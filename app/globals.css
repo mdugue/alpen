@@ -1,0 +1,125 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+/*
+ * shadcn/ui – Style "mira", Base "stone", Akzent Amber.
+ * Ersetzen mit:  bunx shadcn@latest init --preset b1D2ui9g
+ * (überschreibt diese Datei mit den offiziellen Tokens des Presets)
+ */
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  --radius: 0.75rem;
+
+  --background: oklch(0.985 0.004 90);
+  --foreground: oklch(0.21 0.012 65);
+  --card: oklch(1 0 0);
+  --card-foreground: var(--foreground);
+  --popover: oklch(1 0 0);
+  --popover-foreground: var(--foreground);
+  --primary: oklch(0.32 0.035 250);
+  --primary-foreground: oklch(0.98 0.005 90);
+  --secondary: oklch(0.95 0.008 85);
+  --secondary-foreground: var(--foreground);
+  --muted: oklch(0.955 0.008 85);
+  --muted-foreground: oklch(0.52 0.015 70);
+  --accent: oklch(0.79 0.13 75);
+  --accent-foreground: oklch(0.24 0.03 65);
+  --destructive: oklch(0.55 0.19 27);
+  --border: oklch(0.9 0.01 80);
+  --input: oklch(0.9 0.01 80);
+  --ring: oklch(0.79 0.13 75);
+
+  /* Domänenfarben: Status und Kartenobjekte */
+  --status-open: oklch(0.55 0.12 155);
+  --status-risky: oklch(0.75 0.14 75);
+  --status-closed: oklch(0.55 0.18 25);
+  --tour: oklch(0.6 0.09 300);
+  --town: oklch(0.45 0.09 250);
+
+  --chart-1: var(--status-open);
+  --chart-2: var(--status-risky);
+  --chart-3: var(--status-closed);
+  --chart-4: oklch(0.6 0.1 230);
+  --chart-5: oklch(0.65 0.12 40);
+}
+
+.dark {
+  --background: oklch(0.17 0.008 260);
+  --foreground: oklch(0.95 0.005 90);
+  --card: oklch(0.22 0.01 260);
+  --card-foreground: var(--foreground);
+  --popover: oklch(0.22 0.01 260);
+  --popover-foreground: var(--foreground);
+  --primary: oklch(0.85 0.03 90);
+  --primary-foreground: oklch(0.22 0.02 260);
+  --secondary: oklch(0.27 0.012 260);
+  --secondary-foreground: var(--foreground);
+  --muted: oklch(0.27 0.012 260);
+  --muted-foreground: oklch(0.7 0.015 80);
+  --accent: oklch(0.78 0.13 75);
+  --accent-foreground: oklch(0.2 0.02 260);
+  --destructive: oklch(0.65 0.18 25);
+  --border: oklch(0.3 0.012 260);
+  --input: oklch(0.3 0.012 260);
+  --ring: oklch(0.78 0.13 75);
+
+  --status-open: oklch(0.7 0.14 155);
+  --status-risky: oklch(0.79 0.14 75);
+  --status-closed: oklch(0.68 0.17 25);
+  --tour: oklch(0.7 0.09 300);
+  --town: oklch(0.72 0.09 245);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --color-status-open: var(--status-open);
+  --color-status-risky: var(--status-risky);
+  --color-status-closed: var(--status-closed);
+  --color-tour: var(--tour);
+  --color-town: var(--town);
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-heading: var(--font-oxanium), var(--font-inter), ui-sans-serif, sans-serif;
+}
+
+@layer base {
+  * { @apply border-border outline-ring/50; }
+  body { @apply bg-background text-foreground; }
+  h1, h2, h3, h4 { font-family: var(--font-heading); letter-spacing: -0.01em; }
+}
+
+/* MapLibre an die Theme-Tokens angleichen */
+.maplibregl-ctrl-group {
+  @apply bg-card! border border-border! rounded-lg! shadow-sm!;
+}
+.maplibregl-ctrl-group button + button { @apply border-t border-border!; }
+.maplibregl-popup-content {
+  @apply bg-popover! text-popover-foreground! rounded-lg! border border-border! px-3! py-2! text-sm! shadow-md!;
+}
+.maplibregl-popup-tip { @apply border-t-popover! border-b-popover!; }
+.maplibregl-ctrl-attrib { @apply bg-card/80! text-muted-foreground! text-[10px]!; }
+.maplibregl-ctrl-attrib a { @apply text-muted-foreground!; }

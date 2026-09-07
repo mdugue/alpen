@@ -1,0 +1,617 @@
+[
+ {
+  "slug": "sellaronda",
+  "name": "Sellaronda",
+  "color": "#8d7bb5",
+  "km": 52,
+  "elevationGain": 1700,
+  "passes": [
+   "passo-campolongo",
+   "passo-pordoi",
+   "passo-sella",
+   "passo-gardena"
+  ],
+  "season": "Mai bis Oktober; autofreier Sellaronda Bike Day im Juni und September.",
+  "description": "Dolomiten-Klassikerrunde um den Sella-Stock ab Corvara im Uhrzeigersinn.",
+  "waypoints": [
+   {
+    "lat": 46.549,
+    "lon": 11.874
+   },
+   {
+    "lat": 46.518,
+    "lon": 11.877
+   },
+   {
+    "lat": 46.497,
+    "lon": 11.875
+   },
+   {
+    "lat": 46.488,
+    "lon": 11.813
+   },
+   {
+    "lat": 46.477,
+    "lon": 11.77
+   },
+   {
+    "lat": 46.509,
+    "lon": 11.76
+   },
+   {
+    "lat": 46.548,
+    "lon": 11.81
+   },
+   {
+    "lat": 46.549,
+    "lon": 11.874
+   }
+  ]
+ },
+ {
+  "slug": "maratona-dles-dolomites-lang",
+  "name": "Maratona dles Dolomites (lang)",
+  "color": "#b57a99",
+  "km": 138,
+  "elevationGain": 4230,
+  "passes": [
+   "passo-campolongo",
+   "passo-pordoi",
+   "passo-sella",
+   "passo-gardena",
+   "passo-giau",
+   "passo-falzarego",
+   "passo-valparola"
+  ],
+  "season": "Juni bis Oktober; Veranstaltung Anfang Juli (Sperrstraßen).",
+  "description": "Sellaronda plus Campolongo (2×), Giau, Falzarego und Valparola ab La Villa.",
+  "waypoints": [
+   {
+    "lat": 46.587,
+    "lon": 11.905
+   },
+   {
+    "lat": 46.518,
+    "lon": 11.877
+   },
+   {
+    "lat": 46.497,
+    "lon": 11.875
+   },
+   {
+    "lat": 46.488,
+    "lon": 11.813
+   },
+   {
+    "lat": 46.477,
+    "lon": 11.77
+   },
+   {
+    "lat": 46.509,
+    "lon": 11.76
+   },
+   {
+    "lat": 46.548,
+    "lon": 11.81
+   },
+   {
+    "lat": 46.549,
+    "lon": 11.874
+   },
+   {
+    "lat": 46.518,
+    "lon": 11.877
+   },
+   {
+    "lat": 46.497,
+    "lon": 11.875
+   },
+   {
+    "lat": 46.475,
+    "lon": 11.973
+   },
+   {
+    "lat": 46.484,
+    "lon": 12.055
+   },
+   {
+    "lat": 46.532,
+    "lon": 12.106
+   },
+   {
+    "lat": 46.519,
+    "lon": 12.008
+   },
+   {
+    "lat": 46.533,
+    "lon": 11.985
+   },
+   {
+    "lat": 46.587,
+    "lon": 11.905
+   }
+  ]
+ },
+ {
+  "slug": "route-des-grandes-alpes",
+  "name": "Route des Grandes Alpes",
+  "color": "#c4956a",
+  "km": 700,
+  "elevationGain": 17000,
+  "passes": [
+   "col-de-la-colombiere",
+   "cormet-de-roselend",
+   "col-de-l-iseran",
+   "col-du-galibier",
+   "col-d-izoard",
+   "col-de-vars",
+   "col-de-la-cayolle",
+   "col-de-la-couillole",
+   "col-de-turini"
+  ],
+  "season": "Mitte Juni bis Anfang Oktober – der Iseran gibt das Fenster vor; Oktober nur mit Plan B über Mont Cenis.",
+  "description": "Thonon-les-Bains – Menton über 17 Pässe, typisch 6–8 Etappen.",
+  "waypoints": [
+   {
+    "lat": 46.371,
+    "lon": 6.479
+   },
+   {
+    "lat": 46.061,
+    "lon": 6.578
+   },
+   {
+    "lat": 46.019,
+    "lon": 6.478
+   },
+   {
+    "lat": 45.941,
+    "lon": 6.428
+   },
+   {
+    "lat": 45.87,
+    "lon": 6.464
+   },
+   {
+    "lat": 45.818,
+    "lon": 6.514
+   },
+   {
+    "lat": 45.76,
+    "lon": 6.529
+   },
+   {
+    "lat": 45.719,
+    "lon": 6.573
+   },
+   {
+    "lat": 45.674,
+    "lon": 6.643
+   },
+   {
+    "lat": 45.618,
+    "lon": 6.77
+   },
+   {
+    "lat": 45.449,
+    "lon": 6.98
+   },
+   {
+    "lat": 45.417,
+    "lon": 7.031
+   },
+   {
+    "lat": 45.372,
+    "lon": 7.045
+   },
+   {
+    "lat": 45.286,
+    "lon": 6.876
+   },
+   {
+    "lat": 45.2,
+    "lon": 6.67
+   },
+   {
+    "lat": 45.218,
+    "lon": 6.47
+   },
+   {
+    "lat": 45.199,
+    "lon": 6.445
+   },
+   {
+    "lat": 45.165,
+    "lon": 6.43
+   },
+   {
+    "lat": 45.064,
+    "lon": 6.408
+   },
+   {
+    "lat": 45.034,
+    "lon": 6.405
+   },
+   {
+    "lat": 44.897,
+    "lon": 6.636
+   },
+   {
+    "lat": 44.82,
+    "lon": 6.735
+   },
+   {
+    "lat": 44.66,
+    "lon": 6.65
+   },
+   {
+    "lat": 44.538,
+    "lon": 6.702
+   },
+   {
+    "lat": 44.417,
+    "lon": 6.732
+   },
+   {
+    "lat": 44.387,
+    "lon": 6.652
+   },
+   {
+    "lat": 44.259,
+    "lon": 6.744
+   },
+   {
+    "lat": 44.09,
+    "lon": 6.854
+   },
+   {
+    "lat": 44.095,
+    "lon": 6.931
+   },
+   {
+    "lat": 44.098,
+    "lon": 6.988
+   },
+   {
+    "lat": 44.134,
+    "lon": 7.048
+   },
+   {
+    "lat": 44.083,
+    "lon": 7.107
+   },
+   {
+    "lat": 44.066,
+    "lon": 7.256
+   },
+   {
+    "lat": 43.979,
+    "lon": 7.391
+   },
+   {
+    "lat": 43.878,
+    "lon": 7.448
+   },
+   {
+    "lat": 43.827,
+    "lon": 7.488
+   },
+   {
+    "lat": 43.775,
+    "lon": 7.497
+   }
+  ]
+ },
+ {
+  "slug": "oetztaler-radmarathon",
+  "name": "Ötztaler Radmarathon",
+  "color": "#6f9fb0",
+  "km": 227,
+  "elevationGain": 5500,
+  "passes": [
+   "kuehtai",
+   "jaufenpass",
+   "timmelsjoch"
+  ],
+  "season": "Juni bis Anfang Oktober; Veranstaltung Ende August, Timmelsjoch-Maut für Rad frei.",
+  "description": "Sölden – Kühtai – Innsbruck – Brenner – Jaufenpass – Timmelsjoch – Sölden.",
+  "waypoints": [
+   {
+    "lat": 46.968,
+    "lon": 11.007
+   },
+   {
+    "lat": 47.204,
+    "lon": 10.895
+   },
+   {
+    "lat": 47.213,
+    "lon": 11.021
+   },
+   {
+    "lat": 47.256,
+    "lon": 11.272
+   },
+   {
+    "lat": 47.262,
+    "lon": 11.394
+   },
+   {
+    "lat": 47.005,
+    "lon": 11.505
+   },
+   {
+    "lat": 46.897,
+    "lon": 11.431
+   },
+   {
+    "lat": 46.836,
+    "lon": 11.312
+   },
+   {
+    "lat": 46.812,
+    "lon": 11.247
+   },
+   {
+    "lat": 46.906,
+    "lon": 11.093
+   },
+   {
+    "lat": 46.968,
+    "lon": 11.007
+   }
+  ]
+ },
+ {
+  "slug": "la-marmotte",
+  "name": "La Marmotte",
+  "color": "#7f86b8",
+  "km": 174,
+  "elevationGain": 5000,
+  "passes": [
+   "col-du-glandon",
+   "col-du-galibier",
+   "alpe-d-huez"
+  ],
+  "season": "Juni bis Mitte Oktober (Galibier); Veranstaltung Anfang Juli.",
+  "description": "Bourg d'Oisans – Glandon – Télégraphe – Galibier – Lautaret – Alpe d'Huez.",
+  "waypoints": [
+   {
+    "lat": 45.055,
+    "lon": 6.03
+   },
+   {
+    "lat": 45.104,
+    "lon": 5.994
+   },
+   {
+    "lat": 45.24,
+    "lon": 6.176
+   },
+   {
+    "lat": 45.358,
+    "lon": 6.303
+   },
+   {
+    "lat": 45.276,
+    "lon": 6.347
+   },
+   {
+    "lat": 45.218,
+    "lon": 6.47
+   },
+   {
+    "lat": 45.199,
+    "lon": 6.445
+   },
+   {
+    "lat": 45.165,
+    "lon": 6.43
+   },
+   {
+    "lat": 45.064,
+    "lon": 6.408
+   },
+   {
+    "lat": 45.034,
+    "lon": 6.405
+   },
+   {
+    "lat": 45.055,
+    "lon": 6.03
+   },
+   {
+    "lat": 45.092,
+    "lon": 6.07
+   }
+  ]
+ },
+ {
+  "slug": "andermatt-drei-paesse-runde",
+  "name": "Andermatt Drei-Pässe-Runde",
+  "color": "#6fa89f",
+  "km": 120,
+  "elevationGain": 3500,
+  "passes": [
+   "furkapass",
+   "grimselpass",
+   "sustenpass"
+  ],
+  "season": "Mitte Juni bis Mitte Oktober; Alpenbrevet Ende August.",
+  "description": "Furka – Grimsel – Susten, zurück durch die Schöllenenschlucht.",
+  "waypoints": [
+   {
+    "lat": 46.635,
+    "lon": 8.594
+   },
+   {
+    "lat": 46.598,
+    "lon": 8.503
+   },
+   {
+    "lat": 46.572,
+    "lon": 8.415
+   },
+   {
+    "lat": 46.562,
+    "lon": 8.36
+   },
+   {
+    "lat": 46.562,
+    "lon": 8.337
+   },
+   {
+    "lat": 46.706,
+    "lon": 8.226
+   },
+   {
+    "lat": 46.729,
+    "lon": 8.446
+   },
+   {
+    "lat": 46.706,
+    "lon": 8.599
+   },
+   {
+    "lat": 46.667,
+    "lon": 8.589
+   },
+   {
+    "lat": 46.635,
+    "lon": 8.594
+   }
+  ]
+ },
+ {
+  "slug": "stilfserjoch-umbrail-runde",
+  "name": "Stilfserjoch–Umbrail-Runde",
+  "color": "#b09068",
+  "km": 70,
+  "elevationGain": 2000,
+  "passes": [
+   "passo-dello-stelvio",
+   "umbrailpass"
+  ],
+  "season": "Juni bis Mitte Oktober; autofreier Stelvio Bike Day Ende August/Anfang September.",
+  "description": "Prad – Stilfserjoch (48 Kehren) – Umbrail – Santa Maria – Glurns – Prad.",
+  "waypoints": [
+   {
+    "lat": 46.618,
+    "lon": 10.594
+   },
+   {
+    "lat": 46.529,
+    "lon": 10.453
+   },
+   {
+    "lat": 46.548,
+    "lon": 10.433
+   },
+   {
+    "lat": 46.601,
+    "lon": 10.419
+   },
+   {
+    "lat": 46.671,
+    "lon": 10.556
+   },
+   {
+    "lat": 46.618,
+    "lon": 10.594
+   }
+  ]
+ },
+ {
+  "slug": "gavia-mortirolo-runde",
+  "name": "Gavia–Mortirolo-Runde",
+  "color": "#9a7fb0",
+  "km": 130,
+  "elevationGain": 3800,
+  "passes": [
+   "passo-di-gavia",
+   "passo-del-mortirolo"
+  ],
+  "season": "Mitte Juni bis Anfang Oktober (Gavia).",
+  "description": "Bormio – Gavia – Ponte di Legno – Edolo – Mortirolo ab Monno – Mazzo – Bormio.",
+  "waypoints": [
+   {
+    "lat": 46.468,
+    "lon": 10.372
+   },
+   {
+    "lat": 46.412,
+    "lon": 10.494
+   },
+   {
+    "lat": 46.343,
+    "lon": 10.491
+   },
+   {
+    "lat": 46.259,
+    "lon": 10.508
+   },
+   {
+    "lat": 46.176,
+    "lon": 10.331
+   },
+   {
+    "lat": 46.223,
+    "lon": 10.371
+   },
+   {
+    "lat": 46.249,
+    "lon": 10.301
+   },
+   {
+    "lat": 46.256,
+    "lon": 10.256
+   },
+   {
+    "lat": 46.468,
+    "lon": 10.372
+   }
+  ]
+ },
+ {
+  "slug": "vrsic-predil-runde",
+  "name": "Vršič–Predil-Runde",
+  "color": "#6e8ab8",
+  "km": 105,
+  "elevationGain": 2300,
+  "passes": [
+   "vrsic"
+  ],
+  "season": "Mai bis Oktober; Vršič-Pflaster bei Nässe rutschig.",
+  "description": "Kranjska Gora – Vršič – Soča-Tal – Bovec – Predil – Tarvisio – Kranjska Gora.",
+  "waypoints": [
+   {
+    "lat": 46.484,
+    "lon": 13.789
+   },
+   {
+    "lat": 46.432,
+    "lon": 13.745
+   },
+   {
+    "lat": 46.373,
+    "lon": 13.759
+   },
+   {
+    "lat": 46.338,
+    "lon": 13.552
+   },
+   {
+    "lat": 46.416,
+    "lon": 13.578
+   },
+   {
+    "lat": 46.505,
+    "lon": 13.578
+   },
+   {
+    "lat": 46.484,
+    "lon": 13.789
+   }
+  ]
+ }
+]

@@ -1,0 +1,3095 @@
+[
+ {
+  "slug": "col-du-galibier",
+  "name": "Col du Galibier",
+  "country": "FR",
+  "region": "Westalpen",
+  "lat": 45.064,
+  "lon": 6.408,
+  "elevation": 2642,
+  "classicAscent": "18 km, 6,9 % ab Valloire (34 km via Télégraphe)",
+  "beauty": 5,
+  "fame": 5,
+  "difficulty": 5,
+  "traffic": 2,
+  "season": {
+   "opens": 6,
+   "closes": 10.5,
+   "maintained": false
+  },
+  "note": "Wintersperre meist Ende Oktober bis Anfang Juni. Anfang Oktober oft noch traumhaft, ab Mitte Oktober Schneerisiko am Scheitel.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 45.165,
+     "lon": 6.43
+    },
+    "label": "Valloire (Nord)"
+   },
+   {
+    "from": {
+     "lat": 45.034,
+     "lon": 6.405
+    },
+    "label": "Col du Lautaret (Süd)"
+   }
+  ]
+ },
+ {
+  "slug": "alpe-d-huez",
+  "name": "Alpe d'Huez",
+  "country": "FR",
+  "region": "Westalpen",
+  "lat": 45.092,
+  "lon": 6.07,
+  "elevation": 1860,
+  "classicAscent": "13,8 km, 8,1 % ab Bourg d'Oisans, 21 Kehren",
+  "beauty": 3,
+  "fame": 5,
+  "difficulty": 4,
+  "traffic": 3,
+  "season": null,
+  "note": "Straße zum Skiort, ganzjährig offen. Landschaftlich eher nüchtern, dafür Mythos pur.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 45.055,
+     "lon": 6.03
+    },
+    "label": "Bourg d'Oisans"
+   }
+  ]
+ },
+ {
+  "slug": "col-de-l-iseran",
+  "name": "Col de l'Iseran",
+  "country": "FR",
+  "region": "Westalpen",
+  "lat": 45.417,
+  "lon": 7.031,
+  "elevation": 2764,
+  "classicAscent": "13,4 km, 7,3 % ab Bonneval-sur-Arc",
+  "beauty": 5,
+  "fame": 4,
+  "difficulty": 4,
+  "traffic": 2,
+  "season": {
+   "opens": 6,
+   "closes": 10,
+   "maintained": false
+  },
+  "note": "Höchster Straßenpass der Alpen. Wird oft schon Anfang bis Mitte Oktober gesperrt, offen ab Juni.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 45.372,
+     "lon": 7.045
+    },
+    "label": "Bonneval-sur-Arc (Süd)"
+   },
+   {
+    "from": {
+     "lat": 45.449,
+     "lon": 6.98
+    },
+    "label": "Val d'Isère (Nord)"
+   }
+  ]
+ },
+ {
+  "slug": "col-de-la-bonette",
+  "name": "Col de la Bonette",
+  "country": "FR",
+  "region": "Westalpen",
+  "lat": 44.321,
+  "lon": 6.807,
+  "elevation": 2802,
+  "classicAscent": "24 km, 6,6 % ab Jausiers (Cime-Schleife)",
+  "beauty": 5,
+  "fame": 4,
+  "difficulty": 5,
+  "traffic": 1,
+  "season": {
+   "opens": 6,
+   "closes": 10.5,
+   "maintained": false
+  },
+  "note": "Höchste asphaltierte Schleife Europas. Meist bis Mitte/Ende Oktober offen, Sperre wetterabhängig.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 44.417,
+     "lon": 6.732
+    },
+    "label": "Jausiers (Nord)"
+   },
+   {
+    "from": {
+     "lat": 44.257,
+     "lon": 6.925
+    },
+    "label": "Saint-Étienne-de-Tinée (Süd)"
+   }
+  ]
+ },
+ {
+  "slug": "col-d-izoard",
+  "name": "Col d'Izoard",
+  "country": "FR",
+  "region": "Westalpen",
+  "lat": 44.82,
+  "lon": 6.735,
+  "elevation": 2360,
+  "classicAscent": "19 km, 5,9 % ab Briançon",
+  "beauty": 5,
+  "fame": 4,
+  "difficulty": 4,
+  "traffic": 2,
+  "season": {
+   "opens": 5.5,
+   "closes": 11,
+   "maintained": false
+  },
+  "note": "Casse Déserte auf der Südseite. Sperre meist Anfang November, Oktober in der Regel gut – mit Wetterblick.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 44.897,
+     "lon": 6.636
+    },
+    "label": "Briançon (Nord)"
+   },
+   {
+    "from": {
+     "lat": 44.66,
+     "lon": 6.65
+    },
+    "label": "Guillestre (Süd)"
+   }
+  ]
+ },
+ {
+  "slug": "col-de-la-madeleine",
+  "name": "Col de la Madeleine",
+  "country": "FR",
+  "region": "Westalpen",
+  "lat": 45.432,
+  "lon": 6.375,
+  "elevation": 2000,
+  "classicAscent": "19 km, 8 % ab La Chambre",
+  "beauty": 4,
+  "fame": 4,
+  "difficulty": 4,
+  "traffic": 2,
+  "season": {
+   "opens": 5.5,
+   "closes": 11,
+   "maintained": false
+  },
+  "note": "Sperre meist Anfang November. Lange, gleichmäßig zähe Auffahrt.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 45.358,
+     "lon": 6.303
+    },
+    "label": "La Chambre (Süd)"
+   },
+   {
+    "from": {
+     "lat": 45.545,
+     "lon": 6.457
+    },
+    "label": "Feissons-sur-Isère (Nord)"
+   }
+  ]
+ },
+ {
+  "slug": "col-de-la-croix-de-fer",
+  "name": "Col de la Croix de Fer",
+  "country": "FR",
+  "region": "Westalpen",
+  "lat": 45.227,
+  "lon": 6.184,
+  "elevation": 2067,
+  "classicAscent": "29 km, 5,1 % ab St-Jean-de-Maurienne",
+  "beauty": 4,
+  "fame": 4,
+  "difficulty": 4,
+  "traffic": 2,
+  "season": {
+   "opens": 5.5,
+   "closes": 11,
+   "maintained": false
+  },
+  "note": "Sperre meist Anfang November. Unregelmäßiges Profil mit Gegenanstiegen.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 45.276,
+     "lon": 6.347
+    },
+    "label": "Saint-Jean-de-Maurienne"
+   },
+   {
+    "from": {
+     "lat": 45.104,
+     "lon": 5.994
+    },
+    "label": "Rochetaillée (Oisans)"
+   }
+  ]
+ },
+ {
+  "slug": "col-de-la-loze",
+  "name": "Col de la Loze",
+  "country": "FR",
+  "region": "Westalpen",
+  "lat": 45.406,
+  "lon": 6.601,
+  "elevation": 2304,
+  "classicAscent": "21,5 km, 7,8 % ab Brides-les-Bains",
+  "beauty": 4,
+  "fame": 4,
+  "difficulty": 5,
+  "traffic": 1,
+  "season": {
+   "opens": 6,
+   "closes": 10.5,
+   "maintained": false
+  },
+  "note": "Oberer Teil ist ein autofreier Radweg mit Rampen über 20 %. Meist bis Ende Oktober befahrbar.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 45.453,
+     "lon": 6.568
+    },
+    "label": "Brides-les-Bains / Méribel"
+   },
+   {
+    "from": {
+     "lat": 45.415,
+     "lon": 6.634
+    },
+    "label": "Courchevel"
+   }
+  ]
+ },
+ {
+  "slug": "mont-ventoux",
+  "name": "Mont Ventoux",
+  "country": "FR",
+  "region": "Westalpen",
+  "lat": 44.174,
+  "lon": 5.278,
+  "elevation": 1910,
+  "classicAscent": "21,5 km, 7,5 % ab Bédoin",
+  "beauty": 5,
+  "fame": 5,
+  "difficulty": 5,
+  "traffic": 3,
+  "season": {
+   "opens": 5,
+   "closes": 11.5,
+   "maintained": false
+  },
+  "note": "Gipfelstraße meist erst ab Mitte November gesperrt. Oktober ideal, aber der Mistral kann brutal sein – Windprognose prüfen.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 44.124,
+     "lon": 5.179
+    },
+    "label": "Bédoin"
+   },
+   {
+    "from": {
+     "lat": 44.174,
+     "lon": 5.132
+    },
+    "label": "Malaucène"
+   },
+   {
+    "from": {
+     "lat": 44.09,
+     "lon": 5.408
+    },
+    "label": "Sault"
+   }
+  ]
+ },
+ {
+  "slug": "colle-dell-agnello",
+  "name": "Colle dell'Agnello",
+  "country": "IT/FR",
+  "region": "Westalpen",
+  "lat": 44.683,
+  "lon": 6.98,
+  "elevation": 2744,
+  "classicAscent": "22 km, 6,5 % ab Sampeyre (IT-Seite)",
+  "beauty": 5,
+  "fame": 3,
+  "difficulty": 5,
+  "traffic": 1,
+  "season": {
+   "opens": 6,
+   "closes": 10,
+   "maintained": false
+  },
+  "note": "Grenzpass, meist ab Anfang/Mitte Oktober gesperrt. Einsam und großartig, wenn er offen ist.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 44.579,
+     "lon": 7.189
+    },
+    "label": "Sampeyre (IT)"
+   },
+   {
+    "from": {
+     "lat": 44.756,
+     "lon": 6.812
+    },
+    "label": "Château-Ville-Vieille (FR)"
+   }
+  ]
+ },
+ {
+  "slug": "colle-delle-finestre",
+  "name": "Colle delle Finestre",
+  "country": "IT",
+  "region": "Westalpen",
+  "lat": 45.073,
+  "lon": 7.049,
+  "elevation": 2178,
+  "classicAscent": "18,5 km, 9,2 % ab Susa, oben 8 km Schotter",
+  "beauty": 5,
+  "fame": 4,
+  "difficulty": 5,
+  "traffic": 1,
+  "season": {
+   "opens": 5.5,
+   "closes": 10.5,
+   "maintained": false
+  },
+  "note": "Giro-Legende mit Schotterfinale. Meist bis Ende Oktober offen, nach Regen matschig.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 45.137,
+     "lon": 7.053
+    },
+    "label": "Susa"
+   }
+  ]
+ },
+ {
+  "slug": "passo-dello-stelvio",
+  "name": "Passo dello Stelvio",
+  "country": "IT",
+  "region": "Zentralalpen",
+  "lat": 46.529,
+  "lon": 10.453,
+  "elevation": 2757,
+  "classicAscent": "24,3 km, 7,4 % ab Prad, 48 Kehren",
+  "beauty": 5,
+  "fame": 5,
+  "difficulty": 5,
+  "traffic": 4,
+  "season": {
+   "opens": 5.5,
+   "closes": 10.5,
+   "maintained": false
+  },
+  "note": "Sperre je nach Winter zwischen Mitte Oktober und Ende November. Erste Oktoberhälfte oft ideal, danach Lotterie.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.618,
+     "lon": 10.594
+    },
+    "label": "Prad (48 Kehren)"
+   },
+   {
+    "from": {
+     "lat": 46.468,
+     "lon": 10.372
+    },
+    "label": "Bormio"
+   }
+  ]
+ },
+ {
+  "slug": "passo-di-gavia",
+  "name": "Passo di Gavia",
+  "country": "IT",
+  "region": "Zentralalpen",
+  "lat": 46.343,
+  "lon": 10.491,
+  "elevation": 2621,
+  "classicAscent": "17,3 km, 7,9 % ab Ponte di Legno",
+  "beauty": 5,
+  "fame": 4,
+  "difficulty": 5,
+  "traffic": 2,
+  "season": {
+   "opens": 6,
+   "closes": 10,
+   "maintained": false
+  },
+  "note": "Oft schon Anfang/Mitte Oktober gesperrt. Schmale, wilde Straße – Wetterfenster nutzen.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.259,
+     "lon": 10.508
+    },
+    "label": "Ponte di Legno"
+   },
+   {
+    "from": {
+     "lat": 46.468,
+     "lon": 10.372
+    },
+    "label": "Bormio"
+   }
+  ]
+ },
+ {
+  "slug": "passo-del-mortirolo",
+  "name": "Passo del Mortirolo",
+  "country": "IT",
+  "region": "Zentralalpen",
+  "lat": 46.249,
+  "lon": 10.301,
+  "elevation": 1852,
+  "classicAscent": "12,4 km, 10,5 % ab Mazzo di Valtellina",
+  "beauty": 3,
+  "fame": 5,
+  "difficulty": 5,
+  "traffic": 1,
+  "season": null,
+  "note": "Fast ganzjährig befahrbar, Waldstraße ohne Aussicht, dafür gnadenlos steil.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.256,
+     "lon": 10.256
+    },
+    "label": "Mazzo di Valtellina"
+   },
+   {
+    "from": {
+     "lat": 46.223,
+     "lon": 10.371
+    },
+    "label": "Monno"
+   }
+  ]
+ },
+ {
+  "slug": "umbrailpass",
+  "name": "Umbrailpass",
+  "country": "CH/IT",
+  "region": "Zentralalpen",
+  "lat": 46.548,
+  "lon": 10.433,
+  "elevation": 2501,
+  "classicAscent": "13,4 km, 8,9 % ab Santa Maria",
+  "beauty": 4,
+  "fame": 3,
+  "difficulty": 4,
+  "traffic": 2,
+  "season": {
+   "opens": 5.5,
+   "closes": 10.5,
+   "maintained": false
+  },
+  "note": "Zubringer zum Stelvio. Sperre meist Ende Oktober/November.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.601,
+     "lon": 10.419
+    },
+    "label": "Santa Maria Val Müstair"
+   }
+  ]
+ },
+ {
+  "slug": "furkapass",
+  "name": "Furkapass",
+  "country": "CH",
+  "region": "Zentralalpen",
+  "lat": 46.572,
+  "lon": 8.415,
+  "elevation": 2429,
+  "classicAscent": "12,7 km, 6,3 % ab Realp",
+  "beauty": 5,
+  "fame": 4,
+  "difficulty": 4,
+  "traffic": 3,
+  "season": {
+   "opens": 6,
+   "closes": 10.5,
+   "maintained": false
+  },
+  "note": "Wintersperre meist Ende Oktober/Anfang November. Blick auf Rhonegletscher und Grimsel-Serpentinen.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.598,
+     "lon": 8.503
+    },
+    "label": "Realp"
+   },
+   {
+    "from": {
+     "lat": 46.562,
+     "lon": 8.36
+    },
+    "label": "Gletsch"
+   }
+  ]
+ },
+ {
+  "slug": "grimselpass",
+  "name": "Grimselpass",
+  "country": "CH",
+  "region": "Zentralalpen",
+  "lat": 46.562,
+  "lon": 8.337,
+  "elevation": 2164,
+  "classicAscent": "26 km, 5,8 % ab Innertkirchen",
+  "beauty": 5,
+  "fame": 4,
+  "difficulty": 4,
+  "traffic": 3,
+  "season": {
+   "opens": 6,
+   "closes": 10.5,
+   "maintained": false
+  },
+  "note": "Sperre meist Ende Oktober/November. Stauseen und Granit.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.706,
+     "lon": 8.226
+    },
+    "label": "Innertkirchen"
+   },
+   {
+    "from": {
+     "lat": 46.562,
+     "lon": 8.36
+    },
+    "label": "Gletsch"
+   }
+  ]
+ },
+ {
+  "slug": "sustenpass",
+  "name": "Sustenpass",
+  "country": "CH",
+  "region": "Zentralalpen",
+  "lat": 46.729,
+  "lon": 8.446,
+  "elevation": 2224,
+  "classicAscent": "28 km, 5,5 % ab Innertkirchen",
+  "beauty": 5,
+  "fame": 4,
+  "difficulty": 4,
+  "traffic": 3,
+  "season": {
+   "opens": 6,
+   "closes": 10.5,
+   "maintained": false
+  },
+  "note": "Sperre meist Ende Oktober/November. Gleichmäßige Steigung, Steingletscher-Panorama.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.706,
+     "lon": 8.226
+    },
+    "label": "Innertkirchen"
+   },
+   {
+    "from": {
+     "lat": 46.706,
+     "lon": 8.599
+    },
+    "label": "Wassen"
+   }
+  ]
+ },
+ {
+  "slug": "nufenenpass",
+  "name": "Nufenenpass",
+  "country": "CH",
+  "region": "Zentralalpen",
+  "lat": 46.478,
+  "lon": 8.387,
+  "elevation": 2478,
+  "classicAscent": "13,5 km, 8,6 % ab Ulrichen",
+  "beauty": 4,
+  "fame": 3,
+  "difficulty": 5,
+  "traffic": 2,
+  "season": {
+   "opens": 6,
+   "closes": 10.5,
+   "maintained": false
+  },
+  "note": "Höchster Schweizer Straßenpass ganz im Land. Sperre meist Mitte/Ende Oktober.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.505,
+     "lon": 8.309
+    },
+    "label": "Ulrichen"
+   },
+   {
+    "from": {
+     "lat": 46.528,
+     "lon": 8.61
+    },
+    "label": "Airolo"
+   }
+  ]
+ },
+ {
+  "slug": "gotthard-tremola",
+  "name": "Gotthard (Tremola)",
+  "country": "CH",
+  "region": "Zentralalpen",
+  "lat": 46.559,
+  "lon": 8.561,
+  "elevation": 2106,
+  "classicAscent": "12,7 km, 7,3 % ab Airolo, Kopfsteinpflaster",
+  "beauty": 5,
+  "fame": 4,
+  "difficulty": 4,
+  "traffic": 1,
+  "season": {
+   "opens": 5.5,
+   "closes": 11,
+   "maintained": false
+  },
+  "note": "Tremola-Pflasterserpentinen. Passstraße meist bis Ende Oktober/November offen.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.528,
+     "lon": 8.61
+    },
+    "label": "Airolo"
+   },
+   {
+    "from": {
+     "lat": 46.62,
+     "lon": 8.568
+    },
+    "label": "Hospental"
+   }
+  ]
+ },
+ {
+  "slug": "grosse-scheidegg",
+  "name": "Grosse Scheidegg",
+  "country": "CH",
+  "region": "Zentralalpen",
+  "lat": 46.655,
+  "lon": 8.102,
+  "elevation": 1962,
+  "classicAscent": "20 km, 6 % ab Meiringen",
+  "beauty": 5,
+  "fame": 3,
+  "difficulty": 4,
+  "traffic": 1,
+  "season": {
+   "opens": 6,
+   "closes": 10.5,
+   "maintained": false
+  },
+  "note": "Autofrei (nur Postbus). Sperre meist ab Ende Oktober. Eiger-Nordwand-Blick.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.727,
+     "lon": 8.187
+    },
+    "label": "Meiringen"
+   },
+   {
+    "from": {
+     "lat": 46.624,
+     "lon": 8.041
+    },
+    "label": "Grindelwald"
+   }
+  ]
+ },
+ {
+  "slug": "klausenpass",
+  "name": "Klausenpass",
+  "country": "CH",
+  "region": "Zentralalpen",
+  "lat": 46.869,
+  "lon": 8.856,
+  "elevation": 1948,
+  "classicAscent": "22 km, 5,5 % ab Altdorf",
+  "beauty": 4,
+  "fame": 3,
+  "difficulty": 3,
+  "traffic": 3,
+  "season": {
+   "opens": 5.5,
+   "closes": 11,
+   "maintained": false
+  },
+  "note": "Sperre meist Ende Oktober/November.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.881,
+     "lon": 8.644
+    },
+    "label": "Altdorf"
+   },
+   {
+    "from": {
+     "lat": 46.921,
+     "lon": 8.998
+    },
+    "label": "Linthal"
+   }
+  ]
+ },
+ {
+  "slug": "albulapass",
+  "name": "Albulapass",
+  "country": "CH",
+  "region": "Zentralalpen",
+  "lat": 46.583,
+  "lon": 9.836,
+  "elevation": 2312,
+  "classicAscent": "20 km, 5 % ab Filisur",
+  "beauty": 4,
+  "fame": 3,
+  "difficulty": 3,
+  "traffic": 2,
+  "season": {
+   "opens": 5.5,
+   "closes": 11,
+   "maintained": false
+  },
+  "note": "Sperre meist Anfang November. Ruhige Straße parallel zur Rhätischen Bahn.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.675,
+     "lon": 9.685
+    },
+    "label": "Filisur"
+   },
+   {
+    "from": {
+     "lat": 46.582,
+     "lon": 9.924
+    },
+    "label": "La Punt"
+   }
+  ]
+ },
+ {
+  "slug": "col-du-grand-saint-bernard",
+  "name": "Col du Grand Saint-Bernard",
+  "country": "CH/IT",
+  "region": "Zentralalpen",
+  "lat": 45.869,
+  "lon": 7.17,
+  "elevation": 2469,
+  "classicAscent": "12 km, 8,4 % ab Bourg-Saint-Pierre",
+  "beauty": 4,
+  "fame": 4,
+  "difficulty": 4,
+  "traffic": 3,
+  "season": {
+   "opens": 6,
+   "closes": 10,
+   "maintained": false
+  },
+  "note": "Passstraße (nicht Tunnel) meist ab Mitte Oktober gesperrt.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 45.949,
+     "lon": 7.207
+    },
+    "label": "Bourg-Saint-Pierre"
+   },
+   {
+    "from": {
+     "lat": 45.821,
+     "lon": 7.229
+    },
+    "label": "Etroubles (IT)"
+   }
+  ]
+ },
+ {
+  "slug": "grossglockner-hochalpenstrasse",
+  "name": "Großglockner Hochalpenstraße",
+  "country": "AT",
+  "region": "Ostalpen",
+  "lat": 47.081,
+  "lon": 12.831,
+  "elevation": 2571,
+  "classicAscent": "21 km, 8 % ab Fusch bis Edelweißspitze",
+  "beauty": 5,
+  "fame": 5,
+  "difficulty": 5,
+  "traffic": 4,
+  "season": {
+   "opens": 5,
+   "closes": 11,
+   "maintained": true
+  },
+  "note": "Mautstraße, planmäßig bis Ende Oktober/Anfang November offen (nachts gesperrt, Schneetage möglich). Rad-Maut deutlich günstiger.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 47.226,
+     "lon": 12.826
+    },
+    "label": "Fusch"
+   },
+   {
+    "from": {
+     "lat": 47.039,
+     "lon": 12.843
+    },
+    "label": "Heiligenblut"
+   }
+  ]
+ },
+ {
+  "slug": "timmelsjoch",
+  "name": "Timmelsjoch",
+  "country": "AT/IT",
+  "region": "Ostalpen",
+  "lat": 46.906,
+  "lon": 11.093,
+  "elevation": 2509,
+  "classicAscent": "13 km, 8,8 % ab Sölden",
+  "beauty": 4,
+  "fame": 4,
+  "difficulty": 4,
+  "traffic": 3,
+  "season": {
+   "opens": 6,
+   "closes": 10.5,
+   "maintained": true
+  },
+  "note": "Mautstraße, planmäßig bis Mitte/Ende Oktober offen, dann bis Juni gesperrt.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.968,
+     "lon": 11.007
+    },
+    "label": "Sölden"
+   },
+   {
+    "from": {
+     "lat": 46.812,
+     "lon": 11.247
+    },
+    "label": "St. Leonhard in Passeier"
+   }
+  ]
+ },
+ {
+  "slug": "silvretta-hochalpenstrasse",
+  "name": "Silvretta Hochalpenstraße",
+  "country": "AT",
+  "region": "Ostalpen",
+  "lat": 46.918,
+  "lon": 10.096,
+  "elevation": 2032,
+  "classicAscent": "15 km, 8 % ab Partenen",
+  "beauty": 4,
+  "fame": 3,
+  "difficulty": 4,
+  "traffic": 3,
+  "season": {
+   "opens": 6,
+   "closes": 11,
+   "maintained": true
+  },
+  "note": "Mautstraße, meist bis Ende Oktober offen. Bielerhöhe mit Stausee.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.968,
+     "lon": 10.052
+    },
+    "label": "Partenen"
+   },
+   {
+    "from": {
+     "lat": 46.968,
+     "lon": 10.188
+    },
+    "label": "Galtür"
+   }
+  ]
+ },
+ {
+  "slug": "kitzbueheler-horn",
+  "name": "Kitzbüheler Horn",
+  "country": "AT",
+  "region": "Ostalpen",
+  "lat": 47.464,
+  "lon": 12.418,
+  "elevation": 1996,
+  "classicAscent": "7,6 km, 12,5 % ab Kitzbühel",
+  "beauty": 3,
+  "fame": 3,
+  "difficulty": 5,
+  "traffic": 1,
+  "season": null,
+  "note": "Stichstraße, meist bis in den Spätherbst befahrbar. Kurz und sehr steil.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 47.446,
+     "lon": 12.392
+    },
+    "label": "Kitzbühel"
+   }
+  ]
+ },
+ {
+  "slug": "rossfeld-panoramastrasse",
+  "name": "Roßfeld-Panoramastraße",
+  "country": "DE",
+  "region": "Ostalpen",
+  "lat": 47.647,
+  "lon": 13.052,
+  "elevation": 1560,
+  "classicAscent": "15 km, 7,5 % ab Berchtesgaden",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 2,
+  "season": null,
+  "note": "Höchste Höhenstraße Deutschlands, Maut, ganzjährig geräumt.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 47.632,
+     "lon": 13
+    },
+    "label": "Berchtesgaden"
+   }
+  ]
+ },
+ {
+  "slug": "passo-pordoi",
+  "name": "Passo Pordoi",
+  "country": "IT",
+  "region": "Dolomiten",
+  "lat": 46.488,
+  "lon": 11.813,
+  "elevation": 2239,
+  "classicAscent": "9,2 km, 6,9 % ab Arabba",
+  "beauty": 5,
+  "fame": 4,
+  "difficulty": 3,
+  "traffic": 3,
+  "season": null,
+  "note": "Meist ganzjährig offen (Sperre nur bei Schnee). Teil der Sellaronda.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.497,
+     "lon": 11.875
+    },
+    "label": "Arabba"
+   },
+   {
+    "from": {
+     "lat": 46.477,
+     "lon": 11.77
+    },
+    "label": "Canazei"
+   }
+  ]
+ },
+ {
+  "slug": "passo-giau",
+  "name": "Passo Giau",
+  "country": "IT",
+  "region": "Dolomiten",
+  "lat": 46.484,
+  "lon": 12.055,
+  "elevation": 2236,
+  "classicAscent": "9,9 km, 9,3 % ab Selva di Cadore",
+  "beauty": 5,
+  "fame": 4,
+  "difficulty": 4,
+  "traffic": 2,
+  "season": {
+   "opens": 5,
+   "closes": 11.5,
+   "maintained": false
+  },
+  "note": "Meist bis in den November offen. Vielleicht der schönste Dolomitenpass.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.451,
+     "lon": 12.033
+    },
+    "label": "Selva di Cadore"
+   },
+   {
+    "from": {
+     "lat": 46.538,
+     "lon": 12.136
+    },
+    "label": "Cortina d'Ampezzo"
+   }
+  ]
+ },
+ {
+  "slug": "passo-fedaia",
+  "name": "Passo Fedaia",
+  "country": "IT",
+  "region": "Dolomiten",
+  "lat": 46.459,
+  "lon": 11.868,
+  "elevation": 2057,
+  "classicAscent": "14 km, 7,5 % ab Caprile (Schlusskilometer 11 %+)",
+  "beauty": 5,
+  "fame": 4,
+  "difficulty": 5,
+  "traffic": 3,
+  "season": null,
+  "note": "Meist ganzjährig offen. Marmolada-Blick, brutales Finale ab Malga Ciapela.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.437,
+     "lon": 11.992
+    },
+    "label": "Caprile"
+   },
+   {
+    "from": {
+     "lat": 46.477,
+     "lon": 11.77
+    },
+    "label": "Canazei"
+   }
+  ]
+ },
+ {
+  "slug": "passo-sella",
+  "name": "Passo Sella",
+  "country": "IT",
+  "region": "Dolomiten",
+  "lat": 46.509,
+  "lon": 11.76,
+  "elevation": 2240,
+  "classicAscent": "11,8 km, 6 % ab Canazei",
+  "beauty": 5,
+  "fame": 3,
+  "difficulty": 3,
+  "traffic": 3,
+  "season": null,
+  "note": "Meist ganzjährig offen. Direkt unter den Sellatürmen.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.477,
+     "lon": 11.77
+    },
+    "label": "Canazei"
+   },
+   {
+    "from": {
+     "lat": 46.556,
+     "lon": 11.759
+    },
+    "label": "Wolkenstein"
+   }
+  ]
+ },
+ {
+  "slug": "tre-cime-di-lavaredo",
+  "name": "Tre Cime di Lavaredo",
+  "country": "IT",
+  "region": "Dolomiten",
+  "lat": 46.612,
+  "lon": 12.294,
+  "elevation": 2320,
+  "classicAscent": "7,5 km, 7,6 % ab Misurina, letzte 4 km 12 %",
+  "beauty": 5,
+  "fame": 4,
+  "difficulty": 5,
+  "traffic": 2,
+  "season": {
+   "opens": 6,
+   "closes": 10.5,
+   "maintained": true
+  },
+  "note": "Mautstraße, meist bis Ende Oktober offen, dann bis Mai gesperrt.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.583,
+     "lon": 12.253
+    },
+    "label": "Misurina"
+   }
+  ]
+ },
+ {
+  "slug": "monte-zoncolan",
+  "name": "Monte Zoncolan",
+  "country": "IT",
+  "region": "Dolomiten",
+  "lat": 46.499,
+  "lon": 12.916,
+  "elevation": 1730,
+  "classicAscent": "10,1 km, 11,9 % ab Ovaro",
+  "beauty": 3,
+  "fame": 5,
+  "difficulty": 5,
+  "traffic": 1,
+  "season": null,
+  "note": "Meist bis in den Spätherbst befahrbar. Der steilste Giro-Klassiker.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.484,
+     "lon": 12.865
+    },
+    "label": "Ovaro"
+   },
+   {
+    "from": {
+     "lat": 46.512,
+     "lon": 13.036
+    },
+    "label": "Sutrio"
+   }
+  ]
+ },
+ {
+  "slug": "col-de-vars",
+  "name": "Col de Vars",
+  "country": "FR",
+  "region": "Westalpen",
+  "lat": 44.538,
+  "lon": 6.702,
+  "elevation": 2109,
+  "classicAscent": "19 km, 5,7 % ab Guillestre",
+  "beauty": 4,
+  "fame": 3,
+  "difficulty": 3,
+  "traffic": 2,
+  "season": {
+   "opens": 5,
+   "closes": 11.5,
+   "maintained": false
+  },
+  "note": "Sperre meist Ende November. Klassische Kombination mit Izoard oder Bonette.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 44.66,
+     "lon": 6.65
+    },
+    "label": "Guillestre (Nord)"
+   },
+   {
+    "from": {
+     "lat": 44.522,
+     "lon": 6.751
+    },
+    "label": "Saint-Paul-sur-Ubaye (Süd)"
+   }
+  ]
+ },
+ {
+  "slug": "col-du-lautaret",
+  "name": "Col du Lautaret",
+  "country": "FR",
+  "region": "Westalpen",
+  "lat": 45.034,
+  "lon": 6.405,
+  "elevation": 2058,
+  "classicAscent": "28 km, 3,8 % ab Bourg d'Oisans",
+  "beauty": 4,
+  "fame": 3,
+  "difficulty": 2,
+  "traffic": 5,
+  "season": null,
+  "note": "Nationalstraße, ganzjährig geräumt. Zubringer zum Galibier, viel Verkehr.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 45.055,
+     "lon": 6.03
+    },
+    "label": "Bourg d'Oisans"
+   },
+   {
+    "from": {
+     "lat": 44.897,
+     "lon": 6.636
+    },
+    "label": "Briançon"
+   }
+  ]
+ },
+ {
+  "slug": "col-du-glandon",
+  "name": "Col du Glandon",
+  "country": "FR",
+  "region": "Westalpen",
+  "lat": 45.24,
+  "lon": 6.176,
+  "elevation": 1924,
+  "classicAscent": "21 km, 6,9 % ab La Chambre",
+  "beauty": 4,
+  "fame": 3,
+  "difficulty": 4,
+  "traffic": 2,
+  "season": {
+   "opens": 5.5,
+   "closes": 11,
+   "maintained": false
+  },
+  "note": "Sperre meist Anfang November. Rampen bis 11 % kurz vor dem Scheitel.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 45.358,
+     "lon": 6.303
+    },
+    "label": "La Chambre"
+   },
+   {
+    "from": {
+     "lat": 45.104,
+     "lon": 5.994
+    },
+    "label": "Rochetaillée"
+   }
+  ]
+ },
+ {
+  "slug": "col-de-joux-plane",
+  "name": "Col de Joux Plane",
+  "country": "FR",
+  "region": "Westalpen",
+  "lat": 46.13,
+  "lon": 6.712,
+  "elevation": 1691,
+  "classicAscent": "11,6 km, 8,5 % ab Samoëns",
+  "beauty": 4,
+  "fame": 3,
+  "difficulty": 4,
+  "traffic": 2,
+  "season": {
+   "opens": 5,
+   "closes": 12,
+   "maintained": false
+  },
+  "note": "Sperre meist ab Dezember. Kurz, steil, Mont-Blanc-Blick am Ende.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.083,
+     "lon": 6.727
+    },
+    "label": "Samoëns"
+   }
+  ]
+ },
+ {
+  "slug": "col-de-la-colombiere",
+  "name": "Col de la Colombière",
+  "country": "FR",
+  "region": "Westalpen",
+  "lat": 46.019,
+  "lon": 6.478,
+  "elevation": 1613,
+  "classicAscent": "16,3 km, 6,8 % ab Scionzier",
+  "beauty": 3,
+  "fame": 3,
+  "difficulty": 3,
+  "traffic": 2,
+  "season": {
+   "opens": 5,
+   "closes": 12,
+   "maintained": false
+  },
+  "note": "Sperre meist erst im Dezember.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.058,
+     "lon": 6.552
+    },
+    "label": "Scionzier"
+   },
+   {
+    "from": {
+     "lat": 45.941,
+     "lon": 6.428
+    },
+    "label": "Le Grand-Bornand"
+   }
+  ]
+ },
+ {
+  "slug": "cormet-de-roselend",
+  "name": "Cormet de Roselend",
+  "country": "FR",
+  "region": "Westalpen",
+  "lat": 45.674,
+  "lon": 6.643,
+  "elevation": 1967,
+  "classicAscent": "20 km, 6 % ab Beaufort",
+  "beauty": 5,
+  "fame": 3,
+  "difficulty": 3,
+  "traffic": 2,
+  "season": {
+   "opens": 5.5,
+   "closes": 11,
+   "maintained": false
+  },
+  "note": "Sperre meist Anfang November. Stausee-Kulisse, eine der schönsten Straßen der Savoyen.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 45.719,
+     "lon": 6.573
+    },
+    "label": "Beaufort"
+   },
+   {
+    "from": {
+     "lat": 45.618,
+     "lon": 6.77
+    },
+    "label": "Bourg-Saint-Maurice"
+   }
+  ]
+ },
+ {
+  "slug": "col-du-petit-saint-bernard",
+  "name": "Col du Petit Saint-Bernard",
+  "country": "FR/IT",
+  "region": "Westalpen",
+  "lat": 45.681,
+  "lon": 6.884,
+  "elevation": 2188,
+  "classicAscent": "30 km, 4,6 % ab Bourg-Saint-Maurice",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 3,
+  "season": {
+   "opens": 5.5,
+   "closes": 10.5,
+   "maintained": false
+  },
+  "note": "Grenzpass, Sperre meist Ende Oktober/November.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 45.618,
+     "lon": 6.77
+    },
+    "label": "Bourg-Saint-Maurice"
+   },
+   {
+    "from": {
+     "lat": 45.716,
+     "lon": 6.949
+    },
+    "label": "La Thuile (IT)"
+   }
+  ]
+ },
+ {
+  "slug": "col-du-mont-cenis",
+  "name": "Col du Mont Cenis",
+  "country": "FR/IT",
+  "region": "Westalpen",
+  "lat": 45.259,
+  "lon": 6.903,
+  "elevation": 2081,
+  "classicAscent": "10 km, 6,7 % ab Lanslebourg",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 3,
+  "season": {
+   "opens": 5.5,
+   "closes": 11,
+   "maintained": false
+  },
+  "note": "Sperre meist ab November. Hochplateau mit Stausee.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 45.286,
+     "lon": 6.876
+    },
+    "label": "Lanslebourg"
+   },
+   {
+    "from": {
+     "lat": 45.137,
+     "lon": 7.053
+    },
+    "label": "Susa"
+   }
+  ]
+ },
+ {
+  "slug": "col-de-la-cayolle",
+  "name": "Col de la Cayolle",
+  "country": "FR",
+  "region": "Westalpen",
+  "lat": 44.259,
+  "lon": 6.744,
+  "elevation": 2326,
+  "classicAscent": "30 km, 4 % ab Barcelonnette",
+  "beauty": 5,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 1,
+  "season": {
+   "opens": 5.5,
+   "closes": 11,
+   "maintained": false
+  },
+  "note": "Sperre meist ab November. Schmal, einsam, Schluchten und Murmeltiere.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 44.387,
+     "lon": 6.652
+    },
+    "label": "Barcelonnette"
+   },
+   {
+    "from": {
+     "lat": 44.09,
+     "lon": 6.854
+    },
+    "label": "Guillaumes"
+   }
+  ]
+ },
+ {
+  "slug": "col-d-allos",
+  "name": "Col d'Allos",
+  "country": "FR",
+  "region": "Westalpen",
+  "lat": 44.282,
+  "lon": 6.591,
+  "elevation": 2247,
+  "classicAscent": "20 km, 5,7 % ab Barcelonnette",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 2,
+  "season": {
+   "opens": 5.5,
+   "closes": 11,
+   "maintained": false
+  },
+  "note": "Sperre meist ab November. Zusammen mit Cayolle und Champs die 'Dreier-Runde' von Barcelonnette.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 44.387,
+     "lon": 6.652
+    },
+    "label": "Barcelonnette"
+   },
+   {
+    "from": {
+     "lat": 44.181,
+     "lon": 6.626
+    },
+    "label": "Colmars"
+   }
+  ]
+ },
+ {
+  "slug": "col-des-champs",
+  "name": "Col des Champs",
+  "country": "FR",
+  "region": "Westalpen",
+  "lat": 44.202,
+  "lon": 6.663,
+  "elevation": 2087,
+  "classicAscent": "16 km, 6,5 % ab Colmars",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 4,
+  "traffic": 1,
+  "season": {
+   "opens": 5.5,
+   "closes": 11,
+   "maintained": false
+  },
+  "note": "Sehr ruhig, mäßiger Asphalt. Sperre meist ab November.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 44.181,
+     "lon": 6.626
+    },
+    "label": "Colmars"
+   },
+   {
+    "from": {
+     "lat": 44.152,
+     "lon": 6.755
+    },
+    "label": "Saint-Martin-d'Entraunes"
+   }
+  ]
+ },
+ {
+  "slug": "col-de-la-lombarde",
+  "name": "Col de la Lombarde",
+  "country": "FR/IT",
+  "region": "Westalpen",
+  "lat": 44.203,
+  "lon": 7.147,
+  "elevation": 2350,
+  "classicAscent": "21 km, 7 % ab Isola",
+  "beauty": 4,
+  "fame": 3,
+  "difficulty": 4,
+  "traffic": 1,
+  "season": {
+   "opens": 6,
+   "closes": 10.5,
+   "maintained": false
+  },
+  "note": "Grenzpass nach Piemont. Sperre meist Mitte/Ende Oktober.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 44.187,
+     "lon": 7.053
+    },
+    "label": "Isola"
+   },
+   {
+    "from": {
+     "lat": 44.307,
+     "lon": 7.174
+    },
+    "label": "Vinadio (IT)"
+   }
+  ]
+ },
+ {
+  "slug": "col-de-turini",
+  "name": "Col de Turini",
+  "country": "FR",
+  "region": "Westalpen",
+  "lat": 43.979,
+  "lon": 7.391,
+  "elevation": 1607,
+  "classicAscent": "24 km, 5 % ab Sospel",
+  "beauty": 3,
+  "fame": 3,
+  "difficulty": 3,
+  "traffic": 2,
+  "season": null,
+  "note": "Rallye-Monte-Carlo-Berühmtheit, ganzjährig offen.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 43.878,
+     "lon": 7.448
+    },
+    "label": "Sospel"
+   },
+   {
+    "from": {
+     "lat": 43.999,
+     "lon": 7.331
+    },
+    "label": "La Bollène-Vésubie"
+   }
+  ]
+ },
+ {
+  "slug": "col-de-la-couillole",
+  "name": "Col de la Couillole",
+  "country": "FR",
+  "region": "Westalpen",
+  "lat": 44.134,
+  "lon": 7.048,
+  "elevation": 1678,
+  "classicAscent": "15,7 km, 7,3 % ab Saint-Sauveur-sur-Tinée",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 4,
+  "traffic": 1,
+  "season": null,
+  "note": "Ganzjährig meist offen, wenig Verkehr.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 44.083,
+     "lon": 7.107
+    },
+    "label": "Saint-Sauveur-sur-Tinée"
+   },
+   {
+    "from": {
+     "lat": 44.098,
+     "lon": 6.988
+    },
+    "label": "Beuil"
+   }
+  ]
+ },
+ {
+  "slug": "colle-del-nivolet",
+  "name": "Colle del Nivolet",
+  "country": "IT",
+  "region": "Westalpen",
+  "lat": 45.48,
+  "lon": 7.14,
+  "elevation": 2612,
+  "classicAscent": "40 km, 5 % ab Locana",
+  "beauty": 5,
+  "fame": 2,
+  "difficulty": 4,
+  "traffic": 1,
+  "season": {
+   "opens": 6,
+   "closes": 10,
+   "maintained": false
+  },
+  "note": "Sackgasse im Gran-Paradiso-Nationalpark, oben autofrei an Sommerwochenenden. Meist ab Oktober gesperrt.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 45.416,
+     "lon": 7.461
+    },
+    "label": "Locana"
+   }
+  ]
+ },
+ {
+  "slug": "colle-fauniera",
+  "name": "Colle Fauniera",
+  "country": "IT",
+  "region": "Westalpen",
+  "lat": 44.398,
+  "lon": 7.223,
+  "elevation": 2481,
+  "classicAscent": "22 km, 8 % ab Demonte",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 5,
+  "traffic": 1,
+  "season": {
+   "opens": 6,
+   "closes": 10.5,
+   "maintained": false
+  },
+  "note": "Pantani-Denkmal am Scheitel, ruppiger Asphalt. Sperre meist ab Mitte Oktober.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 44.316,
+     "lon": 7.3
+    },
+    "label": "Demonte"
+   },
+   {
+    "from": {
+     "lat": 44.417,
+     "lon": 7.281
+    },
+    "label": "Pradleves"
+   }
+  ]
+ },
+ {
+  "slug": "colle-di-sampeyre",
+  "name": "Colle di Sampeyre",
+  "country": "IT",
+  "region": "Westalpen",
+  "lat": 44.532,
+  "lon": 7.163,
+  "elevation": 2284,
+  "classicAscent": "17 km, 7,4 % ab Sampeyre",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 4,
+  "traffic": 1,
+  "season": {
+   "opens": 6,
+   "closes": 10.5,
+   "maintained": false
+  },
+  "note": "Sperre meist ab Ende Oktober.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 44.579,
+     "lon": 7.189
+    },
+    "label": "Sampeyre"
+   },
+   {
+    "from": {
+     "lat": 44.507,
+     "lon": 7.127
+    },
+    "label": "Stroppo"
+   }
+  ]
+ },
+ {
+  "slug": "colle-san-carlo",
+  "name": "Colle San Carlo",
+  "country": "IT",
+  "region": "Westalpen",
+  "lat": 45.689,
+  "lon": 6.983,
+  "elevation": 1971,
+  "classicAscent": "10,5 km, 9,8 % ab Morgex",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 5,
+  "traffic": 1,
+  "season": {
+   "opens": 5.5,
+   "closes": 11,
+   "maintained": false
+  },
+  "note": "Aostatal, brutal steil, Sperre meist ab November.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 45.755,
+     "lon": 7.037
+    },
+    "label": "Morgex"
+   },
+   {
+    "from": {
+     "lat": 45.716,
+     "lon": 6.949
+    },
+    "label": "La Thuile"
+   }
+  ]
+ },
+ {
+  "slug": "simplonpass",
+  "name": "Simplonpass",
+  "country": "CH",
+  "region": "Zentralalpen",
+  "lat": 46.251,
+  "lon": 8.033,
+  "elevation": 2005,
+  "classicAscent": "21 km, 6,5 % ab Brig",
+  "beauty": 3,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 5,
+  "season": null,
+  "note": "Ganzjährig offen, breite Straße mit Verkehr.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.319,
+     "lon": 7.988
+    },
+    "label": "Brig"
+   },
+   {
+    "from": {
+     "lat": 46.196,
+     "lon": 8.14
+    },
+    "label": "Gondo"
+   }
+  ]
+ },
+ {
+  "slug": "lukmanierpass",
+  "name": "Lukmanierpass",
+  "country": "CH",
+  "region": "Zentralalpen",
+  "lat": 46.563,
+  "lon": 8.803,
+  "elevation": 1915,
+  "classicAscent": "18 km, 5 % ab Disentis",
+  "beauty": 3,
+  "fame": 2,
+  "difficulty": 2,
+  "traffic": 2,
+  "season": {
+   "opens": 5.5,
+   "closes": 11.5,
+   "maintained": false
+  },
+  "note": "Sperre wetterabhängig ab November, oft länger offen als die Nachbarn.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.704,
+     "lon": 8.852
+    },
+    "label": "Disentis"
+   },
+   {
+    "from": {
+     "lat": 46.531,
+     "lon": 8.943
+    },
+    "label": "Olivone"
+   }
+  ]
+ },
+ {
+  "slug": "oberalppass",
+  "name": "Oberalppass",
+  "country": "CH",
+  "region": "Zentralalpen",
+  "lat": 46.658,
+  "lon": 8.671,
+  "elevation": 2044,
+  "classicAscent": "10 km, 6,9 % ab Andermatt",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 3,
+  "season": {
+   "opens": 5.5,
+   "closes": 11,
+   "maintained": false
+  },
+  "note": "Sperre meist ab November. Leuchtturm am Scheitel.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.635,
+     "lon": 8.594
+    },
+    "label": "Andermatt"
+   },
+   {
+    "from": {
+     "lat": 46.704,
+     "lon": 8.852
+    },
+    "label": "Disentis"
+   }
+  ]
+ },
+ {
+  "slug": "passo-san-bernardino",
+  "name": "Passo San Bernardino",
+  "country": "CH",
+  "region": "Zentralalpen",
+  "lat": 46.497,
+  "lon": 9.171,
+  "elevation": 2065,
+  "classicAscent": "20 km, 6 % ab Mesocco",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 2,
+  "season": {
+   "opens": 5.5,
+   "closes": 11,
+   "maintained": false
+  },
+  "note": "Alte Passstraße parallel zur Autobahn. Sperre meist ab November.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.394,
+     "lon": 9.234
+    },
+    "label": "Mesocco"
+   },
+   {
+    "from": {
+     "lat": 46.532,
+     "lon": 9.196
+    },
+    "label": "Hinterrhein"
+   }
+  ]
+ },
+ {
+  "slug": "spluegenpass",
+  "name": "Splügenpass",
+  "country": "CH/IT",
+  "region": "Zentralalpen",
+  "lat": 46.507,
+  "lon": 9.33,
+  "elevation": 2114,
+  "classicAscent": "9 km, 8 % ab Splügen (30 km ab Chiavenna)",
+  "beauty": 5,
+  "fame": 2,
+  "difficulty": 4,
+  "traffic": 2,
+  "season": {
+   "opens": 5.5,
+   "closes": 11,
+   "maintained": false
+  },
+  "note": "Italienische Südrampe mit Kehrenwand ist ein Highlight. Sperre meist ab November.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.551,
+     "lon": 9.323
+    },
+    "label": "Splügen"
+   },
+   {
+    "from": {
+     "lat": 46.32,
+     "lon": 9.397
+    },
+    "label": "Chiavenna"
+   }
+  ]
+ },
+ {
+  "slug": "julierpass",
+  "name": "Julierpass",
+  "country": "CH",
+  "region": "Zentralalpen",
+  "lat": 46.472,
+  "lon": 9.728,
+  "elevation": 2284,
+  "classicAscent": "34 km, 4 % ab Tiefencastel",
+  "beauty": 3,
+  "fame": 2,
+  "difficulty": 2,
+  "traffic": 4,
+  "season": null,
+  "note": "Ganzjährig geräumt, Verkehr Richtung Engadin.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.66,
+     "lon": 9.578
+    },
+    "label": "Tiefencastel"
+   },
+   {
+    "from": {
+     "lat": 46.459,
+     "lon": 9.795
+    },
+    "label": "Silvaplana"
+   }
+  ]
+ },
+ {
+  "slug": "malojapass",
+  "name": "Malojapass",
+  "country": "CH/IT",
+  "region": "Zentralalpen",
+  "lat": 46.4,
+  "lon": 9.696,
+  "elevation": 1815,
+  "classicAscent": "32 km, 5 % ab Chiavenna",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 4,
+  "season": null,
+  "note": "Ganzjährig offen; Kehrenwand ganz oben, davor langes Tal.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.32,
+     "lon": 9.397
+    },
+    "label": "Chiavenna"
+   }
+  ]
+ },
+ {
+  "slug": "berninapass",
+  "name": "Berninapass",
+  "country": "CH",
+  "region": "Zentralalpen",
+  "lat": 46.41,
+  "lon": 10.026,
+  "elevation": 2328,
+  "classicAscent": "32 km, 4,5 % ab Poschiavo",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 3,
+  "season": null,
+  "note": "Ganzjährig offen, Gletscherblick beim Lago Bianco.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.325,
+     "lon": 10.059
+    },
+    "label": "Poschiavo"
+   },
+   {
+    "from": {
+     "lat": 46.492,
+     "lon": 9.9
+    },
+    "label": "Pontresina"
+   }
+  ]
+ },
+ {
+  "slug": "flueelapass",
+  "name": "Flüelapass",
+  "country": "CH",
+  "region": "Zentralalpen",
+  "lat": 46.75,
+  "lon": 9.946,
+  "elevation": 2383,
+  "classicAscent": "13 km, 6,6 % ab Davos",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 2,
+  "season": {
+   "opens": 5.5,
+   "closes": 10.5,
+   "maintained": false
+  },
+  "note": "Sperre meist ab Ende Oktober/November.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.803,
+     "lon": 9.836
+    },
+    "label": "Davos"
+   },
+   {
+    "from": {
+     "lat": 46.75,
+     "lon": 10.079
+    },
+    "label": "Susch"
+   }
+  ]
+ },
+ {
+  "slug": "ofenpass",
+  "name": "Ofenpass",
+  "country": "CH",
+  "region": "Zentralalpen",
+  "lat": 46.64,
+  "lon": 10.291,
+  "elevation": 2149,
+  "classicAscent": "14 km, 5 % ab Zernez",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 2,
+  "traffic": 3,
+  "season": null,
+  "note": "Ganzjährig offen, durch den Nationalpark.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.699,
+     "lon": 10.093
+    },
+    "label": "Zernez"
+   },
+   {
+    "from": {
+     "lat": 46.601,
+     "lon": 10.419
+    },
+    "label": "Santa Maria"
+   }
+  ]
+ },
+ {
+  "slug": "passo-del-foscagno",
+  "name": "Passo del Foscagno",
+  "country": "IT",
+  "region": "Zentralalpen",
+  "lat": 46.494,
+  "lon": 10.208,
+  "elevation": 2291,
+  "classicAscent": "14 km, 6,5 % ab Isolaccia",
+  "beauty": 3,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 3,
+  "season": null,
+  "note": "Ganzjährig offen (Zufahrt Livigno).",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.483,
+     "lon": 10.306
+    },
+    "label": "Isolaccia"
+   },
+   {
+    "from": {
+     "lat": 46.538,
+     "lon": 10.135
+    },
+    "label": "Livigno"
+   }
+  ]
+ },
+ {
+  "slug": "passo-del-tonale",
+  "name": "Passo del Tonale",
+  "country": "IT",
+  "region": "Zentralalpen",
+  "lat": 46.259,
+  "lon": 10.586,
+  "elevation": 1883,
+  "classicAscent": "15 km, 6 % ab Vezza d'Oglio",
+  "beauty": 3,
+  "fame": 3,
+  "difficulty": 3,
+  "traffic": 4,
+  "season": null,
+  "note": "Ganzjährig offen, oft mit Gavia oder Mortirolo kombiniert.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.242,
+     "lon": 10.397
+    },
+    "label": "Vezza d'Oglio"
+   },
+   {
+    "from": {
+     "lat": 46.297,
+     "lon": 10.692
+    },
+    "label": "Vermiglio"
+   }
+  ]
+ },
+ {
+  "slug": "passo-san-marco",
+  "name": "Passo San Marco",
+  "country": "IT",
+  "region": "Zentralalpen",
+  "lat": 46.05,
+  "lon": 9.62,
+  "elevation": 1992,
+  "classicAscent": "26 km, 6,2 % ab Morbegno",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 4,
+  "traffic": 1,
+  "season": {
+   "opens": 6,
+   "closes": 10.5,
+   "maintained": false
+  },
+  "note": "Ruhige Bergamasker Straße, Sperre meist ab November.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.137,
+     "lon": 9.573
+    },
+    "label": "Morbegno"
+   },
+   {
+    "from": {
+     "lat": 45.985,
+     "lon": 9.663
+    },
+    "label": "Mezzoldo"
+   }
+  ]
+ },
+ {
+  "slug": "passo-crocedomini",
+  "name": "Passo Crocedomini",
+  "country": "IT",
+  "region": "Zentralalpen",
+  "lat": 45.903,
+  "lon": 10.417,
+  "elevation": 1892,
+  "classicAscent": "23 km, 6,2 % ab Breno",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 4,
+  "traffic": 1,
+  "season": {
+   "opens": 5.5,
+   "closes": 11,
+   "maintained": false
+  },
+  "note": "Einsam, teils grober Asphalt. Sperre meist ab November.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 45.956,
+     "lon": 10.302
+    },
+    "label": "Breno"
+   },
+   {
+    "from": {
+     "lat": 45.826,
+     "lon": 10.464
+    },
+    "label": "Bagolino"
+   }
+  ]
+ },
+ {
+  "slug": "oetztaler-gletscherstrasse",
+  "name": "Ötztaler Gletscherstraße",
+  "country": "AT",
+  "region": "Ostalpen",
+  "lat": 46.932,
+  "lon": 10.94,
+  "elevation": 2830,
+  "classicAscent": "13 km, 10,5 % ab Sölden",
+  "beauty": 3,
+  "fame": 3,
+  "difficulty": 5,
+  "traffic": 2,
+  "season": null,
+  "note": "Höchste Asphaltstraße Österreichs (Tiefenbach-Tunnel). Sperrungen kurzfristig bei Schnee, oben Skibetrieb.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.968,
+     "lon": 11.007
+    },
+    "label": "Sölden"
+   }
+  ]
+ },
+ {
+  "slug": "kuehtai",
+  "name": "Kühtai",
+  "country": "AT",
+  "region": "Ostalpen",
+  "lat": 47.213,
+  "lon": 11.021,
+  "elevation": 2017,
+  "classicAscent": "18 km, 6 % ab Kematen",
+  "beauty": 3,
+  "fame": 3,
+  "difficulty": 4,
+  "traffic": 3,
+  "season": null,
+  "note": "Ganzjährig offen, erster Anstieg des Ötztaler Radmarathons.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 47.256,
+     "lon": 11.272
+    },
+    "label": "Kematen"
+   },
+   {
+    "from": {
+     "lat": 47.204,
+     "lon": 10.895
+    },
+    "label": "Ötz"
+   }
+  ]
+ },
+ {
+  "slug": "jaufenpass",
+  "name": "Jaufenpass",
+  "country": "IT",
+  "region": "Ostalpen",
+  "lat": 46.836,
+  "lon": 11.312,
+  "elevation": 2094,
+  "classicAscent": "15 km, 6,8 % ab St. Leonhard",
+  "beauty": 4,
+  "fame": 3,
+  "difficulty": 4,
+  "traffic": 3,
+  "season": {
+   "opens": 5.5,
+   "closes": 11.5,
+   "maintained": false
+  },
+  "note": "Meist bis in den November offen. Dritter Pass des Ötztalers.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.812,
+     "lon": 11.247
+    },
+    "label": "St. Leonhard"
+   },
+   {
+    "from": {
+     "lat": 46.897,
+     "lon": 11.431
+    },
+    "label": "Sterzing"
+   }
+  ]
+ },
+ {
+  "slug": "penserjoch",
+  "name": "Penserjoch",
+  "country": "IT",
+  "region": "Ostalpen",
+  "lat": 46.819,
+  "lon": 11.443,
+  "elevation": 2211,
+  "classicAscent": "21 km, 6 % ab Sarnthein",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 4,
+  "traffic": 2,
+  "season": {
+   "opens": 5.5,
+   "closes": 11,
+   "maintained": false
+  },
+  "note": "Sperre meist ab November, wenig Verkehr.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.643,
+     "lon": 11.357
+    },
+    "label": "Sarnthein"
+   },
+   {
+    "from": {
+     "lat": 46.897,
+     "lon": 11.431
+    },
+    "label": "Sterzing"
+   }
+  ]
+ },
+ {
+  "slug": "hahntennjoch",
+  "name": "Hahntennjoch",
+  "country": "AT",
+  "region": "Ostalpen",
+  "lat": 47.284,
+  "lon": 10.708,
+  "elevation": 1894,
+  "classicAscent": "17 km, 5 % ab Elmen (12 km, 7 % ab Imst)",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 4,
+  "traffic": 2,
+  "season": {
+   "opens": 5.5,
+   "closes": 11,
+   "maintained": false
+  },
+  "note": "Wintersperre meist ab November, im Frühjahr spät geöffnet.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 47.343,
+     "lon": 10.552
+    },
+    "label": "Elmen"
+   },
+   {
+    "from": {
+     "lat": 47.245,
+     "lon": 10.74
+    },
+    "label": "Imst"
+   }
+  ]
+ },
+ {
+  "slug": "arlbergpass",
+  "name": "Arlbergpass",
+  "country": "AT",
+  "region": "Ostalpen",
+  "lat": 47.13,
+  "lon": 10.211,
+  "elevation": 1793,
+  "classicAscent": "13 km, 5,6 % ab Landeck-Pians",
+  "beauty": 3,
+  "fame": 2,
+  "difficulty": 2,
+  "traffic": 3,
+  "season": null,
+  "note": "Ganzjährig offen, Verkehr trotz Tunnel.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 47.139,
+     "lon": 10.514
+    },
+    "label": "Pians"
+   },
+   {
+    "from": {
+     "lat": 47.132,
+     "lon": 10.121
+    },
+    "label": "Langen"
+   }
+  ]
+ },
+ {
+  "slug": "gerlospass",
+  "name": "Gerlospass",
+  "country": "AT",
+  "region": "Ostalpen",
+  "lat": 47.24,
+  "lon": 12.13,
+  "elevation": 1531,
+  "classicAscent": "19 km, 4,6 % ab Zell am Ziller",
+  "beauty": 3,
+  "fame": 2,
+  "difficulty": 2,
+  "traffic": 4,
+  "season": null,
+  "note": "Mautstraße, ganzjährig offen.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 47.233,
+     "lon": 11.881
+    },
+    "label": "Zell am Ziller"
+   },
+   {
+    "from": {
+     "lat": 47.216,
+     "lon": 12.174
+    },
+    "label": "Krimml"
+   }
+  ]
+ },
+ {
+  "slug": "malta-hochalmstrasse",
+  "name": "Malta-Hochalmstraße",
+  "country": "AT",
+  "region": "Ostalpen",
+  "lat": 47.07,
+  "lon": 13.35,
+  "elevation": 1933,
+  "classicAscent": "30 km, 5 % ab Gmünd",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 4,
+  "traffic": 1,
+  "season": {
+   "opens": 5.5,
+   "closes": 10.5,
+   "maintained": true
+  },
+  "note": "Mautstraße zum Kölnbreinspeicher, planmäßig bis Mitte/Ende Oktober offen.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.905,
+     "lon": 13.529
+    },
+    "label": "Gmünd"
+   }
+  ]
+ },
+ {
+  "slug": "nockalmstrasse",
+  "name": "Nockalmstraße",
+  "country": "AT",
+  "region": "Ostalpen",
+  "lat": 46.905,
+  "lon": 13.78,
+  "elevation": 2042,
+  "classicAscent": "18 km, 6,5 % ab Innerkrems",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 2,
+  "season": {
+   "opens": 5,
+   "closes": 11,
+   "maintained": true
+  },
+  "note": "Mautstraße (Eisentalhöhe), planmäßig bis Ende Oktober offen.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.968,
+     "lon": 13.744
+    },
+    "label": "Innerkrems"
+   },
+   {
+    "from": {
+     "lat": 46.858,
+     "lon": 13.88
+    },
+    "label": "Ebene Reichenau"
+   }
+  ]
+ },
+ {
+  "slug": "turracher-hoehe",
+  "name": "Turracher Höhe",
+  "country": "AT",
+  "region": "Ostalpen",
+  "lat": 46.917,
+  "lon": 13.876,
+  "elevation": 1763,
+  "classicAscent": "9 km, 9,5 % ab Ebene Reichenau, Rampen bis 23 %",
+  "beauty": 3,
+  "fame": 2,
+  "difficulty": 5,
+  "traffic": 3,
+  "season": null,
+  "note": "Ganzjährig offen.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.858,
+     "lon": 13.88
+    },
+    "label": "Ebene Reichenau"
+   },
+   {
+    "from": {
+     "lat": 47.036,
+     "lon": 13.9
+    },
+    "label": "Predlitz"
+   }
+  ]
+ },
+ {
+  "slug": "soelkpass",
+  "name": "Sölkpass",
+  "country": "AT",
+  "region": "Ostalpen",
+  "lat": 47.28,
+  "lon": 14.1,
+  "elevation": 1790,
+  "classicAscent": "15 km, 6,5 % ab Stein an der Enns",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 1,
+  "season": {
+   "opens": 5.5,
+   "closes": 11,
+   "maintained": false
+  },
+  "note": "Sperre meist ab November, wenig Verkehr.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 47.396,
+     "lon": 14.03
+    },
+    "label": "Stein an der Enns"
+   },
+   {
+    "from": {
+     "lat": 47.18,
+     "lon": 14.121
+    },
+    "label": "Schöder"
+   }
+  ]
+ },
+ {
+  "slug": "villacher-alpenstrasse",
+  "name": "Villacher Alpenstraße",
+  "country": "AT",
+  "region": "Ostalpen",
+  "lat": 46.598,
+  "lon": 13.792,
+  "elevation": 1732,
+  "classicAscent": "17 km, 6,2 % ab Möltschach",
+  "beauty": 3,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 2,
+  "season": {
+   "opens": 5,
+   "closes": 11,
+   "maintained": true
+  },
+  "note": "Mautstraße, meist bis Ende Oktober oder länger offen.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.607,
+     "lon": 13.83
+    },
+    "label": "Villach"
+   }
+  ]
+ },
+ {
+  "slug": "vrsic",
+  "name": "Vršič",
+  "country": "SI",
+  "region": "Ostalpen",
+  "lat": 46.432,
+  "lon": 13.745,
+  "elevation": 1611,
+  "classicAscent": "12 km, 8 % ab Kranjska Gora, Pflasterkehren",
+  "beauty": 5,
+  "fame": 3,
+  "difficulty": 4,
+  "traffic": 3,
+  "season": {
+   "opens": 5,
+   "closes": 11,
+   "maintained": false
+  },
+  "note": "Julische Alpen, 50 Kehren mit Kopfsteinpflaster. Sperre meist ab November.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.484,
+     "lon": 13.789
+    },
+    "label": "Kranjska Gora"
+   },
+   {
+    "from": {
+     "lat": 46.373,
+     "lon": 13.759
+    },
+    "label": "Trenta"
+   }
+  ]
+ },
+ {
+  "slug": "mangart-sattel",
+  "name": "Mangart-Sattel",
+  "country": "SI",
+  "region": "Ostalpen",
+  "lat": 46.44,
+  "lon": 13.65,
+  "elevation": 2055,
+  "classicAscent": "12 km, 9 % ab Log pod Mangartom",
+  "beauty": 5,
+  "fame": 2,
+  "difficulty": 5,
+  "traffic": 1,
+  "season": {
+   "opens": 6,
+   "closes": 11,
+   "maintained": false
+  },
+  "note": "Höchste Straße Sloweniens, Sackgasse, meist bis Ende Oktober offen.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.404,
+     "lon": 13.594
+    },
+    "label": "Log pod Mangartom"
+   }
+  ]
+ },
+ {
+  "slug": "passo-falzarego",
+  "name": "Passo Falzarego",
+  "country": "IT",
+  "region": "Dolomiten",
+  "lat": 46.519,
+  "lon": 12.008,
+  "elevation": 2105,
+  "classicAscent": "16 km, 5,6 % ab Cortina d'Ampezzo",
+  "beauty": 4,
+  "fame": 3,
+  "difficulty": 3,
+  "traffic": 4,
+  "season": null,
+  "note": "Ganzjährig offen.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.538,
+     "lon": 12.136
+    },
+    "label": "Cortina d'Ampezzo"
+   },
+   {
+    "from": {
+     "lat": 46.437,
+     "lon": 11.992
+    },
+    "label": "Caprile"
+   }
+  ]
+ },
+ {
+  "slug": "passo-valparola",
+  "name": "Passo Valparola",
+  "country": "IT",
+  "region": "Dolomiten",
+  "lat": 46.533,
+  "lon": 11.985,
+  "elevation": 2168,
+  "classicAscent": "11 km, 7 % ab Stern",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 2,
+  "season": null,
+  "note": "Ganzjährig offen, direkt neben dem Falzarego.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.587,
+     "lon": 11.905
+    },
+    "label": "Stern / La Villa"
+   }
+  ]
+ },
+ {
+  "slug": "passo-gardena",
+  "name": "Passo Gardena",
+  "country": "IT",
+  "region": "Dolomiten",
+  "lat": 46.548,
+  "lon": 11.81,
+  "elevation": 2121,
+  "classicAscent": "9 km, 6 % ab Corvara",
+  "beauty": 5,
+  "fame": 3,
+  "difficulty": 3,
+  "traffic": 3,
+  "season": null,
+  "note": "Ganzjährig offen, Sellaronda.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.549,
+     "lon": 11.874
+    },
+    "label": "Corvara"
+   },
+   {
+    "from": {
+     "lat": 46.556,
+     "lon": 11.759
+    },
+    "label": "Wolkenstein"
+   }
+  ]
+ },
+ {
+  "slug": "passo-campolongo",
+  "name": "Passo Campolongo",
+  "country": "IT",
+  "region": "Dolomiten",
+  "lat": 46.518,
+  "lon": 11.877,
+  "elevation": 1875,
+  "classicAscent": "6 km, 6,5 % ab Arabba",
+  "beauty": 3,
+  "fame": 2,
+  "difficulty": 2,
+  "traffic": 3,
+  "season": null,
+  "note": "Ganzjährig offen, kürzester Sellaronda-Pass.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.497,
+     "lon": 11.875
+    },
+    "label": "Arabba"
+   },
+   {
+    "from": {
+     "lat": 46.549,
+     "lon": 11.874
+    },
+    "label": "Corvara"
+   }
+  ]
+ },
+ {
+  "slug": "passo-rolle",
+  "name": "Passo Rolle",
+  "country": "IT",
+  "region": "Dolomiten",
+  "lat": 46.297,
+  "lon": 11.786,
+  "elevation": 1980,
+  "classicAscent": "21 km, 5 % ab Predazzo",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 3,
+  "season": null,
+  "note": "Ganzjährig offen, Pala-Gruppe.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.313,
+     "lon": 11.601
+    },
+    "label": "Predazzo"
+   },
+   {
+    "from": {
+     "lat": 46.176,
+     "lon": 11.831
+    },
+    "label": "Fiera di Primiero"
+   }
+  ]
+ },
+ {
+  "slug": "passo-san-pellegrino",
+  "name": "Passo San Pellegrino",
+  "country": "IT",
+  "region": "Dolomiten",
+  "lat": 46.393,
+  "lon": 11.786,
+  "elevation": 1918,
+  "classicAscent": "12 km, 7 % ab Moena",
+  "beauty": 3,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 3,
+  "season": null,
+  "note": "Ganzjährig offen.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.377,
+     "lon": 11.661
+    },
+    "label": "Moena"
+   },
+   {
+    "from": {
+     "lat": 46.358,
+     "lon": 11.874
+    },
+    "label": "Falcade"
+   }
+  ]
+ },
+ {
+  "slug": "passo-manghen",
+  "name": "Passo Manghen",
+  "country": "IT",
+  "region": "Dolomiten",
+  "lat": 46.18,
+  "lon": 11.437,
+  "elevation": 2047,
+  "classicAscent": "23 km, 6,6 % ab Borgo Valsugana",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 5,
+  "traffic": 1,
+  "season": {
+   "opens": 5.5,
+   "closes": 11,
+   "maintained": false
+  },
+  "note": "Schmal, steil, kaum Verkehr. Sperre meist ab November.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.052,
+     "lon": 11.457
+    },
+    "label": "Borgo Valsugana"
+   },
+   {
+    "from": {
+     "lat": 46.29,
+     "lon": 11.425
+    },
+    "label": "Molina di Fiemme"
+   }
+  ]
+ },
+ {
+  "slug": "passo-delle-erbe",
+  "name": "Passo delle Erbe",
+  "country": "IT",
+  "region": "Dolomiten",
+  "lat": 46.68,
+  "lon": 11.83,
+  "elevation": 2003,
+  "classicAscent": "12 km, 7 % ab St. Martin in Thurn",
+  "beauty": 5,
+  "fame": 2,
+  "difficulty": 4,
+  "traffic": 1,
+  "season": {
+   "opens": 5.5,
+   "closes": 11,
+   "maintained": false
+  },
+  "note": "Peitlerkofel-Blick, Sperre meist ab November.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.681,
+     "lon": 11.898
+    },
+    "label": "St. Martin in Thurn"
+   },
+   {
+    "from": {
+     "lat": 46.716,
+     "lon": 11.657
+    },
+    "label": "Brixen"
+   }
+  ]
+ },
+ {
+  "slug": "passo-staulanza",
+  "name": "Passo Staulanza",
+  "country": "IT",
+  "region": "Dolomiten",
+  "lat": 46.428,
+  "lon": 12.128,
+  "elevation": 1773,
+  "classicAscent": "12 km, 6 % ab Forno di Zoldo",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 2,
+  "season": null,
+  "note": "Ganzjährig offen, Pelmo-Blick.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.351,
+     "lon": 12.184
+    },
+    "label": "Forno di Zoldo"
+   },
+   {
+    "from": {
+     "lat": 46.451,
+     "lon": 12.033
+    },
+    "label": "Selva di Cadore"
+   }
+  ]
+ },
+ {
+  "slug": "passo-duran",
+  "name": "Passo Duran",
+  "country": "IT",
+  "region": "Dolomiten",
+  "lat": 46.302,
+  "lon": 12.063,
+  "elevation": 1601,
+  "classicAscent": "12 km, 7,5 % ab Agordo",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 4,
+  "traffic": 1,
+  "season": null,
+  "note": "Ganzjährig offen, Steilstücke bis 15 %.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.282,
+     "lon": 12.033
+    },
+    "label": "Agordo"
+   },
+   {
+    "from": {
+     "lat": 46.351,
+     "lon": 12.184
+    },
+    "label": "Forno di Zoldo"
+   }
+  ]
+ },
+ {
+  "slug": "passo-monte-croce-comelico",
+  "name": "Passo Monte Croce Comelico",
+  "country": "IT",
+  "region": "Dolomiten",
+  "lat": 46.653,
+  "lon": 12.421,
+  "elevation": 1636,
+  "classicAscent": "14 km, 3,5 % ab Innichen",
+  "beauty": 3,
+  "fame": 2,
+  "difficulty": 2,
+  "traffic": 3,
+  "season": null,
+  "note": "Ganzjährig offen.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.732,
+     "lon": 12.283
+    },
+    "label": "Innichen"
+   },
+   {
+    "from": {
+     "lat": 46.607,
+     "lon": 12.463
+    },
+    "label": "Padola"
+   }
+  ]
+ }
+]

@@ -1,0 +1,210 @@
+[
+ {
+  "slug": "bourg-d-oisans",
+  "name": "Bourg d'Oisans",
+  "country": "FR",
+  "lat": 45.055,
+  "lon": 6.03,
+  "why": "Basis für Alpe d'Huez, Galibier, Croix de Fer, Sarenne. Mehrere Rennradläden mit Werkstatt und Verleih, Marmotte-Zentrale."
+ },
+ {
+  "slug": "briancon",
+  "name": "Briançon",
+  "country": "FR",
+  "lat": 44.897,
+  "lon": 6.636,
+  "why": "Izoard, Lautaret/Galibier, Montgenèvre, Granon. Radläden, Bahnhof, höchste Stadt Frankreichs."
+ },
+ {
+  "slug": "barcelonnette",
+  "name": "Barcelonnette",
+  "country": "FR",
+  "lat": 44.387,
+  "lon": 6.652,
+  "why": "Bonette, Cayolle, Allos, Vars, Champs – sieben Pässe im Radius. Werkstätten, Rad-Unterkünfte."
+ },
+ {
+  "slug": "bedoin",
+  "name": "Bédoin",
+  "country": "FR",
+  "lat": 44.124,
+  "lon": 5.179,
+  "why": "Ventoux-Dorf: Verleih, Werkstatt, Cafés, Startort der klassischen Auffahrt."
+ },
+ {
+  "slug": "saint-jean-de-maurienne",
+  "name": "Saint-Jean-de-Maurienne",
+  "country": "FR",
+  "lat": 45.276,
+  "lon": 6.347,
+  "why": "Croix de Fer, Madeleine, Télégraphe/Galibier; Bahnhof, Radläden, Maurienne-Radbüro."
+ },
+ {
+  "slug": "bormio",
+  "name": "Bormio",
+  "country": "IT",
+  "lat": 46.468,
+  "lon": 10.372,
+  "why": "Stelvio, Gavia, Mortirolo, Foscagno. Viele Radgeschäfte, Verleih, Bike-Hotels, Thermen."
+ },
+ {
+  "slug": "livigno",
+  "name": "Livigno",
+  "country": "IT",
+  "lat": 46.538,
+  "lon": 10.135,
+  "why": "Höhentraining-Ort, Bike-Hotels, Werkstätten; Foscagno, Bernina, Forcola."
+ },
+ {
+  "slug": "ponte-di-legno",
+  "name": "Ponte di Legno",
+  "country": "IT",
+  "lat": 46.259,
+  "lon": 10.508,
+  "why": "Gavia, Tonale, Mortirolo; Radläden, ruhiger als Bormio."
+ },
+ {
+  "slug": "prad-am-stilfserjoch",
+  "name": "Prad am Stilfserjoch",
+  "country": "IT",
+  "lat": 46.618,
+  "lon": 10.594,
+  "why": "Fuß der 48 Kehren, Umbrail, Vinschgau-Radweg; Verleih und Werkstätten."
+ },
+ {
+  "slug": "corvara-alta-badia",
+  "name": "Corvara / Alta Badia",
+  "country": "IT",
+  "lat": 46.549,
+  "lon": 11.874,
+  "why": "Sellaronda- und Maratona-Zentrum: Bike-Hotels, Verleih, Werkstätten, Servicepoints an den Pässen."
+ },
+ {
+  "slug": "canazei",
+  "name": "Canazei",
+  "country": "IT",
+  "lat": 46.477,
+  "lon": 11.77,
+  "why": "Sella, Pordoi, Fedaia, San Pellegrino; Radläden, Sellaronda-Startort."
+ },
+ {
+  "slug": "cortina-d-ampezzo",
+  "name": "Cortina d'Ampezzo",
+  "country": "IT",
+  "lat": 46.538,
+  "lon": 12.136,
+  "why": "Giau, Falzarego, Tre Cime, Cimabanche; Radläden, große Auswahl an Unterkünften."
+ },
+ {
+  "slug": "soelden",
+  "name": "Sölden",
+  "country": "AT",
+  "lat": 46.968,
+  "lon": 11.007,
+  "why": "Ötztaler-Zentrale: Timmelsjoch, Gletscherstraße, Kühtai; Radläden, Verleih, Rad-Hotels."
+ },
+ {
+  "slug": "bruck-an-der-glocknerstrasse",
+  "name": "Bruck an der Glocknerstraße",
+  "country": "AT",
+  "lat": 47.285,
+  "lon": 12.823,
+  "why": "Fuß der Großglockner-Hochalpenstraße; Werkstatt, Verleih, Zeller-See-Region."
+ },
+ {
+  "slug": "bad-kleinkirchheim",
+  "name": "Bad Kleinkirchheim",
+  "country": "AT",
+  "lat": 46.815,
+  "lon": 13.789,
+  "why": "Nockalmstraße, Turracher Höhe, Villacher Alpenstraße; Rad-Hotels, Werkstätten."
+ },
+ {
+  "slug": "andermatt",
+  "name": "Andermatt",
+  "country": "CH",
+  "lat": 46.635,
+  "lon": 8.594,
+  "why": "Furka, Gotthard, Oberalp, Susten, Nufenen; Radläden, Bahnhof, Alpenbrevet-Basis."
+ },
+ {
+  "slug": "meiringen",
+  "name": "Meiringen",
+  "country": "CH",
+  "lat": 46.727,
+  "lon": 8.187,
+  "why": "Grimsel, Susten, Grosse Scheidegg; Radläden, Bahnhof."
+ },
+ {
+  "slug": "davos",
+  "name": "Davos",
+  "country": "CH",
+  "lat": 46.803,
+  "lon": 9.836,
+  "why": "Flüela, Albula, Wolfgang; viele Radgeschäfte, Höhenlage 1 560 m."
+ },
+ {
+  "slug": "st-moritz",
+  "name": "St. Moritz",
+  "country": "CH",
+  "lat": 46.498,
+  "lon": 9.838,
+  "why": "Bernina, Julier, Maloja, Albula; Radläden, Verleih, Engadin-Radrouten."
+ },
+ {
+  "slug": "aosta",
+  "name": "Aosta",
+  "country": "IT",
+  "lat": 45.737,
+  "lon": 7.32,
+  "why": "Grand/Petit Saint-Bernard, San Carlo, Cervinia, Pila; Radläden, Bahnhof."
+ },
+ {
+  "slug": "cuneo",
+  "name": "Cuneo",
+  "country": "IT",
+  "lat": 44.384,
+  "lon": 7.543,
+  "why": "Fauniera, Lombarde, Agnello, Sampeyre, Maddalena; Radläden, Fausto-Coppi-Granfondo."
+ },
+ {
+  "slug": "susa",
+  "name": "Susa",
+  "country": "IT",
+  "lat": 45.137,
+  "lon": 7.053,
+  "why": "Finestre, Mont Cenis, Sestriere; Bahnhof, Radläden."
+ },
+ {
+  "slug": "kranjska-gora",
+  "name": "Kranjska Gora",
+  "country": "SI",
+  "lat": 46.484,
+  "lon": 13.789,
+  "why": "Vršič, Predil, Mangart; Verleih, Werkstätten, Rad-Hotels."
+ },
+ {
+  "slug": "bovec",
+  "name": "Bovec",
+  "country": "SI",
+  "lat": 46.338,
+  "lon": 13.552,
+  "why": "Soča-Tal, Vršič, Mangart, Predil; Verleih, Outdoor-Basis."
+ },
+ {
+  "slug": "sterzing",
+  "name": "Sterzing",
+  "country": "IT",
+  "lat": 46.897,
+  "lon": 11.431,
+  "why": "Jaufen, Penser Joch, Brenner, Pfitscher Joch; Radläden, Bahnhof."
+ },
+ {
+  "slug": "innsbruck",
+  "name": "Innsbruck",
+  "country": "AT",
+  "lat": 47.262,
+  "lon": 11.394,
+  "why": "Kühtai, Brenner, Zirler Berg; große Auswahl an Radläden, Bahnknoten."
+ }
+]
