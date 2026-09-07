@@ -8,7 +8,7 @@
 | Data objects in a `<script>` block | `data/*.json`, typed via `lib/types.ts`, validatable |
 | Routes/profiles/climate fetched at runtime into localStorage | precomputed in `data/generated/`, checked into the repo |
 | Weather fetched directly from the client to Open-Meteo | dedicated route with server-side cache |
-| Hand-written CSS | shadcn/ui tokens (style "mira"), dark mode via `next-themes` |
+| Hand-written CSS | shadcn/ui tokens (style "mira"), dark mode follows the OS via `prefers-color-scheme` |
 | State in global variables | `components/explorer.tsx` + `lib/app-state.ts`, hash sync |
 | Keys in localStorage | `ORS_KEY` as a build secret, map keys as `NEXT_PUBLIC_*` |
 
@@ -21,10 +21,10 @@ URLs.
 1. **`data/generated/` is empty.** The files currently contain only `{}`. Run
    `bun run data:build` once, ideally with `ORS_KEY` set, and commit the result.
 
-2. **Design.** Header, toolbar, table and panel are deliberately kept restrained
-   so that the Mira components can shape them. If the result still does not sit
-   right, the quickest levers are: `--radius`, the header color (`bg-primary`)
-   and the density of the table.
+2. **Design.** The map fills the viewport; sidebar, lists and detail view use
+   the Mira components unchanged. If the result still does not sit right, the
+   quickest levers are: `--radius`, the sidebar width in `explorer.tsx` and
+   the row density in `components/sidebar/entity-row.tsx`.
 
 Done: the components in `components/ui/` used to be hand-written placeholders
 because the sandbox had no access to `ui.shadcn.com`. The real shadcn "mira"
@@ -39,7 +39,8 @@ that file.
 
 Build time, as a secret. There is no input field in the app any more: routing
 happens in the script, not in the browser. Locally in `.env.local`, in GitHub
-Actions as `secrets.ORS_KEY` (see `refresh-data.yml`), not needed on Vercel at
+Actions as `secrets.ORS_KEY` (see `refresh-data.yml`, which commits new data
+directly to `main` twice a day until the backlog is gone), not needed on Vercel at
 all as long as the precomputed files are in the repo. Do not paste the key into
 a chat or commit it to the repo.
 

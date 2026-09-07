@@ -24,7 +24,8 @@ and the climate series are missing.
 | `bun run build` / `bun start` | Production build and server |
 | `bun run typecheck` | `tsc --noEmit` |
 | `bun run lint` | ESLint (incl. React Compiler rules) |
-| `bun run data:build` | Fetch routes, elevation profiles, climate → `data/generated/` |
+| `bun run data:build` | Fetch routes, elevation profiles, climate → `data/generated/` (resumable) |
+| `bun run data:build --status` | Show what is still missing and what it costs in Open-Meteo calls |
 | `bun run data:check` | Validate references and completeness of the data |
 | `bun run ui:init` / `bun run ui:add` | (Re)install the shadcn "mira" preset and components |
 
@@ -41,7 +42,7 @@ every view is shareable.
 
 ```
 app/            layout, start page, weather route
-components/     explorer (state) · map (MapLibre) · panel (detail) · ui (shadcn)
+components/     explorer (state) · map (MapLibre) · sidebar (lists, filters) · panel (detail) · ui (shadcn)
 data/           passes.json, tours.json, towns.json  ← source data, hand-maintained
 data/generated/ routes.json, profiles.json, climate.json  ← from data:build, committed
 lib/            types, data access, status heuristic, state hooks
@@ -60,6 +61,11 @@ See `.env.example`. None of them is required to start the app.
   OpenRouteService **road-cycling profile**, which correctly handles the
   Tremola cobbles, the gravel on the Finestre and car-free roads. Free,
   2,000 routes/day: <https://openrouteservice.org/dev>
+- `OPEN_METEO_BUDGET` – only for `data:build`. Open-Meteo bills weighted
+  "calls" (an elevation profile ≈ 100, a climate series ≈ 261) with a free
+  tier of 5,000/hour and 10,000/day. The script stops itself at this budget
+  (default 4,500) and picks up the rest on the next run; the GitHub Action
+  `refresh-data.yml` runs twice a day until nothing is missing.
 - `NEXT_PUBLIC_THUNDERFOREST_KEY`, `NEXT_PUBLIC_MAPTILER_KEY` – optional
   outdoor base maps. Without a key, OSM, OpenTopoMap, CyclOSM, Esri Topo and
   satellite imagery are available.

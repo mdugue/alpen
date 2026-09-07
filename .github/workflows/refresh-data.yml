@@ -1,27 +1,46 @@
 name: Refresh data
 
-# Precomputed data rarely changes. This run fetches newly added routes,
-# profiles and climate series and opens a PR if anything changed.
+# Fetches missing routes, elevation profiles and climate series and commits them.
+# The script is resumable and stops itself at the Open-Meteo free-tier budget
+# (see the header of scripts/build-data.ts), so a backlog drains over several
+# runs: two runs a day ≈ 9 000 of the 10 000 daily Open-Meteo calls. Runs with
+# nothing missing finish in seconds and commit nothing.
 on:
   workflow_dispatch:
+    inputs:
+      budget:
+        description: "Open-Meteo calls for this run (free tier: 5 000/h, 10 000/day)"
+        default: "4500"
   schedule:
-    - cron: "0 4 1 * *" # monthly
+    - cron: "0 3,15 * * *"
+
+concurrency:
+  group: refresh-data
+  cancel-in-progress: false
+
+permissions:
+  contents: write
 
 jobs:
   refresh:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
+    timeout-minutes: 55
     steps:
       - uses: actions/checkout@v5
       - uses: oven-sh/setup-bun@v2
         with:
           bun-version: latest
       - run: bun install --frozen-lockfile
+      - run: bun run data:build --status
       - run: bun run data:build
         env:
           ORS_KEY: ${{ secrets.ORS_KEY }}
-      - uses: peter-evans/create-pull-request@v7
-        with:
-          commit-message: "chore(data): refresh precomputed data"
-          title: "Refresh precomputed data"
-          branch: chore/refresh-data
-          add-paths: data/generated/*.json
+          OPEN_METEO_BUDGET: ${{ inputs.budget || '4500' }}
+      - run: bun run data:check
+      - name: Commit
+        run: |
+          git add data/generated/*.json
+          git diff --cached --quiet && { echo "Nichts zu committen"; exit 0; }
+          git -c user.name=github-actions[bot] -c user.email=41898282+github-actions[bot]@users.noreply.github.com \
+            commit -m "chore(data): refresh precomputed data" -m "$(bun run --silent data:build --status)"
+          git push

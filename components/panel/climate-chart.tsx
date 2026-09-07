@@ -3,7 +3,8 @@ import type { ClimateYear, Period } from "@/lib/types";
 
 /**
  * Bars: share of days with frost or snowfall per half-month (left axis,
- * percent). Lines: mean daily maximum and minimum (right axis, °C).
+ * percent). Lines: mean daily maximum and minimum (right axis, °C). Colours
+ * come from the neutral chart tokens, not from the status palette.
  */
 export function ClimateChart({ climate, period }: { climate: ClimateYear; period: Period }) {
   const W = 360;
@@ -28,78 +29,97 @@ export function ClimateChart({ climate, period }: { climate: ClimateYear; period
       .join(" ");
 
   return (
-    <svg viewBox={`0 0 ${W} ${H}`} className="w-full" role="img" aria-label="Klima je Halbmonat">
-      {[0, 25, 50, 75, 100].map((p) => (
-        <g key={p}>
-          <line x1={ml} x2={W - mr} y1={y(p)} y2={y(p)} className="stroke-border" strokeWidth={0.6} />
-          <text x={ml - 3} y={y(p) + 3} fontSize={8} textAnchor="end" className="fill-muted-foreground">
-            {p}%
-          </text>
-        </g>
-      ))}
-      {Array.from({ length: Math.floor((thi - tlo) / 5) + 1 }, (_, i) => tlo + i * 5).map((t) => (
-        <text key={t} x={W - mr + 3} y={yt(t) + 3} fontSize={8} className="fill-status-risky">
-          {t}°
-        </text>
-      ))}
-      <line
-        x1={ml}
-        x2={W - mr}
-        y1={yt(0)}
-        y2={yt(0)}
-        className="stroke-status-risky"
-        strokeWidth={0.7}
-        strokeDasharray="3 3"
-      />
-      {climate.map((b, i) => {
-        if (!b) return null;
-        const x0 = ml + i * bw;
-        const label = periodLabel(PERIODS[i]!);
-        return (
-          <g key={i}>
-            <rect
-              x={x0 + 1}
-              y={y(b.frostPct)}
-              width={bw - 2}
-              height={y(0) - y(b.frostPct)}
-              className={i === current ? "fill-primary/40" : "fill-muted-foreground/20"}
-            >
-              <title>{`${label}: Frost an ${b.frostPct} % der Tage`}</title>
-            </rect>
-            <rect
-              x={x0 + 1}
-              y={y(b.snowPct)}
-              width={bw - 2}
-              height={y(0) - y(b.snowPct)}
-              className={i === current ? "fill-status-closed" : "fill-muted-foreground/50"}
-            >
-              <title>{`${label}: Schneefall an ${b.snowPct} % der Tage`}</title>
-            </rect>
-            {i % 2 === 0 && (
-              <text x={x0 + bw} y={H - 4} fontSize={7.5} textAnchor="middle" className="fill-muted-foreground">
-                {MONTHS[i / 2]!.slice(0, 3)}
-              </text>
-            )}
+    <figure className="mt-2">
+      <svg viewBox={`0 0 ${W} ${H}`} className="w-full" role="img" aria-label="Klima je Halbmonat">
+        {[0, 25, 50, 75, 100].map((p) => (
+          <g key={p}>
+            <line x1={ml} x2={W - mr} y1={y(p)} y2={y(p)} className="stroke-border" strokeWidth={0.6} />
+            <text x={ml - 3} y={y(p) + 3} fontSize={9} textAnchor="end" className="fill-muted-foreground">
+              {p}%
+            </text>
           </g>
-        );
-      })}
-      <polyline points={line("tmax")} fill="none" className="stroke-status-risky" strokeWidth={1.4} />
-      <polyline
-        points={line("tmin")}
-        fill="none"
-        className="stroke-status-risky"
-        strokeWidth={1.4}
-        strokeDasharray="4 2"
-      />
-      <rect
-        x={ml + current * bw}
-        y={mt}
-        width={bw}
-        height={H - mt - mb}
-        fill="none"
-        className="stroke-foreground"
-        strokeWidth={1}
-      />
-    </svg>
+        ))}
+        {Array.from({ length: Math.floor((thi - tlo) / 5) + 1 }, (_, i) => tlo + i * 5).map((t) => (
+          <text key={t} x={W - mr + 3} y={yt(t) + 3} fontSize={9} className="fill-chart-5">
+            {t}°
+          </text>
+        ))}
+        <line
+          x1={ml}
+          x2={W - mr}
+          y1={yt(0)}
+          y2={yt(0)}
+          className="stroke-chart-5"
+          strokeWidth={0.7}
+          strokeDasharray="3 3"
+        />
+        {climate.map((b, i) => {
+          if (!b) return null;
+          const x0 = ml + i * bw;
+          const label = periodLabel(PERIODS[i]!);
+          return (
+            <g key={i}>
+              <rect
+                x={x0 + 1}
+                y={y(b.frostPct)}
+                width={bw - 2}
+                height={y(0) - y(b.frostPct)}
+                className={i === current ? "fill-muted-foreground/45" : "fill-muted-foreground/20"}
+              >
+                <title>{`${label}: Frost an ${b.frostPct} % der Tage`}</title>
+              </rect>
+              <rect
+                x={x0 + 1}
+                y={y(b.snowPct)}
+                width={bw - 2}
+                height={y(0) - y(b.snowPct)}
+                className={i === current ? "fill-chart-4" : "fill-chart-4/55"}
+              >
+                <title>{`${label}: Schneefall an ${b.snowPct} % der Tage`}</title>
+              </rect>
+              {i % 2 === 0 && (
+                <text x={x0 + bw} y={H - 4} fontSize={8.5} textAnchor="middle" className="fill-muted-foreground">
+                  {MONTHS[i / 2]!.slice(0, 3)}
+                </text>
+              )}
+            </g>
+          );
+        })}
+        <polyline points={line("tmax")} fill="none" className="stroke-chart-5" strokeWidth={1.4} />
+        <polyline
+          points={line("tmin")}
+          fill="none"
+          className="stroke-chart-5"
+          strokeWidth={1.4}
+          strokeDasharray="4 2"
+        />
+        <rect
+          x={ml + current * bw}
+          y={mt}
+          width={bw}
+          height={H - mt - mb}
+          fill="none"
+          className="stroke-foreground"
+          strokeWidth={1}
+        />
+      </svg>
+      <figcaption className="mt-1 flex flex-wrap gap-x-3 gap-y-0.5 text-[11px] text-muted-foreground">
+        <span className="inline-flex items-center gap-1">
+          <span className="inline-block h-2.5 w-2 bg-muted-foreground/30" aria-hidden /> Frost
+        </span>
+        <span className="inline-flex items-center gap-1">
+          <span className="inline-block h-2.5 w-2 bg-chart-4" aria-hidden /> Schneefall
+        </span>
+        <span className="inline-flex items-center gap-1">
+          <span className="inline-block h-0.5 w-3 bg-chart-5" aria-hidden /> Ø Tmax
+        </span>
+        <span className="inline-flex items-center gap-1">
+          <span className="inline-block h-0.5 w-3 border-t border-dashed border-chart-5" aria-hidden /> Ø Tmin
+        </span>
+        <span className="inline-flex items-center gap-1">
+          <span className="inline-block size-2.5 border border-foreground" aria-hidden /> gewählter Halbmonat
+        </span>
+      </figcaption>
+    </figure>
   );
 }

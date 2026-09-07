@@ -1,5 +1,4 @@
 import { Explorer } from "@/components/explorer";
-import { SiteHeader } from "@/components/site-header";
 import { getClimate, getPasses, getProfiles, getRoutes, getTours, getTowns } from "@/lib/data";
 
 /**
@@ -7,6 +6,9 @@ import { getClimate, getPasses, getProfiles, getRoutes, getTours, getTowns } fro
  * build time and managed as cached segments via "use cache" (lib/data.ts).
  * This lets Next prerender the page completely; the only dynamic part is the
  * weather request in the detail panel (own route with its own cache lifetime).
+ *
+ * The map is the page: no header, no footer – the title lives in the sidebar
+ * and the disclaimer in the scales dialog.
  */
 export default async function Page() {
   "use cache";
@@ -21,8 +23,7 @@ export default async function Page() {
   ]);
 
   return (
-    <main className="flex min-h-dvh flex-col">
-      <SiteHeader />
+    <main className="h-dvh overflow-hidden">
       <Explorer
         passes={passes}
         tours={tours}
@@ -31,11 +32,6 @@ export default async function Page() {
         profiles={profiles}
         climate={climate}
       />
-      <footer className="px-4 pb-6 text-xs text-muted-foreground">
-        Höhen und Auffahrtsdaten sind gerundete Richtwerte. Schönheit, Bekanntheit, Schwierigkeit und Verkehr
-        sind redaktionelle 1–5-Einschätzungen. Der Status je Zeitraum ist eine Heuristik und ersetzt keine
-        amtliche Sperrauskunft. Kartendaten © OpenStreetMap-Mitwirkende.
-      </footer>
     </main>
   );
 }

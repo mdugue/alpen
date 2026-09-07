@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "engines": {
-    "bun": ">=1.3.0"
+    "bun": ">=1.4.0"
   },
   "scripts": {
     "dev": "bun run scripts/copy-maplibre-worker.ts && next dev",
@@ -15,19 +15,16 @@
     "data:build": "bun run scripts/build-data.ts",
     "data:check": "bun run scripts/check-data.ts",
     "ui:init": "bunx shadcn@latest init --preset b1D2ui9g",
-    "ui:add": "bunx shadcn@latest add button badge card checkbox dialog input native-select slider table toggle-group tooltip"
+    "ui:add": "bunx shadcn@latest add badge button card collapsible dialog drawer empty field input input-group label native-select popover radio-group separator skeleton slider switch table toggle toggle-group tooltip"
   },
   "dependencies": {
     "@base-ui/react": "^1.8.0",
-    "@tanstack/react-table": "^9.2.4",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cn": "^0.2.6",
     "lucide-react": "^1.42.0",
     "maplibre-gl": "^6.7.0",
     "next": "^16.3.4",
-    "next-themes": "^0.4.6",
-    "radix-ui": "^1.6.7",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
     "shadcn": "^4.21.0",

@@ -1,8 +1,11 @@
 "use client";
 
-import { Star, X } from "lucide-react";
+import { useEffect, useRef } from "react";
+import { ArrowLeft, ExternalLink, HelpCircle, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardDescription, CardTitle } from "@/components/ui/card";
+import { Empty, EmptyDescription, EmptyHeader, EmptyTitle } from "@/components/ui/empty";
+import { Toggle } from "@/components/ui/toggle";
 import { Rating } from "@/components/rating";
 import { StatusBadge, StatusDot } from "@/components/status-badge";
 import { ElevationProfile } from "@/components/panel/elevation-profile";
@@ -10,7 +13,7 @@ import { ClimateChart } from "@/components/panel/climate-chart";
 import { WeatherTable } from "@/components/panel/weather-table";
 import { haversine, NEARBY_RADIUS_KM } from "@/lib/geo";
 import { passStatus, periodIndex, periodLabel, seasonText, tourStatus } from "@/lib/status";
-import { cn, fmt } from "@/lib/utils";
+import { cn, fmt, fmtUnit } from "@/lib/utils";
 import type { EntityKind, Selection } from "@/lib/app-state";
 import type {
   ClimateYear,
@@ -25,7 +28,7 @@ import type {
 const TRAFFIC_LABEL = ["", "fast autofrei", "ruhig", "normal", "viel", "Durchgangsstraße"];
 
 interface Props {
-  selection: Selection | null;
+  selection: Selection;
   period: Period;
   passes: Pass[];
   tours: Tour[];
@@ -36,82 +39,95 @@ interface Props {
   isFavorite: (kind: EntityKind, slug: string) => boolean;
   onToggleFavorite: (kind: EntityKind, slug: string) => void;
   onSelect: (sel: Selection) => void;
-  onClose: () => void;
+  onBack: () => void;
   onOpenScales: () => void;
 }
 
+/**
+ * Detail view of the selected entity. Lives inside the sidebar (desktop) or
+ * the bottom sheet (mobile) as a stack on top of the lists.
+ */
 export function DetailPanel(props: Props) {
-  const { selection, onClose } = props;
-  const open = Boolean(selection);
+  const { selection, onBack } = props;
+  const heading = useRef<HTMLHeadingElement>(null);
+  const scroller = useRef<HTMLDivElement>(null);
+
+  // Move focus and scroll to the top whenever another entity is selected.
+  useEffect(() => {
+    scroller.current?.scrollTo({ top: 0 });
+    heading.current?.focus({ preventScroll: true });
+  }, [selection.kind, selection.slug]);
+
+  const entity =
+    selection.kind === "pass"
+      ? props.passes.find((p) => p.slug === selection.slug)
+      : selection.kind === "tour"
+        ? props.tours.find((t) => t.slug === selection.slug)
+        : props.towns.find((t) => t.slug === selection.slug);
+  if (!entity) return null;
+
+  const kicker =
+    selection.kind === "pass"
+      ? `Pass · ${(entity as Pass).region} · ${(entity as Pass).country}`
+      : selection.kind === "tour"
+        ? "Rundtour"
+        : `Rad-Ort · ${(entity as Town).country}`;
+  const favorite = props.isFavorite(selection.kind, selection.slug);
 
   return (
-    <aside
-      className={cn(
-        "absolute z-20 overflow-y-auto border border-border bg-card shadow-xl transition-all duration-200",
-        "inset-x-0 bottom-0 max-h-[64%] rounded-t-xl border-b-0",
-        "md:inset-x-auto md:bottom-auto md:right-3 md:top-3 md:max-h-[calc(100%-1.5rem)] md:w-[24rem] md:rounded-xl md:border-b",
-        open
-          ? "translate-y-0 opacity-100 md:translate-x-0"
-          : "pointer-events-none translate-y-full opacity-0 md:translate-x-[115%] md:translate-y-0",
-      )}
-      aria-live="polite"
+    <section
+      aria-labelledby="detail-title"
+      className="flex min-h-0 flex-1 flex-col"
+      onKeyDown={(e) => {
+        if (e.key === "Escape") onBack();
+      }}
     >
-      {selection && (
-        <div className="relative p-4">
-          <Button
-            size="icon-sm"
-            variant="ghost"
-            className="absolute right-2 top-2"
-            onClick={onClose}
-            aria-label="Schließen"
-          >
-            <X />
-          </Button>
-          {selection.kind === "pass" && <PassDetail {...props} entitySlug={selection.slug} />}
-          {selection.kind === "tour" && <TourDetail {...props} entitySlug={selection.slug} />}
-          {selection.kind === "town" && <TownDetail {...props} entitySlug={selection.slug} />}
-        </div>
-      )}
-    </aside>
-  );
-}
-
-function FavButton({
-  kind,
-  slug,
-  isFavorite,
-  onToggleFavorite,
-}: Pick<Props, "isFavorite" | "onToggleFavorite"> & { kind: EntityKind; slug: string }) {
-  const on = isFavorite(kind, slug);
-  return (
-    <Button
-      size="icon-sm"
-      variant="ghost"
-      className="absolute right-10 top-2"
-      onClick={() => onToggleFavorite(kind, slug)}
-      aria-pressed={on}
-      title={on ? "Merkung entfernen" : "Merken"}
-    >
-      <Star className={on ? "fill-accent text-accent" : "text-muted-foreground"} />
-    </Button>
+      <div className="flex h-10 shrink-0 items-center gap-1 border-b border-border px-2">
+        <Button size="sm" variant="ghost" onClick={onBack}>
+          <ArrowLeft data-icon="inline-start" /> Liste
+        </Button>
+        <p className="min-w-0 flex-1 truncate text-center text-[11px] font-semibold tracking-widest text-muted-foreground uppercase">
+          {kicker}
+        </p>
+        <Toggle
+          size="sm"
+          pressed={favorite}
+          onPressedChange={() => props.onToggleFavorite(selection.kind, selection.slug)}
+          aria-label={favorite ? "Merkung entfernen" : "Merken"}
+        >
+          <Star className={cn(favorite && "fill-accent text-accent")} />
+        </Toggle>
+      </div>
+      <div ref={scroller} className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-4 pb-6 pt-3">
+        <h2 ref={heading} id="detail-title" tabIndex={-1} className="text-2xl font-bold outline-none">
+          {entity.name}
+        </h2>
+        {selection.kind === "pass" && <PassDetail {...props} pass={entity as Pass} />}
+        {selection.kind === "tour" && <TourDetail {...props} tour={entity as Tour} />}
+        {selection.kind === "town" && <TownDetail {...props} town={entity as Town} />}
+      </div>
+    </section>
   );
 }
 
 function SectionTitle({ children, hint }: { children: React.ReactNode; hint?: string }) {
   return (
-    <h4 className="mt-4 mb-1.5 flex items-baseline gap-2 border-b border-border pb-1 text-[11px] font-semibold tracking-widest text-muted-foreground uppercase">
+    <h3 className="mt-5 mb-2 flex items-baseline gap-2 border-b border-border pb-1 text-[11px] font-semibold tracking-widest text-muted-foreground uppercase">
       {children}
-      {hint && <span className="text-[11px] font-normal normal-case tracking-normal">{hint}</span>}
-    </h4>
+      {hint && <span className="text-[11px] font-normal tracking-normal normal-case">{hint}</span>}
+    </h3>
   );
 }
 
-function Nearby({
-  lat,
-  lon,
-  exclude,
-  ...p
-}: Props & { lat: number; lon: number; exclude?: string }) {
+function LinkButton({ children, onClick }: { children: React.ReactNode; onClick: () => void }) {
+  return (
+    <Button variant="link" size="sm" className="h-auto gap-1 px-0 py-0.5 text-[13px]" onClick={onClick}>
+      {children}
+    </Button>
+  );
+}
+
+function Nearby({ lat, lon, exclude, ...p }: Props & { lat: number; lon: number; exclude?: string }) {
   const nearPasses = p.passes
     .map((x) => ({ x, d: haversine({ lat, lon }, x) }))
     .filter((e) => e.d <= NEARBY_RADIUS_KM && e.x.slug !== exclude)
@@ -126,71 +142,73 @@ function Nearby({
     .filter((e) => e.d <= NEARBY_RADIUS_KM && e.x.slug !== exclude)
     .sort((a, b) => a.d - b.d);
 
-  const Link = ({ children, onClick }: { children: React.ReactNode; onClick: () => void }) => (
-    <button onClick={onClick} className="mr-2 text-left text-[13px] text-primary hover:underline">
-      {children}
-    </button>
+  const group = (label: string, items: React.ReactNode) => (
+    <div className="flex flex-wrap items-baseline gap-x-3 gap-y-0.5">
+      <span className="text-xs text-muted-foreground">{label}</span>
+      {items}
+    </div>
   );
 
   return (
     <>
       <SectionTitle>Im Umkreis von {NEARBY_RADIUS_KM} km</SectionTitle>
-      {nearPasses.length > 0 && (
-        <p className="mb-1">
-          <span className="text-xs text-muted-foreground">Pässe: </span>
-          {nearPasses.map(({ x, d }) => (
-            <Link key={x.slug} onClick={() => p.onSelect({ kind: "pass", slug: x.slug })}>
-              <StatusDot status={passStatus(x, p.period)} /> {x.name}{" "}
-              <span className="text-muted-foreground">{d.toFixed(0)} km</span>
-            </Link>
-          ))}
-        </p>
-      )}
-      {nearTours.length > 0 && (
-        <p className="mb-1">
-          <span className="text-xs text-muted-foreground">Touren: </span>
-          {nearTours.map((t) => (
-            <Link key={t.slug} onClick={() => p.onSelect({ kind: "tour", slug: t.slug })}>
-              <span className="inline-block h-1 w-3 rounded" style={{ background: t.color }} /> {t.name}
-            </Link>
-          ))}
-        </p>
-      )}
-      {nearTowns.length > 0 && (
-        <p>
-          <span className="text-xs text-muted-foreground">Orte: </span>
-          {nearTowns.map(({ x, d }) => (
-            <Link key={x.slug} onClick={() => p.onSelect({ kind: "town", slug: x.slug })}>
-              ◆ {x.name} <span className="text-muted-foreground">{d.toFixed(0)} km</span>
-            </Link>
-          ))}
-        </p>
-      )}
+      <div className="flex flex-col gap-1">
+        {nearPasses.length > 0 &&
+          group(
+            "Pässe",
+            nearPasses.map(({ x, d }) => (
+              <LinkButton key={x.slug} onClick={() => p.onSelect({ kind: "pass", slug: x.slug })}>
+                <StatusDot status={passStatus(x, p.period)} /> {x.name}
+                <span className="text-muted-foreground">{fmtUnit(d, "km")}</span>
+              </LinkButton>
+            )),
+          )}
+        {nearTours.length > 0 &&
+          group(
+            "Touren",
+            nearTours.map((t) => (
+              <LinkButton key={t.slug} onClick={() => p.onSelect({ kind: "tour", slug: t.slug })}>
+                <span className="inline-block h-1 w-3 rounded" style={{ background: t.color }} /> {t.name}
+              </LinkButton>
+            )),
+          )}
+        {nearTowns.length > 0 &&
+          group(
+            "Orte",
+            nearTowns.map(({ x, d }) => (
+              <LinkButton key={x.slug} onClick={() => p.onSelect({ kind: "town", slug: x.slug })}>
+                <span className="inline-block size-2 rotate-45 rounded-[1px] bg-town" aria-hidden /> {x.name}
+                <span className="text-muted-foreground">{fmtUnit(d, "km")}</span>
+              </LinkButton>
+            )),
+          )}
+      </div>
     </>
   );
 }
 
 function ExternalLinks({ links }: { links: [string, string][] }) {
   return (
-    <div className="mt-3 flex flex-wrap gap-1.5">
+    <div className="mt-4 flex flex-wrap gap-1.5">
       {links.map(([label, href]) => (
-        <a
+        <Button
           key={label}
-          href={href}
-          target="_blank"
-          rel="noopener"
-          className="rounded-md border border-border px-2 py-1 text-xs hover:bg-muted"
+          variant="outline"
+          size="xs"
+          render={<a href={href} target="_blank" rel="noopener noreferrer" />}
+          nativeButton={false}
         >
           {label}
-        </a>
+          <ExternalLink data-icon="inline-end" />
+          <span className="sr-only"> (öffnet in neuem Tab)</span>
+        </Button>
       ))}
     </div>
   );
 }
 
-function PassDetail(props: Props & { entitySlug: string }) {
-  const pass = props.passes.find((p) => p.slug === props.entitySlug);
-  if (!pass) return null;
+function PassDetail(props: Props & { pass: Pass }) {
+  const { pass } = props;
   const status = passStatus(pass, props.period);
   const climate = props.climate[pass.slug];
   const bucket = climate?.[periodIndex(props.period)];
@@ -198,13 +216,8 @@ function PassDetail(props: Props & { entitySlug: string }) {
 
   return (
     <>
-      <FavButton kind="pass" slug={pass.slug} {...props} />
-      <p className="text-[11px] font-semibold tracking-widest text-muted-foreground uppercase">
-        Pass · {pass.region} · {pass.country}
-      </p>
-      <h2 className="mt-0.5 pr-16 text-2xl font-bold">{pass.name}</h2>
-      <div className="mt-2 mb-2 flex items-baseline gap-3">
-        <span className="text-4xl leading-none font-bold">
+      <div className="mt-2 mb-2 flex flex-wrap items-baseline gap-3">
+        <span className="text-4xl leading-none font-bold tabular-nums">
           {fmt(pass.elevation)}
           <span className="ml-1 text-lg text-muted-foreground">m</span>
         </span>
@@ -214,27 +227,29 @@ function PassDetail(props: Props & { entitySlug: string }) {
       <dl className="my-2 grid grid-cols-[auto_1fr] gap-x-3 gap-y-1 text-[13px]">
         <dt className="text-muted-foreground">Klassisch</dt>
         <dd>{pass.classicAscent}</dd>
-        <dt className="text-muted-foreground">
-          Schönheit{" "}
-          <button onClick={props.onOpenScales} className="underline decoration-dotted" title="Skalen erklärt">
-            ?
-          </button>
+        <dt className="flex items-center gap-1 text-muted-foreground">
+          Bewertung
+          <Button
+            size="icon-xs"
+            variant="ghost"
+            aria-label="Skalen erklärt"
+            onClick={props.onOpenScales}
+            className="text-muted-foreground"
+          >
+            <HelpCircle />
+          </Button>
         </dt>
-        <dd>
+        <dd className="grid grid-cols-[auto_auto] items-center gap-x-3 gap-y-0.5 justify-self-start text-xs text-muted-foreground">
+          <span>Schönheit</span>
           <Rating value={pass.beauty} />
-        </dd>
-        <dt className="text-muted-foreground">Bekanntheit</dt>
-        <dd>
+          <span>Bekanntheit</span>
           <Rating value={pass.fame} />
-        </dd>
-        <dt className="text-muted-foreground">Schwierigkeit</dt>
-        <dd>
+          <span>Schwierigkeit</span>
           <Rating value={pass.difficulty} />
-        </dd>
-        <dt className="text-muted-foreground">Verkehr</dt>
-        <dd>
-          <Rating value={pass.traffic} muted />{" "}
-          <span className="text-xs text-muted-foreground">{TRAFFIC_LABEL[pass.traffic]}</span>
+          <span>Verkehr</span>
+          <span className="flex items-center gap-1.5">
+            <Rating value={pass.traffic} muted /> {TRAFFIC_LABEL[pass.traffic]}
+          </span>
         </dd>
       </dl>
 
@@ -244,17 +259,23 @@ function PassDetail(props: Props & { entitySlug: string }) {
       </p>
 
       <SectionTitle hint="Routing + Höhenmodell">Auffahrten</SectionTitle>
-      {pass.ascents.length === 0 && <p className="text-xs text-muted-foreground">keine Auffahrt hinterlegt</p>}
+      {pass.ascents.length === 0 && (
+        <Empty className="py-3">
+          <EmptyHeader>
+            <EmptyTitle>Keine Auffahrt hinterlegt</EmptyTitle>
+          </EmptyHeader>
+        </Empty>
+      )}
       {pass.ascents.map((a, i) => {
         const profile = props.profiles[`${pass.slug}:${i}`];
         return (
-          <div key={a.label} className="mb-2">
-            <div className="flex items-baseline justify-between gap-2">
+          <div key={a.label} className="mb-3">
+            <div className="flex flex-col">
               <span className="text-[13px] font-medium">{a.label}</span>
-              <span className="text-xs text-muted-foreground">
+              <span className="text-xs text-muted-foreground tabular-nums">
                 {profile
-                  ? `${profile.km} km · ${profile.elevationGain} hm · Ø ${profile.avgGradient} % · ${profile.start}→${profile.top} m`
-                  : "kein Profil (bun run data:build)"}
+                  ? `${fmtUnit(profile.km, "km", 1)} · ${fmtUnit(profile.elevationGain, "hm")} · Ø ${fmt(profile.avgGradient, 1)} % · ${fmt(profile.start)} → ${fmtUnit(profile.top, "m")}`
+                  : "Kein Höhenprofil vorhanden."}
               </span>
             </div>
             {profile && <ElevationProfile profile={profile} />}
@@ -268,22 +289,25 @@ function PassDetail(props: Props & { entitySlug: string }) {
       <SectionTitle hint="ERA5-Land, 2015–2024">Klima auf Passhöhe</SectionTitle>
       {bucket && climate ? (
         <>
-          <p className="mb-1 text-xs text-muted-foreground">
-            {periodLabel(props.period)} auf {fmt(pass.elevation)} m, Mittel 2015–2024 (≈ 15 Tage je Halbmonat):
+          <p className="mb-1.5 text-xs text-muted-foreground">
+            {periodLabel(props.period)} auf {fmtUnit(pass.elevation, "m")}, Mittel 2015–2024 (≈ 15 Tage je
+            Halbmonat):
           </p>
           <div className="grid grid-cols-3 gap-1.5">
             {[
-              [`${bucket.tmax} / ${bucket.tmin} °C`, "Ø Höchst-/Tiefstwert"],
+              [`${fmt(bucket.tmax)} / ${fmt(bucket.tmin)} °C`, "Ø Höchst-/Tiefstwert"],
               [`${bucket.frostPct} %`, `Frost (≈ ${days(bucket.frostPct)} von 15)`],
               [`${bucket.snowPct} %`, `Schneefall (≈ ${days(bucket.snowPct)} von 15)`],
             ].map(([value, label]) => (
-              <div key={label} className="rounded-md bg-muted px-2 py-1.5">
-                <b className="block text-lg leading-none font-bold">{value}</b>
-                <span className="text-[11px] text-muted-foreground">{label}</span>
-              </div>
+              <Card key={label} size="sm" className="gap-0 py-1.5">
+                <CardContent className="px-2">
+                  <CardTitle className="text-base leading-tight tabular-nums">{value}</CardTitle>
+                  <CardDescription className="text-[11px] leading-tight">{label}</CardDescription>
+                </CardContent>
+              </Card>
             ))}
           </div>
-          <p className="mt-1 text-xs text-muted-foreground">
+          <p className="mt-1.5 text-xs text-muted-foreground">
             Niederschlag ≥ 1 mm an {bucket.wetPct} % der Tage (≈ {days(bucket.wetPct)} von 15).
           </p>
           <ClimateChart climate={climate} period={props.period} />
@@ -293,7 +317,12 @@ function PassDetail(props: Props & { entitySlug: string }) {
           </p>
         </>
       ) : (
-        <p className="text-xs text-muted-foreground">keine Klimareihe (bun run data:build)</p>
+        <Empty className="py-3">
+          <EmptyHeader>
+            <EmptyTitle>Keine Klimareihe</EmptyTitle>
+            <EmptyDescription>Für diesen Pass liegen noch keine Klimadaten vor.</EmptyDescription>
+          </EmptyHeader>
+        </Empty>
       )}
 
       <Nearby {...props} lat={pass.lat} lon={pass.lon} exclude={pass.slug} />
@@ -309,9 +338,8 @@ function PassDetail(props: Props & { entitySlug: string }) {
   );
 }
 
-function TourDetail(props: Props & { entitySlug: string }) {
-  const tour = props.tours.find((t) => t.slug === props.entitySlug);
-  if (!tour) return null;
+function TourDetail(props: Props & { tour: Tour }) {
+  const { tour } = props;
   const status = tourStatus(tour, props.passes, props.period);
   const limiting = tour.passes
     .map((s) => props.passes.find((p) => p.slug === s))
@@ -320,15 +348,12 @@ function TourDetail(props: Props & { entitySlug: string }) {
 
   return (
     <>
-      <FavButton kind="tour" slug={tour.slug} {...props} />
-      <p className="text-[11px] font-semibold tracking-widest text-muted-foreground uppercase">Rundtour</p>
-      <h2 className="mt-0.5 pr-16 text-2xl font-bold">{tour.name}</h2>
       <div className="mt-2 mb-2 flex flex-wrap items-baseline gap-3">
-        <span className="text-3xl leading-none font-bold">
-          {tour.km}
+        <span className="text-3xl leading-none font-bold tabular-nums">
+          {fmt(tour.km)}
           <span className="ml-1 text-base text-muted-foreground">km</span>
         </span>
-        <span className="text-3xl leading-none font-bold">
+        <span className="text-3xl leading-none font-bold tabular-nums">
           {fmt(tour.elevationGain)}
           <span className="ml-1 text-base text-muted-foreground">hm</span>
         </span>
@@ -349,13 +374,9 @@ function TourDetail(props: Props & { entitySlug: string }) {
             const p = props.passes.find((x) => x.slug === slug);
             if (!p) return null;
             return (
-              <button
-                key={slug}
-                className="text-primary hover:underline"
-                onClick={() => props.onSelect({ kind: "pass", slug })}
-              >
+              <LinkButton key={slug} onClick={() => props.onSelect({ kind: "pass", slug })}>
                 <StatusDot status={passStatus(p, props.period)} /> {p.name}
-              </button>
+              </LinkButton>
             );
           })}
         </dd>
@@ -365,16 +386,10 @@ function TourDetail(props: Props & { entitySlug: string }) {
   );
 }
 
-function TownDetail(props: Props & { entitySlug: string }) {
-  const town = props.towns.find((t) => t.slug === props.entitySlug);
-  if (!town) return null;
+function TownDetail(props: Props & { town: Town }) {
+  const { town } = props;
   return (
     <>
-      <FavButton kind="town" slug={town.slug} {...props} />
-      <p className="text-[11px] font-semibold tracking-widest text-muted-foreground uppercase">
-        Rad-Ort · {town.country}
-      </p>
-      <h2 className="mt-0.5 pr-16 text-2xl font-bold">{town.name}</h2>
       <p className="mt-2 text-[13px]">{town.why}</p>
       <Nearby {...props} lat={town.lat} lon={town.lon} exclude={town.slug} />
       <ExternalLinks

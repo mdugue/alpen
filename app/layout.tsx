@@ -1,6 +1,5 @@
 import type { Metadata, Viewport } from "next";
 import { Inter, Oxanium } from "next/font/google";
-import { ThemeProvider } from "@/components/theme-provider";
 import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter", display: "swap" });
@@ -18,21 +17,19 @@ export const metadata: Metadata = {
   },
 };
 
+// Keep in sync with --background in app/globals.css (light / dark).
 export const viewport: Viewport = {
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#f7f4ee" },
-    { media: "(prefers-color-scheme: dark)", color: "#12181f" },
+    { media: "(prefers-color-scheme: light)", color: "#fbfaf7" },
+    { media: "(prefers-color-scheme: dark)", color: "#1a1c22" },
   ],
+  viewportFit: "cover",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="de" suppressHydrationWarning className={`${inter.variable} ${oxanium.variable}`}>
-      <body className="min-h-dvh antialiased">
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
-          {children}
-        </ThemeProvider>
-      </body>
+    <html lang="de" className={`${inter.variable} ${oxanium.variable}`}>
+      <body className="h-dvh overflow-hidden antialiased">{children}</body>
     </html>
   );
 }

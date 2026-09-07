@@ -1,5 +1,5 @@
 "use client";
-import { useCallback, useMemo, useSyncExternalStore } from "react";
+import { useCallback, useSyncExternalStore } from "react";
 import type { Period, Status } from "@/lib/types";
 
 export type EntityKind = "pass" | "tour" | "town";
@@ -8,11 +8,15 @@ export interface Selection {
   slug: string;
 }
 
+export const ALL_STATUS: Status[] = ["open", "risky", "closed"];
+
 export interface Filters {
   period: Period;
-  kinds: EntityKind[];
-  status: "all" | "open" | "openRisky";
+  /** Statuses that stay visible; all three = no filter. Applies to passes and tours. */
+  status: Status[];
+  /** Passes only. */
   minFame: number;
+  /** Passes only. */
   minElevation: number;
   query: string;
   favoritesOnly: boolean;
@@ -20,13 +24,20 @@ export interface Filters {
 
 export const DEFAULT_FILTERS: Filters = {
   period: 10, // early October
-  kinds: ["pass", "tour", "town"],
-  status: "all",
+  status: ALL_STATUS,
   minFame: 1,
   minElevation: 0,
   query: "",
   favoritesOnly: false,
 };
+
+/** True when any filter apart from the period is active. */
+export const hasActiveFilters = (f: Filters) =>
+  f.status.length !== ALL_STATUS.length ||
+  f.minFame > 1 ||
+  f.minElevation > 0 ||
+  f.query.trim() !== "" ||
+  f.favoritesOnly;
 
 export interface MapView {
   lat: number;
@@ -57,11 +68,10 @@ export function readHash(): { filters: Partial<Filters>; selection: Selection | 
   return {
     filters: {
       period: num("t"),
-      status: (p.get("s") as Filters["status"]) ?? undefined,
+      status: parseStatus(p.get("s")),
       minFame: num("f"),
       minElevation: num("m"),
       query: p.get("q") ?? undefined,
-      kinds: p.get("k")?.split(",") as EntityKind[] | undefined,
     },
     selection,
     view: {
@@ -74,6 +84,14 @@ export function readHash(): { filters: Partial<Filters>; selection: Selection | 
   };
 }
 
+/** `s=open,risky`; the legacy values `open` and `openRisky` from older links still work. */
+function parseStatus(raw: string | null): Status[] | undefined {
+  if (!raw || raw === "all") return undefined;
+  if (raw === "openRisky") return ["open", "risky"];
+  const list = raw.split(",").filter((s): s is Status => ALL_STATUS.includes(s as Status));
+  return list.length ? list : undefined;
+}
+
 export function writeHash(filters: Filters, selection: Selection | null, view: MapView) {
   const p = new URLSearchParams();
   p.set("t", String(filters.period));
@@ -83,11 +101,10 @@ export function writeHash(filters: Filters, selection: Selection | null, view: M
     p.set("pi", view.pitch.toFixed(0));
     p.set("b", view.bearing.toFixed(0));
   }
-  if (filters.status !== "all") p.set("s", filters.status);
+  if (filters.status.length !== ALL_STATUS.length) p.set("s", filters.status.join(","));
   if (filters.minFame > 1) p.set("f", String(filters.minFame));
   if (filters.minElevation > 0) p.set("m", String(filters.minElevation));
   if (filters.query) p.set("q", filters.query);
-  if (filters.kinds.length !== 3) p.set("k", filters.kinds.join(","));
   if (selection) p.set(selection.kind, selection.slug);
   history.replaceState(null, "", `#${p}`);
 }
@@ -165,26 +182,14 @@ export const NO_FAVORITES: Favorites = { pass: [], tour: [], town: [] };
 
 export function useFavorites() {
   const [favorites, setFavorites] = useStored<Favorites>("alpenpaesse:favorites", NO_FAVORITES);
-  const isFavorite = useCallback(
-    (kind: EntityKind, slug: string) => favorites[kind].includes(slug),
-    [favorites],
-  );
-  const toggle = useCallback(
-    (kind: EntityKind, slug: string) =>
-      setFavorites((f) => ({
-        ...f,
-        [kind]: f[kind].includes(slug) ? f[kind].filter((s) => s !== slug) : [...f[kind], slug],
-      })),
-    [setFavorites],
-  );
-  const count = useMemo(
-    () => favorites.pass.length + favorites.tour.length + favorites.town.length,
-    [favorites],
-  );
+  const isFavorite = (kind: EntityKind, slug: string) => favorites[kind].includes(slug);
+  const toggle = (kind: EntityKind, slug: string) =>
+    setFavorites((f) => ({
+      ...f,
+      [kind]: f[kind].includes(slug) ? f[kind].filter((s) => s !== slug) : [...f[kind], slug],
+    }));
+  const count = favorites.pass.length + favorites.tour.length + favorites.town.length;
   return { favorites, isFavorite, toggle, clear: () => setFavorites(NO_FAVORITES), count };
 }
 
-export const statusMatches = (status: Status, filter: Filters["status"]) =>
-  filter === "all" ||
-  (filter === "open" && status === "open") ||
-  (filter === "openRisky" && status !== "closed");
+export const statusMatches = (status: Status, filter: Status[]) => filter.includes(status);

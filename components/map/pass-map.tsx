@@ -13,10 +13,17 @@ import {
   type StyleSpecification,
 } from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
-import { Box, Layers, Maximize2, Crosshair } from "lucide-react";
+import { Layers, Maximize2, Mountain } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Field, FieldLabel, FieldLegend, FieldSet } from "@/components/ui/field";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Switch } from "@/components/ui/switch";
+import { Toggle } from "@/components/ui/toggle";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { baseLayers, OVERLAYS } from "@/components/map/map-style";
-import { useStored, type Selection } from "@/lib/app-state";
+import { DEFAULT_VIEW, readHash, useStored, type MapView, type Selection } from "@/lib/app-state";
+import { cn, MAP_CONTROL, PRESSED } from "@/lib/utils";
 import type { Pass, RouteGeometry, Status, Tour, Town } from "@/lib/types";
 
 export interface MapPass extends Pass {
@@ -32,17 +39,20 @@ interface Props {
   showTowns: boolean;
   selection: Selection | null;
   onSelect: (sel: Selection) => void;
-  initialView: { lat: number; lon: number; zoom: number; pitch: number; bearing: number };
-  onViewChange: (v: { lat: number; lon: number; zoom: number; pitch: number; bearing: number }) => void;
+  onViewChange: (v: MapView) => void;
+  /** Pixels at the bottom covered by the mobile sheet; camera targets stay above it. */
+  insetBottom?: number;
+  /** Rendered over the map in the top-left corner. */
+  children?: React.ReactNode;
 }
 
 const EMPTY = { type: "FeatureCollection", features: [] } as const;
+const TERRAIN = { source: "dem", exaggeration: 1.25 } as const;
 
 // MapLibre resolves its worker via import.meta.url, which Turbopack does not
 // serve; scripts/copy-maplibre-worker.ts places a copy under public/maplibre.
 setWorkerUrl("/maplibre/maplibre-gl-worker.mjs");
 
-/** Read colour values from the theme tokens – MapLibre cannot use CSS variables. */
 /**
  * Normalises any CSS colour (oklch, lab, color-mix …) to an rgb/rgba string.
  * Browsers hand back computed custom properties in `lab()` notation, which
@@ -63,6 +73,7 @@ function toRgb(color: string, fallback: string): string {
   return a === 255 ? `rgb(${r}, ${g}, ${b})` : `rgba(${r}, ${g}, ${b}, ${((a ?? 0) / 255).toFixed(3)})`;
 }
 
+/** Read colour values from the theme tokens – MapLibre cannot use CSS variables. */
 function readColors(el: HTMLElement) {
   const s = getComputedStyle(el);
   const v = (name: string, fallback: string) => {
@@ -129,6 +140,12 @@ function addIcons(map: MLMap, c: ReturnType<typeof readColors>) {
   );
 }
 
+const escapeHtml = (s: string) =>
+  s.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]!);
+
+const defined = <T extends object>(o: T): Partial<T> =>
+  Object.fromEntries(Object.entries(o).filter(([, v]) => v !== undefined && !Number.isNaN(v))) as Partial<T>;
+
 export function PassMap({
   passes,
   tours,
@@ -137,22 +154,24 @@ export function PassMap({
   showTowns,
   selection,
   onSelect,
-  initialView,
   onViewChange,
+  insetBottom = 0,
+  children,
 }: Props) {
   const container = useRef<HTMLDivElement>(null);
   const map = useRef<MLMap | null>(null);
   const [ready, setReady] = useState(false);
-  const [is3d, setIs3d] = useState(initialView.pitch > 1);
-  const [layerMenu, setLayerMenu] = useState(false);
+  const [is3d, setIs3d] = useState(false);
   const [base, setBase] = useStored("alpenpaesse:base", "osm");
   const [overlays, setOverlays] = useStored<string[]>("alpenpaesse:overlays", ["hillshade"]);
-  // The callback is needed in map event handlers that are only registered
-  // during setup; the ref keeps it current without rebuilding the map.
+  // Callbacks are needed in map event handlers that are only registered
+  // during setup; refs keep them current without rebuilding the map.
   const onSelectRef = useRef(onSelect);
+  const onViewChangeRef = useRef(onViewChange);
   useEffect(() => {
     onSelectRef.current = onSelect;
-  }, [onSelect]);
+    onViewChangeRef.current = onViewChange;
+  }, [onSelect, onViewChange]);
 
   // --- Build the map once ------------------------------------------------
   useEffect(() => {
@@ -298,7 +317,9 @@ export function PassMap({
               12,
               ["+", 4, ["*", 1.8, ["get", "fame"]]],
             ],
-            "circle-color": statusColor,
+            // "closed" is additionally encoded as a hollow circle so that the
+            // three states do not rely on hue alone.
+            "circle-color": ["case", ["==", ["get", "status"], "closed"], colors.paper, statusColor],
             "circle-opacity": [
               "case",
               [">=", ["get", "fame"], 4],
@@ -307,8 +328,22 @@ export function PassMap({
               0.8,
               0.62,
             ],
-            "circle-stroke-color": ["case", ["==", ["get", "selected"], 1], colors.ink, colors.paper],
-            "circle-stroke-width": ["case", ["==", ["get", "selected"], 1], 3, 1.5],
+            "circle-stroke-color": [
+              "case",
+              ["==", ["get", "selected"], 1],
+              colors.ink,
+              ["==", ["get", "status"], "closed"],
+              colors.closed,
+              colors.paper,
+            ],
+            "circle-stroke-width": [
+              "case",
+              ["==", ["get", "selected"], 1],
+              3,
+              ["==", ["get", "status"], "closed"],
+              2.5,
+              1.5,
+            ],
             "circle-pitch-alignment": "map",
           },
         },
@@ -363,23 +398,39 @@ export function PassMap({
       ] as StyleSpecification["layers"],
     };
 
+    // The hash is read here rather than taken from props: this effect runs
+    // before the parent's hash initialisation, and the map is built only once.
+    const view = { ...DEFAULT_VIEW, ...defined(readHash().view) };
+    const coarse = window.matchMedia("(pointer: coarse)").matches;
     const m = new MLMap({
       container: container.current,
       style,
-      center: [initialView.lon, initialView.lat],
-      zoom: initialView.zoom,
-      pitch: initialView.pitch,
-      bearing: initialView.bearing,
+      center: [view.lon, view.lat],
+      zoom: view.zoom,
+      pitch: view.pitch,
+      bearing: view.bearing,
       maxPitch: 75,
       attributionControl: { compact: true },
+      locale: {
+        "Map.Title": "Karte",
+        "NavigationControl.ZoomIn": "Vergrößern",
+        "NavigationControl.ZoomOut": "Verkleinern",
+        "NavigationControl.ResetBearing": "Nach Norden ausrichten",
+        "AttributionControl.ToggleAttribution": "Quellenangaben",
+        "ScaleControl.Meters": "m",
+        "ScaleControl.Kilometers": "km",
+      },
     });
     map.current = m;
-    m.addControl(new NavigationControl({ visualizePitch: true }), "top-right");
-    m.addControl(new ScaleControl({ unit: "metric" }), "bottom-right");
+    m.addControl(new NavigationControl({ visualizePitch: true, showZoom: !coarse }), "bottom-right");
+    m.addControl(new ScaleControl({ unit: "metric" }), "bottom-left");
 
     m.on("load", () => {
       addIcons(m, colors);
-      if (initialView.pitch > 1) m.setTerrain({ source: "dem", exaggeration: 1.25 });
+      if (view.pitch > 1) {
+        m.setTerrain(TERRAIN);
+        setIs3d(true);
+      }
       setReady(true);
     });
 
@@ -391,11 +442,7 @@ export function PassMap({
         if (!p) return;
         popup
           .setLngLat(e.lngLat)
-          .setHTML(
-            p.kind === "pass" || p.kind === "route"
-              ? `<b>${p.name}</b><br>${p.subtitle ?? ""}`
-              : `<b>${p.name}</b><br>${p.subtitle ?? ""}`,
-          )
+          .setHTML(`<b>${escapeHtml(p.name ?? "")}</b><br>${escapeHtml(p.subtitle ?? "")}`)
           .addTo(m);
       });
       m.on("mousemove", layer, (e: MapLayerMouseEvent) => popup.setLngLat(e.lngLat));
@@ -413,25 +460,42 @@ export function PassMap({
       });
     }
 
-    const report = () => {
+    // Keep the 3D toggle honest when the map is tilted by drag or compass.
+    m.on("pitchend", () => {
+      const pitched = m.getPitch() > 1;
+      setIs3d(pitched);
+      if (pitched && !m.getTerrain()) m.setTerrain(TERRAIN);
+    });
+
+    m.on("moveend", () => {
       const c = m.getCenter();
-      onViewChange({
+      onViewChangeRef.current({
         lat: c.lat,
         lon: c.lng,
         zoom: m.getZoom(),
         pitch: m.getPitch(),
         bearing: m.getBearing(),
       });
-    };
-    m.on("moveend", report);
+    });
+
+    // The container changes size when the sidebar collapses; MapLibre only
+    // tracks window resizes on its own.
+    const ro = new ResizeObserver(() => m.resize());
+    ro.observe(container.current);
 
     return () => {
+      ro.disconnect();
       m.remove();
       map.current = null;
     };
     // Intentional: build only once. Data arrives via the effects below.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // --- Reserve space for the mobile sheet ---------------------------------
+  useEffect(() => {
+    map.current?.setPadding({ top: 0, left: 0, right: 0, bottom: insetBottom });
+  }, [insetBottom, ready]);
 
   // --- Write data into the sources ---------------------------------------
   useEffect(() => {
@@ -521,35 +585,36 @@ export function PassMap({
   useEffect(() => {
     const m = map.current;
     if (!m || !ready || !selection) return;
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const duration = reduce ? 0 : 900;
     if (selection.kind === "pass") {
       const p = passes.find((x) => x.slug === selection.slug);
-      if (p) m.flyTo({ center: [p.lon, p.lat], zoom: Math.max(m.getZoom(), 11), duration: 900 });
+      if (p) m.flyTo({ center: [p.lon, p.lat], zoom: Math.max(m.getZoom(), 11), duration });
     } else if (selection.kind === "town") {
       const t = towns.find((x) => x.slug === selection.slug);
-      if (t) m.flyTo({ center: [t.lon, t.lat], zoom: Math.max(m.getZoom(), 10.5), duration: 900 });
+      if (t) m.flyTo({ center: [t.lon, t.lat], zoom: Math.max(m.getZoom(), 10.5), duration });
     } else {
       const t = tours.find((x) => x.slug === selection.slug);
       const line = t?.geometry?.length ? t.geometry : t?.waypoints.map((w) => [w.lat, w.lon] as [number, number]);
       if (line?.length) {
         const b = new LngLatBounds();
         line.forEach(([lat, lon]) => b.extend([lon, lat]));
-        m.fitBounds(b, { padding: 60, duration: 900 });
+        m.fitBounds(b, { padding: 60, duration });
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selection?.kind, selection?.slug, ready]);
 
-  const toggle3d = () => {
+  const toggle3d = (pressed: boolean) => {
     const m = map.current;
     if (!m) return;
-    const next = !is3d;
-    setIs3d(next);
-    if (next) {
-      m.setTerrain({ source: "dem", exaggeration: 1.25 });
+    setIs3d(pressed);
+    if (pressed) {
+      m.setTerrain(TERRAIN);
       m.easeTo({ pitch: 60, duration: 700 });
     } else {
       m.setTerrain(null);
-      m.easeTo({ pitch: 0, bearing: 0, duration: 600 });
+      m.easeTo({ pitch: 0, duration: 600 });
     }
   };
 
@@ -567,65 +632,100 @@ export function PassMap({
     map.current?.setLayoutProperty(id === "hillshade" ? "hillshade" : `ov-${id}`, "visibility", on ? "visible" : "none");
   };
 
-  const fitToPasses = () => {
+  /** Fit the view to everything currently drawn; the whole Alps when nothing is. */
+  const fitToVisible = () => {
     const m = map.current;
-    if (!m || !passes.length) return;
+    if (!m) return;
     const b = new LngLatBounds();
     passes.forEach((p) => b.extend([p.lon, p.lat]));
-    m.fitBounds(b, { padding: 48, duration: 800 });
+    tours.filter((t) => t.visible).forEach((t) => t.geometry.forEach(([lat, lon]) => b.extend([lon, lat])));
+    if (b.isEmpty()) m.flyTo({ center: [DEFAULT_VIEW.lon, DEFAULT_VIEW.lat], zoom: DEFAULT_VIEW.zoom, duration: 800 });
+    else m.fitBounds(b, { padding: 48, duration: 800 });
   };
 
+  const tool = cn("size-9 lg:size-8", MAP_CONTROL);
+
   return (
-    <div className="relative size-full overflow-hidden rounded-xl border border-border bg-muted">
+    <div className="relative size-full overflow-hidden bg-muted">
       {/* Plain "absolute inset-0" loses against the unlayered maplibre-gl.css (`.maplibregl-map { position: relative }`). */}
       <div ref={container} className="size-full" />
 
-      <div className="absolute left-3 top-3 z-10 flex flex-wrap gap-1.5">
-        <Button size="sm" variant={is3d ? "default" : "outline"} onClick={toggle3d} aria-pressed={is3d}>
-          <Box /> 3D
-        </Button>
-        <div className="relative">
-          <Button size="sm" variant="outline" onClick={() => setLayerMenu((v) => !v)} aria-expanded={layerMenu}>
-            <Layers /> Karte
-          </Button>
-          {layerMenu && (
-            <div className="absolute left-0 top-10 w-60 rounded-lg border border-border bg-card p-3 text-sm shadow-lg">
-              <p className="mb-1 text-xs font-semibold tracking-wide text-muted-foreground uppercase">Grundkarte</p>
-              {baseLayers().map((b) => (
-                <label key={b.id} className="flex items-center gap-2 py-0.5">
-                  <input type="radio" name="base" checked={base === b.id} onChange={() => switchBase(b.id)} />
-                  {b.name}
-                </label>
-              ))}
-              <p className="mt-2 mb-1 text-xs font-semibold tracking-wide text-muted-foreground uppercase">Overlays</p>
-              <label className="flex items-center gap-2 py-0.5">
-                <input
-                  type="checkbox"
-                  checked={overlays.includes("hillshade")}
-                  onChange={() => toggleOverlay("hillshade")}
+      <div className="absolute top-3 left-3 z-10 flex max-w-[calc(100%-4rem)] flex-wrap items-center gap-2">
+        {children}
+      </div>
+
+      <div className="absolute top-3 right-3 z-10 flex flex-col items-end gap-2">
+        <Popover>
+          <Tooltip>
+            <TooltipTrigger
+              render={
+                <PopoverTrigger
+                  render={<Button size="icon-lg" variant="outline" className={tool} aria-label="Kartenebenen" />}
                 />
-                Relief-Schummerung
-              </label>
-              {OVERLAYS.map((o) => (
-                <label key={o.id} className="flex items-center gap-2 py-0.5">
-                  <input type="checkbox" checked={overlays.includes(o.id)} onChange={() => toggleOverlay(o.id)} />
-                  {o.name}
-                </label>
+              }
+            >
+              <Layers />
+            </TooltipTrigger>
+            <TooltipContent side="left">Kartenebenen</TooltipContent>
+          </Tooltip>
+          <PopoverContent align="end" className="w-60 gap-3">
+            <FieldSet className="gap-2">
+              <FieldLegend variant="label">Grundkarte</FieldLegend>
+              <RadioGroup value={base} onValueChange={(v) => switchBase(String(v))} className="gap-1.5">
+                {baseLayers().map((b) => (
+                  <Field key={b.id} orientation="horizontal">
+                    <RadioGroupItem value={b.id} id={`base-${b.id}`} />
+                    <FieldLabel htmlFor={`base-${b.id}`} className="font-normal">
+                      {b.name}
+                    </FieldLabel>
+                  </Field>
+                ))}
+              </RadioGroup>
+            </FieldSet>
+            <FieldSet className="gap-2">
+              <FieldLegend variant="label">Overlays</FieldLegend>
+              {[{ id: "hillshade", name: "Relief-Schummerung" }, ...OVERLAYS].map((o) => (
+                <Field key={o.id} orientation="horizontal">
+                  <Switch
+                    size="sm"
+                    id={`ov-${o.id}`}
+                    checked={overlays.includes(o.id)}
+                    onCheckedChange={() => toggleOverlay(o.id)}
+                  />
+                  <FieldLabel htmlFor={`ov-${o.id}`} className="font-normal">
+                    {o.name}
+                  </FieldLabel>
+                </Field>
               ))}
-            </div>
-          )}
-        </div>
-        <Button size="sm" variant="outline" onClick={fitToPasses} title="Ansicht auf gefilterte Pässe">
-          <Maximize2 /> Auswahl
-        </Button>
-        <Button
-          size="sm"
-          variant="outline"
-          onClick={() => map.current?.flyTo({ center: [9.6, 46.3], zoom: 6.5 })}
-          title="Alpen"
-        >
-          <Crosshair />
-        </Button>
+            </FieldSet>
+          </PopoverContent>
+        </Popover>
+
+        <Tooltip>
+          <TooltipTrigger
+            render={
+              <Toggle
+                variant="outline"
+                pressed={is3d}
+                onPressedChange={toggle3d}
+                aria-label="3D-Gelände"
+                className={cn(tool, PRESSED)}
+              />
+            }
+          >
+            <Mountain />
+          </TooltipTrigger>
+          <TooltipContent side="left">3D-Gelände</TooltipContent>
+        </Tooltip>
+
+        <Tooltip>
+          <TooltipTrigger
+            render={<Button size="icon-lg" variant="outline" className={tool} onClick={fitToVisible} aria-label="Ansicht einpassen" />}
+          >
+            <Maximize2 />
+          </TooltipTrigger>
+          <TooltipContent side="left">Ansicht auf alle sichtbaren Einträge einpassen</TooltipContent>
+        </Tooltip>
       </div>
     </div>
   );

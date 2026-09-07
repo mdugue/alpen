@@ -83,35 +83,3 @@ export const OVERLAYS = [
     attribution: "© waymarkedtrails.org",
   },
 ] as const;
-
-const STATUS_COLOR = [
-  "match",
-  ["get", "status"],
-  "open",
-  "var(--status-open)",
-  "risky",
-  "var(--status-risky)",
-  "closed",
-  "var(--status-closed)",
-  "#888",
-];
-
-/**
- * MapLibre does not know CSS variables; the actual colours are read from the
- * computed style during setup (see pass-map.tsx → cssVar).
- */
-export function statusColorExpression(colors: Record<string, string>) {
-  return [
-    "match",
-    ["get", "status"],
-    "open",
-    colors.open,
-    "risky",
-    colors.risky,
-    "closed",
-    colors.closed,
-    "#888888",
-  ] as unknown as StyleSpecification["layers"][number];
-}
-
-export { STATUS_COLOR };

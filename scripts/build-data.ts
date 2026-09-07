@@ -4,10 +4,32 @@
  *
  *   bun run data:build              # OSRM demo (car profile)
  *   ORS_KEY=… bun run data:build    # OpenRouteService, road-cycling profile
+ *   bun run data:build --status     # only report what is missing and what it costs
  *
  * Writes to data/generated/. Intermediate state is saved after every step;
  * the run can be aborted and resumes. Results belong in the repo – nothing
  * is fetched at runtime.
+ *
+ * Rate limits. Every upstream host gets its own pacer; requests to one host are
+ * sequential, the pipelines for different hosts (routing vs. Open-Meteo) run in
+ * parallel. Open-Meteo bills weighted "calls", so the pacer spaces requests by
+ * weight and a per-run budget stops the run before the hourly quota does.
+ *
+ *   OSRM demo      1 request/s, no key ("Do not exceed 1 request per second")
+ *   ORS free       40 requests/min, 2 000/day; 403 "Quota exceeded" once spent
+ *   Open-Meteo     600 calls/min, 5 000/h, 10 000/day per IP, shared by ALL
+ *                  open-meteo.com hosts. 1 call = 1 location × ≤14 days × ≤10
+ *                  variables. Observed: an elevation request with 100 points costs
+ *                  ~100 calls, a 10-year daily climate request ~261 calls. The free
+ *                  tier therefore fits ~40 profiles or ~19 climate series per hour.
+ *
+ * OPEN_METEO_BUDGET (default 4500) caps the weighted calls per run; what is left
+ * over is picked up by the next run (.github/workflows/refresh-data.yml runs
+ * twice a day, which uses ~9 000 of the 10 000 daily calls).
+ *
+ * A 429/403 whose body says the hour/day quota is spent stops that host for this
+ * run – retrying would only burn the next window. A minutely 429 or a 5xx pauses
+ * the host (Retry-After or 60 s) and retries.
  */
 import { mkdir } from "node:fs/promises";
 import passes from "../data/passes.json" with { type: "json" };
@@ -23,28 +45,122 @@ import type {
 
 const OUT = new URL("../data/generated/", import.meta.url);
 const ORS = process.env.ORS_KEY ?? "";
+const STATUS_ONLY = process.argv.includes("--status");
+const OPEN_METEO_BUDGET = Number(process.env.OPEN_METEO_BUDGET ?? 4500);
+const OPEN_METEO_DAILY = 10_000;
+const CLIMATE_FROM = "2015-01-01";
+const CLIMATE_TO = "2024-12-31";
+const PROFILE_POINTS = 100;
+/** Open-Meteo weight of one climate request: one call per started 14-day period. */
+const CLIMATE_WEIGHT = Math.ceil(
+  (Date.parse(CLIMATE_TO) - Date.parse(CLIMATE_FROM)) / 86_400_000 / 14,
+);
+/** Open-Meteo weight of one elevation request: one call per location. */
+const PROFILE_WEIGHT = PROFILE_POINTS;
+
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
 async function readJson<T>(name: string, fallback: T): Promise<T> {
   const f = Bun.file(new URL(name, OUT));
   return (await f.exists()) ? ((await f.json()) as T) : fallback;
 }
+// Writes are chained so concurrent pipelines never interleave a file write.
+let writing: Promise<unknown> = Promise.resolve();
 const write = (name: string, data: unknown) =>
-  Bun.write(new URL(name, OUT), JSON.stringify(data));
+  (writing = writing.then(() => Bun.write(new URL(name, OUT), JSON.stringify(data))));
 
-async function getJson<T>(url: string, init?: RequestInit): Promise<T> {
-  for (let attempt = 0; attempt < 4; attempt++) {
-    const res = await fetch(url, init);
-    if (res.ok) return (await res.json()) as T;
-    if (res.status === 429 || res.status >= 500) {
-      console.log(`  ${res.status}, warte …`);
-      await sleep(3000 * (attempt + 1));
-      continue;
-    }
-    throw new Error(`${res.status} ${url.slice(0, 80)}`);
+// ---------------------------------------------------------------------------
+// Per-host rate limiting
+
+class QuotaExhausted extends Error {
+  constructor(host: string, reason: string) {
+    super(`${host}: ${reason}`);
   }
-  throw new Error("aufgegeben nach 4 Versuchen");
 }
+
+/**
+ * Sequential per-host pacer. `weight` is what the host bills for the request;
+ * the gap to the next request is weight / callsPerMinute.
+ */
+class Limiter {
+  private chain: Promise<unknown> = Promise.resolve();
+  private nextAt = 0;
+  /** Set once the host's quota (or our budget) is spent; remaining tasks skip. */
+  exhausted: string | null = null;
+  requests = 0;
+  used = 0;
+
+  constructor(
+    readonly name: string,
+    private callsPerMinute: number,
+    private budget = Infinity,
+  ) {}
+
+  run<T>(fn: () => Promise<T>, weight = 1): Promise<T> {
+    const p = this.chain.then(async () => {
+      if (!this.exhausted && this.used + weight > this.budget)
+        this.exhausted = `Budget von ${this.budget} Calls für diesen Lauf erreicht`;
+      if (this.exhausted) throw new QuotaExhausted(this.name, this.exhausted);
+      const wait = this.nextAt - Date.now();
+      if (wait > 0) await sleep(wait);
+      this.nextAt = Date.now() + (weight * 60_000) / this.callsPerMinute;
+      this.used += weight;
+      this.requests++;
+      return fn();
+    });
+    this.chain = p.catch(() => {});
+    return p;
+  }
+
+  pause(ms: number) {
+    this.nextAt = Math.max(this.nextAt, Date.now() + ms);
+  }
+}
+
+// Elevation and archive share one quota (per IP, across all open-meteo.com hosts).
+const openMeteo = new Limiter("Open-Meteo", 500, OPEN_METEO_BUDGET);
+const router = ORS ? new Limiter("OpenRouteService", 38) : new Limiter("OSRM-Demo", 55);
+
+async function getJson<T>(lim: Limiter, weight: number, url: string, init?: RequestInit): Promise<T> {
+  return lim.run(async () => {
+    for (let attempt = 0; attempt < 5; attempt++) {
+      const res = await fetch(url, init);
+      if (res.ok) return (await res.json()) as T;
+
+      const body = await res.text().catch(() => "");
+      const reason = (() => {
+        try {
+          return (JSON.parse(body) as { reason?: string; error?: string }).reason ?? body;
+        } catch {
+          return body;
+        }
+      })()
+        .replace(/\s+/g, " ")
+        .trim()
+        .slice(0, 120);
+
+      // Open-Meteo: 429 "Hourly/Daily API request limit exceeded"; ORS: 403 "Quota exceeded" (daily).
+      if ((res.status === 429 && /hourly|daily/i.test(reason)) || (res.status === 403 && /quota/i.test(reason))) {
+        lim.exhausted = reason;
+        throw new QuotaExhausted(lim.name, reason);
+      }
+      if (res.status === 429 || res.status >= 500) {
+        const retryAfter = Number(res.headers.get("retry-after")) * 1000;
+        const wait =
+          retryAfter > 0 ? Math.min(retryAfter, 90_000) : res.status === 429 ? 60_000 : 5000 * (attempt + 1);
+        console.log(`  ${lim.name} ${res.status} (${reason || "keine Angabe"}), warte ${wait / 1000}s …`);
+        lim.pause(wait);
+        await sleep(wait);
+        continue;
+      }
+      throw new Error(`${res.status} ${reason} ${url.slice(0, 80)}`);
+    }
+    throw new Error(`${lim.name}: aufgegeben nach 5 Versuchen`);
+  }, weight);
+}
+
+// ---------------------------------------------------------------------------
+// Fetchers
 
 async function route(waypoints: LatLon[]): Promise<RouteGeometry> {
   const out: RouteGeometry = [];
@@ -54,29 +170,33 @@ async function route(waypoints: LatLon[]): Promise<RouteGeometry> {
     for (let i = 0; i < waypoints.length - 1; i += 49) {
       const chunk = waypoints.slice(i, Math.min(i + 50, waypoints.length));
       const json = await getJson<{ features: { geometry: { coordinates: [number, number][] } }[] }>(
+        router,
+        1,
         "https://api.openrouteservice.org/v2/directions/cycling-road/geojson",
         {
           method: "POST",
           headers: { "Content-Type": "application/json", Authorization: ORS },
           body: JSON.stringify({
             coordinates: chunk.map((c) => [c.lon, c.lat]),
+            // Some ascent starts sit in a village centre > 350 m (ORS default) from a cycling-road edge.
+            radiuses: chunk.map(() => 2000),
             instructions: false,
           }),
         },
       );
       push(json.features[0]!.geometry.coordinates.map(([x, y]) => [+y.toFixed(5), +x.toFixed(5)]));
-      await sleep(1600); // ORS: 40 requests/minute
     }
   } else {
     for (let i = 0; i < waypoints.length - 1; i += 11) {
       const chunk = waypoints.slice(i, Math.min(i + 12, waypoints.length));
       const coords = chunk.map((c) => `${c.lon},${c.lat}`).join(";");
       const json = await getJson<{ code: string; routes: { geometry: { coordinates: [number, number][] } }[] }>(
+        router,
+        1,
         `https://router.project-osrm.org/route/v1/driving/${coords}?overview=full&geometries=geojson`,
       );
       if (json.code !== "Ok") throw new Error(json.code);
       push(json.routes[0]!.geometry.coordinates.map(([x, y]) => [+y.toFixed(5), +x.toFixed(5)]));
-      await sleep(700);
     }
   }
   return out;
@@ -94,10 +214,12 @@ function haversine(a: RouteGeometry[number], b: RouteGeometry[number]) {
 
 /** Elevations from the Copernicus DEM (Open-Meteo, no key needed). */
 async function profile(geom: RouteGeometry): Promise<ElevationProfile> {
-  const n = Math.min(100, geom.length);
+  const n = Math.min(PROFILE_POINTS, geom.length);
   const step = (geom.length - 1) / (n - 1);
   const pts = Array.from({ length: n }, (_, i) => geom[Math.round(i * step)]!);
   const { elevation } = await getJson<{ elevation: number[] }>(
+    openMeteo,
+    PROFILE_WEIGHT,
     `https://api.open-meteo.com/v1/elevation?latitude=${pts.map((c) => c[0]).join(",")}&longitude=${pts.map((c) => c[1]).join(",")}`,
   );
 
@@ -138,8 +260,10 @@ async function climate(pass: Pass): Promise<ClimateYear> {
       precipitation_sum: (number | null)[];
     };
   }>(
+    openMeteo,
+    CLIMATE_WEIGHT,
     `https://archive-api.open-meteo.com/v1/archive?latitude=${pass.lat}&longitude=${pass.lon}` +
-      `&elevation=${pass.elevation}&start_date=2015-01-01&end_date=2024-12-31` +
+      `&elevation=${pass.elevation}&start_date=${CLIMATE_FROM}&end_date=${CLIMATE_TO}` +
       `&daily=temperature_2m_max,temperature_2m_min,snowfall_sum,precipitation_sum&timezone=Europe%2FBerlin`,
   );
   const buckets = Array.from({ length: 24 }, () => ({ n: 0, tx: 0, tn: 0, snow: 0, frost: 0, wet: 0 }));
@@ -176,60 +300,100 @@ const routes = await readJson<Record<string, RouteGeometry>>("routes.json", {});
 const profiles = await readJson<Record<string, ElevationProfile>>("profiles.json", {});
 const climates = await readJson<Record<string, ClimateYear>>("climate.json", {});
 
+type RouteJob = { key: string; label: string; waypoints: LatLon[]; profile: boolean };
+const routeJobs: RouteJob[] = [
+  ...(passes as Pass[]).flatMap((p) =>
+    p.ascents.map((a, i) => ({
+      key: `${p.slug}:${i}`,
+      label: `${p.name} ab ${a.label}`,
+      waypoints: [a.from, { lat: p.lat, lon: p.lon }],
+      profile: true,
+    })),
+  ),
+  ...(tours as Tour[]).map((t) => ({
+    key: `tour:${t.slug}`,
+    label: `Tour ${t.name}`,
+    waypoints: t.waypoints,
+    profile: false,
+  })),
+];
+const missingRoutes = routeJobs.filter((j) => !routes[j.key]);
+const missingProfiles = routeJobs.filter((j) => j.profile && !profiles[j.key]);
+const missingClimate = (passes as Pass[]).filter((p) => !climates[p.slug]);
+
+const report = () => {
+  const r = routeJobs.filter((j) => !routes[j.key]).length;
+  const p = routeJobs.filter((j) => j.profile && !profiles[j.key]).length;
+  const c = (passes as Pass[]).filter((x) => !climates[x.slug]).length;
+  const calls = p * PROFILE_WEIGHT + c * CLIMATE_WEIGHT;
+  console.log(
+    `Fehlend: ${r} Routen, ${p} Profile, ${c} Klimareihen` +
+      (calls ? ` (≈ ${calls} Open-Meteo-Calls ≈ ${Math.ceil(calls / OPEN_METEO_DAILY)} Tage Free-Tier)` : ""),
+  );
+  return r + p + c;
+};
+
+if (STATUS_ONLY) {
+  report();
+  process.exit(0);
+}
+
 console.log(
   ORS
     ? "Routing über OpenRouteService (Rennrad-Profil)"
     : "Routing über OSRM-Demo (Autoprofil) – ORS_KEY setzen für das Rennrad-Profil",
 );
+report();
 
-let n = 0;
-for (const pass of passes as Pass[]) {
-  for (const [i, ascent] of pass.ascents.entries()) {
-    const key = `${pass.slug}:${i}`;
-    if (!routes[key]) {
-      try {
-        console.log(`Route ${++n}: ${pass.name} ab ${ascent.label}`);
-        routes[key] = await route([ascent.from, { lat: pass.lat, lon: pass.lon }]);
-        await write("routes.json", routes);
-      } catch (e) {
-        console.error(`  FEHLER ${(e as Error).message}`);
-        continue;
-      }
-    }
-    if (!profiles[key]) {
-      try {
-        profiles[key] = await profile(routes[key]!);
-        await write("profiles.json", profiles);
-        await sleep(300);
-      } catch (e) {
-        console.error(`  Profil FEHLER ${(e as Error).message}`);
-      }
-    }
-  }
-  if (!climates[pass.slug]) {
-    try {
-      console.log(`Klima: ${pass.name}`);
-      climates[pass.slug] = await climate(pass);
-      await write("climate.json", climates);
-      await sleep(400);
-    } catch (e) {
-      console.error(`  Klima FEHLER ${(e as Error).message}`);
-    }
-  }
-}
+const fail = (what: string, e: unknown) =>
+  console.error(`  ${what} FEHLER ${(e as Error).message}`);
 
-for (const tour of tours as Tour[]) {
-  const key = `tour:${tour.slug}`;
-  if (routes[key]) continue;
+async function doProfile(job: RouteJob) {
   try {
-    console.log(`Tour: ${tour.name}`);
-    routes[key] = await route(tour.waypoints);
-    await write("routes.json", routes);
+    profiles[job.key] = await profile(routes[job.key]!);
+    await write("profiles.json", profiles);
+    console.log(`Profil: ${job.label}`);
   } catch (e) {
-    console.error(`  FEHLER ${(e as Error).message}`);
+    if (!(e instanceof QuotaExhausted)) fail(`Profil ${job.label}`, e);
   }
 }
 
+// Pipeline 1: routing (one host, sequential by limiter), each route hands its profile on.
+const routing = missingRoutes.map(async (job) => {
+  try {
+    routes[job.key] = await route(job.waypoints);
+    await write("routes.json", routes);
+    console.log(`Route: ${job.label}`);
+  } catch (e) {
+    if (!(e instanceof QuotaExhausted)) fail(`Route ${job.label}`, e);
+    return;
+  }
+  if (job.profile) await doProfile(job);
+});
+
+// Pipeline 2: profiles for routes that already exist.
+const profiling = missingProfiles.filter((j) => routes[j.key]).map(doProfile);
+
+// Pipeline 3: climate. Queued after the (cheaper) profiles; the Open-Meteo budget cuts it off.
+console.log(`Open-Meteo-Budget für diesen Lauf: ${OPEN_METEO_BUDGET} Calls (OPEN_METEO_BUDGET)`);
+const climating = missingClimate.map(async (pass) => {
+  try {
+    climates[pass.slug] = await climate(pass);
+    await write("climate.json", climates);
+    console.log(`Klima: ${pass.name}`);
+  } catch (e) {
+    if (!(e instanceof QuotaExhausted)) fail(`Klima ${pass.name}`, e);
+  }
+});
+
+await Promise.all([...routing, ...profiling, ...climating]);
+await writing;
+
+for (const lim of [router, openMeteo]) {
+  if (lim.exhausted) console.log(`${lim.name}: Kontingent erschöpft (${lim.exhausted}) – Rest im nächsten Lauf`);
+}
 console.log(
-  `Fertig: ${Object.keys(routes).length} Routen, ${Object.keys(profiles).length} Profile, ${Object.keys(climates).length} Klimareihen`,
+  `Fertig: ${Object.keys(routes).length} Routen, ${Object.keys(profiles).length} Profile, ${Object.keys(climates).length} Klimareihen` +
+    ` (${router.requests} Routing-Requests, ${openMeteo.requests} Open-Meteo-Requests ≈ ${openMeteo.used} Calls)`,
 );
+report();

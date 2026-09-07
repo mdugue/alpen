@@ -5,13 +5,17 @@
 /*
  * shadcn/ui – style "mira" (base-mira) on a warm stone palette with an amber
  * accent. `bun run ui:init` overwrites this file with the preset's default
- * tokens; the palette below and the domain tokens (--status-*, --tour, --town)
- * must be restored afterwards.
+ * tokens; the palette below, the domain tokens (--status-*, --tour, --town)
+ * and the map rules at the end must be restored afterwards. Dark mode follows
+ * the OS only (Tailwind's default `dark:` variant is `prefers-color-scheme`),
+ * so the `@custom-variant dark (&:is(.dark *))` line that `ui:init` writes
+ * must be deleted again and the dark tokens kept inside the media query.
  */
-@custom-variant dark (&:is(.dark *));
 
 :root {
   --radius: 0.625rem;
+  --sheet-peek: 4.5rem;
+  color-scheme: light dark;
 
   --background: oklch(0.985 0.004 90);
   --foreground: oklch(0.21 0.012 65);
@@ -55,7 +59,8 @@
   --sidebar-ring: var(--ring);
 }
 
-.dark {
+@media (prefers-color-scheme: dark) {
+  :root {
   --background: oklch(0.17 0.008 260);
   --foreground: oklch(0.95 0.005 90);
   --card: oklch(0.22 0.01 260);
@@ -80,6 +85,7 @@
   --status-closed: oklch(0.68 0.17 25);
   --tour: oklch(0.7 0.09 300);
   --town: oklch(0.72 0.09 245);
+  }
 }
 
 @theme inline {
@@ -140,6 +146,12 @@
   html {
     @apply font-sans;
   }
+  @media (prefers-reduced-motion: reduce) {
+    *, ::before, ::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
 }
 
 /* Align MapLibre controls with the theme tokens */
@@ -153,3 +165,11 @@
 .maplibregl-popup-tip { @apply border-t-popover! border-b-popover!; }
 .maplibregl-ctrl-attrib { @apply bg-card/80! text-muted-foreground! text-[10px]!; }
 .maplibregl-ctrl-attrib a { @apply text-muted-foreground!; }
+
+/* Below `lg` the sidebar is a bottom sheet; keep MapLibre's corner controls above its peek row. */
+@media (max-width: 63.99rem) {
+  .maplibregl-ctrl-bottom-left,
+  .maplibregl-ctrl-bottom-right {
+    bottom: var(--sheet-peek);
+  }
+}

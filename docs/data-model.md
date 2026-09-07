@@ -50,7 +50,11 @@ is a single sentence naming the surrounding passes and the infrastructure.
 | `climate.json` | `<pass-slug>` | 24 half-months with average temperatures and frost/snow/rain share |
 
 These files belong in the repo. They only change when passes or ascents are
-added – the script skips everything that already exists.
+added – the script skips everything that already exists. Because Open-Meteo
+bills a profile as ≈100 and a climate series as ≈261 "calls" against a free
+tier of 10,000/day, a larger backlog is drained over several runs
+(`OPEN_METEO_BUDGET`, twice-daily `refresh-data.yml`). `bun run data:build
+--status` shows the backlog and its cost.
 
 ## Adding a pass
 

@@ -28,8 +28,9 @@ is rough route planning, not navigation.
 | Data access (cached)                       | `lib/data.ts`                                 |
 | Filter, selection and URL state            | `lib/app-state.ts`, `components/explorer.tsx` |
 | Map, layers, 3D, markers, labels           | `components/map/pass-map.tsx`                 |
+| Period control floating over the map       | `components/map/period-control.tsx`           |
+| Sidebar: search, filters, one list per kind | `components/sidebar/`, `lib/rows.ts`          |
 | Detail panel incl. profile/weather/climate | `components/panel/`                           |
-| Table across all three entity kinds        | `components/entity-table.tsx`                 |
 | Precomputation                             | `scripts/build-data.ts`                       |
 
 ## Conventions
@@ -44,7 +45,19 @@ is rough route planning, not navigation.
   styling (status badges, etc.) goes into the consuming component via
   `className`. Re-running `ui:init` overwrites `app/globals.css`; the domain
   tokens (`--status-open`, `--status-risky`, `--status-closed`, `--tour`,
-  `--town` plus their `@theme inline` lines) must be re-added afterwards.
+  `--town` plus their `@theme inline` lines), the MapLibre rules at the end
+  and the dark-mode setup must be restored afterwards.
+- **Dark mode follows the OS, nothing else.** There is no theme toggle and no
+  `next-themes`; the dark tokens sit in a `prefers-color-scheme` media query
+  and Tailwind's default `dark:` variant is used. Delete the
+  `@custom-variant dark (&:is(.dark *))` line that `ui:init` writes.
+- **Layout: the map is the page.** No header, toolbar or footer; a collapsible
+  sidebar (`components/sidebar/`) on the left holds search, filters and one
+  collapsible list per kind, and shows the detail view as a stack while
+  something is selected. Below `lg` the same sidebar body lives in a bottom
+  `Drawer` with snap points. Only the period control and three map tools
+  float over the map. Map visibility is always a `Switch` ("auf der Karte"),
+  two-state buttons are always a `Toggle`.
 - **Colours only via tokens.** MapLibre cannot read CSS variables;
   `pass-map.tsx` reads them once via `getComputedStyle` (`readColors`). Add
   new map colours there rather than hard-coding them.
