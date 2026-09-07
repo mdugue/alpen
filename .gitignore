@@ -6,3 +6,6 @@ out
 *.tsbuildinfo
 next-env.d.ts
 scripts/.cache
+
+# npm-Lockfile: das Projekt nutzt bun
+package-lock.json
