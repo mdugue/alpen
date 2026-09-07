@@ -59,7 +59,7 @@ export function DetailPanel(props: Props) {
       {selection && (
         <div className="relative p-4">
           <Button
-            size="iconSm"
+            size="icon-sm"
             variant="ghost"
             className="absolute right-2 top-2"
             onClick={onClose}
@@ -85,7 +85,7 @@ function FavButton({
   const on = isFavorite(kind, slug);
   return (
     <Button
-      size="iconSm"
+      size="icon-sm"
       variant="ghost"
       className="absolute right-10 top-2"
       onClick={() => onToggleFavorite(kind, slug)}

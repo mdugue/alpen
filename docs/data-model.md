@@ -1,59 +1,59 @@
-# Datenmodell
+# Data model
 
-Alle Typen stehen in [`lib/types.ts`](../lib/types.ts). Quelldaten werden von
-Hand gepflegt, abgeleitete Daten kommen aus `scripts/build-data.ts`.
+All types live in [`lib/types.ts`](../lib/types.ts). Source data is maintained
+by hand; derived data comes from `scripts/build-data.ts`.
 
-## Quelldaten (von Hand)
+## Source data (hand-maintained)
 
 ### `data/passes.json`
 
 ```jsonc
 {
-  "slug": "col-du-galibier",       // stabil, aus dem Namen erzeugt; Umlaute → ae/oe/ue
+  "slug": "col-du-galibier",       // stable, derived from the name; umlauts → ae/oe/ue
   "name": "Col du Galibier",
-  "country": "FR",                  // "CH/IT" für Grenzpässe
+  "country": "FR",                  // "CH/IT" for border passes
   "region": "Westalpen",            // Westalpen | Zentralalpen | Ostalpen | Dolomiten
   "lat": 45.064, "lon": 6.408,
   "elevation": 2642,
   "classicAscent": "18 km, 6,9 % ab Valloire (34 km via Télégraphe)",
-  "beauty": 5, "fame": 5, "difficulty": 5, "traffic": 2,   // 1–5, siehe scales.md
-  "season": { "opens": 6, "closes": 10.5 },  // Halbmonate; null = ganzjährig geräumt
-  "note": "…",                       // ein bis zwei Sätze redaktioneller Hinweis
+  "beauty": 5, "fame": 5, "difficulty": 5, "traffic": 2,   // 1–5, see scales.md
+  "season": { "opens": 6, "closes": 10.5 },  // half-months; null = cleared year-round
+  "note": "…",                       // one or two sentences of editorial commentary
   "ascents": [{ "from": { "lat": 45.165, "lon": 6.430 }, "label": "Valloire (Nord)" }]
 }
 ```
 
-`season.maintained: true` markiert bewirtschaftete Mautstraßen (Großglockner,
-Timmelsjoch, Nockalm …). Sie werden geräumt und bekommen deshalb keinen
-Höhenabschlag in der Statusheuristik.
+`season.maintained: true` marks managed toll roads (Grossglockner, Timmelsjoch,
+Nockalm …). They are cleared of snow and therefore get no elevation penalty in
+the status heuristic.
 
-**Zeitrechnung:** Ein `Period` ist ein Halbmonat. `10` = Anfang Oktober,
-`10.5` = Ende Oktober. `PERIODS` in `lib/status.ts` listet alle 24.
+**Time reckoning:** A `Period` is a half-month. `10` = early October,
+`10.5` = late October. `PERIODS` in `lib/status.ts` lists all 24.
 
 ### `data/tours.json`
 
-`passes` enthält Pass-**Slugs**; daraus wird der Tourstatus als schlechtester
-Status der beteiligten Pässe berechnet. `waypoints` sind grobe Stützpunkte, die
-das Routing zu einer Linie verbindet.
+`passes` contains pass **slugs**; the tour status is computed from them as the
+worst status among the passes involved. `waypoints` are rough anchor points
+that routing connects into a line.
 
 ### `data/towns.json`
 
-Orte mit Rennrad-Infrastruktur (Werkstätten, Verleih, Rad-Hotels). `why` ist ein
-Satz, der Passumfeld und Infrastruktur nennt.
+Towns with road-cycling infrastructure (workshops, rentals, bike hotels). `why`
+is a single sentence naming the surrounding passes and the infrastructure.
 
-## Abgeleitete Daten (`bun run data:build`)
+## Derived data (`bun run data:build`)
 
-| Datei | Schlüssel | Inhalt |
+| File | Key | Contents |
 | --- | --- | --- |
-| `routes.json` | `<pass-slug>:<index>`, `tour:<tour-slug>` | Straßenverlauf als `[lat, lon][]` |
-| `profiles.json` | `<pass-slug>:<index>` | km, hm, Ø-Steigung, Stützpunkte |
-| `climate.json` | `<pass-slug>` | 24 Halbmonate mit Ø-Temperaturen und Frost-/Schnee-/Regenanteil |
+| `routes.json` | `<pass-slug>:<index>`, `tour:<tour-slug>` | Road geometry as `[lat, lon][]` |
+| `profiles.json` | `<pass-slug>:<index>` | km, elevation gain, average gradient, anchor points |
+| `climate.json` | `<pass-slug>` | 24 half-months with average temperatures and frost/snow/rain share |
 
-Die Dateien gehören ins Repo. Sie ändern sich nur, wenn Pässe oder Auffahrten
-dazukommen – das Skript überspringt alles, was schon vorhanden ist.
+These files belong in the repo. They only change when passes or ascents are
+added – the script skips everything that already exists.
 
-## Einen Pass hinzufügen
+## Adding a pass
 
-1. Eintrag in `data/passes.json` ergänzen (Slug nach demselben Muster).
-2. `bun run data:build` – holt nur die neuen Routen, Profile und die Klimareihe.
-3. `bun run data:check` – prüft Referenzen, Wertebereiche und Vollständigkeit.
+1. Add an entry to `data/passes.json` (slug following the same pattern).
+2. `bun run data:build` – fetches only the new routes, profiles and the climate series.
+3. `bun run data:check` – validates references, value ranges and completeness.

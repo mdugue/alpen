@@ -8,6 +8,7 @@ import {
   NavigationControl,
   Popup,
   ScaleControl,
+  setWorkerUrl,
   type MapLayerMouseEvent,
   type StyleSpecification,
 } from "maplibre-gl";
@@ -37,10 +38,37 @@ interface Props {
 
 const EMPTY = { type: "FeatureCollection", features: [] } as const;
 
-/** Farbwerte aus den Theme-Tokens lesen – MapLibre kann keine CSS-Variablen. */
+// MapLibre resolves its worker via import.meta.url, which Turbopack does not
+// serve; scripts/copy-maplibre-worker.ts places a copy under public/maplibre.
+setWorkerUrl("/maplibre/maplibre-gl-worker.mjs");
+
+/** Read colour values from the theme tokens – MapLibre cannot use CSS variables. */
+/**
+ * Normalises any CSS colour (oklch, lab, color-mix …) to an rgb/rgba string.
+ * Browsers hand back computed custom properties in `lab()` notation, which
+ * MapLibre cannot parse; painting one pixel and reading it back yields sRGB.
+ */
+function toRgb(color: string, fallback: string): string {
+  const canvas = document.createElement("canvas");
+  canvas.width = canvas.height = 1;
+  const ctx = canvas.getContext("2d", { willReadFrequently: true });
+  if (!ctx) return fallback;
+  const sentinel = "#010203";
+  ctx.fillStyle = sentinel;
+  ctx.fillStyle = color;
+  // An unparseable value leaves the previous fillStyle untouched.
+  if (ctx.fillStyle === sentinel) return fallback;
+  ctx.fillRect(0, 0, 1, 1);
+  const [r, g, b, a] = ctx.getImageData(0, 0, 1, 1).data;
+  return a === 255 ? `rgb(${r}, ${g}, ${b})` : `rgba(${r}, ${g}, ${b}, ${((a ?? 0) / 255).toFixed(3)})`;
+}
+
 function readColors(el: HTMLElement) {
   const s = getComputedStyle(el);
-  const v = (name: string, fallback: string) => s.getPropertyValue(name).trim() || fallback;
+  const v = (name: string, fallback: string) => {
+    const raw = s.getPropertyValue(name).trim();
+    return raw ? toRgb(raw, fallback) : fallback;
+  };
   return {
     open: v("--status-open", "#2e8b57"),
     risky: v("--status-risky", "#d9932a"),
@@ -52,7 +80,7 @@ function readColors(el: HTMLElement) {
   };
 }
 
-/** Stern und Raute als Canvas-Icons, damit keine Font-Glyphen nötig sind. */
+/** Star and diamond as canvas icons so that no font glyphs are needed. */
 function addIcons(map: MLMap, c: ReturnType<typeof readColors>) {
   const draw = (paint: (ctx: CanvasRenderingContext2D, s: number) => void, size = 48) => {
     const canvas = document.createElement("canvas");
@@ -119,14 +147,14 @@ export function PassMap({
   const [layerMenu, setLayerMenu] = useState(false);
   const [base, setBase] = useStored("alpenpaesse:base", "osm");
   const [overlays, setOverlays] = useStored<string[]>("alpenpaesse:overlays", ["hillshade"]);
-  // Der Callback wird in Map-Event-Handlern gebraucht, die nur beim Aufbau
-  // registriert werden; die Ref hält ihn aktuell, ohne die Karte neu zu bauen.
+  // The callback is needed in map event handlers that are only registered
+  // during setup; the ref keeps it current without rebuilding the map.
   const onSelectRef = useRef(onSelect);
   useEffect(() => {
     onSelectRef.current = onSelect;
   }, [onSelect]);
 
-  // --- Karte einmalig aufbauen -------------------------------------------
+  // --- Build the map once ------------------------------------------------
   useEffect(() => {
     if (!container.current || map.current) return;
     const colors = readColors(container.current);
@@ -295,7 +323,7 @@ export function PassMap({
             "icon-allow-overlap": true,
           },
         },
-        // Beschriftung gestaffelt nach Bekanntheit; Kollisionen löst MapLibre
+        // Labels staggered by prominence; MapLibre resolves collisions
         ...([
           [5, 0],
           [4, 7],
@@ -401,11 +429,11 @@ export function PassMap({
       m.remove();
       map.current = null;
     };
-    // Absicht: nur einmal aufbauen. Daten kommen über die Effekte unten.
+    // Intentional: build only once. Data arrives via the effects below.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // --- Daten in die Quellen schreiben ------------------------------------
+  // --- Write data into the sources ---------------------------------------
   useEffect(() => {
     const m = map.current;
     if (!m || !ready) return;
@@ -489,7 +517,7 @@ export function PassMap({
     });
   }, [passes, tours, towns, routes, showTowns, selection, ready]);
 
-  // --- Auf Auswahl fliegen ----------------------------------------------
+  // --- Fly to selection --------------------------------------------------
   useEffect(() => {
     const m = map.current;
     if (!m || !ready || !selection) return;
@@ -549,7 +577,8 @@ export function PassMap({
 
   return (
     <div className="relative size-full overflow-hidden rounded-xl border border-border bg-muted">
-      <div ref={container} className="absolute inset-0" />
+      {/* Plain "absolute inset-0" loses against the unlayered maplibre-gl.css (`.maplibregl-map { position: relative }`). */}
+      <div ref={container} className="size-full" />
 
       <div className="absolute left-3 top-3 z-10 flex flex-wrap gap-1.5">
         <Button size="sm" variant={is3d ? "default" : "outline"} onClick={toggle3d} aria-pressed={is3d}>

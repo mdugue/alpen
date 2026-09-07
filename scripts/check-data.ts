@@ -1,5 +1,5 @@
 #!/usr/bin/env bun
-/** Prüft Referenzen und Vollständigkeit. Läuft in CI vor dem Build. */
+/** Checks references and completeness. Runs in CI before the build. */
 import passes from "../data/passes.json" with { type: "json" };
 import tours from "../data/tours.json" with { type: "json" };
 import towns from "../data/towns.json" with { type: "json" };

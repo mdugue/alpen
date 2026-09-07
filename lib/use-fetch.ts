@@ -8,8 +8,8 @@ interface State<T> {
 }
 
 /**
- * Minimaler Datenholer. `loading` wird abgeleitet, statt im Effekt gesetzt zu
- * werden – bei wachsendem Bedarf durch SWR oder TanStack Query ersetzen.
+ * Minimal data fetcher. `loading` is derived instead of being set in an
+ * effect – replace with SWR or TanStack Query as needs grow.
  */
 export default function useFetch<T>(url: string | null) {
   const [state, setState] = useState<State<T>>({ url: null, data: null, error: null });

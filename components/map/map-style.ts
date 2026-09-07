@@ -10,7 +10,7 @@ export interface BaseLayerDef {
 
 const OSM = "© OpenStreetMap-Mitwirkende";
 
-/** Grundkarten ohne Key; die mit Key werden nur ergänzt, wenn er gesetzt ist. */
+/** Base maps without a key; those requiring a key are only added when it is set. */
 export function baseLayers(): BaseLayerDef[] {
   const list: BaseLayerDef[] = [
     {
@@ -97,8 +97,8 @@ const STATUS_COLOR = [
 ];
 
 /**
- * MapLibre kennt keine CSS-Variablen; die tatsächlichen Farben werden beim
- * Aufbau aus dem berechneten Style gelesen (siehe pass-map.tsx → cssVar).
+ * MapLibre does not know CSS variables; the actual colours are read from the
+ * computed style during setup (see pass-map.tsx → cssVar).
  */
 export function statusColorExpression(colors: Record<string, string>) {
   return [

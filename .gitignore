@@ -2,10 +2,14 @@ node_modules
 .next
 out
 .env*.local
+.env
 .vercel
 *.tsbuildinfo
 next-env.d.ts
 scripts/.cache
+# copied by scripts/copy-maplibre-worker.ts
+public/maplibre
 
-# npm-Lockfile: das Projekt nutzt bun
+# npm lockfile: this project uses bun
 package-lock.json
+

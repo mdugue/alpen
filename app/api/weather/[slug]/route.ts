@@ -2,10 +2,10 @@ import { getPass } from "@/lib/data";
 import type { WeatherDay } from "@/lib/types";
 
 /**
- * Die einzige dynamische Quelle der App. Läuft serverseitig, damit
- *   a) die Vorhersage einmal pro Pass und Halbstunde geholt wird statt
- *      einmal pro Besucher (Open-Meteo-Kontingent),
- *   b) der Client keine Drittanbieter-Requests macht.
+ * The app's only dynamic source. Runs server-side so that
+ *   a) the forecast is fetched once per pass and half hour instead of
+ *      once per visitor (Open-Meteo quota),
+ *   b) the client makes no third-party requests.
  */
 async function forecast(lat: number, lon: number, elevation: number): Promise<WeatherDay[]> {
   "use cache";

@@ -109,7 +109,7 @@ export function buildRows(
     for (const t of towns) {
       if (filters.favoritesOnly && !isFavorite("town", t.slug)) continue;
       if (!matchesQuery(t.name, t.why)) continue;
-      // Höhen- und Statusfilter gelten nur für Pässe; Orte fallen dann heraus.
+      // Altitude and status filters only apply to passes; towns drop out then.
       if (filters.minElevation > 0 || filters.minFame > 1 || filters.status !== "all") continue;
       rows.push({
         kind: "town",

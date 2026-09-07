@@ -1,72 +1,93 @@
-# Hinweise für Coding-Agenten
+## What you are working on
 
-Diese Datei ist der Einstiegspunkt für Claude Code und andere Agenten.
-`CLAUDE.md` ist ein Symlink hierauf.
+A map app for road cyclists: Alpine passes, their ascents, loop tours and
+cycling towns, rated by rideability for a chosen half-month. The intended use
+is rough route planning, not navigation.
 
-## Womit du es zu tun hast
+## Principles
 
-Eine Karten-App für Rennradfahrer: Alpenpässe, ihre Auffahrten, Rundtouren und
-Rad-Orte, bewertet nach Befahrbarkeit in einem gewählten Halbmonat. Zielnutzung
-ist die grobe Routenplanung, nicht die Navigation.
+1. **Stay static.** Content data lives in `data/*.json` and
+   `data/generated/*.json` and is imported at build time. When in doubt, new
+   data is _precomputed_ (`scripts/build-data.ts`) rather than fetched at
+   runtime. Runtime fetches need a good reason and belong behind a route with
+   `"use cache"` + `cacheLife`.
+2. **German in the UI**, English in code, comments and docs. Numbers are
+   formatted with `toLocaleString("de-DE")` (see `fmt` in `lib/utils.ts`).
+3. **Stay honest.** The 1–5 scales are editorial judgements and the status is
+   a heuristic. Both are labelled as such in the scales dialog and must never
+   be presented as measured values.
+4. **No silent data changes.** Whoever touches `data/*.json` runs
+   `bun run data:check`.
 
-## Grundsätze
+## Where things live
 
-1. **Statisch bleiben.** Inhaltsdaten kommen aus `data/*.json` und
-   `data/generated/*.json` und werden zur Build-Zeit importiert. Neue Daten
-   werden im Zweifel *vorberechnet* (`scripts/build-data.ts`) statt zur Laufzeit
-   geholt. Laufzeit-Fetches brauchen einen guten Grund und gehören hinter eine
-   Route mit `"use cache"` + `cacheLife`.
-2. **Deutsch in der Oberfläche**, deutsche Kommentare, englische Bezeichner im
-   Code. Zahlen mit `toLocaleString("de-DE")`.
-3. **Ehrlich bleiben.** Die 1–5-Skalen sind redaktionelle Einschätzungen, die
-   Statusangabe ist eine Heuristik. Beides ist im Skalen-Dialog so benannt und
-   darf nicht als Messwert dargestellt werden.
-4. **Keine stillen Datenänderungen.** Wer `data/*.json` anfasst, lässt
-   `bun run data:check` laufen.
+| Topic                                      | File                                          |
+| ------------------------------------------ | --------------------------------------------- |
+| Rideability heuristic                      | `lib/status.ts` (`passStatus`, `tourStatus`)  |
+| Data types                                 | `lib/types.ts`                                |
+| Data access (cached)                       | `lib/data.ts`                                 |
+| Filter, selection and URL state            | `lib/app-state.ts`, `components/explorer.tsx` |
+| Map, layers, 3D, markers, labels           | `components/map/pass-map.tsx`                 |
+| Detail panel incl. profile/weather/climate | `components/panel/`                           |
+| Table across all three entity kinds        | `components/entity-table.tsx`                 |
+| Precomputation                             | `scripts/build-data.ts`                       |
 
-## Wo was liegt
+## Conventions
 
-| Thema | Datei |
-| --- | --- |
-| Befahrbarkeits-Heuristik | `lib/status.ts` (`passStatus`, `tourStatus`) |
-| Datentypen | `lib/types.ts` |
-| Datenzugriff (gecacht) | `lib/data.ts` |
-| Filter-, Auswahl- und URL-Zustand | `lib/app-state.ts`, `components/explorer.tsx` |
-| Karte, Ebenen, 3D, Marker, Beschriftung | `components/map/pass-map.tsx` |
-| Detailpanel inkl. Profil/Wetter/Klima | `components/panel/` |
-| Tabelle über alle drei Objektarten | `components/entity-table.tsx` |
-| Vorberechnung | `scripts/build-data.ts` |
+- **shadcn/ui, style "mira" (`base-mira`).** `components/ui/` holds the
+  official components generated from the preset (`bun run ui:init`,
+  `bun run ui:add`). They are built on `@base-ui/react`, not Radix, so the
+  API differs from older shadcn snippets: `ToggleGroup` takes `multiple`
+  instead of `type="multiple"`, `Slider.onValueChange` receives
+  `number | number[]`, and button icon sizes are `icon-sm`/`icon-xs`, not
+  `iconSm`. Do not edit files in `components/ui/` by hand; domain-specific
+  styling (status badges, etc.) goes into the consuming component via
+  `className`. Re-running `ui:init` overwrites `app/globals.css`; the domain
+  tokens (`--status-open`, `--status-risky`, `--status-closed`, `--tour`,
+  `--town` plus their `@theme inline` lines) must be re-added afterwards.
+- **Colours only via tokens.** MapLibre cannot read CSS variables;
+  `pass-map.tsx` reads them once via `getComputedStyle` (`readColors`). Add
+  new map colours there rather than hard-coding them.
+- **MapLibre needs two workarounds.** Its web worker is resolved via
+  `import.meta.url`, which Turbopack does not serve, so
+  `scripts/copy-maplibre-worker.ts` copies the worker into `public/maplibre`
+  (git-ignored, runs before `dev` and `build`) and `pass-map.tsx` calls
+  `setWorkerUrl`. And computed CSS custom properties come back as `lab()`,
+  which MapLibre cannot parse; `toRgb` in `pass-map.tsx` converts them
+  through a canvas pixel before they reach the style.
+- **TypeScript 7 side by side with the 6.0 API.** `tsc` (and thus
+  `bun run typecheck` and `next build`) is TypeScript 7, installed as
+  `@typescript/native`. The `typescript` package name resolves to
+  `@typescript/typescript6`, because TypeScript 7.0 has no JavaScript API and
+  `typescript-eslint` needs one (`tsc6` is that version's binary). Keep both
+  entries in `package.json` until typescript-eslint supports TS 7.1+.
+- **React Compiler is on.** No manual `useMemo`/`useCallback` for
+  optimisation; the `react-hooks/*` ESLint rules are errors, not warnings.
+  `setState` in an effect is needed in exactly one documented place (hash
+  initialisation in `explorer.tsx`).
+- **Cache Components.** `"use cache"` sits on the data functions and on
+  `app/page.tsx`. Introducing `cookies()`, `headers()` or `searchParams`
+  breaks prerendering – put such things in a separate dynamic child component
+  inside `<Suspense>` instead.
 
-## Konventionen
-
-- **shadcn/ui, Style „mira".** Die Komponenten in `components/ui/` sind
-  handgeschriebene Platzhalter mit derselben API. Sobald du Netzzugang hast,
-  ersetze sie durch die echten:
-  `bunx shadcn@latest init --preset b1D2ui9g` und danach
-  `bunx shadcn@latest add button badge card checkbox dialog input native-select slider table toggle-group tooltip`.
-  Das überschreibt `app/globals.css` mit den offiziellen Tokens des Presets –
-  die zusätzlichen Domänen-Tokens (`--status-open`, `--status-risky`,
-  `--status-closed`, `--tour`, `--town`) müssen danach wieder ergänzt werden.
-- **Farben nur über Tokens.** MapLibre kann keine CSS-Variablen; `pass-map.tsx`
-  liest sie einmal per `getComputedStyle` aus (`readColors`). Neue Kartenfarben
-  dort ergänzen, nicht hart kodieren.
-- **React Compiler ist aktiv.** Kein manuelles `useMemo`/`useCallback` zur
-  Optimierung nötig; die ESLint-Regeln `react-hooks/*` sind Fehler, keine
-  Warnungen. `setState` im Effekt wird nur an einer dokumentierten Stelle
-  gebraucht (Hash-Initialisierung in `explorer.tsx`).
-- **Cache Components.** `"use cache"` steht auf den Datenfunktionen und auf
-  `app/page.tsx`. Wer `cookies()`, `headers()` oder `searchParams` einführt,
-  bricht das Prerendering – dann lieber eine eigene, dynamische Teilkomponente
-  in `<Suspense>`.
-
-## Bevor du einen PR aufmachst
+## Before opening a PR
 
 ```bash
 bun run typecheck && bun run lint && bun run build && bun run data:check
 ```
 
-## Nächste Aufgaben
+## Next tasks
 
-Siehe `docs/roadmap.md`. Die größte offene Sache ist der amtliche
-Live-Sperrstatus; die Heuristik in `lib/status.ts` ist dafür als
-austauschbare Schicht angelegt.
+See `docs/roadmap.md`. The biggest open item is the official live closure
+status; the heuristic in `lib/status.ts` is designed as a replaceable layer
+for it.
+
+<!-- BEGIN:nextjs-agent-rules -->
+
+# This is NOT the Next.js you know
+
+This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
+
+This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
+
+<!-- END:nextjs-agent-rules -->

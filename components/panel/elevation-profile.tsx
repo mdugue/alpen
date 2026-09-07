@@ -9,7 +9,7 @@ const GRADIENT_COLORS = [
 ];
 const colorFor = (g: number) => GRADIENT_COLORS.find((c) => g < c.max)!.color;
 
-/** Höhenprofil mit Steigungsfarben; Werte per Titel beim Überfahren. */
+/** Elevation profile with gradient colours; values via title on hover. */
 export function ElevationProfile({ profile }: { profile: Profile }) {
   const W = 360;
   const H = 96;

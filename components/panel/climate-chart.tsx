@@ -2,8 +2,8 @@ import { MONTHS, periodIndex, periodLabel, PERIODS } from "@/lib/status";
 import type { ClimateYear, Period } from "@/lib/types";
 
 /**
- * Balken: Anteil der Tage mit Frost bzw. Schneefall je Halbmonat (linke Achse,
- * Prozent). Linien: mittlerer Tageshöchst- und Tiefstwert (rechte Achse, °C).
+ * Bars: share of days with frost or snowfall per half-month (left axis,
+ * percent). Lines: mean daily maximum and minimum (right axis, °C).
  */
 export function ClimateChart({ climate, period }: { climate: ClimateYear; period: Period }) {
   const W = 360;

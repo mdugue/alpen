@@ -1,12 +1,6 @@
 "use client";
 
-import {
-  Dialog,
-  DialogBody,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
 const SCALES: [string, string][] = [
   [
@@ -36,11 +30,11 @@ export function ScalesDialog({
 }) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent>
+      <DialogContent className="max-h-[85vh] grid-rows-[auto_minmax(0,1fr)] sm:max-w-2xl">
         <DialogHeader>
           <DialogTitle>Skalen &amp; Quellen</DialogTitle>
         </DialogHeader>
-        <DialogBody>
+        <div className="overflow-y-auto pr-1 text-sm">
           <h3 className="mb-1 text-base font-semibold">Woher kommen die 1–5-Bewertungen?</h3>
           <p className="mb-3 text-muted-foreground">
             Redaktionelle Einschätzungen aus dem allgemeinen Ruf der Pässe (Radsport-Literatur,
@@ -69,7 +63,7 @@ export function ScalesDialog({
             tendenziell zu mild. <b>Routen:</b> OpenRouteService (Rennrad-Profil) oder OSRM.{" "}
             <b>3D:</b> Mapzen/AWS Terrain Tiles. Karten © OpenStreetMap-Mitwirkende.
           </p>
-        </DialogBody>
+        </div>
       </DialogContent>
     </Dialog>
   );

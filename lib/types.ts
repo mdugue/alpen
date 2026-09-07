@@ -1,4 +1,4 @@
-/** Halbmonats-Zeitpunkt: 1 = Anfang Januar, 1.5 = Ende Januar … 12.5 = Ende Dezember. */
+/** Half-month point in time: 1 = early January, 1.5 = late January … 12.5 = late December. */
 export type Period = number;
 
 export type Status = "open" | "risky" | "closed";
@@ -9,38 +9,38 @@ export interface LatLon {
 }
 
 export interface Ascent {
-  /** Startort der klassischen Rad-Auffahrt. */
+  /** Starting point of the classic cycling ascent. */
   from: LatLon;
-  /** Anzeigename, z. B. "Valloire (Nord)". */
+  /** Display name, e.g. "Valloire (Nord)". */
   label: string;
 }
 
 export interface PassSeason {
-  /** Typische Öffnung als Period. */
+  /** Typical opening as a Period. */
   opens: Period;
-  /** Typische Wintersperre als Period. */
+  /** Typical winter closure as a Period. */
   closes: Period;
-  /** Bewirtschaftete Mautstraße – wird geräumt, kein Höhenabschlag. */
+  /** Managed toll road – it is cleared, no altitude penalty. */
   maintained?: boolean;
 }
 
 export interface Pass {
   slug: string;
   name: string;
-  /** ISO-artiges Kürzel, ggf. mehrere: "IT", "CH/IT". */
+  /** ISO-like code, possibly several: "IT", "CH/IT". */
   country: string;
   region: "Westalpen" | "Zentralalpen" | "Ostalpen" | "Dolomiten" | string;
   lat: number;
   lon: number;
   elevation: number;
-  /** Redaktionelle Kurzbeschreibung der klassischen Auffahrt. */
+  /** Editorial short description of the classic ascent. */
   classicAscent: string;
-  /** Redaktionelle 1–5-Skalen, siehe docs/scales.md. */
+  /** Editorial 1–5 scales, see docs/scales.md. */
   beauty: number;
   fame: number;
   difficulty: number;
   traffic: number;
-  /** null = ganzjährig geräumt. */
+  /** null = cleared all year round. */
   season: PassSeason | null;
   note: string;
   ascents: Ascent[];
@@ -52,7 +52,7 @@ export interface Tour {
   color: string;
   km: number;
   elevationGain: number;
-  /** Pass-Slugs, aus denen sich der Status ableitet. */
+  /** Pass slugs from which the status is derived. */
   passes: string[];
   season: string;
   description: string;
@@ -65,11 +65,11 @@ export interface Town {
   country: string;
   lat: number;
   lon: number;
-  /** Warum der Ort für Rennradfahrer interessant ist. */
+  /** Why the town is interesting for road cyclists. */
   why: string;
 }
 
-/** Ergebnis von scripts/build-data.ts. */
+/** Output of scripts/build-data.ts. */
 export type RouteGeometry = [lat: number, lon: number][];
 
 export interface ElevationProfile {
@@ -78,26 +78,26 @@ export interface ElevationProfile {
   start: number;
   top: number;
   avgGradient: number;
-  /** Kumulierte Distanz je Stützpunkt in km. */
+  /** Cumulative distance per sample point in km. */
   dist: number[];
-  /** Höhe je Stützpunkt in m. */
+  /** Elevation per sample point in m. */
   ele: number[];
 }
 
 export interface ClimateBucket {
-  /** Ø Tageshöchstwert in °C. */
+  /** Mean daily maximum in °C. */
   tmax: number;
-  /** Ø Tagestiefstwert in °C. */
+  /** Mean daily minimum in °C. */
   tmin: number;
-  /** Anteil der Tage mit Schneefall ≥ 1 cm, in Prozent. */
+  /** Share of days with snowfall ≥ 1 cm, in percent. */
   snowPct: number;
-  /** Anteil der Tage mit Frost (Tmin < 0 °C), in Prozent. */
+  /** Share of days with frost (Tmin < 0 °C), in percent. */
   frostPct: number;
-  /** Anteil der Tage mit Niederschlag ≥ 1 mm, in Prozent. */
+  /** Share of days with precipitation ≥ 1 mm, in percent. */
   wetPct: number;
 }
 
-/** 24 Halbmonate, Index 0 = Anfang Januar. null = keine Daten. */
+/** 24 half-months, index 0 = early January. null = no data. */
 export type ClimateYear = (ClimateBucket | null)[];
 
 export interface WeatherDay {

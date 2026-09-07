@@ -1,13 +1,13 @@
 #!/usr/bin/env bun
 /**
- * Vorberechnung aller statischen Daten.
+ * Precomputation of all static data.
  *
- *   bun run data:build              # OSRM-Demo (Autoprofil)
- *   ORS_KEY=… bun run data:build    # OpenRouteService, Rennrad-Profil
+ *   bun run data:build              # OSRM demo (car profile)
+ *   ORS_KEY=… bun run data:build    # OpenRouteService, road-cycling profile
  *
- * Schreibt nach data/generated/. Zwischenstand wird nach jedem Schritt
- * gespeichert, der Lauf ist abbrechbar und setzt fort. Ergebnisse gehören
- * ins Repo – zur Laufzeit wird nichts davon nachgeladen.
+ * Writes to data/generated/. Intermediate state is saved after every step;
+ * the run can be aborted and resumes. Results belong in the repo – nothing
+ * is fetched at runtime.
  */
 import { mkdir } from "node:fs/promises";
 import passes from "../data/passes.json" with { type: "json" };
@@ -65,7 +65,7 @@ async function route(waypoints: LatLon[]): Promise<RouteGeometry> {
         },
       );
       push(json.features[0]!.geometry.coordinates.map(([x, y]) => [+y.toFixed(5), +x.toFixed(5)]));
-      await sleep(1600); // ORS: 40 Anfragen/Minute
+      await sleep(1600); // ORS: 40 requests/minute
     }
   } else {
     for (let i = 0; i < waypoints.length - 1; i += 11) {
@@ -92,7 +92,7 @@ function haversine(a: RouteGeometry[number], b: RouteGeometry[number]) {
   return 2 * R * Math.asin(Math.sqrt(x));
 }
 
-/** Höhen aus dem Copernicus-DEM (Open-Meteo, kein Key nötig). */
+/** Elevations from the Copernicus DEM (Open-Meteo, no key needed). */
 async function profile(geom: RouteGeometry): Promise<ElevationProfile> {
   const n = Math.min(100, geom.length);
   const step = (geom.length - 1) / (n - 1);
@@ -107,7 +107,7 @@ async function profile(geom: RouteGeometry): Promise<ElevationProfile> {
     total += haversine(pts[i - 1]!, pts[i]!);
     dist.push(total);
   }
-  // Anstieg mit 10-m-Glättung, sonst summiert das DEM-Rauschen mit
+  // Elevation gain with 10 m smoothing, otherwise DEM noise adds up
   let gain = 0;
   let base = elevation[0]!;
   for (const e of elevation.slice(1)) {
@@ -127,7 +127,7 @@ async function profile(geom: RouteGeometry): Promise<ElevationProfile> {
   };
 }
 
-/** ERA5-Land 2015–2024, verdichtet auf 24 Halbmonate. */
+/** ERA5-Land 2015–2024, condensed into 24 half-months. */
 async function climate(pass: Pass): Promise<ClimateYear> {
   const d = await getJson<{
     daily: {

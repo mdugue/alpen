@@ -1,6 +1,6 @@
 import type { LatLon } from "@/lib/types";
 
-/** Luftlinie in km. */
+/** Great-circle distance in km. */
 export function haversine(a: LatLon, b: LatLon): number {
   const R = 6371;
   const dLat = ((b.lat - a.lat) * Math.PI) / 180;

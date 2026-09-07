@@ -3,10 +3,10 @@ import { SiteHeader } from "@/components/site-header";
 import { getClimate, getPasses, getProfiles, getRoutes, getTours, getTowns } from "@/lib/data";
 
 /**
- * Alles auf dieser Seite ist statisch: die Daten liegen im Repo, werden zur
- * Build-Zeit geladen und über "use cache" (lib/data.ts) als gecachte Segmente
- * geführt. Damit prerendert Next die Seite vollständig; dynamisch ist nur die
- * Wetterabfrage im Detailpanel (eigene Route mit eigener Cache-Lebensdauer).
+ * Everything on this page is static: the data lives in the repo, is loaded at
+ * build time and managed as cached segments via "use cache" (lib/data.ts).
+ * This lets Next prerender the page completely; the only dynamic part is the
+ * weather request in the detail panel (own route with its own cache lifetime).
  */
 export default async function Page() {
   "use cache";

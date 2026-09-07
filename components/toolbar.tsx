@@ -9,6 +9,16 @@ import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { PERIODS, periodLabel } from "@/lib/status";
 import type { EntityKind, Filters } from "@/lib/app-state";
 
+const KIND_ITEMS: [EntityKind, string][] = [
+  ["pass", "Pässe"],
+  ["tour", "Touren"],
+  ["town", "Orte"],
+];
+
+/** The preset's pressed state is barely visible; make active kinds unmistakable. */
+const PRESSED =
+  "aria-pressed:bg-primary aria-pressed:text-primary-foreground aria-pressed:hover:bg-primary/90 aria-pressed:hover:text-primary-foreground";
+
 interface Props {
   filters: Filters;
   onFilters: (f: (prev: Filters) => Filters) => void;
@@ -50,14 +60,20 @@ export function Toolbar({
       </NativeSelect>
 
       <ToggleGroup
-        type="multiple"
+        multiple
+        variant="outline"
+        spacing={0}
         value={filters.kinds}
-        onValueChange={(v) => v.length && set("kinds", v as EntityKind[])}
+        onValueChange={(v) => {
+          if (v.length) set("kinds", v as EntityKind[]);
+        }}
         aria-label="Typen"
       >
-        <ToggleGroupItem value="pass">Pässe</ToggleGroupItem>
-        <ToggleGroupItem value="tour">Touren</ToggleGroupItem>
-        <ToggleGroupItem value="town">Orte</ToggleGroupItem>
+        {KIND_ITEMS.map(([kind, label]) => (
+          <ToggleGroupItem key={kind} value={kind} className={PRESSED}>
+            {label}
+          </ToggleGroupItem>
+        ))}
       </ToggleGroup>
 
       <NativeSelect
@@ -87,7 +103,7 @@ export function Toolbar({
           min={0}
           max={2800}
           step={100}
-          onValueChange={([v]) => set("minElevation", v ?? 0)}
+          onValueChange={(v) => set("minElevation", Array.isArray(v) ? (v[0] ?? 0) : v)}
           className="w-28"
           aria-label="Mindesthöhe"
         />

@@ -1,15 +1,17 @@
 @import "tailwindcss";
 @import "tw-animate-css";
+@import "shadcn/tailwind.css";
 
 /*
- * shadcn/ui – Style "mira", Base "stone", Akzent Amber.
- * Ersetzen mit:  bunx shadcn@latest init --preset b1D2ui9g
- * (überschreibt diese Datei mit den offiziellen Tokens des Presets)
+ * shadcn/ui – style "mira" (base-mira) on a warm stone palette with an amber
+ * accent. `bun run ui:init` overwrites this file with the preset's default
+ * tokens; the palette below and the domain tokens (--status-*, --tour, --town)
+ * must be restored afterwards.
  */
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  --radius: 0.75rem;
+  --radius: 0.625rem;
 
   --background: oklch(0.985 0.004 90);
   --foreground: oklch(0.21 0.012 65);
@@ -30,7 +32,7 @@
   --input: oklch(0.9 0.01 80);
   --ring: oklch(0.79 0.13 75);
 
-  /* Domänenfarben: Status und Kartenobjekte */
+  /* Domain colours: status and map objects */
   --status-open: oklch(0.55 0.12 155);
   --status-risky: oklch(0.75 0.14 75);
   --status-closed: oklch(0.55 0.18 25);
@@ -42,6 +44,15 @@
   --chart-3: var(--status-closed);
   --chart-4: oklch(0.6 0.1 230);
   --chart-5: oklch(0.65 0.12 40);
+
+  --sidebar: var(--card);
+  --sidebar-foreground: var(--foreground);
+  --sidebar-primary: var(--primary);
+  --sidebar-primary-foreground: var(--primary-foreground);
+  --sidebar-accent: var(--muted);
+  --sidebar-accent-foreground: var(--foreground);
+  --sidebar-border: var(--border);
+  --sidebar-ring: var(--ring);
 }
 
 .dark {
@@ -104,15 +115,34 @@
 
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
   --font-heading: var(--font-oxanium), var(--font-inter), ui-sans-serif, sans-serif;
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
 }
 
 @layer base {
   * { @apply border-border outline-ring/50; }
   body { @apply bg-background text-foreground; }
   h1, h2, h3, h4 { font-family: var(--font-heading); letter-spacing: -0.01em; }
+  html {
+    @apply font-sans;
+  }
 }
 
-/* MapLibre an die Theme-Tokens angleichen */
+/* Align MapLibre controls with the theme tokens */
 .maplibregl-ctrl-group {
   @apply bg-card! border border-border! rounded-lg! shadow-sm!;
 }

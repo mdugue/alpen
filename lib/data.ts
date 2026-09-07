@@ -15,10 +15,10 @@ import type {
 } from "@/lib/types";
 
 /**
- * Alle Daten sind statisch und liegen im Repo. Sie werden zur Build-Zeit
- * importiert – kein Netzwerkzugriff, kein Revalidieren nötig. Die Funktionen
- * sind async + "use cache", damit sie in Cache Components als gecachte
- * Segmente gelten und die Seite vollständig prerendert.
+ * All data is static and lives in the repo. It is imported at build time –
+ * no network access, no revalidation needed. The functions are async +
+ * "use cache" so that Cache Components treat them as cached segments and the
+ * page is prerendered completely.
  */
 
 export async function getPasses(): Promise<Pass[]> {
@@ -36,22 +36,23 @@ export async function getTowns(): Promise<Town[]> {
   return townsJson as Town[];
 }
 
-/** Gerouteten Straßenverlauf je Auffahrt, Schlüssel: `${passSlug}:${index}`. */
+/** Routed road geometry per ascent, key: `${passSlug}:${index}`. */
 export async function getRoutes(): Promise<Record<string, RouteGeometry>> {
   "use cache";
-  return routesJson as Record<string, RouteGeometry>;
+  // JSON imports are inferred as number[][]; narrow via unknown to the tuple type.
+  return routesJson as unknown as Record<string, RouteGeometry>;
 }
 
-/** Höhenprofile je Auffahrt, gleicher Schlüssel wie getRoutes. */
+/** Elevation profiles per ascent, same key as getRoutes. */
 export async function getProfiles(): Promise<Record<string, ElevationProfile>> {
   "use cache";
-  return profilesJson as Record<string, ElevationProfile>;
+  return profilesJson as unknown as Record<string, ElevationProfile>;
 }
 
-/** Klimareihen je Pass-Slug (24 Halbmonate). */
+/** Climate series per pass slug (24 half-months). */
 export async function getClimate(): Promise<Record<string, ClimateYear>> {
   "use cache";
-  return climateJson as Record<string, ClimateYear>;
+  return climateJson as unknown as Record<string, ClimateYear>;
 }
 
 export async function getPass(slug: string): Promise<Pass | undefined> {

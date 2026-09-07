@@ -43,12 +43,12 @@ export function Explorer({ passes, tours, towns, routes, profiles, climate }: Pr
   const [scalesOpen, setScalesOpen] = useState(false);
   const { isFavorite, toggle: toggleFavorite, count: favoriteCount } = useFavorites();
 
-  // Startzustand aus dem URL-Hash (teilbare Ansicht). Bewusst im Effekt: beim
-  // Server-Render gibt es keinen Hash, ein Lesen im ersten Render würde zu
-  // einer Hydration-Abweichung führen.
+  // Initial state from the URL hash (shareable view). Deliberately in an effect:
+  // there is no hash during the server render, and reading it in the first
+  // render would cause a hydration mismatch.
   useEffect(() => {
     const h = readHash();
-    // eslint-disable-next-line react-hooks/set-state-in-effect -- einmalige Initialisierung nach dem Mount
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- one-time initialisation after mount
     setFilters((f) => ({ ...f, ...defined(h.filters) }));
     setView((v) => ({ ...v, ...defined(h.view) }));
     if (h.selection) setSelection(h.selection);
@@ -156,7 +156,7 @@ export function Explorer({ passes, tours, towns, routes, profiles, climate }: Pr
           <div className="flex items-center gap-2 border-b border-border px-3 py-2">
             <Button
               size="xs"
-              variant={filters.favoritesOnly ? "accent" : "outline"}
+              variant={filters.favoritesOnly ? "default" : "outline"}
               onClick={() => setFilters((f) => ({ ...f, favoritesOnly: !f.favoritesOnly }))}
             >
               <Star className={filters.favoritesOnly ? "fill-current" : ""} /> Gemerkt

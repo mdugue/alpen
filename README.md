@@ -1,77 +1,77 @@
-# Alpenpässe – Rennradkarte
+# Alpenpässe – Road cycling map
 
-Grobe Orientierung für Rennradrouten in den Alpen: 92 Pässe mit Auffahrten und
-Höhenprofilen, 9 Rundtouren, 26 Rad-Orte – jeweils mit einer Einschätzung der
-Befahrbarkeit für einen frei wählbaren Halbmonat, Wettervorhersage und
-Klimareihe auf Passhöhe, in 2D und 3D.
+Rough orientation for road cycling routes in the Alps: 92 passes with ascents
+and elevation profiles, 9 loop tours, 26 cycling towns – each with a
+rideability estimate for a freely chosen half-month, a weather forecast and a
+climate series at the summit, in 2D and 3D. The UI is in German.
 
-## Schnellstart
+## Quick start
 
 ```bash
 bun install
-bun run data:build        # einmalig: Routen, Höhenprofile, Klima vorberechnen
+bun run data:build        # once: precompute routes, elevation profiles, climate
 bun dev
 ```
 
-Ohne `data:build` startet die App, es fehlen dann nur die eingezeichneten
-Straßen, die Profile und die Klimareihen.
+Without `data:build` the app still starts; only the drawn roads, the profiles
+and the climate series are missing.
 
-## Kommandos
+## Commands
 
-| Befehl | Zweck |
+| Command | Purpose |
 | --- | --- |
-| `bun dev` | Entwicklungsserver |
-| `bun run build` / `bun start` | Produktionsbuild und -server |
+| `bun dev` | Development server |
+| `bun run build` / `bun start` | Production build and server |
 | `bun run typecheck` | `tsc --noEmit` |
-| `bun run lint` | ESLint (inkl. React-Compiler-Regeln) |
-| `bun run data:build` | Routen, Höhenprofile, Klima holen → `data/generated/` |
-| `bun run data:check` | Referenzen und Vollständigkeit der Daten prüfen |
+| `bun run lint` | ESLint (incl. React Compiler rules) |
+| `bun run data:build` | Fetch routes, elevation profiles, climate → `data/generated/` |
+| `bun run data:check` | Validate references and completeness of the data |
+| `bun run ui:init` / `bun run ui:add` | (Re)install the shadcn "mira" preset and components |
 
-## Architektur in drei Sätzen
+## Architecture in three sentences
 
-Alle inhaltlichen Daten liegen als JSON im Repo (`data/`), werden zur Build-Zeit
-importiert und über `"use cache"` in `lib/data.ts` als gecachte Segmente
-geführt – die Startseite ist damit vollständig vorgerendert. Die einzige
-dynamische Quelle ist die Wettervorhersage; sie läuft über
-`app/api/weather/[slug]/route.ts` mit eigener Cache-Lebensdauer, damit
-Open-Meteo einmal pro Pass und halber Stunde abgefragt wird statt einmal pro
-Besucher. Der gesamte Interaktionszustand steckt in einer Client-Komponente
-(`components/explorer.tsx`) und spiegelt sich in den URL-Hash, sodass jede
-Ansicht teilbar ist.
+All content data lives as JSON in the repo (`data/`), is imported at build
+time and served through `"use cache"` in `lib/data.ts` as cached segments –
+the start page is therefore fully prerendered. The only dynamic source is the
+weather forecast; it goes through `app/api/weather/[slug]/route.ts` with its
+own cache lifetime so Open-Meteo is queried once per pass and half hour
+instead of once per visitor. All interaction state lives in one client
+component (`components/explorer.tsx`) and is mirrored into the URL hash, so
+every view is shareable.
 
 ```
-app/            Layout, Startseite, Wetter-Route
-components/     explorer (Zustand) · map (MapLibre) · panel (Detail) · ui (shadcn)
-data/           passes.json, tours.json, towns.json  ← Quelldaten, von Hand pflegbar
-data/generated/ routes.json, profiles.json, climate.json  ← aus data:build, im Repo
-lib/            Typen, Datenzugriff, Statusheuristik, Zustands-Hooks
-scripts/        build-data.ts (Vorberechnung), check-data.ts (Validierung)
-docs/           Skalen, Datenmodell, Roadmap
+app/            layout, start page, weather route
+components/     explorer (state) · map (MapLibre) · panel (detail) · ui (shadcn)
+data/           passes.json, tours.json, towns.json  ← source data, hand-maintained
+data/generated/ routes.json, profiles.json, climate.json  ← from data:build, committed
+lib/            types, data access, status heuristic, state hooks
+scripts/        build-data.ts (precomputation), check-data.ts (validation)
+docs/           scales, data model, roadmap
 ```
 
-Mehr dazu in [`AGENTS.md`](./AGENTS.md) und [`docs/`](./docs).
+More in [`AGENTS.md`](./AGENTS.md) and [`docs/`](./docs).
 
-## Umgebungsvariablen
+## Environment variables
 
-Siehe `.env.example`. Keine davon ist zum Starten nötig.
+See `.env.example`. None of them is required to start the app.
 
-- `ORS_KEY` – nur für `data:build`. Ohne den Key routet das Skript über den
-  öffentlichen OSRM-Demoserver mit **Autoprofil**; mit Key über das
-  OpenRouteService-**Rennradprofil**, das Tremola-Pflaster, Schotter am
-  Finestre und autofreie Straßen richtig behandelt. Kostenlos, 2 000
-  Routen/Tag: <https://openrouteservice.org/dev>
-- `NEXT_PUBLIC_THUNDERFOREST_KEY`, `NEXT_PUBLIC_MAPTILER_KEY` – optionale
-  Outdoor-Grundkarten. Ohne Key stehen OSM, OpenTopoMap, CyclOSM, Esri Topo und
-  Satellit zur Verfügung.
+- `ORS_KEY` – only for `data:build`. Without the key the script routes via the
+  public OSRM demo server using the **car profile**; with the key it uses the
+  OpenRouteService **road-cycling profile**, which correctly handles the
+  Tremola cobbles, the gravel on the Finestre and car-free roads. Free,
+  2,000 routes/day: <https://openrouteservice.org/dev>
+- `NEXT_PUBLIC_THUNDERFOREST_KEY`, `NEXT_PUBLIC_MAPTILER_KEY` – optional
+  outdoor base maps. Without a key, OSM, OpenTopoMap, CyclOSM, Esri Topo and
+  satellite imagery are available.
 
 ## Deployment (Vercel)
 
-Repo auf GitHub, in Vercel importieren, fertig – kein `vercel.json` nötig. Die
-Startseite wird beim Build vorgerendert und liegt danach am CDN-Rand; nur die
-Wetter-Route läuft als Function.
+Push the repo to GitHub, import it in Vercel, done – no `vercel.json` needed.
+The start page is prerendered at build time and served from the CDN edge;
+only the weather route runs as a function.
 
-## Herkunft
+## Origin
 
-Entstanden aus einem einzelnen HTML-Prototypen; die Daten und die
-Statusheuristik sind daraus übernommen. Der Prototyp liegt zur Referenz unter
+Grew out of a single HTML prototype; the data and the status heuristic were
+carried over from it. The prototype is kept for reference at
 `docs/prototype.html`.

@@ -1,8 +1,4 @@
-import { clsx, type ClassValue } from "clsx";
-import { twMerge } from "tailwind-merge";
+export { cn } from "cn";
 
-export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs));
-}
-
+/** Formats a number using German locale conventions (e.g. "2 764"). */
 export const fmt = (n: number) => n.toLocaleString("de-DE");

@@ -5,7 +5,7 @@ import type { WeatherDay } from "@/lib/types";
 const icon = (code: number) =>
   code === 0 ? "☀" : code <= 2 ? "🌤" : code === 3 ? "☁" : code <= 48 ? "🌫" : code <= 57 ? "🌦" : code <= 67 ? "🌧" : code <= 77 ? "🌨" : code <= 82 ? "🌧" : code <= 86 ? "🌨" : "⛈";
 
-/** 7-Tage-Vorhersage auf Passhöhe; kommt aus der eigenen Route (serverseitig gecacht). */
+/** 7-day forecast at pass altitude; comes from our own route (cached server-side). */
 export function WeatherTable({ slug }: { slug: string }) {
   const { data, error, loading } = useFetch<{ days: WeatherDay[] }>(`/api/weather/${slug}`);
 

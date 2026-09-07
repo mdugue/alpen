@@ -5,7 +5,7 @@ import { useTheme } from "next-themes";
 import { Button } from "@/components/ui/button";
 
 const noop = () => () => {};
-/** Nach dem Mount true – ohne setState im Effekt, damit SSR und Client übereinstimmen. */
+/** True after mount – without setState in an effect, so that SSR and client agree. */
 const useMounted = () =>
   useSyncExternalStore(
     noop,
@@ -19,7 +19,7 @@ export function ThemeToggle() {
 
   return (
     <Button
-      size="iconSm"
+      size="icon-sm"
       variant="ghost"
       className="text-primary-foreground hover:bg-white/10"
       onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")}

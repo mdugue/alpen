@@ -19,7 +19,7 @@ export interface Filters {
 }
 
 export const DEFAULT_FILTERS: Filters = {
-  period: 10, // Anfang Oktober
+  period: 10, // early October
   kinds: ["pass", "tour", "town"],
   status: "all",
   minFame: 1,
@@ -39,8 +39,8 @@ export interface MapView {
 export const DEFAULT_VIEW: MapView = { lat: 46.3, lon: 9.6, zoom: 6.5, pitch: 0, bearing: 0 };
 
 /**
- * Ansichtszustand steht im URL-Hash (teilbar), Merkungen und
- * Karteneinstellungen im localStorage (privat, gerätespezifisch).
+ * View state lives in the URL hash (shareable), bookmarks and
+ * map settings in localStorage (private, per device).
  */
 export function readHash(): { filters: Partial<Filters>; selection: Selection | null; view: Partial<MapView> } {
   if (typeof window === "undefined") return { filters: {}, selection: null, view: {} };
@@ -93,9 +93,9 @@ export function writeHash(filters: Filters, selection: Selection | null, view: M
 }
 
 /**
- * localStorage-Hook mit SSR-sicherem Startwert. Der Wert wird über
- * useSyncExternalStore gelesen, damit der erste Client-Render dem Server-HTML
- * entspricht und kein setState im Effekt nötig ist.
+ * localStorage hook with an SSR-safe initial value. The value is read via
+ * useSyncExternalStore so that the first client render matches the server
+ * HTML and no setState in an effect is needed.
  */
 const listeners = new Set<() => void>();
 const cache = new Map<string, { raw: string | null; value: unknown }>();
@@ -117,7 +117,7 @@ function readStored<T>(key: string, initial: T): T {
     return initial;
   }
   const hit = cache.get(key);
-  // Referenzstabil halten, sonst rendert useSyncExternalStore endlos.
+  // Keep referentially stable, otherwise useSyncExternalStore renders endlessly.
   if (hit && hit.raw === raw) return hit.value as T;
   let value = initial;
   if (raw !== null) {
@@ -145,7 +145,7 @@ export function useStored<T>(key: string, initial: T) {
       try {
         localStorage.setItem(key, JSON.stringify(resolved));
       } catch {
-        /* Privatmodus o. Ä. – dann eben ohne Persistenz */
+        /* Private mode or similar – then simply without persistence */
       }
       cache.set(key, { raw: JSON.stringify(resolved), value: resolved });
       for (const l of listeners) l();

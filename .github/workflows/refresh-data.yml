@@ -1,11 +1,11 @@
-name: Daten aktualisieren
+name: Refresh data
 
-# Vorberechnete Daten ändern sich selten. Dieser Lauf holt neu hinzugekommene
-# Routen, Profile und Klimareihen und öffnet bei Änderungen einen PR.
+# Precomputed data rarely changes. This run fetches newly added routes,
+# profiles and climate series and opens a PR if anything changed.
 on:
   workflow_dispatch:
   schedule:
-    - cron: "0 4 1 * *" # monatlich
+    - cron: "0 4 1 * *" # monthly
 
 jobs:
   refresh:
@@ -21,7 +21,7 @@ jobs:
           ORS_KEY: ${{ secrets.ORS_KEY }}
       - uses: peter-evans/create-pull-request@v7
         with:
-          commit-message: "chore(data): vorberechnete Daten aktualisiert"
-          title: "Vorberechnete Daten aktualisiert"
+          commit-message: "chore(data): refresh precomputed data"
+          title: "Refresh precomputed data"
           branch: chore/refresh-data
           add-paths: data/generated/*.json

@@ -1,60 +1,61 @@
 # Roadmap
 
-Nach Aufwand-Nutzen sortiert. Jeder Punkt nennt, was konkret zu tun ist.
+Sorted by effort-to-benefit ratio. Each item states concretely what needs to be done.
 
-## 1. Amtlicher Live-Sperrstatus
+## 1. Official live closure status
 
-Ersetzt die Heuristik dort, wo echte Daten vorliegen.
+Replaces the heuristic wherever real data is available.
 
-- Quellen: Südtirol (Open Data Hub, JSON, sauber), Trentino (HTML),
-  alpen-paesse.ch bzw. TCS (HTML), Bison Futé und Departements-Seiten (HTML),
-  ÖAMTC/ASFINAG (JSON hinter App-API). Keine erlaubt Direktzugriff aus dem
-  Browser (kein CORS).
-- Umsetzung: ein Schritt in `scripts/build-data.ts` oder ein eigener
-  Cron-Job, der stündlich normalisiert nach
-  `data/generated/closures.json` schreibt: `{ [passSlug]: { state, since, source, url } }`.
-  Auf Vercel als Cron Function (`vercel.json` → `crons`) plus
+- Sources: South Tyrol (Open Data Hub, JSON, clean), Trentino (HTML),
+  alpen-paesse.ch or TCS (HTML), Bison Futé and departmental sites (HTML),
+  ÖAMTC/ASFINAG (JSON behind an app API). None of them allow direct access from
+  the browser (no CORS).
+- Implementation: a step in `scripts/build-data.ts` or a dedicated cron job
+  that writes normalized data hourly to
+  `data/generated/closures.json`: `{ [passSlug]: { state, since, source, url } }`.
+  On Vercel as a Cron Function (`vercel.json` → `crons`) plus
   `revalidateTag("closures")`.
-- In `lib/status.ts` eine Schicht davor: liegt ein aktueller Eintrag vor,
-  gewinnt er; sonst die Heuristik. Herkunft im Detailpanel anzeigen.
-- Aufwand: ein Nachmittag für Südtirol, je ein bis zwei Stunden pro weiterer
-  Quelle, dauerhafte Pflege, weil sich HTML-Seiten ändern.
+- A layer in front of `lib/status.ts`: if a current entry exists, it wins;
+  otherwise the heuristic applies. Show the provenance in the detail panel.
+- Effort: an afternoon for South Tyrol, one to two hours per additional source,
+  ongoing maintenance because HTML pages change.
 
-## 2. Verkehr aus Daten statt aus Bauchgefühl
+## 2. Traffic from data instead of gut feeling
 
-Overpass-Abfrage entlang der gerouteten Auffahrt: Anteil der Straßenklassen
+Overpass query along the routed ascent: share of road classes
 (`trunk`/`primary`/`secondary`/`tertiary`/`unclassified`) plus
-`motor_vehicle=no`. Ergibt einen berechneten Wert je Auffahrt; die redaktionelle
-Schätzung bleibt als Korrektur. Läuft in `data:build`, kostet nichts.
+`motor_vehicle=no`. Yields a computed value per ascent; the editorial estimate
+remains as a correction. Runs in `data:build`, costs nothing.
 
-## 3. Schwierigkeit aus dem Profil
+## 3. Difficulty from the profile
 
-`profiles.json` enthält alles Nötige: Länge, Ø-Steigung, Steilstücke,
-Gipfelhöhe. Eine Formel im Stil von climbbybike ersetzt die Schätzung, die
-redaktionelle Zahl kann als „Charakter" bleiben.
+`profiles.json` contains everything needed: length, average gradient, steep
+sections, summit elevation. A climbbybike-style formula replaces the estimate;
+the editorial number can stay as "character".
 
-## 4. Eigene Touren bauen und exportieren
+## 4. Build and export custom tours
 
-Pässe in Reihenfolge anklicken → Route über OpenRouteService → km, hm, Profil →
-GPX-Export für Garmin/Wahoo. Braucht eine Server-Route für das Routing (Key
-bleibt serverseitig) und einen `use cache`-Eintrag pro Wegpunktfolge.
+Click passes in order → route via OpenRouteService → km, elevation gain, profile →
+GPX export for Garmin/Wahoo. Needs a server route for the routing (key stays
+server-side) and a `use cache` entry per waypoint sequence.
 
-## 5. Gefahrene Pässe
+## 5. Ridden passes
 
-GPX/FIT-Upload oder Strava-Anbindung, Abgleich mit den Passkoordinaten, Häkchen
-in der Tabelle, Filter „noch offen und noch nicht gefahren". Die
-Favoriten-Infrastruktur in `lib/app-state.ts` ist die Vorlage.
+GPX/FIT upload or Strava integration, matching against pass coordinates,
+checkmarks in the table, filter "still open and not yet ridden". The favorites
+infrastructure in `lib/app-state.ts` is the template.
 
-## 6. Weitere Regionen
+## 6. More regions
 
-Pyrenäen, Massif Central, Jura, Vogesen, Dolomiten-Ergänzungen. Rein additiv:
-neue Einträge in `data/passes.json`, `data:build` nachziehen. Ab etwa 300 Pässen
-lohnt eine Aufteilung der JSON-Dateien nach Region und ein Region-Filter.
+Pyrenees, Massif Central, Jura, Vosges, Dolomites additions. Purely additive:
+new entries in `data/passes.json`, then run `data:build`. From roughly 300
+passes on, splitting the JSON files by region and adding a region filter
+becomes worthwhile.
 
-## 7. Kleinere Verbesserungen
+## 7. Smaller improvements
 
-- Offline-Fähigkeit: Service Worker plus vorgehaltene Kacheln für eine Region.
-- Bildmaterial je Pass (eigene Fotos oder Wikimedia mit Lizenzangabe).
-- Etappenplaner für Mehrtagestouren mit Unterkunftsorten.
-- Sortier- und Filterzustand ebenfalls in den URL-Hash.
-- E2E-Tests (Playwright) für Auswahl, Filter und Hash-Wiederherstellung.
+- Offline capability: service worker plus pre-cached tiles for a region.
+- Imagery per pass (own photos or Wikimedia with license attribution).
+- Stage planner for multi-day tours with overnight locations.
+- Sort and filter state in the URL hash as well.
+- E2E tests (Playwright) for selection, filters and hash restoration.

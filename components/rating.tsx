@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils";
 
-/** Redaktionelle 1–5-Skala als Balken; Erklärung im Skalen-Dialog. */
+/** Editorial 1–5 scale as bars; explained in the scales dialog. */
 export function Rating({
   value,
   muted,
