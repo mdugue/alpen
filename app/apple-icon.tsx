@@ -1,4 +1,5 @@
 import { ImageResponse } from "next/og";
+
 import { MarkBadge } from "@/lib/mark";
 
 /**

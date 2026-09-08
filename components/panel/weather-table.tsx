@@ -8,14 +8,27 @@ import {
   CloudSnow,
   CloudSun,
   Sun,
-  type LucideIcon,
 } from "lucide-react";
-import { Empty, EmptyDescription, EmptyHeader, EmptyTitle } from "@/components/ui/empty";
+import type { LucideIcon } from "lucide-react";
+
+import {
+  Empty,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyTitle,
+} from "@/components/ui/empty";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import type { WeatherDay } from "@/lib/types";
 import useFetch from "@/lib/use-fetch";
 import { cn, fmt } from "@/lib/utils";
-import type { WeatherDay } from "@/lib/types";
 
 /** WMO weather code → icon and German label. */
 function describe(code: number): [LucideIcon, string] {
@@ -33,11 +46,18 @@ function describe(code: number): [LucideIcon, string] {
 
 /** 7-day forecast at pass altitude; comes from our own route (cached server-side). */
 export function WeatherTable({ slug }: { slug: string }) {
-  const { data, error, loading } = useFetch<{ days: WeatherDay[] }>(`/api/weather/${slug}`);
+  const { data, error, loading } = useFetch<{ days: WeatherDay[] }>(
+    `/api/weather/${slug}`,
+  );
 
   if (loading)
     return (
-      <div role="status" aria-busy aria-label="Wetter wird geladen" className="flex flex-col gap-1.5 py-1">
+      <div
+        role="status"
+        aria-busy
+        aria-label="Wetter wird geladen"
+        className="flex flex-col gap-1.5 py-1"
+      >
         {Array.from({ length: 7 }, (_, i) => (
           <Skeleton key={i} className="h-4 w-full" />
         ))}
@@ -48,7 +68,9 @@ export function WeatherTable({ slug }: { slug: string }) {
       <Empty className="py-3">
         <EmptyHeader>
           <EmptyTitle>Wetter nicht verfügbar</EmptyTitle>
-          <EmptyDescription>Open-Meteo antwortet gerade nicht.</EmptyDescription>
+          <EmptyDescription>
+            Open-Meteo antwortet gerade nicht.
+          </EmptyDescription>
         </EmptyHeader>
       </Empty>
     );
@@ -77,15 +99,27 @@ export function WeatherTable({ slug }: { slug: string }) {
               className="tabular-nums [&>td]:px-1 [&>td]:py-1 [&>td]:text-right [&>td:first-child]:pl-0 [&>td:first-child]:text-left"
             >
               <TableCell>
-                {new Date(d.date).toLocaleDateString("de-DE", { weekday: "short", day: "numeric", month: "numeric" })}
+                {new Date(d.date).toLocaleDateString("de-DE", {
+                  weekday: "short",
+                  day: "numeric",
+                  month: "numeric",
+                })}
               </TableCell>
               <TableCell>
-                <Icon className="inline size-3.5 text-muted-foreground" aria-label={label} role="img" />
+                <Icon
+                  className="text-muted-foreground inline size-3.5"
+                  aria-label={label}
+                  role="img"
+                />
               </TableCell>
               <TableCell>{fmt(Math.round(d.tmin))}°</TableCell>
               <TableCell>{fmt(Math.round(d.tmax))}°</TableCell>
               <TableCell>{fmt(Math.round(d.precipitation))} mm</TableCell>
-              <TableCell className={cn(d.snowfall > 0 && "font-semibold text-status-closed")}>
+              <TableCell
+                className={cn(
+                  d.snowfall > 0 && "text-status-closed font-semibold",
+                )}
+              >
                 {d.snowfall > 0 ? `${fmt(Math.round(d.snowfall))} cm` : "–"}
               </TableCell>
               <TableCell>{fmt(Math.round(d.windMax))} km/h</TableCell>

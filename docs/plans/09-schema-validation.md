@@ -46,24 +46,37 @@ Today the same knowledge is spread over hand-written interfaces, a dozen
 ```ts
 export const Slug = z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/);
 export const Period = z.number().refine((t) => PERIODS.includes(t));
-export const LatLon = z.object({ lat: z.number().min(43).max(49), lon: z.number().min(4).max(16) });
-export const PassSeason = z.object({ opens: Period, closes: Period, maintained: z.boolean().optional() })
+export const LatLon = z.object({
+  lat: z.number().min(43).max(49),
+  lon: z.number().min(4).max(16),
+});
+export const PassSeason = z
+  .object({ opens: Period, closes: Period, maintained: z.boolean().optional() })
   .refine((s) => s.opens < s.closes, "Saisonfenster verdreht");
 export const Pass = z.object({
-  slug: Slug, name: z.string().min(2), aliases: z.array(z.string()).optional(),
+  slug: Slug,
+  name: z.string().min(2),
+  aliases: z.array(z.string()).optional(),
   country: z.string().regex(/^[A-Z]{2}(\/[A-Z]{2})?$/),
   region: z.enum(["Westalpen", "Zentralalpen", "Ostalpen", "Dolomiten"]),
-  lat: LatLon.shape.lat, lon: LatLon.shape.lon,
+  lat: LatLon.shape.lat,
+  lon: LatLon.shape.lon,
   elevation: z.number().int().min(300).max(3500),
-  classicAscent: z.string(), beauty: Rating, fame: Rating, difficulty: Rating, traffic: Rating,
-  season: PassSeason.nullable(), note: z.string(),
+  classicAscent: z.string(),
+  beauty: Rating,
+  fame: Rating,
+  difficulty: Rating,
+  traffic: Rating,
+  season: PassSeason.nullable(),
+  note: z.string(),
   ascents: z.array(z.object({ from: LatLon, label: z.string() })),
 });
 ```
 
-  plus `Tour`, `Town`, `RouteGeometry` (≥ 2 points), `ElevationProfile`
-  (`dist` and `ele` same length, `pts` when plan 07 lands), `ClimateYear`
-  (length 24), `RoutesMeta`, `Rejected` (plan 00).
+plus `Tour`, `Town`, `RouteGeometry` (≥ 2 points), `ElevationProfile`
+(`dist` and `ele` same length, `pts` when plan 07 lands), `ClimateYear`
+(length 24), `RoutesMeta`, `Rejected` (plan 00).
+
 - `lib/types.ts` re-exports `z.infer` types under the existing names so no
   import path changes.
 - `scripts/check-data.ts`: `safeParse` each file, print path-qualified errors

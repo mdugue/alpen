@@ -1,28 +1,28 @@
 "use client";
 
-import { useEffect, useRef } from "react";
-import Link from "next/link";
 import { PanelLeftClose, Search, Star, X } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput } from "@/components/ui/input-group";
-import { Switch } from "@/components/ui/switch";
-import { Toggle } from "@/components/ui/toggle";
-import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
-import { KIND_GLYPH, Section } from "@/components/sidebar/section";
+import Link from "next/link";
+import { useEffect, useRef } from "react";
+
 import { PassList } from "@/components/sidebar/pass-list";
+import { KIND_GLYPH, Section } from "@/components/sidebar/section";
 import { TourList } from "@/components/sidebar/tour-list";
 import { TownList } from "@/components/sidebar/town-list";
 import { StatusDot } from "@/components/status-badge";
+import { Button } from "@/components/ui/button";
 import {
-  ALL_STATUS,
-  DEFAULT_FILTERS,
-  hasActiveFilters,
-  type EntityKind,
-  type Filters,
-  type Selection,
-} from "@/lib/app-state";
-import { STATUS_LABEL } from "@/lib/status";
+  InputGroup,
+  InputGroupAddon,
+  InputGroupButton,
+  InputGroupInput,
+} from "@/components/ui/input-group";
+import { Switch } from "@/components/ui/switch";
+import { Toggle } from "@/components/ui/toggle";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import { ALL_STATUS, DEFAULT_FILTERS, hasActiveFilters } from "@/lib/app-state";
+import type { EntityKind, Filters, Selection } from "@/lib/app-state";
 import type { PassRow, TourRow, TownRow } from "@/lib/rows";
+import { STATUS_LABEL } from "@/lib/status";
 import type { Status, Tour } from "@/lib/types";
 import { cn, PRESSED } from "@/lib/utils";
 
@@ -59,13 +59,20 @@ export interface SidebarProps {
 export function Sidebar(p: SidebarProps) {
   const set = <K extends keyof Filters>(key: K, value: Filters[K]) =>
     p.setFilters((f) => ({ ...f, [key]: value }));
-  const resetFilters = () => p.setFilters((f) => ({ ...DEFAULT_FILTERS, period: f.period }));
+  const resetFilters = () =>
+    p.setFilters((f) => ({ ...DEFAULT_FILTERS, period: f.period }));
   const toggleSection = (kind: EntityKind) => (open: boolean) =>
-    p.setSections((s) => (open ? [...new Set([...s, kind])] : s.filter((k) => k !== kind)));
+    p.setSections((s) =>
+      open ? [...new Set([...s, kind])] : s.filter((k) => k !== kind),
+    );
   const allTourSlugs = p.tours.map((t) => t.slug);
-  const visibleTourCount = allTourSlugs.filter((s) => !p.hiddenTours.includes(s)).length;
+  const visibleTourCount = allTourSlugs.filter(
+    (s) => !p.hiddenTours.includes(s),
+  ).length;
   const lists = useRef<HTMLDivElement>(null);
-  const currentRow = p.selection ? `${p.selection.kind}:${p.selection.slug}` : null;
+  const currentRow = p.selection
+    ? `${p.selection.kind}:${p.selection.slug}`
+    : null;
 
   // Keep the selected row visible, e.g. after a click on a map marker.
   useEffect(() => {
@@ -76,12 +83,16 @@ export function Sidebar(p: SidebarProps) {
   }, [currentRow]);
 
   return (
-    <div className="flex h-full min-h-0 flex-col text-card-foreground">
+    <div className="text-card-foreground flex h-full min-h-0 flex-col">
       {p.variant === "aside" ? (
-        <div className="flex h-11 shrink-0 items-center gap-2 border-b border-border px-3">
-          <span className="h-5 w-1 rounded-full bg-accent" aria-hidden />
-          <h1 className="font-heading text-sm font-bold tracking-wide uppercase">Alpenpässe</h1>
-          <span className="truncate text-xs text-muted-foreground">Rennradkarte</span>
+        <div className="border-border flex h-11 shrink-0 items-center gap-2 border-b px-3">
+          <span className="bg-accent h-5 w-1 rounded-full" aria-hidden />
+          <h1 className="font-heading text-sm font-bold tracking-wide uppercase">
+            Alpenpässe
+          </h1>
+          <span className="text-muted-foreground truncate text-xs">
+            Rennradkarte
+          </span>
           <Button
             size="icon-sm"
             variant="ghost"
@@ -101,7 +112,7 @@ export function Sidebar(p: SidebarProps) {
       ) : null}
 
       <div className={cn("flex min-h-0 flex-1 flex-col", p.detail && "hidden")}>
-        <div className="relative flex shrink-0 flex-col gap-2 border-b border-border px-3 py-2">
+        <div className="border-border relative flex shrink-0 flex-col gap-2 border-b px-3 py-2">
           <div className="flex items-center gap-2">
             <InputGroup className="flex-1">
               <InputGroupAddon>
@@ -122,7 +133,11 @@ export function Sidebar(p: SidebarProps) {
               />
               {p.filters.query && (
                 <InputGroupAddon align="inline-end">
-                  <InputGroupButton size="icon-xs" onClick={() => set("query", "")} aria-label="Suche leeren">
+                  <InputGroupButton
+                    size="icon-xs"
+                    onClick={() => set("query", "")}
+                    aria-label="Suche leeren"
+                  >
                     <X />
                   </InputGroupButton>
                 </InputGroupAddon>
@@ -136,7 +151,9 @@ export function Sidebar(p: SidebarProps) {
               className={PRESSED}
             >
               <Star className={cn(p.filters.favoritesOnly && "fill-current")} />
-              {p.favoriteCount > 0 && <span className="tabular-nums">{p.favoriteCount}</span>}
+              {p.favoriteCount > 0 && (
+                <span className="tabular-nums">{p.favoriteCount}</span>
+              )}
             </Toggle>
           </div>
           <ToggleGroup
@@ -145,7 +162,12 @@ export function Sidebar(p: SidebarProps) {
             size="sm"
             spacing={0}
             value={p.filters.status}
-            onValueChange={(v) => set("status", ALL_STATUS.filter((s) => v.includes(s)))}
+            onValueChange={(v) =>
+              set(
+                "status",
+                ALL_STATUS.filter((s) => v.includes(s)),
+              )
+            }
             aria-label="Status filtern"
             className={cn("w-full", p.peek && "hidden")}
           >
@@ -155,7 +177,10 @@ export function Sidebar(p: SidebarProps) {
                 <ToggleGroupItem
                   key={s}
                   value={s}
-                  className={cn("flex-1 gap-1.5", !active && "text-muted-foreground")}
+                  className={cn(
+                    "flex-1 gap-1.5",
+                    !active && "text-muted-foreground",
+                  )}
                 >
                   <StatusDot status={s} hollow={!active} />
                   {STATUS_LABEL[s]}
@@ -164,13 +189,23 @@ export function Sidebar(p: SidebarProps) {
             })}
           </ToggleGroup>
           {hasActiveFilters(p.filters) && !p.peek && (
-            <Button variant="link" size="xs" className="h-auto self-end p-0" onClick={resetFilters}>
-              {p.filters.query ? "Suche und Filter zurücksetzen" : "Filter zurücksetzen"}
+            <Button
+              variant="link"
+              size="xs"
+              className="h-auto self-end p-0"
+              onClick={resetFilters}
+            >
+              {p.filters.query
+                ? "Suche und Filter zurücksetzen"
+                : "Filter zurücksetzen"}
             </Button>
           )}
         </div>
 
-        <div ref={lists} className="min-h-0 flex-1 overflow-y-auto overscroll-contain">
+        <div
+          ref={lists}
+          className="min-h-0 flex-1 overflow-y-auto overscroll-contain"
+        >
           <Section
             open={p.sections.includes("pass")}
             onOpenChange={toggleSection("pass")}
@@ -197,15 +232,18 @@ export function Sidebar(p: SidebarProps) {
             total={p.totals.tour}
             control={
               <div className="flex items-center gap-2">
-                {visibleTourCount > 0 && visibleTourCount < allTourSlugs.length && (
-                  <span className="text-[11px] text-muted-foreground tabular-nums">
-                    {visibleTourCount} von {allTourSlugs.length}
-                  </span>
-                )}
+                {visibleTourCount > 0 &&
+                  visibleTourCount < allTourSlugs.length && (
+                    <span className="text-muted-foreground text-[11px] tabular-nums">
+                      {visibleTourCount} von {allTourSlugs.length}
+                    </span>
+                  )}
                 <Switch
                   size="sm"
                   checked={p.hiddenTours.length === 0}
-                  onCheckedChange={(on) => p.setHiddenTours(() => (on ? [] : allTourSlugs))}
+                  onCheckedChange={(on) =>
+                    p.setHiddenTours(() => (on ? [] : allTourSlugs))
+                  }
                   aria-label="Touren auf der Karte anzeigen"
                 />
               </div>
@@ -216,7 +254,9 @@ export function Sidebar(p: SidebarProps) {
               currentRow={currentRow}
               hiddenTours={p.hiddenTours}
               onToggleTour={(slug, on) =>
-                p.setHiddenTours((h) => (on ? h.filter((s) => s !== slug) : [...new Set([...h, slug])]))
+                p.setHiddenTours((h) =>
+                  on ? h.filter((s) => s !== slug) : [...new Set([...h, slug])],
+                )
               }
               onSelect={(slug) => p.onSelect({ kind: "tour", slug })}
               onToggleFavorite={(slug) => p.onToggleFavorite("tour", slug)}
@@ -247,18 +287,33 @@ export function Sidebar(p: SidebarProps) {
           </Section>
         </div>
 
-        <div className={cn("shrink-0 border-t border-border", p.peek && "hidden")}>
-          <p className="flex h-8 items-center gap-1 truncate px-3 text-[11px] text-muted-foreground">
-            <span className="truncate">Status ist eine Heuristik, Skalen sind redaktionell.</span>
-            <Button variant="link" size="xs" className="h-auto shrink-0 p-0" onClick={p.onOpenScales}>
+        <div
+          className={cn("border-border shrink-0 border-t", p.peek && "hidden")}
+        >
+          <p className="text-muted-foreground flex h-8 items-center gap-1 truncate px-3 text-[11px]">
+            <span className="truncate">
+              Status ist eine Heuristik, Skalen sind redaktionell.
+            </span>
+            <Button
+              variant="link"
+              size="xs"
+              className="h-auto shrink-0 p-0"
+              onClick={p.onOpenScales}
+            >
               Skalen &amp; Quellen
             </Button>
           </p>
-          <p className="flex items-center gap-3 px-3 pb-2 text-[11px] text-muted-foreground">
-            <Link href="/impressum" className="hover:text-foreground hover:underline">
+          <p className="text-muted-foreground flex items-center gap-3 px-3 pb-2 text-[11px]">
+            <Link
+              href="/impressum"
+              className="hover:text-foreground hover:underline"
+            >
               Impressum
             </Link>
-            <Link href="/datenschutz" className="hover:text-foreground hover:underline">
+            <Link
+              href="/datenschutz"
+              className="hover:text-foreground hover:underline"
+            >
               Datenschutz
             </Link>
           </p>

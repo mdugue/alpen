@@ -1,8 +1,12 @@
 "use client";
 
 import { ChevronLeft, ChevronRight } from "lucide-react";
+
 import { Button } from "@/components/ui/button";
-import { NativeSelect, NativeSelectOption } from "@/components/ui/native-select";
+import {
+  NativeSelect,
+  NativeSelectOption,
+} from "@/components/ui/native-select";
 import { PERIODS, periodLabel } from "@/lib/status";
 import type { Period } from "@/lib/types";
 import { cn, MAP_CONTROL } from "@/lib/utils";
@@ -12,14 +16,30 @@ import { cn, MAP_CONTROL } from "@/lib/utils";
  * control that floats over the map: a select plus two steppers to scrub
  * through the season.
  */
-export function PeriodControl({ value, onChange }: { value: Period; onChange: (p: Period) => void }) {
+export function PeriodControl({
+  value,
+  onChange,
+}: {
+  value: Period;
+  onChange: (p: Period) => void;
+}) {
   const step = (dir: 1 | -1) => {
     const i = PERIODS.indexOf(value);
     onChange(PERIODS[(i + dir + PERIODS.length) % PERIODS.length]!);
   };
   return (
-    <div className={cn("flex items-center rounded-md border border-border", MAP_CONTROL)}>
-      <Button size="icon-lg" variant="ghost" onClick={() => step(-1)} aria-label="Früherer Halbmonat">
+    <div
+      className={cn(
+        "border-border flex items-center rounded-md border",
+        MAP_CONTROL,
+      )}
+    >
+      <Button
+        size="icon-lg"
+        variant="ghost"
+        onClick={() => step(-1)}
+        aria-label="Früherer Halbmonat"
+      >
         <ChevronLeft />
       </Button>
       <NativeSelect
@@ -34,7 +54,12 @@ export function PeriodControl({ value, onChange }: { value: Period; onChange: (p
           </NativeSelectOption>
         ))}
       </NativeSelect>
-      <Button size="icon-lg" variant="ghost" onClick={() => step(1)} aria-label="Späterer Halbmonat">
+      <Button
+        size="icon-lg"
+        variant="ghost"
+        onClick={() => step(1)}
+        aria-label="Späterer Halbmonat"
+      >
         <ChevronRight />
       </Button>
       <span className="sr-only" aria-live="polite">

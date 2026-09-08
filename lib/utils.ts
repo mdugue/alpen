@@ -2,10 +2,14 @@ export { cn } from "cn";
 
 /** Formats a number using German locale conventions (e.g. "2.764"). */
 export const fmt = (n: number, digits = 0) =>
-  n.toLocaleString("de-DE", { minimumFractionDigits: 0, maximumFractionDigits: digits });
+  n.toLocaleString("de-DE", {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: digits,
+  });
 
 /** Number plus unit with a non-breaking space: "2.757 m", "24,3 km". */
-export const fmtUnit = (n: number, unit: string, digits = 0) => `${fmt(n, digits)} ${unit}`;
+export const fmtUnit = (n: number, unit: string, digits = 0) =>
+  `${fmt(n, digits)} ${unit}`;
 
 /**
  * The mira preset renders a pressed Toggle as a faint `bg-muted`; where the

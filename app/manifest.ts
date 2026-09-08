@@ -1,4 +1,5 @@
 import type { MetadataRoute } from "next";
+
 import { BRAND, SITE_CLAIM, SITE_NAME, SITE_TAGLINE } from "@/lib/brand";
 
 /**
@@ -25,7 +26,12 @@ export default function manifest(): MetadataRoute.Manifest {
     // would cut the range off its baseline (see app/apple-icon.tsx).
     icons: [
       { src: "/icon", sizes: "32x32", type: "image/png" },
-      { src: "/apple-icon", sizes: "180x180", type: "image/png", purpose: "any" },
+      {
+        src: "/apple-icon",
+        sizes: "180x180",
+        type: "image/png",
+        purpose: "any",
+      },
     ],
   };
 }

@@ -33,6 +33,7 @@
  * the host (Retry-After or 60 s) and retries.
  */
 import { mkdir } from "node:fs/promises";
+
 import passes from "../data/passes.json" with { type: "json" };
 import tours from "../data/tours.json" with { type: "json" };
 import type {
@@ -60,7 +61,7 @@ const CLIMATE_WEIGHT = Math.ceil(
 /** Open-Meteo weight of one elevation request: one call per location. */
 const PROFILE_WEIGHT = PROFILE_POINTS;
 
-const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 async function readJson<T>(name: string, fallback: T): Promise<T> {
   const f = Bun.file(new URL(name, OUT));
@@ -72,7 +73,7 @@ async function readJson<T>(name: string, fallback: T): Promise<T> {
  */
 const format = (data: Record<string, unknown>) =>
   `{\n${Object.keys(data)
-    .sort()
+    .toSorted()
     .map((k) => `  ${JSON.stringify(k)}: ${JSON.stringify(data[k])}`)
     .join(",\n")}\n}\n`;
 // Writes are chained so concurrent pipelines never interleave a file write.
@@ -83,7 +84,9 @@ const write = (name: string, data: Record<string, unknown>) =>
 // ---------------------------------------------------------------------------
 // Per-host rate limiting
 
-class QuotaExhausted extends Error {
+class QuotaExhaustedError extends Error {
+  name = "QuotaExhaustedError";
+
   constructor(host: string, reason: string) {
     super(`${host}: ${reason}`);
   }
@@ -111,7 +114,8 @@ class Limiter {
     const p = this.chain.then(async () => {
       if (!this.exhausted && this.used + weight > this.budget)
         this.exhausted = `Budget von ${this.budget} Calls für diesen Lauf erreicht`;
-      if (this.exhausted) throw new QuotaExhausted(this.name, this.exhausted);
+      if (this.exhausted)
+        throw new QuotaExhaustedError(this.name, this.exhausted);
       const wait = this.nextAt - Date.now();
       if (wait > 0) await sleep(wait);
       this.nextAt = Date.now() + (weight * 60_000) / this.callsPerMinute;
@@ -130,9 +134,16 @@ class Limiter {
 
 // Elevation and archive share one quota (per IP, across all open-meteo.com hosts).
 const openMeteo = new Limiter("Open-Meteo", 500, OPEN_METEO_BUDGET);
-const router = ORS ? new Limiter("OpenRouteService", 38) : new Limiter("OSRM-Demo", 55);
+const router = ORS
+  ? new Limiter("OpenRouteService", 38)
+  : new Limiter("OSRM-Demo", 55);
 
-async function getJson<T>(lim: Limiter, weight: number, url: string, init?: RequestInit): Promise<T> {
+function getJson<T>(
+  lim: Limiter,
+  weight: number,
+  url: string,
+  init?: RequestInit,
+): Promise<T> {
   return lim.run(async () => {
     for (let attempt = 0; attempt < 5; attempt++) {
       const res = await fetch(url, init);
@@ -141,25 +152,37 @@ async function getJson<T>(lim: Limiter, weight: number, url: string, init?: Requ
       const body = await res.text().catch(() => "");
       const reason = (() => {
         try {
-          return (JSON.parse(body) as { reason?: string; error?: string }).reason ?? body;
+          return (
+            (JSON.parse(body) as { reason?: string; error?: string }).reason ??
+            body
+          );
         } catch {
           return body;
         }
       })()
-        .replace(/\s+/g, " ")
+        .replaceAll(/\s+/gu, " ")
         .trim()
         .slice(0, 120);
 
       // Open-Meteo: 429 "Hourly/Daily API request limit exceeded"; ORS: 403 "Quota exceeded" (daily).
-      if ((res.status === 429 && /hourly|daily/i.test(reason)) || (res.status === 403 && /quota/i.test(reason))) {
+      if (
+        (res.status === 429 && /hourly|daily/iu.test(reason)) ||
+        (res.status === 403 && /quota/iu.test(reason))
+      ) {
         lim.exhausted = reason;
-        throw new QuotaExhausted(lim.name, reason);
+        throw new QuotaExhaustedError(lim.name, reason);
       }
       if (res.status === 429 || res.status >= 500) {
         const retryAfter = Number(res.headers.get("retry-after")) * 1000;
         const wait =
-          retryAfter > 0 ? Math.min(retryAfter, 90_000) : res.status === 429 ? 60_000 : 5000 * (attempt + 1);
-        console.log(`  ${lim.name} ${res.status} (${reason || "keine Angabe"}), warte ${wait / 1000}s …`);
+          retryAfter > 0
+            ? Math.min(retryAfter, 90_000)
+            : res.status === 429
+              ? 60_000
+              : 5000 * (attempt + 1);
+        console.log(
+          `  ${lim.name} ${res.status} (${reason || "keine Angabe"}), warte ${wait / 1000}s …`,
+        );
         lim.pause(wait);
         await sleep(wait);
         continue;
@@ -175,12 +198,15 @@ async function getJson<T>(lim: Limiter, weight: number, url: string, init?: Requ
 
 async function route(waypoints: LatLon[]): Promise<RouteGeometry> {
   const out: RouteGeometry = [];
-  const push = (cs: RouteGeometry) => out.push(...(out.length ? cs.slice(1) : cs));
+  const push = (cs: RouteGeometry) =>
+    out.push(...(out.length ? cs.slice(1) : cs));
 
   if (ORS) {
     for (let i = 0; i < waypoints.length - 1; i += 49) {
       const chunk = waypoints.slice(i, Math.min(i + 50, waypoints.length));
-      const json = await getJson<{ features: { geometry: { coordinates: [number, number][] } }[] }>(
+      const json = await getJson<{
+        features: { geometry: { coordinates: [number, number][] } }[];
+      }>(
         router,
         1,
         "https://api.openrouteservice.org/v2/directions/cycling-road/geojson",
@@ -195,19 +221,32 @@ async function route(waypoints: LatLon[]): Promise<RouteGeometry> {
           }),
         },
       );
-      push(json.features[0]!.geometry.coordinates.map(([x, y]) => [+y.toFixed(5), +x.toFixed(5)]));
+      push(
+        json.features[0]!.geometry.coordinates.map(([x, y]) => [
+          +y.toFixed(5),
+          +x.toFixed(5),
+        ]),
+      );
     }
   } else {
     for (let i = 0; i < waypoints.length - 1; i += 11) {
       const chunk = waypoints.slice(i, Math.min(i + 12, waypoints.length));
       const coords = chunk.map((c) => `${c.lon},${c.lat}`).join(";");
-      const json = await getJson<{ code: string; routes: { geometry: { coordinates: [number, number][] } }[] }>(
+      const json = await getJson<{
+        code: string;
+        routes: { geometry: { coordinates: [number, number][] } }[];
+      }>(
         router,
         1,
         `https://router.project-osrm.org/route/v1/driving/${coords}?overview=full&geometries=geojson`,
       );
       if (json.code !== "Ok") throw new Error(json.code);
-      push(json.routes[0]!.geometry.coordinates.map(([x, y]) => [+y.toFixed(5), +x.toFixed(5)]));
+      push(
+        json.routes[0]!.geometry.coordinates.map(([x, y]) => [
+          +y.toFixed(5),
+          +x.toFixed(5),
+        ]),
+      );
     }
   }
   return out;
@@ -219,7 +258,9 @@ function haversine(a: RouteGeometry[number], b: RouteGeometry[number]) {
   const dLon = ((b[1] - a[1]) * Math.PI) / 180;
   const x =
     Math.sin(dLat / 2) ** 2 +
-    Math.cos((a[0] * Math.PI) / 180) * Math.cos((b[0] * Math.PI) / 180) * Math.sin(dLon / 2) ** 2;
+    Math.cos((a[0] * Math.PI) / 180) *
+      Math.cos((b[0] * Math.PI) / 180) *
+      Math.sin(dLon / 2) ** 2;
   return 2 * R * Math.asin(Math.sqrt(x));
 }
 
@@ -254,7 +295,9 @@ async function profile(geom: RouteGeometry): Promise<ElevationProfile> {
     elevationGain: Math.round(gain),
     start: Math.round(elevation[0]!),
     top: Math.round(Math.max(...elevation)),
-    avgGradient: +(((elevation.at(-1)! - elevation[0]!) / (total * 10))).toFixed(1),
+    avgGradient: +((elevation.at(-1)! - elevation[0]!) / (total * 10)).toFixed(
+      1,
+    ),
     dist: dist.map((d) => +d.toFixed(2)),
     ele: elevation.map(Math.round),
   };
@@ -277,7 +320,14 @@ async function climate(pass: Pass): Promise<ClimateYear> {
       `&elevation=${pass.elevation}&start_date=${CLIMATE_FROM}&end_date=${CLIMATE_TO}` +
       `&daily=temperature_2m_max,temperature_2m_min,snowfall_sum,precipitation_sum&timezone=Europe%2FBerlin`,
   );
-  const buckets = Array.from({ length: 24 }, () => ({ n: 0, tx: 0, tn: 0, snow: 0, frost: 0, wet: 0 }));
+  const buckets = Array.from({ length: 24 }, () => ({
+    n: 0,
+    tx: 0,
+    tn: 0,
+    snow: 0,
+    frost: 0,
+    wet: 0,
+  }));
   d.daily.time.forEach((t, i) => {
     const tmax = d.daily.temperature_2m_max[i];
     const tmin = d.daily.temperature_2m_min[i];
@@ -308,10 +358,21 @@ async function climate(pass: Pass): Promise<ClimateYear> {
 // ---------------------------------------------------------------------------
 await mkdir(OUT, { recursive: true });
 const routes = await readJson<Record<string, RouteGeometry>>("routes.json", {});
-const profiles = await readJson<Record<string, ElevationProfile>>("profiles.json", {});
-const climates = await readJson<Record<string, ClimateYear>>("climate.json", {});
+const profiles = await readJson<Record<string, ElevationProfile>>(
+  "profiles.json",
+  {},
+);
+const climates = await readJson<Record<string, ClimateYear>>(
+  "climate.json",
+  {},
+);
 
-type RouteJob = { key: string; label: string; waypoints: LatLon[]; profile: boolean };
+interface RouteJob {
+  key: string;
+  label: string;
+  waypoints: LatLon[];
+  profile: boolean;
+}
 const routeJobs: RouteJob[] = [
   ...(passes as Pass[]).flatMap((p) =>
     p.ascents.map((a, i) => ({
@@ -338,8 +399,11 @@ const report = () => {
   const c = (passes as Pass[]).filter((x) => !climates[x.slug]).length;
   const calls = p * PROFILE_WEIGHT + c * CLIMATE_WEIGHT;
   console.log(
-    `Fehlend: ${r} Routen, ${p} Profile, ${c} Klimareihen` +
-      (calls ? ` (≈ ${calls} Open-Meteo-Calls ≈ ${Math.ceil(calls / OPEN_METEO_DAILY)} Tage Free-Tier)` : ""),
+    `Fehlend: ${r} Routen, ${p} Profile, ${c} Klimareihen${
+      calls
+        ? ` (≈ ${calls} Open-Meteo-Calls ≈ ${Math.ceil(calls / OPEN_METEO_DAILY)} Tage Free-Tier)`
+        : ""
+    }`,
   );
   return r + p + c;
 };
@@ -371,8 +435,9 @@ async function doProfile(job: RouteJob) {
     profiles[job.key] = await profile(routes[job.key]!);
     await write("profiles.json", profiles);
     console.log(`Profil: ${job.label}`);
-  } catch (e) {
-    if (!(e instanceof QuotaExhausted)) fail(`Profil ${job.label}`, e);
+  } catch (error) {
+    if (!(error instanceof QuotaExhaustedError))
+      fail(`Profil ${job.label}`, error);
   }
 }
 
@@ -382,8 +447,9 @@ const routing = missingRoutes.map(async (job) => {
     routes[job.key] = await route(job.waypoints);
     await write("routes.json", routes);
     console.log(`Route: ${job.label}`);
-  } catch (e) {
-    if (!(e instanceof QuotaExhausted)) fail(`Route ${job.label}`, e);
+  } catch (error) {
+    if (!(error instanceof QuotaExhaustedError))
+      fail(`Route ${job.label}`, error);
     return;
   }
   if (job.profile) await doProfile(job);
@@ -393,14 +459,17 @@ const routing = missingRoutes.map(async (job) => {
 const profiling = missingProfiles.filter((j) => routes[j.key]).map(doProfile);
 
 // Pipeline 3: climate. Queued after the (cheaper) profiles; the Open-Meteo budget cuts it off.
-console.log(`Open-Meteo-Budget für diesen Lauf: ${OPEN_METEO_BUDGET} Calls (OPEN_METEO_BUDGET)`);
+console.log(
+  `Open-Meteo-Budget für diesen Lauf: ${OPEN_METEO_BUDGET} Calls (OPEN_METEO_BUDGET)`,
+);
 const climating = missingClimate.map(async (pass) => {
   try {
     climates[pass.slug] = await climate(pass);
     await write("climate.json", climates);
     console.log(`Klima: ${pass.name}`);
-  } catch (e) {
-    if (!(e instanceof QuotaExhausted)) fail(`Klima ${pass.name}`, e);
+  } catch (error) {
+    if (!(error instanceof QuotaExhaustedError))
+      fail(`Klima ${pass.name}`, error);
   }
 });
 
@@ -408,7 +477,10 @@ await Promise.all([...routing, ...profiling, ...climating]);
 await writing;
 
 for (const lim of [router, openMeteo]) {
-  if (lim.exhausted) console.log(`${lim.name}: Kontingent erschöpft (${lim.exhausted}) – Rest im nächsten Lauf`);
+  if (lim.exhausted)
+    console.log(
+      `${lim.name}: Kontingent erschöpft (${lim.exhausted}) – Rest im nächsten Lauf`,
+    );
 }
 console.log(
   `Fertig: ${Object.keys(routes).length} Routen, ${Object.keys(profiles).length} Profile, ${Object.keys(climates).length} Klimareihen` +
