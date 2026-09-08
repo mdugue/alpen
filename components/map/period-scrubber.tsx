@@ -1,6 +1,6 @@
 "use client";
 
-import { CalendarDays, ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, RotateCcw } from "lucide-react";
 import { useRef } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -120,7 +120,7 @@ export function PeriodScrubber({
                 />
               }
             >
-              <CalendarDays />
+              <RotateCcw />
             </TooltipTrigger>
             <TooltipContent>heute: {periodLabel(today)}</TooltipContent>
           </Tooltip>

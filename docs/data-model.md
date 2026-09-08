@@ -1,7 +1,39 @@
 # Data model
 
-All types live in [`lib/types.ts`](../lib/types.ts). Source data is maintained
-by hand; derived data comes from `scripts/build-data.ts`.
+All types come from [`lib/schema.ts`](../lib/schema.ts): the zod schemas there
+are the single description of every file in `data/`, and
+[`lib/types.ts`](../lib/types.ts) only re-exports the inferred types under
+their established names. Source data is maintained by hand; derived data
+comes from `scripts/build-data.ts`.
+
+## How the schemas are used
+
+```mermaid
+flowchart LR
+  S["lib/schema.ts<br/>zod schemas"] --> T["lib/types.ts<br/>z.infer, same names"]
+  S --> C["scripts/check-data.ts<br/>safeParse + cross references"]
+  S --> B["scripts/build-data.ts<br/>validate before write"]
+  S --> D["lib/data.ts<br/>parse at build time"]
+  S --> J["data/schema/*.schema.json<br/>bun run data:schema"] --> E["editor completion<br/>and red squiggles"]
+```
+
+- `bun run data:check` parses every file with `safeParse` and prints
+  path-qualified errors (`passes.json › [12].season.closes: …`), then runs
+  the cross-reference checks (tour → pass slugs, aliases, routes and profiles
+  present). It also verifies that the hand-maintained files are in canonical
+  form (`JSON.stringify(data, null, 1)` plus a trailing newline) and that
+  the JSON Schema files are current.
+- `lib/data.ts` parses the files once when the server module loads, so a
+  broken file fails `next build` rather than the UI.
+- `scripts/build-data.ts` validates every generated file before writing it.
+- `bun run data:schema` emits `data/schema/*.schema.json`; `.vscode/settings.json`
+  maps the data files to them, which gives completion and red squiggles in
+  the editor. Regenerate them in the same PR that changes `lib/schema.ts`.
+
+Only server and script code imports `lib/schema.ts`; components import the
+types from `lib/types.ts` so zod never reaches the client bundle. The fixed
+vocabularies (regions, countries) live in `lib/regions.ts`, which both sides
+share.
 
 ## Source data (hand-maintained)
 
@@ -11,6 +43,7 @@ by hand; derived data comes from `scripts/build-data.ts`.
 {
   "slug": "col-du-galibier", // stable, derived from the name; umlauts → ae/oe/ue
   "name": "Col du Galibier",
+  "aliases": ["Galibier"], // optional: other spellings people search for
   "country": "FR", // "CH/IT" for border passes
   "region": "Westalpen", // Westalpen | Zentralalpen | Ostalpen | Dolomiten
   "lat": 45.064,
@@ -42,6 +75,11 @@ route quality gate for that entry alone, with a mandatory `note` saying why:
 `season.maintained: true` marks managed toll roads (Grossglockner, Timmelsjoch,
 Nockalm …). They are cleared of snow and therefore get no elevation penalty in
 the status heuristic.
+
+`aliases` feeds the search only (never a name of another pass; `data:check`
+rejects duplicates). Search folds accents, ß and punctuation on both sides
+(`lib/search.ts`), so "Vrsic" finds Vršič without an alias; aliases are for
+genuinely different names such as "Stilfser Joch".
 
 **Time reckoning:** A `Period` is a half-month. `10` = early October,
 `10.5` = late October. `PERIODS` in `lib/status.ts` lists all 24.
@@ -106,7 +144,7 @@ flowchart LR
   V2 -- "fail" --> R
   V2 -- "pass" --> F["profiles.json"]
   S["summits.json<br/>DEM height at the pass point"] -. "off by more than 80 m" .-> K
-  R --> K["data:check<br/>errors for rejects,<br/>warnings for osrm"]
+  R --> K["data:check<br/>error for a stored route that fails,<br/>warning for a rejection or an osrm route"]
   K -- "--explain" --> T["every route with its<br/>measured values, offline"]
   F --> G["map and panel"]
 ```
@@ -152,8 +190,8 @@ but that file is complete and its window is frozen, so it no longer contributes.
 1. Add an entry to `data/passes.json` (slug following the same pattern).
 2. `ORS_KEY=… bun run data:build` – fetches only the new routes, profiles and
    the climate series, and runs each new route through the gate.
-3. `bun run data:check` – validates references, value ranges, completeness and
-   the plausibility of every stored route.
+3. `bun run data:check` – validates the schema, references and completeness,
+   and the plausibility of every stored route.
 
 If the gate rejects the new ascent, `rejected.json` names the measured value
 that broke a limit. There are exactly three ways out, and the `curate-data`

@@ -1,6 +1,6 @@
 "use client";
 
-import { Layers, Maximize2, Mountain } from "lucide-react";
+import { Box, Focus, Layers } from "lucide-react";
 import type {
   GeoJSONSource,
   MapLayerMouseEvent,
@@ -51,7 +51,10 @@ export interface MapPass extends Pass {
 }
 
 interface Props {
+  /** The passes the list shows: drawn as markers, their ascents highlighted. */
   passes: MapPass[];
+  /** Every pass, for the ascent geometry that is uploaded once (see below). */
+  allPasses: Pass[];
   tours: (Tour & {
     status: Status;
     visible: boolean;
@@ -192,6 +195,7 @@ const defined = <T extends object>(o: T): Partial<T> =>
 
 export function PassMap({
   passes,
+  allPasses,
   tours,
   towns,
   routes,
@@ -229,6 +233,20 @@ export function PassMap({
     const statusColor = [
       "match",
       ["get", "status"],
+      "open",
+      colors.open,
+      "risky",
+      colors.risky,
+      "closed",
+      colors.closed,
+      "#888888",
+    ] as never;
+    // The ascent lines carry status and selection as feature state, so a
+    // filter change never re-uploads their geometry (66 000 points).
+    const routeSelected = ["==", ["feature-state", "selected"], 1];
+    const routeColor = [
+      "match",
+      ["coalesce", ["feature-state", "status"], "none"],
       "open",
       colors.open,
       "risky",
@@ -276,7 +294,7 @@ export function PassMap({
             },
           ]),
         ),
-        routes: { type: "geojson", data: EMPTY },
+        routes: { type: "geojson", data: EMPTY, promoteId: "id" },
         tours: { type: "geojson", data: EMPTY },
         passes: { type: "geojson", data: EMPTY },
         towns: { type: "geojson", data: EMPTY },
@@ -335,9 +353,9 @@ export function PassMap({
           source: "routes",
           layout: { "line-cap": "round", "line-join": "round" },
           paint: {
-            "line-color": statusColor,
-            "line-width": ["case", ["==", ["get", "selected"], 1], 6, 3.5],
-            "line-opacity": ["case", ["==", ["get", "selected"], 1], 1, 0.85],
+            "line-color": routeColor,
+            "line-width": ["case", routeSelected, 6, 3.5],
+            "line-opacity": ["case", routeSelected, 1, 0.85],
           },
         },
         {
@@ -640,6 +658,59 @@ export function PassMap({
     });
   }, [insetLeft, insetBottom, ready]);
 
+  // --- Ascent geometry: uploaded once ------------------------------------
+  // 88 ascents, 66 000 points: re-tiling that on every filter change is what
+  // made the filters feel slow. Which ascents show, and in which colour, is
+  // decided below through a layer filter and feature state instead.
+  useEffect(() => {
+    const m = map.current;
+    if (!m || !ready) return;
+    (m.getSource("routes") as GeoJSONSource | undefined)?.setData({
+      type: "FeatureCollection",
+      features: allPasses.flatMap((p) =>
+        p.ascents.flatMap((a, i) => {
+          const geom = routes[`${p.slug}:${i}`];
+          if (!geom) return [];
+          return [
+            {
+              type: "Feature" as const,
+              geometry: {
+                type: "LineString" as const,
+                coordinates: geom.map(([lat, lon]) => [lon, lat]),
+              },
+              properties: {
+                id: `${p.slug}:${i}`,
+                kind: "route",
+                slug: p.slug,
+                name: p.name,
+                subtitle: `Auffahrt ab ${a.label}`,
+              },
+            },
+          ];
+        }),
+      ),
+    });
+  }, [allPasses, routes, ready]);
+
+  // --- Which ascents show, and how -----------------------------------------
+  useEffect(() => {
+    const m = map.current;
+    if (!m || !ready) return;
+    const selPass = selection?.kind === "pass" ? selection.slug : null;
+    m.setFilter("routes", [
+      "in",
+      ["get", "slug"],
+      ["literal", passes.map((p) => p.slug)],
+    ]);
+    for (const p of passes)
+      p.ascents.forEach((_, i) =>
+        m.setFeatureState(
+          { source: "routes", id: `${p.slug}:${i}` },
+          { status: p.status, selected: p.slug === selPass ? 1 : 0 },
+        ),
+      );
+  }, [passes, selection, ready]);
+
   // --- Write data into the sources ---------------------------------------
   useEffect(() => {
     const m = map.current;
@@ -662,33 +733,6 @@ export function PassMap({
           selected: p.slug === selPass ? 1 : 0,
         },
       })),
-    });
-
-    (m.getSource("routes") as GeoJSONSource | undefined)?.setData({
-      type: "FeatureCollection",
-      features: passes.flatMap((p) =>
-        p.ascents.flatMap((a, i) => {
-          const geom = routes[`${p.slug}:${i}`];
-          if (!geom) return [];
-          return [
-            {
-              type: "Feature" as const,
-              geometry: {
-                type: "LineString" as const,
-                coordinates: geom.map(([lat, lon]) => [lon, lat]),
-              },
-              properties: {
-                kind: "route",
-                slug: p.slug,
-                name: p.name,
-                subtitle: `Auffahrt ab ${a.label}`,
-                status: p.status,
-                selected: p.slug === selPass ? 1 : 0,
-              },
-            },
-          ];
-        }),
-      ),
     });
 
     (m.getSource("tours") as GeoJSONSource | undefined)?.setData({
@@ -729,7 +773,7 @@ export function PassMap({
           }))
         : [],
     });
-  }, [passes, tours, towns, routes, showTowns, selection, ready]);
+  }, [passes, tours, towns, showTowns, selection, ready]);
 
   // --- Fly to selection --------------------------------------------------
   useEffect(() => {
@@ -834,8 +878,6 @@ export function PassMap({
     }
   };
 
-  const tool = cn("size-9 lg:size-8", MAP_CONTROL);
-
   return (
     <div className="bg-muted relative size-full overflow-hidden">
       {/* Plain "absolute inset-0" loses against the unlayered maplibre-gl.css (`.maplibregl-map { position: relative }`). */}
@@ -858,7 +900,7 @@ export function PassMap({
                     <Button
                       size="icon-lg"
                       variant="outline"
-                      className={tool}
+                      className={MAP_CONTROL}
                       aria-label="Kartenebenen"
                     />
                   }
@@ -917,14 +959,15 @@ export function PassMap({
             render={
               <Toggle
                 variant="outline"
+                size="lg"
                 pressed={is3d}
                 onPressedChange={toggle3d}
                 aria-label="3D-Gelände"
-                className={cn(tool, PRESSED)}
+                className={cn("size-8 px-0", MAP_CONTROL, PRESSED)}
               />
             }
           >
-            <Mountain />
+            <Box />
           </TooltipTrigger>
           <TooltipContent side="left">3D-Gelände</TooltipContent>
         </Tooltip>
@@ -935,13 +978,13 @@ export function PassMap({
               <Button
                 size="icon-lg"
                 variant="outline"
-                className={tool}
+                className={MAP_CONTROL}
                 onClick={fitToVisible}
                 aria-label="Ansicht einpassen"
               />
             }
           >
-            <Maximize2 />
+            <Focus />
           </TooltipTrigger>
           <TooltipContent side="left">
             Ansicht einpassen – erneut für die ganzen Alpen

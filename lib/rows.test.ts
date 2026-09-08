@@ -178,6 +178,76 @@ describe("buildPassRows", () => {
   });
 });
 
+describe("plan 05 criteria", () => {
+  const mixed = [
+    ...passes,
+    pass({
+      slug: "grenze",
+      name: "Grenzpass",
+      country: "CH/IT",
+      region: "Zentralalpen",
+      difficulty: 5,
+      traffic: 1,
+      beauty: 5,
+    }),
+  ];
+  const pick = (over: Partial<Filters>) =>
+    buildPassRows(mixed, filters(over), never).map((r) => r.pass.slug);
+
+  test("difficulty window, traffic and beauty on passes", () => {
+    expect(pick({ difficulty: [4, 5] })).toEqual(["grenze"]);
+    expect(pick({ difficulty: [1, 2] })).toEqual([]);
+    expect(pick({ maxTraffic: 1 })).toEqual(["grenze"]);
+    expect(pick({ minBeauty: 4 })).toEqual(["grenze"]);
+  });
+
+  test("search folds accents and matches every token", () => {
+    const umlaut = [pass({ slug: "gross", name: "Großer Sankt Bernhard" })];
+    expect(
+      buildPassRows(umlaut, filters({ query: "grosser bernhard" }), never),
+    ).toHaveLength(1);
+    expect(
+      buildPassRows(umlaut, filters({ query: "bernhard klein" }), never),
+    ).toHaveLength(0);
+  });
+
+  // "kurz" crosses the 1,500 m pass only, "lang" the 1,500 m and the 1,200 m one.
+  test("a tour needs one pass that clears the lower bounds", () => {
+    const rows = (over: Partial<Filters>) =>
+      buildTourRows(tours, index, filters(over), never).map((r) => r.tour.slug);
+    expect(rows({ minElevation: 1400 })).toEqual(["lang", "kurz"]);
+    expect(rows({ minElevation: 2000 })).toEqual([]);
+    expect(rows({ minFame: 3 })).toEqual(["lang", "kurz"]);
+    // Found through the name of a pass it crosses.
+    expect(rows({ query: "winterpass" })).toEqual(["lang"]);
+  });
+
+  test("every pass of a tour has to respect the upper bounds", () => {
+    const hard = [
+      ...passes,
+      pass({ slug: "steil", name: "Steilpass", difficulty: 5, traffic: 5 }),
+    ];
+    const hardIndex = indexBySlug(hard);
+    const withHard = [
+      ...tours,
+      tour({ slug: "hart", name: "Harte Runde", passes: ["mittel", "steil"] }),
+    ];
+    const rows = (over: Partial<Filters>) =>
+      buildTourRows(withHard, hardIndex, filters(over), never).map(
+        (r) => r.tour.slug,
+      );
+    expect(rows({})).toContain("hart");
+    expect(rows({ difficulty: [1, 3] })).toEqual(["lang", "kurz"]);
+    expect(rows({ maxTraffic: 3 })).toEqual(["lang", "kurz"]);
+  });
+
+  test("towns see only search and favourites", () => {
+    expect(
+      buildTownRows(towns, filters({ minBeauty: 5, maxTraffic: 1 }), never),
+    ).toHaveLength(2);
+  });
+});
+
 describe("buildTourRows", () => {
   test("status comes from the passes, sorted by elevation gain", () => {
     const rows = buildTourRows(tours, index, filters(), never);

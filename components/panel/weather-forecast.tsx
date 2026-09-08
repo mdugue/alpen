@@ -143,7 +143,7 @@ export function WeatherForecast({ slug }: { slug: string }) {
           <Button
             variant="ghost"
             size="sm"
-            className="group/week text-muted-foreground mt-1 h-6 px-1"
+            className="group/week text-muted-foreground mt-1 px-1"
           />
         }
       >

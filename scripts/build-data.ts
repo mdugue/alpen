@@ -45,6 +45,7 @@ import { mkdir } from "node:fs/promises";
 
 import passes from "../data/passes.json" with { type: "json" };
 import tours from "../data/tours.json" with { type: "json" };
+import { FILES } from "../lib/schema";
 import type {
   AscentMetrics,
   ClimateYear,
@@ -122,9 +123,27 @@ const format = (data: Record<string, unknown>) =>
     .map((k) => `  ${JSON.stringify(k)}: ${JSON.stringify(data[k])}`)
     .join(",\n")}\n}\n`;
 // Writes are chained so concurrent pipelines never interleave a file write.
+// Every file is validated against its schema first: a malformed upstream
+// answer must never reach the repo.
 let writing: Promise<unknown> = Promise.resolve();
-const write = (name: string, data: Record<string, unknown>) =>
-  (writing = writing.then(() => Bun.write(new URL(name, OUT), format(data))));
+type Generated =
+  | "routes.json"
+  | "profiles.json"
+  | "climate.json"
+  | "routes-meta.json"
+  | "rejected.json"
+  | "summits.json";
+const write = (name: Generated, data: Record<string, unknown>) =>
+  (writing = writing.then(() => {
+    const result = FILES[`generated/${name}`].safeParse(data);
+    if (!result.success) {
+      const [issue] = result.error.issues;
+      throw new Error(
+        `${name}: ${issue?.path.join(".")}: ${issue?.message} – nicht geschrieben`,
+      );
+    }
+    return Bun.write(new URL(name, OUT), format(data));
+  }));
 
 // ---------------------------------------------------------------------------
 // Per-host rate limiting

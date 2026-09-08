@@ -1,0 +1,55 @@
+{
+  "$id": "climate.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "propertyNames": {
+    "type": "string",
+    "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+  },
+  "additionalProperties": {
+    "minItems": 24,
+    "maxItems": 24,
+    "type": "array",
+    "items": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {
+            "tmax": {
+              "type": "number"
+            },
+            "tmin": {
+              "type": "number"
+            },
+            "snowPct": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 100
+            },
+            "frostPct": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 100
+            },
+            "wetPct": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 100
+            }
+          },
+          "required": [
+            "tmax",
+            "tmin",
+            "snowPct",
+            "frostPct",
+            "wetPct"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "null"
+        }
+      ]
+    }
+  }
+}

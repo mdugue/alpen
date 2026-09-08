@@ -51,8 +51,10 @@ jobs:
         env:
           ORS_KEY: ${{ secrets.ORS_KEY }}
           OPEN_METEO_BUDGET: ${{ inputs.budget || '4500' }}
-      # Fails the run on a route the gate rejected: that is a coordinate or a
-      # threshold a human has to decide about, not something to retry.
+      # Fails only on a stored route that violates a check – the invariant the
+      # gate protects. A rejection is a warning: it is a coordinate or a
+      # threshold a human has to decide about, and it must not stop this run
+      # from committing what it fetched.
       - run: bun run data:check
       - name: Commit
         run: |

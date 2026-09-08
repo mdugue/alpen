@@ -82,7 +82,8 @@ number.
 
 ### When the gate rejects something
 
-`rejected.json` names the key, the reasons with their measured values, the date
+A rejection is a warning in `data:check`, not an error: nothing wrong reached
+the map, and what is left is curation. `rejected.json` names the key, the reasons with their measured values, the date
 it was first rejected and which router produced it. An unchanged geometry on a
 retry is stated explicitly – it means the router is not the problem. There are
 three ways out, in this order of preference:
@@ -94,7 +95,7 @@ three ways out, in this order of preference:
    unchanged.
 2. **The ascent really is like that.** Kitzbüheler Horn ends at the Alpenhaus
    below the summit marker. Set `check` on that one ascent with the widened
-   limit and a `note` saying why. A `check` without a `note` is an error.
+   limit and a `note` saying why. A `check` without a `note` fails the schema.
 3. **The limit is wrong.** Change `LIMITS` in `scripts/lib/validate.ts` and run
    `bun run data:check --explain` to see what that does to every other route
    before re-fetching anything. Do not widen a limit to silence a single case –

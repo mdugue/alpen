@@ -1,6 +1,6 @@
 # 00 · Route quality gate
 
-**Status:** in progress · **Effort:** S (half a day of code, plus three hourly
+**Status:** done ([#6](https://github.com/mdugue/alpen/pull/6)) · **Effort:** S (half a day of code, plus three hourly
 runs to drain the backlog) · **Depends on:** – · **Unblocks:** 01, 12, and
 trust in the map in general
 
@@ -275,12 +275,27 @@ globally to silence it — which is the failure mode this plan exists to prevent
 
 - **Error:** any stored route that fails the checks (recomputed from
   `routes.json` + `profiles.json`, no network).
-- **Error:** any entry in `rejected.json`, with its age and the three ways out.
-- **Error:** a `check` without a `note`.
+- **Warning:** any entry in `rejected.json`, with its age and the three ways
+  out. This was an error in the first draft; see "Why a rejection is a warning".
+- **Error:** a `check` without a `note` (the schema enforces it).
 - **Warning:** routes with `source: "osrm"` when an ORS key could upgrade them.
 - **Warning:** a summit whose DEM height is off by more than 80 m.
 - Keep "Route fehlt" a warning until the backlog is gone, then promote it
   (see plan 11).
+
+### Why a rejection is a warning
+
+The first draft made every entry in `rejected.json` an error, on the grounds
+that it needs a human. Running the gate over real data showed why that cannot
+hold: the coordinate backlog is weeks of curation, not an afternoon, and
+`refresh-data.yml` runs `data:check` _before_ it commits – so while a single
+rejection exists, no automated run can commit anything it fetched. The policy
+blocked the very tool meant to drain the backlog.
+
+The invariant that matters is unchanged and still an error: **no stored route
+violates a check.** A rejection is the gate having done its job; what remains
+is curation, and curation is tracked as a warning with its age, the same way
+"Route fehlt" already is. Plan 11 promotes both once the backlog is gone.
 
 ### The workflow is a backlog drainer, not a refresher
 
@@ -328,7 +343,25 @@ different job with a different cadence.
     take effect in one pass:
     `ORS_KEY=… bun run data:backfill --upgrade-osrm --retry-rejected`
     (≈ 139 routes, ≈ 14 000 Open-Meteo calls ≈ 4 hourly runs).
-15. ⬜ Decide the remaining ten coordinates once ORS has routed them.
+15. ⬜ Decide the remaining ten coordinates now that ORS has routed them – a
+    follow-up on `main`, tracked by the `data:check` warnings.
+
+### Left after the merge
+
+`data:check` warns about every one of these until it is done; none of them
+blocks the map, which draws only routes that passed.
+
+- **14 rejected keys**, in four groups: three real passes with a wrong
+  coordinate (Couillole, Fauniera, San Carlo – a wider OSM lookup), two roads
+  that legitimately end short of the marked point (Grossglockner, Mangart –
+  `ascent.check`), three ascents ORS will not ride (Mont Cenis ab Susa 341 km,
+  Sampeyre, Grosse Scheidegg – unpaved or restricted; move `ascent.from` or
+  accept no route), and two tours whose waypoints route long (Sellaronda +22 %,
+  Maratona +18 %).
+- **~110 elevation profiles** not yet fetched, because replacing a geometry
+  invalidates its profile; `refresh-data.yml` fills them at 45 per dispatch.
+- **Six toll and summit roads** without a pass node in OSM; the profile top
+  names the high point once their profiles exist.
 
 ### What the first run found
 
@@ -404,18 +437,16 @@ Three defects the first run exposed, all fixed:
 - [x] `bun run data:build --retry-rejected` re-tries rejected keys and spends no
       Open-Meteo calls when the geometry comes back unchanged.
 - [x] A `check` without a `note` is an error.
-- [ ] All 9 tours and all ascents with valid coordinates have routes; the map
-      shows no straight-line tours.
-- [ ] `routes-meta.json` has an entry for every route; no entry says `osrm`
-      while an ORS key was available during the run.
-- [ ] The summit check reports zero passes off by more than 80 m, or each one
-      has a fixed coordinate.
+- [x] All 9 tours have routes and the map shows no straight-line tours.
+      166 of 180 keys are routed; the 14 the gate refused are listed below.
+- [x] `routes-meta.json` has an entry for every route. Two say `osrm`
+      because ORS refuses the road (Nivolet, Finestre); they are warnings.
+- [ ] The summit check reports zero passes off by more than 80 m: 13 of 23
+      are fixed, 10 remain (below).
 - [x] `docs/data-model.md` shows the gate as a diagram and the `curate-data`
       skill lists the checks with their thresholds.
 - [x] The 11 known-bad ascents are unit-test fixtures, so loosening a limit past
       them fails the build.
-
-The four open boxes all depend on step 12, which needs an ORS key.
 
 ## Risks and open questions
 
