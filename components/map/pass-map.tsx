@@ -1,6 +1,6 @@
 "use client";
 
-import { Layers, Maximize2, Mountain } from "lucide-react";
+import { Box, Focus, Layers } from "lucide-react";
 import type {
   GeoJSONSource,
   MapLayerMouseEvent,
@@ -834,8 +834,6 @@ export function PassMap({
     }
   };
 
-  const tool = cn("size-9 lg:size-8", MAP_CONTROL);
-
   return (
     <div className="bg-muted relative size-full overflow-hidden">
       {/* Plain "absolute inset-0" loses against the unlayered maplibre-gl.css (`.maplibregl-map { position: relative }`). */}
@@ -858,7 +856,7 @@ export function PassMap({
                     <Button
                       size="icon-lg"
                       variant="outline"
-                      className={tool}
+                      className={MAP_CONTROL}
                       aria-label="Kartenebenen"
                     />
                   }
@@ -917,14 +915,15 @@ export function PassMap({
             render={
               <Toggle
                 variant="outline"
+                size="lg"
                 pressed={is3d}
                 onPressedChange={toggle3d}
                 aria-label="3D-Gelände"
-                className={cn(tool, PRESSED)}
+                className={cn("size-8 px-0", MAP_CONTROL, PRESSED)}
               />
             }
           >
-            <Mountain />
+            <Box />
           </TooltipTrigger>
           <TooltipContent side="left">3D-Gelände</TooltipContent>
         </Tooltip>
@@ -935,13 +934,13 @@ export function PassMap({
               <Button
                 size="icon-lg"
                 variant="outline"
-                className={tool}
+                className={MAP_CONTROL}
                 onClick={fitToVisible}
                 aria-label="Ansicht einpassen"
               />
             }
           >
-            <Maximize2 />
+            <Focus />
           </TooltipTrigger>
           <TooltipContent side="left">
             Ansicht einpassen – erneut für die ganzen Alpen

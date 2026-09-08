@@ -309,7 +309,7 @@ export function Explorer({
                     <Button
                       size="icon-lg"
                       variant="outline"
-                      className={cn("size-8", MAP_CONTROL)}
+                      className={MAP_CONTROL}
                       onClick={() => setSidebarOpen(true)}
                       aria-label="Seitenleiste einblenden"
                     />
