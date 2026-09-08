@@ -38,7 +38,8 @@ import {
 } from "@/components/ui/tooltip";
 import type { EntityKind, Selection } from "@/lib/app-state";
 import { haversine, NEARBY_RADIUS_KM } from "@/lib/geo";
-import { profileCoords } from "@/lib/profile";
+import { nearbyKey } from "@/lib/nearby";
+import type { NearbyTours } from "@/lib/nearby";
 import {
   bestPeriods,
   climateBucket,
@@ -57,10 +58,9 @@ import {
 import type {
   ClimateYear,
   LatLon,
-  ElevationProfile as Profile,
   Pass,
   Period,
-  RouteGeometry,
+  ProfileWithCoords,
   Tour,
   Town,
 } from "@/lib/types";
@@ -93,8 +93,9 @@ interface Props {
   passes: Pass[];
   tours: Tour[];
   towns: Town[];
-  routes: Record<string, RouteGeometry>;
-  profiles: Record<string, Profile>;
+  /** Precomputed on the server: which tours run within reach of each entity. */
+  nearbyTours: NearbyTours;
+  profiles: Record<string, ProfileWithCoords>;
   climate: Record<string, ClimateYear>;
   isFavorite: (kind: EntityKind, slug: string) => boolean;
   onToggleFavorite: (kind: EntityKind, slug: string) => void;
@@ -202,15 +203,9 @@ const Nearby = ({
     .map((x) => ({ d: haversine({ lat, lon }, x), x }))
     .filter((e) => e.d <= NEARBY_RADIUS_KM && e.x.slug !== exclude)
     .toSorted((a, b) => a.d - b.d);
-  const nearTours = p.tours.filter((t) =>
-    (
-      p.routes[`tour:${t.slug}`] ??
-      t.waypoints.map((w) => [w.lat, w.lon] as [number, number])
-    ).some(
-      ([tlat, tlon]) =>
-        haversine({ lat, lon }, { lat: tlat, lon: tlon }) <= NEARBY_RADIUS_KM,
-    ),
-  );
+  // Tours are lines, so their reach was measured on the server (lib/nearby.ts).
+  const slugs = p.nearbyTours[nearbyKey(p.selection.kind, p.selection.slug)];
+  const nearTours = p.tours.filter((t) => slugs?.includes(t.slug));
   const nearTowns = p.towns
     .map((x) => ({ d: haversine({ lat, lon }, x), x }))
     .filter((e) => e.d <= NEARBY_RADIUS_KM && e.x.slug !== exclude)
@@ -379,7 +374,6 @@ const PassDetail = (props: Props & { pass: Pass }) => {
         {pass.ascents.map((a, i) => {
           const key = `${pass.slug}:${i}`;
           const profile = props.profiles[key];
-          const geom = props.routes[key];
           return (
             <div key={a.label}>
               <div className="flex flex-wrap items-baseline justify-between gap-x-2">
@@ -393,7 +387,7 @@ const PassDetail = (props: Props & { pass: Pass }) => {
               {profile && (
                 <ElevationProfile
                   profile={profile}
-                  coords={geom && profileCoords(geom)}
+                  coords={profile.coords}
                   onCursor={props.onProfileCursor}
                   onZoomTo={props.onProfileZoom}
                 />

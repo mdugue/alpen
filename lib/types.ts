@@ -26,6 +26,12 @@ export type Town = z.infer<typeof S.Town>;
 /** Output of scripts/build-data.ts. */
 export type RouteGeometry = z.infer<typeof S.RouteGeometry>;
 export type ElevationProfile = z.infer<typeof S.ElevationProfile>;
+/**
+ * What the detail panel gets: the stored profile plus the road coordinate of
+ * every sample (`profileCoords`), derived on the server in `lib/data.ts` so
+ * the client can place the profile cursor without the route itself.
+ */
+export type ProfileWithCoords = ElevationProfile & { coords?: RouteGeometry };
 export type ClimateBucket = z.infer<typeof S.ClimateBucket>;
 /** 24 half-months, index 0 = early January. null = no data. */
 export type ClimateYear = z.infer<typeof S.ClimateYear>;

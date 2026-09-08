@@ -9,6 +9,8 @@ next-env.d.ts
 scripts/.cache
 # copied by scripts/copy-maplibre-worker.ts
 public/maplibre
+# written by scripts/build-map-assets.ts
+public/map
 
 # screenshots the e2e helper writes when a scenario fails
 e2e/failures

@@ -41,17 +41,32 @@ and the climate series are missing.
 | `bun run data:check`                 | Validate references and completeness of the data                          |
 | `bun run ui:init` / `bun run ui:add` | (Re)install the shadcn "mira" preset and components                       |
 
-## Architecture in three sentences
+## Architecture in four sentences
 
 All content data lives as JSON in the repo (`data/`), is imported at build
 time and served through `"use cache"` in `lib/data.ts` as cached segments –
-the start page is therefore fully prerendered. The only dynamic source is the
-weather forecast; it goes through `app/api/weather/[slug]/route.ts` with its
-own cache lifetime so Open-Meteo is queried once per pass and half hour
-instead of once per visitor. All interaction state lives in one client
-component (`components/explorer.tsx`) and is mirrored into the URL hash, so
-every view is shareable (plan 02 in `docs/plans/` moves entities to real
-routes).
+the start page is therefore fully prerendered. The route geometry is the one
+exception that never becomes React props: `scripts/build-map-assets.ts` writes
+it as content-hashed GeoJSON into `public/map`, MapLibre fetches those files
+once and tiles them in its worker, and every later change of period, filter
+or selection reaches the lines as feature state rather than as new data. The
+only dynamic source is the weather forecast; it goes through
+`app/api/weather/[slug]/route.ts` with its own cache lifetime so Open-Meteo is
+queried once per pass and half hour instead of once per visitor. All
+interaction state lives in one client component (`components/explorer.tsx`)
+and is mirrored into the URL hash, so every view is shareable (plan 02 in
+`docs/plans/` moves entities to real routes).
+
+```mermaid
+flowchart LR
+  J["routes.json"] --> B["build-map-assets.ts<br/>simplify 5 m, content hash"]
+  B --> G["public/map/routes.a1b2c3d4.geojson<br/>tours.e5f6a7b8.geojson<br/>immutable, cached for a year"]
+  G -- "fetched once by MapLibre,<br/>tiled in its worker" --> M["sources with promoteId"]
+  P["page props<br/>passes, tours, towns, profiles, climate"] --> X["Explorer"]
+  X -- "period, filter or<br/>selection change" --> F["setFilter + setFeatureState<br/>status, selected"]
+  F --> M
+  M --> L["layers read<br/>feature-state in paint"]
+```
 
 ```
 app/            layout, start page, weather route, Impressum, Datenschutz,
@@ -60,7 +75,8 @@ components/     explorer (state) · map (MapLibre) · sidebar (lists, filters) �
 data/           passes.json, tours.json, towns.json  ← source data, hand-maintained
 data/generated/ routes.json, profiles.json, climate.json  ← from data:build, committed
 lib/            types, data access, status heuristic, state hooks, brand constants
-scripts/        build-data.ts (precomputation), check-data.ts (validation)
+scripts/        build-data.ts (precomputation), check-data.ts (validation),
+                build-map-assets.ts (GeoJSON for the map → public/map, git-ignored)
 docs/           scales, data model, roadmap, plans/
 .agents/skills/ project skills for agents: implement-plan, curate-data, preview-app
 ```

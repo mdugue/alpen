@@ -2,9 +2,10 @@ import { Explorer } from "@/components/explorer";
 import { SITE_DESCRIPTION, SITE_NAME, siteUrl } from "@/lib/brand";
 import {
   getClimate,
+  getMapAssets,
+  getNearbyTours,
   getPasses,
   getProfiles,
-  getRoutes,
   getTours,
   getTowns,
 } from "@/lib/data";
@@ -39,6 +40,8 @@ const jsonLd = {
  * build time and managed as cached segments via "use cache" (lib/data.ts).
  * This lets Next prerender the page completely; the only dynamic part is the
  * weather request in the detail panel (own route with its own cache lifetime).
+ * The route geometry is not part of the page at all: MapLibre fetches it as
+ * static GeoJSON (`public/map`), the page only carries the file URLs.
  *
  * The map is the page: no header, no footer – the title lives in the sidebar
  * and the disclaimer in the scales dialog.
@@ -52,14 +55,16 @@ const jsonLd = {
 const Page = async () => {
   "use cache";
 
-  const [passes, tours, towns, routes, profiles, climate] = await Promise.all([
-    getPasses(),
-    getTours(),
-    getTowns(),
-    getRoutes(),
-    getProfiles(),
-    getClimate(),
-  ]);
+  const [passes, tours, towns, assets, nearbyTours, profiles, climate] =
+    await Promise.all([
+      getPasses(),
+      getTours(),
+      getTowns(),
+      getMapAssets(),
+      getNearbyTours(),
+      getProfiles(),
+      getClimate(),
+    ]);
 
   return (
     <main className="h-dvh overflow-hidden">
@@ -71,7 +76,8 @@ const Page = async () => {
         passes={passes}
         tours={tours}
         towns={towns}
-        routes={routes}
+        assets={assets}
+        nearbyTours={nearbyTours}
         profiles={profiles}
         climate={climate}
         defaultPeriod={todayPeriod()}

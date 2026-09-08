@@ -37,6 +37,8 @@ import {
   writeHash,
 } from "@/lib/app-state";
 import type { EntityKind, Filters, MapView, Selection } from "@/lib/app-state";
+import type { MapAssets } from "@/lib/map-assets";
+import type { NearbyTours } from "@/lib/nearby";
 import {
   buildPassRows,
   buildTourRows,
@@ -46,11 +48,10 @@ import {
 import { indexBySlug } from "@/lib/status";
 import type {
   ClimateYear,
-  ElevationProfile,
   LatLon,
   Pass,
   Period,
-  RouteGeometry,
+  ProfileWithCoords,
   Tour,
   Town,
 } from "@/lib/types";
@@ -61,8 +62,10 @@ interface Props {
   passes: Pass[];
   tours: Tour[];
   towns: Town[];
-  routes: Record<string, RouteGeometry>;
-  profiles: Record<string, ElevationProfile>;
+  /** Where MapLibre loads the ascent and tour lines from, see `lib/map-assets.ts`. */
+  assets: MapAssets;
+  nearbyTours: NearbyTours;
+  profiles: Record<string, ProfileWithCoords>;
   climate: Record<string, ClimateYear>;
   /** Today's half-month, computed on the server in Europe/Berlin. */
   defaultPeriod: Period;
@@ -82,7 +85,8 @@ export const Explorer = ({
   passes,
   tours,
   towns,
-  routes,
+  assets,
+  nearbyTours,
   profiles,
   climate,
   defaultPeriod,
@@ -186,9 +190,6 @@ export const Explorer = ({
   // visibility switches only add a layer toggle on top.
   const mapTours = tourRows.map(({ tour: t, status }) => ({
     ...t,
-    geometry:
-      routes[`tour:${t.slug}`] ??
-      t.waypoints.map((w) => [w.lat, w.lon] as [number, number]),
     status,
     visible: !hiddenTours.includes(t.slug),
   }));
@@ -233,7 +234,7 @@ export const Explorer = ({
       passes={passes}
       tours={tours}
       towns={towns}
-      routes={routes}
+      nearbyTours={nearbyTours}
       profiles={profiles}
       climate={climate}
       isFavorite={isFavorite}
@@ -303,10 +304,9 @@ export const Explorer = ({
         <div className="absolute inset-0">
           <PassMap
             passes={mapPasses}
-            allPasses={passes}
             tours={mapTours}
             towns={mapTowns}
-            routes={routes}
+            assets={assets}
             showTowns={showTowns}
             selection={selection}
             onSelect={select}

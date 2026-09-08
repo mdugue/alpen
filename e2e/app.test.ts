@@ -181,3 +181,41 @@ test(
     }),
   TIMEOUT,
 );
+
+test(
+  "9 · a shared tour link fits the tour bounds; the lines come as static GeoJSON",
+  () =>
+    withPage(
+      app,
+      "tour-bounds",
+      { hash: "#tour=la-marmotte" },
+      async (page) => {
+        await page.waitFor("#detail-title");
+        expect(await page.text("#detail-title")).toBe("La Marmotte");
+        // Only a build with NEXT_PUBLIC_TEST_HOOKS=1 exposes the map.
+        if (!(await page.camera())) return;
+        // The bounds are precomputed per tour (lib/map-assets.ts), not read from
+        // the line, so the camera lands on the tour before its geometry arrives.
+        await waitUntil(async () => {
+          const c = await page.camera();
+          return !!c && c.zoom > 8;
+        }, "camera fitted to the tour");
+        const c = (await page.camera())!;
+        expect(c.lat).toBeGreaterThan(45.03);
+        expect(c.lat).toBeLessThan(45.36);
+        expect(c.lon).toBeGreaterThan(5.99);
+        expect(c.lon).toBeLessThan(6.48);
+        // Tour and ascent lines were fetched from public/map and tiled.
+        await waitUntil(
+          () =>
+            page.evaluate<boolean>(
+              `(() => { const m = window.__alpen?.map; if (!m) return false;
+              const tour = m.querySourceFeatures("tours", { filter: ["==", ["get", "slug"], "la-marmotte"] });
+              return tour.length > 0 && m.querySourceFeatures("routes").length > 0; })()`,
+            ),
+          "tour and ascent geometry loaded from GeoJSON",
+        );
+      },
+    ),
+  TIMEOUT,
+);
