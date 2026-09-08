@@ -5,7 +5,13 @@ import "./globals.css";
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter", display: "swap" });
 const oxanium = Oxanium({ subsets: ["latin"], variable: "--font-oxanium", display: "swap" });
 
+// Absolute URLs for the share images; Vercel provides the production host.
+const siteUrl =
+  process.env.NEXT_PUBLIC_SITE_URL ??
+  (process.env.VERCEL_PROJECT_PRODUCTION_URL ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}` : "http://localhost:3000");
+
 export const metadata: Metadata = {
+  metadataBase: new URL(siteUrl),
   title: "Alpenpässe – Rennradkarte",
   description:
     "Pässe, Auffahrten mit Höhenprofil, Rundtouren und Rad-Orte in den Alpen – mit Befahrbarkeit je Halbmonat, Wetter und Klima.",

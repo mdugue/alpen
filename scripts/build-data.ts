@@ -5,6 +5,7 @@
  *   bun run data:build              # OSRM demo (car profile)
  *   ORS_KEY=… bun run data:build    # OpenRouteService, road-cycling profile
  *   bun run data:build --status     # only report what is missing and what it costs
+  bun run data:build --format     # only rewrite data/generated/*.json in the canonical format
  *
  * Writes to data/generated/. Intermediate state is saved after every step;
  * the run can be aborted and resumes. Results belong in the repo – nothing
@@ -46,6 +47,7 @@ import type {
 const OUT = new URL("../data/generated/", import.meta.url);
 const ORS = process.env.ORS_KEY ?? "";
 const STATUS_ONLY = process.argv.includes("--status");
+const FORMAT_ONLY = process.argv.includes("--format");
 const OPEN_METEO_BUDGET = Number(process.env.OPEN_METEO_BUDGET ?? 4500);
 const OPEN_METEO_DAILY = 10_000;
 const CLIMATE_FROM = "2015-01-01";
@@ -64,10 +66,19 @@ async function readJson<T>(name: string, fallback: T): Promise<T> {
   const f = Bun.file(new URL(name, OUT));
   return (await f.exists()) ? ((await f.json()) as T) : fallback;
 }
+/**
+ * One sorted key per line, compact value: a diff shows exactly which pass or
+ * tour changed, without a fully indented routes.json of 100 000 lines.
+ */
+const format = (data: Record<string, unknown>) =>
+  `{\n${Object.keys(data)
+    .sort()
+    .map((k) => `  ${JSON.stringify(k)}: ${JSON.stringify(data[k])}`)
+    .join(",\n")}\n}\n`;
 // Writes are chained so concurrent pipelines never interleave a file write.
 let writing: Promise<unknown> = Promise.resolve();
-const write = (name: string, data: unknown) =>
-  (writing = writing.then(() => Bun.write(new URL(name, OUT), JSON.stringify(data))));
+const write = (name: string, data: Record<string, unknown>) =>
+  (writing = writing.then(() => Bun.write(new URL(name, OUT), format(data))));
 
 // ---------------------------------------------------------------------------
 // Per-host rate limiting
@@ -335,6 +346,13 @@ const report = () => {
 
 if (STATUS_ONLY) {
   report();
+  process.exit(0);
+}
+if (FORMAT_ONLY) {
+  await write("routes.json", routes);
+  await write("profiles.json", profiles);
+  await write("climate.json", climates);
+  await writing;
   process.exit(0);
 }
 
