@@ -1,0 +1,101 @@
+{
+  "$id": "tours.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "properties": {
+      "slug": {
+        "type": "string",
+        "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+      },
+      "name": {
+        "type": "string",
+        "minLength": 2
+      },
+      "color": {
+        "type": "string",
+        "pattern": "^#[0-9a-f]{6}$"
+      },
+      "km": {
+        "type": "number",
+        "exclusiveMinimum": 0
+      },
+      "elevationGain": {
+        "type": "number",
+        "minimum": 0
+      },
+      "passes": {
+        "minItems": 1,
+        "type": "array",
+        "items": {
+          "type": "string",
+          "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+        }
+      },
+      "season": {
+        "type": "string"
+      },
+      "description": {
+        "type": "string"
+      },
+      "waypoints": {
+        "minItems": 2,
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "lat": {
+              "type": "number",
+              "minimum": 43,
+              "maximum": 49
+            },
+            "lon": {
+              "type": "number",
+              "minimum": 4,
+              "maximum": 16
+            }
+          },
+          "required": [
+            "lat",
+            "lon"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "check": {
+        "type": "object",
+        "properties": {
+          "maxKmDelta": {
+            "type": "number",
+            "exclusiveMinimum": 0
+          },
+          "maxWaypointDist": {
+            "type": "number",
+            "exclusiveMinimum": 0
+          },
+          "note": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "note"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "required": [
+      "slug",
+      "name",
+      "color",
+      "km",
+      "elevationGain",
+      "passes",
+      "season",
+      "description",
+      "waypoints"
+    ],
+    "additionalProperties": false
+  }
+}

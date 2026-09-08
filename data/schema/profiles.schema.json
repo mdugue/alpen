@@ -1,0 +1,52 @@
+{
+  "$id": "profiles.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "propertyNames": {
+    "type": "string"
+  },
+  "additionalProperties": {
+    "type": "object",
+    "properties": {
+      "km": {
+        "type": "number",
+        "minimum": 0
+      },
+      "elevationGain": {
+        "type": "number",
+        "minimum": 0
+      },
+      "start": {
+        "type": "number"
+      },
+      "top": {
+        "type": "number"
+      },
+      "avgGradient": {
+        "type": "number"
+      },
+      "dist": {
+        "type": "array",
+        "items": {
+          "type": "number"
+        }
+      },
+      "ele": {
+        "type": "array",
+        "items": {
+          "type": "number"
+        }
+      }
+    },
+    "required": [
+      "km",
+      "elevationGain",
+      "start",
+      "top",
+      "avgGradient",
+      "dist",
+      "ele"
+    ],
+    "additionalProperties": false
+  }
+}

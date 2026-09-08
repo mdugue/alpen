@@ -1,18 +1,33 @@
 name: Refresh data
 
 # Fetches missing routes, elevation profiles and climate series and commits them.
-# The script is resumable and stops itself at the Open-Meteo free-tier budget
-# (see the header of scripts/build-data.ts), so a backlog drains over several
-# runs: two runs a day ≈ 9 000 of the 10 000 daily Open-Meteo calls. Runs with
-# nothing missing finish in seconds and commit nothing.
+#
+# There is deliberately no schedule. Nothing in the pipeline is time-varying:
+# the climate window is frozen (CLIMATE_FROM/CLIMATE_TO), and routes and
+# profiles only change when data/*.json changes – so a cron could structurally
+# never find work once the backlog is drained. It runs on a source-data push
+# instead. The path filter covers data/*.json only, so the bot's own commit to
+# data/generated/** cannot retrigger it.
+#
+# A large backlog still needs several runs, because Open-Meteo bills an
+# elevation profile as ~100 calls against 5 000/h. Dispatch this workflow again
+# an hour later, or drain it locally with scripts/backfill.sh.
 on:
   workflow_dispatch:
     inputs:
       budget:
         description: "Open-Meteo calls for this run (free tier: 5 000/h, 10 000/day)"
         default: "4500"
-  schedule:
-    - cron: "0 3,15 * * *"
+      retryRejected:
+        description: "Retry the keys in rejected.json (after a coordinate or threshold change)"
+        type: boolean
+        default: false
+  push:
+    branches: [main]
+    paths:
+      - "data/*.json"
+      - "scripts/build-data.ts"
+      - "scripts/lib/validate.ts"
 
 concurrency:
   group: refresh-data
@@ -32,11 +47,17 @@ jobs:
           bun-version: latest
       - run: bun install --frozen-lockfile
       - run: bun run data:build --status
-      - run: bun run data:build
+      - run: bun run data:build ${{ inputs.retryRejected && '--retry-rejected' || '' }}
         env:
           ORS_KEY: ${{ secrets.ORS_KEY }}
           OPEN_METEO_BUDGET: ${{ inputs.budget || '4500' }}
-      - run: bun run data:check
+      # The check must not cost this run its work: the fetched data is committed
+      # first and the job fails afterwards, so a failing check (a stored route
+      # that violates a limit) still surfaces without discarding the paid-for
+      # profiles. A rejection is only a warning and does not fail the check.
+      - id: check
+        run: bun run data:check
+        continue-on-error: true
       - name: Commit
         run: |
           git add data/generated/*.json
@@ -44,3 +65,7 @@ jobs:
           git -c user.name=github-actions[bot] -c user.email=41898282+github-actions[bot]@users.noreply.github.com \
             commit -m "chore(data): refresh precomputed data" -m "$(bun run --silent data:build --status)"
           git push
+      - if: steps.check.outcome == 'failure'
+        run: |
+          echo "data:check ist fehlgeschlagen – die Daten sind trotzdem eingecheckt, der Fehler steht oben."
+          exit 1

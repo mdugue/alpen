@@ -2,6 +2,7 @@ import { describe, expect, test } from "bun:test";
 
 import {
   ALL_STATUS,
+  countCriteria,
   DEFAULT_FILTERS,
   DEFAULT_VIEW,
   defined,
@@ -25,13 +26,17 @@ const view = (over: Partial<MapView> = {}): MapView => ({
 describe("parseHash", () => {
   test("reads filters, selection and camera", () => {
     const h = parseHash(
-      "#pass=col-du-galibier&t=6&z=9&c=45.06,6.41&f=4&m=2000&q=gal&s=open,risky&pi=60&b=30",
+      "#pass=col-du-galibier&t=6&z=9&c=45.06,6.41&f=4&m=2000&q=gal&s=open,risky&pi=60&b=30&d=2-4&v=2&be=4&o=beauty",
     );
     expect(h.filters).toEqual({
       period: 6,
       status: ["open", "risky"],
       minFame: 4,
       minElevation: 2000,
+      difficulty: [2, 4],
+      maxTraffic: 2,
+      minBeauty: 4,
+      sort: "beauty",
       query: "gal",
     });
     expect(h.selection).toEqual({ kind: "pass", slug: "col-du-galibier" });
@@ -88,6 +93,28 @@ describe("parseHash", () => {
     expect(parseHash("#t=6.25").filters.period).toBeUndefined();
     expect(parseHash("#z=abc").view.zoom).toBeUndefined();
   });
+
+  test("the filter keys from plan 05 are validated", () => {
+    expect(parseHash("#d=1-3&v=2&o=beauty").filters).toMatchObject({
+      difficulty: [1, 3],
+      maxTraffic: 2,
+      sort: "beauty",
+    });
+    // A reversed window is turned around.
+    expect(parseHash("#d=4-2").filters.difficulty).toEqual([2, 4]);
+    expect(parseHash("#d=3").filters.difficulty).toEqual([3, 3]);
+    expect(parseHash("#d=0-9").filters.difficulty).toBeUndefined();
+    expect(parseHash("#v=7").filters.maxTraffic).toBeUndefined();
+    // Only what the selects offer, and whole numbers only.
+    expect(parseHash("#v=4").filters.maxTraffic).toBeUndefined();
+    expect(parseHash("#be=2").filters.minBeauty).toBeUndefined();
+    expect(parseHash("#f=99").filters.minFame).toBeUndefined();
+    expect(parseHash("#f=4").filters.minFame).toBe(4);
+    expect(parseHash("#m=2000oops").filters.minElevation).toBeUndefined();
+    expect(parseHash("#m=2000").filters.minElevation).toBe(2000);
+    expect(parseHash("#be=abc").filters.minBeauty).toBeUndefined();
+    expect(parseHash("#o=nonsense").filters.sort).toBeUndefined();
+  });
 });
 
 describe("serializeHash", () => {
@@ -98,7 +125,7 @@ describe("serializeHash", () => {
         null,
         view({ lat: 46.3, lon: 9.6, zoom: 6.5 }),
       ),
-    ).toBe("t=7&z=6.50&c=46.3000%2C9.6000");
+    ).toBe("t=7&z=6.50&c=46.3000,9.6000");
   });
 
   test("filters, selection and a tilted camera are carried", () => {
@@ -108,16 +135,25 @@ describe("serializeHash", () => {
         status: ["open"],
         minFame: 4,
         minElevation: 2000,
+        difficulty: [2, 5],
+        maxTraffic: 3,
+        minBeauty: 4,
+        sort: "traffic",
         query: "gal",
       }),
       { kind: "pass", slug: "col-du-galibier" },
       view({ pitch: 60, bearing: 30 }),
     );
+    expect(hash).toContain("d=2-5");
     const back = parseHash(hash);
     expect(back.filters.period).toBe(6);
     expect(back.filters.status).toEqual(["open"]);
     expect(back.filters.minFame).toBe(4);
     expect(back.filters.minElevation).toBe(2000);
+    expect(back.filters.difficulty).toEqual([2, 5]);
+    expect(back.filters.maxTraffic).toBe(3);
+    expect(back.filters.minBeauty).toBe(4);
+    expect(back.filters.sort).toBe("traffic");
     expect(back.filters.query).toBe("gal");
     expect(back.selection).toEqual({ kind: "pass", slug: "col-du-galibier" });
     expect(back.view.pitch).toBe(60);
@@ -149,12 +185,30 @@ describe("serializeHash", () => {
 });
 
 describe("filters", () => {
-  test("hasActiveFilters ignores the period", () => {
+  test("hasActiveFilters ignores the period and the sort", () => {
     expect(hasActiveFilters(filters({ period: 3 }))).toBe(false);
+    expect(hasActiveFilters(filters({ sort: "name" }))).toBe(false);
+    expect(hasActiveFilters(filters({ difficulty: [1, 4] }))).toBe(true);
+    expect(hasActiveFilters(filters({ maxTraffic: 2 }))).toBe(true);
     expect(hasActiveFilters(filters({ minFame: 4 }))).toBe(true);
     expect(hasActiveFilters(filters({ status: ["open"] }))).toBe(true);
     expect(hasActiveFilters(filters({ query: "  " }))).toBe(false);
     expect(hasActiveFilters(filters({ favoritesOnly: true }))).toBe(true);
+  });
+
+  test("countCriteria counts every criterion once", () => {
+    expect(countCriteria(filters())).toBe(0);
+    expect(
+      countCriteria(
+        filters({
+          minFame: 3,
+          minElevation: 2000,
+          difficulty: [2, 4],
+          maxTraffic: 2,
+          minBeauty: 4,
+        }),
+      ),
+    ).toBe(5);
   });
 
   test("statusMatches follows the visible set", () => {

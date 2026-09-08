@@ -17,7 +17,8 @@ authoritative. In addition:
   change once committed (they are in shared links).
 - **Pass coordinate**: the summit point _on the road_ (not the geographic
   saddle or a nearby peak). Check `elevation` against the map; a mismatch of
-  more than ~80 m is a bug the route gate (plan 00) will flag.
+  more than 80 m is a bug the route gate flags, both against the routed profile
+  and against the DEM height in `summits.json`.
 - **Ascents**: `from` is a point on the road in the valley village where the
   classic climb starts; `label` names the village and, for two-sided passes,
   the side ("Valloire (Nord)"). One or two ascents; three only for famous
@@ -45,7 +46,8 @@ authoritative. In addition:
 bun run data:check                 # before: is the file well-formed and referenced?
 bun run data:build --status        # what will be fetched and what it costs
 ORS_KEY=… bun run data:build       # cycling profile; without the key OSRM car profile
-bun run data:check
+bun run data:check                 # after: is what came back plausible?
+bun run data:check --explain       # every route with its measured values
 ```
 
 - Never edit `data/generated/*.json` by hand. To force a re-fetch, delete the
@@ -54,9 +56,50 @@ bun run data:check
   drawn ascent: it must follow the road and end at the marker, the profile
   top must match the elevation. If not, the `from` point or the pass
   coordinate is wrong, not the router.
-- Respect the quotas in the header of `scripts/build-data.ts`. The GitHub
-  workflow drains backlogs twice a day; a local run is for verifying one new
-  entry, not for bulk fetching.
+- Respect the quotas in the header of `scripts/build-data.ts`. A local run is
+  for verifying one or two new entries; for a real backlog use
+  `ORS_KEY=… bun run data:backfill`, which batches it across Open-Meteo's
+  hourly window until nothing is missing.
+
+## The route quality gate
+
+No route is stored unless it passes these checks (`scripts/lib/validate.ts`).
+They were fitted to the routes that already existed, so each one separates the
+demonstrably right from the demonstrably wrong rather than sitting on a round
+number.
+
+| Check                                 | Limit                               | Catches                                           |
+| ------------------------------------- | ----------------------------------- | ------------------------------------------------- |
+| Ascent length                         | ≤ 60 km                             | a router that took the valley instead of the pass |
+| Start of the route                    | ≤ 2 km from `ascent.from`           | a `from` point nowhere near a road                |
+| End of the route                      | ≤ 500 m from the pass coordinate    | a route that stops short                          |
+| Profile top vs. `pass.elevation`      | within 80 m                         | a wrong summit coordinate, or the wrong road      |
+| Position of the highest sample        | in the last 25 % of the distance    | a route that crosses the pass and carries on      |
+| Elevation gain                        | ≤ 3 000 m                           | a route over several passes                       |
+| Tour length vs. the curated `tour.km` | within 15 %                         | waypoints too sparse to pin the loop down         |
+| Tour start/end                        | ≤ 2 km from the first/last waypoint | a loop that does not close                        |
+| DEM height at the pass point          | within 80 m                         | a pass coordinate on the wrong summit             |
+
+### When the gate rejects something
+
+A rejection is a warning in `data:check`, not an error: nothing wrong reached
+the map, and what is left is curation. `rejected.json` names the key, the reasons with their measured values, the date
+it was first rejected and which router produced it. An unchanged geometry on a
+retry is stated explicitly – it means the router is not the problem. There are
+three ways out, in this order of preference:
+
+1. **The data is wrong.** Almost always the case. Move the pass coordinate onto
+   the road at the summit, or `ascent.from` into the valley village, then
+   `bun run data:build --retry-rejected`. This is free: re-routing costs no
+   Open-Meteo calls and the profile is reused when the geometry comes back
+   unchanged.
+2. **The ascent really is like that.** Kitzbüheler Horn ends at the Alpenhaus
+   below the summit marker. Set `check` on that one ascent with the widened
+   limit and a `note` saying why. A `check` without a `note` fails the schema.
+3. **The limit is wrong.** Change `LIMITS` in `scripts/lib/validate.ts` and run
+   `bun run data:check --explain` to see what that does to every other route
+   before re-fetching anything. Do not widen a limit to silence a single case –
+   that is what step 2 is for.
 
 ## Honesty
 

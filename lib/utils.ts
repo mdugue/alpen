@@ -19,6 +19,13 @@ export const fmtUnit = (n: number, unit: string, digits = 0) =>
 export const PRESSED =
   "aria-pressed:bg-primary aria-pressed:text-primary-foreground aria-pressed:hover:bg-primary/90 aria-pressed:hover:text-primary-foreground";
 
+/**
+ * The mira preset has no icon-only Toggle size; this squares a default-size
+ * Toggle to match Button's `icon` (size-7) so star and map toggles line up
+ * with the buttons next to them.
+ */
+export const ICON_TOGGLE = "size-7 px-0";
+
 /** Opaque surface for controls floating over map tiles (outline buttons are translucent in dark mode). */
 export const MAP_CONTROL = "bg-card shadow-md dark:bg-card";
 
