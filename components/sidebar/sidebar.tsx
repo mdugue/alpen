@@ -4,11 +4,11 @@ import { PanelLeftClose, Search, Star, X } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useRef } from "react";
 
+import { FilterPanel } from "@/components/sidebar/filter-panel";
 import { PassList } from "@/components/sidebar/pass-list";
 import { KIND_GLYPH, Section } from "@/components/sidebar/section";
 import { TourList } from "@/components/sidebar/tour-list";
 import { TownList } from "@/components/sidebar/town-list";
-import { StatusDot } from "@/components/status-badge";
 import { Button } from "@/components/ui/button";
 import {
   InputGroup,
@@ -18,13 +18,10 @@ import {
 } from "@/components/ui/input-group";
 import { Switch } from "@/components/ui/switch";
 import { Toggle } from "@/components/ui/toggle";
-import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
-import { ALL_STATUS, DEFAULT_FILTERS, hasActiveFilters } from "@/lib/app-state";
+import { DEFAULT_FILTERS, hasActiveFilters } from "@/lib/app-state";
 import type { EntityKind, Filters, Selection } from "@/lib/app-state";
-import { COUNTRIES, COUNTRY_NAME } from "@/lib/regions";
 import type { PassRow, TourRow, TownRow } from "@/lib/rows";
-import { STATUS_LABEL } from "@/lib/status";
-import type { Country, Status, Tour } from "@/lib/types";
+import type { Tour } from "@/lib/types";
 import { cn, PRESSED } from "@/lib/utils";
 
 export interface SidebarProps {
@@ -162,69 +159,9 @@ export function Sidebar(p: SidebarProps) {
               )}
             </Toggle>
           </div>
-          <ToggleGroup
-            multiple
-            variant="outline"
-            size="sm"
-            spacing={0}
-            value={p.filters.status}
-            onValueChange={(v) =>
-              set(
-                "status",
-                ALL_STATUS.filter((s) => v.includes(s)),
-              )
-            }
-            aria-label="Status filtern"
-            className={cn("w-full", p.peek && "hidden")}
-          >
-            {ALL_STATUS.map((s: Status) => {
-              const active = p.filters.status.includes(s);
-              return (
-                <ToggleGroupItem
-                  key={s}
-                  value={s}
-                  className={cn(
-                    "flex-1 gap-1.5",
-                    !active && "text-muted-foreground",
-                  )}
-                >
-                  <StatusDot status={s} hollow={!active} />
-                  {STATUS_LABEL[s]}
-                </ToggleGroupItem>
-              );
-            })}
-          </ToggleGroup>
-          <ToggleGroup
-            multiple
-            variant="outline"
-            size="sm"
-            spacing={0}
-            value={p.filters.countries}
-            onValueChange={(v) =>
-              set(
-                "countries",
-                COUNTRIES.filter((c) => v.includes(c)),
-              )
-            }
-            aria-label="Länder filtern"
-            className={cn("w-full", p.peek && "hidden")}
-          >
-            {COUNTRIES.map((c: Country) => (
-              <ToggleGroupItem
-                key={c}
-                value={c}
-                aria-label={COUNTRY_NAME[c]}
-                title={COUNTRY_NAME[c]}
-                className={cn(
-                  "flex-1",
-                  !p.filters.countries.includes(c) && "text-muted-foreground",
-                  PRESSED,
-                )}
-              >
-                {c}
-              </ToggleGroupItem>
-            ))}
-          </ToggleGroup>
+          <div className={cn(p.peek && "hidden")}>
+            <FilterPanel filters={p.filters} setFilters={p.setFilters} />
+          </div>
           {hasActiveFilters(p.filters) && !p.peek && (
             <Button
               variant="link"

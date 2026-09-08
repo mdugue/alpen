@@ -9,9 +9,8 @@ import {
 } from "nuqs";
 import { useCallback, useSyncExternalStore } from "react";
 
-import { COUNTRIES, REGIONS } from "@/lib/regions";
 import { isPeriod } from "@/lib/status";
-import type { Country, Period, Region, Status } from "@/lib/types";
+import type { Period, Status } from "@/lib/types";
 
 export type EntityKind = "pass" | "tour" | "town";
 export interface Selection {
@@ -41,13 +40,14 @@ export const RATING_MAX = 5;
 
 export interface Filters {
   period: Period;
-  /** Statuses that stay visible; all three = no filter. Applies to passes and tours. */
+  /** Statuses that stay visible; all three = no filter. Passes and tours. */
   status: Status[];
-  /** Empty = every country. Passes, tours (via their passes) and towns. */
-  countries: Country[];
-  /** Empty = every region. Passes and tours (via their passes). */
-  regions: Region[];
-  /** Passes only, from here on. */
+  /**
+   * The pass criteria below apply to passes and, through their passes, to
+   * tours: a tour needs one pass that clears the lower bounds (elevation,
+   * fame, beauty, min. difficulty) and every pass has to respect the upper
+   * bounds (max. difficulty, traffic). Towns see only search and favourites.
+   */
   minFame: number;
   minElevation: number;
   /** Inclusive window on the 1–5 scale; [1, 5] = no filter. */
@@ -68,8 +68,6 @@ export interface Filters {
 export const DEFAULT_FILTERS: Filters = {
   period: 10,
   status: ALL_STATUS,
-  countries: [],
-  regions: [],
   minFame: 1,
   minElevation: 0,
   difficulty: [RATING_MIN, RATING_MAX],
@@ -83,15 +81,12 @@ export const DEFAULT_FILTERS: Filters = {
 /** True when any filter apart from the period and the sort is active. */
 export const hasActiveFilters = (f: Filters) =>
   f.status.length !== ALL_STATUS.length ||
-  f.countries.length > 0 ||
-  f.regions.length > 0 ||
-  countPassFilters(f) > 0 ||
+  countCriteria(f) > 0 ||
   f.query.trim() !== "" ||
   f.favoritesOnly;
 
-/** How many of the filters in the pass panel are active – the badge on its trigger. */
-export const countPassFilters = (f: Filters) =>
-  (f.regions.length > 0 ? 1 : 0) +
+/** How many of the pass criteria are active – the badge on the filter trigger. */
+export const countCriteria = (f: Filters) =>
   (f.minFame > 1 ? 1 : 0) +
   (f.minElevation > 0 ? 1 : 0) +
   (f.difficulty[0] > RATING_MIN || f.difficulty[1] < RATING_MAX ? 1 : 0) +
@@ -138,7 +133,6 @@ export interface HashState {
 //   t     half-month, 1 … 12.5             z     zoom
 //   c     centre "lat,lon"                 pi,b  pitch and bearing (only when tilted)
 //   s     statuses "open,risky" | "none"   q     search text
-//   l     countries "fr,it"                r     regions "westalpen,dolomiten"
 //   f     min. fame                        m     min. elevation in m
 //   d     difficulty window "2-4"          v     max. traffic
 //   be    min. beauty                      o     pass sort key
@@ -146,9 +140,6 @@ export interface HashState {
 //
 // Every key is validated on the way in: unknown values fall back to the
 // default rather than reaching the state.
-
-const fromCode = <T extends string>(list: readonly T[], code: string) =>
-  list.find((x) => x.toLowerCase() === code);
 
 const parseAsPeriod = createParser<Period>({
   parse: (v) => {
@@ -187,18 +178,6 @@ const parseAsStatus = createParser<Status[]>({
   serialize: (list) => list.join(",") || "none",
   eq: (a, b) => a.length === b.length && a.every((s) => b.includes(s)),
 });
-const parseAsCodes = <T extends string>(list: readonly T[]) =>
-  createParser<T[]>({
-    parse: (raw) => {
-      const found = raw
-        .split(",")
-        .map((code) => fromCode(list, code))
-        .filter((x): x is T => x !== undefined);
-      return found.length ? [...new Set(found)] : null;
-    },
-    serialize: (values) => values.map((v) => v.toLowerCase()).join(","),
-    eq: (a, b) => a.length === b.length && a.every((x) => b.includes(x)),
-  });
 const RATINGS = [1, 2, 3, 4, 5] as const;
 const parseAsRating = createParser<number>({
   parse: (v) => (RATINGS.includes(Number(v) as never) ? Number(v) : null),
@@ -224,8 +203,6 @@ const HASH = {
   pi: parseAsFixed(0),
   b: parseAsFixed(0),
   s: parseAsStatus,
-  l: parseAsCodes(COUNTRIES),
-  r: parseAsCodes(REGIONS),
   f: parseAsInteger,
   m: parseAsInteger,
   d: parseAsRange,
@@ -241,8 +218,6 @@ const HASH = {
 const HASH_OUT = {
   ...HASH,
   s: HASH.s.withDefault(DEFAULT_FILTERS.status),
-  l: HASH.l.withDefault(DEFAULT_FILTERS.countries),
-  r: HASH.r.withDefault(DEFAULT_FILTERS.regions),
   f: HASH.f.withDefault(DEFAULT_FILTERS.minFame),
   m: HASH.m.withDefault(DEFAULT_FILTERS.minElevation),
   d: HASH.d.withDefault(DEFAULT_FILTERS.difficulty),
@@ -269,8 +244,6 @@ export function parseHash(hash: string): HashState {
     filters: {
       period: given("t"),
       status: given("s"),
-      countries: given("l"),
-      regions: given("r"),
       minFame: given("f"),
       minElevation: given("m"),
       difficulty: given("d"),
@@ -310,8 +283,6 @@ export function serializeHash(
     pi: tilted ? view.pitch : null,
     b: tilted ? view.bearing : null,
     s: filters.status,
-    l: filters.countries,
-    r: filters.regions,
     f: filters.minFame,
     m: filters.minElevation,
     d: filters.difficulty,

@@ -110,13 +110,11 @@ The `curate-data` skill covers adding more.
 
 `Filters` gains:
 
-| Field                    | UI                              | Hash      | Applies to                             |
-| ------------------------ | ------------------------------- | --------- | -------------------------------------- |
-| `countries: string[]`    | chips FR IT CH AT DE SI (multi) | `l=fr,it` | passes, tours (by their passes), towns |
-| `regions: string[]`      | chips Westalpen … (multi)       | `r=`      | passes, tours                          |
-| `difficulty: [min, max]` | range slider 1–5                | `d=2-4`   | passes                                 |
-| `maxTraffic: number`     | select "egal / ≤ 3 / ≤ 2 / ≤ 1" | `v=3`     | passes                                 |
-| `minBeauty: number`      | select like fame                | `be=4`    | passes                                 |
+| Field                    | UI                              | Hash    | Applies to |
+| ------------------------ | ------------------------------- | ------- | ---------- |
+| `difficulty: [min, max]` | range slider 1–5                | `d=2-4` | passes     |
+| `maxTraffic: number`     | select "egal / ≤ 3 / ≤ 2 / ≤ 1" | `v=3`   | passes     |
+| `minBeauty: number`      | select like fame                | `be=4`  | passes     |
 
 `sort` moves from `PassList` state into `Filters` (`o=beauty`). The pass
 filter collapsible grows to two columns on desktop; `passFilters` badge count
@@ -167,8 +165,17 @@ the source.
   fall back to the default.
 - "Vrsic" is not an alias: `fold` already maps "Vršič" to it, and
   `data:check` rejects aliases that collide with a folded name.
-- Country chips sit next to the status chips because they apply to all three
-  kinds; the region chips live in the pass filter panel.
+- Country and region filters were built and then dropped again on review:
+  they are not needed for the product, and the chips made the sidebar
+  noisy. `lib/regions.ts` keeps the vocabularies for the schema and the
+  search haystacks only; plan 12 covers "where" through destinations.
+- There is one global filter panel above the lists, not a global block plus
+  a pass block: the status is a dropdown with checkboxes, the criteria sit in
+  one collapsible. Every criterion applies to passes and, through their
+  passes, to tours: a tour needs one pass that clears the lower bounds
+  (elevation, fame, beauty, min. difficulty) and every pass has to respect
+  the upper bounds (max. difficulty, traffic). Towns see search and
+  favourites only.
 
 ## Risks and open questions
 

@@ -1,6 +1,5 @@
 import { statusMatches } from "@/lib/app-state";
 import type { EntityKind, Filters, PassSort } from "@/lib/app-state";
-import { countriesOf } from "@/lib/regions";
 import {
   matches,
   passHaystack,
@@ -28,11 +27,11 @@ import type {
 export type { PassSort } from "@/lib/app-state";
 
 /**
- * One filtered list per entity kind. Search, the country chips and the
- * favourites toggle apply to all three, the status filter and the regions to
- * passes and tours, the rating and elevation filters to passes only. Map
- * visibility (hidden tours, towns on/off) is a layer toggle, not a filter;
- * what the map draws per kind is what the list of that kind shows.
+ * One filtered list per entity kind. Search and the favourites toggle apply
+ * to all three, the status filter and the pass criteria to passes and, via
+ * their passes, to tours; towns know no criteria. Map visibility (hidden
+ * tours, towns on/off) is a layer toggle, not a filter; what the map draws
+ * per kind is what the list of that kind shows.
  */
 
 interface Query {
@@ -50,26 +49,25 @@ function query(filters: Filters, isFavorite: Query["isFavorite"]): Query {
   };
 }
 
-/** "CH/IT" passes a filter for either country; no chip = every country. */
-const countryMatches = (country: string, filter: string[]) =>
-  filter.length === 0 || countriesOf(country).some((c) => filter.includes(c));
+/** Lower bounds, "at least this interesting": a tour needs one pass that clears them. */
+const interesting = (pass: Pass, f: Filters) =>
+  pass.elevation >= f.minElevation &&
+  pass.fame >= f.minFame &&
+  pass.beauty >= f.minBeauty &&
+  pass.difficulty >= f.difficulty[0];
 
-/** Everything about a pass except its status: search, favourites, country, region, scales, elevation. */
+/** Upper bounds, "not harder or busier than": every pass of a tour has to respect them. */
+const withinLimits = (pass: Pass, f: Filters) =>
+  pass.difficulty <= f.difficulty[1] && pass.traffic <= f.maxTraffic;
+
+/** Everything about a pass except its status: criteria, favourites, search. */
 function passMatches(pass: Pass, filters: Filters, q: Query): boolean {
-  if (pass.elevation < filters.minElevation || pass.fame < filters.minFame)
-    return false;
-  if (pass.beauty < filters.minBeauty || pass.traffic > filters.maxTraffic)
-    return false;
-  const [lo, hi] = filters.difficulty;
-  if (pass.difficulty < lo || pass.difficulty > hi) return false;
-  if (!countryMatches(pass.country, filters.countries)) return false;
-  if (filters.regions.length && !filters.regions.includes(pass.region))
-    return false;
+  if (!interesting(pass, filters) || !withinLimits(pass, filters)) return false;
   if (q.favoritesOnly && !q.isFavorite("pass", pass.slug)) return false;
   return q.matches(passHaystack(pass));
 }
 
-/** A tour counts for every country and region of the passes it crosses. */
+/** The pass criteria reach a tour through the passes it crosses. */
 function tourMatches(
   tour: Tour,
   passes: PassIndex,
@@ -79,16 +77,8 @@ function tourMatches(
   const own = tour.passes
     .map((s) => passes.get(s))
     .filter((p) => p !== undefined);
-  if (
-    filters.countries.length &&
-    !own.some((p) => countryMatches(p.country, filters.countries))
-  )
-    return false;
-  if (
-    filters.regions.length &&
-    !own.some((p) => filters.regions.includes(p.region))
-  )
-    return false;
+  if (own.length && !own.some((p) => interesting(p, filters))) return false;
+  if (!own.every((p) => withinLimits(p, filters))) return false;
   return q.matches(
     tourHaystack(
       tour,
@@ -178,7 +168,6 @@ export function buildTownRows(
   for (const town of towns) {
     const favorite = isFavorite("town", town.slug);
     if (q.favoritesOnly && !favorite) continue;
-    if (!countryMatches(town.country, filters.countries)) continue;
     if (!q.matches(townHaystack(town))) continue;
     rows.push({ town, favorite });
   }
