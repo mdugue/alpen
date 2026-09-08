@@ -1,6 +1,6 @@
 # 07 · Profile interactivity
 
-**Status:** in progress (PR link below) · **Effort:** S–M ·
+**Status:** [done](https://github.com/mdugue/alpen/pull/11) · **Effort:** S–M ·
 **Depends on:** ~~02~~ – dropped, see "Data" · **Priority:** low under the
 destination goal; do it when the detail panel gets attention anyway
 
