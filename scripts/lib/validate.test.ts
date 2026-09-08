@@ -380,6 +380,7 @@ describe("metrics", () => {
       start: 1000,
       top: 2000,
       avgGradient: 10,
+      maxKmGradient: 20,
       dist: [0, 5, 10],
       ele: [1000, 2000, 1900],
     };

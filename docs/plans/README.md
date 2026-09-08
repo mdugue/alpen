@@ -31,7 +31,7 @@ that goal; features that only add route-level precision rank last.
 | 10  | [Tests](10-tests.md)                                               | refactor safety             | M      | –                    | [done](https://github.com/mdugue/alpen/pull/4) |
 | 11  | [Smaller items](11-smaller-items.md)                               | polish                      | S each | varies               | proposed                                       |
 | 08  | [English toggle](08-english-toggle.md)                             | audience                    | M–L    | 02                   | proposed                                       |
-| 07  | [Profile interactivity](07-profile-interactivity.md)               | detail, low priority now    | S–M    | 02                   | proposed                                       |
+| 07  | [Profile interactivity](07-profile-interactivity.md)               | detail, low priority now    | S–M    | –                    | in progress                                    |
 
 Effort: S ≤ 1 day, M 2–3 days, L 4–6 days. 09, 10 and 11 can be interleaved
 with anything; do 09 before 12 so the new entity gets a schema from day one.

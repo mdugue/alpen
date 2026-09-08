@@ -42,7 +42,14 @@ import {
 } from "@/components/ui/tooltip";
 import { DEFAULT_VIEW, readHash, useStored } from "@/lib/app-state";
 import type { MapView, Selection } from "@/lib/app-state";
-import type { Pass, RouteGeometry, Status, Tour, Town } from "@/lib/types";
+import type {
+  LatLon,
+  Pass,
+  RouteGeometry,
+  Status,
+  Tour,
+  Town,
+} from "@/lib/types";
 import { cn, MAP_CONTROL, PRESSED } from "@/lib/utils";
 
 export interface MapPass extends Pass {
@@ -72,6 +79,13 @@ interface Props {
    * when the object identity changes.
    */
   requestedView?: MapView | null;
+  /** Road point under the elevation-profile cursor, marked on the ascent. */
+  profileCursor?: LatLon | null;
+  /**
+   * Fly-to request from a click on the elevation profile. A fresh object per
+   * click, so the same point can be asked for twice.
+   */
+  profileZoom?: LatLon | null;
   /** Pixels on the left covered by floating panels; camera targets stay right of them. */
   insetLeft?: number;
   /** Pixels at the bottom covered by the mobile sheet; camera targets stay above it. */
@@ -203,6 +217,8 @@ export function PassMap({
   selection,
   onSelect,
   onViewChange,
+  profileCursor = null,
+  profileZoom = null,
   requestedView = null,
   insetLeft = 0,
   insetBottom = 0,
@@ -298,6 +314,7 @@ export function PassMap({
         tours: { type: "geojson", data: EMPTY },
         passes: { type: "geojson", data: EMPTY },
         towns: { type: "geojson", data: EMPTY },
+        cursor: { type: "geojson", data: EMPTY },
       } as StyleSpecification["sources"],
       layers: [
         {
@@ -520,6 +537,19 @@ export function PassMap({
             "text-opacity": fame <= 2 ? 0.85 : 1,
           },
         })),
+        // Topmost: the profile cursor must stay visible over its own ascent.
+        {
+          id: "profile-cursor",
+          type: "circle",
+          source: "cursor",
+          paint: {
+            "circle-radius": 6,
+            "circle-color": colors.paper,
+            "circle-stroke-color": colors.ink,
+            "circle-stroke-width": 2.5,
+            "circle-pitch-alignment": "map",
+          },
+        },
       ] as StyleSpecification["layers"],
     };
 
@@ -774,6 +804,41 @@ export function PassMap({
         : [],
     });
   }, [passes, tours, towns, showTowns, selection, ready]);
+
+  // --- Elevation-profile cursor -------------------------------------------
+  // One point, so setData is cheap enough to run on every pointer move.
+  useEffect(() => {
+    const m = map.current;
+    if (!m || !ready) return;
+    (m.getSource("cursor") as GeoJSONSource | undefined)?.setData({
+      type: "FeatureCollection",
+      features: profileCursor
+        ? [
+            {
+              type: "Feature",
+              geometry: {
+                type: "Point",
+                coordinates: [profileCursor.lon, profileCursor.lat],
+              },
+              properties: {},
+            },
+          ]
+        : [],
+    });
+  }, [profileCursor, ready]);
+
+  // Click on the profile: close enough to count the hairpins.
+  useEffect(() => {
+    const m = map.current;
+    if (!m || !ready || !profileZoom) return;
+    m.flyTo({
+      center: [profileZoom.lon, profileZoom.lat],
+      zoom: Math.max(m.getZoom(), 13),
+      duration: window.matchMedia("(prefers-reduced-motion: reduce)").matches
+        ? 0
+        : 900,
+    });
+  }, [profileZoom, ready]);
 
   // --- Fly to selection --------------------------------------------------
   useEffect(() => {

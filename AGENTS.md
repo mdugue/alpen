@@ -41,6 +41,7 @@ friends do that better and the app links out to them.
 | Data schemas (zod) and inferred types         | `lib/schema.ts`, `lib/types.ts`, `data/schema/*.schema.json` (`bun run data:schema`)                                  |
 | Regions and countries (vocabulary)            | `lib/regions.ts`                                                                                                      |
 | Data access (cached, validated)               | `lib/data.ts`                                                                                                         |
+| Profile sampling and derived gradients        | `lib/profile.ts`                                                                                                      |
 | Filter, selection and URL state (hash keys)   | `lib/app-state.ts`, `components/explorer.tsx`                                                                         |
 | Search normalisation and haystacks            | `lib/search.ts`                                                                                                       |
 | Map, layers, 3D, markers, labels              | `components/map/pass-map.tsx`                                                                                         |

@@ -137,6 +137,9 @@
           "avgGradient": {
             "type": "number"
           },
+          "maxKmGradient": {
+            "type": "number"
+          },
           "dist": {
             "type": "array",
             "items": {
@@ -156,6 +159,7 @@
           "start",
           "top",
           "avgGradient",
+          "maxKmGradient",
           "dist",
           "ele"
         ],
