@@ -3,7 +3,6 @@ import {
   createLoader,
   createParser,
   createSerializer,
-  parseAsInteger,
   parseAsString,
   parseAsStringLiteral,
 } from "nuqs";
@@ -37,6 +36,29 @@ export type PassSort = (typeof PASS_SORTS)[number];
 /** Editorial 1–5 scale bounds; the difficulty filter is a window inside them. */
 export const RATING_MIN = 1;
 export const RATING_MAX = 5;
+
+/**
+ * The thresholds the selects offer, hash value → label. The hash parsers
+ * accept exactly these, so a link never applies a filter the control cannot
+ * show.
+ */
+export const TRAFFIC_OPTIONS = [
+  [5, "egal"],
+  [3, "höchstens 3"],
+  [2, "höchstens 2"],
+  [1, "nur ruhige"],
+] as const;
+export const BEAUTY_OPTIONS = [
+  [1, "alle"],
+  [3, "ab 3 von 5"],
+  [4, "ab 4 von 5"],
+  [5, "nur 5 von 5"],
+] as const;
+export const FAME_OPTIONS = [
+  [1, "alle"],
+  [3, "ab 3 von 5"],
+  [4, "nur Klassiker"],
+] as const;
 
 export interface Filters {
   period: Period;
@@ -179,8 +201,15 @@ const parseAsStatus = createParser<Status[]>({
   eq: (a, b) => a.length === b.length && a.every((s) => b.includes(s)),
 });
 const RATINGS = [1, 2, 3, 4, 5] as const;
-const parseAsRating = createParser<number>({
-  parse: (v) => (RATINGS.includes(Number(v) as never) ? Number(v) : null),
+/** Exactly one of the given values; anything else is not a filter. */
+const parseAsOneOf = (values: readonly number[]) =>
+  createParser<number>({
+    parse: (v) => (values.includes(Number(v)) ? Number(v) : null),
+    serialize: String,
+  });
+/** A whole number of metres; "2000oops" is not one (parseAsInteger would take the prefix). */
+const parseAsMetres = createParser<number>({
+  parse: (v) => (/^\d{1,4}$/u.test(v) ? Number(v) : null),
   serialize: String,
 });
 /** `d=2-4`; `d=3` means exactly 3. */
@@ -203,11 +232,11 @@ const HASH = {
   pi: parseAsFixed(0),
   b: parseAsFixed(0),
   s: parseAsStatus,
-  f: parseAsInteger,
-  m: parseAsInteger,
+  f: parseAsOneOf(FAME_OPTIONS.map(([v]) => v)),
+  m: parseAsMetres,
   d: parseAsRange,
-  v: parseAsRating,
-  be: parseAsRating,
+  v: parseAsOneOf(TRAFFIC_OPTIONS.map(([v]) => v)),
+  be: parseAsOneOf(BEAUTY_OPTIONS.map(([v]) => v)),
   o: parseAsStringLiteral(PASS_SORTS),
   q: parseAsString,
   pass: parseAsString,

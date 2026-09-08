@@ -29,12 +29,12 @@ export const Status = z.enum(["open", "risky", "closed"]);
 
 export const Rating = z.int().min(1).max(5);
 
-export const LatLon = z.object({
+export const LatLon = z.strictObject({
   lat: z.number().min(43).max(49),
   lon: z.number().min(4).max(16),
 });
 
-export const Ascent = z.object({
+export const Ascent = z.strictObject({
   /** Starting point of the classic cycling ascent. */
   from: LatLon,
   /** Display name, e.g. "Valloire (Nord)". */
@@ -55,7 +55,7 @@ export const PassSeason = z
 export const Region = z.enum(REGIONS);
 export const Country = z.enum(COUNTRIES);
 
-export const Pass = z.object({
+export const Pass = z.strictObject({
   slug: Slug,
   name: z.string().min(2),
   /** Other spellings people search for: "Stilfser Joch", "Grossglockner". */
@@ -85,7 +85,7 @@ export const Pass = z.object({
   ascents: z.array(Ascent),
 });
 
-export const Tour = z.object({
+export const Tour = z.strictObject({
   slug: Slug,
   name: z.string().min(2),
   color: z.string().regex(/^#[0-9a-f]{6}$/u, "Farbe: #rrggbb"),
@@ -98,7 +98,7 @@ export const Tour = z.object({
   waypoints: z.array(LatLon).min(2),
 });
 
-export const Town = z.object({
+export const Town = z.strictObject({
   slug: Slug,
   name: z.string().min(2),
   country: Country,
@@ -131,7 +131,7 @@ export const ElevationProfile = z
   })
   .refine((p) => p.dist.length === p.ele.length, "dist und ele ungleich lang");
 
-export const ClimateBucket = z.object({
+export const ClimateBucket = z.strictObject({
   /** Mean daily maximum in °C. */
   tmax: z.number(),
   /** Mean daily minimum in °C. */
@@ -155,7 +155,7 @@ export const Profiles = z.record(z.string(), ElevationProfile);
 export const Climate = z.record(Slug, ClimateYear);
 
 /** One day of the Open-Meteo forecast served by `app/api/weather/[slug]`. */
-export const WeatherDay = z.object({
+export const WeatherDay = z.strictObject({
   date: z.string(),
   tmin: z.number(),
   tmax: z.number(),

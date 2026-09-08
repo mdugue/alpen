@@ -93,7 +93,7 @@ function checkPasses(list: Pass[]) {
       const key = fold(alias);
       const owner = names.get(key);
       if (owner === p.slug)
-        errors.push(`${p.slug}: Alias "${alias}" ist bereits der Name`);
+        errors.push(`${p.slug}: Alias "${alias}" doppelt (Name oder Alias)`);
       else if (owner)
         errors.push(`${p.slug}: Alias "${alias}" gehört zu ${owner}`);
       else names.set(key, p.slug);
@@ -134,14 +134,19 @@ if (towns) checkTowns(towns);
 
 // Generated keys that no longer belong to a pass or tour are stale, not wrong.
 if (passes && tours) {
-  const known = new Set([
-    ...passes.flatMap((p) => p.ascents.map((_, i) => `${p.slug}:${i}`)),
+  const ascentKeys = new Set(
+    passes.flatMap((p) => p.ascents.map((_, i) => `${p.slug}:${i}`)),
+  );
+  // Routes exist for ascents and tours, profiles for ascents only.
+  const routeKeys = new Set([
+    ...ascentKeys,
     ...tours.map((t) => `tour:${t.slug}`),
   ]);
   for (const key of Object.keys(routes ?? {}))
-    if (!known.has(key)) warnings.push(`routes.json: verwaiste Route ${key}`);
+    if (!routeKeys.has(key))
+      warnings.push(`routes.json: verwaiste Route ${key}`);
   for (const key of Object.keys(profiles ?? {}))
-    if (!known.has(key))
+    if (!ascentKeys.has(key))
       warnings.push(`profiles.json: verwaistes Profil ${key}`);
   const slugs = new Set(passes.map((p) => p.slug));
   for (const key of Object.keys(climate ?? {}))

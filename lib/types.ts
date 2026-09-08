@@ -9,7 +9,7 @@ import type * as S from "@/lib/schema";
  */
 
 /** Half-month point in time: 1 = early January, 1.5 = late January … 12.5 = late December. */
-export type Period = number;
+export type Period = z.infer<typeof S.Period>;
 
 export type Status = z.infer<typeof S.Status>;
 export type LatLon = z.infer<typeof S.LatLon>;

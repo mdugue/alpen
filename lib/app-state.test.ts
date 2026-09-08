@@ -105,6 +105,13 @@ describe("parseHash", () => {
     expect(parseHash("#d=3").filters.difficulty).toEqual([3, 3]);
     expect(parseHash("#d=0-9").filters.difficulty).toBeUndefined();
     expect(parseHash("#v=7").filters.maxTraffic).toBeUndefined();
+    // Only what the selects offer, and whole numbers only.
+    expect(parseHash("#v=4").filters.maxTraffic).toBeUndefined();
+    expect(parseHash("#be=2").filters.minBeauty).toBeUndefined();
+    expect(parseHash("#f=99").filters.minFame).toBeUndefined();
+    expect(parseHash("#f=4").filters.minFame).toBe(4);
+    expect(parseHash("#m=2000oops").filters.minElevation).toBeUndefined();
+    expect(parseHash("#m=2000").filters.minElevation).toBe(2000);
     expect(parseHash("#be=abc").filters.minBeauty).toBeUndefined();
     expect(parseHash("#o=nonsense").filters.sort).toBeUndefined();
   });

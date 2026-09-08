@@ -80,6 +80,8 @@ describe("fold", () => {
     expect(fold("Roßfeld-Panoramastraße")).toBe("rossfeld panoramastrasse");
     expect(fold("  CH/IT  ")).toBe("ch it");
     expect(fold("St. Moritz")).toBe("st moritz");
+    expect(fold("GROẞGLOCKNER")).toBe("grossglockner");
+    expect(fold("Stelvio, Bormio (Nord): ja!")).toBe("stelvio bormio nord ja");
   });
 });
 

@@ -15,9 +15,15 @@ import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
+  DropdownMenuGroup,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Field, FieldLabel, FieldTitle } from "@/components/ui/field";
+import {
+  Field,
+  FieldGroup,
+  FieldLabel,
+  FieldTitle,
+} from "@/components/ui/field";
 import {
   NativeSelect,
   NativeSelectOption,
@@ -25,9 +31,12 @@ import {
 import { Slider } from "@/components/ui/slider";
 import {
   ALL_STATUS,
+  BEAUTY_OPTIONS,
   countCriteria,
+  FAME_OPTIONS,
   RATING_MAX,
   RATING_MIN,
+  TRAFFIC_OPTIONS,
 } from "@/lib/app-state";
 import type { Filters } from "@/lib/app-state";
 import { STATUS_LABEL } from "@/lib/status";
@@ -117,26 +126,31 @@ export function FilterPanel({
               ))}
               <span className="truncate">{statusSummary(filters.status)}</span>
             </span>
-            <ChevronDown className="text-muted-foreground" />
+            <ChevronDown
+              data-icon="inline-end"
+              className="text-muted-foreground"
+            />
           </DropdownMenuTrigger>
           <DropdownMenuContent>
-            {ALL_STATUS.map((s: Status) => (
-              <DropdownMenuCheckboxItem
-                key={s}
-                checked={filters.status.includes(s)}
-                onCheckedChange={(on) =>
-                  set(
-                    "status",
-                    ALL_STATUS.filter((x) =>
-                      x === s ? on : filters.status.includes(x),
-                    ),
-                  )
-                }
-              >
-                <StatusDot status={s} />
-                {STATUS_LABEL[s]}
-              </DropdownMenuCheckboxItem>
-            ))}
+            <DropdownMenuGroup>
+              {ALL_STATUS.map((s: Status) => (
+                <DropdownMenuCheckboxItem
+                  key={s}
+                  checked={filters.status.includes(s)}
+                  onCheckedChange={(on) =>
+                    set(
+                      "status",
+                      ALL_STATUS.filter((x) =>
+                        x === s ? on : filters.status.includes(x),
+                      ),
+                    )
+                  }
+                >
+                  <StatusDot status={s} />
+                  {STATUS_LABEL[s]}
+                </DropdownMenuCheckboxItem>
+              ))}
+            </DropdownMenuGroup>
           </DropdownMenuContent>
         </DropdownMenu>
         <Field orientation="horizontal">
@@ -169,43 +183,29 @@ export function FilterPanel({
             }
           />
         </Field>
-        <div className="grid grid-cols-3 gap-2">
+        <FieldGroup className="grid grid-cols-3 gap-2">
           <Select
             id="max-traffic"
             label="Verkehr"
             value={filters.maxTraffic}
             onChange={(v) => set("maxTraffic", v)}
-            options={[
-              [5, "egal"],
-              [3, "höchstens 3"],
-              [2, "höchstens 2"],
-              [1, "nur ruhige"],
-            ]}
+            options={TRAFFIC_OPTIONS}
           />
           <Select
             id="min-beauty"
             label="Schönheit"
             value={filters.minBeauty}
             onChange={(v) => set("minBeauty", v)}
-            options={[
-              [1, "alle"],
-              [3, "ab 3 von 5"],
-              [4, "ab 4 von 5"],
-              [5, "nur 5 von 5"],
-            ]}
+            options={BEAUTY_OPTIONS}
           />
           <Select
             id="min-fame"
             label="Bekanntheit"
             value={filters.minFame}
             onChange={(v) => set("minFame", v)}
-            options={[
-              [1, "alle"],
-              [3, "ab 3 von 5"],
-              [4, "nur Klassiker"],
-            ]}
+            options={FAME_OPTIONS}
           />
-        </div>
+        </FieldGroup>
       </CollapsibleContent>
     </Collapsible>
   );
@@ -223,7 +223,7 @@ function Select({
   label: string;
   value: number;
   onChange: (value: number) => void;
-  options: [value: number, label: string][];
+  options: readonly (readonly [value: number, label: string])[];
 }) {
   return (
     <Field className={cn("gap-1")}>

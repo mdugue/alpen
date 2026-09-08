@@ -9,16 +9,16 @@ import type { Pass, Tour, Town } from "@/lib/types";
  */
 export const fold = (s: string) =>
   s
+    .toLowerCase()
     .normalize("NFD")
     .replaceAll(/\p{M}+/gu, "")
     .replaceAll("ß", "ss")
     .replaceAll("æ", "ae")
     .replaceAll("œ", "oe")
     .replaceAll("ł", "l")
-    .toLowerCase()
-    .replaceAll(/['’.]/gu, "")
-    .replaceAll(/[-–/]+/gu, " ")
-    .replaceAll(/\s+/gu, " ")
+    // Apostrophes join ("l'Iseran" → "liseran"), everything else separates.
+    .replaceAll(/['’]/gu, "")
+    .replaceAll(/[^\p{L}\p{N}]+/gu, " ")
     .trim();
 
 export const matches = (haystack: string, query: string) =>

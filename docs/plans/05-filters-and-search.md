@@ -110,11 +110,11 @@ The `curate-data` skill covers adding more.
 
 `Filters` gains:
 
-| Field                    | UI                              | Hash    | Applies to |
-| ------------------------ | ------------------------------- | ------- | ---------- |
-| `difficulty: [min, max]` | range slider 1–5                | `d=2-4` | passes     |
-| `maxTraffic: number`     | select "egal / ≤ 3 / ≤ 2 / ≤ 1" | `v=3`   | passes     |
-| `minBeauty: number`      | select like fame                | `be=4`  | passes     |
+| Field                    | UI                              | Hash    | Applies to                      |
+| ------------------------ | ------------------------------- | ------- | ------------------------------- |
+| `difficulty: [min, max]` | range slider 1–5                | `d=2-4` | passes, tours (by their passes) |
+| `maxTraffic: number`     | select "egal / ≤ 3 / ≤ 2 / ≤ 1" | `v=3`   | passes, tours (by their passes) |
+| `minBeauty: number`      | select like fame                | `be=4`  | passes, tours (by their passes) |
 
 `sort` moves from `PassList` state into `Filters` (`o=beauty`). The pass
 filter collapsible grows to two columns on desktop; `passFilters` badge count
@@ -151,7 +151,7 @@ the source.
 
 - "grossglockner", "vrsic", "stilfser", "bormio", "drei zinnen" each return
   the expected pass.
-- A link with `l=it&d=1-3&v=2&o=beauty` restores those filters and the sort.
+- A link with `d=1-3&v=2&o=beauty` restores those filters and the sort.
 - Searching a pass name leaves only matching tours and towns on the map.
 - The filter badge counts every active pass filter.
 
