@@ -1,6 +1,6 @@
 ---
 name: preview-app
-description: "Build, run and screenshot this app headlessly (desktop, mobile, dark mode, selected pass or tour via hash) to verify a UI change or to show the user what a state looks like. Use when a change touches components/, app/ or globals.css, when the user asks for screenshots, or before opening a PR with visible changes."
+description: "Build, run and screenshot this app headlessly (desktop, mobile, dark mode, selected pass or tour via hash) to verify a UI change or to show the user what a state looks like. Uses Bun.WebView, no Playwright. Use when a change touches components/, app/ or globals.css, when the user asks for screenshots, or before opening a PR with visible changes."
 ---
 
 The app is a map; a diff does not show whether panels overlap or colours
@@ -17,25 +17,32 @@ sleep 3 && curl -s -o /dev/null -w "%{http_code}\n" http://127.0.0.1:3000/
 sees. Stop the server at the end (`pkill -f "[n]ext-server"`; the bracket
 keeps `pkill` from matching your own shell).
 
-## 2. Screenshot with Playwright
+## 2. Screenshot with Bun.WebView
 
-The script `screenshot.mjs` next to this file takes a base URL and a list of
-states and writes PNGs. It needs the `playwright` package and a Chromium:
+`screenshot.ts` next to this file drives a headless browser through
+`Bun.WebView` (Bun ≥ 1.4, experimental). No npm package is involved; it
+needs a Chrome or Chromium on the machine, or on macOS nothing at all with
+`--webkit`.
 
 ```bash
-npm i --prefix /tmp/pw playwright@latest      # once per machine
-PLAYWRIGHT_PKG=/tmp/pw/node_modules/playwright/index.mjs \
-EXE=/opt/pw-browsers/chromium \                # only where a Chromium is preinstalled; omit otherwise
-node .agents/skills/preview-app/screenshot.mjs http://127.0.0.1:3000 out/
+bun .agents/skills/preview-app/screenshot.ts http://127.0.0.1:3000 out/
+CHROME=/opt/pw-browsers/chromium bun .agents/skills/preview-app/screenshot.ts   # Chrome outside standard locations
+bun .agents/skills/preview-app/screenshot.ts --webkit                          # macOS, system WebKit, zero dependencies
 ```
 
 States captured by default: overview light, overview dark, `#tour=sellaronda`,
 `#pass=col-du-galibier&t=10`, mobile 390×844 peek, mobile with a pass. Add
-your own with `--state name=hash[,mobile][,dark]`.
+your own with `--state name=hash[,mobile][,dark]`. Every state starts with
+cleared storage, so remembered sidebar or period state never leaks between
+shots.
 
-If the sandbox cannot reach tile servers, pass `--offline`: external
-requests are aborted so MapLibre reaches `load` and draws the vector layers on
-a blank background. Say so in the PR when you post such screenshots.
+If the sandbox cannot reach tile servers, pass `--offline`: requests to
+other origins are failed at once so MapLibre reaches `load` and draws the
+vector layers on a blank background. Say so in the PR when you post such
+screenshots.
+
+`--webkit` cannot emulate dark mode, touch or offline mode (those need the
+Chrome DevTools Protocol); the script says so and ignores the flags.
 
 ## 3. Look for
 
@@ -48,7 +55,8 @@ a blank background. Say so in the PR when you post such screenshots.
   flown to the entity with the panel padding respected.
 - Text: German, `de-DE` number formatting (2.642 m, 24,3 km), no overflow in
   the 352 px detail panel.
-- Console: no errors except failed tile requests in offline mode.
+- Console: the script prints page errors; failed tile requests in offline
+  mode are filtered out, anything else is worth a look.
 
 ## 4. Deliver
 
