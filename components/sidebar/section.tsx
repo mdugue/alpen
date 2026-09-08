@@ -32,7 +32,7 @@ export function Section({
   const filtered = count !== total;
   return (
     <Collapsible open={open} onOpenChange={onOpenChange}>
-      <div className="sticky top-0 z-10 grid grid-cols-[minmax(0,1fr)_auto] items-center border-b border-border bg-card pr-3">
+      <div className="sticky top-0 z-10 grid grid-cols-[minmax(0,1fr)_auto] items-center border-b border-border bg-card/85 pr-3 backdrop-blur-sm">
         <h2 className="contents">
           <CollapsibleTrigger
             render={<Button variant="ghost" className="group/section h-10 justify-start gap-2 rounded-none px-3" />}

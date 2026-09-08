@@ -9,12 +9,14 @@ import { cn, fmtUnit } from "@/lib/utils";
 
 export function TourList({
   rows,
+  currentRow,
   hiddenTours,
   onToggleTour,
   onSelect,
   onToggleFavorite,
 }: {
   rows: TourRow[];
+  currentRow: string | null;
   hiddenTours: string[];
   onToggleTour: (slug: string, on: boolean) => void;
   onSelect: (slug: string) => void;
@@ -29,6 +31,7 @@ export function TourList({
           <EntityRow
             key={tour.slug}
             rowId={`tour:${tour.slug}`}
+            current={currentRow === `tour:${tour.slug}`}
             className={cn(!onMap && "opacity-60")}
             leading={<span className="h-1.5 w-4 shrink-0 rounded-full" style={{ background: tour.color }} />}
             title={tour.name}

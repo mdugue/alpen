@@ -20,6 +20,7 @@ export function EntityRow({
   className,
   leading,
   rowId,
+  current,
 }: {
   title: React.ReactNode;
   subtitle: React.ReactNode;
@@ -35,9 +36,17 @@ export function EntityRow({
   className?: string;
   /** `kind:slug`, used to return focus to the row after the detail view closes. */
   rowId: string;
+  current?: boolean;
 }) {
   return (
-    <li className={cn("grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-x-1 border-b border-border", className)}>
+    <li
+      data-current={current || undefined}
+      className={cn(
+        "grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-x-1 border-b border-border",
+        current && "bg-accent/15 shadow-[inset_2px_0_0_var(--color-accent)]",
+        className,
+      )}
+    >
       <Toggle
         size="sm"
         pressed={favorite}
@@ -50,6 +59,7 @@ export function EntityRow({
       <button
         type="button"
         data-row={rowId}
+        aria-current={current ? "true" : undefined}
         onClick={onSelect}
         className="min-w-0 rounded-sm py-2 pr-1 text-left outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
       >

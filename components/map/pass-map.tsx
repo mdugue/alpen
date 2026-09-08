@@ -47,6 +47,8 @@ interface Props {
    * when the object identity changes.
    */
   requestedView?: MapView | null;
+  /** Pixels on the left covered by floating panels; camera targets stay right of them. */
+  insetLeft?: number;
   /** Pixels at the bottom covered by the mobile sheet; camera targets stay above it. */
   insetBottom?: number;
   /** Rendered over the map in the top-left corner. */
@@ -163,6 +165,7 @@ export function PassMap({
   onSelect,
   onViewChange,
   requestedView = null,
+  insetLeft = 0,
   insetBottom = 0,
   children,
 }: Props) {
@@ -514,8 +517,8 @@ export function PassMap({
 
   // --- Reserve space for the mobile sheet ---------------------------------
   useEffect(() => {
-    map.current?.setPadding({ top: 0, left: 0, right: 0, bottom: insetBottom });
-  }, [insetBottom, ready]);
+    map.current?.setPadding({ top: 0, left: insetLeft, right: 0, bottom: insetBottom });
+  }, [insetLeft, insetBottom, ready]);
 
   // --- Write data into the sources ---------------------------------------
   useEffect(() => {
@@ -681,7 +684,10 @@ export function PassMap({
       {/* Plain "absolute inset-0" loses against the unlayered maplibre-gl.css (`.maplibregl-map { position: relative }`). */}
       <div ref={container} className="size-full" />
 
-      <div className="absolute top-3 left-3 z-10 flex max-w-[calc(100%-4rem)] flex-wrap items-center gap-2">
+      <div
+        style={{ left: insetLeft + 12 }}
+        className="absolute top-3 z-10 flex max-w-[calc(100%-4rem)] flex-wrap items-center gap-2 transition-[left] duration-200 motion-reduce:transition-none"
+      >
         {children}
       </div>
 

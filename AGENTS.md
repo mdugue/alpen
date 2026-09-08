@@ -51,13 +51,16 @@ is rough route planning, not navigation.
   `next-themes`; the dark tokens sit in a `prefers-color-scheme` media query
   and Tailwind's default `dark:` variant is used. Delete the
   `@custom-variant dark (&:is(.dark *))` line that `ui:init` writes.
-- **Layout: the map is the page.** No header, toolbar or footer; a collapsible
-  sidebar (`components/sidebar/`) on the left holds search, filters and one
-  collapsible list per kind, and shows the detail view as a stack while
-  something is selected. Below `lg` the same sidebar body lives in a bottom
-  `Drawer` with snap points. Only the period control and three map tools
-  float over the map. Map visibility is always a `Switch` ("auf der Karte"),
-  two-state buttons are always a `Toggle`.
+- **Layout: the map is the page.** No header, toolbar or footer. On desktop
+  the map fills the viewport and two translucent panels float over its left
+  edge: the collapsible sidebar (`components/sidebar/`: search, filters, one
+  collapsible list per kind) and, while something is selected, the detail
+  slide-over next to it. Their widths are mirrored in `explorer.tsx`
+  (`SIDEBAR_W`, `DETAIL_W`) and fed to MapLibre as left padding so camera
+  targets stay visible. Below `lg` the same sidebar body lives in a bottom
+  `Drawer` with snap points and the detail stacks inside it. Only the period
+  control and three map tools float over the map. Map visibility is always a
+  `Switch` ("auf der Karte"), two-state buttons are always a `Toggle`.
 - **Colours only via tokens.** MapLibre cannot read CSS variables;
   `pass-map.tsx` reads them once via `getComputedStyle` (`readColors`). Add
   new map colours there rather than hard-coding them.

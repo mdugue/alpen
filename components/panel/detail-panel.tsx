@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { ArrowLeft, ExternalLink, HelpCircle, Star } from "lucide-react";
+import { ArrowLeft, ExternalLink, HelpCircle, Star, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Empty, EmptyDescription, EmptyHeader, EmptyTitle } from "@/components/ui/empty";
@@ -28,6 +28,8 @@ import type {
 const TRAFFIC_LABEL = ["", "fast autofrei", "ruhig", "normal", "viel", "Durchgangsstraße"];
 
 interface Props {
+  /** "back" inside the mobile sheet (returns to the list), "close" for the desktop slide-over. */
+  dismiss: "back" | "close";
   selection: Selection;
   period: Period;
   passes: Pass[];
@@ -83,10 +85,17 @@ export function DetailPanel(props: Props) {
       }}
     >
       <div className="flex h-10 shrink-0 items-center gap-1 border-b border-border px-2">
-        <Button size="sm" variant="ghost" onClick={onBack}>
-          <ArrowLeft data-icon="inline-start" /> Liste
-        </Button>
-        <p className="min-w-0 flex-1 truncate text-center text-[11px] font-semibold tracking-widest text-muted-foreground uppercase">
+        {props.dismiss === "back" && (
+          <Button size="sm" variant="ghost" onClick={onBack}>
+            <ArrowLeft data-icon="inline-start" /> Liste
+          </Button>
+        )}
+        <p
+          className={cn(
+            "min-w-0 flex-1 truncate text-[11px] font-semibold tracking-widest text-muted-foreground uppercase",
+            props.dismiss === "back" ? "text-center" : "pl-2",
+          )}
+        >
           {kicker}
         </p>
         <Toggle
@@ -97,6 +106,11 @@ export function DetailPanel(props: Props) {
         >
           <Star className={cn(favorite && "fill-accent text-accent")} />
         </Toggle>
+        {props.dismiss === "close" && (
+          <Button size="icon-sm" variant="ghost" onClick={onBack} aria-label="Details schließen">
+            <X />
+          </Button>
+        )}
       </div>
       <div ref={scroller} className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-4 pb-6 pt-3">
         <h2 ref={heading} id="detail-title" tabIndex={-1} className="text-2xl font-bold outline-none">

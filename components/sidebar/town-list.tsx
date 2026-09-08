@@ -6,10 +6,12 @@ import type { TownRow } from "@/lib/rows";
 
 export function TownList({
   rows,
+  currentRow,
   onSelect,
   onToggleFavorite,
 }: {
   rows: TownRow[];
+  currentRow: string | null;
   onSelect: (slug: string) => void;
   onToggleFavorite: (slug: string) => void;
 }) {
@@ -20,6 +22,7 @@ export function TownList({
         <EntityRow
           key={town.slug}
           rowId={`town:${town.slug}`}
+          current={currentRow === `town:${town.slug}`}
           title={town.name}
           subtitle={`${town.country} · ${town.why.split(".")[0]}`}
           favorite={favorite}

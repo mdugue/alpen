@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useRef } from "react";
 import { PanelLeftClose, Search, Star, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput } from "@/components/ui/input-group";
@@ -43,6 +44,8 @@ export interface SidebarProps {
   setSections: (update: (s: EntityKind[]) => EntityKind[]) => void;
   onToggleFavorite: (kind: EntityKind, slug: string) => void;
   onSelect: (sel: Selection) => void;
+  /** Highlighted in the lists and scrolled into view. */
+  selection: Selection | null;
   /** Rendered instead of the lists while an entity is selected; the lists stay mounted (scroll position, open sections). */
   detail: React.ReactNode;
   onCollapse?: () => void;
@@ -60,9 +63,19 @@ export function Sidebar(p: SidebarProps) {
     p.setSections((s) => (open ? [...new Set([...s, kind])] : s.filter((k) => k !== kind)));
   const allTourSlugs = p.tours.map((t) => t.slug);
   const visibleTourCount = allTourSlugs.filter((s) => !p.hiddenTours.includes(s)).length;
+  const lists = useRef<HTMLDivElement>(null);
+  const currentRow = p.selection ? `${p.selection.kind}:${p.selection.slug}` : null;
+
+  // Keep the selected row visible, e.g. after a click on a map marker.
+  useEffect(() => {
+    if (!currentRow) return;
+    lists.current
+      ?.querySelector(`[data-row="${currentRow}"]`)
+      ?.scrollIntoView({ block: "nearest", behavior: "smooth" });
+  }, [currentRow]);
 
   return (
-    <div className="flex h-full min-h-0 flex-col bg-card text-card-foreground">
+    <div className="flex h-full min-h-0 flex-col text-card-foreground">
       {p.variant === "aside" ? (
         <div className="flex h-11 shrink-0 items-center gap-2 border-b border-border px-3">
           <span className="h-5 w-1 rounded-full bg-accent" aria-hidden />
@@ -156,7 +169,7 @@ export function Sidebar(p: SidebarProps) {
           )}
         </div>
 
-        <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain">
+        <div ref={lists} className="min-h-0 flex-1 overflow-y-auto overscroll-contain">
           <Section
             open={p.sections.includes("pass")}
             onOpenChange={toggleSection("pass")}
@@ -167,6 +180,7 @@ export function Sidebar(p: SidebarProps) {
           >
             <PassList
               rows={p.passRows}
+              currentRow={currentRow}
               filters={p.filters}
               setFilters={p.setFilters}
               onSelect={(slug) => p.onSelect({ kind: "pass", slug })}
@@ -198,6 +212,7 @@ export function Sidebar(p: SidebarProps) {
           >
             <TourList
               rows={p.tourRows}
+              currentRow={currentRow}
               hiddenTours={p.hiddenTours}
               onToggleTour={(slug, on) =>
                 p.setHiddenTours((h) => (on ? h.filter((s) => s !== slug) : [...new Set([...h, slug])]))
@@ -224,6 +239,7 @@ export function Sidebar(p: SidebarProps) {
           >
             <TownList
               rows={p.townRows}
+              currentRow={currentRow}
               onSelect={(slug) => p.onSelect({ kind: "town", slug })}
               onToggleFavorite={(slug) => p.onToggleFavorite("town", slug)}
             />

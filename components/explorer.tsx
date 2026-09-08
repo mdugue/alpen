@@ -42,6 +42,13 @@ interface Props {
 const defined = <T extends object>(o: T): Partial<T> =>
   Object.fromEntries(Object.entries(o).filter(([, v]) => v !== undefined)) as Partial<T>;
 
+/** Floating panel geometry on desktop (px); keep in sync with the Tailwind widths below. */
+const GAP = 12;
+const SIDEBAR_W = { lg: 384, xl: 416 };
+const DETAIL_W = 352;
+/** Translucent floating panel over the map. */
+const PANEL = "rounded-xl border border-border/60 bg-card/80 shadow-xl backdrop-blur-md supports-not-[backdrop-filter:blur(0)]:bg-card";
+
 /** Bottom sheet positions on phones: a peek row, half, and almost full. */
 const SNAP_PEEK = "4.5rem";
 const SNAP_POINTS = [SNAP_PEEK, 0.5, 0.82] as const;
@@ -59,6 +66,7 @@ export function Explorer({ passes, tours, towns, routes, profiles, climate }: Pr
   const [scalesOpen, setScalesOpen] = useState(false);
   const { isFavorite, toggle: toggleFavorite, count: favoriteCount } = useFavorites();
   const isMobile = useMediaQuery(MOBILE_QUERY);
+  const isXl = useMediaQuery("(width >= 80rem)");
   // Nothing is written to the hash before it has been read once; otherwise the
   // first commit would overwrite a shared link with the defaults.
   const [hashApplied, setHashApplied] = useState(false);
@@ -81,7 +89,6 @@ export function Explorer({ passes, tours, towns, routes, profiles, climate }: Pr
       setSelection(h.selection);
       if (h.selection) {
         setSnap(0.5);
-        setSidebarOpen(true);
         if (h.selection.kind === "tour") setHiddenTours((t) => t.filter((s) => s !== h.selection!.slug));
         if (h.selection.kind === "town") setShowTowns(true);
       }
@@ -117,7 +124,6 @@ export function Explorer({ passes, tours, towns, routes, profiles, climate }: Pr
     if (sel.kind === "tour") setHiddenTours((h) => h.filter((s) => s !== sel.slug));
     if (sel.kind === "town") setShowTowns(true);
     if (isMobile) setSnap(0.5);
-    else setSidebarOpen(true);
   };
 
   /** Back to the list; focus returns to the row the detail came from. */
@@ -133,6 +139,7 @@ export function Explorer({ passes, tours, towns, routes, profiles, climate }: Pr
 
   const detail = selection ? (
     <DetailPanel
+      dismiss={isMobile ? "back" : "close"}
       selection={selection}
       period={filters.period}
       passes={passes}
@@ -169,7 +176,8 @@ export function Explorer({ passes, tours, towns, routes, profiles, climate }: Pr
       setSections={setSections}
       onToggleFavorite={toggleFavorite}
       onSelect={select}
-      detail={detail}
+      selection={selection}
+      detail={variant === "sheet" ? detail : null}
       onCollapse={() => setSidebarOpen(false)}
       onOpenScales={() => setScalesOpen(true)}
       onSearchFocus={variant === "sheet" ? () => setSnap(SNAP_POINTS[2]) : undefined}
@@ -184,16 +192,17 @@ export function Explorer({ passes, tours, towns, routes, profiles, climate }: Pr
       ? Math.round(window.innerHeight * 0.5)
       : 72;
 
+  // Desktop: the panels float over the map; the map is padded by their width
+  // so camera targets land in the visible part.
+  const sidebarW = isXl ? SIDEBAR_W.xl : SIDEBAR_W.lg;
+  const desktopPanels = isMobile ? [] : [sidebarOpen ? sidebarW : 0, selection ? DETAIL_W : 0].filter(Boolean);
+  const insetLeft = desktopPanels.reduce((x, w) => x + w + GAP, desktopPanels.length ? GAP : 0);
+  const detailLeft = GAP + (!isMobile && sidebarOpen ? sidebarW + GAP : 0);
+
   return (
     <TooltipProvider delay={400}>
-      <div className="flex h-dvh overflow-hidden">
-        {!isMobile && sidebarOpen && (
-          <aside ref={sidebarRoot} className="flex w-104 shrink-0 flex-col border-r border-border max-lg:hidden xl:w-md">
-            {sidebar("aside")}
-          </aside>
-        )}
-
-        <div className="relative min-w-0 flex-1">
+      <div className="relative h-dvh overflow-hidden">
+        <div className="absolute inset-0">
           <PassMap
             passes={mapPasses}
             tours={mapTours}
@@ -204,6 +213,7 @@ export function Explorer({ passes, tours, towns, routes, profiles, climate }: Pr
             onSelect={select}
             onViewChange={setView}
             requestedView={requestedView}
+            insetLeft={insetLeft}
             insetBottom={insetBottom}
           >
             {!isMobile && !sidebarOpen && (
@@ -227,6 +237,30 @@ export function Explorer({ passes, tours, towns, routes, profiles, climate }: Pr
             <PeriodControl value={filters.period} onChange={(p) => setFilters((f) => ({ ...f, period: p }))} />
           </PassMap>
         </div>
+
+        {!isMobile && sidebarOpen && (
+          <aside
+            ref={sidebarRoot}
+            className={cn("absolute top-3 bottom-3 left-3 z-20 flex w-96 flex-col overflow-hidden max-lg:hidden xl:w-104", PANEL)}
+          >
+            {sidebar("aside")}
+          </aside>
+        )}
+
+        {!isMobile && detail && (
+          <section
+            key={`${selection!.kind}:${selection!.slug}`}
+            aria-label="Details"
+            style={{ left: detailLeft }}
+            className={cn(
+              "absolute top-3 bottom-3 z-20 flex w-88 flex-col overflow-hidden max-lg:hidden",
+              "animate-in fade-in-0 slide-in-from-left-4 duration-200 motion-reduce:animate-none",
+              PANEL,
+            )}
+          >
+            {detail}
+          </section>
+        )}
 
         {isMobile && (
           <Drawer

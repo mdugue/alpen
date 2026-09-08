@@ -21,12 +21,14 @@ const RATING_SORTS: readonly PassSort[] = ["beauty", "fame", "difficulty", "traf
 
 export function PassList({
   rows,
+  currentRow,
   filters,
   setFilters,
   onSelect,
   onToggleFavorite,
 }: {
   rows: PassRow[];
+  currentRow: string | null;
   filters: Filters;
   setFilters: (update: (f: Filters) => Filters) => void;
   onSelect: (slug: string) => void;
@@ -107,6 +109,7 @@ export function PassList({
             <EntityRow
               key={pass.slug}
               rowId={`pass:${pass.slug}`}
+              current={currentRow === `pass:${pass.slug}`}
               title={pass.name}
               subtitle={`${pass.region} · ${pass.country}`}
               favorite={favorite}
