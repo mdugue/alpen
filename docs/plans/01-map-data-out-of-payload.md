@@ -1,6 +1,6 @@
 # 01 · Map data out of the React payload
 
-**Status:** in progress · **Effort:** M · **Depends on:** 00 (for complete data;
+**Status:** in progress ([#14](https://github.com/mdugue/alpen/pull/14)) · **Effort:** M · **Depends on:** 00 (for complete data;
 the plan itself works with partial data) · **Unblocks:** 02, 07
 
 ## Goal
