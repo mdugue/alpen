@@ -116,52 +116,58 @@ export function Sidebar(p: SidebarProps) {
 
       <div className={cn("flex min-h-0 flex-1 flex-col", p.detail && "hidden")}>
         <div className="border-border relative flex shrink-0 flex-col gap-2 border-b px-3 py-2">
-          <div className="flex items-center gap-2">
-            <InputGroup className="flex-1">
-              <InputGroupAddon>
-                <Search />
-              </InputGroupAddon>
-              <InputGroupInput
-                type="search"
-                name="q"
-                autoComplete="off"
-                enterKeyHint="search"
-                spellCheck={false}
-                value={p.filters.query}
-                onChange={(e) => set("query", e.target.value)}
-                onFocus={p.onSearchFocus}
-                placeholder="Pass, Tour oder Ort …"
-                aria-label="Suchen"
-                className="[&::-webkit-search-cancel-button]:appearance-none [&::-webkit-search-decoration]:appearance-none"
-              />
-              {p.filters.query && (
-                <InputGroupAddon align="inline-end">
-                  <InputGroupButton
-                    size="icon-xs"
-                    onClick={() => set("query", "")}
-                    aria-label="Suche leeren"
-                  >
-                    <X />
-                  </InputGroupButton>
-                </InputGroupAddon>
-              )}
-            </InputGroup>
-            <Toggle
-              variant="outline"
-              pressed={p.filters.favoritesOnly}
-              onPressedChange={(on) => set("favoritesOnly", on)}
-              aria-label="Nur Gemerkte anzeigen"
-              className={PRESSED}
-            >
-              <Star className={cn(p.filters.favoritesOnly && "fill-current")} />
-              {p.favoriteCount > 0 && (
-                <span className="tabular-nums">{p.favoriteCount}</span>
-              )}
-            </Toggle>
-          </div>
-          <div className={cn(p.peek && "hidden")}>
-            <FilterPanel filters={p.filters} setFilters={p.setFilters} />
-          </div>
+          <FilterPanel
+            filters={p.filters}
+            setFilters={p.setFilters}
+            hidden={p.peek}
+            search={
+              <>
+                <InputGroup className="flex-1">
+                  <InputGroupAddon>
+                    <Search />
+                  </InputGroupAddon>
+                  <InputGroupInput
+                    type="search"
+                    name="q"
+                    autoComplete="off"
+                    enterKeyHint="search"
+                    spellCheck={false}
+                    value={p.filters.query}
+                    onChange={(e) => set("query", e.target.value)}
+                    onFocus={p.onSearchFocus}
+                    placeholder="Pass, Tour oder Ort …"
+                    aria-label="Suchen"
+                    className="[&::-webkit-search-cancel-button]:appearance-none [&::-webkit-search-decoration]:appearance-none"
+                  />
+                  {p.filters.query && (
+                    <InputGroupAddon align="inline-end">
+                      <InputGroupButton
+                        size="icon-xs"
+                        onClick={() => set("query", "")}
+                        aria-label="Suche leeren"
+                      >
+                        <X />
+                      </InputGroupButton>
+                    </InputGroupAddon>
+                  )}
+                </InputGroup>
+                <Toggle
+                  variant="outline"
+                  pressed={p.filters.favoritesOnly}
+                  onPressedChange={(on) => set("favoritesOnly", on)}
+                  aria-label="Nur Gemerkte anzeigen"
+                  className={PRESSED}
+                >
+                  <Star
+                    className={cn(p.filters.favoritesOnly && "fill-current")}
+                  />
+                  {p.favoriteCount > 0 && (
+                    <span className="tabular-nums">{p.favoriteCount}</span>
+                  )}
+                </Toggle>
+              </>
+            }
+          />
           {hasActiveFilters(p.filters) && !p.peek && (
             <Button
               variant="link"

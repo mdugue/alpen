@@ -177,6 +177,11 @@ the source.
   the upper bounds (max. difficulty, traffic). Towns see search and
   favourites only.
 
+- Filter changes must stay cheap on the map: the 88 ascent lines (66 000
+  points) are uploaded once, and a change only sets a layer filter and
+  feature state (status, selected) on them. Rebuilding that source on every
+  slider step was what made the filters feel slow.
+
 ## Risks and open questions
 
 - Tours filtered by country: a tour that crosses FR/IT counts for both.

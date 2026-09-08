@@ -92,7 +92,8 @@ test(
     withPage(app, "status-filter", { hash: "#t=1" }, async (page) => {
       await page.waitFor(PASS_ROW);
       const all = await page.count(PASS_ROW);
-      // The status picker is a dropdown with checkboxes.
+      // The status picker is a dropdown with checkboxes inside the filter panel.
+      await page.clickText("button", "Filter");
       await page.click('[aria-label="Status filtern"]');
       await page.clickText('[role="menuitemcheckbox"]', "oft gesperrt");
       await waitUntil(

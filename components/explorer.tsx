@@ -293,6 +293,7 @@ export function Explorer({
         <div className="absolute inset-0">
           <PassMap
             passes={mapPasses}
+            allPasses={passes}
             tours={mapTours}
             towns={mapTowns}
             routes={routes}

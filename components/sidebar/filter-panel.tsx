@@ -55,16 +55,23 @@ const statusSummary = (status: Status[]) =>
 export function FilterPanel({
   filters,
   setFilters,
+  search,
+  hidden,
 }: {
   filters: Filters;
   setFilters: (update: (f: Filters) => Filters) => void;
+  /** The search row; the trigger sits at its end so the panel costs no row of its own. */
+  search: React.ReactNode;
+  /** Bottom sheet at its peek height: only the search row stays. */
+  hidden?: boolean;
 }) {
   const set = <K extends keyof Filters>(key: K, value: Filters[K]) =>
     setFilters((f) => ({ ...f, [key]: value }));
-  const criteria = countCriteria(filters);
-  // Opens by itself when a link carries criteria; the user's own toggling wins afterwards.
+  const statusFiltered = filters.status.length !== ALL_STATUS.length;
+  const active = countCriteria(filters) + (statusFiltered ? 1 : 0);
+  // Opens by itself when a link carries filters; the user's own toggling wins afterwards.
   const [manual, setManual] = useState<boolean | null>(null);
-  const open = manual ?? criteria > 0;
+  const open = manual ?? active > 0;
   const [minDifficulty, maxDifficulty] = filters.difficulty;
   const difficultyLabel =
     minDifficulty === RATING_MIN && maxDifficulty === RATING_MAX
@@ -76,13 +83,31 @@ export function FilterPanel({
   return (
     <Collapsible open={open} onOpenChange={setManual}>
       <div className="flex items-center gap-2">
+        {search}
+        <CollapsibleTrigger
+          render={
+            <Button
+              variant="outline"
+              size="sm"
+              className={cn(hidden && "hidden")}
+            />
+          }
+        >
+          <SlidersHorizontal data-icon="inline-start" />
+          Filter
+          {active > 0 && <Badge variant="secondary">{active}</Badge>}
+        </CollapsibleTrigger>
+      </div>
+      <CollapsibleContent
+        className={cn("grid gap-1.5 pt-2", hidden && "hidden")}
+      >
         <DropdownMenu>
           <DropdownMenuTrigger
             render={
               <Button
                 variant="outline"
                 size="sm"
-                className="flex-1 justify-between font-normal"
+                className="justify-between font-normal"
               />
             }
             aria-label="Status filtern"
@@ -119,15 +144,6 @@ export function FilterPanel({
             ))}
           </DropdownMenuContent>
         </DropdownMenu>
-        <CollapsibleTrigger
-          render={<Button size="sm" variant={open ? "secondary" : "ghost"} />}
-        >
-          <SlidersHorizontal data-icon="inline-start" />
-          Filter
-          {criteria > 0 && <Badge variant="secondary">{criteria}</Badge>}
-        </CollapsibleTrigger>
-      </div>
-      <CollapsibleContent className="grid gap-1.5 pt-2">
         <Field orientation="horizontal">
           <FieldTitle id="difficulty" className="w-32 shrink-0 tabular-nums">
             {difficultyLabel}
