@@ -31,22 +31,22 @@ friends do that better and the app links out to them.
 
 ## Where things live
 
-| Topic                                      | File                                          |
-| ------------------------------------------ | --------------------------------------------- |
-| Rideability heuristic                      | `lib/status.ts` (`passStatus`, `tourStatus`)  |
-| Data types                                 | `lib/types.ts`                                |
-| Data access (cached)                       | `lib/data.ts`                                 |
-| Filter, selection and URL state            | `lib/app-state.ts`, `components/explorer.tsx` |
-| Map, layers, 3D, markers, labels           | `components/map/pass-map.tsx`                 |
-| Period control floating over the map       | `components/map/period-control.tsx`           |
-| Sidebar: search, filters, one list per kind | `components/sidebar/`, `lib/rows.ts`          |
-| Detail panel incl. profile/weather/climate | `components/panel/`                           |
-| Precomputation                             | `scripts/build-data.ts`                       |
-| Name, claim, colours, mark, base URL       | `lib/brand.ts`, `lib/mark.tsx`                |
+| Topic                                         | File                                                                                                                  |
+| --------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| Rideability heuristic                         | `lib/status.ts` (`passStatus`, `tourStatus`)                                                                          |
+| Data types                                    | `lib/types.ts`                                                                                                        |
+| Data access (cached)                          | `lib/data.ts`                                                                                                         |
+| Filter, selection and URL state               | `lib/app-state.ts`, `components/explorer.tsx`                                                                         |
+| Map, layers, 3D, markers, labels              | `components/map/pass-map.tsx`                                                                                         |
+| Period control floating over the map          | `components/map/period-control.tsx`                                                                                   |
+| Sidebar: search, filters, one list per kind   | `components/sidebar/`, `lib/rows.ts`                                                                                  |
+| Detail panel incl. profile/weather/climate    | `components/panel/`                                                                                                   |
+| Precomputation                                | `scripts/build-data.ts`                                                                                               |
+| Name, claim, colours, mark, base URL          | `lib/brand.ts`, `lib/mark.tsx`                                                                                        |
 | Icons, share image, manifest, robots, sitemap | `app/icon.tsx`, `app/apple-icon.tsx`, `app/opengraph-image.tsx`, `app/manifest.ts`, `app/robots.ts`, `app/sitemap.ts` |
-| Legal pages                                | `app/impressum/`, `app/datenschutz/`          |
-| Implementation plans                       | `docs/plans/` (index: `docs/plans/README.md`) |
-| Project skills                             | `.agents/skills/implement-plan`, `curate-data`, `preview-app` |
+| Legal pages                                   | `app/impressum/`, `app/datenschutz/`                                                                                  |
+| Implementation plans                          | `docs/plans/` (index: `docs/plans/README.md`)                                                                         |
+| Project skills                                | `.agents/skills/implement-plan`, `curate-data`, `preview-app`                                                         |
 
 ## Conventions
 
@@ -140,3 +140,9 @@ This version has breaking changes — APIs, conventions, and file structure may 
 This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
 
 <!-- END:nextjs-agent-rules -->
+
+# Ultracite Code Standards
+
+This project uses **Ultracite**, a zero-config preset that enforces strict code quality standards through automated formatting and linting.
+
+Most formatting and common issues are automatically fixed by Oxlint + Oxfmt. Run `bun x ultracite fix` before committing to ensure compliance.
