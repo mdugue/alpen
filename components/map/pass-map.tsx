@@ -529,6 +529,10 @@ export function PassMap({
       },
     });
     map.current = m;
+    // Test hook for the e2e suite (never in a production build).
+    if (process.env.NEXT_PUBLIC_TEST_HOOKS === "1") {
+      (window as unknown as { __alpen?: { map: MLMap } }).__alpen = { map: m };
+    }
     m.addControl(
       new NavigationControl({ visualizePitch: true, showZoom: !coarse }),
       "bottom-right",

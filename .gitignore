@@ -10,6 +10,9 @@ scripts/.cache
 # copied by scripts/copy-maplibre-worker.ts
 public/maplibre
 
+# screenshots the e2e helper writes when a scenario fails
+e2e/failures
+
 # npm lockfile: this project uses bun
 package-lock.json
 

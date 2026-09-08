@@ -4,6 +4,7 @@ import { SlidersHorizontal } from "lucide-react";
 import { useState } from "react";
 
 import { Rating } from "@/components/rating";
+import { SeasonStrip } from "@/components/season-strip";
 import { EntityRow } from "@/components/sidebar/entity-row";
 import { ListEmpty } from "@/components/sidebar/list-empty";
 import { StatusLabel } from "@/components/status-badge";
@@ -139,7 +140,7 @@ export function PassList({
         <ListEmpty title="Keine Pässe für diese Filter" />
       ) : (
         <ul>
-          {sorted.map(({ pass, status, favorite }) => (
+          {sorted.map(({ pass, status, favorite, season }) => (
             <EntityRow
               key={pass.slug}
               rowId={`pass:${pass.slug}`}
@@ -165,6 +166,7 @@ export function PassList({
                       className="text-muted-foreground"
                     />
                   )}
+                  <SeasonStrip statuses={season} current={filters.period} />
                 </>
               }
             />

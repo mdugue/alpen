@@ -1,0 +1,176 @@
+import { describe, expect, test } from "bun:test";
+
+import {
+  ALL_STATUS,
+  DEFAULT_FILTERS,
+  DEFAULT_VIEW,
+  defined,
+  hasActiveFilters,
+  parseHash,
+  resolvePeriod,
+  serializeHash,
+  statusMatches,
+} from "@/lib/app-state";
+import type { Filters, MapView, Selection } from "@/lib/app-state";
+
+const filters = (over: Partial<Filters> = {}): Filters => ({
+  ...DEFAULT_FILTERS,
+  ...over,
+});
+const view = (over: Partial<MapView> = {}): MapView => ({
+  ...DEFAULT_VIEW,
+  ...over,
+});
+
+describe("parseHash", () => {
+  test("reads filters, selection and camera", () => {
+    const h = parseHash(
+      "#pass=col-du-galibier&t=6&z=9&c=45.06,6.41&f=4&m=2000&q=gal&s=open,risky&pi=60&b=30",
+    );
+    expect(h.filters).toEqual({
+      period: 6,
+      status: ["open", "risky"],
+      minFame: 4,
+      minElevation: 2000,
+      query: "gal",
+    });
+    expect(h.selection).toEqual({ kind: "pass", slug: "col-du-galibier" });
+    expect(h.view).toEqual({
+      lat: 45.06,
+      lon: 6.41,
+      zoom: 9,
+      pitch: 60,
+      bearing: 30,
+    });
+  });
+
+  test("works with and without the leading #, and ignores unknown keys", () => {
+    expect(parseHash("t=6&unknown=1")).toEqual(parseHash("#t=6"));
+  });
+
+  test("an empty hash leaves everything undefined", () => {
+    const h = parseHash("");
+    expect(h.selection).toBeNull();
+    expect(Object.values(h.filters).every((v) => v === undefined)).toBe(true);
+    expect(Object.values(h.view).every((v) => v === undefined)).toBe(true);
+  });
+
+  test("only one selection kind, passes first", () => {
+    expect(parseHash("#tour=sellaronda")!.selection).toEqual({
+      kind: "tour",
+      slug: "sellaronda",
+    });
+    expect(parseHash("#town=bormio")!.selection).toEqual({
+      kind: "town",
+      slug: "bormio",
+    });
+    expect(parseHash("#pass=a&tour=b")!.selection).toEqual({
+      kind: "pass",
+      slug: "a",
+    });
+  });
+
+  test("legacy and special status values from older links", () => {
+    expect(parseHash("#s=openRisky").filters.status).toEqual(["open", "risky"]);
+    expect(parseHash("#s=all").filters.status).toBeUndefined();
+    expect(parseHash("#s=none").filters.status).toEqual([]);
+    expect(parseHash("#s=open,nonsense").filters.status).toEqual(["open"]);
+    expect(parseHash("#s=nonsense").filters.status).toBeUndefined();
+  });
+
+  test("nonsense numbers are dropped rather than becoming NaN", () => {
+    expect(parseHash("#c=abc,def").view.lat).toBeUndefined();
+    expect(parseHash("#c=abc,def").view.lon).toBeUndefined();
+    expect(parseHash("#c=45.06").view.lat).toBeUndefined();
+    expect(parseHash("#c=45.06,6.41,9").view.lat).toBeUndefined();
+    expect(parseHash("#t=99").filters.period).toBeUndefined();
+    expect(parseHash("#t=abc").filters.period).toBeUndefined();
+    expect(parseHash("#t=6.25").filters.period).toBeUndefined();
+    expect(parseHash("#z=abc").view.zoom).toBeUndefined();
+  });
+});
+
+describe("serializeHash", () => {
+  test("writes only what differs from the defaults", () => {
+    expect(
+      serializeHash(
+        filters({ period: 7 }),
+        null,
+        view({ lat: 46.3, lon: 9.6, zoom: 6.5 }),
+      ),
+    ).toBe("t=7&z=6.50&c=46.3000%2C9.6000");
+  });
+
+  test("filters, selection and a tilted camera are carried", () => {
+    const hash = serializeHash(
+      filters({
+        period: 6,
+        status: ["open"],
+        minFame: 4,
+        minElevation: 2000,
+        query: "gal",
+      }),
+      { kind: "pass", slug: "col-du-galibier" },
+      view({ pitch: 60, bearing: 30 }),
+    );
+    const back = parseHash(hash);
+    expect(back.filters.period).toBe(6);
+    expect(back.filters.status).toEqual(["open"]);
+    expect(back.filters.minFame).toBe(4);
+    expect(back.filters.minElevation).toBe(2000);
+    expect(back.filters.query).toBe("gal");
+    expect(back.selection).toEqual({ kind: "pass", slug: "col-du-galibier" });
+    expect(back.view.pitch).toBe(60);
+    expect(back.view.bearing).toBe(30);
+  });
+
+  test("an empty status filter survives the round trip", () => {
+    expect(
+      parseHash(serializeHash(filters({ status: [] }), null, view())).filters
+        .status,
+    ).toEqual([]);
+  });
+
+  test("round trip through parse and serialize is stable", () => {
+    const selection: Selection = { kind: "town", slug: "bormio" };
+    const first = serializeHash(
+      filters({ period: 9.5, query: "bor" }),
+      selection,
+      view({ zoom: 8.25 }),
+    );
+    const parsed = parseHash(first);
+    const second = serializeHash(
+      { ...DEFAULT_FILTERS, ...defined(parsed.filters) },
+      parsed.selection,
+      { ...DEFAULT_VIEW, ...defined(parsed.view) },
+    );
+    expect(second).toBe(first);
+  });
+});
+
+describe("filters", () => {
+  test("hasActiveFilters ignores the period", () => {
+    expect(hasActiveFilters(filters({ period: 3 }))).toBe(false);
+    expect(hasActiveFilters(filters({ minFame: 4 }))).toBe(true);
+    expect(hasActiveFilters(filters({ status: ["open"] }))).toBe(true);
+    expect(hasActiveFilters(filters({ query: "  " }))).toBe(false);
+    expect(hasActiveFilters(filters({ favoritesOnly: true }))).toBe(true);
+  });
+
+  test("statusMatches follows the visible set", () => {
+    expect(statusMatches("open", ALL_STATUS)).toBe(true);
+    expect(statusMatches("closed", ["open", "risky"])).toBe(false);
+  });
+});
+
+describe("resolvePeriod", () => {
+  test("a shared link wins over the stored choice and over today", () => {
+    expect(resolvePeriod(7, 9, 5.5)).toBe(7);
+  });
+  test("without a link the visitor's own last choice wins", () => {
+    expect(resolvePeriod(undefined, 9, 5.5)).toBe(9);
+  });
+  test("without either, today's half-month from the server", () => {
+    expect(resolvePeriod(undefined, null, 5.5)).toBe(5.5);
+  });
+});

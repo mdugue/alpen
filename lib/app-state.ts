@@ -1,6 +1,7 @@
 "use client";
 import { useCallback, useSyncExternalStore } from "react";
 
+import { isPeriod } from "@/lib/status";
 import type { Period, Status } from "@/lib/types";
 
 export type EntityKind = "pass" | "tour" | "town";
@@ -26,8 +27,12 @@ export interface Filters {
   favoritesOnly: boolean;
 }
 
+/**
+ * The period here is only a placeholder: the page is handed today's half-month
+ * by the server and the visitor's own choice wins over both (see `Explorer`).
+ */
 export const DEFAULT_FILTERS: Filters = {
-  period: 10, // early October
+  period: 10,
   status: ALL_STATUS,
   minFame: 1,
   minElevation: 0,
@@ -59,19 +64,32 @@ export const DEFAULT_VIEW: MapView = {
   bearing: 0,
 };
 
-/**
- * View state lives in the URL hash (shareable), bookmarks and
- * map settings in localStorage (private, per device).
- */
-export function readHash(): {
+/** Drops keys that are undefined (or NaN) so a spread does not overwrite defaults. */
+export const defined = <T extends object>(o: T): Partial<T> =>
+  Object.fromEntries(
+    Object.entries(o).filter(
+      ([, v]) => v !== undefined && !(typeof v === "number" && Number.isNaN(v)),
+    ),
+  ) as Partial<T>;
+
+export interface HashState {
   filters: Partial<Filters>;
   selection: Selection | null;
   view: Partial<MapView>;
-} {
-  if (typeof window === "undefined")
-    return { filters: {}, selection: null, view: {} };
-  const p = new URLSearchParams(window.location.hash.slice(1));
-  const num = (k: string) => (p.has(k) ? Number(p.get(k)) : undefined);
+}
+
+/**
+ * View state lives in the URL hash (shareable), bookmarks and map settings in
+ * localStorage (private, per device). `parseHash` is the pure half of
+ * `readHash`, so the parsing can be tested without a window.
+ */
+export function parseHash(hash: string): HashState {
+  const p = new URLSearchParams(hash.replace(/^#/u, ""));
+  const num = (k: string) => {
+    if (!p.has(k)) return;
+    const v = Number(p.get(k));
+    return Number.isFinite(v) ? v : undefined;
+  };
   const selection: Selection | null = p.get("pass")
     ? { kind: "pass", slug: p.get("pass")! }
     : p.get("tour")
@@ -79,10 +97,17 @@ export function readHash(): {
       : p.get("town")
         ? { kind: "town", slug: p.get("town")! }
         : null;
-  const c = p.get("c")?.split(",").map(Number);
+  // Both halves have to be numbers; half a pair is no camera at all, and a
+  // NaN would read as "a camera was requested" further up.
+  const pair = p.get("c")?.split(",").map(Number);
+  const center =
+    pair?.length === 2 && pair.every((n) => Number.isFinite(n))
+      ? pair
+      : undefined;
+  const period = num("t");
   return {
     filters: {
-      period: num("t"),
+      period: isPeriod(period) ? period : undefined,
       status: parseStatus(p.get("s")),
       minFame: num("f"),
       minElevation: num("m"),
@@ -90,13 +115,19 @@ export function readHash(): {
     },
     selection,
     view: {
-      lat: c?.[0],
-      lon: c?.[1],
+      lat: center?.[0],
+      lon: center?.[1],
       zoom: num("z"),
       pitch: num("pi"),
       bearing: num("b"),
     },
   };
+}
+
+export function readHash(): HashState {
+  if (typeof window === "undefined")
+    return { filters: {}, selection: null, view: {} };
+  return parseHash(window.location.hash);
 }
 
 /** `s=open,risky`; the legacy values `open` and `openRisky` from older links still work. */
@@ -110,11 +141,12 @@ function parseStatus(raw: string | null): Status[] | undefined {
   return list.length ? list : undefined;
 }
 
-export function writeHash(
+/** Pure half of `writeHash`: the hash body without the leading "#". */
+export function serializeHash(
   filters: Filters,
   selection: Selection | null,
   view: MapView,
-) {
+): string {
   const p = new URLSearchParams();
   p.set("t", String(filters.period));
   p.set("z", view.zoom.toFixed(2));
@@ -129,7 +161,15 @@ export function writeHash(
   if (filters.minElevation > 0) p.set("m", String(filters.minElevation));
   if (filters.query) p.set("q", filters.query);
   if (selection) p.set(selection.kind, selection.slug);
-  history.replaceState(null, "", `#${p}`);
+  return String(p);
+}
+
+export function writeHash(
+  filters: Filters,
+  selection: Selection | null,
+  view: MapView,
+) {
+  history.replaceState(null, "", `#${serializeHash(filters, selection, view)}`);
 }
 
 /**
@@ -232,6 +272,34 @@ export function useFavorites() {
     clear: () => setFavorites(NO_FAVORITES),
     count,
   };
+}
+
+export const PERIOD_KEY = "alpenpaesse:period";
+
+/**
+ * The visitor's own last choice of half-month. It beats the server's "today",
+ * and a shared link (hash `t`) beats both – opening someone else's link never
+ * overwrites the preference, because only the period control writes here.
+ */
+export function useStoredPeriod() {
+  return useStored<Period | null>(PERIOD_KEY, null);
+}
+
+/**
+ * Precedence for the half-month the app opens on: a shared link wins over the
+ * visitor's own last choice, which wins over today's half-month from the
+ * server (see docs/data-model.md, "Time reckoning").
+ */
+export const resolvePeriod = (
+  fromHash: Period | undefined,
+  stored: Period | null,
+  today: Period,
+): Period => fromHash ?? stored ?? today;
+
+/** The stored period outside React, for the one-shot hash initialisation. */
+export function readStoredPeriod(): Period | null {
+  const value = readStored<Period | null>(PERIOD_KEY, null);
+  return isPeriod(value) ? value : null;
 }
 
 export const statusMatches = (status: Status, filter: Status[]) =>

@@ -21,14 +21,37 @@ are listed in `docs/roadmap.md`.
 
 ## Status per period
 
-`passStatus()` in `lib/status.ts`:
+`passVerdict()` in `lib/status.ts` – the opening window, the pass altitude and
+the calendar decide the base verdict, the pass's own ERA5 climate series can
+then downgrade "meist offen" to "wetterabhängig":
 
-1. Without `season` (cleared year-round): from 2,300 m "weather-dependent" in
-   the winter half-year, from 1,800 m somewhat later, in deep winter generally.
-2. With `season`: "often closed" outside the window, "weather-dependent" in the
-   first and last half-month.
-3. Additionally an elevation penalty at the edges of the window – except with
-   `maintained: true`.
+```mermaid
+flowchart TD
+  A["pass, half-month t"] --> W["window, altitude and calendar"]
+  W --> X["oft gesperrt<br/>reason: outside-window"]
+  W --> R["wetterabhängig<br/>reason: window-edge or altitude"]
+  W --> O["meist offen"]
+  O --> K{"climate bucket for t:<br/>snow days ≥ 20 %<br/>or frost nights ≥ 80 %?"}
+  K -- "yes" --> R4["wetterabhängig<br/>reason: snow or frost"]
+  K -- "no" --> O2["meist offen"]
+  K -. "no series" .-> O2
+```
 
-This is deliberately coarse and does not replace official information. The
-function is the place where real closure data will hook in later.
+Climate never produces "oft gesperrt": a closure is what the opening window
+knows, snowfall is what the climate series knows – and a road stays open
+through snowfall, it just stops being reliable. The thresholds
+(`SNOW_RISKY_PCT`, `FROST_RISKY_PCT`) are calibrated on all 92 passes; across
+the pass × half-month pairs the "meist offen" cohort sits at 4 % snow days
+after the change, the "wetterabhängig" cohort at 25 %. Re-run
+`bun run scripts/analyze-status.ts` after touching them: it prints the cohort
+table and every verdict that changes.
+
+Every non-open verdict carries a reason (`StatusReason`) with one German
+sentence in `REASON_TEXT`, shown under the badge in the detail panel.
+
+`bestPeriods()` returns the longest run of half-months that are "meist offen"
+with fewer than 10 % snow days – the "Beste Zeit" line in the panel.
+
+For tours the worst status among their passes applies. All of this is
+deliberately coarse and does not replace official information. `passVerdict`
+is the place where real closure data will hook in later.

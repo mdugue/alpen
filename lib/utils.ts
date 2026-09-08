@@ -21,3 +21,11 @@ export const PRESSED =
 
 /** Opaque surface for controls floating over map tiles (outline buttons are translucent in dark mode). */
 export const MAP_CONTROL = "bg-card shadow-md dark:bg-card";
+
+/**
+ * Translucent floating panel over the map – the sidebar, the detail slide-over
+ * and the period scrubber are the same surface, so the map reads as the page
+ * they float on.
+ */
+export const PANEL =
+  "rounded-xl border border-border/60 bg-card/80 shadow-xl backdrop-blur-md supports-not-[backdrop-filter:blur(0)]:bg-card";

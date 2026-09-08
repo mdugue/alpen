@@ -126,9 +126,17 @@ export default defineConfig({
     },
     {
       // The build script talks to rate-limited APIs: requests are sequential
-      // on purpose and the retry loop awaits each attempt.
-      files: ["scripts/**", ".agents/skills/**"],
+      // on purpose and the retry loop awaits each attempt. The browser
+      // harness polls the page the same way: every wait is a loop that must
+      // await one probe before deciding whether to make the next one.
+      files: ["scripts/**", ".agents/skills/**", "test/**", "e2e/**"],
       rules: { "no-await-in-loop": "off" },
+    },
+    {
+      // This file *is* the lazily loaded chunk: `detail-panel.tsx` pulls it in
+      // through `next/dynamic`, so recharts never reaches the first load.
+      files: ["components/panel/climate-chart.tsx"],
+      rules: { "react-doctor/prefer-dynamic-import": "off" },
     },
     {
       // The JSON-LD block is the one sanctioned use of the prop.
