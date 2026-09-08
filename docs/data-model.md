@@ -62,8 +62,9 @@ share.
 }
 ```
 
-An ascent (or a tour) may carry a `check` object that widens **one** limit of the
-route quality gate for that entry alone, with a mandatory `note` saying why:
+An ascent (or a tour) may carry a `check` object that widens a limit of the
+route quality gate for that entry alone – only the limits its own validator
+reads – with a mandatory `note` saying why:
 
 ```jsonc
 "ascents": [{

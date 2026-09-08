@@ -52,13 +52,14 @@ import type {
   ElevationProfile,
   LatLon,
   Pass,
-  RouteCheck,
+  AscentCheck,
   RouteGeometry,
   RouteMeta,
   RouteMetrics,
   RouteRejection,
   RouteSource,
   Tour,
+  TourCheck,
   TourMetrics,
 } from "../lib/types";
 import {
@@ -332,7 +333,7 @@ async function route(
     } catch (error) {
       if (!(error instanceof QuotaExhaustedError)) throw error;
       console.log(
-        "  ORS-Kontingent erschöpft – weiter mit OSRM (Autoprofil), der Gate fängt die Ausreißer ab",
+        "  ORS-Kontingent erschöpft – weiter mit OSRM (Autoprofil), das Gate fängt die Ausreißer ab",
       );
     }
   }
@@ -466,14 +467,15 @@ const rejected = await readJson<Record<string, RouteRejection>>(
 );
 const summits = await readJson<Record<string, number>>("summits.json", {});
 
-type RouteJob = {
-  key: string;
-  label: string;
-  waypoints: LatLon[];
-  check?: RouteCheck;
-} & (
-  | { kind: "ascent"; from: LatLon; summit: LatLon; elevation: number }
-  | { kind: "tour"; statedKm: number }
+type RouteJob = { key: string; label: string; waypoints: LatLon[] } & (
+  | {
+      kind: "ascent";
+      from: LatLon;
+      summit: LatLon;
+      elevation: number;
+      check?: AscentCheck;
+    }
+  | { kind: "tour"; statedKm: number; check?: TourCheck }
 );
 
 const routeJobs: RouteJob[] = [
@@ -675,6 +677,12 @@ async function gate(
   const bad = judge(job, m);
   if (bad.length) return reject(job, bad, m, source, hash);
 
+  // A cached profile from an earlier rejection is only valid for the very same
+  // geometry; otherwise it has to be paid for again. Read it before accept()
+  // drops the rejection entry, or a retry would always pay.
+  const cached =
+    rejected[job.key]?.hash === hash ? rejected[job.key]?.profile : undefined;
+
   if (fetched) {
     await accept(job, geom, source);
     console.log(
@@ -694,10 +702,6 @@ async function gate(
     return;
   }
 
-  // A cached profile from an earlier rejection is only valid for the very same
-  // geometry; otherwise it has to be paid for again.
-  const cached =
-    rejected[job.key]?.hash === hash ? rejected[job.key]?.profile : undefined;
   if (!cached && profiles[job.key]) {
     // The geometry was just replaced, so the stored profile belongs to a road
     // that is no longer there. Drop it before fetching, otherwise a run that

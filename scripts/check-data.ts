@@ -28,7 +28,9 @@ import type {
   AscentMetrics,
   Pass,
   RouteMetrics,
+  RouteRejection,
   Tour,
+  TourMetrics,
   Town,
 } from "../lib/types";
 import { renderJsonSchema, schemaFileFor } from "./emit-json-schema";
@@ -238,15 +240,37 @@ if (towns) checkTowns(towns);
 
 // Rejections are unfinished curation: either the coordinates in data/*.json are
 // wrong, or a limit in validate.ts is. Both need a human, neither blocks a merge.
+// The stored reasons are history; the verdict is recomputed against the current
+// limits and the entry's own `check`, so a changed threshold shows up here.
+const checkFor = new Map<
+  string,
+  Pass["ascents"][number]["check"] | Tour["check"]
+>();
+for (const p of passes ?? [])
+  p.ascents.forEach((a, i) => checkFor.set(`${p.slug}:${i}`, a.check));
+for (const t of tours ?? []) checkFor.set(`tour:${t.slug}`, t.check);
+
+const rejudge = (key: string, r: RouteRejection) =>
+  key.startsWith("tour:")
+    ? checkTour(r.metrics as TourMetrics, checkFor.get(key) as Tour["check"])
+    : checkAscent(
+        r.metrics as AscentMetrics,
+        checkFor.get(key) as Pass["ascents"][number]["check"],
+      );
+
 for (const [key, r] of Object.entries(rejected ?? {})) {
+  const now = rejudge(key, r);
+  const where = key.startsWith("tour:") ? "der Tour" : "der Auffahrt";
   warnings.push(
-    `${key}: abgewiesen seit ${r.firstSeen} (${days(r.firstSeen)} Tage, ${r.source}) – ${r.reasons.join("; ")}` +
-      "\n       Koordinaten in data/*.json korrigieren, ascent.check mit Begründung setzen," +
-      " oder nach einer Schwellenänderung: bun run data:build --retry-rejected",
+    now.length
+      ? `${key}: abgewiesen seit ${r.firstSeen} (${days(r.firstSeen)} Tage, ${r.source}) – ${now.join("; ")}` +
+          `\n       Koordinaten in data/*.json korrigieren, check an ${where} mit Begründung setzen,` +
+          " oder nach einer Schwellenänderung: bun run data:build --retry-rejected"
+      : `${key}: abgewiesen seit ${r.firstSeen}, würde mit den heutigen Grenzen bestehen – bun run data:build --retry-rejected`,
   );
   if (EXPLAIN)
     explained.push(
-      `✗ ${key.padEnd(36)} ${r.source.padEnd(4)} ${JSON.stringify(r.metrics)} (abgewiesen)`,
+      `${now.length ? "✗" : "↺"} ${key.padEnd(36)} ${r.source.padEnd(4)} ${JSON.stringify(r.metrics)} (abgewiesen${now.length ? "" : ", würde jetzt bestehen"})`,
     );
 }
 
@@ -283,7 +307,7 @@ if (passes && tours) {
 
 if (EXPLAIN) {
   console.log(
-    "Gemessene Werte je Route (✗ = verletzt eine Grenze aus scripts/lib/validate.ts):",
+    "Gemessene Werte je Route (✗ = verletzt eine Grenze aus scripts/lib/validate.ts, ↺ = abgewiesen, würde heute bestehen):",
   );
   for (const line of explained.toSorted()) console.log(`  ${line}`);
   console.log();

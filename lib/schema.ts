@@ -37,29 +37,44 @@ export const LatLon = z.strictObject({
 /**
  * Per-entry exception to the route quality gate (`scripts/lib/validate.ts`),
  * for the ascents and tours that legitimately break a default limit – an ascent
- * that ends at a mountain restaurant below the summit marker, say. `note` is
- * mandatory: an exception nobody can explain is a bug that has been silenced.
+ * that ends at a mountain restaurant below the summit marker, say. Ascents and
+ * tours have different limits, so each kind lists only the limits its validator
+ * reads; a limit that would be silently ignored cannot be written down. `note`
+ * is mandatory and at least one limit has to be named: an exception nobody can
+ * explain, or one that widens nothing, is a bug that has been silenced.
  */
-export const RouteCheck = z.strictObject({
-  maxKm: z.number().positive().optional(),
-  maxStartDist: z.number().positive().optional(),
-  maxEndDist: z.number().positive().optional(),
-  maxTopDelta: z.number().positive().optional(),
-  minPeakAt: z.number().min(0).max(1).optional(),
-  maxGain: z.number().positive().optional(),
-  maxKmDelta: z.number().positive().optional(),
-  maxWaypointDist: z.number().positive().optional(),
-  /** Why this entry legitimately breaks the default limit. */
-  note: z.string().min(1, "check ohne Begründung (note)"),
-});
+const atLeastOneLimit = (o: Record<string, unknown>) =>
+  Object.keys(o).some((k) => k !== "note");
+
+export const AscentCheck = z
+  .strictObject({
+    maxKm: z.number().positive().optional(),
+    maxStartDist: z.number().positive().optional(),
+    maxEndDist: z.number().positive().optional(),
+    maxTopDelta: z.number().positive().optional(),
+    minPeakAt: z.number().min(0).max(1).optional(),
+    maxGain: z.number().positive().optional(),
+    /** Why this ascent legitimately breaks the default limit. */
+    note: z.string().min(1, "check ohne Begründung (note)"),
+  })
+  .refine(atLeastOneLimit, "check nennt keine Grenze");
+
+export const TourCheck = z
+  .strictObject({
+    maxKmDelta: z.number().positive().optional(),
+    maxWaypointDist: z.number().positive().optional(),
+    /** Why this tour legitimately breaks the default limit. */
+    note: z.string().min(1, "check ohne Begründung (note)"),
+  })
+  .refine(atLeastOneLimit, "check nennt keine Grenze");
 
 export const Ascent = z.strictObject({
   /** Starting point of the classic cycling ascent. */
   from: LatLon,
   /** Display name, e.g. "Valloire (Nord)". */
   label: z.string().min(1),
-  /** Widens one route-gate limit for this ascent alone, see `RouteCheck`. */
-  check: RouteCheck.optional(),
+  /** Widens a route-gate limit for this ascent alone, see `AscentCheck`. */
+  check: AscentCheck.optional(),
 });
 
 export const PassSeason = z
@@ -117,8 +132,8 @@ export const Tour = z.strictObject({
   season: z.string(),
   description: z.string(),
   waypoints: z.array(LatLon).min(2),
-  /** Widens one route-gate limit for this tour alone, see `RouteCheck`. */
-  check: RouteCheck.optional(),
+  /** Widens a route-gate limit for this tour alone, see `TourCheck`. */
+  check: TourCheck.optional(),
 });
 
 export const Town = z.strictObject({

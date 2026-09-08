@@ -157,14 +157,6 @@
                   "type": "number",
                   "exclusiveMinimum": 0
                 },
-                "maxKmDelta": {
-                  "type": "number",
-                  "exclusiveMinimum": 0
-                },
-                "maxWaypointDist": {
-                  "type": "number",
-                  "exclusiveMinimum": 0
-                },
                 "note": {
                   "type": "string",
                   "minLength": 1

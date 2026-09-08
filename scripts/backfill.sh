@@ -17,7 +17,7 @@
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
-: "${ORS_KEY:?ORS_KEY ist nicht gesetzt – ohne Schlüssel routet der Lauf über das OSRM-Autoprofil und der Gate weist die Ergebnisse reihenweise ab}"
+: "${ORS_KEY:?ORS_KEY ist nicht gesetzt – ohne Schlüssel routet der Lauf über das OSRM-Autoprofil und das Gate weist die Ergebnisse reihenweise ab}"
 
 BUDGET="${OPEN_METEO_BUDGET:-4500}"
 GAP="${BACKFILL_GAP:-3900}"        # 65 min, safely past Open-Meteo's hourly window
@@ -76,11 +76,11 @@ echo "───── Prüfung ────────────────�
 bun run scripts/check-data.ts || {
   cat <<'EOF'
 
-Der Gate hat etwas abgewiesen. Die drei Wege daraus:
+Das Gate hat etwas abgewiesen. Die drei Wege daraus:
   1. Koordinaten in data/passes.json korrigieren (Passpunkt oder ascent.from)
      und danach: bun run scripts/build-data.ts --retry-rejected
   2. Wenn die Auffahrt wirklich so ist (Straße endet unterhalb des Gipfels):
-     ascent.check mit maxTopDelta/maxKm … und einer note setzen.
+     check (an der Auffahrt oder der Tour) mit maxTopDelta/maxKm … und einer note setzen.
   3. Wenn die Grenze selbst falsch ist: LIMITS in scripts/lib/validate.ts
      ändern und mit `bun run data:check --explain` prüfen, was das für alle
      anderen Routen bedeutet – das kostet keine API-Calls.

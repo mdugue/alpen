@@ -51,11 +51,13 @@ jobs:
         env:
           ORS_KEY: ${{ secrets.ORS_KEY }}
           OPEN_METEO_BUDGET: ${{ inputs.budget || '4500' }}
-      # Fails only on a stored route that violates a check – the invariant the
-      # gate protects. A rejection is a warning: it is a coordinate or a
-      # threshold a human has to decide about, and it must not stop this run
-      # from committing what it fetched.
-      - run: bun run data:check
+      # The check must not cost this run its work: the fetched data is committed
+      # first and the job fails afterwards, so a failing check (a stored route
+      # that violates a limit) still surfaces without discarding the paid-for
+      # profiles. A rejection is only a warning and does not fail the check.
+      - id: check
+        run: bun run data:check
+        continue-on-error: true
       - name: Commit
         run: |
           git add data/generated/*.json
@@ -63,3 +65,7 @@ jobs:
           git -c user.name=github-actions[bot] -c user.email=41898282+github-actions[bot]@users.noreply.github.com \
             commit -m "chore(data): refresh precomputed data" -m "$(bun run --silent data:build --status)"
           git push
+      - if: steps.check.outcome == 'failure'
+        run: |
+          echo "data:check ist fehlgeschlagen – die Daten sind trotzdem eingecheckt, der Fehler steht oben."
+          exit 1

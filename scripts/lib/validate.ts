@@ -12,11 +12,12 @@
  * plan 10 can feed them the known-bad fixtures directly.
  */
 import type {
+  AscentCheck,
   AscentMetrics,
   ElevationProfile,
   LatLon,
-  RouteCheck,
   RouteGeometry,
+  TourCheck,
   TourMetrics,
 } from "../../lib/types";
 
@@ -49,7 +50,7 @@ export function length(geom: RouteGeometry) {
  * Default thresholds. Calibrated against the 88 routes stored before the gate
  * existed: every limit sits clear of the routes that are demonstrably right and
  * clear of the ones that are demonstrably wrong, rather than on a round number.
- * A single ascent may widen one of them via `ascent.check` – with a note.
+ * A single ascent or tour may widen one of them via its `check` – with a note.
  */
 export const LIMITS = {
   ascent: {
@@ -144,7 +145,7 @@ export function tourMetrics(
  * value – `data:check` prints them and a human has to be able to tell a routing
  * problem from a coordinate problem without opening anything else.
  */
-export function checkAscent(m: AscentMetrics, check?: RouteCheck): string[] {
+export function checkAscent(m: AscentMetrics, check?: AscentCheck): string[] {
   const l = { ...LIMITS.ascent, ...strip(check) };
   const out: string[] = [];
   if (m.km > l.maxKm) out.push(`Länge ${m.km} km > ${l.maxKm} km`);
@@ -169,7 +170,7 @@ export function checkAscent(m: AscentMetrics, check?: RouteCheck): string[] {
   return out;
 }
 
-export function checkTour(m: TourMetrics, check?: RouteCheck): string[] {
+export function checkTour(m: TourMetrics, check?: TourCheck): string[] {
   const l = { ...LIMITS.tour, ...strip(check) };
   const out: string[] = [];
   if (Math.abs(m.kmDelta) > l.maxKmDelta)
@@ -217,7 +218,7 @@ const round = (n: number, digits: number) => +n.toFixed(digits);
 const km = (n: number) =>
   n < 1 ? `${Math.round(n * 1000)} m` : `${round(n, 1)} km`;
 /** Drops `note` and any undefined key so the spread does not erase a default. */
-const strip = (c?: RouteCheck) =>
+const strip = (c?: AscentCheck | TourCheck) =>
   Object.fromEntries(
     Object.entries(c ?? {}).filter(([k, v]) => k !== "note" && v !== undefined),
   );
