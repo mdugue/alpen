@@ -1,5 +1,12 @@
 import { statusMatches } from "@/lib/app-state";
-import type { EntityKind, Filters } from "@/lib/app-state";
+import type { EntityKind, Filters, PassSort } from "@/lib/app-state";
+import { countriesOf } from "@/lib/regions";
+import {
+  matches,
+  passHaystack,
+  tourHaystack,
+  townHaystack,
+} from "@/lib/search";
 import {
   climateBucket,
   passSeason,
@@ -18,34 +25,76 @@ import type {
   Town,
 } from "@/lib/types";
 
+export type { PassSort } from "@/lib/app-state";
+
 /**
- * One filtered list per entity kind. Search and the favourites toggle apply to
- * all three, the status filter to passes and tours, fame and elevation to
- * passes only. Map visibility (hidden tours, towns on/off) is not a filter and
- * is handled by the map itself.
+ * One filtered list per entity kind. Search, the country chips and the
+ * favourites toggle apply to all three, the status filter and the regions to
+ * passes and tours, the rating and elevation filters to passes only. Map
+ * visibility (hidden tours, towns on/off) is a layer toggle, not a filter;
+ * what the map draws per kind is what the list of that kind shows.
  */
 
 interface Query {
-  matches: (...parts: string[]) => boolean;
+  matches: (haystack: string) => boolean;
   favoritesOnly: boolean;
   isFavorite: (kind: EntityKind, slug: string) => boolean;
 }
 
 function query(filters: Filters, isFavorite: Query["isFavorite"]): Query {
-  const q = filters.query.trim().toLowerCase();
+  const q = filters.query.trim();
   return {
-    matches: (...parts) => !q || parts.join(" ").toLowerCase().includes(q),
+    matches: (haystack) => !q || matches(haystack, q),
     favoritesOnly: filters.favoritesOnly,
     isFavorite,
   };
 }
 
-/** Everything about a pass except its status: search, favourites, fame, elevation. */
+/** "CH/IT" passes a filter for either country; no chip = every country. */
+const countryMatches = (country: string, filter: string[]) =>
+  filter.length === 0 || countriesOf(country).some((c) => filter.includes(c));
+
+/** Everything about a pass except its status: search, favourites, country, region, scales, elevation. */
 function passMatches(pass: Pass, filters: Filters, q: Query): boolean {
   if (pass.elevation < filters.minElevation || pass.fame < filters.minFame)
     return false;
+  if (pass.beauty < filters.minBeauty || pass.traffic > filters.maxTraffic)
+    return false;
+  const [lo, hi] = filters.difficulty;
+  if (pass.difficulty < lo || pass.difficulty > hi) return false;
+  if (!countryMatches(pass.country, filters.countries)) return false;
+  if (filters.regions.length && !filters.regions.includes(pass.region))
+    return false;
   if (q.favoritesOnly && !q.isFavorite("pass", pass.slug)) return false;
-  return q.matches(pass.name, pass.region, pass.country);
+  return q.matches(passHaystack(pass));
+}
+
+/** A tour counts for every country and region of the passes it crosses. */
+function tourMatches(
+  tour: Tour,
+  passes: PassIndex,
+  filters: Filters,
+  q: Query,
+): boolean {
+  const own = tour.passes
+    .map((s) => passes.get(s))
+    .filter((p) => p !== undefined);
+  if (
+    filters.countries.length &&
+    !own.some((p) => countryMatches(p.country, filters.countries))
+  )
+    return false;
+  if (
+    filters.regions.length &&
+    !own.some((p) => filters.regions.includes(p.region))
+  )
+    return false;
+  return q.matches(
+    tourHaystack(
+      tour,
+      own.map((p) => p.name),
+    ),
+  );
 }
 
 export interface PassRow {
@@ -101,7 +150,7 @@ export function buildTourRows(
   for (const tour of tours) {
     const favorite = isFavorite("tour", tour.slug);
     if (q.favoritesOnly && !favorite) continue;
-    if (!q.matches(tour.name, tour.description)) continue;
+    if (!tourMatches(tour, passes, filters, q)) continue;
     const status = tourStatus(tour, passes, filters.period, climate);
     if (!statusMatches(status, filters.status)) continue;
     rows.push({
@@ -129,7 +178,8 @@ export function buildTownRows(
   for (const town of towns) {
     const favorite = isFavorite("town", town.slug);
     if (q.favoritesOnly && !favorite) continue;
-    if (!q.matches(town.name, town.why, town.country)) continue;
+    if (!countryMatches(town.country, filters.countries)) continue;
+    if (!q.matches(townHaystack(town))) continue;
     rows.push({ town, favorite });
   }
   return rows.toSorted((a, b) => a.town.name.localeCompare(b.town.name, "de"));
@@ -168,15 +218,6 @@ export function statusHistogram(
   }
   return bars;
 }
-
-export type PassSort =
-  | "elevation"
-  | "name"
-  | "status"
-  | "beauty"
-  | "fame"
-  | "difficulty"
-  | "traffic";
 
 export const PASS_SORT_LABEL: Record<PassSort, string> = {
   elevation: "Höhe",

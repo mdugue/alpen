@@ -1,7 +1,39 @@
 # Data model
 
-All types live in [`lib/types.ts`](../lib/types.ts). Source data is maintained
-by hand; derived data comes from `scripts/build-data.ts`.
+All types come from [`lib/schema.ts`](../lib/schema.ts): the zod schemas there
+are the single description of every file in `data/`, and
+[`lib/types.ts`](../lib/types.ts) only re-exports the inferred types under
+their established names. Source data is maintained by hand; derived data
+comes from `scripts/build-data.ts`.
+
+## How the schemas are used
+
+```mermaid
+flowchart LR
+  S["lib/schema.ts<br/>zod schemas"] --> T["lib/types.ts<br/>z.infer, same names"]
+  S --> C["scripts/check-data.ts<br/>safeParse + cross references"]
+  S --> B["scripts/build-data.ts<br/>validate before write"]
+  S --> D["lib/data.ts<br/>parse at build time"]
+  S --> J["data/schema/*.schema.json<br/>bun run data:schema"] --> E["editor completion<br/>and red squiggles"]
+```
+
+- `bun run data:check` parses every file with `safeParse` and prints
+  path-qualified errors (`passes.json › [12].season.closes: …`), then runs
+  the cross-reference checks (tour → pass slugs, aliases, routes and profiles
+  present). It also verifies that the hand-maintained files are in canonical
+  form (`JSON.stringify(data, null, 1)` plus a trailing newline) and that
+  the JSON Schema files are current.
+- `lib/data.ts` parses the files once when the server module loads, so a
+  broken file fails `next build` rather than the UI.
+- `scripts/build-data.ts` validates every generated file before writing it.
+- `bun run data:schema` emits `data/schema/*.schema.json`; `.vscode/settings.json`
+  maps the data files to them, which gives completion and red squiggles in
+  the editor. Regenerate them in the same PR that changes `lib/schema.ts`.
+
+Only server and script code imports `lib/schema.ts`; components import the
+types from `lib/types.ts` so zod never reaches the client bundle. The fixed
+vocabularies (regions, countries) live in `lib/regions.ts`, which both sides
+share.
 
 ## Source data (hand-maintained)
 
@@ -11,6 +43,7 @@ by hand; derived data comes from `scripts/build-data.ts`.
 {
   "slug": "col-du-galibier", // stable, derived from the name; umlauts → ae/oe/ue
   "name": "Col du Galibier",
+  "aliases": ["Galibier"], // optional: other spellings people search for
   "country": "FR", // "CH/IT" for border passes
   "region": "Westalpen", // Westalpen | Zentralalpen | Ostalpen | Dolomiten
   "lat": 45.064,
@@ -32,6 +65,11 @@ by hand; derived data comes from `scripts/build-data.ts`.
 `season.maintained: true` marks managed toll roads (Grossglockner, Timmelsjoch,
 Nockalm …). They are cleared of snow and therefore get no elevation penalty in
 the status heuristic.
+
+`aliases` feeds the search only (never a name of another pass; `data:check`
+rejects duplicates). Search folds accents, ß and punctuation on both sides
+(`lib/search.ts`), so "Vrsic" finds Vršič without an alias; aliases are for
+genuinely different names such as "Stilfser Joch".
 
 **Time reckoning:** A `Period` is a half-month. `10` = early October,
 `10.5` = late October. `PERIODS` in `lib/status.ts` lists all 24.
@@ -82,4 +120,4 @@ tier of 10,000/day, a larger backlog is drained over several runs
 
 1. Add an entry to `data/passes.json` (slug following the same pattern).
 2. `bun run data:build` – fetches only the new routes, profiles and the climate series.
-3. `bun run data:check` – validates references, value ranges and completeness.
+3. `bun run data:check` – validates the schema, references and completeness.

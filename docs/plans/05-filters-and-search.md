@@ -1,6 +1,6 @@
 # 05 · Filters and search
 
-**Status:** proposed · **Effort:** S–M · **Depends on:** – (09 adds the
+**Status:** in progress (PR pending) · **Effort:** S–M · **Depends on:** – (09 adds the
 `aliases` field to the schema) · **Unblocks:** 12 (region filter becomes
 destination navigation)
 
@@ -116,7 +116,7 @@ The `curate-data` skill covers adding more.
 | `regions: string[]`      | chips Westalpen … (multi)       | `r=`      | passes, tours                          |
 | `difficulty: [min, max]` | range slider 1–5                | `d=2-4`   | passes                                 |
 | `maxTraffic: number`     | select "egal / ≤ 3 / ≤ 2 / ≤ 1" | `v=3`     | passes                                 |
-| `minBeauty: number`      | select like fame                | `b=4`     | passes                                 |
+| `minBeauty: number`      | select like fame                | `be=4`    | passes                                 |
 
 `sort` moves from `PassList` state into `Filters` (`o=beauty`). The pass
 filter collapsible grows to two columns on desktop; `passFilters` badge count
@@ -156,6 +156,19 @@ the source.
 - A link with `l=it&d=1-3&v=2&o=beauty` restores those filters and the sort.
 - Searching a pass name leaves only matching tours and towns on the map.
 - The filter badge counts every active pass filter.
+
+## Implementation notes
+
+- The hash key for beauty is `be`, not `b`: `b` has carried the map bearing
+  since the first shareable links.
+- The hash keys are parsed with nuqs' standalone parsers (`createLoader`,
+  `createSerializer`), without its router adapter: the page stays static and
+  the state stays in the hash, but every key is validated and unknown values
+  fall back to the default.
+- "Vrsic" is not an alias: `fold` already maps "Vršič" to it, and
+  `data:check` rejects aliases that collide with a folded name.
+- Country chips sit next to the status chips because they apply to all three
+  kinds; the region chips live in the pass filter panel.
 
 ## Risks and open questions
 

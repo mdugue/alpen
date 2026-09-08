@@ -43,7 +43,7 @@ import {
   buildTownRows,
   statusHistogram,
 } from "@/lib/rows";
-import { indexBySlug, tourStatus } from "@/lib/status";
+import { indexBySlug } from "@/lib/status";
 import type {
   ClimateYear,
   ElevationProfile,
@@ -176,17 +176,19 @@ export function Explorer({
     status,
     favorite,
   }));
-  const mapTours = tours.map((t) => ({
+  // What the list shows for a kind is what the map shows for that kind; the
+  // visibility switches only add a layer toggle on top.
+  const mapTours = tourRows.map(({ tour: t, status }) => ({
     ...t,
-    status: tourStatus(t, passIndex, filters.period, climate),
+    status,
     visible: !hiddenTours.includes(t.slug),
     geometry:
       routes[`tour:${t.slug}`] ??
       t.waypoints.map((w) => [w.lat, w.lon] as [number, number]),
   }));
-  const mapTowns = towns.map((t) => ({
-    ...t,
-    favorite: isFavorite("town", t.slug),
+  const mapTowns = townRows.map(({ town, favorite }) => ({
+    ...town,
+    favorite,
   }));
 
   /** Selecting something also makes it visible and brings the panel up. */

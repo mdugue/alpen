@@ -178,6 +178,66 @@ describe("buildPassRows", () => {
   });
 });
 
+describe("plan 05 filters", () => {
+  const slugs = (over: Partial<Filters>) =>
+    buildPassRows(passes, filters(over), never).map((r) => r.pass.slug);
+
+  test("country, region, difficulty window, traffic and beauty on passes", () => {
+    const mixed = [
+      ...passes,
+      pass({
+        slug: "grenze",
+        name: "Grenzpass",
+        country: "CH/IT",
+        region: "Zentralalpen",
+        difficulty: 5,
+        traffic: 1,
+        beauty: 5,
+      }),
+    ];
+    const pick = (over: Partial<Filters>) =>
+      buildPassRows(mixed, filters(over), never).map((r) => r.pass.slug);
+    expect(pick({ countries: ["IT"] })).toEqual(["grenze"]);
+    expect(pick({ countries: ["CH", "AT"] })).toHaveLength(4);
+    expect(pick({ regions: ["Westalpen"] })).toEqual(["hoch"]);
+    expect(pick({ difficulty: [4, 5] })).toEqual(["grenze"]);
+    expect(pick({ difficulty: [1, 2] })).toEqual([]);
+    expect(pick({ maxTraffic: 1 })).toEqual(["grenze"]);
+    expect(pick({ minBeauty: 4 })).toEqual(["grenze"]);
+    expect(slugs({ countries: ["FR"] })).toEqual([]);
+  });
+
+  test("search folds accents and matches every token", () => {
+    const umlaut = [pass({ slug: "gross", name: "Großer Sankt Bernhard" })];
+    expect(
+      buildPassRows(umlaut, filters({ query: "grosser bernhard" }), never),
+    ).toHaveLength(1);
+    expect(
+      buildPassRows(umlaut, filters({ query: "bernhard klein" }), never),
+    ).toHaveLength(0);
+  });
+
+  test("tours follow the countries and regions of their passes", () => {
+    const rows = (over: Partial<Filters>) =>
+      buildTourRows(tours, index, filters(over), never).map((r) => r.tour.slug);
+    expect(rows({ countries: ["AT"] })).toEqual(["lang", "kurz"]);
+    expect(rows({ countries: ["FR"] })).toEqual([]);
+    expect(rows({ regions: ["Ostalpen"] })).toEqual(["lang", "kurz"]);
+    expect(rows({ regions: ["Westalpen"] })).toEqual([]);
+    // Found through the name of a pass it crosses.
+    expect(rows({ query: "winterpass" })).toEqual(["lang"]);
+  });
+
+  test("towns follow the country chips", () => {
+    expect(
+      buildTownRows(towns, filters({ countries: ["IT"] }), never),
+    ).toHaveLength(2);
+    expect(
+      buildTownRows(towns, filters({ countries: ["FR"] }), never),
+    ).toHaveLength(0);
+  });
+});
+
 describe("buildTourRows", () => {
   test("status comes from the passes, sorted by elevation gain", () => {
     const rows = buildTourRows(tours, index, filters(), never);

@@ -5,6 +5,7 @@ import routesJson from "@/data/generated/routes.json";
 import passesJson from "@/data/passes.json";
 import toursJson from "@/data/tours.json";
 import townsJson from "@/data/towns.json";
+import * as S from "@/lib/schema";
 import type {
   ClimateYear,
   ElevationProfile,
@@ -19,43 +20,52 @@ import type {
  * no network access, no revalidation needed. The functions are async +
  * "use cache" so that Cache Components treat them as cached segments and the
  * page is prerendered completely.
+ *
+ * Every file is parsed against its schema once, when this module loads on the
+ * server; a file that does not match fails `next build` instead of the UI.
  */
+const passes: Pass[] = S.Passes.parse(passesJson);
+const tours: Tour[] = S.Tours.parse(toursJson);
+const towns: Town[] = S.Towns.parse(townsJson);
+const routes: Record<string, RouteGeometry> = S.Routes.parse(routesJson);
+const profiles: Record<string, ElevationProfile> =
+  S.Profiles.parse(profilesJson);
+const climate: Record<string, ClimateYear> = S.Climate.parse(climateJson);
 
 export async function getPasses(): Promise<Pass[]> {
   "use cache";
-  return passesJson as Pass[];
+  return passes;
 }
 
 export async function getTours(): Promise<Tour[]> {
   "use cache";
-  return toursJson as Tour[];
+  return tours;
 }
 
 export async function getTowns(): Promise<Town[]> {
   "use cache";
-  return townsJson as Town[];
+  return towns;
 }
 
 /** Routed road geometry per ascent, key: `${passSlug}:${index}`. */
 export async function getRoutes(): Promise<Record<string, RouteGeometry>> {
   "use cache";
-  // JSON imports are inferred as number[][]; narrow via unknown to the tuple type.
-  return routesJson as unknown as Record<string, RouteGeometry>;
+  return routes;
 }
 
 /** Elevation profiles per ascent, same key as getRoutes. */
 export async function getProfiles(): Promise<Record<string, ElevationProfile>> {
   "use cache";
-  return profilesJson as unknown as Record<string, ElevationProfile>;
+  return profiles;
 }
 
 /** Climate series per pass slug (24 half-months). */
 export async function getClimate(): Promise<Record<string, ClimateYear>> {
   "use cache";
-  return climateJson as unknown as Record<string, ClimateYear>;
+  return climate;
 }
 
 export async function getPass(slug: string): Promise<Pass | undefined> {
   "use cache";
-  return (passesJson as Pass[]).find((p) => p.slug === slug);
+  return passes.find((p) => p.slug === slug);
 }

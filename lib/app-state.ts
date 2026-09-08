@@ -1,8 +1,17 @@
 "use client";
+import {
+  createLoader,
+  createParser,
+  createSerializer,
+  parseAsInteger,
+  parseAsString,
+  parseAsStringLiteral,
+} from "nuqs";
 import { useCallback, useSyncExternalStore } from "react";
 
+import { COUNTRIES, REGIONS } from "@/lib/regions";
 import { isPeriod } from "@/lib/status";
-import type { Period, Status } from "@/lib/types";
+import type { Country, Period, Region, Status } from "@/lib/types";
 
 export type EntityKind = "pass" | "tour" | "town";
 export interface Selection {
@@ -15,14 +24,39 @@ export const ALL_KINDS: EntityKind[] = ["pass", "tour", "town"];
 /** Stable initial values for array-valued stored keys (useSyncExternalStore needs stable snapshots). */
 export const NO_SLUGS: string[] = [];
 
+export const PASS_SORTS = [
+  "elevation",
+  "name",
+  "status",
+  "beauty",
+  "fame",
+  "difficulty",
+  "traffic",
+] as const;
+export type PassSort = (typeof PASS_SORTS)[number];
+
+/** Editorial 1–5 scale bounds; the difficulty filter is a window inside them. */
+export const RATING_MIN = 1;
+export const RATING_MAX = 5;
+
 export interface Filters {
   period: Period;
   /** Statuses that stay visible; all three = no filter. Applies to passes and tours. */
   status: Status[];
-  /** Passes only. */
+  /** Empty = every country. Passes, tours (via their passes) and towns. */
+  countries: Country[];
+  /** Empty = every region. Passes and tours (via their passes). */
+  regions: Region[];
+  /** Passes only, from here on. */
   minFame: number;
-  /** Passes only. */
   minElevation: number;
+  /** Inclusive window on the 1–5 scale; [1, 5] = no filter. */
+  difficulty: [min: number, max: number];
+  /** 5 = no filter. */
+  maxTraffic: number;
+  /** 1 = no filter. */
+  minBeauty: number;
+  sort: PassSort;
   query: string;
   favoritesOnly: boolean;
 }
@@ -34,19 +68,35 @@ export interface Filters {
 export const DEFAULT_FILTERS: Filters = {
   period: 10,
   status: ALL_STATUS,
+  countries: [],
+  regions: [],
   minFame: 1,
   minElevation: 0,
+  difficulty: [RATING_MIN, RATING_MAX],
+  maxTraffic: RATING_MAX,
+  minBeauty: RATING_MIN,
+  sort: "elevation",
   query: "",
   favoritesOnly: false,
 };
 
-/** True when any filter apart from the period is active. */
+/** True when any filter apart from the period and the sort is active. */
 export const hasActiveFilters = (f: Filters) =>
   f.status.length !== ALL_STATUS.length ||
-  f.minFame > 1 ||
-  f.minElevation > 0 ||
+  f.countries.length > 0 ||
+  f.regions.length > 0 ||
+  countPassFilters(f) > 0 ||
   f.query.trim() !== "" ||
   f.favoritesOnly;
+
+/** How many of the filters in the pass panel are active – the badge on its trigger. */
+export const countPassFilters = (f: Filters) =>
+  (f.regions.length > 0 ? 1 : 0) +
+  (f.minFame > 1 ? 1 : 0) +
+  (f.minElevation > 0 ? 1 : 0) +
+  (f.difficulty[0] > RATING_MIN || f.difficulty[1] < RATING_MAX ? 1 : 0) +
+  (f.maxTraffic < RATING_MAX ? 1 : 0) +
+  (f.minBeauty > RATING_MIN ? 1 : 0);
 
 export interface MapView {
   lat: number;
@@ -78,48 +128,164 @@ export interface HashState {
   view: Partial<MapView>;
 }
 
-/**
- * View state lives in the URL hash (shareable), bookmarks and map settings in
- * localStorage (private, per device). `parseHash` is the pure half of
- * `readHash`, so the parsing can be tested without a window.
- */
+// ── The URL hash ─────────────────────────────────────────────────────────────
+//
+// View state lives in the URL hash (shareable), bookmarks and map settings in
+// localStorage (private, per device). The page stays static, so the state
+// goes into the hash rather than the query string; nuqs only lends its
+// parsers here, no router adapter is involved.
+//
+//   t     half-month, 1 … 12.5             z     zoom
+//   c     centre "lat,lon"                 pi,b  pitch and bearing (only when tilted)
+//   s     statuses "open,risky" | "none"   q     search text
+//   l     countries "fr,it"                r     regions "westalpen,dolomiten"
+//   f     min. fame                        m     min. elevation in m
+//   d     difficulty window "2-4"          v     max. traffic
+//   be    min. beauty                      o     pass sort key
+//   pass | tour | town   the selected entity's slug
+//
+// Every key is validated on the way in: unknown values fall back to the
+// default rather than reaching the state.
+
+const fromCode = <T extends string>(list: readonly T[], code: string) =>
+  list.find((x) => x.toLowerCase() === code);
+
+const parseAsPeriod = createParser<Period>({
+  parse: (v) => {
+    const n = Number(v);
+    return isPeriod(n) ? n : null;
+  },
+  serialize: String,
+});
+const parseAsFixed = (digits: number) =>
+  createParser<number>({
+    parse: (v) => {
+      const n = Number(v);
+      return Number.isFinite(n) ? n : null;
+    },
+    serialize: (n) => n.toFixed(digits),
+  });
+/** Both halves have to be numbers; half a pair is no camera at all. */
+const parseAsCenter = createParser<[lat: number, lon: number]>({
+  parse: (v) => {
+    const pair = v.split(",").map(Number);
+    return pair.length === 2 && pair.every((n) => Number.isFinite(n))
+      ? (pair as [number, number])
+      : null;
+  },
+  serialize: ([lat, lon]) => `${lat.toFixed(4)},${lon.toFixed(4)}`,
+});
+/** `s=open,risky`; the legacy values `open` and `openRisky` from older links still work. */
+const parseAsStatus = createParser<Status[]>({
+  parse: (raw) => {
+    if (raw === "all") return null;
+    if (raw === "none") return [];
+    if (raw === "openRisky") return ["open", "risky"];
+    const list = ALL_STATUS.filter((s) => raw.split(",").includes(s));
+    return list.length ? list : null;
+  },
+  serialize: (list) => list.join(",") || "none",
+  eq: (a, b) => a.length === b.length && a.every((s) => b.includes(s)),
+});
+const parseAsCodes = <T extends string>(list: readonly T[]) =>
+  createParser<T[]>({
+    parse: (raw) => {
+      const found = raw
+        .split(",")
+        .map((code) => fromCode(list, code))
+        .filter((x): x is T => x !== undefined);
+      return found.length ? [...new Set(found)] : null;
+    },
+    serialize: (values) => values.map((v) => v.toLowerCase()).join(","),
+    eq: (a, b) => a.length === b.length && a.every((x) => b.includes(x)),
+  });
+const RATINGS = [1, 2, 3, 4, 5] as const;
+const parseAsRating = createParser<number>({
+  parse: (v) => (RATINGS.includes(Number(v) as never) ? Number(v) : null),
+  serialize: String,
+});
+/** `d=2-4`; `d=3` means exactly 3. */
+const parseAsRange = createParser<[number, number]>({
+  parse: (raw) => {
+    const [lo, hi = lo] = raw.split("-").map(Number);
+    if (!RATINGS.includes(lo as never) || !RATINGS.includes(hi as never))
+      return null;
+    return lo! <= hi! ? [lo!, hi!] : [hi!, lo!];
+  },
+  serialize: ([lo, hi]) => (lo === hi ? String(lo) : `${lo}-${hi}`),
+  eq: (a, b) => a[0] === b[0] && a[1] === b[1],
+});
+
+/** Reading: a missing or invalid value is `null`, which `parseHash` turns into "not given". */
+const HASH = {
+  t: parseAsPeriod,
+  z: parseAsFixed(2),
+  c: parseAsCenter,
+  pi: parseAsFixed(0),
+  b: parseAsFixed(0),
+  s: parseAsStatus,
+  l: parseAsCodes(COUNTRIES),
+  r: parseAsCodes(REGIONS),
+  f: parseAsInteger,
+  m: parseAsInteger,
+  d: parseAsRange,
+  v: parseAsRating,
+  be: parseAsRating,
+  o: parseAsStringLiteral(PASS_SORTS),
+  q: parseAsString,
+  pass: parseAsString,
+  tour: parseAsString,
+  town: parseAsString,
+};
+/** Writing: a value equal to its default leaves the hash. */
+const HASH_OUT = {
+  ...HASH,
+  s: HASH.s.withDefault(DEFAULT_FILTERS.status),
+  l: HASH.l.withDefault(DEFAULT_FILTERS.countries),
+  r: HASH.r.withDefault(DEFAULT_FILTERS.regions),
+  f: HASH.f.withDefault(DEFAULT_FILTERS.minFame),
+  m: HASH.m.withDefault(DEFAULT_FILTERS.minElevation),
+  d: HASH.d.withDefault(DEFAULT_FILTERS.difficulty),
+  v: HASH.v.withDefault(DEFAULT_FILTERS.maxTraffic),
+  be: HASH.be.withDefault(DEFAULT_FILTERS.minBeauty),
+  o: HASH.o.withDefault(DEFAULT_FILTERS.sort),
+  q: HASH.q.withDefault(DEFAULT_FILTERS.query),
+};
+const loadHash = createLoader(HASH);
+const serialize = createSerializer(HASH_OUT, { clearOnDefault: true });
+
+/** `parseHash` is the pure half of `readHash`, so the parsing can be tested without a window. */
 export function parseHash(hash: string): HashState {
-  const p = new URLSearchParams(hash.replace(/^#/u, ""));
-  const num = (k: string) => {
-    if (!p.has(k)) return;
-    const v = Number(p.get(k));
-    return Number.isFinite(v) ? v : undefined;
-  };
-  const selection: Selection | null = p.get("pass")
-    ? { kind: "pass", slug: p.get("pass")! }
-    : p.get("tour")
-      ? { kind: "tour", slug: p.get("tour")! }
-      : p.get("town")
-        ? { kind: "town", slug: p.get("town")! }
+  const h = loadHash(new URLSearchParams(hash.replace(/^#/u, "")));
+  const given = <K extends keyof typeof HASH>(key: K) => h[key] ?? undefined;
+  const selection: Selection | null = h.pass
+    ? { kind: "pass", slug: h.pass }
+    : h.tour
+      ? { kind: "tour", slug: h.tour }
+      : h.town
+        ? { kind: "town", slug: h.town }
         : null;
-  // Both halves have to be numbers; half a pair is no camera at all, and a
-  // NaN would read as "a camera was requested" further up.
-  const pair = p.get("c")?.split(",").map(Number);
-  const center =
-    pair?.length === 2 && pair.every((n) => Number.isFinite(n))
-      ? pair
-      : undefined;
-  const period = num("t");
   return {
     filters: {
-      period: isPeriod(period) ? period : undefined,
-      status: parseStatus(p.get("s")),
-      minFame: num("f"),
-      minElevation: num("m"),
-      query: p.get("q") ?? undefined,
+      period: given("t"),
+      status: given("s"),
+      countries: given("l"),
+      regions: given("r"),
+      minFame: given("f"),
+      minElevation: given("m"),
+      difficulty: given("d"),
+      maxTraffic: given("v"),
+      minBeauty: given("be"),
+      sort: given("o"),
+      query: given("q"),
     },
     selection,
     view: {
-      lat: center?.[0],
-      lon: center?.[1],
-      zoom: num("z"),
-      pitch: num("pi"),
-      bearing: num("b"),
+      lat: h.c?.[0],
+      lon: h.c?.[1],
+      zoom: given("z"),
+      pitch: given("pi"),
+      bearing: given("b"),
     },
   };
 }
@@ -130,38 +296,33 @@ export function readHash(): HashState {
   return parseHash(window.location.hash);
 }
 
-/** `s=open,risky`; the legacy values `open` and `openRisky` from older links still work. */
-function parseStatus(raw: string | null): Status[] | undefined {
-  if (!raw || raw === "all") return undefined;
-  if (raw === "none") return [];
-  if (raw === "openRisky") return ["open", "risky"];
-  const list = raw
-    .split(",")
-    .filter((s): s is Status => ALL_STATUS.includes(s as Status));
-  return list.length ? list : undefined;
-}
-
 /** Pure half of `writeHash`: the hash body without the leading "#". */
 export function serializeHash(
   filters: Filters,
   selection: Selection | null,
   view: MapView,
 ): string {
-  const p = new URLSearchParams();
-  p.set("t", String(filters.period));
-  p.set("z", view.zoom.toFixed(2));
-  p.set("c", `${view.lat.toFixed(4)},${view.lon.toFixed(4)}`);
-  if (view.pitch > 1) {
-    p.set("pi", view.pitch.toFixed(0));
-    p.set("b", view.bearing.toFixed(0));
-  }
-  if (filters.status.length !== ALL_STATUS.length)
-    p.set("s", filters.status.join(",") || "none");
-  if (filters.minFame > 1) p.set("f", String(filters.minFame));
-  if (filters.minElevation > 0) p.set("m", String(filters.minElevation));
-  if (filters.query) p.set("q", filters.query);
-  if (selection) p.set(selection.kind, selection.slug);
-  return String(p);
+  const tilted = view.pitch > 1;
+  return serialize({
+    t: filters.period,
+    z: view.zoom,
+    c: [view.lat, view.lon],
+    pi: tilted ? view.pitch : null,
+    b: tilted ? view.bearing : null,
+    s: filters.status,
+    l: filters.countries,
+    r: filters.regions,
+    f: filters.minFame,
+    m: filters.minElevation,
+    d: filters.difficulty,
+    v: filters.maxTraffic,
+    be: filters.minBeauty,
+    o: filters.sort,
+    q: filters.query,
+    pass: selection?.kind === "pass" ? selection.slug : null,
+    tour: selection?.kind === "tour" ? selection.slug : null,
+    town: selection?.kind === "town" ? selection.slug : null,
+  }).replace(/^\?/u, "");
 }
 
 export function writeHash(

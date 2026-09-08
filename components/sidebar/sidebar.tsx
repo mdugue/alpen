@@ -21,9 +21,10 @@ import { Toggle } from "@/components/ui/toggle";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { ALL_STATUS, DEFAULT_FILTERS, hasActiveFilters } from "@/lib/app-state";
 import type { EntityKind, Filters, Selection } from "@/lib/app-state";
+import { COUNTRIES, COUNTRY_NAME } from "@/lib/regions";
 import type { PassRow, TourRow, TownRow } from "@/lib/rows";
 import { STATUS_LABEL } from "@/lib/status";
-import type { Status, Tour } from "@/lib/types";
+import type { Country, Status, Tour } from "@/lib/types";
 import { cn, PRESSED } from "@/lib/utils";
 
 export interface SidebarProps {
@@ -59,8 +60,13 @@ export interface SidebarProps {
 export function Sidebar(p: SidebarProps) {
   const set = <K extends keyof Filters>(key: K, value: Filters[K]) =>
     p.setFilters((f) => ({ ...f, [key]: value }));
+  // The sort is a preference, not a filter: it survives the reset.
   const resetFilters = () =>
-    p.setFilters((f) => ({ ...DEFAULT_FILTERS, period: f.period }));
+    p.setFilters((f) => ({
+      ...DEFAULT_FILTERS,
+      period: f.period,
+      sort: f.sort,
+    }));
   const toggleSection = (kind: EntityKind) => (open: boolean) =>
     p.setSections((s) =>
       open ? [...new Set([...s, kind])] : s.filter((k) => k !== kind),
@@ -187,6 +193,37 @@ export function Sidebar(p: SidebarProps) {
                 </ToggleGroupItem>
               );
             })}
+          </ToggleGroup>
+          <ToggleGroup
+            multiple
+            variant="outline"
+            size="sm"
+            spacing={0}
+            value={p.filters.countries}
+            onValueChange={(v) =>
+              set(
+                "countries",
+                COUNTRIES.filter((c) => v.includes(c)),
+              )
+            }
+            aria-label="Länder filtern"
+            className={cn("w-full", p.peek && "hidden")}
+          >
+            {COUNTRIES.map((c: Country) => (
+              <ToggleGroupItem
+                key={c}
+                value={c}
+                aria-label={COUNTRY_NAME[c]}
+                title={COUNTRY_NAME[c]}
+                className={cn(
+                  "flex-1",
+                  !p.filters.countries.includes(c) && "text-muted-foreground",
+                  PRESSED,
+                )}
+              >
+                {c}
+              </ToggleGroupItem>
+            ))}
           </ToggleGroup>
           {hasActiveFilters(p.filters) && !p.peek && (
             <Button

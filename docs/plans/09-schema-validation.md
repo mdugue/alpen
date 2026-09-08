@@ -1,6 +1,6 @@
 # 09 · Schema validation with zod
 
-**Status:** proposed · **Effort:** S · **Depends on:** – · **Unblocks:** 12
+**Status:** in progress (PR pending) · **Effort:** S · **Depends on:** – · **Unblocks:** 12
 (new entity gets a schema from day one), 05 (`aliases`)
 
 ## Goal
@@ -106,6 +106,16 @@ plus `Tour`, `Town`, `RouteGeometry` (≥ 2 points), `ElevationProfile`
 
 The diagram goes into `docs/data-model.md`, whose first sentence then reads
 "all types come from `lib/schema.ts`".
+
+## Implementation notes
+
+- The hand-maintained files were already indented with one space; the
+  canonical form is therefore `JSON.stringify(data, null, 1)` plus a trailing
+  newline, not two spaces.
+- `REGIONS` and `COUNTRIES` live in `lib/regions.ts` so the client-side
+  filters can share them without importing zod.
+- `WeatherDay` (the forecast route's response) got a schema too, so
+  `lib/types.ts` carries no hand-written interface at all.
 
 ## Acceptance criteria
 
