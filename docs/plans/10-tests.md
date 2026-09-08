@@ -1,6 +1,6 @@
 # 10 · Tests
 
-**Status:** in progress ([PR #4](https://github.com/mdugue/alpen/pull/4)) · **Effort:** M · **Depends on:** – · **Unblocks:** every
+**Status:** done ([PR #4](https://github.com/mdugue/alpen/pull/4)) · **Effort:** M · **Depends on:** – · **Unblocks:** every
 refactor above; especially 01, 02 and 04
 
 ## Goal
