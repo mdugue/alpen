@@ -1,0 +1,175 @@
+{
+  "$id": "rejected.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "propertyNames": {
+    "type": "string"
+  },
+  "additionalProperties": {
+    "type": "object",
+    "properties": {
+      "reasons": {
+        "minItems": 1,
+        "type": "array",
+        "items": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "metrics": {
+        "anyOf": [
+          {
+            "type": "object",
+            "properties": {
+              "km": {
+                "type": "number",
+                "minimum": 0
+              },
+              "startDist": {
+                "type": "number",
+                "minimum": 0
+              },
+              "endDist": {
+                "type": "number",
+                "minimum": 0
+              },
+              "topDelta": {
+                "type": [
+                  "number",
+                  "null"
+                ]
+              },
+              "peakAt": {
+                "type": [
+                  "number",
+                  "null"
+                ]
+              },
+              "gain": {
+                "type": [
+                  "number",
+                  "null"
+                ]
+              }
+            },
+            "required": [
+              "km",
+              "startDist",
+              "endDist",
+              "topDelta",
+              "peakAt",
+              "gain"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "km": {
+                "type": "number",
+                "minimum": 0
+              },
+              "statedKm": {
+                "type": "number",
+                "exclusiveMinimum": 0
+              },
+              "kmDelta": {
+                "type": "number"
+              },
+              "startDist": {
+                "type": "number",
+                "minimum": 0
+              },
+              "endDist": {
+                "type": "number",
+                "minimum": 0
+              }
+            },
+            "required": [
+              "km",
+              "statedKm",
+              "kmDelta",
+              "startDist",
+              "endDist"
+            ],
+            "additionalProperties": false
+          }
+        ]
+      },
+      "source": {
+        "type": "string",
+        "enum": [
+          "ors",
+          "osrm"
+        ]
+      },
+      "hash": {
+        "type": "string",
+        "minLength": 1
+      },
+      "firstSeen": {
+        "type": "string",
+        "format": "date",
+        "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+      },
+      "lastSeen": {
+        "type": "string",
+        "format": "date",
+        "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+      },
+      "profile": {
+        "type": "object",
+        "properties": {
+          "km": {
+            "type": "number",
+            "minimum": 0
+          },
+          "elevationGain": {
+            "type": "number",
+            "minimum": 0
+          },
+          "start": {
+            "type": "number"
+          },
+          "top": {
+            "type": "number"
+          },
+          "avgGradient": {
+            "type": "number"
+          },
+          "dist": {
+            "type": "array",
+            "items": {
+              "type": "number"
+            }
+          },
+          "ele": {
+            "type": "array",
+            "items": {
+              "type": "number"
+            }
+          }
+        },
+        "required": [
+          "km",
+          "elevationGain",
+          "start",
+          "top",
+          "avgGradient",
+          "dist",
+          "ele"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "required": [
+      "reasons",
+      "metrics",
+      "source",
+      "hash",
+      "firstSeen",
+      "lastSeen"
+    ],
+    "additionalProperties": false
+  }
+}

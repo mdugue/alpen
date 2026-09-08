@@ -34,11 +34,47 @@ export const LatLon = z.strictObject({
   lon: z.number().min(4).max(16),
 });
 
+/**
+ * Per-entry exception to the route quality gate (`scripts/lib/validate.ts`),
+ * for the ascents and tours that legitimately break a default limit – an ascent
+ * that ends at a mountain restaurant below the summit marker, say. Ascents and
+ * tours have different limits, so each kind lists only the limits its validator
+ * reads; a limit that would be silently ignored cannot be written down. `note`
+ * is mandatory and at least one limit has to be named: an exception nobody can
+ * explain, or one that widens nothing, is a bug that has been silenced.
+ */
+const atLeastOneLimit = (o: Record<string, unknown>) =>
+  Object.keys(o).some((k) => k !== "note");
+
+export const AscentCheck = z
+  .strictObject({
+    maxKm: z.number().positive().optional(),
+    maxStartDist: z.number().positive().optional(),
+    maxEndDist: z.number().positive().optional(),
+    maxTopDelta: z.number().positive().optional(),
+    minPeakAt: z.number().min(0).max(1).optional(),
+    maxGain: z.number().positive().optional(),
+    /** Why this ascent legitimately breaks the default limit. */
+    note: z.string().min(1, "check ohne Begründung (note)"),
+  })
+  .refine(atLeastOneLimit, "check nennt keine Grenze");
+
+export const TourCheck = z
+  .strictObject({
+    maxKmDelta: z.number().positive().optional(),
+    maxWaypointDist: z.number().positive().optional(),
+    /** Why this tour legitimately breaks the default limit. */
+    note: z.string().min(1, "check ohne Begründung (note)"),
+  })
+  .refine(atLeastOneLimit, "check nennt keine Grenze");
+
 export const Ascent = z.strictObject({
   /** Starting point of the classic cycling ascent. */
   from: LatLon,
   /** Display name, e.g. "Valloire (Nord)". */
   label: z.string().min(1),
+  /** Widens a route-gate limit for this ascent alone, see `AscentCheck`. */
+  check: AscentCheck.optional(),
 });
 
 export const PassSeason = z
@@ -96,6 +132,8 @@ export const Tour = z.strictObject({
   season: z.string(),
   description: z.string(),
   waypoints: z.array(LatLon).min(2),
+  /** Widens a route-gate limit for this tour alone, see `TourCheck`. */
+  check: TourCheck.optional(),
 });
 
 export const Town = z.strictObject({
@@ -154,6 +192,70 @@ export const Profiles = z.record(z.string(), ElevationProfile);
 /** Key: pass slug. */
 export const Climate = z.record(Slug, ClimateYear);
 
+// ── The route quality gate (scripts/lib/validate.ts) ─────────────────────────
+
+/** Which router produced a route. Entries without meta count as `"osrm"`. */
+export const RouteSource = z.enum(["ors", "osrm"]);
+
+/** One entry of `routes-meta.json`: provenance only, the metrics are recomputed. */
+export const RouteMeta = z.strictObject({
+  source: RouteSource,
+  /** ISO date of the run that stored the geometry. */
+  fetchedAt: z.iso.date(),
+});
+
+/** What the gate measured for one ascent. `null` before a profile exists. */
+export const AscentMetrics = z.strictObject({
+  km: z.number().nonnegative(),
+  startDist: z.number().nonnegative(),
+  endDist: z.number().nonnegative(),
+  topDelta: z.number().nullable(),
+  peakAt: z.number().nullable(),
+  gain: z.number().nullable(),
+});
+
+export const TourMetrics = z.strictObject({
+  km: z.number().nonnegative(),
+  /** The curated `tour.km` this was measured against. */
+  statedKm: z.number().positive(),
+  /** Signed relative deviation from `statedKm`. */
+  kmDelta: z.number(),
+  startDist: z.number().nonnegative(),
+  endDist: z.number().nonnegative(),
+});
+
+export const RouteMetrics = z.union([AscentMetrics, TourMetrics]);
+
+/**
+ * One entry of `rejected.json`. It keeps the measured values rather than the
+ * geometry, because re-judging them against a changed limit is what tuning
+ * needs and costs nothing; the geometry itself is free to fetch again. The
+ * elevation profile *is* kept, because that one costs 100 Open-Meteo calls –
+ * so changing a threshold and retrying spends no quota at all.
+ */
+export const RouteRejection = z.strictObject({
+  /** Why it failed, as the sentences `data:check` prints. */
+  reasons: z.array(z.string().min(1)).min(1),
+  metrics: RouteMetrics,
+  source: RouteSource,
+  /** Identity of the rejected geometry; an unchanged hash on a retry means the
+   *  router is not the problem, the coordinates are. */
+  hash: z.string().min(1),
+  /** ISO date this key was first rejected – its age is the signal that a human
+   *  has to fix a coordinate rather than wait for a better route. */
+  firstSeen: z.iso.date(),
+  lastSeen: z.iso.date(),
+  /** Cached so a retry after a threshold change costs no Open-Meteo calls. */
+  profile: ElevationProfile.optional(),
+});
+
+/** Key: as `routes.json`. */
+export const RoutesMeta = z.record(z.string(), RouteMeta);
+/** Key: as `routes.json`. */
+export const Rejected = z.record(z.string(), RouteRejection);
+/** Key: pass slug → DEM height at the pass coordinate in m. */
+export const Summits = z.record(Slug, z.number());
+
 /** One day of the Open-Meteo forecast served by `app/api/weather/[slug]`. */
 export const WeatherDay = z.strictObject({
   date: z.string(),
@@ -173,4 +275,7 @@ export const FILES = {
   "generated/routes.json": Routes,
   "generated/profiles.json": Profiles,
   "generated/climate.json": Climate,
+  "generated/routes-meta.json": RoutesMeta,
+  "generated/rejected.json": Rejected,
+  "generated/summits.json": Summits,
 } as const;

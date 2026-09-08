@@ -13,6 +13,8 @@ export type Period = z.infer<typeof S.Period>;
 
 export type Status = z.infer<typeof S.Status>;
 export type LatLon = z.infer<typeof S.LatLon>;
+export type AscentCheck = z.infer<typeof S.AscentCheck>;
+export type TourCheck = z.infer<typeof S.TourCheck>;
 export type Ascent = z.infer<typeof S.Ascent>;
 export type PassSeason = z.infer<typeof S.PassSeason>;
 export type Region = z.infer<typeof S.Region>;
@@ -28,3 +30,11 @@ export type ClimateBucket = z.infer<typeof S.ClimateBucket>;
 /** 24 half-months, index 0 = early January. null = no data. */
 export type ClimateYear = z.infer<typeof S.ClimateYear>;
 export type WeatherDay = z.infer<typeof S.WeatherDay>;
+
+/** The route quality gate, see scripts/lib/validate.ts. */
+export type RouteSource = z.infer<typeof S.RouteSource>;
+export type RouteMeta = z.infer<typeof S.RouteMeta>;
+export type AscentMetrics = z.infer<typeof S.AscentMetrics>;
+export type TourMetrics = z.infer<typeof S.TourMetrics>;
+export type RouteMetrics = z.infer<typeof S.RouteMetrics>;
+export type RouteRejection = z.infer<typeof S.RouteRejection>;
