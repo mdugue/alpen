@@ -18,7 +18,7 @@
     "data:build": "bun run scripts/build-data.ts",
     "data:check": "bun run scripts/check-data.ts",
     "ui:init": "bunx shadcn@latest init --preset b1D2ui9g",
-    "ui:add": "bunx shadcn@latest add badge button card collapsible dialog drawer empty field input input-group label native-select popover radio-group separator skeleton slider switch table toggle toggle-group tooltip"
+    "ui:add": "bunx shadcn@latest add badge button button-group card chart collapsible dialog drawer empty field input input-group item label native-select popover radio-group separator skeleton slider switch table toggle toggle-group tooltip"
   },
   "dependencies": {
     "@base-ui/react": "^1.8.0",
@@ -30,6 +30,7 @@
     "next": "^16.3.4",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
+    "recharts": "3.8.0",
     "shadcn": "^4.21.0",
     "tailwind-merge": "^3.0.2"
   },

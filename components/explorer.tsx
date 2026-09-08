@@ -54,7 +54,7 @@ import type {
   Town,
 } from "@/lib/types";
 import { MOBILE_QUERY, useMediaQuery } from "@/lib/use-media-query";
-import { cn, MAP_CONTROL } from "@/lib/utils";
+import { cn, MAP_CONTROL, PANEL } from "@/lib/utils";
 
 interface Props {
   passes: Pass[];
@@ -70,11 +70,8 @@ interface Props {
 /** Floating panel geometry on desktop (px); keep in sync with the Tailwind widths below. */
 const GAP = 12;
 const SIDEBAR_W = { lg: 384, xl: 416 };
-const DETAIL_W = 352;
-/** Translucent floating panel over the map. */
-const PANEL =
-  "rounded-xl border border-border/60 bg-card/80 shadow-xl backdrop-blur-md supports-not-[backdrop-filter:blur(0)]:bg-card";
-
+/** The detail panel grows with the viewport; the map keeps the larger half. */
+const DETAIL_W = { lg: 352, xl: 400 };
 /** Bottom sheet positions on phones: a peek row, half, and almost full. */
 const SNAP_PEEK = "4.5rem";
 const SNAP_POINTS = [SNAP_PEEK, 0.5, 0.82] as const;
@@ -278,9 +275,10 @@ export function Explorer({
   // Desktop: the panels float over the map; the map is padded by their width
   // so camera targets land in the visible part.
   const sidebarW = isXl ? SIDEBAR_W.xl : SIDEBAR_W.lg;
+  const detailW = isXl ? DETAIL_W.xl : DETAIL_W.lg;
   const desktopPanels = isMobile
     ? []
-    : [sidebarOpen ? sidebarW : 0, selection ? DETAIL_W : 0].filter(Boolean);
+    : [sidebarOpen ? sidebarW : 0, selection ? detailW : 0].filter(Boolean);
   const insetLeft = desktopPanels.reduce(
     (x, w) => x + w + GAP,
     desktopPanels.length ? GAP : 0,
@@ -353,7 +351,7 @@ export function Explorer({
             aria-label="Details"
             style={{ left: detailLeft }}
             className={cn(
-              "absolute top-3 bottom-3 z-20 flex w-88 flex-col overflow-hidden max-lg:hidden",
+              "absolute top-3 bottom-3 z-20 flex w-88 flex-col overflow-hidden max-lg:hidden xl:w-100",
               "animate-in fade-in-0 slide-in-from-left-4 duration-200 motion-reduce:animate-none",
               PANEL,
             )}

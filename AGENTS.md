@@ -81,6 +81,11 @@ friends do that better and the app links out to them.
   and every list row repeats the same 24 cells as a `SeasonStrip`. Map
   visibility is always a `Switch` ("auf der Karte"), two-state buttons are
   always a `Toggle`.
+- **Charts come from the shadcn `chart` component** (recharts under the hood).
+  It is the only heavy dependency in the app, so the one chart that uses it
+  (`components/panel/climate-chart.tsx`) is pulled in with `next/dynamic` and
+  never reaches the first load. Stat tiles and dense rows use `Item`, stepper
+  groups use `ButtonGroup`.
 - **Colours only via tokens.** MapLibre cannot read CSS variables;
   `pass-map.tsx` reads them once via `getComputedStyle` (`readColors`). Add
   new map colours there rather than hard-coding them.

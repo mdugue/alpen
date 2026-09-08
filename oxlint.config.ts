@@ -133,6 +133,12 @@ export default defineConfig({
       rules: { "no-await-in-loop": "off" },
     },
     {
+      // This file *is* the lazily loaded chunk: `detail-panel.tsx` pulls it in
+      // through `next/dynamic`, so recharts never reaches the first load.
+      files: ["components/panel/climate-chart.tsx"],
+      rules: { "react-doctor/prefer-dynamic-import": "off" },
+    },
+    {
       // The JSON-LD block is the one sanctioned use of the prop.
       files: ["app/page.tsx"],
       rules: { "react/no-danger": "off" },

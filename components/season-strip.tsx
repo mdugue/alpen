@@ -2,6 +2,7 @@ import {
   MONTH_INITIALS,
   periodIndex,
   periodLabel,
+  PERIODS,
   seasonSummary,
   STATUS_LABEL,
 } from "@/lib/status";
@@ -17,12 +18,13 @@ import { cn } from "@/lib/utils";
 const CELL: Record<Status, string> = {
   open: "bg-status-open",
   risky: "bg-status-risky",
-  closed: "bg-transparent ring-1 ring-status-closed/70 ring-inset",
+  closed: "bg-status-closed/12 ring-1 ring-status-closed/45 ring-inset",
 };
 
 export function SeasonStrip({
   statuses,
   current,
+  best,
   size = "row",
   className,
 }: {
@@ -30,10 +32,13 @@ export function SeasonStrip({
   statuses: Status[];
   /** Outlined half-month; usually the selected period. */
   current?: Period;
-  /** `row`: 96 px, no labels. `panel`: 288 px with month initials. */
+  /** Underlined range in the panel size (`bestPeriods`). */
+  best?: [Period, Period] | null;
+  /** `row`: 96 px, no labels. `panel`: full width with month initials. */
   size?: "row" | "panel";
   className?: string;
 }) {
+  const panel = size === "panel";
   const currentIndex = current === undefined ? -1 : periodIndex(current);
   const label = [
     seasonSummary(statuses),
@@ -44,18 +49,28 @@ export function SeasonStrip({
     .filter(Boolean)
     .join(" ");
 
+  // A run that wraps around the turn of the year cannot be drawn as one bar;
+  // the sentence in `aria-label` still carries it.
+  const from = best ? periodIndex(best[0]) : 0;
+  const to = best ? periodIndex(best[1]) : 0;
+  const bestBar =
+    panel && best && from <= to
+      ? {
+          left: `${(from / PERIODS.length) * 100}%`,
+          width: `${((to - from + 1) / PERIODS.length) * 100}%`,
+        }
+      : null;
+
   return (
-    <div
-      className={cn(size === "panel" ? "w-72 max-w-full" : "w-24", className)}
-    >
+    <div className={cn(panel ? "w-full" : "w-24", className)}>
       <div
         role="img"
         aria-label={label}
-        className={cn("flex gap-px", size === "panel" ? "h-3.5" : "h-2")}
+        className={cn("flex gap-px", panel ? "h-4" : "h-2")}
       >
         {statuses.map((status, i) => (
           <span
-            key={i}
+            key={PERIODS[i]}
             className={cn(
               "relative flex-1 rounded-[1px]",
               CELL[status],
@@ -65,13 +80,21 @@ export function SeasonStrip({
           />
         ))}
       </div>
-      {size === "panel" && (
+      {bestBar && (
+        <div aria-hidden className="relative mt-1 h-[3px]">
+          <span
+            style={bestBar}
+            className="bg-foreground/55 absolute top-0 h-[3px] rounded-full"
+          />
+        </div>
+      )}
+      {panel && (
         <div
           aria-hidden
           className="text-muted-foreground mt-0.5 flex text-[10px] leading-none"
         >
           {MONTH_INITIALS.map((m, i) => (
-            <span key={i} className="flex-1 text-center tabular-nums">
+            <span key={m + String(i)} className="flex-1 text-center">
               {m}
             </span>
           ))}

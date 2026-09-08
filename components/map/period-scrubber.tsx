@@ -1,9 +1,15 @@
 "use client";
 
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { CalendarDays, ChevronLeft, ChevronRight } from "lucide-react";
 import { useRef } from "react";
 
 import { Button } from "@/components/ui/button";
+import { ButtonGroup, ButtonGroupText } from "@/components/ui/button-group";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import type { HistogramBar } from "@/lib/rows";
 import {
   MONTH_INITIALS,
@@ -13,15 +19,20 @@ import {
   periodLabel,
 } from "@/lib/status";
 import type { Period } from "@/lib/types";
-import { cn, MAP_CONTROL } from "@/lib/utils";
+import { cn, PANEL } from "@/lib/utils";
 
 /**
  * The half-month drives every colour on the map, so it is the one domain
- * control that floats over it – and it shows what it is scrubbing through:
- * behind the 24 stops a stacked bar per half-month counts how many of the
- * passes currently in the list are open, weather-dependent or often closed.
- * The status filter is ignored for those counts (see `statusHistogram`),
- * otherwise the histogram would hide the alternatives.
+ * control that floats over it, on the same translucent surface as the sidebar.
+ *
+ * It reads as a control from three sides: a stepper group with the current
+ * label, a rail whose 24 stops highlight under the pointer, and a thumb around
+ * the chosen half-month. Behind the stops a stacked bar per half-month counts
+ * how many of the passes currently in the list are open, weather-dependent or
+ * often closed – the status filter is ignored for those counts (see
+ * `statusHistogram`), otherwise the histogram would hide the alternatives.
+ * "Often closed" is grey rather than red: red is the map's closure colour and
+ * a backdrop must not compete with it.
  */
 export function PeriodScrubber({
   value,
@@ -32,7 +43,7 @@ export function PeriodScrubber({
   value: Period;
   onChange: (p: Period) => void;
   histogram: HistogramBar[];
-  /** Today's half-month, marked on the track. */
+  /** Today's half-month, marked on the rail. */
   today?: Period;
 }) {
   const track = useRef<HTMLDivElement>(null);
@@ -69,45 +80,48 @@ export function PeriodScrubber({
   };
 
   return (
-    <div
-      className={cn(
-        "border-border w-72 max-w-full rounded-md border px-1.5 pt-0.5 pb-1",
-        MAP_CONTROL,
-      )}
-    >
-      <div className="flex items-center gap-1">
+    <div className={cn("w-76 max-w-full p-1.5", PANEL)}>
+      <ButtonGroup className="bg-background w-full rounded-md">
         <Button
-          size="icon-sm"
-          variant="ghost"
+          variant="outline"
+          size="icon-lg"
           onClick={() => go(index - 1)}
           disabled={index === 0}
           aria-label="Früherer Halbmonat"
         >
           <ChevronLeft />
         </Button>
-        <span className="flex-1 truncate text-center text-sm font-semibold">
+        <ButtonGroupText className="flex-1 justify-center bg-transparent text-sm font-semibold">
           {periodLabel(value)}
-        </span>
-        {today !== undefined && value !== today && (
-          <Button
-            size="xs"
-            variant="ghost"
-            className="text-muted-foreground h-6 px-1.5 text-xs"
-            onClick={() => onChange(today)}
-          >
-            heute
-          </Button>
-        )}
+        </ButtonGroupText>
         <Button
-          size="icon-sm"
-          variant="ghost"
+          variant="outline"
+          size="icon-lg"
           onClick={() => go(index + 1)}
           disabled={index === PERIODS.length - 1}
           aria-label="Späterer Halbmonat"
         >
           <ChevronRight />
         </Button>
-      </div>
+        {today !== undefined && (
+          <Tooltip>
+            <TooltipTrigger
+              render={
+                <Button
+                  variant="outline"
+                  size="icon-lg"
+                  onClick={() => onChange(today)}
+                  disabled={value === today}
+                  aria-label={`Zurück zu heute (${periodLabel(today)})`}
+                />
+              }
+            >
+              <CalendarDays />
+            </TooltipTrigger>
+            <TooltipContent>heute: {periodLabel(today)}</TooltipContent>
+          </Tooltip>
+        )}
+      </ButtonGroup>
 
       <div
         ref={track}
@@ -131,46 +145,55 @@ export function PeriodScrubber({
           if (e.currentTarget.hasPointerCapture(e.pointerId))
             fromPointer(e.clientX);
         }}
-        className="focus-visible:ring-ring/50 relative mt-0.5 flex h-9 cursor-pointer touch-none items-end gap-px rounded-sm outline-none focus-visible:ring-2"
+        className="focus-visible:ring-ring/50 bg-muted/60 relative mt-1.5 flex h-11 cursor-pointer touch-none items-stretch gap-px rounded-md p-1 outline-none focus-visible:ring-2"
       >
         {histogram.map((b, i) => (
           <span
-            key={i}
+            key={b.period}
             className={cn(
-              "relative flex h-full flex-1 flex-col justify-end gap-px rounded-[1px]",
-              i === index && "outline-foreground outline-1 outline-offset-1",
-              i === todayIndex && "border-foreground/50 border-l border-dashed",
+              "group relative flex flex-1 flex-col justify-end gap-px rounded-[3px] transition-colors",
+              i === index
+                ? "bg-background ring-foreground/80 shadow-sm ring-2"
+                : "hover:bg-foreground/8",
             )}
           >
+            {i === todayIndex && (
+              <span
+                aria-hidden
+                className="bg-foreground/50 absolute inset-x-1 -top-0.5 h-0.5 rounded-full"
+              />
+            )}
             <span
               aria-hidden
               style={{ height: `${(b.closed / max) * 100}%` }}
-              className="bg-status-closed/25 rounded-[1px]"
+              className="bg-muted-foreground/25 rounded-[2px]"
             />
             <span
               aria-hidden
               style={{ height: `${(b.risky / max) * 100}%` }}
-              className="bg-status-risky/70 rounded-[1px]"
+              className="bg-status-risky rounded-[2px]"
             />
             <span
               aria-hidden
               style={{ height: `${(b.open / max) * 100}%` }}
-              className="bg-status-open rounded-[1px]"
+              className="bg-status-open rounded-[2px]"
             />
           </span>
         ))}
-        <span
-          aria-hidden
-          className="border-border pointer-events-none absolute inset-x-0 bottom-0 border-b"
-        />
       </div>
 
       <div
         aria-hidden
-        className="text-muted-foreground flex text-[10px] leading-none"
+        className="text-muted-foreground mt-0.5 flex px-1 text-[10px] leading-none"
       >
         {MONTH_INITIALS.map((m, i) => (
-          <span key={i} className="flex-1 text-center">
+          <span
+            key={m + String(i)}
+            className={cn(
+              "flex-1 text-center",
+              Math.floor(index / 2) === i && "text-foreground font-semibold",
+            )}
+          >
             {m}
           </span>
         ))}
