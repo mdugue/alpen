@@ -21,10 +21,11 @@ export default function manifest(): MetadataRoute.Manifest {
     background_color: BRAND.paper,
     theme_color: BRAND.paper,
     categories: ["travel", "sports", "navigation"],
+    // "any" only: the badge runs edge to edge, so a maskable circular crop
+    // would cut the range off its baseline (see app/apple-icon.tsx).
     icons: [
       { src: "/icon", sizes: "32x32", type: "image/png" },
       { src: "/apple-icon", sizes: "180x180", type: "image/png", purpose: "any" },
-      { src: "/apple-icon", sizes: "180x180", type: "image/png", purpose: "maskable" },
     ],
   };
 }

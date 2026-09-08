@@ -2,38 +2,34 @@ import { MARK } from "@/lib/brand";
 
 /**
  * The mark as a badge, shared by the icon routes and the share image so all
- * three render from one piece of geometry (lib/brand.ts). Server-only: it is
- * drawn by Satori inside an `ImageResponse`, never in the browser.
+ * three render from one piece of geometry (lib/brand.ts). Edge to edge at every
+ * size: the two distant ridges are meant to run off the sides, and the range
+ * only looks grounded while its baseline sits near the bottom of the badge.
+ *
+ * Server-only – drawn by Satori inside an `ImageResponse`, never in the browser.
  */
 export function MarkBadge({
   size,
-  /** `"22%"` for a rounded square, `"0"` where iOS or Android applies its own mask. */
+  /** `"22%"` for a rounded square, `"0"` where iOS applies its own mask. */
   radius = MARK.radius,
-  /** Share of the badge the summits occupy; below 1 they stay inside a maskable safe area. */
-  inset = 1,
 }: {
   size: number;
   radius?: string;
-  inset?: number;
 }) {
-  const glyph = Math.round(size * inset);
   return (
     <div
       style={{
         width: size,
         height: size,
         display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
         background: MARK.ground,
         borderRadius: radius,
       }}
     >
-      <svg width={glyph} height={glyph} viewBox="0 0 100 100">
-        {MARK.peaks.map((d) => (
-          <path key={d} d={d} fill={MARK.rock} />
+      <svg width={size} height={size} viewBox="0 0 100 100">
+        {MARK.ridges.map((r) => (
+          <path key={r.d} d={r.d} fill={r.fill} />
         ))}
-        <path d={MARK.cap} fill={MARK.snow} />
       </svg>
     </div>
   );

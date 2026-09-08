@@ -72,9 +72,10 @@ is rough route planning, not navigation.
   base URL, the sRGB palette and the mark geometry – lives in `lib/brand.ts`,
   because neither Satori nor a manifest can read CSS variables; `lib/mark.tsx`
   paints that geometry as the badge the favicon, the touch icon and the share
-  image all share. Change those two, not the routes. The badge ground is
-  `--accent` at full strength rather than the token itself: a 16 px favicon has
-  to carry the brand on colour alone. `robots.ts` welcomes search engines and turns away
+  image all share. Change those two, not the routes. The badge is monochrome
+  and has its own small grey scale rather than the UI tokens: it is seen at
+  16 px against unknown browser chrome, where depth has to come from tone and
+  the page palette does not carry far enough. `robots.ts` welcomes search engines and turns away
   the training and answer-engine crawlers; pages that carry
   `robots: { index: false }` stay crawlable on purpose, since a crawler has to
   fetch a page to see that.

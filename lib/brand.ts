@@ -52,24 +52,31 @@ export const BRAND = {
 } as const;
 
 /**
- * The mark: two solid summits on an amber ground, the main one snow-capped.
- * Filled shapes rather than strokes, and no detail that a 16 × 16 favicon
- * cannot hold – the cap is sized so it is still the thing you recognise in a
- * tab strip. Drawn on a 100 × 100 grid, so every size renders from the same
- * geometry. See lib/mark.tsx for the component that paints it.
+ * The mark: a range in four tonal planes on a warm charcoal ground, no colour
+ * at all. Depth comes from tone alone – each ridge a step lighter than the one
+ * behind it, the front summit at paper white – which is what carries the badge
+ * down to 16 px, where a snow line or an outline would only turn to mush.
+ *
+ * The greys are their own small scale rather than the UI tokens: an icon is
+ * seen at 16 px against unknown browser chrome and needs contrast the page
+ * palette is not built for. Drawn on a 100 × 100 grid, painted back to front;
+ * see lib/mark.tsx.
  */
 export const MARK = {
+  /** Warm charcoal with a slight tonal falloff, so the ground is not a flat slab. */
+  ground: "linear-gradient(155deg, #2b2724, #151312)",
+  /** Flat equivalent for anywhere a gradient cannot go. */
+  groundFlat: "#211f1c",
   /**
-   * Ground of the badge: `--accent` at full strength. A 16 px badge has to
-   * carry the brand on colour alone, which the softer UI accent cannot do.
+   * Back to front. The two distant ridges run off the sides on purpose – they
+   * are clipped by the viewBox at every size, so they never end in mid-air.
    */
-  ground: "#f0a93c",
-  rock: BRAND.ink,
-  snow: BRAND.paper,
-  /** Foreground summit on the left, then the main summit right of centre. */
-  peaks: ["M28 40 L50 84 L6 84 Z", "M64 22 L96 84 L32 84 Z"],
-  /** Snow on the main summit, cut off by a shallow chevron. */
-  cap: "M64 22 L82.6 58 L64 50 L45.4 58 Z",
+  ridges: [
+    { d: "M14 52 L44 84 L-30 84 Z", fill: "#3d3833" },
+    { d: "M92 50 L140 84 L64 84 Z", fill: "#3d3833" },
+    { d: "M28 40 L50 84 L6 84 Z", fill: "#736d66" },
+    { d: "M64 22 L96 84 L32 84 Z", fill: BRAND.paper },
+  ],
   /** Corner radius wherever the badge is drawn as a rounded square. */
   radius: "22%",
 } as const;
