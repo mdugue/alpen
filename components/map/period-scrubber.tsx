@@ -34,6 +34,10 @@ import { cn, PANEL } from "@/lib/utils";
  * "Often closed" is grey rather than red: red is the map's closure colour and
  * a backdrop must not compete with it.
  */
+/** Share of one segment in its stack, in percent; 0 when the stack is empty. */
+const percent = (part: number, total: number) =>
+  total === 0 ? 0 : (part / total) * 100;
+
 export function PeriodScrubber({
   value,
   onChange,
@@ -145,41 +149,65 @@ export function PeriodScrubber({
           if (e.currentTarget.hasPointerCapture(e.pointerId))
             fromPointer(e.clientX);
         }}
-        className="focus-visible:ring-ring/50 bg-muted/60 relative mt-1.5 flex h-11 cursor-pointer touch-none items-stretch gap-px rounded-md p-1 outline-none focus-visible:ring-2"
+        className="focus-visible:ring-ring/50 ring-border/70 bg-muted/60 relative mt-1.5 h-11 cursor-pointer touch-none rounded-md p-1 ring-1 outline-none focus-visible:ring-2"
       >
-        {histogram.map((b, i) => (
-          <span
-            key={b.period}
-            className={cn(
-              "group relative flex flex-1 flex-col justify-end gap-px rounded-[3px] transition-colors",
-              i === index
-                ? "bg-background ring-foreground/80 shadow-sm ring-2"
-                : "hover:bg-foreground/8",
-            )}
-          >
-            {i === todayIndex && (
+        {/* The stops carry no gap of their own: each is exactly 1/24 wide, so
+            the thumb below lines up with them at any width. The visual gap is
+            the bar's own inset. */}
+        <div className="relative flex h-full items-stretch">
+          {histogram.map((b, i) => (
+            <span
+              key={b.period}
+              className={cn(
+                "relative flex flex-1 flex-col justify-end px-px transition-colors",
+                i === index ? "" : "hover:bg-foreground/8 rounded-[3px]",
+              )}
+            >
+              {i === todayIndex && (
+                <span
+                  aria-hidden
+                  className="bg-foreground/45 absolute inset-x-px top-0 h-0.5 rounded-full"
+                />
+              )}
               <span
                 aria-hidden
-                className="bg-foreground/50 absolute inset-x-1 -top-0.5 h-0.5 rounded-full"
-              />
-            )}
-            <span
-              aria-hidden
-              style={{ height: `${(b.closed / max) * 100}%` }}
-              className="bg-muted-foreground/25 rounded-[2px]"
-            />
-            <span
-              aria-hidden
-              style={{ height: `${(b.risky / max) * 100}%` }}
-              className="bg-status-risky rounded-[2px]"
-            />
-            <span
-              aria-hidden
-              style={{ height: `${(b.open / max) * 100}%` }}
-              className="bg-status-open rounded-[2px]"
-            />
-          </span>
-        ))}
+                className="flex flex-col justify-end overflow-hidden rounded-[2px]"
+                style={{
+                  height: `${((b.closed + b.risky + b.open) / max) * 100}%`,
+                }}
+              >
+                <span
+                  className="bg-muted-foreground/25 shrink-0"
+                  style={{
+                    flexBasis: `${percent(b.closed, b.closed + b.risky + b.open)}%`,
+                  }}
+                />
+                <span
+                  className="bg-status-risky shrink-0"
+                  style={{
+                    flexBasis: `${percent(b.risky, b.closed + b.risky + b.open)}%`,
+                  }}
+                />
+                <span
+                  className="bg-status-open shrink-0"
+                  style={{
+                    flexBasis: `${percent(b.open, b.closed + b.risky + b.open)}%`,
+                  }}
+                />
+              </span>
+            </span>
+          ))}
+          {/* The thumb: inside the rail and inset, so it frames its own stop
+              without reaching into its neighbours. */}
+          <span
+            aria-hidden
+            style={{
+              left: `${(index / PERIODS.length) * 100}%`,
+              width: `${100 / PERIODS.length}%`,
+            }}
+            className="ring-foreground pointer-events-none absolute -inset-y-1 rounded-[5px] ring-2 ring-inset"
+          />
+        </div>
       </div>
 
       <div
