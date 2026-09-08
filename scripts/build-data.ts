@@ -509,7 +509,9 @@ const pendingProfiles = () =>
       j.kind === "ascent" &&
       routes[j.key] &&
       !profiles[j.key] &&
-      !isRejected(j),
+      !isRejected(j) &&
+      // Deferred until the geometry is final, see gate().
+      !upgradable(j),
   );
 const pendingClimate = () =>
   (passes as Pass[]).filter((p) => !climates[p.slug]);
@@ -635,15 +637,36 @@ async function accept(job: RouteJob, geom: RouteGeometry, source: RouteSource) {
  * budget keeps its (free) routing work; the profile checks of the next run can
  * still take it back out.
  */
-async function gate(job: RouteJob, geom: RouteGeometry, source: RouteSource) {
+async function gate(
+  job: RouteJob,
+  geom: RouteGeometry,
+  source: RouteSource,
+  /** False when the geometry came out of routes.json and is only being judged. */
+  fetched = true,
+) {
   const hash = geometryHash(geom);
   let m = measure(job, geom);
   const bad = judge(job, m);
   if (bad.length) return reject(job, bad, m, source, hash);
 
-  await accept(job, geom, source);
-  console.log(`Route: ${job.label} (${source}, ${(m as AscentMetrics).km} km)`);
+  if (fetched) {
+    await accept(job, geom, source);
+    console.log(
+      `Route: ${job.label} (${source}, ${(m as AscentMetrics).km} km)`,
+    );
+  }
   if (job.kind !== "ascent") return;
+
+  // 3: an OSRM route stored while an ORS key exists is provisional – the
+  // upgrade pass will replace the geometry and the profile would have to be
+  // paid for a second time. 100 Open-Meteo calls is far too much to spend on
+  // a road we already know is the wrong one.
+  if (source === "osrm" && ORS) {
+    console.log(
+      `Profil aufgeschoben: ${job.label} (OSRM-Route, erst nach --upgrade-osrm)`,
+    );
+    return;
+  }
 
   // A cached profile from an earlier rejection is only valid for the very same
   // geometry; otherwise it has to be paid for again.
@@ -692,7 +715,7 @@ const routing = pendingRoutes().map(async (job) => {
 
 // Pipeline 2: profiles for routes that already exist and were never judged.
 const profiling = pendingProfiles().map((job) =>
-  gate(job, routes[job.key]!, meta[job.key]?.source ?? "osrm"),
+  gate(job, routes[job.key]!, meta[job.key]?.source ?? "osrm", false),
 );
 
 // Pipeline 3: the DEM height of the pass points themselves – one cheap batch.

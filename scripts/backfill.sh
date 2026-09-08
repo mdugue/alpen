@@ -24,7 +24,7 @@ GAP="${BACKFILL_GAP:-3900}"        # 65 min, safely past Open-Meteo's hourly win
 MAX="${BACKFILL_MAX_RUNS:-8}"
 EXTRA=("$@")
 
-pending() { bun run scripts/build-data.ts --pending; }
+pending() { bun run scripts/build-data.ts --pending "${EXTRA[@]}"; }
 
 echo "Backfill: Budget ${BUDGET} Calls pro Lauf, ${GAP}s Pause, höchstens ${MAX} Läufe"
 bun run scripts/build-data.ts --status "${EXTRA[@]}"
@@ -51,6 +51,25 @@ for ((run = 1; run <= MAX; run++)); do
   echo "Warte ${GAP}s bis $(date -d "+${GAP} seconds" +%H:%M 2>/dev/null || date -v "+${GAP}S" +%H:%M) – Open-Meteo-Stundenfenster"
   sleep "$GAP"
 done
+
+# Filling every gap is not the same as the data being right: while an ORS key is
+# present, a stored OSRM route is provisional by construction, and "nothing
+# missing" would otherwise read as "finished" with every road still a car route.
+case " ${EXTRA[*]-} " in *" --upgrade-osrm "*) upgrading=1 ;; *) upgrading=0 ;; esac
+if [ "$upgrading" -eq 0 ] && [ "$(bun run scripts/build-data.ts --pending --upgrade-osrm)" -gt 0 ]; then
+  cat <<'EOF'
+
+╭─ Achtung ────────────────────────────────────────────────
+│ Es fehlt nichts mehr, aber die gespeicherten Routen stammen
+│ noch vom OSRM-Autoprofil. Sie sind damit vorläufig: das
+│ Rennrad-Profil von ORS fährt andere Straßen, und die
+│ Höhenprofile dieser Routen wurden deshalb aufgeschoben.
+│
+│ Zum Aufrüsten (routet neu über ORS und holt die Profile):
+│   ORS_KEY=… bun run data:backfill --upgrade-osrm
+╰──────────────────────────────────────────────────────────
+EOF
+fi
 
 echo
 echo "───── Prüfung ────────────────────────────────────────────"

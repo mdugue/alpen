@@ -319,9 +319,41 @@ different job with a different cadence.
 10. ✅ `scripts/backfill.sh` plus `bun run data:build --pending`, so the three
     hourly runs are one command.
 11. ✅ `refresh-data.yml`: push trigger instead of the cron.
-12. ⬜ Run the backfill with an ORS key, review the log, fix coordinates in
-    `passes.json` or add an `ascent.check` for whatever the gate rejects,
-    commit source and generated files together.
+12. ✅ First backfill run (OSRM only, no key in the environment): 143 of 180
+    keys routed and stored, 37 refused, 92 summit heights fetched. Every stored
+    route passes every check – the gate refused everything that did not.
+13. ⬜ Upgrade the 143 provisional OSRM routes to ORS
+    (`ORS_KEY=… bun run data:backfill --upgrade-osrm`, ≈ 13 600 Open-Meteo
+    calls ≈ 4 hourly runs), then re-judge.
+14. ⬜ Fix the 23 pass coordinates the summit check found (below), then
+    `bun run data:build --retry-rejected`.
+
+### What the first run found
+
+The DEM height at the pass coordinate and the routed profile agree, independently,
+that **23 of 92 pass coordinates are wrong** – far more than the 11 bad routes
+this plan started from. Jaufenpass is the clearest: the route reaches the stated
+coordinate (18 m away), the DEM there reads 1 873 m, the profile top reads
+1 873 m, and `passes.json` says 2 094 m. The route is right and the coordinate is
+221 m too low. The same signature repeats as `endDist` rejections where _both_
+ascents of a pass end at the identical distance from the stated point (Allos
+1.04 km, Colombière 515 m, Croix de Fer 506 m) – two different roads cannot be
+wrong by the same amount, so the point they are measured against is.
+
+Three defects the first run exposed, all fixed:
+
+- `gate()` logged `Route: …` even when it was only re-judging geometry that came
+  out of `routes.json`, which read as fresh routing and made an OSRM-only run
+  look like an ORS failure. It now logs only what it actually fetched, and no
+  longer restamps `routes-meta.json` with today's date for a route it did not
+  fetch.
+- A route stored from the OSRM fallback while an ORS key exists is provisional by
+  construction, yet its profile was fetched anyway – 100 Open-Meteo calls on a
+  road the upgrade pass will replace. Profiles for such routes are now deferred
+  until the geometry is final.
+- `--pending` reported 0 while every stored route was still a car route, so
+  `backfill.sh` finished with "Nichts mehr offen". It now says plainly that the
+  data is provisional and names the upgrade command.
 
 ### Documentation
 
