@@ -80,7 +80,7 @@ export function PassList({
             ))}
           </NativeSelect>
           <CollapsibleTrigger
-            render={<Button size="sm" variant="ghost" className="ml-auto" />}
+            render={<Button variant="ghost" className="ml-auto" />}
           >
             <SlidersHorizontal data-icon="inline-start" />
             Filter
