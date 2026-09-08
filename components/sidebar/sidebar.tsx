@@ -4,11 +4,11 @@ import { PanelLeftClose, Search, Star, X } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useRef } from "react";
 
+import { FilterPanel } from "@/components/sidebar/filter-panel";
 import { PassList } from "@/components/sidebar/pass-list";
 import { KIND_GLYPH, Section } from "@/components/sidebar/section";
 import { TourList } from "@/components/sidebar/tour-list";
 import { TownList } from "@/components/sidebar/town-list";
-import { StatusDot } from "@/components/status-badge";
 import { Button } from "@/components/ui/button";
 import {
   InputGroup,
@@ -18,12 +18,10 @@ import {
 } from "@/components/ui/input-group";
 import { Switch } from "@/components/ui/switch";
 import { Toggle } from "@/components/ui/toggle";
-import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
-import { ALL_STATUS, DEFAULT_FILTERS, hasActiveFilters } from "@/lib/app-state";
+import { DEFAULT_FILTERS, hasActiveFilters } from "@/lib/app-state";
 import type { EntityKind, Filters, Selection } from "@/lib/app-state";
 import type { PassRow, TourRow, TownRow } from "@/lib/rows";
-import { STATUS_LABEL } from "@/lib/status";
-import type { Status, Tour } from "@/lib/types";
+import type { Tour } from "@/lib/types";
 import { cn, PRESSED } from "@/lib/utils";
 
 export interface SidebarProps {
@@ -59,8 +57,13 @@ export interface SidebarProps {
 export function Sidebar(p: SidebarProps) {
   const set = <K extends keyof Filters>(key: K, value: Filters[K]) =>
     p.setFilters((f) => ({ ...f, [key]: value }));
+  // The sort is a preference, not a filter: it survives the reset.
   const resetFilters = () =>
-    p.setFilters((f) => ({ ...DEFAULT_FILTERS, period: f.period }));
+    p.setFilters((f) => ({
+      ...DEFAULT_FILTERS,
+      period: f.period,
+      sort: f.sort,
+    }));
   const toggleSection = (kind: EntityKind) => (open: boolean) =>
     p.setSections((s) =>
       open ? [...new Set([...s, kind])] : s.filter((k) => k !== kind),
@@ -113,80 +116,58 @@ export function Sidebar(p: SidebarProps) {
 
       <div className={cn("flex min-h-0 flex-1 flex-col", p.detail && "hidden")}>
         <div className="border-border relative flex shrink-0 flex-col gap-2 border-b px-3 py-2">
-          <div className="flex items-center gap-2">
-            <InputGroup className="flex-1">
-              <InputGroupAddon>
-                <Search />
-              </InputGroupAddon>
-              <InputGroupInput
-                type="search"
-                name="q"
-                autoComplete="off"
-                enterKeyHint="search"
-                spellCheck={false}
-                value={p.filters.query}
-                onChange={(e) => set("query", e.target.value)}
-                onFocus={p.onSearchFocus}
-                placeholder="Pass, Tour oder Ort …"
-                aria-label="Suchen"
-                className="[&::-webkit-search-cancel-button]:appearance-none [&::-webkit-search-decoration]:appearance-none"
-              />
-              {p.filters.query && (
-                <InputGroupAddon align="inline-end">
-                  <InputGroupButton
-                    size="icon-xs"
-                    onClick={() => set("query", "")}
-                    aria-label="Suche leeren"
-                  >
-                    <X />
-                  </InputGroupButton>
-                </InputGroupAddon>
-              )}
-            </InputGroup>
-            <Toggle
-              variant="outline"
-              pressed={p.filters.favoritesOnly}
-              onPressedChange={(on) => set("favoritesOnly", on)}
-              aria-label="Nur Gemerkte anzeigen"
-              className={PRESSED}
-            >
-              <Star className={cn(p.filters.favoritesOnly && "fill-current")} />
-              {p.favoriteCount > 0 && (
-                <span className="tabular-nums">{p.favoriteCount}</span>
-              )}
-            </Toggle>
-          </div>
-          <ToggleGroup
-            multiple
-            variant="outline"
-            spacing={0}
-            value={p.filters.status}
-            onValueChange={(v) =>
-              set(
-                "status",
-                ALL_STATUS.filter((s) => v.includes(s)),
-              )
-            }
-            aria-label="Status filtern"
-            className={cn("w-full", p.peek && "hidden")}
-          >
-            {ALL_STATUS.map((s: Status) => {
-              const active = p.filters.status.includes(s);
-              return (
-                <ToggleGroupItem
-                  key={s}
-                  value={s}
-                  className={cn(
-                    "flex-1 gap-1.5",
-                    !active && "text-muted-foreground",
+          <FilterPanel
+            filters={p.filters}
+            setFilters={p.setFilters}
+            hidden={p.peek}
+            search={
+              <>
+                <InputGroup className="flex-1">
+                  <InputGroupAddon>
+                    <Search />
+                  </InputGroupAddon>
+                  <InputGroupInput
+                    type="search"
+                    name="q"
+                    autoComplete="off"
+                    enterKeyHint="search"
+                    spellCheck={false}
+                    value={p.filters.query}
+                    onChange={(e) => set("query", e.target.value)}
+                    onFocus={p.onSearchFocus}
+                    placeholder="Pass, Tour oder Ort …"
+                    aria-label="Suchen"
+                    className="[&::-webkit-search-cancel-button]:appearance-none [&::-webkit-search-decoration]:appearance-none"
+                  />
+                  {p.filters.query && (
+                    <InputGroupAddon align="inline-end">
+                      <InputGroupButton
+                        size="icon-xs"
+                        onClick={() => set("query", "")}
+                        aria-label="Suche leeren"
+                      >
+                        <X />
+                      </InputGroupButton>
+                    </InputGroupAddon>
                   )}
+                </InputGroup>
+                <Toggle
+                  variant="outline"
+                  pressed={p.filters.favoritesOnly}
+                  onPressedChange={(on) => set("favoritesOnly", on)}
+                  aria-label="Nur Gemerkte anzeigen"
+                  className={PRESSED}
                 >
-                  <StatusDot status={s} hollow={!active} />
-                  {STATUS_LABEL[s]}
-                </ToggleGroupItem>
-              );
-            })}
-          </ToggleGroup>
+                  <Star
+                    className={cn(p.filters.favoritesOnly && "fill-current")}
+                  />
+                  {p.favoriteCount > 0 && (
+                    <span className="tabular-nums">{p.favoriteCount}</span>
+                  )}
+                </Toggle>
+              </>
+            }
+          />
           {hasActiveFilters(p.filters) && !p.peek && (
             <Button
               variant="link"

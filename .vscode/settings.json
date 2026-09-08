@@ -41,5 +41,31 @@
   "editor.codeActionsOnSave": {
     "source.fixAll.oxc": "explicit"
   },
-  "biome.enabled": false
+  "biome.enabled": false,
+  "json.schemas": [
+    {
+      "fileMatch": ["/data/passes.json"],
+      "url": "./data/schema/passes.schema.json"
+    },
+    {
+      "fileMatch": ["/data/tours.json"],
+      "url": "./data/schema/tours.schema.json"
+    },
+    {
+      "fileMatch": ["/data/towns.json"],
+      "url": "./data/schema/towns.schema.json"
+    },
+    {
+      "fileMatch": ["/data/generated/routes.json"],
+      "url": "./data/schema/routes.schema.json"
+    },
+    {
+      "fileMatch": ["/data/generated/profiles.json"],
+      "url": "./data/schema/profiles.schema.json"
+    },
+    {
+      "fileMatch": ["/data/generated/climate.json"],
+      "url": "./data/schema/climate.schema.json"
+    }
+  ]
 }

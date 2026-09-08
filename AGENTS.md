@@ -34,15 +34,17 @@ friends do that better and the app links out to them.
 | Topic                                         | File                                                                                                                  |
 | --------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
 | Rideability heuristic                         | `lib/status.ts` (`passStatus`, `tourStatus`)                                                                          |
-| Data types                                    | `lib/types.ts`                                                                                                        |
-| Data access (cached)                          | `lib/data.ts`                                                                                                         |
-| Filter, selection and URL state               | `lib/app-state.ts`, `components/explorer.tsx`                                                                         |
+| Data schemas (zod) and inferred types         | `lib/schema.ts`, `lib/types.ts`, `data/schema/*.schema.json` (`bun run data:schema`)                                  |
+| Regions and countries (vocabulary)            | `lib/regions.ts`                                                                                                      |
+| Data access (cached, validated)               | `lib/data.ts`                                                                                                         |
+| Filter, selection and URL state (hash keys)   | `lib/app-state.ts`, `components/explorer.tsx`                                                                         |
+| Search normalisation and haystacks            | `lib/search.ts`                                                                                                       |
 | Map, layers, 3D, markers, labels              | `components/map/pass-map.tsx`                                                                                         |
 | Period scrubber floating over the map         | `components/map/period-scrubber.tsx`                                                                                  |
 | Season strip (24 half-months)                 | `components/season-strip.tsx`                                                                                         |
 | Sidebar: search, filters, one list per kind   | `components/sidebar/`, `lib/rows.ts`                                                                                  |
 | Detail panel incl. profile/weather/climate    | `components/panel/`                                                                                                   |
-| Precomputation                                | `scripts/build-data.ts`                                                                                               |
+| Precomputation, data checks                   | `scripts/build-data.ts`, `scripts/check-data.ts`                                                                      |
 | Name, claim, colours, mark, base URL          | `lib/brand.ts`, `lib/mark.tsx`                                                                                        |
 | Icons, share image, manifest, robots, sitemap | `app/icon.tsx`, `app/apple-icon.tsx`, `app/opengraph-image.tsx`, `app/manifest.ts`, `app/robots.ts`, `app/sitemap.ts` |
 | Legal pages                                   | `app/impressum/`, `app/datenschutz/`                                                                                  |

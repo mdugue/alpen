@@ -1,5 +1,11 @@
 import { statusMatches } from "@/lib/app-state";
-import type { EntityKind, Filters } from "@/lib/app-state";
+import type { EntityKind, Filters, PassSort } from "@/lib/app-state";
+import {
+  matches,
+  passHaystack,
+  tourHaystack,
+  townHaystack,
+} from "@/lib/search";
 import {
   climateBucket,
   passSeason,
@@ -18,34 +24,67 @@ import type {
   Town,
 } from "@/lib/types";
 
+export type { PassSort } from "@/lib/app-state";
+
 /**
- * One filtered list per entity kind. Search and the favourites toggle apply to
- * all three, the status filter to passes and tours, fame and elevation to
- * passes only. Map visibility (hidden tours, towns on/off) is not a filter and
- * is handled by the map itself.
+ * One filtered list per entity kind. Search and the favourites toggle apply
+ * to all three, the status filter and the pass criteria to passes and, via
+ * their passes, to tours; towns know no criteria. Map visibility (hidden
+ * tours, towns on/off) is a layer toggle, not a filter; what the map draws
+ * per kind is what the list of that kind shows.
  */
 
 interface Query {
-  matches: (...parts: string[]) => boolean;
+  matches: (haystack: string) => boolean;
   favoritesOnly: boolean;
   isFavorite: (kind: EntityKind, slug: string) => boolean;
 }
 
 function query(filters: Filters, isFavorite: Query["isFavorite"]): Query {
-  const q = filters.query.trim().toLowerCase();
+  const q = filters.query.trim();
   return {
-    matches: (...parts) => !q || parts.join(" ").toLowerCase().includes(q),
+    matches: (haystack) => !q || matches(haystack, q),
     favoritesOnly: filters.favoritesOnly,
     isFavorite,
   };
 }
 
-/** Everything about a pass except its status: search, favourites, fame, elevation. */
+/** Lower bounds, "at least this interesting": a tour needs one pass that clears them. */
+const interesting = (pass: Pass, f: Filters) =>
+  pass.elevation >= f.minElevation &&
+  pass.fame >= f.minFame &&
+  pass.beauty >= f.minBeauty &&
+  pass.difficulty >= f.difficulty[0];
+
+/** Upper bounds, "not harder or busier than": every pass of a tour has to respect them. */
+const withinLimits = (pass: Pass, f: Filters) =>
+  pass.difficulty <= f.difficulty[1] && pass.traffic <= f.maxTraffic;
+
+/** Everything about a pass except its status: criteria, favourites, search. */
 function passMatches(pass: Pass, filters: Filters, q: Query): boolean {
-  if (pass.elevation < filters.minElevation || pass.fame < filters.minFame)
-    return false;
+  if (!interesting(pass, filters) || !withinLimits(pass, filters)) return false;
   if (q.favoritesOnly && !q.isFavorite("pass", pass.slug)) return false;
-  return q.matches(pass.name, pass.region, pass.country);
+  return q.matches(passHaystack(pass));
+}
+
+/** The pass criteria reach a tour through the passes it crosses. */
+function tourMatches(
+  tour: Tour,
+  passes: PassIndex,
+  filters: Filters,
+  q: Query,
+): boolean {
+  const own = tour.passes
+    .map((s) => passes.get(s))
+    .filter((p) => p !== undefined);
+  if (own.length && !own.some((p) => interesting(p, filters))) return false;
+  if (!own.every((p) => withinLimits(p, filters))) return false;
+  return q.matches(
+    tourHaystack(
+      tour,
+      own.map((p) => p.name),
+    ),
+  );
 }
 
 export interface PassRow {
@@ -101,7 +140,7 @@ export function buildTourRows(
   for (const tour of tours) {
     const favorite = isFavorite("tour", tour.slug);
     if (q.favoritesOnly && !favorite) continue;
-    if (!q.matches(tour.name, tour.description)) continue;
+    if (!tourMatches(tour, passes, filters, q)) continue;
     const status = tourStatus(tour, passes, filters.period, climate);
     if (!statusMatches(status, filters.status)) continue;
     rows.push({
@@ -129,7 +168,7 @@ export function buildTownRows(
   for (const town of towns) {
     const favorite = isFavorite("town", town.slug);
     if (q.favoritesOnly && !favorite) continue;
-    if (!q.matches(town.name, town.why, town.country)) continue;
+    if (!q.matches(townHaystack(town))) continue;
     rows.push({ town, favorite });
   }
   return rows.toSorted((a, b) => a.town.name.localeCompare(b.town.name, "de"));
@@ -168,15 +207,6 @@ export function statusHistogram(
   }
   return bars;
 }
-
-export type PassSort =
-  | "elevation"
-  | "name"
-  | "status"
-  | "beauty"
-  | "fame"
-  | "difficulty"
-  | "traffic";
 
 export const PASS_SORT_LABEL: Record<PassSort, string> = {
   elevation: "Höhe",

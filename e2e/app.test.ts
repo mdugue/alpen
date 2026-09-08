@@ -92,10 +92,12 @@ test(
     withPage(app, "status-filter", { hash: "#t=1" }, async (page) => {
       await page.waitFor(PASS_ROW);
       const all = await page.count(PASS_ROW);
-      await page.clickText(
-        '[aria-label="Status filtern"] button',
-        "oft gesperrt",
-      );
+      // The status picker is a dropdown with checkboxes inside the filter panel.
+      await page.clickText("button", "Filter");
+      await page.click('[aria-label="Status filtern"]');
+      // The menu renders in a portal a frame after the click.
+      await page.waitFor('[role="menuitemcheckbox"]');
+      await page.clickText('[role="menuitemcheckbox"]', "oft gesperrt");
       await waitUntil(
         async () => (await page.count(PASS_ROW)) < all,
         "fewer passes after filtering",
