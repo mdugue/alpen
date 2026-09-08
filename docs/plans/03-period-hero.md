@@ -1,6 +1,6 @@
 # 03 · Make the period the hero
 
-**Status:** proposed · **Effort:** M · **Depends on:** – (04 makes the strips
+**Status:** in progress ([PR #4](https://github.com/mdugue/alpen/pull/4)) · **Effort:** M · **Depends on:** – (04 makes the strips
 more truthful, 12 adds destination strips) · **Unblocks:** the "when" half of
 the product goal
 

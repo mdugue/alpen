@@ -21,13 +21,18 @@ import type {
 } from "../../lib/types";
 
 /** Great-circle distance in km. */
-export function haversine(a: readonly [number, number], b: readonly [number, number]) {
+export function haversine(
+  a: readonly [number, number],
+  b: readonly [number, number],
+) {
   const R = 6371;
   const dLat = ((b[0] - a[0]) * Math.PI) / 180;
   const dLon = ((b[1] - a[1]) * Math.PI) / 180;
   const x =
     Math.sin(dLat / 2) ** 2 +
-    Math.cos((a[0] * Math.PI) / 180) * Math.cos((b[0] * Math.PI) / 180) * Math.sin(dLon / 2) ** 2;
+    Math.cos((a[0] * Math.PI) / 180) *
+      Math.cos((b[0] * Math.PI) / 180) *
+      Math.sin(dLon / 2) ** 2;
   return 2 * R * Math.asin(Math.sqrt(x));
 }
 
@@ -86,7 +91,11 @@ export const LIMITS = {
 } as const;
 
 /** Geometry-only measurement, available before a profile is paid for. */
-export function ascentMetrics(geom: RouteGeometry, from: LatLon, summit: LatLon): AscentMetrics {
+export function ascentMetrics(
+  geom: RouteGeometry,
+  from: LatLon,
+  summit: LatLon,
+): AscentMetrics {
   return {
     km: round(length(geom), 2),
     startDist: round(haversine(geom[0]!, at(from)), 3),
@@ -105,7 +114,8 @@ export function withProfile(
 ): AscentMetrics {
   const total = profile.dist.at(-1) ?? 0;
   let peak = 0;
-  for (let i = 1; i < profile.ele.length; i++) if (profile.ele[i]! > profile.ele[peak]!) peak = i;
+  for (let i = 1; i < profile.ele.length; i++)
+    if (profile.ele[i]! > profile.ele[peak]!) peak = i;
   return {
     ...m,
     topDelta: profile.top - elevation,
@@ -114,7 +124,11 @@ export function withProfile(
   };
 }
 
-export function tourMetrics(geom: RouteGeometry, waypoints: LatLon[], statedKm: number): TourMetrics {
+export function tourMetrics(
+  geom: RouteGeometry,
+  waypoints: LatLon[],
+  statedKm: number,
+): TourMetrics {
   const km = length(geom);
   return {
     km: round(km, 2),
@@ -135,14 +149,23 @@ export function checkAscent(m: AscentMetrics, check?: RouteCheck): string[] {
   const out: string[] = [];
   if (m.km > l.maxKm) out.push(`Länge ${m.km} km > ${l.maxKm} km`);
   if (m.startDist > l.maxStartDist)
-    out.push(`Start ${km(m.startDist)} vom Auffahrtsbeginn entfernt > ${km(l.maxStartDist)}`);
+    out.push(
+      `Start ${km(m.startDist)} vom Auffahrtsbeginn entfernt > ${km(l.maxStartDist)}`,
+    );
   if (m.endDist > l.maxEndDist)
-    out.push(`Ende ${km(m.endDist)} vom Passpunkt entfernt > ${km(l.maxEndDist)}`);
+    out.push(
+      `Ende ${km(m.endDist)} vom Passpunkt entfernt > ${km(l.maxEndDist)}`,
+    );
   if (m.topDelta !== null && Math.abs(m.topDelta) > l.maxTopDelta)
-    out.push(`Profilhöhe weicht ${m.topDelta > 0 ? "+" : ""}${m.topDelta} m ab > ${l.maxTopDelta} m`);
+    out.push(
+      `Profilhöhe weicht ${m.topDelta > 0 ? "+" : ""}${m.topDelta} m ab > ${l.maxTopDelta} m`,
+    );
   if (m.peakAt !== null && m.peakAt < l.minPeakAt)
-    out.push(`höchster Punkt bei ${Math.round(m.peakAt * 100)} % der Strecke < ${Math.round(l.minPeakAt * 100)} %`);
-  if (m.gain !== null && m.gain > l.maxGain) out.push(`Anstieg ${m.gain} Hm > ${l.maxGain} Hm`);
+    out.push(
+      `höchster Punkt bei ${Math.round(m.peakAt * 100)} % der Strecke < ${Math.round(l.minPeakAt * 100)} %`,
+    );
+  if (m.gain !== null && m.gain > l.maxGain)
+    out.push(`Anstieg ${m.gain} Hm > ${l.maxGain} Hm`);
   return out;
 }
 
@@ -155,9 +178,13 @@ export function checkTour(m: TourMetrics, check?: RouteCheck): string[] {
         `von den angegebenen ${m.statedKm} km ab > ${Math.round(l.maxKmDelta * 100)} %`,
     );
   if (m.startDist > l.maxWaypointDist)
-    out.push(`Start ${km(m.startDist)} vom ersten Wegpunkt entfernt > ${km(l.maxWaypointDist)}`);
+    out.push(
+      `Start ${km(m.startDist)} vom ersten Wegpunkt entfernt > ${km(l.maxWaypointDist)}`,
+    );
   if (m.endDist > l.maxWaypointDist)
-    out.push(`Ende ${km(m.endDist)} vom letzten Wegpunkt entfernt > ${km(l.maxWaypointDist)}`);
+    out.push(
+      `Ende ${km(m.endDist)} vom letzten Wegpunkt entfernt > ${km(l.maxWaypointDist)}`,
+    );
   return out;
 }
 
@@ -165,30 +192,32 @@ export function checkTour(m: TourMetrics, check?: RouteCheck): string[] {
 export function checkSummit(dem: number, elevation: number): string[] {
   const d = Math.round(dem - elevation);
   return Math.abs(d) > LIMITS.summit.maxDelta
-    ? [`DEM-Höhe am Passpunkt weicht ${d > 0 ? "+" : ""}${d} m ab > ${LIMITS.summit.maxDelta} m`]
+    ? [
+        `DEM-Höhe am Passpunkt weicht ${d > 0 ? "+" : ""}${d} m ab > ${LIMITS.summit.maxDelta} m`,
+      ]
     : [];
 }
 
 /**
  * Identity of a geometry, so a retry can say "the router returned exactly the
  * same thing" – which means the fix belongs in `data/passes.json`, not here.
- * FNV-1a over the rounded coordinates; collisions do not matter for that.
+ * The hash is also what makes a cached profile reusable.
+ *
+ * Bun's hash is not promised to be stable across Bun versions. Both uses
+ * degrade harmlessly if it ever changes: a stale hash reads as "the geometry
+ * moved", which costs one re-fetched profile and never a wrong route.
  */
 export function geometryHash(geom: RouteGeometry) {
-  let h = 0x811c9dc5;
-  for (const [lat, lon] of geom) {
-    for (const s of [lat.toFixed(5), ",", lon.toFixed(5), ";"]) {
-      for (let i = 0; i < s.length; i++) {
-        h ^= s.charCodeAt(i);
-        h = Math.imul(h, 0x01000193) >>> 0;
-      }
-    }
-  }
-  return h.toString(16).padStart(8, "0");
+  return Bun.hash(
+    geom.map(([lat, lon]) => `${lat.toFixed(5)},${lon.toFixed(5)}`).join(";"),
+  ).toString(16);
 }
 
 const round = (n: number, digits: number) => +n.toFixed(digits);
-const km = (n: number) => (n < 1 ? `${Math.round(n * 1000)} m` : `${round(n, 1)} km`);
+const km = (n: number) =>
+  n < 1 ? `${Math.round(n * 1000)} m` : `${round(n, 1)} km`;
 /** Drops `note` and any undefined key so the spread does not erase a default. */
 const strip = (c?: RouteCheck) =>
-  Object.fromEntries(Object.entries(c ?? {}).filter(([k, v]) => k !== "note" && v !== undefined));
+  Object.fromEntries(
+    Object.entries(c ?? {}).filter(([k, v]) => k !== "note" && v !== undefined),
+  );

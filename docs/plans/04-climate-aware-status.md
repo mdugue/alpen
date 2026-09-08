@@ -1,6 +1,6 @@
 # 04 · Climate-aware status
 
-**Status:** proposed · **Effort:** S–M · **Depends on:** – · **Unblocks:**
+**Status:** in progress ([PR #4](https://github.com/mdugue/alpen/pull/4)) · **Effort:** S–M · **Depends on:** – · **Unblocks:**
 03 (truthful strips), 12 (destination scores), "beste Zeit" per pass
 
 ## Goal
@@ -16,11 +16,11 @@ but not the pass's own climate, although 92 × 24 climate buckets sit in
 `data/generated/climate.json`. Across all pass × half-month pairs it calls
 "meist offen":
 
-| Verdict | n | mean snow-day share | share with snow ≥ 20 % of days |
-| --- | --- | --- | --- |
-| meist offen | 948 | 7 % | 12 % |
-| wetterabhängig | 447 | 25 % | 72 % |
-| oft gesperrt | 813 | 32 % | 90 % |
+| Verdict        | n   | mean snow-day share | share with snow ≥ 20 % of days |
+| -------------- | --- | ------------------- | ------------------------------ |
+| meist offen    | 948 | 7 %                 | 12 %                           |
+| wetterabhängig | 447 | 25 %                | 72 %                           |
+| oft gesperrt   | 813 | 32 %                | 90 %                           |
 
 72 "meist offen" pairs have snowfall on 25 % or more of days: Großglockner
 early October (37 %), Silvretta early October (29 %), Gotthard/Tremola early
@@ -83,10 +83,18 @@ knows, snow days are what the climate series knows.
 ```ts
 export interface StatusVerdict {
   status: Status;
-  reasons: StatusReason[];   // "outside-window" | "window-edge" | "altitude" | "snow" | "frost"
+  reasons: StatusReason[]; // "outside-window" | "window-edge" | "altitude" | "snow" | "frost"
 }
-export function passVerdict(pass: Pass, t: Period, bucket?: ClimateBucket | null): StatusVerdict;
-export function passStatus(pass: Pass, t: Period, bucket?: ClimateBucket | null): Status; // = passVerdict().status
+export function passVerdict(
+  pass: Pass,
+  t: Period,
+  bucket?: ClimateBucket | null,
+): StatusVerdict;
+export function passStatus(
+  pass: Pass,
+  t: Period,
+  bucket?: ClimateBucket | null,
+): Status; // = passVerdict().status
 ```
 
 ### Rules
@@ -115,7 +123,10 @@ sits at 7 %, the "risky" cohort at 25 %). They are constants in
 ### Beste Zeit
 
 ```ts
-export function bestPeriods(pass: Pass, climate: ClimateYear): [Period, Period] | null
+export function bestPeriods(
+  pass: Pass,
+  climate: ClimateYear,
+): [Period, Period] | null;
 ```
 
 The longest run of half-months where the verdict is `open` and

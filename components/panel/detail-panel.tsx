@@ -1,20 +1,58 @@
 "use client";
 
+import {
+  ArrowLeft,
+  ExternalLink,
+  HelpCircle,
+  Info,
+  Star,
+  X,
+} from "lucide-react";
+import dynamic from "next/dynamic";
 import { useEffect, useRef } from "react";
-import { ArrowLeft, ExternalLink, HelpCircle, Star, X } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Empty, EmptyDescription, EmptyHeader, EmptyTitle } from "@/components/ui/empty";
-import { Toggle } from "@/components/ui/toggle";
-import { Rating } from "@/components/rating";
-import { StatusBadge, StatusDot } from "@/components/status-badge";
+
 import { ElevationProfile } from "@/components/panel/elevation-profile";
-import { ClimateChart } from "@/components/panel/climate-chart";
-import { WeatherTable } from "@/components/panel/weather-table";
-import { haversine, NEARBY_RADIUS_KM } from "@/lib/geo";
-import { passStatus, periodIndex, periodLabel, seasonText, tourStatus } from "@/lib/status";
-import { cn, fmt, fmtUnit } from "@/lib/utils";
+import { WeatherForecast } from "@/components/panel/weather-forecast";
+import { Rating } from "@/components/rating";
+import { SeasonStrip } from "@/components/season-strip";
+import { StatusBadge, StatusDot } from "@/components/status-badge";
+import { Button } from "@/components/ui/button";
+import {
+  Empty,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyTitle,
+} from "@/components/ui/empty";
+import {
+  Item,
+  ItemContent,
+  ItemDescription,
+  ItemGroup,
+  ItemTitle,
+} from "@/components/ui/item";
+import { Toggle } from "@/components/ui/toggle";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import type { EntityKind, Selection } from "@/lib/app-state";
+import { haversine, NEARBY_RADIUS_KM } from "@/lib/geo";
+import {
+  bestPeriods,
+  climateBucket,
+  daysOf,
+  indexBySlug,
+  passSeason,
+  passStatus,
+  passVerdict,
+  periodIndex,
+  periodLabel,
+  seasonText,
+  tourSeason,
+  tourStatus,
+  verdictReasons,
+} from "@/lib/status";
 import type {
   ClimateYear,
   ElevationProfile as Profile,
@@ -24,8 +62,25 @@ import type {
   Tour,
   Town,
 } from "@/lib/types";
+import { cn, fmt, fmtUnit } from "@/lib/utils";
 
-const TRAFFIC_LABEL = ["", "fast autofrei", "ruhig", "normal", "viel", "Durchgangsstraße"];
+/**
+ * recharts is the heaviest thing this app would ship; the climate chart is
+ * the only user of it and only appears once a pass is selected, so it stays
+ * in its own chunk.
+ */
+const ClimateChart = dynamic(() =>
+  import("@/components/panel/climate-chart").then((m) => m.ClimateChart),
+);
+
+const TRAFFIC_LABEL = [
+  "",
+  "fast autofrei",
+  "ruhig",
+  "normal",
+  "viel",
+  "Durchgangsstraße",
+];
 
 interface Props {
   /** "back" inside the mobile sheet (returns to the list), "close" for the desktop slide-over. */
@@ -54,10 +109,13 @@ export function DetailPanel(props: Props) {
   const heading = useRef<HTMLHeadingElement>(null);
   const scroller = useRef<HTMLDivElement>(null);
 
-  // Move focus and scroll to the top whenever another entity is selected.
+  // Move focus and scroll to the top whenever another entity is selected. The
+  // selection is the trigger, not something the effect reads – which is what
+  // the rule objects to.
   useEffect(() => {
     scroller.current?.scrollTo({ top: 0 });
     heading.current?.focus({ preventScroll: true });
+    // oxlint-disable-next-line react/exhaustive-effect-dependencies
   }, [selection.kind, selection.slug]);
 
   const entity =
@@ -84,7 +142,7 @@ export function DetailPanel(props: Props) {
         if (e.key === "Escape") onBack();
       }}
     >
-      <div className="flex h-10 shrink-0 items-center gap-1 border-b border-border px-2">
+      <div className="border-border flex h-10 shrink-0 items-center gap-1 border-b px-2">
         {props.dismiss === "back" && (
           <Button size="sm" variant="ghost" onClick={onBack}>
             <ArrowLeft data-icon="inline-start" /> Liste
@@ -92,7 +150,7 @@ export function DetailPanel(props: Props) {
         )}
         <p
           className={cn(
-            "min-w-0 flex-1 truncate text-[11px] font-semibold tracking-widest text-muted-foreground uppercase",
+            "text-muted-foreground min-w-0 flex-1 truncate text-[11px] font-semibold tracking-widest uppercase",
             props.dismiss === "back" ? "text-center" : "pl-2",
           )}
         >
@@ -101,64 +159,139 @@ export function DetailPanel(props: Props) {
         <Toggle
           size="sm"
           pressed={favorite}
-          onPressedChange={() => props.onToggleFavorite(selection.kind, selection.slug)}
+          onPressedChange={() =>
+            props.onToggleFavorite(selection.kind, selection.slug)
+          }
           aria-label={favorite ? "Nicht mehr merken" : "Merken"}
         >
           <Star className={cn(favorite && "fill-accent text-accent")} />
         </Toggle>
         {props.dismiss === "close" && (
-          <Button size="icon-sm" variant="ghost" onClick={onBack} aria-label="Details schließen">
+          <Button
+            size="icon-sm"
+            variant="ghost"
+            onClick={onBack}
+            aria-label="Details schließen"
+          >
             <X />
           </Button>
         )}
       </div>
-      <div ref={scroller} className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-4 pb-6 pt-3">
-        <h2 ref={heading} id="detail-title" tabIndex={-1} className="text-2xl font-bold outline-none">
+      <div
+        ref={scroller}
+        className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-4 pt-3 pb-6"
+      >
+        <h2
+          ref={heading}
+          id="detail-title"
+          tabIndex={-1}
+          className="text-xl leading-tight font-bold tracking-tight text-balance outline-none"
+        >
           {entity.name}
         </h2>
-        {selection.kind === "pass" && <PassDetail {...props} pass={entity as Pass} />}
-        {selection.kind === "tour" && <TourDetail {...props} tour={entity as Tour} />}
-        {selection.kind === "town" && <TownDetail {...props} town={entity as Town} />}
+        {selection.kind === "pass" && (
+          <PassDetail {...props} pass={entity as Pass} />
+        )}
+        {selection.kind === "tour" && (
+          <TourDetail {...props} tour={entity as Tour} />
+        )}
+        {selection.kind === "town" && (
+          <TownDetail {...props} town={entity as Town} />
+        )}
       </div>
     </section>
   );
 }
 
-function SectionTitle({ children, hint }: { children: React.ReactNode; hint?: string }) {
+/**
+ * The one heading level inside the panel: small caps, a hairline, and room
+ * above it. `hint` names the source in passing, `info` hides the caveat that
+ * belongs to it behind an icon – a sentence about grid resolution must not
+ * take the place a fact could have.
+ */
+function SectionTitle({
+  children,
+  hint,
+  info,
+}: {
+  children: React.ReactNode;
+  hint?: string;
+  info?: string;
+}) {
   return (
-    <h3 className="mt-5 mb-2 flex items-baseline gap-2 border-b border-border pb-1 text-[11px] font-semibold tracking-widest text-muted-foreground uppercase">
+    <h3 className="border-border text-muted-foreground mt-6 mb-2.5 flex items-baseline gap-2 border-b pb-1.5 text-[11px] font-semibold tracking-widest uppercase">
       {children}
-      {hint && <span className="text-[11px] font-normal tracking-normal normal-case">{hint}</span>}
+      {hint && (
+        <span className="truncate text-[11px] font-normal tracking-normal normal-case">
+          {hint}
+        </span>
+      )}
+      {info && (
+        <Tooltip>
+          <TooltipTrigger
+            render={
+              <button
+                type="button"
+                aria-label="Hinweis zur Quelle"
+                className="text-muted-foreground/70 hover:text-foreground ml-auto shrink-0 self-center"
+              />
+            }
+          >
+            <Info className="size-3.5" />
+          </TooltipTrigger>
+          <TooltipContent className="max-w-64">{info}</TooltipContent>
+        </Tooltip>
+      )}
     </h3>
   );
 }
 
-function LinkButton({ children, onClick }: { children: React.ReactNode; onClick: () => void }) {
+function LinkButton({
+  children,
+  onClick,
+}: {
+  children: React.ReactNode;
+  onClick: () => void;
+}) {
   return (
-    <Button variant="link" size="sm" className="h-auto gap-1 px-0 py-0.5" onClick={onClick}>
+    <Button
+      variant="link"
+      size="sm"
+      className="h-auto gap-1 px-0 py-0.5"
+      onClick={onClick}
+    >
       {children}
     </Button>
   );
 }
 
-function Nearby({ lat, lon, exclude, ...p }: Props & { lat: number; lon: number; exclude?: string }) {
+function Nearby({
+  lat,
+  lon,
+  exclude,
+  ...p
+}: Props & { lat: number; lon: number; exclude?: string }) {
   const nearPasses = p.passes
     .map((x) => ({ x, d: haversine({ lat, lon }, x) }))
     .filter((e) => e.d <= NEARBY_RADIUS_KM && e.x.slug !== exclude)
-    .sort((a, b) => a.d - b.d);
+    .toSorted((a, b) => a.d - b.d);
   const nearTours = p.tours.filter((t) =>
-    (p.routes[`tour:${t.slug}`] ?? t.waypoints.map((w) => [w.lat, w.lon] as [number, number])).some(
-      ([tlat, tlon]) => haversine({ lat, lon }, { lat: tlat, lon: tlon }) <= NEARBY_RADIUS_KM,
+    (
+      p.routes[`tour:${t.slug}`] ??
+      t.waypoints.map((w) => [w.lat, w.lon] as [number, number])
+    ).some(
+      ([tlat, tlon]) =>
+        haversine({ lat, lon }, { lat: tlat, lon: tlon }) <= NEARBY_RADIUS_KM,
     ),
   );
   const nearTowns = p.towns
     .map((x) => ({ x, d: haversine({ lat, lon }, x) }))
     .filter((e) => e.d <= NEARBY_RADIUS_KM && e.x.slug !== exclude)
-    .sort((a, b) => a.d - b.d);
+    .toSorted((a, b) => a.d - b.d);
 
   const group = (label: string, items: React.ReactNode) => (
     <div className="flex flex-wrap items-baseline gap-x-3 gap-y-0.5">
-      <span className="text-xs text-muted-foreground">{label}</span>
+      <span className="text-muted-foreground text-xs">{label}</span>
       {items}
     </div>
   );
@@ -171,9 +304,21 @@ function Nearby({ lat, lon, exclude, ...p }: Props & { lat: number; lon: number;
           group(
             "Pässe",
             nearPasses.map(({ x, d }) => (
-              <LinkButton key={x.slug} onClick={() => p.onSelect({ kind: "pass", slug: x.slug })}>
-                <StatusDot status={passStatus(x, p.period)} /> {x.name}
-                <span className="text-muted-foreground">{fmtUnit(d, "km")}</span>
+              <LinkButton
+                key={x.slug}
+                onClick={() => p.onSelect({ kind: "pass", slug: x.slug })}
+              >
+                <StatusDot
+                  status={passStatus(
+                    x,
+                    p.period,
+                    climateBucket(p.climate, x.slug, p.period),
+                  )}
+                />{" "}
+                {x.name}
+                <span className="text-muted-foreground">
+                  {fmtUnit(d, "km")}
+                </span>
               </LinkButton>
             )),
           )}
@@ -181,8 +326,15 @@ function Nearby({ lat, lon, exclude, ...p }: Props & { lat: number; lon: number;
           group(
             "Touren",
             nearTours.map((t) => (
-              <LinkButton key={t.slug} onClick={() => p.onSelect({ kind: "tour", slug: t.slug })}>
-                <span className="inline-block h-1 w-3 rounded" style={{ background: t.color }} /> {t.name}
+              <LinkButton
+                key={t.slug}
+                onClick={() => p.onSelect({ kind: "tour", slug: t.slug })}
+              >
+                <span
+                  className="inline-block h-1 w-3 rounded"
+                  style={{ background: t.color }}
+                />{" "}
+                {t.name}
               </LinkButton>
             )),
           )}
@@ -190,9 +342,18 @@ function Nearby({ lat, lon, exclude, ...p }: Props & { lat: number; lon: number;
           group(
             "Orte",
             nearTowns.map(({ x, d }) => (
-              <LinkButton key={x.slug} onClick={() => p.onSelect({ kind: "town", slug: x.slug })}>
-                <span className="inline-block size-2 rotate-45 rounded-[1px] bg-town" aria-hidden /> {x.name}
-                <span className="text-muted-foreground">{fmtUnit(d, "km")}</span>
+              <LinkButton
+                key={x.slug}
+                onClick={() => p.onSelect({ kind: "town", slug: x.slug })}
+              >
+                <span
+                  className="bg-town inline-block size-2 rotate-45 rounded-[1px]"
+                  aria-hidden
+                />{" "}
+                {x.name}
+                <span className="text-muted-foreground">
+                  {fmtUnit(d, "km")}
+                </span>
               </LinkButton>
             )),
           )}
@@ -223,48 +384,83 @@ function ExternalLinks({ links }: { links: [string, string][] }) {
 
 function PassDetail(props: Props & { pass: Pass }) {
   const { pass } = props;
-  const status = passStatus(pass, props.period);
   const climate = props.climate[pass.slug];
   const bucket = climate?.[periodIndex(props.period)];
-  const days = (pct: number) => Math.round((pct / 100) * 15);
+  const { status } = passVerdict(pass, props.period, bucket);
+  const reasons = verdictReasons(pass, props.period, bucket);
+  const best = bestPeriods(pass, climate);
 
   return (
     <>
-      <div className="mt-2 mb-2 flex flex-wrap items-baseline gap-3">
-        <span className="text-4xl leading-none font-bold tabular-nums">
+      <p className="text-muted-foreground mt-0.5 text-[13px]">
+        <span className="text-foreground text-2xl leading-none font-bold tabular-nums">
           {fmt(pass.elevation)}
-          <span className="ml-1 text-lg text-muted-foreground">m</span>
         </span>
-        <StatusBadge status={status} period={props.period} />
+        <span className="ml-1">m · {pass.classicAscent}</span>
+      </p>
+
+      {/* The "when" answer, boxed: verdict, why, the whole year, best time. */}
+      <div className="bg-muted/40 border-border/70 mt-3 flex flex-col gap-2 rounded-lg border p-3">
+        <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
+          <StatusBadge status={status} period={props.period} />
+          {best && (
+            <span className="text-muted-foreground text-xs">
+              beste Zeit {periodLabel(best[0])} – {periodLabel(best[1])}
+            </span>
+          )}
+        </div>
+        {reasons.length > 0 && (
+          <p className="text-muted-foreground text-xs leading-relaxed">
+            {reasons.join(" ")}
+          </p>
+        )}
+        <SeasonStrip
+          statuses={passSeason(pass, climate)}
+          current={props.period}
+          size="panel"
+          best={best}
+        />
       </div>
 
-      <dl className="my-2 grid grid-cols-[auto_1fr] gap-x-3 gap-y-1 text-[13px]">
-        <dt className="text-muted-foreground">Klassisch</dt>
-        <dd>{pass.classicAscent}</dd>
-        <dt className="flex items-center gap-1 text-muted-foreground">
-          Bewertung
-          <Button size="icon-xs" variant="ghost" aria-label="Skalen erklärt" onClick={props.onOpenScales}>
-            <HelpCircle />
-          </Button>
-        </dt>
-        <dd className="grid grid-cols-[auto_auto] items-center gap-x-3 gap-y-0.5 justify-self-start text-xs text-muted-foreground">
-          <span>Schönheit</span>
-          <Rating value={pass.beauty} />
-          <span>Bekanntheit</span>
-          <Rating value={pass.fame} />
-          <span>Schwierigkeit</span>
-          <Rating value={pass.difficulty} />
-          <span>Verkehr</span>
-          <span className="flex items-center gap-1.5">
-            <Rating value={pass.traffic} muted /> {TRAFFIC_LABEL[pass.traffic]}
-          </span>
-        </dd>
-      </dl>
-
-      <p className="text-[13px]">{seasonText(pass)}</p>
-      <p className="mt-1 text-[13px]">
-        <b>Hinweis:</b> {pass.note}
+      <p className="mt-4 text-[13px] leading-relaxed">{seasonText(pass)}</p>
+      <p className="text-muted-foreground mt-1.5 text-[13px] leading-relaxed">
+        {pass.note}
       </p>
+
+      <SectionTitle hint="redaktionell, 1–5">
+        Bewertung
+        <Button
+          size="icon-xs"
+          variant="ghost"
+          aria-label="Skalen erklärt"
+          onClick={props.onOpenScales}
+        >
+          <HelpCircle />
+        </Button>
+      </SectionTitle>
+      <dl className="grid grid-cols-[auto_1fr] items-center gap-x-3 gap-y-1.5 text-[13px]">
+        {(
+          [
+            ["Schönheit", <Rating key="b" value={pass.beauty} />],
+            ["Bekanntheit", <Rating key="f" value={pass.fame} />],
+            ["Schwierigkeit", <Rating key="d" value={pass.difficulty} />],
+            [
+              "Verkehr",
+              <span key="t" className="flex items-center gap-2">
+                <Rating value={pass.traffic} muted />
+                <span className="text-muted-foreground text-xs">
+                  {TRAFFIC_LABEL[pass.traffic]}
+                </span>
+              </span>,
+            ],
+          ] as [string, React.ReactNode][]
+        ).map(([label, value]) => (
+          <div key={label} className="contents">
+            <dt className="text-muted-foreground text-xs">{label}</dt>
+            <dd>{value}</dd>
+          </div>
+        ))}
+      </dl>
 
       <SectionTitle hint="Routing + Höhenmodell">Auffahrten</SectionTitle>
       {pass.ascents.length === 0 && (
@@ -274,61 +470,83 @@ function PassDetail(props: Props & { pass: Pass }) {
           </EmptyHeader>
         </Empty>
       )}
-      {pass.ascents.map((a, i) => {
-        const profile = props.profiles[`${pass.slug}:${i}`];
-        return (
-          <div key={a.label} className="mb-3">
-            <div className="flex flex-col">
-              <span className="text-[13px] font-medium">{a.label}</span>
-              <span className="text-xs text-muted-foreground tabular-nums">
-                {profile
-                  ? `${fmtUnit(profile.km, "km", 1)} · ${fmtUnit(profile.elevationGain, "hm")} · Ø ${fmt(profile.avgGradient, 1)} % · ${fmt(profile.start)} → ${fmtUnit(profile.top, "m")}`
-                  : "Kein Höhenprofil vorhanden."}
-              </span>
+      <div className="flex flex-col gap-4">
+        {pass.ascents.map((a, i) => {
+          const profile = props.profiles[`${pass.slug}:${i}`];
+          return (
+            <div key={a.label}>
+              <div className="flex flex-wrap items-baseline justify-between gap-x-2">
+                <span className="text-[13px] font-medium">{a.label}</span>
+                <span className="text-muted-foreground text-xs tabular-nums">
+                  {profile
+                    ? `${fmtUnit(profile.km, "km", 1)} · ${fmtUnit(profile.elevationGain, "hm")} · Ø ${fmt(profile.avgGradient, 1)} %`
+                    : "Kein Höhenprofil vorhanden."}
+                </span>
+              </div>
+              {profile && <ElevationProfile profile={profile} />}
             </div>
-            {profile && <ElevationProfile profile={profile} />}
-          </div>
-        );
-      })}
+          );
+        })}
+      </div>
 
-      <SectionTitle hint="7 Tage, Open-Meteo">Wetter auf Passhöhe</SectionTitle>
-      <WeatherTable slug={pass.slug} />
+      <SectionTitle hint="Open-Meteo">Wetter auf Passhöhe</SectionTitle>
+      <WeatherForecast slug={pass.slug} />
 
-      <SectionTitle hint="ERA5-Land, 2015–2024">Klima auf Passhöhe</SectionTitle>
+      <SectionTitle
+        hint="ERA5-Land 2015–2024"
+        info="ERA5-Land ist ein 10-km-Raster und auf Passhöhe eher zu mild – gut zum Vergleich der Zeiträume, nicht als Absolutwert."
+      >
+        Klima
+      </SectionTitle>
       {bucket && climate ? (
         <>
-          <p className="mb-1.5 text-xs text-muted-foreground">
-            {periodLabel(props.period)} auf {fmtUnit(pass.elevation, "m")}, Mittel 2015–2024 (≈ 15 Tage je
-            Halbmonat):
-          </p>
-          <div className="grid grid-cols-3 gap-1.5">
-            {[
-              [`${fmt(bucket.tmax)} / ${fmt(bucket.tmin)} °C`, "Ø Höchst-/Tiefstwert"],
-              [`${bucket.frostPct} %`, `Frost (≈ ${days(bucket.frostPct)} von 15)`],
-              [`${bucket.snowPct} %`, `Schneefall (≈ ${days(bucket.snowPct)} von 15)`],
-            ].map(([value, label]) => (
-              <Card key={label} size="sm" className="gap-0 py-1.5">
-                <CardHeader className="gap-0 px-2">
-                  <CardTitle className="text-base leading-tight tabular-nums">{value}</CardTitle>
-                  <CardDescription className="leading-tight">{label}</CardDescription>
-                </CardHeader>
-              </Card>
+          <ItemGroup className="grid grid-cols-3 gap-1.5">
+            {(
+              [
+                [
+                  `${fmt(bucket.tmax)}° / ${fmt(bucket.tmin)}°`,
+                  "Ø Tag / Nacht",
+                ],
+                [
+                  `${bucket.frostPct} %`,
+                  `Frost · ${daysOf(bucket.frostPct)} von 15 Tagen`,
+                ],
+                [
+                  `${bucket.snowPct} %`,
+                  `Schnee · ${daysOf(bucket.snowPct)} von 15 Tagen`,
+                ],
+              ] as [string, string][]
+            ).map(([value, label]) => (
+              <Item
+                key={label}
+                variant="muted"
+                size="xs"
+                className="flex-col items-start gap-0.5"
+              >
+                <ItemContent className="gap-0">
+                  <ItemTitle className="text-sm leading-tight tabular-nums">
+                    {value}
+                  </ItemTitle>
+                  <ItemDescription className="line-clamp-none text-[11px] leading-tight text-pretty">
+                    {label}
+                  </ItemDescription>
+                </ItemContent>
+              </Item>
             ))}
-          </div>
-          <p className="mt-1.5 text-xs text-muted-foreground">
-            Niederschlag ≥ 1 mm an {bucket.wetPct} % der Tage (≈ {days(bucket.wetPct)} von 15).
+          </ItemGroup>
+          <p className="text-muted-foreground mt-1.5 text-[11px]">
+            {periodLabel(props.period)} auf {fmtUnit(pass.elevation, "m")};
+            Niederschlag an {bucket.wetPct} % der Tage.
           </p>
           <ClimateChart climate={climate} period={props.period} />
-          <p className="mt-1 text-xs text-muted-foreground">
-            ERA5-Land ist ein 10-km-Raster und auf Passhöhe eher zu mild – gut zum Vergleich der Zeiträume,
-            nicht als Absolutwert.
-          </p>
         </>
       ) : (
         <Empty className="py-3">
           <EmptyHeader>
             <EmptyTitle>Keine Klimareihe</EmptyTitle>
-            <EmptyDescription>Für diesen Pass liegen noch keine Klimadaten vor.</EmptyDescription>
+            <EmptyDescription>
+              Für diesen Pass liegen noch keine Klimadaten vor.
+            </EmptyDescription>
           </EmptyHeader>
         </Empty>
       )}
@@ -336,10 +554,22 @@ function PassDetail(props: Props & { pass: Pass }) {
       <Nearby {...props} lat={pass.lat} lon={pass.lon} exclude={pass.slug} />
       <ExternalLinks
         links={[
-          ["quaeldich.de", `https://www.quaeldich.de/suche/?q=${encodeURIComponent(pass.name)}`],
-          ["komoot", `https://www.komoot.com/discover?lat=${pass.lat}&lng=${pass.lon}&sport=racebike`],
-          ["Google Maps", `https://www.google.com/maps/search/?api=1&query=${pass.lat},${pass.lon}`],
-          ["OSM", `https://www.openstreetmap.org/?mlat=${pass.lat}&mlon=${pass.lon}#map=14/${pass.lat}/${pass.lon}`],
+          [
+            "quaeldich.de",
+            `https://www.quaeldich.de/suche/?q=${encodeURIComponent(pass.name)}`,
+          ],
+          [
+            "komoot",
+            `https://www.komoot.com/discover?lat=${pass.lat}&lng=${pass.lon}&sport=racebike`,
+          ],
+          [
+            "Google Maps",
+            `https://www.google.com/maps/search/?api=1&query=${pass.lat},${pass.lon}`,
+          ],
+          [
+            "OSM",
+            `https://www.openstreetmap.org/?mlat=${pass.lat}&mlon=${pass.lon}#map=14/${pass.lat}/${pass.lon}`,
+          ],
         ]}
       />
     </>
@@ -348,48 +578,83 @@ function PassDetail(props: Props & { pass: Pass }) {
 
 function TourDetail(props: Props & { tour: Tour }) {
   const { tour } = props;
-  const status = tourStatus(tour, props.passes, props.period);
+  const passIndex = indexBySlug(props.passes);
+  const status = tourStatus(tour, passIndex, props.period, props.climate);
   const limiting = tour.passes
-    .map((s) => props.passes.find((p) => p.slug === s))
+    .map((s) => passIndex.get(s))
     .filter((p): p is Pass => Boolean(p))
-    .filter((p) => passStatus(p, props.period) !== "open");
+    .filter(
+      (p) =>
+        passStatus(
+          p,
+          props.period,
+          climateBucket(props.climate, p.slug, props.period),
+        ) !== "open",
+    );
 
   return (
     <>
-      <div className="mt-2 mb-2 flex flex-wrap items-baseline gap-3">
-        <span className="text-3xl leading-none font-bold tabular-nums">
+      <p className="text-muted-foreground mt-0.5 text-[13px]">
+        <span className="text-foreground text-2xl leading-none font-bold tabular-nums">
           {fmt(tour.km)}
-          <span className="ml-1 text-base text-muted-foreground">km</span>
         </span>
-        <span className="text-3xl leading-none font-bold tabular-nums">
+        <span className="ml-1">km · </span>
+        <span className="text-foreground text-2xl leading-none font-bold tabular-nums">
           {fmt(tour.elevationGain)}
-          <span className="ml-1 text-base text-muted-foreground">hm</span>
         </span>
+        <span className="ml-1">hm · {tour.passes.length} Pässe</span>
+      </p>
+
+      <div className="bg-muted/40 border-border/70 mt-3 flex flex-col gap-2 rounded-lg border p-3">
         <StatusBadge status={status} period={props.period} />
+        {limiting.length > 0 && (
+          <p className="text-muted-foreground text-xs leading-relaxed">
+            Eingeschränkt durch {limiting.map((p) => p.name).join(", ")}.
+          </p>
+        )}
+        <SeasonStrip
+          statuses={tourSeason(tour, passIndex, props.climate)}
+          current={props.period}
+          size="panel"
+        />
       </div>
-      {limiting.length > 0 && (
-        <p className="text-xs text-muted-foreground">
-          Einschränkung durch: {limiting.map((p) => p.name).join(", ")}
-        </p>
-      )}
-      <p className="mt-2 text-[13px]">{tour.description}</p>
-      <dl className="my-2 grid grid-cols-[auto_1fr] gap-x-3 gap-y-1 text-[13px]">
-        <dt className="text-muted-foreground">Saison</dt>
-        <dd>{tour.season}</dd>
-        <dt className="text-muted-foreground">Pässe</dt>
-        <dd className="flex flex-col items-start">
-          {tour.passes.map((slug) => {
-            const p = props.passes.find((x) => x.slug === slug);
-            if (!p) return null;
-            return (
-              <LinkButton key={slug} onClick={() => props.onSelect({ kind: "pass", slug })}>
-                <StatusDot status={passStatus(p, props.period)} /> {p.name}
-              </LinkButton>
-            );
-          })}
-        </dd>
-      </dl>
-      <Nearby {...props} lat={tour.waypoints[0]!.lat} lon={tour.waypoints[0]!.lon} />
+
+      <p className="mt-4 text-[13px] leading-relaxed">{tour.description}</p>
+      <p className="text-muted-foreground mt-1.5 text-[13px] leading-relaxed">
+        {tour.season}
+      </p>
+
+      <SectionTitle>Pässe der Runde</SectionTitle>
+      <div className="flex flex-col items-start">
+        {tour.passes.map((slug) => {
+          const p = passIndex.get(slug);
+          if (!p) return null;
+          return (
+            <LinkButton
+              key={slug}
+              onClick={() => props.onSelect({ kind: "pass", slug })}
+            >
+              <StatusDot
+                status={passStatus(
+                  p,
+                  props.period,
+                  climateBucket(props.climate, p.slug, props.period),
+                )}
+              />{" "}
+              {p.name}
+              <span className="text-muted-foreground tabular-nums">
+                {fmtUnit(p.elevation, "m")}
+              </span>
+            </LinkButton>
+          );
+        })}
+      </div>
+
+      <Nearby
+        {...props}
+        lat={tour.waypoints[0]!.lat}
+        lon={tour.waypoints[0]!.lon}
+      />
     </>
   );
 }

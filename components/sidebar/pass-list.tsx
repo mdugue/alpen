@@ -1,23 +1,43 @@
 "use client";
 
-import { useState } from "react";
 import { SlidersHorizontal } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { Field, FieldGroup, FieldLabel, FieldTitle } from "@/components/ui/field";
-import { NativeSelect, NativeSelectOption } from "@/components/ui/native-select";
-import { Slider } from "@/components/ui/slider";
+import { useState } from "react";
+
+import { Rating } from "@/components/rating";
+import { SeasonStrip } from "@/components/season-strip";
 import { EntityRow } from "@/components/sidebar/entity-row";
 import { ListEmpty } from "@/components/sidebar/list-empty";
-import { Rating } from "@/components/rating";
 import { StatusLabel } from "@/components/status-badge";
-import { PASS_SORT_LABEL, sortPassRows, type PassRow, type PassSort } from "@/lib/rows";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
+import {
+  Field,
+  FieldGroup,
+  FieldLabel,
+  FieldTitle,
+} from "@/components/ui/field";
+import {
+  NativeSelect,
+  NativeSelectOption,
+} from "@/components/ui/native-select";
+import { Slider } from "@/components/ui/slider";
 import type { Filters } from "@/lib/app-state";
+import { PASS_SORT_LABEL, sortPassRows } from "@/lib/rows";
+import type { PassRow, PassSort } from "@/lib/rows";
 import { fmtUnit } from "@/lib/utils";
 
 type RatingSort = "beauty" | "fame" | "difficulty" | "traffic";
-const RATING_SORTS: readonly PassSort[] = ["beauty", "fame", "difficulty", "traffic"];
+const RATING_SORTS: readonly PassSort[] = [
+  "beauty",
+  "fame",
+  "difficulty",
+  "traffic",
+];
 
 export function PassList({
   rows,
@@ -35,7 +55,8 @@ export function PassList({
   onToggleFavorite: (slug: string) => void;
 }) {
   const [sort, setSort] = useState<PassSort>("elevation");
-  const passFilters = (filters.minFame > 1 ? 1 : 0) + (filters.minElevation > 0 ? 1 : 0);
+  const passFilters =
+    (filters.minFame > 1 ? 1 : 0) + (filters.minElevation > 0 ? 1 : 0);
   // Opens by itself when a link carries pass filters; the user's own toggling wins afterwards.
   const [filtersManual, setFiltersManual] = useState<boolean | null>(null);
   const filtersOpen = filtersManual ?? passFilters > 0;
@@ -45,7 +66,7 @@ export function PassList({
   return (
     <>
       <Collapsible open={filtersOpen} onOpenChange={setFiltersManual}>
-        <div className="flex items-center gap-2 border-b border-border px-3 py-1.5">
+        <div className="border-border flex items-center gap-2 border-b px-3 py-1.5">
           <NativeSelect
             size="sm"
             value={sort}
@@ -58,13 +79,17 @@ export function PassList({
               </NativeSelectOption>
             ))}
           </NativeSelect>
-          <CollapsibleTrigger render={<Button size="sm" variant="ghost" className="ml-auto" />}>
+          <CollapsibleTrigger
+            render={<Button size="sm" variant="ghost" className="ml-auto" />}
+          >
             <SlidersHorizontal data-icon="inline-start" />
             Filter
-            {passFilters > 0 && <Badge variant="secondary">{passFilters}</Badge>}
+            {passFilters > 0 && (
+              <Badge variant="secondary">{passFilters}</Badge>
+            )}
           </CollapsibleTrigger>
         </div>
-        <CollapsibleContent className="border-b border-border px-3 py-2">
+        <CollapsibleContent className="border-border border-b px-3 py-2">
           <FieldGroup className="gap-2">
             <Field orientation="horizontal">
               <FieldLabel htmlFor="min-fame" className="w-24 shrink-0">
@@ -74,7 +99,9 @@ export function PassList({
                 size="sm"
                 id="min-fame"
                 value={filters.minFame}
-                onChange={(e) => setFilters((f) => ({ ...f, minFame: Number(e.target.value) }))}
+                onChange={(e) =>
+                  setFilters((f) => ({ ...f, minFame: Number(e.target.value) }))
+                }
               >
                 <NativeSelectOption value={1}>alle</NativeSelectOption>
                 <NativeSelectOption value={3}>ab 3 von 5</NativeSelectOption>
@@ -82,8 +109,13 @@ export function PassList({
               </NativeSelect>
             </Field>
             <Field orientation="horizontal">
-              <FieldTitle id="min-elevation" className="w-24 shrink-0 tabular-nums">
-                {filters.minElevation > 0 ? `ab ${fmtUnit(filters.minElevation, "m")}` : "Jede Höhe"}
+              <FieldTitle
+                id="min-elevation"
+                className="w-24 shrink-0 tabular-nums"
+              >
+                {filters.minElevation > 0
+                  ? `ab ${fmtUnit(filters.minElevation, "m")}`
+                  : "Jede Höhe"}
               </FieldTitle>
               <Slider
                 aria-labelledby="min-elevation"
@@ -92,7 +124,10 @@ export function PassList({
                 max={2800}
                 step={100}
                 onValueChange={(v) =>
-                  setFilters((f) => ({ ...f, minElevation: Array.isArray(v) ? (v[0] ?? 0) : v }))
+                  setFilters((f) => ({
+                    ...f,
+                    minElevation: Array.isArray(v) ? (v[0] ?? 0) : v,
+                  }))
                 }
                 className="max-w-40"
               />
@@ -105,7 +140,7 @@ export function PassList({
         <ListEmpty title="Keine Pässe für diese Filter" />
       ) : (
         <ul>
-          {sorted.map(({ pass, status, favorite }) => (
+          {sorted.map(({ pass, status, favorite, season }) => (
             <EntityRow
               key={pass.slug}
               rowId={`pass:${pass.slug}`}
@@ -117,12 +152,21 @@ export function PassList({
               onSelect={() => onSelect(pass.slug)}
               aside={
                 <>
-                  <span className="text-[13px] font-medium tabular-nums">{fmtUnit(pass.elevation, "m")}</span>
+                  <span className="text-[13px] font-medium tabular-nums">
+                    {fmtUnit(pass.elevation, "m")}
+                  </span>
                   {ratingSort ? (
-                    <Rating value={pass[ratingSort]} muted={ratingSort === "traffic"} />
+                    <Rating
+                      value={pass[ratingSort]}
+                      muted={ratingSort === "traffic"}
+                    />
                   ) : (
-                    <StatusLabel status={status} className="text-muted-foreground" />
+                    <StatusLabel
+                      status={status}
+                      className="text-muted-foreground"
+                    />
                   )}
+                  <SeasonStrip statuses={season} current={filters.period} />
                 </>
               }
             />

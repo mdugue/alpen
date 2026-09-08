@@ -22,7 +22,11 @@ export function Rating({
           aria-hidden
           className={cn(
             "h-2.5 w-1.5 rounded-[2px]",
-            i <= value ? (muted ? "bg-muted-foreground" : "bg-primary") : "bg-muted-foreground/25",
+            i <= value
+              ? muted
+                ? "bg-muted-foreground"
+                : "bg-primary"
+              : "bg-muted-foreground/25",
           )}
         />
       ))}

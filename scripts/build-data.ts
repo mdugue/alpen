@@ -42,6 +42,7 @@
  * the host (Retry-After or 60 s) and retries.
  */
 import { mkdir } from "node:fs/promises";
+
 import passes from "../data/passes.json" with { type: "json" };
 import tours from "../data/tours.json" with { type: "json" };
 import type {
@@ -88,9 +89,8 @@ const OSRM_HOST = process.env.OSRM_HOST ?? "https://router.project-osrm.org";
 const SNAP_RADIUS = LIMITS.ascent.maxStartDist;
 const TODAY = new Date().toISOString().slice(0, 10);
 const OPEN_METEO_BUDGET = Number(process.env.OPEN_METEO_BUDGET ?? 4500);
-const OPEN_METEO_DAILY = 10_000;
 /** The binding limit in practice: 5 000 calls/h ≈ 50 elevation profiles. */
-const OPEN_METEO_HOURLY = 5_000;
+const OPEN_METEO_HOURLY = 5000;
 const CLIMATE_FROM = "2015-01-01";
 const CLIMATE_TO = "2024-12-31";
 const PROFILE_POINTS = 100;
@@ -101,7 +101,7 @@ const CLIMATE_WEIGHT = Math.ceil(
 /** Open-Meteo weight of one elevation request: one call per location. */
 const PROFILE_WEIGHT = PROFILE_POINTS;
 
-const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 async function readJson<T>(name: string, fallback: T): Promise<T> {
   const f = Bun.file(new URL(name, OUT));
@@ -113,7 +113,7 @@ async function readJson<T>(name: string, fallback: T): Promise<T> {
  */
 const format = (data: Record<string, unknown>) =>
   `{\n${Object.keys(data)
-    .sort()
+    .toSorted()
     .map((k) => `  ${JSON.stringify(k)}: ${JSON.stringify(data[k])}`)
     .join(",\n")}\n}\n`;
 // Writes are chained so concurrent pipelines never interleave a file write.
@@ -124,7 +124,9 @@ const write = (name: string, data: Record<string, unknown>) =>
 // ---------------------------------------------------------------------------
 // Per-host rate limiting
 
-class QuotaExhausted extends Error {
+class QuotaExhaustedError extends Error {
+  name = "QuotaExhaustedError";
+
   constructor(host: string, reason: string) {
     super(`${host}: ${reason}`);
   }
@@ -152,7 +154,8 @@ class Limiter {
     const p = this.chain.then(async () => {
       if (!this.exhausted && this.used + weight > this.budget)
         this.exhausted = `Budget von ${this.budget} Calls für diesen Lauf erreicht`;
-      if (this.exhausted) throw new QuotaExhausted(this.name, this.exhausted);
+      if (this.exhausted)
+        throw new QuotaExhaustedError(this.name, this.exhausted);
       const wait = this.nextAt - Date.now();
       if (wait > 0) await sleep(wait);
       this.nextAt = Date.now() + (weight * 60_000) / this.callsPerMinute;
@@ -178,7 +181,12 @@ const openMeteo = new Limiter("Open-Meteo", 500, OPEN_METEO_BUDGET);
 const ors = ORS ? new Limiter("OpenRouteService", 38) : null;
 const osrm = new Limiter("OSRM-Demo", 55);
 
-async function getJson<T>(lim: Limiter, weight: number, url: string, init?: RequestInit): Promise<T> {
+function getJson<T>(
+  lim: Limiter,
+  weight: number,
+  url: string,
+  init?: RequestInit,
+): Promise<T> {
   return lim.run(async () => {
     for (let attempt = 0; attempt < 5; attempt++) {
       const res = await fetch(url, init);
@@ -187,25 +195,37 @@ async function getJson<T>(lim: Limiter, weight: number, url: string, init?: Requ
       const body = await res.text().catch(() => "");
       const reason = (() => {
         try {
-          return (JSON.parse(body) as { reason?: string; error?: string }).reason ?? body;
+          return (
+            (JSON.parse(body) as { reason?: string; error?: string }).reason ??
+            body
+          );
         } catch {
           return body;
         }
       })()
-        .replace(/\s+/g, " ")
+        .replaceAll(/\s+/gu, " ")
         .trim()
         .slice(0, 120);
 
       // Open-Meteo: 429 "Hourly/Daily API request limit exceeded"; ORS: 403 "Quota exceeded" (daily).
-      if ((res.status === 429 && /hourly|daily/i.test(reason)) || (res.status === 403 && /quota/i.test(reason))) {
+      if (
+        (res.status === 429 && /hourly|daily/iu.test(reason)) ||
+        (res.status === 403 && /quota/iu.test(reason))
+      ) {
         lim.exhausted = reason;
-        throw new QuotaExhausted(lim.name, reason);
+        throw new QuotaExhaustedError(lim.name, reason);
       }
       if (res.status === 429 || res.status >= 500) {
         const retryAfter = Number(res.headers.get("retry-after")) * 1000;
         const wait =
-          retryAfter > 0 ? Math.min(retryAfter, 90_000) : res.status === 429 ? 60_000 : 5000 * (attempt + 1);
-        console.log(`  ${lim.name} ${res.status} (${reason || "keine Angabe"}), warte ${wait / 1000}s …`);
+          retryAfter > 0
+            ? Math.min(retryAfter, 90_000)
+            : res.status === 429
+              ? 60_000
+              : 5000 * (attempt + 1);
+        console.log(
+          `  ${lim.name} ${res.status} (${reason || "keine Angabe"}), warte ${wait / 1000}s …`,
+        );
         lim.pause(wait);
         await sleep(wait);
         continue;
@@ -219,14 +239,20 @@ async function getJson<T>(lim: Limiter, weight: number, url: string, init?: Requ
 // ---------------------------------------------------------------------------
 // Fetchers
 
-async function routeVia(source: RouteSource, waypoints: LatLon[]): Promise<RouteGeometry> {
+async function routeVia(
+  source: RouteSource,
+  waypoints: LatLon[],
+): Promise<RouteGeometry> {
   const out: RouteGeometry = [];
-  const push = (cs: RouteGeometry) => out.push(...(out.length ? cs.slice(1) : cs));
+  const push = (cs: RouteGeometry) =>
+    out.push(...(out.length ? cs.slice(1) : cs));
 
   if (source === "ors") {
     for (let i = 0; i < waypoints.length - 1; i += 49) {
       const chunk = waypoints.slice(i, Math.min(i + 50, waypoints.length));
-      const json = await getJson<{ features: { geometry: { coordinates: [number, number][] } }[] }>(
+      const json = await getJson<{
+        features: { geometry: { coordinates: [number, number][] } }[];
+      }>(
         ors!,
         1,
         "https://api.openrouteservice.org/v2/directions/cycling-road/geojson",
@@ -241,32 +267,49 @@ async function routeVia(source: RouteSource, waypoints: LatLon[]): Promise<Route
           }),
         },
       );
-      push(json.features[0]!.geometry.coordinates.map(([x, y]) => [+y.toFixed(5), +x.toFixed(5)]));
+      push(
+        json.features[0]!.geometry.coordinates.map(([x, y]) => [
+          +y.toFixed(5),
+          +x.toFixed(5),
+        ]),
+      );
     }
   } else {
     for (let i = 0; i < waypoints.length - 1; i += 11) {
       const chunk = waypoints.slice(i, Math.min(i + 12, waypoints.length));
       const coords = chunk.map((c) => `${c.lon},${c.lat}`).join(";");
-      const json = await getJson<{ code: string; routes: { geometry: { coordinates: [number, number][] } }[] }>(
+      const json = await getJson<{
+        code: string;
+        routes: { geometry: { coordinates: [number, number][] } }[];
+      }>(
         osrm,
         1,
         `${OSRM_HOST}/route/v1/driving/${coords}?overview=full&geometries=geojson`,
       );
       if (json.code !== "Ok") throw new Error(json.code);
-      push(json.routes[0]!.geometry.coordinates.map(([x, y]) => [+y.toFixed(5), +x.toFixed(5)]));
+      push(
+        json.routes[0]!.geometry.coordinates.map(([x, y]) => [
+          +y.toFixed(5),
+          +x.toFixed(5),
+        ]),
+      );
     }
   }
   return out;
 }
 
 /** ORS first, OSRM as the fallback once ORS says the daily quota is spent. */
-async function route(waypoints: LatLon[]): Promise<{ geom: RouteGeometry; source: RouteSource }> {
+async function route(
+  waypoints: LatLon[],
+): Promise<{ geom: RouteGeometry; source: RouteSource }> {
   if (ors && !ors.exhausted) {
     try {
       return { geom: await routeVia("ors", waypoints), source: "ors" };
-    } catch (e) {
-      if (!(e instanceof QuotaExhausted)) throw e;
-      console.log("  ORS-Kontingent erschöpft – weiter mit OSRM (Autoprofil), der Gate fängt die Ausreißer ab");
+    } catch (error) {
+      if (!(error instanceof QuotaExhaustedError)) throw error;
+      console.log(
+        "  ORS-Kontingent erschöpft – weiter mit OSRM (Autoprofil), der Gate fängt die Ausreißer ab",
+      );
     }
   }
   return { geom: await routeVia("osrm", waypoints), source: "osrm" };
@@ -321,7 +364,9 @@ async function profile(geom: RouteGeometry): Promise<ElevationProfile> {
     elevationGain: Math.round(gain),
     start: Math.round(elevation[0]!),
     top: Math.round(Math.max(...elevation)),
-    avgGradient: +(((elevation.at(-1)! - elevation[0]!) / (total * 10))).toFixed(1),
+    avgGradient: +((elevation.at(-1)! - elevation[0]!) / (total * 10)).toFixed(
+      1,
+    ),
     dist: dist.map((d) => +d.toFixed(2)),
     ele: elevation.map(Math.round),
   };
@@ -344,7 +389,14 @@ async function climate(pass: Pass): Promise<ClimateYear> {
       `&elevation=${pass.elevation}&start_date=${CLIMATE_FROM}&end_date=${CLIMATE_TO}` +
       `&daily=temperature_2m_max,temperature_2m_min,snowfall_sum,precipitation_sum&timezone=Europe%2FBerlin`,
   );
-  const buckets = Array.from({ length: 24 }, () => ({ n: 0, tx: 0, tn: 0, snow: 0, frost: 0, wet: 0 }));
+  const buckets = Array.from({ length: 24 }, () => ({
+    n: 0,
+    tx: 0,
+    tn: 0,
+    snow: 0,
+    frost: 0,
+    wet: 0,
+  }));
   d.daily.time.forEach((t, i) => {
     const tmax = d.daily.temperature_2m_max[i];
     const tmin = d.daily.temperature_2m_min[i];
@@ -375,13 +427,27 @@ async function climate(pass: Pass): Promise<ClimateYear> {
 // ---------------------------------------------------------------------------
 await mkdir(OUT, { recursive: true });
 const routes = await readJson<Record<string, RouteGeometry>>("routes.json", {});
-const profiles = await readJson<Record<string, ElevationProfile>>("profiles.json", {});
-const climates = await readJson<Record<string, ClimateYear>>("climate.json", {});
+const profiles = await readJson<Record<string, ElevationProfile>>(
+  "profiles.json",
+  {},
+);
+const climates = await readJson<Record<string, ClimateYear>>(
+  "climate.json",
+  {},
+);
 const meta = await readJson<Record<string, RouteMeta>>("routes-meta.json", {});
-const rejected = await readJson<Record<string, RouteRejection>>("rejected.json", {});
+const rejected = await readJson<Record<string, RouteRejection>>(
+  "rejected.json",
+  {},
+);
 const summits = await readJson<Record<string, number>>("summits.json", {});
 
-type RouteJob = { key: string; label: string; waypoints: LatLon[]; check?: RouteCheck } & (
+type RouteJob = {
+  key: string;
+  label: string;
+  waypoints: LatLon[];
+  check?: RouteCheck;
+} & (
   | { kind: "ascent"; from: LatLon; summit: LatLon; elevation: number }
   | { kind: "tour"; statedKm: number }
 );
@@ -416,7 +482,9 @@ const measure = (job: RouteJob, geom: RouteGeometry): RouteMetrics =>
     : tourMetrics(geom, job.waypoints, job.statedKm);
 
 const judge = (job: RouteJob, m: RouteMetrics) =>
-  job.kind === "ascent" ? checkAscent(m as AscentMetrics, job.check) : checkTour(m as TourMetrics, job.check);
+  job.kind === "ascent"
+    ? checkAscent(m as AscentMetrics, job.check)
+    : checkTour(m as TourMetrics, job.check);
 
 /**
  * Re-routing a stored OSRM route also invalidates its profile, and a profile is
@@ -426,15 +494,27 @@ const judge = (job: RouteJob, m: RouteMetrics) =>
  * route it finds.
  */
 const upgradable = (j: RouteJob) =>
-  routes[j.key] !== undefined && ORS !== "" && (meta[j.key]?.source ?? "osrm") === "osrm";
-const needsRoute = (j: RouteJob) => !routes[j.key] || (UPGRADE_OSRM && upgradable(j));
+  routes[j.key] !== undefined &&
+  ORS !== "" &&
+  (meta[j.key]?.source ?? "osrm") === "osrm";
+const needsRoute = (j: RouteJob) =>
+  !routes[j.key] || (UPGRADE_OSRM && upgradable(j));
 const isRejected = (j: RouteJob) => j.key in rejected && !RETRY_REJECTED;
 
-const pendingRoutes = () => routeJobs.filter((j) => needsRoute(j) && !isRejected(j));
+const pendingRoutes = () =>
+  routeJobs.filter((j) => needsRoute(j) && !isRejected(j));
 const pendingProfiles = () =>
-  routeJobs.filter((j) => j.kind === "ascent" && routes[j.key] && !profiles[j.key] && !isRejected(j));
-const pendingClimate = () => (passes as Pass[]).filter((p) => !climates[p.slug]);
-const pendingSummits = () => (passes as Pass[]).filter((p) => !(p.slug in summits));
+  routeJobs.filter(
+    (j) =>
+      j.kind === "ascent" &&
+      routes[j.key] &&
+      !profiles[j.key] &&
+      !isRejected(j),
+  );
+const pendingClimate = () =>
+  (passes as Pass[]).filter((p) => !climates[p.slug]);
+const pendingSummits = () =>
+  (passes as Pass[]).filter((p) => !(p.slug in summits));
 
 const report = () => {
   const r = pendingRoutes().length;
@@ -442,22 +522,34 @@ const report = () => {
   const c = pendingClimate().length;
   const s = pendingSummits().length;
   // A newly routed ascent needs a profile too, and that is what actually costs.
-  const newProfiles = p + routeJobs.filter((j) => j.kind === "ascent" && needsRoute(j) && !isRejected(j)).length;
+  const newProfiles =
+    p +
+    routeJobs.filter(
+      (j) => j.kind === "ascent" && needsRoute(j) && !isRejected(j),
+    ).length;
   const calls = newProfiles * PROFILE_WEIGHT + c * CLIMATE_WEIGHT + s;
   const up = routeJobs.filter(upgradable).length;
   console.log(
-    `Fehlend: ${r} Routen, ${p} Profile, ${c} Klimareihen, ${s} Gipfelhöhen` +
-      (calls
+    `Fehlend: ${r} Routen, ${p} Profile, ${c} Klimareihen, ${s} Gipfelhöhen${
+      calls
         ? ` (≈ ${calls} Open-Meteo-Calls ≈ ${Math.ceil(calls / Math.min(OPEN_METEO_BUDGET, OPEN_METEO_HOURLY))} Läufe à ${OPEN_METEO_BUDGET})`
-        : "") +
-      (Object.keys(rejected).length ? ` · ${Object.keys(rejected).length} abgewiesen (rejected.json)` : "") +
-      (up && !UPGRADE_OSRM ? ` · ${up} OSRM-Routen aufrüstbar (--upgrade-osrm)` : ""),
+        : ""
+    }${
+      Object.keys(rejected).length
+        ? ` · ${Object.keys(rejected).length} abgewiesen (rejected.json)`
+        : ""
+    }${up && !UPGRADE_OSRM ? ` · ${up} OSRM-Routen aufrüstbar (--upgrade-osrm)` : ""}`,
   );
   return r + p + c + s;
 };
 
 if (PENDING_ONLY) {
-  console.log(pendingRoutes().length + pendingProfiles().length + pendingClimate().length + pendingSummits().length);
+  console.log(
+    pendingRoutes().length +
+      pendingProfiles().length +
+      pendingClimate().length +
+      pendingSummits().length,
+  );
   process.exit(0);
 }
 if (STATUS_ONLY) {
@@ -481,14 +573,22 @@ console.log(
     : "Routing über OSRM-Demo (Autoprofil) – ORS_KEY setzen für das Rennrad-Profil",
 );
 if (RETRY_REJECTED && Object.keys(rejected).length)
-  console.log(`${Object.keys(rejected).length} abgewiesene Schlüssel werden erneut versucht`);
+  console.log(
+    `${Object.keys(rejected).length} abgewiesene Schlüssel werden erneut versucht`,
+  );
 report();
 
 const fail = (what: string, e: unknown) =>
   console.error(`  ${what} FEHLER ${(e as Error).message}`);
 
 /** Removes a key everywhere and records why, keeping the date of the first rejection. */
-async function reject(job: RouteJob, reasons: string[], m: RouteMetrics, source: RouteSource, hash: string) {
+async function reject(
+  job: RouteJob,
+  reasons: string[],
+  m: RouteMetrics,
+  source: RouteSource,
+  hash: string,
+) {
   const before = rejected[job.key];
   const unchanged = before?.hash === hash;
   rejected[job.key] = {
@@ -500,25 +600,30 @@ async function reject(job: RouteJob, reasons: string[], m: RouteMetrics, source:
     lastSeen: TODAY,
     // Keep the profile: it is the only expensive part, so a later retry after a
     // threshold change costs nothing.
-    ...(profiles[job.key] ? { profile: profiles[job.key] } : before?.profile ? { profile: before.profile } : {}),
+    ...(profiles[job.key]
+      ? { profile: profiles[job.key] }
+      : before?.profile
+        ? { profile: before.profile }
+        : {}),
   };
-  delete routes[job.key];
-  delete profiles[job.key];
-  delete meta[job.key];
+  Reflect.deleteProperty(routes, job.key);
+  Reflect.deleteProperty(profiles, job.key);
+  Reflect.deleteProperty(meta, job.key);
   await write("routes.json", routes);
   await write("profiles.json", profiles);
   await write("routes-meta.json", meta);
   await write("rejected.json", rejected);
   console.log(
-    `Abgewiesen: ${job.label} (${source})${unchanged ? " – unveränderte Geometrie, die Koordinaten sind das Problem" : ""}\n` +
-      reasons.map((r) => `    ${r}`).join("\n"),
+    `Abgewiesen: ${job.label} (${source})${unchanged ? " – unveränderte Geometrie, die Koordinaten sind das Problem" : ""}\n${reasons
+      .map((r) => `    ${r}`)
+      .join("\n")}`,
   );
 }
 
 async function accept(job: RouteJob, geom: RouteGeometry, source: RouteSource) {
   routes[job.key] = geom;
   meta[job.key] = { source, fetchedAt: TODAY };
-  delete rejected[job.key];
+  Reflect.deleteProperty(rejected, job.key);
   await write("routes.json", routes);
   await write("routes-meta.json", meta);
   await write("rejected.json", rejected);
@@ -542,19 +647,21 @@ async function gate(job: RouteJob, geom: RouteGeometry, source: RouteSource) {
 
   // A cached profile from an earlier rejection is only valid for the very same
   // geometry; otherwise it has to be paid for again.
-  const cached = rejected[job.key]?.hash === hash ? rejected[job.key]?.profile : undefined;
+  const cached =
+    rejected[job.key]?.hash === hash ? rejected[job.key]?.profile : undefined;
   if (!cached && profiles[job.key]) {
     // The geometry was just replaced, so the stored profile belongs to a road
     // that is no longer there. Drop it before fetching, otherwise a run that
     // runs out of Open-Meteo budget leaves a profile from the old route behind.
-    delete profiles[job.key];
+    Reflect.deleteProperty(profiles, job.key);
     await write("profiles.json", profiles);
   }
   let prof: ElevationProfile;
   try {
     prof = cached ?? (await profile(geom));
-  } catch (e) {
-    if (!(e instanceof QuotaExhausted)) fail(`Profil ${job.label}`, e);
+  } catch (error) {
+    if (!(error instanceof QuotaExhaustedError))
+      fail(`Profil ${job.label}`, error);
     return; // route stays, profile follows in the next run
   }
   m = withProfile(m as AscentMetrics, prof, job.elevation);
@@ -565,7 +672,9 @@ async function gate(job: RouteJob, geom: RouteGeometry, source: RouteSource) {
   }
   profiles[job.key] = prof;
   await write("profiles.json", profiles);
-  console.log(`Profil: ${job.label} (${prof.km} km, ${prof.elevationGain} Hm, Gipfel ${prof.top} m)`);
+  console.log(
+    `Profil: ${job.label} (${prof.km} km, ${prof.elevationGain} Hm, Gipfel ${prof.top} m)`,
+  );
 }
 
 // Pipeline 1: routing. Each route runs through the gate and hands its profile on.
@@ -575,13 +684,16 @@ const routing = pendingRoutes().map(async (job) => {
     const { geom, source } = await route(job.waypoints);
     if (upgrade && (meta[job.key]?.source ?? "osrm") === source) return; // nothing gained
     await gate(job, geom, source);
-  } catch (e) {
-    if (!(e instanceof QuotaExhausted)) fail(`Route ${job.label}`, e);
+  } catch (error) {
+    if (!(error instanceof QuotaExhaustedError))
+      fail(`Route ${job.label}`, error);
   }
 });
 
 // Pipeline 2: profiles for routes that already exist and were never judged.
-const profiling = pendingProfiles().map((job) => gate(job, routes[job.key]!, meta[job.key]?.source ?? "osrm"));
+const profiling = pendingProfiles().map((job) =>
+  gate(job, routes[job.key]!, meta[job.key]?.source ?? "osrm"),
+);
 
 // Pipeline 3: the DEM height of the pass points themselves – one cheap batch.
 const summiting = (async () => {
@@ -590,22 +702,29 @@ const summiting = (async () => {
   try {
     Object.assign(summits, await summitElevations(todo));
     await write("summits.json", summits);
-    const off = todo.filter((p) => summits[p.slug] !== undefined && checkSummit(summits[p.slug]!, p.elevation).length);
+    const off = todo.filter(
+      (p) =>
+        summits[p.slug] !== undefined &&
+        checkSummit(summits[p.slug]!, p.elevation).length,
+    );
     console.log(`Gipfelhöhen: ${todo.length} geprüft, ${off.length} auffällig`);
-  } catch (e) {
-    if (!(e instanceof QuotaExhausted)) fail("Gipfelhöhen", e);
+  } catch (error) {
+    if (!(error instanceof QuotaExhaustedError)) fail("Gipfelhöhen", error);
   }
 })();
 
 // Pipeline 4: climate. Queued after the (cheaper) profiles; the Open-Meteo budget cuts it off.
-console.log(`Open-Meteo-Budget für diesen Lauf: ${OPEN_METEO_BUDGET} Calls (OPEN_METEO_BUDGET)`);
+console.log(
+  `Open-Meteo-Budget für diesen Lauf: ${OPEN_METEO_BUDGET} Calls (OPEN_METEO_BUDGET)`,
+);
 const climating = pendingClimate().map(async (pass) => {
   try {
     climates[pass.slug] = await climate(pass);
     await write("climate.json", climates);
     console.log(`Klima: ${pass.name}`);
-  } catch (e) {
-    if (!(e instanceof QuotaExhausted)) fail(`Klima ${pass.name}`, e);
+  } catch (error) {
+    if (!(error instanceof QuotaExhaustedError))
+      fail(`Klima ${pass.name}`, error);
   }
 });
 
@@ -613,14 +732,22 @@ await Promise.all([...routing, ...profiling, summiting, ...climating]);
 await writing;
 
 for (const lim of [ors, osrm, openMeteo]) {
-  if (lim?.exhausted) console.log(`${lim.name}: Kontingent erschöpft (${lim.exhausted}) – Rest im nächsten Lauf`);
+  if (lim?.exhausted)
+    console.log(
+      `${lim.name}: Kontingent erschöpft (${lim.exhausted}) – Rest im nächsten Lauf`,
+    );
 }
-const osrmRoutes = Object.values(meta).filter((x) => x.source === "osrm").length;
+const osrmRoutes = Object.values(meta).filter(
+  (x) => x.source === "osrm",
+).length;
 console.log(
   `Fertig: ${Object.keys(routes).length} Routen, ${Object.keys(profiles).length} Profile, ` +
     `${Object.keys(climates).length} Klimareihen` +
     ` (${(ors?.requests ?? 0) + osrm.requests} Routing-Requests, ${openMeteo.requests} Open-Meteo-Requests` +
     ` ≈ ${openMeteo.used} Calls)`,
 );
-if (osrmRoutes) console.log(`${osrmRoutes} Routen stammen vom OSRM-Autoprofil und sollten mit ORS_KEY erneuert werden`);
+if (osrmRoutes)
+  console.log(
+    `${osrmRoutes} Routen stammen vom OSRM-Autoprofil und sollten mit ORS_KEY erneuert werden`,
+  );
 report();

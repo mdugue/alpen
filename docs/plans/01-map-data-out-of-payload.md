@@ -14,12 +14,12 @@ on every change.
 
 Measured on the deployed build (identical to `main`):
 
-| What ships on first load | Size |
-| --- | --- |
-| Start page HTML | 1.95 MB raw, 422 KB gzipped |
+| What ships on first load   | Size                                       |
+| -------------------------- | ------------------------------------------ |
+| Start page HTML            | 1.95 MB raw, 422 KB gzipped                |
 | RSC payload embedded in it | 1.57 MB, of which `routes.json` is 1.27 MB |
-| Coordinate pairs inlined | 54,083 |
-| MapLibre chunk | 1.37 MB raw, 390 KB gzipped |
+| Coordinate pairs inlined   | 54,083                                     |
+| MapLibre chunk             | 1.37 MB raw, 390 KB gzipped                |
 
 React parses the routes once as flight data; then `components/map/pass-map.tsx`
 re-serialises all four sources into GeoJSON on every filter, period or
@@ -78,7 +78,7 @@ MapLibre worker copy, reads `data/generated/routes.json` and writes:
 
 - `public/map/routes.<hash>.geojson`: one `LineString` per ascent with
   `properties: { id: "col-du-galibier:0", pass: "col-du-galibier", ascent: 0,
-  name, label }`.
+name, label }`.
 - `public/map/tours.<hash>.geojson`: one `LineString` per tour with
   `properties: { id: slug, name, color, km, elevationGain }`; tours without a
   routed geometry are omitted rather than drawn as straight lines.

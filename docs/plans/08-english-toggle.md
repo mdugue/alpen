@@ -80,8 +80,12 @@ climate texts, map control labels, MapLibre `locale` strings, the legal note.
 `data/i18n/en/passes.json`, `tours.json`, `towns.json`, keyed by slug:
 
 ```jsonc
-{ "col-du-galibier": { "classicAscent": "18 km, 6.9 % from Valloire (34 km via Télégraphe)",
-                       "note": "Winter closure usually late October to early June. …" } }
+{
+  "col-du-galibier": {
+    "classicAscent": "18 km, 6.9 % from Valloire (34 km via Télégraphe)",
+    "note": "Winter closure usually late October to early June. …",
+  },
+}
 ```
 
 `lib/data.ts` merges by locale with a German fallback; `check-data` warns

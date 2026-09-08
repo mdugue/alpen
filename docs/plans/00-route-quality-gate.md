@@ -42,20 +42,20 @@ Three corrections to the earlier draft, all measured rather than assumed:
 - **The hourly cap binds before the daily one.** Open-Meteo allows 5,000
   calls/h and 10,000/day, so a run can place at most ~50 profiles and the
   default `OPEN_METEO_BUDGET=4500` is already sized just under that ceiling.
-  The 103 outstanding profiles are therefore **three runs an hour apart**, not
+  The 9,492 outstanding calls are therefore **three runs an hour apart**, not
   a multi-day affair.
 - **Routing is free and fits in one shot.** 103 ORS requests against a free
   quota of 2,000/day is 5 % of one day, about five minutes of wall clock.
   Ascents are two waypoints (one request); the longest tour has 37 waypoints
   and still fits in ORS's 50-coordinate chunk, so tours are one request each.
 
-| Step | Requests | Open-Meteo calls | Limit |
-| --- | --- | --- | --- |
-| 94 missing + 9 tour routes | 103 ORS | – | 2,000/day |
-| 11 re-fetched after the gate removed them | 11 ORS | – | |
-| 103 elevation profiles | – | 10,300 | 5,000/h, 10,000/day |
-| 92 summit heights | – | 92 | one batch |
-| Climate | – | 0 (complete) | |
+| Step                                      | Requests | Open-Meteo calls | Limit               |
+| ----------------------------------------- | -------- | ---------------- | ------------------- |
+| 94 missing + 9 tour routes                | 103 ORS  | –                | 2,000/day           |
+| 11 re-fetched after the gate removed them | 11 ORS   | –                |                     |
+| 94 elevation profiles (tours have none)   | –        | 9,400            | 5,000/h, 10,000/day |
+| 92 summit heights                         | –        | 92               | one batch           |
+| Climate                                   | –        | 0 (complete)     |                     |
 
 ## Non-goals
 
@@ -174,13 +174,24 @@ demand, so a hand-edited geometry cannot hide behind stale meta.
 ```jsonc
 {
   "col-du-mont-cenis:1": {
-    "reasons": ["Länge 341.44 km > 60 km", "Profilhöhe weicht +642 m ab > 80 m"],
-    "metrics": { "km": 341.44, "startDist": 0.025, "endDist": 0.019,
-                 "topDelta": 642, "peakAt": 0.505, "gain": 6274 },
-    "source": "osrm", "hash": "3f1ab29c",
-    "firstSeen": "2026-09-08", "lastSeen": "2026-09-08",
-    "profile": { }
-  }
+    "reasons": [
+      "Länge 341.44 km > 60 km",
+      "Profilhöhe weicht +642 m ab > 80 m",
+    ],
+    "metrics": {
+      "km": 341.44,
+      "startDist": 0.025,
+      "endDist": 0.019,
+      "topDelta": 642,
+      "peakAt": 0.505,
+      "gain": 6274,
+    },
+    "source": "osrm",
+    "hash": "3f1ab29c",
+    "firstSeen": "2026-09-08",
+    "lastSeen": "2026-09-08",
+    "profile": {},
+  },
 }
 ```
 
@@ -190,7 +201,7 @@ Three deliberate choices:
   numbers, and the geometry is free to fetch again (ORS routing costs nothing
   against the quota). Keeping thousands of coordinates per reject in git would
   buy nothing.
-- **The elevation profile *is* kept.** That is the only expensive part, so
+- **The elevation profile _is_ kept.** That is the only expensive part, so
   loosening a threshold and running `--retry-rejected` spends **zero**
   Open-Meteo calls: the route is re-fetched for free and the cached profile is
   reused, guarded by `hash` so a changed geometry gets a fresh profile.
@@ -204,17 +215,17 @@ Three deliberate choices:
 
 Run after routing, before the write, and again after the profile:
 
-| Check | Limit | Fitted how |
-| --- | --- | --- |
-| Ascent length | ≤ 60 km | max legitimate 35 km, failures at 60.4/66.3/341 km |
-| Ascent start | ≤ 2 km from `ascent.from` | the ORS snapping radius, so router and gate agree |
-| Ascent end | ≤ 500 m from the pass coordinate | max observed 250 m |
-| Profile top vs `pass.elevation` | within 80 m | clean gap: good ≤ 50 m, bad ≥ 123 m |
-| Position of the highest sample | in the last 25 % | worst genuine failure 65 %, tightest correct ascent 81 % |
-| Elevation gain | ≤ 3,000 m | max legitimate 2,363 Hm, the broken one 6,274 Hm |
-| Tour length vs the curated `tour.km` | within 25 % | – |
-| Tour start/end | ≤ 2 km from the first/last waypoint | – |
-| DEM height at the pass point | within 80 m | same DEM noise as the profile top |
+| Check                                | Limit                               | Fitted how                                                  |
+| ------------------------------------ | ----------------------------------- | ----------------------------------------------------------- |
+| Ascent length                        | ≤ 60 km                             | max legitimate 35 km, failures at 60.4/66.3/341 km          |
+| Ascent start                         | ≤ 2 km from `ascent.from`           | the ORS snapping radius, so router and gate agree           |
+| Ascent end                           | ≤ 500 m from the pass coordinate    | max observed 250 m                                          |
+| Profile top vs `pass.elevation`      | within 80 m                         | clean gap: good ≤ 50 m, bad ≥ 123 m                         |
+| Position of the highest sample       | in the last 25 %                    | worst genuine failure 65 %, tightest correct ascent 81 %    |
+| Elevation gain                       | ≤ 3,000 m                           | max legitimate 2,363 Hm, the broken one 6,274 Hm            |
+| Tour length vs the curated `tour.km` | within 15 %                         | seven tours within ±7 %, two sparse ones at +29 % and +37 % |
+| Tour start/end                       | ≤ 2 km from the first/last waypoint | –                                                           |
+| DEM height at the pass point         | within 80 m                         | same DEM noise as the profile top                           |
 
 The thresholds were **fitted to the 88 routes that already existed**, not
 chosen first. That run initially flagged 12 ascents; the twelfth (Grimselpass
@@ -234,8 +245,14 @@ Alpenhaus, below the summit marker. `Ascent.check` and `Tour.check`
 (`RouteCheck` in `lib/types.ts`) widen a single limit for a single entry:
 
 ```jsonc
-{ "from": { }, "label": "Kitzbühel",
-  "check": { "maxTopDelta": 420, "note": "Straße endet am Alpenhaus unter dem Gipfel" } }
+{
+  "from": {},
+  "label": "Kitzbühel",
+  "check": {
+    "maxTopDelta": 420,
+    "note": "Straße endet am Alpenhaus unter dem Gipfel",
+  },
+}
 ```
 
 `note` is mandatory and `data:check` errors without it. Without this escape
@@ -282,25 +299,27 @@ different job with a different cadence.
 ## Steps
 
 1. ✅ `scripts/lib/validate.ts`: metrics, `LIMITS`, `checkAscent`,
-   `checkTour`, `checkSummit`, `geometryHash` — pure, so plan 10 can unit-test
-   them with the 11 known-bad fixtures.
-2. ✅ Fit the thresholds against the existing 88 routes before writing the gate,
+   `checkTour`, `checkSummit`, `geometryHash` — pure, no I/O.
+2. ✅ `scripts/lib/validate.test.ts` on plan 10's suite (`bun test lib` picks it
+   up by path): the 11 known-bad ascents and the nine routed tours as fixtures,
+   so a limit that stops catching one of them fails the build.
+3. ✅ Fit the thresholds against the existing 88 routes before writing the gate,
    so they separate the known-good from the known-bad rather than being round
    numbers.
-3. ✅ `routes-meta.json`, `rejected.json`, `summits.json` in
+4. ✅ `routes-meta.json`, `rejected.json`, `summits.json` in
    `scripts/build-data.ts`, written through the same chained `write()`.
-4. ✅ Wire the gate into routing → profile; on rejection remove any partial
+5. ✅ Wire the gate into routing → profile; on rejection remove any partial
    route and profile and cache the profile for a free retry.
-5. ✅ Separate ORS and OSRM limiters, OSRM fallback on `QuotaExhausted`, and the
+6. ✅ Separate ORS and OSRM limiters, OSRM fallback on `QuotaExhaustedError`, and the
    OSRM→ORS upgrade pass.
-6. ✅ The summit check with its own cache file (one batch, 92 calls).
-7. ✅ `check-data.ts`: the error/warning rules above and `--explain`.
-8. ✅ Remove the 11 known-bad keys from `routes.json` and `profiles.json` so the
+7. ✅ The summit check with its own cache file (one batch, 92 calls).
+8. ✅ `check-data.ts`: the error/warning rules above and `--explain`.
+9. ✅ Remove the 11 known-bad keys from `routes.json` and `profiles.json` so the
    backfill re-fetches them through the gate.
-9. ✅ `scripts/backfill.sh` plus `bun run data:build --pending`, so the three
-   hourly runs are one command.
-10. ✅ `refresh-data.yml`: push trigger instead of the cron.
-11. ⬜ Run the backfill with an ORS key, review the log, fix coordinates in
+10. ✅ `scripts/backfill.sh` plus `bun run data:build --pending`, so the three
+    hourly runs are one command.
+11. ✅ `refresh-data.yml`: push trigger instead of the cron.
+12. ⬜ Run the backfill with an ORS key, review the log, fix coordinates in
     `passes.json` or add an `ascent.check` for whatever the gate rejects,
     commit source and generated files together.
 
@@ -328,8 +347,10 @@ different job with a different cadence.
       has a fixed coordinate.
 - [x] `docs/data-model.md` shows the gate as a diagram and the `curate-data`
       skill lists the checks with their thresholds.
+- [x] The 11 known-bad ascents are unit-test fixtures, so loosening a limit past
+      them fails the build.
 
-The four open boxes all depend on step 11, which needs an ORS key.
+The four open boxes all depend on step 12, which needs an ORS key.
 
 ## Risks and open questions
 
@@ -340,9 +361,11 @@ The four open boxes all depend on step 11, which needs an ORS key.
 - ORS cycling-road may refuse private toll roads (Roßfeld, Kitzbüheler Horn).
   If both routers fail, the ascent keeps no route rather than a wrong one; the
   panel already handles "Kein Höhenprofil vorhanden".
-- **The tour thresholds are the least calibrated part.** No tour had a route
-  when the limits were fitted, so the 25 % deviation from `tour.km` is reasoning
-  rather than measurement. Re-fit it from the first complete run.
+- **The tour threshold was fitted against OSRM car routes**, since no tour had
+  a route of its own: seven of nine land within ±7 % of their stated distance,
+  Sellaronda at +37 % and Maratona lang at +29 % because their waypoints are too
+  sparse to pin the loop down. Re-confirm the 15 % once ORS has routed them, and
+  expect those two to need denser waypoints rather than a wider limit.
 - **A second router as a cross-check** is the strongest quality signal
   available and is not built here. Two independent routers agreeing on length
   and endpoint says more than any threshold, and it is self-calibrating.

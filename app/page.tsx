@@ -1,6 +1,14 @@
 import { Explorer } from "@/components/explorer";
 import { SITE_DESCRIPTION, SITE_NAME, siteUrl } from "@/lib/brand";
-import { getClimate, getPasses, getProfiles, getRoutes, getTours, getTowns } from "@/lib/data";
+import {
+  getClimate,
+  getPasses,
+  getProfiles,
+  getRoutes,
+  getTours,
+  getTowns,
+} from "@/lib/data";
+import { todayPeriod } from "@/lib/status";
 
 /**
  * Structured data for the map page. Deliberately without ratings or reviews:
@@ -18,7 +26,11 @@ const jsonLd = {
   inLanguage: "de",
   isAccessibleForFree: true,
   offers: { "@type": "Offer", price: 0, priceCurrency: "EUR" },
-  author: { "@type": "Person", name: "Manuel Dugué", url: "https://manuel.fyi" },
+  author: {
+    "@type": "Person",
+    name: "Manuel Dugué",
+    url: "https://manuel.fyi",
+  },
   about: { "@type": "Place", name: "Alpen" },
 };
 
@@ -30,6 +42,12 @@ const jsonLd = {
  *
  * The map is the page: no header, no footer – the title lives in the sidebar
  * and the disclaimer in the scales dialog.
+ *
+ * The half-month the app opens on is computed here, in Europe/Berlin: the
+ * cached page is revalidated within 15 minutes, so the prerendered HTML is
+ * never more than that behind the calendar and the first paint shows no flash
+ * of some other period. A hash or the visitor's stored choice wins over it in
+ * the client (see `Explorer`).
  */
 export default async function Page() {
   "use cache";
@@ -45,7 +63,10 @@ export default async function Page() {
 
   return (
     <main className="h-dvh overflow-hidden">
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <Explorer
         passes={passes}
         tours={tours}
@@ -53,6 +74,7 @@ export default async function Page() {
         routes={routes}
         profiles={profiles}
         climate={climate}
+        defaultPeriod={todayPeriod()}
       />
     </main>
   );

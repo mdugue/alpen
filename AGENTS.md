@@ -35,24 +35,25 @@ friends do that better and the app links out to them.
 
 ## Where things live
 
-| Topic                                      | File                                          |
-| ------------------------------------------ | --------------------------------------------- |
-| Rideability heuristic                      | `lib/status.ts` (`passStatus`, `tourStatus`)  |
-| Data types                                 | `lib/types.ts`                                |
-| Data access (cached)                       | `lib/data.ts`                                 |
-| Filter, selection and URL state            | `lib/app-state.ts`, `components/explorer.tsx` |
-| Map, layers, 3D, markers, labels           | `components/map/pass-map.tsx`                 |
-| Period control floating over the map       | `components/map/period-control.tsx`           |
-| Sidebar: search, filters, one list per kind | `components/sidebar/`, `lib/rows.ts`          |
-| Detail panel incl. profile/weather/climate | `components/panel/`                           |
-| Precomputation                             | `scripts/build-data.ts`                       |
-| Route quality gate: checks and thresholds | `scripts/lib/validate.ts`          |
-| Route quality gate: checks and thresholds | `scripts/lib/validate.ts`          |
-| Name, claim, colours, mark, base URL       | `lib/brand.ts`, `lib/mark.tsx`                |
+| Topic                                         | File                                                                                                                  |
+| --------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| Rideability heuristic                         | `lib/status.ts` (`passStatus`, `tourStatus`)                                                                          |
+| Data types                                    | `lib/types.ts`                                                                                                        |
+| Data access (cached)                          | `lib/data.ts`                                                                                                         |
+| Filter, selection and URL state               | `lib/app-state.ts`, `components/explorer.tsx`                                                                         |
+| Map, layers, 3D, markers, labels              | `components/map/pass-map.tsx`                                                                                         |
+| Period scrubber floating over the map         | `components/map/period-scrubber.tsx`                                                                                  |
+| Season strip (24 half-months)                 | `components/season-strip.tsx`                                                                                         |
+| Sidebar: search, filters, one list per kind   | `components/sidebar/`, `lib/rows.ts`                                                                                  |
+| Detail panel incl. profile/weather/climate    | `components/panel/`                                                                                                   |
+| Precomputation                                | `scripts/build-data.ts`                                                                                               |
+| Route quality gate: checks and thresholds     | `scripts/lib/validate.ts`                                                                                             |
+| Name, claim, colours, mark, base URL          | `lib/brand.ts`, `lib/mark.tsx`                                                                                        |
 | Icons, share image, manifest, robots, sitemap | `app/icon.tsx`, `app/apple-icon.tsx`, `app/opengraph-image.tsx`, `app/manifest.ts`, `app/robots.ts`, `app/sitemap.ts` |
-| Legal pages                                | `app/impressum/`, `app/datenschutz/`          |
-| Implementation plans                       | `docs/plans/` (index: `docs/plans/README.md`) |
-| Project skills                             | `.agents/skills/implement-plan`, `curate-data`, `preview-app` |
+| Legal pages                                   | `app/impressum/`, `app/datenschutz/`                                                                                  |
+| Linting and formatting                        | `oxlint.config.ts`, `oxfmt.config.ts`                                                                                 |
+| Implementation plans                          | `docs/plans/` (index: `docs/plans/README.md`)                                                                         |
+| Project skills                                | `.agents/skills/implement-plan`, `curate-data`, `preview-app`                                                         |
 
 ## Conventions
 
@@ -80,8 +81,16 @@ friends do that better and the app links out to them.
   (`SIDEBAR_W`, `DETAIL_W`) and fed to MapLibre as left padding so camera
   targets stay visible. Below `lg` the same sidebar body lives in a bottom
   `Drawer` with snap points and the detail stacks inside it. Only the period
-  control and three map tools float over the map. Map visibility is always a
-  `Switch` ("auf der Karte"), two-state buttons are always a `Toggle`.
+  scrubber and three map tools float over the map; the scrubber carries the
+  24 half-months, the histogram of what is rideable and the "heute" marker,
+  and every list row repeats the same 24 cells as a `SeasonStrip`. Map
+  visibility is always a `Switch` ("auf der Karte"), two-state buttons are
+  always a `Toggle`.
+- **Charts come from the shadcn `chart` component** (recharts under the hood).
+  It is the only heavy dependency in the app, so the one chart that uses it
+  (`components/panel/climate-chart.tsx`) is pulled in with `next/dynamic` and
+  never reaches the first load. Stat tiles and dense rows use `Item`, stepper
+  groups use `ButtonGroup`.
 - **Colours only via tokens.** MapLibre cannot read CSS variables;
   `pass-map.tsx` reads them once via `getComputedStyle` (`readColors`). Add
   new map colours there rather than hard-coding them.
@@ -108,23 +117,36 @@ friends do that better and the app links out to them.
 - **TypeScript 7 side by side with the 6.0 API.** `tsc` (and thus
   `bun run typecheck` and `next build`) is TypeScript 7, installed as
   `@typescript/native`. The `typescript` package name resolves to
-  `@typescript/typescript6`, because TypeScript 7.0 has no JavaScript API and
-  `typescript-eslint` needs one (`tsc6` is that version's binary). Keep both
-  entries in `package.json` until typescript-eslint supports TS 7.1+.
+  `@typescript/typescript6` (`tsc6` is that version's binary), because
+  TypeScript 7.0 has no JavaScript API and the editor language service still
+  wants one – `.vscode/settings.json` points `js/ts.tsdk.path` at it. Keep
+  both entries in `package.json`.
 - **React Compiler is on.** No manual `useMemo`/`useCallback` for
-  optimisation; the `react-hooks/*` ESLint rules are errors, not warnings.
+  optimisation; oxlint ports the whole React Compiler rule set under
+  `react/*` (`set-state-in-effect`, `purity`, `immutability`, `refs`,
+  `preserve-manual-memoization`, …) and every one of them is an error.
   `setState` in an effect is needed in exactly one documented place (hash
   initialisation in `explorer.tsx`).
 - **Cache Components.** `"use cache"` sits on the data functions and on
   `app/page.tsx`. Introducing `cookies()`, `headers()` or `searchParams`
   breaks prerendering – put such things in a separate dynamic child component
   inside `<Suspense>` instead.
+- **oxlint and oxfmt, no ESLint.** `bun run lint` is `ultracite check`
+  (oxlint plus an oxfmt format check), `bun run lint:fix` writes the fixes.
+  oxlint's `nextjs` and `react` plugins cover everything `eslint-config-next`
+  did, React Compiler rules included, so ESLint and `eslint-config-next` are
+  gone. The two config files only ever _deviate_ from the ultracite preset,
+  and every deviation carries the reason next to it – keep it that way rather
+  than silencing a rule at the call site.
 
 ## Before opening a PR
 
 ```bash
-bun run typecheck && bun run lint && bun run build && bun run data:check
+bun run typecheck && bun run lint && bun test && bun run build && bun run data:check
 ```
+
+`bun test` runs the unit tests next to the code; `bun run e2e` drives the
+built app in a headless browser (needs a Chrome, see `test/browser.ts`).
 
 For anything visible, add screenshots (`preview-app` skill). When a PR
 implements a plan, update the plan's status header and the table in

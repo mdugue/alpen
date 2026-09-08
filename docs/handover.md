@@ -2,15 +2,15 @@
 
 ## What was carried over
 
-| Prototype | Now |
-| --- | --- |
-| A 1.2 MB HTML file with inline MapLibre | Next.js 16 (App Router, Turbopack), React 19, Tailwind 4 |
-| Data objects in a `<script>` block | `data/*.json`, typed via `lib/types.ts`, validatable |
-| Routes/profiles/climate fetched at runtime into localStorage | precomputed in `data/generated/`, checked into the repo |
-| Weather fetched directly from the client to Open-Meteo | dedicated route with server-side cache |
-| Hand-written CSS | shadcn/ui tokens (style "mira"), dark mode follows the OS via `prefers-color-scheme` |
-| State in global variables | `components/explorer.tsx` + `lib/app-state.ts`, hash sync |
-| Keys in localStorage | `ORS_KEY` as a build secret, map keys as `NEXT_PUBLIC_*` |
+| Prototype                                                    | Now                                                                                  |
+| ------------------------------------------------------------ | ------------------------------------------------------------------------------------ |
+| A 1.2 MB HTML file with inline MapLibre                      | Next.js 16 (App Router, Turbopack), React 19, Tailwind 4                             |
+| Data objects in a `<script>` block                           | `data/*.json`, typed via `lib/types.ts`, validatable                                 |
+| Routes/profiles/climate fetched at runtime into localStorage | precomputed in `data/generated/`, checked into the repo                              |
+| Weather fetched directly from the client to Open-Meteo       | dedicated route with server-side cache                                               |
+| Hand-written CSS                                             | shadcn/ui tokens (style "mira"), dark mode follows the OS via `prefers-color-scheme` |
+| State in global variables                                    | `components/explorer.tsx` + `lib/app-state.ts`, hash sync                            |
+| Keys in localStorage                                         | `ORS_KEY` as a build secret, map keys as `NEXT_PUBLIC_*`                             |
 
 Functionally unchanged: filters, period selection, status heuristic, 3D,
 elevation profiles, climate chart, favorites, radius search (60 km), shareable

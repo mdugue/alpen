@@ -15,7 +15,7 @@ authoritative. In addition:
 - **Slug**: from the name, lowercase ASCII; umlauts → `ae/oe/ue`, `ß` → `ss`,
   apostrophes and spaces → `-`, no leading/trailing dashes. Slugs never
   change once committed (they are in shared links).
-- **Pass coordinate**: the summit point *on the road* (not the geographic
+- **Pass coordinate**: the summit point _on the road_ (not the geographic
   saddle or a nearby peak). Check `elevation` against the map; a mismatch of
   more than 80 m is a bug the route gate flags, both against the routed profile
   and against the DEM height in `summits.json`.
@@ -68,17 +68,17 @@ They were fitted to the routes that already existed, so each one separates the
 demonstrably right from the demonstrably wrong rather than sitting on a round
 number.
 
-| Check | Limit | Catches |
-| --- | --- | --- |
-| Ascent length | ≤ 60 km | a router that took the valley instead of the pass |
-| Start of the route | ≤ 2 km from `ascent.from` | a `from` point nowhere near a road |
-| End of the route | ≤ 500 m from the pass coordinate | a route that stops short |
-| Profile top vs. `pass.elevation` | within 80 m | a wrong summit coordinate, or the wrong road |
-| Position of the highest sample | in the last 25 % of the distance | a route that crosses the pass and carries on |
-| Elevation gain | ≤ 3 000 m | a route over several passes |
-| Tour length vs. the curated `tour.km` | within 15 % | waypoints too sparse to pin the loop down |
-| Tour start/end | ≤ 2 km from the first/last waypoint | a loop that does not close |
-| DEM height at the pass point | within 80 m | a pass coordinate on the wrong summit |
+| Check                                 | Limit                               | Catches                                           |
+| ------------------------------------- | ----------------------------------- | ------------------------------------------------- |
+| Ascent length                         | ≤ 60 km                             | a router that took the valley instead of the pass |
+| Start of the route                    | ≤ 2 km from `ascent.from`           | a `from` point nowhere near a road                |
+| End of the route                      | ≤ 500 m from the pass coordinate    | a route that stops short                          |
+| Profile top vs. `pass.elevation`      | within 80 m                         | a wrong summit coordinate, or the wrong road      |
+| Position of the highest sample        | in the last 25 % of the distance    | a route that crosses the pass and carries on      |
+| Elevation gain                        | ≤ 3 000 m                           | a route over several passes                       |
+| Tour length vs. the curated `tour.km` | within 15 %                         | waypoints too sparse to pin the loop down         |
+| Tour start/end                        | ≤ 2 km from the first/last waypoint | a loop that does not close                        |
+| DEM height at the pass point          | within 80 m                         | a pass coordinate on the wrong summit             |
 
 ### When the gate rejects something
 

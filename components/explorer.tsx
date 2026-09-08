@@ -1,34 +1,60 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
 import { PanelLeftOpen } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Drawer, DrawerContent, DrawerSwipeHandle, DrawerTitle } from "@/components/ui/drawer";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { PassMap, type MapPass } from "@/components/map/pass-map";
-import { PeriodControl } from "@/components/map/period-control";
+import { useEffect, useRef, useState } from "react";
+
+import { PassMap } from "@/components/map/pass-map";
+import type { MapPass } from "@/components/map/pass-map";
+import { PeriodScrubber } from "@/components/map/period-scrubber";
 import { DetailPanel } from "@/components/panel/detail-panel";
-import { Sidebar } from "@/components/sidebar/sidebar";
 import { ScalesDialog } from "@/components/scales-dialog";
-import { tourStatus } from "@/lib/status";
-import { buildPassRows, buildTourRows, buildTownRows } from "@/lib/rows";
+import { Sidebar } from "@/components/sidebar/sidebar";
+import { Button } from "@/components/ui/button";
+import {
+  Drawer,
+  DrawerContent,
+  DrawerSwipeHandle,
+  DrawerTitle,
+} from "@/components/ui/drawer";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import {
   ALL_KINDS,
   DEFAULT_FILTERS,
   DEFAULT_VIEW,
+  defined,
   NO_SLUGS,
   readHash,
+  readStoredPeriod,
+  resolvePeriod,
   useFavorites,
   useStored,
+  useStoredPeriod,
   writeHash,
-  type EntityKind,
-  type Filters,
-  type MapView,
-  type Selection,
 } from "@/lib/app-state";
+import type { EntityKind, Filters, MapView, Selection } from "@/lib/app-state";
+import {
+  buildPassRows,
+  buildTourRows,
+  buildTownRows,
+  statusHistogram,
+} from "@/lib/rows";
+import { indexBySlug, tourStatus } from "@/lib/status";
+import type {
+  ClimateYear,
+  ElevationProfile,
+  Pass,
+  Period,
+  RouteGeometry,
+  Tour,
+  Town,
+} from "@/lib/types";
 import { MOBILE_QUERY, useMediaQuery } from "@/lib/use-media-query";
-import { cn, MAP_CONTROL } from "@/lib/utils";
-import type { ClimateYear, ElevationProfile, Pass, RouteGeometry, Tour, Town } from "@/lib/types";
+import { cn, MAP_CONTROL, PANEL } from "@/lib/utils";
 
 interface Props {
   passes: Pass[];
@@ -37,34 +63,53 @@ interface Props {
   routes: Record<string, RouteGeometry>;
   profiles: Record<string, ElevationProfile>;
   climate: Record<string, ClimateYear>;
+  /** Today's half-month, computed on the server in Europe/Berlin. */
+  defaultPeriod: Period;
 }
-
-const defined = <T extends object>(o: T): Partial<T> =>
-  Object.fromEntries(Object.entries(o).filter(([, v]) => v !== undefined)) as Partial<T>;
 
 /** Floating panel geometry on desktop (px); keep in sync with the Tailwind widths below. */
 const GAP = 12;
 const SIDEBAR_W = { lg: 384, xl: 416 };
-const DETAIL_W = 352;
-/** Translucent floating panel over the map. */
-const PANEL = "rounded-xl border border-border/60 bg-card/80 shadow-xl backdrop-blur-md supports-not-[backdrop-filter:blur(0)]:bg-card";
-
+/** The detail panel grows with the viewport; the map keeps the larger half. */
+const DETAIL_W = { lg: 352, xl: 400 };
 /** Bottom sheet positions on phones: a peek row, half, and almost full. */
 const SNAP_PEEK = "4.5rem";
 const SNAP_POINTS = [SNAP_PEEK, 0.5, 0.82] as const;
 type Snap = (typeof SNAP_POINTS)[number];
 
-export function Explorer({ passes, tours, towns, routes, profiles, climate }: Props) {
-  const [filters, setFilters] = useState<Filters>(DEFAULT_FILTERS);
+export function Explorer({
+  passes,
+  tours,
+  towns,
+  routes,
+  profiles,
+  climate,
+  defaultPeriod,
+}: Props) {
+  const [filters, setFilters] = useState<Filters>({
+    ...DEFAULT_FILTERS,
+    period: defaultPeriod,
+  });
   const [selection, setSelection] = useState<Selection | null>(null);
   const [view, setView] = useState<MapView>(DEFAULT_VIEW);
   const [showTowns, setShowTowns] = useStored("alpenpaesse:showTowns", true);
-  const [hiddenTours, setHiddenTours] = useStored<string[]>("alpenpaesse:hiddenTours", NO_SLUGS);
-  const [sections, setSections] = useStored<EntityKind[]>("alpenpaesse:sections", ALL_KINDS);
+  const [hiddenTours, setHiddenTours] = useStored<string[]>(
+    "alpenpaesse:hiddenTours",
+    NO_SLUGS,
+  );
+  const [sections, setSections] = useStored<EntityKind[]>(
+    "alpenpaesse:sections",
+    ALL_KINDS,
+  );
   const [sidebarOpen, setSidebarOpen] = useStored("alpenpaesse:sidebar", true);
   const [snap, setSnap] = useState<Snap>(SNAP_PEEK);
   const [scalesOpen, setScalesOpen] = useState(false);
-  const { isFavorite, toggle: toggleFavorite, count: favoriteCount } = useFavorites();
+  const {
+    isFavorite,
+    toggle: toggleFavorite,
+    count: favoriteCount,
+  } = useFavorites();
+  const [, setStoredPeriod] = useStoredPeriod();
   const isMobile = useMediaQuery(MOBILE_QUERY);
   const isXl = useMediaQuery("(width >= 80rem)");
   // Nothing is written to the hash before it has been read once; otherwise the
@@ -82,14 +127,23 @@ export function Explorer({ passes, tours, towns, routes, profiles, climate }: Pr
   useEffect(() => {
     const apply = () => {
       const h = readHash();
-      const view = { ...DEFAULT_VIEW, ...defined(h.view) };
-      setFilters({ ...DEFAULT_FILTERS, ...defined(h.filters) });
-      setView(view);
-      if (h.view.lat !== undefined || h.view.zoom !== undefined) setRequestedView(view);
+      const hashView = { ...DEFAULT_VIEW, ...defined(h.view) };
+      // Precedence: a shared link wins, then the visitor's own last choice,
+      // then today's half-month from the server.
+      const period = resolvePeriod(
+        h.filters.period,
+        readStoredPeriod(),
+        defaultPeriod,
+      );
+      setFilters({ ...DEFAULT_FILTERS, ...defined(h.filters), period });
+      setView(hashView);
+      if (h.view.lat !== undefined || h.view.zoom !== undefined)
+        setRequestedView(hashView);
       setSelection(h.selection);
       if (h.selection) {
         setSnap(0.5);
-        if (h.selection.kind === "tour") setHiddenTours((t) => t.filter((s) => s !== h.selection!.slug));
+        if (h.selection.kind === "tour")
+          setHiddenTours((t) => t.filter((s) => s !== h.selection!.slug));
         if (h.selection.kind === "town") setShowTowns(true);
       }
       setHashApplied(true);
@@ -98,30 +152,48 @@ export function Explorer({ passes, tours, towns, routes, profiles, climate }: Pr
     window.addEventListener("hashchange", apply);
     return () => window.removeEventListener("hashchange", apply);
     // Intentional: the stored-state setters are stable.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // oxlint-disable-next-line react/exhaustive-deps
   }, []);
 
   useEffect(() => {
     if (hashApplied) writeHash(filters, selection, view);
   }, [hashApplied, filters, selection, view]);
 
-  const passRows = buildPassRows(passes, filters, isFavorite);
-  const tourRows = buildTourRows(tours, passes, filters, isFavorite);
+  const passIndex = indexBySlug(passes);
+  const passRows = buildPassRows(passes, filters, isFavorite, climate);
+  const tourRows = buildTourRows(
+    tours,
+    passIndex,
+    filters,
+    isFavorite,
+    climate,
+  );
   const townRows = buildTownRows(towns, filters, isFavorite);
+  const histogram = statusHistogram(passes, filters, isFavorite, climate);
 
-  const mapPasses: MapPass[] = passRows.map(({ pass, status, favorite }) => ({ ...pass, status, favorite }));
+  const mapPasses: MapPass[] = passRows.map(({ pass, status, favorite }) => ({
+    ...pass,
+    status,
+    favorite,
+  }));
   const mapTours = tours.map((t) => ({
     ...t,
-    status: tourStatus(t, passes, filters.period),
+    status: tourStatus(t, passIndex, filters.period, climate),
     visible: !hiddenTours.includes(t.slug),
-    geometry: routes[`tour:${t.slug}`] ?? t.waypoints.map((w) => [w.lat, w.lon] as [number, number]),
+    geometry:
+      routes[`tour:${t.slug}`] ??
+      t.waypoints.map((w) => [w.lat, w.lon] as [number, number]),
   }));
-  const mapTowns = towns.map((t) => ({ ...t, favorite: isFavorite("town", t.slug) }));
+  const mapTowns = towns.map((t) => ({
+    ...t,
+    favorite: isFavorite("town", t.slug),
+  }));
 
   /** Selecting something also makes it visible and brings the panel up. */
   const select = (sel: Selection) => {
     setSelection(sel);
-    if (sel.kind === "tour") setHiddenTours((h) => h.filter((s) => s !== sel.slug));
+    if (sel.kind === "tour")
+      setHiddenTours((h) => h.filter((s) => s !== sel.slug));
     if (sel.kind === "town") setShowTowns(true);
     if (isMobile) setSnap(0.5);
   };
@@ -132,8 +204,14 @@ export function Explorer({ passes, tours, towns, routes, profiles, climate }: Pr
     setSelection(null);
     requestAnimationFrame(() => {
       const root = sidebarRoot.current;
-      const row = sel && root?.querySelector<HTMLElement>(`[data-row="${sel.kind}:${sel.slug}"]`);
-      (row ?? root?.querySelector<HTMLElement>("input[type=search]"))?.focus({ preventScroll: !row });
+      const row =
+        sel &&
+        root?.querySelector<HTMLElement>(
+          `[data-row="${sel.kind}:${sel.slug}"]`,
+        );
+      (row ?? root?.querySelector<HTMLElement>("input[type=search]"))?.focus({
+        preventScroll: !row,
+      });
     });
   };
 
@@ -180,7 +258,9 @@ export function Explorer({ passes, tours, towns, routes, profiles, climate }: Pr
       detail={variant === "sheet" ? detail : null}
       onCollapse={() => setSidebarOpen(false)}
       onOpenScales={() => setScalesOpen(true)}
-      onSearchFocus={variant === "sheet" ? () => setSnap(SNAP_POINTS[2]) : undefined}
+      onSearchFocus={
+        variant === "sheet" ? () => setSnap(SNAP_POINTS[2]) : undefined
+      }
     />
   );
 
@@ -195,8 +275,14 @@ export function Explorer({ passes, tours, towns, routes, profiles, climate }: Pr
   // Desktop: the panels float over the map; the map is padded by their width
   // so camera targets land in the visible part.
   const sidebarW = isXl ? SIDEBAR_W.xl : SIDEBAR_W.lg;
-  const desktopPanels = isMobile ? [] : [sidebarOpen ? sidebarW : 0, selection ? DETAIL_W : 0].filter(Boolean);
-  const insetLeft = desktopPanels.reduce((x, w) => x + w + GAP, desktopPanels.length ? GAP : 0);
+  const detailW = isXl ? DETAIL_W.xl : DETAIL_W.lg;
+  const desktopPanels = isMobile
+    ? []
+    : [sidebarOpen ? sidebarW : 0, selection ? detailW : 0].filter(Boolean);
+  const insetLeft = desktopPanels.reduce(
+    (x, w) => x + w + GAP,
+    desktopPanels.length ? GAP : 0,
+  );
   const detailLeft = GAP + (!isMobile && sidebarOpen ? sidebarW + GAP : 0);
 
   return (
@@ -234,14 +320,26 @@ export function Explorer({ passes, tours, towns, routes, profiles, climate }: Pr
                 <TooltipContent>Liste und Filter</TooltipContent>
               </Tooltip>
             )}
-            <PeriodControl value={filters.period} onChange={(p) => setFilters((f) => ({ ...f, period: p }))} />
+            <PeriodScrubber
+              value={filters.period}
+              today={defaultPeriod}
+              histogram={histogram}
+              onChange={(p) => {
+                setFilters((f) => ({ ...f, period: p }));
+                // Only the control writes the preference; applying a hash never does.
+                setStoredPeriod(p);
+              }}
+            />
           </PassMap>
         </div>
 
         {!isMobile && sidebarOpen && (
           <aside
             ref={sidebarRoot}
-            className={cn("absolute top-3 bottom-3 left-3 z-20 flex w-96 flex-col overflow-hidden max-lg:hidden xl:w-104", PANEL)}
+            className={cn(
+              "absolute top-3 bottom-3 left-3 z-20 flex w-96 flex-col overflow-hidden max-lg:hidden xl:w-104",
+              PANEL,
+            )}
           >
             {sidebar("aside")}
           </aside>
@@ -253,7 +351,7 @@ export function Explorer({ passes, tours, towns, routes, profiles, climate }: Pr
             aria-label="Details"
             style={{ left: detailLeft }}
             className={cn(
-              "absolute top-3 bottom-3 z-20 flex w-88 flex-col overflow-hidden max-lg:hidden",
+              "absolute top-3 bottom-3 z-20 flex w-88 flex-col overflow-hidden max-lg:hidden xl:w-100",
               "animate-in fade-in-0 slide-in-from-left-4 duration-200 motion-reduce:animate-none",
               PANEL,
             )}
@@ -287,12 +385,18 @@ export function Explorer({ passes, tours, towns, routes, profiles, climate }: Pr
               <button
                 type="button"
                 onClick={() => setSnap(snap === SNAP_PEEK ? 0.5 : SNAP_PEEK)}
-                aria-label={snap === SNAP_PEEK ? "Liste ausklappen" : "Liste einklappen"}
+                aria-label={
+                  snap === SNAP_PEEK ? "Liste ausklappen" : "Liste einklappen"
+                }
                 className="w-full shrink-0"
               >
                 <DrawerSwipeHandle className="h-6" />
               </button>
-              <div ref={sidebarRoot} style={{ height: `calc(${sheetHeight} - 1.5rem)` }} className="min-h-0">
+              <div
+                ref={sidebarRoot}
+                style={{ height: `calc(${sheetHeight} - 1.5rem)` }}
+                className="min-h-0"
+              >
                 {sidebar("sheet")}
               </div>
             </DrawerContent>

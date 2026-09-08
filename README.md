@@ -30,16 +30,16 @@ and the climate series are missing.
 
 ## Commands
 
-| Command | Purpose |
-| --- | --- |
-| `bun dev` | Development server |
-| `bun run build` / `bun start` | Production build and server |
-| `bun run typecheck` | `tsc --noEmit` |
-| `bun run lint` | ESLint (incl. React Compiler rules) |
-| `bun run data:build` | Fetch routes, elevation profiles, climate → `data/generated/` (resumable) |
-| `bun run data:build --status` | Show what is still missing and what it costs in Open-Meteo calls |
-| `bun run data:check` | Validate references and completeness of the data |
-| `bun run ui:init` / `bun run ui:add` | (Re)install the shadcn "mira" preset and components |
+| Command                              | Purpose                                                                   |
+| ------------------------------------ | ------------------------------------------------------------------------- |
+| `bun dev`                            | Development server                                                        |
+| `bun run build` / `bun start`        | Production build and server                                               |
+| `bun run typecheck`                  | `tsc --noEmit`                                                            |
+| `bun run lint` / `bun run lint:fix`  | oxlint + oxfmt via ultracite (incl. React Compiler rules)                 |
+| `bun run data:build`                 | Fetch routes, elevation profiles, climate → `data/generated/` (resumable) |
+| `bun run data:build --status`        | Show what is still missing and what it costs in Open-Meteo calls          |
+| `bun run data:check`                 | Validate references and completeness of the data                          |
+| `bun run ui:init` / `bun run ui:add` | (Re)install the shadcn "mira" preset and components                       |
 
 ## Architecture in three sentences
 
