@@ -28,8 +28,8 @@ heuristic (plan 04) stays as the fallback.
 Pyrenees, Massif Central, Jura, Vosges, more Dolomites. Purely additive: new
 entries in `data/passes.json` and `data/destinations.json` (plan 12), then
 `data:build`. From roughly 300 passes on, split the JSON files by region;
-the region filter (plan 05) and destinations (plan 12) already give the UI
-the structure for it.
+the region vocabulary (`lib/regions.ts`, plan 05) and destinations (plan 12)
+already give the UI the structure for it.
 
 ## 3. Multi-day trips between destinations
 

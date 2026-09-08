@@ -17,21 +17,21 @@ that goal; features that only add route-level precision rank last.
 
 ## Recommended order
 
-| #   | Plan                                                               | Serves                      | Effort | Depends on           | Status                                                |
-| --- | ------------------------------------------------------------------ | --------------------------- | ------ | -------------------- | ----------------------------------------------------- |
-| 00  | [Route quality gate](00-route-quality-gate.md)                     | trust in what the map shows | S      | –                    | proposed                                              |
-| 01  | [Map data out of the React payload](01-map-data-out-of-payload.md) | first load on holiday Wi-Fi | M      | 00 for complete data | proposed                                              |
-| 03  | [Make the period the hero](03-period-hero.md)                      | "when"                      | M      | –                    | [done](https://github.com/mdugue/alpen/pull/4)        |
-| 04  | [Climate-aware status](04-climate-aware-status.md)                 | "when", honesty             | S–M    | –                    | [done](https://github.com/mdugue/alpen/pull/4)        |
-| 12  | [Destinations](12-destinations.md)                                 | "where"                     | L      | 09                   | proposed                                              |
-| 05  | [Filters and search](05-filters-and-search.md)                     | finding things              | S–M    | –                    | [in progress](https://github.com/mdugue/alpen/pull/9) |
-| 02  | [Real routes instead of the hash](02-real-routes.md)               | sharing, back button, SEO   | L      | 01                   | proposed                                              |
-| 06  | [A basemap that matches the theme](06-basemap.md)                  | dark mode, map quality      | M      | –                    | proposed                                              |
-| 09  | [Schema validation with zod](09-schema-validation.md)              | data safety                 | S      | –                    | [in progress](https://github.com/mdugue/alpen/pull/9) |
-| 10  | [Tests](10-tests.md)                                               | refactor safety             | M      | –                    | [done](https://github.com/mdugue/alpen/pull/4)        |
-| 11  | [Smaller items](11-smaller-items.md)                               | polish                      | S each | varies               | proposed                                              |
-| 08  | [English toggle](08-english-toggle.md)                             | audience                    | M–L    | 02                   | proposed                                              |
-| 07  | [Profile interactivity](07-profile-interactivity.md)               | detail, low priority now    | S–M    | 02                   | proposed                                              |
+| #   | Plan                                                               | Serves                      | Effort | Depends on           | Status                                         |
+| --- | ------------------------------------------------------------------ | --------------------------- | ------ | -------------------- | ---------------------------------------------- |
+| 00  | [Route quality gate](00-route-quality-gate.md)                     | trust in what the map shows | S      | –                    | proposed                                       |
+| 01  | [Map data out of the React payload](01-map-data-out-of-payload.md) | first load on holiday Wi-Fi | M      | 00 for complete data | proposed                                       |
+| 03  | [Make the period the hero](03-period-hero.md)                      | "when"                      | M      | –                    | [done](https://github.com/mdugue/alpen/pull/4) |
+| 04  | [Climate-aware status](04-climate-aware-status.md)                 | "when", honesty             | S–M    | –                    | [done](https://github.com/mdugue/alpen/pull/4) |
+| 12  | [Destinations](12-destinations.md)                                 | "where"                     | L      | 09                   | proposed                                       |
+| 05  | [Filters and search](05-filters-and-search.md)                     | finding things              | S–M    | –                    | [done](https://github.com/mdugue/alpen/pull/9) |
+| 02  | [Real routes instead of the hash](02-real-routes.md)               | sharing, back button, SEO   | L      | 01                   | proposed                                       |
+| 06  | [A basemap that matches the theme](06-basemap.md)                  | dark mode, map quality      | M      | –                    | proposed                                       |
+| 09  | [Schema validation with zod](09-schema-validation.md)              | data safety                 | S      | –                    | [done](https://github.com/mdugue/alpen/pull/9) |
+| 10  | [Tests](10-tests.md)                                               | refactor safety             | M      | –                    | [done](https://github.com/mdugue/alpen/pull/4) |
+| 11  | [Smaller items](11-smaller-items.md)                               | polish                      | S each | varies               | proposed                                       |
+| 08  | [English toggle](08-english-toggle.md)                             | audience                    | M–L    | 02                   | proposed                                       |
+| 07  | [Profile interactivity](07-profile-interactivity.md)               | detail, low priority now    | S–M    | 02                   | proposed                                       |
 
 Effort: S ≤ 1 day, M 2–3 days, L 4–6 days. 09, 10 and 11 can be interleaved
 with anything; do 09 before 12 so the new entity gets a schema from day one.

@@ -1,13 +1,13 @@
 # 05 · Filters and search
 
-**Status:** in progress ([#9](https://github.com/mdugue/alpen/pull/9)) · **Effort:** S–M · **Depends on:** – (09 adds the
-`aliases` field to the schema) · **Unblocks:** 12 (region filter becomes
-destination navigation)
+**Status:** done ([#9](https://github.com/mdugue/alpen/pull/9)) · **Effort:** S–M · **Depends on:** – (09 adds the
+`aliases` field to the schema) · **Unblocks:** 12 (the region vocabulary in
+`lib/regions.ts` becomes destination navigation)
 
 ## Goal
 
 Search finds passes the way people spell them, filters cover the questions a
-holiday planner asks (which country, how hard, how much traffic), sort and
+holiday planner asks (how hard, how much traffic, how beautiful), sort and
 filters survive in the URL, and the map shows the same set as the list.
 
 ## Why now
@@ -15,9 +15,9 @@ filters survive in the URL, and the map shows the same set as the list.
 - Search is byte-literal (`lib/rows.ts` lowercases and calls `includes`).
   "Grossglockner", "Vrsic" and "Stilfserjoch" return nothing; the pass is
   called "Großglockner Hochalpenstraße", "Vršič" and "Passo dello Stelvio".
-- The only pass filters are fame and minimum elevation. A planner asks "France
-  or Italy?", "nothing above difficulty 3 for my partner", "as little traffic
-  as possible".
+- The only pass filters are fame and minimum elevation. A planner asks
+  "nothing above difficulty 3 for my partner", "as little traffic as
+  possible", "only the beautiful ones".
 - The map hides filtered-out passes but keeps every tour and town regardless
   of search or status. Searching "Galibier" leaves nine tours on the map,
   which reads as a bug.
@@ -37,16 +37,16 @@ haystack, but no ranking engine).
 ```ts
 export const fold = (s: string) =>
   s
-    .normalize("NFD")
-    .replace(/\p{M}+/gu, "")
-    .replace(/ß/g, "ss")
-    .replace(/æ/g, "ae")
-    .replace(/œ/g, "oe")
-    .replace(/ł/g, "l")
     .toLowerCase()
-    .replace(/['’.]/g, "")
-    .replace(/[-–/]+/g, " ")
-    .replace(/\s+/g, " ")
+    .normalize("NFD")
+    .replaceAll(/\p{M}+/gu, "")
+    .replaceAll("ß", "ss")
+    .replaceAll("æ", "ae")
+    .replaceAll("œ", "oe")
+    .replaceAll("ł", "l")
+    // Apostrophes join ("l'Iseran" → "liseran"), everything else separates.
+    .replaceAll(/['’]/gu, "")
+    .replaceAll(/[^\p{L}\p{N}]+/gu, " ")
     .trim();
 export const matches = (haystack: string, query: string) =>
   fold(query)
@@ -54,7 +54,9 @@ export const matches = (haystack: string, query: string) =>
     .every((token) => haystack.includes(token));
 ```
 
-Haystacks are folded once per entity (module-level `WeakMap<Pass, string>`):
+Haystacks are folded once per pass and town (module-level `WeakMap`); the
+nine tours are folded on the fly because their haystack also carries the
+names of their passes:
 
 - Pass: `name`, `aliases`, `region`, `country` and the German country names
   (`FR` → "Frankreich"), the ascent labels (so "Bormio" finds Stelvio and
@@ -108,20 +110,30 @@ The `curate-data` skill covers adding more.
 
 ### Filters
 
-`Filters` gains:
+One filter panel (`components/sidebar/filter-panel.tsx`) above the lists:
+its trigger sits at the end of the search row, the panel holds the status
+picker (a dropdown with checkboxes) and the criteria. `Filters` carries:
 
-| Field                    | UI                              | Hash    | Applies to                      |
-| ------------------------ | ------------------------------- | ------- | ------------------------------- |
-| `difficulty: [min, max]` | range slider 1–5                | `d=2-4` | passes, tours (by their passes) |
-| `maxTraffic: number`     | select "egal / ≤ 3 / ≤ 2 / ≤ 1" | `v=3`   | passes, tours (by their passes) |
-| `minBeauty: number`      | select like fame                | `be=4`  | passes, tours (by their passes) |
+| Field                    | UI                                     | Hash       | Applies to                      |
+| ------------------------ | -------------------------------------- | ---------- | ------------------------------- |
+| `status: Status[]`       | dropdown with three checkboxes         | `s=open`   | passes, tours                   |
+| `difficulty: [min, max]` | range slider 1–5                       | `d=2-4`    | passes, tours (by their passes) |
+| `minElevation: number`   | slider 0–2 800 m                       | `m=2000`   | passes, tours (by their passes) |
+| `maxTraffic: number`     | select "egal / ≤ 3 / ≤ 2 / nur ruhige" | `v=3`      | passes, tours (by their passes) |
+| `minBeauty: number`      | select "alle / ab 3 / ab 4 / nur 5"    | `be=4`     | passes, tours (by their passes) |
+| `minFame: number`        | select "alle / ab 3 / nur Klassiker"   | `f=4`      | passes, tours (by their passes) |
+| `sort: PassSort`         | select in the pass list header         | `o=beauty` | passes                          |
 
-`sort` moves from `PassList` state into `Filters` (`o=beauty`). The pass
-filter collapsible grows to two columns on desktop; `passFilters` badge count
-covers all of them. `hasActiveFilters` and `resetFilters` are extended.
+Every criterion reaches a tour through the passes it crosses: a tour needs
+one pass that clears the lower bounds (elevation, fame, beauty, minimum
+difficulty) and every pass has to respect the upper bounds (maximum
+difficulty, traffic). Towns see search and favourites only. The badge on the
+trigger counts every active filter; `resetFilters` keeps the sort, which is
+a preference rather than a filter.
 
-Plan 12 turns the region chips into destination navigation; keep the chip
-component generic.
+The hash parsers accept exactly the values the controls offer (nuqs'
+standalone `createLoader`/`createSerializer`, no router adapter), so a link
+never applies a filter the panel cannot show, and the page stays static.
 
 ### Map consistency
 
@@ -132,8 +144,11 @@ Rule: what the list shows for a kind is what the map shows for that kind.
 - `mapTowns` derives from `townRows` intersected with `showTowns`.
 - Passes already follow `passRows`.
 
-With plan 01 this means feature state `hidden` for tours instead of rebuilding
-the source.
+Filter changes stay cheap on the map: the 88 ascent lines (66 000 points)
+are uploaded once from all passes, and a change only sets a layer filter for
+the visible passes and feature state (status, selected) on the `routes`
+source. Rebuilding that source on every slider step was what made the
+filters feel slow.
 
 ## Steps
 
@@ -159,31 +174,16 @@ the source.
 
 - The hash key for beauty is `be`, not `b`: `b` has carried the map bearing
   since the first shareable links.
-- The hash keys are parsed with nuqs' standalone parsers (`createLoader`,
-  `createSerializer`), without its router adapter: the page stays static and
-  the state stays in the hash, but every key is validated and unknown values
-  fall back to the default.
 - "Vrsic" is not an alias: `fold` already maps "Vršič" to it, and
   `data:check` rejects aliases that collide with a folded name.
-- Country and region filters were built and then dropped again on review:
-  they are not needed for the product, and the chips made the sidebar
-  noisy. `lib/regions.ts` keeps the vocabularies for the schema and the
-  search haystacks only; plan 12 covers "where" through destinations.
-- There is one global filter panel above the lists, not a global block plus
-  a pass block: the status is a dropdown with checkboxes, the criteria sit in
-  one collapsible. Every criterion applies to passes and, through their
-  passes, to tours: a tour needs one pass that clears the lower bounds
-  (elevation, fame, beauty, min. difficulty) and every pass has to respect
-  the upper bounds (max. difficulty, traffic). Towns see search and
-  favourites only.
-
-- Filter changes must stay cheap on the map: the 88 ascent lines (66 000
-  points) are uploaded once, and a change only sets a layer filter and
-  feature state (status, selected) on them. Rebuilding that source on every
-  slider step was what made the filters feel slow.
+- Country and region filters were part of the first draft and were dropped
+  again on review: they are not needed for the product, and the chips made
+  the sidebar noisy. `lib/regions.ts` keeps the vocabularies for the schema
+  and the search haystacks; plan 12 covers "where" through destinations.
 
 ## Risks and open questions
 
-- Tours filtered by country: a tour that crosses FR/IT counts for both.
-- Too many chips on a phone: the country row wraps; regions collapse into the
-  filter panel.
+- The tour semantics (one pass clears the lower bounds, every pass respects
+  the upper bounds) are a judgement call; both live in two small functions in
+  `lib/rows.ts` if a stricter or looser rule turns out to serve planners
+  better.
