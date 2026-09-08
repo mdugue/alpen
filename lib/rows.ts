@@ -1,3 +1,5 @@
+import { statusMatches } from "@/lib/app-state";
+import type { EntityKind, Filters } from "@/lib/app-state";
 import {
   climateBucket,
   passSeason,
@@ -5,10 +7,16 @@ import {
   PERIODS,
   tourSeason,
   tourStatus,
-  type PassIndex,
 } from "@/lib/status";
-import { statusMatches, type EntityKind, type Filters } from "@/lib/app-state";
-import type { ClimateYear, Pass, Period, Status, Tour, Town } from "@/lib/types";
+import type { PassIndex } from "@/lib/status";
+import type {
+  ClimateYear,
+  Pass,
+  Period,
+  Status,
+  Tour,
+  Town,
+} from "@/lib/types";
 
 /**
  * One filtered list per entity kind. Search and the favourites toggle apply to
@@ -34,7 +42,8 @@ function query(filters: Filters, isFavorite: Query["isFavorite"]): Query {
 
 /** Everything about a pass except its status: search, favourites, fame, elevation. */
 function passMatches(pass: Pass, filters: Filters, q: Query): boolean {
-  if (pass.elevation < filters.minElevation || pass.fame < filters.minFame) return false;
+  if (pass.elevation < filters.minElevation || pass.fame < filters.minFame)
+    return false;
   if (q.favoritesOnly && !q.isFavorite("pass", pass.slug)) return false;
   return q.matches(pass.name, pass.region, pass.country);
 }
@@ -57,9 +66,18 @@ export function buildPassRows(
   const rows: PassRow[] = [];
   for (const pass of passes) {
     if (!passMatches(pass, filters, q)) continue;
-    const status = passStatus(pass, filters.period, climateBucket(climate, pass.slug, filters.period));
+    const status = passStatus(
+      pass,
+      filters.period,
+      climateBucket(climate, pass.slug, filters.period),
+    );
     if (!statusMatches(status, filters.status)) continue;
-    rows.push({ pass, status, favorite: isFavorite("pass", pass.slug), season: passSeason(pass, climate?.[pass.slug]) });
+    rows.push({
+      pass,
+      status,
+      favorite: isFavorite("pass", pass.slug),
+      season: passSeason(pass, climate?.[pass.slug]),
+    });
   }
   return rows;
 }
@@ -86,9 +104,14 @@ export function buildTourRows(
     if (!q.matches(tour.name, tour.description)) continue;
     const status = tourStatus(tour, passes, filters.period, climate);
     if (!statusMatches(status, filters.status)) continue;
-    rows.push({ tour, status, favorite, season: tourSeason(tour, passes, climate) });
+    rows.push({
+      tour,
+      status,
+      favorite,
+      season: tourSeason(tour, passes, climate),
+    });
   }
-  return rows.sort((a, b) => b.tour.elevationGain - a.tour.elevationGain);
+  return rows.toSorted((a, b) => b.tour.elevationGain - a.tour.elevationGain);
 }
 
 export interface TownRow {
@@ -96,7 +119,11 @@ export interface TownRow {
   favorite: boolean;
 }
 
-export function buildTownRows(towns: Town[], filters: Filters, isFavorite: Query["isFavorite"]): TownRow[] {
+export function buildTownRows(
+  towns: Town[],
+  filters: Filters,
+  isFavorite: Query["isFavorite"],
+): TownRow[] {
   const q = query(filters, isFavorite);
   const rows: TownRow[] = [];
   for (const town of towns) {
@@ -105,7 +132,7 @@ export function buildTownRows(towns: Town[], filters: Filters, isFavorite: Query
     if (!q.matches(town.name, town.why, town.country)) continue;
     rows.push({ town, favorite });
   }
-  return rows.sort((a, b) => a.town.name.localeCompare(b.town.name, "de"));
+  return rows.toSorted((a, b) => a.town.name.localeCompare(b.town.name, "de"));
 }
 
 export interface HistogramBar {
@@ -128,7 +155,12 @@ export function statusHistogram(
   climate?: Record<string, ClimateYear>,
 ): HistogramBar[] {
   const q = query(filters, isFavorite);
-  const bars: HistogramBar[] = PERIODS.map((period) => ({ period, open: 0, risky: 0, closed: 0 }));
+  const bars: HistogramBar[] = PERIODS.map((period) => ({
+    period,
+    open: 0,
+    risky: 0,
+    closed: 0,
+  }));
   for (const pass of passes) {
     if (!passMatches(pass, filters, q)) continue;
     const season = passSeason(pass, climate?.[pass.slug]);
@@ -137,7 +169,14 @@ export function statusHistogram(
   return bars;
 }
 
-export type PassSort = "elevation" | "name" | "status" | "beauty" | "fame" | "difficulty" | "traffic";
+export type PassSort =
+  | "elevation"
+  | "name"
+  | "status"
+  | "beauty"
+  | "fame"
+  | "difficulty"
+  | "traffic";
 
 export const PASS_SORT_LABEL: Record<PassSort, string> = {
   elevation: "Höhe",
@@ -153,15 +192,18 @@ const STATUS_RANK: Record<Status, number> = { open: 0, risky: 1, closed: 2 };
 
 /** Direction is fixed per key: the "best" value first. */
 export function sortPassRows(rows: PassRow[], sort: PassSort): PassRow[] {
-  const byName = (a: PassRow, b: PassRow) => a.pass.name.localeCompare(b.pass.name, "de");
+  const byName = (a: PassRow, b: PassRow) =>
+    a.pass.name.localeCompare(b.pass.name, "de");
   const cmp: Record<PassSort, (a: PassRow, b: PassRow) => number> = {
     elevation: (a, b) => b.pass.elevation - a.pass.elevation,
     name: byName,
-    status: (a, b) => STATUS_RANK[a.status] - STATUS_RANK[b.status] || b.pass.elevation - a.pass.elevation,
+    status: (a, b) =>
+      STATUS_RANK[a.status] - STATUS_RANK[b.status] ||
+      b.pass.elevation - a.pass.elevation,
     beauty: (a, b) => b.pass.beauty - a.pass.beauty,
     fame: (a, b) => b.pass.fame - a.pass.fame,
     difficulty: (a, b) => b.pass.difficulty - a.pass.difficulty,
     traffic: (a, b) => a.pass.traffic - b.pass.traffic,
   };
-  return [...rows].sort((a, b) => cmp[sort](a, b) || byName(a, b));
+  return rows.toSorted((a, b) => cmp[sort](a, b) || byName(a, b));
 }

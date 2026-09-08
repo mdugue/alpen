@@ -7,12 +7,12 @@ user ratings. They are suitable for rough classification, not for point-by-point
 comparison. The scales dialog in the app says exactly that – please keep that
 honesty.
 
-| Scale | 1 | 3 | 5 |
-| --- | --- | --- | --- |
-| **Fame** | barely known | known in the scene | legend (Galibier, Stelvio, Ventoux, Alpe d'Huez, Glockner) |
-| **Beauty** | forest road with no view | solid | high-alpine scenery with a spectacular road (Bonette, Iseran, Gavia, Giau) |
-| **Difficulty** | short or flat | ordinary alpine pass | > 1,000 m of elevation gain with ramps above 10 %, or very long and high |
-| **Traffic** | almost car-free, dead end | ordinary pass traffic | through road (Simplon, Lautaret, Julier) |
+| Scale          | 1                         | 3                     | 5                                                                          |
+| -------------- | ------------------------- | --------------------- | -------------------------------------------------------------------------- |
+| **Fame**       | barely known              | known in the scene    | legend (Galibier, Stelvio, Ventoux, Alpe d'Huez, Glockner)                 |
+| **Beauty**     | forest road with no view  | solid                 | high-alpine scenery with a spectacular road (Bonette, Iseran, Gavia, Giau) |
+| **Difficulty** | short or flat             | ordinary alpine pass  | > 1,000 m of elevation gain with ramps above 10 %, or very long and high   |
+| **Traffic**    | almost car-free, dead end | ordinary pass traffic | through road (Simplon, Lautaret, Julier)                                   |
 
 For anyone wanting to make this objective: `difficulty` could be computed from
 `profiles.json` (length, average gradient, maximum ramp, summit elevation),

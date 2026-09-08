@@ -21,12 +21,16 @@ import { join } from "node:path";
 // --- CLI ------------------------------------------------------------------
 
 const args = process.argv.slice(2);
-const positional = args.filter((a, i) => !a.startsWith("--") && args[i - 1] !== "--state");
-const base = (positional[0] ?? "http://127.0.0.1:3000").replace(/\/$/, "");
+const positional = args.filter(
+  (a, i) => !a.startsWith("--") && args[i - 1] !== "--state",
+);
+const base = (positional[0] ?? "http://127.0.0.1:3000").replace(/\/$/u, "");
 const outDir = positional[1] ?? "out";
 const offline = args.includes("--offline");
 const webkit = args.includes("--webkit");
-const customStates = args.flatMap((a, i) => (a === "--state" && args[i + 1] ? [args[i + 1]!] : []));
+const customStates = args.flatMap((a, i) =>
+  a === "--state" && args[i + 1] ? [args[i + 1]!] : [],
+);
 
 interface State {
   name: string;
@@ -44,11 +48,20 @@ const DEFAULT_STATES = [
   "mobile-pass=#pass=passo-dello-stelvio,mobile",
 ];
 
-const states: State[] = (customStates.length ? customStates : DEFAULT_STATES).map((spec) => {
+const states: State[] = (
+  customStates.length ? customStates : DEFAULT_STATES
+).map((spec) => {
   const eq = spec.indexOf("=");
   const name = eq === -1 ? spec : spec.slice(0, eq);
-  const [hash = "", ...flags] = (eq === -1 ? "" : spec.slice(eq + 1)).split(",");
-  return { name, hash, mobile: flags.includes("mobile"), dark: flags.includes("dark") };
+  const [hash = "", ...flags] = (eq === -1 ? "" : spec.slice(eq + 1)).split(
+    ",",
+  );
+  return {
+    name,
+    hash,
+    mobile: flags.includes("mobile"),
+    dark: flags.includes("dark"),
+  };
 });
 
 // --- Backend --------------------------------------------------------------
@@ -82,7 +95,12 @@ const EXTERNAL_HOST_PATTERNS = [
 function chromePath(): string | undefined {
   const explicit = process.env.CHROME ?? process.env.BUN_CHROME_PATH;
   if (explicit) return explicit;
-  for (const name of ["chromium", "chromium-browser", "google-chrome", "google-chrome-stable"]) {
+  for (const name of [
+    "chromium",
+    "chromium-browser",
+    "google-chrome",
+    "google-chrome-stable",
+  ]) {
     if (Bun.which(name)) return undefined; // on PATH: let Bun auto-detect
   }
   const fallback = "/opt/pw-browsers/chromium";
@@ -103,7 +121,9 @@ function backend(): Bun.WebView.Backend {
 }
 
 if (webkit && (offline || states.some((s) => s.dark || s.mobile))) {
-  console.log("note: --webkit cannot emulate dark mode, touch or offline mode; those flags are ignored");
+  console.log(
+    "note: --webkit cannot emulate dark mode, touch or offline mode; those flags are ignored",
+  );
 }
 
 // --- One state ------------------------------------------------------------
@@ -119,7 +139,12 @@ async function shoot(state: State) {
     console: (type, ...rest) => {
       if (type !== "error") return;
       const first = rest[0] as { description?: string } | string | undefined;
-      errors.add(String(typeof first === "object" ? first?.description : first).slice(0, 160));
+      errors.add(
+        String(typeof first === "object" ? first?.description : first).slice(
+          0,
+          160,
+        ),
+      );
     },
   });
 
@@ -127,14 +152,30 @@ async function shoot(state: State) {
     // The first navigation sets up the DevTools session; emulation comes after it.
     await view.navigate("about:blank");
     if (!webkit) {
-      await view.cdp("Emulation.setDeviceMetricsOverride", { width, height, deviceScaleFactor: 1, mobile: state.mobile });
-      await view.cdp("Emulation.setTouchEmulationEnabled", { enabled: state.mobile, maxTouchPoints: state.mobile ? 5 : 1 });
+      await view.cdp("Emulation.setDeviceMetricsOverride", {
+        width,
+        height,
+        deviceScaleFactor: 1,
+        mobile: state.mobile,
+      });
+      await view.cdp("Emulation.setTouchEmulationEnabled", {
+        enabled: state.mobile,
+        maxTouchPoints: state.mobile ? 5 : 1,
+      });
       await view.cdp("Emulation.setEmulatedMedia", {
-        features: [{ name: "prefers-color-scheme", value: state.dark ? "dark" : "light" }],
+        features: [
+          {
+            name: "prefers-color-scheme",
+            value: state.dark ? "dark" : "light",
+          },
+        ],
       });
       await view.cdp("Emulation.setLocaleOverride", { locale: "de-DE" });
       // Views share one Chrome profile: start every state without stored sidebar or period state.
-      await view.cdp("Storage.clearDataForOrigin", { origin: base, storageTypes: "all" });
+      await view.cdp("Storage.clearDataForOrigin", {
+        origin: base,
+        storageTypes: "all",
+      });
       if (offline) {
         // Block by URL pattern (a blocklist, so there is no allow-list for the
         // base origin): with a local http server every https request is
@@ -143,7 +184,9 @@ async function shoot(state: State) {
         // exact but deadlocks in Bun.WebView 1.4.2.
         await view.cdp("Network.enable");
         await view.cdp("Network.setBlockedURLs", {
-          urls: base.startsWith("http://") ? ["https://*"] : EXTERNAL_HOST_PATTERNS,
+          urls: base.startsWith("http://")
+            ? ["https://*"]
+            : EXTERNAL_HOST_PATTERNS,
         });
       }
     }
@@ -154,8 +197,13 @@ async function shoot(state: State) {
 
     const file = join(outDir, `${state.name}.png`);
     await Bun.write(file, await view.screenshot({ encoding: "buffer" }));
-    const relevant = [...errors].filter((e) => !/Failed to load resource|ERR_FAILED|ERR_BLOCKED|AJAXError/.test(e));
-    console.log(`${file}${relevant.length ? "  console: " + relevant.join(" | ") : ""}`);
+    const relevant = [...errors].filter(
+      (e) =>
+        !/Failed to load resource|ERR_FAILED|ERR_BLOCKED|AJAXError/u.test(e),
+    );
+    console.log(
+      `${file}${relevant.length ? `  console: ${relevant.join(" | ")}` : ""}`,
+    );
   } finally {
     view.close();
   }

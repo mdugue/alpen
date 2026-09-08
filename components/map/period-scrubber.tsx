@@ -1,10 +1,17 @@
 "use client";
 
-import { useRef } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useRef } from "react";
+
 import { Button } from "@/components/ui/button";
-import { MONTH_INITIALS, PERIODS, periodAt, periodIndex, periodLabel } from "@/lib/status";
 import type { HistogramBar } from "@/lib/rows";
+import {
+  MONTH_INITIALS,
+  PERIODS,
+  periodAt,
+  periodIndex,
+  periodLabel,
+} from "@/lib/status";
 import type { Period } from "@/lib/types";
 import { cn, MAP_CONTROL } from "@/lib/utils";
 
@@ -47,7 +54,12 @@ export function PeriodScrubber({
 
   const onKeyDown = (e: React.KeyboardEvent) => {
     const step: Record<string, number> = {
-      ArrowLeft: -1, ArrowDown: -1, ArrowRight: 1, ArrowUp: 1, PageDown: -2, PageUp: 2,
+      ArrowLeft: -1,
+      ArrowDown: -1,
+      ArrowRight: 1,
+      ArrowUp: 1,
+      PageDown: -2,
+      PageUp: 2,
     };
     if (e.key in step) go(index + step[e.key]!);
     else if (e.key === "Home") go(0);
@@ -57,7 +69,12 @@ export function PeriodScrubber({
   };
 
   return (
-    <div className={cn("w-72 max-w-full rounded-md border border-border px-1.5 pt-0.5 pb-1", MAP_CONTROL)}>
+    <div
+      className={cn(
+        "border-border w-72 max-w-full rounded-md border px-1.5 pt-0.5 pb-1",
+        MAP_CONTROL,
+      )}
+    >
       <div className="flex items-center gap-1">
         <Button
           size="icon-sm"
@@ -68,12 +85,14 @@ export function PeriodScrubber({
         >
           <ChevronLeft />
         </Button>
-        <span className="flex-1 truncate text-center text-sm font-semibold">{periodLabel(value)}</span>
+        <span className="flex-1 truncate text-center text-sm font-semibold">
+          {periodLabel(value)}
+        </span>
         {today !== undefined && value !== today && (
           <Button
             size="xs"
             variant="ghost"
-            className="h-6 px-1.5 text-xs text-muted-foreground"
+            className="text-muted-foreground h-6 px-1.5 text-xs"
             onClick={() => onChange(today)}
           >
             heute
@@ -109,40 +128,47 @@ export function PeriodScrubber({
           fromPointer(e.clientX);
         }}
         onPointerMove={(e) => {
-          if (e.currentTarget.hasPointerCapture(e.pointerId)) fromPointer(e.clientX);
+          if (e.currentTarget.hasPointerCapture(e.pointerId))
+            fromPointer(e.clientX);
         }}
-        className="relative mt-0.5 flex h-9 cursor-pointer touch-none items-end gap-px rounded-sm outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+        className="focus-visible:ring-ring/50 relative mt-0.5 flex h-9 cursor-pointer touch-none items-end gap-px rounded-sm outline-none focus-visible:ring-2"
       >
         {histogram.map((b, i) => (
           <span
             key={i}
             className={cn(
               "relative flex h-full flex-1 flex-col justify-end gap-px rounded-[1px]",
-              i === index && "outline-1 outline-offset-1 outline-foreground",
-              i === todayIndex && "border-l border-dashed border-foreground/50",
+              i === index && "outline-foreground outline-1 outline-offset-1",
+              i === todayIndex && "border-foreground/50 border-l border-dashed",
             )}
           >
             <span
               aria-hidden
               style={{ height: `${(b.closed / max) * 100}%` }}
-              className="rounded-[1px] bg-status-closed/25"
+              className="bg-status-closed/25 rounded-[1px]"
             />
             <span
               aria-hidden
               style={{ height: `${(b.risky / max) * 100}%` }}
-              className="rounded-[1px] bg-status-risky/70"
+              className="bg-status-risky/70 rounded-[1px]"
             />
             <span
               aria-hidden
               style={{ height: `${(b.open / max) * 100}%` }}
-              className="rounded-[1px] bg-status-open"
+              className="bg-status-open rounded-[1px]"
             />
           </span>
         ))}
-        <span aria-hidden className="pointer-events-none absolute inset-x-0 bottom-0 border-b border-border" />
+        <span
+          aria-hidden
+          className="border-border pointer-events-none absolute inset-x-0 bottom-0 border-b"
+        />
       </div>
 
-      <div aria-hidden className="flex text-[10px] leading-none text-muted-foreground">
+      <div
+        aria-hidden
+        className="text-muted-foreground flex text-[10px] leading-none"
+      >
         {MONTH_INITIALS.map((m, i) => (
           <span key={i} className="flex-1 text-center">
             {m}

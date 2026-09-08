@@ -31,21 +31,24 @@ friends do that better and the app links out to them.
 
 ## Where things live
 
-| Topic                                      | File                                          |
-| ------------------------------------------ | --------------------------------------------- |
-| Rideability heuristic                      | `lib/status.ts` (`passStatus`, `tourStatus`)  |
-| Data types                                 | `lib/types.ts`                                |
-| Data access (cached)                       | `lib/data.ts`                                 |
-| Filter, selection and URL state            | `lib/app-state.ts`, `components/explorer.tsx` |
-| Map, layers, 3D, markers, labels           | `components/map/pass-map.tsx`                 |
-| Period scrubber floating over the map      | `components/map/period-scrubber.tsx`          |
-| Season strip (24 half-months)              | `components/season-strip.tsx`                 |
-| Sidebar: search, filters, one list per kind | `components/sidebar/`, `lib/rows.ts`          |
-| Detail panel incl. profile/weather/climate | `components/panel/`                           |
-| Precomputation                             | `scripts/build-data.ts`                       |
-| Legal pages                                | `app/impressum/`, `app/datenschutz/`          |
-| Implementation plans                       | `docs/plans/` (index: `docs/plans/README.md`) |
-| Project skills                             | `.agents/skills/implement-plan`, `curate-data`, `preview-app` |
+| Topic                                         | File                                                                                                                  |
+| --------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| Rideability heuristic                         | `lib/status.ts` (`passStatus`, `tourStatus`)                                                                          |
+| Data types                                    | `lib/types.ts`                                                                                                        |
+| Data access (cached)                          | `lib/data.ts`                                                                                                         |
+| Filter, selection and URL state               | `lib/app-state.ts`, `components/explorer.tsx`                                                                         |
+| Map, layers, 3D, markers, labels              | `components/map/pass-map.tsx`                                                                                         |
+| Period scrubber floating over the map         | `components/map/period-scrubber.tsx`                                                                                  |
+| Season strip (24 half-months)                 | `components/season-strip.tsx`                                                                                         |
+| Sidebar: search, filters, one list per kind   | `components/sidebar/`, `lib/rows.ts`                                                                                  |
+| Detail panel incl. profile/weather/climate    | `components/panel/`                                                                                                   |
+| Precomputation                                | `scripts/build-data.ts`                                                                                               |
+| Name, claim, colours, mark, base URL          | `lib/brand.ts`, `lib/mark.tsx`                                                                                        |
+| Icons, share image, manifest, robots, sitemap | `app/icon.tsx`, `app/apple-icon.tsx`, `app/opengraph-image.tsx`, `app/manifest.ts`, `app/robots.ts`, `app/sitemap.ts` |
+| Legal pages                                   | `app/impressum/`, `app/datenschutz/`                                                                                  |
+| Linting and formatting                        | `oxlint.config.ts`, `oxfmt.config.ts`                                                                                 |
+| Implementation plans                          | `docs/plans/` (index: `docs/plans/README.md`)                                                                         |
+| Project skills                                | `.agents/skills/implement-plan`, `curate-data`, `preview-app`                                                         |
 
 ## Conventions
 
@@ -81,6 +84,19 @@ friends do that better and the app links out to them.
 - **Colours only via tokens.** MapLibre cannot read CSS variables;
   `pass-map.tsx` reads them once via `getComputedStyle` (`readColors`). Add
   new map colours there rather than hard-coding them.
+- **Site metadata is generated, never committed as a binary.** Icons, the share
+  image, the manifest, `robots.txt` and `sitemap.xml` are Next metadata routes
+  under `app/`, prerendered at build time. Everything they need – name, claim,
+  base URL, the sRGB palette and the mark geometry – lives in `lib/brand.ts`,
+  because neither Satori nor a manifest can read CSS variables; `lib/mark.tsx`
+  paints that geometry as the badge the favicon, the touch icon and the share
+  image all share. Change those two, not the routes. The badge is monochrome
+  and has its own small grey scale rather than the UI tokens: it is seen at
+  16 px against unknown browser chrome, where depth has to come from tone and
+  the page palette does not carry far enough. `robots.ts` welcomes search engines and turns away
+  the training and answer-engine crawlers; pages that carry
+  `robots: { index: false }` stay crawlable on purpose, since a crawler has to
+  fetch a page to see that.
 - **MapLibre needs two workarounds.** Its web worker is resolved via
   `import.meta.url`, which Turbopack does not serve, so
   `scripts/copy-maplibre-worker.ts` copies the worker into `public/maplibre`
@@ -91,17 +107,27 @@ friends do that better and the app links out to them.
 - **TypeScript 7 side by side with the 6.0 API.** `tsc` (and thus
   `bun run typecheck` and `next build`) is TypeScript 7, installed as
   `@typescript/native`. The `typescript` package name resolves to
-  `@typescript/typescript6`, because TypeScript 7.0 has no JavaScript API and
-  `typescript-eslint` needs one (`tsc6` is that version's binary). Keep both
-  entries in `package.json` until typescript-eslint supports TS 7.1+.
+  `@typescript/typescript6` (`tsc6` is that version's binary), because
+  TypeScript 7.0 has no JavaScript API and the editor language service still
+  wants one – `.vscode/settings.json` points `js/ts.tsdk.path` at it. Keep
+  both entries in `package.json`.
 - **React Compiler is on.** No manual `useMemo`/`useCallback` for
-  optimisation; the `react-hooks/*` ESLint rules are errors, not warnings.
+  optimisation; oxlint ports the whole React Compiler rule set under
+  `react/*` (`set-state-in-effect`, `purity`, `immutability`, `refs`,
+  `preserve-manual-memoization`, …) and every one of them is an error.
   `setState` in an effect is needed in exactly one documented place (hash
   initialisation in `explorer.tsx`).
 - **Cache Components.** `"use cache"` sits on the data functions and on
   `app/page.tsx`. Introducing `cookies()`, `headers()` or `searchParams`
   breaks prerendering – put such things in a separate dynamic child component
   inside `<Suspense>` instead.
+- **oxlint and oxfmt, no ESLint.** `bun run lint` is `ultracite check`
+  (oxlint plus an oxfmt format check), `bun run lint:fix` writes the fixes.
+  oxlint's `nextjs` and `react` plugins cover everything `eslint-config-next`
+  did, React Compiler rules included, so ESLint and `eslint-config-next` are
+  gone. The two config files only ever _deviate_ from the ultracite preset,
+  and every deviation carries the reason next to it – keep it that way rather
+  than silencing a rule at the call site.
 
 ## Before opening a PR
 

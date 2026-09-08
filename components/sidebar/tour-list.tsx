@@ -1,10 +1,10 @@
 "use client";
 
-import { Switch } from "@/components/ui/switch";
+import { SeasonStrip } from "@/components/season-strip";
 import { EntityRow } from "@/components/sidebar/entity-row";
 import { ListEmpty } from "@/components/sidebar/list-empty";
 import { StatusLabel } from "@/components/status-badge";
-import { SeasonStrip } from "@/components/season-strip";
+import { Switch } from "@/components/ui/switch";
 import type { TourRow } from "@/lib/rows";
 import type { Period } from "@/lib/types";
 import { cn, fmtUnit } from "@/lib/utils";
@@ -26,7 +26,8 @@ export function TourList({
   onSelect: (slug: string) => void;
   onToggleFavorite: (slug: string) => void;
 }) {
-  if (rows.length === 0) return <ListEmpty title="Keine Touren für diese Filter" />;
+  if (rows.length === 0)
+    return <ListEmpty title="Keine Touren für diese Filter" />;
   return (
     <ul>
       {rows.map(({ tour, status, favorite, season }) => {
@@ -37,7 +38,12 @@ export function TourList({
             rowId={`tour:${tour.slug}`}
             current={currentRow === `tour:${tour.slug}`}
             className={cn(!onMap && "opacity-60")}
-            leading={<span className="h-1.5 w-4 shrink-0 rounded-full" style={{ background: tour.color }} />}
+            leading={
+              <span
+                className="h-1.5 w-4 shrink-0 rounded-full"
+                style={{ background: tour.color }}
+              />
+            }
             title={tour.name}
             subtitle={`${tour.passes.length} Pässe · ${tour.season.split(";")[0]}`}
             favorite={favorite}
@@ -45,10 +51,13 @@ export function TourList({
             onSelect={() => onSelect(tour.slug)}
             aside={
               <>
-                <span className="text-[13px] font-medium tabular-nums whitespace-nowrap">
+                <span className="text-[13px] font-medium whitespace-nowrap tabular-nums">
                   {fmtUnit(tour.km, "km")} · {fmtUnit(tour.elevationGain, "hm")}
                 </span>
-                <StatusLabel status={status} className="text-muted-foreground" />
+                <StatusLabel
+                  status={status}
+                  className="text-muted-foreground"
+                />
                 <SeasonStrip statuses={season} current={period} />
               </>
             }

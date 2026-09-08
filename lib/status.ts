@@ -1,8 +1,25 @@
-import type { ClimateBucket, ClimateYear, Pass, Period, Status, Tour } from "@/lib/types";
+import type {
+  ClimateBucket,
+  ClimateYear,
+  Pass,
+  Period,
+  Status,
+  Tour,
+} from "@/lib/types";
 
 export const MONTHS = [
-  "Januar", "Februar", "März", "April", "Mai", "Juni",
-  "Juli", "August", "September", "Oktober", "November", "Dezember",
+  "Januar",
+  "Februar",
+  "März",
+  "April",
+  "Mai",
+  "Juni",
+  "Juli",
+  "August",
+  "September",
+  "Oktober",
+  "November",
+  "Dezember",
 ] as const;
 
 /** Month initials for compact scales (J F M A M J J A S O N D). */
@@ -14,8 +31,9 @@ export function periodLabel(t: Period): string {
 }
 
 /** All 24 half-month points in time. */
-export const PERIODS: Period[] = Array.from({ length: 24 }, (_, i) =>
-  Math.floor(i / 2) + 1 + (i % 2 ? 0.5 : 0),
+export const PERIODS: Period[] = Array.from(
+  { length: 24 },
+  (_, i) => Math.floor(i / 2) + 1 + (i % 2 ? 0.5 : 0),
 );
 
 /** Index into a ClimateYear series. */
@@ -39,9 +57,17 @@ export function isPeriod(value: unknown): value is Period {
  * arriving today; half-month buckets make a one-day timezone offset
  * irrelevant (see docs/data-model.md, "Time reckoning").
  */
-export function todayPeriod(now: Date = new Date(), timeZone = "Europe/Berlin"): Period {
-  const parts = new Intl.DateTimeFormat("en-CA", { timeZone, month: "numeric", day: "numeric" }).formatToParts(now);
-  const part = (type: string) => Number(parts.find((p) => p.type === type)?.value);
+export function todayPeriod(
+  now: Date = new Date(),
+  timeZone = "Europe/Berlin",
+): Period {
+  const parts = new Intl.DateTimeFormat("en-CA", {
+    timeZone,
+    month: "numeric",
+    day: "numeric",
+  }).formatToParts(now);
+  const part = (type: string) =>
+    Number(parts.find((p) => p.type === type)?.value);
   return part("month") + (part("day") <= 15 ? 0 : 0.5);
 }
 
@@ -55,7 +81,12 @@ export const STATUS_LABEL: Record<Status, string> = {
  * Why a verdict came out the way it did. The order is the order in which the
  * rules fire, and the first reason is the one worth showing on its own.
  */
-export type StatusReason = "outside-window" | "window-edge" | "altitude" | "snow" | "frost";
+export type StatusReason =
+  | "outside-window"
+  | "window-edge"
+  | "altitude"
+  | "snow"
+  | "frost";
 
 export interface StatusVerdict {
   status: Status;
@@ -84,11 +115,17 @@ export const daysOf = (pct: number) => Math.round((pct / 100) * 15);
  *
  * Does not replace official closure information – see docs/roadmap.md ("Live-Status").
  */
-export function passVerdict(pass: Pass, t: Period, bucket?: ClimateBucket | null): StatusVerdict {
+export function passVerdict(
+  pass: Pass,
+  t: Period,
+  bucket?: ClimateBucket | null,
+): StatusVerdict {
   const verdict = baseVerdict(pass, t);
   if (verdict.status === "open" && bucket) {
-    if (bucket.snowPct >= SNOW_RISKY_PCT) return { status: "risky", reasons: ["snow"] };
-    if (bucket.frostPct >= FROST_RISKY_PCT) return { status: "risky", reasons: ["frost"] };
+    if (bucket.snowPct >= SNOW_RISKY_PCT)
+      return { status: "risky", reasons: ["snow"] };
+    if (bucket.frostPct >= FROST_RISKY_PCT)
+      return { status: "risky", reasons: ["frost"] };
   }
   return verdict;
 }
@@ -97,21 +134,31 @@ export function passVerdict(pass: Pass, t: Period, bucket?: ClimateBucket | null
 function baseVerdict(pass: Pass, t: Period): StatusVerdict {
   const s = pass.season;
   if (!s) {
-    if (pass.elevation >= 2300 && (t >= 10 || t < 5.5)) return { status: "risky", reasons: ["altitude"] };
-    if (pass.elevation >= 1800 && (t >= 11 || t < 4.5)) return { status: "risky", reasons: ["altitude"] };
+    if (pass.elevation >= 2300 && (t >= 10 || t < 5.5))
+      return { status: "risky", reasons: ["altitude"] };
+    if (pass.elevation >= 1800 && (t >= 11 || t < 4.5))
+      return { status: "risky", reasons: ["altitude"] };
     if (t >= 12 || t < 3) return { status: "risky", reasons: ["altitude"] };
     return { status: "open", reasons: [] };
   }
-  if (t < s.opens || t >= s.closes) return { status: "closed", reasons: ["outside-window"] };
-  if (t < s.opens + 0.5 || t >= s.closes - 0.5) return { status: "risky", reasons: ["window-edge"] };
+  if (t < s.opens || t >= s.closes)
+    return { status: "closed", reasons: ["outside-window"] };
+  if (t < s.opens + 0.5 || t >= s.closes - 0.5)
+    return { status: "risky", reasons: ["window-edge"] };
   if (!s.maintained) {
-    if (pass.elevation >= 2300 && (t >= 10 || t < 6.5)) return { status: "risky", reasons: ["altitude"] };
-    if (pass.elevation >= 1800 && (t >= 10.5 || t < 6)) return { status: "risky", reasons: ["altitude"] };
+    if (pass.elevation >= 2300 && (t >= 10 || t < 6.5))
+      return { status: "risky", reasons: ["altitude"] };
+    if (pass.elevation >= 1800 && (t >= 10.5 || t < 6))
+      return { status: "risky", reasons: ["altitude"] };
   }
   return { status: "open", reasons: [] };
 }
 
-export function passStatus(pass: Pass, t: Period, bucket?: ClimateBucket | null): Status {
+export function passStatus(
+  pass: Pass,
+  t: Period,
+  bucket?: ClimateBucket | null,
+): Status {
   return passVerdict(pass, t, bucket).status;
 }
 
@@ -128,31 +175,41 @@ const de = (n: number) => n.toLocaleString("de-DE");
  * and frost say what they are: a share of days from a ten-year average, not a
  * barrier.
  */
-export const REASON_TEXT: Record<StatusReason, (ctx: ReasonContext) => string> = {
-  "outside-window": ({ pass }) =>
-    pass.season
-      ? `Außerhalb des typischen Öffnungsfensters (${periodLabel(pass.season.opens)} bis ${periodLabel(pass.season.closes)}).`
-      : "Außerhalb der typischen Saison.",
-  "window-edge": ({ pass }) =>
-    `Am Rand des Öffnungsfensters${
-      pass.season ? ` (${periodLabel(pass.season.opens)} bis ${periodLabel(pass.season.closes)})` : ""
-    } – Öffnung und Sperrung verschieben sich je nach Winter um Wochen.`,
-  altitude: ({ pass, t }) =>
-    `${periodLabel(t)} ist auf ${de(pass.elevation)} m Grenzbereich: Schnee und Eis sind möglich, auch wenn die Straße offen ist.`,
-  snow: ({ bucket }) =>
-    `Schneefall an ${bucket?.snowPct ?? 0} % der Tage (≈ ${daysOf(bucket?.snowPct ?? 0)} von 15, ERA5-Land 2015–2024) – meist bleibt die Straße befahrbar, planbar ist der Zeitraum aber nicht.`,
-  frost: ({ bucket }) =>
-    `Frost in ${bucket?.frostPct ?? 0} % der Nächte (≈ ${daysOf(bucket?.frostPct ?? 0)} von 15, ERA5-Land 2015–2024) – nasse Straßen können überfrieren, die Abfahrt wird kalt.`,
-};
+export const REASON_TEXT: Record<StatusReason, (ctx: ReasonContext) => string> =
+  {
+    "outside-window": ({ pass }) =>
+      pass.season
+        ? `Außerhalb des typischen Öffnungsfensters (${periodLabel(pass.season.opens)} bis ${periodLabel(pass.season.closes)}).`
+        : "Außerhalb der typischen Saison.",
+    "window-edge": ({ pass }) =>
+      `Am Rand des Öffnungsfensters${
+        pass.season
+          ? ` (${periodLabel(pass.season.opens)} bis ${periodLabel(pass.season.closes)})`
+          : ""
+      } – Öffnung und Sperrung verschieben sich je nach Winter um Wochen.`,
+    altitude: ({ pass, t }) =>
+      `${periodLabel(t)} ist auf ${de(pass.elevation)} m Grenzbereich: Schnee und Eis sind möglich, auch wenn die Straße offen ist.`,
+    snow: ({ bucket }) =>
+      `Schneefall an ${bucket?.snowPct ?? 0} % der Tage (≈ ${daysOf(bucket?.snowPct ?? 0)} von 15, ERA5-Land 2015–2024) – meist bleibt die Straße befahrbar, planbar ist der Zeitraum aber nicht.`,
+    frost: ({ bucket }) =>
+      `Frost in ${bucket?.frostPct ?? 0} % der Nächte (≈ ${daysOf(bucket?.frostPct ?? 0)} von 15, ERA5-Land 2015–2024) – nasse Straßen können überfrieren, die Abfahrt wird kalt.`,
+  };
 
 /** The sentences behind a verdict, most important first. */
-export function verdictReasons(pass: Pass, t: Period, bucket?: ClimateBucket | null): string[] {
-  return passVerdict(pass, t, bucket).reasons.map((r) => REASON_TEXT[r]({ pass, t, bucket }));
+export function verdictReasons(
+  pass: Pass,
+  t: Period,
+  bucket?: ClimateBucket | null,
+): string[] {
+  return passVerdict(pass, t, bucket).reasons.map((r) =>
+    REASON_TEXT[r]({ pass, t, bucket }),
+  );
 }
 
 export function seasonText(pass: Pass): string {
   const s = pass.season;
-  if (!s) return "Ganzjährig befahrbar (Winterräumung); Schnee und Kälte je nach Höhe.";
+  if (!s)
+    return "Ganzjährig befahrbar (Winterräumung); Schnee und Kälte je nach Höhe.";
   return `Typisch offen ${periodLabel(s.opens)} bis ${periodLabel(s.closes)}${
     s.maintained ? " (bewirtschaftete Mautstraße, wird geräumt)" : ""
   }.`;
@@ -160,7 +217,8 @@ export function seasonText(pass: Pass): string {
 
 export type PassIndex = Map<string, Pass>;
 
-export const indexBySlug = (passes: Pass[]): PassIndex => new Map(passes.map((p) => [p.slug, p]));
+export const indexBySlug = (passes: Pass[]): PassIndex =>
+  new Map(passes.map((p) => [p.slug, p]));
 
 /** The climate bucket of one pass for one half-month, if a series exists. */
 export function climateBucket(
@@ -193,7 +251,11 @@ export function passSeason(pass: Pass, climate?: ClimateYear | null): Status[] {
 }
 
 /** The 24 verdicts of one tour. */
-export function tourSeason(tour: Tour, passes: PassIndex, climate?: Record<string, ClimateYear>): Status[] {
+export function tourSeason(
+  tour: Tour,
+  passes: PassIndex,
+  climate?: Record<string, ClimateYear>,
+): Status[] {
   return PERIODS.map((t) => tourStatus(tour, passes, t, climate));
 }
 
@@ -202,9 +264,14 @@ export function tourSeason(tour: Tour, passes: PassIndex, climate?: Record<strin
  * series. Returns the first and last half-month of that run, or null when it
  * is shorter than two half-months (nothing worth calling a best time).
  */
-export function bestPeriods(pass: Pass, climate?: ClimateYear | null): [Period, Period] | null {
+export function bestPeriods(
+  pass: Pass,
+  climate?: ClimateYear | null,
+): [Period, Period] | null {
   const good = PERIODS.map(
-    (t, i) => passStatus(pass, t, climate?.[i] ?? null) === "open" && (climate?.[i]?.snowPct ?? 0) < SNOW_BEST_PCT,
+    (t, i) =>
+      passStatus(pass, t, climate?.[i] ?? null) === "open" &&
+      (climate?.[i]?.snowPct ?? 0) < SNOW_BEST_PCT,
   );
   const run = longestRun(good);
   if (!run || run.length < 2) return null;
@@ -212,7 +279,9 @@ export function bestPeriods(pass: Pass, climate?: ClimateYear | null): [Period, 
 }
 
 /** Longest run of `true` in a circular series of 24; null when there is none. */
-function longestRun(flags: boolean[]): { start: number; length: number } | null {
+function longestRun(
+  flags: boolean[],
+): { start: number; length: number } | null {
   const n = flags.length;
   if (flags.every(Boolean)) return { start: 0, length: n };
   let best: { start: number; length: number } | null = null;
@@ -222,7 +291,8 @@ function longestRun(flags: boolean[]): { start: number; length: number } | null 
     if (flags[i % n]) {
       if (length === 0) start = i % n;
       length++;
-      if (length <= n && (!best || length > best.length)) best = { start, length };
+      if (length <= n && (!best || length > best.length))
+        best = { start, length };
     } else {
       length = 0;
     }
@@ -243,8 +313,10 @@ export function seasonSummary(statuses: Status[]): string {
     run.length === statuses.length
       ? "ganzjährig"
       : `${periodLabel(periodAt(run.start))} bis ${periodLabel(periodAt(run.start + run.length - 1))}`;
-  if (!open) return `Saison: wetterabhängig ${span(rideable)}, sonst oft gesperrt.`;
+  if (!open)
+    return `Saison: wetterabhängig ${span(rideable)}, sonst oft gesperrt.`;
   const parts = [`meist offen ${span(open)}`];
-  if (rideable.length > open.length) parts.push(`wetterabhängig ${span(rideable)}`);
+  if (rideable.length > open.length)
+    parts.push(`wetterabhängig ${span(rideable)}`);
   return `Saison: ${parts.join(", ")}.`;
 }

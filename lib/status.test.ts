@@ -1,6 +1,7 @@
 import { describe, expect, test } from "bun:test";
-import passesJson from "@/data/passes.json" with { type: "json" };
+
 import climateJson from "@/data/generated/climate.json" with { type: "json" };
+import passesJson from "@/data/passes.json" with { type: "json" };
 import {
   bestPeriods,
   climateBucket,
@@ -18,7 +19,14 @@ import {
   tourStatus,
   verdictReasons,
 } from "@/lib/status";
-import type { ClimateBucket, ClimateYear, Pass, Period, Status, Tour } from "@/lib/types";
+import type {
+  ClimateBucket,
+  ClimateYear,
+  Pass,
+  Period,
+  Status,
+  Tour,
+} from "@/lib/types";
 
 const passes = passesJson as Pass[];
 const climate = climateJson as unknown as Record<string, ClimateYear>;
@@ -52,7 +60,9 @@ const bucket = (over: Partial<ClimateBucket> = {}): ClimateBucket => ({
 describe("periods", () => {
   test("24 half-months round trip through index and label", () => {
     expect(PERIODS).toHaveLength(24);
-    expect(PERIODS.map(periodIndex)).toEqual(Array.from({ length: 24 }, (_, i) => i));
+    expect(PERIODS.map(periodIndex)).toEqual(
+      Array.from({ length: 24 }, (_, i) => i),
+    );
     expect(PERIODS.map((t) => periodAt(periodIndex(t)))).toEqual(PERIODS);
     expect(periodLabel(1)).toBe("Anfang Januar");
     expect(periodLabel(10)).toBe("Anfang Oktober");
@@ -111,7 +121,10 @@ describe("passStatus without a climate series", () => {
 
   test("the altitude penalty inside the window is waived for maintained roads", () => {
     const wild = pass({ elevation: 2400, season: { opens: 5, closes: 11 } });
-    const toll = pass({ elevation: 2400, season: { opens: 5, closes: 11, maintained: true } });
+    const toll = pass({
+      elevation: 2400,
+      season: { opens: 5, closes: 11, maintained: true },
+    });
     expect(passStatus(wild, 6)).toBe("risky");
     expect(passStatus(toll, 6)).toBe("open");
     expect(passStatus(wild, 8)).toBe("open");
@@ -121,30 +134,44 @@ describe("passStatus without a climate series", () => {
 describe("the climate series", () => {
   test("snow days turn open into weather-dependent, with a reason", () => {
     const p = pass({ elevation: 1500, season: { opens: 6, closes: 10.5 } });
-    expect(passVerdict(p, 7, bucket({ snowPct: 27 }))).toEqual({ status: "risky", reasons: ["snow"] });
-    expect(verdictReasons(p, 7, bucket({ snowPct: 27 }))[0]).toContain("Schneefall an 27 % der Tage");
+    expect(passVerdict(p, 7, bucket({ snowPct: 27 }))).toEqual({
+      status: "risky",
+      reasons: ["snow"],
+    });
+    expect(verdictReasons(p, 7, bucket({ snowPct: 27 }))[0]).toContain(
+      "Schneefall an 27 % der Tage",
+    );
   });
 
   test("frost nights count too, snow first", () => {
     const p = pass({ elevation: 1500, season: { opens: 6, closes: 10.5 } });
-    expect(passVerdict(p, 7, bucket({ frostPct: 85 })).reasons).toEqual(["frost"]);
-    expect(passVerdict(p, 7, bucket({ snowPct: 21, frostPct: 85 })).reasons).toEqual(["snow"]);
+    expect(passVerdict(p, 7, bucket({ frostPct: 85 })).reasons).toEqual([
+      "frost",
+    ]);
+    expect(
+      passVerdict(p, 7, bucket({ snowPct: 21, frostPct: 85 })).reasons,
+    ).toEqual(["snow"]);
   });
 
   test("just below the thresholds nothing changes", () => {
     const p = pass({ elevation: 1500, season: { opens: 6, closes: 10.5 } });
-    expect(passStatus(p, 7, bucket({ snowPct: 19, frostPct: 79 }))).toBe("open");
+    expect(passStatus(p, 7, bucket({ snowPct: 19, frostPct: 79 }))).toBe(
+      "open",
+    );
   });
 
   test("maintained roads get the climate rule as well", () => {
-    const toll = pass({ elevation: 2400, season: { opens: 5, closes: 11, maintained: true } });
+    const toll = pass({
+      elevation: 2400,
+      season: { opens: 5, closes: 11, maintained: true },
+    });
     expect(passStatus(toll, 6, bucket({ snowPct: 25 }))).toBe("risky");
   });
 
   test("no bucket behaves exactly as before", () => {
     const p = pass({ elevation: 1500, season: { opens: 6, closes: 10.5 } });
     expect(passStatus(p, 7, null)).toBe(passStatus(p, 7));
-    expect(passStatus(p, 7, undefined)).toBe(passStatus(p, 7));
+    expect(passStatus(p, 7)).toBe(passStatus(p, 7));
   });
 
   test("climate never produces a closure, for no pass and no half-month", () => {
@@ -168,7 +195,10 @@ describe("the climate series", () => {
     for (const [slug, t, expected] of cases) {
       const p = passes.find((x) => x.slug === slug);
       expect(p, slug).toBeDefined();
-      expect(passStatus(p!, t, climateBucket(climate, slug, t)), `${slug} ${periodLabel(t)}`).toBe(expected);
+      expect(
+        passStatus(p!, t, climateBucket(climate, slug, t)),
+        `${slug} ${periodLabel(t)}`,
+      ).toBe(expected);
     }
   });
 });
@@ -178,7 +208,9 @@ describe("season strips and best periods", () => {
     const p = passes[0]!;
     const season = passSeason(p, climate[p.slug]);
     expect(season).toHaveLength(24);
-    expect(season[periodIndex(8)]).toBe(passStatus(p, 8, climateBucket(climate, p.slug, 8)));
+    expect(season[periodIndex(8)]).toBe(
+      passStatus(p, 8, climateBucket(climate, p.slug, 8)),
+    );
   });
 
   test("bestPeriods finds the longest quiet open run", () => {
@@ -203,12 +235,18 @@ describe("season strips and best periods", () => {
 
   test("seasonSummary describes the strip in one sentence", () => {
     const statuses = (spec: string): Status[] =>
-      [...spec].map((c) => (c === "o" ? "open" : c === "r" ? "risky" : "closed"));
+      [...spec].map((c) =>
+        c === "o" ? "open" : c === "r" ? "risky" : "closed",
+      );
     expect(seasonSummary(statuses("xxxxxxxxxxrooooooorxxxxx"))).toBe(
       "Saison: meist offen Ende Juni bis Ende September, wetterabhängig Anfang Juni bis Anfang Oktober.",
     );
-    expect(seasonSummary(statuses("o".repeat(24)))).toBe("Saison: meist offen ganzjährig.");
-    expect(seasonSummary(statuses("x".repeat(24)))).toBe("Saison: ganzjährig oft gesperrt.");
+    expect(seasonSummary(statuses("o".repeat(24)))).toBe(
+      "Saison: meist offen ganzjährig.",
+    );
+    expect(seasonSummary(statuses("x".repeat(24)))).toBe(
+      "Saison: ganzjährig oft gesperrt.",
+    );
     expect(seasonSummary(statuses("xxxxxxxxxxxxrrxxxxxxxxxx"))).toBe(
       "Saison: wetterabhängig Anfang Juli bis Ende Juli, sonst oft gesperrt.",
     );
@@ -243,7 +281,10 @@ describe("tourStatus", () => {
   });
 
   test("the climate map reaches the passes of a tour", () => {
-    const snowy = { a: PERIODS.map(() => bucket({ snowPct: 30 })) } as Record<string, ClimateYear>;
+    const snowy = { a: PERIODS.map(() => bucket({ snowPct: 30 })) } as Record<
+      string,
+      ClimateYear
+    >;
     expect(tourStatus(tour(["a"]), index, 8)).toBe("open");
     expect(tourStatus(tour(["a"]), index, 8, snowy)).toBe("risky");
   });
@@ -256,7 +297,12 @@ describe("tourStatus", () => {
 test("status matrix for all passes × 24 half-months", () => {
   const code: Record<Status, string> = { open: "o", risky: "r", closed: "x" };
   const matrix = passes
-    .map((p) => `${passSeason(p, climate[p.slug]).map((s) => code[s]).join("")}  ${p.slug}`)
-    .sort();
+    .map(
+      (p) =>
+        `${passSeason(p, climate[p.slug])
+          .map((s) => code[s])
+          .join("")}  ${p.slug}`,
+    )
+    .toSorted();
   expect(matrix).toMatchSnapshot();
 });

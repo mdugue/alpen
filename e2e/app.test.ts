@@ -4,7 +4,9 @@
  * assertions) and a Chrome; `bun run e2e` does the rest.
  */
 import { afterAll, beforeAll, expect, test } from "bun:test";
-import { startApp, waitUntil, withPage, type App } from "@/test/browser";
+
+import { startApp, waitUntil, withPage } from "@/test/browser";
+import type { App } from "@/test/browser";
 
 const TIMEOUT = 90_000;
 let app: App;
@@ -30,7 +32,11 @@ test(
       expect(await page.count(PASS_ROW)).toBe(92);
       await page.waitFor("canvas.maplibregl-canvas");
       // The period control shows a half-month and its histogram.
-      await page.waitForAttribute(SLIDER, "aria-valuetext", /^(Anfang|Ende) \w+: \d+ meist offen/);
+      await page.waitForAttribute(
+        SLIDER,
+        "aria-valuetext",
+        /^(?:Anfang|Ende) \w+: \d+ meist offen/u,
+      );
     }),
   TIMEOUT,
 );
@@ -54,23 +60,28 @@ test(
 test(
   "3 · a shared link restores selection, period and camera",
   () =>
-    withPage(app, "shared-link", { hash: "#pass=col-du-galibier&t=6&z=9&c=45.06,6.41" }, async (page) => {
-      await page.waitFor("#detail-title");
-      expect(await page.text("#detail-title")).toBe("Col du Galibier");
-      await page.waitForAttribute(SLIDER, "aria-valuetext", "Anfang Juni");
+    withPage(
+      app,
+      "shared-link",
+      { hash: "#pass=col-du-galibier&t=6&z=9&c=45.06,6.41" },
+      async (page) => {
+        await page.waitFor("#detail-title");
+        expect(await page.text("#detail-title")).toBe("Col du Galibier");
+        await page.waitForAttribute(SLIDER, "aria-valuetext", "Anfang Juni");
 
-      // The camera of a link without a selection is applied as it stands;
-      // with a selection the map flies to it afterwards.
-      await page.navigate("#t=6&z=9&c=45.06,6.41");
-      await page.waitFor("canvas.maplibregl-canvas");
-      const camera = await page.camera();
-      // Only a build with NEXT_PUBLIC_TEST_HOOKS=1 exposes the map.
-      if (camera) {
-        expect(camera.zoom).toBeCloseTo(9, 1);
-        expect(camera.lat).toBeCloseTo(45.06, 1);
-        expect(camera.lon).toBeCloseTo(6.41, 1);
-      }
-    }),
+        // The camera of a link without a selection is applied as it stands;
+        // with a selection the map flies to it afterwards.
+        await page.navigate("#t=6&z=9&c=45.06,6.41");
+        await page.waitFor("canvas.maplibregl-canvas");
+        const camera = await page.camera();
+        // Only a build with NEXT_PUBLIC_TEST_HOOKS=1 exposes the map.
+        if (camera) {
+          expect(camera.zoom).toBeCloseTo(9, 1);
+          expect(camera.lat).toBeCloseTo(45.06, 1);
+          expect(camera.lon).toBeCloseTo(6.41, 1);
+        }
+      },
+    ),
   TIMEOUT,
 );
 
@@ -81,10 +92,19 @@ test(
     withPage(app, "status-filter", { hash: "#t=1" }, async (page) => {
       await page.waitFor(PASS_ROW);
       const all = await page.count(PASS_ROW);
-      await page.clickText('[aria-label="Status filtern"] button', "oft gesperrt");
-      await waitUntil(async () => (await page.count(PASS_ROW)) < all, "fewer passes after filtering");
+      await page.clickText(
+        '[aria-label="Status filtern"] button',
+        "oft gesperrt",
+      );
+      await waitUntil(
+        async () => (await page.count(PASS_ROW)) < all,
+        "fewer passes after filtering",
+      );
       await page.clickText("button", "Filter zurücksetzen");
-      await waitUntil(async () => (await page.count(PASS_ROW)) === all, "all passes back after the reset");
+      await waitUntil(
+        async () => (await page.count(PASS_ROW)) === all,
+        "all passes back after the reset",
+      );
     }),
   TIMEOUT,
 );
@@ -94,7 +114,10 @@ test(
   () =>
     withPage(app, "search", {}, async (page) => {
       await page.fill("input[type=search]", "galibier");
-      await waitUntil(async () => (await page.count(PASS_ROW)) === 1, "one pass left for \"galibier\"");
+      await waitUntil(
+        async () => (await page.count(PASS_ROW)) === 1,
+        'one pass left for "galibier"',
+      );
       expect(await page.text(GALIBIER)).toContain("Col du Galibier");
     }),
   TIMEOUT,

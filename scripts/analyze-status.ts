@@ -1,4 +1,5 @@
 #!/usr/bin/env bun
+import climateJson from "../data/generated/climate.json" with { type: "json" };
 /**
  * Calibration for the climate-aware status heuristic (docs/plans/04).
  *
@@ -11,8 +12,13 @@
  * must be a shoulder-season shift, never a mid-summer surprise.
  */
 import passesJson from "../data/passes.json" with { type: "json" };
-import climateJson from "../data/generated/climate.json" with { type: "json" };
-import { bestPeriods, passStatus, periodLabel, PERIODS, STATUS_LABEL } from "../lib/status";
+import {
+  bestPeriods,
+  passStatus,
+  periodLabel,
+  PERIODS,
+  STATUS_LABEL,
+} from "../lib/status";
 import type { ClimateYear, Pass, Status } from "../lib/types";
 
 const passes = passesJson as Pass[];
@@ -61,7 +67,9 @@ for (const pass of passes) {
 
 function table(title: string, cohorts: Record<Status, Cohort>) {
   console.log(`\n${title}`);
-  console.log("| Verdict | n | mean snow-day share | share with snow ≥ 20 % of days |");
+  console.log(
+    "| Verdict | n | mean snow-day share | share with snow ≥ 20 % of days |",
+  );
   console.log("| --- | --- | --- | --- |");
   for (const status of ["open", "risky", "closed"] as Status[]) {
     const c = cohorts[status];
@@ -76,13 +84,17 @@ if (!changesOnly) {
   table("After (plus the climate series):", after);
 }
 
-console.log(`\n${changes.length} of ${passes.length * PERIODS.length} (pass, period) pairs change:`);
-for (const line of changes.sort()) console.log("  " + line);
+console.log(
+  `\n${changes.length} of ${passes.length * PERIODS.length} (pass, period) pairs change:`,
+);
+for (const line of changes.toSorted()) console.log(`  ${line}`);
 
 if (!changesOnly) {
   const best = passes.map((p) => [p, bestPeriods(p, climate[p.slug])] as const);
   const withBest = best.filter(([, b]) => b);
-  console.log(`\nBeste Zeit: ${withBest.length} of ${passes.length} passes have one.`);
+  console.log(
+    `\nBeste Zeit: ${withBest.length} of ${passes.length} passes have one.`,
+  );
   for (const [p, b] of best) {
     if (!b) console.log(`  none: ${p.name} (${p.elevation} m)`);
   }

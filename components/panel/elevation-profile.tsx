@@ -22,8 +22,13 @@ export function ElevationProfile({ profile }: { profile: Profile }) {
   const x = (d: number) => ml + (d / profile.km) * (W - ml - 4);
   const y = (e: number) => H - mb - ((e - lo) / (hi - lo)) * (H - mb - 6);
   const step = hi - lo > 1200 ? 500 : hi - lo > 600 ? 250 : 100;
-  const gridlines = Array.from({ length: Math.floor((hi - lo) / step) + 1 }, (_, i) => lo + i * step);
-  const points = profile.ele.map((e, i) => `${x(profile.dist[i]!).toFixed(1)},${y(e).toFixed(1)}`);
+  const gridlines = Array.from(
+    { length: Math.floor((hi - lo) / step) + 1 },
+    (_, i) => lo + i * step,
+  );
+  const points = profile.ele.map(
+    (e, i) => `${x(profile.dist[i]!).toFixed(1)},${y(e).toFixed(1)}`,
+  );
 
   return (
     <figure>
@@ -35,8 +40,21 @@ export function ElevationProfile({ profile }: { profile: Profile }) {
       >
         {gridlines.map((e) => (
           <g key={e}>
-            <line x1={ml} x2={W - 4} y1={y(e)} y2={y(e)} className="stroke-border" strokeWidth={0.6} />
-            <text x={ml - 3} y={y(e) + 3} fontSize={9} textAnchor="end" className="fill-muted-foreground">
+            <line
+              x1={ml}
+              x2={W - 4}
+              y1={y(e)}
+              y2={y(e)}
+              className="stroke-border"
+              strokeWidth={0.6}
+            />
+            <text
+              x={ml - 3}
+              y={y(e) + 3}
+              fontSize={9}
+              textAnchor="end"
+              className="fill-muted-foreground"
+            >
               {fmt(e)}
             </text>
           </g>
@@ -56,18 +74,33 @@ export function ElevationProfile({ profile }: { profile: Profile }) {
             </polygon>
           );
         })}
-        <polyline points={points.join(" ")} fill="none" className="stroke-foreground" strokeWidth={1} />
+        <polyline
+          points={points.join(" ")}
+          fill="none"
+          className="stroke-foreground"
+          strokeWidth={1}
+        />
         <text x={ml} y={H - 3} fontSize={9} className="fill-muted-foreground">
           0 km
         </text>
-        <text x={W - 4} y={H - 3} fontSize={9} textAnchor="end" className="fill-muted-foreground">
+        <text
+          x={W - 4}
+          y={H - 3}
+          fontSize={9}
+          textAnchor="end"
+          className="fill-muted-foreground"
+        >
           {fmt(profile.km, 1)} km
         </text>
       </svg>
-      <figcaption className="flex flex-wrap gap-x-2.5 gap-y-0.5 text-[11px] text-muted-foreground">
+      <figcaption className="text-muted-foreground flex flex-wrap gap-x-2.5 gap-y-0.5 text-[11px]">
         {GRADIENT_COLORS.map((c) => (
           <span key={c.label} className="inline-flex items-center gap-1">
-            <span className="inline-block size-2 rounded-[2px]" style={{ background: c.color }} aria-hidden />
+            <span
+              className="inline-block size-2 rounded-[2px]"
+              style={{ background: c.color }}
+              aria-hidden
+            />
             {c.label}
           </span>
         ))}

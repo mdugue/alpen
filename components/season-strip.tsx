@@ -1,6 +1,12 @@
-import { MONTH_INITIALS, periodIndex, periodLabel, seasonSummary, STATUS_LABEL } from "@/lib/status";
-import { cn } from "@/lib/utils";
+import {
+  MONTH_INITIALS,
+  periodIndex,
+  periodLabel,
+  seasonSummary,
+  STATUS_LABEL,
+} from "@/lib/status";
 import type { Period, Status } from "@/lib/types";
+import { cn } from "@/lib/utils";
 
 /**
  * The whole year of one pass or tour in 24 cells, so "when" is answered
@@ -39,21 +45,31 @@ export function SeasonStrip({
     .join(" ");
 
   return (
-    <div className={cn(size === "panel" ? "w-72 max-w-full" : "w-24", className)}>
-      <div role="img" aria-label={label} className={cn("flex gap-px", size === "panel" ? "h-3.5" : "h-2")}>
+    <div
+      className={cn(size === "panel" ? "w-72 max-w-full" : "w-24", className)}
+    >
+      <div
+        role="img"
+        aria-label={label}
+        className={cn("flex gap-px", size === "panel" ? "h-3.5" : "h-2")}
+      >
         {statuses.map((status, i) => (
           <span
             key={i}
             className={cn(
               "relative flex-1 rounded-[1px]",
               CELL[status],
-              i === currentIndex && "z-10 outline-1 outline-offset-1 outline-foreground",
+              i === currentIndex &&
+                "outline-foreground z-10 outline-1 outline-offset-1",
             )}
           />
         ))}
       </div>
       {size === "panel" && (
-        <div aria-hidden className="mt-0.5 flex text-[10px] leading-none text-muted-foreground">
+        <div
+          aria-hidden
+          className="text-muted-foreground mt-0.5 flex text-[10px] leading-none"
+        >
           {MONTH_INITIALS.map((m, i) => (
             <span key={i} className="flex-1 text-center tabular-nums">
               {m}

@@ -15,7 +15,8 @@ export function TownList({
   onSelect: (slug: string) => void;
   onToggleFavorite: (slug: string) => void;
 }) {
-  if (rows.length === 0) return <ListEmpty title="Keine Orte für diese Filter" />;
+  if (rows.length === 0)
+    return <ListEmpty title="Keine Orte für diese Filter" />;
   return (
     <ul>
       {rows.map(({ town, favorite }) => (

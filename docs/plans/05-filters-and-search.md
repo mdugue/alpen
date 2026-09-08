@@ -36,11 +36,22 @@ haystack, but no ranking engine).
 
 ```ts
 export const fold = (s: string) =>
-  s.normalize("NFD").replace(/\p{M}+/gu, "")
-   .replace(/ß/g, "ss").replace(/æ/g, "ae").replace(/œ/g, "oe").replace(/ł/g, "l")
-   .toLowerCase().replace(/['’.]/g, "").replace(/[-–/]+/g, " ").replace(/\s+/g, " ").trim();
+  s
+    .normalize("NFD")
+    .replace(/\p{M}+/gu, "")
+    .replace(/ß/g, "ss")
+    .replace(/æ/g, "ae")
+    .replace(/œ/g, "oe")
+    .replace(/ł/g, "l")
+    .toLowerCase()
+    .replace(/['’.]/g, "")
+    .replace(/[-–/]+/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
 export const matches = (haystack: string, query: string) =>
-  fold(query).split(" ").every((token) => haystack.includes(token));
+  fold(query)
+    .split(" ")
+    .every((token) => haystack.includes(token));
 ```
 
 Haystacks are folded once per entity (module-level `WeakMap<Pass, string>`):
@@ -59,39 +70,39 @@ name and ascent label.
 New optional `aliases: string[]` in `data/passes.json` (schema in plan 09).
 Seed list to add in the same PR:
 
-| Pass | Aliases |
-| --- | --- |
-| Passo dello Stelvio | Stilfser Joch, Stilfserjoch, Stelvio |
-| Umbrailpass | Giogo di Santa Maria |
-| Großglockner Hochalpenstraße | Grossglockner, Glockner |
-| Vršič | Vrsic, Werschetz |
-| Gotthard (Tremola) | San Gottardo, Gotthardpass |
-| Passo Sella | Sellajoch |
-| Passo Gardena | Grödner Joch, Groednerjoch |
-| Passo Pordoi | Pordoijoch |
-| Passo delle Erbe | Würzjoch |
-| Passo Monte Croce Comelico | Kreuzbergpass |
-| Tre Cime di Lavaredo | Drei Zinnen, Auronzohütte |
-| Jaufenpass | Passo di Monte Giovo |
-| Penserjoch | Passo di Pennes |
-| Timmelsjoch | Passo del Rombo |
-| Passo Fedaia | Marmolada |
-| Julierpass | Pass dal Güglia |
-| Malojapass | Passo del Maloja |
-| Ofenpass | Pass dal Fuorn |
-| Splügenpass | Passo dello Spluga |
-| Simplonpass | Passo del Sempione |
-| Nufenenpass | Passo della Novena |
-| Lukmanierpass | Passo del Lucomagno |
-| Col du Grand Saint-Bernard | Gran San Bernardo, Grosser Sankt Bernhard |
-| Col du Petit Saint-Bernard | Piccolo San Bernardo, Kleiner Sankt Bernhard |
-| Col du Mont Cenis | Moncenisio |
-| Colle dell'Agnello | Col Agnel |
-| Colle Fauniera | Colle dei Morti |
-| Col de la Bonette | Cime de la Bonette, Restefond |
-| Roßfeld-Panoramastraße | Rossfeld |
-| Silvretta Hochalpenstraße | Bielerhöhe |
-| Ötztaler Gletscherstraße | Rettenbachferner |
+| Pass                         | Aliases                                      |
+| ---------------------------- | -------------------------------------------- |
+| Passo dello Stelvio          | Stilfser Joch, Stilfserjoch, Stelvio         |
+| Umbrailpass                  | Giogo di Santa Maria                         |
+| Großglockner Hochalpenstraße | Grossglockner, Glockner                      |
+| Vršič                        | Vrsic, Werschetz                             |
+| Gotthard (Tremola)           | San Gottardo, Gotthardpass                   |
+| Passo Sella                  | Sellajoch                                    |
+| Passo Gardena                | Grödner Joch, Groednerjoch                   |
+| Passo Pordoi                 | Pordoijoch                                   |
+| Passo delle Erbe             | Würzjoch                                     |
+| Passo Monte Croce Comelico   | Kreuzbergpass                                |
+| Tre Cime di Lavaredo         | Drei Zinnen, Auronzohütte                    |
+| Jaufenpass                   | Passo di Monte Giovo                         |
+| Penserjoch                   | Passo di Pennes                              |
+| Timmelsjoch                  | Passo del Rombo                              |
+| Passo Fedaia                 | Marmolada                                    |
+| Julierpass                   | Pass dal Güglia                              |
+| Malojapass                   | Passo del Maloja                             |
+| Ofenpass                     | Pass dal Fuorn                               |
+| Splügenpass                  | Passo dello Spluga                           |
+| Simplonpass                  | Passo del Sempione                           |
+| Nufenenpass                  | Passo della Novena                           |
+| Lukmanierpass                | Passo del Lucomagno                          |
+| Col du Grand Saint-Bernard   | Gran San Bernardo, Grosser Sankt Bernhard    |
+| Col du Petit Saint-Bernard   | Piccolo San Bernardo, Kleiner Sankt Bernhard |
+| Col du Mont Cenis            | Moncenisio                                   |
+| Colle dell'Agnello           | Col Agnel                                    |
+| Colle Fauniera               | Colle dei Morti                              |
+| Col de la Bonette            | Cime de la Bonette, Restefond                |
+| Roßfeld-Panoramastraße       | Rossfeld                                     |
+| Silvretta Hochalpenstraße    | Bielerhöhe                                   |
+| Ötztaler Gletscherstraße     | Rettenbachferner                             |
 
 The `curate-data` skill covers adding more.
 
@@ -99,13 +110,13 @@ The `curate-data` skill covers adding more.
 
 `Filters` gains:
 
-| Field | UI | Hash | Applies to |
-| --- | --- | --- | --- |
-| `countries: string[]` | chips FR IT CH AT DE SI (multi) | `l=fr,it` | passes, tours (by their passes), towns |
-| `regions: string[]` | chips Westalpen … (multi) | `r=` | passes, tours |
-| `difficulty: [min, max]` | range slider 1–5 | `d=2-4` | passes |
-| `maxTraffic: number` | select "egal / ≤ 3 / ≤ 2 / ≤ 1" | `v=3` | passes |
-| `minBeauty: number` | select like fame | `b=4` | passes |
+| Field                    | UI                              | Hash      | Applies to                             |
+| ------------------------ | ------------------------------- | --------- | -------------------------------------- |
+| `countries: string[]`    | chips FR IT CH AT DE SI (multi) | `l=fr,it` | passes, tours (by their passes), towns |
+| `regions: string[]`      | chips Westalpen … (multi)       | `r=`      | passes, tours                          |
+| `difficulty: [min, max]` | range slider 1–5                | `d=2-4`   | passes                                 |
+| `maxTraffic: number`     | select "egal / ≤ 3 / ≤ 2 / ≤ 1" | `v=3`     | passes                                 |
+| `minBeauty: number`      | select like fame                | `b=4`     | passes                                 |
 
 `sort` moves from `PassList` state into `Filters` (`o=beauty`). The pass
 filter collapsible grows to two columns on desktop; `passFilters` badge count

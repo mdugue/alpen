@@ -1,5 +1,3 @@
-import type { StyleSpecification } from "maplibre-gl";
-
 export interface BaseLayerDef {
   id: string;
   name: string;
@@ -23,28 +21,37 @@ export function baseLayers(): BaseLayerDef[] {
     {
       id: "opentopo",
       name: "OpenTopoMap (Relief)",
-      tiles: ["a", "b", "c"].map((s) => `https://${s}.tile.opentopomap.org/{z}/{x}/{y}.png`),
+      tiles: ["a", "b", "c"].map(
+        (s) => `https://${s}.tile.opentopomap.org/{z}/{x}/{y}.png`,
+      ),
       maxzoom: 17,
       attribution: `${OSM}, SRTM | © OpenTopoMap (CC-BY-SA)`,
     },
     {
       id: "cyclosm",
       name: "CyclOSM",
-      tiles: ["a", "b", "c"].map((s) => `https://${s}.tile-cyclosm.openstreetmap.fr/cyclosm/{z}/{x}/{y}.png`),
+      tiles: ["a", "b", "c"].map(
+        (s) =>
+          `https://${s}.tile-cyclosm.openstreetmap.fr/cyclosm/{z}/{x}/{y}.png`,
+      ),
       maxzoom: 20,
       attribution: `${OSM} | CyclOSM`,
     },
     {
       id: "esri-topo",
       name: "Esri Topo",
-      tiles: ["https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}"],
+      tiles: [
+        "https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}",
+      ],
       maxzoom: 19,
       attribution: "Tiles © Esri, HERE, Garmin, FAO, NOAA, USGS",
     },
     {
       id: "esri-sat",
       name: "Satellit",
-      tiles: ["https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"],
+      tiles: [
+        "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+      ],
       maxzoom: 19,
       attribution: "Tiles © Esri, Maxar, Earthstar Geographics",
     },
@@ -55,7 +62,9 @@ export function baseLayers(): BaseLayerDef[] {
     list.push({
       id: "tf-outdoors",
       name: "Thunderforest Outdoors",
-      tiles: [`https://tile.thunderforest.com/outdoors/{z}/{x}/{y}.png?apikey=${tf}`],
+      tiles: [
+        `https://tile.thunderforest.com/outdoors/{z}/{x}/{y}.png?apikey=${tf}`,
+      ],
       maxzoom: 22,
       attribution: `Maps © Thunderforest, ${OSM}`,
     });
@@ -65,7 +74,9 @@ export function baseLayers(): BaseLayerDef[] {
     list.push({
       id: "mt-outdoor",
       name: "MapTiler Outdoor",
-      tiles: [`https://api.maptiler.com/maps/outdoor-v2/256/{z}/{x}/{y}.png?key=${mt}`],
+      tiles: [
+        `https://api.maptiler.com/maps/outdoor-v2/256/{z}/{x}/{y}.png?key=${mt}`,
+      ],
       maxzoom: 20,
       attribution: `© MapTiler, ${OSM}`,
     });

@@ -100,12 +100,12 @@ sorted by elevation                      sorted by what is rideable in the chose
   "center": { "lat": 45.06, "lon": 6.05 },
   "radiusKm": 45,
   "baseTowns": ["bourg-d-oisans"],
-  "include": ["col-du-galibier"],          // passes beyond the radius that belong here
+  "include": ["col-du-galibier"], // passes beyond the radius that belong here
   "exclude": [],
   "character": "Zwei Sätze: Alpe d'Huez, Galibier, Croix de Fer, Sarenne; große Höhen, große Namen, viel Verkehr auf der D1091.",
   "multiDay": "Basis für 4–6 Tage; Etappe über Galibier nach Briançon möglich.",
   "access": "Grenoble (Bahn, Flughafen Lyon 1,5 h).",
-  "note": "…"
+  "note": "…",
 }
 ```
 

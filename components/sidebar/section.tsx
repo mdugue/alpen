@@ -1,8 +1,13 @@
 "use client";
 
 import { ChevronDown } from "lucide-react";
+
 import { Button } from "@/components/ui/button";
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
 import { cn } from "@/lib/utils";
 
 /**
@@ -32,22 +37,34 @@ export function Section({
   const filtered = count !== total;
   return (
     <Collapsible open={open} onOpenChange={onOpenChange}>
-      <div className="sticky top-0 z-10 grid grid-cols-[minmax(0,1fr)_auto] items-center border-b border-border bg-card/85 pr-3 backdrop-blur-sm">
+      <div className="border-border bg-card/85 sticky top-0 z-10 grid grid-cols-[minmax(0,1fr)_auto] items-center border-b pr-3 backdrop-blur-sm">
         <h2 className="contents">
           <CollapsibleTrigger
-            render={<Button variant="ghost" className="group/section h-10 justify-start gap-2 rounded-none px-3" />}
+            render={
+              <Button
+                variant="ghost"
+                className="group/section h-10 justify-start gap-2 rounded-none px-3"
+              />
+            }
           >
-            <span className="flex size-4 items-center justify-center" aria-hidden>
+            <span
+              className="flex size-4 items-center justify-center"
+              aria-hidden
+            >
               {glyph}
             </span>
-            <span className="text-xs font-semibold tracking-widest uppercase">{label}</span>
-            <span className="tabular-nums text-muted-foreground">
-              <span className={cn(filtered && "font-semibold text-foreground")}>{count}</span>
+            <span className="text-xs font-semibold tracking-widest uppercase">
+              {label}
+            </span>
+            <span className="text-muted-foreground tabular-nums">
+              <span className={cn(filtered && "text-foreground font-semibold")}>
+                {count}
+              </span>
               {filtered && <span> / {total}</span>}
             </span>
             <ChevronDown
               data-icon="inline-end"
-              className="ml-auto text-muted-foreground transition-transform group-aria-expanded/section:rotate-180"
+              className="text-muted-foreground ml-auto transition-transform group-aria-expanded/section:rotate-180"
             />
           </CollapsibleTrigger>
         </h2>
@@ -60,7 +77,7 @@ export function Section({
 
 /** Legend glyphs; the same shapes the map uses for the three kinds. */
 export const KIND_GLYPH = {
-  pass: <span className="size-3 rounded-full border-2 border-foreground/70" />,
-  tour: <span className="h-1.5 w-4 rounded-full bg-tour" />,
-  town: <span className="size-2.5 rotate-45 rounded-[2px] bg-town" />,
+  pass: <span className="border-foreground/70 size-3 rounded-full border-2" />,
+  tour: <span className="bg-tour h-1.5 w-4 rounded-full" />,
+  town: <span className="bg-town size-2.5 rotate-45 rounded-[2px]" />,
 } as const;

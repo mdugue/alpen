@@ -102,7 +102,13 @@ Keep `routes.json` as `{ key: [lat, lon][] }` so nothing downstream changes.
 Add `data/generated/routes-meta.json`:
 
 ```jsonc
-{ "col-du-galibier:0": { "source": "ors", "fetchedAt": "2026-09-08", "km": 17.2 } }
+{
+  "col-du-galibier:0": {
+    "source": "ors",
+    "fetchedAt": "2026-09-08",
+    "km": 17.2,
+  },
+}
 ```
 
 `source` is `"ors"` or `"osrm"`. Entries without meta are treated as `"osrm"`
@@ -112,14 +118,14 @@ Add `data/generated/routes-meta.json`:
 
 Run after routing, before the write, and again after the profile:
 
-| Check | Ascent | Tour |
-| --- | --- | --- |
-| Length | ≤ 60 km | ≤ 1.2 × sum of straight waypoint legs, and ≤ 900 km |
-| Start | ≤ 2 km from `ascent.from` | ≤ 2 km from first waypoint |
-| End | ≤ 500 m from the pass coordinate | ≤ 2 km from the last waypoint |
-| Profile top vs `pass.elevation` | within 80 m | – |
-| Position of the highest sample | in the last 15 % of the distance | – |
-| Elevation gain | ≤ 3,000 m | – |
+| Check                           | Ascent                           | Tour                                                |
+| ------------------------------- | -------------------------------- | --------------------------------------------------- |
+| Length                          | ≤ 60 km                          | ≤ 1.2 × sum of straight waypoint legs, and ≤ 900 km |
+| Start                           | ≤ 2 km from `ascent.from`        | ≤ 2 km from first waypoint                          |
+| End                             | ≤ 500 m from the pass coordinate | ≤ 2 km from the last waypoint                       |
+| Profile top vs `pass.elevation` | within 80 m                      | –                                                   |
+| Position of the highest sample  | in the last 15 % of the distance | –                                                   |
+| Elevation gain                  | ≤ 3,000 m                        | –                                                   |
 
 A failing route is not stored. The reason goes to
 `data/generated/rejected.json` as `{ key: { reason, source, at } }` so the

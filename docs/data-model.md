@@ -9,17 +9,23 @@ by hand; derived data comes from `scripts/build-data.ts`.
 
 ```jsonc
 {
-  "slug": "col-du-galibier",       // stable, derived from the name; umlauts → ae/oe/ue
+  "slug": "col-du-galibier", // stable, derived from the name; umlauts → ae/oe/ue
   "name": "Col du Galibier",
-  "country": "FR",                  // "CH/IT" for border passes
-  "region": "Westalpen",            // Westalpen | Zentralalpen | Ostalpen | Dolomiten
-  "lat": 45.064, "lon": 6.408,
+  "country": "FR", // "CH/IT" for border passes
+  "region": "Westalpen", // Westalpen | Zentralalpen | Ostalpen | Dolomiten
+  "lat": 45.064,
+  "lon": 6.408,
   "elevation": 2642,
   "classicAscent": "18 km, 6,9 % ab Valloire (34 km via Télégraphe)",
-  "beauty": 5, "fame": 5, "difficulty": 5, "traffic": 2,   // 1–5, see scales.md
-  "season": { "opens": 6, "closes": 10.5 },  // half-months; null = cleared year-round
-  "note": "…",                       // one or two sentences of editorial commentary
-  "ascents": [{ "from": { "lat": 45.165, "lon": 6.430 }, "label": "Valloire (Nord)" }]
+  "beauty": 5,
+  "fame": 5,
+  "difficulty": 5,
+  "traffic": 2, // 1–5, see scales.md
+  "season": { "opens": 6, "closes": 10.5 }, // half-months; null = cleared year-round
+  "note": "…", // one or two sentences of editorial commentary
+  "ascents": [
+    { "from": { "lat": 45.165, "lon": 6.43 }, "label": "Valloire (Nord)" },
+  ],
 }
 ```
 
@@ -59,11 +65,11 @@ is a single sentence naming the surrounding passes and the infrastructure.
 
 ## Derived data (`bun run data:build`)
 
-| File | Key | Contents |
-| --- | --- | --- |
-| `routes.json` | `<pass-slug>:<index>`, `tour:<tour-slug>` | Road geometry as `[lat, lon][]` |
-| `profiles.json` | `<pass-slug>:<index>` | km, elevation gain, average gradient, anchor points |
-| `climate.json` | `<pass-slug>` | 24 half-months with average temperatures and frost/snow/rain share |
+| File            | Key                                       | Contents                                                           |
+| --------------- | ----------------------------------------- | ------------------------------------------------------------------ |
+| `routes.json`   | `<pass-slug>:<index>`, `tour:<tour-slug>` | Road geometry as `[lat, lon][]`                                    |
+| `profiles.json` | `<pass-slug>:<index>`                     | km, elevation gain, average gradient, anchor points                |
+| `climate.json`  | `<pass-slug>`                             | 24 half-months with average temperatures and frost/snow/rain share |
 
 These files belong in the repo. They only change when passes or ascents are
 added – the script skips everything that already exists. Because Open-Meteo

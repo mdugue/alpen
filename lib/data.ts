@@ -1,10 +1,10 @@
 import "server-only";
+import climateJson from "@/data/generated/climate.json";
+import profilesJson from "@/data/generated/profiles.json";
+import routesJson from "@/data/generated/routes.json";
 import passesJson from "@/data/passes.json";
 import toursJson from "@/data/tours.json";
 import townsJson from "@/data/towns.json";
-import routesJson from "@/data/generated/routes.json";
-import profilesJson from "@/data/generated/profiles.json";
-import climateJson from "@/data/generated/climate.json";
 import type {
   ClimateYear,
   ElevationProfile,

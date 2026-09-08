@@ -7,7 +7,11 @@ import type { WeatherDay } from "@/lib/types";
  *      once per visitor (Open-Meteo quota),
  *   b) the client makes no third-party requests.
  */
-async function forecast(lat: number, lon: number, elevation: number): Promise<WeatherDay[]> {
+async function forecast(
+  lat: number,
+  lon: number,
+  elevation: number,
+): Promise<WeatherDay[]> {
   "use cache";
   const { cacheLife, cacheTag } = await import("next/cache");
   cacheLife({ stale: 300, revalidate: 1800, expire: 7200 });
@@ -19,7 +23,9 @@ async function forecast(lat: number, lon: number, elevation: number): Promise<We
       "&timezone=Europe%2FBerlin&forecast_days=7",
   );
   if (!res.ok) throw new Error(`Open-Meteo ${res.status}`);
-  const { daily } = (await res.json()) as { daily: Record<string, (number | string)[]> };
+  const { daily } = (await res.json()) as {
+    daily: Record<string, (number | string)[]>;
+  };
 
   return (daily.time as string[]).map((date, i) => ({
     date,
@@ -32,15 +38,19 @@ async function forecast(lat: number, lon: number, elevation: number): Promise<We
   }));
 }
 
-export async function GET(_req: Request, ctx: { params: Promise<{ slug: string }> }) {
+export async function GET(
+  _req: Request,
+  ctx: { params: Promise<{ slug: string }> },
+) {
   const { slug } = await ctx.params;
   const pass = await getPass(slug);
-  if (!pass) return Response.json({ error: "unbekannter Pass" }, { status: 404 });
+  if (!pass)
+    return Response.json({ error: "unbekannter Pass" }, { status: 404 });
 
   try {
     const days = await forecast(pass.lat, pass.lon, pass.elevation);
     return Response.json({ slug, days });
-  } catch (e) {
-    return Response.json({ error: (e as Error).message }, { status: 502 });
+  } catch (error) {
+    return Response.json({ error: (error as Error).message }, { status: 502 });
   }
 }

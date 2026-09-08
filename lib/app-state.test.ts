@@ -1,4 +1,5 @@
 import { describe, expect, test } from "bun:test";
+
 import {
   ALL_STATUS,
   DEFAULT_FILTERS,
@@ -9,17 +10,23 @@ import {
   resolvePeriod,
   serializeHash,
   statusMatches,
-  type Filters,
-  type MapView,
-  type Selection,
 } from "@/lib/app-state";
+import type { Filters, MapView, Selection } from "@/lib/app-state";
 
-const filters = (over: Partial<Filters> = {}): Filters => ({ ...DEFAULT_FILTERS, ...over });
-const view = (over: Partial<MapView> = {}): MapView => ({ ...DEFAULT_VIEW, ...over });
+const filters = (over: Partial<Filters> = {}): Filters => ({
+  ...DEFAULT_FILTERS,
+  ...over,
+});
+const view = (over: Partial<MapView> = {}): MapView => ({
+  ...DEFAULT_VIEW,
+  ...over,
+});
 
 describe("parseHash", () => {
   test("reads filters, selection and camera", () => {
-    const h = parseHash("#pass=col-du-galibier&t=6&z=9&c=45.06,6.41&f=4&m=2000&q=gal&s=open,risky&pi=60&b=30");
+    const h = parseHash(
+      "#pass=col-du-galibier&t=6&z=9&c=45.06,6.41&f=4&m=2000&q=gal&s=open,risky&pi=60&b=30",
+    );
     expect(h.filters).toEqual({
       period: 6,
       status: ["open", "risky"],
@@ -28,7 +35,13 @@ describe("parseHash", () => {
       query: "gal",
     });
     expect(h.selection).toEqual({ kind: "pass", slug: "col-du-galibier" });
-    expect(h.view).toEqual({ lat: 45.06, lon: 6.41, zoom: 9, pitch: 60, bearing: 30 });
+    expect(h.view).toEqual({
+      lat: 45.06,
+      lon: 6.41,
+      zoom: 9,
+      pitch: 60,
+      bearing: 30,
+    });
   });
 
   test("works with and without the leading #, and ignores unknown keys", () => {
@@ -43,9 +56,18 @@ describe("parseHash", () => {
   });
 
   test("only one selection kind, passes first", () => {
-    expect(parseHash("#tour=sellaronda")!.selection).toEqual({ kind: "tour", slug: "sellaronda" });
-    expect(parseHash("#town=bormio")!.selection).toEqual({ kind: "town", slug: "bormio" });
-    expect(parseHash("#pass=a&tour=b")!.selection).toEqual({ kind: "pass", slug: "a" });
+    expect(parseHash("#tour=sellaronda")!.selection).toEqual({
+      kind: "tour",
+      slug: "sellaronda",
+    });
+    expect(parseHash("#town=bormio")!.selection).toEqual({
+      kind: "town",
+      slug: "bormio",
+    });
+    expect(parseHash("#pass=a&tour=b")!.selection).toEqual({
+      kind: "pass",
+      slug: "a",
+    });
   });
 
   test("legacy and special status values from older links", () => {
@@ -66,14 +88,24 @@ describe("parseHash", () => {
 
 describe("serializeHash", () => {
   test("writes only what differs from the defaults", () => {
-    expect(serializeHash(filters({ period: 7 }), null, view({ lat: 46.3, lon: 9.6, zoom: 6.5 }))).toBe(
-      "t=7&z=6.50&c=46.3000%2C9.6000",
-    );
+    expect(
+      serializeHash(
+        filters({ period: 7 }),
+        null,
+        view({ lat: 46.3, lon: 9.6, zoom: 6.5 }),
+      ),
+    ).toBe("t=7&z=6.50&c=46.3000%2C9.6000");
   });
 
   test("filters, selection and a tilted camera are carried", () => {
     const hash = serializeHash(
-      filters({ period: 6, status: ["open"], minFame: 4, minElevation: 2000, query: "gal" }),
+      filters({
+        period: 6,
+        status: ["open"],
+        minFame: 4,
+        minElevation: 2000,
+        query: "gal",
+      }),
       { kind: "pass", slug: "col-du-galibier" },
       view({ pitch: 60, bearing: 30 }),
     );
@@ -89,12 +121,19 @@ describe("serializeHash", () => {
   });
 
   test("an empty status filter survives the round trip", () => {
-    expect(parseHash(serializeHash(filters({ status: [] }), null, view())).filters.status).toEqual([]);
+    expect(
+      parseHash(serializeHash(filters({ status: [] }), null, view())).filters
+        .status,
+    ).toEqual([]);
   });
 
   test("round trip through parse and serialize is stable", () => {
     const selection: Selection = { kind: "town", slug: "bormio" };
-    const first = serializeHash(filters({ period: 9.5, query: "bor" }), selection, view({ zoom: 8.25 }));
+    const first = serializeHash(
+      filters({ period: 9.5, query: "bor" }),
+      selection,
+      view({ zoom: 8.25 }),
+    );
     const parsed = parseHash(first);
     const second = serializeHash(
       { ...DEFAULT_FILTERS, ...defined(parsed.filters) },

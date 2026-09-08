@@ -1,8 +1,12 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import {
+import { Layers, Maximize2, Mountain } from "lucide-react";
+import type {
   GeoJSONSource,
+  MapLayerMouseEvent,
+  StyleSpecification,
+} from "maplibre-gl";
+import {
   LngLat,
   LngLatBounds,
   Map as MLMap,
@@ -10,22 +14,36 @@ import {
   Popup,
   ScaleControl,
   setWorkerUrl,
-  type MapLayerMouseEvent,
-  type StyleSpecification,
 } from "maplibre-gl";
+
 import "maplibre-gl/dist/maplibre-gl.css";
-import { Layers, Maximize2, Mountain } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+
+import { baseLayers, OVERLAYS } from "@/components/map/map-style";
 import { Button } from "@/components/ui/button";
-import { Field, FieldLabel, FieldLegend, FieldSet } from "@/components/ui/field";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import {
+  Field,
+  FieldLabel,
+  FieldLegend,
+  FieldSet,
+} from "@/components/ui/field";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Switch } from "@/components/ui/switch";
 import { Toggle } from "@/components/ui/toggle";
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import { baseLayers, OVERLAYS } from "@/components/map/map-style";
-import { DEFAULT_VIEW, defined, readHash, useStored, type MapView, type Selection } from "@/lib/app-state";
-import { cn, MAP_CONTROL, PRESSED } from "@/lib/utils";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { DEFAULT_VIEW, readHash, useStored } from "@/lib/app-state";
+import type { MapView, Selection } from "@/lib/app-state";
 import type { Pass, RouteGeometry, Status, Tour, Town } from "@/lib/types";
+import { cn, MAP_CONTROL, PRESSED } from "@/lib/utils";
 
 export interface MapPass extends Pass {
   status: Status;
@@ -34,7 +52,11 @@ export interface MapPass extends Pass {
 
 interface Props {
   passes: MapPass[];
-  tours: (Tour & { status: Status; visible: boolean; geometry: RouteGeometry })[];
+  tours: (Tour & {
+    status: Status;
+    visible: boolean;
+    geometry: RouteGeometry;
+  })[];
   towns: (Town & { favorite: boolean })[];
   routes: Record<string, RouteGeometry>;
   showTowns: boolean;
@@ -79,7 +101,9 @@ function toRgb(color: string, fallback: string): string {
   if (ctx.fillStyle === sentinel) return fallback;
   ctx.fillRect(0, 0, 1, 1);
   const [r, g, b, a] = ctx.getImageData(0, 0, 1, 1).data;
-  return a === 255 ? `rgb(${r}, ${g}, ${b})` : `rgba(${r}, ${g}, ${b}, ${((a ?? 0) / 255).toFixed(3)})`;
+  return a === 255
+    ? `rgb(${r}, ${g}, ${b})`
+    : `rgba(${r}, ${g}, ${b}, ${((a ?? 0) / 255).toFixed(3)})`;
 }
 
 /** Read colour values from the theme tokens – MapLibre cannot use CSS variables. */
@@ -102,7 +126,10 @@ function readColors(el: HTMLElement) {
 
 /** Star and diamond as canvas icons so that no font glyphs are needed. */
 function addIcons(map: MLMap, c: ReturnType<typeof readColors>) {
-  const draw = (paint: (ctx: CanvasRenderingContext2D, s: number) => void, size = 48) => {
+  const draw = (
+    paint: (ctx: CanvasRenderingContext2D, s: number) => void,
+    size = 48,
+  ) => {
     const canvas = document.createElement("canvas");
     canvas.width = canvas.height = size;
     const ctx = canvas.getContext("2d")!;
@@ -150,7 +177,18 @@ function addIcons(map: MLMap, c: ReturnType<typeof readColors>) {
 }
 
 const escapeHtml = (s: string) =>
-  s.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]!);
+  s.replaceAll(
+    /[&<>"']/gu,
+    (c) =>
+      ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[
+        c
+      ]!,
+  );
+
+const defined = <T extends object>(o: T): Partial<T> =>
+  Object.fromEntries(
+    Object.entries(o).filter(([, v]) => v !== undefined && !Number.isNaN(v)),
+  ) as Partial<T>;
 
 export function PassMap({
   passes,
@@ -171,7 +209,9 @@ export function PassMap({
   const [ready, setReady] = useState(false);
   const [is3d, setIs3d] = useState(false);
   const [base, setBase] = useStored("alpenpaesse:base", "osm");
-  const [overlays, setOverlays] = useStored<string[]>("alpenpaesse:overlays", ["hillshade"]);
+  const [overlays, setOverlays] = useStored<string[]>("alpenpaesse:overlays", [
+    "hillshade",
+  ]);
   // Callbacks are needed in map event handlers that are only registered
   // during setup; refs keep them current without rebuilding the map.
   const onSelectRef = useRef(onSelect);
@@ -204,7 +244,9 @@ export function PassMap({
       sources: {
         dem: {
           type: "raster-dem",
-          tiles: ["https://s3.amazonaws.com/elevation-tiles-prod/terrarium/{z}/{x}/{y}.png"],
+          tiles: [
+            "https://s3.amazonaws.com/elevation-tiles-prod/terrarium/{z}/{x}/{y}.png",
+          ],
           encoding: "terrarium",
           tileSize: 256,
           maxzoom: 15,
@@ -213,13 +255,25 @@ export function PassMap({
         ...Object.fromEntries(
           bases.map((b) => [
             b.id,
-            { type: "raster", tiles: b.tiles, tileSize: 256, maxzoom: b.maxzoom, attribution: b.attribution },
+            {
+              type: "raster",
+              tiles: b.tiles,
+              tileSize: 256,
+              maxzoom: b.maxzoom,
+              attribution: b.attribution,
+            },
           ]),
         ),
         ...Object.fromEntries(
           OVERLAYS.map((o) => [
             `ov-${o.id}`,
-            { type: "raster", tiles: [...o.tiles], tileSize: 256, maxzoom: o.maxzoom, attribution: o.attribution },
+            {
+              type: "raster",
+              tiles: [...o.tiles],
+              tileSize: 256,
+              maxzoom: o.maxzoom,
+              attribution: o.attribution,
+            },
           ]),
         ),
         routes: { type: "geojson", data: EMPTY },
@@ -228,19 +282,29 @@ export function PassMap({
         towns: { type: "geojson", data: EMPTY },
       } as StyleSpecification["sources"],
       layers: [
-        { id: "base", type: "raster", source: bases.some((b) => b.id === base) ? base : "osm" },
+        {
+          id: "base",
+          type: "raster",
+          source: bases.some((b) => b.id === base) ? base : "osm",
+        },
         {
           id: "hillshade",
           type: "hillshade",
           source: "dem",
-          layout: { visibility: overlays.includes("hillshade") ? "visible" : "none" },
+          layout: {
+            visibility: overlays.includes("hillshade") ? "visible" : "none",
+          },
           paint: { "hillshade-exaggeration": 0.3 },
         },
         ...OVERLAYS.map((o) => ({
           id: `ov-${o.id}`,
           type: "raster" as const,
           source: `ov-${o.id}`,
-          layout: { visibility: overlays.includes(o.id) ? ("visible" as const) : ("none" as const) },
+          layout: {
+            visibility: overlays.includes(o.id)
+              ? ("visible" as const)
+              : ("none" as const),
+          },
           paint: { "raster-opacity": o.opacity },
         })),
         {
@@ -248,7 +312,11 @@ export function PassMap({
           type: "line",
           source: "tours",
           layout: { "line-cap": "round", "line-join": "round" },
-          paint: { "line-color": colors.paper, "line-width": 6, "line-opacity": 0.55 },
+          paint: {
+            "line-color": colors.paper,
+            "line-width": 6,
+            "line-opacity": 0.55,
+          },
         },
         {
           id: "tours",
@@ -283,14 +351,23 @@ export function PassMap({
             "text-size": 11,
             "symbol-spacing": 600,
           },
-          paint: { "text-color": ["get", "color"], "text-halo-color": colors.paper, "text-halo-width": 1.5 },
+          paint: {
+            "text-color": ["get", "color"],
+            "text-halo-color": colors.paper,
+            "text-halo-width": 1.5,
+          },
         },
         {
           id: "towns",
           type: "symbol",
           source: "towns",
           layout: {
-            "icon-image": ["case", ["==", ["get", "favorite"], 1], "star-town-0", "town"],
+            "icon-image": [
+              "case",
+              ["==", ["get", "favorite"], 1],
+              "star-town-0",
+              "town",
+            ],
             "icon-size": ["case", ["==", ["get", "favorite"], 1], 0.62, 0.5],
             "icon-allow-overlap": true,
           },
@@ -308,7 +385,11 @@ export function PassMap({
             "text-radial-offset": 0.8,
             "text-justify": "auto",
           },
-          paint: { "text-color": colors.town, "text-halo-color": colors.paper, "text-halo-width": 1.5 },
+          paint: {
+            "text-color": colors.town,
+            "text-halo-color": colors.paper,
+            "text-halo-width": 1.5,
+          },
         },
         {
           id: "passes",
@@ -327,7 +408,12 @@ export function PassMap({
             ],
             // "closed" is additionally encoded as a hollow circle so that the
             // three states do not rely on hue alone.
-            "circle-color": ["case", ["==", ["get", "status"], "closed"], colors.paper, statusColor],
+            "circle-color": [
+              "case",
+              ["==", ["get", "status"], "closed"],
+              colors.paper,
+              statusColor,
+            ],
             "circle-opacity": [
               "case",
               [">=", ["get", "fame"], 4],
@@ -361,26 +447,39 @@ export function PassMap({
           source: "passes",
           filter: ["==", ["get", "favorite"], 1],
           layout: {
-            "icon-image": ["concat", "star-", ["get", "status"], "-", ["to-string", ["get", "selected"]]],
+            "icon-image": [
+              "concat",
+              "star-",
+              ["get", "status"],
+              "-",
+              ["to-string", ["get", "selected"]],
+            ],
             "icon-size": ["interpolate", ["linear"], ["zoom"], 6, 0.5, 12, 0.9],
             "icon-allow-overlap": true,
           },
         },
         // Labels staggered by prominence; MapLibre resolves collisions
-        ...([
-          [5, 0],
-          [4, 7],
-          [3, 8],
-          [2, 9.5],
-          [1, 10.5],
-        ] as const).map(([fame, minzoom]) => ({
+        ...(
+          [
+            [5, 0],
+            [4, 7],
+            [3, 8],
+            [2, 9.5],
+            [1, 10.5],
+          ] as const
+        ).map(([fame, minzoom]) => ({
           id: `pass-label-${fame}`,
           type: "symbol" as const,
           source: "passes",
           minzoom,
           filter:
             fame === 5
-              ? (["any", ["==", ["get", "fame"], 5], ["==", ["get", "selected"], 1], ["==", ["get", "favorite"], 1]] as never)
+              ? ([
+                  "any",
+                  ["==", ["get", "fame"], 5],
+                  ["==", ["get", "selected"], 1],
+                  ["==", ["get", "favorite"], 1],
+                ] as never)
               : ([
                   "all",
                   ["==", ["get", "fame"], fame],
@@ -434,7 +533,10 @@ export function PassMap({
     if (process.env.NEXT_PUBLIC_TEST_HOOKS === "1") {
       (window as unknown as { __alpen?: { map: MLMap } }).__alpen = { map: m };
     }
-    m.addControl(new NavigationControl({ visualizePitch: true, showZoom: !coarse }), "bottom-right");
+    m.addControl(
+      new NavigationControl({ visualizePitch: true, showZoom: !coarse }),
+      "bottom-right",
+    );
     m.addControl(new ScaleControl({ unit: "metric" }), "bottom-left");
 
     m.on("load", () => {
@@ -446,24 +548,36 @@ export function PassMap({
       setReady(true);
     });
 
-    const popup = new Popup({ closeButton: false, closeOnClick: false, offset: 10 });
+    const popup = new Popup({
+      closeButton: false,
+      closeOnClick: false,
+      offset: 10,
+    });
     for (const layer of ["passes", "pass-stars", "routes", "tours", "towns"]) {
       m.on("mouseenter", layer, (e: MapLayerMouseEvent) => {
         m.getCanvas().style.cursor = "pointer";
-        const p = e.features?.[0]?.properties as Record<string, string> | undefined;
+        const p = e.features?.[0]?.properties as
+          | Record<string, string>
+          | undefined;
         if (!p) return;
         popup
           .setLngLat(e.lngLat)
-          .setHTML(`<b>${escapeHtml(p.name ?? "")}</b><br>${escapeHtml(p.subtitle ?? "")}`)
+          .setHTML(
+            `<b>${escapeHtml(p.name ?? "")}</b><br>${escapeHtml(p.subtitle ?? "")}`,
+          )
           .addTo(m);
       });
-      m.on("mousemove", layer, (e: MapLayerMouseEvent) => popup.setLngLat(e.lngLat));
+      m.on("mousemove", layer, (e: MapLayerMouseEvent) =>
+        popup.setLngLat(e.lngLat),
+      );
       m.on("mouseleave", layer, () => {
         m.getCanvas().style.cursor = "";
         popup.remove();
       });
       m.on("click", layer, (e: MapLayerMouseEvent) => {
-        const p = e.features?.[0]?.properties as { kind: string; slug: string } | undefined;
+        const p = e.features?.[0]?.properties as
+          | { kind: string; slug: string }
+          | undefined;
         if (!p) return;
         onSelectRef.current({
           kind: p.kind === "route" ? "pass" : (p.kind as Selection["kind"]),
@@ -501,7 +615,7 @@ export function PassMap({
       map.current = null;
     };
     // Intentional: build only once. Data arrives via the effects below.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // oxlint-disable-next-line react/exhaustive-deps
   }, []);
 
   // --- Camera requested via the URL hash ----------------------------------
@@ -518,7 +632,12 @@ export function PassMap({
 
   // --- Reserve space for the mobile sheet ---------------------------------
   useEffect(() => {
-    map.current?.setPadding({ top: 0, left: insetLeft, right: 0, bottom: insetBottom });
+    map.current?.setPadding({
+      top: 0,
+      left: insetLeft,
+      right: 0,
+      bottom: insetBottom,
+    });
   }, [insetLeft, insetBottom, ready]);
 
   // --- Write data into the sources ---------------------------------------
@@ -554,7 +673,10 @@ export function PassMap({
           return [
             {
               type: "Feature" as const,
-              geometry: { type: "LineString" as const, coordinates: geom.map(([lat, lon]) => [lon, lat]) },
+              geometry: {
+                type: "LineString" as const,
+                coordinates: geom.map(([lat, lon]) => [lon, lat]),
+              },
               properties: {
                 kind: "route",
                 slug: p.slug,
@@ -575,14 +697,18 @@ export function PassMap({
         .filter((t) => t.visible && t.geometry?.length)
         .map((t) => ({
           type: "Feature",
-          geometry: { type: "LineString", coordinates: t.geometry.map(([lat, lon]) => [lon, lat]) },
+          geometry: {
+            type: "LineString",
+            coordinates: t.geometry.map(([lat, lon]) => [lon, lat]),
+          },
           properties: {
             kind: "tour",
             slug: t.slug,
             name: t.name,
             subtitle: `ca. ${t.km} km · ${t.elevationGain.toLocaleString("de-DE")} hm`,
             color: t.color,
-            selected: selection?.kind === "tour" && selection.slug === t.slug ? 1 : 0,
+            selected:
+              selection?.kind === "tour" && selection.slug === t.slug ? 1 : 0,
           },
         })),
     });
@@ -609,24 +735,38 @@ export function PassMap({
   useEffect(() => {
     const m = map.current;
     if (!m || !ready || !selection) return;
-    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const reduce = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
     const duration = reduce ? 0 : 900;
     if (selection.kind === "pass") {
       const p = passes.find((x) => x.slug === selection.slug);
-      if (p) m.flyTo({ center: [p.lon, p.lat], zoom: Math.max(m.getZoom(), 11), duration });
+      if (p)
+        m.flyTo({
+          center: [p.lon, p.lat],
+          zoom: Math.max(m.getZoom(), 11),
+          duration,
+        });
     } else if (selection.kind === "town") {
       const t = towns.find((x) => x.slug === selection.slug);
-      if (t) m.flyTo({ center: [t.lon, t.lat], zoom: Math.max(m.getZoom(), 10.5), duration });
+      if (t)
+        m.flyTo({
+          center: [t.lon, t.lat],
+          zoom: Math.max(m.getZoom(), 10.5),
+          duration,
+        });
     } else {
       const t = tours.find((x) => x.slug === selection.slug);
-      const line = t?.geometry?.length ? t.geometry : t?.waypoints.map((w) => [w.lat, w.lon] as [number, number]);
+      const line = t?.geometry?.length
+        ? t.geometry
+        : t?.waypoints.map((w) => [w.lat, w.lon] as [number, number]);
       if (line?.length) {
         const b = new LngLatBounds();
         line.forEach(([lat, lon]) => b.extend([lon, lat]));
         m.fitBounds(b, { padding: 60, duration });
       }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // oxlint-disable-next-line react/exhaustive-deps
   }, [selection?.kind, selection?.slug, ready]);
 
   const toggle3d = (pressed: boolean) => {
@@ -653,7 +793,11 @@ export function PassMap({
   const toggleOverlay = (id: string) => {
     const on = !overlays.includes(id);
     setOverlays(on ? [...overlays, id] : overlays.filter((o) => o !== id));
-    map.current?.setLayoutProperty(id === "hillshade" ? "hillshade" : `ov-${id}`, "visibility", on ? "visible" : "none");
+    map.current?.setLayoutProperty(
+      id === "hillshade" ? "hillshade" : `ov-${id}`,
+      "visibility",
+      on ? "visible" : "none",
+    );
   };
 
   /**
@@ -665,14 +809,26 @@ export function PassMap({
     if (!m) return;
     const b = new LngLatBounds();
     passes.forEach((p) => b.extend([p.lon, p.lat]));
-    tours.filter((t) => t.visible).forEach((t) => t.geometry.forEach(([lat, lon]) => b.extend([lon, lat])));
-    const target = b.isEmpty() ? undefined : m.cameraForBounds(b, { padding: 48 });
+    tours
+      .filter((t) => t.visible)
+      .forEach((t) => t.geometry.forEach(([lat, lon]) => b.extend([lon, lat])));
+    const target = b.isEmpty()
+      ? undefined
+      : m.cameraForBounds(b, { padding: 48 });
     const alreadyFitted =
       target?.zoom !== undefined &&
       Math.abs(m.getZoom() - target.zoom) < 0.05 &&
-      m.getCenter().distanceTo(LngLat.convert(target.center as [number, number])) < 2000;
+      m
+        .getCenter()
+        .distanceTo(LngLat.convert(target.center as [number, number])) < 2000;
     if (!target || alreadyFitted) {
-      m.flyTo({ center: [DEFAULT_VIEW.lon, DEFAULT_VIEW.lat], zoom: DEFAULT_VIEW.zoom, pitch: 0, bearing: 0, duration: 800 });
+      m.flyTo({
+        center: [DEFAULT_VIEW.lon, DEFAULT_VIEW.lat],
+        zoom: DEFAULT_VIEW.zoom,
+        pitch: 0,
+        bearing: 0,
+        duration: 800,
+      });
     } else {
       m.fitBounds(b, { padding: 48, duration: 800 });
     }
@@ -681,7 +837,7 @@ export function PassMap({
   const tool = cn("size-9 lg:size-8", MAP_CONTROL);
 
   return (
-    <div className="relative size-full overflow-hidden bg-muted">
+    <div className="bg-muted relative size-full overflow-hidden">
       {/* Plain "absolute inset-0" loses against the unlayered maplibre-gl.css (`.maplibregl-map { position: relative }`). */}
       <div ref={container} className="size-full" />
 
@@ -698,7 +854,14 @@ export function PassMap({
             <TooltipTrigger
               render={
                 <PopoverTrigger
-                  render={<Button size="icon-lg" variant="outline" className={tool} aria-label="Kartenebenen" />}
+                  render={
+                    <Button
+                      size="icon-lg"
+                      variant="outline"
+                      className={tool}
+                      aria-label="Kartenebenen"
+                    />
+                  }
                 />
               }
             >
@@ -709,11 +872,18 @@ export function PassMap({
           <PopoverContent align="end" className="w-60 gap-3">
             <FieldSet className="gap-2">
               <FieldLegend variant="label">Grundkarte</FieldLegend>
-              <RadioGroup value={base} onValueChange={(v) => switchBase(String(v))} className="gap-1.5">
+              <RadioGroup
+                value={base}
+                onValueChange={(v) => switchBase(String(v))}
+                className="gap-1.5"
+              >
                 {baseLayers().map((b) => (
                   <Field key={b.id} orientation="horizontal">
                     <RadioGroupItem value={b.id} id={`base-${b.id}`} />
-                    <FieldLabel htmlFor={`base-${b.id}`} className="font-normal">
+                    <FieldLabel
+                      htmlFor={`base-${b.id}`}
+                      className="font-normal"
+                    >
                       {b.name}
                     </FieldLabel>
                   </Field>
@@ -722,7 +892,10 @@ export function PassMap({
             </FieldSet>
             <FieldSet className="gap-2">
               <FieldLegend variant="label">Overlays</FieldLegend>
-              {[{ id: "hillshade", name: "Relief-Schummerung" }, ...OVERLAYS].map((o) => (
+              {[
+                { id: "hillshade", name: "Relief-Schummerung" },
+                ...OVERLAYS,
+              ].map((o) => (
                 <Field key={o.id} orientation="horizontal">
                   <Switch
                     size="sm"
@@ -758,11 +931,21 @@ export function PassMap({
 
         <Tooltip>
           <TooltipTrigger
-            render={<Button size="icon-lg" variant="outline" className={tool} onClick={fitToVisible} aria-label="Ansicht einpassen" />}
+            render={
+              <Button
+                size="icon-lg"
+                variant="outline"
+                className={tool}
+                onClick={fitToVisible}
+                aria-label="Ansicht einpassen"
+              />
+            }
           >
             <Maximize2 />
           </TooltipTrigger>
-          <TooltipContent side="left">Ansicht einpassen – erneut für die ganzen Alpen</TooltipContent>
+          <TooltipContent side="left">
+            Ansicht einpassen – erneut für die ganzen Alpen
+          </TooltipContent>
         </Tooltip>
       </div>
     </div>

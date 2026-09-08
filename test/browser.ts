@@ -35,7 +35,12 @@ const CHROME_ARGV = [
 function chromePath(): string | undefined {
   const explicit = process.env.CHROME ?? process.env.BUN_CHROME_PATH;
   if (explicit) return explicit;
-  for (const name of ["chromium", "chromium-browser", "google-chrome", "google-chrome-stable"]) {
+  for (const name of [
+    "chromium",
+    "chromium-browser",
+    "google-chrome",
+    "google-chrome-stable",
+  ]) {
     if (Bun.which(name)) return undefined; // on PATH: let Bun auto-detect
   }
   const fallback = "/opt/pw-browsers/chromium";
@@ -43,7 +48,11 @@ function chromePath(): string | undefined {
 }
 
 /** Polls until the check passes; the message names what was waited for. */
-export async function waitUntil(check: () => Promise<boolean>, what: string, timeout = 15_000) {
+export async function waitUntil(
+  check: () => Promise<boolean>,
+  what: string,
+  timeout = 15_000,
+) {
   const deadline = Date.now() + timeout;
   for (;;) {
     if (await check()) return;
@@ -63,7 +72,7 @@ export interface App {
  */
 export async function startApp(): Promise<App> {
   const fromEnv = process.env.BASE_URL;
-  if (fromEnv) return { base: fromEnv.replace(/\/$/, ""), stop: () => {} };
+  if (fromEnv) return { base: fromEnv.replace(/\/$/u, ""), stop: () => {} };
 
   const proc = Bun.spawn({
     cmd: ["bun", "run", "start"],
@@ -76,8 +85,9 @@ export async function startApp(): Promise<App> {
   for (;;) {
     if (proc.exitCode !== null) {
       throw new Error(
-        `"bun run start" exited with ${proc.exitCode}. Run "bun run build" first.\n` +
-          (await new Response(proc.stderr).text()),
+        `"bun run start" exited with ${proc.exitCode}. Run "bun run build" first.\n${await new Response(
+          proc.stderr,
+        ).text()}`,
       );
     }
     try {
@@ -86,7 +96,8 @@ export async function startApp(): Promise<App> {
     } catch {
       /* not up yet */
     }
-    if (Date.now() > deadline) throw new Error(`No answer from ${base} after 60 s.`);
+    if (Date.now() > deadline)
+      throw new Error(`No answer from ${base} after 60 s.`);
     await Bun.sleep(250);
   }
   return { base, stop: () => proc.kill() };
@@ -131,7 +142,8 @@ export class Page {
           return !!el && !!el.getClientRects().length; })()`,
       );
       if (visible) return;
-      if (Date.now() > deadline) throw new Error(`Timeout: ${selector} did not become visible`);
+      if (Date.now() > deadline)
+        throw new Error(`Timeout: ${selector} did not become visible`);
       await Bun.sleep(100);
     }
   }
@@ -144,13 +156,16 @@ export class Page {
           return !el || !el.getClientRects().length; })()`,
       );
       if (gone) return;
-      if (Date.now() > deadline) throw new Error(`Timeout: ${selector} is still there`);
+      if (Date.now() > deadline)
+        throw new Error(`Timeout: ${selector} is still there`);
       await Bun.sleep(100);
     }
   }
 
   count(selector: string) {
-    return this.evaluate<number>(`document.querySelectorAll(${JSON.stringify(selector)}).length`);
+    return this.evaluate<number>(
+      `document.querySelectorAll(${JSON.stringify(selector)}).length`,
+    );
   }
 
   text(selector: string) {
@@ -164,13 +179,27 @@ export class Page {
    * Polls an attribute until it matches. State restored from `localStorage`
    * only appears after hydration, so reading once would race the effect.
    */
-  async waitForAttribute(selector: string, name: string, expected: string | RegExp, timeout = 15_000) {
+  async waitForAttribute(
+    selector: string,
+    name: string,
+    expected: string | RegExp,
+    timeout = 15_000,
+  ) {
     const deadline = Date.now() + timeout;
     let last: string | null = null;
     for (;;) {
       last = await this.attribute(selector, name);
-      if (last !== null && (typeof expected === "string" ? last.includes(expected) : expected.test(last))) return last;
-      if (Date.now() > deadline) throw new Error(`Timeout: ${selector}[${name}] is "${last}", expected ${expected}`);
+      if (
+        last !== null &&
+        (typeof expected === "string"
+          ? last.includes(expected)
+          : expected.test(last))
+      )
+        return last;
+      if (Date.now() > deadline)
+        throw new Error(
+          `Timeout: ${selector}[${name}] is "${last}", expected ${expected}`,
+        );
       await Bun.sleep(100);
     }
   }
@@ -211,7 +240,9 @@ export class Page {
   /** Moves focus without a click, e.g. before typing or for keyboard tests. */
   async focus(selector: string) {
     await this.waitFor(selector);
-    await this.evaluate(`document.querySelector(${JSON.stringify(selector)}).focus()`);
+    await this.evaluate(
+      `document.querySelector(${JSON.stringify(selector)}).focus()`,
+    );
   }
 
   async fill(selector: string, value: string) {
@@ -229,7 +260,9 @@ export class Page {
 
   /** `data-row` of the focused element, for the focus-return checks. */
   activeRow() {
-    return this.evaluate<string | null>("document.activeElement?.getAttribute('data-row') ?? null");
+    return this.evaluate<string | null>(
+      "document.activeElement?.getAttribute('data-row') ?? null",
+    );
   }
 
   /** Camera state via the test hook (`NEXT_PUBLIC_TEST_HOOKS=1`). */
@@ -242,7 +275,10 @@ export class Page {
 
   async save(name: string) {
     await mkdir(FAILURE_DIR, { recursive: true });
-    const file = join(FAILURE_DIR, name.endsWith(".png") ? name : `${name}.png`);
+    const file = join(
+      FAILURE_DIR,
+      name.endsWith(".png") ? name : `${name}.png`,
+    );
     await Bun.write(file, await this.view.screenshot({ encoding: "buffer" }));
     return file;
   }
@@ -270,7 +306,12 @@ async function openPage(app: App, options: OpenOptions = {}): Promise<Page> {
     console: (type, ...rest) => {
       if (type !== "error") return;
       const first = rest[0] as { description?: string } | string | undefined;
-      errors.push(String(typeof first === "object" ? first?.description : first).slice(0, 200));
+      errors.push(
+        String(typeof first === "object" ? first?.description : first).slice(
+          0,
+          200,
+        ),
+      );
     },
   });
   const page = new Page(view, app.base);
@@ -287,11 +328,16 @@ async function openPage(app: App, options: OpenOptions = {}): Promise<Page> {
     maxTouchPoints: options.mobile ? 5 : 1,
   });
   await view.cdp("Emulation.setEmulatedMedia", {
-    features: [{ name: "prefers-color-scheme", value: options.dark ? "dark" : "light" }],
+    features: [
+      { name: "prefers-color-scheme", value: options.dark ? "dark" : "light" },
+    ],
   });
   await view.cdp("Emulation.setLocaleOverride", { locale: "de-DE" });
   // No remembered sidebar, period or favourites leaking between scenarios.
-  await view.cdp("Storage.clearDataForOrigin", { origin: app.base, storageTypes: "all" });
+  await view.cdp("Storage.clearDataForOrigin", {
+    origin: app.base,
+    storageTypes: "all",
+  });
   // Hermetic: the base is http, so every https request is a tile, DEM or
   // glyph server. Blocking is enough for MapLibre to reach "load".
   await view.cdp("Network.enable");
@@ -315,7 +361,9 @@ export async function withPage(
   try {
     await body(page);
   } catch (error) {
-    const file = await page.save(name.replace(/[^a-z0-9]+/gi, "-").toLowerCase()).catch(() => null);
+    const file = await page
+      .save(name.replaceAll(/[^a-z0-9]+/giu, "-").toLowerCase())
+      .catch(() => null);
     if (file) console.error(`Screenshot of the failure: ${file}`);
     throw error;
   } finally {
