@@ -40,14 +40,14 @@ interface Query {
   isFavorite: (kind: EntityKind, slug: string) => boolean;
 }
 
-function query(filters: Filters, isFavorite: Query["isFavorite"]): Query {
+const query = (filters: Filters, isFavorite: Query["isFavorite"]): Query => {
   const q = filters.query.trim();
   return {
-    matches: (haystack) => !q || matches(haystack, q),
     favoritesOnly: filters.favoritesOnly,
     isFavorite,
+    matches: (haystack) => !q || matches(haystack, q),
   };
-}
+};
 
 /** Lower bounds, "at least this interesting": a tour needs one pass that clears them. */
 const interesting = (pass: Pass, f: Filters) =>
@@ -61,19 +61,19 @@ const withinLimits = (pass: Pass, f: Filters) =>
   pass.difficulty <= f.difficulty[1] && pass.traffic <= f.maxTraffic;
 
 /** Everything about a pass except its status: criteria, favourites, search. */
-function passMatches(pass: Pass, filters: Filters, q: Query): boolean {
+const passMatches = (pass: Pass, filters: Filters, q: Query): boolean => {
   if (!interesting(pass, filters) || !withinLimits(pass, filters)) return false;
   if (q.favoritesOnly && !q.isFavorite("pass", pass.slug)) return false;
   return q.matches(passHaystack(pass));
-}
+};
 
 /** The pass criteria reach a tour through the passes it crosses. */
-function tourMatches(
+const tourMatches = (
   tour: Tour,
   passes: PassIndex,
   filters: Filters,
   q: Query,
-): boolean {
+): boolean => {
   const own = tour.passes
     .map((s) => passes.get(s))
     .filter((p) => p !== undefined);
@@ -85,7 +85,7 @@ function tourMatches(
       own.map((p) => p.name),
     ),
   );
-}
+};
 
 export interface PassRow {
   pass: Pass;
@@ -95,12 +95,12 @@ export interface PassRow {
   season: Status[];
 }
 
-export function buildPassRows(
+export const buildPassRows = (
   passes: Pass[],
   filters: Filters,
   isFavorite: Query["isFavorite"],
   climate?: Record<string, ClimateYear>,
-): PassRow[] {
+): PassRow[] => {
   const q = query(filters, isFavorite);
   const rows: PassRow[] = [];
   for (const pass of passes) {
@@ -112,14 +112,14 @@ export function buildPassRows(
     );
     if (!statusMatches(status, filters.status)) continue;
     rows.push({
-      pass,
-      status,
       favorite: isFavorite("pass", pass.slug),
+      pass,
       season: passSeason(pass, climate?.[pass.slug]),
+      status,
     });
   }
   return rows;
-}
+};
 
 export interface TourRow {
   tour: Tour;
@@ -128,13 +128,13 @@ export interface TourRow {
   season: Status[];
 }
 
-export function buildTourRows(
+export const buildTourRows = (
   tours: Tour[],
   passes: PassIndex,
   filters: Filters,
   isFavorite: Query["isFavorite"],
   climate?: Record<string, ClimateYear>,
-): TourRow[] {
+): TourRow[] => {
   const q = query(filters, isFavorite);
   const rows: TourRow[] = [];
   for (const tour of tours) {
@@ -144,35 +144,35 @@ export function buildTourRows(
     const status = tourStatus(tour, passes, filters.period, climate);
     if (!statusMatches(status, filters.status)) continue;
     rows.push({
-      tour,
-      status,
       favorite,
       season: tourSeason(tour, passes, climate),
+      status,
+      tour,
     });
   }
   return rows.toSorted((a, b) => b.tour.elevationGain - a.tour.elevationGain);
-}
+};
 
 export interface TownRow {
   town: Town;
   favorite: boolean;
 }
 
-export function buildTownRows(
+export const buildTownRows = (
   towns: Town[],
   filters: Filters,
   isFavorite: Query["isFavorite"],
-): TownRow[] {
+): TownRow[] => {
   const q = query(filters, isFavorite);
   const rows: TownRow[] = [];
   for (const town of towns) {
     const favorite = isFavorite("town", town.slug);
     if (q.favoritesOnly && !favorite) continue;
     if (!q.matches(townHaystack(town))) continue;
-    rows.push({ town, favorite });
+    rows.push({ favorite, town });
   }
   return rows.toSorted((a, b) => a.town.name.localeCompare(b.town.name, "de"));
-}
+};
 
 export interface HistogramBar {
   period: Period;
@@ -187,53 +187,65 @@ export interface HistogramBar {
  * filter is deliberately ignored: it would hide exactly the alternatives the
  * histogram is there to show.
  */
-export function statusHistogram(
+export const statusHistogram = (
   passes: Pass[],
   filters: Filters,
   isFavorite: Query["isFavorite"],
   climate?: Record<string, ClimateYear>,
-): HistogramBar[] {
+): HistogramBar[] => {
   const q = query(filters, isFavorite);
   const bars: HistogramBar[] = PERIODS.map((period) => ({
-    period,
-    open: 0,
-    risky: 0,
     closed: 0,
+    open: 0,
+    period,
+    risky: 0,
   }));
   for (const pass of passes) {
     if (!passMatches(pass, filters, q)) continue;
     const season = passSeason(pass, climate?.[pass.slug]);
-    for (let i = 0; i < bars.length; i++) bars[i]![season[i]!]++;
+    for (let i = 0; i < bars.length; i += 1) bars[i]![season[i]!] += 1;
   }
   return bars;
-}
+};
+
+/** The sort menu, in the order it is offered. */
+export const PASS_SORTS: readonly PassSort[] = [
+  "elevation",
+  "name",
+  "status",
+  "beauty",
+  "fame",
+  "difficulty",
+  "traffic",
+];
 
 export const PASS_SORT_LABEL: Record<PassSort, string> = {
+  beauty: "Schönheit",
+  difficulty: "Schwierigkeit",
   elevation: "Höhe",
+  fame: "Bekanntheit",
   name: "Name",
   status: "Status",
-  beauty: "Schönheit",
-  fame: "Bekanntheit",
-  difficulty: "Schwierigkeit",
   traffic: "Verkehr",
 };
 
-const STATUS_RANK: Record<Status, number> = { open: 0, risky: 1, closed: 2 };
+const STATUS_RANK: Record<Status, number> = { closed: 2, open: 0, risky: 1 };
+
+const byName = (a: PassRow, b: PassRow) =>
+  a.pass.name.localeCompare(b.pass.name, "de");
 
 /** Direction is fixed per key: the "best" value first. */
-export function sortPassRows(rows: PassRow[], sort: PassSort): PassRow[] {
-  const byName = (a: PassRow, b: PassRow) =>
-    a.pass.name.localeCompare(b.pass.name, "de");
+export const sortPassRows = (rows: PassRow[], sort: PassSort): PassRow[] => {
   const cmp: Record<PassSort, (a: PassRow, b: PassRow) => number> = {
+    beauty: (a, b) => b.pass.beauty - a.pass.beauty,
+    difficulty: (a, b) => b.pass.difficulty - a.pass.difficulty,
     elevation: (a, b) => b.pass.elevation - a.pass.elevation,
+    fame: (a, b) => b.pass.fame - a.pass.fame,
     name: byName,
     status: (a, b) =>
       STATUS_RANK[a.status] - STATUS_RANK[b.status] ||
       b.pass.elevation - a.pass.elevation,
-    beauty: (a, b) => b.pass.beauty - a.pass.beauty,
-    fame: (a, b) => b.pass.fame - a.pass.fame,
-    difficulty: (a, b) => b.pass.difficulty - a.pass.difficulty,
     traffic: (a, b) => a.pass.traffic - b.pass.traffic,
   };
   return rows.toSorted((a, b) => cmp[sort](a, b) || byName(a, b));
-}
+};

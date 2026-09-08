@@ -54,7 +54,7 @@ export interface SidebarProps {
   peek?: boolean;
 }
 
-export function Sidebar(p: SidebarProps) {
+export const Sidebar = (p: SidebarProps) => {
   const set = <K extends keyof Filters>(key: K, value: Filters[K]) =>
     p.setFilters((f) => ({ ...f, [key]: value }));
   // The sort is a preference, not a filter: it survives the reset.
@@ -82,7 +82,7 @@ export function Sidebar(p: SidebarProps) {
     if (!currentRow) return;
     lists.current
       ?.querySelector(`[data-row="${currentRow}"]`)
-      ?.scrollIntoView({ block: "nearest", behavior: "smooth" });
+      ?.scrollIntoView({ behavior: "smooth", block: "nearest" });
   }, [currentRow]);
 
   return (
@@ -302,4 +302,4 @@ export function Sidebar(p: SidebarProps) {
       </div>
     </div>
   );
-}
+};

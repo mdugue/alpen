@@ -22,10 +22,10 @@ import type {
 } from "../../lib/types";
 
 /** Great-circle distance in km. */
-export function haversine(
+export const haversine = (
   a: readonly [number, number],
   b: readonly [number, number],
-) {
+) => {
   const R = 6371;
   const dLat = ((b[0] - a[0]) * Math.PI) / 180;
   const dLon = ((b[1] - a[1]) * Math.PI) / 180;
@@ -35,16 +35,25 @@ export function haversine(
       Math.cos((b[0] * Math.PI) / 180) *
       Math.sin(dLon / 2) ** 2;
   return 2 * R * Math.asin(Math.sqrt(x));
-}
+};
 
 const at = (p: LatLon): [number, number] => [p.lat, p.lon];
+const round = (n: number, digits: number) => +n.toFixed(digits);
+const fmtKm = (n: number) =>
+  n < 1 ? `${Math.round(n * 1000)} m` : `${round(n, 1)} km`;
+/** Drops `note` and any undefined key so the spread does not erase a default. */
+const strip = (c?: AscentCheck | TourCheck) =>
+  Object.fromEntries(
+    Object.entries(c ?? {}).filter(([k, v]) => k !== "note" && v !== undefined),
+  );
 
 /** Length of a polyline in km. */
-export function length(geom: RouteGeometry) {
+export const length = (geom: RouteGeometry) => {
   let km = 0;
-  for (let i = 1; i < geom.length; i++) km += haversine(geom[i - 1]!, geom[i]!);
+  for (let i = 1; i < geom.length; i += 1)
+    km += haversine(geom[i - 1]!, geom[i]!);
   return km;
-}
+};
 
 /**
  * Default thresholds. Calibrated against the 88 routes stored before the gate
@@ -54,12 +63,14 @@ export function length(geom: RouteGeometry) {
  */
 export const LIMITS = {
   ascent: {
+    /** …and end at the summit marker. */
+    maxEndDist: 0.5,
+    /** A single ascent that gains more than this is routed over something else. */
+    maxGain: 3000,
     /** Longest plausible single alpine ascent. */
     maxKm: 60,
     /** The route has to start where the ascent says it starts. */
     maxStartDist: 2,
-    /** …and end at the summit marker. */
-    maxEndDist: 0.5,
     /** |profile top − pass.elevation|. Copernicus DEM noise is well inside this. */
     maxTopDelta: 80,
     /**
@@ -68,9 +79,9 @@ export const LIMITS = {
      * 0.65, the tightest correct ascent (Grimselpass ab Gletsch, 6 km) at 0.81.
      */
     minPeakAt: 0.75,
-    /** A single ascent that gains more than this is routed over something else. */
-    maxGain: 3000,
   },
+  /** DEM height at the pass coordinate vs. the stated `pass.elevation`. */
+  summit: { maxDelta: 80 },
   tour: {
     /**
      * Relative deviation from the hand-maintained `tour.km`. Those figures come
@@ -87,75 +98,74 @@ export const LIMITS = {
     /** Distance from the route ends to the first/last waypoint. */
     maxWaypointDist: 2,
   },
-  /** DEM height at the pass coordinate vs. the stated `pass.elevation`. */
-  summit: { maxDelta: 80 },
 } as const;
 
 /** Geometry-only measurement, available before a profile is paid for. */
-export function ascentMetrics(
+export const ascentMetrics = (
   geom: RouteGeometry,
   from: LatLon,
   summit: LatLon,
-): AscentMetrics {
-  return {
-    km: round(length(geom), 2),
-    startDist: round(haversine(geom[0]!, at(from)), 3),
-    endDist: round(haversine(geom.at(-1)!, at(summit)), 3),
-    topDelta: null,
-    peakAt: null,
-    gain: null,
-  };
-}
+): AscentMetrics => ({
+  endDist: round(haversine(geom.at(-1)!, at(summit)), 3),
+  gain: null,
+  km: round(length(geom), 2),
+  peakAt: null,
+  startDist: round(haversine(geom[0]!, at(from)), 3),
+  topDelta: null,
+});
 
 /** Fills in the three profile metrics once the elevation samples exist. */
-export function withProfile(
+export const withProfile = (
   m: AscentMetrics,
   profile: ElevationProfile,
   elevation: number,
-): AscentMetrics {
+): AscentMetrics => {
   const total = profile.dist.at(-1) ?? 0;
   let peak = 0;
-  for (let i = 1; i < profile.ele.length; i++)
+  for (let i = 1; i < profile.ele.length; i += 1)
     if (profile.ele[i]! > profile.ele[peak]!) peak = i;
   return {
     ...m,
-    topDelta: profile.top - elevation,
-    peakAt: total > 0 ? round(profile.dist[peak]! / total, 3) : 1,
     gain: profile.elevationGain,
+    peakAt: total > 0 ? round(profile.dist[peak]! / total, 3) : 1,
+    topDelta: profile.top - elevation,
   };
-}
+};
 
-export function tourMetrics(
+export const tourMetrics = (
   geom: RouteGeometry,
   waypoints: LatLon[],
   statedKm: number,
-): TourMetrics {
+): TourMetrics => {
   const km = length(geom);
   return {
+    endDist: round(haversine(geom.at(-1)!, at(waypoints.at(-1)!)), 3),
     km: round(km, 2),
-    statedKm,
     kmDelta: round(statedKm > 0 ? (km - statedKm) / statedKm : Infinity, 3),
     startDist: round(haversine(geom[0]!, at(waypoints[0]!)), 3),
-    endDist: round(haversine(geom.at(-1)!, at(waypoints.at(-1)!)), 3),
+    statedKm,
   };
-}
+};
 
 /**
  * Reasons this ascent fails, as short German sentences carrying the measured
  * value – `data:check` prints them and a human has to be able to tell a routing
  * problem from a coordinate problem without opening anything else.
  */
-export function checkAscent(m: AscentMetrics, check?: AscentCheck): string[] {
+export const checkAscent = (
+  m: AscentMetrics,
+  check?: AscentCheck,
+): string[] => {
   const l = { ...LIMITS.ascent, ...strip(check) };
   const out: string[] = [];
   if (m.km > l.maxKm) out.push(`Länge ${m.km} km > ${l.maxKm} km`);
   if (m.startDist > l.maxStartDist)
     out.push(
-      `Start ${km(m.startDist)} vom Auffahrtsbeginn entfernt > ${km(l.maxStartDist)}`,
+      `Start ${fmtKm(m.startDist)} vom Auffahrtsbeginn entfernt > ${fmtKm(l.maxStartDist)}`,
     );
   if (m.endDist > l.maxEndDist)
     out.push(
-      `Ende ${km(m.endDist)} vom Passpunkt entfernt > ${km(l.maxEndDist)}`,
+      `Ende ${fmtKm(m.endDist)} vom Passpunkt entfernt > ${fmtKm(l.maxEndDist)}`,
     );
   if (m.topDelta !== null && Math.abs(m.topDelta) > l.maxTopDelta)
     out.push(
@@ -168,9 +178,9 @@ export function checkAscent(m: AscentMetrics, check?: AscentCheck): string[] {
   if (m.gain !== null && m.gain > l.maxGain)
     out.push(`Anstieg ${m.gain} Hm > ${l.maxGain} Hm`);
   return out;
-}
+};
 
-export function checkTour(m: TourMetrics, check?: TourCheck): string[] {
+export const checkTour = (m: TourMetrics, check?: TourCheck): string[] => {
   const l = { ...LIMITS.tour, ...strip(check) };
   const out: string[] = [];
   if (Math.abs(m.kmDelta) > l.maxKmDelta)
@@ -180,24 +190,24 @@ export function checkTour(m: TourMetrics, check?: TourCheck): string[] {
     );
   if (m.startDist > l.maxWaypointDist)
     out.push(
-      `Start ${km(m.startDist)} vom ersten Wegpunkt entfernt > ${km(l.maxWaypointDist)}`,
+      `Start ${fmtKm(m.startDist)} vom ersten Wegpunkt entfernt > ${fmtKm(l.maxWaypointDist)}`,
     );
   if (m.endDist > l.maxWaypointDist)
     out.push(
-      `Ende ${km(m.endDist)} vom letzten Wegpunkt entfernt > ${km(l.maxWaypointDist)}`,
+      `Ende ${fmtKm(m.endDist)} vom letzten Wegpunkt entfernt > ${fmtKm(l.maxWaypointDist)}`,
     );
   return out;
-}
+};
 
 /** DEM height at the pass coordinate vs. the stated elevation. */
-export function checkSummit(dem: number, elevation: number): string[] {
+export const checkSummit = (dem: number, elevation: number): string[] => {
   const d = Math.round(dem - elevation);
   return Math.abs(d) > LIMITS.summit.maxDelta
     ? [
         `DEM-Höhe am Passpunkt weicht ${d > 0 ? "+" : ""}${d} m ab > ${LIMITS.summit.maxDelta} m`,
       ]
     : [];
-}
+};
 
 /**
  * Identity of a geometry, so a retry can say "the router returned exactly the
@@ -208,17 +218,7 @@ export function checkSummit(dem: number, elevation: number): string[] {
  * degrade harmlessly if it ever changes: a stale hash reads as "the geometry
  * moved", which costs one re-fetched profile and never a wrong route.
  */
-export function geometryHash(geom: RouteGeometry) {
-  return Bun.hash(
+export const geometryHash = (geom: RouteGeometry) =>
+  Bun.hash(
     geom.map(([lat, lon]) => `${lat.toFixed(5)},${lon.toFixed(5)}`).join(";"),
   ).toString(16);
-}
-
-const round = (n: number, digits: number) => +n.toFixed(digits);
-const km = (n: number) =>
-  n < 1 ? `${Math.round(n * 1000)} m` : `${round(n, 1)} km`;
-/** Drops `note` and any undefined key so the spread does not erase a default. */
-const strip = (c?: AscentCheck | TourCheck) =>
-  Object.fromEntries(
-    Object.entries(c ?? {}).filter(([k, v]) => k !== "note" && v !== undefined),
-  );

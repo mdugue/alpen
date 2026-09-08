@@ -3,8 +3,8 @@ export { cn } from "cn";
 /** Formats a number using German locale conventions (e.g. "2.764"). */
 export const fmt = (n: number, digits = 0) =>
   n.toLocaleString("de-DE", {
-    minimumFractionDigits: 0,
     maximumFractionDigits: digits,
+    minimumFractionDigits: 0,
   });
 
 /** Number plus unit with a non-breaking space: "2.757 m", "24,3 km". */

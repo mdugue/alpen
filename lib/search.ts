@@ -37,7 +37,7 @@ const firstSentence = (s: string) => s.split(/(?<=[.!?])\s/u)[0] ?? s;
 const passHay = new WeakMap<Pass, string>();
 const townHay = new WeakMap<Town, string>();
 
-export function passHaystack(pass: Pass): string {
+export const passHaystack = (pass: Pass): string => {
   let hay = passHay.get(pass);
   if (hay === undefined) {
     hay = fold(
@@ -53,18 +53,17 @@ export function passHaystack(pass: Pass): string {
     passHay.set(pass, hay);
   }
   return hay;
-}
+};
 
 /** Not cached: the haystack depends on the pass names handed in, and there are only a handful of tours. */
-export function tourHaystack(tour: Tour, passNames: string[]): string {
-  return fold([tour.name, tour.description, ...passNames].join(" "));
-}
+export const tourHaystack = (tour: Tour, passNames: string[]): string =>
+  fold([tour.name, tour.description, ...passNames].join(" "));
 
-export function townHaystack(town: Town): string {
+export const townHaystack = (town: Town): string => {
   let hay = townHay.get(town);
   if (hay === undefined) {
     hay = fold([town.name, countryWords(town.country), town.why].join(" "));
     townHay.set(town, hay);
   }
   return hay;
-}
+};

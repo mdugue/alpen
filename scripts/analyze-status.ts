@@ -32,9 +32,9 @@ interface Cohort {
 }
 
 const empty = (): Record<Status, Cohort> => ({
-  open: { n: 0, snowSum: 0, snowHigh: 0 },
-  risky: { n: 0, snowSum: 0, snowHigh: 0 },
-  closed: { n: 0, snowSum: 0, snowHigh: 0 },
+  closed: { n: 0, snowHigh: 0, snowSum: 0 },
+  open: { n: 0, snowHigh: 0, snowSum: 0 },
+  risky: { n: 0, snowHigh: 0, snowSum: 0 },
 });
 
 const before = empty();
@@ -43,7 +43,7 @@ const changes: string[] = [];
 
 for (const pass of passes) {
   const series = climate[pass.slug];
-  PERIODS.forEach((t, i) => {
+  for (const [i, t] of PERIODS.entries()) {
     const bucket = series?.[i] ?? null;
     const snow = bucket?.snowPct ?? 0;
     const b = passStatus(pass, t);
@@ -52,9 +52,9 @@ for (const pass of passes) {
       [before, b],
       [after, a],
     ] as const) {
-      cohort[status].n++;
+      cohort[status].n += 1;
       cohort[status].snowSum += snow;
-      if (snow >= 20) cohort[status].snowHigh++;
+      if (snow >= 20) cohort[status].snowHigh += 1;
     }
     if (a !== b) {
       changes.push(
@@ -62,10 +62,10 @@ for (const pass of passes) {
           `  (Schnee ${snow} %, Frost ${bucket?.frostPct ?? 0} %)`,
       );
     }
-  });
+  }
 }
 
-function table(title: string, cohorts: Record<Status, Cohort>) {
+const table = (title: string, cohorts: Record<Status, Cohort>) => {
   console.log(`\n${title}`);
   console.log(
     "| Verdict | n | mean snow-day share | share with snow ≥ 20 % of days |",
@@ -77,7 +77,7 @@ function table(title: string, cohorts: Record<Status, Cohort>) {
     const high = c.n ? Math.round((c.snowHigh / c.n) * 100) : 0;
     console.log(`| ${STATUS_LABEL[status]} | ${c.n} | ${mean} % | ${high} % |`);
   }
-}
+};
 
 if (!changesOnly) {
   table("Before (window, altitude, calendar):", before);

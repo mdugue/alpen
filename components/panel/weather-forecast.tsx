@@ -38,7 +38,7 @@ import useFetch from "@/lib/use-fetch";
 import { cn, fmt } from "@/lib/utils";
 
 /** WMO weather code → icon and German label. */
-function describe(code: number): [LucideIcon, string] {
+const describe = (code: number): [LucideIcon, string] => {
   if (code === 0) return [Sun, "sonnig"];
   if (code <= 2) return [CloudSun, "leicht bewölkt"];
   if (code === 3) return [Cloud, "bedeckt"];
@@ -49,13 +49,13 @@ function describe(code: number): [LucideIcon, string] {
   if (code <= 82) return [CloudRain, "Regenschauer"];
   if (code <= 86) return [CloudSnow, "Schneeschauer"];
   return [CloudLightning, "Gewitter"];
-}
+};
 
 const weekday = (date: string) =>
   new Date(date).toLocaleDateString("de-DE", {
-    weekday: "short",
     day: "numeric",
     month: "numeric",
+    weekday: "short",
   });
 
 /**
@@ -64,7 +64,7 @@ const weekday = (date: string) =>
  * tomorrow are shown as two dense rows, the rest of the week stays one click
  * away.
  */
-export function WeatherForecast({ slug }: { slug: string }) {
+export const WeatherForecast = ({ slug }: { slug: string }) => {
   const { data, error, loading } = useFetch<{ days: WeatherDay[] }>(
     `/api/weather/${slug}`,
   );
@@ -203,4 +203,4 @@ export function WeatherForecast({ slug }: { slug: string }) {
       </CollapsibleContent>
     </Collapsible>
   );
-}
+};

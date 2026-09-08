@@ -8,11 +8,11 @@ import { fmt } from "@/lib/utils";
 
 /** Gradient classes; fixed colours on purpose so profiles compare across passes. */
 const GRADIENT_COLORS = [
-  { max: 3, label: "< 3 %", color: "oklch(0.75 0.09 150)" },
-  { max: 6, label: "3–6 %", color: "oklch(0.82 0.12 95)" },
-  { max: 9, label: "6–9 %", color: "oklch(0.72 0.15 60)" },
-  { max: 12, label: "9–12 %", color: "oklch(0.6 0.18 30)" },
-  { max: Infinity, label: "> 12 %", color: "oklch(0.45 0.16 350)" },
+  { color: "oklch(0.75 0.09 150)", label: "< 3 %", max: 3 },
+  { color: "oklch(0.82 0.12 95)", label: "3–6 %", max: 6 },
+  { color: "oklch(0.72 0.15 60)", label: "6–9 %", max: 9 },
+  { color: "oklch(0.6 0.18 30)", label: "9–12 %", max: 12 },
+  { color: "oklch(0.45 0.16 350)", label: "> 12 %", max: Infinity },
 ];
 const colorFor = (g: number) => GRADIENT_COLORS.find((c) => g < c.max)!.color;
 
@@ -35,18 +35,56 @@ interface Props {
   onZoomTo?: (point: { lat: number; lon: number }) => void;
 }
 
+/** Hairline, dot and readout at the scrubbed sample; the readout flips at the right edge. */
+const Cursor = ({ cx, cy, text }: { cx: number; cy: number; text: string }) => {
+  const flip = cx > W * 0.58;
+  return (
+    <g>
+      <line
+        x1={cx}
+        x2={cx}
+        y1={4}
+        y2={H - MB}
+        className="stroke-foreground"
+        strokeWidth={0.8}
+        strokeDasharray="2 2"
+      />
+      <circle
+        cx={cx}
+        cy={cy}
+        r={3}
+        className="fill-card stroke-foreground"
+        strokeWidth={1.5}
+      />
+      <text
+        x={flip ? cx - 5 : cx + 5}
+        y={10}
+        fontSize={9.5}
+        textAnchor={flip ? "end" : "start"}
+        className="fill-foreground font-medium tabular-nums"
+        paintOrder="stroke"
+        strokeWidth={3}
+        strokeLinejoin="round"
+        style={{ stroke: "var(--card)" }}
+      >
+        {text}
+      </text>
+    </g>
+  );
+};
+
 /**
  * Elevation profile with gradient colours, scrubbable with pointer, touch and
  * keyboard. The values used to sit in `<title>` tooltips, which touch users
  * never saw and which never reached the map; the cursor shows them in the
  * figure and reports the road point so the map can mark it.
  */
-export function ElevationProfile({
+export const ElevationProfile = ({
   profile,
   coords,
   onCursor,
   onZoomTo,
-}: Props) {
+}: Props) => {
   const [cursor, setCursor] = useState<number | null>(null);
 
   const lo = Math.floor((Math.min(...profile.ele) - 40) / 100) * 100;
@@ -78,7 +116,7 @@ export function ElevationProfile({
       ((((clientX - rect.left) / rect.width) * W - ML) / (W - ML - 4)) *
       profile.km;
     let best = 0;
-    for (let i = 1; i <= last; i++)
+    for (let i = 1; i <= last; i += 1)
       if (Math.abs(profile.dist[i]! - km) < Math.abs(profile.dist[best]! - km))
         best = i;
     return best;
@@ -232,42 +270,4 @@ export function ElevationProfile({
       </figcaption>
     </figure>
   );
-}
-
-/** Hairline, dot and readout at the scrubbed sample; the readout flips at the right edge. */
-function Cursor({ cx, cy, text }: { cx: number; cy: number; text: string }) {
-  const flip = cx > W * 0.58;
-  return (
-    <g>
-      <line
-        x1={cx}
-        x2={cx}
-        y1={4}
-        y2={H - MB}
-        className="stroke-foreground"
-        strokeWidth={0.8}
-        strokeDasharray="2 2"
-      />
-      <circle
-        cx={cx}
-        cy={cy}
-        r={3}
-        className="fill-card stroke-foreground"
-        strokeWidth={1.5}
-      />
-      <text
-        x={flip ? cx - 5 : cx + 5}
-        y={10}
-        fontSize={9.5}
-        textAnchor={flip ? "end" : "start"}
-        className="fill-foreground font-medium tabular-nums"
-        paintOrder="stroke"
-        strokeWidth={3}
-        strokeLinejoin="round"
-        style={{ stroke: "var(--card)" }}
-      >
-        {text}
-      </text>
-    </g>
-  );
-}
+};

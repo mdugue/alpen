@@ -16,12 +16,12 @@ import { cn } from "@/lib/utils";
  * is outlined, so the strip still works without hue.
  */
 const CELL: Record<Status, string> = {
+  closed: "bg-status-closed/12 ring-1 ring-status-closed/45 ring-inset",
   open: "bg-status-open",
   risky: "bg-status-risky",
-  closed: "bg-status-closed/12 ring-1 ring-status-closed/45 ring-inset",
 };
 
-export function SeasonStrip({
+export const SeasonStrip = ({
   statuses,
   current,
   best,
@@ -37,7 +37,7 @@ export function SeasonStrip({
   /** `row`: 96 px, no labels. `panel`: full width with month initials. */
   size?: "row" | "panel";
   className?: string;
-}) {
+}) => {
   const panel = size === "panel";
   const currentIndex = current === undefined ? -1 : periodIndex(current);
   const label = [
@@ -102,4 +102,4 @@ export function SeasonStrip({
       )}
     </div>
   );
-}
+};

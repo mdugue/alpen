@@ -1,7 +1,7 @@
 import { cn } from "@/lib/utils";
 
 /** Editorial 1–5 scale as bars; explained in the scales dialog. */
-export function Rating({
+export const Rating = ({
   value,
   muted,
   className,
@@ -9,27 +9,25 @@ export function Rating({
   value: number;
   muted?: boolean;
   className?: string;
-}) {
-  return (
-    <span
-      role="img"
-      aria-label={`${value} von 5`}
-      className={cn("inline-flex gap-0.5 align-middle", className)}
-    >
-      {[1, 2, 3, 4, 5].map((i) => (
-        <span
-          key={i}
-          aria-hidden
-          className={cn(
-            "h-2.5 w-1.5 rounded-[2px]",
-            i <= value
-              ? muted
-                ? "bg-muted-foreground"
-                : "bg-primary"
-              : "bg-muted-foreground/25",
-          )}
-        />
-      ))}
-    </span>
-  );
-}
+}) => (
+  <span
+    role="img"
+    aria-label={`${value} von 5`}
+    className={cn("inline-flex gap-0.5 align-middle", className)}
+  >
+    {[1, 2, 3, 4, 5].map((i) => (
+      <span
+        key={i}
+        aria-hidden
+        className={cn(
+          "h-2.5 w-1.5 rounded-[2px]",
+          i <= value
+            ? muted
+              ? "bg-muted-foreground"
+              : "bg-primary"
+            : "bg-muted-foreground/25",
+        )}
+      />
+    ))}
+  </span>
+);

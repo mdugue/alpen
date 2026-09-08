@@ -13,24 +13,31 @@ interface State<T> {
  */
 export default function useFetch<T>(url: string | null) {
   const [state, setState] = useState<State<T>>({
-    url: null,
     data: null,
     error: null,
+    url: null,
   });
 
   useEffect(() => {
     if (!url) return;
     let cancelled = false;
-    fetch(url)
-      .then((r) =>
-        r.ok
-          ? (r.json() as Promise<T>)
-          : Promise.reject(new Error(String(r.status))),
-      )
-      .then((data) => !cancelled && setState({ url, data, error: null }))
-      .catch(
-        (error: Error) => !cancelled && setState({ url, data: null, error }),
-      );
+    const load = async () => {
+      let next: State<T>;
+      try {
+        const r = await fetch(url);
+        next = r.ok
+          ? { data: (await r.json()) as T, error: null, url }
+          : { data: null, error: new Error(String(r.status)), url };
+      } catch (error) {
+        next = {
+          data: null,
+          error: error instanceof Error ? error : new Error(String(error)),
+          url,
+        };
+      }
+      if (!cancelled) setState(next);
+    };
+    void load();
     return () => {
       cancelled = true;
     };

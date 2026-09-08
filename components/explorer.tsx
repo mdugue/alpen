@@ -78,7 +78,7 @@ const SNAP_PEEK = "4.5rem";
 const SNAP_POINTS = [SNAP_PEEK, 0.5, 0.82] as const;
 type Snap = (typeof SNAP_POINTS)[number];
 
-export function Explorer({
+export const Explorer = ({
   passes,
   tours,
   towns,
@@ -86,7 +86,7 @@ export function Explorer({
   profiles,
   climate,
   defaultPeriod,
-}: Props) {
+}: Props) => {
   const [filters, setFilters] = useState<Filters>({
     ...DEFAULT_FILTERS,
     period: defaultPeriod,
@@ -179,18 +179,18 @@ export function Explorer({
 
   const mapPasses: MapPass[] = passRows.map(({ pass, status, favorite }) => ({
     ...pass,
-    status,
     favorite,
+    status,
   }));
   // What the list shows for a kind is what the map shows for that kind; the
   // visibility switches only add a layer toggle on top.
   const mapTours = tourRows.map(({ tour: t, status }) => ({
     ...t,
-    status,
-    visible: !hiddenTours.includes(t.slug),
     geometry:
       routes[`tour:${t.slug}`] ??
       t.waypoints.map((w) => [w.lat, w.lon] as [number, number]),
+    status,
+    visible: !hiddenTours.includes(t.slug),
   }));
   const mapTowns = townRows.map(({ town, favorite }) => ({
     ...town,
@@ -278,11 +278,11 @@ export function Explorer({
 
   // Height of the visible sheet part, so its own scroll container ends at the fold.
   const sheetHeight = typeof snap === "number" ? `${snap * 100}dvh` : snap;
-  const insetBottom = !isMobile
-    ? 0
-    : typeof snap === "number"
+  const insetBottom = isMobile
+    ? typeof snap === "number"
       ? Math.round(window.innerHeight * 0.5)
-      : 72;
+      : 72
+    : 0;
 
   // Desktop: the panels float over the map; the map is padded by their width
   // so camera targets land in the visible part.
@@ -392,7 +392,9 @@ export function Explorer({
                 setSnap(s as Snap);
               }
             }}
-            onOpenChange={() => {}}
+            onOpenChange={() => {
+              // The sheet is always open; it only moves between snap points.
+            }}
           >
             <DrawerContent className="rounded-b-none border-b-0 [--drawer-inset:0px] data-[swipe-axis=y]:[--drawer-content-max-height:100dvh]">
               <DrawerTitle className="sr-only">Liste und Filter</DrawerTitle>
@@ -422,4 +424,4 @@ export function Explorer({
       <ScalesDialog open={scalesOpen} onOpenChange={setScalesOpen} />
     </TooltipProvider>
   );
-}
+};

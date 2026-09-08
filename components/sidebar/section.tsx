@@ -15,7 +15,7 @@ import { cn } from "@/lib/utils";
  * belong to the section (e.g. the map-visibility switch) are rendered next to
  * the trigger, never inside it.
  */
-export function Section({
+export const Section = ({
   open,
   onOpenChange,
   glyph,
@@ -33,7 +33,7 @@ export function Section({
   total: number;
   control?: React.ReactNode;
   children: React.ReactNode;
-}) {
+}) => {
   const filtered = count !== total;
   return (
     <Collapsible open={open} onOpenChange={onOpenChange}>
@@ -73,7 +73,7 @@ export function Section({
       <CollapsibleContent>{children}</CollapsibleContent>
     </Collapsible>
   );
-}
+};
 
 /** Legend glyphs; the same shapes the map uses for the three kinds. */
 export const KIND_GLYPH = {

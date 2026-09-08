@@ -51,12 +51,12 @@ describe("profileDistances", () => {
     // A square wave: the samples land on every fourth point and would cut the
     // corners, so a chord chain comes out far shorter than the road.
     const geom: RouteGeometry = [];
-    for (let i = 0; i < 400; i++)
+    for (let i = 0; i < 400; i += 1)
       geom.push([46 + (i % 2) * 0.002, 10 + i * 0.0002]);
     const dist = profileDistances(geom);
     let chords = 0;
     const pts = profileCoords(geom);
-    for (let i = 1; i < pts.length; i++)
+    for (let i = 1; i < pts.length; i += 1)
       chords += Math.hypot(
         (pts[i]![0] - pts[i - 1]![0]) * 111,
         (pts[i]![1] - pts[i - 1]![1]) * 77,
@@ -67,7 +67,7 @@ describe("profileDistances", () => {
   test("starts at zero and never goes backwards", () => {
     const dist = profileDistances(straight(500));
     expect(dist[0]).toBe(0);
-    for (let i = 1; i < dist.length; i++)
+    for (let i = 1; i < dist.length; i += 1)
       expect(dist[i]!).toBeGreaterThan(dist[i - 1]!);
   });
 
@@ -115,8 +115,8 @@ describe("profileStats", () => {
     const dist = Array.from({ length: 51 }, (_, i) => i * 0.2);
     const ele = dist.map((d) => 500 + d * 70);
     expect(profileStats(dist, ele)).toEqual({
-      km: 10,
       avgGradient: 7,
+      km: 10,
       maxKmGradient: 7,
     });
   });
@@ -126,8 +126,8 @@ describe("profileStats", () => {
       expect([key, profileStats(p.dist, p.ele)]).toEqual([
         key,
         {
-          km: p.km,
           avgGradient: p.avgGradient,
+          km: p.km,
           maxKmGradient: p.maxKmGradient,
         },
       ]);
@@ -140,14 +140,14 @@ describe("withRoadDistances", () => {
   test("re-derives the distances and the stats, keeps the elevations", () => {
     const ele = profileCoords(geom).map((_, i) => 1000 + i * 5);
     const stale: ElevationProfile = {
-      km: 1,
-      elevationGain: 495,
-      start: 1000,
-      top: ele.at(-1)!,
       avgGradient: 49.5,
-      maxKmGradient: 60,
       dist: ele.map((_, i) => i * 0.01),
       ele,
+      elevationGain: 495,
+      km: 1,
+      maxKmGradient: 60,
+      start: 1000,
+      top: ele.at(-1)!,
     };
     const fresh = withRoadDistances(stale, geom);
     expect(fresh.ele).toBe(stale.ele);
@@ -167,14 +167,14 @@ describe("withRoadDistances", () => {
 
   test("a route that no longer matches the samples is left alone", () => {
     const p = {
-      km: 1,
-      elevationGain: 0,
-      start: 0,
-      top: 0,
       avgGradient: 0,
-      maxKmGradient: 0,
       dist: [0, 1],
       ele: [0, 0],
+      elevationGain: 0,
+      km: 1,
+      maxKmGradient: 0,
+      start: 0,
+      top: 0,
     } as ElevationProfile;
     expect(withRoadDistances(p, straight(300, 100))).toBe(p);
   });

@@ -32,40 +32,42 @@ const profiles: Record<string, ElevationProfile> =
   S.Profiles.parse(profilesJson);
 const climate: Record<string, ClimateYear> = S.Climate.parse(climateJson);
 
-export async function getPasses(): Promise<Pass[]> {
+export const getPasses = async (): Promise<Pass[]> => {
   "use cache";
   return passes;
-}
+};
 
-export async function getTours(): Promise<Tour[]> {
+export const getTours = async (): Promise<Tour[]> => {
   "use cache";
   return tours;
-}
+};
 
-export async function getTowns(): Promise<Town[]> {
+export const getTowns = async (): Promise<Town[]> => {
   "use cache";
   return towns;
-}
+};
 
 /** Routed road geometry per ascent, key: `${passSlug}:${index}`. */
-export async function getRoutes(): Promise<Record<string, RouteGeometry>> {
+export const getRoutes = async (): Promise<Record<string, RouteGeometry>> => {
   "use cache";
   return routes;
-}
+};
 
 /** Elevation profiles per ascent, same key as getRoutes. */
-export async function getProfiles(): Promise<Record<string, ElevationProfile>> {
+export const getProfiles = async (): Promise<
+  Record<string, ElevationProfile>
+> => {
   "use cache";
   return profiles;
-}
+};
 
 /** Climate series per pass slug (24 half-months). */
-export async function getClimate(): Promise<Record<string, ClimateYear>> {
+export const getClimate = async (): Promise<Record<string, ClimateYear>> => {
   "use cache";
   return climate;
-}
+};
 
-export async function getPass(slug: string): Promise<Pass | undefined> {
+export const getPass = async (slug: string): Promise<Pass | undefined> => {
   "use cache";
   return passes.find((p) => p.slug === slug);
-}
+};

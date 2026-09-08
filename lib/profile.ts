@@ -13,21 +13,20 @@ import type { ElevationProfile, RouteGeometry } from "@/lib/types";
 export const PROFILE_POINTS = 100;
 
 /** Indices into the route geometry that a profile is sampled at. */
-function sampleIndices(length: number): number[] {
+const sampleIndices = (length: number): number[] => {
   const n = Math.min(PROFILE_POINTS, length);
   if (n < 2) return [0];
   const step = (length - 1) / (n - 1);
   return Array.from({ length: n }, (_, i) => Math.round(i * step));
-}
+};
 
 /**
  * The route coordinates a profile was sampled at, in profile order. The route
  * itself already ships for the map, so the coordinates are derived here rather
  * than stored a second time in `profiles.json`.
  */
-export function profileCoords(geom: RouteGeometry): RouteGeometry {
-  return sampleIndices(geom.length).map((i) => geom[i]!);
-}
+export const profileCoords = (geom: RouteGeometry): RouteGeometry =>
+  sampleIndices(geom.length).map((i) => geom[i]!);
 
 /**
  * Cumulative distance per sample in km, measured **along the road** and not
@@ -35,9 +34,9 @@ export function profileCoords(geom: RouteGeometry): RouteGeometry {
  * a chord chain through the 48 bends of the Stelvio is a good two kilometres
  * short, which makes every gradient derived from it far too steep.
  */
-export function profileDistances(geom: RouteGeometry): number[] {
+export const profileDistances = (geom: RouteGeometry): number[] => {
   const cum = [0];
-  for (let i = 1; i < geom.length; i++)
+  for (let i = 1; i < geom.length; i += 1)
     cum.push(
       cum[i - 1]! +
         haversine(
@@ -46,7 +45,7 @@ export function profileDistances(geom: RouteGeometry): number[] {
         ),
     );
   return sampleIndices(geom.length).map((i) => +cum[i]!.toFixed(2));
-}
+};
 
 /**
  * Steepest full kilometre in percent – the figure a rider braces for, which an
@@ -64,7 +63,7 @@ export function profileDistances(geom: RouteGeometry): number[] {
  *
  * Profiles shorter than a kilometre report their overall gradient.
  */
-export function steepestKm(dist: number[], ele: number[]): number {
+export const steepestKm = (dist: number[], ele: number[]): number => {
   const total = dist.at(-1) ?? 0;
   const overall = total > 0 ? (ele.at(-1)! - ele[0]!) / (total * 10) : 0;
   if (total <= 1 || dist.length < 3) return +overall.toFixed(1);
@@ -73,13 +72,13 @@ export function steepestKm(dist: number[], ele: number[]): number {
     const from = Math.max(0, i - 1);
     const to = Math.min(ele.length - 1, i + 1);
     let sum = 0;
-    for (let k = from; k <= to; k++) sum += ele[k]!;
+    for (let k = from; k <= to; k += 1) sum += ele[k]!;
     return sum / (to - from + 1);
   });
   /** Elevation at an arbitrary distance, interpolated between two samples. */
   const eleAt = (km: number) => {
     let j = 1;
-    while (j < dist.length - 1 && dist[j]! < km) j++;
+    while (j < dist.length - 1 && dist[j]! < km) j += 1;
     const d0 = dist[j - 1]!;
     const d1 = dist[j]!;
     const t = d1 === d0 ? 0 : (km - d0) / (d1 - d0);
@@ -87,13 +86,13 @@ export function steepestKm(dist: number[], ele: number[]): number {
   };
 
   let best = -Infinity;
-  for (let i = 0; i < dist.length - 1; i++) {
+  for (let i = 0; i < dist.length - 1; i += 1) {
     const end = dist[i]! + 1;
     if (end > total) break;
     // Every sample in the window, plus the interpolated point at exactly 1 km.
     const xs = [dist[i]!];
     const ys = [smooth[i]!];
-    for (let k = i + 1; k < dist.length && dist[k]! < end; k++) {
+    for (let k = i + 1; k < dist.length && dist[k]! < end; k += 1) {
       xs.push(dist[k]!);
       ys.push(smooth[k]!);
     }
@@ -103,7 +102,7 @@ export function steepestKm(dist: number[], ele: number[]): number {
     const my = ys.reduce((a, c) => a + c, 0) / ys.length;
     let num = 0;
     let den = 0;
-    for (let k = 0; k < xs.length; k++) {
+    for (let k = 0; k < xs.length; k += 1) {
       num += (xs[k]! - mx) * (ys[k]! - my);
       den += (xs[k]! - mx) ** 2;
     }
@@ -111,29 +110,29 @@ export function steepestKm(dist: number[], ele: number[]): number {
     if (den > 0) best = Math.max(best, num / den / 10);
   }
   return +(best === -Infinity ? overall : best).toFixed(1);
-}
+};
 
 /** Gradient of the sample step ending at `i`, in percent. */
-export function stepGradient(profile: ElevationProfile, i: number): number {
+export const stepGradient = (profile: ElevationProfile, i: number): number => {
   if (i < 1) return 0;
   const run = (profile.dist[i]! - profile.dist[i - 1]!) * 10;
   return run > 0 ? (profile.ele[i]! - profile.ele[i - 1]!) / run : 0;
-}
+};
 
 /**
  * The figures that follow from `dist` and `ele`. `km` is rounded for display,
  * but the gradient is derived from the unrounded total – on a short ascent the
  * 0,1 km of rounding is worth a tenth of a percent of gradient.
  */
-export function profileStats(dist: number[], ele: number[]) {
+export const profileStats = (dist: number[], ele: number[]) => {
   const total = dist.at(-1) ?? 0;
   return {
-    km: +total.toFixed(1),
     avgGradient:
       total > 0 ? +((ele.at(-1)! - ele[0]!) / (total * 10)).toFixed(1) : 0,
+    km: +total.toFixed(1),
     maxKmGradient: steepestKm(dist, ele),
   };
-}
+};
 
 /**
  * Brings a profile's distance-dependent fields up to date from the route it
@@ -144,11 +143,11 @@ export function profileStats(dist: number[], ele: number[]) {
  * Returns the profile unchanged when the route no longer has as many sample
  * points as the profile has elevations.
  */
-export function withRoadDistances(
+export const withRoadDistances = (
   profile: ElevationProfile,
   geom: RouteGeometry,
-): ElevationProfile {
+): ElevationProfile => {
   const dist = profileDistances(geom);
   if (dist.length !== profile.ele.length) return profile;
   return { ...profile, ...profileStats(dist, profile.ele), dist };
-}
+};
