@@ -1,0 +1,3 @@
+interface:
+  display_name: "Curate data"
+  short_description: "Add or edit passes, tours, towns; rebuild and check"
