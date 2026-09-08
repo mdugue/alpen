@@ -152,7 +152,7 @@ export function Explorer({
     window.addEventListener("hashchange", apply);
     return () => window.removeEventListener("hashchange", apply);
     // Intentional: the stored-state setters are stable.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // oxlint-disable-next-line react/exhaustive-deps
   }, []);
 
   useEffect(() => {

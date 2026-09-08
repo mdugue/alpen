@@ -79,6 +79,10 @@ describe("parseHash", () => {
   });
 
   test("nonsense numbers are dropped rather than becoming NaN", () => {
+    expect(parseHash("#c=abc,def").view.lat).toBeUndefined();
+    expect(parseHash("#c=abc,def").view.lon).toBeUndefined();
+    expect(parseHash("#c=45.06").view.lat).toBeUndefined();
+    expect(parseHash("#c=45.06,6.41,9").view.lat).toBeUndefined();
     expect(parseHash("#t=99").filters.period).toBeUndefined();
     expect(parseHash("#t=abc").filters.period).toBeUndefined();
     expect(parseHash("#t=6.25").filters.period).toBeUndefined();

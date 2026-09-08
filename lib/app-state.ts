@@ -97,7 +97,13 @@ export function parseHash(hash: string): HashState {
       : p.get("town")
         ? { kind: "town", slug: p.get("town")! }
         : null;
-  const c = p.get("c")?.split(",").map(Number);
+  // Both halves have to be numbers; half a pair is no camera at all, and a
+  // NaN would read as "a camera was requested" further up.
+  const pair = p.get("c")?.split(",").map(Number);
+  const center =
+    pair?.length === 2 && pair.every((n) => Number.isFinite(n))
+      ? pair
+      : undefined;
   const period = num("t");
   return {
     filters: {
@@ -109,8 +115,8 @@ export function parseHash(hash: string): HashState {
     },
     selection,
     view: {
-      lat: c?.[0],
-      lon: c?.[1],
+      lat: center?.[0],
+      lon: center?.[1],
       zoom: num("z"),
       pitch: num("pi"),
       bearing: num("b"),
