@@ -164,6 +164,8 @@ export const ElevationProfile = z
     ele: z.array(z.number()),
     elevationGain: z.number().nonnegative(),
     km: z.number().nonnegative(),
+    /** Steepest full kilometre in percent (see `steepestKm` in lib/profile.ts). */
+    maxKmGradient: z.number(),
     start: z.number(),
     top: z.number(),
   })

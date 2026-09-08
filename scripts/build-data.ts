@@ -8,6 +8,7 @@
  *   bun run data:build --pending         # the same as a single number, for scripts
  *   bun run data:build --retry-rejected  # try the rejected keys again
  *   bun run data:build --format          # only rewrite data/generated/*.json canonically
+ *   bun run data:build --backfill        # recompute derived profile fields, no API call
  *
  * Writes to data/generated/. Intermediate state is saved after every step;
  * the run can be aborted and resumes. Results belong in the repo – nothing
@@ -45,6 +46,12 @@ import { mkdir } from "node:fs/promises";
 
 import passes from "../data/passes.json" with { type: "json" };
 import tours from "../data/tours.json" with { type: "json" };
+import {
+  profileCoords,
+  profileDistances,
+  profileStats,
+  withRoadDistances,
+} from "../lib/profile";
 import { FILES } from "../lib/schema";
 import type {
   AscentMetrics,
@@ -69,7 +76,6 @@ import {
   checkSummit,
   checkTour,
   geometryHash,
-  haversine,
   tourMetrics,
   withProfile,
 } from "./lib/validate";
@@ -81,6 +87,7 @@ const PENDING_ONLY = process.argv.includes("--pending");
 const FORMAT_ONLY = process.argv.includes("--format");
 const RETRY_REJECTED = process.argv.includes("--retry-rejected");
 const UPGRADE_OSRM = process.argv.includes("--upgrade-osrm");
+const BACKFILL_ONLY = process.argv.includes("--backfill");
 /** Restrict the run to keys containing this, e.g. --only col-du-galibier. */
 const ONLY = process.argv[process.argv.indexOf("--only") + 1];
 const isOnly = (key: string) =>
@@ -364,21 +371,13 @@ const summitElevations = async (
 
 /** Elevations from the Copernicus DEM (Open-Meteo, no key needed). */
 const profile = async (geom: RouteGeometry): Promise<ElevationProfile> => {
-  const n = Math.min(PROFILE_POINTS, geom.length);
-  const step = (geom.length - 1) / (n - 1);
-  const pts = Array.from({ length: n }, (_, i) => geom[Math.round(i * step)]!);
+  const pts = profileCoords(geom);
   const { elevation } = await getJson<{ elevation: number[] }>(
     openMeteo,
     PROFILE_WEIGHT,
     `https://api.open-meteo.com/v1/elevation?latitude=${pts.map((c) => c[0]).join(",")}&longitude=${pts.map((c) => c[1]).join(",")}`,
   );
 
-  let total = 0;
-  const dist = [0];
-  for (let i = 1; i < pts.length; i += 1) {
-    total += haversine(pts[i - 1]!, pts[i]!);
-    dist.push(total);
-  }
   // Elevation gain with 10 m smoothing, otherwise DEM noise adds up
   let gain = 0;
   let base = elevation[0]!;
@@ -388,16 +387,17 @@ const profile = async (geom: RouteGeometry): Promise<ElevationProfile> => {
       base = e;
     } else if (e < base) base = e;
   }
+  // Distances follow the road, so profile.km agrees with the gate's
+  // `ascentMetrics.km` instead of cutting every hairpin short.
+  const dist = profileDistances(geom);
+  const ele = elevation.map(Math.round);
   return {
-    avgGradient: +((elevation.at(-1)! - elevation[0]!) / (total * 10)).toFixed(
-      1,
-    ),
-    dist: dist.map((d) => +d.toFixed(2)),
-    ele: elevation.map(Math.round),
+    ...profileStats(dist, ele),
+    dist,
+    ele,
     elevationGain: Math.round(gain),
-    km: +total.toFixed(1),
-    start: Math.round(elevation[0]!),
-    top: Math.round(Math.max(...elevation)),
+    start: ele[0]!,
+    top: Math.max(...ele),
   };
 };
 
@@ -590,6 +590,58 @@ if (STATUS_ONLY) {
   report();
   process.exit(0);
 }
+/**
+ * Recomputes everything a profile derives from its route and its samples: the
+ * distances along the road, km, the average and the steepest kilometre. The
+ * elevations stay as they were fetched, so this runs on the whole set without
+ * a single request – which is how existing profiles pick up a field that did
+ * not exist when they were fetched.
+ */
+if (BACKFILL_ONLY) {
+  let changed = 0;
+  let noRoute = 0;
+  let mismatched = 0;
+  for (const [key, p] of Object.entries(profiles)) {
+    const geom = routes[key];
+    if (!geom) {
+      noRoute += 1;
+      continue;
+    }
+    const next = withRoadDistances(p, geom);
+    if (next === p) {
+      console.warn(
+        `  ${key}: ${profileDistances(geom).length} Stützstellen aus der Route, ${p.ele.length} Höhen – übersprungen`,
+      );
+      mismatched += 1;
+      continue;
+    }
+    if (JSON.stringify(next) !== JSON.stringify(p)) changed += 1;
+    profiles[key] = next;
+  }
+  // A rejected entry keeps its profile but not its geometry, so only the
+  // fields that follow from the samples alone can be brought up to date here;
+  // the distances are re-derived if the key is ever retried and accepted.
+  let cached = 0;
+  for (const [key, r] of Object.entries(rejected)) {
+    if (!r.profile) continue;
+    const next = {
+      ...r.profile,
+      ...profileStats(r.profile.dist, r.profile.ele),
+    };
+    if (JSON.stringify(next) === JSON.stringify(r.profile)) continue;
+    rejected[key] = { ...r, profile: next };
+    cached += 1;
+  }
+  await write("profiles.json", profiles);
+  await write("rejected.json", rejected);
+  await writing;
+  console.log(
+    `Nachgerechnet: ${changed} Profile geändert, ${cached} zwischengespeicherte in rejected.json` +
+      `${noRoute ? `, ${noRoute} ohne passende Route` : ""}` +
+      `${mismatched ? `, ${mismatched} mit abweichender Stützstellenzahl` : ""}`,
+  );
+  process.exit(0);
+}
 if (FORMAT_ONLY) {
   await write("routes.json", routes);
   await write("profiles.json", profiles);
@@ -719,7 +771,9 @@ const gate = async (
   }
   let prof: ElevationProfile;
   try {
-    prof = cached ?? (await profile(geom));
+    // The cache is only ever hit for an identical geometry, so the distances
+    // can be re-derived from it rather than trusted as they were written.
+    prof = cached ? withRoadDistances(cached, geom) : await profile(geom);
   } catch (error) {
     if (!(error instanceof QuotaExhaustedError))
       fail(`Profil ${job.label}`, error);

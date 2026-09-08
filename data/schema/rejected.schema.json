@@ -128,6 +128,9 @@
             "type": "number",
             "minimum": 0
           },
+          "maxKmGradient": {
+            "type": "number"
+          },
           "start": {
             "type": "number"
           },
@@ -141,6 +144,7 @@
           "ele",
           "elevationGain",
           "km",
+          "maxKmGradient",
           "start",
           "top"
         ],

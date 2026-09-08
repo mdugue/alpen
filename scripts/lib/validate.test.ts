@@ -380,6 +380,7 @@ describe("metrics", () => {
       ele: [1000, 2000, 1900],
       elevationGain: 1000,
       km: 10,
+      maxKmGradient: 20,
       start: 1000,
       top: 2000,
     };

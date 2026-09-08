@@ -47,6 +47,7 @@ import { indexBySlug } from "@/lib/status";
 import type {
   ClimateYear,
   ElevationProfile,
+  LatLon,
   Pass,
   Period,
   RouteGeometry,
@@ -104,6 +105,11 @@ export const Explorer = ({
   const [sidebarOpen, setSidebarOpen] = useStored("alpenpaesse:sidebar", true);
   const [snap, setSnap] = useState<Snap>(SNAP_PEEK);
   const [scalesOpen, setScalesOpen] = useState(false);
+  // Where the elevation-profile cursor sits on the road, and a fly-to asked
+  // for by a click on it. Both live here because the map draws them and the
+  // detail panel produces them.
+  const [profileCursor, setProfileCursor] = useState<LatLon | null>(null);
+  const [profileZoom, setProfileZoom] = useState<LatLon | null>(null);
   const {
     isFavorite,
     toggle: toggleFavorite,
@@ -194,6 +200,7 @@ export const Explorer = ({
   /** Selecting something also makes it visible and brings the panel up. */
   const select = (sel: Selection) => {
     setSelection(sel);
+    setProfileCursor(null);
     if (sel.kind === "tour")
       setHiddenTours((h) => h.filter((s) => s !== sel.slug));
     if (sel.kind === "town") setShowTowns(true);
@@ -204,6 +211,7 @@ export const Explorer = ({
   const back = () => {
     const sel = selection;
     setSelection(null);
+    setProfileCursor(null);
     requestAnimationFrame(() => {
       const root = sidebarRoot.current;
       const row =
@@ -230,6 +238,8 @@ export const Explorer = ({
       climate={climate}
       isFavorite={isFavorite}
       onToggleFavorite={toggleFavorite}
+      onProfileCursor={setProfileCursor}
+      onProfileZoom={setProfileZoom}
       onSelect={select}
       onBack={back}
       onOpenScales={() => setScalesOpen(true)}
@@ -301,6 +311,8 @@ export const Explorer = ({
             selection={selection}
             onSelect={select}
             onViewChange={setView}
+            profileCursor={profileCursor}
+            profileZoom={profileZoom}
             requestedView={requestedView}
             insetLeft={insetLeft}
             insetBottom={insetBottom}
