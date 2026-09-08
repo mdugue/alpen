@@ -322,11 +322,13 @@ different job with a different cadence.
 12. ✅ First backfill run (OSRM only, no key in the environment): 143 of 180
     keys routed and stored, 37 refused, 92 summit heights fetched. Every stored
     route passes every check – the gate refused everything that did not.
-13. ⬜ Upgrade the 143 provisional OSRM routes to ORS
-    (`ORS_KEY=… bun run data:backfill --upgrade-osrm`, ≈ 13 600 Open-Meteo
-    calls ≈ 4 hourly runs), then re-judge.
-14. ⬜ Fix the 23 pass coordinates the summit check found (below), then
-    `bun run data:build --retry-rejected`.
+13. ✅ Fix the pass coordinates the summit check found: 13 of the 23 are moved
+    onto the pass (see below). Ten are left.
+14. ⬜ Upgrade the provisional OSRM routes to ORS and let the moved coordinates
+    take effect in one pass:
+    `ORS_KEY=… bun run data:backfill --upgrade-osrm --retry-rejected`
+    (≈ 139 routes, ≈ 14 000 Open-Meteo calls ≈ 4 hourly runs).
+15. ⬜ Decide the remaining ten coordinates once ORS has routed them.
 
 ### What the first run found
 
@@ -339,6 +341,37 @@ coordinate (18 m away), the DEM there reads 1 873 m, the profile top reads
 ascents of a pass end at the identical distance from the stated point (Allos
 1.04 km, Colombière 515 m, Croix de Fer 506 m) – two different roads cannot be
 wrong by the same amount, so the point they are measured against is.
+
+### Fixing the coordinates
+
+OSM settles most of them. A single Overpass query for `mountain_pass=yes` and
+`natural=saddle` nodes within 4 km of each suspect coordinate returned a node
+carrying the pass's own name for 13 of the 23, and three independent sources
+agree on every one: the node's name, its `ele` tag against the curated
+elevation (Δ 0–35 m), and the Copernicus DEM at the proposed point (Δ 1–29 m,
+against 100–670 m at the old point). The elevations were right throughout –
+that is precisely what made the comparison decisive – so only coordinates moved.
+
+Hahntennjoch was 4 km out, Passo Duran and Passo Staulanza 2–3.6 km, the rest
+0.3–3 km. Moving a coordinate invalidates two things, both handled: the cached
+DEM height in `summits.json` is dropped so the next run re-measures it, and the
+stored route now ends up to 3.9 km from the pass, which `data:check` reports as
+an implausible stored route until the upgrade re-routes it.
+
+The remaining ten split in two:
+
+- **Four are real passes** whose node lay outside the 4 km radius (Col des
+  Champs, Col de la Couillole, Colle Fauniera, Colle San Carlo). A wider query
+  finds them.
+- **Six are not passes at all** but toll and summit roads – Roßfeld, Villacher
+  Alpenstraße, Nockalmstraße, Malta-Hochalmstraße, Ötztaler Gletscherstraße,
+  Kitzbüheler Horn – so OSM has no node to look up and the coordinate has to be
+  the high point of the _road_. These are deliberately left until ORS has routed
+  them: the OSRM car profile refuses or truncates most of them (Roßfeld tops out
+  at 703 m of 1 560 m), so the stored geometry says nothing about where the road
+  really ends. Once the cycling profile has driven them, the profile top names
+  the high point, and whatever still disagrees is a case for `ascent.check`
+  rather than a moved coordinate.
 
 Three defects the first run exposed, all fixed:
 
