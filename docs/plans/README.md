@@ -19,7 +19,7 @@ that goal; features that only add route-level precision rank last.
 
 | # | Plan | Serves | Effort | Depends on | Status |
 | --- | --- | --- | --- | --- | --- |
-| 00 | [Route quality gate](00-route-quality-gate.md) | trust in what the map shows | S | – | proposed |
+| 00 | [Route quality gate](00-route-quality-gate.md) | trust in what the map shows | S | – | in progress |
 | 01 | [Map data out of the React payload](01-map-data-out-of-payload.md) | first load on holiday Wi-Fi | M | 00 for complete data | proposed |
 | 03 | [Make the period the hero](03-period-hero.md) | "when" | M | – | proposed |
 | 04 | [Climate-aware status](04-climate-aware-status.md) | "when", honesty | S–M | – | proposed |

@@ -1,8 +1,8 @@
 # 00 · Route quality gate
 
-**Status:** proposed · **Effort:** S (half a day of code, plus waiting for API
-quota) · **Depends on:** – · **Unblocks:** 01, 12, and trust in the map in
-general
+**Status:** in progress · **Effort:** S (half a day of code, plus three hourly
+runs to drain the backlog) · **Depends on:** – · **Unblocks:** 01, 12, and
+trust in the map in general
 
 ## Goal
 
@@ -10,28 +10,59 @@ No routed ascent or tour is stored unless it passes plausibility checks, every
 route records which router produced it, and the routes that are wrong today
 are re-fetched. Tours stop being drawn as straight lines between waypoints.
 
+Second goal, of equal weight: the checks must be **tunable**. A gate whose
+thresholds cannot be revisited cheaply gets loosened until it catches nothing.
+
 ## Why now
 
-- All 9 tours and 83 of 171 ascents have no route. The only refresh run so far
+- All 9 tours and 94 of 171 ascents have no route. The only refresh run so far
   made one OpenRouteService request, received "Quota exceeded" and stopped
-  routing for the whole run; `scripts/build-data.ts` has no fallback for that
-  case and the workflow runs only twice a day.
-- 11 stored ascents are wrong and nothing catches them. Examples, stated summit
-  vs. profile top: Col du Mont Cenis ascent 1 is routed over 271 km
-  (2,081 m vs 2,723 m); Roßfeld-Panoramastraße reaches 703 m instead of
-  1,560 m; Kitzbüheler Horn 1,596 m instead of 1,996 m; Col des Champs ascent 0
-  is a 5 km stub ending at 1,730 m instead of 2,087 m; Col de la Colombière
-  ascent 0 ends at the pass point but 340 m too low, which points at a wrong
-  summit coordinate rather than a wrong route.
-- The script never revisits an existing key and does not record whether a route
+  routing for the whole run; `scripts/build-data.ts` had no fallback for that
+  case.
+- 11 stored ascents were wrong and nothing caught them. Stated summit vs.
+  profile top: Col du Mont Cenis ascent 1 routed over 341 km (+642 m,
+  6,274 Hm); Roßfeld-Panoramastraße 857 m too low; Kitzbüheler Horn 400 m too
+  low; Col des Champs ascent 0 a 5 km stub 357 m too low; Col de la Colombière
+  ascent 0 at the pass point but 343 m too low, which points at a wrong summit
+  coordinate rather than a wrong route.
+- The script never revisited an existing key and did not record whether a route
   came from ORS (road-cycling profile) or the OSRM demo (car profile), so a bad
-  OSRM route is frozen forever.
+  OSRM route was frozen forever.
 - A wrong route also burns Open-Meteo budget on a useless profile.
+
+### What the numbers actually are
+
+Three corrections to the earlier draft, all measured rather than assumed:
+
+- **The bottleneck is elevation, not weather.** `climate.json` is complete
+  (92 of 92 passes) and its window is frozen (`CLIMATE_FROM`/`CLIMATE_TO` =
+  2015-01-01…2024-12-31), so it contributes nothing to the backlog. The
+  expensive call is the Copernicus DEM lookup for the height profile:
+  100 Open-Meteo calls per ascent.
+- **The hourly cap binds before the daily one.** Open-Meteo allows 5,000
+  calls/h and 10,000/day, so a run can place at most ~50 profiles and the
+  default `OPEN_METEO_BUDGET=4500` is already sized just under that ceiling.
+  The 103 outstanding profiles are therefore **three runs an hour apart**, not
+  a multi-day affair.
+- **Routing is free and fits in one shot.** 103 ORS requests against a free
+  quota of 2,000/day is 5 % of one day, about five minutes of wall clock.
+  Ascents are two waypoints (one request); the longest tour has 37 waypoints
+  and still fits in ORS's 50-coordinate chunk, so tours are one request each.
+
+| Step | Requests | Open-Meteo calls | Limit |
+| --- | --- | --- | --- |
+| 94 missing + 9 tour routes | 103 ORS | – | 2,000/day |
+| 11 re-fetched after the gate removed them | 11 ORS | – | |
+| 103 elevation profiles | – | 10,300 | 5,000/h, 10,000/day |
+| 92 summit heights | – | 92 | one batch |
+| Climate | – | 0 (complete) | |
 
 ## Non-goals
 
 Official closure data, traffic from OSM, difficulty from the profile: all
-separate roadmap items.
+separate roadmap items. Self-hosting a router is not in scope either; the
+`OSRM_HOST` environment variable is the one affordance left behind for it
+(see "Risks and open questions").
 
 ## The mechanism in one picture
 
@@ -46,7 +77,7 @@ flowchart LR
   C --> D["routes.json"]
   D --> E["Open-Meteo elevation<br/>100 calls per ascent"]
   E --> F["profiles.json"]
-  F --> G["map and panel:<br/>a 271 km ascent is drawn as is"]
+  F --> G["map and panel:<br/>a 341 km ascent is drawn as is"]
 ```
 
 ### After
@@ -57,7 +88,7 @@ flowchart LR
   B -- "yes" --> G
   B -- "missing, or osrm<br/>while an ORS key exists" --> C["router: ORS,<br/>on quota error OSRM"]
   C --> V1{"geometry checks<br/>length, start, end"}
-  V1 -- "fail" --> R["rejected.json<br/>key, reason, source"]
+  V1 -- "fail" --> R["rejected.json<br/>reasons + measured values<br/>+ the paid-for profile"]
   V1 -- "pass" --> D["routes.json<br/>routes-meta.json: source, date"]
   D --> E["Open-Meteo elevation"]
   E --> V2{"profile checks<br/>top within 80 m,<br/>summit near the end, gain"}
@@ -65,6 +96,7 @@ flowchart LR
   V2 -- "pass" --> F["profiles.json"]
   S["summits.json<br/>DEM height at the pass point"] -. "off by more than 80 m" .-> K
   R --> K["data:check<br/>errors for rejects,<br/>warnings for osrm"]
+  K -- "--explain" --> T["every route with its<br/>measured values, offline"]
   F --> G["map and panel"]
 ```
 
@@ -73,7 +105,7 @@ What the checks look at, for one ascent:
 ```
  elevation
    ▲                                        top within 80 m of pass.elevation
-   │                                 ●──●   and inside the last 15 % of the distance
+   │                                 ●──●   and inside the last 25 % of the distance
    │                           ●──●──┘
    │                     ●──●──┘
    │               ●──●──┘
@@ -91,113 +123,232 @@ missing ──fetch──► candidate ──checks pass──► stored (source
                        │                            │
                   checks fail                  osrm, and an ORS key is present
                        ▼                            ▼
-              rejected (reason) ──fix coordinates or --retry-rejected──► missing
+              rejected (reasons + metrics + profile)
+                       │
+        ┌──────────────┼───────────────────┐
+        ▼              ▼                   ▼
+  fix coordinates  set ascent.check   change a limit in validate.ts
+  in passes.json   with a note        then --retry-rejected
+        └──────────────┴───────────────────┘
+                       ▼
+                    missing
 ```
 
 ## Design
 
+### Measuring and judging are separate
+
+This is the piece that makes the thresholds tunable, and it is the main
+departure from the first draft. `scripts/lib/validate.ts` has two kinds of
+function and no I/O at all:
+
+- `ascentMetrics()` / `tourMetrics()` / `withProfile()` produce **numbers**:
+  length, distance from the intended start, distance from the summit, deviation
+  of the profile top, where the highest sample sits, elevation gain.
+- `checkAscent()` / `checkTour()` compare those numbers against `LIMITS`.
+
+Because judging is a pure function of stored numbers, re-judging the entire
+dataset against a changed limit is a local computation.
+`bun run data:check --explain` prints every route with its measured values and
+marks the ones that violate a limit — offline, in milliseconds, without a
+single API call. Changing a threshold and seeing what it would do is free.
+
 ### Provenance without changing the route shape
 
-Keep `routes.json` as `{ key: [lat, lon][] }` so nothing downstream changes.
-Add `data/generated/routes-meta.json`:
+`routes.json` stays `{ key: [lat, lon][] }` so nothing downstream changes.
+`data/generated/routes-meta.json` records provenance only:
 
 ```jsonc
-{ "col-du-galibier:0": { "source": "ors", "fetchedAt": "2026-09-08", "km": 17.2 } }
+{ "col-du-galibier:0": { "source": "ors", "fetchedAt": "2026-09-08" } }
 ```
 
-`source` is `"ors"` or `"osrm"`. Entries without meta are treated as `"osrm"`
-(the pessimistic assumption for everything fetched before this plan).
+`source` is `"ors"` or `"osrm"`; an entry without meta counts as `"osrm"`, the
+pessimistic assumption for everything fetched before this plan. Metrics are
+deliberately **not** cached here — they are recomputed from `routes.json` on
+demand, so a hand-edited geometry cannot hide behind stale meta.
+
+### What a rejection keeps, and why
+
+`data/generated/rejected.json`:
+
+```jsonc
+{
+  "col-du-mont-cenis:1": {
+    "reasons": ["Länge 341.44 km > 60 km", "Profilhöhe weicht +642 m ab > 80 m"],
+    "metrics": { "km": 341.44, "startDist": 0.025, "endDist": 0.019,
+                 "topDelta": 642, "peakAt": 0.505, "gain": 6274 },
+    "source": "osrm", "hash": "3f1ab29c",
+    "firstSeen": "2026-09-08", "lastSeen": "2026-09-08",
+    "profile": { }
+  }
+}
+```
+
+Three deliberate choices:
+
+- **The measured values are kept, the geometry is not.** Tuning needs the
+  numbers, and the geometry is free to fetch again (ORS routing costs nothing
+  against the quota). Keeping thousands of coordinates per reject in git would
+  buy nothing.
+- **The elevation profile *is* kept.** That is the only expensive part, so
+  loosening a threshold and running `--retry-rejected` spends **zero**
+  Open-Meteo calls: the route is re-fetched for free and the cached profile is
+  reused, guarded by `hash` so a changed geometry gets a fresh profile.
+- **`firstSeen` plus `hash`, not a run counter.** A counter would rewrite the
+  file on every run and produce a diff even when nothing changed. The age
+  (`data:check` prints "abgewiesen seit … (N Tage)") is the signal that a human
+  has to fix a coordinate, and an unchanged `hash` on a retry says outright
+  that the router is not the problem.
 
 ### Checks
 
 Run after routing, before the write, and again after the profile:
 
-| Check | Ascent | Tour |
+| Check | Limit | Fitted how |
 | --- | --- | --- |
-| Length | ≤ 60 km | ≤ 1.2 × sum of straight waypoint legs, and ≤ 900 km |
-| Start | ≤ 2 km from `ascent.from` | ≤ 2 km from first waypoint |
-| End | ≤ 500 m from the pass coordinate | ≤ 2 km from the last waypoint |
-| Profile top vs `pass.elevation` | within 80 m | – |
-| Position of the highest sample | in the last 15 % of the distance | – |
-| Elevation gain | ≤ 3,000 m | – |
+| Ascent length | ≤ 60 km | max legitimate 35 km, failures at 60.4/66.3/341 km |
+| Ascent start | ≤ 2 km from `ascent.from` | the ORS snapping radius, so router and gate agree |
+| Ascent end | ≤ 500 m from the pass coordinate | max observed 250 m |
+| Profile top vs `pass.elevation` | within 80 m | clean gap: good ≤ 50 m, bad ≥ 123 m |
+| Position of the highest sample | in the last 25 % | worst genuine failure 65 %, tightest correct ascent 81 % |
+| Elevation gain | ≤ 3,000 m | max legitimate 2,363 Hm, the broken one 6,274 Hm |
+| Tour length vs the curated `tour.km` | within 25 % | – |
+| Tour start/end | ≤ 2 km from the first/last waypoint | – |
+| DEM height at the pass point | within 80 m | same DEM noise as the profile top |
 
-A failing route is not stored. The reason goes to
-`data/generated/rejected.json` as `{ key: { reason, source, at } }` so the
-next run does not retry blindly, `data:check` can list it, and a human can tell
-a routing problem from a coordinate problem. `bun run data:build --retry-rejected`
-clears the list and tries again (for example after fixing coordinates in
-`passes.json`, or once an ORS key is available).
+The thresholds were **fitted to the 88 routes that already existed**, not
+chosen first. That run initially flagged 12 ascents; the twelfth (Grimselpass
+ab Gletsch, highest sample at 81 % of a 6 km climb) was a false positive, which
+is why the position check sits at 75 % rather than the 85 % of the first draft.
+The remaining 11 are exactly the known-bad set.
 
-### Summit sanity
+Tour length is checked against the hand-maintained `tour.km` — those figures
+come from the events themselves (Marmotte 174 km, Ötztaler 227 km) — instead of
+against a ratio to the straight waypoint legs. That ratio measures how densely a
+tour happens to be sampled, not whether its route is right.
 
-Once per pass, fetch the DEM elevation of the pass coordinate itself
-(Open-Meteo elevation, 92 calls in total) and warn when it differs from
-`pass.elevation` by more than 80 m. This is the check that catches Colombière-
-style errors where the summit point is off. Store results in
-`data/generated/summits.json` so it costs nothing on later runs.
+### Exceptions, with a note
+
+Some ascents legitimately break a limit: the Kitzbüheler Horn road ends at the
+Alpenhaus, below the summit marker. `Ascent.check` and `Tour.check`
+(`RouteCheck` in `lib/types.ts`) widen a single limit for a single entry:
+
+```jsonc
+{ "from": { }, "label": "Kitzbühel",
+  "check": { "maxTopDelta": 420, "note": "Straße endet am Alpenhaus unter dem Gipfel" } }
+```
+
+`note` is mandatory and `data:check` errors without it. Without this escape
+hatch the gate would stay permanently red and the thresholds would get loosened
+globally to silence it — which is the failure mode this plan exists to prevent.
 
 ### Quota behaviour
 
-- When ORS reports "Quota exceeded", continue with OSRM for the remaining
-  jobs, tagged `source: "osrm"`, instead of stopping. The gate makes this
-  safe enough; the upgrade step below fixes the profile difference later.
-- When an ORS key is present and `meta.source === "osrm"`, re-route those keys
-  first (bounded by the daily quota; ~40 requests per minute).
+- ORS and OSRM now have their own limiters and both exist for the whole run.
+  When ORS reports "Quota exceeded" the run **continues** on OSRM, tagged
+  `source: "osrm"`, instead of stopping.
+- When an ORS key is present and `meta.source === "osrm"`, those keys are
+  re-routed; if the fallback returns OSRM again, the stored route is kept
+  rather than pointlessly rewritten.
+- A route is stored as soon as its **geometry** passes, before the profile is
+  paid for, so a run cut short by the Open-Meteo budget keeps its free routing
+  work. The profile checks of the next run can still take it back out.
 
 ### check-data
 
-- Error, not warning: any stored route that fails the checks above (uses
-  `profiles.json` where needed). This makes the 11 known-bad routes fail CI
-  until they are re-fetched or their source coordinates are fixed.
-- Warning: routes with `source: "osrm"` when an ORS key could upgrade them.
-- Keep "Route fehlt" a warning until the backlog is gone, then promote it (see
-  plan 11).
+- **Error:** any stored route that fails the checks (recomputed from
+  `routes.json` + `profiles.json`, no network).
+- **Error:** any entry in `rejected.json`, with its age and the three ways out.
+- **Error:** a `check` without a `note`.
+- **Warning:** routes with `source: "osrm"` when an ORS key could upgrade them.
+- **Warning:** a summit whose DEM height is off by more than 80 m.
+- Keep "Route fehlt" a warning until the backlog is gone, then promote it
+  (see plan 11).
+
+### The workflow is a backlog drainer, not a refresher
+
+Nothing in the pipeline is time-varying: the climate window is frozen, and
+routes and profiles only change when `data/*.json` changes. The twice-daily
+cron existed solely to work around the Open-Meteo hourly cap. Once the backlog
+is drained a scheduled run structurally cannot find work — its own header says
+"Runs with nothing missing finish in seconds and commit nothing".
+
+`refresh-data.yml` therefore drops the cron and triggers on `push` to
+`data/*.json` plus `workflow_dispatch`. The path filter covers the source files
+only, so the bot's own commit to `data/generated/**` cannot retrigger it. A real
+schedule becomes justified again with the live closure status, which is a
+different job with a different cadence.
 
 ## Steps
 
-1. Add `routes-meta.json`, `rejected.json`, `summits.json` handling to
-   `scripts/build-data.ts` (read at start, write with the same chained
-   `write()`).
-2. Implement `validateAscentRoute()` / `validateTourRoute()` /
-   `validateProfile()` as pure functions in `scripts/lib/validate.ts` so plan
-   10 can unit-test them with the 11 known-bad fixtures.
-3. Wire the checks into `route()` → `doProfile()`; on rejection delete any
-   partial profile.
-4. Add the OSRM fallback on `QuotaExhausted` from ORS and the OSRM→ORS upgrade
-   pass.
-5. Add the summit check with its own cache file.
-6. Extend `scripts/check-data.ts` with the error/warning rules above.
-7. Delete the 11 known-bad keys from `routes.json` and `profiles.json`, run
-   `bun run data:build` with an ORS key, review the log, fix coordinates in
-   `passes.json` for the ones that fail again, commit data and generated files
-   together.
-8. Run the workflow by hand until `data:build --status` reports nothing
-   missing; then shorten the schedule to once a day.
+1. ✅ `scripts/lib/validate.ts`: metrics, `LIMITS`, `checkAscent`,
+   `checkTour`, `checkSummit`, `geometryHash` — pure, so plan 10 can unit-test
+   them with the 11 known-bad fixtures.
+2. ✅ Fit the thresholds against the existing 88 routes before writing the gate,
+   so they separate the known-good from the known-bad rather than being round
+   numbers.
+3. ✅ `routes-meta.json`, `rejected.json`, `summits.json` in
+   `scripts/build-data.ts`, written through the same chained `write()`.
+4. ✅ Wire the gate into routing → profile; on rejection remove any partial
+   route and profile and cache the profile for a free retry.
+5. ✅ Separate ORS and OSRM limiters, OSRM fallback on `QuotaExhausted`, and the
+   OSRM→ORS upgrade pass.
+6. ✅ The summit check with its own cache file (one batch, 92 calls).
+7. ✅ `check-data.ts`: the error/warning rules above and `--explain`.
+8. ✅ Remove the 11 known-bad keys from `routes.json` and `profiles.json` so the
+   backfill re-fetches them through the gate.
+9. ✅ `scripts/backfill.sh` plus `bun run data:build --pending`, so the three
+   hourly runs are one command.
+10. ✅ `refresh-data.yml`: push trigger instead of the cron.
+11. ⬜ Run the backfill with an ORS key, review the log, fix coordinates in
+    `passes.json` or add an `ascent.check` for whatever the gate rejects,
+    commit source and generated files together.
 
 ### Documentation
 
-Move the "after" flowchart and the ascent sketch into `docs/data-model.md`
-("Derived data"), and the check table into the `curate-data` skill, so the
-gate is explained where the data is edited and where a rejected route is
-diagnosed.
+- ✅ The "after" flowchart and the ascent sketch move into `docs/data-model.md`
+  ("Derived data").
+- ✅ The check table with its thresholds goes into the `curate-data` skill, so
+  it is next to the data it constrains.
+- ✅ `AGENTS.md` / `CLAUDE.md` gain the gate under "Where things live".
 
 ## Acceptance criteria
 
-- `bun run data:check` fails on any route that violates the table above.
-- All 9 tours and all ascents with valid coordinates have routes; the map
-  shows no straight-line tours.
-- `routes-meta.json` has an entry for every route; no entry says `osrm` while
-  an ORS key was available during the run.
-- The summit check reports zero passes off by more than 80 m, or each one has a
-  fixed coordinate.
-- `docs/data-model.md` shows the gate as a diagram and the `curate-data`
-  skill lists the checks with their thresholds.
+- [x] `bun run data:check` fails on any route that violates the table above.
+- [x] `bun run data:check --explain` prints every route's measured values
+      without network access, so a threshold change can be evaluated for free.
+- [x] `bun run data:build --retry-rejected` re-tries rejected keys and spends no
+      Open-Meteo calls when the geometry comes back unchanged.
+- [x] A `check` without a `note` is an error.
+- [ ] All 9 tours and all ascents with valid coordinates have routes; the map
+      shows no straight-line tours.
+- [ ] `routes-meta.json` has an entry for every route; no entry says `osrm`
+      while an ORS key was available during the run.
+- [ ] The summit check reports zero passes off by more than 80 m, or each one
+      has a fixed coordinate.
+- [x] `docs/data-model.md` shows the gate as a diagram and the `curate-data`
+      skill lists the checks with their thresholds.
+
+The four open boxes all depend on step 11, which needs an ORS key.
 
 ## Risks and open questions
 
-- Some ascents legitimately end below the summit marker (e.g. Kitzbüheler Horn
-  ends at the Alpenhaus). Decide per case: move the pass coordinate to the end
-  of the road, or add `ascent.end` as an optional override. Prefer the former.
+- Some ascents legitimately end below the summit marker (Kitzbüheler Horn ends
+  at the Alpenhaus). Decide per case: move the pass coordinate to the end of the
+  road, or set `ascent.check` with a note. Prefer the former; the escape hatch
+  exists so the decision can wait without the gate going red forever.
 - ORS cycling-road may refuse private toll roads (Roßfeld, Kitzbüheler Horn).
-  If both routers fail, keep the ascent without a route rather than with a
-  wrong one; the panel already handles "Kein Höhenprofil vorhanden".
+  If both routers fail, the ascent keeps no route rather than a wrong one; the
+  panel already handles "Kein Höhenprofil vorhanden".
+- **The tour thresholds are the least calibrated part.** No tour had a route
+  when the limits were fitted, so the 25 % deviation from `tour.km` is reasoning
+  rather than measurement. Re-fit it from the first complete run.
+- **A second router as a cross-check** is the strongest quality signal
+  available and is not built here. Two independent routers agreeing on length
+  and endpoint says more than any threshold, and it is self-calibrating.
+  `OSRM_HOST` makes a locally built OSRM bike graph usable
+  (`osrm-extract -p bicycle.lua` over the 2.2 GB Geofabrik Alps extract, ~11 GB
+  RAM, one Docker afternoon), but note that the stock `bicycle.lua` is a
+  commuter profile that likes tracks and gravel — it needs surface penalties
+  before it is a fair second opinion. Worth a scratch experiment, not worth
+  putting in CI.
