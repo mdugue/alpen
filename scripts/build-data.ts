@@ -766,8 +766,20 @@ const osrmRoutes = Object.values(meta).filter(
 console.log(
   `Fertig: ${Object.keys(routes).length} Routen, ${Object.keys(profiles).length} Profile, ` +
     `${Object.keys(climates).length} Klimareihen` +
-    ` (${(ors?.requests ?? 0) + osrm.requests} Routing-Requests, ${openMeteo.requests} Open-Meteo-Requests` +
-    ` ≈ ${openMeteo.used} Calls)`,
+    ` (${openMeteo.requests} Open-Meteo-Requests ≈ ${openMeteo.used} Calls)`,
+);
+// Split by router on purpose: a combined count cannot answer "did ORS run at
+// all?", which is the first question when every stored route says osrm.
+console.log(
+  `Routing: ${ors?.requests ?? 0} ORS-Requests, ${osrm.requests} OSRM-Requests${
+    ORS
+      ? ors?.exhausted
+        ? ` – ORS gestoppt: ${ors.exhausted}`
+        : ors?.requests
+          ? ""
+          : " – ORS war eingerichtet, wurde aber nie gebraucht (nichts zu routen?)"
+      : " – ohne ORS_KEY, deshalb Autoprofil"
+  }`,
 );
 if (osrmRoutes)
   console.log(
