@@ -52,11 +52,24 @@ export const BRAND = {
 } as const;
 
 /**
- * The mark: a ridge line over two summits with the col in between and a dot on
- * the col – a pass, reduced to the two strokes that still read at 16 px. Drawn
- * on a 100 × 100 grid so every rendering can pick its own stroke width.
+ * The mark: two solid summits on an amber ground, the main one snow-capped.
+ * Filled shapes rather than strokes, and no detail that a 16 × 16 favicon
+ * cannot hold – the cap is sized so it is still the thing you recognise in a
+ * tab strip. Drawn on a 100 × 100 grid, so every size renders from the same
+ * geometry. See lib/mark.tsx for the component that paints it.
  */
 export const MARK = {
-  ridge: "M10 78 L32 32 L50 54 L70 24 L90 78",
-  col: { x: 50, y: 54 },
+  /**
+   * Ground of the badge: `--accent` at full strength. A 16 px badge has to
+   * carry the brand on colour alone, which the softer UI accent cannot do.
+   */
+  ground: "#f0a93c",
+  rock: BRAND.ink,
+  snow: BRAND.paper,
+  /** Foreground summit on the left, then the main summit right of centre. */
+  peaks: ["M28 40 L50 84 L6 84 Z", "M64 22 L96 84 L32 84 Z"],
+  /** Snow on the main summit, cut off by a shallow chevron. */
+  cap: "M64 22 L82.6 58 L64 50 L45.4 58 Z",
+  /** Corner radius wherever the badge is drawn as a rounded square. */
+  radius: "22%",
 } as const;

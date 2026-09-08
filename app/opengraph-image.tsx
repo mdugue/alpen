@@ -4,7 +4,8 @@ import { ImageResponse } from "next/og";
 import passes from "@/data/passes.json";
 import tours from "@/data/tours.json";
 import towns from "@/data/towns.json";
-import { BRAND, MARK, SITE_NAME } from "@/lib/brand";
+import { BRAND, SITE_NAME } from "@/lib/brand";
+import { MarkBadge } from "@/lib/mark";
 import { periodLabel, passStatus, STATUS_LABEL } from "@/lib/status";
 import type { Pass, Status } from "@/lib/types";
 import { fmt } from "@/lib/utils";
@@ -99,24 +100,7 @@ export default function Image() {
           width: 330,
         }}
       >
-        <svg width={54} height={54} viewBox="0 0 100 100">
-          <path
-            d={MARK.ridge}
-            fill="none"
-            stroke={BRAND.primary}
-            strokeWidth={10}
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-          <circle
-            cx={MARK.col.x}
-            cy={MARK.col.y}
-            r={12}
-            fill={BRAND.accent}
-            stroke={BRAND.paper}
-            strokeWidth={5}
-          />
-        </svg>
+        <MarkBadge size={62} />
         <div
           style={{
             marginTop: 22,
