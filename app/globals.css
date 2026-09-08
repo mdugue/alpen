@@ -187,6 +187,28 @@
   @apply text-muted-foreground!;
 }
 
+/*
+ * Touch: iOS Safari zooms the page when a focused control's text is under 16px
+ * and never zooms back out, and a fast double tap on a button (the scrubber's
+ * chevrons) zooms the page instead of pressing twice. Both are opt-outs on the
+ * controls themselves, so pinch zoom of the page stays available.
+ */
+@media (pointer: coarse) {
+  input:not([type="range"]),
+  select,
+  textarea {
+    font-size: 1rem;
+  }
+  button,
+  a,
+  input,
+  select,
+  textarea,
+  label {
+    touch-action: manipulation;
+  }
+}
+
 /* Below `lg` the sidebar is a bottom sheet; keep MapLibre's corner controls above its peek row. */
 @media (width < 64rem) {
   .maplibregl-ctrl-bottom-left,
