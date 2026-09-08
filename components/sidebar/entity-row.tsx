@@ -1,6 +1,7 @@
 "use client";
 
 import { Star } from "lucide-react";
+
 import { Toggle } from "@/components/ui/toggle";
 import { cn } from "@/lib/utils";
 
@@ -42,7 +43,7 @@ export function EntityRow({
     <li
       data-current={current || undefined}
       className={cn(
-        "grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-x-1 border-b border-border",
+        "border-border grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-x-1 border-b",
         current && "bg-accent/15 shadow-[inset_2px_0_0_var(--color-accent)]",
         className,
       )}
@@ -54,23 +55,31 @@ export function EntityRow({
         aria-label={favorite ? "Nicht mehr merken" : "Merken"}
         className="ml-1.5"
       >
-        <Star className={cn(favorite ? "fill-accent text-accent" : "text-muted-foreground/60")} />
+        <Star
+          className={cn(
+            favorite ? "fill-accent text-accent" : "text-muted-foreground/60",
+          )}
+        />
       </Toggle>
       <button
         type="button"
         data-row={rowId}
         aria-current={current ? "true" : undefined}
         onClick={onSelect}
-        className="min-w-0 rounded-sm py-2 pr-1 text-left outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+        className="focus-visible:ring-ring/50 min-w-0 rounded-sm py-2 pr-1 text-left outline-none focus-visible:ring-2"
       >
         <span className="flex items-center gap-1.5 text-[13px] leading-tight font-medium">
           {leading}
           <span className="truncate">{title}</span>
         </span>
-        <span className="mt-0.5 block truncate text-xs text-muted-foreground">{subtitle}</span>
+        <span className="text-muted-foreground mt-0.5 block truncate text-xs">
+          {subtitle}
+        </span>
       </button>
       <div className="flex items-center gap-2 pr-3 text-right">
-        {aside && <div className="flex flex-col items-end gap-0.5 text-xs">{aside}</div>}
+        {aside && (
+          <div className="flex flex-col items-end gap-0.5 text-xs">{aside}</div>
+        )}
         {trailing}
       </div>
     </li>

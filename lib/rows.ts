@@ -1,5 +1,6 @@
+import { statusMatches } from "@/lib/app-state";
+import type { EntityKind, Filters } from "@/lib/app-state";
 import { passStatus, tourStatus } from "@/lib/status";
-import { statusMatches, type EntityKind, type Filters } from "@/lib/app-state";
 import type { Pass, Status, Tour, Town } from "@/lib/types";
 
 /**
@@ -30,11 +31,16 @@ export interface PassRow {
   favorite: boolean;
 }
 
-export function buildPassRows(passes: Pass[], filters: Filters, isFavorite: Query["isFavorite"]): PassRow[] {
+export function buildPassRows(
+  passes: Pass[],
+  filters: Filters,
+  isFavorite: Query["isFavorite"],
+): PassRow[] {
   const q = query(filters, isFavorite);
   const rows: PassRow[] = [];
   for (const pass of passes) {
-    if (pass.elevation < filters.minElevation || pass.fame < filters.minFame) continue;
+    if (pass.elevation < filters.minElevation || pass.fame < filters.minFame)
+      continue;
     const favorite = isFavorite("pass", pass.slug);
     if (q.favoritesOnly && !favorite) continue;
     if (!q.matches(pass.name, pass.region, pass.country)) continue;
@@ -67,7 +73,7 @@ export function buildTourRows(
     if (!statusMatches(status, filters.status)) continue;
     rows.push({ tour, status, favorite });
   }
-  return rows.sort((a, b) => b.tour.elevationGain - a.tour.elevationGain);
+  return rows.toSorted((a, b) => b.tour.elevationGain - a.tour.elevationGain);
 }
 
 export interface TownRow {
@@ -75,7 +81,11 @@ export interface TownRow {
   favorite: boolean;
 }
 
-export function buildTownRows(towns: Town[], filters: Filters, isFavorite: Query["isFavorite"]): TownRow[] {
+export function buildTownRows(
+  towns: Town[],
+  filters: Filters,
+  isFavorite: Query["isFavorite"],
+): TownRow[] {
   const q = query(filters, isFavorite);
   const rows: TownRow[] = [];
   for (const town of towns) {
@@ -84,10 +94,17 @@ export function buildTownRows(towns: Town[], filters: Filters, isFavorite: Query
     if (!q.matches(town.name, town.why, town.country)) continue;
     rows.push({ town, favorite });
   }
-  return rows.sort((a, b) => a.town.name.localeCompare(b.town.name, "de"));
+  return rows.toSorted((a, b) => a.town.name.localeCompare(b.town.name, "de"));
 }
 
-export type PassSort = "elevation" | "name" | "status" | "beauty" | "fame" | "difficulty" | "traffic";
+export type PassSort =
+  | "elevation"
+  | "name"
+  | "status"
+  | "beauty"
+  | "fame"
+  | "difficulty"
+  | "traffic";
 
 export const PASS_SORT_LABEL: Record<PassSort, string> = {
   elevation: "Höhe",
@@ -103,15 +120,18 @@ const STATUS_RANK: Record<Status, number> = { open: 0, risky: 1, closed: 2 };
 
 /** Direction is fixed per key: the "best" value first. */
 export function sortPassRows(rows: PassRow[], sort: PassSort): PassRow[] {
-  const byName = (a: PassRow, b: PassRow) => a.pass.name.localeCompare(b.pass.name, "de");
+  const byName = (a: PassRow, b: PassRow) =>
+    a.pass.name.localeCompare(b.pass.name, "de");
   const cmp: Record<PassSort, (a: PassRow, b: PassRow) => number> = {
     elevation: (a, b) => b.pass.elevation - a.pass.elevation,
     name: byName,
-    status: (a, b) => STATUS_RANK[a.status] - STATUS_RANK[b.status] || b.pass.elevation - a.pass.elevation,
+    status: (a, b) =>
+      STATUS_RANK[a.status] - STATUS_RANK[b.status] ||
+      b.pass.elevation - a.pass.elevation,
     beauty: (a, b) => b.pass.beauty - a.pass.beauty,
     fame: (a, b) => b.pass.fame - a.pass.fame,
     difficulty: (a, b) => b.pass.difficulty - a.pass.difficulty,
     traffic: (a, b) => a.pass.traffic - b.pass.traffic,
   };
-  return [...rows].sort((a, b) => cmp[sort](a, b) || byName(a, b));
+  return rows.toSorted((a, b) => cmp[sort](a, b) || byName(a, b));
 }

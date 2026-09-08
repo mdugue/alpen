@@ -15,7 +15,7 @@ authoritative. In addition:
 - **Slug**: from the name, lowercase ASCII; umlauts → `ae/oe/ue`, `ß` → `ss`,
   apostrophes and spaces → `-`, no leading/trailing dashes. Slugs never
   change once committed (they are in shared links).
-- **Pass coordinate**: the summit point *on the road* (not the geographic
+- **Pass coordinate**: the summit point _on the road_ (not the geographic
   saddle or a nearby peak). Check `elevation` against the map; a mismatch of
   more than ~80 m is a bug the route gate (plan 00) will flag.
 - **Ascents**: `from` is a point on the road in the valley village where the

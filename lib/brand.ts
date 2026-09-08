@@ -20,7 +20,8 @@ export const SITE_DESCRIPTION =
   "Wohin mit dem Rennrad, und wann? Alpenpässe, Auffahrten mit Höhenprofil, Rundtouren und Rad-Orte auf einer Karte – mit Befahrbarkeit je Halbmonat, Wetter und Klima.";
 
 /** Short form for the share image and the manifest, where space is tight. */
-export const SITE_CLAIM = "Pässe, Rundtouren und Rad-Orte in den Alpen – nach Befahrbarkeit je Halbmonat.";
+export const SITE_CLAIM =
+  "Pässe, Rundtouren und Rad-Orte in den Alpen – nach Befahrbarkeit je Halbmonat.";
 
 /**
  * Absolute base URL. Vercel provides the production host; a preview deployment

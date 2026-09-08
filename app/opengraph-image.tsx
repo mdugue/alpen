@@ -1,6 +1,8 @@
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
+
 import { ImageResponse } from "next/og";
+
 import passes from "@/data/passes.json";
 import tours from "@/data/tours.json";
 import towns from "@/data/towns.json";
@@ -26,8 +28,12 @@ export const alt = `${SITE_NAME} – welche Pässe, Touren und Rad-Orte sind wan
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
-const oxaniumBold = await readFile(join(process.cwd(), "assets/fonts/Oxanium-Bold.ttf"));
-const oxaniumMedium = await readFile(join(process.cwd(), "assets/fonts/Oxanium-Medium.ttf"));
+const oxaniumBold = await readFile(
+  join(process.cwd(), "assets/fonts/Oxanium-Bold.ttf"),
+);
+const oxaniumMedium = await readFile(
+  join(process.cwd(), "assets/fonts/Oxanium-Medium.ttf"),
+);
 
 export default function Image() {
   // Equirectangular projection into the right two thirds of the canvas.
@@ -50,7 +56,7 @@ export default function Image() {
       r: 4.5 + p.fame * 2,
     }))
     // Small dots first, so the famous passes stay readable on top.
-    .sort((a, b) => a.r - b.r);
+    .toSorted((a, b) => a.r - b.r);
 
   // Same words as the sidebar sections, so the preview and the app agree.
   const counts = [
@@ -125,7 +131,16 @@ export default function Image() {
         >
           Welche Region lohnt sich wann?
         </div>
-        <div style={{ marginTop: 14, fontSize: 20, fontWeight: 500, color: BRAND.muted }}>{counts}</div>
+        <div
+          style={{
+            marginTop: 14,
+            fontSize: 20,
+            fontWeight: 500,
+            color: BRAND.muted,
+          }}
+        >
+          {counts}
+        </div>
       </div>
 
       <div
@@ -153,12 +168,29 @@ export default function Image() {
             color: BRAND.ink,
           }}
         >
-          <div style={{ width: 26, height: 4, borderRadius: 999, background: BRAND.accent }} />
+          <div
+            style={{
+              width: 26,
+              height: 4,
+              borderRadius: 999,
+              background: BRAND.accent,
+            }}
+          />
           <span>{periodLabel(PERIOD)}</span>
         </div>
         {(["open", "risky", "closed"] as Status[]).map((s) => (
-          <div key={s} style={{ display: "flex", alignItems: "center", gap: 12 }}>
-            <div style={{ width: 14, height: 14, borderRadius: 999, background: BRAND.status[s] }} />
+          <div
+            key={s}
+            style={{ display: "flex", alignItems: "center", gap: 12 }}
+          >
+            <div
+              style={{
+                width: 14,
+                height: 14,
+                borderRadius: 999,
+                background: BRAND.status[s],
+              }}
+            />
             <span>{STATUS_LABEL[s]}</span>
           </div>
         ))}

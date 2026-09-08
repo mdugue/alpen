@@ -1,5 +1,6 @@
 "use client";
 import { useCallback, useSyncExternalStore } from "react";
+
 import type { Period, Status } from "@/lib/types";
 
 export type EntityKind = "pass" | "tour" | "town";
@@ -50,14 +51,25 @@ export interface MapView {
   bearing: number;
 }
 
-export const DEFAULT_VIEW: MapView = { lat: 46.3, lon: 9.6, zoom: 6.5, pitch: 0, bearing: 0 };
+export const DEFAULT_VIEW: MapView = {
+  lat: 46.3,
+  lon: 9.6,
+  zoom: 6.5,
+  pitch: 0,
+  bearing: 0,
+};
 
 /**
  * View state lives in the URL hash (shareable), bookmarks and
  * map settings in localStorage (private, per device).
  */
-export function readHash(): { filters: Partial<Filters>; selection: Selection | null; view: Partial<MapView> } {
-  if (typeof window === "undefined") return { filters: {}, selection: null, view: {} };
+export function readHash(): {
+  filters: Partial<Filters>;
+  selection: Selection | null;
+  view: Partial<MapView>;
+} {
+  if (typeof window === "undefined")
+    return { filters: {}, selection: null, view: {} };
   const p = new URLSearchParams(window.location.hash.slice(1));
   const num = (k: string) => (p.has(k) ? Number(p.get(k)) : undefined);
   const selection: Selection | null = p.get("pass")
@@ -92,11 +104,17 @@ function parseStatus(raw: string | null): Status[] | undefined {
   if (!raw || raw === "all") return undefined;
   if (raw === "none") return [];
   if (raw === "openRisky") return ["open", "risky"];
-  const list = raw.split(",").filter((s): s is Status => ALL_STATUS.includes(s as Status));
+  const list = raw
+    .split(",")
+    .filter((s): s is Status => ALL_STATUS.includes(s as Status));
   return list.length ? list : undefined;
 }
 
-export function writeHash(filters: Filters, selection: Selection | null, view: MapView) {
+export function writeHash(
+  filters: Filters,
+  selection: Selection | null,
+  view: MapView,
+) {
   const p = new URLSearchParams();
   p.set("t", String(filters.period));
   p.set("z", view.zoom.toFixed(2));
@@ -105,7 +123,8 @@ export function writeHash(filters: Filters, selection: Selection | null, view: M
     p.set("pi", view.pitch.toFixed(0));
     p.set("b", view.bearing.toFixed(0));
   }
-  if (filters.status.length !== ALL_STATUS.length) p.set("s", filters.status.join(",") || "none");
+  if (filters.status.length !== ALL_STATUS.length)
+    p.set("s", filters.status.join(",") || "none");
   if (filters.minFame > 1) p.set("f", String(filters.minFame));
   if (filters.minElevation > 0) p.set("m", String(filters.minElevation));
   if (filters.query) p.set("q", filters.query);
@@ -166,7 +185,9 @@ export function useStored<T>(key: string, initial: T) {
   const setValue = useCallback(
     (next: T | ((prev: T) => T)) => {
       const resolved =
-        typeof next === "function" ? (next as (prev: T) => T)(readStored(key, initial)) : next;
+        typeof next === "function"
+          ? (next as (prev: T) => T)(readStored(key, initial))
+          : next;
       try {
         localStorage.setItem(key, JSON.stringify(resolved));
       } catch {
@@ -189,15 +210,29 @@ export interface Favorites {
 export const NO_FAVORITES: Favorites = { pass: [], tour: [], town: [] };
 
 export function useFavorites() {
-  const [favorites, setFavorites] = useStored<Favorites>("alpenpaesse:favorites", NO_FAVORITES);
-  const isFavorite = (kind: EntityKind, slug: string) => favorites[kind].includes(slug);
+  const [favorites, setFavorites] = useStored<Favorites>(
+    "alpenpaesse:favorites",
+    NO_FAVORITES,
+  );
+  const isFavorite = (kind: EntityKind, slug: string) =>
+    favorites[kind].includes(slug);
   const toggle = (kind: EntityKind, slug: string) =>
     setFavorites((f) => ({
       ...f,
-      [kind]: f[kind].includes(slug) ? f[kind].filter((s) => s !== slug) : [...f[kind], slug],
+      [kind]: f[kind].includes(slug)
+        ? f[kind].filter((s) => s !== slug)
+        : [...f[kind], slug],
     }));
-  const count = favorites.pass.length + favorites.tour.length + favorites.town.length;
-  return { favorites, isFavorite, toggle, clear: () => setFavorites(NO_FAVORITES), count };
+  const count =
+    favorites.pass.length + favorites.tour.length + favorites.town.length;
+  return {
+    favorites,
+    isFavorite,
+    toggle,
+    clear: () => setFavorites(NO_FAVORITES),
+    count,
+  };
 }
 
-export const statusMatches = (status: Status, filter: Status[]) => filter.includes(status);
+export const statusMatches = (status: Status, filter: Status[]) =>
+  filter.includes(status);

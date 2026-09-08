@@ -1,6 +1,13 @@
 import { Explorer } from "@/components/explorer";
 import { SITE_DESCRIPTION, SITE_NAME, siteUrl } from "@/lib/brand";
-import { getClimate, getPasses, getProfiles, getRoutes, getTours, getTowns } from "@/lib/data";
+import {
+  getClimate,
+  getPasses,
+  getProfiles,
+  getRoutes,
+  getTours,
+  getTowns,
+} from "@/lib/data";
 
 /**
  * Structured data for the map page. Deliberately without ratings or reviews:
@@ -18,7 +25,11 @@ const jsonLd = {
   inLanguage: "de",
   isAccessibleForFree: true,
   offers: { "@type": "Offer", price: 0, priceCurrency: "EUR" },
-  author: { "@type": "Person", name: "Manuel Dugué", url: "https://manuel.fyi" },
+  author: {
+    "@type": "Person",
+    name: "Manuel Dugué",
+    url: "https://manuel.fyi",
+  },
   about: { "@type": "Place", name: "Alpen" },
 };
 
@@ -45,7 +56,10 @@ export default async function Page() {
 
   return (
     <main className="h-dvh overflow-hidden">
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <Explorer
         passes={passes}
         tours={tours}

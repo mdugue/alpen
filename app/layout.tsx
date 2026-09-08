@@ -1,10 +1,26 @@
 import type { Metadata, Viewport } from "next";
 import { Inter, Oxanium } from "next/font/google";
-import { BRAND, SITE_DESCRIPTION, SITE_NAME, SITE_TITLE, siteUrl } from "@/lib/brand";
+
+import {
+  BRAND,
+  SITE_DESCRIPTION,
+  SITE_NAME,
+  SITE_TITLE,
+  siteUrl,
+} from "@/lib/brand";
+
 import "./globals.css";
 
-const inter = Inter({ subsets: ["latin"], variable: "--font-inter", display: "swap" });
-const oxanium = Oxanium({ subsets: ["latin"], variable: "--font-oxanium", display: "swap" });
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-inter",
+  display: "swap",
+});
+const oxanium = Oxanium({
+  subsets: ["latin"],
+  variable: "--font-oxanium",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   // Absolute URLs for the share images; Vercel provides the production host.
@@ -61,7 +77,11 @@ export const viewport: Viewport = {
   viewportFit: "cover",
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <html lang="de" className={`${inter.variable} ${oxanium.variable}`}>
       <body className="h-dvh overflow-hidden antialiased">{children}</body>

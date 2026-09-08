@@ -1,8 +1,18 @@
 import type { Pass, Period, Status, Tour } from "@/lib/types";
 
 export const MONTHS = [
-  "Januar", "Februar", "März", "April", "Mai", "Juni",
-  "Juli", "August", "September", "Oktober", "November", "Dezember",
+  "Januar",
+  "Februar",
+  "März",
+  "April",
+  "Mai",
+  "Juni",
+  "Juli",
+  "August",
+  "September",
+  "Oktober",
+  "November",
+  "Dezember",
 ] as const;
 
 /** "Anfang Oktober" / "Ende Oktober" (early/late October) for a Period. */
@@ -11,8 +21,9 @@ export function periodLabel(t: Period): string {
 }
 
 /** All 24 half-month points in time. */
-export const PERIODS: Period[] = Array.from({ length: 24 }, (_, i) =>
-  Math.floor(i / 2) + 1 + (i % 2 ? 0.5 : 0),
+export const PERIODS: Period[] = Array.from(
+  { length: 24 },
+  (_, i) => Math.floor(i / 2) + 1 + (i % 2 ? 0.5 : 0),
 );
 
 /** Index into a ClimateYear series. */
@@ -49,7 +60,8 @@ export function passStatus(pass: Pass, t: Period): Status {
 
 export function seasonText(pass: Pass): string {
   const s = pass.season;
-  if (!s) return "Ganzjährig befahrbar (Winterräumung); Schnee und Kälte je nach Höhe.";
+  if (!s)
+    return "Ganzjährig befahrbar (Winterräumung); Schnee und Kälte je nach Höhe.";
   return `Typisch offen ${periodLabel(s.opens)} bis ${periodLabel(s.closes)}${
     s.maintained ? " (bewirtschaftete Mautstraße, wird geräumt)" : ""
   }.`;

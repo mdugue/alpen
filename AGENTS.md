@@ -31,22 +31,23 @@ friends do that better and the app links out to them.
 
 ## Where things live
 
-| Topic                                      | File                                          |
-| ------------------------------------------ | --------------------------------------------- |
-| Rideability heuristic                      | `lib/status.ts` (`passStatus`, `tourStatus`)  |
-| Data types                                 | `lib/types.ts`                                |
-| Data access (cached)                       | `lib/data.ts`                                 |
-| Filter, selection and URL state            | `lib/app-state.ts`, `components/explorer.tsx` |
-| Map, layers, 3D, markers, labels           | `components/map/pass-map.tsx`                 |
-| Period control floating over the map       | `components/map/period-control.tsx`           |
-| Sidebar: search, filters, one list per kind | `components/sidebar/`, `lib/rows.ts`          |
-| Detail panel incl. profile/weather/climate | `components/panel/`                           |
-| Precomputation                             | `scripts/build-data.ts`                       |
-| Name, claim, colours, mark, base URL       | `lib/brand.ts`, `lib/mark.tsx`                |
+| Topic                                         | File                                                                                                                  |
+| --------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| Rideability heuristic                         | `lib/status.ts` (`passStatus`, `tourStatus`)                                                                          |
+| Data types                                    | `lib/types.ts`                                                                                                        |
+| Data access (cached)                          | `lib/data.ts`                                                                                                         |
+| Filter, selection and URL state               | `lib/app-state.ts`, `components/explorer.tsx`                                                                         |
+| Map, layers, 3D, markers, labels              | `components/map/pass-map.tsx`                                                                                         |
+| Period control floating over the map          | `components/map/period-control.tsx`                                                                                   |
+| Sidebar: search, filters, one list per kind   | `components/sidebar/`, `lib/rows.ts`                                                                                  |
+| Detail panel incl. profile/weather/climate    | `components/panel/`                                                                                                   |
+| Precomputation                                | `scripts/build-data.ts`                                                                                               |
+| Name, claim, colours, mark, base URL          | `lib/brand.ts`, `lib/mark.tsx`                                                                                        |
 | Icons, share image, manifest, robots, sitemap | `app/icon.tsx`, `app/apple-icon.tsx`, `app/opengraph-image.tsx`, `app/manifest.ts`, `app/robots.ts`, `app/sitemap.ts` |
-| Legal pages                                | `app/impressum/`, `app/datenschutz/`          |
-| Implementation plans                       | `docs/plans/` (index: `docs/plans/README.md`) |
-| Project skills                             | `.agents/skills/implement-plan`, `curate-data`, `preview-app` |
+| Legal pages                                   | `app/impressum/`, `app/datenschutz/`                                                                                  |
+| Linting and formatting                        | `oxlint.config.ts`, `oxfmt.config.ts`                                                                                 |
+| Implementation plans                          | `docs/plans/` (index: `docs/plans/README.md`)                                                                         |
+| Project skills                                | `.agents/skills/implement-plan`, `curate-data`, `preview-app`                                                         |
 
 ## Conventions
 
@@ -102,17 +103,27 @@ friends do that better and the app links out to them.
 - **TypeScript 7 side by side with the 6.0 API.** `tsc` (and thus
   `bun run typecheck` and `next build`) is TypeScript 7, installed as
   `@typescript/native`. The `typescript` package name resolves to
-  `@typescript/typescript6`, because TypeScript 7.0 has no JavaScript API and
-  `typescript-eslint` needs one (`tsc6` is that version's binary). Keep both
-  entries in `package.json` until typescript-eslint supports TS 7.1+.
+  `@typescript/typescript6` (`tsc6` is that version's binary), because
+  TypeScript 7.0 has no JavaScript API and the editor language service still
+  wants one – `.vscode/settings.json` points `js/ts.tsdk.path` at it. Keep
+  both entries in `package.json`.
 - **React Compiler is on.** No manual `useMemo`/`useCallback` for
-  optimisation; the `react-hooks/*` ESLint rules are errors, not warnings.
+  optimisation; oxlint ports the whole React Compiler rule set under
+  `react/*` (`set-state-in-effect`, `purity`, `immutability`, `refs`,
+  `preserve-manual-memoization`, …) and every one of them is an error.
   `setState` in an effect is needed in exactly one documented place (hash
   initialisation in `explorer.tsx`).
 - **Cache Components.** `"use cache"` sits on the data functions and on
   `app/page.tsx`. Introducing `cookies()`, `headers()` or `searchParams`
   breaks prerendering – put such things in a separate dynamic child component
   inside `<Suspense>` instead.
+- **oxlint and oxfmt, no ESLint.** `bun run lint` is `ultracite check`
+  (oxlint plus an oxfmt format check), `bun run lint:fix` writes the fixes.
+  oxlint's `nextjs` and `react` plugins cover everything `eslint-config-next`
+  did, React Compiler rules included, so ESLint and `eslint-config-next` are
+  gone. The two config files only ever _deviate_ from the ultracite preset,
+  and every deviation carries the reason next to it – keep it that way rather
+  than silencing a rule at the call site.
 
 ## Before opening a PR
 
