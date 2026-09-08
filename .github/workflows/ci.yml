@@ -31,6 +31,7 @@ jobs:
         id: chrome
         with:
           chrome-version: stable
+          install-dependencies: true
       - run: bun install --frozen-lockfile
       # The test hook (window.__alpen) only exists in a build with this flag.
       - run: NEXT_PUBLIC_TEST_HOOKS=1 bun run build

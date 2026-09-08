@@ -23,8 +23,13 @@ const CHROME_ARGV = [
   "--disable-background-networking",
   "--disable-sync",
   "--hide-scrollbars",
-  // Chrome refuses to start as root without it (containers, CI runners).
-  ...(process.getuid?.() === 0 ? ["--no-sandbox"] : []),
+  // Unconditional, not just for root: on Ubuntu 24.04 (the GitHub runner)
+  // unprivileged user namespaces are restricted, so Chrome's sandbox cannot
+  // start and the process closes the pipe before the first navigation. The
+  // page under test is our own server with every other origin blocked.
+  "--no-sandbox",
+  // Small /dev/shm in containers crashes the renderer.
+  "--disable-dev-shm-usage",
 ];
 
 function chromePath(): string | undefined {
@@ -252,7 +257,14 @@ async function openPage(app: App, options: OpenOptions = {}): Promise<Page> {
   const height = options.mobile ? 844 : 900;
   const errors: string[] = [];
   const view = new Bun.WebView({
-    backend: { type: "chrome", url: false, ...(chromePath() ? { path: chromePath()! } : {}), argv: CHROME_ARGV },
+    backend: {
+      type: "chrome",
+      url: false,
+      ...(chromePath() ? { path: chromePath()! } : {}),
+      argv: CHROME_ARGV,
+      // Chrome's own crash output; the reason it "closed the pipe" is only in there.
+      stderr: process.env.DEBUG_CHROME ? "inherit" : "ignore",
+    },
     width,
     height,
     console: (type, ...rest) => {
