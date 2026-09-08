@@ -1,10 +1,13 @@
 # Roadmap
 
-Sorted by effort-to-benefit ratio. Each item states concretely what needs to be done.
+What lies beyond the implementation plans in [`docs/plans/`](./plans/README.md).
+The plans cover the next several months; this file keeps the longer list,
+re-sorted for the product goal (destination finding, not route planning).
 
 ## 1. Official live closure status
 
-Replaces the heuristic wherever real data is available.
+Replaces the heuristic wherever real data is available; the climate-aware
+heuristic (plan 04) stays as the fallback.
 
 - Sources: South Tyrol (Open Data Hub, JSON, clean), Trentino (HTML),
   alpen-paesse.ch or TCS (HTML), Bison Futé and departmental sites (HTML),
@@ -20,42 +23,52 @@ Replaces the heuristic wherever real data is available.
 - Effort: an afternoon for South Tyrol, one to two hours per additional source,
   ongoing maintenance because HTML pages change.
 
-## 2. Traffic from data instead of gut feeling
+## 2. More regions, then more destinations
+
+Pyrenees, Massif Central, Jura, Vosges, more Dolomites. Purely additive: new
+entries in `data/passes.json` and `data/destinations.json` (plan 12), then
+`data:build`. From roughly 300 passes on, split the JSON files by region;
+the region filter (plan 05) and destinations (plan 12) already give the UI
+the structure for it.
+
+## 3. Multi-day trips between destinations
+
+Once destinations exist: a stage view that chains destinations ("Oisans →
+Maurienne → Susa, 4 days, which passes on the way"), with overnight towns and
+the season strip per stage. Rough, not routed: the stages are lines between
+base towns, the passes in between come from the destination membership.
+
+## 4. Traffic from data instead of gut feeling
 
 Overpass query along the routed ascent: share of road classes
 (`trunk`/`primary`/`secondary`/`tertiary`/`unclassified`) plus
 `motor_vehicle=no`. Yields a computed value per ascent; the editorial estimate
 remains as a correction. Runs in `data:build`, costs nothing.
 
-## 3. Difficulty from the profile
+## 5. Difficulty from the profile
 
 `profiles.json` contains everything needed: length, average gradient, steep
 sections, summit elevation. A climbbybike-style formula replaces the estimate;
-the editorial number can stay as "character".
+the editorial number can stay as "character". Show both, as the scales dialog
+promises honesty.
 
-## 4. Build and export custom tours
-
-Click passes in order → route via OpenRouteService → km, elevation gain, profile →
-GPX export for Garmin/Wahoo. Needs a server route for the routing (key stays
-server-side) and a `use cache` entry per waypoint sequence.
-
-## 5. Ridden passes
+## 6. Ridden passes
 
 GPX/FIT upload or Strava integration, matching against pass coordinates,
-checkmarks in the table, filter "still open and not yet ridden". The favorites
-infrastructure in `lib/app-state.ts` is the template.
+checkmarks in the lists, filter "still open and not yet ridden". The favorites
+infrastructure in `lib/app-state.ts` is the template. Fits the destination
+goal ("where are the passes we have not done yet").
 
-## 6. More regions
+## 7. Deliberately parked
 
-Pyrenees, Massif Central, Jura, Vosges, Dolomites additions. Purely additive:
-new entries in `data/passes.json`, then run `data:build`. From roughly 300
-passes on, splitting the JSON files by region and adding a region filter
-becomes worthwhile.
+- **Custom tour building and GPX export.** Route planning is what Komoot and
+  Strava are for; the app links to them from every pass. Revisit only if
+  users ask for "the ascent as a file" specifically.
+- **Offline tiles / service worker.** Planning happens at home; the app is
+  not for on-the-bike use.
 
-## 7. Smaller improvements
+## 8. Smaller ideas
 
-- Offline capability: service worker plus pre-cached tiles for a region.
 - Imagery per pass (own photos or Wikimedia with license attribution).
-- Stage planner for multi-day tours with overnight locations.
-- Sort and filter state in the URL hash as well.
-- E2E tests (Playwright) for selection, filters and hash restoration.
+- Weather for tours and towns, not only passes.
+- Print / PDF summary of a destination for the kitchen table.
