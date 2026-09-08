@@ -97,7 +97,7 @@ export function Sidebar(p: SidebarProps) {
             Rennradkarte
           </span>
           <Button
-            size="icon-sm"
+            size="icon"
             variant="ghost"
             className="ml-auto"
             onClick={p.onCollapse}
@@ -171,8 +171,8 @@ export function Sidebar(p: SidebarProps) {
           {hasActiveFilters(p.filters) && !p.peek && (
             <Button
               variant="link"
-              size="xs"
-              className="h-auto self-end p-0"
+              size="sm"
+              className="self-end px-0"
               onClick={resetFilters}
             >
               {p.filters.query
@@ -277,7 +277,7 @@ export function Sidebar(p: SidebarProps) {
             </span>
             <Button
               variant="link"
-              size="xs"
+              size="sm"
               className="h-auto shrink-0 p-0"
               onClick={p.onOpenScales}
             >

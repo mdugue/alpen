@@ -86,11 +86,7 @@ export function FilterPanel({
         {search}
         <CollapsibleTrigger
           render={
-            <Button
-              variant="outline"
-              size="sm"
-              className={cn(hidden && "hidden")}
-            />
+            <Button variant="outline" className={cn(hidden && "hidden")} />
           }
         >
           <SlidersHorizontal data-icon="inline-start" />
@@ -106,7 +102,6 @@ export function FilterPanel({
             render={
               <Button
                 variant="outline"
-                size="sm"
                 className="justify-between font-normal"
               />
             }

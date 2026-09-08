@@ -62,7 +62,7 @@ import type {
   Tour,
   Town,
 } from "@/lib/types";
-import { cn, fmt, fmtUnit } from "@/lib/utils";
+import { cn, fmt, fmtUnit, ICON_TOGGLE } from "@/lib/utils";
 
 /**
  * recharts is the heaviest thing this app would ship; the climate chart is
@@ -144,7 +144,7 @@ export function DetailPanel(props: Props) {
     >
       <div className="border-border flex h-10 shrink-0 items-center gap-1 border-b px-2">
         {props.dismiss === "back" && (
-          <Button size="sm" variant="ghost" onClick={onBack}>
+          <Button variant="ghost" onClick={onBack}>
             <ArrowLeft data-icon="inline-start" /> Liste
           </Button>
         )}
@@ -157,18 +157,18 @@ export function DetailPanel(props: Props) {
           {kicker}
         </p>
         <Toggle
-          size="sm"
           pressed={favorite}
           onPressedChange={() =>
             props.onToggleFavorite(selection.kind, selection.slug)
           }
           aria-label={favorite ? "Nicht mehr merken" : "Merken"}
+          className={ICON_TOGGLE}
         >
           <Star className={cn(favorite && "fill-accent text-accent")} />
         </Toggle>
         {props.dismiss === "close" && (
           <Button
-            size="icon-sm"
+            size="icon"
             variant="ghost"
             onClick={onBack}
             aria-label="Details schließen"
@@ -230,14 +230,15 @@ function SectionTitle({
         <Tooltip>
           <TooltipTrigger
             render={
-              <button
-                type="button"
+              <Button
+                size="icon-sm"
+                variant="ghost"
                 aria-label="Hinweis zur Quelle"
-                className="text-muted-foreground/70 hover:text-foreground ml-auto shrink-0 self-center"
+                className="text-muted-foreground/70 ml-auto self-center"
               />
             }
           >
-            <Info className="size-3.5" />
+            <Info />
           </TooltipTrigger>
           <TooltipContent className="max-w-64">{info}</TooltipContent>
         </Tooltip>
@@ -369,7 +370,7 @@ function ExternalLinks({ links }: { links: [string, string][] }) {
         <Button
           key={label}
           variant="outline"
-          size="xs"
+          size="sm"
           render={<a href={href} target="_blank" rel="noopener noreferrer" />}
           nativeButton={false}
         >
@@ -430,7 +431,7 @@ function PassDetail(props: Props & { pass: Pass }) {
       <SectionTitle hint="redaktionell, 1–5">
         Bewertung
         <Button
-          size="icon-xs"
+          size="icon-sm"
           variant="ghost"
           aria-label="Skalen erklärt"
           onClick={props.onOpenScales}
