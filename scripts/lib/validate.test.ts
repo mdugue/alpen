@@ -197,6 +197,14 @@ const REASON = {
   gain: "Anstieg",
 } as const;
 
+const tourMetricsOf = (km: number, statedKm: number): TourMetrics => ({
+  km,
+  statedKm,
+  kmDelta: +((km - statedKm) / statedKm).toFixed(3),
+  startDist: 0.1,
+  endDist: 0.1,
+});
+
 describe("checkAscent", () => {
   for (const [key, { m, trips }] of Object.entries(KNOWN_BAD))
     test(`rejects ${key} for exactly ${trips.join(", ")}`, () => {
@@ -297,19 +305,11 @@ describe("checkTour", () => {
     "gavia-mortirolo-runde": [131.7, 130],
     "vrsic-predil-runde": [95.9, 105],
   };
-  const metrics = (km: number, statedKm: number): TourMetrics => ({
-    km,
-    statedKm,
-    kmDelta: +((km - statedKm) / statedKm).toFixed(3),
-    startDist: 0.1,
-    endDist: 0.1,
-  });
-
   for (const [slug, [km, statedKm]] of Object.entries(routed)) {
     const sparse =
       slug === "sellaronda" || slug === "maratona-dles-dolomites-lang";
     test(`${sparse ? "rejects" : "accepts"} ${slug}`, () => {
-      const reasons = checkTour(metrics(km, statedKm));
+      const reasons = checkTour(tourMetricsOf(km, statedKm));
       expect(reasons.length > 0).toBe(sparse);
       if (sparse) expect(reasons[0]).toContain("Länge");
     });
@@ -317,31 +317,31 @@ describe("checkTour", () => {
 
   test("kmDelta boundary, both signs", () => {
     const L = LIMITS.tour.maxKmDelta;
-    expect(checkTour({ ...metrics(100, 100), kmDelta: L })).toBeEmpty();
-    expect(checkTour({ ...metrics(100, 100), kmDelta: -L })).toBeEmpty();
+    expect(checkTour({ ...tourMetricsOf(100, 100), kmDelta: L })).toBeEmpty();
+    expect(checkTour({ ...tourMetricsOf(100, 100), kmDelta: -L })).toBeEmpty();
     expect(
-      checkTour({ ...metrics(100, 100), kmDelta: L + 0.001 }),
+      checkTour({ ...tourMetricsOf(100, 100), kmDelta: L + 0.001 }),
     ).toHaveLength(1);
     expect(
-      checkTour({ ...metrics(100, 100), kmDelta: -L - 0.001 }),
+      checkTour({ ...tourMetricsOf(100, 100), kmDelta: -L - 0.001 }),
     ).toHaveLength(1);
   });
 
   test("waypoint distance boundary at both ends", () => {
     const L = LIMITS.tour.maxWaypointDist;
     expect(
-      checkTour({ ...metrics(120, 120), startDist: L, endDist: L }),
+      checkTour({ ...tourMetricsOf(120, 120), startDist: L, endDist: L }),
     ).toBeEmpty();
     expect(
-      checkTour({ ...metrics(120, 120), startDist: L + 0.001 }).join(" "),
+      checkTour({ ...tourMetricsOf(120, 120), startDist: L + 0.001 }).join(" "),
     ).toContain("ersten Wegpunkt");
     expect(
-      checkTour({ ...metrics(120, 120), endDist: L + 0.001 }).join(" "),
+      checkTour({ ...tourMetricsOf(120, 120), endDist: L + 0.001 }).join(" "),
     ).toContain("letzten Wegpunkt");
   });
 
   test("tour.check widens a tour limit", () => {
-    const long = metrics(63.5, 52);
+    const long = tourMetricsOf(63.5, 52);
     expect(checkTour(long)).not.toBeEmpty();
     expect(
       checkTour(long, {

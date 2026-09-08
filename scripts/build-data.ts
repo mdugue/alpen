@@ -355,9 +355,8 @@ async function summitElevations(list: Pass[]): Promise<Record<string, number>> {
       `https://api.open-meteo.com/v1/elevation?latitude=${chunk.map((p) => p.lat).join(",")}` +
         `&longitude=${chunk.map((p) => p.lon).join(",")}`,
     );
-    chunk.forEach((p, j) => {
+    for (const [j, p] of chunk.entries())
       out[p.slug] = Math.round(elevation[j]!);
-    });
   }
   return out;
 }
@@ -719,12 +718,14 @@ async function gate(
   } catch (error) {
     if (!(error instanceof QuotaExhaustedError))
       fail(`Profil ${job.label}`, error);
-    return; // route stays, profile follows in the next run
+    // The route stays; the profile follows in the next run.
+    return;
   }
   m = withProfile(m as AscentMetrics, prof, job.elevation);
   const badProfile = judge(job, m);
   if (badProfile.length) {
-    profiles[job.key] = prof; // so reject() carries it into the cache
+    // So that reject() carries it into the cache.
+    profiles[job.key] = prof;
     return reject(job, badProfile, m, source, hash);
   }
   profiles[job.key] = prof;
@@ -739,7 +740,8 @@ const routing = pendingRoutes().map(async (job) => {
   const upgrade = routes[job.key] !== undefined;
   try {
     const { geom, source } = await route(job.waypoints);
-    if (upgrade && (meta[job.key]?.source ?? "osrm") === source) return; // nothing gained
+    // Same source as before: nothing gained.
+    if (upgrade && (meta[job.key]?.source ?? "osrm") === source) return;
     await gate(job, geom, source);
   } catch (error) {
     if (!(error instanceof QuotaExhaustedError))

@@ -100,13 +100,6 @@ export const DEFAULT_FILTERS: Filters = {
   favoritesOnly: false,
 };
 
-/** True when any filter apart from the period and the sort is active. */
-export const hasActiveFilters = (f: Filters) =>
-  f.status.length !== ALL_STATUS.length ||
-  countCriteria(f) > 0 ||
-  f.query.trim() !== "" ||
-  f.favoritesOnly;
-
 /** How many of the pass criteria are active – the badge on the filter trigger. */
 export const countCriteria = (f: Filters) =>
   (f.minFame > 1 ? 1 : 0) +
@@ -114,6 +107,13 @@ export const countCriteria = (f: Filters) =>
   (f.difficulty[0] > RATING_MIN || f.difficulty[1] < RATING_MAX ? 1 : 0) +
   (f.maxTraffic < RATING_MAX ? 1 : 0) +
   (f.minBeauty > RATING_MIN ? 1 : 0);
+
+/** True when any filter apart from the period and the sort is active. */
+export const hasActiveFilters = (f: Filters) =>
+  f.status.length !== ALL_STATUS.length ||
+  countCriteria(f) > 0 ||
+  f.query.trim() !== "" ||
+  f.favoritesOnly;
 
 export interface MapView {
   lat: number;

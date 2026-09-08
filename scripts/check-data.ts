@@ -188,13 +188,13 @@ function checkPasses(list: Pass[]) {
           `${p.slug}: ${r} – Passkoordinate prüfen (DEM ${dem} m, angegeben ${p.elevation} m)`,
         );
 
-    p.ascents.forEach((a, i) => {
+    for (const [i, a] of p.ascents.entries()) {
       const key = `${p.slug}:${i}`;
       const geom = routes?.[key];
       if (!geom) {
         if (routes && !(rejected && key in rejected))
           warnings.push(`${key}: Route fehlt (bun run data:build)`);
-        return;
+        continue;
       }
       let m = ascentMetrics(geom, a.from, { lat: p.lat, lon: p.lon });
       const prof = profiles?.[key];
@@ -206,7 +206,7 @@ function checkPasses(list: Pass[]) {
         m,
         checkAscent(m as AscentMetrics, a.check),
       );
-    });
+    }
     if (climate && !(p.slug in climate))
       warnings.push(`${p.slug}: Klimareihe fehlt`);
   }
@@ -247,7 +247,8 @@ const checkFor = new Map<
   Pass["ascents"][number]["check"] | Tour["check"]
 >();
 for (const p of passes ?? [])
-  p.ascents.forEach((a, i) => checkFor.set(`${p.slug}:${i}`, a.check));
+  for (const [i, a] of p.ascents.entries())
+    checkFor.set(`${p.slug}:${i}`, a.check);
 for (const t of tours ?? []) checkFor.set(`tour:${t.slug}`, t.check);
 
 const rejudge = (key: string, r: RouteRejection) =>

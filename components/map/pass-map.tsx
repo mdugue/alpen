@@ -707,12 +707,11 @@ export function PassMap({
       ["literal", passes.map((p) => p.slug)],
     ]);
     for (const p of passes)
-      p.ascents.forEach((_, i) =>
+      for (const [i] of p.ascents.entries())
         m.setFeatureState(
           { source: "routes", id: `${p.slug}:${i}` },
           { status: p.status, selected: p.slug === selPass ? 1 : 0 },
-        ),
-      );
+        );
   }, [passes, selection, ready]);
 
   // --- Write data into the sources ---------------------------------------

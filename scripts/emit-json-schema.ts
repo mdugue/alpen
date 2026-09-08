@@ -38,7 +38,7 @@ if (import.meta.main) {
       ? await Bun.file(target).text()
       : null;
     if (current === next) continue;
-    stale++;
+    stale += 1;
     if (CHECK) console.error(`FEHLER ${schemaFileFor(file)} ist veraltet`);
     else await Bun.write(target, next);
   }

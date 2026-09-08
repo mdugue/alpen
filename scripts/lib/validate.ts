@@ -38,11 +38,20 @@ export function haversine(
 }
 
 const at = (p: LatLon): [number, number] => [p.lat, p.lon];
+const round = (n: number, digits: number) => +n.toFixed(digits);
+const fmtKm = (n: number) =>
+  n < 1 ? `${Math.round(n * 1000)} m` : `${round(n, 1)} km`;
+/** Drops `note` and any undefined key so the spread does not erase a default. */
+const strip = (c?: AscentCheck | TourCheck) =>
+  Object.fromEntries(
+    Object.entries(c ?? {}).filter(([k, v]) => k !== "note" && v !== undefined),
+  );
 
 /** Length of a polyline in km. */
 export function length(geom: RouteGeometry) {
   let km = 0;
-  for (let i = 1; i < geom.length; i++) km += haversine(geom[i - 1]!, geom[i]!);
+  for (let i = 1; i < geom.length; i += 1)
+    km += haversine(geom[i - 1]!, geom[i]!);
   return km;
 }
 
@@ -115,7 +124,7 @@ export function withProfile(
 ): AscentMetrics {
   const total = profile.dist.at(-1) ?? 0;
   let peak = 0;
-  for (let i = 1; i < profile.ele.length; i++)
+  for (let i = 1; i < profile.ele.length; i += 1)
     if (profile.ele[i]! > profile.ele[peak]!) peak = i;
   return {
     ...m,
@@ -151,11 +160,11 @@ export function checkAscent(m: AscentMetrics, check?: AscentCheck): string[] {
   if (m.km > l.maxKm) out.push(`Länge ${m.km} km > ${l.maxKm} km`);
   if (m.startDist > l.maxStartDist)
     out.push(
-      `Start ${km(m.startDist)} vom Auffahrtsbeginn entfernt > ${km(l.maxStartDist)}`,
+      `Start ${fmtKm(m.startDist)} vom Auffahrtsbeginn entfernt > ${fmtKm(l.maxStartDist)}`,
     );
   if (m.endDist > l.maxEndDist)
     out.push(
-      `Ende ${km(m.endDist)} vom Passpunkt entfernt > ${km(l.maxEndDist)}`,
+      `Ende ${fmtKm(m.endDist)} vom Passpunkt entfernt > ${fmtKm(l.maxEndDist)}`,
     );
   if (m.topDelta !== null && Math.abs(m.topDelta) > l.maxTopDelta)
     out.push(
@@ -180,11 +189,11 @@ export function checkTour(m: TourMetrics, check?: TourCheck): string[] {
     );
   if (m.startDist > l.maxWaypointDist)
     out.push(
-      `Start ${km(m.startDist)} vom ersten Wegpunkt entfernt > ${km(l.maxWaypointDist)}`,
+      `Start ${fmtKm(m.startDist)} vom ersten Wegpunkt entfernt > ${fmtKm(l.maxWaypointDist)}`,
     );
   if (m.endDist > l.maxWaypointDist)
     out.push(
-      `Ende ${km(m.endDist)} vom letzten Wegpunkt entfernt > ${km(l.maxWaypointDist)}`,
+      `Ende ${fmtKm(m.endDist)} vom letzten Wegpunkt entfernt > ${fmtKm(l.maxWaypointDist)}`,
     );
   return out;
 }
@@ -213,12 +222,3 @@ export function geometryHash(geom: RouteGeometry) {
     geom.map(([lat, lon]) => `${lat.toFixed(5)},${lon.toFixed(5)}`).join(";"),
   ).toString(16);
 }
-
-const round = (n: number, digits: number) => +n.toFixed(digits);
-const km = (n: number) =>
-  n < 1 ? `${Math.round(n * 1000)} m` : `${round(n, 1)} km`;
-/** Drops `note` and any undefined key so the spread does not erase a default. */
-const strip = (c?: AscentCheck | TourCheck) =>
-  Object.fromEntries(
-    Object.entries(c ?? {}).filter(([k, v]) => k !== "note" && v !== undefined),
-  );
