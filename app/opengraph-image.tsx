@@ -1,5 +1,5 @@
 import { readFile } from "node:fs/promises";
-import { join } from "node:path";
+import path from "node:path";
 
 import { ImageResponse } from "next/og";
 
@@ -29,15 +29,16 @@ export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
 const oxaniumBold = await readFile(
-  join(process.cwd(), "assets/fonts/Oxanium-Bold.ttf"),
+  path.join(process.cwd(), "assets/fonts/Oxanium-Bold.ttf"),
 );
 const oxaniumMedium = await readFile(
-  join(process.cwd(), "assets/fonts/Oxanium-Medium.ttf"),
+  path.join(process.cwd(), "assets/fonts/Oxanium-Medium.ttf"),
 );
 
+/** Equirectangular projection into the right two thirds of the canvas. */
+const box = { x: 400, y: 70, w: 740, h: 500 };
+
 export default function Image() {
-  // Equirectangular projection into the right two thirds of the canvas.
-  const box = { x: 400, y: 70, w: 740, h: 500 };
   const lats = (passes as Pass[]).map((p) => p.lat);
   const lons = (passes as Pass[]).map((p) => p.lon);
   const lat0 = Math.min(...lats);

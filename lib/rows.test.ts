@@ -113,6 +113,8 @@ const snowy = (snowPct: number): ClimateYear =>
       }) satisfies ClimateBucket,
   );
 
+const periodIndexOf = (t: number) => PERIODS.indexOf(t);
+
 describe("buildPassRows", () => {
   test("filters by elevation, fame, search and favourites", () => {
     expect(
@@ -317,5 +319,3 @@ describe("statusHistogram", () => {
     expect(bars.every((b) => b.open === 0)).toBe(true);
   });
 });
-
-const periodIndexOf = (t: number) => PERIODS.indexOf(t);

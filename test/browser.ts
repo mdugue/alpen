@@ -10,7 +10,7 @@
  * background.
  */
 import { mkdir } from "node:fs/promises";
-import { join } from "node:path";
+import path from "node:path";
 
 const PORT = Number(process.env.PORT ?? 3123);
 const FAILURE_DIR = process.env.E2E_FAILURE_DIR ?? "e2e/failures";
@@ -41,7 +41,8 @@ function chromePath(): string | undefined {
     "google-chrome",
     "google-chrome-stable",
   ]) {
-    if (Bun.which(name)) return undefined; // on PATH: let Bun auto-detect
+    // On PATH: let Bun auto-detect.
+    if (Bun.which(name)) return undefined;
   }
   const fallback = "/opt/pw-browsers/chromium";
   return Bun.file(fallback).size > 0 ? fallback : undefined;
@@ -72,7 +73,13 @@ export interface App {
  */
 export async function startApp(): Promise<App> {
   const fromEnv = process.env.BASE_URL;
-  if (fromEnv) return { base: fromEnv.replace(/\/$/u, ""), stop: () => {} };
+  if (fromEnv)
+    return {
+      base: fromEnv.replace(/\/$/u, ""),
+      stop: () => {
+        // Nothing to stop: the server is not ours.
+      },
+    };
 
   const proc = Bun.spawn({
     cmd: ["bun", "run", "start"],
@@ -114,10 +121,12 @@ export interface OpenOptions {
 /** One page under test; thin wrapper over the view with the waits we need. */
 export class Page {
   readonly errors: string[] = [];
-  constructor(
-    private readonly view: Bun.WebView,
-    private readonly base: string,
-  ) {}
+  private readonly view: Bun.WebView;
+  private readonly base: string;
+  constructor(view: Bun.WebView, base: string) {
+    this.view = view;
+    this.base = base;
+  }
 
   /**
    * Always a fresh document, via a hop over about:blank: a fragment-only
@@ -275,7 +284,7 @@ export class Page {
 
   async save(name: string) {
     await mkdir(FAILURE_DIR, { recursive: true });
-    const file = join(
+    const file = path.join(
       FAILURE_DIR,
       name.endsWith(".png") ? name : `${name}.png`,
     );

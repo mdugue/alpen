@@ -33,39 +33,21 @@ export default defineConfig({
     // Arrow helpers (`lib/utils.ts`) sit next to function declarations for
     // components; neither is wrong here.
     "func-style": "off",
-    // Trailing comments annotate single lines all over `lib/`.
-    "no-inline-comments": "off",
     // Nested ternaries map a status or a scale to a label in one expression –
     // the alternative is an if-chain that says less.
     "no-nested-ternary": "off",
-    "unicorn/no-negated-condition": "off",
-    "no-negated-condition": "off",
-    "no-plusplus": "off",
     // Object literals are ordered by meaning, not by name: Next metadata, the
     // manifest, MapLibre paint specs and the scale labels all read in a
     // deliberate sequence that alphabetising would destroy.
     "sort-keys": "off",
     // Components are `function` declarations, hoisted above the helpers they
     // use, and helper declarations follow the component they belong to.
-    "no-use-before-define": "off",
+    // Variables and classes still have to be declared first.
+    "no-use-before-define": ["error", { functions: false }],
     "react/function-component-definition": [
       "error",
       { namedComponents: "function-declaration" },
     ],
-    // `x == null` is the deliberate nullish check.
-    eqeqeq: ["error", "smart"],
-    "no-eq-null": "off",
-    "no-multi-assign": "off",
-    "no-empty-function": "off",
-    "unicorn/no-array-for-each": "off",
-    "unicorn/prefer-set-has": "off",
-    // Named imports from `node:path` read better than a namespace object.
-    "unicorn/import-style": "off",
-    // Colocated helpers stay next to their only caller; React Compiler takes
-    // care of the render cost the preset is worried about.
-    "unicorn/consistent-function-scoping": "off",
-    "react-doctor/prefer-module-scope-pure-function": "off",
-    "react-doctor/prefer-module-scope-static-value": "off",
 
     // ── Rules that are wrong for this codebase ──────────────────────────
     // `noUncheckedIndexedAccess` is on, and the profile, climate and route
@@ -84,15 +66,15 @@ export default defineConfig({
     // explain why right above the suppression; this rule objects to the
     // existence of the suppression, which would leave nowhere to put it.
     "react/rule-suppression": "off",
-    // `passStatus` and `Explorer` sit at 21: the heuristic and the layout both
-    // branch a lot by nature, and splitting them would only move the branches.
+    // `baseVerdict` sits at 21 and `Explorer` at 22: the heuristic and the
+    // layout both branch a lot by nature, and splitting them would only move
+    // the branches.
     complexity: ["error", 25],
     // 92 passes, 30-odd tours: `includes`, `filter().map()` and friends are
     // clearer than the Set/reduce rewrites these rules ask for, and none of
     // this is a measured hot path.
     "react-doctor/js-set-map-lookups": "off",
     "react-doctor/js-combine-iterations": "off",
-    "react-doctor/js-flatmap-filter": "off",
     // Axis and legend labels in the charts are 11px on purpose; they are dense
     // data annotation, not interface text.
     "react-doctor/no-tiny-text": "off",
@@ -106,16 +88,6 @@ export default defineConfig({
     // The weather route is a Cache Components route: `"use cache"` plus
     // `cacheLife`/`cacheTag` control its freshness, which the rule cannot see.
     "react-doctor/server-fetch-without-revalidate": "off",
-    // `useFetch` and the build script drive promises from callbacks on
-    // purpose; rewriting them as `await` would need extra state either way.
-    "promise/prefer-await-to-then": "off",
-    "promise/prefer-await-to-callbacks": "off",
-    "promise/avoid-new": "off",
-    "no-promise-executor-return": "off",
-    // `scripts/build-data.ts` is a script, not a library: two small classes in
-    // one file and TypeScript parameter properties are the point.
-    "max-classes-per-file": "off",
-    "typescript/parameter-properties": "off",
   },
   overrides: [
     {
@@ -123,6 +95,17 @@ export default defineConfig({
       // returns imported JSON.
       files: ["lib/data.ts"],
       rules: { "require-await": "off" },
+    },
+    {
+      // The build script serialises its API calls and its file writes on
+      // promise chains (`this.chain`, `writing`); `await` has no way to hand
+      // the chain on to the next caller. It also keeps its error class next
+      // to the rate limiter that throws it.
+      files: ["scripts/build-data.ts"],
+      rules: {
+        "promise/prefer-await-to-then": "off",
+        "max-classes-per-file": "off",
+      },
     },
     {
       // The build script talks to rate-limited APIs: requests are sequential

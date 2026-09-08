@@ -164,7 +164,7 @@ export function statusHistogram(
   for (const pass of passes) {
     if (!passMatches(pass, filters, q)) continue;
     const season = passSeason(pass, climate?.[pass.slug]);
-    for (let i = 0; i < bars.length; i++) bars[i]![season[i]!]++;
+    for (let i = 0; i < bars.length; i += 1) bars[i]![season[i]!] += 1;
   }
   return bars;
 }
@@ -190,10 +190,11 @@ export const PASS_SORT_LABEL: Record<PassSort, string> = {
 
 const STATUS_RANK: Record<Status, number> = { open: 0, risky: 1, closed: 2 };
 
+const byName = (a: PassRow, b: PassRow) =>
+  a.pass.name.localeCompare(b.pass.name, "de");
+
 /** Direction is fixed per key: the "best" value first. */
 export function sortPassRows(rows: PassRow[], sort: PassSort): PassRow[] {
-  const byName = (a: PassRow, b: PassRow) =>
-    a.pass.name.localeCompare(b.pass.name, "de");
   const cmp: Record<PassSort, (a: PassRow, b: PassRow) => number> = {
     elevation: (a, b) => b.pass.elevation - a.pass.elevation,
     name: byName,

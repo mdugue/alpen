@@ -69,9 +69,10 @@ import { cn, fmt, fmtUnit } from "@/lib/utils";
  * the only user of it and only appears once a pass is selected, so it stays
  * in its own chunk.
  */
-const ClimateChart = dynamic(() =>
-  import("@/components/panel/climate-chart").then((m) => m.ClimateChart),
-);
+const ClimateChart = dynamic(async () => {
+  const m = await import("@/components/panel/climate-chart");
+  return m.ClimateChart;
+});
 
 const TRAFFIC_LABEL = [
   "",
@@ -265,6 +266,16 @@ function LinkButton({
   );
 }
 
+/** One labelled row of the nearby list. */
+function group(label: string, items: React.ReactNode) {
+  return (
+    <div className="flex flex-wrap items-baseline gap-x-3 gap-y-0.5">
+      <span className="text-muted-foreground text-xs">{label}</span>
+      {items}
+    </div>
+  );
+}
+
 function Nearby({
   lat,
   lon,
@@ -288,13 +299,6 @@ function Nearby({
     .map((x) => ({ x, d: haversine({ lat, lon }, x) }))
     .filter((e) => e.d <= NEARBY_RADIUS_KM && e.x.slug !== exclude)
     .toSorted((a, b) => a.d - b.d);
-
-  const group = (label: string, items: React.ReactNode) => (
-    <div className="flex flex-wrap items-baseline gap-x-3 gap-y-0.5">
-      <span className="text-muted-foreground text-xs">{label}</span>
-      {items}
-    </div>
-  );
 
   return (
     <>

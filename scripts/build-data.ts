@@ -61,8 +61,6 @@ const CLIMATE_WEIGHT = Math.ceil(
 /** Open-Meteo weight of one elevation request: one call per location. */
 const PROFILE_WEIGHT = PROFILE_POINTS;
 
-const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
-
 async function readJson<T>(name: string, fallback: T): Promise<T> {
   const f = Bun.file(new URL(name, OUT));
   return (await f.exists()) ? ((await f.json()) as T) : fallback;
@@ -104,11 +102,15 @@ class Limiter {
   requests = 0;
   used = 0;
 
-  constructor(
-    readonly name: string,
-    private callsPerMinute: number,
-    private budget = Infinity,
-  ) {}
+  readonly name: string;
+  private readonly callsPerMinute: number;
+  private readonly budget: number;
+
+  constructor(name: string, callsPerMinute: number, budget = Infinity) {
+    this.name = name;
+    this.callsPerMinute = callsPerMinute;
+    this.budget = budget;
+  }
 
   run<T>(fn: () => Promise<T>, weight = 1): Promise<T> {
     const p = this.chain.then(async () => {
@@ -117,13 +119,15 @@ class Limiter {
       if (this.exhausted)
         throw new QuotaExhaustedError(this.name, this.exhausted);
       const wait = this.nextAt - Date.now();
-      if (wait > 0) await sleep(wait);
+      if (wait > 0) await Bun.sleep(wait);
       this.nextAt = Date.now() + (weight * 60_000) / this.callsPerMinute;
       this.used += weight;
-      this.requests++;
+      this.requests += 1;
       return fn();
     });
-    this.chain = p.catch(() => {});
+    this.chain = p.catch(() => {
+      // Failures surface through `p`; the chain only sequences the calls.
+    });
     return p;
   }
 
@@ -145,7 +149,7 @@ function getJson<T>(
   init?: RequestInit,
 ): Promise<T> {
   return lim.run(async () => {
-    for (let attempt = 0; attempt < 5; attempt++) {
+    for (let attempt = 0; attempt < 5; attempt += 1) {
       const res = await fetch(url, init);
       if (res.ok) return (await res.json()) as T;
 
@@ -184,7 +188,7 @@ function getJson<T>(
           `  ${lim.name} ${res.status} (${reason || "keine Angabe"}), warte ${wait / 1000}s …`,
         );
         lim.pause(wait);
-        await sleep(wait);
+        await Bun.sleep(wait);
         continue;
       }
       throw new Error(`${res.status} ${reason} ${url.slice(0, 80)}`);
@@ -277,7 +281,7 @@ async function profile(geom: RouteGeometry): Promise<ElevationProfile> {
 
   let total = 0;
   const dist = [0];
-  for (let i = 1; i < pts.length; i++) {
+  for (let i = 1; i < pts.length; i += 1) {
     total += haversine(pts[i - 1]!, pts[i]!);
     dist.push(total);
   }
@@ -328,20 +332,20 @@ async function climate(pass: Pass): Promise<ClimateYear> {
     frost: 0,
     wet: 0,
   }));
-  d.daily.time.forEach((t, i) => {
+  for (const [i, t] of d.daily.time.entries()) {
     const tmax = d.daily.temperature_2m_max[i];
     const tmin = d.daily.temperature_2m_min[i];
-    if (tmax == null || tmin == null) return;
+    if (typeof tmax !== "number" || typeof tmin !== "number") continue;
     const month = +t.slice(5, 7);
     const day = +t.slice(8, 10);
     const b = buckets[(month - 1) * 2 + (day > 15 ? 1 : 0)]!;
-    b.n++;
+    b.n += 1;
     b.tx += tmax;
     b.tn += tmin;
-    if ((d.daily.snowfall_sum[i] ?? 0) >= 1) b.snow++;
-    if (tmin < 0) b.frost++;
-    if ((d.daily.precipitation_sum[i] ?? 0) >= 1) b.wet++;
-  });
+    if ((d.daily.snowfall_sum[i] ?? 0) >= 1) b.snow += 1;
+    if (tmin < 0) b.frost += 1;
+    if ((d.daily.precipitation_sum[i] ?? 0) >= 1) b.wet += 1;
+  }
   return buckets.map((b) =>
     b.n
       ? {

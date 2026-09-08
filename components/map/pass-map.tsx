@@ -91,7 +91,8 @@ setWorkerUrl("/maplibre/maplibre-gl-worker.mjs");
  */
 function toRgb(color: string, fallback: string): string {
   const canvas = document.createElement("canvas");
-  canvas.width = canvas.height = 1;
+  canvas.width = 1;
+  canvas.height = 1;
   const ctx = canvas.getContext("2d", { willReadFrequently: true });
   if (!ctx) return fallback;
   const sentinel = "#010203";
@@ -124,22 +125,25 @@ function readColors(el: HTMLElement) {
   };
 }
 
+/** Paints one icon on a fresh canvas and returns its pixels. */
+function draw(
+  paint: (ctx: CanvasRenderingContext2D, s: number) => void,
+  size = 48,
+) {
+  const canvas = document.createElement("canvas");
+  canvas.width = size;
+  canvas.height = size;
+  const ctx = canvas.getContext("2d")!;
+  paint(ctx, size);
+  return ctx.getImageData(0, 0, size, size);
+}
+
 /** Star and diamond as canvas icons so that no font glyphs are needed. */
 function addIcons(map: MLMap, c: ReturnType<typeof readColors>) {
-  const draw = (
-    paint: (ctx: CanvasRenderingContext2D, s: number) => void,
-    size = 48,
-  ) => {
-    const canvas = document.createElement("canvas");
-    canvas.width = canvas.height = size;
-    const ctx = canvas.getContext("2d")!;
-    paint(ctx, size);
-    return ctx.getImageData(0, 0, size, size);
-  };
   const star = (fill: string, stroke: string) =>
     draw((ctx, s) => {
       ctx.beginPath();
-      for (let i = 0; i < 10; i++) {
+      for (let i = 0; i < 10; i += 1) {
         const a = -Math.PI / 2 + (i * Math.PI) / 5;
         const r = (i % 2 ? 0.46 : 1) * s * 0.42;
         ctx.lineTo(s / 2 + Math.cos(a) * r, s / 2 + Math.sin(a) * r);
@@ -156,10 +160,10 @@ function addIcons(map: MLMap, c: ReturnType<typeof readColors>) {
   const add = (id: string, data: ImageData) => {
     if (!map.hasImage(id)) map.addImage(id, data, { pixelRatio: 2 });
   };
-  (["open", "risky", "closed"] as const).forEach((k) => {
+  for (const k of ["open", "risky", "closed"] as const) {
     add(`star-${k}-0`, star(c[k], c.paper));
     add(`star-${k}-1`, star(c[k], c.ink));
-  });
+  }
   add("star-town-0", star(c.accent, c.paper));
   add("star-town-1", star(c.accent, c.ink));
   add(
@@ -762,7 +766,7 @@ export function PassMap({
         : t?.waypoints.map((w) => [w.lat, w.lon] as [number, number]);
       if (line?.length) {
         const b = new LngLatBounds();
-        line.forEach(([lat, lon]) => b.extend([lon, lat]));
+        for (const [lat, lon] of line) b.extend([lon, lat]);
         m.fitBounds(b, { padding: 60, duration });
       }
     }
@@ -808,10 +812,11 @@ export function PassMap({
     const m = map.current;
     if (!m) return;
     const b = new LngLatBounds();
-    passes.forEach((p) => b.extend([p.lon, p.lat]));
-    tours
-      .filter((t) => t.visible)
-      .forEach((t) => t.geometry.forEach(([lat, lon]) => b.extend([lon, lat])));
+    for (const p of passes) b.extend([p.lon, p.lat]);
+    for (const t of tours) {
+      if (!t.visible) continue;
+      for (const [lat, lon] of t.geometry) b.extend([lon, lat]);
+    }
     const target = b.isEmpty()
       ? undefined
       : m.cameraForBounds(b, { padding: 48 });

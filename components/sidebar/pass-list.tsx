@@ -32,12 +32,12 @@ import type { PassRow, PassSort } from "@/lib/rows";
 import { fmtUnit } from "@/lib/utils";
 
 type RatingSort = "beauty" | "fame" | "difficulty" | "traffic";
-const RATING_SORTS: readonly PassSort[] = [
+const RATING_SORTS: ReadonlySet<PassSort> = new Set([
   "beauty",
   "fame",
   "difficulty",
   "traffic",
-];
+]);
 
 export function PassList({
   rows,
@@ -61,7 +61,7 @@ export function PassList({
   const [filtersManual, setFiltersManual] = useState<boolean | null>(null);
   const filtersOpen = filtersManual ?? passFilters > 0;
   const sorted = sortPassRows(rows, sort);
-  const ratingSort = RATING_SORTS.includes(sort) ? (sort as RatingSort) : null;
+  const ratingSort = RATING_SORTS.has(sort) ? (sort as RatingSort) : null;
 
   return (
     <>

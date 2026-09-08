@@ -16,7 +16,7 @@
  * background. Say so when posting such screenshots.
  */
 import { mkdir } from "node:fs/promises";
-import { join } from "node:path";
+import path from "node:path";
 
 // --- CLI ------------------------------------------------------------------
 
@@ -101,7 +101,8 @@ function chromePath(): string | undefined {
     "google-chrome",
     "google-chrome-stable",
   ]) {
-    if (Bun.which(name)) return undefined; // on PATH: let Bun auto-detect
+    // On PATH: let Bun auto-detect.
+    if (Bun.which(name)) return undefined;
   }
   const fallback = "/opt/pw-browsers/chromium";
   return Bun.file(fallback).size > 0 ? fallback : undefined;
@@ -109,11 +110,11 @@ function chromePath(): string | undefined {
 
 function backend(): Bun.WebView.Backend {
   if (webkit) return "webkit";
-  const path = chromePath();
+  const chrome = chromePath();
   return {
     type: "chrome",
     url: false,
-    ...(path ? { path } : {}),
+    ...(chrome ? { path: chrome } : {}),
     argv: CHROME_ARGV,
     // Chrome's own crash output; useful when it "closes the pipe" without a reason.
     stderr: process.env.DEBUG_CHROME ? "inherit" : "ignore",
@@ -195,7 +196,7 @@ async function shoot(state: State) {
     // Let MapLibre fetch its worker, style and data and paint the layers.
     await Bun.sleep(offline ? 4000 : 8000);
 
-    const file = join(outDir, `${state.name}.png`);
+    const file = path.join(outDir, `${state.name}.png`);
     await Bun.write(file, await view.screenshot({ encoding: "buffer" }));
     const relevant = [...errors].filter(
       (e) =>

@@ -36,12 +36,12 @@ for (const p of passes as Pass[]) {
   if (p.season && p.season.opens >= p.season.closes)
     errors.push(`${p.slug}: Saisonfenster verdreht`);
   if (!p.ascents.length) warnings.push(`${p.slug}: keine Auffahrt hinterlegt`);
-  p.ascents.forEach((_, i) => {
+  for (const [i] of p.ascents.entries()) {
     const key = `${p.slug}:${i}`;
     if (!(key in routes))
       warnings.push(`${key}: Route fehlt (bun run data:build)`);
     else if (!(key in profiles)) warnings.push(`${key}: Profil fehlt`);
-  });
+  }
   if (!(p.slug in climate)) warnings.push(`${p.slug}: Klimareihe fehlt`);
 }
 

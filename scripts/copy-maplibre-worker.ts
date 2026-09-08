@@ -7,12 +7,18 @@
  * made here. Runs before `dev` and `build`; the output is git-ignored.
  */
 import { copyFile, mkdir } from "node:fs/promises";
-import { join } from "node:path";
+import path from "node:path";
 
-const src = join(import.meta.dir, "..", "node_modules", "maplibre-gl", "dist");
-const dest = join(import.meta.dir, "..", "public", "maplibre");
+const src = path.join(
+  import.meta.dir,
+  "..",
+  "node_modules",
+  "maplibre-gl",
+  "dist",
+);
+const dest = path.join(import.meta.dir, "..", "public", "maplibre");
 
 await mkdir(dest, { recursive: true });
 for (const file of ["maplibre-gl-worker.mjs", "maplibre-gl-shared.mjs"]) {
-  await copyFile(join(src, file), join(dest, file));
+  await copyFile(path.join(src, file), path.join(dest, file));
 }

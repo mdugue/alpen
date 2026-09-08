@@ -266,11 +266,11 @@ export function Explorer({
 
   // Height of the visible sheet part, so its own scroll container ends at the fold.
   const sheetHeight = typeof snap === "number" ? `${snap * 100}dvh` : snap;
-  const insetBottom = !isMobile
-    ? 0
-    : typeof snap === "number"
+  const insetBottom = isMobile
+    ? typeof snap === "number"
       ? Math.round(window.innerHeight * 0.5)
-      : 72;
+      : 72
+    : 0;
 
   // Desktop: the panels float over the map; the map is padded by their width
   // so camera targets land in the visible part.
@@ -377,7 +377,9 @@ export function Explorer({
                 setSnap(s as Snap);
               }
             }}
-            onOpenChange={() => {}}
+            onOpenChange={() => {
+              // The sheet is always open; it only moves between snap points.
+            }}
           >
             <DrawerContent className="rounded-b-none border-b-0 [--drawer-inset:0px] data-[swipe-axis=y]:[--drawer-content-max-height:100dvh]">
               <DrawerTitle className="sr-only">Liste und Filter</DrawerTitle>

@@ -57,6 +57,22 @@ const bucket = (over: Partial<ClimateBucket> = {}): ClimateBucket => ({
   ...over,
 });
 
+/** One status per character: `o` open, `r` risky, anything else closed. */
+const statuses = (spec: string): Status[] =>
+  [...spec].map((c) => (c === "o" ? "open" : c === "r" ? "risky" : "closed"));
+
+const tour = (slugs: string[]): Tour => ({
+  slug: "t",
+  name: "Testtour",
+  color: "#000",
+  km: 100,
+  elevationGain: 2000,
+  passes: slugs,
+  season: "",
+  description: "",
+  waypoints: [],
+});
+
 describe("periods", () => {
   test("24 half-months round trip through index and label", () => {
     expect(PERIODS).toHaveLength(24);
@@ -234,10 +250,6 @@ describe("season strips and best periods", () => {
   });
 
   test("seasonSummary describes the strip in one sentence", () => {
-    const statuses = (spec: string): Status[] =>
-      [...spec].map((c) =>
-        c === "o" ? "open" : c === "r" ? "risky" : "closed",
-      );
     expect(seasonSummary(statuses("xxxxxxxxxxrooooooorxxxxx"))).toBe(
       "Saison: meist offen Ende Juni bis Ende September, wetterabhängig Anfang Juni bis Anfang Oktober.",
     );
@@ -258,17 +270,6 @@ describe("tourStatus", () => {
     pass({ slug: "a", elevation: 1000, season: { opens: 5, closes: 11 } }),
     pass({ slug: "b", elevation: 1000, season: { opens: 7, closes: 9 } }),
   ]);
-  const tour = (slugs: string[]): Tour => ({
-    slug: "t",
-    name: "Testtour",
-    color: "#000",
-    km: 100,
-    elevationGain: 2000,
-    passes: slugs,
-    season: "",
-    description: "",
-    waypoints: [],
-  });
 
   test("a tour is as rideable as its worst pass", () => {
     expect(tourStatus(tour(["a", "b"]), index, 8)).toBe("open");

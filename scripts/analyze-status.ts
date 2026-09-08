@@ -43,7 +43,7 @@ const changes: string[] = [];
 
 for (const pass of passes) {
   const series = climate[pass.slug];
-  PERIODS.forEach((t, i) => {
+  for (const [i, t] of PERIODS.entries()) {
     const bucket = series?.[i] ?? null;
     const snow = bucket?.snowPct ?? 0;
     const b = passStatus(pass, t);
@@ -52,9 +52,9 @@ for (const pass of passes) {
       [before, b],
       [after, a],
     ] as const) {
-      cohort[status].n++;
+      cohort[status].n += 1;
       cohort[status].snowSum += snow;
-      if (snow >= 20) cohort[status].snowHigh++;
+      if (snow >= 20) cohort[status].snowHigh += 1;
     }
     if (a !== b) {
       changes.push(
@@ -62,7 +62,7 @@ for (const pass of passes) {
           `  (Schnee ${snow} %, Frost ${bucket?.frostPct ?? 0} %)`,
       );
     }
-  });
+  }
 }
 
 function table(title: string, cohorts: Record<Status, Cohort>) {

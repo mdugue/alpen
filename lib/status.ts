@@ -236,12 +236,14 @@ export function tourStatus(
   t: Period,
   climate?: Record<string, ClimateYear>,
 ): Status {
-  const list = tour.passes
-    .map((slug) => passes.get(slug))
-    .filter((p): p is Pass => Boolean(p))
-    .map((p) => passStatus(p, t, climateBucket(climate, p.slug, t)));
-  if (list.includes("closed")) return "closed";
-  if (list.includes("risky")) return "risky";
+  const list = new Set(
+    tour.passes
+      .map((slug) => passes.get(slug))
+      .filter((p): p is Pass => Boolean(p))
+      .map((p) => passStatus(p, t, climateBucket(climate, p.slug, t))),
+  );
+  if (list.has("closed")) return "closed";
+  if (list.has("risky")) return "risky";
   return "open";
 }
 
@@ -287,10 +289,10 @@ function longestRun(
   let best: { start: number; length: number } | null = null;
   let start = -1;
   let length = 0;
-  for (let i = 0; i < 2 * n; i++) {
+  for (let i = 0; i < 2 * n; i += 1) {
     if (flags[i % n]) {
       if (length === 0) start = i % n;
-      length++;
+      length += 1;
       if (length <= n && (!best || length > best.length))
         best = { start, length };
     } else {
