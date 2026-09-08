@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import Link from "next/link";
 import { PanelLeftClose, Search, Star, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput } from "@/components/ui/input-group";
@@ -246,17 +247,22 @@ export function Sidebar(p: SidebarProps) {
           </Section>
         </div>
 
-        <p
-          className={cn(
-            "flex h-8 shrink-0 items-center gap-1 truncate border-t border-border px-3 text-[11px] text-muted-foreground",
-            p.peek && "hidden",
-          )}
-        >
-          <span className="truncate">Status ist eine Heuristik, Skalen sind redaktionell.</span>
-          <Button variant="link" size="xs" className="h-auto shrink-0 p-0" onClick={p.onOpenScales}>
-            Skalen &amp; Quellen
-          </Button>
-        </p>
+        <div className={cn("shrink-0 border-t border-border", p.peek && "hidden")}>
+          <p className="flex h-8 items-center gap-1 truncate px-3 text-[11px] text-muted-foreground">
+            <span className="truncate">Status ist eine Heuristik, Skalen sind redaktionell.</span>
+            <Button variant="link" size="xs" className="h-auto shrink-0 p-0" onClick={p.onOpenScales}>
+              Skalen &amp; Quellen
+            </Button>
+          </p>
+          <p className="flex items-center gap-3 px-3 pb-2 text-[11px] text-muted-foreground">
+            <Link href="/impressum" className="hover:text-foreground hover:underline">
+              Impressum
+            </Link>
+            <Link href="/datenschutz" className="hover:text-foreground hover:underline">
+              Datenschutz
+            </Link>
+          </p>
+        </div>
       </div>
     </div>
   );
