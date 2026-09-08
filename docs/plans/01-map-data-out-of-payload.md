@@ -32,6 +32,43 @@ planning happens on hotel Wi-Fi and phones; this is the biggest lever.
 Changing how passes, tours and towns themselves reach the client (they are
 small); lazy loading of profiles and climate (optional phase 4).
 
+## The mechanism in one picture
+
+### Before
+
+```mermaid
+flowchart LR
+  J["routes.json<br/>1.27 MB, 54,000 coordinate pairs"] --> P["app/page.tsx<br/>props"]
+  P --> H["index.html<br/>1.95 MB incl. RSC payload"]
+  H --> R["React parses the flight data<br/>on every visitor's device"]
+  R --> X["Explorer props"]
+  X -- "every filter, period<br/>or selection change" --> S["setData on 4 sources<br/>54,000 coordinates re-serialised"]
+  S --> W["MapLibre worker<br/>re-tiles everything"]
+```
+
+### After
+
+```mermaid
+flowchart LR
+  J["routes.json"] --> B["build-map-assets.ts<br/>simplify 5 m, content hash"]
+  B --> G["public/map/routes.a1b2c3.geojson<br/>tours.d4e5f6.geojson<br/>immutable, cached for a year"]
+  G -- "fetched once by MapLibre,<br/>tiled in its worker" --> M["sources with promoteId"]
+  P["page props<br/>passes, tours, towns, about 100 KB"] --> X["Explorer"]
+  X -- "period, filter or<br/>selection change" --> F["setFeatureState × 263<br/>status, selected, hidden"]
+  F --> M
+  M --> L["layers read<br/>feature-state in paint"]
+```
+
+What travels when:
+
+```
+                  before                                after
+first load        HTML 1.95 MB (422 KB gz)              HTML about 250 KB
+                                                        + routes.geojson about 350 KB gz, cacheable
+period change     4 × setData, 54,000 coordinates       263 × setFeatureState
+select a pass     4 × setData                           2 × setFeatureState (old and new)
+```
+
 ## Design
 
 ### Build step
@@ -118,6 +155,12 @@ needed; the current behaviour already draws lines a moment after the markers.
    `public/data/pass/<slug>.json`, fetched when a pass is selected. With plan
    02 this becomes unnecessary because the detail is server-rendered per slug.
 
+### Documentation
+
+Put the "after" flowchart into the README section "Architecture in three
+sentences" (which then needs a fourth sentence about map assets) and update
+the map row in `AGENTS.md` to mention feature state and `public/map`.
+
 ## Acceptance criteria
 
 - Start page HTML under 250 KB raw with all routes present.
@@ -125,6 +168,7 @@ needed; the current behaviour already draws lines a moment after the markers.
 - Ascent lines, tour lines, hover popups and click selection behave as before,
   including hidden tours and filtered passes.
 - Hash restoration with a selected tour still fits the tour bounds.
+- README and `AGENTS.md` describe the asset pipeline with the diagram.
 
 ## Risks and open questions
 

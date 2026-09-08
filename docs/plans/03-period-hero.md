@@ -26,6 +26,31 @@ answer to "when" is visible without clicking.
 Changing the status heuristic itself (plan 04). Region-level aggregation
 (plan 12 reuses the strip component).
 
+## The mechanism in one picture
+
+Where the period comes from:
+
+```
+hash t=…  ───────────────► present? ── yes ──► use it, never store it (someone else's link)
+                               │ no
+localStorage alpenpaesse:period ► present? ── yes ──► use it (the visitor's last choice)
+                               │ no
+today's half-month, computed on the server in Europe/Berlin (prerendered, revalidated every 15 min)
+```
+
+Before and after, on the map and in a row:
+
+```
+before   ◀  Anfang Oktober ▾  ▶                     Col du Galibier   2.642 m
+                                                     Westalpen · FR   ● wetterabhängig
+
+after    ◀  J  F  M  A  M  J  J  A  S  O  N  D  ▶   Col du Galibier   2.642 m
+            ░░ ░░ ░░ ░░ ░▒ ▒▓ ▓▓ ▓▓ ▓▓ ▓▒ ▒░ ░░      Westalpen · FR   ░░░░░░░░░░▒▓▓▓▓▓▓▓▒▒░░░░
+            ─────────────────────────●───────                          24 cells, current one outlined
+            stacked bars: open / risky / closed      "heute" tick, thumb on "Anfang Oktober"
+            among the passes matching the filters
+```
+
 ## Design
 
 ### Part A: default to today, remember the choice
@@ -92,6 +117,13 @@ Unchanged: `t` in the hash. With plan 02 the hash is still the carrier.
 3. Part C (one PR): scrubber component, histogram helper, delete
    `period-control.tsx`, update `AGENTS.md` ("Period control" row).
 
+### Documentation
+
+The precedence diagram goes into `docs/data-model.md` next to "Time
+reckoning"; the row/scrubber sketch goes into the `AGENTS.md` layout
+convention ("Only the period control and three map tools float over the map"
+needs rewording once the scrubber lands).
+
 ## Acceptance criteria
 
 - A fresh visitor in the second half of May sees "Ende Mai" and the list
@@ -101,6 +133,7 @@ Unchanged: `t` in the hash. With plan 02 the hash is still the carrier.
   changing the stored preference.
 - Every pass and tour row shows a strip; the current cell matches the badge.
 - The scrubber is operable by keyboard alone and announces the label.
+- `docs/data-model.md` explains the precedence with the diagram.
 
 ## Risks and open questions
 

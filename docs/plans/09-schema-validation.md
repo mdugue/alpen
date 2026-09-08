@@ -24,6 +24,20 @@ maintained files.
 
 Runtime validation in the browser (the data is trusted once it passed CI).
 
+## The mechanism in one picture
+
+```mermaid
+flowchart LR
+  S["lib/schema.ts<br/>zod schemas"] --> T["lib/types.ts<br/>z.infer, same names"]
+  S --> C["scripts/check-data.ts<br/>safeParse + cross references"]
+  S --> B["scripts/build-data.ts<br/>validate before write"]
+  S --> D["lib/data.ts<br/>parse at build time"]
+  S --> J["data/schema/*.schema.json"] --> E["editor completion<br/>and red squiggles"]
+```
+
+Today the same knowledge is spread over hand-written interfaces, a dozen
+`if` statements in the check script and the reader's memory.
+
 ## Design
 
 - `bun add zod` (4.x). Only server and script code imports it.
@@ -75,9 +89,15 @@ export const Pass = z.object({
 4. JSON Schema emission and editor mapping.
 5. Document in `docs/data-model.md`: "types come from `lib/schema.ts`".
 
+### Documentation
+
+The diagram goes into `docs/data-model.md`, whose first sentence then reads
+"all types come from `lib/schema.ts`".
+
 ## Acceptance criteria
 
 - A deliberately broken field in `passes.json` fails `bun run data:check` with
   a path and message, and fails `next build`.
 - `lib/types.ts` contains no hand-written data interfaces anymore.
 - VS Code shows completion and errors in `data/passes.json`.
+- `docs/data-model.md` shows the schema flow.

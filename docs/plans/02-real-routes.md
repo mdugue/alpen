@@ -30,6 +30,35 @@ Moving camera, period or filters into the URL path or search params (search
 params would make the page dynamic; the hash costs nothing). Server-side
 locale detection (plan 08 keeps that static too).
 
+## The mechanism in one picture
+
+```
+before   https://alpen.manuel.fyi/#pass=col-du-galibier&t=10&z=9&c=45.06,6.41
+                                   └── selection ──┘ └ period ┘ └── camera ──┘
+         one prerendered page, one title, one share image
+         replaceState on every change: no history entry, back leaves the site
+
+after    https://alpen.manuel.fyi/pass/col-du-galibier#t=10&z=9&c=45.06,6.41
+                                  └── selection ──┘ └ period ┘ └── camera ──┘
+         127 prerendered routes, each with title, description and share image
+         push per selection: back closes the panel, forward reopens it
+```
+
+```mermaid
+sequenceDiagram
+  participant U as User
+  participant L as (explorer)/layout<br/>map + sidebar, stays mounted
+  participant R as Next router
+  participant P as pass/[slug]/page<br/>prerendered
+  U->>L: click a row or a marker
+  L->>R: router.push("/pass/x" + location.hash)
+  R->>P: fetch the static RSC payload
+  P-->>L: detail slot renders server HTML
+  P-->>L: weather streams into the Suspense hole
+  U->>R: browser back
+  R-->>L: previous page restored from the Activity cache, map untouched
+```
+
 ## Design
 
 ### Route tree
@@ -135,6 +164,13 @@ active, `back` returns to the list.
 6. Update `AGENTS.md` ("Filter, selection and URL state" row) and the README
    architecture paragraph.
 
+### Documentation
+
+The URL anatomy block and the sequence diagram replace the "All interaction
+state lives in one client component … mirrored into the URL hash" sentence
+in the README, and the "Filter, selection and URL state" row in `AGENTS.md`
+points at the layout and the dynamic segments.
+
 ## Acceptance criteria
 
 - `/pass/col-du-galibier` is prerendered (`○` in the build log), has a unique
@@ -145,6 +181,7 @@ active, `back` returns to the list.
 - A shared `#pass=…` link from before still opens the right pass.
 - Weather streams in without a client fetch; the API route is gone.
 - Lighthouse SEO score for an entity route is 100.
+- README and `AGENTS.md` show the new URL anatomy and the navigation flow.
 
 ## Risks and open questions
 

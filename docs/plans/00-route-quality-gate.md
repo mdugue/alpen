@@ -33,6 +33,67 @@ are re-fetched. Tours stop being drawn as straight lines between waypoints.
 Official closure data, traffic from OSM, difficulty from the profile: all
 separate roadmap items.
 
+## The mechanism in one picture
+
+### Before
+
+```mermaid
+flowchart LR
+  A["passes.json ascents<br/>tours.json waypoints"] --> B{"key in routes.json?"}
+  B -- "yes" --> Z["skipped forever,<br/>even when wrong"]
+  B -- "no" --> C["router: ORS,<br/>else OSRM car profile"]
+  C -- "quota error" --> Q["routing stops<br/>for the whole run"]
+  C --> D["routes.json"]
+  D --> E["Open-Meteo elevation<br/>100 calls per ascent"]
+  E --> F["profiles.json"]
+  F --> G["map and panel:<br/>a 271 km ascent is drawn as is"]
+```
+
+### After
+
+```mermaid
+flowchart LR
+  A["passes.json ascents<br/>tours.json waypoints"] --> B{"stored with<br/>source ors?"}
+  B -- "yes" --> G
+  B -- "missing, or osrm<br/>while an ORS key exists" --> C["router: ORS,<br/>on quota error OSRM"]
+  C --> V1{"geometry checks<br/>length, start, end"}
+  V1 -- "fail" --> R["rejected.json<br/>key, reason, source"]
+  V1 -- "pass" --> D["routes.json<br/>routes-meta.json: source, date"]
+  D --> E["Open-Meteo elevation"]
+  E --> V2{"profile checks<br/>top within 80 m,<br/>summit near the end, gain"}
+  V2 -- "fail" --> R
+  V2 -- "pass" --> F["profiles.json"]
+  S["summits.json<br/>DEM height at the pass point"] -. "off by more than 80 m" .-> K
+  R --> K["data:check<br/>errors for rejects,<br/>warnings for osrm"]
+  F --> G["map and panel"]
+```
+
+What the checks look at, for one ascent:
+
+```
+ elevation
+   ▲                                        top within 80 m of pass.elevation
+   │                                 ●──●   and inside the last 15 % of the distance
+   │                           ●──●──┘
+   │                     ●──●──┘
+   │               ●──●──┘
+   │         ●──●──┘
+   │   ●──●──┘
+   └───┼───────────────────────────────┼────► distance, at most 60 km
+     start within 2 km              end within 500 m
+     of ascent.from                 of the pass coordinate
+```
+
+Life of one route key:
+
+```
+missing ──fetch──► candidate ──checks pass──► stored (source: ors | osrm)
+                       │                            │
+                  checks fail                  osrm, and an ORS key is present
+                       ▼                            ▼
+              rejected (reason) ──fix coordinates or --retry-rejected──► missing
+```
+
 ## Design
 
 ### Provenance without changing the route shape
@@ -113,6 +174,13 @@ style errors where the summit point is off. Store results in
 8. Run the workflow by hand until `data:build --status` reports nothing
    missing; then shorten the schedule to once a day.
 
+### Documentation
+
+Move the "after" flowchart and the ascent sketch into `docs/data-model.md`
+("Derived data"), and the check table into the `curate-data` skill, so the
+gate is explained where the data is edited and where a rejected route is
+diagnosed.
+
 ## Acceptance criteria
 
 - `bun run data:check` fails on any route that violates the table above.
@@ -122,6 +190,8 @@ style errors where the summit point is off. Store results in
   an ORS key was available during the run.
 - The summit check reports zero passes off by more than 80 m, or each one has a
   fixed coordinate.
+- `docs/data-model.md` shows the gate as a diagram and the `curate-data`
+  skill lists the checks with their thresholds.
 
 ## Risks and open questions
 

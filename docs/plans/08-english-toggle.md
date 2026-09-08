@@ -24,6 +24,19 @@ a proxy), machine-translating the legal pages (they stay German with an
 English note), translating pass names (proper names stay as they are, aliases
 cover the search side).
 
+## The mechanism in one picture
+
+```
+request            rewrite         route file                                   lang
+/               →  /de          →  app/[lang]/(explorer)/page.tsx               de
+/pass/x         →  /de/pass/x   →  app/[lang]/(explorer)/pass/[slug]/page.tsx   de
+/en             →  (none)       →  app/[lang]/(explorer)/page.tsx               en
+/en/pass/x      →  (none)       →  app/[lang]/(explorer)/pass/[slug]/page.tsx   en
+
+German URLs stay prefix-free and canonical; English gets the /en prefix;
+both locales are prerendered from generateStaticParams, no proxy, no redirect.
+```
+
 ## Design
 
 ### Routing
@@ -103,6 +116,11 @@ a `Link` to the same path in the other locale with the current hash appended
 5. OG images and metadata per locale; sitemap lists both.
 6. Toggle and the first-visit hint.
 
+### Documentation
+
+The rewrite table goes into the README ("Architecture") and the message
+module gets a header comment with the glossary.
+
 ## Acceptance criteria
 
 - `/en/pass/col-du-galibier` is prerendered, fully English, with English
@@ -110,6 +128,7 @@ a `Link` to the same path in the other locale with the current hash appended
 - A missing message key is a type error; a missing editorial translation is a
   `data:check` warning.
 - Switching language keeps the map camera, period and selection.
+- README shows the rewrite table.
 
 ## Risks and open questions
 

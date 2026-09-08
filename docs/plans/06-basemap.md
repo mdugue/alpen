@@ -27,6 +27,33 @@ Replacing the terrain source (Terrarium DEM stays for hillshade and 3D) or
 removing the raster alternatives (OpenTopoMap, CyclOSM, Esri, satellite stay
 selectable in the layer popover).
 
+## The mechanism in one picture
+
+Layer stack, bottom to top:
+
+```
+before (light and dark)          after, light                    after, dark
+pass labels                      pass labels                     pass labels
+pass circles, stars              pass circles, stars             pass circles, stars
+towns                            towns                           towns
+routes (status colour)           routes                          routes
+tours (own colour)               tours                           tours
+overlays (Radrouten)             overlays                        overlays
+hillshade (Terrarium DEM)        hillshade                       hillshade
+OSM raster tiles, always light   vector: style-light.json        vector: style-dark.json
+                                 OpenFreeMap tiles, name:de      OpenFreeMap tiles, name:de
+```
+
+Switching without losing the app's own layers:
+
+```mermaid
+flowchart LR
+  A["prefers-color-scheme changes"] --> B["map.setStyle(style-dark.json,<br/>transformStyle)"]
+  B --> C["transformStyle merges the app's sources and layers<br/>dem, routes, tours, passes, towns"]
+  C --> D["readColors() again:<br/>status tokens differ per scheme"]
+  D --> E["setPaintProperty on the app layers"]
+```
+
 ## Design
 
 ### Tiles
@@ -95,6 +122,11 @@ principle.
 5. Screenshots light/dark at zoom 6.5, 9 and 12 in the PR; compare tile bytes
    per view before/after (Playwright resource timing).
 
+### Documentation
+
+The layer stack goes into the map row of `AGENTS.md` ("Map, layers, 3D,
+markers, labels") and the palette module gets a comment linking to it.
+
 ## Acceptance criteria
 
 - Dark mode shows a dark map; toggling the OS scheme switches the map without
@@ -103,6 +135,7 @@ principle.
   backgrounds (WCAG AA for text with halo).
 - No request to `tile.openstreetmap.org` unless the user selects that layer.
 - Tile bytes for the overview view are lower than with raster.
+- `AGENTS.md` documents the layer stack and the style switch.
 
 ## Risks and open questions
 

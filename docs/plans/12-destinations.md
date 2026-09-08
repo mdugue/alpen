@@ -28,6 +28,64 @@ series, town infrastructure, tour membership.
 Bookings, prices, affiliate links, user accounts. Turn-by-turn or stage
 routing between destinations.
 
+## The mechanism in one picture
+
+### Before
+
+```mermaid
+erDiagram
+  PASS {
+    string slug
+    string region "four coarse values"
+  }
+  TOUR {
+    string slug
+    list passes "pass slugs"
+  }
+  TOWN {
+    string slug
+    string why "prose"
+  }
+  TOUR }o--o{ PASS : "passes[]"
+```
+
+Towns relate to nothing; "nearby" is a 60 km haversine at render time.
+
+### After
+
+```mermaid
+erDiagram
+  DESTINATION ||--o{ PASS : "within radius, plus include, minus exclude"
+  DESTINATION ||--o{ TOUR : "a waypoint within radius"
+  DESTINATION ||--o{ TOWN : "baseTowns and within radius"
+  TOUR }o--o{ PASS : "passes[]"
+  DESTINATION {
+    string slug
+    string name
+    latlon center
+    number radiusKm
+    list baseTowns
+    string character
+    string multiDay
+    string access
+  }
+```
+
+The first screen, before and after:
+
+```
+before                                   after
+┌ Anfang Oktober ────────────────┐       ┌ Anfang Oktober ─────────────────────────────┐
+│ PÄSSE 92                       │       │ REISEZIELE                        nach Score │
+│ Ötztaler Gletscherstraße 2.830 │       │ ▸ Oisans · FR        7/9 offen  ░░░▒▓▓▓▓▓▒░░ │
+│ Col de la Bonette        2.802 │       │ ▸ Alta Badia · IT    8/8 offen  ░░▒▓▓▓▓▓▓▒░░ │
+│ Col de l'Iseran          2.764 │       │ ▸ Mercantour · FR    5/6 offen  ░░▒▓▓▓▓▓▓▓▒░ │
+│ …                              │       │ ▸ Engadin · CH       3/7 offen  ░░░░▒▓▓▓▓▒░░ │
+│ TOUREN 9 · ORTE 26             │       │ PÄSSE 92 ▾   TOUREN 9 ▾   ORTE 26 ▾           │
+└────────────────────────────────┘       └──────────────────────────────────────────────┘
+sorted by elevation                      sorted by what is rideable in the chosen half-month
+```
+
 ## Design
 
 ### Data
@@ -113,6 +171,12 @@ For destination D and period t:
 6. Fill the remaining destinations; write `docs/destinations.md` on the
    editorial rules (radius, what counts as a base town).
 
+### Documentation
+
+The "after" entity diagram goes into `docs/data-model.md`; the editorial
+rules and the first-screen sketch go into the new `docs/destinations.md`
+that the `curate-data` skill points to.
+
 ## Acceptance criteria
 
 - With early October selected, the top of the sidebar lists destinations
@@ -122,6 +186,8 @@ For destination D and period t:
   leaving the app, and links out for lodging and workshops.
 - Every pass belongs to at least one destination or is deliberately listed as
   standalone in `check-data` output.
+- `docs/data-model.md` shows the entity diagram; `docs/destinations.md`
+  exists.
 
 ## Risks and open questions
 

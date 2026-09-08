@@ -48,3 +48,9 @@ the header of the plan and this table in the same PR that changes the code.
   edited by hand.
 - Each plan lists a verification section. Run it before opening the PR, and
   paste screenshots for anything visual (`preview-app` skill).
+- Conceptual plans carry a "mechanism in one picture" section: a before and
+  an after diagram (Mermaid renders on GitHub; ASCII for sketches). When the
+  plan is done, its "after" picture moves into the documentation it changed
+  (`docs/data-model.md`, `docs/scales.md`, README, `AGENTS.md`, a skill), so
+  the docs show the mechanism and not only the API. Each plan's
+  "Documentation" step says where.

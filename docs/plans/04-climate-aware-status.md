@@ -33,6 +33,49 @@ right.
 Official closure data (roadmap item 1) and forecast-based status; both would
 sit in front of this layer, not replace it.
 
+## The mechanism in one picture
+
+### Before
+
+```mermaid
+flowchart TD
+  A["pass, half-month t"] --> B{"season window?"}
+  B -- "none, cleared all year" --> C{"altitude and calendar"}
+  C -- "high and cold months" --> R1["wetterabhängig"]
+  C -- "otherwise" --> O1["meist offen"]
+  B -- "window" --> D{"t inside the window?"}
+  D -- "no" --> X["oft gesperrt"]
+  D -- "first or last half-month" --> R2["wetterabhängig"]
+  D -- "yes" --> E{"altitude penalty<br/>unless maintained"}
+  E -- "applies" --> R3["wetterabhängig"]
+  E -- "no" --> O2["meist offen"]
+```
+
+### After
+
+```mermaid
+flowchart TD
+  A["pass, half-month t"] --> W["window, altitude and calendar<br/>exactly as before"]
+  W --> X["oft gesperrt"]
+  W --> R["wetterabhängig"]
+  W --> O["meist offen"]
+  O --> K{"climate bucket for t:<br/>snow days ≥ 20 %<br/>or frost days ≥ 80 %?"}
+  K -- "yes" --> R4["wetterabhängig<br/>reason: snow or frost"]
+  K -- "no" --> O2["meist offen"]
+  K -. "no bucket" .-> O2
+```
+
+Climate never produces "oft gesperrt": closures are what the season window
+knows, snow days are what the climate series knows.
+
+"Beste Zeit" is the longest run of open half-months with fewer than 10 % snow days:
+
+```
+ J   F   M   A   M   J   J   A   S   O   N   D
+ ░░  ░░  ░░  ░░  ░▒  ▒▓  ▓▓  ▓▓  ▓▓  ▓▒  ▒░  ░░      status per half-month
+                      └── Beste Zeit: Anfang Juli bis Ende September ──┘
+```
+
 ## Design
 
 ### Signature
@@ -111,12 +154,19 @@ Klimareihe des Passes (Schnee- und Frosttage je Halbmonat, 2015–2024)".
 6. Tests: the truth table in plan 10 gains climate cases (Großglockner early
    October → risky with reason "snow"; Galibier late July with 2 % snow → open).
 
+### Documentation
+
+The "after" flowchart replaces the numbered list under "Status per period"
+in `docs/scales.md`; the scales dialog gets the one-sentence version and the
+reason texts.
+
 ## Acceptance criteria
 
 - The analysis script shows the "meist offen" cohort with snow ≥ 20 % at 0 %.
 - No pass gains `closed` from climate alone.
 - Every non-open badge can explain itself in one German sentence.
 - `bestPeriods` returns a plausible range for at least 80 of 92 passes.
+- `docs/scales.md` shows the decision flow as a diagram.
 
 ## Risks and open questions
 
