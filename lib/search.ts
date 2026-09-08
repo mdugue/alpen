@@ -35,7 +35,6 @@ const firstSentence = (s: string) => s.split(/(?<=[.!?])\s/u)[0] ?? s;
 
 // Haystacks are folded once per entity object; the data never changes at runtime.
 const passHay = new WeakMap<Pass, string>();
-const tourHay = new WeakMap<Tour, string>();
 const townHay = new WeakMap<Town, string>();
 
 export function passHaystack(pass: Pass): string {
@@ -56,13 +55,9 @@ export function passHaystack(pass: Pass): string {
   return hay;
 }
 
+/** Not cached: the haystack depends on the pass names handed in, and there are only a handful of tours. */
 export function tourHaystack(tour: Tour, passNames: string[]): string {
-  let hay = tourHay.get(tour);
-  if (hay === undefined) {
-    hay = fold([tour.name, tour.description, ...passNames].join(" "));
-    tourHay.set(tour, hay);
-  }
-  return hay;
+  return fold([tour.name, tour.description, ...passNames].join(" "));
 }
 
 export function townHaystack(town: Town): string {

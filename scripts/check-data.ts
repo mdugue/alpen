@@ -23,7 +23,13 @@ async function load<K extends keyof typeof FILES>(
   file: K,
 ): Promise<z.infer<(typeof FILES)[K]> | null> {
   const raw = await Bun.file(new URL(file, DATA)).text();
-  const data: unknown = JSON.parse(raw);
+  let data: unknown;
+  try {
+    data = JSON.parse(raw);
+  } catch (error) {
+    errors.push(`${file}: kein gültiges JSON (${(error as Error).message})`);
+    return null;
+  }
   // Hand-maintained files keep one canonical layout so diffs stay readable.
   if (
     HAND_MAINTAINED.includes(file as never) &&
@@ -74,9 +80,14 @@ const dupes = (list: { slug: string }[], what: string) => {
 
 function checkPasses(list: Pass[]) {
   dupes(list, "Pässe");
-  // Aliases: never a name or another alias – search would find two passes.
+  // Folded names and aliases must be unique – search would find two passes.
   const names = new Map<string, string>();
-  for (const p of list) names.set(fold(p.name), p.slug);
+  for (const p of list) {
+    const key = fold(p.name);
+    const other = names.get(key);
+    if (other) errors.push(`${p.slug}: Name fällt mit ${other} zusammen`);
+    else names.set(key, p.slug);
+  }
   for (const p of list)
     for (const alias of p.aliases ?? []) {
       const key = fold(alias);
