@@ -3,7 +3,7 @@
 import { useEffect, useRef } from "react";
 import { ArrowLeft, ExternalLink, HelpCircle, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardTitle } from "@/components/ui/card";
+import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Empty, EmptyDescription, EmptyHeader, EmptyTitle } from "@/components/ui/empty";
 import { Toggle } from "@/components/ui/toggle";
 import { Rating } from "@/components/rating";
@@ -93,7 +93,7 @@ export function DetailPanel(props: Props) {
           size="sm"
           pressed={favorite}
           onPressedChange={() => props.onToggleFavorite(selection.kind, selection.slug)}
-          aria-label={favorite ? "Merkung entfernen" : "Merken"}
+          aria-label={favorite ? "Nicht mehr merken" : "Merken"}
         >
           <Star className={cn(favorite && "fill-accent text-accent")} />
         </Toggle>
@@ -121,7 +121,7 @@ function SectionTitle({ children, hint }: { children: React.ReactNode; hint?: st
 
 function LinkButton({ children, onClick }: { children: React.ReactNode; onClick: () => void }) {
   return (
-    <Button variant="link" size="sm" className="h-auto gap-1 px-0 py-0.5 text-[13px]" onClick={onClick}>
+    <Button variant="link" size="sm" className="h-auto gap-1 px-0 py-0.5" onClick={onClick}>
       {children}
     </Button>
   );
@@ -229,13 +229,7 @@ function PassDetail(props: Props & { pass: Pass }) {
         <dd>{pass.classicAscent}</dd>
         <dt className="flex items-center gap-1 text-muted-foreground">
           Bewertung
-          <Button
-            size="icon-xs"
-            variant="ghost"
-            aria-label="Skalen erklärt"
-            onClick={props.onOpenScales}
-            className="text-muted-foreground"
-          >
+          <Button size="icon-xs" variant="ghost" aria-label="Skalen erklärt" onClick={props.onOpenScales}>
             <HelpCircle />
           </Button>
         </dt>
@@ -300,10 +294,10 @@ function PassDetail(props: Props & { pass: Pass }) {
               [`${bucket.snowPct} %`, `Schneefall (≈ ${days(bucket.snowPct)} von 15)`],
             ].map(([value, label]) => (
               <Card key={label} size="sm" className="gap-0 py-1.5">
-                <CardContent className="px-2">
+                <CardHeader className="gap-0 px-2">
                   <CardTitle className="text-base leading-tight tabular-nums">{value}</CardTitle>
-                  <CardDescription className="text-[11px] leading-tight">{label}</CardDescription>
-                </CardContent>
+                  <CardDescription className="leading-tight">{label}</CardDescription>
+                </CardHeader>
               </Card>
             ))}
           </div>

@@ -9,6 +9,9 @@ export interface Selection {
 }
 
 export const ALL_STATUS: Status[] = ["open", "risky", "closed"];
+export const ALL_KINDS: EntityKind[] = ["pass", "tour", "town"];
+/** Stable initial values for array-valued stored keys (useSyncExternalStore needs stable snapshots). */
+export const NO_SLUGS: string[] = [];
 
 export interface Filters {
   period: Period;
@@ -87,6 +90,7 @@ export function readHash(): { filters: Partial<Filters>; selection: Selection | 
 /** `s=open,risky`; the legacy values `open` and `openRisky` from older links still work. */
 function parseStatus(raw: string | null): Status[] | undefined {
   if (!raw || raw === "all") return undefined;
+  if (raw === "none") return [];
   if (raw === "openRisky") return ["open", "risky"];
   const list = raw.split(",").filter((s): s is Status => ALL_STATUS.includes(s as Status));
   return list.length ? list : undefined;
@@ -101,7 +105,7 @@ export function writeHash(filters: Filters, selection: Selection | null, view: M
     p.set("pi", view.pitch.toFixed(0));
     p.set("b", view.bearing.toFixed(0));
   }
-  if (filters.status.length !== ALL_STATUS.length) p.set("s", filters.status.join(","));
+  if (filters.status.length !== ALL_STATUS.length) p.set("s", filters.status.join(",") || "none");
   if (filters.minFame > 1) p.set("f", String(filters.minFame));
   if (filters.minElevation > 0) p.set("m", String(filters.minElevation));
   if (filters.query) p.set("q", filters.query);
@@ -131,6 +135,10 @@ function readStored<T>(key: string, initial: T): T {
   try {
     raw = localStorage.getItem(key);
   } catch {
+    // Blocked storage: still hand back one stable reference per key.
+    const hit = cache.get(key);
+    if (hit) return hit.value as T;
+    cache.set(key, { raw: null, value: initial });
     return initial;
   }
   const hit = cache.get(key);

@@ -13,16 +13,14 @@ export function TourList({
   onToggleTour,
   onSelect,
   onToggleFavorite,
-  onResetFilters,
 }: {
   rows: TourRow[];
   hiddenTours: string[];
   onToggleTour: (slug: string, on: boolean) => void;
   onSelect: (slug: string) => void;
   onToggleFavorite: (slug: string) => void;
-  onResetFilters: () => void;
 }) {
-  if (rows.length === 0) return <ListEmpty title="Keine Touren für diese Filter" onReset={onResetFilters} />;
+  if (rows.length === 0) return <ListEmpty title="Keine Touren für diese Filter" />;
   return (
     <ul>
       {rows.map(({ tour, status, favorite }) => {
@@ -30,6 +28,7 @@ export function TourList({
         return (
           <EntityRow
             key={tour.slug}
+            rowId={`tour:${tour.slug}`}
             className={cn(!onMap && "opacity-60")}
             leading={<span className="h-1.5 w-4 shrink-0 rounded-full" style={{ background: tour.color }} />}
             title={tour.name}

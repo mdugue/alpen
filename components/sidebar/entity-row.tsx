@@ -19,6 +19,7 @@ export function EntityRow({
   onSelect,
   className,
   leading,
+  rowId,
 }: {
   title: React.ReactNode;
   subtitle: React.ReactNode;
@@ -32,6 +33,8 @@ export function EntityRow({
   onToggleFavorite: () => void;
   onSelect: () => void;
   className?: string;
+  /** `kind:slug`, used to return focus to the row after the detail view closes. */
+  rowId: string;
 }) {
   return (
     <li className={cn("grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-x-1 border-b border-border", className)}>
@@ -39,13 +42,14 @@ export function EntityRow({
         size="sm"
         pressed={favorite}
         onPressedChange={onToggleFavorite}
-        aria-label={favorite ? "Merkung entfernen" : "Merken"}
+        aria-label={favorite ? "Nicht mehr merken" : "Merken"}
         className="ml-1.5"
       >
         <Star className={cn(favorite ? "fill-accent text-accent" : "text-muted-foreground/60")} />
       </Toggle>
       <button
         type="button"
+        data-row={rowId}
         onClick={onSelect}
         className="min-w-0 rounded-sm py-2 pr-1 text-left outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
       >

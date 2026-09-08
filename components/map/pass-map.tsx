@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import {
   GeoJSONSource,
+  LngLat,
   LngLatBounds,
   Map as MLMap,
   NavigationControl,
@@ -40,6 +41,12 @@ interface Props {
   selection: Selection | null;
   onSelect: (sel: Selection) => void;
   onViewChange: (v: MapView) => void;
+  /**
+   * Camera requested from outside (a hash pasted into an open page). The map
+   * is otherwise the source of truth for its camera, so this is applied only
+   * when the object identity changes.
+   */
+  requestedView?: MapView | null;
   /** Pixels at the bottom covered by the mobile sheet; camera targets stay above it. */
   insetBottom?: number;
   /** Rendered over the map in the top-left corner. */
@@ -155,6 +162,7 @@ export function PassMap({
   selection,
   onSelect,
   onViewChange,
+  requestedView = null,
   insetBottom = 0,
   children,
 }: Props) {
@@ -492,6 +500,18 @@ export function PassMap({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // --- Camera requested via the URL hash ----------------------------------
+  useEffect(() => {
+    const m = map.current;
+    if (!m || !ready || !requestedView) return;
+    m.jumpTo({
+      center: [requestedView.lon, requestedView.lat],
+      zoom: requestedView.zoom,
+      pitch: requestedView.pitch,
+      bearing: requestedView.bearing,
+    });
+  }, [requestedView, ready]);
+
   // --- Reserve space for the mobile sheet ---------------------------------
   useEffect(() => {
     map.current?.setPadding({ top: 0, left: 0, right: 0, bottom: insetBottom });
@@ -614,7 +634,7 @@ export function PassMap({
       m.easeTo({ pitch: 60, duration: 700 });
     } else {
       m.setTerrain(null);
-      m.easeTo({ pitch: 0, duration: 600 });
+      m.easeTo({ pitch: 0, bearing: 0, duration: 600 });
     }
   };
 
@@ -632,15 +652,26 @@ export function PassMap({
     map.current?.setLayoutProperty(id === "hillshade" ? "hillshade" : `ov-${id}`, "visibility", on ? "visible" : "none");
   };
 
-  /** Fit the view to everything currently drawn; the whole Alps when nothing is. */
+  /**
+   * Fit the view to everything currently drawn. Pressed again while already
+   * fitted (or when nothing is drawn) it returns to the whole-Alps overview.
+   */
   const fitToVisible = () => {
     const m = map.current;
     if (!m) return;
     const b = new LngLatBounds();
     passes.forEach((p) => b.extend([p.lon, p.lat]));
     tours.filter((t) => t.visible).forEach((t) => t.geometry.forEach(([lat, lon]) => b.extend([lon, lat])));
-    if (b.isEmpty()) m.flyTo({ center: [DEFAULT_VIEW.lon, DEFAULT_VIEW.lat], zoom: DEFAULT_VIEW.zoom, duration: 800 });
-    else m.fitBounds(b, { padding: 48, duration: 800 });
+    const target = b.isEmpty() ? undefined : m.cameraForBounds(b, { padding: 48 });
+    const alreadyFitted =
+      target?.zoom !== undefined &&
+      Math.abs(m.getZoom() - target.zoom) < 0.05 &&
+      m.getCenter().distanceTo(LngLat.convert(target.center as [number, number])) < 2000;
+    if (!target || alreadyFitted) {
+      m.flyTo({ center: [DEFAULT_VIEW.lon, DEFAULT_VIEW.lat], zoom: DEFAULT_VIEW.zoom, pitch: 0, bearing: 0, duration: 800 });
+    } else {
+      m.fitBounds(b, { padding: 48, duration: 800 });
+    }
   };
 
   const tool = cn("size-9 lg:size-8", MAP_CONTROL);
@@ -724,7 +755,7 @@ export function PassMap({
           >
             <Maximize2 />
           </TooltipTrigger>
-          <TooltipContent side="left">Ansicht auf alle sichtbaren Einträge einpassen</TooltipContent>
+          <TooltipContent side="left">Ansicht einpassen – erneut für die ganzen Alpen</TooltipContent>
         </Tooltip>
       </div>
     </div>

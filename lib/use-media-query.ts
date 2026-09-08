@@ -18,4 +18,4 @@ export function useMediaQuery(query: string): boolean {
 }
 
 /** Below this width the sidebar becomes a bottom sheet (Tailwind `lg`). */
-export const MOBILE_QUERY = "(max-width: 63.99rem)";
+export const MOBILE_QUERY = "(width < 64rem)";

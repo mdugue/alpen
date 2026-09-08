@@ -1,17 +1,13 @@
-import { Button } from "@/components/ui/button";
-import { Empty, EmptyContent, EmptyHeader, EmptyTitle } from "@/components/ui/empty";
+import { Empty, EmptyDescription, EmptyHeader, EmptyTitle } from "@/components/ui/empty";
 
-export function ListEmpty({ title, onReset }: { title: string; onReset: () => void }) {
+/** Per-section empty state; the "Filter zurücksetzen" link sits once above the sections. */
+export function ListEmpty({ title }: { title: string }) {
   return (
-    <Empty className="gap-2 py-6">
+    <Empty className="gap-1 py-5">
       <EmptyHeader>
         <EmptyTitle>{title}</EmptyTitle>
+        <EmptyDescription>Suche, Status oder Filter passen zu keinem Eintrag.</EmptyDescription>
       </EmptyHeader>
-      <EmptyContent>
-        <Button size="sm" variant="outline" onClick={onReset}>
-          Filter zurücksetzen
-        </Button>
-      </EmptyContent>
     </Empty>
   );
 }

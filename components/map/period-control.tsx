@@ -37,6 +37,9 @@ export function PeriodControl({ value, onChange }: { value: Period; onChange: (p
       <Button size="icon-lg" variant="ghost" onClick={() => step(1)} aria-label="Späterer Halbmonat">
         <ChevronRight />
       </Button>
+      <span className="sr-only" aria-live="polite">
+        {periodLabel(value)}
+      </span>
     </div>
   );
 }

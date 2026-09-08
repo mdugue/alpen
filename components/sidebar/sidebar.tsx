@@ -48,6 +48,8 @@ export interface SidebarProps {
   onCollapse?: () => void;
   onOpenScales: () => void;
   onSearchFocus?: () => void;
+  /** Bottom sheet at its peek height: only the search row is visible. */
+  peek?: boolean;
 }
 
 export function Sidebar(p: SidebarProps) {
@@ -102,6 +104,7 @@ export function Sidebar(p: SidebarProps) {
                 onFocus={p.onSearchFocus}
                 placeholder="Pass, Tour oder Ort …"
                 aria-label="Suchen"
+                className="[&::-webkit-search-cancel-button]:appearance-none [&::-webkit-search-decoration]:appearance-none"
               />
               {p.filters.query && (
                 <InputGroupAddon align="inline-end">
@@ -128,22 +131,27 @@ export function Sidebar(p: SidebarProps) {
             size="sm"
             spacing={0}
             value={p.filters.status}
-            onValueChange={(v) => {
-              if (v.length) set("status", ALL_STATUS.filter((s) => v.includes(s)));
-            }}
+            onValueChange={(v) => set("status", ALL_STATUS.filter((s) => v.includes(s)))}
             aria-label="Status filtern"
-            className="w-full"
+            className={cn("w-full", p.peek && "hidden")}
           >
-            {ALL_STATUS.map((s: Status) => (
-              <ToggleGroupItem key={s} value={s} className="flex-1 gap-1.5 not-aria-pressed:opacity-45">
-                <StatusDot status={s} />
-                {STATUS_LABEL[s]}
-              </ToggleGroupItem>
-            ))}
+            {ALL_STATUS.map((s: Status) => {
+              const active = p.filters.status.includes(s);
+              return (
+                <ToggleGroupItem
+                  key={s}
+                  value={s}
+                  className={cn("flex-1 gap-1.5", !active && "text-muted-foreground")}
+                >
+                  <StatusDot status={s} hollow={!active} />
+                  {STATUS_LABEL[s]}
+                </ToggleGroupItem>
+              );
+            })}
           </ToggleGroup>
-          {hasActiveFilters(p.filters) && (
+          {hasActiveFilters(p.filters) && !p.peek && (
             <Button variant="link" size="xs" className="h-auto self-end p-0" onClick={resetFilters}>
-              Filter zurücksetzen
+              {p.filters.query ? "Suche und Filter zurücksetzen" : "Filter zurücksetzen"}
             </Button>
           )}
         </div>
@@ -163,7 +171,6 @@ export function Sidebar(p: SidebarProps) {
               setFilters={p.setFilters}
               onSelect={(slug) => p.onSelect({ kind: "pass", slug })}
               onToggleFavorite={(slug) => p.onToggleFavorite("pass", slug)}
-              onResetFilters={resetFilters}
             />
           </Section>
           <Section
@@ -182,7 +189,7 @@ export function Sidebar(p: SidebarProps) {
                 )}
                 <Switch
                   size="sm"
-                  checked={visibleTourCount > 0}
+                  checked={p.hiddenTours.length === 0}
                   onCheckedChange={(on) => p.setHiddenTours(() => (on ? [] : allTourSlugs))}
                   aria-label="Touren auf der Karte anzeigen"
                 />
@@ -197,7 +204,6 @@ export function Sidebar(p: SidebarProps) {
               }
               onSelect={(slug) => p.onSelect({ kind: "tour", slug })}
               onToggleFavorite={(slug) => p.onToggleFavorite("tour", slug)}
-              onResetFilters={resetFilters}
             />
           </Section>
           <Section
@@ -220,14 +226,18 @@ export function Sidebar(p: SidebarProps) {
               rows={p.townRows}
               onSelect={(slug) => p.onSelect({ kind: "town", slug })}
               onToggleFavorite={(slug) => p.onToggleFavorite("town", slug)}
-              onResetFilters={resetFilters}
             />
           </Section>
         </div>
 
-        <p className="flex h-8 shrink-0 items-center gap-1 truncate border-t border-border px-3 text-[11px] text-muted-foreground">
+        <p
+          className={cn(
+            "flex h-8 shrink-0 items-center gap-1 truncate border-t border-border px-3 text-[11px] text-muted-foreground",
+            p.peek && "hidden",
+          )}
+        >
           <span className="truncate">Status ist eine Heuristik, Skalen sind redaktionell.</span>
-          <Button variant="link" size="xs" className="h-auto shrink-0 p-0 text-[11px]" onClick={p.onOpenScales}>
+          <Button variant="link" size="xs" className="h-auto shrink-0 p-0" onClick={p.onOpenScales}>
             Skalen &amp; Quellen
           </Button>
         </p>

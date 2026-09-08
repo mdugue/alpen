@@ -1,9 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { PanelLeftOpen } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Drawer, DrawerContent, DrawerTitle } from "@/components/ui/drawer";
+import { Drawer, DrawerContent, DrawerSwipeHandle, DrawerTitle } from "@/components/ui/drawer";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { PassMap, type MapPass } from "@/components/map/pass-map";
 import { PeriodControl } from "@/components/map/period-control";
@@ -13,8 +13,10 @@ import { ScalesDialog } from "@/components/scales-dialog";
 import { tourStatus } from "@/lib/status";
 import { buildPassRows, buildTourRows, buildTownRows } from "@/lib/rows";
 import {
+  ALL_KINDS,
   DEFAULT_FILTERS,
   DEFAULT_VIEW,
+  NO_SLUGS,
   readHash,
   useFavorites,
   useStored,
@@ -42,7 +44,7 @@ const defined = <T extends object>(o: T): Partial<T> =>
 
 /** Bottom sheet positions on phones: a peek row, half, and almost full. */
 const SNAP_PEEK = "4.5rem";
-const SNAP_POINTS = [SNAP_PEEK, 0.5, 0.92] as const;
+const SNAP_POINTS = [SNAP_PEEK, 0.5, 0.82] as const;
 type Snap = (typeof SNAP_POINTS)[number];
 
 export function Explorer({ passes, tours, towns, routes, profiles, climate }: Props) {
@@ -50,8 +52,8 @@ export function Explorer({ passes, tours, towns, routes, profiles, climate }: Pr
   const [selection, setSelection] = useState<Selection | null>(null);
   const [view, setView] = useState<MapView>(DEFAULT_VIEW);
   const [showTowns, setShowTowns] = useStored("alpenpaesse:showTowns", true);
-  const [hiddenTours, setHiddenTours] = useStored<string[]>("alpenpaesse:hiddenTours", []);
-  const [sections, setSections] = useStored<EntityKind[]>("alpenpaesse:sections", ["pass", "tour", "town"]);
+  const [hiddenTours, setHiddenTours] = useStored<string[]>("alpenpaesse:hiddenTours", NO_SLUGS);
+  const [sections, setSections] = useStored<EntityKind[]>("alpenpaesse:sections", ALL_KINDS);
   const [sidebarOpen, setSidebarOpen] = useStored("alpenpaesse:sidebar", true);
   const [snap, setSnap] = useState<Snap>(SNAP_PEEK);
   const [scalesOpen, setScalesOpen] = useState(false);
@@ -60,26 +62,36 @@ export function Explorer({ passes, tours, towns, routes, profiles, climate }: Pr
   // Nothing is written to the hash before it has been read once; otherwise the
   // first commit would overwrite a shared link with the defaults.
   const [hashApplied, setHashApplied] = useState(false);
+  // Camera from a hash pasted into an open page; the map applies it once.
+  const [requestedView, setRequestedView] = useState<MapView | null>(null);
+  const sidebarRoot = useRef<HTMLDivElement>(null);
 
   // Initial state from the URL hash (shareable view). Deliberately in an effect:
   // there is no hash during the server render, and reading it in the first
-  // render would cause a hydration mismatch.
-  // The same listener also applies a hash pasted into the address bar of an
-  // already open page (a same-document navigation, which never remounts).
+  // render would cause a hydration mismatch. The same listener applies a hash
+  // pasted into the address bar of an already open page (a same-document
+  // navigation, which never remounts); the hash is authoritative then.
   useEffect(() => {
     const apply = () => {
       const h = readHash();
-      setFilters((f) => ({ ...f, ...defined(h.filters) }));
-      setView((v) => ({ ...v, ...defined(h.view) }));
+      const view = { ...DEFAULT_VIEW, ...defined(h.view) };
+      setFilters({ ...DEFAULT_FILTERS, ...defined(h.filters) });
+      setView(view);
+      if (h.view.lat !== undefined || h.view.zoom !== undefined) setRequestedView(view);
+      setSelection(h.selection);
       if (h.selection) {
-        setSelection(h.selection);
         setSnap(0.5);
+        setSidebarOpen(true);
+        if (h.selection.kind === "tour") setHiddenTours((t) => t.filter((s) => s !== h.selection!.slug));
+        if (h.selection.kind === "town") setShowTowns(true);
       }
       setHashApplied(true);
     };
     apply();
     window.addEventListener("hashchange", apply);
     return () => window.removeEventListener("hashchange", apply);
+    // Intentional: the stored-state setters are stable.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -108,6 +120,17 @@ export function Explorer({ passes, tours, towns, routes, profiles, climate }: Pr
     else setSidebarOpen(true);
   };
 
+  /** Back to the list; focus returns to the row the detail came from. */
+  const back = () => {
+    const sel = selection;
+    setSelection(null);
+    requestAnimationFrame(() => {
+      const root = sidebarRoot.current;
+      const row = sel && root?.querySelector<HTMLElement>(`[data-row="${sel.kind}:${sel.slug}"]`);
+      (row ?? root?.querySelector<HTMLElement>("input[type=search]"))?.focus({ preventScroll: !row });
+    });
+  };
+
   const detail = selection ? (
     <DetailPanel
       selection={selection}
@@ -121,7 +144,7 @@ export function Explorer({ passes, tours, towns, routes, profiles, climate }: Pr
       isFavorite={isFavorite}
       onToggleFavorite={toggleFavorite}
       onSelect={select}
-      onBack={() => setSelection(null)}
+      onBack={back}
       onOpenScales={() => setScalesOpen(true)}
     />
   ) : null;
@@ -129,6 +152,7 @@ export function Explorer({ passes, tours, towns, routes, profiles, climate }: Pr
   const sidebar = (variant: "aside" | "sheet") => (
     <Sidebar
       variant={variant}
+      peek={variant === "sheet" && snap === SNAP_PEEK}
       filters={filters}
       setFilters={setFilters}
       passRows={passRows}
@@ -148,7 +172,7 @@ export function Explorer({ passes, tours, towns, routes, profiles, climate }: Pr
       detail={detail}
       onCollapse={() => setSidebarOpen(false)}
       onOpenScales={() => setScalesOpen(true)}
-      onSearchFocus={variant === "sheet" ? () => setSnap(0.92) : undefined}
+      onSearchFocus={variant === "sheet" ? () => setSnap(SNAP_POINTS[2]) : undefined}
     />
   );
 
@@ -164,7 +188,7 @@ export function Explorer({ passes, tours, towns, routes, profiles, climate }: Pr
     <TooltipProvider delay={400}>
       <div className="flex h-dvh overflow-hidden">
         {!isMobile && sidebarOpen && (
-          <aside className="flex w-104 shrink-0 flex-col border-r border-border max-lg:hidden xl:w-md">
+          <aside ref={sidebarRoot} className="flex w-104 shrink-0 flex-col border-r border-border max-lg:hidden xl:w-md">
             {sidebar("aside")}
           </aside>
         )}
@@ -179,6 +203,7 @@ export function Explorer({ passes, tours, towns, routes, profiles, climate }: Pr
             selection={selection}
             onSelect={select}
             onViewChange={setView}
+            requestedView={requestedView}
             insetBottom={insetBottom}
           >
             {!isMobile && !sidebarOpen && (
@@ -210,8 +235,15 @@ export function Explorer({ passes, tours, towns, routes, profiles, climate }: Pr
             disablePointerDismissal
             snapPoints={[...SNAP_POINTS]}
             snapPoint={snap}
-            onSnapPointChange={(s) => {
-              if (s !== null) setSnap(s as Snap);
+            onSnapPointChange={(s, details) => {
+              // A fast flick below the lowest snap point would dismiss the
+              // sheet; keep it and settle on the peek row instead.
+              if (s === null) {
+                details.cancel();
+                setSnap(SNAP_PEEK);
+              } else {
+                setSnap(s as Snap);
+              }
             }}
             onOpenChange={() => {}}
           >
@@ -222,11 +254,11 @@ export function Explorer({ passes, tours, towns, routes, profiles, climate }: Pr
                 type="button"
                 onClick={() => setSnap(snap === SNAP_PEEK ? 0.5 : SNAP_PEEK)}
                 aria-label={snap === SNAP_PEEK ? "Liste ausklappen" : "Liste einklappen"}
-                className="flex h-6 w-full shrink-0 cursor-grab items-center justify-center"
+                className="w-full shrink-0"
               >
-                <span className="h-1 w-12 rounded-full bg-muted-foreground/40" aria-hidden />
+                <DrawerSwipeHandle className="h-6" />
               </button>
-              <div style={{ height: `calc(${sheetHeight} - 1.5rem)` }} className="min-h-0">
+              <div ref={sidebarRoot} style={{ height: `calc(${sheetHeight} - 1.5rem)` }} className="min-h-0">
                 {sidebar("sheet")}
               </div>
             </DrawerContent>

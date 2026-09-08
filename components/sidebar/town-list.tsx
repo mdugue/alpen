@@ -8,19 +8,18 @@ export function TownList({
   rows,
   onSelect,
   onToggleFavorite,
-  onResetFilters,
 }: {
   rows: TownRow[];
   onSelect: (slug: string) => void;
   onToggleFavorite: (slug: string) => void;
-  onResetFilters: () => void;
 }) {
-  if (rows.length === 0) return <ListEmpty title="Keine Orte für diese Filter" onReset={onResetFilters} />;
+  if (rows.length === 0) return <ListEmpty title="Keine Orte für diese Filter" />;
   return (
     <ul>
       {rows.map(({ town, favorite }) => (
         <EntityRow
           key={town.slug}
+          rowId={`town:${town.slug}`}
           title={town.name}
           subtitle={`${town.country} · ${town.why.split(".")[0]}`}
           favorite={favorite}

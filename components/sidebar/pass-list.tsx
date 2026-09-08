@@ -25,24 +25,24 @@ export function PassList({
   setFilters,
   onSelect,
   onToggleFavorite,
-  onResetFilters,
 }: {
   rows: PassRow[];
   filters: Filters;
   setFilters: (update: (f: Filters) => Filters) => void;
   onSelect: (slug: string) => void;
   onToggleFavorite: (slug: string) => void;
-  onResetFilters: () => void;
 }) {
   const [sort, setSort] = useState<PassSort>("elevation");
   const passFilters = (filters.minFame > 1 ? 1 : 0) + (filters.minElevation > 0 ? 1 : 0);
-  const [filtersOpen, setFiltersOpen] = useState(passFilters > 0);
+  // Opens by itself when a link carries pass filters; the user's own toggling wins afterwards.
+  const [filtersManual, setFiltersManual] = useState<boolean | null>(null);
+  const filtersOpen = filtersManual ?? passFilters > 0;
   const sorted = sortPassRows(rows, sort);
   const ratingSort = RATING_SORTS.includes(sort) ? (sort as RatingSort) : null;
 
   return (
     <>
-      <Collapsible open={filtersOpen} onOpenChange={setFiltersOpen}>
+      <Collapsible open={filtersOpen} onOpenChange={setFiltersManual}>
         <div className="flex items-center gap-2 border-b border-border px-3 py-1.5">
           <NativeSelect
             size="sm"
@@ -100,12 +100,13 @@ export function PassList({
       </Collapsible>
 
       {sorted.length === 0 ? (
-        <ListEmpty title="Keine Pässe für diese Filter" onReset={onResetFilters} />
+        <ListEmpty title="Keine Pässe für diese Filter" />
       ) : (
         <ul>
           {sorted.map(({ pass, status, favorite }) => (
             <EntityRow
               key={pass.slug}
+              rowId={`pass:${pass.slug}`}
               title={pass.name}
               subtitle={`${pass.region} · ${pass.country}`}
               favorite={favorite}

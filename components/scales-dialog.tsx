@@ -63,6 +63,14 @@ export function ScalesDialog({
             </p>
           </section>
           <section className="flex flex-col gap-2">
+            <h3 className="text-base font-semibold">Kartensymbole</h3>
+            <p className="text-muted-foreground">
+              <b>Kreis:</b> Pass – Farbe zeigt den Status, hohler Kreis = oft gesperrt, Größe = Bekanntheit.{" "}
+              <b>Stern:</b> gemerkt. <b>Linie:</b> Rundtour (eigene Farbe) oder Auffahrt (Statusfarbe).{" "}
+              <b>Raute:</b> Rad-Ort.
+            </p>
+          </section>
+          <section className="flex flex-col gap-2">
             <h3 className="text-base font-semibold">Daten</h3>
             <p className="text-muted-foreground">
               <b>Höhenprofil:</b> Open-Meteo Elevation (Copernicus DEM 90 m) entlang der gerouteten Straße.{" "}

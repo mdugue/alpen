@@ -9,10 +9,21 @@ export const STATUS_CSS: Record<Status, string> = {
   closed: "bg-status-closed",
 };
 
-export function StatusDot({ status, className }: { status: Status; className?: string }) {
+const STATUS_RING: Record<Status, string> = {
+  open: "ring-status-open",
+  risky: "ring-status-risky",
+  closed: "ring-status-closed",
+};
+
+/** Filled by default; `hollow` mirrors the map's "not shown" state. */
+export function StatusDot({ status, hollow, className }: { status: Status; hollow?: boolean; className?: string }) {
   return (
     <span
-      className={cn("inline-block size-2.5 shrink-0 rounded-full", STATUS_CSS[status], className)}
+      className={cn(
+        "inline-block size-2.5 shrink-0 rounded-full",
+        hollow ? cn("ring-2 ring-inset", STATUS_RING[status]) : STATUS_CSS[status],
+        className,
+      )}
       aria-hidden
     />
   );
