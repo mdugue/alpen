@@ -1,6 +1,6 @@
 # 05 · Filters and search
 
-**Status:** in progress (PR pending) · **Effort:** S–M · **Depends on:** – (09 adds the
+**Status:** in progress ([#9](https://github.com/mdugue/alpen/pull/9)) · **Effort:** S–M · **Depends on:** – (09 adds the
 `aliases` field to the schema) · **Unblocks:** 12 (region filter becomes
 destination navigation)
 

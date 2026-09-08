@@ -1,6 +1,6 @@
 # 09 · Schema validation with zod
 
-**Status:** in progress (PR pending) · **Effort:** S · **Depends on:** – · **Unblocks:** 12
+**Status:** in progress ([#9](https://github.com/mdugue/alpen/pull/9)) · **Effort:** S · **Depends on:** – · **Unblocks:** 12
 (new entity gets a schema from day one), 05 (`aliases`)
 
 ## Goal
