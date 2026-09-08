@@ -3,7 +3,9 @@ import { ArrowLeft } from "lucide-react";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Impressum – Alpenpässe",
+  // The site name is appended by the title template in app/layout.tsx.
+  title: "Impressum",
+  alternates: { canonical: "/impressum" },
   robots: { index: false },
 };
 

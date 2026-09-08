@@ -32,6 +32,8 @@ is rough route planning, not navigation.
 | Sidebar: search, filters, one list per kind | `components/sidebar/`, `lib/rows.ts`          |
 | Detail panel incl. profile/weather/climate | `components/panel/`                           |
 | Precomputation                             | `scripts/build-data.ts`                       |
+| Name, claim, colours, mark, base URL       | `lib/brand.ts`                                |
+| Icons, share image, manifest, robots, sitemap | `app/icon.tsx`, `app/apple-icon.tsx`, `app/opengraph-image.tsx`, `app/manifest.ts`, `app/robots.ts`, `app/sitemap.ts` |
 
 ## Conventions
 
@@ -64,6 +66,15 @@ is rough route planning, not navigation.
 - **Colours only via tokens.** MapLibre cannot read CSS variables;
   `pass-map.tsx` reads them once via `getComputedStyle` (`readColors`). Add
   new map colours there rather than hard-coding them.
+- **Site metadata is generated, never committed as a binary.** Icons, the share
+  image, the manifest, `robots.txt` and `sitemap.xml` are Next metadata routes
+  under `app/`, prerendered at build time. Everything they need – name, claim,
+  base URL, the sRGB palette and the mark geometry – lives in `lib/brand.ts`,
+  because neither Satori nor a manifest can read CSS variables. Change it
+  there, not in the routes. `robots.ts` welcomes search engines and turns away
+  the training and answer-engine crawlers; pages that carry
+  `robots: { index: false }` stay crawlable on purpose, since a crawler has to
+  fetch a page to see that.
 - **MapLibre needs two workarounds.** Its web worker is resolved via
   `import.meta.url`, which Turbopack does not serve, so
   `scripts/copy-maplibre-worker.ts` copies the worker into `public/maplibre`
