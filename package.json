@@ -11,6 +11,8 @@
     "build": "bun run scripts/copy-maplibre-worker.ts && next build",
     "start": "next start",
     "lint": "eslint .",
+    "test": "bun test lib",
+    "e2e": "NEXT_PUBLIC_TEST_HOOKS=1 bun run build && bun test e2e",
     "typecheck": "tsc --noEmit",
     "data:build": "bun run scripts/build-data.ts",
     "data:check": "bun run scripts/check-data.ts",

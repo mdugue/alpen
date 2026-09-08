@@ -57,9 +57,22 @@ export function ScalesDialog({
           <section className="flex flex-col gap-2">
             <h3 className="text-base font-semibold">Status je Zeitraum</h3>
             <p className="text-muted-foreground">
-              Heuristik aus typischem Öffnungsfenster (halbmonatsgenau), Passhöhe und Jahreszeit.
-              Bewirtschaftete Mautstraßen bekommen keinen Höhenabschlag. Für Rundtouren gilt der schlechteste
-              Status ihrer Pässe. Ersetzt keine amtliche Sperrauskunft.
+              Heuristik aus typischem Öffnungsfenster (halbmonatsgenau), Passhöhe, Jahreszeit und der
+              Klimareihe des Passes (Schnee- und Frosttage je Halbmonat, ERA5-Land 2015–2024).
+              Bewirtschaftete Mautstraßen bekommen keinen Höhenabschlag, die Klimareihe gilt aber auch für
+              sie. Für Rundtouren gilt der schlechteste Status ihrer Pässe. Ersetzt keine amtliche
+              Sperrauskunft.
+            </p>
+            <p className="text-muted-foreground">
+              <b>Schneefall sperrt nichts.</b> Ab 20 % Schneefalltagen oder 80 % Frostnächten im Halbmonat
+              wird aus „meist offen“ ein „wetterabhängig“: die Straße ist dann meist befahrbar, aber nicht
+              verlässlich planbar. „Oft gesperrt“ kommt ausschließlich aus dem Öffnungsfenster. Im Detail
+              steht unter dem Status der Grund in einem Satz; „Beste Zeit“ ist der längste Abschnitt mit
+              „meist offen“ und weniger als 10 % Schneefalltagen.
+            </p>
+            <p className="text-muted-foreground">
+              Der Streifen aus 24 Zellen zeigt das ganze Jahr auf einen Blick: gefüllt = meist offen bzw.
+              wetterabhängig, hohl = oft gesperrt, umrandet = der gewählte Halbmonat.
             </p>
           </section>
           <section className="flex flex-col gap-2">

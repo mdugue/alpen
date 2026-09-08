@@ -38,7 +38,8 @@ friends do that better and the app links out to them.
 | Data access (cached)                       | `lib/data.ts`                                 |
 | Filter, selection and URL state            | `lib/app-state.ts`, `components/explorer.tsx` |
 | Map, layers, 3D, markers, labels           | `components/map/pass-map.tsx`                 |
-| Period control floating over the map       | `components/map/period-control.tsx`           |
+| Period scrubber floating over the map      | `components/map/period-scrubber.tsx`          |
+| Season strip (24 half-months)              | `components/season-strip.tsx`                 |
 | Sidebar: search, filters, one list per kind | `components/sidebar/`, `lib/rows.ts`          |
 | Detail panel incl. profile/weather/climate | `components/panel/`                           |
 | Precomputation                             | `scripts/build-data.ts`                       |
@@ -72,8 +73,11 @@ friends do that better and the app links out to them.
   (`SIDEBAR_W`, `DETAIL_W`) and fed to MapLibre as left padding so camera
   targets stay visible. Below `lg` the same sidebar body lives in a bottom
   `Drawer` with snap points and the detail stacks inside it. Only the period
-  control and three map tools float over the map. Map visibility is always a
-  `Switch` ("auf der Karte"), two-state buttons are always a `Toggle`.
+  scrubber and three map tools float over the map; the scrubber carries the
+  24 half-months, the histogram of what is rideable and the "heute" marker,
+  and every list row repeats the same 24 cells as a `SeasonStrip`. Map
+  visibility is always a `Switch` ("auf der Karte"), two-state buttons are
+  always a `Toggle`.
 - **Colours only via tokens.** MapLibre cannot read CSS variables;
   `pass-map.tsx` reads them once via `getComputedStyle` (`readColors`). Add
   new map colours there rather than hard-coding them.
@@ -102,8 +106,11 @@ friends do that better and the app links out to them.
 ## Before opening a PR
 
 ```bash
-bun run typecheck && bun run lint && bun run build && bun run data:check
+bun run typecheck && bun run lint && bun test && bun run build && bun run data:check
 ```
+
+`bun test` runs the unit tests next to the code; `bun run e2e` drives the
+built app in a headless browser (needs a Chrome, see `test/browser.ts`).
 
 For anything visible, add screenshots (`preview-app` skill). When a PR
 implements a plan, update the plan's status header and the table in

@@ -6,20 +6,24 @@ import { Button } from "@/components/ui/button";
 import { Drawer, DrawerContent, DrawerSwipeHandle, DrawerTitle } from "@/components/ui/drawer";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { PassMap, type MapPass } from "@/components/map/pass-map";
-import { PeriodControl } from "@/components/map/period-control";
+import { PeriodScrubber } from "@/components/map/period-scrubber";
 import { DetailPanel } from "@/components/panel/detail-panel";
 import { Sidebar } from "@/components/sidebar/sidebar";
 import { ScalesDialog } from "@/components/scales-dialog";
-import { tourStatus } from "@/lib/status";
-import { buildPassRows, buildTourRows, buildTownRows } from "@/lib/rows";
+import { indexBySlug, tourStatus } from "@/lib/status";
+import { buildPassRows, buildTourRows, buildTownRows, statusHistogram } from "@/lib/rows";
 import {
   ALL_KINDS,
   DEFAULT_FILTERS,
   DEFAULT_VIEW,
+  defined,
   NO_SLUGS,
   readHash,
+  readStoredPeriod,
+  resolvePeriod,
   useFavorites,
   useStored,
+  useStoredPeriod,
   writeHash,
   type EntityKind,
   type Filters,
@@ -28,7 +32,7 @@ import {
 } from "@/lib/app-state";
 import { MOBILE_QUERY, useMediaQuery } from "@/lib/use-media-query";
 import { cn, MAP_CONTROL } from "@/lib/utils";
-import type { ClimateYear, ElevationProfile, Pass, RouteGeometry, Tour, Town } from "@/lib/types";
+import type { ClimateYear, ElevationProfile, Pass, Period, RouteGeometry, Tour, Town } from "@/lib/types";
 
 interface Props {
   passes: Pass[];
@@ -37,10 +41,9 @@ interface Props {
   routes: Record<string, RouteGeometry>;
   profiles: Record<string, ElevationProfile>;
   climate: Record<string, ClimateYear>;
+  /** Today's half-month, computed on the server in Europe/Berlin. */
+  defaultPeriod: Period;
 }
-
-const defined = <T extends object>(o: T): Partial<T> =>
-  Object.fromEntries(Object.entries(o).filter(([, v]) => v !== undefined)) as Partial<T>;
 
 /** Floating panel geometry on desktop (px); keep in sync with the Tailwind widths below. */
 const GAP = 12;
@@ -54,8 +57,8 @@ const SNAP_PEEK = "4.5rem";
 const SNAP_POINTS = [SNAP_PEEK, 0.5, 0.82] as const;
 type Snap = (typeof SNAP_POINTS)[number];
 
-export function Explorer({ passes, tours, towns, routes, profiles, climate }: Props) {
-  const [filters, setFilters] = useState<Filters>(DEFAULT_FILTERS);
+export function Explorer({ passes, tours, towns, routes, profiles, climate, defaultPeriod }: Props) {
+  const [filters, setFilters] = useState<Filters>({ ...DEFAULT_FILTERS, period: defaultPeriod });
   const [selection, setSelection] = useState<Selection | null>(null);
   const [view, setView] = useState<MapView>(DEFAULT_VIEW);
   const [showTowns, setShowTowns] = useStored("alpenpaesse:showTowns", true);
@@ -65,6 +68,7 @@ export function Explorer({ passes, tours, towns, routes, profiles, climate }: Pr
   const [snap, setSnap] = useState<Snap>(SNAP_PEEK);
   const [scalesOpen, setScalesOpen] = useState(false);
   const { isFavorite, toggle: toggleFavorite, count: favoriteCount } = useFavorites();
+  const [, setStoredPeriod] = useStoredPeriod();
   const isMobile = useMediaQuery(MOBILE_QUERY);
   const isXl = useMediaQuery("(width >= 80rem)");
   // Nothing is written to the hash before it has been read once; otherwise the
@@ -83,7 +87,10 @@ export function Explorer({ passes, tours, towns, routes, profiles, climate }: Pr
     const apply = () => {
       const h = readHash();
       const view = { ...DEFAULT_VIEW, ...defined(h.view) };
-      setFilters({ ...DEFAULT_FILTERS, ...defined(h.filters) });
+      // Precedence: a shared link wins, then the visitor's own last choice,
+      // then today's half-month from the server.
+      const period = resolvePeriod(h.filters.period, readStoredPeriod(), defaultPeriod);
+      setFilters({ ...DEFAULT_FILTERS, ...defined(h.filters), period });
       setView(view);
       if (h.view.lat !== undefined || h.view.zoom !== undefined) setRequestedView(view);
       setSelection(h.selection);
@@ -105,14 +112,16 @@ export function Explorer({ passes, tours, towns, routes, profiles, climate }: Pr
     if (hashApplied) writeHash(filters, selection, view);
   }, [hashApplied, filters, selection, view]);
 
-  const passRows = buildPassRows(passes, filters, isFavorite);
-  const tourRows = buildTourRows(tours, passes, filters, isFavorite);
+  const passIndex = indexBySlug(passes);
+  const passRows = buildPassRows(passes, filters, isFavorite, climate);
+  const tourRows = buildTourRows(tours, passIndex, filters, isFavorite, climate);
   const townRows = buildTownRows(towns, filters, isFavorite);
+  const histogram = statusHistogram(passes, filters, isFavorite, climate);
 
   const mapPasses: MapPass[] = passRows.map(({ pass, status, favorite }) => ({ ...pass, status, favorite }));
   const mapTours = tours.map((t) => ({
     ...t,
-    status: tourStatus(t, passes, filters.period),
+    status: tourStatus(t, passIndex, filters.period, climate),
     visible: !hiddenTours.includes(t.slug),
     geometry: routes[`tour:${t.slug}`] ?? t.waypoints.map((w) => [w.lat, w.lon] as [number, number]),
   }));
@@ -234,7 +243,16 @@ export function Explorer({ passes, tours, towns, routes, profiles, climate }: Pr
                 <TooltipContent>Liste und Filter</TooltipContent>
               </Tooltip>
             )}
-            <PeriodControl value={filters.period} onChange={(p) => setFilters((f) => ({ ...f, period: p }))} />
+            <PeriodScrubber
+              value={filters.period}
+              today={defaultPeriod}
+              histogram={histogram}
+              onChange={(p) => {
+                setFilters((f) => ({ ...f, period: p }));
+                // Only the control writes the preference; applying a hash never does.
+                setStoredPeriod(p);
+              }}
+            />
           </PassMap>
         </div>
 

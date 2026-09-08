@@ -214,6 +214,7 @@ export function Sidebar(p: SidebarProps) {
             <TourList
               rows={p.tourRows}
               currentRow={currentRow}
+              period={p.filters.period}
               hiddenTours={p.hiddenTours}
               onToggleTour={(slug, on) =>
                 p.setHiddenTours((h) => (on ? h.filter((s) => s !== slug) : [...new Set([...h, slug])]))

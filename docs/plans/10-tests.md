@@ -1,6 +1,6 @@
 # 10 · Tests
 
-**Status:** proposed · **Effort:** M · **Depends on:** – · **Unblocks:** every
+**Status:** in progress · **Effort:** M · **Depends on:** – · **Unblocks:** every
 refactor above; especially 01, 02 and 04
 
 ## Goal

@@ -8,11 +8,25 @@ import { Empty, EmptyDescription, EmptyHeader, EmptyTitle } from "@/components/u
 import { Toggle } from "@/components/ui/toggle";
 import { Rating } from "@/components/rating";
 import { StatusBadge, StatusDot } from "@/components/status-badge";
+import { SeasonStrip } from "@/components/season-strip";
 import { ElevationProfile } from "@/components/panel/elevation-profile";
 import { ClimateChart } from "@/components/panel/climate-chart";
 import { WeatherTable } from "@/components/panel/weather-table";
 import { haversine, NEARBY_RADIUS_KM } from "@/lib/geo";
-import { passStatus, periodIndex, periodLabel, seasonText, tourStatus } from "@/lib/status";
+import {
+  bestPeriods,
+  climateBucket,
+  indexBySlug,
+  passSeason,
+  passStatus,
+  passVerdict,
+  periodIndex,
+  periodLabel,
+  seasonText,
+  tourSeason,
+  tourStatus,
+  verdictReasons,
+} from "@/lib/status";
 import { cn, fmt, fmtUnit } from "@/lib/utils";
 import type { EntityKind, Selection } from "@/lib/app-state";
 import type {
@@ -172,7 +186,8 @@ function Nearby({ lat, lon, exclude, ...p }: Props & { lat: number; lon: number;
             "Pässe",
             nearPasses.map(({ x, d }) => (
               <LinkButton key={x.slug} onClick={() => p.onSelect({ kind: "pass", slug: x.slug })}>
-                <StatusDot status={passStatus(x, p.period)} /> {x.name}
+                <StatusDot status={passStatus(x, p.period, climateBucket(p.climate, x.slug, p.period))} />{" "}
+                {x.name}
                 <span className="text-muted-foreground">{fmtUnit(d, "km")}</span>
               </LinkButton>
             )),
@@ -223,9 +238,11 @@ function ExternalLinks({ links }: { links: [string, string][] }) {
 
 function PassDetail(props: Props & { pass: Pass }) {
   const { pass } = props;
-  const status = passStatus(pass, props.period);
   const climate = props.climate[pass.slug];
   const bucket = climate?.[periodIndex(props.period)];
+  const { status } = passVerdict(pass, props.period, bucket);
+  const reasons = verdictReasons(pass, props.period, bucket);
+  const best = bestPeriods(pass, climate);
   const days = (pct: number) => Math.round((pct / 100) * 15);
 
   return (
@@ -237,6 +254,16 @@ function PassDetail(props: Props & { pass: Pass }) {
         </span>
         <StatusBadge status={status} period={props.period} />
       </div>
+      {reasons.length > 0 && (
+        <p className="mb-2 text-xs text-muted-foreground">{reasons.join(" ")}</p>
+      )}
+
+      <SeasonStrip statuses={passSeason(pass, climate)} current={props.period} size="panel" className="mb-2" />
+      {best && (
+        <p className="mb-2 text-[13px]">
+          <b>Beste Zeit:</b> {periodLabel(best[0])} bis {periodLabel(best[1])}
+        </p>
+      )}
 
       <dl className="my-2 grid grid-cols-[auto_1fr] gap-x-3 gap-y-1 text-[13px]">
         <dt className="text-muted-foreground">Klassisch</dt>
@@ -348,11 +375,12 @@ function PassDetail(props: Props & { pass: Pass }) {
 
 function TourDetail(props: Props & { tour: Tour }) {
   const { tour } = props;
-  const status = tourStatus(tour, props.passes, props.period);
+  const passIndex = indexBySlug(props.passes);
+  const status = tourStatus(tour, passIndex, props.period, props.climate);
   const limiting = tour.passes
-    .map((s) => props.passes.find((p) => p.slug === s))
+    .map((s) => passIndex.get(s))
     .filter((p): p is Pass => Boolean(p))
-    .filter((p) => passStatus(p, props.period) !== "open");
+    .filter((p) => passStatus(p, props.period, climateBucket(props.climate, p.slug, props.period)) !== "open");
 
   return (
     <>
@@ -367,6 +395,12 @@ function TourDetail(props: Props & { tour: Tour }) {
         </span>
         <StatusBadge status={status} period={props.period} />
       </div>
+      <SeasonStrip
+        statuses={tourSeason(tour, passIndex, props.climate)}
+        current={props.period}
+        size="panel"
+        className="mb-2"
+      />
       {limiting.length > 0 && (
         <p className="text-xs text-muted-foreground">
           Einschränkung durch: {limiting.map((p) => p.name).join(", ")}
@@ -383,7 +417,8 @@ function TourDetail(props: Props & { tour: Tour }) {
             if (!p) return null;
             return (
               <LinkButton key={slug} onClick={() => props.onSelect({ kind: "pass", slug })}>
-                <StatusDot status={passStatus(p, props.period)} /> {p.name}
+                <StatusDot status={passStatus(p, props.period, climateBucket(props.climate, p.slug, props.period))} />{" "}
+                {p.name}
               </LinkButton>
             );
           })}

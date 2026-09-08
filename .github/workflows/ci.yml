@@ -17,4 +17,29 @@ jobs:
       - run: bun run data:check
       - run: bun run typecheck
       - run: bun run lint
+      - run: bun test lib
       - run: bun run build
+
+  e2e:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+      - uses: browser-actions/setup-chrome@v2
+        id: chrome
+        with:
+          chrome-version: stable
+      - run: bun install --frozen-lockfile
+      # The test hook (window.__alpen) only exists in a build with this flag.
+      - run: NEXT_PUBLIC_TEST_HOOKS=1 bun run build
+      - run: bun test e2e
+        env:
+          CHROME: ${{ steps.chrome.outputs.chrome-path }}
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: e2e-failures
+          path: e2e/failures
+          if-no-files-found: ignore

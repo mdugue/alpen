@@ -30,6 +30,22 @@ the status heuristic.
 **Time reckoning:** A `Period` is a half-month. `10` = early October,
 `10.5` = late October. `PERIODS` in `lib/status.ts` lists all 24.
 
+Which half-month the app shows is decided in this order:
+
+```
+hash t=…  ───────────────► present? ── yes ──► use it, never store it (someone else's link)
+                               │ no
+localStorage alpenpaesse:period ► present? ── yes ──► use it (the visitor's last choice)
+                               │ no
+today's half-month, computed on the server in Europe/Berlin (prerendered, revalidated every 15 min)
+```
+
+`todayPeriod()` reads the calendar in `Europe/Berlin`; because a half-month is
+15 days wide, a visitor in another timezone is at most one day off at a
+boundary, which never changes the bucket by more than that day. Only the
+period control writes to `localStorage`, so opening a shared link never
+overwrites the visitor's own preference.
+
 ### `data/tours.json`
 
 `passes` contains pass **slugs**; the tour status is computed from them as the

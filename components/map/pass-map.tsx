@@ -23,7 +23,7 @@ import { Switch } from "@/components/ui/switch";
 import { Toggle } from "@/components/ui/toggle";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { baseLayers, OVERLAYS } from "@/components/map/map-style";
-import { DEFAULT_VIEW, readHash, useStored, type MapView, type Selection } from "@/lib/app-state";
+import { DEFAULT_VIEW, defined, readHash, useStored, type MapView, type Selection } from "@/lib/app-state";
 import { cn, MAP_CONTROL, PRESSED } from "@/lib/utils";
 import type { Pass, RouteGeometry, Status, Tour, Town } from "@/lib/types";
 
@@ -151,9 +151,6 @@ function addIcons(map: MLMap, c: ReturnType<typeof readColors>) {
 
 const escapeHtml = (s: string) =>
   s.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]!);
-
-const defined = <T extends object>(o: T): Partial<T> =>
-  Object.fromEntries(Object.entries(o).filter(([, v]) => v !== undefined && !Number.isNaN(v))) as Partial<T>;
 
 export function PassMap({
   passes,
@@ -433,6 +430,10 @@ export function PassMap({
       },
     });
     map.current = m;
+    // Test hook for the e2e suite (never in a production build).
+    if (process.env.NEXT_PUBLIC_TEST_HOOKS === "1") {
+      (window as unknown as { __alpen?: { map: MLMap } }).__alpen = { map: m };
+    }
     m.addControl(new NavigationControl({ visualizePitch: true, showZoom: !coarse }), "bottom-right");
     m.addControl(new ScaleControl({ unit: "metric" }), "bottom-left");
 

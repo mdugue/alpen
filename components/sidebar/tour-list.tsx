@@ -4,12 +4,15 @@ import { Switch } from "@/components/ui/switch";
 import { EntityRow } from "@/components/sidebar/entity-row";
 import { ListEmpty } from "@/components/sidebar/list-empty";
 import { StatusLabel } from "@/components/status-badge";
+import { SeasonStrip } from "@/components/season-strip";
 import type { TourRow } from "@/lib/rows";
+import type { Period } from "@/lib/types";
 import { cn, fmtUnit } from "@/lib/utils";
 
 export function TourList({
   rows,
   currentRow,
+  period,
   hiddenTours,
   onToggleTour,
   onSelect,
@@ -17,6 +20,7 @@ export function TourList({
 }: {
   rows: TourRow[];
   currentRow: string | null;
+  period: Period;
   hiddenTours: string[];
   onToggleTour: (slug: string, on: boolean) => void;
   onSelect: (slug: string) => void;
@@ -25,7 +29,7 @@ export function TourList({
   if (rows.length === 0) return <ListEmpty title="Keine Touren für diese Filter" />;
   return (
     <ul>
-      {rows.map(({ tour, status, favorite }) => {
+      {rows.map(({ tour, status, favorite, season }) => {
         const onMap = !hiddenTours.includes(tour.slug);
         return (
           <EntityRow
@@ -45,6 +49,7 @@ export function TourList({
                   {fmtUnit(tour.km, "km")} · {fmtUnit(tour.elevationGain, "hm")}
                 </span>
                 <StatusLabel status={status} className="text-muted-foreground" />
+                <SeasonStrip statuses={season} current={period} />
               </>
             }
             trailing={

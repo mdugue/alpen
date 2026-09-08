@@ -12,6 +12,7 @@ import { EntityRow } from "@/components/sidebar/entity-row";
 import { ListEmpty } from "@/components/sidebar/list-empty";
 import { Rating } from "@/components/rating";
 import { StatusLabel } from "@/components/status-badge";
+import { SeasonStrip } from "@/components/season-strip";
 import { PASS_SORT_LABEL, sortPassRows, type PassRow, type PassSort } from "@/lib/rows";
 import type { Filters } from "@/lib/app-state";
 import { fmtUnit } from "@/lib/utils";
@@ -105,7 +106,7 @@ export function PassList({
         <ListEmpty title="Keine Pässe für diese Filter" />
       ) : (
         <ul>
-          {sorted.map(({ pass, status, favorite }) => (
+          {sorted.map(({ pass, status, favorite, season }) => (
             <EntityRow
               key={pass.slug}
               rowId={`pass:${pass.slug}`}
@@ -123,6 +124,7 @@ export function PassList({
                   ) : (
                     <StatusLabel status={status} className="text-muted-foreground" />
                   )}
+                  <SeasonStrip statuses={season} current={filters.period} />
                 </>
               }
             />

@@ -1,6 +1,6 @@
 # 04 · Climate-aware status
 
-**Status:** proposed · **Effort:** S–M · **Depends on:** – · **Unblocks:**
+**Status:** in progress · **Effort:** S–M · **Depends on:** – · **Unblocks:**
 03 (truthful strips), 12 (destination scores), "beste Zeit" per pass
 
 ## Goal
