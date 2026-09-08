@@ -62,6 +62,27 @@
           ],
           "additionalProperties": false
         }
+      },
+      "check": {
+        "type": "object",
+        "properties": {
+          "maxKmDelta": {
+            "type": "number",
+            "exclusiveMinimum": 0
+          },
+          "maxWaypointDist": {
+            "type": "number",
+            "exclusiveMinimum": 0
+          },
+          "note": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "note"
+        ],
+        "additionalProperties": false
       }
     },
     "required": [

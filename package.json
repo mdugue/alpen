@@ -17,6 +17,7 @@
     "typecheck": "tsc --noEmit",
     "data:build": "bun run scripts/build-data.ts",
     "data:check": "bun run scripts/check-data.ts",
+    "data:backfill": "bash scripts/backfill.sh",
     "data:schema": "bun run scripts/emit-json-schema.ts",
     "ui:init": "bunx shadcn@latest init --preset b1D2ui9g",
     "ui:add": "bunx shadcn@latest add badge button button-group card chart collapsible dialog drawer dropdown-menu empty field input input-group item label native-select popover radio-group separator skeleton slider switch table toggle toggle-group tooltip"

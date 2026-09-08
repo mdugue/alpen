@@ -120,12 +120,35 @@ export function stepGradient(profile: ElevationProfile, i: number): number {
   return run > 0 ? (profile.ele[i]! - profile.ele[i - 1]!) / run : 0;
 }
 
-/** The figures that follow from `dist` and `ele`; recomputed by the backfill. */
+/**
+ * The figures that follow from `dist` and `ele`. `km` is rounded for display,
+ * but the gradient is derived from the unrounded total – on a short ascent the
+ * 0,1 km of rounding is worth a tenth of a percent of gradient.
+ */
 export function profileStats(dist: number[], ele: number[]) {
-  const km = +(dist.at(-1) ?? 0).toFixed(1);
+  const total = dist.at(-1) ?? 0;
   return {
-    km,
-    avgGradient: km > 0 ? +((ele.at(-1)! - ele[0]!) / (km * 10)).toFixed(1) : 0,
+    km: +total.toFixed(1),
+    avgGradient:
+      total > 0 ? +((ele.at(-1)! - ele[0]!) / (total * 10)).toFixed(1) : 0,
     maxKmGradient: steepestKm(dist, ele),
   };
+}
+
+/**
+ * Brings a profile's distance-dependent fields up to date from the route it
+ * belongs to, keeping the elevations – which are the part that costs an API
+ * call. Used by the `--backfill` migration and whenever a profile cached from
+ * an earlier rejection is reused for the very same geometry, so a cached
+ * profile can never carry distances the current code would not have written.
+ * Returns the profile unchanged when the route no longer has as many sample
+ * points as the profile has elevations.
+ */
+export function withRoadDistances(
+  profile: ElevationProfile,
+  geom: RouteGeometry,
+): ElevationProfile {
+  const dist = profileDistances(geom);
+  if (dist.length !== profile.ele.length) return profile;
+  return { ...profile, ...profileStats(dist, profile.ele), dist };
 }

@@ -66,6 +66,18 @@
     {
       "fileMatch": ["/data/generated/climate.json"],
       "url": "./data/schema/climate.schema.json"
+    },
+    {
+      "fileMatch": ["/data/generated/routes-meta.json"],
+      "url": "./data/schema/routes-meta.schema.json"
+    },
+    {
+      "fileMatch": ["/data/generated/rejected.json"],
+      "url": "./data/schema/rejected.schema.json"
+    },
+    {
+      "fileMatch": ["/data/generated/summits.json"],
+      "url": "./data/schema/summits.schema.json"
     }
   ]
 }

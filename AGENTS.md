@@ -23,7 +23,11 @@ friends do that better and the app links out to them.
    a heuristic. Both are labelled as such in the scales dialog and must never
    be presented as measured values.
 4. **No silent data changes.** Whoever touches `data/*.json` runs
-   `bun run data:check`.
+   `bun run data:check`. Routed geometry passes the quality gate in
+   `scripts/lib/validate.ts` before it is stored; what fails lands in
+   `rejected.json` with its measured values. Judging is separate from measuring
+   so `bun run data:check --explain` can re-evaluate every route against a
+   changed threshold offline, without spending API calls.
 5. **Destination first.** Judge a feature by whether it helps choose where
    and when to go. Overview beats precision: a season strip for 92 passes is
    worth more than a metre-exact profile for one. Route-level detail ranks
@@ -46,6 +50,7 @@ friends do that better and the app links out to them.
 | Sidebar: search, filters, one list per kind   | `components/sidebar/`, `lib/rows.ts`                                                                                  |
 | Detail panel incl. profile/weather/climate    | `components/panel/`                                                                                                   |
 | Precomputation, data checks                   | `scripts/build-data.ts`, `scripts/check-data.ts`                                                                      |
+| Route quality gate: checks and thresholds     | `scripts/lib/validate.ts`                                                                                             |
 | Name, claim, colours, mark, base URL          | `lib/brand.ts`, `lib/mark.tsx`                                                                                        |
 | Icons, share image, manifest, robots, sitemap | `app/icon.tsx`, `app/apple-icon.tsx`, `app/opengraph-image.tsx`, `app/manifest.ts`, `app/robots.ts`, `app/sitemap.ts` |
 | Legal pages                                   | `app/impressum/`, `app/datenschutz/`                                                                                  |

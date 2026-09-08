@@ -62,6 +62,17 @@ share.
 }
 ```
 
+An ascent (or a tour) may carry a `check` object that widens a limit of the
+route quality gate for that entry alone – only the limits its own validator
+reads – with a mandatory `note` saying why:
+
+```jsonc
+"ascents": [{
+  "from": { "lat": 47.446, "lon": 12.392 }, "label": "Kitzbühel",
+  "check": { "maxTopDelta": 420, "note": "Straße endet am Alpenhaus unter dem Gipfel" }
+}]
+```
+
 `season.maintained: true` marks managed toll roads (Grossglockner, Timmelsjoch,
 Nockalm …). They are cleared of snow and therefore get no elevation penalty in
 the status heuristic.
@@ -103,35 +114,103 @@ is a single sentence naming the surrounding passes and the infrastructure.
 
 ## Derived data (`bun run data:build`)
 
-| File            | Key                                       | Contents                                                                  |
-| --------------- | ----------------------------------------- | ------------------------------------------------------------------------- |
-| `routes.json`   | `<pass-slug>:<index>`, `tour:<tour-slug>` | Road geometry as `[lat, lon][]`                                           |
-| `profiles.json` | `<pass-slug>:<index>`                     | km, elevation gain, average and steepest-kilometre gradient, ~100 samples |
-| `climate.json`  | `<pass-slug>`                             | 24 half-months with average temperatures and frost/snow/rain share        |
+| File               | Key                                       | Contents                                                                                        |
+| ------------------ | ----------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| `routes.json`      | `<pass-slug>:<index>`, `tour:<tour-slug>` | Road geometry as `[lat, lon][]`                                                                 |
+| `profiles.json`    | `<pass-slug>:<index>`                     | km, elevation gain, average and steepest-kilometre gradient, ~100 samples                       |
+| `climate.json`     | `<pass-slug>`                             | 24 half-months with average temperatures and frost/snow/rain share                              |
+| `routes-meta.json` | as `routes.json`                          | `source` (`ors` \| `osrm`) and `fetchedAt` – which router produced this route                   |
+| `rejected.json`    | as `routes.json`                          | routes the quality gate refused, with the reasons, the measured values and the paid-for profile |
+| `summits.json`     | `<pass-slug>`                             | DEM height at the pass coordinate, to catch a wrong summit point                                |
 
 A profile's samples are ~100 points of the ascent's road geometry, taken at
 `Math.round(i * step)` of `routes.json` (`lib/profile.ts`). The coordinate of a
 sample is therefore derivable from the route and is not stored twice – which is
 what lets the detail panel put a cursor on the map while you scrub the profile.
 `dist` measures **along the road**, not from sample to sample: a chord chain
-through the Stelvio's 48 hairpins comes out two kilometres short. Everything
-derived from `dist` and `ele` – `km`, `avgGradient`, `maxKmGradient` – can be
-recomputed offline with `bun run data:build --backfill`.
+through the Stelvio's 48 hairpins comes out two kilometres short, and
+`profile.km` would disagree with the gate's `ascentMetrics.km`, which has always
+measured the full geometry. Everything derived from `dist` and `ele` – `km`,
+`avgGradient`, `maxKmGradient` – can be recomputed offline with
+`bun run data:build --backfill`.
 
 The steepest kilometre is an estimate, not a measurement: the samples are a few
 hundred metres apart and carry DEM noise, and a maximum over ninety windows
 picks the worst of it. `steepestKm` smooths and fits a line through each window
 to keep the bias down, and the panel labels the section accordingly.
 
-These files belong in the repo. They only change when passes or ascents are
-added – the script skips everything that already exists. Because Open-Meteo
-bills a profile as ≈100 and a climate series as ≈261 "calls" against a free
-tier of 10,000/day, a larger backlog is drained over several runs
-(`OPEN_METEO_BUDGET`, twice-daily `refresh-data.yml`). `bun run data:build
---status` shows the backlog and its cost.
+These files belong in the repo. They only change when passes, ascents or tours
+change – the script skips everything that already exists.
+
+### The route quality gate
+
+Nothing reaches `routes.json` unmeasured. A geometry is measured, judged, and
+only then written; what fails goes to `rejected.json` instead, so a wrong route
+neither reaches the map nor spends 100 Open-Meteo calls on a useless profile.
+
+```mermaid
+flowchart LR
+  A["passes.json ascents<br/>tours.json waypoints"] --> B{"stored with<br/>source ors?"}
+  B -- "yes" --> G
+  B -- "missing, or osrm<br/>with --upgrade-osrm" --> C["router: ORS,<br/>on quota error OSRM"]
+  C --> V1{"geometry checks<br/>length, start, end"}
+  V1 -- "fail" --> R["rejected.json<br/>reasons + measured values<br/>+ the paid-for profile"]
+  V1 -- "pass" --> D["routes.json<br/>routes-meta.json: source, date"]
+  D --> E["Open-Meteo elevation"]
+  E --> V2{"profile checks<br/>top within 80 m,<br/>summit near the end, gain"}
+  V2 -- "fail" --> R
+  V2 -- "pass" --> F["profiles.json"]
+  S["summits.json<br/>DEM height at the pass point"] -. "off by more than 80 m" .-> K
+  R --> K["data:check<br/>error for a stored route that fails,<br/>warning for a rejection or an osrm route"]
+  K -- "--explain" --> T["every route with its<br/>measured values, offline"]
+  F --> G["map and panel"]
+```
+
+What the checks look at, for one ascent:
+
+```
+ elevation
+   ▲                                        top within 80 m of pass.elevation
+   │                                 ●──●   and inside the last 25 % of the distance
+   │                           ●──●──┘
+   │                     ●──●──┘
+   │               ●──●──┘
+   │         ●──●──┘
+   │   ●──●──┘
+   └───┼───────────────────────────────┼────► distance, at most 60 km
+     start within 2 km              end within 500 m
+     of ascent.from                 of the pass coordinate
+```
+
+Measuring and judging are separate functions in `scripts/lib/validate.ts`, and
+`check-data.ts` re-measures the stored geometries rather than trusting what the
+build wrote. That is what keeps the thresholds tunable: `bun run data:check
+--explain` prints every route with its measured values and marks the violations,
+offline and without a single API call, so the effect of changing a limit is
+visible before anything is re-fetched. The thresholds themselves are listed in
+the `curate-data` skill.
+
+### What it costs
+
+Routing is effectively free: ORS allows 2 000 requests a day and the whole
+dataset is ~180 of them, one per ascent and one per tour. Open-Meteo is the
+constraint, and its **hourly** limit binds first – 5 000 calls/h against ~100
+calls per elevation profile, so a run places about 45 profiles before
+`OPEN_METEO_BUDGET` (default 4500) stops it. A climate series costs ~261 calls,
+but that file is complete and its window is frozen, so it no longer contributes.
+
+`bun run data:build --status` shows the backlog and how many runs it needs;
+`scripts/backfill.sh` drains it in hourly batches until nothing is missing.
 
 ## Adding a pass
 
 1. Add an entry to `data/passes.json` (slug following the same pattern).
-2. `bun run data:build` – fetches only the new routes, profiles and the climate series.
-3. `bun run data:check` – validates the schema, references and completeness.
+2. `ORS_KEY=… bun run data:build` – fetches only the new routes, profiles and
+   the climate series, and runs each new route through the gate.
+3. `bun run data:check` – validates the schema, references and completeness,
+   and the plausibility of every stored route.
+
+If the gate rejects the new ascent, `rejected.json` names the measured value
+that broke a limit. There are exactly three ways out, and the `curate-data`
+skill describes when each applies: fix the coordinates, set `ascent.check` with
+a note, or change the limit itself.

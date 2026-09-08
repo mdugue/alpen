@@ -9,6 +9,7 @@ import {
   profileStats,
   steepestKm,
   stepGradient,
+  withRoadDistances,
 } from "@/lib/profile";
 import type { ElevationProfile, RouteGeometry } from "@/lib/types";
 
@@ -130,6 +131,52 @@ describe("profileStats", () => {
           maxKmGradient: p.maxKmGradient,
         },
       ]);
+  });
+});
+
+describe("withRoadDistances", () => {
+  const geom = straight(300, 100);
+
+  test("re-derives the distances and the stats, keeps the elevations", () => {
+    const ele = profileCoords(geom).map((_, i) => 1000 + i * 5);
+    const stale: ElevationProfile = {
+      km: 1,
+      elevationGain: 495,
+      start: 1000,
+      top: ele.at(-1)!,
+      avgGradient: 49.5,
+      maxKmGradient: 60,
+      dist: ele.map((_, i) => i * 0.01),
+      ele,
+    };
+    const fresh = withRoadDistances(stale, geom);
+    expect(fresh.ele).toBe(stale.ele);
+    expect(fresh.elevationGain).toBe(stale.elevationGain);
+    expect(fresh.dist).toEqual(profileDistances(geom));
+    expect(fresh.km).toBeCloseTo(29.9, 0);
+    expect(fresh.avgGradient).toBeCloseTo(1.7, 1);
+  });
+
+  test("the gradient follows the unrounded total, not the rounded km", () => {
+    // 0,55 km at a steady 10 %: rounding the total to 0,6 km would report 9,2 %.
+    const dist = [0, 0.275, 0.55];
+    const ele = [1000, 1027.5, 1055];
+    expect(profileStats(dist, ele).km).toBe(0.6);
+    expect(profileStats(dist, ele).avgGradient).toBe(10);
+  });
+
+  test("a route that no longer matches the samples is left alone", () => {
+    const p = {
+      km: 1,
+      elevationGain: 0,
+      start: 0,
+      top: 0,
+      avgGradient: 0,
+      maxKmGradient: 0,
+      dist: [0, 1],
+      ele: [0, 0],
+    } as ElevationProfile;
+    expect(withRoadDistances(p, straight(300, 100))).toBe(p);
   });
 });
 
