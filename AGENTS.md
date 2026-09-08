@@ -1,8 +1,14 @@
 ## What you are working on
 
-A map app for road cyclists: Alpine passes, their ascents, loop tours and
-cycling towns, rated by rideability for a chosen half-month. The intended use
-is rough route planning, not navigation.
+A map app for road cyclists planning a holiday in the Alps: passes, their
+ascents, loop tours and cycling towns, rated by rideability for a chosen
+half-month. The product goal is **finding and comparing destinations**, not
+route planning. The questions it must answer well: "which regions are good
+in early October if we want to ride a few nice passes", "where should we look
+for a hotel so that several passes and a loop are within reach", "which
+destinations should we keep an eye on for single-day and multi-day tours".
+Turn-by-turn planning, GPX export and navigation are out of scope; Komoot and
+friends do that better and the app links out to them.
 
 ## Principles
 
@@ -18,6 +24,10 @@ is rough route planning, not navigation.
    be presented as measured values.
 4. **No silent data changes.** Whoever touches `data/*.json` runs
    `bun run data:check`.
+5. **Destination first.** Judge a feature by whether it helps choose where
+   and when to go. Overview beats precision: a season strip for 92 passes is
+   worth more than a metre-exact profile for one. Route-level detail ranks
+   last (see `docs/plans/README.md`).
 
 ## Where things live
 
@@ -34,6 +44,9 @@ is rough route planning, not navigation.
 | Precomputation                             | `scripts/build-data.ts`                       |
 | Name, claim, colours, mark, base URL       | `lib/brand.ts`, `lib/mark.tsx`                |
 | Icons, share image, manifest, robots, sitemap | `app/icon.tsx`, `app/apple-icon.tsx`, `app/opengraph-image.tsx`, `app/manifest.ts`, `app/robots.ts`, `app/sitemap.ts` |
+| Legal pages                                | `app/impressum/`, `app/datenschutz/`          |
+| Implementation plans                       | `docs/plans/` (index: `docs/plans/README.md`) |
+| Project skills                             | `.agents/skills/implement-plan`, `curate-data`, `preview-app` |
 
 ## Conventions
 
@@ -107,11 +120,16 @@ is rough route planning, not navigation.
 bun run typecheck && bun run lint && bun run build && bun run data:check
 ```
 
+For anything visible, add screenshots (`preview-app` skill). When a PR
+implements a plan, update the plan's status header and the table in
+`docs/plans/README.md` in the same PR.
+
 ## Next tasks
 
-See `docs/roadmap.md`. The biggest open item is the official live closure
-status; the heuristic in `lib/status.ts` is designed as a replaceable layer
-for it.
+See `docs/plans/README.md` for the ordered plans and `docs/roadmap.md` for
+what lies beyond them. The biggest open item outside the plans is the official
+live closure status; the heuristic in `lib/status.ts` is designed as a
+replaceable layer for it.
 
 <!-- BEGIN:nextjs-agent-rules -->
 

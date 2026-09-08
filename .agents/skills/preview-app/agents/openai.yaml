@@ -1,0 +1,3 @@
+interface:
+  display_name: "Preview app"
+  short_description: "Build, run and screenshot the app headlessly"

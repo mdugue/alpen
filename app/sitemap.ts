@@ -4,7 +4,8 @@ import { siteUrl } from "@/lib/brand";
 /**
  * The app is a single page – filters, period and selection live in the URL
  * fragment, which crawlers neither see nor need. So the sitemap has exactly one
- * entry, plus the share image so it can be picked up as an image result.
+ * entry, plus the share image so it can be picked up as an image result. Once
+ * entities get real routes (`docs/plans/02-real-routes.md`), they belong here.
  *
  * /impressum and /datenschutz are deliberately missing: they are `noindex`
  * (see their metadata), and a sitemap is a request to index.

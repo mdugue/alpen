@@ -1,9 +1,21 @@
-# Alpenpässe – Road cycling map
+# Alpenpässe – where to ride, and when
 
-Rough orientation for road cycling routes in the Alps: 92 passes with ascents
-and elevation profiles, 9 loop tours, 26 cycling towns – each with a
-rideability estimate for a freely chosen half-month, a weather forecast and a
-climate series at the summit, in 2D and 3D. The UI is in German.
+A map for planning road-cycling holidays in the Alps. It answers destination
+questions, not routing questions:
+
+- Which regions are good in early October if we want to ride a few great passes?
+- Where should we look for a hotel so that several passes and a loop are within reach?
+- Which destinations should we keep an eye on for single-day and multi-day tours?
+
+Data today: 92 passes with ascents and elevation profiles, 9 loop tours and
+26 cycling towns, each with a rideability estimate for a freely chosen
+half-month, a 7-day forecast and a 2015–2024 climate series at the summit, in
+2D and 3D. The UI is in German.
+
+**What it is not.** A route planner or a navigation tool. Komoot, Strava and
+similar services do turn-by-turn planning far better, and the app links out
+to them. Precision beyond "is this doable that week" is out of scope, and so
+are GPX export, custom tour building and live navigation.
 
 ## Quick start
 
@@ -38,19 +50,36 @@ weather forecast; it goes through `app/api/weather/[slug]/route.ts` with its
 own cache lifetime so Open-Meteo is queried once per pass and half hour
 instead of once per visitor. All interaction state lives in one client
 component (`components/explorer.tsx`) and is mirrored into the URL hash, so
-every view is shareable.
+every view is shareable (plan 02 in `docs/plans/` moves entities to real
+routes).
 
 ```
-app/            layout, start page, weather route, metadata routes (icons, share image, manifest, robots, sitemap)
+app/            layout, start page, weather route, Impressum, Datenschutz,
+                metadata routes (icons, share image, manifest, robots, sitemap)
 components/     explorer (state) · map (MapLibre) · sidebar (lists, filters) · panel (detail) · ui (shadcn)
 data/           passes.json, tours.json, towns.json  ← source data, hand-maintained
 data/generated/ routes.json, profiles.json, climate.json  ← from data:build, committed
 lib/            types, data access, status heuristic, state hooks, brand constants
 scripts/        build-data.ts (precomputation), check-data.ts (validation)
-docs/           scales, data model, roadmap
+docs/           scales, data model, roadmap, plans/
+.agents/skills/ project skills for agents: implement-plan, curate-data, preview-app
 ```
 
 More in [`AGENTS.md`](./AGENTS.md) and [`docs/`](./docs).
+
+## Plans and skills
+
+`docs/plans/` holds one implementation plan per topic, ordered by how much
+each serves the destination goal: data quality gate, payload, period as the
+hero, climate-aware status, destinations, filters and search, real routes,
+basemap, schema validation, tests, smaller items, English toggle, profile
+interactivity. Start with [`docs/plans/README.md`](./docs/plans/README.md).
+
+`.agents/skills/` holds project skills that agents (and people) follow:
+`implement-plan` executes a plan end to end, `curate-data` adds or edits
+passes, tours and towns, `preview-app` builds and screenshots the app headless
+to verify a UI change. Vendored general-purpose skills (shadcn, React,
+composition patterns, code review) sit next to them.
 
 ## Environment variables
 
@@ -78,7 +107,7 @@ See `.env.example`. None of them is required to start the app.
 
 Push the repo to GitHub, import it in Vercel, done – no `vercel.json` needed.
 The start page is prerendered at build time and served from the CDN edge;
-only the weather route runs as a function.
+only the weather route runs as a function. Production: <https://alpen.manuel.fyi>.
 
 ## Origin
 
