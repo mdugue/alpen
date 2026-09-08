@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 
 export default function ImpressumPage() {
   return (
-    <main className="min-h-dvh bg-background px-4 py-10 text-foreground">
+    <main className="h-dvh overflow-y-auto bg-background px-4 py-10 text-foreground">
       <div className="mx-auto flex max-w-2xl flex-col gap-8">
         <Link
           href="/"
