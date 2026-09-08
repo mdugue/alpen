@@ -79,6 +79,11 @@ const PENDING_ONLY = process.argv.includes("--pending");
 const FORMAT_ONLY = process.argv.includes("--format");
 const RETRY_REJECTED = process.argv.includes("--retry-rejected");
 const UPGRADE_OSRM = process.argv.includes("--upgrade-osrm");
+/** Restrict the run to keys containing this, e.g. --only col-du-galibier. */
+const ONLY = process.argv[process.argv.indexOf("--only") + 1];
+const isOnly = (key: string) =>
+  !process.argv.includes("--only") ||
+  (ONLY !== undefined && key.includes(ONLY));
 /** Point a local OSRM at this to cross-check ORS, see docs/plans/00-…md. */
 const OSRM_HOST = process.env.OSRM_HOST ?? "https://router.project-osrm.org";
 /**
@@ -502,11 +507,12 @@ const needsRoute = (j: RouteJob) =>
 const isRejected = (j: RouteJob) => j.key in rejected && !RETRY_REJECTED;
 
 const pendingRoutes = () =>
-  routeJobs.filter((j) => needsRoute(j) && !isRejected(j));
+  routeJobs.filter((j) => isOnly(j.key) && needsRoute(j) && !isRejected(j));
 const pendingProfiles = () =>
   routeJobs.filter(
     (j) =>
       j.kind === "ascent" &&
+      isOnly(j.key) &&
       routes[j.key] &&
       !profiles[j.key] &&
       !isRejected(j) &&
@@ -527,7 +533,8 @@ const report = () => {
   const newProfiles =
     p +
     routeJobs.filter(
-      (j) => j.kind === "ascent" && needsRoute(j) && !isRejected(j),
+      (j) =>
+        j.kind === "ascent" && isOnly(j.key) && needsRoute(j) && !isRejected(j),
     ).length;
   const calls = newProfiles * PROFILE_WEIGHT + c * CLIMATE_WEIGHT + s;
   const up = routeJobs.filter(upgradable).length;
@@ -571,8 +578,8 @@ if (FORMAT_ONLY) {
 
 console.log(
   ORS
-    ? "Routing über OpenRouteService (Rennrad-Profil), Fallback OSRM"
-    : "Routing über OSRM-Demo (Autoprofil) – ORS_KEY setzen für das Rennrad-Profil",
+    ? `Routing über OpenRouteService (Rennrad-Profil), Fallback OSRM – ORS_KEY vorhanden (${ORS.length} Zeichen)`
+    : "Routing über OSRM-Demo (Autoprofil) – ORS_KEY ist NICHT gesetzt, deshalb Autoprofil",
 );
 if (RETRY_REJECTED && Object.keys(rejected).length)
   console.log(
