@@ -103,11 +103,25 @@ is a single sentence naming the surrounding passes and the infrastructure.
 
 ## Derived data (`bun run data:build`)
 
-| File            | Key                                       | Contents                                                           |
-| --------------- | ----------------------------------------- | ------------------------------------------------------------------ |
-| `routes.json`   | `<pass-slug>:<index>`, `tour:<tour-slug>` | Road geometry as `[lat, lon][]`                                    |
-| `profiles.json` | `<pass-slug>:<index>`                     | km, elevation gain, average gradient, anchor points                |
-| `climate.json`  | `<pass-slug>`                             | 24 half-months with average temperatures and frost/snow/rain share |
+| File            | Key                                       | Contents                                                                  |
+| --------------- | ----------------------------------------- | ------------------------------------------------------------------------- |
+| `routes.json`   | `<pass-slug>:<index>`, `tour:<tour-slug>` | Road geometry as `[lat, lon][]`                                           |
+| `profiles.json` | `<pass-slug>:<index>`                     | km, elevation gain, average and steepest-kilometre gradient, ~100 samples |
+| `climate.json`  | `<pass-slug>`                             | 24 half-months with average temperatures and frost/snow/rain share        |
+
+A profile's samples are ~100 points of the ascent's road geometry, taken at
+`Math.round(i * step)` of `routes.json` (`lib/profile.ts`). The coordinate of a
+sample is therefore derivable from the route and is not stored twice – which is
+what lets the detail panel put a cursor on the map while you scrub the profile.
+`dist` measures **along the road**, not from sample to sample: a chord chain
+through the Stelvio's 48 hairpins comes out two kilometres short. Everything
+derived from `dist` and `ele` – `km`, `avgGradient`, `maxKmGradient` – can be
+recomputed offline with `bun run data:build --backfill`.
+
+The steepest kilometre is an estimate, not a measurement: the samples are a few
+hundred metres apart and carry DEM noise, and a maximum over ninety windows
+picks the worst of it. `steepestKm` smooths and fits a line through each window
+to keep the bias down, and the panel labels the section accordingly.
 
 These files belong in the repo. They only change when passes or ascents are
 added – the script skips everything that already exists. Because Open-Meteo

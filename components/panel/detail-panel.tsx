@@ -38,6 +38,7 @@ import {
 } from "@/components/ui/tooltip";
 import type { EntityKind, Selection } from "@/lib/app-state";
 import { haversine, NEARBY_RADIUS_KM } from "@/lib/geo";
+import { profileCoords } from "@/lib/profile";
 import {
   bestPeriods,
   climateBucket,
@@ -55,6 +56,7 @@ import {
 } from "@/lib/status";
 import type {
   ClimateYear,
+  LatLon,
   ElevationProfile as Profile,
   Pass,
   Period,
@@ -95,6 +97,10 @@ interface Props {
   climate: Record<string, ClimateYear>;
   isFavorite: (kind: EntityKind, slug: string) => boolean;
   onToggleFavorite: (kind: EntityKind, slug: string) => void;
+  /** Road point under the profile cursor, drawn on the map; `null` clears it. */
+  onProfileCursor: (point: LatLon | null) => void;
+  /** Click on the profile: fly the map to that point to look at the hairpins. */
+  onProfileZoom: (point: LatLon) => void;
   onSelect: (sel: Selection) => void;
   onBack: () => void;
   onOpenScales: () => void;
@@ -463,7 +469,12 @@ function PassDetail(props: Props & { pass: Pass }) {
         ))}
       </dl>
 
-      <SectionTitle hint="Routing + Höhenmodell">Auffahrten</SectionTitle>
+      <SectionTitle
+        hint="Routing + Höhenmodell"
+        info="Das Profil sind 100 Höhenpunkte aus einem Geländemodell entlang der gerouteten Straße – gut, um Auffahrten zu vergleichen, nicht metergenau. Der steilste Kilometer fällt dabei eher zu steil aus."
+      >
+        Auffahrten
+      </SectionTitle>
       {pass.ascents.length === 0 && (
         <Empty className="py-3">
           <EmptyHeader>
@@ -473,18 +484,27 @@ function PassDetail(props: Props & { pass: Pass }) {
       )}
       <div className="flex flex-col gap-4">
         {pass.ascents.map((a, i) => {
-          const profile = props.profiles[`${pass.slug}:${i}`];
+          const key = `${pass.slug}:${i}`;
+          const profile = props.profiles[key];
+          const geom = props.routes[key];
           return (
             <div key={a.label}>
               <div className="flex flex-wrap items-baseline justify-between gap-x-2">
                 <span className="text-[13px] font-medium">{a.label}</span>
                 <span className="text-muted-foreground text-xs tabular-nums">
                   {profile
-                    ? `${fmtUnit(profile.km, "km", 1)} · ${fmtUnit(profile.elevationGain, "hm")} · Ø ${fmt(profile.avgGradient, 1)} %`
+                    ? `${fmtUnit(profile.km, "km", 1)} · ${fmtUnit(profile.elevationGain, "hm")} · Ø ${fmt(profile.avgGradient, 1)} % · steilster km ${fmt(profile.maxKmGradient, 1)} % · ${fmt(profile.start)} → ${fmtUnit(profile.top, "m")}`
                     : "Kein Höhenprofil vorhanden."}
                 </span>
               </div>
-              {profile && <ElevationProfile profile={profile} />}
+              {profile && (
+                <ElevationProfile
+                  profile={profile}
+                  coords={geom && profileCoords(geom)}
+                  onCursor={props.onProfileCursor}
+                  onZoomTo={props.onProfileZoom}
+                />
+              )}
             </div>
           );
         })}

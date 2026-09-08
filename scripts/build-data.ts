@@ -5,7 +5,8 @@
  *   bun run data:build              # OSRM demo (car profile)
  *   ORS_KEY=… bun run data:build    # OpenRouteService, road-cycling profile
  *   bun run data:build --status     # only report what is missing and what it costs
-  bun run data:build --format     # only rewrite data/generated/*.json in the canonical format
+ *   bun run data:build --format     # only rewrite data/generated/*.json in the canonical format
+ *   bun run data:build --backfill   # only recompute derived profile fields, no API call
  *
  * Writes to data/generated/. Intermediate state is saved after every step;
  * the run can be aborted and resumes. Results belong in the repo – nothing
@@ -36,6 +37,12 @@ import { mkdir } from "node:fs/promises";
 
 import passes from "../data/passes.json" with { type: "json" };
 import tours from "../data/tours.json" with { type: "json" };
+import {
+  PROFILE_POINTS,
+  profileCoords,
+  profileDistances,
+  profileStats,
+} from "../lib/profile";
 import { FILES } from "../lib/schema";
 import type {
   ClimateYear,
@@ -50,11 +57,11 @@ const OUT = new URL("../data/generated/", import.meta.url);
 const ORS = process.env.ORS_KEY ?? "";
 const STATUS_ONLY = process.argv.includes("--status");
 const FORMAT_ONLY = process.argv.includes("--format");
+const BACKFILL_ONLY = process.argv.includes("--backfill");
 const OPEN_METEO_BUDGET = Number(process.env.OPEN_METEO_BUDGET ?? 4500);
 const OPEN_METEO_DAILY = 10_000;
 const CLIMATE_FROM = "2015-01-01";
 const CLIMATE_TO = "2024-12-31";
-const PROFILE_POINTS = 100;
 /** Open-Meteo weight of one climate request: one call per started 14-day period. */
 const CLIMATE_WEIGHT = Math.ceil(
   (Date.parse(CLIMATE_TO) - Date.parse(CLIMATE_FROM)) / 86_400_000 / 14,
@@ -265,35 +272,15 @@ async function route(waypoints: LatLon[]): Promise<RouteGeometry> {
   return out;
 }
 
-function haversine(a: RouteGeometry[number], b: RouteGeometry[number]) {
-  const R = 6371;
-  const dLat = ((b[0] - a[0]) * Math.PI) / 180;
-  const dLon = ((b[1] - a[1]) * Math.PI) / 180;
-  const x =
-    Math.sin(dLat / 2) ** 2 +
-    Math.cos((a[0] * Math.PI) / 180) *
-      Math.cos((b[0] * Math.PI) / 180) *
-      Math.sin(dLon / 2) ** 2;
-  return 2 * R * Math.asin(Math.sqrt(x));
-}
-
 /** Elevations from the Copernicus DEM (Open-Meteo, no key needed). */
 async function profile(geom: RouteGeometry): Promise<ElevationProfile> {
-  const n = Math.min(PROFILE_POINTS, geom.length);
-  const step = (geom.length - 1) / (n - 1);
-  const pts = Array.from({ length: n }, (_, i) => geom[Math.round(i * step)]!);
+  const pts = profileCoords(geom);
   const { elevation } = await getJson<{ elevation: number[] }>(
     openMeteo,
     PROFILE_WEIGHT,
     `https://api.open-meteo.com/v1/elevation?latitude=${pts.map((c) => c[0]).join(",")}&longitude=${pts.map((c) => c[1]).join(",")}`,
   );
 
-  let total = 0;
-  const dist = [0];
-  for (let i = 1; i < pts.length; i++) {
-    total += haversine(pts[i - 1]!, pts[i]!);
-    dist.push(total);
-  }
   // Elevation gain with 10 m smoothing, otherwise DEM noise adds up
   let gain = 0;
   let base = elevation[0]!;
@@ -303,16 +290,15 @@ async function profile(geom: RouteGeometry): Promise<ElevationProfile> {
       base = e;
     } else if (e < base) base = e;
   }
+  const dist = profileDistances(geom);
+  const ele = elevation.map(Math.round);
   return {
-    km: +total.toFixed(1),
+    ...profileStats(dist, ele),
     elevationGain: Math.round(gain),
-    start: Math.round(elevation[0]!),
-    top: Math.round(Math.max(...elevation)),
-    avgGradient: +((elevation.at(-1)! - elevation[0]!) / (total * 10)).toFixed(
-      1,
-    ),
-    dist: dist.map((d) => +d.toFixed(2)),
-    ele: elevation.map(Math.round),
+    start: ele[0]!,
+    top: Math.max(...ele),
+    dist,
+    ele,
   };
 }
 
@@ -423,6 +409,41 @@ const report = () => {
 
 if (STATUS_ONLY) {
   report();
+  process.exit(0);
+}
+/**
+ * Recomputes everything a profile derives from its route and its samples:
+ * the distances along the road, km, the average and the steepest kilometre.
+ * The elevations stay as they were fetched, so this runs on the whole set
+ * without a single request – which is how existing profiles pick up a field
+ * that did not exist when they were fetched.
+ */
+if (BACKFILL_ONLY) {
+  let changed = 0;
+  let missing = 0;
+  for (const [key, p] of Object.entries(profiles)) {
+    const geom = routes[key];
+    if (!geom) {
+      missing++;
+      continue;
+    }
+    const dist = profileDistances(geom);
+    if (dist.length !== p.ele.length) {
+      console.warn(
+        `  ${key}: ${dist.length} Stützstellen aus der Route, ${p.ele.length} Höhen – übersprungen`,
+      );
+      missing++;
+      continue;
+    }
+    const next = { ...p, ...profileStats(dist, p.ele), dist };
+    if (JSON.stringify(next) !== JSON.stringify(p)) changed++;
+    profiles[key] = next;
+  }
+  await write("profiles.json", profiles);
+  await writing;
+  console.log(
+    `Nachgerechnet: ${changed} Profile geändert, ${missing} ohne passende Route`,
+  );
   process.exit(0);
 }
 if (FORMAT_ONLY) {

@@ -124,6 +124,8 @@ export const ElevationProfile = z
     start: z.number(),
     top: z.number(),
     avgGradient: z.number(),
+    /** Steepest full kilometre in percent (see `steepestKm` in lib/profile.ts). */
+    maxKmGradient: z.number(),
     /** Cumulative distance per sample point in km. */
     dist: z.array(z.number()),
     /** Elevation per sample point in m. */
