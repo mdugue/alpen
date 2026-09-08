@@ -27,103 +27,99 @@ const SCALES: [string, string][] = [
   ],
 ];
 
-export function ScalesDialog({
+export const ScalesDialog = ({
   open,
   onOpenChange,
 }: {
   open: boolean;
   onOpenChange: (v: boolean) => void;
-}) {
-  return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-h-[85vh] grid-rows-[auto_minmax(0,1fr)] sm:max-w-2xl">
-        <DialogHeader>
-          <DialogTitle>Skalen &amp; Quellen</DialogTitle>
-          <DialogDescription>
-            Wie die 1–5-Bewertungen und der Status je Zeitraum zustande kommen –
-            und woher die Daten stammen.
-          </DialogDescription>
-        </DialogHeader>
-        <div className="flex flex-col gap-4 overflow-y-auto pr-1 text-sm">
-          <section className="flex flex-col gap-2">
-            <h3 className="text-base font-semibold">
-              Woher kommen die 1–5-Bewertungen?
-            </h3>
-            <p className="text-muted-foreground">
-              Redaktionelle Einschätzungen aus dem allgemeinen Ruf der Pässe
-              (Radsport-Literatur, Grand-Tour-Historie, quaeldich.de,
-              climbbybike, Cyclingcols). Keine gemessenen Werte, keine
-              Nutzerbewertungen – zur groben Einordnung, nicht zum
-              Punktevergleich.
-            </p>
-            <dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-2">
-              {SCALES.map(([term, text]) => (
-                <div key={term} className="contents">
-                  <dt className="font-semibold">{term}</dt>
-                  <dd className="text-muted-foreground">{text}</dd>
-                </div>
-              ))}
-            </dl>
-          </section>
-          <section className="flex flex-col gap-2">
-            <h3 className="text-base font-semibold">Status je Zeitraum</h3>
-            <p className="text-muted-foreground">
-              Heuristik aus typischem Öffnungsfenster (halbmonatsgenau),
-              Passhöhe, Jahreszeit und der Klimareihe des Passes (Schnee- und
-              Frosttage je Halbmonat, ERA5-Land 2015–2024). Bewirtschaftete
-              Mautstraßen bekommen keinen Höhenabschlag, die Klimareihe gilt
-              aber auch für sie. Für Rundtouren gilt der schlechteste Status
-              ihrer Pässe. Ersetzt keine amtliche Sperrauskunft.
-            </p>
-            <p className="text-muted-foreground">
-              <b>Schneefall sperrt nichts.</b> Ab 20 % Schneefalltagen oder 80 %
-              Frostnächten im Halbmonat wird aus „meist offen“ ein
-              „wetterabhängig“: die Straße ist dann meist befahrbar, aber nicht
-              verlässlich planbar. „Oft gesperrt“ kommt ausschließlich aus dem
-              Öffnungsfenster. Im Detail steht unter dem Status der Grund in
-              einem Satz; „Beste Zeit“ ist der längste Abschnitt mit „meist
-              offen“ und weniger als 10 % Schneefalltagen.
-            </p>
-            <p className="text-muted-foreground">
-              Der Streifen aus 24 Zellen zeigt das ganze Jahr auf einen Blick:
-              gefüllt = meist offen bzw. wetterabhängig, hohl = oft gesperrt,
-              umrandet = der gewählte Halbmonat.
-            </p>
-          </section>
-          <section className="flex flex-col gap-2">
-            <h3 className="text-base font-semibold">Kartensymbole</h3>
-            <p className="text-muted-foreground">
-              <b>Kreis:</b> Pass – Farbe zeigt den Status, hohler Kreis = oft
-              gesperrt, Größe = Bekanntheit. <b>Stern:</b> gemerkt.{" "}
-              <b>Linie:</b> Rundtour (eigene Farbe) oder Auffahrt (Statusfarbe).{" "}
-              <b>Raute:</b> Rad-Ort.
-            </p>
-          </section>
-          <section className="flex flex-col gap-2">
-            <h3 className="text-base font-semibold">Daten</h3>
-            <p className="text-muted-foreground">
-              <b>Höhenprofil:</b> Open-Meteo Elevation (Copernicus DEM 90 m)
-              entlang der gerouteten Straße. <b>Wetter:</b>{" "}
-              Open-Meteo-Vorhersage auf Passhöhe, serverseitig
-              zwischengespeichert. <b>Klima:</b> Open-Meteo-Archiv (ERA5-Land
-              2015–2024) je Halbmonat; 10-km-Raster, auf Passhöhe tendenziell zu
-              mild. <b>Routen:</b> OpenRouteService (Rennrad-Profil) oder OSRM.{" "}
-              <b>3D:</b> Mapzen/AWS Terrain Tiles. Karten ©
-              OpenStreetMap-Mitwirkende.
-            </p>
-          </section>
-          <section className="flex flex-col gap-2">
-            <h3 className="text-base font-semibold">Hinweise</h3>
-            <p className="text-muted-foreground">
-              Höhen und Auffahrtsdaten sind gerundete Richtwerte. Schönheit,
-              Bekanntheit, Schwierigkeit und Verkehr sind redaktionelle
-              1–5-Einschätzungen. Der Status je Zeitraum ist eine Heuristik und
-              ersetzt keine amtliche Sperrauskunft. Die App dient der groben
-              Routenplanung, nicht der Navigation.
-            </p>
-          </section>
-        </div>
-      </DialogContent>
-    </Dialog>
-  );
-}
+}) => (
+  <Dialog open={open} onOpenChange={onOpenChange}>
+    <DialogContent className="max-h-[85vh] grid-rows-[auto_minmax(0,1fr)] sm:max-w-2xl">
+      <DialogHeader>
+        <DialogTitle>Skalen &amp; Quellen</DialogTitle>
+        <DialogDescription>
+          Wie die 1–5-Bewertungen und der Status je Zeitraum zustande kommen –
+          und woher die Daten stammen.
+        </DialogDescription>
+      </DialogHeader>
+      <div className="flex flex-col gap-4 overflow-y-auto pr-1 text-sm">
+        <section className="flex flex-col gap-2">
+          <h3 className="text-base font-semibold">
+            Woher kommen die 1–5-Bewertungen?
+          </h3>
+          <p className="text-muted-foreground">
+            Redaktionelle Einschätzungen aus dem allgemeinen Ruf der Pässe
+            (Radsport-Literatur, Grand-Tour-Historie, quaeldich.de, climbbybike,
+            Cyclingcols). Keine gemessenen Werte, keine Nutzerbewertungen – zur
+            groben Einordnung, nicht zum Punktevergleich.
+          </p>
+          <dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-2">
+            {SCALES.map(([term, text]) => (
+              <div key={term} className="contents">
+                <dt className="font-semibold">{term}</dt>
+                <dd className="text-muted-foreground">{text}</dd>
+              </div>
+            ))}
+          </dl>
+        </section>
+        <section className="flex flex-col gap-2">
+          <h3 className="text-base font-semibold">Status je Zeitraum</h3>
+          <p className="text-muted-foreground">
+            Heuristik aus typischem Öffnungsfenster (halbmonatsgenau), Passhöhe,
+            Jahreszeit und der Klimareihe des Passes (Schnee- und Frosttage je
+            Halbmonat, ERA5-Land 2015–2024). Bewirtschaftete Mautstraßen
+            bekommen keinen Höhenabschlag, die Klimareihe gilt aber auch für
+            sie. Für Rundtouren gilt der schlechteste Status ihrer Pässe.
+            Ersetzt keine amtliche Sperrauskunft.
+          </p>
+          <p className="text-muted-foreground">
+            <b>Schneefall sperrt nichts.</b> Ab 20 % Schneefalltagen oder 80 %
+            Frostnächten im Halbmonat wird aus „meist offen“ ein
+            „wetterabhängig“: die Straße ist dann meist befahrbar, aber nicht
+            verlässlich planbar. „Oft gesperrt“ kommt ausschließlich aus dem
+            Öffnungsfenster. Im Detail steht unter dem Status der Grund in einem
+            Satz; „Beste Zeit“ ist der längste Abschnitt mit „meist offen“ und
+            weniger als 10 % Schneefalltagen.
+          </p>
+          <p className="text-muted-foreground">
+            Der Streifen aus 24 Zellen zeigt das ganze Jahr auf einen Blick:
+            gefüllt = meist offen bzw. wetterabhängig, hohl = oft gesperrt,
+            umrandet = der gewählte Halbmonat.
+          </p>
+        </section>
+        <section className="flex flex-col gap-2">
+          <h3 className="text-base font-semibold">Kartensymbole</h3>
+          <p className="text-muted-foreground">
+            <b>Kreis:</b> Pass – Farbe zeigt den Status, hohler Kreis = oft
+            gesperrt, Größe = Bekanntheit. <b>Stern:</b> gemerkt. <b>Linie:</b>{" "}
+            Rundtour (eigene Farbe) oder Auffahrt (Statusfarbe). <b>Raute:</b>{" "}
+            Rad-Ort.
+          </p>
+        </section>
+        <section className="flex flex-col gap-2">
+          <h3 className="text-base font-semibold">Daten</h3>
+          <p className="text-muted-foreground">
+            <b>Höhenprofil:</b> Open-Meteo Elevation (Copernicus DEM 90 m)
+            entlang der gerouteten Straße. <b>Wetter:</b> Open-Meteo-Vorhersage
+            auf Passhöhe, serverseitig zwischengespeichert. <b>Klima:</b>{" "}
+            Open-Meteo-Archiv (ERA5-Land 2015–2024) je Halbmonat; 10-km-Raster,
+            auf Passhöhe tendenziell zu mild. <b>Routen:</b> OpenRouteService
+            (Rennrad-Profil) oder OSRM. <b>3D:</b> Mapzen/AWS Terrain Tiles.
+            Karten © OpenStreetMap-Mitwirkende.
+          </p>
+        </section>
+        <section className="flex flex-col gap-2">
+          <h3 className="text-base font-semibold">Hinweise</h3>
+          <p className="text-muted-foreground">
+            Höhen und Auffahrtsdaten sind gerundete Richtwerte. Schönheit,
+            Bekanntheit, Schwierigkeit und Verkehr sind redaktionelle
+            1–5-Einschätzungen. Der Status je Zeitraum ist eine Heuristik und
+            ersetzt keine amtliche Sperrauskunft. Die App dient der groben
+            Routenplanung, nicht der Navigation.
+          </p>
+        </section>
+      </div>
+    </DialogContent>
+  </Dialog>
+);

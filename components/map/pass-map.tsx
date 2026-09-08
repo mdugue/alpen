@@ -80,8 +80,8 @@ interface Props {
   children?: React.ReactNode;
 }
 
-const EMPTY = { type: "FeatureCollection", features: [] } as const;
-const TERRAIN = { source: "dem", exaggeration: 1.25 } as const;
+const EMPTY = { features: [], type: "FeatureCollection" } as const;
+const TERRAIN = { exaggeration: 1.25, source: "dem" } as const;
 
 // MapLibre resolves its worker via import.meta.url, which Turbopack does not
 // serve; scripts/copy-maplibre-worker.ts places a copy under public/maplibre.
@@ -92,7 +92,7 @@ setWorkerUrl("/maplibre/maplibre-gl-worker.mjs");
  * Browsers hand back computed custom properties in `lab()` notation, which
  * MapLibre cannot parse; painting one pixel and reading it back yields sRGB.
  */
-function toRgb(color: string, fallback: string): string {
+const toRgb = (color: string, fallback: string): string => {
   const canvas = document.createElement("canvas");
   canvas.width = 1;
   canvas.height = 1;
@@ -108,41 +108,41 @@ function toRgb(color: string, fallback: string): string {
   return a === 255
     ? `rgb(${r}, ${g}, ${b})`
     : `rgba(${r}, ${g}, ${b}, ${((a ?? 0) / 255).toFixed(3)})`;
-}
+};
 
 /** Read colour values from the theme tokens – MapLibre cannot use CSS variables. */
-function readColors(el: HTMLElement) {
+const readColors = (el: HTMLElement) => {
   const s = getComputedStyle(el);
   const v = (name: string, fallback: string) => {
     const raw = s.getPropertyValue(name).trim();
     return raw ? toRgb(raw, fallback) : fallback;
   };
   return {
-    open: v("--status-open", "#2e8b57"),
-    risky: v("--status-risky", "#d9932a"),
-    closed: v("--status-closed", "#c43d3d"),
-    town: v("--town", "#1f4e79"),
     accent: v("--accent", "#e8a33d"),
+    closed: v("--status-closed", "#c43d3d"),
     ink: v("--foreground", "#1b2430"),
+    open: v("--status-open", "#2e8b57"),
     paper: v("--card", "#ffffff"),
+    risky: v("--status-risky", "#d9932a"),
+    town: v("--town", "#1f4e79"),
   };
-}
+};
 
 /** Paints one icon on a fresh canvas and returns its pixels. */
-function draw(
+const draw = (
   paint: (ctx: CanvasRenderingContext2D, s: number) => void,
   size = 48,
-) {
+) => {
   const canvas = document.createElement("canvas");
   canvas.width = size;
   canvas.height = size;
   const ctx = canvas.getContext("2d")!;
   paint(ctx, size);
   return ctx.getImageData(0, 0, size, size);
-}
+};
 
 /** Star and diamond as canvas icons so that no font glyphs are needed. */
-function addIcons(map: MLMap, c: ReturnType<typeof readColors>) {
+const addIcons = (map: MLMap, c: ReturnType<typeof readColors>) => {
   const star = (fill: string, stroke: string) =>
     draw((ctx, s) => {
       ctx.beginPath();
@@ -181,13 +181,13 @@ function addIcons(map: MLMap, c: ReturnType<typeof readColors>) {
       ctx.strokeRect(-s * 0.26, -s * 0.26, s * 0.52, s * 0.52);
     }),
   );
-}
+};
 
 const escapeHtml = (s: string) =>
   s.replaceAll(
     /[&<>"']/gu,
     (c) =>
-      ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[
+      ({ '"': "&quot;", "&": "&amp;", "'": "&#39;", "<": "&lt;", ">": "&gt;" })[
         c
       ]!,
   );
@@ -197,7 +197,7 @@ const defined = <T extends object>(o: T): Partial<T> =>
     Object.entries(o).filter(([, v]) => v !== undefined && !Number.isNaN(v)),
   ) as Partial<T>;
 
-export function PassMap({
+export const PassMap = ({
   passes,
   allPasses,
   tours,
@@ -211,7 +211,7 @@ export function PassMap({
   insetLeft = 0,
   insetBottom = 0,
   children,
-}: Props) {
+}: Props) => {
   const container = useRef<HTMLDivElement>(null);
   const map = useRef<MLMap | null>(null);
   const [ready, setReady] = useState(false);
@@ -261,129 +261,87 @@ export function PassMap({
     ] as never;
 
     const style: StyleSpecification = {
-      version: 8,
       glyphs: "https://fonts.openmaptiles.org/{fontstack}/{range}.pbf",
-      sources: {
-        dem: {
-          type: "raster-dem",
-          tiles: [
-            "https://s3.amazonaws.com/elevation-tiles-prod/terrarium/{z}/{x}/{y}.png",
-          ],
-          encoding: "terrarium",
-          tileSize: 256,
-          maxzoom: 15,
-          attribution: "Terrain © Mapzen/AWS",
-        },
-        ...Object.fromEntries(
-          bases.map((b) => [
-            b.id,
-            {
-              type: "raster",
-              tiles: b.tiles,
-              tileSize: 256,
-              maxzoom: b.maxzoom,
-              attribution: b.attribution,
-            },
-          ]),
-        ),
-        ...Object.fromEntries(
-          OVERLAYS.map((o) => [
-            `ov-${o.id}`,
-            {
-              type: "raster",
-              tiles: [...o.tiles],
-              tileSize: 256,
-              maxzoom: o.maxzoom,
-              attribution: o.attribution,
-            },
-          ]),
-        ),
-        routes: { type: "geojson", data: EMPTY, promoteId: "id" },
-        tours: { type: "geojson", data: EMPTY },
-        passes: { type: "geojson", data: EMPTY },
-        towns: { type: "geojson", data: EMPTY },
-      } as StyleSpecification["sources"],
       layers: [
         {
           id: "base",
-          type: "raster",
           source: bases.some((b) => b.id === base) ? base : "osm",
+          type: "raster",
         },
         {
           id: "hillshade",
-          type: "hillshade",
-          source: "dem",
           layout: {
             visibility: overlays.includes("hillshade") ? "visible" : "none",
           },
           paint: { "hillshade-exaggeration": 0.3 },
+          source: "dem",
+          type: "hillshade",
         },
         ...OVERLAYS.map((o) => ({
           id: `ov-${o.id}`,
-          type: "raster" as const,
-          source: `ov-${o.id}`,
           layout: {
             visibility: overlays.includes(o.id)
               ? ("visible" as const)
               : ("none" as const),
           },
           paint: { "raster-opacity": o.opacity },
+          source: `ov-${o.id}`,
+          type: "raster" as const,
         })),
         {
           id: "tours-casing",
-          type: "line",
-          source: "tours",
           layout: { "line-cap": "round", "line-join": "round" },
           paint: {
             "line-color": colors.paper,
-            "line-width": 6,
             "line-opacity": 0.55,
+            "line-width": 6,
           },
+          source: "tours",
+          type: "line",
         },
         {
           id: "tours",
-          type: "line",
-          source: "tours",
           layout: { "line-cap": "round", "line-join": "round" },
           paint: {
             "line-color": ["get", "color"],
-            "line-width": ["case", ["==", ["get", "selected"], 1], 5, 3],
             "line-opacity": 0.85,
+            "line-width": ["case", ["==", ["get", "selected"], 1], 5, 3],
           },
+          source: "tours",
+          type: "line",
         },
         {
           id: "routes",
-          type: "line",
-          source: "routes",
           layout: { "line-cap": "round", "line-join": "round" },
           paint: {
             "line-color": routeColor,
-            "line-width": ["case", routeSelected, 6, 3.5],
             "line-opacity": ["case", routeSelected, 1, 0.85],
+            "line-width": ["case", routeSelected, 6, 3.5],
           },
+          source: "routes",
+          type: "line",
         },
         {
           id: "tours-label",
-          type: "symbol",
-          source: "tours",
           layout: {
             "symbol-placement": "line",
+            "symbol-spacing": 600,
             "text-field": ["get", "name"],
             "text-font": ["Open Sans Semibold"],
             "text-size": 11,
-            "symbol-spacing": 600,
           },
           paint: {
             "text-color": ["get", "color"],
             "text-halo-color": colors.paper,
             "text-halo-width": 1.5,
           },
+          source: "tours",
+          type: "symbol",
         },
         {
           id: "towns",
-          type: "symbol",
-          source: "towns",
           layout: {
+            "icon-allow-overlap": true,
             "icon-image": [
               "case",
               ["==", ["get", "favorite"], 1],
@@ -391,43 +349,33 @@ export function PassMap({
               "town",
             ],
             "icon-size": ["case", ["==", ["get", "favorite"], 1], 0.62, 0.5],
-            "icon-allow-overlap": true,
           },
+          source: "towns",
+          type: "symbol",
         },
         {
           id: "towns-label",
-          type: "symbol",
-          source: "towns",
-          minzoom: 8,
           layout: {
             "text-field": ["get", "name"],
             "text-font": ["Open Sans Italic"],
+            "text-justify": "auto",
+            "text-radial-offset": 0.8,
             "text-size": 11,
             "text-variable-anchor": ["left", "right", "top", "bottom"],
-            "text-radial-offset": 0.8,
-            "text-justify": "auto",
           },
+          minzoom: 8,
           paint: {
             "text-color": colors.town,
             "text-halo-color": colors.paper,
             "text-halo-width": 1.5,
           },
+          source: "towns",
+          type: "symbol",
         },
         {
-          id: "passes",
-          type: "circle",
-          source: "passes",
           filter: ["!=", ["get", "favorite"], 1],
+          id: "passes",
           paint: {
-            "circle-radius": [
-              "interpolate",
-              ["linear"],
-              ["zoom"],
-              6,
-              ["+", 2, ["*", 1.1, ["get", "fame"]]],
-              12,
-              ["+", 4, ["*", 1.8, ["get", "fame"]]],
-            ],
             // "closed" is additionally encoded as a hollow circle so that the
             // three states do not rely on hue alone.
             "circle-color": [
@@ -443,6 +391,16 @@ export function PassMap({
               ["==", ["get", "fame"], 3],
               0.8,
               0.62,
+            ],
+            "circle-pitch-alignment": "map",
+            "circle-radius": [
+              "interpolate",
+              ["linear"],
+              ["zoom"],
+              6,
+              ["+", 2, ["*", 1.1, ["get", "fame"]]],
+              12,
+              ["+", 4, ["*", 1.8, ["get", "fame"]]],
             ],
             "circle-stroke-color": [
               "case",
@@ -460,15 +418,15 @@ export function PassMap({
               2.5,
               1.5,
             ],
-            "circle-pitch-alignment": "map",
           },
+          source: "passes",
+          type: "circle",
         },
         {
-          id: "pass-stars",
-          type: "symbol",
-          source: "passes",
           filter: ["==", ["get", "favorite"], 1],
+          id: "pass-stars",
           layout: {
+            "icon-allow-overlap": true,
             "icon-image": [
               "concat",
               "star-",
@@ -477,8 +435,9 @@ export function PassMap({
               ["to-string", ["get", "selected"]],
             ],
             "icon-size": ["interpolate", ["linear"], ["zoom"], 6, 0.5, 12, 0.9],
-            "icon-allow-overlap": true,
           },
+          source: "passes",
+          type: "symbol",
         },
         // Labels staggered by prominence; MapLibre resolves collisions
         ...(
@@ -490,10 +449,6 @@ export function PassMap({
             [1, 10.5],
           ] as const
         ).map(([fame, minzoom]) => ({
-          id: `pass-label-${fame}`,
-          type: "symbol" as const,
-          source: "passes",
-          minzoom,
           filter:
             fame === 5
               ? ([
@@ -508,23 +463,68 @@ export function PassMap({
                   ["!=", ["get", "selected"], 1],
                   ["!=", ["get", "favorite"], 1],
                 ] as never),
+          id: `pass-label-${fame}`,
           layout: {
+            "symbol-sort-key": ["-", 6, ["get", "fame"]] as never,
             "text-field": ["get", "name"] as never,
             "text-font": ["Open Sans Semibold"],
+            "text-justify": "auto" as never,
+            "text-radial-offset": 1,
             "text-size": fame >= 5 ? 13 : fame <= 2 ? 11 : 12.5,
             "text-variable-anchor": ["left", "right", "top", "bottom"] as never,
-            "text-radial-offset": 1,
-            "text-justify": "auto" as never,
-            "symbol-sort-key": ["-", 6, ["get", "fame"]] as never,
           },
+          minzoom,
           paint: {
             "text-color": colors.ink,
             "text-halo-color": colors.paper,
             "text-halo-width": 1.6,
             "text-opacity": fame <= 2 ? 0.85 : 1,
           },
+          source: "passes",
+          type: "symbol" as const,
         })),
       ] as StyleSpecification["layers"],
+      sources: {
+        dem: {
+          attribution: "Terrain © Mapzen/AWS",
+          encoding: "terrarium",
+          maxzoom: 15,
+          tileSize: 256,
+          tiles: [
+            "https://s3.amazonaws.com/elevation-tiles-prod/terrarium/{z}/{x}/{y}.png",
+          ],
+          type: "raster-dem",
+        },
+        ...Object.fromEntries(
+          bases.map((b) => [
+            b.id,
+            {
+              attribution: b.attribution,
+              maxzoom: b.maxzoom,
+              tileSize: 256,
+              tiles: b.tiles,
+              type: "raster",
+            },
+          ]),
+        ),
+        ...Object.fromEntries(
+          OVERLAYS.map((o) => [
+            `ov-${o.id}`,
+            {
+              attribution: o.attribution,
+              maxzoom: o.maxzoom,
+              tileSize: 256,
+              tiles: [...o.tiles],
+              type: "raster",
+            },
+          ]),
+        ),
+        passes: { data: EMPTY, type: "geojson" },
+        routes: { data: EMPTY, promoteId: "id", type: "geojson" },
+        tours: { data: EMPTY, type: "geojson" },
+        towns: { data: EMPTY, type: "geojson" },
+      } as StyleSpecification["sources"],
+      version: 8,
     };
 
     // The hash is read here rather than taken from props: this effect runs
@@ -532,23 +532,23 @@ export function PassMap({
     const view = { ...DEFAULT_VIEW, ...defined(readHash().view) };
     const coarse = window.matchMedia("(pointer: coarse)").matches;
     const m = new MLMap({
-      container: container.current,
-      style,
-      center: [view.lon, view.lat],
-      zoom: view.zoom,
-      pitch: view.pitch,
-      bearing: view.bearing,
-      maxPitch: 75,
       attributionControl: { compact: true },
+      bearing: view.bearing,
+      center: [view.lon, view.lat],
+      container: container.current,
       locale: {
+        "AttributionControl.ToggleAttribution": "Quellenangaben",
         "Map.Title": "Karte",
+        "NavigationControl.ResetBearing": "Nach Norden ausrichten",
         "NavigationControl.ZoomIn": "Vergrößern",
         "NavigationControl.ZoomOut": "Verkleinern",
-        "NavigationControl.ResetBearing": "Nach Norden ausrichten",
-        "AttributionControl.ToggleAttribution": "Quellenangaben",
-        "ScaleControl.Meters": "m",
         "ScaleControl.Kilometers": "km",
+        "ScaleControl.Meters": "m",
       },
+      maxPitch: 75,
+      pitch: view.pitch,
+      style,
+      zoom: view.zoom,
     });
     map.current = m;
     // Test hook for the e2e suite (never in a production build).
@@ -556,7 +556,7 @@ export function PassMap({
       (window as unknown as { __alpen?: { map: MLMap } }).__alpen = { map: m };
     }
     m.addControl(
-      new NavigationControl({ visualizePitch: true, showZoom: !coarse }),
+      new NavigationControl({ showZoom: !coarse, visualizePitch: true }),
       "bottom-right",
     );
     m.addControl(new ScaleControl({ unit: "metric" }), "bottom-left");
@@ -618,11 +618,11 @@ export function PassMap({
     m.on("moveend", () => {
       const c = m.getCenter();
       onViewChangeRef.current({
+        bearing: m.getBearing(),
         lat: c.lat,
         lon: c.lng,
-        zoom: m.getZoom(),
         pitch: m.getPitch(),
-        bearing: m.getBearing(),
+        zoom: m.getZoom(),
       });
     });
 
@@ -645,20 +645,20 @@ export function PassMap({
     const m = map.current;
     if (!m || !ready || !requestedView) return;
     m.jumpTo({
-      center: [requestedView.lon, requestedView.lat],
-      zoom: requestedView.zoom,
-      pitch: requestedView.pitch,
       bearing: requestedView.bearing,
+      center: [requestedView.lon, requestedView.lat],
+      pitch: requestedView.pitch,
+      zoom: requestedView.zoom,
     });
   }, [requestedView, ready]);
 
   // --- Reserve space for the mobile sheet ---------------------------------
   useEffect(() => {
     map.current?.setPadding({
-      top: 0,
+      bottom: insetBottom,
       left: insetLeft,
       right: 0,
-      bottom: insetBottom,
+      top: 0,
     });
   }, [insetLeft, insetBottom, ready]);
 
@@ -670,29 +670,29 @@ export function PassMap({
     const m = map.current;
     if (!m || !ready) return;
     (m.getSource("routes") as GeoJSONSource | undefined)?.setData({
-      type: "FeatureCollection",
       features: allPasses.flatMap((p) =>
         p.ascents.flatMap((a, i) => {
           const geom = routes[`${p.slug}:${i}`];
           if (!geom) return [];
           return [
             {
-              type: "Feature" as const,
               geometry: {
-                type: "LineString" as const,
                 coordinates: geom.map(([lat, lon]) => [lon, lat]),
+                type: "LineString" as const,
               },
               properties: {
                 id: `${p.slug}:${i}`,
                 kind: "route",
-                slug: p.slug,
                 name: p.name,
+                slug: p.slug,
                 subtitle: `Auffahrt ab ${a.label}`,
               },
+              type: "Feature" as const,
             },
           ];
         }),
       ),
+      type: "FeatureCollection",
     });
   }, [allPasses, routes, ready]);
 
@@ -709,8 +709,8 @@ export function PassMap({
     for (const p of passes)
       for (const [i] of p.ascents.entries())
         m.setFeatureState(
-          { source: "routes", id: `${p.slug}:${i}` },
-          { status: p.status, selected: p.slug === selPass ? 1 : 0 },
+          { id: `${p.slug}:${i}`, source: "routes" },
+          { selected: p.slug === selPass ? 1 : 0, status: p.status },
         );
   }, [passes, selection, ready]);
 
@@ -721,60 +721,60 @@ export function PassMap({
 
     const selPass = selection?.kind === "pass" ? selection.slug : null;
     (m.getSource("passes") as GeoJSONSource | undefined)?.setData({
-      type: "FeatureCollection",
       features: passes.map((p) => ({
-        type: "Feature",
-        geometry: { type: "Point", coordinates: [p.lon, p.lat] },
+        geometry: { coordinates: [p.lon, p.lat], type: "Point" },
         properties: {
-          kind: "pass",
-          slug: p.slug,
-          name: p.name,
-          subtitle: `${p.elevation.toLocaleString("de-DE")} m`,
           fame: p.fame,
-          status: p.status,
           favorite: p.favorite ? 1 : 0,
+          kind: "pass",
+          name: p.name,
           selected: p.slug === selPass ? 1 : 0,
+          slug: p.slug,
+          status: p.status,
+          subtitle: `${p.elevation.toLocaleString("de-DE")} m`,
         },
+        type: "Feature",
       })),
+      type: "FeatureCollection",
     });
 
     (m.getSource("tours") as GeoJSONSource | undefined)?.setData({
-      type: "FeatureCollection",
       features: tours
         .filter((t) => t.visible && t.geometry?.length)
         .map((t) => ({
-          type: "Feature",
           geometry: {
-            type: "LineString",
             coordinates: t.geometry.map(([lat, lon]) => [lon, lat]),
+            type: "LineString",
           },
           properties: {
-            kind: "tour",
-            slug: t.slug,
-            name: t.name,
-            subtitle: `ca. ${t.km} km · ${t.elevationGain.toLocaleString("de-DE")} hm`,
             color: t.color,
+            kind: "tour",
+            name: t.name,
             selected:
               selection?.kind === "tour" && selection.slug === t.slug ? 1 : 0,
+            slug: t.slug,
+            subtitle: `ca. ${t.km} km · ${t.elevationGain.toLocaleString("de-DE")} hm`,
           },
+          type: "Feature",
         })),
+      type: "FeatureCollection",
     });
 
     (m.getSource("towns") as GeoJSONSource | undefined)?.setData({
-      type: "FeatureCollection",
       features: showTowns
         ? towns.map((t) => ({
-            type: "Feature",
-            geometry: { type: "Point", coordinates: [t.lon, t.lat] },
+            geometry: { coordinates: [t.lon, t.lat], type: "Point" },
             properties: {
-              kind: "town",
-              slug: t.slug,
-              name: t.name,
-              subtitle: "Rad-Ort",
               favorite: t.favorite ? 1 : 0,
+              kind: "town",
+              name: t.name,
+              slug: t.slug,
+              subtitle: "Rad-Ort",
             },
+            type: "Feature",
           }))
         : [],
+      type: "FeatureCollection",
     });
   }, [passes, tours, towns, showTowns, selection, ready]);
 
@@ -791,16 +791,16 @@ export function PassMap({
       if (p)
         m.flyTo({
           center: [p.lon, p.lat],
-          zoom: Math.max(m.getZoom(), 11),
           duration,
+          zoom: Math.max(m.getZoom(), 11),
         });
     } else if (selection.kind === "town") {
       const t = towns.find((x) => x.slug === selection.slug);
       if (t)
         m.flyTo({
           center: [t.lon, t.lat],
-          zoom: Math.max(m.getZoom(), 10.5),
           duration,
+          zoom: Math.max(m.getZoom(), 10.5),
         });
     } else {
       const t = tours.find((x) => x.slug === selection.slug);
@@ -810,7 +810,7 @@ export function PassMap({
       if (line?.length) {
         const b = new LngLatBounds();
         for (const [lat, lon] of line) b.extend([lon, lat]);
-        m.fitBounds(b, { padding: 60, duration });
+        m.fitBounds(b, { duration, padding: 60 });
       }
     }
     // oxlint-disable-next-line react/exhaustive-deps
@@ -822,10 +822,10 @@ export function PassMap({
     setIs3d(pressed);
     if (pressed) {
       m.setTerrain(TERRAIN);
-      m.easeTo({ pitch: 60, duration: 700 });
+      m.easeTo({ duration: 700, pitch: 60 });
     } else {
       m.setTerrain(null);
-      m.easeTo({ pitch: 0, bearing: 0, duration: 600 });
+      m.easeTo({ bearing: 0, duration: 600, pitch: 0 });
     }
   };
 
@@ -834,7 +834,7 @@ export function PassMap({
     const m = map.current;
     if (!m) return;
     m.removeLayer("base");
-    m.addLayer({ id: "base", type: "raster", source: id }, "hillshade");
+    m.addLayer({ id: "base", source: id, type: "raster" }, "hillshade");
   };
 
   const toggleOverlay = (id: string) => {
@@ -871,14 +871,14 @@ export function PassMap({
         .distanceTo(LngLat.convert(target.center as [number, number])) < 2000;
     if (!target || alreadyFitted) {
       m.flyTo({
-        center: [DEFAULT_VIEW.lon, DEFAULT_VIEW.lat],
-        zoom: DEFAULT_VIEW.zoom,
-        pitch: 0,
         bearing: 0,
+        center: [DEFAULT_VIEW.lon, DEFAULT_VIEW.lat],
         duration: 800,
+        pitch: 0,
+        zoom: DEFAULT_VIEW.zoom,
       });
     } else {
-      m.fitBounds(b, { padding: 48, duration: 800 });
+      m.fitBounds(b, { duration: 800, padding: 48 });
     }
   };
 
@@ -997,4 +997,4 @@ export function PassMap({
       </div>
     </div>
   );
-}
+};

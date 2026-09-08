@@ -38,17 +38,17 @@ export const siteUrl =
 
 /** sRGB equivalents of the light-theme tokens in app/globals.css. */
 export const BRAND = {
-  paper: "#fbfaf7",
-  ink: "#2b2a27",
-  primary: "#2f3d55",
-  muted: "#8a8275",
   accent: "#e8b45a",
+  ink: "#2b2a27",
+  muted: "#8a8275",
   /** --background in the dark theme, used as the dark browser chrome colour. */
   night: "#1a1c22",
+  paper: "#fbfaf7",
+  primary: "#2f3d55",
   status: {
+    closed: "#c0463e",
     open: "#4a9a6a",
     risky: "#e0a93f",
-    closed: "#c0463e",
   },
 } as const;
 
@@ -68,6 +68,8 @@ export const MARK = {
   ground: "linear-gradient(155deg, #2b2724, #151312)",
   /** Flat equivalent for anywhere a gradient cannot go. */
   groundFlat: "#211f1c",
+  /** Corner radius wherever the badge is drawn as a rounded square. */
+  radius: "22%",
   /**
    * Back to front. The two distant ridges run off the sides on purpose – they
    * are clipped by the viewBox at every size, so they never end in mid-air.
@@ -78,6 +80,4 @@ export const MARK = {
     { d: "M28 40 L50 84 L6 84 Z", fill: "#736d66" },
     { d: "M64 22 L96 84 L32 84 Z", fill: BRAND.paper },
   ],
-  /** Corner radius wherever the badge is drawn as a rounded square. */
-  radius: "22%",
 } as const;

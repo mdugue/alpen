@@ -13,9 +13,9 @@ interface State<T> {
  */
 export default function useFetch<T>(url: string | null) {
   const [state, setState] = useState<State<T>>({
-    url: null,
     data: null,
     error: null,
+    url: null,
   });
 
   useEffect(() => {
@@ -26,13 +26,13 @@ export default function useFetch<T>(url: string | null) {
       try {
         const r = await fetch(url);
         next = r.ok
-          ? { url, data: (await r.json()) as T, error: null }
-          : { url, data: null, error: new Error(String(r.status)) };
+          ? { data: (await r.json()) as T, error: null, url }
+          : { data: null, error: new Error(String(r.status)), url };
       } catch (error) {
         next = {
-          url,
           data: null,
           error: error instanceof Error ? error : new Error(String(error)),
+          url,
         };
       }
       if (!cancelled) setState(next);

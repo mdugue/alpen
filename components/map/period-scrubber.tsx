@@ -38,7 +38,7 @@ import { cn, PANEL } from "@/lib/utils";
 const percent = (part: number, total: number) =>
   total === 0 ? 0 : (part / total) * 100;
 
-export function PeriodScrubber({
+export const PeriodScrubber = ({
   value,
   onChange,
   histogram,
@@ -49,7 +49,7 @@ export function PeriodScrubber({
   histogram: HistogramBar[];
   /** Today's half-month, marked on the rail. */
   today?: Period;
-}) {
+}) => {
   const track = useRef<HTMLDivElement>(null);
   const index = periodIndex(value);
   const max = Math.max(1, ...histogram.map((b) => b.open + b.risky + b.closed));
@@ -69,8 +69,8 @@ export function PeriodScrubber({
 
   const onKeyDown = (e: React.KeyboardEvent) => {
     const step: Record<string, number> = {
-      ArrowLeft: -1,
       ArrowDown: -1,
+      ArrowLeft: -1,
       ArrowRight: 1,
       ArrowUp: 1,
       PageDown: -2,
@@ -228,4 +228,4 @@ export function PeriodScrubber({
       </div>
     </div>
   );
-}
+};

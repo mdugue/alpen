@@ -18,20 +18,20 @@ import { todayPeriod } from "@/lib/status";
 const jsonLd = {
   "@context": "https://schema.org",
   "@type": "WebApplication",
-  name: SITE_NAME,
-  url: siteUrl,
-  description: SITE_DESCRIPTION,
+  about: { "@type": "Place", name: "Alpen" },
   applicationCategory: "TravelApplication",
-  browserRequirements: "Requires JavaScript and WebGL.",
-  inLanguage: "de",
-  isAccessibleForFree: true,
-  offers: { "@type": "Offer", price: 0, priceCurrency: "EUR" },
   author: {
     "@type": "Person",
     name: "Manuel Dugué",
     url: "https://manuel.fyi",
   },
-  about: { "@type": "Place", name: "Alpen" },
+  browserRequirements: "Requires JavaScript and WebGL.",
+  description: SITE_DESCRIPTION,
+  inLanguage: "de",
+  isAccessibleForFree: true,
+  name: SITE_NAME,
+  offers: { "@type": "Offer", price: 0, priceCurrency: "EUR" },
+  url: siteUrl,
 };
 
 /**
@@ -49,7 +49,7 @@ const jsonLd = {
  * of some other period. A hash or the visitor's stored choice wins over it in
  * the client (see `Explorer`).
  */
-export default async function Page() {
+const Page = async () => {
   "use cache";
 
   const [passes, tours, towns, routes, profiles, climate] = await Promise.all([
@@ -78,4 +78,6 @@ export default async function Page() {
       />
     </main>
   );
-}
+};
+
+export default Page;

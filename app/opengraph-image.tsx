@@ -25,7 +25,7 @@ import { fmt } from "@/lib/utils";
 const PERIOD = 10.5;
 
 export const alt = `${SITE_NAME} – welche Pässe, Touren und Rad-Orte sind wann mit dem Rennrad befahrbar?`;
-export const size = { width: 1200, height: 630 };
+export const size = { height: 630, width: 1200 };
 export const contentType = "image/png";
 
 const oxaniumBold = await readFile(
@@ -36,7 +36,7 @@ const oxaniumMedium = await readFile(
 );
 
 /** Equirectangular projection into the right two thirds of the canvas. */
-const box = { x: 400, y: 70, w: 740, h: 500 };
+const box = { h: 500, w: 740, x: 400, y: 70 };
 
 export default function Image() {
   const lats = (passes as Pass[]).map((p) => p.lat);
@@ -51,10 +51,10 @@ export default function Image() {
   const dy = box.y + (box.h - (lat1 - lat0) * scale) / 2;
   const dots = (passes as Pass[])
     .map((p) => ({
+      r: 4.5 + p.fame * 2,
+      status: passStatus(p, PERIOD),
       x: dx + (p.lon - lon0) * kx * scale,
       y: dy + (lat1 - p.lat) * scale,
-      status: passStatus(p, PERIOD),
-      r: 4.5 + p.fame * 2,
     }))
     // Small dots first, so the famous passes stay readable on top.
     .toSorted((a, b) => a.r - b.r);
@@ -69,20 +69,20 @@ export default function Image() {
   return new ImageResponse(
     <div
       style={{
-        width: "100%",
-        height: "100%",
-        display: "flex",
         background: BRAND.paper,
-        fontFamily: "Oxanium",
         color: BRAND.ink,
+        display: "flex",
+        fontFamily: "Oxanium",
+        height: "100%",
         position: "relative",
+        width: "100%",
       }}
     >
       <svg
         width={size.width}
         height={size.height}
         viewBox={`0 0 ${size.width} ${size.height}`}
-        style={{ position: "absolute", left: 0, top: 0 }}
+        style={{ left: 0, position: "absolute", top: 0 }}
       >
         {dots.map((d, i) => (
           <circle
@@ -99,23 +99,23 @@ export default function Image() {
 
       <div
         style={{
-          position: "absolute",
-          left: 72,
-          top: 68,
           display: "flex",
           flexDirection: "column",
+          left: 72,
+          position: "absolute",
+          top: 68,
           width: 330,
         }}
       >
         <MarkBadge size={62} />
         <div
           style={{
-            marginTop: 22,
+            color: BRAND.primary,
             fontSize: 54,
             fontWeight: 700,
             letterSpacing: 3,
             lineHeight: 1,
-            color: BRAND.primary,
+            marginTop: 22,
             textTransform: "uppercase",
           }}
         >
@@ -123,21 +123,21 @@ export default function Image() {
         </div>
         <div
           style={{
-            marginTop: 20,
+            color: BRAND.ink,
             fontSize: 30,
             fontWeight: 500,
             lineHeight: 1.3,
-            color: BRAND.ink,
+            marginTop: 20,
           }}
         >
           Welche Region lohnt sich wann?
         </div>
         <div
           style={{
-            marginTop: 14,
+            color: BRAND.muted,
             fontSize: 20,
             fontWeight: 500,
-            color: BRAND.muted,
+            marginTop: 14,
           }}
         >
           {counts}
@@ -146,35 +146,35 @@ export default function Image() {
 
       <div
         style={{
-          position: "absolute",
-          left: 72,
           bottom: 64,
+          color: BRAND.muted,
           display: "flex",
           flexDirection: "column",
-          gap: 10,
           fontSize: 21,
           fontWeight: 500,
-          color: BRAND.muted,
+          gap: 10,
+          left: 72,
+          position: "absolute",
         }}
       >
         <div
           style={{
-            display: "flex",
             alignItems: "center",
-            gap: 12,
-            marginBottom: 4,
-            fontSize: 17,
-            letterSpacing: 2,
-            textTransform: "uppercase",
             color: BRAND.ink,
+            display: "flex",
+            fontSize: 17,
+            gap: 12,
+            letterSpacing: 2,
+            marginBottom: 4,
+            textTransform: "uppercase",
           }}
         >
           <div
             style={{
-              width: 26,
-              height: 4,
-              borderRadius: 999,
               background: BRAND.accent,
+              borderRadius: 999,
+              height: 4,
+              width: 26,
             }}
           />
           <span>{periodLabel(PERIOD)}</span>
@@ -182,14 +182,14 @@ export default function Image() {
         {(["open", "risky", "closed"] as Status[]).map((s) => (
           <div
             key={s}
-            style={{ display: "flex", alignItems: "center", gap: 12 }}
+            style={{ alignItems: "center", display: "flex", gap: 12 }}
           >
             <div
               style={{
-                width: 14,
-                height: 14,
-                borderRadius: 999,
                 background: BRAND.status[s],
+                borderRadius: 999,
+                height: 14,
+                width: 14,
               }}
             />
             <span>{STATUS_LABEL[s]}</span>
@@ -200,8 +200,8 @@ export default function Image() {
     {
       ...size,
       fonts: [
-        { name: "Oxanium", data: oxaniumBold, weight: 700, style: "normal" },
-        { name: "Oxanium", data: oxaniumMedium, weight: 500, style: "normal" },
+        { data: oxaniumBold, name: "Oxanium", style: "normal", weight: 700 },
+        { data: oxaniumMedium, name: "Oxanium", style: "normal", weight: 500 },
       ],
     },
   );

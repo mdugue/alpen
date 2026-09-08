@@ -10,60 +10,60 @@ import {
 import type { Pass, Tour, Town } from "@/lib/types";
 
 const pass = (over: Partial<Pass> & { slug: string; name: string }): Pass => ({
+  ascents: [],
+  beauty: 5,
+  classicAscent: "",
   country: "IT",
-  region: "Zentralalpen",
+  difficulty: 5,
+  elevation: 2757,
+  fame: 5,
   lat: 46.5,
   lon: 10.4,
-  elevation: 2757,
-  classicAscent: "",
-  beauty: 5,
-  fame: 5,
-  difficulty: 5,
-  traffic: 4,
-  season: null,
   note: "",
-  ascents: [],
+  region: "Zentralalpen",
+  season: null,
+  traffic: 4,
   ...over,
 });
 
 /** The alias table from plan 05: what people type → which pass they mean. */
 const passes: Pass[] = [
   pass({
-    slug: "passo-dello-stelvio",
-    name: "Passo dello Stelvio",
     aliases: ["Stilfser Joch", "Stilfserjoch", "Stelvio"],
     ascents: [
       { from: { lat: 46.6, lon: 10.4 }, label: "Bormio" },
       { from: { lat: 46.6, lon: 10.5 }, label: "Prad (Nord)" },
     ],
+    name: "Passo dello Stelvio",
+    slug: "passo-dello-stelvio",
   }),
   pass({
-    slug: "grossglockner-hochalpenstrasse",
-    name: "Großglockner Hochalpenstraße",
     aliases: ["Grossglockner", "Glockner"],
     country: "AT",
+    name: "Großglockner Hochalpenstraße",
     region: "Ostalpen",
+    slug: "grossglockner-hochalpenstrasse",
   }),
   pass({
-    slug: "vrsic",
-    name: "Vršič",
     aliases: ["Werschetz"],
     country: "SI",
+    name: "Vršič",
     region: "Ostalpen",
+    slug: "vrsic",
   }),
   pass({
-    slug: "tre-cime-di-lavaredo",
-    name: "Tre Cime di Lavaredo",
     aliases: ["Drei Zinnen", "Auronzohütte"],
+    name: "Tre Cime di Lavaredo",
     region: "Dolomiten",
+    slug: "tre-cime-di-lavaredo",
   }),
   pass({
-    slug: "colle-dell-agnello",
-    name: "Colle dell'Agnello",
     aliases: ["Col Agnel"],
     country: "IT/FR",
-    region: "Westalpen",
+    name: "Colle dell'Agnello",
     note: "Der höchste Grenzpass. Zweiter Satz über Chianale.",
+    region: "Westalpen",
+    slug: "colle-dell-agnello",
   }),
 ];
 
@@ -120,22 +120,22 @@ describe("passHaystack", () => {
 
 describe("tourHaystack and townHaystack", () => {
   const tour: Tour = {
-    slug: "stelvio-runde",
-    name: "Stilfserjoch-Umbrail-Runde",
     color: "#000000",
-    km: 80,
+    description: "Ab Bormio",
     elevationGain: 2500,
+    km: 80,
+    name: "Stilfserjoch-Umbrail-Runde",
     passes: ["passo-dello-stelvio"],
     season: "",
-    description: "Ab Bormio",
+    slug: "stelvio-runde",
     waypoints: [],
   };
   const town: Town = {
-    slug: "bormio",
-    name: "Bormio",
     country: "IT",
     lat: 46.4,
     lon: 10.3,
+    name: "Bormio",
+    slug: "bormio",
     why: "Stelvio vor der Tür",
   };
   test("a tour is found through the names of its passes", () => {

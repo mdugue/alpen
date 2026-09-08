@@ -30,14 +30,14 @@ import type { ClimateYear, Period } from "@/lib/types";
  * of the chart is comparing periods, not reading absolute values.
  */
 const CHART_CONFIG = {
-  frostPct: { label: "Frost", color: "var(--muted-foreground)" },
-  snowPct: { label: "Schneefall", color: "var(--chart-4)" },
-  tmax: { label: "Ø Tag", color: "var(--chart-5)" },
-  tmin: { label: "Ø Nacht", color: "var(--chart-5)" },
+  frostPct: { color: "var(--muted-foreground)", label: "Frost" },
+  snowPct: { color: "var(--chart-4)", label: "Schneefall" },
+  tmax: { color: "var(--chart-5)", label: "Ø Tag" },
+  tmin: { color: "var(--chart-5)", label: "Ø Nacht" },
 } satisfies ChartConfig;
 
 /** "Frost 82 %", "Ø Tag 4 °C" – the unit follows the axis the series is on. */
-function formatValue(value: unknown, name?: number | string) {
+const formatValue = (value: unknown, name?: number | string) => {
   const key = name as keyof typeof CHART_CONFIG;
   const unit = key === "tmax" || key === "tmin" ? "°C" : "%";
   return (
@@ -50,22 +50,22 @@ function formatValue(value: unknown, name?: number | string) {
       </span>
     </span>
   );
-}
+};
 
-export function ClimateChart({
+export const ClimateChart = ({
   climate,
   period,
 }: {
   climate: ClimateYear;
   period: Period;
-}) {
+}) => {
   const data = PERIODS.map((t, i) => {
     const bucket = climate[i];
     return {
-      period: t,
+      frostPct: bucket?.frostPct ?? null,
       label: periodLabel(t),
       month: i % 2 === 0 ? MONTHS[i / 2]!.slice(0, 3) : "",
-      frostPct: bucket?.frostPct ?? null,
+      period: t,
       snowPct: bucket?.snowPct ?? null,
       tmax: bucket?.tmax ?? null,
       tmin: bucket?.tmin ?? null,
@@ -152,4 +152,4 @@ export function ClimateChart({
       </ComposedChart>
     </ChartContainer>
   );
-}
+};

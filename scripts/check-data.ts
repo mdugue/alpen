@@ -53,9 +53,9 @@ const explained: string[] = [];
 
 const HAND_MAINTAINED = ["passes.json", "tours.json", "towns.json"] as const;
 
-async function load<K extends keyof typeof FILES>(
+const load = async <K extends keyof typeof FILES>(
   file: K,
-): Promise<z.infer<(typeof FILES)[K]> | null> {
+): Promise<z.infer<(typeof FILES)[K]> | null> => {
   const f = Bun.file(new URL(file, DATA));
   // The gate's files appear with the first run that needs them.
   if (!(await f.exists())) return {} as z.infer<(typeof FILES)[K]>;
@@ -85,7 +85,7 @@ async function load<K extends keyof typeof FILES>(
     errors.push(`${file} › ${path || "(root)"}: ${issue.message}`);
   }
   return null;
-}
+};
 
 const [
   passes,
@@ -124,12 +124,12 @@ const days = (iso: string) =>
   Math.round((Date.now() - Date.parse(iso)) / 86_400_000);
 
 /** Shared by ascents and tours: judge what is stored, and note where it came from. */
-function inspect(
+const inspect = (
   key: string,
   label: string,
   metrics: RouteMetrics,
   reasons: string[],
-) {
+) => {
   const source = meta?.[key]?.source ?? "osrm";
   if (reasons.length)
     errors.push(
@@ -143,7 +143,7 @@ function inspect(
     explained.push(
       `${reasons.length ? "✗" : "·"} ${key.padEnd(36)} ${source.padEnd(4)} ${JSON.stringify(metrics)}${reasons.length ? `\n      ${reasons.join("\n      ")}` : ""}`,
     );
-}
+};
 
 // ── 3. References and completeness ──────────────────────────────────────────
 
@@ -155,7 +155,7 @@ const dupes = (list: { slug: string }[], what: string) => {
   }
 };
 
-function checkPasses(list: Pass[]) {
+const checkPasses = (list: Pass[]) => {
   dupes(list, "Pässe");
   // Folded names and aliases must be unique – search would find two passes.
   const names = new Map<string, string>();
@@ -210,9 +210,9 @@ function checkPasses(list: Pass[]) {
     if (climate && !(p.slug in climate))
       warnings.push(`${p.slug}: Klimareihe fehlt`);
   }
-}
+};
 
-function checkTours(list: Tour[], slugs: Set<string>) {
+const checkTours = (list: Tour[], slugs: Set<string>) => {
   dupes(list, "Touren");
   for (const t of list) {
     for (const s of t.passes)
@@ -227,11 +227,11 @@ function checkTours(list: Tour[], slugs: Set<string>) {
     const m = tourMetrics(geom, t.waypoints, t.km);
     inspect(key, `Tour ${t.name}`, m, checkTour(m, t.check));
   }
-}
+};
 
-function checkTowns(list: Town[]) {
+const checkTowns = (list: Town[]) => {
   dupes(list, "Orte");
-}
+};
 
 if (passes) checkPasses(passes);
 // Without a valid pass list every reference would read as unknown.

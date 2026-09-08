@@ -19,7 +19,7 @@ const CHECK = process.argv.includes("--check");
 export const schemaFileFor = (file: string) =>
   `${file.replace(/^generated\//u, "").replace(/\.json$/u, "")}.schema.json`;
 
-export function renderJsonSchema(file: keyof typeof FILES): string {
+export const renderJsonSchema = (file: keyof typeof FILES): string => {
   const json = z.toJSONSchema(FILES[file], {
     target: "draft-2020-12",
     // Refinements (season window, dist/ele length) have no JSON Schema
@@ -27,7 +27,7 @@ export function renderJsonSchema(file: keyof typeof FILES): string {
     unrepresentable: "any",
   });
   return `${JSON.stringify({ $id: schemaFileFor(file), ...json }, null, 2)}\n`;
-}
+};
 
 if (import.meta.main) {
   let stale = 0;

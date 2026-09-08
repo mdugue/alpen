@@ -77,7 +77,7 @@ const SNAP_PEEK = "4.5rem";
 const SNAP_POINTS = [SNAP_PEEK, 0.5, 0.82] as const;
 type Snap = (typeof SNAP_POINTS)[number];
 
-export function Explorer({
+export const Explorer = ({
   passes,
   tours,
   towns,
@@ -85,7 +85,7 @@ export function Explorer({
   profiles,
   climate,
   defaultPeriod,
-}: Props) {
+}: Props) => {
   const [filters, setFilters] = useState<Filters>({
     ...DEFAULT_FILTERS,
     period: defaultPeriod,
@@ -173,18 +173,18 @@ export function Explorer({
 
   const mapPasses: MapPass[] = passRows.map(({ pass, status, favorite }) => ({
     ...pass,
-    status,
     favorite,
+    status,
   }));
   // What the list shows for a kind is what the map shows for that kind; the
   // visibility switches only add a layer toggle on top.
   const mapTours = tourRows.map(({ tour: t, status }) => ({
     ...t,
-    status,
-    visible: !hiddenTours.includes(t.slug),
     geometry:
       routes[`tour:${t.slug}`] ??
       t.waypoints.map((w) => [w.lat, w.lon] as [number, number]),
+    status,
+    visible: !hiddenTours.includes(t.slug),
   }));
   const mapTowns = townRows.map(({ town, favorite }) => ({
     ...town,
@@ -412,4 +412,4 @@ export function Explorer({
       <ScalesDialog open={scalesOpen} onOpenChange={setScalesOpen} />
     </TooltipProvider>
   );
-}
+};

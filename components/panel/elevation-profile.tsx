@@ -3,16 +3,16 @@ import { fmt } from "@/lib/utils";
 
 /** Gradient classes; fixed colours on purpose so profiles compare across passes. */
 const GRADIENT_COLORS = [
-  { max: 3, label: "< 3 %", color: "oklch(0.75 0.09 150)" },
-  { max: 6, label: "3–6 %", color: "oklch(0.82 0.12 95)" },
-  { max: 9, label: "6–9 %", color: "oklch(0.72 0.15 60)" },
-  { max: 12, label: "9–12 %", color: "oklch(0.6 0.18 30)" },
-  { max: Infinity, label: "> 12 %", color: "oklch(0.45 0.16 350)" },
+  { color: "oklch(0.75 0.09 150)", label: "< 3 %", max: 3 },
+  { color: "oklch(0.82 0.12 95)", label: "3–6 %", max: 6 },
+  { color: "oklch(0.72 0.15 60)", label: "6–9 %", max: 9 },
+  { color: "oklch(0.6 0.18 30)", label: "9–12 %", max: 12 },
+  { color: "oklch(0.45 0.16 350)", label: "> 12 %", max: Infinity },
 ];
 const colorFor = (g: number) => GRADIENT_COLORS.find((c) => g < c.max)!.color;
 
 /** Elevation profile with gradient colours; segment values via title on hover. */
-export function ElevationProfile({ profile }: { profile: Profile }) {
+export const ElevationProfile = ({ profile }: { profile: Profile }) => {
   const W = 360;
   const H = 96;
   const ml = 32;
@@ -107,4 +107,4 @@ export function ElevationProfile({ profile }: { profile: Profile }) {
       </figcaption>
     </figure>
   );
-}
+};

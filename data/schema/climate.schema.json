@@ -15,21 +15,21 @@
         {
           "type": "object",
           "properties": {
-            "tmax": {
-              "type": "number"
-            },
-            "tmin": {
-              "type": "number"
+            "frostPct": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 100
             },
             "snowPct": {
               "type": "number",
               "minimum": 0,
               "maximum": 100
             },
-            "frostPct": {
-              "type": "number",
-              "minimum": 0,
-              "maximum": 100
+            "tmax": {
+              "type": "number"
+            },
+            "tmin": {
+              "type": "number"
             },
             "wetPct": {
               "type": "number",
@@ -38,10 +38,10 @@
             }
           },
           "required": [
+            "frostPct",
+            "snowPct",
             "tmax",
             "tmin",
-            "snowPct",
-            "frostPct",
             "wetPct"
           ],
           "additionalProperties": false

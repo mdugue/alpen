@@ -14,11 +14,11 @@ export const COUNTRIES = ["FR", "IT", "CH", "AT", "DE", "SI"] as const;
 
 /** German names for the country codes, so "frankreich" and "fr" both search. */
 export const COUNTRY_NAME: Record<(typeof COUNTRIES)[number], string> = {
+  AT: "Österreich",
+  CH: "Schweiz",
+  DE: "Deutschland",
   FR: "Frankreich",
   IT: "Italien",
-  CH: "Schweiz",
-  AT: "Österreich",
-  DE: "Deutschland",
   SI: "Slowenien",
 };
 

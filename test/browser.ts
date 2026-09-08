@@ -32,7 +32,7 @@ const CHROME_ARGV = [
   "--disable-dev-shm-usage",
 ];
 
-function chromePath(): string | undefined {
+const chromePath = (): string | undefined => {
   const explicit = process.env.CHROME ?? process.env.BUN_CHROME_PATH;
   if (explicit) return explicit;
   for (const name of [
@@ -46,21 +46,21 @@ function chromePath(): string | undefined {
   }
   const fallback = "/opt/pw-browsers/chromium";
   return Bun.file(fallback).size > 0 ? fallback : undefined;
-}
+};
 
 /** Polls until the check passes; the message names what was waited for. */
-export async function waitUntil(
+export const waitUntil = async (
   check: () => Promise<boolean>,
   what: string,
   timeout = 15_000,
-) {
+) => {
   const deadline = Date.now() + timeout;
   for (;;) {
     if (await check()) return;
     if (Date.now() > deadline) throw new Error(`Timeout: ${what}`);
     await Bun.sleep(100);
   }
-}
+};
 
 export interface App {
   base: string;
@@ -71,7 +71,7 @@ export interface App {
  * Reuses a server at `BASE_URL`, otherwise starts the production server once
  * for the whole run. `bun run build` has to have happened before.
  */
-export async function startApp(): Promise<App> {
+export const startApp = async (): Promise<App> => {
   const fromEnv = process.env.BASE_URL;
   if (fromEnv)
     return {
@@ -84,8 +84,8 @@ export async function startApp(): Promise<App> {
   const proc = Bun.spawn({
     cmd: ["bun", "run", "start"],
     env: { ...process.env, PORT: String(PORT) },
-    stdout: "pipe",
     stderr: "pipe",
+    stdout: "pipe",
   });
   const base = `http://127.0.0.1:${PORT}`;
   const deadline = Date.now() + 60_000;
@@ -108,7 +108,7 @@ export async function startApp(): Promise<App> {
     await Bun.sleep(250);
   }
   return { base, stop: () => proc.kill() };
-}
+};
 
 export interface OpenOptions {
   /** Everything after the "/", usually a "#…" hash. */
@@ -297,7 +297,7 @@ export class Page {
   }
 }
 
-async function openPage(app: App, options: OpenOptions = {}): Promise<Page> {
+const openPage = async (app: App, options: OpenOptions = {}): Promise<Page> => {
   const width = options.mobile ? 390 : 1440;
   const height = options.mobile ? 844 : 900;
   const errors: string[] = [];
@@ -310,8 +310,6 @@ async function openPage(app: App, options: OpenOptions = {}): Promise<Page> {
       // Chrome's own crash output; the reason it "closed the pipe" is only in there.
       stderr: process.env.DEBUG_CHROME ? "inherit" : "ignore",
     },
-    width,
-    height,
     console: (type, ...rest) => {
       if (type !== "error") return;
       const first = rest[0] as { description?: string } | string | undefined;
@@ -322,15 +320,17 @@ async function openPage(app: App, options: OpenOptions = {}): Promise<Page> {
         ),
       );
     },
+    height,
+    width,
   });
   const page = new Page(view, app.base);
   // The first navigation sets up the CDP session; emulation comes after it.
   await view.navigate("about:blank");
   await view.cdp("Emulation.setDeviceMetricsOverride", {
-    width,
-    height,
     deviceScaleFactor: 1,
+    height,
     mobile: !!options.mobile,
+    width,
   });
   await view.cdp("Emulation.setTouchEmulationEnabled", {
     enabled: !!options.mobile,
@@ -354,18 +354,18 @@ async function openPage(app: App, options: OpenOptions = {}): Promise<Page> {
   page.errors.push(...errors);
   await page.navigate(options.hash ?? "");
   return page;
-}
+};
 
 /**
  * One scenario: opens a page, runs the body, and writes a screenshot next to
  * the report when it fails.
  */
-export async function withPage(
+export const withPage = async (
   app: App,
   name: string,
   options: OpenOptions,
   body: (page: Page) => Promise<void>,
-): Promise<void> {
+): Promise<void> => {
   const page = await openPage(app, options);
   try {
     await body(page);
@@ -378,4 +378,4 @@ export async function withPage(
   } finally {
     page.close();
   }
-}
+};

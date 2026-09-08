@@ -102,115 +102,12 @@ interface Props {
 }
 
 /**
- * Detail view of the selected entity. Lives inside the sidebar (desktop) or
- * the bottom sheet (mobile) as a stack on top of the lists.
- */
-export function DetailPanel(props: Props) {
-  const { selection, onBack } = props;
-  const heading = useRef<HTMLHeadingElement>(null);
-  const scroller = useRef<HTMLDivElement>(null);
-
-  // Move focus and scroll to the top whenever another entity is selected. The
-  // selection is the trigger, not something the effect reads – which is what
-  // the rule objects to.
-  useEffect(() => {
-    scroller.current?.scrollTo({ top: 0 });
-    heading.current?.focus({ preventScroll: true });
-    // oxlint-disable-next-line react/exhaustive-effect-dependencies
-  }, [selection.kind, selection.slug]);
-
-  const entity =
-    selection.kind === "pass"
-      ? props.passes.find((p) => p.slug === selection.slug)
-      : selection.kind === "tour"
-        ? props.tours.find((t) => t.slug === selection.slug)
-        : props.towns.find((t) => t.slug === selection.slug);
-  if (!entity) return null;
-
-  const kicker =
-    selection.kind === "pass"
-      ? `Pass · ${(entity as Pass).region} · ${(entity as Pass).country}`
-      : selection.kind === "tour"
-        ? "Rundtour"
-        : `Rad-Ort · ${(entity as Town).country}`;
-  const favorite = props.isFavorite(selection.kind, selection.slug);
-
-  return (
-    <section
-      aria-labelledby="detail-title"
-      className="flex min-h-0 flex-1 flex-col"
-      onKeyDown={(e) => {
-        if (e.key === "Escape") onBack();
-      }}
-    >
-      <div className="border-border flex h-10 shrink-0 items-center gap-1 border-b px-2">
-        {props.dismiss === "back" && (
-          <Button variant="ghost" onClick={onBack}>
-            <ArrowLeft data-icon="inline-start" /> Liste
-          </Button>
-        )}
-        <p
-          className={cn(
-            "text-muted-foreground min-w-0 flex-1 truncate text-[11px] font-semibold tracking-widest uppercase",
-            props.dismiss === "back" ? "text-center" : "pl-2",
-          )}
-        >
-          {kicker}
-        </p>
-        <Toggle
-          pressed={favorite}
-          onPressedChange={() =>
-            props.onToggleFavorite(selection.kind, selection.slug)
-          }
-          aria-label={favorite ? "Nicht mehr merken" : "Merken"}
-          className={ICON_TOGGLE}
-        >
-          <Star className={cn(favorite && "fill-accent text-accent")} />
-        </Toggle>
-        {props.dismiss === "close" && (
-          <Button
-            size="icon"
-            variant="ghost"
-            onClick={onBack}
-            aria-label="Details schließen"
-          >
-            <X />
-          </Button>
-        )}
-      </div>
-      <div
-        ref={scroller}
-        className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-4 pt-3 pb-6"
-      >
-        <h2
-          ref={heading}
-          id="detail-title"
-          tabIndex={-1}
-          className="text-xl leading-tight font-bold tracking-tight text-balance outline-none"
-        >
-          {entity.name}
-        </h2>
-        {selection.kind === "pass" && (
-          <PassDetail {...props} pass={entity as Pass} />
-        )}
-        {selection.kind === "tour" && (
-          <TourDetail {...props} tour={entity as Tour} />
-        )}
-        {selection.kind === "town" && (
-          <TownDetail {...props} town={entity as Town} />
-        )}
-      </div>
-    </section>
-  );
-}
-
-/**
  * The one heading level inside the panel: small caps, a hairline, and room
  * above it. `hint` names the source in passing, `info` hides the caveat that
  * belongs to it behind an icon – a sentence about grid resolution must not
  * take the place a fact could have.
  */
-function SectionTitle({
+const SectionTitle = ({
   children,
   hint,
   info,
@@ -218,73 +115,85 @@ function SectionTitle({
   children: React.ReactNode;
   hint?: string;
   info?: string;
-}) {
-  return (
-    <h3 className="border-border text-muted-foreground mt-6 mb-2.5 flex items-baseline gap-2 border-b pb-1.5 text-[11px] font-semibold tracking-widest uppercase">
-      {children}
-      {hint && (
-        <span className="truncate text-[11px] font-normal tracking-normal normal-case">
-          {hint}
-        </span>
-      )}
-      {info && (
-        <Tooltip>
-          <TooltipTrigger
-            render={
-              <Button
-                size="icon-sm"
-                variant="ghost"
-                aria-label="Hinweis zur Quelle"
-                className="text-muted-foreground/70 ml-auto self-center"
-              />
-            }
-          >
-            <Info />
-          </TooltipTrigger>
-          <TooltipContent className="max-w-64">{info}</TooltipContent>
-        </Tooltip>
-      )}
-    </h3>
-  );
-}
+}) => (
+  <h3 className="border-border text-muted-foreground mt-6 mb-2.5 flex items-baseline gap-2 border-b pb-1.5 text-[11px] font-semibold tracking-widest uppercase">
+    {children}
+    {hint && (
+      <span className="truncate text-[11px] font-normal tracking-normal normal-case">
+        {hint}
+      </span>
+    )}
+    {info && (
+      <Tooltip>
+        <TooltipTrigger
+          render={
+            <Button
+              size="icon-sm"
+              variant="ghost"
+              aria-label="Hinweis zur Quelle"
+              className="text-muted-foreground/70 ml-auto self-center"
+            />
+          }
+        >
+          <Info />
+        </TooltipTrigger>
+        <TooltipContent className="max-w-64">{info}</TooltipContent>
+      </Tooltip>
+    )}
+  </h3>
+);
 
-function LinkButton({
+const ExternalLinks = ({ links }: { links: [string, string][] }) => (
+  <div className="mt-4 flex flex-wrap gap-1.5">
+    {links.map(([label, href]) => (
+      <Button
+        key={label}
+        variant="outline"
+        size="sm"
+        render={<a href={href} target="_blank" rel="noopener noreferrer" />}
+        nativeButton={false}
+      >
+        {label}
+        <ExternalLink data-icon="inline-end" />
+        <span className="sr-only"> (öffnet in neuem Tab)</span>
+      </Button>
+    ))}
+  </div>
+);
+
+const LinkButton = ({
   children,
   onClick,
 }: {
   children: React.ReactNode;
   onClick: () => void;
-}) {
-  return (
-    <Button
-      variant="link"
-      size="sm"
-      className="h-auto gap-1 px-0 py-0.5"
-      onClick={onClick}
-    >
-      {children}
-    </Button>
-  );
-}
+}) => (
+  <Button
+    variant="link"
+    size="sm"
+    className="h-auto gap-1 px-0 py-0.5"
+    onClick={onClick}
+  >
+    {children}
+  </Button>
+);
 
 /** One labelled row of the nearby list. */
-function group(label: string, items: React.ReactNode) {
-  return (
-    <div className="flex flex-wrap items-baseline gap-x-3 gap-y-0.5">
-      <span className="text-muted-foreground text-xs">{label}</span>
-      {items}
-    </div>
-  );
-}
+const group = (label: string, items: React.ReactNode) => (
+  <div className="flex flex-wrap items-baseline gap-x-3 gap-y-0.5">
+    <span className="text-muted-foreground text-xs">{label}</span>
+    {items}
+  </div>
+);
 
-function Nearby({
+const Nearby = ({
   lat,
   lon,
   exclude,
   ...p
-}: Props & { lat: number; lon: number; exclude?: string }) {
+}: Props & { lat: number; lon: number; exclude?: string }) => {
   const nearPasses = p.passes
-    .map((x) => ({ x, d: haversine({ lat, lon }, x) }))
+    .map((x) => ({ d: haversine({ lat, lon }, x), x }))
     .filter((e) => e.d <= NEARBY_RADIUS_KM && e.x.slug !== exclude)
     .toSorted((a, b) => a.d - b.d);
   const nearTours = p.tours.filter((t) =>
@@ -297,7 +206,7 @@ function Nearby({
     ),
   );
   const nearTowns = p.towns
-    .map((x) => ({ x, d: haversine({ lat, lon }, x) }))
+    .map((x) => ({ d: haversine({ lat, lon }, x), x }))
     .filter((e) => e.d <= NEARBY_RADIUS_KM && e.x.slug !== exclude)
     .toSorted((a, b) => a.d - b.d);
 
@@ -365,29 +274,9 @@ function Nearby({
       </div>
     </>
   );
-}
+};
 
-function ExternalLinks({ links }: { links: [string, string][] }) {
-  return (
-    <div className="mt-4 flex flex-wrap gap-1.5">
-      {links.map(([label, href]) => (
-        <Button
-          key={label}
-          variant="outline"
-          size="sm"
-          render={<a href={href} target="_blank" rel="noopener noreferrer" />}
-          nativeButton={false}
-        >
-          {label}
-          <ExternalLink data-icon="inline-end" />
-          <span className="sr-only"> (öffnet in neuem Tab)</span>
-        </Button>
-      ))}
-    </div>
-  );
-}
-
-function PassDetail(props: Props & { pass: Pass }) {
+const PassDetail = (props: Props & { pass: Pass }) => {
   const { pass } = props;
   const climate = props.climate[pass.slug];
   const bucket = climate?.[periodIndex(props.period)];
@@ -579,9 +468,9 @@ function PassDetail(props: Props & { pass: Pass }) {
       />
     </>
   );
-}
+};
 
-function TourDetail(props: Props & { tour: Tour }) {
+const TourDetail = (props: Props & { tour: Tour }) => {
   const { tour } = props;
   const passIndex = indexBySlug(props.passes);
   const status = tourStatus(tour, passIndex, props.period, props.climate);
@@ -662,9 +551,9 @@ function TourDetail(props: Props & { tour: Tour }) {
       />
     </>
   );
-}
+};
 
-function TownDetail(props: Props & { town: Town }) {
+const TownDetail = (props: Props & { town: Town }) => {
   const { town } = props;
   return (
     <>
@@ -684,4 +573,107 @@ function TownDetail(props: Props & { town: Town }) {
       />
     </>
   );
-}
+};
+
+/**
+ * Detail view of the selected entity. Lives inside the sidebar (desktop) or
+ * the bottom sheet (mobile) as a stack on top of the lists.
+ */
+export const DetailPanel = (props: Props) => {
+  const { selection, onBack } = props;
+  const heading = useRef<HTMLHeadingElement>(null);
+  const scroller = useRef<HTMLDivElement>(null);
+
+  // Move focus and scroll to the top whenever another entity is selected. The
+  // selection is the trigger, not something the effect reads – which is what
+  // the rule objects to.
+  useEffect(() => {
+    scroller.current?.scrollTo({ top: 0 });
+    heading.current?.focus({ preventScroll: true });
+    // oxlint-disable-next-line react/exhaustive-effect-dependencies
+  }, [selection.kind, selection.slug]);
+
+  const entity =
+    selection.kind === "pass"
+      ? props.passes.find((p) => p.slug === selection.slug)
+      : selection.kind === "tour"
+        ? props.tours.find((t) => t.slug === selection.slug)
+        : props.towns.find((t) => t.slug === selection.slug);
+  if (!entity) return null;
+
+  const kicker =
+    selection.kind === "pass"
+      ? `Pass · ${(entity as Pass).region} · ${(entity as Pass).country}`
+      : selection.kind === "tour"
+        ? "Rundtour"
+        : `Rad-Ort · ${(entity as Town).country}`;
+  const favorite = props.isFavorite(selection.kind, selection.slug);
+
+  return (
+    <section
+      aria-labelledby="detail-title"
+      className="flex min-h-0 flex-1 flex-col"
+      onKeyDown={(e) => {
+        if (e.key === "Escape") onBack();
+      }}
+    >
+      <div className="border-border flex h-10 shrink-0 items-center gap-1 border-b px-2">
+        {props.dismiss === "back" && (
+          <Button variant="ghost" onClick={onBack}>
+            <ArrowLeft data-icon="inline-start" /> Liste
+          </Button>
+        )}
+        <p
+          className={cn(
+            "text-muted-foreground min-w-0 flex-1 truncate text-[11px] font-semibold tracking-widest uppercase",
+            props.dismiss === "back" ? "text-center" : "pl-2",
+          )}
+        >
+          {kicker}
+        </p>
+        <Toggle
+          pressed={favorite}
+          onPressedChange={() =>
+            props.onToggleFavorite(selection.kind, selection.slug)
+          }
+          aria-label={favorite ? "Nicht mehr merken" : "Merken"}
+          className={ICON_TOGGLE}
+        >
+          <Star className={cn(favorite && "fill-accent text-accent")} />
+        </Toggle>
+        {props.dismiss === "close" && (
+          <Button
+            size="icon"
+            variant="ghost"
+            onClick={onBack}
+            aria-label="Details schließen"
+          >
+            <X />
+          </Button>
+        )}
+      </div>
+      <div
+        ref={scroller}
+        className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-4 pt-3 pb-6"
+      >
+        <h2
+          ref={heading}
+          id="detail-title"
+          tabIndex={-1}
+          className="text-xl leading-tight font-bold tracking-tight text-balance outline-none"
+        >
+          {entity.name}
+        </h2>
+        {selection.kind === "pass" && (
+          <PassDetail {...props} pass={entity as Pass} />
+        )}
+        {selection.kind === "tour" && (
+          <TourDetail {...props} tour={entity as Tour} />
+        )}
+        {selection.kind === "town" && (
+          <TownDetail {...props} town={entity as Town} />
+        )}
+      </div>
+    </section>
+  );
+};

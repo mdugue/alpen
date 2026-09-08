@@ -19,11 +19,11 @@ const BUILD_TIME = new Date();
 export default function sitemap(): MetadataRoute.Sitemap {
   return [
     {
-      url: siteUrl,
-      lastModified: BUILD_TIME,
       changeFrequency: "weekly",
-      priority: 1,
       images: [`${siteUrl}/opengraph-image`],
+      lastModified: BUILD_TIME,
+      priority: 1,
+      url: siteUrl,
     },
   ];
 }

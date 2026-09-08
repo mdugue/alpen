@@ -108,10 +108,10 @@ const CLIMATE_WEIGHT = Math.ceil(
 /** Open-Meteo weight of one elevation request: one call per location. */
 const PROFILE_WEIGHT = PROFILE_POINTS;
 
-async function readJson<T>(name: string, fallback: T): Promise<T> {
+const readJson = async <T>(name: string, fallback: T): Promise<T> => {
   const f = Bun.file(new URL(name, OUT));
   return (await f.exists()) ? ((await f.json()) as T) : fallback;
-}
+};
 /**
  * One sorted key per line, compact value: a diff shows exactly which pass or
  * tour changed, without a fully indented routes.json of 100 000 lines.
@@ -210,13 +210,13 @@ const openMeteo = new Limiter("Open-Meteo", 500, OPEN_METEO_BUDGET);
 const ors = ORS ? new Limiter("OpenRouteService", 38) : null;
 const osrm = new Limiter("OSRM-Demo", 55);
 
-function getJson<T>(
+const getJson = <T>(
   lim: Limiter,
   weight: number,
   url: string,
   init?: RequestInit,
-): Promise<T> {
-  return lim.run(async () => {
+): Promise<T> =>
+  lim.run(async () => {
     for (let attempt = 0; attempt < 5; attempt += 1) {
       const res = await fetch(url, init);
       if (res.ok) return (await res.json()) as T;
@@ -263,15 +263,14 @@ function getJson<T>(
     }
     throw new Error(`${lim.name}: aufgegeben nach 5 Versuchen`);
   }, weight);
-}
 
 // ---------------------------------------------------------------------------
 // Fetchers
 
-async function routeVia(
+const routeVia = async (
   source: RouteSource,
   waypoints: LatLon[],
-): Promise<RouteGeometry> {
+): Promise<RouteGeometry> => {
   const out: RouteGeometry = [];
   const push = (cs: RouteGeometry) =>
     out.push(...(out.length ? cs.slice(1) : cs));
@@ -286,14 +285,14 @@ async function routeVia(
         1,
         "https://api.openrouteservice.org/v2/directions/cycling-road/geojson",
         {
-          method: "POST",
-          headers: { "Content-Type": "application/json", Authorization: ORS },
           body: JSON.stringify({
             coordinates: chunk.map((c) => [c.lon, c.lat]),
+            instructions: false,
             // Some ascent starts sit in a village centre > 350 m (ORS default) from a cycling-road edge.
             radiuses: chunk.map(() => SNAP_RADIUS * 1000),
-            instructions: false,
           }),
+          headers: { Authorization: ORS, "Content-Type": "application/json" },
+          method: "POST",
         },
       );
       push(
@@ -325,12 +324,12 @@ async function routeVia(
     }
   }
   return out;
-}
+};
 
 /** ORS first, OSRM as the fallback once ORS says the daily quota is spent. */
-async function route(
+const route = async (
   waypoints: LatLon[],
-): Promise<{ geom: RouteGeometry; source: RouteSource }> {
+): Promise<{ geom: RouteGeometry; source: RouteSource }> => {
   if (ors && !ors.exhausted) {
     try {
       return { geom: await routeVia("ors", waypoints), source: "ors" };
@@ -342,10 +341,12 @@ async function route(
     }
   }
   return { geom: await routeVia("osrm", waypoints), source: "osrm" };
-}
+};
 
 /** DEM height at the pass coordinates themselves, to catch a wrong summit point. */
-async function summitElevations(list: Pass[]): Promise<Record<string, number>> {
+const summitElevations = async (
+  list: Pass[],
+): Promise<Record<string, number>> => {
   const out: Record<string, number> = {};
   for (let i = 0; i < list.length; i += PROFILE_POINTS) {
     const chunk = list.slice(i, i + PROFILE_POINTS);
@@ -359,10 +360,10 @@ async function summitElevations(list: Pass[]): Promise<Record<string, number>> {
       out[p.slug] = Math.round(elevation[j]!);
   }
   return out;
-}
+};
 
 /** Elevations from the Copernicus DEM (Open-Meteo, no key needed). */
-async function profile(geom: RouteGeometry): Promise<ElevationProfile> {
+const profile = async (geom: RouteGeometry): Promise<ElevationProfile> => {
   const n = Math.min(PROFILE_POINTS, geom.length);
   const step = (geom.length - 1) / (n - 1);
   const pts = Array.from({ length: n }, (_, i) => geom[Math.round(i * step)]!);
@@ -388,20 +389,20 @@ async function profile(geom: RouteGeometry): Promise<ElevationProfile> {
     } else if (e < base) base = e;
   }
   return {
-    km: +total.toFixed(1),
-    elevationGain: Math.round(gain),
-    start: Math.round(elevation[0]!),
-    top: Math.round(Math.max(...elevation)),
     avgGradient: +((elevation.at(-1)! - elevation[0]!) / (total * 10)).toFixed(
       1,
     ),
     dist: dist.map((d) => +d.toFixed(2)),
     ele: elevation.map(Math.round),
+    elevationGain: Math.round(gain),
+    km: +total.toFixed(1),
+    start: Math.round(elevation[0]!),
+    top: Math.round(Math.max(...elevation)),
   };
-}
+};
 
 /** ERA5-Land 2015–2024, condensed into 24 half-months. */
-async function climate(pass: Pass): Promise<ClimateYear> {
+const climate = async (pass: Pass): Promise<ClimateYear> => {
   const d = await getJson<{
     daily: {
       time: string[];
@@ -418,11 +419,11 @@ async function climate(pass: Pass): Promise<ClimateYear> {
       `&daily=temperature_2m_max,temperature_2m_min,snowfall_sum,precipitation_sum&timezone=Europe%2FBerlin`,
   );
   const buckets = Array.from({ length: 24 }, () => ({
-    n: 0,
-    tx: 0,
-    tn: 0,
-    snow: 0,
     frost: 0,
+    n: 0,
+    snow: 0,
+    tn: 0,
+    tx: 0,
     wet: 0,
   }));
   for (const [i, t] of d.daily.time.entries()) {
@@ -442,15 +443,15 @@ async function climate(pass: Pass): Promise<ClimateYear> {
   return buckets.map((b) =>
     b.n
       ? {
+          frostPct: Math.round((b.frost / b.n) * 100),
+          snowPct: Math.round((b.snow / b.n) * 100),
           tmax: +(b.tx / b.n).toFixed(1),
           tmin: +(b.tn / b.n).toFixed(1),
-          snowPct: Math.round((b.snow / b.n) * 100),
-          frostPct: Math.round((b.frost / b.n) * 100),
           wetPct: Math.round((b.wet / b.n) * 100),
         }
       : null,
   );
-}
+};
 
 // ---------------------------------------------------------------------------
 await mkdir(OUT, { recursive: true });
@@ -484,23 +485,23 @@ type RouteJob = { key: string; label: string; waypoints: LatLon[] } & (
 const routeJobs: RouteJob[] = [
   ...(passes as Pass[]).flatMap((p) =>
     p.ascents.map((a, i): RouteJob => ({
-      kind: "ascent",
-      key: `${p.slug}:${i}`,
-      label: `${p.name} ab ${a.label}`,
-      waypoints: [a.from, { lat: p.lat, lon: p.lon }],
       check: a.check,
-      from: a.from,
-      summit: { lat: p.lat, lon: p.lon },
       elevation: p.elevation,
+      from: a.from,
+      key: `${p.slug}:${i}`,
+      kind: "ascent",
+      label: `${p.name} ab ${a.label}`,
+      summit: { lat: p.lat, lon: p.lon },
+      waypoints: [a.from, { lat: p.lat, lon: p.lon }],
     })),
   ),
   ...(tours as Tour[]).map((t): RouteJob => ({
-    kind: "tour",
-    key: `tour:${t.slug}`,
-    label: `Tour ${t.name}`,
-    waypoints: t.waypoints,
     check: t.check,
+    key: `tour:${t.slug}`,
+    kind: "tour",
+    label: `Tour ${t.name}`,
     statedKm: t.km,
+    waypoints: t.waypoints,
   })),
 ];
 
@@ -615,22 +616,22 @@ const fail = (what: string, e: unknown) =>
   console.error(`  ${what} FEHLER ${(e as Error).message}`);
 
 /** Removes a key everywhere and records why, keeping the date of the first rejection. */
-async function reject(
+const reject = async (
   job: RouteJob,
   reasons: string[],
   m: RouteMetrics,
   source: RouteSource,
   hash: string,
-) {
+) => {
   const before = rejected[job.key];
   const unchanged = before?.hash === hash;
   rejected[job.key] = {
-    reasons,
-    metrics: m,
-    source,
-    hash,
     firstSeen: before?.firstSeen ?? TODAY,
+    hash,
     lastSeen: TODAY,
+    metrics: m,
+    reasons,
+    source,
     // Keep the profile: it is the only expensive part, so a later retry after a
     // threshold change costs nothing.
     ...(profiles[job.key]
@@ -651,16 +652,20 @@ async function reject(
       .map((r) => `    ${r}`)
       .join("\n")}`,
   );
-}
+};
 
-async function accept(job: RouteJob, geom: RouteGeometry, source: RouteSource) {
+const accept = async (
+  job: RouteJob,
+  geom: RouteGeometry,
+  source: RouteSource,
+) => {
   routes[job.key] = geom;
-  meta[job.key] = { source, fetchedAt: TODAY };
+  meta[job.key] = { fetchedAt: TODAY, source };
   Reflect.deleteProperty(rejected, job.key);
   await write("routes.json", routes);
   await write("routes-meta.json", meta);
   await write("rejected.json", rejected);
-}
+};
 
 /**
  * Geometry checks, then – for ascents – the profile and its checks. The route is
@@ -668,13 +673,13 @@ async function accept(job: RouteJob, geom: RouteGeometry, source: RouteSource) {
  * budget keeps its (free) routing work; the profile checks of the next run can
  * still take it back out.
  */
-async function gate(
+const gate = async (
   job: RouteJob,
   geom: RouteGeometry,
   source: RouteSource,
   /** False when the geometry came out of routes.json and is only being judged. */
   fetched = true,
-) {
+) => {
   const hash = geometryHash(geom);
   let m = measure(job, geom);
   const bad = judge(job, m);
@@ -733,7 +738,7 @@ async function gate(
   console.log(
     `Profil: ${job.label} (${prof.km} km, ${prof.elevationGain} Hm, Gipfel ${prof.top} m)`,
   );
-}
+};
 
 // Pipeline 1: routing. Each route runs through the gate and hands its profile on.
 const routing = pendingRoutes().map(async (job) => {

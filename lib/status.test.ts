@@ -31,28 +31,28 @@ import type {
 const passes = passesJson as Pass[];
 const climate = climateJson as unknown as Record<string, ClimateYear>;
 const pass = (over: Partial<Pass>): Pass => ({
-  slug: "test",
-  name: "Testpass",
+  ascents: [],
+  beauty: 3,
+  classicAscent: "",
   country: "AT",
-  region: "Ostalpen",
+  difficulty: 3,
+  elevation: 2000,
+  fame: 3,
   lat: 47,
   lon: 12,
-  elevation: 2000,
-  classicAscent: "",
-  beauty: 3,
-  fame: 3,
-  difficulty: 3,
-  traffic: 3,
-  season: null,
+  name: "Testpass",
   note: "",
-  ascents: [],
+  region: "Ostalpen",
+  season: null,
+  slug: "test",
+  traffic: 3,
   ...over,
 });
 const bucket = (over: Partial<ClimateBucket> = {}): ClimateBucket => ({
+  frostPct: 0,
+  snowPct: 0,
   tmax: 12,
   tmin: 4,
-  snowPct: 0,
-  frostPct: 0,
   wetPct: 20,
   ...over,
 });
@@ -62,14 +62,14 @@ const statuses = (spec: string): Status[] =>
   [...spec].map((c) => (c === "o" ? "open" : c === "r" ? "risky" : "closed"));
 
 const tour = (slugs: string[]): Tour => ({
-  slug: "t",
-  name: "Testtour",
   color: "#000",
-  km: 100,
+  description: "",
   elevationGain: 2000,
+  km: 100,
+  name: "Testtour",
   passes: slugs,
   season: "",
-  description: "",
+  slug: "t",
   waypoints: [],
 });
 
@@ -127,7 +127,7 @@ describe("passStatus without a climate series", () => {
   });
 
   test("season window: closed outside, risky at the edges", () => {
-    const p = pass({ elevation: 1500, season: { opens: 6, closes: 10.5 } });
+    const p = pass({ elevation: 1500, season: { closes: 10.5, opens: 6 } });
     expect(passStatus(p, 5.5)).toBe("closed");
     expect(passStatus(p, 6)).toBe("risky");
     expect(passStatus(p, 6.5)).toBe("open");
@@ -136,10 +136,10 @@ describe("passStatus without a climate series", () => {
   });
 
   test("the altitude penalty inside the window is waived for maintained roads", () => {
-    const wild = pass({ elevation: 2400, season: { opens: 5, closes: 11 } });
+    const wild = pass({ elevation: 2400, season: { closes: 11, opens: 5 } });
     const toll = pass({
       elevation: 2400,
-      season: { opens: 5, closes: 11, maintained: true },
+      season: { closes: 11, maintained: true, opens: 5 },
     });
     expect(passStatus(wild, 6)).toBe("risky");
     expect(passStatus(toll, 6)).toBe("open");
@@ -149,10 +149,10 @@ describe("passStatus without a climate series", () => {
 
 describe("the climate series", () => {
   test("snow days turn open into weather-dependent, with a reason", () => {
-    const p = pass({ elevation: 1500, season: { opens: 6, closes: 10.5 } });
+    const p = pass({ elevation: 1500, season: { closes: 10.5, opens: 6 } });
     expect(passVerdict(p, 7, bucket({ snowPct: 27 }))).toEqual({
-      status: "risky",
       reasons: ["snow"],
+      status: "risky",
     });
     expect(verdictReasons(p, 7, bucket({ snowPct: 27 }))[0]).toContain(
       "Schneefall an 27 % der Tage",
@@ -160,18 +160,18 @@ describe("the climate series", () => {
   });
 
   test("frost nights count too, snow first", () => {
-    const p = pass({ elevation: 1500, season: { opens: 6, closes: 10.5 } });
+    const p = pass({ elevation: 1500, season: { closes: 10.5, opens: 6 } });
     expect(passVerdict(p, 7, bucket({ frostPct: 85 })).reasons).toEqual([
       "frost",
     ]);
     expect(
-      passVerdict(p, 7, bucket({ snowPct: 21, frostPct: 85 })).reasons,
+      passVerdict(p, 7, bucket({ frostPct: 85, snowPct: 21 })).reasons,
     ).toEqual(["snow"]);
   });
 
   test("just below the thresholds nothing changes", () => {
-    const p = pass({ elevation: 1500, season: { opens: 6, closes: 10.5 } });
-    expect(passStatus(p, 7, bucket({ snowPct: 19, frostPct: 79 }))).toBe(
+    const p = pass({ elevation: 1500, season: { closes: 10.5, opens: 6 } });
+    expect(passStatus(p, 7, bucket({ frostPct: 79, snowPct: 19 }))).toBe(
       "open",
     );
   });
@@ -179,13 +179,13 @@ describe("the climate series", () => {
   test("maintained roads get the climate rule as well", () => {
     const toll = pass({
       elevation: 2400,
-      season: { opens: 5, closes: 11, maintained: true },
+      season: { closes: 11, maintained: true, opens: 5 },
     });
     expect(passStatus(toll, 6, bucket({ snowPct: 25 }))).toBe("risky");
   });
 
   test("no bucket behaves exactly as before", () => {
-    const p = pass({ elevation: 1500, season: { opens: 6, closes: 10.5 } });
+    const p = pass({ elevation: 1500, season: { closes: 10.5, opens: 6 } });
     expect(passStatus(p, 7, null)).toBe(passStatus(p, 7));
     expect(passStatus(p, 7)).toBe(passStatus(p, 7));
   });
@@ -240,7 +240,7 @@ describe("season strips and best periods", () => {
   });
 
   test("bestPeriods returns null when nothing lasts two half-months", () => {
-    const p = pass({ elevation: 2600, season: { opens: 7, closes: 7.5 } });
+    const p = pass({ elevation: 2600, season: { closes: 7.5, opens: 7 } });
     expect(bestPeriods(p, null)).toBeNull();
   });
 
@@ -267,8 +267,8 @@ describe("season strips and best periods", () => {
 
 describe("tourStatus", () => {
   const index = indexBySlug([
-    pass({ slug: "a", elevation: 1000, season: { opens: 5, closes: 11 } }),
-    pass({ slug: "b", elevation: 1000, season: { opens: 7, closes: 9 } }),
+    pass({ elevation: 1000, season: { closes: 11, opens: 5 }, slug: "a" }),
+    pass({ elevation: 1000, season: { closes: 9, opens: 7 }, slug: "b" }),
   ]);
 
   test("a tour is as rideable as its worst pass", () => {
@@ -296,7 +296,7 @@ describe("tourStatus", () => {
  * a diff, one line per pass, one character per half-month (o/r/x).
  */
 test("status matrix for all passes × 24 half-months", () => {
-  const code: Record<Status, string> = { open: "o", risky: "r", closed: "x" };
+  const code: Record<Status, string> = { closed: "x", open: "o", risky: "r" };
   const matrix = passes
     .map(
       (p) =>

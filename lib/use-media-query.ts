@@ -5,8 +5,8 @@ import { useSyncExternalStore } from "react";
  * SSR-safe media query. The server snapshot is `false`, so the prerendered
  * HTML always carries the desktop layout; phones switch after hydration.
  */
-export function useMediaQuery(query: string): boolean {
-  return useSyncExternalStore(
+export const useMediaQuery = (query: string): boolean =>
+  useSyncExternalStore(
     (onChange) => {
       const mql = window.matchMedia(query);
       mql.addEventListener("change", onChange);
@@ -15,7 +15,6 @@ export function useMediaQuery(query: string): boolean {
     () => window.matchMedia(query).matches,
     () => false,
   );
-}
 
 /** Below this width the sidebar becomes a bottom sheet (Tailwind `lg`). */
 export const MOBILE_QUERY = "(width < 64rem)";

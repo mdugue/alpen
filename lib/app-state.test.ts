@@ -29,23 +29,23 @@ describe("parseHash", () => {
       "#pass=col-du-galibier&t=6&z=9&c=45.06,6.41&f=4&m=2000&q=gal&s=open,risky&pi=60&b=30&d=2-4&v=2&be=4&o=beauty",
     );
     expect(h.filters).toEqual({
-      period: 6,
-      status: ["open", "risky"],
-      minFame: 4,
-      minElevation: 2000,
       difficulty: [2, 4],
       maxTraffic: 2,
       minBeauty: 4,
-      sort: "beauty",
+      minElevation: 2000,
+      minFame: 4,
+      period: 6,
       query: "gal",
+      sort: "beauty",
+      status: ["open", "risky"],
     });
     expect(h.selection).toEqual({ kind: "pass", slug: "col-du-galibier" });
     expect(h.view).toEqual({
+      bearing: 30,
       lat: 45.06,
       lon: 6.41,
-      zoom: 9,
       pitch: 60,
-      bearing: 30,
+      zoom: 9,
     });
   });
 
@@ -125,24 +125,24 @@ describe("serializeHash", () => {
         null,
         view({ lat: 46.3, lon: 9.6, zoom: 6.5 }),
       ),
-    ).toBe("t=7&z=6.50&c=46.3000,9.6000");
+    ).toBe("c=46.3000,9.6000&t=7&z=6.50");
   });
 
   test("filters, selection and a tilted camera are carried", () => {
     const hash = serializeHash(
       filters({
-        period: 6,
-        status: ["open"],
-        minFame: 4,
-        minElevation: 2000,
         difficulty: [2, 5],
         maxTraffic: 3,
         minBeauty: 4,
-        sort: "traffic",
+        minElevation: 2000,
+        minFame: 4,
+        period: 6,
         query: "gal",
+        sort: "traffic",
+        status: ["open"],
       }),
       { kind: "pass", slug: "col-du-galibier" },
-      view({ pitch: 60, bearing: 30 }),
+      view({ bearing: 30, pitch: 60 }),
     );
     expect(hash).toContain("d=2-5");
     const back = parseHash(hash);
@@ -201,11 +201,11 @@ describe("filters", () => {
     expect(
       countCriteria(
         filters({
-          minFame: 3,
-          minElevation: 2000,
           difficulty: [2, 4],
           maxTraffic: 2,
           minBeauty: 4,
+          minElevation: 2000,
+          minFame: 3,
         }),
       ),
     ).toBe(5);

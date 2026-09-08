@@ -24,71 +24,6 @@ export default defineConfig({
     "components/ui",
   ],
   jsPlugins: jsPlugins.jsPlugins,
-  settings: jsPluginSettings,
-  rules: {
-    // ── Style the repo settled on before ultracite ──────────────────────
-    // Guard clauses (`if (!pass) continue;`) and early `return (<jsx/>)` both
-    // read fine without braces; no setting of this rule accepts both.
-    curly: "off",
-    // Arrow helpers (`lib/utils.ts`) sit next to function declarations for
-    // components; neither is wrong here.
-    "func-style": "off",
-    // Nested ternaries map a status or a scale to a label in one expression –
-    // the alternative is an if-chain that says less.
-    "no-nested-ternary": "off",
-    // Object literals are ordered by meaning, not by name: Next metadata, the
-    // manifest, MapLibre paint specs and the scale labels all read in a
-    // deliberate sequence that alphabetising would destroy.
-    "sort-keys": "off",
-    // Components are `function` declarations, hoisted above the helpers they
-    // use, and helper declarations follow the component they belong to.
-    // Variables and classes still have to be declared first.
-    "no-use-before-define": ["error", { functions: false }],
-    "react/function-component-definition": [
-      "error",
-      { namedComponents: "function-declaration" },
-    ],
-
-    // ── Rules that are wrong for this codebase ──────────────────────────
-    // `noUncheckedIndexedAccess` is on, and the profile, climate and route
-    // code walks parallel arrays by index. Guarding every access would bury
-    // the maths; the assertions mark the invariant instead.
-    "typescript/no-non-null-assertion": "off",
-    // Base UI components take their element through `render`, which the a11y
-    // rules cannot see through, and `role="img"` is the correct label for an
-    // inline SVG chart – it is not an `<img>`.
-    "jsx-a11y/control-has-associated-label": "off",
-    "jsx-a11y/prefer-tag-over-role": "off",
-    // Handlers are named after what they do (`onOpenScales`), not after the
-    // prop they are passed to.
-    "react/jsx-handler-names": "off",
-    // A handful of effects deliberately opt out of the dependency rules and
-    // explain why right above the suppression; this rule objects to the
-    // existence of the suppression, which would leave nowhere to put it.
-    "react/rule-suppression": "off",
-    // `baseVerdict` sits at 21 and `Explorer` at 22: the heuristic and the
-    // layout both branch a lot by nature, and splitting them would only move
-    // the branches.
-    complexity: ["error", 25],
-    // 92 passes, 30-odd tours: `includes`, `filter().map()` and friends are
-    // clearer than the Set/reduce rewrites these rules ask for, and none of
-    // this is a measured hot path.
-    "react-doctor/js-set-map-lookups": "off",
-    "react-doctor/js-combine-iterations": "off",
-    // Axis and legend labels in the charts are 11px on purpose; they are dense
-    // data annotation, not interface text.
-    "react-doctor/no-tiny-text": "off",
-    // `pass-map.tsx` is one component by design (see AGENTS.md); the MapLibre
-    // setup does not survive being cut into pieces.
-    "react-doctor/no-giant-component": "off",
-    // `map.on(...)` is cleaned up by `map.remove()` in the same effect.
-    "react-doctor/effect-needs-cleanup": "off",
-    // Route segments and small modules export constants beside a component.
-    "react-doctor/only-export-components": "off",
-    // The weather route is a Cache Components route: `"use cache"` plus
-    // `cacheLife`/`cacheTag` control its freshness, which the rule cannot see.
-    "react-doctor/server-fetch-without-revalidate": "off",
-  },
   overrides: [
     {
       // `"use cache"` requires the function to be async even when it only
@@ -103,8 +38,8 @@ export default defineConfig({
       // to the rate limiter that throws it.
       files: ["scripts/build-data.ts"],
       rules: {
-        "promise/prefer-await-to-then": "off",
         "max-classes-per-file": "off",
+        "promise/prefer-await-to-then": "off",
       },
     },
     {
@@ -139,4 +74,51 @@ export default defineConfig({
       rules: { "react-doctor/react-compiler-no-manual-memoization": "off" },
     },
   ],
+  rules: {
+    // `baseVerdict` sits at 21 and `Explorer` at 22: the heuristic and the
+    // layout both branch a lot by nature, and splitting them would only move
+    // the branches.
+    complexity: ["error", 25],
+    // Guard clauses (`if (!pass) continue;`) and early `return (<jsx/>)` both
+    // read fine without braces; no setting of this rule accepts both.
+    curly: "off",
+    // Base UI components take their element through `render`, which the a11y
+    // rules cannot see through, and `role="img"` is the correct label for an
+    // inline SVG chart – it is not an `<img>`.
+    "jsx-a11y/control-has-associated-label": "off",
+    "jsx-a11y/prefer-tag-over-role": "off",
+    // Nested ternaries map a status or a scale to a label in one expression –
+    // the alternative is an if-chain that says less.
+    "no-nested-ternary": "off",
+    // `map.on(...)` is cleaned up by `map.remove()` in the same effect.
+    "react-doctor/effect-needs-cleanup": "off",
+    // 92 passes, 30-odd tours: `includes`, `filter().map()` and friends are
+    // clearer than the Set/reduce rewrites these two rules ask for, and none
+    // of this is a measured hot path.
+    "react-doctor/js-combine-iterations": "off",
+    "react-doctor/js-set-map-lookups": "off",
+    // `pass-map.tsx` is one component by design (see AGENTS.md); the MapLibre
+    // setup does not survive being cut into pieces.
+    "react-doctor/no-giant-component": "off",
+    // Axis and legend labels in the charts are 11px on purpose; they are dense
+    // data annotation, not interface text.
+    "react-doctor/no-tiny-text": "off",
+    // Route segments and small modules export constants beside a component.
+    "react-doctor/only-export-components": "off",
+    // The weather route is a Cache Components route: `"use cache"` plus
+    // `cacheLife`/`cacheTag` control its freshness, which the rule cannot see.
+    "react-doctor/server-fetch-without-revalidate": "off",
+    // Handlers are named after what they do (`onOpenScales`), not after the
+    // prop they are passed to.
+    "react/jsx-handler-names": "off",
+    // A handful of effects deliberately opt out of the dependency rules and
+    // explain why right above the suppression; this rule objects to the
+    // existence of the suppression, which would leave nowhere to put it.
+    "react/rule-suppression": "off",
+    // `noUncheckedIndexedAccess` is on, and the profile, climate and route
+    // code walks parallel arrays by index. Guarding every access would bury
+    // the maths; the assertions mark the invariant instead.
+    "typescript/no-non-null-assertion": "off",
+  },
+  settings: jsPluginSettings,
 });

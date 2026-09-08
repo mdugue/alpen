@@ -5,25 +5,45 @@
   "items": {
     "type": "object",
     "properties": {
-      "slug": {
-        "type": "string",
-        "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
-      },
-      "name": {
-        "type": "string",
-        "minLength": 2
+      "check": {
+        "type": "object",
+        "properties": {
+          "maxKmDelta": {
+            "type": "number",
+            "exclusiveMinimum": 0
+          },
+          "maxWaypointDist": {
+            "type": "number",
+            "exclusiveMinimum": 0
+          },
+          "note": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "note"
+        ],
+        "additionalProperties": false
       },
       "color": {
         "type": "string",
         "pattern": "^#[0-9a-f]{6}$"
       },
-      "km": {
-        "type": "number",
-        "exclusiveMinimum": 0
+      "description": {
+        "type": "string"
       },
       "elevationGain": {
         "type": "number",
         "minimum": 0
+      },
+      "km": {
+        "type": "number",
+        "exclusiveMinimum": 0
+      },
+      "name": {
+        "type": "string",
+        "minLength": 2
       },
       "passes": {
         "minItems": 1,
@@ -36,8 +56,9 @@
       "season": {
         "type": "string"
       },
-      "description": {
-        "type": "string"
+      "slug": {
+        "type": "string",
+        "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
       },
       "waypoints": {
         "minItems": 2,
@@ -62,38 +83,17 @@
           ],
           "additionalProperties": false
         }
-      },
-      "check": {
-        "type": "object",
-        "properties": {
-          "maxKmDelta": {
-            "type": "number",
-            "exclusiveMinimum": 0
-          },
-          "maxWaypointDist": {
-            "type": "number",
-            "exclusiveMinimum": 0
-          },
-          "note": {
-            "type": "string",
-            "minLength": 1
-          }
-        },
-        "required": [
-          "note"
-        ],
-        "additionalProperties": false
       }
     },
     "required": [
-      "slug",
-      "name",
       "color",
-      "km",
+      "description",
       "elevationGain",
+      "km",
+      "name",
       "passes",
       "season",
-      "description",
+      "slug",
       "waypoints"
     ],
     "additionalProperties": false

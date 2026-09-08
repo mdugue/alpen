@@ -7,14 +7,14 @@ import type { WeatherDay } from "@/lib/types";
  *      once per visitor (Open-Meteo quota),
  *   b) the client makes no third-party requests.
  */
-async function forecast(
+const forecast = async (
   lat: number,
   lon: number,
   elevation: number,
-): Promise<WeatherDay[]> {
+): Promise<WeatherDay[]> => {
   "use cache";
   const { cacheLife, cacheTag } = await import("next/cache");
-  cacheLife({ stale: 300, revalidate: 1800, expire: 7200 });
+  cacheLife({ expire: 7200, revalidate: 1800, stale: 300 });
   cacheTag("weather");
 
   const res = await fetch(
@@ -29,19 +29,19 @@ async function forecast(
 
   return (daily.time as string[]).map((date, i) => ({
     date,
-    tmin: daily.temperature_2m_min![i] as number,
-    tmax: daily.temperature_2m_max![i] as number,
     precipitation: daily.precipitation_sum![i] as number,
     snowfall: daily.snowfall_sum![i] as number,
-    windMax: daily.wind_speed_10m_max![i] as number,
+    tmax: daily.temperature_2m_max![i] as number,
+    tmin: daily.temperature_2m_min![i] as number,
     weatherCode: daily.weather_code![i] as number,
+    windMax: daily.wind_speed_10m_max![i] as number,
   }));
-}
+};
 
-export async function GET(
+export const GET = async (
   _req: Request,
   ctx: { params: Promise<{ slug: string }> },
-) {
+) => {
   const { slug } = await ctx.params;
   const pass = await getPass(slug);
   if (!pass)
@@ -49,8 +49,8 @@ export async function GET(
 
   try {
     const days = await forecast(pass.lat, pass.lon, pass.elevation);
-    return Response.json({ slug, days });
+    return Response.json({ days, slug });
   } catch (error) {
     return Response.json({ error: (error as Error).message }, { status: 502 });
   }
-}
+};

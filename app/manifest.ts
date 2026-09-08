@@ -10,28 +10,28 @@ import { BRAND, SITE_CLAIM, SITE_NAME, SITE_TAGLINE } from "@/lib/brand";
  */
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    id: "/",
-    name: `${SITE_NAME} – ${SITE_TAGLINE}`,
-    short_name: SITE_NAME,
-    description: SITE_CLAIM,
-    lang: "de",
-    dir: "ltr",
-    start_url: "/",
-    scope: "/",
-    display: "standalone",
     background_color: BRAND.paper,
-    theme_color: BRAND.paper,
     categories: ["travel", "sports", "navigation"],
+    description: SITE_CLAIM,
+    dir: "ltr",
+    display: "standalone",
     // "any" only: the badge runs edge to edge, so a maskable circular crop
     // would cut the range off its baseline (see app/apple-icon.tsx).
     icons: [
-      { src: "/icon", sizes: "32x32", type: "image/png" },
+      { sizes: "32x32", src: "/icon", type: "image/png" },
       {
-        src: "/apple-icon",
-        sizes: "180x180",
-        type: "image/png",
         purpose: "any",
+        sizes: "180x180",
+        src: "/apple-icon",
+        type: "image/png",
       },
     ],
+    id: "/",
+    lang: "de",
+    name: `${SITE_NAME} – ${SITE_TAGLINE}`,
+    scope: "/",
+    short_name: SITE_NAME,
+    start_url: "/",
+    theme_color: BRAND.paper,
   };
 }

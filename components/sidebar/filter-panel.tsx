@@ -56,12 +56,45 @@ const statusSummary = (status: Status[]) =>
       ? "Kein Status"
       : status.map((s) => STATUS_LABEL[s]).join(", ");
 
+/** A labelled native select for one 1–5 threshold; label above, so three fit in a row. */
+const Select = ({
+  id,
+  label,
+  value,
+  onChange,
+  options,
+}: {
+  id: string;
+  label: string;
+  value: number;
+  onChange: (value: number) => void;
+  options: readonly (readonly [value: number, label: string])[];
+}) => (
+  <Field className={cn("gap-1")}>
+    <FieldLabel htmlFor={id} className="text-muted-foreground text-[11px]">
+      {label}
+    </FieldLabel>
+    <NativeSelect
+      size="sm"
+      id={id}
+      value={value}
+      onChange={(e) => onChange(Number(e.target.value))}
+    >
+      {options.map(([v, text]) => (
+        <NativeSelectOption key={v} value={v}>
+          {text}
+        </NativeSelectOption>
+      ))}
+    </NativeSelect>
+  </Field>
+);
+
 /**
  * The one filter panel of the app: the status picker and the pass criteria.
  * Everything here applies to passes and tours alike (see `Filters`), so it
  * sits above the lists rather than inside one of them.
  */
-export function FilterPanel({
+export const FilterPanel = ({
   filters,
   setFilters,
   search,
@@ -73,7 +106,7 @@ export function FilterPanel({
   search: React.ReactNode;
   /** Bottom sheet at its peek height: only the search row stays. */
   hidden?: boolean;
-}) {
+}) => {
   const set = <K extends keyof Filters>(key: K, value: Filters[K]) =>
     setFilters((f) => ({ ...f, [key]: value }));
   const statusFiltered = filters.status.length !== ALL_STATUS.length;
@@ -209,39 +242,4 @@ export function FilterPanel({
       </CollapsibleContent>
     </Collapsible>
   );
-}
-
-/** A labelled native select for one 1–5 threshold; label above, so three fit in a row. */
-function Select({
-  id,
-  label,
-  value,
-  onChange,
-  options,
-}: {
-  id: string;
-  label: string;
-  value: number;
-  onChange: (value: number) => void;
-  options: readonly (readonly [value: number, label: string])[];
-}) {
-  return (
-    <Field className={cn("gap-1")}>
-      <FieldLabel htmlFor={id} className="text-muted-foreground text-[11px]">
-        {label}
-      </FieldLabel>
-      <NativeSelect
-        size="sm"
-        id={id}
-        value={value}
-        onChange={(e) => onChange(Number(e.target.value))}
-      >
-        {options.map(([v, text]) => (
-          <NativeSelectOption key={v} value={v}>
-            {text}
-          </NativeSelectOption>
-        ))}
-      </NativeSelect>
-    </Field>
-  );
-}
+};
