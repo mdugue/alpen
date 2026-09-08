@@ -1,5 +1,26 @@
 import { Explorer } from "@/components/explorer";
+import { SITE_DESCRIPTION, SITE_NAME, siteUrl } from "@/lib/brand";
 import { getClimate, getPasses, getProfiles, getRoutes, getTours, getTowns } from "@/lib/data";
+
+/**
+ * Structured data for the map page. Deliberately without ratings or reviews:
+ * the 1–5 scales are editorial judgements (docs/scales.md) and must not show up
+ * as measured values in a search result either.
+ */
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  name: SITE_NAME,
+  url: siteUrl,
+  description: SITE_DESCRIPTION,
+  applicationCategory: "TravelApplication",
+  browserRequirements: "Requires JavaScript and WebGL.",
+  inLanguage: "de",
+  isAccessibleForFree: true,
+  offers: { "@type": "Offer", price: 0, priceCurrency: "EUR" },
+  author: { "@type": "Person", name: "Manuel Dugué", url: "https://manuel.fyi" },
+  about: { "@type": "Place", name: "Alpen" },
+};
 
 /**
  * Everything on this page is static: the data lives in the repo, is loaded at
@@ -24,6 +45,7 @@ export default async function Page() {
 
   return (
     <main className="h-dvh overflow-hidden">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <Explorer
         passes={passes}
         tours={tours}

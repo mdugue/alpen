@@ -1,33 +1,62 @@
 import type { Metadata, Viewport } from "next";
 import { Inter, Oxanium } from "next/font/google";
+import { BRAND, SITE_DESCRIPTION, SITE_NAME, SITE_TITLE, siteUrl } from "@/lib/brand";
 import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter", display: "swap" });
 const oxanium = Oxanium({ subsets: ["latin"], variable: "--font-oxanium", display: "swap" });
 
-// Absolute URLs for the share images; Vercel provides the production host.
-const siteUrl =
-  process.env.NEXT_PUBLIC_SITE_URL ??
-  (process.env.VERCEL_PROJECT_PRODUCTION_URL ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}` : "http://localhost:3000");
-
 export const metadata: Metadata = {
+  // Absolute URLs for the share images; Vercel provides the production host.
   metadataBase: new URL(siteUrl),
-  title: "Alpenpässe – Rennradkarte",
-  description:
-    "Pässe, Auffahrten mit Höhenprofil, Rundtouren und Rad-Orte in den Alpen – mit Befahrbarkeit je Halbmonat, Wetter und Klima.",
-  openGraph: {
-    title: "Alpenpässe – Rennradkarte",
-    description: "Grobe Orientierung für Rennradrouten in den Alpen.",
-    locale: "de_DE",
-    type: "website",
+  title: {
+    default: SITE_TITLE,
+    // Sub-pages set a bare title ("Impressum") and get the site name appended.
+    template: `%s – ${SITE_NAME}`,
   },
+  description: SITE_DESCRIPTION,
+  applicationName: SITE_NAME,
+  authors: [{ name: "Manuel Dugué", url: "https://manuel.fyi" }],
+  creator: "Manuel Dugué",
+  category: "travel",
+  keywords: [
+    "Alpenpässe",
+    "Rennrad",
+    "Rennradurlaub",
+    "Radurlaub Alpen",
+    "Passhöhen",
+    "Rundtouren",
+    "Höhenprofil",
+    "Passöffnung",
+    "Wann sind die Alpenpässe offen",
+    "Radreiseziele",
+  ],
+  alternates: { canonical: "/" },
+  openGraph: {
+    type: "website",
+    locale: "de_DE",
+    url: "/",
+    siteName: SITE_NAME,
+    title: SITE_TITLE,
+    description: SITE_DESCRIPTION,
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: SITE_TITLE,
+    description: SITE_DESCRIPTION,
+  },
+  // Search engines are welcome; the crawlers that are not are turned away in
+  // app/robots.ts.
+  robots: { index: true, follow: true },
+  appleWebApp: { capable: true, title: SITE_NAME, statusBarStyle: "default" },
+  formatDetection: { telephone: false },
 };
 
 // Keep in sync with --background in app/globals.css (light / dark).
 export const viewport: Viewport = {
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#fbfaf7" },
-    { media: "(prefers-color-scheme: dark)", color: "#1a1c22" },
+    { media: "(prefers-color-scheme: light)", color: BRAND.paper },
+    { media: "(prefers-color-scheme: dark)", color: BRAND.night },
   ],
   viewportFit: "cover",
 };

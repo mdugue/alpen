@@ -3,7 +3,9 @@ import { ArrowLeft } from "lucide-react";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Datenschutzerklärung – Alpenpässe",
+  // The site name is appended by the title template in app/layout.tsx.
+  title: "Datenschutzerklärung",
+  alternates: { canonical: "/datenschutz" },
   robots: { index: false },
 };
 

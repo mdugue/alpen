@@ -54,11 +54,12 @@ every view is shareable (plan 02 in `docs/plans/` moves entities to real
 routes).
 
 ```
-app/            layout, start page, weather route, Impressum, Datenschutz
+app/            layout, start page, weather route, Impressum, Datenschutz,
+                metadata routes (icons, share image, manifest, robots, sitemap)
 components/     explorer (state) · map (MapLibre) · sidebar (lists, filters) · panel (detail) · ui (shadcn)
 data/           passes.json, tours.json, towns.json  ← source data, hand-maintained
 data/generated/ routes.json, profiles.json, climate.json  ← from data:build, committed
-lib/            types, data access, status heuristic, state hooks
+lib/            types, data access, status heuristic, state hooks, brand constants
 scripts/        build-data.ts (precomputation), check-data.ts (validation)
 docs/           scales, data model, roadmap, plans/
 .agents/skills/ project skills for agents: implement-plan, curate-data, preview-app
@@ -94,6 +95,10 @@ See `.env.example`. None of them is required to start the app.
   tier of 5,000/hour and 10,000/day. The script stops itself at this budget
   (default 4,500) and picks up the rest on the next run; the GitHub Action
   `refresh-data.yml` runs twice a day until nothing is missing.
+- `NEXT_PUBLIC_SITE_URL` – absolute base URL for canonical links, the share
+  images, `robots.txt` and `sitemap.xml`. On Vercel it is derived from
+  `VERCEL_PROJECT_PRODUCTION_URL` (or `VERCEL_URL` on a preview), so it is only
+  needed for a custom domain or a different host.
 - `NEXT_PUBLIC_THUNDERFOREST_KEY`, `NEXT_PUBLIC_MAPTILER_KEY` – optional
   outdoor base maps. Without a key, OSM, OpenTopoMap, CyclOSM, Esri Topo and
   satellite imagery are available.
