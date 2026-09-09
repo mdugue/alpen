@@ -35,6 +35,9 @@ export type ProfileWithCoords = ElevationProfile & { coords?: RouteGeometry };
 export type ClimateBucket = z.infer<typeof S.ClimateBucket>;
 /** 24 half-months, index 0 = early January. null = no data. */
 export type ClimateYear = z.infer<typeof S.ClimateYear>;
+/** Wikimedia Commons photos per entity, see `lib/photos.ts`. */
+export type Photo = z.infer<typeof S.Photo>;
+export type Photos = z.infer<typeof S.Photos>;
 export type WeatherDay = z.infer<typeof S.WeatherDay>;
 
 /** The route quality gate, see scripts/lib/validate.ts. */

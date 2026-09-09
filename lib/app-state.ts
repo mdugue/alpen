@@ -334,12 +334,24 @@ export const writeHash = (
 };
 
 /**
- * localStorage hook with an SSR-safe initial value. The value is read via
+ * Web-storage hook with an SSR-safe initial value. The value is read via
  * useSyncExternalStore so that the first client render matches the server
  * HTML and no setState in an effect is needed.
+ *
+ * Two areas, because the two kinds of state have different lifetimes: what the
+ * visitor decided about the app (favourites, period, which lists are open)
+ * belongs in `localStorage` and outlives the tab; how they arranged one
+ * sitting (which detail blocks they folded away) belongs in `sessionStorage`
+ * and is forgotten with it.
  */
+export type StorageArea = "local" | "session";
+
 const listeners = new Set<() => void>();
+/** Keyed by area *and* key: the two areas may hold the same name. */
 const cache = new Map<string, { raw: string | null; value: unknown }>();
+
+const storage = (where: StorageArea) =>
+  where === "local" ? localStorage : sessionStorage;
 
 const subscribe = (onChange: () => void) => {
   listeners.add(onChange);
@@ -350,18 +362,19 @@ const subscribe = (onChange: () => void) => {
   };
 };
 
-const readStored = <T>(key: string, initial: T): T => {
+const readStored = <T>(key: string, initial: T, where: StorageArea): T => {
+  const id = `${where}:${key}`;
   let raw: string | null = null;
   try {
-    raw = localStorage.getItem(key);
+    raw = storage(where).getItem(key);
   } catch {
     // Blocked storage: still hand back one stable reference per key.
-    const hit = cache.get(key);
+    const hit = cache.get(id);
     if (hit) return hit.value as T;
-    cache.set(key, { raw: null, value: initial });
+    cache.set(id, { raw: null, value: initial });
     return initial;
   }
-  const hit = cache.get(key);
+  const hit = cache.get(id);
   // Keep referentially stable, otherwise useSyncExternalStore renders endlessly.
   if (hit && hit.raw === raw) return hit.value as T;
   let value = initial;
@@ -372,14 +385,18 @@ const readStored = <T>(key: string, initial: T): T => {
       value = initial;
     }
   }
-  cache.set(key, { raw, value });
+  cache.set(id, { raw, value });
   return value;
 };
 
-export const useStored = <T>(key: string, initial: T) => {
+export const useStored = <T>(
+  key: string,
+  initial: T,
+  where: StorageArea = "local",
+) => {
   const value = useSyncExternalStore(
     subscribe,
-    () => readStored(key, initial),
+    () => readStored(key, initial, where),
     () => initial,
   );
 
@@ -387,17 +404,18 @@ export const useStored = <T>(key: string, initial: T) => {
     (next: T | ((prev: T) => T)) => {
       const resolved =
         typeof next === "function"
-          ? (next as (prev: T) => T)(readStored(key, initial))
+          ? (next as (prev: T) => T)(readStored(key, initial, where))
           : next;
+      const raw = JSON.stringify(resolved);
       try {
-        localStorage.setItem(key, JSON.stringify(resolved));
+        storage(where).setItem(key, raw);
       } catch {
         /* Private mode or similar – then simply without persistence */
       }
-      cache.set(key, { raw: JSON.stringify(resolved), value: resolved });
+      cache.set(`${where}:${key}`, { raw, value: resolved });
       for (const l of listeners) l();
     },
-    [key, initial],
+    [key, initial, where],
   );
 
   return [value, setValue] as const;
@@ -435,6 +453,16 @@ export const useFavorites = () => {
   };
 };
 
+/**
+ * Which blocks of the detail panel the visitor folded away, by `Section` id.
+ * Stored as the *closed* ones, so a block that did not exist yet opens by
+ * itself, and in `sessionStorage`: folding the climate away applies to the
+ * next pass looked at, not to the next visit a month later.
+ */
+export const SECTIONS_KEY = "alpenpaesse:closedSections";
+/** Stable empty snapshot for `SECTIONS_KEY`, as `NO_SLUGS` is for the tours. */
+export const NO_SECTIONS: string[] = [];
+
 export const PERIOD_KEY = "alpenpaesse:period";
 
 /**
@@ -457,7 +485,7 @@ export const resolvePeriod = (
 
 /** The stored period outside React, for the one-shot hash initialisation. */
 export const readStoredPeriod = (): Period | null => {
-  const value = readStored<Period | null>(PERIOD_KEY, null);
+  const value = readStored<Period | null>(PERIOD_KEY, null, "local");
   return isPeriod(value) ? value : null;
 };
 

@@ -46,6 +46,7 @@ import type {
   LatLon,
   Pass,
   Period,
+  Photos,
   ProfileWithCoords,
   Tour,
   Town,
@@ -66,6 +67,8 @@ interface Props {
   nearbyTours: NearbyTours;
   profiles: Record<string, ProfileWithCoords>;
   climate: Record<string, ClimateYear>;
+  /** Commons photos per entity, see `lib/photos.ts`. */
+  photos: Photos;
   /** Today's half-month, computed on the server in Europe/Berlin. */
   defaultPeriod: Period;
 }
@@ -93,6 +96,7 @@ export const Explorer = ({
   nearbyTours,
   profiles,
   climate,
+  photos,
   defaultPeriod,
 }: Props) => {
   const [filters, setFilters] = useState<Filters>({
@@ -252,13 +256,13 @@ export const Explorer = ({
       nearbyTours={nearbyTours}
       profiles={profiles}
       climate={climate}
+      photos={photos}
       isFavorite={isFavorite}
       onToggleFavorite={toggleFavorite}
       onProfileCursor={setProfileCursor}
       onProfileZoom={setProfileZoom}
       onSelect={select}
       onBack={back}
-      onOpenScales={() => setScalesOpen(true)}
     />
   );
 

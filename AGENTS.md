@@ -49,12 +49,13 @@ friends do that better and the app links out to them.
 | Map, layers, 3D, markers, labels, feature state | `components/map/pass-map.tsx`                                                                                             |
 | Map assets: GeoJSON, simplification, hashing    | `lib/map-assets.ts`, `scripts/build-map-assets.ts` (→ `public/map`, git-ignored)                                          |
 | Tours within reach of an entity                 | `lib/nearby.ts` (computed on the server in `lib/data.ts`)                                                                 |
+| Photos: keys, sizes, licence metadata           | `lib/photos.ts`, `scripts/build-photos.ts` (`bun run data:photos`) → `data/generated/photos.json`                         |
 | Period scrubber floating over the map           | `components/map/period-scrubber.tsx`                                                                                      |
 | Season strip (24 half-months)                   | `components/season-strip.tsx`                                                                                             |
 | Sidebar: search, filters, one list per kind     | `components/sidebar/`, `lib/rows.ts`                                                                                      |
-| Detail panel incl. profile/weather/climate      | `components/panel/`                                                                                                       |
+| Detail panel incl. profile/weather/climate      | `components/panel/` (collapsible blocks: `components/panel/section.tsx`)                                                  |
 | Bottom sheet on phones (one per panel)          | `components/mobile-sheet.tsx`                                                                                             |
-| Precomputation, data checks                     | `scripts/build-data.ts`, `scripts/check-data.ts`                                                                          |
+| Precomputation, data checks                     | `scripts/build-data.ts`, `scripts/build-photos.ts`, `scripts/check-data.ts`                                               |
 | Route quality gate: checks and thresholds       | `scripts/lib/validate.ts`; pass-point placement `scripts/locate-pass.ts` (`bun run data:locate`), `scripts/lib/locate.ts` |
 | Name, claim, colours, mark, base URL            | `lib/brand.ts`, `lib/mark.tsx`                                                                                            |
 | Icons, share image, manifest, robots, sitemap   | `app/icon.tsx`, `app/apple-icon.tsx`, `app/opengraph-image.tsx`, `app/manifest.ts`, `app/robots.ts`, `app/sitemap.ts`     |
@@ -119,6 +120,29 @@ friends do that better and the app links out to them.
   (`components/panel/climate-chart.tsx`) is pulled in with `next/dynamic` and
   never reaches the first load. Stat tiles and dense rows use `Item`, stepper
   groups use `ButtonGroup`.
+- **Photos are borrowed, not owned.** The detail panel opens with a slideshow
+  of Wikimedia Commons photos (`components/panel/photo-carousel.tsx`).
+  `scripts/build-photos.ts` picks them once, without an editorial step – a
+  geosearch around the pass point, a name filter that keeps signs and maps out,
+  a rank by name match – and stores only metadata in
+  `data/generated/photos.json`: the thumbnail URL, the author, the licence and
+  the file page. The files themselves stay on Wikimedia's CDN and reach the
+  browser through a plain `<img>`; they are already the right size and already
+  cached, and mirroring them would put ~25 MB of binaries into the repo.
+  Attribution is not decoration: every slide carries author and licence,
+  baked into the slide rather than derived from the carousel's index, so it
+  cannot drift out of sync with what is on screen.
+- **The panel folds.** Every block below the title is a `Section`
+  (`components/panel/section.tsx`), open by default. The panel is a column on a
+  map and a phone sheet shows two blocks at a time; whoever wants the climate
+  should not scroll past two elevation profiles first. Which blocks are folded
+  is one `sessionStorage` entry shared by all of them (`SECTIONS_KEY`), keyed
+  by section id and holding the _closed_ ones: a fold carries over to the next
+  pass looked at, a new section opens by itself, and the next visit starts
+  unfolded again. A section title says what the block is and nothing else;
+  where a source or its caveat has to be named, one short sentence sits behind
+  the `info` tooltip. A header never opens a dialog – the scales dialog belongs
+  to the sidebar footer, which is where it stays.
 - **Colours only via tokens.** MapLibre cannot read CSS variables;
   `pass-map.tsx` reads them once via `getComputedStyle` (`readColors`). Add
   new map colours there rather than hard-coding them.

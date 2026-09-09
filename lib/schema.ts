@@ -193,6 +193,34 @@ export const Routes = z.record(z.string(), RouteGeometry);
 export const Profiles = z.record(z.string(), ElevationProfile);
 /** Key: pass slug. */
 export const Climate = z.record(Slug, ClimateYear);
+// ── Output of scripts/build-photos.ts ────────────────────────────────────────
+
+/**
+ * One photo from Wikimedia Commons, together with everything its licence
+ * obliges us to show: author, licence name and a link to the file page. Only
+ * the metadata lives in the repo – the file itself stays on Wikimedia's CDN
+ * and is loaded by the browser from `src`, so no binary enters the project.
+ */
+export const Photo = z.strictObject({
+  /** Author line as plain text. Empty only where Commons names none. */
+  artist: z.string(),
+  /** Height of the thumbnail `src` points at. */
+  height: z.int().positive(),
+  /** Licence as Commons states it, e.g. "CC BY-SA 4.0" or "Public domain". */
+  license: z.string().min(1),
+  licenseUrl: z.url().optional(),
+  /** The Commons file page: the "source" half of the attribution. */
+  page: z.url(),
+  /** Commons thumbnail URL, `PHOTO_WIDTH` px wide (see `lib/photos.ts`). */
+  src: z.url(),
+  /** File name without the "File:" prefix and the extension – the alt text. */
+  title: z.string().min(1),
+  /** Width of the thumbnail `src` points at. */
+  width: z.int().positive(),
+});
+
+/** Key: `pass:<slug>`, `tour:<slug>` or `town:<slug>`, see `photoKey`. */
+export const Photos = z.record(z.string(), z.array(Photo));
 
 // ── The route quality gate (scripts/lib/validate.ts) ─────────────────────────
 
@@ -296,6 +324,7 @@ export const WeatherDay = z.strictObject({
 /** Which schema validates which file; used by check-data and emit-json-schema. */
 export const FILES = {
   "generated/climate.json": Climate,
+  "generated/photos.json": Photos,
   "generated/profiles.json": Profiles,
   "generated/rejected.json": Rejected,
   "generated/routes-meta.json": RoutesMeta,
