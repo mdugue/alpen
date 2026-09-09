@@ -1,6 +1,6 @@
 "use client";
 
-import { PanelLeftClose, Search, Star, X } from "lucide-react";
+import { PanelLeftClose, Search, X } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useRef } from "react";
 
@@ -17,12 +17,11 @@ import {
   InputGroupInput,
 } from "@/components/ui/input-group";
 import { Switch } from "@/components/ui/switch";
-import { Toggle } from "@/components/ui/toggle";
 import { DEFAULT_FILTERS, hasActiveFilters } from "@/lib/app-state";
 import type { EntityKind, Filters, Selection } from "@/lib/app-state";
 import type { PassRow, TourRow, TownRow } from "@/lib/rows";
 import type { Tour } from "@/lib/types";
-import { cn, PRESSED } from "@/lib/utils";
+import { cn, TOUCH_CONTROL } from "@/lib/utils";
 
 export interface SidebarProps {
   /** `aside` renders the brand row; the bottom sheet shows its swipe handle instead. */
@@ -45,11 +44,10 @@ export interface SidebarProps {
   onSelect: (sel: Selection) => void;
   /** Highlighted in the lists and scrolled into view. */
   selection: Selection | null;
-  /** Rendered instead of the lists while an entity is selected; the lists stay mounted (scroll position, open sections). */
-  detail: React.ReactNode;
   onCollapse?: () => void;
   onOpenScales: () => void;
-  onSearchFocus?: () => void;
+  /** Tap on the peek row's search button: the sheet opens, the field it reveals is the real one. */
+  onOpenSearch?: () => void;
   /** Bottom sheet at its peek height: only the search row is visible. */
   peek?: boolean;
 }
@@ -110,19 +108,34 @@ export const Sidebar = (p: SidebarProps) => {
         <h1 className="sr-only">Alpenpässe – Rennradkarte</h1>
       )}
 
-      {p.detail ? (
-        <div className="flex min-h-0 flex-1 flex-col">{p.detail}</div>
-      ) : null}
-
-      <div className={cn("flex min-h-0 flex-1 flex-col", p.detail && "hidden")}>
+      <div className="flex min-h-0 flex-1 flex-col">
         <div className="border-border relative flex shrink-0 flex-col gap-2 border-b px-3 py-2">
           <FilterPanel
             filters={p.filters}
             setFilters={p.setFilters}
+            favoriteCount={p.favoriteCount}
             hidden={p.peek}
             search={
-              <>
-                <InputGroup className="flex-1">
+              // On the peek row the field is a button that only opens the
+              // sheet: a live input there would have the software keyboard
+              // come up in the same moment as the sheet moves, and the two
+              // animations fight over where the field ends up.
+              p.peek ? (
+                <Button
+                  variant="outline"
+                  onClick={p.onOpenSearch}
+                  className={cn(
+                    "text-muted-foreground flex-1 justify-start font-normal",
+                    TOUCH_CONTROL,
+                  )}
+                >
+                  <Search data-icon="inline-start" />
+                  <span className="truncate">
+                    {p.filters.query || "Pass, Tour oder Ort …"}
+                  </span>
+                </Button>
+              ) : (
+                <InputGroup className={cn("flex-1", TOUCH_CONTROL)}>
                   <InputGroupAddon>
                     <Search />
                   </InputGroupAddon>
@@ -134,10 +147,9 @@ export const Sidebar = (p: SidebarProps) => {
                     spellCheck={false}
                     value={p.filters.query}
                     onChange={(e) => set("query", e.target.value)}
-                    onFocus={p.onSearchFocus}
                     placeholder="Pass, Tour oder Ort …"
                     aria-label="Suchen"
-                    className="[&::-webkit-search-cancel-button]:appearance-none [&::-webkit-search-decoration]:appearance-none"
+                    className="h-full [&::-webkit-search-cancel-button]:appearance-none [&::-webkit-search-decoration]:appearance-none"
                   />
                   {p.filters.query && (
                     <InputGroupAddon align="inline-end">
@@ -151,21 +163,7 @@ export const Sidebar = (p: SidebarProps) => {
                     </InputGroupAddon>
                   )}
                 </InputGroup>
-                <Toggle
-                  variant="outline"
-                  pressed={p.filters.favoritesOnly}
-                  onPressedChange={(on) => set("favoritesOnly", on)}
-                  aria-label="Nur Gemerkte anzeigen"
-                  className={PRESSED}
-                >
-                  <Star
-                    className={cn(p.filters.favoritesOnly && "fill-current")}
-                  />
-                  {p.favoriteCount > 0 && (
-                    <span className="tabular-nums">{p.favoriteCount}</span>
-                  )}
-                </Toggle>
-              </>
+              )
             }
           />
           {hasActiveFilters(p.filters) && !p.peek && (

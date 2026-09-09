@@ -92,12 +92,14 @@ test(
     withPage(app, "status-filter", { hash: "#t=1" }, async (page) => {
       await page.waitFor(PASS_ROW);
       const all = await page.count(PASS_ROW);
-      // The status picker is a dropdown with checkboxes inside the filter panel.
+      // The status picker is a toggle group inside the filter panel: one chip
+      // per status, no popup to open.
       await page.clickText("button", "Filter");
-      await page.click('[aria-label="Status filtern"]');
-      // The menu renders in a portal a frame after the click.
-      await page.waitFor('[role="menuitemcheckbox"]');
-      await page.clickText('[role="menuitemcheckbox"]', "oft gesperrt");
+      await page.waitFor('[aria-label="Status filtern"]');
+      await page.clickText(
+        '[aria-label="Status filtern"] button',
+        "oft gesperrt",
+      );
       await waitUntil(
         async () => (await page.count(PASS_ROW)) < all,
         "fewer passes after filtering",
@@ -126,18 +128,27 @@ test(
 );
 
 test(
-  "6 · the mobile sheet goes peek → list → detail → back",
+  "6 · list and detail are separate sheets: peek → list → detail → back",
   () =>
     withPage(app, "mobile-sheet", { mobile: true }, async (page) => {
+      // The peek row carries a button, not the field: the sheet opens first,
+      // so the software keyboard never arrives while the sheet is moving.
+      await page.waitFor('[aria-label="Liste ausklappen"]');
+      expect(await page.count("input[type=search]")).toBe(0);
+      await page.clickText("button", "Pass, Tour oder Ort");
       await page.waitFor("input[type=search]");
-      await page.click('[aria-label="Liste ausklappen"]');
       await page.waitFor(PASS_ROW);
+      const all = await page.count(PASS_ROW);
       await page.click(GALIBIER);
       await page.waitFor("#detail-title");
       expect(await page.text("#detail-title")).toBe("Col du Galibier");
-      await page.clickText("button", "Liste");
+      // The list sheet stays on screen behind the detail sheet, so its rows
+      // are still in the document while the detail is open.
+      expect(await page.count(PASS_ROW)).toBe(all);
+      await page.click('[aria-label="Details schließen"]');
       await page.waitForGone("#detail-title");
       await page.waitFor(PASS_ROW);
+      expect(await page.hash()).not.toContain("pass=");
     }),
   TIMEOUT,
 );
@@ -196,9 +207,12 @@ test(
         if (!(await page.camera())) return;
         // The bounds are precomputed per tour (lib/map-assets.ts), not read from
         // the line, so the camera lands on the tour before its geometry arrives.
+        // The camera flies in from the Alps overview, so it has to have
+        // arrived before its centre says anything: half way through the flight
+        // it is still east of the tour.
         await waitUntil(async () => {
           const c = await page.camera();
-          return !!c && c.zoom > 8;
+          return !!c && c.zoom > 8 && !c.moving;
         }, "camera fitted to the tour");
         const c = (await page.camera())!;
         expect(c.lat).toBeGreaterThan(45.03);
