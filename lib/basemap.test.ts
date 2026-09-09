@@ -1,5 +1,6 @@
 import { describe, expect, test } from "bun:test";
 
+// A dependency of maplibre-gl, so it is present without being declared.
 import { validateStyleMin } from "@maplibre/maplibre-gl-style-spec";
 
 import {
