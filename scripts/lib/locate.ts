@@ -26,6 +26,21 @@ export const ROAD_RADIUS = 0.3;
 /** Search radius for OSM pass nodes around a suspect point, km. */
 export const CANDIDATE_RADIUS = 6;
 
+/**
+ * A POST to Overpass. The Apache in front of overpass-api.de answers a bare
+ * `fetch` with 406 before the query is ever parsed – it wants the form
+ * content type and a User-Agent it recognises as a client rather than a
+ * runtime default. Both call sites go through here so they cannot drift.
+ */
+export const overpassPost = (query: string): RequestInit => ({
+  body: `data=${encodeURIComponent(query)}`,
+  headers: {
+    "Content-Type": "application/x-www-form-urlencoded",
+    "User-Agent": "alpen-data/1.0 (https://github.com/mdugue/alpen)",
+  },
+  method: "POST",
+});
+
 /** Overpass `out geom` way: the node coordinates come inline. */
 export interface OverpassWay {
   geometry: { lat: number; lon: number }[];

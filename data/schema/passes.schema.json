@@ -99,6 +99,9 @@
         "type": "string",
         "pattern": "^[A-Z]{2}(?:\\/[A-Z]{2})?$"
       },
+      "deadEnd": {
+        "type": "boolean"
+      },
       "difficulty": {
         "type": "integer",
         "minimum": 1,
@@ -139,6 +142,9 @@
           "Ostalpen",
           "Dolomiten"
         ]
+      },
+      "roadSummit": {
+        "type": "boolean"
       },
       "season": {
         "anyOf": [
