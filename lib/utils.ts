@@ -26,6 +26,22 @@ export const PRESSED =
  */
 export const ICON_TOGGLE = "size-7 px-0";
 
+/**
+ * Controls a thumb operates. The axis is the pointer, not the viewport: a
+ * coarse pointer needs a bigger target, and it is also where every form control
+ * is forced to a 16 px font (see `app/globals.css`) that the dense desktop
+ * height would clip. With a mouse the sizes stay as they are.
+ */
+export const TOUCH_CONTROL = "pointer-coarse:h-9";
+/**
+ * The same for `NativeSelect`, whose `className` lands on the wrapper, not on
+ * the control – and whose own `data-[size=sm]` height is more specific than a
+ * plain child selector, hence the important modifier.
+ */
+export const TOUCH_SELECT = "pointer-coarse:[&>select]:h-9!";
+/** The same for icon-only buttons and toggles, which have no label to aim at. */
+export const TOUCH_ICON = "pointer-coarse:size-9";
+
 /** Opaque surface for controls floating over map tiles (outline buttons are translucent in dark mode). */
 export const MAP_CONTROL = "bg-card shadow-md dark:bg-card";
 

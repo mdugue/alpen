@@ -3,7 +3,7 @@
 import { Star } from "lucide-react";
 
 import { Toggle } from "@/components/ui/toggle";
-import { cn, ICON_TOGGLE } from "@/lib/utils";
+import { cn, ICON_TOGGLE, TOUCH_ICON } from "@/lib/utils";
 
 /**
  * One list row: favourite toggle, the selectable body and a right-aligned
@@ -51,7 +51,7 @@ export const EntityRow = ({
       pressed={favorite}
       onPressedChange={onToggleFavorite}
       aria-label={favorite ? "Nicht mehr merken" : "Merken"}
-      className={cn(ICON_TOGGLE, "ml-1.5")}
+      className={cn(ICON_TOGGLE, TOUCH_ICON, "ml-1.5")}
     >
       <Star
         className={cn(

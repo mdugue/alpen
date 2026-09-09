@@ -98,6 +98,7 @@ const [
   meta,
   rejected,
   summits,
+  photos,
 ] = await Promise.all([
   load("passes.json"),
   load("tours.json"),
@@ -108,6 +109,7 @@ const [
   load("generated/routes-meta.json"),
   load("generated/rejected.json"),
   load("generated/summits.json"),
+  load("generated/photos.json"),
 ]);
 
 for (const file of Object.keys(FILES) as (keyof typeof FILES)[]) {
@@ -229,6 +231,8 @@ const checkPasses = (list: Pass[]) => {
     }
     if (climate && !(p.slug in climate))
       warnings.push(`${p.slug}: Klimareihe fehlt`);
+    if (photos && !(`pass:${p.slug}` in photos))
+      warnings.push(`${p.slug}: keine Fotos (bun run data:photos)`);
   }
 };
 
@@ -342,6 +346,15 @@ if (passes && tours) {
   for (const key of Object.keys(summits ?? {}))
     if (!slugs.has(key))
       warnings.push(`summits.json: verwaiste Gipfelhöhe ${key}`);
+  // Photos are keyed by entity, not by route: `pass:…`, `tour:…`, `town:…`.
+  const entityKeys = new Set([
+    ...passes.map((p) => `pass:${p.slug}`),
+    ...tours.map((t) => `tour:${t.slug}`),
+    ...(towns ?? []).map((t) => `town:${t.slug}`),
+  ]);
+  for (const key of Object.keys(photos ?? {}))
+    if (!entityKeys.has(key))
+      warnings.push(`photos.json: verwaiste Fotos ${key}`);
 }
 
 if (EXPLAIN) {

@@ -14,7 +14,7 @@
 
 :root {
   --radius: 0.625rem;
-  --sheet-peek: 4.5rem;
+  --sheet-peek: 5rem;
   color-scheme: light dark;
 
   --background: oklch(0.985 0.004 90);
@@ -192,5 +192,23 @@
   .maplibregl-ctrl-bottom-left,
   .maplibregl-ctrl-bottom-right {
     bottom: var(--sheet-peek);
+  }
+}
+
+/*
+ * Safari on iOS zooms the whole page in when a focused form control carries a
+ * font size below 16 px – on a map that fills the viewport that zoom is a trap,
+ * because there is no page to scroll back out of it. Coarse pointers therefore
+ * get 16 px controls; `TOUCH_CONTROL` in lib/utils.ts gives them the room, on
+ * the same `pointer-coarse` condition.
+ * The rule sits outside every layer on purpose: the components carry `text-xs`
+ * utilities, and an unlayered declaration beats `@layer utilities` no matter
+ * how specific the selector is.
+ */
+@media (pointer: coarse) {
+  input:not([type="range"], [type="checkbox"], [type="radio"]),
+  select,
+  textarea {
+    font-size: 1rem;
   }
 }
