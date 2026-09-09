@@ -3,6 +3,7 @@
 import { Box, Focus, Layers } from "lucide-react";
 import type {
   GeoJSONSource,
+  LayerSpecification,
   MapLayerMouseEvent,
   StyleSpecification,
 } from "maplibre-gl";
@@ -19,7 +20,7 @@ import {
 import "maplibre-gl/dist/maplibre-gl.css";
 import { useEffect, useRef, useState } from "react";
 
-import { baseLayers, OVERLAYS } from "@/components/map/map-style";
+import { baseLayers, OVERLAYS, VECTOR_BASE } from "@/components/map/map-style";
 import { Button } from "@/components/ui/button";
 import { ButtonGroup } from "@/components/ui/button-group";
 import {
@@ -43,7 +44,18 @@ import {
 } from "@/components/ui/tooltip";
 import { DEFAULT_VIEW, readHash, useStored } from "@/lib/app-state";
 import type { MapView, Selection } from "@/lib/app-state";
+import {
+  BASEMAP_ID,
+  BASEMAP_SOURCE,
+  BASEMAP_SOURCE_ID,
+  basemapLayers,
+  FONT_BOLD,
+  FONT_ITALIC,
+  GLYPHS,
+} from "@/lib/basemap";
 import type { MapAssets } from "@/lib/map-assets";
+import { PALETTE } from "@/lib/palette";
+import type { Scheme } from "@/lib/palette";
 import { ascentKey } from "@/lib/route-key";
 import type { LatLon, Pass, Status, Tour, Town } from "@/lib/types";
 import { cn, MAP_CLUSTER, MAP_TOOL, PRESSED } from "@/lib/utils";
@@ -108,6 +120,16 @@ const FIT_PADDING = 48;
  */
 const TOOL = "h-auto w-9 flex-1";
 const TERRAIN = { exaggeration: 1.25, source: "dem" } as const;
+const DARK_QUERY = "(prefers-color-scheme: dark)";
+/** The first layer above the base stack: where the basemap's lines and labels go. */
+const ABOVE_BASE = `ov-${OVERLAYS[0].id}`;
+
+const scheme = (): Scheme =>
+  window.matchMedia(DARK_QUERY).matches ? "dark" : "light";
+
+/** A stored base that no longer exists (a keyed raster, say) falls back to the default. */
+const resolveBase = (id: string) =>
+  id === BASEMAP_ID || baseLayers().some((b) => b.id === id) ? id : BASEMAP_ID;
 
 // MapLibre resolves its worker via import.meta.url, which Turbopack does not
 // serve; scripts/copy-maplibre-worker.ts places a copy under public/maplibre.
@@ -186,8 +208,10 @@ const addIcons = (map: MLMap, c: ReturnType<typeof readColors>) => {
       ctx.stroke();
     });
 
+  // Repainted on a scheme change: the strokes are paper and ink, which flip.
   const add = (id: string, data: ImageData) => {
-    if (!map.hasImage(id)) map.addImage(id, data, { pixelRatio: 2 });
+    if (map.hasImage(id)) map.updateImage(id, data);
+    else map.addImage(id, data, { pixelRatio: 2 });
   };
   for (const k of ["open", "risky", "closed"] as const) {
     add(`star-${k}-0`, star(c[k], c.paper));
@@ -207,6 +231,290 @@ const addIcons = (map: MLMap, c: ReturnType<typeof readColors>) => {
       ctx.strokeRect(-s * 0.26, -s * 0.26, s * 0.52, s * 0.52);
     }),
   );
+};
+
+type Colors = ReturnType<typeof readColors>;
+
+// Lighter on the light map: over a flat land tone the shading is the only
+// texture, and at 0.3 it turns the whole range grey.
+const hillshadePaint = (s: Scheme) => ({
+  "hillshade-exaggeration": s === "dark" ? 0.3 : 0.2,
+  "hillshade-highlight-color": PALETTE[s].highlight,
+  "hillshade-shadow-color": PALETTE[s].shade,
+});
+
+/** The hillshade over the base: the DEM stays, its tones follow the scheme. */
+const hillshadeLayer = (s: Scheme, visible: boolean): LayerSpecification => ({
+  id: "hillshade",
+  layout: { visibility: visible ? "visible" : "none" },
+  paint: hillshadePaint(s),
+  source: "dem",
+  type: "hillshade",
+});
+
+/**
+ * The bottom of the stack: either the generated vector map – its fills below
+ * the hillshade, its lines and labels above it – or one raster layer below.
+ */
+const baseStack = (
+  id: string,
+  s: Scheme,
+): { ground: LayerSpecification[]; detail: LayerSpecification[] } =>
+  id === BASEMAP_ID
+    ? basemapLayers(s)
+    : { detail: [], ground: [{ id: "base", source: id, type: "raster" }] };
+
+/** Swaps the base under a running map; everything above it stays put. */
+const applyBase = (m: MLMap, id: string, s: Scheme) => {
+  for (const l of m.getStyle().layers)
+    if (l.id === "base" || l.id.startsWith("base-")) m.removeLayer(l.id);
+  const { ground, detail } = baseStack(id, s);
+  for (const l of ground) m.addLayer(l, "hillshade");
+  for (const l of detail) m.addLayer(l, ABOVE_BASE);
+};
+
+/**
+ * The app's own layers, painted with the live tokens. A pure function of the
+ * colours, so a scheme change re-applies every paint property from the same
+ * definition the style was built from.
+ */
+const appLayers = (colors: Colors): LayerSpecification[] => {
+  const statusColor = [
+    "match",
+    ["get", "status"],
+    "open",
+    colors.open,
+    "risky",
+    colors.risky,
+    "closed",
+    colors.closed,
+    "#888888",
+  ] as never;
+  // The ascent and tour lines carry status and selection as feature state,
+  // so a period, filter or selection change never re-uploads geometry.
+  const selected = ["==", ["feature-state", "selected"], 1];
+  const routeColor = [
+    "match",
+    ["coalesce", ["feature-state", "status"], "none"],
+    "open",
+    colors.open,
+    "risky",
+    colors.risky,
+    "closed",
+    colors.closed,
+    "#888888",
+  ] as never;
+
+  return [
+    {
+      id: "tours-casing",
+      layout: { "line-cap": "round", "line-join": "round" },
+      paint: {
+        "line-color": colors.paper,
+        "line-opacity": 0.55,
+        "line-width": 6,
+      },
+      source: "tours",
+      type: "line",
+    },
+    {
+      id: "tours",
+      layout: { "line-cap": "round", "line-join": "round" },
+      paint: {
+        "line-color": ["get", "color"],
+        "line-opacity": 0.85,
+        "line-width": ["case", selected, 5, 3],
+      },
+      source: "tours",
+      type: "line",
+    },
+    {
+      id: "routes",
+      layout: { "line-cap": "round", "line-join": "round" },
+      paint: {
+        "line-color": routeColor,
+        "line-opacity": ["case", selected, 1, 0.85],
+        "line-width": ["case", selected, 6, 3.5],
+      },
+      source: "routes",
+      type: "line",
+    },
+    {
+      id: "tours-label",
+      layout: {
+        "symbol-placement": "line",
+        "symbol-spacing": 600,
+        "text-field": ["get", "name"],
+        "text-font": [FONT_BOLD],
+        "text-size": 11,
+      },
+      paint: {
+        "text-color": ["get", "color"],
+        "text-halo-color": colors.paper,
+        "text-halo-width": 1.5,
+      },
+      source: "tours",
+      type: "symbol",
+    },
+    {
+      id: "towns",
+      layout: {
+        "icon-allow-overlap": true,
+        "icon-image": [
+          "case",
+          ["==", ["get", "favorite"], 1],
+          "star-town-0",
+          "town",
+        ],
+        "icon-size": ["case", ["==", ["get", "favorite"], 1], 0.62, 0.5],
+      },
+      source: "towns",
+      type: "symbol",
+    },
+    {
+      id: "towns-label",
+      layout: {
+        "text-field": ["get", "name"],
+        "text-font": [FONT_ITALIC],
+        "text-justify": "auto",
+        "text-radial-offset": 0.8,
+        "text-size": 11,
+        "text-variable-anchor": ["left", "right", "top", "bottom"],
+      },
+      minzoom: 8,
+      paint: {
+        "text-color": colors.town,
+        "text-halo-color": colors.paper,
+        "text-halo-width": 1.5,
+      },
+      source: "towns",
+      type: "symbol",
+    },
+    {
+      filter: ["!=", ["get", "favorite"], 1],
+      id: "passes",
+      paint: {
+        // "closed" is additionally encoded as a hollow circle so that the
+        // three states do not rely on hue alone.
+        "circle-color": [
+          "case",
+          ["==", ["get", "status"], "closed"],
+          colors.paper,
+          statusColor,
+        ],
+        "circle-opacity": [
+          "case",
+          [">=", ["get", "fame"], 4],
+          0.95,
+          ["==", ["get", "fame"], 3],
+          0.8,
+          0.62,
+        ],
+        "circle-pitch-alignment": "map",
+        "circle-radius": [
+          "interpolate",
+          ["linear"],
+          ["zoom"],
+          6,
+          ["+", 2, ["*", 1.1, ["get", "fame"]]],
+          12,
+          ["+", 4, ["*", 1.8, ["get", "fame"]]],
+        ],
+        "circle-stroke-color": [
+          "case",
+          ["==", ["get", "selected"], 1],
+          colors.ink,
+          ["==", ["get", "status"], "closed"],
+          colors.closed,
+          colors.paper,
+        ],
+        "circle-stroke-width": [
+          "case",
+          ["==", ["get", "selected"], 1],
+          3,
+          ["==", ["get", "status"], "closed"],
+          2.5,
+          1.5,
+        ],
+      },
+      source: "passes",
+      type: "circle",
+    },
+    {
+      filter: ["==", ["get", "favorite"], 1],
+      id: "pass-stars",
+      layout: {
+        "icon-allow-overlap": true,
+        "icon-image": [
+          "concat",
+          "star-",
+          ["get", "status"],
+          "-",
+          ["to-string", ["get", "selected"]],
+        ],
+        "icon-size": ["interpolate", ["linear"], ["zoom"], 6, 0.5, 12, 0.9],
+      },
+      source: "passes",
+      type: "symbol",
+    },
+    // Labels staggered by prominence; MapLibre resolves collisions
+    ...(
+      [
+        [5, 0],
+        [4, 7],
+        [3, 8],
+        [2, 9.5],
+        [1, 10.5],
+      ] as const
+    ).map(([fame, minzoom]) => ({
+      filter:
+        fame === 5
+          ? ([
+              "any",
+              ["==", ["get", "fame"], 5],
+              ["==", ["get", "selected"], 1],
+              ["==", ["get", "favorite"], 1],
+            ] as never)
+          : ([
+              "all",
+              ["==", ["get", "fame"], fame],
+              ["!=", ["get", "selected"], 1],
+              ["!=", ["get", "favorite"], 1],
+            ] as never),
+      id: `pass-label-${fame}`,
+      layout: {
+        "symbol-sort-key": ["-", 6, ["get", "fame"]] as never,
+        "text-field": ["get", "name"] as never,
+        "text-font": [FONT_BOLD],
+        "text-justify": "auto" as never,
+        "text-radial-offset": 1,
+        "text-size": fame >= 5 ? 13 : fame <= 2 ? 11 : 12.5,
+        "text-variable-anchor": ["left", "right", "top", "bottom"] as never,
+      },
+      minzoom,
+      paint: {
+        "text-color": colors.ink,
+        "text-halo-color": colors.paper,
+        "text-halo-width": 1.6,
+        "text-opacity": fame <= 2 ? 0.85 : 1,
+      },
+      source: "passes",
+      type: "symbol" as const,
+    })),
+    // Topmost: the profile cursor must stay visible over its own ascent.
+    {
+      id: "profile-cursor",
+      paint: {
+        "circle-color": colors.paper,
+        "circle-pitch-alignment": "map",
+        "circle-radius": 6,
+        "circle-stroke-color": colors.ink,
+        "circle-stroke-width": 2.5,
+      },
+      source: "cursor",
+      type: "circle",
+    },
+  ] as LayerSpecification[];
 };
 
 const escapeHtml = (s: string) =>
@@ -251,7 +559,11 @@ export const PassMap = ({
   // effect and never a render.
   const hashCamera = useRef(false);
   const fitted = useRef(false);
-  const [base, setBase] = useStored("alpenpaesse:base", "osm");
+  const [base, setBase] = useStored("alpenpaesse:base", BASEMAP_ID);
+  // The base the map currently shows. The map is built during the hydration
+  // render, where a stored value is not known yet (useSyncExternalStore hands
+  // out the server snapshot); the effect below catches up once it is.
+  const appliedBase = useRef(BASEMAP_ID);
   const [overlays, setOverlays] = useStored<string[]>("alpenpaesse:overlays", [
     "hillshade",
   ]);
@@ -279,50 +591,16 @@ export const PassMap = ({
   useEffect(() => {
     if (!container.current || map.current) return;
     const colors = readColors(container.current);
-    const bases = baseLayers();
-    const statusColor = [
-      "match",
-      ["get", "status"],
-      "open",
-      colors.open,
-      "risky",
-      colors.risky,
-      "closed",
-      colors.closed,
-      "#888888",
-    ] as never;
-    // The ascent and tour lines carry status and selection as feature state,
-    // so a period, filter or selection change never re-uploads geometry.
-    const selected = ["==", ["feature-state", "selected"], 1];
-    const routeColor = [
-      "match",
-      ["coalesce", ["feature-state", "status"], "none"],
-      "open",
-      colors.open,
-      "risky",
-      colors.risky,
-      "closed",
-      colors.closed,
-      "#888888",
-    ] as never;
+    const initialScheme = scheme();
+    appliedBase.current = resolveBase(base);
+    const { ground, detail } = baseStack(appliedBase.current, initialScheme);
 
     const style: StyleSpecification = {
-      glyphs: "https://fonts.openmaptiles.org/{fontstack}/{range}.pbf",
+      glyphs: GLYPHS,
       layers: [
-        {
-          id: "base",
-          source: bases.some((b) => b.id === base) ? base : "osm",
-          type: "raster",
-        },
-        {
-          id: "hillshade",
-          layout: {
-            visibility: overlays.includes("hillshade") ? "visible" : "none",
-          },
-          paint: { "hillshade-exaggeration": 0.3 },
-          source: "dem",
-          type: "hillshade",
-        },
+        ...ground,
+        hillshadeLayer(initialScheme, overlays.includes("hillshade")),
+        ...detail,
         ...OVERLAYS.map((o) => ({
           id: `ov-${o.id}`,
           layout: {
@@ -334,216 +612,10 @@ export const PassMap = ({
           source: `ov-${o.id}`,
           type: "raster" as const,
         })),
-        {
-          id: "tours-casing",
-          layout: { "line-cap": "round", "line-join": "round" },
-          paint: {
-            "line-color": colors.paper,
-            "line-opacity": 0.55,
-            "line-width": 6,
-          },
-          source: "tours",
-          type: "line",
-        },
-        {
-          id: "tours",
-          layout: { "line-cap": "round", "line-join": "round" },
-          paint: {
-            "line-color": ["get", "color"],
-            "line-opacity": 0.85,
-            "line-width": ["case", selected, 5, 3],
-          },
-          source: "tours",
-          type: "line",
-        },
-        {
-          id: "routes",
-          layout: { "line-cap": "round", "line-join": "round" },
-          paint: {
-            "line-color": routeColor,
-            "line-opacity": ["case", selected, 1, 0.85],
-            "line-width": ["case", selected, 6, 3.5],
-          },
-          source: "routes",
-          type: "line",
-        },
-        {
-          id: "tours-label",
-          layout: {
-            "symbol-placement": "line",
-            "symbol-spacing": 600,
-            "text-field": ["get", "name"],
-            "text-font": ["Open Sans Semibold"],
-            "text-size": 11,
-          },
-          paint: {
-            "text-color": ["get", "color"],
-            "text-halo-color": colors.paper,
-            "text-halo-width": 1.5,
-          },
-          source: "tours",
-          type: "symbol",
-        },
-        {
-          id: "towns",
-          layout: {
-            "icon-allow-overlap": true,
-            "icon-image": [
-              "case",
-              ["==", ["get", "favorite"], 1],
-              "star-town-0",
-              "town",
-            ],
-            "icon-size": ["case", ["==", ["get", "favorite"], 1], 0.62, 0.5],
-          },
-          source: "towns",
-          type: "symbol",
-        },
-        {
-          id: "towns-label",
-          layout: {
-            "text-field": ["get", "name"],
-            "text-font": ["Open Sans Italic"],
-            "text-justify": "auto",
-            "text-radial-offset": 0.8,
-            "text-size": 11,
-            "text-variable-anchor": ["left", "right", "top", "bottom"],
-          },
-          minzoom: 8,
-          paint: {
-            "text-color": colors.town,
-            "text-halo-color": colors.paper,
-            "text-halo-width": 1.5,
-          },
-          source: "towns",
-          type: "symbol",
-        },
-        {
-          filter: ["!=", ["get", "favorite"], 1],
-          id: "passes",
-          paint: {
-            // "closed" is additionally encoded as a hollow circle so that the
-            // three states do not rely on hue alone.
-            "circle-color": [
-              "case",
-              ["==", ["get", "status"], "closed"],
-              colors.paper,
-              statusColor,
-            ],
-            "circle-opacity": [
-              "case",
-              [">=", ["get", "fame"], 4],
-              0.95,
-              ["==", ["get", "fame"], 3],
-              0.8,
-              0.62,
-            ],
-            "circle-pitch-alignment": "map",
-            "circle-radius": [
-              "interpolate",
-              ["linear"],
-              ["zoom"],
-              6,
-              ["+", 2, ["*", 1.1, ["get", "fame"]]],
-              12,
-              ["+", 4, ["*", 1.8, ["get", "fame"]]],
-            ],
-            "circle-stroke-color": [
-              "case",
-              ["==", ["get", "selected"], 1],
-              colors.ink,
-              ["==", ["get", "status"], "closed"],
-              colors.closed,
-              colors.paper,
-            ],
-            "circle-stroke-width": [
-              "case",
-              ["==", ["get", "selected"], 1],
-              3,
-              ["==", ["get", "status"], "closed"],
-              2.5,
-              1.5,
-            ],
-          },
-          source: "passes",
-          type: "circle",
-        },
-        {
-          filter: ["==", ["get", "favorite"], 1],
-          id: "pass-stars",
-          layout: {
-            "icon-allow-overlap": true,
-            "icon-image": [
-              "concat",
-              "star-",
-              ["get", "status"],
-              "-",
-              ["to-string", ["get", "selected"]],
-            ],
-            "icon-size": ["interpolate", ["linear"], ["zoom"], 6, 0.5, 12, 0.9],
-          },
-          source: "passes",
-          type: "symbol",
-        },
-        // Labels staggered by prominence; MapLibre resolves collisions
-        ...(
-          [
-            [5, 0],
-            [4, 7],
-            [3, 8],
-            [2, 9.5],
-            [1, 10.5],
-          ] as const
-        ).map(([fame, minzoom]) => ({
-          filter:
-            fame === 5
-              ? ([
-                  "any",
-                  ["==", ["get", "fame"], 5],
-                  ["==", ["get", "selected"], 1],
-                  ["==", ["get", "favorite"], 1],
-                ] as never)
-              : ([
-                  "all",
-                  ["==", ["get", "fame"], fame],
-                  ["!=", ["get", "selected"], 1],
-                  ["!=", ["get", "favorite"], 1],
-                ] as never),
-          id: `pass-label-${fame}`,
-          layout: {
-            "symbol-sort-key": ["-", 6, ["get", "fame"]] as never,
-            "text-field": ["get", "name"] as never,
-            "text-font": ["Open Sans Semibold"],
-            "text-justify": "auto" as never,
-            "text-radial-offset": 1,
-            "text-size": fame >= 5 ? 13 : fame <= 2 ? 11 : 12.5,
-            "text-variable-anchor": ["left", "right", "top", "bottom"] as never,
-          },
-          minzoom,
-          paint: {
-            "text-color": colors.ink,
-            "text-halo-color": colors.paper,
-            "text-halo-width": 1.6,
-            "text-opacity": fame <= 2 ? 0.85 : 1,
-          },
-          source: "passes",
-          type: "symbol" as const,
-        })),
-        // Topmost: the profile cursor must stay visible over its own ascent.
-        {
-          id: "profile-cursor",
-          paint: {
-            "circle-color": colors.paper,
-            "circle-pitch-alignment": "map",
-            "circle-radius": 6,
-            "circle-stroke-color": colors.ink,
-            "circle-stroke-width": 2.5,
-          },
-          source: "cursor",
-          type: "circle",
-        },
-      ] as StyleSpecification["layers"],
+        ...appLayers(colors),
+      ],
       sources: {
+        [BASEMAP_SOURCE_ID]: BASEMAP_SOURCE,
         dem: {
           attribution: "Terrain © Mapzen/AWS",
           encoding: "terrarium",
@@ -555,7 +627,7 @@ export const PassMap = ({
           type: "raster-dem",
         },
         ...Object.fromEntries(
-          bases.map((b) => [
+          baseLayers().map((b) => [
             b.id,
             {
               attribution: b.attribution,
@@ -713,6 +785,43 @@ export const PassMap = ({
     // Intentional: build only once. Data arrives via the effects below.
     // oxlint-disable-next-line react/exhaustive-deps
   }, []);
+
+  // --- Which base ----------------------------------------------------------
+  useEffect(() => {
+    const m = map.current;
+    if (!m || !ready) return;
+    const next = resolveBase(base);
+    if (next === appliedBase.current) return;
+    appliedBase.current = next;
+    applyBase(m, next, scheme());
+  }, [base, ready]);
+
+  // --- Follow the OS colour scheme -----------------------------------------
+  // The tokens flip with it: the base is swapped for its twin, the icons are
+  // repainted and every paint property of the app's layers is set again from
+  // the definition the style was built from. Camera, sources, filters and
+  // feature state are not touched, so nothing is lost or reloaded.
+  useEffect(() => {
+    const m = map.current;
+    const el = container.current;
+    if (!m || !el || !ready) return;
+    const mql = window.matchMedia(DARK_QUERY);
+    const onChange = () => {
+      const s: Scheme = mql.matches ? "dark" : "light";
+      const colors = readColors(el);
+      addIcons(m, colors);
+      if (resolveBase(base) === BASEMAP_ID) applyBase(m, BASEMAP_ID, s);
+      const repaint = (id: string, paint: object) => {
+        for (const [k, v] of Object.entries(paint) as [never, never][])
+          m.setPaintProperty(id, k, v);
+      };
+      repaint("hillshade", hillshadePaint(s));
+      for (const layer of appLayers(colors))
+        repaint(layer.id, layer.paint ?? {});
+    };
+    mql.addEventListener("change", onChange);
+    return () => mql.removeEventListener("change", onChange);
+  }, [ready, base]);
 
   // --- Camera requested via the URL hash ----------------------------------
   useEffect(() => {
@@ -926,13 +1035,7 @@ export const PassMap = ({
     }
   };
 
-  const switchBase = (id: string) => {
-    setBase(id);
-    const m = map.current;
-    if (!m) return;
-    m.removeLayer("base");
-    m.addLayer({ id: "base", source: id, type: "raster" }, "hillshade");
-  };
+  const switchBase = (id: string) => setBase(id);
 
   const toggleOverlay = (id: string) => {
     const on = !overlays.includes(id);
@@ -1020,11 +1123,11 @@ export const PassMap = ({
                 <FieldSet className="gap-2">
                   <FieldLegend variant="label">Grundkarte</FieldLegend>
                   <RadioGroup
-                    value={base}
+                    value={resolveBase(base)}
                     onValueChange={(v) => switchBase(String(v))}
                     className="gap-1.5"
                   >
-                    {baseLayers().map((b) => (
+                    {[VECTOR_BASE, ...baseLayers()].map((b) => (
                       <Field key={b.id} orientation="horizontal">
                         <RadioGroupItem value={b.id} id={`base-${b.id}`} />
                         <FieldLabel

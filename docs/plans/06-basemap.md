@@ -1,6 +1,6 @@
 # 06 · A basemap that matches the theme
 
-**Status:** proposed · **Effort:** M · **Depends on:** – · **Unblocks:** 08
+**Status:** done ([#22](https://github.com/mdugue/alpen/pull/22)) · **Effort:** M · **Depends on:** – · **Unblocks:** 08
 (map labels per language), better screenshots and share images
 
 ## Goal
