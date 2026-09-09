@@ -47,7 +47,7 @@ friends do that better and the app links out to them.
 | Filter, selection and URL state (hash keys)     | `lib/app-state.ts`, `components/explorer.tsx`                                                                                                               |
 | Search normalisation and haystacks              | `lib/search.ts`                                                                                                                                             |
 | Map, layers, 3D, markers, labels, feature state | `components/map/pass-map.tsx`                                                                                                                               |
-| Basemap: vector style, palette, glyphs          | `lib/basemap.ts`, `lib/palette.ts`, `scripts/build-map-style.ts` (→ `public/map/style-*.json`), `scripts/fetch-glyphs.ts` (→ `public/map/fonts`, committed) |
+| Basemap: vector style, palette, glyphs          | `lib/basemap.ts`, `lib/palette.ts`, `scripts/build-map-style.ts` (→ `public/map/style-*.json`), `scripts/build-glyphs.ts` (→ `public/map/fonts`, committed) |
 | Map assets: GeoJSON, simplification, hashing    | `lib/map-assets.ts`, `scripts/build-map-assets.ts` (→ `public/map`, git-ignored)                                                                            |
 | Tours within reach of an entity                 | `lib/nearby.ts` (computed on the server in `lib/data.ts`)                                                                                                   |
 | Photos: keys, sizes, licence metadata           | `lib/photos.ts`, `scripts/build-photos.ts` (`bun run data:photos`) → `data/generated/photos.json`                                                           |
@@ -193,10 +193,11 @@ friends do that better and the app links out to them.
   `base`, and a `prefers-color-scheme` change re-reads the tokens, repaints
   the icons and sets every paint property of the app's layers again from the
   same `appLayers` definition the style was built from – camera, sources,
-  filters and feature state stay. Glyphs are served from `public/map/fonts`
-  (the Latin ranges of Noto Sans, fetched once by `scripts/fetch-glyphs.ts`
-  and committed), so the hermetic e2e suite renders labels and the map has no
-  font server to wait for; `scripts/build-map-style.ts` writes the same style
+  filters and feature state stay. Glyphs are served from `public/map/fonts`:
+  the Latin ranges of Inter, the UI's own face, rasterised once into
+  MapLibre's glyph atlases by `scripts/build-glyphs.ts` and committed – so
+  map and panels share one family, the hermetic e2e suite renders labels and
+  the map has no font server to wait for; `scripts/build-map-style.ts` writes the same style
   as two standalone JSON files for tuning in a style editor.
 - **MapLibre needs two workarounds.** Its web worker is resolved via
   `import.meta.url`, which Turbopack does not serve, so

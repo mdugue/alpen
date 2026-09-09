@@ -49,13 +49,15 @@ export const BASEMAP_SOURCE: SourceSpecification = {
 export const BASEMAP_SOURCE_ID = "openmaptiles";
 
 /**
- * Glyphs are served from `public/map/fonts` (scripts/fetch-glyphs.ts): the
- * Latin ranges of Noto Sans, the family OpenFreeMap's own styles use.
+ * Glyphs are served from `public/map/fonts` (scripts/build-glyphs.ts): the
+ * Latin ranges of Inter, the family the rest of the app is set in. The
+ * names are directories there; SemiBold is the weight the UI uses for
+ * emphasis, and the one the pass labels had before.
  */
 export const GLYPHS = "/map/fonts/{fontstack}/{range}.pbf";
-export const FONT_REGULAR = "Noto Sans Regular";
-export const FONT_ITALIC = "Noto Sans Italic";
-export const FONT_BOLD = "Noto Sans Bold";
+export const FONT_REGULAR = "Inter Regular";
+export const FONT_ITALIC = "Inter Italic";
+export const FONT_BOLD = "Inter SemiBold";
 
 /** German name where OpenStreetMap has one, else the Latin spelling. */
 const NAME: ExpressionSpecification = [
