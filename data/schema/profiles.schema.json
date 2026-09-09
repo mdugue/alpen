@@ -8,20 +8,6 @@
   "additionalProperties": {
     "type": "object",
     "properties": {
-      "km": {
-        "type": "number",
-        "minimum": 0
-      },
-      "elevationGain": {
-        "type": "number",
-        "minimum": 0
-      },
-      "start": {
-        "type": "number"
-      },
-      "top": {
-        "type": "number"
-      },
       "avgGradient": {
         "type": "number"
       },
@@ -36,16 +22,34 @@
         "items": {
           "type": "number"
         }
+      },
+      "elevationGain": {
+        "type": "number",
+        "minimum": 0
+      },
+      "km": {
+        "type": "number",
+        "minimum": 0
+      },
+      "maxKmGradient": {
+        "type": "number"
+      },
+      "start": {
+        "type": "number"
+      },
+      "top": {
+        "type": "number"
       }
     },
     "required": [
-      "km",
-      "elevationGain",
-      "start",
-      "top",
       "avgGradient",
       "dist",
-      "ele"
+      "ele",
+      "elevationGain",
+      "km",
+      "maxKmGradient",
+      "start",
+      "top"
     ],
     "additionalProperties": false
   }

@@ -1,8 +1,8 @@
 # 07 · Profile interactivity
 
-**Status:** proposed · **Effort:** S–M · **Depends on:** 02 (so that only the
-selected pass's profile data ships) · **Priority:** low under the destination
-goal; do it when the detail panel gets attention anyway
+**Status:** [done](https://github.com/mdugue/alpen/pull/11) · **Effort:** S–M ·
+**Depends on:** ~~02~~ – dropped, see "Data" · **Priority:** low under the
+destination goal; do it when the detail panel gets attention anyway
 
 ## Goal
 
@@ -25,34 +25,55 @@ Route editing, GPX export, turn-by-turn anything.
 
 ### Data
 
-Each profile sample needs a coordinate. Add `pts: [lat, lon][]` (100 pairs,
-about 2.4 KB per ascent) and `maxKmGradient: number` (steepest 1 km window)
-to `ElevationProfile` in `scripts/build-data.ts`; the sample indices are the
-same `Math.round(i * step)` positions already used for the elevation request.
-Existing profiles get the fields through a one-off `--format`-style migration
-that recomputes them from `routes.json` without any API call.
+Each profile sample needs a coordinate. **As built, none are stored.**
+`routes.json` already ships to the client in full (the map draws every ascent
+from it), and the sample indices are deterministic – `Math.round(i * step)`
+over the route geometry, the same positions the elevation request used. So
+`lib/profile.ts` holds that sampling as one function, `profileCoords`, that
+`scripts/build-data.ts` and the panel both call: build and runtime cannot
+drift, and the payload does not grow by a byte. That is what removes the
+dependency on plan 02, which existed only because of the ~400 KB `pts` would
+have added.
 
-With plan 02 a route ships only the selected pass's profiles, so the extra
-bytes do not matter; without plan 02 they would add ~400 KB to the start page,
-which is why this plan waits.
+`maxKmGradient` (steepest 1 km window) is added to `ElevationProfile`.
+Existing profiles pick it up through `bun run data:build --backfill`, which
+recomputes everything derivable from the route and the samples without an API
+call.
+
+That backfill also **corrected `dist`, `km` and `avgGradient`**: they were
+measured from sample to sample, and a chord chain through the Stelvio's 48
+hairpins is two kilometres short (24,3 km of road came out as 21,7 km, and
+every gradient derived from it was too steep). `profileDistances` measures
+along the full geometry instead.
+
+The steepest kilometre stays an estimate. A hundred DEM samples a few hundred
+metres apart carry ±20 m of noise, and taking the maximum over ninety windows
+picks the worst of it – a raw endpoint delta puts the Stelvio at 15,5 %.
+`steepestKm` smooths over three samples and fits a line through each window,
+which brings it to 12,5 % against a measured ~11 %. It still leans high, so
+the "Auffahrten" section carries an info tooltip saying so.
 
 ### Profile component
 
 `components/panel/elevation-profile.tsx` becomes a client component:
 
-- Pointer move / touch move over the SVG maps x → sample index; a vertical
-  cursor line and a small label (km, m, %) render inside the SVG.
+- Pointer move / touch drag over the SVG maps x → sample index; a vertical
+  cursor line and a small label (km, m, %) render inside the SVG. Touch scrubs
+  only while held (`touch-action: pan-y`), so the sheet still scrolls.
 - Keyboard: the figure is focusable with `role="slider"`, arrow keys move the
-  cursor by one sample, Home/End jump; `aria-valuetext` reads "km 8,4, 2.100 m,
-  7,2 %".
-- `onCursor(index | null)` bubbles up with the coordinate from `pts`.
-- Click flies the map to that point at zoom 13 (hairpin inspection).
+  cursor by one sample, PageUp/Down by ten, Home/End jump; `aria-valuetext`
+  reads "km 8,4 · 2.100 m · 7,2 %".
+- `onCursor(point | null)` bubbles up with the coordinate from `profileCoords`.
+- Click, or Enter on the focused figure, flies the map to that point at zoom 13
+  (hairpin inspection).
 
 ### Map
 
-`pass-map.tsx` gets a `cursor: LatLon | null` prop backed by a one-point
-GeoJSON source and a circle layer (paper fill, ink stroke, radius 6) plus an
-optional elevation label. `setData` with one point is cheap.
+`pass-map.tsx` gets a `profileCursor: LatLon | null` prop backed by a one-point
+GeoJSON source and a topmost circle layer (paper fill, ink stroke, radius 6);
+`setData` with one point is cheap enough for every pointer move. A second prop,
+`profileZoom`, carries the fly-to request. The elevation label stays in the
+figure – on the map it would only fight the pass labels.
 
 ### Stats line
 
@@ -60,10 +81,11 @@ optional elevation label. `setData` with one point is cheap.
 
 ## Steps
 
-1. Build-script fields + migration + `check-data` (lengths match).
-2. Interactive profile with keyboard support; keep the static SVG for the
-   server-rendered shell (plan 02) and hydrate the interaction.
-3. Cursor source/layer in the map, prop plumbing through the explorer context.
+1. Build-script fields + `--backfill` migration + `check-data` (the schema
+   refinement keeps `dist` and `ele` the same length; `lib/profile.test.ts`
+   checks the stored values against a recomputation).
+2. Interactive profile with keyboard support.
+3. Cursor source/layer in the map, prop plumbing through the explorer.
 4. Screenshots and a keyboard walkthrough in the PR.
 
 ## Acceptance criteria
@@ -71,4 +93,7 @@ optional elevation label. `setData` with one point is cheap.
 - Moving over the profile moves a marker along the drawn ascent on the map.
 - Works with touch and with keyboard only; the values are announced.
 - The steepest-km figure matches a manual check for two known passes
-  (Mortirolo, Zoncolan).
+  (Mortirolo, Zoncolan). Partly: the terrain model is too coarse for a
+  measurement-grade figure. Stelvio lands at 12,5 % (measured ~11 %),
+  Mortirolo at 17,3 % and Zoncolan at 17,9 % – the right order, still high in
+  absolute terms, which the section's info tooltip says.

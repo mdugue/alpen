@@ -25,124 +25,124 @@ import {
  * expected reasons are named, loosening one limit cannot hide behind another.
  */
 const KNOWN_BAD: Record<string, { m: AscentMetrics; trips: string[] }> = {
+  "col-de-la-colombiere:0": {
+    m: {
+      endDist: 0.156,
+      gain: 931,
+      km: 11.66,
+      peakAt: 1,
+      startDist: 0.009,
+      topDelta: -343,
+    },
+    trips: ["Profilhöhe"],
+  },
+  "col-de-la-colombiere:1": {
+    m: {
+      endDist: 0.156,
+      gain: 1536,
+      km: 35.39,
+      peakAt: 0.345,
+      startDist: 0.003,
+      topDelta: 21,
+    },
+    trips: ["höchster Punkt"],
+  },
+  "col-des-champs:0": {
+    m: {
+      endDist: 0.027,
+      gain: 592,
+      km: 5.32,
+      peakAt: 1,
+      startDist: 0.002,
+      topDelta: -357,
+    },
+    trips: ["Profilhöhe"],
+  },
+  "col-des-champs:1": {
+    m: {
+      endDist: 0.027,
+      gain: 1451,
+      km: 25.9,
+      peakAt: 0.645,
+      startDist: 0.116,
+      topDelta: 7,
+    },
+    trips: ["höchster Punkt"],
+  },
   "col-du-mont-cenis:1": {
     m: {
-      km: 341.44,
-      startDist: 0.025,
       endDist: 0.019,
-      topDelta: 642,
-      peakAt: 0.505,
       gain: 6274,
+      km: 341.44,
+      peakAt: 0.505,
+      startDist: 0.025,
+      topDelta: 642,
     },
     trips: ["Länge", "Profilhöhe", "höchster Punkt", "Anstieg"],
   },
   "colle-di-sampeyre:0": {
     m: {
-      km: 66.33,
-      startDist: 0.008,
       endDist: 0.005,
-      topDelta: 12,
-      peakAt: 1,
       gain: 2042,
+      km: 66.33,
+      peakAt: 1,
+      startDist: 0.008,
+      topDelta: 12,
     },
     trips: ["Länge"],
   },
   "grosse-scheidegg:0": {
     m: {
-      km: 60.44,
-      startDist: 0.013,
       endDist: 0.019,
-      topDelta: -4,
-      peakAt: 1,
       gain: 1731,
+      km: 60.44,
+      peakAt: 1,
+      startDist: 0.013,
+      topDelta: -4,
     },
     trips: ["Länge"],
   },
-  "col-de-la-colombiere:1": {
-    m: {
-      km: 35.39,
-      startDist: 0.003,
-      endDist: 0.156,
-      topDelta: 21,
-      peakAt: 0.345,
-      gain: 1536,
-    },
-    trips: ["höchster Punkt"],
-  },
-  "col-des-champs:1": {
-    m: {
-      km: 25.9,
-      startDist: 0.116,
-      endDist: 0.027,
-      topDelta: 7,
-      peakAt: 0.645,
-      gain: 1451,
-    },
-    trips: ["höchster Punkt"],
-  },
-  "timmelsjoch:0": {
-    m: {
-      km: 22.2,
-      startDist: 0.005,
-      endDist: 0.135,
-      topDelta: -179,
-      peakAt: 0.996,
-      gain: 1420,
-    },
-    trips: ["Profilhöhe"],
-  },
   "kitzbueheler-horn:0": {
     m: {
-      km: 12.92,
-      startDist: 0.002,
       endDist: 0.056,
-      topDelta: -400,
-      peakAt: 0.769,
       gain: 1056,
-    },
-    trips: ["Profilhöhe"],
-  },
-  "col-de-la-colombiere:0": {
-    m: {
-      km: 11.66,
-      startDist: 0.009,
-      endDist: 0.156,
-      topDelta: -343,
-      peakAt: 1,
-      gain: 931,
+      km: 12.92,
+      peakAt: 0.769,
+      startDist: 0.002,
+      topDelta: -400,
     },
     trips: ["Profilhöhe"],
   },
   "monte-zoncolan:0": {
     m: {
-      km: 8.32,
-      startDist: 0.002,
       endDist: 0.084,
-      topDelta: -123,
-      peakAt: 1,
       gain: 1179,
+      km: 8.32,
+      peakAt: 1,
+      startDist: 0.002,
+      topDelta: -123,
     },
     trips: ["Profilhöhe"],
   },
   "rossfeld-panoramastrasse:0": {
     m: {
-      km: 6.1,
-      startDist: 0.01,
       endDist: 0.12,
-      topDelta: -857,
-      peakAt: 0.988,
       gain: 319,
+      km: 6.1,
+      peakAt: 0.988,
+      startDist: 0.01,
+      topDelta: -857,
     },
     trips: ["Profilhöhe"],
   },
-  "col-des-champs:0": {
+  "timmelsjoch:0": {
     m: {
-      km: 5.32,
-      startDist: 0.002,
-      endDist: 0.027,
-      topDelta: -357,
-      peakAt: 1,
-      gain: 592,
+      endDist: 0.135,
+      gain: 1420,
+      km: 22.2,
+      peakAt: 0.996,
+      startDist: 0.005,
+      topDelta: -179,
     },
     trips: ["Profilhöhe"],
   },
@@ -151,51 +151,59 @@ const KNOWN_BAD: Record<string, { m: AscentMetrics; trips: string[] }> = {
 /** Ascents that are right and have to stay right when a limit is retuned. */
 const KNOWN_GOOD: Record<string, AscentMetrics> = {
   "alpe-d-huez:0": {
-    km: 15.12,
-    startDist: 0.002,
     endDist: 0.021,
-    topDelta: -23,
-    peakAt: 0.974,
     gain: 1403,
+    km: 15.12,
+    peakAt: 0.974,
+    startDist: 0.002,
+    topDelta: -23,
   },
   "col-d-izoard:1": {
-    km: 30.28,
-    startDist: 0.001,
     endDist: 0.002,
-    topDelta: 12,
-    peakAt: 0.995,
     gain: 1953,
+    km: 30.28,
+    peakAt: 0.995,
+    startDist: 0.001,
+    topDelta: 12,
   },
   // The false positive that moved `minPeakAt` from 0.85 to 0.75: a 6 km climb
   // whose highest sample sits at 81 % of the distance, and which is correct.
   "grimselpass:1": {
-    km: 6.01,
-    startDist: 0.013,
     endDist: 0.006,
-    topDelta: 44,
-    peakAt: 0.806,
     gain: 988,
+    km: 6.01,
+    peakAt: 0.806,
+    startDist: 0.013,
+    topDelta: 44,
   },
 };
 
 const GOOD: AscentMetrics = {
-  km: 20,
-  startDist: 0.1,
   endDist: 0.1,
-  topDelta: 10,
-  peakAt: 0.98,
   gain: 1200,
+  km: 20,
+  peakAt: 0.98,
+  startDist: 0.1,
+  topDelta: 10,
 };
 
 /** The one reason each field produces, so a boundary test can name it. */
 const REASON = {
-  km: "Länge",
-  startDist: "Start",
   endDist: "Ende",
-  topDelta: "Profilhöhe",
-  peakAt: "höchster Punkt",
   gain: "Anstieg",
+  km: "Länge",
+  peakAt: "höchster Punkt",
+  startDist: "Start",
+  topDelta: "Profilhöhe",
 } as const;
+
+const tourMetricsOf = (km: number, statedKm: number): TourMetrics => ({
+  endDist: 0.1,
+  km,
+  kmDelta: +((km - statedKm) / statedKm).toFixed(3),
+  startDist: 0.1,
+  statedKm,
+});
 
 describe("checkAscent", () => {
   for (const [key, { m, trips }] of Object.entries(KNOWN_BAD))
@@ -226,9 +234,9 @@ describe("checkAscent", () => {
   test("judges only what has been measured", () => {
     const geometryOnly: AscentMetrics = {
       ...GOOD,
-      topDelta: null,
-      peakAt: null,
       gain: null,
+      peakAt: null,
+      topDelta: null,
     };
     expect(checkAscent(geometryOnly)).toBeEmpty();
   });
@@ -287,29 +295,21 @@ describe("checkTour", () => {
   // Measured by routing all nine tours with ORS: seven land within ±13 % of
   // their stated distance, the two whose waypoints route long do not.
   const routed: Record<string, [routedKm: number, statedKm: number]> = {
-    sellaronda: [63.5, 52],
-    "maratona-dles-dolomites-lang": [163.2, 138],
-    "route-des-grandes-alpes": [760, 700],
-    "oetztaler-radmarathon": [227.4, 227],
-    "la-marmotte": [196.3, 174],
     "andermatt-drei-paesse-runde": [121.1, 120],
-    "stilfserjoch-umbrail-runde": [65.8, 70],
     "gavia-mortirolo-runde": [131.7, 130],
+    "la-marmotte": [196.3, 174],
+    "maratona-dles-dolomites-lang": [163.2, 138],
+    "oetztaler-radmarathon": [227.4, 227],
+    "route-des-grandes-alpes": [760, 700],
+    sellaronda: [63.5, 52],
+    "stilfserjoch-umbrail-runde": [65.8, 70],
     "vrsic-predil-runde": [95.9, 105],
   };
-  const metrics = (km: number, statedKm: number): TourMetrics => ({
-    km,
-    statedKm,
-    kmDelta: +((km - statedKm) / statedKm).toFixed(3),
-    startDist: 0.1,
-    endDist: 0.1,
-  });
-
   for (const [slug, [km, statedKm]] of Object.entries(routed)) {
     const sparse =
       slug === "sellaronda" || slug === "maratona-dles-dolomites-lang";
     test(`${sparse ? "rejects" : "accepts"} ${slug}`, () => {
-      const reasons = checkTour(metrics(km, statedKm));
+      const reasons = checkTour(tourMetricsOf(km, statedKm));
       expect(reasons.length > 0).toBe(sparse);
       if (sparse) expect(reasons[0]).toContain("Länge");
     });
@@ -317,31 +317,31 @@ describe("checkTour", () => {
 
   test("kmDelta boundary, both signs", () => {
     const L = LIMITS.tour.maxKmDelta;
-    expect(checkTour({ ...metrics(100, 100), kmDelta: L })).toBeEmpty();
-    expect(checkTour({ ...metrics(100, 100), kmDelta: -L })).toBeEmpty();
+    expect(checkTour({ ...tourMetricsOf(100, 100), kmDelta: L })).toBeEmpty();
+    expect(checkTour({ ...tourMetricsOf(100, 100), kmDelta: -L })).toBeEmpty();
     expect(
-      checkTour({ ...metrics(100, 100), kmDelta: L + 0.001 }),
+      checkTour({ ...tourMetricsOf(100, 100), kmDelta: L + 0.001 }),
     ).toHaveLength(1);
     expect(
-      checkTour({ ...metrics(100, 100), kmDelta: -L - 0.001 }),
+      checkTour({ ...tourMetricsOf(100, 100), kmDelta: -L - 0.001 }),
     ).toHaveLength(1);
   });
 
   test("waypoint distance boundary at both ends", () => {
     const L = LIMITS.tour.maxWaypointDist;
     expect(
-      checkTour({ ...metrics(120, 120), startDist: L, endDist: L }),
+      checkTour({ ...tourMetricsOf(120, 120), endDist: L, startDist: L }),
     ).toBeEmpty();
     expect(
-      checkTour({ ...metrics(120, 120), startDist: L + 0.001 }).join(" "),
+      checkTour({ ...tourMetricsOf(120, 120), startDist: L + 0.001 }).join(" "),
     ).toContain("ersten Wegpunkt");
     expect(
-      checkTour({ ...metrics(120, 120), endDist: L + 0.001 }).join(" "),
+      checkTour({ ...tourMetricsOf(120, 120), endDist: L + 0.001 }).join(" "),
     ).toContain("letzten Wegpunkt");
   });
 
   test("tour.check widens a tour limit", () => {
-    const long = metrics(63.5, 52);
+    const long = tourMetricsOf(63.5, 52);
     expect(checkTour(long)).not.toBeEmpty();
     expect(
       checkTour(long, {
@@ -375,13 +375,14 @@ describe("metrics", () => {
 
   test("withProfile puts the peak where the highest sample is", () => {
     const profile: ElevationProfile = {
-      km: 10,
-      elevationGain: 1000,
-      start: 1000,
-      top: 2000,
       avgGradient: 10,
       dist: [0, 5, 10],
       ele: [1000, 2000, 1900],
+      elevationGain: 1000,
+      km: 10,
+      maxKmGradient: 20,
+      start: 1000,
+      top: 2000,
     };
     const m = withProfile(ascentMetrics(geom, from, summit), profile, 1990);
     expect(m.topDelta).toBe(10);

@@ -9,7 +9,7 @@ import type { TourRow } from "@/lib/rows";
 import type { Period } from "@/lib/types";
 import { cn, fmtUnit } from "@/lib/utils";
 
-export function TourList({
+export const TourList = ({
   rows,
   currentRow,
   period,
@@ -25,7 +25,7 @@ export function TourList({
   onToggleTour: (slug: string, on: boolean) => void;
   onSelect: (slug: string) => void;
   onToggleFavorite: (slug: string) => void;
-}) {
+}) => {
   if (rows.length === 0)
     return <ListEmpty title="Keine Touren für diese Filter" />;
   return (
@@ -74,4 +74,4 @@ export function TourList({
       })}
     </ul>
   );
-}
+};

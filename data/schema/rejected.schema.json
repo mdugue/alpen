@@ -8,28 +8,46 @@
   "additionalProperties": {
     "type": "object",
     "properties": {
-      "reasons": {
-        "minItems": 1,
-        "type": "array",
-        "items": {
-          "type": "string",
-          "minLength": 1
-        }
+      "firstSeen": {
+        "type": "string",
+        "format": "date",
+        "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+      },
+      "hash": {
+        "type": "string",
+        "minLength": 1
+      },
+      "lastSeen": {
+        "type": "string",
+        "format": "date",
+        "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
       },
       "metrics": {
         "anyOf": [
           {
             "type": "object",
             "properties": {
+              "endDist": {
+                "type": "number",
+                "minimum": 0
+              },
+              "gain": {
+                "type": [
+                  "number",
+                  "null"
+                ]
+              },
               "km": {
                 "type": "number",
                 "minimum": 0
               },
-              "startDist": {
-                "type": "number",
-                "minimum": 0
+              "peakAt": {
+                "type": [
+                  "number",
+                  "null"
+                ]
               },
-              "endDist": {
+              "startDist": {
                 "type": "number",
                 "minimum": 0
               },
@@ -38,40 +56,28 @@
                   "number",
                   "null"
                 ]
-              },
-              "peakAt": {
-                "type": [
-                  "number",
-                  "null"
-                ]
-              },
-              "gain": {
-                "type": [
-                  "number",
-                  "null"
-                ]
               }
             },
             "required": [
-              "km",
-              "startDist",
               "endDist",
-              "topDelta",
+              "gain",
+              "km",
               "peakAt",
-              "gain"
+              "startDist",
+              "topDelta"
             ],
             "additionalProperties": false
           },
           {
             "type": "object",
             "properties": {
-              "km": {
+              "endDist": {
                 "type": "number",
                 "minimum": 0
               },
-              "statedKm": {
+              "km": {
                 "type": "number",
-                "exclusiveMinimum": 0
+                "minimum": 0
               },
               "kmDelta": {
                 "type": "number"
@@ -80,60 +86,25 @@
                 "type": "number",
                 "minimum": 0
               },
-              "endDist": {
+              "statedKm": {
                 "type": "number",
-                "minimum": 0
+                "exclusiveMinimum": 0
               }
             },
             "required": [
+              "endDist",
               "km",
-              "statedKm",
               "kmDelta",
               "startDist",
-              "endDist"
+              "statedKm"
             ],
             "additionalProperties": false
           }
         ]
       },
-      "source": {
-        "type": "string",
-        "enum": [
-          "ors",
-          "osrm"
-        ]
-      },
-      "hash": {
-        "type": "string",
-        "minLength": 1
-      },
-      "firstSeen": {
-        "type": "string",
-        "format": "date",
-        "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
-      },
-      "lastSeen": {
-        "type": "string",
-        "format": "date",
-        "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
-      },
       "profile": {
         "type": "object",
         "properties": {
-          "km": {
-            "type": "number",
-            "minimum": 0
-          },
-          "elevationGain": {
-            "type": "number",
-            "minimum": 0
-          },
-          "start": {
-            "type": "number"
-          },
-          "top": {
-            "type": "number"
-          },
           "avgGradient": {
             "type": "number"
           },
@@ -148,27 +119,60 @@
             "items": {
               "type": "number"
             }
+          },
+          "elevationGain": {
+            "type": "number",
+            "minimum": 0
+          },
+          "km": {
+            "type": "number",
+            "minimum": 0
+          },
+          "maxKmGradient": {
+            "type": "number"
+          },
+          "start": {
+            "type": "number"
+          },
+          "top": {
+            "type": "number"
           }
         },
         "required": [
-          "km",
-          "elevationGain",
-          "start",
-          "top",
           "avgGradient",
           "dist",
-          "ele"
+          "ele",
+          "elevationGain",
+          "km",
+          "maxKmGradient",
+          "start",
+          "top"
         ],
         "additionalProperties": false
+      },
+      "reasons": {
+        "minItems": 1,
+        "type": "array",
+        "items": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "source": {
+        "type": "string",
+        "enum": [
+          "ors",
+          "osrm"
+        ]
       }
     },
     "required": [
-      "reasons",
-      "metrics",
-      "source",
-      "hash",
       "firstSeen",
-      "lastSeen"
+      "hash",
+      "lastSeen",
+      "metrics",
+      "reasons",
+      "source"
     ],
     "additionalProperties": false
   }

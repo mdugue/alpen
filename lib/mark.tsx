@@ -8,29 +8,27 @@ import { MARK } from "@/lib/brand";
  *
  * Server-only – drawn by Satori inside an `ImageResponse`, never in the browser.
  */
-export function MarkBadge({
+export const MarkBadge = ({
   size,
   /** `"22%"` for a rounded square, `"0"` where iOS applies its own mask. */
   radius = MARK.radius,
 }: {
   size: number;
   radius?: string;
-}) {
-  return (
-    <div
-      style={{
-        width: size,
-        height: size,
-        display: "flex",
-        background: MARK.ground,
-        borderRadius: radius,
-      }}
-    >
-      <svg width={size} height={size} viewBox="0 0 100 100">
-        {MARK.ridges.map((r) => (
-          <path key={r.d} d={r.d} fill={r.fill} />
-        ))}
-      </svg>
-    </div>
-  );
-}
+}) => (
+  <div
+    style={{
+      background: MARK.ground,
+      borderRadius: radius,
+      display: "flex",
+      height: size,
+      width: size,
+    }}
+  >
+    <svg width={size} height={size} viewBox="0 0 100 100">
+      {MARK.ridges.map((r) => (
+        <path key={r.d} d={r.d} fill={r.fill} />
+      ))}
+    </svg>
+  </div>
+);

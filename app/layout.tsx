@@ -12,29 +12,25 @@ import {
 import "./globals.css";
 
 const inter = Inter({
+  display: "swap",
   subsets: ["latin"],
   variable: "--font-inter",
-  display: "swap",
 });
 const oxanium = Oxanium({
+  display: "swap",
   subsets: ["latin"],
   variable: "--font-oxanium",
-  display: "swap",
 });
 
 export const metadata: Metadata = {
-  // Absolute URLs for the share images; Vercel provides the production host.
-  metadataBase: new URL(siteUrl),
-  title: {
-    default: SITE_TITLE,
-    // Sub-pages set a bare title ("Impressum") and get the site name appended.
-    template: `%s – ${SITE_NAME}`,
-  },
-  description: SITE_DESCRIPTION,
+  alternates: { canonical: "/" },
+  appleWebApp: { capable: true, statusBarStyle: "default", title: SITE_NAME },
   applicationName: SITE_NAME,
   authors: [{ name: "Manuel Dugué", url: "https://manuel.fyi" }],
-  creator: "Manuel Dugué",
   category: "travel",
+  creator: "Manuel Dugué",
+  description: SITE_DESCRIPTION,
+  formatDetection: { telephone: false },
   keywords: [
     "Alpenpässe",
     "Rennrad",
@@ -47,44 +43,44 @@ export const metadata: Metadata = {
     "Wann sind die Alpenpässe offen",
     "Radreiseziele",
   ],
-  alternates: { canonical: "/" },
+  // Absolute URLs for the share images; Vercel provides the production host.
+  metadataBase: new URL(siteUrl),
   openGraph: {
-    type: "website",
+    description: SITE_DESCRIPTION,
     locale: "de_DE",
-    url: "/",
     siteName: SITE_NAME,
     title: SITE_TITLE,
-    description: SITE_DESCRIPTION,
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: SITE_TITLE,
-    description: SITE_DESCRIPTION,
+    type: "website",
+    url: "/",
   },
   // Search engines are welcome; the crawlers that are not are turned away in
   // app/robots.ts.
-  robots: { index: true, follow: true },
-  appleWebApp: { capable: true, title: SITE_NAME, statusBarStyle: "default" },
-  formatDetection: { telephone: false },
+  robots: { follow: true, index: true },
+  title: {
+    default: SITE_TITLE,
+    // Sub-pages set a bare title ("Impressum") and get the site name appended.
+    template: `%s – ${SITE_NAME}`,
+  },
+  twitter: {
+    card: "summary_large_image",
+    description: SITE_DESCRIPTION,
+    title: SITE_TITLE,
+  },
 };
 
 // Keep in sync with --background in app/globals.css (light / dark).
 export const viewport: Viewport = {
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: BRAND.paper },
-    { media: "(prefers-color-scheme: dark)", color: BRAND.night },
+    { color: BRAND.paper, media: "(prefers-color-scheme: light)" },
+    { color: BRAND.night, media: "(prefers-color-scheme: dark)" },
   ],
   viewportFit: "cover",
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
-  return (
-    <html lang="de" className={`${inter.variable} ${oxanium.variable}`}>
-      <body className="h-dvh overflow-hidden antialiased">{children}</body>
-    </html>
-  );
-}
+const RootLayout = ({ children }: { children: React.ReactNode }) => (
+  <html lang="de" className={`${inter.variable} ${oxanium.variable}`}>
+    <body className="h-dvh overflow-hidden antialiased">{children}</body>
+  </html>
+);
+
+export default RootLayout;

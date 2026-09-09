@@ -10,19 +10,19 @@ import {
   NativeSelectOption,
 } from "@/components/ui/native-select";
 import type { Filters, PassSort } from "@/lib/app-state";
-import { PASS_SORT_LABEL, sortPassRows } from "@/lib/rows";
+import { PASS_SORT_LABEL, PASS_SORTS, sortPassRows } from "@/lib/rows";
 import type { PassRow } from "@/lib/rows";
 import { fmtUnit } from "@/lib/utils";
 
 type RatingSort = "beauty" | "fame" | "difficulty" | "traffic";
-const RATING_SORTS: readonly PassSort[] = [
+const RATING_SORTS: ReadonlySet<PassSort> = new Set([
   "beauty",
   "fame",
   "difficulty",
   "traffic",
-];
+]);
 
-export function PassList({
+export const PassList = ({
   rows,
   currentRow,
   filters,
@@ -36,9 +36,9 @@ export function PassList({
   setFilters: (update: (f: Filters) => Filters) => void;
   onSelect: (slug: string) => void;
   onToggleFavorite: (slug: string) => void;
-}) {
+}) => {
   const sorted = sortPassRows(rows, filters.sort);
-  const ratingSort = RATING_SORTS.includes(filters.sort)
+  const ratingSort = RATING_SORTS.has(filters.sort)
     ? (filters.sort as RatingSort)
     : null;
 
@@ -54,7 +54,7 @@ export function PassList({
           }
           aria-label="Sortieren nach"
         >
-          {(Object.keys(PASS_SORT_LABEL) as PassSort[]).map((k) => (
+          {PASS_SORTS.map((k) => (
             <NativeSelectOption key={k} value={k}>
               {PASS_SORT_LABEL[k]}
             </NativeSelectOption>
@@ -101,4 +101,4 @@ export function PassList({
       )}
     </>
   );
-}
+};

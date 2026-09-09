@@ -4,7 +4,7 @@ import { EntityRow } from "@/components/sidebar/entity-row";
 import { ListEmpty } from "@/components/sidebar/list-empty";
 import type { TownRow } from "@/lib/rows";
 
-export function TownList({
+export const TownList = ({
   rows,
   currentRow,
   onSelect,
@@ -14,7 +14,7 @@ export function TownList({
   currentRow: string | null;
   onSelect: (slug: string) => void;
   onToggleFavorite: (slug: string) => void;
-}) {
+}) => {
   if (rows.length === 0)
     return <ListEmpty title="Keine Orte für diese Filter" />;
   return (
@@ -33,4 +33,4 @@ export function TownList({
       ))}
     </ul>
   );
-}
+};

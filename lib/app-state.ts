@@ -88,24 +88,17 @@ export interface Filters {
  * by the server and the visitor's own choice wins over both (see `Explorer`).
  */
 export const DEFAULT_FILTERS: Filters = {
-  period: 10,
-  status: ALL_STATUS,
-  minFame: 1,
-  minElevation: 0,
   difficulty: [RATING_MIN, RATING_MAX],
+  favoritesOnly: false,
   maxTraffic: RATING_MAX,
   minBeauty: RATING_MIN,
-  sort: "elevation",
+  minElevation: 0,
+  minFame: 1,
+  period: 10,
   query: "",
-  favoritesOnly: false,
+  sort: "elevation",
+  status: ALL_STATUS,
 };
-
-/** True when any filter apart from the period and the sort is active. */
-export const hasActiveFilters = (f: Filters) =>
-  f.status.length !== ALL_STATUS.length ||
-  countCriteria(f) > 0 ||
-  f.query.trim() !== "" ||
-  f.favoritesOnly;
 
 /** How many of the pass criteria are active – the badge on the filter trigger. */
 export const countCriteria = (f: Filters) =>
@@ -114,6 +107,13 @@ export const countCriteria = (f: Filters) =>
   (f.difficulty[0] > RATING_MIN || f.difficulty[1] < RATING_MAX ? 1 : 0) +
   (f.maxTraffic < RATING_MAX ? 1 : 0) +
   (f.minBeauty > RATING_MIN ? 1 : 0);
+
+/** True when any filter apart from the period and the sort is active. */
+export const hasActiveFilters = (f: Filters) =>
+  f.status.length !== ALL_STATUS.length ||
+  countCriteria(f) > 0 ||
+  f.query.trim() !== "" ||
+  f.favoritesOnly;
 
 export interface MapView {
   lat: number;
@@ -124,11 +124,11 @@ export interface MapView {
 }
 
 export const DEFAULT_VIEW: MapView = {
+  bearing: 0,
   lat: 46.3,
   lon: 9.6,
-  zoom: 6.5,
   pitch: 0,
-  bearing: 0,
+  zoom: 6.5,
 };
 
 /** Drops keys that are undefined (or NaN) so a spread does not overwrite defaults. */
@@ -190,6 +190,7 @@ const parseAsCenter = createParser<[lat: number, lon: number]>({
 });
 /** `s=open,risky`; the legacy values `open` and `openRisky` from older links still work. */
 const parseAsStatus = createParser<Status[]>({
+  eq: (a, b) => a.length === b.length && a.every((s) => b.includes(s)),
   parse: (raw) => {
     if (raw === "all") return null;
     if (raw === "none") return [];
@@ -198,7 +199,6 @@ const parseAsStatus = createParser<Status[]>({
     return list.length ? list : null;
   },
   serialize: (list) => list.join(",") || "none",
-  eq: (a, b) => a.length === b.length && a.every((s) => b.includes(s)),
 });
 const RATINGS = [1, 2, 3, 4, 5] as const;
 /** Exactly one of the given values; anything else is not a filter. */
@@ -214,6 +214,7 @@ const parseAsMetres = createParser<number>({
 });
 /** `d=2-4`; `d=3` means exactly 3. */
 const parseAsRange = createParser<[number, number]>({
+  eq: (a, b) => a[0] === b[0] && a[1] === b[1],
   parse: (raw) => {
     const [lo, hi = lo] = raw.split("-").map(Number);
     if (!RATINGS.includes(lo as never) || !RATINGS.includes(hi as never))
@@ -221,45 +222,44 @@ const parseAsRange = createParser<[number, number]>({
     return lo! <= hi! ? [lo!, hi!] : [hi!, lo!];
   },
   serialize: ([lo, hi]) => (lo === hi ? String(lo) : `${lo}-${hi}`),
-  eq: (a, b) => a[0] === b[0] && a[1] === b[1],
 });
 
 /** Reading: a missing or invalid value is `null`, which `parseHash` turns into "not given". */
 const HASH = {
-  t: parseAsPeriod,
-  z: parseAsFixed(2),
-  c: parseAsCenter,
-  pi: parseAsFixed(0),
   b: parseAsFixed(0),
-  s: parseAsStatus,
+  be: parseAsOneOf(BEAUTY_OPTIONS.map(([v]) => v)),
+  c: parseAsCenter,
+  d: parseAsRange,
   f: parseAsOneOf(FAME_OPTIONS.map(([v]) => v)),
   m: parseAsMetres,
-  d: parseAsRange,
-  v: parseAsOneOf(TRAFFIC_OPTIONS.map(([v]) => v)),
-  be: parseAsOneOf(BEAUTY_OPTIONS.map(([v]) => v)),
   o: parseAsStringLiteral(PASS_SORTS),
-  q: parseAsString,
   pass: parseAsString,
+  pi: parseAsFixed(0),
+  q: parseAsString,
+  s: parseAsStatus,
+  t: parseAsPeriod,
   tour: parseAsString,
   town: parseAsString,
+  v: parseAsOneOf(TRAFFIC_OPTIONS.map(([v]) => v)),
+  z: parseAsFixed(2),
 };
 /** Writing: a value equal to its default leaves the hash. */
 const HASH_OUT = {
   ...HASH,
-  s: HASH.s.withDefault(DEFAULT_FILTERS.status),
+  be: HASH.be.withDefault(DEFAULT_FILTERS.minBeauty),
+  d: HASH.d.withDefault(DEFAULT_FILTERS.difficulty),
   f: HASH.f.withDefault(DEFAULT_FILTERS.minFame),
   m: HASH.m.withDefault(DEFAULT_FILTERS.minElevation),
-  d: HASH.d.withDefault(DEFAULT_FILTERS.difficulty),
-  v: HASH.v.withDefault(DEFAULT_FILTERS.maxTraffic),
-  be: HASH.be.withDefault(DEFAULT_FILTERS.minBeauty),
   o: HASH.o.withDefault(DEFAULT_FILTERS.sort),
   q: HASH.q.withDefault(DEFAULT_FILTERS.query),
+  s: HASH.s.withDefault(DEFAULT_FILTERS.status),
+  v: HASH.v.withDefault(DEFAULT_FILTERS.maxTraffic),
 };
 const loadHash = createLoader(HASH);
 const serialize = createSerializer(HASH_OUT, { clearOnDefault: true });
 
 /** `parseHash` is the pure half of `readHash`, so the parsing can be tested without a window. */
-export function parseHash(hash: string): HashState {
+export const parseHash = (hash: string): HashState => {
   const h = loadHash(new URLSearchParams(hash.replace(/^#/u, "")));
   const given = <K extends keyof typeof HASH>(key: K) => h[key] ?? undefined;
   const selection: Selection | null = h.pass
@@ -271,67 +271,67 @@ export function parseHash(hash: string): HashState {
         : null;
   return {
     filters: {
-      period: given("t"),
-      status: given("s"),
-      minFame: given("f"),
-      minElevation: given("m"),
       difficulty: given("d"),
       maxTraffic: given("v"),
       minBeauty: given("be"),
-      sort: given("o"),
+      minElevation: given("m"),
+      minFame: given("f"),
+      period: given("t"),
       query: given("q"),
+      sort: given("o"),
+      status: given("s"),
     },
     selection,
     view: {
+      bearing: given("b"),
       lat: h.c?.[0],
       lon: h.c?.[1],
-      zoom: given("z"),
       pitch: given("pi"),
-      bearing: given("b"),
+      zoom: given("z"),
     },
   };
-}
+};
 
-export function readHash(): HashState {
+export const readHash = (): HashState => {
   if (typeof window === "undefined")
     return { filters: {}, selection: null, view: {} };
   return parseHash(window.location.hash);
-}
+};
 
 /** Pure half of `writeHash`: the hash body without the leading "#". */
-export function serializeHash(
+export const serializeHash = (
   filters: Filters,
   selection: Selection | null,
   view: MapView,
-): string {
+): string => {
   const tilted = view.pitch > 1;
   return serialize({
-    t: filters.period,
-    z: view.zoom,
-    c: [view.lat, view.lon],
-    pi: tilted ? view.pitch : null,
     b: tilted ? view.bearing : null,
-    s: filters.status,
+    be: filters.minBeauty,
+    c: [view.lat, view.lon],
+    d: filters.difficulty,
     f: filters.minFame,
     m: filters.minElevation,
-    d: filters.difficulty,
-    v: filters.maxTraffic,
-    be: filters.minBeauty,
     o: filters.sort,
-    q: filters.query,
     pass: selection?.kind === "pass" ? selection.slug : null,
+    pi: tilted ? view.pitch : null,
+    q: filters.query,
+    s: filters.status,
+    t: filters.period,
     tour: selection?.kind === "tour" ? selection.slug : null,
     town: selection?.kind === "town" ? selection.slug : null,
+    v: filters.maxTraffic,
+    z: view.zoom,
   }).replace(/^\?/u, "");
-}
+};
 
-export function writeHash(
+export const writeHash = (
   filters: Filters,
   selection: Selection | null,
   view: MapView,
-) {
+) => {
   history.replaceState(null, "", `#${serializeHash(filters, selection, view)}`);
-}
+};
 
 /**
  * localStorage hook with an SSR-safe initial value. The value is read via
@@ -341,16 +341,16 @@ export function writeHash(
 const listeners = new Set<() => void>();
 const cache = new Map<string, { raw: string | null; value: unknown }>();
 
-function subscribe(onChange: () => void) {
+const subscribe = (onChange: () => void) => {
   listeners.add(onChange);
   window.addEventListener("storage", onChange);
   return () => {
     listeners.delete(onChange);
     window.removeEventListener("storage", onChange);
   };
-}
+};
 
-function readStored<T>(key: string, initial: T): T {
+const readStored = <T>(key: string, initial: T): T => {
   let raw: string | null = null;
   try {
     raw = localStorage.getItem(key);
@@ -374,9 +374,9 @@ function readStored<T>(key: string, initial: T): T {
   }
   cache.set(key, { raw, value });
   return value;
-}
+};
 
-export function useStored<T>(key: string, initial: T) {
+export const useStored = <T>(key: string, initial: T) => {
   const value = useSyncExternalStore(
     subscribe,
     () => readStored(key, initial),
@@ -401,7 +401,7 @@ export function useStored<T>(key: string, initial: T) {
   );
 
   return [value, setValue] as const;
-}
+};
 
 export interface Favorites {
   pass: string[];
@@ -410,7 +410,7 @@ export interface Favorites {
 }
 export const NO_FAVORITES: Favorites = { pass: [], tour: [], town: [] };
 
-export function useFavorites() {
+export const useFavorites = () => {
   const [favorites, setFavorites] = useStored<Favorites>(
     "alpenpaesse:favorites",
     NO_FAVORITES,
@@ -427,13 +427,13 @@ export function useFavorites() {
   const count =
     favorites.pass.length + favorites.tour.length + favorites.town.length;
   return {
+    clear: () => setFavorites(NO_FAVORITES),
+    count,
     favorites,
     isFavorite,
     toggle,
-    clear: () => setFavorites(NO_FAVORITES),
-    count,
   };
-}
+};
 
 export const PERIOD_KEY = "alpenpaesse:period";
 
@@ -442,9 +442,7 @@ export const PERIOD_KEY = "alpenpaesse:period";
  * and a shared link (hash `t`) beats both – opening someone else's link never
  * overwrites the preference, because only the period control writes here.
  */
-export function useStoredPeriod() {
-  return useStored<Period | null>(PERIOD_KEY, null);
-}
+export const useStoredPeriod = () => useStored<Period | null>(PERIOD_KEY, null);
 
 /**
  * Precedence for the half-month the app opens on: a shared link wins over the
@@ -458,10 +456,10 @@ export const resolvePeriod = (
 ): Period => fromHash ?? stored ?? today;
 
 /** The stored period outside React, for the one-shot hash initialisation. */
-export function readStoredPeriod(): Period | null {
+export const readStoredPeriod = (): Period | null => {
   const value = readStored<Period | null>(PERIOD_KEY, null);
   return isPeriod(value) ? value : null;
-}
+};
 
 export const statusMatches = (status: Status, filter: Status[]) =>
   filter.includes(status);

@@ -16,7 +16,7 @@
  * background. Say so when posting such screenshots.
  */
 import { mkdir } from "node:fs/promises";
-import { join } from "node:path";
+import path from "node:path";
 
 // --- CLI ------------------------------------------------------------------
 
@@ -57,10 +57,10 @@ const states: State[] = (
     ",",
   );
   return {
-    name,
+    dark: flags.includes("dark"),
     hash,
     mobile: flags.includes("mobile"),
-    dark: flags.includes("dark"),
+    name,
   };
 });
 
@@ -92,7 +92,7 @@ const EXTERNAL_HOST_PATTERNS = [
   "*://*.openfreemap.org/*",
 ];
 
-function chromePath(): string | undefined {
+const chromePath = (): string | undefined => {
   const explicit = process.env.CHROME ?? process.env.BUN_CHROME_PATH;
   if (explicit) return explicit;
   for (const name of [
@@ -101,24 +101,25 @@ function chromePath(): string | undefined {
     "google-chrome",
     "google-chrome-stable",
   ]) {
-    if (Bun.which(name)) return undefined; // on PATH: let Bun auto-detect
+    // On PATH: let Bun auto-detect.
+    if (Bun.which(name)) return undefined;
   }
   const fallback = "/opt/pw-browsers/chromium";
   return Bun.file(fallback).size > 0 ? fallback : undefined;
-}
+};
 
-function backend(): Bun.WebView.Backend {
+const backend = (): Bun.WebView.Backend => {
   if (webkit) return "webkit";
-  const path = chromePath();
+  const chrome = chromePath();
   return {
     type: "chrome",
     url: false,
-    ...(path ? { path } : {}),
+    ...(chrome ? { path: chrome } : {}),
     argv: CHROME_ARGV,
     // Chrome's own crash output; useful when it "closes the pipe" without a reason.
     stderr: process.env.DEBUG_CHROME ? "inherit" : "ignore",
   };
-}
+};
 
 if (webkit && (offline || states.some((s) => s.dark || s.mobile))) {
   console.log(
@@ -128,14 +129,12 @@ if (webkit && (offline || states.some((s) => s.dark || s.mobile))) {
 
 // --- One state ------------------------------------------------------------
 
-async function shoot(state: State) {
+const shoot = async (state: State) => {
   const width = state.mobile ? 390 : 1440;
   const height = state.mobile ? 844 : 900;
   const errors = new Set<string>();
   const view = new Bun.WebView({
     backend: backend(),
-    width,
-    height,
     console: (type, ...rest) => {
       if (type !== "error") return;
       const first = rest[0] as { description?: string } | string | undefined;
@@ -146,6 +145,8 @@ async function shoot(state: State) {
         ),
       );
     },
+    height,
+    width,
   });
 
   try {
@@ -153,10 +154,10 @@ async function shoot(state: State) {
     await view.navigate("about:blank");
     if (!webkit) {
       await view.cdp("Emulation.setDeviceMetricsOverride", {
-        width,
-        height,
         deviceScaleFactor: 1,
+        height,
         mobile: state.mobile,
+        width,
       });
       await view.cdp("Emulation.setTouchEmulationEnabled", {
         enabled: state.mobile,
@@ -195,7 +196,7 @@ async function shoot(state: State) {
     // Let MapLibre fetch its worker, style and data and paint the layers.
     await Bun.sleep(offline ? 4000 : 8000);
 
-    const file = join(outDir, `${state.name}.png`);
+    const file = path.join(outDir, `${state.name}.png`);
     await Bun.write(file, await view.screenshot({ encoding: "buffer" }));
     const relevant = [...errors].filter(
       (e) =>
@@ -207,7 +208,7 @@ async function shoot(state: State) {
   } finally {
     view.close();
   }
-}
+};
 
 await mkdir(outDir, { recursive: true });
 try {

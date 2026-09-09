@@ -5,14 +5,6 @@
   "items": {
     "type": "object",
     "properties": {
-      "slug": {
-        "type": "string",
-        "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
-      },
-      "name": {
-        "type": "string",
-        "minLength": 2
-      },
       "aliases": {
         "type": "array",
         "items": {
@@ -20,91 +12,49 @@
           "minLength": 2
         }
       },
-      "country": {
-        "type": "string",
-        "pattern": "^[A-Z]{2}(?:\\/[A-Z]{2})?$"
-      },
-      "region": {
-        "type": "string",
-        "enum": [
-          "Westalpen",
-          "Zentralalpen",
-          "Ostalpen",
-          "Dolomiten"
-        ]
-      },
-      "lat": {
-        "type": "number",
-        "minimum": 43,
-        "maximum": 49
-      },
-      "lon": {
-        "type": "number",
-        "minimum": 4,
-        "maximum": 16
-      },
-      "elevation": {
-        "type": "integer",
-        "minimum": 300,
-        "maximum": 3500
-      },
-      "classicAscent": {
-        "type": "string"
-      },
-      "beauty": {
-        "type": "integer",
-        "minimum": 1,
-        "maximum": 5
-      },
-      "fame": {
-        "type": "integer",
-        "minimum": 1,
-        "maximum": 5
-      },
-      "difficulty": {
-        "type": "integer",
-        "minimum": 1,
-        "maximum": 5
-      },
-      "traffic": {
-        "type": "integer",
-        "minimum": 1,
-        "maximum": 5
-      },
-      "season": {
-        "anyOf": [
-          {
-            "type": "object",
-            "properties": {
-              "opens": {
-                "type": "number"
-              },
-              "closes": {
-                "type": "number"
-              },
-              "maintained": {
-                "type": "boolean"
-              }
-            },
-            "required": [
-              "opens",
-              "closes"
-            ],
-            "additionalProperties": false
-          },
-          {
-            "type": "null"
-          }
-        ]
-      },
-      "note": {
-        "type": "string"
-      },
       "ascents": {
         "type": "array",
         "items": {
           "type": "object",
           "properties": {
+            "check": {
+              "type": "object",
+              "properties": {
+                "maxEndDist": {
+                  "type": "number",
+                  "exclusiveMinimum": 0
+                },
+                "maxGain": {
+                  "type": "number",
+                  "exclusiveMinimum": 0
+                },
+                "maxKm": {
+                  "type": "number",
+                  "exclusiveMinimum": 0
+                },
+                "maxStartDist": {
+                  "type": "number",
+                  "exclusiveMinimum": 0
+                },
+                "maxTopDelta": {
+                  "type": "number",
+                  "exclusiveMinimum": 0
+                },
+                "minPeakAt": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 1
+                },
+                "note": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "required": [
+                "note"
+              ],
+              "additionalProperties": false
+            },
             "from": {
               "type": "object",
               "properties": {
@@ -128,44 +78,6 @@
             "label": {
               "type": "string",
               "minLength": 1
-            },
-            "check": {
-              "type": "object",
-              "properties": {
-                "maxKm": {
-                  "type": "number",
-                  "exclusiveMinimum": 0
-                },
-                "maxStartDist": {
-                  "type": "number",
-                  "exclusiveMinimum": 0
-                },
-                "maxEndDist": {
-                  "type": "number",
-                  "exclusiveMinimum": 0
-                },
-                "maxTopDelta": {
-                  "type": "number",
-                  "exclusiveMinimum": 0
-                },
-                "minPeakAt": {
-                  "type": "number",
-                  "minimum": 0,
-                  "maximum": 1
-                },
-                "maxGain": {
-                  "type": "number",
-                  "exclusiveMinimum": 0
-                },
-                "note": {
-                  "type": "string",
-                  "minLength": 1
-                }
-              },
-              "required": [
-                "note"
-              ],
-              "additionalProperties": false
             }
           },
           "required": [
@@ -174,24 +86,112 @@
           ],
           "additionalProperties": false
         }
+      },
+      "beauty": {
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 5
+      },
+      "classicAscent": {
+        "type": "string"
+      },
+      "country": {
+        "type": "string",
+        "pattern": "^[A-Z]{2}(?:\\/[A-Z]{2})?$"
+      },
+      "difficulty": {
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 5
+      },
+      "elevation": {
+        "type": "integer",
+        "minimum": 300,
+        "maximum": 3500
+      },
+      "fame": {
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 5
+      },
+      "lat": {
+        "type": "number",
+        "minimum": 43,
+        "maximum": 49
+      },
+      "lon": {
+        "type": "number",
+        "minimum": 4,
+        "maximum": 16
+      },
+      "name": {
+        "type": "string",
+        "minLength": 2
+      },
+      "note": {
+        "type": "string"
+      },
+      "region": {
+        "type": "string",
+        "enum": [
+          "Westalpen",
+          "Zentralalpen",
+          "Ostalpen",
+          "Dolomiten"
+        ]
+      },
+      "season": {
+        "anyOf": [
+          {
+            "type": "object",
+            "properties": {
+              "closes": {
+                "type": "number"
+              },
+              "maintained": {
+                "type": "boolean"
+              },
+              "opens": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "closes",
+              "opens"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "null"
+          }
+        ]
+      },
+      "slug": {
+        "type": "string",
+        "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+      },
+      "traffic": {
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 5
       }
     },
     "required": [
-      "slug",
-      "name",
+      "ascents",
+      "beauty",
+      "classicAscent",
       "country",
-      "region",
+      "difficulty",
+      "elevation",
+      "fame",
       "lat",
       "lon",
-      "elevation",
-      "classicAscent",
-      "beauty",
-      "fame",
-      "difficulty",
-      "traffic",
-      "season",
+      "name",
       "note",
-      "ascents"
+      "region",
+      "season",
+      "slug",
+      "traffic"
     ],
     "additionalProperties": false
   }

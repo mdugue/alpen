@@ -20,83 +20,83 @@ const filters = (over: Partial<Filters> = {}): Filters => ({
 const never = () => false;
 
 const pass = (over: Partial<Pass> & { slug: string }): Pass => ({
-  name: over.slug,
+  ascents: [],
+  beauty: 3,
+  classicAscent: "",
   country: "AT",
-  region: "Ostalpen",
+  difficulty: 3,
+  elevation: 1500,
+  fame: 3,
   lat: 47,
   lon: 12,
-  elevation: 1500,
-  classicAscent: "",
-  beauty: 3,
-  fame: 3,
-  difficulty: 3,
-  traffic: 3,
-  season: null,
+  name: over.slug,
   note: "",
-  ascents: [],
+  region: "Ostalpen",
+  season: null,
+  traffic: 3,
   ...over,
 });
 
 const passes = [
   pass({
-    slug: "hoch",
-    name: "Hochpass",
     elevation: 2500,
     fame: 5,
+    name: "Hochpass",
     region: "Westalpen",
+    slug: "hoch",
   }),
-  pass({ slug: "mittel", name: "Mittelpass", elevation: 1500, fame: 3 }),
+  pass({ elevation: 1500, fame: 3, name: "Mittelpass", slug: "mittel" }),
   pass({
-    slug: "winter",
-    name: "Winterpass",
     elevation: 1200,
     fame: 1,
-    season: { opens: 6, closes: 10 },
+    name: "Winterpass",
+    season: { closes: 10, opens: 6 },
+    slug: "winter",
   }),
 ];
 const index = indexBySlug(passes);
 
 const tour = (over: Partial<Tour> & { slug: string }): Tour => ({
-  name: over.slug,
   color: "#000",
-  km: 100,
+  description: "",
   elevationGain: 2000,
+  km: 100,
+  name: over.slug,
   passes: [],
   season: "",
-  description: "",
   waypoints: [],
   ...over,
 });
 const tours = [
   tour({
-    slug: "kurz",
+    elevationGain: 1000,
     name: "Kurze Runde",
     passes: ["mittel"],
-    elevationGain: 1000,
+    slug: "kurz",
   }),
   tour({
-    slug: "lang",
+    elevationGain: 3000,
     name: "Lange Runde",
     passes: ["mittel", "winter"],
-    elevationGain: 3000,
+    slug: "lang",
   }),
 ];
 
 const towns: Town[] = [
   {
-    slug: "bormio",
-    name: "Bormio",
     country: "IT",
     lat: 46.4,
     lon: 10.3,
+    name: "Bormio",
+    slug: "bormio",
     why: "Stelvio vor der Tür",
   },
   {
-    slug: "aosta",
-    name: "Aosta",
     country: "IT",
     lat: 45.7,
     lon: 7.3,
+    name: "Aosta",
+    slug: "aosta",
     why: "Vier Pässe im Umkreis",
   },
 ];
@@ -105,13 +105,15 @@ const snowy = (snowPct: number): ClimateYear =>
   PERIODS.map(
     () =>
       ({
+        frostPct: 0,
+        snowPct,
         tmax: 10,
         tmin: 2,
-        snowPct,
-        frostPct: 0,
         wetPct: 20,
       }) satisfies ClimateBucket,
   );
+
+const periodIndexOf = (t: number) => PERIODS.indexOf(t);
 
 describe("buildPassRows", () => {
   test("filters by elevation, fame, search and favourites", () => {
@@ -182,13 +184,13 @@ describe("plan 05 criteria", () => {
   const mixed = [
     ...passes,
     pass({
-      slug: "grenze",
-      name: "Grenzpass",
-      country: "CH/IT",
-      region: "Zentralalpen",
-      difficulty: 5,
-      traffic: 1,
       beauty: 5,
+      country: "CH/IT",
+      difficulty: 5,
+      name: "Grenzpass",
+      region: "Zentralalpen",
+      slug: "grenze",
+      traffic: 1,
     }),
   ];
   const pick = (over: Partial<Filters>) =>
@@ -202,7 +204,7 @@ describe("plan 05 criteria", () => {
   });
 
   test("search folds accents and matches every token", () => {
-    const umlaut = [pass({ slug: "gross", name: "Großer Sankt Bernhard" })];
+    const umlaut = [pass({ name: "Großer Sankt Bernhard", slug: "gross" })];
     expect(
       buildPassRows(umlaut, filters({ query: "grosser bernhard" }), never),
     ).toHaveLength(1);
@@ -225,12 +227,12 @@ describe("plan 05 criteria", () => {
   test("every pass of a tour has to respect the upper bounds", () => {
     const hard = [
       ...passes,
-      pass({ slug: "steil", name: "Steilpass", difficulty: 5, traffic: 5 }),
+      pass({ difficulty: 5, name: "Steilpass", slug: "steil", traffic: 5 }),
     ];
     const hardIndex = indexBySlug(hard);
     const withHard = [
       ...tours,
-      tour({ slug: "hart", name: "Harte Runde", passes: ["mittel", "steil"] }),
+      tour({ name: "Harte Runde", passes: ["mittel", "steil"], slug: "hart" }),
     ];
     const rows = (over: Partial<Filters>) =>
       buildTourRows(withHard, hardIndex, filters(over), never).map(
@@ -243,7 +245,7 @@ describe("plan 05 criteria", () => {
 
   test("towns see only search and favourites", () => {
     expect(
-      buildTownRows(towns, filters({ minBeauty: 5, maxTraffic: 1 }), never),
+      buildTownRows(towns, filters({ maxTraffic: 1, minBeauty: 5 }), never),
     ).toHaveLength(2);
   });
 });
@@ -334,8 +336,8 @@ describe("sortPassRows", () => {
 
   test("is stable for equal values", () => {
     const twins = [
-      pass({ slug: "b", name: "B" }),
-      pass({ slug: "a", name: "A" }),
+      pass({ name: "B", slug: "b" }),
+      pass({ name: "A", slug: "a" }),
     ];
     const sorted = sortPassRows(
       buildPassRows(twins, filters(), never),
@@ -353,16 +355,16 @@ describe("statusHistogram", () => {
     for (const b of bars)
       expect(b.open + b.risky + b.closed).toBe(passes.length);
     expect(bars[periodIndexOf(4)]).toMatchObject({
+      closed: 1,
       open: 1,
       risky: 1,
-      closed: 1,
     });
   });
 
   test("the status filter is ignored, the other filters are not", () => {
     const bars = statusHistogram(
       passes,
-      filters({ status: ["open"], minFame: 4 }),
+      filters({ minFame: 4, status: ["open"] }),
       never,
     );
     for (const b of bars) expect(b.open + b.risky + b.closed).toBe(1);
@@ -380,12 +382,10 @@ describe("statusHistogram", () => {
 
   test("the climate series moves passes from open to weather-dependent", () => {
     const bars = statusHistogram(passes, filters(), never, {
-      mittel: snowy(30),
       hoch: snowy(30),
+      mittel: snowy(30),
       winter: snowy(30),
     });
     expect(bars.every((b) => b.open === 0)).toBe(true);
   });
 });
-
-const periodIndexOf = (t: number) => PERIODS.indexOf(t);

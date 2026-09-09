@@ -47,6 +47,7 @@ import { indexBySlug } from "@/lib/status";
 import type {
   ClimateYear,
   ElevationProfile,
+  LatLon,
   Pass,
   Period,
   RouteGeometry,
@@ -77,7 +78,7 @@ const SNAP_PEEK = "4.5rem";
 const SNAP_POINTS = [SNAP_PEEK, 0.5, 0.82] as const;
 type Snap = (typeof SNAP_POINTS)[number];
 
-export function Explorer({
+export const Explorer = ({
   passes,
   tours,
   towns,
@@ -85,7 +86,7 @@ export function Explorer({
   profiles,
   climate,
   defaultPeriod,
-}: Props) {
+}: Props) => {
   const [filters, setFilters] = useState<Filters>({
     ...DEFAULT_FILTERS,
     period: defaultPeriod,
@@ -104,6 +105,11 @@ export function Explorer({
   const [sidebarOpen, setSidebarOpen] = useStored("alpenpaesse:sidebar", true);
   const [snap, setSnap] = useState<Snap>(SNAP_PEEK);
   const [scalesOpen, setScalesOpen] = useState(false);
+  // Where the elevation-profile cursor sits on the road, and a fly-to asked
+  // for by a click on it. Both live here because the map draws them and the
+  // detail panel produces them.
+  const [profileCursor, setProfileCursor] = useState<LatLon | null>(null);
+  const [profileZoom, setProfileZoom] = useState<LatLon | null>(null);
   const {
     isFavorite,
     toggle: toggleFavorite,
@@ -173,18 +179,18 @@ export function Explorer({
 
   const mapPasses: MapPass[] = passRows.map(({ pass, status, favorite }) => ({
     ...pass,
-    status,
     favorite,
+    status,
   }));
   // What the list shows for a kind is what the map shows for that kind; the
   // visibility switches only add a layer toggle on top.
   const mapTours = tourRows.map(({ tour: t, status }) => ({
     ...t,
-    status,
-    visible: !hiddenTours.includes(t.slug),
     geometry:
       routes[`tour:${t.slug}`] ??
       t.waypoints.map((w) => [w.lat, w.lon] as [number, number]),
+    status,
+    visible: !hiddenTours.includes(t.slug),
   }));
   const mapTowns = townRows.map(({ town, favorite }) => ({
     ...town,
@@ -194,6 +200,7 @@ export function Explorer({
   /** Selecting something also makes it visible and brings the panel up. */
   const select = (sel: Selection) => {
     setSelection(sel);
+    setProfileCursor(null);
     if (sel.kind === "tour")
       setHiddenTours((h) => h.filter((s) => s !== sel.slug));
     if (sel.kind === "town") setShowTowns(true);
@@ -204,6 +211,7 @@ export function Explorer({
   const back = () => {
     const sel = selection;
     setSelection(null);
+    setProfileCursor(null);
     requestAnimationFrame(() => {
       const root = sidebarRoot.current;
       const row =
@@ -230,6 +238,8 @@ export function Explorer({
       climate={climate}
       isFavorite={isFavorite}
       onToggleFavorite={toggleFavorite}
+      onProfileCursor={setProfileCursor}
+      onProfileZoom={setProfileZoom}
       onSelect={select}
       onBack={back}
       onOpenScales={() => setScalesOpen(true)}
@@ -268,11 +278,11 @@ export function Explorer({
 
   // Height of the visible sheet part, so its own scroll container ends at the fold.
   const sheetHeight = typeof snap === "number" ? `${snap * 100}dvh` : snap;
-  const insetBottom = !isMobile
-    ? 0
-    : typeof snap === "number"
+  const insetBottom = isMobile
+    ? typeof snap === "number"
       ? Math.round(window.innerHeight * 0.5)
-      : 72;
+      : 72
+    : 0;
 
   // Desktop: the panels float over the map; the map is padded by their width
   // so camera targets land in the visible part.
@@ -301,6 +311,8 @@ export function Explorer({
             selection={selection}
             onSelect={select}
             onViewChange={setView}
+            profileCursor={profileCursor}
+            profileZoom={profileZoom}
             requestedView={requestedView}
             insetLeft={insetLeft}
             insetBottom={insetBottom}
@@ -380,7 +392,9 @@ export function Explorer({
                 setSnap(s as Snap);
               }
             }}
-            onOpenChange={() => {}}
+            onOpenChange={() => {
+              // The sheet is always open; it only moves between snap points.
+            }}
           >
             <DrawerContent className="rounded-b-none border-b-0 [--drawer-inset:0px] data-[swipe-axis=y]:[--drawer-content-max-height:100dvh]">
               <DrawerTitle className="sr-only">Liste und Filter</DrawerTitle>
@@ -410,4 +424,4 @@ export function Explorer({
       <ScalesDialog open={scalesOpen} onOpenChange={setScalesOpen} />
     </TooltipProvider>
   );
-}
+};
