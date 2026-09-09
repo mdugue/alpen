@@ -108,6 +108,7 @@ export const Explorer = ({
   // sheet would empty out the moment the selection is cleared.
   const [lastSelection, setLastSelection] = useState<Selection | null>(null);
   const [view, setView] = useState<MapView>(DEFAULT_VIEW);
+  const [showPasses, setShowPasses] = useStored("alpenpaesse:showPasses", true);
   const [showTowns, setShowTowns] = useStored("alpenpaesse:showTowns", true);
   const [hiddenTours, setHiddenTours] = useStored<string[]>(
     "alpenpaesse:hiddenTours",
@@ -165,6 +166,7 @@ export const Explorer = ({
       setSelection(h.selection);
       if (h.selection) {
         setLastSelection(h.selection);
+        if (h.selection.kind === "pass") setShowPasses(true);
         if (h.selection.kind === "tour")
           setHiddenTours((t) => t.filter((s) => s !== h.selection!.slug));
         if (h.selection.kind === "town") setShowTowns(true);
@@ -216,6 +218,7 @@ export const Explorer = ({
     setSelection(sel);
     setLastSelection(sel);
     setProfileCursor(null);
+    if (sel.kind === "pass") setShowPasses(true);
     if (sel.kind === "tour")
       setHiddenTours((h) => h.filter((s) => s !== sel.slug));
     if (sel.kind === "town") setShowTowns(true);
@@ -280,6 +283,8 @@ export const Explorer = ({
       tours={tours}
       hiddenTours={hiddenTours}
       setHiddenTours={setHiddenTours}
+      showPasses={showPasses}
+      setShowPasses={setShowPasses}
       showTowns={showTowns}
       setShowTowns={setShowTowns}
       sections={sections}
@@ -327,6 +332,7 @@ export const Explorer = ({
             tours={mapTours}
             towns={mapTowns}
             assets={assets}
+            showPasses={showPasses}
             showTowns={showTowns}
             selection={selection}
             onSelect={select}
@@ -336,6 +342,18 @@ export const Explorer = ({
             requestedView={requestedView}
             insetLeft={insetLeft}
             insetBottom={insetBottom}
+            scrubber={
+              <PeriodScrubber
+                value={filters.period}
+                today={defaultPeriod}
+                histogram={histogram}
+                onChange={(p) => {
+                  setFilters((f) => ({ ...f, period: p }));
+                  // Only the control writes the preference; applying a hash never does.
+                  setStoredPeriod(p);
+                }}
+              />
+            }
           >
             {!isMobile && !sidebarOpen && (
               <Tooltip>
@@ -355,16 +373,6 @@ export const Explorer = ({
                 <TooltipContent>Liste und Filter</TooltipContent>
               </Tooltip>
             )}
-            <PeriodScrubber
-              value={filters.period}
-              today={defaultPeriod}
-              histogram={histogram}
-              onChange={(p) => {
-                setFilters((f) => ({ ...f, period: p }));
-                // Only the control writes the preference; applying a hash never does.
-                setStoredPeriod(p);
-              }}
-            />
           </PassMap>
         </div>
 

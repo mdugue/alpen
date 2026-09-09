@@ -76,9 +76,16 @@ friends do that better and the app links out to them.
   styling (status badges, etc.) goes into the consuming component via
   `className`. Re-running `ui:init` overwrites `app/globals.css`; the domain
   tokens (`--status-open`, `--status-risky`, `--status-closed`, `--tour`,
-  `--town` plus their `@theme inline` lines), the MapLibre rules at the end,
-  the coarse-pointer font-size rule next to them and the dark-mode setup must
-  be restored afterwards.
+  `--town` plus their `@theme inline` lines), the `--text-2xs` step below
+  Tailwind's `text-xs`, the MapLibre rules at the end, the coarse-pointer
+  font-size rule next to them and the dark-mode setup must be restored
+  afterwards.
+- **Sizes come from the scale, not from pixels.** Font sizes, spacing and radii
+  are Tailwind steps; an arbitrary value (`text-[13px]`, `rounded-[3px]`) is
+  only for what the scale genuinely cannot express, such as a `calc()` width or
+  the inset shadow marking the current row. The dense map furniture needs one
+  step below `text-xs`, so the scale carries `text-2xs` (10 px) as a token –
+  add to the scale rather than reaching for a pixel value.
 - **Touch targets follow the pointer, not the width.** Safari on iOS zooms the
   page in when a focused form control carries a font size below 16 px, and on a
   map that fills the viewport that zoom has no way back. An unlayered rule at
@@ -109,12 +116,21 @@ friends do that better and the app links out to them.
   search field itself: a field there would have the software keyboard come up
   in the same moment as the sheet moves, and the two animations fight over
   where the field ends up. The field a thumb reaches is always in a sheet that
-  already stands still. Only the period
-  scrubber and three map tools float over the map; the scrubber carries the
+  already stands still. What floats over the map is one cluster in its top-left
+  corner (`MAP_CLUSTER`, next to the panels' left edge): the period scrubber
+  and, on the same panel surface, the three map tools – layers, 3D, fit. The
+  tools are one segmented column in the same outline as the scrubber's own
+  stepper, stretched to its height, so they read as pressable and the cluster
+  keeps an even edge; `MAP_TOOL` settles the outline, because `Button` and
+  `Toggle` disagree about hover, border token and dark fill. The scrubber
+  reaches the map through the `scrubber` prop rather than `children`, which is
+  what stays free-floating beside the cluster – today the sidebar's own toggle.
+  The scrubber carries the
   24 half-months, the histogram of what is rideable and the "heute" marker,
   and every list row repeats the same 24 cells as a `SeasonStrip`. Map
-  visibility is always a `Switch` ("auf der Karte"), two-state buttons are
-  always a `Toggle`.
+  visibility is always a `Switch` ("auf der Karte"), one per kind, two-state
+  buttons are always a `Toggle`. Without a camera or a selection in the hash
+  the map opens on the frame the fit button produces, not on a fixed overview.
 - **Charts come from the shadcn `chart` component** (recharts under the hood).
   It is the only heavy dependency in the app, so the one chart that uses it
   (`components/panel/climate-chart.tsx`) is pulled in with `next/dynamic` and
@@ -132,6 +148,15 @@ friends do that better and the app links out to them.
   Attribution is not decoration: every slide carries author and licence,
   baked into the slide rather than derived from the carousel's index, so it
   cannot drift out of sync with what is on screen.
+- **A sidebar section adds no surface.** The three collapsible lists
+  (`components/sidebar/section.tsx`) carry no background of their own in either
+  state – neither a tint on the header nor the ghost trigger's
+  `aria-expanded` fill – so the panel's frosted backdrop reads through them
+  evenly. That is also why the header does not stick: a pinned header needs a
+  background to stay legible over the rows scrolling under it, and a
+  `backdrop-blur` cannot supply one, because the panel already filters its
+  backdrop and a nested filter never sees the content inside that backdrop
+  root.
 - **The panel folds.** Every block below the title is a `Section`
   (`components/panel/section.tsx`), open by default. The panel is a column on a
   map and a phone sheet shows two blocks at a time; whoever wants the climate

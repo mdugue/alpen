@@ -19,11 +19,13 @@ import {
   periodLabel,
 } from "@/lib/status";
 import type { Period } from "@/lib/types";
-import { cn, PANEL } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 
 /**
  * The half-month drives every colour on the map, so it is the one domain
- * control that floats over it, on the same translucent surface as the sidebar.
+ * control that floats over it. It carries no surface of its own: it sits in
+ * the map cluster (`MAP_CLUSTER`) together with the three map tools, and that
+ * shared panel is what makes the corner read as one interaction area.
  *
  * It reads as a control from three sides: a stepper group with the current
  * label, a rail whose 24 stops highlight under the pointer, and a thumb around
@@ -84,8 +86,8 @@ export const PeriodScrubber = ({
   };
 
   return (
-    <div className={cn("w-76 max-w-full p-1.5", PANEL)}>
-      <ButtonGroup className="bg-background w-full rounded-md">
+    <div className="w-76 max-w-full min-w-0">
+      <ButtonGroup className="bg-background/60 w-full rounded-md">
         <Button
           variant="outline"
           size="icon-lg"
@@ -160,7 +162,7 @@ export const PeriodScrubber = ({
               key={b.period}
               className={cn(
                 "relative flex flex-1 flex-col justify-end px-px transition-colors",
-                i === index ? "" : "hover:bg-foreground/8 rounded-[3px]",
+                i === index ? "" : "hover:bg-foreground/10 rounded-sm",
               )}
             >
               {i === todayIndex && (
@@ -171,7 +173,7 @@ export const PeriodScrubber = ({
               )}
               <span
                 aria-hidden
-                className="flex flex-col justify-end overflow-hidden rounded-[2px]"
+                className="flex flex-col justify-end overflow-hidden rounded-xs"
                 style={{
                   height: `${((b.closed + b.risky + b.open) / max) * 100}%`,
                 }}
@@ -205,14 +207,14 @@ export const PeriodScrubber = ({
               left: `${(index / PERIODS.length) * 100}%`,
               width: `${100 / PERIODS.length}%`,
             }}
-            className="ring-foreground pointer-events-none absolute -inset-y-1 rounded-[5px] ring-2 ring-inset"
+            className="ring-foreground pointer-events-none absolute -inset-y-1 rounded-md ring-2 ring-inset"
           />
         </div>
       </div>
 
       <div
         aria-hidden
-        className="text-muted-foreground mt-0.5 flex px-1 text-[10px] leading-none"
+        className="text-muted-foreground text-2xs mt-0.5 flex px-1 leading-none"
       >
         {MONTH_INITIALS.map((m, i) => (
           <span
