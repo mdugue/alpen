@@ -84,7 +84,12 @@ import type {
   TourCheck,
   TourMetrics,
 } from "../lib/types";
-import { ROAD_RADIUS, distanceToWays, roadsQuery } from "./lib/locate";
+import {
+  distanceToWays,
+  overpassPost,
+  ROAD_RADIUS,
+  roadsQuery,
+} from "./lib/locate";
 import type { OverpassWay } from "./lib/locate";
 import {
   LIMITS,
@@ -407,7 +412,7 @@ const roadDistances = async (
       overpass,
       1,
       OVERPASS,
-      { body: `data=${encodeURIComponent(roadsQuery(chunk))}`, method: "POST" },
+      overpassPost(roadsQuery(chunk)),
     );
     const ways = elements.filter((e) => e.type === "way");
     for (const p of chunk) {
