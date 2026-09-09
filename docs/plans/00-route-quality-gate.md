@@ -449,10 +449,19 @@ changes close it:
   coordinates, elevation and `check`). The next build retries it exactly when
   that could change the outcome: the inputs changed, or the stored metrics pass
   the current limits. `--retry-rejected` remains as the override.
-- The DEM check at the pass point runs first and gates routing: a pass whose
-  point is more than 80 m off in height is not routed, so no route ends short
-  of it and no profile is paid for it. `summits.json` stores the coordinate a
-  height was read at, so a moved point is re-measured by itself.
+- The pass point is measured first and gates routing: the DEM height (Open-
+  Meteo) and the distance to the nearest drivable OSM way (Overpass). A pass
+  whose point is more than 80 m off in height or more than 100 m from a road
+  is not routed, so no route ends short of it and no profile is paid for it.
+  The road distance is the check the Großglockner needed: its DEM read 2 535 m
+  against 2 571 and passed, while the point was 1 km from the road.
+  `summits.json` stores the coordinate both were read at, so a moved point is
+  re-measured by itself.
+- `bun run data:locate [slug…]` is the interactive counterpart for fixing a
+  point: DEM and road distance for the stored coordinate and for the OSM pass
+  and saddle nodes nearby, ranked by name, with `--apply` for the unambiguous
+  case. The `curate-data` skill now carries the six-step checklist for adding
+  or moving a pass.
 
 **The pattern.** Of the 20 rejections, 14 were the same coordinate defect
 rather than a routing problem, visible without a map: _both_ ascents of a pass

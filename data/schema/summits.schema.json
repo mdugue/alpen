@@ -17,6 +17,12 @@
       },
       "lon": {
         "type": "number"
+      },
+      "roadDist": {
+        "type": [
+          "number",
+          "null"
+        ]
       }
     },
     "required": [

@@ -80,8 +80,16 @@ export const LIMITS = {
      */
     minPeakAt: 0.75,
   },
-  /** DEM height at the pass coordinate vs. the stated `pass.elevation`. */
-  summit: { maxDelta: 80 },
+  summit: {
+    /** DEM height at the pass coordinate vs. the stated `pass.elevation`. */
+    maxDelta: 80,
+    /**
+     * Distance from the pass coordinate to the nearest drivable OSM way, km.
+     * A hand-picked point lands within a few tens of metres of the road; the
+     * wrong ones were 0.5–1 km off (Großglockner 1 km, at pass height).
+     */
+    maxRoadDist: 0.1,
+  },
   tour: {
     /**
      * Relative deviation from the hand-maintained `tour.km`. Those figures come
@@ -205,6 +213,21 @@ export const checkSummit = (dem: number, elevation: number): string[] => {
   return Math.abs(d) > LIMITS.summit.maxDelta
     ? [
         `DEM-Höhe am Passpunkt weicht ${d > 0 ? "+" : ""}${d} m ab > ${LIMITS.summit.maxDelta} m`,
+      ]
+    : [];
+};
+
+/**
+ * Distance from the pass coordinate to the nearest road. `null` means no road
+ * within the search radius at all; `undefined` means not measured yet, which
+ * is not a finding.
+ */
+export const checkRoad = (roadDist: number | null | undefined): string[] => {
+  if (roadDist === undefined) return [];
+  if (roadDist === null) return ["keine Straße in der Nähe des Passpunkts"];
+  return roadDist > LIMITS.summit.maxRoadDist
+    ? [
+        `Passpunkt ${fmtKm(roadDist)} von der nächsten Straße entfernt > ${fmtKm(LIMITS.summit.maxRoadDist)}`,
       ]
     : [];
 };

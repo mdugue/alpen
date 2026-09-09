@@ -272,6 +272,12 @@ export const Summit = z.strictObject({
   dem: z.number(),
   lat: z.number(),
   lon: z.number(),
+  /**
+   * Distance in km from the pass point to the nearest drivable OSM way; null
+   * when there is none within `ROAD_RADIUS` (scripts/lib/locate.ts). Missing
+   * on entries from before the check existed – the next build fills it in.
+   */
+  roadDist: z.number().nullable().optional(),
 });
 /** Key: pass slug. */
 export const Summits = z.record(Slug, Summit);

@@ -9,6 +9,7 @@ import {
   LIMITS,
   ascentMetrics,
   checkAscent,
+  checkRoad,
   checkSummit,
   checkTour,
   geometryHash,
@@ -457,5 +458,18 @@ describe("inputsHash", () => {
         { maxEndDist: 0.8, note: "b" },
       ),
     );
+  });
+});
+
+describe("checkRoad", () => {
+  test("unmeasured is not a finding, none within reach is", () => {
+    const notYetMeasured: { roadDist?: number | null } = {};
+    expect(checkRoad(notYetMeasured.roadDist)).toEqual([]);
+    expect(checkRoad(null)).toHaveLength(1);
+  });
+
+  test("the Großglockner point at 1 km is caught, a point at 40 m is fine", () => {
+    expect(checkRoad(0.98)[0]).toContain("980 m");
+    expect(checkRoad(0.04)).toEqual([]);
   });
 });

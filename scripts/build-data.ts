@@ -84,10 +84,13 @@ import type {
   TourCheck,
   TourMetrics,
 } from "../lib/types";
+import { ROAD_RADIUS, distanceToWays, roadsQuery } from "./lib/locate";
+import type { OverpassWay } from "./lib/locate";
 import {
   LIMITS,
   ascentMetrics,
   checkAscent,
+  checkRoad,
   checkSummit,
   checkTour,
   geometryHash,
@@ -232,6 +235,10 @@ const openMeteo = new Limiter("Open-Meteo", 500, OPEN_METEO_BUDGET);
 // with quota left.
 const ors = ORS ? new Limiter("OpenRouteService", 38) : null;
 const osrm = new Limiter("OSRM-Demo", 55);
+// Overpass asks for fair use, no key; a handful of batched queries per run.
+const overpass = new Limiter("Overpass", 20);
+const OVERPASS =
+  process.env.OVERPASS_URL ?? "https://overpass-api.de/api/interpreter";
 
 const getJson = <T>(
   lim: Limiter,
@@ -381,6 +388,32 @@ const summitElevations = async (
     );
     for (const [j, p] of chunk.entries())
       out[p.slug] = { dem: Math.round(elevation[j]!), lat: p.lat, lon: p.lon };
+  }
+  return out;
+};
+
+/**
+ * Distance from each pass point to the nearest drivable OSM way, one Overpass
+ * request per batch. The ways come back with their geometry and the distance
+ * is measured locally; a point with no way inside ROAD_RADIUS gets null.
+ */
+const roadDistances = async (
+  list: Pass[],
+): Promise<Record<string, number | null>> => {
+  const out: Record<string, number | null> = {};
+  for (let i = 0; i < list.length; i += 25) {
+    const chunk = list.slice(i, i + 25);
+    const { elements } = await getJson<{ elements: OverpassWay[] }>(
+      overpass,
+      1,
+      OVERPASS,
+      { body: `data=${encodeURIComponent(roadsQuery(chunk))}`, method: "POST" },
+    );
+    const ways = elements.filter((e) => e.type === "way");
+    for (const p of chunk) {
+      const d = distanceToWays(p, ways);
+      out[p.slug] = d <= ROAD_RADIUS ? +d.toFixed(3) : null;
+    }
   }
   return out;
 };
@@ -590,7 +623,10 @@ const summitOff = (slug: string) => {
   const p = passBySlug.get(slug);
   const s = summits[slug];
   if (!(p && s) || s.lat !== p.lat || s.lon !== p.lon) return false;
-  return checkSummit(s.dem, p.elevation).length > 0;
+  return (
+    checkSummit(s.dem, p.elevation).length > 0 ||
+    checkRoad(s.roadDist).length > 0
+  );
 };
 const summitBlocked = (j: RouteJob) => j.kind === "ascent" && summitOff(j.slug);
 
@@ -619,6 +655,17 @@ const pendingSummits = () =>
     const s = summits[p.slug];
     return !s || s.lat !== p.lat || s.lon !== p.lon;
   });
+/** Summit entries that still lack the road distance (predate the check, or just fetched). */
+const pendingRoads = () =>
+  (passes as Pass[]).filter((p) => {
+    const s = summits[p.slug];
+    return (
+      s !== undefined &&
+      s.lat === p.lat &&
+      s.lon === p.lon &&
+      s.roadDist === undefined
+    );
+  });
 
 const report = () => {
   const r = pendingRoutes().length;
@@ -637,11 +684,12 @@ const report = () => {
         !summitBlocked(j),
     ).length;
   const calls = newProfiles * PROFILE_WEIGHT + c * CLIMATE_WEIGHT + s;
+  const roads = pendingRoads().length + s;
   const up = routeJobs.filter(provisional).length;
   const blocked = routeJobs.filter(summitBlocked).length;
   const kept = Object.keys(rejected).filter((k) => routes[k]).length;
   console.log(
-    `Fehlend: ${r} Routen, ${p} Profile, ${c} Klimareihen, ${s} Gipfelhöhen${
+    `Fehlend: ${r} Routen, ${p} Profile, ${c} Klimareihen, ${s} Gipfelhöhen, ${roads} Straßenabstände${
       calls
         ? ` (≈ ${calls} Open-Meteo-Calls ≈ ${Math.ceil(calls / Math.min(OPEN_METEO_BUDGET, OPEN_METEO_HOURLY))} Läufe à ${OPEN_METEO_BUDGET})`
         : ""
@@ -667,7 +715,8 @@ if (PENDING_ONLY) {
     pendingRoutes().length +
       pendingProfiles().length +
       pendingClimate().length +
-      pendingSummits().length,
+      pendingSummits().length +
+      pendingRoads().length,
   );
   process.exit(0);
 }
@@ -911,25 +960,40 @@ const gate = async (
   );
 };
 
-// Pipeline 0: the DEM height of the pass points – one cheap batch, and it
-// decides which ascents may be routed at all, so it runs before the others.
+// Pipeline 0: the pass points themselves – DEM height (Open-Meteo) and
+// distance to the nearest road (Overpass), two cheap batches. They decide
+// which ascents may be routed at all, so they run before everything else.
 {
   const todo = pendingSummits();
   if (todo.length)
     try {
       Object.assign(summits, await summitElevations(todo));
       await write("summits.json", summits);
-      const off = todo.filter((p) => summitOff(p.slug));
-      console.log(
-        `Gipfelhöhen: ${todo.length} geprüft, ${off.length} auffällig${
-          off.length
-            ? ` (${off.map((p) => p.slug).join(", ")}) – deren Auffahrten werden nicht geroutet`
-            : ""
-        }`,
-      );
+      console.log(`Gipfelhöhen: ${todo.length} gemessen`);
     } catch (error) {
       if (!(error instanceof QuotaExhaustedError)) fail("Gipfelhöhen", error);
     }
+  const roads = pendingRoads();
+  if (roads.length)
+    try {
+      const dist = await roadDistances(roads);
+      for (const p of roads)
+        summits[p.slug] = {
+          ...summits[p.slug]!,
+          roadDist: dist[p.slug] ?? null,
+        };
+      await write("summits.json", summits);
+      console.log(`Straßenabstände: ${roads.length} gemessen`);
+    } catch (error) {
+      fail("Straßenabstände", error);
+    }
+  const off = [...new Set([...todo, ...roads])].filter((p) =>
+    summitOff(p.slug),
+  );
+  if (off.length)
+    console.log(
+      `Passpunkte auffällig: ${off.map((p) => p.slug).join(", ")} – deren Auffahrten werden nicht geroutet (bun run data:locate)`,
+    );
 }
 
 // Pipeline 1: routing. Each route runs through the gate and hands its profile on.

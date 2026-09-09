@@ -114,14 +114,14 @@ is a single sentence naming the surrounding passes and the infrastructure.
 
 ## Derived data (`bun run data:build`)
 
-| File               | Key                                       | Contents                                                                                                                                   |
-| ------------------ | ----------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
-| `routes.json`      | `<pass-slug>:<index>`, `tour:<tour-slug>` | Road geometry as `[lat, lon][]`                                                                                                            |
-| `profiles.json`    | `<pass-slug>:<index>`                     | km, elevation gain, average and steepest-kilometre gradient, ~100 samples                                                                  |
-| `climate.json`     | `<pass-slug>`                             | 24 half-months with average temperatures and frost/snow/rain share                                                                         |
-| `routes-meta.json` | as `routes.json`                          | `source` (`ors` \| `osrm`) and `fetchedAt` – which router produced this route                                                              |
-| `rejected.json`    | as `routes.json`                          | routes the quality gate refused, with the reasons, the measured values, the paid-for profile and a hash of the inputs they were routed for |
-| `summits.json`     | `<pass-slug>`                             | DEM height at the pass coordinate (`dem`) with the `lat`/`lon` it was read at, to catch a wrong summit point                               |
+| File               | Key                                       | Contents                                                                                                                                                       |
+| ------------------ | ----------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `routes.json`      | `<pass-slug>:<index>`, `tour:<tour-slug>` | Road geometry as `[lat, lon][]`                                                                                                                                |
+| `profiles.json`    | `<pass-slug>:<index>`                     | km, elevation gain, average and steepest-kilometre gradient, ~100 samples                                                                                      |
+| `climate.json`     | `<pass-slug>`                             | 24 half-months with average temperatures and frost/snow/rain share                                                                                             |
+| `routes-meta.json` | as `routes.json`                          | `source` (`ors` \| `osrm`) and `fetchedAt` – which router produced this route                                                                                  |
+| `rejected.json`    | as `routes.json`                          | routes the quality gate refused, with the reasons, the measured values, the paid-for profile and a hash of the inputs they were routed for                     |
+| `summits.json`     | `<pass-slug>`                             | DEM height (`dem`) and distance to the nearest road (`roadDist`) at the pass coordinate, with the `lat`/`lon` they were read at, to catch a wrong summit point |
 
 A profile's samples are ~100 points of the ascent's road geometry, taken at
 `Math.round(i * step)` of `routes.json` (`lib/profile.ts`). The coordinate of a
@@ -155,7 +155,7 @@ neither reaches the map nor spends 100 Open-Meteo calls on a useless profile.
 
 ```mermaid
 flowchart LR
-  A["passes.json ascents<br/>tours.json waypoints"] --> S0{"DEM at the pass point<br/>within 80 m?"}
+  A["passes.json ascents<br/>tours.json waypoints"] --> S0{"pass point: DEM within 80 m<br/>and a road within 100 m?"}
   S0 -- "no" --> K
   S0 -- "yes" --> B{"stored with<br/>source ors?"}
   B -- "yes" --> G
@@ -168,7 +168,7 @@ flowchart LR
   E --> V2{"profile checks<br/>top within 80 m,<br/>summit near the end, gain"}
   V2 -- "fail" --> R
   V2 -- "pass" --> F["profiles.json"]
-  S["summits.json<br/>DEM height at the pass point"] -. "off by more than 80 m" .-> K
+  S["summits.json<br/>DEM height and road distance<br/>at the pass point"] -. "off by more than 80 m<br/>or 100 m from a road" .-> K
   R --> K["data:check<br/>error for a stored route that fails,<br/>warning for a rejection or an osrm route"]
   K -- "--explain" --> T["every route with its<br/>measured values, offline"]
   F --> G["map and panel"]

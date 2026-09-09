@@ -37,6 +37,7 @@ import { renderJsonSchema, schemaFileFor } from "./emit-json-schema";
 import {
   ascentMetrics,
   checkAscent,
+  checkRoad,
   checkSummit,
   checkTour,
   tourMetrics,
@@ -166,10 +167,19 @@ const summitWarnings = (p: Pass): string[] => {
     return [
       `${p.slug}: Gipfelhöhe ungeprüft – Passkoordinate wurde verschoben (bun run data:build)`,
     ];
-  return checkSummit(summit.dem, p.elevation).map(
+  const out = checkSummit(summit.dem, p.elevation).map(
     (r) =>
-      `${p.slug}: ${r} – Passkoordinate prüfen (DEM ${summit.dem} m, angegeben ${p.elevation} m); die Auffahrten werden bis dahin nicht geroutet`,
+      `${p.slug}: ${r} – Passkoordinate prüfen (DEM ${summit.dem} m, angegeben ${p.elevation} m); die Auffahrten werden bis dahin nicht geroutet (bun run data:locate ${p.slug})`,
   );
+  if (summit.roadDist === undefined)
+    out.push(`${p.slug}: Straßenabstand ungeprüft (bun run data:build)`);
+  out.push(
+    ...checkRoad(summit.roadDist).map(
+      (r) =>
+        `${p.slug}: ${r} – Passkoordinate auf die Straße legen; die Auffahrten werden bis dahin nicht geroutet (bun run data:locate ${p.slug})`,
+    ),
+  );
+  return out;
 };
 
 const checkPasses = (list: Pass[]) => {
