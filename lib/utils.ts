@@ -46,9 +46,27 @@ export const TOUCH_ICON = "pointer-coarse:size-9";
 export const MAP_CONTROL = "bg-card shadow-md dark:bg-card";
 
 /**
+ * One map tool. The three sit in a segmented group next to the period
+ * scrubber, in the same outline as its stepper – a tool has to look pressable,
+ * and a bare icon on the panel does not. `Button` and `Toggle` disagree about
+ * that outline in the mira preset (`hover:bg-input/50` against
+ * `hover:bg-muted`, `border-border` against `border-input`, a dark fill on one
+ * and not the other), so all three are settled on the button's side here.
+ */
+export const MAP_TOOL =
+  "border-border hover:bg-input/50 hover:text-foreground dark:bg-input/30";
+
+/**
  * Translucent floating panel over the map – the sidebar, the detail slide-over
  * and the period scrubber are the same surface, so the map reads as the page
  * they float on.
  */
 export const PANEL =
   "rounded-xl border border-border/60 bg-card/80 shadow-xl backdrop-blur-md supports-not-[backdrop-filter:blur(0)]:bg-card";
+
+/**
+ * A group of controls floating over the map, on the panel surface: the period
+ * scrubber and the map tools next to it share it, which is what makes the
+ * top-left corner read as one interaction area rather than as loose buttons.
+ */
+export const MAP_CLUSTER = `${PANEL} p-1.5`;

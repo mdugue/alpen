@@ -20,7 +20,7 @@ export const Rating = ({
         key={i}
         aria-hidden
         className={cn(
-          "h-2.5 w-1.5 rounded-[2px]",
+          "h-2.5 w-1.5 rounded-xs",
           i <= value
             ? muted
               ? "bg-muted-foreground"

@@ -29,6 +29,13 @@ authoritative. In addition:
 - **Season**: half-months (`10` = early October, `10.5` = late October);
   `null` for roads cleared all year; `maintained: true` only for managed toll
   roads that are actually cleared.
+- **`deadEnd` / `roadSummit`**: for the entries that are not passes in the
+  strict sense. `deadEnd: true` when the road ends at the summit – a planner
+  acts on it, and `data:check` warns if a tour lists such a pass.
+  `roadSummit: true` when the summit is simply the highest point of the
+  asphalt and OSM has no `mountain_pass` node; `data:locate` then offers the
+  highest point of the stored route instead of searching for a node. See
+  `docs/data-model.md`.
 - **note**: one or two German sentences with the closure habit and the
   character; this is the sentence a planner reads.
 - **aliases** (plan 05): other spellings and other-language names, never the
@@ -57,6 +64,10 @@ below is either a command or a look at its output.
    carries the pass's name and reads ✓ ✓ where yours does not,
    `bun run data:locate <slug> --apply` moves the point for you; anything
    less clear-cut it leaves to you, with the numbers on screen.
+   If the answer is "kein mountain_pass/saddle-Knoten im Umkreis", the entry
+   is a toll or summit road: set `roadSummit: true` on it and run the command
+   again – it then offers the highest point of the stored route, which is the
+   right point for such a road, and `--apply` takes it.
 3. **Build:** `ORS_KEY=… bun run data:build`. The pass point is measured first
    (DEM and road distance, two cheap requests) and its ascents are routed only
    if both pass; otherwise the run says so and names `data:locate`.

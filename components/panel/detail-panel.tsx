@@ -211,7 +211,7 @@ const Nearby = ({
                 onClick={() => p.onSelect({ kind: "town", slug: x.slug })}
               >
                 <span
-                  className="bg-town inline-block size-2 rotate-45 rounded-[1px]"
+                  className="bg-town inline-block size-2 rotate-45 rounded-xs"
                   aria-hidden
                 />{" "}
                 {x.name}
@@ -236,7 +236,7 @@ const PassDetail = (props: Props & { pass: Pass }) => {
 
   return (
     <>
-      <p className="text-muted-foreground mt-0.5 text-[13px]">
+      <p className="text-muted-foreground mt-0.5 text-xs">
         <span className="text-foreground text-2xl leading-none font-bold tabular-nums">
           {fmt(pass.elevation)}
         </span>
@@ -266,8 +266,8 @@ const PassDetail = (props: Props & { pass: Pass }) => {
         />
       </div>
 
-      <p className="mt-4 text-[13px] leading-relaxed">{seasonText(pass)}</p>
-      <p className="text-muted-foreground mt-1.5 text-[13px] leading-relaxed">
+      <p className="mt-4 text-xs leading-relaxed">{seasonText(pass)}</p>
+      <p className="text-muted-foreground mt-1.5 text-xs leading-relaxed">
         {pass.note}
       </p>
 
@@ -276,7 +276,7 @@ const PassDetail = (props: Props & { pass: Pass }) => {
         info="Redaktionelle Einschätzung auf einer Skala von 1 bis 5, keine gemessenen Werte."
         title="Bewertung"
       >
-        <dl className="grid grid-cols-[auto_1fr] items-center gap-x-3 gap-y-1.5 text-[13px]">
+        <dl className="grid grid-cols-[auto_1fr] items-center gap-x-3 gap-y-1.5 text-xs">
           {(
             [
               ["Schönheit", <Rating key="b" value={pass.beauty} />],
@@ -306,6 +306,12 @@ const PassDetail = (props: Props & { pass: Pass }) => {
         info="Geroutete Straße, 100 Höhenpunkte aus einem Geländemodell – zum Vergleichen gut, nicht metergenau."
         title="Auffahrten"
       >
+        {pass.deadEnd && (
+          <p className="text-muted-foreground mb-3 text-xs leading-relaxed">
+            Stichstraße: Die Straße endet oben, hinunter geht es dieselbe
+            Auffahrt zurück.
+          </p>
+        )}
         {pass.ascents.length === 0 && (
           <Empty className="py-3">
             <EmptyHeader>
@@ -319,7 +325,7 @@ const PassDetail = (props: Props & { pass: Pass }) => {
             return (
               <div key={a.label}>
                 <div className="flex flex-wrap items-baseline justify-between gap-x-2">
-                  <span className="text-[13px] font-medium">{a.label}</span>
+                  <span className="text-xs font-medium">{a.label}</span>
                   <span className="text-muted-foreground text-xs tabular-nums">
                     {profile
                       ? `${fmtUnit(profile.km, "km", 1)} · ${fmtUnit(profile.elevationGain, "hm")} · Ø ${fmt(profile.avgGradient, 1)} % · steilster km ${fmt(profile.maxKmGradient, 1)} % · ${fmt(profile.start)} → ${fmtUnit(profile.top, "m")}`
@@ -382,14 +388,14 @@ const PassDetail = (props: Props & { pass: Pass }) => {
                     <ItemTitle className="text-sm leading-tight tabular-nums">
                       {value}
                     </ItemTitle>
-                    <ItemDescription className="line-clamp-none text-[11px] leading-tight text-pretty">
+                    <ItemDescription className="text-2xs line-clamp-none leading-tight text-pretty">
                       {label}
                     </ItemDescription>
                   </ItemContent>
                 </Item>
               ))}
             </ItemGroup>
-            <p className="text-muted-foreground mt-1.5 text-[11px]">
+            <p className="text-muted-foreground text-2xs mt-1.5">
               {periodLabel(props.period)} auf {fmtUnit(pass.elevation, "m")};
               Niederschlag an {bucket.wetPct} % der Tage.
             </p>
@@ -450,7 +456,7 @@ const TourDetail = (props: Props & { tour: Tour }) => {
 
   return (
     <>
-      <p className="text-muted-foreground mt-0.5 text-[13px]">
+      <p className="text-muted-foreground mt-0.5 text-xs">
         <span className="text-foreground text-2xl leading-none font-bold tabular-nums">
           {fmt(tour.km)}
         </span>
@@ -475,8 +481,8 @@ const TourDetail = (props: Props & { tour: Tour }) => {
         />
       </div>
 
-      <p className="mt-4 text-[13px] leading-relaxed">{tour.description}</p>
-      <p className="text-muted-foreground mt-1.5 text-[13px] leading-relaxed">
+      <p className="mt-4 text-xs leading-relaxed">{tour.description}</p>
+      <p className="text-muted-foreground mt-1.5 text-xs leading-relaxed">
         {tour.season}
       </p>
 
@@ -520,7 +526,7 @@ const TownDetail = (props: Props & { town: Town }) => {
   const { town } = props;
   return (
     <>
-      <p className="mt-2 text-[13px]">{town.why}</p>
+      <p className="mt-2 text-xs">{town.why}</p>
       <Nearby {...props} lat={town.lat} lon={town.lon} exclude={town.slug} />
       <ExternalLinks
         links={[
@@ -583,7 +589,7 @@ export const DetailPanel = (props: Props) => {
       }}
     >
       <div className="border-border flex h-10 shrink-0 items-center gap-1 border-b px-2">
-        <p className="text-muted-foreground min-w-0 flex-1 truncate pl-2 text-[11px] font-semibold tracking-widest uppercase">
+        <p className="text-muted-foreground text-2xs min-w-0 flex-1 truncate pl-2 font-semibold tracking-widest uppercase">
           {kicker}
         </p>
         <Toggle

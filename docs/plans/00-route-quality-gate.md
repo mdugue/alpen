@@ -476,13 +476,13 @@ holds them back again if one is wrong.
 
 What is left, by cause rather than by key:
 
-| Cause                                  | Keys                                                                             | Way out                                                                                |
-| -------------------------------------- | -------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------- |
-| Summit or toll road, point in a valley | Roßfeld, Ötztaler Gletscherstraße, Malta, Nockalm, Villacher                     | one Overpass lookup of the road's high point each; blocked until then                  |
-| ORS refuses the road for road cycling  | Mont Cenis ab Susa (341 km), Sampeyre ab Sampeyre, Grosse Scheidegg ab Meiringen | keep the OSRM route (now automatic), or move `from` past the refused segment           |
-| Road legitimately ends short           | Mangart (700 m), Crocedomini ab Bagolino (shoulder +85 m)                        | `ascent.check` with a note – set in this PR                                            |
-| DEM over a tunnel                      | Ötztaler Gletscherstraße (+251 m spike in the last sample)                       | end the ascent at the Rettenbach car park; the tunnel has no surface                   |
-| Tour waypoints route long              | Maratona lang +18 %, Sellaronda +22 % against a stated 52 km                     | Sellaronda's `km` was the 52 of older sources, now 58; Maratona needs denser waypoints |
+| Cause                                  | Keys                                                                             | Way out                                                                         |
+| -------------------------------------- | -------------------------------------------------------------------------------- | ------------------------------------------------------------------------------- |
+| Summit or toll road, point in a valley | Roßfeld, Ötztaler Gletscherstraße, Malta, Nockalm, Villacher                     | one Overpass lookup of the road's high point each; blocked until then           |
+| ORS refuses the road for road cycling  | Mont Cenis ab Susa (341 km), Sampeyre ab Sampeyre, Grosse Scheidegg ab Meiringen | keep the OSRM route (now automatic), or move `from` past the refused segment    |
+| Road legitimately ends short           | Mangart (700 m), Crocedomini ab Bagolino (shoulder +85 m)                        | `ascent.check` with a note – set in this PR                                     |
+| DEM over a tunnel                      | Ötztaler Gletscherstraße (+251 m spike in the last sample)                       | end the ascent at the Rettenbach car park; the tunnel has no surface            |
+| Tour waypoints route long              | Maratona lang +18 %, Sellaronda +22 % against a stated 52 km                     | waypoints off the road (Canazei, Pocol, Campolongo), moved – see the note below |
 
 Two conclusions for the thresholds themselves. They are not the problem: not
 one of the 20 rejections was a false positive, and every one that was
@@ -525,6 +525,13 @@ orthogonal. Left as is for now, since one case does not justify refitting.
   Sellaronda at +37 % and Maratona lang at +29 % because their waypoints are too
   sparse to pin the loop down. Re-confirm the 15 % once ORS has routed them, and
   expect those two to need denser waypoints rather than a wider limit.
+  _Resolved:_ the waypoints were not too sparse but off the road. The Canazei
+  waypoint sent both loops 5 km down the Pordoi road and back up to the Sella
+  fork at Lupo Bianco, the Pocol waypoint sat on a hamlet road beyond the
+  SR48 junction (a 3.5 km spur, ridden twice) and the Campolongo waypoint
+  300 m off the pass road (a 1 km spur, ridden four times). Moved onto the
+  road, the OSRM car route measures 136.6 km for the Maratona (stated 138)
+  and 52.4 km for the Sellaronda (stated 52 again; 58 had fitted the detour).
 - **A second router as a cross-check** is the strongest quality signal
   available and is not built here. Two independent routers agreeing on length
   and endpoint says more than any threshold, and it is self-calibrating.
