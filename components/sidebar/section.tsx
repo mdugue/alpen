@@ -91,5 +91,5 @@ export const Section = ({
 export const KIND_GLYPH = {
   pass: <span className="border-foreground/70 size-3 rounded-full border-2" />,
   tour: <span className="bg-tour h-1.5 w-4 rounded-full" />,
-  town: <span className="bg-town size-2.5 rotate-45 rounded-xs" />,
+  town: <span className="bg-town size-2.5 rounded-full" />,
 } as const;

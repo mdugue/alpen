@@ -49,7 +49,7 @@ friends do that better and the app links out to them.
 | Map, layers, 3D, markers, labels, feature state | `components/map/pass-map.tsx`                                                                                                                               |
 | Basemap: vector style, palette, glyphs          | `lib/basemap.ts`, `lib/palette.ts`, `scripts/build-map-style.ts` (→ `public/map/style-*.json`), `scripts/build-glyphs.ts` (→ `public/map/fonts`, committed) |
 | Map assets: GeoJSON, simplification, hashing    | `lib/map-assets.ts`, `scripts/build-map-assets.ts` (→ `public/map`, git-ignored)                                                                            |
-| Tours within reach of an entity                 | `lib/nearby.ts` (computed on the server in `lib/data.ts`)                                                                                                   |
+| Tours within reach, town reach hull             | `lib/nearby.ts`, `lib/geo.ts` (computed on the server in `lib/data.ts`)                                                                                     |
 | Photos: keys, sizes, licence metadata           | `lib/photos.ts`, `scripts/build-photos.ts` (`bun run data:photos`) → `data/generated/photos.json`                                                           |
 | Period scrubber floating over the map           | `components/map/period-scrubber.tsx`                                                                                                                        |
 | Season strip (24 half-months)                   | `components/season-strip.tsx`                                                                                                                               |
@@ -208,7 +208,10 @@ friends do that better and the app links out to them.
   the hillshade from the Terrarium DEM, the basemap's lines and labels
   (rivers, borders, roads from zoom 6 to minor roads at 11, road names at 12,
   lakes, peaks with elevation at 10, places), the raster overlays, then the
-  app's own layers (tours, ascents, towns, passes, labels, profile cursor).
+  app's own layers (the hovered town's reach, tours, ascents, passes, labels,
+  towns, profile cursor). The towns sit **above** the passes: MapLibre places
+  labels from the top of the style down, so the 26 towns win every collision
+  against the 92 pass labels and against the basemap's own place names.
   Roads are thin and neutral and there are no POIs: the mountain roads that
   matter are the app's lines, and the status and tour colours are what should
   dominate. Labels prefer `name:de`. The raster alternatives (OSM, OpenTopoMap,

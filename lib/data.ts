@@ -11,8 +11,8 @@ import toursJson from "@/data/tours.json";
 import townsJson from "@/data/towns.json";
 import { MAP_ASSET_DIR, mapAssets } from "@/lib/map-assets";
 import type { MapAssets } from "@/lib/map-assets";
-import { nearbyTours } from "@/lib/nearby";
-import type { NearbyTours } from "@/lib/nearby";
+import { nearbyTours, townReach } from "@/lib/nearby";
+import type { NearbyTours, TownReach } from "@/lib/nearby";
 import { profileCoords } from "@/lib/profile";
 import * as S from "@/lib/schema";
 import type {
@@ -92,6 +92,12 @@ export const getMapAssets = async (): Promise<MapAssets> => {
 export const getNearbyTours = async (): Promise<NearbyTours> => {
   "use cache";
   return nearbyTours(passes, tours, towns, routes);
+};
+
+/** The area each town reaches, as a hull over its passes; see `lib/nearby.ts`. */
+export const getTownReach = async (): Promise<TownReach> => {
+  "use cache";
+  return townReach(passes, towns);
 };
 
 /** Elevation profiles per ascent, key as `routes.json`, with their sample coordinates. */

@@ -1,5 +1,5 @@
 import type { EntityKind } from "@/lib/app-state";
-import { haversine, NEARBY_RADIUS_KM } from "@/lib/geo";
+import { convexHull, expandRing, haversine, NEARBY_RADIUS_KM } from "@/lib/geo";
 import { tourKey } from "@/lib/route-key";
 import type { LatLon, Pass, RouteGeometry, Tour, Town } from "@/lib/types";
 
@@ -42,5 +42,39 @@ export const nearbyTours = (
   for (const p of passes) out[nearbyKey("pass", p.slug)] = near(p);
   for (const t of tours) out[nearbyKey("tour", t.slug)] = near(t.waypoints[0]!);
   for (const t of towns) out[nearbyKey("town", t.slug)] = near(t);
+  return out;
+};
+
+/**
+ * The area a town reaches: the convex hull of the town and every pass within
+ * `radiusKm`, expanded a little so it reads as a region rather than a polygon
+ * cutting through the pass dots. Precomputed on the server for the same
+ * reason as the tours above – the map hovers it, and a hull per town is a few
+ * hundred bytes against the alternative of shipping the logic and recomputing
+ * it on every pointer move.
+ *
+ * Key: town slug; value: a ring as `[lon, lat]` pairs, ready as a GeoJSON
+ * polygon and open (MapLibre closes it). A town with fewer than three points
+ * has no hull and is left out.
+ */
+export type TownReach = Record<string, [number, number][]>;
+
+/** How far the hull is pushed out from its centroid, in km. */
+const REACH_PADDING_KM = 4;
+
+export const townReach = (
+  passes: readonly Pass[],
+  towns: readonly Town[],
+  radiusKm = NEARBY_RADIUS_KM,
+): TownReach => {
+  const out: TownReach = {};
+  for (const town of towns) {
+    const points = passes.filter((p) => haversine(town, p) <= radiusKm);
+    const ring = expandRing(
+      convexHull([town, ...points]),
+      REACH_PADDING_KM,
+    ).map((p) => [p.lon, p.lat] as [number, number]);
+    if (ring.length >= 3) out[town.slug] = ring;
+  }
   return out;
 };

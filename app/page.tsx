@@ -8,6 +8,7 @@ import {
   getPhotos,
   getProfiles,
   getTours,
+  getTownReach,
   getTowns,
 } from "@/lib/data";
 import { todayPeriod } from "@/lib/status";
@@ -56,17 +57,27 @@ const jsonLd = {
 const Page = async () => {
   "use cache";
 
-  const [passes, tours, towns, assets, nearbyTours, profiles, climate, photos] =
-    await Promise.all([
-      getPasses(),
-      getTours(),
-      getTowns(),
-      getMapAssets(),
-      getNearbyTours(),
-      getProfiles(),
-      getClimate(),
-      getPhotos(),
-    ]);
+  const [
+    passes,
+    tours,
+    towns,
+    assets,
+    nearbyTours,
+    townReach,
+    profiles,
+    climate,
+    photos,
+  ] = await Promise.all([
+    getPasses(),
+    getTours(),
+    getTowns(),
+    getMapAssets(),
+    getNearbyTours(),
+    getTownReach(),
+    getProfiles(),
+    getClimate(),
+    getPhotos(),
+  ]);
 
   return (
     <main className="h-dvh overflow-hidden">
@@ -80,6 +91,7 @@ const Page = async () => {
         towns={towns}
         assets={assets}
         nearbyTours={nearbyTours}
+        townReach={townReach}
         profiles={profiles}
         climate={climate}
         photos={photos}

@@ -211,7 +211,7 @@ const Nearby = ({
                 onClick={() => p.onSelect({ kind: "town", slug: x.slug })}
               >
                 <span
-                  className="bg-town inline-block size-2 rotate-45 rounded-xs"
+                  className="bg-town inline-block size-2 rounded-full"
                   aria-hidden
                 />{" "}
                 {x.name}
