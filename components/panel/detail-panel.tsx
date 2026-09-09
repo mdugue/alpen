@@ -28,6 +28,7 @@ import {
 import { Toggle } from "@/components/ui/toggle";
 import type { EntityKind, Selection } from "@/lib/app-state";
 import { haversine, NEARBY_RADIUS_KM } from "@/lib/geo";
+import { komootHref, quaeldichHref } from "@/lib/links";
 import { nearbyKey } from "@/lib/nearby";
 import type { NearbyTours } from "@/lib/nearby";
 import { photoKey } from "@/lib/photos";
@@ -99,26 +100,6 @@ interface Props {
   onSelect: (sel: Selection) => void;
   onBack: () => void;
 }
-
-/**
- * quäldich.de's own page for the pass. Their slugs follow their German-first
- * naming ("Stilfser Joch", "St. Gotthardpass"), so the mapping is curated in
- * `data/passes.json`; without it we fall back to their search, whose parameter
- * is `suchwort` – `q` silently returns everything.
- */
-const quaeldichHref = (pass: Pass) =>
-  pass.quaeldich
-    ? `https://www.quaeldich.de/paesse/${pass.quaeldich}/`
-    : `https://www.quaeldich.de/suche/?suchwort=${encodeURIComponent(pass.name).replaceAll("%20", "+")}`;
-
-/**
- * Komoot's discover view reads its location from the path, not from query
- * parameters: `?lat=&lng=` lands on the generic page at the visitor's own
- * position. The name segment is only a label, the `@lat,lon` behind it is what
- * places the map.
- */
-const komootHref = (name: string, lat: number, lon: number) =>
-  `https://www.komoot.com/de-de/discover/${encodeURIComponent(name)}/@${lat},${lon}/tours?sport=racebike`;
 
 const ExternalLinks = ({ links }: { links: [string, string][] }) => (
   <div className="mt-4 flex flex-wrap gap-1.5">
