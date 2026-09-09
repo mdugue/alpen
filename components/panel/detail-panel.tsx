@@ -28,6 +28,7 @@ import {
 import { Toggle } from "@/components/ui/toggle";
 import type { EntityKind, Selection } from "@/lib/app-state";
 import { haversine, NEARBY_RADIUS_KM } from "@/lib/geo";
+import { komootHref, quaeldichHref } from "@/lib/links";
 import { nearbyKey } from "@/lib/nearby";
 import type { NearbyTours } from "@/lib/nearby";
 import { photoKey } from "@/lib/photos";
@@ -416,14 +417,8 @@ const PassDetail = (props: Props & { pass: Pass }) => {
       <Nearby {...props} lat={pass.lat} lon={pass.lon} exclude={pass.slug} />
       <ExternalLinks
         links={[
-          [
-            "quaeldich.de",
-            `https://www.quaeldich.de/suche/?q=${encodeURIComponent(pass.name)}`,
-          ],
-          [
-            "komoot",
-            `https://www.komoot.com/discover?lat=${pass.lat}&lng=${pass.lon}&sport=racebike`,
-          ],
+          ["quaeldich.de", quaeldichHref(pass)],
+          ["komoot", komootHref(pass.name, pass.lat, pass.lon)],
           [
             "Google Maps",
             `https://www.google.com/maps/search/?api=1&query=${pass.lat},${pass.lon}`,
