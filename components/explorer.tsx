@@ -76,8 +76,8 @@ const SIDEBAR_W = { lg: 384, xl: 416 };
 /** The detail panel grows with the viewport; the map keeps the larger half. */
 const DETAIL_W = { lg: 352, xl: 400 };
 /**
- * Bottom sheet positions on phones. The list opens on a peek row that shows
- * only the search field (keep `--sheet-peek` in app/globals.css in step, the
+ * Bottom sheet positions on phones. The list opens on a peek row that carries
+ * the search button (keep `--sheet-peek` in app/globals.css in step, the
  * MapLibre controls sit above it), then half and almost full; the detail sheet
  * leaves the map visible above it or takes nearly the whole screen.
  */
@@ -285,15 +285,12 @@ export const Explorer = ({
       selection={selection}
       onCollapse={() => setSidebarOpen(false)}
       onOpenScales={() => setScalesOpen(true)}
-      onSearchFocus={
-        // Typing needs room: from the peek row, where the search field is all
-        // there is, the sheet goes as high as it can so that as much of the
-        // result list as possible stays above the software keyboard. Higher up
-        // the list is already visible – and the focus `back()` returns to the
-        // search field must not move the sheet at all.
-        variant === "sheet"
-          ? () => setListSnap((s) => (s === LIST_PEEK ? LIST_FULL : s))
-          : undefined
+      onOpenSearch={
+        // The peek row's search button opens the sheet as far as it goes and
+        // stops there: the field it reveals is the real one, and by the time a
+        // thumb reaches it the sheet stands still, so the software keyboard has
+        // nothing to fight with.
+        variant === "sheet" ? () => setListSnap(LIST_FULL) : undefined
       }
     />
   );

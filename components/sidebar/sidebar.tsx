@@ -46,7 +46,8 @@ export interface SidebarProps {
   selection: Selection | null;
   onCollapse?: () => void;
   onOpenScales: () => void;
-  onSearchFocus?: () => void;
+  /** Tap on the peek row's search button: the sheet opens, the field it reveals is the real one. */
+  onOpenSearch?: () => void;
   /** Bottom sheet at its peek height: only the search row is visible. */
   peek?: boolean;
 }
@@ -115,35 +116,54 @@ export const Sidebar = (p: SidebarProps) => {
             favoriteCount={p.favoriteCount}
             hidden={p.peek}
             search={
-              <InputGroup className={cn("flex-1", TOUCH_CONTROL)}>
-                <InputGroupAddon>
-                  <Search />
-                </InputGroupAddon>
-                <InputGroupInput
-                  type="search"
-                  name="q"
-                  autoComplete="off"
-                  enterKeyHint="search"
-                  spellCheck={false}
-                  value={p.filters.query}
-                  onChange={(e) => set("query", e.target.value)}
-                  onFocus={p.onSearchFocus}
-                  placeholder="Pass, Tour oder Ort …"
-                  aria-label="Suchen"
-                  className="h-full [&::-webkit-search-cancel-button]:appearance-none [&::-webkit-search-decoration]:appearance-none"
-                />
-                {p.filters.query && (
-                  <InputGroupAddon align="inline-end">
-                    <InputGroupButton
-                      size="icon-xs"
-                      onClick={() => set("query", "")}
-                      aria-label="Suche leeren"
-                    >
-                      <X />
-                    </InputGroupButton>
+              // On the peek row the field is a button that only opens the
+              // sheet: a live input there would have the software keyboard
+              // come up in the same moment as the sheet moves, and the two
+              // animations fight over where the field ends up.
+              p.peek ? (
+                <Button
+                  variant="outline"
+                  onClick={p.onOpenSearch}
+                  className={cn(
+                    "text-muted-foreground flex-1 justify-start font-normal",
+                    TOUCH_CONTROL,
+                  )}
+                >
+                  <Search data-icon="inline-start" />
+                  <span className="truncate">
+                    {p.filters.query || "Pass, Tour oder Ort …"}
+                  </span>
+                </Button>
+              ) : (
+                <InputGroup className={cn("flex-1", TOUCH_CONTROL)}>
+                  <InputGroupAddon>
+                    <Search />
                   </InputGroupAddon>
-                )}
-              </InputGroup>
+                  <InputGroupInput
+                    type="search"
+                    name="q"
+                    autoComplete="off"
+                    enterKeyHint="search"
+                    spellCheck={false}
+                    value={p.filters.query}
+                    onChange={(e) => set("query", e.target.value)}
+                    placeholder="Pass, Tour oder Ort …"
+                    aria-label="Suchen"
+                    className="h-full [&::-webkit-search-cancel-button]:appearance-none [&::-webkit-search-decoration]:appearance-none"
+                  />
+                  {p.filters.query && (
+                    <InputGroupAddon align="inline-end">
+                      <InputGroupButton
+                        size="icon-xs"
+                        onClick={() => set("query", "")}
+                        aria-label="Suche leeren"
+                      >
+                        <X />
+                      </InputGroupButton>
+                    </InputGroupAddon>
+                  )}
+                </InputGroup>
+              )
             }
           />
           {hasActiveFilters(p.filters) && !p.peek && (

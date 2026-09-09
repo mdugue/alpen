@@ -131,8 +131,12 @@ test(
   "6 · list and detail are separate sheets: peek → list → detail → back",
   () =>
     withPage(app, "mobile-sheet", { mobile: true }, async (page) => {
+      // The peek row carries a button, not the field: the sheet opens first,
+      // so the software keyboard never arrives while the sheet is moving.
+      await page.waitFor('[aria-label="Liste ausklappen"]');
+      expect(await page.count("input[type=search]")).toBe(0);
+      await page.clickText("button", "Pass, Tour oder Ort");
       await page.waitFor("input[type=search]");
-      await page.click('[aria-label="Liste ausklappen"]');
       await page.waitFor(PASS_ROW);
       const all = await page.count(PASS_ROW);
       await page.click(GALIBIER);

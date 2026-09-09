@@ -104,7 +104,11 @@ friends do that better and the app links out to them.
   never takes the list's place and the lists keep their scroll position.
   A sheet sizes itself from `--drawer-snap-point-offset`: the popup is a full
   `100dvh` and padded off at the bottom by that offset, so its content box ends
-  at the fold. Only the period
+  at the fold. The peek row carries a **button** that opens the sheet, not the
+  search field itself: a field there would have the software keyboard come up
+  in the same moment as the sheet moves, and the two animations fight over
+  where the field ends up. The field a thumb reaches is always in a sheet that
+  already stands still. Only the period
   scrubber and three map tools float over the map; the scrubber carries the
   24 half-months, the histogram of what is rideable and the "heute" marker,
   and every list row repeats the same 24 cells as a `SeasonStrip`. Map
