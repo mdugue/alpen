@@ -45,7 +45,7 @@ import type { MapView, Selection } from "@/lib/app-state";
 import type { MapAssets } from "@/lib/map-assets";
 import { ascentKey } from "@/lib/route-key";
 import type { LatLon, Pass, Status, Tour, Town } from "@/lib/types";
-import { cn, MAP_CONTROL, PRESSED } from "@/lib/utils";
+import { cn, MAP_CLUSTER, MAP_TOOL, PRESSED } from "@/lib/utils";
 
 export interface MapPass extends Pass {
   status: Status;
@@ -64,6 +64,8 @@ interface Props {
    * show and how is set through layer filters and feature state below.
    */
   assets: MapAssets;
+  /** "auf der Karte" for the pass section: markers, labels and ascents at once. */
+  showPasses: boolean;
   showTowns: boolean;
   selection: Selection | null;
   onSelect: (sel: Selection) => void;
@@ -85,11 +87,13 @@ interface Props {
   insetLeft?: number;
   /** Pixels at the bottom covered by the mobile sheet; camera targets stay above it. */
   insetBottom?: number;
-  /** Rendered over the map in the top-left corner. */
+  /** Rendered in the top-left control cluster, ahead of the three map tools. */
   children?: React.ReactNode;
 }
 
 const EMPTY = { features: [], type: "FeatureCollection" } as const;
+/** Breathing room around a fitted frame, in pixels; the map padding is added on top. */
+const FIT_PADDING = 48;
 const TERRAIN = { exaggeration: 1.25, source: "dem" } as const;
 
 // MapLibre resolves its worker via import.meta.url, which Turbopack does not
@@ -211,6 +215,7 @@ export const PassMap = ({
   tours,
   towns,
   assets,
+  showPasses,
   showTowns,
   selection,
   onSelect,
@@ -226,6 +231,12 @@ export const PassMap = ({
   const map = useRef<MLMap | null>(null);
   const [ready, setReady] = useState(false);
   const [is3d, setIs3d] = useState(false);
+  // A shared link (a camera or a selection in the hash) is authoritative about
+  // the camera; without one the map opens on what it draws, which is the frame
+  // the fit button would produce. Both are refs, not state: they steer one
+  // effect and never a render.
+  const hashCamera = useRef(false);
+  const fitted = useRef(false);
   const [base, setBase] = useStored("alpenpaesse:base", "osm");
   const [overlays, setOverlays] = useStored<string[]>("alpenpaesse:overlays", [
     "hillshade",
@@ -238,6 +249,17 @@ export const PassMap = ({
     onSelectRef.current = onSelect;
     onViewChangeRef.current = onViewChange;
   }, [onSelect, onViewChange]);
+
+  /** Bounds of everything currently drawn; empty while nothing is. */
+  const visibleBounds = () => {
+    const b = new LngLatBounds();
+    if (showPasses) for (const p of passes) b.extend([p.lon, p.lat]);
+    for (const t of tours) {
+      const bbox = assets.tourBounds[t.slug];
+      if (t.visible && bbox) b.extend(bbox);
+    }
+    return b;
+  };
 
   // --- Build the map once ------------------------------------------------
   useEffect(() => {
@@ -555,7 +577,14 @@ export const PassMap = ({
 
     // The hash is read here rather than taken from props: this effect runs
     // before the parent's hash initialisation, and the map is built only once.
-    const view = { ...DEFAULT_VIEW, ...defined(readHash().view) };
+    const hash = readHash();
+    const view = { ...DEFAULT_VIEW, ...defined(hash.view) };
+    // A selection counts too: the map flies to it, so framing everything
+    // first would only be a camera move the visitor never asked for.
+    hashCamera.current =
+      hash.view.lat !== undefined ||
+      hash.view.zoom !== undefined ||
+      hash.selection !== null;
     const coarse = window.matchMedia("(pointer: coarse)").matches;
     const m = new MLMap({
       attributionControl: { compact: true },
@@ -693,6 +722,26 @@ export const PassMap = ({
     });
   }, [insetLeft, insetBottom, ready]);
 
+  // --- The frame the map opens on -----------------------------------------
+  // Without a camera in the hash the overview is not a fixed rectangle but
+  // whatever is drawn, so the first look is already the answer to "where are
+  // these passes" – the same frame the fit button produces. A camera or a
+  // selection in the hash wins; the selection flies to its own target.
+  useEffect(() => {
+    const m = map.current;
+    if (!m || !ready || fitted.current) return;
+    if (hashCamera.current || selection) {
+      fitted.current = true;
+      return;
+    }
+    const b = visibleBounds();
+    if (b.isEmpty()) return;
+    fitted.current = true;
+    m.fitBounds(b, { animate: false, padding: FIT_PADDING });
+    // Intentional: this runs once, as soon as there is something to frame.
+    // oxlint-disable-next-line react/exhaustive-deps
+  }, [ready, passes, tours, selection]);
+
   // --- Which ascents show, and how -----------------------------------------
   // The geometry stays in the worker; a filter keeps the lines of filtered-out
   // passes out of the picture and out of hit-testing, feature state colours
@@ -705,7 +754,7 @@ export const PassMap = ({
     m.setFilter("routes", [
       "in",
       ["get", "slug"],
-      ["literal", passes.map((p) => p.slug)],
+      ["literal", showPasses ? passes.map((p) => p.slug) : []],
     ]);
     for (const p of passes)
       for (const [i] of p.ascents.entries())
@@ -713,7 +762,7 @@ export const PassMap = ({
           { id: ascentKey(p.slug, i), source: "routes" },
           { selected: p.slug === selPass ? 1 : 0, status: p.status },
         );
-  }, [passes, selection, ready]);
+  }, [passes, selection, showPasses, ready]);
 
   // --- Which tours show, and how -------------------------------------------
   // A handful of tours: the filter with the visible slugs is as cheap as
@@ -744,7 +793,7 @@ export const PassMap = ({
     if (!m || !ready) return;
     const selPass = selection?.kind === "pass" ? selection.slug : null;
     (m.getSource("passes") as GeoJSONSource | undefined)?.setData({
-      features: passes.map((p) => ({
+      features: (showPasses ? passes : []).map((p) => ({
         geometry: { coordinates: [p.lon, p.lat], type: "Point" },
         properties: {
           fame: p.fame,
@@ -760,7 +809,7 @@ export const PassMap = ({
       })),
       type: "FeatureCollection",
     });
-  }, [passes, selection, ready]);
+  }, [passes, selection, showPasses, ready]);
 
   useEffect(() => {
     const m = map.current;
@@ -888,15 +937,10 @@ export const PassMap = ({
   const fitToVisible = () => {
     const m = map.current;
     if (!m) return;
-    const b = new LngLatBounds();
-    for (const p of passes) b.extend([p.lon, p.lat]);
-    for (const t of tours) {
-      const bbox = assets.tourBounds[t.slug];
-      if (t.visible && bbox) b.extend(bbox);
-    }
+    const b = visibleBounds();
     const target = b.isEmpty()
       ? undefined
-      : m.cameraForBounds(b, { padding: 48 });
+      : m.cameraForBounds(b, { padding: FIT_PADDING });
     const alreadyFitted =
       target?.zoom !== undefined &&
       Math.abs(m.getZoom() - target.zoom) < 0.05 &&
@@ -912,7 +956,7 @@ export const PassMap = ({
         zoom: DEFAULT_VIEW.zoom,
       });
     } else {
-      m.fitBounds(b, { duration: 800, padding: 48 });
+      m.fitBounds(b, { duration: 800, padding: FIT_PADDING });
     }
   };
 
@@ -921,113 +965,121 @@ export const PassMap = ({
       {/* Plain "absolute inset-0" loses against the unlayered maplibre-gl.css (`.maplibregl-map { position: relative }`). */}
       <div ref={container} className="size-full" />
 
+      {/*
+       * One interaction area in the top-left corner: the period scrubber and
+       * the three map tools share a single panel surface, so the corner reads
+       * as the place where the map is steered from rather than as buttons
+       * scattered over two corners.
+       */}
       <div
         style={{ left: insetLeft + 12 }}
-        className="absolute top-3 z-10 flex max-w-[calc(100%-4rem)] flex-wrap items-center gap-2 transition-[left] duration-200 motion-reduce:transition-none"
+        className={cn(
+          "absolute top-3 z-10 flex max-w-[calc(100%-4rem)] items-start gap-1.5 transition-[left] duration-200 motion-reduce:transition-none",
+          MAP_CLUSTER,
+        )}
       >
         {children}
-      </div>
-
-      <div className="absolute top-3 right-3 z-10 flex flex-col items-end gap-2">
-        <Popover>
-          <Tooltip>
-            <TooltipTrigger
-              render={
-                <PopoverTrigger
-                  render={
-                    <Button
-                      size="icon-lg"
-                      variant="outline"
-                      className={MAP_CONTROL}
-                      aria-label="Kartenebenen"
-                    />
-                  }
-                />
-              }
-            >
-              <Layers />
-            </TooltipTrigger>
-            <TooltipContent side="left">Kartenebenen</TooltipContent>
-          </Tooltip>
-          <PopoverContent align="end" className="w-60 gap-3">
-            <FieldSet className="gap-2">
-              <FieldLegend variant="label">Grundkarte</FieldLegend>
-              <RadioGroup
-                value={base}
-                onValueChange={(v) => switchBase(String(v))}
-                className="gap-1.5"
+        <div className="flex shrink-0 flex-col gap-1">
+          <Popover>
+            <Tooltip>
+              <TooltipTrigger
+                render={
+                  <PopoverTrigger
+                    render={
+                      <Button
+                        size="icon-lg"
+                        variant="outline"
+                        className={MAP_TOOL}
+                        aria-label="Kartenebenen"
+                      />
+                    }
+                  />
+                }
               >
-                {baseLayers().map((b) => (
-                  <Field key={b.id} orientation="horizontal">
-                    <RadioGroupItem value={b.id} id={`base-${b.id}`} />
-                    <FieldLabel
-                      htmlFor={`base-${b.id}`}
-                      className="font-normal"
-                    >
-                      {b.name}
+                <Layers />
+              </TooltipTrigger>
+              <TooltipContent side="right">Kartenebenen</TooltipContent>
+            </Tooltip>
+            <PopoverContent align="start" side="right" className="w-60 gap-3">
+              <FieldSet className="gap-2">
+                <FieldLegend variant="label">Grundkarte</FieldLegend>
+                <RadioGroup
+                  value={base}
+                  onValueChange={(v) => switchBase(String(v))}
+                  className="gap-1.5"
+                >
+                  {baseLayers().map((b) => (
+                    <Field key={b.id} orientation="horizontal">
+                      <RadioGroupItem value={b.id} id={`base-${b.id}`} />
+                      <FieldLabel
+                        htmlFor={`base-${b.id}`}
+                        className="font-normal"
+                      >
+                        {b.name}
+                      </FieldLabel>
+                    </Field>
+                  ))}
+                </RadioGroup>
+              </FieldSet>
+              <FieldSet className="gap-2">
+                <FieldLegend variant="label">Overlays</FieldLegend>
+                {[
+                  { id: "hillshade", name: "Relief-Schummerung" },
+                  ...OVERLAYS,
+                ].map((o) => (
+                  <Field key={o.id} orientation="horizontal">
+                    <Switch
+                      size="sm"
+                      id={`ov-${o.id}`}
+                      checked={overlays.includes(o.id)}
+                      onCheckedChange={() => toggleOverlay(o.id)}
+                    />
+                    <FieldLabel htmlFor={`ov-${o.id}`} className="font-normal">
+                      {o.name}
                     </FieldLabel>
                   </Field>
                 ))}
-              </RadioGroup>
-            </FieldSet>
-            <FieldSet className="gap-2">
-              <FieldLegend variant="label">Overlays</FieldLegend>
-              {[
-                { id: "hillshade", name: "Relief-Schummerung" },
-                ...OVERLAYS,
-              ].map((o) => (
-                <Field key={o.id} orientation="horizontal">
-                  <Switch
-                    size="sm"
-                    id={`ov-${o.id}`}
-                    checked={overlays.includes(o.id)}
-                    onCheckedChange={() => toggleOverlay(o.id)}
-                  />
-                  <FieldLabel htmlFor={`ov-${o.id}`} className="font-normal">
-                    {o.name}
-                  </FieldLabel>
-                </Field>
-              ))}
-            </FieldSet>
-          </PopoverContent>
-        </Popover>
+              </FieldSet>
+            </PopoverContent>
+          </Popover>
 
-        <Tooltip>
-          <TooltipTrigger
-            render={
-              <Toggle
-                variant="outline"
-                size="lg"
-                pressed={is3d}
-                onPressedChange={toggle3d}
-                aria-label="3D-Gelände"
-                className={cn("size-8 px-0", MAP_CONTROL, PRESSED)}
-              />
-            }
-          >
-            <Box />
-          </TooltipTrigger>
-          <TooltipContent side="left">3D-Gelände</TooltipContent>
-        </Tooltip>
+          <Tooltip>
+            <TooltipTrigger
+              render={
+                <Toggle
+                  variant="outline"
+                  size="lg"
+                  pressed={is3d}
+                  onPressedChange={toggle3d}
+                  aria-label="3D-Gelände"
+                  className={cn("size-8 px-0", MAP_TOOL, PRESSED)}
+                />
+              }
+            >
+              <Box />
+            </TooltipTrigger>
+            <TooltipContent side="right">3D-Gelände</TooltipContent>
+          </Tooltip>
 
-        <Tooltip>
-          <TooltipTrigger
-            render={
-              <Button
-                size="icon-lg"
-                variant="outline"
-                className={MAP_CONTROL}
-                onClick={fitToVisible}
-                aria-label="Ansicht einpassen"
-              />
-            }
-          >
-            <Focus />
-          </TooltipTrigger>
-          <TooltipContent side="left">
-            Ansicht einpassen – erneut für die ganzen Alpen
-          </TooltipContent>
-        </Tooltip>
+          <Tooltip>
+            <TooltipTrigger
+              render={
+                <Button
+                  size="icon-lg"
+                  variant="outline"
+                  className={MAP_TOOL}
+                  onClick={fitToVisible}
+                  aria-label="Ansicht einpassen"
+                />
+              }
+            >
+              <Focus />
+            </TooltipTrigger>
+            <TooltipContent side="right">
+              Ansicht einpassen – erneut für die ganzen Alpen
+            </TooltipContent>
+          </Tooltip>
+        </div>
       </div>
     </div>
   );

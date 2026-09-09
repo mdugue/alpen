@@ -51,7 +51,7 @@ export const TourList = ({
             onSelect={() => onSelect(tour.slug)}
             aside={
               <>
-                <span className="text-[13px] font-medium whitespace-nowrap tabular-nums">
+                <span className="text-xs font-medium whitespace-nowrap tabular-nums">
                   {fmtUnit(tour.km, "km")} · {fmtUnit(tour.elevationGain, "hm")}
                 </span>
                 <StatusLabel

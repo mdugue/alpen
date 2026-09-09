@@ -256,11 +256,11 @@ export const ElevationProfile = ({
           </text>
         </svg>
       </div>
-      <figcaption className="text-muted-foreground flex flex-wrap gap-x-2.5 gap-y-0.5 text-[11px]">
+      <figcaption className="text-muted-foreground text-2xs flex flex-wrap gap-x-2.5 gap-y-0.5">
         {GRADIENT_COLORS.map((c) => (
           <span key={c.label} className="inline-flex items-center gap-1">
             <span
-              className="inline-block size-2 rounded-[2px]"
+              className="inline-block size-2 rounded-xs"
               style={{ background: c.color }}
               aria-hidden
             />

@@ -46,7 +46,7 @@ export const PhotoCarousel = ({ photos }: { photos: Photo[] }) => {
                 src={photo.src}
                 width={photo.width}
               />
-              <figcaption className="absolute inset-x-0 bottom-0 flex items-center gap-1.5 bg-gradient-to-t from-black/80 via-black/45 to-transparent px-2 pt-6 pb-1.5 text-[10px] leading-tight text-white/85">
+              <figcaption className="text-2xs absolute inset-x-0 bottom-0 flex items-center gap-1.5 bg-gradient-to-t from-black/80 via-black/45 to-transparent px-2 pt-6 pb-1.5 leading-tight text-white/85">
                 <a
                   className="min-w-0 truncate underline-offset-2 hover:underline"
                   href={photo.page}

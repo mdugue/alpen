@@ -66,7 +66,7 @@ export const EntityRow = ({
       onClick={onSelect}
       className="focus-visible:ring-ring/50 min-w-0 rounded-sm py-2 pr-1 text-left outline-none focus-visible:ring-2"
     >
-      <span className="flex items-center gap-1.5 text-[13px] leading-tight font-medium">
+      <span className="flex items-center gap-1.5 text-xs leading-tight font-medium">
         {leading}
         <span className="truncate">{title}</span>
       </span>

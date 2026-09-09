@@ -46,9 +46,26 @@ export const TOUCH_ICON = "pointer-coarse:size-9";
 export const MAP_CONTROL = "bg-card shadow-md dark:bg-card";
 
 /**
+ * One map tool: the layer popover, the 3D toggle and the fit button sit on the
+ * same cluster surface, so none of them brings a surface of its own. `Button`
+ * and `Toggle` disagree about the outline hover in the mira preset
+ * (`hover:bg-input/50` vs `hover:bg-muted`); this settles both on the same one
+ * so the three feel like one row of controls.
+ */
+export const MAP_TOOL =
+  "border-transparent bg-transparent hover:bg-muted hover:text-foreground dark:bg-transparent";
+
+/**
  * Translucent floating panel over the map – the sidebar, the detail slide-over
  * and the period scrubber are the same surface, so the map reads as the page
  * they float on.
  */
 export const PANEL =
   "rounded-xl border border-border/60 bg-card/80 shadow-xl backdrop-blur-md supports-not-[backdrop-filter:blur(0)]:bg-card";
+
+/**
+ * A group of controls floating over the map, on the panel surface: the period
+ * scrubber and the map tools next to it share it, which is what makes the
+ * top-left corner read as one interaction area rather than as loose buttons.
+ */
+export const MAP_CLUSTER = `${PANEL} p-1.5`;

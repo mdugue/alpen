@@ -68,7 +68,7 @@ export const Section = ({
             />
           }
         >
-          <span className="text-muted-foreground text-[11px] font-semibold tracking-widest uppercase">
+          <span className="text-muted-foreground text-2xs font-semibold tracking-widest uppercase">
             {title}
           </span>
           <ChevronDown
