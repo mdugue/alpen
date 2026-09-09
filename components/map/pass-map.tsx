@@ -56,8 +56,10 @@ import {
 import type { MapAssets } from "@/lib/map-assets";
 import { PALETTE } from "@/lib/palette";
 import type { Scheme } from "@/lib/palette";
+import { TOWN_TAG } from "@/lib/regions";
 import { ascentKey } from "@/lib/route-key";
-import type { LatLon, Pass, Status, Tour, Town } from "@/lib/types";
+import { tagIconSvg } from "@/lib/tag-icons";
+import type { LatLon, Pass, Status, Tour, Town, TownTag } from "@/lib/types";
 import { cn, MAP_CLUSTER, MAP_TOOL, PRESSED } from "@/lib/utils";
 
 export interface MapPass extends Pass {
@@ -526,6 +528,28 @@ const escapeHtml = (s: string) =>
       ]!,
   );
 
+/**
+ * The hover popup's body. A town says why it is in the list, with the same
+ * glyphs the sidebar and the panel use (`lib/tag-icons.ts` exists because this
+ * popup is an HTML string and not React); everything else keeps the one line
+ * it always had.
+ */
+const popupHtml = (p: Record<string, string>) => {
+  const title = `<b>${escapeHtml(p.name ?? "")}</b>`;
+  // Feature properties are strings; only what the vocabulary knows is drawn.
+  const tags = (p.tags ?? "")
+    .split(",")
+    .filter((t): t is TownTag => t in TOWN_TAG);
+  if (tags.length === 0) return `${title}<br>${escapeHtml(p.subtitle ?? "")}`;
+  const chips = tags
+    .map(
+      (t) =>
+        `<span class="flex items-center gap-1">${tagIconSvg(t)}${escapeHtml(TOWN_TAG[t].label)}</span>`,
+    )
+    .join("");
+  return `${title}<div class="mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs">${chips}</div>`;
+};
+
 const defined = <T extends object>(o: T): Partial<T> =>
   Object.fromEntries(
     Object.entries(o).filter(([, v]) => v !== undefined && !Number.isNaN(v)),
@@ -728,12 +752,7 @@ export const PassMap = ({
           | Record<string, string>
           | undefined;
         if (!p) return;
-        popup
-          .setLngLat(e.lngLat)
-          .setHTML(
-            `<b>${escapeHtml(p.name ?? "")}</b><br>${escapeHtml(p.subtitle ?? "")}`,
-          )
-          .addTo(m);
+        popup.setLngLat(e.lngLat).setHTML(popupHtml(p)).addTo(m);
       });
       m.on("mousemove", layer, (e: MapLayerMouseEvent) =>
         popup.setLngLat(e.lngLat),
@@ -947,6 +966,7 @@ export const PassMap = ({
               name: t.name,
               slug: t.slug,
               subtitle: "Rad-Ort",
+              tags: t.tags.join(","),
             },
             type: "Feature",
           }))

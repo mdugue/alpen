@@ -1,5 +1,6 @@
 "use client";
 
+import { TownTagIcon } from "@/components/town-tags";
 import {
   Dialog,
   DialogContent,
@@ -69,14 +70,18 @@ export const ScalesDialog = ({
             Warum ein Ort in der Liste steht
           </h3>
           <p className="text-muted-foreground">
-            Jeder Rad-Ort trägt bis zu vier Merkmale. Auch sie sind
+            Jeder Rad-Ort trägt bis zu vier Merkmale. In der Liste stehen sie
+            als Symbole, im Detail und auf der Karte mit Text. Auch sie sind
             redaktionell: Sie sagen, was vor Ort auffällt, und sind keine
             gezählten Werkstätten oder Hotels.
           </p>
           <dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-2">
             {TOWN_TAGS.map((tag) => (
               <div key={tag} className="contents">
-                <dt className="font-semibold">{TOWN_TAG[tag].label}</dt>
+                <dt className="flex items-center gap-1.5 font-semibold">
+                  <TownTagIcon tag={tag} className="size-4" />
+                  {TOWN_TAG[tag].label}
+                </dt>
                 <dd className="text-muted-foreground">{TOWN_TAG[tag].hint}</dd>
               </div>
             ))}

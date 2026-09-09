@@ -151,6 +151,13 @@ the scales dialog):
 | `events`    | Marathon-Ort          | start or centre of a big cycling marathon                       |
 | `season`    | Lange Saison          | low and mild – rides early in the year and late in the autumn   |
 
+Each label has a glyph (`lib/tag-icons.ts`, `components/town-tags.tsx`): the
+sidebar row shows the glyphs alone, because three labels spelled out are wider
+than the row; the detail panel, the map's hover popup and the scales dialog
+show glyph and word. The popup takes an HTML string rather than React, which
+is why the geometry lives in a table of its own instead of a `lucide-react`
+import – one source for both, so panel and map cannot drift apart.
+
 They are **editorial labels, not counted facts**, in the same sense as the 1–5
 scales (`docs/scales.md`): the scales dialog says so, and `data:check` warns
 above four labels, because a town that is everything says nothing.

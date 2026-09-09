@@ -11,7 +11,7 @@ import { WeatherForecast } from "@/components/panel/weather-forecast";
 import { Rating } from "@/components/rating";
 import { SeasonStrip } from "@/components/season-strip";
 import { StatusBadge, StatusDot } from "@/components/status-badge";
-import { Badge } from "@/components/ui/badge";
+import { TownTagBadges } from "@/components/town-tags";
 import { Button } from "@/components/ui/button";
 import {
   Empty,
@@ -32,7 +32,6 @@ import { haversine, NEARBY_RADIUS_KM } from "@/lib/geo";
 import { nearbyKey } from "@/lib/nearby";
 import type { NearbyTours } from "@/lib/nearby";
 import { photoKey } from "@/lib/photos";
-import { TOWN_TAG } from "@/lib/regions";
 import { ascentKey } from "@/lib/route-key";
 import {
   bestPeriods,
@@ -534,12 +533,8 @@ const TownDetail = (props: Props & { town: Town }) => {
   const { town } = props;
   return (
     <>
-      <div className="mt-2 flex flex-wrap gap-1">
-        {town.tags.map((t) => (
-          <Badge key={t} variant="secondary">
-            {TOWN_TAG[t].label}
-          </Badge>
-        ))}
+      <div className="mt-2">
+        <TownTagBadges tags={town.tags} />
       </div>
       <p className="mt-2 text-xs">{town.why}</p>
       <Nearby {...props} lat={town.lat} lon={town.lon} exclude={town.slug} />
