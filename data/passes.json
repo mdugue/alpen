@@ -18,6 +18,7 @@
    "maintained": false
   },
   "note": "Wintersperre meist Ende Oktober bis Anfang Juni. Anfang Oktober oft noch traumhaft, ab Mitte Oktober Schneerisiko am Scheitel.",
+  "quaeldich": "col-du-galibier",
   "ascents": [
    {
     "from": {
@@ -50,6 +51,7 @@
   "traffic": 3,
   "season": null,
   "note": "Straße zum Skiort, ganzjährig offen. Landschaftlich eher nüchtern, dafür Mythos pur.",
+  "quaeldich": "alpe-d-huez",
   "ascents": [
    {
     "from": {
@@ -79,6 +81,7 @@
    "maintained": false
   },
   "note": "Höchster Straßenpass der Alpen. Wird oft schon Anfang bis Mitte Oktober gesperrt, offen ab Juni.",
+  "quaeldich": "col-de-l-iseran",
   "ascents": [
    {
     "from": {
@@ -119,6 +122,7 @@
    "maintained": false
   },
   "note": "Höchste asphaltierte Schleife Europas. Meist bis Mitte/Ende Oktober offen, Sperre wetterabhängig.",
+  "quaeldich": "col-de-la-bonette",
   "ascents": [
    {
     "from": {
@@ -155,6 +159,7 @@
    "maintained": false
   },
   "note": "Casse Déserte auf der Südseite. Sperre meist Anfang November, Oktober in der Regel gut – mit Wetterblick.",
+  "quaeldich": "col-d-izoard",
   "ascents": [
    {
     "from": {
@@ -191,6 +196,7 @@
    "maintained": false
   },
   "note": "Sperre meist Anfang November. Lange, gleichmäßig zähe Auffahrt.",
+  "quaeldich": "col-de-la-madeleine",
   "ascents": [
    {
     "from": {
@@ -227,6 +233,7 @@
    "maintained": false
   },
   "note": "Sperre meist Anfang November. Unregelmäßiges Profil mit Gegenanstiegen.",
+  "quaeldich": "col-de-la-croix-de-fer",
   "ascents": [
    {
     "from": {
@@ -263,6 +270,7 @@
    "maintained": false
   },
   "note": "Oberer Teil ist ein autofreier Radweg mit Rampen über 20 %. Meist bis Ende Oktober befahrbar.",
+  "quaeldich": "col-de-la-loze",
   "ascents": [
    {
     "from": {
@@ -299,6 +307,7 @@
    "maintained": false
   },
   "note": "Gipfelstraße meist erst ab Mitte November gesperrt. Oktober ideal, aber der Mistral kann brutal sein – Windprognose prüfen.",
+  "quaeldich": "mont-ventoux",
   "ascents": [
    {
     "from": {
@@ -345,6 +354,7 @@
    "maintained": false
   },
   "note": "Grenzpass, meist ab Anfang/Mitte Oktober gesperrt. Einsam und großartig, wenn er offen ist.",
+  "quaeldich": "col-agnel",
   "ascents": [
    {
     "from": {
@@ -381,6 +391,7 @@
    "maintained": false
   },
   "note": "Giro-Legende mit Schotterfinale. Meist bis Ende Oktober offen, nach Regen matschig.",
+  "quaeldich": "colle-delle-finestre",
   "ascents": [
    {
     "from": {
@@ -415,6 +426,7 @@
    "maintained": false
   },
   "note": "Sperre je nach Winter zwischen Mitte Oktober und Ende November. Erste Oktoberhälfte oft ideal, danach Lotterie.",
+  "quaeldich": "stilfser-joch",
   "ascents": [
    {
     "from": {
@@ -451,6 +463,7 @@
    "maintained": false
   },
   "note": "Oft schon Anfang/Mitte Oktober gesperrt. Schmale, wilde Straße – Wetterfenster nutzen.",
+  "quaeldich": "passo-di-gavia",
   "ascents": [
    {
     "from": {
@@ -483,6 +496,7 @@
   "traffic": 1,
   "season": null,
   "note": "Fast ganzjährig befahrbar, Waldstraße ohne Aussicht, dafür gnadenlos steil.",
+  "quaeldich": "passo-del-mortirolo",
   "ascents": [
    {
     "from": {
@@ -522,6 +536,7 @@
    "maintained": false
   },
   "note": "Zubringer zum Stelvio. Sperre meist Ende Oktober/November.",
+  "quaeldich": "umbrailpass",
   "ascents": [
    {
     "from": {
@@ -551,6 +566,7 @@
    "maintained": false
   },
   "note": "Wintersperre meist Ende Oktober/Anfang November. Blick auf Rhonegletscher und Grimsel-Serpentinen.",
+  "quaeldich": "furkapass",
   "ascents": [
    {
     "from": {
@@ -587,6 +603,7 @@
    "maintained": false
   },
   "note": "Sperre meist Ende Oktober/November. Stauseen und Granit.",
+  "quaeldich": "grimselpass",
   "ascents": [
    {
     "from": {
@@ -623,6 +640,7 @@
    "maintained": false
   },
   "note": "Sperre meist Ende Oktober/November. Gleichmäßige Steigung, Steingletscher-Panorama.",
+  "quaeldich": "sustenpass",
   "ascents": [
    {
     "from": {
@@ -662,6 +680,7 @@
    "maintained": false
   },
   "note": "Höchster Schweizer Straßenpass ganz im Land. Sperre meist Mitte/Ende Oktober.",
+  "quaeldich": "nufenenpass",
   "ascents": [
    {
     "from": {
@@ -702,6 +721,7 @@
    "maintained": false
   },
   "note": "Tremola-Pflasterserpentinen. Passstraße meist bis Ende Oktober/November offen.",
+  "quaeldich": "st-gotthardpass",
   "ascents": [
    {
     "from": {
@@ -738,6 +758,7 @@
    "maintained": false
   },
   "note": "Autofrei (nur Postbus). Sperre meist ab Ende Oktober. Eiger-Nordwand-Blick.",
+  "quaeldich": "grosse-scheidegg",
   "ascents": [
    {
     "from": {
@@ -774,6 +795,7 @@
    "maintained": false
   },
   "note": "Sperre meist Ende Oktober/November.",
+  "quaeldich": "klausenpass",
   "ascents": [
    {
     "from": {
@@ -810,6 +832,7 @@
    "maintained": false
   },
   "note": "Sperre meist Anfang November. Ruhige Straße parallel zur Rhätischen Bahn.",
+  "quaeldich": "albulapass",
   "ascents": [
    {
     "from": {
@@ -850,6 +873,7 @@
    "maintained": false
   },
   "note": "Passstraße (nicht Tunnel) meist ab Mitte Oktober gesperrt.",
+  "quaeldich": "col-du-grand-saint-bernard",
   "ascents": [
    {
     "from": {
@@ -890,6 +914,7 @@
    "maintained": true
   },
   "note": "Mautstraße, planmäßig bis Ende Oktober/Anfang November offen (nachts gesperrt, Schneetage möglich). Rad-Maut deutlich günstiger. Scheitel ist das Hochtor (2504 m); die Edelweißspitze (2571 m) ist ein knapp 2 km langer Abstecher von der Fuscher Seite.",
+  "quaeldich": "grossglockner-hochalpenstrasse",
   "ascents": [
    {
     "from": {
@@ -929,6 +954,7 @@
    "maintained": true
   },
   "note": "Mautstraße, planmäßig bis Mitte/Ende Oktober offen, dann bis Juni gesperrt.",
+  "quaeldich": "timmelsjoch",
   "ascents": [
    {
     "from": {
@@ -968,6 +994,7 @@
    "maintained": true
   },
   "note": "Mautstraße, meist bis Ende Oktober offen. Bielerhöhe mit Stausee.",
+  "quaeldich": "silvretta-hochalpenstrasse",
   "ascents": [
    {
     "from": {
@@ -1002,6 +1029,7 @@
   "traffic": 1,
   "season": null,
   "note": "Stichstraße, meist bis in den Spätherbst befahrbar. Kurz und sehr steil.",
+  "quaeldich": "kitzbueheler-horn",
   "ascents": [
    {
     "from": {
@@ -1031,6 +1059,7 @@
   "traffic": 2,
   "season": null,
   "note": "Höchste Höhenstraße Deutschlands, Maut, ganzjährig geräumt.",
+  "quaeldich": "rossfeld-hoehenringstrasse",
   "ascents": [
    {
     "from": {
@@ -1059,6 +1088,7 @@
   "traffic": 3,
   "season": null,
   "note": "Meist ganzjährig offen (Sperre nur bei Schnee). Teil der Sellaronda.",
+  "quaeldich": "passo-pordoi",
   "ascents": [
    {
     "from": {
@@ -1095,6 +1125,7 @@
    "maintained": false
   },
   "note": "Meist bis in den November offen. Vielleicht der schönste Dolomitenpass.",
+  "quaeldich": "passo-di-giau",
   "ascents": [
    {
     "from": {
@@ -1130,6 +1161,7 @@
   "traffic": 3,
   "season": null,
   "note": "Meist ganzjährig offen. Marmolada-Blick, brutales Finale ab Malga Ciapela.",
+  "quaeldich": "passo-fedaia",
   "ascents": [
    {
     "from": {
@@ -1165,6 +1197,7 @@
   "traffic": 3,
   "season": null,
   "note": "Meist ganzjährig offen. Direkt unter den Sellatürmen.",
+  "quaeldich": "sellajoch",
   "ascents": [
    {
     "from": {
@@ -1207,6 +1240,7 @@
    "maintained": true
   },
   "note": "Mautstraße, meist bis Ende Oktober offen, dann bis Mai gesperrt.",
+  "quaeldich": "tre-cime-di-lavaredo",
   "ascents": [
    {
     "from": {
@@ -1232,6 +1266,7 @@
   "traffic": 1,
   "season": null,
   "note": "Meist bis in den Spätherbst befahrbar. Der steilste Giro-Klassiker.",
+  "quaeldich": "monte-zoncolan",
   "ascents": [
    {
     "from": {
@@ -1268,6 +1303,7 @@
    "maintained": false
   },
   "note": "Sperre meist Ende November. Klassische Kombination mit Izoard oder Bonette.",
+  "quaeldich": "col-de-vars",
   "ascents": [
    {
     "from": {
@@ -1300,6 +1336,7 @@
   "traffic": 5,
   "season": null,
   "note": "Nationalstraße, ganzjährig geräumt. Zubringer zum Galibier, viel Verkehr.",
+  "quaeldich": "col-du-lautaret",
   "ascents": [
    {
     "from": {
@@ -1336,6 +1373,7 @@
    "maintained": false
   },
   "note": "Sperre meist Anfang November. Rampen bis 11 % kurz vor dem Scheitel.",
+  "quaeldich": "col-du-glandon",
   "ascents": [
    {
     "from": {
@@ -1372,6 +1410,7 @@
    "maintained": false
   },
   "note": "Sperre meist ab Dezember. Kurz, steil, Mont-Blanc-Blick am Ende.",
+  "quaeldich": "col-de-joux-plane",
   "ascents": [
    {
     "from": {
@@ -1401,6 +1440,7 @@
    "maintained": false
   },
   "note": "Sperre meist erst im Dezember.",
+  "quaeldich": "col-de-la-colombiere",
   "ascents": [
    {
     "from": {
@@ -1437,6 +1477,7 @@
    "maintained": false
   },
   "note": "Sperre meist Anfang November. Stausee-Kulisse, eine der schönsten Straßen der Savoyen.",
+  "quaeldich": "cormet-de-roselend",
   "ascents": [
    {
     "from": {
@@ -1477,6 +1518,7 @@
    "maintained": false
   },
   "note": "Grenzpass, Sperre meist Ende Oktober/November.",
+  "quaeldich": "col-du-petit-saint-bernard",
   "ascents": [
    {
     "from": {
@@ -1516,6 +1558,7 @@
    "maintained": false
   },
   "note": "Sperre meist ab November. Hochplateau mit Stausee.",
+  "quaeldich": "col-du-mont-cenis",
   "ascents": [
    {
     "from": {
@@ -1552,6 +1595,7 @@
    "maintained": false
   },
   "note": "Sperre meist ab November. Schmal, einsam, Schluchten und Murmeltiere.",
+  "quaeldich": "col-de-la-cayolle",
   "ascents": [
    {
     "from": {
@@ -1588,6 +1632,7 @@
    "maintained": false
   },
   "note": "Sperre meist ab November. Zusammen mit Cayolle und Champs die 'Dreier-Runde' von Barcelonnette.",
+  "quaeldich": "col-d-allos",
   "ascents": [
    {
     "from": {
@@ -1624,6 +1669,7 @@
    "maintained": false
   },
   "note": "Sehr ruhig, mäßiger Asphalt. Sperre meist ab November.",
+  "quaeldich": "col-des-champs",
   "ascents": [
    {
     "from": {
@@ -1660,6 +1706,7 @@
    "maintained": false
   },
   "note": "Grenzpass nach Piemont. Sperre meist Mitte/Ende Oktober.",
+  "quaeldich": "col-de-la-lombarde",
   "ascents": [
    {
     "from": {
@@ -1692,6 +1739,7 @@
   "traffic": 2,
   "season": null,
   "note": "Rallye-Monte-Carlo-Berühmtheit, ganzjährig offen.",
+  "quaeldich": "col-de-turini",
   "ascents": [
    {
     "from": {
@@ -1724,6 +1772,7 @@
   "traffic": 1,
   "season": null,
   "note": "Ganzjährig meist offen, wenig Verkehr.",
+  "quaeldich": "col-de-la-couillole",
   "ascents": [
    {
     "from": {
@@ -1762,6 +1811,7 @@
    "maintained": false
   },
   "note": "Sackgasse im Gran-Paradiso-Nationalpark, oben autofrei an Sommerwochenenden. Meist ab Oktober gesperrt.",
+  "quaeldich": "colle-del-nivolet",
   "ascents": [
    {
     "from": {
@@ -1794,6 +1844,7 @@
    "maintained": false
   },
   "note": "Pantani-Denkmal am Scheitel, ruppiger Asphalt. Sperre meist ab Mitte Oktober.",
+  "quaeldich": "colle-dei-morti",
   "ascents": [
    {
     "from": {
@@ -1830,6 +1881,7 @@
    "maintained": false
   },
   "note": "Sperre meist ab Ende Oktober.",
+  "quaeldich": "colle-di-sampeyre",
   "ascents": [
    {
     "from": {
@@ -1866,6 +1918,7 @@
    "maintained": false
   },
   "note": "Aostatal, brutal steil, Sperre meist ab November.",
+  "quaeldich": "colle-san-carlo",
   "ascents": [
    {
     "from": {
@@ -1901,6 +1954,7 @@
   "traffic": 5,
   "season": null,
   "note": "Ganzjährig offen, breite Straße mit Verkehr.",
+  "quaeldich": "simplonpass",
   "ascents": [
    {
     "from": {
@@ -1940,6 +1994,7 @@
    "maintained": false
   },
   "note": "Sperre wetterabhängig ab November, oft länger offen als die Nachbarn.",
+  "quaeldich": "lukmanierpass",
   "ascents": [
    {
     "from": {
@@ -1976,6 +2031,7 @@
    "maintained": false
   },
   "note": "Sperre meist ab November. Leuchtturm am Scheitel.",
+  "quaeldich": "oberalppass",
   "ascents": [
    {
     "from": {
@@ -2012,6 +2068,7 @@
    "maintained": false
   },
   "note": "Alte Passstraße parallel zur Autobahn. Sperre meist ab November.",
+  "quaeldich": "san-bernardino-pass",
   "ascents": [
    {
     "from": {
@@ -2051,6 +2108,7 @@
    "maintained": false
   },
   "note": "Italienische Südrampe mit Kehrenwand ist ein Highlight. Sperre meist ab November.",
+  "quaeldich": "spluegenpass",
   "ascents": [
    {
     "from": {
@@ -2086,6 +2144,7 @@
   "traffic": 4,
   "season": null,
   "note": "Ganzjährig geräumt, Verkehr Richtung Engadin.",
+  "quaeldich": "julierpass",
   "ascents": [
    {
     "from": {
@@ -2121,6 +2180,7 @@
   "traffic": 4,
   "season": null,
   "note": "Ganzjährig offen; Kehrenwand ganz oben, davor langes Tal.",
+  "quaeldich": "malojapass",
   "ascents": [
    {
     "from": {
@@ -2146,6 +2206,7 @@
   "traffic": 3,
   "season": null,
   "note": "Ganzjährig offen, Gletscherblick beim Lago Bianco.",
+  "quaeldich": "berninapass",
   "ascents": [
    {
     "from": {
@@ -2182,6 +2243,7 @@
    "maintained": false
   },
   "note": "Sperre meist ab Ende Oktober/November.",
+  "quaeldich": "flueelapass",
   "ascents": [
    {
     "from": {
@@ -2217,6 +2279,7 @@
   "traffic": 3,
   "season": null,
   "note": "Ganzjährig offen, durch den Nationalpark.",
+  "quaeldich": "ofenpass",
   "ascents": [
    {
     "from": {
@@ -2249,6 +2312,7 @@
   "traffic": 3,
   "season": null,
   "note": "Ganzjährig offen (Zufahrt Livigno).",
+  "quaeldich": "passo-di-foscagno",
   "ascents": [
    {
     "from": {
@@ -2281,6 +2345,7 @@
   "traffic": 4,
   "season": null,
   "note": "Ganzjährig offen, oft mit Gavia oder Mortirolo kombiniert.",
+  "quaeldich": "passo-del-tonale",
   "ascents": [
    {
     "from": {
@@ -2317,6 +2382,7 @@
    "maintained": false
   },
   "note": "Ruhige Bergamasker Straße, Sperre meist ab November.",
+  "quaeldich": "passo-di-san-marco",
   "ascents": [
    {
     "from": {
@@ -2394,6 +2460,7 @@
   "traffic": 2,
   "season": null,
   "note": "Höchste Asphaltstraße Österreichs (Tiefenbach-Tunnel). Sperrungen kurzfristig bei Schnee, oben Skibetrieb.",
+  "quaeldich": "oetztaler-gletscherstrasse",
   "ascents": [
    {
     "from": {
@@ -2419,6 +2486,7 @@
   "traffic": 3,
   "season": null,
   "note": "Ganzjährig offen, erster Anstieg des Ötztaler Radmarathons.",
+  "quaeldich": "kuehtaisattel",
   "ascents": [
    {
     "from": {
@@ -2458,6 +2526,7 @@
    "maintained": false
   },
   "note": "Meist bis in den November offen. Dritter Pass des Ötztalers.",
+  "quaeldich": "jaufenpass",
   "ascents": [
    {
     "from": {
@@ -2497,6 +2566,7 @@
    "maintained": false
   },
   "note": "Sperre meist ab November, wenig Verkehr.",
+  "quaeldich": "penser-joch",
   "ascents": [
    {
     "from": {
@@ -2533,6 +2603,7 @@
    "maintained": false
   },
   "note": "Wintersperre meist ab November, im Frühjahr spät geöffnet.",
+  "quaeldich": "hahntennjoch",
   "ascents": [
    {
     "from": {
@@ -2565,6 +2636,7 @@
   "traffic": 3,
   "season": null,
   "note": "Ganzjährig offen, Verkehr trotz Tunnel.",
+  "quaeldich": "arlbergpass",
   "ascents": [
    {
     "from": {
@@ -2597,6 +2669,7 @@
   "traffic": 4,
   "season": null,
   "note": "Mautstraße, ganzjährig offen.",
+  "quaeldich": "gerlospass",
   "ascents": [
    {
     "from": {
@@ -2635,6 +2708,7 @@
    "maintained": true
   },
   "note": "Mautstraße zum Kölnbreinspeicher, planmäßig bis Mitte/Ende Oktober offen.",
+  "quaeldich": "malta-hochalmstrasse",
   "ascents": [
    {
     "from": {
@@ -2665,6 +2739,7 @@
    "maintained": true
   },
   "note": "Mautstraße (Eisentalhöhe), planmäßig bis Ende Oktober offen.",
+  "quaeldich": "nockalmstrasse",
   "ascents": [
    {
     "from": {
@@ -2697,6 +2772,7 @@
   "traffic": 3,
   "season": null,
   "note": "Ganzjährig offen.",
+  "quaeldich": "turracherhoehe",
   "ascents": [
    {
     "from": {
@@ -2733,6 +2809,7 @@
    "maintained": false
   },
   "note": "Sperre meist ab November, wenig Verkehr.",
+  "quaeldich": "soelkpass",
   "ascents": [
    {
     "from": {
@@ -2771,6 +2848,7 @@
    "maintained": true
   },
   "note": "Mautstraße, meist bis Ende Oktober oder länger offen.",
+  "quaeldich": "villacher-alpenstrasse",
   "ascents": [
    {
     "from": {
@@ -2803,6 +2881,7 @@
    "maintained": false
   },
   "note": "Julische Alpen, 50 Kehren mit Kopfsteinpflaster. Sperre meist ab November.",
+  "quaeldich": "vrsic",
   "ascents": [
    {
     "from": {
@@ -2841,6 +2920,7 @@
    "maintained": false
   },
   "note": "Höchste Straße Sloweniens, Sackgasse, meist bis Ende Oktober offen.",
+  "quaeldich": "mangrt",
   "ascents": [
    {
     "from": {
@@ -2870,6 +2950,7 @@
   "traffic": 4,
   "season": null,
   "note": "Ganzjährig offen.",
+  "quaeldich": "passo-di-falzarego",
   "ascents": [
    {
     "from": {
@@ -2902,6 +2983,7 @@
   "traffic": 2,
   "season": null,
   "note": "Ganzjährig offen, direkt neben dem Falzarego.",
+  "quaeldich": "passo-di-valparola",
   "ascents": [
    {
     "from": {
@@ -2931,6 +3013,7 @@
   "traffic": 3,
   "season": null,
   "note": "Ganzjährig offen, Sellaronda.",
+  "quaeldich": "groednerjoch",
   "ascents": [
    {
     "from": {
@@ -2963,6 +3046,7 @@
   "traffic": 3,
   "season": null,
   "note": "Ganzjährig offen, kürzester Sellaronda-Pass.",
+  "quaeldich": "passo-campolongo",
   "ascents": [
    {
     "from": {
@@ -2995,6 +3079,7 @@
   "traffic": 3,
   "season": null,
   "note": "Ganzjährig offen, Pala-Gruppe.",
+  "quaeldich": "passo-rolle",
   "ascents": [
    {
     "from": {
@@ -3027,6 +3112,7 @@
   "traffic": 3,
   "season": null,
   "note": "Ganzjährig offen.",
+  "quaeldich": "passo-san-pellegrino",
   "ascents": [
    {
     "from": {
@@ -3063,6 +3149,7 @@
    "maintained": false
   },
   "note": "Schmal, steil, kaum Verkehr. Sperre meist ab November.",
+  "quaeldich": "passo-del-manghen",
   "ascents": [
    {
     "from": {
@@ -3102,6 +3189,7 @@
    "maintained": false
   },
   "note": "Peitlerkofel-Blick, Sperre meist ab November.",
+  "quaeldich": "wuerzjoch",
   "ascents": [
    {
     "from": {
@@ -3134,6 +3222,7 @@
   "traffic": 2,
   "season": null,
   "note": "Ganzjährig offen, Pelmo-Blick.",
+  "quaeldich": "forcella-staulanza",
   "ascents": [
    {
     "from": {
@@ -3166,6 +3255,7 @@
   "traffic": 1,
   "season": null,
   "note": "Ganzjährig offen, Steilstücke bis 15 %.",
+  "quaeldich": "passo-duran",
   "ascents": [
    {
     "from": {
@@ -3201,6 +3291,7 @@
   "traffic": 3,
   "season": null,
   "note": "Ganzjährig offen.",
+  "quaeldich": "passo-monte-croce-di-comelico",
   "ascents": [
    {
     "from": {

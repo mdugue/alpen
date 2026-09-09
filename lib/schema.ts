@@ -122,6 +122,15 @@ export const Pass = z.strictObject({
   lon: LatLon.shape.lon,
   name: z.string().min(2),
   note: z.string(),
+  /**
+   * Slug of the pass on quaeldich.de, so the detail panel links straight to
+   * `quaeldich.de/paesse/<slug>/` instead of a search. Curated, because
+   * quäldich names a pass in its own language ("Stilfser Joch",
+   * "St. Gotthardpass", "Mangrt") and no rule derives that from ours. Left
+   * out for the few passes their Pässelexikon does not carry – those fall
+   * back to the search.
+   */
+  quaeldich: Slug.optional(),
   region: Region,
   /**
    * The summit is the highest point of the asphalt, not a saddle: OSM carries
