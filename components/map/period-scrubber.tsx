@@ -109,12 +109,12 @@ export const PeriodScrubber = ({
           >
             {periodLabel(value)}
           </TooltipTrigger>
-          <TooltipContent className="max-w-64">
+          <TooltipContent className="max-w-72">
             <GradeLegend
-              className="text-inherit"
+              compact={false}
               hint={
                 bar
-                  ? `${periodLabel(value)}: ${bar.best + bar.good} gut, davon ${bar.best} in ihrer besten Zeit, ${bar.limited} eingeschränkt, ${bar.closed} oft gesperrt. Amber nennt den ersten Grund; alles unter „Skalen & Quellen“.`
+                  ? `${periodLabel(value)}: ${bar.best + bar.good} gut, davon ${bar.best} in ihrer besten Zeit, ${bar.limited} eingeschränkt, ${bar.closed} oft gesperrt. Mehr unter „Skalen & Quellen“.`
                   : undefined
               }
             />

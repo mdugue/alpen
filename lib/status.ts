@@ -93,6 +93,22 @@ export const GRADE_LABEL: Record<Grade, string> = {
   limited: "eingeschränkt",
 };
 
+/**
+ * One plain sentence per grade for the legend's tooltips – what the colour
+ * says, in the words a rider would use. The rules behind it are in
+ * docs/scales.md and the scales dialog.
+ */
+export const GRADE_HINT: Record<Grade, string> = {
+  best: "Der längste Abschnitt, in dem nichts dagegenspricht und es kaum schneit.",
+  closed: "Die Straße ist in dieser Zeit meist gesperrt (Wintersperre).",
+  good: "Nichts spricht dagegen. Ohne Strich: ein kürzerer Abschnitt, oder es schneit ab und zu.",
+  limited:
+    "Ein Vorbehalt: Hitze im Tal, viel Regen, kurze Tage, kalte Abfahrt, Schnee oder Frost. Das Wort nennt den wichtigsten.",
+};
+
+/** The order the legend lists the grades in: best first. */
+export const GRADE_ORDER: Grade[] = ["best", "good", "limited", "closed"];
+
 /** Worse is lower; a tour cell is the minimum over its passes. */
 export const GRADE_RANK: Record<Grade, number> = {
   best: 3,
