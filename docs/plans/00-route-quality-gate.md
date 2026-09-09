@@ -530,8 +530,8 @@ orthogonal. Left as is for now, since one case does not justify refitting.
   fork at Lupo Bianco, the Pocol waypoint sat on a hamlet road beyond the
   SR48 junction (a 3.5 km spur, ridden twice) and the Campolongo waypoint
   300 m off the pass road (a 1 km spur, ridden four times). Moved onto the
-  road, the OSRM car route measures 136.6 km for the Maratona (stated 138)
-  and 52.4 km for the Sellaronda (stated 52 again; 58 had fitted the detour).
+  road, ORS measures 136.3 km for the Maratona (stated 138) and 52.1 km for
+  the Sellaronda (stated 52 again; 58 had fitted the detour).
 - **A second router as a cross-check** is the strongest quality signal
   available and is not built here. Two independent routers agreeing on length
   and endpoint says more than any threshold, and it is self-calibrating.
