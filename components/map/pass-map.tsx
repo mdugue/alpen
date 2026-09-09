@@ -50,10 +50,10 @@ import {
   BASEMAP_SOURCE_ID,
   basemapLayers,
   FONT_BOLD,
-  FONT_ITALIC,
   GLYPHS,
 } from "@/lib/basemap";
 import type { MapAssets } from "@/lib/map-assets";
+import type { TownReach } from "@/lib/nearby";
 import { PALETTE } from "@/lib/palette";
 import type { Scheme } from "@/lib/palette";
 import { ascentKey } from "@/lib/route-key";
@@ -71,6 +71,12 @@ interface Props {
   /** The tours the list shows; `visible` is the "auf der Karte" switch. */
   tours: (Tour & { status: Status; visible: boolean })[];
   towns: (Town & { favorite: boolean })[];
+  /**
+   * The area each town reaches – the hull over the passes within reach,
+   * precomputed in `lib/nearby.ts`. Drawn while a town is hovered or selected,
+   * so "was ist von hier aus erreichbar" is answered on the map itself.
+   */
+  townReach: TownReach;
   /**
    * The ascent and tour lines never arrive as props: MapLibre fetches them as
    * static GeoJSON from these URLs and tiles them in its worker. Which lines
@@ -189,7 +195,32 @@ const draw = (
   return ctx.getImageData(0, 0, size, size);
 };
 
-/** Star and diamond as canvas icons so that no font glyphs are needed. */
+/**
+ * A town: a disc in the town colour inside a ring. No glyph in it – at the
+ * size a town mark has on this map a pictogram is a smudge, and the ring
+ * plus the colour already separate it from a pass dot. Only the ring changes
+ * – paper for a plain town, accent for a favourite, ink for the selected one
+ * – so a town keeps one silhouette at every zoom.
+ */
+const townIcon = (c: Colors, ring: string) =>
+  draw((ctx, s) => {
+    const r = s * 0.3;
+    ctx.translate(s / 2, s / 2);
+    ctx.beginPath();
+    ctx.arc(0, 0, r, 0, Math.PI * 2);
+    ctx.fillStyle = c.town;
+    ctx.fill();
+    ctx.lineWidth = s * 0.08;
+    ctx.strokeStyle = c.paper;
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.arc(0, 0, r + s * 0.115, 0, Math.PI * 2);
+    ctx.lineWidth = s * 0.07;
+    ctx.strokeStyle = ring;
+    ctx.stroke();
+  });
+
+/** Star as a canvas icon so that no font glyphs are needed. */
 const addIcons = (map: MLMap, c: ReturnType<typeof readColors>) => {
   const star = (fill: string, stroke: string) =>
     draw((ctx, s) => {
@@ -217,20 +248,9 @@ const addIcons = (map: MLMap, c: ReturnType<typeof readColors>) => {
     add(`star-${k}-0`, star(c[k], c.paper));
     add(`star-${k}-1`, star(c[k], c.ink));
   }
-  add("star-town-0", star(c.accent, c.paper));
-  add("star-town-1", star(c.accent, c.ink));
-  add(
-    "town",
-    draw((ctx, s) => {
-      ctx.translate(s / 2, s / 2);
-      ctx.rotate(Math.PI / 4);
-      ctx.fillStyle = c.town;
-      ctx.fillRect(-s * 0.26, -s * 0.26, s * 0.52, s * 0.52);
-      ctx.lineWidth = s * 0.07;
-      ctx.strokeStyle = c.paper;
-      ctx.strokeRect(-s * 0.26, -s * 0.26, s * 0.52, s * 0.52);
-    }),
-  );
+  add("town", townIcon(c, c.paper));
+  add("town-fav", townIcon(c, c.accent));
+  add("town-sel", townIcon(c, c.ink));
 };
 
 type Colors = ReturnType<typeof readColors>;
@@ -306,6 +326,26 @@ const appLayers = (colors: Colors): LayerSpecification[] => {
   ] as never;
 
   return [
+    // The area one town reaches, drawn while it is hovered: the hull over
+    // its passes (lib/nearby.ts). Bottom of the app's stack, so
+    // every line and dot stays readable on top of it.
+    {
+      id: "town-reach-fill",
+      paint: { "fill-color": colors.town, "fill-opacity": 0.12 },
+      source: "reach",
+      type: "fill",
+    },
+    {
+      id: "town-reach-line",
+      paint: {
+        "line-color": colors.town,
+        "line-dasharray": [3, 2],
+        "line-opacity": 0.7,
+        "line-width": 1.5,
+      },
+      source: "reach",
+      type: "line",
+    },
     {
       id: "tours-casing",
       layout: { "line-cap": "round", "line-join": "round" },
@@ -356,17 +396,23 @@ const appLayers = (colors: Colors): LayerSpecification[] => {
       source: "tours",
       type: "symbol",
     },
+    // Below the passes: MapLibre places labels from the top of the style
+    // down, so a pass label wins the collision against a town name. The
+    // passes are what the map is read for; the town is the answer to the
+    // second question, not the first.
     {
       id: "towns",
       layout: {
         "icon-allow-overlap": true,
         "icon-image": [
           "case",
+          ["==", ["get", "selected"], 1],
+          "town-sel",
           ["==", ["get", "favorite"], 1],
-          "star-town-0",
+          "town-fav",
           "town",
         ],
-        "icon-size": ["case", ["==", ["get", "favorite"], 1], 0.62, 0.5],
+        "icon-size": ["interpolate", ["linear"], ["zoom"], 5, 0.6, 13, 0.85],
       },
       source: "towns",
       type: "symbol",
@@ -375,17 +421,17 @@ const appLayers = (colors: Colors): LayerSpecification[] => {
       id: "towns-label",
       layout: {
         "text-field": ["get", "name"],
-        "text-font": [FONT_ITALIC],
+        "text-font": [FONT_BOLD],
         "text-justify": "auto",
-        "text-radial-offset": 0.8,
-        "text-size": 11,
+        "text-radial-offset": 1,
+        "text-size": ["interpolate", ["linear"], ["zoom"], 8, 12, 13, 14],
         "text-variable-anchor": ["left", "right", "top", "bottom"],
       },
       minzoom: 8,
       paint: {
         "text-color": colors.town,
         "text-halo-color": colors.paper,
-        "text-halo-width": 1.5,
+        "text-halo-width": 2,
       },
       source: "towns",
       type: "symbol",
@@ -535,6 +581,7 @@ export const PassMap = ({
   passes,
   tours,
   towns,
+  townReach,
   assets,
   showPasses,
   showTowns,
@@ -575,6 +622,28 @@ export const PassMap = ({
     onSelectRef.current = onSelect;
     onViewChangeRef.current = onViewChange;
   }, [onSelect, onViewChange]);
+
+  // The hover handler below is registered once during setup; this ref keeps
+  // the hulls current without rebuilding the map.
+  const reachRef = useRef<TownReach>(townReach);
+
+  /** Draws one town's reach hull, or clears the layer. */
+  const paintReach = (slug: string | null) => {
+    const m = map.current;
+    const ring = slug ? reachRef.current[slug] : undefined;
+    (m?.getSource("reach") as GeoJSONSource | undefined)?.setData({
+      features: ring
+        ? [
+            {
+              geometry: { coordinates: [ring], type: "Polygon" },
+              properties: {},
+              type: "Feature",
+            },
+          ]
+        : [],
+      type: "FeatureCollection",
+    });
+  };
 
   /** Bounds of everything currently drawn; empty while nothing is. */
   const visibleBounds = () => {
@@ -652,6 +721,7 @@ export const PassMap = ({
         ),
         cursor: { data: EMPTY, type: "geojson" },
         passes: { data: EMPTY, type: "geojson" },
+        reach: { data: EMPTY, type: "geojson" },
         // Static files with a content hash in the name (scripts/build-map-assets.ts);
         // promoteId makes the `id` property the feature id for feature state.
         routes: { data: assets.routesUrl, promoteId: "id", type: "geojson" },
@@ -753,6 +823,17 @@ export const PassMap = ({
         });
       });
     }
+
+    // Hovering a town also outlines what it reaches. Only on hover: selecting
+    // one flies the camera in, and from inside the hull there is nothing to
+    // see. The outline goes when the pointer does.
+    m.on("mouseenter", "towns", (e: MapLayerMouseEvent) => {
+      const slug = (
+        e.features?.[0]?.properties as { slug?: string } | undefined
+      )?.slug;
+      if (slug) paintReach(slug);
+    });
+    m.on("mouseleave", "towns", () => paintReach(null));
 
     // Keep the 3D toggle honest when the map is tilted by drag or compass.
     m.on("pitchend", () => {
@@ -937,6 +1018,7 @@ export const PassMap = ({
   useEffect(() => {
     const m = map.current;
     if (!m || !ready) return;
+    const selTown = selection?.kind === "town" ? selection.slug : null;
     (m.getSource("towns") as GeoJSONSource | undefined)?.setData({
       features: showTowns
         ? towns.map((t) => ({
@@ -945,6 +1027,7 @@ export const PassMap = ({
               favorite: t.favorite ? 1 : 0,
               kind: "town",
               name: t.name,
+              selected: t.slug === selTown ? 1 : 0,
               slug: t.slug,
               subtitle: "Rad-Ort",
             },
@@ -953,7 +1036,18 @@ export const PassMap = ({
         : [],
       type: "FeatureCollection",
     });
-  }, [towns, showTowns, ready]);
+  }, [towns, selection, showTowns, ready]);
+
+  // --- The reach hull of the hovered town ---------------------------------
+  // Nothing is hovered while this runs, so the layer is cleared with it: the
+  // towns may have just been switched off under the pointer.
+  useEffect(() => {
+    if (!ready) return;
+    reachRef.current = townReach;
+    paintReach(null);
+    // `paintReach` only reads refs and the map instance, both stable.
+    // oxlint-disable-next-line react/exhaustive-deps
+  }, [townReach, showTowns, ready]);
 
   // --- Elevation-profile cursor -------------------------------------------
   // One point, so setData is cheap enough to run on every pointer move.
