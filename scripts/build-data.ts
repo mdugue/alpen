@@ -635,18 +635,26 @@ const pendingRoutes = () =>
     (j) =>
       isOnly(j.key) && needsRoute(j) && !isRejected(j) && !summitBlocked(j),
   );
-const pendingProfiles = () =>
-  routeJobs.filter(
+/**
+ * Stored ascents without a profile. A rejection next to a stored route does
+ * not exclude it – that route passed, the rejection is its failed replacement
+ * – but a key the routing pipeline is about to re-fetch this run is left to
+ * that pipeline, so two pipelines never work on one key at once.
+ */
+const pendingProfiles = () => {
+  const routing = new Set(pendingRoutes().map((j) => j.key));
+  return routeJobs.filter(
     (j) =>
       j.kind === "ascent" &&
       isOnly(j.key) &&
       routes[j.key] &&
       !profiles[j.key] &&
-      !isRejected(j) &&
+      !routing.has(j.key) &&
       !summitBlocked(j) &&
       // Deferred until the geometry is final, see gate().
       !provisional(j),
   );
+};
 const pendingClimate = () =>
   (passes as Pass[]).filter((p) => !climates[p.slug]);
 /** Missing, or measured at a coordinate that has since moved. */
@@ -703,7 +711,7 @@ const report = () => {
         : ""
     }${
       blocked
-        ? ` · ${blocked} Auffahrten warten auf eine korrigierte Passkoordinate (DEM-Abweichung)`
+        ? ` · ${blocked} Auffahrten warten auf eine korrigierte Passkoordinate (Höhe oder Straßenabstand)`
         : ""
     }`,
   );
@@ -879,10 +887,38 @@ const accept = async (
 };
 
 /**
- * Geometry checks, then – for ascents – the profile and its checks. The route is
- * stored as soon as the geometry passes, so a run cut short by the Open-Meteo
- * budget keeps its (free) routing work; the profile checks of the next run can
- * still take it back out.
+ * The candidate's profile: from the rejection cache when the geometry is the
+ * same, otherwise paid for. Null when the budget is spent – the stored route
+ * stays, and the profile or the upgrade follows in the next run, which
+ * re-fetches the candidate for free.
+ */
+const fetchProfile = async (
+  job: RouteJob,
+  geom: RouteGeometry,
+  cached: ElevationProfile | undefined,
+  keep: Stored | undefined,
+): Promise<ElevationProfile | null> => {
+  try {
+    // The cache is only ever hit for an identical geometry, so the distances
+    // can be re-derived from it rather than trusted as they were written.
+    return cached ? withRoadDistances(cached, geom) : await profile(geom);
+  } catch (error) {
+    if (!(error instanceof QuotaExhaustedError))
+      fail(`Profil ${job.label}`, error);
+    if (keep)
+      console.log(
+        `Aufrüstung verschoben: ${job.label} – die ${keep.meta?.source ?? "osrm"}-Route bleibt, bis das ORS-Profil bezahlt ist`,
+      );
+    return null;
+  }
+};
+
+/**
+ * Geometry checks, then – for ascents – the profile and its checks. A fresh
+ * route is stored as soon as the geometry passes, so a run cut short by the
+ * Open-Meteo budget keeps its (free) routing work; the profile checks of the
+ * next run can still take it back out. An upgrade candidate replaces the
+ * stored route only once both have passed.
  */
 const gate = async (
   job: RouteJob,
@@ -911,48 +947,48 @@ const gate = async (
   // drops the rejection entry, or a retry would always pay.
   const cached =
     rejected[job.key]?.hash === hash ? rejected[job.key]?.profile : undefined;
-
-  if (fetched) {
+  const accepted = async () => {
     await accept(job, geom, source);
     console.log(
       `Route: ${job.label} (${source}, ${(m as AscentMetrics).km} km)`,
     );
-  }
-  if (job.kind !== "ascent") return;
+  };
 
-  // 3: an OSRM route stored while an ORS key exists is provisional – the
-  // upgrade pass will replace the geometry and the profile would have to be
-  // paid for a second time. 100 Open-Meteo calls is far too much to spend on
-  // a road we already know is the wrong one.
-  if (source === "osrm" && ORS && !rejected[job.key]) {
-    console.log(
-      `Profil aufgeschoben: ${job.label} (OSRM-Route, erst nach --upgrade-osrm)`,
-    );
+  // An OSRM route stored while an ORS key exists is provisional – the upgrade
+  // pass will replace the geometry and the profile would have to be paid for
+  // a second time. 100 Open-Meteo calls is far too much to spend on a road we
+  // already know is the wrong one.
+  const deferred = source === "osrm" && ORS && !rejected[job.key];
+  if (job.kind !== "ascent" || deferred) {
+    if (fetched) await accepted();
+    if (deferred)
+      console.log(
+        `Profil aufgeschoben: ${job.label} (OSRM-Route, erst nach --upgrade-osrm)`,
+      );
     return;
   }
 
-  if (!cached && profiles[job.key]) {
+  // A fresh route is stored before its profile is paid for, so a run cut short
+  // by the Open-Meteo budget keeps its (free) routing work. An upgrade
+  // candidate is not: until its profile has passed, the stored route is the
+  // better of the two, and a run that ends between the two steps would
+  // otherwise leave the candidate behind with nothing to fall back to.
+  if (fetched && !keep) await accepted();
+
+  if (!(cached || keep) && profiles[job.key]) {
     // The geometry was just replaced, so the stored profile belongs to a road
     // that is no longer there. Drop it before fetching, otherwise a run that
     // runs out of Open-Meteo budget leaves a profile from the old route behind.
     Reflect.deleteProperty(profiles, job.key);
     await write("profiles.json", profiles);
   }
-  let prof: ElevationProfile;
-  try {
-    // The cache is only ever hit for an identical geometry, so the distances
-    // can be re-derived from it rather than trusted as they were written.
-    prof = cached ? withRoadDistances(cached, geom) : await profile(geom);
-  } catch (error) {
-    if (!(error instanceof QuotaExhaustedError))
-      fail(`Profil ${job.label}`, error);
-    // The route stays; the profile follows in the next run.
-    return;
-  }
+  const prof = await fetchProfile(job, geom, cached, keep);
+  if (!prof) return;
   m = withProfile(m as AscentMetrics, prof, job.elevation);
   const badProfile = judge(job, m);
   if (badProfile.length)
     return reject(job, badProfile, m, source, hash, prof, keep);
+  if (keep) await accepted();
   profiles[job.key] = prof;
   await write("profiles.json", profiles);
   console.log(
