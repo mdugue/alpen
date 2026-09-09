@@ -80,8 +80,16 @@ export const LIMITS = {
      */
     minPeakAt: 0.75,
   },
-  /** DEM height at the pass coordinate vs. the stated `pass.elevation`. */
-  summit: { maxDelta: 80 },
+  summit: {
+    /** DEM height at the pass coordinate vs. the stated `pass.elevation`. */
+    maxDelta: 80,
+    /**
+     * Distance from the pass coordinate to the nearest drivable OSM way, km.
+     * A hand-picked point lands within a few tens of metres of the road; the
+     * wrong ones were 0.5–1 km off (Großglockner 1 km, at pass height).
+     */
+    maxRoadDist: 0.1,
+  },
   tour: {
     /**
      * Relative deviation from the hand-maintained `tour.km`. Those figures come
@@ -210,6 +218,21 @@ export const checkSummit = (dem: number, elevation: number): string[] => {
 };
 
 /**
+ * Distance from the pass coordinate to the nearest road. `null` means no road
+ * within the search radius at all; `undefined` means not measured yet, which
+ * is not a finding.
+ */
+export const checkRoad = (roadDist: number | null | undefined): string[] => {
+  if (roadDist === undefined) return [];
+  if (roadDist === null) return ["keine Straße in der Nähe des Passpunkts"];
+  return roadDist > LIMITS.summit.maxRoadDist
+    ? [
+        `Passpunkt ${fmtKm(roadDist)} von der nächsten Straße entfernt > ${fmtKm(LIMITS.summit.maxRoadDist)}`,
+      ]
+    : [];
+};
+
+/**
  * Identity of a geometry, so a retry can say "the router returned exactly the
  * same thing" – which means the fix belongs in `data/passes.json`, not here.
  * The hash is also what makes a cached profile reusable.
@@ -221,4 +244,28 @@ export const checkSummit = (dem: number, elevation: number): string[] => {
 export const geometryHash = (geom: RouteGeometry) =>
   Bun.hash(
     geom.map(([lat, lon]) => `${lat.toFixed(5)},${lon.toFixed(5)}`).join(";"),
+  ).toString(16);
+
+/**
+ * Identity of what a route is asked for: the ascent's start and summit with
+ * its elevation and `check`, or a tour's waypoints, stated length and `check`.
+ * A rejection stores it so the next build can tell "the curator changed
+ * something, try again" from "nothing changed, the answer would be the same" –
+ * without that, a rejected key is either retried on every run (and, for an
+ * OSRM route that ORS refuses, loops between the two routers) or never.
+ * Key order is fixed here, so a reformatted `data/*.json` does not read as a
+ * change; `check.note` is left out because it changes no limit.
+ */
+export const inputsHash = (
+  parts: Record<string, unknown>,
+  check?: AscentCheck | TourCheck,
+) =>
+  Bun.hash(
+    JSON.stringify(
+      Object.fromEntries(
+        Object.entries({ ...parts, check: strip(check) }).toSorted(([a], [b]) =>
+          a.localeCompare(b),
+        ),
+      ),
+    ),
   ).toString(16);

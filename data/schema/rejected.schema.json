@@ -17,6 +17,10 @@
         "type": "string",
         "minLength": 1
       },
+      "inputs": {
+        "type": "string",
+        "minLength": 1
+      },
       "lastSeen": {
         "type": "string",
         "format": "date",

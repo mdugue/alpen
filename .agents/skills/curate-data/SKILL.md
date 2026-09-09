@@ -40,10 +40,44 @@ authoritative. In addition:
   infrastructure (workshop, rental, bike hotel).
 - **Destinations** (plan 12): follow `docs/destinations.md` once it exists.
 
+## Adding or moving a pass: the checklist
+
+This is the whole procedure. Nothing else has to be remembered; every step
+below is either a command or a look at its output.
+
+1. **Write the entry** in `data/passes.json` per the rules above. For the pass
+   coordinate, take the point where the road crosses the summit from the map
+   (OSM `mountain_pass` node, or the top of the road for toll and summit
+   roads) – four decimals are enough.
+2. **Ask the data where the point belongs** before spending anything:
+   `bun run data:locate <slug>`. It prints the DEM height at your point and
+   its distance to the nearest road, then the OSM pass and saddle nodes
+   nearby with the same two measurements each. Your point should read ✓ ✓
+   (height within 80 m of `elevation`, road within 100 m). If a candidate
+   carries the pass's name and reads ✓ ✓ where yours does not,
+   `bun run data:locate <slug> --apply` moves the point for you; anything
+   less clear-cut it leaves to you, with the numbers on screen.
+3. **Build:** `ORS_KEY=… bun run data:build`. The pass point is measured first
+   (DEM and road distance, two cheap requests) and its ascents are routed only
+   if both pass; otherwise the run says so and names `data:locate`.
+4. **Check:** `bun run data:check`. Read every line that names your slug – a
+   rejection tells you the measured value that broke a limit, and the three
+   ways out are below. After a fix, run `data:build` again; the rejection is
+   retried by itself because its inputs changed.
+5. **Look:** open the pass in the app (`preview-app` skill or `bun dev`). The
+   drawn ascent must follow the road and end at the marker, the profile top
+   must match the elevation.
+6. **Commit `data/*.json` and `data/generated/*.json` together.**
+
+Without the network step 2 cannot run; the build then does the same two
+measurements itself and simply holds the ascents back until the point is
+right, so nothing wrong is routed either way.
+
 ## Loop
 
 ```bash
 bun run data:check                 # before: is the file well-formed and referenced?
+bun run data:locate [slug…]        # where does the pass point belong? (network)
 bun run data:build --status        # what will be fetched and what it costs
 ORS_KEY=… bun run data:build       # cycling profile; without the key OSRM car profile
 bun run data:check                 # after: is what came back plausible?
@@ -51,7 +85,11 @@ bun run data:check --explain       # every route with its measured values
 ```
 
 - Never edit `data/generated/*.json` by hand. To force a re-fetch, delete the
-  key from the generated file and run the build.
+  key from the generated file and run the build. A moved pass coordinate needs
+  no such step: `summits.json` remembers where each DEM height and road
+  distance was read and the next build re-measures it, and a pass whose point
+  is more than 80 m off in height or more than 100 m from a road is not
+  routed at all until the coordinate is fixed.
 - Open the pass in the app (`preview-app` skill or `bun dev`) and look at the
   drawn ascent: it must follow the road and end at the marker, the profile
   top must match the elevation. If not, the `from` point or the pass
@@ -79,6 +117,7 @@ number.
 | Tour length vs. the curated `tour.km` | within 15 %                         | waypoints too sparse to pin the loop down         |
 | Tour start/end                        | ≤ 2 km from the first/last waypoint | a loop that does not close                        |
 | DEM height at the pass point          | within 80 m                         | a pass coordinate on the wrong summit             |
+| Pass point to the nearest road        | ≤ 100 m                             | a pass coordinate beside the road at pass height  |
 
 ### When the gate rejects something
 
@@ -90,9 +129,15 @@ three ways out, in this order of preference:
 
 1. **The data is wrong.** Almost always the case. Move the pass coordinate onto
    the road at the summit, or `ascent.from` into the valley village, then
-   `bun run data:build --retry-rejected`. This is free: re-routing costs no
-   Open-Meteo calls and the profile is reused when the geometry comes back
-   unchanged.
+   `bun run data:build`. The rejection remembers the inputs it was routed for,
+   so the next build retries it by itself – and only then; a rejection whose
+   inputs and limits are unchanged is not asked again, because the answer would
+   be the same. This is free: re-routing costs no Open-Meteo calls and the
+   profile is reused when the geometry comes back unchanged.
+   `--retry-rejected` forces a retry regardless, for the case that the
+   router's map data changed. The tell-tale of a wrong pass point: _both_
+   ascents end at the identical distance from it (Großglockner 535 m,
+   Couillole 1.6 km) – two roads cannot be wrong by the same amount.
 2. **The ascent really is like that.** Kitzbüheler Horn ends at the Alpenhaus
    below the summit marker. Set `check` on that one ascent with the widened
    limit and a `note` saying why. A `check` without a `note` fails the schema.
@@ -100,6 +145,13 @@ three ways out, in this order of preference:
    `bun run data:check --explain` to see what that does to every other route
    before re-fetching anything. Do not widen a limit to silence a single case –
    that is what step 2 is for.
+
+A rejection next to a stored route ("ORS-Kandidat abgewiesen … die osrm-Route
+bleibt") is the upgrade pass having asked ORS for a car-profile route and the
+gate having refused the answer – ORS routes around roads it considers unfit
+for road cycling (Mont Cenis from Susa, Sampeyre, Grosse Scheidegg). The OSRM
+route stays on the map and gets its profile; nothing is lost, and the same
+three ways out apply.
 
 ## Honesty
 
