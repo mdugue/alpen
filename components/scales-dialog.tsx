@@ -67,25 +67,38 @@ export const ScalesDialog = ({
           <h3 className="text-base font-semibold">Status je Zeitraum</h3>
           <p className="text-muted-foreground">
             Heuristik aus typischem Öffnungsfenster (halbmonatsgenau), Passhöhe,
-            Jahreszeit und der Klimareihe des Passes (Schnee- und Frosttage je
-            Halbmonat, ERA5-Land 2015–2024). Bewirtschaftete Mautstraßen
-            bekommen keinen Höhenabschlag, die Klimareihe gilt aber auch für
-            sie. Für Rundtouren gilt der schlechteste Status ihrer Pässe.
-            Ersetzt keine amtliche Sperrauskunft.
+            Jahreszeit, der Klimareihe des Passes (ERA5-Land 2015–2024) und dem
+            Tageslicht. Sie beantwortet „wie gut ist es, dort in diesem
+            Halbmonat zu fahren“, nicht nur „kommt man drüber“. Für Rundtouren
+            gilt der schlechteste Wert ihrer Pässe. Ersetzt keine amtliche
+            Sperrauskunft.
           </p>
           <p className="text-muted-foreground">
-            <b>Schneefall sperrt nichts.</b> Ab 20 % Schneefalltagen oder 80 %
-            Frostnächten im Halbmonat wird aus „meist offen“ ein
-            „wetterabhängig“: die Straße ist dann meist befahrbar, aber nicht
-            verlässlich planbar. „Oft gesperrt“ kommt ausschließlich aus dem
-            Öffnungsfenster. Im Detail steht unter dem Status der Grund in einem
-            Satz; „Beste Zeit“ ist der längste Abschnitt mit „meist offen“ und
-            weniger als 10 % Schneefalltagen.
+            <b>Vier Stufen, eine Leiter.</b> Jedes Signal kann eine Zelle nur
+            senken, nie heben: Schneefall ab 20 % der Tage, Frost in 80 % der
+            Nächte, Hitze im Tal ab 26 °C, Regen an 70 % der Tage, Tage unter
+            10¾ Stunden Licht oder ein Gipfel-Tagesmaximum unter 8 °C machen aus
+            „gut“ ein „eingeschränkt“ – und das erste Signal in dieser
+            Reihenfolge ist das Wort dazu. „Beste Zeit“ ist der längste
+            Abschnitt ohne Vorbehalt und mit weniger als 10 % Schneefalltagen.
+            „Oft gesperrt“ kommt ausschließlich aus dem Öffnungsfenster: eine
+            gesperrte Straße und ein heißes Tal sind nicht dieselbe Art von
+            Aussage.
+          </p>
+          <p className="text-muted-foreground">
+            <b>Abgeleitet, nicht gemessen:</b> Die Klimareihe gilt für die
+            Passhöhe. Der Talwert wird mit 0,65 °C je 100 m bis zum tiefsten
+            Anstiegsbeginn heruntergerechnet und liegt gut ± 3 °C daneben; für
+            Pässe ohne Anstiegsprofil gibt es ihn nicht. Das Tageslicht ist
+            reine Astronomie. Im Detail steht unter dem Status der Grund in
+            einem Satz, mit Zahl und Herkunft.
           </p>
           <p className="text-muted-foreground">
             Der Streifen aus 24 Zellen zeigt das ganze Jahr auf einen Blick:
-            gefüllt = meist offen bzw. wetterabhängig, hohl = oft gesperrt,
-            umrandet = der gewählte Halbmonat.
+            kräftig grün = beste Zeit, hell grün = gut, amber = eingeschränkt,
+            hohl = oft gesperrt, umrandet = der gewählte Halbmonat. Die Karte
+            bleibt bei drei Farben; die Punkte dort unterscheiden nicht zwischen
+            „gut“ und „beste Zeit“.
           </p>
         </section>
         <section className="flex flex-col gap-2">

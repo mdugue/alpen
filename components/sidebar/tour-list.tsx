@@ -58,7 +58,7 @@ export const TourList = ({
                   status={status}
                   className="text-muted-foreground"
                 />
-                <SeasonStrip statuses={season} current={period} />
+                <SeasonStrip grades={season} current={period} />
               </>
             }
             trailing={

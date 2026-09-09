@@ -30,23 +30,26 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import type { EntityKind, Selection } from "@/lib/app-state";
+import { clockTime, periodDate, sunTimes } from "@/lib/daylight";
 import { haversine, NEARBY_RADIUS_KM } from "@/lib/geo";
 import { nearbyKey } from "@/lib/nearby";
 import type { NearbyTours } from "@/lib/nearby";
 import { ascentKey } from "@/lib/route-key";
 import {
   bestPeriods,
-  climateBucket,
   daysOf,
   indexBySlug,
-  passSeason,
+  inputAt,
+  passGrades,
   passStatus,
   passVerdict,
   periodIndex,
   periodLabel,
   seasonText,
-  tourSeason,
+  signalsOf,
+  tourGrades,
   tourStatus,
+  valleyTmax,
   verdictReasons,
 } from "@/lib/status";
 import type {
@@ -89,6 +92,8 @@ interface Props {
   nearbyTours: NearbyTours;
   profiles: Record<string, ProfileWithCoords>;
   climate: Record<string, ClimateYear>;
+  /** Lowest ascent start per pass, for the derived valley heat. */
+  valleys: Record<string, number>;
   isFavorite: (kind: EntityKind, slug: string) => boolean;
   onToggleFavorite: (kind: EntityKind, slug: string) => void;
   /** Road point under the profile cursor, drawn on the map; `null` clears it. */
@@ -219,7 +224,7 @@ const Nearby = ({
                   status={passStatus(
                     x,
                     p.period,
-                    climateBucket(p.climate, x.slug, p.period),
+                    inputAt(signalsOf(p, x.slug), p.period),
                   )}
                 />{" "}
                 {x.name}
@@ -273,9 +278,14 @@ const PassDetail = (props: Props & { pass: Pass }) => {
   const { pass } = props;
   const climate = props.climate[pass.slug];
   const bucket = climate?.[periodIndex(props.period)];
-  const { status } = passVerdict(pass, props.period, bucket);
-  const reasons = verdictReasons(pass, props.period, bucket);
-  const best = bestPeriods(pass, climate);
+  const signals = signalsOf(props, pass.slug);
+  const input = inputAt(signals, props.period);
+  const { status, reasons: why } = passVerdict(pass, props.period, input);
+  const reasons = verdictReasons(pass, props.period, input);
+  const best = bestPeriods(pass, signals);
+  const grades = passGrades(pass, signals);
+  const valley = bucket ? valleyTmax(pass, bucket, signals.valley) : null;
+  const sun = sunTimes(pass.lat, pass.lon, periodDate(props.period));
 
   return (
     <>
@@ -289,7 +299,12 @@ const PassDetail = (props: Props & { pass: Pass }) => {
       {/* The "when" answer, boxed: verdict, why, the whole year, best time. */}
       <div className="bg-muted/40 border-border/70 mt-3 flex flex-col gap-2 rounded-lg border p-3">
         <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
-          <StatusBadge status={status} period={props.period} />
+          <StatusBadge
+            status={status}
+            reason={why[0]}
+            best={grades[periodIndex(props.period)] === "best"}
+            period={props.period}
+          />
           {best && (
             <span className="text-muted-foreground text-xs">
               beste Zeit {periodLabel(best[0])} – {periodLabel(best[1])}
@@ -301,12 +316,7 @@ const PassDetail = (props: Props & { pass: Pass }) => {
             {reasons.join(" ")}
           </p>
         )}
-        <SeasonStrip
-          statuses={passSeason(pass, climate)}
-          current={props.period}
-          size="panel"
-          best={best}
-        />
+        <SeasonStrip grades={grades} current={props.period} size="panel" />
       </div>
 
       <p className="mt-4 text-[13px] leading-relaxed">{seasonText(pass)}</p>
@@ -433,9 +443,19 @@ const PassDetail = (props: Props & { pass: Pass }) => {
               </Item>
             ))}
           </ItemGroup>
+          {/* The derived values, labelled as such – the summit values above
+              are what the series measured (Principle 3). */}
           <p className="text-muted-foreground mt-1.5 text-[11px]">
             {periodLabel(props.period)} auf {fmtUnit(pass.elevation, "m")};
-            Niederschlag an {bucket.wetPct} % der Tage.
+            Niederschlag an {bucket.wetPct} % der Tage.{" "}
+            {valley === null
+              ? "Talwert nicht ableitbar, kein Anstiegsprofil."
+              : `Im Tal (${fmtUnit(signals.valley ?? 0, "m")}) um ${fmt(Math.round(valley))} °C, abgeleitet.`}{" "}
+            Tag{" "}
+            {sun.dayLength.toLocaleString("de-DE", {
+              maximumFractionDigits: 1,
+            })}{" "}
+            h, Sonne {clockTime(sun.sunrise)}–{clockTime(sun.sunset)}.
           </p>
           <ClimateChart climate={climate} period={props.period} />
         </>
@@ -478,7 +498,7 @@ const PassDetail = (props: Props & { pass: Pass }) => {
 const TourDetail = (props: Props & { tour: Tour }) => {
   const { tour } = props;
   const passIndex = indexBySlug(props.passes);
-  const status = tourStatus(tour, passIndex, props.period, props.climate);
+  const status = tourStatus(tour, passIndex, props.period, props);
   const limiting = tour.passes
     .map((s) => passIndex.get(s))
     .filter((p): p is Pass => Boolean(p))
@@ -487,7 +507,7 @@ const TourDetail = (props: Props & { tour: Tour }) => {
         passStatus(
           p,
           props.period,
-          climateBucket(props.climate, p.slug, props.period),
+          inputAt(signalsOf(props, p.slug), props.period),
         ) !== "open",
     );
 
@@ -512,7 +532,7 @@ const TourDetail = (props: Props & { tour: Tour }) => {
           </p>
         )}
         <SeasonStrip
-          statuses={tourSeason(tour, passIndex, props.climate)}
+          grades={tourGrades(tour, passIndex, props)}
           current={props.period}
           size="panel"
         />
@@ -537,7 +557,7 @@ const TourDetail = (props: Props & { tour: Tour }) => {
                 status={passStatus(
                   p,
                   props.period,
-                  climateBucket(props.climate, p.slug, props.period),
+                  inputAt(signalsOf(props, p.slug), props.period),
                 )}
               />{" "}
               {p.name}

@@ -3,6 +3,7 @@ import { describe, expect, test } from "bun:test";
 import { DEFAULT_FILTERS } from "@/lib/app-state";
 import type { Filters } from "@/lib/app-state";
 import {
+  barTotal,
   buildPassRows,
   buildTourRows,
   buildTownRows,
@@ -173,10 +174,11 @@ describe("buildPassRows", () => {
     expect(row!.season).toHaveLength(24);
     expect(row!.status).toBe("open");
     const withSnow = buildPassRows([passes[1]!], filters(), never, {
-      mittel: snowy(30),
+      climate: { mittel: snowy(30) },
     });
     expect(withSnow[0]!.status).toBe("risky");
-    expect(withSnow[0]!.season.every((s) => s === "risky")).toBe(true);
+    expect(withSnow[0]!.reason).toBe("snow");
+    expect(withSnow[0]!.season.every((s) => s === "limited")).toBe(true);
   });
 });
 
@@ -280,7 +282,7 @@ describe("buildTourRows", () => {
 
   test("the climate series reaches the tour verdict", () => {
     const rows = buildTourRows(tours, index, filters(), never, {
-      mittel: snowy(40),
+      climate: { mittel: snowy(40) },
     });
     expect(rows.every((r) => r.status === "risky")).toBe(true);
   });
@@ -352,12 +354,11 @@ describe("statusHistogram", () => {
     const bars = statusHistogram(passes, filters(), never);
     expect(bars).toHaveLength(24);
     expect(bars.map((b) => b.period)).toEqual(PERIODS);
-    for (const b of bars)
-      expect(b.open + b.risky + b.closed).toBe(passes.length);
+    for (const b of bars) expect(barTotal(b)).toBe(passes.length);
     expect(bars[periodIndexOf(4)]).toMatchObject({
+      best: 1,
       closed: 1,
-      open: 1,
-      risky: 1,
+      limited: 1,
     });
   });
 
@@ -367,7 +368,7 @@ describe("statusHistogram", () => {
       filters({ minFame: 4, status: ["open"] }),
       never,
     );
-    for (const b of bars) expect(b.open + b.risky + b.closed).toBe(1);
+    for (const b of bars) expect(barTotal(b)).toBe(1);
   });
 
   test("no matching pass leaves 24 empty bars rather than nothing", () => {
@@ -377,15 +378,13 @@ describe("statusHistogram", () => {
       never,
     );
     expect(bars).toHaveLength(24);
-    expect(bars.every((b) => b.open + b.risky + b.closed === 0)).toBe(true);
+    expect(bars.every((b) => barTotal(b) === 0)).toBe(true);
   });
 
   test("the climate series moves passes from open to weather-dependent", () => {
     const bars = statusHistogram(passes, filters(), never, {
-      hoch: snowy(30),
-      mittel: snowy(30),
-      winter: snowy(30),
+      climate: { hoch: snowy(30), mittel: snowy(30), winter: snowy(30) },
     });
-    expect(bars.every((b) => b.open === 0)).toBe(true);
+    expect(bars.every((b) => b.best === 0 && b.good === 0)).toBe(true);
   });
 });

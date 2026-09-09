@@ -35,7 +35,7 @@ test(
       await page.waitForAttribute(
         SLIDER,
         "aria-valuetext",
-        /^(?:Anfang|Ende) \w+: \d+ meist offen/u,
+        /^(?:Anfang|Ende) \w+: \d+ beste Zeit, \d+ gut/u,
       );
     }),
   TIMEOUT,

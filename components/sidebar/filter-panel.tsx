@@ -29,9 +29,11 @@ import {
   BEAUTY_OPTIONS,
   countCriteria,
   FAME_OPTIONS,
+  HEAT_OPTIONS,
   RATING_MAX,
   RATING_MIN,
   TRAFFIC_OPTIONS,
+  WET_OPTIONS,
 } from "@/lib/app-state";
 import type { Filters } from "@/lib/app-state";
 import { STATUS_LABEL } from "@/lib/status";
@@ -230,6 +232,24 @@ export const FilterPanel = ({
             value={filters.minFame}
             onChange={(v) => set("minFame", v)}
             options={FAME_OPTIONS}
+          />
+        </FieldGroup>
+        {/* The raw summer signals of the chosen half-month, not the composite:
+            "unter 28 °C im Tal" is a question the status alone cannot answer. */}
+        <FieldGroup className="grid grid-cols-3 gap-2">
+          <Select
+            id="max-heat"
+            label="Hitze im Tal"
+            value={filters.maxValleyTmax}
+            onChange={(v) => set("maxValleyTmax", v)}
+            options={HEAT_OPTIONS}
+          />
+          <Select
+            id="max-wet"
+            label="Regentage"
+            value={filters.maxWetPct}
+            onChange={(v) => set("maxWetPct", v)}
+            options={WET_OPTIONS}
           />
         </FieldGroup>
       </CollapsibleContent>

@@ -1,39 +1,40 @@
 import {
+  GRADE_LABEL,
   MONTH_INITIALS,
   periodIndex,
   periodLabel,
   PERIODS,
   seasonSummary,
-  STATUS_LABEL,
 } from "@/lib/status";
-import type { Period, Status } from "@/lib/types";
+import type { Grade } from "@/lib/status";
+import type { Period } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
 /**
  * The whole year of one pass or tour in 24 cells, so "when" is answered
- * without clicking. Colour carries the status, but never alone: "oft
- * gesperrt" is hollow like the circles on the map and the current half-month
+ * without clicking. Four rungs, two hues: the pass's best window is the full
+ * green, "gut" a tint of the same token, "eingeschränkt" amber, and "oft
+ * gesperrt" hollow like the circles on the map – a closure is a different
+ * kind of statement, not one more step on the ramp. The current half-month
  * is outlined, so the strip still works without hue.
  */
-const CELL: Record<Status, string> = {
+const CELL: Record<Grade, string> = {
+  best: "bg-status-open",
   closed: "bg-status-closed/12 ring-1 ring-status-closed/45 ring-inset",
-  open: "bg-status-open",
-  risky: "bg-status-risky",
+  good: "bg-status-open/40",
+  limited: "bg-status-risky",
 };
 
 export const SeasonStrip = ({
-  statuses,
+  grades,
   current,
-  best,
   size = "row",
   className,
 }: {
-  /** 24 verdicts, index 0 = early January. */
-  statuses: Status[];
+  /** 24 grades, index 0 = early January. */
+  grades: Grade[];
   /** Outlined half-month; usually the selected period. */
   current?: Period;
-  /** Underlined range in the panel size (`bestPeriods`). */
-  best?: [Period, Period] | null;
   /** `row`: 96 px, no labels. `panel`: full width with month initials. */
   size?: "row" | "panel";
   className?: string;
@@ -41,25 +42,13 @@ export const SeasonStrip = ({
   const panel = size === "panel";
   const currentIndex = current === undefined ? -1 : periodIndex(current);
   const label = [
-    seasonSummary(statuses),
-    current !== undefined && statuses[currentIndex]
-      ? `${periodLabel(current)}: ${STATUS_LABEL[statuses[currentIndex]]}.`
+    seasonSummary(grades),
+    current !== undefined && grades[currentIndex]
+      ? `${periodLabel(current)}: ${GRADE_LABEL[grades[currentIndex]]}.`
       : "",
   ]
     .filter(Boolean)
     .join(" ");
-
-  // A run that wraps around the turn of the year cannot be drawn as one bar;
-  // the sentence in `aria-label` still carries it.
-  const from = best ? periodIndex(best[0]) : 0;
-  const to = best ? periodIndex(best[1]) : 0;
-  const bestBar =
-    panel && best && from <= to
-      ? {
-          left: `${(from / PERIODS.length) * 100}%`,
-          width: `${((to - from + 1) / PERIODS.length) * 100}%`,
-        }
-      : null;
 
   return (
     <div className={cn(panel ? "w-full" : "w-24", className)}>
@@ -68,26 +57,18 @@ export const SeasonStrip = ({
         aria-label={label}
         className={cn("flex gap-px", panel ? "h-4" : "h-2")}
       >
-        {statuses.map((status, i) => (
+        {grades.map((grade, i) => (
           <span
             key={PERIODS[i]}
             className={cn(
               "relative flex-1 rounded-[1px]",
-              CELL[status],
+              CELL[grade],
               i === currentIndex &&
                 "outline-foreground z-10 outline-1 outline-offset-1",
             )}
           />
         ))}
       </div>
-      {bestBar && (
-        <div aria-hidden className="relative mt-1 h-[3px]">
-          <span
-            style={bestBar}
-            className="bg-foreground/55 absolute top-0 h-[3px] rounded-full"
-          />
-        </div>
-      )}
       {panel && (
         <div
           aria-hidden

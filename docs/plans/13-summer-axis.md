@@ -1,6 +1,6 @@
 # 13 · Summer axis
 
-**Status:** proposed · **Effort:** M–L · **Depends on:** 04 (climate series,
+**Status:** in progress ([PR #17](https://github.com/mdugue/alpen/pull/17)) · **Effort:** M–L · **Depends on:** 04 (climate series,
 reasons, `bestPeriods`) · **Unblocks:** 12 (destination scores that mean
 something in July), the "usable hours per day" cell fill and the daily window
 in `docs/roadmap.md`
@@ -84,7 +84,7 @@ flowchart TD
   S --> S1["snow ≥ 20 % · frost ≥ 80 % · altitude"]
   S --> S2["valley tmax ≥ 26 °C → Hitze"]
   S --> S3["rain days ≥ 70 % → nass"]
-  S --> S4["daylight < 10,5 h → kurze Tage"]
+  S --> S4["daylight < 10¾ h → kurze Tage"]
   S --> S5["summit tmax < 8 °C → kalte Abfahrt"]
   S1 & S2 & S3 & S4 & S5 --> L{"any fired?"}
   L -- "yes, first in ladder order" --> R["eingeschränkt<br/>label = that one word"]
@@ -276,12 +276,14 @@ half-month and shifts sunset by an hour within it, which the text tolerates
 
 | day length < | pairs | half-months hit                                  |
 | ------------ | ----- | ------------------------------------------------ |
-| 10 h         | 4     | November only                                    |
-| **10,5 h**   | 34    | Ende Oktober 30 · Anfang November 3 · Ende Nov 1 |
-| 11 h         | 38    | plus Anfang Oktober 4 (Nice latitude)            |
+| 10¼ h        | 4     | November only                                    |
+| **10¾ h**    | 34    | Ende Oktober 30 · Anfang November 3 · Ende Nov 1 |
+| 11¼ h        | 34    | the same; early October sits at 11,4 h           |
 
-`SHORT_DAY_HOURS = 10.5`: sunset before ~17:15 CET. At 46,5° N that is late
-October onward (and February, where nothing is open). Most late-October cells
+`SHORT_DAY_HOURS = 10.75` (the day length is measured with refraction and the
+solar disc, which adds a quarter of an hour to the geometric value; the
+cohort is the same as a geometric 10,5 h): sunset before ~17:15 CET. At
+46,5° N that is late October onward (and February, where nothing is open). Most late-October cells
 are amber already for frost or snow; the word matters for the low passes that
 stay green until November (Turini, Ventoux, Couillole), where "kurze Tage" is
 the true limit and "wetterabhängig" was never the right word.
@@ -447,9 +449,9 @@ second one if the first grows past comfortable review size.
 
 ## Acceptance criteria
 
-- In late July the 92 passes no longer share one grade: at least three of
-  the four rungs occur, and the `heat` cohort is the valley list from the
-  table above (Ventoux, Finestre, Turini, Alpe d'Huez, Mortirolo among them),
+- From June to September the 92 passes no longer share one grade: all three
+  rideable rungs occur, and in late July the `heat` cohort is the valley
+  list from the table above (Ventoux, Finestre, Turini, Alpe d'Huez, Mortirolo among them),
   the `wet` cohort the Dolomites/Carinthia list, and no French Southern Alps
   pass is amber for `wet`.
 - No pass gains `closed` from any signal other than `outside-window`

@@ -59,6 +59,23 @@ export const FAME_OPTIONS = [
   [3, "ab 3 von 5"],
   [4, "nur Klassiker"],
 ] as const;
+/**
+ * The raw summer signals, so the data that makes July queryable is not buried
+ * under the composite status: the valley's derived mean daily maximum and the
+ * share of rain days in the chosen half-month (`lib/status.ts`).
+ */
+export const HEAT_NONE = 99;
+export const HEAT_OPTIONS = [
+  [HEAT_NONE, "egal"],
+  [28, "Tal unter 28 °C"],
+  [24, "Tal unter 24 °C"],
+] as const;
+export const WET_NONE = 100;
+export const WET_OPTIONS = [
+  [WET_NONE, "egal"],
+  [50, "höchstens jeder 2. Tag"],
+  [40, "trocken (≤ 40 %)"],
+] as const;
 
 export interface Filters {
   period: Period;
@@ -78,6 +95,13 @@ export interface Filters {
   maxTraffic: number;
   /** 1 = no filter. */
   minBeauty: number;
+  /**
+   * Upper bounds on the raw summer signals of the chosen half-month, see
+   * `HEAT_OPTIONS` and `WET_OPTIONS`; a pass without the value does not pass
+   * an active one. `HEAT_NONE` / `WET_NONE` = no filter.
+   */
+  maxValleyTmax: number;
+  maxWetPct: number;
   sort: PassSort;
   query: string;
   favoritesOnly: boolean;
@@ -91,6 +115,8 @@ export const DEFAULT_FILTERS: Filters = {
   difficulty: [RATING_MIN, RATING_MAX],
   favoritesOnly: false,
   maxTraffic: RATING_MAX,
+  maxValleyTmax: HEAT_NONE,
+  maxWetPct: WET_NONE,
   minBeauty: RATING_MIN,
   minElevation: 0,
   minFame: 1,
@@ -106,7 +132,9 @@ export const countCriteria = (f: Filters) =>
   (f.minElevation > 0 ? 1 : 0) +
   (f.difficulty[0] > RATING_MIN || f.difficulty[1] < RATING_MAX ? 1 : 0) +
   (f.maxTraffic < RATING_MAX ? 1 : 0) +
-  (f.minBeauty > RATING_MIN ? 1 : 0);
+  (f.minBeauty > RATING_MIN ? 1 : 0) +
+  (f.maxValleyTmax < HEAT_NONE ? 1 : 0) +
+  (f.maxWetPct < WET_NONE ? 1 : 0);
 
 /** True when any filter apart from the period and the sort is active. */
 export const hasActiveFilters = (f: Filters) =>
@@ -158,6 +186,7 @@ export interface HashState {
 //   f     min. fame                        m     min. elevation in m
 //   d     difficulty window "2-4"          v     max. traffic
 //   be    min. beauty                      o     pass sort key
+//   h     max. valley heat in °C           w     max. share of rain days
 //   pass | tour | town   the selected entity's slug
 //
 // Every key is validated on the way in: unknown values fall back to the
@@ -231,6 +260,7 @@ const HASH = {
   c: parseAsCenter,
   d: parseAsRange,
   f: parseAsOneOf(FAME_OPTIONS.map(([v]) => v)),
+  h: parseAsOneOf(HEAT_OPTIONS.map(([v]) => v)),
   m: parseAsMetres,
   o: parseAsStringLiteral(PASS_SORTS),
   pass: parseAsString,
@@ -241,6 +271,7 @@ const HASH = {
   tour: parseAsString,
   town: parseAsString,
   v: parseAsOneOf(TRAFFIC_OPTIONS.map(([v]) => v)),
+  w: parseAsOneOf(WET_OPTIONS.map(([v]) => v)),
   z: parseAsFixed(2),
 };
 /** Writing: a value equal to its default leaves the hash. */
@@ -249,11 +280,13 @@ const HASH_OUT = {
   be: HASH.be.withDefault(DEFAULT_FILTERS.minBeauty),
   d: HASH.d.withDefault(DEFAULT_FILTERS.difficulty),
   f: HASH.f.withDefault(DEFAULT_FILTERS.minFame),
+  h: HASH.h.withDefault(DEFAULT_FILTERS.maxValleyTmax),
   m: HASH.m.withDefault(DEFAULT_FILTERS.minElevation),
   o: HASH.o.withDefault(DEFAULT_FILTERS.sort),
   q: HASH.q.withDefault(DEFAULT_FILTERS.query),
   s: HASH.s.withDefault(DEFAULT_FILTERS.status),
   v: HASH.v.withDefault(DEFAULT_FILTERS.maxTraffic),
+  w: HASH.w.withDefault(DEFAULT_FILTERS.maxWetPct),
 };
 const loadHash = createLoader(HASH);
 const serialize = createSerializer(HASH_OUT, { clearOnDefault: true });
@@ -273,6 +306,8 @@ export const parseHash = (hash: string): HashState => {
     filters: {
       difficulty: given("d"),
       maxTraffic: given("v"),
+      maxValleyTmax: given("h"),
+      maxWetPct: given("w"),
       minBeauty: given("be"),
       minElevation: given("m"),
       minFame: given("f"),
@@ -311,6 +346,7 @@ export const serializeHash = (
     c: [view.lat, view.lon],
     d: filters.difficulty,
     f: filters.minFame,
+    h: filters.maxValleyTmax,
     m: filters.minElevation,
     o: filters.sort,
     pass: selection?.kind === "pass" ? selection.slug : null,
@@ -321,6 +357,7 @@ export const serializeHash = (
     tour: selection?.kind === "tour" ? selection.slug : null,
     town: selection?.kind === "town" ? selection.slug : null,
     v: filters.maxTraffic,
+    w: filters.maxWetPct,
     z: view.zoom,
   }).replace(/^\?/u, "");
 };

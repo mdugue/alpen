@@ -12,7 +12,7 @@ import { MAP_ASSET_DIR, mapAssets } from "@/lib/map-assets";
 import type { MapAssets } from "@/lib/map-assets";
 import { nearbyTours } from "@/lib/nearby";
 import type { NearbyTours } from "@/lib/nearby";
-import { profileCoords } from "@/lib/profile";
+import { profileCoords, valleyElevations } from "@/lib/profile";
 import * as S from "@/lib/schema";
 import type {
   ClimateYear,
@@ -108,6 +108,16 @@ export const getProfiles = async (): Promise<
 export const getClimate = async (): Promise<Record<string, ClimateYear>> => {
   "use cache";
   return climate;
+};
+
+/**
+ * Lowest ascent start per pass slug – the elevation the valley heat is derived
+ * to (`valleyTmax`, lib/status.ts). Derived here so the client never needs the
+ * profiles for it.
+ */
+export const getValleys = async (): Promise<Record<string, number>> => {
+  "use cache";
+  return valleyElevations(passes, profiles);
 };
 
 export const getPass = async (slug: string): Promise<Pass | undefined> => {

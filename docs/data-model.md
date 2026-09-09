@@ -118,7 +118,7 @@ is a single sentence naming the surrounding passes and the infrastructure.
 | ------------------ | ----------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `routes.json`      | `<pass-slug>:<index>`, `tour:<tour-slug>` | Road geometry as `[lat, lon][]`                                                                                                                                |
 | `profiles.json`    | `<pass-slug>:<index>`                     | km, elevation gain, average and steepest-kilometre gradient, ~100 samples                                                                                      |
-| `climate.json`     | `<pass-slug>`                             | 24 half-months with average temperatures and frost/snow/rain share                                                                                             |
+| `climate.json`     | `<pass-slug>`                             | 24 half-months with average temperatures and frost/snow/rain share; the verdict reads `snowPct`, `frostPct`, `wetPct` and `tmax` (`lib/status.ts`)             |
 | `routes-meta.json` | as `routes.json`                          | `source` (`ors` \| `osrm`) and `fetchedAt` – which router produced this route                                                                                  |
 | `rejected.json`    | as `routes.json`                          | routes the quality gate refused, with the reasons, the measured values, the paid-for profile and a hash of the inputs they were routed for                     |
 | `summits.json`     | `<pass-slug>`                             | DEM height (`dem`) and distance to the nearest road (`roadDist`) at the pass coordinate, with the `lat`/`lon` they were read at, to catch a wrong summit point |
@@ -128,7 +128,12 @@ A profile's samples are ~100 points of the ascent's road geometry, taken at
 sample is therefore derivable from the route and is not stored twice;
 `lib/data.ts` derives it on the server (`ProfileWithCoords`) – which is what
 lets the detail panel put a cursor on the map while you scrub the profile,
-without the route itself reaching the client. The map draws the routes from
+without the route itself reaching the client. The same getter family derives
+`valleys` (`getValleys()`, `valleyElevations()` in `lib/profile.ts`): the
+lowest `start` of a pass's profiles, which is the elevation the summit
+climate is taken down to for the heat signal (`valleyTmax()`, see
+`docs/scales.md`, "Derived values"). The client gets the number per slug, not
+the profiles. The map draws the routes from
 static GeoJSON instead: `scripts/build-map-assets.ts` writes `routes.json`,
 simplified to 5 m, as content-hashed files into `public/map` (git-ignored),
 see plan 01.
