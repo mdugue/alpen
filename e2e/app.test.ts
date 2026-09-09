@@ -51,7 +51,12 @@ test(
       expect(await page.hash()).toContain("pass=col-du-galibier");
       await page.press("Escape");
       await page.waitForGone("#detail-title");
-      expect(await page.activeRow()).toBe("pass:col-du-galibier");
+      // The panel is gone on commit, the row is focused a frame later
+      // (`back` in explorer.tsx); a single read in between sees the body.
+      await waitUntil(
+        async () => (await page.activeRow()) === "pass:col-du-galibier",
+        "focus back on the row",
+      );
       expect(await page.hash()).not.toContain("pass=");
     }),
   TIMEOUT,
