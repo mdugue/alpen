@@ -118,10 +118,14 @@ friends do that better and the app links out to them.
   where the field ends up. The field a thumb reaches is always in a sheet that
   already stands still. What floats over the map is one cluster in its top-left
   corner (`MAP_CLUSTER`, next to the panels' left edge): the period scrubber
-  and, on the same panel surface, the three map tools – layers, 3D, fit. They
-  share one surface and one hover (`MAP_TOOL`, because `Button` and `Toggle`
-  disagree about the outline hover) so the corner reads as the place the map is
-  steered from. The scrubber carries the
+  and, on the same panel surface, the three map tools – layers, 3D, fit. The
+  tools are one segmented column in the same outline as the scrubber's own
+  stepper, stretched to its height, so they read as pressable and the cluster
+  keeps an even edge; `MAP_TOOL` settles the outline, because `Button` and
+  `Toggle` disagree about hover, border token and dark fill. The scrubber
+  reaches the map through the `scrubber` prop rather than `children`, which is
+  what stays free-floating beside the cluster – today the sidebar's own toggle.
+  The scrubber carries the
   24 half-months, the histogram of what is rideable and the "heute" marker,
   and every list row repeats the same 24 cells as a `SeasonStrip`. Map
   visibility is always a `Switch` ("auf der Karte"), one per kind, two-state

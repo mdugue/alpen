@@ -21,6 +21,7 @@ import { useEffect, useRef, useState } from "react";
 
 import { baseLayers, OVERLAYS } from "@/components/map/map-style";
 import { Button } from "@/components/ui/button";
+import { ButtonGroup } from "@/components/ui/button-group";
 import {
   Field,
   FieldLabel,
@@ -87,13 +88,25 @@ interface Props {
   insetLeft?: number;
   /** Pixels at the bottom covered by the mobile sheet; camera targets stay above it. */
   insetBottom?: number;
-  /** Rendered in the top-left control cluster, ahead of the three map tools. */
+  /**
+   * The period scrubber, rendered inside the control cluster next to the three
+   * map tools. A slot of its own, because `children` floats free beside the
+   * cluster and must not stretch to its height.
+   */
+  scrubber?: React.ReactNode;
+  /** Free-floating controls left of the cluster (the sidebar's own toggle). */
   children?: React.ReactNode;
 }
 
 const EMPTY = { features: [], type: "FeatureCollection" } as const;
 /** Breathing room around a fitted frame, in pixels; the map padding is added on top. */
 const FIT_PADDING = 48;
+/**
+ * The three tools share one segmented column that stretches to the scrubber's
+ * height, so each takes a third of it and the cluster keeps an even edge all
+ * the way round – a fixed height would leave a margin below the scrubber.
+ */
+const TOOL = "h-auto w-9 flex-1";
 const TERRAIN = { exaggeration: 1.25, source: "dem" } as const;
 
 // MapLibre resolves its worker via import.meta.url, which Turbopack does not
@@ -225,6 +238,7 @@ export const PassMap = ({
   requestedView = null,
   insetLeft = 0,
   insetBottom = 0,
+  scrubber,
   children,
 }: Props) => {
   const container = useRef<HTMLDivElement>(null);
@@ -965,120 +979,126 @@ export const PassMap = ({
       {/* Plain "absolute inset-0" loses against the unlayered maplibre-gl.css (`.maplibregl-map { position: relative }`). */}
       <div ref={container} className="size-full" />
 
-      {/*
-       * One interaction area in the top-left corner: the period scrubber and
-       * the three map tools share a single panel surface, so the corner reads
-       * as the place where the map is steered from rather than as buttons
-       * scattered over two corners.
-       */}
       <div
         style={{ left: insetLeft + 12 }}
-        className={cn(
-          "absolute top-3 z-10 flex max-w-[calc(100%-4rem)] items-start gap-1.5 transition-[left] duration-200 motion-reduce:transition-none",
-          MAP_CLUSTER,
-        )}
+        className="absolute top-3 z-10 flex max-w-[calc(100%-4rem)] items-start gap-2 transition-[left] duration-200 motion-reduce:transition-none"
       >
         {children}
-        <div className="flex shrink-0 flex-col gap-1">
-          <Popover>
-            <Tooltip>
-              <TooltipTrigger
-                render={
-                  <PopoverTrigger
-                    render={
-                      <Button
-                        size="icon-lg"
-                        variant="outline"
-                        className={MAP_TOOL}
-                        aria-label="Kartenebenen"
-                      />
-                    }
-                  />
-                }
-              >
-                <Layers />
-              </TooltipTrigger>
-              <TooltipContent side="right">Kartenebenen</TooltipContent>
-            </Tooltip>
-            <PopoverContent align="start" side="right" className="w-60 gap-3">
-              <FieldSet className="gap-2">
-                <FieldLegend variant="label">Grundkarte</FieldLegend>
-                <RadioGroup
-                  value={base}
-                  onValueChange={(v) => switchBase(String(v))}
-                  className="gap-1.5"
+        {/*
+         * One interaction area: the period scrubber and the three map tools on
+         * a single panel surface, the tools segmented in the same outline as
+         * the scrubber's own stepper and stretched to its height. A tool has to
+         * look pressable, and the cluster has to keep an even edge.
+         */}
+        <div className={cn("flex min-w-0 items-stretch gap-1.5", MAP_CLUSTER)}>
+          {scrubber}
+          <ButtonGroup
+            orientation="vertical"
+            className="bg-background/60 shrink-0 rounded-md"
+          >
+            <Popover>
+              <Tooltip>
+                <TooltipTrigger
+                  render={
+                    <PopoverTrigger
+                      render={
+                        <Button
+                          size="icon-lg"
+                          variant="outline"
+                          className={cn(TOOL, MAP_TOOL)}
+                          aria-label="Kartenebenen"
+                        />
+                      }
+                    />
+                  }
                 >
-                  {baseLayers().map((b) => (
-                    <Field key={b.id} orientation="horizontal">
-                      <RadioGroupItem value={b.id} id={`base-${b.id}`} />
+                  <Layers />
+                </TooltipTrigger>
+                <TooltipContent side="right">Kartenebenen</TooltipContent>
+              </Tooltip>
+              <PopoverContent align="start" side="right" className="w-60 gap-3">
+                <FieldSet className="gap-2">
+                  <FieldLegend variant="label">Grundkarte</FieldLegend>
+                  <RadioGroup
+                    value={base}
+                    onValueChange={(v) => switchBase(String(v))}
+                    className="gap-1.5"
+                  >
+                    {baseLayers().map((b) => (
+                      <Field key={b.id} orientation="horizontal">
+                        <RadioGroupItem value={b.id} id={`base-${b.id}`} />
+                        <FieldLabel
+                          htmlFor={`base-${b.id}`}
+                          className="font-normal"
+                        >
+                          {b.name}
+                        </FieldLabel>
+                      </Field>
+                    ))}
+                  </RadioGroup>
+                </FieldSet>
+                <FieldSet className="gap-2">
+                  <FieldLegend variant="label">Overlays</FieldLegend>
+                  {[
+                    { id: "hillshade", name: "Relief-Schummerung" },
+                    ...OVERLAYS,
+                  ].map((o) => (
+                    <Field key={o.id} orientation="horizontal">
+                      <Switch
+                        size="sm"
+                        id={`ov-${o.id}`}
+                        checked={overlays.includes(o.id)}
+                        onCheckedChange={() => toggleOverlay(o.id)}
+                      />
                       <FieldLabel
-                        htmlFor={`base-${b.id}`}
+                        htmlFor={`ov-${o.id}`}
                         className="font-normal"
                       >
-                        {b.name}
+                        {o.name}
                       </FieldLabel>
                     </Field>
                   ))}
-                </RadioGroup>
-              </FieldSet>
-              <FieldSet className="gap-2">
-                <FieldLegend variant="label">Overlays</FieldLegend>
-                {[
-                  { id: "hillshade", name: "Relief-Schummerung" },
-                  ...OVERLAYS,
-                ].map((o) => (
-                  <Field key={o.id} orientation="horizontal">
-                    <Switch
-                      size="sm"
-                      id={`ov-${o.id}`}
-                      checked={overlays.includes(o.id)}
-                      onCheckedChange={() => toggleOverlay(o.id)}
-                    />
-                    <FieldLabel htmlFor={`ov-${o.id}`} className="font-normal">
-                      {o.name}
-                    </FieldLabel>
-                  </Field>
-                ))}
-              </FieldSet>
-            </PopoverContent>
-          </Popover>
+                </FieldSet>
+              </PopoverContent>
+            </Popover>
 
-          <Tooltip>
-            <TooltipTrigger
-              render={
-                <Toggle
-                  variant="outline"
-                  size="lg"
-                  pressed={is3d}
-                  onPressedChange={toggle3d}
-                  aria-label="3D-Gelände"
-                  className={cn("size-8 px-0", MAP_TOOL, PRESSED)}
-                />
-              }
-            >
-              <Box />
-            </TooltipTrigger>
-            <TooltipContent side="right">3D-Gelände</TooltipContent>
-          </Tooltip>
+            <Tooltip>
+              <TooltipTrigger
+                render={
+                  <Toggle
+                    variant="outline"
+                    size="lg"
+                    pressed={is3d}
+                    onPressedChange={toggle3d}
+                    aria-label="3D-Gelände"
+                    className={cn(TOOL, "px-0", MAP_TOOL, PRESSED)}
+                  />
+                }
+              >
+                <Box />
+              </TooltipTrigger>
+              <TooltipContent side="right">3D-Gelände</TooltipContent>
+            </Tooltip>
 
-          <Tooltip>
-            <TooltipTrigger
-              render={
-                <Button
-                  size="icon-lg"
-                  variant="outline"
-                  className={MAP_TOOL}
-                  onClick={fitToVisible}
-                  aria-label="Ansicht einpassen"
-                />
-              }
-            >
-              <Focus />
-            </TooltipTrigger>
-            <TooltipContent side="right">
-              Ansicht einpassen – erneut für die ganzen Alpen
-            </TooltipContent>
-          </Tooltip>
+            <Tooltip>
+              <TooltipTrigger
+                render={
+                  <Button
+                    size="icon-lg"
+                    variant="outline"
+                    className={cn(TOOL, MAP_TOOL)}
+                    onClick={fitToVisible}
+                    aria-label="Ansicht einpassen"
+                  />
+                }
+              >
+                <Focus />
+              </TooltipTrigger>
+              <TooltipContent side="right">
+                Ansicht einpassen – erneut für die ganzen Alpen
+              </TooltipContent>
+            </Tooltip>
+          </ButtonGroup>
         </div>
       </div>
     </div>

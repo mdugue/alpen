@@ -56,7 +56,7 @@ import {
   useMediaQuery,
   useViewportHeight,
 } from "@/lib/use-media-query";
-import { cn, MAP_TOOL, PANEL } from "@/lib/utils";
+import { cn, MAP_CONTROL, PANEL } from "@/lib/utils";
 
 interface Props {
   passes: Pass[];
@@ -342,6 +342,18 @@ export const Explorer = ({
             requestedView={requestedView}
             insetLeft={insetLeft}
             insetBottom={insetBottom}
+            scrubber={
+              <PeriodScrubber
+                value={filters.period}
+                today={defaultPeriod}
+                histogram={histogram}
+                onChange={(p) => {
+                  setFilters((f) => ({ ...f, period: p }));
+                  // Only the control writes the preference; applying a hash never does.
+                  setStoredPeriod(p);
+                }}
+              />
+            }
           >
             {!isMobile && !sidebarOpen && (
               <Tooltip>
@@ -350,7 +362,7 @@ export const Explorer = ({
                     <Button
                       size="icon-lg"
                       variant="outline"
-                      className={MAP_TOOL}
+                      className={MAP_CONTROL}
                       onClick={() => setSidebarOpen(true)}
                       aria-label="Seitenleiste einblenden"
                     />
@@ -361,16 +373,6 @@ export const Explorer = ({
                 <TooltipContent>Liste und Filter</TooltipContent>
               </Tooltip>
             )}
-            <PeriodScrubber
-              value={filters.period}
-              today={defaultPeriod}
-              histogram={histogram}
-              onChange={(p) => {
-                setFilters((f) => ({ ...f, period: p }));
-                // Only the control writes the preference; applying a hash never does.
-                setStoredPeriod(p);
-              }}
-            />
           </PassMap>
         </div>
 
