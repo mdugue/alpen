@@ -81,14 +81,21 @@ export const sunTimes = (lat: number, lon: number, date: Date): SunTimes => {
 };
 
 /**
- * The day that stands for a half-month: the 8th for "Anfang", the 23rd for
- * "Ende" – the middle of each. The year matters only for leap days and the
- * clock times around the DST switch; the current one is the honest default.
+ * A year without a leap day, so the 8th and the 23rd of every month land on
+ * the same day of the year every time. Fixed rather than `new Date()`: the
+ * strip is prerendered, and a prerender must not read the clock (Next stops
+ * the build on an unstable value in a client component). Day length and the
+ * DST rule do not change from one year to the next in any way a half-month
+ * could show.
  */
-export const periodDate = (
-  t: Period,
-  year = new Date().getUTCFullYear(),
-): Date => new Date(Date.UTC(year, Math.floor(t) - 1, t % 1 ? 23 : 8, 12));
+const REFERENCE_YEAR = 2025;
+
+/**
+ * The day that stands for a half-month: the 8th for "Anfang", the 23rd for
+ * "Ende" – the middle of each.
+ */
+export const periodDate = (t: Period, year = REFERENCE_YEAR): Date =>
+  new Date(Date.UTC(year, Math.floor(t) - 1, t % 1 ? 23 : 8, 12));
 
 /** Hours of daylight at a latitude in the middle of a half-month. */
 export const dayLength = (lat: number, t: Period): number =>
