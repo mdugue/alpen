@@ -17,6 +17,7 @@
     "typecheck": "tsc --noEmit",
     "data:build": "bun run scripts/build-data.ts",
     "data:check": "bun run scripts/check-data.ts",
+    "data:locate": "bun run scripts/locate-pass.ts",
     "data:backfill": "bash scripts/backfill.sh",
     "data:schema": "bun run scripts/emit-json-schema.ts",
     "ui:init": "bunx shadcn@latest init --preset b1D2ui9g",

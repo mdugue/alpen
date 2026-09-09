@@ -39,6 +39,7 @@ and the climate series are missing.
 | `bun run data:build`                 | Fetch routes, elevation profiles, climate → `data/generated/` (resumable) |
 | `bun run data:build --status`        | Show what is still missing and what it costs in Open-Meteo calls          |
 | `bun run data:check`                 | Validate references and completeness of the data                          |
+| `bun run data:locate [slug…]`        | Where a pass point belongs: DEM, road distance, OSM candidates (network)  |
 | `bun run ui:init` / `bun run ui:add` | (Re)install the shadcn "mira" preset and components                       |
 
 ## Architecture in four sentences

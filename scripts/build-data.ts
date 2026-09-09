@@ -19,7 +19,21 @@
  * lands in rejected.json with its measured values instead of in routes.json, so
  * a wrong route neither reaches the map nor spends 100 Open-Meteo calls on a
  * useless profile. routes-meta.json records which router produced each route;
- * an OSRM route is re-fetched once an ORS key is available.
+ * an OSRM route is re-fetched once an ORS key is available (--upgrade-osrm).
+ *
+ * Two rules keep the gate from eating its own work. A rejected candidate never
+ * evicts a stored route: when ORS's answer for a stored OSRM route fails the
+ * checks, the rejection is recorded next to the route and the OSRM route stays
+ * on the map – otherwise an upgrade pass turns a passing route into a gap, the
+ * next run falls back to OSRM, and the pair loops forever. And a rejected key
+ * is retried by itself exactly when that could change the outcome: its inputs
+ * (coordinates, elevation, check) changed, or its stored metrics would pass
+ * the current limits. `--retry-rejected` forces it regardless, for the case
+ * that the router's own data moved.
+ *
+ * The DEM height at the pass point is fetched first and gates the ascents of
+ * that pass: a point that is 300 m off in height is not on the road, and every
+ * route to it ends short and every profile paid for it is wasted.
  *
  * Rate limits. Every upstream host gets its own pacer; requests to one host are
  * sequential, the pipelines for different hosts (routing vs. Open-Meteo) run in
@@ -65,18 +79,23 @@ import type {
   RouteMetrics,
   RouteRejection,
   RouteSource,
+  Summit,
   Tour,
   TourCheck,
   TourMetrics,
 } from "../lib/types";
+import { ROAD_RADIUS, distanceToWays, roadsQuery } from "./lib/locate";
+import type { OverpassWay } from "./lib/locate";
 import {
   LIMITS,
   ascentMetrics,
   checkAscent,
+  checkRoad,
   checkSummit,
   checkTour,
   geometryHash,
   tourMetrics,
+  inputsHash,
   withProfile,
 } from "./lib/validate";
 
@@ -216,6 +235,10 @@ const openMeteo = new Limiter("Open-Meteo", 500, OPEN_METEO_BUDGET);
 // with quota left.
 const ors = ORS ? new Limiter("OpenRouteService", 38) : null;
 const osrm = new Limiter("OSRM-Demo", 55);
+// Overpass asks for fair use, no key; a handful of batched queries per run.
+const overpass = new Limiter("Overpass", 20);
+const OVERPASS =
+  process.env.OVERPASS_URL ?? "https://overpass-api.de/api/interpreter";
 
 const getJson = <T>(
   lim: Limiter,
@@ -353,8 +376,8 @@ const route = async (
 /** DEM height at the pass coordinates themselves, to catch a wrong summit point. */
 const summitElevations = async (
   list: Pass[],
-): Promise<Record<string, number>> => {
-  const out: Record<string, number> = {};
+): Promise<Record<string, Summit>> => {
+  const out: Record<string, Summit> = {};
   for (let i = 0; i < list.length; i += PROFILE_POINTS) {
     const chunk = list.slice(i, i + PROFILE_POINTS);
     const { elevation } = await getJson<{ elevation: number[] }>(
@@ -364,7 +387,33 @@ const summitElevations = async (
         `&longitude=${chunk.map((p) => p.lon).join(",")}`,
     );
     for (const [j, p] of chunk.entries())
-      out[p.slug] = Math.round(elevation[j]!);
+      out[p.slug] = { dem: Math.round(elevation[j]!), lat: p.lat, lon: p.lon };
+  }
+  return out;
+};
+
+/**
+ * Distance from each pass point to the nearest drivable OSM way, one Overpass
+ * request per batch. The ways come back with their geometry and the distance
+ * is measured locally; a point with no way inside ROAD_RADIUS gets null.
+ */
+const roadDistances = async (
+  list: Pass[],
+): Promise<Record<string, number | null>> => {
+  const out: Record<string, number | null> = {};
+  for (let i = 0; i < list.length; i += 25) {
+    const chunk = list.slice(i, i + 25);
+    const { elements } = await getJson<{ elements: OverpassWay[] }>(
+      overpass,
+      1,
+      OVERPASS,
+      { body: `data=${encodeURIComponent(roadsQuery(chunk))}`, method: "POST" },
+    );
+    const ways = elements.filter((e) => e.type === "way");
+    for (const p of chunk) {
+      const d = distanceToWays(p, ways);
+      out[p.slug] = d <= ROAD_RADIUS ? +d.toFixed(3) : null;
+    }
   }
   return out;
 };
@@ -469,11 +518,18 @@ const rejected = await readJson<Record<string, RouteRejection>>(
   "rejected.json",
   {},
 );
-const summits = await readJson<Record<string, number>>("summits.json", {});
+const summits = await readJson<Record<string, Summit>>("summits.json", {});
 
-type RouteJob = { key: string; label: string; waypoints: LatLon[] } & (
+type RouteJob = {
+  key: string;
+  label: string;
+  waypoints: LatLon[];
+  /** What the route is asked for, see `inputsHash`. */
+  inputs: string;
+} & (
   | {
       kind: "ascent";
+      slug: string;
       from: LatLon;
       summit: LatLon;
       elevation: number;
@@ -482,21 +538,33 @@ type RouteJob = { key: string; label: string; waypoints: LatLon[] } & (
   | { kind: "tour"; statedKm: number; check?: TourCheck }
 );
 
+const passBySlug = new Map((passes as Pass[]).map((p) => [p.slug, p]));
+
 const routeJobs: RouteJob[] = [
   ...(passes as Pass[]).flatMap((p) =>
     p.ascents.map((a, i): RouteJob => ({
       check: a.check,
       elevation: p.elevation,
       from: a.from,
+      inputs: inputsHash(
+        {
+          elevation: p.elevation,
+          from: a.from,
+          summit: { lat: p.lat, lon: p.lon },
+        },
+        a.check,
+      ),
       key: `${p.slug}:${i}`,
       kind: "ascent",
       label: `${p.name} ab ${a.label}`,
+      slug: p.slug,
       summit: { lat: p.lat, lon: p.lon },
       waypoints: [a.from, { lat: p.lat, lon: p.lon }],
     })),
   ),
   ...(tours as Tour[]).map((t): RouteJob => ({
     check: t.check,
+    inputs: inputsHash({ km: t.km, waypoints: t.waypoints }, t.check),
     key: `tour:${t.slug}`,
     kind: "tour",
     label: `Tour ${t.name}`,
@@ -527,27 +595,85 @@ const upgradable = (j: RouteJob) =>
   routes[j.key] !== undefined &&
   ORS !== "" &&
   (meta[j.key]?.source ?? "osrm") === "osrm";
+/**
+ * An OSRM route ORS has not been asked about yet. Once ORS has answered and
+ * the gate refused that answer (the key is in rejected.json next to the
+ * stored route), the OSRM route is as final as it gets and earns its profile.
+ */
+const provisional = (j: RouteJob) => upgradable(j) && !(j.key in rejected);
 const needsRoute = (j: RouteJob) =>
   !routes[j.key] || (UPGRADE_OSRM && upgradable(j));
-const isRejected = (j: RouteJob) => j.key in rejected && !RETRY_REJECTED;
+/**
+ * A rejection is retried when it could come out differently: the curator
+ * changed the inputs, or the stored metrics pass the current limits (a limit
+ * was changed, or a `check` was set). Entries from before `inputs` existed are
+ * retried once. Otherwise the router would give the same answer, and asking
+ * again only rewrites `lastSeen`.
+ */
+const retryDue = (j: RouteJob) => {
+  const r = rejected[j.key];
+  if (!r) return false;
+  if (RETRY_REJECTED) return true;
+  if (r.inputs !== j.inputs) return true;
+  return judge(j, r.metrics).length === 0;
+};
+const isRejected = (j: RouteJob) => j.key in rejected && !retryDue(j);
+/** The pass point is not where its elevation says: fix it before routing to it. */
+const summitOff = (slug: string) => {
+  const p = passBySlug.get(slug);
+  const s = summits[slug];
+  if (!(p && s) || s.lat !== p.lat || s.lon !== p.lon) return false;
+  return (
+    checkSummit(s.dem, p.elevation).length > 0 ||
+    checkRoad(s.roadDist).length > 0
+  );
+};
+const summitBlocked = (j: RouteJob) => j.kind === "ascent" && summitOff(j.slug);
 
 const pendingRoutes = () =>
-  routeJobs.filter((j) => isOnly(j.key) && needsRoute(j) && !isRejected(j));
-const pendingProfiles = () =>
   routeJobs.filter(
+    (j) =>
+      isOnly(j.key) && needsRoute(j) && !isRejected(j) && !summitBlocked(j),
+  );
+/**
+ * Stored ascents without a profile. A rejection next to a stored route does
+ * not exclude it – that route passed, the rejection is its failed replacement
+ * – but a key the routing pipeline is about to re-fetch this run is left to
+ * that pipeline, so two pipelines never work on one key at once.
+ */
+const pendingProfiles = () => {
+  const routing = new Set(pendingRoutes().map((j) => j.key));
+  return routeJobs.filter(
     (j) =>
       j.kind === "ascent" &&
       isOnly(j.key) &&
       routes[j.key] &&
       !profiles[j.key] &&
-      !isRejected(j) &&
+      !routing.has(j.key) &&
+      !summitBlocked(j) &&
       // Deferred until the geometry is final, see gate().
-      !upgradable(j),
+      !provisional(j),
   );
+};
 const pendingClimate = () =>
   (passes as Pass[]).filter((p) => !climates[p.slug]);
+/** Missing, or measured at a coordinate that has since moved. */
 const pendingSummits = () =>
-  (passes as Pass[]).filter((p) => !(p.slug in summits));
+  (passes as Pass[]).filter((p) => {
+    const s = summits[p.slug];
+    return !s || s.lat !== p.lat || s.lon !== p.lon;
+  });
+/** Summit entries that still lack the road distance (predate the check, or just fetched). */
+const pendingRoads = () =>
+  (passes as Pass[]).filter((p) => {
+    const s = summits[p.slug];
+    return (
+      s !== undefined &&
+      s.lat === p.lat &&
+      s.lon === p.lon &&
+      s.roadDist === undefined
+    );
+  });
 
 const report = () => {
   const r = pendingRoutes().length;
@@ -559,12 +685,19 @@ const report = () => {
     p +
     routeJobs.filter(
       (j) =>
-        j.kind === "ascent" && isOnly(j.key) && needsRoute(j) && !isRejected(j),
+        j.kind === "ascent" &&
+        isOnly(j.key) &&
+        needsRoute(j) &&
+        !isRejected(j) &&
+        !summitBlocked(j),
     ).length;
   const calls = newProfiles * PROFILE_WEIGHT + c * CLIMATE_WEIGHT + s;
-  const up = routeJobs.filter(upgradable).length;
+  const roads = pendingRoads().length + s;
+  const up = routeJobs.filter(provisional).length;
+  const blocked = routeJobs.filter(summitBlocked).length;
+  const kept = Object.keys(rejected).filter((k) => routes[k]).length;
   console.log(
-    `Fehlend: ${r} Routen, ${p} Profile, ${c} Klimareihen, ${s} Gipfelhöhen${
+    `Fehlend: ${r} Routen, ${p} Profile, ${c} Klimareihen, ${s} Gipfelhöhen, ${roads} Straßenabstände${
       calls
         ? ` (≈ ${calls} Open-Meteo-Calls ≈ ${Math.ceil(calls / Math.min(OPEN_METEO_BUDGET, OPEN_METEO_HOURLY))} Läufe à ${OPEN_METEO_BUDGET})`
         : ""
@@ -572,7 +705,15 @@ const report = () => {
       Object.keys(rejected).length
         ? ` · ${Object.keys(rejected).length} abgewiesen (rejected.json)`
         : ""
-    }${up && !UPGRADE_OSRM ? ` · ${up} OSRM-Routen aufrüstbar (--upgrade-osrm)` : ""}`,
+    }${up && !UPGRADE_OSRM ? ` · ${up} OSRM-Routen aufrüstbar (--upgrade-osrm)` : ""}${
+      kept
+        ? ` · ${kept} davon OSRM-Routen, deren ORS-Kandidat abgewiesen wurde`
+        : ""
+    }${
+      blocked
+        ? ` · ${blocked} Auffahrten warten auf eine korrigierte Passkoordinate (Höhe oder Straßenabstand)`
+        : ""
+    }`,
   );
   return r + p + c + s;
 };
@@ -582,7 +723,8 @@ if (PENDING_ONLY) {
     pendingRoutes().length +
       pendingProfiles().length +
       pendingClimate().length +
-      pendingSummits().length,
+      pendingSummits().length +
+      pendingRoads().length,
   );
   process.exit(0);
 }
@@ -667,42 +809,67 @@ report();
 const fail = (what: string, e: unknown) =>
   console.error(`  ${what} FEHLER ${(e as Error).message}`);
 
-/** Removes a key everywhere and records why, keeping the date of the first rejection. */
+/** What an upgrade candidate would replace; restored when the candidate fails. */
+interface Stored {
+  geom: RouteGeometry;
+  meta: RouteMeta | undefined;
+  profile: ElevationProfile | undefined;
+}
+
+/**
+ * Records why a candidate failed, keeping the date of the first rejection.
+ * Without `keep` the key is removed everywhere; with it the previously stored
+ * route (an OSRM route whose ORS replacement failed) is put back and stays on
+ * the map, and the rejection sits next to it as the record that ORS was asked.
+ * `candidateProfile` is the candidate's own profile, if one was paid for: it is cached
+ * because it is the only expensive part, so a later retry after a threshold
+ * change costs nothing. It is only ever kept for the very geometry it was
+ * measured on – a stored route's profile, or one from an earlier candidate
+ * with another hash, would be reused for the wrong road.
+ */
 const reject = async (
   job: RouteJob,
   reasons: string[],
   m: RouteMetrics,
   source: RouteSource,
   hash: string,
+  candidateProfile?: ElevationProfile,
+  keep?: Stored,
 ) => {
   const before = rejected[job.key];
   const unchanged = before?.hash === hash;
+  const cached = candidateProfile ?? (unchanged ? before?.profile : undefined);
   rejected[job.key] = {
     firstSeen: before?.firstSeen ?? TODAY,
     hash,
+    inputs: job.inputs,
     lastSeen: TODAY,
     metrics: m,
     reasons,
     source,
-    // Keep the profile: it is the only expensive part, so a later retry after a
-    // threshold change costs nothing.
-    ...(profiles[job.key]
-      ? { profile: profiles[job.key] }
-      : before?.profile
-        ? { profile: before.profile }
-        : {}),
+    ...(cached ? { profile: cached } : {}),
   };
-  Reflect.deleteProperty(routes, job.key);
-  Reflect.deleteProperty(profiles, job.key);
-  Reflect.deleteProperty(meta, job.key);
+  if (keep) {
+    routes[job.key] = keep.geom;
+    if (keep.meta) meta[job.key] = keep.meta;
+    else Reflect.deleteProperty(meta, job.key);
+    if (keep.profile) profiles[job.key] = keep.profile;
+    else Reflect.deleteProperty(profiles, job.key);
+  } else {
+    Reflect.deleteProperty(routes, job.key);
+    Reflect.deleteProperty(profiles, job.key);
+    Reflect.deleteProperty(meta, job.key);
+  }
   await write("routes.json", routes);
   await write("profiles.json", profiles);
   await write("routes-meta.json", meta);
   await write("rejected.json", rejected);
   console.log(
-    `Abgewiesen: ${job.label} (${source})${unchanged ? " – unveränderte Geometrie, die Koordinaten sind das Problem" : ""}\n${reasons
-      .map((r) => `    ${r}`)
-      .join("\n")}`,
+    `Abgewiesen: ${job.label} (${source})${unchanged ? " – unveränderte Geometrie, die Koordinaten sind das Problem" : ""}${
+      keep
+        ? ` – die gespeicherte ${keep.meta?.source ?? "osrm"}-Route bleibt`
+        : ""
+    }\n${reasons.map((r) => `    ${r}`).join("\n")}`,
   );
 };
 
@@ -720,10 +887,38 @@ const accept = async (
 };
 
 /**
- * Geometry checks, then – for ascents – the profile and its checks. The route is
- * stored as soon as the geometry passes, so a run cut short by the Open-Meteo
- * budget keeps its (free) routing work; the profile checks of the next run can
- * still take it back out.
+ * The candidate's profile: from the rejection cache when the geometry is the
+ * same, otherwise paid for. Null when the budget is spent – the stored route
+ * stays, and the profile or the upgrade follows in the next run, which
+ * re-fetches the candidate for free.
+ */
+const fetchProfile = async (
+  job: RouteJob,
+  geom: RouteGeometry,
+  cached: ElevationProfile | undefined,
+  keep: Stored | undefined,
+): Promise<ElevationProfile | null> => {
+  try {
+    // The cache is only ever hit for an identical geometry, so the distances
+    // can be re-derived from it rather than trusted as they were written.
+    return cached ? withRoadDistances(cached, geom) : await profile(geom);
+  } catch (error) {
+    if (!(error instanceof QuotaExhaustedError))
+      fail(`Profil ${job.label}`, error);
+    if (keep)
+      console.log(
+        `Aufrüstung verschoben: ${job.label} – die ${keep.meta?.source ?? "osrm"}-Route bleibt, bis das ORS-Profil bezahlt ist`,
+      );
+    return null;
+  }
+};
+
+/**
+ * Geometry checks, then – for ascents – the profile and its checks. A fresh
+ * route is stored as soon as the geometry passes, so a run cut short by the
+ * Open-Meteo budget keeps its (free) routing work; the profile checks of the
+ * next run can still take it back out. An upgrade candidate replaces the
+ * stored route only once both have passed.
  */
 const gate = async (
   job: RouteJob,
@@ -733,66 +928,109 @@ const gate = async (
   fetched = true,
 ) => {
   const hash = geometryHash(geom);
+  // A fetched candidate for a key that already has a route is an upgrade; the
+  // stored route has passed the gate and must survive a failing candidate.
+  const keep: Stored | undefined =
+    fetched && routes[job.key]
+      ? {
+          geom: routes[job.key]!,
+          meta: meta[job.key],
+          profile: profiles[job.key],
+        }
+      : undefined;
   let m = measure(job, geom);
   const bad = judge(job, m);
-  if (bad.length) return reject(job, bad, m, source, hash);
+  if (bad.length) return reject(job, bad, m, source, hash, undefined, keep);
 
   // A cached profile from an earlier rejection is only valid for the very same
   // geometry; otherwise it has to be paid for again. Read it before accept()
   // drops the rejection entry, or a retry would always pay.
   const cached =
     rejected[job.key]?.hash === hash ? rejected[job.key]?.profile : undefined;
-
-  if (fetched) {
+  const accepted = async () => {
     await accept(job, geom, source);
     console.log(
       `Route: ${job.label} (${source}, ${(m as AscentMetrics).km} km)`,
     );
-  }
-  if (job.kind !== "ascent") return;
+  };
 
-  // 3: an OSRM route stored while an ORS key exists is provisional – the
-  // upgrade pass will replace the geometry and the profile would have to be
-  // paid for a second time. 100 Open-Meteo calls is far too much to spend on
-  // a road we already know is the wrong one.
-  if (source === "osrm" && ORS) {
-    console.log(
-      `Profil aufgeschoben: ${job.label} (OSRM-Route, erst nach --upgrade-osrm)`,
-    );
+  // An OSRM route stored while an ORS key exists is provisional – the upgrade
+  // pass will replace the geometry and the profile would have to be paid for
+  // a second time. 100 Open-Meteo calls is far too much to spend on a road we
+  // already know is the wrong one.
+  const deferred = source === "osrm" && ORS && !rejected[job.key];
+  if (job.kind !== "ascent" || deferred) {
+    if (fetched) await accepted();
+    if (deferred)
+      console.log(
+        `Profil aufgeschoben: ${job.label} (OSRM-Route, erst nach --upgrade-osrm)`,
+      );
     return;
   }
 
-  if (!cached && profiles[job.key]) {
+  // A fresh route is stored before its profile is paid for, so a run cut short
+  // by the Open-Meteo budget keeps its (free) routing work. An upgrade
+  // candidate is not: until its profile has passed, the stored route is the
+  // better of the two, and a run that ends between the two steps would
+  // otherwise leave the candidate behind with nothing to fall back to.
+  if (fetched && !keep) await accepted();
+
+  if (!(cached || keep) && profiles[job.key]) {
     // The geometry was just replaced, so the stored profile belongs to a road
     // that is no longer there. Drop it before fetching, otherwise a run that
     // runs out of Open-Meteo budget leaves a profile from the old route behind.
     Reflect.deleteProperty(profiles, job.key);
     await write("profiles.json", profiles);
   }
-  let prof: ElevationProfile;
-  try {
-    // The cache is only ever hit for an identical geometry, so the distances
-    // can be re-derived from it rather than trusted as they were written.
-    prof = cached ? withRoadDistances(cached, geom) : await profile(geom);
-  } catch (error) {
-    if (!(error instanceof QuotaExhaustedError))
-      fail(`Profil ${job.label}`, error);
-    // The route stays; the profile follows in the next run.
-    return;
-  }
+  const prof = await fetchProfile(job, geom, cached, keep);
+  if (!prof) return;
   m = withProfile(m as AscentMetrics, prof, job.elevation);
   const badProfile = judge(job, m);
-  if (badProfile.length) {
-    // So that reject() carries it into the cache.
-    profiles[job.key] = prof;
-    return reject(job, badProfile, m, source, hash);
-  }
+  if (badProfile.length)
+    return reject(job, badProfile, m, source, hash, prof, keep);
+  if (keep) await accepted();
   profiles[job.key] = prof;
   await write("profiles.json", profiles);
   console.log(
     `Profil: ${job.label} (${prof.km} km, ${prof.elevationGain} Hm, Gipfel ${prof.top} m)`,
   );
 };
+
+// Pipeline 0: the pass points themselves – DEM height (Open-Meteo) and
+// distance to the nearest road (Overpass), two cheap batches. They decide
+// which ascents may be routed at all, so they run before everything else.
+{
+  const todo = pendingSummits();
+  if (todo.length)
+    try {
+      Object.assign(summits, await summitElevations(todo));
+      await write("summits.json", summits);
+      console.log(`Gipfelhöhen: ${todo.length} gemessen`);
+    } catch (error) {
+      if (!(error instanceof QuotaExhaustedError)) fail("Gipfelhöhen", error);
+    }
+  const roads = pendingRoads();
+  if (roads.length)
+    try {
+      const dist = await roadDistances(roads);
+      for (const p of roads)
+        summits[p.slug] = {
+          ...summits[p.slug]!,
+          roadDist: dist[p.slug] ?? null,
+        };
+      await write("summits.json", summits);
+      console.log(`Straßenabstände: ${roads.length} gemessen`);
+    } catch (error) {
+      fail("Straßenabstände", error);
+    }
+  const off = [...new Set([...todo, ...roads])].filter((p) =>
+    summitOff(p.slug),
+  );
+  if (off.length)
+    console.log(
+      `Passpunkte auffällig: ${off.map((p) => p.slug).join(", ")} – deren Auffahrten werden nicht geroutet (bun run data:locate)`,
+    );
+}
 
 // Pipeline 1: routing. Each route runs through the gate and hands its profile on.
 const routing = pendingRoutes().map(async (job) => {
@@ -813,24 +1051,6 @@ const profiling = pendingProfiles().map((job) =>
   gate(job, routes[job.key]!, meta[job.key]?.source ?? "osrm", false),
 );
 
-// Pipeline 3: the DEM height of the pass points themselves – one cheap batch.
-const summiting = (async () => {
-  const todo = pendingSummits();
-  if (!todo.length) return;
-  try {
-    Object.assign(summits, await summitElevations(todo));
-    await write("summits.json", summits);
-    const off = todo.filter(
-      (p) =>
-        summits[p.slug] !== undefined &&
-        checkSummit(summits[p.slug]!, p.elevation).length,
-    );
-    console.log(`Gipfelhöhen: ${todo.length} geprüft, ${off.length} auffällig`);
-  } catch (error) {
-    if (!(error instanceof QuotaExhaustedError)) fail("Gipfelhöhen", error);
-  }
-})();
-
 // Pipeline 4: climate. Queued after the (cheaper) profiles; the Open-Meteo budget cuts it off.
 console.log(
   `Open-Meteo-Budget für diesen Lauf: ${OPEN_METEO_BUDGET} Calls (OPEN_METEO_BUDGET)`,
@@ -846,7 +1066,7 @@ const climating = pendingClimate().map(async (pass) => {
   }
 });
 
-await Promise.all([...routing, ...profiling, summiting, ...climating]);
+await Promise.all([...routing, ...profiling, ...climating]);
 await writing;
 
 for (const lim of [ors, osrm, openMeteo]) {
