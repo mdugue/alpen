@@ -43,6 +43,7 @@ import {
 import { DEFAULT_VIEW, readHash, useStored } from "@/lib/app-state";
 import type { MapView, Selection } from "@/lib/app-state";
 import type { MapAssets } from "@/lib/map-assets";
+import { ascentKey } from "@/lib/route-key";
 import type { LatLon, Pass, Status, Tour, Town } from "@/lib/types";
 import { cn, MAP_CONTROL, PRESSED } from "@/lib/utils";
 
@@ -256,8 +257,7 @@ export const PassMap = ({
     ] as never;
     // The ascent and tour lines carry status and selection as feature state,
     // so a period, filter or selection change never re-uploads geometry.
-    const routeSelected = ["==", ["feature-state", "selected"], 1];
-    const tourSelected = ["==", ["feature-state", "selected"], 1];
+    const selected = ["==", ["feature-state", "selected"], 1];
     const routeColor = [
       "match",
       ["coalesce", ["feature-state", "status"], "none"],
@@ -315,7 +315,7 @@ export const PassMap = ({
           paint: {
             "line-color": ["get", "color"],
             "line-opacity": 0.85,
-            "line-width": ["case", tourSelected, 5, 3],
+            "line-width": ["case", selected, 5, 3],
           },
           source: "tours",
           type: "line",
@@ -325,8 +325,8 @@ export const PassMap = ({
           layout: { "line-cap": "round", "line-join": "round" },
           paint: {
             "line-color": routeColor,
-            "line-opacity": ["case", routeSelected, 1, 0.85],
-            "line-width": ["case", routeSelected, 6, 3.5],
+            "line-opacity": ["case", selected, 1, 0.85],
+            "line-width": ["case", selected, 6, 3.5],
           },
           source: "routes",
           type: "line",
@@ -710,14 +710,14 @@ export const PassMap = ({
     for (const p of passes)
       for (const [i] of p.ascents.entries())
         m.setFeatureState(
-          { id: `${p.slug}:${i}`, source: "routes" },
+          { id: ascentKey(p.slug, i), source: "routes" },
           { selected: p.slug === selPass ? 1 : 0, status: p.status },
         );
   }, [passes, selection, ready]);
 
   // --- Which tours show, and how -------------------------------------------
-  // Nine tours: the filter with the visible slugs is as cheap as feature
-  // state and also keeps a hidden tour from answering hover and click.
+  // A handful of tours: the filter with the visible slugs is as cheap as
+  // feature state and also keeps a hidden tour from answering hover and click.
   useEffect(() => {
     const m = map.current;
     if (!m || !ready) return;
@@ -843,14 +843,9 @@ export const PassMap = ({
           zoom: Math.max(m.getZoom(), 10.5),
         });
     } else {
-      // The routed line's bounds come precomputed; a tour without a route is
-      // framed by its waypoints.
+      // Precomputed per tour: the routed line's bounds, or the waypoints'.
       const bbox = assets.tourBounds[selection.slug];
-      const t = tours.find((x) => x.slug === selection.slug);
-      const b = new LngLatBounds();
-      if (bbox) b.extend(bbox);
-      else for (const w of t?.waypoints ?? []) b.extend([w.lon, w.lat]);
-      if (!b.isEmpty()) m.fitBounds(b, { duration, padding: 60 });
+      if (bbox) m.fitBounds(bbox, { duration, padding: 60 });
     }
     // oxlint-disable-next-line react/exhaustive-deps
   }, [selection?.kind, selection?.slug, ready]);
@@ -896,10 +891,8 @@ export const PassMap = ({
     const b = new LngLatBounds();
     for (const p of passes) b.extend([p.lon, p.lat]);
     for (const t of tours) {
-      if (!t.visible) continue;
       const bbox = assets.tourBounds[t.slug];
-      if (bbox) b.extend(bbox);
-      else for (const w of t.waypoints) b.extend([w.lon, w.lat]);
+      if (t.visible && bbox) b.extend(bbox);
     }
     const target = b.isEmpty()
       ? undefined

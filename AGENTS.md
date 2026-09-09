@@ -16,7 +16,9 @@ friends do that better and the app links out to them.
    `data/generated/*.json` and is imported at build time. When in doubt, new
    data is _precomputed_ (`scripts/build-data.ts`) rather than fetched at
    runtime. Runtime fetches need a good reason and belong behind a route with
-   `"use cache"` + `cacheLife`.
+   `"use cache"` + `cacheLife`; the one exception is a content-hashed static
+   file under `public/` (the map geometry), which is precomputed too and
+   cached by name.
 2. **German in the UI**, English in code, comments and docs. Numbers are
    formatted with `toLocaleString("de-DE")` (see `fmt` in `lib/utils.ts`).
 3. **Stay honest.** The 1–5 scales are editorial judgements and the status is
@@ -119,8 +121,11 @@ friends do that better and the app links out to them.
   `lib/data.ts` derives the same file names with `lib/map-assets.ts` and hands
   the page the URLs plus the tour bounding boxes; MapLibre fetches the files
   and tiles them in its worker. `pass-map.tsx` never calls `setData` on the
-  `routes` and `tours` sources: which lines show is a layer filter, status and
-  selection are feature state. Points (passes, towns) stay in-memory sources,
+  `routes` and `tours` sources: which lines show is a layer filter (which also
+  keeps hidden lines out of hit-testing), status and selection are feature
+  state. MapLibre keeps that state per source and applies it to tiles as they
+  load, so it is set as soon as the style is parsed (`style.load`) and needs
+  no re-application when the file arrives. Points (passes, towns) stay in-memory sources,
   because their symbol layers need real properties. Anything else the client
   used to read from the geometry is precomputed on the server: tours within
   reach of an entity (`lib/nearby.ts`) and the road coordinate of every

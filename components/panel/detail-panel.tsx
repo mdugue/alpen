@@ -40,6 +40,7 @@ import type { EntityKind, Selection } from "@/lib/app-state";
 import { haversine, NEARBY_RADIUS_KM } from "@/lib/geo";
 import { nearbyKey } from "@/lib/nearby";
 import type { NearbyTours } from "@/lib/nearby";
+import { ascentKey } from "@/lib/route-key";
 import {
   bestPeriods,
   climateBucket,
@@ -372,8 +373,7 @@ const PassDetail = (props: Props & { pass: Pass }) => {
       )}
       <div className="flex flex-col gap-4">
         {pass.ascents.map((a, i) => {
-          const key = `${pass.slug}:${i}`;
-          const profile = props.profiles[key];
+          const profile = props.profiles[ascentKey(pass.slug, i)];
           return (
             <div key={a.label}>
               <div className="flex flex-wrap items-baseline justify-between gap-x-2">

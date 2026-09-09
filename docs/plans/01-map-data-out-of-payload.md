@@ -163,8 +163,16 @@ the map row in `AGENTS.md` to mention feature state and `public/map`.
 
 ## Acceptance criteria
 
-- Start page HTML under 250 KB raw with all routes present.
-- No `setData` call on period change or selection change; only feature state.
+- Start page HTML under 250 KB raw with all routes present. **Not met by
+  PR #14:** 1.09 MB raw, 153 KB gzipped (from 3.79 MB / 855 KB). No
+  coordinates ship any more; what remains is 579 KB of server-rendered lists
+  with their season strips (plan 03, written after this criterion) and
+  511 KB of flight data, of which climate (139 KB, needed by the lists for
+  the status), profile sample coordinates (162 KB) and profiles (96 KB) are
+  the bulk. Step 6 would move the profiles; plan 02 makes it moot.
+- No `setData` call on period change or selection change; only feature state
+  (and a layer filter for hidden lines, see the risks below – chosen over a
+  `hidden` state because it also removes them from hit-testing).
 - Ascent lines, tour lines, hover popups and click selection behave as before,
   including hidden tours and filtered passes.
 - Hash restoration with a selected tour still fits the tour bounds.
@@ -175,7 +183,18 @@ the map row in `AGENTS.md` to mention feature state and `public/map`.
 - `promoteId` needs unique ids per source; the ascent key already is one.
 - Feature-state-driven opacity keeps hidden features hit-testable; the click
   handler must check the state (or use `setFilter` with the hidden list, which
-  is cheap for 9 tours).
+  is cheap for 9 tours). PR #14 uses the filter, for tours and for the
+  ascents of filtered-out passes alike.
+- The plan asked for feature state to be re-applied on `sourcedata`. Not
+  needed: MapLibre stores it per source, not per tile, and initialises every
+  newly loaded tile from it (`initializeTileState`). The map therefore
+  becomes ready on `style.load`, before the files arrive, so the markers do
+  not wait for a megabyte of lines. Time to interactive on a throttled
+  profile was not measured.
+- The file name is derived on both sides (Bun writes, V8 derives), so the
+  simplification uses only IEEE-exact arithmetic; `Math.cos` differed in its
+  last bit and flipped a hash. `getMapAssets` fails the build if the derived
+  file is missing; e2e scenario 9 guards the hash parity.
 - Vercel serves `public/` with `Cache-Control: public, max-age=0, must-revalidate`
   by default; the content hash in the filename is what makes long caching safe.
   Add a `headers()` rule in `next.config.ts` for `/map/:path*` with

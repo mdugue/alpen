@@ -1,11 +1,14 @@
 import "server-only";
+import { existsSync } from "node:fs";
+import path from "node:path";
+
 import climateJson from "@/data/generated/climate.json";
 import profilesJson from "@/data/generated/profiles.json";
 import routesJson from "@/data/generated/routes.json";
 import passesJson from "@/data/passes.json";
 import toursJson from "@/data/tours.json";
 import townsJson from "@/data/towns.json";
-import { mapAssets } from "@/lib/map-assets";
+import { MAP_ASSET_DIR, mapAssets } from "@/lib/map-assets";
 import type { MapAssets } from "@/lib/map-assets";
 import { nearbyTours } from "@/lib/nearby";
 import type { NearbyTours } from "@/lib/nearby";
@@ -33,26 +36,20 @@ import type {
  * The route geometry is the one thing that never leaves the server as props:
  * MapLibre loads it as static GeoJSON from `public/map` (written by
  * `scripts/build-map-assets.ts`). What the page hands the client instead is
- * derived from it here – the file URLs, tour bounding boxes, which tours pass
- * near which entity, and the road coordinate of each profile sample.
+ * derived from it – the file URLs, tour bounding boxes, which tours pass near
+ * which entity, and the road coordinate of each profile sample. Those
+ * derivations sit inside their cached getters, not at module scope: the page
+ * fills them once at prerender, while the weather route, which imports
+ * `getPass` from here and starts cold on a serverless instance, never runs
+ * them.
  */
 const passes: Pass[] = S.Passes.parse(passesJson);
 const tours: Tour[] = S.Tours.parse(toursJson);
 const towns: Town[] = S.Towns.parse(townsJson);
 const routes: Record<string, RouteGeometry> = S.Routes.parse(routesJson);
 const climate: Record<string, ClimateYear> = S.Climate.parse(climateJson);
-
-const profiles: Record<string, ProfileWithCoords> = Object.fromEntries(
-  Object.entries(S.Profiles.parse(profilesJson)).map(
-    ([key, p]: [string, ElevationProfile]) => [
-      key,
-      { ...p, coords: routes[key] ? profileCoords(routes[key]) : undefined },
-    ],
-  ),
-);
-
-const assets: MapAssets = mapAssets(passes, tours, routes).assets;
-const nearby: NearbyTours = nearbyTours(passes, tours, towns, routes);
+const profiles: Record<string, ElevationProfile> =
+  S.Profiles.parse(profilesJson);
 
 export const getPasses = async (): Promise<Pass[]> => {
   "use cache";
@@ -69,24 +66,42 @@ export const getTowns = async (): Promise<Town[]> => {
   return towns;
 };
 
-/** URLs of the GeoJSON files MapLibre loads, plus the tour bounding boxes. */
+/**
+ * URLs of the GeoJSON files MapLibre loads, plus the tour bounding boxes.
+ * The names are derived, not read from a manifest, so this is where a build
+ * that skipped the script (`next build` instead of `bun run build`) is caught
+ * – as a build error, not as a silent 404 in the visitor's browser.
+ */
 export const getMapAssets = async (): Promise<MapAssets> => {
   "use cache";
+  const { assets, files } = mapAssets(passes, tours, routes);
+  for (const f of files) {
+    const file = path.join(process.cwd(), "public", MAP_ASSET_DIR, f.name);
+    if (!existsSync(file))
+      throw new Error(
+        `${MAP_ASSET_DIR}/${f.name} fehlt – "bun run scripts/build-map-assets.ts" ausführen (Teil von "bun run build")`,
+      );
+  }
   return assets;
 };
 
 /** Tours within reach of each pass, tour start and town, see `lib/nearby.ts`. */
 export const getNearbyTours = async (): Promise<NearbyTours> => {
   "use cache";
-  return nearby;
+  return nearbyTours(passes, tours, towns, routes);
 };
 
-/** Elevation profiles per ascent, key `${passSlug}:${index}`, with their sample coordinates. */
+/** Elevation profiles per ascent, key as `routes.json`, with their sample coordinates. */
 export const getProfiles = async (): Promise<
   Record<string, ProfileWithCoords>
 > => {
   "use cache";
-  return profiles;
+  return Object.fromEntries(
+    Object.entries(profiles).map(([key, p]) => [
+      key,
+      { ...p, coords: routes[key] ? profileCoords(routes[key]) : undefined },
+    ]),
+  );
 };
 
 /** Climate series per pass slug (24 half-months). */

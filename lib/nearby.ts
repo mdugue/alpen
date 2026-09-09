@@ -1,4 +1,6 @@
+import type { EntityKind } from "@/lib/app-state";
 import { haversine, NEARBY_RADIUS_KM } from "@/lib/geo";
+import { tourKey } from "@/lib/route-key";
 import type { LatLon, Pass, RouteGeometry, Tour, Town } from "@/lib/types";
 
 /**
@@ -14,15 +16,14 @@ import type { LatLon, Pass, RouteGeometry, Tour, Town } from "@/lib/types";
  */
 export type NearbyTours = Record<string, string[]>;
 
-export const nearbyKey = (kind: "pass" | "tour" | "town", slug: string) =>
-  `${kind}:${slug}`;
+export const nearbyKey = (kind: EntityKind, slug: string) => `${kind}:${slug}`;
 
 /** A tour without a routed geometry is judged by its waypoints, as before. */
 const tourLine = (
   tour: Tour,
   routes: Record<string, RouteGeometry>,
 ): RouteGeometry =>
-  routes[`tour:${tour.slug}`] ?? tour.waypoints.map((w) => [w.lat, w.lon]);
+  routes[tourKey(tour.slug)] ?? tour.waypoints.map((w) => [w.lat, w.lon]);
 
 const within = (line: RouteGeometry, at: LatLon, km: number) =>
   line.some(([lat, lon]) => haversine(at, { lat, lon }) <= km);

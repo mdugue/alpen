@@ -13,7 +13,9 @@ const nextConfig: NextConfig = {
 
   // The route geometry MapLibre loads (scripts/build-map-assets.ts) carries a
   // content hash in its name, so it may be cached for good. Without this rule
-  // Vercel serves public/ with max-age=0 and revalidates on every visit.
+  // Vercel serves public/ with max-age=0 and revalidates on every visit. Only
+  // the hashed names match (same shape as ASSET_NAME in lib/map-assets.ts):
+  // anything else under public/map keeps the default and stays updatable.
   headers: () =>
     Promise.resolve([
       {
@@ -23,7 +25,7 @@ const nextConfig: NextConfig = {
             value: "public, max-age=31536000, immutable",
           },
         ],
-        source: `/${MAP_ASSET_DIR}/:path*`,
+        source: `/${MAP_ASSET_DIR}/:kind(routes|tours).:hash([0-9a-f]{8}).geojson`,
       },
     ]),
 

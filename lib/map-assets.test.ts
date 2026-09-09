@@ -73,6 +73,10 @@ const tour = {
   km: 120,
   name: "Testrunde",
   slug: "testrunde",
+  waypoints: [
+    { lat: 46, lon: 9 },
+    { lat: 46.5, lon: 9.5 },
+  ],
 } as Tour;
 const routes: Record<string, RouteGeometry> = {
   "testpass:0": road(0),
@@ -109,7 +113,7 @@ describe("features", () => {
 });
 
 describe("mapAssets", () => {
-  test("names files by content and lists bounds only for routed tours", () => {
+  test("names files by content; bounds come from the route or the waypoints", () => {
     const { assets, files } = mapAssets(
       [pass],
       [tour, { ...tour, slug: "ohne-route" }],
@@ -121,8 +125,11 @@ describe("mapAssets", () => {
     ]);
     expect(assets.routesUrl).toBe(`/map/${files[0]!.name}`);
     expect(assets.toursUrl).toBe(`/map/${files[1]!.name}`);
-    expect(Object.keys(assets.tourBounds)).toEqual(["testrunde"]);
+    // Only the routed tour is drawn …
     expect(JSON.parse(files[1]!.body).features).toHaveLength(1);
+    // … but both can be framed.
+    expect(assets.tourBounds.testrunde).toEqual(bounds(road(20)));
+    expect(assets.tourBounds["ohne-route"]).toEqual([9, 46, 9.5, 46.5]);
   });
 
   test("the same content gives the same name, other content another", () => {
