@@ -266,6 +266,34 @@ const checkTours = (
 
 const checkTowns = (list: Town[]) => {
   dupes(list, "Orte");
+  // Unlike a pass alias, a town alias may be shared: a valley name legitimately
+  // covers several bases ("Wallis" is Brig and Martigny, and a planner wants
+  // both). What must not happen is an alias that hides behind another town's
+  // name, or one a town gives itself twice.
+  const names = new Map<string, string>();
+  for (const t of list) {
+    const key = fold(t.name);
+    const other = names.get(key);
+    if (other) errors.push(`${t.slug}: Name fällt mit ${other} zusammen`);
+    else names.set(key, t.slug);
+  }
+  for (const t of list) {
+    const seen = new Set<string>();
+    for (const alias of t.aliases ?? []) {
+      const key = fold(alias);
+      const owner = names.get(key);
+      if (owner === t.slug || seen.has(key))
+        errors.push(`${t.slug}: Alias "${alias}" doppelt (Name oder Alias)`);
+      else if (owner) errors.push(`${t.slug}: Alias "${alias}" ist ${owner}`);
+      seen.add(key);
+    }
+    if (new Set(t.tags).size !== t.tags.length)
+      errors.push(`${t.slug}: Merkmal doppelt (tags)`);
+    if (t.tags.length > 4)
+      warnings.push(
+        `${t.slug}: ${t.tags.length} Merkmale – mehr als vier sagen nichts mehr aus`,
+      );
+  }
 };
 
 if (passes) checkPasses(passes);

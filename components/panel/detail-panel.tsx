@@ -11,6 +11,7 @@ import { WeatherForecast } from "@/components/panel/weather-forecast";
 import { Rating } from "@/components/rating";
 import { SeasonStrip } from "@/components/season-strip";
 import { StatusBadge, StatusDot } from "@/components/status-badge";
+import { TownTagBadges } from "@/components/town-tags";
 import { Button } from "@/components/ui/button";
 import {
   Empty,
@@ -517,10 +518,19 @@ const TourDetail = (props: Props & { tour: Tour }) => {
   );
 };
 
+/**
+ * The labels say in two words why the town is in the list at all – a planner
+ * scanning bases wants "Radsport-Mekka" or "Ruhig" before the prose. What each
+ * label means, and that it is an editorial judgement rather than a count, is
+ * explained once in the scales dialog.
+ */
 const TownDetail = (props: Props & { town: Town }) => {
   const { town } = props;
   return (
     <>
+      <div className="mt-2">
+        <TownTagBadges tags={town.tags} />
+      </div>
       <p className="mt-2 text-xs">{town.why}</p>
       <Nearby {...props} lat={town.lat} lon={town.lon} exclude={town.slug} />
       <ExternalLinks

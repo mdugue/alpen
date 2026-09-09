@@ -89,6 +89,7 @@ const towns: Town[] = [
     lon: 10.3,
     name: "Bormio",
     slug: "bormio",
+    tags: ["hub", "passes"],
     why: "Stelvio vor der Tür",
   },
   {
@@ -97,6 +98,7 @@ const towns: Town[] = [
     lon: 7.3,
     name: "Aosta",
     slug: "aosta",
+    tags: ["passes", "train"],
     why: "Vier Pässe im Umkreis",
   },
 ];
