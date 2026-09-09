@@ -49,11 +49,11 @@ friends do that better and the app links out to them.
 | Map, layers, 3D, markers, labels, feature state | `components/map/pass-map.tsx`                                                                                             |
 | Map assets: GeoJSON, simplification, hashing    | `lib/map-assets.ts`, `scripts/build-map-assets.ts` (→ `public/map`, git-ignored)                                          |
 | Tours within reach of an entity                 | `lib/nearby.ts` (computed on the server in `lib/data.ts`)                                                                 |
-| Photos: keys, sizes, licence metadata           | `lib/photos.ts`, `scripts/build-photos.ts` (`bun run data:photos`) → `data/generated/photos.json`                          |
+| Photos: keys, sizes, licence metadata           | `lib/photos.ts`, `scripts/build-photos.ts` (`bun run data:photos`) → `data/generated/photos.json`                         |
 | Period scrubber floating over the map           | `components/map/period-scrubber.tsx`                                                                                      |
 | Season strip (24 half-months)                   | `components/season-strip.tsx`                                                                                             |
 | Sidebar: search, filters, one list per kind     | `components/sidebar/`, `lib/rows.ts`                                                                                      |
-| Detail panel incl. profile/weather/climate      | `components/panel/` (collapsible blocks: `components/panel/section.tsx`)                                                   |
+| Detail panel incl. profile/weather/climate      | `components/panel/` (collapsible blocks: `components/panel/section.tsx`)                                                  |
 | Bottom sheet on phones (one per panel)          | `components/mobile-sheet.tsx`                                                                                             |
 | Precomputation, data checks                     | `scripts/build-data.ts`, `scripts/build-photos.ts`, `scripts/check-data.ts`                                               |
 | Route quality gate: checks and thresholds       | `scripts/lib/validate.ts`; pass-point placement `scripts/locate-pass.ts` (`bun run data:locate`), `scripts/lib/locate.ts` |
