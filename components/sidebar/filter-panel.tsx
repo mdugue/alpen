@@ -1,6 +1,6 @@
 "use client";
 
-import { ChevronDown, SlidersHorizontal } from "lucide-react";
+import { SlidersHorizontal, Star } from "lucide-react";
 import { useState } from "react";
 
 import { StatusDot } from "@/components/status-badge";
@@ -12,13 +12,6 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import {
   Field,
   FieldGroup,
   FieldLabel,
@@ -29,6 +22,8 @@ import {
   NativeSelectOption,
 } from "@/components/ui/native-select";
 import { Slider } from "@/components/ui/slider";
+import { Toggle } from "@/components/ui/toggle";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import {
   ALL_STATUS,
   BEAUTY_OPTIONS,
@@ -41,20 +36,13 @@ import {
 import type { Filters } from "@/lib/app-state";
 import { STATUS_LABEL } from "@/lib/status";
 import type { Status } from "@/lib/types";
-import { cn, fmtUnit } from "@/lib/utils";
+import { cn, fmtUnit, PRESSED, TOUCH_CONTROL, TOUCH_SELECT } from "@/lib/utils";
 
 /** Base UI hands back a number for a single thumb and an array for a range. */
 const asRange = (v: number | readonly number[]): [number, number] =>
   Array.isArray(v)
     ? [v[0] ?? RATING_MIN, v[1] ?? RATING_MAX]
     : [v as number, v as number];
-
-const statusSummary = (status: Status[]) =>
-  status.length === ALL_STATUS.length
-    ? "Jeder Status"
-    : status.length === 0
-      ? "Kein Status"
-      : status.map((s) => STATUS_LABEL[s]).join(", ");
 
 /** A labelled native select for one 1–5 threshold; label above, so three fit in a row. */
 const Select = ({
@@ -79,6 +67,7 @@ const Select = ({
       id={id}
       value={value}
       onChange={(e) => onChange(Number(e.target.value))}
+      className={cn("w-full", TOUCH_SELECT)}
     >
       {options.map(([v, text]) => (
         <NativeSelectOption key={v} value={v}>
@@ -90,18 +79,23 @@ const Select = ({
 );
 
 /**
- * The one filter panel of the app: the status picker and the pass criteria.
- * Everything here applies to passes and tours alike (see `Filters`), so it
- * sits above the lists rather than inside one of them.
+ * The one filter panel of the app: the bookmarks, the status picker and the
+ * pass criteria. Everything here applies to passes and tours alike (see
+ * `Filters`), so it sits above the lists rather than inside one of them, and
+ * every control is inline – a popup over a bottom sheet is one edge case too
+ * many on a phone.
  */
 export const FilterPanel = ({
   filters,
   setFilters,
+  favoriteCount,
   search,
   hidden,
 }: {
   filters: Filters;
   setFilters: (update: (f: Filters) => Filters) => void;
+  /** Shown on the bookmark filter, which is the only filter with a count. */
+  favoriteCount: number;
   /** The search row; the trigger sits at its end so the panel costs no row of its own. */
   search: React.ReactNode;
   /** Bottom sheet at its peek height: only the search row stays. */
@@ -110,7 +104,10 @@ export const FilterPanel = ({
   const set = <K extends keyof Filters>(key: K, value: Filters[K]) =>
     setFilters((f) => ({ ...f, [key]: value }));
   const statusFiltered = filters.status.length !== ALL_STATUS.length;
-  const active = countCriteria(filters) + (statusFiltered ? 1 : 0);
+  const active =
+    countCriteria(filters) +
+    (statusFiltered ? 1 : 0) +
+    (filters.favoritesOnly ? 1 : 0);
   // Opens by itself when a link carries filters; the user's own toggling wins afterwards.
   const [manual, setManual] = useState<boolean | null>(null);
   const open = manual ?? active > 0;
@@ -128,7 +125,10 @@ export const FilterPanel = ({
         {search}
         <CollapsibleTrigger
           render={
-            <Button variant="outline" className={cn(hidden && "hidden")} />
+            <Button
+              variant="outline"
+              className={cn(TOUCH_CONTROL, hidden && "hidden")}
+            />
           }
         >
           <SlidersHorizontal data-icon="inline-start" />
@@ -139,54 +139,47 @@ export const FilterPanel = ({
       <CollapsibleContent
         className={cn("grid gap-1.5 pt-2", hidden && "hidden")}
       >
-        <DropdownMenu>
-          <DropdownMenuTrigger
-            render={
-              <Button
-                variant="outline"
-                className="justify-between font-normal"
-              />
-            }
-            aria-label="Status filtern"
-          >
-            <span className="flex items-center gap-1.5 truncate">
-              {ALL_STATUS.map((s) => (
-                <StatusDot
-                  key={s}
-                  status={s}
-                  hollow={!filters.status.includes(s)}
-                />
-              ))}
-              <span className="truncate">{statusSummary(filters.status)}</span>
-            </span>
-            <ChevronDown
-              data-icon="inline-end"
-              className="text-muted-foreground"
-            />
-          </DropdownMenuTrigger>
-          <DropdownMenuContent>
-            <DropdownMenuGroup>
-              {ALL_STATUS.map((s: Status) => (
-                <DropdownMenuCheckboxItem
-                  key={s}
-                  checked={filters.status.includes(s)}
-                  onCheckedChange={(on) =>
-                    set(
-                      "status",
-                      ALL_STATUS.filter((x) =>
-                        x === s ? on : filters.status.includes(x),
-                      ),
-                    )
-                  }
-                >
-                  <StatusDot status={s} />
-                  {STATUS_LABEL[s]}
-                </DropdownMenuCheckboxItem>
-              ))}
-            </DropdownMenuGroup>
-          </DropdownMenuContent>
-        </DropdownMenu>
-        <Field orientation="horizontal">
+        <Toggle
+          variant="outline"
+          pressed={filters.favoritesOnly}
+          onPressedChange={(on) => set("favoritesOnly", on)}
+          aria-label="Nur Gemerkte anzeigen"
+          className={cn("justify-start gap-2", TOUCH_CONTROL, PRESSED)}
+        >
+          <Star className={cn(filters.favoritesOnly && "fill-current")} />
+          Nur Gemerkte
+          {favoriteCount > 0 && (
+            <span className="ml-auto tabular-nums">{favoriteCount}</span>
+          )}
+        </Toggle>
+        <ToggleGroup
+          multiple
+          spacing={0}
+          variant="outline"
+          value={filters.status}
+          onValueChange={(picked) =>
+            set(
+              "status",
+              ALL_STATUS.filter((s) => picked.includes(s)),
+            )
+          }
+          aria-label="Status filtern"
+          className="w-full"
+        >
+          {/* Filled dot = kept in the lists and on the map, hollow = filtered out. */}
+          {ALL_STATUS.map((s: Status) => (
+            <ToggleGroupItem
+              key={s}
+              value={s}
+              className={cn("flex-1", TOUCH_CONTROL)}
+            >
+              <StatusDot status={s} hollow={!filters.status.includes(s)} />
+              <span className="truncate">{STATUS_LABEL[s]}</span>
+            </ToggleGroupItem>
+          ))}
+        </ToggleGroup>
+        {/* The drawer must not read a drag on a slider as a swipe on the sheet. */}
+        <Field orientation="horizontal" data-base-ui-swipe-ignore>
           <FieldTitle id="difficulty" className="w-32 shrink-0 tabular-nums">
             {difficultyLabel}
           </FieldTitle>
@@ -199,7 +192,7 @@ export const FilterPanel = ({
             onValueChange={(v) => set("difficulty", asRange(v))}
           />
         </Field>
-        <Field orientation="horizontal">
+        <Field orientation="horizontal" data-base-ui-swipe-ignore>
           <FieldTitle id="min-elevation" className="w-32 shrink-0 tabular-nums">
             {filters.minElevation > 0
               ? `ab ${fmtUnit(filters.minElevation, "m")}`

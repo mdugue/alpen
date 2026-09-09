@@ -53,6 +53,7 @@ friends do that better and the app links out to them.
 | Season strip (24 half-months)                   | `components/season-strip.tsx`                                                                                         |
 | Sidebar: search, filters, one list per kind     | `components/sidebar/`, `lib/rows.ts`                                                                                  |
 | Detail panel incl. profile/weather/climate      | `components/panel/`                                                                                                   |
+| Bottom sheet on phones (one per panel)          | `components/mobile-sheet.tsx`                                                                                         |
 | Precomputation, data checks                     | `scripts/build-data.ts`, `scripts/check-data.ts`                                                                      |
 | Route quality gate: checks and thresholds       | `scripts/lib/validate.ts`                                                                                             |
 | Name, claim, colours, mark, base URL            | `lib/brand.ts`, `lib/mark.tsx`                                                                                        |
@@ -74,8 +75,17 @@ friends do that better and the app links out to them.
   styling (status badges, etc.) goes into the consuming component via
   `className`. Re-running `ui:init` overwrites `app/globals.css`; the domain
   tokens (`--status-open`, `--status-risky`, `--status-closed`, `--tour`,
-  `--town` plus their `@theme inline` lines), the MapLibre rules at the end
-  and the dark-mode setup must be restored afterwards.
+  `--town` plus their `@theme inline` lines), the MapLibre rules at the end,
+  the coarse-pointer font-size rule next to them and the dark-mode setup must
+  be restored afterwards.
+- **Touch targets follow the pointer, not the width.** Safari on iOS zooms the
+  page in when a focused form control carries a font size below 16 px, and on a
+  map that fills the viewport that zoom has no way back. An unlayered rule at
+  the end of `app/globals.css` gives every control 16 px on a coarse pointer –
+  unlayered because it has to beat the `text-xs` utilities the components carry
+  – and `TOUCH_CONTROL`, `TOUCH_SELECT` and `TOUCH_ICON` in `lib/utils.ts` grow
+  the boxes to match, on the same `pointer-coarse` condition. With a mouse
+  everything stays as dense as it was.
 - **Dark mode follows the OS, nothing else.** There is no theme toggle and no
   `next-themes`; the dark tokens sit in a `prefers-color-scheme` media query
   and Tailwind's default `dark:` variant is used. Delete the
@@ -86,8 +96,15 @@ friends do that better and the app links out to them.
   collapsible list per kind) and, while something is selected, the detail
   slide-over next to it. Their widths are mirrored in `explorer.tsx`
   (`SIDEBAR_W`, `DETAIL_W`) and fed to MapLibre as left padding so camera
-  targets stay visible. Below `lg` the same sidebar body lives in a bottom
-  `Drawer` with snap points and the detail stacks inside it. Only the period
+  targets stay visible. Below `lg` the split is the same, only turned by
+  90°: two `MobileSheet`s (`components/mobile-sheet.tsx`, a `Drawer` with snap
+  points each) hold the same two panels, the list sheet on its peek row and the
+  detail sheet sliding in over it, and the height of whichever is in front is
+  fed to MapLibre as bottom padding. Both keep their own state, so a detail
+  never takes the list's place and the lists keep their scroll position.
+  A sheet sizes itself from `--drawer-snap-point-offset`: the popup is a full
+  `100dvh` and padded off at the bottom by that offset, so its content box ends
+  at the fold. Only the period
   scrubber and three map tools float over the map; the scrubber carries the
   24 half-months, the histogram of what is rideable and the "heute" marker,
   and every list row repeats the same 24 cells as a `SeasonStrip`. Map

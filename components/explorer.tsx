@@ -6,16 +6,11 @@ import { useEffect, useRef, useState } from "react";
 import { PassMap } from "@/components/map/pass-map";
 import type { MapPass } from "@/components/map/pass-map";
 import { PeriodScrubber } from "@/components/map/period-scrubber";
+import { MobileSheet, snapPx } from "@/components/mobile-sheet";
 import { DetailPanel } from "@/components/panel/detail-panel";
 import { ScalesDialog } from "@/components/scales-dialog";
 import { Sidebar } from "@/components/sidebar/sidebar";
 import { Button } from "@/components/ui/button";
-import {
-  Drawer,
-  DrawerContent,
-  DrawerSwipeHandle,
-  DrawerTitle,
-} from "@/components/ui/drawer";
 import {
   Tooltip,
   TooltipContent,
@@ -55,7 +50,11 @@ import type {
   Tour,
   Town,
 } from "@/lib/types";
-import { MOBILE_QUERY, useMediaQuery } from "@/lib/use-media-query";
+import {
+  MOBILE_QUERY,
+  useMediaQuery,
+  useViewportHeight,
+} from "@/lib/use-media-query";
 import { cn, MAP_CONTROL, PANEL } from "@/lib/utils";
 
 interface Props {
@@ -76,10 +75,14 @@ const GAP = 12;
 const SIDEBAR_W = { lg: 384, xl: 416 };
 /** The detail panel grows with the viewport; the map keeps the larger half. */
 const DETAIL_W = { lg: 352, xl: 400 };
-/** Bottom sheet positions on phones: a peek row, half, and almost full. */
-const SNAP_PEEK = "4.5rem";
-const SNAP_POINTS = [SNAP_PEEK, 0.5, 0.82] as const;
-type Snap = (typeof SNAP_POINTS)[number];
+/**
+ * Bottom sheet positions on phones. The list opens on a peek row that shows
+ * only the search field (keep `--sheet-peek` in app/globals.css in step, the
+ * MapLibre controls sit above it), then half and almost full; the detail sheet
+ * leaves the map visible above it or takes nearly the whole screen.
+ */
+const LIST_SNAPS = [80, 0.5, 0.85];
+const DETAIL_SNAPS = [0.55, 0.92];
 
 export const Explorer = ({
   passes,
@@ -96,6 +99,9 @@ export const Explorer = ({
     period: defaultPeriod,
   });
   const [selection, setSelection] = useState<Selection | null>(null);
+  // What the detail sheet keeps showing while it slides away; without it the
+  // sheet would empty out the moment the selection is cleared.
+  const [lastSelection, setLastSelection] = useState<Selection | null>(null);
   const [view, setView] = useState<MapView>(DEFAULT_VIEW);
   const [showTowns, setShowTowns] = useStored("alpenpaesse:showTowns", true);
   const [hiddenTours, setHiddenTours] = useStored<string[]>(
@@ -107,7 +113,8 @@ export const Explorer = ({
     ALL_KINDS,
   );
   const [sidebarOpen, setSidebarOpen] = useStored("alpenpaesse:sidebar", true);
-  const [snap, setSnap] = useState<Snap>(SNAP_PEEK);
+  const [listSnap, setListSnap] = useState(LIST_SNAPS[0]!);
+  const [detailSnap, setDetailSnap] = useState(DETAIL_SNAPS[0]!);
   const [scalesOpen, setScalesOpen] = useState(false);
   // Where the elevation-profile cursor sits on the road, and a fly-to asked
   // for by a click on it. Both live here because the map draws them and the
@@ -122,6 +129,7 @@ export const Explorer = ({
   const [, setStoredPeriod] = useStoredPeriod();
   const isMobile = useMediaQuery(MOBILE_QUERY);
   const isXl = useMediaQuery("(width >= 80rem)");
+  const viewportHeight = useViewportHeight();
   // Nothing is written to the hash before it has been read once; otherwise the
   // first commit would overwrite a shared link with the defaults.
   const [hashApplied, setHashApplied] = useState(false);
@@ -151,7 +159,7 @@ export const Explorer = ({
         setRequestedView(hashView);
       setSelection(h.selection);
       if (h.selection) {
-        setSnap(0.5);
+        setLastSelection(h.selection);
         if (h.selection.kind === "tour")
           setHiddenTours((t) => t.filter((s) => s !== h.selection!.slug));
         if (h.selection.kind === "town") setShowTowns(true);
@@ -198,14 +206,20 @@ export const Explorer = ({
     favorite,
   }));
 
-  /** Selecting something also makes it visible and brings the panel up. */
+  /** Selecting something also makes it visible and brings the detail up. */
   const select = (sel: Selection) => {
     setSelection(sel);
+    setLastSelection(sel);
     setProfileCursor(null);
     if (sel.kind === "tour")
       setHiddenTours((h) => h.filter((s) => s !== sel.slug));
     if (sel.kind === "town") setShowTowns(true);
-    if (isMobile) setSnap(0.5);
+    if (isMobile) {
+      // The detail sheet covers the list; the list waits on its peek row so
+      // nothing of it shows above the detail.
+      setListSnap(LIST_SNAPS[0]!);
+      setDetailSnap(DETAIL_SNAPS[0]!);
+    }
   };
 
   /** Back to the list; focus returns to the row the detail came from. */
@@ -213,6 +227,7 @@ export const Explorer = ({
     const sel = selection;
     setSelection(null);
     setProfileCursor(null);
+    if (isMobile) setListSnap(LIST_SNAPS[1]!);
     requestAnimationFrame(() => {
       const root = sidebarRoot.current;
       const row =
@@ -226,10 +241,9 @@ export const Explorer = ({
     });
   };
 
-  const detail = selection ? (
+  const detailFor = (sel: Selection) => (
     <DetailPanel
-      dismiss={isMobile ? "back" : "close"}
-      selection={selection}
+      selection={sel}
       period={filters.period}
       passes={passes}
       tours={tours}
@@ -245,12 +259,12 @@ export const Explorer = ({
       onBack={back}
       onOpenScales={() => setScalesOpen(true)}
     />
-  ) : null;
+  );
 
   const sidebar = (variant: "aside" | "sheet") => (
     <Sidebar
       variant={variant}
-      peek={variant === "sheet" && snap === SNAP_PEEK}
+      peek={variant === "sheet" && listSnap === LIST_SNAPS[0]}
       filters={filters}
       setFilters={setFilters}
       passRows={passRows}
@@ -268,21 +282,20 @@ export const Explorer = ({
       onToggleFavorite={toggleFavorite}
       onSelect={select}
       selection={selection}
-      detail={variant === "sheet" ? detail : null}
       onCollapse={() => setSidebarOpen(false)}
       onOpenScales={() => setScalesOpen(true)}
       onSearchFocus={
-        variant === "sheet" ? () => setSnap(SNAP_POINTS[2]) : undefined
+        // Typing needs room: the sheet goes as high as it can, so as much of
+        // the result list as possible stays above the software keyboard.
+        variant === "sheet" ? () => setListSnap(LIST_SNAPS.at(-1)!) : undefined
       }
     />
   );
 
-  // Height of the visible sheet part, so its own scroll container ends at the fold.
-  const sheetHeight = typeof snap === "number" ? `${snap * 100}dvh` : snap;
+  // Mobile: the map is padded by the sheet in front of it, so camera targets
+  // land above the fold.
   const insetBottom = isMobile
-    ? typeof snap === "number"
-      ? Math.round(window.innerHeight * 0.5)
-      : 72
+    ? snapPx(selection ? detailSnap : listSnap, viewportHeight)
     : 0;
 
   // Desktop: the panels float over the map; the map is padded by their width
@@ -360,9 +373,9 @@ export const Explorer = ({
           </aside>
         )}
 
-        {!isMobile && detail && (
+        {!isMobile && selection && (
           <section
-            key={`${selection!.kind}:${selection!.slug}`}
+            key={`${selection.kind}:${selection.slug}`}
             aria-label="Details"
             style={{ left: detailLeft }}
             className={cn(
@@ -371,53 +384,39 @@ export const Explorer = ({
               PANEL,
             )}
           >
-            {detail}
+            {detailFor(selection)}
           </section>
         )}
 
+        {/*
+         * Mobile: one sheet per panel, the same split as the two floating
+         * panels on desktop. The list sheet never leaves the screen, the detail
+         * sheet slides in over it and is swiped away again.
+         */}
         {isMobile && (
-          <Drawer
-            open
-            modal={false}
-            disablePointerDismissal
-            snapPoints={[...SNAP_POINTS]}
-            snapPoint={snap}
-            onSnapPointChange={(s, details) => {
-              // A fast flick below the lowest snap point would dismiss the
-              // sheet; keep it and settle on the peek row instead.
-              if (s === null) {
-                details.cancel();
-                setSnap(SNAP_PEEK);
-              } else {
-                setSnap(s as Snap);
-              }
-            }}
-            onOpenChange={() => {
-              // The sheet is always open; it only moves between snap points.
-            }}
-          >
-            <DrawerContent className="rounded-b-none border-b-0 [--drawer-inset:0px] data-[swipe-axis=y]:[--drawer-content-max-height:100dvh]">
-              <DrawerTitle className="sr-only">Liste und Filter</DrawerTitle>
-              {/* Tap target for users who do not swipe: peek → half → peek. */}
-              <button
-                type="button"
-                onClick={() => setSnap(snap === SNAP_PEEK ? 0.5 : SNAP_PEEK)}
-                aria-label={
-                  snap === SNAP_PEEK ? "Liste ausklappen" : "Liste einklappen"
-                }
-                className="w-full shrink-0"
-              >
-                <DrawerSwipeHandle className="h-6" />
-              </button>
-              <div
-                ref={sidebarRoot}
-                style={{ height: `calc(${sheetHeight} - 1.5rem)` }}
-                className="min-h-0"
-              >
+          <>
+            <MobileSheet
+              label="Liste"
+              open
+              snapPoints={LIST_SNAPS}
+              snap={listSnap}
+              onSnapChange={setListSnap}
+            >
+              <div ref={sidebarRoot} className="flex min-h-0 flex-1 flex-col">
                 {sidebar("sheet")}
               </div>
-            </DrawerContent>
-          </Drawer>
+            </MobileSheet>
+            <MobileSheet
+              label="Details"
+              open={selection !== null}
+              onClose={back}
+              snapPoints={DETAIL_SNAPS}
+              snap={detailSnap}
+              onSnapChange={setDetailSnap}
+            >
+              {lastSelection && detailFor(lastSelection)}
+            </MobileSheet>
+          </>
         )}
       </div>
 

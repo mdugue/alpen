@@ -92,12 +92,14 @@ test(
     withPage(app, "status-filter", { hash: "#t=1" }, async (page) => {
       await page.waitFor(PASS_ROW);
       const all = await page.count(PASS_ROW);
-      // The status picker is a dropdown with checkboxes inside the filter panel.
+      // The status picker is a toggle group inside the filter panel: one chip
+      // per status, no popup to open.
       await page.clickText("button", "Filter");
-      await page.click('[aria-label="Status filtern"]');
-      // The menu renders in a portal a frame after the click.
-      await page.waitFor('[role="menuitemcheckbox"]');
-      await page.clickText('[role="menuitemcheckbox"]', "oft gesperrt");
+      await page.waitFor('[aria-label="Status filtern"]');
+      await page.clickText(
+        '[aria-label="Status filtern"] button',
+        "oft gesperrt",
+      );
       await waitUntil(
         async () => (await page.count(PASS_ROW)) < all,
         "fewer passes after filtering",
@@ -126,7 +128,7 @@ test(
 );
 
 test(
-  "6 · the mobile sheet goes peek → list → detail → back",
+  "6 · list and detail are separate sheets: peek → list → detail → back",
   () =>
     withPage(app, "mobile-sheet", { mobile: true }, async (page) => {
       await page.waitFor("input[type=search]");
@@ -135,9 +137,13 @@ test(
       await page.click(GALIBIER);
       await page.waitFor("#detail-title");
       expect(await page.text("#detail-title")).toBe("Col du Galibier");
-      await page.clickText("button", "Liste");
+      // The list sheet stays on screen behind the detail sheet, so its rows
+      // are still in the document while the detail is open.
+      expect(await page.count(PASS_ROW)).toBe(92);
+      await page.click('[aria-label="Details schließen"]');
       await page.waitForGone("#detail-title");
       await page.waitFor(PASS_ROW);
+      expect(await page.hash()).not.toContain("pass=");
     }),
   TIMEOUT,
 );

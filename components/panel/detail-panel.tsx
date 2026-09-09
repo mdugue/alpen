@@ -1,13 +1,6 @@
 "use client";
 
-import {
-  ArrowLeft,
-  ExternalLink,
-  HelpCircle,
-  Info,
-  Star,
-  X,
-} from "lucide-react";
+import { ExternalLink, HelpCircle, Info, Star, X } from "lucide-react";
 import dynamic from "next/dynamic";
 import { useEffect, useRef } from "react";
 
@@ -65,7 +58,7 @@ import type {
   Tour,
   Town,
 } from "@/lib/types";
-import { cn, fmt, fmtUnit, ICON_TOGGLE } from "@/lib/utils";
+import { cn, fmt, fmtUnit, ICON_TOGGLE, TOUCH_ICON } from "@/lib/utils";
 
 /**
  * recharts is the heaviest thing this app would ship; the climate chart is
@@ -87,8 +80,6 @@ const TRAFFIC_LABEL = [
 ];
 
 interface Props {
-  /** "back" inside the mobile sheet (returns to the list), "close" for the desktop slide-over. */
-  dismiss: "back" | "close";
   selection: Selection;
   period: Period;
   passes: Pass[];
@@ -590,8 +581,10 @@ const TownDetail = (props: Props & { town: Town }) => {
 };
 
 /**
- * Detail view of the selected entity. Lives inside the sidebar (desktop) or
- * the bottom sheet (mobile) as a stack on top of the lists.
+ * Detail view of the selected entity. It is a panel of its own in both layouts:
+ * the slide-over next to the sidebar on desktop, its own bottom sheet on a
+ * phone – so closing it always means the same thing and the lists keep their
+ * scroll position underneath.
  */
 export const DetailPanel = (props: Props) => {
   const { selection, onBack } = props;
@@ -632,17 +625,7 @@ export const DetailPanel = (props: Props) => {
       }}
     >
       <div className="border-border flex h-10 shrink-0 items-center gap-1 border-b px-2">
-        {props.dismiss === "back" && (
-          <Button variant="ghost" onClick={onBack}>
-            <ArrowLeft data-icon="inline-start" /> Liste
-          </Button>
-        )}
-        <p
-          className={cn(
-            "text-muted-foreground min-w-0 flex-1 truncate text-[11px] font-semibold tracking-widest uppercase",
-            props.dismiss === "back" ? "text-center" : "pl-2",
-          )}
-        >
+        <p className="text-muted-foreground min-w-0 flex-1 truncate pl-2 text-[11px] font-semibold tracking-widest uppercase">
           {kicker}
         </p>
         <Toggle
@@ -651,20 +634,19 @@ export const DetailPanel = (props: Props) => {
             props.onToggleFavorite(selection.kind, selection.slug)
           }
           aria-label={favorite ? "Nicht mehr merken" : "Merken"}
-          className={ICON_TOGGLE}
+          className={cn(ICON_TOGGLE, TOUCH_ICON)}
         >
           <Star className={cn(favorite && "fill-accent text-accent")} />
         </Toggle>
-        {props.dismiss === "close" && (
-          <Button
-            size="icon"
-            variant="ghost"
-            onClick={onBack}
-            aria-label="Details schließen"
-          >
-            <X />
-          </Button>
-        )}
+        <Button
+          size="icon"
+          variant="ghost"
+          onClick={onBack}
+          aria-label="Details schließen"
+          className={TOUCH_ICON}
+        >
+          <X />
+        </Button>
       </div>
       <div
         ref={scroller}
