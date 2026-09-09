@@ -1,6 +1,7 @@
 name: Refresh data
 
-# Fetches missing routes, elevation profiles and climate series and commits them.
+# Fetches missing routes, elevation profiles, climate series and photos and
+# commits them.
 #
 # There is deliberately no schedule. Nothing in the pipeline is time-varying:
 # the climate window is frozen (CLIMATE_FROM/CLIMATE_TO), and routes and
@@ -51,6 +52,10 @@ jobs:
         env:
           ORS_KEY: ${{ secrets.ORS_KEY }}
           OPEN_METEO_BUDGET: ${{ inputs.budget || '4500' }}
+      # Photos are cheap and unmetered next to the routing quota: this only
+      # fills the gaps a new pass or town left (scripts/build-photos.ts).
+      - run: bun run data:photos
+        continue-on-error: true
       # The check must not cost this run its work: the fetched data is committed
       # first and the job fails afterwards, so a failing check (a stored route
       # that violates a limit) still surfaces without discarding the paid-for

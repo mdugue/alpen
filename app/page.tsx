@@ -5,6 +5,7 @@ import {
   getMapAssets,
   getNearbyTours,
   getPasses,
+  getPhotos,
   getProfiles,
   getTours,
   getTowns,
@@ -55,7 +56,7 @@ const jsonLd = {
 const Page = async () => {
   "use cache";
 
-  const [passes, tours, towns, assets, nearbyTours, profiles, climate] =
+  const [passes, tours, towns, assets, nearbyTours, profiles, climate, photos] =
     await Promise.all([
       getPasses(),
       getTours(),
@@ -64,6 +65,7 @@ const Page = async () => {
       getNearbyTours(),
       getProfiles(),
       getClimate(),
+      getPhotos(),
     ]);
 
   return (
@@ -80,6 +82,7 @@ const Page = async () => {
         nearbyTours={nearbyTours}
         profiles={profiles}
         climate={climate}
+        photos={photos}
         defaultPeriod={todayPeriod()}
       />
     </main>
