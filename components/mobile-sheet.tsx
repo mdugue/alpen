@@ -25,8 +25,8 @@ interface Props {
    * snap point then settles on it instead of dismissing the sheet.
    */
   onClose?: () => void;
-  /** Lowest first; a tap on the handle toggles between the first two. */
-  snapPoints: readonly number[];
+  /** Lowest first, at least two; a tap on the handle toggles between the first two. */
+  snapPoints: readonly [number, number, ...number[]];
   snap: number;
   onSnapChange: (snap: number) => void;
   children: React.ReactNode;
@@ -47,8 +47,7 @@ export const MobileSheet = ({
   onSnapChange,
   children,
 }: Props) => {
-  const collapsed = snapPoints[0] ?? 0.5;
-  const expanded = snapPoints[1] ?? collapsed;
+  const [collapsed, expanded] = snapPoints;
   const isCollapsed = snap === collapsed;
 
   return (

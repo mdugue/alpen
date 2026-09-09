@@ -81,8 +81,9 @@ const DETAIL_W = { lg: 352, xl: 400 };
  * MapLibre controls sit above it), then half and almost full; the detail sheet
  * leaves the map visible above it or takes nearly the whole screen.
  */
-const LIST_SNAPS = [80, 0.5, 0.85];
-const DETAIL_SNAPS = [0.55, 0.92];
+const LIST_SNAPS = [80, 0.5, 0.85] as const;
+const DETAIL_SNAPS = [0.55, 0.92] as const;
+const [LIST_PEEK, LIST_HALF, LIST_FULL] = LIST_SNAPS;
 
 export const Explorer = ({
   passes,
@@ -113,8 +114,8 @@ export const Explorer = ({
     ALL_KINDS,
   );
   const [sidebarOpen, setSidebarOpen] = useStored("alpenpaesse:sidebar", true);
-  const [listSnap, setListSnap] = useState(LIST_SNAPS[0]!);
-  const [detailSnap, setDetailSnap] = useState(DETAIL_SNAPS[0]!);
+  const [listSnap, setListSnap] = useState<number>(LIST_PEEK);
+  const [detailSnap, setDetailSnap] = useState<number>(DETAIL_SNAPS[0]);
   const [scalesOpen, setScalesOpen] = useState(false);
   // Where the elevation-profile cursor sits on the road, and a fly-to asked
   // for by a click on it. Both live here because the map draws them and the
@@ -217,8 +218,8 @@ export const Explorer = ({
     if (isMobile) {
       // The detail sheet covers the list; the list waits on its peek row so
       // nothing of it shows above the detail.
-      setListSnap(LIST_SNAPS[0]!);
-      setDetailSnap(DETAIL_SNAPS[0]!);
+      setListSnap(LIST_PEEK);
+      setDetailSnap(DETAIL_SNAPS[0]);
     }
   };
 
@@ -227,7 +228,7 @@ export const Explorer = ({
     const sel = selection;
     setSelection(null);
     setProfileCursor(null);
-    if (isMobile) setListSnap(LIST_SNAPS[1]!);
+    if (isMobile) setListSnap(LIST_HALF);
     requestAnimationFrame(() => {
       const root = sidebarRoot.current;
       const row =
@@ -264,7 +265,7 @@ export const Explorer = ({
   const sidebar = (variant: "aside" | "sheet") => (
     <Sidebar
       variant={variant}
-      peek={variant === "sheet" && listSnap === LIST_SNAPS[0]}
+      peek={variant === "sheet" && listSnap === LIST_PEEK}
       filters={filters}
       setFilters={setFilters}
       passRows={passRows}
@@ -285,9 +286,14 @@ export const Explorer = ({
       onCollapse={() => setSidebarOpen(false)}
       onOpenScales={() => setScalesOpen(true)}
       onSearchFocus={
-        // Typing needs room: the sheet goes as high as it can, so as much of
-        // the result list as possible stays above the software keyboard.
-        variant === "sheet" ? () => setListSnap(LIST_SNAPS.at(-1)!) : undefined
+        // Typing needs room: from the peek row, where the search field is all
+        // there is, the sheet goes as high as it can so that as much of the
+        // result list as possible stays above the software keyboard. Higher up
+        // the list is already visible – and the focus `back()` returns to the
+        // search field must not move the sheet at all.
+        variant === "sheet"
+          ? () => setListSnap((s) => (s === LIST_PEEK ? LIST_FULL : s))
+          : undefined
       }
     />
   );

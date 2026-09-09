@@ -12,7 +12,7 @@ import {
 import type { Filters, PassSort } from "@/lib/app-state";
 import { PASS_SORT_LABEL, PASS_SORTS, sortPassRows } from "@/lib/rows";
 import type { PassRow } from "@/lib/rows";
-import { cn, fmtUnit, TOUCH_SELECT } from "@/lib/utils";
+import { fmtUnit, TOUCH_SELECT } from "@/lib/utils";
 
 type RatingSort = "beauty" | "fame" | "difficulty" | "traffic";
 const RATING_SORTS: ReadonlySet<PassSort> = new Set([
@@ -53,7 +53,7 @@ export const PassList = ({
             setFilters((f) => ({ ...f, sort: e.target.value as PassSort }))
           }
           aria-label="Sortieren nach"
-          className={cn(TOUCH_SELECT)}
+          className={TOUCH_SELECT}
         >
           {PASS_SORTS.map((k) => (
             <NativeSelectOption key={k} value={k}>

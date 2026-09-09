@@ -134,12 +134,13 @@ test(
       await page.waitFor("input[type=search]");
       await page.click('[aria-label="Liste ausklappen"]');
       await page.waitFor(PASS_ROW);
+      const all = await page.count(PASS_ROW);
       await page.click(GALIBIER);
       await page.waitFor("#detail-title");
       expect(await page.text("#detail-title")).toBe("Col du Galibier");
       // The list sheet stays on screen behind the detail sheet, so its rows
       // are still in the document while the detail is open.
-      expect(await page.count(PASS_ROW)).toBe(92);
+      expect(await page.count(PASS_ROW)).toBe(all);
       await page.click('[aria-label="Details schließen"]');
       await page.waitForGone("#detail-title");
       await page.waitFor(PASS_ROW);

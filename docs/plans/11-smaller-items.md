@@ -1,6 +1,6 @@
 # 11 · Smaller items
 
-**Status:** proposed · **Effort:** S each · **Depends on:** noted per item
+**Status:** [in progress](https://github.com/mdugue/alpen/pull/16) · **Effort:** S each · **Depends on:** noted per item
 
 Independent clean-ups. Each is a PR on its own or rides along with the plan
 that touches the same file. Tick them off here.
