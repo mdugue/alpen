@@ -52,12 +52,13 @@ friends do that better and the app links out to them.
 | Map, layers, 3D, markers, labels, feature state | `components/map/pass-map.tsx`                                                                                             |
 | Map assets: GeoJSON, simplification, hashing    | `lib/map-assets.ts`, `scripts/build-map-assets.ts` (→ `public/map`, git-ignored)                                          |
 | Tours within reach of an entity                 | `lib/nearby.ts` (computed on the server in `lib/data.ts`)                                                                 |
+| Photos: keys, sizes, licence metadata           | `lib/photos.ts`, `scripts/build-photos.ts` (`bun run data:photos`) → `data/generated/photos.json`                         |
 | Period scrubber floating over the map           | `components/map/period-scrubber.tsx`                                                                                      |
 | Season strip (24 half-months)                   | `components/season-strip.tsx`                                                                                             |
 | Sidebar: search, filters, one list per kind     | `components/sidebar/`, `lib/rows.ts`                                                                                      |
-| Detail panel incl. profile/weather/climate      | `components/panel/`                                                                                                       |
+| Detail panel incl. profile/weather/climate      | `components/panel/` (collapsible blocks: `components/panel/section.tsx`)                                                  |
 | Bottom sheet on phones (one per panel)          | `components/mobile-sheet.tsx`                                                                                             |
-| Precomputation, data checks                     | `scripts/build-data.ts`, `scripts/check-data.ts`                                                                          |
+| Precomputation, data checks                     | `scripts/build-data.ts`, `scripts/build-photos.ts`, `scripts/check-data.ts`                                               |
 | Route quality gate: checks and thresholds       | `scripts/lib/validate.ts`; pass-point placement `scripts/locate-pass.ts` (`bun run data:locate`), `scripts/lib/locate.ts` |
 | Name, claim, colours, mark, base URL            | `lib/brand.ts`, `lib/mark.tsx`                                                                                            |
 | Icons, share image, manifest, robots, sitemap   | `app/icon.tsx`, `app/apple-icon.tsx`, `app/opengraph-image.tsx`, `app/manifest.ts`, `app/robots.ts`, `app/sitemap.ts`     |
@@ -78,9 +79,16 @@ friends do that better and the app links out to them.
   styling (status badges, etc.) goes into the consuming component via
   `className`. Re-running `ui:init` overwrites `app/globals.css`; the domain
   tokens (`--status-open`, `--status-risky`, `--status-closed`, `--tour`,
-  `--town` plus their `@theme inline` lines), the MapLibre rules at the end,
-  the coarse-pointer font-size rule next to them and the dark-mode setup must
-  be restored afterwards.
+  `--town` plus their `@theme inline` lines), the `--text-2xs` step below
+  Tailwind's `text-xs`, the MapLibre rules at the end, the coarse-pointer
+  font-size rule next to them and the dark-mode setup must be restored
+  afterwards.
+- **Sizes come from the scale, not from pixels.** Font sizes, spacing and radii
+  are Tailwind steps; an arbitrary value (`text-[13px]`, `rounded-[3px]`) is
+  only for what the scale genuinely cannot express, such as a `calc()` width or
+  the inset shadow marking the current row. The dense map furniture needs one
+  step below `text-xs`, so the scale carries `text-2xs` (10 px) as a token –
+  add to the scale rather than reaching for a pixel value.
 - **Touch targets follow the pointer, not the width.** Safari on iOS zooms the
   page in when a focused form control carries a font size below 16 px, and on a
   map that fills the viewport that zoom has no way back. An unlayered rule at
@@ -111,17 +119,58 @@ friends do that better and the app links out to them.
   search field itself: a field there would have the software keyboard come up
   in the same moment as the sheet moves, and the two animations fight over
   where the field ends up. The field a thumb reaches is always in a sheet that
-  already stands still. Only the period
-  scrubber and three map tools float over the map; the scrubber carries the
+  already stands still. What floats over the map is one cluster in its top-left
+  corner (`MAP_CLUSTER`, next to the panels' left edge): the period scrubber
+  and, on the same panel surface, the three map tools – layers, 3D, fit. The
+  tools are one segmented column in the same outline as the scrubber's own
+  stepper, stretched to its height, so they read as pressable and the cluster
+  keeps an even edge; `MAP_TOOL` settles the outline, because `Button` and
+  `Toggle` disagree about hover, border token and dark fill. The scrubber
+  reaches the map through the `scrubber` prop rather than `children`, which is
+  what stays free-floating beside the cluster – today the sidebar's own toggle.
+  The scrubber carries the
   24 half-months, the histogram of what is rideable and the "heute" marker,
   and every list row repeats the same 24 cells as a `SeasonStrip`. Map
-  visibility is always a `Switch` ("auf der Karte"), two-state buttons are
-  always a `Toggle`.
+  visibility is always a `Switch` ("auf der Karte"), one per kind, two-state
+  buttons are always a `Toggle`. Without a camera or a selection in the hash
+  the map opens on the frame the fit button produces, not on a fixed overview.
 - **Charts come from the shadcn `chart` component** (recharts under the hood).
   It is the only heavy dependency in the app, so the one chart that uses it
   (`components/panel/climate-chart.tsx`) is pulled in with `next/dynamic` and
   never reaches the first load. Stat tiles and dense rows use `Item`, stepper
   groups use `ButtonGroup`.
+- **Photos are borrowed, not owned.** The detail panel opens with a slideshow
+  of Wikimedia Commons photos (`components/panel/photo-carousel.tsx`).
+  `scripts/build-photos.ts` picks them once, without an editorial step – a
+  geosearch around the pass point, a name filter that keeps signs and maps out,
+  a rank by name match – and stores only metadata in
+  `data/generated/photos.json`: the thumbnail URL, the author, the licence and
+  the file page. The files themselves stay on Wikimedia's CDN and reach the
+  browser through a plain `<img>`; they are already the right size and already
+  cached, and mirroring them would put ~25 MB of binaries into the repo.
+  Attribution is not decoration: every slide carries author and licence,
+  baked into the slide rather than derived from the carousel's index, so it
+  cannot drift out of sync with what is on screen.
+- **A sidebar section adds no surface.** The three collapsible lists
+  (`components/sidebar/section.tsx`) carry no background of their own in either
+  state – neither a tint on the header nor the ghost trigger's
+  `aria-expanded` fill – so the panel's frosted backdrop reads through them
+  evenly. That is also why the header does not stick: a pinned header needs a
+  background to stay legible over the rows scrolling under it, and a
+  `backdrop-blur` cannot supply one, because the panel already filters its
+  backdrop and a nested filter never sees the content inside that backdrop
+  root.
+- **The panel folds.** Every block below the title is a `Section`
+  (`components/panel/section.tsx`), open by default. The panel is a column on a
+  map and a phone sheet shows two blocks at a time; whoever wants the climate
+  should not scroll past two elevation profiles first. Which blocks are folded
+  is one `sessionStorage` entry shared by all of them (`SECTIONS_KEY`), keyed
+  by section id and holding the _closed_ ones: a fold carries over to the next
+  pass looked at, a new section opens by itself, and the next visit starts
+  unfolded again. A section title says what the block is and nothing else;
+  where a source or its caveat has to be named, one short sentence sits behind
+  the `info` tooltip. A header never opens a dialog – the scales dialog belongs
+  to the sidebar footer, which is where it stays.
 - **Colours only via tokens.** MapLibre cannot read CSS variables;
   `pass-map.tsx` reads them once via `getComputedStyle` (`readColors`). Add
   new map colours there rather than hard-coding them.

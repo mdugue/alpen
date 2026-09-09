@@ -57,6 +57,19 @@ export default defineConfig({
       rules: { "react-doctor/prefer-dynamic-import": "off" },
     },
     {
+      // Commons serves the photos as ready-made thumbnails from its own CDN
+      // (see `lib/photos.ts`): they are already the width the panel asks for
+      // and already cached, so routing a few hundred of them through the image
+      // optimiser would add a hop and a bill and change nothing about what is
+      // downloaded. `next/image` also wants every host in `remotePatterns`,
+      // which would tie the config to whichever Wikimedia host answers.
+      files: ["components/panel/photo-carousel.tsx"],
+      rules: {
+        "nextjs/no-img-element": "off",
+        "react-doctor/nextjs-no-img-element": "off",
+      },
+    },
+    {
       // The JSON-LD block is the one sanctioned use of the prop.
       files: ["app/page.tsx"],
       rules: { "react/no-danger": "off" },

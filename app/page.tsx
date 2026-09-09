@@ -5,6 +5,7 @@ import {
   getMapAssets,
   getNearbyTours,
   getPasses,
+  getPhotos,
   getProfiles,
   getTours,
   getTowns,
@@ -65,6 +66,7 @@ const Page = async () => {
     profiles,
     climate,
     valleys,
+    photos,
   ] = await Promise.all([
     getPasses(),
     getTours(),
@@ -74,6 +76,7 @@ const Page = async () => {
     getProfiles(),
     getClimate(),
     getValleys(),
+    getPhotos(),
   ]);
 
   return (
@@ -91,6 +94,7 @@ const Page = async () => {
         profiles={profiles}
         climate={climate}
         valleys={valleys}
+        photos={photos}
         defaultPeriod={todayPeriod()}
       />
     </main>

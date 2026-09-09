@@ -109,7 +109,7 @@ export const WeatherForecast = ({ slug }: { slug: string }) => {
             return (
               <div
                 key={d.date}
-                className="flex items-center gap-2 py-1 text-[13px] tabular-nums"
+                className="flex items-center gap-2 py-1 text-xs tabular-nums"
               >
                 <Icon
                   className="text-muted-foreground size-4 shrink-0"

@@ -114,6 +114,14 @@
   --color-tour: var(--tour);
   --color-town: var(--town);
 
+  /*
+   * One step below Tailwind's `text-xs`, for the dense map furniture (month
+   * initials, attribution, table meta). It is a scale token rather than a
+   * per-place pixel value so those places stay in step with each other.
+   */
+  --text-2xs: 0.625rem;
+  --text-2xs--line-height: 0.875rem;
+
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
@@ -181,7 +189,7 @@
   @apply border-t-popover! border-b-popover!;
 }
 .maplibregl-ctrl-attrib {
-  @apply bg-card/80! text-muted-foreground! text-[10px]!;
+  @apply bg-card/80! text-muted-foreground! text-2xs!;
 }
 .maplibregl-ctrl-attrib a {
   @apply text-muted-foreground!;

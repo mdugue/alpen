@@ -61,7 +61,7 @@ const Select = ({
   options: readonly (readonly [value: number, label: string])[];
 }) => (
   <Field className={cn("gap-1")}>
-    <FieldLabel htmlFor={id} className="text-muted-foreground text-[11px]">
+    <FieldLabel htmlFor={id} className="text-muted-foreground text-2xs">
       {label}
     </FieldLabel>
     <NativeSelect

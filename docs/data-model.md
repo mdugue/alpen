@@ -49,6 +49,8 @@ share.
   "lat": 45.064,
   "lon": 6.408,
   "elevation": 2642,
+  "deadEnd": true, // optional: the road ends at the summit, no crossing
+  "roadSummit": true, // optional: highest asphalt, no mountain_pass node in OSM
   "classicAscent": "18 km, 6,9 % ab Valloire (34 km via Télégraphe)",
   "beauty": 5,
   "fame": 5,
@@ -76,6 +78,24 @@ reads – with a mandatory `note` saying why:
 `season.maintained: true` marks managed toll roads (Grossglockner, Timmelsjoch,
 Nockalm …). They are cleared of snow and therefore get no elevation penalty in
 the status heuristic.
+
+Not every entry is a pass in the strict sense. Two optional flags say how the
+entry differs, and they are independent of each other and of `maintained`:
+
+- `deadEnd: true` – the road ends at the summit (Ötztaler Gletscherstraße,
+  Tre Cime, Kitzbüheler Horn …). The descent is the ascent ridden backwards
+  and the climb cannot be part of a loop, so `data:check` warns when a tour
+  lists such a pass, and the detail panel says so under "Auffahrten". It is
+  curated, not derived from the number of ascents: the Nockalmstraße has two
+  ascents and is a crossing, the Umbrailpass has one and is not a dead end.
+- `roadSummit: true` – the summit point is the highest point of the asphalt
+  rather than a saddle, because OSM carries no `mountain_pass` node for it.
+  `bun run data:locate` then skips the pass-node search and offers the highest
+  sample of the stored route instead, and `--apply` takes it – judged on DEM
+  height and road distance, since there is no name to match. The gate's summit
+  checks are unchanged: a correct road-summit point passes them like any pass.
+  Every dead end is a road summit; a crossing can be one too (Roßfeld-
+  Panoramastraße, Nockalmstraße).
 
 `aliases` feeds the search only (never a name of another pass; `data:check`
 rejects duplicates). Search folds accents, ß and punctuation on both sides

@@ -14,6 +14,18 @@ import { cn } from "@/lib/utils";
  * One collapsible block of the sidebar with a sticky header. Controls that
  * belong to the section (e.g. the map-visibility switch) are rendered next to
  * the trigger, never inside it.
+ *
+ * The header carries no surface of its own, in neither state, so the panel's
+ * frosted backdrop reads through it exactly as it does everywhere else: a tint
+ * stacks on `bg-card/80` and turns the header into a white band across an
+ * otherwise translucent panel, and the ghost trigger's `aria-expanded:bg-muted`
+ * would paint the open section a second one.
+ *
+ * That is also why the header no longer sticks to the top: a pinned header has
+ * rows scrolling underneath and needs a background to stay legible, and a
+ * `backdrop-blur` of its own cannot supply one – the panel already filters its
+ * backdrop, and Chromium makes that a backdrop root, so a nested filter never
+ * sees the rows inside it. Collapsing a section is how a long list is skipped.
  */
 export const Section = ({
   open,
@@ -37,13 +49,13 @@ export const Section = ({
   const filtered = count !== total;
   return (
     <Collapsible open={open} onOpenChange={onOpenChange}>
-      <div className="border-border bg-card/85 sticky top-0 z-10 grid grid-cols-[minmax(0,1fr)_auto] items-center border-b pr-3 backdrop-blur-sm">
+      <div className="border-border grid grid-cols-[minmax(0,1fr)_auto] items-center border-b pr-3">
         <h2 className="contents">
           <CollapsibleTrigger
             render={
               <Button
                 variant="ghost"
-                className="group/section h-10 justify-start gap-2 rounded-none px-3"
+                className="group/section hover:bg-muted/50 h-10 justify-start gap-2 rounded-none px-3 aria-expanded:bg-transparent"
               />
             }
           >
@@ -79,5 +91,5 @@ export const Section = ({
 export const KIND_GLYPH = {
   pass: <span className="border-foreground/70 size-3 rounded-full border-2" />,
   tour: <span className="bg-tour h-1.5 w-4 rounded-full" />,
-  town: <span className="bg-town size-2.5 rotate-45 rounded-[2px]" />,
+  town: <span className="bg-town size-2.5 rotate-45 rounded-xs" />,
 } as const;

@@ -45,7 +45,7 @@ export const PassList = ({
   return (
     <>
       <div className="border-border flex items-center gap-2 border-b px-3 py-1.5">
-        <span className="text-muted-foreground text-[11px]">Sortieren</span>
+        <span className="text-muted-foreground text-2xs">Sortieren</span>
         <NativeSelect
           size="sm"
           value={filters.sort}
@@ -79,7 +79,7 @@ export const PassList = ({
               onSelect={() => onSelect(pass.slug)}
               aside={
                 <>
-                  <span className="text-[13px] font-medium tabular-nums">
+                  <span className="text-xs font-medium tabular-nums">
                     {fmtUnit(pass.elevation, "m")}
                   </span>
                   {ratingSort ? (

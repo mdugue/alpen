@@ -36,6 +36,8 @@ export interface SidebarProps {
   tours: Tour[];
   hiddenTours: string[];
   setHiddenTours: (update: (h: string[]) => string[]) => void;
+  showPasses: boolean;
+  setShowPasses: (v: boolean) => void;
   showTowns: boolean;
   setShowTowns: (v: boolean) => void;
   sections: EntityKind[];
@@ -191,6 +193,14 @@ export const Sidebar = (p: SidebarProps) => {
             label="Pässe"
             count={p.passRows.length}
             total={p.totals.pass}
+            control={
+              <Switch
+                size="sm"
+                checked={p.showPasses}
+                onCheckedChange={p.setShowPasses}
+                aria-label="Pässe auf der Karte anzeigen"
+              />
+            }
           >
             <PassList
               rows={p.passRows}
@@ -212,7 +222,7 @@ export const Sidebar = (p: SidebarProps) => {
               <div className="flex items-center gap-2">
                 {visibleTourCount > 0 &&
                   visibleTourCount < allTourSlugs.length && (
-                    <span className="text-muted-foreground text-[11px] tabular-nums">
+                    <span className="text-muted-foreground text-2xs tabular-nums">
                       {visibleTourCount} von {allTourSlugs.length}
                     </span>
                   )}
@@ -269,7 +279,7 @@ export const Sidebar = (p: SidebarProps) => {
         <div
           className={cn("border-border shrink-0 border-t", p.peek && "hidden")}
         >
-          <p className="text-muted-foreground flex h-8 items-center gap-1 truncate px-3 text-[11px]">
+          <p className="text-muted-foreground text-2xs flex h-8 items-center gap-1 truncate px-3">
             <span className="truncate">
               Status ist eine Heuristik, Skalen sind redaktionell.
             </span>
@@ -282,7 +292,7 @@ export const Sidebar = (p: SidebarProps) => {
               Skalen &amp; Quellen
             </Button>
           </p>
-          <p className="text-muted-foreground flex items-center gap-3 px-3 pb-2 text-[11px]">
+          <p className="text-muted-foreground text-2xs flex items-center gap-3 px-3 pb-2">
             <Link
               href="/impressum"
               className="hover:text-foreground hover:underline"

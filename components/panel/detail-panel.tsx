@@ -1,10 +1,13 @@
 "use client";
 
-import { ExternalLink, HelpCircle, Info, Star, X } from "lucide-react";
+import { ExternalLink, Star, X } from "lucide-react";
 import dynamic from "next/dynamic";
 import { useEffect, useRef } from "react";
 
+import { GradeLegend } from "@/components/grade-legend";
 import { ElevationProfile } from "@/components/panel/elevation-profile";
+import { PhotoCarousel } from "@/components/panel/photo-carousel";
+import { Section } from "@/components/panel/section";
 import { WeatherForecast } from "@/components/panel/weather-forecast";
 import { Rating } from "@/components/rating";
 import { SeasonStrip } from "@/components/season-strip";
@@ -24,16 +27,12 @@ import {
   ItemTitle,
 } from "@/components/ui/item";
 import { Toggle } from "@/components/ui/toggle";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
 import type { EntityKind, Selection } from "@/lib/app-state";
 import { clockTime, periodDate, sunTimes } from "@/lib/daylight";
 import { haversine, NEARBY_RADIUS_KM } from "@/lib/geo";
 import { nearbyKey } from "@/lib/nearby";
 import type { NearbyTours } from "@/lib/nearby";
+import { photoKey } from "@/lib/photos";
 import { ascentKey } from "@/lib/route-key";
 import {
   bestPeriods,
@@ -57,6 +56,7 @@ import type {
   LatLon,
   Pass,
   Period,
+  Photos,
   ProfileWithCoords,
   Tour,
   Town,
@@ -94,6 +94,8 @@ interface Props {
   climate: Record<string, ClimateYear>;
   /** Lowest ascent start per pass, for the derived valley heat. */
   valleys: Record<string, number>;
+  /** Commons photos per entity, keyed by `photoKey`. */
+  photos: Photos;
   isFavorite: (kind: EntityKind, slug: string) => boolean;
   onToggleFavorite: (kind: EntityKind, slug: string) => void;
   /** Road point under the profile cursor, drawn on the map; `null` clears it. */
@@ -102,50 +104,7 @@ interface Props {
   onProfileZoom: (point: LatLon) => void;
   onSelect: (sel: Selection) => void;
   onBack: () => void;
-  onOpenScales: () => void;
 }
-
-/**
- * The one heading level inside the panel: small caps, a hairline, and room
- * above it. `hint` names the source in passing, `info` hides the caveat that
- * belongs to it behind an icon – a sentence about grid resolution must not
- * take the place a fact could have.
- */
-const SectionTitle = ({
-  children,
-  hint,
-  info,
-}: {
-  children: React.ReactNode;
-  hint?: string;
-  info?: string;
-}) => (
-  <h3 className="border-border text-muted-foreground mt-6 mb-2.5 flex items-baseline gap-2 border-b pb-1.5 text-[11px] font-semibold tracking-widest uppercase">
-    {children}
-    {hint && (
-      <span className="truncate text-[11px] font-normal tracking-normal normal-case">
-        {hint}
-      </span>
-    )}
-    {info && (
-      <Tooltip>
-        <TooltipTrigger
-          render={
-            <Button
-              size="icon-sm"
-              variant="ghost"
-              aria-label="Hinweis zur Quelle"
-              className="text-muted-foreground/70 ml-auto self-center"
-            />
-          }
-        >
-          <Info />
-        </TooltipTrigger>
-        <TooltipContent className="max-w-64">{info}</TooltipContent>
-      </Tooltip>
-    )}
-  </h3>
-);
 
 const ExternalLinks = ({ links }: { links: [string, string][] }) => (
   <div className="mt-4 flex flex-wrap gap-1.5">
@@ -209,8 +168,7 @@ const Nearby = ({
     .toSorted((a, b) => a.d - b.d);
 
   return (
-    <>
-      <SectionTitle>Im Umkreis von {NEARBY_RADIUS_KM} km</SectionTitle>
+    <Section id="nearby" title={`Im Umkreis von ${NEARBY_RADIUS_KM} km`}>
       <div className="flex flex-col gap-1">
         {nearPasses.length > 0 &&
           group(
@@ -259,7 +217,7 @@ const Nearby = ({
                 onClick={() => p.onSelect({ kind: "town", slug: x.slug })}
               >
                 <span
-                  className="bg-town inline-block size-2 rotate-45 rounded-[1px]"
+                  className="bg-town inline-block size-2 rotate-45 rounded-xs"
                   aria-hidden
                 />{" "}
                 {x.name}
@@ -270,7 +228,7 @@ const Nearby = ({
             )),
           )}
       </div>
-    </>
+    </Section>
   );
 };
 
@@ -289,7 +247,7 @@ const PassDetail = (props: Props & { pass: Pass }) => {
 
   return (
     <>
-      <p className="text-muted-foreground mt-0.5 text-[13px]">
+      <p className="text-muted-foreground mt-0.5 text-xs">
         <span className="text-foreground text-2xl leading-none font-bold tabular-nums">
           {fmt(pass.elevation)}
         </span>
@@ -317,158 +275,165 @@ const PassDetail = (props: Props & { pass: Pass }) => {
           </p>
         )}
         <SeasonStrip grades={grades} current={props.period} size="panel" />
+        <GradeLegend />
       </div>
 
-      <p className="mt-4 text-[13px] leading-relaxed">{seasonText(pass)}</p>
-      <p className="text-muted-foreground mt-1.5 text-[13px] leading-relaxed">
+      <p className="mt-4 text-xs leading-relaxed">{seasonText(pass)}</p>
+      <p className="text-muted-foreground mt-1.5 text-xs leading-relaxed">
         {pass.note}
       </p>
 
-      <SectionTitle hint="redaktionell, 1–5">
-        Bewertung
-        <Button
-          size="icon-sm"
-          variant="ghost"
-          aria-label="Skalen erklärt"
-          onClick={props.onOpenScales}
-        >
-          <HelpCircle />
-        </Button>
-      </SectionTitle>
-      <dl className="grid grid-cols-[auto_1fr] items-center gap-x-3 gap-y-1.5 text-[13px]">
-        {(
-          [
-            ["Schönheit", <Rating key="b" value={pass.beauty} />],
-            ["Bekanntheit", <Rating key="f" value={pass.fame} />],
-            ["Schwierigkeit", <Rating key="d" value={pass.difficulty} />],
+      <Section
+        id="rating"
+        info="Redaktionelle Einschätzung auf einer Skala von 1 bis 5, keine gemessenen Werte."
+        title="Bewertung"
+      >
+        <dl className="grid grid-cols-[auto_1fr] items-center gap-x-3 gap-y-1.5 text-xs">
+          {(
             [
-              "Verkehr",
-              <span key="t" className="flex items-center gap-2">
-                <Rating value={pass.traffic} muted />
-                <span className="text-muted-foreground text-xs">
-                  {TRAFFIC_LABEL[pass.traffic]}
-                </span>
-              </span>,
-            ],
-          ] as [string, React.ReactNode][]
-        ).map(([label, value]) => (
-          <div key={label} className="contents">
-            <dt className="text-muted-foreground text-xs">{label}</dt>
-            <dd>{value}</dd>
-          </div>
-        ))}
-      </dl>
-
-      <SectionTitle
-        hint="Routing + Höhenmodell"
-        info="Das Profil sind 100 Höhenpunkte aus einem Geländemodell entlang der gerouteten Straße – gut, um Auffahrten zu vergleichen, nicht metergenau. Der steilste Kilometer fällt dabei eher zu steil aus."
-      >
-        Auffahrten
-      </SectionTitle>
-      {pass.ascents.length === 0 && (
-        <Empty className="py-3">
-          <EmptyHeader>
-            <EmptyTitle>Keine Auffahrt hinterlegt</EmptyTitle>
-          </EmptyHeader>
-        </Empty>
-      )}
-      <div className="flex flex-col gap-4">
-        {pass.ascents.map((a, i) => {
-          const profile = props.profiles[ascentKey(pass.slug, i)];
-          return (
-            <div key={a.label}>
-              <div className="flex flex-wrap items-baseline justify-between gap-x-2">
-                <span className="text-[13px] font-medium">{a.label}</span>
-                <span className="text-muted-foreground text-xs tabular-nums">
-                  {profile
-                    ? `${fmtUnit(profile.km, "km", 1)} · ${fmtUnit(profile.elevationGain, "hm")} · Ø ${fmt(profile.avgGradient, 1)} % · steilster km ${fmt(profile.maxKmGradient, 1)} % · ${fmt(profile.start)} → ${fmtUnit(profile.top, "m")}`
-                    : "Kein Höhenprofil vorhanden."}
-                </span>
-              </div>
-              {profile && (
-                <ElevationProfile
-                  profile={profile}
-                  coords={profile.coords}
-                  onCursor={props.onProfileCursor}
-                  onZoomTo={props.onProfileZoom}
-                />
-              )}
-            </div>
-          );
-        })}
-      </div>
-
-      <SectionTitle hint="Open-Meteo">Wetter auf Passhöhe</SectionTitle>
-      <WeatherForecast slug={pass.slug} />
-
-      <SectionTitle
-        hint="ERA5-Land 2015–2024"
-        info="ERA5-Land ist ein 10-km-Raster und auf Passhöhe eher zu mild – gut zum Vergleich der Zeiträume, nicht als Absolutwert."
-      >
-        Klima
-      </SectionTitle>
-      {bucket && climate ? (
-        <>
-          <ItemGroup className="grid grid-cols-3 gap-1.5">
-            {(
+              ["Schönheit", <Rating key="b" value={pass.beauty} />],
+              ["Bekanntheit", <Rating key="f" value={pass.fame} />],
+              ["Schwierigkeit", <Rating key="d" value={pass.difficulty} />],
               [
-                [
-                  `${fmt(bucket.tmax)}° / ${fmt(bucket.tmin)}°`,
-                  "Ø Tag / Nacht",
-                ],
-                [
-                  `${bucket.frostPct} %`,
-                  `Frost · ${daysOf(bucket.frostPct)} von 15 Tagen`,
-                ],
-                [
-                  `${bucket.snowPct} %`,
-                  `Schnee · ${daysOf(bucket.snowPct)} von 15 Tagen`,
-                ],
-              ] as [string, string][]
-            ).map(([value, label]) => (
-              <Item
-                key={label}
-                variant="muted"
-                size="xs"
-                className="flex-col items-start gap-0.5"
-              >
-                <ItemContent className="gap-0">
-                  <ItemTitle className="text-sm leading-tight tabular-nums">
-                    {value}
-                  </ItemTitle>
-                  <ItemDescription className="line-clamp-none text-[11px] leading-tight text-pretty">
-                    {label}
-                  </ItemDescription>
-                </ItemContent>
-              </Item>
-            ))}
-          </ItemGroup>
-          {/* The derived values, labelled as such – the summit values above
-              are what the series measured (Principle 3). */}
-          <p className="text-muted-foreground mt-1.5 text-[11px]">
-            {periodLabel(props.period)} auf {fmtUnit(pass.elevation, "m")};
-            Niederschlag an {bucket.wetPct} % der Tage.{" "}
-            {valley === null
-              ? "Talwert nicht ableitbar, kein Anstiegsprofil."
-              : `Im Tal (${fmtUnit(signals.valley ?? 0, "m")}) um ${fmt(Math.round(valley))} °C, abgeleitet.`}{" "}
-            Tag{" "}
-            {sun.dayLength.toLocaleString("de-DE", {
-              maximumFractionDigits: 1,
-            })}{" "}
-            h, Sonne {clockTime(sun.sunrise)}–{clockTime(sun.sunset)}.
+                "Verkehr",
+                <span key="t" className="flex items-center gap-2">
+                  <Rating value={pass.traffic} muted />
+                  <span className="text-muted-foreground text-xs">
+                    {TRAFFIC_LABEL[pass.traffic]}
+                  </span>
+                </span>,
+              ],
+            ] as [string, React.ReactNode][]
+          ).map(([label, value]) => (
+            <div key={label} className="contents">
+              <dt className="text-muted-foreground text-xs">{label}</dt>
+              <dd>{value}</dd>
+            </div>
+          ))}
+        </dl>
+      </Section>
+
+      <Section
+        id="ascents"
+        info="Geroutete Straße, 100 Höhenpunkte aus einem Geländemodell – zum Vergleichen gut, nicht metergenau."
+        title="Auffahrten"
+      >
+        {pass.deadEnd && (
+          <p className="text-muted-foreground mb-3 text-xs leading-relaxed">
+            Stichstraße: Die Straße endet oben, hinunter geht es dieselbe
+            Auffahrt zurück.
           </p>
-          <ClimateChart climate={climate} period={props.period} />
-        </>
-      ) : (
-        <Empty className="py-3">
-          <EmptyHeader>
-            <EmptyTitle>Keine Klimareihe</EmptyTitle>
-            <EmptyDescription>
-              Für diesen Pass liegen noch keine Klimadaten vor.
-            </EmptyDescription>
-          </EmptyHeader>
-        </Empty>
-      )}
+        )}
+        {pass.ascents.length === 0 && (
+          <Empty className="py-3">
+            <EmptyHeader>
+              <EmptyTitle>Keine Auffahrt hinterlegt</EmptyTitle>
+            </EmptyHeader>
+          </Empty>
+        )}
+        <div className="flex flex-col gap-4">
+          {pass.ascents.map((a, i) => {
+            const profile = props.profiles[ascentKey(pass.slug, i)];
+            return (
+              <div key={a.label}>
+                <div className="flex flex-wrap items-baseline justify-between gap-x-2">
+                  <span className="text-xs font-medium">{a.label}</span>
+                  <span className="text-muted-foreground text-xs tabular-nums">
+                    {profile
+                      ? `${fmtUnit(profile.km, "km", 1)} · ${fmtUnit(profile.elevationGain, "hm")} · Ø ${fmt(profile.avgGradient, 1)} % · steilster km ${fmt(profile.maxKmGradient, 1)} % · ${fmt(profile.start)} → ${fmtUnit(profile.top, "m")}`
+                      : "Kein Höhenprofil vorhanden."}
+                  </span>
+                </div>
+                {profile && (
+                  <ElevationProfile
+                    profile={profile}
+                    coords={profile.coords}
+                    onCursor={props.onProfileCursor}
+                    onZoomTo={props.onProfileZoom}
+                  />
+                )}
+              </div>
+            );
+          })}
+        </div>
+      </Section>
+
+      <Section
+        id="weather"
+        info="Vorhersage von Open-Meteo für die Passhöhe, sieben Tage."
+        title="Aktuelles Wetter"
+      >
+        <WeatherForecast slug={pass.slug} />
+      </Section>
+
+      <Section
+        id="climate"
+        info="ERA5-Land 2015–2024, ein 10-km-Raster – auf Passhöhe eher zu mild."
+        title="Jahresklima"
+      >
+        {bucket && climate ? (
+          <>
+            <ItemGroup className="grid grid-cols-3 gap-1.5">
+              {(
+                [
+                  [
+                    `${fmt(bucket.tmax)}° / ${fmt(bucket.tmin)}°`,
+                    "Ø Tag / Nacht",
+                  ],
+                  [
+                    `${bucket.frostPct} %`,
+                    `Frost · ${daysOf(bucket.frostPct)} von 15 Tagen`,
+                  ],
+                  [
+                    `${bucket.snowPct} %`,
+                    `Schnee · ${daysOf(bucket.snowPct)} von 15 Tagen`,
+                  ],
+                ] as [string, string][]
+              ).map(([value, label]) => (
+                <Item
+                  key={label}
+                  variant="muted"
+                  size="xs"
+                  className="flex-col items-start gap-0.5"
+                >
+                  <ItemContent className="gap-0">
+                    <ItemTitle className="text-sm leading-tight tabular-nums">
+                      {value}
+                    </ItemTitle>
+                    <ItemDescription className="text-2xs line-clamp-none leading-tight text-pretty">
+                      {label}
+                    </ItemDescription>
+                  </ItemContent>
+                </Item>
+              ))}
+            </ItemGroup>
+            {/* The derived values, labelled as such – the summit values above
+                are what the series measured (Principle 3). */}
+            <p className="text-muted-foreground text-2xs mt-1.5">
+              {periodLabel(props.period)} auf {fmtUnit(pass.elevation, "m")};
+              Niederschlag an {bucket.wetPct} % der Tage.{" "}
+              {valley === null
+                ? "Talwert nicht ableitbar, kein Anstiegsprofil."
+                : `Im Tal (${fmtUnit(signals.valley ?? 0, "m")}) um ${fmt(Math.round(valley))} °C, abgeleitet.`}{" "}
+              Tag{" "}
+              {sun.dayLength.toLocaleString("de-DE", {
+                maximumFractionDigits: 1,
+              })}{" "}
+              h, Sonne {clockTime(sun.sunrise)}–{clockTime(sun.sunset)}.
+            </p>
+            <ClimateChart climate={climate} period={props.period} />
+          </>
+        ) : (
+          <Empty className="py-3">
+            <EmptyHeader>
+              <EmptyTitle>Keine Klimareihe</EmptyTitle>
+              <EmptyDescription>
+                Für diesen Pass liegen noch keine Klimadaten vor.
+              </EmptyDescription>
+            </EmptyHeader>
+          </Empty>
+        )}
+      </Section>
 
       <Nearby {...props} lat={pass.lat} lon={pass.lon} exclude={pass.slug} />
       <ExternalLinks
@@ -513,7 +478,7 @@ const TourDetail = (props: Props & { tour: Tour }) => {
 
   return (
     <>
-      <p className="text-muted-foreground mt-0.5 text-[13px]">
+      <p className="text-muted-foreground mt-0.5 text-xs">
         <span className="text-foreground text-2xl leading-none font-bold tabular-nums">
           {fmt(tour.km)}
         </span>
@@ -536,38 +501,40 @@ const TourDetail = (props: Props & { tour: Tour }) => {
           current={props.period}
           size="panel"
         />
+        <GradeLegend />
       </div>
 
-      <p className="mt-4 text-[13px] leading-relaxed">{tour.description}</p>
-      <p className="text-muted-foreground mt-1.5 text-[13px] leading-relaxed">
+      <p className="mt-4 text-xs leading-relaxed">{tour.description}</p>
+      <p className="text-muted-foreground mt-1.5 text-xs leading-relaxed">
         {tour.season}
       </p>
 
-      <SectionTitle>Pässe der Runde</SectionTitle>
-      <div className="flex flex-col items-start">
-        {tour.passes.map((slug) => {
-          const p = passIndex.get(slug);
-          if (!p) return null;
-          return (
-            <LinkButton
-              key={slug}
-              onClick={() => props.onSelect({ kind: "pass", slug })}
-            >
-              <StatusDot
-                status={passStatus(
-                  p,
-                  props.period,
-                  inputAt(signalsOf(props, p.slug), props.period),
-                )}
-              />{" "}
-              {p.name}
-              <span className="text-muted-foreground tabular-nums">
-                {fmtUnit(p.elevation, "m")}
-              </span>
-            </LinkButton>
-          );
-        })}
-      </div>
+      <Section id="tour-passes" title="Pässe der Runde">
+        <div className="flex flex-col items-start">
+          {tour.passes.map((slug) => {
+            const p = passIndex.get(slug);
+            if (!p) return null;
+            return (
+              <LinkButton
+                key={slug}
+                onClick={() => props.onSelect({ kind: "pass", slug })}
+              >
+                <StatusDot
+                  status={passStatus(
+                    p,
+                    props.period,
+                    inputAt(signalsOf(props, p.slug), props.period),
+                  )}
+                />{" "}
+                {p.name}
+                <span className="text-muted-foreground tabular-nums">
+                  {fmtUnit(p.elevation, "m")}
+                </span>
+              </LinkButton>
+            );
+          })}
+        </div>
+      </Section>
 
       <Nearby
         {...props}
@@ -582,7 +549,7 @@ const TownDetail = (props: Props & { town: Town }) => {
   const { town } = props;
   return (
     <>
-      <p className="mt-2 text-[13px]">{town.why}</p>
+      <p className="mt-2 text-xs">{town.why}</p>
       <Nearby {...props} lat={town.lat} lon={town.lon} exclude={town.slug} />
       <ExternalLinks
         links={[
@@ -645,7 +612,7 @@ export const DetailPanel = (props: Props) => {
       }}
     >
       <div className="border-border flex h-10 shrink-0 items-center gap-1 border-b px-2">
-        <p className="text-muted-foreground min-w-0 flex-1 truncate pl-2 text-[11px] font-semibold tracking-widest uppercase">
+        <p className="text-muted-foreground text-2xs min-w-0 flex-1 truncate pl-2 font-semibold tracking-widest uppercase">
           {kicker}
         </p>
         <Toggle
@@ -680,6 +647,9 @@ export const DetailPanel = (props: Props) => {
         >
           {entity.name}
         </h2>
+        <PhotoCarousel
+          photos={props.photos[photoKey(selection.kind, selection.slug)] ?? []}
+        />
         {selection.kind === "pass" && (
           <PassDetail {...props} pass={entity as Pass} />
         )}

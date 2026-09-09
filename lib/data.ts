@@ -3,6 +3,7 @@ import { existsSync } from "node:fs";
 import path from "node:path";
 
 import climateJson from "@/data/generated/climate.json";
+import photosJson from "@/data/generated/photos.json";
 import profilesJson from "@/data/generated/profiles.json";
 import routesJson from "@/data/generated/routes.json";
 import passesJson from "@/data/passes.json";
@@ -18,6 +19,7 @@ import type {
   ClimateYear,
   ElevationProfile,
   Pass,
+  Photos,
   ProfileWithCoords,
   RouteGeometry,
   Tour,
@@ -50,6 +52,7 @@ const routes: Record<string, RouteGeometry> = S.Routes.parse(routesJson);
 const climate: Record<string, ClimateYear> = S.Climate.parse(climateJson);
 const profiles: Record<string, ElevationProfile> =
   S.Profiles.parse(profilesJson);
+const photos: Photos = S.Photos.parse(photosJson);
 
 export const getPasses = async (): Promise<Pass[]> => {
   "use cache";
@@ -118,6 +121,12 @@ export const getClimate = async (): Promise<Record<string, ClimateYear>> => {
 export const getValleys = async (): Promise<Record<string, number>> => {
   "use cache";
   return valleyElevations(passes, profiles);
+};
+
+/** Commons photos per entity, keyed by `photoKey` (see `lib/photos.ts`). */
+export const getPhotos = async (): Promise<Photos> => {
+  "use cache";
+  return photos;
 };
 
 export const getPass = async (slug: string): Promise<Pass | undefined> => {

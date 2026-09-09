@@ -61,7 +61,7 @@ export const SeasonStrip = ({
           <span
             key={PERIODS[i]}
             className={cn(
-              "relative flex-1 rounded-[1px]",
+              "relative flex-1 rounded-xs",
               CELL[grade],
               i === currentIndex &&
                 "outline-foreground z-10 outline-1 outline-offset-1",
@@ -72,7 +72,7 @@ export const SeasonStrip = ({
       {panel && (
         <div
           aria-hidden
-          className="text-muted-foreground mt-0.5 flex text-[10px] leading-none"
+          className="text-muted-foreground text-2xs mt-0.5 flex leading-none"
         >
           {MONTH_INITIALS.map((m, i) => (
             <span key={m + String(i)} className="flex-1 text-center">

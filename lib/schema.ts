@@ -107,6 +107,14 @@ export const Pass = z.strictObject({
       (c) => c.split("/").every((x) => COUNTRIES.includes(x as never)),
       `Land: eines von ${COUNTRIES.join(", ")}`,
     ),
+  /**
+   * The road ends at the summit – no crossing. The descent is the ascent
+   * ridden backwards and the climb can never be part of a loop tour, so it is
+   * a fact a planner acts on, not decoration. Curated, not derived: the
+   * Nockalmstraße has two ascents and is a crossing, the Umbrailpass has one
+   * and is not a dead end.
+   */
+  deadEnd: z.boolean().optional(),
   difficulty: Rating,
   elevation: z.int().min(300).max(3500),
   fame: Rating,
@@ -115,6 +123,15 @@ export const Pass = z.strictObject({
   name: z.string().min(2),
   note: z.string(),
   region: Region,
+  /**
+   * The summit is the highest point of the asphalt, not a saddle: OSM carries
+   * no `mountain_pass` node for it (toll roads, panorama roads, roads that end
+   * at a glacier or a refuge). `data:locate` then skips the pass-node search
+   * and offers the highest sample of the stored route instead – the only
+   * honest candidate for such a road. The gate's own summit checks are
+   * unchanged; a correct road summit passes them like any pass.
+   */
+  roadSummit: z.boolean().optional(),
   /** null = cleared all year round. */
   season: PassSeason.nullable(),
   slug: Slug,
@@ -193,6 +210,34 @@ export const Routes = z.record(z.string(), RouteGeometry);
 export const Profiles = z.record(z.string(), ElevationProfile);
 /** Key: pass slug. */
 export const Climate = z.record(Slug, ClimateYear);
+// ── Output of scripts/build-photos.ts ────────────────────────────────────────
+
+/**
+ * One photo from Wikimedia Commons, together with everything its licence
+ * obliges us to show: author, licence name and a link to the file page. Only
+ * the metadata lives in the repo – the file itself stays on Wikimedia's CDN
+ * and is loaded by the browser from `src`, so no binary enters the project.
+ */
+export const Photo = z.strictObject({
+  /** Author line as plain text. Empty only where Commons names none. */
+  artist: z.string(),
+  /** Height of the thumbnail `src` points at. */
+  height: z.int().positive(),
+  /** Licence as Commons states it, e.g. "CC BY-SA 4.0" or "Public domain". */
+  license: z.string().min(1),
+  licenseUrl: z.url().optional(),
+  /** The Commons file page: the "source" half of the attribution. */
+  page: z.url(),
+  /** Commons thumbnail URL, `PHOTO_WIDTH` px wide (see `lib/photos.ts`). */
+  src: z.url(),
+  /** File name without the "File:" prefix and the extension – the alt text. */
+  title: z.string().min(1),
+  /** Width of the thumbnail `src` points at. */
+  width: z.int().positive(),
+});
+
+/** Key: `pass:<slug>`, `tour:<slug>` or `town:<slug>`, see `photoKey`. */
+export const Photos = z.record(z.string(), z.array(Photo));
 
 // ── The route quality gate (scripts/lib/validate.ts) ─────────────────────────
 
@@ -296,6 +341,7 @@ export const WeatherDay = z.strictObject({
 /** Which schema validates which file; used by check-data and emit-json-schema. */
 export const FILES = {
   "generated/climate.json": Climate,
+  "generated/photos.json": Photos,
   "generated/profiles.json": Profiles,
   "generated/rejected.json": Rejected,
   "generated/routes-meta.json": RoutesMeta,
