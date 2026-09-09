@@ -232,11 +232,22 @@ const checkPasses = (list: Pass[]) => {
   }
 };
 
-const checkTours = (list: Tour[], slugs: Set<string>) => {
+const checkTours = (
+  list: Tour[],
+  deadEnds: Set<string>,
+  slugs: Set<string>,
+) => {
   dupes(list, "Touren");
   for (const t of list) {
-    for (const s of t.passes)
+    for (const s of t.passes) {
       if (!slugs.has(s)) errors.push(`Tour ${t.slug}: unbekannter Pass ${s}`);
+      // A road that ends at its summit cannot be crossed, so a tour listing it
+      // either has the wrong pass or the pass is wrongly marked.
+      else if (deadEnds.has(s))
+        warnings.push(
+          `Tour ${t.slug}: ${s} ist eine Stichstraße (deadEnd) – eine Runde kann dort nicht hinüber`,
+        );
+    }
     const key = `tour:${t.slug}`;
     const geom = routes?.[key];
     if (!geom) {
@@ -255,7 +266,12 @@ const checkTowns = (list: Town[]) => {
 
 if (passes) checkPasses(passes);
 // Without a valid pass list every reference would read as unknown.
-if (tours && passes) checkTours(tours, new Set(passes.map((p) => p.slug)));
+if (tours && passes)
+  checkTours(
+    tours,
+    new Set(passes.filter((p) => p.deadEnd).map((p) => p.slug)),
+    new Set(passes.map((p) => p.slug)),
+  );
 if (towns) checkTowns(towns);
 
 // Rejections are unfinished curation: either the coordinates in data/*.json are

@@ -364,6 +364,12 @@ const PassDetail = (props: Props & { pass: Pass }) => {
       >
         Auffahrten
       </SectionTitle>
+      {pass.deadEnd && (
+        <p className="text-muted-foreground mb-3 text-xs leading-relaxed">
+          Stichstraße: Die Straße endet oben, hinunter geht es dieselbe Auffahrt
+          zurück.
+        </p>
+      )}
       {pass.ascents.length === 0 && (
         <Empty className="py-3">
           <EmptyHeader>

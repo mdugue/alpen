@@ -107,6 +107,14 @@ export const Pass = z.strictObject({
       (c) => c.split("/").every((x) => COUNTRIES.includes(x as never)),
       `Land: eines von ${COUNTRIES.join(", ")}`,
     ),
+  /**
+   * The road ends at the summit – no crossing. The descent is the ascent
+   * ridden backwards and the climb can never be part of a loop tour, so it is
+   * a fact a planner acts on, not decoration. Curated, not derived: the
+   * Nockalmstraße has two ascents and is a crossing, the Umbrailpass has one
+   * and is not a dead end.
+   */
+  deadEnd: z.boolean().optional(),
   difficulty: Rating,
   elevation: z.int().min(300).max(3500),
   fame: Rating,
@@ -115,6 +123,15 @@ export const Pass = z.strictObject({
   name: z.string().min(2),
   note: z.string(),
   region: Region,
+  /**
+   * The summit is the highest point of the asphalt, not a saddle: OSM carries
+   * no `mountain_pass` node for it (toll roads, panorama roads, roads that end
+   * at a glacier or a refuge). `data:locate` then skips the pass-node search
+   * and offers the highest sample of the stored route instead – the only
+   * honest candidate for such a road. The gate's own summit checks are
+   * unchanged; a correct road summit passes them like any pass.
+   */
+  roadSummit: z.boolean().optional(),
   /** null = cleared all year round. */
   season: PassSeason.nullable(),
   slug: Slug,
