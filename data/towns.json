@@ -5,6 +5,17 @@
   "country": "FR",
   "lat": 45.055,
   "lon": 6.03,
+  "tags": [
+   "hub",
+   "passes",
+   "workshops",
+   "events"
+  ],
+  "aliases": [
+   "Oisans",
+   "Le Bourg-d'Oisans",
+   "Romanche"
+  ],
   "why": "Basis für Alpe d'Huez, Galibier, Croix de Fer, Sarenne. Mehrere Rennradläden mit Werkstatt und Verleih, Marmotte-Zentrale."
  },
  {
@@ -13,6 +24,15 @@
   "country": "FR",
   "lat": 44.897,
   "lon": 6.636,
+  "tags": [
+   "passes",
+   "workshops",
+   "train"
+  ],
+  "aliases": [
+   "Serre Chevalier",
+   "Hautes-Alpes"
+  ],
   "why": "Izoard, Lautaret/Galibier, Montgenèvre, Granon. Radläden, Bahnhof, höchste Stadt Frankreichs."
  },
  {
@@ -21,6 +41,15 @@
   "country": "FR",
   "lat": 44.387,
   "lon": 6.652,
+  "tags": [
+   "passes",
+   "quiet",
+   "scenic"
+  ],
+  "aliases": [
+   "Ubaye",
+   "Vallée de l'Ubaye"
+  ],
   "why": "Bonette, Cayolle, Allos, Vars, Champs – sieben Pässe im Radius. Werkstätten, Rad-Unterkünfte."
  },
  {
@@ -29,6 +58,15 @@
   "country": "FR",
   "lat": 44.124,
   "lon": 5.179,
+  "tags": [
+   "hub",
+   "season",
+   "workshops"
+  ],
+  "aliases": [
+   "Provence",
+   "Vaucluse"
+  ],
   "why": "Ventoux-Dorf: Verleih, Werkstatt, Cafés, Startort der klassischen Auffahrt."
  },
  {
@@ -37,7 +75,112 @@
   "country": "FR",
   "lat": 45.276,
   "lon": 6.347,
+  "tags": [
+   "hub",
+   "passes",
+   "train",
+   "workshops"
+  ],
+  "aliases": [
+   "Maurienne",
+   "St-Jean-de-Maurienne",
+   "Savoie"
+  ],
   "why": "Croix de Fer, Madeleine, Télégraphe/Galibier; Bahnhof, Radläden, Maurienne-Radbüro."
+ },
+ {
+  "slug": "bourg-saint-maurice",
+  "name": "Bourg-Saint-Maurice",
+  "country": "FR",
+  "lat": 45.618,
+  "lon": 6.769,
+  "tags": [
+   "passes",
+   "train",
+   "workshops"
+  ],
+  "aliases": [
+   "Tarentaise",
+   "Haute-Tarentaise",
+   "Les Arcs",
+   "Savoie"
+  ],
+  "why": "Haute-Tarentaise mit TGV-Anschluss: Iseran, Petit-St-Bernard, Cormet de Roselend und Les Arcs. Radläden mit Werkstatt und Verleih im Ort."
+ },
+ {
+  "slug": "le-grand-bornand",
+  "name": "Le Grand-Bornand",
+  "country": "FR",
+  "lat": 45.943,
+  "lon": 6.429,
+  "tags": [
+   "passes",
+   "scenic",
+   "quiet"
+  ],
+  "aliases": [
+   "Aravis",
+   "Haute-Savoie",
+   "Col de la Croix Fry"
+  ],
+  "why": "Aravis-Dorf: Colombière, Aravis und Croix Fry beginnen am Ort. Grüne Nebentäler, wenig Verkehr, Verleih im Dorf."
+ },
+ {
+  "slug": "morzine",
+  "name": "Morzine",
+  "country": "FR",
+  "lat": 46.18,
+  "lon": 6.7,
+  "tags": [
+   "hub",
+   "passes",
+   "workshops"
+  ],
+  "aliases": [
+   "Chablais",
+   "Portes du Soleil",
+   "Avoriaz",
+   "Haute-Savoie"
+  ],
+  "why": "Chablais-Klassiker: Joux-Plane, Ramaz, Avoriaz und Joux Verte ab dem Ort. Dichte Radszene mit Läden, Verleih und Werkstätten."
+ },
+ {
+  "slug": "guillestre",
+  "name": "Guillestre",
+  "country": "FR",
+  "lat": 44.66,
+  "lon": 6.648,
+  "tags": [
+   "passes",
+   "quiet",
+   "scenic"
+  ],
+  "aliases": [
+   "Queyras",
+   "Guillestrois",
+   "Hautes-Alpes"
+  ],
+  "why": "Tor zum Queyras: Izoard, Vars, Agnel und Risoul, dazu die ruhige Schlucht des Guil. Campingplätze und kleine Radläden statt Skiort-Betrieb."
+ },
+ {
+  "slug": "sospel",
+  "name": "Sospel",
+  "country": "FR",
+  "lat": 43.877,
+  "lon": 7.447,
+  "tags": [
+   "season",
+   "quiet",
+   "train",
+   "scenic"
+  ],
+  "aliases": [
+   "Alpes-Maritimes",
+   "Côte d'Azur",
+   "Bévéra",
+   "Seealpen"
+  ],
+  "why": "Hinterland der Côte d'Azur: Turini, Braus, Brouis und Madone. Bahnhof an der Linie Nizza–Tende und ein Klima, das fast das ganze Jahr fahrbar ist."
  },
  {
   "slug": "bormio",
@@ -45,6 +188,16 @@
   "country": "IT",
   "lat": 46.468,
   "lon": 10.372,
+  "tags": [
+   "hub",
+   "passes",
+   "workshops"
+  ],
+  "aliases": [
+   "Valtellina",
+   "Veltlin",
+   "Alta Valtellina"
+  ],
   "why": "Stelvio, Gavia, Mortirolo, Foscagno. Viele Radgeschäfte, Verleih, Bike-Hotels, Thermen."
  },
  {
@@ -53,7 +206,35 @@
   "country": "IT",
   "lat": 46.538,
   "lon": 10.135,
+  "tags": [
+   "passes",
+   "hotels",
+   "workshops"
+  ],
+  "aliases": [
+   "Klein-Tibet",
+   "Lombardei"
+  ],
   "why": "Höhentraining-Ort, Bike-Hotels, Werkstätten; Foscagno, Bernina, Forcola."
+ },
+ {
+  "slug": "morbegno",
+  "name": "Morbegno",
+  "country": "IT",
+  "lat": 46.137,
+  "lon": 9.572,
+  "tags": [
+   "passes",
+   "train",
+   "season"
+  ],
+  "aliases": [
+   "Valtellina",
+   "Veltlin",
+   "Val Gerola",
+   "Valchiavenna"
+  ],
+  "why": "Tiefer Einstieg in die Valtellina: San Marco, Vivione und die Anfahrt Richtung Aprica. Bahn bis in den Ort, im Frühjahr und Spätherbst fahrbar."
  },
  {
   "slug": "ponte-di-legno",
@@ -61,6 +242,15 @@
   "country": "IT",
   "lat": 46.259,
   "lon": 10.508,
+  "tags": [
+   "passes",
+   "hotels",
+   "workshops"
+  ],
+  "aliases": [
+   "Val Camonica",
+   "Valcamonica"
+  ],
   "why": "Gavia, Tonale, Mortirolo; Radläden, ruhiger als Bormio."
  },
  {
@@ -69,7 +259,37 @@
   "country": "IT",
   "lat": 46.618,
   "lon": 10.594,
+  "tags": [
+   "passes",
+   "season",
+   "quiet"
+  ],
+  "aliases": [
+   "Prato allo Stelvio",
+   "Vinschgau",
+   "Val Venosta"
+  ],
   "why": "Fuß der 48 Kehren, Umbrail, Vinschgau-Radweg; Verleih und Werkstätten."
+ },
+ {
+  "slug": "meran-merano",
+  "name": "Meran / Merano",
+  "country": "IT",
+  "lat": 46.6713,
+  "lon": 11.1596,
+  "tags": [
+   "hub",
+   "season",
+   "train",
+   "workshops"
+  ],
+  "aliases": [
+   "Passeiertal",
+   "Val Passiria",
+   "Etschtal",
+   "Burggrafenamt"
+  ],
+  "why": "Milder Talort für die lange Saison: Jaufen, Timmelsjoch, Gampenjoch und der Vinschgau ab der Haustür. Bahnanschluss, Radläden, Radhotels."
  },
  {
   "slug": "corvara-alta-badia",
@@ -77,7 +297,37 @@
   "country": "IT",
   "lat": 46.549,
   "lon": 11.874,
+  "tags": [
+   "hub",
+   "passes",
+   "hotels",
+   "events"
+  ],
+  "aliases": [
+   "Val Badia",
+   "Gadertal",
+   "Kolfuschg",
+   "Colfosco"
+  ],
   "why": "Sellaronda- und Maratona-Zentrum: Bike-Hotels, Verleih, Werkstätten, Servicepoints an den Pässen."
+ },
+ {
+  "slug": "arabba",
+  "name": "Arabba",
+  "country": "IT",
+  "lat": 46.4972,
+  "lon": 11.8703,
+  "tags": [
+   "passes",
+   "hotels",
+   "scenic"
+  ],
+  "aliases": [
+   "Buchenstein",
+   "Livinallongo",
+   "Sellaronda"
+  ],
+  "why": "Mitten in der Sellaronda: Pordoi, Campolongo, Falzarego/Valparola und Fedaia beginnen am Ort. Bike-Hotels mit Radkeller, Verleih an der Talstation."
  },
  {
   "slug": "canazei",
@@ -85,7 +335,36 @@
   "country": "IT",
   "lat": 46.477,
   "lon": 11.77,
+  "tags": [
+   "hub",
+   "passes",
+   "hotels"
+  ],
+  "aliases": [
+   "Val di Fassa",
+   "Fassatal",
+   "Campitello di Fassa"
+  ],
   "why": "Sella, Pordoi, Fedaia, San Pellegrino; Radläden, Sellaronda-Startort."
+ },
+ {
+  "slug": "wolkenstein-selva",
+  "name": "Wolkenstein / Selva di Val Gardena",
+  "country": "IT",
+  "lat": 46.5556,
+  "lon": 11.7597,
+  "tags": [
+   "passes",
+   "hotels",
+   "scenic"
+  ],
+  "aliases": [
+   "Gröden",
+   "Groeden",
+   "Val Gardena",
+   "Sellaronda"
+  ],
+  "why": "Grödner Talschluss: Sella und Grödner Joch beginnen am Ort, Erbe/Würzjoch und die Sellaronda schließen an. Viele Bike-Hotels, Verleih und Werkstätten."
  },
  {
   "slug": "cortina-d-ampezzo",
@@ -93,7 +372,108 @@
   "country": "IT",
   "lat": 46.538,
   "lon": 12.136,
+  "tags": [
+   "passes",
+   "hotels",
+   "scenic"
+  ],
+  "aliases": [
+   "Cadore",
+   "Ampezzo",
+   "Boite"
+  ],
   "why": "Giau, Falzarego, Tre Cime, Cimabanche; Radläden, große Auswahl an Unterkünften."
+ },
+ {
+  "slug": "alleghe-caprile",
+  "name": "Alleghe / Caprile",
+  "country": "IT",
+  "lat": 46.4093,
+  "lon": 12.0219,
+  "tags": [
+   "passes",
+   "scenic",
+   "quiet"
+  ],
+  "aliases": [
+   "Agordino",
+   "Cordevole",
+   "Civetta"
+  ],
+  "why": "Ruhige Basis unter der Civetta: Fedaia ab Caprile, dazu Giau, Staulanza und Duran. Wenig Durchgangsverkehr, See und Dolomitenwände direkt vor der Tür."
+ },
+ {
+  "slug": "san-martino-di-castrozza",
+  "name": "San Martino di Castrozza",
+  "country": "IT",
+  "lat": 46.2622,
+  "lon": 11.8003,
+  "tags": [
+   "passes",
+   "scenic",
+   "quiet"
+  ],
+  "aliases": [
+   "Primiero",
+   "Pale di San Martino",
+   "Passo Cereda"
+  ],
+  "why": "Südrampe des Rolle unter den Palagruppen: Rolle, Cereda und Croce d'Aune. Ruhig, landschaftlich außergewöhnlich, Hotels aus dem Skibetrieb."
+ },
+ {
+  "slug": "cavalese",
+  "name": "Cavalese",
+  "country": "IT",
+  "lat": 46.2893,
+  "lon": 11.461,
+  "tags": [
+   "passes",
+   "quiet",
+   "hotels"
+  ],
+  "aliases": [
+   "Val di Fiemme",
+   "Fleimstal",
+   "Predazzo"
+  ],
+  "why": "Fleimstal als ruhige Talbasis: Manghen, Lavazè, Rolle und San Pellegrino in Reichweite, dazu flache Talstraßen für den Tag danach."
+ },
+ {
+  "slug": "toblach-dobbiaco",
+  "name": "Toblach / Dobbiaco",
+  "country": "IT",
+  "lat": 46.7358,
+  "lon": 12.2214,
+  "tags": [
+   "train",
+   "hotels",
+   "scenic"
+  ],
+  "aliases": [
+   "Pustertal",
+   "Val Pusteria",
+   "Hochpustertal",
+   "Höhlensteintal"
+  ],
+  "why": "Hochpustertal mit Bahnhof: Tre Cime, Kreuzbergpass und Furkelpass in Reichweite. Radverleih und Radhotels am Ort, Radweg ins Tal."
+ },
+ {
+  "slug": "tolmezzo",
+  "name": "Tolmezzo",
+  "country": "IT",
+  "lat": 46.403,
+  "lon": 13.018,
+  "tags": [
+   "quiet",
+   "season"
+  ],
+  "aliases": [
+   "Carnia",
+   "Karnien",
+   "Friaul",
+   "Friuli"
+  ],
+  "why": "Karnisches Zentrum: Zoncolan, Plöckenpass und Passo di Lanza. Ruhige Täler, mild genug für Frühjahr und Spätherbst."
  },
  {
   "slug": "soelden",
@@ -101,7 +481,91 @@
   "country": "AT",
   "lat": 46.968,
   "lon": 11.007,
+  "tags": [
+   "passes",
+   "hotels",
+   "events"
+  ],
+  "aliases": [
+   "Soelden",
+   "Ötztal",
+   "Oetztal",
+   "Obergurgl"
+  ],
   "why": "Ötztaler-Zentrale: Timmelsjoch, Gletscherstraße, Kühtai; Radläden, Verleih, Rad-Hotels."
+ },
+ {
+  "slug": "landeck",
+  "name": "Landeck",
+  "country": "AT",
+  "lat": 47.139,
+  "lon": 10.566,
+  "tags": [
+   "train",
+   "quiet",
+   "season"
+  ],
+  "aliases": [
+   "Oberinntal",
+   "Zams",
+   "Kaunertal"
+  ],
+  "why": "Knotenpunkt im Oberinntal mit Bahnhof: Hahntennjoch, Arlberg, Kaunertaler Gletscherstraße und Silvretta ohne lange Anfahrt."
+ },
+ {
+  "slug": "innsbruck",
+  "name": "Innsbruck",
+  "country": "AT",
+  "lat": 47.262,
+  "lon": 11.394,
+  "tags": [
+   "hub",
+   "passes",
+   "train",
+   "workshops"
+  ],
+  "aliases": [
+   "Tirol",
+   "Inntal",
+   "Nordkette"
+  ],
+  "why": "Kühtai, Brenner, Zirler Berg; große Auswahl an Radläden, Bahnknoten."
+ },
+ {
+  "slug": "mayrhofen",
+  "name": "Mayrhofen",
+  "country": "AT",
+  "lat": 47.166,
+  "lon": 11.862,
+  "tags": [
+   "passes",
+   "train",
+   "hotels"
+  ],
+  "aliases": [
+   "Zillertal",
+   "Zell am Ziller",
+   "Zillertaler Höhenstraße"
+  ],
+  "why": "Zillertaler Basis: Gerlospass und Zillertaler Höhenstraße ab dem Ort, Talradweg für lockere Tage. Zillertalbahn bis ins Zentrum, viele Radhotels."
+ },
+ {
+  "slug": "kitzbuehel",
+  "name": "Kitzbühel",
+  "country": "AT",
+  "lat": 47.446,
+  "lon": 12.392,
+  "tags": [
+   "passes",
+   "train",
+   "hotels"
+  ],
+  "aliases": [
+   "Kitzbuehel",
+   "Kitzbüheler Alpen",
+   "Brixental"
+  ],
+  "why": "Das Kitzbüheler Horn beginnt am Ortsrand, dazu Thurn, Gerlos und Filzensattel. Bahnhof, Verleih und ein dichtes Hotelangebot."
  },
  {
   "slug": "bruck-an-der-glocknerstrasse",
@@ -109,7 +573,35 @@
   "country": "AT",
   "lat": 47.285,
   "lon": 12.823,
+  "tags": [
+   "passes",
+   "train",
+   "hotels"
+  ],
+  "aliases": [
+   "Pinzgau",
+   "Fusch",
+   "Zell am See"
+  ],
   "why": "Fuß der Großglockner-Hochalpenstraße; Werkstatt, Verleih, Zeller-See-Region."
+ },
+ {
+  "slug": "schladming",
+  "name": "Schladming",
+  "country": "AT",
+  "lat": 47.394,
+  "lon": 13.689,
+  "tags": [
+   "train",
+   "hotels",
+   "scenic"
+  ],
+  "aliases": [
+   "Ennstal",
+   "Dachstein",
+   "Steiermark"
+  ],
+  "why": "Ennstal mit Bahnhof: Sölkpass, Radstädter Tauern und die Dachsteinrunde. Radhotels und Verleih aus dem Skibetrieb."
  },
  {
   "slug": "bad-kleinkirchheim",
@@ -117,7 +609,36 @@
   "country": "AT",
   "lat": 46.815,
   "lon": 13.789,
+  "tags": [
+   "passes",
+   "hotels",
+   "quiet"
+  ],
+  "aliases": [
+   "Nockberge",
+   "Kärnten",
+   "Kaernten"
+  ],
   "why": "Nockalmstraße, Turracher Höhe, Villacher Alpenstraße; Rad-Hotels, Werkstätten."
+ },
+ {
+  "slug": "berchtesgaden",
+  "name": "Berchtesgaden",
+  "country": "DE",
+  "lat": 47.631,
+  "lon": 13.004,
+  "tags": [
+   "passes",
+   "train",
+   "scenic"
+  ],
+  "aliases": [
+   "Berchtesgadener Land",
+   "Königssee",
+   "Koenigssee",
+   "Rossfeld"
+  ],
+  "why": "Roßfeld-Panoramastraße, Hirschbichl und die Runde um den Königssee. Bahnanschluss, Alpenkulisse und kurze Anfahrten aus Salzburg."
  },
  {
   "slug": "andermatt",
@@ -125,6 +646,16 @@
   "country": "CH",
   "lat": 46.635,
   "lon": 8.594,
+  "tags": [
+   "hub",
+   "passes",
+   "train"
+  ],
+  "aliases": [
+   "Urserental",
+   "Uri",
+   "Gotthard"
+  ],
   "why": "Furka, Gotthard, Oberalp, Susten, Nufenen; Radläden, Bahnhof, Alpenbrevet-Basis."
  },
  {
@@ -133,7 +664,74 @@
   "country": "CH",
   "lat": 46.727,
   "lon": 8.187,
+  "tags": [
+   "passes",
+   "train",
+   "scenic"
+  ],
+  "aliases": [
+   "Haslital",
+   "Berner Oberland"
+  ],
   "why": "Grimsel, Susten, Grosse Scheidegg; Radläden, Bahnhof."
+ },
+ {
+  "slug": "brig",
+  "name": "Brig",
+  "country": "CH",
+  "lat": 46.319,
+  "lon": 7.988,
+  "tags": [
+   "passes",
+   "train",
+   "season"
+  ],
+  "aliases": [
+   "Brig-Glis",
+   "Briga",
+   "Wallis",
+   "Valais",
+   "Oberwallis"
+  ],
+  "why": "Walliser Drehscheibe mit Bahnhof: Simplon, Nufenen, Furka und Grimsel ab dem Rhonetal. Tief gelegen, deshalb früh im Jahr fahrbar."
+ },
+ {
+  "slug": "martigny",
+  "name": "Martigny",
+  "country": "CH",
+  "lat": 46.101,
+  "lon": 7.073,
+  "tags": [
+   "passes",
+   "train",
+   "season"
+  ],
+  "aliases": [
+   "Unterwallis",
+   "Wallis",
+   "Valais",
+   "Forclaz"
+  ],
+  "why": "Unterwallis mit Bahnhof: Grand-St-Bernard, Forclaz und Champex. Auf 470 m gelegen und dadurch eine der frühesten Basen der Westalpen."
+ },
+ {
+  "slug": "spluegen",
+  "name": "Splügen",
+  "country": "CH",
+  "lat": 46.551,
+  "lon": 9.321,
+  "tags": [
+   "passes",
+   "quiet",
+   "scenic"
+  ],
+  "aliases": [
+   "Spluegen",
+   "Rheinwald",
+   "Hinterrhein",
+   "San Bernardino"
+  ],
+  "why": "Ruhiges Rheinwalddorf zwischen Splügenpass und San Bernardino, Julier und Albula folgen im Anschluss. Der Transit läuft in der Autobahn, die Passstraßen bleiben leer."
  },
  {
   "slug": "davos",
@@ -141,6 +739,16 @@
   "country": "CH",
   "lat": 46.803,
   "lon": 9.836,
+  "tags": [
+   "passes",
+   "train",
+   "hotels"
+  ],
+  "aliases": [
+   "Graubünden",
+   "Graubuenden",
+   "Landwassertal"
+  ],
   "why": "Flüela, Albula, Wolfgang; viele Radgeschäfte, Höhenlage 1 560 m."
  },
  {
@@ -149,6 +757,16 @@
   "country": "CH",
   "lat": 46.498,
   "lon": 9.838,
+  "tags": [
+   "passes",
+   "train",
+   "scenic"
+  ],
+  "aliases": [
+   "Engadin",
+   "Oberengadin",
+   "Sankt Moritz"
+  ],
   "why": "Bernina, Julier, Maloja, Albula; Radläden, Verleih, Engadin-Radrouten."
  },
  {
@@ -157,15 +775,17 @@
   "country": "IT",
   "lat": 45.737,
   "lon": 7.32,
+  "tags": [
+   "train",
+   "season",
+   "workshops"
+  ],
+  "aliases": [
+   "Aostatal",
+   "Valle d'Aosta",
+   "Aoste"
+  ],
   "why": "Grand/Petit Saint-Bernard, San Carlo, Cervinia, Pila; Radläden, Bahnhof."
- },
- {
-  "slug": "cuneo",
-  "name": "Cuneo",
-  "country": "IT",
-  "lat": 44.384,
-  "lon": 7.543,
-  "why": "Fauniera, Lombarde, Agnello, Sampeyre, Maddalena; Radläden, Fausto-Coppi-Granfondo."
  },
  {
   "slug": "susa",
@@ -173,7 +793,52 @@
   "country": "IT",
   "lat": 45.137,
   "lon": 7.053,
+  "tags": [
+   "train",
+   "season",
+   "quiet"
+  ],
+  "aliases": [
+   "Val di Susa",
+   "Susatal"
+  ],
   "why": "Finestre, Mont Cenis, Sestriere; Bahnhof, Radläden."
+ },
+ {
+  "slug": "cuneo",
+  "name": "Cuneo",
+  "country": "IT",
+  "lat": 44.384,
+  "lon": 7.543,
+  "tags": [
+   "train",
+   "season",
+   "workshops"
+  ],
+  "aliases": [
+   "Coni",
+   "Piemont",
+   "Piemonte"
+  ],
+  "why": "Fauniera, Lombarde, Agnello, Sampeyre, Maddalena; Radläden, Fausto-Coppi-Granfondo."
+ },
+ {
+  "slug": "sterzing",
+  "name": "Sterzing",
+  "country": "IT",
+  "lat": 46.897,
+  "lon": 11.431,
+  "tags": [
+   "passes",
+   "train",
+   "workshops"
+  ],
+  "aliases": [
+   "Vipiteno",
+   "Wipptal",
+   "Eisacktal"
+  ],
+  "why": "Jaufen, Penser Joch, Brenner, Pfitscher Joch; Radläden, Bahnhof."
  },
  {
   "slug": "kranjska-gora",
@@ -181,6 +846,16 @@
   "country": "SI",
   "lat": 46.484,
   "lon": 13.789,
+  "tags": [
+   "passes",
+   "scenic",
+   "hotels"
+  ],
+  "aliases": [
+   "Julische Alpen",
+   "Oberkrain",
+   "Gorenjska"
+  ],
   "why": "Vršič, Predil, Mangart; Verleih, Werkstätten, Rad-Hotels."
  },
  {
@@ -189,22 +864,17 @@
   "country": "SI",
   "lat": 46.338,
   "lon": 13.552,
+  "tags": [
+   "passes",
+   "scenic",
+   "quiet"
+  ],
+  "aliases": [
+   "Flitsch",
+   "Soča",
+   "Isonzo",
+   "Julische Alpen"
+  ],
   "why": "Soča-Tal, Vršič, Mangart, Predil; Verleih, Outdoor-Basis."
- },
- {
-  "slug": "sterzing",
-  "name": "Sterzing",
-  "country": "IT",
-  "lat": 46.897,
-  "lon": 11.431,
-  "why": "Jaufen, Penser Joch, Brenner, Pfitscher Joch; Radläden, Bahnhof."
- },
- {
-  "slug": "innsbruck",
-  "name": "Innsbruck",
-  "country": "AT",
-  "lat": 47.262,
-  "lon": 11.394,
-  "why": "Kühtai, Brenner, Zirler Berg; große Auswahl an Radläden, Bahnknoten."
  }
 ]

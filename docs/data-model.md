@@ -129,8 +129,37 @@ that routing connects into a line.
 
 ### `data/towns.json`
 
-Towns with road-cycling infrastructure (workshops, rentals, bike hotels). `why`
-is a single sentence naming the surrounding passes and the infrastructure.
+Bases to look for a hotel in: towns with road-cycling infrastructure
+(workshops, rentals, bike hotels) or with several classic ascents at the door.
+`why` is a single sentence naming the surrounding passes and the
+infrastructure.
+
+`tags` says in two words **why the town is in the list at all** – one to four
+labels from the fixed vocabulary in `lib/regions.ts` (`TOWN_TAGS`, display
+order; `TOWN_TAG` carries the German label and the sentence that explains it in
+the scales dialog):
+
+| Tag         | Label                 | Given when                                                      |
+| ----------- | --------------------- | --------------------------------------------------------------- |
+| `hub`       | Radsport-Mekka        | a fixture of the road-cycling calendar, full of bikes in summer |
+| `passes`    | Pässe vor der Tür     | several classic ascents start without a transfer                |
+| `workshops` | Werkstätten & Verleih | road-bike shops with a workshop and rentals in the town         |
+| `hotels`    | Bike-Hotels           | accommodation with a bike cellar, wash bay and tour service     |
+| `scenic`    | Besonders schön       | the setting is itself a reason to go                            |
+| `quiet`     | Ruhig                 | side valley rather than a transit axis                          |
+| `train`     | Bahnanschluss         | reachable without a car                                         |
+| `events`    | Marathon-Ort          | start or centre of a big cycling marathon                       |
+| `season`    | Lange Saison          | low and mild – rides early in the year and late in the autumn   |
+
+They are **editorial labels, not counted facts**, in the same sense as the 1–5
+scales (`docs/scales.md`): the scales dialog says so, and `data:check` warns
+above four labels, because a town that is everything says nothing.
+
+`aliases` feeds the search like the pass aliases, but with the valley and area
+names people actually type: "Val di Fassa" finds Canazei, "Gröden" finds
+Wolkenstein, "Wallis" finds Brig and Martigny. Unlike a pass alias it may
+therefore be shared by several towns; what `data:check` rejects is an alias
+that collides with another town's _name_, or one a town gives itself twice.
 
 ## Derived data (`bun run data:build`)
 

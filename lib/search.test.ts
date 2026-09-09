@@ -131,11 +131,13 @@ describe("tourHaystack and townHaystack", () => {
     waypoints: [],
   };
   const town: Town = {
+    aliases: ["Valtellina", "Veltlin"],
     country: "IT",
     lat: 46.4,
     lon: 10.3,
     name: "Bormio",
     slug: "bormio",
+    tags: ["hub", "workshops"],
     why: "Stelvio vor der Tür",
   };
   test("a tour is found through the names of its passes", () => {
@@ -147,5 +149,13 @@ describe("tourHaystack and townHaystack", () => {
   test("a town is found through its country name", () => {
     expect(matches(townHaystack(town), "italien")).toBe(true);
     expect(matches(townHaystack(town), "bormio it")).toBe(true);
+  });
+  test("a town is found through the valley it sits in and through its labels", () => {
+    expect(matches(townHaystack(town), "veltlin")).toBe(true);
+    expect(matches(townHaystack(town), "valtellina")).toBe(true);
+    // The labels are prose in the haystack, so a stem finds them too.
+    expect(matches(townHaystack(town), "werkstatt")).toBe(true);
+    expect(matches(townHaystack(town), "mekka")).toBe(true);
+    expect(matches(townHaystack(town), "bahnanschluss")).toBe(false);
   });
 });

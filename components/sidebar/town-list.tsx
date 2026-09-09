@@ -2,8 +2,14 @@
 
 import { EntityRow } from "@/components/sidebar/entity-row";
 import { ListEmpty } from "@/components/sidebar/list-empty";
+import { TOWN_TAG } from "@/lib/regions";
 import type { TownRow } from "@/lib/rows";
 
+/**
+ * The subtitle is the town's own labels rather than the first sentence of
+ * `why`: what a planner scans a list of bases for is what kind of place it is,
+ * and the sentence with the pass names is one click away in the detail panel.
+ */
 export const TownList = ({
   rows,
   currentRow,
@@ -25,7 +31,10 @@ export const TownList = ({
           rowId={`town:${town.slug}`}
           current={currentRow === `town:${town.slug}`}
           title={town.name}
-          subtitle={`${town.country} · ${town.why.split(".")[0]}`}
+          subtitle={[
+            town.country,
+            ...town.tags.map((t) => TOWN_TAG[t].label),
+          ].join(" · ")}
           favorite={favorite}
           onToggleFavorite={() => onToggleFavorite(town.slug)}
           onSelect={() => onSelect(town.slug)}

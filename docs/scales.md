@@ -19,6 +19,15 @@ For anyone wanting to make this objective: `difficulty` could be computed from
 `traffic` approximately from the OSM road classes along the routed ascent. Both
 are listed in `docs/roadmap.md`.
 
+## Town labels
+
+`tags` in `data/towns.json` (vocabulary and German labels in `lib/regions.ts`)
+are editorial in exactly the same sense: they say what a planner would notice
+on arrival – "Radsport-Mekka", "Werkstätten & Verleih", "Ruhig", "Lange
+Saison" – and nothing is counted. The scales dialog lists all of them with the
+sentence that defines each, `docs/data-model.md` has the table. One to four per
+town; `data:check` warns above four.
+
 ## Status per period
 
 `passVerdict()` in `lib/status.ts` – the opening window, the pass altitude and
