@@ -7,8 +7,8 @@
     "bun": ">=1.4.0"
   },
   "scripts": {
-    "dev": "bun run scripts/copy-maplibre-worker.ts && next dev",
-    "build": "bun run scripts/copy-maplibre-worker.ts && next build",
+    "dev": "bun run scripts/copy-maplibre-worker.ts && bun run scripts/build-map-assets.ts && next dev",
+    "build": "bun run scripts/copy-maplibre-worker.ts && bun run scripts/build-map-assets.ts && next build",
     "start": "next start",
     "lint": "ultracite check",
     "lint:fix": "ultracite fix",

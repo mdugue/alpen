@@ -16,7 +16,9 @@ friends do that better and the app links out to them.
    `data/generated/*.json` and is imported at build time. When in doubt, new
    data is _precomputed_ (`scripts/build-data.ts`) rather than fetched at
    runtime. Runtime fetches need a good reason and belong behind a route with
-   `"use cache"` + `cacheLife`.
+   `"use cache"` + `cacheLife`; the one exception is a content-hashed static
+   file under `public/` (the map geometry), which is precomputed too and
+   cached by name.
 2. **German in the UI**, English in code, comments and docs. Numbers are
    formatted with `toLocaleString("de-DE")` (see `fmt` in `lib/utils.ts`).
 3. **Stay honest.** The 1–5 scales are editorial judgements and the status is
@@ -35,28 +37,30 @@ friends do that better and the app links out to them.
 
 ## Where things live
 
-| Topic                                         | File                                                                                                                  |
-| --------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
-| Rideability heuristic                         | `lib/status.ts` (`passStatus`, `tourStatus`)                                                                          |
-| Data schemas (zod) and inferred types         | `lib/schema.ts`, `lib/types.ts`, `data/schema/*.schema.json` (`bun run data:schema`)                                  |
-| Regions and countries (vocabulary)            | `lib/regions.ts`                                                                                                      |
-| Data access (cached, validated)               | `lib/data.ts`                                                                                                         |
-| Profile sampling and derived gradients        | `lib/profile.ts`                                                                                                      |
-| Filter, selection and URL state (hash keys)   | `lib/app-state.ts`, `components/explorer.tsx`                                                                         |
-| Search normalisation and haystacks            | `lib/search.ts`                                                                                                       |
-| Map, layers, 3D, markers, labels              | `components/map/pass-map.tsx`                                                                                         |
-| Period scrubber floating over the map         | `components/map/period-scrubber.tsx`                                                                                  |
-| Season strip (24 half-months)                 | `components/season-strip.tsx`                                                                                         |
-| Sidebar: search, filters, one list per kind   | `components/sidebar/`, `lib/rows.ts`                                                                                  |
-| Detail panel incl. profile/weather/climate    | `components/panel/`                                                                                                   |
-| Precomputation, data checks                   | `scripts/build-data.ts`, `scripts/check-data.ts`                                                                      |
-| Route quality gate: checks and thresholds     | `scripts/lib/validate.ts`                                                                                             |
-| Name, claim, colours, mark, base URL          | `lib/brand.ts`, `lib/mark.tsx`                                                                                        |
-| Icons, share image, manifest, robots, sitemap | `app/icon.tsx`, `app/apple-icon.tsx`, `app/opengraph-image.tsx`, `app/manifest.ts`, `app/robots.ts`, `app/sitemap.ts` |
-| Legal pages                                   | `app/impressum/`, `app/datenschutz/`                                                                                  |
-| Linting and formatting                        | `oxlint.config.ts`, `oxfmt.config.ts`                                                                                 |
-| Implementation plans                          | `docs/plans/` (index: `docs/plans/README.md`)                                                                         |
-| Project skills                                | `.agents/skills/implement-plan`, `curate-data`, `preview-app`                                                         |
+| Topic                                           | File                                                                                                                  |
+| ----------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| Rideability heuristic                           | `lib/status.ts` (`passStatus`, `tourStatus`)                                                                          |
+| Data schemas (zod) and inferred types           | `lib/schema.ts`, `lib/types.ts`, `data/schema/*.schema.json` (`bun run data:schema`)                                  |
+| Regions and countries (vocabulary)              | `lib/regions.ts`                                                                                                      |
+| Data access (cached, validated)                 | `lib/data.ts`                                                                                                         |
+| Profile sampling and derived gradients          | `lib/profile.ts`                                                                                                      |
+| Filter, selection and URL state (hash keys)     | `lib/app-state.ts`, `components/explorer.tsx`                                                                         |
+| Search normalisation and haystacks              | `lib/search.ts`                                                                                                       |
+| Map, layers, 3D, markers, labels, feature state | `components/map/pass-map.tsx`                                                                                         |
+| Map assets: GeoJSON, simplification, hashing    | `lib/map-assets.ts`, `scripts/build-map-assets.ts` (→ `public/map`, git-ignored)                                      |
+| Tours within reach of an entity                 | `lib/nearby.ts` (computed on the server in `lib/data.ts`)                                                             |
+| Period scrubber floating over the map           | `components/map/period-scrubber.tsx`                                                                                  |
+| Season strip (24 half-months)                   | `components/season-strip.tsx`                                                                                         |
+| Sidebar: search, filters, one list per kind     | `components/sidebar/`, `lib/rows.ts`                                                                                  |
+| Detail panel incl. profile/weather/climate      | `components/panel/`                                                                                                   |
+| Precomputation, data checks                     | `scripts/build-data.ts`, `scripts/check-data.ts`                                                                      |
+| Route quality gate: checks and thresholds       | `scripts/lib/validate.ts`                                                                                             |
+| Name, claim, colours, mark, base URL            | `lib/brand.ts`, `lib/mark.tsx`                                                                                        |
+| Icons, share image, manifest, robots, sitemap   | `app/icon.tsx`, `app/apple-icon.tsx`, `app/opengraph-image.tsx`, `app/manifest.ts`, `app/robots.ts`, `app/sitemap.ts` |
+| Legal pages                                     | `app/impressum/`, `app/datenschutz/`                                                                                  |
+| Linting and formatting                          | `oxlint.config.ts`, `oxfmt.config.ts`                                                                                 |
+| Implementation plans                            | `docs/plans/` (index: `docs/plans/README.md`)                                                                         |
+| Project skills                                  | `.agents/skills/implement-plan`, `curate-data`, `preview-app`                                                         |
 
 ## Conventions
 
@@ -110,6 +114,22 @@ friends do that better and the app links out to them.
   the training and answer-engine crawlers; pages that carry
   `robots: { index: false }` stay crawlable on purpose, since a crawler has to
   fetch a page to see that.
+- **Route geometry never travels as props.** `scripts/build-map-assets.ts`
+  (runs before `dev` and `build`, next to the worker copy) simplifies
+  `routes.json` to 5 m and writes one content-hashed GeoJSON per kind into
+  `public/map` (git-ignored, cached immutably via `next.config.ts`).
+  `lib/data.ts` derives the same file names with `lib/map-assets.ts` and hands
+  the page the URLs plus the tour bounding boxes; MapLibre fetches the files
+  and tiles them in its worker. `pass-map.tsx` never calls `setData` on the
+  `routes` and `tours` sources: which lines show is a layer filter (which also
+  keeps hidden lines out of hit-testing), status and selection are feature
+  state. MapLibre keeps that state per source and applies it to tiles as they
+  load, so it is set as soon as the style is parsed (`style.load`) and needs
+  no re-application when the file arrives. Points (passes, towns) stay in-memory sources,
+  because their symbol layers need real properties. Anything else the client
+  used to read from the geometry is precomputed on the server: tours within
+  reach of an entity (`lib/nearby.ts`) and the road coordinate of every
+  profile sample (`ProfileWithCoords`).
 - **MapLibre needs two workarounds.** Its web worker is resolved via
   `import.meta.url`, which Turbopack does not serve, so
   `scripts/copy-maplibre-worker.ts` copies the worker into `public/maplibre`

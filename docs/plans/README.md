@@ -20,7 +20,7 @@ that goal; features that only add route-level precision rank last.
 | #   | Plan                                                               | Serves                      | Effort | Depends on           | Status                                          |
 | --- | ------------------------------------------------------------------ | --------------------------- | ------ | -------------------- | ----------------------------------------------- |
 | 00  | [Route quality gate](00-route-quality-gate.md)                     | trust in what the map shows | S      | –                    | [done](https://github.com/mdugue/alpen/pull/6)  |
-| 01  | [Map data out of the React payload](01-map-data-out-of-payload.md) | first load on holiday Wi-Fi | M      | 00 for complete data | proposed                                        |
+| 01  | [Map data out of the React payload](01-map-data-out-of-payload.md) | first load on holiday Wi-Fi | M      | 00 for complete data | [done](https://github.com/mdugue/alpen/pull/14) |
 | 03  | [Make the period the hero](03-period-hero.md)                      | "when"                      | M      | –                    | [done](https://github.com/mdugue/alpen/pull/4)  |
 | 04  | [Climate-aware status](04-climate-aware-status.md)                 | "when", honesty             | S–M    | –                    | [done](https://github.com/mdugue/alpen/pull/4)  |
 | 12  | [Destinations](12-destinations.md)                                 | "where"                     | L      | 09                   | proposed                                        |

@@ -125,8 +125,13 @@ is a single sentence naming the surrounding passes and the infrastructure.
 
 A profile's samples are ~100 points of the ascent's road geometry, taken at
 `Math.round(i * step)` of `routes.json` (`lib/profile.ts`). The coordinate of a
-sample is therefore derivable from the route and is not stored twice – which is
-what lets the detail panel put a cursor on the map while you scrub the profile.
+sample is therefore derivable from the route and is not stored twice;
+`lib/data.ts` derives it on the server (`ProfileWithCoords`) – which is what
+lets the detail panel put a cursor on the map while you scrub the profile,
+without the route itself reaching the client. The map draws the routes from
+static GeoJSON instead: `scripts/build-map-assets.ts` writes `routes.json`,
+simplified to 5 m, as content-hashed files into `public/map` (git-ignored),
+see plan 01.
 `dist` measures **along the road**, not from sample to sample: a chord chain
 through the Stelvio's 48 hairpins comes out two kilometres short, and
 `profile.km` would disagree with the gate's `ascentMetrics.km`, which has always

@@ -42,14 +42,9 @@ import {
 } from "@/components/ui/tooltip";
 import { DEFAULT_VIEW, readHash, useStored } from "@/lib/app-state";
 import type { MapView, Selection } from "@/lib/app-state";
-import type {
-  LatLon,
-  Pass,
-  RouteGeometry,
-  Status,
-  Tour,
-  Town,
-} from "@/lib/types";
+import type { MapAssets } from "@/lib/map-assets";
+import { ascentKey } from "@/lib/route-key";
+import type { LatLon, Pass, Status, Tour, Town } from "@/lib/types";
 import { cn, MAP_CONTROL, PRESSED } from "@/lib/utils";
 
 export interface MapPass extends Pass {
@@ -60,15 +55,15 @@ export interface MapPass extends Pass {
 interface Props {
   /** The passes the list shows: drawn as markers, their ascents highlighted. */
   passes: MapPass[];
-  /** Every pass, for the ascent geometry that is uploaded once (see below). */
-  allPasses: Pass[];
-  tours: (Tour & {
-    status: Status;
-    visible: boolean;
-    geometry: RouteGeometry;
-  })[];
+  /** The tours the list shows; `visible` is the "auf der Karte" switch. */
+  tours: (Tour & { status: Status; visible: boolean })[];
   towns: (Town & { favorite: boolean })[];
-  routes: Record<string, RouteGeometry>;
+  /**
+   * The ascent and tour lines never arrive as props: MapLibre fetches them as
+   * static GeoJSON from these URLs and tiles them in its worker. Which lines
+   * show and how is set through layer filters and feature state below.
+   */
+  assets: MapAssets;
   showTowns: boolean;
   selection: Selection | null;
   onSelect: (sel: Selection) => void;
@@ -213,10 +208,9 @@ const defined = <T extends object>(o: T): Partial<T> =>
 
 export const PassMap = ({
   passes,
-  allPasses,
   tours,
   towns,
-  routes,
+  assets,
   showTowns,
   selection,
   onSelect,
@@ -261,9 +255,9 @@ export const PassMap = ({
       colors.closed,
       "#888888",
     ] as never;
-    // The ascent lines carry status and selection as feature state, so a
-    // filter change never re-uploads their geometry (66 000 points).
-    const routeSelected = ["==", ["feature-state", "selected"], 1];
+    // The ascent and tour lines carry status and selection as feature state,
+    // so a period, filter or selection change never re-uploads geometry.
+    const selected = ["==", ["feature-state", "selected"], 1];
     const routeColor = [
       "match",
       ["coalesce", ["feature-state", "status"], "none"],
@@ -321,7 +315,7 @@ export const PassMap = ({
           paint: {
             "line-color": ["get", "color"],
             "line-opacity": 0.85,
-            "line-width": ["case", ["==", ["get", "selected"], 1], 5, 3],
+            "line-width": ["case", selected, 5, 3],
           },
           source: "tours",
           type: "line",
@@ -331,8 +325,8 @@ export const PassMap = ({
           layout: { "line-cap": "round", "line-join": "round" },
           paint: {
             "line-color": routeColor,
-            "line-opacity": ["case", routeSelected, 1, 0.85],
-            "line-width": ["case", routeSelected, 6, 3.5],
+            "line-opacity": ["case", selected, 1, 0.85],
+            "line-width": ["case", selected, 6, 3.5],
           },
           source: "routes",
           type: "line",
@@ -550,8 +544,10 @@ export const PassMap = ({
         ),
         cursor: { data: EMPTY, type: "geojson" },
         passes: { data: EMPTY, type: "geojson" },
-        routes: { data: EMPTY, promoteId: "id", type: "geojson" },
-        tours: { data: EMPTY, type: "geojson" },
+        // Static files with a content hash in the name (scripts/build-map-assets.ts);
+        // promoteId makes the `id` property the feature id for feature state.
+        routes: { data: assets.routesUrl, promoteId: "id", type: "geojson" },
+        tours: { data: assets.toursUrl, promoteId: "id", type: "geojson" },
         towns: { data: EMPTY, type: "geojson" },
       } as StyleSpecification["sources"],
       version: 8,
@@ -591,7 +587,12 @@ export const PassMap = ({
     );
     m.addControl(new ScaleControl({ unit: "metric" }), "bottom-left");
 
-    m.on("load", () => {
+    // `style.load`, not `load`: the latter waits for every source, and the
+    // ascent and tour lines are a megabyte of GeoJSON fetched over holiday
+    // Wi-Fi. Once the style is parsed the sources exist, so the markers,
+    // filters and feature state can go in at once; the lines follow when
+    // their files arrive (state set before that is applied as they load).
+    m.on("style.load", () => {
       addIcons(m, colors);
       if (view.pitch > 1) {
         m.setTerrain(TERRAIN);
@@ -692,41 +693,11 @@ export const PassMap = ({
     });
   }, [insetLeft, insetBottom, ready]);
 
-  // --- Ascent geometry: uploaded once ------------------------------------
-  // 88 ascents, 66 000 points: re-tiling that on every filter change is what
-  // made the filters feel slow. Which ascents show, and in which colour, is
-  // decided below through a layer filter and feature state instead.
-  useEffect(() => {
-    const m = map.current;
-    if (!m || !ready) return;
-    (m.getSource("routes") as GeoJSONSource | undefined)?.setData({
-      features: allPasses.flatMap((p) =>
-        p.ascents.flatMap((a, i) => {
-          const geom = routes[`${p.slug}:${i}`];
-          if (!geom) return [];
-          return [
-            {
-              geometry: {
-                coordinates: geom.map(([lat, lon]) => [lon, lat]),
-                type: "LineString" as const,
-              },
-              properties: {
-                id: `${p.slug}:${i}`,
-                kind: "route",
-                name: p.name,
-                slug: p.slug,
-                subtitle: `Auffahrt ab ${a.label}`,
-              },
-              type: "Feature" as const,
-            },
-          ];
-        }),
-      ),
-      type: "FeatureCollection",
-    });
-  }, [allPasses, routes, ready]);
-
   // --- Which ascents show, and how -----------------------------------------
+  // The geometry stays in the worker; a filter keeps the lines of filtered-out
+  // passes out of the picture and out of hit-testing, feature state colours
+  // the rest. MapLibre applies state set before the file has arrived to the
+  // tiles as they load, so nothing here waits for the source.
   useEffect(() => {
     const m = map.current;
     if (!m || !ready) return;
@@ -739,16 +710,38 @@ export const PassMap = ({
     for (const p of passes)
       for (const [i] of p.ascents.entries())
         m.setFeatureState(
-          { id: `${p.slug}:${i}`, source: "routes" },
+          { id: ascentKey(p.slug, i), source: "routes" },
           { selected: p.slug === selPass ? 1 : 0, status: p.status },
         );
   }, [passes, selection, ready]);
 
-  // --- Write data into the sources ---------------------------------------
+  // --- Which tours show, and how -------------------------------------------
+  // A handful of tours: the filter with the visible slugs is as cheap as
+  // feature state and also keeps a hidden tour from answering hover and click.
   useEffect(() => {
     const m = map.current;
     if (!m || !ready) return;
+    const visible = tours.filter((t) => t.visible).map((t) => t.slug);
+    const filter = ["in", ["get", "slug"], ["literal", visible]] as never;
+    for (const layer of ["tours-casing", "tours", "tours-label"])
+      m.setFilter(layer, filter);
+    for (const t of tours)
+      m.setFeatureState(
+        { id: t.slug, source: "tours" },
+        {
+          selected:
+            selection?.kind === "tour" && selection.slug === t.slug ? 1 : 0,
+        },
+      );
+  }, [tours, selection, ready]);
 
+  // --- Markers: passes and towns ------------------------------------------
+  // Points, a few hundred of them; their symbol layers need real properties
+  // (icon by favourite and status, label filters by fame), which feature
+  // state cannot drive, so these two sources are still written as GeoJSON.
+  useEffect(() => {
+    const m = map.current;
+    if (!m || !ready) return;
     const selPass = selection?.kind === "pass" ? selection.slug : null;
     (m.getSource("passes") as GeoJSONSource | undefined)?.setData({
       features: passes.map((p) => ({
@@ -767,29 +760,11 @@ export const PassMap = ({
       })),
       type: "FeatureCollection",
     });
+  }, [passes, selection, ready]);
 
-    (m.getSource("tours") as GeoJSONSource | undefined)?.setData({
-      features: tours
-        .filter((t) => t.visible && t.geometry?.length)
-        .map((t) => ({
-          geometry: {
-            coordinates: t.geometry.map(([lat, lon]) => [lon, lat]),
-            type: "LineString",
-          },
-          properties: {
-            color: t.color,
-            kind: "tour",
-            name: t.name,
-            selected:
-              selection?.kind === "tour" && selection.slug === t.slug ? 1 : 0,
-            slug: t.slug,
-            subtitle: `ca. ${t.km} km · ${t.elevationGain.toLocaleString("de-DE")} hm`,
-          },
-          type: "Feature",
-        })),
-      type: "FeatureCollection",
-    });
-
+  useEffect(() => {
+    const m = map.current;
+    if (!m || !ready) return;
     (m.getSource("towns") as GeoJSONSource | undefined)?.setData({
       features: showTowns
         ? towns.map((t) => ({
@@ -806,7 +781,7 @@ export const PassMap = ({
         : [],
       type: "FeatureCollection",
     });
-  }, [passes, tours, towns, showTowns, selection, ready]);
+  }, [towns, showTowns, ready]);
 
   // --- Elevation-profile cursor -------------------------------------------
   // One point, so setData is cheap enough to run on every pointer move.
@@ -868,15 +843,9 @@ export const PassMap = ({
           zoom: Math.max(m.getZoom(), 10.5),
         });
     } else {
-      const t = tours.find((x) => x.slug === selection.slug);
-      const line = t?.geometry?.length
-        ? t.geometry
-        : t?.waypoints.map((w) => [w.lat, w.lon] as [number, number]);
-      if (line?.length) {
-        const b = new LngLatBounds();
-        for (const [lat, lon] of line) b.extend([lon, lat]);
-        m.fitBounds(b, { duration, padding: 60 });
-      }
+      // Precomputed per tour: the routed line's bounds, or the waypoints'.
+      const bbox = assets.tourBounds[selection.slug];
+      if (bbox) m.fitBounds(bbox, { duration, padding: 60 });
     }
     // oxlint-disable-next-line react/exhaustive-deps
   }, [selection?.kind, selection?.slug, ready]);
@@ -922,8 +891,8 @@ export const PassMap = ({
     const b = new LngLatBounds();
     for (const p of passes) b.extend([p.lon, p.lat]);
     for (const t of tours) {
-      if (!t.visible) continue;
-      for (const [lat, lon] of t.geometry) b.extend([lon, lat]);
+      const bbox = assets.tourBounds[t.slug];
+      if (t.visible && bbox) b.extend(bbox);
     }
     const target = b.isEmpty()
       ? undefined
