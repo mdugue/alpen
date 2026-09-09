@@ -51,7 +51,10 @@ bun run data:check --explain       # every route with its measured values
 ```
 
 - Never edit `data/generated/*.json` by hand. To force a re-fetch, delete the
-  key from the generated file and run the build.
+  key from the generated file and run the build. A moved pass coordinate needs
+  no such step: `summits.json` remembers where each DEM height was read and the
+  next build re-measures it, and a pass whose DEM height is off by more than
+  80 m is not routed at all until the coordinate is fixed.
 - Open the pass in the app (`preview-app` skill or `bun dev`) and look at the
   drawn ascent: it must follow the road and end at the marker, the profile
   top must match the elevation. If not, the `from` point or the pass
@@ -90,9 +93,15 @@ three ways out, in this order of preference:
 
 1. **The data is wrong.** Almost always the case. Move the pass coordinate onto
    the road at the summit, or `ascent.from` into the valley village, then
-   `bun run data:build --retry-rejected`. This is free: re-routing costs no
-   Open-Meteo calls and the profile is reused when the geometry comes back
-   unchanged.
+   `bun run data:build`. The rejection remembers the inputs it was routed for,
+   so the next build retries it by itself – and only then; a rejection whose
+   inputs and limits are unchanged is not asked again, because the answer would
+   be the same. This is free: re-routing costs no Open-Meteo calls and the
+   profile is reused when the geometry comes back unchanged.
+   `--retry-rejected` forces a retry regardless, for the case that the
+   router's map data changed. The tell-tale of a wrong pass point: _both_
+   ascents end at the identical distance from it (Großglockner 535 m,
+   Couillole 1.6 km) – two roads cannot be wrong by the same amount.
 2. **The ascent really is like that.** Kitzbüheler Horn ends at the Alpenhaus
    below the summit marker. Set `check` on that one ascent with the widened
    limit and a `note` saying why. A `check` without a `note` fails the schema.
@@ -100,6 +109,13 @@ three ways out, in this order of preference:
    `bun run data:check --explain` to see what that does to every other route
    before re-fetching anything. Do not widen a limit to silence a single case –
    that is what step 2 is for.
+
+A rejection next to a stored route ("ORS-Kandidat abgewiesen … die osrm-Route
+bleibt") is the upgrade pass having asked ORS for a car-profile route and the
+gate having refused the answer – ORS routes around roads it considers unfit
+for road cycling (Mont Cenis from Susa, Sampeyre, Grosse Scheidegg). The OSRM
+route stays on the map and gets its profile; nothing is lost, and the same
+three ways out apply.
 
 ## Honesty
 

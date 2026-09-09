@@ -3,8 +3,8 @@
   "slug": "sellaronda",
   "name": "Sellaronda",
   "color": "#8d7bb5",
-  "km": 52,
-  "elevationGain": 1700,
+  "km": 58,
+  "elevationGain": 1780,
   "passes": [
    "passo-campolongo",
    "passo-pordoi",

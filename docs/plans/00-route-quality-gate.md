@@ -429,6 +429,60 @@ Three defects the first run exposed, all fixed:
   it is next to the data it constrains.
 - ✅ `AGENTS.md` / `CLAUDE.md` gain the gate under "Where things live".
 
+### Follow-up, 2026-09-09: the upgrade loop and the second look
+
+Two days of running the gate with an ORS key showed one defect in the
+mechanism and a pattern in what it rejects.
+
+**The defect.** `reject()` removed a key everywhere, including a stored route
+that had passed. During `--upgrade-osrm` that meant: passing OSRM route → ORS
+candidate fails a check → route gone, key rejected → `--retry-rejected` asks
+ORS again, or falls back to OSRM once the ORS quota is spent → the OSRM route
+passes and is stored → next upgrade pass evicts it again. Col du Mont Cenis ab
+Susa went round this loop and lost the 28 km profile it already had. Three
+changes close it:
+
+- A rejected candidate never evicts a stored route. The rejection is recorded
+  next to it, the OSRM route stays on the map and – since ORS has been asked –
+  gets its profile instead of being deferred.
+- A rejection remembers the inputs it was routed for (`inputs`, a hash of
+  coordinates, elevation and `check`). The next build retries it exactly when
+  that could change the outcome: the inputs changed, or the stored metrics pass
+  the current limits. `--retry-rejected` remains as the override.
+- The DEM check at the pass point runs first and gates routing: a pass whose
+  point is more than 80 m off in height is not routed, so no route ends short
+  of it and no profile is paid for it. `summits.json` stores the coordinate a
+  height was read at, so a moved point is re-measured by itself.
+
+**The pattern.** Of the 20 rejections, 14 were the same coordinate defect
+rather than a routing problem, visible without a map: _both_ ascents of a pass
+ending at the identical distance from the point (Großglockner 535 m, Couillole
+1.6 km, Fauniera 1.3 km, San Carlo 1.7 km), or the DEM at the point hundreds
+of metres away from the stated elevation (Champs −357, Kitzbüheler Horn −667,
+Roßfeld −873). The Großglockner point sat on the Margrötzenkopf 1 km west of
+the road with the elevation of the Edelweißspitze; the pass is now the Hochtor
+(2 504 m). Six of these points are moved in this PR, from OSM knowledge and
+without DEM verification – the next build measures them, and the summit gate
+holds them back again if one is wrong.
+
+What is left, by cause rather than by key:
+
+| Cause                                  | Keys                                                                             | Way out                                                                                |
+| -------------------------------------- | -------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------- |
+| Summit or toll road, point in a valley | Roßfeld, Ötztaler Gletscherstraße, Malta, Nockalm, Villacher                     | one Overpass lookup of the road's high point each; blocked until then                  |
+| ORS refuses the road for road cycling  | Mont Cenis ab Susa (341 km), Sampeyre ab Sampeyre, Grosse Scheidegg ab Meiringen | keep the OSRM route (now automatic), or move `from` past the refused segment           |
+| Road legitimately ends short           | Mangart (700 m), Crocedomini ab Bagolino (shoulder +85 m)                        | `ascent.check` with a note – set in this PR                                            |
+| DEM over a tunnel                      | Ötztaler Gletscherstraße (+251 m spike in the last sample)                       | end the ascent at the Rettenbach car park; the tunnel has no surface                   |
+| Tour waypoints route long              | Maratona lang +18 %, Sellaronda +22 % against a stated 52 km                     | Sellaronda's `km` was the 52 of older sources, now 58; Maratona needs denser waypoints |
+
+Two conclusions for the thresholds themselves. They are not the problem: not
+one of the 20 rejections was a false positive, and every one that was
+re-examined turned out to be data. And the `topDelta` check compares the
+profile _maximum_, so an ascent that crosses a shoulder above the pass
+(Crocedomini) trips it even though `peakAt` already covers "the summit is at
+the end"; comparing the _end_ elevation instead would make the two checks
+orthogonal. Left as is for now, since one case does not justify refitting.
+
 ## Acceptance criteria
 
 - [x] `bun run data:check` fails on any route that violates the table above.

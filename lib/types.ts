@@ -44,3 +44,4 @@ export type AscentMetrics = z.infer<typeof S.AscentMetrics>;
 export type TourMetrics = z.infer<typeof S.TourMetrics>;
 export type RouteMetrics = z.infer<typeof S.RouteMetrics>;
 export type RouteRejection = z.infer<typeof S.RouteRejection>;
+export type Summit = z.infer<typeof S.Summit>;

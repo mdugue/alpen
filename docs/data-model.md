@@ -114,14 +114,14 @@ is a single sentence naming the surrounding passes and the infrastructure.
 
 ## Derived data (`bun run data:build`)
 
-| File               | Key                                       | Contents                                                                                        |
-| ------------------ | ----------------------------------------- | ----------------------------------------------------------------------------------------------- |
-| `routes.json`      | `<pass-slug>:<index>`, `tour:<tour-slug>` | Road geometry as `[lat, lon][]`                                                                 |
-| `profiles.json`    | `<pass-slug>:<index>`                     | km, elevation gain, average and steepest-kilometre gradient, ~100 samples                       |
-| `climate.json`     | `<pass-slug>`                             | 24 half-months with average temperatures and frost/snow/rain share                              |
-| `routes-meta.json` | as `routes.json`                          | `source` (`ors` \| `osrm`) and `fetchedAt` – which router produced this route                   |
-| `rejected.json`    | as `routes.json`                          | routes the quality gate refused, with the reasons, the measured values and the paid-for profile |
-| `summits.json`     | `<pass-slug>`                             | DEM height at the pass coordinate, to catch a wrong summit point                                |
+| File               | Key                                       | Contents                                                                                                                                   |
+| ------------------ | ----------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| `routes.json`      | `<pass-slug>:<index>`, `tour:<tour-slug>` | Road geometry as `[lat, lon][]`                                                                                                            |
+| `profiles.json`    | `<pass-slug>:<index>`                     | km, elevation gain, average and steepest-kilometre gradient, ~100 samples                                                                  |
+| `climate.json`     | `<pass-slug>`                             | 24 half-months with average temperatures and frost/snow/rain share                                                                         |
+| `routes-meta.json` | as `routes.json`                          | `source` (`ors` \| `osrm`) and `fetchedAt` – which router produced this route                                                              |
+| `rejected.json`    | as `routes.json`                          | routes the quality gate refused, with the reasons, the measured values, the paid-for profile and a hash of the inputs they were routed for |
+| `summits.json`     | `<pass-slug>`                             | DEM height at the pass coordinate (`dem`) with the `lat`/`lon` it was read at, to catch a wrong summit point                               |
 
 A profile's samples are ~100 points of the ascent's road geometry, taken at
 `Math.round(i * step)` of `routes.json` (`lib/profile.ts`). The coordinate of a
@@ -155,11 +155,14 @@ neither reaches the map nor spends 100 Open-Meteo calls on a useless profile.
 
 ```mermaid
 flowchart LR
-  A["passes.json ascents<br/>tours.json waypoints"] --> B{"stored with<br/>source ors?"}
+  A["passes.json ascents<br/>tours.json waypoints"] --> S0{"DEM at the pass point<br/>within 80 m?"}
+  S0 -- "no" --> K
+  S0 -- "yes" --> B{"stored with<br/>source ors?"}
   B -- "yes" --> G
+  B -- "rejected, inputs and<br/>limits unchanged" --> K
   B -- "missing, or osrm<br/>with --upgrade-osrm" --> C["router: ORS,<br/>on quota error OSRM"]
   C --> V1{"geometry checks<br/>length, start, end"}
-  V1 -- "fail" --> R["rejected.json<br/>reasons + measured values<br/>+ the paid-for profile"]
+  V1 -- "fail" --> R["rejected.json<br/>reasons + measured values<br/>+ the paid-for profile<br/>a stored osrm route stays"]
   V1 -- "pass" --> D["routes.json<br/>routes-meta.json: source, date"]
   D --> E["Open-Meteo elevation"]
   E --> V2{"profile checks<br/>top within 80 m,<br/>summit near the end, gain"}
@@ -218,4 +221,7 @@ but that file is complete and its window is frozen, so it no longer contributes.
 If the gate rejects the new ascent, `rejected.json` names the measured value
 that broke a limit. There are exactly three ways out, and the `curate-data`
 skill describes when each applies: fix the coordinates, set `ascent.check` with
-a note, or change the limit itself.
+a note, or change the limit itself. Each of them is picked up by the next
+`data:build` on its own: a rejection remembers the inputs it was routed for and
+is retried when they change or when its stored metrics pass the current limits,
+and not otherwise.

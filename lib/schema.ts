@@ -242,6 +242,14 @@ export const RouteRejection = z.strictObject({
   /** Identity of the rejected geometry; an unchanged hash on a retry means the
    *  router is not the problem, the coordinates are. */
   hash: z.string().min(1),
+  /**
+   * Hash of what the candidate was routed for – coordinates, elevation, `check`
+   * (`inputsHash` in `scripts/lib/validate.ts`). The next build retries a
+   * rejected key by itself once this changes or the stored metrics would pass
+   * the current limits; while both hold, retrying only repeats the rejection.
+   * Missing on entries written before the field existed: they are retried once.
+   */
+  inputs: z.string().min(1).optional(),
   lastSeen: z.iso.date(),
   metrics: RouteMetrics,
   /** Cached so a retry after a threshold change costs no Open-Meteo calls. */
@@ -255,8 +263,18 @@ export const RouteRejection = z.strictObject({
 export const RoutesMeta = z.record(z.string(), RouteMeta);
 /** Key: as `routes.json`. */
 export const Rejected = z.record(z.string(), RouteRejection);
-/** Key: pass slug → DEM height at the pass coordinate in m. */
-export const Summits = z.record(Slug, z.number());
+/**
+ * DEM height at the pass coordinate, together with the coordinate it was read
+ * at: a moved pass point invalidates the entry by itself instead of leaving a
+ * height behind that was measured somewhere else.
+ */
+export const Summit = z.strictObject({
+  dem: z.number(),
+  lat: z.number(),
+  lon: z.number(),
+});
+/** Key: pass slug. */
+export const Summits = z.record(Slug, Summit);
 
 /** One day of the Open-Meteo forecast served by `app/api/weather/[slug]`. */
 export const WeatherDay = z.strictObject({

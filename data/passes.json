@@ -876,9 +876,9 @@
   ],
   "country": "AT",
   "region": "Ostalpen",
-  "lat": 47.081,
-  "lon": 12.831,
-  "elevation": 2571,
+  "lat": 47.0836,
+  "lon": 12.8428,
+  "elevation": 2504,
   "classicAscent": "21 km, 8 % ab Fusch bis Edelweißspitze",
   "beauty": 5,
   "fame": 5,
@@ -889,7 +889,7 @@
    "closes": 11,
    "maintained": true
   },
-  "note": "Mautstraße, planmäßig bis Ende Oktober/Anfang November offen (nachts gesperrt, Schneetage möglich). Rad-Maut deutlich günstiger.",
+  "note": "Mautstraße, planmäßig bis Ende Oktober/Anfang November offen (nachts gesperrt, Schneetage möglich). Rad-Maut deutlich günstiger. Scheitel ist das Hochtor (2504 m); die Edelweißspitze (2571 m) ist ein knapp 2 km langer Abstecher von der Fuscher Seite.",
   "ascents": [
    {
     "from": {
@@ -990,8 +990,8 @@
   "name": "Kitzbüheler Horn",
   "country": "AT",
   "region": "Ostalpen",
-  "lat": 47.464,
-  "lon": 12.418,
+  "lat": 47.4505,
+  "lon": 12.4243,
   "elevation": 1996,
   "classicAscent": "7,6 km, 12,5 % ab Kitzbühel",
   "beauty": 3,
@@ -1605,8 +1605,8 @@
   "name": "Col des Champs",
   "country": "FR",
   "region": "Westalpen",
-  "lat": 44.202,
-  "lon": 6.663,
+  "lat": 44.1828,
+  "lon": 6.6972,
   "elevation": 2087,
   "classicAscent": "16 km, 6,5 % ab Colmars",
   "beauty": 4,
@@ -1709,8 +1709,8 @@
   "name": "Col de la Couillole",
   "country": "FR",
   "region": "Westalpen",
-  "lat": 44.134,
-  "lon": 7.048,
+  "lat": 44.1447,
+  "lon": 7.0025,
   "elevation": 1678,
   "classicAscent": "15,7 km, 7,3 % ab Saint-Sauveur-sur-Tinée",
   "beauty": 4,
@@ -1773,8 +1773,8 @@
   ],
   "country": "IT",
   "region": "Westalpen",
-  "lat": 44.398,
-  "lon": 7.223,
+  "lat": 44.39,
+  "lon": 7.1458,
   "elevation": 2481,
   "classicAscent": "22 km, 8 % ab Demonte",
   "beauty": 4,
@@ -1845,8 +1845,8 @@
   "name": "Colle San Carlo",
   "country": "IT",
   "region": "Westalpen",
-  "lat": 45.689,
-  "lon": 6.983,
+  "lat": 45.7267,
+  "lon": 6.9889,
   "elevation": 1971,
   "classicAscent": "10,5 km, 9,8 % ab Morgex",
   "beauty": 4,
@@ -2359,7 +2359,11 @@
      "lat": 45.826,
      "lon": 10.464
     },
-    "label": "Bagolino"
+    "label": "Bagolino",
+    "check": {
+     "maxTopDelta": 120,
+     "note": "Von Bagolino quert die Straße kurz vor dem Pass eine rund 80 m höhere Kuppe; die Profilspitze liegt deshalb über der Passhöhe."
+    }
    }
   ]
  },
@@ -2827,7 +2831,11 @@
      "lat": 46.404,
      "lon": 13.594
     },
-    "label": "Log pod Mangartom"
+    "label": "Log pod Mangartom",
+    "check": {
+     "maxEndDist": 0.8,
+     "note": "Die Straße endet am Parkplatz rund 700 m vor dem Sattelpunkt; der Sattel selbst ist nur zu Fuß erreichbar."
+    }
    }
   ]
  },

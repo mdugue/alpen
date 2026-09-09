@@ -12,6 +12,7 @@ import {
   checkSummit,
   checkTour,
   geometryHash,
+  inputsHash,
   length,
   tourMetrics,
   withProfile,
@@ -421,5 +422,40 @@ describe("checkSummit", () => {
 
   test("reports a pass coordinate on the wrong summit", () => {
     expect(checkSummit(1200, 2642).join(" ")).toContain("-1442 m");
+  });
+});
+
+describe("inputsHash", () => {
+  const from = { lat: 47.226, lon: 12.826 };
+  const summit = { lat: 47.081, lon: 12.831 };
+  const base = () => inputsHash({ elevation: 2571, from, summit });
+
+  test("is stable for equal inputs, whatever the key order", () => {
+    expect(base()).toBe(inputsHash({ elevation: 2571, from, summit }));
+  });
+
+  test("changes with a moved coordinate or a changed elevation", () => {
+    expect(
+      inputsHash({
+        elevation: 2571,
+        from,
+        summit: { lat: 47.0836, lon: 12.8428 },
+      }),
+    ).not.toBe(base());
+    expect(inputsHash({ elevation: 2504, from, summit })).not.toBe(base());
+  });
+
+  test("a check counts by its limits, not by its note", () => {
+    const widened = inputsHash(
+      { elevation: 2571, from, summit },
+      { maxEndDist: 0.8, note: "a" },
+    );
+    expect(widened).not.toBe(base());
+    expect(widened).toBe(
+      inputsHash(
+        { elevation: 2571, from, summit },
+        { maxEndDist: 0.8, note: "b" },
+      ),
+    );
   });
 });

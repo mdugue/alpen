@@ -222,3 +222,27 @@ export const geometryHash = (geom: RouteGeometry) =>
   Bun.hash(
     geom.map(([lat, lon]) => `${lat.toFixed(5)},${lon.toFixed(5)}`).join(";"),
   ).toString(16);
+
+/**
+ * Identity of what a route is asked for: the ascent's start and summit with
+ * its elevation and `check`, or a tour's waypoints, stated length and `check`.
+ * A rejection stores it so the next build can tell "the curator changed
+ * something, try again" from "nothing changed, the answer would be the same" –
+ * without that, a rejected key is either retried on every run (and, for an
+ * OSRM route that ORS refuses, loops between the two routers) or never.
+ * Key order is fixed here, so a reformatted `data/*.json` does not read as a
+ * change; `check.note` is left out because it changes no limit.
+ */
+export const inputsHash = (
+  parts: Record<string, unknown>,
+  check?: AscentCheck | TourCheck,
+) =>
+  Bun.hash(
+    JSON.stringify(
+      Object.fromEntries(
+        Object.entries({ ...parts, check: strip(check) }).toSorted(([a], [b]) =>
+          a.localeCompare(b),
+        ),
+      ),
+    ),
+  ).toString(16);

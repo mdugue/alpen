@@ -135,7 +135,9 @@ const inspect = (
     errors.push(
       `${key}: gespeicherte Route ist unplausibel – ${reasons.join("; ")} (${label})`,
     );
-  else if (source === "osrm")
+  // An OSRM route whose ORS candidate was refused is reported with that
+  // rejection below, not as "erneuern": ORS has been asked.
+  else if (source === "osrm" && !(rejected && key in rejected))
     warnings.push(
       `${key}: Route stammt vom OSRM-Autoprofil – mit ORS_KEY erneuern`,
     );
@@ -153,6 +155,21 @@ const dupes = (list: { slug: string }[], what: string) => {
     if (seen.has(x.slug)) errors.push(`${what}: doppelter Slug ${x.slug}`);
     seen.add(x.slug);
   }
+};
+
+/** The DEM height at the pass point, if it was read at the current coordinate. */
+const summitWarnings = (p: Pass): string[] => {
+  const summit = summits?.[p.slug];
+  if (summit === undefined)
+    return [`${p.slug}: Gipfelhöhe ungeprüft (bun run data:build)`];
+  if (summit.lat !== p.lat || summit.lon !== p.lon)
+    return [
+      `${p.slug}: Gipfelhöhe ungeprüft – Passkoordinate wurde verschoben (bun run data:build)`,
+    ];
+  return checkSummit(summit.dem, p.elevation).map(
+    (r) =>
+      `${p.slug}: ${r} – Passkoordinate prüfen (DEM ${summit.dem} m, angegeben ${p.elevation} m); die Auffahrten werden bis dahin nicht geroutet`,
+  );
 };
 
 const checkPasses = (list: Pass[]) => {
@@ -179,14 +196,7 @@ const checkPasses = (list: Pass[]) => {
     if (!p.ascents.length)
       warnings.push(`${p.slug}: keine Auffahrt hinterlegt`);
 
-    const dem = summits?.[p.slug];
-    if (dem === undefined)
-      warnings.push(`${p.slug}: Gipfelhöhe ungeprüft (bun run data:build)`);
-    else
-      for (const r of checkSummit(dem, p.elevation))
-        warnings.push(
-          `${p.slug}: ${r} – Passkoordinate prüfen (DEM ${dem} m, angegeben ${p.elevation} m)`,
-        );
+    warnings.push(...summitWarnings(p));
 
     for (const [i, a] of p.ascents.entries()) {
       const key = `${p.slug}:${i}`;
@@ -262,16 +272,18 @@ const rejudge = (key: string, r: RouteRejection) =>
 for (const [key, r] of Object.entries(rejected ?? {})) {
   const now = rejudge(key, r);
   const where = key.startsWith("tour:") ? "der Tour" : "der Auffahrt";
+  // A rejection next to a stored route is the ORS candidate that failed to
+  // replace an OSRM route; the OSRM route stays on the map.
+  const kept = routes && key in routes ? (meta?.[key]?.source ?? "osrm") : null;
+  const what = kept ? `${r.source}-Kandidat abgewiesen` : "abgewiesen";
   warnings.push(
     now.length
-      ? `${key}: abgewiesen seit ${r.firstSeen} (${days(r.firstSeen)} Tage, ${r.source}) – ${now.join("; ")}` +
-          `\n       Koordinaten in data/*.json korrigieren, check an ${where} mit Begründung setzen,` +
-          " oder nach einer Schwellenänderung: bun run data:build --retry-rejected"
-      : `${key}: abgewiesen seit ${r.firstSeen}, würde mit den heutigen Grenzen bestehen – bun run data:build --retry-rejected`,
+      ? `${key}: ${what} seit ${r.firstSeen} (${days(r.firstSeen)} Tage, ${r.source}) – ${now.join("; ")}${kept ? `; die ${kept}-Route bleibt` : ""}\n       Koordinaten in data/*.json korrigieren oder check an ${where} mit Begründung setzen – der nächste Lauf versucht es dann von selbst (erzwingen: bun run data:build --retry-rejected)`
+      : `${key}: ${what} seit ${r.firstSeen}, würde mit den heutigen Grenzen bestehen – der nächste bun run data:build versucht es erneut`,
   );
   if (EXPLAIN)
     explained.push(
-      `${now.length ? "✗" : "↺"} ${key.padEnd(36)} ${r.source.padEnd(4)} ${JSON.stringify(r.metrics)} (abgewiesen${now.length ? "" : ", würde jetzt bestehen"})`,
+      `${now.length ? "✗" : "↺"} ${key.padEnd(36)} ${r.source.padEnd(4)} ${JSON.stringify(r.metrics)} (${what}${now.length ? "" : ", würde jetzt bestehen"})`,
     );
 }
 
