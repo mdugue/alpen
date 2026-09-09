@@ -5,6 +5,7 @@ import type {
   GeoJSONSource,
   LayerSpecification,
   MapLayerMouseEvent,
+  MapMouseEvent,
   StyleSpecification,
 } from "maplibre-gl";
 import {
@@ -128,6 +129,14 @@ const FIT_PADDING = 48;
  */
 const TOOL = "h-auto w-9 flex-1";
 const TERRAIN = { exaggeration: 1.25, source: "dem" } as const;
+/**
+ * The layers that answer hover and click, queried in one go. The order the
+ * query returns them in is the style's own, top down – so a pass wins over a
+ * town, both win over an ascent, and an ascent wins over the tour corridor it
+ * runs inside. `tours-band` stands in for the whole corridor: it is the widest
+ * of its three layers, so a click anywhere in the channel finds the tour.
+ */
+const HIT_LAYERS = ["passes", "pass-stars", "towns", "routes", "tours-band"];
 const DARK_QUERY = "(prefers-color-scheme: dark)";
 /** The first layer above the base stack: where the basemap's lines and labels go. */
 const ABOVE_BASE = `ov-${OVERLAYS[0].id}`;
@@ -326,6 +335,29 @@ const appLayers = (colors: Colors): LayerSpecification[] => {
     colors.closed,
     "#888888",
   ] as never;
+  /**
+   * A pixel width for the tour corridor: it grows with the zoom and again
+   * while the tour is selected. The zoom interpolation has to sit at the very
+   * top of the expression – MapLibre accepts `["zoom"]` only as the input of
+   * the outermost stop function – so the selection case goes inside the stops
+   * rather than as a factor around them.
+   */
+  const corridor = (near: number, far: number, grow = 1.4) =>
+    [
+      "interpolate",
+      ["linear"],
+      ["zoom"],
+      6,
+      ["case", selected, near * grow, near],
+      13,
+      ["case", selected, far * grow, far],
+    ] as never;
+  // The channel the ascents ride in, the weight of the lines flanking it,
+  // and the full width including those lines.
+  const gap = corridor(7, 14);
+  const edge = corridor(1.4, 2.2, 1.5);
+  const band = corridor(9.8, 18.4);
+  const casing = corridor(3.4, 4.2, 1.5);
 
   return [
     // The area one town reaches, drawn while it is hovered: the hull over
@@ -348,34 +380,60 @@ const appLayers = (colors: Colors): LayerSpecification[] => {
       source: "reach",
       type: "line",
     },
+    // A tour is the union of several ascents – the Sellaronda *is* its four
+    // passes – so drawn as a line of the same weight it and the ascents cover
+    // each other, and where the two routings differ by a few metres they
+    // fight. The tour is therefore not a line but a corridor: a wide, softly
+    // tinted band whose two edges are drawn, wide enough for the ascents to
+    // ride inside it. Both stay legible at once, and which pass belongs to
+    // the tour is read from the map rather than from the list.
     {
+      // The interior tint. A stretch with no ascent under it still reads as a
+      // ribbon in the tour's colour, and where an ascent runs it shows to
+      // either side of it.
+      id: "tours-band",
+      layout: { "line-cap": "round", "line-join": "round" },
+      paint: {
+        "line-color": ["get", "color"],
+        "line-opacity": ["case", selected, 0.24, 0.16],
+        "line-width": band,
+      },
+      source: "tours",
+      type: "line",
+    },
+    {
+      // Paper outside the two edges, so the corridor keeps its shape over the
+      // hillshade. Same gap as the edges: it shows only where they end.
       id: "tours-casing",
       layout: { "line-cap": "round", "line-join": "round" },
       paint: {
         "line-color": colors.paper,
+        "line-gap-width": gap,
         "line-opacity": 0.55,
-        "line-width": 6,
+        "line-width": casing,
       },
       source: "tours",
       type: "line",
     },
     {
-      id: "tours",
+      id: "tours-edge",
       layout: { "line-cap": "round", "line-join": "round" },
       paint: {
         "line-color": ["get", "color"],
-        "line-opacity": 0.85,
-        "line-width": ["case", selected, 5, 3],
+        "line-gap-width": gap,
+        "line-opacity": ["case", selected, 1, 0.9],
+        "line-width": edge,
       },
       source: "tours",
       type: "line",
     },
+    // Inside the corridor, and opaque: the status colour is the stronger
+    // signal of the two and must not be tinted by the tour it lies in.
     {
       id: "routes",
       layout: { "line-cap": "round", "line-join": "round" },
       paint: {
         "line-color": routeColor,
-        "line-opacity": ["case", selected, 1, 0.85],
         "line-width": ["case", selected, 6, 3.5],
       },
       source: "routes",
@@ -815,33 +873,49 @@ export const PassMap = ({
       closeOnClick: false,
       offset: 10,
     });
-    for (const layer of ["passes", "pass-stars", "routes", "tours", "towns"]) {
-      m.on("mouseenter", layer, (e: MapLayerMouseEvent) => {
-        m.getCanvas().style.cursor = "pointer";
-        const p = e.features?.[0]?.properties as
-          | Record<string, string>
-          | undefined;
-        if (!p) return;
-        popup.setLngLat(e.lngLat).setHTML(popupHtml(p)).addTo(m);
-      });
-      m.on("mousemove", layer, (e: MapLayerMouseEvent) =>
-        popup.setLngLat(e.lngLat),
-      );
-      m.on("mouseleave", layer, () => {
-        m.getCanvas().style.cursor = "";
+    // One query per pointer move instead of a handler per layer. The tour
+    // corridor is wide and the ascents run inside it, so several layers
+    // answer for the same pixel; per-layer `mouseenter`/`mouseleave` would
+    // let whichever fired last win and would clear the popup on leaving the
+    // ascent even though the pointer is still in the corridor. The query
+    // returns the topmost first, which is the priority the style already
+    // states: a pass beats a town, both beat an ascent, an ascent beats the
+    // corridor it lies in.
+    const topmost = (e: MapMouseEvent) =>
+      m.queryRenderedFeatures(e.point, { layers: HIT_LAYERS })[0]
+        ?.properties as Record<string, string> | undefined;
+
+    // What the popup currently shows, so that moving along one line only
+    // moves it instead of writing its markup again on every event.
+    let shown: string | null = null;
+    m.on("mousemove", (e: MapMouseEvent) => {
+      const p = topmost(e);
+      m.getCanvas().style.cursor = p ? "pointer" : "";
+      if (!p) {
+        shown = null;
         popup.remove();
+        return;
+      }
+      popup.setLngLat(e.lngLat);
+      const key = `${p.kind}:${p.slug}`;
+      if (key !== shown) {
+        shown = key;
+        popup.setHTML(popupHtml(p)).addTo(m);
+      }
+    });
+    m.on("mouseout", () => {
+      m.getCanvas().style.cursor = "";
+      shown = null;
+      popup.remove();
+    });
+    m.on("click", (e: MapMouseEvent) => {
+      const p = topmost(e) as { kind: string; slug: string } | undefined;
+      if (!p) return;
+      onSelectRef.current({
+        kind: p.kind === "route" ? "pass" : (p.kind as Selection["kind"]),
+        slug: p.slug,
       });
-      m.on("click", layer, (e: MapLayerMouseEvent) => {
-        const p = e.features?.[0]?.properties as
-          | { kind: string; slug: string }
-          | undefined;
-        if (!p) return;
-        onSelectRef.current({
-          kind: p.kind === "route" ? "pass" : (p.kind as Selection["kind"]),
-          slug: p.slug,
-        });
-      });
-    }
+    });
 
     // Hovering a town also outlines what it reaches. Only on hover: selecting
     // one flies the camera in, and from inside the hull there is nothing to
@@ -995,7 +1069,12 @@ export const PassMap = ({
     if (!m || !ready) return;
     const visible = tours.filter((t) => t.visible).map((t) => t.slug);
     const filter = ["in", ["get", "slug"], ["literal", visible]] as never;
-    for (const layer of ["tours-casing", "tours", "tours-label"])
+    for (const layer of [
+      "tours-band",
+      "tours-casing",
+      "tours-edge",
+      "tours-label",
+    ])
       m.setFilter(layer, filter);
     for (const t of tours)
       m.setFeatureState(

@@ -170,6 +170,24 @@ friends do that better and the app links out to them.
   where a source or its caveat has to be named, one short sentence sits behind
   the `info` tooltip. A header never opens a dialog – the scales dialog belongs
   to the sidebar footer, which is where it stays.
+- **A tour is a corridor, not a line.** A tour _is_ the union of several
+  ascents – the Sellaronda is its four passes – so as a line of the same
+  weight it and the ascents covered each other, and where the two routings
+  differ by a few metres they fought. The tour is therefore drawn as a
+  channel wide enough for the ascents to ride inside: a faint tint of its own
+  colour (`tours-band`, so a stretch with no ascent under it still reads as a
+  ribbon), a paper casing and the two coloured edges flanking it
+  (`tours-casing`, `tours-edge`, both via `line-gap-width`). The ascent stays
+  opaque on top – the status colour is the stronger signal and must not be
+  tinted by the tour it lies in. Widths interpolate with the zoom and grow
+  again for the selected tour; because a zoom expression may only be the
+  input of the _outermost_ stop function, the selection case goes inside the
+  stops (`corridor` in `pass-map.tsx`). Hover and click are one
+  `queryRenderedFeatures` over `HIT_LAYERS` rather than a handler per layer:
+  several layers answer for the same pixel now, and the query returns them in
+  the style's own order, so a pass beats a town, both beat an ascent, and an
+  ascent beats the corridor it runs in.
+
 - **Colours only via tokens.** MapLibre cannot read CSS variables;
   `pass-map.tsx` reads them once via `getComputedStyle` (`readColors`). Add
   new map colours there rather than hard-coding them.
@@ -209,8 +227,8 @@ friends do that better and the app links out to them.
   the hillshade from the Terrarium DEM, the basemap's lines and labels
   (rivers, borders, roads from zoom 6 to minor roads at 11, road names at 12,
   lakes, peaks with elevation at 10, places), the raster overlays, then the
-  app's own layers (the hovered town's reach, tours, ascents, towns, passes,
-  labels, profile cursor). MapLibre places labels from the top of the style
+  app's own layers (the hovered town's reach, the tour corridors, the ascents,
+  towns, passes, labels, profile cursor). MapLibre places labels from the top of the style
   down, so that order is also their collision priority: a pass label wins
   against a town name, and both win against the basemap's own place names.
   Roads are thin and neutral and there are no POIs: the mountain roads that
