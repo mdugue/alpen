@@ -263,7 +263,6 @@ export const Explorer = ({
       onProfileZoom={setProfileZoom}
       onSelect={select}
       onBack={back}
-      onOpenScales={() => setScalesOpen(true)}
     />
   );
 

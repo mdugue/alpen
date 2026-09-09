@@ -135,7 +135,14 @@ friends do that better and the app links out to them.
 - **The panel folds.** Every block below the title is a `Section`
   (`components/panel/section.tsx`), open by default. The panel is a column on a
   map and a phone sheet shows two blocks at a time; whoever wants the climate
-  should not scroll past two elevation profiles first.
+  should not scroll past two elevation profiles first. Which blocks are folded
+  is one `sessionStorage` entry shared by all of them (`SECTIONS_KEY`), keyed
+  by section id and holding the _closed_ ones: a fold carries over to the next
+  pass looked at, a new section opens by itself, and the next visit starts
+  unfolded again. A section title says what the block is and nothing else;
+  where a source or its caveat has to be named, one short sentence sits behind
+  the `info` tooltip. A header never opens a dialog – the scales dialog belongs
+  to the sidebar footer, which is where it stays.
 - **Colours only via tokens.** MapLibre cannot read CSS variables;
   `pass-map.tsx` reads them once via `getComputedStyle` (`readColors`). Add
   new map colours there rather than hard-coding them.

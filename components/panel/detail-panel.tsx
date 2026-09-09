@@ -1,6 +1,6 @@
 "use client";
 
-import { ExternalLink, HelpCircle, Star, X } from "lucide-react";
+import { ExternalLink, Star, X } from "lucide-react";
 import dynamic from "next/dynamic";
 import { useEffect, useRef } from "react";
 
@@ -98,7 +98,6 @@ interface Props {
   onProfileZoom: (point: LatLon) => void;
   onSelect: (sel: Selection) => void;
   onBack: () => void;
-  onOpenScales: () => void;
 }
 
 const ExternalLinks = ({ links }: { links: [string, string][] }) => (
@@ -163,7 +162,7 @@ const Nearby = ({
     .toSorted((a, b) => a.d - b.d);
 
   return (
-    <Section title={`Im Umkreis von ${NEARBY_RADIUS_KM} km`}>
+    <Section id="nearby" title={`Im Umkreis von ${NEARBY_RADIUS_KM} km`}>
       <div className="flex flex-col gap-1">
         {nearPasses.length > 0 &&
           group(
@@ -273,18 +272,9 @@ const PassDetail = (props: Props & { pass: Pass }) => {
       </p>
 
       <Section
+        id="rating"
+        info="Redaktionelle Einschätzung auf einer Skala von 1 bis 5, keine gemessenen Werte."
         title="Bewertung"
-        hint="redaktionell, 1–5"
-        action={
-          <Button
-            size="icon-sm"
-            variant="ghost"
-            aria-label="Skalen erklärt"
-            onClick={props.onOpenScales}
-          >
-            <HelpCircle />
-          </Button>
-        }
       >
         <dl className="grid grid-cols-[auto_1fr] items-center gap-x-3 gap-y-1.5 text-[13px]">
           {(
@@ -312,9 +302,9 @@ const PassDetail = (props: Props & { pass: Pass }) => {
       </Section>
 
       <Section
+        id="ascents"
+        info="Geroutete Straße, 100 Höhenpunkte aus einem Geländemodell – zum Vergleichen gut, nicht metergenau."
         title="Auffahrten"
-        hint="Routing + Höhenmodell"
-        info="Das Profil sind 100 Höhenpunkte aus einem Geländemodell entlang der gerouteten Straße – gut, um Auffahrten zu vergleichen, nicht metergenau. Der steilste Kilometer fällt dabei eher zu steil aus."
       >
         {pass.ascents.length === 0 && (
           <Empty className="py-3">
@@ -350,14 +340,18 @@ const PassDetail = (props: Props & { pass: Pass }) => {
         </div>
       </Section>
 
-      <Section title="Wetter auf Passhöhe" hint="Open-Meteo">
+      <Section
+        id="weather"
+        info="Vorhersage von Open-Meteo für die Passhöhe, sieben Tage."
+        title="Aktuelles Wetter"
+      >
         <WeatherForecast slug={pass.slug} />
       </Section>
 
       <Section
-        title="Klima"
-        hint="ERA5-Land 2015–2024"
-        info="ERA5-Land ist ein 10-km-Raster und auf Passhöhe eher zu mild – gut zum Vergleich der Zeiträume, nicht als Absolutwert."
+        id="climate"
+        info="ERA5-Land 2015–2024, ein 10-km-Raster – auf Passhöhe eher zu mild."
+        title="Jahresklima"
       >
         {bucket && climate ? (
           <>
@@ -486,7 +480,7 @@ const TourDetail = (props: Props & { tour: Tour }) => {
         {tour.season}
       </p>
 
-      <Section title="Pässe der Runde">
+      <Section id="tour-passes" title="Pässe der Runde">
         <div className="flex flex-col items-start">
           {tour.passes.map((slug) => {
             const p = passIndex.get(slug);
