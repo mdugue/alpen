@@ -35,7 +35,7 @@ test(
       await page.waitForAttribute(
         SLIDER,
         "aria-valuetext",
-        /^(?:Anfang|Ende) \w+: \d+ beste Zeit, \d+ gut/u,
+        /^(?:Anfang|Ende) \w+: \d+ gut, davon \d+ in ihrer besten Zeit/u,
       );
     }),
   TIMEOUT,

@@ -114,7 +114,7 @@ export const PeriodScrubber = ({
               className="text-inherit"
               hint={
                 bar
-                  ? `${periodLabel(value)}: ${bar.best} beste Zeit, ${bar.good} gut, ${bar.limited} eingeschränkt, ${bar.closed} oft gesperrt. Amber nennt den ersten Grund; alles unter „Skalen & Quellen“.`
+                  ? `${periodLabel(value)}: ${bar.best + bar.good} gut, davon ${bar.best} in ihrer besten Zeit, ${bar.limited} eingeschränkt, ${bar.closed} oft gesperrt. Amber nennt den ersten Grund; alles unter „Skalen & Quellen“.`
                   : undefined
               }
             />
@@ -159,7 +159,7 @@ export const PeriodScrubber = ({
         aria-valuenow={index + 1}
         aria-valuetext={
           bar
-            ? `${periodLabel(value)}: ${bar.best} beste Zeit, ${bar.good} gut, ${bar.limited} eingeschränkt, ${bar.closed} oft gesperrt`
+            ? `${periodLabel(value)}: ${bar.best + bar.good} gut, davon ${bar.best} in ihrer besten Zeit, ${bar.limited} eingeschränkt, ${bar.closed} oft gesperrt`
             : periodLabel(value)
         }
         onKeyDown={onKeyDown}
@@ -205,12 +205,10 @@ export const PeriodScrubber = ({
                   style={{ flexBasis: `${percent(b.limited, barTotal(b))}%` }}
                 />
                 <span
-                  className="bg-status-open/40 shrink-0"
-                  style={{ flexBasis: `${percent(b.good, barTotal(b))}%` }}
-                />
-                <span
                   className="bg-status-open shrink-0"
-                  style={{ flexBasis: `${percent(b.best, barTotal(b))}%` }}
+                  style={{
+                    flexBasis: `${percent(b.best + b.good, barTotal(b))}%`,
+                  }}
                 />
               </span>
             </span>

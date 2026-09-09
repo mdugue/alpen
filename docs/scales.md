@@ -50,22 +50,29 @@ fired stays in `StatusVerdict.reasons`, in that order; the badge shows the
 first as one word (`REASON_WORD`), the panel every one as a sentence with its
 number and provenance (`REASON_TEXT`).
 
-Four rungs, two hues plus the hollow state:
+Three fills plus a mark:
 
 ```
-██  beste Zeit     strong green   nothing limits, and it is the pass's best window
-▓▓  gut            light green    rideable, no caveat worth a word
+██  gut            green          rideable, no caveat worth a word
 ▒▒  eingeschränkt  amber          one word: Hitze · nass · kurze Tage · kalte Abfahrt · Schnee · Frost · Höhe · Randzeit
 ░░  oft gesperrt   hollow         road closed, from the opening window only
+▔▔  beste Zeit     mark under green cells: the longest stretch without a caveat and with < 10 % snow days
 ```
+
+The best window is a distinction of a stretch, not a grade of the cell, so it
+is drawn as a mark under the green cells rather than as a fourth fill: a
+paler green would read as "less" without being a step towards amber. Green
+without the mark means "just as good, only a shorter stretch" or "a little
+snow" (10–19 % of days, below the `snow` threshold but above `SNOW_BEST_PCT`).
 
 `Status` (`open | risky | closed`, `lib/schema.ts`) stays three-valued: it is
 the vocabulary of the filter, the hash and the map. `Grade` (`best | good |
-limited | closed`, `lib/status.ts`) is the display scale of the strip and the
-histogram: `open` split by whether the half-month lies in `bestPeriods()`,
-the longest run of "gut" half-months with fewer than 10 % snow days. The map
-circles, the row dot and the badge dot keep the three colours; an 8 px circle
-cannot carry two greens, and the strip next to it answers "when".
+limited | closed`, `lib/status.ts`) is what the strip reads: `open` split by
+whether the half-month lies in `bestPeriods()`, the longest run of "gut"
+half-months with fewer than 10 % snow days; `best` and `good` share the green
+fill, `best` adds the mark. The histogram counts three segments and names the
+best-window share in its tooltip. The map circles, the row dot and the badge
+dot keep the three colours.
 
 Nothing but the opening window produces "oft gesperrt": a closure is what the
 window knows; snowfall, heat or short days are what the series and the

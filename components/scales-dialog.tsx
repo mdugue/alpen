@@ -95,10 +95,12 @@ export const ScalesDialog = ({
           </p>
           <p className="text-muted-foreground">
             Der Streifen aus 24 Zellen zeigt das ganze Jahr auf einen Blick:
-            kräftig grün = beste Zeit, hell grün = gut, amber = eingeschränkt,
-            hohl = oft gesperrt, umrandet = der gewählte Halbmonat. Die Karte
-            bleibt bei drei Farben; die Punkte dort unterscheiden nicht zwischen
-            „gut“ und „beste Zeit“.
+            grün = gut, amber = eingeschränkt, hohl = oft gesperrt, umrandet =
+            der gewählte Halbmonat. Die „beste Zeit“ ist keine vierte Farbe,
+            sondern der Strich unter den grünen Zellen: der längste Abschnitt
+            ohne Vorbehalt und mit weniger als 10 % Schneefalltagen. Grün ohne
+            Strich heißt „ebenso gut, nur ein kürzerer Abschnitt“ oder „etwas
+            Schnee“ (10 bis 19 % der Tage).
           </p>
         </section>
         <section className="flex flex-col gap-2">

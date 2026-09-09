@@ -12,18 +12,23 @@ import { cn } from "@/lib/utils";
 
 /**
  * The whole year of one pass or tour in 24 cells, so "when" is answered
- * without clicking. Four rungs, two hues: the pass's best window is the full
- * green, "gut" a tint of the same token, "eingeschränkt" amber, and "oft
- * gesperrt" hollow like the circles on the map – a closure is a different
- * kind of statement, not one more step on the ramp. The current half-month
- * is outlined, so the strip still works without hue.
+ * without clicking. The fill is the rideability and nothing else: green for
+ * "gut", amber for "eingeschränkt", hollow for "oft gesperrt" like the
+ * circles on the map – a closure is a different kind of statement, not one
+ * more step on the ramp. The pass's best window is not a fourth fill but a
+ * mark under the green cells: "beste Zeit" is a distinction of a stretch,
+ * not a grade of the cell. The current half-month is outlined, so the strip
+ * still works without hue.
  */
 const CELL: Record<Grade, string> = {
   best: "bg-status-open",
   closed: "bg-status-closed/12 ring-1 ring-status-closed/45 ring-inset",
-  good: "bg-status-open/40",
+  good: "bg-status-open",
   limited: "bg-status-risky",
 };
+
+/** The mark under a cell in the best window; same token as the underline the panel had before. */
+export const BEST_MARK = "bg-foreground/55";
 
 export const SeasonStrip = ({
   grades,
@@ -69,6 +74,24 @@ export const SeasonStrip = ({
           />
         ))}
       </div>
+      {/* The best-window mark: one segment per cell, so a run that wraps
+          around the turn of the year draws as two bars by itself. */}
+      {grades.some((g) => g === "best") && (
+        <div
+          aria-hidden
+          className={cn("flex gap-px", panel ? "mt-1 h-0.5" : "mt-px h-0.5")}
+        >
+          {grades.map((grade, i) => (
+            <span
+              key={PERIODS[i]}
+              className={cn(
+                "flex-1 rounded-full",
+                grade === "best" && BEST_MARK,
+              )}
+            />
+          ))}
+        </div>
+      )}
       {panel && (
         <div
           aria-hidden

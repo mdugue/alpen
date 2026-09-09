@@ -97,10 +97,10 @@ The ladder, from what it is on the road: closed is categorically different
 (binary and known), the three rungs above it are one gradual scale (Principle 3):
 
 ```
-██  beste Zeit     strong green   nothing limits, and it is the pass's best window
-▓▓  gut            light green    rideable, no caveat worth a word
+██  gut            green          rideable, no caveat worth a word
 ▒▒  eingeschränkt  amber          one word: Hitze · nass · kurze Tage · kalte Abfahrt · Schnee · Frost · Höhe · Randzeit
 ░░  oft gesperrt   hollow         road closed, from the opening window only
+▔▔  beste Zeit     a mark under the green cells: nothing limits, and it is the pass's best window
 ```
 
 Mont Ventoux, before and after (Bédoin start at 331 m, 31 °C in the valley
@@ -321,22 +321,22 @@ fire too, they come first in the ladder and keep their word.
 - The scales dialog and `docs/scales.md` describe the ladder and say that
   the amber word is the _first_ limit, not the only one.
 
-### Strip and histogram: four rungs, two greens, hollow closed
+### Strip and histogram: three fills, the best window as a mark
 
-`SeasonStrip` takes `Grade[]`. Cells: `best` → `bg-status-open`, `good` →
-`bg-status-open/45`, `limited` → `bg-status-risky`, `closed` unchanged
-(hollow ring). The lighter green is a tint of the existing token, so the
-scale costs no new colour and the map, the dot and the badge keep their full
-green. If the two greens do not separate in dark mode on the row background
-(check in the screenshots), the fallback is a `--status-best` token in
-`app/globals.css` with its `@theme inline` line and dark value – never a
-hard-coded colour. The `best` underline bar in the panel stays; it now
-duplicates the strong green and can go once the screenshots show the cells
-carry it alone.
+`SeasonStrip` takes `Grade[]`. Fills: `best` and `good` → `bg-status-open`,
+`limited` → `bg-status-risky`, `closed` unchanged (hollow ring). The best
+window is a mark under the green cells (one segment per `best` cell, so a
+run across the turn of the year draws itself), in the rows as well as in the
+panel, plus a one-line `GradeLegend` under the panel strip and in the period
+control's tooltip. A first cut painted `good` as a 40 % tint of the green;
+review found that a paler green reads as "less" without being a step towards
+amber, and that "gut" mixes two things ("a shorter stretch" and "10–19 % snow
+days") that no fill can express – so the fill is the rideability and the
+mark is the distinction.
 
-`HistogramBar` becomes `{ period, best, good, limited, closed }`, the stack
-in `period-scrubber.tsx` gets a fourth segment (strong green at the bottom,
-light green, amber, grey) and the tooltip/aria text the four counts.
+`HistogramBar` becomes `{ period, best, good, limited, closed }`; the stack
+in `period-scrubber.tsx` keeps three segments (green = best + good, amber,
+grey) and the tooltip names the best-window share.
 
 `rows.ts`: `PassRow.season`/`TourRow.season` → `Grade[]`, `statusHistogram`
 counts grades. Sorting by status keeps `STATUS_RANK` on the three-valued
@@ -345,7 +345,7 @@ status.
 ### The map stays three-stage
 
 `pass-map.tsx` paints circles by `status` via `readColors` and does not learn
-the fourth rung. An 8 px circle cannot carry two greens legibly, the circle
+the fourth rung. An 8 px circle cannot carry a mark legibly, the circle
 answers "can I go there now", and the strip in the row next to it answers
 "when". The row dot and the badge dot are the same three colours for the same
 reason. This is a deliberate decision, not an omission; if plan 12 wants the
@@ -408,7 +408,7 @@ an editorial judgement, the raw values remain visible).
 - `AGENTS.md`: "Where things live" gains `lib/daylight.ts`; the rideability
   row names `passVerdict`, `Grade` and the ladder. Principle 3 gets the
   sentence that derived values are labelled as such.
-- `components/scales-dialog.tsx`: the ladder and the two greens, the amber
+- `components/scales-dialog.tsx`: the ladder, the fills and the mark, the amber
   word, the derived valley value.
 - `docs/roadmap.md`: one entry each for the non-goals above.
 - Plan header and the row in `docs/plans/README.md`.
@@ -465,8 +465,8 @@ second one if the first grows past comfortable review size.
 - The map, the row dot and the badge dot are unchanged in colour.
 - `bun run scripts/analyze-status.ts` prints the four distribution tables and
   the change list; the PR carries them.
-- Screenshots show the two greens as distinguishable in light and dark mode
-  at row size (96 px, 24 cells).
+- Screenshots show the best-window mark as legible under the row strip
+  (96 px, 24 cells) in light and dark mode.
 
 ## Risks and open questions
 
@@ -487,9 +487,9 @@ second one if the first grows past comfortable review size.
   threshold from the same table is `tmin < 0 °C` (53 pairs, 36 passes, same
   half-months), with the caveat that most of those cells are already amber
   for frost, so the word would rarely appear.
-- **Two greens at 4 px cell height.** A 45 % tint may vanish on the phone in
-  daylight. The fallback token is named above; the decision waits for the
-  screenshots.
+- **The mark at 2 px.** A 2 px bar under a 96 px strip is small on a phone;
+  the sentence in `aria-label` and the "beste Zeit" line in the panel carry
+  the same information, and the panel strip is four times the height.
 - **Reason ladder order** is set once in `REASON_ORDER` and documented in
   `docs/scales.md`. Moving `altitude` behind snow and frost changes the first
   word for cells where both fire; the change list in the analysis script
