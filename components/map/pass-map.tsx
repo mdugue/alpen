@@ -196,50 +196,28 @@ const draw = (
 };
 
 /**
- * The lucide `building-2` glyph as its raw paths on a 24-unit grid – the same
- * icon the sidebar uses, so the map's town mark and the UI's agree. Paths are
- * built inside the drawing call: `Path2D` does not exist while this module is
- * evaluated on the server.
- */
-const BUILDING_2 = [
-  "M10 12h4",
-  "M10 8h4",
-  "M14 21v-3a2 2 0 0 0-4 0v3",
-  "M6 10H4a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-2",
-  "M6 21V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v16",
-];
-
-/**
- * A town: a disc in the town colour carrying the building glyph, inside a
- * ring. Only the ring changes – paper for a plain town, accent for a
- * favourite, ink for the selected one – so a town keeps one silhouette at
- * every zoom instead of turning into a different symbol, and a pass dot next
- * to it can never be mistaken for one.
+ * A town: a disc in the town colour inside a ring. No glyph in it – at the
+ * size a town mark has on this map a pictogram is a smudge, and the ring
+ * plus the colour already separate it from a pass dot. Only the ring changes
+ * – paper for a plain town, accent for a favourite, ink for the selected one
+ * – so a town keeps one silhouette at every zoom.
  */
 const townIcon = (c: Colors, ring: string) =>
   draw((ctx, s) => {
-    const r = s * 0.34;
+    const r = s * 0.3;
     ctx.translate(s / 2, s / 2);
     ctx.beginPath();
     ctx.arc(0, 0, r, 0, Math.PI * 2);
     ctx.fillStyle = c.town;
     ctx.fill();
-    ctx.lineWidth = s * 0.075;
+    ctx.lineWidth = s * 0.08;
     ctx.strokeStyle = c.paper;
     ctx.stroke();
     ctx.beginPath();
-    ctx.arc(0, 0, r + s * 0.105, 0, Math.PI * 2);
+    ctx.arc(0, 0, r + s * 0.115, 0, Math.PI * 2);
     ctx.lineWidth = s * 0.07;
     ctx.strokeStyle = ring;
     ctx.stroke();
-    const scale = (r * 1.12) / 24;
-    ctx.scale(scale, scale);
-    ctx.translate(-12, -12);
-    ctx.lineCap = "round";
-    ctx.lineJoin = "round";
-    ctx.lineWidth = 2.2;
-    ctx.strokeStyle = c.paper;
-    for (const d of BUILDING_2) ctx.stroke(new Path2D(d));
   });
 
 /** Star as a canvas icon so that no font glyphs are needed. */
@@ -418,6 +396,46 @@ const appLayers = (colors: Colors): LayerSpecification[] => {
       source: "tours",
       type: "symbol",
     },
+    // Below the passes: MapLibre places labels from the top of the style
+    // down, so a pass label wins the collision against a town name. The
+    // passes are what the map is read for; the town is the answer to the
+    // second question, not the first.
+    {
+      id: "towns",
+      layout: {
+        "icon-allow-overlap": true,
+        "icon-image": [
+          "case",
+          ["==", ["get", "selected"], 1],
+          "town-sel",
+          ["==", ["get", "favorite"], 1],
+          "town-fav",
+          "town",
+        ],
+        "icon-size": ["interpolate", ["linear"], ["zoom"], 5, 0.6, 13, 0.85],
+      },
+      source: "towns",
+      type: "symbol",
+    },
+    {
+      id: "towns-label",
+      layout: {
+        "text-field": ["get", "name"],
+        "text-font": [FONT_BOLD],
+        "text-justify": "auto",
+        "text-radial-offset": 1,
+        "text-size": ["interpolate", ["linear"], ["zoom"], 8, 12, 13, 14],
+        "text-variable-anchor": ["left", "right", "top", "bottom"],
+      },
+      minzoom: 8,
+      paint: {
+        "text-color": colors.town,
+        "text-halo-color": colors.paper,
+        "text-halo-width": 2,
+      },
+      source: "towns",
+      type: "symbol",
+    },
     {
       filter: ["!=", ["get", "favorite"], 1],
       id: "passes",
@@ -529,68 +547,6 @@ const appLayers = (colors: Colors): LayerSpecification[] => {
       source: "passes",
       type: "symbol" as const,
     })),
-    // Above the passes on purpose: MapLibre places labels from the top of the
-    // style down, so the 26 towns win every collision against the 92 pass
-    // labels – and against the basemap's own place names below them. A town
-    // is the answer to "where do we stay", so it may cover a dot.
-    {
-      id: "towns",
-      layout: {
-        "icon-allow-overlap": true,
-        "icon-image": [
-          "case",
-          ["==", ["get", "selected"], 1],
-          "town-sel",
-          ["==", ["get", "favorite"], 1],
-          "town-fav",
-          "town",
-        ],
-        "icon-size": [
-          "interpolate",
-          ["linear"],
-          ["zoom"],
-          5,
-          0.62,
-          9,
-          0.85,
-          13,
-          1,
-        ],
-      },
-      source: "towns",
-      type: "symbol",
-    },
-    {
-      id: "towns-label",
-      layout: {
-        "text-field": ["get", "name"],
-        "text-font": [FONT_BOLD],
-        "text-justify": "auto",
-        "text-radial-offset": 1,
-        "text-size": [
-          "interpolate",
-          ["linear"],
-          ["zoom"],
-          5,
-          12,
-          9,
-          14,
-          13,
-          15,
-        ],
-        "text-variable-anchor": ["left", "right", "top", "bottom"],
-      },
-      // From the overview on: on the first frame the map opens on, the towns
-      // are what a visitor picks a region by.
-      minzoom: 5,
-      paint: {
-        "text-color": colors.town,
-        "text-halo-color": colors.paper,
-        "text-halo-width": 2,
-      },
-      source: "towns",
-      type: "symbol",
-    },
     // Topmost: the profile cursor must stay visible over its own ascent.
     {
       id: "profile-cursor",

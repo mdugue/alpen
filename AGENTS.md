@@ -208,10 +208,10 @@ friends do that better and the app links out to them.
   the hillshade from the Terrarium DEM, the basemap's lines and labels
   (rivers, borders, roads from zoom 6 to minor roads at 11, road names at 12,
   lakes, peaks with elevation at 10, places), the raster overlays, then the
-  app's own layers (the hovered town's reach, tours, ascents, passes, labels,
-  towns, profile cursor). The towns sit **above** the passes: MapLibre places
-  labels from the top of the style down, so the 26 towns win every collision
-  against the 92 pass labels and against the basemap's own place names.
+  app's own layers (the hovered town's reach, tours, ascents, towns, passes,
+  labels, profile cursor). MapLibre places labels from the top of the style
+  down, so that order is also their collision priority: a pass label wins
+  against a town name, and both win against the basemap's own place names.
   Roads are thin and neutral and there are no POIs: the mountain roads that
   matter are the app's lines, and the status and tour colours are what should
   dominate. Labels prefer `name:de`. The raster alternatives (OSM, OpenTopoMap,

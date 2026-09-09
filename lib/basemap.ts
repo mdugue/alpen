@@ -26,7 +26,7 @@ import type { Scheme } from "@/lib/palette";
  *   detail   rivers · borders · roads (minor at ≥ 11, casing at ≥ 10)
  *            road names (≥ 12) · lake names · peaks with elevation (≥ 10)
  *            villages · towns · cities · regions · countries
- *   [overlays · town reach · tours · ascents · passes · labels · towns
+ *   [overlays · town reach · tours · ascents · towns · passes · labels
  *    · profile cursor]
  *
  * The hillshade sits between the two groups: it models the land without
