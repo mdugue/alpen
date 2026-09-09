@@ -274,11 +274,21 @@ export class Page {
     );
   }
 
-  /** Camera state via the test hook (`NEXT_PUBLIC_TEST_HOOKS=1`). */
+  /**
+   * Camera state via the test hook (`NEXT_PUBLIC_TEST_HOOKS=1`). A fly-to is an
+   * animation, so `moving` says whether this is where the camera ends up or
+   * somewhere along the way – assert on a settled one.
+   */
   camera() {
-    return this.evaluate<{ zoom: number; lat: number; lon: number } | null>(
+    return this.evaluate<{
+      zoom: number;
+      lat: number;
+      lon: number;
+      moving: boolean;
+    } | null>(
       `(() => { const m = window.__alpen?.map; if (!m) return null;
-        const c = m.getCenter(); return { zoom: m.getZoom(), lat: c.lat, lon: c.lng }; })()`,
+        const c = m.getCenter();
+        return { zoom: m.getZoom(), lat: c.lat, lon: c.lng, moving: m.isMoving() }; })()`,
     );
   }
 

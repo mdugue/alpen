@@ -207,9 +207,12 @@ test(
         if (!(await page.camera())) return;
         // The bounds are precomputed per tour (lib/map-assets.ts), not read from
         // the line, so the camera lands on the tour before its geometry arrives.
+        // The camera flies in from the Alps overview, so it has to have
+        // arrived before its centre says anything: half way through the flight
+        // it is still east of the tour.
         await waitUntil(async () => {
           const c = await page.camera();
-          return !!c && c.zoom > 8;
+          return !!c && c.zoom > 8 && !c.moving;
         }, "camera fitted to the tour");
         const c = (await page.camera())!;
         expect(c.lat).toBeGreaterThan(45.03);
