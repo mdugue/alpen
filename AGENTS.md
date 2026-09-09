@@ -37,32 +37,33 @@ friends do that better and the app links out to them.
 
 ## Where things live
 
-| Topic                                           | File                                                                                                                      |
-| ----------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
-| Rideability heuristic                           | `lib/status.ts` (`passStatus`, `tourStatus`)                                                                              |
-| Data schemas (zod) and inferred types           | `lib/schema.ts`, `lib/types.ts`, `data/schema/*.schema.json` (`bun run data:schema`)                                      |
-| Regions and countries (vocabulary)              | `lib/regions.ts`                                                                                                          |
-| Data access (cached, validated)                 | `lib/data.ts`                                                                                                             |
-| Profile sampling and derived gradients          | `lib/profile.ts`                                                                                                          |
-| Filter, selection and URL state (hash keys)     | `lib/app-state.ts`, `components/explorer.tsx`                                                                             |
-| Search normalisation and haystacks              | `lib/search.ts`                                                                                                           |
-| Map, layers, 3D, markers, labels, feature state | `components/map/pass-map.tsx`                                                                                             |
-| Map assets: GeoJSON, simplification, hashing    | `lib/map-assets.ts`, `scripts/build-map-assets.ts` (→ `public/map`, git-ignored)                                          |
-| Tours within reach of an entity                 | `lib/nearby.ts` (computed on the server in `lib/data.ts`)                                                                 |
-| Photos: keys, sizes, licence metadata           | `lib/photos.ts`, `scripts/build-photos.ts` (`bun run data:photos`) → `data/generated/photos.json`                         |
-| Period scrubber floating over the map           | `components/map/period-scrubber.tsx`                                                                                      |
-| Season strip (24 half-months)                   | `components/season-strip.tsx`                                                                                             |
-| Sidebar: search, filters, one list per kind     | `components/sidebar/`, `lib/rows.ts`                                                                                      |
-| Detail panel incl. profile/weather/climate      | `components/panel/` (collapsible blocks: `components/panel/section.tsx`)                                                  |
-| Bottom sheet on phones (one per panel)          | `components/mobile-sheet.tsx`                                                                                             |
-| Precomputation, data checks                     | `scripts/build-data.ts`, `scripts/build-photos.ts`, `scripts/check-data.ts`                                               |
-| Route quality gate: checks and thresholds       | `scripts/lib/validate.ts`; pass-point placement `scripts/locate-pass.ts` (`bun run data:locate`), `scripts/lib/locate.ts` |
-| Name, claim, colours, mark, base URL            | `lib/brand.ts`, `lib/mark.tsx`                                                                                            |
-| Icons, share image, manifest, robots, sitemap   | `app/icon.tsx`, `app/apple-icon.tsx`, `app/opengraph-image.tsx`, `app/manifest.ts`, `app/robots.ts`, `app/sitemap.ts`     |
-| Legal pages                                     | `app/impressum/`, `app/datenschutz/`                                                                                      |
-| Linting and formatting                          | `oxlint.config.ts`, `oxfmt.config.ts`                                                                                     |
-| Implementation plans                            | `docs/plans/` (index: `docs/plans/README.md`)                                                                             |
-| Project skills                                  | `.agents/skills/implement-plan`, `curate-data`, `preview-app`                                                             |
+| Topic                                           | File                                                                                                                                                        |
+| ----------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Rideability heuristic                           | `lib/status.ts` (`passStatus`, `tourStatus`)                                                                                                                |
+| Data schemas (zod) and inferred types           | `lib/schema.ts`, `lib/types.ts`, `data/schema/*.schema.json` (`bun run data:schema`)                                                                        |
+| Regions and countries (vocabulary)              | `lib/regions.ts`                                                                                                                                            |
+| Data access (cached, validated)                 | `lib/data.ts`                                                                                                                                               |
+| Profile sampling and derived gradients          | `lib/profile.ts`                                                                                                                                            |
+| Filter, selection and URL state (hash keys)     | `lib/app-state.ts`, `components/explorer.tsx`                                                                                                               |
+| Search normalisation and haystacks              | `lib/search.ts`                                                                                                                                             |
+| Map, layers, 3D, markers, labels, feature state | `components/map/pass-map.tsx`                                                                                                                               |
+| Basemap: vector style, palette, glyphs          | `lib/basemap.ts`, `lib/palette.ts`, `scripts/build-map-style.ts` (→ `public/map/style-*.json`), `scripts/fetch-glyphs.ts` (→ `public/map/fonts`, committed) |
+| Map assets: GeoJSON, simplification, hashing    | `lib/map-assets.ts`, `scripts/build-map-assets.ts` (→ `public/map`, git-ignored)                                                                            |
+| Tours within reach of an entity                 | `lib/nearby.ts` (computed on the server in `lib/data.ts`)                                                                                                   |
+| Photos: keys, sizes, licence metadata           | `lib/photos.ts`, `scripts/build-photos.ts` (`bun run data:photos`) → `data/generated/photos.json`                                                           |
+| Period scrubber floating over the map           | `components/map/period-scrubber.tsx`                                                                                                                        |
+| Season strip (24 half-months)                   | `components/season-strip.tsx`                                                                                                                               |
+| Sidebar: search, filters, one list per kind     | `components/sidebar/`, `lib/rows.ts`                                                                                                                        |
+| Detail panel incl. profile/weather/climate      | `components/panel/` (collapsible blocks: `components/panel/section.tsx`)                                                                                    |
+| Bottom sheet on phones (one per panel)          | `components/mobile-sheet.tsx`                                                                                                                               |
+| Precomputation, data checks                     | `scripts/build-data.ts`, `scripts/build-photos.ts`, `scripts/check-data.ts`                                                                                 |
+| Route quality gate: checks and thresholds       | `scripts/lib/validate.ts`; pass-point placement `scripts/locate-pass.ts` (`bun run data:locate`), `scripts/lib/locate.ts`                                   |
+| Name, claim, colours, mark, base URL            | `lib/brand.ts`, `lib/mark.tsx`                                                                                                                              |
+| Icons, share image, manifest, robots, sitemap   | `app/icon.tsx`, `app/apple-icon.tsx`, `app/opengraph-image.tsx`, `app/manifest.ts`, `app/robots.ts`, `app/sitemap.ts`                                       |
+| Legal pages                                     | `app/impressum/`, `app/datenschutz/`                                                                                                                        |
+| Linting and formatting                          | `oxlint.config.ts`, `oxfmt.config.ts`                                                                                                                       |
+| Implementation plans                            | `docs/plans/` (index: `docs/plans/README.md`)                                                                                                               |
+| Project skills                                  | `.agents/skills/implement-plan`, `curate-data`, `preview-app`                                                                                               |
 
 ## Conventions
 
@@ -175,6 +176,28 @@ friends do that better and the app links out to them.
   used to read from the geometry is precomputed on the server: tours within
   reach of an entity (`lib/nearby.ts`) and the road coordinate of every
   profile sample (`ProfileWithCoords`).
+- **The basemap is generated, and it follows the OS scheme.** The default
+  base is a vector style painted from the app's own palette (`lib/basemap.ts`,
+  colours in `lib/palette.ts`), tiles from OpenFreeMap, no key. Layer stack,
+  bottom to top: the basemap's fills (land, built-up, wood, glacier, water),
+  the hillshade from the Terrarium DEM, the basemap's lines and labels
+  (rivers, borders, roads from zoom 6 to minor roads at 11, road names at 12,
+  lakes, peaks with elevation at 10, places), the raster overlays, then the
+  app's own layers (tours, ascents, towns, passes, labels, profile cursor).
+  Roads are thin and neutral and there are no POIs: the mountain roads that
+  matter are the app's lines, and the status and tour colours are what should
+  dominate. Labels prefer `name:de`. The raster alternatives (OSM, OpenTopoMap,
+  CyclOSM, Esri, satellite) stay in the layer popover; a raster base is one
+  layer below the hillshade. Switching base or scheme never rebuilds the map:
+  `applyBase` in `pass-map.tsx` swaps only the layers whose id starts with
+  `base`, and a `prefers-color-scheme` change re-reads the tokens, repaints
+  the icons and sets every paint property of the app's layers again from the
+  same `appLayers` definition the style was built from – camera, sources,
+  filters and feature state stay. Glyphs are served from `public/map/fonts`
+  (the Latin ranges of Noto Sans, fetched once by `scripts/fetch-glyphs.ts`
+  and committed), so the hermetic e2e suite renders labels and the map has no
+  font server to wait for; `scripts/build-map-style.ts` writes the same style
+  as two standalone JSON files for tuning in a style editor.
 - **MapLibre needs two workarounds.** Its web worker is resolved via
   `import.meta.url`, which Turbopack does not serve, so
   `scripts/copy-maplibre-worker.ts` copies the worker into `public/maplibre`

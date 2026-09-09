@@ -26,7 +26,7 @@ that goal; features that only add route-level precision rank last.
 | 12  | [Destinations](12-destinations.md)                                 | "where"                     | L      | 09                   | proposed                                               |
 | 05  | [Filters and search](05-filters-and-search.md)                     | finding things              | S–M    | –                    | [done](https://github.com/mdugue/alpen/pull/9)         |
 | 02  | [Real routes instead of the hash](02-real-routes.md)               | sharing, back button, SEO   | L      | 01                   | proposed                                               |
-| 06  | [A basemap that matches the theme](06-basemap.md)                  | dark mode, map quality      | M      | –                    | proposed                                               |
+| 06  | [A basemap that matches the theme](06-basemap.md)                  | dark mode, map quality      | M      | –                    | in progress (PR pending)                               |
 | 09  | [Schema validation with zod](09-schema-validation.md)              | data safety                 | S      | –                    | [done](https://github.com/mdugue/alpen/pull/9)         |
 | 10  | [Tests](10-tests.md)                                               | refactor safety             | M      | –                    | [done](https://github.com/mdugue/alpen/pull/4)         |
 | 11  | [Smaller items](11-smaller-items.md)                               | polish                      | S each | varies               | [in progress](https://github.com/mdugue/alpen/pull/16) |

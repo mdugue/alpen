@@ -9,8 +9,10 @@ next-env.d.ts
 scripts/.cache
 # copied by scripts/copy-maplibre-worker.ts
 public/maplibre
-# written by scripts/build-map-assets.ts
-public/map
+# written by scripts/build-map-assets.ts and scripts/build-map-style.ts;
+# only the glyphs (scripts/fetch-glyphs.ts, committed) are tracked
+public/map/*
+!public/map/fonts/
 
 # screenshots the e2e helper writes when a scenario fails
 e2e/failures
