@@ -269,7 +269,7 @@ const HIT_POINTS = `(() => {
 })()`;
 
 test(
-  "9 · a pass answers beside its dot and on its name",
+  "10 · a pass answers beside its dot and on its name",
   () =>
     // A camera, no selection: nothing floats over the map and nothing flies.
     withPage(
