@@ -130,13 +130,23 @@ const FIT_PADDING = 48;
 const TOOL = "h-auto w-9 flex-1";
 const TERRAIN = { exaggeration: 1.25, source: "dem" } as const;
 /**
- * The layers that answer hover and click, queried in one go. The order the
- * query returns them in is the style's own, top down – so a pass wins over a
- * town, both win over an ascent, and an ascent wins over the tour it lies on.
- * The tour answers through its own line rather than its casing, so the rim
- * that reaches past the ascent is exactly what is clickable.
+ * The tour dash, in multiples of the line width, so the rhythm holds as the
+ * line grows with the zoom. Its paper casing is `CASING` times as wide, and
+ * because the pattern counts in line widths its own array has to be divided
+ * by exactly that – otherwise the casing's dashes run longer than the ones
+ * they back and the two drift out of step.
  */
-const HIT_LAYERS = ["passes", "pass-stars", "towns", "routes", "tours"];
+const DASH = [3, 2.2];
+const CASING = 1.6;
+const CASING_DASH = DASH.map((n) => n / CASING);
+/**
+ * The layers that answer hover and click, most specific first. The order is
+ * spelled out rather than taken from the style, because the two disagree: the
+ * tour dashes are painted *over* the ascent they annotate, but a click on
+ * them means the ascent – the tour is the annotation, not the answer. A pass
+ * wins over a town, both win over an ascent, an ascent wins over its tour.
+ */
+const HIT_LAYERS = ["pass-stars", "passes", "towns", "routes", "tours"];
 const DARK_QUERY = "(prefers-color-scheme: dark)";
 /** The first layer above the base stack: where the basemap's lines and labels go. */
 const ABOVE_BASE = `ov-${OVERLAYS[0].id}`;
@@ -348,15 +358,13 @@ const appLayers = (colors: Colors): LayerSpecification[] => {
       ["linear"],
       ["zoom"],
       6,
-      ["case", selected, near * 1.4, near],
+      ["case", selected, near * 1.3, near],
       13,
-      ["case", selected, far * 1.4, far],
+      ["case", selected, far * 1.3, far],
     ] as never;
-  // Wide enough that the rim survives the *widest* ascent it can carry – a
-  // selected one, at 6 – and no wider: a wide line folds over itself in a
-  // hairpin, and the wider it is the further the fold reaches.
-  const tourLine = tourWidth(7, 10);
-  const tourCasing = tourWidth(10, 13);
+  // Narrower than the ascent it annotates, on purpose – see the tour layers.
+  const tourLine = tourWidth(2.8, 2.1);
+  const tourCasing = tourWidth(2.8 * CASING, 2.1 * CASING);
 
   return [
     // The area one town reaches, drawn while it is hovered: the hull over
@@ -379,44 +387,58 @@ const appLayers = (colors: Colors): LayerSpecification[] => {
       source: "reach",
       type: "line",
     },
-    // A tour is the union of several ascents – the Sellaronda *is* its four
-    // passes – so as a line of the same weight it and the ascents covered each
-    // other, and where the two routings differ by a few metres they fought.
-    // The tour is therefore drawn wider than the ascent and underneath it, so
-    // that it survives as a rim to either side; which pass belongs to the tour
-    // is then read from the map rather than from the list.
-    //
-    // Everything here is opaque, and no line is offset. Both are what a
-    // hairpin punishes: MapLibre draws a line as one triangle strip, so in a
-    // bend tighter than the line is wide the strip runs over itself – with a
-    // translucent colour every such overlap composites twice and shows as a
-    // blotch, and an offset line (`line-gap-width`) folds its inner side
-    // inside out altogether. Opaque, unoffset and only as wide as it needs to
-    // be, the overlap is invisible.
+    // Under the ascent, so it shows only on the stretches that have none: the
+    // dash needs something to stand on over the bare hillshade, but over an
+    // ascent the ascent itself is that ground, and a casing there would eat
+    // the status colour from both sides.
     {
       id: "tours-casing",
-      layout: { "line-cap": "round", "line-join": "round" },
-      paint: { "line-color": colors.paper, "line-width": tourCasing },
+      layout: { "line-cap": "butt", "line-join": "round" },
+      paint: {
+        "line-color": colors.paper,
+        "line-dasharray": CASING_DASH,
+        "line-layer-opacity": 0.55,
+        "line-width": tourCasing,
+      },
       source: "tours",
       type: "line",
     },
-    {
-      id: "tours",
-      layout: { "line-cap": "round", "line-join": "round" },
-      paint: { "line-color": ["get", "color"], "line-width": tourLine },
-      source: "tours",
-      type: "line",
-    },
-    // On top of the tour, and opaque: the status colour is the stronger signal
-    // of the two and must not be tinted by the tour it lies in.
+    // The ascent: solid, in its status colour, and the widest of the two. It
+    // is the rated thing, so it carries the weight.
     {
       id: "routes",
       layout: { "line-cap": "round", "line-join": "round" },
       paint: {
         "line-color": routeColor,
-        "line-width": ["case", selected, 6, 3.5],
+        "line-width": ["case", selected, 7, 4.5],
       },
       source: "routes",
+      type: "line",
+    },
+    // A tour is the union of several ascents – the Sellaronda *is* its four
+    // passes – so as a second solid line of its own it and the ascents merely
+    // covered each other. It is drawn instead the way a map draws any named
+    // route that follows roads it does not own: as a dashed line laid over
+    // them, narrower than the road and interrupted, so the two are told apart
+    // by texture rather than by weight. The ascent shows through every gap,
+    // and a stretch of tour with no ascent under it reads as what it is –
+    // connecting road, not a rated climb.
+    //
+    // `line-layer-opacity`, not `line-opacity`: the latter is applied per
+    // feature, so where a hairpin runs MapLibre's triangle strip over itself
+    // the overlap composites twice and shows as a blotch. The layer property
+    // flattens the whole layer to one surface first and composites that once,
+    // which is what makes a translucent line usable in switchbacks at all.
+    {
+      id: "tours",
+      layout: { "line-cap": "butt", "line-join": "round" },
+      paint: {
+        "line-color": ["get", "color"],
+        "line-dasharray": DASH,
+        "line-layer-opacity": 0.9,
+        "line-width": tourLine,
+      },
+      source: "tours",
       type: "line",
     },
     {
@@ -853,17 +875,19 @@ export const PassMap = ({
       closeOnClick: false,
       offset: 10,
     });
-    // One query per pointer move instead of a handler per layer. The tour
-    // corridor is wide and the ascents run inside it, so several layers
-    // answer for the same pixel; per-layer `mouseenter`/`mouseleave` would
-    // let whichever fired last win and would clear the popup on leaving the
-    // ascent even though the pointer is still in the corridor. The query
-    // returns the topmost first, which is the priority the style already
-    // states: a pass beats a town, both beat an ascent, an ascent beats the
-    // tour it lies on.
-    const topmost = (e: MapMouseEvent) =>
-      m.queryRenderedFeatures(e.point, { layers: HIT_LAYERS })[0]
-        ?.properties as Record<string, string> | undefined;
+    // One query per pointer move instead of a handler per layer. A tour and
+    // the ascents it runs over answer for the same pixel, so per-layer
+    // `mouseenter`/`mouseleave` would let whichever fired last win and would
+    // clear the popup on leaving the ascent even though the pointer is still
+    // on the tour. One query, then `HIT_LAYERS` decides which hit counts.
+    const topmost = (e: MapMouseEvent) => {
+      const hits = new Map<string, Record<string, string>>();
+      for (const f of m.queryRenderedFeatures(e.point, { layers: HIT_LAYERS }))
+        if (!hits.has(f.layer.id))
+          hits.set(f.layer.id, f.properties as Record<string, string>);
+      const winner = HIT_LAYERS.find((id) => hits.has(id));
+      return winner ? hits.get(winner) : undefined;
+    };
 
     // What the popup currently shows, so that moving along one line only
     // moves it instead of writing its markup again on every event.

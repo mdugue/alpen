@@ -170,28 +170,42 @@ friends do that better and the app links out to them.
   where a source or its caveat has to be named, one short sentence sits behind
   the `info` tooltip. A header never opens a dialog – the scales dialog belongs
   to the sidebar footer, which is where it stays.
-- **A tour is the rim around its ascents.** A tour _is_ the union of several
-  ascents – the Sellaronda is its four passes – so as a line of the same
-  weight it and the ascents covered each other, and where the two routings
-  differ by a few metres they fought. The tour is therefore drawn wider than
-  the ascent and underneath it (`tours-casing`, `tours`), so what survives is
-  a rim to either side: which pass belongs to the tour is read from the map
-  rather than from the list. Its width is set by the _widest_ ascent it can
-  carry – a selected one – plus about half a line on each side, and not a
-  pixel more, because everything above that width is paid for in a hairpin:
+- **A tour is dashed, an ascent is solid.** A tour _is_ the union of several
+  ascents – the Sellaronda is its four passes – so as a second solid line of
+  its own it and the ascents merely covered each other, and telling them
+  apart by width alone both fails at a glance and makes the tour look like
+  the more important of the two. It is drawn instead the way a map draws any
+  named route that follows roads it does not own: as a dashed line laid over
+  them (`tours`), narrower than the ascent and interrupted, so the two are
+  told apart by texture rather than by weight. The status colour shows as a
+  border along every dash and in full through every gap, and a stretch of
+  tour with no ascent under it reads as what it is – connecting road, not a
+  rated climb. Its paper casing (`tours-casing`) sits _below_ the ascent, so
+  it gives the dash something to stand on over the bare hillshade without
+  eating the status colour where there is an ascent. The dash counts in line
+  widths, so the casing's array is divided by the same factor its width is
+  multiplied by, or the two drift out of step (`DASH`, `CASING` in
+  `pass-map.tsx`). The tour is boldest zoomed out, where it stands alone, and
+  finest zoomed in, where it annotates an ascent.
+- **Translucent lines need `line-layer-opacity`, not `line-opacity`.**
   MapLibre draws a line as one triangle strip, so a bend tighter than the
-  line is wide runs the strip over itself. That is why nothing here is
-  translucent and nothing is offset – a translucent overlap composites twice
-  and shows as a blotch, an offset line (`line-gap-width`) folds its inner
-  side inside out, and opaque and unoffset the same overlap is invisible.
+  line is wide runs the strip over itself. `line-opacity` is applied per
+  feature, so every such overlap composites twice and a switchback fills with
+  blotches; `line-layer-opacity` (MapLibre GL JS 6+) flattens the layer to a
+  single surface first and composites that once, which is what makes a
+  translucent line usable in a hairpin at all. It is data-constant – zoom and
+  global state only, no feature state – so anything per-feature has to be
+  carried by width or colour instead. `line-gap-width` has a second, purely
+  geometric failure in the same bends, folding its inner side inside out;
+  there is no property that fixes that one, so offset lines stay out.
   Widths interpolate with the zoom and grow again for the selected tour;
   because a zoom expression may only be the input of the _outermost_ stop
-  function, the selection case goes inside the stops (`tourWidth` in
-  `pass-map.tsx`). Hover and click are one `queryRenderedFeatures` over
-  `HIT_LAYERS` rather than a handler per layer: several layers answer for the
-  same pixel now, and the query returns them in the style's own order, so a
-  pass beats a town, both beat an ascent, and an ascent beats the tour it
-  lies on.
+  function, the selection case goes inside the stops (`tourWidth`). Hover and
+  click are one `queryRenderedFeatures` over `HIT_LAYERS` rather than a
+  handler per layer: several layers answer for the same pixel now, and
+  `HIT_LAYERS` spells the priority out rather than taking it from the style,
+  because the two disagree – the tour dashes are painted _over_ the ascent
+  they annotate, but a click on them means the ascent.
 
 - **Colours only via tokens.** MapLibre cannot read CSS variables;
   `pass-map.tsx` reads them once via `getComputedStyle` (`readColors`). Add
@@ -232,8 +246,8 @@ friends do that better and the app links out to them.
   the hillshade from the Terrarium DEM, the basemap's lines and labels
   (rivers, borders, roads from zoom 6 to minor roads at 11, road names at 12,
   lakes, peaks with elevation at 10, places), the raster overlays, then the
-  app's own layers (the hovered town's reach, the tours, the ascents on top of
-  them, towns, passes, labels, profile cursor). MapLibre places labels from the top of the style
+  app's own layers (the hovered town's reach, the tour casings, the ascents,
+  the tour dashes over them, towns, passes, labels, profile cursor). MapLibre places labels from the top of the style
   down, so that order is also their collision priority: a pass label wins
   against a town name, and both win against the basemap's own place names.
   Roads are thin and neutral and there are no POIs: the mountain roads that
