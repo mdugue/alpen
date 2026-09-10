@@ -130,21 +130,17 @@ const FIT_PADDING = 48;
 const TOOL = "h-auto w-9 flex-1";
 const TERRAIN = { exaggeration: 1.25, source: "dem" } as const;
 /**
- * The tour dash, in multiples of the line width, so the rhythm holds as the
- * line grows with the zoom. Its paper casing is `CASING` times as wide, and
- * because the pattern counts in line widths its own array has to be divided
- * by exactly that – otherwise the casing's dashes run longer than the ones
- * they back and the two drift out of step.
+ * The tour hatch, in multiples of the line width – so on a band this wide the
+ * numbers have to be well below 1 to read as a texture at all. Widen the band
+ * and the dashes lengthen with it unless these come down to match.
  */
-const DASH = [3, 2.2];
-const CASING = 1.6;
-const CASING_DASH = DASH.map((n) => n / CASING);
+const DASH = [0.45, 0.35];
 /**
  * The layers that answer hover and click, most specific first. The order is
  * spelled out rather than taken from the style, because the two disagree: the
- * tour dashes are painted *over* the ascent they annotate, but a click on
- * them means the ascent – the tour is the annotation, not the answer. A pass
- * wins over a town, both win over an ascent, an ascent wins over its tour.
+ * tour band lies *under* the ascents but reaches past them, so a click inside
+ * it hits both – and the ascent is the more specific answer. A pass wins over
+ * a town, both win over an ascent, an ascent wins over the tour holding it.
  */
 const HIT_LAYERS = ["pass-stars", "passes", "towns", "routes", "tours"];
 const DARK_QUERY = "(prefers-color-scheme: dark)";
@@ -362,9 +358,9 @@ const appLayers = (colors: Colors): LayerSpecification[] => {
       13,
       ["case", selected, far * 1.3, far],
     ] as never;
-  // Narrower than the ascent it annotates, on purpose – see the tour layers.
-  const tourLine = tourWidth(2.8, 2.1);
-  const tourCasing = tourWidth(2.8 * CASING, 2.1 * CASING);
+  // Wide enough to hold the widest ascent it can carry – a selected one, at 6
+  // – and still reach past it on both sides.
+  const tourLine = tourWidth(9, 12);
 
   return [
     // The area one town reaches, drawn while it is hovered: the hull over
@@ -387,58 +383,46 @@ const appLayers = (colors: Colors): LayerSpecification[] => {
       source: "reach",
       type: "line",
     },
-    // Under the ascent, so it shows only on the stretches that have none: the
-    // dash needs something to stand on over the bare hillshade, but over an
-    // ascent the ascent itself is that ground, and a casing there would eat
-    // the status colour from both sides.
-    {
-      id: "tours-casing",
-      layout: { "line-cap": "butt", "line-join": "round" },
-      paint: {
-        "line-color": colors.paper,
-        "line-dasharray": CASING_DASH,
-        "line-layer-opacity": 0.55,
-        "line-width": tourCasing,
-      },
-      source: "tours",
-      type: "line",
-    },
-    // The ascent: solid, in its status colour, and the widest of the two. It
-    // is the rated thing, so it carries the weight.
-    {
-      id: "routes",
-      layout: { "line-cap": "round", "line-join": "round" },
-      paint: {
-        "line-color": routeColor,
-        "line-width": ["case", selected, 7, 4.5],
-      },
-      source: "routes",
-      type: "line",
-    },
     // A tour is the union of several ascents – the Sellaronda *is* its four
-    // passes – so as a second solid line of its own it and the ascents merely
-    // covered each other. It is drawn instead the way a map draws any named
-    // route that follows roads it does not own: as a dashed line laid over
-    // them, narrower than the road and interrupted, so the two are told apart
-    // by texture rather than by weight. The ascent shows through every gap,
-    // and a stretch of tour with no ascent under it reads as what it is –
-    // connecting road, not a rated climb.
+    // passes – so it is drawn as what it is: a band wide enough to hold them,
+    // laid *under* the ascents so it reaches past them on both sides. What a
+    // tour contains is then read from the map rather than from the list.
+    //
+    // Translucent, so the hillshade and the roads keep showing through a band
+    // that covers a lot of ground, and hatched rather than solid, so it is
+    // told apart from an ascent by texture and not only by weight – a tour is
+    // the looser of the two marks, which is the right order: the ascent is
+    // the rated thing. The hatch is short and tight on purpose; a wide line
+    // with long dashes reads as a chain of blocks rather than as a texture.
     //
     // `line-layer-opacity`, not `line-opacity`: the latter is applied per
     // feature, so where a hairpin runs MapLibre's triangle strip over itself
     // the overlap composites twice and shows as a blotch. The layer property
     // flattens the whole layer to one surface first and composites that once,
-    // which is what makes a translucent line usable in switchbacks at all.
+    // which is what makes a translucent band usable in switchbacks at all.
     {
       id: "tours",
       layout: { "line-cap": "butt", "line-join": "round" },
       paint: {
         "line-color": ["get", "color"],
         "line-dasharray": DASH,
-        "line-layer-opacity": 0.9,
+        "line-layer-opacity": 0.62,
         "line-width": tourLine,
       },
       source: "tours",
+      type: "line",
+    },
+    // The ascent, on top of the band that holds it: solid and opaque, because
+    // the status colour is the stronger signal and must not be tinted by the
+    // tour it belongs to.
+    {
+      id: "routes",
+      layout: { "line-cap": "round", "line-join": "round" },
+      paint: {
+        "line-color": routeColor,
+        "line-width": ["case", selected, 6, 3.5],
+      },
+      source: "routes",
       type: "line",
     },
     {
@@ -1073,8 +1057,7 @@ export const PassMap = ({
     if (!m || !ready) return;
     const visible = tours.filter((t) => t.visible).map((t) => t.slug);
     const filter = ["in", ["get", "slug"], ["literal", visible]] as never;
-    for (const layer of ["tours-casing", "tours", "tours-label"])
-      m.setFilter(layer, filter);
+    for (const layer of ["tours", "tours-label"]) m.setFilter(layer, filter);
     for (const t of tours)
       m.setFeatureState(
         { id: t.slug, source: "tours" },
