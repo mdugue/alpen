@@ -227,6 +227,11 @@ export class Page {
     await this.view.click(selector);
   }
 
+  /** Clicks a point on the page – for the map, which has no elements. */
+  clickAt(x: number, y: number) {
+    return this.view.click(x, y);
+  }
+
   /**
    * Clicks the first element matching the selector whose text contains
    * `text` – for the German link and button labels that carry no test id.

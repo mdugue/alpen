@@ -2,10 +2,9 @@
 
 import { Box, Focus, Layers } from "lucide-react";
 import type {
+  ExpressionSpecification,
   GeoJSONSource,
   LayerSpecification,
-  MapLayerMouseEvent,
-  MapMouseEvent,
   StyleSpecification,
 } from "maplibre-gl";
 import {
@@ -135,20 +134,113 @@ const TERRAIN = { exaggeration: 1.25, source: "dem" } as const;
  * and the dashes lengthen with it unless these come down to match.
  */
 const DASH = [0.45, 0.35];
-/**
- * The layers that answer hover and click, most specific first. The order is
- * spelled out rather than taken from the style, because the two disagree: the
- * tour band lies *under* the ascents but reaches past them, so a click inside
- * it hits both – and the ascent is the more specific answer. A pass wins over
- * a town, both win over an ascent, an ascent wins over the tour holding it.
- */
-const HIT_LAYERS = ["pass-stars", "passes", "towns", "routes", "tours"];
 const DARK_QUERY = "(prefers-color-scheme: dark)";
 /** The first layer above the base stack: where the basemap's lines and labels go. */
 const ABOVE_BASE = `ov-${OVERLAYS[0].id}`;
 
 const scheme = (): Scheme =>
   window.matchMedia(DARK_QUERY).matches ? "dark" : "light";
+
+const coarsePointer = () => window.matchMedia("(pointer: coarse)").matches;
+
+/**
+ * What the pointer may aim at, in pixels. A pass dot is 5 to 15 px across, a
+ * town disc about 14, an ascent line 3.5 wide – targets that a finger cannot
+ * hit and that a mouse only hits when the map stands still. Every kind
+ * therefore carries a transparent hit area on top of its mark: about a 44 px
+ * target on touch, roughly half of that with a mouse, where aiming is precise
+ * and the marks sit denser on screen. Deliberately not larger: the areas
+ * overlap heavily as it is, and the wider they get the more often one mark
+ * answers for its neighbour.
+ */
+const HIT_RADIUS = 22;
+const HIT_RADIUS_FINE = 13;
+const HIT_WIDTH = 32;
+const HIT_WIDTH_FINE = 18;
+/** How far a hit area reaches beyond a mark that is drawn wider than the floor. */
+const HIT_MARGIN = 6;
+/** Slack around the pointer, so a near miss on a label still counts. */
+const HIT_SLOP = 4;
+
+/**
+ * The layers that answer hover and click, in falling priority. The order is
+ * spelled out rather than taken from the style, because the two disagree:
+ * marks first, then the names beside them, then the lines – a name is a small
+ * deliberate target, a line covers half the map, and both would otherwise
+ * swallow the dot they belong to; and the tour band lies *under* the ascents
+ * but reaches past them, so a click inside it hits both and the ascent is the
+ * more specific answer. Within a group the nearer mark wins – passes and
+ * towns share the first one – so a generous hit area never steals the click
+ * from the mark actually aimed at.
+ */
+const HIT_GROUPS: readonly (readonly string[])[] = [
+  ["passes-hit", "towns-hit"],
+  [
+    "pass-label-5",
+    "pass-label-4",
+    "pass-label-3",
+    "pass-label-2",
+    "pass-label-1",
+    "towns-label",
+  ],
+  ["tours-label"],
+  ["routes-hit"],
+  ["tours-hit"],
+];
+const HIT_LAYERS = HIT_GROUPS.flat();
+
+interface Hit {
+  kind: Selection["kind"];
+  slug: string;
+  /** The feature's own properties – what the hover popup is built from. */
+  props: Record<string, string>;
+  /** Where the popup points: the mark itself, or the pointer on a line. */
+  anchor: [number, number];
+}
+
+/**
+ * The one entity under a point, resolved across all hit layers at once.
+ * A single query instead of a handler per layer: overlapping areas are the
+ * normal case here, and only one of them may win a click.
+ */
+const pickAt = (m: MLMap, x: number, y: number): Hit | null => {
+  const layers = HIT_LAYERS.filter((id) => m.getLayer(id));
+  if (layers.length === 0) return null;
+  const features = m.queryRenderedFeatures(
+    [
+      [x - HIT_SLOP, y - HIT_SLOP],
+      [x + HIT_SLOP, y + HIT_SLOP],
+    ],
+    { layers },
+  );
+  let best: Hit | null = null;
+  let bestRank = Number.POSITIVE_INFINITY;
+  let bestDist = Number.POSITIVE_INFINITY;
+  for (const f of features) {
+    const rank = HIT_GROUPS.findIndex((g) => g.includes(f.layer.id));
+    if (rank === -1 || rank > bestRank) continue;
+    const props = f.properties as Record<string, string>;
+    if (!props.slug) continue;
+    const at =
+      f.geometry.type === "Point"
+        ? (f.geometry.coordinates as [number, number])
+        : null;
+    const p = at ? m.project(at) : null;
+    const dist = p ? Math.hypot(p.x - x, p.y - y) : 0;
+    if (rank === bestRank && dist >= bestDist) continue;
+    const pointer = m.unproject([x, y]);
+    bestRank = rank;
+    bestDist = dist;
+    best = {
+      anchor: at ?? [pointer.lng, pointer.lat],
+      // An ascent belongs to its pass; everything else names its own kind.
+      kind: props.kind === "route" ? "pass" : (props.kind as Selection["kind"]),
+      props,
+      slug: props.slug,
+    };
+  }
+  return best;
+};
 
 /** A stored base that no longer exists (a keyed raster, say) falls back to the default. */
 const resolveBase = (id: string) =>
@@ -316,6 +408,44 @@ const applyBase = (m: MLMap, id: string, s: Scheme) => {
  * definition the style was built from.
  */
 const appLayers = (colors: Colors): LayerSpecification[] => {
+  const coarse = coarsePointer();
+  /**
+   * A transparent line under a drawn one, as wide as the pointer needs. It
+   * carries the same filter as its visible twin (set in the effects below), so
+   * a hidden tour stays out of hit-testing.
+   */
+  const hitLine = (id: string, source: string): LayerSpecification => ({
+    id,
+    layout: { "line-cap": "round", "line-join": "round" },
+    paint: {
+      "line-color": colors.ink,
+      "line-opacity": 0,
+      "line-width": coarse ? HIT_WIDTH : HIT_WIDTH_FINE,
+    },
+    source,
+    type: "line",
+  });
+  /**
+   * The same for a mark: one disc per point, in screen pixels (the default
+   * viewport alignment), so a tilted map does not shrink the target.
+   */
+  const hitPoint = (
+    id: string,
+    source: string,
+    /** Where the drawn mark grows with the zoom, the area has to grow with it. */
+    radius: number | ExpressionSpecification = coarse
+      ? HIT_RADIUS
+      : HIT_RADIUS_FINE,
+  ): LayerSpecification => ({
+    id,
+    paint: {
+      "circle-color": colors.ink,
+      "circle-opacity": 0,
+      "circle-radius": radius,
+    },
+    source,
+    type: "circle",
+  });
   const statusColor = [
     "match",
     ["get", "status"],
@@ -330,6 +460,32 @@ const appLayers = (colors: Colors): LayerSpecification[] => {
   // The ascent and tour lines carry status and selection as feature state,
   // so a period, filter or selection change never re-uploads geometry.
   const selected = ["==", ["feature-state", "selected"], 1];
+  /**
+   * The radius of a pass dot, by zoom and fame. With a `hit` floor it becomes
+   * the dot's hit area instead: never below that floor, and always a margin
+   * wider than the dot, which on a famous pass at close zoom is as wide as the
+   * floor itself. One interpolate rather than a `max` around it, because a
+   * `zoom` expression may only be the input of a top-level interpolate.
+   */
+  const passRadius = (hit = 0): ExpressionSpecification => {
+    const stop = (base: number, perFame: number): ExpressionSpecification => {
+      const r: ExpressionSpecification = [
+        "+",
+        base + (hit ? HIT_MARGIN : 0),
+        ["*", perFame, ["get", "fame"]],
+      ];
+      return hit ? ["max", hit, r] : r;
+    };
+    return [
+      "interpolate",
+      ["linear"],
+      ["zoom"],
+      6,
+      stop(2, 1.1),
+      12,
+      stop(4, 1.8),
+    ];
+  };
   const routeColor = [
     "match",
     ["coalesce", ["feature-state", "status"], "none"],
@@ -383,6 +539,8 @@ const appLayers = (colors: Colors): LayerSpecification[] => {
       source: "reach",
       type: "line",
     },
+    hitLine("tours-hit", "tours"),
+    hitLine("routes-hit", "routes"),
     // A tour is the union of several ascents – the Sellaronda *is* its four
     // passes – so it is drawn as what it is: a band wide enough to hold them,
     // laid *under* the ascents so it reaches past them on both sides. What a
@@ -442,6 +600,12 @@ const appLayers = (colors: Colors): LayerSpecification[] => {
       source: "tours",
       type: "symbol",
     },
+    hitPoint("towns-hit", "towns"),
+    hitPoint(
+      "passes-hit",
+      "passes",
+      passRadius(coarse ? HIT_RADIUS : HIT_RADIUS_FINE),
+    ),
     // Below the passes: MapLibre places labels from the top of the style
     // down, so a pass label wins the collision against a town name. The
     // passes are what the map is read for; the town is the answer to the
@@ -503,15 +667,7 @@ const appLayers = (colors: Colors): LayerSpecification[] => {
           0.62,
         ],
         "circle-pitch-alignment": "map",
-        "circle-radius": [
-          "interpolate",
-          ["linear"],
-          ["zoom"],
-          6,
-          ["+", 2, ["*", 1.1, ["get", "fame"]]],
-          12,
-          ["+", 4, ["*", 1.8, ["get", "fame"]]],
-        ],
+        "circle-radius": passRadius(),
         "circle-stroke-color": [
           "case",
           ["==", ["get", "selected"], 1],
@@ -854,67 +1010,63 @@ export const PassMap = ({
       setReady(true);
     });
 
+    // One pointer resolution for the whole map rather than a handler per
+    // layer: the hit areas overlap, and exactly one entity may answer a hover
+    // or a click (`pickAt` above decides which).
     const popup = new Popup({
       closeButton: false,
       closeOnClick: false,
-      offset: 10,
+      offset: 12,
     });
-    // One query per pointer move instead of a handler per layer. A tour and
-    // the ascents it runs over answer for the same pixel, so per-layer
-    // `mouseenter`/`mouseleave` would let whichever fired last win and would
-    // clear the popup on leaving the ascent even though the pointer is still
-    // on the tour. One query, then `HIT_LAYERS` decides which hit counts.
-    const topmost = (e: MapMouseEvent) => {
-      const hits = new Map<string, Record<string, string>>();
-      for (const f of m.queryRenderedFeatures(e.point, { layers: HIT_LAYERS }))
-        if (!hits.has(f.layer.id))
-          hits.set(f.layer.id, f.properties as Record<string, string>);
-      const winner = HIT_LAYERS.find((id) => hits.has(id));
-      return winner ? hits.get(winner) : undefined;
-    };
+    /** The entity under the pointer as `kind:slug`, to rebuild only on change. */
+    let hovered: string | null = null;
+    /** Last pointer position, so a moving map re-reads what is under it. */
+    let at: { x: number; y: number } | null = null;
 
-    // What the popup currently shows, so that moving along one line only
-    // moves it instead of writing its markup again on every event.
-    let shown: string | null = null;
-    m.on("mousemove", (e: MapMouseEvent) => {
-      const p = topmost(e);
-      m.getCanvas().style.cursor = p ? "pointer" : "";
-      if (!p) {
-        shown = null;
+    const hover = () => {
+      // While the map moves there is nothing to aim at, and a popup following
+      // a drag is only noise.
+      const hit = at && !m.isMoving() ? pickAt(m, at.x, at.y) : null;
+      m.getCanvas().style.cursor = hit ? "pointer" : "";
+      if (!hit) {
         popup.remove();
+        if (hovered) paintReach(null);
+        hovered = null;
         return;
       }
-      popup.setLngLat(e.lngLat);
-      const key = `${p.kind}:${p.slug}`;
-      if (key !== shown) {
-        shown = key;
-        popup.setHTML(popupHtml(p)).addTo(m);
+      const key = `${hit.kind}:${hit.slug}`;
+      if (key !== hovered) {
+        hovered = key;
+        popup.setHTML(popupHtml(hit.props));
+        // Hovering a town also outlines what it reaches. Only on hover:
+        // selecting one flies the camera in, and from inside the hull there is
+        // nothing to see. The outline goes when the pointer does.
+        paintReach(hit.kind === "town" ? hit.slug : null);
       }
-    });
-    m.on("mouseout", () => {
-      m.getCanvas().style.cursor = "";
-      shown = null;
-      popup.remove();
-    });
-    m.on("click", (e: MapMouseEvent) => {
-      const p = topmost(e) as { kind: string; slug: string } | undefined;
-      if (!p) return;
-      onSelectRef.current({
-        kind: p.kind === "route" ? "pass" : (p.kind as Selection["kind"]),
-        slug: p.slug,
-      });
-    });
+      // `addTo` on an open popup re-appends its element, so it is only ever
+      // added once per hover; the anchor follows the pointer along a line.
+      popup.setLngLat(hit.anchor);
+      if (!popup.isOpen()) popup.addTo(m);
+    };
 
-    // Hovering a town also outlines what it reaches. Only on hover: selecting
-    // one flies the camera in, and from inside the hull there is nothing to
-    // see. The outline goes when the pointer does.
-    m.on("mouseenter", "towns", (e: MapLayerMouseEvent) => {
-      const slug = (
-        e.features?.[0]?.properties as { slug?: string } | undefined
-      )?.slug;
-      if (slug) paintReach(slug);
+    // Hover is a mouse affordance; a finger has none, and a popup under it
+    // would cover what was just tapped.
+    if (!coarse) {
+      m.on("mousemove", (e) => {
+        at = { x: e.point.x, y: e.point.y };
+        hover();
+      });
+      m.on("mouseout", () => {
+        at = null;
+        hover();
+      });
+      m.on("moveend", hover);
+    }
+
+    m.on("click", (e) => {
+      const hit = pickAt(m, e.point.x, e.point.y);
+      if (hit) onSelectRef.current({ kind: hit.kind, slug: hit.slug });
     });
-    m.on("mouseleave", "towns", () => paintReach(null));
 
     // Keep the 3D toggle honest when the map is tilted by drag or compass.
     m.on("pitchend", () => {
@@ -1036,11 +1188,12 @@ export const PassMap = ({
     const m = map.current;
     if (!m || !ready) return;
     const selPass = selection?.kind === "pass" ? selection.slug : null;
-    m.setFilter("routes", [
+    const shown = [
       "in",
       ["get", "slug"],
       ["literal", showPasses ? passes.map((p) => p.slug) : []],
-    ]);
+    ] as never;
+    for (const layer of ["routes", "routes-hit"]) m.setFilter(layer, shown);
     for (const p of passes)
       for (const [i] of p.ascents.entries())
         m.setFeatureState(
@@ -1057,7 +1210,8 @@ export const PassMap = ({
     if (!m || !ready) return;
     const visible = tours.filter((t) => t.visible).map((t) => t.slug);
     const filter = ["in", ["get", "slug"], ["literal", visible]] as never;
-    for (const layer of ["tours", "tours-label"]) m.setFilter(layer, filter);
+    for (const layer of ["tours", "tours-label", "tours-hit"])
+      m.setFilter(layer, filter);
     for (const t of tours)
       m.setFeatureState(
         { id: t.slug, source: "tours" },
