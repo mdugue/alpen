@@ -44,15 +44,15 @@
   --town: oklch(0.45 0.09 250);
 
   /*
-   * The four rungs of the season strip: one pastel ramp, constant lightness
-   * and chroma, only the hue walks from green to red. Softer than the status
-   * tokens on purpose – 24 cells a row, 92 rows, and the strip must read as a
-   * texture next to the map, not shout over it.
+   * The three filled rungs of the season strip. They have to be told apart
+   * at 4 px, so they differ in lightness as well as hue: a deep green, a
+   * light butter yellow, a warm orange. "Oft gesperrt" has no fill – it is
+   * the hollow cell with a red hairline (`CELL` in season-strip.tsx), so a
+   * winter of closures stays light instead of heavy.
    */
-  --grade-best: oklch(0.74 0.1 152);
-  --grade-good: oklch(0.74 0.1 108);
-  --grade-limited: oklch(0.74 0.1 62);
-  --grade-closed: oklch(0.74 0.1 25);
+  --grade-best: oklch(0.62 0.14 152);
+  --grade-good: oklch(0.86 0.13 98);
+  --grade-limited: oklch(0.73 0.15 58);
 
   --chart-1: var(--status-open);
   --chart-2: var(--status-risky);
@@ -97,10 +97,9 @@
     --tour: oklch(0.7 0.09 300);
     --town: oklch(0.72 0.09 245);
 
-    --grade-best: oklch(0.68 0.1 152);
-    --grade-good: oklch(0.68 0.1 108);
-    --grade-limited: oklch(0.68 0.1 62);
-    --grade-closed: oklch(0.68 0.1 25);
+    --grade-best: oklch(0.68 0.14 152);
+    --grade-good: oklch(0.84 0.13 98);
+    --grade-limited: oklch(0.74 0.15 58);
   }
 }
 
@@ -132,7 +131,6 @@
   --color-grade-best: var(--grade-best);
   --color-grade-good: var(--grade-good);
   --color-grade-limited: var(--grade-limited);
-  --color-grade-closed: var(--grade-closed);
 
   /*
    * One step below Tailwind's `text-xs`, for the dense map furniture (month

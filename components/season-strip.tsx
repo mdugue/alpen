@@ -18,15 +18,17 @@ import { cn } from "@/lib/utils";
 
 /**
  * The whole year of one pass or tour in 24 cells, so "when" is answered
- * without clicking. Four rungs on one pastel ramp (`--grade-*` in
- * app/globals.css): green for the pass's best window, yellow-green for
- * "gut", orange for "eingeschränkt", red for "oft gesperrt". The current
+ * without clicking. Three fills that differ in lightness as well as hue
+ * (`--grade-*` in app/globals.css): deep green for the pass's best window,
+ * light yellow for "gut", orange for "eingeschränkt" – and "oft gesperrt"
+ * hollow with a red hairline, like the circles on the map, so a closure is
+ * told apart by weight and a winter of them stays light. The current
  * half-month is outlined, so the strip still works without hue, and in the
  * panel every cell explains itself on hover.
  */
 export const CELL: Record<Grade, string> = {
   best: "bg-grade-best",
-  closed: "bg-grade-closed",
+  closed: "bg-status-closed/12 ring-1 ring-status-closed/45 ring-inset",
   good: "bg-grade-good",
   limited: "bg-grade-limited",
 };

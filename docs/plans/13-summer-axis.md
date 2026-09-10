@@ -321,14 +321,16 @@ fire too, they come first in the ladder and keep their word.
 - The scales dialog and `docs/scales.md` describe the ladder and say that
   the amber word is the _first_ limit, not the only one.
 
-### Strip and histogram: four rungs on one pastel ramp
+### Strip and histogram: four rungs, three fills and the hollow cell
 
-`SeasonStrip` takes `Grade[]` and paints four fills from their own tokens
-(`--grade-best/good/limited/closed` in `app/globals.css`, with `@theme
-inline` lines and dark values): one OKLCH ramp with constant lightness and
-chroma, hue from green over yellow-green and orange to red, softer than the
-status tokens so 92 rows read as a texture. The status tokens stay for the
-map, the dots and the badge. In the panel every cell carries a tooltip: the
+`SeasonStrip` takes `Grade[]` and paints three fills from their own tokens
+(`--grade-best/good/limited` in `app/globals.css`, with `@theme inline`
+lines and dark values) that differ in lightness as well as hue – deep green,
+light yellow, orange – and the closure as the hollow cell with a red
+hairline it always was. A pastel ramp with constant lightness and chroma was
+tried and reviewed out: green, yellow-green and orange sat too close to tell
+apart at 4 px, and a red fill made a winter of closures heavy. The status
+tokens stay for the map, the dots and the badge. In the panel every cell carries a tooltip: the
 half-month and the grade, then one plain sentence (`GRADE_HINT`), the caveat
 named for a limited cell (`cellHint`, `REASON_PHRASE`). The period control's
 label carries the four sentences as a tooltip (`GradeLegend`). Two earlier
@@ -337,7 +339,9 @@ reviewed out: the first read as "less" without being a step towards amber,
 the second put a distinction into a 2 px bar nobody could hover.
 
 `HistogramBar` becomes `{ period, best, good, limited, closed }`; the stack
-in `period-scrubber.tsx` has four segments on the same ramp.
+in `period-scrubber.tsx` has four segments: the three fills and grey for
+the closure, because red is the map's colour and a backdrop must not
+compete with it.
 
 `rows.ts`: `PassRow.season`/`TourRow.season` → `Grade[]`, `statusHistogram`
 counts grades. Sorting by status keeps `STATUS_RANK` on the three-valued
@@ -488,16 +492,7 @@ second one if the first grows past comfortable review size.
   threshold from the same table is `tmin < 0 °C` (53 pairs, 36 passes, same
   half-months), with the caveat that most of those cells are already amber
   for frost, so the word would rarely appear.
-- **A pastel ramp at 4 px cell height.** Yellow-green next to green is the
-  closest pair; the sentence in `aria-label` and the "beste Zeit" line in
-  the panel carry the same information, and the panel cells are four times
-  the height and explain themselves on hover.
-- **Reason ladder order** is set once in `REASON_ORDER` and documented in
-  `docs/scales.md`. Moving `altitude` behind snow and frost changes the first
-  word for cells where both fire; the change list in the analysis script
-  makes every such cell visible.
-- **Twelve passes without a profile** (Kitzbüheler Horn, Roßfeld, Couillole,
-  Fauniera, San Carlo, Ötztaler Gletscherstraße, Malta, Nockalm, Villacher
-  Alpenstraße, Mangart, Valparola, Campolongo) get no heat signal until their
-  routes pass the quality gate. That is a data task (plan 00), and the panel
-  says why the value is missing.
+- **Four rungs at 4 px cell height.** Green and yellow are the closest pair
+  and are separated by lightness on purpose; the sentence in `aria-label`
+  and the "beste Zeit" line in the panel carry the same information, and the
+  panel cells are four times the height and explain themselves on hover.

@@ -196,7 +196,7 @@ export const PeriodScrubber = ({
                 style={{ height: `${(barTotal(b) / max) * 100}%` }}
               >
                 <span
-                  className="bg-grade-closed shrink-0"
+                  className="bg-muted-foreground/25 shrink-0"
                   style={{ flexBasis: `${percent(b.closed, barTotal(b))}%` }}
                 />
                 <span
