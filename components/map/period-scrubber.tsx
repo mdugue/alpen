@@ -111,10 +111,9 @@ export const PeriodScrubber = ({
           </TooltipTrigger>
           <TooltipContent className="max-w-72">
             <GradeLegend
-              compact={false}
               hint={
                 bar
-                  ? `${periodLabel(value)}: ${bar.best + bar.good} gut, davon ${bar.best} in ihrer besten Zeit, ${bar.limited} eingeschränkt, ${bar.closed} oft gesperrt. Mehr unter „Skalen & Quellen“.`
+                  ? `${periodLabel(value)}: ${bar.best} beste Zeit, ${bar.good} gut, ${bar.limited} eingeschränkt, ${bar.closed} oft gesperrt. Mehr unter „Skalen & Quellen“.`
                   : undefined
               }
             />
@@ -159,7 +158,7 @@ export const PeriodScrubber = ({
         aria-valuenow={index + 1}
         aria-valuetext={
           bar
-            ? `${periodLabel(value)}: ${bar.best + bar.good} gut, davon ${bar.best} in ihrer besten Zeit, ${bar.limited} eingeschränkt, ${bar.closed} oft gesperrt`
+            ? `${periodLabel(value)}: ${bar.best} beste Zeit, ${bar.good} gut, ${bar.limited} eingeschränkt, ${bar.closed} oft gesperrt`
             : periodLabel(value)
         }
         onKeyDown={onKeyDown}
@@ -197,18 +196,20 @@ export const PeriodScrubber = ({
                 style={{ height: `${(barTotal(b) / max) * 100}%` }}
               >
                 <span
-                  className="bg-muted-foreground/25 shrink-0"
+                  className="bg-grade-closed shrink-0"
                   style={{ flexBasis: `${percent(b.closed, barTotal(b))}%` }}
                 />
                 <span
-                  className="bg-status-risky shrink-0"
+                  className="bg-grade-limited shrink-0"
                   style={{ flexBasis: `${percent(b.limited, barTotal(b))}%` }}
                 />
                 <span
-                  className="bg-status-open shrink-0"
-                  style={{
-                    flexBasis: `${percent(b.best + b.good, barTotal(b))}%`,
-                  }}
+                  className="bg-grade-good shrink-0"
+                  style={{ flexBasis: `${percent(b.good, barTotal(b))}%` }}
+                />
+                <span
+                  className="bg-grade-best shrink-0"
+                  style={{ flexBasis: `${percent(b.best, barTotal(b))}%` }}
                 />
               </span>
             </span>

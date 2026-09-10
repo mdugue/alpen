@@ -60,29 +60,29 @@ fired stays in `StatusVerdict.reasons`, in that order; the badge shows the
 first as one word (`REASON_WORD`), the panel every one as a sentence with its
 number and provenance (`REASON_TEXT`).
 
-Three fills plus a mark:
+Four rungs on one pastel ramp (`--grade-*` in `app/globals.css`: constant
+lightness and chroma in OKLCH, only the hue walks from green to red):
 
 ```
-██  gut            green          rideable, no caveat worth a word
-▒▒  eingeschränkt  amber          one word: Hitze · nass · kurze Tage · kalte Abfahrt · Schnee · Frost · Höhe · Randzeit
-░░  oft gesperrt   hollow         road closed, from the opening window only
-▔▔  beste Zeit     mark under green cells: the longest stretch without a caveat and with < 10 % snow days
+██  beste Zeit     green          the longest stretch without a caveat and with < 10 % snow days
+██  gut            yellow-green   rideable, no caveat worth a word; a shorter stretch, or 10–19 % snow days
+██  eingeschränkt  orange         one word: Hitze · nass · kurze Tage · kalte Abfahrt · Schnee · Frost · Höhe · Randzeit
+██  oft gesperrt   red            road closed, from the opening window only
 ```
 
-The best window is a distinction of a stretch, not a grade of the cell, so it
-is drawn as a mark under the green cells rather than as a fourth fill: a
-paler green would read as "less" without being a step towards amber. Green
-without the mark means "just as good, only a shorter stretch" or "a little
-snow" (10–19 % of days, below the `snow` threshold but above `SNOW_BEST_PCT`).
+The ramp is deliberately softer than the status tokens: 24 cells a row and 92
+rows have to read as a texture next to the map. In the panel every cell
+carries a tooltip – the half-month and the grade in the first line, then the
+sentence from `GRADE_HINT`, with the caveat named for a limited cell
+(`cellHint`, `REASON_PHRASE`). The period control's tooltip lists the four
+sentences once.
 
 `Status` (`open | risky | closed`, `lib/schema.ts`) stays three-valued: it is
 the vocabulary of the filter, the hash and the map. `Grade` (`best | good |
-limited | closed`, `lib/status.ts`) is what the strip reads: `open` split by
-whether the half-month lies in `bestPeriods()`, the longest run of "gut"
-half-months with fewer than 10 % snow days; `best` and `good` share the green
-fill, `best` adds the mark. The histogram counts three segments and names the
-best-window share in its tooltip. The map circles, the row dot and the badge
-dot keep the three colours.
+limited | closed`, `lib/status.ts`) is what the strip and the histogram
+read: `open` split by whether the half-month lies in `bestPeriods()`, the
+longest run of "gut" half-months with fewer than 10 % snow days. The map
+circles, the row dot and the badge dot keep the three status colours.
 
 Nothing but the opening window produces "oft gesperrt": a closure is what the
 window knows; snowfall, heat or short days are what the series and the

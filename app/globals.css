@@ -43,6 +43,17 @@
   --tour: oklch(0.6 0.09 300);
   --town: oklch(0.45 0.09 250);
 
+  /*
+   * The four rungs of the season strip: one pastel ramp, constant lightness
+   * and chroma, only the hue walks from green to red. Softer than the status
+   * tokens on purpose – 24 cells a row, 92 rows, and the strip must read as a
+   * texture next to the map, not shout over it.
+   */
+  --grade-best: oklch(0.74 0.1 152);
+  --grade-good: oklch(0.74 0.1 108);
+  --grade-limited: oklch(0.74 0.1 62);
+  --grade-closed: oklch(0.74 0.1 25);
+
   --chart-1: var(--status-open);
   --chart-2: var(--status-risky);
   --chart-3: var(--status-closed);
@@ -85,6 +96,11 @@
     --status-closed: oklch(0.68 0.17 25);
     --tour: oklch(0.7 0.09 300);
     --town: oklch(0.72 0.09 245);
+
+    --grade-best: oklch(0.68 0.1 152);
+    --grade-good: oklch(0.68 0.1 108);
+    --grade-limited: oklch(0.68 0.1 62);
+    --grade-closed: oklch(0.68 0.1 25);
   }
 }
 
@@ -113,6 +129,10 @@
   --color-status-closed: var(--status-closed);
   --color-tour: var(--tour);
   --color-town: var(--town);
+  --color-grade-best: var(--grade-best);
+  --color-grade-good: var(--grade-good);
+  --color-grade-limited: var(--grade-limited);
+  --color-grade-closed: var(--grade-closed);
 
   /*
    * One step below Tailwind's `text-xs`, for the dense map furniture (month

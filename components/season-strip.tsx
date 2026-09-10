@@ -1,4 +1,10 @@
 import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import {
+  cellHint,
   GRADE_LABEL,
   MONTH_INITIALS,
   periodIndex,
@@ -6,41 +12,39 @@ import {
   PERIODS,
   seasonSummary,
 } from "@/lib/status";
-import type { Grade } from "@/lib/status";
+import type { Grade, StatusReason } from "@/lib/status";
 import type { Period } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
 /**
  * The whole year of one pass or tour in 24 cells, so "when" is answered
- * without clicking. The fill is the rideability and nothing else: green for
- * "gut", amber for "eingeschränkt", hollow for "oft gesperrt" like the
- * circles on the map – a closure is a different kind of statement, not one
- * more step on the ramp. The pass's best window is not a fourth fill but a
- * mark under the green cells: "beste Zeit" is a distinction of a stretch,
- * not a grade of the cell. The current half-month is outlined, so the strip
- * still works without hue.
+ * without clicking. Four rungs on one pastel ramp (`--grade-*` in
+ * app/globals.css): green for the pass's best window, yellow-green for
+ * "gut", orange for "eingeschränkt", red for "oft gesperrt". The current
+ * half-month is outlined, so the strip still works without hue, and in the
+ * panel every cell explains itself on hover.
  */
-const CELL: Record<Grade, string> = {
-  best: "bg-status-open",
-  closed: "bg-status-closed/12 ring-1 ring-status-closed/45 ring-inset",
-  good: "bg-status-open",
-  limited: "bg-status-risky",
+export const CELL: Record<Grade, string> = {
+  best: "bg-grade-best",
+  closed: "bg-grade-closed",
+  good: "bg-grade-good",
+  limited: "bg-grade-limited",
 };
-
-/** The mark under a cell in the best window; same token as the underline the panel had before. */
-export const BEST_MARK = "bg-foreground/55";
 
 export const SeasonStrip = ({
   grades,
+  reasons,
   current,
   size = "row",
   className,
 }: {
   /** 24 grades, index 0 = early January. */
   grades: Grade[];
+  /** The first reason per half-month, so a limited cell can name its caveat. */
+  reasons?: (StatusReason | null)[];
   /** Outlined half-month; usually the selected period. */
   current?: Period;
-  /** `row`: 96 px, no labels. `panel`: full width with month initials. */
+  /** `row`: 96 px, no labels. `panel`: full width with month initials and cell tooltips. */
   size?: "row" | "panel";
   className?: string;
 }) => {
@@ -55,6 +59,18 @@ export const SeasonStrip = ({
     .filter(Boolean)
     .join(" ");
 
+  const cell = (grade: Grade, i: number) => (
+    <span
+      key={PERIODS[i]}
+      className={cn(
+        "relative flex-1 rounded-xs",
+        CELL[grade],
+        i === currentIndex &&
+          "outline-foreground z-10 outline-1 outline-offset-1",
+      )}
+    />
+  );
+
   return (
     <div className={cn(panel ? "w-full" : "w-24", className)}>
       <div
@@ -62,36 +78,24 @@ export const SeasonStrip = ({
         aria-label={label}
         className={cn("flex gap-px", panel ? "h-4" : "h-2")}
       >
-        {grades.map((grade, i) => (
-          <span
-            key={PERIODS[i]}
-            className={cn(
-              "relative flex-1 rounded-xs",
-              CELL[grade],
-              i === currentIndex &&
-                "outline-foreground z-10 outline-1 outline-offset-1",
-            )}
-          />
-        ))}
+        {grades.map((grade, i) =>
+          panel ? (
+            <Tooltip key={PERIODS[i]}>
+              <TooltipTrigger render={cell(grade, i)} />
+              <TooltipContent className="max-w-64">
+                <div className="flex flex-col gap-0.5">
+                  <p className="font-semibold">
+                    {periodLabel(PERIODS[i]!)} · {GRADE_LABEL[grade]}
+                  </p>
+                  <p className="opacity-80">{cellHint(grade, reasons?.[i])}</p>
+                </div>
+              </TooltipContent>
+            </Tooltip>
+          ) : (
+            cell(grade, i)
+          ),
+        )}
       </div>
-      {/* The best-window mark: one segment per cell, so a run that wraps
-          around the turn of the year draws as two bars by itself. */}
-      {grades.some((g) => g === "best") && (
-        <div
-          aria-hidden
-          className={cn("flex gap-px", panel ? "mt-1 h-0.5" : "mt-px h-0.5")}
-        >
-          {grades.map((grade, i) => (
-            <span
-              key={PERIODS[i]}
-              className={cn(
-                "flex-1 rounded-full",
-                grade === "best" && BEST_MARK,
-              )}
-            />
-          ))}
-        </div>
-      )}
       {panel && (
         <div
           aria-hidden

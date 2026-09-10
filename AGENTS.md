@@ -81,7 +81,7 @@ friends do that better and the app links out to them.
   styling (status badges, etc.) goes into the consuming component via
   `className`. Re-running `ui:init` overwrites `app/globals.css`; the domain
   tokens (`--status-open`, `--status-risky`, `--status-closed`, `--tour`,
-  `--town` plus their `@theme inline` lines), the `--text-2xs` step below
+  `--town`, the strip's `--grade-*` ramp, plus their `@theme inline` lines), the `--text-2xs` step below
   Tailwind's `text-xs`, the MapLibre rules at the end, the coarse-pointer
   font-size rule next to them and the dark-mode setup must be restored
   afterwards.

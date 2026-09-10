@@ -97,10 +97,10 @@ The ladder, from what it is on the road: closed is categorically different
 (binary and known), the three rungs above it are one gradual scale (Principle 3):
 
 ```
-██  gut            green          rideable, no caveat worth a word
-▒▒  eingeschränkt  amber          one word: Hitze · nass · kurze Tage · kalte Abfahrt · Schnee · Frost · Höhe · Randzeit
-░░  oft gesperrt   hollow         road closed, from the opening window only
-▔▔  beste Zeit     a mark under the green cells: nothing limits, and it is the pass's best window
+██  beste Zeit     green          nothing limits, and it is the pass's best window
+██  gut            yellow-green   rideable, no caveat worth a word
+██  eingeschränkt  orange         one word: Hitze · nass · kurze Tage · kalte Abfahrt · Schnee · Frost · Höhe · Randzeit
+██  oft gesperrt   red            road closed, from the opening window only
 ```
 
 Mont Ventoux, before and after (Bédoin start at 331 m, 31 °C in the valley
@@ -321,22 +321,23 @@ fire too, they come first in the ladder and keep their word.
 - The scales dialog and `docs/scales.md` describe the ladder and say that
   the amber word is the _first_ limit, not the only one.
 
-### Strip and histogram: three fills, the best window as a mark
+### Strip and histogram: four rungs on one pastel ramp
 
-`SeasonStrip` takes `Grade[]`. Fills: `best` and `good` → `bg-status-open`,
-`limited` → `bg-status-risky`, `closed` unchanged (hollow ring). The best
-window is a mark under the green cells (one segment per `best` cell, so a
-run across the turn of the year draws itself), in the rows as well as in the
-panel, plus a one-line `GradeLegend` under the panel strip and in the period
-control's tooltip. A first cut painted `good` as a 40 % tint of the green;
-review found that a paler green reads as "less" without being a step towards
-amber, and that "gut" mixes two things ("a shorter stretch" and "10–19 % snow
-days") that no fill can express – so the fill is the rideability and the
-mark is the distinction.
+`SeasonStrip` takes `Grade[]` and paints four fills from their own tokens
+(`--grade-best/good/limited/closed` in `app/globals.css`, with `@theme
+inline` lines and dark values): one OKLCH ramp with constant lightness and
+chroma, hue from green over yellow-green and orange to red, softer than the
+status tokens so 92 rows read as a texture. The status tokens stay for the
+map, the dots and the badge. In the panel every cell carries a tooltip: the
+half-month and the grade, then one plain sentence (`GRADE_HINT`), the caveat
+named for a limited cell (`cellHint`, `REASON_PHRASE`). The period control's
+label carries the four sentences as a tooltip (`GradeLegend`). Two earlier
+cuts – a paler green for `good`, then a mark under the green cells – were
+reviewed out: the first read as "less" without being a step towards amber,
+the second put a distinction into a 2 px bar nobody could hover.
 
 `HistogramBar` becomes `{ period, best, good, limited, closed }`; the stack
-in `period-scrubber.tsx` keeps three segments (green = best + good, amber,
-grey) and the tooltip names the best-window share.
+in `period-scrubber.tsx` has four segments on the same ramp.
 
 `rows.ts`: `PassRow.season`/`TourRow.season` → `Grade[]`, `statusHistogram`
 counts grades. Sorting by status keeps `STATUS_RANK` on the three-valued
@@ -465,8 +466,8 @@ second one if the first grows past comfortable review size.
 - The map, the row dot and the badge dot are unchanged in colour.
 - `bun run scripts/analyze-status.ts` prints the four distribution tables and
   the change list; the PR carries them.
-- Screenshots show the best-window mark as legible under the row strip
-  (96 px, 24 cells) in light and dark mode.
+- Screenshots show the four rungs as distinguishable at row size (96 px,
+  24 cells) in light and dark mode.
 
 ## Risks and open questions
 
@@ -487,9 +488,10 @@ second one if the first grows past comfortable review size.
   threshold from the same table is `tmin < 0 °C` (53 pairs, 36 passes, same
   half-months), with the caveat that most of those cells are already amber
   for frost, so the word would rarely appear.
-- **The mark at 2 px.** A 2 px bar under a 96 px strip is small on a phone;
-  the sentence in `aria-label` and the "beste Zeit" line in the panel carry
-  the same information, and the panel strip is four times the height.
+- **A pastel ramp at 4 px cell height.** Yellow-green next to green is the
+  closest pair; the sentence in `aria-label` and the "beste Zeit" line in
+  the panel carry the same information, and the panel cells are four times
+  the height and explain themselves on hover.
 - **Reason ladder order** is set once in `REASON_ORDER` and documented in
   `docs/scales.md`. Moving `altitude` behind snow and frost changes the first
   word for cells where both fire; the change list in the analysis script

@@ -4,7 +4,6 @@ import { ExternalLink, Star, X } from "lucide-react";
 import dynamic from "next/dynamic";
 import { useEffect, useRef } from "react";
 
-import { GradeLegend } from "@/components/grade-legend";
 import { ElevationProfile } from "@/components/panel/elevation-profile";
 import { PhotoCarousel } from "@/components/panel/photo-carousel";
 import { Section } from "@/components/panel/section";
@@ -42,6 +41,7 @@ import {
   indexBySlug,
   inputAt,
   passGrades,
+  passReasons,
   passStatus,
   passVerdict,
   periodIndex,
@@ -276,8 +276,12 @@ const PassDetail = (props: Props & { pass: Pass }) => {
             {reasons.join(" ")}
           </p>
         )}
-        <SeasonStrip grades={grades} current={props.period} size="panel" />
-        <GradeLegend />
+        <SeasonStrip
+          grades={grades}
+          reasons={passReasons(pass, signals)}
+          current={props.period}
+          size="panel"
+        />
       </div>
 
       <p className="mt-4 text-xs leading-relaxed">{seasonText(pass)}</p>
@@ -497,7 +501,6 @@ const TourDetail = (props: Props & { tour: Tour }) => {
           current={props.period}
           size="panel"
         />
-        <GradeLegend />
       </div>
 
       <p className="mt-4 text-xs leading-relaxed">{tour.description}</p>

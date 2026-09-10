@@ -94,18 +94,39 @@ export const GRADE_LABEL: Record<Grade, string> = {
 };
 
 /**
- * One plain sentence per grade for the legend's tooltips – what the colour
- * says, in the words a rider would use. The rules behind it are in
- * docs/scales.md and the scales dialog.
+ * One plain sentence per grade – what the colour says, in the words a rider
+ * would use. The strip's cell tooltip puts the grade's label above it, and
+ * for a limited cell names the caveat itself (`REASON_PHRASE`) instead of
+ * the list. The rules behind it are in docs/scales.md and the scales dialog.
  */
 export const GRADE_HINT: Record<Grade, string> = {
-  best: "Der Strich unter grünen Zellen. Die verlässlichsten Wochen des Jahres für diesen Pass: Nichts spricht gegen die Fahrt, und Schnee ist selten. Wer frei wählen kann, nimmt diese.",
+  best: "Die verlässlichsten Wochen des Jahres für diesen Pass: Nichts spricht gegen die Fahrt, und Schnee ist selten.",
   closed:
     "Die Straße ist in dieser Zeit meist gesperrt, in der Regel wegen der Wintersperre.",
-  good: "Grün ohne Strich. Nichts spricht gegen die Fahrt. Es zählt nur nicht zur besten Zeit, weil das Fenster kürzer ist oder es gelegentlich schneien kann.",
+  good: "Nichts spricht gegen die Fahrt. Die beste Zeit ist nur noch verlässlicher: Sie hängt länger am Stück zusammen, oder hier schneit es gelegentlich.",
   limited:
-    "Fahrbar, aber mit einem Haken: Hitze im Tal, viel Regen, kurze Tage, eine kalte Abfahrt, Schnee oder Frost. Der wichtigste Haken steht als Wort daneben, etwa „eingeschränkt: Hitze“.",
+    "Fahrbar, aber mit einem Haken: Hitze im Tal, viel Regen, kurze Tage, eine kalte Abfahrt, Schnee oder Frost.",
 };
+
+/** The caveat as a phrase, for "Fahrbar, aber mit einem Haken: …". */
+export const REASON_PHRASE: Record<StatusReason, string> = {
+  altitude: "Höhenlage, Schnee und Eis sind möglich",
+  "cold-descent": "eine kalte Abfahrt",
+  frost: "Frost in den Nächten",
+  heat: "Hitze im Tal",
+  "outside-window": "Wintersperre",
+  "short-day": "kurze Tage",
+  snow: "Schneefall",
+  wet: "viel Regen",
+  "window-edge":
+    "der Rand des Öffnungsfensters, Öffnung und Sperrung verschieben sich je nach Winter",
+};
+
+/** The sentence for one cell: the grade's hint, with the caveat named for a limited cell. */
+export const cellHint = (grade: Grade, reason?: StatusReason | null): string =>
+  grade === "limited" && reason
+    ? `Fahrbar, aber mit einem Haken: ${REASON_PHRASE[reason]}.`
+    : GRADE_HINT[grade];
 
 /** The order the legend lists the grades in: best first. */
 export const GRADE_ORDER: Grade[] = ["best", "good", "limited", "closed"];
@@ -493,6 +514,15 @@ export const passGrades = (
     gradeOf(status, best !== null && inRange(i, best)),
   );
 };
+
+/** The first reason of every half-month, for the strip's cell tooltips; null where nothing fired. */
+export const passReasons = (
+  pass: Pass,
+  signals?: PassSignals | null,
+): (StatusReason | null)[] =>
+  PERIODS.map(
+    (t) => passVerdict(pass, t, inputAt(signals, t)).reasons[0] ?? null,
+  );
 
 /** The 24 grades of one tour: per half-month the worst grade of its passes. */
 export const tourGrades = (
