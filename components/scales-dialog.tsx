@@ -1,5 +1,6 @@
 "use client";
 
+import { TownTagIcon } from "@/components/town-tags";
 import {
   Dialog,
   DialogContent,
@@ -7,6 +8,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { TOWN_TAG, TOWN_TAGS } from "@/lib/regions";
 
 const SCALES: [string, string][] = [
   [
@@ -59,6 +61,28 @@ export const ScalesDialog = ({
               <div key={term} className="contents">
                 <dt className="font-semibold">{term}</dt>
                 <dd className="text-muted-foreground">{text}</dd>
+              </div>
+            ))}
+          </dl>
+        </section>
+        <section className="flex flex-col gap-2">
+          <h3 className="text-base font-semibold">
+            Warum ein Ort in der Liste steht
+          </h3>
+          <p className="text-muted-foreground">
+            Jeder Rad-Ort trägt bis zu vier Merkmale. In der Liste stehen sie
+            als Symbole, im Detail und auf der Karte mit Text. Auch sie sind
+            redaktionell: Sie sagen, was vor Ort auffällt, und sind keine
+            gezählten Werkstätten oder Hotels.
+          </p>
+          <dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-2">
+            {TOWN_TAGS.map((tag) => (
+              <div key={tag} className="contents">
+                <dt className="flex items-center gap-1.5 font-semibold">
+                  <TownTagIcon tag={tag} className="size-4" />
+                  {TOWN_TAG[tag].label}
+                </dt>
+                <dd className="text-muted-foreground">{TOWN_TAG[tag].hint}</dd>
               </div>
             ))}
           </dl>
@@ -129,9 +153,10 @@ export const ScalesDialog = ({
           <p className="text-muted-foreground">
             Höhen und Auffahrtsdaten sind gerundete Richtwerte. Schönheit,
             Bekanntheit, Schwierigkeit und Verkehr sind redaktionelle
-            1–5-Einschätzungen. Der Status je Zeitraum ist eine Heuristik und
-            ersetzt keine amtliche Sperrauskunft. Die App dient der groben
-            Routenplanung, nicht der Navigation.
+            1–5-Einschätzungen, die Merkmale der Orte redaktionelle Labels. Der
+            Status je Zeitraum ist eine Heuristik und ersetzt keine amtliche
+            Sperrauskunft. Die App dient der groben Routenplanung, nicht der
+            Navigation.
           </p>
         </section>
       </div>

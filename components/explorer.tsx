@@ -33,7 +33,7 @@ import {
 } from "@/lib/app-state";
 import type { EntityKind, Filters, MapView, Selection } from "@/lib/app-state";
 import type { MapAssets } from "@/lib/map-assets";
-import type { NearbyTours } from "@/lib/nearby";
+import type { NearbyTours, TownReach } from "@/lib/nearby";
 import {
   buildPassRows,
   buildTourRows,
@@ -66,6 +66,8 @@ interface Props {
   /** Where MapLibre loads the ascent and tour lines from, see `lib/map-assets.ts`. */
   assets: MapAssets;
   nearbyTours: NearbyTours;
+  /** The area each town reaches, drawn on hover; see `lib/nearby.ts`. */
+  townReach: TownReach;
   profiles: Record<string, ProfileWithCoords>;
   climate: Record<string, ClimateYear>;
   /** Lowest ascent start per pass, for the derived valley heat (`lib/status.ts`). */
@@ -97,6 +99,7 @@ export const Explorer = ({
   towns,
   assets,
   nearbyTours,
+  townReach,
   profiles,
   climate,
   valleys,
@@ -337,6 +340,7 @@ export const Explorer = ({
             passes={mapPasses}
             tours={mapTours}
             towns={mapTowns}
+            townReach={townReach}
             assets={assets}
             showPasses={showPasses}
             showTowns={showTowns}

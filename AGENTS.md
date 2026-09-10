@@ -39,33 +39,35 @@ friends do that better and the app links out to them.
 
 ## Where things live
 
-| Topic                                           | File                                                                                                                      |
-| ----------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
-| Rideability heuristic                           | `lib/status.ts` (`passVerdict`, the reason ladder `REASON_ORDER`, `Grade`, `tourStatus`); thresholds in `docs/scales.md`  |
-| Daylight (sunrise, sunset, day length)          | `lib/daylight.ts`, pure astronomy, no data                                                                                |
-| Data schemas (zod) and inferred types           | `lib/schema.ts`, `lib/types.ts`, `data/schema/*.schema.json` (`bun run data:schema`)                                      |
-| Regions and countries (vocabulary)              | `lib/regions.ts`                                                                                                          |
-| Data access (cached, validated)                 | `lib/data.ts`                                                                                                             |
-| Profile sampling and derived gradients          | `lib/profile.ts`                                                                                                          |
-| Filter, selection and URL state (hash keys)     | `lib/app-state.ts`, `components/explorer.tsx`                                                                             |
-| Search normalisation and haystacks              | `lib/search.ts`                                                                                                           |
-| Map, layers, 3D, markers, labels, feature state | `components/map/pass-map.tsx`                                                                                             |
-| Map assets: GeoJSON, simplification, hashing    | `lib/map-assets.ts`, `scripts/build-map-assets.ts` (→ `public/map`, git-ignored)                                          |
-| Tours within reach of an entity                 | `lib/nearby.ts` (computed on the server in `lib/data.ts`)                                                                 |
-| Photos: keys, sizes, licence metadata           | `lib/photos.ts`, `scripts/build-photos.ts` (`bun run data:photos`) → `data/generated/photos.json`                         |
-| Period scrubber floating over the map           | `components/map/period-scrubber.tsx`                                                                                      |
-| Season strip (24 half-months)                   | `components/season-strip.tsx`                                                                                             |
-| Sidebar: search, filters, one list per kind     | `components/sidebar/`, `lib/rows.ts`                                                                                      |
-| Detail panel incl. profile/weather/climate      | `components/panel/` (collapsible blocks: `components/panel/section.tsx`)                                                  |
-| Bottom sheet on phones (one per panel)          | `components/mobile-sheet.tsx`                                                                                             |
-| Precomputation, data checks                     | `scripts/build-data.ts`, `scripts/build-photos.ts`, `scripts/check-data.ts`                                               |
-| Route quality gate: checks and thresholds       | `scripts/lib/validate.ts`; pass-point placement `scripts/locate-pass.ts` (`bun run data:locate`), `scripts/lib/locate.ts` |
-| Name, claim, colours, mark, base URL            | `lib/brand.ts`, `lib/mark.tsx`                                                                                            |
-| Icons, share image, manifest, robots, sitemap   | `app/icon.tsx`, `app/apple-icon.tsx`, `app/opengraph-image.tsx`, `app/manifest.ts`, `app/robots.ts`, `app/sitemap.ts`     |
-| Legal pages                                     | `app/impressum/`, `app/datenschutz/`                                                                                      |
-| Linting and formatting                          | `oxlint.config.ts`, `oxfmt.config.ts`                                                                                     |
-| Implementation plans                            | `docs/plans/` (index: `docs/plans/README.md`)                                                                             |
-| Project skills                                  | `.agents/skills/implement-plan`, `curate-data`, `preview-app`                                                             |
+| Topic                                           | File                                                                                                                                                        |
+| ----------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Rideability heuristic                           | `lib/status.ts` (`passVerdict`, the reason ladder `REASON_ORDER`, `Grade`, `tourStatus`); thresholds in `docs/scales.md`                                    |
+| Daylight (sunrise, sunset, day length)          | `lib/daylight.ts`, pure astronomy, no data                                                                                                                  |
+| Data schemas (zod) and inferred types           | `lib/schema.ts`, `lib/types.ts`, `data/schema/*.schema.json` (`bun run data:schema`)                                                                        |
+| Regions and countries (vocabulary)              | `lib/regions.ts`                                                                                                                                            |
+| Data access (cached, validated)                 | `lib/data.ts`                                                                                                                                               |
+| Profile sampling and derived gradients          | `lib/profile.ts`                                                                                                                                            |
+| Filter, selection and URL state (hash keys)     | `lib/app-state.ts`, `components/explorer.tsx`                                                                                                               |
+| Town labels: vocabulary, icons, badges          | `lib/regions.ts` (`TOWN_TAGS`), `lib/tag-icons.ts`, `components/town-tags.tsx`                                                                              |
+| Search normalisation and haystacks              | `lib/search.ts`                                                                                                                                             |
+| Map, layers, 3D, markers, labels, feature state | `components/map/pass-map.tsx`                                                                                                                               |
+| Basemap: vector style, palette, glyphs          | `lib/basemap.ts`, `lib/palette.ts`, `scripts/build-map-style.ts` (→ `public/map/style-*.json`), `scripts/build-glyphs.ts` (→ `public/map/fonts`, committed) |
+| Map assets: GeoJSON, simplification, hashing    | `lib/map-assets.ts`, `scripts/build-map-assets.ts` (→ `public/map`, git-ignored)                                                                            |
+| Tours within reach, town reach hull             | `lib/nearby.ts`, `lib/geo.ts` (computed on the server in `lib/data.ts`)                                                                                     |
+| Photos: keys, sizes, licence metadata           | `lib/photos.ts`, `scripts/build-photos.ts` (`bun run data:photos`) → `data/generated/photos.json`                                                           |
+| Period scrubber floating over the map           | `components/map/period-scrubber.tsx`                                                                                                                        |
+| Season strip (24 half-months)                   | `components/season-strip.tsx`                                                                                                                               |
+| Sidebar: search, filters, one list per kind     | `components/sidebar/`, `lib/rows.ts`                                                                                                                        |
+| Detail panel incl. profile/weather/climate      | `components/panel/` (collapsible blocks: `components/panel/section.tsx`)                                                                                    |
+| Bottom sheet on phones (one per panel)          | `components/mobile-sheet.tsx`                                                                                                                               |
+| Precomputation, data checks                     | `scripts/build-data.ts`, `scripts/build-photos.ts`, `scripts/check-data.ts`                                                                                 |
+| Route quality gate: checks and thresholds       | `scripts/lib/validate.ts`; pass-point placement `scripts/locate-pass.ts` (`bun run data:locate`), `scripts/lib/locate.ts`                                   |
+| Name, claim, colours, mark, base URL            | `lib/brand.ts`, `lib/mark.tsx`                                                                                                                              |
+| Icons, share image, manifest, robots, sitemap   | `app/icon.tsx`, `app/apple-icon.tsx`, `app/opengraph-image.tsx`, `app/manifest.ts`, `app/robots.ts`, `app/sitemap.ts`                                       |
+| Legal pages                                     | `app/impressum/`, `app/datenschutz/`                                                                                                                        |
+| Linting and formatting                          | `oxlint.config.ts`, `oxfmt.config.ts`                                                                                                                       |
+| Implementation plans                            | `docs/plans/` (index: `docs/plans/README.md`)                                                                                                               |
+| Project skills                                  | `.agents/skills/implement-plan`, `curate-data`, `preview-app`                                                                                               |
 
 ## Conventions
 
@@ -171,6 +173,54 @@ friends do that better and the app links out to them.
   where a source or its caveat has to be named, one short sentence sits behind
   the `info` tooltip. A header never opens a dialog – the scales dialog belongs
   to the sidebar footer, which is where it stays.
+- **A tour holds its ascents; it does not sit beside them.** A tour _is_ the
+  union of several ascents – the Sellaronda is its four passes – so it is
+  drawn as what it is: a band wide enough to hold them, laid _under_ the
+  ascents so it reaches past them on both sides. What a tour contains is then
+  read from the map rather than from the list, which a mark running alongside
+  the ascents cannot say. The band is translucent, so the hillshade and the
+  roads keep showing through something that covers this much ground, and
+  hatched rather than solid, so it is told apart from an ascent by texture
+  and not only by weight – the looser of the two marks, which is the right
+  order, since the ascent is the rated thing and keeps the solid line and the
+  opaque status colour. `DASH` counts in multiples of the line width, so on a
+  band this wide the numbers have to be well below 1: widen the band and the
+  dashes lengthen with it unless they come down to match, and long dashes on
+  a wide line read as a chain of blocks rather than as a texture.
+- **Translucent lines need `line-layer-opacity`, not `line-opacity`.**
+  MapLibre draws a line as one triangle strip, so a bend tighter than the
+  line is wide runs the strip over itself. `line-opacity` is applied per
+  feature, so every such overlap composites twice and a switchback fills with
+  blotches; `line-layer-opacity` (MapLibre GL JS 6+) flattens the layer to a
+  single surface first and composites that once, which is what makes a
+  translucent line usable in a hairpin at all. It is data-constant – zoom and
+  global state only, no feature state – so anything per-feature has to be
+  carried by width or colour instead. `line-gap-width` has a second, purely
+  geometric failure in the same bends, folding its inner side inside out;
+  there is no property that fixes that one, so offset lines stay out.
+  Widths interpolate with the zoom and grow again for the selected tour;
+  because a zoom expression may only be the input of the _outermost_ stop
+  function, the selection case goes inside the stops (`tourWidth`) – the same
+  reason the pass hit radius is one `interpolate` with a `max` per stop
+  rather than a `max` around one.
+- **What answers the pointer is not what is drawn.** A pass dot is a few
+  pixels across and an ascent line 3.5 wide, so every kind carries a
+  transparent hit layer over its mark (`*-hit` in `appLayers`): a disc per
+  point, a wide line per route, sized from the pointer – about 44 px on touch,
+  half of that with a mouse – and never narrower than the mark plus a margin.
+  A name is part of its mark: the label layers answer the pointer too. Because
+  several layers answer for the same pixel, there is no handler per layer:
+  `pickAt` runs one `queryRenderedFeatures` over all of them and decides
+  which single entity a hover or a click means. `HIT_GROUPS` spells the
+  priority out rather than taking it from the style, because the two disagree
+  – marks before names before lines, and the tour band lies _under_ the
+  ascents but reaches past them, so a click inside it hits both and the ascent
+  is the more specific answer – and within a group the mark nearest the
+  pointer wins. A hit layer needs the same filter as the layer it widens, or a
+  hidden tour still answers. The hover popup is a label, not a target: it is
+  suppressed on a coarse pointer and click-through everywhere
+  (`app/globals.css`).
+
 - **Colours only via tokens.** MapLibre cannot read CSS variables;
   `pass-map.tsx` reads them once via `getComputedStyle` (`readColors`). Add
   new map colours there rather than hard-coding them.
@@ -203,6 +253,32 @@ friends do that better and the app links out to them.
   used to read from the geometry is precomputed on the server: tours within
   reach of an entity (`lib/nearby.ts`) and the road coordinate of every
   profile sample (`ProfileWithCoords`).
+- **The basemap is generated, and it follows the OS scheme.** The default
+  base is a vector style painted from the app's own palette (`lib/basemap.ts`,
+  colours in `lib/palette.ts`), tiles from OpenFreeMap, no key. Layer stack,
+  bottom to top: the basemap's fills (land, built-up, wood, glacier, water),
+  the hillshade from the Terrarium DEM, the basemap's lines and labels
+  (rivers, borders, roads from zoom 6 to minor roads at 11, road names at 12,
+  lakes, peaks with elevation at 10, places), the raster overlays, then the
+  app's own layers (the hovered town's reach, the tour bands, the ascents on
+  top of them, towns, passes, labels, profile cursor). MapLibre places labels from the top of the style
+  down, so that order is also their collision priority: a pass label wins
+  against a town name, and both win against the basemap's own place names.
+  Roads are thin and neutral and there are no POIs: the mountain roads that
+  matter are the app's lines, and the status and tour colours are what should
+  dominate. Labels prefer `name:de`. The raster alternatives (OSM, OpenTopoMap,
+  CyclOSM, Esri, satellite) stay in the layer popover; a raster base is one
+  layer below the hillshade. Switching base or scheme never rebuilds the map:
+  `applyBase` in `pass-map.tsx` swaps only the layers whose id starts with
+  `base`, and a `prefers-color-scheme` change re-reads the tokens, repaints
+  the icons and sets every paint property of the app's layers again from the
+  same `appLayers` definition the style was built from – camera, sources,
+  filters and feature state stay. Glyphs are served from `public/map/fonts`:
+  the Latin ranges of Inter, the UI's own face, rasterised once into
+  MapLibre's glyph atlases by `scripts/build-glyphs.ts` and committed – so
+  map and panels share one family, the hermetic e2e suite renders labels and
+  the map has no font server to wait for; `scripts/build-map-style.ts` writes the same style
+  as two standalone JSON files for tuning in a style editor.
 - **MapLibre needs two workarounds.** Its web worker is resolved via
   `import.meta.url`, which Turbopack does not serve, so
   `scripts/copy-maplibre-worker.ts` copies the worker into `public/maplibre`

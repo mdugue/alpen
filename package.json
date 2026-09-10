@@ -7,8 +7,8 @@
     "bun": ">=1.4.0"
   },
   "scripts": {
-    "dev": "bun run scripts/copy-maplibre-worker.ts && bun run scripts/build-map-assets.ts && next dev",
-    "build": "bun run scripts/copy-maplibre-worker.ts && bun run scripts/build-map-assets.ts && next build",
+    "dev": "bun run scripts/copy-maplibre-worker.ts && bun run scripts/build-map-assets.ts && bun run scripts/build-map-style.ts && next dev",
+    "build": "bun run scripts/copy-maplibre-worker.ts && bun run scripts/build-map-assets.ts && bun run scripts/build-map-style.ts && next build",
     "start": "next start",
     "lint": "ultracite check",
     "lint:fix": "ultracite fix",
@@ -21,6 +21,7 @@
     "data:locate": "bun run scripts/locate-pass.ts",
     "data:backfill": "bash scripts/backfill.sh",
     "data:schema": "bun run scripts/emit-json-schema.ts",
+    "map:glyphs": "bun run scripts/build-glyphs.ts",
     "ui:init": "bunx shadcn@latest init --preset b1D2ui9g",
     "ui:add": "bunx shadcn@latest add badge button button-group card carousel chart collapsible dialog drawer dropdown-menu empty field input input-group item label native-select popover radio-group separator skeleton slider switch table toggle toggle-group tooltip"
   },

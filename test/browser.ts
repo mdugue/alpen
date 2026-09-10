@@ -5,9 +5,9 @@
  * nothing beyond Bun and a Chrome.
  *
  * Runs are hermetic: every view starts with cleared storage and every request
- * to another origin is blocked, so no tile, DEM or glyph server is involved.
- * MapLibre still reaches `load` and draws its own layers on a blank
- * background.
+ * to another origin is blocked, so no tile or DEM server is involved (the
+ * glyphs come from the app's own origin). MapLibre still reaches `load` and
+ * draws its own layers on a blank background.
  */
 import { mkdir } from "node:fs/promises";
 import path from "node:path";
@@ -225,6 +225,11 @@ export class Page {
     // Rows sit in a scroll container; actionability needs them in the viewport.
     await this.view.scrollTo(selector);
     await this.view.click(selector);
+  }
+
+  /** Clicks a point on the page – for the map, which has no elements. */
+  clickAt(x: number, y: number) {
+    return this.view.click(x, y);
   }
 
   /**

@@ -1,3 +1,15 @@
+import { BASEMAP_ID } from "@/lib/basemap";
+
+/**
+ * The default: the vector map generated from the app's palette
+ * (`lib/basemap.ts`), light or dark with the OS. Listed first in the popover.
+ */
+export const VECTOR_BASE = {
+  id: BASEMAP_ID,
+  name: "Karte (hell/dunkel automatisch)",
+} as const;
+
+/** A raster alternative in the layer popover. */
 export interface BaseLayerDef {
   id: string;
   name: string;
@@ -8,7 +20,7 @@ export interface BaseLayerDef {
 
 const OSM = "© OpenStreetMap-Mitwirkende";
 
-/** Base maps without a key; those requiring a key are only added when it is set. */
+/** Raster base maps without a key; those requiring a key are only added when it is set. */
 export const baseLayers = (): BaseLayerDef[] => {
   const list: BaseLayerDef[] = [
     {

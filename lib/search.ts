@@ -1,4 +1,4 @@
-import { COUNTRY_NAME, countriesOf } from "@/lib/regions";
+import { COUNTRY_NAME, countriesOf, TOWN_TAG } from "@/lib/regions";
 import type { Pass, Tour, Town } from "@/lib/types";
 
 /**
@@ -62,7 +62,15 @@ export const tourHaystack = (tour: Tour, passNames: string[]): string =>
 export const townHaystack = (town: Town): string => {
   let hay = townHay.get(town);
   if (hay === undefined) {
-    hay = fold([town.name, countryWords(town.country), town.why].join(" "));
+    hay = fold(
+      [
+        town.name,
+        ...(town.aliases ?? []),
+        countryWords(town.country),
+        ...town.tags.map((t) => TOWN_TAG[t].label),
+        town.why,
+      ].join(" "),
+    );
     townHay.set(town, hay);
   }
   return hay;

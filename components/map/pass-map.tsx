@@ -2,8 +2,9 @@
 
 import { Box, Focus, Layers } from "lucide-react";
 import type {
+  ExpressionSpecification,
   GeoJSONSource,
-  MapLayerMouseEvent,
+  LayerSpecification,
   StyleSpecification,
 } from "maplibre-gl";
 import {
@@ -19,7 +20,7 @@ import {
 import "maplibre-gl/dist/maplibre-gl.css";
 import { useEffect, useRef, useState } from "react";
 
-import { baseLayers, OVERLAYS } from "@/components/map/map-style";
+import { baseLayers, OVERLAYS, VECTOR_BASE } from "@/components/map/map-style";
 import { Button } from "@/components/ui/button";
 import { ButtonGroup } from "@/components/ui/button-group";
 import {
@@ -43,9 +44,22 @@ import {
 } from "@/components/ui/tooltip";
 import { DEFAULT_VIEW, readHash, useStored } from "@/lib/app-state";
 import type { MapView, Selection } from "@/lib/app-state";
+import {
+  BASEMAP_ID,
+  BASEMAP_SOURCE,
+  BASEMAP_SOURCE_ID,
+  basemapLayers,
+  FONT_BOLD,
+  GLYPHS,
+} from "@/lib/basemap";
 import type { MapAssets } from "@/lib/map-assets";
+import type { TownReach } from "@/lib/nearby";
+import { PALETTE } from "@/lib/palette";
+import type { Scheme } from "@/lib/palette";
+import { TOWN_TAG } from "@/lib/regions";
 import { ascentKey } from "@/lib/route-key";
-import type { LatLon, Pass, Status, Tour, Town } from "@/lib/types";
+import { tagIconSvg } from "@/lib/tag-icons";
+import type { LatLon, Pass, Status, Tour, Town, TownTag } from "@/lib/types";
 import { cn, MAP_CLUSTER, MAP_TOOL, PRESSED } from "@/lib/utils";
 
 export interface MapPass extends Pass {
@@ -59,6 +73,12 @@ interface Props {
   /** The tours the list shows; `visible` is the "auf der Karte" switch. */
   tours: (Tour & { status: Status; visible: boolean })[];
   towns: (Town & { favorite: boolean })[];
+  /**
+   * The area each town reaches – the hull over the passes within reach,
+   * precomputed in `lib/nearby.ts`. Drawn while a town is hovered or selected,
+   * so "was ist von hier aus erreichbar" is answered on the map itself.
+   */
+  townReach: TownReach;
   /**
    * The ascent and tour lines never arrive as props: MapLibre fetches them as
    * static GeoJSON from these URLs and tiles them in its worker. Which lines
@@ -108,6 +128,123 @@ const FIT_PADDING = 48;
  */
 const TOOL = "h-auto w-9 flex-1";
 const TERRAIN = { exaggeration: 1.25, source: "dem" } as const;
+/**
+ * The tour hatch, in multiples of the line width – so on a band this wide the
+ * numbers have to be well below 1 to read as a texture at all. Widen the band
+ * and the dashes lengthen with it unless these come down to match.
+ */
+const DASH = [0.45, 0.35];
+const DARK_QUERY = "(prefers-color-scheme: dark)";
+/** The first layer above the base stack: where the basemap's lines and labels go. */
+const ABOVE_BASE = `ov-${OVERLAYS[0].id}`;
+
+const scheme = (): Scheme =>
+  window.matchMedia(DARK_QUERY).matches ? "dark" : "light";
+
+const coarsePointer = () => window.matchMedia("(pointer: coarse)").matches;
+
+/**
+ * What the pointer may aim at, in pixels. A pass dot is 5 to 15 px across, a
+ * town disc about 14, an ascent line 3.5 wide – targets that a finger cannot
+ * hit and that a mouse only hits when the map stands still. Every kind
+ * therefore carries a transparent hit area on top of its mark: about a 44 px
+ * target on touch, roughly half of that with a mouse, where aiming is precise
+ * and the marks sit denser on screen. Deliberately not larger: the areas
+ * overlap heavily as it is, and the wider they get the more often one mark
+ * answers for its neighbour.
+ */
+const HIT_RADIUS = 22;
+const HIT_RADIUS_FINE = 13;
+const HIT_WIDTH = 32;
+const HIT_WIDTH_FINE = 18;
+/** How far a hit area reaches beyond a mark that is drawn wider than the floor. */
+const HIT_MARGIN = 6;
+/** Slack around the pointer, so a near miss on a label still counts. */
+const HIT_SLOP = 4;
+
+/**
+ * The layers that answer hover and click, in falling priority. The order is
+ * spelled out rather than taken from the style, because the two disagree:
+ * marks first, then the names beside them, then the lines – a name is a small
+ * deliberate target, a line covers half the map, and both would otherwise
+ * swallow the dot they belong to; and the tour band lies *under* the ascents
+ * but reaches past them, so a click inside it hits both and the ascent is the
+ * more specific answer. Within a group the nearer mark wins – passes and
+ * towns share the first one – so a generous hit area never steals the click
+ * from the mark actually aimed at.
+ */
+const HIT_GROUPS: readonly (readonly string[])[] = [
+  ["passes-hit", "towns-hit"],
+  [
+    "pass-label-5",
+    "pass-label-4",
+    "pass-label-3",
+    "pass-label-2",
+    "pass-label-1",
+    "towns-label",
+  ],
+  ["tours-label"],
+  ["routes-hit"],
+  ["tours-hit"],
+];
+const HIT_LAYERS = HIT_GROUPS.flat();
+
+interface Hit {
+  kind: Selection["kind"];
+  slug: string;
+  /** The feature's own properties – what the hover popup is built from. */
+  props: Record<string, string>;
+  /** Where the popup points: the mark itself, or the pointer on a line. */
+  anchor: [number, number];
+}
+
+/**
+ * The one entity under a point, resolved across all hit layers at once.
+ * A single query instead of a handler per layer: overlapping areas are the
+ * normal case here, and only one of them may win a click.
+ */
+const pickAt = (m: MLMap, x: number, y: number): Hit | null => {
+  const layers = HIT_LAYERS.filter((id) => m.getLayer(id));
+  if (layers.length === 0) return null;
+  const features = m.queryRenderedFeatures(
+    [
+      [x - HIT_SLOP, y - HIT_SLOP],
+      [x + HIT_SLOP, y + HIT_SLOP],
+    ],
+    { layers },
+  );
+  let best: Hit | null = null;
+  let bestRank = Number.POSITIVE_INFINITY;
+  let bestDist = Number.POSITIVE_INFINITY;
+  for (const f of features) {
+    const rank = HIT_GROUPS.findIndex((g) => g.includes(f.layer.id));
+    if (rank === -1 || rank > bestRank) continue;
+    const props = f.properties as Record<string, string>;
+    if (!props.slug) continue;
+    const at =
+      f.geometry.type === "Point"
+        ? (f.geometry.coordinates as [number, number])
+        : null;
+    const p = at ? m.project(at) : null;
+    const dist = p ? Math.hypot(p.x - x, p.y - y) : 0;
+    if (rank === bestRank && dist >= bestDist) continue;
+    const pointer = m.unproject([x, y]);
+    bestRank = rank;
+    bestDist = dist;
+    best = {
+      anchor: at ?? [pointer.lng, pointer.lat],
+      // An ascent belongs to its pass; everything else names its own kind.
+      kind: props.kind === "route" ? "pass" : (props.kind as Selection["kind"]),
+      props,
+      slug: props.slug,
+    };
+  }
+  return best;
+};
+
+/** A stored base that no longer exists (a keyed raster, say) falls back to the default. */
+const resolveBase = (id: string) =>
+  id === BASEMAP_ID || baseLayers().some((b) => b.id === id) ? id : BASEMAP_ID;
 
 // MapLibre resolves its worker via import.meta.url, which Turbopack does not
 // serve; scripts/copy-maplibre-worker.ts places a copy under public/maplibre.
@@ -167,7 +304,32 @@ const draw = (
   return ctx.getImageData(0, 0, size, size);
 };
 
-/** Star and diamond as canvas icons so that no font glyphs are needed. */
+/**
+ * A town: a disc in the town colour inside a ring. No glyph in it – at the
+ * size a town mark has on this map a pictogram is a smudge, and the ring
+ * plus the colour already separate it from a pass dot. Only the ring changes
+ * – paper for a plain town, accent for a favourite, ink for the selected one
+ * – so a town keeps one silhouette at every zoom.
+ */
+const townIcon = (c: Colors, ring: string) =>
+  draw((ctx, s) => {
+    const r = s * 0.3;
+    ctx.translate(s / 2, s / 2);
+    ctx.beginPath();
+    ctx.arc(0, 0, r, 0, Math.PI * 2);
+    ctx.fillStyle = c.town;
+    ctx.fill();
+    ctx.lineWidth = s * 0.08;
+    ctx.strokeStyle = c.paper;
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.arc(0, 0, r + s * 0.115, 0, Math.PI * 2);
+    ctx.lineWidth = s * 0.07;
+    ctx.strokeStyle = ring;
+    ctx.stroke();
+  });
+
+/** Star as a canvas icon so that no font glyphs are needed. */
 const addIcons = (map: MLMap, c: ReturnType<typeof readColors>) => {
   const star = (fill: string, stroke: string) =>
     draw((ctx, s) => {
@@ -186,27 +348,421 @@ const addIcons = (map: MLMap, c: ReturnType<typeof readColors>) => {
       ctx.stroke();
     });
 
+  // Repainted on a scheme change: the strokes are paper and ink, which flip.
   const add = (id: string, data: ImageData) => {
-    if (!map.hasImage(id)) map.addImage(id, data, { pixelRatio: 2 });
+    if (map.hasImage(id)) map.updateImage(id, data);
+    else map.addImage(id, data, { pixelRatio: 2 });
   };
   for (const k of ["open", "risky", "closed"] as const) {
     add(`star-${k}-0`, star(c[k], c.paper));
     add(`star-${k}-1`, star(c[k], c.ink));
   }
-  add("star-town-0", star(c.accent, c.paper));
-  add("star-town-1", star(c.accent, c.ink));
-  add(
-    "town",
-    draw((ctx, s) => {
-      ctx.translate(s / 2, s / 2);
-      ctx.rotate(Math.PI / 4);
-      ctx.fillStyle = c.town;
-      ctx.fillRect(-s * 0.26, -s * 0.26, s * 0.52, s * 0.52);
-      ctx.lineWidth = s * 0.07;
-      ctx.strokeStyle = c.paper;
-      ctx.strokeRect(-s * 0.26, -s * 0.26, s * 0.52, s * 0.52);
-    }),
-  );
+  add("town", townIcon(c, c.paper));
+  add("town-fav", townIcon(c, c.accent));
+  add("town-sel", townIcon(c, c.ink));
+};
+
+type Colors = ReturnType<typeof readColors>;
+
+// Lighter on the light map: over a flat land tone the shading is the only
+// texture, and at 0.3 it turns the whole range grey.
+const hillshadePaint = (s: Scheme) => ({
+  "hillshade-exaggeration": s === "dark" ? 0.3 : 0.2,
+  "hillshade-highlight-color": PALETTE[s].highlight,
+  "hillshade-shadow-color": PALETTE[s].shade,
+});
+
+/** The hillshade over the base: the DEM stays, its tones follow the scheme. */
+const hillshadeLayer = (s: Scheme, visible: boolean): LayerSpecification => ({
+  id: "hillshade",
+  layout: { visibility: visible ? "visible" : "none" },
+  paint: hillshadePaint(s),
+  source: "dem",
+  type: "hillshade",
+});
+
+/**
+ * The bottom of the stack: either the generated vector map – its fills below
+ * the hillshade, its lines and labels above it – or one raster layer below.
+ */
+const baseStack = (
+  id: string,
+  s: Scheme,
+): { ground: LayerSpecification[]; detail: LayerSpecification[] } =>
+  id === BASEMAP_ID
+    ? basemapLayers(s)
+    : { detail: [], ground: [{ id: "base", source: id, type: "raster" }] };
+
+/** Swaps the base under a running map; everything above it stays put. */
+const applyBase = (m: MLMap, id: string, s: Scheme) => {
+  for (const l of m.getStyle().layers)
+    if (l.id === "base" || l.id.startsWith("base-")) m.removeLayer(l.id);
+  const { ground, detail } = baseStack(id, s);
+  for (const l of ground) m.addLayer(l, "hillshade");
+  for (const l of detail) m.addLayer(l, ABOVE_BASE);
+};
+
+/**
+ * The app's own layers, painted with the live tokens. A pure function of the
+ * colours, so a scheme change re-applies every paint property from the same
+ * definition the style was built from.
+ */
+const appLayers = (colors: Colors): LayerSpecification[] => {
+  const coarse = coarsePointer();
+  /**
+   * A transparent line under a drawn one, as wide as the pointer needs. It
+   * carries the same filter as its visible twin (set in the effects below), so
+   * a hidden tour stays out of hit-testing.
+   */
+  const hitLine = (id: string, source: string): LayerSpecification => ({
+    id,
+    layout: { "line-cap": "round", "line-join": "round" },
+    paint: {
+      "line-color": colors.ink,
+      "line-opacity": 0,
+      "line-width": coarse ? HIT_WIDTH : HIT_WIDTH_FINE,
+    },
+    source,
+    type: "line",
+  });
+  /**
+   * The same for a mark: one disc per point, in screen pixels (the default
+   * viewport alignment), so a tilted map does not shrink the target.
+   */
+  const hitPoint = (
+    id: string,
+    source: string,
+    /** Where the drawn mark grows with the zoom, the area has to grow with it. */
+    radius: number | ExpressionSpecification = coarse
+      ? HIT_RADIUS
+      : HIT_RADIUS_FINE,
+  ): LayerSpecification => ({
+    id,
+    paint: {
+      "circle-color": colors.ink,
+      "circle-opacity": 0,
+      "circle-radius": radius,
+    },
+    source,
+    type: "circle",
+  });
+  const statusColor = [
+    "match",
+    ["get", "status"],
+    "open",
+    colors.open,
+    "risky",
+    colors.risky,
+    "closed",
+    colors.closed,
+    "#888888",
+  ] as never;
+  // The ascent and tour lines carry status and selection as feature state,
+  // so a period, filter or selection change never re-uploads geometry.
+  const selected = ["==", ["feature-state", "selected"], 1];
+  /**
+   * The radius of a pass dot, by zoom and fame. With a `hit` floor it becomes
+   * the dot's hit area instead: never below that floor, and always a margin
+   * wider than the dot, which on a famous pass at close zoom is as wide as the
+   * floor itself. One interpolate rather than a `max` around it, because a
+   * `zoom` expression may only be the input of a top-level interpolate.
+   */
+  const passRadius = (hit = 0): ExpressionSpecification => {
+    const stop = (base: number, perFame: number): ExpressionSpecification => {
+      const r: ExpressionSpecification = [
+        "+",
+        base + (hit ? HIT_MARGIN : 0),
+        ["*", perFame, ["get", "fame"]],
+      ];
+      return hit ? ["max", hit, r] : r;
+    };
+    return [
+      "interpolate",
+      ["linear"],
+      ["zoom"],
+      6,
+      stop(2, 1.1),
+      12,
+      stop(4, 1.8),
+    ];
+  };
+  const routeColor = [
+    "match",
+    ["coalesce", ["feature-state", "status"], "none"],
+    "open",
+    colors.open,
+    "risky",
+    colors.risky,
+    "closed",
+    colors.closed,
+    "#888888",
+  ] as never;
+  /**
+   * A pixel width for the tour lines: it grows with the zoom and again while
+   * the tour is selected. The zoom interpolation has to sit at the very top of
+   * the expression – MapLibre accepts `["zoom"]` only as the input of the
+   * outermost stop function – so the selection case goes inside the stops
+   * rather than as a factor around them.
+   */
+  const tourWidth = (near: number, far: number) =>
+    [
+      "interpolate",
+      ["linear"],
+      ["zoom"],
+      6,
+      ["case", selected, near * 1.3, near],
+      13,
+      ["case", selected, far * 1.3, far],
+    ] as never;
+  // Wide enough to hold the widest ascent it can carry – a selected one, at 6
+  // – and still reach past it on both sides.
+  const tourLine = tourWidth(9, 12);
+
+  return [
+    // The area one town reaches, drawn while it is hovered: the hull over
+    // its passes (lib/nearby.ts). Bottom of the app's stack, so
+    // every line and dot stays readable on top of it.
+    {
+      id: "town-reach-fill",
+      paint: { "fill-color": colors.town, "fill-opacity": 0.12 },
+      source: "reach",
+      type: "fill",
+    },
+    {
+      id: "town-reach-line",
+      paint: {
+        "line-color": colors.town,
+        "line-dasharray": [3, 2],
+        "line-opacity": 0.7,
+        "line-width": 1.5,
+      },
+      source: "reach",
+      type: "line",
+    },
+    hitLine("tours-hit", "tours"),
+    hitLine("routes-hit", "routes"),
+    // A tour is the union of several ascents – the Sellaronda *is* its four
+    // passes – so it is drawn as what it is: a band wide enough to hold them,
+    // laid *under* the ascents so it reaches past them on both sides. What a
+    // tour contains is then read from the map rather than from the list.
+    //
+    // Translucent, so the hillshade and the roads keep showing through a band
+    // that covers a lot of ground, and hatched rather than solid, so it is
+    // told apart from an ascent by texture and not only by weight – a tour is
+    // the looser of the two marks, which is the right order: the ascent is
+    // the rated thing. The hatch is short and tight on purpose; a wide line
+    // with long dashes reads as a chain of blocks rather than as a texture.
+    //
+    // `line-layer-opacity`, not `line-opacity`: the latter is applied per
+    // feature, so where a hairpin runs MapLibre's triangle strip over itself
+    // the overlap composites twice and shows as a blotch. The layer property
+    // flattens the whole layer to one surface first and composites that once,
+    // which is what makes a translucent band usable in switchbacks at all.
+    {
+      id: "tours",
+      layout: { "line-cap": "butt", "line-join": "round" },
+      paint: {
+        "line-color": ["get", "color"],
+        "line-dasharray": DASH,
+        "line-layer-opacity": 0.62,
+        "line-width": tourLine,
+      },
+      source: "tours",
+      type: "line",
+    },
+    // The ascent, on top of the band that holds it: solid and opaque, because
+    // the status colour is the stronger signal and must not be tinted by the
+    // tour it belongs to.
+    {
+      id: "routes",
+      layout: { "line-cap": "round", "line-join": "round" },
+      paint: {
+        "line-color": routeColor,
+        "line-width": ["case", selected, 6, 3.5],
+      },
+      source: "routes",
+      type: "line",
+    },
+    {
+      id: "tours-label",
+      layout: {
+        "symbol-placement": "line",
+        "symbol-spacing": 600,
+        "text-field": ["get", "name"],
+        "text-font": [FONT_BOLD],
+        "text-size": 11,
+      },
+      paint: {
+        "text-color": ["get", "color"],
+        "text-halo-color": colors.paper,
+        "text-halo-width": 1.5,
+      },
+      source: "tours",
+      type: "symbol",
+    },
+    hitPoint("towns-hit", "towns"),
+    hitPoint(
+      "passes-hit",
+      "passes",
+      passRadius(coarse ? HIT_RADIUS : HIT_RADIUS_FINE),
+    ),
+    // Below the passes: MapLibre places labels from the top of the style
+    // down, so a pass label wins the collision against a town name. The
+    // passes are what the map is read for; the town is the answer to the
+    // second question, not the first.
+    {
+      id: "towns",
+      layout: {
+        "icon-allow-overlap": true,
+        "icon-image": [
+          "case",
+          ["==", ["get", "selected"], 1],
+          "town-sel",
+          ["==", ["get", "favorite"], 1],
+          "town-fav",
+          "town",
+        ],
+        "icon-size": ["interpolate", ["linear"], ["zoom"], 5, 0.6, 13, 0.85],
+      },
+      source: "towns",
+      type: "symbol",
+    },
+    {
+      id: "towns-label",
+      layout: {
+        "text-field": ["get", "name"],
+        "text-font": [FONT_BOLD],
+        "text-justify": "auto",
+        "text-radial-offset": 1,
+        "text-size": ["interpolate", ["linear"], ["zoom"], 8, 12, 13, 14],
+        "text-variable-anchor": ["left", "right", "top", "bottom"],
+      },
+      minzoom: 8,
+      paint: {
+        "text-color": colors.town,
+        "text-halo-color": colors.paper,
+        "text-halo-width": 2,
+      },
+      source: "towns",
+      type: "symbol",
+    },
+    {
+      filter: ["!=", ["get", "favorite"], 1],
+      id: "passes",
+      paint: {
+        // "closed" is additionally encoded as a hollow circle so that the
+        // three states do not rely on hue alone.
+        "circle-color": [
+          "case",
+          ["==", ["get", "status"], "closed"],
+          colors.paper,
+          statusColor,
+        ],
+        "circle-opacity": [
+          "case",
+          [">=", ["get", "fame"], 4],
+          0.95,
+          ["==", ["get", "fame"], 3],
+          0.8,
+          0.62,
+        ],
+        "circle-pitch-alignment": "map",
+        "circle-radius": passRadius(),
+        "circle-stroke-color": [
+          "case",
+          ["==", ["get", "selected"], 1],
+          colors.ink,
+          ["==", ["get", "status"], "closed"],
+          colors.closed,
+          colors.paper,
+        ],
+        "circle-stroke-width": [
+          "case",
+          ["==", ["get", "selected"], 1],
+          3,
+          ["==", ["get", "status"], "closed"],
+          2.5,
+          1.5,
+        ],
+      },
+      source: "passes",
+      type: "circle",
+    },
+    {
+      filter: ["==", ["get", "favorite"], 1],
+      id: "pass-stars",
+      layout: {
+        "icon-allow-overlap": true,
+        "icon-image": [
+          "concat",
+          "star-",
+          ["get", "status"],
+          "-",
+          ["to-string", ["get", "selected"]],
+        ],
+        "icon-size": ["interpolate", ["linear"], ["zoom"], 6, 0.5, 12, 0.9],
+      },
+      source: "passes",
+      type: "symbol",
+    },
+    // Labels staggered by prominence; MapLibre resolves collisions
+    ...(
+      [
+        [5, 0],
+        [4, 7],
+        [3, 8],
+        [2, 9.5],
+        [1, 10.5],
+      ] as const
+    ).map(([fame, minzoom]) => ({
+      filter:
+        fame === 5
+          ? ([
+              "any",
+              ["==", ["get", "fame"], 5],
+              ["==", ["get", "selected"], 1],
+              ["==", ["get", "favorite"], 1],
+            ] as never)
+          : ([
+              "all",
+              ["==", ["get", "fame"], fame],
+              ["!=", ["get", "selected"], 1],
+              ["!=", ["get", "favorite"], 1],
+            ] as never),
+      id: `pass-label-${fame}`,
+      layout: {
+        "symbol-sort-key": ["-", 6, ["get", "fame"]] as never,
+        "text-field": ["get", "name"] as never,
+        "text-font": [FONT_BOLD],
+        "text-justify": "auto" as never,
+        "text-radial-offset": 1,
+        "text-size": fame >= 5 ? 13 : fame <= 2 ? 11 : 12.5,
+        "text-variable-anchor": ["left", "right", "top", "bottom"] as never,
+      },
+      minzoom,
+      paint: {
+        "text-color": colors.ink,
+        "text-halo-color": colors.paper,
+        "text-halo-width": 1.6,
+        "text-opacity": fame <= 2 ? 0.85 : 1,
+      },
+      source: "passes",
+      type: "symbol" as const,
+    })),
+    // Topmost: the profile cursor must stay visible over its own ascent.
+    {
+      id: "profile-cursor",
+      paint: {
+        "circle-color": colors.paper,
+        "circle-pitch-alignment": "map",
+        "circle-radius": 6,
+        "circle-stroke-color": colors.ink,
+        "circle-stroke-width": 2.5,
+      },
+      source: "cursor",
+      type: "circle",
+    },
+  ] as LayerSpecification[];
 };
 
 const escapeHtml = (s: string) =>
@@ -218,6 +774,28 @@ const escapeHtml = (s: string) =>
       ]!,
   );
 
+/**
+ * The hover popup's body. A town says why it is in the list, with the same
+ * glyphs the sidebar and the panel use (`lib/tag-icons.ts` exists because this
+ * popup is an HTML string and not React); everything else keeps the one line
+ * it always had.
+ */
+const popupHtml = (p: Record<string, string>) => {
+  const title = `<b>${escapeHtml(p.name ?? "")}</b>`;
+  // Feature properties are strings; only what the vocabulary knows is drawn.
+  const tags = (p.tags ?? "")
+    .split(",")
+    .filter((t): t is TownTag => t in TOWN_TAG);
+  if (tags.length === 0) return `${title}<br>${escapeHtml(p.subtitle ?? "")}`;
+  const chips = tags
+    .map(
+      (t) =>
+        `<span class="flex items-center gap-1">${tagIconSvg(t)}${escapeHtml(TOWN_TAG[t].label)}</span>`,
+    )
+    .join("");
+  return `${title}<div class="mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs">${chips}</div>`;
+};
+
 const defined = <T extends object>(o: T): Partial<T> =>
   Object.fromEntries(
     Object.entries(o).filter(([, v]) => v !== undefined && !Number.isNaN(v)),
@@ -227,6 +805,7 @@ export const PassMap = ({
   passes,
   tours,
   towns,
+  townReach,
   assets,
   showPasses,
   showTowns,
@@ -251,7 +830,11 @@ export const PassMap = ({
   // effect and never a render.
   const hashCamera = useRef(false);
   const fitted = useRef(false);
-  const [base, setBase] = useStored("alpenpaesse:base", "osm");
+  const [base, setBase] = useStored("alpenpaesse:base", BASEMAP_ID);
+  // The base the map currently shows. The map is built during the hydration
+  // render, where a stored value is not known yet (useSyncExternalStore hands
+  // out the server snapshot); the effect below catches up once it is.
+  const appliedBase = useRef(BASEMAP_ID);
   const [overlays, setOverlays] = useStored<string[]>("alpenpaesse:overlays", [
     "hillshade",
   ]);
@@ -263,6 +846,28 @@ export const PassMap = ({
     onSelectRef.current = onSelect;
     onViewChangeRef.current = onViewChange;
   }, [onSelect, onViewChange]);
+
+  // The hover handler below is registered once during setup; this ref keeps
+  // the hulls current without rebuilding the map.
+  const reachRef = useRef<TownReach>(townReach);
+
+  /** Draws one town's reach hull, or clears the layer. */
+  const paintReach = (slug: string | null) => {
+    const m = map.current;
+    const ring = slug ? reachRef.current[slug] : undefined;
+    (m?.getSource("reach") as GeoJSONSource | undefined)?.setData({
+      features: ring
+        ? [
+            {
+              geometry: { coordinates: [ring], type: "Polygon" },
+              properties: {},
+              type: "Feature",
+            },
+          ]
+        : [],
+      type: "FeatureCollection",
+    });
+  };
 
   /** Bounds of everything currently drawn; empty while nothing is. */
   const visibleBounds = () => {
@@ -279,50 +884,16 @@ export const PassMap = ({
   useEffect(() => {
     if (!container.current || map.current) return;
     const colors = readColors(container.current);
-    const bases = baseLayers();
-    const statusColor = [
-      "match",
-      ["get", "status"],
-      "open",
-      colors.open,
-      "risky",
-      colors.risky,
-      "closed",
-      colors.closed,
-      "#888888",
-    ] as never;
-    // The ascent and tour lines carry status and selection as feature state,
-    // so a period, filter or selection change never re-uploads geometry.
-    const selected = ["==", ["feature-state", "selected"], 1];
-    const routeColor = [
-      "match",
-      ["coalesce", ["feature-state", "status"], "none"],
-      "open",
-      colors.open,
-      "risky",
-      colors.risky,
-      "closed",
-      colors.closed,
-      "#888888",
-    ] as never;
+    const initialScheme = scheme();
+    appliedBase.current = resolveBase(base);
+    const { ground, detail } = baseStack(appliedBase.current, initialScheme);
 
     const style: StyleSpecification = {
-      glyphs: "https://fonts.openmaptiles.org/{fontstack}/{range}.pbf",
+      glyphs: GLYPHS,
       layers: [
-        {
-          id: "base",
-          source: bases.some((b) => b.id === base) ? base : "osm",
-          type: "raster",
-        },
-        {
-          id: "hillshade",
-          layout: {
-            visibility: overlays.includes("hillshade") ? "visible" : "none",
-          },
-          paint: { "hillshade-exaggeration": 0.3 },
-          source: "dem",
-          type: "hillshade",
-        },
+        ...ground,
+        hillshadeLayer(initialScheme, overlays.includes("hillshade")),
+        ...detail,
         ...OVERLAYS.map((o) => ({
           id: `ov-${o.id}`,
           layout: {
@@ -334,216 +905,10 @@ export const PassMap = ({
           source: `ov-${o.id}`,
           type: "raster" as const,
         })),
-        {
-          id: "tours-casing",
-          layout: { "line-cap": "round", "line-join": "round" },
-          paint: {
-            "line-color": colors.paper,
-            "line-opacity": 0.55,
-            "line-width": 6,
-          },
-          source: "tours",
-          type: "line",
-        },
-        {
-          id: "tours",
-          layout: { "line-cap": "round", "line-join": "round" },
-          paint: {
-            "line-color": ["get", "color"],
-            "line-opacity": 0.85,
-            "line-width": ["case", selected, 5, 3],
-          },
-          source: "tours",
-          type: "line",
-        },
-        {
-          id: "routes",
-          layout: { "line-cap": "round", "line-join": "round" },
-          paint: {
-            "line-color": routeColor,
-            "line-opacity": ["case", selected, 1, 0.85],
-            "line-width": ["case", selected, 6, 3.5],
-          },
-          source: "routes",
-          type: "line",
-        },
-        {
-          id: "tours-label",
-          layout: {
-            "symbol-placement": "line",
-            "symbol-spacing": 600,
-            "text-field": ["get", "name"],
-            "text-font": ["Open Sans Semibold"],
-            "text-size": 11,
-          },
-          paint: {
-            "text-color": ["get", "color"],
-            "text-halo-color": colors.paper,
-            "text-halo-width": 1.5,
-          },
-          source: "tours",
-          type: "symbol",
-        },
-        {
-          id: "towns",
-          layout: {
-            "icon-allow-overlap": true,
-            "icon-image": [
-              "case",
-              ["==", ["get", "favorite"], 1],
-              "star-town-0",
-              "town",
-            ],
-            "icon-size": ["case", ["==", ["get", "favorite"], 1], 0.62, 0.5],
-          },
-          source: "towns",
-          type: "symbol",
-        },
-        {
-          id: "towns-label",
-          layout: {
-            "text-field": ["get", "name"],
-            "text-font": ["Open Sans Italic"],
-            "text-justify": "auto",
-            "text-radial-offset": 0.8,
-            "text-size": 11,
-            "text-variable-anchor": ["left", "right", "top", "bottom"],
-          },
-          minzoom: 8,
-          paint: {
-            "text-color": colors.town,
-            "text-halo-color": colors.paper,
-            "text-halo-width": 1.5,
-          },
-          source: "towns",
-          type: "symbol",
-        },
-        {
-          filter: ["!=", ["get", "favorite"], 1],
-          id: "passes",
-          paint: {
-            // "closed" is additionally encoded as a hollow circle so that the
-            // three states do not rely on hue alone.
-            "circle-color": [
-              "case",
-              ["==", ["get", "status"], "closed"],
-              colors.paper,
-              statusColor,
-            ],
-            "circle-opacity": [
-              "case",
-              [">=", ["get", "fame"], 4],
-              0.95,
-              ["==", ["get", "fame"], 3],
-              0.8,
-              0.62,
-            ],
-            "circle-pitch-alignment": "map",
-            "circle-radius": [
-              "interpolate",
-              ["linear"],
-              ["zoom"],
-              6,
-              ["+", 2, ["*", 1.1, ["get", "fame"]]],
-              12,
-              ["+", 4, ["*", 1.8, ["get", "fame"]]],
-            ],
-            "circle-stroke-color": [
-              "case",
-              ["==", ["get", "selected"], 1],
-              colors.ink,
-              ["==", ["get", "status"], "closed"],
-              colors.closed,
-              colors.paper,
-            ],
-            "circle-stroke-width": [
-              "case",
-              ["==", ["get", "selected"], 1],
-              3,
-              ["==", ["get", "status"], "closed"],
-              2.5,
-              1.5,
-            ],
-          },
-          source: "passes",
-          type: "circle",
-        },
-        {
-          filter: ["==", ["get", "favorite"], 1],
-          id: "pass-stars",
-          layout: {
-            "icon-allow-overlap": true,
-            "icon-image": [
-              "concat",
-              "star-",
-              ["get", "status"],
-              "-",
-              ["to-string", ["get", "selected"]],
-            ],
-            "icon-size": ["interpolate", ["linear"], ["zoom"], 6, 0.5, 12, 0.9],
-          },
-          source: "passes",
-          type: "symbol",
-        },
-        // Labels staggered by prominence; MapLibre resolves collisions
-        ...(
-          [
-            [5, 0],
-            [4, 7],
-            [3, 8],
-            [2, 9.5],
-            [1, 10.5],
-          ] as const
-        ).map(([fame, minzoom]) => ({
-          filter:
-            fame === 5
-              ? ([
-                  "any",
-                  ["==", ["get", "fame"], 5],
-                  ["==", ["get", "selected"], 1],
-                  ["==", ["get", "favorite"], 1],
-                ] as never)
-              : ([
-                  "all",
-                  ["==", ["get", "fame"], fame],
-                  ["!=", ["get", "selected"], 1],
-                  ["!=", ["get", "favorite"], 1],
-                ] as never),
-          id: `pass-label-${fame}`,
-          layout: {
-            "symbol-sort-key": ["-", 6, ["get", "fame"]] as never,
-            "text-field": ["get", "name"] as never,
-            "text-font": ["Open Sans Semibold"],
-            "text-justify": "auto" as never,
-            "text-radial-offset": 1,
-            "text-size": fame >= 5 ? 13 : fame <= 2 ? 11 : 12.5,
-            "text-variable-anchor": ["left", "right", "top", "bottom"] as never,
-          },
-          minzoom,
-          paint: {
-            "text-color": colors.ink,
-            "text-halo-color": colors.paper,
-            "text-halo-width": 1.6,
-            "text-opacity": fame <= 2 ? 0.85 : 1,
-          },
-          source: "passes",
-          type: "symbol" as const,
-        })),
-        // Topmost: the profile cursor must stay visible over its own ascent.
-        {
-          id: "profile-cursor",
-          paint: {
-            "circle-color": colors.paper,
-            "circle-pitch-alignment": "map",
-            "circle-radius": 6,
-            "circle-stroke-color": colors.ink,
-            "circle-stroke-width": 2.5,
-          },
-          source: "cursor",
-          type: "circle",
-        },
-      ] as StyleSpecification["layers"],
+        ...appLayers(colors),
+      ],
       sources: {
+        [BASEMAP_SOURCE_ID]: BASEMAP_SOURCE,
         dem: {
           attribution: "Terrain © Mapzen/AWS",
           encoding: "terrarium",
@@ -555,7 +920,7 @@ export const PassMap = ({
           type: "raster-dem",
         },
         ...Object.fromEntries(
-          bases.map((b) => [
+          baseLayers().map((b) => [
             b.id,
             {
               attribution: b.attribution,
@@ -580,6 +945,7 @@ export const PassMap = ({
         ),
         cursor: { data: EMPTY, type: "geojson" },
         passes: { data: EMPTY, type: "geojson" },
+        reach: { data: EMPTY, type: "geojson" },
         // Static files with a content hash in the name (scripts/build-map-assets.ts);
         // promoteId makes the `id` property the feature id for feature state.
         routes: { data: assets.routesUrl, promoteId: "id", type: "geojson" },
@@ -644,43 +1010,63 @@ export const PassMap = ({
       setReady(true);
     });
 
+    // One pointer resolution for the whole map rather than a handler per
+    // layer: the hit areas overlap, and exactly one entity may answer a hover
+    // or a click (`pickAt` above decides which).
     const popup = new Popup({
       closeButton: false,
       closeOnClick: false,
-      offset: 10,
+      offset: 12,
     });
-    for (const layer of ["passes", "pass-stars", "routes", "tours", "towns"]) {
-      m.on("mouseenter", layer, (e: MapLayerMouseEvent) => {
-        m.getCanvas().style.cursor = "pointer";
-        const p = e.features?.[0]?.properties as
-          | Record<string, string>
-          | undefined;
-        if (!p) return;
-        popup
-          .setLngLat(e.lngLat)
-          .setHTML(
-            `<b>${escapeHtml(p.name ?? "")}</b><br>${escapeHtml(p.subtitle ?? "")}`,
-          )
-          .addTo(m);
-      });
-      m.on("mousemove", layer, (e: MapLayerMouseEvent) =>
-        popup.setLngLat(e.lngLat),
-      );
-      m.on("mouseleave", layer, () => {
-        m.getCanvas().style.cursor = "";
+    /** The entity under the pointer as `kind:slug`, to rebuild only on change. */
+    let hovered: string | null = null;
+    /** Last pointer position, so a moving map re-reads what is under it. */
+    let at: { x: number; y: number } | null = null;
+
+    const hover = () => {
+      // While the map moves there is nothing to aim at, and a popup following
+      // a drag is only noise.
+      const hit = at && !m.isMoving() ? pickAt(m, at.x, at.y) : null;
+      m.getCanvas().style.cursor = hit ? "pointer" : "";
+      if (!hit) {
         popup.remove();
+        if (hovered) paintReach(null);
+        hovered = null;
+        return;
+      }
+      const key = `${hit.kind}:${hit.slug}`;
+      if (key !== hovered) {
+        hovered = key;
+        popup.setHTML(popupHtml(hit.props));
+        // Hovering a town also outlines what it reaches. Only on hover:
+        // selecting one flies the camera in, and from inside the hull there is
+        // nothing to see. The outline goes when the pointer does.
+        paintReach(hit.kind === "town" ? hit.slug : null);
+      }
+      // `addTo` on an open popup re-appends its element, so it is only ever
+      // added once per hover; the anchor follows the pointer along a line.
+      popup.setLngLat(hit.anchor);
+      if (!popup.isOpen()) popup.addTo(m);
+    };
+
+    // Hover is a mouse affordance; a finger has none, and a popup under it
+    // would cover what was just tapped.
+    if (!coarse) {
+      m.on("mousemove", (e) => {
+        at = { x: e.point.x, y: e.point.y };
+        hover();
       });
-      m.on("click", layer, (e: MapLayerMouseEvent) => {
-        const p = e.features?.[0]?.properties as
-          | { kind: string; slug: string }
-          | undefined;
-        if (!p) return;
-        onSelectRef.current({
-          kind: p.kind === "route" ? "pass" : (p.kind as Selection["kind"]),
-          slug: p.slug,
-        });
+      m.on("mouseout", () => {
+        at = null;
+        hover();
       });
+      m.on("moveend", hover);
     }
+
+    m.on("click", (e) => {
+      const hit = pickAt(m, e.point.x, e.point.y);
+      if (hit) onSelectRef.current({ kind: hit.kind, slug: hit.slug });
+    });
 
     // Keep the 3D toggle honest when the map is tilted by drag or compass.
     m.on("pitchend", () => {
@@ -713,6 +1099,43 @@ export const PassMap = ({
     // Intentional: build only once. Data arrives via the effects below.
     // oxlint-disable-next-line react/exhaustive-deps
   }, []);
+
+  // --- Which base ----------------------------------------------------------
+  useEffect(() => {
+    const m = map.current;
+    if (!m || !ready) return;
+    const next = resolveBase(base);
+    if (next === appliedBase.current) return;
+    appliedBase.current = next;
+    applyBase(m, next, scheme());
+  }, [base, ready]);
+
+  // --- Follow the OS colour scheme -----------------------------------------
+  // The tokens flip with it: the base is swapped for its twin, the icons are
+  // repainted and every paint property of the app's layers is set again from
+  // the definition the style was built from. Camera, sources, filters and
+  // feature state are not touched, so nothing is lost or reloaded.
+  useEffect(() => {
+    const m = map.current;
+    const el = container.current;
+    if (!m || !el || !ready) return;
+    const mql = window.matchMedia(DARK_QUERY);
+    const onChange = () => {
+      const s: Scheme = mql.matches ? "dark" : "light";
+      const colors = readColors(el);
+      addIcons(m, colors);
+      if (resolveBase(base) === BASEMAP_ID) applyBase(m, BASEMAP_ID, s);
+      const repaint = (id: string, paint: object) => {
+        for (const [k, v] of Object.entries(paint) as [never, never][])
+          m.setPaintProperty(id, k, v);
+      };
+      repaint("hillshade", hillshadePaint(s));
+      for (const layer of appLayers(colors))
+        repaint(layer.id, layer.paint ?? {});
+    };
+    mql.addEventListener("change", onChange);
+    return () => mql.removeEventListener("change", onChange);
+  }, [ready, base]);
 
   // --- Camera requested via the URL hash ----------------------------------
   useEffect(() => {
@@ -765,11 +1188,12 @@ export const PassMap = ({
     const m = map.current;
     if (!m || !ready) return;
     const selPass = selection?.kind === "pass" ? selection.slug : null;
-    m.setFilter("routes", [
+    const shown = [
       "in",
       ["get", "slug"],
       ["literal", showPasses ? passes.map((p) => p.slug) : []],
-    ]);
+    ] as never;
+    for (const layer of ["routes", "routes-hit"]) m.setFilter(layer, shown);
     for (const p of passes)
       for (const [i] of p.ascents.entries())
         m.setFeatureState(
@@ -786,7 +1210,7 @@ export const PassMap = ({
     if (!m || !ready) return;
     const visible = tours.filter((t) => t.visible).map((t) => t.slug);
     const filter = ["in", ["get", "slug"], ["literal", visible]] as never;
-    for (const layer of ["tours-casing", "tours", "tours-label"])
+    for (const layer of ["tours", "tours-label", "tours-hit"])
       m.setFilter(layer, filter);
     for (const t of tours)
       m.setFeatureState(
@@ -828,6 +1252,7 @@ export const PassMap = ({
   useEffect(() => {
     const m = map.current;
     if (!m || !ready) return;
+    const selTown = selection?.kind === "town" ? selection.slug : null;
     (m.getSource("towns") as GeoJSONSource | undefined)?.setData({
       features: showTowns
         ? towns.map((t) => ({
@@ -836,15 +1261,28 @@ export const PassMap = ({
               favorite: t.favorite ? 1 : 0,
               kind: "town",
               name: t.name,
+              selected: t.slug === selTown ? 1 : 0,
               slug: t.slug,
               subtitle: "Rad-Ort",
+              tags: t.tags.join(","),
             },
             type: "Feature",
           }))
         : [],
       type: "FeatureCollection",
     });
-  }, [towns, showTowns, ready]);
+  }, [towns, selection, showTowns, ready]);
+
+  // --- The reach hull of the hovered town ---------------------------------
+  // Nothing is hovered while this runs, so the layer is cleared with it: the
+  // towns may have just been switched off under the pointer.
+  useEffect(() => {
+    if (!ready) return;
+    reachRef.current = townReach;
+    paintReach(null);
+    // `paintReach` only reads refs and the map instance, both stable.
+    // oxlint-disable-next-line react/exhaustive-deps
+  }, [townReach, showTowns, ready]);
 
   // --- Elevation-profile cursor -------------------------------------------
   // One point, so setData is cheap enough to run on every pointer move.
@@ -926,13 +1364,7 @@ export const PassMap = ({
     }
   };
 
-  const switchBase = (id: string) => {
-    setBase(id);
-    const m = map.current;
-    if (!m) return;
-    m.removeLayer("base");
-    m.addLayer({ id: "base", source: id, type: "raster" }, "hillshade");
-  };
+  const switchBase = (id: string) => setBase(id);
 
   const toggleOverlay = (id: string) => {
     const on = !overlays.includes(id);
@@ -1020,11 +1452,11 @@ export const PassMap = ({
                 <FieldSet className="gap-2">
                   <FieldLegend variant="label">Grundkarte</FieldLegend>
                   <RadioGroup
-                    value={base}
+                    value={resolveBase(base)}
                     onValueChange={(v) => switchBase(String(v))}
                     className="gap-1.5"
                   >
-                    {baseLayers().map((b) => (
+                    {[VECTOR_BASE, ...baseLayers()].map((b) => (
                       <Field key={b.id} orientation="horizontal">
                         <RadioGroupItem value={b.id} id={`base-${b.id}`} />
                         <FieldLabel

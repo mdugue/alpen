@@ -8,6 +8,7 @@ import {
   getPhotos,
   getProfiles,
   getTours,
+  getTownReach,
   getTowns,
   getValleys,
 } from "@/lib/data";
@@ -63,6 +64,7 @@ const Page = async () => {
     towns,
     assets,
     nearbyTours,
+    townReach,
     profiles,
     climate,
     valleys,
@@ -73,6 +75,7 @@ const Page = async () => {
     getTowns(),
     getMapAssets(),
     getNearbyTours(),
+    getTownReach(),
     getProfiles(),
     getClimate(),
     getValleys(),
@@ -91,6 +94,7 @@ const Page = async () => {
         towns={towns}
         assets={assets}
         nearbyTours={nearbyTours}
+        townReach={townReach}
         profiles={profiles}
         climate={climate}
         valleys={valleys}

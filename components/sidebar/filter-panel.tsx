@@ -138,7 +138,16 @@ export const FilterPanel = ({
           {active > 0 && <Badge variant="secondary">{active}</Badge>}
         </CollapsibleTrigger>
       </div>
+      {/*
+        Kept mounted: the two sliders measure themselves with
+        `getBoundingClientRect` when they mount, and inside the phone's bottom
+        sheet every such measurement forces a layout of the whole sheet – with
+        the passes unfolded that is thousands of elements, and opening the
+        panel took the better part of a second. Mounted once, the panel only
+        toggles its `hidden` attribute afterwards.
+      */}
       <CollapsibleContent
+        keepMounted
         className={cn("grid gap-1.5 pt-2", hidden && "hidden")}
       >
         <Toggle

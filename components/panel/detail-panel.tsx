@@ -12,6 +12,7 @@ import { WeatherForecast } from "@/components/panel/weather-forecast";
 import { Rating } from "@/components/rating";
 import { SeasonStrip } from "@/components/season-strip";
 import { StatusBadge, StatusDot } from "@/components/status-badge";
+import { TownTagBadges } from "@/components/town-tags";
 import { Button } from "@/components/ui/button";
 import {
   Empty,
@@ -30,6 +31,7 @@ import { Toggle } from "@/components/ui/toggle";
 import type { EntityKind, Selection } from "@/lib/app-state";
 import { clockTime, periodDate, sunTimes } from "@/lib/daylight";
 import { haversine, NEARBY_RADIUS_KM } from "@/lib/geo";
+import { komootHref, quaeldichHref } from "@/lib/links";
 import { nearbyKey } from "@/lib/nearby";
 import type { NearbyTours } from "@/lib/nearby";
 import { photoKey } from "@/lib/photos";
@@ -217,7 +219,7 @@ const Nearby = ({
                 onClick={() => p.onSelect({ kind: "town", slug: x.slug })}
               >
                 <span
-                  className="bg-town inline-block size-2 rotate-45 rounded-xs"
+                  className="bg-town inline-block size-2 rounded-full"
                   aria-hidden
                 />{" "}
                 {x.name}
@@ -438,14 +440,8 @@ const PassDetail = (props: Props & { pass: Pass }) => {
       <Nearby {...props} lat={pass.lat} lon={pass.lon} exclude={pass.slug} />
       <ExternalLinks
         links={[
-          [
-            "quaeldich.de",
-            `https://www.quaeldich.de/suche/?q=${encodeURIComponent(pass.name)}`,
-          ],
-          [
-            "komoot",
-            `https://www.komoot.com/discover?lat=${pass.lat}&lng=${pass.lon}&sport=racebike`,
-          ],
+          ["quaeldich.de", quaeldichHref(pass)],
+          ["komoot", komootHref(pass.name, pass.lat, pass.lon)],
           [
             "Google Maps",
             `https://www.google.com/maps/search/?api=1&query=${pass.lat},${pass.lon}`,
@@ -545,10 +541,19 @@ const TourDetail = (props: Props & { tour: Tour }) => {
   );
 };
 
+/**
+ * The labels say in two words why the town is in the list at all – a planner
+ * scanning bases wants "Radsport-Mekka" or "Ruhig" before the prose. What each
+ * label means, and that it is an editorial judgement rather than a count, is
+ * explained once in the scales dialog.
+ */
 const TownDetail = (props: Props & { town: Town }) => {
   const { town } = props;
   return (
     <>
+      <div className="mt-2">
+        <TownTagBadges tags={town.tags} />
+      </div>
       <p className="mt-2 text-xs">{town.why}</p>
       <Nearby {...props} lat={town.lat} lon={town.lon} exclude={town.slug} />
       <ExternalLinks

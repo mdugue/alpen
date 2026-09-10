@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import { COUNTRIES, REGIONS } from "@/lib/regions";
+import { COUNTRIES, REGIONS, TOWN_TAGS } from "@/lib/regions";
 
 /**
  * Single source of truth for the shape of everything in `data/`. The types in
@@ -122,6 +122,15 @@ export const Pass = z.strictObject({
   lon: LatLon.shape.lon,
   name: z.string().min(2),
   note: z.string(),
+  /**
+   * Slug of the pass on quaeldich.de, so the detail panel links straight to
+   * `quaeldich.de/paesse/<slug>/` instead of a search. Curated, because
+   * quäldich names a pass in its own language ("Stilfser Joch",
+   * "St. Gotthardpass", "Mangrt") and no rule derives that from ours. Left
+   * out for the few passes their Pässelexikon does not carry – those fall
+   * back to the search.
+   */
+  quaeldich: Slug.optional(),
   region: Region,
   /**
    * The summit is the highest point of the asphalt, not a saddle: OSM carries
@@ -153,12 +162,22 @@ export const Tour = z.strictObject({
   waypoints: z.array(LatLon).min(2),
 });
 
+export const TownTag = z.enum(TOWN_TAGS);
+
 export const Town = z.strictObject({
+  /** Valley, region or other-language name people search for: "Val di Fassa", "Gröden". */
+  aliases: z.array(z.string().min(2)).optional(),
   country: Country,
   lat: LatLon.shape.lat,
   lon: LatLon.shape.lon,
   name: z.string().min(2),
   slug: Slug,
+  /**
+   * Why the town is in the list, as a handful of editorial labels (see
+   * `TOWN_TAG`). At least one: a town nobody can say anything about does not
+   * belong in a list meant for choosing a base.
+   */
+  tags: z.array(TownTag).min(1, "Ort ohne Merkmal (tags)"),
   /** Why the town is interesting for road cyclists. */
   why: z.string(),
 });

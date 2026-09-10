@@ -117,8 +117,9 @@ See `.env.example`. None of them is required to start the app.
   `VERCEL_PROJECT_PRODUCTION_URL` (or `VERCEL_URL` on a preview), so it is only
   needed for a custom domain or a different host.
 - `NEXT_PUBLIC_THUNDERFOREST_KEY`, `NEXT_PUBLIC_MAPTILER_KEY` – optional
-  outdoor base maps. Without a key, OSM, OpenTopoMap, CyclOSM, Esri Topo and
-  satellite imagery are available.
+  outdoor base maps. The default is the app's own vector style on OpenFreeMap
+  tiles (light or dark with the OS, no key); OSM, OpenTopoMap, CyclOSM, Esri
+  Topo and satellite imagery are available as alternatives.
 
 ## Deployment (Vercel)
 
