@@ -5,6 +5,7 @@ import type {
   GeoJSONSource,
   LayerSpecification,
   MapLayerMouseEvent,
+  MapMouseEvent,
   StyleSpecification,
 } from "maplibre-gl";
 import {
@@ -128,6 +129,20 @@ const FIT_PADDING = 48;
  */
 const TOOL = "h-auto w-9 flex-1";
 const TERRAIN = { exaggeration: 1.25, source: "dem" } as const;
+/**
+ * The tour hatch, in multiples of the line width – so on a band this wide the
+ * numbers have to be well below 1 to read as a texture at all. Widen the band
+ * and the dashes lengthen with it unless these come down to match.
+ */
+const DASH = [0.45, 0.35];
+/**
+ * The layers that answer hover and click, most specific first. The order is
+ * spelled out rather than taken from the style, because the two disagree: the
+ * tour band lies *under* the ascents but reaches past them, so a click inside
+ * it hits both – and the ascent is the more specific answer. A pass wins over
+ * a town, both win over an ascent, an ascent wins over the tour holding it.
+ */
+const HIT_LAYERS = ["pass-stars", "passes", "towns", "routes", "tours"];
 const DARK_QUERY = "(prefers-color-scheme: dark)";
 /** The first layer above the base stack: where the basemap's lines and labels go. */
 const ABOVE_BASE = `ov-${OVERLAYS[0].id}`;
@@ -326,6 +341,26 @@ const appLayers = (colors: Colors): LayerSpecification[] => {
     colors.closed,
     "#888888",
   ] as never;
+  /**
+   * A pixel width for the tour lines: it grows with the zoom and again while
+   * the tour is selected. The zoom interpolation has to sit at the very top of
+   * the expression – MapLibre accepts `["zoom"]` only as the input of the
+   * outermost stop function – so the selection case goes inside the stops
+   * rather than as a factor around them.
+   */
+  const tourWidth = (near: number, far: number) =>
+    [
+      "interpolate",
+      ["linear"],
+      ["zoom"],
+      6,
+      ["case", selected, near * 1.3, near],
+      13,
+      ["case", selected, far * 1.3, far],
+    ] as never;
+  // Wide enough to hold the widest ascent it can carry – a selected one, at 6
+  // – and still reach past it on both sides.
+  const tourLine = tourWidth(9, 12);
 
   return [
     // The area one town reaches, drawn while it is hovered: the hull over
@@ -348,34 +383,43 @@ const appLayers = (colors: Colors): LayerSpecification[] => {
       source: "reach",
       type: "line",
     },
-    {
-      id: "tours-casing",
-      layout: { "line-cap": "round", "line-join": "round" },
-      paint: {
-        "line-color": colors.paper,
-        "line-opacity": 0.55,
-        "line-width": 6,
-      },
-      source: "tours",
-      type: "line",
-    },
+    // A tour is the union of several ascents – the Sellaronda *is* its four
+    // passes – so it is drawn as what it is: a band wide enough to hold them,
+    // laid *under* the ascents so it reaches past them on both sides. What a
+    // tour contains is then read from the map rather than from the list.
+    //
+    // Translucent, so the hillshade and the roads keep showing through a band
+    // that covers a lot of ground, and hatched rather than solid, so it is
+    // told apart from an ascent by texture and not only by weight – a tour is
+    // the looser of the two marks, which is the right order: the ascent is
+    // the rated thing. The hatch is short and tight on purpose; a wide line
+    // with long dashes reads as a chain of blocks rather than as a texture.
+    //
+    // `line-layer-opacity`, not `line-opacity`: the latter is applied per
+    // feature, so where a hairpin runs MapLibre's triangle strip over itself
+    // the overlap composites twice and shows as a blotch. The layer property
+    // flattens the whole layer to one surface first and composites that once,
+    // which is what makes a translucent band usable in switchbacks at all.
     {
       id: "tours",
-      layout: { "line-cap": "round", "line-join": "round" },
+      layout: { "line-cap": "butt", "line-join": "round" },
       paint: {
         "line-color": ["get", "color"],
-        "line-opacity": 0.85,
-        "line-width": ["case", selected, 5, 3],
+        "line-dasharray": DASH,
+        "line-layer-opacity": 0.62,
+        "line-width": tourLine,
       },
       source: "tours",
       type: "line",
     },
+    // The ascent, on top of the band that holds it: solid and opaque, because
+    // the status colour is the stronger signal and must not be tinted by the
+    // tour it belongs to.
     {
       id: "routes",
       layout: { "line-cap": "round", "line-join": "round" },
       paint: {
         "line-color": routeColor,
-        "line-opacity": ["case", selected, 1, 0.85],
         "line-width": ["case", selected, 6, 3.5],
       },
       source: "routes",
@@ -815,33 +859,51 @@ export const PassMap = ({
       closeOnClick: false,
       offset: 10,
     });
-    for (const layer of ["passes", "pass-stars", "routes", "tours", "towns"]) {
-      m.on("mouseenter", layer, (e: MapLayerMouseEvent) => {
-        m.getCanvas().style.cursor = "pointer";
-        const p = e.features?.[0]?.properties as
-          | Record<string, string>
-          | undefined;
-        if (!p) return;
-        popup.setLngLat(e.lngLat).setHTML(popupHtml(p)).addTo(m);
-      });
-      m.on("mousemove", layer, (e: MapLayerMouseEvent) =>
-        popup.setLngLat(e.lngLat),
-      );
-      m.on("mouseleave", layer, () => {
-        m.getCanvas().style.cursor = "";
+    // One query per pointer move instead of a handler per layer. A tour and
+    // the ascents it runs over answer for the same pixel, so per-layer
+    // `mouseenter`/`mouseleave` would let whichever fired last win and would
+    // clear the popup on leaving the ascent even though the pointer is still
+    // on the tour. One query, then `HIT_LAYERS` decides which hit counts.
+    const topmost = (e: MapMouseEvent) => {
+      const hits = new Map<string, Record<string, string>>();
+      for (const f of m.queryRenderedFeatures(e.point, { layers: HIT_LAYERS }))
+        if (!hits.has(f.layer.id))
+          hits.set(f.layer.id, f.properties as Record<string, string>);
+      const winner = HIT_LAYERS.find((id) => hits.has(id));
+      return winner ? hits.get(winner) : undefined;
+    };
+
+    // What the popup currently shows, so that moving along one line only
+    // moves it instead of writing its markup again on every event.
+    let shown: string | null = null;
+    m.on("mousemove", (e: MapMouseEvent) => {
+      const p = topmost(e);
+      m.getCanvas().style.cursor = p ? "pointer" : "";
+      if (!p) {
+        shown = null;
         popup.remove();
+        return;
+      }
+      popup.setLngLat(e.lngLat);
+      const key = `${p.kind}:${p.slug}`;
+      if (key !== shown) {
+        shown = key;
+        popup.setHTML(popupHtml(p)).addTo(m);
+      }
+    });
+    m.on("mouseout", () => {
+      m.getCanvas().style.cursor = "";
+      shown = null;
+      popup.remove();
+    });
+    m.on("click", (e: MapMouseEvent) => {
+      const p = topmost(e) as { kind: string; slug: string } | undefined;
+      if (!p) return;
+      onSelectRef.current({
+        kind: p.kind === "route" ? "pass" : (p.kind as Selection["kind"]),
+        slug: p.slug,
       });
-      m.on("click", layer, (e: MapLayerMouseEvent) => {
-        const p = e.features?.[0]?.properties as
-          | { kind: string; slug: string }
-          | undefined;
-        if (!p) return;
-        onSelectRef.current({
-          kind: p.kind === "route" ? "pass" : (p.kind as Selection["kind"]),
-          slug: p.slug,
-        });
-      });
-    }
+    });
 
     // Hovering a town also outlines what it reaches. Only on hover: selecting
     // one flies the camera in, and from inside the hull there is nothing to
@@ -995,8 +1057,7 @@ export const PassMap = ({
     if (!m || !ready) return;
     const visible = tours.filter((t) => t.visible).map((t) => t.slug);
     const filter = ["in", ["get", "slug"], ["literal", visible]] as never;
-    for (const layer of ["tours-casing", "tours", "tours-label"])
-      m.setFilter(layer, filter);
+    for (const layer of ["tours", "tours-label"]) m.setFilter(layer, filter);
     for (const t of tours)
       m.setFeatureState(
         { id: t.slug, source: "tours" },

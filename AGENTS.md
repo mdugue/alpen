@@ -170,6 +170,41 @@ friends do that better and the app links out to them.
   where a source or its caveat has to be named, one short sentence sits behind
   the `info` tooltip. A header never opens a dialog – the scales dialog belongs
   to the sidebar footer, which is where it stays.
+- **A tour holds its ascents; it does not sit beside them.** A tour _is_ the
+  union of several ascents – the Sellaronda is its four passes – so it is
+  drawn as what it is: a band wide enough to hold them, laid _under_ the
+  ascents so it reaches past them on both sides. What a tour contains is then
+  read from the map rather than from the list, which a mark running alongside
+  the ascents cannot say. The band is translucent, so the hillshade and the
+  roads keep showing through something that covers this much ground, and
+  hatched rather than solid, so it is told apart from an ascent by texture
+  and not only by weight – the looser of the two marks, which is the right
+  order, since the ascent is the rated thing and keeps the solid line and the
+  opaque status colour. `DASH` counts in multiples of the line width, so on a
+  band this wide the numbers have to be well below 1: widen the band and the
+  dashes lengthen with it unless they come down to match, and long dashes on
+  a wide line read as a chain of blocks rather than as a texture.
+- **Translucent lines need `line-layer-opacity`, not `line-opacity`.**
+  MapLibre draws a line as one triangle strip, so a bend tighter than the
+  line is wide runs the strip over itself. `line-opacity` is applied per
+  feature, so every such overlap composites twice and a switchback fills with
+  blotches; `line-layer-opacity` (MapLibre GL JS 6+) flattens the layer to a
+  single surface first and composites that once, which is what makes a
+  translucent line usable in a hairpin at all. It is data-constant – zoom and
+  global state only, no feature state – so anything per-feature has to be
+  carried by width or colour instead. `line-gap-width` has a second, purely
+  geometric failure in the same bends, folding its inner side inside out;
+  there is no property that fixes that one, so offset lines stay out.
+  Widths interpolate with the zoom and grow again for the selected tour;
+  because a zoom expression may only be the input of the _outermost_ stop
+  function, the selection case goes inside the stops (`tourWidth`). Hover and
+  click are one `queryRenderedFeatures` over `HIT_LAYERS` rather than a
+  handler per layer: several layers answer for the same pixel now, and
+  `HIT_LAYERS` spells the priority out rather than taking it from the style,
+  because the two disagree – the tour band lies _under_ the ascents but
+  reaches past them, so a click inside it hits both, and the ascent is the
+  more specific answer.
+
 - **Colours only via tokens.** MapLibre cannot read CSS variables;
   `pass-map.tsx` reads them once via `getComputedStyle` (`readColors`). Add
   new map colours there rather than hard-coding them.
@@ -209,8 +244,8 @@ friends do that better and the app links out to them.
   the hillshade from the Terrarium DEM, the basemap's lines and labels
   (rivers, borders, roads from zoom 6 to minor roads at 11, road names at 12,
   lakes, peaks with elevation at 10, places), the raster overlays, then the
-  app's own layers (the hovered town's reach, tours, ascents, towns, passes,
-  labels, profile cursor). MapLibre places labels from the top of the style
+  app's own layers (the hovered town's reach, the tour bands, the ascents on
+  top of them, towns, passes, labels, profile cursor). MapLibre places labels from the top of the style
   down, so that order is also their collision priority: a pass label wins
   against a town name, and both win against the basemap's own place names.
   Roads are thin and neutral and there are no POIs: the mountain roads that
