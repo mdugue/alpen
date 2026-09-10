@@ -238,3 +238,73 @@ test(
     ),
   TIMEOUT,
 );
+
+/**
+ * The map's hit areas: what is drawn is a few pixels wide, what answers the
+ * pointer is the transparent layer over it – and the name next to a mark
+ * counts as part of the mark.
+ */
+const HIT_POINTS = `(() => {
+  const m = window.__alpen?.map;
+  if (!m) return null;
+  const feature = m
+    .queryRenderedFeatures({ layers: ["passes-hit"] })
+    .find((f) => f.properties.slug === "col-du-galibier");
+  if (!feature) return null;
+  const c = m.project(feature.geometry.coordinates);
+  const labels = ["pass-label-5", "pass-label-4", "pass-label-3"]
+    .filter((id) => m.getLayer(id));
+  // A point that only the name answers: on the label, clear of every mark.
+  const onlyLabel = (x, y) =>
+    m.queryRenderedFeatures([x, y], { layers: labels })
+      .some((f) => f.properties.slug === "col-du-galibier") &&
+    m.queryRenderedFeatures([x, y], { layers: ["passes-hit", "towns-hit"] })
+      .length === 0;
+  let label = null;
+  for (let d = 16; d <= 200 && !label; d += 4)
+    for (const [dx, dy] of [[d, 0], [-d, 0], [0, d], [0, -d]])
+      if (!label && onlyLabel(c.x + dx, c.y + dy))
+        label = { x: c.x + dx, y: c.y + dy };
+  return { dot: { x: c.x, y: c.y }, label, moving: m.isMoving() };
+})()`;
+
+test(
+  "10 · a pass answers beside its dot and on its name",
+  () =>
+    // A camera, no selection: nothing floats over the map and nothing flies.
+    withPage(
+      app,
+      "map-hit-areas",
+      { hash: "#z=12&c=45.064,6.408" },
+      async (page) => {
+        type Points = {
+          dot: { x: number; y: number };
+          label: { x: number; y: number } | null;
+          moving: boolean;
+        } | null;
+        const points = async () => {
+          let p: Points = null;
+          await waitUntil(async () => {
+            p = await page.evaluate<Points>(HIT_POINTS);
+            return !!p && !p.moving && !!p.label;
+          }, "the Galibier drawn with its name, on a map at rest");
+          return p!;
+        };
+
+        // Beside the dot: the drawn circle ends at 13 px, the hit area at 19.
+        const beside = await points();
+        await page.clickAt(beside.dot.x + 16, beside.dot.y);
+        await page.waitFor("#detail-title");
+        expect(await page.text("#detail-title")).toBe("Col du Galibier");
+
+        // And on the name, which is a target of its own.
+        await page.press("Escape");
+        await page.waitForGone("#detail-title");
+        const named = await points();
+        await page.clickAt(named.label!.x, named.label!.y);
+        await page.waitFor("#detail-title");
+        expect(await page.text("#detail-title")).toBe("Col du Galibier");
+      },
+    ),
+  TIMEOUT,
+);

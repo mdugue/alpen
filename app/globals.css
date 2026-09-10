@@ -182,8 +182,13 @@
 .maplibregl-ctrl-group button + button {
   @apply border-border! border-t;
 }
+/*
+ * The hover popup is a label, not a target: it must never take the pointer off
+ * the mark it describes, or hovering a mark near the edge of the popup would
+ * flicker. Unlayered like the rule it overrides in maplibre-gl.css.
+ */
 .maplibregl-popup-content {
-  @apply bg-popover! text-popover-foreground! border-border! rounded-lg! border px-3! py-2! text-sm! shadow-md!;
+  @apply bg-popover! text-popover-foreground! border-border! pointer-events-none! rounded-lg! border px-3! py-2! text-sm! shadow-md!;
 }
 .maplibregl-popup-tip {
   @apply border-t-popover! border-b-popover!;

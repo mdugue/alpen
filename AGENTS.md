@@ -197,13 +197,26 @@ friends do that better and the app links out to them.
   there is no property that fixes that one, so offset lines stay out.
   Widths interpolate with the zoom and grow again for the selected tour;
   because a zoom expression may only be the input of the _outermost_ stop
-  function, the selection case goes inside the stops (`tourWidth`). Hover and
-  click are one `queryRenderedFeatures` over `HIT_LAYERS` rather than a
-  handler per layer: several layers answer for the same pixel now, and
-  `HIT_LAYERS` spells the priority out rather than taking it from the style,
-  because the two disagree – the tour band lies _under_ the ascents but
-  reaches past them, so a click inside it hits both, and the ascent is the
-  more specific answer.
+  function, the selection case goes inside the stops (`tourWidth`) – the same
+  reason the pass hit radius is one `interpolate` with a `max` per stop
+  rather than a `max` around one.
+- **What answers the pointer is not what is drawn.** A pass dot is a few
+  pixels across and an ascent line 3.5 wide, so every kind carries a
+  transparent hit layer over its mark (`*-hit` in `appLayers`): a disc per
+  point, a wide line per route, sized from the pointer – about 44 px on touch,
+  half of that with a mouse – and never narrower than the mark plus a margin.
+  A name is part of its mark: the label layers answer the pointer too. Because
+  several layers answer for the same pixel, there is no handler per layer:
+  `pickAt` runs one `queryRenderedFeatures` over all of them and decides
+  which single entity a hover or a click means. `HIT_GROUPS` spells the
+  priority out rather than taking it from the style, because the two disagree
+  – marks before names before lines, and the tour band lies _under_ the
+  ascents but reaches past them, so a click inside it hits both and the ascent
+  is the more specific answer – and within a group the mark nearest the
+  pointer wins. A hit layer needs the same filter as the layer it widens, or a
+  hidden tour still answers. The hover popup is a label, not a target: it is
+  suppressed on a coarse pointer and click-through everywhere
+  (`app/globals.css`).
 
 - **Colours only via tokens.** MapLibre cannot read CSS variables;
   `pass-map.tsx` reads them once via `getComputedStyle` (`readColors`). Add
