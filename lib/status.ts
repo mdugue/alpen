@@ -95,15 +95,16 @@ export const GRADE_LABEL: Record<Grade, string> = {
 
 /**
  * One plain sentence per grade – what the colour says, in the words a rider
- * would use. The strip's cell tooltip puts the grade's label above it, and
- * for a limited cell names the caveat itself (`REASON_PHRASE`) instead of
- * the list. The rules behind it are in docs/scales.md and the scales dialog.
+ * would use. These are the general sentences for the legend; a cell in the
+ * strip knows its half-month and says the specific thing instead
+ * (`cellHint`): which caveat a limited cell has, and why a good cell is not
+ * the best time. The rules behind it are in docs/scales.md and the dialog.
  */
 export const GRADE_HINT: Record<Grade, string> = {
   best: "Die verlässlichsten Wochen des Jahres für diesen Pass: Nichts spricht gegen die Fahrt, und Schnee ist selten.",
   closed:
     "Die Straße ist in dieser Zeit meist gesperrt, in der Regel wegen der Wintersperre.",
-  good: "Nichts spricht gegen die Fahrt. Die beste Zeit ist nur noch verlässlicher: Sie hängt länger am Stück zusammen, oder hier schneit es gelegentlich.",
+  good: "Nichts spricht gegen die Fahrt. Nur ist es entweder ein kürzerer Abschnitt als die beste Zeit, oder es schneit gelegentlich.",
   limited:
     "Fahrbar, aber mit einem Haken: Hitze im Tal, viel Regen, kurze Tage, eine kalte Abfahrt, Schnee oder Frost.",
 };
@@ -122,11 +123,28 @@ export const REASON_PHRASE: Record<StatusReason, string> = {
     "der Rand des Öffnungsfensters, Öffnung und Sperrung verschieben sich je nach Winter",
 };
 
-/** The sentence for one cell: the grade's hint, with the caveat named for a limited cell. */
-export const cellHint = (grade: Grade, reason?: StatusReason | null): string =>
-  grade === "limited" && reason
-    ? `Fahrbar, aber mit einem Haken: ${REASON_PHRASE[reason]}.`
-    : GRADE_HINT[grade];
+/** What one cell of the strip knows about itself beyond its grade. */
+export interface CellNote {
+  /** The first reason of a limited cell. */
+  reason: StatusReason | null;
+  /** A good cell with 10–19 % snow days: that, not the run length, keeps it from the best time. */
+  snowy: boolean;
+}
+
+/**
+ * The sentence for one cell: the specific thing where the cell knows it – the
+ * caveat of a limited cell, the reason a good cell is not the best time – and
+ * the general sentence otherwise.
+ */
+export const cellHint = (grade: Grade, note?: CellNote | null): string => {
+  if (grade === "limited" && note?.reason)
+    return `Fahrbar, aber mit einem Haken: ${REASON_PHRASE[note.reason]}.`;
+  if (grade === "good" && note)
+    return note.snowy
+      ? "Nichts spricht gegen die Fahrt. Jedoch schneit es gelegentlich."
+      : "Nichts spricht gegen die Fahrt. Nur ist es ein kürzerer Abschnitt als die beste Zeit.";
+  return GRADE_HINT[grade];
+};
 
 /** The order the legend lists the grades in: best first. */
 export const GRADE_ORDER: Grade[] = ["best", "good", "limited", "closed"];
@@ -515,14 +533,15 @@ export const passGrades = (
   );
 };
 
-/** The first reason of every half-month, for the strip's cell tooltips; null where nothing fired. */
-export const passReasons = (
+/** What every half-month's cell says about itself, for the strip's tooltips. */
+export const passCellNotes = (
   pass: Pass,
   signals?: PassSignals | null,
-): (StatusReason | null)[] =>
-  PERIODS.map(
-    (t) => passVerdict(pass, t, inputAt(signals, t)).reasons[0] ?? null,
-  );
+): CellNote[] =>
+  PERIODS.map((t, i) => ({
+    reason: passVerdict(pass, t, inputAt(signals, t)).reasons[0] ?? null,
+    snowy: (signals?.climate?.[i]?.snowPct ?? 0) >= SNOW_BEST_PCT,
+  }));
 
 /** The 24 grades of one tour: per half-month the worst grade of its passes. */
 export const tourGrades = (

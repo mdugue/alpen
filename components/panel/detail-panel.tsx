@@ -41,7 +41,7 @@ import {
   indexBySlug,
   inputAt,
   passGrades,
-  passReasons,
+  passCellNotes,
   passStatus,
   passVerdict,
   periodIndex,
@@ -278,7 +278,7 @@ const PassDetail = (props: Props & { pass: Pass }) => {
         )}
         <SeasonStrip
           grades={grades}
-          reasons={passReasons(pass, signals)}
+          notes={passCellNotes(pass, signals)}
           current={props.period}
           size="panel"
         />

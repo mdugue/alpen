@@ -97,10 +97,10 @@ The ladder, from what it is on the road: closed is categorically different
 (binary and known), the three rungs above it are one gradual scale (Principle 3):
 
 ```
-██  beste Zeit     green          nothing limits, and it is the pass's best window
-██  gut            yellow-green   rideable, no caveat worth a word
-██  eingeschränkt  orange         one word: Hitze · nass · kurze Tage · kalte Abfahrt · Schnee · Frost · Höhe · Randzeit
-██  oft gesperrt   red            road closed, from the opening window only
+██  beste Zeit     deep green     nothing limits, and it is the pass's best window
+▓▓  gut            light yellow   rideable, no caveat worth a word
+▒▒  eingeschränkt  orange         one word: Hitze · nass · kurze Tage · kalte Abfahrt · Schnee · Frost · Höhe · Randzeit
+░░  oft gesperrt   hollow         road closed, from the opening window only
 ```
 
 Mont Ventoux, before and after (Bédoin start at 331 m, 31 °C in the valley

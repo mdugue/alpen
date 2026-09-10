@@ -6,10 +6,13 @@ import passesJson from "@/data/passes.json" with { type: "json" };
 import { valleyElevations } from "@/lib/profile";
 import {
   bestPeriods,
+  cellHint,
   climateBucket,
+  GRADE_HINT,
   indexBySlug,
   inputAt,
   isPeriod,
+  passCellNotes,
   passGrades,
   passSeason,
   passStatus,
@@ -396,6 +399,29 @@ describe("the summer axis (plan 13)", () => {
     expect(g[periodIndex(8)]).toBe("best");
     expect(g[periodIndex(7)]).toBe("limited");
     expect(g[periodIndex(6)]).toBe("closed");
+  });
+});
+
+describe("cell hints", () => {
+  test("a limited cell names its caveat, a good cell says why it is not the best time", () => {
+    expect(cellHint("limited", { reason: "heat", snowy: false })).toBe(
+      "Fahrbar, aber mit einem Haken: Hitze im Tal.",
+    );
+    expect(cellHint("good", { reason: null, snowy: true })).toBe(
+      "Nichts spricht gegen die Fahrt. Jedoch schneit es gelegentlich.",
+    );
+    expect(cellHint("good", { reason: null, snowy: false })).toBe(
+      "Nichts spricht gegen die Fahrt. Nur ist es ein kürzerer Abschnitt als die beste Zeit.",
+    );
+    // Without a note the general sentence stands.
+    expect(cellHint("best")).toBe(GRADE_HINT.best);
+    expect(cellHint("closed")).toBe(GRADE_HINT.closed);
+    expect(
+      passCellNotes(
+        bySlug("mont-ventoux"),
+        signalsOf(signals, "mont-ventoux"),
+      )[13],
+    ).toMatchObject({ reason: "heat" });
   });
 });
 

@@ -12,7 +12,7 @@ import {
   PERIODS,
   seasonSummary,
 } from "@/lib/status";
-import type { Grade, StatusReason } from "@/lib/status";
+import type { CellNote, Grade } from "@/lib/status";
 import type { Period } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
@@ -35,15 +35,15 @@ export const CELL: Record<Grade, string> = {
 
 export const SeasonStrip = ({
   grades,
-  reasons,
+  notes,
   current,
   size = "row",
   className,
 }: {
   /** 24 grades, index 0 = early January. */
   grades: Grade[];
-  /** The first reason per half-month, so a limited cell can name its caveat. */
-  reasons?: (StatusReason | null)[];
+  /** What each cell knows beyond its grade, so its tooltip can be specific. */
+  notes?: CellNote[];
   /** Outlined half-month; usually the selected period. */
   current?: Period;
   /** `row`: 96 px, no labels. `panel`: full width with month initials and cell tooltips. */
@@ -89,7 +89,7 @@ export const SeasonStrip = ({
                   <p className="font-semibold">
                     {periodLabel(PERIODS[i]!)} · {GRADE_LABEL[grade]}
                   </p>
-                  <p className="opacity-80">{cellHint(grade, reasons?.[i])}</p>
+                  <p className="opacity-80">{cellHint(grade, notes?.[i])}</p>
                 </div>
               </TooltipContent>
             </Tooltip>
