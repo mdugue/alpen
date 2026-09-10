@@ -99,11 +99,12 @@ export const GRADE_LABEL: Record<Grade, string> = {
  * docs/scales.md and the scales dialog.
  */
 export const GRADE_HINT: Record<Grade, string> = {
-  best: "Der längste Abschnitt, in dem nichts dagegenspricht und es kaum schneit.",
-  closed: "Die Straße ist in dieser Zeit meist gesperrt (Wintersperre).",
-  good: "Nichts spricht dagegen. Ohne Strich: ein kürzerer Abschnitt, oder es schneit ab und zu.",
+  best: "Der Strich unter grünen Zellen. Die verlässlichsten Wochen des Jahres für diesen Pass: Nichts spricht gegen die Fahrt, und Schnee ist selten. Wer frei wählen kann, nimmt diese.",
+  closed:
+    "Die Straße ist in dieser Zeit meist gesperrt, in der Regel wegen der Wintersperre.",
+  good: "Grün ohne Strich. Nichts spricht gegen die Fahrt. Es zählt nur nicht zur besten Zeit, weil das Fenster kürzer ist oder es gelegentlich schneien kann.",
   limited:
-    "Ein Vorbehalt: Hitze im Tal, viel Regen, kurze Tage, kalte Abfahrt, Schnee oder Frost. Das Wort nennt den wichtigsten.",
+    "Fahrbar, aber mit einem Haken: Hitze im Tal, viel Regen, kurze Tage, eine kalte Abfahrt, Schnee oder Frost. Der wichtigste Haken steht als Wort daneben, etwa „eingeschränkt: Hitze“.",
 };
 
 /** The order the legend lists the grades in: best first. */
