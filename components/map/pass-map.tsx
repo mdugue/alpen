@@ -132,11 +132,11 @@ const TERRAIN = { exaggeration: 1.25, source: "dem" } as const;
 /**
  * The layers that answer hover and click, queried in one go. The order the
  * query returns them in is the style's own, top down – so a pass wins over a
- * town, both win over an ascent, and an ascent wins over the tour corridor it
- * runs inside. `tours-band` stands in for the whole corridor: it is the widest
- * of its three layers, so a click anywhere in the channel finds the tour.
+ * town, both win over an ascent, and an ascent wins over the tour it lies on.
+ * The tour answers through its own line rather than its casing, so the rim
+ * that reaches past the ascent is exactly what is clickable.
  */
-const HIT_LAYERS = ["passes", "pass-stars", "towns", "routes", "tours-band"];
+const HIT_LAYERS = ["passes", "pass-stars", "towns", "routes", "tours"];
 const DARK_QUERY = "(prefers-color-scheme: dark)";
 /** The first layer above the base stack: where the basemap's lines and labels go. */
 const ABOVE_BASE = `ov-${OVERLAYS[0].id}`;
@@ -336,28 +336,27 @@ const appLayers = (colors: Colors): LayerSpecification[] => {
     "#888888",
   ] as never;
   /**
-   * A pixel width for the tour corridor: it grows with the zoom and again
-   * while the tour is selected. The zoom interpolation has to sit at the very
-   * top of the expression – MapLibre accepts `["zoom"]` only as the input of
-   * the outermost stop function – so the selection case goes inside the stops
+   * A pixel width for the tour lines: it grows with the zoom and again while
+   * the tour is selected. The zoom interpolation has to sit at the very top of
+   * the expression – MapLibre accepts `["zoom"]` only as the input of the
+   * outermost stop function – so the selection case goes inside the stops
    * rather than as a factor around them.
    */
-  const corridor = (near: number, far: number, grow = 1.4) =>
+  const tourWidth = (near: number, far: number) =>
     [
       "interpolate",
       ["linear"],
       ["zoom"],
       6,
-      ["case", selected, near * grow, near],
+      ["case", selected, near * 1.4, near],
       13,
-      ["case", selected, far * grow, far],
+      ["case", selected, far * 1.4, far],
     ] as never;
-  // The channel the ascents ride in, the weight of the lines flanking it,
-  // and the full width including those lines.
-  const gap = corridor(7, 14);
-  const edge = corridor(1.4, 2.2, 1.5);
-  const band = corridor(9.8, 18.4);
-  const casing = corridor(3.4, 4.2, 1.5);
+  // Wide enough that the rim survives the *widest* ascent it can carry – a
+  // selected one, at 6 – and no wider: a wide line folds over itself in a
+  // hairpin, and the wider it is the further the fold reaches.
+  const tourLine = tourWidth(7, 10);
+  const tourCasing = tourWidth(10, 13);
 
   return [
     // The area one town reaches, drawn while it is hovered: the hull over
@@ -381,54 +380,35 @@ const appLayers = (colors: Colors): LayerSpecification[] => {
       type: "line",
     },
     // A tour is the union of several ascents – the Sellaronda *is* its four
-    // passes – so drawn as a line of the same weight it and the ascents cover
-    // each other, and where the two routings differ by a few metres they
-    // fight. The tour is therefore not a line but a corridor: a wide, softly
-    // tinted band whose two edges are drawn, wide enough for the ascents to
-    // ride inside it. Both stay legible at once, and which pass belongs to
-    // the tour is read from the map rather than from the list.
+    // passes – so as a line of the same weight it and the ascents covered each
+    // other, and where the two routings differ by a few metres they fought.
+    // The tour is therefore drawn wider than the ascent and underneath it, so
+    // that it survives as a rim to either side; which pass belongs to the tour
+    // is then read from the map rather than from the list.
+    //
+    // Everything here is opaque, and no line is offset. Both are what a
+    // hairpin punishes: MapLibre draws a line as one triangle strip, so in a
+    // bend tighter than the line is wide the strip runs over itself – with a
+    // translucent colour every such overlap composites twice and shows as a
+    // blotch, and an offset line (`line-gap-width`) folds its inner side
+    // inside out altogether. Opaque, unoffset and only as wide as it needs to
+    // be, the overlap is invisible.
     {
-      // The interior tint. A stretch with no ascent under it still reads as a
-      // ribbon in the tour's colour, and where an ascent runs it shows to
-      // either side of it.
-      id: "tours-band",
-      layout: { "line-cap": "round", "line-join": "round" },
-      paint: {
-        "line-color": ["get", "color"],
-        "line-opacity": ["case", selected, 0.24, 0.16],
-        "line-width": band,
-      },
-      source: "tours",
-      type: "line",
-    },
-    {
-      // Paper outside the two edges, so the corridor keeps its shape over the
-      // hillshade. Same gap as the edges: it shows only where they end.
       id: "tours-casing",
       layout: { "line-cap": "round", "line-join": "round" },
-      paint: {
-        "line-color": colors.paper,
-        "line-gap-width": gap,
-        "line-opacity": 0.55,
-        "line-width": casing,
-      },
+      paint: { "line-color": colors.paper, "line-width": tourCasing },
       source: "tours",
       type: "line",
     },
     {
-      id: "tours-edge",
+      id: "tours",
       layout: { "line-cap": "round", "line-join": "round" },
-      paint: {
-        "line-color": ["get", "color"],
-        "line-gap-width": gap,
-        "line-opacity": ["case", selected, 1, 0.9],
-        "line-width": edge,
-      },
+      paint: { "line-color": ["get", "color"], "line-width": tourLine },
       source: "tours",
       type: "line",
     },
-    // Inside the corridor, and opaque: the status colour is the stronger
-    // signal of the two and must not be tinted by the tour it lies in.
+    // On top of the tour, and opaque: the status colour is the stronger signal
+    // of the two and must not be tinted by the tour it lies in.
     {
       id: "routes",
       layout: { "line-cap": "round", "line-join": "round" },
@@ -880,7 +860,7 @@ export const PassMap = ({
     // ascent even though the pointer is still in the corridor. The query
     // returns the topmost first, which is the priority the style already
     // states: a pass beats a town, both beat an ascent, an ascent beats the
-    // corridor it lies in.
+    // tour it lies on.
     const topmost = (e: MapMouseEvent) =>
       m.queryRenderedFeatures(e.point, { layers: HIT_LAYERS })[0]
         ?.properties as Record<string, string> | undefined;
@@ -1069,12 +1049,7 @@ export const PassMap = ({
     if (!m || !ready) return;
     const visible = tours.filter((t) => t.visible).map((t) => t.slug);
     const filter = ["in", ["get", "slug"], ["literal", visible]] as never;
-    for (const layer of [
-      "tours-band",
-      "tours-casing",
-      "tours-edge",
-      "tours-label",
-    ])
+    for (const layer of ["tours-casing", "tours", "tours-label"])
       m.setFilter(layer, filter);
     for (const t of tours)
       m.setFeatureState(
