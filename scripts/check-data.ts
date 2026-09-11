@@ -162,25 +162,66 @@ const dupes = (list: { slug: string }[], what: string) => {
   }
 };
 
-/** The DEM height at the pass point, if it was read at the current coordinate. */
+/**
+ * The marker in the words of the type, because a warning that names the wrong
+ * thing sends the curator looking for a mistake the entry cannot have. Three
+ * kinds, not two:
+ *
+ * - a **pass** is a saddle, usually with a `mountain_pass` node in OSM, and
+ *   its rides climb to it from both sides;
+ * - a **spur** has no saddle at all – it ends where the asphalt does, which
+ *   this codebase calls the Scheitel, and the way down is the way up again;
+ * - a **traverse** aims at no high point whatsoever. Its marker is a point
+ *   somewhere along the road and its rides are stretches across, not climbs.
+ */
+const MARKER_WORDS = {
+  pass: {
+    coord: "Passkoordinate",
+    height: "Gipfelhöhe",
+    marker: "Passpunkt",
+    rides: "Auffahrten",
+  },
+  spur: {
+    coord: "Scheitelkoordinate",
+    height: "Scheitelhöhe",
+    marker: "Scheitelpunkt",
+    rides: "Auffahrten",
+  },
+  traverse: {
+    coord: "Markerkoordinate",
+    height: "Markerhöhe",
+    marker: "Markerpunkt",
+    rides: "Strecken",
+  },
+} as const;
+
+const markerWords = (type: Pass["type"]) =>
+  isTraverse(type)
+    ? MARKER_WORDS.traverse
+    : type === "spur"
+      ? MARKER_WORDS.spur
+      : MARKER_WORDS.pass;
+
+/** The DEM height at the marker, if it was read at the current coordinate. */
 const summitWarnings = (p: Pass): string[] => {
+  const w = markerWords(p.type);
   const summit = summits?.[p.slug];
   if (summit === undefined)
-    return [`${p.slug}: Gipfelhöhe ungeprüft (bun run data:build)`];
+    return [`${p.slug}: ${w.height} ungeprüft (bun run data:build)`];
   if (summit.lat !== p.lat || summit.lon !== p.lon)
     return [
-      `${p.slug}: Gipfelhöhe ungeprüft – Passkoordinate wurde verschoben (bun run data:build)`,
+      `${p.slug}: ${w.height} ungeprüft – ${w.coord} wurde verschoben (bun run data:build)`,
     ];
-  const out = checkSummit(summit.dem, p.elevation).map(
+  const out = checkSummit(summit.dem, p.elevation, w.marker).map(
     (r) =>
-      `${p.slug}: ${r} – Passkoordinate prüfen (DEM ${summit.dem} m, angegeben ${p.elevation} m); die Auffahrten werden bis dahin nicht geroutet (bun run data:locate ${p.slug})`,
+      `${p.slug}: ${r} – ${w.coord} prüfen (DEM ${summit.dem} m, angegeben ${p.elevation} m); die ${w.rides} werden bis dahin nicht geroutet (bun run data:locate ${p.slug})`,
   );
   if (summit.roadDist === undefined)
     out.push(`${p.slug}: Straßenabstand ungeprüft (bun run data:build)`);
   out.push(
-    ...checkRoad(summit.roadDist).map(
+    ...checkRoad(summit.roadDist, w.marker).map(
       (r) =>
-        `${p.slug}: ${r} – Passkoordinate auf die Straße legen; die Auffahrten werden bis dahin nicht geroutet (bun run data:locate ${p.slug})`,
+        `${p.slug}: ${r} – ${w.coord} auf die Straße legen; die ${w.rides} werden bis dahin nicht geroutet (bun run data:locate ${p.slug})`,
     ),
   );
   return out;

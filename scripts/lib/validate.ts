@@ -237,27 +237,42 @@ export const checkRoadAscent = (
     ? checkTour(metrics as TourMetrics, check as TourCheck)
     : checkAscent(metrics as AscentMetrics, check as AscentCheck);
 
-/** DEM height at the pass coordinate vs. the stated elevation. */
-export const checkSummit = (dem: number, elevation: number): string[] => {
+/**
+ * What the entry's marker is called in a finding. A `pass` and a `spur` put
+ * theirs on a saddle or a summit; the traverse types put theirs somewhere
+ * along the road, and calling that a `Passpunkt` names a thing the entry does
+ * not have. The caller knows the type, this module does not – it measures.
+ */
+const MARKER = "Passpunkt";
+
+/** DEM height at the marker vs. the stated elevation. */
+export const checkSummit = (
+  dem: number,
+  elevation: number,
+  marker = MARKER,
+): string[] => {
   const d = Math.round(dem - elevation);
   return Math.abs(d) > LIMITS.summit.maxDelta
     ? [
-        `DEM-Höhe am Passpunkt weicht ${d > 0 ? "+" : ""}${d} m ab > ${LIMITS.summit.maxDelta} m`,
+        `DEM-Höhe am ${marker} weicht ${d > 0 ? "+" : ""}${d} m ab > ${LIMITS.summit.maxDelta} m`,
       ]
     : [];
 };
 
 /**
- * Distance from the pass coordinate to the nearest road. `null` means no road
- * within the search radius at all; `undefined` means not measured yet, which
- * is not a finding.
+ * Distance from the marker to the nearest road. `null` means no road within
+ * the search radius at all; `undefined` means not measured yet, which is not
+ * a finding.
  */
-export const checkRoad = (roadDist: number | null | undefined): string[] => {
+export const checkRoad = (
+  roadDist: number | null | undefined,
+  marker = MARKER,
+): string[] => {
   if (roadDist === undefined) return [];
-  if (roadDist === null) return ["keine Straße in der Nähe des Passpunkts"];
+  if (roadDist === null) return [`keine Straße in der Nähe des ${marker}s`];
   return roadDist > LIMITS.summit.maxRoadDist
     ? [
-        `Passpunkt ${fmtKm(roadDist)} von der nächsten Straße entfernt > ${fmtKm(LIMITS.summit.maxRoadDist)}`,
+        `${marker} ${fmtKm(roadDist)} von der nächsten Straße entfernt > ${fmtKm(LIMITS.summit.maxRoadDist)}`,
       ]
     : [];
 };
