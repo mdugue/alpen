@@ -172,8 +172,10 @@ friends do that better and the app links out to them.
   pass looked at, a new section opens by itself, and the next visit starts
   unfolded again. A section title says what the block is and nothing else;
   where a source or its caveat has to be named, one short sentence sits behind
-  the `info` tooltip. A header never opens a dialog – the scales dialog belongs
-  to the sidebar footer, which is where it stays.
+  the `info` popover, opened by tap or click – a tooltip needs hover, which a
+  phone cannot give it, and the detail panel is where a phone reaches this app
+  most. A header never opens a dialog – the scales dialog belongs to the
+  sidebar footer, which is where it stays.
 - **A tour holds its ascents; it does not sit beside them.** A tour _is_ the
   union of several ascents – the Sellaronda is its four passes – so it is
   drawn as what it is: a band wide enough to hold them, laid _under_ the
