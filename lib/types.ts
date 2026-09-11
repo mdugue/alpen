@@ -26,6 +26,8 @@ export type Pass = z.infer<typeof S.Pass>;
 export type Tour = z.infer<typeof S.Tour>;
 export type Town = z.infer<typeof S.Town>;
 export type TownTag = z.infer<typeof S.TownTag>;
+/** An editorial label of either vocabulary; the two share no name. */
+export type Tag = TownTag | RoadTag;
 
 /** Output of scripts/build-data.ts. */
 export type RouteGeometry = z.infer<typeof S.RouteGeometry>;

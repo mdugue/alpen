@@ -94,12 +94,12 @@ import {
 import type { OverpassWay } from "./lib/locate";
 import {
   LIMITS,
+  ascentMetrics,
   checkRoad,
   checkRoadAscent,
   checkSummit,
   checkTour,
   geometryHash,
-  roadMetrics,
   tourMetrics,
   inputsHash,
   withProfile,
@@ -619,7 +619,7 @@ const routeJobs: RouteJob[] = [
 /** Measure a geometry; the profile fields stay null until one has been fetched. */
 const measure = (job: RouteJob, geom: RouteGeometry): RouteMetrics =>
   job.kind === "ascent"
-    ? roadMetrics(false, geom, job, job.summit)
+    ? ascentMetrics(geom, job.from, job.summit)
     : tourMetrics(geom, job.waypoints, job.statedKm);
 
 const judge = (job: RouteJob, m: RouteMetrics) =>

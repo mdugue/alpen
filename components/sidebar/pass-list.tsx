@@ -11,7 +11,7 @@ import {
   NativeSelectOption,
 } from "@/components/ui/native-select";
 import type { Filters, PassSort } from "@/lib/app-state";
-import { ROAD_TYPE } from "@/lib/regions";
+import { roadTypeWord } from "@/lib/regions";
 import { PASS_SORT_LABEL, PASS_SORTS, sortPassRows } from "@/lib/rows";
 import type { PassRow } from "@/lib/rows";
 import { fmtUnit, TOUCH_SELECT } from "@/lib/utils";
@@ -78,15 +78,9 @@ export const PassList = ({
               subtitle={
                 <TagLine
                   tags={pass.tags ?? []}
-                  lead={[
-                    // The common case needs no word: "Pass" on nine rows out
-                    // of ten says nothing the list does not already say.
-                    ...(pass.type === "pass"
-                      ? []
-                      : [ROAD_TYPE[pass.type].label]),
-                    pass.region,
-                    pass.country,
-                  ].join(" · ")}
+                  lead={[roadTypeWord(pass.type), pass.region, pass.country]
+                    .filter(Boolean)
+                    .join(" · ")}
                 />
               }
               favorite={favorite}

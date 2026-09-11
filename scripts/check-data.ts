@@ -23,6 +23,7 @@
 import type { z } from "zod";
 
 import { isTraverse, ROAD_TYPE } from "../lib/regions";
+import { ascentKey, tourKey } from "../lib/route-key";
 import { FILES } from "../lib/schema";
 import { fold } from "../lib/search";
 import type {
@@ -331,17 +332,15 @@ const checkFor = new Map<
   string,
   Pass["ascents"][number]["check"] | Tour["check"]
 >();
-for (const p of passes ?? [])
-  for (const [i, a] of p.ascents.entries())
-    checkFor.set(`${p.slug}:${i}`, a.check);
-for (const t of tours ?? []) checkFor.set(`tour:${t.slug}`, t.check);
-
 /** Ascent keys of the types whose rides are measured as a traverse, see `roadMetrics`. */
-const traverseKeys = new Set(
-  (passes ?? [])
-    .filter((p) => isTraverse(p.type))
-    .flatMap((p) => p.ascents.map((_, i) => `${p.slug}:${i}`)),
-);
+const traverseKeys = new Set<string>();
+for (const p of passes ?? [])
+  for (const [i, a] of p.ascents.entries()) {
+    const key = ascentKey(p.slug, i);
+    checkFor.set(key, a.check);
+    if (isTraverse(p.type)) traverseKeys.add(key);
+  }
+for (const t of tours ?? []) checkFor.set(tourKey(t.slug), t.check);
 
 const rejudge = (key: string, r: RouteRejection) =>
   key.startsWith("tour:")

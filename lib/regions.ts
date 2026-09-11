@@ -128,6 +128,14 @@ export const ROAD_TYPE: Record<RoadTypeName, { label: string; hint: string }> =
   };
 
 /**
+ * The type as a word where a list or a popup shows one, and nothing for a
+ * `pass`: "Pass" on nine entries out of ten says nothing the list does not
+ * already say. The detail panel stands alone and names every type.
+ */
+export const roadTypeWord = (type: RoadTypeName): string | undefined =>
+  type === "pass" ? undefined : ROAD_TYPE[type].label;
+
+/**
  * The types whose ride is the traverse itself rather than a climb to the
  * entry's marker. Their ascents carry `to` and `km` and are measured against
  * the tour limits – `minPeakAt` and "ends at the summit" are the right checks
@@ -210,8 +218,8 @@ export const ROAD_TAG: Record<RoadTagName, { label: string; hint: string }> = {
 /**
  * Both label vocabularies under one roof, for the three places that draw a tag
  * without caring which list it came from: the icon table, the badge and the
- * map's popup. The two vocabularies share no name, and `data:check` would say
- * so if they ever did.
+ * map's popup. The two vocabularies share no name; `lib/tag-icons.test.ts`
+ * fails if they ever did.
  */
 export const TAG_LABEL: Record<
   (typeof TOWN_TAGS)[number] | RoadTagName,
