@@ -125,7 +125,7 @@
   "turracher-hoehe": {"dem":1775,"lat":46.917,"lon":13.876,"roadDist":0.123},
   "umbrailpass": {"dem":2509,"lat":46.548,"lon":10.433,"roadDist":0.156},
   "val-thorens": {"dem":2321,"lat":45.2976,"lon":6.5826,"roadDist":0.003},
-  "vallee-de-l-ubaye": {"dem":1577,"lat":44.5362,"lon":6.7825,"roadDist":0},
+  "vallee-de-l-ubaye": {"dem":1671,"lat":44.5425,"lon":6.7892,"roadDist":0.006},
   "vallee-de-la-claree": {"dem":1619,"lat":45.0195,"lon":6.6068,"roadDist":0.002},
   "vallee-des-chapieux": {"dem":1435,"lat":45.6702,"lon":6.7704,"roadDist":0.004},
   "villacher-alpenstrasse": {"dem":945,"lat":46.598,"lon":13.792,"roadDist":0.119},
