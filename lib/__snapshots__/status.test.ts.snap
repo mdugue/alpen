@@ -2,7 +2,6 @@
 
 exports[`status matrix for all passes × 24 half-months 1`] = `
 [
-  "rrrrooooooooooooooorrrrr  cirque-du-fer-a-cheval",
   "rrrroooooooorrrrooorrrrr  corniche-sublime",
   "rrrroooooooorrrrooorrrrr  gorges-de-daluis",
   "rrrrooooooorrrrrooorrrrr  col-de-braus",
@@ -24,6 +23,7 @@ exports[`status matrix for all passes × 24 half-months 1`] = `
   "rrrrrrrorrrrrrroooorrrrr  passo-duran",
   "rrrrrrrrooooooooooorrrrr  orcieres-merlette",
   "rrrrrrrroooorrrrooorrrrr  gorges-du-guil",
+  "rrrrrrrrooroooooooorrrrr  cirque-du-fer-a-cheval",
   "rrrrrrrrroooooooooorrrrr  col-de-montgenevre",
   "rrrrrrrrroooooooooorrrrr  le-chazelet",
   "rrrrrrrrroooooooooorrrrr  les-arcs",
@@ -82,7 +82,6 @@ exports[`status matrix for all passes × 24 half-months 1`] = `
   "xxxxxxxxxrooooooooorxxxx  col-du-mont-cenis",
   "xxxxxxxxxrooooooooorxxxx  colle-san-carlo",
   "xxxxxxxxxrooooooooorxxxx  vallee-de-la-claree",
-  "xxxxxxxxxrooooooooorxxxx  vallee-des-chapieux",
   "xxxxxxxxxroooooooorrrxxx  jaufenpass",
   "xxxxxxxxxroooooooorrrxxx  lukmanierpass",
   "xxxxxxxxxroooooooorrxxxx  gotthard-tremola",
@@ -95,6 +94,7 @@ exports[`status matrix for all passes × 24 half-months 1`] = `
   "xxxxxxxxxrroooooooorxxxx  cormet-de-roselend",
   "xxxxxxxxxrroooooooorxxxx  hahntennjoch",
   "xxxxxxxxxrroooooooorxxxx  soelkpass",
+  "xxxxxxxxxrroooooooorxxxx  vallee-des-chapieux",
   "xxxxxxxxxrrooooooorrxxxx  albulapass",
   "xxxxxxxxxrrooooooorrxxxx  passo-san-bernardino",
   "xxxxxxxxxrroooooorrxxxxx  flueelapass",
