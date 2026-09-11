@@ -3453,5 +3453,106 @@
     "label": "Padola"
    }
   ]
+ },
+ {
+  "slug": "combe-laval",
+  "name": "Combe Laval",
+  "aliases": [
+   "Col de la Machine",
+   "Route de Combe Laval"
+  ],
+  "type": "pass",
+  "tags": [
+   "panorama",
+   "gorge",
+   "tunnels"
+  ],
+  "country": "FR",
+  "region": "Westalpen",
+  "lat": 44.9747,
+  "lon": 5.3348,
+  "elevation": 1011,
+  "classicAscent": "12,8 km, 6,0 % ab Saint-Jean-en-Royans",
+  "beauty": 5,
+  "fame": 3,
+  "difficulty": 3,
+  "traffic": 2,
+  "season": null,
+  "note": "Ganzjährig unterhalten, einzelne Sperrungen wegen Steinschlag. Die letzten Kilometer hängen als Galerie in der Wand des Cirque de Combe Laval, elf Tunnel inklusive; oben quert die Straße den Col de la Machine ins Hochtal von Lente.",
+  "quaeldich": "col-de-la-machine",
+  "ascents": [
+   {
+    "from": {
+     "lat": 45.0161,
+     "lon": 5.2908
+    },
+    "label": "Saint-Jean-en-Royans"
+   }
+  ]
+ },
+ {
+  "slug": "gorges-de-la-bourne",
+  "name": "Gorges de la Bourne",
+  "type": "balcony",
+  "tags": [
+   "gorge",
+   "tunnels"
+  ],
+  "country": "FR",
+  "region": "Westalpen",
+  "lat": 45.0613,
+  "lon": 5.4187,
+  "elevation": 434,
+  "classicAscent": "24,8 km, 3,2 % von Pont-en-Royans nach Villard-de-Lans",
+  "beauty": 5,
+  "fame": 3,
+  "difficulty": 2,
+  "traffic": 3,
+  "season": null,
+  "note": "Ganzjährig unterhalten, nach Regen und im Frühjahr zeitweise wegen Steinschlag gesperrt. Die Straße ist über Kilometer in die Schluchtwand gesprengt, stellenweise einspurig unter überhängendem Fels; sie ist zugleich die Hauptzufahrt nach Villard-de-Lans.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 45.0623,
+     "lon": 5.3426
+    },
+    "label": "Pont-en-Royans",
+    "to": {
+     "lat": 45.0706,
+     "lon": 5.5511
+    },
+    "km": 24.8
+   }
+  ]
+ },
+ {
+  "slug": "col-du-rousset",
+  "name": "Col du Rousset",
+  "type": "pass",
+  "tags": [
+   "tunnels"
+  ],
+  "country": "FR",
+  "region": "Westalpen",
+  "lat": 44.8381,
+  "lon": 5.3971,
+  "elevation": 1254,
+  "classicAscent": "20,9 km, 4,0 % ab Die",
+  "beauty": 4,
+  "fame": 3,
+  "difficulty": 3,
+  "traffic": 3,
+  "roadSummit": true,
+  "season": null,
+  "note": "Ganzjährig offen, die Straße erschließt die Skistation. Der Scheitel ist das Südportal des Tunnels; der eigentliche Sattel liegt 170 m höher über der Röhre. Hinter dem Tunnel öffnet sich das Hochplateau des Vercors.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 44.7533,
+     "lon": 5.3695
+    },
+    "label": "Die"
+   }
+  ]
  }
 ]

@@ -1,6 +1,6 @@
 # 14 · Road types and tags
 
-**Status:** in progress – steps 1–4 done, 5 (new entries) and 6 (rename) open ·
+**Status:** in progress – steps 1–4 done, 5 under way (batch 1: Vercors), 6 open ·
 **Effort:** L (M for code, the rest is curation) ·
 **Depends on:** 09 (schema), 05 (filters) · **Unblocks:** the sporting roads
 that are not passes – spur roads, balcony roads, high roads, quiet valleys –
@@ -394,6 +394,18 @@ mentions in `CLAUDE.md`/`AGENTS.md` go.
   says of itself. `carfree` in the existing data is therefore Grosse Scheidegg
   (all but the bus) and Colle del Nivolet (summer weekends), both of which say
   so in their own `note`.
+- **A DEM cannot see into a tunnel, and the `tunnels` roads pay for it.**
+  Found while routing the first batch: the Copernicus DEM samples the mountain
+  _above_ a tunnel, not the road inside it, so the elevation gain of a
+  tunnel-heavy road comes out far too high – Combe Laval measures 1 351 Hm
+  against 764 m of net climb, the Gorges de la Bourne 1 595 against 800. The
+  summit checks are unaffected (`topDelta` stayed inside 80 m for both), and
+  `avgGradient` is computed from start and top and is right (6,0 % and 3,2 %),
+  but `elevationGain` and `maxKmGradient` are not values to show for a road
+  carrying the `tunnels` tag. Options, none of them part of this plan: smooth
+  the series, derive the gain from the net climb for such roads, or say in the
+  panel that the profile reads the rock above a tunnel. The `tunnels` tag is at
+  least the flag that says which roads are affected.
 - **Fame filter and the new entries.** Most balcony and valley roads are
   unknown outside their region; "nur Klassiker" will hide them, which is
   correct. `beauty` is where they score, and the beauty filter is the one to
@@ -412,50 +424,50 @@ Vosges and Pyrenees (roadmap item 2) are left out.
 
 ### Westalpen · Frankreich
 
-| Name                                     | Typ     | Merkmale          | Höhe   | prüfen                                      |
-| ---------------------------------------- | ------- | ----------------- | ------ | ------------------------------------------- |
-| Col du Granon                            | spur    |                   | ~2 400 |                                             |
-| Val Thorens                              | spur    |                   | ~2 350 | Straßenende am Ort                          |
-| Les Arcs 2000 / Arc 1800                 | spur    |                   | ~2 100 |                                             |
-| Orcières-Merlette                        | spur    |                   | ~1 850 |                                             |
-| Pra-Loup                                 | spur    |                   | ~1 600 |                                             |
-| Col de Sarenne                           | pass    |                   | ~2 000 | Belag Ostseite                              |
-| Col du Télégraphe                        | pass    |                   | ~1 570 | eigener Eintrag oder Auffahrt des Galibier? |
-| Col du Chaussy (Lacets de Montvernier)   | pass    | hairpins          | ~1 530 |                                             |
-| Col du Mollard                           | pass    |                   | ~1 640 |                                             |
-| Col du Pré                               | pass    | reservoir         | ~1 700 |                                             |
-| Col des Aravis                           | pass    |                   | ~1 490 |                                             |
-| Col des Saisies                          | pass    |                   | ~1 650 |                                             |
-| Col de la Forclaz de Montmin             | pass    | panorama          | ~1 160 |                                             |
-| Semnoz (Crêt de Châtillon)               | pass    | panorama          | ~1 700 | Übergang oder Stich                         |
-| Col de Romme                             | pass    |                   | ~1 300 |                                             |
-| Col de la Ramaz                          | pass    |                   | ~1 620 |                                             |
-| Col d'Ornon                              | pass    |                   | ~1 370 |                                             |
-| Col du Noyer                             | pass    | panorama          | ~1 660 |                                             |
-| Col de Montgenèvre                       | pass    |                   | ~1 850 | ganzjährig                                  |
-| Col de Braus                             | pass    | hairpins          | ~1 000 |                                             |
-| Col de Vence                             | pass    |                   | ~960   | ganzjährig                                  |
-| Col de la Madone (Menton)                | pass    |                   | ~930   |                                             |
-| Col Saint-Martin                         | pass    |                   | ~1 500 |                                             |
-| Col de Tende (alte Straße)               | pass    | hairpins, surface | ~1 870 | Belag beider Seiten, Sperrungen             |
-| Col du Rousset                           | pass    | tunnels           | ~1 250 |                                             |
-| Col de la Machine / Combe Laval          | balcony | gorge, tunnels    | ~1 000 | Marker: Combe Laval-Aussicht                |
-| Gorges de la Bourne                      | balcony | gorge             | ~600   | zeitweise gesperrt (Steinschlag)            |
-| Route de Presles                         | balcony | gorge             | ~900   |                                             |
-| Gorges du Nan (Malleval)                 | balcony | gorge             | ~700   |                                             |
-| Gorges du Cians                          | balcony | gorge             | ~1 000 |                                             |
-| Gorges de Daluis                         | balcony | gorge             | ~800   |                                             |
-| Gorges du Verdon – Route des Crêtes      | balcony | gorge, panorama   | ~1 300 | Einbahnrunde                                |
-| Gorges du Verdon – Corniche Sublime      | balcony | gorge, panorama   | ~900   |                                             |
-| Gorges de la Nesque                      | balcony | gorge             | ~730   |                                             |
-| Gorges du Guil                           | balcony | gorge             | ~1 200 | oder Auffahrt Izoard/Agnel                  |
-| Plateau des Glières                      | plateau | panorama          | ~1 450 |                                             |
-| Plateau d'Emparis (Le Chazelet)          | plateau | panorama          | ~1 800 | Asphaltende                                 |
-| Vallée de la Clarée (Névache → Laval)    | valley  | carfree           | ~2 000 | Sperrtage mit Shuttle                       |
-| Vallée du Vénéon → La Bérarde            | valley  |                   | ~1 700 | Straße nach Hochwasser 2024?                |
-| Vallée de l'Ubaye → Maljasset            | valley  |                   | ~1 900 |                                             |
-| Vallée des Chapieux → Ville des Glaciers | valley  |                   | ~1 800 |                                             |
-| Cirque du Fer-à-Cheval                   | valley  |                   | ~1 000 |                                             |
+| Name                                                        | Typ     | Merkmale                 | Höhe   | prüfen                                                        |
+| ----------------------------------------------------------- | ------- | ------------------------ | ------ | ------------------------------------------------------------- |
+| Col du Granon                                               | spur    |                          | ~2 400 |                                                               |
+| Val Thorens                                                 | spur    |                          | ~2 350 | Straßenende am Ort                                            |
+| Les Arcs 2000 / Arc 1800                                    | spur    |                          | ~2 100 |                                                               |
+| Orcières-Merlette                                           | spur    |                          | ~1 850 |                                                               |
+| Pra-Loup                                                    | spur    |                          | ~1 600 |                                                               |
+| Col de Sarenne                                              | pass    |                          | ~2 000 | Belag Ostseite                                                |
+| Col du Télégraphe                                           | pass    |                          | ~1 570 | eigener Eintrag oder Auffahrt des Galibier?                   |
+| Col du Chaussy (Lacets de Montvernier)                      | pass    | hairpins                 | ~1 530 |                                                               |
+| Col du Mollard                                              | pass    |                          | ~1 640 |                                                               |
+| Col du Pré                                                  | pass    | reservoir                | ~1 700 |                                                               |
+| Col des Aravis                                              | pass    |                          | ~1 490 |                                                               |
+| Col des Saisies                                             | pass    |                          | ~1 650 |                                                               |
+| Col de la Forclaz de Montmin                                | pass    | panorama                 | ~1 160 |                                                               |
+| Semnoz (Crêt de Châtillon)                                  | pass    | panorama                 | ~1 700 | Übergang oder Stich                                           |
+| Col de Romme                                                | pass    |                          | ~1 300 |                                                               |
+| Col de la Ramaz                                             | pass    |                          | ~1 620 |                                                               |
+| Col d'Ornon                                                 | pass    |                          | ~1 370 |                                                               |
+| Col du Noyer                                                | pass    | panorama                 | ~1 660 |                                                               |
+| Col de Montgenèvre                                          | pass    |                          | ~1 850 | ganzjährig                                                    |
+| Col de Braus                                                | pass    | hairpins                 | ~1 000 |                                                               |
+| Col de Vence                                                | pass    |                          | ~960   | ganzjährig                                                    |
+| Col de la Madone (Menton)                                   | pass    |                          | ~930   |                                                               |
+| Col Saint-Martin                                            | pass    |                          | ~1 500 |                                                               |
+| Col de Tende (alte Straße)                                  | pass    | hairpins, surface        | ~1 870 | Belag beider Seiten, Sperrungen                               |
+| ~~Col du Rousset~~ – Eintrag `col-du-rousset`               | pass    | tunnels                  | 1 254  | Scheitel ist das Südportal des Tunnels                        |
+| ~~Col de la Machine / Combe Laval~~ – Eintrag `combe-laval` | pass    | panorama, gorge, tunnels | 1 011  | als `pass` geführt: die Auffahrt steigt zum Col de la Machine |
+| ~~Gorges de la Bourne~~ – Eintrag `gorges-de-la-bourne`     | balcony | gorge, tunnels           | 434    | Marker in der Schluchtmitte; 24,8 km                          |
+| Route de Presles                                            | balcony | gorge                    | ~900   |                                                               |
+| Gorges du Nan (Malleval)                                    | balcony | gorge                    | ~700   |                                                               |
+| Gorges du Cians                                             | balcony | gorge                    | ~1 000 |                                                               |
+| Gorges de Daluis                                            | balcony | gorge                    | ~800   |                                                               |
+| Gorges du Verdon – Route des Crêtes                         | balcony | gorge, panorama          | ~1 300 | Einbahnrunde                                                  |
+| Gorges du Verdon – Corniche Sublime                         | balcony | gorge, panorama          | ~900   |                                                               |
+| Gorges de la Nesque                                         | balcony | gorge                    | ~730   |                                                               |
+| Gorges du Guil                                              | balcony | gorge                    | ~1 200 | oder Auffahrt Izoard/Agnel                                    |
+| Plateau des Glières                                         | plateau | panorama                 | ~1 450 |                                                               |
+| Plateau d'Emparis (Le Chazelet)                             | plateau | panorama                 | ~1 800 | Asphaltende                                                   |
+| Vallée de la Clarée (Névache → Laval)                       | valley  | carfree                  | ~2 000 | Sperrtage mit Shuttle                                         |
+| Vallée du Vénéon → La Bérarde                               | valley  |                          | ~1 700 | Straße nach Hochwasser 2024?                                  |
+| Vallée de l'Ubaye → Maljasset                               | valley  |                          | ~1 900 |                                                               |
+| Vallée des Chapieux → Ville des Glaciers                    | valley  |                          | ~1 800 |                                                               |
+| Cirque du Fer-à-Cheval                                      | valley  |                          | ~1 000 |                                                               |
 
 ### Westalpen · Piemont und Aostatal
 

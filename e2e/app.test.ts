@@ -29,7 +29,7 @@ test(
   () =>
     withPage(app, "loads", {}, async (page) => {
       await page.waitFor(PASS_ROW);
-      expect(await page.count(PASS_ROW)).toBe(92);
+      expect(await page.count(PASS_ROW)).toBe(95);
       await page.waitFor("canvas.maplibregl-canvas");
       // The period control shows a half-month and its histogram.
       await page.waitForAttribute(
