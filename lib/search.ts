@@ -1,4 +1,10 @@
-import { COUNTRY_NAME, countriesOf, TOWN_TAG } from "@/lib/regions";
+import {
+  COUNTRY_NAME,
+  countriesOf,
+  ROAD_TAG,
+  ROAD_TYPE,
+  TOWN_TAG,
+} from "@/lib/regions";
 import type { Pass, Tour, Town } from "@/lib/types";
 
 /**
@@ -45,6 +51,10 @@ export const passHaystack = (pass: Pass): string => {
         pass.name,
         ...(pass.aliases ?? []),
         pass.region,
+        // "stich", "autofrei" and "gletscher" have to find the entries that
+        // carry the label, so the vocabulary's own words join the haystack.
+        ROAD_TYPE[pass.type].label,
+        ...(pass.tags ?? []).map((t) => ROAD_TAG[t].label),
         countryWords(pass.country),
         ...pass.ascents.map((a) => a.label),
         firstSentence(pass.note),

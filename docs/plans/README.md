@@ -33,7 +33,7 @@ that goal; features that only add route-level precision rank last.
 | 11  | [Smaller items](11-smaller-items.md)                               | polish                      | S each | varies               | [in progress](https://github.com/mdugue/alpen/pull/16) |
 | 08  | [English toggle](08-english-toggle.md)                             | audience                    | M–L    | 02                   | proposed                                               |
 | 07  | [Profile interactivity](07-profile-interactivity.md)               | detail, low priority now    | S–M    | –                    | [done](https://github.com/mdugue/alpen/pull/11)        |
-| 13  | [Road types and tags](13-road-types-and-tags.md)                   | roads that are not passes   | L      | 09, 05               | proposed                                               |
+| 14  | [Road types and tags](14-road-types-and-tags.md)                   | roads that are not passes   | L      | 09, 05               | in progress                                            |
 
 Effort: S ≤ 1 day, M 2–3 days, L 4–6 days. 09, 10 and 11 can be interleaved
 with anything; do 09 before 12 so the new entity gets a schema from day one.

@@ -29,12 +29,24 @@ authoritative. In addition:
 - **Season**: half-months (`10` = early October, `10.5` = late October);
   `null` for roads cleared all year; `maintained: true` only for managed toll
   roads that are actually cleared.
-- **`deadEnd` / `roadSummit`**: for the entries that are not passes in the
-  strict sense. `deadEnd: true` when the road ends at the summit – a planner
-  acts on it, and `data:check` warns if a tour lists such a pass.
-  `roadSummit: true` when the summit is simply the highest point of the
-  asphalt and OSM has no `mountain_pass` node; `data:locate` then offers the
-  highest point of the stored route instead of searching for a node. See
+- **`type`**: what kind of road the entry is – `pass`, `spur`, `plateau`,
+  `balcony` or `valley` (`ROAD_TYPES` in `lib/regions.ts`). Required on every
+  entry. The rule is operational: if the ascents climb to the entry's own
+  point it is a `pass` (a crossing) or a `spur` (the road ends up there); if
+  the ride is the traverse itself it is one of the other three. It decides how
+  the gate measures the entry, see "measured by type" below, and `data:check`
+  warns when a tour lists a `spur` – a loop cannot cross one.
+- **`tags`**: editorial labels for what riding the road is like (`ROAD_TAGS`),
+  optional, no duplicates. Judged like the town labels: what a planner
+  notices, never something the data already measures (length, steepness,
+  altitude, a border crossing are numbers and stay numbers). What a label
+  cannot carry belongs in `note` – which days a `carfree` road is closed to
+  cars, whether bikes pay on a `toll` road.
+- **`roadSummit`**: only on a `pass`, and only when its summit is simply the
+  highest point of the asphalt because OSM has no `mountain_pass` node;
+  `data:locate` then offers the highest point of the stored route instead of
+  searching for a node. Every other type is a road summit by definition, so
+  writing it there is redundant and `data:check` says so. See
   `docs/data-model.md`.
 - **note**: one or two German sentences with the closure habit and the
   character; this is the sentence a planner reads.
@@ -65,9 +77,12 @@ below is either a command or a look at its output.
    `bun run data:locate <slug> --apply` moves the point for you; anything
    less clear-cut it leaves to you, with the numbers on screen.
    If the answer is "kein mountain_pass/saddle-Knoten im Umkreis", the entry
-   is a toll or summit road: set `roadSummit: true` on it and run the command
-   again – it then offers the highest point of the stored route, which is the
-   right point for such a road, and `--apply` takes it.
+   is a toll or summit road: set `roadSummit: true` on the `pass` and run the
+   command again – it then offers the highest point of the stored route, which
+   is the right point for such a road, and `--apply` takes it. A `spur` needs
+   no flag, it is asked that way already; for a traverse type the command only
+   prints the two measurements, because its marker is a curated point and
+   there is no better candidate to propose.
 3. **Build:** `ORS_KEY=… bun run data:build`. The pass point is measured first
    (DEM and road distance, two cheap requests) and its ascents are routed only
    if both pass; otherwise the run says so and names `data:locate`.
@@ -117,18 +132,37 @@ They were fitted to the routes that already existed, so each one separates the
 demonstrably right from the demonstrably wrong rather than sitting on a round
 number.
 
-| Check                                 | Limit                               | Catches                                           |
-| ------------------------------------- | ----------------------------------- | ------------------------------------------------- |
-| Ascent length                         | ≤ 60 km                             | a router that took the valley instead of the pass |
-| Start of the route                    | ≤ 2 km from `ascent.from`           | a `from` point nowhere near a road                |
-| End of the route                      | ≤ 500 m from the pass coordinate    | a route that stops short                          |
-| Profile top vs. `pass.elevation`      | within 80 m                         | a wrong summit coordinate, or the wrong road      |
-| Position of the highest sample        | in the last 25 % of the distance    | a route that crosses the pass and carries on      |
-| Elevation gain                        | ≤ 3 000 m                           | a route over several passes                       |
-| Tour length vs. the curated `tour.km` | within 15 %                         | waypoints too sparse to pin the loop down         |
-| Tour start/end                        | ≤ 2 km from the first/last waypoint | a loop that does not close                        |
-| DEM height at the pass point          | within 80 m                         | a pass coordinate on the wrong summit             |
-| Pass point to the nearest road        | ≤ 100 m                             | a pass coordinate beside the road at pass height  |
+**Measured by type.** `minPeakAt` and "ends at the summit" are the right
+checks for a climb and the wrong ones for a road that stays up or cuts across
+a wall. So a `pass` or `spur` ascent is measured as a climb, and a `plateau`,
+`balcony` or `valley` ascent is measured the way a tour is – between its two
+curated ends and against its stated length. That is why a traverse ascent
+carries two more curated numbers, and only a traverse ascent may:
+
+```jsonc
+"ascents": [{
+  "from": { "lat": 45.05, "lon": 5.35 }, "label": "Saint-Jean-en-Royans",
+  "to": { "lat": 44.99, "lon": 5.27 },   // where the ride ends
+  "km": 17                               // its length, from a trusted source
+}]
+```
+
+A `check` follows the same split: a climb may widen the ascent limits, a
+traverse the tour limits, and nothing else – a limit its own validator would
+ignore cannot be written down.
+
+| Check                            | Applies to              | Limit                               | Catches                                               |
+| -------------------------------- | ----------------------- | ----------------------------------- | ----------------------------------------------------- |
+| Ascent length                    | `pass`, `spur`          | ≤ 60 km                             | a router that took the valley instead of the pass     |
+| Start of the route               | `pass`, `spur`          | ≤ 2 km from `ascent.from`           | a `from` point nowhere near a road                    |
+| End of the route                 | `pass`, `spur`          | ≤ 500 m from the pass coordinate    | a route that stops short                              |
+| Profile top vs. `pass.elevation` | `pass`, `spur`          | within 80 m                         | a wrong summit coordinate, or the wrong road          |
+| Position of the highest sample   | `pass`, `spur`          | in the last 25 % of the distance    | a route that crosses the pass and carries on          |
+| Elevation gain                   | `pass`, `spur`          | ≤ 3 000 m                           | a route over several passes                           |
+| Length vs. the curated `km`      | traverse ascents, tours | within 15 %                         | waypoints too sparse to pin the line down             |
+| Start/end                        | traverse ascents, tours | ≤ 2 km from the first/last waypoint | a route whose ends are not where the curator put them |
+| DEM height at the marker         | every type              | within 80 m                         | a coordinate on the wrong summit                      |
+| Marker to the nearest road       | every type              | ≤ 100 m                             | a coordinate beside the road                          |
 
 ### When the gate rejects something
 

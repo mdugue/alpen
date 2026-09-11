@@ -56,10 +56,18 @@ import type { MapAssets } from "@/lib/map-assets";
 import type { TownReach } from "@/lib/nearby";
 import { PALETTE } from "@/lib/palette";
 import type { Scheme } from "@/lib/palette";
-import { TOWN_TAG } from "@/lib/regions";
+import { ROAD_TYPE, TAG_LABEL } from "@/lib/regions";
 import { ascentKey } from "@/lib/route-key";
 import { tagIconSvg } from "@/lib/tag-icons";
-import type { LatLon, Pass, Status, Tour, Town, TownTag } from "@/lib/types";
+import type {
+  LatLon,
+  Pass,
+  RoadTag,
+  Status,
+  Tour,
+  Town,
+  TownTag,
+} from "@/lib/types";
 import { cn, MAP_CLUSTER, MAP_TOOL, PRESSED } from "@/lib/utils";
 
 export interface MapPass extends Pass {
@@ -775,25 +783,27 @@ const escapeHtml = (s: string) =>
   );
 
 /**
- * The hover popup's body. A town says why it is in the list, with the same
- * glyphs the sidebar and the panel use (`lib/tag-icons.ts` exists because this
- * popup is an HTML string and not React); everything else keeps the one line
- * it always had.
+ * The hover popup's body: the name, the one line the mark carries (a road's
+ * height and kind, a tour's own line) and the editorial labels with the same
+ * glyphs the sidebar and the panel use – `lib/tag-icons.ts` exists because
+ * this popup is an HTML string and not React. A town has labels and no
+ * subtitle: what it is, is what the labels say.
  */
 const popupHtml = (p: Record<string, string>) => {
   const title = `<b>${escapeHtml(p.name ?? "")}</b>`;
   // Feature properties are strings; only what the vocabulary knows is drawn.
   const tags = (p.tags ?? "")
     .split(",")
-    .filter((t): t is TownTag => t in TOWN_TAG);
-  if (tags.length === 0) return `${title}<br>${escapeHtml(p.subtitle ?? "")}`;
+    .filter((t): t is TownTag | RoadTag => t in TAG_LABEL);
+  const subtitle = p.subtitle ? `<br>${escapeHtml(p.subtitle)}` : "";
+  if (tags.length === 0) return `${title}${subtitle}`;
   const chips = tags
     .map(
       (t) =>
-        `<span class="flex items-center gap-1">${tagIconSvg(t)}${escapeHtml(TOWN_TAG[t].label)}</span>`,
+        `<span class="flex items-center gap-1">${tagIconSvg(t)}${escapeHtml(TAG_LABEL[t].label)}</span>`,
     )
     .join("");
-  return `${title}<div class="mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs">${chips}</div>`;
+  return `${title}${subtitle}<div class="mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs">${chips}</div>`;
 };
 
 const defined = <T extends object>(o: T): Partial<T> =>
@@ -1241,7 +1251,11 @@ export const PassMap = ({
           selected: p.slug === selPass ? 1 : 0,
           slug: p.slug,
           status: p.status,
-          subtitle: `${p.elevation.toLocaleString("de-DE")} m`,
+          subtitle:
+            p.type === "pass"
+              ? `${p.elevation.toLocaleString("de-DE")} m`
+              : `${p.elevation.toLocaleString("de-DE")} m · ${ROAD_TYPE[p.type].label}`,
+          tags: (p.tags ?? []).join(","),
         },
         type: "Feature",
       })),
@@ -1263,7 +1277,6 @@ export const PassMap = ({
               name: t.name,
               selected: t.slug === selTown ? 1 : 0,
               slug: t.slug,
-              subtitle: "Rad-Ort",
               tags: t.tags.join(","),
             },
             type: "Feature",

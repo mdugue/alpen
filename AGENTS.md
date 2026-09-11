@@ -48,7 +48,8 @@ friends do that better and the app links out to them.
 | Data access (cached, validated)                 | `lib/data.ts`                                                                                                                                               |
 | Profile sampling and derived gradients          | `lib/profile.ts`                                                                                                                                            |
 | Filter, selection and URL state (hash keys)     | `lib/app-state.ts`, `components/explorer.tsx`                                                                                                               |
-| Town labels: vocabulary, icons, badges          | `lib/regions.ts` (`TOWN_TAGS`), `lib/tag-icons.ts`, `components/town-tags.tsx`                                                                              |
+| Road types and labels (vocabulary)              | `lib/regions.ts` (`ROAD_TYPES`, `ROAD_TAGS`, `isTraverse`, `hasRoadSummit`)                                                                                 |
+| Tag labels: vocabulary, icons, badges           | `lib/regions.ts` (`TOWN_TAGS`, `ROAD_TAGS`, `TAG_LABEL`), `lib/tag-icons.ts`, `components/tags.tsx`                                                         |
 | Search normalisation and haystacks              | `lib/search.ts`                                                                                                                                             |
 | Map, layers, 3D, markers, labels, feature state | `components/map/pass-map.tsx`                                                                                                                               |
 | Basemap: vector style, palette, glyphs          | `lib/basemap.ts`, `lib/palette.ts`, `scripts/build-map-style.ts` (→ `public/map/style-*.json`), `scripts/build-glyphs.ts` (→ `public/map/fonts`, committed) |

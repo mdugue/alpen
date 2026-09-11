@@ -17,6 +17,7 @@ const pass = (over: Partial<Pass> & { slug: string; name: string }): Pass => ({
   region: "Zentralalpen",
   season: null,
   traffic: 4,
+  type: "pass",
   ...over,
 });
 

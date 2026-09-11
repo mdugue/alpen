@@ -71,6 +71,7 @@ const pass = (over: Partial<Pass>): Pass => ({
   season: null,
   slug: "test",
   traffic: 3,
+  type: "pass",
   ...over,
 });
 const bucket = (over: Partial<ClimateBucket> = {}): ClimateBucket => ({

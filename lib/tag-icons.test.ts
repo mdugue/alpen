@@ -1,11 +1,19 @@
 import { describe, expect, test } from "bun:test";
 
-import { TOWN_TAGS } from "@/lib/regions";
+import { ROAD_TAGS, TOWN_TAGS } from "@/lib/regions";
 import { TAG_ICON, tagIconSvg } from "@/lib/tag-icons";
 
 describe("TAG_ICON", () => {
   test("every label has a glyph and every glyph a label", () => {
-    expect(Object.keys(TAG_ICON).toSorted()).toEqual([...TOWN_TAGS].toSorted());
+    expect(Object.keys(TAG_ICON).toSorted()).toEqual(
+      [...TOWN_TAGS, ...ROAD_TAGS].toSorted(),
+    );
+  });
+
+  test("the two vocabularies share no name", () => {
+    expect(new Set([...TOWN_TAGS, ...ROAD_TAGS]).size).toBe(
+      TOWN_TAGS.length + ROAD_TAGS.length,
+    );
   });
 
   test("the copied Lucide nodes carry no React key", () => {

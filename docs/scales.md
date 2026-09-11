@@ -29,6 +29,19 @@ sentence that defines each next to its glyph, `docs/data-model.md` has the
 table. One to four per
 town; `data:check` warns above four.
 
+## Road types and labels
+
+`type` and `tags` in `data/passes.json` (vocabulary and German labels in
+`lib/regions.ts`) are editorial too, in the same sense as the town labels. The
+**type** says how the road lies in the terrain – it is the one axis that also
+has a mechanical consequence, because the route quality gate measures a
+traverse the way it measures a tour. The **labels** say what riding it is
+like: "Panoramastraße", "Autofrei", "Maut", "Kehrenbauwerk". Neither is a
+measured value, and nothing the data already measures may become one: length,
+gradient, altitude and a border crossing are numbers next to them, not labels
+among them. The scales dialog lists all fourteen with the sentence that
+defines each, `docs/data-model.md` has the tables.
+
 ## Status per period
 
 `passVerdict()` in `lib/status.ts` answers "how good is it to ride there in

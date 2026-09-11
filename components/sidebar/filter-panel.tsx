@@ -4,6 +4,7 @@ import { SlidersHorizontal, Star } from "lucide-react";
 import { useState } from "react";
 
 import { StatusDot } from "@/components/status-badge";
+import { TagIcon } from "@/components/tags";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -26,6 +27,7 @@ import { Toggle } from "@/components/ui/toggle";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import {
   ALL_STATUS,
+  ALL_TYPES,
   BEAUTY_OPTIONS,
   countCriteria,
   FAME_OPTIONS,
@@ -36,8 +38,9 @@ import {
   WET_OPTIONS,
 } from "@/lib/app-state";
 import type { Filters } from "@/lib/app-state";
+import { ROAD_TAG, ROAD_TAGS, ROAD_TYPE } from "@/lib/regions";
 import { STATUS_LABEL } from "@/lib/status";
-import type { Status } from "@/lib/types";
+import type { RoadTag, RoadType, Status } from "@/lib/types";
 import { cn, fmtUnit, PRESSED, TOUCH_CONTROL, TOUCH_SELECT } from "@/lib/utils";
 
 /** Base UI hands back a number for a single thumb and an array for a range. */
@@ -242,6 +245,73 @@ export const FilterPanel = ({
             onChange={(v) => set("minFame", v)}
             options={FAME_OPTIONS}
           />
+        </FieldGroup>
+        {/* Art and Merkmale: the two axes of plan 14. The type is topology and
+            single-valued per road, so the set is a plain "which kinds do I
+            want"; the labels are character and stack with and-semantics, which
+            is why they carry their word next to the glyph – a strip of icons
+            alone is scannable in a row but not choosable in a filter. */}
+        <FieldGroup className="grid gap-1.5">
+          <FieldTitle
+            id="road-types"
+            className="text-muted-foreground text-2xs"
+          >
+            Art der Straße
+          </FieldTitle>
+          <ToggleGroup
+            multiple
+            spacing={0}
+            variant="outline"
+            value={filters.types}
+            onValueChange={(picked) =>
+              set(
+                "types",
+                ALL_TYPES.filter((t) => picked.includes(t)),
+              )
+            }
+            aria-labelledby="road-types"
+            className="w-full"
+          >
+            {ALL_TYPES.map((t: RoadType) => (
+              <ToggleGroupItem
+                key={t}
+                value={t}
+                title={ROAD_TYPE[t].hint}
+                className={cn("min-w-0 flex-1", TOUCH_CONTROL)}
+              >
+                <span className="truncate">{ROAD_TYPE[t].label}</span>
+              </ToggleGroupItem>
+            ))}
+          </ToggleGroup>
+          <FieldTitle id="road-tags" className="text-muted-foreground text-2xs">
+            Merkmale – alle ausgewählten müssen zutreffen
+          </FieldTitle>
+          <ToggleGroup
+            multiple
+            spacing={0}
+            variant="outline"
+            value={filters.tags}
+            onValueChange={(picked) =>
+              set(
+                "tags",
+                ROAD_TAGS.filter((t) => picked.includes(t)),
+              )
+            }
+            aria-labelledby="road-tags"
+            className="grid w-full grid-cols-3"
+          >
+            {ROAD_TAGS.map((t: RoadTag) => (
+              <ToggleGroupItem
+                key={t}
+                value={t}
+                title={ROAD_TAG[t].hint}
+                className={cn("min-w-0", TOUCH_CONTROL)}
+              >
+                <TagIcon tag={t} />
+                <span className="truncate">{ROAD_TAG[t].label}</span>
+              </ToggleGroupItem>
+            ))}
+          </ToggleGroup>
         </FieldGroup>
         {/* The raw summer signals of the chosen half-month, not the composite:
             "unter 28 °C im Tal" is a question the status alone cannot answer.

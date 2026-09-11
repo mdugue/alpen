@@ -190,7 +190,7 @@ export const Sidebar = (p: SidebarProps) => {
             open={p.sections.includes("pass")}
             onOpenChange={toggleSection("pass")}
             glyph={KIND_GLYPH.pass}
-            label="Pässe"
+            label="Pässe & Straßen"
             count={p.passRows.length}
             total={p.totals.pass}
             control={
@@ -198,7 +198,7 @@ export const Sidebar = (p: SidebarProps) => {
                 size="sm"
                 checked={p.showPasses}
                 onCheckedChange={p.setShowPasses}
-                aria-label="Pässe auf der Karte anzeigen"
+                aria-label="Pässe und Straßen auf der Karte anzeigen"
               />
             }
           >

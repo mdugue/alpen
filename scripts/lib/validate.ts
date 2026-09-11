@@ -17,6 +17,7 @@ import type {
   ElevationProfile,
   LatLon,
   RouteGeometry,
+  RouteMetrics,
   TourCheck,
   TourMetrics,
 } from "../../lib/types";
@@ -206,6 +207,35 @@ export const checkTour = (m: TourMetrics, check?: TourCheck): string[] => {
     );
   return out;
 };
+
+/**
+ * What one ride of a road is measured as. A climb to the entry's own marker
+ * (`pass`, `spur`) is an ascent; a traverse (`plateau`, `balcony`, `valley`)
+ * has no summit the ride aims at, so it is measured the way a tour is –
+ * between its two curated ends and against its stated length. The caller
+ * passes the decision rather than the type, so this module stays free of the
+ * vocabulary and keeps its fixtures to plain numbers; `isTraverse` in
+ * `lib/regions.ts` is what makes it.
+ */
+export const roadMetrics = (
+  traverse: boolean,
+  geom: RouteGeometry,
+  ascent: { from: LatLon; to?: LatLon; km?: number },
+  summit: LatLon,
+): RouteMetrics =>
+  traverse
+    ? tourMetrics(geom, [ascent.from, ascent.to ?? summit], ascent.km ?? 0)
+    : ascentMetrics(geom, ascent.from, summit);
+
+/** Judges what `roadMetrics` measured, against the limits that measurement belongs to. */
+export const checkRoadAscent = (
+  traverse: boolean,
+  metrics: RouteMetrics,
+  check?: AscentCheck | TourCheck,
+): string[] =>
+  traverse
+    ? checkTour(metrics as TourMetrics, check as TourCheck)
+    : checkAscent(metrics as AscentMetrics, check as AscentCheck);
 
 /** DEM height at the pass coordinate vs. the stated elevation. */
 export const checkSummit = (dem: number, elevation: number): string[] => {

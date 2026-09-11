@@ -1,6 +1,7 @@
-# 13 · Road types and tags
+# 14 · Road types and tags
 
-**Status:** proposed · **Effort:** L (M for code, the rest is curation) ·
+**Status:** in progress – steps 1–4 done, 5 (new entries) and 6 (rename) open ·
+**Effort:** L (M for code, the rest is curation) ·
 **Depends on:** 09 (schema), 05 (filters) · **Unblocks:** the sporting roads
 that are not passes – spur roads, balcony roads, high roads, quiet valleys –
 and the filter "passes only / everything but passes / gorges"
@@ -386,6 +387,13 @@ mentions in `CLAUDE.md`/`AGENTS.md` go.
   a short bar – is left open. The dot and the status colour carry the
   product's question ("when"); the type is one word in the list. Revisit when
   the first batch is on the map and it turns out to matter.
+- **Tre Cime is not car-free** (found in step 4). Its road is a toll road cars
+  still drive; what changed in recent summers is that it closes when the car
+  park is full, which is capacity and not a car ban. It gets `toll` and no
+  `carfree`; the appendix line above was dictated from memory, as the appendix
+  says of itself. `carfree` in the existing data is therefore Grosse Scheidegg
+  (all but the bus) and Colle del Nivolet (summer weekends), both of which say
+  so in their own `note`.
 - **Fame filter and the new entries.** Most balcony and valley roads are
   unknown outside their region; "nur Klassiker" will hide them, which is
   correct. `beauty` is where they score, and the beauty filter is the one to
