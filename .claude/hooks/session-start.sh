@@ -31,15 +31,30 @@ have=$(bun --version 2>/dev/null || echo 0)
 # sort -V puts the lower version first; `have` is new enough when `want` leads.
 if [ -n "$want" ] && [ "$(printf '%s\n%s\n' "$want" "$have" | sort -V | head -1)" != "$want" ]; then
   echo "Bun $have is older than the required $want – installing the current release."
-  # The official installer writes to $BUN_INSTALL/bin (default ~/.bun/bin),
-  # which is where the image's Bun already sits, so PATH stays as it is.
   curl -fsSL https://bun.sh/install | bash
+  # The installer writes to $BUN_INSTALL/bin, which today is where the image's
+  # own Bun sits – but only today. Put it in front rather than trusting that:
+  # if a future image keeps its Bun somewhere else on PATH, `hash -r` alone
+  # would clear Bash's cache and still resolve the old binary, and everything
+  # below would run on the version we just replaced. `vercel.json` exports the
+  # same directory for the same reason.
+  bin="${BUN_INSTALL:-$HOME/.bun}/bin"
+  export PATH="$bin:$PATH"
   hash -r
-  echo "Bun is now $(bun --version)."
+  # The hook is a subprocess: without this the session's own commands would go
+  # on resolving whatever Bun they resolved before it ran.
+  if [ -n "${CLAUDE_ENV_FILE:-}" ]; then
+    echo "export PATH=\"$bin:\$PATH\"" >>"$CLAUDE_ENV_FILE"
+  fi
+  echo "Bun is now $(bun --version) ($(command -v bun))."
 fi
 
-# --frozen-lockfile so a session start can never rewrite a committed lockfile;
-# if it is genuinely out of sync, say so and install anyway rather than leaving
-# the session without dependencies.
-bun install --frozen-lockfile ||
-  { echo "bun.lock is out of sync with package.json – installing without it."; bun install; }
+# --frozen-lockfile so a session start can never rewrite a committed lockfile.
+# No fallback to a plain install: that would catch a network or disk failure
+# just as readily as a real mismatch and "fix" it by resolving a different
+# dependency graph into the committed lockfile. Bun auto-installs into its
+# global cache, so the session still runs; what it must not do is edit the repo.
+bun install --frozen-lockfile || {
+  echo "bun install --frozen-lockfile failed – dependencies are NOT installed."
+  echo "If bun.lock and package.json disagree, fix them; the hook will not."
+}
