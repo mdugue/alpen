@@ -1,8 +1,8 @@
 import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import {
   cellHint,
   GRADE_LABEL,
@@ -24,7 +24,15 @@ import { cn } from "@/lib/utils";
  * hollow with a red hairline, like the circles on the map, so a closure is
  * told apart by weight and a winter of them stays light. The current
  * half-month is outlined, so the strip still works without hue, and in the
- * panel every cell explains itself on hover and on focus.
+ * panel every cell explains itself on tap, click or hover – a `Popover`
+ * with `openOnHover`, not a `Tooltip`, for the same reason as the panel's
+ * `info` icon (`components/panel/section.tsx`): hover needs a pointer a
+ * phone does not have, and Base UI's hover interaction already stands down
+ * for a touch press on its own. Unlike the `Tooltip` it replaced, a
+ * `Popover` shares no "next one opens instantly" state across the 24
+ * triggers, so scrubbing the strip with a mouse re-waits the open delay at
+ * every cell rather than only the first; accepted for now since reading a
+ * cell's text takes about that long anyway.
  */
 export const CELL: Record<Grade, string> = {
   best: "bg-grade-best",
@@ -42,11 +50,11 @@ export const SeasonStrip = ({
 }: {
   /** 24 grades, index 0 = early January. */
   grades: Grade[];
-  /** What each cell knows beyond its grade, so its tooltip can be specific. */
+  /** What each cell knows beyond its grade, so its popover can be specific. */
   notes?: CellNote[];
   /** Outlined half-month; usually the selected period. */
   current?: Period;
-  /** `row`: 96 px, no labels. `panel`: full width with month initials and cell tooltips. */
+  /** `row`: 96 px, no labels. `panel`: full width with month initials and cell popovers. */
   size?: "row" | "panel";
   className?: string;
 }) => {
@@ -69,17 +77,20 @@ export const SeasonStrip = ({
         "outline-foreground z-10 outline-1 outline-offset-1",
     );
 
-  // In the panel every cell is a button: reachable with Tab, its tooltip
-  // opening on focus as on hover, so the explanation is not pointer-only.
-  // The strip is then a group rather than an image, since an image role
-  // would make the cells presentational and hide them from a screen reader.
+  // In the panel every cell is a button: reachable with Tab, its popover
+  // opening on tap, click, focus or hover, so the explanation is not
+  // pointer-only. The strip is then a group rather than an image, since an
+  // image role would make the cells presentational and hide them from a
+  // screen reader.
   return (
     <div className={cn(panel ? "w-full" : "w-24", className)}>
       {panel ? (
         <div role="group" aria-label={label} className="flex h-4 gap-px">
           {grades.map((grade, i) => (
-            <Tooltip key={PERIODS[i]}>
-              <TooltipTrigger
+            <Popover key={PERIODS[i]}>
+              <PopoverTrigger
+                delay={400}
+                openOnHover
                 render={
                   <button
                     type="button"
@@ -91,15 +102,15 @@ export const SeasonStrip = ({
                   />
                 }
               />
-              <TooltipContent className="max-w-64">
-                <div className="flex flex-col gap-0.5">
-                  <p className="font-semibold">
-                    {periodLabel(PERIODS[i]!)} · {GRADE_LABEL[grade]}
-                  </p>
-                  <p className="opacity-80">{cellHint(grade, notes?.[i])}</p>
-                </div>
-              </TooltipContent>
-            </Tooltip>
+              <PopoverContent className="w-56 gap-1" side="top">
+                <p className="text-sm font-semibold">
+                  {periodLabel(PERIODS[i]!)} · {GRADE_LABEL[grade]}
+                </p>
+                <p className="text-muted-foreground text-xs">
+                  {cellHint(grade, notes?.[i])}
+                </p>
+              </PopoverContent>
+            </Popover>
           ))}
         </div>
       ) : (
