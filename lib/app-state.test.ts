@@ -115,6 +115,68 @@ describe("parseHash", () => {
     expect(parseHash("#be=abc").filters.minBeauty).toBeUndefined();
     expect(parseHash("#o=nonsense").filters.sort).toBeUndefined();
   });
+
+  test("the summer-signal keys from plan 13 round-trip and are validated", () => {
+    expect(parseHash("#h=28&w=40").filters).toMatchObject({
+      maxValleyTmax: 28,
+      maxWetPct: 40,
+    });
+    // Only what the selects offer; an old link without them is unfiltered.
+    expect(parseHash("#h=27").filters.maxValleyTmax).toBeUndefined();
+    expect(parseHash("#w=45").filters.maxWetPct).toBeUndefined();
+    expect(parseHash("#s=open,risky").filters).toMatchObject({
+      maxValleyTmax: undefined,
+      maxWetPct: undefined,
+      status: ["open", "risky"],
+    });
+    const out = serializeHash(
+      filters({ maxValleyTmax: 24, maxWetPct: 50 }),
+      null,
+      DEFAULT_VIEW,
+    );
+    expect(out).toContain("h=24");
+    expect(out).toContain("w=50");
+    expect(parseHash(out).filters).toMatchObject({
+      maxValleyTmax: 24,
+      maxWetPct: 50,
+    });
+    expect(serializeHash(filters(), null, DEFAULT_VIEW)).not.toMatch(/[hw]=/u);
+  });
+});
+
+describe("plan 14 road types and labels", () => {
+  test("a and e read a subset of their vocabulary, in vocabulary order", () => {
+    const h = parseHash("#a=valley,spur&e=toll,carfree");
+    expect(h.filters.types).toEqual(["spur", "valley"]);
+    expect(h.filters.tags).toEqual(["carfree", "toll"]);
+  });
+
+  test("unknown members drop out, a value that leaves nothing is no filter", () => {
+    expect(parseHash("#a=spur,autobahn").filters.types).toEqual(["spur"]);
+    expect(parseHash("#a=autobahn").filters.types).toBeUndefined();
+    expect(parseHash("#e=schnee").filters.tags).toBeUndefined();
+  });
+
+  test("both survive the round trip, the defaults leave the hash", () => {
+    const hash = serializeHash(
+      filters({ tags: ["toll"], types: ["pass", "spur"] }),
+      null,
+      view(),
+    );
+    expect(hash).toContain("a=pass,spur");
+    expect(hash).toContain("e=toll");
+    const back = parseHash(hash);
+    expect(back.filters.types).toEqual(["pass", "spur"]);
+    expect(back.filters.tags).toEqual(["toll"]);
+    expect(serializeHash(filters(), null, view())).not.toMatch(/[ae]=/u);
+  });
+
+  test("both count as one criterion each", () => {
+    expect(countCriteria(filters({ types: ["balcony"] }))).toBe(1);
+    expect(countCriteria(filters({ tags: ["carfree", "glacier"] }))).toBe(1);
+    expect(hasActiveFilters(filters({ types: ["balcony"] }))).toBe(true);
+    expect(hasActiveFilters(filters({ tags: ["toll"] }))).toBe(true);
+  });
 });
 
 describe("serializeHash", () => {
@@ -203,12 +265,14 @@ describe("filters", () => {
         filters({
           difficulty: [2, 4],
           maxTraffic: 2,
+          maxValleyTmax: 28,
+          maxWetPct: 40,
           minBeauty: 4,
           minElevation: 2000,
           minFame: 3,
         }),
       ),
-    ).toBe(5);
+    ).toBe(7);
   });
 
   test("statusMatches follows the visible set", () => {

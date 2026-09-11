@@ -3,6 +3,7 @@ import { describe, expect, test } from "bun:test";
 import { DEFAULT_FILTERS } from "@/lib/app-state";
 import type { Filters } from "@/lib/app-state";
 import {
+  barTotal,
   buildPassRows,
   buildTourRows,
   buildTownRows,
@@ -34,6 +35,7 @@ const pass = (over: Partial<Pass> & { slug: string }): Pass => ({
   region: "Ostalpen",
   season: null,
   traffic: 3,
+  type: "pass",
   ...over,
 });
 
@@ -175,10 +177,11 @@ describe("buildPassRows", () => {
     expect(row!.season).toHaveLength(24);
     expect(row!.status).toBe("open");
     const withSnow = buildPassRows([passes[1]!], filters(), never, {
-      mittel: snowy(30),
+      climate: { mittel: snowy(30) },
     });
     expect(withSnow[0]!.status).toBe("risky");
-    expect(withSnow[0]!.season.every((s) => s === "risky")).toBe(true);
+    expect(withSnow[0]!.reason).toBe("snow");
+    expect(withSnow[0]!.season.every((s) => s === "limited")).toBe(true);
   });
 });
 
@@ -252,6 +255,125 @@ describe("plan 05 criteria", () => {
   });
 });
 
+/** A uniform year, so the chosen half-month reads the same bucket. */
+const year = (over: Partial<ClimateBucket>): ClimateYear =>
+  PERIODS.map(() => ({
+    frostPct: 0,
+    snowPct: 0,
+    tmax: 20,
+    tmin: 8,
+    wetPct: 20,
+    ...over,
+  }));
+
+describe("plan 13 summer filters", () => {
+  // "mittel" is at 1 500 m; a valley at 500 m adds 6,5 °C to the summit value.
+  const valleys = { mittel: 500 };
+  const slugs = (
+    over: Partial<Filters>,
+    climate: Record<string, ClimateYear>,
+    withValleys = true,
+  ) =>
+    buildPassRows([passes[1]!], filters(over), never, {
+      climate,
+      valleys: withValleys ? valleys : {},
+    }).map((r) => r.pass.slug);
+
+  test("heat is an exclusive upper bound on the derived valley tmax", () => {
+    // 20 °C at the summit is 26,5 °C in the valley.
+    expect(
+      slugs({ maxValleyTmax: 28 }, { mittel: year({ tmax: 20 }) }),
+    ).toEqual(["mittel"]);
+    expect(
+      slugs({ maxValleyTmax: 24 }, { mittel: year({ tmax: 20 }) }),
+    ).toEqual([]);
+    // 22 °C at the summit is 28,5 °C in the valley: not "unter 28".
+    expect(
+      slugs({ maxValleyTmax: 28 }, { mittel: year({ tmax: 22 }) }),
+    ).toEqual([]);
+  });
+
+  test("rain days are an inclusive upper bound", () => {
+    expect(slugs({ maxWetPct: 50 }, { mittel: year({ wetPct: 50 }) })).toEqual([
+      "mittel",
+    ]);
+    expect(slugs({ maxWetPct: 50 }, { mittel: year({ wetPct: 51 }) })).toEqual(
+      [],
+    );
+  });
+
+  test("a missing value fails an active filter and passes an inactive one", () => {
+    // No profile, so no valley elevation: the heat filter cannot say "under".
+    expect(slugs({ maxValleyTmax: 28 }, { mittel: year({}) }, false)).toEqual(
+      [],
+    );
+    expect(slugs({}, { mittel: year({}) }, false)).toEqual(["mittel"]);
+    // No climate series at all: neither filter can say anything.
+    expect(slugs({ maxValleyTmax: 28 }, {})).toEqual([]);
+    expect(slugs({ maxWetPct: 50 }, {})).toEqual([]);
+    expect(slugs({}, {})).toEqual(["mittel"]);
+  });
+
+  test("every pass of a tour has to respect the summer bounds", () => {
+    const rows = (over: Partial<Filters>) =>
+      buildTourRows(tours, index, filters(over), never, {
+        climate: { mittel: year({ tmax: 20, wetPct: 40 }) },
+        valleys,
+      }).map((r) => r.tour.slug);
+    expect(rows({})).toEqual(["lang", "kurz"]);
+    // "lang" also crosses "winter", which has no series: it fails both bounds.
+    expect(rows({ maxValleyTmax: 28 })).toEqual(["kurz"]);
+    expect(rows({ maxWetPct: 50 })).toEqual(["kurz"]);
+  });
+});
+
+describe("plan 14 type and label filters", () => {
+  const roads = [
+    pass({ name: "Übergang", slug: "uebergang" }),
+    pass({ name: "Stich", slug: "stich", tags: ["toll"], type: "spur" }),
+    pass({
+      name: "Balkon",
+      slug: "balkon",
+      tags: ["carfree", "gorge"],
+      type: "balcony",
+    }),
+  ];
+  const slugs = (over: Partial<Filters>) =>
+    buildPassRows(roads, filters(over), never).map((r) => r.pass.slug);
+
+  test("all five types selected is no filter", () => {
+    expect(slugs({})).toEqual(["uebergang", "stich", "balkon"]);
+  });
+
+  test("a type set keeps exactly its members", () => {
+    expect(slugs({ types: ["spur"] })).toEqual(["stich"]);
+    expect(slugs({ types: ["spur", "plateau", "balcony", "valley"] })).toEqual([
+      "stich",
+      "balkon",
+    ]);
+  });
+
+  test("labels stack: every selected one has to be present", () => {
+    expect(slugs({ tags: ["carfree"] })).toEqual(["balkon"]);
+    expect(slugs({ tags: ["carfree", "gorge"] })).toEqual(["balkon"]);
+    expect(slugs({ tags: ["carfree", "toll"] })).toEqual([]);
+    // A road without labels never satisfies an active one.
+    expect(slugs({ tags: ["toll"] })).toEqual(["stich"]);
+  });
+
+  test("a tour needs one road of a selected type, and sees no labels", () => {
+    const withSpur = tour({ passes: ["stich"], slug: "mit-stich" });
+    const rows = (over: Partial<Filters>) =>
+      buildTourRows([withSpur], indexBySlug(roads), filters(over), never).map(
+        (r) => r.tour.slug,
+      );
+    expect(rows({ types: ["spur"] })).toEqual(["mit-stich"]);
+    expect(rows({ types: ["pass"] })).toEqual([]);
+    // "autofrei" is a label of one road, never of the loop around it.
+    expect(rows({ tags: ["carfree"] })).toEqual(["mit-stich"]);
+  });
+});
+
 describe("buildTourRows", () => {
   test("status comes from the passes, sorted by elevation gain", () => {
     const rows = buildTourRows(tours, index, filters(), never);
@@ -280,11 +402,14 @@ describe("buildTourRows", () => {
     ).toEqual(["kurz"]);
   });
 
-  test("the climate series reaches the tour verdict", () => {
+  test("the climate series reaches the tour verdict, with the limiting reason", () => {
     const rows = buildTourRows(tours, index, filters(), never, {
-      mittel: snowy(40),
+      climate: { mittel: snowy(40) },
     });
     expect(rows.every((r) => r.status === "risky")).toBe(true);
+    expect(rows.every((r) => r.reason === "snow")).toBe(true);
+    const clear = buildTourRows(tours, index, filters(), never);
+    expect(clear.every((r) => r.reason === null)).toBe(true);
   });
 });
 
@@ -354,12 +479,11 @@ describe("statusHistogram", () => {
     const bars = statusHistogram(passes, filters(), never);
     expect(bars).toHaveLength(24);
     expect(bars.map((b) => b.period)).toEqual(PERIODS);
-    for (const b of bars)
-      expect(b.open + b.risky + b.closed).toBe(passes.length);
+    for (const b of bars) expect(barTotal(b)).toBe(passes.length);
     expect(bars[periodIndexOf(4)]).toMatchObject({
+      best: 1,
       closed: 1,
-      open: 1,
-      risky: 1,
+      limited: 1,
     });
   });
 
@@ -369,7 +493,7 @@ describe("statusHistogram", () => {
       filters({ minFame: 4, status: ["open"] }),
       never,
     );
-    for (const b of bars) expect(b.open + b.risky + b.closed).toBe(1);
+    for (const b of bars) expect(barTotal(b)).toBe(1);
   });
 
   test("no matching pass leaves 24 empty bars rather than nothing", () => {
@@ -379,15 +503,13 @@ describe("statusHistogram", () => {
       never,
     );
     expect(bars).toHaveLength(24);
-    expect(bars.every((b) => b.open + b.risky + b.closed === 0)).toBe(true);
+    expect(bars.every((b) => barTotal(b) === 0)).toBe(true);
   });
 
   test("the climate series moves passes from open to weather-dependent", () => {
     const bars = statusHistogram(passes, filters(), never, {
-      hoch: snowy(30),
-      mittel: snowy(30),
-      winter: snowy(30),
+      climate: { hoch: snowy(30), mittel: snowy(30), winter: snowy(30) },
     });
-    expect(bars.every((b) => b.open === 0)).toBe(true);
+    expect(bars.every((b) => b.best === 0 && b.good === 0)).toBe(true);
   });
 });

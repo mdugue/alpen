@@ -1,6 +1,6 @@
 "use client";
 
-import { TownTagIcon } from "@/components/town-tags";
+import { TagIcon } from "@/components/tags";
 import {
   Dialog,
   DialogContent,
@@ -8,7 +8,14 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { TOWN_TAG, TOWN_TAGS } from "@/lib/regions";
+import {
+  ROAD_TAG,
+  ROAD_TAGS,
+  ROAD_TYPE,
+  ROAD_TYPES,
+  TOWN_TAG,
+  TOWN_TAGS,
+} from "@/lib/regions";
 
 const SCALES: [string, string][] = [
   [
@@ -79,7 +86,7 @@ export const ScalesDialog = ({
             {TOWN_TAGS.map((tag) => (
               <div key={tag} className="contents">
                 <dt className="flex items-center gap-1.5 font-semibold">
-                  <TownTagIcon tag={tag} className="size-4" />
+                  <TagIcon tag={tag} className="size-4" />
                   {TOWN_TAG[tag].label}
                 </dt>
                 <dd className="text-muted-foreground">{TOWN_TAG[tag].hint}</dd>
@@ -88,28 +95,72 @@ export const ScalesDialog = ({
           </dl>
         </section>
         <section className="flex flex-col gap-2">
+          <h3 className="text-base font-semibold">Art und Merkmale</h3>
+          <p className="text-muted-foreground">
+            Die <b>Art</b> sagt, wie die Straße im Gelände liegt – jede Straße
+            hat genau eine. Die <b>Merkmale</b> sagen, wie sich das Fahren dort
+            anfühlt; eine Straße trägt keines, eines oder mehrere. Auch sie sind
+            redaktionelle Labels, keine gezählten Werte: Was die Daten messen –
+            Länge, Steigung, Höhe, Grenzübertritt – steht als Zahl daneben und
+            nicht hier.
+          </p>
+          <dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-2">
+            {ROAD_TYPES.map((type) => (
+              <div key={type} className="contents">
+                <dt className="font-semibold">{ROAD_TYPE[type].label}</dt>
+                <dd className="text-muted-foreground">
+                  {ROAD_TYPE[type].hint}
+                </dd>
+              </div>
+            ))}
+            {ROAD_TAGS.map((tag) => (
+              <div key={tag} className="contents">
+                <dt className="flex items-center gap-1.5 font-semibold">
+                  <TagIcon tag={tag} className="size-4" />
+                  {ROAD_TAG[tag].label}
+                </dt>
+                <dd className="text-muted-foreground">{ROAD_TAG[tag].hint}</dd>
+              </div>
+            ))}
+          </dl>
+        </section>
+        <section className="flex flex-col gap-2">
           <h3 className="text-base font-semibold">Status je Zeitraum</h3>
           <p className="text-muted-foreground">
             Heuristik aus typischem Öffnungsfenster (halbmonatsgenau), Passhöhe,
-            Jahreszeit und der Klimareihe des Passes (Schnee- und Frosttage je
-            Halbmonat, ERA5-Land 2015–2024). Bewirtschaftete Mautstraßen
-            bekommen keinen Höhenabschlag, die Klimareihe gilt aber auch für
-            sie. Für Rundtouren gilt der schlechteste Status ihrer Pässe.
-            Ersetzt keine amtliche Sperrauskunft.
+            Jahreszeit, der Klimareihe des Passes (ERA5-Land 2015–2024) und dem
+            Tageslicht. Sie beantwortet „wie gut ist es, dort in diesem
+            Halbmonat zu fahren“, nicht nur „kommt man drüber“. Für Rundtouren
+            gilt der schlechteste Wert ihrer Pässe. Ersetzt keine amtliche
+            Sperrauskunft.
           </p>
           <p className="text-muted-foreground">
-            <b>Schneefall sperrt nichts.</b> Ab 20 % Schneefalltagen oder 80 %
-            Frostnächten im Halbmonat wird aus „meist offen“ ein
-            „wetterabhängig“: die Straße ist dann meist befahrbar, aber nicht
-            verlässlich planbar. „Oft gesperrt“ kommt ausschließlich aus dem
-            Öffnungsfenster. Im Detail steht unter dem Status der Grund in einem
-            Satz; „Beste Zeit“ ist der längste Abschnitt mit „meist offen“ und
-            weniger als 10 % Schneefalltagen.
+            <b>Vier Stufen, eine Leiter.</b> Jedes Signal kann eine Zelle nur
+            senken, nie heben: Schneefall ab 20 % der Tage, Frost in 80 % der
+            Nächte, Hitze im Tal ab 26 °C, Regen an 70 % der Tage, Tage unter
+            10¾ Stunden Licht oder ein Gipfel-Tagesmaximum unter 8 °C machen aus
+            „gut“ ein „eingeschränkt“ – und das erste Signal in dieser
+            Reihenfolge ist das Wort dazu. „Beste Zeit“ ist der längste
+            Abschnitt ohne Vorbehalt und mit weniger als 10 % Schneefalltagen.
+            „Oft gesperrt“ kommt ausschließlich aus dem Öffnungsfenster: eine
+            gesperrte Straße und ein heißes Tal sind nicht dieselbe Art von
+            Aussage.
+          </p>
+          <p className="text-muted-foreground">
+            <b>Abgeleitet, nicht gemessen:</b> Die Klimareihe gilt für die
+            Passhöhe. Der Talwert wird mit 0,65 °C je 100 m bis zum tiefsten
+            Anstiegsbeginn heruntergerechnet und liegt gut ± 3 °C daneben; für
+            Pässe ohne Anstiegsprofil gibt es ihn nicht. Das Tageslicht ist
+            reine Astronomie. Im Detail steht unter dem Status der Grund in
+            einem Satz, mit Zahl und Herkunft.
           </p>
           <p className="text-muted-foreground">
             Der Streifen aus 24 Zellen zeigt das ganze Jahr auf einen Blick:
-            gefüllt = meist offen bzw. wetterabhängig, hohl = oft gesperrt,
-            umrandet = der gewählte Halbmonat.
+            grün = beste Zeit (der längste Abschnitt ohne Vorbehalt und mit
+            weniger als 10 % Schneefalltagen), gelb = gut, orange =
+            eingeschränkt, hohl mit rotem Rand = oft gesperrt, umrandet = der
+            gewählte Halbmonat. Im Detail erklärt jede Zelle sich beim
+            Überfahren selbst.
           </p>
         </section>
         <section className="flex flex-col gap-2">
@@ -138,10 +189,10 @@ export const ScalesDialog = ({
           <p className="text-muted-foreground">
             Höhen und Auffahrtsdaten sind gerundete Richtwerte. Schönheit,
             Bekanntheit, Schwierigkeit und Verkehr sind redaktionelle
-            1–5-Einschätzungen, die Merkmale der Orte redaktionelle Labels. Der
-            Status je Zeitraum ist eine Heuristik und ersetzt keine amtliche
-            Sperrauskunft. Die App dient der groben Routenplanung, nicht der
-            Navigation.
+            1–5-Einschätzungen, Art und Merkmale der Straßen sowie die Merkmale
+            der Orte sind redaktionelle Labels. Der Status je Zeitraum ist eine
+            Heuristik und ersetzt keine amtliche Sperrauskunft. Die App dient
+            der groben Routenplanung, nicht der Navigation.
           </p>
         </section>
       </div>

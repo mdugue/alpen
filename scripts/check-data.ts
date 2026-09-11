@@ -22,6 +22,8 @@
  */
 import type { z } from "zod";
 
+import { isTraverse, ROAD_TYPE } from "../lib/regions";
+import { ascentKey, tourKey } from "../lib/route-key";
 import { FILES } from "../lib/schema";
 import { fold } from "../lib/search";
 import type {
@@ -35,11 +37,11 @@ import type {
 } from "../lib/types";
 import { renderJsonSchema, schemaFileFor } from "./emit-json-schema";
 import {
-  ascentMetrics,
-  checkAscent,
   checkRoad,
+  checkRoadAscent,
   checkSummit,
   checkTour,
+  roadMetrics,
   tourMetrics,
   withProfile,
 } from "./lib/validate";
@@ -184,6 +186,37 @@ const summitWarnings = (p: Pass): string[] => {
   return out;
 };
 
+/**
+ * Every stored ride of one road, measured the way its type is measured
+ * (`roadMetrics`): a climb against the marker, a traverse against its two
+ * curated ends and its stated length.
+ */
+const checkRoutes = (p: Pass) => {
+  const traverse = isTraverse(p.type);
+  for (const [i, a] of p.ascents.entries()) {
+    const key = `${p.slug}:${i}`;
+    const geom = routes?.[key];
+    if (!geom) {
+      if (routes && !(rejected && key in rejected))
+        warnings.push(`${key}: Route fehlt (bun run data:build)`);
+      continue;
+    }
+    let m = roadMetrics(traverse, geom, a, { lat: p.lat, lon: p.lon });
+    const prof = profiles?.[key];
+    // The profile only feeds the climb metrics; a traverse is judged on
+    // length and ends, which the geometry alone already carries.
+    if (prof && !traverse)
+      m = withProfile(m as AscentMetrics, prof, p.elevation);
+    else if (profiles && !prof) warnings.push(`${key}: Profil fehlt`);
+    inspect(
+      key,
+      `${p.name} ab ${a.label}`,
+      m,
+      checkRoadAscent(traverse, m, a.check),
+    );
+  }
+};
+
 const checkPasses = (list: Pass[]) => {
   dupes(list, "Pässe");
   // Folded names and aliases must be unique – search would find two passes.
@@ -210,25 +243,15 @@ const checkPasses = (list: Pass[]) => {
 
     warnings.push(...summitWarnings(p));
 
-    for (const [i, a] of p.ascents.entries()) {
-      const key = `${p.slug}:${i}`;
-      const geom = routes?.[key];
-      if (!geom) {
-        if (routes && !(rejected && key in rejected))
-          warnings.push(`${key}: Route fehlt (bun run data:build)`);
-        continue;
-      }
-      let m = ascentMetrics(geom, a.from, { lat: p.lat, lon: p.lon });
-      const prof = profiles?.[key];
-      if (prof) m = withProfile(m, prof, p.elevation);
-      else if (profiles) warnings.push(`${key}: Profil fehlt`);
-      inspect(
-        key,
-        `${p.name} ab ${a.label}`,
-        m,
-        checkAscent(m as AscentMetrics, a.check),
+    // Every type but `pass` is a road summit by definition, so `hasRoadSummit`
+    // never reads the flag there. `true` is a fact nobody maintains, and
+    // `false` is worse: it reads as "kein Straßenscheitel" and does nothing.
+    if (p.roadSummit !== undefined && p.type !== "pass")
+      warnings.push(
+        `${p.slug}: roadSummit wird bei einer ${ROAD_TYPE[p.type].label} nicht gelesen – der Scheitel liegt dort immer auf der Straße; Zeile entfernen`,
       );
-    }
+
+    checkRoutes(p);
     if (climate && !(p.slug in climate))
       warnings.push(`${p.slug}: Klimareihe fehlt`);
     if (photos && !(`pass:${p.slug}` in photos))
@@ -236,20 +259,16 @@ const checkPasses = (list: Pass[]) => {
   }
 };
 
-const checkTours = (
-  list: Tour[],
-  deadEnds: Set<string>,
-  slugs: Set<string>,
-) => {
+const checkTours = (list: Tour[], spurs: Set<string>, slugs: Set<string>) => {
   dupes(list, "Touren");
   for (const t of list) {
     for (const s of t.passes) {
       if (!slugs.has(s)) errors.push(`Tour ${t.slug}: unbekannter Pass ${s}`);
       // A road that ends at its summit cannot be crossed, so a tour listing it
       // either has the wrong pass or the pass is wrongly marked.
-      else if (deadEnds.has(s))
+      else if (spurs.has(s))
         warnings.push(
-          `Tour ${t.slug}: ${s} ist eine Stichstraße (deadEnd) – eine Runde kann dort nicht hinüber`,
+          `Tour ${t.slug}: ${s} ist eine Stichstraße – eine Runde kann dort nicht hinüber`,
         );
     }
     const key = `tour:${t.slug}`;
@@ -301,7 +320,7 @@ if (passes) checkPasses(passes);
 if (tours && passes)
   checkTours(
     tours,
-    new Set(passes.filter((p) => p.deadEnd).map((p) => p.slug)),
+    new Set(passes.filter((p) => p.type === "spur").map((p) => p.slug)),
     new Set(passes.map((p) => p.slug)),
   );
 if (towns) checkTowns(towns);
@@ -314,18 +333,20 @@ const checkFor = new Map<
   string,
   Pass["ascents"][number]["check"] | Tour["check"]
 >();
+/** Ascent keys of the types whose rides are measured as a traverse, see `roadMetrics`. */
+const traverseKeys = new Set<string>();
 for (const p of passes ?? [])
-  for (const [i, a] of p.ascents.entries())
-    checkFor.set(`${p.slug}:${i}`, a.check);
-for (const t of tours ?? []) checkFor.set(`tour:${t.slug}`, t.check);
+  for (const [i, a] of p.ascents.entries()) {
+    const key = ascentKey(p.slug, i);
+    checkFor.set(key, a.check);
+    if (isTraverse(p.type)) traverseKeys.add(key);
+  }
+for (const t of tours ?? []) checkFor.set(tourKey(t.slug), t.check);
 
 const rejudge = (key: string, r: RouteRejection) =>
   key.startsWith("tour:")
     ? checkTour(r.metrics as TourMetrics, checkFor.get(key) as Tour["check"])
-    : checkAscent(
-        r.metrics as AscentMetrics,
-        checkFor.get(key) as Pass["ascents"][number]["check"],
-      );
+    : checkRoadAscent(traverseKeys.has(key), r.metrics, checkFor.get(key));
 
 for (const [key, r] of Object.entries(rejected ?? {})) {
   const now = rejudge(key, r);

@@ -1,91 +1,123 @@
 import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import {
+  cellHint,
+  GRADE_LABEL,
   MONTH_INITIALS,
   periodIndex,
   periodLabel,
   PERIODS,
   seasonSummary,
-  STATUS_LABEL,
 } from "@/lib/status";
-import type { Period, Status } from "@/lib/types";
+import type { CellNote, Grade } from "@/lib/status";
+import type { Period } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
 /**
  * The whole year of one pass or tour in 24 cells, so "when" is answered
- * without clicking. Colour carries the status, but never alone: "oft
- * gesperrt" is hollow like the circles on the map and the current half-month
- * is outlined, so the strip still works without hue.
+ * without clicking. Three fills that differ in lightness as well as hue
+ * (`--grade-*` in app/globals.css): deep green for the pass's best window,
+ * light yellow for "gut", orange for "eingeschränkt" – and "oft gesperrt"
+ * hollow with a red hairline, like the circles on the map, so a closure is
+ * told apart by weight and a winter of them stays light. The current
+ * half-month is outlined, so the strip still works without hue, and in the
+ * panel every cell explains itself on tap, click or hover – a `Popover`
+ * with `openOnHover`, not a `Tooltip`, for the same reason as the panel's
+ * `info` icon (`components/panel/section.tsx`): hover needs a pointer a
+ * phone does not have, and Base UI's hover interaction already stands down
+ * for a touch press on its own. Unlike the `Tooltip` it replaced, a
+ * `Popover` shares no "next one opens instantly" state across the 24
+ * triggers, so scrubbing the strip with a mouse re-waits the open delay at
+ * every cell rather than only the first; accepted for now since reading a
+ * cell's text takes about that long anyway.
  */
-const CELL: Record<Status, string> = {
+export const CELL: Record<Grade, string> = {
+  best: "bg-grade-best",
   closed: "bg-status-closed/12 ring-1 ring-status-closed/45 ring-inset",
-  open: "bg-status-open",
-  risky: "bg-status-risky",
+  good: "bg-grade-good",
+  limited: "bg-grade-limited",
 };
 
 export const SeasonStrip = ({
-  statuses,
+  grades,
+  notes,
   current,
-  best,
   size = "row",
   className,
 }: {
-  /** 24 verdicts, index 0 = early January. */
-  statuses: Status[];
+  /** 24 grades, index 0 = early January. */
+  grades: Grade[];
+  /** What each cell knows beyond its grade, so its popover can be specific. */
+  notes?: CellNote[];
   /** Outlined half-month; usually the selected period. */
   current?: Period;
-  /** Underlined range in the panel size (`bestPeriods`). */
-  best?: [Period, Period] | null;
-  /** `row`: 96 px, no labels. `panel`: full width with month initials. */
+  /** `row`: 96 px, no labels. `panel`: full width with month initials and cell popovers. */
   size?: "row" | "panel";
   className?: string;
 }) => {
   const panel = size === "panel";
   const currentIndex = current === undefined ? -1 : periodIndex(current);
   const label = [
-    seasonSummary(statuses),
-    current !== undefined && statuses[currentIndex]
-      ? `${periodLabel(current)}: ${STATUS_LABEL[statuses[currentIndex]]}.`
+    seasonSummary(grades),
+    current !== undefined && grades[currentIndex]
+      ? `${periodLabel(current)}: ${GRADE_LABEL[grades[currentIndex]]}.`
       : "",
   ]
     .filter(Boolean)
     .join(" ");
 
-  // A run that wraps around the turn of the year cannot be drawn as one bar;
-  // the sentence in `aria-label` still carries it.
-  const from = best ? periodIndex(best[0]) : 0;
-  const to = best ? periodIndex(best[1]) : 0;
-  const bestBar =
-    panel && best && from <= to
-      ? {
-          left: `${(from / PERIODS.length) * 100}%`,
-          width: `${((to - from + 1) / PERIODS.length) * 100}%`,
-        }
-      : null;
+  const cellClass = (grade: Grade, i: number) =>
+    cn(
+      "relative flex-1 rounded-xs",
+      CELL[grade],
+      i === currentIndex &&
+        "outline-foreground z-10 outline-1 outline-offset-1",
+    );
 
+  // In the panel every cell is a button: reachable with Tab, its popover
+  // opening on tap, click, focus or hover, so the explanation is not
+  // pointer-only. The strip is then a group rather than an image, since an
+  // image role would make the cells presentational and hide them from a
+  // screen reader.
   return (
     <div className={cn(panel ? "w-full" : "w-24", className)}>
-      <div
-        role="img"
-        aria-label={label}
-        className={cn("flex gap-px", panel ? "h-4" : "h-2")}
-      >
-        {statuses.map((status, i) => (
-          <span
-            key={PERIODS[i]}
-            className={cn(
-              "relative flex-1 rounded-xs",
-              CELL[status],
-              i === currentIndex &&
-                "outline-foreground z-10 outline-1 outline-offset-1",
-            )}
-          />
-        ))}
-      </div>
-      {bestBar && (
-        <div aria-hidden className="relative mt-1 h-0.5">
-          <span
-            style={bestBar}
-            className="bg-foreground/55 absolute top-0 h-0.5 rounded-full"
-          />
+      {panel ? (
+        <div role="group" aria-label={label} className="flex h-4 gap-px">
+          {grades.map((grade, i) => (
+            <Popover key={PERIODS[i]}>
+              <PopoverTrigger
+                delay={400}
+                openOnHover
+                render={
+                  <button
+                    type="button"
+                    aria-label={`${periodLabel(PERIODS[i]!)}: ${GRADE_LABEL[grade]}`}
+                    className={cn(
+                      cellClass(grade, i),
+                      "focus-visible:outline-ring cursor-default border-0 p-0 focus-visible:z-20 focus-visible:outline-2 focus-visible:outline-offset-1",
+                    )}
+                  />
+                }
+              />
+              <PopoverContent className="w-56 gap-1" side="top">
+                <p className="text-sm font-semibold">
+                  {periodLabel(PERIODS[i]!)} · {GRADE_LABEL[grade]}
+                </p>
+                <p className="text-muted-foreground text-xs">
+                  {cellHint(grade, notes?.[i])}
+                </p>
+              </PopoverContent>
+            </Popover>
+          ))}
+        </div>
+      ) : (
+        <div role="img" aria-label={label} className="flex h-2 gap-px">
+          {grades.map((grade, i) => (
+            <span key={PERIODS[i]} className={cellClass(grade, i)} />
+          ))}
         </div>
       )}
       {panel && (

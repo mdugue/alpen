@@ -151,3 +151,22 @@ export const withRoadDistances = (
   if (dist.length !== profile.ele.length) return profile;
   return { ...profile, ...profileStats(dist, profile.ele), dist };
 };
+
+/**
+ * The lowest ascent start of every pass in m, from its profiles: where the
+ * heat of a half-month is felt, and what `valleyTmax` in lib/status.ts
+ * derives the valley value down to. Passes without a profile are absent.
+ */
+export const valleyElevations = (
+  passes: { slug: string; ascents: unknown[] }[],
+  profiles: Record<string, ElevationProfile>,
+): Record<string, number> => {
+  const out: Record<string, number> = {};
+  for (const p of passes) {
+    const starts = p.ascents
+      .map((_, i) => profiles[`${p.slug}:${i}`]?.start)
+      .filter((e): e is number => typeof e === "number");
+    if (starts.length) out[p.slug] = Math.min(...starts);
+  }
+  return out;
+};

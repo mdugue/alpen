@@ -10,11 +10,13 @@ import {
   ascentMetrics,
   checkAscent,
   checkRoad,
+  checkRoadAscent,
   checkSummit,
   checkTour,
   geometryHash,
   inputsHash,
   length,
+  roadMetrics,
   tourMetrics,
   withProfile,
 } from "./validate";
@@ -396,6 +398,65 @@ describe("metrics", () => {
     const m = tourMetrics(geom, [from, summit], 10);
     expect(m.statedKm).toBe(10);
     expect(m.kmDelta).toBeCloseTo(0.112, 2);
+  });
+});
+
+/**
+ * Plan 14: a road whose ride is the traverse itself has no summit the climb
+ * aims at, so it is measured between its two curated ends and against its
+ * stated length – the tour limits, with the tour's own sentences.
+ */
+describe("roadMetrics by type", () => {
+  const marker = { lat: 45.05, lon: 6.5 };
+  const from = { lat: 45, lon: 6.5 };
+  const to = { lat: 45.1, lon: 6.5 };
+  // ~11,1 km from `from` to `to`, with the marker in the middle.
+  const geom: [number, number][] = [
+    [45, 6.5],
+    [45.05, 6.5],
+    [45.1, 6.5],
+  ];
+
+  test("a correct traverse passes", () => {
+    const m = roadMetrics(true, geom, { from, km: 11.1, to }, marker);
+    expect((m as TourMetrics).statedKm).toBe(11.1);
+    expect(checkRoadAscent(true, m)).toBeEmpty();
+  });
+
+  test("a wrong end trips the tour sentence, not the pass one", () => {
+    const m = roadMetrics(
+      true,
+      geom,
+      { from, km: 11.1, to: { lat: 45.5, lon: 6.5 } },
+      marker,
+    );
+    expect(checkRoadAscent(true, m).join(" ")).toContain("letzten Wegpunkt");
+  });
+
+  test("a wrong km trips the length sentence", () => {
+    const m = roadMetrics(true, geom, { from, km: 30, to }, marker);
+    const reasons = checkRoadAscent(true, m);
+    expect(reasons).toHaveLength(1);
+    expect(reasons[0]).toContain("von den angegebenen 30 km ab");
+  });
+
+  test("the same geometry as a climb is measured against the marker", () => {
+    // As a climb the road ends 5,5 km past the marker and peaks at the end;
+    // the two measurements are not interchangeable, which is the whole point.
+    const m = roadMetrics(false, geom, { from }, marker);
+    expect((m as AscentMetrics).endDist).toBeCloseTo(5.56, 1);
+    expect(checkRoadAscent(false, m).join(" ")).toContain("vom Passpunkt");
+  });
+
+  test("a traverse check may only widen the tour limits", () => {
+    const m = roadMetrics(true, geom, { from, km: 13.5, to }, marker);
+    expect(checkRoadAscent(true, m)).not.toBeEmpty();
+    expect(
+      checkRoadAscent(true, m, {
+        maxKmDelta: 0.25,
+        note: "Länge laut Straßenverwaltung inkl. Zufahrt",
+      }),
+    ).toBeEmpty();
   });
 });
 

@@ -59,7 +59,32 @@ checkmarks in the lists, filter "still open and not yet ridden". The favorites
 infrastructure in `lib/app-state.ts` is the template. Fits the destination
 goal ("where are the passes we have not done yet").
 
-## 7. Deliberately parked
+## 7. More summer signals
+
+Plan 13 put heat, rain days, daylight and the cold descent on the status
+ladder with what `climate.json` already holds. What needs a new archive run
+or editorial data, each a plan of its own when its turn comes:
+
+- **Thunderstorm tendency.** Needs `cape` or hourly precipitation from the
+  archive (afternoon share of the rain), a new Open-Meteo run over the ten
+  years. Would be the one signal that separates the Dolomites' afternoons
+  from the Maritime Alps' at equal rain-day shares.
+- **Wind and sunshine share.** Fit into the same daily archive call (≤ 10
+  daily variables, currently 4): `wind_gusts_10m_max`, `sunshine_duration`.
+  Wind matters on the Ventoux and the Bonette, sunshine for the "nass" word.
+- **Seasonal crowds.** Ferragosto, school holidays, granfondos and the
+  Tour's passage: editorial, per pass and half-month, a fifth reason word
+  ("voll") on the same ladder.
+- **Car-free days.** Sellaronda Bike Day, Stelvio Bike Day, the Glockner's
+  closures: editorial dates, shown as a highlight rather than a reason.
+- **Infrastructure season.** Hotels, the summit inn, the lift that carries
+  bikes: when the valley is open for business. Editorial, per destination
+  (plan 12) rather than per pass.
+- **Usable hours per day.** The cell fill height as hours between sunrise,
+  the heat of the afternoon and sunset – the daylight module already yields
+  the window, the heat signal the cut-off.
+
+## 8. Deliberately parked
 
 - **Custom tour building and GPX export.** Route planning is what Komoot and
   Strava are for; the app links to them from every pass. Revisit only if
@@ -67,7 +92,7 @@ goal ("where are the passes we have not done yet").
 - **Offline tiles / service worker.** Planning happens at home; the app is
   not for on-the-bike use.
 
-## 8. Smaller ideas
+## 9. Smaller ideas
 
 - Imagery per pass (own photos or Wikimedia with license attribution).
 - Weather for tours and towns, not only passes.

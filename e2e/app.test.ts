@@ -35,7 +35,7 @@ test(
       await page.waitForAttribute(
         SLIDER,
         "aria-valuetext",
-        /^(?:Anfang|Ende) \w+: \d+ meist offen/u,
+        /^(?:Anfang|Ende) \w+: \d+ beste Zeit, \d+ gut/u,
       );
     }),
   TIMEOUT,
@@ -140,7 +140,15 @@ test(
       // so the software keyboard never arrives while the sheet is moving.
       await page.waitFor('[aria-label="Liste ausklappen"]');
       expect(await page.count("input[type=search]")).toBe(0);
-      await page.clickText("button", "Pass, Tour oder Ort");
+      // The peek row rides in with the sheet, so a tap in its first frames can
+      // land beside the button or before React has attached its handler. Tap
+      // again until the field has taken the button's place.
+      await waitUntil(async () => {
+        if ((await page.count("input[type=search]")) > 0) return true;
+        await page.clickText("button", "Pass, Tour oder Ort");
+        await Bun.sleep(300);
+        return (await page.count("input[type=search]")) > 0;
+      }, "the list sheet to open");
       await page.waitFor("input[type=search]");
       await page.waitFor(PASS_ROW);
       const all = await page.count(PASS_ROW);

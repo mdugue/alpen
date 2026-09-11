@@ -8,8 +8,9 @@ import {
 } from "nuqs";
 import { useCallback, useSyncExternalStore } from "react";
 
+import { ROAD_TAGS, ROAD_TYPES } from "@/lib/regions";
 import { isPeriod } from "@/lib/status";
-import type { Period, Status } from "@/lib/types";
+import type { Period, RoadTag, RoadType, Status } from "@/lib/types";
 
 export type EntityKind = "pass" | "tour" | "town";
 export interface Selection {
@@ -18,6 +19,10 @@ export interface Selection {
 }
 
 export const ALL_STATUS: Status[] = ["open", "risky", "closed"];
+/** All five road types selected = no type filter, see `Filters.types`. */
+export const ALL_TYPES: RoadType[] = [...ROAD_TYPES];
+/** Stable empty snapshot for the tag filter (`Filters.tags`). */
+export const NO_TAGS: RoadTag[] = [];
 export const ALL_KINDS: EntityKind[] = ["pass", "tour", "town"];
 /** Stable initial values for array-valued stored keys (useSyncExternalStore needs stable snapshots). */
 export const NO_SLUGS: string[] = [];
@@ -59,6 +64,23 @@ export const FAME_OPTIONS = [
   [3, "ab 3 von 5"],
   [4, "nur Klassiker"],
 ] as const;
+/**
+ * The raw summer signals, so the data that makes July queryable is not buried
+ * under the composite status: the valley's derived mean daily maximum and the
+ * share of rain days in the chosen half-month (`lib/status.ts`).
+ */
+export const HEAT_NONE = 99;
+export const HEAT_OPTIONS = [
+  [HEAT_NONE, "egal"],
+  [28, "Tal unter 28 °C"],
+  [24, "Tal unter 24 °C"],
+] as const;
+export const WET_NONE = 100;
+export const WET_OPTIONS = [
+  [WET_NONE, "egal"],
+  [50, "höchstens jeder 2. Tag"],
+  [40, "trocken (≤ 40 %)"],
+] as const;
 
 export interface Filters {
   period: Period;
@@ -78,6 +100,28 @@ export interface Filters {
   maxTraffic: number;
   /** 1 = no filter. */
   minBeauty: number;
+  /**
+   * Upper bounds on the raw summer signals of the chosen half-month, see
+   * `HEAT_OPTIONS` and `WET_OPTIONS`; a pass without the value does not pass
+   * an active one. `HEAT_NONE` / `WET_NONE` = no filter.
+   */
+  maxValleyTmax: number;
+  maxWetPct: number;
+  /**
+   * Which kinds of road stay in the lists; all five = no filter. A set rather
+   * than a single choice, because "passes and spurs, but no valleys" is a real
+   * question. Like the other lower bounds it reaches a tour through its
+   * passes: one member road of a selected type is enough.
+   */
+  types: RoadType[];
+  /**
+   * Editorial road labels that all have to be present (and-semantics): two
+   * selected labels mean "car-free *and* glacier", which is what a planner
+   * asks two filters for. Empty = no filter. Not applied to tours – a label
+   * describes one road, and a loop with a car-free spur in it is not a
+   * car-free loop.
+   */
+  tags: RoadTag[];
   sort: PassSort;
   query: string;
   favoritesOnly: boolean;
@@ -91,6 +135,8 @@ export const DEFAULT_FILTERS: Filters = {
   difficulty: [RATING_MIN, RATING_MAX],
   favoritesOnly: false,
   maxTraffic: RATING_MAX,
+  maxValleyTmax: HEAT_NONE,
+  maxWetPct: WET_NONE,
   minBeauty: RATING_MIN,
   minElevation: 0,
   minFame: 1,
@@ -98,6 +144,8 @@ export const DEFAULT_FILTERS: Filters = {
   query: "",
   sort: "elevation",
   status: ALL_STATUS,
+  tags: NO_TAGS,
+  types: ALL_TYPES,
 };
 
 /** How many of the pass criteria are active – the badge on the filter trigger. */
@@ -106,7 +154,11 @@ export const countCriteria = (f: Filters) =>
   (f.minElevation > 0 ? 1 : 0) +
   (f.difficulty[0] > RATING_MIN || f.difficulty[1] < RATING_MAX ? 1 : 0) +
   (f.maxTraffic < RATING_MAX ? 1 : 0) +
-  (f.minBeauty > RATING_MIN ? 1 : 0);
+  (f.minBeauty > RATING_MIN ? 1 : 0) +
+  (f.maxValleyTmax < HEAT_NONE ? 1 : 0) +
+  (f.maxWetPct < WET_NONE ? 1 : 0) +
+  (f.types.length === ALL_TYPES.length ? 0 : 1) +
+  (f.tags.length > 0 ? 1 : 0);
 
 /** True when any filter apart from the period and the sort is active. */
 export const hasActiveFilters = (f: Filters) =>
@@ -158,6 +210,8 @@ export interface HashState {
 //   f     min. fame                        m     min. elevation in m
 //   d     difficulty window "2-4"          v     max. traffic
 //   be    min. beauty                      o     pass sort key
+//   h     max. valley heat in °C           w     max. share of rain days
+//   a     road types "pass,spur"           e     road labels "toll,carfree"
 //   pass | tour | town   the selected entity's slug
 //
 // Every key is validated on the way in: unknown values fall back to the
@@ -200,6 +254,25 @@ const parseAsStatus = createParser<Status[]>({
   },
   serialize: (list) => list.join(",") || "none",
 });
+/**
+ * A comma-joined subset of a fixed vocabulary, in vocabulary order – `a=pass,spur`,
+ * `e=toll,carfree`. Unknown members are dropped rather than rejected, so an
+ * old link keeps the part of its filter this build still understands; a value
+ * that leaves nothing behind is no filter at all and falls back to the
+ * default. `none` is the empty set, as it is for the status.
+ */
+const parseAsSubset = <T extends string>(vocabulary: readonly T[]) =>
+  createParser<T[]>({
+    eq: (a, b) => a.length === b.length && a.every((x) => b.includes(x)),
+    parse: (raw) => {
+      if (raw === "none") return [];
+      const picked = raw.split(",");
+      const list = vocabulary.filter((v) => picked.includes(v));
+      return list.length ? list : null;
+    },
+    serialize: (list) => list.join(",") || "none",
+  });
+
 const RATINGS = [1, 2, 3, 4, 5] as const;
 /** Exactly one of the given values; anything else is not a filter. */
 const parseAsOneOf = (values: readonly number[]) =>
@@ -226,11 +299,14 @@ const parseAsRange = createParser<[number, number]>({
 
 /** Reading: a missing or invalid value is `null`, which `parseHash` turns into "not given". */
 const HASH = {
+  a: parseAsSubset(ROAD_TYPES),
   b: parseAsFixed(0),
   be: parseAsOneOf(BEAUTY_OPTIONS.map(([v]) => v)),
   c: parseAsCenter,
   d: parseAsRange,
+  e: parseAsSubset(ROAD_TAGS),
   f: parseAsOneOf(FAME_OPTIONS.map(([v]) => v)),
+  h: parseAsOneOf(HEAT_OPTIONS.map(([v]) => v)),
   m: parseAsMetres,
   o: parseAsStringLiteral(PASS_SORTS),
   pass: parseAsString,
@@ -241,19 +317,24 @@ const HASH = {
   tour: parseAsString,
   town: parseAsString,
   v: parseAsOneOf(TRAFFIC_OPTIONS.map(([v]) => v)),
+  w: parseAsOneOf(WET_OPTIONS.map(([v]) => v)),
   z: parseAsFixed(2),
 };
 /** Writing: a value equal to its default leaves the hash. */
 const HASH_OUT = {
   ...HASH,
+  a: HASH.a.withDefault(DEFAULT_FILTERS.types),
   be: HASH.be.withDefault(DEFAULT_FILTERS.minBeauty),
   d: HASH.d.withDefault(DEFAULT_FILTERS.difficulty),
+  e: HASH.e.withDefault(DEFAULT_FILTERS.tags),
   f: HASH.f.withDefault(DEFAULT_FILTERS.minFame),
+  h: HASH.h.withDefault(DEFAULT_FILTERS.maxValleyTmax),
   m: HASH.m.withDefault(DEFAULT_FILTERS.minElevation),
   o: HASH.o.withDefault(DEFAULT_FILTERS.sort),
   q: HASH.q.withDefault(DEFAULT_FILTERS.query),
   s: HASH.s.withDefault(DEFAULT_FILTERS.status),
   v: HASH.v.withDefault(DEFAULT_FILTERS.maxTraffic),
+  w: HASH.w.withDefault(DEFAULT_FILTERS.maxWetPct),
 };
 const loadHash = createLoader(HASH);
 const serialize = createSerializer(HASH_OUT, { clearOnDefault: true });
@@ -273,6 +354,8 @@ export const parseHash = (hash: string): HashState => {
     filters: {
       difficulty: given("d"),
       maxTraffic: given("v"),
+      maxValleyTmax: given("h"),
+      maxWetPct: given("w"),
       minBeauty: given("be"),
       minElevation: given("m"),
       minFame: given("f"),
@@ -280,6 +363,8 @@ export const parseHash = (hash: string): HashState => {
       query: given("q"),
       sort: given("o"),
       status: given("s"),
+      tags: given("e"),
+      types: given("a"),
     },
     selection,
     view: {
@@ -306,11 +391,14 @@ export const serializeHash = (
 ): string => {
   const tilted = view.pitch > 1;
   return serialize({
+    a: filters.types,
     b: tilted ? view.bearing : null,
     be: filters.minBeauty,
     c: [view.lat, view.lon],
     d: filters.difficulty,
+    e: filters.tags,
     f: filters.minFame,
+    h: filters.maxValleyTmax,
     m: filters.minElevation,
     o: filters.sort,
     pass: selection?.kind === "pass" ? selection.slug : null,
@@ -321,6 +409,7 @@ export const serializeHash = (
     tour: selection?.kind === "tour" ? selection.slug : null,
     town: selection?.kind === "town" ? selection.slug : null,
     v: filters.maxTraffic,
+    w: filters.maxWetPct,
     z: view.zoom,
   }).replace(/^\?/u, "");
 };

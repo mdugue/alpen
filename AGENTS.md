@@ -23,7 +23,9 @@ friends do that better and the app links out to them.
    formatted with `toLocaleString("de-DE")` (see `fmt` in `lib/utils.ts`).
 3. **Stay honest.** The 1–5 scales are editorial judgements and the status is
    a heuristic. Both are labelled as such in the scales dialog and must never
-   be presented as measured values.
+   be presented as measured values. Values the app derives rather than reads
+   (the valley temperature from the summit series) say "abgeleitet" wherever
+   they show, and the raw summit values stay visible next to them.
 4. **No silent data changes.** Whoever touches `data/*.json` runs
    `bun run data:check`. Routed geometry passes the quality gate in
    `scripts/lib/validate.ts` before it is stored; what fails lands in
@@ -39,13 +41,15 @@ friends do that better and the app links out to them.
 
 | Topic                                           | File                                                                                                                                                        |
 | ----------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Rideability heuristic                           | `lib/status.ts` (`passStatus`, `tourStatus`)                                                                                                                |
+| Rideability heuristic                           | `lib/status.ts` (`passVerdict`, the reason ladder `REASON_ORDER`, `Grade`, `tourStatus`); thresholds in `docs/scales.md`                                    |
+| Daylight (sunrise, sunset, day length)          | `lib/daylight.ts`, pure astronomy, no data                                                                                                                  |
 | Data schemas (zod) and inferred types           | `lib/schema.ts`, `lib/types.ts`, `data/schema/*.schema.json` (`bun run data:schema`)                                                                        |
 | Regions and countries (vocabulary)              | `lib/regions.ts`                                                                                                                                            |
 | Data access (cached, validated)                 | `lib/data.ts`                                                                                                                                               |
 | Profile sampling and derived gradients          | `lib/profile.ts`                                                                                                                                            |
 | Filter, selection and URL state (hash keys)     | `lib/app-state.ts`, `components/explorer.tsx`                                                                                                               |
-| Town labels: vocabulary, icons, badges          | `lib/regions.ts` (`TOWN_TAGS`), `lib/tag-icons.ts`, `components/town-tags.tsx`                                                                              |
+| Road types and labels (vocabulary)              | `lib/regions.ts` (`ROAD_TYPES`, `ROAD_TAGS`, `isTraverse`, `hasRoadSummit`)                                                                                 |
+| Tag labels: vocabulary, icons, badges           | `lib/regions.ts` (`TOWN_TAGS`, `ROAD_TAGS`, `TAG_LABEL`), `lib/tag-icons.ts`, `components/tags.tsx`                                                         |
 | Search normalisation and haystacks              | `lib/search.ts`                                                                                                                                             |
 | Map, layers, 3D, markers, labels, feature state | `components/map/pass-map.tsx`                                                                                                                               |
 | Basemap: vector style, palette, glyphs          | `lib/basemap.ts`, `lib/palette.ts`, `scripts/build-map-style.ts` (→ `public/map/style-*.json`), `scripts/build-glyphs.ts` (→ `public/map/fonts`, committed) |
@@ -65,6 +69,7 @@ friends do that better and the app links out to them.
 | Linting and formatting                          | `oxlint.config.ts`, `oxfmt.config.ts`                                                                                                                       |
 | Implementation plans                            | `docs/plans/` (index: `docs/plans/README.md`)                                                                                                               |
 | Project skills                                  | `.agents/skills/implement-plan`, `curate-data`, `preview-app`                                                                                               |
+| Web-session setup (Bun version, deps)           | `.claude/hooks/session-start.sh`, registered in `.claude/settings.json`                                                                                     |
 
 ## Conventions
 
@@ -78,7 +83,7 @@ friends do that better and the app links out to them.
   styling (status badges, etc.) goes into the consuming component via
   `className`. Re-running `ui:init` overwrites `app/globals.css`; the domain
   tokens (`--status-open`, `--status-risky`, `--status-closed`, `--tour`,
-  `--town` plus their `@theme inline` lines), the `--text-2xs` step below
+  `--town`, the strip's `--grade-*` ramp, plus their `@theme inline` lines), the `--text-2xs` step below
   Tailwind's `text-xs`, the MapLibre rules at the end, the coarse-pointer
   font-size rule next to them and the dark-mode setup must be restored
   afterwards.
@@ -168,8 +173,10 @@ friends do that better and the app links out to them.
   pass looked at, a new section opens by itself, and the next visit starts
   unfolded again. A section title says what the block is and nothing else;
   where a source or its caveat has to be named, one short sentence sits behind
-  the `info` tooltip. A header never opens a dialog – the scales dialog belongs
-  to the sidebar footer, which is where it stays.
+  the `info` popover, opened by tap or click – a tooltip needs hover, which a
+  phone cannot give it, and the detail panel is where a phone reaches this app
+  most. A header never opens a dialog – the scales dialog belongs to the
+  sidebar footer, which is where it stays.
 - **A tour holds its ascents; it does not sit beside them.** A tour _is_ the
   union of several ascents – the Sellaronda is its four passes – so it is
   drawn as what it is: a band wide enough to hold them, laid _under_ the
@@ -290,6 +297,17 @@ friends do that better and the app links out to them.
   TypeScript 7.0 has no JavaScript API and the editor language service still
   wants one – `.vscode/settings.json` points `js/ts.tsdk.path` at it. Keep
   both entries in `package.json`.
+- **Bun is pinned by `engines`, and the web container is dragged up to it.**
+  `engines.bun` in `package.json` is the floor, and it is not decoration: on
+  Bun 1.3 `bun run build` dies in Next's TypeScript step, and `bun run e2e`
+  and the `preview-app` skill cannot start at all, because both drive Chrome
+  through `Bun.WebView` (Bun 1.4+). Claude Code on the web ships whatever Bun
+  its image was built with, so `.claude/hooks/session-start.sh` runs at session
+  start, upgrades Bun when it is below that floor and installs the
+  dependencies with `--frozen-lockfile` – an older Bun rewrites `bun.lock` to
+  the previous format on the first install. The hook only runs in the remote
+  container (`CLAUDE_CODE_REMOTE`); a local machine manages its own toolchain.
+  Raise the floor in `package.json` and the hook follows.
 - **React Compiler is on.** No manual `useMemo`/`useCallback` for
   optimisation; oxlint ports the whole React Compiler rule set under
   `react/*` (`set-state-in-effect`, `purity`, `immutability`, `refs`,

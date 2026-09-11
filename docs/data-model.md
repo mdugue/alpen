@@ -32,8 +32,8 @@ flowchart LR
 
 Only server and script code imports `lib/schema.ts`; components import the
 types from `lib/types.ts` so zod never reaches the client bundle. The fixed
-vocabularies (regions, countries) live in `lib/regions.ts`, which both sides
-share.
+vocabularies (regions, countries, road types, road and town labels) live in
+`lib/regions.ts`, which both sides share.
 
 ## Source data (hand-maintained)
 
@@ -46,11 +46,12 @@ share.
   "aliases": ["Galibier"], // optional: other spellings people search for
   "country": "FR", // "CH/IT" for border passes
   "region": "Westalpen", // Westalpen | Zentralalpen | Ostalpen | Dolomiten
+  "type": "pass", // required: pass | spur | plateau | balcony | valley
+  "tags": ["toll", "panorama"], // optional: editorial labels, see below
   "lat": 45.064,
   "lon": 6.408,
-  "elevation": 2642,
-  "deadEnd": true, // optional: the road ends at the summit, no crossing
-  "roadSummit": true, // optional: highest asphalt, no mountain_pass node in OSM
+  "elevation": 2642, // the height of the marker, not "the summit"
+  "roadSummit": true, // only on a pass: highest asphalt, no mountain_pass node in OSM
   "classicAscent": "18 km, 6,9 % ab Valloire (34 km via Télégraphe)",
   "beauty": 5,
   "fame": 5,
@@ -79,23 +80,78 @@ reads – with a mandatory `note` saying why:
 Nockalm …). They are cleared of snow and therefore get no elevation penalty in
 the status heuristic.
 
-Not every entry is a pass in the strict sense. Two optional flags say how the
-entry differs, and they are independent of each other and of `maintained`:
+#### What kind of road it is, and what riding it is like
 
-- `deadEnd: true` – the road ends at the summit (Ötztaler Gletscherstraße,
-  Tre Cime, Kitzbüheler Horn …). The descent is the ascent ridden backwards
-  and the climb cannot be part of a loop, so `data:check` warns when a tour
-  lists such a pass, and the detail panel says so under "Auffahrten". It is
-  curated, not derived from the number of ascents: the Nockalmstraße has two
-  ascents and is a crossing, the Umbrailpass has one and is not a dead end.
-- `roadSummit: true` – the summit point is the highest point of the asphalt
-  rather than a saddle, because OSM carries no `mountain_pass` node for it.
-  `bun run data:locate` then skips the pass-node search and offers the highest
-  sample of the stored route instead, and `--apply` takes it – judged on DEM
-  height and road distance, since there is no name to match. The gate's summit
-  checks are unchanged: a correct road-summit point passes them like any pass.
-  Every dead end is a road summit; a crossing can be one too (Roßfeld-
-  Panoramastraße, Nockalmstraße).
+Not every entry is a pass in the strict sense, and "how it deviates from a
+pass" was never able to say what it is instead. Two axes do (plan 14). They
+are independent of each other and of `maintained`:
+
+```mermaid
+erDiagram
+  ROAD {
+    string slug
+    enum type "pass | spur | plateau | balcony | valley"
+    list tags "panorama, glacier, gorge, reservoir, carfree, toll, hairpins, surface, tunnels"
+    bool roadSummit "technical, only on a pass: no mountain_pass node"
+    list ascents "from, label – plus to, km for a traverse"
+  }
+  GATE {
+    limits ascent "pass, spur: climbs to the marker"
+    limits traverse "plateau, balcony, valley: measured as a tour"
+  }
+  ROAD ||--|| GATE : "measured by type"
+```
+
+**`type`** is topology: how the road lies in the terrain. Single-valued,
+required on every entry, and it decides how the route quality gate measures
+it. The rule is operational, not aesthetic: if the ascents climb to the
+entry's own point it is a `pass` or a `spur`; if the ride is the traverse
+itself it is one of the other three.
+
+| `type`    | Label (UI)   | What it is                                            | Examples                                             |
+| --------- | ------------ | ----------------------------------------------------- | ---------------------------------------------------- |
+| `pass`    | Pass         | a crossing: up one side, down another                 | Stilfser Joch, Galibier, Nockalmstraße               |
+| `spur`    | Stichstraße  | a climb to a point where the road ends                | Tre Cime, Ötztaler Gletscherstraße, Kitzbüheler Horn |
+| `plateau` | Höhenstraße  | stays up instead of crossing once: high road, plateau | Zillertaler Höhenstraße, Seiser Alm, Ritten          |
+| `balcony` | Balkonstraße | cut into a wall, no summit the ride aims at           | Combe Laval, Gorges de la Bourne, Gorges du Cians    |
+| `valley`  | Talstraße    | a quiet dead-end valley, little gradient              | Vallée de la Clarée, Val Ferret, Sertigtal           |
+
+A `spur` cannot be crossed, so `data:check` warns when a tour lists one and
+the detail panel says so under "Auffahrten". The three traverse types carry
+`to` and `km` on every ascent and are measured against the tour limits; a
+`pass` or `spur` ascent must not carry them (see the `curate-data` skill).
+
+**`tags`** is character: what riding the road is like. Multi-valued,
+optional, editorial in the exact sense of the town labels – what a planner
+notices, not counted facts. Nothing the data already measures belongs here:
+steepness, length, altitude and a border crossing are numbers and stay
+numbers.
+
+| Tag         | Label (UI)             | Given when                                                                           |
+| ----------- | ---------------------- | ------------------------------------------------------------------------------------ |
+| `panorama`  | Panoramastraße         | the road was built for the view and says so in its name or its layout                |
+| `glacier`   | Gletscherstraße        | ends at or runs along a glacier                                                      |
+| `gorge`     | Schlucht               | a significant stretch runs through a gorge or canyon                                 |
+| `reservoir` | Stausee                | the road exists because of a dam and ends at or along the lake                       |
+| `carfree`   | Autofrei               | closed to cars, at least on fixed days (say which in `note`)                         |
+| `toll`      | Maut                   | a fee is charged; whether bikes pay goes into `note`                                 |
+| `hairpins`  | Kehrenbauwerk          | the hairpins are a monument in themselves (Tremola, Vršič, San Boldo)                |
+| `surface`   | Pflaster oder Schotter | a stretch that is not smooth asphalt – cobbles, gravel top – changes the tyre choice |
+| `tunnels`   | Tunnel & Galerien      | unlit tunnels or galleries a rider has to plan for                                   |
+
+`toll` and `season.maintained` are independent: maintained means cleared, toll
+means paid for. The Großglockner is both, the Simplon is cleared and free, a
+car-free spur is neither. Nothing derives one from the other.
+
+`roadSummit: true` stays a technical flag, and only a `pass` carries it: its
+summit point is the highest point of the asphalt rather than a saddle, because
+OSM has no `mountain_pass` node for it. `bun run data:locate` then skips the
+pass-node search and offers the highest sample of the stored route instead,
+and `--apply` takes it – judged on DEM height and road distance, since there
+is no name to match. The gate's summit checks are unchanged: a correct
+road-summit point passes them like any pass. For every other type the flag
+follows from the type, so `data:check` reports it as redundant where it is
+written down anyway.
 
 `aliases` feeds the search only (never a name of another pass; `data:check`
 rejects duplicates). Search folds accents, ß and punctuation on both sides
@@ -151,7 +207,7 @@ the scales dialog):
 | `events`    | Marathon-Ort          | start or centre of a big cycling marathon                       |
 | `season`    | Lange Saison          | low and mild – rides early in the year and late in the autumn   |
 
-Each label has a glyph (`lib/tag-icons.ts`, `components/town-tags.tsx`): the
+Each label has a glyph (`lib/tag-icons.ts`, `components/tags.tsx`): the
 sidebar row shows the glyphs alone, because three labels spelled out are wider
 than the row; the detail panel, the map's hover popup and the scales dialog
 show glyph and word. The popup takes an HTML string rather than React, which
@@ -174,7 +230,7 @@ that collides with another town's _name_, or one a town gives itself twice.
 | ------------------ | ----------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `routes.json`      | `<pass-slug>:<index>`, `tour:<tour-slug>` | Road geometry as `[lat, lon][]`                                                                                                                                |
 | `profiles.json`    | `<pass-slug>:<index>`                     | km, elevation gain, average and steepest-kilometre gradient, ~100 samples                                                                                      |
-| `climate.json`     | `<pass-slug>`                             | 24 half-months with average temperatures and frost/snow/rain share                                                                                             |
+| `climate.json`     | `<pass-slug>`                             | 24 half-months with average temperatures and frost/snow/rain share; the verdict reads `snowPct`, `frostPct`, `wetPct` and `tmax` (`lib/status.ts`)             |
 | `routes-meta.json` | as `routes.json`                          | `source` (`ors` \| `osrm`) and `fetchedAt` – which router produced this route                                                                                  |
 | `rejected.json`    | as `routes.json`                          | routes the quality gate refused, with the reasons, the measured values, the paid-for profile and a hash of the inputs they were routed for                     |
 | `summits.json`     | `<pass-slug>`                             | DEM height (`dem`) and distance to the nearest road (`roadDist`) at the pass coordinate, with the `lat`/`lon` they were read at, to catch a wrong summit point |
@@ -184,7 +240,12 @@ A profile's samples are ~100 points of the ascent's road geometry, taken at
 sample is therefore derivable from the route and is not stored twice;
 `lib/data.ts` derives it on the server (`ProfileWithCoords`) – which is what
 lets the detail panel put a cursor on the map while you scrub the profile,
-without the route itself reaching the client. The map draws the routes from
+without the route itself reaching the client. The same getter family derives
+`valleys` (`getValleys()`, `valleyElevations()` in `lib/profile.ts`): the
+lowest `start` of a pass's profiles, which is the elevation the summit
+climate is taken down to for the heat signal (`valleyTmax()`, see
+`docs/scales.md`, "Derived values"). The client gets the number per slug, not
+the profiles. The map draws the routes from
 static GeoJSON instead: `scripts/build-map-assets.ts` writes `routes.json`,
 simplified to 5 m, as content-hashed files into `public/map` (git-ignored),
 see plan 01.

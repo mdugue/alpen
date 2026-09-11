@@ -23,6 +23,7 @@ const pass = (over: Partial<Pass> & { slug: string; name: string }): Pass => ({
   region: "Zentralalpen",
   season: null,
   traffic: 4,
+  type: "pass",
   ...over,
 });
 
@@ -115,6 +116,77 @@ describe("passHaystack", () => {
   test("the folded haystack is cached per object", () => {
     const p = passes[0]!;
     expect(passHaystack(p)).toBe(passHaystack(p));
+  });
+});
+
+describe("passHaystack carries the road vocabulary", () => {
+  /**
+   * Plan 14's acceptance queries: a road is found by what it *is*, not only by
+   * what it is called. The three entries are the ones the real data gives
+   * these labels to.
+   *
+   * Their own table rather than the alias table above, because "Autofrei"
+   * folds to "autofrei" and that contains "fr" – a carfree road in the list up
+   * there would turn up under the country code for France.
+   */
+  const roads: Pass[] = [
+    pass({
+      country: "AT",
+      name: "Ötztaler Gletscherstraße",
+      region: "Ostalpen",
+      slug: "oetztaler-gletscherstrasse",
+      tags: ["glacier", "toll"],
+      type: "spur",
+    }),
+    pass({
+      country: "CH",
+      name: "Große Scheidegg",
+      region: "Zentralalpen",
+      slug: "grosse-scheidegg",
+      tags: ["carfree"],
+    }),
+    pass({
+      name: "Colle del Nivolet",
+      region: "Westalpen",
+      slug: "colle-del-nivolet",
+      tags: ["reservoir", "carfree"],
+      type: "spur",
+    }),
+  ];
+  const findRoad = (query: string) =>
+    roads.filter((p) => matches(passHaystack(p), query)).map((p) => p.slug);
+
+  test("the acceptance queries from plan 14", () => {
+    expect(findRoad("stichstrasse")).toEqual([
+      "oetztaler-gletscherstrasse",
+      "colle-del-nivolet",
+    ]);
+    expect(findRoad("autofrei")).toEqual([
+      "grosse-scheidegg",
+      "colle-del-nivolet",
+    ]);
+    expect(findRoad("gletscher")).toEqual(["oetztaler-gletscherstrasse"]);
+  });
+
+  test("the German labels are found as they are typed", () => {
+    // "Stichstraße" and "Stausee" reach the haystack folded, so both
+    // spellings of the ß and any case find them.
+    expect(findRoad("Stichstraße")).toEqual([
+      "oetztaler-gletscherstrasse",
+      "colle-del-nivolet",
+    ]);
+    expect(findRoad("stausee")).toEqual(["colle-del-nivolet"]);
+    expect(findRoad("maut")).toEqual(["oetztaler-gletscherstrasse"]);
+    // A label the road does not carry finds nothing.
+    expect(findRoad("schlucht")).toEqual([]);
+    expect(findRoad("tunnel")).toEqual([]);
+  });
+
+  test("a label answers where the name says nothing", () => {
+    const scheidegg = roads[1]!;
+    expect(matches(passHaystack(scheidegg), "autofrei")).toBe(true);
+    // Nothing in "Große Scheidegg" is about cars: the label is what answers.
+    expect(matches(fold(scheidegg.name), "autofrei")).toBe(false);
   });
 });
 

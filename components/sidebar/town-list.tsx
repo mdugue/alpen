@@ -2,7 +2,7 @@
 
 import { EntityRow } from "@/components/sidebar/entity-row";
 import { ListEmpty } from "@/components/sidebar/list-empty";
-import { TownTagLine } from "@/components/town-tags";
+import { TagLine } from "@/components/tags";
 import type { TownRow } from "@/lib/rows";
 
 /**
@@ -33,7 +33,7 @@ export const TownList = ({
           rowId={`town:${town.slug}`}
           current={currentRow === `town:${town.slug}`}
           title={town.name}
-          subtitle={<TownTagLine tags={town.tags} lead={town.country} />}
+          subtitle={<TagLine tags={town.tags} lead={town.country} />}
           favorite={favorite}
           onToggleFavorite={() => onToggleFavorite(town.slug)}
           onSelect={() => onSelect(town.slug)}

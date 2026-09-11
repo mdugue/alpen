@@ -4,6 +4,7 @@ import { SlidersHorizontal, Star } from "lucide-react";
 import { useState } from "react";
 
 import { StatusDot } from "@/components/status-badge";
+import { TagIcon } from "@/components/tags";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -26,17 +27,36 @@ import { Toggle } from "@/components/ui/toggle";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import {
   ALL_STATUS,
+  ALL_TYPES,
   BEAUTY_OPTIONS,
   countCriteria,
   FAME_OPTIONS,
+  HEAT_OPTIONS,
   RATING_MAX,
   RATING_MIN,
   TRAFFIC_OPTIONS,
+  WET_OPTIONS,
 } from "@/lib/app-state";
 import type { Filters } from "@/lib/app-state";
+import { ROAD_TAG, ROAD_TAGS, ROAD_TYPE } from "@/lib/regions";
 import { STATUS_LABEL } from "@/lib/status";
-import type { Status } from "@/lib/types";
+import type { RoadTag, RoadType, Status } from "@/lib/types";
 import { cn, fmtUnit, PRESSED, TOUCH_CONTROL, TOUCH_SELECT } from "@/lib/utils";
+
+/**
+ * Five type buttons over six grid columns: three and two, both rows full.
+ * `Stichstraße` and `Balkonstraße` do not fit a fifth of the 352 px panel, and
+ * a filter whose options read "Stichstr…" is not one anybody can choose from;
+ * the vocabulary order is the display order, so the split is here and not in
+ * `ROAD_TYPES`.
+ */
+const TYPE_SPAN: Record<RoadType, string> = {
+  balcony: "col-span-3",
+  pass: "col-span-2",
+  plateau: "col-span-2",
+  spur: "col-span-2",
+  valley: "col-span-3",
+};
 
 /** Base UI hands back a number for a single thumb and an array for a range. */
 const asRange = (v: number | readonly number[]): [number, number] =>
@@ -239,6 +259,93 @@ export const FilterPanel = ({
             value={filters.minFame}
             onChange={(v) => set("minFame", v)}
             options={FAME_OPTIONS}
+          />
+        </FieldGroup>
+        {/* Art and Merkmale: the two axes of plan 14. The type is topology and
+            single-valued per road, so the set is a plain "which kinds do I
+            want"; the labels are character and stack with and-semantics, which
+            is why they carry their word next to the glyph – a strip of icons
+            alone is scannable in a row but not choosable in a filter. */}
+        <FieldGroup className="grid gap-1.5">
+          <FieldTitle
+            id="road-types"
+            className="text-muted-foreground text-2xs"
+          >
+            Art der Straße
+          </FieldTitle>
+          <ToggleGroup
+            multiple
+            spacing={0}
+            variant="outline"
+            value={filters.types}
+            onValueChange={(picked) =>
+              set(
+                "types",
+                ALL_TYPES.filter((t) => picked.includes(t)),
+              )
+            }
+            aria-labelledby="road-types"
+            className="grid w-full grid-cols-6"
+          >
+            {ALL_TYPES.map((t: RoadType) => (
+              <ToggleGroupItem
+                key={t}
+                value={t}
+                title={ROAD_TYPE[t].hint}
+                className={cn("min-w-0", TYPE_SPAN[t], TOUCH_CONTROL)}
+              >
+                <span className="truncate">{ROAD_TYPE[t].label}</span>
+              </ToggleGroupItem>
+            ))}
+          </ToggleGroup>
+          <FieldTitle id="road-tags" className="text-muted-foreground text-2xs">
+            Merkmale – alle ausgewählten müssen zutreffen
+          </FieldTitle>
+          <ToggleGroup
+            multiple
+            spacing={0}
+            variant="outline"
+            value={filters.tags}
+            onValueChange={(picked) =>
+              set(
+                "tags",
+                ROAD_TAGS.filter((t) => picked.includes(t)),
+              )
+            }
+            aria-labelledby="road-tags"
+            className="grid w-full grid-cols-3"
+          >
+            {ROAD_TAGS.map((t: RoadTag) => (
+              <ToggleGroupItem
+                key={t}
+                value={t}
+                title={ROAD_TAG[t].hint}
+                className={cn("min-w-0", TOUCH_CONTROL)}
+              >
+                <TagIcon tag={t} />
+                <span className="truncate">{ROAD_TAG[t].label}</span>
+              </ToggleGroupItem>
+            ))}
+          </ToggleGroup>
+        </FieldGroup>
+        {/* The raw summer signals of the chosen half-month, not the composite:
+            "unter 28 °C im Tal" is a question the status alone cannot answer.
+            The valley value is derived from the summit series, and the label
+            says so, as every derived value in the app does. */}
+        <FieldGroup className="grid grid-cols-3 gap-2">
+          <Select
+            id="max-heat"
+            label="Hitze im Tal (abgeleitet)"
+            value={filters.maxValleyTmax}
+            onChange={(v) => set("maxValleyTmax", v)}
+            options={HEAT_OPTIONS}
+          />
+          <Select
+            id="max-wet"
+            label="Regentage"
+            value={filters.maxWetPct}
+            onChange={(v) => set("maxWetPct", v)}
+            options={WET_OPTIONS}
           />
         </FieldGroup>
       </CollapsibleContent>

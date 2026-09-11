@@ -24,6 +24,7 @@ that goal; features that only add route-level precision rank last.
 | 03  | [Make the period the hero](03-period-hero.md)                      | "when"                      | M      | –                    | [done](https://github.com/mdugue/alpen/pull/4)         |
 | 04  | [Climate-aware status](04-climate-aware-status.md)                 | "when", honesty             | S–M    | –                    | [done](https://github.com/mdugue/alpen/pull/4)         |
 | 12  | [Destinations](12-destinations.md)                                 | "where"                     | L      | 09                   | proposed                                               |
+| 13  | [Summer axis](13-summer-axis.md)                                   | "when" in summer, honesty   | M–L    | 04                   | [in progress](https://github.com/mdugue/alpen/pull/17) |
 | 05  | [Filters and search](05-filters-and-search.md)                     | finding things              | S–M    | –                    | [done](https://github.com/mdugue/alpen/pull/9)         |
 | 02  | [Real routes instead of the hash](02-real-routes.md)               | sharing, back button, SEO   | L      | 01                   | proposed                                               |
 | 06  | [A basemap that matches the theme](06-basemap.md)                  | dark mode, map quality      | M      | –                    | [done](https://github.com/mdugue/alpen/pull/22)        |
@@ -32,6 +33,7 @@ that goal; features that only add route-level precision rank last.
 | 11  | [Smaller items](11-smaller-items.md)                               | polish                      | S each | varies               | [in progress](https://github.com/mdugue/alpen/pull/16) |
 | 08  | [English toggle](08-english-toggle.md)                             | audience                    | M–L    | 02                   | proposed                                               |
 | 07  | [Profile interactivity](07-profile-interactivity.md)               | detail, low priority now    | S–M    | –                    | [done](https://github.com/mdugue/alpen/pull/11)        |
+| 14  | [Road types and tags](14-road-types-and-tags.md)                   | roads that are not passes   | L      | 09, 05               | [in progress](https://github.com/mdugue/alpen/pull/31) |
 
 Effort: S ≤ 1 day, M 2–3 days, L 4–6 days. 09, 10 and 11 can be interleaved
 with anything; do 09 before 12 so the new entity gets a schema from day one.
