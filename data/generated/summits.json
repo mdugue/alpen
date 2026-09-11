@@ -24,7 +24,6 @@
   "col-de-montgenevre": {"dem":1854,"lat":44.9313,"lon":6.7257,"roadDist":0.003},
   "col-de-romme": {"dem":1304,"lat":46.03,"lon":6.5746,"roadDist":0.005},
   "col-de-sarenne": {"dem":2001,"lat":45.0875,"lon":6.1491,"roadDist":0.003},
-  "col-de-tende": {"dem":1857,"lat":44.1497,"lon":7.5619,"roadDist":0},
   "col-de-turini": {"dem":1631,"lat":43.979,"lon":7.391,"roadDist":0.013},
   "col-de-vars": {"dem":2105,"lat":44.538,"lon":6.702,"roadDist":0.068},
   "col-de-vence": {"dem":964,"lat":43.7606,"lon":7.0751,"roadDist":0.002},

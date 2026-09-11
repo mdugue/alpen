@@ -3472,7 +3472,7 @@
   "lat": 44.9747,
   "lon": 5.3348,
   "elevation": 1011,
-  "classicAscent": "12,8 km, 6,0 % ab Saint-Jean-en-Royans",
+  "classicAscent": "12,9 km, 6,0 % ab Saint-Jean-en-Royans",
   "beauty": 5,
   "fame": 3,
   "difficulty": 3,
@@ -3503,7 +3503,7 @@
   "lat": 45.0613,
   "lon": 5.4187,
   "elevation": 434,
-  "classicAscent": "24,8 km, 3,2 % von Pont-en-Royans nach Villard-de-Lans",
+  "classicAscent": "25,1 km, 3,2 % von Pont-en-Royans nach Villard-de-Lans",
   "beauty": 5,
   "fame": 3,
   "difficulty": 2,
@@ -3537,7 +3537,7 @@
   "lat": 44.8381,
   "lon": 5.3971,
   "elevation": 1254,
-  "classicAscent": "20,9 km, 4,0 % ab Die",
+  "classicAscent": "20,8 km, 4,0 % ab Die",
   "beauty": 4,
   "fame": 3,
   "difficulty": 3,
@@ -3570,7 +3570,7 @@
   "difficulty": 5,
   "traffic": 1,
   "season": {
-   "opens": 6,
+   "opens": 6.5,
    "closes": 10.5,
    "maintained": false
   },
@@ -3594,7 +3594,7 @@
   "lat": 45.2976,
   "lon": 6.5826,
   "elevation": 2300,
-  "classicAscent": "38,4 km, 4,7 % ab Moûtiers",
+  "classicAscent": "35,5 km, 5,2 % ab Moûtiers",
   "beauty": 3,
   "fame": 4,
   "difficulty": 4,
@@ -3623,7 +3623,7 @@
   "lat": 45.5721,
   "lon": 6.832,
   "elevation": 2100,
-  "classicAscent": "25,1 km, 5,2 % ab Bourg-Saint-Maurice",
+  "classicAscent": "20,8 km, 6,3 % ab Bourg-Saint-Maurice",
   "beauty": 3,
   "fame": 3,
   "difficulty": 4,
@@ -3649,7 +3649,7 @@
   "lat": 44.6971,
   "lon": 6.3235,
   "elevation": 1832,
-  "classicAscent": "15,4 km, 4,6 % ab Pont-du-Fossé",
+  "classicAscent": "14,9 km, 4,8 % ab Pont-du-Fossé",
   "beauty": 3,
   "fame": 3,
   "difficulty": 3,
@@ -3750,8 +3750,8 @@
   "ascents": [
    {
     "from": {
-     "lat": 45.987,
-     "lon": 6.3165
+     "lat": 45.9964,
+     "lon": 6.2497
     },
     "label": "Thorens-Glières"
    }
@@ -3796,7 +3796,7 @@
   "lat": 45.2027,
   "lon": 6.4446,
   "elevation": 1566,
-  "classicAscent": "12,6 km, 6,5 % ab Saint-Michel-de-Maurienne",
+  "classicAscent": "12,5 km, 6,6 % ab Saint-Michel-de-Maurienne",
   "beauty": 3,
   "fame": 4,
   "difficulty": 3,
@@ -3838,8 +3838,8 @@
   "ascents": [
    {
     "from": {
-     "lat": 45.3076,
-     "lon": 6.3261
+     "lat": 45.3124,
+     "lon": 6.3407
     },
     "label": "Pontamafrey"
    }
@@ -3854,7 +3854,7 @@
   "lat": 45.2105,
   "lon": 6.3371,
   "elevation": 1638,
-  "classicAscent": "17,8 km, 6,0 % ab Saint-Jean-de-Maurienne",
+  "classicAscent": "21,5 km, 5,0 % ab Saint-Jean-de-Maurienne",
   "beauty": 4,
   "fame": 2,
   "difficulty": 4,
@@ -3888,7 +3888,7 @@
   "lat": 45.6903,
   "lon": 6.598,
   "elevation": 1703,
-  "classicAscent": "12,4 km, 7,8 % ab Beaufort",
+  "classicAscent": "12,3 km, 7,8 % ab Beaufort",
   "beauty": 5,
   "fame": 3,
   "difficulty": 4,
@@ -3918,7 +3918,7 @@
   "lat": 45.8723,
   "lon": 6.4649,
   "elevation": 1487,
-  "classicAscent": "11,7 km, 5,1 % ab Flumet",
+  "classicAscent": "11,9 km, 5,0 % ab Flumet",
   "beauty": 4,
   "fame": 4,
   "difficulty": 3,
@@ -3973,7 +3973,7 @@
   "lat": 45.8085,
   "lon": 6.2448,
   "elevation": 1157,
-  "classicAscent": "10,3 km, 6,6 % ab Talloires",
+  "classicAscent": "10,2 km, 6,6 % ab Talloires",
   "beauty": 5,
   "fame": 3,
   "difficulty": 3,
@@ -4005,7 +4005,7 @@
   "lat": 45.7977,
   "lon": 6.1072,
   "elevation": 1667,
-  "classicAscent": "17,9 km, 6,8 % ab Annecy",
+  "classicAscent": "17,4 km, 7,0 % ab Annecy",
   "beauty": 4,
   "fame": 3,
   "difficulty": 4,
@@ -4035,7 +4035,7 @@
   "lat": 46.03,
   "lon": 6.5746,
   "elevation": 1297,
-  "classicAscent": "18,3 km, 4,5 % ab Cluses",
+  "classicAscent": "18,1 km, 4,5 % ab Cluses",
   "beauty": 3,
   "fame": 3,
   "difficulty": 4,
@@ -4061,7 +4061,7 @@
   "lat": 46.1593,
   "lon": 6.5807,
   "elevation": 1619,
-  "classicAscent": "16,2 km, 6,0 % ab Taninges",
+  "classicAscent": "13,5 km, 7,1 % ab Taninges",
   "beauty": 4,
   "fame": 3,
   "difficulty": 4,
@@ -4091,7 +4091,7 @@
   "lat": 45.0083,
   "lon": 5.9674,
   "elevation": 1371,
-  "classicAscent": "13,5 km, 4,8 % ab Le Bourg-d'Oisans",
+  "classicAscent": "13,6 km, 4,8 % ab Le Bourg-d'Oisans",
   "beauty": 3,
   "fame": 2,
   "difficulty": 2,
@@ -4120,14 +4120,14 @@
   "lat": 44.6925,
   "lon": 5.9843,
   "elevation": 1664,
-  "classicAscent": "14,1 km, 4,7 % ab Saint-Bonnet-en-Champsaur",
+  "classicAscent": "14,2 km, 4,7 % ab Saint-Bonnet-en-Champsaur",
   "beauty": 5,
   "fame": 2,
   "difficulty": 3,
   "traffic": 1,
   "season": {
-   "opens": 5,
-   "closes": 11.5,
+   "opens": 6,
+   "closes": 10,
    "maintained": false
   },
   "note": "Die Nordrampe klebt in Kehren an der Wand des Dévoluy, der Scheitel schaut über das ganze Champsaur. Im Winter gesperrt.",
@@ -4150,7 +4150,7 @@
   "lat": 44.9313,
   "lon": 6.7257,
   "elevation": 1860,
-  "classicAscent": "12,3 km, 4,3 % ab Briançon",
+  "classicAscent": "12,1 km, 4,4 % ab Briançon",
   "beauty": 2,
   "fame": 3,
   "difficulty": 2,
@@ -4205,7 +4205,7 @@
   "lat": 43.7606,
   "lon": 7.0751,
   "elevation": 962,
-  "classicAscent": "10,2 km, 6,3 % ab Vence",
+  "classicAscent": "9,1 km, 7,1 % ab Vence",
   "beauty": 4,
   "fame": 3,
   "difficulty": 3,
@@ -4231,7 +4231,7 @@
   "lat": 43.8031,
   "lon": 7.4233,
   "elevation": 925,
-  "classicAscent": "15,7 km, 5,8 % ab Menton",
+  "classicAscent": "15,8 km, 5,7 % ab Menton",
   "beauty": 4,
   "fame": 3,
   "difficulty": 3,
@@ -4274,43 +4274,6 @@
      "lon": 7.2565
     },
     "label": "Saint-Martin-Vésubie"
-   }
-  ]
- },
- {
-  "slug": "col-de-tende",
-  "name": "Col de Tende",
-  "aliases": [
-   "Colle di Tenda"
-  ],
-  "type": "pass",
-  "tags": [
-   "hairpins",
-   "surface"
-  ],
-  "country": "FR",
-  "region": "Westalpen",
-  "lat": 44.1497,
-  "lon": 7.5619,
-  "elevation": 1871,
-  "classicAscent": "21,8 km, 4,7 % ab Tende",
-  "beauty": 5,
-  "fame": 3,
-  "difficulty": 5,
-  "traffic": 1,
-  "season": {
-   "opens": 6,
-   "closes": 10.5,
-   "maintained": false
-  },
-  "note": "Die alte Passstraße über dem Tunnel: 48 Kehren, ab der Mitte ohne Asphalt, oben Festungsruinen und ein Grat zwischen Frankreich und Italien. Schotter und Sperrungen vorher prüfen.",
-  "ascents": [
-   {
-    "from": {
-     "lat": 44.0889,
-     "lon": 7.5933
-    },
-    "label": "Tende"
    }
   ]
  },
@@ -4362,7 +4325,7 @@
   "lat": 45.1587,
   "lon": 5.4369,
   "elevation": 674,
-  "classicAscent": "9,3 km, 7,0 % von Cognin-les-Gorges nach Malleval-en-Vercors",
+  "classicAscent": "9,3 km, 6,9 % von Cognin-les-Gorges nach Malleval-en-Vercors",
   "beauty": 5,
   "fame": 2,
   "difficulty": 3,
@@ -4397,7 +4360,7 @@
   "lat": 44.0033,
   "lon": 6.9908,
   "elevation": 608,
-  "classicAscent": "31,0 km, 3,2 % von Touët-sur-Var nach Beuil",
+  "classicAscent": "30,7 km, 2,9 % von Touët-sur-Var nach Beuil",
   "beauty": 5,
   "fame": 3,
   "difficulty": 3,
@@ -4432,7 +4395,7 @@
   "lat": 44.0503,
   "lon": 6.8435,
   "elevation": 872,
-  "classicAscent": "12,7 km, 0,3 % von Daluis nach Guillaumes",
+  "classicAscent": "12,6 km, 0,2 % von Daluis nach Guillaumes",
   "beauty": 5,
   "fame": 2,
   "difficulty": 2,
@@ -4470,7 +4433,7 @@
   "lat": 43.7319,
   "lon": 6.3639,
   "elevation": 914,
-  "classicAscent": "37,8 km, 0,3 % von Aiguines nach Comps-sur-Artuby",
+  "classicAscent": "37,3 km, 0,3 % von Aiguines nach Comps-sur-Artuby",
   "beauty": 5,
   "fame": 4,
   "difficulty": 3,
@@ -4504,7 +4467,7 @@
   "lat": 44.0923,
   "lon": 5.3497,
   "elevation": 942,
-  "classicAscent": "24,7 km, 2,6 % von Villes-sur-Auzon nach Sault",
+  "classicAscent": "26,9 km, 1,9 % von Villes-sur-Auzon nach Sault",
   "beauty": 5,
   "fame": 3,
   "difficulty": 2,
@@ -4573,13 +4536,13 @@
   "lat": 45.0195,
   "lon": 6.6068,
   "elevation": 1619,
-  "classicAscent": "21,2 km, 2,1 % von Val-des-Prés nach Laval",
+  "classicAscent": "21,3 km, 2,8 % von Val-des-Prés nach Laval",
   "beauty": 5,
   "fame": 3,
   "difficulty": 2,
   "traffic": 1,
   "season": {
-   "opens": 5,
+   "opens": 5.5,
    "closes": 11,
    "maintained": false
   },
@@ -4605,10 +4568,10 @@
   "type": "valley",
   "country": "FR",
   "region": "Westalpen",
-  "lat": 44.5362,
-  "lon": 6.7825,
-  "elevation": 1596,
-  "classicAscent": "15,5 km, 2,9 % von Saint-Paul-sur-Ubaye nach Maljasset",
+  "lat": 44.5425,
+  "lon": 6.7892,
+  "elevation": 1686,
+  "classicAscent": "15,4 km, 1,6 % von Saint-Paul-sur-Ubaye nach Maljasset",
   "beauty": 4,
   "fame": 1,
   "difficulty": 2,
@@ -4643,14 +4606,14 @@
   "lat": 45.6702,
   "lon": 6.7704,
   "elevation": 1435,
-  "classicAscent": "19,3 km, 5,0 % von Bourg-Saint-Maurice nach Ville des Glaciers",
+  "classicAscent": "19,1 km, 5,0 % von Bourg-Saint-Maurice nach Ville des Glaciers",
   "beauty": 4,
   "fame": 2,
   "difficulty": 3,
   "traffic": 1,
   "season": {
-   "opens": 6,
-   "closes": 10.5,
+   "opens": 5.5,
+   "closes": 11,
    "maintained": false
   },
   "note": "Über Les Chapieux ins Talende unter dem Mont-Blanc-Massiv, wo die Straße vor dem Gletscher aufhört. Der letzte Abschnitt ist schmal und wird spät im Jahr frei.",
@@ -4678,7 +4641,7 @@
   "lat": 46.0671,
   "lon": 6.8021,
   "elevation": 847,
-  "classicAscent": "6,3 km, 3,1 % von Sixt-Fer-à-Cheval zum Talschluss",
+  "classicAscent": "6,2 km, 3,2 % von Sixt-Fer-à-Cheval zum Talschluss",
   "beauty": 5,
   "fame": 2,
   "difficulty": 1,
