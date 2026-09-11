@@ -211,7 +211,7 @@ export interface HashState {
 //   d     difficulty window "2-4"          v     max. traffic
 //   be    min. beauty                      o     pass sort key
 //   h     max. valley heat in °C           w     max. share of rain days
-//   a     road types "pass,spur"            e     road labels "toll,carfree"
+//   a     road types "pass,spur"           e     road labels "toll,carfree"
 //   pass | tour | town   the selected entity's slug
 //
 // Every key is validated on the way in: unknown values fall back to the

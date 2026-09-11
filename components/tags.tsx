@@ -3,7 +3,7 @@
 import { Badge } from "@/components/ui/badge";
 import { TAG_LABEL } from "@/lib/regions";
 import { ICON_ATTRS, TAG_ICON } from "@/lib/tag-icons";
-import type { RoadTag, TownTag } from "@/lib/types";
+import type { Tag } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
 /**
@@ -21,8 +21,6 @@ import { cn } from "@/lib/utils";
  * The glyph is decoration next to its own label, never a replacement for it,
  * so it is `aria-hidden` and the text stays.
  */
-export type Tag = TownTag | RoadTag;
-
 export const TagIcon = ({
   tag,
   className,

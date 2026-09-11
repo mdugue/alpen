@@ -1,6 +1,8 @@
 # 14 · Road types and tags
 
-**Status:** in progress – steps 1–4 done, 5 (new entries) and 6 (rename) open ·
+**Status:** in progress – steps 1–4 done except that the `note` of nine of
+the ten existing `toll` entries does not yet say whether bikes pay; 5 (new
+entries) and 6 (rename) open ·
 **Effort:** L (M for code, the rest is curation) ·
 **Depends on:** 09 (schema), 05 (filters) · **Unblocks:** the sporting roads
 that are not passes – spur roads, balcony roads, high roads, quiet valleys –
@@ -283,8 +285,10 @@ hinüber" is keyed on `type === "spur"` instead of `deadEnd`.
   The tag filter is _not_ applied to tours – a tag describes one road, and a
   loop with a car-free spur in it is not a car-free loop.
 - **Detail panel**: the line under the name reads
-  `Stichstraße · Westalpen · IT` (type only when not `pass`); tag badges
-  below it, glyph and word, as `TownTagBadges`. The "Auffahrten" section is
+  `Stichstraße · Westalpen · IT`, and `Pass · …` for a pass as before – the
+  panel stands alone and names its kind the way "Rundtour" and "Rad-Ort" do;
+  only the list row and the popup leave `Pass` out. Tag badges below it,
+  glyph and word, as `TagBadges`. The "Auffahrten" section is
   titled "Strecke" for traverse types, and the sentence that today follows
   `deadEnd` ("Stichstraße: die Straße endet oben …") is keyed on `spur`.
 - **Search** (`lib/search.ts`): the type label and the tag labels join the
@@ -292,8 +296,9 @@ hinüber" is keyed on `type === "spur"` instead of `deadEnd`.
 - **Scales dialog**: a block "Art und Merkmale" after the town labels, one
   line per value with its hint – the honesty note that these are editorial
   labels covers them too.
-- **Map**: no change. The hover popup shows the tag glyphs like it does for
-  towns (`tagIconSvg`).
+- **Map**: no change to the marks. The hover popup shows the tag glyphs like
+  it does for towns (`tagIconSvg`), and its subtitle adds the type word after
+  the height by the row's rule (`roadTypeWord`).
 
 ### Rename
 
@@ -327,8 +332,9 @@ to migrate the hash key with a redirect, not before.
 4. **Tags on the existing entries.** One curation pass over the 92:
    `toll` and `panorama` on the toll roads, `glacier` on the Ötztaler,
    `reservoir` on Malta, Fedaia, Nivolet, Silvretta, `surface` and `hairpins`
-   on the Tremola, `hairpins` on the Stelvio, `carfree` on Tre Cime and
-   Nivolet, `tunnels` on Mangart. No route changes, so no API cost.
+   on the Tremola, `hairpins` on the Stelvio, `carfree` on Nivolet and
+   Grosse Scheidegg (not Tre Cime, see the risks), `tunnels` on Mangart. No
+   route changes, so no API cost.
 5. **The new entries**, from the candidate list in the appendix, curated
    in regional batches of 15–25 through the `curate-data` loop – one PR per
    batch, so each fits one Open-Meteo hour (`data:backfill`) and one review.
@@ -356,8 +362,8 @@ mentions in `CLAUDE.md`/`AGENTS.md` go.
   ("Länge … weicht … von den angegebenen … ab"); a correct one is stored,
   drawn on the map and has a profile.
 - The filter "Art: Stichstraße" alone lists exactly the spur entries; "Art:
-  alles außer Pass" lists the rest; "Merkmale: autofrei" lists Tre Cime and
-  Nivolet and nothing that is not marked so. Both survive a reload via the
+  alles außer Pass" lists the rest; "Merkmale: autofrei" lists Grosse
+  Scheidegg and Nivolet and nothing that is not marked so. Both survive a reload via the
   hash.
 - Typing "autofrei" or "gletscher" in the search finds the tagged entries.
 - The sidebar section reads "Pässe & Straßen"; a `spur` row shows the word,

@@ -56,19 +56,11 @@ import type { MapAssets } from "@/lib/map-assets";
 import type { TownReach } from "@/lib/nearby";
 import { PALETTE } from "@/lib/palette";
 import type { Scheme } from "@/lib/palette";
-import { ROAD_TYPE, TAG_LABEL } from "@/lib/regions";
+import { roadTypeWord, TAG_LABEL } from "@/lib/regions";
 import { ascentKey } from "@/lib/route-key";
 import { tagIconSvg } from "@/lib/tag-icons";
-import type {
-  LatLon,
-  Pass,
-  RoadTag,
-  Status,
-  Tour,
-  Town,
-  TownTag,
-} from "@/lib/types";
-import { cn, MAP_CLUSTER, MAP_TOOL, PRESSED } from "@/lib/utils";
+import type { LatLon, Pass, Status, Tag, Tour, Town } from "@/lib/types";
+import { cn, fmtUnit, MAP_CLUSTER, MAP_TOOL, PRESSED } from "@/lib/utils";
 
 export interface MapPass extends Pass {
   status: Status;
@@ -794,7 +786,7 @@ const popupHtml = (p: Record<string, string>) => {
   // Feature properties are strings; only what the vocabulary knows is drawn.
   const tags = (p.tags ?? "")
     .split(",")
-    .filter((t): t is TownTag | RoadTag => t in TAG_LABEL);
+    .filter((t): t is Tag => t in TAG_LABEL);
   const subtitle = p.subtitle ? `<br>${escapeHtml(p.subtitle)}` : "";
   if (tags.length === 0) return `${title}${subtitle}`;
   const chips = tags
@@ -1251,10 +1243,9 @@ export const PassMap = ({
           selected: p.slug === selPass ? 1 : 0,
           slug: p.slug,
           status: p.status,
-          subtitle:
-            p.type === "pass"
-              ? `${p.elevation.toLocaleString("de-DE")} m`
-              : `${p.elevation.toLocaleString("de-DE")} m · ${ROAD_TYPE[p.type].label}`,
+          subtitle: [fmtUnit(p.elevation, "m"), roadTypeWord(p.type)]
+            .filter(Boolean)
+            .join(" · "),
           tags: (p.tags ?? []).join(","),
         },
         type: "Feature",

@@ -1,4 +1,4 @@
-import type { RoadTag, TownTag } from "@/lib/types";
+import type { Tag } from "@/lib/types";
 
 /**
  * The geometry of the eighteen label icons, as Lucide draws them (Lucide 1.43.0,
@@ -20,7 +20,7 @@ type IconNode = [element: string, attrs: Record<string, string>][];
  * glyph, and the row, the badge and the popup that draw one do not care which
  * list the label came from. The two vocabularies share no name.
  */
-export const TAG_ICON: Record<TownTag | RoadTag, IconNode> = {
+export const TAG_ICON: Record<Tag, IconNode> = {
   // traffic-cone – the road is barred to cars
   carfree: [
     ["path", { d: "M16.05 10.966a5 2.5 0 0 1-8.1 0" }],
@@ -235,7 +235,7 @@ export const ICON_ATTRS = {
  * literals reach it – nothing from the data files – so there is nothing to
  * escape here; the popup escapes the names it interpolates itself.
  */
-export const tagIconSvg = (tag: TownTag | RoadTag, size = 12): string => {
+export const tagIconSvg = (tag: Tag, size = 12): string => {
   const attrs = Object.entries({ ...ICON_ATTRS, height: size, width: size })
     .map(([k, v]) => `${k}="${v}"`)
     .join(" ");

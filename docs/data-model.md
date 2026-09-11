@@ -207,7 +207,7 @@ the scales dialog):
 | `events`    | Marathon-Ort          | start or centre of a big cycling marathon                       |
 | `season`    | Lange Saison          | low and mild – rides early in the year and late in the autumn   |
 
-Each label has a glyph (`lib/tag-icons.ts`, `components/town-tags.tsx`): the
+Each label has a glyph (`lib/tag-icons.ts`, `components/tags.tsx`): the
 sidebar row shows the glyphs alone, because three labels spelled out are wider
 than the row; the detail panel, the map's hover popup and the scales dialog
 show glyph and word. The popup takes an HTML string rather than React, which
