@@ -30,7 +30,7 @@ export const TourList = ({
     return <ListEmpty title="Keine Touren für diese Filter" />;
   return (
     <ul>
-      {rows.map(({ tour, status, favorite, season }) => {
+      {rows.map(({ tour, status, reason, favorite, season }) => {
         const onMap = !hiddenTours.includes(tour.slug);
         return (
           <EntityRow
@@ -56,9 +56,10 @@ export const TourList = ({
                 </span>
                 <StatusLabel
                   status={status}
+                  reason={reason}
                   className="text-muted-foreground"
                 />
-                <SeasonStrip statuses={season} current={period} />
+                <SeasonStrip grades={season} current={period} />
               </>
             }
             trailing={

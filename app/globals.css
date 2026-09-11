@@ -43,6 +43,18 @@
   --tour: oklch(0.6 0.09 300);
   --town: oklch(0.45 0.09 250);
 
+  /*
+   * The three filled rungs of the season strip. They have to be told apart
+   * at 4 px, so they differ in lightness as well as hue: a deep green, a
+   * light butter yellow, a soft apricot orange – the two lighter rungs close
+   * in weight, so neither shouts over the other. "Oft gesperrt" has no fill – it is
+   * the hollow cell with a red hairline (`CELL` in season-strip.tsx), so a
+   * winter of closures stays light instead of heavy.
+   */
+  --grade-best: oklch(0.66 0.13 152);
+  --grade-good: oklch(0.87 0.12 98);
+  --grade-limited: oklch(0.81 0.12 62);
+
   --chart-1: var(--status-open);
   --chart-2: var(--status-risky);
   --chart-3: var(--status-closed);
@@ -85,6 +97,10 @@
     --status-closed: oklch(0.68 0.17 25);
     --tour: oklch(0.7 0.09 300);
     --town: oklch(0.72 0.09 245);
+
+    --grade-best: oklch(0.7 0.13 152);
+    --grade-good: oklch(0.83 0.12 98);
+    --grade-limited: oklch(0.79 0.12 62);
   }
 }
 
@@ -113,6 +129,9 @@
   --color-status-closed: var(--status-closed);
   --color-tour: var(--tour);
   --color-town: var(--town);
+  --color-grade-best: var(--grade-best);
+  --color-grade-good: var(--grade-good);
+  --color-grade-limited: var(--grade-limited);
 
   /*
    * One step below Tailwind's `text-xs`, for the dense map furniture (month

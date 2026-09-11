@@ -31,37 +31,113 @@ town; `data:check` warns above four.
 
 ## Status per period
 
-`passVerdict()` in `lib/status.ts` – the opening window, the pass altitude and
-the calendar decide the base verdict, the pass's own ERA5 climate series can
-then downgrade "meist offen" to "wetterabhängig":
+`passVerdict()` in `lib/status.ts` answers "how good is it to ride there in
+this half-month", not only "can you get over". The opening window decides
+what is closed; every other signal is judged on its own, can only lower a
+cell, never lift it, and the first one in ladder order is the word the cell
+carries:
 
 ```mermaid
 flowchart TD
-  A["pass, half-month t"] --> W["window, altitude and calendar"]
-  W --> X["oft gesperrt<br/>reason: outside-window"]
-  W --> R["wetterabhängig<br/>reason: window-edge or altitude"]
-  W --> O["meist offen"]
-  O --> K{"climate bucket for t:<br/>snow days ≥ 20 %<br/>or frost nights ≥ 80 %?"}
-  K -- "yes" --> R4["wetterabhängig<br/>reason: snow or frost"]
-  K -- "no" --> O2["meist offen"]
-  K -. "no series" .-> O2
+  A["pass, half-month t"] --> W["window: outside → closed<br/>edge → limited"]
+  W --> X["oft gesperrt"]
+  W --> S["every other signal, worst-of,<br/>each one only ever lowers"]
+  S --> S1["snow ≥ 20 % · frost ≥ 80 % · altitude"]
+  S --> S2["valley tmax ≥ 26 °C → Hitze"]
+  S --> S3["rain days ≥ 70 % → nass"]
+  S --> S4["daylight < 10¾ h → kurze Tage"]
+  S --> S5["summit tmax < 8 °C → kalte Abfahrt"]
+  S1 & S2 & S3 & S4 & S5 --> L{"any fired?"}
+  L -- "yes, first in ladder order" --> R["eingeschränkt<br/>label = that one word"]
+  L -- "no" --> G{"inside the pass's<br/>longest quiet run?"}
+  G -- "yes" --> B["beste Zeit"]
+  G -- "no" --> O["gut"]
 ```
 
-Climate never produces "oft gesperrt": a closure is what the opening window
-knows, snowfall is what the climate series knows – and a road stays open
-through snowfall, it just stops being reliable. The thresholds
-(`SNOW_RISKY_PCT`, `FROST_RISKY_PCT`) are calibrated on all 92 passes; across
-the pass × half-month pairs the "meist offen" cohort sits at 4 % snow days
-after the change, the "wetterabhängig" cohort at 25 %. Re-run
-`bun run scripts/analyze-status.ts` after touching them: it prints the cohort
-table and every verdict that changes.
+The ladder order is `REASON_ORDER`: `outside-window → window-edge → snow →
+frost → altitude → heat → wet → short-day → cold-descent`. Every reason that
+fired stays in `StatusVerdict.reasons`, in that order; the badge shows the
+first as one word (`REASON_WORD`), the panel every one as a sentence with its
+number and provenance (`REASON_TEXT`).
 
-Every non-open verdict carries a reason (`StatusReason`) with one German
-sentence in `REASON_TEXT`, shown under the badge in the detail panel.
+Four rungs (`--grade-*` in `app/globals.css` for the fills):
 
-`bestPeriods()` returns the longest run of half-months that are "meist offen"
-with fewer than 10 % snow days – the "Beste Zeit" line in the panel.
+```
+██  beste Zeit     deep green     the longest stretch without a caveat and with < 10 % snow days
+▓▓  gut            light yellow   rideable, no caveat worth a word; a shorter stretch, or 10–19 % snow days
+▒▒  eingeschränkt  orange         one word: Hitze · nass · kurze Tage · kalte Abfahrt · Schnee · Frost · Höhe · Randzeit
+░░  oft gesperrt   hollow, red hairline   road closed, from the opening window only
+```
 
-For tours the worst status among their passes applies. All of this is
-deliberately coarse and does not replace official information. `passVerdict`
-is the place where real closure data will hook in later.
+The three fills differ in lightness as well as hue, so they are told apart at
+4 px; the closure has no fill, so a winter of closures stays light and a
+closed road keeps reading as a different kind of statement. In the panel every cell
+carries a tooltip – the half-month and the grade in the first line, then the
+sentence from `GRADE_HINT`, with the caveat named for a limited cell
+(`cellHint`, `REASON_PHRASE`). The period control's tooltip lists the four
+sentences once.
+
+`Status` (`open | risky | closed`, `lib/schema.ts`) stays three-valued: it is
+the vocabulary of the filter, the hash and the map. `Grade` (`best | good |
+limited | closed`, `lib/status.ts`) is what the strip and the histogram
+read: `open` split by whether the half-month lies in `bestPeriods()`, the
+longest run of "gut" half-months with fewer than 10 % snow days. The map
+circles, the row dot and the badge dot keep the three status colours.
+
+Nothing but the opening window produces "oft gesperrt": a closure is what the
+window knows; snowfall, heat or short days are what the series and the
+calendar know – and a road stays open through them, it just stops being a
+good idea. A closed road and a 34 °C valley are not the same kind of
+statement, which is why the hollow cell is categorically apart from the
+amber one.
+
+### Thresholds
+
+All constants sit in `lib/status.ts`; the tables they were read off are in
+`docs/plans/04-climate-aware-status.md` (snow, frost) and
+`docs/plans/13-summer-axis.md` (the rest). `bun run scripts/analyze-status.ts`
+prints the cohort tables, the per-half-month distributions of every signal,
+the counts one step either side of every threshold, and every (pass,
+half-month) pair whose verdict changes – re-run it after touching a constant.
+
+| Signal        | Constant            | Value | Reads                                            |
+| ------------- | ------------------- | ----- | ------------------------------------------------ |
+| Schnee        | `SNOW_RISKY_PCT`    | 20 %  | `snowPct`, share of days with ≥ 1 cm             |
+| Frost         | `FROST_RISKY_PCT`   | 80 %  | `frostPct`, share of nights below 0 °C           |
+| Hitze         | `HEAT_VALLEY_TMAX`  | 26 °C | `tmax` derived to the lowest ascent start        |
+| nass          | `WET_LIMITED_PCT`   | 70 %  | `wetPct`, share of days with ≥ 1 mm              |
+| kurze Tage    | `SHORT_DAY_HOURS`   | 10¾ h | day length from `lat`, `lib/daylight.ts`         |
+| kalte Abfahrt | `COLD_DESCENT_TMAX` | 8 °C  | `tmax` at the summit, the afternoon of a descent |
+| beste Zeit    | `SNOW_BEST_PCT`     | 10 %  | `snowPct` inside a run of "gut"                  |
+
+### Derived values
+
+The climate series is ERA5-Land, downscaled by Open-Meteo to `pass.elevation`
+(the `elevation` parameter in `scripts/build-data.ts`), so every bucket
+describes the summit. Heat is a valley phenomenon, and the valley is not
+measured: `valleyTmax()` takes the summit `tmax` down to the lowest ascent
+start (`valleyElevations()` in `lib/profile.ts`, from `profiles.json`) with
+the standard-atmosphere lapse rate of 0,65 °C per 100 m. That is a model:
+inversions, foehn and the valley floor's own heat are not in it, and against
+station values it runs about 2–3 °C low for passes with 1 800 m of drop
+(Stilfser Joch from Prato: 24,8 °C derived, ~27 °C measured) and close for
+low ones. The threshold therefore errs towards _not_ flagging heat on the
+highest passes, which is the safe direction for a planner, and every place
+the value shows says "abgeleitet". Passes without a profile (twelve, until
+their routes pass the quality gate) have no valley value and no heat signal;
+the panel says so.
+
+Day length and sunrise/sunset are pure astronomy (`lib/daylight.ts`, the NOAA
+sunrise equation, good to a minute or two), taken in the middle of the
+half-month (the 8th or the 23rd) and shown in Europe/Berlin clock time. The
+DST switch in late October falls inside a half-month, so the sunset shown
+there is an hour off for part of it; the text says "gegen".
+
+The cold descent reads the summit's daily **maximum**, not its minimum: the
+descent happens in the afternoon, when the summit is at its warmest, and a
+maximum of 8 °C means wind chill around freezing at 50 km/h.
+
+For tours the worst status among their passes applies, and the worst grade
+per half-month. All of this is deliberately coarse and does not replace
+official information. `passVerdict` is the place where real closure data will
+hook in later.

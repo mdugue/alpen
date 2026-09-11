@@ -23,7 +23,9 @@ friends do that better and the app links out to them.
    formatted with `toLocaleString("de-DE")` (see `fmt` in `lib/utils.ts`).
 3. **Stay honest.** The 1–5 scales are editorial judgements and the status is
    a heuristic. Both are labelled as such in the scales dialog and must never
-   be presented as measured values.
+   be presented as measured values. Values the app derives rather than reads
+   (the valley temperature from the summit series) say "abgeleitet" wherever
+   they show, and the raw summit values stay visible next to them.
 4. **No silent data changes.** Whoever touches `data/*.json` runs
    `bun run data:check`. Routed geometry passes the quality gate in
    `scripts/lib/validate.ts` before it is stored; what fails lands in
@@ -39,7 +41,8 @@ friends do that better and the app links out to them.
 
 | Topic                                           | File                                                                                                                                                        |
 | ----------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Rideability heuristic                           | `lib/status.ts` (`passStatus`, `tourStatus`)                                                                                                                |
+| Rideability heuristic                           | `lib/status.ts` (`passVerdict`, the reason ladder `REASON_ORDER`, `Grade`, `tourStatus`); thresholds in `docs/scales.md`                                    |
+| Daylight (sunrise, sunset, day length)          | `lib/daylight.ts`, pure astronomy, no data                                                                                                                  |
 | Data schemas (zod) and inferred types           | `lib/schema.ts`, `lib/types.ts`, `data/schema/*.schema.json` (`bun run data:schema`)                                                                        |
 | Regions and countries (vocabulary)              | `lib/regions.ts`                                                                                                                                            |
 | Data access (cached, validated)                 | `lib/data.ts`                                                                                                                                               |
@@ -78,7 +81,7 @@ friends do that better and the app links out to them.
   styling (status badges, etc.) goes into the consuming component via
   `className`. Re-running `ui:init` overwrites `app/globals.css`; the domain
   tokens (`--status-open`, `--status-risky`, `--status-closed`, `--tour`,
-  `--town` plus their `@theme inline` lines), the `--text-2xs` step below
+  `--town`, the strip's `--grade-*` ramp, plus their `@theme inline` lines), the `--text-2xs` step below
   Tailwind's `text-xs`, the MapLibre rules at the end, the coarse-pointer
   font-size rule next to them and the dark-mode setup must be restored
   afterwards.

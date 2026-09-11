@@ -41,6 +41,7 @@ import {
   statusHistogram,
 } from "@/lib/rows";
 import { indexBySlug } from "@/lib/status";
+import type { Signals } from "@/lib/status";
 import type {
   ClimateYear,
   LatLon,
@@ -69,6 +70,8 @@ interface Props {
   townReach: TownReach;
   profiles: Record<string, ProfileWithCoords>;
   climate: Record<string, ClimateYear>;
+  /** Lowest ascent start per pass, for the derived valley heat (`lib/status.ts`). */
+  valleys: Record<string, number>;
   /** Commons photos per entity, see `lib/photos.ts`. */
   photos: Photos;
   /** Today's half-month, computed on the server in Europe/Berlin. */
@@ -99,9 +102,11 @@ export const Explorer = ({
   townReach,
   profiles,
   climate,
+  valleys,
   photos,
   defaultPeriod,
 }: Props) => {
+  const signals: Signals = { climate, valleys };
   const [filters, setFilters] = useState<Filters>({
     ...DEFAULT_FILTERS,
     period: defaultPeriod,
@@ -188,16 +193,16 @@ export const Explorer = ({
   }, [hashApplied, filters, selection, view]);
 
   const passIndex = indexBySlug(passes);
-  const passRows = buildPassRows(passes, filters, isFavorite, climate);
+  const passRows = buildPassRows(passes, filters, isFavorite, signals);
   const tourRows = buildTourRows(
     tours,
     passIndex,
     filters,
     isFavorite,
-    climate,
+    signals,
   );
   const townRows = buildTownRows(towns, filters, isFavorite);
-  const histogram = statusHistogram(passes, filters, isFavorite, climate);
+  const histogram = statusHistogram(passes, filters, isFavorite, signals);
 
   const mapPasses: MapPass[] = passRows.map(({ pass, status, favorite }) => ({
     ...pass,
@@ -262,6 +267,7 @@ export const Explorer = ({
       nearbyTours={nearbyTours}
       profiles={profiles}
       climate={climate}
+      valleys={valleys}
       photos={photos}
       isFavorite={isFavorite}
       onToggleFavorite={toggleFavorite}

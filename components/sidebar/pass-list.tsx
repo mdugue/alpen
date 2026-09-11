@@ -67,7 +67,7 @@ export const PassList = ({
         <ListEmpty title="Keine Pässe für diese Filter" />
       ) : (
         <ul>
-          {sorted.map(({ pass, status, favorite, season }) => (
+          {sorted.map(({ pass, status, reason, favorite, season }) => (
             <EntityRow
               key={pass.slug}
               rowId={`pass:${pass.slug}`}
@@ -90,10 +90,11 @@ export const PassList = ({
                   ) : (
                     <StatusLabel
                       status={status}
+                      reason={reason}
                       className="text-muted-foreground"
                     />
                   )}
-                  <SeasonStrip statuses={season} current={filters.period} />
+                  <SeasonStrip grades={season} current={filters.period} />
                 </>
               }
             />

@@ -115,6 +115,33 @@ describe("parseHash", () => {
     expect(parseHash("#be=abc").filters.minBeauty).toBeUndefined();
     expect(parseHash("#o=nonsense").filters.sort).toBeUndefined();
   });
+
+  test("the summer-signal keys from plan 13 round-trip and are validated", () => {
+    expect(parseHash("#h=28&w=40").filters).toMatchObject({
+      maxValleyTmax: 28,
+      maxWetPct: 40,
+    });
+    // Only what the selects offer; an old link without them is unfiltered.
+    expect(parseHash("#h=27").filters.maxValleyTmax).toBeUndefined();
+    expect(parseHash("#w=45").filters.maxWetPct).toBeUndefined();
+    expect(parseHash("#s=open,risky").filters).toMatchObject({
+      maxValleyTmax: undefined,
+      maxWetPct: undefined,
+      status: ["open", "risky"],
+    });
+    const out = serializeHash(
+      filters({ maxValleyTmax: 24, maxWetPct: 50 }),
+      null,
+      DEFAULT_VIEW,
+    );
+    expect(out).toContain("h=24");
+    expect(out).toContain("w=50");
+    expect(parseHash(out).filters).toMatchObject({
+      maxValleyTmax: 24,
+      maxWetPct: 50,
+    });
+    expect(serializeHash(filters(), null, DEFAULT_VIEW)).not.toMatch(/[hw]=/u);
+  });
 });
 
 describe("serializeHash", () => {
@@ -203,12 +230,14 @@ describe("filters", () => {
         filters({
           difficulty: [2, 4],
           maxTraffic: 2,
+          maxValleyTmax: 28,
+          maxWetPct: 40,
           minBeauty: 4,
           minElevation: 2000,
           minFame: 3,
         }),
       ),
-    ).toBe(5);
+    ).toBe(7);
   });
 
   test("statusMatches follows the visible set", () => {

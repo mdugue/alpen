@@ -3,6 +3,7 @@
 import { ChevronLeft, ChevronRight, RotateCcw } from "lucide-react";
 import { useRef } from "react";
 
+import { GradeLegend } from "@/components/grade-legend";
 import { Button } from "@/components/ui/button";
 import { ButtonGroup, ButtonGroupText } from "@/components/ui/button-group";
 import {
@@ -10,6 +11,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { barTotal } from "@/lib/rows";
 import type { HistogramBar } from "@/lib/rows";
 import {
   MONTH_INITIALS,
@@ -54,7 +56,7 @@ export const PeriodScrubber = ({
 }) => {
   const track = useRef<HTMLDivElement>(null);
   const index = periodIndex(value);
-  const max = Math.max(1, ...histogram.map((b) => b.open + b.risky + b.closed));
+  const max = Math.max(1, ...histogram.map(barTotal));
   const todayIndex = today === undefined ? -1 : periodIndex(today);
   const bar = histogram[index];
 
@@ -97,9 +99,31 @@ export const PeriodScrubber = ({
         >
           <ChevronLeft />
         </Button>
-        <ButtonGroupText className="flex-1 justify-center bg-transparent text-sm font-semibold">
-          {periodLabel(value)}
-        </ButtonGroupText>
+        {/* The label doubles as the legend: what the four colours of the bars
+            and the strips mean, and the counts of this half-month. A button
+            rather than the group's text element, so the legend also opens
+            from the keyboard, on focus. */}
+        <Tooltip>
+          <TooltipTrigger
+            render={
+              <ButtonGroupText
+                render={<button type="button" />}
+                className="flex-1 cursor-default justify-center bg-transparent text-sm font-semibold"
+              />
+            }
+          >
+            {periodLabel(value)}
+          </TooltipTrigger>
+          <TooltipContent className="max-w-72">
+            <GradeLegend
+              hint={
+                bar
+                  ? `${periodLabel(value)}: ${bar.best} beste Zeit, ${bar.good} gut, ${bar.limited} eingeschränkt, ${bar.closed} oft gesperrt. Mehr unter „Skalen & Quellen“.`
+                  : undefined
+              }
+            />
+          </TooltipContent>
+        </Tooltip>
         <Button
           variant="outline"
           size="icon-lg"
@@ -139,7 +163,7 @@ export const PeriodScrubber = ({
         aria-valuenow={index + 1}
         aria-valuetext={
           bar
-            ? `${periodLabel(value)}: ${bar.open} meist offen, ${bar.risky} wetterabhängig, ${bar.closed} oft gesperrt`
+            ? `${periodLabel(value)}: ${bar.best} beste Zeit, ${bar.good} gut, ${bar.limited} eingeschränkt, ${bar.closed} oft gesperrt`
             : periodLabel(value)
         }
         onKeyDown={onKeyDown}
@@ -174,27 +198,23 @@ export const PeriodScrubber = ({
               <span
                 aria-hidden
                 className="flex flex-col justify-end overflow-hidden rounded-xs"
-                style={{
-                  height: `${((b.closed + b.risky + b.open) / max) * 100}%`,
-                }}
+                style={{ height: `${(barTotal(b) / max) * 100}%` }}
               >
                 <span
                   className="bg-muted-foreground/25 shrink-0"
-                  style={{
-                    flexBasis: `${percent(b.closed, b.closed + b.risky + b.open)}%`,
-                  }}
+                  style={{ flexBasis: `${percent(b.closed, barTotal(b))}%` }}
                 />
                 <span
-                  className="bg-status-risky shrink-0"
-                  style={{
-                    flexBasis: `${percent(b.risky, b.closed + b.risky + b.open)}%`,
-                  }}
+                  className="bg-grade-limited shrink-0"
+                  style={{ flexBasis: `${percent(b.limited, barTotal(b))}%` }}
                 />
                 <span
-                  className="bg-status-open shrink-0"
-                  style={{
-                    flexBasis: `${percent(b.open, b.closed + b.risky + b.open)}%`,
-                  }}
+                  className="bg-grade-good shrink-0"
+                  style={{ flexBasis: `${percent(b.good, barTotal(b))}%` }}
+                />
+                <span
+                  className="bg-grade-best shrink-0"
+                  style={{ flexBasis: `${percent(b.best, barTotal(b))}%` }}
                 />
               </span>
             </span>
