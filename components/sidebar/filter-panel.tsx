@@ -43,6 +43,21 @@ import { STATUS_LABEL } from "@/lib/status";
 import type { RoadTag, RoadType, Status } from "@/lib/types";
 import { cn, fmtUnit, PRESSED, TOUCH_CONTROL, TOUCH_SELECT } from "@/lib/utils";
 
+/**
+ * Five type buttons over six grid columns: three and two, both rows full.
+ * `Stichstraße` and `Balkonstraße` do not fit a fifth of the 352 px panel, and
+ * a filter whose options read "Stichstr…" is not one anybody can choose from;
+ * the vocabulary order is the display order, so the split is here and not in
+ * `ROAD_TYPES`.
+ */
+const TYPE_SPAN: Record<RoadType, string> = {
+  balcony: "col-span-3",
+  pass: "col-span-2",
+  plateau: "col-span-2",
+  spur: "col-span-2",
+  valley: "col-span-3",
+};
+
 /** Base UI hands back a number for a single thumb and an array for a range. */
 const asRange = (v: number | readonly number[]): [number, number] =>
   Array.isArray(v)
@@ -270,14 +285,14 @@ export const FilterPanel = ({
               )
             }
             aria-labelledby="road-types"
-            className="w-full"
+            className="grid w-full grid-cols-6"
           >
             {ALL_TYPES.map((t: RoadType) => (
               <ToggleGroupItem
                 key={t}
                 value={t}
                 title={ROAD_TYPE[t].hint}
-                className={cn("min-w-0 flex-1", TOUCH_CONTROL)}
+                className={cn("min-w-0", TYPE_SPAN[t], TOUCH_CONTROL)}
               >
                 <span className="truncate">{ROAD_TYPE[t].label}</span>
               </ToggleGroupItem>
