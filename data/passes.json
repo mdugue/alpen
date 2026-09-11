@@ -2,6 +2,7 @@
  {
   "slug": "col-du-galibier",
   "name": "Col du Galibier",
+  "type": "pass",
   "country": "FR",
   "region": "Westalpen",
   "lat": 45.064,
@@ -39,6 +40,7 @@
  {
   "slug": "alpe-d-huez",
   "name": "Alpe d'Huez",
+  "type": "pass",
   "country": "FR",
   "region": "Westalpen",
   "lat": 45.092,
@@ -65,6 +67,7 @@
  {
   "slug": "col-de-l-iseran",
   "name": "Col de l'Iseran",
+  "type": "pass",
   "country": "FR",
   "region": "Westalpen",
   "lat": 45.417,
@@ -102,6 +105,7 @@
  {
   "slug": "col-de-la-bonette",
   "name": "Col de la Bonette",
+  "type": "pass",
   "aliases": [
    "Cime de la Bonette",
    "Restefond"
@@ -143,6 +147,7 @@
  {
   "slug": "col-d-izoard",
   "name": "Col d'Izoard",
+  "type": "pass",
   "country": "FR",
   "region": "Westalpen",
   "lat": 44.82,
@@ -180,6 +185,7 @@
  {
   "slug": "col-de-la-madeleine",
   "name": "Col de la Madeleine",
+  "type": "pass",
   "country": "FR",
   "region": "Westalpen",
   "lat": 45.432,
@@ -217,6 +223,7 @@
  {
   "slug": "col-de-la-croix-de-fer",
   "name": "Col de la Croix de Fer",
+  "type": "pass",
   "country": "FR",
   "region": "Westalpen",
   "lat": 45.227,
@@ -254,6 +261,7 @@
  {
   "slug": "col-de-la-loze",
   "name": "Col de la Loze",
+  "type": "pass",
   "country": "FR",
   "region": "Westalpen",
   "lat": 45.406,
@@ -291,6 +299,7 @@
  {
   "slug": "mont-ventoux",
   "name": "Mont Ventoux",
+  "type": "pass",
   "country": "FR",
   "region": "Westalpen",
   "lat": 44.174,
@@ -335,6 +344,7 @@
  {
   "slug": "colle-dell-agnello",
   "name": "Colle dell'Agnello",
+  "type": "pass",
   "aliases": [
    "Col Agnel"
   ],
@@ -375,6 +385,10 @@
  {
   "slug": "colle-delle-finestre",
   "name": "Colle delle Finestre",
+  "type": "pass",
+  "tags": [
+   "surface"
+  ],
   "country": "IT",
   "region": "Westalpen",
   "lat": 45.073,
@@ -405,6 +419,10 @@
  {
   "slug": "passo-dello-stelvio",
   "name": "Passo dello Stelvio",
+  "type": "pass",
+  "tags": [
+   "hairpins"
+  ],
   "aliases": [
    "Stilfser Joch",
    "Stilfserjoch",
@@ -447,6 +465,7 @@
  {
   "slug": "passo-di-gavia",
   "name": "Passo di Gavia",
+  "type": "pass",
   "country": "IT",
   "region": "Zentralalpen",
   "lat": 46.343,
@@ -484,6 +503,7 @@
  {
   "slug": "passo-del-mortirolo",
   "name": "Passo del Mortirolo",
+  "type": "pass",
   "country": "IT",
   "region": "Zentralalpen",
   "lat": 46.249,
@@ -517,6 +537,7 @@
  {
   "slug": "umbrailpass",
   "name": "Umbrailpass",
+  "type": "pass",
   "aliases": [
    "Giogo di Santa Maria"
   ],
@@ -550,6 +571,7 @@
  {
   "slug": "furkapass",
   "name": "Furkapass",
+  "type": "pass",
   "country": "CH",
   "region": "Zentralalpen",
   "lat": 46.572,
@@ -587,6 +609,7 @@
  {
   "slug": "grimselpass",
   "name": "Grimselpass",
+  "type": "pass",
   "country": "CH",
   "region": "Zentralalpen",
   "lat": 46.562,
@@ -624,6 +647,7 @@
  {
   "slug": "sustenpass",
   "name": "Sustenpass",
+  "type": "pass",
   "country": "CH",
   "region": "Zentralalpen",
   "lat": 46.729,
@@ -661,6 +685,7 @@
  {
   "slug": "nufenenpass",
   "name": "Nufenenpass",
+  "type": "pass",
   "aliases": [
    "Passo della Novena"
   ],
@@ -701,6 +726,11 @@
  {
   "slug": "gotthard-tremola",
   "name": "Gotthard (Tremola)",
+  "type": "pass",
+  "tags": [
+   "hairpins",
+   "surface"
+  ],
   "aliases": [
    "San Gottardo",
    "Gotthardpass"
@@ -742,6 +772,10 @@
  {
   "slug": "grosse-scheidegg",
   "name": "Grosse Scheidegg",
+  "type": "pass",
+  "tags": [
+   "carfree"
+  ],
   "country": "CH",
   "region": "Zentralalpen",
   "lat": 46.655,
@@ -779,6 +813,7 @@
  {
   "slug": "klausenpass",
   "name": "Klausenpass",
+  "type": "pass",
   "country": "CH",
   "region": "Zentralalpen",
   "lat": 46.869,
@@ -816,6 +851,7 @@
  {
   "slug": "albulapass",
   "name": "Albulapass",
+  "type": "pass",
   "country": "CH",
   "region": "Zentralalpen",
   "lat": 46.583,
@@ -853,6 +889,7 @@
  {
   "slug": "col-du-grand-saint-bernard",
   "name": "Col du Grand Saint-Bernard",
+  "type": "pass",
   "aliases": [
    "Gran San Bernardo",
    "Grosser Sankt Bernhard"
@@ -894,6 +931,10 @@
  {
   "slug": "grossglockner-hochalpenstrasse",
   "name": "Großglockner Hochalpenstraße",
+  "type": "pass",
+  "tags": [
+   "toll"
+  ],
   "aliases": [
    "Grossglockner",
    "Glockner"
@@ -935,6 +976,10 @@
  {
   "slug": "timmelsjoch",
   "name": "Timmelsjoch",
+  "type": "pass",
+  "tags": [
+   "toll"
+  ],
   "aliases": [
    "Passo del Rombo"
   ],
@@ -975,6 +1020,12 @@
  {
   "slug": "silvretta-hochalpenstrasse",
   "name": "Silvretta Hochalpenstraße",
+  "type": "pass",
+  "tags": [
+   "panorama",
+   "reservoir",
+   "toll"
+  ],
   "aliases": [
    "Bielerhöhe"
   ],
@@ -1015,13 +1066,15 @@
  {
   "slug": "kitzbueheler-horn",
   "name": "Kitzbüheler Horn",
+  "type": "spur",
+  "tags": [
+   "toll"
+  ],
   "country": "AT",
   "region": "Ostalpen",
   "lat": 47.4505,
   "lon": 12.4243,
   "elevation": 1996,
-  "deadEnd": true,
-  "roadSummit": true,
   "classicAscent": "7,6 km, 12,5 % ab Kitzbühel",
   "beauty": 3,
   "fame": 3,
@@ -1043,6 +1096,11 @@
  {
   "slug": "rossfeld-panoramastrasse",
   "name": "Roßfeld-Panoramastraße",
+  "type": "pass",
+  "tags": [
+   "panorama",
+   "toll"
+  ],
   "aliases": [
    "Rossfeld"
   ],
@@ -1073,6 +1131,7 @@
  {
   "slug": "passo-pordoi",
   "name": "Passo Pordoi",
+  "type": "pass",
   "aliases": [
    "Pordoijoch"
   ],
@@ -1109,6 +1168,7 @@
  {
   "slug": "passo-giau",
   "name": "Passo Giau",
+  "type": "pass",
   "country": "IT",
   "region": "Dolomiten",
   "lat": 46.484,
@@ -1146,6 +1206,10 @@
  {
   "slug": "passo-fedaia",
   "name": "Passo Fedaia",
+  "type": "pass",
+  "tags": [
+   "reservoir"
+  ],
   "aliases": [
    "Marmolada"
   ],
@@ -1182,6 +1246,7 @@
  {
   "slug": "passo-sella",
   "name": "Passo Sella",
+  "type": "pass",
   "aliases": [
    "Sellajoch"
   ],
@@ -1218,6 +1283,10 @@
  {
   "slug": "tre-cime-di-lavaredo",
   "name": "Tre Cime di Lavaredo",
+  "type": "spur",
+  "tags": [
+   "toll"
+  ],
   "aliases": [
    "Drei Zinnen",
    "Auronzohütte"
@@ -1227,8 +1296,6 @@
   "lat": 46.612,
   "lon": 12.294,
   "elevation": 2320,
-  "deadEnd": true,
-  "roadSummit": true,
   "classicAscent": "7,5 km, 7,6 % ab Misurina, letzte 4 km 12 %",
   "beauty": 5,
   "fame": 4,
@@ -1254,6 +1321,7 @@
  {
   "slug": "monte-zoncolan",
   "name": "Monte Zoncolan",
+  "type": "pass",
   "country": "IT",
   "region": "Dolomiten",
   "lat": 46.502,
@@ -1287,6 +1355,7 @@
  {
   "slug": "col-de-vars",
   "name": "Col de Vars",
+  "type": "pass",
   "country": "FR",
   "region": "Westalpen",
   "lat": 44.538,
@@ -1324,6 +1393,7 @@
  {
   "slug": "col-du-lautaret",
   "name": "Col du Lautaret",
+  "type": "pass",
   "country": "FR",
   "region": "Westalpen",
   "lat": 45.034,
@@ -1357,6 +1427,7 @@
  {
   "slug": "col-du-glandon",
   "name": "Col du Glandon",
+  "type": "pass",
   "country": "FR",
   "region": "Westalpen",
   "lat": 45.24,
@@ -1394,6 +1465,7 @@
  {
   "slug": "col-de-joux-plane",
   "name": "Col de Joux Plane",
+  "type": "pass",
   "country": "FR",
   "region": "Westalpen",
   "lat": 46.13,
@@ -1424,6 +1496,7 @@
  {
   "slug": "col-de-la-colombiere",
   "name": "Col de la Colombière",
+  "type": "pass",
   "country": "FR",
   "region": "Westalpen",
   "lat": 45.992,
@@ -1461,6 +1534,10 @@
  {
   "slug": "cormet-de-roselend",
   "name": "Cormet de Roselend",
+  "type": "pass",
+  "tags": [
+   "reservoir"
+  ],
   "country": "FR",
   "region": "Westalpen",
   "lat": 45.674,
@@ -1498,6 +1575,7 @@
  {
   "slug": "col-du-petit-saint-bernard",
   "name": "Col du Petit Saint-Bernard",
+  "type": "pass",
   "aliases": [
    "Piccolo San Bernardo",
    "Kleiner Sankt Bernhard"
@@ -1539,6 +1617,7 @@
  {
   "slug": "col-du-mont-cenis",
   "name": "Col du Mont Cenis",
+  "type": "pass",
   "aliases": [
    "Moncenisio"
   ],
@@ -1579,6 +1658,7 @@
  {
   "slug": "col-de-la-cayolle",
   "name": "Col de la Cayolle",
+  "type": "pass",
   "country": "FR",
   "region": "Westalpen",
   "lat": 44.259,
@@ -1616,6 +1696,7 @@
  {
   "slug": "col-d-allos",
   "name": "Col d'Allos",
+  "type": "pass",
   "country": "FR",
   "region": "Westalpen",
   "lat": 44.297,
@@ -1653,6 +1734,7 @@
  {
   "slug": "col-des-champs",
   "name": "Col des Champs",
+  "type": "pass",
   "country": "FR",
   "region": "Westalpen",
   "lat": 44.1828,
@@ -1690,6 +1772,7 @@
  {
   "slug": "col-de-la-lombarde",
   "name": "Col de la Lombarde",
+  "type": "pass",
   "country": "FR/IT",
   "region": "Westalpen",
   "lat": 44.203,
@@ -1727,6 +1810,7 @@
  {
   "slug": "col-de-turini",
   "name": "Col de Turini",
+  "type": "pass",
   "country": "FR",
   "region": "Westalpen",
   "lat": 43.979,
@@ -1760,6 +1844,7 @@
  {
   "slug": "col-de-la-couillole",
   "name": "Col de la Couillole",
+  "type": "pass",
   "country": "FR",
   "region": "Westalpen",
   "lat": 44.1447,
@@ -1793,13 +1878,16 @@
  {
   "slug": "colle-del-nivolet",
   "name": "Colle del Nivolet",
+  "type": "spur",
+  "tags": [
+   "reservoir",
+   "carfree"
+  ],
   "country": "IT",
   "region": "Westalpen",
   "lat": 45.48,
   "lon": 7.14,
   "elevation": 2612,
-  "deadEnd": true,
-  "roadSummit": true,
   "classicAscent": "40 km, 5 % ab Locana",
   "beauty": 5,
   "fame": 2,
@@ -1825,6 +1913,7 @@
  {
   "slug": "colle-fauniera",
   "name": "Colle Fauniera",
+  "type": "pass",
   "aliases": [
    "Colle dei Morti"
   ],
@@ -1865,6 +1954,7 @@
  {
   "slug": "colle-di-sampeyre",
   "name": "Colle di Sampeyre",
+  "type": "pass",
   "country": "IT",
   "region": "Westalpen",
   "lat": 44.532,
@@ -1902,6 +1992,7 @@
  {
   "slug": "colle-san-carlo",
   "name": "Colle San Carlo",
+  "type": "pass",
   "country": "IT",
   "region": "Westalpen",
   "lat": 45.7267,
@@ -1939,6 +2030,7 @@
  {
   "slug": "simplonpass",
   "name": "Simplonpass",
+  "type": "pass",
   "aliases": [
    "Passo del Sempione"
   ],
@@ -1975,6 +2067,7 @@
  {
   "slug": "lukmanierpass",
   "name": "Lukmanierpass",
+  "type": "pass",
   "aliases": [
    "Passo del Lucomagno"
   ],
@@ -2015,6 +2108,7 @@
  {
   "slug": "oberalppass",
   "name": "Oberalppass",
+  "type": "pass",
   "country": "CH",
   "region": "Zentralalpen",
   "lat": 46.658,
@@ -2052,6 +2146,7 @@
  {
   "slug": "passo-san-bernardino",
   "name": "Passo San Bernardino",
+  "type": "pass",
   "country": "CH",
   "region": "Zentralalpen",
   "lat": 46.497,
@@ -2089,6 +2184,7 @@
  {
   "slug": "spluegenpass",
   "name": "Splügenpass",
+  "type": "pass",
   "aliases": [
    "Passo dello Spluga"
   ],
@@ -2129,6 +2225,7 @@
  {
   "slug": "julierpass",
   "name": "Julierpass",
+  "type": "pass",
   "aliases": [
    "Pass dal Güglia"
   ],
@@ -2165,6 +2262,7 @@
  {
   "slug": "malojapass",
   "name": "Malojapass",
+  "type": "pass",
   "aliases": [
    "Passo del Maloja"
   ],
@@ -2194,6 +2292,7 @@
  {
   "slug": "berninapass",
   "name": "Berninapass",
+  "type": "pass",
   "country": "CH",
   "region": "Zentralalpen",
   "lat": 46.41,
@@ -2227,6 +2326,7 @@
  {
   "slug": "flueelapass",
   "name": "Flüelapass",
+  "type": "pass",
   "country": "CH",
   "region": "Zentralalpen",
   "lat": 46.75,
@@ -2264,6 +2364,7 @@
  {
   "slug": "ofenpass",
   "name": "Ofenpass",
+  "type": "pass",
   "aliases": [
    "Pass dal Fuorn"
   ],
@@ -2300,6 +2401,7 @@
  {
   "slug": "passo-del-foscagno",
   "name": "Passo del Foscagno",
+  "type": "pass",
   "country": "IT",
   "region": "Zentralalpen",
   "lat": 46.494,
@@ -2333,6 +2435,7 @@
  {
   "slug": "passo-del-tonale",
   "name": "Passo del Tonale",
+  "type": "pass",
   "country": "IT",
   "region": "Zentralalpen",
   "lat": 46.259,
@@ -2366,6 +2469,7 @@
  {
   "slug": "passo-san-marco",
   "name": "Passo San Marco",
+  "type": "pass",
   "country": "IT",
   "region": "Zentralalpen",
   "lat": 46.047,
@@ -2403,6 +2507,7 @@
  {
   "slug": "passo-crocedomini",
   "name": "Passo Crocedomini",
+  "type": "pass",
   "country": "IT",
   "region": "Zentralalpen",
   "lat": 45.903,
@@ -2443,6 +2548,11 @@
  {
   "slug": "oetztaler-gletscherstrasse",
   "name": "Ötztaler Gletscherstraße",
+  "type": "spur",
+  "tags": [
+   "glacier",
+   "toll"
+  ],
   "aliases": [
    "Rettenbachferner"
   ],
@@ -2451,8 +2561,6 @@
   "lat": 46.932,
   "lon": 10.94,
   "elevation": 2830,
-  "deadEnd": true,
-  "roadSummit": true,
   "classicAscent": "13 km, 10,5 % ab Sölden",
   "beauty": 3,
   "fame": 3,
@@ -2474,6 +2582,7 @@
  {
   "slug": "kuehtai",
   "name": "Kühtai",
+  "type": "pass",
   "country": "AT",
   "region": "Ostalpen",
   "lat": 47.213,
@@ -2507,6 +2616,7 @@
  {
   "slug": "jaufenpass",
   "name": "Jaufenpass",
+  "type": "pass",
   "aliases": [
    "Passo di Monte Giovo"
   ],
@@ -2547,6 +2657,7 @@
  {
   "slug": "penserjoch",
   "name": "Penserjoch",
+  "type": "pass",
   "aliases": [
    "Passo di Pennes"
   ],
@@ -2587,6 +2698,7 @@
  {
   "slug": "hahntennjoch",
   "name": "Hahntennjoch",
+  "type": "pass",
   "country": "AT",
   "region": "Ostalpen",
   "lat": 47.287,
@@ -2624,6 +2736,7 @@
  {
   "slug": "arlbergpass",
   "name": "Arlbergpass",
+  "type": "pass",
   "country": "AT",
   "region": "Ostalpen",
   "lat": 47.13,
@@ -2657,6 +2770,7 @@
  {
   "slug": "gerlospass",
   "name": "Gerlospass",
+  "type": "pass",
   "country": "AT",
   "region": "Ostalpen",
   "lat": 47.24,
@@ -2690,13 +2804,16 @@
  {
   "slug": "malta-hochalmstrasse",
   "name": "Malta-Hochalmstraße",
+  "type": "spur",
+  "tags": [
+   "reservoir",
+   "toll"
+  ],
   "country": "AT",
   "region": "Ostalpen",
   "lat": 47.07,
   "lon": 13.35,
   "elevation": 1933,
-  "deadEnd": true,
-  "roadSummit": true,
   "classicAscent": "30 km, 5 % ab Gmünd",
   "beauty": 4,
   "fame": 2,
@@ -2722,6 +2839,11 @@
  {
   "slug": "nockalmstrasse",
   "name": "Nockalmstraße",
+  "type": "pass",
+  "tags": [
+   "panorama",
+   "toll"
+  ],
   "country": "AT",
   "region": "Ostalpen",
   "lat": 46.905,
@@ -2760,6 +2882,7 @@
  {
   "slug": "turracher-hoehe",
   "name": "Turracher Höhe",
+  "type": "pass",
   "country": "AT",
   "region": "Ostalpen",
   "lat": 46.917,
@@ -2793,6 +2916,7 @@
  {
   "slug": "soelkpass",
   "name": "Sölkpass",
+  "type": "pass",
   "country": "AT",
   "region": "Ostalpen",
   "lat": 47.28,
@@ -2830,13 +2954,16 @@
  {
   "slug": "villacher-alpenstrasse",
   "name": "Villacher Alpenstraße",
+  "type": "spur",
+  "tags": [
+   "panorama",
+   "toll"
+  ],
   "country": "AT",
   "region": "Ostalpen",
   "lat": 46.598,
   "lon": 13.792,
   "elevation": 1732,
-  "deadEnd": true,
-  "roadSummit": true,
   "classicAscent": "17 km, 6,2 % ab Möltschach",
   "beauty": 3,
   "fame": 2,
@@ -2862,6 +2989,11 @@
  {
   "slug": "vrsic",
   "name": "Vršič",
+  "type": "pass",
+  "tags": [
+   "hairpins",
+   "surface"
+  ],
   "aliases": [
    "Werschetz"
   ],
@@ -2902,13 +3034,15 @@
  {
   "slug": "mangart-sattel",
   "name": "Mangart-Sattel",
+  "type": "spur",
+  "tags": [
+   "tunnels"
+  ],
   "country": "SI",
   "region": "Ostalpen",
   "lat": 46.44,
   "lon": 13.65,
   "elevation": 2055,
-  "deadEnd": true,
-  "roadSummit": true,
   "classicAscent": "12 km, 9 % ab Log pod Mangartom",
   "beauty": 5,
   "fame": 2,
@@ -2938,6 +3072,7 @@
  {
   "slug": "passo-falzarego",
   "name": "Passo Falzarego",
+  "type": "pass",
   "country": "IT",
   "region": "Dolomiten",
   "lat": 46.519,
@@ -2971,6 +3106,7 @@
  {
   "slug": "passo-valparola",
   "name": "Passo Valparola",
+  "type": "pass",
   "country": "IT",
   "region": "Dolomiten",
   "lat": 46.533,
@@ -2997,6 +3133,7 @@
  {
   "slug": "passo-gardena",
   "name": "Passo Gardena",
+  "type": "pass",
   "aliases": [
    "Grödner Joch",
    "Groednerjoch"
@@ -3034,6 +3171,7 @@
  {
   "slug": "passo-campolongo",
   "name": "Passo Campolongo",
+  "type": "pass",
   "country": "IT",
   "region": "Dolomiten",
   "lat": 46.518,
@@ -3067,6 +3205,7 @@
  {
   "slug": "passo-rolle",
   "name": "Passo Rolle",
+  "type": "pass",
   "country": "IT",
   "region": "Dolomiten",
   "lat": 46.297,
@@ -3100,6 +3239,7 @@
  {
   "slug": "passo-san-pellegrino",
   "name": "Passo San Pellegrino",
+  "type": "pass",
   "country": "IT",
   "region": "Dolomiten",
   "lat": 46.378,
@@ -3133,6 +3273,7 @@
  {
   "slug": "passo-manghen",
   "name": "Passo Manghen",
+  "type": "pass",
   "country": "IT",
   "region": "Dolomiten",
   "lat": 46.173,
@@ -3170,6 +3311,7 @@
  {
   "slug": "passo-delle-erbe",
   "name": "Passo delle Erbe",
+  "type": "pass",
   "aliases": [
    "Würzjoch"
   ],
@@ -3210,6 +3352,7 @@
  {
   "slug": "passo-staulanza",
   "name": "Passo Staulanza",
+  "type": "pass",
   "country": "IT",
   "region": "Dolomiten",
   "lat": 46.421,
@@ -3243,6 +3386,7 @@
  {
   "slug": "passo-duran",
   "name": "Passo Duran",
+  "type": "pass",
   "country": "IT",
   "region": "Dolomiten",
   "lat": 46.325,
@@ -3276,6 +3420,7 @@
  {
   "slug": "passo-monte-croce-comelico",
   "name": "Passo Monte Croce Comelico",
+  "type": "pass",
   "aliases": [
    "Kreuzbergpass"
   ],

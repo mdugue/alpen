@@ -66,6 +66,7 @@ import {
   profileStats,
   withRoadDistances,
 } from "../lib/profile";
+import { isTraverse } from "../lib/regions";
 import { FILES } from "../lib/schema";
 import type {
   AscentMetrics,
@@ -94,8 +95,8 @@ import type { OverpassWay } from "./lib/locate";
 import {
   LIMITS,
   ascentMetrics,
-  checkAscent,
   checkRoad,
+  checkRoadAscent,
   checkSummit,
   checkTour,
   geometryHash,
@@ -525,6 +526,13 @@ const rejected = await readJson<Record<string, RouteRejection>>(
 );
 const summits = await readJson<Record<string, Summit>>("summits.json", {});
 
+/**
+ * One route to fetch, measure and judge. `ascent` is a climb to a road's own
+ * marker, `traverse` one ride along a road that has no summit to aim at
+ * (`plateau`, `balcony`, `valley`) – measured against the tour limits, but
+ * belonging to a road and therefore earning a profile like any ascent. `tour`
+ * is a loop of `tours.json`.
+ */
 type RouteJob = {
   key: string;
   label: string;
@@ -540,32 +548,62 @@ type RouteJob = {
       elevation: number;
       check?: AscentCheck;
     }
+  | {
+      kind: "traverse";
+      slug: string;
+      from: LatLon;
+      to: LatLon;
+      statedKm: number;
+      check?: TourCheck;
+    }
   | { kind: "tour"; statedKm: number; check?: TourCheck }
 );
+
+/** A job that belongs to a road, so it has a slug and earns an elevation profile. */
+const ofRoad = (
+  j: RouteJob,
+): j is RouteJob & { kind: "ascent" | "traverse"; slug: string } =>
+  j.kind !== "tour";
 
 const passBySlug = new Map((passes as Pass[]).map((p) => [p.slug, p]));
 
 const routeJobs: RouteJob[] = [
   ...(passes as Pass[]).flatMap((p) =>
-    p.ascents.map((a, i): RouteJob => ({
-      check: a.check,
-      elevation: p.elevation,
-      from: a.from,
-      inputs: inputsHash(
-        {
-          elevation: p.elevation,
+    p.ascents.map((a, i): RouteJob => {
+      const key = `${p.slug}:${i}`;
+      const label = `${p.name} ab ${a.label}`;
+      const summit = { lat: p.lat, lon: p.lon };
+      // A traverse is routed between its two curated ends and judged against
+      // its stated length; a climb is routed to the marker (`roadMetrics`).
+      if (isTraverse(p.type))
+        return {
+          check: a.check as TourCheck | undefined,
           from: a.from,
-          summit: { lat: p.lat, lon: p.lon },
-        },
-        a.check,
-      ),
-      key: `${p.slug}:${i}`,
-      kind: "ascent",
-      label: `${p.name} ab ${a.label}`,
-      slug: p.slug,
-      summit: { lat: p.lat, lon: p.lon },
-      waypoints: [a.from, { lat: p.lat, lon: p.lon }],
-    })),
+          inputs: inputsHash({ from: a.from, km: a.km, to: a.to }, a.check),
+          key,
+          kind: "traverse",
+          label,
+          slug: p.slug,
+          statedKm: a.km ?? 0,
+          to: a.to ?? summit,
+          waypoints: [a.from, a.to ?? summit],
+        };
+      return {
+        check: a.check as AscentCheck | undefined,
+        elevation: p.elevation,
+        from: a.from,
+        inputs: inputsHash(
+          { elevation: p.elevation, from: a.from, summit },
+          a.check,
+        ),
+        key,
+        kind: "ascent",
+        label,
+        slug: p.slug,
+        summit,
+        waypoints: [a.from, summit],
+      };
+    }),
   ),
   ...(tours as Tour[]).map((t): RouteJob => ({
     check: t.check,
@@ -585,9 +623,9 @@ const measure = (job: RouteJob, geom: RouteGeometry): RouteMetrics =>
     : tourMetrics(geom, job.waypoints, job.statedKm);
 
 const judge = (job: RouteJob, m: RouteMetrics) =>
-  job.kind === "ascent"
-    ? checkAscent(m as AscentMetrics, job.check)
-    : checkTour(m as TourMetrics, job.check);
+  job.kind === "tour"
+    ? checkTour(m as TourMetrics, job.check)
+    : checkRoadAscent(job.kind === "traverse", m, job.check);
 
 /**
  * Re-routing a stored OSRM route also invalidates its profile, and a profile is
@@ -633,7 +671,9 @@ const summitOff = (slug: string) => {
     checkRoad(s.roadDist).length > 0
   );
 };
-const summitBlocked = (j: RouteJob) => j.kind === "ascent" && summitOff(j.slug);
+// The summit checks hold for every type: the marker has a stated height and
+// has to sit on a road, whatever kind of road it is.
+const summitBlocked = (j: RouteJob) => ofRoad(j) && summitOff(j.slug);
 
 const pendingRoutes = () =>
   routeJobs.filter(
@@ -650,7 +690,7 @@ const pendingProfiles = () => {
   const routing = new Set(pendingRoutes().map((j) => j.key));
   return routeJobs.filter(
     (j) =>
-      j.kind === "ascent" &&
+      ofRoad(j) &&
       isOnly(j.key) &&
       routes[j.key] &&
       !profiles[j.key] &&
@@ -690,7 +730,7 @@ const report = () => {
     p +
     routeJobs.filter(
       (j) =>
-        j.kind === "ascent" &&
+        ofRoad(j) &&
         isOnly(j.key) &&
         needsRoute(j) &&
         !isRejected(j) &&
@@ -964,7 +1004,7 @@ const gate = async (
   // a second time. 100 Open-Meteo calls is far too much to spend on a road we
   // already know is the wrong one.
   const deferred = source === "osrm" && ORS && !rejected[job.key];
-  if (job.kind !== "ascent" || deferred) {
+  if (!ofRoad(job) || deferred) {
     if (fetched) await accepted();
     if (deferred)
       console.log(
@@ -989,10 +1029,14 @@ const gate = async (
   }
   const prof = await fetchProfile(job, geom, cached, keep);
   if (!prof) return;
-  m = withProfile(m as AscentMetrics, prof, job.elevation);
-  const badProfile = judge(job, m);
-  if (badProfile.length)
-    return reject(job, badProfile, m, source, hash, prof, keep);
+  // A traverse has no summit the profile could be checked against – it is
+  // judged on length and ends, which the geometry alone already decided.
+  if (job.kind === "ascent") {
+    m = withProfile(m as AscentMetrics, prof, job.elevation);
+    const badProfile = judge(job, m);
+    if (badProfile.length)
+      return reject(job, badProfile, m, source, hash, prof, keep);
+  }
   if (keep) await accepted();
   profiles[job.key] = prof;
   await write("profiles.json", profiles);

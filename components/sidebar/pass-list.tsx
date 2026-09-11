@@ -5,11 +5,13 @@ import { SeasonStrip } from "@/components/season-strip";
 import { EntityRow } from "@/components/sidebar/entity-row";
 import { ListEmpty } from "@/components/sidebar/list-empty";
 import { StatusLabel } from "@/components/status-badge";
+import { TagLine } from "@/components/tags";
 import {
   NativeSelect,
   NativeSelectOption,
 } from "@/components/ui/native-select";
 import type { Filters, PassSort } from "@/lib/app-state";
+import { roadTypeWord } from "@/lib/regions";
 import { PASS_SORT_LABEL, PASS_SORTS, sortPassRows } from "@/lib/rows";
 import type { PassRow } from "@/lib/rows";
 import { fmtUnit, TOUCH_SELECT } from "@/lib/utils";
@@ -64,7 +66,7 @@ export const PassList = ({
       </div>
 
       {sorted.length === 0 ? (
-        <ListEmpty title="Keine Pässe für diese Filter" />
+        <ListEmpty title="Keine Straßen für diese Filter" />
       ) : (
         <ul>
           {sorted.map(({ pass, status, reason, favorite, season }) => (
@@ -73,7 +75,14 @@ export const PassList = ({
               rowId={`pass:${pass.slug}`}
               current={currentRow === `pass:${pass.slug}`}
               title={pass.name}
-              subtitle={`${pass.region} · ${pass.country}`}
+              subtitle={
+                <TagLine
+                  tags={pass.tags ?? []}
+                  lead={[roadTypeWord(pass.type), pass.region, pass.country]
+                    .filter(Boolean)
+                    .join(" · ")}
+                />
+              }
               favorite={favorite}
               onToggleFavorite={() => onToggleFavorite(pass.slug)}
               onSelect={() => onSelect(pass.slug)}

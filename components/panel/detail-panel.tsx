@@ -11,7 +11,7 @@ import { WeatherForecast } from "@/components/panel/weather-forecast";
 import { Rating } from "@/components/rating";
 import { SeasonStrip } from "@/components/season-strip";
 import { StatusBadge, StatusDot } from "@/components/status-badge";
-import { TownTagBadges } from "@/components/town-tags";
+import { TagBadges } from "@/components/tags";
 import { Button } from "@/components/ui/button";
 import {
   Empty,
@@ -34,6 +34,7 @@ import { komootHref, quaeldichHref } from "@/lib/links";
 import { nearbyKey } from "@/lib/nearby";
 import type { NearbyTours } from "@/lib/nearby";
 import { photoKey } from "@/lib/photos";
+import { isTraverse, ROAD_TYPE } from "@/lib/regions";
 import { ascentKey } from "@/lib/route-key";
 import {
   bestPeriods,
@@ -256,6 +257,11 @@ const PassDetail = (props: Props & { pass: Pass }) => {
         </span>
         <span className="ml-1">m · {pass.classicAscent}</span>
       </p>
+      {pass.tags && pass.tags.length > 0 && (
+        <div className="mt-2">
+          <TagBadges tags={pass.tags} />
+        </div>
+      )}
 
       {/* The "when" answer, boxed: verdict, why, the whole year, best time. */}
       <div className="bg-muted/40 border-border/70 mt-3 flex flex-col gap-2 rounded-lg border p-3">
@@ -320,12 +326,14 @@ const PassDetail = (props: Props & { pass: Pass }) => {
         </dl>
       </Section>
 
+      {/* A traverse is not climbed to a summit, so what is drawn below is the
+          road itself; "Auffahrten" would name the wrong thing. */}
       <Section
         id="ascents"
         info="Geroutete Straße, 100 Höhenpunkte aus einem Geländemodell – zum Vergleichen gut, nicht metergenau."
-        title="Auffahrten"
+        title={isTraverse(pass.type) ? "Strecke" : "Auffahrten"}
       >
-        {pass.deadEnd && (
+        {pass.type === "spur" && (
           <p className="text-muted-foreground mb-3 text-xs leading-relaxed">
             Stichstraße: Die Straße endet oben, hinunter geht es dieselbe
             Auffahrt zurück.
@@ -557,7 +565,7 @@ const TownDetail = (props: Props & { town: Town }) => {
   return (
     <>
       <div className="mt-2">
-        <TownTagBadges tags={town.tags} />
+        <TagBadges tags={town.tags} />
       </div>
       <p className="mt-2 text-xs">{town.why}</p>
       <Nearby {...props} lat={town.lat} lon={town.lon} exclude={town.slug} />
@@ -607,7 +615,7 @@ export const DetailPanel = (props: Props) => {
 
   const kicker =
     selection.kind === "pass"
-      ? `Pass · ${(entity as Pass).region} · ${(entity as Pass).country}`
+      ? `${ROAD_TYPE[(entity as Pass).type].label} · ${(entity as Pass).region} · ${(entity as Pass).country}`
       : selection.kind === "tour"
         ? "Rundtour"
         : `Rad-Ort · ${(entity as Town).country}`;

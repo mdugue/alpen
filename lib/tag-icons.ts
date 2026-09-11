@@ -1,9 +1,9 @@
-import type { TownTag } from "@/lib/types";
+import type { Tag } from "@/lib/types";
 
 /**
- * The geometry of the nine label icons, as Lucide draws them (Lucide 1.43.0,
+ * The geometry of the eighteen label icons, as Lucide draws them (Lucide 1.43.0,
  * ISC, lucide.dev). Not imported as `lucide-react` components, because the
- * same nine glyphs also have to reach MapLibre's hover popup, which takes an
+ * same glyphs also have to reach MapLibre's hover popup, which takes an
  * HTML string and not React – the same reason `scripts/build-glyphs.ts` bakes
  * Inter into glyph atlases for the map. One table serves both, so a badge in
  * the panel and the popup on the map can never drift apart.
@@ -15,7 +15,27 @@ import type { TownTag } from "@/lib/types";
  */
 type IconNode = [element: string, attrs: Record<string, string>][];
 
-export const TAG_ICON: Record<TownTag, IconNode> = {
+/**
+ * One table over both vocabularies (`TOWN_TAGS`, `ROAD_TAGS`): a glyph is a
+ * glyph, and the row, the badge and the popup that draw one do not care which
+ * list the label came from. The two vocabularies share no name.
+ */
+export const TAG_ICON: Record<Tag, IconNode> = {
+  // traffic-cone – the road is barred to cars
+  carfree: [
+    ["path", { d: "M16.05 10.966a5 2.5 0 0 1-8.1 0" }],
+    [
+      "path",
+      {
+        d: "m16.923 14.049 4.48 2.04a1 1 0 0 1 .001 1.831l-8.574 3.9a2 2 0 0 1-1.66 0l-8.574-3.91a1 1 0 0 1 0-1.83l4.484-2.04",
+      },
+    ],
+    [
+      "path",
+      { d: "M16.949 14.14a5 2.5 0 1 1-9.9 0L10.063 3.5a2 2 0 0 1 3.874 0z" },
+    ],
+    ["path", { d: "M9.194 6.57a5 2.5 0 0 0 5.61 0" }],
+  ],
   // trophy
   events: [
     ["path", { d: "M10 14.66V17a1 1 0 0 1-1 1 2 2 0 0 0-2 2v2" }],
@@ -24,6 +44,32 @@ export const TAG_ICON: Record<TownTag, IconNode> = {
     ["path", { d: "M4 22h16" }],
     ["path", { d: "M6 9a6 6 0 0 0 12 0V3a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1z" }],
     ["path", { d: "M6.084 10H4.5A2.5 2.5 0 0 1 2 7.5V5a1 1 0 0 1 1-1h3" }],
+  ],
+  // snowflake
+  glacier: [
+    ["path", { d: "m10 20-1.25-2.5L6 18" }],
+    ["path", { d: "M10 4 8.75 6.5 6 6" }],
+    ["path", { d: "m14 20 1.25-2.5L18 18" }],
+    ["path", { d: "m14 4 1.25 2.5L18 6" }],
+    ["path", { d: "m17 21-3-6h-4" }],
+    ["path", { d: "m17 3-3 6 1.5 3" }],
+    ["path", { d: "M2 12h6.5L10 9" }],
+    ["path", { d: "m20 10-1.5 2 1.5 2" }],
+    ["path", { d: "M22 12h-6.5L14 15" }],
+    ["path", { d: "m4 10 1.5 2L4 14" }],
+    ["path", { d: "m7 21 3-6-1.5-3" }],
+    ["path", { d: "m7 3 3 6h4" }],
+  ],
+  // chevrons-right-left – two walls closing in
+  gorge: [
+    ["path", { d: "m20 17-5-5 5-5" }],
+    ["path", { d: "m4 17 5-5-5-5" }],
+  ],
+  // spline – the curve the hairpins are built for
+  hairpins: [
+    ["circle", { cx: "19", cy: "5", r: "2" }],
+    ["circle", { cx: "5", cy: "19", r: "2" }],
+    ["path", { d: "M5 17A12 12 0 0 1 17 5" }],
   ],
   // bed-double
   hotels: [
@@ -39,6 +85,25 @@ export const TAG_ICON: Record<TownTag, IconNode> = {
     ["circle", { cx: "15", cy: "5", r: "1" }],
     ["path", { d: "M12 17.5V14l-3-3 4-3 2 3h2" }],
   ],
+  // binoculars – built for the view
+  panorama: [
+    ["path", { d: "M10 10h4" }],
+    ["path", { d: "M19 7V4a1 1 0 0 0-1-1h-2a1 1 0 0 0-1 1v3" }],
+    [
+      "path",
+      {
+        d: "M20 21a2 2 0 0 0 2-2v-3.851c0-1.39-2-2.962-2-4.829V8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v11a2 2 0 0 0 2 2z",
+      },
+    ],
+    ["path", { d: "M 22 16 L 2 16" }],
+    [
+      "path",
+      {
+        d: "M4 21a2 2 0 0 1-2-2v-3.851c0-1.39 2-2.962 2-4.829V8a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v11a2 2 0 0 1-2 2z",
+      },
+    ],
+    ["path", { d: "M9 7V4a1 1 0 0 0-1-1H6a1 1 0 0 0-1 1v3" }],
+  ],
   // mountain
   passes: [["path", { d: "m8 3 4 8 5-5 5 15H2L8 3z" }]],
   // leaf
@@ -50,6 +115,29 @@ export const TAG_ICON: Record<TownTag, IconNode> = {
       },
     ],
     ["path", { d: "M2 21a5 5 0 012.911-4.544C7.613 15.212 8.351 15.24 11 13" }],
+  ],
+  // dam
+  reservoir: [
+    [
+      "path",
+      {
+        d: "M11 11.31c1.17.56 1.54 1.69 3.5 1.69 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1",
+      },
+    ],
+    [
+      "path",
+      { d: "M11.75 18c.35.5 1.45 1 2.75 1 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1" },
+    ],
+    ["path", { d: "M2 10h4" }],
+    ["path", { d: "M2 14h4" }],
+    ["path", { d: "M2 18h4" }],
+    ["path", { d: "M2 6h4" }],
+    [
+      "path",
+      {
+        d: "M7 3a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h4a1 1 0 0 0 1-1L10 4a1 1 0 0 0-1-1z",
+      },
+    ],
   ],
   // sparkles
   scenic: [
@@ -75,6 +163,29 @@ export const TAG_ICON: Record<TownTag, IconNode> = {
     ["path", { d: "m6.34 17.66-1.41 1.41" }],
     ["path", { d: "m19.07 4.93-1.41 1.41" }],
   ],
+  // grip – the cobbles under the tyre
+  surface: [
+    ["circle", { cx: "12", cy: "5", r: "1" }],
+    ["circle", { cx: "19", cy: "5", r: "1" }],
+    ["circle", { cx: "5", cy: "5", r: "1" }],
+    ["circle", { cx: "12", cy: "12", r: "1" }],
+    ["circle", { cx: "19", cy: "12", r: "1" }],
+    ["circle", { cx: "5", cy: "12", r: "1" }],
+    ["circle", { cx: "12", cy: "19", r: "1" }],
+    ["circle", { cx: "19", cy: "19", r: "1" }],
+    ["circle", { cx: "5", cy: "19", r: "1" }],
+  ],
+  // euro – a fee is charged
+  toll: [
+    ["path", { d: "M4 10h12" }],
+    ["path", { d: "M4 14h9" }],
+    [
+      "path",
+      {
+        d: "M19 6a7.7 7.7 0 0 0-5.2-2A7.9 7.9 0 0 0 6 12c0 4.4 3.5 8 7.8 8 2 0 3.8-.8 5.2-2",
+      },
+    ],
+  ],
   // train-front
   train: [
     ["path", { d: "M8 3.1V7a4 4 0 0 0 8 0V3.1" }],
@@ -86,6 +197,17 @@ export const TAG_ICON: Record<TownTag, IconNode> = {
     ],
     ["path", { d: "m8 19-2 3" }],
     ["path", { d: "m16 19 2 3" }],
+  ],
+  // flashlight – what an unlit tunnel asks for
+  tunnels: [
+    ["path", { d: "M12 13v1" }],
+    [
+      "path",
+      {
+        d: "M17 2a1 1 0 0 1 1 1v4a3 3 0 0 1-.6 1.8l-.6.8A4 4 0 0 0 16 12v8a2 2 0 0 1-2 2H10a2 2 0 0 1-2-2v-8a4 4 0 0 0-.8-2.4l-.6-.8A3 3 0 0 1 6 7V3a1 1 0 0 1 1-1z",
+      },
+    ],
+    ["path", { d: "M6 6h12" }],
   ],
   // wrench
   workshops: [
@@ -113,7 +235,7 @@ export const ICON_ATTRS = {
  * literals reach it – nothing from the data files – so there is nothing to
  * escape here; the popup escapes the names it interpolates itself.
  */
-export const tagIconSvg = (tag: TownTag, size = 12): string => {
+export const tagIconSvg = (tag: Tag, size = 12): string => {
   const attrs = Object.entries({ ...ICON_ATTRS, height: size, width: size })
     .map(([k, v]) => `${k}="${v}"`)
     .join(" ");

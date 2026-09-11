@@ -35,6 +35,7 @@ const pass = (over: Partial<Pass> & { slug: string }): Pass => ({
   region: "Ostalpen",
   season: null,
   traffic: 3,
+  type: "pass",
   ...over,
 });
 
@@ -323,6 +324,53 @@ describe("plan 13 summer filters", () => {
     // "lang" also crosses "winter", which has no series: it fails both bounds.
     expect(rows({ maxValleyTmax: 28 })).toEqual(["kurz"]);
     expect(rows({ maxWetPct: 50 })).toEqual(["kurz"]);
+  });
+});
+
+describe("plan 14 type and label filters", () => {
+  const roads = [
+    pass({ name: "Übergang", slug: "uebergang" }),
+    pass({ name: "Stich", slug: "stich", tags: ["toll"], type: "spur" }),
+    pass({
+      name: "Balkon",
+      slug: "balkon",
+      tags: ["carfree", "gorge"],
+      type: "balcony",
+    }),
+  ];
+  const slugs = (over: Partial<Filters>) =>
+    buildPassRows(roads, filters(over), never).map((r) => r.pass.slug);
+
+  test("all five types selected is no filter", () => {
+    expect(slugs({})).toEqual(["uebergang", "stich", "balkon"]);
+  });
+
+  test("a type set keeps exactly its members", () => {
+    expect(slugs({ types: ["spur"] })).toEqual(["stich"]);
+    expect(slugs({ types: ["spur", "plateau", "balcony", "valley"] })).toEqual([
+      "stich",
+      "balkon",
+    ]);
+  });
+
+  test("labels stack: every selected one has to be present", () => {
+    expect(slugs({ tags: ["carfree"] })).toEqual(["balkon"]);
+    expect(slugs({ tags: ["carfree", "gorge"] })).toEqual(["balkon"]);
+    expect(slugs({ tags: ["carfree", "toll"] })).toEqual([]);
+    // A road without labels never satisfies an active one.
+    expect(slugs({ tags: ["toll"] })).toEqual(["stich"]);
+  });
+
+  test("a tour needs one road of a selected type, and sees no labels", () => {
+    const withSpur = tour({ passes: ["stich"], slug: "mit-stich" });
+    const rows = (over: Partial<Filters>) =>
+      buildTourRows([withSpur], indexBySlug(roads), filters(over), never).map(
+        (r) => r.tour.slug,
+      );
+    expect(rows({ types: ["spur"] })).toEqual(["mit-stich"]);
+    expect(rows({ types: ["pass"] })).toEqual([]);
+    // "autofrei" is a label of one road, never of the loop around it.
+    expect(rows({ tags: ["carfree"] })).toEqual(["mit-stich"]);
   });
 });
 

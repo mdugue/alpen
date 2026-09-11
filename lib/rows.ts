@@ -50,12 +50,18 @@ const query = (filters: Filters, isFavorite: Query["isFavorite"]): Query => {
   };
 };
 
-/** Lower bounds, "at least this interesting": a tour needs one pass that clears them. */
+/**
+ * Lower bounds, "at least this interesting": a tour needs one pass that clears
+ * them. The road type belongs here rather than among the upper bounds: a loop
+ * over one spur and three passes is still a loop worth showing when spurs are
+ * asked for.
+ */
 const interesting = (pass: Pass, f: Filters) =>
   pass.elevation >= f.minElevation &&
   pass.fame >= f.minFame &&
   pass.beauty >= f.minBeauty &&
-  pass.difficulty >= f.difficulty[0];
+  pass.difficulty >= f.difficulty[0] &&
+  f.types.includes(pass.type);
 
 /**
  * Upper bounds, "not harder, busier, hotter or wetter than": every pass of a
@@ -84,6 +90,11 @@ const passMatches = (
 ): boolean => {
   if (!interesting(pass, filters) || !withinLimits(pass, filters, input))
     return false;
+  // And-semantics: every selected label has to be present. Or-semantics would
+  // make "autofrei + Gletscher" mean "either", which is never what a planner
+  // asks two filters for. Roads only – a label describes one road, so it never
+  // reaches a tour.
+  if (!filters.tags.every((t) => pass.tags?.includes(t))) return false;
   if (q.favoritesOnly && !q.isFavorite("pass", pass.slug)) return false;
   return q.matches(passHaystack(pass));
 };

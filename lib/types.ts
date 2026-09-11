@@ -19,10 +19,15 @@ export type Ascent = z.infer<typeof S.Ascent>;
 export type PassSeason = z.infer<typeof S.PassSeason>;
 export type Region = z.infer<typeof S.Region>;
 export type Country = z.infer<typeof S.Country>;
+export type RoadType = z.infer<typeof S.RoadType>;
+export type RoadTag = z.infer<typeof S.RoadTag>;
+/** One road worth the journey: a pass, a spur, a high, balcony or valley road. */
 export type Pass = z.infer<typeof S.Pass>;
 export type Tour = z.infer<typeof S.Tour>;
 export type Town = z.infer<typeof S.Town>;
 export type TownTag = z.infer<typeof S.TownTag>;
+/** An editorial label of either vocabulary; the two share no name. */
+export type Tag = TownTag | RoadTag;
 
 /** Output of scripts/build-data.ts. */
 export type RouteGeometry = z.infer<typeof S.RouteGeometry>;

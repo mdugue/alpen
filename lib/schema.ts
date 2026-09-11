@@ -1,6 +1,14 @@
 import { z } from "zod";
 
-import { COUNTRIES, REGIONS, TOWN_TAGS } from "@/lib/regions";
+import {
+  COUNTRIES,
+  isTraverse,
+  REGIONS,
+  ROAD_TAGS,
+  ROAD_TYPE,
+  ROAD_TYPES,
+  TOWN_TAGS,
+} from "@/lib/regions";
 
 /**
  * Single source of truth for the shape of everything in `data/`. The types in
@@ -68,13 +76,26 @@ export const TourCheck = z
   })
   .refine(atLeastOneLimit, "check nennt keine Grenze");
 
+/**
+ * One ride up or along a road. Which half of this shape applies is decided by
+ * the parent's `type` and enforced by `Pass`'s refinement below: a climb
+ * (`pass`, `spur`) ends at the entry's own marker and says nothing more, a
+ * traverse (`plateau`, `balcony`, `valley`) names where it ends and how long
+ * it is, because that is what the gate measures it against. `check` follows
+ * the same split – an ascent may only widen the limits its own validator
+ * reads, so a climb carries an `AscentCheck` and a traverse a `TourCheck`.
+ */
 export const Ascent = z.strictObject({
   /** Widens a route-gate limit for this ascent alone, see `AscentCheck`. */
-  check: AscentCheck.optional(),
+  check: z.union([AscentCheck, TourCheck]).optional(),
   /** Starting point of the classic cycling ascent. */
   from: LatLon,
+  /** Traverse types only: the curated length in km, from a trusted source. */
+  km: z.number().positive().optional(),
   /** Display name, e.g. "Valloire (Nord)". */
   label: z.string().min(1),
+  /** Traverse types only: where the ride ends – there is no summit to aim at. */
+  to: LatLon.optional(),
 });
 
 export const PassSeason = z
@@ -90,62 +111,115 @@ export const PassSeason = z
 
 export const Region = z.enum(REGIONS);
 export const Country = z.enum(COUNTRIES);
+export const RoadType = z.enum(ROAD_TYPES);
+export const RoadTag = z.enum(ROAD_TAGS);
 
-export const Pass = z.strictObject({
-  /** Other spellings people search for: "Stilfser Joch", "Grossglockner". */
-  aliases: z.array(z.string().min(2)).optional(),
-  ascents: z.array(Ascent),
-  /** Editorial 1–5 scales, see docs/scales.md. */
-  beauty: Rating,
-  /** Editorial short description of the classic ascent. */
-  classicAscent: z.string(),
-  /** ISO-like code, possibly several: "IT", "CH/IT". */
-  country: z
-    .string()
-    .regex(/^[A-Z]{2}(?:\/[A-Z]{2})?$/u, 'Land: "IT" oder "CH/IT"')
-    .refine(
-      (c) => c.split("/").every((x) => COUNTRIES.includes(x as never)),
-      `Land: eines von ${COUNTRIES.join(", ")}`,
-    ),
+export const Pass = z
+  .strictObject({
+    /** Other spellings people search for: "Stilfser Joch", "Grossglockner". */
+    aliases: z.array(z.string().min(2)).optional(),
+    ascents: z.array(Ascent),
+    /** Editorial 1–5 scales, see docs/scales.md. */
+    beauty: Rating,
+    /** Editorial short description of the classic ascent. */
+    classicAscent: z.string(),
+    /** ISO-like code, possibly several: "IT", "CH/IT". */
+    country: z
+      .string()
+      .regex(/^[A-Z]{2}(?:\/[A-Z]{2})?$/u, 'Land: "IT" oder "CH/IT"')
+      .refine(
+        (c) => c.split("/").every((x) => COUNTRIES.includes(x as never)),
+        `Land: eines von ${COUNTRIES.join(", ")}`,
+      ),
+    difficulty: Rating,
+    /**
+     * Height of the marker, not "the summit": for a traverse type the marker is
+     * a curated point on the road, and the gorge roads sit far below what a pass
+     * ever does.
+     */
+    elevation: z.int().min(100).max(3500),
+    fame: Rating,
+    lat: LatLon.shape.lat,
+    lon: LatLon.shape.lon,
+    name: z.string().min(2),
+    note: z.string(),
+    /**
+     * Slug of the pass on quaeldich.de, so the detail panel links straight to
+     * `quaeldich.de/paesse/<slug>/` instead of a search. Curated, because
+     * quäldich names a pass in its own language ("Stilfser Joch",
+     * "St. Gotthardpass", "Mangrt") and no rule derives that from ours. Left
+     * out for the few passes their Pässelexikon does not carry – those fall
+     * back to the search.
+     */
+    quaeldich: Slug.optional(),
+    region: Region,
+    /**
+     * The summit is the highest point of the asphalt, not a saddle: OSM carries
+     * no `mountain_pass` node for it (toll roads, panorama roads, roads that end
+     * at a glacier or a refuge). `data:locate` then skips the pass-node search
+     * and offers the highest sample of the stored route instead – the only
+     * honest candidate for such a road. The gate's own summit checks are
+     * unchanged; a correct road summit passes them like any pass.
+     *
+     * Only a `pass` says this about itself; every other type is a road summit by
+     * definition (`hasRoadSummit`), and `data:check` reports it as redundant
+     * where it is written down anyway.
+     */
+    roadSummit: z.boolean().optional(),
+    /** null = cleared all year round. */
+    season: PassSeason.nullable(),
+    slug: Slug,
+    /**
+     * What riding the road is like, as editorial labels (see `ROAD_TAG`).
+     * Optional: plenty of roads are simply a climb, and an empty strip of glyphs
+     * says that honestly. Display order is the vocabulary order.
+     */
+    tags: z
+      .array(RoadTag)
+      .refine((t) => new Set(t).size === t.length, "Merkmal doppelt (tags)")
+      .optional(),
+    traffic: Rating,
+    /**
+     * What kind of road this is (see `ROAD_TYPE`). Required on every entry
+     * rather than defaulted: the file is the product, and an entry that does not
+     * say what it is is an entry nobody has looked at.
+     */
+    type: RoadType,
+  })
   /**
-   * The road ends at the summit – no crossing. The descent is the ascent
-   * ridden backwards and the climb can never be part of a loop tour, so it is
-   * a fact a planner acts on, not decoration. Curated, not derived: the
-   * Nockalmstraße has two ascents and is a crossing, the Umbrailpass has one
-   * and is not a dead end.
+   * The two halves of `Ascent` that only the parent's type can decide, and the
+   * same for `check`. Kept here rather than as a discriminated union so the
+   * emitted JSON Schema stays one flat object an editor can complete; the
+   * rules a schema cannot express are the ones `data:check` prints.
    */
-  deadEnd: z.boolean().optional(),
-  difficulty: Rating,
-  elevation: z.int().min(300).max(3500),
-  fame: Rating,
-  lat: LatLon.shape.lat,
-  lon: LatLon.shape.lon,
-  name: z.string().min(2),
-  note: z.string(),
-  /**
-   * Slug of the pass on quaeldich.de, so the detail panel links straight to
-   * `quaeldich.de/paesse/<slug>/` instead of a search. Curated, because
-   * quäldich names a pass in its own language ("Stilfser Joch",
-   * "St. Gotthardpass", "Mangrt") and no rule derives that from ours. Left
-   * out for the few passes their Pässelexikon does not carry – those fall
-   * back to the search.
-   */
-  quaeldich: Slug.optional(),
-  region: Region,
-  /**
-   * The summit is the highest point of the asphalt, not a saddle: OSM carries
-   * no `mountain_pass` node for it (toll roads, panorama roads, roads that end
-   * at a glacier or a refuge). `data:locate` then skips the pass-node search
-   * and offers the highest sample of the stored route instead – the only
-   * honest candidate for such a road. The gate's own summit checks are
-   * unchanged; a correct road summit passes them like any pass.
-   */
-  roadSummit: z.boolean().optional(),
-  /** null = cleared all year round. */
-  season: PassSeason.nullable(),
-  slug: Slug,
-  traffic: Rating,
-});
+  .superRefine((road, ctx) => {
+    const traverse = isTraverse(road.type);
+    for (const [i, a] of road.ascents.entries()) {
+      if (traverse && (a.to === undefined || a.km === undefined))
+        ctx.addIssue({
+          code: "custom",
+          message: `${ROAD_TYPE[road.type].label}: Strecke braucht Ende (to) und Länge (km)`,
+          path: ["ascents", i],
+        });
+      if (!traverse && (a.to !== undefined || a.km !== undefined))
+        ctx.addIssue({
+          code: "custom",
+          message: `${ROAD_TYPE[road.type].label}: Auffahrt endet am Passpunkt – to und km gehören nicht dazu`,
+          path: ["ascents", i],
+        });
+      // A check may only widen the limits the validator of *this* ascent
+      // reads; the union above accepts either shape, the type decides which.
+      const shape = traverse ? TourCheck : AscentCheck;
+      if (a.check !== undefined && !shape.safeParse(a.check).success)
+        ctx.addIssue({
+          code: "custom",
+          message: traverse
+            ? "check einer Strecke kennt nur maxKmDelta und maxWaypointDist"
+            : "check einer Auffahrt kennt die Tour-Grenzen nicht",
+          path: ["ascents", i, "check"],
+        });
+    }
+  });
 
 export const Tour = z.strictObject({
   /** Widens a route-gate limit for this tour alone, see `TourCheck`. */

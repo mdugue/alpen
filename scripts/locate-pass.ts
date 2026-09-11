@@ -19,8 +19,12 @@
  * ranked by name, elevation and distance, each with the DEM at the node and
  * its own road distance – and, when a route is stored, the highest sample of
  * that route as the fallback for toll and summit roads that have no pass node.
- * A pass marked `roadSummit` is not asked for a pass node at all; for it that
- * highest sample is the candidate, and `--apply` takes it.
+ * A road summit – a `pass` marked `roadSummit`, and every `spur` – is not asked
+ * for a pass node at all; for it that highest sample is the candidate, and
+ * `--apply` takes it. A traverse type (`plateau`, `balcony`, `valley`) gets
+ * neither: its marker is a curated point on a road that has no summit the ride
+ * aims at, so there is no better candidate to propose and only the two
+ * measurements are printed.
  *
  * `--apply` moves the point only when the best candidate is unambiguous: it
  * carries the pass's name (or an alias), its DEM height is within the summit
@@ -34,6 +38,7 @@
  */
 import passes from "../data/passes.json" with { type: "json" };
 import { profileCoords } from "../lib/profile";
+import { hasRoadSummit, isTraverse, ROAD_TYPE } from "../lib/regions";
 import type {
   ElevationProfile,
   Pass,
@@ -157,13 +162,14 @@ for (const p of list) {
   // Candidates from OSM, plus the highest sample of a stored route. A road
   // summit has no pass node by definition, so it is not asked for one.
   const ranked =
-    p.roadSummit || OFFLINE
+    hasRoadSummit(p) || OFFLINE
       ? []
       : rankCandidates(
           p,
           await overpass<OverpassNode>(candidatesQuery(p)),
         ).slice(0, 6);
-  const fallback = highestSample(p);
+  // A traverse has no summit, so the route's highest sample means nothing there.
+  const fallback = isTraverse(p.type) ? null : highestSample(p);
 
   // One DEM request and one roads request for the point and every candidate.
   const points = [
@@ -201,9 +207,13 @@ for (const p of list) {
   console.log(
     `  gespeichert  ${p.lat}, ${p.lon}   DEM ${cur.dem} m ${ok(cur.demOk)}   Straße ${road(cur)}`,
   );
-  if (p.roadSummit)
+  if (isTraverse(p.type))
     console.log(
-      "  Straßenhöhepunkt (roadSummit): kein Passknoten in OSM, maßgeblich ist der höchste Punkt der Straße",
+      `  ${ROAD_TYPE[p.type].label}: kein Gipfel, auf den die Fahrt zuläuft – der Punkt ist gesetzt, hier stehen nur seine Messwerte`,
+    );
+  else if (hasRoadSummit(p))
+    console.log(
+      "  Straßenhöhepunkt: kein Passknoten in OSM, maßgeblich ist der höchste Punkt der Straße",
     );
   else if (OFFLINE)
     console.log(
@@ -231,7 +241,13 @@ for (const p of list) {
   }
 
   if (!APPLY) continue;
-  if (p.roadSummit) {
+  if (isTraverse(p.type)) {
+    console.log(
+      "  --apply: für eine Strecke ohne Gipfel gibt es keinen Kandidaten – der Punkt bleibt, wie er kuratiert wurde",
+    );
+    continue;
+  }
+  if (hasRoadSummit(p)) {
     const x = fallback ? at(last) : null;
     if (!(fallback && x)) {
       console.log(
@@ -262,7 +278,7 @@ for (const p of list) {
   }
   if (OFFLINE) {
     console.log(
-      "  --apply: offline gibt es nur den höchsten Routenpunkt eines roadSummit – dieser Pass braucht Overpass",
+      "  --apply: offline gibt es nur den höchsten Routenpunkt eines Straßenhöhepunkts – dieser Pass braucht Overpass",
     );
     continue;
   }
