@@ -458,7 +458,10 @@ Vosges and Pyrenees (roadmap item 2) are left out.
 ### Westalpen · Frankreich
 
 Abgearbeitet (Batch 1 und 2). Höhe und Merkmale sind jetzt die kuratierten
-Werte, nicht mehr die geschätzten; zwei Kandidaten sind gestrichen.
+Werte, nicht mehr die geschätzten; drei Kandidaten sind gestrichen – die
+Route des Crêtes (Einbahnring, den die Zwei-Enden-Form nicht abbildet), das
+Vallée du Vénéon (seit dem Hochwasser 2024 gesperrt) und der Col de Tende
+(alte Passstraße gesperrt, Befahren strafbewehrt).
 
 | Name                                         | Typ       | Merkmale                 | Höhe | Ergebnis                                                                                                                                                                                                                                                 |
 | -------------------------------------------- | --------- | ------------------------ | ---- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |

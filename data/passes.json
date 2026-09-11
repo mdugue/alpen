@@ -3736,7 +3736,7 @@
   "lat": 45.956,
   "lon": 6.3276,
   "elevation": 1480,
-  "classicAscent": "8,6 km, 3,0 % ab Thorens-Glières",
+  "classicAscent": "13,8 km, 5,8 % ab Thorens-Glières",
   "beauty": 4,
   "fame": 3,
   "difficulty": 3,
@@ -3828,7 +3828,7 @@
   "lat": 45.3432,
   "lon": 6.3572,
   "elevation": 1533,
-  "classicAscent": "15,2 km, 6,7 % ab Pontamafrey über die Lacets de Montvernier",
+  "classicAscent": "13,8 km, 7,5 % ab Pontamafrey über die Lacets de Montvernier",
   "beauty": 4,
   "fame": 3,
   "difficulty": 4,
@@ -3880,8 +3880,8 @@
   "name": "Col du Pré",
   "type": "pass",
   "tags": [
-   "reservoir",
-   "panorama"
+   "panorama",
+   "reservoir"
   ],
   "country": "FR",
   "region": "Westalpen",
@@ -4360,7 +4360,7 @@
   "lat": 44.0033,
   "lon": 6.9908,
   "elevation": 608,
-  "classicAscent": "30,7 km, 2,9 % von Touët-sur-Var nach Beuil",
+  "classicAscent": "20,3 km, 4,8 % von Touët-sur-Var nach Beuil",
   "beauty": 5,
   "fame": 3,
   "difficulty": 3,
@@ -4370,11 +4370,11 @@
   "ascents": [
    {
     "from": {
-     "lat": 43.96,
-     "lon": 6.9
+     "lat": 43.962,
+     "lon": 6.9991
     },
     "label": "Touët-sur-Var",
-    "km": 31,
+    "km": 20.3,
     "to": {
      "lat": 44.0944,
      "lon": 6.99
@@ -4425,8 +4425,8 @@
   ],
   "type": "balcony",
   "tags": [
-   "gorge",
-   "panorama"
+   "panorama",
+   "gorge"
   ],
   "country": "FR",
   "region": "Westalpen",

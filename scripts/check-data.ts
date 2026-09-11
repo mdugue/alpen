@@ -163,27 +163,44 @@ const dupes = (list: { slug: string }[], what: string) => {
 };
 
 /**
- * The marker in the words of the type. A `pass` and a `spur` aim at a high
- * point, so a deviation there is a matter of the summit and of the climbs
- * that end on it. A `plateau`, `balcony` or `valley` has no summit to aim at:
- * its marker is a point somewhere along the road, and its rides are stretches
- * across rather than climbs up. Calling that a `Gipfelhöhe` sends whoever
- * reads the warning looking for a mistake the entry cannot have.
+ * The marker in the words of the type, because a warning that names the wrong
+ * thing sends the curator looking for a mistake the entry cannot have. Three
+ * kinds, not two:
+ *
+ * - a **pass** is a saddle, usually with a `mountain_pass` node in OSM, and
+ *   its rides climb to it from both sides;
+ * - a **spur** has no saddle at all – it ends where the asphalt does, which
+ *   this codebase calls the Scheitel, and the way down is the way up again;
+ * - a **traverse** aims at no high point whatsoever. Its marker is a point
+ *   somewhere along the road and its rides are stretches across, not climbs.
  */
+const MARKER_WORDS = {
+  pass: {
+    coord: "Passkoordinate",
+    height: "Gipfelhöhe",
+    marker: "Passpunkt",
+    rides: "Auffahrten",
+  },
+  spur: {
+    coord: "Scheitelkoordinate",
+    height: "Scheitelhöhe",
+    marker: "Scheitelpunkt",
+    rides: "Auffahrten",
+  },
+  traverse: {
+    coord: "Markerkoordinate",
+    height: "Markerhöhe",
+    marker: "Markerpunkt",
+    rides: "Strecken",
+  },
+} as const;
+
 const markerWords = (type: Pass["type"]) =>
   isTraverse(type)
-    ? {
-        coord: "Markerkoordinate",
-        height: "Markerhöhe",
-        marker: "Markerpunkt",
-        rides: "Strecken",
-      }
-    : {
-        coord: "Passkoordinate",
-        height: "Gipfelhöhe",
-        marker: "Passpunkt",
-        rides: "Auffahrten",
-      };
+    ? MARKER_WORDS.traverse
+    : type === "spur"
+      ? MARKER_WORDS.spur
+      : MARKER_WORDS.pass;
 
 /** The DEM height at the marker, if it was read at the current coordinate. */
 const summitWarnings = (p: Pass): string[] => {

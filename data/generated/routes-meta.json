@@ -80,7 +80,7 @@
   "gorges-de-daluis:0": {"fetchedAt":"2026-09-11","source":"ors"},
   "gorges-de-la-bourne:0": {"fetchedAt":"2026-09-11","source":"ors"},
   "gorges-de-la-nesque:0": {"fetchedAt":"2026-09-11","source":"ors"},
-  "gorges-du-cians:0": {"fetchedAt":"2026-09-11","source":"ors"},
+  "gorges-du-cians:0": {"fetchedAt":"2026-09-11","source":"osrm"},
   "gorges-du-guil:0": {"fetchedAt":"2026-09-11","source":"ors"},
   "gorges-du-nan:0": {"fetchedAt":"2026-09-11","source":"ors"},
   "gotthard-tremola:0": {"source":"ors","fetchedAt":"2026-09-08"},
