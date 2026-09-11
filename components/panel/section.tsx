@@ -9,10 +9,10 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { NO_SECTIONS, SECTIONS_KEY, useStored } from "@/lib/app-state";
 
 /**
@@ -22,9 +22,15 @@ import { NO_SECTIONS, SECTIONS_KEY, useStored } from "@/lib/app-state";
  * for the climate should not have to scroll past two elevation profiles first.
  *
  * The title says what the block is and nothing else; where the source or its
- * caveat has to be named, `info` puts one short sentence behind an icon. There
- * is no second kind of disclosure here: the scales dialog is reachable from the
- * sidebar footer, so a header never opens one.
+ * caveat has to be named, `info` puts one short sentence behind an icon – a
+ * `Popover`, not a `Tooltip`: the detail panel is the one place a phone
+ * reaches this app most, and a hover-only disclosure is simply unreachable
+ * with a finger. `openOnHover` still opens it on hover with a mouse, exactly
+ * like a tooltip would, because Base UI's own hover interaction is
+ * `mouseOnly` and stands down once the current open state came from a touch
+ * press – so the one trigger serves both without a media query of our own.
+ * There is no second kind of disclosure here: the scales dialog is reachable
+ * from the sidebar footer, so a header never opens one.
  *
  * Which sections are folded is kept per session and shared by all of them
  * (`SECTIONS_KEY`), so it survives switching to the next pass but not the next
@@ -77,8 +83,10 @@ export const Section = ({
           />
         </CollapsibleTrigger>
         {info && (
-          <Tooltip>
-            <TooltipTrigger
+          <Popover>
+            <PopoverTrigger
+              delay={400}
+              openOnHover
               render={
                 <Button
                   aria-label={`${title}: Hinweis zur Quelle`}
@@ -89,9 +97,15 @@ export const Section = ({
               }
             >
               <Info />
-            </TooltipTrigger>
-            <TooltipContent className="max-w-56">{info}</TooltipContent>
-          </Tooltip>
+            </PopoverTrigger>
+            <PopoverContent
+              align="start"
+              className="w-64 text-xs leading-relaxed"
+              side="bottom"
+            >
+              {info}
+            </PopoverContent>
+          </Popover>
         )}
       </h3>
       <CollapsibleContent>{children}</CollapsibleContent>
