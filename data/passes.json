@@ -3554,5 +3554,1150 @@
     "label": "Die"
    }
   ]
+ },
+ {
+  "slug": "col-du-granon",
+  "name": "Col du Granon",
+  "type": "spur",
+  "country": "FR",
+  "region": "Westalpen",
+  "lat": 44.9628,
+  "lon": 6.6109,
+  "elevation": 2413,
+  "classicAscent": "12,1 km, 8,7 % ab Saint-Chaffrey",
+  "beauty": 5,
+  "fame": 4,
+  "difficulty": 5,
+  "traffic": 1,
+  "season": {
+   "opens": 6,
+   "closes": 10.5,
+   "maintained": false
+  },
+  "note": "Militärstraße ohne Durchgang, oben nur Wiesen und der Blick auf die Écrins. Tour-Ankunft 1986 und 2022; die Steigung lässt zwischen 8 und 11 % kaum nach.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 44.9263,
+     "lon": 6.6072
+    },
+    "label": "Saint-Chaffrey"
+   }
+  ]
+ },
+ {
+  "slug": "val-thorens",
+  "name": "Val Thorens",
+  "type": "spur",
+  "country": "FR",
+  "region": "Westalpen",
+  "lat": 45.2976,
+  "lon": 6.5826,
+  "elevation": 2300,
+  "classicAscent": "38,4 km, 4,7 % ab Moûtiers",
+  "beauty": 3,
+  "fame": 4,
+  "difficulty": 4,
+  "traffic": 3,
+  "season": null,
+  "note": "Höchster Skiort der Alpen, ganzjährig geräumt. Kein Anstieg, sondern eine Auffahrt: knapp 40 km am Stück, nie steil, nie flach.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 45.4849,
+     "lon": 6.534
+    },
+    "label": "Moûtiers"
+   }
+  ]
+ },
+ {
+  "slug": "les-arcs",
+  "name": "Arc 2000",
+  "aliases": [
+   "Les Arcs"
+  ],
+  "type": "spur",
+  "country": "FR",
+  "region": "Westalpen",
+  "lat": 45.5721,
+  "lon": 6.832,
+  "elevation": 2100,
+  "classicAscent": "25,1 km, 5,2 % ab Bourg-Saint-Maurice",
+  "beauty": 3,
+  "fame": 3,
+  "difficulty": 4,
+  "traffic": 3,
+  "season": null,
+  "note": "Skiort-Auffahrt über Arc 1800, ganzjährig offen. Landschaftlich nüchtern, als Höhenmeter-Training brauchbar.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 45.6187,
+     "lon": 6.7694
+    },
+    "label": "Bourg-Saint-Maurice"
+   }
+  ]
+ },
+ {
+  "slug": "orcieres-merlette",
+  "name": "Orcières-Merlette",
+  "type": "spur",
+  "country": "FR",
+  "region": "Westalpen",
+  "lat": 44.6971,
+  "lon": 6.3235,
+  "elevation": 1832,
+  "classicAscent": "15,4 km, 4,6 % ab Pont-du-Fossé",
+  "beauty": 3,
+  "fame": 3,
+  "difficulty": 3,
+  "traffic": 2,
+  "season": null,
+  "note": "Tour-Ankunft 1971 und 2020, sonst ein ruhiger Skiort im Champsaur. Gleichmäßig, kaum Verkehr außerhalb der Saison.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 44.6663,
+     "lon": 6.227
+    },
+    "label": "Pont-du-Fossé"
+   }
+  ]
+ },
+ {
+  "slug": "pra-loup",
+  "name": "Pra-Loup",
+  "type": "spur",
+  "country": "FR",
+  "region": "Westalpen",
+  "lat": 44.3698,
+  "lon": 6.6027,
+  "elevation": 1630,
+  "classicAscent": "10,4 km, 4,7 % ab Barcelonnette",
+  "beauty": 3,
+  "fame": 3,
+  "difficulty": 3,
+  "traffic": 2,
+  "season": null,
+  "note": "1975 brach hier Merckx ein und Thévenet gewann die Tour. Kurz, gleichmäßig, mit Blick ins Ubaye-Tal.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 44.3863,
+     "lon": 6.6513
+    },
+    "label": "Barcelonnette"
+   }
+  ]
+ },
+ {
+  "slug": "le-chazelet",
+  "name": "Le Chazelet",
+  "aliases": [
+   "Plateau d'Emparis"
+  ],
+  "type": "spur",
+  "tags": [
+   "panorama"
+  ],
+  "country": "FR",
+  "region": "Westalpen",
+  "lat": 45.054,
+  "lon": 6.2858,
+  "elevation": 1794,
+  "classicAscent": "5,9 km, 5,1 % ab La Grave",
+  "beauty": 5,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 1,
+  "season": null,
+  "note": "Kurze Sackgasse über La Grave, am Ende steht man der Meije gegenüber – eines der großen Panoramen der Westalpen. Weiter aufs Plateau d'Emparis geht es nur ohne Asphalt.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 45.0454,
+     "lon": 6.3067
+    },
+    "label": "La Grave"
+   }
+  ]
+ },
+ {
+  "slug": "plateau-des-glieres",
+  "name": "Plateau des Glières",
+  "type": "spur",
+  "tags": [
+   "panorama"
+  ],
+  "country": "FR",
+  "region": "Westalpen",
+  "lat": 45.956,
+  "lon": 6.3276,
+  "elevation": 1480,
+  "classicAscent": "8,6 km, 3,0 % ab Thorens-Glières",
+  "beauty": 4,
+  "fame": 3,
+  "difficulty": 3,
+  "traffic": 1,
+  "season": {
+   "opens": 5,
+   "closes": 11,
+   "maintained": false
+  },
+  "note": "Auffahrt zur Hochebene mit dem Widerstandsdenkmal von 1944; oben endet die durchgehende Straße. Die Tour fuhr 2018 und 2023 hinauf.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 45.987,
+     "lon": 6.3165
+    },
+    "label": "Thorens-Glières"
+   }
+  ]
+ },
+ {
+  "slug": "col-de-sarenne",
+  "name": "Col de Sarenne",
+  "type": "pass",
+  "country": "FR",
+  "region": "Westalpen",
+  "lat": 45.0875,
+  "lon": 6.1491,
+  "elevation": 1999,
+  "classicAscent": "4,8 km, 8,4 % ab Clavans-en-Haut",
+  "beauty": 4,
+  "fame": 3,
+  "difficulty": 3,
+  "traffic": 1,
+  "season": {
+   "opens": 5.5,
+   "closes": 11,
+   "maintained": false
+  },
+  "note": "Die stille Rückseite von Alpe d'Huez: schmal, rau und ohne jede Infrastruktur. Der Belag der Ostseite ist stellenweise grob.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 45.0976,
+     "lon": 6.1643
+    },
+    "label": "Clavans-en-Haut (Ost)"
+   }
+  ]
+ },
+ {
+  "slug": "col-du-telegraphe",
+  "name": "Col du Télégraphe",
+  "type": "pass",
+  "country": "FR",
+  "region": "Westalpen",
+  "lat": 45.2027,
+  "lon": 6.4446,
+  "elevation": 1566,
+  "classicAscent": "12,6 km, 6,5 % ab Saint-Michel-de-Maurienne",
+  "beauty": 3,
+  "fame": 4,
+  "difficulty": 3,
+  "traffic": 3,
+  "season": null,
+  "note": "Ganzjährig offen, Waldstraße mit gleichmäßigen 7 %. Für sich genommen ein solider Anstieg, meistens aber nur die erste Stufe zum Galibier.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 45.2179,
+     "lon": 6.4751
+    },
+    "label": "Saint-Michel-de-Maurienne"
+   }
+  ]
+ },
+ {
+  "slug": "col-du-chaussy",
+  "name": "Col du Chaussy",
+  "aliases": [
+   "Lacets de Montvernier"
+  ],
+  "type": "pass",
+  "tags": [
+   "hairpins"
+  ],
+  "country": "FR",
+  "region": "Westalpen",
+  "lat": 45.3432,
+  "lon": 6.3572,
+  "elevation": 1533,
+  "classicAscent": "15,2 km, 6,7 % ab Pontamafrey über die Lacets de Montvernier",
+  "beauty": 4,
+  "fame": 3,
+  "difficulty": 4,
+  "traffic": 1,
+  "season": null,
+  "note": "Die siebzehn Kehren der Lacets de Montvernier stapeln sich auf zwei Kilometern übereinander wie ein Bauwerk – seit 2015 regelmäßig im Tour-Programm. Darüber wird die Straße ruhig und schmal.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 45.3076,
+     "lon": 6.3261
+    },
+    "label": "Pontamafrey"
+   }
+  ]
+ },
+ {
+  "slug": "col-du-mollard",
+  "name": "Col du Mollard",
+  "type": "pass",
+  "country": "FR",
+  "region": "Westalpen",
+  "lat": 45.2105,
+  "lon": 6.3371,
+  "elevation": 1638,
+  "classicAscent": "17,8 km, 6,0 % ab Saint-Jean-de-Maurienne",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 4,
+  "traffic": 1,
+  "season": {
+   "opens": 5,
+   "closes": 11.5,
+   "maintained": false
+  },
+  "note": "Achtzehn Kehren durch Wald und Weiler, kaum befahren; oben öffnet sich der Blick auf die Aiguilles d'Arves.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 45.2776,
+     "lon": 6.3452
+    },
+    "label": "Saint-Jean-de-Maurienne"
+   }
+  ]
+ },
+ {
+  "slug": "col-du-pre",
+  "name": "Col du Pré",
+  "type": "pass",
+  "tags": [
+   "reservoir",
+   "panorama"
+  ],
+  "country": "FR",
+  "region": "Westalpen",
+  "lat": 45.6903,
+  "lon": 6.598,
+  "elevation": 1703,
+  "classicAscent": "12,4 km, 7,8 % ab Beaufort",
+  "beauty": 5,
+  "fame": 3,
+  "difficulty": 4,
+  "traffic": 2,
+  "season": {
+   "opens": 5.5,
+   "closes": 11,
+   "maintained": false
+  },
+  "note": "Steile, schattige Rampen bis zum Scheitel, dann der Lac de Roselend von oben – die schönste Art, zum Cormet de Roselend zu kommen.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 45.7174,
+     "lon": 6.5733
+    },
+    "label": "Beaufort"
+   }
+  ]
+ },
+ {
+  "slug": "col-des-aravis",
+  "name": "Col des Aravis",
+  "type": "pass",
+  "country": "FR",
+  "region": "Westalpen",
+  "lat": 45.8723,
+  "lon": 6.4649,
+  "elevation": 1487,
+  "classicAscent": "11,7 km, 5,1 % ab Flumet",
+  "beauty": 4,
+  "fame": 4,
+  "difficulty": 3,
+  "traffic": 3,
+  "season": null,
+  "note": "Ganzjährig offen, seit 1911 im Tour-Programm. Vom Scheitel der Blick auf den Mont Blanc; im Sommer viel Verkehr.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 45.8176,
+     "lon": 6.5143
+    },
+    "label": "Flumet"
+   }
+  ]
+ },
+ {
+  "slug": "col-des-saisies",
+  "name": "Col des Saisies",
+  "type": "pass",
+  "country": "FR",
+  "region": "Westalpen",
+  "lat": 45.7586,
+  "lon": 6.5291,
+  "elevation": 1633,
+  "classicAscent": "9,3 km, 5,1 % ab Hauteluce",
+  "beauty": 3,
+  "fame": 3,
+  "difficulty": 3,
+  "traffic": 3,
+  "season": null,
+  "note": "Skiort auf dem Scheitel, ganzjährig geräumt. Breite, gleichmäßige Straße – die Verbindung zwischen Beaufortain und Val d'Arly.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 45.7506,
+     "lon": 6.5854
+    },
+    "label": "Hauteluce"
+   }
+  ]
+ },
+ {
+  "slug": "col-de-la-forclaz-de-montmin",
+  "name": "Col de la Forclaz de Montmin",
+  "type": "pass",
+  "tags": [
+   "panorama"
+  ],
+  "country": "FR",
+  "region": "Westalpen",
+  "lat": 45.8085,
+  "lon": 6.2448,
+  "elevation": 1157,
+  "classicAscent": "10,3 km, 6,6 % ab Talloires",
+  "beauty": 5,
+  "fame": 3,
+  "difficulty": 3,
+  "traffic": 3,
+  "season": null,
+  "note": "Ganzjährig offen. Der Scheitel hängt als Balkon über dem Lac d'Annecy; entsprechend voll ist der Gleitschirm-Startplatz an schönen Tagen.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 45.8395,
+     "lon": 6.2147
+    },
+    "label": "Talloires"
+   }
+  ]
+ },
+ {
+  "slug": "semnoz",
+  "name": "Semnoz",
+  "aliases": [
+   "Crêt de Châtillon"
+  ],
+  "type": "pass",
+  "tags": [
+   "panorama"
+  ],
+  "country": "FR",
+  "region": "Westalpen",
+  "lat": 45.7977,
+  "lon": 6.1072,
+  "elevation": 1667,
+  "classicAscent": "17,9 km, 6,8 % ab Annecy",
+  "beauty": 4,
+  "fame": 3,
+  "difficulty": 4,
+  "traffic": 2,
+  "season": {
+   "opens": 4.5,
+   "closes": 11.5,
+   "maintained": false
+  },
+  "note": "Vom Seeufer bis auf den Crêt de Châtillon, oben Rundblick von den Bauges zum Mont Blanc. Tour-Ankunft 2013; im Winter oberhalb der Alm gesperrt.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 45.8992,
+     "lon": 6.1287
+    },
+    "label": "Annecy"
+   }
+  ]
+ },
+ {
+  "slug": "col-de-romme",
+  "name": "Col de Romme",
+  "type": "pass",
+  "country": "FR",
+  "region": "Westalpen",
+  "lat": 46.03,
+  "lon": 6.5746,
+  "elevation": 1297,
+  "classicAscent": "18,3 km, 4,5 % ab Cluses",
+  "beauty": 3,
+  "fame": 3,
+  "difficulty": 4,
+  "traffic": 1,
+  "season": null,
+  "note": "Balkonstraße über dem Arve-Tal, oben steil und schmal. Seit 2009 als Vorspeise der Colombière im Tour-Programm.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.0603,
+     "lon": 6.5803
+    },
+    "label": "Cluses"
+   }
+  ]
+ },
+ {
+  "slug": "col-de-la-ramaz",
+  "name": "Col de la Ramaz",
+  "type": "pass",
+  "country": "FR",
+  "region": "Westalpen",
+  "lat": 46.1593,
+  "lon": 6.5807,
+  "elevation": 1619,
+  "classicAscent": "16,2 km, 6,0 % ab Taninges",
+  "beauty": 4,
+  "fame": 3,
+  "difficulty": 4,
+  "traffic": 1,
+  "season": {
+   "opens": 5,
+   "closes": 11.5,
+   "maintained": false
+  },
+  "note": "Wenig befahren, mit einer Galerie und einem steilen Mittelteil um 10 %. Oben Almgelände statt Skiort.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.1075,
+     "lon": 6.5911
+    },
+    "label": "Taninges"
+   }
+  ]
+ },
+ {
+  "slug": "col-d-ornon",
+  "name": "Col d'Ornon",
+  "type": "pass",
+  "country": "FR",
+  "region": "Westalpen",
+  "lat": 45.0083,
+  "lon": 5.9674,
+  "elevation": 1371,
+  "classicAscent": "13,5 km, 4,8 % ab Le Bourg-d'Oisans",
+  "beauty": 3,
+  "fame": 2,
+  "difficulty": 2,
+  "traffic": 2,
+  "season": null,
+  "note": "Ganzjährig offen, gleichmäßig und ruhig – die entspannte Verbindung vom Oisans ins Valbonnais.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 45.0549,
+     "lon": 6.0307
+    },
+    "label": "Le Bourg-d'Oisans"
+   }
+  ]
+ },
+ {
+  "slug": "col-du-noyer",
+  "name": "Col du Noyer",
+  "type": "pass",
+  "tags": [
+   "panorama"
+  ],
+  "country": "FR",
+  "region": "Westalpen",
+  "lat": 44.6925,
+  "lon": 5.9843,
+  "elevation": 1664,
+  "classicAscent": "14,1 km, 4,7 % ab Saint-Bonnet-en-Champsaur",
+  "beauty": 5,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 1,
+  "season": {
+   "opens": 5,
+   "closes": 11.5,
+   "maintained": false
+  },
+  "note": "Die Nordrampe klebt in Kehren an der Wand des Dévoluy, der Scheitel schaut über das ganze Champsaur. Im Winter gesperrt.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 44.6828,
+     "lon": 6.0748
+    },
+    "label": "Saint-Bonnet-en-Champsaur"
+   }
+  ]
+ },
+ {
+  "slug": "col-de-montgenevre",
+  "name": "Col de Montgenèvre",
+  "type": "pass",
+  "country": "FR",
+  "region": "Westalpen",
+  "lat": 44.9313,
+  "lon": 6.7257,
+  "elevation": 1860,
+  "classicAscent": "12,3 km, 4,3 % ab Briançon",
+  "beauty": 2,
+  "fame": 3,
+  "difficulty": 2,
+  "traffic": 5,
+  "season": null,
+  "note": "Ganzjährig offener Grenzübergang nach Italien und entsprechend stark befahren. Als Anstieg unspektakulär, als Verbindung praktisch.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 44.8984,
+     "lon": 6.6436
+    },
+    "label": "Briançon"
+   }
+  ]
+ },
+ {
+  "slug": "col-de-braus",
+  "name": "Col de Braus",
+  "type": "pass",
+  "tags": [
+   "hairpins"
+  ],
+  "country": "FR",
+  "region": "Westalpen",
+  "lat": 43.8726,
+  "lon": 7.3989,
+  "elevation": 1002,
+  "classicAscent": "10,3 km, 6,4 % ab L'Escarène",
+  "beauty": 4,
+  "fame": 3,
+  "difficulty": 3,
+  "traffic": 2,
+  "season": null,
+  "note": "Ganzjährig offen, im Winter ein klassisches Trainingsziel der Profis an der Côte d'Azur. Die Kehrenleiter über L'Escarène ist berühmt genug für eigene Fotos.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 43.8342,
+     "lon": 7.3557
+    },
+    "label": "L'Escarène"
+   }
+  ]
+ },
+ {
+  "slug": "col-de-vence",
+  "name": "Col de Vence",
+  "type": "pass",
+  "country": "FR",
+  "region": "Westalpen",
+  "lat": 43.7606,
+  "lon": 7.0751,
+  "elevation": 962,
+  "classicAscent": "10,2 km, 6,3 % ab Vence",
+  "beauty": 4,
+  "fame": 3,
+  "difficulty": 3,
+  "traffic": 2,
+  "season": null,
+  "note": "Ganzjährig offen, karstige Hochfläche über der Küste. Das Winterrevier der Profis rund um Nizza.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 43.7226,
+     "lon": 7.1117
+    },
+    "label": "Vence"
+   }
+  ]
+ },
+ {
+  "slug": "col-de-la-madone",
+  "name": "Col de la Madone",
+  "type": "pass",
+  "country": "FR",
+  "region": "Westalpen",
+  "lat": 43.8031,
+  "lon": 7.4233,
+  "elevation": 925,
+  "classicAscent": "15,7 km, 5,8 % ab Menton",
+  "beauty": 4,
+  "fame": 3,
+  "difficulty": 3,
+  "traffic": 1,
+  "season": null,
+  "note": "Ganzjährig offen und fast ohne Verkehr, weil oben nur ein Dorf liegt. Berühmt als Formtest: wer hier schnell ist, ist in Form.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 43.7752,
+     "lon": 7.503
+    },
+    "label": "Menton"
+   }
+  ]
+ },
+ {
+  "slug": "col-saint-martin",
+  "name": "Col Saint-Martin",
+  "aliases": [
+   "Col de la Colmiane"
+  ],
+  "type": "pass",
+  "country": "FR",
+  "region": "Westalpen",
+  "lat": 44.071,
+  "lon": 7.2214,
+  "elevation": 1500,
+  "classicAscent": "8,3 km, 6,4 % ab Saint-Martin-Vésubie",
+  "beauty": 3,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 2,
+  "season": null,
+  "note": "Zufahrt zur kleinen Station La Colmiane, ganzjährig geräumt. Kurz, gleichmäßig, Waldkehren.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 44.0701,
+     "lon": 7.2565
+    },
+    "label": "Saint-Martin-Vésubie"
+   }
+  ]
+ },
+ {
+  "slug": "col-de-tende",
+  "name": "Col de Tende",
+  "aliases": [
+   "Colle di Tenda"
+  ],
+  "type": "pass",
+  "tags": [
+   "hairpins",
+   "surface"
+  ],
+  "country": "FR",
+  "region": "Westalpen",
+  "lat": 44.1497,
+  "lon": 7.5619,
+  "elevation": 1871,
+  "classicAscent": "21,8 km, 4,7 % ab Tende",
+  "beauty": 5,
+  "fame": 3,
+  "difficulty": 5,
+  "traffic": 1,
+  "season": {
+   "opens": 6,
+   "closes": 10.5,
+   "maintained": false
+  },
+  "note": "Die alte Passstraße über dem Tunnel: 48 Kehren, ab der Mitte ohne Asphalt, oben Festungsruinen und ein Grat zwischen Frankreich und Italien. Schotter und Sperrungen vorher prüfen.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 44.0889,
+     "lon": 7.5933
+    },
+    "label": "Tende"
+   }
+  ]
+ },
+ {
+  "slug": "route-de-presles",
+  "name": "Route de Presles",
+  "type": "balcony",
+  "tags": [
+   "gorge",
+   "tunnels"
+  ],
+  "country": "FR",
+  "region": "Westalpen",
+  "lat": 45.0914,
+  "lon": 5.3826,
+  "elevation": 861,
+  "classicAscent": "11,4 km, 5,6 % von Pont-en-Royans nach Presles",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 1,
+  "season": null,
+  "note": "Ganzjährig unterhalten, bei Steinschlag zeitweise gesperrt. Eine Handvoll Tunnel und ein Band, das frei über den Wänden von Choranche hängt; oben endet sie im Dorf.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 45.0623,
+     "lon": 5.3426
+    },
+    "label": "Pont-en-Royans",
+    "km": 11.4,
+    "to": {
+     "lat": 45.0914,
+     "lon": 5.3826
+    }
+   }
+  ]
+ },
+ {
+  "slug": "gorges-du-nan",
+  "name": "Gorges du Nan",
+  "type": "balcony",
+  "tags": [
+   "gorge",
+   "tunnels"
+  ],
+  "country": "FR",
+  "region": "Westalpen",
+  "lat": 45.1587,
+  "lon": 5.4369,
+  "elevation": 674,
+  "classicAscent": "9,3 km, 7,0 % von Cognin-les-Gorges nach Malleval-en-Vercors",
+  "beauty": 5,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 1,
+  "season": null,
+  "note": "Ganzjährig unterhalten, bei Steinschlag zeitweise gesperrt. 1894 ohne Brüstung in die Wand geschlagen, drei kurze unbeleuchtete Tunnel; die Straße endet nicht in Malleval, sondern steigt weiter zum Col du Mont Noir.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 45.1708,
+     "lon": 5.411
+    },
+    "label": "Cognin-les-Gorges",
+    "km": 9.3,
+    "to": {
+     "lat": 45.1472,
+     "lon": 5.4378
+    }
+   }
+  ]
+ },
+ {
+  "slug": "gorges-du-cians",
+  "name": "Gorges du Cians",
+  "type": "balcony",
+  "tags": [
+   "gorge",
+   "tunnels"
+  ],
+  "country": "FR",
+  "region": "Westalpen",
+  "lat": 44.0033,
+  "lon": 6.9908,
+  "elevation": 608,
+  "classicAscent": "31,0 km, 3,2 % von Touët-sur-Var nach Beuil",
+  "beauty": 5,
+  "fame": 3,
+  "difficulty": 3,
+  "traffic": 2,
+  "season": null,
+  "note": "Ganzjährig unterhalten, bei Steinschlag zeitweise gesperrt. Roter Schiefer, der sich über der Straße schließt, dazwischen enge Tunnel – eine der eindrucksvollsten Schluchten der Seealpen.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 43.96,
+     "lon": 6.9
+    },
+    "label": "Touët-sur-Var",
+    "km": 31,
+    "to": {
+     "lat": 44.0944,
+     "lon": 6.99
+    }
+   }
+  ]
+ },
+ {
+  "slug": "gorges-de-daluis",
+  "name": "Gorges de Daluis",
+  "type": "balcony",
+  "tags": [
+   "gorge",
+   "tunnels"
+  ],
+  "country": "FR",
+  "region": "Westalpen",
+  "lat": 44.0503,
+  "lon": 6.8435,
+  "elevation": 872,
+  "classicAscent": "12,7 km, 0,3 % von Daluis nach Guillaumes",
+  "beauty": 5,
+  "fame": 2,
+  "difficulty": 2,
+  "traffic": 2,
+  "season": null,
+  "note": "Ganzjährig unterhalten, bei Steinschlag zeitweise gesperrt. Der rote Canyon des Var, Galerien und Tunnel über dem Wasser; kaum Steigung, dafür ununterbrochen Kulisse.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 44.024,
+     "lon": 6.8092
+    },
+    "label": "Daluis",
+    "km": 12.7,
+    "to": {
+     "lat": 44.0903,
+     "lon": 6.8528
+    }
+   }
+  ]
+ },
+ {
+  "slug": "corniche-sublime",
+  "name": "Corniche Sublime",
+  "aliases": [
+   "Gorges du Verdon"
+  ],
+  "type": "balcony",
+  "tags": [
+   "gorge",
+   "panorama"
+  ],
+  "country": "FR",
+  "region": "Westalpen",
+  "lat": 43.7319,
+  "lon": 6.3639,
+  "elevation": 914,
+  "classicAscent": "37,8 km, 0,3 % von Aiguines nach Comps-sur-Artuby",
+  "beauty": 5,
+  "fame": 4,
+  "difficulty": 3,
+  "traffic": 3,
+  "season": null,
+  "note": "Die Südseite des Verdon, ganzjährig offen. Von den Balcons de la Mescla schaut man 300 m senkrecht hinunter; an Sommerwochenenden ist entsprechend viel los.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 43.7757,
+     "lon": 6.2433
+    },
+    "label": "Aiguines",
+    "km": 37.8,
+    "to": {
+     "lat": 43.7093,
+     "lon": 6.5085
+    }
+   }
+  ]
+ },
+ {
+  "slug": "gorges-de-la-nesque",
+  "name": "Gorges de la Nesque",
+  "type": "balcony",
+  "tags": [
+   "gorge"
+  ],
+  "country": "FR",
+  "region": "Westalpen",
+  "lat": 44.0923,
+  "lon": 5.3497,
+  "elevation": 942,
+  "classicAscent": "24,7 km, 2,6 % von Villes-sur-Auzon nach Sault",
+  "beauty": 5,
+  "fame": 3,
+  "difficulty": 2,
+  "traffic": 2,
+  "season": null,
+  "note": "Ganzjährig offen. Eine fast unmerklich steigende Balkonstraße gegenüber dem Rocher du Cire – die schöne Art, zum Ventoux nach Sault zu fahren.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 44.0582,
+     "lon": 5.2339
+    },
+    "label": "Villes-sur-Auzon",
+    "km": 24.7,
+    "to": {
+     "lat": 44.0776,
+     "lon": 5.429
+    }
+   }
+  ]
+ },
+ {
+  "slug": "gorges-du-guil",
+  "name": "Gorges du Guil",
+  "type": "balcony",
+  "tags": [
+   "gorge",
+   "tunnels"
+  ],
+  "country": "FR",
+  "region": "Westalpen",
+  "lat": 44.7063,
+  "lon": 6.725,
+  "elevation": 1215,
+  "classicAscent": "20,8 km, 2,2 % von Guillestre nach Château-Ville-Vieille",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 2,
+  "traffic": 2,
+  "season": null,
+  "note": "Ganzjährig unterhalten, das Tor zum Queyras. Galerien und Tunnel über dem Guil; oben zweigen Izoard und Agnel ab.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 44.6598,
+     "lon": 6.6494
+    },
+    "label": "Guillestre",
+    "km": 20.8,
+    "to": {
+     "lat": 44.762,
+     "lon": 6.8125
+    }
+   }
+  ]
+ },
+ {
+  "slug": "vallee-de-la-claree",
+  "name": "Vallée de la Clarée",
+  "type": "valley",
+  "tags": [
+   "carfree"
+  ],
+  "country": "FR",
+  "region": "Westalpen",
+  "lat": 45.0195,
+  "lon": 6.6068,
+  "elevation": 1619,
+  "classicAscent": "21,2 km, 2,1 % von Val-des-Prés nach Laval",
+  "beauty": 5,
+  "fame": 3,
+  "difficulty": 2,
+  "traffic": 1,
+  "season": {
+   "opens": 5,
+   "closes": 11,
+   "maintained": false
+  },
+  "note": "Sackgassental voller Lärchen und Weiler, im oberen Teil an Sommertagen für Autos gesperrt (Shuttle ab Névache – die Sperrtage vorher prüfen). Wenig Steigung, viel Landschaft.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 44.9513,
+     "lon": 6.676
+    },
+    "label": "Val-des-Prés",
+    "km": 21.2,
+    "to": {
+     "lat": 45.0576,
+     "lon": 6.5284
+    }
+   }
+  ]
+ },
+ {
+  "slug": "vallee-de-l-ubaye",
+  "name": "Vallée de l'Ubaye",
+  "type": "valley",
+  "country": "FR",
+  "region": "Westalpen",
+  "lat": 44.5362,
+  "lon": 6.7825,
+  "elevation": 1596,
+  "classicAscent": "15,5 km, 2,9 % von Saint-Paul-sur-Ubaye nach Maljasset",
+  "beauty": 4,
+  "fame": 1,
+  "difficulty": 2,
+  "traffic": 1,
+  "season": {
+   "opens": 5,
+   "closes": 11,
+   "maintained": false
+  },
+  "note": "Das obere Ubaye-Tal endet in Maljasset unter den Dreitausendern. Eine der stillsten Straßen der Westalpen; im Winter gesperrt.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 44.5215,
+     "lon": 6.746
+    },
+    "label": "Saint-Paul-sur-Ubaye",
+    "km": 15.5,
+    "to": {
+     "lat": 44.5932,
+     "lon": 6.8424
+    }
+   }
+  ]
+ },
+ {
+  "slug": "vallee-des-chapieux",
+  "name": "Vallée des Chapieux",
+  "type": "valley",
+  "country": "FR",
+  "region": "Westalpen",
+  "lat": 45.6702,
+  "lon": 6.7704,
+  "elevation": 1435,
+  "classicAscent": "19,3 km, 5,0 % von Bourg-Saint-Maurice nach Ville des Glaciers",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 1,
+  "season": {
+   "opens": 6,
+   "closes": 10.5,
+   "maintained": false
+  },
+  "note": "Über Les Chapieux ins Talende unter dem Mont-Blanc-Massiv, wo die Straße vor dem Gletscher aufhört. Der letzte Abschnitt ist schmal und wird spät im Jahr frei.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 45.6187,
+     "lon": 6.7694
+    },
+    "label": "Bourg-Saint-Maurice",
+    "km": 19.3,
+    "to": {
+     "lat": 45.7274,
+     "lon": 6.7675
+    }
+   }
+  ]
+ },
+ {
+  "slug": "cirque-du-fer-a-cheval",
+  "name": "Cirque du Fer-à-Cheval",
+  "type": "valley",
+  "country": "FR",
+  "region": "Westalpen",
+  "lat": 46.0671,
+  "lon": 6.8021,
+  "elevation": 847,
+  "classicAscent": "6,3 km, 3,1 % von Sixt-Fer-à-Cheval zum Talschluss",
+  "beauty": 5,
+  "fame": 2,
+  "difficulty": 1,
+  "traffic": 2,
+  "season": null,
+  "note": "Sechs flache Kilometer in einen Talschluss, den Wasserfälle in einem Halbrund aus 700-Meter-Wänden umstellen. Kurz, leicht und trotzdem einer der großen Anblicke der Nordalpen.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.0549,
+     "lon": 6.7753
+    },
+    "label": "Sixt-Fer-à-Cheval",
+    "km": 6.3,
+    "to": {
+     "lat": 46.0774,
+     "lon": 6.8409
+    }
+   }
+  ]
  }
 ]
