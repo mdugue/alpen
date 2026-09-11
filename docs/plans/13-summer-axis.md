@@ -206,8 +206,9 @@ Rules:
 4. `bestPeriods` keeps its definition word for word: the longest run of
    `open` half-months with fewer than `SNOW_BEST_PCT` snow days. Since every
    new reason turns a cell `risky`, a best run is automatically free of heat,
-   wet, short days and cold descents. New: `passGrades(pass, climate, valley):
-Grade[]` and `tourGrades(...)`, where a tour cell is the worst grade of
+   wet, short days and cold descents. New: `passGrades(pass, signals):
+Grade[]` (with `signals: PassSignals`, the pass's climate series and valley
+   elevation) and `tourGrades(tour, passes, signals)`, where a tour cell is the worst grade of
    its passes (`closed < limited < good < best`), consistent with
    `tourStatus`.
 5. Passes without a climate series behave as today; passes without a profile

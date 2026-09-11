@@ -106,7 +106,7 @@ export const GRADE_HINT: Record<Grade, string> = {
     "Die Straße ist in dieser Zeit meist gesperrt, in der Regel wegen der Wintersperre.",
   good: "Nichts spricht gegen die Fahrt. Nur ist es entweder ein kürzerer Abschnitt als die beste Zeit, oder es schneit gelegentlich.",
   limited:
-    "Fahrbar, aber mit einem Haken: Hitze im Tal, viel Regen, kurze Tage, eine kalte Abfahrt, Schnee oder Frost.",
+    "Fahrbar, aber mit einem Haken: Hitze im Tal, viel Regen, kurze Tage, eine kalte Abfahrt, Schnee, Frost, die Höhenlage oder der Rand des Öffnungsfensters.",
 };
 
 /** The caveat as a phrase, for "Fahrbar, aber mit einem Haken: …". */
@@ -442,22 +442,41 @@ const tourPasses = (tour: Tour, passes: PassIndex): Pass[] =>
     .map((slug) => passes.get(slug))
     .filter((p): p is Pass => Boolean(p));
 
-/** A tour is only as rideable as its worst pass. */
+const STATUS_RANK: Record<Status, number> = { closed: 0, open: 2, risky: 1 };
+
+/** Where a verdict's first reason sits on the ladder; past the end without one. */
+const ladderRank = (v: StatusVerdict): number =>
+  v.reasons[0] ? REASON_ORDER.indexOf(v.reasons[0]) : REASON_ORDER.length;
+
+/**
+ * A tour is only as rideable as its worst pass, and it is that pass's
+ * reasons the tour reports: "eingeschränkt: Hitze" on a tour row names what
+ * limits the tour, not a merge of every pass's caveats. Among passes with the
+ * same status the one whose first reason ranks earliest on the ladder wins.
+ */
+export const tourVerdict = (
+  tour: Tour,
+  passes: PassIndex,
+  t: Period,
+  signals?: Signals,
+): StatusVerdict => {
+  let worst: StatusVerdict = { reasons: [], status: "open" };
+  for (const p of tourPasses(tour, passes)) {
+    const v = passVerdict(p, t, inputAt(signalsOf(signals, p.slug), t));
+    const rank = STATUS_RANK[v.status] - STATUS_RANK[worst.status];
+    if (rank < 0 || (rank === 0 && ladderRank(v) < ladderRank(worst)))
+      worst = v;
+  }
+  return worst;
+};
+
+/** The status alone – see `tourVerdict`. */
 export const tourStatus = (
   tour: Tour,
   passes: PassIndex,
   t: Period,
   signals?: Signals,
-): Status => {
-  const list = new Set(
-    tourPasses(tour, passes).map((p) =>
-      passStatus(p, t, inputAt(signalsOf(signals, p.slug), t)),
-    ),
-  );
-  if (list.has("closed")) return "closed";
-  if (list.has("risky")) return "risky";
-  return "open";
-};
+): Status => tourVerdict(tour, passes, t, signals).status;
 
 /** The 24 verdicts of one pass. */
 export const passSeason = (
@@ -473,24 +492,47 @@ export const tourSeason = (
 ): Status[] => PERIODS.map((t) => tourStatus(tour, passes, t, signals));
 
 /** Longest run of `true` in a circular series of 24; null when there is none. */
-const longestRun = (
-  flags: boolean[],
-): { start: number; length: number } | null => {
+interface Run {
+  start: number;
+  length: number;
+}
+
+/** Every circular run of `true` in `flags`, none of them split at the wrap. */
+const runsOf = (flags: boolean[]): Run[] => {
   const n = flags.length;
-  if (flags.every(Boolean)) return { length: n, start: 0 };
-  let best: { start: number; length: number } | null = null;
+  const origin = flags.indexOf(false);
+  if (origin === -1) return n ? [{ length: n, start: 0 }] : [];
+  const runs: Run[] = [];
   let start = -1;
   let length = 0;
-  for (let i = 0; i < 2 * n; i += 1) {
-    if (flags[i % n]) {
-      if (length === 0) start = i % n;
+  // Walk one full circle starting just after a gap; the walk ends on that
+  // gap, so the last run is closed like every other.
+  for (let k = 1; k <= n; k += 1) {
+    const i = (origin + k) % n;
+    if (flags[i]) {
+      if (length === 0) start = i;
       length += 1;
-      if (length <= n && (!best || length > best.length))
-        best = { length, start };
-    } else {
+    } else if (length) {
+      runs.push({ length, start });
       length = 0;
     }
   }
+  return runs;
+};
+
+/**
+ * The longest run of `true`; with `prefer`, the longest among the runs that
+ * satisfy it, if any does.
+ */
+const longestRun = (
+  flags: boolean[],
+  prefer?: (run: Run) => boolean,
+): Run | null => {
+  const runs = runsOf(flags);
+  const pool = prefer ? runs.filter(prefer) : [];
+  let best: Run | null = null;
+  for (const r of pool.length ? pool : runs)
+    if (!best || r.length > best.length) best = r;
   return best;
 };
 
@@ -561,25 +603,64 @@ export const tourGrades = (
 };
 
 /**
+ * What every half-month's cell of a tour says about itself: the note of the
+ * pass that sets the cell's grade, so a limited tour cell names its caveat
+ * ("Hitze im Tal") the way a pass cell does.
+ */
+export const tourCellNotes = (
+  tour: Tour,
+  passes: PassIndex,
+  signals?: Signals,
+): CellNote[] => {
+  const per = tourPasses(tour, passes).map((p) => {
+    const own = signalsOf(signals, p.slug);
+    return { grades: passGrades(p, own), notes: passCellNotes(p, own) };
+  });
+  return PERIODS.map((_, i) => {
+    let pick: { grade: Grade; note: CellNote } | null = null;
+    for (const { grades, notes } of per) {
+      const grade = grades[i]!;
+      if (!pick || GRADE_RANK[grade] < GRADE_RANK[pick.grade])
+        pick = { grade, note: notes[i]! };
+    }
+    return pick?.note ?? { reason: null, snowy: false };
+  });
+};
+
+/**
  * One sentence for the 24 cells of a season strip, so screen readers get the
  * same overview the colours give: "beste Zeit Anfang Juli bis Ende September,
  * gut Anfang Juni bis Anfang Oktober, eingeschränkt bis Ende Oktober".
  */
 export const seasonSummary = (grades: Grade[]): string => {
+  const n = grades.length;
+  // A run "holds" a grade when one of its cells has it: `good` and `rideable`
+  // are supersets of `best`, so the longest of them may be the best run
+  // itself, while the genuinely good or limited cells sit in another.
+  const holds = (grade: Grade) => (run: Run) => {
+    for (let k = 0; k < run.length; k += 1)
+      if (grades[(run.start + k) % n] === grade) return true;
+    return false;
+  };
   const best = longestRun(grades.map((g) => g === "best"));
-  const good = longestRun(grades.map((g) => g === "best" || g === "good"));
-  const rideable = longestRun(grades.map((g) => g !== "closed"));
+  const good = longestRun(
+    grades.map((g) => g === "best" || g === "good"),
+    holds("good"),
+  );
+  const rideable = longestRun(
+    grades.map((g) => g !== "closed"),
+    holds("limited"),
+  );
   if (!rideable) return "Saison: ganzjährig oft gesperrt.";
-  const span = (run: { start: number; length: number }) =>
-    run.length === grades.length
+  const span = (run: Run) =>
+    run.length === n
       ? "ganzjährig"
       : `${periodLabel(periodAt(run.start))} bis ${periodLabel(periodAt(run.start + run.length - 1))}`;
   if (!good)
     return `Saison: eingeschränkt ${span(rideable)}, sonst oft gesperrt.`;
   const parts: string[] = [];
   if (best) parts.push(`beste Zeit ${span(best)}`);
-  if (!best || good.length > best.length) parts.push(`gut ${span(good)}`);
-  if (rideable.length > good.length)
-    parts.push(`eingeschränkt ${span(rideable)}`);
+  if (grades.includes("good")) parts.push(`gut ${span(good)}`);
+  if (grades.includes("limited")) parts.push(`eingeschränkt ${span(rideable)}`);
   return `Saison: ${parts.join(", ")}.`;
 };

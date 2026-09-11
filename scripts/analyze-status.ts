@@ -18,7 +18,8 @@ import profilesJson from "../data/generated/profiles.json" with { type: "json" }
  *      diff with visible consequences.
  *   4. Changes: every pair whose verdict or first reason differs from the
  *      plan 04 heuristic (window, altitude, snow, frost), grouped by the
- *      reason that decided, and the "Beste Zeit" run lengths. Read the lists adversarially: heat should
+ *      reason that decided, and the "Beste Zeit" run lengths before (plan 04)
+ *      and after (plan 13). Read the lists adversarially: heat should
  *      name valleys, wet the Dolomites, nothing should turn amber in July for
  *      a reason a rider would not recognise.
  */
@@ -35,6 +36,7 @@ import {
   REASON_ORDER,
   SHORT_DAY_HOURS,
   signalsOf,
+  SNOW_BEST_PCT,
   STATUS_LABEL,
   valleyTmax,
   WET_LIMITED_PCT,
@@ -264,22 +266,51 @@ for (const reason of REASON_ORDER) {
     console.log(`    ${describe(p)}`);
 }
 
+/**
+ * "Beste Zeit" as `bestPeriods` defines it – the longest circular run of
+ * "gut" half-months with fewer than SNOW_BEST_PCT snow days, at least two
+ * long – computed from a given status series, so the run can be measured
+ * for the plan 04 verdicts and the plan 13 verdicts alike.
+ */
+const bestRunLength = (pass: Pass, pick: (p: Pair) => Status): number => {
+  const flags = pairs
+    .filter((p) => p.pass === pass)
+    .map((p) => pick(p) === "open" && (p.bucket?.snowPct ?? 0) < SNOW_BEST_PCT);
+  if (flags.every(Boolean)) return flags.length;
+  let best = 0;
+  let length = 0;
+  for (let i = 0; i < 2 * flags.length; i += 1) {
+    length = flags[i % flags.length] ? length + 1 : 0;
+    best = Math.max(best, Math.min(length, flags.length));
+  }
+  return best >= 2 ? best : 0;
+};
+
 if (!changesOnly) {
-  const runs = passes.map((p) => {
+  const report = (title: string, pick: (p: Pair) => Status) => {
+    const runs = passes.map((p) => ({ length: bestRunLength(p, pick), p }));
+    const withBest = runs.filter((r) => r.length > 0);
+    console.log(
+      `\nBeste Zeit (${title}): ${withBest.length} of ${passes.length} passes have one; run lengths ` +
+        `${runs
+          .map((r) => r.length)
+          .toSorted((a, b) => a - b)
+          .join(",")}`,
+    );
+    for (const r of runs) {
+      if (r.length === 0)
+        console.log(`  none: ${r.p.name} (${r.p.elevation} m)`);
+    }
+  };
+  report("plan 04", (p) => p.base);
+  report("plan 13", (p) => p.status);
+  // Sanity: the plan 13 run agrees with the library's own definition.
+  for (const p of passes) {
     const best = bestPeriods(p, signalsOf(signals, p.slug));
-    if (!best) return { length: 0, p };
-    const [from, to] = best.map((t) => PERIODS.indexOf(t)) as [number, number];
-    return { best, length: ((to - from + 24) % 24) + 1, p };
-  });
-  const withBest = runs.filter((r) => r.length > 0);
-  console.log(
-    `\nBeste Zeit: ${withBest.length} of ${passes.length} passes have one; run lengths ` +
-      `${runs
-        .map((r) => r.length)
-        .toSorted((a, b) => a - b)
-        .join(",")}`,
-  );
-  for (const r of runs) {
-    if (r.length === 0) console.log(`  none: ${r.p.name} (${r.p.elevation} m)`);
+    const lib = best
+      ? ((PERIODS.indexOf(best[1]) - PERIODS.indexOf(best[0]) + 24) % 24) + 1
+      : 0;
+    if (lib !== bestRunLength(p, (q) => q.status))
+      console.log(`  mismatch with bestPeriods: ${p.name}`);
   }
 }

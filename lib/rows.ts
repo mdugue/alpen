@@ -13,7 +13,7 @@ import {
   PERIODS,
   signalsOf,
   tourGrades,
-  tourStatus,
+  tourVerdict,
   valleyTmax,
 } from "@/lib/status";
 import type {
@@ -156,6 +156,8 @@ export const buildPassRows = (
 export interface TourRow {
   tour: Tour;
   status: Status;
+  /** The first reason of the pass that limits the tour – the word next to the dot. */
+  reason: StatusReason | null;
   favorite: boolean;
   season: Grade[];
 }
@@ -173,10 +175,16 @@ export const buildTourRows = (
     const favorite = isFavorite("tour", tour.slug);
     if (q.favoritesOnly && !favorite) continue;
     if (!tourMatches(tour, passes, filters, q, signals)) continue;
-    const status = tourStatus(tour, passes, filters.period, signals);
+    const { status, reasons } = tourVerdict(
+      tour,
+      passes,
+      filters.period,
+      signals,
+    );
     if (!statusMatches(status, filters.status)) continue;
     rows.push({
       favorite,
+      reason: status === "risky" ? (reasons[0] ?? null) : null,
       season: tourGrades(tour, passes, signals),
       status,
       tour,

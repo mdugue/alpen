@@ -3,13 +3,23 @@ import path from "node:path";
 
 import { ImageResponse } from "next/og";
 
+import climateJson from "@/data/generated/climate.json";
+import profilesJson from "@/data/generated/profiles.json";
 import passes from "@/data/passes.json";
 import tours from "@/data/tours.json";
 import towns from "@/data/towns.json";
 import { BRAND, SITE_NAME } from "@/lib/brand";
 import { MarkBadge } from "@/lib/mark";
-import { periodLabel, passStatus, STATUS_LABEL } from "@/lib/status";
-import type { Pass, Status } from "@/lib/types";
+import { valleyElevations } from "@/lib/profile";
+import {
+  inputAt,
+  periodLabel,
+  passStatus,
+  signalsOf,
+  STATUS_LABEL,
+} from "@/lib/status";
+import type { Signals } from "@/lib/status";
+import type { ClimateYear, ElevationProfile, Pass, Status } from "@/lib/types";
 import { fmt } from "@/lib/utils";
 
 /**
@@ -23,6 +33,20 @@ import { fmt } from "@/lib/utils";
 
 /** Late October: the season's end, when all three colours show at once. */
 const PERIOD = 10.5;
+
+/**
+ * The same signals the app reads (climate series, valley elevation), so the
+ * dots agree with the list for the same half-month: without them a pass
+ * that the heuristic calls limited for snow or a cold descent would show as
+ * open here.
+ */
+const signals: Signals = {
+  climate: climateJson as unknown as Record<string, ClimateYear>,
+  valleys: valleyElevations(
+    passes as Pass[],
+    profilesJson as unknown as Record<string, ElevationProfile>,
+  ),
+};
 
 export const alt = `${SITE_NAME} – welche Pässe, Touren und Rad-Orte sind wann mit dem Rennrad befahrbar?`;
 export const size = { height: 630, width: 1200 };
@@ -52,7 +76,11 @@ export default function Image() {
   const dots = (passes as Pass[])
     .map((p) => ({
       r: 4.5 + p.fame * 2,
-      status: passStatus(p, PERIOD),
+      status: passStatus(
+        p,
+        PERIOD,
+        inputAt(signalsOf(signals, p.slug), PERIOD),
+      ),
       x: dx + (p.lon - lon0) * kx * scale,
       y: dy + (lat1 - p.lat) * scale,
     }))

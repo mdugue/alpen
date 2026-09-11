@@ -100,11 +100,16 @@ export const PeriodScrubber = ({
           <ChevronLeft />
         </Button>
         {/* The label doubles as the legend: what the four colours of the bars
-            and the strips mean, and the counts of this half-month. */}
+            and the strips mean, and the counts of this half-month. A button
+            rather than the group's text element, so the legend also opens
+            from the keyboard, on focus. */}
         <Tooltip>
           <TooltipTrigger
             render={
-              <ButtonGroupText className="flex-1 justify-center bg-transparent text-sm font-semibold" />
+              <ButtonGroupText
+                render={<button type="button" />}
+                className="flex-1 cursor-default justify-center bg-transparent text-sm font-semibold"
+              />
             }
           >
             {periodLabel(value)}

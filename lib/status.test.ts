@@ -25,8 +25,10 @@ import {
   seasonSummary,
   signalsOf,
   todayPeriod,
+  tourCellNotes,
   tourGrades,
   tourStatus,
+  tourVerdict,
   valleyTmax,
   verdictReasons,
 } from "@/lib/status";
@@ -400,6 +402,38 @@ describe("the summer axis (plan 13)", () => {
     expect(g[periodIndex(7)]).toBe("limited");
     expect(g[periodIndex(6)]).toBe("closed");
   });
+
+  test("a tour cell's note comes from the pass that sets its grade", () => {
+    const index = indexBySlug([
+      pass({
+        elevation: 1000,
+        lat: 46.5,
+        season: { closes: 11, opens: 5 },
+        slug: "a",
+      }),
+      pass({
+        elevation: 1000,
+        lat: 46.5,
+        season: { closes: 9, opens: 7 },
+        slug: "b",
+      }),
+    ]);
+    const snowy = { a: PERIODS.map(() => bucket({ snowPct: 30 })) } as Record<
+      string,
+      ClimateYear
+    >;
+    const notes = tourCellNotes(tour(["a", "b"]), index, { climate: snowy });
+    expect(notes).toHaveLength(24);
+    // August: "a" is limited by snow while "b" is at its best.
+    expect(notes[periodIndex(8)]).toEqual({ reason: "snow", snowy: true });
+    // June: "b" is still closed, and closed outranks limited.
+    expect(notes[periodIndex(6)]!.reason).toBe("outside-window");
+    // Without a caveat anywhere the note is empty rather than missing.
+    expect(tourCellNotes(tour(["a", "b"]), index)[periodIndex(8)]).toEqual({
+      reason: null,
+      snowy: false,
+    });
+  });
 });
 
 describe("cell hints", () => {
@@ -474,6 +508,20 @@ describe("season strips and best periods", () => {
       "Saison: eingeschränkt Anfang Juli bis Ende Juli, sonst oft gesperrt.",
     );
   });
+
+  test("seasonSummary names a grade whenever it occurs, even in a shorter run than the best one", () => {
+    // Two best, a closed gap, two good: the longest "best or good" run is the
+    // best run itself, so a length comparison would hide the good cells.
+    expect(seasonSummary(grades("xxxxxxbbxooxxxxxxxxxxxxx"))).toBe(
+      "Saison: beste Zeit Anfang April bis Ende April, gut Ende Mai bis Anfang Juni.",
+    );
+    expect(seasonSummary(grades("xxxxxxbbxrrxxxxxxxxxxxxx"))).toBe(
+      "Saison: beste Zeit Anfang April bis Ende April, eingeschränkt Ende Mai bis Anfang Juni.",
+    );
+    expect(seasonSummary(grades("oooooooooooobbbbbbbbbbbb"))).toBe(
+      "Saison: beste Zeit Anfang Juli bis Ende Dezember, gut ganzjährig.",
+    );
+  });
 });
 
 describe("tourStatus", () => {
@@ -490,6 +538,30 @@ describe("tourStatus", () => {
 
   test("unknown pass slugs are ignored", () => {
     expect(tourStatus(tour(["a", "ghost"]), index, 8)).toBe("open");
+  });
+
+  test("tourVerdict carries the reasons of the pass that limits the tour", () => {
+    const snowy = { a: PERIODS.map(() => bucket({ snowPct: 30 })) } as Record<
+      string,
+      ClimateYear
+    >;
+    expect(tourVerdict(tour(["a", "b"]), index, 8)).toEqual({
+      reasons: [],
+      status: "open",
+    });
+    // Only "a" is snowy in August: its reason is the tour's.
+    expect(
+      tourVerdict(tour(["a", "b"]), index, 8, { climate: snowy }).reasons[0],
+    ).toBe("snow");
+    // In July both are limited – "b" at its window's edge, "a" by snow – and
+    // the reason that ranks earlier on the ladder names the tour.
+    expect(
+      tourVerdict(tour(["a", "b"]), index, 7, { climate: snowy }).reasons[0],
+    ).toBe("window-edge");
+    // A closed pass closes the tour, whatever the others say.
+    expect(tourVerdict(tour(["a", "b"]), index, 6, { climate: snowy })).toEqual(
+      { reasons: ["outside-window"], status: "closed" },
+    );
   });
 
   test("the climate map reaches the passes of a tour", () => {

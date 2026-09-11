@@ -254,6 +254,78 @@ describe("plan 05 criteria", () => {
   });
 });
 
+/** A uniform year, so the chosen half-month reads the same bucket. */
+const year = (over: Partial<ClimateBucket>): ClimateYear =>
+  PERIODS.map(() => ({
+    frostPct: 0,
+    snowPct: 0,
+    tmax: 20,
+    tmin: 8,
+    wetPct: 20,
+    ...over,
+  }));
+
+describe("plan 13 summer filters", () => {
+  // "mittel" is at 1 500 m; a valley at 500 m adds 6,5 °C to the summit value.
+  const valleys = { mittel: 500 };
+  const slugs = (
+    over: Partial<Filters>,
+    climate: Record<string, ClimateYear>,
+    withValleys = true,
+  ) =>
+    buildPassRows([passes[1]!], filters(over), never, {
+      climate,
+      valleys: withValleys ? valleys : {},
+    }).map((r) => r.pass.slug);
+
+  test("heat is an exclusive upper bound on the derived valley tmax", () => {
+    // 20 °C at the summit is 26,5 °C in the valley.
+    expect(
+      slugs({ maxValleyTmax: 28 }, { mittel: year({ tmax: 20 }) }),
+    ).toEqual(["mittel"]);
+    expect(
+      slugs({ maxValleyTmax: 24 }, { mittel: year({ tmax: 20 }) }),
+    ).toEqual([]);
+    // 22 °C at the summit is 28,5 °C in the valley: not "unter 28".
+    expect(
+      slugs({ maxValleyTmax: 28 }, { mittel: year({ tmax: 22 }) }),
+    ).toEqual([]);
+  });
+
+  test("rain days are an inclusive upper bound", () => {
+    expect(slugs({ maxWetPct: 50 }, { mittel: year({ wetPct: 50 }) })).toEqual([
+      "mittel",
+    ]);
+    expect(slugs({ maxWetPct: 50 }, { mittel: year({ wetPct: 51 }) })).toEqual(
+      [],
+    );
+  });
+
+  test("a missing value fails an active filter and passes an inactive one", () => {
+    // No profile, so no valley elevation: the heat filter cannot say "under".
+    expect(slugs({ maxValleyTmax: 28 }, { mittel: year({}) }, false)).toEqual(
+      [],
+    );
+    expect(slugs({}, { mittel: year({}) }, false)).toEqual(["mittel"]);
+    // No climate series at all: neither filter can say anything.
+    expect(slugs({ maxValleyTmax: 28 }, {})).toEqual([]);
+    expect(slugs({ maxWetPct: 50 }, {})).toEqual([]);
+    expect(slugs({}, {})).toEqual(["mittel"]);
+  });
+
+  test("every pass of a tour has to respect the summer bounds", () => {
+    const rows = (over: Partial<Filters>) =>
+      buildTourRows(tours, index, filters(over), never, {
+        climate: { mittel: year({ tmax: 20, wetPct: 40 }) },
+        valleys,
+      }).map((r) => r.tour.slug);
+    expect(rows({})).toEqual(["lang", "kurz"]);
+    // "lang" also crosses "winter", which has no series: it fails both bounds.
+    expect(rows({ maxValleyTmax: 28 })).toEqual(["kurz"]);
+    expect(rows({ maxWetPct: 50 })).toEqual(["kurz"]);
+  });
+});
+
 describe("buildTourRows", () => {
   test("status comes from the passes, sorted by elevation gain", () => {
     const rows = buildTourRows(tours, index, filters(), never);
@@ -282,11 +354,14 @@ describe("buildTourRows", () => {
     ).toEqual(["kurz"]);
   });
 
-  test("the climate series reaches the tour verdict", () => {
+  test("the climate series reaches the tour verdict, with the limiting reason", () => {
     const rows = buildTourRows(tours, index, filters(), never, {
       climate: { mittel: snowy(40) },
     });
     expect(rows.every((r) => r.status === "risky")).toBe(true);
+    expect(rows.every((r) => r.reason === "snow")).toBe(true);
+    const clear = buildTourRows(tours, index, filters(), never);
+    expect(clear.every((r) => r.reason === null)).toBe(true);
   });
 });
 

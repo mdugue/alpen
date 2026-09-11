@@ -244,11 +244,13 @@ export const FilterPanel = ({
           />
         </FieldGroup>
         {/* The raw summer signals of the chosen half-month, not the composite:
-            "unter 28 °C im Tal" is a question the status alone cannot answer. */}
+            "unter 28 °C im Tal" is a question the status alone cannot answer.
+            The valley value is derived from the summit series, and the label
+            says so, as every derived value in the app does. */}
         <FieldGroup className="grid grid-cols-3 gap-2">
           <Select
             id="max-heat"
-            label="Hitze im Tal"
+            label="Hitze im Tal (abgeleitet)"
             value={filters.maxValleyTmax}
             onChange={(v) => set("maxValleyTmax", v)}
             options={HEAT_OPTIONS}

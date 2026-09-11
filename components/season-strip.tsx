@@ -24,7 +24,7 @@ import { cn } from "@/lib/utils";
  * hollow with a red hairline, like the circles on the map, so a closure is
  * told apart by weight and a winter of them stays light. The current
  * half-month is outlined, so the strip still works without hue, and in the
- * panel every cell explains itself on hover.
+ * panel every cell explains itself on hover and on focus.
  */
 export const CELL: Record<Grade, string> = {
   best: "bg-grade-best",
@@ -61,29 +61,36 @@ export const SeasonStrip = ({
     .filter(Boolean)
     .join(" ");
 
-  const cell = (grade: Grade, i: number) => (
-    <span
-      key={PERIODS[i]}
-      className={cn(
-        "relative flex-1 rounded-xs",
-        CELL[grade],
-        i === currentIndex &&
-          "outline-foreground z-10 outline-1 outline-offset-1",
-      )}
-    />
-  );
+  const cellClass = (grade: Grade, i: number) =>
+    cn(
+      "relative flex-1 rounded-xs",
+      CELL[grade],
+      i === currentIndex &&
+        "outline-foreground z-10 outline-1 outline-offset-1",
+    );
 
+  // In the panel every cell is a button: reachable with Tab, its tooltip
+  // opening on focus as on hover, so the explanation is not pointer-only.
+  // The strip is then a group rather than an image, since an image role
+  // would make the cells presentational and hide them from a screen reader.
   return (
     <div className={cn(panel ? "w-full" : "w-24", className)}>
-      <div
-        role="img"
-        aria-label={label}
-        className={cn("flex gap-px", panel ? "h-4" : "h-2")}
-      >
-        {grades.map((grade, i) =>
-          panel ? (
+      {panel ? (
+        <div role="group" aria-label={label} className="flex h-4 gap-px">
+          {grades.map((grade, i) => (
             <Tooltip key={PERIODS[i]}>
-              <TooltipTrigger render={cell(grade, i)} />
+              <TooltipTrigger
+                render={
+                  <button
+                    type="button"
+                    aria-label={`${periodLabel(PERIODS[i]!)}: ${GRADE_LABEL[grade]}`}
+                    className={cn(
+                      cellClass(grade, i),
+                      "focus-visible:outline-ring cursor-default border-0 p-0 focus-visible:z-20 focus-visible:outline-2 focus-visible:outline-offset-1",
+                    )}
+                  />
+                }
+              />
               <TooltipContent className="max-w-64">
                 <div className="flex flex-col gap-0.5">
                   <p className="font-semibold">
@@ -93,11 +100,15 @@ export const SeasonStrip = ({
                 </div>
               </TooltipContent>
             </Tooltip>
-          ) : (
-            cell(grade, i)
-          ),
-        )}
-      </div>
+          ))}
+        </div>
+      ) : (
+        <div role="img" aria-label={label} className="flex h-2 gap-px">
+          {grades.map((grade, i) => (
+            <span key={PERIODS[i]} className={cellClass(grade, i)} />
+          ))}
+        </div>
+      )}
       {panel && (
         <div
           aria-hidden

@@ -48,6 +48,7 @@ import {
   periodLabel,
   seasonText,
   signalsOf,
+  tourCellNotes,
   tourGrades,
   tourStatus,
   valleyTmax,
@@ -498,6 +499,7 @@ const TourDetail = (props: Props & { tour: Tour }) => {
         )}
         <SeasonStrip
           grades={tourGrades(tour, passIndex, props)}
+          notes={tourCellNotes(tour, passIndex, props)}
           current={props.period}
           size="panel"
         />
