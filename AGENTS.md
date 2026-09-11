@@ -68,6 +68,7 @@ friends do that better and the app links out to them.
 | Linting and formatting                          | `oxlint.config.ts`, `oxfmt.config.ts`                                                                                                                       |
 | Implementation plans                            | `docs/plans/` (index: `docs/plans/README.md`)                                                                                                               |
 | Project skills                                  | `.agents/skills/implement-plan`, `curate-data`, `preview-app`                                                                                               |
+| Web-session setup (Bun version, deps)           | `.claude/hooks/session-start.sh`, registered in `.claude/settings.json`                                                                                     |
 
 ## Conventions
 
@@ -293,6 +294,17 @@ friends do that better and the app links out to them.
   TypeScript 7.0 has no JavaScript API and the editor language service still
   wants one – `.vscode/settings.json` points `js/ts.tsdk.path` at it. Keep
   both entries in `package.json`.
+- **Bun is pinned by `engines`, and the web container is dragged up to it.**
+  `engines.bun` in `package.json` is the floor, and it is not decoration: on
+  Bun 1.3 `bun run build` dies in Next's TypeScript step, and `bun run e2e`
+  and the `preview-app` skill cannot start at all, because both drive Chrome
+  through `Bun.WebView` (Bun 1.4+). Claude Code on the web ships whatever Bun
+  its image was built with, so `.claude/hooks/session-start.sh` runs at session
+  start, upgrades Bun when it is below that floor and installs the
+  dependencies with `--frozen-lockfile` – an older Bun rewrites `bun.lock` to
+  the previous format on the first install. The hook only runs in the remote
+  container (`CLAUDE_CODE_REMOTE`); a local machine manages its own toolchain.
+  Raise the floor in `package.json` and the hook follows.
 - **React Compiler is on.** No manual `useMemo`/`useCallback` for
   optimisation; oxlint ports the whole React Compiler rule set under
   `react/*` (`set-state-in-effect`, `purity`, `immutability`, `refs`,
