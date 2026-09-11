@@ -24,10 +24,15 @@ import { cn } from "@/lib/utils";
  * hollow with a red hairline, like the circles on the map, so a closure is
  * told apart by weight and a winter of them stays light. The current
  * half-month is outlined, so the strip still works without hue, and in the
- * panel every cell explains itself on tap or click as well as on hover –
- * a `Popover`, not a `Tooltip`, for the same reason as the panel's `info`
- * icon (`components/panel/section.tsx`): hover needs a pointer a phone
- * does not have.
+ * panel every cell explains itself on tap, click or hover – a `Popover`
+ * with `openOnHover`, not a `Tooltip`, for the same reason as the panel's
+ * `info` icon (`components/panel/section.tsx`): hover needs a pointer a
+ * phone does not have, and Base UI's hover interaction already stands down
+ * for a touch press on its own. Unlike the `Tooltip` it replaced, a
+ * `Popover` shares no "next one opens instantly" state across the 24
+ * triggers, so scrubbing the strip with a mouse re-waits the open delay at
+ * every cell rather than only the first; accepted for now since reading a
+ * cell's text takes about that long anyway.
  */
 export const CELL: Record<Grade, string> = {
   best: "bg-grade-best",
@@ -73,7 +78,7 @@ export const SeasonStrip = ({
     );
 
   // In the panel every cell is a button: reachable with Tab, its popover
-  // opening on tap or click as well as on focus, so the explanation is not
+  // opening on tap, click, focus or hover, so the explanation is not
   // pointer-only. The strip is then a group rather than an image, since an
   // image role would make the cells presentational and hide them from a
   // screen reader.
@@ -84,6 +89,8 @@ export const SeasonStrip = ({
           {grades.map((grade, i) => (
             <Popover key={PERIODS[i]}>
               <PopoverTrigger
+                delay={400}
+                openOnHover
                 render={
                   <button
                     type="button"
