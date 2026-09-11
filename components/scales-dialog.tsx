@@ -190,7 +190,7 @@ export const ScalesDialog = ({
             Höhen und Auffahrtsdaten sind gerundete Richtwerte. Schönheit,
             Bekanntheit, Schwierigkeit und Verkehr sind redaktionelle
             1–5-Einschätzungen, Art und Merkmale der Straßen sowie die Merkmale
-            der Orte redaktionelle Labels. Der Status je Zeitraum ist eine
+            der Orte sind redaktionelle Labels. Der Status je Zeitraum ist eine
             Heuristik und ersetzt keine amtliche Sperrauskunft. Die App dient
             der groben Routenplanung, nicht der Navigation.
           </p>

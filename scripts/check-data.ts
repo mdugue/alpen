@@ -243,11 +243,12 @@ const checkPasses = (list: Pass[]) => {
 
     warnings.push(...summitWarnings(p));
 
-    // Every type but `pass` is a road summit by definition, so saying it again
-    // is a flag nobody maintains rather than a fact anybody reads.
-    if (p.roadSummit && p.type !== "pass")
+    // Every type but `pass` is a road summit by definition, so `hasRoadSummit`
+    // never reads the flag there. `true` is a fact nobody maintains, and
+    // `false` is worse: it reads as "kein Straßenscheitel" and does nothing.
+    if (p.roadSummit !== undefined && p.type !== "pass")
       warnings.push(
-        `${p.slug}: roadSummit ist bei einer ${ROAD_TYPE[p.type].label} selbstverständlich – Zeile entfernen`,
+        `${p.slug}: roadSummit wird bei einer ${ROAD_TYPE[p.type].label} nicht gelesen – der Scheitel liegt dort immer auf der Straße; Zeile entfernen`,
       );
 
     checkRoutes(p);
