@@ -9,10 +9,10 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { NO_SECTIONS, SECTIONS_KEY, useStored } from "@/lib/app-state";
 
 /**
@@ -22,8 +22,11 @@ import { NO_SECTIONS, SECTIONS_KEY, useStored } from "@/lib/app-state";
  * for the climate should not have to scroll past two elevation profiles first.
  *
  * The title says what the block is and nothing else; where the source or its
- * caveat has to be named, `info` puts one short sentence behind an icon. There
- * is no second kind of disclosure here: the scales dialog is reachable from the
+ * caveat has to be named, `info` puts one short sentence behind an icon,
+ * opened by tap or click rather than hover – a `Popover`, not a `Tooltip`:
+ * the detail panel is the one place a phone reaches this app most, and a
+ * hover-only disclosure is simply unreachable with a finger. There is no
+ * second kind of disclosure here: the scales dialog is reachable from the
  * sidebar footer, so a header never opens one.
  *
  * Which sections are folded is kept per session and shared by all of them
@@ -77,8 +80,8 @@ export const Section = ({
           />
         </CollapsibleTrigger>
         {info && (
-          <Tooltip>
-            <TooltipTrigger
+          <Popover>
+            <PopoverTrigger
               render={
                 <Button
                   aria-label={`${title}: Hinweis zur Quelle`}
@@ -89,9 +92,15 @@ export const Section = ({
               }
             >
               <Info />
-            </TooltipTrigger>
-            <TooltipContent className="max-w-56">{info}</TooltipContent>
-          </Tooltip>
+            </PopoverTrigger>
+            <PopoverContent
+              align="start"
+              className="w-64 text-xs leading-relaxed"
+              side="bottom"
+            >
+              {info}
+            </PopoverContent>
+          </Popover>
         )}
       </h3>
       <CollapsibleContent>{children}</CollapsibleContent>
