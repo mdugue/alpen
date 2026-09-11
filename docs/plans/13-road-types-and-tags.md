@@ -328,14 +328,14 @@ to migrate the hash key with a redirect, not before.
    `reservoir` on Malta, Fedaia, Nivolet, Silvretta, `surface` and `hairpins`
    on the Tremola, `hairpins` on the Stelvio, `carfree` on Tre Cime and
    Nivolet, `tunnels` on Mangart. No route changes, so no API cost.
-5. **First batch of new entries**, at least two per new type, through the
-   `curate-data` loop: Kaunertaler Gletscherstraße and Colle del Sommeiller
-   (`spur`); Zillertaler Höhenstraße and Seiser Alm (`plateau`); Combe Laval,
-   Gorges de la Bourne and Gorges du Cians (`balcony`); Vallée de la Clarée
-   and Val Ferret (`valley`); plus Col du Chaussy via the Lacets de
-   Montvernier and Passo San Boldo as `pass` with `hairpins`. Every entry
-   comes with its four scales judged against its neighbours, per
-   `docs/scales.md`.
+5. **The new entries**, from the candidate list in the appendix, curated
+   in regional batches of 15–25 through the `curate-data` loop – one PR per
+   batch, so each fits one Open-Meteo hour (`data:backfill`) and one review.
+   A candidate that turns out not to belong (road closed, gravel throughout,
+   bikes banned) is struck from the appendix with the reason in the same PR,
+   never silently dropped. Every entry comes with its four scales judged
+   against its neighbours, per `docs/scales.md`, and a `note` that carries
+   what the tags cannot (which days are car-free, whether bikes pay).
 6. **Rename** (own PR, see above).
 
 ### Documentation
@@ -362,8 +362,9 @@ mentions in `CLAUDE.md`/`AGENTS.md` go.
 - The sidebar section reads "Pässe & Straßen"; a `spur` row shows the word,
   a `pass` row does not; tag glyphs show in the row, glyph and word in the
   panel and the popup; the scales dialog explains all fourteen labels.
-- At least nine new non-pass entries are on the map with routes that follow
-  the road, per the `curate-data` look-and-check step.
+- Every row of the appendix is either an entry on the map with a route that
+  follows the road (per the `curate-data` look-and-check step) or struck
+  through with a reason. At least five entries per new type.
 
 ## Risks and open questions
 
@@ -389,3 +390,190 @@ mentions in `CLAUDE.md`/`AGENTS.md` go.
   unknown outside their region; "nur Klassiker" will hide them, which is
   correct. `beauty` is where they score, and the beauty filter is the one to
   use with the new types.
+
+## Appendix: candidate entries
+
+What "popular" means here: a road a road cyclist travels for – Tour, Giro
+and marathon history, a quäldich or climbbybike entry people quote, or a
+fixture of the regional riding – judged the way `fame` is judged, not counted.
+The list is dictated from memory to be pruned, not verified: **elevation is
+approximate** and is measured by `data:locate`; the **prüfen** column names
+what the curation step has to look up before the entry is written. Roads
+whose surface is gravel end to end, roads closed to bikes, and the Jura,
+Vosges and Pyrenees (roadmap item 2) are left out.
+
+### Westalpen · Frankreich
+
+| Name                                     | Typ     | Merkmale          | Höhe   | prüfen                                      |
+| ---------------------------------------- | ------- | ----------------- | ------ | ------------------------------------------- |
+| Col du Granon                            | spur    |                   | ~2 400 |                                             |
+| Val Thorens                              | spur    |                   | ~2 350 | Straßenende am Ort                          |
+| Les Arcs 2000 / Arc 1800                 | spur    |                   | ~2 100 |                                             |
+| Orcières-Merlette                        | spur    |                   | ~1 850 |                                             |
+| Pra-Loup                                 | spur    |                   | ~1 600 |                                             |
+| Col de Sarenne                           | pass    |                   | ~2 000 | Belag Ostseite                              |
+| Col du Télégraphe                        | pass    |                   | ~1 570 | eigener Eintrag oder Auffahrt des Galibier? |
+| Col du Chaussy (Lacets de Montvernier)   | pass    | hairpins          | ~1 530 |                                             |
+| Col du Mollard                           | pass    |                   | ~1 640 |                                             |
+| Col du Pré                               | pass    | reservoir         | ~1 700 |                                             |
+| Col des Aravis                           | pass    |                   | ~1 490 |                                             |
+| Col des Saisies                          | pass    |                   | ~1 650 |                                             |
+| Col de la Forclaz de Montmin             | pass    | panorama          | ~1 160 |                                             |
+| Semnoz (Crêt de Châtillon)               | pass    | panorama          | ~1 700 | Übergang oder Stich                         |
+| Col de Romme                             | pass    |                   | ~1 300 |                                             |
+| Col de la Ramaz                          | pass    |                   | ~1 620 |                                             |
+| Col d'Ornon                              | pass    |                   | ~1 370 |                                             |
+| Col du Noyer                             | pass    | panorama          | ~1 660 |                                             |
+| Col de Montgenèvre                       | pass    |                   | ~1 850 | ganzjährig                                  |
+| Col de Braus                             | pass    | hairpins          | ~1 000 |                                             |
+| Col de Vence                             | pass    |                   | ~960   | ganzjährig                                  |
+| Col de la Madone (Menton)                | pass    |                   | ~930   |                                             |
+| Col Saint-Martin                         | pass    |                   | ~1 500 |                                             |
+| Col de Tende (alte Straße)               | pass    | hairpins, surface | ~1 870 | Belag beider Seiten, Sperrungen             |
+| Col du Rousset                           | pass    | tunnels           | ~1 250 |                                             |
+| Col de la Machine / Combe Laval          | balcony | gorge, tunnels    | ~1 000 | Marker: Combe Laval-Aussicht                |
+| Gorges de la Bourne                      | balcony | gorge             | ~600   | zeitweise gesperrt (Steinschlag)            |
+| Route de Presles                         | balcony | gorge             | ~900   |                                             |
+| Gorges du Nan (Malleval)                 | balcony | gorge             | ~700   |                                             |
+| Gorges du Cians                          | balcony | gorge             | ~1 000 |                                             |
+| Gorges de Daluis                         | balcony | gorge             | ~800   |                                             |
+| Gorges du Verdon – Route des Crêtes      | balcony | gorge, panorama   | ~1 300 | Einbahnrunde                                |
+| Gorges du Verdon – Corniche Sublime      | balcony | gorge, panorama   | ~900   |                                             |
+| Gorges de la Nesque                      | balcony | gorge             | ~730   |                                             |
+| Gorges du Guil                           | balcony | gorge             | ~1 200 | oder Auffahrt Izoard/Agnel                  |
+| Plateau des Glières                      | plateau | panorama          | ~1 450 |                                             |
+| Plateau d'Emparis (Le Chazelet)          | plateau | panorama          | ~1 800 | Asphaltende                                 |
+| Vallée de la Clarée (Névache → Laval)    | valley  | carfree           | ~2 000 | Sperrtage mit Shuttle                       |
+| Vallée du Vénéon → La Bérarde            | valley  |                   | ~1 700 | Straße nach Hochwasser 2024?                |
+| Vallée de l'Ubaye → Maljasset            | valley  |                   | ~1 900 |                                             |
+| Vallée des Chapieux → Ville des Glaciers | valley  |                   | ~1 800 |                                             |
+| Cirque du Fer-à-Cheval                   | valley  |                   | ~1 000 |                                             |
+
+### Westalpen · Piemont und Aostatal
+
+| Name                                     | Typ     | Merkmale                   | Höhe   | prüfen                      |
+| ---------------------------------------- | ------- | -------------------------- | ------ | --------------------------- |
+| Colle del Sommeiller                     | spur    | surface, reservoir         | ~2 990 | Asphaltende, Schotteranteil |
+| Colle dell'Assietta (Strada dei Cannoni) | plateau | surface, panorama, carfree | ~2 470 | Schotter, autofreie Tage    |
+| Sestriere                                | pass    |                            | ~2 040 |                             |
+| Breuil-Cervinia                          | spur    | panorama                   | ~2 000 |                             |
+| Valsavarenche → Pont                     | valley  |                            | ~1 960 |                             |
+| Valle di Cogne → Valnontey               | valley  |                            | ~1 700 |                             |
+| Valgrisenche (Lago di Beauregard)        | valley  | reservoir                  | ~1 800 |                             |
+| Val Ferret (IT) → Arnouvaz               | valley  | carfree                    | ~1 770 | Sperrtage mit Shuttle       |
+| Val Veny                                 | valley  | carfree                    | ~1 700 | Sperrtage mit Shuttle       |
+| Gressoney → Staffal                      | valley  |                            | ~1 800 |                             |
+| Valle Gesso → Terme di Valdieri          | valley  |                            | ~1 370 |                             |
+| Valle Maira → Chiappera                  | valley  |                            | ~1 650 |                             |
+| Alpe Devero                              | spur    |                            | ~1 640 |                             |
+| Val Formazza → Riale                     | valley  | reservoir                  | ~1 730 |                             |
+
+### Zentralalpen · Schweiz und Lombardei
+
+| Name                              | Typ    | Merkmale            | Höhe   | prüfen                          |
+| --------------------------------- | ------ | ------------------- | ------ | ------------------------------- |
+| Col du Sanetsch                   | spur   | reservoir, tunnels  | ~2 250 |                                 |
+| Lac de Moiry                      | spur   | reservoir           | ~2 250 |                                 |
+| Grande Dixence                    | spur   | reservoir           | ~2 140 |                                 |
+| Lac d'Emosson                     | spur   | reservoir           | ~1 970 |                                 |
+| Lac de Mauvoisin                  | spur   | reservoir, tunnels  | ~1 980 |                                 |
+| Mattmark                          | spur   | reservoir           | ~2 200 |                                 |
+| Arolla                            | valley |                     | ~2 000 |                                 |
+| Lötschental → Fafleralp           | valley |                     | ~1 790 |                                 |
+| Sertigtal                         | valley |                     | ~1 860 |                                 |
+| Val Fex                           | valley | carfree             | ~1 950 | Fahrverbot für Autos, Rad frei? |
+| Col de la Forclaz (Martigny)      | pass   |                     | ~1 530 |                                 |
+| Col des Montets                   | pass   |                     | ~1 460 |                                 |
+| Col des Mosses                    | pass   |                     | ~1 450 |                                 |
+| Col du Pillon                     | pass   |                     | ~1 550 |                                 |
+| Col de la Croix                   | pass   |                     | ~1 780 |                                 |
+| Jaunpass                          | pass   |                     | ~1 510 |                                 |
+| Pragelpass                        | pass   | carfree             | ~1 550 | Wochenend-Fahrverbot            |
+| Glaubenbielen                     | pass   |                     | ~1 610 |                                 |
+| Glaubenberg                       | pass   |                     | ~1 540 |                                 |
+| Ibergeregg                        | pass   |                     | ~1 410 |                                 |
+| Schwägalp                         | pass   |                     | ~1 280 |                                 |
+| Forcola di Livigno                | pass   |                     | ~2 320 |                                 |
+| Passo d'Eira                      | pass   |                     | ~2 210 |                                 |
+| Lago di Cancano (Torri di Fraele) | spur   | reservoir, hairpins | ~1 950 |                                 |
+| Passo del Vivione                 | pass   |                     | ~1 830 |                                 |
+| Passo del Maniva                  | pass   |                     | ~1 660 |                                 |
+| Madonna del Ghisallo              | pass   |                     | ~750   |                                 |
+| Muro di Sormano                   | pass   |                     | ~1 120 |                                 |
+| Aprica                            | pass   |                     | ~1 180 | Transitverkehr – lohnt es?      |
+
+### Ostalpen · Österreich, Bayern, Slowenien
+
+| Name                        | Typ     | Merkmale                 | Höhe   | prüfen                                  |
+| --------------------------- | ------- | ------------------------ | ------ | --------------------------------------- |
+| Kaunertaler Gletscherstraße | spur    | glacier, toll, reservoir | ~2 750 |                                         |
+| Schlegeisspeicher           | spur    | reservoir, toll          | ~1 800 |                                         |
+| Zillertaler Höhenstraße     | plateau | panorama, toll           | ~2 020 | Mautstrecke, Rad frei?                  |
+| Stubaital → Mutterberg      | valley  | glacier                  | ~1 750 |                                         |
+| Pitztal → Mittelberg        | valley  | glacier                  | ~1 740 |                                         |
+| Kals → Lucknerhaus          | spur    | panorama                 | ~1 920 |                                         |
+| Sportgastein                | spur    | toll                     | ~1 590 |                                         |
+| Rauris → Kolm-Saigurn       | spur    |                          | ~1 600 | Maut                                    |
+| Loser Panoramastraße        | spur    | panorama, toll           | ~1 600 |                                         |
+| Tauplitzalm Alpenstraße     | spur    | toll                     | ~1 650 |                                         |
+| Hochkar Alpenstraße         | spur    | toll                     | ~1 450 |                                         |
+| Gaisberg                    | spur    | panorama                 | ~1 290 |                                         |
+| Postalm                     | plateau | toll                     | ~1 200 |                                         |
+| Hochtannbergpass            | pass    |                          | ~1 680 |                                         |
+| Furkajoch                   | pass    |                          | ~1 760 |                                         |
+| Faschinajoch                | pass    |                          | ~1 490 |                                         |
+| Staller Sattel              | pass    | tunnels                  | ~2 050 | Einbahnregelung mit Zeitfenstern        |
+| Plöckenpass                 | pass    |                          | ~1 360 |                                         |
+| Nassfeld / Passo Pramollo   | pass    |                          | ~1 530 |                                         |
+| Wurzenpass                  | pass    |                          | ~1 070 |                                         |
+| Loiblpass (alte Passstraße) | pass    | carfree                  | ~1 370 | Fahrverbot über den Pass, Rad frei?     |
+| Seebergsattel               | pass    |                          | ~1 220 |                                         |
+| Kesselberg                  | pass    | hairpins                 | ~860   |                                         |
+| Sudelfeld / Tatzelwurm      | pass    |                          | ~1 100 |                                         |
+| Riedbergpass                | pass    |                          | ~1 410 |                                         |
+| Oberjoch                    | pass    |                          | ~1 180 |                                         |
+| Spitzingsee                 | spur    |                          | ~1 130 |                                         |
+| Pokljuka                    | plateau |                          | ~1 300 |                                         |
+| Sella Nevea                 | pass    |                          | ~1 190 |                                         |
+| Predil                      | pass    |                          | ~1 160 | in `vrsic-predil-runde`, fehlt als Pass |
+
+### Dolomiten, Trentino, Südtirol, Friaul
+
+| Name                                     | Typ     | Merkmale          | Höhe   | prüfen                        |
+| ---------------------------------------- | ------- | ----------------- | ------ | ----------------------------- |
+| Seiser Alm                               | plateau | carfree           | ~1 850 | Fahrverbot 9–17 Uhr, Rad frei |
+| Ritten (Rittner Höhenstraße)             | plateau | panorama          | ~1 250 |                               |
+| Altopiano di Asiago                      | plateau |                   | ~1 000 |                               |
+| Altopiano del Cansiglio                  | plateau |                   | ~1 000 |                               |
+| Lessinia (San Giorgio)                   | plateau |                   | ~1 500 |                               |
+| Cima Grappa                              | pass    | panorama          | ~1 750 | Übergang (mehrere Straßen)    |
+| Monte Bondone                            | pass    | panorama          | ~1 650 |                               |
+| Passo San Boldo                          | pass    | hairpins, tunnels | ~710   |                               |
+| Passo Valles                             | pass    |                   | ~2 030 |                               |
+| Passo Tre Croci                          | pass    |                   | ~1 810 |                               |
+| Passo Cibiana                            | pass    |                   | ~1 530 |                               |
+| Passo Furcia / Furkelpass                | pass    |                   | ~1 760 |                               |
+| Passo di Costalunga / Karerpass          | pass    |                   | ~1 750 |                               |
+| Nigerpass                                | pass    |                   | ~1 690 |                               |
+| Passo Lavazè                             | pass    |                   | ~1 810 |                               |
+| Mendelpass                               | pass    | hairpins          | ~1 360 |                               |
+| Gampenjoch                               | pass    |                   | ~1 520 |                               |
+| Campo Carlo Magno (Madonna di Campiglio) | pass    |                   | ~1 680 |                               |
+| Passo Brocon                             | pass    |                   | ~1 620 |                               |
+| Passo Cereda                             | pass    |                   | ~1 360 |                               |
+| Monte Crostis                            | pass    | surface, panorama | ~1 980 | Schotteranteil                |
+| Strada della Forra (Tremosine)           | pass    | gorge, tunnels    | ~500   | Marker: Pieve                 |
+| Val di Genova                            | valley  | carfree           | ~1 600 | Sommer-Fahrverbot mit Shuttle |
+| Ultental → Weißbrunn                     | valley  | reservoir         | ~1 900 |                               |
+| Martelltal → Zufrittsee                  | valley  | reservoir         | ~2 050 |                               |
+| Schnalstal → Kurzras                     | valley  | glacier           | ~2 010 |                               |
+| Villnößtal → Zanser Alm                  | valley  |                   | ~1 680 |                               |
+
+Existing entries that gain tags in step 4 (no route change): Großglockner,
+Timmelsjoch, Nockalm, Roßfeld, Villacher, Malta, Silvretta, Kitzbüheler
+Horn (`toll`); Nockalm, Roßfeld, Villacher, Silvretta (`panorama`); Ötztaler
+Gletscherstraße (`glacier`, `toll`); Malta, Fedaia, Nivolet, Silvretta,
+Cormet de Roselend (`reservoir`); Tre Cime, Nivolet, Grosse Scheidegg
+(`carfree` – Nivolet on summer Sundays, Scheidegg for all but the bus);
+Gotthard Tremola (`surface`, `hairpins`); Stelvio (`hairpins`); Finestre
+(`surface`); Mangart, Sella … (`tunnels`, to be checked per road).
