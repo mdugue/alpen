@@ -39,18 +39,18 @@ An `instant()` test against a production build requires
 builds do not expose the API:
 
 ```ts filename="next.config.ts" highlight={3,8-10}
-import type { NextConfig } from "next";
+import type { NextConfig } from 'next'
 
-const exposeTestingApi = process.env.EXPOSE_TESTING_API === "1";
+const exposeTestingApi = process.env.EXPOSE_TESTING_API === '1'
 
 const nextConfig: NextConfig = {
   cacheComponents: true,
   experimental: {
     exposeTestingApiInProductionBuild: exposeTestingApi,
   },
-};
+}
 
-export default nextConfig;
+export default nextConfig
 ```
 
 Merge the option into an existing `experimental` object instead of replacing
@@ -148,14 +148,16 @@ Place this file at the repository root or next to the end-to-end configuration:
 - RUN: <focused Playwright command and how it receives BASE_URL>
 - TEST USER: <public/no auth, or account and login>; state: <flags, role, data, locale>
 - DRIFT: <differences that could change the asserted UI>
+- CONTRACTS: <audited source Link, destination, and prefetched UI to preserve>
 - LOOP: <local build → start → test, or push → deploy → test>; agent limits: <...>
 - LIVENESS: <deployed SHA check, or n/a for a local build and start>
 - WALLS: <project-specific obstacles and their resolutions>
 ```
 
-Every field needs a concrete value. `n/a` is valid only with a reason, such as
-`TEST USER: public; no authentication` or `LIVENESS: n/a; local build and
-start`.
+`CONTRACTS` may list more than one audited navigation, but each contract needs
+its own test. Every field needs a concrete value. `n/a` is valid only with a
+reason, such as `TEST USER: public; no authentication` or
+`LIVENESS: n/a; local build and start`.
 
 ## Check the rig before writing the baseline
 

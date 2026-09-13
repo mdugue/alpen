@@ -13,6 +13,12 @@
       "skillPath": "skills/engineering/codebase-design/SKILL.md",
       "computedHash": "5a17552cc1482f1a40124bf4e6c9dbd90ac0dbb47e71c07d47369f9e5f2ae3b5"
     },
+    "improve": {
+      "source": "shadcn/improve",
+      "sourceType": "github",
+      "skillPath": "skills/improve/SKILL.md",
+      "computedHash": "39a9358732dcff385e9e4d3e60b4547856f834e54a58b35e455aa9bd49928c13"
+    },
     "improve-codebase-architecture": {
       "source": "mattpocock/skills",
       "sourceType": "github",
@@ -23,19 +29,19 @@
       "source": "vercel/next.js",
       "sourceType": "github",
       "skillPath": "skills/next-cache-components-optimizer/SKILL.md",
-      "computedHash": "4b3ec1ad99551a98d2fefdaefdb398f88e1621e06fb250f7c06858d5371cb5aa"
+      "computedHash": "60f603cd578249e5bfc6e192032b20bf7e74764554bdd319fdc543be0b563052"
     },
     "next-dev-loop": {
       "source": "vercel/next.js",
       "sourceType": "github",
       "skillPath": "skills/next-dev-loop/SKILL.md",
-      "computedHash": "d2a697a0a0429cad0bb7264644115457f588d4ed1007eeb0bb7f965b1185fa6e"
+      "computedHash": "d604c9440a736b08836fe782e8c0bf6a596d00c4e20e3e245e4a4394efbf74f4"
     },
     "next-partial-prefetching-adoption": {
       "source": "vercel/next.js",
       "sourceType": "github",
       "skillPath": "skills/next-partial-prefetching-adoption/SKILL.md",
-      "computedHash": "0e8e6cfdc21684b7a359ffc5bbe1ba3b7ae7f26a068b9e7dc6b1d0f170c9e98d"
+      "computedHash": "ed8e8106385248d02a9da25f66e5434202b98ae131873abd0a70851e2ad061f5"
     },
     "shadcn": {
       "source": "shadcn-ui/ui",
