@@ -2,7 +2,8 @@
 
 **Status:** in progress – steps 1–4 done except that the `note` of nine of
 the ten existing `toll` entries does not yet say whether bikes pay; 5 under
-way (Westalpen · Frankreich abgearbeitet), 6 (rename) open ·
+way (Westalpen · Frankreich und Dolomiten/Trentino/Südtirol abgearbeitet,
+Monte Crostis offen), 6 (rename) open ·
 **Effort:** L (M for code, the rest is curation) ·
 **Depends on:** 09 (schema), 05 (filters) · **Unblocks:** the sporting roads
 that are not passes – spur roads, balcony roads, high roads, quiet valleys –
@@ -598,35 +599,41 @@ Vallée du Vénéon (seit dem Hochwasser 2024 gesperrt) und der Col de Tende
 
 ### Dolomiten, Trentino, Südtirol, Friaul
 
-| Name                                     | Typ     | Merkmale          | Höhe   | prüfen                        |
-| ---------------------------------------- | ------- | ----------------- | ------ | ----------------------------- |
-| Seiser Alm                               | plateau | carfree           | ~1 850 | Fahrverbot 9–17 Uhr, Rad frei |
-| Ritten (Rittner Höhenstraße)             | plateau | panorama          | ~1 250 |                               |
-| Altopiano di Asiago                      | plateau |                   | ~1 000 |                               |
-| Altopiano del Cansiglio                  | plateau |                   | ~1 000 |                               |
-| Lessinia (San Giorgio)                   | plateau |                   | ~1 500 |                               |
-| Cima Grappa                              | pass    | panorama          | ~1 750 | Übergang (mehrere Straßen)    |
-| Monte Bondone                            | pass    | panorama          | ~1 650 |                               |
-| Passo San Boldo                          | pass    | hairpins, tunnels | ~710   |                               |
-| Passo Valles                             | pass    |                   | ~2 030 |                               |
-| Passo Tre Croci                          | pass    |                   | ~1 810 |                               |
-| Passo Cibiana                            | pass    |                   | ~1 530 |                               |
-| Passo Furcia / Furkelpass                | pass    |                   | ~1 760 |                               |
-| Passo di Costalunga / Karerpass          | pass    |                   | ~1 750 |                               |
-| Nigerpass                                | pass    |                   | ~1 690 |                               |
-| Passo Lavazè                             | pass    |                   | ~1 810 |                               |
-| Mendelpass                               | pass    | hairpins          | ~1 360 |                               |
-| Gampenjoch                               | pass    |                   | ~1 520 |                               |
-| Campo Carlo Magno (Madonna di Campiglio) | pass    |                   | ~1 680 |                               |
-| Passo Brocon                             | pass    |                   | ~1 620 |                               |
-| Passo Cereda                             | pass    |                   | ~1 360 |                               |
-| Monte Crostis                            | pass    | surface, panorama | ~1 980 | Schotteranteil                |
-| Strada della Forra (Tremosine)           | pass    | gorge, tunnels    | ~500   | Marker: Pieve                 |
-| Val di Genova                            | valley  | carfree           | ~1 600 | Sommer-Fahrverbot mit Shuttle |
-| Ultental → Weißbrunn                     | valley  | reservoir         | ~1 900 |                               |
-| Martelltal → Zufrittsee                  | valley  | reservoir         | ~2 050 |                               |
-| Schnalstal → Kurzras                     | valley  | glacier           | ~2 010 |                               |
-| Villnößtal → Zanser Alm                  | valley  |                   | ~1 680 |                               |
+Abgearbeitet (Batch 3) bis auf den Monte Crostis. Höhe und Merkmale sind
+jetzt die kuratierten Werte, nicht mehr die geschätzten; die Region im
+Eintrag folgt dem Gebirge und nicht dieser Überschrift, weshalb Adamello,
+Brenta und Ortler unter `Zentralalpen` und das Schnalstal unter `Ostalpen`
+stehen.
+
+| Name                                     | Typ       | Merkmale          | Höhe | Ergebnis                                                                                                                                 |
+| ---------------------------------------- | --------- | ----------------- | ---- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| ~~Seiser Alm~~                           | `plateau` | carfree, panorama | 1844 | Eintrag `seiser-alm` · das Fahrverbot 9–17 Uhr gilt nur für Autos, Räder dürfen durchgehend – steht in der Notiz                          |
+| ~~Ritten (Rittner Höhenstraße)~~         | `plateau` | panorama          | 1154 | Eintrag `rittner-hochplateau` · Marker Klobenstein, die Strecke läuft von Bozen bis Lengstein                                            |
+| ~~Altopiano di Asiago~~                  | `plateau` | –                 | 1001 | Eintrag `altopiano-di-asiago`                                                                                                            |
+| ~~Altopiano del Cansiglio~~              | `plateau` | –                 | 1020 | Eintrag `altopiano-del-cansiglio`                                                                                                        |
+| ~~Lessinia (San Giorgio)~~               | `plateau` | panorama          | 1498 | Eintrag `lessinia` · kuratierte Länge von 11 auf 12,7 km korrigiert, die geschätzte war 16 % zu kurz                                     |
+| ~~Cima Grappa~~                          | `pass`    | panorama          | 1750 | Eintrag `cima-grappa` · Übergang mit mehreren Straßen, also `pass` mit `roadSummit`                                                      |
+| ~~Monte Bondone~~                        | `pass`    | panorama          | 1651 | Eintrag `monte-bondone`                                                                                                                  |
+| ~~Passo San Boldo~~                      | `pass`    | hairpins, tunnels | 706  | Eintrag `passo-san-boldo`                                                                                                                |
+| ~~Passo Valles~~                         | `pass`    | –                 | 2032 | Eintrag `passo-valles`                                                                                                                   |
+| ~~Passo Tre Croci~~                      | `pass`    | –                 | 1809 | Eintrag `passo-tre-croci`                                                                                                                |
+| ~~Passo Cibiana~~                        | `pass`    | –                 | 1530 | Eintrag `passo-cibiana`                                                                                                                  |
+| ~~Passo Furcia / Furkelpass~~            | `pass`    | –                 | 1789 | Eintrag `passo-furcia`                                                                                                                   |
+| ~~Passo di Costalunga / Karerpass~~      | `pass`    | –                 | 1745 | Eintrag `passo-di-costalunga`                                                                                                            |
+| ~~Nigerpass~~                            | `pass`    | –                 | 1690 | Eintrag `nigerpass`                                                                                                                      |
+| ~~Passo Lavazè~~                         | `pass`    | –                 | 1807 | Eintrag `passo-lavaze`                                                                                                                   |
+| ~~Mendelpass~~                           | `pass`    | hairpins          | 1363 | Eintrag `mendelpass`                                                                                                                     |
+| ~~Gampenjoch~~                           | `pass`    | –                 | 1518 | Eintrag `gampenjoch`                                                                                                                     |
+| ~~Campo Carlo Magno~~                    | `pass`    | –                 | 1682 | Eintrag `campo-carlo-magno`                                                                                                              |
+| ~~Passo Brocon~~                         | `pass`    | –                 | 1616 | Eintrag `passo-brocon`                                                                                                                   |
+| ~~Passo Cereda~~                         | `pass`    | –                 | 1369 | Eintrag `passo-cereda`                                                                                                                   |
+| Monte Crostis                            | pass      | surface, panorama | ~1 980 | **offen:** OSM kennt die Panoramica delle Vette weder als benannte Straße noch als Passknoten, und der Schotteranteil lässt sich aus der Ferne nicht klären. Bleibt für einen späteren Batch stehen, zusammen mit Friaul. |
+| ~~Strada della Forra (Tremosine)~~       | `pass`    | gorge, tunnels    | 414  | Eintrag `strada-della-forra` · Marker Pieve, `roadSummit`; gemessen 411 m statt der geschätzten 500                                      |
+| ~~Val di Genova~~                        | `valley`  | carfree           | 1580 | Eintrag `val-di-genova`                                                                                                                  |
+| ~~Ultental → Weißbrunn~~                 | `valley`  | reservoir         | 1872 | Eintrag `ultental-weissbrunn`                                                                                                            |
+| ~~Martelltal → Zufrittsee~~              | `valley`  | reservoir         | 2050 | Eintrag `martelltal` · die Strecke endet am Parkplatz der Enzianhütte oberhalb des Sees                                                  |
+| ~~Schnalstal → Kurzras~~                 | `valley`  | glacier           | 2011 | Eintrag `schnalstal-kurzras` · kuratierte Länge von 32 auf 26,5 km korrigiert, die geschätzte war 17 % zu lang                           |
+| ~~Villnößtal → Zanser Alm~~              | `valley`  | –                 | 1680 | Eintrag `villnoesstal`                                                                                                                   |
 
 Existing entries that gain tags in step 4 (no route change): Großglockner,
 Timmelsjoch, Nockalm, Roßfeld, Villacher, Malta, Silvretta, Kitzbüheler
