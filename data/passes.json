@@ -6307,5 +6307,563 @@
     "km": 20.1
    }
   ]
+ },
+ {
+  "slug": "col-de-la-forclaz-martigny",
+  "name": "Col de la Forclaz",
+  "type": "pass",
+  "aliases": [
+   "Forclaz Martigny"
+  ],
+  "country": "CH",
+  "region": "Zentralalpen",
+  "lat": 46.0577,
+  "lon": 7.0013,
+  "elevation": 1527,
+  "classicAscent": "13,0 km, 7,5 % ab Martigny",
+  "beauty": 3,
+  "fame": 3,
+  "difficulty": 4,
+  "traffic": 4,
+  "season": null,
+  "note": "Der Weg von Martigny nach Chamonix, gleichmäßig steil durch Weinberge und dann Wald. Ganzjährig geräumt und als Hauptverbindung ins Trienttal entsprechend befahren; oft als Zubringer zum Col des Montets gefahren.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.1031,
+     "lon": 7.0727
+    },
+    "label": "Martigny (Nord)"
+   }
+  ]
+ },
+ {
+  "slug": "col-des-montets",
+  "name": "Col des Montets",
+  "type": "pass",
+  "country": "FR",
+  "region": "Zentralalpen",
+  "lat": 46.0039,
+  "lon": 6.9236,
+  "elevation": 1461,
+  "classicAscent": "5,0 km, 4,5 % ab Argentière",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 2,
+  "traffic": 3,
+  "season": null,
+  "note": "Der flache Riegel zwischen Chamonix-Tal und Vallorcine, direkt unter den Aiguilles Rouges. Kurz und nie steil; im Winter bei Lawinengefahr zeitweise gesperrt.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 45.9838,
+     "lon": 6.9299
+    },
+    "label": "Argentière (Süd)"
+   }
+  ]
+ },
+ {
+  "slug": "col-des-mosses",
+  "name": "Col des Mosses",
+  "type": "pass",
+  "country": "CH",
+  "region": "Zentralalpen",
+  "lat": 46.399,
+  "lon": 7.1026,
+  "elevation": 1445,
+  "classicAscent": "13,0 km, 6,0 % ab Le Sépey",
+  "beauty": 3,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 3,
+  "season": null,
+  "note": "Die breite Verbindung vom Rhonetal ins Pays-d'Enhaut, oben ein Hochmoor statt einer Passhöhe. Ganzjährig geräumt, gleichmäßig und ohne Überraschungen.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.3611,
+     "lon": 7.0512
+    },
+    "label": "Le Sépey (Süd)"
+   }
+  ]
+ },
+ {
+  "slug": "col-du-pillon",
+  "name": "Col du Pillon",
+  "type": "pass",
+  "country": "CH",
+  "region": "Zentralalpen",
+  "lat": 46.3534,
+  "lon": 7.2046,
+  "elevation": 1546,
+  "classicAscent": "6,0 km, 6,0 % ab Les Diablerets",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 2,
+  "traffic": 3,
+  "season": null,
+  "note": "Von Les Diablerets nach Gsteig hinüber, mit dem Gletscher des Diablerets über der Straße. Kurz, ganzjährig geräumt und meist mit dem Col de la Croix zur Runde gehängt.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.3511,
+     "lon": 7.1566
+    },
+    "label": "Les Diablerets (West)"
+   }
+  ]
+ },
+ {
+  "slug": "col-de-la-croix",
+  "name": "Col de la Croix",
+  "type": "pass",
+  "country": "CH",
+  "region": "Zentralalpen",
+  "lat": 46.3247,
+  "lon": 7.1267,
+  "elevation": 1776,
+  "classicAscent": "8,0 km, 8,0 % ab Villars-sur-Ollon",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 4,
+  "traffic": 1,
+  "season": {
+   "opens": 5,
+   "closes": 11,
+   "maintained": false
+  },
+  "note": "Schmale, steile Verbindung von Villars nach Les Diablerets, im Winter gesperrt. Oben Alpweiden mit Blick auf den Muveran; deutlich ruhiger als der parallele Weg durchs Tal.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.2978,
+     "lon": 7.0553
+    },
+    "label": "Villars-sur-Ollon (West)"
+   }
+  ]
+ },
+ {
+  "slug": "jaunpass",
+  "name": "Jaunpass",
+  "type": "pass",
+  "aliases": [
+   "Col du Jaun"
+  ],
+  "country": "CH",
+  "region": "Zentralalpen",
+  "lat": 46.5922,
+  "lon": 7.3391,
+  "elevation": 1508,
+  "classicAscent": "9,0 km, 7,0 % ab Boltigen",
+  "beauty": 3,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 2,
+  "season": null,
+  "note": "Vom Simmental ins Greyerzerland, die Sprachgrenze liegt auf der anderen Seite. Gleichmäßig steil durch Wald und Weiden, ganzjährig geräumt und wenig befahren.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.6295,
+     "lon": 7.3908
+    },
+    "label": "Boltigen (Ost)"
+   }
+  ]
+ },
+ {
+  "slug": "pragelpass",
+  "name": "Pragelpass",
+  "type": "pass",
+  "tags": [
+   "carfree"
+  ],
+  "country": "CH",
+  "region": "Zentralalpen",
+  "lat": 46.9994,
+  "lon": 8.8695,
+  "elevation": 1548,
+  "classicAscent": "14,0 km, 7,0 % ab Muotathal",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 4,
+  "traffic": 1,
+  "season": {
+   "opens": 5.5,
+   "closes": 10.5,
+   "maintained": false
+  },
+  "note": "Zwischen Muotatal und Klöntal, für Autos an Sonn- und Feiertagen gesperrt – dann gehört die Straße den Rädern. Schmal, steil und mit dem Klöntalersee als Belohnung auf der Ostseite.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.9747,
+     "lon": 8.7658
+    },
+    "label": "Muotathal (West)"
+   }
+  ]
+ },
+ {
+  "slug": "glaubenbielen",
+  "name": "Glaubenbielen",
+  "type": "pass",
+  "aliases": [
+   "Panoramastrasse Glaubenbielen"
+  ],
+  "country": "CH",
+  "region": "Zentralalpen",
+  "lat": 46.8188,
+  "lon": 8.0932,
+  "elevation": 1611,
+  "classicAscent": "13,0 km, 8,0 % ab Giswil",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 4,
+  "traffic": 1,
+  "season": {
+   "opens": 5,
+   "closes": 11,
+   "maintained": false
+  },
+  "note": "Von Giswil am Sarnersee hinauf nach Sörenberg, lang und gleichmäßig steil. Oben weite Alpweiden unter dem Brienzer Rothorn; im Winter gesperrt.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.8382,
+     "lon": 8.188
+    },
+    "label": "Giswil (Ost)"
+   }
+  ]
+ },
+ {
+  "slug": "glaubenberg",
+  "name": "Glaubenberg",
+  "type": "pass",
+  "country": "CH",
+  "region": "Zentralalpen",
+  "lat": 46.8925,
+  "lon": 8.1077,
+  "elevation": 1540,
+  "classicAscent": "16,0 km, 6,5 % ab Sarnen",
+  "beauty": 3,
+  "fame": 2,
+  "difficulty": 4,
+  "traffic": 1,
+  "season": {
+   "opens": 5,
+   "closes": 11,
+   "maintained": false
+  },
+  "note": "Der stille Nachbar des Glaubenbielen, von Sarnen ins Entlebuch. Lange Rampen durch Wald, oben Moorlandschaft; im Winter gesperrt und auch im Sommer kaum befahren.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.8957,
+     "lon": 8.2461
+    },
+    "label": "Sarnen (Ost)"
+   }
+  ]
+ },
+ {
+  "slug": "ibergeregg",
+  "name": "Ibergeregg",
+  "type": "pass",
+  "country": "CH",
+  "region": "Zentralalpen",
+  "lat": 47.0174,
+  "lon": 8.7332,
+  "elevation": 1406,
+  "classicAscent": "9,0 km, 8,0 % ab Oberiberg",
+  "beauty": 3,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 2,
+  "season": null,
+  "note": "Zwischen Schwyz und dem Sihltal, steil und kurz. Ganzjährig geräumt; oben der Blick auf die Mythen, die den ganzen Anstieg über im Rücken stehen.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 47.0392,
+     "lon": 8.7834
+    },
+    "label": "Oberiberg (Ost)"
+   }
+  ]
+ },
+ {
+  "slug": "schwaegalp",
+  "name": "Schwägalp",
+  "type": "pass",
+  "country": "CH",
+  "region": "Zentralalpen",
+  "lat": 47.2535,
+  "lon": 9.3037,
+  "elevation": 1300,
+  "classicAscent": "10,0 km, 6,0 % ab Urnäsch",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 2,
+  "season": null,
+  "note": "Die Passhöhe liegt direkt unter der Nordwand des Säntis, was den Anstieg trägt – die Wand steht die letzten Kilometer über der Straße. Ganzjährig geräumt, Ausgangspunkt der Säntis-Bahn.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 47.3179,
+     "lon": 9.2835
+    },
+    "label": "Urnäsch (Nord)"
+   }
+  ]
+ },
+ {
+  "slug": "forcola-di-livigno",
+  "name": "Forcola di Livigno",
+  "type": "pass",
+  "country": "CH/IT",
+  "region": "Zentralalpen",
+  "lat": 46.4409,
+  "lon": 10.0562,
+  "elevation": 2315,
+  "classicAscent": "14,0 km, 5,0 % ab Livigno",
+  "beauty": 4,
+  "fame": 3,
+  "difficulty": 3,
+  "traffic": 2,
+  "season": {
+   "opens": 6,
+   "closes": 10.5,
+   "maintained": false
+  },
+  "note": "Der Grenzübergang zwischen Livigno und dem Berninagebiet, meist als Teil der Runde über Bernina und Foscagno gefahren. Hoch, kahl und im Winter gesperrt.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.5382,
+     "lon": 10.136
+    },
+    "label": "Livigno (Nord)"
+   }
+  ]
+ },
+ {
+  "slug": "passo-d-eira",
+  "name": "Passo d'Eira",
+  "type": "pass",
+  "country": "IT",
+  "region": "Zentralalpen",
+  "lat": 46.5383,
+  "lon": 10.1664,
+  "elevation": 2208,
+  "classicAscent": "4,0 km, 6,0 % ab Livigno",
+  "beauty": 3,
+  "fame": 2,
+  "difficulty": 2,
+  "traffic": 3,
+  "season": null,
+  "note": "Der kleinere der beiden Pässe, die Livigno vom Veltlin trennen – direkt vor dem Foscagno. Kurz und meist nur als Durchgang gefahren; wegen des zollfreien Livigno gut befahren.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.5382,
+     "lon": 10.136
+    },
+    "label": "Livigno (West)"
+   }
+  ]
+ },
+ {
+  "slug": "passo-del-vivione",
+  "name": "Passo del Vivione",
+  "type": "pass",
+  "country": "IT",
+  "region": "Zentralalpen",
+  "lat": 46.0366,
+  "lon": 10.1993,
+  "elevation": 1828,
+  "classicAscent": "12,0 km, 7,0 % ab Schilpario",
+  "beauty": 5,
+  "fame": 2,
+  "difficulty": 4,
+  "traffic": 1,
+  "season": {
+   "opens": 5.5,
+   "closes": 10.5,
+   "maintained": false
+  },
+  "note": "Eine der stillsten Straßen der Bergamasker Alpen, schmal und ohne Leitplanken über dem Val di Scalve. Im Winter gesperrt; wer Verkehr sucht, ist hier falsch.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.0094,
+     "lon": 10.1541
+    },
+    "label": "Schilpario (West)"
+   }
+  ]
+ },
+ {
+  "slug": "passo-del-maniva",
+  "name": "Passo del Maniva",
+  "type": "pass",
+  "aliases": [
+   "Giogo del Maniva"
+  ],
+  "country": "IT",
+  "region": "Zentralalpen",
+  "lat": 45.8226,
+  "lon": 10.4101,
+  "elevation": 1664,
+  "classicAscent": "20,0 km, 6,0 % ab Bagolino",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 4,
+  "traffic": 1,
+  "season": {
+   "opens": 5.5,
+   "closes": 10.5,
+   "maintained": false
+  },
+  "note": "Lange Auffahrt aus dem Val Trompia oder von Bagolino, oben eine Kammstraße mit Blick bis zum Gardasee. Im Winter gesperrt, im Sommer sehr ruhig.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 45.8236,
+     "lon": 10.4627
+    },
+    "label": "Bagolino (Ost)"
+   }
+  ]
+ },
+ {
+  "slug": "madonna-del-ghisallo",
+  "name": "Madonna del Ghisallo",
+  "type": "pass",
+  "country": "IT",
+  "region": "Zentralalpen",
+  "lat": 45.9237,
+  "lon": 9.2672,
+  "elevation": 754,
+  "classicAscent": "10,0 km, 5,5 % ab Bellagio",
+  "beauty": 4,
+  "fame": 5,
+  "difficulty": 3,
+  "traffic": 3,
+  "season": null,
+  "note": "Die Schutzpatronin der Radfahrer steht oben in der Kapelle, daneben das Radmuseum – kein hoher Pass, aber der berühmteste Anstieg der Lombardei. Von Bellagio steil über dem Comer See, Fixpunkt des Giro di Lombardia.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 45.9873,
+     "lon": 9.2613
+    },
+    "label": "Bellagio (Nord)"
+   }
+  ]
+ },
+ {
+  "slug": "muro-di-sormano",
+  "name": "Muro di Sormano",
+  "type": "pass",
+  "aliases": [
+   "Colma di Sormano"
+  ],
+  "country": "IT",
+  "region": "Zentralalpen",
+  "lat": 45.883,
+  "lon": 9.229,
+  "elevation": 1121,
+  "classicAscent": "2,0 km, 15,0 % ab Sormano",
+  "beauty": 3,
+  "fame": 5,
+  "difficulty": 5,
+  "traffic": 1,
+  "season": null,
+  "note": "Zwei Kilometer mit durchschnittlich 15 % und Rampen bis 27 %, die Steigungsprozente stehen auf dem Asphalt. 1962 aus dem Giro di Lombardia genommen, weil kaum jemand fahrend hinaufkam; seit 2012 wieder im Rennen.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 45.8778,
+     "lon": 9.2487
+    },
+    "label": "Sormano (Ost)"
+   }
+  ]
+ },
+ {
+  "slug": "passo-dell-aprica",
+  "name": "Passo dell'Aprica",
+  "type": "pass",
+  "country": "IT",
+  "region": "Zentralalpen",
+  "lat": 46.1543,
+  "lon": 10.1542,
+  "elevation": 1172,
+  "classicAscent": "14,0 km, 4,0 % ab Tresenda",
+  "beauty": 2,
+  "fame": 3,
+  "difficulty": 3,
+  "traffic": 4,
+  "season": null,
+  "note": "Die Hauptverbindung zwischen Veltlin und Camonica-Tal, entsprechend viel Verkehr – der Pass steht regelmäßig im Giro, meist als Zubringer zu Mortirolo oder Gavia. Gleichmäßig und nie steil.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.1633,
+     "lon": 10.0862
+    },
+    "label": "Tresenda (West)"
+   },
+   {
+    "from": {
+     "lat": 46.1806,
+     "lon": 10.3333
+    },
+    "label": "Edolo (Ost)"
+   }
+  ]
+ },
+ {
+  "slug": "col-du-sanetsch",
+  "name": "Col du Sanetsch",
+  "type": "spur",
+  "tags": [
+   "reservoir",
+   "tunnels"
+  ],
+  "aliases": [
+   "Sanetschpass"
+  ],
+  "country": "CH",
+  "region": "Zentralalpen",
+  "lat": 46.3316,
+  "lon": 7.2862,
+  "elevation": 2252,
+  "classicAscent": "26,0 km, 6,5 % ab Sion",
+  "beauty": 5,
+  "fame": 3,
+  "difficulty": 5,
+  "traffic": 1,
+  "season": {
+   "opens": 6,
+   "closes": 10.5,
+   "maintained": false
+  },
+  "note": "Von Sion über 1 700 Höhenmeter am Stück bis an den Stausee – hinunter geht es nur dieselbe Straße zurück, oder mit der Seilbahn nach Gsteig. Mehrere unbeleuchtete Tunnel, oben eine Karstlandschaft ohne Bäume.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.2312,
+     "lon": 7.3589
+    },
+    "label": "Sion"
+   }
+  ]
  }
 ]

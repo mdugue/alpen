@@ -530,37 +530,44 @@ Vallée du Vénéon (seit dem Hochwasser 2024 gesperrt) und der Col de Tende
 
 ### Zentralalpen · Schweiz und Lombardei
 
-| Name                              | Typ    | Merkmale            | Höhe   | prüfen                          |
-| --------------------------------- | ------ | ------------------- | ------ | ------------------------------- |
-| Col du Sanetsch                   | spur   | reservoir, tunnels  | ~2 250 |                                 |
-| Lac de Moiry                      | spur   | reservoir           | ~2 250 |                                 |
-| Grande Dixence                    | spur   | reservoir           | ~2 140 |                                 |
-| Lac d'Emosson                     | spur   | reservoir           | ~1 970 |                                 |
-| Lac de Mauvoisin                  | spur   | reservoir, tunnels  | ~1 980 |                                 |
-| Mattmark                          | spur   | reservoir           | ~2 200 |                                 |
-| Arolla                            | valley |                     | ~2 000 |                                 |
-| Lötschental → Fafleralp           | valley |                     | ~1 790 |                                 |
-| Sertigtal                         | valley |                     | ~1 860 |                                 |
-| Val Fex                           | valley | carfree             | ~1 950 | Fahrverbot für Autos, Rad frei? |
-| Col de la Forclaz (Martigny)      | pass   |                     | ~1 530 |                                 |
-| Col des Montets                   | pass   |                     | ~1 460 |                                 |
-| Col des Mosses                    | pass   |                     | ~1 450 |                                 |
-| Col du Pillon                     | pass   |                     | ~1 550 |                                 |
-| Col de la Croix                   | pass   |                     | ~1 780 |                                 |
-| Jaunpass                          | pass   |                     | ~1 510 |                                 |
-| Pragelpass                        | pass   | carfree             | ~1 550 | Wochenend-Fahrverbot            |
-| Glaubenbielen                     | pass   |                     | ~1 610 |                                 |
-| Glaubenberg                       | pass   |                     | ~1 540 |                                 |
-| Ibergeregg                        | pass   |                     | ~1 410 |                                 |
-| Schwägalp                         | pass   |                     | ~1 280 |                                 |
-| Forcola di Livigno                | pass   |                     | ~2 320 |                                 |
-| Passo d'Eira                      | pass   |                     | ~2 210 |                                 |
-| Lago di Cancano (Torri di Fraele) | spur   | reservoir, hairpins | ~1 950 |                                 |
-| Passo del Vivione                 | pass   |                     | ~1 830 |                                 |
-| Passo del Maniva                  | pass   |                     | ~1 660 |                                 |
-| Madonna del Ghisallo              | pass   |                     | ~750   |                                 |
-| Muro di Sormano                   | pass   |                     | ~1 120 |                                 |
-| Aprica                            | pass   |                     | ~1 180 | Transitverkehr – lohnt es?      |
+Batch 5, die Pässe sind abgearbeitet: neunzehn Einträge, alle Marker aus
+OSM-`mountain_pass`-Knoten und keiner weiter als 27 m von der DEM-Höhe
+entfernt. Die zehn Stauseestraßen und Talstraßen der Sektion stehen noch aus;
+sie brauchen dieselbe Vorprüfung wie im Ostalpen-Batch, weil ein Stausee-Ende
+regelmäßig auf `service` oder `track` liegt und das Rennrad-Profil dort nicht
+hinfährt.
+
+| Name                              | Typ    | Merkmale            | Höhe   | Ergebnis                                                                                                                                       |
+| --------------------------------- | ------ | ------------------- | ------ | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| ~~Col de la Forclaz (Martigny)~~  | `pass` | –                   | 1527   | Eintrag `col-de-la-forclaz-martigny`                                                                                                           |
+| ~~Col des Montets~~               | `pass` | –                   | 1461   | Eintrag `col-des-montets`                                                                                                                      |
+| ~~Col des Mosses~~                | `pass` | –                   | 1445   | Eintrag `col-des-mosses`                                                                                                                       |
+| ~~Col du Pillon~~                 | `pass` | –                   | 1546   | Eintrag `col-du-pillon`                                                                                                                        |
+| ~~Col de la Croix~~               | `pass` | –                   | 1776   | Eintrag `col-de-la-croix`                                                                                                                      |
+| ~~Jaunpass~~                      | `pass` | –                   | 1508   | Eintrag `jaunpass`                                                                                                                             |
+| ~~Pragelpass~~                    | `pass` | carfree             | 1548   | Eintrag `pragelpass` · Fahrverbot an Sonn- und Feiertagen, steht in der Notiz                                                                  |
+| ~~Glaubenbielen~~                 | `pass` | –                   | 1611   | Eintrag `glaubenbielen`                                                                                                                        |
+| ~~Glaubenberg~~                   | `pass` | –                   | 1540   | Eintrag `glaubenberg`                                                                                                                          |
+| ~~Ibergeregg~~                    | `pass` | –                   | 1406   | Eintrag `ibergeregg`                                                                                                                           |
+| ~~Schwägalp~~                     | `pass` | –                   | 1300   | Eintrag `schwaegalp`                                                                                                                           |
+| ~~Forcola di Livigno~~            | `pass` | –                   | 2315   | Eintrag `forcola-di-livigno`                                                                                                                   |
+| ~~Passo d'Eira~~                  | `pass` | –                   | 2208   | Eintrag `passo-d-eira`                                                                                                                         |
+| ~~Passo del Vivione~~             | `pass` | –                   | 1828   | Eintrag `passo-del-vivione`                                                                                                                    |
+| ~~Passo del Maniva~~              | `pass` | –                   | 1664   | Eintrag `passo-del-maniva`                                                                                                                     |
+| ~~Madonna del Ghisallo~~          | `pass` | –                   | 754    | Eintrag `madonna-del-ghisallo`                                                                                                                 |
+| ~~Muro di Sormano~~               | `pass` | –                   | 1121   | Eintrag `muro-di-sormano`                                                                                                                      |
+| ~~Aprica~~                        | `pass` | –                   | 1172   | Eintrag `passo-dell-aprica` · trotz Transitverkehr aufgenommen: Giro-Stammgast und Zubringer zu Mortirolo und Gavia, `traffic` 4 sagt den Rest |
+| ~~Col du Sanetsch~~               | `spur` | reservoir, tunnels  | 2252   | Eintrag `col-du-sanetsch`                                                                                                                      |
+| Lac de Moiry                      | spur   | reservoir           | ~2 250 | **offen**                                                                                                                                      |
+| Grande Dixence                    | spur   | reservoir           | ~2 140 | **offen**                                                                                                                                      |
+| Lac d'Emosson                     | spur   | reservoir           | ~1 970 | **offen**                                                                                                                                      |
+| Lac de Mauvoisin                  | spur   | reservoir, tunnels  | ~1 980 | **offen**                                                                                                                                      |
+| Mattmark                          | spur   | reservoir           | ~2 200 | **offen**                                                                                                                                      |
+| Lago di Cancano (Torri di Fraele) | spur   | reservoir, hairpins | ~1 950 | **offen**                                                                                                                                      |
+| Arolla                            | valley | –                   | ~2 000 | **offen**                                                                                                                                      |
+| Lötschental → Fafleralp           | valley | –                   | ~1 790 | **offen**                                                                                                                                      |
+| Sertigtal                         | valley | –                   | ~1 860 | **offen**                                                                                                                                      |
+| Val Fex                           | valley | carfree             | ~1 950 | **offen** · Fahrverbot für Autos, Rad frei?                                                                                                    |
 
 ### Ostalpen · Österreich, Bayern, Slowenien
 
