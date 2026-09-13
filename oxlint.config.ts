@@ -28,6 +28,7 @@ export default defineConfig({
     // second name matches none of the `.agents/skills/**` overrides below, so
     // the same file fails rules the original is exempt from. Lint the real
     // path; the link is the same bytes.
+    ".agents/skills",
     ".claude/skills",
   ],
   jsPlugins: jsPlugins.jsPlugins,

@@ -14,10 +14,16 @@ export default defineConfig({
     // lost on the next update anyway.
     ".agents/skills/code-review",
     ".agents/skills/codebase-design",
+    ".agents/skills/improve",
     ".agents/skills/improve-codebase-architecture",
+    ".agents/skills/next-cache-components-optimizer",
+    ".agents/skills/next-dev-loop",
+    ".agents/skills/next-partial-prefetching-adoption",
     ".agents/skills/shadcn",
     ".agents/skills/vercel-*",
     ".agents/skills/web-design-guidelines",
+    // Local, git-ignored personal settings; never worth reformatting.
+    ".claude/settings.local.json",
     // Curated content, reviewed with `bun run data:check`; the formatter must
     // not silently reindent it.
     "data",
