@@ -5554,5 +5554,612 @@
     "km": 20
    }
   ]
+ },
+ {
+  "slug": "hochtannbergpass",
+  "name": "Hochtannbergpass",
+  "type": "pass",
+  "country": "AT",
+  "region": "Ostalpen",
+  "lat": 47.2695,
+  "lon": 10.1305,
+  "elevation": 1676,
+  "classicAscent": "6,0 km, 6,5 % ab Schröcken",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 2,
+  "traffic": 3,
+  "season": null,
+  "note": "Der Übergang vom Bregenzerwald ins Lechtal, zwischen Widderstein und Braunarlspitze. Ganzjährig geräumt, weil Warth und Schröcken sonst keine Verbindung hätten – die Lawinenhänge darüber sind der Grund für die Galerien.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 47.2579,
+     "lon": 10.0925
+    },
+    "label": "Schröcken (West)"
+   },
+   {
+    "from": {
+     "lat": 47.2582,
+     "lon": 10.1833
+    },
+    "label": "Warth (Ost)"
+   }
+  ]
+ },
+ {
+  "slug": "furkajoch",
+  "name": "Furkajoch",
+  "type": "pass",
+  "country": "AT",
+  "region": "Ostalpen",
+  "lat": 47.2666,
+  "lon": 9.8329,
+  "elevation": 1758,
+  "classicAscent": "8,0 km, 7,5 % ab Damüls",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 1,
+  "season": {
+   "opens": 5,
+   "closes": 11,
+   "maintained": false
+  },
+  "note": "Schmale, kaum befahrene Verbindung vom Laternsertal nach Damüls, im Winter gesperrt. Oben eine Wiesenkuppe mit Blick auf Rätikon und Arlberg; die Westrampe ist eng und stellenweise ohne Leitplanke.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 47.2804,
+     "lon": 9.891
+    },
+    "label": "Damüls (Ost)"
+   }
+  ]
+ },
+ {
+  "slug": "faschinajoch",
+  "name": "Faschinajoch",
+  "type": "pass",
+  "country": "AT",
+  "region": "Ostalpen",
+  "lat": 47.2717,
+  "lon": 9.9073,
+  "elevation": 1486,
+  "classicAscent": "4,5 km, 7,5 % ab Fontanella",
+  "beauty": 3,
+  "fame": 2,
+  "difficulty": 2,
+  "traffic": 2,
+  "season": null,
+  "note": "Kurzer Übergang vom Großen Walsertal nach Damüls, meist als Auftakt zum Furkajoch gefahren. Ganzjährig geräumt und der einzige Winterzugang nach Damüls.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 47.2475,
+     "lon": 9.9088
+    },
+    "label": "Fontanella (Süd)"
+   },
+   {
+    "from": {
+     "lat": 47.2804,
+     "lon": 9.891
+    },
+    "label": "Damüls (West)"
+   }
+  ]
+ },
+ {
+  "slug": "staller-sattel",
+  "name": "Staller Sattel",
+  "type": "pass",
+  "aliases": [
+   "Passo Stalle"
+  ],
+  "country": "AT/IT",
+  "region": "Ostalpen",
+  "lat": 46.8877,
+  "lon": 12.1997,
+  "elevation": 2052,
+  "classicAscent": "10,0 km, 6,5 % ab Antholz Mittertal",
+  "beauty": 5,
+  "fame": 3,
+  "difficulty": 3,
+  "traffic": 1,
+  "season": {
+   "opens": 6,
+   "closes": 10.5,
+   "maintained": false
+  },
+  "note": "Über dem Antholzer See vom Pustertal ins Defereggental, hoch und sehr ruhig. Die Südrampe ist einspurig und im Einbahnbetrieb geregelt: pro Stunde eine Richtung, jeweils zur halben Stunde gewechselt – die Zeitfenster vor der Fahrt prüfen.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.8592,
+     "lon": 12.0994
+    },
+    "label": "Antholz Mittertal (Süd)"
+   },
+   {
+    "from": {
+     "lat": 46.9162,
+     "lon": 12.26
+    },
+    "label": "Erlsbach (Nord)"
+   }
+  ]
+ },
+ {
+  "slug": "ploeckenpass",
+  "name": "Plöckenpass",
+  "type": "pass",
+  "aliases": [
+   "Passo di Monte Croce Carnico"
+  ],
+  "country": "AT/IT",
+  "region": "Ostalpen",
+  "lat": 46.6036,
+  "lon": 12.9451,
+  "elevation": 1360,
+  "classicAscent": "12,0 km, 5,5 % ab Kötschach-Mauthen",
+  "beauty": 3,
+  "fame": 3,
+  "difficulty": 3,
+  "traffic": 3,
+  "season": null,
+  "note": "Die alte Römerverbindung von Kärnten nach Karnien, oben Freilichtmuseum des Gebirgskriegs. Die Südrampe zieht in den letzten Kilometern auf über 10 % an; ganzjährig geräumt, bei Steinschlag zeitweise gesperrt.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.6785,
+     "lon": 13.0044
+    },
+    "label": "Kötschach-Mauthen (Nord)"
+   },
+   {
+    "from": {
+     "lat": 46.5308,
+     "lon": 13.0182
+    },
+    "label": "Paluzza (Süd)"
+   }
+  ]
+ },
+ {
+  "slug": "nassfeldpass",
+  "name": "Nassfeldpass",
+  "type": "pass",
+  "aliases": [
+   "Passo di Pramollo"
+  ],
+  "country": "AT/IT",
+  "region": "Ostalpen",
+  "lat": 46.56,
+  "lon": 13.2756,
+  "elevation": 1530,
+  "classicAscent": "10,5 km, 9,0 % ab Tröpolach",
+  "beauty": 3,
+  "fame": 3,
+  "difficulty": 4,
+  "traffic": 2,
+  "season": null,
+  "note": "Die Nordrampe ab Tröpolach ist eine der härtesten Auffahrten Kärntens, mit Rampen über 17 % im unteren Teil. Oben ein Skiort auf der Grenze; ganzjährig geräumt.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.6129,
+     "lon": 13.2782
+    },
+    "label": "Tröpolach (Nord)"
+   },
+   {
+    "from": {
+     "lat": 46.5065,
+     "lon": 13.3064
+    },
+    "label": "Pontebba (Süd)"
+   }
+  ]
+ },
+ {
+  "slug": "wurzenpass",
+  "name": "Wurzenpass",
+  "type": "pass",
+  "aliases": [
+   "Korensko sedlo"
+  ],
+  "country": "AT/SI",
+  "region": "Ostalpen",
+  "lat": 46.5233,
+  "lon": 13.7516,
+  "elevation": 1071,
+  "classicAscent": "6,5 km, 9,5 % ab Riegersdorf",
+  "beauty": 2,
+  "fame": 3,
+  "difficulty": 4,
+  "traffic": 3,
+  "season": null,
+  "note": "Kurz, brutal und mit Lkw-Verkehr: die Nordrampe hat auf dem letzten Kilometer 18 %. Grenzübergang nach Slowenien, ganzjährig offen – der Ruf kommt von der Steigung, nicht von der Landschaft.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.5491,
+     "lon": 13.7806
+    },
+    "label": "Riegersdorf (Nord)"
+   },
+   {
+    "from": {
+     "lat": 46.4851,
+     "lon": 13.7844
+    },
+    "label": "Kranjska Gora (Süd)"
+   }
+  ]
+ },
+ {
+  "slug": "loiblpass",
+  "name": "Loiblpass",
+  "type": "pass",
+  "aliases": [
+   "Ljubelj"
+  ],
+  "country": "AT/SI",
+  "region": "Ostalpen",
+  "lat": 46.4392,
+  "lon": 14.2667,
+  "elevation": 1367,
+  "classicAscent": "9,5 km, 8,0 % ab Ferlach",
+  "beauty": 3,
+  "fame": 3,
+  "difficulty": 4,
+  "traffic": 2,
+  "season": {
+   "opens": 4.5,
+   "closes": 11,
+   "maintained": false
+  },
+  "note": "Der Durchgangsverkehr nimmt den Tunnel darunter, weshalb die alte Passstraße über die Höhe ruhig ist – und steil: über 20 % auf der Südseite. Am Nordportal steht die Gedenkstätte des KZ-Außenlagers Loibl.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.5265,
+     "lon": 14.3006
+    },
+    "label": "Ferlach (Nord)"
+   },
+   {
+    "from": {
+     "lat": 46.3637,
+     "lon": 14.3095
+    },
+    "label": "Tržič (Süd)"
+   }
+  ]
+ },
+ {
+  "slug": "seebergsattel",
+  "name": "Seebergsattel",
+  "type": "pass",
+  "aliases": [
+   "Jezerski vrh"
+  ],
+  "country": "AT/SI",
+  "region": "Ostalpen",
+  "lat": 46.4191,
+  "lon": 14.527,
+  "elevation": 1215,
+  "classicAscent": "7,0 km, 6,5 % ab Zgornje Jezersko",
+  "beauty": 3,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 2,
+  "season": null,
+  "note": "Der stille Grenzübergang zwischen Karawanken und Steiner Alpen, östlich des Loibl. Gleichmäßig und wenig befahren, oben Wiesen statt Fels; ganzjährig geräumt.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.3935,
+     "lon": 14.4979
+    },
+    "label": "Zgornje Jezersko (Süd)"
+   }
+  ]
+ },
+ {
+  "slug": "kesselberg",
+  "name": "Kesselberg",
+  "type": "pass",
+  "tags": [
+   "hairpins"
+  ],
+  "country": "DE",
+  "region": "Ostalpen",
+  "lat": 47.6216,
+  "lon": 11.3492,
+  "elevation": 858,
+  "classicAscent": "4,5 km, 5,5 % ab Kochel am See",
+  "beauty": 3,
+  "fame": 3,
+  "difficulty": 2,
+  "traffic": 4,
+  "season": null,
+  "note": "Die Kehrenstraße zwischen Kochelsee und Walchensee, seit 1897 Rennstrecke und bis heute ein Motorradmagnet – an schönen Wochenenden entsprechend laut. Kurz, aber der Blick auf den Walchensee von oben trägt sie.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 47.6531,
+     "lon": 11.3632
+    },
+    "label": "Kochel am See (Nord)"
+   }
+  ]
+ },
+ {
+  "slug": "sudelfeld",
+  "name": "Sudelfeld",
+  "type": "pass",
+  "aliases": [
+   "Sudelfeldpass",
+   "Tatzelwurm"
+  ],
+  "country": "DE",
+  "region": "Ostalpen",
+  "lat": 47.6788,
+  "lon": 12.0355,
+  "elevation": 1123,
+  "classicAscent": "6,0 km, 6,0 % ab Bayrischzell",
+  "beauty": 3,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 3,
+  "season": null,
+  "note": "Vom Leitzachtal über die Skihänge des Sudelfelds hinüber ins Inntal, die Ostrampe heißt nach dem Wasserfall Tatzelwurm. Ganzjährig geräumt und am Wochenende voller Motorräder.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 47.6737,
+     "lon": 12.0149
+    },
+    "label": "Bayrischzell (West)"
+   },
+   {
+    "from": {
+     "lat": 47.6486,
+     "lon": 12.172
+    },
+    "label": "Oberaudorf (Ost)"
+   }
+  ]
+ },
+ {
+  "slug": "riedbergpass",
+  "name": "Riedbergpass",
+  "type": "pass",
+  "country": "DE",
+  "region": "Ostalpen",
+  "lat": 47.4373,
+  "lon": 10.1769,
+  "elevation": 1406,
+  "classicAscent": "6,0 km, 9,0 % ab Obermaiselstein",
+  "beauty": 3,
+  "fame": 3,
+  "difficulty": 4,
+  "traffic": 2,
+  "season": null,
+  "note": "Die höchste Passstraße Deutschlands und mit 16 % im oberen Drittel auch eine der steilsten. Verbindet das Illertal mit Balderschwang; ganzjährig geräumt, bei starkem Schneefall zeitweise nur mit Ketten.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 47.4479,
+     "lon": 10.2375
+    },
+    "label": "Obermaiselstein (Ost)"
+   }
+  ]
+ },
+ {
+  "slug": "oberjoch",
+  "name": "Oberjoch",
+  "type": "pass",
+  "tags": [
+   "hairpins"
+  ],
+  "country": "DE",
+  "region": "Ostalpen",
+  "lat": 47.5268,
+  "lon": 10.4329,
+  "elevation": 1175,
+  "classicAscent": "6,5 km, 5,5 % ab Bad Hindelang",
+  "beauty": 3,
+  "fame": 3,
+  "difficulty": 2,
+  "traffic": 4,
+  "season": null,
+  "note": "Die Jochstraße ab Bad Hindelang legt 106 Kehren auf wenige Kilometer – Deutschlands kurvenreichste Straße. Hauptverbindung ins Tannheimer Tal und entsprechend befahren, ganzjährig geräumt.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 47.5063,
+     "lon": 10.3699
+    },
+    "label": "Bad Hindelang (West)"
+   }
+  ]
+ },
+ {
+  "slug": "sella-nevea",
+  "name": "Sella Nevea",
+  "type": "pass",
+  "aliases": [
+   "Neveasattel"
+  ],
+  "country": "IT",
+  "region": "Ostalpen",
+  "lat": 46.3904,
+  "lon": 13.4763,
+  "elevation": 1195,
+  "classicAscent": "14,0 km, 5,0 % ab Tarvisio",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 1,
+  "season": null,
+  "note": "Der Sattel zwischen Kanin und Montasch, erreicht über Cave del Predil. Sehr ruhig, hohe Wände auf beiden Seiten; ganzjährig für das Skigebiet geräumt.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.5053,
+     "lon": 13.5784
+    },
+    "label": "Tarvisio (Nordost)"
+   }
+  ]
+ },
+ {
+  "slug": "predilpass",
+  "name": "Predilpass",
+  "type": "pass",
+  "aliases": [
+   "Passo del Predil",
+   "Predel"
+  ],
+  "country": "IT/SI",
+  "region": "Ostalpen",
+  "lat": 46.4186,
+  "lon": 13.5782,
+  "elevation": 1156,
+  "classicAscent": "9,5 km, 6,0 % ab Tarvisio",
+  "beauty": 4,
+  "fame": 3,
+  "difficulty": 3,
+  "traffic": 2,
+  "season": null,
+  "note": "Von Tarvisio über den Raibler See nach Bovec ins Soča-Tal, meist zusammen mit dem Vršič gefahren. Die Südrampe fällt steil in die Soča ab; oben die Reste der habsburgischen Sperrfestung.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.5053,
+     "lon": 13.5784
+    },
+    "label": "Tarvisio (Nord)"
+   },
+   {
+    "from": {
+     "lat": 46.3386,
+     "lon": 13.5524
+    },
+    "label": "Bovec (Süd)"
+   }
+  ]
+ },
+ {
+  "slug": "kaunertaler-gletscherstrasse",
+  "name": "Kaunertaler Gletscherstraße",
+  "type": "spur",
+  "tags": [
+   "glacier",
+   "reservoir",
+   "toll"
+  ],
+  "country": "AT",
+  "region": "Ostalpen",
+  "lat": 46.8711,
+  "lon": 10.71,
+  "elevation": 2510,
+  "classicAscent": "24,0 km, 6,9 % ab Feichten",
+  "beauty": 5,
+  "fame": 3,
+  "difficulty": 5,
+  "traffic": 1,
+  "season": {
+   "opens": 6,
+   "closes": 10,
+   "maintained": false
+  },
+  "note": "Vom Kaunertal am Gepatsch-Stausee vorbei bis ans Ende der öffentlichen Straße auf 2 510 m – die letzten Kehren zum Gletscherparkplatz auf rund 2 750 m sind eine Zufahrtsstraße des Skigebiets. Mautstraße: Autos zahlen, Räder fahren frei. Oben dünne Luft, Kehren weit über der Baumgrenze.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 47.029,
+     "lon": 10.746
+    },
+    "label": "Feichten"
+   }
+  ]
+ },
+ {
+  "slug": "loser-panoramastrasse",
+  "name": "Loser Panoramastraße",
+  "type": "spur",
+  "tags": [
+   "panorama",
+   "toll"
+  ],
+  "country": "AT",
+  "region": "Ostalpen",
+  "lat": 47.6602,
+  "lon": 13.7844,
+  "elevation": 1631,
+  "classicAscent": "8,5 km, 9,0 % ab Altaussee",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 4,
+  "traffic": 1,
+  "season": {
+   "opens": 5,
+   "closes": 10.5,
+   "maintained": false
+  },
+  "note": "Steile Mautstraße über dem Altausseer See ins Tote Gebirge, mit Rampen um 16 %. Für Autos wird kassiert, Räder fahren frei; oben endet der Asphalt am Loser-Plateau mit Blick über das Ausseerland.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 47.6399,
+     "lon": 13.7641
+    },
+    "label": "Altaussee"
+   }
+  ]
+ },
+ {
+  "slug": "postalm",
+  "name": "Postalm",
+  "type": "plateau",
+  "tags": [
+   "toll"
+  ],
+  "country": "AT",
+  "region": "Ostalpen",
+  "lat": 47.6668,
+  "lon": 13.4266,
+  "elevation": 1425,
+  "classicAscent": "14,0 km, 5,0 % von Strobl zur Postalm",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 1,
+  "season": {
+   "opens": 5,
+   "closes": 11,
+   "maintained": false
+  },
+  "note": "Österreichs größte Almhochfläche, über eine Mautstraße von Strobl am Wolfgangsee zu erreichen – Räder zahlen nichts. Oben weite Weiden ohne Wald, die Straße läuft lange fast eben weiter Richtung Abtenau.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 47.713,
+     "lon": 13.4873
+    },
+    "label": "Strobl",
+    "to": {
+     "lat": 47.6668,
+     "lon": 13.4266
+    },
+    "km": 14
+   }
+  ]
  }
 ]
