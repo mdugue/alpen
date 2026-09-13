@@ -1,6 +1,6 @@
 # 13 · Summer axis
 
-**Status:** in progress ([PR #17](https://github.com/mdugue/alpen/pull/17)) · **Effort:** M–L · **Depends on:** 04 (climate series,
+**Status:** done ([PR #17](https://github.com/mdugue/alpen/pull/17)) · **Effort:** M–L · **Depends on:** 04 (climate series,
 reasons, `bestPeriods`) · **Unblocks:** 12 (destination scores that mean
 something in July), the "usable hours per day" cell fill and the daily window
 in `docs/roadmap.md`
@@ -497,3 +497,34 @@ second one if the first grows past comfortable review size.
   and are separated by lightness on purpose; the sentence in `aria-label`
   and the "beste Zeit" line in the panel carry the same information, and the
   panel cells are four times the height and explain themselves on hover.
+
+## Recalibration after plan 14 (open)
+
+The thresholds above were calibrated on 92 passes. Plan 14 took the corpus to
+131 roads, most of them low French balcony, gorge and valley roads, and
+`bun run scripts/analyze-status.ts` over that corpus shows the heat signal
+drifting: 171 pairs on 48 roads instead of 85 on 26, and among them
+Val Thorens, Splügenpass, Colle del Nivolet and Col du Glandon – the "pass a
+rider would call cool" case this plan's risk section asked to confirm. Three
+roads (Glandon, Malojapass, Val Thorens) lose their "beste Zeit" run
+altogether, so their strip never says "go here".
+
+Raising `HEAT_VALLEY_TMAX` is the wrong knob: at 27 the signal still flags
+Val Thorens (28.2 °C in the valley) and drops Alpe d'Huez (27.0 °C), which is
+the opposite of what the level is meant to express. The shape of the signal is
+what is off – a valley value alone cannot say whether the climb rides out of
+the heat. With a constant lapse rate the mean of the valley and the summit
+value _is_ the temperature at half height, i.e. the mean over the ascent, and
+it separates the two cases directly: Val Thorens 22.3 °C (1 817 m of drop,
+climbs out of it), Gorges de la Nesque 29.4 °C (648 m, no escape),
+Mont Ventoux 25.9 °C.
+
+A dry run of `(valleyTmax + bucket.tmax) / 2 >= 22.5` over the 131 roads keeps
+the volume of the signal (167 pairs on 48 roads, against 171 on 48 today),
+names the list this plan asked for (Ventoux, Turini, Finestre, Alpe d'Huez,
+Mortirolo, Glandon, Madeleine, Maloja, San Marco, the gorges and corniches),
+spares Galibier, Iseran, Stelvio, Nivolet, Splügen and Val Thorens, and gives
+all 131 roads a "beste Zeit" run again (shortest 2 half-months). Deciding it
+means a threshold constant that is no longer a valley temperature, so the
+reason sentence, `docs/scales.md`, the scales dialog and the `h` filter (which
+stays on the raw valley value) have to follow – a small plan of its own.
