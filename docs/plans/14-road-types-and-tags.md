@@ -2,8 +2,9 @@
 
 **Status:** in progress – steps 1–4 done except that the `note` of nine of
 the ten existing `toll` entries does not yet say whether bikes pay; 5 under
-way (Westalpen · Frankreich und Dolomiten/Trentino/Südtirol abgearbeitet,
-Ostalpen zu zwei Dritteln), 6 (rename) open ·
+way (Frankreich fertig; Dolomiten, Ostalpen, Zentralalpen und Piemont
+teilweise – 110 Straßen stehen, die offenen Kandidaten tragen ihren Grund),
+6 (rename) open ·
 **Effort:** L (M for code, the rest is curation) ·
 **Depends on:** 09 (schema), 05 (filters) · **Unblocks:** the sporting roads
 that are not passes – spur roads, balcony roads, high roads, quiet valleys –
@@ -511,22 +512,27 @@ Vallée du Vénéon (seit dem Hochwasser 2024 gesperrt) und der Col de Tende
 
 ### Westalpen · Piemont und Aostatal
 
-| Name                                     | Typ     | Merkmale                   | Höhe   | prüfen                      |
-| ---------------------------------------- | ------- | -------------------------- | ------ | --------------------------- |
-| Colle del Sommeiller                     | spur    | surface, reservoir         | ~2 990 | Asphaltende, Schotteranteil |
-| Colle dell'Assietta (Strada dei Cannoni) | plateau | surface, panorama, carfree | ~2 470 | Schotter, autofreie Tage    |
-| Sestriere                                | pass    |                            | ~2 040 |                             |
-| Breuil-Cervinia                          | spur    | panorama                   | ~2 000 |                             |
-| Valsavarenche → Pont                     | valley  |                            | ~1 960 |                             |
-| Valle di Cogne → Valnontey               | valley  |                            | ~1 700 |                             |
-| Valgrisenche (Lago di Beauregard)        | valley  | reservoir                  | ~1 800 |                             |
-| Val Ferret (IT) → Arnouvaz               | valley  | carfree                    | ~1 770 | Sperrtage mit Shuttle       |
-| Val Veny                                 | valley  | carfree                    | ~1 700 | Sperrtage mit Shuttle       |
-| Gressoney → Staffal                      | valley  |                            | ~1 800 |                             |
-| Valle Gesso → Terme di Valdieri          | valley  |                            | ~1 370 |                             |
-| Valle Maira → Chiappera                  | valley  |                            | ~1 650 |                             |
-| Alpe Devero                              | spur    |                            | ~1 640 |                             |
-| Val Formazza → Riale                     | valley  | reservoir                  | ~1 730 |                             |
+Batch 6, angefangen: vier Einträge stehen, zehn Kandidaten warten. Die Höhen
+sind über die Höhen-API entlang der OSM-Geometrie gemessen; die kuratierte
+Länge einer Talstraße kommt aus derselben Geometrie und nicht aus einer
+Schätzung.
+
+| Name                                     | Typ      | Merkmale                   | Höhe   | Ergebnis                                                                                                                                                                       |
+| ---------------------------------------- | -------- | -------------------------- | ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| ~~Sestriere~~                            | `pass`   | –                          | 2035   | Eintrag `sestriere` · Punkt gegen die Höhen-API geprüft, kein OSM-Passknoten im Umkreis erreichbar                                                                             |
+| ~~Valsavarenche → Pont~~                 | `valley` | –                          | 1972   | Eintrag `valsavarenche` · 26,1 km aus der Geometrie gerechnet                                                                                                                  |
+| ~~Valgrisenche (Lago di Beauregard)~~    | `valley` | reservoir                  | 2019   | Eintrag `valgrisenche` · die Straße endet höher als die geschätzten 1 800 m                                                                                                    |
+| ~~Valle Maira → Chiappera~~              | `valley` | –                          | 1616   | Eintrag `valle-maira`                                                                                                                                                          |
+| Colle del Sommeiller                     | spur     | surface, reservoir         | ~2 990 | **offen:** durchgehend Schotter – der Plan schließt reine Schotterstraßen aus, das ist vor einem Eintrag zu klären.                                                            |
+| Colle dell'Assietta (Strada dei Cannoni) | plateau  | surface, panorama, carfree | ~2 470 | **offen:** dieselbe Frage, dazu die autofreien Tage.                                                                                                                           |
+| Breuil-Cervinia                          | spur     | panorama                   | ~2 000 | **offen:** noch nicht geprüft.                                                                                                                                                 |
+| Valle di Cogne → Valnontey               | valley   | –                          | ~1 700 | **offen:** gemessener Hochpunkt 1 696 m, aber die 6,4 km benannter Wege enthalten die Ortsstraßen von Cogne samt Pflaster – die Länge der Strecke ist daraus nicht abzuleiten. |
+| Val Ferret (IT) → Arnouvaz               | valley   | carfree                    | ~1 770 | **offen:** Hochpunkt 1 772 m bestätigt, aber nur 2,6 km sind unter diesem Namen erfasst; der Rest der Straße heißt anders.                                                     |
+| Val Veny                                 | valley   | carfree                    | ~1 700 | **offen:** unter diesem Namen nur 300 m `living_street` – die Talstraße ist so nicht zu fassen.                                                                                |
+| Gressoney → Staffal                      | valley   | –                          | ~1 800 | **offen:** die Suche liefert einen Hochpunkt von 2 191 m, deutlich über Staffal – der Name trifft mehr als die Talstraße.                                                      |
+| Valle Gesso → Terme di Valdieri          | valley   | –                          | ~1 370 | **offen:** unter keinem der geprüften Namen in OSM gefunden.                                                                                                                   |
+| Alpe Devero                              | spur     | –                          | ~1 640 | **offen:** Abfrage nicht durchgekommen, Overpass war überlastet.                                                                                                               |
+| Val Formazza → Riale                     | valley   | reservoir                  | ~1 730 | **offen:** dito.                                                                                                                                                               |
 
 ### Zentralalpen · Schweiz und Lombardei
 

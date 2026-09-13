@@ -6865,5 +6865,151 @@
     "label": "Sion"
    }
   ]
+ },
+ {
+  "slug": "sestriere",
+  "name": "Sestriere",
+  "type": "pass",
+  "aliases": [
+   "Colle del Sestriere"
+  ],
+  "country": "IT",
+  "region": "Westalpen",
+  "lat": 44.956,
+  "lon": 6.879,
+  "elevation": 2035,
+  "classicAscent": "11,0 km, 6,0 % ab Cesana Torinese",
+  "beauty": 3,
+  "fame": 4,
+  "difficulty": 3,
+  "traffic": 3,
+  "season": null,
+  "note": "Der Skiort auf der Passhöhe zwischen Val Chisone und Val Susa, Giro- und Tour-Stammgast seit den dreißiger Jahren – Coppi und Pantani haben hier gewonnen. Ganzjährig geräumt; landschaftlich nüchtern, historisch schwer.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 44.9522,
+     "lon": 6.7936
+    },
+    "label": "Cesana Torinese (West)"
+   }
+  ]
+ },
+ {
+  "slug": "valsavarenche",
+  "name": "Valsavarenche",
+  "type": "valley",
+  "aliases": [
+   "Pont"
+  ],
+  "country": "IT",
+  "region": "Westalpen",
+  "lat": 45.5271,
+  "lon": 7.2015,
+  "elevation": 1972,
+  "classicAscent": "26,1 km, 5,0 % von Villeneuve nach Pont",
+  "beauty": 5,
+  "fame": 2,
+  "difficulty": 4,
+  "traffic": 1,
+  "season": {
+   "opens": 5.5,
+   "closes": 10.5,
+   "maintained": false
+  },
+  "note": "Eines der drei Täler des Gran Paradiso, von Villeneuve im Aostatal bis zum Talschluss von Pont unter dem Gipfel. Durchgehend Nationalpark, wenig Verkehr, am Ende nur noch Wiesen und Steinböcke.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 45.6985,
+     "lon": 7.1922
+    },
+    "label": "Villeneuve",
+    "to": {
+     "lat": 45.5271,
+     "lon": 7.2015
+    },
+    "km": 26.1
+   }
+  ]
+ },
+ {
+  "slug": "valgrisenche",
+  "name": "Valgrisenche",
+  "type": "valley",
+  "tags": [
+   "reservoir"
+  ],
+  "aliases": [
+   "Lago di Beauregard"
+  ],
+  "country": "IT",
+  "region": "Westalpen",
+  "lat": 45.5986,
+  "lon": 7.0389,
+  "elevation": 2019,
+  "classicAscent": "17,5 km, 5,0 % von Arvier zum Talschluss",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 4,
+  "traffic": 1,
+  "season": {
+   "opens": 5.5,
+   "closes": 10.5,
+   "maintained": false
+  },
+  "note": "Am Stausee von Beauregard vorbei bis unter die Gletscher der Grande Sassière – eine Sackgasse, in der nach dem See fast nichts mehr kommt. Der alte Talboden liegt unter dem Wasser, die Straße hängt darüber an der Flanke.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 45.6874,
+     "lon": 7.131
+    },
+    "label": "Arvier",
+    "to": {
+     "lat": 45.5986,
+     "lon": 7.0389
+    },
+    "km": 17.5
+   }
+  ]
+ },
+ {
+  "slug": "valle-maira",
+  "name": "Valle Maira",
+  "type": "valley",
+  "aliases": [
+   "Chiappera"
+  ],
+  "country": "IT",
+  "region": "Westalpen",
+  "lat": 44.4876,
+  "lon": 6.9249,
+  "elevation": 1616,
+  "classicAscent": "14,3 km, 4,3 % von Acceglio nach Chiappera",
+  "beauty": 5,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 1,
+  "season": {
+   "opens": 5,
+   "closes": 11,
+   "maintained": false
+  },
+  "note": "Das stillste der piemontesischen Täler, am Ende der Felszahn der Provenzale über Chiappera. Kaum Verkehr, kaum Tourismus – wer die Maira fährt, fährt sie wegen der Ruhe und nicht wegen der Steigung.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 44.4847,
+     "lon": 7.0657
+    },
+    "label": "Acceglio",
+    "to": {
+     "lat": 44.4876,
+     "lon": 6.9249
+    },
+    "km": 14.3
+   }
+  ]
  }
 ]
