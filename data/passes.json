@@ -6161,5 +6161,151 @@
     "km": 14
    }
   ]
+ },
+ {
+  "slug": "sportgastein",
+  "name": "Sportgastein",
+  "type": "spur",
+  "tags": [
+   "toll"
+  ],
+  "aliases": [
+   "Gasteiner Alpenstraße",
+   "Nassfeld Gastein"
+  ],
+  "country": "AT",
+  "region": "Ostalpen",
+  "lat": 47.065,
+  "lon": 13.0599,
+  "elevation": 1644,
+  "classicAscent": "9,0 km, 6,5 % ab Bad Gastein",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 1,
+  "season": {
+   "opens": 5.5,
+   "closes": 10.5,
+   "maintained": false
+  },
+  "note": "Die Gasteiner Alpenstraße endet im Talschluss des Nassfelds unter den Dreitausendern der Goldberggruppe. Mautstraße – für Autos wird kassiert, Räder fahren frei; oben nur Skilift, Wiesen und die alten Goldbergwerke.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 47.1145,
+     "lon": 13.1352
+    },
+    "label": "Bad Gastein"
+   }
+  ]
+ },
+ {
+  "slug": "hochkar",
+  "name": "Hochkar Alpenstraße",
+  "type": "spur",
+  "tags": [
+   "toll",
+   "panorama"
+  ],
+  "country": "AT",
+  "region": "Ostalpen",
+  "lat": 47.7197,
+  "lon": 14.9179,
+  "elevation": 1470,
+  "classicAscent": "9,0 km, 8,5 % ab Lassing",
+  "beauty": 3,
+  "fame": 2,
+  "difficulty": 4,
+  "traffic": 1,
+  "season": {
+   "opens": 5,
+   "closes": 11,
+   "maintained": false
+  },
+  "note": "Mautstraße auf das Hochkar im Mostviertel, mit dem Blick über die Ybbstaler Alpen bis zum Ötscher. Gleichmäßig steil, oben endet der Asphalt am Skigebiet; Räder zahlen keine Maut.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 47.7475,
+     "lon": 14.9032
+    },
+    "label": "Lassing"
+   }
+  ]
+ },
+ {
+  "slug": "kals-lucknerhaus",
+  "name": "Kalser Glocknerstraße",
+  "type": "spur",
+  "tags": [
+   "panorama",
+   "toll"
+  ],
+  "aliases": [
+   "Lucknerhaus"
+  ],
+  "country": "AT",
+  "region": "Ostalpen",
+  "lat": 47.0205,
+  "lon": 12.6883,
+  "elevation": 1939,
+  "classicAscent": "8,0 km, 7,5 % ab Kals am Großglockner",
+  "beauty": 5,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 1,
+  "season": {
+   "opens": 5.5,
+   "closes": 10.5,
+   "maintained": false
+  },
+  "note": "Die Sackgasse von Kals hinauf zum Lucknerhaus, direkt unter die Südwand des Großglockners – der nächste Punkt, an den eine Straße an den höchsten Berg Österreichs heranführt. Mautstraße für Autos, Räder frei.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 47.0024,
+     "lon": 12.6458
+    },
+    "label": "Kals am Großglockner"
+   }
+  ]
+ },
+ {
+  "slug": "pitztal-mittelberg",
+  "name": "Pitztal",
+  "type": "valley",
+  "tags": [
+   "glacier"
+  ],
+  "aliases": [
+   "Mittelberg",
+   "Pitztaler Gletscher"
+  ],
+  "country": "AT",
+  "region": "Ostalpen",
+  "lat": 46.9595,
+  "lon": 10.8749,
+  "elevation": 1715,
+  "classicAscent": "20,1 km, 2,6 % von Jerzens nach Mittelberg",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 1,
+  "season": null,
+  "note": "Das Pitztal endet nach zwanzig flachen Kilometern am Gletscherparkplatz von Mittelberg, unter der Wildspitze. Wenig Steigung, wenig Verkehr; wegen des Gletscherskigebiets ganzjährig geräumt.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 47.1125,
+     "lon": 10.7982
+    },
+    "label": "Jerzens",
+    "to": {
+     "lat": 46.9595,
+     "lon": 10.8749
+    },
+    "km": 20.1
+   }
+  ]
  }
 ]

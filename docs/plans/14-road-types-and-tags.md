@@ -3,7 +3,7 @@
 **Status:** in progress – steps 1–4 done except that the `note` of nine of
 the ten existing `toll` entries does not yet say whether bikes pay; 5 under
 way (Westalpen · Frankreich und Dolomiten/Trentino/Südtirol abgearbeitet,
-Monte Crostis offen), 6 (rename) open ·
+Ostalpen zu zwei Dritteln), 6 (rename) open ·
 **Effort:** L (M for code, the rest is curation) ·
 **Depends on:** 09 (schema), 05 (filters) · **Unblocks:** the sporting roads
 that are not passes – spur roads, balcony roads, high roads, quiet valleys –
@@ -564,38 +564,47 @@ Vallée du Vénéon (seit dem Hochwasser 2024 gesperrt) und der Col de Tende
 
 ### Ostalpen · Österreich, Bayern, Slowenien
 
-| Name                        | Typ     | Merkmale                 | Höhe   | prüfen                                  |
-| --------------------------- | ------- | ------------------------ | ------ | --------------------------------------- |
-| Kaunertaler Gletscherstraße | spur    | glacier, toll, reservoir | ~2 750 |                                         |
-| Schlegeisspeicher           | spur    | reservoir, toll          | ~1 800 |                                         |
-| Zillertaler Höhenstraße     | plateau | panorama, toll           | ~2 020 | Mautstrecke, Rad frei?                  |
-| Stubaital → Mutterberg      | valley  | glacier                  | ~1 750 |                                         |
-| Pitztal → Mittelberg        | valley  | glacier                  | ~1 740 |                                         |
-| Kals → Lucknerhaus          | spur    | panorama                 | ~1 920 |                                         |
-| Sportgastein                | spur    | toll                     | ~1 590 |                                         |
-| Rauris → Kolm-Saigurn       | spur    |                          | ~1 600 | Maut                                    |
-| Loser Panoramastraße        | spur    | panorama, toll           | ~1 600 |                                         |
-| Tauplitzalm Alpenstraße     | spur    | toll                     | ~1 650 |                                         |
-| Hochkar Alpenstraße         | spur    | toll                     | ~1 450 |                                         |
-| Gaisberg                    | spur    | panorama                 | ~1 290 |                                         |
-| Postalm                     | plateau | toll                     | ~1 200 |                                         |
-| Hochtannbergpass            | pass    |                          | ~1 680 |                                         |
-| Furkajoch                   | pass    |                          | ~1 760 |                                         |
-| Faschinajoch                | pass    |                          | ~1 490 |                                         |
-| Staller Sattel              | pass    | tunnels                  | ~2 050 | Einbahnregelung mit Zeitfenstern        |
-| Plöckenpass                 | pass    |                          | ~1 360 |                                         |
-| Nassfeld / Passo Pramollo   | pass    |                          | ~1 530 |                                         |
-| Wurzenpass                  | pass    |                          | ~1 070 |                                         |
-| Loiblpass (alte Passstraße) | pass    | carfree                  | ~1 370 | Fahrverbot über den Pass, Rad frei?     |
-| Seebergsattel               | pass    |                          | ~1 220 |                                         |
-| Kesselberg                  | pass    | hairpins                 | ~860   |                                         |
-| Sudelfeld / Tatzelwurm      | pass    |                          | ~1 100 |                                         |
-| Riedbergpass                | pass    |                          | ~1 410 |                                         |
-| Oberjoch                    | pass    |                          | ~1 180 |                                         |
-| Spitzingsee                 | spur    |                          | ~1 130 |                                         |
-| Pokljuka                    | plateau |                          | ~1 300 |                                         |
-| Sella Nevea                 | pass    |                          | ~1 190 |                                         |
-| Predil                      | pass    |                          | ~1 160 | in `vrsic-predil-runde`, fehlt als Pass |
+Batch 4, teilweise abgearbeitet: 22 Einträge stehen, zehn Kandidaten warten
+noch. Die Höhen sind gemessen – bei den Straßen ohne `mountain_pass`-Knoten
+über die Höhen-API entlang der OSM-Geometrie, nachdem die drei aus einer
+Straßenausdehnung geschätzten Marker alle danebenlagen (Loser um 766 m).
+Wer hier weitermacht, prüft zuerst die `highway`-Klasse des Ziels: das
+Rennrad-Profil befährt `service` und `track` nicht, woran Ultental und
+Kaunertal schon gescheitert sind.
+
+| Name                            | Typ       | Merkmale                 | Höhe   | Ergebnis                                                                                                                                                                                                                                       |
+| ------------------------------- | --------- | ------------------------ | ------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| ~~Hochtannbergpass~~            | `pass`    | –                        | 1676   | Eintrag `hochtannbergpass`                                                                                                                                                                                                                     |
+| ~~Furkajoch~~                   | `pass`    | –                        | 1758   | Eintrag `furkajoch`                                                                                                                                                                                                                            |
+| ~~Faschinajoch~~                | `pass`    | –                        | 1486   | Eintrag `faschinajoch`                                                                                                                                                                                                                         |
+| ~~Staller Sattel~~              | `pass`    | –                        | 2052   | Eintrag `staller-sattel` · die Einbahnregelung mit Zeitfenstern steht in der Notiz; `tunnels` nicht vergeben, weil nicht belegt                                                                                                                |
+| ~~Plöckenpass~~                 | `pass`    | –                        | 1360   | Eintrag `ploeckenpass`                                                                                                                                                                                                                         |
+| ~~Nassfeld / Pramollo~~         | `pass`    | –                        | 1530   | Eintrag `nassfeldpass`                                                                                                                                                                                                                         |
+| ~~Wurzenpass~~                  | `pass`    | –                        | 1071   | Eintrag `wurzenpass`                                                                                                                                                                                                                           |
+| ~~Loiblpass~~                   | `pass`    | –                        | 1367   | Eintrag `loiblpass` · `carfree` nicht vergeben: der Verkehr nimmt den Tunnel, ein Fahrverbot ist das nicht – steht in der Notiz                                                                                                                |
+| ~~Seebergsattel~~               | `pass`    | –                        | 1215   | Eintrag `seebergsattel`                                                                                                                                                                                                                        |
+| ~~Kesselberg~~                  | `pass`    | hairpins                 | 858    | Eintrag `kesselberg`                                                                                                                                                                                                                           |
+| ~~Sudelfeld / Tatzelwurm~~      | `pass`    | –                        | 1123   | Eintrag `sudelfeld`                                                                                                                                                                                                                            |
+| ~~Riedbergpass~~                | `pass`    | –                        | 1406   | Eintrag `riedbergpass`                                                                                                                                                                                                                         |
+| ~~Oberjoch~~                    | `pass`    | hairpins                 | 1175   | Eintrag `oberjoch`                                                                                                                                                                                                                             |
+| ~~Sella Nevea~~                 | `pass`    | –                        | 1195   | Eintrag `sella-nevea`                                                                                                                                                                                                                          |
+| ~~Predil~~                      | `pass`    | –                        | 1156   | Eintrag `predilpass` · fehlte als Pass, obwohl in `vrsic-predil-runde` gefahren                                                                                                                                                                |
+| ~~Kaunertaler Gletscherstraße~~ | `spur`    | glacier, reservoir, toll | 2510   | Eintrag `kaunertaler-gletscherstrasse` · Marker am Ende der öffentlichen Straße; die Zufahrt zum Gletscherparkplatz auf ~2 750 m ist `service` und damit nicht routbar                                                                         |
+| ~~Loser Panoramastraße~~        | `spur`    | panorama, toll           | 1631   | Eintrag `loser-panoramastrasse` · geschätzter Marker lag am Fuß der Straße auf 865 m, korrigiert über die Höhen-API                                                                                                                            |
+| ~~Postalm~~                     | `plateau` | toll                     | 1425   | Eintrag `postalm` · gemessen statt der geschätzten 1 250 m                                                                                                                                                                                     |
+| ~~Sportgastein~~                | `spur`    | toll                     | 1644   | Eintrag `sportgastein`                                                                                                                                                                                                                         |
+| ~~Hochkar Alpenstraße~~         | `spur`    | toll, panorama           | 1470   | Eintrag `hochkar`                                                                                                                                                                                                                              |
+| ~~Kals → Lucknerhaus~~          | `spur`    | panorama, toll           | 1939   | Eintrag `kals-lucknerhaus`                                                                                                                                                                                                                     |
+| ~~Pitztal → Mittelberg~~        | `valley`  | glacier                  | 1715   | Eintrag `pitztal-mittelberg`                                                                                                                                                                                                                   |
+| Zillertaler Höhenstraße         | plateau   | panorama, toll           | 2042   | **offen:** Marker und Höhe sind gemessen, aber die benannten Wege summieren sich mit Abzweigen auf 32,2 km – daraus lässt sich die kuratierte Länge der Strecke nicht ableiten, und eine geschätzte hat das Gate schon zweimal zurückgewiesen. |
+| Schlegeisspeicher               | spur      | reservoir, toll          | ~1 800 | **offen:** unter diesem Namen führt OSM nur 400 m Straße und ein paar Klettersteige; die Alpenstraße heißt dort anders und muss erst gefunden werden.                                                                                          |
+| Stubaital → Mutterberg          | valley    | glacier                  | ~1 750 | **offen:** die benannte Stubaitalstraße endet auf 1 007 m, der Talschluss an der Mutterbergalm ist nicht davon erfasst.                                                                                                                        |
+| Zillertal: Gaisberg             | spur      | panorama                 | ~1 290 | **offen:** die Suche trifft die Gaisbergstraße in der Stadt Salzburg auf 451 m, nicht die Straße auf den Gaisberg.                                                                                                                             |
+| Tauplitzalm Alpenstraße         | spur      | toll                     | ~1 650 | **offen:** der höchste Punkt liegt auf einem `track`; welcher Teil die befahrbare Mautstraße ist, muss vor Ort geklärt werden.                                                                                                                 |
+| Spitzingsee                     | spur      | –                        | ~1 130 | **offen:** nur 1,8 km unter diesem Namen, dazu Schotterwege – der Sattel ist damit nicht sauber zu platzieren.                                                                                                                                 |
+| Rauris → Kolm-Saigurn           | spur      | –                        | ~1 600 | **offen:** die benannten Wege springen zwischen Asphalt und Pfad; der gemessene Hochpunkt liegt auf einem `path`.                                                                                                                              |
+| Pokljuka                        | plateau   | –                        | ~1 300 | **offen:** noch nicht geprüft.                                                                                                                                                                                                                 |
+| Loser: Tauplitz, Postalm        | –         | –                        | –      | siehe oben, erledigt                                                                                                                                                                                                                           |
 
 ### Dolomiten, Trentino, Südtirol, Friaul
 
