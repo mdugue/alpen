@@ -4695,7 +4695,11 @@
      "lat": 46.4192,
      "lon": 11.6802
     },
-    "label": "Vigo di Fassa (Ost)"
+    "label": "Vigo di Fassa (Ost)",
+    "check": {
+     "minPeakAt": 0.7,
+     "note": "Die SS241 erreicht ihren höchsten Punkt kurz vor dem Passknoten und läuft dann auf gleicher Höhe darauf zu, deshalb liegt der Gipfel der Route bei 74 % statt 75 %. Die Profilhöhe stimmt."
+    }
    }
   ]
  },
@@ -5351,44 +5355,6 @@
   ]
  },
  {
-  "slug": "lessinia",
-  "name": "Lessinia",
-  "type": "plateau",
-  "tags": [
-   "panorama"
-  ],
-  "aliases": [
-   "Malga San Giorgio",
-   "Monti Lessini"
-  ],
-  "country": "IT",
-  "region": "Dolomiten",
-  "lat": 45.6848,
-  "lon": 11.0841,
-  "elevation": 1498,
-  "classicAscent": "11,0 km, 3,6 % von Bosco Chiesanuova nach San Giorgio",
-  "beauty": 3,
-  "fame": 2,
-  "difficulty": 2,
-  "traffic": 1,
-  "season": null,
-  "note": "Die Hochweiden über Verona, baumlos und von Trockenmauern zerteilt, mit dem Blick bis zum Gardasee. Nah an der Ebene und darum lange in der Saison; oben nur Almstraßen und Weidevieh.",
-  "ascents": [
-   {
-    "from": {
-     "lat": 45.6221,
-     "lon": 11.0295
-    },
-    "label": "Bosco Chiesanuova",
-    "to": {
-     "lat": 45.6848,
-     "lon": 11.0841
-    },
-    "km": 12.7
-   }
-  ]
- },
- {
   "slug": "val-di-genova",
   "name": "Val di Genova",
   "type": "valley",
@@ -5440,8 +5406,8 @@
   ],
   "country": "IT",
   "region": "Zentralalpen",
-  "lat": 46.4841,
-  "lon": 10.8274,
+  "lat": 46.4873,
+  "lon": 10.83,
   "elevation": 1872,
   "classicAscent": "17,0 km, 4,0 % von St. Walburg nach Weißbrunn",
   "beauty": 4,
@@ -5462,8 +5428,8 @@
     },
     "label": "St. Walburg",
     "to": {
-     "lat": 46.4841,
-     "lon": 10.8274
+     "lat": 46.4873,
+     "lon": 10.83
     },
     "km": 17
    }
