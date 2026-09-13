@@ -15,8 +15,8 @@ import { cn } from "@/lib/utils";
  * to read at a glance in a dense list.
  *
  * One component pair over both vocabularies, because a tag is a tag wherever
- * it is drawn; which list a name belongs to is `TOWN_TAGS` / `ROAD_TAGS`'
- * business, and only the filter panel and the scales dialog care.
+ * it is drawn; which list a name belongs to is the business of `TOWN_TAGS`
+ * and `ROAD_TAGS`, and only the filter panel and the scales dialog care.
  *
  * The glyph is decoration next to its own label, never a replacement for it,
  * so it is `aria-hidden` and the text stays.

@@ -47,7 +47,7 @@ vocabularies (regions, countries, road types, road and town labels) live in
   "country": "FR", // "CH/IT" for border passes
   "region": "Westalpen", // Westalpen | Zentralalpen | Ostalpen | Dolomiten
   "type": "pass", // required: pass | spur | plateau | balcony | valley
-  "tags": ["toll", "panorama"], // optional: editorial labels, see below
+  "tags": ["panorama", "toll"], // optional: editorial labels in ROAD_TAGS order, see below
   "lat": 45.064,
   "lon": 6.408,
   "elevation": 2642, // the height of the marker, not "the summit"
@@ -125,7 +125,10 @@ the detail panel says so under "Auffahrten". The three traverse types carry
 optional, editorial in the exact sense of the town labels – what a planner
 notices, not counted facts. Nothing the data already measures belongs here:
 steepness, length, altitude and a border crossing are numbers and stay
-numbers.
+numbers. The array is stored in the order of `ROAD_TAGS` below, because that
+is the order it is drawn in: the badges in the panel and the strip of glyphs
+in the sidebar row both follow the array, so a hand-sorted entry shows up as
+a differently sorted row.
 
 | Tag         | Label (UI)             | Given when                                                                           |
 | ----------- | ---------------------- | ------------------------------------------------------------------------------------ |

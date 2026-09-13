@@ -110,6 +110,30 @@ interface Props {
   onBack: () => void;
 }
 
+/**
+ * The one line of numbers over an elevation profile – and on a traverse, two
+ * numbers fewer.
+ *
+ * `elevationGain` and `maxKmGradient` accumulate over a hundred DEM samples,
+ * and a 90 m Copernicus cell in a gorge averages the road, the wall above it
+ * and the river below into one height. On a climb that noise disappears under
+ * the real ascent; on a balcony road there is no real ascent to hide it, and
+ * the Gorges du Cians come out at 1 766 Hm for 974 m of net climb. Showing
+ * that next to "Ø 4,8 %" would present a measurement the data cannot support
+ * (principle 3), so the traverse types get `km`, the average and the two end
+ * heights – `avgGradient` reads `start` and `top` only, two samples instead of
+ * a hundred, and is sound either way. The section's info tooltip says why the
+ * other two are missing.
+ */
+const profileLine = (profile: ProfileWithCoords, traverse: boolean) =>
+  [
+    fmtUnit(profile.km, "km", 1),
+    ...(traverse ? [] : [fmtUnit(profile.elevationGain, "hm")]),
+    `Ø ${fmt(profile.avgGradient, 1)} %`,
+    ...(traverse ? [] : [`steilster km ${fmt(profile.maxKmGradient, 1)} %`]),
+    `${fmt(profile.start)} → ${fmtUnit(profile.top, "m")}`,
+  ].join(" · ");
+
 const ExternalLinks = ({ links }: { links: [string, string][] }) => (
   <div className="mt-4 flex flex-wrap gap-1.5">
     {links.map(([label, href]) => (
@@ -330,7 +354,11 @@ const PassDetail = (props: Props & { pass: Pass }) => {
           road itself; "Auffahrten" would name the wrong thing. */}
       <Section
         id="ascents"
-        info="Geroutete Straße, 100 Höhenpunkte aus einem Geländemodell – zum Vergleichen gut, nicht metergenau."
+        info={
+          isTraverse(pass.type)
+            ? "Geroutete Straße, 100 Höhenpunkte aus einem Geländemodell – zum Vergleichen gut, nicht metergenau. Höhenmeter und steilster Kilometer stehen hier nicht: auf einer fast flachen Straße in einer Schlucht misst das Modell mehr Auf und Ab als die Straße hat."
+            : "Geroutete Straße, 100 Höhenpunkte aus einem Geländemodell – zum Vergleichen gut, nicht metergenau."
+        }
         title={isTraverse(pass.type) ? "Strecke" : "Auffahrten"}
       >
         {pass.type === "spur" && (
@@ -355,7 +383,7 @@ const PassDetail = (props: Props & { pass: Pass }) => {
                   <span className="text-xs font-medium">{a.label}</span>
                   <span className="text-muted-foreground text-xs tabular-nums">
                     {profile
-                      ? `${fmtUnit(profile.km, "km", 1)} · ${fmtUnit(profile.elevationGain, "hm")} · Ø ${fmt(profile.avgGradient, 1)} % · steilster km ${fmt(profile.maxKmGradient, 1)} % · ${fmt(profile.start)} → ${fmtUnit(profile.top, "m")}`
+                      ? profileLine(profile, isTraverse(pass.type))
                       : "Kein Höhenprofil vorhanden."}
                   </span>
                 </div>

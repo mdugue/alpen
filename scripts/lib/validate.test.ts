@@ -485,6 +485,14 @@ describe("checkSummit", () => {
   test("reports a pass coordinate on the wrong summit", () => {
     expect(checkSummit(1200, 2642).join(" ")).toContain("-1442 m");
   });
+
+  test("names the marker the caller's type calls it", () => {
+    expect(checkSummit(1200, 2642)[0]).toContain("am Passpunkt");
+    // A balcony road has no summit to miss; `data:check` passes the word.
+    expect(checkSummit(1200, 2642, "Markerpunkt")[0]).toContain(
+      "am Markerpunkt",
+    );
+  });
 });
 
 describe("inputsHash", () => {
@@ -532,5 +540,12 @@ describe("checkRoad", () => {
   test("the Großglockner point at 1 km is caught, a point at 40 m is fine", () => {
     expect(checkRoad(0.98)[0]).toContain("980 m");
     expect(checkRoad(0.04)).toEqual([]);
+  });
+
+  test("names the marker the caller's type calls it, in both findings", () => {
+    expect(checkRoad(null)[0]).toContain("des Passpunkts");
+    expect(checkRoad(0.98)[0]).toStartWith("Passpunkt ");
+    expect(checkRoad(null, "Markerpunkt")[0]).toContain("des Markerpunkts");
+    expect(checkRoad(0.98, "Markerpunkt")[0]).toStartWith("Markerpunkt ");
   });
 });

@@ -781,6 +781,21 @@ const escapeHtml = (s: string) =>
  * this popup is an HTML string and not React. A town has labels and no
  * subtitle: what it is, is what the labels say.
  */
+/**
+ * What the hover popup reads off a road: its name, the one line under it and
+ * its labels. One function rather than an object literal in the marker
+ * effect, because the ascents read it too – see `roadPopupRef` – and a popup
+ * that says one thing over the dot and another over the line belonging to it
+ * is the kind of drift nobody notices until a screenshot.
+ */
+const roadPopup = (p: MapPass): Record<string, string> => ({
+  name: p.name,
+  subtitle: [fmtUnit(p.elevation, "m"), roadTypeWord(p.type)]
+    .filter(Boolean)
+    .join(" · "),
+  tags: (p.tags ?? []).join(","),
+});
+
 const popupHtml = (p: Record<string, string>) => {
   const title = `<b>${escapeHtml(p.name ?? "")}</b>`;
   // Feature properties are strings; only what the vocabulary knows is drawn.
@@ -852,6 +867,19 @@ export const PassMap = ({
   // The hover handler below is registered once during setup; this ref keeps
   // the hulls current without rebuilding the map.
   const reachRef = useRef<TownReach>(townReach);
+
+  /**
+   * Each road's popup body by slug. An ascent line *is* its road – `pickAt`
+   * already answers a hit on one with `kind: "pass"` – but the route features
+   * come from the static GeoJSON file, which carries the slug and nothing
+   * else. Without this lookup the wide hit area over a line would open a
+   * popup holding a bare name where the dot two hundred metres away shows the
+   * height, the type and the labels.
+   */
+  const roadPopupRef = useRef(new Map<string, Record<string, string>>());
+  useEffect(() => {
+    roadPopupRef.current = new Map(passes.map((p) => [p.slug, roadPopup(p)]));
+  }, [passes]);
 
   /** Draws one town's reach hull, or clears the layer. */
   const paintReach = (slug: string | null) => {
@@ -1039,7 +1067,12 @@ export const PassMap = ({
       const key = `${hit.kind}:${hit.slug}`;
       if (key !== hovered) {
         hovered = key;
-        popup.setHTML(popupHtml(hit.props));
+        // A route feature knows only its slug; its road knows the rest.
+        const props =
+          hit.props.kind === "route"
+            ? (roadPopupRef.current.get(hit.slug) ?? hit.props)
+            : hit.props;
+        popup.setHTML(popupHtml(props));
         // Hovering a town also outlines what it reaches. Only on hover:
         // selecting one flies the camera in, and from inside the hull there is
         // nothing to see. The outline goes when the pointer does.
@@ -1236,17 +1269,13 @@ export const PassMap = ({
       features: (showPasses ? passes : []).map((p) => ({
         geometry: { coordinates: [p.lon, p.lat], type: "Point" },
         properties: {
+          ...roadPopup(p),
           fame: p.fame,
           favorite: p.favorite ? 1 : 0,
           kind: "pass",
-          name: p.name,
           selected: p.slug === selPass ? 1 : 0,
           slug: p.slug,
           status: p.status,
-          subtitle: [fmtUnit(p.elevation, "m"), roadTypeWord(p.type)]
-            .filter(Boolean)
-            .join(" · "),
-          tags: (p.tags ?? []).join(","),
         },
         type: "Feature",
       })),
