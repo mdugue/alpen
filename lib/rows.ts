@@ -7,6 +7,7 @@ import {
   townHaystack,
 } from "@/lib/search";
 import {
+  daysOf,
   inputAt,
   passGrades,
   passVerdict,
@@ -77,7 +78,11 @@ const withinLimits = (pass: Pass, f: Filters, input: VerdictInput) => {
     const valley = b ? valleyTmax(pass, b, input.valley) : null;
     if (valley === null || valley >= f.maxValleyTmax) return false;
   }
-  if (f.maxWetPct < WET_NONE && (!b || b.wetPct > f.maxWetPct)) return false;
+  // Rounded to days first, because days are what the filter asks in and what
+  // the panel and the reason text both show; comparing the raw share would let
+  // a pass shown as "6 von 15" fail a "bis 6 von 15" filter.
+  if (f.maxWetDays < WET_NONE && (!b || daysOf(b.wetPct) > f.maxWetDays))
+    return false;
   return true;
 };
 
@@ -311,7 +316,7 @@ export const statusHistogram = (
   const unbounded = {
     ...filters,
     maxValleyTmax: HEAT_NONE,
-    maxWetPct: WET_NONE,
+    maxWetDays: WET_NONE,
   };
   const bars: HistogramBar[] = PERIODS.map((period) => ({
     best: 0,

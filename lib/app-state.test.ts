@@ -125,32 +125,32 @@ describe("parseHash", () => {
   });
 
   test("the summer-signal keys from plan 13 round-trip and are validated", () => {
-    expect(parseHash("#h=26&w=40").filters).toMatchObject({
+    expect(parseHash("#h=26&w=6").filters).toMatchObject({
       maxValleyTmax: 26,
-      maxWetPct: 40,
+      maxWetDays: 6,
     });
-    // Only what the chips offer; an old link without them is unfiltered. The
-    // steps moved to the status heuristic's own line, so 28 and 50 are gone.
+    // Only the rungs of the two ladders. `w` counts rain days now, so the old
+    // percentages are not values it can hold at all.
     expect(parseHash("#h=27").filters.maxValleyTmax).toBeUndefined();
-    expect(parseHash("#h=28").filters.maxValleyTmax).toBeUndefined();
-    expect(parseHash("#w=45").filters.maxWetPct).toBeUndefined();
-    expect(parseHash("#w=50").filters.maxWetPct).toBeUndefined();
-    expect(parseHash("#w=53").filters.maxWetPct).toBe(53);
+    expect(parseHash("#h=28").filters.maxValleyTmax).toBe(28);
+    expect(parseHash("#w=5").filters.maxWetDays).toBeUndefined();
+    expect(parseHash("#w=50").filters.maxWetDays).toBeUndefined();
+    expect(parseHash("#w=10").filters.maxWetDays).toBe(10);
     expect(parseHash("#s=open,risky").filters).toMatchObject({
       maxValleyTmax: undefined,
-      maxWetPct: undefined,
+      maxWetDays: undefined,
       status: ["open", "risky"],
     });
     const out = serializeHash(
-      filters({ maxValleyTmax: 22, maxWetPct: 53 }),
+      filters({ maxValleyTmax: 22, maxWetDays: 8 }),
       null,
       DEFAULT_VIEW,
     );
     expect(out).toContain("h=22");
-    expect(out).toContain("w=53");
+    expect(out).toContain("w=8");
     expect(parseHash(out).filters).toMatchObject({
       maxValleyTmax: 22,
-      maxWetPct: 53,
+      maxWetDays: 8,
     });
     expect(serializeHash(filters(), null, DEFAULT_VIEW)).not.toMatch(/[hw]=/u);
   });
@@ -279,7 +279,7 @@ describe("filters", () => {
           difficulty: [2, 4],
           maxTraffic: 2,
           maxValleyTmax: 28,
-          maxWetPct: 40,
+          maxWetDays: 6,
           minBeauty: 4,
           minElevation: 2000,
           minFame: 3,

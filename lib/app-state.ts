@@ -94,30 +94,45 @@ export const ELEVATION_OPTIONS = [
  */
 export const HEAT_NONE = 99;
 /**
- * The upper step is `HEAT_VALLEY_TMAX` from `lib/status.ts`, the line at which
- * the status itself starts saying "eingeschränkt: Hitze" – so the filter asks
- * exactly what the list answers, instead of inventing a second opinion about
- * the same signal. The bound is strict, as the status one is, hence "unter"
- * rather than "bis": a pass flagged for heat must never survive the heat
- * filter. The lower step is one round stop below it.
+ * A regular ladder in 2 °C steps rather than a pair of hand-picked numbers: a
+ * ladder is read as a scale, where two lonely values are read as somebody's
+ * opinion. 26 °C is `HEAT_VALLEY_TMAX` from `lib/status.ts`, the line at which
+ * the status itself starts saying "eingeschränkt: Hitze", so one rung of the
+ * ladder is exactly "kein Hitze-Hinweis" and the filter asks what the list
+ * answers. The bound is strict, as the status one is, hence "unter" rather
+ * than "bis": a pass flagged for heat must never survive the heat filter.
+ * The span covers the summer field, which runs from about 18 °C to 31 °C in
+ * mid-July; what a rung is worth in a given half-month is on its chip.
  */
 export const HEAT_OPTIONS = [
   [HEAT_NONE, "egal"],
+  [28, "unter 28 °C"],
   [26, "unter 26 °C"],
+  [24, "unter 24 °C"],
   [22, "unter 22 °C"],
 ] as const satisfies Options;
-export const WET_NONE = 100;
+/** All fifteen days of the half-month: no filter. */
+export const WET_NONE = 15;
 /**
- * Stored as the share of rain days, because that is what the climate bucket
- * holds, but labelled in days out of fifteen – the unit `REASON_TEXT` already
- * writes ("Regen an 53 % der Tage (≈ 8 von 15)") and the one a planner can
- * picture. `daysOf` does the conversion; the values are chosen so that it
- * lands on a whole day. This bound includes its value, hence "bis".
+ * Counted in rain days out of the fifteen a half-month has, not in per cent.
+ * The climate bucket stores a share, but the share is not what anybody plans
+ * with – "an 53 % der Tage" is a number to convert, "8 von 15 Tagen" is one to
+ * picture – and it is already the unit `REASON_TEXT` writes. Storing the days
+ * also means the hash carries the number on the chip (`w=6`), so nothing in
+ * the URL looks invented either. `daysOf` in `lib/status.ts` does the
+ * conversion at comparison time.
+ *
+ * Another regular ladder, every second day. Its top rung is exactly the line
+ * the status draws: `daysOf(pct) <= 10` holds precisely when `pct` is below
+ * `WET_LIMITED_PCT`, so "bis 10 von 15" is "kein Nass-Hinweis", the way
+ * "unter 26 °C" is "kein Hitze-Hinweis".
  */
 export const WET_OPTIONS = [
   [WET_NONE, "egal"],
-  [53, "bis 8 von 15"],
-  [40, "bis 6 von 15"],
+  [10, "bis 10 von 15"],
+  [8, "bis 8 von 15"],
+  [6, "bis 6 von 15"],
+  [4, "bis 4 von 15"],
 ] as const satisfies Options;
 
 /**
@@ -199,7 +214,7 @@ export interface Filters {
    * an active one. `HEAT_NONE` / `WET_NONE` = no filter.
    */
   maxValleyTmax: number;
-  maxWetPct: number;
+  maxWetDays: number;
   /**
    * Which kinds of road stay in the lists; all five = no filter. A set rather
    * than a single choice, because "passes and spurs, but no valleys" is a real
@@ -229,7 +244,7 @@ export const DEFAULT_FILTERS: Filters = {
   favoritesOnly: false,
   maxTraffic: RATING_MAX,
   maxValleyTmax: HEAT_NONE,
-  maxWetPct: WET_NONE,
+  maxWetDays: WET_NONE,
   minBeauty: RATING_MIN,
   minElevation: 0,
   minFame: 1,
@@ -249,7 +264,7 @@ export const countCriteria = (f: Filters) =>
   (f.maxTraffic < RATING_MAX ? 1 : 0) +
   (f.minBeauty > RATING_MIN ? 1 : 0) +
   (f.maxValleyTmax < HEAT_NONE ? 1 : 0) +
-  (f.maxWetPct < WET_NONE ? 1 : 0) +
+  (f.maxWetDays < WET_NONE ? 1 : 0) +
   (f.types.length === ALL_TYPES.length ? 0 : 1) +
   (f.tags.length > 0 ? 1 : 0);
 
@@ -303,7 +318,7 @@ export interface HashState {
 //   f     min. fame                        m     min. elevation in m
 //   d     difficulty window "2-4"          v     max. traffic
 //   be    min. beauty                      o     pass sort key
-//   h     max. valley heat in °C           w     max. share of rain days
+//   h     max. valley heat in °C           w     max. rain days of 15
 //   a     road types "pass,spur"           e     road labels "toll,carfree"
 //   pass | tour | town   the selected entity's slug
 //
@@ -423,7 +438,7 @@ const HASH_OUT = {
   q: HASH.q.withDefault(DEFAULT_FILTERS.query),
   s: HASH.s.withDefault(DEFAULT_FILTERS.status),
   v: HASH.v.withDefault(DEFAULT_FILTERS.maxTraffic),
-  w: HASH.w.withDefault(DEFAULT_FILTERS.maxWetPct),
+  w: HASH.w.withDefault(DEFAULT_FILTERS.maxWetDays),
 };
 const loadHash = createLoader(HASH);
 const serialize = createSerializer(HASH_OUT, { clearOnDefault: true });
@@ -444,7 +459,7 @@ export const parseHash = (hash: string): HashState => {
       difficulty: given("d"),
       maxTraffic: given("v"),
       maxValleyTmax: given("h"),
-      maxWetPct: given("w"),
+      maxWetDays: given("w"),
       minBeauty: given("be"),
       minElevation: given("m"),
       minFame: given("f"),
@@ -498,7 +513,7 @@ export const serializeHash = (
     tour: selection?.kind === "tour" ? selection.slug : null,
     town: selection?.kind === "town" ? selection.slug : null,
     v: filters.maxTraffic,
-    w: filters.maxWetPct,
+    w: filters.maxWetDays,
     z: view.zoom,
   }).replace(/^\?/u, "");
 };

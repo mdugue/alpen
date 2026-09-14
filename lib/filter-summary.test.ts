@@ -24,7 +24,7 @@ describe("appliedFilters", () => {
         favoritesOnly: true,
         maxTraffic: 2,
         maxValleyTmax: 26,
-        maxWetPct: 53,
+        maxWetDays: 8,
         minBeauty: 4,
         minElevation: 2000,
         minFame: 5,

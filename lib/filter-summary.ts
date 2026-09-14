@@ -101,11 +101,11 @@ export const appliedFilters = (f: Filters): AppliedFilter[] => {
       ...g,
       maxValleyTmax: HEAT_OPTIONS[0][0],
     }));
-  const wet = optionLabel(WET_OPTIONS, f.maxWetPct);
+  const wet = optionLabel(WET_OPTIONS, f.maxWetDays);
   if (wet && wet !== "egal")
     add("wet", `Regentage ${wet}`, (g) => ({
       ...g,
-      maxWetPct: WET_OPTIONS[0][0],
+      maxWetDays: WET_OPTIONS[0][0],
     }));
   return out;
 };
@@ -122,4 +122,4 @@ export const hasSecondaryFilters = (f: Filters) =>
   f.minBeauty > RATING_MIN ||
   f.minFame > 1 ||
   f.maxValleyTmax < HEAT_OPTIONS[0][0] ||
-  f.maxWetPct < WET_OPTIONS[0][0];
+  f.maxWetDays < WET_OPTIONS[0][0];

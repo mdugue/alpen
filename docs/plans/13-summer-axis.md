@@ -364,10 +364,10 @@ The four-rung scale is for strip and histogram. The filters
 `Status` and gain two raw-signal selects, so the data that makes summer
 queryable is not buried under the composite:
 
-| Filter          | Options (hash value → label)                       | Hash | Applies to                     |
-| --------------- | -------------------------------------------------- | ---- | ------------------------------ |
-| `maxValleyTmax` | 99 "egal" · 26 "unter 26 °C" · 22 "unter 22 °C"    | `h`  | pass, and every pass of a tour |
-| `maxWetPct`     | 100 "egal" · 53 "bis 8 von 15" · 40 "bis 6 von 15" | `w`  | pass, and every pass of a tour |
+| Filter          | Options (hash value → label)               | Hash | Applies to                     |
+| --------------- | ------------------------------------------ | ---- | ------------------------------ |
+| `maxValleyTmax` | 99 "egal" · 28 · 26 · 24 · 22 "unter … °C" | `h`  | pass, and every pass of a tour |
+| `maxWetDays`    | 15 "egal" · 10 · 8 · 6 · 4 "bis … von 15"  | `w`  | pass, and every pass of a tour |
 
 Both read the bucket of `filters.period` (and `valleys` for heat), are upper
 bounds like traffic, count in `countCriteria`, and are parsed with

@@ -294,11 +294,24 @@ describe("plan 13 summer filters", () => {
     ).toEqual([]);
   });
 
-  test("rain days are an inclusive upper bound", () => {
-    expect(slugs({ maxWetPct: 50 }, { mittel: year({ wetPct: 50 }) })).toEqual([
+  test("rain days are an inclusive upper bound, counted in days", () => {
+    // The share is rounded to whole days before it is compared, so a pass the
+    // panel shows as "8 von 15" clears a "bis 8 von 15" filter.
+    expect(slugs({ maxWetDays: 8 }, { mittel: year({ wetPct: 53 }) })).toEqual([
       "mittel",
     ]);
-    expect(slugs({ maxWetPct: 50 }, { mittel: year({ wetPct: 51 }) })).toEqual(
+    // 56 % still rounds to 8 days and passes; 60 % is the ninth day.
+    expect(slugs({ maxWetDays: 8 }, { mittel: year({ wetPct: 56 }) })).toEqual([
+      "mittel",
+    ]);
+    expect(slugs({ maxWetDays: 8 }, { mittel: year({ wetPct: 60 }) })).toEqual(
+      [],
+    );
+    // 10 days is exactly the line at which the status starts saying "nass".
+    expect(slugs({ maxWetDays: 10 }, { mittel: year({ wetPct: 69 }) })).toEqual(
+      ["mittel"],
+    );
+    expect(slugs({ maxWetDays: 10 }, { mittel: year({ wetPct: 70 }) })).toEqual(
       [],
     );
   });
@@ -311,7 +324,7 @@ describe("plan 13 summer filters", () => {
     expect(slugs({}, { mittel: year({}) }, false)).toEqual(["mittel"]);
     // No climate series at all: neither filter can say anything.
     expect(slugs({ maxValleyTmax: 28 }, {})).toEqual([]);
-    expect(slugs({ maxWetPct: 50 }, {})).toEqual([]);
+    expect(slugs({ maxWetDays: 8 }, {})).toEqual([]);
     expect(slugs({}, {})).toEqual(["mittel"]);
   });
 
@@ -324,7 +337,7 @@ describe("plan 13 summer filters", () => {
     expect(rows({})).toEqual(["lang", "kurz"]);
     // "lang" also crosses "winter", which has no series: it fails both bounds.
     expect(rows({ maxValleyTmax: 28 })).toEqual(["kurz"]);
-    expect(rows({ maxWetPct: 50 })).toEqual(["kurz"]);
+    expect(rows({ maxWetDays: 8 })).toEqual(["kurz"]);
   });
 });
 

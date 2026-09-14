@@ -385,7 +385,7 @@ export const FilterBody = ({
           />
 
           {/* The raw summer signals of the chosen half-month, not the composite:
-              "unter 28 °C im Tal" is a question the status alone cannot answer.
+              "unter 24 °C im Tal" is a question the status alone cannot answer.
               The valley value is derived from the summit series, and the label
               says so, as every derived value in the app does. */}
           <ThresholdChips
@@ -398,11 +398,11 @@ export const FilterBody = ({
           />
           <ThresholdChips
             id="f-wet"
-            label="Anteil der Regentage"
+            label="Regentage im Halbmonat"
             options={WET_OPTIONS}
-            count={(v) => countWith({ maxWetPct: v })}
-            value={filters.maxWetPct}
-            onChange={(v) => set("maxWetPct", v)}
+            count={(v) => countWith({ maxWetDays: v })}
+            value={filters.maxWetDays}
+            onChange={(v) => set("maxWetDays", v)}
           />
         </CollapsibleContent>
       </Collapsible>
