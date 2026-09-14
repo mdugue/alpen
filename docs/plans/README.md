@@ -17,26 +17,43 @@ that goal; features that only add route-level precision rank last.
 
 ## Recommended order
 
-| #   | Plan                                                               | Serves                      | Effort | Depends on           | Status                                                 |
-| --- | ------------------------------------------------------------------ | --------------------------- | ------ | -------------------- | ------------------------------------------------------ |
-| 00  | [Route quality gate](00-route-quality-gate.md)                     | trust in what the map shows | S      | –                    | [done](https://github.com/mdugue/alpen/pull/6)         |
-| 01  | [Map data out of the React payload](01-map-data-out-of-payload.md) | first load on holiday Wi-Fi | M      | 00 for complete data | [done](https://github.com/mdugue/alpen/pull/14)        |
-| 03  | [Make the period the hero](03-period-hero.md)                      | "when"                      | M      | –                    | [done](https://github.com/mdugue/alpen/pull/4)         |
-| 04  | [Climate-aware status](04-climate-aware-status.md)                 | "when", honesty             | S–M    | –                    | [done](https://github.com/mdugue/alpen/pull/4)         |
-| 12  | [Destinations](12-destinations.md)                                 | "where"                     | L      | 09                   | proposed                                               |
-| 13  | [Summer axis](13-summer-axis.md)                                   | "when" in summer, honesty   | M–L    | 04                   | [done](https://github.com/mdugue/alpen/pull/17)        |
-| 05  | [Filters and search](05-filters-and-search.md)                     | finding things              | S–M    | –                    | [done](https://github.com/mdugue/alpen/pull/9)         |
-| 02  | [Real routes instead of the hash](02-real-routes.md)               | sharing, back button, SEO   | L      | 01                   | proposed                                               |
-| 06  | [A basemap that matches the theme](06-basemap.md)                  | dark mode, map quality      | M      | –                    | [done](https://github.com/mdugue/alpen/pull/22)        |
-| 09  | [Schema validation with zod](09-schema-validation.md)              | data safety                 | S      | –                    | [done](https://github.com/mdugue/alpen/pull/9)         |
-| 10  | [Tests](10-tests.md)                                               | refactor safety             | M      | –                    | [done](https://github.com/mdugue/alpen/pull/4)         |
-| 11  | [Smaller items](11-smaller-items.md)                               | polish                      | S each | varies               | [in progress](https://github.com/mdugue/alpen/pull/16) |
-| 08  | [English toggle](08-english-toggle.md)                             | audience                    | M–L    | 02                   | proposed                                               |
-| 07  | [Profile interactivity](07-profile-interactivity.md)               | detail, low priority now    | S–M    | –                    | [done](https://github.com/mdugue/alpen/pull/11)        |
-| 14  | [Road types and tags](14-road-types-and-tags.md)                   | roads that are not passes   | L      | 09, 05               | [in progress](https://github.com/mdugue/alpen/pull/33) |
+| #   | Plan                                                                  | Serves                              | Effort | Depends on           | Status                                                 |
+| --- | --------------------------------------------------------------------- | ----------------------------------- | ------ | -------------------- | ------------------------------------------------------ |
+| 00  | [Route quality gate](00-route-quality-gate.md)                        | trust in what the map shows         | S      | –                    | [done](https://github.com/mdugue/alpen/pull/6)         |
+| 01  | [Map data out of the React payload](01-map-data-out-of-payload.md)    | first load on holiday Wi-Fi         | M      | 00 for complete data | [done](https://github.com/mdugue/alpen/pull/14)        |
+| 03  | [Make the period the hero](03-period-hero.md)                         | "when"                              | M      | –                    | [done](https://github.com/mdugue/alpen/pull/4)         |
+| 04  | [Climate-aware status](04-climate-aware-status.md)                    | "when", honesty                     | S–M    | –                    | [done](https://github.com/mdugue/alpen/pull/4)         |
+| 12  | [Destinations](12-destinations.md)                                    | "where"                             | L      | 09                   | proposed                                               |
+| 13  | [Summer axis](13-summer-axis.md)                                      | "when" in summer, honesty           | M–L    | 04                   | [done](https://github.com/mdugue/alpen/pull/17)        |
+| 05  | [Filters and search](05-filters-and-search.md)                        | finding things                      | S–M    | –                    | [done](https://github.com/mdugue/alpen/pull/9)         |
+| 02  | [Real routes instead of the hash](02-real-routes.md)                  | sharing, back button, SEO           | L      | 01                   | proposed                                               |
+| 06  | [A basemap that matches the theme](06-basemap.md)                     | dark mode, map quality              | M      | –                    | [done](https://github.com/mdugue/alpen/pull/22)        |
+| 09  | [Schema validation with zod](09-schema-validation.md)                 | data safety                         | S      | –                    | [done](https://github.com/mdugue/alpen/pull/9)         |
+| 10  | [Tests](10-tests.md)                                                  | refactor safety                     | M      | –                    | [done](https://github.com/mdugue/alpen/pull/4)         |
+| 11  | [Smaller items](11-smaller-items.md)                                  | polish                              | S each | varies               | [in progress](https://github.com/mdugue/alpen/pull/16) |
+| 08  | [English toggle](08-english-toggle.md)                                | audience                            | M–L    | 02                   | proposed                                               |
+| 07  | [Profile interactivity](07-profile-interactivity.md)                  | detail, low priority now            | S–M    | –                    | [done](https://github.com/mdugue/alpen/pull/11)        |
+| 14  | [Road types and tags](14-road-types-and-tags.md)                      | roads that are not passes           | L      | 09, 05               | [in progress](https://github.com/mdugue/alpen/pull/33) |
+| 15  | [The year of a pass, computed once](15-pass-year.md)                  | compute, one series for all readers | S–M    | 13                   | proposed                                               |
+| 16  | [One status vocabulary](16-status-vocabulary.md)                      | honesty, one home for the words     | M      | 15                   | proposed                                               |
+| 17  | [Detail panel per kind](17-detail-panel-per-kind.md)                  | testable panel, 02 and 12           | M      | 15, 16               | proposed                                               |
+| 18  | [Selection, visibility and camera](18-selection-visibility-camera.md) | one rule, 02 as adapter             | M      | –                    | proposed                                               |
+| 19  | [A map scene between the rows and MapLibre](19-map-scene.md)          | map testable without WebGL          | M–L    | 18, 01               | proposed                                               |
+| 20  | [The gate's decisions out of the build script](20-route-decisions.md) | pipeline testable, one retry rule   | M–L    | 00                   | proposed                                               |
+| 21  | [One adapter per external host](21-host-adapters.md)                  | offline pipeline test               | M      | 20                   | proposed                                               |
 
 Effort: S ≤ 1 day, M 2–3 days, L 4–6 days. 09, 10 and 11 can be interleaved
 with anything; do 09 before 12 so the new entity gets a schema from day one.
+
+Plans 15–21 came out of an architecture review (September 2026). They add no
+feature; each turns a shallow module into a deep one so that the feature plans
+after them land in one place and can be tested through one interface. They
+form three independent chains and can run in parallel: **15 → 16 → 17** in the
+app (the status series, its words, the panel), **18 → 19** on the map (what is
+shown, the scene) and **20 → 21** in the pipeline (the gate's decisions, the
+hosts). Within a chain a later plan assumes the earlier one is done and is
+written smaller because of it. Start with 15: it shrinks 16 and 17 and sits in
+the most-changed files.
 
 ## Status legend
 
