@@ -114,6 +114,8 @@ describe("parseHash", () => {
     expect(parseHash("#be=2").filters.minBeauty).toBeUndefined();
     expect(parseHash("#f=99").filters.minFame).toBeUndefined();
     expect(parseHash("#f=4").filters.minFame).toBe(4);
+    expect(parseHash("#f=5").filters.minFame).toBe(5);
+    expect(parseHash("#f=2").filters.minFame).toBeUndefined();
     expect(parseHash("#m=2000oops").filters.minElevation).toBeUndefined();
     expect(parseHash("#m=2000").filters.minElevation).toBe(2000);
     // Only the thresholds the chips offer.

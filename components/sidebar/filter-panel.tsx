@@ -126,7 +126,7 @@ export const AppliedFilters = ({
           aria-label={`Filter „${chip.label}" entfernen`}
           className={cn(
             "h-7 shrink-0 rounded-full pr-1.5 pl-3 font-normal",
-            "pointer-coarse:h-9 pointer-coarse:pl-3.5",
+            "pointer-coarse:h-9",
           )}
         >
           {chip.label}
@@ -230,7 +230,7 @@ export const FilterBody = ({
             onPressedChange={() =>
               set("difficulty", toggleLevel(filters.difficulty, n))
             }
-            className="w-11 justify-center px-0 tabular-nums pointer-coarse:w-13"
+            className="w-9 justify-center px-0 tabular-nums pointer-coarse:w-11"
           >
             {n}
           </FilterChip>

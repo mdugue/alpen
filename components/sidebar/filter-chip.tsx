@@ -5,7 +5,7 @@ import type { ReactNode } from "react";
 import { Toggle } from "@/components/ui/toggle";
 import type { Options } from "@/lib/app-state";
 import { thresholdChips } from "@/lib/app-state";
-import { cn } from "@/lib/utils";
+import { cn, TOUCH_CONTROL } from "@/lib/utils";
 
 /**
  * Every filter in this app is a chip: a small, pressable word that is either
@@ -53,8 +53,12 @@ export const FilterChip = ({
     aria-label={label}
     title={hint}
     className={cn(
-      "border-border h-8 gap-1.5 rounded-full px-3 font-normal",
-      "pointer-coarse:h-10 pointer-coarse:gap-2 pointer-coarse:px-4",
+      // The Toggle's own default size, widened into a pill and grown for a
+      // thumb by the constant every other control in the app uses – h-7 with a
+      // mouse, h-9 on a coarse pointer. No step of its own: a chip taller than
+      // the buttons beside it reads as a different kind of thing.
+      "border-border gap-1.5 rounded-full px-3 font-normal",
+      TOUCH_CONTROL,
       "aria-pressed:border-primary aria-pressed:bg-primary aria-pressed:text-primary-foreground aria-pressed:font-medium",
       "aria-pressed:hover:bg-primary/90 aria-pressed:hover:text-primary-foreground",
       className,
@@ -95,11 +99,7 @@ export const ChipGroup = ({
       )}
     </div>
     {hint && <p className="text-muted-foreground text-2xs -mt-1">{hint}</p>}
-    <div
-      role="group"
-      aria-labelledby={id}
-      className="flex flex-wrap gap-1.5 pointer-coarse:gap-2"
-    >
+    <div role="group" aria-labelledby={id} className="flex flex-wrap gap-1.5">
       {children}
     </div>
   </div>

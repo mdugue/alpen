@@ -64,10 +64,17 @@ export const BEAUTY_OPTIONS = [
   [4, "ab 4"],
   [5, "nur 5"],
 ] as const satisfies Options;
+/**
+ * The full ladder, "nur 5" included: nine roads carry it – Galibier, Alpe
+ * d'Huez, Ventoux, Stelvio, Mortirolo, Großglockner, Zoncolan, Ghisallo,
+ * Sormano – and "only the ones everybody knows" is exactly the question
+ * somebody planning their first Alpine week asks.
+ */
 export const FAME_OPTIONS = [
   [1, "egal"],
   [3, "ab 3"],
   [4, "ab 4"],
+  [5, "nur 5"],
 ] as const satisfies Options;
 /**
  * Pass height as a few round thresholds rather than a slider: the question is

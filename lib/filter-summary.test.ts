@@ -27,7 +27,7 @@ describe("appliedFilters", () => {
         maxWetPct: 50,
         minBeauty: 4,
         minElevation: 2000,
-        minFame: 4,
+        minFame: 5,
         status: ["open", "risky"],
         tags: ["carfree", "glacier"],
         types: ["pass", "spur"],
@@ -43,7 +43,7 @@ describe("appliedFilters", () => {
       "ab 2.000 m",
       "Verkehr bis 2",
       "Schönheit ab 4",
-      "Bekanntheit ab 4",
+      "Bekanntheit nur 5",
       "Tal unter 28 °C",
       "Regentage unter 50 %",
     ]);
