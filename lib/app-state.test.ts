@@ -7,10 +7,13 @@ import {
   DEFAULT_VIEW,
   defined,
   hasActiveFilters,
+  pickedMembers,
   parseHash,
   resolvePeriod,
   serializeHash,
   statusMatches,
+  toggleLevel,
+  toggleMember,
 } from "@/lib/app-state";
 import type { Filters, MapView, Selection } from "@/lib/app-state";
 
@@ -78,7 +81,8 @@ describe("parseHash", () => {
   test("legacy and special status values from older links", () => {
     expect(parseHash("#s=openRisky").filters.status).toEqual(["open", "risky"]);
     expect(parseHash("#s=all").filters.status).toBeUndefined();
-    expect(parseHash("#s=none").filters.status).toEqual([]);
+    // "none" used to hide everything; no control produces it any more.
+    expect(parseHash("#s=none").filters.status).toBeUndefined();
     expect(parseHash("#s=open,nonsense").filters.status).toEqual(["open"]);
     expect(parseHash("#s=nonsense").filters.status).toBeUndefined();
   });
@@ -112,6 +116,8 @@ describe("parseHash", () => {
     expect(parseHash("#f=4").filters.minFame).toBe(4);
     expect(parseHash("#m=2000oops").filters.minElevation).toBeUndefined();
     expect(parseHash("#m=2000").filters.minElevation).toBe(2000);
+    // Only the thresholds the chips offer.
+    expect(parseHash("#m=1700").filters.minElevation).toBeUndefined();
     expect(parseHash("#be=abc").filters.minBeauty).toBeUndefined();
     expect(parseHash("#o=nonsense").filters.sort).toBeUndefined();
   });
@@ -222,11 +228,12 @@ describe("serializeHash", () => {
     expect(back.view.bearing).toBe(30);
   });
 
-  test("an empty status filter survives the round trip", () => {
-    expect(
-      parseHash(serializeHash(filters({ status: [] }), null, view())).filters
-        .status,
-    ).toEqual([]);
+  test("an empty set never reaches the hash – it is no filter", () => {
+    // `toggleMember` cannot produce one; a hand-written link with it opens
+    // unfiltered rather than on an empty list.
+    const hash = serializeHash(filters({ status: [] }), null, view());
+    expect(parseHash(hash).filters.status).toBeUndefined();
+    expect(parseHash("#a=").filters.types).toBeUndefined();
   });
 
   test("round trip through parse and serialize is stable", () => {
@@ -273,6 +280,31 @@ describe("filters", () => {
         }),
       ),
     ).toBe(7);
+  });
+
+  test("toggleMember never leaves an empty or a full set behind", () => {
+    expect(toggleMember(ALL_STATUS, ALL_STATUS, "open")).toEqual(["open"]);
+    expect(toggleMember(["open"], ALL_STATUS, "closed")).toEqual([
+      "open",
+      "closed",
+    ]);
+    // The last one out lifts the filter; so does picking every one.
+    expect(toggleMember(["open"], ALL_STATUS, "open")).toEqual(ALL_STATUS);
+    expect(toggleMember(["open", "closed"], ALL_STATUS, "risky")).toEqual(
+      ALL_STATUS,
+    );
+    expect(pickedMembers(ALL_STATUS, ALL_STATUS)).toEqual([]);
+    expect(pickedMembers(["risky"], ALL_STATUS)).toEqual(["risky"]);
+  });
+
+  test("toggleLevel keeps the difficulty window in one piece", () => {
+    expect(toggleLevel([1, 5], 3)).toEqual([3, 3]);
+    expect(toggleLevel([3, 3], 5)).toEqual([3, 5]);
+    expect(toggleLevel([3, 5], 1)).toEqual([1, 5]);
+    expect(toggleLevel([2, 4], 4)).toEqual([2, 3]);
+    expect(toggleLevel([2, 4], 2)).toEqual([3, 4]);
+    expect(toggleLevel([2, 4], 3)).toEqual([3, 3]);
+    expect(toggleLevel([3, 3], 3)).toEqual([1, 5]);
   });
 
   test("statusMatches follows the visible set", () => {

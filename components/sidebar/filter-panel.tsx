@@ -1,8 +1,18 @@
 "use client";
 
-import { SlidersHorizontal, Star } from "lucide-react";
-import { useState } from "react";
+import {
+  ChevronDown,
+  RotateCcw,
+  SlidersHorizontal,
+  Star,
+  X,
+} from "lucide-react";
 
+import {
+  ChipGroup,
+  FilterChip,
+  ThresholdChips,
+} from "@/components/sidebar/filter-chip";
 import { StatusDot } from "@/components/status-badge";
 import { TagIcon } from "@/components/tags";
 import { Badge } from "@/components/ui/badge";
@@ -13,342 +23,380 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import {
-  Field,
-  FieldGroup,
-  FieldLabel,
-  FieldTitle,
-} from "@/components/ui/field";
-import {
-  NativeSelect,
-  NativeSelectOption,
-} from "@/components/ui/native-select";
-import { Slider } from "@/components/ui/slider";
-import { Toggle } from "@/components/ui/toggle";
-import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
-import {
   ALL_STATUS,
   ALL_TYPES,
   BEAUTY_OPTIONS,
-  countCriteria,
+  ELEVATION_OPTIONS,
   FAME_OPTIONS,
   HEAT_OPTIONS,
+  pickedMembers,
   RATING_MAX,
   RATING_MIN,
+  toggleLevel,
+  toggleMember,
   TRAFFIC_OPTIONS,
   WET_OPTIONS,
 } from "@/lib/app-state";
-import type { Filters } from "@/lib/app-state";
+import type { EntityKind, Filters } from "@/lib/app-state";
+import { appliedFilters, difficultyLabel } from "@/lib/filter-summary";
 import { ROAD_TAG, ROAD_TAGS, ROAD_TYPE } from "@/lib/regions";
 import { STATUS_LABEL } from "@/lib/status";
 import type { RoadTag, RoadType, Status } from "@/lib/types";
-import { cn, fmtUnit, PRESSED, TOUCH_CONTROL, TOUCH_SELECT } from "@/lib/utils";
+import { cn, fmt, TOUCH_CONTROL } from "@/lib/utils";
+
+const LEVELS = [1, 2, 3, 4, 5] as const;
+
+/** How many decisions the panel currently carries – the badge on its trigger. */
+export const filterCount = (f: Filters) => appliedFilters(f).length;
 
 /**
- * Five type buttons over six grid columns: three and two, both rows full.
- * `Stichstraße` and `Balkonstraße` do not fit a fifth of the 352 px panel, and
- * a filter whose options read "Stichstr…" is not one anybody can choose from;
- * the vocabulary order is the display order, so the split is here and not in
- * `ROAD_TYPES`.
+ * The button that opens the panel, at the end of the search row. The badge
+ * counts the same decisions the chip row lists, so trigger and row can never
+ * disagree about how filtered the list is.
  */
-const TYPE_SPAN: Record<RoadType, string> = {
-  balcony: "col-span-3",
-  pass: "col-span-2",
-  plateau: "col-span-2",
-  spur: "col-span-2",
-  valley: "col-span-3",
+export const FilterTrigger = ({
+  filters,
+  open,
+  onOpenChange,
+  className,
+}: {
+  filters: Filters;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  className?: string;
+}) => {
+  const count = filterCount(filters);
+  return (
+    <Button
+      variant={count > 0 ? "secondary" : "outline"}
+      aria-expanded={open}
+      onClick={() => onOpenChange(!open)}
+      className={cn(TOUCH_CONTROL, className)}
+    >
+      <SlidersHorizontal data-icon="inline-start" />
+      Filter
+      {count > 0 && <Badge>{count}</Badge>}
+      <ChevronDown
+        data-icon="inline-end"
+        className={cn("transition-transform", open && "rotate-180")}
+      />
+    </Button>
+  );
 };
 
-/** Base UI hands back a number for a single thumb and an array for a range. */
-const asRange = (v: number | readonly number[]): [number, number] =>
-  Array.isArray(v)
-    ? [v[0] ?? RATING_MIN, v[1] ?? RATING_MAX]
-    : [v as number, v as number];
-
-/** A labelled native select for one 1–5 threshold; label above, so three fit in a row. */
-const Select = ({
-  id,
-  label,
-  value,
-  onChange,
-  options,
-}: {
-  id: string;
-  label: string;
-  value: number;
-  onChange: (value: number) => void;
-  options: readonly (readonly [value: number, label: string])[];
-}) => (
-  <Field className={cn("gap-1")}>
-    <FieldLabel htmlFor={id} className="text-muted-foreground text-2xs">
-      {label}
-    </FieldLabel>
-    <NativeSelect
-      size="sm"
-      id={id}
-      value={value}
-      onChange={(e) => onChange(Number(e.target.value))}
-      className={cn("w-full", TOUCH_SELECT)}
-    >
-      {options.map(([v, text]) => (
-        <NativeSelectOption key={v} value={v}>
-          {text}
-        </NativeSelectOption>
-      ))}
-    </NativeSelect>
-  </Field>
-);
-
 /**
- * The one filter panel of the app: the bookmarks, the status picker and the
- * pass criteria. Everything here applies to passes and tours alike (see
- * `Filters`), so it sits above the lists rather than inside one of them, and
- * every control is inline – a popup over a bottom sheet is one edge case too
- * many on a phone.
+ * What is currently filtered away, as one removable chip per decision, plus
+ * the way back to nothing. Without it the only place the state of the app is
+ * written down is the panel itself, and the panel is the thing that has to be
+ * open to be read – on a phone that means the list it describes is off screen
+ * while the answer is on it. The row scrolls sideways rather than wrapping, so
+ * a panel with eight filters never pushes the lists off the sheet.
  */
-export const FilterPanel = ({
+export const AppliedFilters = ({
   filters,
   setFilters,
-  favoriteCount,
-  search,
-  hidden,
+  onReset,
+  className,
 }: {
   filters: Filters;
   setFilters: (update: (f: Filters) => Filters) => void;
-  /** Shown on the bookmark filter, which is the only filter with a count. */
+  onReset: () => void;
+  className?: string;
+}) => {
+  const applied = appliedFilters(filters);
+  if (applied.length === 0) return null;
+  return (
+    <div
+      className={cn(
+        "-mx-3 flex items-center gap-1.5 overflow-x-auto px-3 pb-0.5",
+        // A horizontal strip inside the phone's bottom sheet: the sheet must
+        // not read a sideways drag on it as a swipe downwards.
+        "[scrollbar-width:none] [&::-webkit-scrollbar]:hidden",
+        className,
+      )}
+      data-base-ui-swipe-ignore
+      aria-label="Aktive Filter"
+    >
+      {applied.map((chip) => (
+        <Button
+          key={chip.key}
+          variant="secondary"
+          size="sm"
+          onClick={() => setFilters(chip.clear)}
+          aria-label={`Filter „${chip.label}" entfernen`}
+          className={cn(
+            "h-7 shrink-0 rounded-full pr-1.5 pl-3 font-normal",
+            "pointer-coarse:h-9 pointer-coarse:pl-3.5",
+          )}
+        >
+          {chip.label}
+          <X data-icon="inline-end" className="opacity-60" />
+        </Button>
+      ))}
+      {applied.length > 1 && (
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={onReset}
+          className="h-7 shrink-0 rounded-full px-2.5 font-normal pointer-coarse:h-9"
+        >
+          <RotateCcw data-icon="inline-start" />
+          Alle
+        </Button>
+      )}
+    </div>
+  );
+};
+
+/**
+ * The filter panel itself. Four decisions are always visible – the status, how
+ * hard, how high, and whether only the bookmarks count – because those are the
+ * ones a holiday planner makes first; the eight that answer a sharper question
+ * wait behind "Weitere Filter", so the panel opens at a height a phone can
+ * show in one piece instead of a screen and a half of controls.
+ *
+ * It lives inside the list's own scroll container rather than above it: the
+ * sidebar's header is a fixed row, and a panel that grows inside a fixed row
+ * simply runs off the bottom of the sheet with no way to reach its lower half.
+ *
+ * Nothing is applied on a button. The list, the map and the counts change
+ * under every tap, which is what makes the panel answerable at all – the count
+ * line at the end says what the current answer is, so the effect of a chip is
+ * visible without closing the panel first.
+ */
+export const FilterBody = ({
+  filters,
+  setFilters,
+  counts,
+  totals,
+  favoriteCount,
+  onReset,
+  more,
+  onMoreChange,
+}: {
+  filters: Filters;
+  setFilters: (update: (f: Filters) => Filters) => void;
+  /** How many rows each list shows right now, and how many there are in all. */
+  counts: Record<EntityKind, number>;
+  totals: Record<EntityKind, number>;
   favoriteCount: number;
-  /** The search row; the trigger sits at its end so the panel costs no row of its own. */
-  search: React.ReactNode;
-  /** Bottom sheet at its peek height: only the search row stays. */
-  hidden?: boolean;
+  onReset: () => void;
+  /** The second half of the panel; its state lives with the panel's own. */
+  more: boolean;
+  onMoreChange: (open: boolean) => void;
 }) => {
   const set = <K extends keyof Filters>(key: K, value: Filters[K]) =>
     setFilters((f) => ({ ...f, [key]: value }));
-  const statusFiltered = filters.status.length !== ALL_STATUS.length;
-  const active =
-    countCriteria(filters) +
-    (statusFiltered ? 1 : 0) +
-    (filters.favoritesOnly ? 1 : 0);
-  // Opens by itself when a link carries filters; the user's own toggling wins afterwards.
-  const [manual, setManual] = useState<boolean | null>(null);
-  const open = manual ?? active > 0;
-  const [minDifficulty, maxDifficulty] = filters.difficulty;
-  const difficultyLabel =
-    minDifficulty === RATING_MIN && maxDifficulty === RATING_MAX
-      ? "Jede Schwierigkeit"
-      : minDifficulty === maxDifficulty
-        ? `Schwierigkeit ${minDifficulty}`
-        : `Schwierigkeit ${minDifficulty}–${maxDifficulty}`;
+  const pickedStatus = pickedMembers(filters.status, ALL_STATUS);
+  const pickedTypes = pickedMembers(filters.types, ALL_TYPES);
+  const [lo, hi] = filters.difficulty;
+  const wholeScale = lo === RATING_MIN && hi === RATING_MAX;
+  const count = filterCount(filters);
 
   return (
-    <Collapsible open={open} onOpenChange={setManual}>
-      <div className="flex items-center gap-2">
-        {search}
+    <div className="grid gap-4 px-3 pt-3 pb-4">
+      <ChipGroup id="f-status" label="Zustand im gewählten Zeitraum">
+        {ALL_STATUS.map((s: Status) => {
+          const on = pickedStatus.includes(s);
+          return (
+            <FilterChip
+              key={s}
+              pressed={on}
+              onPressedChange={() =>
+                set("status", toggleMember(filters.status, ALL_STATUS, s))
+              }
+            >
+              <StatusDot status={s} hollow={!on} />
+              {STATUS_LABEL[s]}
+            </FilterChip>
+          );
+        })}
+      </ChipGroup>
+
+      {/* Five cells, one per level of the editorial scale, and the window they
+          span is the filter. Two of them are a range without a second thumb to
+          aim at, and the cells say what the numbers mean by standing next to
+          the same scale the list draws. */}
+      <ChipGroup
+        id="f-difficulty"
+        label="Schwierigkeit"
+        value={wholeScale ? "egal" : difficultyLabel(filters.difficulty)}
+      >
+        {LEVELS.map((n) => (
+          <FilterChip
+            key={n}
+            label={`Schwierigkeit ${n}`}
+            pressed={!wholeScale && n >= lo && n <= hi}
+            onPressedChange={() =>
+              set("difficulty", toggleLevel(filters.difficulty, n))
+            }
+            className="w-11 justify-center px-0 tabular-nums pointer-coarse:w-13"
+          >
+            {n}
+          </FilterChip>
+        ))}
+      </ChipGroup>
+
+      <ThresholdChips
+        id="f-elevation"
+        label="Höhe des Scheitelpunkts"
+        options={ELEVATION_OPTIONS}
+        value={filters.minElevation}
+        onChange={(v) => set("minElevation", v)}
+      />
+
+      <FilterChip
+        pressed={filters.favoritesOnly}
+        onPressedChange={(on) => set("favoritesOnly", on)}
+        className="w-fit"
+      >
+        <Star className={cn(filters.favoritesOnly && "fill-current")} />
+        Nur Gemerkte
+        {favoriteCount > 0 && (
+          <span className="tabular-nums opacity-70">{favoriteCount}</span>
+        )}
+      </FilterChip>
+
+      <Collapsible open={more} onOpenChange={onMoreChange}>
         <CollapsibleTrigger
           render={
             <Button
-              variant="outline"
-              className={cn(TOUCH_CONTROL, hidden && "hidden")}
+              variant="ghost"
+              size="sm"
+              // A ghost trigger fills on `aria-expanded`; a filter group is
+              // not a surface of its own, no more than a sidebar section is.
+              className={cn(
+                "-mx-1 w-full justify-start aria-expanded:bg-transparent",
+                TOUCH_CONTROL,
+              )}
             />
           }
         >
-          <SlidersHorizontal data-icon="inline-start" />
-          Filter
-          {active > 0 && <Badge variant="secondary">{active}</Badge>}
+          <ChevronDown
+            data-icon="inline-start"
+            className={cn("transition-transform", more && "rotate-180")}
+          />
+          Weitere Filter
         </CollapsibleTrigger>
-      </div>
-      {/*
-        Kept mounted: the two sliders measure themselves with
-        `getBoundingClientRect` when they mount, and inside the phone's bottom
-        sheet every such measurement forces a layout of the whole sheet – with
-        the passes unfolded that is thousands of elements, and opening the
-        panel took the better part of a second. Mounted once, the panel only
-        toggles its `hidden` attribute afterwards.
-      */}
-      <CollapsibleContent
-        keepMounted
-        className={cn("grid gap-1.5 pt-2", hidden && "hidden")}
-      >
-        <Toggle
-          variant="outline"
-          pressed={filters.favoritesOnly}
-          onPressedChange={(on) => set("favoritesOnly", on)}
-          aria-label="Nur Gemerkte anzeigen"
-          className={cn("justify-start gap-2", TOUCH_CONTROL, PRESSED)}
-        >
-          <Star className={cn(filters.favoritesOnly && "fill-current")} />
-          Nur Gemerkte
-          {favoriteCount > 0 && (
-            <span className="ml-auto tabular-nums">{favoriteCount}</span>
-          )}
-        </Toggle>
-        <ToggleGroup
-          multiple
-          spacing={0}
-          variant="outline"
-          value={filters.status}
-          onValueChange={(picked) =>
-            set(
-              "status",
-              ALL_STATUS.filter((s) => picked.includes(s)),
-            )
-          }
-          aria-label="Status filtern"
-          className="w-full"
-        >
-          {/* Filled dot = kept in the lists and on the map, hollow = filtered out. */}
-          {ALL_STATUS.map((s: Status) => (
-            <ToggleGroupItem
-              key={s}
-              value={s}
-              className={cn("flex-1", TOUCH_CONTROL)}
-            >
-              <StatusDot status={s} hollow={!filters.status.includes(s)} />
-              <span className="truncate">{STATUS_LABEL[s]}</span>
-            </ToggleGroupItem>
-          ))}
-        </ToggleGroup>
-        {/* The drawer must not read a drag on a slider as a swipe on the sheet. */}
-        <Field orientation="horizontal" data-base-ui-swipe-ignore>
-          <FieldTitle id="difficulty" className="w-32 shrink-0 tabular-nums">
-            {difficultyLabel}
-          </FieldTitle>
-          <Slider
-            aria-labelledby="difficulty"
-            value={filters.difficulty}
-            min={RATING_MIN}
-            max={RATING_MAX}
-            step={1}
-            onValueChange={(v) => set("difficulty", asRange(v))}
-          />
-        </Field>
-        <Field orientation="horizontal" data-base-ui-swipe-ignore>
-          <FieldTitle id="min-elevation" className="w-32 shrink-0 tabular-nums">
-            {filters.minElevation > 0
-              ? `ab ${fmtUnit(filters.minElevation, "m")}`
-              : "Jede Höhe"}
-          </FieldTitle>
-          <Slider
-            aria-labelledby="min-elevation"
-            value={[filters.minElevation]}
-            min={0}
-            max={2800}
-            step={100}
-            onValueChange={(v) =>
-              set("minElevation", Array.isArray(v) ? (v[0] ?? 0) : v)
-            }
-          />
-        </Field>
-        <FieldGroup className="grid grid-cols-3 gap-2">
-          <Select
-            id="max-traffic"
-            label="Verkehr"
-            value={filters.maxTraffic}
-            onChange={(v) => set("maxTraffic", v)}
-            options={TRAFFIC_OPTIONS}
-          />
-          <Select
-            id="min-beauty"
-            label="Schönheit"
-            value={filters.minBeauty}
-            onChange={(v) => set("minBeauty", v)}
-            options={BEAUTY_OPTIONS}
-          />
-          <Select
-            id="min-fame"
-            label="Bekanntheit"
-            value={filters.minFame}
-            onChange={(v) => set("minFame", v)}
-            options={FAME_OPTIONS}
-          />
-        </FieldGroup>
-        {/* Art and Merkmale: the two axes of plan 14. The type is topology and
-            single-valued per road, so the set is a plain "which kinds do I
-            want"; the labels are character and stack with and-semantics, which
-            is why they carry their word next to the glyph – a strip of icons
-            alone is scannable in a row but not choosable in a filter. */}
-        <FieldGroup className="grid gap-1.5">
-          <FieldTitle
-            id="road-types"
-            className="text-muted-foreground text-2xs"
-          >
-            Art der Straße
-          </FieldTitle>
-          <ToggleGroup
-            multiple
-            spacing={0}
-            variant="outline"
-            value={filters.types}
-            onValueChange={(picked) =>
-              set(
-                "types",
-                ALL_TYPES.filter((t) => picked.includes(t)),
-              )
-            }
-            aria-labelledby="road-types"
-            className="grid w-full grid-cols-6"
-          >
+        <CollapsibleContent className="grid gap-4 pt-3">
+          {/* Art and Merkmale: the two axes of plan 14. The type is topology
+              and single-valued per road, so the set is a plain "which kinds do
+              I want"; the labels are character and stack with and-semantics,
+              which is why they carry their word next to the glyph – a strip of
+              icons alone is scannable in a row but not choosable in a filter. */}
+          <ChipGroup id="f-types" label="Art der Straße">
             {ALL_TYPES.map((t: RoadType) => (
-              <ToggleGroupItem
+              <FilterChip
                 key={t}
-                value={t}
-                title={ROAD_TYPE[t].hint}
-                className={cn("min-w-0", TYPE_SPAN[t], TOUCH_CONTROL)}
+                hint={ROAD_TYPE[t].hint}
+                pressed={pickedTypes.includes(t)}
+                onPressedChange={() =>
+                  set("types", toggleMember(filters.types, ALL_TYPES, t))
+                }
               >
-                <span className="truncate">{ROAD_TYPE[t].label}</span>
-              </ToggleGroupItem>
+                {ROAD_TYPE[t].label}
+              </FilterChip>
             ))}
-          </ToggleGroup>
-          <FieldTitle id="road-tags" className="text-muted-foreground text-2xs">
-            Merkmale – alle ausgewählten müssen zutreffen
-          </FieldTitle>
-          <ToggleGroup
-            multiple
-            spacing={0}
-            variant="outline"
-            value={filters.tags}
-            onValueChange={(picked) =>
-              set(
-                "tags",
-                ROAD_TAGS.filter((t) => picked.includes(t)),
-              )
-            }
-            aria-labelledby="road-tags"
-            className="grid w-full grid-cols-3"
+          </ChipGroup>
+
+          <ChipGroup
+            id="f-tags"
+            label="Merkmale"
+            hint="Alle ausgewählten müssen zutreffen."
           >
             {ROAD_TAGS.map((t: RoadTag) => (
-              <ToggleGroupItem
+              <FilterChip
                 key={t}
-                value={t}
-                title={ROAD_TAG[t].hint}
-                className={cn("min-w-0", TOUCH_CONTROL)}
+                hint={ROAD_TAG[t].hint}
+                pressed={filters.tags.includes(t)}
+                onPressedChange={(on) =>
+                  set(
+                    "tags",
+                    on
+                      ? ROAD_TAGS.filter(
+                          (x) => x === t || filters.tags.includes(x),
+                        )
+                      : filters.tags.filter((x) => x !== t),
+                  )
+                }
               >
                 <TagIcon tag={t} />
-                <span className="truncate">{ROAD_TAG[t].label}</span>
-              </ToggleGroupItem>
+                {ROAD_TAG[t].label}
+              </FilterChip>
             ))}
-          </ToggleGroup>
-        </FieldGroup>
-        {/* The raw summer signals of the chosen half-month, not the composite:
-            "unter 28 °C im Tal" is a question the status alone cannot answer.
-            The valley value is derived from the summit series, and the label
-            says so, as every derived value in the app does. */}
-        <FieldGroup className="grid grid-cols-3 gap-2">
-          <Select
-            id="max-heat"
-            label="Hitze im Tal (abgeleitet)"
+          </ChipGroup>
+
+          <ThresholdChips
+            id="f-traffic"
+            label="Verkehr, 1 ist am ruhigsten"
+            options={TRAFFIC_OPTIONS}
+            value={filters.maxTraffic}
+            onChange={(v) => set("maxTraffic", v)}
+          />
+          <ThresholdChips
+            id="f-beauty"
+            label="Schönheit, 5 ist am schönsten"
+            options={BEAUTY_OPTIONS}
+            value={filters.minBeauty}
+            onChange={(v) => set("minBeauty", v)}
+          />
+          <ThresholdChips
+            id="f-fame"
+            label="Bekanntheit, 5 ist ein Klassiker"
+            options={FAME_OPTIONS}
+            value={filters.minFame}
+            onChange={(v) => set("minFame", v)}
+          />
+
+          {/* The raw summer signals of the chosen half-month, not the composite:
+              "unter 28 °C im Tal" is a question the status alone cannot answer.
+              The valley value is derived from the summit series, and the label
+              says so, as every derived value in the app does. */}
+          <ThresholdChips
+            id="f-heat"
+            label="Wärme im Tal (abgeleitet)"
+            options={HEAT_OPTIONS}
             value={filters.maxValleyTmax}
             onChange={(v) => set("maxValleyTmax", v)}
-            options={HEAT_OPTIONS}
           />
-          <Select
-            id="max-wet"
-            label="Regentage"
+          <ThresholdChips
+            id="f-wet"
+            label="Anteil der Regentage"
+            options={WET_OPTIONS}
             value={filters.maxWetPct}
             onChange={(v) => set("maxWetPct", v)}
-            options={WET_OPTIONS}
           />
-        </FieldGroup>
-      </CollapsibleContent>
-    </Collapsible>
+        </CollapsibleContent>
+      </Collapsible>
+
+      {/* What the chips just did, in one line. Live filtering only works when
+          the result of a tap is visible from where the tap happened. */}
+      <div className="border-border flex items-center gap-2 border-t pt-2">
+        <p
+          aria-live="polite"
+          className="text-muted-foreground text-2xs min-w-0 flex-1 truncate"
+        >
+          <span className="text-foreground font-medium tabular-nums">
+            {fmt(counts.pass)}
+          </span>{" "}
+          von {fmt(totals.pass)} Straßen
+          {", "}
+          <span className="text-foreground font-medium tabular-nums">
+            {fmt(counts.tour)}
+          </span>{" "}
+          Touren
+        </p>
+        <Button
+          variant="ghost"
+          size="sm"
+          disabled={count === 0}
+          onClick={onReset}
+          className={TOUCH_CONTROL}
+        >
+          <RotateCcw data-icon="inline-start" />
+          Zurücksetzen
+        </Button>
+      </div>
+    </div>
   );
 };

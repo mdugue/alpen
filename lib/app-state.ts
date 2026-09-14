@@ -43,27 +43,43 @@ export const RATING_MIN = 1;
 export const RATING_MAX = 5;
 
 /**
- * The thresholds the selects offer, hash value → label. The hash parsers
- * accept exactly these, so a link never applies a filter the control cannot
- * show.
+ * The thresholds the chips offer, hash value → chip label. The first entry
+ * of every list is "no filter" (its value is the default) and gets no chip:
+ * a threshold chip is pressed while it applies and pressed again to lift it,
+ * so an untouched group shows no pressed chip at all. The hash parsers accept
+ * exactly these values, so a link never applies a filter the control cannot
+ * show. Wording: `ab` for a lower bound, `bis` for an upper bound, `nur` for
+ * the end of the scale.
  */
+export type Options = readonly (readonly [value: number, label: string])[];
 export const TRAFFIC_OPTIONS = [
   [5, "egal"],
-  [3, "höchstens 3"],
-  [2, "höchstens 2"],
-  [1, "nur ruhige"],
-] as const;
+  [3, "bis 3"],
+  [2, "bis 2"],
+  [1, "nur 1"],
+] as const satisfies Options;
 export const BEAUTY_OPTIONS = [
-  [1, "alle"],
-  [3, "ab 3 von 5"],
-  [4, "ab 4 von 5"],
-  [5, "nur 5 von 5"],
-] as const;
+  [1, "egal"],
+  [3, "ab 3"],
+  [4, "ab 4"],
+  [5, "nur 5"],
+] as const satisfies Options;
 export const FAME_OPTIONS = [
-  [1, "alle"],
-  [3, "ab 3 von 5"],
-  [4, "nur Klassiker"],
-] as const;
+  [1, "egal"],
+  [3, "ab 3"],
+  [4, "ab 4"],
+] as const satisfies Options;
+/**
+ * Pass height as a few round thresholds rather than a slider: the question is
+ * "the high ones" or "the really high ones", not "above 1.700 m", and a
+ * threshold is a chip a thumb can hit.
+ */
+export const ELEVATION_OPTIONS = [
+  [0, "egal"],
+  [1500, "ab 1.500 m"],
+  [2000, "ab 2.000 m"],
+  [2500, "ab 2.500 m"],
+] as const satisfies Options;
 /**
  * The raw summer signals, so the data that makes July queryable is not buried
  * under the composite status: the valley's derived mean daily maximum and the
@@ -72,15 +88,70 @@ export const FAME_OPTIONS = [
 export const HEAT_NONE = 99;
 export const HEAT_OPTIONS = [
   [HEAT_NONE, "egal"],
-  [28, "Tal unter 28 °C"],
-  [24, "Tal unter 24 °C"],
-] as const;
+  [28, "unter 28 °C"],
+  [24, "unter 24 °C"],
+] as const satisfies Options;
 export const WET_NONE = 100;
 export const WET_OPTIONS = [
   [WET_NONE, "egal"],
-  [50, "höchstens jeder 2. Tag"],
-  [40, "trocken (≤ 40 %)"],
-] as const;
+  [50, "unter 50 %"],
+  [40, "unter 40 %"],
+] as const satisfies Options;
+
+/**
+ * The chips of a threshold group: every option but the first, which is "no
+ * filter" and has no chip of its own.
+ */
+export const thresholdChips = (options: Options) => options.slice(1);
+
+/**
+ * One member of a "which of these" set toggled – the status, the road types.
+ * The set is stored as "what stays visible" and the whole vocabulary means
+ * no filter, so the chips show nothing pressed then; pressing one narrows
+ * the list to it, pressing the last pressed one lifts the filter again. An
+ * empty set is never produced: a filter that hides everything is not a state
+ * anyone asks for, and it is what "all or none selected" used to allow.
+ */
+export const toggleMember = <T extends string>(
+  current: readonly T[],
+  all: readonly T[],
+  member: T,
+): T[] => {
+  const picked = current.length === all.length ? [] : current;
+  const next = picked.includes(member)
+    ? picked.filter((m) => m !== member)
+    : [...picked, member];
+  return next.length === 0 || next.length === all.length
+    ? [...all]
+    : all.filter((m) => next.includes(m));
+};
+
+/** The chips that show as pressed for such a set: none while the whole vocabulary is in. */
+export const pickedMembers = <T extends string>(
+  current: readonly T[],
+  all: readonly T[],
+): readonly T[] => (current.length === all.length ? [] : current);
+
+/**
+ * One level of the difficulty window toggled. The five cells behave like
+ * checkboxes that keep the window in one piece: a cell outside the window
+ * extends it, an end cell shrinks it, an interior cell narrows the window to
+ * itself, and the last cell lifts the filter. The full scale is no filter and
+ * shows no pressed cell, like the sets above.
+ */
+export const toggleLevel = (
+  [lo, hi]: readonly [number, number],
+  level: number,
+): [number, number] => {
+  const full: [number, number] = [RATING_MIN, RATING_MAX];
+  if (lo === RATING_MIN && hi === RATING_MAX) return [level, level];
+  if (level < lo) return [level, hi];
+  if (level > hi) return [lo, level];
+  if (lo === hi) return full;
+  if (level === lo) return [lo + 1, hi];
+  if (level === hi) return [lo, hi - 1];
+  return [level, level];
+};
 
 export interface Filters {
   period: Period;
@@ -206,7 +277,7 @@ export interface HashState {
 //
 //   t     half-month, 1 … 12.5             z     zoom
 //   c     centre "lat,lon"                 pi,b  pitch and bearing (only when tilted)
-//   s     statuses "open,risky" | "none"   q     search text
+//   s     statuses "open,risky"        q     search text
 //   f     min. fame                        m     min. elevation in m
 //   d     difficulty window "2-4"          v     max. traffic
 //   be    min. beauty                      o     pass sort key
@@ -242,35 +313,36 @@ const parseAsCenter = createParser<[lat: number, lon: number]>({
   },
   serialize: ([lat, lon]) => `${lat.toFixed(4)},${lon.toFixed(4)}`,
 });
-/** `s=open,risky`; the legacy values `open` and `openRisky` from older links still work. */
+/**
+ * `s=open,risky`; the legacy values `open` and `openRisky` from older links
+ * still work. `none` used to mean "hide everything" – no control produces that
+ * any more (`toggleMember`), so an old link with it opens unfiltered.
+ */
 const parseAsStatus = createParser<Status[]>({
   eq: (a, b) => a.length === b.length && a.every((s) => b.includes(s)),
   parse: (raw) => {
-    if (raw === "all") return null;
-    if (raw === "none") return [];
     if (raw === "openRisky") return ["open", "risky"];
     const list = ALL_STATUS.filter((s) => raw.split(",").includes(s));
     return list.length ? list : null;
   },
-  serialize: (list) => list.join(",") || "none",
+  serialize: (list) => list.join(","),
 });
 /**
  * A comma-joined subset of a fixed vocabulary, in vocabulary order – `a=pass,spur`,
  * `e=toll,carfree`. Unknown members are dropped rather than rejected, so an
  * old link keeps the part of its filter this build still understands; a value
  * that leaves nothing behind is no filter at all and falls back to the
- * default. `none` is the empty set, as it is for the status.
+ * default – `none` included, see `parseAsStatus`.
  */
 const parseAsSubset = <T extends string>(vocabulary: readonly T[]) =>
   createParser<T[]>({
     eq: (a, b) => a.length === b.length && a.every((x) => b.includes(x)),
     parse: (raw) => {
-      if (raw === "none") return [];
       const picked = raw.split(",");
       const list = vocabulary.filter((v) => picked.includes(v));
       return list.length ? list : null;
     },
-    serialize: (list) => list.join(",") || "none",
+    serialize: (list) => list.join(","),
   });
 
 const RATINGS = [1, 2, 3, 4, 5] as const;
@@ -280,11 +352,6 @@ const parseAsOneOf = (values: readonly number[]) =>
     parse: (v) => (values.includes(Number(v)) ? Number(v) : null),
     serialize: String,
   });
-/** A whole number of metres; "2000oops" is not one (parseAsInteger would take the prefix). */
-const parseAsMetres = createParser<number>({
-  parse: (v) => (/^\d{1,4}$/u.test(v) ? Number(v) : null),
-  serialize: String,
-});
 /** `d=2-4`; `d=3` means exactly 3. */
 const parseAsRange = createParser<[number, number]>({
   eq: (a, b) => a[0] === b[0] && a[1] === b[1],
@@ -307,7 +374,7 @@ const HASH = {
   e: parseAsSubset(ROAD_TAGS),
   f: parseAsOneOf(FAME_OPTIONS.map(([v]) => v)),
   h: parseAsOneOf(HEAT_OPTIONS.map(([v]) => v)),
-  m: parseAsMetres,
+  m: parseAsOneOf(ELEVATION_OPTIONS.map(([v]) => v)),
   o: parseAsStringLiteral(PASS_SORTS),
   pass: parseAsString,
   pi: parseAsFixed(0),

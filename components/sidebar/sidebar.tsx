@@ -2,13 +2,19 @@
 
 import { PanelLeftClose, Search, X } from "lucide-react";
 import Link from "next/link";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
-import { FilterPanel } from "@/components/sidebar/filter-panel";
+import {
+  AppliedFilters,
+  FilterBody,
+  filterCount,
+  FilterTrigger,
+} from "@/components/sidebar/filter-panel";
 import { PassList } from "@/components/sidebar/pass-list";
 import { KIND_GLYPH, Section } from "@/components/sidebar/section";
 import { TourList } from "@/components/sidebar/tour-list";
 import { TownList } from "@/components/sidebar/town-list";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   InputGroup,
@@ -17,8 +23,9 @@ import {
   InputGroupInput,
 } from "@/components/ui/input-group";
 import { Switch } from "@/components/ui/switch";
-import { DEFAULT_FILTERS, hasActiveFilters } from "@/lib/app-state";
+import { DEFAULT_FILTERS } from "@/lib/app-state";
 import type { EntityKind, Filters, Selection } from "@/lib/app-state";
+import { hasSecondaryFilters } from "@/lib/filter-summary";
 import type { PassRow, TourRow, TownRow } from "@/lib/rows";
 import type { Tour } from "@/lib/types";
 import { cn, TOUCH_CONTROL } from "@/lib/utils";
@@ -72,6 +79,16 @@ export const Sidebar = (p: SidebarProps) => {
   const visibleTourCount = allTourSlugs.filter(
     (s) => !p.hiddenTours.includes(s),
   ).length;
+  // The panel opens by itself when a link carries filters; the visitor's own
+  // toggling wins from then on. The second half stays folded until it is
+  // needed, or until a filter inside it is already set.
+  const [manual, setManual] = useState<boolean | null>(null);
+  const active = filterCount(p.filters);
+  const filtersOpen = manual ?? active > 0;
+  const [more, setMore] = useState<boolean | null>(null);
+  const moreOpen = more ?? hasSecondaryFilters(p.filters);
+  const setMoreOpen = (open: boolean) => setMore(open);
+
   const lists = useRef<HTMLDivElement>(null);
   const currentRow = p.selection
     ? `${p.selection.kind}:${p.selection.slug}`
@@ -112,12 +129,8 @@ export const Sidebar = (p: SidebarProps) => {
 
       <div className="flex min-h-0 flex-1 flex-col">
         <div className="border-border relative flex shrink-0 flex-col gap-2 border-b px-3 py-2">
-          <FilterPanel
-            filters={p.filters}
-            setFilters={p.setFilters}
-            favoriteCount={p.favoriteCount}
-            hidden={p.peek}
-            search={
+          <div className="flex items-center gap-2">
+            {
               // On the peek row the field is a button that only opens the
               // sheet: a live input there would have the software keyboard
               // come up in the same moment as the sheet moves, and the two
@@ -135,6 +148,12 @@ export const Sidebar = (p: SidebarProps) => {
                   <span className="truncate">
                     {p.filters.query || "Pass, Tour oder Ort …"}
                   </span>
+                  {/* The peek row is one row high, so the chip row below it
+                      cannot show – the count takes its place and the chips
+                      themselves are one tap away, in the sheet. */}
+                  {active > 0 && (
+                    <Badge className="ml-auto shrink-0">{active}</Badge>
+                  )}
                 </Button>
               ) : (
                 <InputGroup className={cn("flex-1", TOUCH_CONTROL)}>
@@ -167,18 +186,23 @@ export const Sidebar = (p: SidebarProps) => {
                 </InputGroup>
               )
             }
-          />
-          {hasActiveFilters(p.filters) && !p.peek && (
-            <Button
-              variant="link"
-              size="sm"
-              className="self-end px-0"
-              onClick={resetFilters}
-            >
-              {p.filters.query
-                ? "Suche und Filter zurücksetzen"
-                : "Filter zurücksetzen"}
-            </Button>
+            {!p.peek && (
+              <FilterTrigger
+                filters={p.filters}
+                open={filtersOpen}
+                onOpenChange={setManual}
+              />
+            )}
+          </div>
+          {/* What is filtered away stays readable while the panel is shut –
+              and on the sheet's peek row, where the panel cannot be opened at
+              all, it is the only place that says so. */}
+          {!p.peek && (
+            <AppliedFilters
+              filters={p.filters}
+              setFilters={p.setFilters}
+              onReset={resetFilters}
+            />
           )}
         </div>
 
@@ -186,6 +210,24 @@ export const Sidebar = (p: SidebarProps) => {
           ref={lists}
           className="min-h-0 flex-1 overflow-y-auto overscroll-contain"
         >
+          {filtersOpen && !p.peek && (
+            <div className="border-border border-b">
+              <FilterBody
+                filters={p.filters}
+                setFilters={p.setFilters}
+                counts={{
+                  pass: p.passRows.length,
+                  tour: p.tourRows.length,
+                  town: p.townRows.length,
+                }}
+                totals={p.totals}
+                favoriteCount={p.favoriteCount}
+                onReset={resetFilters}
+                more={moreOpen}
+                onMoreChange={setMoreOpen}
+              />
+            </div>
+          )}
           <Section
             open={p.sections.includes("pass")}
             onOpenChange={toggleSection("pass")}
