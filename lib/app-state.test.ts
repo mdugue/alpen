@@ -7,10 +7,13 @@ import {
   DEFAULT_VIEW,
   defined,
   hasActiveFilters,
+  pickedMembers,
   parseHash,
   resolvePeriod,
   serializeHash,
   statusMatches,
+  toggleLevel,
+  toggleMember,
 } from "@/lib/app-state";
 import type { Filters, MapView, Selection } from "@/lib/app-state";
 
@@ -78,7 +81,8 @@ describe("parseHash", () => {
   test("legacy and special status values from older links", () => {
     expect(parseHash("#s=openRisky").filters.status).toEqual(["open", "risky"]);
     expect(parseHash("#s=all").filters.status).toBeUndefined();
-    expect(parseHash("#s=none").filters.status).toEqual([]);
+    // "none" used to hide everything; no control produces it any more.
+    expect(parseHash("#s=none").filters.status).toBeUndefined();
     expect(parseHash("#s=open,nonsense").filters.status).toEqual(["open"]);
     expect(parseHash("#s=nonsense").filters.status).toBeUndefined();
   });
@@ -110,35 +114,43 @@ describe("parseHash", () => {
     expect(parseHash("#be=2").filters.minBeauty).toBeUndefined();
     expect(parseHash("#f=99").filters.minFame).toBeUndefined();
     expect(parseHash("#f=4").filters.minFame).toBe(4);
+    expect(parseHash("#f=5").filters.minFame).toBe(5);
+    expect(parseHash("#f=2").filters.minFame).toBeUndefined();
     expect(parseHash("#m=2000oops").filters.minElevation).toBeUndefined();
     expect(parseHash("#m=2000").filters.minElevation).toBe(2000);
+    // Only the thresholds the chips offer.
+    expect(parseHash("#m=1700").filters.minElevation).toBeUndefined();
     expect(parseHash("#be=abc").filters.minBeauty).toBeUndefined();
     expect(parseHash("#o=nonsense").filters.sort).toBeUndefined();
   });
 
   test("the summer-signal keys from plan 13 round-trip and are validated", () => {
-    expect(parseHash("#h=28&w=40").filters).toMatchObject({
-      maxValleyTmax: 28,
-      maxWetPct: 40,
+    expect(parseHash("#h=26&w=6").filters).toMatchObject({
+      maxValleyTmax: 26,
+      maxWetDays: 6,
     });
-    // Only what the selects offer; an old link without them is unfiltered.
+    // Only the rungs of the two ladders. `w` counts rain days now, so the old
+    // percentages are not values it can hold at all.
     expect(parseHash("#h=27").filters.maxValleyTmax).toBeUndefined();
-    expect(parseHash("#w=45").filters.maxWetPct).toBeUndefined();
+    expect(parseHash("#h=28").filters.maxValleyTmax).toBe(28);
+    expect(parseHash("#w=5").filters.maxWetDays).toBeUndefined();
+    expect(parseHash("#w=50").filters.maxWetDays).toBeUndefined();
+    expect(parseHash("#w=10").filters.maxWetDays).toBe(10);
     expect(parseHash("#s=open,risky").filters).toMatchObject({
       maxValleyTmax: undefined,
-      maxWetPct: undefined,
+      maxWetDays: undefined,
       status: ["open", "risky"],
     });
     const out = serializeHash(
-      filters({ maxValleyTmax: 24, maxWetPct: 50 }),
+      filters({ maxValleyTmax: 22, maxWetDays: 8 }),
       null,
       DEFAULT_VIEW,
     );
-    expect(out).toContain("h=24");
-    expect(out).toContain("w=50");
+    expect(out).toContain("h=22");
+    expect(out).toContain("w=8");
     expect(parseHash(out).filters).toMatchObject({
-      maxValleyTmax: 24,
-      maxWetPct: 50,
+      maxValleyTmax: 22,
+      maxWetDays: 8,
     });
     expect(serializeHash(filters(), null, DEFAULT_VIEW)).not.toMatch(/[hw]=/u);
   });
@@ -222,11 +234,12 @@ describe("serializeHash", () => {
     expect(back.view.bearing).toBe(30);
   });
 
-  test("an empty status filter survives the round trip", () => {
-    expect(
-      parseHash(serializeHash(filters({ status: [] }), null, view())).filters
-        .status,
-    ).toEqual([]);
+  test("an empty set never reaches the hash – it is no filter", () => {
+    // `toggleMember` cannot produce one; a hand-written link with it opens
+    // unfiltered rather than on an empty list.
+    const hash = serializeHash(filters({ status: [] }), null, view());
+    expect(parseHash(hash).filters.status).toBeUndefined();
+    expect(parseHash("#a=").filters.types).toBeUndefined();
   });
 
   test("round trip through parse and serialize is stable", () => {
@@ -266,13 +279,38 @@ describe("filters", () => {
           difficulty: [2, 4],
           maxTraffic: 2,
           maxValleyTmax: 28,
-          maxWetPct: 40,
+          maxWetDays: 6,
           minBeauty: 4,
           minElevation: 2000,
           minFame: 3,
         }),
       ),
     ).toBe(7);
+  });
+
+  test("toggleMember never leaves an empty or a full set behind", () => {
+    expect(toggleMember(ALL_STATUS, ALL_STATUS, "open")).toEqual(["open"]);
+    expect(toggleMember(["open"], ALL_STATUS, "closed")).toEqual([
+      "open",
+      "closed",
+    ]);
+    // The last one out lifts the filter; so does picking every one.
+    expect(toggleMember(["open"], ALL_STATUS, "open")).toEqual(ALL_STATUS);
+    expect(toggleMember(["open", "closed"], ALL_STATUS, "risky")).toEqual(
+      ALL_STATUS,
+    );
+    expect(pickedMembers(ALL_STATUS, ALL_STATUS)).toEqual([]);
+    expect(pickedMembers(["risky"], ALL_STATUS)).toEqual(["risky"]);
+  });
+
+  test("toggleLevel keeps the difficulty window in one piece", () => {
+    expect(toggleLevel([1, 5], 3)).toEqual([3, 3]);
+    expect(toggleLevel([3, 3], 5)).toEqual([3, 5]);
+    expect(toggleLevel([3, 5], 1)).toEqual([1, 5]);
+    expect(toggleLevel([2, 4], 4)).toEqual([2, 3]);
+    expect(toggleLevel([2, 4], 2)).toEqual([3, 4]);
+    expect(toggleLevel([2, 4], 3)).toEqual([3, 3]);
+    expect(toggleLevel([3, 3], 3)).toEqual([1, 5]);
   });
 
   test("statusMatches follows the visible set", () => {

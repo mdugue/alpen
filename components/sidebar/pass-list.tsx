@@ -1,20 +1,26 @@
 "use client";
 
+import { ArrowDownWideNarrow } from "lucide-react";
+
 import { Rating } from "@/components/rating";
 import { SeasonStrip } from "@/components/season-strip";
 import { EntityRow } from "@/components/sidebar/entity-row";
 import { ListEmpty } from "@/components/sidebar/list-empty";
 import { StatusLabel } from "@/components/status-badge";
 import { TagLine } from "@/components/tags";
+import { Button } from "@/components/ui/button";
 import {
-  NativeSelect,
-  NativeSelectOption,
-} from "@/components/ui/native-select";
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import type { Filters, PassSort } from "@/lib/app-state";
 import { roadTypeWord } from "@/lib/regions";
 import { PASS_SORT_LABEL, PASS_SORTS, sortPassRows } from "@/lib/rows";
 import type { PassRow } from "@/lib/rows";
-import { fmtUnit, TOUCH_SELECT } from "@/lib/utils";
+import { cn, fmtUnit, TOUCH_CONTROL } from "@/lib/utils";
 
 type RatingSort = "beauty" | "fame" | "difficulty" | "traffic";
 const RATING_SORTS: ReadonlySet<PassSort> = new Set([
@@ -46,23 +52,44 @@ export const PassList = ({
 
   return (
     <>
+      {/*
+        A menu rather than a native select: on a coarse pointer every native
+        control is forced to a 16 px font (app/globals.css, against Safari's
+        focus zoom), which in this dense row reads as a headline sitting among
+        the labels. A menu is ordinary markup and keeps the row's own scale,
+        and it shows the seven keys in one list instead of behind an OS wheel.
+      */}
       <div className="border-border flex items-center gap-2 border-b px-3 py-1.5">
         <span className="text-muted-foreground text-2xs">Sortieren</span>
-        <NativeSelect
-          size="sm"
-          value={filters.sort}
-          onChange={(e) =>
-            setFilters((f) => ({ ...f, sort: e.target.value as PassSort }))
-          }
-          aria-label="Sortieren nach"
-          className={TOUCH_SELECT}
-        >
-          {PASS_SORTS.map((k) => (
-            <NativeSelectOption key={k} value={k}>
-              {PASS_SORT_LABEL[k]}
-            </NativeSelectOption>
-          ))}
-        </NativeSelect>
+        <DropdownMenu>
+          <DropdownMenuTrigger
+            render={
+              <Button
+                variant="ghost"
+                size="sm"
+                aria-label={`Sortieren nach: ${PASS_SORT_LABEL[filters.sort]}`}
+                className={cn("-my-0.5 px-2 font-normal", TOUCH_CONTROL)}
+              />
+            }
+          >
+            <ArrowDownWideNarrow data-icon="inline-start" />
+            {PASS_SORT_LABEL[filters.sort]}
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="start">
+            <DropdownMenuRadioGroup
+              value={filters.sort}
+              onValueChange={(v) =>
+                setFilters((f) => ({ ...f, sort: v as PassSort }))
+              }
+            >
+              {PASS_SORTS.map((k) => (
+                <DropdownMenuRadioItem key={k} value={k}>
+                  {PASS_SORT_LABEL[k]}
+                </DropdownMenuRadioItem>
+              ))}
+            </DropdownMenuRadioGroup>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
 
       {sorted.length === 0 ? (

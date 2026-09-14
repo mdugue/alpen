@@ -36,7 +36,11 @@ export const TOUCH_CONTROL = "pointer-coarse:h-9";
 /**
  * The same for `NativeSelect`, whose `className` lands on the wrapper, not on
  * the control – and whose own `data-[size=sm]` height is more specific than a
- * plain child selector, hence the important modifier.
+ * plain child selector, hence the important modifier. Nothing uses it today:
+ * the app has no native select left, because the 16 px the coarse-pointer rule
+ * forces on one is a headline in a dense row (see the sort menu in
+ * `components/sidebar/pass-list.tsx`). Kept for the next one that is genuinely
+ * better native.
  */
 export const TOUCH_SELECT = "pointer-coarse:[&>select]:h-9!";
 /** The same for icon-only buttons and toggles, which have no label to aim at. */

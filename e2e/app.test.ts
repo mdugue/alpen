@@ -91,25 +91,38 @@ test(
 );
 
 test(
-  "4 · the status filter changes the counts and the reset link restores them",
+  "4 · a status chip narrows the lists and the applied-filter chip undoes it",
   () =>
-    // Early January, so all three statuses actually occur.
+    // Early January: nothing is "gut", so the counts and the disabled chip bite.
     withPage(app, "status-filter", { hash: "#t=1" }, async (page) => {
       await page.waitFor(PASS_ROW);
       const all = await page.count(PASS_ROW);
-      // The status picker is a toggle group inside the filter panel: one chip
-      // per status, no popup to open.
+      // The status picker is a row of chips inside the filter panel: no popup
+      // to open, and pressing one narrows the list to it.
       await page.clickText("button", "Filter");
-      await page.waitFor('[aria-label="Status filtern"]');
+      await page.waitFor('[aria-labelledby="f-status"]');
+      // Every chip carries how many roads it would leave, counted with its own
+      // group's filter lifted. In early January that is zero for "gut", and a
+      // chip that can only empty the list is disabled rather than pressable.
+      expect(
+        await page.evaluate<boolean>(
+          `[...document.querySelectorAll('[aria-labelledby="f-status"] button')]
+             .find((b) => b.textContent.startsWith("gut")).disabled`,
+        ),
+      ).toBe(true);
       await page.clickText(
-        '[aria-label="Status filtern"] button',
-        "oft gesperrt",
+        '[aria-labelledby="f-status"] button',
+        "eingeschränkt",
       );
       await waitUntil(
         async () => (await page.count(PASS_ROW)) < all,
         "fewer passes after filtering",
       );
-      await page.clickText("button", "Filter zurücksetzen");
+      // The chip row above the panel undoes exactly that decision again.
+      await page.clickText(
+        '[aria-label="Aktive Filter"] button',
+        "eingeschränkt",
+      );
       await waitUntil(
         async () => (await page.count(PASS_ROW)) === all,
         "all passes back after the reset",

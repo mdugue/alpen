@@ -7,6 +7,7 @@ import {
   buildPassRows,
   buildTourRows,
   buildTownRows,
+  facetCount,
   sortPassRows,
   statusHistogram,
 } from "@/lib/rows";
@@ -293,11 +294,24 @@ describe("plan 13 summer filters", () => {
     ).toEqual([]);
   });
 
-  test("rain days are an inclusive upper bound", () => {
-    expect(slugs({ maxWetPct: 50 }, { mittel: year({ wetPct: 50 }) })).toEqual([
+  test("rain days are an inclusive upper bound, counted in days", () => {
+    // The share is rounded to whole days before it is compared, so a pass the
+    // panel shows as "8 von 15" clears a "bis 8 von 15" filter.
+    expect(slugs({ maxWetDays: 8 }, { mittel: year({ wetPct: 53 }) })).toEqual([
       "mittel",
     ]);
-    expect(slugs({ maxWetPct: 50 }, { mittel: year({ wetPct: 51 }) })).toEqual(
+    // 56 % still rounds to 8 days and passes; 60 % is the ninth day.
+    expect(slugs({ maxWetDays: 8 }, { mittel: year({ wetPct: 56 }) })).toEqual([
+      "mittel",
+    ]);
+    expect(slugs({ maxWetDays: 8 }, { mittel: year({ wetPct: 60 }) })).toEqual(
+      [],
+    );
+    // 10 days is exactly the line at which the status starts saying "nass".
+    expect(slugs({ maxWetDays: 10 }, { mittel: year({ wetPct: 69 }) })).toEqual(
+      ["mittel"],
+    );
+    expect(slugs({ maxWetDays: 10 }, { mittel: year({ wetPct: 70 }) })).toEqual(
       [],
     );
   });
@@ -310,7 +324,7 @@ describe("plan 13 summer filters", () => {
     expect(slugs({}, { mittel: year({}) }, false)).toEqual(["mittel"]);
     // No climate series at all: neither filter can say anything.
     expect(slugs({ maxValleyTmax: 28 }, {})).toEqual([]);
-    expect(slugs({ maxWetPct: 50 }, {})).toEqual([]);
+    expect(slugs({ maxWetDays: 8 }, {})).toEqual([]);
     expect(slugs({}, {})).toEqual(["mittel"]);
   });
 
@@ -323,7 +337,7 @@ describe("plan 13 summer filters", () => {
     expect(rows({})).toEqual(["lang", "kurz"]);
     // "lang" also crosses "winter", which has no series: it fails both bounds.
     expect(rows({ maxValleyTmax: 28 })).toEqual(["kurz"]);
-    expect(rows({ maxWetPct: 50 })).toEqual(["kurz"]);
+    expect(rows({ maxWetDays: 8 })).toEqual(["kurz"]);
   });
 });
 
@@ -511,5 +525,48 @@ describe("statusHistogram", () => {
       climate: { hoch: snowy(30), mittel: snowy(30), winter: snowy(30) },
     });
     expect(bars.every((b) => b.best === 0 && b.good === 0)).toBe(true);
+  });
+});
+
+describe("facetCount", () => {
+  test("counts what the patch would leave, not what is left now", () => {
+    const f = filters({ minFame: 5 });
+    expect(buildPassRows(passes, f, never).length).toBe(1);
+    // The patch replaces the fame filter rather than narrowing it further.
+    expect(facetCount(passes, f, never, { minFame: 3 })).toBe(2);
+    expect(facetCount(passes, f, never, { minFame: 1 })).toBe(3);
+  });
+
+  test("a group's own filter never decides its own numbers", () => {
+    // The point of counting disjunctively: with "ab 5" chosen, the other two
+    // fame chips still report what they would give, instead of the 0 a naive
+    // conjunctive count would report for every one of them.
+    const chosen = filters({ minFame: 5 });
+    const untouched = filters();
+    for (const v of [1, 3, 5]) {
+      expect(facetCount(passes, chosen, never, { minFame: v })).toBe(
+        facetCount(passes, untouched, never, { minFame: v }),
+      );
+    }
+  });
+
+  test("the other groups do still narrow it", () => {
+    const f = filters({ minElevation: 2000 });
+    expect(facetCount(passes, f, never, { minFame: 1 })).toBe(1);
+    expect(facetCount(passes, filters(), never, { minFame: 1 })).toBe(3);
+  });
+
+  test("it agrees with the rows it counts", () => {
+    for (const patch of [
+      { minFame: 3 },
+      { minElevation: 2000 },
+      { status: ["closed" as const] },
+      { types: ["spur" as const] },
+    ]) {
+      const f = { ...filters(), ...patch };
+      expect(facetCount(passes, filters(), never, patch)).toBe(
+        buildPassRows(passes, f, never).length,
+      );
+    }
   });
 });

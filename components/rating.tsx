@@ -4,10 +4,17 @@ import { cn } from "@/lib/utils";
 export const Rating = ({
   value,
   muted,
+  tone = "primary",
   className,
 }: {
   value: number;
   muted?: boolean;
+  /**
+   * `current` paints the bars in the text colour instead of the primary one.
+   * Inside a pressed filter chip the surface *is* the primary colour, so a
+   * primary bar would be invisible exactly where the filter is active.
+   */
+  tone?: "primary" | "current";
   className?: string;
 }) => (
   <span
@@ -22,10 +29,14 @@ export const Rating = ({
         className={cn(
           "h-2.5 w-1.5 rounded-xs",
           i <= value
-            ? muted
-              ? "bg-muted-foreground"
-              : "bg-primary"
-            : "bg-muted-foreground/25",
+            ? tone === "current"
+              ? "bg-current"
+              : muted
+                ? "bg-muted-foreground"
+                : "bg-primary"
+            : tone === "current"
+              ? "bg-current/25"
+              : "bg-muted-foreground/25",
         )}
       />
     ))}

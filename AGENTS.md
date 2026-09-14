@@ -58,6 +58,7 @@ friends do that better and the app links out to them.
 | Photos: keys, sizes, licence metadata           | `lib/photos.ts`, `scripts/build-photos.ts` (`bun run data:photos`) → `data/generated/photos.json`                                                           |
 | Period scrubber floating over the map           | `components/map/period-scrubber.tsx`                                                                                                                        |
 | Season strip (24 half-months)                   | `components/season-strip.tsx`                                                                                                                               |
+| Filter controls, chips, applied-filter row      | `components/sidebar/filter-panel.tsx`, `components/sidebar/filter-chip.tsx`, `lib/filter-summary.ts`                                                        |
 | Sidebar: search, filters, one list per kind     | `components/sidebar/`, `lib/rows.ts`                                                                                                                        |
 | Detail panel incl. profile/weather/climate      | `components/panel/` (collapsible blocks: `components/panel/section.tsx`)                                                                                    |
 | Bottom sheet on phones (one per panel)          | `components/mobile-sheet.tsx`                                                                                                                               |
@@ -98,9 +99,71 @@ friends do that better and the app links out to them.
   map that fills the viewport that zoom has no way back. An unlayered rule at
   the end of `app/globals.css` gives every control 16 px on a coarse pointer –
   unlayered because it has to beat the `text-xs` utilities the components carry
-  – and `TOUCH_CONTROL`, `TOUCH_SELECT` and `TOUCH_ICON` in `lib/utils.ts` grow
-  the boxes to match, on the same `pointer-coarse` condition. With a mouse
-  everything stays as dense as it was.
+  – and `TOUCH_CONTROL` and `TOUCH_ICON` in `lib/utils.ts` grow the boxes to
+  match, on the same `pointer-coarse` condition (`TOUCH_SELECT` did the same
+  for a native select and is unused, see below). With a mouse everything stays
+  as dense as it was. The rule cuts both ways: a control that is _not_ a text
+  field gains nothing from the 16 px and loses the row's scale, which is why
+  the app has no `<select>` left – the sort picker is a `DropdownMenu` and the
+  filters are chips, both ordinary markup the rule never touches.
+- **A filter is a chip, and no chip lies.** Every filter in the sidebar is the
+  same shape: a small pressable word, outlined while it is off and filled with
+  the primary colour while it is on (`FilterChip`). There is no slider and no
+  select among them. A slider is for a value where the exact number matters
+  and the scale is wide; a 1–5 editorial judgement and four round height
+  thresholds are neither, and on a phone its thumb is the one control that is
+  regularly missed – small, indistinguishable against the filled track at
+  either end, and it swallows the sheet's swipe. A chip is a target with a
+  label that says what it does before it is pressed.
+  Three rules keep the panel out of states that answer nothing. A "which of
+  these" set (status, road type) is stored as what stays visible, and the whole
+  vocabulary means _no filter_, so nothing reads as pressed then; `toggleMember`
+  turns the last one out back into the whole set, so "none selected" – an empty
+  list by construction – cannot be reached. A threshold group (`ThresholdChips`)
+  holds at most one pressed chip and pressing it again lifts the filter, and its
+  "egal" value is the first option of the list and deliberately has no chip of
+  its own. The difficulty is five cells that always span one window
+  (`toggleLevel`), which is a range without a second thumb to aim at.
+  A threshold on one of the 1–5 scales carries the same five-bar mark the list
+  rows draw (`Rating`, `mark` on `ThresholdChips`), so the filter and the thing
+  it filters show one picture instead of a word here and a glyph there. The
+  word stays in front of it, because the mark alone carries "at least"
+  implicitly and `maxTraffic` is an upper bound – a bare rating row would read
+  as the opposite of what it does there. Inside a pressed chip the mark takes
+  `tone="current"`: the surface _is_ the primary colour, so a primary bar
+  disappears exactly where the filter is active.
+  Every chip carries how many roads it would leave (`facetCount` in
+  `lib/rows.ts`, handed down as `countWith`), and that number is counted
+  **disjunctively**: with all other groups' filters applied but its own group's
+  filter lifted. Counted the other way – with the group's current choice still
+  in force – every unpressed chip in a group reads 0 although each is one tap
+  away. The disjunctive rule buys a second thing: a group's numbers do not
+  depend on that group's own state, so they hold still while a thumb works that
+  group and only move when another group changes. A chip that would leave none
+  is disabled rather than hidden, because hiding it raises the question of where
+  it went and the 0 is the answer; a pressed chip is never disabled, it has to
+  stay liftable. The difficulty cells are the one exception to "what happens if
+  I press this": a cell moves a window rather than replacing it, so its number
+  is how many roads sit at that level. Counting has its own path rather than
+  going through `buildPassRows`, which also grades every pass for all 24
+  half-months for the season strip – about forty times the work, once per option,
+  on every keystroke. And when a combination does run empty, the count line names
+  the single filter that would bring the most back rather than saying nothing.
+  What is filtered away is written down outside the panel too: `AppliedFilters`
+  turns `appliedFilters()` in `lib/filter-summary.ts` into one removable chip
+  per decision, and the same list's length is the badge on the trigger, so the
+  two can never disagree. Nothing is applied on a button – the count line at the
+  end of the panel says what the current answer is, which is what makes live
+  filtering answerable at all.
+- **The panel scrolls with the lists, not above them.** The sidebar's header is
+  a fixed row and holds only the search field, the trigger and the chip row; the
+  panel body itself is the first thing inside the scroll container the lists
+  live in. A growing panel inside a fixed row simply runs off the bottom of the
+  phone's sheet with no way to reach its lower half, and two scroll containers
+  stacked inside one drawer is the other half of the same bug. The four
+  decisions a holiday planner makes first (status, difficulty, height,
+  bookmarks) are always visible, the eight sharper ones wait behind "Weitere
+  Filter", which opens by itself when a link carries one of them.
 - **Dark mode follows the OS, nothing else.** There is no theme toggle and no
   `next-themes`; the dark tokens sit in a `prefers-color-scheme` media query
   and Tailwind's default `dark:` variant is used. Delete the
