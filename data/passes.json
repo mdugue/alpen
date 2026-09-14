@@ -4662,5 +4662,2354 @@
     }
    }
   ]
+ },
+ {
+  "slug": "passo-di-costalunga",
+  "name": "Passo di Costalunga",
+  "type": "pass",
+  "aliases": [
+   "Karerpass"
+  ],
+  "country": "IT",
+  "region": "Dolomiten",
+  "lat": 46.4043,
+  "lon": 11.609,
+  "elevation": 1745,
+  "classicAscent": "9,2 km, 6,1 % ab Welschnofen",
+  "beauty": 4,
+  "fame": 3,
+  "difficulty": 2,
+  "traffic": 4,
+  "season": null,
+  "note": "Die Hauptverbindung vom Eggental ins Fassatal, ganzjährig geräumt und entsprechend befahren. Kurz und gleichmäßig; der Karersee und die Rosengartenwand kurz vor der Höhe sind der Grund, trotzdem hier hochzufahren.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.4303,
+     "lon": 11.5389
+    },
+    "label": "Welschnofen (West)"
+   },
+   {
+    "from": {
+     "lat": 46.4192,
+     "lon": 11.6802
+    },
+    "label": "Vigo di Fassa (Ost)",
+    "check": {
+     "minPeakAt": 0.7,
+     "note": "Die SS241 erreicht ihren höchsten Punkt kurz vor dem Passknoten und läuft dann auf gleicher Höhe darauf zu, deshalb liegt der Gipfel der Route bei 74 % statt 75 %. Die Profilhöhe stimmt."
+    }
+   }
+  ]
+ },
+ {
+  "slug": "nigerpass",
+  "name": "Nigerpass",
+  "type": "pass",
+  "aliases": [
+   "Passo Nigra"
+  ],
+  "country": "IT",
+  "region": "Dolomiten",
+  "lat": 46.456,
+  "lon": 11.5859,
+  "elevation": 1690,
+  "classicAscent": "9,9 km, 6,9 % ab Tiers",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 2,
+  "season": null,
+  "note": "Die stille Seitentür zum Rosengarten: von Tiers steil und schattig hinauf, oben steht die Wand direkt über der Straße. Ganzjährig geräumt, aber nur Zubringer – der Durchgangsverkehr nimmt den Karerpass.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.4673,
+     "lon": 11.5275
+    },
+    "label": "Tiers (Nord)"
+   }
+  ]
+ },
+ {
+  "slug": "passo-valles",
+  "name": "Passo Valles",
+  "type": "pass",
+  "country": "IT",
+  "region": "Dolomiten",
+  "lat": 46.3386,
+  "lon": 11.8003,
+  "elevation": 2032,
+  "classicAscent": "11,3 km, 7,9 % ab Falcade",
+  "beauty": 4,
+  "fame": 3,
+  "difficulty": 3,
+  "traffic": 2,
+  "season": {
+   "opens": 5.5,
+   "closes": 11,
+   "maintained": false
+  },
+  "note": "Verbindet das Biois- mit dem Travignolotal und wird meist mit Rolle und San Pellegrino zur Runde gehängt. Schmal, wenig befahren, die letzten Kilometer über der Baumgrenze.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.3581,
+     "lon": 11.8721
+    },
+    "label": "Falcade (Ost)"
+   },
+   {
+    "from": {
+     "lat": 46.3097,
+     "lon": 11.7482
+    },
+    "label": "Paneveggio (West)"
+   }
+  ]
+ },
+ {
+  "slug": "monte-bondone",
+  "name": "Monte Bondone",
+  "type": "pass",
+  "tags": [
+   "panorama"
+  ],
+  "country": "IT",
+  "region": "Dolomiten",
+  "lat": 46.0393,
+  "lon": 11.0582,
+  "elevation": 1651,
+  "classicAscent": "20,6 km, 7,0 % ab Trient",
+  "beauty": 3,
+  "fame": 4,
+  "difficulty": 5,
+  "traffic": 2,
+  "season": null,
+  "note": "Der Hausberg von Trient, seit 1956 Giro-Anstieg – die Etappe, in der Charly Gaul im Schneesturm gewann. Von der Etsch weg über 1 400 Höhenmeter am Stück, ganzjährig bis zum Skigebiet geräumt.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.0664,
+     "lon": 11.1258
+    },
+    "label": "Trient (Ost)"
+   },
+   {
+    "from": {
+     "lat": 46.0631,
+     "lon": 11.0967
+    },
+    "label": "Sardagna (Nordost)"
+   }
+  ]
+ },
+ {
+  "slug": "passo-tre-croci",
+  "name": "Passo Tre Croci",
+  "type": "pass",
+  "country": "IT",
+  "region": "Dolomiten",
+  "lat": 46.557,
+  "lon": 12.2019,
+  "elevation": 1809,
+  "classicAscent": "8,5 km, 6,9 % ab Cortina d'Ampezzo",
+  "beauty": 4,
+  "fame": 3,
+  "difficulty": 2,
+  "traffic": 3,
+  "season": null,
+  "note": "Der kurze Übergang von Cortina nach Misurina, meist als Zufahrt zu den Tre Cime gefahren. Gleichmäßig im Wald, oben der Blick auf Sorapiss und Cristallo; ganzjährig geräumt.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.5383,
+     "lon": 12.1374
+    },
+    "label": "Cortina d'Ampezzo (West)"
+   },
+   {
+    "from": {
+     "lat": 46.5785,
+     "lon": 12.252
+    },
+    "label": "Misurina (Ost)"
+   }
+  ]
+ },
+ {
+  "slug": "campo-carlo-magno",
+  "name": "Campo Carlo Magno",
+  "type": "pass",
+  "aliases": [
+   "Madonna di Campiglio",
+   "Passo Campo Carlo Magno"
+  ],
+  "country": "IT",
+  "region": "Zentralalpen",
+  "lat": 46.2431,
+  "lon": 10.8402,
+  "elevation": 1682,
+  "classicAscent": "15,4 km, 5,9 % ab Pinzolo",
+  "beauty": 3,
+  "fame": 3,
+  "difficulty": 3,
+  "traffic": 4,
+  "season": null,
+  "note": "Der Übergang zwischen Val Rendena und Val di Sole, direkt über Madonna di Campiglio, mit der Brenta zur einen und dem Adamello zur anderen Seite. Als Skiort ganzjährig geräumt und im Winter wie im Sommer gut befahren.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.1617,
+     "lon": 10.765
+    },
+    "label": "Pinzolo (Süd)"
+   },
+   {
+    "from": {
+     "lat": 46.3263,
+     "lon": 10.8747
+    },
+    "label": "Dimaro (Nord)"
+   }
+  ]
+ },
+ {
+  "slug": "passo-furcia",
+  "name": "Passo Furcia",
+  "type": "pass",
+  "aliases": [
+   "Furkelpass",
+   "Ju de Furcia"
+  ],
+  "country": "IT",
+  "region": "Dolomiten",
+  "lat": 46.7229,
+  "lon": 11.9689,
+  "elevation": 1789,
+  "classicAscent": "10,3 km, 6,9 % ab Olang",
+  "beauty": 3,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 2,
+  "season": null,
+  "note": "Die Rampe vom Pustertal nach St. Vigil in Enneberg, der kürzeste Weg in die Dolomiten von Norden. Gleichmäßig steil durch Wald, oben der Kronplatz über der Straße; ganzjährig geräumt.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.7598,
+     "lon": 12.031
+    },
+    "label": "Olang (Nord)"
+   }
+  ]
+ },
+ {
+  "slug": "passo-san-boldo",
+  "name": "Passo San Boldo",
+  "type": "pass",
+  "tags": [
+   "hairpins",
+   "tunnels"
+  ],
+  "country": "IT",
+  "region": "Dolomiten",
+  "lat": 46.006,
+  "lon": 12.1697,
+  "elevation": 706,
+  "classicAscent": "6,0 km, 7,2 % ab Tovena",
+  "beauty": 3,
+  "fame": 3,
+  "difficulty": 2,
+  "traffic": 2,
+  "season": null,
+  "note": "Die „Straße der hundert Tage“, 1918 von Zwangsarbeitern in die Wand gebaut: fünf Kehrentunnel übereinander, die Kehren selbst liegen im Fels. Niedrig und ganzjährig offen, mit Ampelregelung in den einspurigen Tunneln.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 45.9793,
+     "lon": 12.1751
+    },
+    "label": "Tovena (Süd)"
+   }
+  ]
+ },
+ {
+  "slug": "passo-cibiana",
+  "name": "Passo Cibiana",
+  "type": "pass",
+  "country": "IT",
+  "region": "Dolomiten",
+  "lat": 46.3744,
+  "lon": 12.2598,
+  "elevation": 1530,
+  "classicAscent": "15,4 km, 4,6 % ab Valle di Cadore",
+  "beauty": 3,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 1,
+  "season": null,
+  "note": "Der ruhige Übergang zwischen Cadore und Zoldotal, unter der Nordwand des Monte Rite. Kaum Verkehr, oben das Museum in den Sonnen von Reinhold Messner; ganzjährig geräumt.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.4174,
+     "lon": 12.332
+    },
+    "label": "Valle di Cadore (Nord)"
+   }
+  ]
+ },
+ {
+  "slug": "gampenjoch",
+  "name": "Gampenjoch",
+  "type": "pass",
+  "aliases": [
+   "Passo delle Palade",
+   "Gampenpass"
+  ],
+  "country": "IT",
+  "region": "Dolomiten",
+  "lat": 46.5295,
+  "lon": 11.1118,
+  "elevation": 1518,
+  "classicAscent": "18,2 km, 6,7 % ab Lana",
+  "beauty": 3,
+  "fame": 2,
+  "difficulty": 4,
+  "traffic": 3,
+  "season": null,
+  "note": "Vom Etschtal bei Lana in den Nonsberg, gleichmäßig und ohne Erholung, im Sommer unten heiß. Hauptverbindung ins Trentino und ganzjährig geräumt, darum nie ganz leer.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.616,
+     "lon": 11.1449
+    },
+    "label": "Lana (Nord)"
+   },
+   {
+    "from": {
+     "lat": 46.4401,
+     "lon": 11.1365
+    },
+    "label": "Fondo (Süd)"
+   }
+  ]
+ },
+ {
+  "slug": "passo-lavaze",
+  "name": "Passo Lavazè",
+  "type": "pass",
+  "aliases": [
+   "Lavazèjoch"
+  ],
+  "country": "IT",
+  "region": "Dolomiten",
+  "lat": 46.3547,
+  "lon": 11.4927,
+  "elevation": 1807,
+  "classicAscent": "9,4 km, 8,5 % ab Cavalese",
+  "beauty": 3,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 2,
+  "season": null,
+  "note": "Vom Fleimstal hinauf auf die Hochfläche zwischen Latemar und Schwarzhorn, oben weite Wiesen statt Fels. Ganzjährig geräumt, im Winter Langlaufzentrum.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.2912,
+     "lon": 11.4605
+    },
+    "label": "Cavalese (Süd)"
+   },
+   {
+    "from": {
+     "lat": 46.414,
+     "lon": 11.4252
+    },
+    "label": "Deutschnofen (Nord)"
+   }
+  ]
+ },
+ {
+  "slug": "mendelpass",
+  "name": "Mendelpass",
+  "type": "pass",
+  "tags": [
+   "hairpins"
+  ],
+  "aliases": [
+   "Passo della Mendola"
+  ],
+  "country": "IT",
+  "region": "Dolomiten",
+  "lat": 46.4168,
+  "lon": 11.2083,
+  "elevation": 1363,
+  "classicAscent": "13,5 km, 7,0 % ab Kaltern",
+  "beauty": 3,
+  "fame": 3,
+  "difficulty": 3,
+  "traffic": 3,
+  "season": null,
+  "note": "Aus den Weinbergen über Kaltern in engen Kehren an der Mendelwand hinauf, mit dem Blick zurück über das Etschtal bis zum Rosengarten. Ganzjährig geräumt und als Verbindung in den Nonsberg gut befahren.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.4135,
+     "lon": 11.2469
+    },
+    "label": "Kaltern (Ost)"
+   },
+   {
+    "from": {
+     "lat": 46.4187,
+     "lon": 11.1408
+    },
+    "label": "Sarnonico (West)"
+   }
+  ]
+ },
+ {
+  "slug": "passo-brocon",
+  "name": "Passo Brocon",
+  "type": "pass",
+  "country": "IT",
+  "region": "Dolomiten",
+  "lat": 46.1186,
+  "lon": 11.6885,
+  "elevation": 1616,
+  "classicAscent": "17,0 km, 4,4 % ab Castello Tesino",
+  "beauty": 3,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 1,
+  "season": null,
+  "note": "Zwischen Valsugana und Primiero, ein Pass ohne Publikum: breite Wiesen, kaum Autos, im Norden die Pale di San Martino im Blick. Ganzjährig für das kleine Skigebiet geräumt.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.0642,
+     "lon": 11.6322
+    },
+    "label": "Castello Tesino (Süd)"
+   }
+  ]
+ },
+ {
+  "slug": "passo-cereda",
+  "name": "Passo Cereda",
+  "type": "pass",
+  "country": "IT",
+  "region": "Dolomiten",
+  "lat": 46.193,
+  "lon": 11.9054,
+  "elevation": 1369,
+  "classicAscent": "8,3 km, 7,9 % ab Fiera di Primiero",
+  "beauty": 3,
+  "fame": 2,
+  "difficulty": 2,
+  "traffic": 2,
+  "season": null,
+  "note": "Der Übergang von Primiero nach Agordo, unter den Südwänden der Pale. Kurz und gutmütig, meist als Zubringer zwischen zwei größeren Pässen gefahren; ganzjährig geräumt.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.1771,
+     "lon": 11.8296
+    },
+    "label": "Fiera di Primiero (West)"
+   },
+   {
+    "from": {
+     "lat": 46.2821,
+     "lon": 12.035
+    },
+    "label": "Agordo (Ost)"
+   }
+  ]
+ },
+ {
+  "slug": "cima-grappa",
+  "name": "Cima Grappa",
+  "type": "pass",
+  "tags": [
+   "panorama"
+  ],
+  "aliases": [
+   "Monte Grappa"
+  ],
+  "country": "IT",
+  "region": "Dolomiten",
+  "lat": 45.8734,
+  "lon": 11.803,
+  "elevation": 1750,
+  "classicAscent": "19,1 km, 7,9 % ab Semonzo",
+  "beauty": 4,
+  "fame": 4,
+  "difficulty": 5,
+  "traffic": 2,
+  "roadSummit": true,
+  "season": {
+   "opens": 4,
+   "closes": 11.5,
+   "maintained": false
+  },
+  "note": "Der Solitär über der venezianischen Ebene: von jeder Seite über 1 500 Höhenmeter am Stück, oben das Beinhaus des Ersten Weltkriegs und der Blick von der Adria bis zu den Dolomiten. Die Straße ab Semonzo ist die Strada Cadorna, schmal und im oberen Teil ohne Schatten.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 45.8103,
+     "lon": 11.7728
+    },
+    "label": "Semonzo (Süd)"
+   },
+   {
+    "from": {
+     "lat": 45.8549,
+     "lon": 11.8816
+    },
+    "label": "Possagno (Ost)"
+   }
+  ]
+ },
+ {
+  "slug": "strada-della-forra",
+  "name": "Strada della Forra",
+  "type": "pass",
+  "tags": [
+   "gorge",
+   "tunnels"
+  ],
+  "aliases": [
+   "Tremosine"
+  ],
+  "country": "IT",
+  "region": "Dolomiten",
+  "lat": 45.7711,
+  "lon": 10.7608,
+  "elevation": 414,
+  "classicAscent": "7,9 km, 3,8 % ab Campione del Garda",
+  "beauty": 5,
+  "fame": 3,
+  "difficulty": 2,
+  "traffic": 3,
+  "roadSummit": true,
+  "season": null,
+  "note": "Vom Gardasee in die Klamm des Brasa hinein, kilometerweit unter überhängendem Fels und durch Tunnel ohne Licht, dann heraus auf die Hochfläche von Tremosine. Ganzjährig offen, im Sommer eng und voll – Winston Churchill nannte sie die achte Weltwunderstraße.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 45.7528,
+     "lon": 10.7488
+    },
+    "label": "Campione del Garda (Süd)"
+   }
+  ]
+ },
+ {
+  "slug": "seiser-alm",
+  "name": "Seiser Alm",
+  "type": "plateau",
+  "tags": [
+   "carfree",
+   "panorama"
+  ],
+  "aliases": [
+   "Alpe di Siusi",
+   "Compatsch"
+  ],
+  "country": "IT",
+  "region": "Dolomiten",
+  "lat": 46.5403,
+  "lon": 11.6179,
+  "elevation": 1844,
+  "classicAscent": "10,7 km, 7,8 % von Seis nach Compatsch",
+  "beauty": 5,
+  "fame": 3,
+  "difficulty": 3,
+  "traffic": 1,
+  "season": null,
+  "note": "Europas größte Hochalm, mit Schlern und Langkofel als Kulisse. Die Auffahrt von Seis ist für Autos werktags von 9 bis 17 Uhr gesperrt, für Räder durchgehend frei – die Sperrstunden sind genau die Zeit, in der man hier fahren will.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.5437,
+     "lon": 11.563
+    },
+    "label": "Seis am Schlern",
+    "to": {
+     "lat": 46.5403,
+     "lon": 11.6179
+    },
+    "km": 10.7
+   }
+  ]
+ },
+ {
+  "slug": "rittner-hochplateau",
+  "name": "Rittner Hochplateau",
+  "type": "plateau",
+  "tags": [
+   "panorama"
+  ],
+  "aliases": [
+   "Ritten",
+   "Renon",
+   "Rittner Straße"
+  ],
+  "country": "IT",
+  "region": "Dolomiten",
+  "lat": 46.5404,
+  "lon": 11.457,
+  "elevation": 1154,
+  "classicAscent": "21,8 km, 3,2 % von Bozen nach Lengstein",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 2,
+  "season": null,
+  "note": "Die Sonnenterrasse über Bozen: nach den Kehren aus dem Etschtal läuft die Straße fast eben über Wiesen und Lärchen, mit dem Rosengarten und dem Schlern gegenüber. Ganzjährig geräumt, oben kaum Durchgangsverkehr.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.4983,
+     "lon": 11.3548
+    },
+    "label": "Bozen",
+    "to": {
+     "lat": 46.555,
+     "lon": 11.4921
+    },
+    "km": 20.5
+   }
+  ]
+ },
+ {
+  "slug": "altopiano-di-asiago",
+  "name": "Altopiano di Asiago",
+  "type": "plateau",
+  "aliases": [
+   "Sieben Gemeinden",
+   "Sette Comuni"
+  ],
+  "country": "IT",
+  "region": "Dolomiten",
+  "lat": 45.8754,
+  "lon": 11.5107,
+  "elevation": 1001,
+  "classicAscent": "33,8 km, 2,6 % von Bassano del Grappa nach Asiago",
+  "beauty": 3,
+  "fame": 3,
+  "difficulty": 3,
+  "traffic": 2,
+  "season": null,
+  "note": "Die Hochebene der Sieben Gemeinden, oben weit und flach, an den Rändern überall Spuren des Gebirgskriegs. Die Auffahrt zieht sich, die Runden oben sind das eigentliche Ziel; ganzjährig geräumt.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 45.7669,
+     "lon": 11.7343
+    },
+    "label": "Bassano del Grappa",
+    "to": {
+     "lat": 45.8754,
+     "lon": 11.5107
+    },
+    "km": 33
+   }
+  ]
+ },
+ {
+  "slug": "altopiano-del-cansiglio",
+  "name": "Altopiano del Cansiglio",
+  "type": "plateau",
+  "country": "IT",
+  "region": "Dolomiten",
+  "lat": 46.0667,
+  "lon": 12.4034,
+  "elevation": 1020,
+  "classicAscent": "21,4 km, 4,1 % von Vittorio Veneto nach Pian Cansiglio",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 1,
+  "season": null,
+  "note": "Der Buchenwald der venezianischen Flotte, heute eine stille Hochebene mit Karstwiesen und Nebelseen. Die Auffahrt aus Vittorio Veneto ist gleichmäßig, oben ist fast nichts los.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 45.9898,
+     "lon": 12.2959
+    },
+    "label": "Vittorio Veneto",
+    "to": {
+     "lat": 46.0667,
+     "lon": 12.4034
+    },
+    "km": 20
+   }
+  ]
+ },
+ {
+  "slug": "val-di-genova",
+  "name": "Val di Genova",
+  "type": "valley",
+  "tags": [
+   "carfree"
+  ],
+  "country": "IT",
+  "region": "Zentralalpen",
+  "lat": 46.1984,
+  "lon": 10.6031,
+  "elevation": 1580,
+  "classicAscent": "16,6 km, 4,7 % von Carisolo nach Bedole",
+  "beauty": 5,
+  "fame": 2,
+  "difficulty": 2,
+  "traffic": 1,
+  "season": {
+   "opens": 5,
+   "closes": 10.5,
+   "maintained": false
+  },
+  "note": "Das Wasserfalltal des Adamello, von Carisolo bis zur Malga Bedole unter Gletschern. Im Sommer ist der obere Teil tagsüber für Autos gesperrt (Shuttle) – die Sperrtage vorher prüfen, Räder dürfen durchgehend.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.1688,
+     "lon": 10.7592
+    },
+    "label": "Carisolo",
+    "to": {
+     "lat": 46.1984,
+     "lon": 10.6031
+    },
+    "km": 17.5
+   }
+  ]
+ },
+ {
+  "slug": "ultental-weissbrunn",
+  "name": "Ultental",
+  "type": "valley",
+  "tags": [
+   "reservoir"
+  ],
+  "aliases": [
+   "Weißbrunn",
+   "Val d'Ultimo",
+   "Fontana Bianca"
+  ],
+  "country": "IT",
+  "region": "Zentralalpen",
+  "lat": 46.4873,
+  "lon": 10.83,
+  "elevation": 1872,
+  "classicAscent": "15,9 km, 3,6 % von St. Walburg nach Weißbrunn",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 2,
+  "traffic": 1,
+  "season": {
+   "opens": 5,
+   "closes": 11,
+   "maintained": false
+  },
+  "note": "Ein Sackgassental hinter Lana, an drei Stauseen vorbei bis zum Weißbrunnsee unter der Weißbrunnspitze. Wenig Steigung, wenig Verkehr, alte Höfe und Lärchen – das Gegenteil der Dolomitenpässe.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.5486,
+     "lon": 11.0042
+    },
+    "label": "St. Walburg",
+    "to": {
+     "lat": 46.4873,
+     "lon": 10.83
+    },
+    "km": 17
+   }
+  ]
+ },
+ {
+  "slug": "martelltal",
+  "name": "Martelltal",
+  "type": "valley",
+  "tags": [
+   "reservoir"
+  ],
+  "aliases": [
+   "Val Martello",
+   "Zufrittsee"
+  ],
+  "country": "IT",
+  "region": "Zentralalpen",
+  "lat": 46.4882,
+  "lon": 10.6874,
+  "elevation": 2050,
+  "classicAscent": "25,5 km, 5,5 % von Goldrain zur Enzianhütte",
+  "beauty": 5,
+  "fame": 2,
+  "difficulty": 4,
+  "traffic": 1,
+  "season": {
+   "opens": 5.5,
+   "closes": 10.5,
+   "maintained": false
+  },
+  "note": "Vom Vinschgau am Zufrittsee vorbei bis unter die Nordwände des Cevedale – eine Sackgasse, die 1 400 Höhenmeter steigt und im letzten Stück richtig steil wird. Oben endet der Asphalt am Parkplatz der Enzianhütte.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.6218,
+     "lon": 10.8277
+    },
+    "label": "Goldrain",
+    "to": {
+     "lat": 46.4882,
+     "lon": 10.6874
+    },
+    "km": 24.5
+   }
+  ]
+ },
+ {
+  "slug": "schnalstal-kurzras",
+  "name": "Schnalstal",
+  "type": "valley",
+  "tags": [
+   "glacier"
+  ],
+  "aliases": [
+   "Val Senales",
+   "Kurzras",
+   "Maso Corto"
+  ],
+  "country": "IT",
+  "region": "Ostalpen",
+  "lat": 46.7565,
+  "lon": 10.7827,
+  "elevation": 2011,
+  "classicAscent": "25,6 km, 5,8 % von Naturns nach Kurzras",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 4,
+  "traffic": 1,
+  "season": null,
+  "note": "Von Naturns bis auf 2 000 m an den Gletscher, das ganze Tal eine einzige Sackgasse. Lang und gleichmäßig, der Fund der Ötzi-Mumie liegt am Talschluss darüber; wegen des Gletscherskigebiets ganzjährig geräumt.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.6499,
+     "lon": 11.0042
+    },
+    "label": "Naturns",
+    "to": {
+     "lat": 46.7565,
+     "lon": 10.7827
+    },
+    "km": 26.5
+   }
+  ]
+ },
+ {
+  "slug": "villnoesstal",
+  "name": "Villnößtal",
+  "type": "valley",
+  "aliases": [
+   "Val di Funes",
+   "Zanser Alm"
+  ],
+  "country": "IT",
+  "region": "Dolomiten",
+  "lat": 46.6357,
+  "lon": 11.7656,
+  "elevation": 1680,
+  "classicAscent": "20,1 km, 5,6 % von Klausen zur Zanser Alm",
+  "beauty": 5,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 1,
+  "season": {
+   "opens": 4.5,
+   "closes": 11,
+   "maintained": false
+  },
+  "note": "Das Tal unter den Geislerspitzen, am Ende die Zanser Alm mit der Wand direkt darüber. Ruhig, weil es nirgends hinführt; die letzten Kilometer ab St. Magdalena steigen spürbar an.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.6399,
+     "lon": 11.5663
+    },
+    "label": "Klausen",
+    "to": {
+     "lat": 46.6357,
+     "lon": 11.7656
+    },
+    "km": 20
+   }
+  ]
+ },
+ {
+  "slug": "hochtannbergpass",
+  "name": "Hochtannbergpass",
+  "type": "pass",
+  "country": "AT",
+  "region": "Ostalpen",
+  "lat": 47.2695,
+  "lon": 10.1305,
+  "elevation": 1676,
+  "classicAscent": "5,4 km, 8,0 % ab Schröcken",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 2,
+  "traffic": 3,
+  "season": null,
+  "note": "Der Übergang vom Bregenzerwald ins Lechtal, zwischen Widderstein und Braunarlspitze. Ganzjährig geräumt, weil Warth und Schröcken sonst keine Verbindung hätten – die Lawinenhänge darüber sind der Grund für die Galerien.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 47.2579,
+     "lon": 10.0925
+    },
+    "label": "Schröcken (West)"
+   },
+   {
+    "from": {
+     "lat": 47.2582,
+     "lon": 10.1833
+    },
+    "label": "Warth (Ost)"
+   }
+  ]
+ },
+ {
+  "slug": "furkajoch",
+  "name": "Furkajoch",
+  "type": "pass",
+  "country": "AT",
+  "region": "Ostalpen",
+  "lat": 47.2666,
+  "lon": 9.8329,
+  "elevation": 1758,
+  "classicAscent": "6,5 km, 5,3 % ab Damüls",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 1,
+  "season": {
+   "opens": 5,
+   "closes": 11,
+   "maintained": false
+  },
+  "note": "Schmale, kaum befahrene Verbindung vom Laternsertal nach Damüls, im Winter gesperrt. Oben eine Wiesenkuppe mit Blick auf Rätikon und Arlberg; die Westrampe ist eng und stellenweise ohne Leitplanke.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 47.2804,
+     "lon": 9.891
+    },
+    "label": "Damüls (Ost)"
+   }
+  ]
+ },
+ {
+  "slug": "faschinajoch",
+  "name": "Faschinajoch",
+  "type": "pass",
+  "country": "AT",
+  "region": "Ostalpen",
+  "lat": 47.2717,
+  "lon": 9.9073,
+  "elevation": 1486,
+  "classicAscent": "4,1 km, 8,3 % ab Fontanella",
+  "beauty": 3,
+  "fame": 2,
+  "difficulty": 2,
+  "traffic": 2,
+  "season": null,
+  "note": "Kurzer Übergang vom Großen Walsertal nach Damüls, meist als Auftakt zum Furkajoch gefahren. Ganzjährig geräumt und der einzige Winterzugang nach Damüls.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 47.2475,
+     "lon": 9.9088
+    },
+    "label": "Fontanella (Süd)"
+   },
+   {
+    "from": {
+     "lat": 47.2804,
+     "lon": 9.891
+    },
+    "label": "Damüls (West)"
+   }
+  ]
+ },
+ {
+  "slug": "staller-sattel",
+  "name": "Staller Sattel",
+  "type": "pass",
+  "aliases": [
+   "Passo Stalle"
+  ],
+  "country": "AT/IT",
+  "region": "Ostalpen",
+  "lat": 46.8877,
+  "lon": 12.1997,
+  "elevation": 2052,
+  "classicAscent": "12,0 km, 6,8 % ab Antholz Mittertal",
+  "beauty": 5,
+  "fame": 3,
+  "difficulty": 3,
+  "traffic": 1,
+  "season": {
+   "opens": 6,
+   "closes": 10.5,
+   "maintained": false
+  },
+  "note": "Über dem Antholzer See vom Pustertal ins Defereggental, hoch und sehr ruhig. Die Südrampe ist einspurig und im Einbahnbetrieb geregelt: pro Stunde eine Richtung, jeweils zur halben Stunde gewechselt – die Zeitfenster vor der Fahrt prüfen.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.8592,
+     "lon": 12.0994
+    },
+    "label": "Antholz Mittertal (Süd)"
+   },
+   {
+    "from": {
+     "lat": 46.9162,
+     "lon": 12.26
+    },
+    "label": "Erlsbach (Nord)"
+   }
+  ]
+ },
+ {
+  "slug": "ploeckenpass",
+  "name": "Plöckenpass",
+  "type": "pass",
+  "aliases": [
+   "Passo di Monte Croce Carnico"
+  ],
+  "country": "AT/IT",
+  "region": "Ostalpen",
+  "lat": 46.6036,
+  "lon": 12.9451,
+  "elevation": 1360,
+  "classicAscent": "13,5 km, 5,0 % ab Kötschach-Mauthen",
+  "beauty": 3,
+  "fame": 3,
+  "difficulty": 3,
+  "traffic": 3,
+  "season": null,
+  "note": "Die alte Römerverbindung von Kärnten nach Karnien, oben Freilichtmuseum des Gebirgskriegs. Die Südrampe zieht in den letzten Kilometern auf über 10 % an; ganzjährig geräumt, bei Steinschlag zeitweise gesperrt.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.6785,
+     "lon": 13.0044
+    },
+    "label": "Kötschach-Mauthen (Nord)"
+   },
+   {
+    "from": {
+     "lat": 46.5308,
+     "lon": 13.0182
+    },
+    "label": "Paluzza (Süd)"
+   }
+  ]
+ },
+ {
+  "slug": "nassfeldpass",
+  "name": "Nassfeldpass",
+  "type": "pass",
+  "aliases": [
+   "Passo di Pramollo"
+  ],
+  "country": "AT/IT",
+  "region": "Ostalpen",
+  "lat": 46.56,
+  "lon": 13.2756,
+  "elevation": 1530,
+  "classicAscent": "11,3 km, 8,3 % ab Tröpolach",
+  "beauty": 3,
+  "fame": 3,
+  "difficulty": 4,
+  "traffic": 2,
+  "season": null,
+  "note": "Die Nordrampe ab Tröpolach ist eine der härtesten Auffahrten Kärntens, mit Rampen über 17 % im unteren Teil. Oben ein Skiort auf der Grenze; ganzjährig geräumt.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.6129,
+     "lon": 13.2782
+    },
+    "label": "Tröpolach (Nord)"
+   },
+   {
+    "from": {
+     "lat": 46.5065,
+     "lon": 13.3064
+    },
+    "label": "Pontebba (Süd)"
+   }
+  ]
+ },
+ {
+  "slug": "wurzenpass",
+  "name": "Wurzenpass",
+  "type": "pass",
+  "aliases": [
+   "Korensko sedlo"
+  ],
+  "country": "AT/SI",
+  "region": "Ostalpen",
+  "lat": 46.5233,
+  "lon": 13.7516,
+  "elevation": 1071,
+  "classicAscent": "6,2 km, 8,8 % ab Riegersdorf",
+  "beauty": 2,
+  "fame": 3,
+  "difficulty": 4,
+  "traffic": 3,
+  "season": null,
+  "note": "Kurz, brutal und mit Lkw-Verkehr: die Nordrampe hat auf dem letzten Kilometer 18 %. Grenzübergang nach Slowenien, ganzjährig offen – der Ruf kommt von der Steigung, nicht von der Landschaft.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.5491,
+     "lon": 13.7806
+    },
+    "label": "Riegersdorf (Nord)"
+   },
+   {
+    "from": {
+     "lat": 46.4851,
+     "lon": 13.7844
+    },
+    "label": "Kranjska Gora (Süd)"
+   }
+  ]
+ },
+ {
+  "slug": "loiblpass",
+  "name": "Loiblpass",
+  "type": "pass",
+  "aliases": [
+   "Ljubelj"
+  ],
+  "country": "AT/SI",
+  "region": "Ostalpen",
+  "lat": 46.4392,
+  "lon": 14.2667,
+  "elevation": 1367,
+  "classicAscent": "16,2 km, 5,4 % ab Ferlach",
+  "beauty": 3,
+  "fame": 3,
+  "difficulty": 4,
+  "traffic": 2,
+  "season": {
+   "opens": 4.5,
+   "closes": 11,
+   "maintained": false
+  },
+  "note": "Der Durchgangsverkehr nimmt den Tunnel darunter, weshalb die alte Passstraße über die Höhe ruhig ist – und steil: über 20 % auf der Südseite. Am Nordportal steht die Gedenkstätte des KZ-Außenlagers Loibl.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.5265,
+     "lon": 14.3006
+    },
+    "label": "Ferlach (Nord)"
+   },
+   {
+    "from": {
+     "lat": 46.3637,
+     "lon": 14.3095
+    },
+    "label": "Tržič (Süd)"
+   }
+  ]
+ },
+ {
+  "slug": "seebergsattel",
+  "name": "Seebergsattel",
+  "type": "pass",
+  "aliases": [
+   "Jezerski vrh"
+  ],
+  "country": "AT/SI",
+  "region": "Ostalpen",
+  "lat": 46.4191,
+  "lon": 14.527,
+  "elevation": 1215,
+  "classicAscent": "7,0 km, 4,7 % ab Zgornje Jezersko",
+  "beauty": 3,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 2,
+  "season": null,
+  "note": "Der stille Grenzübergang zwischen Karawanken und Steiner Alpen, östlich des Loibl. Gleichmäßig und wenig befahren, oben Wiesen statt Fels; ganzjährig geräumt.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.3935,
+     "lon": 14.4979
+    },
+    "label": "Zgornje Jezersko (Süd)"
+   }
+  ]
+ },
+ {
+  "slug": "kesselberg",
+  "name": "Kesselberg",
+  "type": "pass",
+  "tags": [
+   "hairpins"
+  ],
+  "country": "DE",
+  "region": "Ostalpen",
+  "lat": 47.6216,
+  "lon": 11.3492,
+  "elevation": 858,
+  "classicAscent": "7,0 km, 3,7 % ab Kochel am See",
+  "beauty": 3,
+  "fame": 3,
+  "difficulty": 2,
+  "traffic": 4,
+  "season": null,
+  "note": "Die Kehrenstraße zwischen Kochelsee und Walchensee, seit 1897 Rennstrecke und bis heute ein Motorradmagnet – an schönen Wochenenden entsprechend laut. Kurz, aber der Blick auf den Walchensee von oben trägt sie.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 47.6531,
+     "lon": 11.3632
+    },
+    "label": "Kochel am See (Nord)"
+   }
+  ]
+ },
+ {
+  "slug": "sudelfeld",
+  "name": "Sudelfeld",
+  "type": "pass",
+  "aliases": [
+   "Sudelfeldpass",
+   "Tatzelwurm"
+  ],
+  "country": "DE",
+  "region": "Ostalpen",
+  "lat": 47.6788,
+  "lon": 12.0355,
+  "elevation": 1123,
+  "classicAscent": "4,0 km, 8,4 % ab Bayrischzell",
+  "beauty": 3,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 3,
+  "season": null,
+  "note": "Vom Leitzachtal über die Skihänge des Sudelfelds hinüber ins Inntal, die Ostrampe heißt nach dem Wasserfall Tatzelwurm. Ganzjährig geräumt und am Wochenende voller Motorräder.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 47.6737,
+     "lon": 12.0149
+    },
+    "label": "Bayrischzell (West)"
+   },
+   {
+    "from": {
+     "lat": 47.6486,
+     "lon": 12.172
+    },
+    "label": "Oberaudorf (Ost)"
+   }
+  ]
+ },
+ {
+  "slug": "riedbergpass",
+  "name": "Riedbergpass",
+  "type": "pass",
+  "country": "DE",
+  "region": "Ostalpen",
+  "lat": 47.4373,
+  "lon": 10.1769,
+  "elevation": 1406,
+  "classicAscent": "6,5 km, 8,3 % ab Obermaiselstein",
+  "beauty": 3,
+  "fame": 3,
+  "difficulty": 4,
+  "traffic": 2,
+  "season": null,
+  "note": "Die höchste Passstraße Deutschlands und mit 16 % im oberen Drittel auch eine der steilsten. Verbindet das Illertal mit Balderschwang; ganzjährig geräumt, bei starkem Schneefall zeitweise nur mit Ketten.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 47.4479,
+     "lon": 10.2375
+    },
+    "label": "Obermaiselstein (Ost)"
+   }
+  ]
+ },
+ {
+  "slug": "oberjoch",
+  "name": "Oberjoch",
+  "type": "pass",
+  "tags": [
+   "hairpins"
+  ],
+  "country": "DE",
+  "region": "Ostalpen",
+  "lat": 47.5268,
+  "lon": 10.4329,
+  "elevation": 1175,
+  "classicAscent": "7,9 km, 4,4 % ab Bad Hindelang",
+  "beauty": 3,
+  "fame": 3,
+  "difficulty": 2,
+  "traffic": 4,
+  "season": null,
+  "note": "Die Jochstraße ab Bad Hindelang legt 106 Kehren auf wenige Kilometer – Deutschlands kurvenreichste Straße. Hauptverbindung ins Tannheimer Tal und entsprechend befahren, ganzjährig geräumt.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 47.5063,
+     "lon": 10.3699
+    },
+    "label": "Bad Hindelang (West)"
+   }
+  ]
+ },
+ {
+  "slug": "sella-nevea",
+  "name": "Sella Nevea",
+  "type": "pass",
+  "aliases": [
+   "Neveasattel"
+  ],
+  "country": "IT",
+  "region": "Ostalpen",
+  "lat": 46.3904,
+  "lon": 13.4763,
+  "elevation": 1195,
+  "classicAscent": "20,4 km, 2,0 % ab Tarvisio",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 1,
+  "season": null,
+  "note": "Der Sattel zwischen Kanin und Montasch, erreicht über Cave del Predil. Sehr ruhig, hohe Wände auf beiden Seiten; ganzjährig für das Skigebiet geräumt.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.5053,
+     "lon": 13.5784
+    },
+    "label": "Tarvisio (Nordost)"
+   }
+  ]
+ },
+ {
+  "slug": "predilpass",
+  "name": "Predilpass",
+  "type": "pass",
+  "aliases": [
+   "Passo del Predil",
+   "Predel"
+  ],
+  "country": "IT/SI",
+  "region": "Ostalpen",
+  "lat": 46.4186,
+  "lon": 13.5782,
+  "elevation": 1156,
+  "classicAscent": "13,4 km, 3,1 % ab Tarvisio",
+  "beauty": 4,
+  "fame": 3,
+  "difficulty": 3,
+  "traffic": 2,
+  "season": null,
+  "note": "Von Tarvisio über den Raibler See nach Bovec ins Soča-Tal, meist zusammen mit dem Vršič gefahren. Die Südrampe fällt steil in die Soča ab; oben die Reste der habsburgischen Sperrfestung.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.5053,
+     "lon": 13.5784
+    },
+    "label": "Tarvisio (Nord)"
+   },
+   {
+    "from": {
+     "lat": 46.3386,
+     "lon": 13.5524
+    },
+    "label": "Bovec (Süd)"
+   }
+  ]
+ },
+ {
+  "slug": "kaunertaler-gletscherstrasse",
+  "name": "Kaunertaler Gletscherstraße",
+  "type": "spur",
+  "tags": [
+   "glacier",
+   "reservoir",
+   "toll"
+  ],
+  "country": "AT",
+  "region": "Ostalpen",
+  "lat": 46.8711,
+  "lon": 10.71,
+  "elevation": 2510,
+  "classicAscent": "24,5 km, 5,0 % ab Feichten",
+  "beauty": 5,
+  "fame": 3,
+  "difficulty": 5,
+  "traffic": 1,
+  "season": {
+   "opens": 6,
+   "closes": 10,
+   "maintained": false
+  },
+  "note": "Vom Kaunertal am Gepatsch-Stausee vorbei bis ans Ende der öffentlichen Straße auf 2 510 m – die letzten Kehren zum Gletscherparkplatz auf rund 2 750 m sind eine Zufahrtsstraße des Skigebiets. Mautstraße: Autos zahlen, Räder fahren frei. Oben dünne Luft, Kehren weit über der Baumgrenze.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 47.029,
+     "lon": 10.746
+    },
+    "label": "Feichten"
+   }
+  ]
+ },
+ {
+  "slug": "loser-panoramastrasse",
+  "name": "Loser Panoramastraße",
+  "type": "spur",
+  "tags": [
+   "panorama",
+   "toll"
+  ],
+  "country": "AT",
+  "region": "Ostalpen",
+  "lat": 47.6602,
+  "lon": 13.7844,
+  "elevation": 1631,
+  "classicAscent": "10,7 km, 8,5 % ab Altaussee",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 4,
+  "traffic": 1,
+  "season": {
+   "opens": 5,
+   "closes": 10.5,
+   "maintained": false
+  },
+  "note": "Steile Mautstraße über dem Altausseer See ins Tote Gebirge, mit Rampen um 16 %. Für Autos wird kassiert, Räder fahren frei; oben endet der Asphalt am Loser-Plateau mit Blick über das Ausseerland.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 47.6399,
+     "lon": 13.7641
+    },
+    "label": "Altaussee"
+   }
+  ]
+ },
+ {
+  "slug": "postalm",
+  "name": "Postalm",
+  "type": "plateau",
+  "tags": [
+   "toll"
+  ],
+  "country": "AT",
+  "region": "Ostalpen",
+  "lat": 47.6261,
+  "lon": 13.4143,
+  "elevation": 1306,
+  "classicAscent": "27,7 km, 2,8 % von Strobl ins Lammertal",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 1,
+  "season": {
+   "opens": 5,
+   "closes": 11,
+   "maintained": false
+  },
+  "note": "Österreichs größte Almhochfläche, über eine Mautstraße von Strobl am Wolfgangsee zu erreichen – Räder zahlen nichts. Oben weite Weiden ohne Wald; die Straße läuft lange fast eben über die Hochfläche und fällt dann ins Lammertal ab.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 47.713,
+     "lon": 13.4873
+    },
+    "label": "Strobl",
+    "to": {
+     "lat": 47.5971,
+     "lon": 13.3305
+    },
+    "km": 27.7
+   }
+  ]
+ },
+ {
+  "slug": "sportgastein",
+  "name": "Sportgastein",
+  "type": "spur",
+  "tags": [
+   "toll"
+  ],
+  "aliases": [
+   "Gasteiner Alpenstraße",
+   "Nassfeld Gastein"
+  ],
+  "country": "AT",
+  "region": "Ostalpen",
+  "lat": 47.065,
+  "lon": 13.0599,
+  "elevation": 1644,
+  "classicAscent": "10,4 km, 6,2 % ab Bad Gastein",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 1,
+  "season": {
+   "opens": 5.5,
+   "closes": 10.5,
+   "maintained": false
+  },
+  "note": "Die Gasteiner Alpenstraße endet im Talschluss des Nassfelds unter den Dreitausendern der Goldberggruppe. Mautstraße – für Autos wird kassiert, Räder fahren frei; oben nur Skilift, Wiesen und die alten Goldbergwerke.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 47.1145,
+     "lon": 13.1352
+    },
+    "label": "Bad Gastein"
+   }
+  ]
+ },
+ {
+  "slug": "hochkar",
+  "name": "Hochkar Alpenstraße",
+  "type": "spur",
+  "tags": [
+   "toll",
+   "panorama"
+  ],
+  "country": "AT",
+  "region": "Ostalpen",
+  "lat": 47.7197,
+  "lon": 14.9179,
+  "elevation": 1470,
+  "classicAscent": "8,5 km, 9,3 % ab Lassing",
+  "beauty": 3,
+  "fame": 2,
+  "difficulty": 4,
+  "traffic": 1,
+  "season": {
+   "opens": 5,
+   "closes": 11,
+   "maintained": false
+  },
+  "note": "Mautstraße auf das Hochkar im Mostviertel, mit dem Blick über die Ybbstaler Alpen bis zum Ötscher. Gleichmäßig steil, oben endet der Asphalt am Skigebiet; Räder zahlen keine Maut.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 47.7475,
+     "lon": 14.9032
+    },
+    "label": "Lassing"
+   }
+  ]
+ },
+ {
+  "slug": "kals-lucknerhaus",
+  "name": "Kalser Glocknerstraße",
+  "type": "spur",
+  "tags": [
+   "panorama",
+   "toll"
+  ],
+  "aliases": [
+   "Lucknerhaus"
+  ],
+  "country": "AT",
+  "region": "Ostalpen",
+  "lat": 47.0205,
+  "lon": 12.6883,
+  "elevation": 1939,
+  "classicAscent": "7,4 km, 8,1 % ab Kals am Großglockner",
+  "beauty": 5,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 1,
+  "season": {
+   "opens": 5.5,
+   "closes": 10.5,
+   "maintained": false
+  },
+  "note": "Die Sackgasse von Kals hinauf zum Lucknerhaus, direkt unter die Südwand des Großglockners – der nächste Punkt, an den eine Straße an den höchsten Berg Österreichs heranführt. Mautstraße für Autos, Räder frei.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 47.0024,
+     "lon": 12.6458
+    },
+    "label": "Kals am Großglockner"
+   }
+  ]
+ },
+ {
+  "slug": "pitztal-mittelberg",
+  "name": "Pitztal",
+  "type": "valley",
+  "tags": [
+   "glacier"
+  ],
+  "aliases": [
+   "Mittelberg",
+   "Pitztaler Gletscher"
+  ],
+  "country": "AT",
+  "region": "Ostalpen",
+  "lat": 46.9595,
+  "lon": 10.8749,
+  "elevation": 1715,
+  "classicAscent": "19,8 km, 2,7 % von Jerzens nach Mittelberg",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 1,
+  "season": null,
+  "note": "Das Pitztal endet nach zwanzig flachen Kilometern am Gletscherparkplatz von Mittelberg, unter der Wildspitze. Wenig Steigung, wenig Verkehr; wegen des Gletscherskigebiets ganzjährig geräumt.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 47.1125,
+     "lon": 10.7982
+    },
+    "label": "Jerzens",
+    "to": {
+     "lat": 46.9595,
+     "lon": 10.8749
+    },
+    "km": 20.1
+   }
+  ]
+ },
+ {
+  "slug": "col-de-la-forclaz-martigny",
+  "name": "Col de la Forclaz",
+  "type": "pass",
+  "aliases": [
+   "Forclaz Martigny"
+  ],
+  "country": "CH",
+  "region": "Zentralalpen",
+  "lat": 46.0577,
+  "lon": 7.0013,
+  "elevation": 1527,
+  "classicAscent": "13,0 km, 7,5 % ab Martigny",
+  "beauty": 3,
+  "fame": 3,
+  "difficulty": 4,
+  "traffic": 4,
+  "season": null,
+  "note": "Der Weg von Martigny nach Chamonix, gleichmäßig steil durch Weinberge und dann Wald. Ganzjährig geräumt und als Hauptverbindung ins Trienttal entsprechend befahren; oft als Zubringer zum Col des Montets gefahren.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.1031,
+     "lon": 7.0727
+    },
+    "label": "Martigny (Nord)"
+   }
+  ]
+ },
+ {
+  "slug": "col-des-montets",
+  "name": "Col des Montets",
+  "type": "pass",
+  "country": "FR",
+  "region": "Zentralalpen",
+  "lat": 46.0039,
+  "lon": 6.9236,
+  "elevation": 1461,
+  "classicAscent": "5,0 km, 4,5 % ab Argentière",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 2,
+  "traffic": 3,
+  "season": null,
+  "note": "Der flache Riegel zwischen Chamonix-Tal und Vallorcine, direkt unter den Aiguilles Rouges. Kurz und nie steil; im Winter bei Lawinengefahr zeitweise gesperrt.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 45.9838,
+     "lon": 6.9299
+    },
+    "label": "Argentière (Süd)"
+   }
+  ]
+ },
+ {
+  "slug": "col-des-mosses",
+  "name": "Col des Mosses",
+  "type": "pass",
+  "country": "CH",
+  "region": "Zentralalpen",
+  "lat": 46.399,
+  "lon": 7.1026,
+  "elevation": 1445,
+  "classicAscent": "13,0 km, 6,0 % ab Le Sépey",
+  "beauty": 3,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 3,
+  "season": null,
+  "note": "Die breite Verbindung vom Rhonetal ins Pays-d'Enhaut, oben ein Hochmoor statt einer Passhöhe. Ganzjährig geräumt, gleichmäßig und ohne Überraschungen.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.3611,
+     "lon": 7.0512
+    },
+    "label": "Le Sépey (Süd)"
+   }
+  ]
+ },
+ {
+  "slug": "col-du-pillon",
+  "name": "Col du Pillon",
+  "type": "pass",
+  "country": "CH",
+  "region": "Zentralalpen",
+  "lat": 46.3534,
+  "lon": 7.2046,
+  "elevation": 1546,
+  "classicAscent": "6,0 km, 6,0 % ab Les Diablerets",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 2,
+  "traffic": 3,
+  "season": null,
+  "note": "Von Les Diablerets nach Gsteig hinüber, mit dem Gletscher des Diablerets über der Straße. Kurz, ganzjährig geräumt und meist mit dem Col de la Croix zur Runde gehängt.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.3511,
+     "lon": 7.1566
+    },
+    "label": "Les Diablerets (West)"
+   }
+  ]
+ },
+ {
+  "slug": "col-de-la-croix",
+  "name": "Col de la Croix",
+  "type": "pass",
+  "country": "CH",
+  "region": "Zentralalpen",
+  "lat": 46.3247,
+  "lon": 7.1267,
+  "elevation": 1776,
+  "classicAscent": "8,0 km, 8,0 % ab Villars-sur-Ollon",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 4,
+  "traffic": 1,
+  "season": {
+   "opens": 5,
+   "closes": 11,
+   "maintained": false
+  },
+  "note": "Schmale, steile Verbindung von Villars nach Les Diablerets, im Winter gesperrt. Oben Alpweiden mit Blick auf den Muveran; deutlich ruhiger als der parallele Weg durchs Tal.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.2978,
+     "lon": 7.0553
+    },
+    "label": "Villars-sur-Ollon (West)"
+   }
+  ]
+ },
+ {
+  "slug": "jaunpass",
+  "name": "Jaunpass",
+  "type": "pass",
+  "aliases": [
+   "Col du Jaun"
+  ],
+  "country": "CH",
+  "region": "Zentralalpen",
+  "lat": 46.5922,
+  "lon": 7.3391,
+  "elevation": 1508,
+  "classicAscent": "9,0 km, 7,0 % ab Boltigen",
+  "beauty": 3,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 2,
+  "season": null,
+  "note": "Vom Simmental ins Greyerzerland, die Sprachgrenze liegt auf der anderen Seite. Gleichmäßig steil durch Wald und Weiden, ganzjährig geräumt und wenig befahren.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.6295,
+     "lon": 7.3908
+    },
+    "label": "Boltigen (Ost)"
+   }
+  ]
+ },
+ {
+  "slug": "pragelpass",
+  "name": "Pragelpass",
+  "type": "pass",
+  "tags": [
+   "carfree"
+  ],
+  "country": "CH",
+  "region": "Zentralalpen",
+  "lat": 46.9994,
+  "lon": 8.8695,
+  "elevation": 1548,
+  "classicAscent": "14,0 km, 7,0 % ab Muotathal",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 4,
+  "traffic": 1,
+  "season": {
+   "opens": 5.5,
+   "closes": 10.5,
+   "maintained": false
+  },
+  "note": "Zwischen Muotatal und Klöntal, für Autos an Sonn- und Feiertagen gesperrt – dann gehört die Straße den Rädern. Schmal, steil und mit dem Klöntalersee als Belohnung auf der Ostseite.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.9747,
+     "lon": 8.7658
+    },
+    "label": "Muotathal (West)"
+   }
+  ]
+ },
+ {
+  "slug": "glaubenbielen",
+  "name": "Glaubenbielen",
+  "type": "pass",
+  "aliases": [
+   "Panoramastrasse Glaubenbielen"
+  ],
+  "country": "CH",
+  "region": "Zentralalpen",
+  "lat": 46.8188,
+  "lon": 8.0932,
+  "elevation": 1611,
+  "classicAscent": "13,0 km, 8,0 % ab Giswil",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 4,
+  "traffic": 1,
+  "season": {
+   "opens": 5,
+   "closes": 11,
+   "maintained": false
+  },
+  "note": "Von Giswil am Sarnersee hinauf nach Sörenberg, lang und gleichmäßig steil. Oben weite Alpweiden unter dem Brienzer Rothorn; im Winter gesperrt.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.8382,
+     "lon": 8.188
+    },
+    "label": "Giswil (Ost)"
+   }
+  ]
+ },
+ {
+  "slug": "glaubenberg",
+  "name": "Glaubenberg",
+  "type": "pass",
+  "country": "CH",
+  "region": "Zentralalpen",
+  "lat": 46.8925,
+  "lon": 8.1077,
+  "elevation": 1540,
+  "classicAscent": "16,0 km, 6,5 % ab Sarnen",
+  "beauty": 3,
+  "fame": 2,
+  "difficulty": 4,
+  "traffic": 1,
+  "season": {
+   "opens": 5,
+   "closes": 11,
+   "maintained": false
+  },
+  "note": "Der stille Nachbar des Glaubenbielen, von Sarnen ins Entlebuch. Lange Rampen durch Wald, oben Moorlandschaft; im Winter gesperrt und auch im Sommer kaum befahren.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.8957,
+     "lon": 8.2461
+    },
+    "label": "Sarnen (Ost)"
+   }
+  ]
+ },
+ {
+  "slug": "ibergeregg",
+  "name": "Ibergeregg",
+  "type": "pass",
+  "country": "CH",
+  "region": "Zentralalpen",
+  "lat": 47.0174,
+  "lon": 8.7332,
+  "elevation": 1406,
+  "classicAscent": "9,0 km, 8,0 % ab Oberiberg",
+  "beauty": 3,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 2,
+  "season": null,
+  "note": "Zwischen Schwyz und dem Sihltal, steil und kurz. Ganzjährig geräumt; oben der Blick auf die Mythen, die den ganzen Anstieg über im Rücken stehen.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 47.0392,
+     "lon": 8.7834
+    },
+    "label": "Oberiberg (Ost)"
+   }
+  ]
+ },
+ {
+  "slug": "schwaegalp",
+  "name": "Schwägalp",
+  "type": "pass",
+  "country": "CH",
+  "region": "Zentralalpen",
+  "lat": 47.2535,
+  "lon": 9.3037,
+  "elevation": 1300,
+  "classicAscent": "10,0 km, 6,0 % ab Urnäsch",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 2,
+  "season": null,
+  "note": "Die Passhöhe liegt direkt unter der Nordwand des Säntis, was den Anstieg trägt – die Wand steht die letzten Kilometer über der Straße. Ganzjährig geräumt, Ausgangspunkt der Säntis-Bahn.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 47.3179,
+     "lon": 9.2835
+    },
+    "label": "Urnäsch (Nord)"
+   }
+  ]
+ },
+ {
+  "slug": "forcola-di-livigno",
+  "name": "Forcola di Livigno",
+  "type": "pass",
+  "country": "CH/IT",
+  "region": "Zentralalpen",
+  "lat": 46.4409,
+  "lon": 10.0562,
+  "elevation": 2315,
+  "classicAscent": "14,0 km, 5,0 % ab Livigno",
+  "beauty": 4,
+  "fame": 3,
+  "difficulty": 3,
+  "traffic": 2,
+  "season": {
+   "opens": 6,
+   "closes": 10.5,
+   "maintained": false
+  },
+  "note": "Der Grenzübergang zwischen Livigno und dem Berninagebiet, meist als Teil der Runde über Bernina und Foscagno gefahren. Hoch, kahl und im Winter gesperrt.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.5382,
+     "lon": 10.136
+    },
+    "label": "Livigno (Nord)"
+   }
+  ]
+ },
+ {
+  "slug": "passo-d-eira",
+  "name": "Passo d'Eira",
+  "type": "pass",
+  "country": "IT",
+  "region": "Zentralalpen",
+  "lat": 46.5383,
+  "lon": 10.1664,
+  "elevation": 2208,
+  "classicAscent": "4,0 km, 6,0 % ab Livigno",
+  "beauty": 3,
+  "fame": 2,
+  "difficulty": 2,
+  "traffic": 3,
+  "season": null,
+  "note": "Der kleinere der beiden Pässe, die Livigno vom Veltlin trennen – direkt vor dem Foscagno. Kurz und meist nur als Durchgang gefahren; wegen des zollfreien Livigno gut befahren.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.5382,
+     "lon": 10.136
+    },
+    "label": "Livigno (West)"
+   }
+  ]
+ },
+ {
+  "slug": "passo-del-vivione",
+  "name": "Passo del Vivione",
+  "type": "pass",
+  "country": "IT",
+  "region": "Zentralalpen",
+  "lat": 46.0366,
+  "lon": 10.1993,
+  "elevation": 1828,
+  "classicAscent": "12,0 km, 7,0 % ab Schilpario",
+  "beauty": 5,
+  "fame": 2,
+  "difficulty": 4,
+  "traffic": 1,
+  "season": {
+   "opens": 5.5,
+   "closes": 10.5,
+   "maintained": false
+  },
+  "note": "Eine der stillsten Straßen der Bergamasker Alpen, schmal und ohne Leitplanken über dem Val di Scalve. Im Winter gesperrt; wer Verkehr sucht, ist hier falsch.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.0094,
+     "lon": 10.1541
+    },
+    "label": "Schilpario (West)"
+   }
+  ]
+ },
+ {
+  "slug": "passo-del-maniva",
+  "name": "Passo del Maniva",
+  "type": "pass",
+  "aliases": [
+   "Giogo del Maniva"
+  ],
+  "country": "IT",
+  "region": "Zentralalpen",
+  "lat": 45.8226,
+  "lon": 10.4101,
+  "elevation": 1664,
+  "classicAscent": "20,0 km, 6,0 % ab Bagolino",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 4,
+  "traffic": 1,
+  "season": {
+   "opens": 5.5,
+   "closes": 10.5,
+   "maintained": false
+  },
+  "note": "Lange Auffahrt aus dem Val Trompia oder von Bagolino, oben eine Kammstraße mit Blick bis zum Gardasee. Im Winter gesperrt, im Sommer sehr ruhig.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 45.8236,
+     "lon": 10.4627
+    },
+    "label": "Bagolino (Ost)"
+   }
+  ]
+ },
+ {
+  "slug": "madonna-del-ghisallo",
+  "name": "Madonna del Ghisallo",
+  "type": "pass",
+  "country": "IT",
+  "region": "Zentralalpen",
+  "lat": 45.9237,
+  "lon": 9.2672,
+  "elevation": 754,
+  "classicAscent": "10,0 km, 5,5 % ab Bellagio",
+  "beauty": 4,
+  "fame": 5,
+  "difficulty": 3,
+  "traffic": 3,
+  "season": null,
+  "note": "Die Schutzpatronin der Radfahrer steht oben in der Kapelle, daneben das Radmuseum – kein hoher Pass, aber der berühmteste Anstieg der Lombardei. Von Bellagio steil über dem Comer See, Fixpunkt des Giro di Lombardia.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 45.9873,
+     "lon": 9.2613
+    },
+    "label": "Bellagio (Nord)"
+   }
+  ]
+ },
+ {
+  "slug": "muro-di-sormano",
+  "name": "Muro di Sormano",
+  "type": "pass",
+  "aliases": [
+   "Colma di Sormano"
+  ],
+  "country": "IT",
+  "region": "Zentralalpen",
+  "lat": 45.883,
+  "lon": 9.229,
+  "elevation": 1121,
+  "classicAscent": "2,0 km, 15,0 % ab Sormano",
+  "beauty": 3,
+  "fame": 5,
+  "difficulty": 5,
+  "traffic": 1,
+  "season": null,
+  "note": "Zwei Kilometer mit durchschnittlich 15 % und Rampen bis 27 %, die Steigungsprozente stehen auf dem Asphalt. 1962 aus dem Giro di Lombardia genommen, weil kaum jemand fahrend hinaufkam; seit 2012 wieder im Rennen.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 45.8778,
+     "lon": 9.2487
+    },
+    "label": "Sormano (Ost)"
+   }
+  ]
+ },
+ {
+  "slug": "passo-dell-aprica",
+  "name": "Passo dell'Aprica",
+  "type": "pass",
+  "country": "IT",
+  "region": "Zentralalpen",
+  "lat": 46.1543,
+  "lon": 10.1542,
+  "elevation": 1172,
+  "classicAscent": "14,0 km, 4,0 % ab Tresenda",
+  "beauty": 2,
+  "fame": 3,
+  "difficulty": 3,
+  "traffic": 4,
+  "season": null,
+  "note": "Die Hauptverbindung zwischen Veltlin und Camonica-Tal, entsprechend viel Verkehr – der Pass steht regelmäßig im Giro, meist als Zubringer zu Mortirolo oder Gavia. Gleichmäßig und nie steil.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.1633,
+     "lon": 10.0862
+    },
+    "label": "Tresenda (West)"
+   },
+   {
+    "from": {
+     "lat": 46.1806,
+     "lon": 10.3333
+    },
+    "label": "Edolo (Ost)"
+   }
+  ]
+ },
+ {
+  "slug": "col-du-sanetsch",
+  "name": "Col du Sanetsch",
+  "type": "spur",
+  "tags": [
+   "reservoir",
+   "tunnels"
+  ],
+  "aliases": [
+   "Sanetschpass"
+  ],
+  "country": "CH",
+  "region": "Zentralalpen",
+  "lat": 46.3316,
+  "lon": 7.2862,
+  "elevation": 2252,
+  "classicAscent": "26,0 km, 6,5 % ab Sion",
+  "beauty": 5,
+  "fame": 3,
+  "difficulty": 5,
+  "traffic": 1,
+  "season": {
+   "opens": 6,
+   "closes": 10.5,
+   "maintained": false
+  },
+  "note": "Von Sion über 1 700 Höhenmeter am Stück bis an den Stausee – hinunter geht es nur dieselbe Straße zurück, oder mit der Seilbahn nach Gsteig. Mehrere unbeleuchtete Tunnel, oben eine Karstlandschaft ohne Bäume.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.2312,
+     "lon": 7.3589
+    },
+    "label": "Sion"
+   }
+  ]
+ },
+ {
+  "slug": "sestriere",
+  "name": "Sestriere",
+  "type": "pass",
+  "aliases": [
+   "Colle del Sestriere"
+  ],
+  "country": "IT",
+  "region": "Westalpen",
+  "lat": 44.956,
+  "lon": 6.879,
+  "elevation": 2035,
+  "classicAscent": "11,6 km, 5,9 % ab Cesana Torinese",
+  "beauty": 3,
+  "fame": 4,
+  "difficulty": 3,
+  "traffic": 3,
+  "season": null,
+  "note": "Der Skiort auf der Passhöhe zwischen Val Chisone und Val Susa, Giro- und Tour-Stammgast seit den dreißiger Jahren – Coppi und Pantani haben hier gewonnen. Ganzjährig geräumt; landschaftlich nüchtern, historisch schwer.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 44.9522,
+     "lon": 6.7936
+    },
+    "label": "Cesana Torinese (West)"
+   }
+  ]
+ },
+ {
+  "slug": "valsavarenche",
+  "name": "Valsavarenche",
+  "type": "valley",
+  "aliases": [
+   "Pont"
+  ],
+  "country": "IT",
+  "region": "Westalpen",
+  "lat": 45.5271,
+  "lon": 7.2015,
+  "elevation": 1972,
+  "classicAscent": "26,1 km, 5,0 % von Villeneuve nach Pont",
+  "beauty": 5,
+  "fame": 2,
+  "difficulty": 4,
+  "traffic": 1,
+  "season": {
+   "opens": 5.5,
+   "closes": 10.5,
+   "maintained": false
+  },
+  "note": "Eines der drei Täler des Gran Paradiso, von Villeneuve im Aostatal bis zum Talschluss von Pont unter dem Gipfel. Durchgehend Nationalpark, wenig Verkehr, am Ende nur noch Wiesen und Steinböcke.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 45.6985,
+     "lon": 7.1922
+    },
+    "label": "Villeneuve",
+    "to": {
+     "lat": 45.5271,
+     "lon": 7.2015
+    },
+    "km": 26.1
+   }
+  ]
+ },
+ {
+  "slug": "valgrisenche",
+  "name": "Valgrisenche",
+  "type": "valley",
+  "tags": [
+   "reservoir"
+  ],
+  "aliases": [
+   "Lago di Beauregard"
+  ],
+  "country": "IT",
+  "region": "Westalpen",
+  "lat": 45.5986,
+  "lon": 7.0389,
+  "elevation": 2019,
+  "classicAscent": "14,9 km, 5,8 % von Arvier zum Talschluss",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 4,
+  "traffic": 1,
+  "season": {
+   "opens": 5.5,
+   "closes": 10.5,
+   "maintained": false
+  },
+  "note": "Am Stausee von Beauregard vorbei bis unter die Gletscher der Grande Sassière – eine Sackgasse, in der nach dem See fast nichts mehr kommt. Der alte Talboden liegt unter dem Wasser, die Straße hängt darüber an der Flanke.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 45.6874,
+     "lon": 7.131
+    },
+    "label": "Arvier",
+    "to": {
+     "lat": 45.5986,
+     "lon": 7.0389
+    },
+    "km": 14.9
+   }
+  ]
+ },
+ {
+  "slug": "valle-maira",
+  "name": "Valle Maira",
+  "type": "valley",
+  "aliases": [
+   "Chiappera"
+  ],
+  "country": "IT",
+  "region": "Westalpen",
+  "lat": 44.4876,
+  "lon": 6.9249,
+  "elevation": 1616,
+  "classicAscent": "14,2 km, 4,3 % von Acceglio nach Chiappera",
+  "beauty": 5,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 1,
+  "season": {
+   "opens": 5,
+   "closes": 11,
+   "maintained": false
+  },
+  "note": "Das stillste der piemontesischen Täler, am Ende der Felszahn der Provenzale über Chiappera. Kaum Verkehr, kaum Tourismus – wer die Maira fährt, fährt sie wegen der Ruhe und nicht wegen der Steigung.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 44.4847,
+     "lon": 7.0657
+    },
+    "label": "Acceglio",
+    "to": {
+     "lat": 44.4876,
+     "lon": 6.9249
+    },
+    "km": 14.3
+   }
+  ]
  }
 ]

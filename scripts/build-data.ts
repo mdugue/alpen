@@ -188,6 +188,22 @@ class QuotaExhaustedError extends Error {
 }
 
 /**
+ * A response the host answered but refused. Carries the status so a caller can
+ * tell "this host will not answer this question" (ORS 404 on a road it does not
+ * route) from "this request was wrong" (400, 401) – the first has a fallback,
+ * the second is a bug and has to surface.
+ */
+class HttpError extends Error {
+  name = "HttpError";
+  status: number;
+
+  constructor(status: number, message: string) {
+    super(message);
+    this.status = status;
+  }
+}
+
+/**
  * Sequential per-host pacer. `weight` is what the host bills for the request;
  * the gap to the next request is weight / callsPerMinute.
  */
@@ -295,7 +311,10 @@ const getJson = <T>(
         await Bun.sleep(wait);
         continue;
       }
-      throw new Error(`${res.status} ${reason} ${url.slice(0, 80)}`);
+      throw new HttpError(
+        res.status,
+        `${res.status} ${reason} ${url.slice(0, 80)}`,
+      );
     }
     throw new Error(`${lim.name}: aufgegeben nach 5 Versuchen`);
   }, weight);
@@ -362,7 +381,23 @@ const routeVia = async (
   return out;
 };
 
-/** ORS first, OSRM as the fallback once ORS says the daily quota is spent. */
+/**
+ * ORS first, OSRM as the fallback – for the two reasons ORS legitimately has
+ * no answer:
+ *
+ * - the daily quota is spent, and
+ * - ORS refuses this geometry. Its road-cycling graph leaves out roads it does
+ *   not consider fit for a road bike, and then answers 404: no route between
+ *   the points (2009) or no routable point near one of them (2010). The URL is
+ *   a constant, so a 404 here can only be the routing question, never a wrong
+ *   address. Without this branch such a road is skipped on every run for ever –
+ *   it is never stored, so nothing marks it as needing a retry.
+ *
+ * Both fall through to the car profile, and the gate judges what comes back the
+ * same way it judges an ORS route: a car route that cuts a corner the road does
+ * not take fails on length, on its end point or on where its summit lies. That
+ * is how Finestre and Nivolet are on the map.
+ */
 const route = async (
   waypoints: LatLon[],
 ): Promise<{ geom: RouteGeometry; source: RouteSource }> => {
@@ -370,10 +405,15 @@ const route = async (
     try {
       return { geom: await routeVia("ors", waypoints), source: "ors" };
     } catch (error) {
-      if (!(error instanceof QuotaExhaustedError)) throw error;
-      console.log(
-        "  ORS-Kontingent erschöpft – weiter mit OSRM (Autoprofil), das Gate fängt die Ausreißer ab",
-      );
+      if (error instanceof QuotaExhaustedError)
+        console.log(
+          "  ORS-Kontingent erschöpft – weiter mit OSRM (Autoprofil), das Gate fängt die Ausreißer ab",
+        );
+      else if (error instanceof HttpError && error.status === 404)
+        console.log(
+          "  ORS fährt diese Straße nicht – weiter mit OSRM (Autoprofil), das Gate fängt die Ausreißer ab",
+        );
+      else throw error;
     }
   }
   return { geom: await routeVia("osrm", waypoints), source: "osrm" };
@@ -873,6 +913,7 @@ interface Stored {
  * with another hash, would be reused for the wrong road.
  */
 const reject = async (
+  tag: string,
   job: RouteJob,
   reasons: string[],
   m: RouteMetrics,
@@ -910,7 +951,7 @@ const reject = async (
   await write("routes-meta.json", meta);
   await write("rejected.json", rejected);
   console.log(
-    `Abgewiesen: ${job.label} (${source})${unchanged ? " – unveränderte Geometrie, die Koordinaten sind das Problem" : ""}${
+    `${tag} Abgewiesen: ${job.label} (${source})${unchanged ? " – unveränderte Geometrie, die Koordinaten sind das Problem" : ""}${
       keep
         ? ` – die gespeicherte ${keep.meta?.source ?? "osrm"}-Route bleibt`
         : ""
@@ -938,6 +979,7 @@ const accept = async (
  * re-fetches the candidate for free.
  */
 const fetchProfile = async (
+  tag: string,
   job: RouteJob,
   geom: RouteGeometry,
   cached: ElevationProfile | undefined,
@@ -949,10 +991,10 @@ const fetchProfile = async (
     return cached ? withRoadDistances(cached, geom) : await profile(geom);
   } catch (error) {
     if (!(error instanceof QuotaExhaustedError))
-      fail(`Profil ${job.label}`, error);
+      fail(`${tag} Profil ${job.label}`, error);
     if (keep)
       console.log(
-        `Aufrüstung verschoben: ${job.label} – die ${keep.meta?.source ?? "osrm"}-Route bleibt, bis das ORS-Profil bezahlt ist`,
+        `${tag} Aufrüstung verschoben: ${job.label} – die ${keep.meta?.source ?? "osrm"}-Route bleibt, bis das ORS-Profil bezahlt ist`,
       );
     return null;
   }
@@ -966,6 +1008,7 @@ const fetchProfile = async (
  * stored route only once both have passed.
  */
 const gate = async (
+  tag: string,
   job: RouteJob,
   geom: RouteGeometry,
   source: RouteSource,
@@ -985,7 +1028,8 @@ const gate = async (
       : undefined;
   let m = measure(job, geom);
   const bad = judge(job, m);
-  if (bad.length) return reject(job, bad, m, source, hash, undefined, keep);
+  if (bad.length)
+    return reject(tag, job, bad, m, source, hash, undefined, keep);
 
   // A cached profile from an earlier rejection is only valid for the very same
   // geometry; otherwise it has to be paid for again. Read it before accept()
@@ -995,7 +1039,7 @@ const gate = async (
   const accepted = async () => {
     await accept(job, geom, source);
     console.log(
-      `Route: ${job.label} (${source}, ${(m as AscentMetrics).km} km)`,
+      `${tag} Route: ${job.label} (${source}, ${(m as AscentMetrics).km} km)`,
     );
   };
 
@@ -1008,7 +1052,7 @@ const gate = async (
     if (fetched) await accepted();
     if (deferred)
       console.log(
-        `Profil aufgeschoben: ${job.label} (OSRM-Route, erst nach --upgrade-osrm)`,
+        `${tag} Profil aufgeschoben: ${job.label} (OSRM-Route, erst nach --upgrade-osrm)`,
       );
     return;
   }
@@ -1027,7 +1071,7 @@ const gate = async (
     Reflect.deleteProperty(profiles, job.key);
     await write("profiles.json", profiles);
   }
-  const prof = await fetchProfile(job, geom, cached, keep);
+  const prof = await fetchProfile(tag, job, geom, cached, keep);
   if (!prof) return;
   // A traverse has no summit the profile could be checked against – it is
   // judged on length and ends, which the geometry alone already decided.
@@ -1035,13 +1079,13 @@ const gate = async (
     m = withProfile(m as AscentMetrics, prof, job.elevation);
     const badProfile = judge(job, m);
     if (badProfile.length)
-      return reject(job, badProfile, m, source, hash, prof, keep);
+      return reject(tag, job, badProfile, m, source, hash, prof, keep);
   }
   if (keep) await accepted();
   profiles[job.key] = prof;
   await write("profiles.json", profiles);
   console.log(
-    `Profil: ${job.label} (${prof.km} km, ${prof.elevationGain} Hm, Gipfel ${prof.top} m)`,
+    `${tag} Profil: ${job.label} (${prof.km} km, ${prof.elevationGain} Hm, Gipfel ${prof.top} m)`,
   );
 };
 
@@ -1081,37 +1125,54 @@ const gate = async (
     );
 }
 
+/** `[3/40]` against the pipeline's own total, dispatch order (not completion order). */
+const counter = (total: number) => (i: number) => `[${i + 1}/${total}]`;
+
 // Pipeline 1: routing. Each route runs through the gate and hands its profile on.
-const routing = pendingRoutes().map(async (job) => {
+const routeJobsPending = pendingRoutes();
+const routeTag = counter(routeJobsPending.length);
+const routing = routeJobsPending.map(async (job, i) => {
+  const tag = routeTag(i);
   const upgrade = routes[job.key] !== undefined;
   try {
     const { geom, source } = await route(job.waypoints);
     // Same source as before: nothing gained.
     if (upgrade && (meta[job.key]?.source ?? "osrm") === source) return;
-    await gate(job, geom, source);
+    await gate(tag, job, geom, source);
   } catch (error) {
     if (!(error instanceof QuotaExhaustedError))
-      fail(`Route ${job.label}`, error);
+      fail(`${tag} Route ${job.label}`, error);
   }
 });
 
 // Pipeline 2: profiles for routes that already exist and were never judged.
-const profiling = pendingProfiles().map((job) =>
-  gate(job, routes[job.key]!, meta[job.key]?.source ?? "osrm", false),
+const profileJobsPending = pendingProfiles();
+const profileTag = counter(profileJobsPending.length);
+const profiling = profileJobsPending.map((job, i) =>
+  gate(
+    profileTag(i),
+    job,
+    routes[job.key]!,
+    meta[job.key]?.source ?? "osrm",
+    false,
+  ),
 );
 
 // Pipeline 4: climate. Queued after the (cheaper) profiles; the Open-Meteo budget cuts it off.
 console.log(
   `Open-Meteo-Budget für diesen Lauf: ${OPEN_METEO_BUDGET} Calls (OPEN_METEO_BUDGET)`,
 );
-const climating = pendingClimate().map(async (pass) => {
+const climatePending = pendingClimate();
+const climateTag = counter(climatePending.length);
+const climating = climatePending.map(async (pass, i) => {
+  const tag = climateTag(i);
   try {
     climates[pass.slug] = await climate(pass);
     await write("climate.json", climates);
-    console.log(`Klima: ${pass.name}`);
+    console.log(`${tag} Klima: ${pass.name}`);
   } catch (error) {
     if (!(error instanceof QuotaExhaustedError))
-      fail(`Klima ${pass.name}`, error);
+      fail(`${tag} Klima ${pass.name}`, error);
   }
 });
 

@@ -2,7 +2,9 @@
 
 **Status:** in progress – steps 1–4 done except that the `note` of nine of
 the ten existing `toll` entries does not yet say whether bikes pay; 5 under
-way (Westalpen · Frankreich abgearbeitet), 6 (rename) open ·
+way (Frankreich fertig; Dolomiten, Ostalpen, Zentralalpen und Piemont
+teilweise – 110 Straßen stehen, die offenen Kandidaten tragen ihren Grund),
+6 (rename) open ·
 **Effort:** L (M for code, the rest is curation) ·
 **Depends on:** 09 (schema), 05 (filters) · **Unblocks:** the sporting roads
 that are not passes – spur roads, balcony roads, high roads, quiet valleys –
@@ -510,123 +512,150 @@ Vallée du Vénéon (seit dem Hochwasser 2024 gesperrt) und der Col de Tende
 
 ### Westalpen · Piemont und Aostatal
 
-| Name                                     | Typ     | Merkmale                   | Höhe   | prüfen                      |
-| ---------------------------------------- | ------- | -------------------------- | ------ | --------------------------- |
-| Colle del Sommeiller                     | spur    | surface, reservoir         | ~2 990 | Asphaltende, Schotteranteil |
-| Colle dell'Assietta (Strada dei Cannoni) | plateau | surface, panorama, carfree | ~2 470 | Schotter, autofreie Tage    |
-| Sestriere                                | pass    |                            | ~2 040 |                             |
-| Breuil-Cervinia                          | spur    | panorama                   | ~2 000 |                             |
-| Valsavarenche → Pont                     | valley  |                            | ~1 960 |                             |
-| Valle di Cogne → Valnontey               | valley  |                            | ~1 700 |                             |
-| Valgrisenche (Lago di Beauregard)        | valley  | reservoir                  | ~1 800 |                             |
-| Val Ferret (IT) → Arnouvaz               | valley  | carfree                    | ~1 770 | Sperrtage mit Shuttle       |
-| Val Veny                                 | valley  | carfree                    | ~1 700 | Sperrtage mit Shuttle       |
-| Gressoney → Staffal                      | valley  |                            | ~1 800 |                             |
-| Valle Gesso → Terme di Valdieri          | valley  |                            | ~1 370 |                             |
-| Valle Maira → Chiappera                  | valley  |                            | ~1 650 |                             |
-| Alpe Devero                              | spur    |                            | ~1 640 |                             |
-| Val Formazza → Riale                     | valley  | reservoir                  | ~1 730 |                             |
+Batch 6, angefangen: vier Einträge stehen, zehn Kandidaten warten. Die Höhen
+sind über die Höhen-API entlang der OSM-Geometrie gemessen; die kuratierte
+Länge einer Talstraße kommt aus derselben Geometrie und nicht aus einer
+Schätzung.
+
+| Name                                     | Typ      | Merkmale                   | Höhe   | Ergebnis                                                                                                                                                                                                                               |
+| ---------------------------------------- | -------- | -------------------------- | ------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| ~~Sestriere~~                            | `pass`   | –                          | 2035   | Eintrag `sestriere` · Punkt gegen die Höhen-API geprüft, kein OSM-Passknoten im Umkreis erreichbar                                                                                                                                     |
+| ~~Valsavarenche → Pont~~                 | `valley` | –                          | 1972   | Eintrag `valsavarenche` · 26,1 km aus der Geometrie gerechnet                                                                                                                                                                          |
+| ~~Valgrisenche (Lago di Beauregard)~~    | `valley` | reservoir                  | 2019   | Eintrag `valgrisenche` · die Straße endet höher als die geschätzten 1 800 m                                                                                                                                                            |
+| ~~Valle Maira → Chiappera~~              | `valley` | –                          | 1616   | Eintrag `valle-maira`                                                                                                                                                                                                                  |
+| Colle del Sommeiller                     | spur     | surface, reservoir         | ~2 990 | **offen:** durchgehend Schotter – der Plan schließt reine Schotterstraßen aus, das ist vor einem Eintrag zu klären.                                                                                                                    |
+| Colle dell'Assietta (Strada dei Cannoni) | plateau  | surface, panorama, carfree | ~2 470 | **offen:** dieselbe Frage, dazu die autofreien Tage.                                                                                                                                                                                   |
+| Breuil-Cervinia                          | spur     | panorama                   | ~2 000 | **offen:** noch nicht geprüft.                                                                                                                                                                                                         |
+| Valle di Cogne → Valnontey               | valley   | –                          | ~1 700 | **offen:** gemessener Hochpunkt 1 696 m, aber die 6,4 km benannter Wege enthalten die Ortsstraßen von Cogne samt Pflaster – die Länge der Strecke ist daraus nicht abzuleiten.                                                         |
+| Val Ferret (IT) → Arnouvaz               | valley   | carfree                    | ~1 770 | **offen:** Hochpunkt 1 772 m bestätigt, aber nur 2,6 km sind unter diesem Namen erfasst; der Rest der Straße heißt anders.                                                                                                             |
+| Val Veny                                 | valley   | carfree                    | ~1 700 | **offen:** unter diesem Namen nur 300 m `living_street` – die Talstraße ist so nicht zu fassen.                                                                                                                                        |
+| Gressoney → Staffal                      | valley   | –                          | ~1 800 | **offen:** die Suche liefert einen Hochpunkt von 2 191 m, deutlich über Staffal – der Name trifft mehr als die Talstraße.                                                                                                              |
+| Valle Gesso → Terme di Valdieri          | valley   | –                          | ~1 370 | **offen:** unter keinem der geprüften Namen in OSM gefunden.                                                                                                                                                                           |
+| Alpe Devero                              | spur     | –                          | ~1 640 | **offen:** unter `Alpe Devero` und `Strada Provinciale 60` findet OSM nichts – der Name der Straße muss erst gefunden werden.                                                                                                          |
+| Val Formazza → Riale                     | valley   | reservoir                  | ~1 730 | **offen:** Riale selbst liegt auf 1 731 m, aber unter diesem Namen mischen sich 12 Asphaltwege mit 23 `track`-Stücken und Pflaster; die 11,8 km sind damit keine Länge der Talstraße. Braucht eine Abfrage, die nur die Straße trifft. |
 
 ### Zentralalpen · Schweiz und Lombardei
 
-| Name                              | Typ    | Merkmale            | Höhe   | prüfen                          |
-| --------------------------------- | ------ | ------------------- | ------ | ------------------------------- |
-| Col du Sanetsch                   | spur   | reservoir, tunnels  | ~2 250 |                                 |
-| Lac de Moiry                      | spur   | reservoir           | ~2 250 |                                 |
-| Grande Dixence                    | spur   | reservoir           | ~2 140 |                                 |
-| Lac d'Emosson                     | spur   | reservoir           | ~1 970 |                                 |
-| Lac de Mauvoisin                  | spur   | reservoir, tunnels  | ~1 980 |                                 |
-| Mattmark                          | spur   | reservoir           | ~2 200 |                                 |
-| Arolla                            | valley |                     | ~2 000 |                                 |
-| Lötschental → Fafleralp           | valley |                     | ~1 790 |                                 |
-| Sertigtal                         | valley |                     | ~1 860 |                                 |
-| Val Fex                           | valley | carfree             | ~1 950 | Fahrverbot für Autos, Rad frei? |
-| Col de la Forclaz (Martigny)      | pass   |                     | ~1 530 |                                 |
-| Col des Montets                   | pass   |                     | ~1 460 |                                 |
-| Col des Mosses                    | pass   |                     | ~1 450 |                                 |
-| Col du Pillon                     | pass   |                     | ~1 550 |                                 |
-| Col de la Croix                   | pass   |                     | ~1 780 |                                 |
-| Jaunpass                          | pass   |                     | ~1 510 |                                 |
-| Pragelpass                        | pass   | carfree             | ~1 550 | Wochenend-Fahrverbot            |
-| Glaubenbielen                     | pass   |                     | ~1 610 |                                 |
-| Glaubenberg                       | pass   |                     | ~1 540 |                                 |
-| Ibergeregg                        | pass   |                     | ~1 410 |                                 |
-| Schwägalp                         | pass   |                     | ~1 280 |                                 |
-| Forcola di Livigno                | pass   |                     | ~2 320 |                                 |
-| Passo d'Eira                      | pass   |                     | ~2 210 |                                 |
-| Lago di Cancano (Torri di Fraele) | spur   | reservoir, hairpins | ~1 950 |                                 |
-| Passo del Vivione                 | pass   |                     | ~1 830 |                                 |
-| Passo del Maniva                  | pass   |                     | ~1 660 |                                 |
-| Madonna del Ghisallo              | pass   |                     | ~750   |                                 |
-| Muro di Sormano                   | pass   |                     | ~1 120 |                                 |
-| Aprica                            | pass   |                     | ~1 180 | Transitverkehr – lohnt es?      |
+Batch 5, die Pässe sind abgearbeitet: neunzehn Einträge, alle Marker aus
+OSM-`mountain_pass`-Knoten und keiner weiter als 27 m von der DEM-Höhe
+entfernt. Die zehn Stauseestraßen und Talstraßen der Sektion stehen noch aus;
+sie brauchen dieselbe Vorprüfung wie im Ostalpen-Batch, weil ein Stausee-Ende
+regelmäßig auf `service` oder `track` liegt und das Rennrad-Profil dort nicht
+hinfährt.
+
+| Name                              | Typ    | Merkmale            | Höhe   | Ergebnis                                                                                                                                       |
+| --------------------------------- | ------ | ------------------- | ------ | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| ~~Col de la Forclaz (Martigny)~~  | `pass` | –                   | 1527   | Eintrag `col-de-la-forclaz-martigny`                                                                                                           |
+| ~~Col des Montets~~               | `pass` | –                   | 1461   | Eintrag `col-des-montets`                                                                                                                      |
+| ~~Col des Mosses~~                | `pass` | –                   | 1445   | Eintrag `col-des-mosses`                                                                                                                       |
+| ~~Col du Pillon~~                 | `pass` | –                   | 1546   | Eintrag `col-du-pillon`                                                                                                                        |
+| ~~Col de la Croix~~               | `pass` | –                   | 1776   | Eintrag `col-de-la-croix`                                                                                                                      |
+| ~~Jaunpass~~                      | `pass` | –                   | 1508   | Eintrag `jaunpass`                                                                                                                             |
+| ~~Pragelpass~~                    | `pass` | carfree             | 1548   | Eintrag `pragelpass` · Fahrverbot an Sonn- und Feiertagen, steht in der Notiz                                                                  |
+| ~~Glaubenbielen~~                 | `pass` | –                   | 1611   | Eintrag `glaubenbielen`                                                                                                                        |
+| ~~Glaubenberg~~                   | `pass` | –                   | 1540   | Eintrag `glaubenberg`                                                                                                                          |
+| ~~Ibergeregg~~                    | `pass` | –                   | 1406   | Eintrag `ibergeregg`                                                                                                                           |
+| ~~Schwägalp~~                     | `pass` | –                   | 1300   | Eintrag `schwaegalp`                                                                                                                           |
+| ~~Forcola di Livigno~~            | `pass` | –                   | 2315   | Eintrag `forcola-di-livigno`                                                                                                                   |
+| ~~Passo d'Eira~~                  | `pass` | –                   | 2208   | Eintrag `passo-d-eira`                                                                                                                         |
+| ~~Passo del Vivione~~             | `pass` | –                   | 1828   | Eintrag `passo-del-vivione`                                                                                                                    |
+| ~~Passo del Maniva~~              | `pass` | –                   | 1664   | Eintrag `passo-del-maniva`                                                                                                                     |
+| ~~Madonna del Ghisallo~~          | `pass` | –                   | 754    | Eintrag `madonna-del-ghisallo`                                                                                                                 |
+| ~~Muro di Sormano~~               | `pass` | –                   | 1121   | Eintrag `muro-di-sormano`                                                                                                                      |
+| ~~Aprica~~                        | `pass` | –                   | 1172   | Eintrag `passo-dell-aprica` · trotz Transitverkehr aufgenommen: Giro-Stammgast und Zubringer zu Mortirolo und Gavia, `traffic` 4 sagt den Rest |
+| ~~Col du Sanetsch~~               | `spur` | reservoir, tunnels  | 2252   | Eintrag `col-du-sanetsch`                                                                                                                      |
+| Lac de Moiry                      | spur   | reservoir           | ~2 250 | **offen**                                                                                                                                      |
+| Grande Dixence                    | spur   | reservoir           | ~2 140 | **offen**                                                                                                                                      |
+| Lac d'Emosson                     | spur   | reservoir           | ~1 970 | **offen**                                                                                                                                      |
+| Lac de Mauvoisin                  | spur   | reservoir, tunnels  | ~1 980 | **offen**                                                                                                                                      |
+| Mattmark                          | spur   | reservoir           | ~2 200 | **offen**                                                                                                                                      |
+| Lago di Cancano (Torri di Fraele) | spur   | reservoir, hairpins | ~1 950 | **offen**                                                                                                                                      |
+| Arolla                            | valley | –                   | ~2 000 | **offen**                                                                                                                                      |
+| Lötschental → Fafleralp           | valley | –                   | ~1 790 | **offen**                                                                                                                                      |
+| Sertigtal                         | valley | –                   | ~1 860 | **offen**                                                                                                                                      |
+| Val Fex                           | valley | carfree             | ~1 950 | **offen** · Fahrverbot für Autos, Rad frei?                                                                                                    |
 
 ### Ostalpen · Österreich, Bayern, Slowenien
 
-| Name                        | Typ     | Merkmale                 | Höhe   | prüfen                                  |
-| --------------------------- | ------- | ------------------------ | ------ | --------------------------------------- |
-| Kaunertaler Gletscherstraße | spur    | glacier, toll, reservoir | ~2 750 |                                         |
-| Schlegeisspeicher           | spur    | reservoir, toll          | ~1 800 |                                         |
-| Zillertaler Höhenstraße     | plateau | panorama, toll           | ~2 020 | Mautstrecke, Rad frei?                  |
-| Stubaital → Mutterberg      | valley  | glacier                  | ~1 750 |                                         |
-| Pitztal → Mittelberg        | valley  | glacier                  | ~1 740 |                                         |
-| Kals → Lucknerhaus          | spur    | panorama                 | ~1 920 |                                         |
-| Sportgastein                | spur    | toll                     | ~1 590 |                                         |
-| Rauris → Kolm-Saigurn       | spur    |                          | ~1 600 | Maut                                    |
-| Loser Panoramastraße        | spur    | panorama, toll           | ~1 600 |                                         |
-| Tauplitzalm Alpenstraße     | spur    | toll                     | ~1 650 |                                         |
-| Hochkar Alpenstraße         | spur    | toll                     | ~1 450 |                                         |
-| Gaisberg                    | spur    | panorama                 | ~1 290 |                                         |
-| Postalm                     | plateau | toll                     | ~1 200 |                                         |
-| Hochtannbergpass            | pass    |                          | ~1 680 |                                         |
-| Furkajoch                   | pass    |                          | ~1 760 |                                         |
-| Faschinajoch                | pass    |                          | ~1 490 |                                         |
-| Staller Sattel              | pass    | tunnels                  | ~2 050 | Einbahnregelung mit Zeitfenstern        |
-| Plöckenpass                 | pass    |                          | ~1 360 |                                         |
-| Nassfeld / Passo Pramollo   | pass    |                          | ~1 530 |                                         |
-| Wurzenpass                  | pass    |                          | ~1 070 |                                         |
-| Loiblpass (alte Passstraße) | pass    | carfree                  | ~1 370 | Fahrverbot über den Pass, Rad frei?     |
-| Seebergsattel               | pass    |                          | ~1 220 |                                         |
-| Kesselberg                  | pass    | hairpins                 | ~860   |                                         |
-| Sudelfeld / Tatzelwurm      | pass    |                          | ~1 100 |                                         |
-| Riedbergpass                | pass    |                          | ~1 410 |                                         |
-| Oberjoch                    | pass    |                          | ~1 180 |                                         |
-| Spitzingsee                 | spur    |                          | ~1 130 |                                         |
-| Pokljuka                    | plateau |                          | ~1 300 |                                         |
-| Sella Nevea                 | pass    |                          | ~1 190 |                                         |
-| Predil                      | pass    |                          | ~1 160 | in `vrsic-predil-runde`, fehlt als Pass |
+Batch 4, teilweise abgearbeitet: 22 Einträge stehen, zehn Kandidaten warten
+noch. Die Höhen sind gemessen – bei den Straßen ohne `mountain_pass`-Knoten
+über die Höhen-API entlang der OSM-Geometrie, nachdem die drei aus einer
+Straßenausdehnung geschätzten Marker alle danebenlagen (Loser um 766 m).
+Wer hier weitermacht, prüft zuerst die `highway`-Klasse des Ziels: das
+Rennrad-Profil befährt `service` und `track` nicht, woran Ultental und
+Kaunertal schon gescheitert sind.
+
+| Name                            | Typ       | Merkmale                 | Höhe   | Ergebnis                                                                                                                                                                                                                                       |
+| ------------------------------- | --------- | ------------------------ | ------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| ~~Hochtannbergpass~~            | `pass`    | –                        | 1676   | Eintrag `hochtannbergpass`                                                                                                                                                                                                                     |
+| ~~Furkajoch~~                   | `pass`    | –                        | 1758   | Eintrag `furkajoch`                                                                                                                                                                                                                            |
+| ~~Faschinajoch~~                | `pass`    | –                        | 1486   | Eintrag `faschinajoch`                                                                                                                                                                                                                         |
+| ~~Staller Sattel~~              | `pass`    | –                        | 2052   | Eintrag `staller-sattel` · die Einbahnregelung mit Zeitfenstern steht in der Notiz; `tunnels` nicht vergeben, weil nicht belegt                                                                                                                |
+| ~~Plöckenpass~~                 | `pass`    | –                        | 1360   | Eintrag `ploeckenpass`                                                                                                                                                                                                                         |
+| ~~Nassfeld / Pramollo~~         | `pass`    | –                        | 1530   | Eintrag `nassfeldpass`                                                                                                                                                                                                                         |
+| ~~Wurzenpass~~                  | `pass`    | –                        | 1071   | Eintrag `wurzenpass`                                                                                                                                                                                                                           |
+| ~~Loiblpass~~                   | `pass`    | –                        | 1367   | Eintrag `loiblpass` · `carfree` nicht vergeben: der Verkehr nimmt den Tunnel, ein Fahrverbot ist das nicht – steht in der Notiz                                                                                                                |
+| ~~Seebergsattel~~               | `pass`    | –                        | 1215   | Eintrag `seebergsattel`                                                                                                                                                                                                                        |
+| ~~Kesselberg~~                  | `pass`    | hairpins                 | 858    | Eintrag `kesselberg`                                                                                                                                                                                                                           |
+| ~~Sudelfeld / Tatzelwurm~~      | `pass`    | –                        | 1123   | Eintrag `sudelfeld`                                                                                                                                                                                                                            |
+| ~~Riedbergpass~~                | `pass`    | –                        | 1406   | Eintrag `riedbergpass`                                                                                                                                                                                                                         |
+| ~~Oberjoch~~                    | `pass`    | hairpins                 | 1175   | Eintrag `oberjoch`                                                                                                                                                                                                                             |
+| ~~Sella Nevea~~                 | `pass`    | –                        | 1195   | Eintrag `sella-nevea`                                                                                                                                                                                                                          |
+| ~~Predil~~                      | `pass`    | –                        | 1156   | Eintrag `predilpass` · fehlte als Pass, obwohl in `vrsic-predil-runde` gefahren                                                                                                                                                                |
+| ~~Kaunertaler Gletscherstraße~~ | `spur`    | glacier, reservoir, toll | 2510   | Eintrag `kaunertaler-gletscherstrasse` · Marker am Ende der öffentlichen Straße; die Zufahrt zum Gletscherparkplatz auf ~2 750 m ist `service` und damit nicht routbar                                                                         |
+| ~~Loser Panoramastraße~~        | `spur`    | panorama, toll           | 1631   | Eintrag `loser-panoramastrasse` · geschätzter Marker lag am Fuß der Straße auf 865 m, korrigiert über die Höhen-API                                                                                                                            |
+| ~~Postalm~~                     | `plateau` | toll                     | 1425   | Eintrag `postalm` · gemessen statt der geschätzten 1 250 m                                                                                                                                                                                     |
+| ~~Sportgastein~~                | `spur`    | toll                     | 1644   | Eintrag `sportgastein`                                                                                                                                                                                                                         |
+| ~~Hochkar Alpenstraße~~         | `spur`    | toll, panorama           | 1470   | Eintrag `hochkar`                                                                                                                                                                                                                              |
+| ~~Kals → Lucknerhaus~~          | `spur`    | panorama, toll           | 1939   | Eintrag `kals-lucknerhaus`                                                                                                                                                                                                                     |
+| ~~Pitztal → Mittelberg~~        | `valley`  | glacier                  | 1715   | Eintrag `pitztal-mittelberg`                                                                                                                                                                                                                   |
+| Zillertaler Höhenstraße         | plateau   | panorama, toll           | 2042   | **offen:** Marker und Höhe sind gemessen, aber die benannten Wege summieren sich mit Abzweigen auf 32,2 km – daraus lässt sich die kuratierte Länge der Strecke nicht ableiten, und eine geschätzte hat das Gate schon zweimal zurückgewiesen. |
+| Schlegeisspeicher               | spur      | reservoir, toll          | ~1 800 | **offen:** unter diesem Namen führt OSM nur 400 m Straße und ein paar Klettersteige; die Alpenstraße heißt dort anders und muss erst gefunden werden.                                                                                          |
+| Stubaital → Mutterberg          | valley    | glacier                  | ~1 750 | **offen:** die benannte Stubaitalstraße endet auf 1 007 m, der Talschluss an der Mutterbergalm ist nicht davon erfasst.                                                                                                                        |
+| Zillertal: Gaisberg             | spur      | panorama                 | ~1 290 | **offen:** die Suche trifft die Gaisbergstraße in der Stadt Salzburg auf 451 m, nicht die Straße auf den Gaisberg.                                                                                                                             |
+| Tauplitzalm Alpenstraße         | spur      | toll                     | ~1 650 | **offen:** der höchste Punkt liegt auf einem `track`; welcher Teil die befahrbare Mautstraße ist, muss vor Ort geklärt werden.                                                                                                                 |
+| Spitzingsee                     | spur      | –                        | ~1 130 | **offen:** nur 1,8 km unter diesem Namen, dazu Schotterwege – der Sattel ist damit nicht sauber zu platzieren.                                                                                                                                 |
+| Rauris → Kolm-Saigurn           | spur      | –                        | ~1 600 | **offen:** die benannten Wege springen zwischen Asphalt und Pfad; der gemessene Hochpunkt liegt auf einem `path`.                                                                                                                              |
+| Pokljuka                        | plateau   | –                        | ~1 300 | **offen:** noch nicht geprüft.                                                                                                                                                                                                                 |
+| Loser: Tauplitz, Postalm        | –         | –                        | –      | siehe oben, erledigt                                                                                                                                                                                                                           |
 
 ### Dolomiten, Trentino, Südtirol, Friaul
 
-| Name                                     | Typ     | Merkmale          | Höhe   | prüfen                        |
-| ---------------------------------------- | ------- | ----------------- | ------ | ----------------------------- |
-| Seiser Alm                               | plateau | carfree           | ~1 850 | Fahrverbot 9–17 Uhr, Rad frei |
-| Ritten (Rittner Höhenstraße)             | plateau | panorama          | ~1 250 |                               |
-| Altopiano di Asiago                      | plateau |                   | ~1 000 |                               |
-| Altopiano del Cansiglio                  | plateau |                   | ~1 000 |                               |
-| Lessinia (San Giorgio)                   | plateau |                   | ~1 500 |                               |
-| Cima Grappa                              | pass    | panorama          | ~1 750 | Übergang (mehrere Straßen)    |
-| Monte Bondone                            | pass    | panorama          | ~1 650 |                               |
-| Passo San Boldo                          | pass    | hairpins, tunnels | ~710   |                               |
-| Passo Valles                             | pass    |                   | ~2 030 |                               |
-| Passo Tre Croci                          | pass    |                   | ~1 810 |                               |
-| Passo Cibiana                            | pass    |                   | ~1 530 |                               |
-| Passo Furcia / Furkelpass                | pass    |                   | ~1 760 |                               |
-| Passo di Costalunga / Karerpass          | pass    |                   | ~1 750 |                               |
-| Nigerpass                                | pass    |                   | ~1 690 |                               |
-| Passo Lavazè                             | pass    |                   | ~1 810 |                               |
-| Mendelpass                               | pass    | hairpins          | ~1 360 |                               |
-| Gampenjoch                               | pass    |                   | ~1 520 |                               |
-| Campo Carlo Magno (Madonna di Campiglio) | pass    |                   | ~1 680 |                               |
-| Passo Brocon                             | pass    |                   | ~1 620 |                               |
-| Passo Cereda                             | pass    |                   | ~1 360 |                               |
-| Monte Crostis                            | pass    | surface, panorama | ~1 980 | Schotteranteil                |
-| Strada della Forra (Tremosine)           | pass    | gorge, tunnels    | ~500   | Marker: Pieve                 |
-| Val di Genova                            | valley  | carfree           | ~1 600 | Sommer-Fahrverbot mit Shuttle |
-| Ultental → Weißbrunn                     | valley  | reservoir         | ~1 900 |                               |
-| Martelltal → Zufrittsee                  | valley  | reservoir         | ~2 050 |                               |
-| Schnalstal → Kurzras                     | valley  | glacier           | ~2 010 |                               |
-| Villnößtal → Zanser Alm                  | valley  |                   | ~1 680 |                               |
+Abgearbeitet (Batch 3) bis auf den Monte Crostis; die Lessinia ist gestrichen. Höhe und Merkmale sind
+jetzt die kuratierten Werte, nicht mehr die geschätzten; die Region im
+Eintrag folgt dem Gebirge und nicht dieser Überschrift, weshalb Adamello,
+Brenta und Ortler unter `Zentralalpen` und das Schnalstal unter `Ostalpen`
+stehen.
+
+| Name                                | Typ       | Merkmale          | Höhe   | Ergebnis                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
+| ----------------------------------- | --------- | ----------------- | ------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| ~~Seiser Alm~~                      | `plateau` | carfree, panorama | 1844   | Eintrag `seiser-alm` · das Fahrverbot 9–17 Uhr gilt nur für Autos, Räder dürfen durchgehend – steht in der Notiz                                                                                                                                                                                                                                                                                                                                                |
+| ~~Ritten (Rittner Höhenstraße)~~    | `plateau` | panorama          | 1154   | Eintrag `rittner-hochplateau` · Marker Klobenstein, die Strecke läuft von Bozen bis Lengstein                                                                                                                                                                                                                                                                                                                                                                   |
+| ~~Altopiano di Asiago~~             | `plateau` | –                 | 1001   | Eintrag `altopiano-di-asiago`                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+| ~~Altopiano del Cansiglio~~         | `plateau` | –                 | 1020   | Eintrag `altopiano-del-cansiglio`                                                                                                                                                                                                                                                                                                                                                                                                                               |
+| ~~Lessinia (San Giorgio)~~          | –         | –                 | –      | **gestrichen:** Das Rennrad-Profil verbindet Bosco Chiesanuova und die Malga San Giorgio nur über 27,4 km statt der 12,7 km der direkten SP6 – zweimal geprüft, auch mit dem Marker auf dem Asphalt der SP6. Rund um die Malga ist fast alles Schotter; welche Strecke ORS stattdessen nimmt, lässt sich aus der Ferne nicht beurteilen, und eine Länge, die niemand gesehen hat, gehört nicht ins Gate. Kommt mit einem eigenen Blick auf die Lessinia wieder. |
+| ~~Cima Grappa~~                     | `pass`    | panorama          | 1750   | Eintrag `cima-grappa` · Übergang mit mehreren Straßen, also `pass` mit `roadSummit`                                                                                                                                                                                                                                                                                                                                                                             |
+| ~~Monte Bondone~~                   | `pass`    | panorama          | 1651   | Eintrag `monte-bondone`                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+| ~~Passo San Boldo~~                 | `pass`    | hairpins, tunnels | 706    | Eintrag `passo-san-boldo`                                                                                                                                                                                                                                                                                                                                                                                                                                       |
+| ~~Passo Valles~~                    | `pass`    | –                 | 2032   | Eintrag `passo-valles`                                                                                                                                                                                                                                                                                                                                                                                                                                          |
+| ~~Passo Tre Croci~~                 | `pass`    | –                 | 1809   | Eintrag `passo-tre-croci`                                                                                                                                                                                                                                                                                                                                                                                                                                       |
+| ~~Passo Cibiana~~                   | `pass`    | –                 | 1530   | Eintrag `passo-cibiana`                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+| ~~Passo Furcia / Furkelpass~~       | `pass`    | –                 | 1789   | Eintrag `passo-furcia`                                                                                                                                                                                                                                                                                                                                                                                                                                          |
+| ~~Passo di Costalunga / Karerpass~~ | `pass`    | –                 | 1745   | Eintrag `passo-di-costalunga`                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+| ~~Nigerpass~~                       | `pass`    | –                 | 1690   | Eintrag `nigerpass`                                                                                                                                                                                                                                                                                                                                                                                                                                             |
+| ~~Passo Lavazè~~                    | `pass`    | –                 | 1807   | Eintrag `passo-lavaze`                                                                                                                                                                                                                                                                                                                                                                                                                                          |
+| ~~Mendelpass~~                      | `pass`    | hairpins          | 1363   | Eintrag `mendelpass`                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| ~~Gampenjoch~~                      | `pass`    | –                 | 1518   | Eintrag `gampenjoch`                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| ~~Campo Carlo Magno~~               | `pass`    | –                 | 1682   | Eintrag `campo-carlo-magno`                                                                                                                                                                                                                                                                                                                                                                                                                                     |
+| ~~Passo Brocon~~                    | `pass`    | –                 | 1616   | Eintrag `passo-brocon`                                                                                                                                                                                                                                                                                                                                                                                                                                          |
+| ~~Passo Cereda~~                    | `pass`    | –                 | 1369   | Eintrag `passo-cereda`                                                                                                                                                                                                                                                                                                                                                                                                                                          |
+| Monte Crostis                       | pass      | surface, panorama | ~1 980 | **offen:** OSM kennt die Panoramica delle Vette weder als benannte Straße noch als Passknoten, und der Schotteranteil lässt sich aus der Ferne nicht klären. Bleibt für einen späteren Batch stehen, zusammen mit Friaul.                                                                                                                                                                                                                                       |
+| ~~Strada della Forra (Tremosine)~~  | `pass`    | gorge, tunnels    | 414    | Eintrag `strada-della-forra` · Marker Pieve, `roadSummit`; gemessen 411 m statt der geschätzten 500                                                                                                                                                                                                                                                                                                                                                             |
+| ~~Val di Genova~~                   | `valley`  | carfree           | 1580   | Eintrag `val-di-genova`                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+| ~~Ultental → Weißbrunn~~            | `valley`  | reservoir         | 1872   | Eintrag `ultental-weissbrunn`                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+| ~~Martelltal → Zufrittsee~~         | `valley`  | reservoir         | 2050   | Eintrag `martelltal` · die Strecke endet am Parkplatz der Enzianhütte oberhalb des Sees                                                                                                                                                                                                                                                                                                                                                                         |
+| ~~Schnalstal → Kurzras~~            | `valley`  | glacier           | 2011   | Eintrag `schnalstal-kurzras` · kuratierte Länge von 32 auf 26,5 km korrigiert, die geschätzte war 17 % zu lang                                                                                                                                                                                                                                                                                                                                                  |
+| ~~Villnößtal → Zanser Alm~~         | `valley`  | –                 | 1680   | Eintrag `villnoesstal`                                                                                                                                                                                                                                                                                                                                                                                                                                          |
 
 Existing entries that gain tags in step 4 (no route change): Großglockner,
 Timmelsjoch, Nockalm, Roßfeld, Villacher, Malta, Silvretta, Kitzbüheler
