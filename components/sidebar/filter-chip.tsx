@@ -2,6 +2,7 @@
 
 import type { ReactNode } from "react";
 
+import { Rating } from "@/components/rating";
 import { Toggle } from "@/components/ui/toggle";
 import type { Options } from "@/lib/app-state";
 import { thresholdChips } from "@/lib/app-state";
@@ -120,6 +121,7 @@ export const ThresholdChips = ({
   options,
   value,
   onChange,
+  scale,
 }: {
   id: string;
   label: string;
@@ -127,6 +129,14 @@ export const ThresholdChips = ({
   options: Options;
   value: number;
   onChange: (value: number) => void;
+  /**
+   * One of the editorial 1–5 scales: the chip then carries the same five-bar
+   * mark the list rows draw, filled to its own threshold, so the filter and
+   * the thing it filters show one picture. The word stays in front of it –
+   * the mark alone reads as "at least", and an upper bound like the traffic
+   * limit is exactly the case where that is the wrong way round.
+   */
+  scale?: boolean;
 }) => {
   const [[none]] = options as unknown as [[number, string]];
   return (
@@ -137,6 +147,9 @@ export const ThresholdChips = ({
           pressed={value === v}
           onPressedChange={(on) => onChange(on ? v : none)}
         >
+          {/* `current`, because the pressed chip's surface *is* the primary
+              colour and a primary bar would vanish on it. */}
+          {scale && <Rating value={v} tone="current" />}
           {text}
         </FilterChip>
       ))}

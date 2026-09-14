@@ -330,6 +330,7 @@ export const FilterBody = ({
             id="f-traffic"
             label="Verkehr, 1 ist am ruhigsten"
             options={TRAFFIC_OPTIONS}
+            scale
             value={filters.maxTraffic}
             onChange={(v) => set("maxTraffic", v)}
           />
@@ -337,6 +338,7 @@ export const FilterBody = ({
             id="f-beauty"
             label="Schönheit, 5 ist am schönsten"
             options={BEAUTY_OPTIONS}
+            scale
             value={filters.minBeauty}
             onChange={(v) => set("minBeauty", v)}
           />
@@ -344,6 +346,7 @@ export const FilterBody = ({
             id="f-fame"
             label="Bekanntheit, 5 ist ein Klassiker"
             options={FAME_OPTIONS}
+            scale
             value={filters.minFame}
             onChange={(v) => set("minFame", v)}
           />

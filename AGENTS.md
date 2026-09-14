@@ -124,6 +124,14 @@ friends do that better and the app links out to them.
   "egal" value is the first option of the list and deliberately has no chip of
   its own. The difficulty is five cells that always span one window
   (`toggleLevel`), which is a range without a second thumb to aim at.
+  A threshold on one of the 1–5 scales carries the same five-bar mark the list
+  rows draw (`Rating`, `mark` on `ThresholdChips`), so the filter and the thing
+  it filters show one picture instead of a word here and a glyph there. The
+  word stays in front of it, because the mark alone carries "at least"
+  implicitly and `maxTraffic` is an upper bound – a bare rating row would read
+  as the opposite of what it does there. Inside a pressed chip the mark takes
+  `tone="current"`: the surface _is_ the primary colour, so a primary bar
+  disappears exactly where the filter is active.
   What is filtered away is written down outside the panel too: `AppliedFilters`
   turns `appliedFilters()` in `lib/filter-summary.ts` into one removable chip
   per decision, and the same list's length is the badge on the trigger, so the
