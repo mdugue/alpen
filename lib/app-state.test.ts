@@ -125,28 +125,32 @@ describe("parseHash", () => {
   });
 
   test("the summer-signal keys from plan 13 round-trip and are validated", () => {
-    expect(parseHash("#h=28&w=40").filters).toMatchObject({
-      maxValleyTmax: 28,
+    expect(parseHash("#h=26&w=40").filters).toMatchObject({
+      maxValleyTmax: 26,
       maxWetPct: 40,
     });
-    // Only what the selects offer; an old link without them is unfiltered.
+    // Only what the chips offer; an old link without them is unfiltered. The
+    // steps moved to the status heuristic's own line, so 28 and 50 are gone.
     expect(parseHash("#h=27").filters.maxValleyTmax).toBeUndefined();
+    expect(parseHash("#h=28").filters.maxValleyTmax).toBeUndefined();
     expect(parseHash("#w=45").filters.maxWetPct).toBeUndefined();
+    expect(parseHash("#w=50").filters.maxWetPct).toBeUndefined();
+    expect(parseHash("#w=53").filters.maxWetPct).toBe(53);
     expect(parseHash("#s=open,risky").filters).toMatchObject({
       maxValleyTmax: undefined,
       maxWetPct: undefined,
       status: ["open", "risky"],
     });
     const out = serializeHash(
-      filters({ maxValleyTmax: 24, maxWetPct: 50 }),
+      filters({ maxValleyTmax: 22, maxWetPct: 53 }),
       null,
       DEFAULT_VIEW,
     );
-    expect(out).toContain("h=24");
-    expect(out).toContain("w=50");
+    expect(out).toContain("h=22");
+    expect(out).toContain("w=53");
     expect(parseHash(out).filters).toMatchObject({
-      maxValleyTmax: 24,
-      maxWetPct: 50,
+      maxValleyTmax: 22,
+      maxWetPct: 53,
     });
     expect(serializeHash(filters(), null, DEFAULT_VIEW)).not.toMatch(/[hw]=/u);
   });

@@ -39,7 +39,8 @@ export interface SidebarProps {
   tourRows: TourRow[];
   townRows: TownRow[];
   totals: Record<EntityKind, number>;
-  favoriteCount: number;
+  /** How many roads a filter change would leave – the number on every chip. */
+  countWith: (patch: Partial<Filters>) => number;
   tours: Tour[];
   hiddenTours: string[];
   setHiddenTours: (update: (h: string[]) => string[]) => void;
@@ -221,7 +222,7 @@ export const Sidebar = (p: SidebarProps) => {
                   town: p.townRows.length,
                 }}
                 totals={p.totals}
-                favoriteCount={p.favoriteCount}
+                countWith={p.countWith}
                 onReset={resetFilters}
                 more={moreOpen}
                 onMoreChange={setMoreOpen}

@@ -132,6 +132,23 @@ friends do that better and the app links out to them.
   as the opposite of what it does there. Inside a pressed chip the mark takes
   `tone="current"`: the surface _is_ the primary colour, so a primary bar
   disappears exactly where the filter is active.
+  Every chip carries how many roads it would leave (`facetCount` in
+  `lib/rows.ts`, handed down as `countWith`), and that number is counted
+  **disjunctively**: with all other groups' filters applied but its own group's
+  filter lifted. Counted the other way – with the group's current choice still
+  in force – every unpressed chip in a group reads 0 although each is one tap
+  away. The disjunctive rule buys a second thing: a group's numbers do not
+  depend on that group's own state, so they hold still while a thumb works that
+  group and only move when another group changes. A chip that would leave none
+  is disabled rather than hidden, because hiding it raises the question of where
+  it went and the 0 is the answer; a pressed chip is never disabled, it has to
+  stay liftable. The difficulty cells are the one exception to "what happens if
+  I press this": a cell moves a window rather than replacing it, so its number
+  is how many roads sit at that level. Counting has its own path rather than
+  going through `buildPassRows`, which also grades every pass for all 24
+  half-months for the season strip – about forty times the work, once per option,
+  on every keystroke. And when a combination does run empty, the count line names
+  the single filter that would bring the most back rather than saying nothing.
   What is filtered away is written down outside the panel too: `AppliedFilters`
   turns `appliedFilters()` in `lib/filter-summary.ts` into one removable chip
   per decision, and the same list's length is the badge on the trigger, so the

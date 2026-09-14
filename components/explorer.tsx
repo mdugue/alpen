@@ -38,6 +38,7 @@ import {
   buildPassRows,
   buildTourRows,
   buildTownRows,
+  facetCount,
   statusHistogram,
 } from "@/lib/rows";
 import { indexBySlug } from "@/lib/status";
@@ -135,11 +136,7 @@ export const Explorer = ({
   // detail panel produces them.
   const [profileCursor, setProfileCursor] = useState<LatLon | null>(null);
   const [profileZoom, setProfileZoom] = useState<LatLon | null>(null);
-  const {
-    isFavorite,
-    toggle: toggleFavorite,
-    count: favoriteCount,
-  } = useFavorites();
+  const { isFavorite, toggle: toggleFavorite } = useFavorites();
   const [, setStoredPeriod] = useStoredPeriod();
   const isMobile = useMediaQuery(MOBILE_QUERY);
   const isXl = useMediaQuery("(width >= 80rem)");
@@ -202,6 +199,14 @@ export const Explorer = ({
     signals,
   );
   const townRows = buildTownRows(towns, filters, isFavorite);
+  /**
+   * The number on every filter chip. The patch both applies the option and
+   * lifts its own group's filter, which is what makes the count answer "what
+   * happens if I press this" instead of "what is left of my current choice";
+   * `facetCount` explains why that is the only honest arithmetic here.
+   */
+  const countWith = (patch: Partial<Filters>) =>
+    facetCount(passes, filters, isFavorite, patch, signals);
   const histogram = statusHistogram(passes, filters, isFavorite, signals);
 
   const mapPasses: MapPass[] = passRows.map(({ pass, status, favorite }) => ({
@@ -288,7 +293,7 @@ export const Explorer = ({
       tourRows={tourRows}
       townRows={townRows}
       totals={{ pass: passes.length, tour: tours.length, town: towns.length }}
-      favoriteCount={favoriteCount}
+      countWith={countWith}
       tours={tours}
       hiddenTours={hiddenTours}
       setHiddenTours={setHiddenTours}

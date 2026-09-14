@@ -23,8 +23,8 @@ describe("appliedFilters", () => {
         difficulty: [2, 4],
         favoritesOnly: true,
         maxTraffic: 2,
-        maxValleyTmax: 28,
-        maxWetPct: 50,
+        maxValleyTmax: 26,
+        maxWetPct: 53,
         minBeauty: 4,
         minElevation: 2000,
         minFame: 5,
@@ -44,8 +44,8 @@ describe("appliedFilters", () => {
       "Verkehr bis 2",
       "Schönheit ab 4",
       "Bekanntheit nur 5",
-      "Tal unter 28 °C",
-      "Regentage unter 50 %",
+      "Tal unter 26 °C",
+      "Regentage bis 8 von 15",
     ]);
     expect(new Set(chips.map((c) => c.key)).size).toBe(chips.length);
   });

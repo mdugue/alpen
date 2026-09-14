@@ -93,16 +93,31 @@ export const ELEVATION_OPTIONS = [
  * share of rain days in the chosen half-month (`lib/status.ts`).
  */
 export const HEAT_NONE = 99;
+/**
+ * The upper step is `HEAT_VALLEY_TMAX` from `lib/status.ts`, the line at which
+ * the status itself starts saying "eingeschränkt: Hitze" – so the filter asks
+ * exactly what the list answers, instead of inventing a second opinion about
+ * the same signal. The bound is strict, as the status one is, hence "unter"
+ * rather than "bis": a pass flagged for heat must never survive the heat
+ * filter. The lower step is one round stop below it.
+ */
 export const HEAT_OPTIONS = [
   [HEAT_NONE, "egal"],
-  [28, "unter 28 °C"],
-  [24, "unter 24 °C"],
+  [26, "unter 26 °C"],
+  [22, "unter 22 °C"],
 ] as const satisfies Options;
 export const WET_NONE = 100;
+/**
+ * Stored as the share of rain days, because that is what the climate bucket
+ * holds, but labelled in days out of fifteen – the unit `REASON_TEXT` already
+ * writes ("Regen an 53 % der Tage (≈ 8 von 15)") and the one a planner can
+ * picture. `daysOf` does the conversion; the values are chosen so that it
+ * lands on a whole day. This bound includes its value, hence "bis".
+ */
 export const WET_OPTIONS = [
   [WET_NONE, "egal"],
-  [50, "unter 50 %"],
-  [40, "unter 40 %"],
+  [53, "bis 8 von 15"],
+  [40, "bis 6 von 15"],
 ] as const satisfies Options;
 
 /**

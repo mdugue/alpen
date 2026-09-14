@@ -129,6 +129,36 @@ const tourMatches = (
   );
 };
 
+/**
+ * How many passes a filter set keeps. `buildPassRows` would answer the same
+ * question, but it also grades every surviving pass for all 24 half-months for
+ * the season strip – around forty times the work of the verdict a count needs,
+ * and a filter panel asks this once per option on every keystroke. Counting is
+ * therefore its own path over the same two predicates.
+ */
+const countPasses = (
+  passes: Pass[],
+  filters: Filters,
+  isFavorite: Query["isFavorite"],
+  signals?: Signals,
+): number => {
+  const q = query(filters, isFavorite);
+  let n = 0;
+  for (const pass of passes) {
+    const input = inputAt(signalsOf(signals, pass.slug), filters.period);
+    if (!passMatches(pass, filters, q, input)) continue;
+    if (
+      !statusMatches(
+        passVerdict(pass, filters.period, input).status,
+        filters.status,
+      )
+    )
+      continue;
+    n += 1;
+  }
+  return n;
+};
+
 export interface PassRow {
   pass: Pass;
   status: Status;
@@ -224,6 +254,33 @@ export const buildTownRows = (
   }
   return rows.toSorted((a, b) => a.town.name.localeCompare(b.town.name, "de"));
 };
+
+/**
+ * How many roads a filter chip would leave, counted **disjunctively**: the
+ * patch carries both the option and the lifting of its own group's filter,
+ * because a group's own selection must not decide its own options' numbers.
+ * Count them conjunctively instead – with the group's current choice still in
+ * force – and in a group where one chip is pressed every other chip reads 0,
+ * although each of them is one tap away. Search engines call the same trick
+ * `excludeTags` (Solr), `disjunctiveFacets` (Algolia) or a `post_filter` with
+ * one aggregation per facet (Elasticsearch).
+ *
+ * It buys a second thing for free: because a group's numbers ignore that
+ * group's own state, they do not move while the group is being operated. Only
+ * a change in another group makes them jump, so nothing shifts under the
+ * thumb that is doing the tapping.
+ *
+ * The same idea is already in this file: `statusHistogram` below drops the
+ * status filter and the summer filters, for exactly this reason – on the
+ * period axis.
+ */
+export const facetCount = (
+  passes: Pass[],
+  filters: Filters,
+  isFavorite: Query["isFavorite"],
+  patch: Partial<Filters>,
+  signals?: Signals,
+): number => countPasses(passes, { ...filters, ...patch }, isFavorite, signals);
 
 export interface HistogramBar {
   period: Period;

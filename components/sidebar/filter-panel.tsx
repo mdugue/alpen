@@ -169,7 +169,7 @@ export const FilterBody = ({
   setFilters,
   counts,
   totals,
-  favoriteCount,
+  countWith,
   onReset,
   more,
   onMoreChange,
@@ -179,7 +179,14 @@ export const FilterBody = ({
   /** How many rows each list shows right now, and how many there are in all. */
   counts: Record<EntityKind, number>;
   totals: Record<EntityKind, number>;
-  favoriteCount: number;
+  /**
+   * How many roads would be left by a filter change – the number on every
+   * chip. The patch carries the option *and* lifts its own group's filter, so
+   * a group's numbers never depend on that group's own choice; `facetCount`
+   * in `lib/rows.ts` says why that is the only honest way to count, and why
+   * it also keeps the numbers still while a group is being tapped.
+   */
+  countWith: (patch: Partial<Filters>) => number;
   onReset: () => void;
   /** The second half of the panel; its state lives with the panel's own. */
   more: boolean;
@@ -192,6 +199,17 @@ export const FilterBody = ({
   const [lo, hi] = filters.difficulty;
   const wholeScale = lo === RATING_MIN && hi === RATING_MAX;
   const count = filterCount(filters);
+  // Which single applied filter, lifted on its own, brings the most back.
+  // Only asked once the list is empty, so it costs nothing while the panel is
+  // doing its job. An applied chip's `clear` hands back a whole `Filters`,
+  // which is a valid patch for `countWith` – no second seam needed.
+  const relief =
+    counts.pass > 0
+      ? null
+      : appliedFilters(filters)
+          .map((chip) => ({ chip, n: countWith(chip.clear(filters)) }))
+          .filter((r) => r.n > 0)
+          .toSorted((a, b) => b.n - a.n)[0];
 
   return (
     <div className="grid gap-4 px-3 pt-3 pb-4">
@@ -201,6 +219,8 @@ export const FilterBody = ({
           return (
             <FilterChip
               key={s}
+              label={STATUS_LABEL[s]}
+              count={countWith({ status: [s] })}
               pressed={on}
               onPressedChange={() =>
                 set("status", toggleMember(filters.status, ALL_STATUS, s))
@@ -216,7 +236,12 @@ export const FilterBody = ({
       {/* Five cells, one per level of the editorial scale, and the window they
           span is the filter. Two of them are a range without a second thumb to
           aim at, and the cells say what the numbers mean by standing next to
-          the same scale the list draws. */}
+          the same scale the list draws.
+          The number on a cell is how many roads sit at that level, not what
+          pressing it would leave: a cell extends or shrinks a window rather
+          than replacing it, so "what happens if I press this" has no single
+          answer here. The distribution is the more useful reading anyway, and
+          it stays invariant like every other group's numbers. */}
       <ChipGroup
         id="f-difficulty"
         label="Schwierigkeit"
@@ -226,11 +251,12 @@ export const FilterBody = ({
           <FilterChip
             key={n}
             label={`Schwierigkeit ${n}`}
+            count={countWith({ difficulty: [n, n] })}
             pressed={!wholeScale && n >= lo && n <= hi}
             onPressedChange={() =>
               set("difficulty", toggleLevel(filters.difficulty, n))
             }
-            className="w-9 justify-center px-0 tabular-nums pointer-coarse:w-11"
+            className="px-2.5 tabular-nums"
           >
             {n}
           </FilterChip>
@@ -241,20 +267,20 @@ export const FilterBody = ({
         id="f-elevation"
         label="Höhe des Scheitelpunkts"
         options={ELEVATION_OPTIONS}
+        count={(v) => countWith({ minElevation: v })}
         value={filters.minElevation}
         onChange={(v) => set("minElevation", v)}
       />
 
       <FilterChip
+        label="Nur Gemerkte"
+        count={countWith({ favoritesOnly: true })}
         pressed={filters.favoritesOnly}
         onPressedChange={(on) => set("favoritesOnly", on)}
         className="w-fit"
       >
         <Star className={cn(filters.favoritesOnly && "fill-current")} />
         Nur Gemerkte
-        {favoriteCount > 0 && (
-          <span className="tabular-nums opacity-70">{favoriteCount}</span>
-        )}
       </FilterChip>
 
       <Collapsible open={more} onOpenChange={onMoreChange}>
@@ -288,7 +314,9 @@ export const FilterBody = ({
             {ALL_TYPES.map((t: RoadType) => (
               <FilterChip
                 key={t}
+                label={ROAD_TYPE[t].label}
                 hint={ROAD_TYPE[t].hint}
+                count={countWith({ types: [t] })}
                 pressed={pickedTypes.includes(t)}
                 onPressedChange={() =>
                   set("types", toggleMember(filters.types, ALL_TYPES, t))
@@ -307,7 +335,9 @@ export const FilterBody = ({
             {ROAD_TAGS.map((t: RoadTag) => (
               <FilterChip
                 key={t}
+                label={ROAD_TAG[t].label}
                 hint={ROAD_TAG[t].hint}
+                count={countWith({ tags: [t] })}
                 pressed={filters.tags.includes(t)}
                 onPressedChange={(on) =>
                   set(
@@ -330,6 +360,7 @@ export const FilterBody = ({
             id="f-traffic"
             label="Verkehr, 1 ist am ruhigsten"
             options={TRAFFIC_OPTIONS}
+            count={(v) => countWith({ maxTraffic: v })}
             scale
             value={filters.maxTraffic}
             onChange={(v) => set("maxTraffic", v)}
@@ -338,6 +369,7 @@ export const FilterBody = ({
             id="f-beauty"
             label="Schönheit, 5 ist am schönsten"
             options={BEAUTY_OPTIONS}
+            count={(v) => countWith({ minBeauty: v })}
             scale
             value={filters.minBeauty}
             onChange={(v) => set("minBeauty", v)}
@@ -346,6 +378,7 @@ export const FilterBody = ({
             id="f-fame"
             label="Bekanntheit, 5 ist ein Klassiker"
             options={FAME_OPTIONS}
+            count={(v) => countWith({ minFame: v })}
             scale
             value={filters.minFame}
             onChange={(v) => set("minFame", v)}
@@ -359,6 +392,7 @@ export const FilterBody = ({
             id="f-heat"
             label="Wärme im Tal (abgeleitet)"
             options={HEAT_OPTIONS}
+            count={(v) => countWith({ maxValleyTmax: v })}
             value={filters.maxValleyTmax}
             onChange={(v) => set("maxValleyTmax", v)}
           />
@@ -366,6 +400,7 @@ export const FilterBody = ({
             id="f-wet"
             label="Anteil der Regentage"
             options={WET_OPTIONS}
+            count={(v) => countWith({ maxWetPct: v })}
             value={filters.maxWetPct}
             onChange={(v) => set("maxWetPct", v)}
           />
@@ -373,21 +408,35 @@ export const FilterBody = ({
       </Collapsible>
 
       {/* What the chips just did, in one line. Live filtering only works when
-          the result of a tap is visible from where the tap happened. */}
+          the result of a tap is visible from where the tap happened – and a
+          dead end is never silent: it names the one filter that would bring
+          the most back, which the same counting machinery works out. */}
       <div className="border-border flex items-center gap-2 border-t pt-2">
         <p
           aria-live="polite"
           className="text-muted-foreground text-2xs min-w-0 flex-1 truncate"
         >
-          <span className="text-foreground font-medium tabular-nums">
-            {fmt(counts.pass)}
-          </span>{" "}
-          von {fmt(totals.pass)} Straßen
-          {", "}
-          <span className="text-foreground font-medium tabular-nums">
-            {fmt(counts.tour)}
-          </span>{" "}
-          Touren
+          {counts.pass === 0 && relief ? (
+            <>
+              Keine Straßen. Ohne „{relief.chip.label}“ wären es{" "}
+              <span className="text-foreground font-medium tabular-nums">
+                {fmt(relief.n)}
+              </span>
+              .
+            </>
+          ) : (
+            <>
+              <span className="text-foreground font-medium tabular-nums">
+                {fmt(counts.pass)}
+              </span>{" "}
+              von {fmt(totals.pass)} Straßen
+              {", "}
+              <span className="text-foreground font-medium tabular-nums">
+                {fmt(counts.tour)}
+              </span>{" "}
+              Touren
+            </>
+          )}
         </p>
         <Button
           variant="ghost"

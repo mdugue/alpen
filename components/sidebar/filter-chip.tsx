@@ -6,7 +6,7 @@ import { Rating } from "@/components/rating";
 import { Toggle } from "@/components/ui/toggle";
 import type { Options } from "@/lib/app-state";
 import { thresholdChips } from "@/lib/app-state";
-import { cn, TOUCH_CONTROL } from "@/lib/utils";
+import { cn, fmt, TOUCH_CONTROL } from "@/lib/utils";
 
 /**
  * Every filter in this app is a chip: a small, pressable word that is either
@@ -36,6 +36,7 @@ export const FilterChip = ({
   children,
   label,
   hint,
+  count,
   className,
 }: {
   pressed: boolean;
@@ -45,13 +46,23 @@ export const FilterChip = ({
   label?: string;
   /** The vocabulary's own sentence, as a pointer tooltip. */
   hint?: string;
+  /**
+   * How many roads the chip would leave, counted disjunctively (`facetCount`
+   * in `lib/rows.ts`). A chip that would leave none is disabled rather than
+   * hidden: hiding it raises the question of where it went, and the 0 is the
+   * answer. A pressed chip is never disabled – it has to stay liftable.
+   */
+  count?: number;
   className?: string;
 }) => (
   <Toggle
     variant="outline"
     pressed={pressed}
     onPressedChange={onPressedChange}
-    aria-label={label}
+    disabled={count === 0 && !pressed}
+    aria-label={
+      count === undefined || !label ? label : `${label}, ${fmt(count)} Straßen`
+    }
     title={hint}
     className={cn(
       // The Toggle's own default size, widened into a pill and grown for a
@@ -66,6 +77,13 @@ export const FilterChip = ({
     )}
   >
     {children}
+    {count !== undefined && (
+      // A fixed slot: the number changes with every tap in another group, and
+      // a chip that resizes with it would rewrap the row under the thumb.
+      <span className="min-w-6 text-right tabular-nums opacity-65">
+        {fmt(count)}
+      </span>
+    )}
   </Toggle>
 );
 
@@ -122,6 +140,7 @@ export const ThresholdChips = ({
   value,
   onChange,
   scale,
+  count,
 }: {
   id: string;
   label: string;
@@ -137,6 +156,8 @@ export const ThresholdChips = ({
    * limit is exactly the case where that is the wrong way round.
    */
   scale?: boolean;
+  /** How many roads each option would leave; see `FilterChip.count`. */
+  count?: (value: number) => number;
 }) => {
   const [[none]] = options as unknown as [[number, string]];
   return (
@@ -144,6 +165,8 @@ export const ThresholdChips = ({
       {thresholdChips(options).map(([v, text]) => (
         <FilterChip
           key={v}
+          label={text}
+          count={count?.(v)}
           pressed={value === v}
           onPressedChange={(on) => onChange(on ? v : none)}
         >

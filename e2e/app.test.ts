@@ -93,7 +93,7 @@ test(
 test(
   "4 · a status chip narrows the lists and the applied-filter chip undoes it",
   () =>
-    // Early January, so all three statuses actually occur.
+    // Early January: nothing is "gut", so the counts and the disabled chip bite.
     withPage(app, "status-filter", { hash: "#t=1" }, async (page) => {
       await page.waitFor(PASS_ROW);
       const all = await page.count(PASS_ROW);
@@ -101,13 +101,28 @@ test(
       // to open, and pressing one narrows the list to it.
       await page.clickText("button", "Filter");
       await page.waitFor('[aria-labelledby="f-status"]');
-      await page.clickText('[aria-labelledby="f-status"] button', "gut");
+      // Every chip carries how many roads it would leave, counted with its own
+      // group's filter lifted. In early January that is zero for "gut", and a
+      // chip that can only empty the list is disabled rather than pressable.
+      expect(
+        await page.evaluate<boolean>(
+          `[...document.querySelectorAll('[aria-labelledby="f-status"] button')]
+             .find((b) => b.textContent.startsWith("gut")).disabled`,
+        ),
+      ).toBe(true);
+      await page.clickText(
+        '[aria-labelledby="f-status"] button',
+        "eingeschränkt",
+      );
       await waitUntil(
         async () => (await page.count(PASS_ROW)) < all,
         "fewer passes after filtering",
       );
       // The chip row above the panel undoes exactly that decision again.
-      await page.clickText('[aria-label="Aktive Filter"] button', "gut");
+      await page.clickText(
+        '[aria-label="Aktive Filter"] button',
+        "eingeschränkt",
+      );
       await waitUntil(
         async () => (await page.count(PASS_ROW)) === all,
         "all passes back after the reset",
