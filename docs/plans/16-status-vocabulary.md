@@ -1,6 +1,7 @@
 # 16 · One status vocabulary
 
-**Status:** proposed · **Effort:** M · **Depends on:** 15 (the badge, the
+**Status:** [in progress](https://github.com/mdugue/alpen/pull/40) ·
+**Effort:** M · **Depends on:** 15 (the badge, the
 strip and the panel read one cell) · **Unblocks:** 17 (the per-kind panel
 modules print sentences they do not compose), 08 (a second language
 translates one table)
@@ -29,6 +30,14 @@ scattered. Reading the code found these:
 | `PASS_SORTS`                       | `app-state.ts:30`, `rows.ts:277`                                                                          | two copies                                                                                                    |
 
 None of these has a test, because none of them is a function.
+
+Two line references above drifted before the work started: the second
+`STATUS_RANK` is `rows.ts:374`, and `status.ts:445` is `GRADE_RANK`, which
+runs the _other_ way (higher is better, because `tourYear` takes the
+minimum). So the pair with one name and two directions was `STATUS_RANK` in
+`rows.ts` against `statusRank`'s neighbourhood in `lib/status.ts`; the
+constant the plan calls `WET_RISKY_PCT` is `WET_LIMITED_PCT`. Everything else
+held.
 
 ## Non-goals
 
@@ -78,6 +87,13 @@ verdict and the histogram. `app-state.ts` re-exports `STATUS_ORDER` as
 `ALL_STATUS` for the filter, `rows.ts` sorts by `statusRank`, the share image
 and the calibration script iterate `STATUS_ORDER`. `PASS_SORTS` lives in
 `app-state.ts` only; `rows.ts` imports it.
+
+`worstStatus` was dropped while implementing: nothing calls it. Plan 15 had
+already made both callers it was meant for reduce by **grade** – `tourYear`
+takes the minimum `GRADE_RANK`, and the histogram counts grades – and a grade
+is the status refined by the best window, so the lowest grade is always the
+worst status too. Adding an export with no caller would have been one more
+way to say the same thing, which is what this plan is against.
 
 ### The ladder drives the prose
 

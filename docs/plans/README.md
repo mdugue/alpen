@@ -35,7 +35,7 @@ that goal; features that only add route-level precision rank last.
 | 07  | [Profile interactivity](07-profile-interactivity.md)                  | detail, low priority now            | S–M    | –                    | [done](https://github.com/mdugue/alpen/pull/11)        |
 | 14  | [Road types and tags](14-road-types-and-tags.md)                      | roads that are not passes           | L      | 09, 05               | [in progress](https://github.com/mdugue/alpen/pull/33) |
 | 15  | [The year of a pass, computed once](15-pass-year.md)                  | compute, one series for all readers | S–M    | 13                   | [done](https://github.com/mdugue/alpen/pull/39)        |
-| 16  | [One status vocabulary](16-status-vocabulary.md)                      | honesty, one home for the words     | M      | 15                   | proposed                                               |
+| 16  | [One status vocabulary](16-status-vocabulary.md)                      | honesty, one home for the words     | M      | 15                   | [in progress](https://github.com/mdugue/alpen/pull/40) |
 | 17  | [Detail panel per kind](17-detail-panel-per-kind.md)                  | testable panel, 02 and 12           | M      | 15, 16               | proposed                                               |
 | 18  | [Selection, visibility and camera](18-selection-visibility-camera.md) | one rule, 02 as adapter             | M      | –                    | proposed                                               |
 | 19  | [A map scene between the rows and MapLibre](19-map-scene.md)          | map testable without WebGL          | M–L    | 18, 01               | proposed                                               |
@@ -52,8 +52,8 @@ form three independent chains and can run in parallel: **15 → 16 → 17** in t
 app (the status series, its words, the panel), **18 → 19** on the map (what is
 shown, the scene) and **20 → 21** in the pipeline (the gate's decisions, the
 hosts). Within a chain a later plan assumes the earlier one is done and is
-written smaller because of it. 15 is done, so 16 is the next one in that chain;
-18 and 20 head the other two and depend on nothing that is open.
+written smaller because of it. 15 and 16 are done, so 17 is the next one in
+that chain; 18 and 20 head the other two and depend on nothing that is open.
 
 ## Status legend
 

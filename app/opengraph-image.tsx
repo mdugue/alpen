@@ -17,9 +17,10 @@ import {
   passStatus,
   signalsOf,
   STATUS_LABEL,
+  STATUS_ORDER,
 } from "@/lib/status";
 import type { Signals } from "@/lib/status";
-import type { ClimateYear, ElevationProfile, Pass, Status } from "@/lib/types";
+import type { ClimateYear, ElevationProfile, Pass } from "@/lib/types";
 import { fmt } from "@/lib/utils";
 
 /**
@@ -207,7 +208,7 @@ export default function Image() {
           />
           <span>{periodLabel(PERIOD)}</span>
         </div>
-        {(["open", "risky", "closed"] as Status[]).map((s) => (
+        {STATUS_ORDER.map((s) => (
           <div
             key={s}
             style={{ alignItems: "center", display: "flex", gap: 12 }}
