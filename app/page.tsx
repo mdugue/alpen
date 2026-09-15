@@ -11,6 +11,7 @@ import {
   getTownReach,
   getTowns,
   getValleys,
+  getYears,
 } from "@/lib/data";
 import { todayPeriod } from "@/lib/status";
 
@@ -68,6 +69,7 @@ const Page = async () => {
     profiles,
     climate,
     valleys,
+    years,
     photos,
   ] = await Promise.all([
     getPasses(),
@@ -79,6 +81,7 @@ const Page = async () => {
     getProfiles(),
     getClimate(),
     getValleys(),
+    getYears(),
     getPhotos(),
   ]);
 
@@ -98,6 +101,7 @@ const Page = async () => {
         profiles={profiles}
         climate={climate}
         valleys={valleys}
+        years={years}
         photos={photos}
         defaultPeriod={todayPeriod()}
       />

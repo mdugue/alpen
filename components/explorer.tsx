@@ -42,7 +42,7 @@ import {
   statusHistogram,
 } from "@/lib/rows";
 import { indexBySlug } from "@/lib/status";
-import type { Signals } from "@/lib/status";
+import type { Signals, Years } from "@/lib/status";
 import type {
   ClimateYear,
   LatLon,
@@ -73,6 +73,11 @@ interface Props {
   climate: Record<string, ClimateYear>;
   /** Lowest ascent start per pass, for the derived valley heat (`lib/status.ts`). */
   valleys: Record<string, number>;
+  /**
+   * The 24 graded half-months of every pass and tour, computed once on the
+   * server (`getYears`, lib/data.ts). Nothing here grades a pass itself.
+   */
+  years: Years;
   /** Commons photos per entity, see `lib/photos.ts`. */
   photos: Photos;
   /** Today's half-month, computed on the server in Europe/Berlin. */
@@ -104,6 +109,7 @@ export const Explorer = ({
   profiles,
   climate,
   valleys,
+  years,
   photos,
   defaultPeriod,
 }: Props) => {
@@ -190,10 +196,11 @@ export const Explorer = ({
   }, [hashApplied, filters, selection, view]);
 
   const passIndex = indexBySlug(passes);
-  const passRows = buildPassRows(passes, filters, isFavorite, signals);
+  const passRows = buildPassRows(passes, years, filters, isFavorite, signals);
   const tourRows = buildTourRows(
     tours,
     passIndex,
+    years,
     filters,
     isFavorite,
     signals,
@@ -206,8 +213,14 @@ export const Explorer = ({
    * `facetCount` explains why that is the only honest arithmetic here.
    */
   const countWith = (patch: Partial<Filters>) =>
-    facetCount(passes, filters, isFavorite, patch, signals);
-  const histogram = statusHistogram(passes, filters, isFavorite, signals);
+    facetCount(passes, years, filters, isFavorite, patch, signals);
+  const histogram = statusHistogram(
+    passes,
+    years,
+    filters,
+    isFavorite,
+    signals,
+  );
 
   const mapPasses: MapPass[] = passRows.map(({ pass, status, favorite }) => ({
     ...pass,
@@ -273,6 +286,7 @@ export const Explorer = ({
       profiles={profiles}
       climate={climate}
       valleys={valleys}
+      years={years}
       photos={photos}
       isFavorite={isFavorite}
       onToggleFavorite={toggleFavorite}

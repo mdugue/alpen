@@ -11,7 +11,14 @@ import {
   sortPassRows,
   statusHistogram,
 } from "@/lib/rows";
-import { indexBySlug, PERIODS } from "@/lib/status";
+import {
+  indexBySlug,
+  passYear,
+  PERIODS,
+  signalsOf,
+  tourYear,
+} from "@/lib/status";
+import type { Signals, Year, Years } from "@/lib/status";
 import type { ClimateBucket, ClimateYear, Pass, Tour, Town } from "@/lib/types";
 
 const filters = (over: Partial<Filters> = {}): Filters => ({
@@ -85,6 +92,25 @@ const tours = [
   }),
 ];
 
+/**
+ * The years the page hands down, built exactly as `getYears` (lib/data.ts)
+ * does. Every builder below reads them instead of grading a pass itself, so a
+ * test that changes the signals has to rebuild them – which is the point: the
+ * row and the strip can no longer be fed two different opinions of one pass.
+ */
+const yearsOf = (
+  list: Pass[],
+  tourList: Tour[] = [],
+  signals?: Signals,
+): Years => {
+  const p: Record<string, Year> = {};
+  for (const x of list) p[x.slug] = passYear(x, signalsOf(signals, x.slug));
+  const t: Record<string, Year> = {};
+  for (const x of tourList) t[x.slug] = tourYear(x, p);
+  return { passes: p, tours: t };
+};
+const years = yearsOf(passes, tours);
+
 const towns: Town[] = [
   {
     country: "IT",
@@ -123,31 +149,32 @@ const periodIndexOf = (t: number) => PERIODS.indexOf(t);
 describe("buildPassRows", () => {
   test("filters by elevation, fame, search and favourites", () => {
     expect(
-      buildPassRows(passes, filters({ minElevation: 2000 }), never).map(
+      buildPassRows(passes, years, filters({ minElevation: 2000 }), never).map(
         (r) => r.pass.slug,
       ),
     ).toEqual(["hoch"]);
     expect(
-      buildPassRows(passes, filters({ minFame: 4 }), never).map(
+      buildPassRows(passes, years, filters({ minFame: 4 }), never).map(
         (r) => r.pass.slug,
       ),
     ).toEqual(["hoch"]);
     expect(
-      buildPassRows(passes, filters({ query: "winter" }), never).map(
+      buildPassRows(passes, years, filters({ query: "winter" }), never).map(
         (r) => r.pass.slug,
       ),
     ).toEqual(["winter"]);
     expect(
-      buildPassRows(passes, filters({ query: "westalpen" }), never).map(
+      buildPassRows(passes, years, filters({ query: "westalpen" }), never).map(
         (r) => r.pass.slug,
       ),
     ).toEqual(["hoch"]);
     expect(
-      buildPassRows(passes, filters({ favoritesOnly: true }), never),
+      buildPassRows(passes, years, filters({ favoritesOnly: true }), never),
     ).toHaveLength(0);
     expect(
       buildPassRows(
         passes,
+        years,
         filters({ favoritesOnly: true }),
         (_, slug) => slug === "mittel",
       ).map((r) => r.pass.slug),
@@ -160,6 +187,7 @@ describe("buildPassRows", () => {
     expect(
       buildPassRows(
         passes,
+        years,
         filters({ period: 4, status: ["open"] }),
         never,
       ).map((r) => r.pass.slug),
@@ -167,22 +195,39 @@ describe("buildPassRows", () => {
     expect(
       buildPassRows(
         passes,
+        years,
         filters({ period: 4, status: ["closed"] }),
         never,
       ).map((r) => r.pass.slug),
     ).toEqual(["winter"]);
   });
 
-  test("every row carries its 24 verdicts and the climate series is applied", () => {
-    const [row] = buildPassRows([passes[1]!], filters(), never);
+  test("every row carries its 24 cells and the climate series is applied", () => {
+    const [row] = buildPassRows([passes[1]!], years, filters(), never);
     expect(row!.season).toHaveLength(24);
     expect(row!.status).toBe("open");
-    const withSnow = buildPassRows([passes[1]!], filters(), never, {
-      climate: { mittel: snowy(30) },
-    });
+    const signals = { climate: { mittel: snowy(30) } };
+    const withSnow = buildPassRows(
+      [passes[1]!],
+      yearsOf(passes, tours, signals),
+      filters(),
+      never,
+      signals,
+    );
     expect(withSnow[0]!.status).toBe("risky");
     expect(withSnow[0]!.reason).toBe("snow");
-    expect(withSnow[0]!.season.every((s) => s === "limited")).toBe(true);
+    expect(withSnow[0]!.season.every((c) => c.grade === "limited")).toBe(true);
+  });
+
+  // The acceptance criterion of plan 15: one `Year` per pass, not one per
+  // reader. Identity, not equality – two builders that agree today but grade
+  // separately would drift the moment one of them changes.
+  test("the row and the histogram read one and the same year", () => {
+    const [row] = buildPassRows([passes[1]!], years, filters(), never);
+    expect(row!.season).toBe(years.passes.mittel!.cells);
+    const bars = statusHistogram([passes[1]!], years, filters(), never);
+    for (const [i, bar] of bars.entries())
+      expect(bar[years.passes.mittel!.cells[i]!.grade]).toBe(1);
   });
 });
 
@@ -200,7 +245,9 @@ describe("plan 05 criteria", () => {
     }),
   ];
   const pick = (over: Partial<Filters>) =>
-    buildPassRows(mixed, filters(over), never).map((r) => r.pass.slug);
+    buildPassRows(mixed, yearsOf(mixed), filters(over), never).map(
+      (r) => r.pass.slug,
+    );
 
   test("difficulty window, traffic and beauty on passes", () => {
     expect(pick({ difficulty: [4, 5] })).toEqual(["grenze"]);
@@ -212,17 +259,29 @@ describe("plan 05 criteria", () => {
   test("search folds accents and matches every token", () => {
     const umlaut = [pass({ name: "Großer Sankt Bernhard", slug: "gross" })];
     expect(
-      buildPassRows(umlaut, filters({ query: "grosser bernhard" }), never),
+      buildPassRows(
+        umlaut,
+        yearsOf(umlaut),
+        filters({ query: "grosser bernhard" }),
+        never,
+      ),
     ).toHaveLength(1);
     expect(
-      buildPassRows(umlaut, filters({ query: "bernhard klein" }), never),
+      buildPassRows(
+        umlaut,
+        yearsOf(umlaut),
+        filters({ query: "bernhard klein" }),
+        never,
+      ),
     ).toHaveLength(0);
   });
 
   // "kurz" crosses the 1,500 m pass only, "lang" the 1,500 m and the 1,200 m one.
   test("a tour needs one pass that clears the lower bounds", () => {
     const rows = (over: Partial<Filters>) =>
-      buildTourRows(tours, index, filters(over), never).map((r) => r.tour.slug);
+      buildTourRows(tours, index, years, filters(over), never).map(
+        (r) => r.tour.slug,
+      );
     expect(rows({ minElevation: 1400 })).toEqual(["lang", "kurz"]);
     expect(rows({ minElevation: 2000 })).toEqual([]);
     expect(rows({ minFame: 3 })).toEqual(["lang", "kurz"]);
@@ -241,9 +300,13 @@ describe("plan 05 criteria", () => {
       tour({ name: "Harte Runde", passes: ["mittel", "steil"], slug: "hart" }),
     ];
     const rows = (over: Partial<Filters>) =>
-      buildTourRows(withHard, hardIndex, filters(over), never).map(
-        (r) => r.tour.slug,
-      );
+      buildTourRows(
+        withHard,
+        hardIndex,
+        yearsOf(hard, withHard),
+        filters(over),
+        never,
+      ).map((r) => r.tour.slug);
     expect(rows({})).toContain("hart");
     expect(rows({ difficulty: [1, 3] })).toEqual(["lang", "kurz"]);
     expect(rows({ maxTraffic: 3 })).toEqual(["lang", "kurz"]);
@@ -274,11 +337,16 @@ describe("plan 13 summer filters", () => {
     over: Partial<Filters>,
     climate: Record<string, ClimateYear>,
     withValleys = true,
-  ) =>
-    buildPassRows([passes[1]!], filters(over), never, {
-      climate,
-      valleys: withValleys ? valleys : {},
-    }).map((r) => r.pass.slug);
+  ) => {
+    const signals = { climate, valleys: withValleys ? valleys : {} };
+    return buildPassRows(
+      [passes[1]!],
+      yearsOf(passes, tours, signals),
+      filters(over),
+      never,
+      signals,
+    ).map((r) => r.pass.slug);
+  };
 
   test("heat is an exclusive upper bound on the derived valley tmax", () => {
     // 20 °C at the summit is 26,5 °C in the valley.
@@ -329,11 +397,19 @@ describe("plan 13 summer filters", () => {
   });
 
   test("every pass of a tour has to respect the summer bounds", () => {
+    const signals = {
+      climate: { mittel: year({ tmax: 20, wetPct: 40 }) },
+      valleys,
+    };
     const rows = (over: Partial<Filters>) =>
-      buildTourRows(tours, index, filters(over), never, {
-        climate: { mittel: year({ tmax: 20, wetPct: 40 }) },
-        valleys,
-      }).map((r) => r.tour.slug);
+      buildTourRows(
+        tours,
+        index,
+        yearsOf(passes, tours, signals),
+        filters(over),
+        never,
+        signals,
+      ).map((r) => r.tour.slug);
     expect(rows({})).toEqual(["lang", "kurz"]);
     // "lang" also crosses "winter", which has no series: it fails both bounds.
     expect(rows({ maxValleyTmax: 28 })).toEqual(["kurz"]);
@@ -353,7 +429,9 @@ describe("plan 14 type and label filters", () => {
     }),
   ];
   const slugs = (over: Partial<Filters>) =>
-    buildPassRows(roads, filters(over), never).map((r) => r.pass.slug);
+    buildPassRows(roads, yearsOf(roads), filters(over), never).map(
+      (r) => r.pass.slug,
+    );
 
   test("all five types selected is no filter", () => {
     expect(slugs({})).toEqual(["uebergang", "stich", "balkon"]);
@@ -378,9 +456,13 @@ describe("plan 14 type and label filters", () => {
   test("a tour needs one road of a selected type, and sees no labels", () => {
     const withSpur = tour({ passes: ["stich"], slug: "mit-stich" });
     const rows = (over: Partial<Filters>) =>
-      buildTourRows([withSpur], indexBySlug(roads), filters(over), never).map(
-        (r) => r.tour.slug,
-      );
+      buildTourRows(
+        [withSpur],
+        indexBySlug(roads),
+        yearsOf(roads, [withSpur]),
+        filters(over),
+        never,
+      ).map((r) => r.tour.slug);
     expect(rows({ types: ["spur"] })).toEqual(["mit-stich"]);
     expect(rows({ types: ["pass"] })).toEqual([]);
     // "autofrei" is a label of one road, never of the loop around it.
@@ -390,11 +472,11 @@ describe("plan 14 type and label filters", () => {
 
 describe("buildTourRows", () => {
   test("status comes from the passes, sorted by elevation gain", () => {
-    const rows = buildTourRows(tours, index, filters(), never);
+    const rows = buildTourRows(tours, index, years, filters(), never);
     expect(rows.map((r) => r.tour.slug)).toEqual(["lang", "kurz"]);
     expect(rows.map((r) => r.status)).toEqual(["open", "open"]);
     expect(
-      buildTourRows(tours, index, filters({ period: 4 }), never).map(
+      buildTourRows(tours, index, years, filters({ period: 4 }), never).map(
         (r) => r.status,
       ),
     ).toEqual(["closed", "open"]);
@@ -402,14 +484,19 @@ describe("buildTourRows", () => {
 
   test("search matches name and description, the status filter applies", () => {
     expect(
-      buildTourRows(tours, index, filters({ query: "kurze" }), never).map(
-        (r) => r.tour.slug,
-      ),
+      buildTourRows(
+        tours,
+        index,
+        years,
+        filters({ query: "kurze" }),
+        never,
+      ).map((r) => r.tour.slug),
     ).toEqual(["kurz"]);
     expect(
       buildTourRows(
         tours,
         index,
+        years,
         filters({ period: 4, status: ["open"] }),
         never,
       ).map((r) => r.tour.slug),
@@ -417,12 +504,18 @@ describe("buildTourRows", () => {
   });
 
   test("the climate series reaches the tour verdict, with the limiting reason", () => {
-    const rows = buildTourRows(tours, index, filters(), never, {
-      climate: { mittel: snowy(40) },
-    });
+    const signals = { climate: { mittel: snowy(40) } };
+    const rows = buildTourRows(
+      tours,
+      index,
+      yearsOf(passes, tours, signals),
+      filters(),
+      never,
+      signals,
+    );
     expect(rows.every((r) => r.status === "risky")).toBe(true);
     expect(rows.every((r) => r.reason === "snow")).toBe(true);
-    const clear = buildTourRows(tours, index, filters(), never);
+    const clear = buildTourRows(tours, index, years, filters(), never);
     expect(clear.every((r) => r.reason === null)).toBe(true);
   });
 });
@@ -444,7 +537,7 @@ describe("buildTownRows", () => {
 });
 
 describe("sortPassRows", () => {
-  const rows = buildPassRows(passes, filters({ period: 4 }), never);
+  const rows = buildPassRows(passes, years, filters({ period: 4 }), never);
 
   test("each key puts the best value first, name breaks ties", () => {
     expect(sortPassRows(rows, "elevation").map((r) => r.pass.slug)).toEqual([
@@ -481,7 +574,7 @@ describe("sortPassRows", () => {
       pass({ name: "A", slug: "a" }),
     ];
     const sorted = sortPassRows(
-      buildPassRows(twins, filters(), never),
+      buildPassRows(twins, yearsOf(twins), filters(), never),
       "beauty",
     );
     expect(sorted.map((r) => r.pass.slug)).toEqual(["a", "b"]);
@@ -490,7 +583,7 @@ describe("sortPassRows", () => {
 
 describe("statusHistogram", () => {
   test("one bar per half-month, counting every matching pass", () => {
-    const bars = statusHistogram(passes, filters(), never);
+    const bars = statusHistogram(passes, years, filters(), never);
     expect(bars).toHaveLength(24);
     expect(bars.map((b) => b.period)).toEqual(PERIODS);
     for (const b of bars) expect(barTotal(b)).toBe(passes.length);
@@ -504,6 +597,7 @@ describe("statusHistogram", () => {
   test("the status filter is ignored, the other filters are not", () => {
     const bars = statusHistogram(
       passes,
+      years,
       filters({ minFame: 4, status: ["open"] }),
       never,
     );
@@ -513,6 +607,7 @@ describe("statusHistogram", () => {
   test("no matching pass leaves 24 empty bars rather than nothing", () => {
     const bars = statusHistogram(
       passes,
+      years,
       filters({ query: "gibtsnicht" }),
       never,
     );
@@ -521,9 +616,16 @@ describe("statusHistogram", () => {
   });
 
   test("the climate series moves passes from open to weather-dependent", () => {
-    const bars = statusHistogram(passes, filters(), never, {
+    const signals = {
       climate: { hoch: snowy(30), mittel: snowy(30), winter: snowy(30) },
-    });
+    };
+    const bars = statusHistogram(
+      passes,
+      yearsOf(passes, tours, signals),
+      filters(),
+      never,
+      signals,
+    );
     expect(bars.every((b) => b.best === 0 && b.good === 0)).toBe(true);
   });
 });
@@ -531,10 +633,10 @@ describe("statusHistogram", () => {
 describe("facetCount", () => {
   test("counts what the patch would leave, not what is left now", () => {
     const f = filters({ minFame: 5 });
-    expect(buildPassRows(passes, f, never).length).toBe(1);
+    expect(buildPassRows(passes, years, f, never).length).toBe(1);
     // The patch replaces the fame filter rather than narrowing it further.
-    expect(facetCount(passes, f, never, { minFame: 3 })).toBe(2);
-    expect(facetCount(passes, f, never, { minFame: 1 })).toBe(3);
+    expect(facetCount(passes, years, f, never, { minFame: 3 })).toBe(2);
+    expect(facetCount(passes, years, f, never, { minFame: 1 })).toBe(3);
   });
 
   test("a group's own filter never decides its own numbers", () => {
@@ -544,16 +646,16 @@ describe("facetCount", () => {
     const chosen = filters({ minFame: 5 });
     const untouched = filters();
     for (const v of [1, 3, 5]) {
-      expect(facetCount(passes, chosen, never, { minFame: v })).toBe(
-        facetCount(passes, untouched, never, { minFame: v }),
+      expect(facetCount(passes, years, chosen, never, { minFame: v })).toBe(
+        facetCount(passes, years, untouched, never, { minFame: v }),
       );
     }
   });
 
   test("the other groups do still narrow it", () => {
     const f = filters({ minElevation: 2000 });
-    expect(facetCount(passes, f, never, { minFame: 1 })).toBe(1);
-    expect(facetCount(passes, filters(), never, { minFame: 1 })).toBe(3);
+    expect(facetCount(passes, years, f, never, { minFame: 1 })).toBe(1);
+    expect(facetCount(passes, years, filters(), never, { minFame: 1 })).toBe(3);
   });
 
   test("it agrees with the rows it counts", () => {
@@ -564,8 +666,8 @@ describe("facetCount", () => {
       { types: ["spur" as const] },
     ]) {
       const f = { ...filters(), ...patch };
-      expect(facetCount(passes, filters(), never, patch)).toBe(
-        buildPassRows(passes, f, never).length,
+      expect(facetCount(passes, years, filters(), never, patch)).toBe(
+        buildPassRows(passes, years, f, never).length,
       );
     }
   });

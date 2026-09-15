@@ -9,20 +9,18 @@ import {
 import {
   daysOf,
   inputAt,
-  passGrades,
-  passVerdict,
+  periodIndex,
   PERIODS,
   signalsOf,
-  tourGrades,
-  tourVerdict,
   valleyTmax,
 } from "@/lib/status";
 import type {
-  Grade,
   PassIndex,
   Signals,
   StatusReason,
   VerdictInput,
+  YearCell,
+  Years,
 } from "@/lib/status";
 import type { Pass, Period, Status, Tour, Town } from "@/lib/types";
 
@@ -136,29 +134,26 @@ const tourMatches = (
 
 /**
  * How many passes a filter set keeps. `buildPassRows` would answer the same
- * question, but it also grades every surviving pass for all 24 half-months for
- * the season strip – around forty times the work of the verdict a count needs,
- * and a filter panel asks this once per option on every keystroke. Counting is
- * therefore its own path over the same two predicates.
+ * question, but it also carries the 24 cells of every surviving pass for the
+ * season strip, which a count has no use for; a filter panel asks this once
+ * per option on every keystroke. Counting is therefore its own path over the
+ * same two predicates.
  */
 const countPasses = (
   passes: Pass[],
+  years: Years,
   filters: Filters,
   isFavorite: Query["isFavorite"],
   signals?: Signals,
 ): number => {
   const q = query(filters, isFavorite);
+  const i = periodIndex(filters.period);
   let n = 0;
   for (const pass of passes) {
     const input = inputAt(signalsOf(signals, pass.slug), filters.period);
     if (!passMatches(pass, filters, q, input)) continue;
-    if (
-      !statusMatches(
-        passVerdict(pass, filters.period, input).status,
-        filters.status,
-      )
-    )
-      continue;
+    const cell = years.passes[pass.slug]?.cells[i];
+    if (!cell || !statusMatches(cell.status, filters.status)) continue;
     n += 1;
   }
   return n;
@@ -170,30 +165,39 @@ export interface PassRow {
   /** The first reason of a limited status – the word next to the dot. */
   reason: StatusReason | null;
   favorite: boolean;
-  /** 24 grades for the season strip, one per half-month. */
-  season: Grade[];
+  /** The 24 cells for the season strip; the pass's own `Year`, not a copy. */
+  season: YearCell[];
 }
 
+/**
+ * The status, the word next to it and the strip all come out of one `Year`
+ * (`getYears`, lib/data.ts), which is what keeps the row and the detail panel
+ * from ever disagreeing about the same pass. The criteria filters still read
+ * the raw signals: they ask about the chosen half-month's heat and rain, not
+ * about the verdict.
+ */
 export const buildPassRows = (
   passes: Pass[],
+  years: Years,
   filters: Filters,
   isFavorite: Query["isFavorite"],
   signals?: Signals,
 ): PassRow[] => {
   const q = query(filters, isFavorite);
+  const i = periodIndex(filters.period);
   const rows: PassRow[] = [];
   for (const pass of passes) {
-    const own = signalsOf(signals, pass.slug);
-    const input = inputAt(own, filters.period);
+    const input = inputAt(signalsOf(signals, pass.slug), filters.period);
     if (!passMatches(pass, filters, q, input)) continue;
-    const { status, reasons } = passVerdict(pass, filters.period, input);
-    if (!statusMatches(status, filters.status)) continue;
+    const year = years.passes[pass.slug];
+    const cell = year?.cells[i];
+    if (!year || !cell || !statusMatches(cell.status, filters.status)) continue;
     rows.push({
       favorite: isFavorite("pass", pass.slug),
       pass,
-      reason: status === "risky" ? (reasons[0] ?? null) : null,
-      season: passGrades(pass, own),
-      status,
+      reason: cell.status === "risky" ? (cell.reasons[0] ?? null) : null,
+      season: year.cells,
+      status: cell.status,
     });
   }
   return rows;
@@ -205,34 +209,32 @@ export interface TourRow {
   /** The first reason of the pass that limits the tour – the word next to the dot. */
   reason: StatusReason | null;
   favorite: boolean;
-  season: Grade[];
+  season: YearCell[];
 }
 
 export const buildTourRows = (
   tours: Tour[],
   passes: PassIndex,
+  years: Years,
   filters: Filters,
   isFavorite: Query["isFavorite"],
   signals?: Signals,
 ): TourRow[] => {
   const q = query(filters, isFavorite);
+  const i = periodIndex(filters.period);
   const rows: TourRow[] = [];
   for (const tour of tours) {
     const favorite = isFavorite("tour", tour.slug);
     if (q.favoritesOnly && !favorite) continue;
     if (!tourMatches(tour, passes, filters, q, signals)) continue;
-    const { status, reasons } = tourVerdict(
-      tour,
-      passes,
-      filters.period,
-      signals,
-    );
-    if (!statusMatches(status, filters.status)) continue;
+    const year = years.tours[tour.slug];
+    const cell = year?.cells[i];
+    if (!year || !cell || !statusMatches(cell.status, filters.status)) continue;
     rows.push({
       favorite,
-      reason: status === "risky" ? (reasons[0] ?? null) : null,
-      season: tourGrades(tour, passes, signals),
-      status,
+      reason: cell.status === "risky" ? (cell.reasons[0] ?? null) : null,
+      season: year.cells,
+      status: cell.status,
       tour,
     });
   }
@@ -281,11 +283,13 @@ export const buildTownRows = (
  */
 export const facetCount = (
   passes: Pass[],
+  years: Years,
   filters: Filters,
   isFavorite: Query["isFavorite"],
   patch: Partial<Filters>,
   signals?: Signals,
-): number => countPasses(passes, { ...filters, ...patch }, isFavorite, signals);
+): number =>
+  countPasses(passes, years, { ...filters, ...patch }, isFavorite, signals);
 
 export interface HistogramBar {
   period: Period;
@@ -308,6 +312,7 @@ export const barTotal = (b: HistogramBar) =>
  */
 export const statusHistogram = (
   passes: Pass[],
+  years: Years,
   filters: Filters,
   isFavorite: Query["isFavorite"],
   signals?: Signals,
@@ -329,8 +334,9 @@ export const statusHistogram = (
     const own = signalsOf(signals, pass.slug);
     if (!passMatches(pass, unbounded, q, inputAt(own, filters.period)))
       continue;
-    const season = passGrades(pass, own);
-    for (let i = 0; i < bars.length; i += 1) bars[i]![season[i]!] += 1;
+    const cells = years.passes[pass.slug]?.cells;
+    if (!cells) continue;
+    for (let i = 0; i < bars.length; i += 1) bars[i]![cells[i]!.grade] += 1;
   }
   return bars;
 };

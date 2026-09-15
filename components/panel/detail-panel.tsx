@@ -37,24 +37,18 @@ import { photoKey } from "@/lib/photos";
 import { isTraverse, ROAD_TYPE } from "@/lib/regions";
 import { ascentKey } from "@/lib/route-key";
 import {
-  bestPeriods,
+  cellAt,
   daysOf,
   indexBySlug,
   inputAt,
-  passGrades,
-  passCellNotes,
-  passStatus,
-  passVerdict,
   periodIndex,
   periodLabel,
+  reasonTexts,
   seasonText,
   signalsOf,
-  tourCellNotes,
-  tourGrades,
-  tourStatus,
   valleyTmax,
-  verdictReasons,
 } from "@/lib/status";
+import type { Years } from "@/lib/status";
 import type {
   ClimateYear,
   LatLon,
@@ -98,6 +92,8 @@ interface Props {
   climate: Record<string, ClimateYear>;
   /** Lowest ascent start per pass, for the derived valley heat. */
   valleys: Record<string, number>;
+  /** The 24 graded half-months of every pass and tour (`getYears`, lib/data.ts). */
+  years: Years;
   /** Commons photos per entity, keyed by `photoKey`. */
   photos: Photos;
   isFavorite: (kind: EntityKind, slug: string) => boolean;
@@ -207,11 +203,7 @@ const Nearby = ({
                 onClick={() => p.onSelect({ kind: "pass", slug: x.slug })}
               >
                 <StatusDot
-                  status={passStatus(
-                    x,
-                    p.period,
-                    inputAt(signalsOf(p, x.slug), p.period),
-                  )}
+                  status={cellAt(p.years.passes[x.slug], p.period).status}
                 />{" "}
                 {x.name}
                 <span className="text-muted-foreground">
@@ -266,10 +258,9 @@ const PassDetail = (props: Props & { pass: Pass }) => {
   const bucket = climate?.[periodIndex(props.period)];
   const signals = signalsOf(props, pass.slug);
   const input = inputAt(signals, props.period);
-  const { status, reasons: why } = passVerdict(pass, props.period, input);
-  const reasons = verdictReasons(pass, props.period, input);
-  const best = bestPeriods(pass, signals);
-  const grades = passGrades(pass, signals);
+  const year = props.years.passes[pass.slug];
+  const cell = cellAt(year, props.period);
+  const reasons = reasonTexts(pass, props.period, cell.reasons, input);
   const valley = bucket ? valleyTmax(pass, bucket, signals.valley) : null;
   const sun = sunTimes(pass.lat, pass.lon, periodDate(props.period));
 
@@ -290,15 +281,11 @@ const PassDetail = (props: Props & { pass: Pass }) => {
       {/* The "when" answer, boxed: verdict, why, the whole year, best time. */}
       <div className="bg-muted/40 border-border/70 mt-3 flex flex-col gap-2 rounded-lg border p-3">
         <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
-          <StatusBadge
-            status={status}
-            reason={why[0]}
-            best={grades[periodIndex(props.period)] === "best"}
-            period={props.period}
-          />
-          {best && (
+          <StatusBadge cell={cell} period={props.period} />
+          {year?.best && (
             <span className="text-muted-foreground text-xs">
-              beste Zeit {periodLabel(best[0])} – {periodLabel(best[1])}
+              beste Zeit {periodLabel(year.best[0])} –{" "}
+              {periodLabel(year.best[1])}
             </span>
           )}
         </div>
@@ -308,8 +295,7 @@ const PassDetail = (props: Props & { pass: Pass }) => {
           </p>
         )}
         <SeasonStrip
-          grades={grades}
-          notes={passCellNotes(pass, signals)}
+          cells={year?.cells ?? []}
           current={props.period}
           size="panel"
         />
@@ -500,17 +486,13 @@ const PassDetail = (props: Props & { pass: Pass }) => {
 const TourDetail = (props: Props & { tour: Tour }) => {
   const { tour } = props;
   const passIndex = indexBySlug(props.passes);
-  const status = tourStatus(tour, passIndex, props.period, props);
+  const year = props.years.tours[tour.slug];
+  const cell = cellAt(year, props.period);
   const limiting = tour.passes
     .map((s) => passIndex.get(s))
     .filter((p): p is Pass => Boolean(p))
     .filter(
-      (p) =>
-        passStatus(
-          p,
-          props.period,
-          inputAt(signalsOf(props, p.slug), props.period),
-        ) !== "open",
+      (p) => cellAt(props.years.passes[p.slug], props.period).status !== "open",
     );
 
   return (
@@ -527,15 +509,14 @@ const TourDetail = (props: Props & { tour: Tour }) => {
       </p>
 
       <div className="bg-muted/40 border-border/70 mt-3 flex flex-col gap-2 rounded-lg border p-3">
-        <StatusBadge status={status} period={props.period} />
+        <StatusBadge cell={cell} period={props.period} />
         {limiting.length > 0 && (
           <p className="text-muted-foreground text-xs leading-relaxed">
             Eingeschränkt durch {limiting.map((p) => p.name).join(", ")}.
           </p>
         )}
         <SeasonStrip
-          grades={tourGrades(tour, passIndex, props)}
-          notes={tourCellNotes(tour, passIndex, props)}
+          cells={year?.cells ?? []}
           current={props.period}
           size="panel"
         />
@@ -557,11 +538,7 @@ const TourDetail = (props: Props & { tour: Tour }) => {
                 onClick={() => props.onSelect({ kind: "pass", slug })}
               >
                 <StatusDot
-                  status={passStatus(
-                    p,
-                    props.period,
-                    inputAt(signalsOf(props, p.slug), props.period),
-                  )}
+                  status={cellAt(props.years.passes[slug], props.period).status}
                 />{" "}
                 {p.name}
                 <span className="text-muted-foreground tabular-nums">
