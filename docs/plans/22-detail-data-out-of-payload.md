@@ -16,14 +16,14 @@ Plan 01 took the route geometry out of the payload. What it left is now the
 majority of what remains. Measured per prop on the prerendered page
 (`JSON.stringify`, gzipped, September 2026):
 
-| Prop          |    raw |   gzip | read by                                 |
-| ------------- | -----: | -----: | --------------------------------------- |
-| **profiles**  | 828 KB | 297 KB | `DetailPanel`, one entity at a time     |
-| **photos**    | 664 KB |  77 KB | `DetailPanel`, one entity at a time     |
-| climate       | 302 KB |  42 KB | sidebar filters **and** the panel        |
-| passes        | 109 KB |  26 KB | everything                              |
-| years         | 403 KB |   9 KB | every row, every count                  |
-| rest          |      – |  17 KB | map, nearby, reach                      |
+| Prop         |    raw |   gzip | read by                             |
+| ------------ | -----: | -----: | ----------------------------------- |
+| **profiles** | 828 KB | 297 KB | `DetailPanel`, one entity at a time |
+| **photos**   | 664 KB |  77 KB | `DetailPanel`, one entity at a time |
+| climate      | 302 KB |  42 KB | sidebar filters **and** the panel   |
+| passes       | 109 KB |  26 KB | everything                          |
+| years        | 403 KB |   9 KB | every row, every count              |
+| rest         |      – |  17 KB | map, nearby, reach                  |
 
 The two heavy ones are read by exactly one component, about exactly one entity,
 after a click that most visitors make a handful of times. Shipping all of them
