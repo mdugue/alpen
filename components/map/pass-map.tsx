@@ -18,6 +18,7 @@ import {
 } from "maplibre-gl";
 
 import "maplibre-gl/dist/maplibre-gl.css";
+import type { CSSProperties } from "react";
 import { useEffect, useRef, useState } from "react";
 
 import { baseLayers, OVERLAYS, VECTOR_BASE } from "@/components/map/map-style";
@@ -1445,8 +1446,8 @@ export const PassMap = ({
       <div ref={container} className="size-full" />
 
       <div
-        style={{ left: insetLeft + 12 }}
-        className="absolute top-3 z-10 flex max-w-[calc(100%-4rem)] items-start gap-2 transition-[left] duration-200 motion-reduce:transition-none"
+        style={{ "--inset-left": `${insetLeft + 12}px` } as CSSProperties}
+        className="absolute top-3 left-(--inset-left) z-10 flex max-w-[calc(100%-4rem)] items-start gap-2 transition-[left] duration-200 motion-reduce:transition-none"
       >
         {children}
         {/*

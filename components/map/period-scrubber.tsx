@@ -1,6 +1,7 @@
 "use client";
 
 import { ChevronLeft, ChevronRight, RotateCcw } from "lucide-react";
+import type { CSSProperties } from "react";
 import { useRef } from "react";
 
 import { GradeLegend } from "@/components/grade-legend";
@@ -195,26 +196,47 @@ export const PeriodScrubber = ({
                   className="bg-foreground/45 absolute inset-x-px top-0 h-0.5 rounded-full"
                 />
               )}
+              {/* The bar's height and its four slices are data, so they travel
+                  as custom properties rather than as class names: a class per
+                  percentage is a class Tailwind cannot generate. */}
               <span
                 aria-hidden
-                className="flex flex-col justify-end overflow-hidden rounded-xs"
-                style={{ height: `${(barTotal(b) / max) * 100}%` }}
+                className="flex h-(--bar) flex-col justify-end overflow-hidden rounded-xs"
+                style={
+                  { "--bar": `${(barTotal(b) / max) * 100}%` } as CSSProperties
+                }
               >
                 <span
-                  className="bg-muted-foreground/25 shrink-0"
-                  style={{ flexBasis: `${percent(b.closed, barTotal(b))}%` }}
+                  className="bg-muted-foreground/25 shrink-0 basis-(--slice)"
+                  style={
+                    {
+                      "--slice": `${percent(b.closed, barTotal(b))}%`,
+                    } as CSSProperties
+                  }
                 />
                 <span
-                  className="bg-grade-limited shrink-0"
-                  style={{ flexBasis: `${percent(b.limited, barTotal(b))}%` }}
+                  className="bg-grade-limited shrink-0 basis-(--slice)"
+                  style={
+                    {
+                      "--slice": `${percent(b.limited, barTotal(b))}%`,
+                    } as CSSProperties
+                  }
                 />
                 <span
-                  className="bg-grade-good shrink-0"
-                  style={{ flexBasis: `${percent(b.good, barTotal(b))}%` }}
+                  className="bg-grade-good shrink-0 basis-(--slice)"
+                  style={
+                    {
+                      "--slice": `${percent(b.good, barTotal(b))}%`,
+                    } as CSSProperties
+                  }
                 />
                 <span
-                  className="bg-grade-best shrink-0"
-                  style={{ flexBasis: `${percent(b.best, barTotal(b))}%` }}
+                  className="bg-grade-best shrink-0 basis-(--slice)"
+                  style={
+                    {
+                      "--slice": `${percent(b.best, barTotal(b))}%`,
+                    } as CSSProperties
+                  }
                 />
               </span>
             </span>
@@ -223,11 +245,13 @@ export const PeriodScrubber = ({
               without reaching into its neighbours. */}
           <span
             aria-hidden
-            style={{
-              left: `${(index / PERIODS.length) * 100}%`,
-              width: `${100 / PERIODS.length}%`,
-            }}
-            className="ring-foreground pointer-events-none absolute -inset-y-1 rounded-md ring-2 ring-inset"
+            style={
+              {
+                "--stop": `${(index / PERIODS.length) * 100}%`,
+                "--stop-w": `${100 / PERIODS.length}%`,
+              } as CSSProperties
+            }
+            className="ring-foreground pointer-events-none absolute -inset-y-1 left-(--stop) w-(--stop-w) rounded-md ring-2 ring-inset"
           />
         </div>
       </div>
