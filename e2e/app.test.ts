@@ -469,31 +469,28 @@ test(
 );
 
 /**
- * Whether the elevation profile is in the document at the moment the camera
- * lands. The profiles, the photo slideshow and the climate chart are what the
- * panel costs most to draw, and they wait for the flight to be over (`flying`
- * in explorer.tsx) instead of taking frames away from it – so at `moveend`
- * there is no profile yet, and it appears in one of the commits after.
+ * Whether the detail panel is in the document at the moment the camera lands.
+ * The panel shows the selection the camera has *arrived* at (`selectionState`
+ * in explorer.tsx), so at `moveend` there is none yet, and it appears – whole,
+ * with its photo and its profiles – in one of the commits after.
  */
 const AT_MOVEEND = `(() => {
   const m = window.__alpen?.map;
   if (!m) return false;
   window.__atMoveend = [];
   m.on("moveend", () =>
-    window.__atMoveend.push(
-      !!document.querySelector('[aria-label^="Höhenprofil:"]'),
-    ),
+    window.__atMoveend.push(!!document.querySelector("#detail-title")),
   );
   return true;
 })()`;
 
 test(
-  "13 · the detail panel's heavy blocks wait for the camera to land",
+  "13 · the detail panel appears when the camera arrives, not while it flies",
   () =>
     // A camera far from the target, so the flight is a long one.
     withPage(
       app,
-      "defer-detail",
+      "detail-on-arrival",
       { hash: "#z=8&c=47.4,13.2", mobile: true },
       async (page) => {
         await page.waitFor("canvas.maplibregl-canvas");
@@ -513,20 +510,22 @@ test(
 
         expect(await page.evaluate<boolean>(AT_MOVEEND)).toBe(true);
         await page.click(GALIBIER);
-        // What the page already carries is there at once …
+        // The tap is answered at once on the map and in the hash …
+        await waitUntil(
+          () => page.hash().then((h) => h.includes("pass=col-du-galibier")),
+          "the selection in the hash",
+        );
+        // … and the panel follows when the camera has landed, with the photo
+        // and the profile already in it rather than filling in afterwards.
         await page.waitFor("#detail-title");
         expect(await page.text("#detail-title")).toBe("Col du Galibier");
-        // … and the profile follows once the camera has landed.
-        await waitUntil(
-          () => page.count('[aria-label^="Höhenprofil:"]').then((n) => n > 0),
-          "the profile drawn after the flight",
-        );
+        await page.waitFor('[aria-label^="Höhenprofil:"]');
         await waitUntil(settled, "the camera settled");
 
         const atMoveend = await page.evaluate<boolean[]>("window.__atMoveend");
         // The flight happened …
         expect(atMoveend.length).toBeGreaterThan(0);
-        // … and no profile was drawn before it was over.
+        // … and the panel was not on screen during any of it.
         expect(atMoveend).toEqual(atMoveend.map(() => false));
       },
     ),

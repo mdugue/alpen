@@ -1,7 +1,7 @@
 "use client";
 
 import { PanelLeftOpen } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useReducer, useRef, useState } from "react";
 
 import { PassMap } from "@/components/map/pass-map";
 import type { MapPass } from "@/components/map/pass-map";
@@ -100,6 +100,70 @@ const LIST_SNAPS = [80, 0.5, 0.85] as const;
 const DETAIL_SNAPS = [0.55, 0.92] as const;
 const [LIST_PEEK, LIST_HALF, LIST_FULL] = LIST_SNAPS;
 
+/**
+ * What is selected, and what the detail panel shows – four values that only
+ * ever change together, so they change in one move.
+ *
+ * They are not the same thing: `at` is where the camera is *going*, and
+ * everything that answers the tap at once follows it – the map's layers and
+ * feature state, the highlighted row, the URL hash. `shown` is where the
+ * camera *is*, and that is what the panel renders. A panel that opened with
+ * the flight filled in as it went – the file arrived, then the photo, and a
+ * block appearing under the one being read pushed it down. One arrival is
+ * calmer than three, and it also keeps the most expensive thing the app draws
+ * out of the animation's frames: measured on a phone-sized viewport, drawing
+ * the panel into a flight cost that flight about a third of its frame rate.
+ */
+interface SelectionState {
+  at: Selection | null;
+  shown: Selection | null;
+  /**
+   * What the sheet keeps showing while it slides away; without it the sheet
+   * would empty out the moment the selection is cleared.
+   */
+  last: Selection | null;
+  flying: boolean;
+}
+
+type SelectionAction =
+  | { kind: "select"; sel: Selection }
+  /** A shared link: its selection is part of the first paint, nothing to wait for. */
+  | { kind: "restore"; sel: Selection | null }
+  | { kind: "arrive" }
+  | { kind: "close" };
+
+const NO_SELECTION: SelectionState = {
+  at: null,
+  flying: false,
+  last: null,
+  shown: null,
+};
+
+const selectionState = (
+  s: SelectionState,
+  a: SelectionAction,
+): SelectionState => {
+  switch (a.kind) {
+    case "select": {
+      // `shown` stays: whatever the panel has is what it keeps until the
+      // camera lands – nothing at all, when no detail was open.
+      return { at: a.sel, flying: true, last: a.sel, shown: s.shown };
+    }
+    case "restore": {
+      return { at: a.sel, flying: false, last: a.sel ?? s.last, shown: a.sel };
+    }
+    case "arrive": {
+      // The map reports this on every `idle` as well as on `moveend`, so a
+      // state that is not waiting is returned unchanged rather than replaced –
+      // an equal object would re-render the whole page a few times a second.
+      return s.flying ? { ...s, flying: false, shown: s.at } : s;
+    }
+    default: {
+      return { ...s, at: null, flying: false, shown: null };
+    }
+  }
+};
+
 export const Explorer = ({
   passes,
   tours,
@@ -118,10 +182,8 @@ export const Explorer = ({
     ...DEFAULT_FILTERS,
     period: defaultPeriod,
   });
-  const [selection, setSelection] = useState<Selection | null>(null);
-  // What the detail sheet keeps showing while it slides away; without it the
-  // sheet would empty out the moment the selection is cleared.
-  const [lastSelection, setLastSelection] = useState<Selection | null>(null);
+  const [current, dispatch] = useReducer(selectionState, NO_SELECTION);
+  const selection = current.at;
   const [view, setView] = useState<MapView>(DEFAULT_VIEW);
   const [showPasses, setShowPasses] = useStored("alpenpaesse:showPasses", true);
   const [showTowns, setShowTowns] = useStored("alpenpaesse:showTowns", true);
@@ -137,20 +199,6 @@ export const Explorer = ({
   const [listSnap, setListSnap] = useState<number>(LIST_PEEK);
   const [detailSnap, setDetailSnap] = useState<number>(DETAIL_SNAPS[0]);
   const [scalesOpen, setScalesOpen] = useState(false);
-  /**
-   * Whether the camera is still on its way to what was just selected. The
-   * detail panel's three expensive blocks – the photo slideshow, the elevation
-   * profiles and the climate chart with recharts behind it – wait for it, so
-   * that mounting them does not take frames away from the flight. Measured on
-   * a phone-sized viewport, they cost about as much main-thread time again as
-   * the whole flight, and they land in its first frames.
-   *
-   * It is set here, in the click that starts the flight, and not from the
-   * map's own `movestart`: the panel renders in the same commit that the
-   * flight is started in, so a flag arriving with the map's event would be one
-   * commit too late – after the expensive render it is meant to hold back.
-   */
-  const [flying, setFlying] = useState(false);
   // Where the elevation-profile cursor sits on the road, and a fly-to asked
   // for by a click on it. Both live here because the map draws them and the
   // detail panel produces them.
@@ -188,9 +236,8 @@ export const Explorer = ({
       setView(hashView);
       if (h.view.lat !== undefined || h.view.zoom !== undefined)
         setRequestedView(hashView);
-      setSelection(h.selection);
+      dispatch({ kind: "restore", sel: h.selection });
       if (h.selection) {
-        setLastSelection(h.selection);
         if (h.selection.kind === "pass") setShowPasses(true);
         if (h.selection.kind === "tour")
           setHiddenTours((t) => t.filter((s) => s !== h.selection!.slug));
@@ -253,12 +300,13 @@ export const Explorer = ({
     favorite,
   }));
 
-  /** Selecting something also makes it visible and brings the detail up. */
+  /**
+   * Selecting something also makes it visible and brings the detail up – which
+   * the camera's arrival does, one flight later (`selectionState` above).
+   */
   const select = (sel: Selection) => {
-    setSelection(sel);
-    setLastSelection(sel);
+    dispatch({ kind: "select", sel });
     setProfileCursor(null);
-    setFlying(true);
     if (sel.kind === "pass") setShowPasses(true);
     if (sel.kind === "tour")
       setHiddenTours((h) => h.filter((s) => s !== sel.slug));
@@ -273,16 +321,16 @@ export const Explorer = ({
 
   /** Back to the list; focus returns to the row the detail came from. */
   const back = () => {
-    const sel = selection;
-    setSelection(null);
+    const closed = selection;
+    dispatch({ kind: "close" });
     setProfileCursor(null);
     if (isMobile) setListSnap(LIST_HALF);
     requestAnimationFrame(() => {
       const root = sidebarRoot.current;
       const row =
-        sel &&
+        closed &&
         root?.querySelector<HTMLElement>(
-          `[data-row="${sel.kind}:${sel.slug}"]`,
+          `[data-row="${closed.kind}:${closed.slug}"]`,
         );
       (row ?? root?.querySelector<HTMLElement>("input[type=search]"))?.focus({
         preventScroll: !row,
@@ -302,7 +350,6 @@ export const Explorer = ({
       climate={climate}
       valleys={valleys}
       years={years}
-      flying={flying}
       isFavorite={isFavorite}
       onToggleFavorite={toggleFavorite}
       onProfileCursor={setProfileCursor}
@@ -381,7 +428,7 @@ export const Explorer = ({
             selection={selection}
             onSelect={select}
             onViewChange={setView}
-            onCameraSettled={() => setFlying(false)}
+            onCameraSettled={() => dispatch({ kind: "arrive" })}
             profileCursor={profileCursor}
             profileZoom={profileZoom}
             requestedView={requestedView}
@@ -433,9 +480,9 @@ export const Explorer = ({
           </aside>
         )}
 
-        {!isMobile && selection && (
+        {!isMobile && current.shown && (
           <section
-            key={`${selection.kind}:${selection.slug}`}
+            key={`${current.shown.kind}:${current.shown.slug}`}
             aria-label="Details"
             style={{ left: detailLeft }}
             className={cn(
@@ -444,7 +491,7 @@ export const Explorer = ({
               PANEL,
             )}
           >
-            {detailFor(selection)}
+            {detailFor(current.shown)}
           </section>
         )}
 
@@ -468,13 +515,16 @@ export const Explorer = ({
             </MobileSheet>
             <MobileSheet
               label="Details"
-              open={selection !== null}
+              open={current.shown !== null}
               onClose={back}
               snapPoints={DETAIL_SNAPS}
               snap={detailSnap}
               onSnapChange={setDetailSnap}
             >
-              {lastSelection && detailFor(lastSelection)}
+              {/* `last` is what the sheet keeps showing while it slides away,
+                  once there is nothing to show any more. */}
+              {(current.shown ?? current.last) &&
+                detailFor((current.shown ?? current.last)!)}
             </MobileSheet>
           </>
         )}
