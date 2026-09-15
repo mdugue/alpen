@@ -29,6 +29,8 @@ const APP2 = segment(
   Array.from({ length: 4000 }, () => 0x55),
 );
 const COMMENT = segment(0xfe, [0x68, 0x69]);
+/** APP14: not metadata but the colour transform, so it stays. */
+const APP14 = segment(0xee, [0x41, 0x64, 0x6f, 0x62, 0x65]);
 
 const png = (...chunks: number[][]) =>
   new Uint8Array([
@@ -57,9 +59,9 @@ const chunk = (type: string, payload: number[]) => [
 
 describe("strip", () => {
   test("drops the application segments and the comment, keeps the picture", () => {
-    const full = jpeg(APP2, DQT, COMMENT);
+    const full = jpeg(APP2, DQT, COMMENT, APP14);
     const out = strip(full, "image/jpeg");
-    expect(out).toEqual(jpeg(DQT));
+    expect(out).toEqual(jpeg(DQT, APP14));
     // The 4 KB profile is what a 20-px rendering pays for nothing.
     expect(full.length - out.length).toBe(APP2.length + COMMENT.length);
   });

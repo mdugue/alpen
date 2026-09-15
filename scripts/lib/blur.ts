@@ -38,9 +38,16 @@ const join = (parts: Uint8Array[]): Uint8Array => {
   return out;
 };
 
-/** Segments a 20-px rendering does not need: APP0–APP15 and the comment. */
+/**
+ * Segments a 20-px rendering does not need: APP0–APP15 and the comment –
+ * except APP14, which is fourteen bytes and is not metadata at all. It names
+ * the colour transform of a CMYK or YCCK file, and a decoder that does not
+ * find it reads such an image inverted. Commons thumbnails are three-channel
+ * sRGB and carry none, so this keeps nothing in practice and rules out one
+ * way of quietly wrecking a picture.
+ */
 const JPEG_DROPPED = (marker: number) =>
-  (marker >= 0xe0 && marker <= 0xef) || marker === 0xfe;
+  (marker >= 0xe0 && marker <= 0xef && marker !== 0xee) || marker === 0xfe;
 
 /**
  * A JPEG without its application segments. Walks the marker list up to the
