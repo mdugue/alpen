@@ -315,9 +315,10 @@ export const Photo = z.strictObject({
   /** Author line as plain text. Empty only where Commons names none. */
   artist: z.string(),
   /**
-   * The same photo `BLUR_WIDTH` px wide as a data URI (`lib/photos.ts`), so
-   * the slide opens on its own colours rather than on an empty box. Optional:
-   * a thumbnail Commons declines to render costs a placeholder, not a photo.
+   * The same photo `BLUR_WIDTH` px wide as a data URI (`lib/photos.ts`), WebP
+   * where this Bun can encode one, so the slide opens on its own colours
+   * rather than on an empty box. Optional: a thumbnail Commons declines to
+   * render costs a placeholder, not a photo.
    */
   blur: z.string().startsWith("data:image/").optional(),
   /** Height of the thumbnail `src` points at. */

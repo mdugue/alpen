@@ -1,22 +1,25 @@
 /**
  * Turning a 20-px-wide Commons thumbnail into the data URI that `Photo.blur`
- * carries (`lib/photos.ts`).
+ * carries (`lib/photos.ts`). Two steps, and the order is the point.
  *
- * Wikimedia renders the placeholder; the only thing left to do is take out
- * what a 20-px image has no use for. The thumbnail of a wide-gamut photo
- * inherits its ICC profile, and that profile does not shrink with the picture:
- * one 20×9 JPEG in the data measures 30 750 bytes, of which 30 268 are an APP2
- * colour profile and 482 are the image. Stripped, it is the same 482 bytes as
- * every other placeholder. Dropping the profile means the browser reads the
- * blurred stand-in as sRGB, which can shift its colours slightly for the
- * fraction of a second it is on screen – against 40 KB in every detail file
- * that photo appears in, that is not a close call.
+ * **Strip.** Wikimedia renders the placeholder, but the thumbnail of a
+ * wide-gamut photo inherits its ICC profile, and that profile does not shrink
+ * with the picture: one 20×9 JPEG in the data measures 30 750 bytes, of which
+ * 30 268 are an APP2 colour profile and 482 are the image. This has to happen
+ * first, because re-encoding does not drop it – `Bun.Image` carries the
+ * profile into the WebP and the monster comes out 30 420 bytes. Dropping it
+ * means the browser reads the blurred stand-in as sRGB, which can shift its
+ * colours slightly for the fraction of a second it is on screen; against 40 KB
+ * in every detail file that photo appears in, that is not a close call.
  *
- * Marker and chunk surgery only, no decoding: the pixels are not touched, so
- * nothing here can change what the placeholder looks like beyond that.
+ * **Re-encode.** JPEG spends about 280 bytes on quantisation and Huffman
+ * tables before it has described a single pixel, which is most of a 20-px
+ * picture. WebP does not, and `Bun.Image` is in the runtime the build already
+ * uses – so the placeholders cost ~150 bytes instead of ~510, with no image
+ * library and no native dependency anywhere in the project.
  *
- * Pure functions, no I/O – separate from `scripts/build-photos.ts` for the
- * same reason `photo-rank.ts` is: the script does the talking.
+ * No I/O – separate from `scripts/build-photos.ts` for the same reason
+ * `photo-rank.ts` is: the script does the talking.
  */
 
 /**
@@ -27,6 +30,14 @@
  * what it did before there were placeholders.
  */
 export const BLUR_MAX_BYTES = 2048;
+
+/**
+ * Quality of the re-encoded placeholder. It is 20 px wide and about to be
+ * upscaled twentyfold, so the artefacts a low number buys are smaller than the
+ * blur they hide under; below 30 the file stops shrinking and only the colours
+ * drift.
+ */
+export const BLUR_QUALITY = 30;
 
 const join = (parts: Uint8Array[]): Uint8Array => {
   const out = new Uint8Array(parts.reduce((n, p) => n + p.length, 0));
@@ -125,12 +136,35 @@ export const strip = (bytes: Uint8Array, type: string): Uint8Array => {
 };
 
 /**
+ * The stripped picture as WebP, or as it came where this Bun cannot encode
+ * one. `Bun.Image` landed during 1.4 and the placeholder is cosmetic, so a
+ * runtime without it gets the JPEG rather than an error – both are valid
+ * `Photo.blur` values and the panel cannot tell them apart.
+ */
+const encode = async (
+  small: Uint8Array,
+  type: string,
+): Promise<{ bytes: Uint8Array; type: string }> => {
+  try {
+    const webp = await new Bun.Image(small)
+      .webp({ quality: BLUR_QUALITY })
+      .toBuffer();
+    return { bytes: new Uint8Array(webp), type: "image/webp" };
+  } catch {
+    return { bytes: small, type };
+  }
+};
+
+/**
  * The data URI for `Photo.blur`, or `null` where the rendering is too big to
  * be worth carrying. Never throws on odd input: a placeholder is cosmetic.
  */
-export const blurUri = (bytes: Uint8Array, type: string): string | null => {
-  if (!type.startsWith("image/")) return null;
-  const small = strip(bytes, type);
-  if (small.length > BLUR_MAX_BYTES) return null;
-  return `data:${type};base64,${Buffer.from(small).toString("base64")}`;
+export const blurUri = async (
+  raw: Uint8Array,
+  rawType: string,
+): Promise<string | null> => {
+  if (!rawType.startsWith("image/")) return null;
+  const { bytes, type } = await encode(strip(raw, rawType), rawType);
+  if (bytes.length > BLUR_MAX_BYTES) return null;
+  return `data:${type};base64,${Buffer.from(bytes).toString("base64")}`;
 };

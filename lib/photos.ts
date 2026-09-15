@@ -86,10 +86,11 @@ export const photoSrcSet = (photo: {
 
 /**
  * Width of the placeholder baked into `Photo.blur`: the smallest width
- * Wikimedia renders, around 500 bytes of JPEG, which is ~700 as base64. Big
- * enough that the panel opens on the photo's own colours and shapes instead of
- * an empty box, small enough to travel inside the detail file it belongs to –
- * a placeholder that needs a request of its own places second in the race it
- * was supposed to win.
+ * Wikimedia renders. Re-encoded as WebP (`scripts/lib/blur.ts`) it is around
+ * 150 bytes, some 200 as base64 – big enough that the panel opens on the
+ * photo's own colours and shapes instead of an empty box, small enough to
+ * travel inside the detail file it belongs to. That is the whole point: a
+ * placeholder that needs a request of its own places second in the race it
+ * was supposed to win, so it is precomputed and never generated on demand.
  */
 export const BLUR_WIDTH = 20;

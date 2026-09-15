@@ -57,6 +57,17 @@ const chunk = (type: string, payload: number[]) => [
   0,
 ];
 
+/**
+ * A real 20x11 Commons rendering – the encoder needs pixels, and the sizes
+ * this file asserts only mean something against a genuine picture.
+ */
+const THUMB = new Uint8Array(
+  Buffer.from(
+    "/9j/2wBDAAQDAwQDAwQEAwQFBAQFBgoHBgYGBg0JCggKDw0QEA8NDw4RExgUERIXEg4PFRwVFxkZGxsbEBQdHx0aHxgaGxr/2wBDAQQFBQYFBgwHBwwaEQ8RGhoaGhoaGhoaGhoaGhoaGhoaGhoaGhoaGhoaGhoaGhoaGhoaGhoaGhoaGhoaGhoaGhr/wAARCAALABQDASIAAhEBAxEB/8QAGQAAAgMBAAAAAAAAAAAAAAAAAAMEBgcI/8QAJRAAAQQCAgICAgMAAAAAAAAAAQIDBREEBgcSACExQRMUImGB/8QAFQEBAQAAAAAAAAAAAAAAAAAAAwX/xAAeEQABBAIDAQAAAAAAAAAAAAABAAIDBBExISJRwf/aAAwDAQACEQMRAD8Ao8pwxNQkDkTmzYzkJGtOoZp5sKyFLUaFMdgoJ+f5Kr49X43Wxx7DodGW1m5eQ40wlSZaBxMxDbqge3VTbinOt9SgdRdUr7udonH+sznL+HGyMNiqxH8t4uhoFlSrdUCCtBCqr1V151ZP8R6ElZx0adAobaJZR1jmkqCB7A7BN3ZJu78s2rlqwQMho8H1ToIIIRok+lYho/DEDyhEPzsXsUhOI/acYcyX484J7JohKWUBKUJCVJoCx/f0DxmxabG6fL5GDqj0tC4Th/MrHwprMZbLivRV1S6BdAD/AAeHhNrgty48pDKc9dL/2Q==",
+    "base64",
+  ),
+);
+
 describe("strip", () => {
   test("drops the application segments and the comment, keeps the picture", () => {
     const full = jpeg(APP2, DQT, COMMENT, APP14);
@@ -89,23 +100,44 @@ describe("strip", () => {
 });
 
 describe("blurUri", () => {
-  test("is the stripped picture as a data URI of its own type", () => {
-    const uri = blurUri(jpeg(APP2, DQT), "image/jpeg");
-    expect(uri).toStartWith("data:image/jpeg;base64,");
-    expect(Buffer.from(uri?.split(",")[1] ?? "", "base64").length).toBe(
-      jpeg(DQT).length,
-    );
+  test("re-encodes to WebP, which is what makes it small", async () => {
+    const uri = await blurUri(THUMB, "image/jpeg");
+    expect(uri).toStartWith("data:image/webp;base64,");
+    const out = new Uint8Array(Buffer.from(uri?.split(",")[1] ?? "", "base64"));
+    // JPEG spends ~280 bytes on its tables before describing a pixel, which
+    // is most of a picture this size; WebP does not.
+    expect(out.length).toBeLessThan(THUMB.length / 2);
+    expect(await new Bun.Image(out).metadata()).toMatchObject({
+      format: "webp",
+      height: 11,
+      width: 20,
+    });
   });
 
-  test("refuses what is still too big to carry after stripping", () => {
+  test("strips before it encodes, or the profile rides along", async () => {
+    const profile = segment(
+      0xe2,
+      Array.from({ length: 4000 }, () => 0x55),
+    );
+    const fat = new Uint8Array([
+      ...THUMB.subarray(0, 2),
+      ...profile,
+      ...THUMB.subarray(2),
+    ]);
+    const withProfile = await blurUri(fat, "image/jpeg");
+    const without = await blurUri(THUMB, "image/jpeg");
+    expect(withProfile?.length).toBe(without?.length);
+  });
+
+  test("refuses what is still too big to carry", async () => {
     const fat = segment(
       0xdb,
       Array.from({ length: BLUR_MAX_BYTES }, () => 1),
     );
-    expect(blurUri(jpeg(fat), "image/jpeg")).toBeNull();
+    expect(await blurUri(jpeg(fat), "image/jpeg")).toBeNull();
   });
 
-  test("refuses an answer that is not an image at all", () => {
-    expect(blurUri(jpeg(DQT), "text/html")).toBeNull();
+  test("refuses an answer that is not an image at all", async () => {
+    expect(await blurUri(THUMB, "text/html")).toBeNull();
   });
 });

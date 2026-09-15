@@ -267,7 +267,12 @@ friends do that better and the app links out to them.
   background, so a slide opens on its own colours instead of an empty box and
   the browser's upscaling is the blur. It travels inside the entity's detail
   file, because a placeholder that needs a request of its own loses the race
-  it exists to win. Attribution is not decoration: every slide carries author
+  it exists to win; generating one on demand and caching it would lose the
+  same race for every first visitor to a pass. No image library is involved
+  either way: Wikimedia renders the 20 px version, `scripts/lib/blur.ts`
+  strips the metadata it inherits – a wide-gamut photo's ICC profile is 30 KB
+  around a 480-byte picture, and re-encoding does not drop it – and
+  `Bun.Image` turns what is left into ~150 bytes of WebP. Attribution is not decoration: every slide carries author
   and licence, baked into the slide rather than derived from the carousel's
   index, so it cannot drift out of sync with what is on screen.
 - **A sidebar section adds no surface.** The three collapsible lists

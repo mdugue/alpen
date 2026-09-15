@@ -204,7 +204,7 @@ const blurFor = async (src: string): Promise<string | undefined> => {
   try {
     const res = await request(new URL(url));
     const type = res.headers.get("content-type")?.split(";")[0] ?? "";
-    blur = blurUri(new Uint8Array(await res.arrayBuffer()), type);
+    blur = await blurUri(new Uint8Array(await res.arrayBuffer()), type);
     if (!blur) console.warn(`  ohne Vorschau: ${url} (${type}, zu groß)`);
   } catch (error) {
     // A missing placeholder is a cosmetic loss, never a reason to drop a photo
@@ -215,10 +215,28 @@ const blurFor = async (src: string): Promise<string | undefined> => {
   return blur ?? undefined;
 };
 
-/** Fills in what has none – new photos and everything from before this field. */
+/**
+ * The placeholder of one photo, from whatever is cheapest. A placeholder that
+ * is already WebP is done. One in another format was written before the
+ * re-encoding step existed and holds the picture already – it is upgraded from
+ * its own bytes, which costs no request at all. Only a photo with none has to
+ * ask Wikimedia.
+ */
+const WEBP_URI = "data:image/webp;";
+
 const fillBlur = async (photos: Photo[]) => {
   for (const photo of photos) {
-    if (photo.blur && !REBLUR) continue;
+    if (photo.blur?.startsWith(WEBP_URI) && !REBLUR) continue;
+    if (photo.blur && !REBLUR) {
+      const [head, body] = photo.blur.split(",");
+      const type = head?.slice("data:".length, head.indexOf(";")) ?? "";
+      const again = await blurUri(
+        new Uint8Array(Buffer.from(body ?? "", "base64")),
+        type,
+      );
+      if (again) photo.blur = again;
+      continue;
+    }
     const blur = await blurFor(photo.src);
     if (blur) photo.blur = blur;
   }
