@@ -568,13 +568,17 @@ const ladderRank = (reasons: StatusReason[]): number =>
   reasons[0] ? REASON_ORDER.indexOf(reasons[0]) : REASON_ORDER.length;
 
 /**
- * Nothing holds this half-month back: what a tour reads when none of its
- * passes are known, and what `cellAt` answers for a slug the year has never
- * heard of. Both are data errors `data:check` already rejects, so this is a
- * type question rather than a state the app shows.
+ * Nothing known holds this half-month back: the identity of the worst-of
+ * reduction in `tourYear`, and what `cellAt` answers for a slug the year has
+ * never heard of. Both are data errors `data:check` already rejects, so this
+ * is a type question rather than a state the app shows.
+ *
+ * "gut", not "beste Zeit": the best window is a property of the year, and a
+ * cell standing in for something unknown is in no position to claim it. An
+ * absent pass would otherwise render as the strongest verdict the app has.
  */
-const UNHELD: YearCell = {
-  grade: "best",
+const UNCONSTRAINED: YearCell = {
+  grade: "good",
   reasons: [],
   snowy: false,
   status: "open",
@@ -595,10 +599,6 @@ const UNHELD: YearCell = {
  * only where all of its passes are. Among equal grades the pass whose first
  * reason ranks earliest on the ladder wins.
  */
-/** The cell of one half-month, see `UNHELD` for a slug the year does not know. */
-export const cellAt = (year: Year | undefined, t: Period): YearCell =>
-  year?.cells[periodIndex(t)] ?? UNHELD;
-
 export const tourYear = (tour: Tour, passes: Record<string, Year>): Year => {
   const own = tour.passes
     .map((slug) => passes[slug])
@@ -619,13 +619,32 @@ export const tourYear = (tour: Tour, passes: Record<string, Year>): Year => {
       )
         worst = cell;
     }
-    return worst ?? UNHELD;
+    return worst ?? UNCONSTRAINED;
   });
-  // Read back out of the cells rather than computed the way a pass's is: the
-  // minimum over the member grades has already worked out where every pass is
-  // at its best, which is exactly where the tour is.
-  return { best: windowOf(cells.map((c) => c.grade === "best")), cells };
+  // A member's grade is "best" only inside that member's own best window, so
+  // the minimum is "best" exactly where every pass is – which is the tour's
+  // candidate window. It still has to clear the same two bars a pass's does:
+  // at least two half-months, and only the longest run of them. So the window
+  // is taken first and the cells are graded from it, the way `passYear` does
+  // it; computing the cells first and reading a window back out of them is two
+  // rules for one thing, and they disagree on a lone best half-month – the
+  // cell would paint "beste Zeit" while the year reported none.
+  const best = windowOf(cells.map((c) => c.grade === "best"));
+  return {
+    best,
+    cells: cells.map((cell, i) => ({
+      ...cell,
+      grade: gradeOf(cell.status, best !== null && inRange(i, best)),
+    })),
+  };
 };
+
+/**
+ * The cell of one half-month; `UNCONSTRAINED` for a slug the year does not
+ * know, so a caller never has to choose a verdict for missing data itself.
+ */
+export const cellAt = (year: Year | undefined, t: Period): YearCell =>
+  year?.cells[periodIndex(t)] ?? UNCONSTRAINED;
 /**
  * One sentence for the 24 cells of a season strip, so screen readers get the
  * same overview the colours give: "beste Zeit Anfang Juli bis Ende September,

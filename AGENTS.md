@@ -145,9 +145,11 @@ friends do that better and the app links out to them.
   stay liftable. The difficulty cells are the one exception to "what happens if
   I press this": a cell moves a window rather than replacing it, so its number
   is how many roads sit at that level. Counting has its own path rather than
-  going through `buildPassRows`, which also grades every pass for all 24
-  half-months for the season strip – about forty times the work, once per option,
-  on every keystroke. And when a combination does run empty, the count line names
+  going through `buildPassRows`: a count needs neither the row objects nor the
+  season strip hanging off them, and the panel asks it once per option on every
+  keystroke. Since plan 15 the saving is allocation rather than arithmetic – both
+  paths read the grades from the precomputed year – but it is still 201 rows
+  built per option to produce one number. And when a combination does run empty, the count line names
   the single filter that would bring the most back rather than saying nothing.
   What is filtered away is written down outside the panel too: `AppliedFilters`
   turns `appliedFilters()` in `lib/filter-summary.ts` into one removable chip

@@ -134,10 +134,10 @@ const tourMatches = (
 
 /**
  * How many passes a filter set keeps. `buildPassRows` would answer the same
- * question, but it also carries the 24 cells of every surviving pass for the
- * season strip, which a count has no use for; a filter panel asks this once
- * per option on every keystroke. Counting is therefore its own path over the
- * same two predicates.
+ * question, but it builds a row per survivor – the favourite flag, the season
+ * strip, the word next to the dot – and a count uses none of it; the filter
+ * panel asks this once per option on every keystroke. Counting is therefore
+ * its own path over the same two predicates.
  */
 const countPasses = (
   passes: Pass[],
@@ -158,6 +158,13 @@ const countPasses = (
   }
   return n;
 };
+
+/**
+ * The word next to the dot. Only a limited cell carries one: "oft gesperrt"
+ * already says why it is closed, and an open cell has nothing to add.
+ */
+const reasonOf = (cell: YearCell): StatusReason | null =>
+  cell.status === "risky" ? (cell.reasons[0] ?? null) : null;
 
 export interface PassRow {
   pass: Pass;
@@ -190,12 +197,13 @@ export const buildPassRows = (
     const input = inputAt(signalsOf(signals, pass.slug), filters.period);
     if (!passMatches(pass, filters, q, input)) continue;
     const year = years.passes[pass.slug];
-    const cell = year?.cells[i];
-    if (!year || !cell || !statusMatches(cell.status, filters.status)) continue;
+    if (!year) continue;
+    const cell = year.cells[i];
+    if (!cell || !statusMatches(cell.status, filters.status)) continue;
     rows.push({
       favorite: isFavorite("pass", pass.slug),
       pass,
-      reason: cell.status === "risky" ? (cell.reasons[0] ?? null) : null,
+      reason: reasonOf(cell),
       season: year.cells,
       status: cell.status,
     });
@@ -228,11 +236,12 @@ export const buildTourRows = (
     if (q.favoritesOnly && !favorite) continue;
     if (!tourMatches(tour, passes, filters, q, signals)) continue;
     const year = years.tours[tour.slug];
-    const cell = year?.cells[i];
-    if (!year || !cell || !statusMatches(cell.status, filters.status)) continue;
+    if (!year) continue;
+    const cell = year.cells[i];
+    if (!cell || !statusMatches(cell.status, filters.status)) continue;
     rows.push({
       favorite,
-      reason: cell.status === "risky" ? (cell.reasons[0] ?? null) : null,
+      reason: reasonOf(cell),
       season: year.cells,
       status: cell.status,
       tour,

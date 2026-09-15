@@ -84,6 +84,13 @@ const bucket = (over: Partial<ClimateBucket> = {}): ClimateBucket => ({
   ...over,
 });
 
+/** Whether half-month `i` lies in a circular window; mirrors `inRange`. */
+const inWindow = (i: number, [from, to]: [Period, Period]): boolean => {
+  const a = periodIndex(from);
+  const b = periodIndex(to);
+  return a <= b ? i >= a && i <= b : i >= a || i <= b;
+};
+
 /** A "gut" cell, overridden per case. */
 const cell = (over: Partial<YearCell> = {}): YearCell => ({
   grade: "good",
@@ -598,6 +605,67 @@ describe("tourYear", () => {
   test("the climate map reaches the passes of a tour", () => {
     expect(at(["a"], 8).status).toBe("open");
     expect(at(["a"], 8, snowyYears).status).toBe("risky");
+  });
+
+  // A tour's best window has to clear the same two bars a pass's does, and its
+  // cells have to agree with it. Reading the window back out of the cells
+  // instead of grading the cells from it is two rules for one thing, and they
+  // part company on a lone best half-month: the cell paints "beste Zeit" while
+  // the year reports none. Two of the nine real tours hit exactly that.
+  test("a lone best half-month is not a best time, for a tour either", () => {
+    // Two windows that overlap in a single half-month, which is what it takes:
+    // each member's own window already had to be two long, so a shorter
+    // intersection is the only way to reach one.
+    const barelyOverlapping = [
+      pass({
+        elevation: 1000,
+        lat: 46.5,
+        season: { closes: 4.5, opens: 1 },
+        slug: "a",
+      }),
+      pass({
+        elevation: 1000,
+        lat: 46.5,
+        season: { closes: 5, opens: 3 },
+        slug: "b",
+      }),
+    ];
+    const narrow = yearsOf(barelyOverlapping);
+    // Both are at their best in that one half-month, so the minimum over the
+    // member grades – all the old rule looked at – would have painted it.
+    const shared = PERIODS.filter(
+      (_, i) =>
+        narrow.a!.cells[i]!.grade === "best" &&
+        narrow.b!.cells[i]!.grade === "best",
+    );
+    expect(shared).toHaveLength(1);
+
+    const year = tourYear(tour(["a", "b"]), narrow);
+    expect(year.cells.filter((c) => c.grade === "best")).toHaveLength(0);
+    expect(year.best).toBeNull();
+  });
+
+  test("a tour's cells and its best window never disagree", () => {
+    const overlapping = [
+      pass({
+        elevation: 1000,
+        lat: 46.5,
+        season: { closes: 11, opens: 5 },
+        slug: "a",
+      }),
+      pass({
+        elevation: 1000,
+        lat: 46.5,
+        season: { closes: 10, opens: 6 },
+        slug: "b",
+      }),
+    ];
+    const year = tourYear(tour(["a", "b"]), yearsOf(overlapping));
+    expect(year.best).not.toBeNull();
+    for (const [i, cellOf] of year.cells.entries())
+      expect(cellOf.grade === "best", periodLabel(periodAt(i))).toBe(
+        inWindow(i, year.best!),
+      );
   });
 });
 

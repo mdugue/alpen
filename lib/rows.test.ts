@@ -12,6 +12,7 @@ import {
   statusHistogram,
 } from "@/lib/rows";
 import {
+  cellAt,
   indexBySlug,
   passYear,
   PERIODS,
@@ -222,12 +223,39 @@ describe("buildPassRows", () => {
   // The acceptance criterion of plan 15: one `Year` per pass, not one per
   // reader. Identity, not equality – two builders that agree today but grade
   // separately would drift the moment one of them changes.
-  test("the row and the histogram read one and the same year", () => {
-    const [row] = buildPassRows([passes[1]!], years, filters(), never);
-    expect(row!.season).toBe(years.passes.mittel!.cells);
-    const bars = statusHistogram([passes[1]!], years, filters(), never);
-    for (const [i, bar] of bars.entries())
-      expect(bar[years.passes.mittel!.cells[i]!.grade]).toBe(1);
+  test("the row, the histogram and the strip read one and the same year", () => {
+    // A value only the `Year` can supply: planted in the year, then looked for
+    // in each reader. Equality would pass for a reader that graded the pass
+    // again and happened to agree; only a value the heuristic would never
+    // produce tells the two apart.
+    const own = yearsOf([passes[1]!]);
+    const { cells } = own.passes.mittel!;
+    cells[0] = {
+      grade: "limited",
+      reasons: ["heat"],
+      snowy: true,
+      status: "risky",
+    };
+
+    const [row] = buildPassRows(
+      [passes[1]!],
+      own,
+      filters({ period: 1 }),
+      never,
+    );
+    expect(row!.status).toBe("risky");
+    expect(row!.reason).toBe("heat");
+    // The strip is handed `row.season` unchanged (`PassList` → `SeasonStrip`),
+    // so the row and the strip are the same 24 cells by construction, not by
+    // two builders agreeing.
+    expect(row!.season).toBe(cells);
+    expect(row!.season[0]!.grade).toBe("limited");
+
+    const bars = statusHistogram([passes[1]!], own, filters(), never);
+    expect(bars[0]).toMatchObject({ best: 0, good: 0, limited: 1 });
+
+    // And the detail panel, which reads the cell through `cellAt`.
+    expect(cellAt(own.passes.mittel, 1)).toBe(cells[0]);
   });
 });
 

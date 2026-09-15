@@ -166,8 +166,21 @@ series is computed once on the server.
 | the same plus one `facetCount` per chip (24) | 20 467 | 0     |
 
 The server runs 4 824 verdicts once at prerender (201 passes × 24
-half-months). Measured with a counter in `passVerdict` and a script that calls
-what `Explorer` calls per render; see the PR.
+half-months).
+
+To re-run it, put a counter at the top of `passVerdict` in `lib/status.ts`:
+
+```ts
+globalThis.__verdicts = (globalThis.__verdicts ?? 0) + 1;
+```
+
+then, in a throwaway script under `scripts/`, call exactly what `Explorer`
+calls per render over the real `passes.json` and `climate.json` –
+`buildPassRows`, `buildTourRows`, `buildTownRows`, `statusHistogram`, and
+`facetCount` once per filter chip – resetting the counter after the years are
+built so the server's share is not counted with the client's. The "before"
+column is the same script against `main`, where the builders take no `years`
+argument (`git worktree add … origin/main`).
 
 ## Risks and open questions
 
@@ -190,12 +203,26 @@ what `Explorer` calls per render; see the PR.
 ## What it changed for a reader
 
 Every one of the 201 passes comes out bit-identical to before: over all 5 040
-cells, **zero** differences in status, grade, reasons or the best window, for
-passes and tours alike (dumped from both branches and diffed; the 24-status
-snapshot in `status.test.ts` also passes unchanged).
+cells, **zero** differences in status, reasons, grade or the best window
+(dumped from both branches and diffed; the 24-status snapshot in
+`status.test.ts` also passes unchanged). No pass cell moves.
 
-Seven **tour** cells changed, in one place only: the sentence in the strip's
-popover. That is the disagreement this plan was written to remove, caught in
+Nine **tour** cells changed, each time because two rules that used to answer
+for one cell now answer as one.
+
+**Two of them change colour.** A pass's best window has to last at least two
+half-months – "nothing worth calling a best time" – and its cells are graded
+from that window. A tour had no window of its own: its grades were the minimum
+over its members, so where two members' best windows overlapped in a single
+half-month, that cell was painted "beste Zeit" although the same rule applied
+to a pass would have refused. `tourYear` now takes the window first and grades
+from it, exactly as `passYear` does, which drops that lone cell to "gut" on the
+Route des Grandes Alpes and the Gavia–Mortirolo-Runde. It also repairs an
+invariant the first cut of this plan broke: both tours carried `best: null`
+while a cell of theirs read "beste Zeit", and plans 12, 16 and 17 are all
+written to read `Year.best`.
+
+**The other seven change the sentence in the strip's popover.** That is the disagreement this plan was written to remove, caught in
 the act. A tour cell used to be assembled from two rules – the word next to the
 dot came from `tourVerdict`, which picks the member pass whose first reason
 ranks earliest on the ladder, while the strip's note came from
@@ -205,7 +232,9 @@ tour cell could read "eingeschränkt: Randzeit" with a popover explaining the
 snowfall of a different pass, and which pass that was depended on the order of
 an array. `tourYear` takes one cell whole, so the note now names the same
 caveat the word does. `status`, `grade` and the strip's colours are untouched,
-which is why the non-goal "no change to the strip's look" holds.
+which is why the non-goal "no change to the strip's look" holds: the two
+recoloured cells are the strip obeying a rule `docs/scales.md` already states,
+not a change to what the strip means.
 
 ## What it changed beyond the plan
 
