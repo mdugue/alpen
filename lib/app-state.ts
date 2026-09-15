@@ -9,7 +9,7 @@ import {
 import { useCallback, useSyncExternalStore } from "react";
 
 import { ROAD_TAGS, ROAD_TYPES } from "@/lib/regions";
-import { isPeriod } from "@/lib/status";
+import { isPeriod, STATUS_ORDER } from "@/lib/status";
 import type { Period, RoadTag, RoadType, Status } from "@/lib/types";
 
 export type EntityKind = "pass" | "tour" | "town";
@@ -18,7 +18,8 @@ export interface Selection {
   slug: string;
 }
 
-export const ALL_STATUS: Status[] = ["open", "risky", "closed"];
+/** All three selected = no status filter, see `Filters.status`. */
+export const ALL_STATUS: Status[] = STATUS_ORDER;
 /** All five road types selected = no type filter, see `Filters.types`. */
 export const ALL_TYPES: RoadType[] = [...ROAD_TYPES];
 /** Stable empty snapshot for the tag filter (`Filters.tags`). */

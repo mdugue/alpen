@@ -80,6 +80,28 @@ export const STATUS_LABEL: Record<Status, string> = {
 };
 
 /**
+ * The three statuses, best first – the one list the filter, the share image
+ * and the calibration script iterate. `lib/schema.ts` carries the same triple
+ * as a zod enum because it is the source of the type, but it is server-only
+ * (zod must not reach the client), so this literal cannot be derived from it.
+ */
+export const STATUS_ORDER: Status[] = ["open", "risky", "closed"];
+
+/**
+ * Higher is worse: what the status sort orders by and what `worstStatus`
+ * compares. Note that `GRADE_RANK` below runs the other way (higher is
+ * better) because `tourYear` picks the minimum grade; the two directions are
+ * deliberate and live next to each other so neither can be read for the
+ * other.
+ */
+export const statusRank = (status: Status): number =>
+  STATUS_ORDER.indexOf(status);
+
+/** The worse of two statuses – a tour is only as rideable as its worst pass. */
+export const worstStatus = (a: Status, b: Status): Status =>
+  statusRank(b) > statusRank(a) ? b : a;
+
+/**
  * The display scale of the strip and the histogram: `open` split into the
  * pass's best window and the rest. Not data, so not in lib/schema.ts – the
  * map, the filter and the hash stay three-valued (docs/plans/13-summer-axis.md).

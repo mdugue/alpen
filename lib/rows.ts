@@ -12,6 +12,7 @@ import {
   periodIndex,
   PERIODS,
   signalsOf,
+  statusRank,
   valleyTmax,
 } from "@/lib/status";
 import type {
@@ -24,6 +25,7 @@ import type {
 } from "@/lib/status";
 import type { Pass, Period, Status, Tour, Town } from "@/lib/types";
 
+export { PASS_SORTS } from "@/lib/app-state";
 export type { PassSort } from "@/lib/app-state";
 
 /**
@@ -350,17 +352,6 @@ export const statusHistogram = (
   return bars;
 };
 
-/** The sort menu, in the order it is offered. */
-export const PASS_SORTS: readonly PassSort[] = [
-  "elevation",
-  "name",
-  "status",
-  "beauty",
-  "fame",
-  "difficulty",
-  "traffic",
-];
-
 export const PASS_SORT_LABEL: Record<PassSort, string> = {
   beauty: "Schönheit",
   difficulty: "Schwierigkeit",
@@ -370,8 +361,6 @@ export const PASS_SORT_LABEL: Record<PassSort, string> = {
   status: "Status",
   traffic: "Verkehr",
 };
-
-const STATUS_RANK: Record<Status, number> = { closed: 2, open: 0, risky: 1 };
 
 const byName = (a: PassRow, b: PassRow) =>
   a.pass.name.localeCompare(b.pass.name, "de");
@@ -385,7 +374,7 @@ export const sortPassRows = (rows: PassRow[], sort: PassSort): PassRow[] => {
     fame: (a, b) => b.pass.fame - a.pass.fame,
     name: byName,
     status: (a, b) =>
-      STATUS_RANK[a.status] - STATUS_RANK[b.status] ||
+      statusRank(a.status) - statusRank(b.status) ||
       b.pass.elevation - a.pass.elevation,
     traffic: (a, b) => a.pass.traffic - b.pass.traffic,
   };

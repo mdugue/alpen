@@ -38,6 +38,7 @@ import {
   signalsOf,
   SNOW_BEST_PCT,
   STATUS_LABEL,
+  STATUS_ORDER,
   valleyTmax,
   WET_LIMITED_PCT,
 } from "../lib/status";
@@ -140,7 +141,7 @@ const cohortTable = (title: string, pick: (p: Pair) => Status) => {
     "| Verdict | n | mean snow-day share | share with snow ≥ 20 % of days |",
   );
   console.log("| --- | --- | --- | --- |");
-  for (const status of ["open", "risky", "closed"] as Status[]) {
+  for (const status of STATUS_ORDER) {
     const c = cohorts[status];
     const mean = c.n ? Math.round(c.snowSum / c.n) : 0;
     const high = c.n ? Math.round((c.snowHigh / c.n) * 100) : 0;

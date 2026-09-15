@@ -58,6 +58,7 @@ import { PALETTE } from "@/lib/palette";
 import type { Scheme } from "@/lib/palette";
 import { roadTypeWord, TAG_LABEL } from "@/lib/regions";
 import { ascentKey } from "@/lib/route-key";
+import { STATUS_ORDER } from "@/lib/status";
 import { tagIconSvg } from "@/lib/tag-icons";
 import type { LatLon, Pass, Status, Tag, Tour, Town } from "@/lib/types";
 import { cn, fmtUnit, MAP_CLUSTER, MAP_TOOL, PRESSED } from "@/lib/utils";
@@ -353,7 +354,7 @@ const addIcons = (map: MLMap, c: ReturnType<typeof readColors>) => {
     if (map.hasImage(id)) map.updateImage(id, data);
     else map.addImage(id, data, { pixelRatio: 2 });
   };
-  for (const k of ["open", "risky", "closed"] as const) {
+  for (const k of STATUS_ORDER) {
     add(`star-${k}-0`, star(c[k], c.paper));
     add(`star-${k}-1`, star(c[k], c.ink));
   }
