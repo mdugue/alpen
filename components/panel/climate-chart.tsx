@@ -11,6 +11,7 @@ import {
   YAxis,
 } from "recharts";
 
+import { CHART_HEIGHT } from "@/components/panel/chart-size";
 import {
   ChartContainer,
   ChartLegend,
@@ -21,6 +22,7 @@ import {
 import type { ChartConfig } from "@/components/ui/chart";
 import { MONTHS, periodLabel, PERIODS } from "@/lib/status";
 import type { ClimateYear, Period } from "@/lib/types";
+import { cn } from "@/lib/utils";
 
 /**
  * The pass's own climate over the year: the share of days with frost (band)
@@ -76,7 +78,7 @@ export const ClimateChart = ({
   return (
     <ChartContainer
       config={CHART_CONFIG}
-      className="mt-3 aspect-auto h-44 w-full"
+      className={cn("mt-3 aspect-auto w-full", CHART_HEIGHT)}
     >
       <ComposedChart data={data} margin={{ left: 0, right: 0, top: 4 }}>
         <CartesianGrid vertical={false} />

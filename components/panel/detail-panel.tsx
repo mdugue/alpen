@@ -4,6 +4,7 @@ import { ExternalLink, Star, X } from "lucide-react";
 import dynamic from "next/dynamic";
 import { useEffect, useRef } from "react";
 
+import { CHART_HEIGHT } from "@/components/panel/chart-size";
 import {
   ElevationProfile,
   PROFILE_ASPECT,
@@ -73,10 +74,24 @@ import { cn, fmt, fmtUnit, ICON_TOGGLE, TOUCH_ICON } from "@/lib/utils";
  * the only user of it and only appears once a pass is selected, so it stays
  * in its own chunk.
  */
-const ClimateChart = dynamic(async () => {
-  const m = await import("@/components/panel/climate-chart");
-  return m.ClimateChart;
-});
+const ClimateChart = dynamic(
+  async () => {
+    const m = await import("@/components/panel/climate-chart");
+    return m.ClimateChart;
+  },
+  {
+    // The chunk arrives a moment after the panel, and without a placeholder of
+    // the chart's own height everything below it jumps when it does.
+    loading: () => (
+      <Skeleton
+        aria-busy
+        aria-label="Klimadiagramm wird geladen"
+        className={cn("mt-3 w-full", CHART_HEIGHT)}
+        role="status"
+      />
+    ),
+  },
+);
 
 const TRAFFIC_LABEL = [
   "",

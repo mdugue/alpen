@@ -52,6 +52,7 @@ friends do that better and the app links out to them.
 | Tag labels: vocabulary, icons, badges           | `lib/regions.ts` (`TOWN_TAGS`, `ROAD_TAGS`, `TAG_LABEL`), `lib/tag-icons.ts`, `components/tags.tsx`                                                                                                                                                                                                        |
 | Search normalisation and haystacks              | `lib/search.ts`                                                                                                                                                                                                                                                                                            |
 | Map, layers, 3D, markers, labels, feature state | `components/map/pass-map.tsx`                                                                                                                                                                                                                                                                              |
+| Camera padding for the panels in front of it    | `lib/map-camera.ts`, the padding and fly-to effects in `components/map/pass-map.tsx`                                                                                                                                                                                                                       |
 | Basemap: vector style, palette, glyphs          | `lib/basemap.ts`, `lib/palette.ts`, `scripts/build-map-style.ts` (→ `public/map/style-*.json`), `scripts/build-glyphs.ts` (→ `public/map/fonts`, committed)                                                                                                                                                |
 | Map assets: GeoJSON, simplification, hashing    | `lib/map-assets.ts`, `scripts/build-map-assets.ts` (→ `public/map`, git-ignored)                                                                                                                                                                                                                           |
 | Detail assets: one file per entity, hashing     | `lib/detail-assets.ts`, `scripts/build-detail-assets.ts` (→ `public/detail`, git-ignored)                                                                                                                                                                                                                  |
@@ -205,6 +206,42 @@ friends do that better and the app links out to them.
   visibility is always a `Switch` ("auf der Karte"), one per kind, two-state
   buttons are always a `Toggle`. Without a camera or a selection in the hash
   the map opens on the frame the fit button produces, not on a fixed overview.
+- **The padding is never set on its own.** What the panels cover reaches
+  MapLibre as camera padding, and padding is not a passive margin: the centre
+  is drawn in the middle of the _padded_ box, so `setPadding` – a `jumpTo` –
+  moves the picture by half of what changed. On a phone that is the detail
+  sheet's 55 % of the screen in one frame, a jump at the start of every
+  selection. So a selection carries the new padding into its own flight (one
+  movement instead of a jump and a movement, which is also why a tour is framed
+  with `cameraForBounds` + `flyTo` rather than `fitBounds`: that one drops the
+  padding before it flies, and the frame has to be measured against where the
+  camera lands – `fitInset` in `lib/map-camera.ts`), and a padding change with
+  no camera move behind it – a sheet dragged to another snap point, the sidebar
+  folding away – eases in. Only the first padding is set outright, before the
+  map has drawn a frame that could jump.
+- **The panel shows where the camera _is_, not where it is going.** Selecting
+  starts a flight, and `selectionState` in `explorer.tsx` keeps the two apart:
+  `at` is the target, and the map's layers, the highlighted row and the hash
+  follow it at once, so the tap is answered in the same frame; `shown` is what
+  the camera has arrived at, and only that reaches `DetailPanel`. A panel that
+  opens with the flight fills in as it goes – the file arrives, then the photo,
+  then the chart's chunk – and a block appearing under the one being read
+  pushes it down; one arrival is calmer than three. It is also the most
+  expensive thing the app draws (the photo slideshow, the elevation profiles
+  with a polygon per sample, the climate chart with recharts behind it), and on
+  a phone-sized viewport drawing it into a flight cost that flight about a
+  third of its frame rate. `flying` is set by the click rather than by the
+  map's `movestart`, which would arrive one commit too late, and cleared on
+  `moveend` – or on `idle`, the safety net for a selection that never flew.
+  `arrive` returns the state object unchanged when nothing is waiting, because
+  `idle` fires a few times a second. Everything that is still on its way when
+  the panel opens keeps its own height while it waits, so nothing below it ever
+  jumps: the profile skeleton has the drawing's aspect ratio (`PROFILE_ASPECT`)
+  and the chart's `next/dynamic` placeholder its height (`CHART_HEIGHT`,
+  a module of its own so the placeholder does not import recharts). The same
+  rule is why the selected row is put into view without a smooth scroll while
+  the list sheet is peeking: it would animate a list nobody can see against the
+  two animations that can be seen.
 - **Charts come from the shadcn `chart` component** (recharts under the hood).
   It is the only heavy dependency in the app, so the one chart that uses it
   (`components/panel/climate-chart.tsx`) is pulled in with `next/dynamic` and

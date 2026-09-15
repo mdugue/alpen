@@ -407,3 +407,127 @@ test(
     ),
   TIMEOUT,
 );
+
+/**
+ * The map's bottom padding on every camera frame. `setPadding` is a `jumpTo`,
+ * so its very first frame already carries the final value; a flight that
+ * re-pads while it moves starts where the camera stood.
+ */
+const RECORD_PADDING = `(() => {
+  const m = window.__alpen?.map;
+  if (!m) return false;
+  window.__pad = [];
+  m.on("move", () => window.__pad.push(m.getPadding().bottom));
+  return true;
+})()`;
+
+test(
+  "12 · the detail sheet re-pads the map along its flight, not in one frame",
+  () =>
+    // A tap on the map itself, with the list sheet on its peek row: the case
+    // the padding jumped in, because the sheet in front of the map goes from
+    // 80 px to more than half the screen in that one moment.
+    withPage(
+      app,
+      "mobile-camera-padding",
+      { hash: "#z=12&c=45.064,6.408", mobile: true },
+      async (page) => {
+        // The map hook is set where the map is built, so the canvas is what
+        // says it should be there by now; only a build with
+        // NEXT_PUBLIC_TEST_HOOKS=1 actually sets one.
+        await page.waitFor("canvas.maplibregl-canvas");
+        if (!(await page.camera())) return;
+        type Dot = { x: number; y: number; zoom: number } | null;
+        let dot: Dot = null;
+        await waitUntil(async () => {
+          dot = await page.evaluate<Dot>(PASS_DOT);
+          return !!dot;
+        }, "the Galibier drawn, on a map at rest");
+
+        expect(await page.evaluate<boolean>(RECORD_PADDING)).toBe(true);
+        const before = await page.evaluate<number>(
+          "window.__alpen.map.getPadding().bottom",
+        );
+        await page.clickAt(dot!.x, dot!.y);
+        await page.waitFor("#detail-title");
+        await waitUntil(async () => {
+          const c = await page.camera();
+          return !!c && !c.moving;
+        }, "the camera settled on the pass");
+
+        const pad = await page.evaluate<number[]>("window.__pad");
+        const after = pad.at(-1)!;
+        // The sheet in front of the map did take more than half the screen …
+        expect(after - before).toBeGreaterThan(100);
+        // … and the camera answered over the whole flight rather than in one
+        // frame: the first of its frames still stands where the camera stood.
+        expect(pad.length).toBeGreaterThan(5);
+        expect(Math.abs(pad[0]! - before)).toBeLessThan((after - before) / 2);
+      },
+    ),
+  TIMEOUT,
+);
+
+/**
+ * Whether the detail panel is in the document at the moment the camera lands.
+ * The panel shows the selection the camera has *arrived* at (`selectionState`
+ * in explorer.tsx), so at `moveend` there is none yet, and it appears – whole,
+ * with its photo and its profiles – in one of the commits after.
+ */
+const AT_MOVEEND = `(() => {
+  const m = window.__alpen?.map;
+  if (!m) return false;
+  window.__atMoveend = [];
+  m.on("moveend", () =>
+    window.__atMoveend.push(!!document.querySelector("#detail-title")),
+  );
+  return true;
+})()`;
+
+test(
+  "13 · the detail panel appears when the camera arrives, not while it flies",
+  () =>
+    // A camera far from the target, so the flight is a long one.
+    withPage(
+      app,
+      "detail-on-arrival",
+      { hash: "#z=8&c=47.4,13.2", mobile: true },
+      async (page) => {
+        await page.waitFor("canvas.maplibregl-canvas");
+        if (!(await page.camera())) return;
+        const settled = async () => {
+          const c = await page.camera();
+          return !!c && !c.moving;
+        };
+        await waitUntil(async () => {
+          if ((await page.count("input[type=search]")) > 0) return true;
+          await page.clickText("button", "Pass, Tour oder Ort");
+          await Bun.sleep(300);
+          return (await page.count("input[type=search]")) > 0;
+        }, "the list sheet to open");
+        await page.waitFor(GALIBIER);
+        await waitUntil(settled, "the camera at rest");
+
+        expect(await page.evaluate<boolean>(AT_MOVEEND)).toBe(true);
+        await page.click(GALIBIER);
+        // The tap is answered at once on the map and in the hash …
+        await waitUntil(
+          () => page.hash().then((h) => h.includes("pass=col-du-galibier")),
+          "the selection in the hash",
+        );
+        // … and the panel follows when the camera has landed, with the photo
+        // and the profile already in it rather than filling in afterwards.
+        await page.waitFor("#detail-title");
+        expect(await page.text("#detail-title")).toBe("Col du Galibier");
+        await page.waitFor('[aria-label^="Höhenprofil:"]');
+        await waitUntil(settled, "the camera settled");
+
+        const atMoveend = await page.evaluate<boolean[]>("window.__atMoveend");
+        // The flight happened …
+        expect(atMoveend.length).toBeGreaterThan(0);
+        // … and the panel was not on screen during any of it.
+        expect(atMoveend).toEqual(atMoveend.map(() => false));
+      },
+    ),
+  TIMEOUT,
+);
