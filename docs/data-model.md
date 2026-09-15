@@ -267,6 +267,41 @@ to keep the bias down, and the panel labels the section accordingly.
 These files belong in the repo. They only change when passes, ascents or tours
 change – the script skips everything that already exists.
 
+### Derived at prerender, not as a file
+
+Some derivations are computed by a `"use cache"` getter in `lib/data.ts` while
+the page is prerendered, rather than committed next to the measurements: they
+depend on rules and thresholds in `lib/`, so a file would go stale the moment
+one of those changed, with nothing to notice it.
+
+| Getter           | Value                                                                                                             |
+| ---------------- | ----------------------------------------------------------------------------------------------------------------- |
+| `getValleys`     | the lowest ascent start per pass – the elevation the summit climate is taken down to for the heat signal          |
+| `getProfiles`    | the road coordinate of every profile sample (`ProfileWithCoords`), so no route geometry reaches the client        |
+| `getNearbyTours` | which tours run within 60 km of each pass, tour start and town (`lib/nearby.ts`)                                  |
+| `getTownReach`   | the area each town reaches, as a hull over its passes                                                             |
+| `getYears`       | the **year of every pass and tour**: 24 cells with status, grade, reasons and the snow note, plus the best window |
+
+The year is what the whole app reads. `passYear()` in `lib/status.ts` runs the
+verdict over all 24 half-months of a pass, `tourYear()` takes per half-month the
+cell of the member pass with the lowest grade, and everything downstream looks
+the answer up instead of judging again:
+
+```mermaid
+flowchart LR
+  D["passes.json · climate.json · valleys"] --> Y["getYears() · lib/data.ts<br/>24 cells per pass and tour<br/>status · reasons · grade · best window<br/>computed at prerender"]
+  Y --> A["row: the cell at the chosen half-month"]
+  Y --> B["histogram: the sum of the grades"]
+  Y --> C["strip: the cells and their notes"]
+  Y --> E["badge: the first reason's word"]
+  Y --> F["panel: the best window, the sentences"]
+```
+
+It stays out of the repo for the reason above – the thresholds in
+`lib/status.ts` move, and the live closure layer (`docs/roadmap.md`) will hook
+in front of `passVerdict` – and it does not need to be committed: 201 passes ×
+24 cells are 394 KB of JSON but 8 KB gzipped, because the cells repeat.
+
 ### The route quality gate
 
 Nothing reaches `routes.json` unmeasured. A geometry is measured, judged, and

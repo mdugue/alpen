@@ -123,12 +123,36 @@ export const REASON_PHRASE: Record<StatusReason, string> = {
     "der Rand des Öffnungsfensters, Öffnung und Sperrung verschieben sich je nach Winter",
 };
 
-/** What one cell of the strip knows about itself beyond its grade. */
-export interface CellNote {
-  /** The first reason of a limited cell. */
-  reason: StatusReason | null;
-  /** A good cell with 10–19 % snow days: that, not the run length, keeps it from the best time. */
+/**
+ * One half-month of one pass or tour, index 0 = early January – everything a
+ * cell of the strip, a row's dot or the badge says about that half-month.
+ */
+export interface YearCell {
+  status: Status;
+  /** The status split by the best window: what the strip paints. */
+  grade: Grade;
+  /** Every reason that fired, in ladder order; empty when none did. */
+  reasons: StatusReason[];
+  /** A cell with ≥ `SNOW_BEST_PCT` snow days: that, not the run length, keeps a good cell from the best time. */
   snowy: boolean;
+}
+
+/** The whole year of one pass or tour: 24 cells and the best window. */
+export interface Year {
+  /** 24 cells, index 0 = early January. */
+  cells: YearCell[];
+  /** The longest quiet run, or null when it is shorter than two half-months. */
+  best: [Period, Period] | null;
+}
+
+/**
+ * The year of every pass and tour, keyed by slug: what `getYears` in
+ * lib/data.ts computes once at prerender and the page hands the client,
+ * instead of letting the browser grade 201 passes again on every keystroke.
+ */
+export interface Years {
+  passes: Record<string, Year>;
+  tours: Record<string, Year>;
 }
 
 /**
@@ -136,14 +160,14 @@ export interface CellNote {
  * caveat of a limited cell, the reason a good cell is not the best time – and
  * the general sentence otherwise.
  */
-export const cellHint = (grade: Grade, note?: CellNote | null): string => {
-  if (grade === "limited" && note?.reason)
-    return `Fahrbar, aber mit einem Haken: ${REASON_PHRASE[note.reason]}.`;
-  if (grade === "good" && note)
-    return note.snowy
+export const cellHint = (cell: YearCell): string => {
+  if (cell.grade === "limited" && cell.reasons[0])
+    return `Fahrbar, aber mit einem Haken: ${REASON_PHRASE[cell.reasons[0]]}.`;
+  if (cell.grade === "good")
+    return cell.snowy
       ? "Nichts spricht gegen die Fahrt. Jedoch schneit es gelegentlich."
       : "Nichts spricht gegen die Fahrt. Nur ist es ein kürzerer Abschnitt als die beste Zeit.";
-  return GRADE_HINT[grade];
+  return GRADE_HINT[cell.grade];
 };
 
 /** The order the legend lists the grades in: best first. */
@@ -401,13 +425,19 @@ export const REASON_TEXT: Record<StatusReason, (ctx: ReasonContext) => string> =
       } – Öffnung und Sperrung verschieben sich je nach Winter um Wochen.`,
   };
 
-/** The sentences behind a verdict, most important first. */
-export const verdictReasons = (
+/**
+ * The sentences behind a cell's reasons, most important first. The reasons
+ * are passed in rather than judged again: the cell of a `Year` already knows
+ * them, and running the verdict a second time to read them back is how the
+ * panel and the row used to be able to disagree.
+ */
+export const reasonTexts = (
   pass: Pass,
   t: Period,
+  reasons: StatusReason[],
   input?: VerdictInput | null,
 ): string[] =>
-  passVerdict(pass, t, input).reasons.map((r) =>
+  reasons.map((r) =>
     REASON_TEXT[r]({
       bucket: input?.bucket,
       pass,
@@ -436,60 +466,6 @@ export const climateBucket = (
   slug: string,
   t: Period,
 ): ClimateBucket | null => climate?.[slug]?.[periodIndex(t)] ?? null;
-
-const tourPasses = (tour: Tour, passes: PassIndex): Pass[] =>
-  tour.passes
-    .map((slug) => passes.get(slug))
-    .filter((p): p is Pass => Boolean(p));
-
-const STATUS_RANK: Record<Status, number> = { closed: 0, open: 2, risky: 1 };
-
-/** Where a verdict's first reason sits on the ladder; past the end without one. */
-const ladderRank = (v: StatusVerdict): number =>
-  v.reasons[0] ? REASON_ORDER.indexOf(v.reasons[0]) : REASON_ORDER.length;
-
-/**
- * A tour is only as rideable as its worst pass, and it is that pass's
- * reasons the tour reports: "eingeschränkt: Hitze" on a tour row names what
- * limits the tour, not a merge of every pass's caveats. Among passes with the
- * same status the one whose first reason ranks earliest on the ladder wins.
- */
-export const tourVerdict = (
-  tour: Tour,
-  passes: PassIndex,
-  t: Period,
-  signals?: Signals,
-): StatusVerdict => {
-  let worst: StatusVerdict = { reasons: [], status: "open" };
-  for (const p of tourPasses(tour, passes)) {
-    const v = passVerdict(p, t, inputAt(signalsOf(signals, p.slug), t));
-    const rank = STATUS_RANK[v.status] - STATUS_RANK[worst.status];
-    if (rank < 0 || (rank === 0 && ladderRank(v) < ladderRank(worst)))
-      worst = v;
-  }
-  return worst;
-};
-
-/** The status alone – see `tourVerdict`. */
-export const tourStatus = (
-  tour: Tour,
-  passes: PassIndex,
-  t: Period,
-  signals?: Signals,
-): Status => tourVerdict(tour, passes, t, signals).status;
-
-/** The 24 verdicts of one pass. */
-export const passSeason = (
-  pass: Pass,
-  signals?: PassSignals | null,
-): Status[] => PERIODS.map((t) => passStatus(pass, t, inputAt(signals, t)));
-
-/** The 24 verdicts of one tour. */
-export const tourSeason = (
-  tour: Tour,
-  passes: PassIndex,
-  signals?: Signals,
-): Status[] => PERIODS.map((t) => tourStatus(tour, passes, t, signals));
 
 /** Longest run of `true` in a circular series of 24; null when there is none. */
 interface Run {
@@ -536,27 +512,6 @@ const longestRun = (
   return best;
 };
 
-/**
- * Longest run of half-months that are "gut" and quiet in the climate series.
- * Returns the first and last half-month of that run, or null when it is
- * shorter than two half-months (nothing worth calling a best time). Since
- * every reason makes a cell "eingeschränkt", the run is free of heat, rain,
- * short days and cold descents by construction.
- */
-export const bestPeriods = (
-  pass: Pass,
-  signals?: PassSignals | null,
-): [Period, Period] | null => {
-  const good = PERIODS.map(
-    (t, i) =>
-      passStatus(pass, t, inputAt(signals, t)) === "open" &&
-      (signals?.climate?.[i]?.snowPct ?? 0) < SNOW_BEST_PCT,
-  );
-  const run = longestRun(good);
-  if (!run || run.length < 2) return null;
-  return [periodAt(run.start), periodAt(run.start + run.length - 1)];
-};
-
 /** Whether index `i` lies in the circular run from `from` to `to` (both inclusive). */
 const inRange = (i: number, [from, to]: [Period, Period]): boolean => {
   const a = periodIndex(from);
@@ -564,69 +519,132 @@ const inRange = (i: number, [from, to]: [Period, Period]): boolean => {
   return a <= b ? i >= a && i <= b : i >= a || i <= b;
 };
 
-/** The 24 grades of one pass, for the strip and the histogram. */
-export const passGrades = (
-  pass: Pass,
-  signals?: PassSignals | null,
-): Grade[] => {
-  const best = bestPeriods(pass, signals);
-  return passSeason(pass, signals).map((status, i) =>
-    gradeOf(status, best !== null && inRange(i, best)),
-  );
-};
-
-/** What every half-month's cell says about itself, for the strip's tooltips. */
-export const passCellNotes = (
-  pass: Pass,
-  signals?: PassSignals | null,
-): CellNote[] =>
-  PERIODS.map((t, i) => ({
-    reason: passVerdict(pass, t, inputAt(signals, t)).reasons[0] ?? null,
-    snowy: (signals?.climate?.[i]?.snowPct ?? 0) >= SNOW_BEST_PCT,
-  }));
-
-/** The 24 grades of one tour: per half-month the worst grade of its passes. */
-export const tourGrades = (
-  tour: Tour,
-  passes: PassIndex,
-  signals?: Signals,
-): Grade[] => {
-  const per = tourPasses(tour, passes).map((p) =>
-    passGrades(p, signalsOf(signals, p.slug)),
-  );
-  return PERIODS.map((_, i) => {
-    let worst: Grade = "best";
-    for (const g of per)
-      if (GRADE_RANK[g[i]!] < GRADE_RANK[worst]) worst = g[i]!;
-    return worst;
-  });
+/**
+ * The longest run of `true` as a window, or null when it is shorter than two
+ * half-months – nothing worth calling a best time.
+ */
+const windowOf = (flags: boolean[]): [Period, Period] | null => {
+  const run = longestRun(flags);
+  if (!run || run.length < 2) return null;
+  return [periodAt(run.start), periodAt(run.start + run.length - 1)];
 };
 
 /**
- * What every half-month's cell of a tour says about itself: the note of the
- * pass that sets the cell's grade, so a limited tour cell names its caveat
- * ("Hitze im Tal") the way a pass cell does.
+ * The whole year of one pass in one value: the status, grade and caveats of
+ * every half-month, plus where the best window lies. This is the only place
+ * the verdict is run over all 24 half-months – the row, the histogram, the
+ * strip, the badge and the panel read this instead of grading again, which is
+ * both why they cannot disagree about the same pass and why a keystroke costs
+ * no verdicts at all (docs/plans/15-pass-year.md).
+ *
+ * "Beste Zeit" is the longest circular run of half-months that are open and
+ * quiet in the climate series (under `SNOW_BEST_PCT` snow days). Since every
+ * reason makes a cell "eingeschränkt", that run is free of heat, rain, short
+ * days and cold descents by construction.
  */
-export const tourCellNotes = (
-  tour: Tour,
-  passes: PassIndex,
-  signals?: Signals,
-): CellNote[] => {
-  const per = tourPasses(tour, passes).map((p) => {
-    const own = signalsOf(signals, p.slug);
-    return { grades: passGrades(p, own), notes: passCellNotes(p, own) };
-  });
-  return PERIODS.map((_, i) => {
-    let pick: { grade: Grade; note: CellNote } | null = null;
-    for (const { grades, notes } of per) {
-      const grade = grades[i]!;
-      if (!pick || GRADE_RANK[grade] < GRADE_RANK[pick.grade])
-        pick = { grade, note: notes[i]! };
-    }
-    return pick?.note ?? { reason: null, snowy: false };
-  });
+export const passYear = (pass: Pass, signals?: PassSignals | null): Year => {
+  const verdicts = PERIODS.map((t) =>
+    passVerdict(pass, t, inputAt(signals, t)),
+  );
+  const snowy = PERIODS.map(
+    (_, i) => (signals?.climate?.[i]?.snowPct ?? 0) >= SNOW_BEST_PCT,
+  );
+  const best = windowOf(
+    verdicts.map((v, i) => v.status === "open" && !snowy[i]),
+  );
+  return {
+    best,
+    cells: verdicts.map((v, i) => ({
+      grade: gradeOf(v.status, best !== null && inRange(i, best)),
+      reasons: v.reasons,
+      snowy: snowy[i]!,
+      status: v.status,
+    })),
+  };
 };
 
+/** Where a cell's first reason sits on the ladder; past the end without one. */
+const ladderRank = (reasons: StatusReason[]): number =>
+  reasons[0] ? REASON_ORDER.indexOf(reasons[0]) : REASON_ORDER.length;
+
+/**
+ * Nothing known holds this half-month back: the identity of the worst-of
+ * reduction in `tourYear`, and what `cellAt` answers for a slug the year has
+ * never heard of. Both are data errors `data:check` already rejects, so this
+ * is a type question rather than a state the app shows.
+ *
+ * "gut", not "beste Zeit": the best window is a property of the year, and a
+ * cell standing in for something unknown is in no position to claim it. An
+ * absent pass would otherwise render as the strongest verdict the app has.
+ */
+const UNCONSTRAINED: YearCell = {
+  grade: "good",
+  reasons: [],
+  snowy: false,
+  status: "open",
+};
+
+/**
+ * The year of a tour: per half-month the cell of the member pass that holds
+ * the tour back, taken whole. A tour is only as rideable as its worst pass,
+ * and it is that pass the tour reports – "eingeschränkt: Hitze" on a tour row
+ * names what limits the tour rather than merging every pass's caveats, and the
+ * strip's note comes from the same pass as the colour rather than from a
+ * second one.
+ *
+ * The grade picks that pass, not the status: a grade is the status refined by
+ * the best window (`gradeOf`), so the lowest grade is always the worst status
+ * too, and where two passes are both open it prefers the one that is not at
+ * its best – which is what a tour cell has to be, since a tour is at its best
+ * only where all of its passes are. Among equal grades the pass whose first
+ * reason ranks earliest on the ladder wins.
+ */
+export const tourYear = (tour: Tour, passes: Record<string, Year>): Year => {
+  const own = tour.passes
+    .map((slug) => passes[slug])
+    .filter((year) => year !== undefined);
+  const cells = PERIODS.map((_, i) => {
+    let worst: YearCell | undefined;
+    for (const year of own) {
+      const cell = year.cells[i];
+      if (!cell) continue;
+      if (!worst) {
+        worst = cell;
+        continue;
+      }
+      const d = GRADE_RANK[cell.grade] - GRADE_RANK[worst.grade];
+      if (
+        d < 0 ||
+        (d === 0 && ladderRank(cell.reasons) < ladderRank(worst.reasons))
+      )
+        worst = cell;
+    }
+    return worst ?? UNCONSTRAINED;
+  });
+  // A member's grade is "best" only inside that member's own best window, so
+  // the minimum is "best" exactly where every pass is – which is the tour's
+  // candidate window. It still has to clear the same two bars a pass's does:
+  // at least two half-months, and only the longest run of them. So the window
+  // is taken first and the cells are graded from it, the way `passYear` does
+  // it; computing the cells first and reading a window back out of them is two
+  // rules for one thing, and they disagree on a lone best half-month – the
+  // cell would paint "beste Zeit" while the year reported none.
+  const best = windowOf(cells.map((c) => c.grade === "best"));
+  return {
+    best,
+    cells: cells.map((cell, i) => ({
+      ...cell,
+      grade: gradeOf(cell.status, best !== null && inRange(i, best)),
+    })),
+  };
+};
+
+/**
+ * The cell of one half-month; `UNCONSTRAINED` for a slug the year does not
+ * know, so a caller never has to choose a verdict for missing data itself.
+ */
+export const cellAt = (year: Year | undefined, t: Period): YearCell =>
+  year?.cells[periodIndex(t)] ?? UNCONSTRAINED;
 /**
  * One sentence for the 24 cells of a season strip, so screen readers get the
  * same overview the colours give: "beste Zeit Anfang Juli bis Ende September,

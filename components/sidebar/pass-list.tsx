@@ -101,7 +101,7 @@ export const PassList = ({
           {sorted.map(({ pass, status, reason, favorite, season }) => {
             const current = currentRow === `pass:${pass.slug}`;
             const strip = (
-              <SeasonStrip grades={season} current={filters.period} />
+              <SeasonStrip cells={season} current={filters.period} />
             );
             return (
               // The row boundary is the list's identity: on a filter change the

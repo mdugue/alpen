@@ -12,7 +12,7 @@ import {
   PERIODS,
   seasonSummary,
 } from "@/lib/status";
-import type { CellNote, Grade } from "@/lib/status";
+import type { Grade, YearCell } from "@/lib/status";
 import type { Period } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
@@ -42,16 +42,13 @@ export const CELL: Record<Grade, string> = {
 };
 
 export const SeasonStrip = ({
-  grades,
-  notes,
+  cells,
   current,
   size = "row",
   className,
 }: {
-  /** 24 grades, index 0 = early January. */
-  grades: Grade[];
-  /** What each cell knows beyond its grade, so its popover can be specific. */
-  notes?: CellNote[];
+  /** The 24 cells of one `Year` (`passYear`, lib/status.ts), index 0 = early January. */
+  cells: YearCell[];
   /** Outlined half-month; usually the selected period. */
   current?: Period;
   /** `row`: 96 px, no labels. `panel`: full width with month initials and cell popovers. */
@@ -59,6 +56,7 @@ export const SeasonStrip = ({
   className?: string;
 }) => {
   const panel = size === "panel";
+  const grades = cells.map((c) => c.grade);
   const currentIndex = current === undefined ? -1 : periodIndex(current);
   const label = [
     seasonSummary(grades),
@@ -107,7 +105,7 @@ export const SeasonStrip = ({
                   {periodLabel(PERIODS[i]!)} · {GRADE_LABEL[grade]}
                 </p>
                 <p className="text-muted-foreground text-xs">
-                  {cellHint(grade, notes?.[i])}
+                  {cellHint(cells[i]!)}
                 </p>
               </PopoverContent>
             </Popover>

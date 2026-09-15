@@ -36,7 +36,7 @@ export const TourList = ({
       {rows.map(({ tour, status, reason, favorite, season }) => {
         const onMap = !hiddenTours.includes(tour.slug);
         const current = currentRow === `tour:${tour.slug}`;
-        const strip = <SeasonStrip grades={season} current={period} />;
+        const strip = <SeasonStrip cells={season} current={period} />;
         return (
           // Row identity and the strip that morphs into the panel; see
           // `components/sidebar/pass-list.tsx` for what the two boundaries do.

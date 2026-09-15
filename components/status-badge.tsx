@@ -1,6 +1,6 @@
 import { Badge } from "@/components/ui/badge";
 import { periodLabel, REASON_WORD, STATUS_LABEL } from "@/lib/status";
-import type { StatusReason } from "@/lib/status";
+import type { StatusReason, YearCell } from "@/lib/status";
 import type { Period, Status } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
@@ -74,22 +74,22 @@ export const StatusLabel = ({
   </span>
 );
 
+/**
+ * The badge reads one cell rather than a status, a reason and a "best" flag
+ * handed to it separately: those three always describe the same half-month of
+ * the same entity, and three props are three chances to pass a set that never
+ * occurs.
+ */
 export const StatusBadge = ({
-  status,
-  reason,
-  best,
+  cell,
   period,
 }: {
-  status: Status;
-  /** The first reason of a limited status. */
-  reason?: StatusReason | null;
-  /** The half-month lies in the pass's best window. */
-  best?: boolean;
+  cell: YearCell;
   period?: Period;
 }) => (
   <Badge variant="outline" className="gap-1.5">
-    <StatusDot status={status} />
-    {statusText(status, reason, best)}
+    <StatusDot status={cell.status} />
+    {statusText(cell.status, cell.reasons[0], cell.grade === "best")}
     {period !== undefined && ` · ${periodLabel(period)}`}
   </Badge>
 );
