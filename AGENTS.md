@@ -219,6 +219,21 @@ friends do that better and the app links out to them.
   no camera move behind it – a sheet dragged to another snap point, the sidebar
   folding away – eases in. Only the first padding is set outright, before the
   map has drawn a frame that could jump.
+- **Nothing expensive is drawn while the camera flies.** A selection starts a
+  flight and mounts the detail panel in the same commit, and the panel's three
+  costly blocks – the photo slideshow, the elevation profiles (a polygon per
+  sample) and the climate chart with recharts behind it – then take their
+  frames from the animation: measured on a phone-sized viewport they cost the
+  flight about a third of its frame rate and doubled its worst frame. So they
+  wait. `flying` in `explorer.tsx` is set by the click that starts the flight –
+  not by the map's `movestart`, which would arrive one commit too late – and
+  cleared when the map reports `moveend` (or `idle`, for a selection that never
+  flew). The panel needs no new states for it: the file's contents are simply
+  held back until then, so every block shows the same waiting look it already
+  has for a file still on its way, and each one that waits keeps its own height
+  so nothing below it jumps. The same rule is why the selected row is put into
+  view without a smooth scroll while the list sheet is peeking: it would
+  animate a list nobody can see against the two animations that can be seen.
 - **Charts come from the shadcn `chart` component** (recharts under the hood).
   It is the only heavy dependency in the app, so the one chart that uses it
   (`components/panel/climate-chart.tsx`) is pulled in with `next/dynamic` and

@@ -95,6 +95,12 @@ interface Props {
   onSelect: (sel: Selection) => void;
   onViewChange: (v: MapView) => void;
   /**
+   * The camera has landed. What the detail panel costs most to draw waits for
+   * this rather than competing with the flight for the same frames; see
+   * `flying` in `explorer.tsx`.
+   */
+  onCameraSettled?: () => void;
+  /**
    * Camera requested from outside (a hash pasted into an open page). The map
    * is otherwise the source of truth for its camera, so this is applied only
    * when the object identity changes.
@@ -855,6 +861,7 @@ export const PassMap = ({
   selection,
   onSelect,
   onViewChange,
+  onCameraSettled,
   profileCursor = null,
   profileZoom = null,
   requestedView = null,
@@ -896,10 +903,12 @@ export const PassMap = ({
   // during setup; refs keep them current without rebuilding the map.
   const onSelectRef = useRef(onSelect);
   const onViewChangeRef = useRef(onViewChange);
+  const onSettledRef = useRef(onCameraSettled);
   useEffect(() => {
     onSelectRef.current = onSelect;
     onViewChangeRef.current = onViewChange;
-  }, [onSelect, onViewChange]);
+    onSettledRef.current = onCameraSettled;
+  }, [onSelect, onViewChange, onCameraSettled]);
 
   // The hover handler below is registered once during setup; this ref keeps
   // the hulls current without rebuilding the map.
@@ -1190,7 +1199,12 @@ export const PassMap = ({
         pitch: m.getPitch(),
         zoom: m.getZoom(),
       });
+      onSettledRef.current?.();
     });
+    // `moveend` is the answer; `idle` is the safety net, for a selection whose
+    // flight never happened – an entity the map does not draw – where nothing
+    // else would ever tell the panel to go on.
+    m.on("idle", () => onSettledRef.current?.());
 
     // The container changes size when the sidebar collapses; MapLibre only
     // tracks window resizes on its own.

@@ -95,12 +95,20 @@ export const Sidebar = (p: SidebarProps) => {
     ? `${p.selection.kind}:${p.selection.slug}`
     : null;
 
-  // Keep the selected row visible, e.g. after a click on a map marker.
+  // Keep the selected row visible, e.g. after a click on a map marker. A
+  // selection also starts a camera flight, and on a phone the sheet drops to
+  // its peek row in the same moment – where a smooth scroll would animate a
+  // list nobody can see, against the two animations that can be seen. Peeking,
+  // the row is put in place at once instead; by the time the sheet is pulled
+  // up again it is where it should be.
   useEffect(() => {
     if (!currentRow) return;
-    lists.current
-      ?.querySelector(`[data-row="${currentRow}"]`)
-      ?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    lists.current?.querySelector(`[data-row="${currentRow}"]`)?.scrollIntoView({
+      behavior: p.peek ? "instant" : "smooth",
+      block: "nearest",
+    });
+    // Intentional: the row is the trigger; `peek` only says how to get there.
+    // oxlint-disable-next-line react/exhaustive-deps
   }, [currentRow]);
 
   return (

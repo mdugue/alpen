@@ -137,6 +137,20 @@ export const Explorer = ({
   const [listSnap, setListSnap] = useState<number>(LIST_PEEK);
   const [detailSnap, setDetailSnap] = useState<number>(DETAIL_SNAPS[0]);
   const [scalesOpen, setScalesOpen] = useState(false);
+  /**
+   * Whether the camera is still on its way to what was just selected. The
+   * detail panel's three expensive blocks – the photo slideshow, the elevation
+   * profiles and the climate chart with recharts behind it – wait for it, so
+   * that mounting them does not take frames away from the flight. Measured on
+   * a phone-sized viewport, they cost about as much main-thread time again as
+   * the whole flight, and they land in its first frames.
+   *
+   * It is set here, in the click that starts the flight, and not from the
+   * map's own `movestart`: the panel renders in the same commit that the
+   * flight is started in, so a flag arriving with the map's event would be one
+   * commit too late – after the expensive render it is meant to hold back.
+   */
+  const [flying, setFlying] = useState(false);
   // Where the elevation-profile cursor sits on the road, and a fly-to asked
   // for by a click on it. Both live here because the map draws them and the
   // detail panel produces them.
@@ -244,6 +258,7 @@ export const Explorer = ({
     setSelection(sel);
     setLastSelection(sel);
     setProfileCursor(null);
+    setFlying(true);
     if (sel.kind === "pass") setShowPasses(true);
     if (sel.kind === "tour")
       setHiddenTours((h) => h.filter((s) => s !== sel.slug));
@@ -287,6 +302,7 @@ export const Explorer = ({
       climate={climate}
       valleys={valleys}
       years={years}
+      flying={flying}
       isFavorite={isFavorite}
       onToggleFavorite={toggleFavorite}
       onProfileCursor={setProfileCursor}
@@ -365,6 +381,7 @@ export const Explorer = ({
             selection={selection}
             onSelect={select}
             onViewChange={setView}
+            onCameraSettled={() => setFlying(false)}
             profileCursor={profileCursor}
             profileZoom={profileZoom}
             requestedView={requestedView}

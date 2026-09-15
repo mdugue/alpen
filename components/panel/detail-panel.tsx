@@ -102,6 +102,12 @@ interface Props {
   valleys: Record<string, number>;
   /** The 24 graded half-months of every pass and tour (`getYears`, lib/data.ts). */
   years: Years;
+  /**
+   * The camera is still flying to what was selected. The blocks that cost the
+   * most wait for it rather than competing with the flight for frames; see
+   * `flying` in `components/explorer.tsx`.
+   */
+  flying?: boolean;
   isFavorite: (kind: EntityKind, slug: string) => boolean;
   onToggleFavorite: (kind: EntityKind, slug: string) => void;
   /** Road point under the profile cursor, drawn on the map; `null` clears it. */
@@ -121,8 +127,13 @@ interface Props {
 interface DetailState {
   profiles: Record<string, ProfileWithCoords>;
   photos: Photo[];
+  /** The file is not here yet – or the camera is still on its way, see `flying`. */
   loading: boolean;
 }
+
+/** Stable empties, so a held-back render is not a new object every time. */
+const NO_PHOTOS: Photo[] = [];
+const NO_PROFILES: Record<string, ProfileWithCoords> = {};
 
 /**
  * The one line of numbers over an elevation profile – and on a traverse, two
@@ -473,7 +484,20 @@ const PassDetail = (props: Props & DetailState & { pass: Pass }) => {
               })}{" "}
               h, Sonne {clockTime(sun.sunrise)}–{clockTime(sun.sunset)}.
             </p>
-            <ClimateChart climate={climate} period={props.period} />
+            {/* recharts is a chunk of its own and the chart is the heaviest
+                thing the panel draws, so it waits like the profiles above –
+                behind a placeholder of its own height, or the block below it
+                would jump once it arrives. */}
+            {props.loading ? (
+              <Skeleton
+                aria-busy
+                aria-label="Klimadiagramm wird geladen"
+                className="mt-3 h-44 w-full"
+                role="status"
+              />
+            ) : (
+              <ClimateChart climate={climate} period={props.period} />
+            )}
           </>
         ) : (
           <Empty className="py-3">
@@ -627,10 +651,17 @@ export const DetailPanel = (props: Props) => {
   // An entity with neither has no URL and nothing is fetched.
   const url = props.detail[photoKey(selection.kind, selection.slug)] ?? null;
   const { data, loading } = useFetch<DetailData>(url);
+  // Two things have to have happened before the expensive blocks are drawn:
+  // the file has to be here, and the camera has to have landed (`flying`).
+  // Holding the file's contents back for the second is what keeps the panel
+  // out of the flight's frames, and it needs no state of its own anywhere
+  // below: every block already has a waiting look for a file on its way, and
+  // that is exactly the right one while the map is still moving.
+  const ready = !(loading || props.flying);
   const loaded: DetailState = {
-    loading,
-    photos: data?.photos ?? [],
-    profiles: data?.profiles ?? {},
+    loading: !ready,
+    photos: ready ? (data?.photos ?? []) : NO_PHOTOS,
+    profiles: ready ? (data?.profiles ?? {}) : NO_PROFILES,
   };
 
   // Move focus and scroll to the top whenever another entity is selected. The

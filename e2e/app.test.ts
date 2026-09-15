@@ -424,20 +424,84 @@ const RECORD_PADDING = `(() => {
 test(
   "12 · the detail sheet re-pads the map along its flight, not in one frame",
   () =>
+    // A tap on the map itself, with the list sheet on its peek row: the case
+    // the padding jumped in, because the sheet in front of the map goes from
+    // 80 px to more than half the screen in that one moment.
     withPage(
       app,
       "mobile-camera-padding",
-      { hash: "#z=10&c=45.5,6.0", mobile: true },
+      { hash: "#z=12&c=45.064,6.408", mobile: true },
       async (page) => {
-        // Only a build with NEXT_PUBLIC_TEST_HOOKS=1 exposes the map.
+        // The map hook is set where the map is built, so the canvas is what
+        // says it should be there by now; only a build with
+        // NEXT_PUBLIC_TEST_HOOKS=1 actually sets one.
+        await page.waitFor("canvas.maplibregl-canvas");
+        if (!(await page.camera())) return;
+        type Dot = { x: number; y: number; zoom: number } | null;
+        let dot: Dot = null;
+        await waitUntil(async () => {
+          dot = await page.evaluate<Dot>(PASS_DOT);
+          return !!dot;
+        }, "the Galibier drawn, on a map at rest");
+
+        expect(await page.evaluate<boolean>(RECORD_PADDING)).toBe(true);
+        const before = await page.evaluate<number>(
+          "window.__alpen.map.getPadding().bottom",
+        );
+        await page.clickAt(dot!.x, dot!.y);
+        await page.waitFor("#detail-title");
+        await waitUntil(async () => {
+          const c = await page.camera();
+          return !!c && !c.moving;
+        }, "the camera settled on the pass");
+
+        const pad = await page.evaluate<number[]>("window.__pad");
+        const after = pad.at(-1)!;
+        // The sheet in front of the map did take more than half the screen …
+        expect(after - before).toBeGreaterThan(100);
+        // … and the camera answered over the whole flight rather than in one
+        // frame: the first of its frames still stands where the camera stood.
+        expect(pad.length).toBeGreaterThan(5);
+        expect(Math.abs(pad[0]! - before)).toBeLessThan((after - before) / 2);
+      },
+    ),
+  TIMEOUT,
+);
+
+/**
+ * Whether the elevation profile is in the document at the moment the camera
+ * lands. The profiles, the photo slideshow and the climate chart are what the
+ * panel costs most to draw, and they wait for the flight to be over (`flying`
+ * in explorer.tsx) instead of taking frames away from it – so at `moveend`
+ * there is no profile yet, and it appears in one of the commits after.
+ */
+const AT_MOVEEND = `(() => {
+  const m = window.__alpen?.map;
+  if (!m) return false;
+  window.__atMoveend = [];
+  m.on("moveend", () =>
+    window.__atMoveend.push(
+      !!document.querySelector('[aria-label^="Höhenprofil:"]'),
+    ),
+  );
+  return true;
+})()`;
+
+test(
+  "13 · the detail panel's heavy blocks wait for the camera to land",
+  () =>
+    // A camera far from the target, so the flight is a long one.
+    withPage(
+      app,
+      "defer-detail",
+      { hash: "#z=8&c=47.4,13.2", mobile: true },
+      async (page) => {
+        await page.waitFor("canvas.maplibregl-canvas");
         if (!(await page.camera())) return;
         const settled = async () => {
           const c = await page.camera();
           return !!c && !c.moving;
         };
-        // The list sheet opens the way test 6 opens it; the detail sheet then
-        // slides in over it and takes a different share of the screen, which
-        // is the padding change this is about.
         await waitUntil(async () => {
           if ((await page.count("input[type=search]")) > 0) return true;
           await page.clickText("button", "Pass, Tour oder Ort");
@@ -445,26 +509,25 @@ test(
           return (await page.count("input[type=search]")) > 0;
         }, "the list sheet to open");
         await page.waitFor(GALIBIER);
-        await waitUntil(settled, "the camera at rest behind the open list");
+        await waitUntil(settled, "the camera at rest");
 
-        expect(await page.evaluate<boolean>(RECORD_PADDING)).toBe(true);
-        const before = await page.evaluate<number>(
-          "window.__alpen.map.getPadding().bottom",
-        );
+        expect(await page.evaluate<boolean>(AT_MOVEEND)).toBe(true);
         await page.click(GALIBIER);
+        // What the page already carries is there at once …
         await page.waitFor("#detail-title");
-        await waitUntil(settled, "the camera settled on the pass");
-
-        const pad = await page.evaluate<number[]>("window.__pad");
-        const after = pad.at(-1)!;
-        // The sheet in front of the map did change height …
-        expect(Math.abs(after - before)).toBeGreaterThan(100);
-        // … and the camera answered over the whole flight: the first of its
-        // frames still stands where the camera stood.
-        expect(pad.length).toBeGreaterThan(5);
-        expect(Math.abs(pad[0]! - before)).toBeLessThan(
-          Math.abs(after - before) / 2,
+        expect(await page.text("#detail-title")).toBe("Col du Galibier");
+        // … and the profile follows once the camera has landed.
+        await waitUntil(
+          () => page.count('[aria-label^="Höhenprofil:"]').then((n) => n > 0),
+          "the profile drawn after the flight",
         );
+        await waitUntil(settled, "the camera settled");
+
+        const atMoveend = await page.evaluate<boolean[]>("window.__atMoveend");
+        // The flight happened …
+        expect(atMoveend.length).toBeGreaterThan(0);
+        // … and no profile was drawn before it was over.
+        expect(atMoveend).toEqual(atMoveend.map(() => false));
       },
     ),
   TIMEOUT,
