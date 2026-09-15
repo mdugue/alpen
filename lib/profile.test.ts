@@ -6,6 +6,7 @@ import {
   PROFILE_POINTS,
   profileCoords,
   profileDistances,
+  profilesWithCoords,
   profileStats,
   steepestKm,
   stepGradient,
@@ -193,5 +194,30 @@ describe("stepGradient", () => {
 
   test("the first sample has no step before it", () => {
     expect(stepGradient(profile, 0)).toBe(0);
+  });
+});
+
+describe("profilesWithCoords", () => {
+  const two: Record<string, ElevationProfile> = {
+    "a:0": { ele: [1000] } as ElevationProfile,
+    "b:0": { ele: [900] } as ElevationProfile,
+  };
+
+  test("attaches the sample coordinates of the matching route only", () => {
+    const out = profilesWithCoords(two, { "a:0": straight(3) });
+    expect(out["a:0"]!.coords).toEqual(profileCoords(straight(3)));
+    // A pass whose gate rejected its route keeps its profile and gets no
+    // coordinates, rather than dropping out of the file altogether.
+    expect(out["b:0"]!.coords).toBeUndefined();
+    expect(out["b:0"]!.ele).toEqual([900]);
+  });
+
+  test("is stable, which is what the detail file name depends on", () => {
+    // `lib/data.ts` derives the hash and the build script writes the file, both
+    // by running this; a result that differed between two runs would name a
+    // file that is never written.
+    const once = JSON.stringify(profilesWithCoords(profiles, routes));
+    const twice = JSON.stringify(profilesWithCoords(profiles, routes));
+    expect(once).toBe(twice);
   });
 });

@@ -143,4 +143,6 @@ what the sidebar reads.
 - **Hash determinism.** The body is `JSON.stringify` of parsed data plus
   `profileCoords`, which does index arithmetic only – no transcendental
   functions, so Bun and the Next server agree (the concern documented in
-  `lib/map-assets.ts`).
+  `lib/map-assets.ts`). Both sides run one exported `profilesWithCoords`
+  (`lib/profile.ts`) rather than each spelling the derivation out, so the
+  remaining risk is the engine's, not a copy going stale.

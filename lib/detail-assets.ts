@@ -12,8 +12,10 @@ import type {
 
 // Relative on purpose, same as in `lib/map-assets.ts`: this module is imported
 // by `next.config.ts` and by a Bun script outside the bundler, where the "@/"
-// alias is not resolved for transitive imports. Type-only imports are erased
-// and may keep the alias.
+// alias is not resolved for transitive imports. Only modules that are
+// themselves free of them may be imported here – which is why the profile
+// derivation both hash sides share lives in `lib/profile.ts` (it reaches
+// `lib/geo.ts`) and not in this file.
 import { photoKey } from "./photos";
 import { ascentKey } from "./route-key";
 
@@ -66,8 +68,15 @@ export type DetailAssets = Record<string, string>;
 /** Where the files live under `public/`, and thus their URL prefix. */
 export const DETAIL_ASSET_DIR = "detail";
 
-/** What the script writes and prunes, and what `next.config.ts` caches for a year. */
-export const ASSET_NAME = /^[a-z]+-[a-z0-9-]+\.[0-9a-f]{8}\.json$/u;
+/**
+ * What the script writes and prunes, and what `next.config.ts` caches for a
+ * year – the two have to describe the same set of names, or the header rule
+ * would promise immutability to something the pruner may replace. Named for
+ * this directory rather than `ASSET_NAME`, which `lib/map-assets.ts` already
+ * exports for the GeoJSON shape.
+ */
+export const DETAIL_ASSET_NAME =
+  /^(?:pass|tour|town)-[a-z0-9-]+\.[0-9a-f]{8}\.json$/u;
 
 export interface DetailFile {
   /** `pass-stilfser-joch.a1b2c3d4.json` – 8 hex digits of SHA-256 of `body`. */

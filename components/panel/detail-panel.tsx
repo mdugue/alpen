@@ -113,12 +113,12 @@ interface Props {
 }
 
 /**
- * What the selected entity's detail file carried, once it arrived. The panel
- * renders before it does – the name, the status, the season strip and the
- * ratings are all in the page – so the two blocks that wait for it say so
- * rather than appearing out of nowhere.
+ * The selected entity's detail file: what it carried, and whether it is still
+ * on the way. The panel renders before it arrives – the name, the status, the
+ * season strip and the ratings are all in the page – so the two blocks that
+ * wait for it say so rather than appearing out of nowhere.
  */
-interface Loaded {
+interface DetailState {
   profiles: Record<string, ProfileWithCoords>;
   photos: Photo[];
   loading: boolean;
@@ -270,7 +270,7 @@ const Nearby = ({
   );
 };
 
-const PassDetail = (props: Props & Loaded & { pass: Pass }) => {
+const PassDetail = (props: Props & DetailState & { pass: Pass }) => {
   const { pass } = props;
   const climate = props.climate[pass.slug];
   const bucket = climate?.[periodIndex(props.period)];
@@ -627,7 +627,7 @@ export const DetailPanel = (props: Props) => {
   // An entity with neither has no URL and nothing is fetched.
   const url = props.detail[photoKey(selection.kind, selection.slug)] ?? null;
   const { data, loading } = useFetch<DetailData>(url);
-  const loaded: Loaded = {
+  const loaded: DetailState = {
     loading,
     photos: data?.photos ?? [],
     profiles: data?.profiles ?? {},

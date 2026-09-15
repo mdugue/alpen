@@ -1,7 +1,7 @@
 import { describe, expect, test } from "bun:test";
 
 import {
-  ASSET_NAME,
+  DETAIL_ASSET_NAME,
   DETAIL_ASSET_DIR,
   detailAssets,
 } from "@/lib/detail-assets";
@@ -76,7 +76,19 @@ describe("detailAssets", () => {
   test("every written name is one the build script would prune", () => {
     // The script removes files of this shape that are not in the current set;
     // a name it does not recognise would linger in `public/detail` for good.
-    for (const f of build().files) expect(ASSET_NAME.test(f.name)).toBe(true);
+    for (const f of build().files)
+      expect(DETAIL_ASSET_NAME.test(f.name)).toBe(true);
+  });
+
+  test("the pattern admits the three kinds and nothing else", () => {
+    // `next.config.ts` promises a year of immutability to the same shape, so
+    // the pattern may not be looser than what the script actually writes.
+    expect(DETAIL_ASSET_NAME.test("tour-sellaronda.0123abcd.json")).toBe(true);
+    expect(DETAIL_ASSET_NAME.test("plan-sellaronda.0123abcd.json")).toBe(false);
+    expect(DETAIL_ASSET_NAME.test("pass-stilfser-joch.json")).toBe(false);
+    expect(DETAIL_ASSET_NAME.test("pass-stilfser-joch.0123abc.json")).toBe(
+      false,
+    );
   });
 
   test("a pass carries its own ascents' profiles and its own photos", () => {

@@ -25,13 +25,12 @@ import passesJson from "../data/passes.json" with { type: "json" };
 import toursJson from "../data/tours.json" with { type: "json" };
 import townsJson from "../data/towns.json" with { type: "json" };
 import {
-  ASSET_NAME,
   DETAIL_ASSET_DIR,
+  DETAIL_ASSET_NAME,
   detailAssets,
 } from "../lib/detail-assets";
-import { profileCoords } from "../lib/profile";
+import { profilesWithCoords } from "../lib/profile";
 import * as S from "../lib/schema";
-import type { ProfileWithCoords } from "../lib/types";
 
 const OUT = new URL(`../public/${DETAIL_ASSET_DIR}/`, import.meta.url);
 const routesFile = Bun.file(
@@ -49,22 +48,21 @@ const routes = S.Routes.parse(
   (await routesFile.exists()) ? await routesFile.json() : {},
 );
 
-// The sample coordinates are derived rather than stored (lib/profile.ts), and
-// `lib/data.ts` derives them the same way – both sides have to, or the hashes
-// would not agree.
-const withCoords: Record<string, ProfileWithCoords> = Object.fromEntries(
-  Object.entries(profiles).map(([key, p]) => [
-    key,
-    { ...p, coords: routes[key] ? profileCoords(routes[key]) : undefined },
-  ]),
+// The same function `lib/data.ts` runs to derive the names: the file name is a
+// hash of what it returns, so the two sides cannot spell this differently.
+const { files } = detailAssets(
+  passes,
+  tours,
+  towns,
+  profilesWithCoords(profiles, routes),
+  photos,
 );
-
-const { files } = detailAssets(passes, tours, towns, withCoords, photos);
 
 await mkdir(OUT, { recursive: true });
 const keep = new Set(files.map((f) => f.name));
 for (const name of await readdir(OUT))
-  if (ASSET_NAME.test(name) && !keep.has(name)) await rm(new URL(name, OUT));
+  if (DETAIL_ASSET_NAME.test(name) && !keep.has(name))
+    await rm(new URL(name, OUT));
 
 let bytes = 0;
 let gzipped = 0;

@@ -408,12 +408,18 @@ friends do that better and the app links out to them.
   cached call per pass per window, 201 passes, which is why the window is an
   hour (≈ 4 800/day) and not the half hour it was (≈ 9 600/day). Three rules
   follow. A window that gets shorter has to be checked against that product
-  again. The answer carries `s-maxage`, so the repeats inside a window are
-  served by the CDN and not by the function. And a failure is never left to
-  each visitor to retry: a thrown forecast is not cached, so a rate limit or
-  an outage would arrive undamped – the module-level cooldown and the
-  `s-maxage` on the error are what keeps the load off Open-Meteo exactly when
-  the cache has stopped absorbing it. The same arithmetic is why the app is
+  again. A successful answer carries `s-maxage`, so the repeats inside a
+  window are served by the CDN and not by the function. And a failure is never
+  left to each visitor to retry: a thrown forecast is not cached, so a rate
+  limit or an outage would arrive undamped, and a module-level cooldown bounds
+  what one warm instance will ask. That cooldown sits _inside_ the cached
+  function, where a cache hit never reaches it – one failing pass must not
+  blank the weather of the other 200 – and it is armed at the failed fetch
+  rather than in the handler, or it would re-arm on its own rejection and
+  never end. It cannot be helped along at the edge: Vercel's CDN stores only
+  200, 404, 410 and the redirects, so a `Cache-Control` on a 502 is inert, and
+  dressing a failure as a 200 to make it cacheable is not worth the lie. The
+  404 for an unknown slug _is_ cacheable and says so. The same arithmetic is why the app is
   non-commercial in both senses: ads or affiliate links would break Vercel's
   Hobby terms and Open-Meteo's free tier in the same move. Donations would
   not.

@@ -23,7 +23,7 @@ const nextConfig: NextConfig = {
     Promise.resolve(
       [
         `/${MAP_ASSET_DIR}/:kind(routes|tours).:hash([0-9a-f]{8}).geojson`,
-        `/${DETAIL_ASSET_DIR}/:entity.:hash([0-9a-f]{8}).json`,
+        `/${DETAIL_ASSET_DIR}/:entity((?:pass|tour|town)-[a-z0-9-]+).:hash([0-9a-f]{8}).json`,
       ].map((source) => ({
         headers: [
           {

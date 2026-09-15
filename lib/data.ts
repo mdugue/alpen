@@ -15,7 +15,7 @@ import { MAP_ASSET_DIR, mapAssets } from "@/lib/map-assets";
 import type { MapAssets } from "@/lib/map-assets";
 import { nearbyTours, townReach } from "@/lib/nearby";
 import type { NearbyTours, TownReach } from "@/lib/nearby";
-import { profileCoords, valleyElevations } from "@/lib/profile";
+import { profilesWithCoords, valleyElevations } from "@/lib/profile";
 import * as S from "@/lib/schema";
 import { passYear, signalsOf, tourYear } from "@/lib/status";
 import type { Signals, Year, Years } from "@/lib/status";
@@ -24,7 +24,6 @@ import type {
   ElevationProfile,
   Pass,
   Photos,
-  ProfileWithCoords,
   RouteGeometry,
   Tour,
   Town,
@@ -80,21 +79,28 @@ export const getTowns = async (): Promise<Town[]> => {
 };
 
 /**
- * URLs of the GeoJSON files MapLibre loads, plus the tour bounding boxes.
- * The names are derived, not read from a manifest, so this is where a build
- * that skipped the script (`next build` instead of `bun run build`) is caught
- * – as a build error, not as a silent 404 in the visitor's browser.
+ * Both asset kinds derive their file names here rather than reading a
+ * manifest, so this is where a build that skipped a script (`next build`
+ * instead of `bun run build`) is caught – as a build error, not as a silent
+ * 404 in the visitor's browser.
  */
+const assertWritten = (dir: string, names: string[], script: string) => {
+  for (const name of names)
+    if (!existsSync(path.join(process.cwd(), "public", dir, name)))
+      throw new Error(
+        `${dir}/${name} fehlt – "bun run scripts/${script}" ausführen (Teil von "bun run build")`,
+      );
+};
+
+/** URLs of the GeoJSON files MapLibre loads, plus the tour bounding boxes. */
 export const getMapAssets = async (): Promise<MapAssets> => {
   "use cache";
   const { assets, files } = mapAssets(passes, tours, routes);
-  for (const f of files) {
-    const file = path.join(process.cwd(), "public", MAP_ASSET_DIR, f.name);
-    if (!existsSync(file))
-      throw new Error(
-        `${MAP_ASSET_DIR}/${f.name} fehlt – "bun run scripts/build-map-assets.ts" ausführen (Teil von "bun run build")`,
-      );
-  }
+  assertWritten(
+    MAP_ASSET_DIR,
+    files.map((f) => f.name),
+    "build-map-assets.ts",
+  );
   return assets;
 };
 
@@ -111,23 +117,10 @@ export const getTownReach = async (): Promise<TownReach> => {
 };
 
 /**
- * Elevation profiles per ascent, key as `routes.json`, with the road
- * coordinate of every sample. Server-side only: this is what goes into the
- * per-entity detail files, not into the page.
- */
-const profilesWithCoords = (): Record<string, ProfileWithCoords> =>
-  Object.fromEntries(
-    Object.entries(profiles).map(([key, p]) => [
-      key,
-      { ...p, coords: routes[key] ? profileCoords(routes[key]) : undefined },
-    ]),
-  );
-
-/**
  * One URL per entity for the profiles and photos its detail panel needs
- * (`lib/detail-assets.ts`). Derived like the map assets, and checked the same
- * way: a build that skipped the script fails here rather than 404-ing in the
- * visitor's browser.
+ * (`lib/detail-assets.ts`). The profiles go through `profilesWithCoords`, the
+ * same function the build script runs – the file name is a hash of what it
+ * returns, so the two sides have to derive it identically.
  */
 export const getDetailAssets = async (): Promise<DetailAssets> => {
   "use cache";
@@ -135,16 +128,14 @@ export const getDetailAssets = async (): Promise<DetailAssets> => {
     passes,
     tours,
     towns,
-    profilesWithCoords(),
+    profilesWithCoords(profiles, routes),
     photos,
   );
-  for (const f of files) {
-    const file = path.join(process.cwd(), "public", DETAIL_ASSET_DIR, f.name);
-    if (!existsSync(file))
-      throw new Error(
-        `${DETAIL_ASSET_DIR}/${f.name} fehlt – "bun run scripts/build-detail-assets.ts" ausführen (Teil von "bun run build")`,
-      );
-  }
+  assertWritten(
+    DETAIL_ASSET_DIR,
+    files.map((f) => f.name),
+    "build-detail-assets.ts",
+  );
   return assets;
 };
 

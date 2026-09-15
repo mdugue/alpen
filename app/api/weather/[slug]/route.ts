@@ -21,12 +21,19 @@ import type { WeatherDay } from "@/lib/types";
 /** How long one pass's forecast is reused. Open-Meteo refreshes hourly at best. */
 const REVALIDATE_S = 3600;
 /**
- * After a failed call, how long every pass answers from `COOL_DOWN_S` without
- * asking Open-Meteo again. A thrown forecast is deliberately *not* cached, so
- * without this each visitor would start a fresh upstream call – the moment a
- * rate limit or an outage makes the cache stop absorbing them is exactly the
- * moment the load arrives undamped. Module scope, so the window is per warm
- * instance; the `s-maxage` on the error does the same for the edge.
+ * After a failed call, how long this instance stops asking Open-Meteo. A thrown
+ * forecast is deliberately *not* cached, so without a cooldown each visitor
+ * would start a fresh upstream call – the moment a rate limit or an outage
+ * makes the cache stop absorbing them is exactly the moment the load arrives
+ * undamped.
+ *
+ * Two things it is not. It is module scope, so the window is per warm instance
+ * and a burst spread over several cold ones still costs one call each; that is
+ * a bound on the storm, not a gate. And it cannot be helped along at the edge:
+ * Vercel's CDN caches only 200, 404, 410 and the redirects, so a 502 or 503 is
+ * never stored however it is labelled, and this route does not dress a failure
+ * up as a 200 to get it cached – the panel's "Wetter nicht verfügbar" belongs
+ * to a response that says it failed.
  */
 const COOL_DOWN_S = 60;
 let coolDownUntil = 0;
@@ -38,15 +45,31 @@ const forecast = async (
 ): Promise<WeatherDay[]> => {
   "use cache";
   const { cacheLife, cacheTag } = await import("next/cache");
-  cacheLife({ expire: 14_400, revalidate: REVALIDATE_S, stale: 300 });
+  cacheLife({ expire: 7200, revalidate: REVALIDATE_S, stale: 300 });
   cacheTag("weather");
 
-  const res = await fetch(
-    `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&elevation=${elevation}` +
-      "&daily=temperature_2m_max,temperature_2m_min,precipitation_sum,snowfall_sum,wind_speed_10m_max,weather_code" +
-      "&timezone=Europe%2FBerlin&forecast_days=7",
-  );
-  if (!res.ok) throw new Error(`Open-Meteo ${res.status}`);
+  // Inside the cached function on purpose: a cache hit never runs this body, so
+  // a pass that is already answered keeps being answered while the cooldown
+  // holds. Only a call that would actually reach Open-Meteo is turned away –
+  // one failing pass must not blank the weather of the other 200.
+  if (Date.now() < coolDownUntil) throw new Error("Open-Meteo pausiert");
+
+  // The cooldown is armed where it is earned, not in the handler: a handler
+  // that armed it on every rejection would re-arm on its own "pausiert" throw
+  // and, under steady traffic, never let the window end.
+  let res: Response;
+  try {
+    res = await fetch(
+      `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&elevation=${elevation}` +
+        "&daily=temperature_2m_max,temperature_2m_min,precipitation_sum,snowfall_sum,wind_speed_10m_max,weather_code" +
+        "&timezone=Europe%2FBerlin&forecast_days=7",
+    );
+    if (!res.ok) throw new Error(`Open-Meteo ${res.status}`);
+  } catch (error) {
+    coolDownUntil = Date.now() + COOL_DOWN_S * 1000;
+    throw error;
+  }
+
   const { daily } = (await res.json()) as {
     daily: Record<string, (number | string)[]>;
   };
@@ -64,12 +87,13 @@ const forecast = async (
 
 /**
  * `s-maxage` lets the CDN answer the repeats, `max-age=0` keeps the browser
- * asking so a reload shows the newer forecast, and the long
- * `stale-while-revalidate` means an Open-Meteo outage shows yesterday's
- * numbers rather than an empty block.
+ * asking so a reload shows the newer forecast, and `stale-while-revalidate`
+ * covers one more window: a forecast at most two hours old is still a forecast,
+ * while a whole day of staleness would eventually label yesterday "heute".
  */
-const CACHE_OK = `public, max-age=0, s-maxage=${REVALIDATE_S}, stale-while-revalidate=86400`;
-const CACHE_ERROR = `public, max-age=0, s-maxage=${COOL_DOWN_S}`;
+const CACHE_OK = `public, max-age=0, s-maxage=${REVALIDATE_S}, stale-while-revalidate=${REVALIDATE_S}`;
+/** An unknown slug cannot become known without a deploy, and a 404 *is* cacheable. */
+const CACHE_404 = "public, max-age=0, s-maxage=86400";
 
 export const GET = async (
   _req: Request,
@@ -78,12 +102,9 @@ export const GET = async (
   const { slug } = await ctx.params;
   const pass = await getPass(slug);
   if (!pass)
-    return Response.json({ error: "unbekannter Pass" }, { status: 404 });
-
-  if (Date.now() < coolDownUntil)
     return Response.json(
-      { error: "Open-Meteo pausiert" },
-      { headers: { "Cache-Control": CACHE_ERROR }, status: 503 },
+      { error: "unbekannter Pass" },
+      { headers: { "Cache-Control": CACHE_404 }, status: 404 },
     );
 
   try {
@@ -93,10 +114,6 @@ export const GET = async (
       { headers: { "Cache-Control": CACHE_OK } },
     );
   } catch (error) {
-    coolDownUntil = Date.now() + COOL_DOWN_S * 1000;
-    return Response.json(
-      { error: (error as Error).message },
-      { headers: { "Cache-Control": CACHE_ERROR }, status: 502 },
-    );
+    return Response.json({ error: (error as Error).message }, { status: 502 });
   }
 };
