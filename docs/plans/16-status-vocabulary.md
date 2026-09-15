@@ -1,6 +1,7 @@
 # 16 · One status vocabulary
 
-**Status:** in progress · **Effort:** M · **Depends on:** 15 (the badge, the
+**Status:** [in progress](https://github.com/mdugue/alpen/pull/40) ·
+**Effort:** M · **Depends on:** 15 (the badge, the
 strip and the panel read one cell) · **Unblocks:** 17 (the per-kind panel
 modules print sentences they do not compose), 08 (a second language
 translates one table)
