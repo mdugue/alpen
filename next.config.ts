@@ -1,5 +1,6 @@
 import type { NextConfig } from "next";
 
+import { DETAIL_ASSET_DIR } from "./lib/detail-assets";
 import { MAP_ASSET_DIR } from "./lib/map-assets";
 
 const nextConfig: NextConfig = {
@@ -11,23 +12,28 @@ const nextConfig: NextConfig = {
     turbopackRustReactCompiler: true,
   },
 
-  // The route geometry MapLibre loads (scripts/build-map-assets.ts) carries a
-  // content hash in its name, so it may be cached for good. Without this rule
-  // Vercel serves public/ with max-age=0 and revalidates on every visit. Only
-  // the hashed names match (same shape as ASSET_NAME in lib/map-assets.ts):
-  // anything else under public/map keeps the default and stays updatable.
+  // What the browser fetches instead of getting it as props – the route
+  // geometry (scripts/build-map-assets.ts) and the per-entity detail files
+  // (scripts/build-detail-assets.ts) – carries a content hash in its name, so
+  // it may be cached for good. Without these rules Vercel serves public/ with
+  // max-age=0 and revalidates on every visit. Only the hashed names match
+  // (same shape as the ASSET_NAME patterns in the two lib modules): anything
+  // else under those directories keeps the default and stays updatable.
   headers: () =>
-    Promise.resolve([
-      {
+    Promise.resolve(
+      [
+        `/${MAP_ASSET_DIR}/:kind(routes|tours).:hash([0-9a-f]{8}).geojson`,
+        `/${DETAIL_ASSET_DIR}/:entity((?:pass|tour|town)-[a-z0-9-]+).:hash([0-9a-f]{8}).json`,
+      ].map((source) => ({
         headers: [
           {
             key: "Cache-Control",
             value: "public, max-age=31536000, immutable",
           },
         ],
-        source: `/${MAP_ASSET_DIR}/:kind(routes|tours).:hash([0-9a-f]{8}).geojson`,
-      },
-    ]),
+        source,
+      })),
+    ),
 
   // The pass, tour and town data is static and imported at build time;
   // the only dynamic source is the weather forecast

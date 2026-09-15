@@ -41,6 +41,7 @@ that goal; features that only add route-level precision rank last.
 | 19  | [A map scene between the rows and MapLibre](19-map-scene.md)          | map testable without WebGL          | M–L    | 18, 01               | proposed                                               |
 | 20  | [The gate's decisions out of the build script](20-route-decisions.md) | pipeline testable, one retry rule   | M–L    | 00                   | proposed                                               |
 | 21  | [One adapter per external host](21-host-adapters.md)                  | offline pipeline test               | M      | 20                   | proposed                                               |
+| 22  | [Detail data out of the payload](22-detail-data-out-of-payload.md)    | first load, free-tier headroom      | S–M    | 01                   | done                                                   |
 
 Effort: S ≤ 1 day, M 2–3 days, L 4–6 days. 09, 10 and 11 can be interleaved
 with anything; do 09 before 12 so the new entity gets a schema from day one.

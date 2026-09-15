@@ -13,6 +13,8 @@ public/maplibre
 # only the glyphs (scripts/fetch-glyphs.ts, committed) are tracked
 public/map/*
 !public/map/fonts/
+# written by scripts/build-detail-assets.ts
+public/detail
 
 # screenshots the e2e helper writes when a scenario fails
 e2e/failures

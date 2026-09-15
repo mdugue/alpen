@@ -49,6 +49,10 @@ test(
       await page.waitFor("#detail-title");
       expect(await page.text("#detail-title")).toBe("Col du Galibier");
       expect(await page.hash()).toContain("pass=col-du-galibier");
+      // The profiles are not in the page: the panel fetches the selected
+      // entity's file from `public/detail` (lib/detail-assets.ts). The title
+      // is there immediately, the profile a request later.
+      await page.waitFor('[aria-label^="Höhenprofil:"]');
       await page.press("Escape");
       await page.waitForGone("#detail-title");
       // The panel is gone on commit, the row is focused a frame later
