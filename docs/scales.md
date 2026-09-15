@@ -93,9 +93,17 @@ sentences once.
 `Status` (`open | risky | closed`, `lib/schema.ts`) stays three-valued: it is
 the vocabulary of the filter, the hash and the map. `Grade` (`best | good |
 limited | closed`, `lib/status.ts`) is what the strip and the histogram
-read: `open` split by whether the half-month lies in `bestPeriods()`, the
+read: `open` split by whether the half-month lies in the best window, the
 longest run of "gut" half-months with fewer than 10 % snow days. The map
 circles, the row dot and the badge dot keep the three status colours.
+
+All 24 half-months of a pass are judged **once, on the server**: `passYear()`
+runs the verdict over the whole year and `getYears()` (`lib/data.ts`) does that
+for every pass and tour at prerender, so the row, the histogram, the strip, the
+badge and the detail panel all read one `Year` instead of each grading the pass
+again in the browser (plan 15). A tour takes, per half-month, the cell of the
+member pass with the lowest grade – whole, so its colour, its word and its snow
+note come from the same pass.
 
 Nothing but the opening window produces "oft gesperrt": a closure is what the
 window knows; snowfall, heat or short days are what the series and the

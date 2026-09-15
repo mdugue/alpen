@@ -579,6 +579,22 @@ describe("tourYear", () => {
     });
   });
 
+  // The July cell above is where the two rules this replaced disagreed: the
+  // word came from the ladder ("b", Randzeit) while the strip's note came from
+  // whichever member happened to be listed first ("a", snowy), so a tour cell
+  // could say "Randzeit" next to a popover explaining the snow. One cell, one
+  // pass: the snow note has to follow the word, not the slug order.
+  test("the whole cell comes from one pass, not the word from one and the note from another", () => {
+    expect(at(["a", "b"], 7, snowyYears)).toMatchObject({
+      reasons: ["window-edge"],
+      snowy: false,
+    });
+    // Listing the members the other way round cannot change the answer.
+    expect(at(["b", "a"], 7, snowyYears)).toEqual(
+      at(["a", "b"], 7, snowyYears),
+    );
+  });
+
   test("the climate map reaches the passes of a tour", () => {
     expect(at(["a"], 8).status).toBe("open");
     expect(at(["a"], 8, snowyYears).status).toBe("risky");

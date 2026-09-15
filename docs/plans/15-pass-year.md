@@ -1,8 +1,9 @@
 # 15 · The year of a pass, computed once
 
-**Status:** proposed · **Effort:** S–M · **Depends on:** 13 (the reason
-ladder, `bestPeriods`) · **Unblocks:** 16, 17; 12 (a destination score reads
-the same series instead of running the verdict again)
+**Status:** [done](https://github.com/mdugue/alpen/pull/PR_NUMBER) ·
+**Effort:** S–M · **Depends on:** 13 (the reason ladder, the best window) ·
+**Unblocks:** 16, 17; 12 (a destination score reads the same series instead of
+running the verdict again)
 
 ## Goal
 
@@ -157,14 +158,61 @@ series is computed once on the server.
 - The 24-status snapshot passes unchanged; `bun run e2e` unchanged;
   screenshots of a list, the scrubber and a detail identical to before.
 
+## What it measured
+
+| Per search keystroke, in the browser         | Before | After |
+| -------------------------------------------- | ------ | ----- |
+| rows + histogram                             | 16 699 | 0     |
+| the same plus one `facetCount` per chip (24) | 20 467 | 0     |
+
+The server runs 4 824 verdicts once at prerender (201 passes × 24
+half-months). Measured with a counter in `passVerdict` and a script that calls
+what `Explorer` calls per render; see the PR.
+
 ## Risks and open questions
 
-- **Payload.** 201 passes × 24 cells as JSON is roughly 150–200 KB before
-  compression, in the same order as `climate.json`, which already ships. If
-  it matters, encode a cell compactly (status and grade as small integers,
-  reasons as ladder indices) inside the getter and decode in one place.
+- **Payload – measured, and left plain.** 201 passes × 24 cells are 394 KB of
+  JSON, more than the 150–200 KB estimated here, but **8.4 KB gzipped** against
+  `climate.json`'s 41.8 KB: the cells repeat, so they compress about five times
+  better than the series they come from. The compact encoding this section held
+  in reserve (status and grade as small integers, reasons as ladder indices)
+  would buy nothing over the wire and cost a decode step, so the cells ship as
+  they are.
 - **Valleys.** The summer filters derive the valley temperature for the
-  chosen half-month on the client, so `valleys` stays a prop for now. When the
-  cell carries the derived number, the filter can read it and `valleys` goes.
-- **Tours** with a member the year does not know (a slug typo) get an empty
-  cell set; `data:check` already rejects that, so it is only a type question.
+  chosen half-month on the client, so `valleys` stays a prop, as does
+  `climate` – the chart draws it and `withinLimits` reads the raw signals.
+  When the cell carries the derived number, the filter can read it and
+  `valleys` goes.
+- **Tours** with a member the year does not know (a slug typo) read the
+  `UNHELD` cell; `data:check` already rejects that, so it stayed a type
+  question.
+
+## What it changed for a reader
+
+Every one of the 201 passes comes out bit-identical to before: over all 5 040
+cells, **zero** differences in status, grade, reasons or the best window, for
+passes and tours alike (dumped from both branches and diffed; the 24-status
+snapshot in `status.test.ts` also passes unchanged).
+
+Seven **tour** cells changed, in one place only: the sentence in the strip's
+popover. That is the disagreement this plan was written to remove, caught in
+the act. A tour cell used to be assembled from two rules – the word next to the
+dot came from `tourVerdict`, which picks the member pass whose first reason
+ranks earliest on the ladder, while the strip's note came from
+`tourCellNotes`, which picks by grade alone and therefore, among equally
+limited passes, took whichever slug `tours.json` happened to list first. So a
+tour cell could read "eingeschränkt: Randzeit" with a popover explaining the
+snowfall of a different pass, and which pass that was depended on the order of
+an array. `tourYear` takes one cell whole, so the note now names the same
+caveat the word does. `status`, `grade` and the strip's colours are untouched,
+which is why the non-goal "no change to the strip's look" holds.
+
+## What it changed beyond the plan
+
+`tourVerdict` and `tourStatus` went with the rest. The plan kept them, but
+`tourYear` subsumes both: it picks the member pass by grade, and since a grade
+is the status refined by the best window, the lowest grade is always the worst
+status too. Keeping a second rule for "what is this tour's status" is the
+duplication this plan exists to remove. `verdictReasons` became `reasonTexts`
+for the same reason – it ran the verdict again only to read the reasons back,
+which the cell already carries.
