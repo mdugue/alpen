@@ -254,11 +254,27 @@ friends do that better and the app links out to them.
   a rank by name match – and stores only metadata in
   `data/generated/photos.json`: the thumbnail URL, the author, the licence and
   the file page. The files themselves stay on Wikimedia's CDN and reach the
-  browser through a plain `<img>`; they are already the right size and already
-  cached, and mirroring them would put ~25 MB of binaries into the repo.
-  Attribution is not decoration: every slide carries author and licence,
-  baked into the slide rather than derived from the carousel's index, so it
-  cannot drift out of sync with what is on screen.
+  browser through a plain `<img>`, never `next/image`; they are already
+  rendered and already cached, mirroring them would put ~25 MB of binaries
+  into the repo, and the optimiser would add a hop, a `remotePatterns` entry
+  and a bill for the same bytes. What it would have brought is had without
+  it. Wikimedia renders a fixed ladder of widths and answers a direct request
+  for anything else with a 400, so `thumbUrl` composes the smaller rungs of
+  that ladder and the slide carries a `srcset` off it (`photoSrcSet`,
+  `PHOTO_SIZES`): a 1× panel fetches 500 px where it used to fetch 960. And
+  the one thing that cannot be fetched in time is precomputed – `Photo.blur`
+  is the same photo 20 px wide as a data URI, painted as the figure's
+  background, so a slide opens on its own colours instead of an empty box and
+  the browser's upscaling is the blur. It travels inside the entity's detail
+  file, because a placeholder that needs a request of its own loses the race
+  it exists to win; generating one on demand and caching it would lose the
+  same race for every first visitor to a pass. No image library is involved
+  either way: Wikimedia renders the 20 px version, `scripts/lib/blur.ts`
+  strips the metadata it inherits – a wide-gamut photo's ICC profile is 30 KB
+  around a 480-byte picture, and re-encoding does not drop it – and
+  `Bun.Image` turns what is left into ~150 bytes of WebP. Attribution is not decoration: every slide carries author
+  and licence, baked into the slide rather than derived from the carousel's
+  index, so it cannot drift out of sync with what is on screen.
 - **A sidebar section adds no surface.** The three collapsible lists
   (`components/sidebar/section.tsx`) carry no background of their own in either
   state – neither a tint on the header nor the ghost trigger's

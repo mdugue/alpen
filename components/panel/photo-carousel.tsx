@@ -7,6 +7,7 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
+import { PHOTO_SIZES, photoSrcSet } from "@/lib/photos";
 import type { Photo } from "@/lib/types";
 import { cn, MAP_CONTROL } from "@/lib/utils";
 
@@ -22,9 +23,14 @@ import { cn, MAP_CONTROL } from "@/lib/utils";
  * sync, and it is correct while a slide is still half-scrolled into view.
  *
  * The files are loaded from Wikimedia's CDN (`lib/photos.ts`), which is why
- * this is a plain `<img>` – they are already the right size and already
- * cached; routing a few hundred of them through the image optimiser would buy
- * nothing.
+ * this is a plain `<img>` and not `next/image`: they are already rendered,
+ * already cached, and routing a few hundred of them through the image
+ * optimiser would add a hop and a bill for the same bytes. What the optimiser
+ * would have brought, the two attributes below bring without it – a `srcset`
+ * off Commons' own width ladder (`photoSrcSet`), so a 1x panel fetches 500 px
+ * instead of 960, and a placeholder baked into the metadata (`Photo.blur`),
+ * painted as the figure's background so the slide opens on the photo's own
+ * colours and the sharp file lands on top of them.
  */
 export const PhotoCarousel = ({ photos }: { photos: Photo[] }) => {
   if (photos.length === 0) return null;
@@ -34,7 +40,14 @@ export const PhotoCarousel = ({ photos }: { photos: Photo[] }) => {
       <CarouselContent className="-ml-1.5">
         {photos.map((photo, i) => (
           <CarouselItem className="pl-1.5" key={photo.src}>
-            <figure className="border-border/60 bg-muted relative overflow-hidden rounded-lg border">
+            <figure
+              className="border-border/60 bg-muted relative overflow-hidden rounded-lg border bg-cover bg-center"
+              // The placeholder is 20 px wide; the browser's own upscaling is
+              // the blur, so nothing has to be filtered or faded here.
+              style={
+                photo.blur ? { backgroundImage: `url("${photo.blur}")` } : {}
+              }
+            >
               <img
                 alt={photo.title}
                 className="aspect-video w-full object-cover"
@@ -43,7 +56,9 @@ export const PhotoCarousel = ({ photos }: { photos: Photo[] }) => {
                 // The first photo is the hero and is visible as the panel
                 // opens; the rest are one swipe away and can wait.
                 loading={i === 0 ? "eager" : "lazy"}
+                sizes={PHOTO_SIZES}
                 src={photo.src}
+                srcSet={photoSrcSet(photo)}
                 width={photo.width}
               />
               <figcaption className="text-2xs absolute inset-x-0 bottom-0 flex items-center gap-1.5 bg-gradient-to-t from-black/80 via-black/45 to-transparent px-2 pt-6 pb-1.5 leading-tight text-white/85">

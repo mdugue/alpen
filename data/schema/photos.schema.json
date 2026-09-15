@@ -13,6 +13,11 @@
         "artist": {
           "type": "string"
         },
+        "blur": {
+          "type": "string",
+          "format": "starts_with",
+          "pattern": "^data:image\\/.*"
+        },
         "height": {
           "type": "integer",
           "exclusiveMinimum": 0,
