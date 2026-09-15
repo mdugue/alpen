@@ -32,6 +32,7 @@ import {
   writeHash,
 } from "@/lib/app-state";
 import type { EntityKind, Filters, MapView, Selection } from "@/lib/app-state";
+import type { DetailAssets } from "@/lib/detail-assets";
 import type { MapAssets } from "@/lib/map-assets";
 import type { NearbyTours, TownReach } from "@/lib/nearby";
 import {
@@ -48,8 +49,6 @@ import type {
   LatLon,
   Pass,
   Period,
-  Photos,
-  ProfileWithCoords,
   Tour,
   Town,
 } from "@/lib/types";
@@ -69,7 +68,11 @@ interface Props {
   nearbyTours: NearbyTours;
   /** The area each town reaches, drawn on hover; see `lib/nearby.ts`. */
   townReach: TownReach;
-  profiles: Record<string, ProfileWithCoords>;
+  /**
+   * Where the detail panel loads the selected entity's profiles and photos
+   * from, one file per entity; see `lib/detail-assets.ts`.
+   */
+  detail: DetailAssets;
   climate: Record<string, ClimateYear>;
   /** Lowest ascent start per pass, for the derived valley heat (`lib/status.ts`). */
   valleys: Record<string, number>;
@@ -78,8 +81,6 @@ interface Props {
    * server (`getYears`, lib/data.ts). Nothing here grades a pass itself.
    */
   years: Years;
-  /** Commons photos per entity, see `lib/photos.ts`. */
-  photos: Photos;
   /** Today's half-month, computed on the server in Europe/Berlin. */
   defaultPeriod: Period;
 }
@@ -106,11 +107,10 @@ export const Explorer = ({
   assets,
   nearbyTours,
   townReach,
-  profiles,
+  detail,
   climate,
   valleys,
   years,
-  photos,
   defaultPeriod,
 }: Props) => {
   const signals: Signals = { climate, valleys };
@@ -283,11 +283,10 @@ export const Explorer = ({
       tours={tours}
       towns={towns}
       nearbyTours={nearbyTours}
-      profiles={profiles}
+      detail={detail}
       climate={climate}
       valleys={valleys}
       years={years}
-      photos={photos}
       isFavorite={isFavorite}
       onToggleFavorite={toggleFavorite}
       onProfileCursor={setProfileCursor}

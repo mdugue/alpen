@@ -54,6 +54,8 @@ friends do that better and the app links out to them.
 | Map, layers, 3D, markers, labels, feature state | `components/map/pass-map.tsx`                                                                                                                                                                                                                                                                              |
 | Basemap: vector style, palette, glyphs          | `lib/basemap.ts`, `lib/palette.ts`, `scripts/build-map-style.ts` (→ `public/map/style-*.json`), `scripts/build-glyphs.ts` (→ `public/map/fonts`, committed)                                                                                                                                                |
 | Map assets: GeoJSON, simplification, hashing    | `lib/map-assets.ts`, `scripts/build-map-assets.ts` (→ `public/map`, git-ignored)                                                                                                                                                                                                                           |
+| Detail assets: one file per entity, hashing     | `lib/detail-assets.ts`, `scripts/build-detail-assets.ts` (→ `public/detail`, git-ignored)                                                                                                                                                                                                                  |
+| Weather route, Open-Meteo quota and cooldown    | `app/api/weather/[slug]/route.ts`                                                                                                                                                                                                                                                                          |
 | Tours within reach, town reach hull             | `lib/nearby.ts`, `lib/geo.ts` (computed on the server in `lib/data.ts`)                                                                                                                                                                                                                                    |
 | Photos: keys, sizes, licence metadata           | `lib/photos.ts`, `scripts/build-photos.ts` (`bun run data:photos`) → `data/generated/photos.json`                                                                                                                                                                                                          |
 | Period scrubber floating over the map           | `components/map/period-scrubber.tsx`                                                                                                                                                                                                                                                                       |
@@ -322,6 +324,22 @@ friends do that better and the app links out to them.
   used to read from the geometry is precomputed on the server: tours within
   reach of an entity (`lib/nearby.ts`) and the road coordinate of every
   profile sample (`ProfileWithCoords`).
+- **Neither does what only one entity's panel reads.** The same rule, one
+  layer up: `scripts/build-detail-assets.ts` writes one content-hashed JSON
+  per pass, tour and town into `public/detail` (git-ignored, cached immutably)
+  holding that entity's elevation profiles and its Commons photo metadata,
+  `lib/data.ts` derives the same names with `lib/detail-assets.ts` and hands
+  the page one URL per entity, and `DetailPanel` fetches the one that is
+  selected. Measured per prop on the prerendered page, those two were 297 KB
+  and 77 KB gzipped of 468 KB; the page now carries 144 KB and a selection
+  costs about 2 KB. A block that waits for the file says so – `PhotoCarousel`
+  renders nothing until it has a photo, the ascent list shows a
+  `PROFILE_ASPECT`-shaped skeleton – because everything a list row already
+  showed (name, status, season strip, ratings) is in the page and must not
+  flicker. What the sidebar reads stays a prop, and that is the line: the
+  climate series is 42 KB gzipped and `buildPassRows`/`facetCount` read it on
+  every keystroke, so a late arrival would mean a filter counting wrong for a
+  moment (see "A filter is a chip, and no chip lies").
 - **The basemap is generated, and it follows the OS scheme.** The default
   base is a vector style painted from the app's own palette (`lib/basemap.ts`,
   colours in `lib/palette.ts`), tiles from OpenFreeMap, no key. Layer stack,
@@ -383,6 +401,22 @@ friends do that better and the app links out to them.
   `app/page.tsx`. Introducing `cookies()`, `headers()` or `searchParams`
   breaks prerendering – put such things in a separate dynamic child component
   inside `<Suspense>` instead.
+- **The one dynamic route lives inside a free tier, and the numbers are in
+  the file.** `app/api/weather/[slug]` is the only thing a visitor can spend
+  somebody's quota on. Open-Meteo's non-commercial allowance is 10 000 calls
+  a day, so the worst case has to be computed rather than hoped for: one
+  cached call per pass per window, 201 passes, which is why the window is an
+  hour (≈ 4 800/day) and not the half hour it was (≈ 9 600/day). Three rules
+  follow. A window that gets shorter has to be checked against that product
+  again. The answer carries `s-maxage`, so the repeats inside a window are
+  served by the CDN and not by the function. And a failure is never left to
+  each visitor to retry: a thrown forecast is not cached, so a rate limit or
+  an outage would arrive undamped – the module-level cooldown and the
+  `s-maxage` on the error are what keeps the load off Open-Meteo exactly when
+  the cache has stopped absorbing it. The same arithmetic is why the app is
+  non-commercial in both senses: ads or affiliate links would break Vercel's
+  Hobby terms and Open-Meteo's free tier in the same move. Donations would
+  not.
 - **oxlint and oxfmt, no ESLint.** `bun run lint` is `ultracite check`
   (oxlint plus an oxfmt format check), `bun run lint:fix` writes the fixes.
   oxlint's `nextjs` and `react` plugins cover everything `eslint-config-next`

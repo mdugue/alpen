@@ -4,7 +4,10 @@ import { ExternalLink, Star, X } from "lucide-react";
 import dynamic from "next/dynamic";
 import { useEffect, useRef } from "react";
 
-import { ElevationProfile } from "@/components/panel/elevation-profile";
+import {
+  ElevationProfile,
+  PROFILE_ASPECT,
+} from "@/components/panel/elevation-profile";
 import { PhotoCarousel } from "@/components/panel/photo-carousel";
 import { Section } from "@/components/panel/section";
 import { WeatherForecast } from "@/components/panel/weather-forecast";
@@ -26,9 +29,11 @@ import {
   ItemGroup,
   ItemTitle,
 } from "@/components/ui/item";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Toggle } from "@/components/ui/toggle";
 import type { EntityKind, Selection } from "@/lib/app-state";
 import { clockTime, periodDate, sunTimes } from "@/lib/daylight";
+import type { DetailAssets, DetailData } from "@/lib/detail-assets";
 import { haversine, NEARBY_RADIUS_KM } from "@/lib/geo";
 import { komootHref, quaeldichHref } from "@/lib/links";
 import { nearbyKey } from "@/lib/nearby";
@@ -55,11 +60,12 @@ import type {
   LatLon,
   Pass,
   Period,
-  Photos,
+  Photo,
   ProfileWithCoords,
   Tour,
   Town,
 } from "@/lib/types";
+import useFetch from "@/lib/use-fetch";
 import { cn, fmt, fmtUnit, ICON_TOGGLE, TOUCH_ICON } from "@/lib/utils";
 
 /**
@@ -89,14 +95,13 @@ interface Props {
   towns: Town[];
   /** Precomputed on the server: which tours run within reach of each entity. */
   nearbyTours: NearbyTours;
-  profiles: Record<string, ProfileWithCoords>;
+  /** One URL per entity for its profiles and photos; see `lib/detail-assets.ts`. */
+  detail: DetailAssets;
   climate: Record<string, ClimateYear>;
   /** Lowest ascent start per pass, for the derived valley heat. */
   valleys: Record<string, number>;
   /** The 24 graded half-months of every pass and tour (`getYears`, lib/data.ts). */
   years: Years;
-  /** Commons photos per entity, keyed by `photoKey`. */
-  photos: Photos;
   isFavorite: (kind: EntityKind, slug: string) => boolean;
   onToggleFavorite: (kind: EntityKind, slug: string) => void;
   /** Road point under the profile cursor, drawn on the map; `null` clears it. */
@@ -105,6 +110,18 @@ interface Props {
   onProfileZoom: (point: LatLon) => void;
   onSelect: (sel: Selection) => void;
   onBack: () => void;
+}
+
+/**
+ * What the selected entity's detail file carried, once it arrived. The panel
+ * renders before it does – the name, the status, the season strip and the
+ * ratings are all in the page – so the two blocks that wait for it say so
+ * rather than appearing out of nowhere.
+ */
+interface Loaded {
+  profiles: Record<string, ProfileWithCoords>;
+  photos: Photo[];
+  loading: boolean;
 }
 
 /**
@@ -253,7 +270,7 @@ const Nearby = ({
   );
 };
 
-const PassDetail = (props: Props & { pass: Pass }) => {
+const PassDetail = (props: Props & Loaded & { pass: Pass }) => {
   const { pass } = props;
   const climate = props.climate[pass.slug];
   const bucket = climate?.[periodIndex(props.period)];
@@ -368,9 +385,9 @@ const PassDetail = (props: Props & { pass: Pass }) => {
                 <div className="flex flex-wrap items-baseline justify-between gap-x-2">
                   <span className="text-xs font-medium">{a.label}</span>
                   <span className="text-muted-foreground text-xs tabular-nums">
-                    {profile
-                      ? profileLine(profile, isTraverse(pass.type))
-                      : "Kein Höhenprofil vorhanden."}
+                    {profile && profileLine(profile, isTraverse(pass.type))}
+                    {!(profile || props.loading) &&
+                      "Kein Höhenprofil vorhanden."}
                   </span>
                 </div>
                 {profile && (
@@ -379,6 +396,15 @@ const PassDetail = (props: Props & { pass: Pass }) => {
                     coords={profile.coords}
                     onCursor={props.onProfileCursor}
                     onZoomTo={props.onProfileZoom}
+                  />
+                )}
+                {!profile && props.loading && (
+                  <Skeleton
+                    aria-busy
+                    aria-label="Höhenprofil wird geladen"
+                    className="mt-1 w-full"
+                    role="status"
+                    style={{ aspectRatio: PROFILE_ASPECT }}
                   />
                 )}
               </div>
@@ -595,6 +621,18 @@ export const DetailPanel = (props: Props) => {
   const heading = useRef<HTMLHeadingElement>(null);
   const scroller = useRef<HTMLDivElement>(null);
 
+  // The profiles and the photos of this one entity, as a static file with a
+  // content hash in its name (lib/detail-assets.ts) – so the page does not
+  // carry all 201 passes' worth, and looking at the same pass again is free.
+  // An entity with neither has no URL and nothing is fetched.
+  const url = props.detail[photoKey(selection.kind, selection.slug)] ?? null;
+  const { data, loading } = useFetch<DetailData>(url);
+  const loaded: Loaded = {
+    loading,
+    photos: data?.photos ?? [],
+    profiles: data?.profiles ?? {},
+  };
+
   // Move focus and scroll to the top whenever another entity is selected. The
   // selection is the trigger, not something the effect reads – which is what
   // the rule objects to.
@@ -664,11 +702,9 @@ export const DetailPanel = (props: Props) => {
         >
           {entity.name}
         </h2>
-        <PhotoCarousel
-          photos={props.photos[photoKey(selection.kind, selection.slug)] ?? []}
-        />
+        <PhotoCarousel photos={loaded.photos} />
         {selection.kind === "pass" && (
-          <PassDetail {...props} pass={entity as Pass} />
+          <PassDetail {...props} {...loaded} pass={entity as Pass} />
         )}
         {selection.kind === "tour" && (
           <TourDetail {...props} tour={entity as Tour} />

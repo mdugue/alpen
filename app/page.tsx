@@ -2,11 +2,10 @@ import { Explorer } from "@/components/explorer";
 import { SITE_DESCRIPTION, SITE_NAME, siteUrl } from "@/lib/brand";
 import {
   getClimate,
+  getDetailAssets,
   getMapAssets,
   getNearbyTours,
   getPasses,
-  getPhotos,
-  getProfiles,
   getTours,
   getTownReach,
   getTowns,
@@ -44,8 +43,10 @@ const jsonLd = {
  * build time and managed as cached segments via "use cache" (lib/data.ts).
  * This lets Next prerender the page completely; the only dynamic part is the
  * weather request in the detail panel (own route with its own cache lifetime).
- * The route geometry is not part of the page at all: MapLibre fetches it as
- * static GeoJSON (`public/map`), the page only carries the file URLs.
+ * Neither the route geometry nor the profiles and photos are part of the page:
+ * MapLibre fetches the lines as static GeoJSON (`public/map`) and the panel
+ * fetches the selected entity's detail file (`public/detail`); the page only
+ * carries the URLs.
  *
  * The map is the page: no header, no footer – the title lives in the sidebar
  * and the disclaimer in the scales dialog.
@@ -66,11 +67,10 @@ const Page = async () => {
     assets,
     nearbyTours,
     townReach,
-    profiles,
+    detail,
     climate,
     valleys,
     years,
-    photos,
   ] = await Promise.all([
     getPasses(),
     getTours(),
@@ -78,11 +78,10 @@ const Page = async () => {
     getMapAssets(),
     getNearbyTours(),
     getTownReach(),
-    getProfiles(),
+    getDetailAssets(),
     getClimate(),
     getValleys(),
     getYears(),
-    getPhotos(),
   ]);
 
   return (
@@ -98,11 +97,10 @@ const Page = async () => {
         assets={assets}
         nearbyTours={nearbyTours}
         townReach={townReach}
-        profiles={profiles}
+        detail={detail}
         climate={climate}
         valleys={valleys}
         years={years}
-        photos={photos}
         defaultPeriod={todayPeriod()}
       />
     </main>

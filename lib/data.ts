@@ -9,6 +9,8 @@ import routesJson from "@/data/generated/routes.json";
 import passesJson from "@/data/passes.json";
 import toursJson from "@/data/tours.json";
 import townsJson from "@/data/towns.json";
+import { DETAIL_ASSET_DIR, detailAssets } from "@/lib/detail-assets";
+import type { DetailAssets } from "@/lib/detail-assets";
 import { MAP_ASSET_DIR, mapAssets } from "@/lib/map-assets";
 import type { MapAssets } from "@/lib/map-assets";
 import { nearbyTours, townReach } from "@/lib/nearby";
@@ -37,15 +39,21 @@ import type {
  * Every file is parsed against its schema once, when this module loads on the
  * server; a file that does not match fails `next build` instead of the UI.
  *
- * The route geometry is the one thing that never leaves the server as props:
- * MapLibre loads it as static GeoJSON from `public/map` (written by
- * `scripts/build-map-assets.ts`). What the page hands the client instead is
- * derived from it – the file URLs, tour bounding boxes, which tours pass near
- * which entity, and the road coordinate of each profile sample. Those
- * derivations sit inside their cached getters, not at module scope: the page
- * fills them once at prerender, while the weather route, which imports
- * `getPass` from here and starts cold on a serverless instance, never runs
- * them.
+ * Two of the files never leave the server as props, because both are read for
+ * one entity at a time while the page would carry all of them:
+ *
+ *   - the route geometry, which MapLibre loads as static GeoJSON from
+ *     `public/map` (`scripts/build-map-assets.ts`),
+ *   - the elevation profiles and the photo metadata, which the detail panel
+ *     loads per entity from `public/detail`
+ *     (`scripts/build-detail-assets.ts`, `lib/detail-assets.ts`).
+ *
+ * What the page hands the client instead is derived from them – the file URLs,
+ * tour bounding boxes, which tours pass near which entity, and the valley
+ * elevation of each pass. Those derivations sit inside their cached getters,
+ * not at module scope: the page fills them once at prerender, while the
+ * weather route, which imports `getPass` from here and starts cold on a
+ * serverless instance, never runs them.
  */
 const passes: Pass[] = S.Passes.parse(passesJson);
 const tours: Tour[] = S.Tours.parse(toursJson);
@@ -102,17 +110,42 @@ export const getTownReach = async (): Promise<TownReach> => {
   return townReach(passes, towns);
 };
 
-/** Elevation profiles per ascent, key as `routes.json`, with their sample coordinates. */
-export const getProfiles = async (): Promise<
-  Record<string, ProfileWithCoords>
-> => {
-  "use cache";
-  return Object.fromEntries(
+/**
+ * Elevation profiles per ascent, key as `routes.json`, with the road
+ * coordinate of every sample. Server-side only: this is what goes into the
+ * per-entity detail files, not into the page.
+ */
+const profilesWithCoords = (): Record<string, ProfileWithCoords> =>
+  Object.fromEntries(
     Object.entries(profiles).map(([key, p]) => [
       key,
       { ...p, coords: routes[key] ? profileCoords(routes[key]) : undefined },
     ]),
   );
+
+/**
+ * One URL per entity for the profiles and photos its detail panel needs
+ * (`lib/detail-assets.ts`). Derived like the map assets, and checked the same
+ * way: a build that skipped the script fails here rather than 404-ing in the
+ * visitor's browser.
+ */
+export const getDetailAssets = async (): Promise<DetailAssets> => {
+  "use cache";
+  const { assets, files } = detailAssets(
+    passes,
+    tours,
+    towns,
+    profilesWithCoords(),
+    photos,
+  );
+  for (const f of files) {
+    const file = path.join(process.cwd(), "public", DETAIL_ASSET_DIR, f.name);
+    if (!existsSync(file))
+      throw new Error(
+        `${DETAIL_ASSET_DIR}/${f.name} fehlt – "bun run scripts/build-detail-assets.ts" ausführen (Teil von "bun run build")`,
+      );
+  }
+  return assets;
 };
 
 /** Climate series per pass slug (24 half-months). */
@@ -157,12 +190,6 @@ export const getYears = async (): Promise<Years> => {
   const tourYears: Record<string, Year> = {};
   for (const t of tours) tourYears[t.slug] = tourYear(t, passYears);
   return { passes: passYears, tours: tourYears };
-};
-
-/** Commons photos per entity, keyed by `photoKey` (see `lib/photos.ts`). */
-export const getPhotos = async (): Promise<Photos> => {
-  "use cache";
-  return photos;
 };
 
 export const getPass = async (slug: string): Promise<Pass | undefined> => {

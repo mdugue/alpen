@@ -21,6 +21,14 @@ const H = 96;
 const ML = 32;
 const MB = 14;
 
+/**
+ * The drawing's aspect ratio, for whoever has to reserve its space before the
+ * profile is there – the panel's skeleton while the detail file loads. Shared
+ * rather than copied so the placeholder cannot end up a different height than
+ * the thing it stands in for.
+ */
+export const PROFILE_ASPECT = `${W} / ${H}`;
+
 interface Props {
   profile: Profile;
   /**
