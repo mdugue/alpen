@@ -800,7 +800,7 @@ describe("one status vocabulary", () => {
 
   test("the status order is one list and one direction", () => {
     expect(STATUS_ORDER).toEqual(["open", "risky", "closed"]);
-    // Higher is worse – the direction the status sort and worstStatus read.
+    // Higher is worse – the direction the status sort reads.
     expect(statusRank("open")).toBeLessThan(statusRank("risky"));
     expect(statusRank("risky")).toBeLessThan(statusRank("closed"));
   });

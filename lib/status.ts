@@ -89,18 +89,13 @@ export const STATUS_LABEL: Record<Status, string> = {
 export const STATUS_ORDER: Status[] = ["open", "risky", "closed"];
 
 /**
- * Higher is worse: what the status sort orders by and what `worstStatus`
- * compares. Note that `GRADE_RANK` below runs the other way (higher is
- * better) because `tourYear` picks the minimum grade; the two directions are
- * deliberate and live next to each other so neither can be read for the
- * other.
+ * Higher is worse: the direction the status sort reads. Note that
+ * `GRADE_RANK` below runs the other way (higher is better) because `tourYear`
+ * picks the minimum grade; the two directions are deliberate and live next to
+ * each other so neither can be read for the other.
  */
 export const statusRank = (status: Status): number =>
   STATUS_ORDER.indexOf(status);
-
-/** The worse of two statuses – a tour is only as rideable as its worst pass. */
-export const worstStatus = (a: Status, b: Status): Status =>
-  statusRank(b) > statusRank(a) ? b : a;
 
 /**
  * Why a verdict came out the way it did. Every signal can only lower a cell,

@@ -70,8 +70,25 @@ flowchart TD
 The ladder order is `REASON_ORDER`: `outside-window → window-edge → snow →
 frost → altitude → heat → wet → short-day → cold-descent`. Every reason that
 fired stays in `StatusVerdict.reasons`, in that order; the badge shows the
-first as one word (`REASON_WORD`), the panel every one as a sentence with its
-number and provenance (`REASON_TEXT`).
+first as one word (`REASON_WORD`, via `badgeWord`), the panel every one as a
+sentence with its number and provenance (`REASON_TEXT`).
+
+The thresholds in the diagram above are not written twice. `SIGNALS` in
+`lib/status.ts` is one table – reason, constant, unit and the clause that
+explains it – in ladder order, and the scales dialog renders its "Vier
+Stufen, eine Leiter" paragraph from it (`ladderText`), so a constant that
+moves reaches the text explaining it. `scripts/analyze-status.ts` reads the
+same table when it re-runs the calibration. The reasons without a number –
+the opening window, its edge and the altitude fallback – are calendar rules
+rather than thresholds and are named by `REASON_PHRASE` only.
+
+Three builders in the same module compose the sentences the UI prints, so no
+component joins the word tables itself: `badgeWord(cell)` (the badge and,
+through `statusWord`, the row), `valleyText()` (the one "abgeleitet"
+sentence, always with its `VALLEY_TMAX_ERROR`) and `tourText(cell, names)`
+(the sentence under a tour's badge, carrying the word of the tour's own
+status and naming the members that share it – `YearCell.limiting`, recorded
+by `tourYear`).
 
 Four rungs (`--grade-*` in `app/globals.css` for the fills):
 
