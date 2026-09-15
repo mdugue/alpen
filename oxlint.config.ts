@@ -66,11 +66,13 @@ export default defineConfig({
     },
     {
       // Commons serves the photos as ready-made thumbnails from its own CDN
-      // (see `lib/photos.ts`): they are already the width the panel asks for
-      // and already cached, so routing a few hundred of them through the image
-      // optimiser would add a hop and a bill and change nothing about what is
-      // downloaded. `next/image` also wants every host in `remotePatterns`,
-      // which would tie the config to whichever Wikimedia host answers.
+      // (see `lib/photos.ts`): they are already cached, and routing a few
+      // hundred of them through the image optimiser would add a hop and a bill
+      // for the same bytes. `next/image` also wants every host in
+      // `remotePatterns`, which would tie the config to whichever Wikimedia
+      // host answers. What it would have brought, the `<img>` carries itself:
+      // a `srcset` off Commons' own width ladder and a precomputed
+      // placeholder (`photoSrcSet`, `Photo.blur`).
       files: ["components/panel/photo-carousel.tsx"],
       rules: {
         "nextjs/no-img-element": "off",

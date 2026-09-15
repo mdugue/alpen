@@ -314,6 +314,12 @@ export const Climate = z.record(Slug, ClimateYear);
 export const Photo = z.strictObject({
   /** Author line as plain text. Empty only where Commons names none. */
   artist: z.string(),
+  /**
+   * The same photo `BLUR_WIDTH` px wide as a data URI (`lib/photos.ts`), so
+   * the slide opens on its own colours rather than on an empty box. Optional:
+   * a thumbnail Commons declines to render costs a placeholder, not a photo.
+   */
+  blur: z.string().startsWith("data:image/").optional(),
   /** Height of the thumbnail `src` points at. */
   height: z.int().positive(),
   /** Licence as Commons states it, e.g. "CC BY-SA 4.0" or "Public domain". */
@@ -321,7 +327,11 @@ export const Photo = z.strictObject({
   licenseUrl: z.url().optional(),
   /** The Commons file page: the "source" half of the attribution. */
   page: z.url(),
-  /** Commons thumbnail URL, `PHOTO_WIDTH` px wide (see `lib/photos.ts`). */
+  /**
+   * Commons thumbnail URL, `PHOTO_WIDTH` px wide (see `lib/photos.ts`). The
+   * panel derives the smaller widths of its `srcset` from it (`photoSrcSet`),
+   * which is why it is kept exactly as the API spelled it.
+   */
   src: z.url(),
   /** File name without the "File:" prefix and the extension – the alt text. */
   title: z.string().min(1),
