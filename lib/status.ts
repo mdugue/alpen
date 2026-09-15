@@ -7,6 +7,7 @@ import type {
   Status,
   Tour,
 } from "@/lib/types";
+import { fmt, fmtUnit } from "@/lib/utils";
 
 export const MONTHS = [
   "Januar",
@@ -228,6 +229,13 @@ export interface YearCell {
   reasons: StatusReason[];
   /** A cell with ≥ `SNOW_BEST_PCT` snow days: that, not the run length, keeps a good cell from the best time. */
   snowy: boolean;
+  /**
+   * Tour cells only: the slugs of the member passes that share this cell's
+   * status – the ones that hold the tour back. It comes out of the same
+   * reduction that produced the cell, which is what keeps the sentence under
+   * the badge from naming a set the badge does not describe.
+   */
+  limiting?: string[];
 }
 
 /** The whole year of one pass or tour: 24 cells and the best window. */
@@ -777,7 +785,15 @@ export const tourYear = (tour: Tour, passes: Record<string, Year>): Year => {
       )
         worst = cell;
     }
-    return worst ?? UNCONSTRAINED;
+    if (!worst) return UNCONSTRAINED;
+    // The members that share the cell's status are the ones the sentence
+    // names: status, not grade, because a tour that is "oft gesperrt" is held
+    // back by every pass that is closed, not only by the one the reduction
+    // happened to settle on.
+    const limiting = tour.passes.filter(
+      (slug) => passes[slug]?.cells[i]?.status === worst.status,
+    );
+    return { ...worst, limiting };
   });
   // A member's grade is "best" only inside that member's own best window, so
   // the minimum is "best" exactly where every pass is – which is the tour's
@@ -803,6 +819,79 @@ export const tourYear = (tour: Tour, passes: Record<string, Year>): Year => {
  */
 export const cellAt = (year: Year | undefined, t: Period): YearCell =>
   year?.cells[periodIndex(t)] ?? UNCONSTRAINED;
+
+/**
+ * "gut", "eingeschränkt: Hitze" or "oft gesperrt": the status label and, where
+ * a caveat applies, the one word of its first reason. `CLOSING_REASON` is
+ * excluded because it never coexists with "eingeschränkt"; its word exists for
+ * the strip's cell hint.
+ */
+export const statusWord = (
+  status: Status,
+  reason?: StatusReason | null,
+): string =>
+  status === "risky" && reason && reason !== CLOSING_REASON
+    ? `${STATUS_LABEL[status]}: ${REASON_WORD[reason]}`
+    : STATUS_LABEL[status];
+
+/**
+ * What the badge prints for one cell. A cell inside the best window says so
+ * instead of "gut"; everything else is `statusWord`. The badge reads the cell
+ * rather than re-deriving the three parts, so it cannot describe a half-month
+ * the strip next to it paints differently.
+ */
+export const badgeWord = (cell: YearCell): string =>
+  cell.grade === "best"
+    ? GRADE_LABEL.best
+    : statusWord(cell.status, cell.reasons[0]);
+
+/**
+ * The one "abgeleitet" sentence for the valley value – Principle 3: the
+ * derived number never shows without the word and without its error, and the
+ * error is the one `REASON_TEXT.heat` prints.
+ */
+export const valleyText = (
+  pass: Pass,
+  bucket: ClimateBucket,
+  valley: number | null | undefined,
+): string => {
+  const tmax = valleyTmax(pass, bucket, valley);
+  return tmax === null || valley === null || valley === undefined
+    ? "Talwert nicht ableitbar, kein Anstiegsprofil."
+    : `Im Tal (${fmtUnit(valley, "m")}) um ${fmt(Math.round(tmax))} °C, abgeleitet (± ${VALLEY_TMAX_ERROR} °C).`;
+};
+
+/**
+ * How the tour sentence joins its status word to the passes that carry it.
+ * Nothing limits an open tour, so `open` has no sentence.
+ */
+const TOUR_JOIN: Record<Status, string | null> = {
+  closed: ":",
+  open: null,
+  risky: " durch",
+};
+
+const capitalise = (word: string) =>
+  word.charAt(0).toUpperCase() + word.slice(1);
+
+/**
+ * "Oft gesperrt: Stilfser Joch." or "Eingeschränkt durch Gavia, Mortirolo." –
+ * the sentence under a tour's badge, carrying the word of the tour's own
+ * status. The panel used to compose this itself from every member that was
+ * not open, which printed "Eingeschränkt durch …" under an "oft gesperrt"
+ * badge; the cell's `limiting` comes out of `tourYear` instead, so the
+ * sentence and the badge always describe the same set.
+ */
+export const tourText = (
+  cell: YearCell,
+  names: (slug: string) => string | undefined,
+): string | null => {
+  const join = TOUR_JOIN[cell.status];
+  if (join === null) return null;
+  const list = (cell.limiting ?? []).map(names).filter((n) => n !== undefined);
+  if (list.length === 0) return null;
+  return `${capitalise(STATUS_LABEL[cell.status])}${join} ${list.join(", ")}.`;
+};
 /**
  * One sentence for the 24 cells of a season strip, so screen readers get the
  * same overview the colours give: "beste Zeit Anfang Juli bis Ende September,

@@ -1,5 +1,5 @@
 import { Badge } from "@/components/ui/badge";
-import { periodLabel, REASON_WORD, STATUS_LABEL } from "@/lib/status";
+import { badgeWord, periodLabel, statusWord } from "@/lib/status";
 import type { StatusReason, YearCell } from "@/lib/status";
 import type { Period, Status } from "@/lib/types";
 import { cn } from "@/lib/utils";
@@ -38,21 +38,6 @@ export const StatusDot = ({
   />
 );
 
-/**
- * "gut", "beste Zeit", "eingeschränkt: Hitze" or "oft gesperrt": the status
- * plus the one word of the first reason, or the best window where one applies.
- */
-export const statusText = (
-  status: Status,
-  reason?: StatusReason | null,
-  best?: boolean,
-): string =>
-  status === "risky" && reason && reason !== "outside-window"
-    ? `${STATUS_LABEL[status]}: ${REASON_WORD[reason]}`
-    : status === "open" && best
-      ? "beste Zeit"
-      : STATUS_LABEL[status];
-
 /** Dot plus label; the colour is carried by the dot only so the text keeps its contrast in both themes. */
 export const StatusLabel = ({
   status,
@@ -70,7 +55,7 @@ export const StatusLabel = ({
     )}
   >
     <StatusDot status={status} />
-    {statusText(status, reason)}
+    {statusWord(status, reason)}
   </span>
 );
 
@@ -89,7 +74,7 @@ export const StatusBadge = ({
 }) => (
   <Badge variant="outline" className="gap-1.5">
     <StatusDot status={cell.status} />
-    {statusText(cell.status, cell.reasons[0], cell.grade === "best")}
+    {badgeWord(cell)}
     {period !== undefined && ` · ${periodLabel(period)}`}
   </Badge>
 );

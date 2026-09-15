@@ -45,8 +45,9 @@ import {
   periodLabel,
   reasonTexts,
   seasonText,
+  tourText,
+  valleyText,
   signalsOf,
-  valleyTmax,
 } from "@/lib/status";
 import type { Years } from "@/lib/status";
 import type {
@@ -261,7 +262,6 @@ const PassDetail = (props: Props & { pass: Pass }) => {
   const year = props.years.passes[pass.slug];
   const cell = cellAt(year, props.period);
   const reasons = reasonTexts(pass, props.period, cell.reasons, input);
-  const valley = bucket ? valleyTmax(pass, bucket, signals.valley) : null;
   const sun = sunTimes(pass.lat, pass.lon, periodDate(props.period));
 
   return (
@@ -441,10 +441,7 @@ const PassDetail = (props: Props & { pass: Pass }) => {
             <p className="text-muted-foreground text-2xs mt-1.5">
               {periodLabel(props.period)} auf {fmtUnit(pass.elevation, "m")};
               Niederschlag an {bucket.wetPct} % der Tage.{" "}
-              {valley === null
-                ? "Talwert nicht ableitbar, kein Anstiegsprofil."
-                : `Im Tal (${fmtUnit(signals.valley ?? 0, "m")}) um ${fmt(Math.round(valley))} °C, abgeleitet.`}{" "}
-              Tag{" "}
+              {valleyText(pass, bucket, signals.valley)} Tag{" "}
               {sun.dayLength.toLocaleString("de-DE", {
                 maximumFractionDigits: 1,
               })}{" "}
@@ -488,12 +485,9 @@ const TourDetail = (props: Props & { tour: Tour }) => {
   const passIndex = indexBySlug(props.passes);
   const year = props.years.tours[tour.slug];
   const cell = cellAt(year, props.period);
-  const limiting = tour.passes
-    .map((s) => passIndex.get(s))
-    .filter((p): p is Pass => Boolean(p))
-    .filter(
-      (p) => cellAt(props.years.passes[p.slug], props.period).status !== "open",
-    );
+  // The passes that hold the tour back come from the cell, not from a second
+  // pass over the members: the sentence and the badge describe one set.
+  const limited = tourText(cell, (slug) => passIndex.get(slug)?.name);
 
   return (
     <>
@@ -510,9 +504,9 @@ const TourDetail = (props: Props & { tour: Tour }) => {
 
       <div className="bg-muted/40 border-border/70 mt-3 flex flex-col gap-2 rounded-lg border p-3">
         <StatusBadge cell={cell} period={props.period} />
-        {limiting.length > 0 && (
+        {limited && (
           <p className="text-muted-foreground text-xs leading-relaxed">
-            Eingeschränkt durch {limiting.map((p) => p.name).join(", ")}.
+            {limited}
           </p>
         )}
         <SeasonStrip
