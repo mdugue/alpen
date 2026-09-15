@@ -241,9 +241,12 @@ const blurFor = async (src: string): Promise<string | undefined> => {
  */
 const WEBP_URI = "data:image/webp;";
 
+/** Anything that is not already a WebP placeholder – missing or older. */
+const needsBlur = (photo: Photo) => !photo.blur?.startsWith(WEBP_URI);
+
 const fillBlur = async (photos: Photo[]) => {
   for (const photo of photos) {
-    if (photo.blur?.startsWith(WEBP_URI) && !REBLUR) continue;
+    if (!(needsBlur(photo) || REBLUR)) continue;
     if (photo.blur && !REBLUR) {
       const [head, body] = photo.blur.split(",");
       const type = head?.slice("data:".length, head.indexOf(";")) ?? "";
@@ -342,7 +345,10 @@ const main = async () => {
   // per entity for the same reason the search is – an interrupted backfill
   // keeps what it already fetched.
   for (const [key, list] of photos) {
-    if (!(wanted(key) && (REBLUR || list.some((p) => !p.blur)))) continue;
+    // Not only "has none": a placeholder in another format is one the
+    // re-encoding step had not been written yet when it was fetched, and the
+    // upgrade is local, so skipping those would leave them JPEG for good.
+    if (!(wanted(key) && (REBLUR || list.some(needsBlur)))) continue;
     await fillBlur(list);
     await save(photos);
   }
