@@ -36,8 +36,27 @@ import {
 } from "@/components/ui/table";
 import type { WeatherDay } from "@/lib/types";
 import useFetch from "@/lib/use-fetch";
+import { MOBILE_QUERY, useMediaQuery } from "@/lib/use-media-query";
 import { cn, fmt } from "@/lib/utils";
 import { LOADED, LOADING } from "@/lib/view-transitions";
+import type { Boundary } from "@/lib/view-transitions";
+
+/**
+ * The handover boundary, where the layout wants one. `null` renders the
+ * children on their own, which is what keeps a phone out of it.
+ */
+const Reveal = ({
+  boundary,
+  children,
+}: {
+  boundary: Boundary | null;
+  children: React.ReactNode;
+}) =>
+  boundary ? (
+    <ViewTransition {...boundary}>{children}</ViewTransition>
+  ) : (
+    children
+  );
 
 /** WMO weather code → icon and German label. */
 const describe = (code: number): [LucideIcon, string] => {
@@ -70,13 +89,18 @@ export const WeatherForecast = ({ slug }: { slug: string }) => {
   const { data, error, loading } = useFetch<{ days: WeatherDay[] }>(
     `/api/weather/${slug}`,
   );
+  // The panel is a sheet on a phone, and nothing inside it animates this way
+  // (`animating` in `components/explorer.tsx`). No boundary in the update
+  // means React opens no view transition, so leaving it out is the whole
+  // switch – an empty one would default back to the browser's own crossfade.
+  const still = useMediaQuery(MOBILE_QUERY);
 
   // The one thing in this app that is genuinely fetched at runtime, so the one
   // place with a placeholder to hand over from: it yields downwards, the answer
   // arrives from below (`lib/view-transitions.ts`).
   if (loading)
     return (
-      <ViewTransition {...LOADING}>
+      <Reveal boundary={still ? null : LOADING}>
         <div
           role="status"
           aria-busy
@@ -86,11 +110,11 @@ export const WeatherForecast = ({ slug }: { slug: string }) => {
           <Skeleton className="h-5 w-full" />
           <Skeleton className="h-5 w-full" />
         </div>
-      </ViewTransition>
+      </Reveal>
     );
   if (error || !data)
     return (
-      <ViewTransition {...LOADED}>
+      <Reveal boundary={still ? null : LOADED}>
         <Empty className="py-3">
           <EmptyHeader>
             <EmptyTitle>Wetter nicht verfügbar</EmptyTitle>
@@ -99,13 +123,13 @@ export const WeatherForecast = ({ slug }: { slug: string }) => {
             </EmptyDescription>
           </EmptyHeader>
         </Empty>
-      </ViewTransition>
+      </Reveal>
     );
 
   const [today, tomorrow] = data.days;
 
   return (
-    <ViewTransition {...LOADED}>
+    <Reveal boundary={still ? null : LOADED}>
       <Collapsible>
         <div className="flex flex-col">
           {[
@@ -214,6 +238,6 @@ export const WeatherForecast = ({ slug }: { slug: string }) => {
           </Table>
         </CollapsibleContent>
       </Collapsible>
-    </ViewTransition>
+    </Reveal>
   );
 };

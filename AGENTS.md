@@ -226,9 +226,17 @@ friends do that better and the app links out to them.
   blink. The period scrubber opens no transition at all – it fires while a
   thumb is dragged and every transition rasterises the viewport once – and the
   search field writes its query straight through, because the field's value
-  _is_ that state and a deferred update would lag the keystroke. On a phone the
-  selection opens none either: the sheet animates its own transform on every
-  touchmove and a document-wide transition laid over that fights it.
+  _is_ that state and a deferred update would lag the keystroke. **A phone runs
+  none of them at all**: the sheet animates its own transform on every
+  touchmove, a document-wide transition laid over that fights it for the same
+  pixels, and the sheet is full of rows that skip their own rendering off
+  screen – the hardest thing there is to capture correctly. `animating` in
+  `explorer.tsx` and `openBlock` in the sidebar are where that is decided; the
+  weather block simply renders no boundary there, because an empty one would
+  fall back to the browser's own crossfade. The transitions are also gated on
+  `view-transition-class`: without it React cannot express `default: "none"`,
+  so every boundary on the page would animate on every transition, and no
+  transition is better than one the design cannot steer.
   The map needs no boundary of its own: the old root snapshot is hidden and the
   new one is a live representation, so the canvas keeps running under the
   overlay and only the named boundaries animate. Two consequences are worth

@@ -39,18 +39,39 @@ export type TransitionType =
   | "panel";
 
 /**
+ * Whether the browser has what the boundaries below are built on.
+ *
+ * `view-transition-class` is not a nicety here: every boundary in this file is
+ * `default: "none"` and names a class per transition type, and React expresses
+ * both through that property. Without it nothing can be held back – every
+ * boundary on the page animates on every transition with the UA's own
+ * crossfade, so opening the filter panel drags the whole sidebar, the three
+ * lists and every visible row through a snapshot of themselves. Better to run
+ * no transition at all than one the design cannot steer.
+ */
+const usable = () =>
+  typeof document !== "undefined" &&
+  "startViewTransition" in document &&
+  CSS.supports("view-transition-class", "none");
+
+/**
  * Open a view transition around `change`. `type` is what the boundaries match
  * on; `null` opens an untyped transition, which is what the selection uses –
  * there the enter, exit and share of the detail panel already say what
  * happened, and the rows must hold still.
+ *
+ * Where the browser cannot steer them the change is applied plainly, the same
+ * way the mobile layout applies it: this app has to work without any of this.
  */
-export const animate = (type: TransitionType | null, change: () => void) =>
+export const animate = (type: TransitionType | null, change: () => void) => {
+  if (!usable()) return change();
   startTransition(() => {
     if (type) addTransitionType(type);
     change();
   });
+};
 
-type Boundary = Omit<ComponentProps<typeof ViewTransition>, "children">;
+export type Boundary = Omit<ComponentProps<typeof ViewTransition>, "children">;
 
 /**
  * The season strip of one entity, shared between its list row and the detail

@@ -228,19 +228,26 @@ export const Explorer = ({
   }));
 
   /**
-   * Selecting something also makes it visible and brings the detail up.
+   * Every state change that is worth animating goes through here, and on a
+   * phone none of them are.
    *
-   * The change is wrapped in a view transition on desktop, where the detail
-   * panel appears next to the sidebar and the season strip of the row travels
-   * into it (`lib/view-transitions.ts`). On a phone it is not: there the sheet
-   * itself is the motion, and it animates its own transform on every touchmove
-   * – a document-wide transition laid over that fights it for the same pixels.
+   * The sheet is the motion in that layout: it animates its own transform on
+   * every touchmove, and a document-wide transition laid over that fights it
+   * for the same pixels. A view transition also replaces the page with a
+   * snapshot for its duration, and the one thing the sheet is full of – rows
+   * that skip their own rendering off screen (`content-visibility`, see
+   * `components/sidebar/entity-row.tsx`) – is the hardest thing there is to
+   * capture correctly. Desktop keeps the transitions, the sheet keeps its own
+   * animation, and nothing is layered on top of anything.
    */
-  const selecting = (change: () => void) =>
-    isMobile ? change() : animate(null, change);
+  const animating = (
+    type: Parameters<typeof animate>[0],
+    change: () => void,
+  ) => (isMobile ? change() : animate(type, change));
 
+  /** Selecting something also makes it visible and brings the detail up. */
   const select = (sel: Selection) =>
-    selecting(() => {
+    animating(null, () => {
       setSelection(sel);
       setLastSelection(sel);
       setProfileCursor(null);
@@ -270,18 +277,18 @@ export const Explorer = ({
    * this gets expensive.
    */
   const changeFilters = (update: (f: Filters) => Filters) =>
-    animate("filter", () => setFilters(update));
+    animating("filter", () => setFilters(update));
 
   const setQuery = (query: string) => setFilters((f) => ({ ...f, query }));
 
   /** Folding the sidebar away moves the detail panel and the map's padding. */
   const showSidebar = (open: boolean) =>
-    animate("panel", () => setSidebarOpen(open));
+    animating("panel", () => setSidebarOpen(open));
 
   /** Back to the list; focus returns to the row the detail came from. */
   const back = () => {
     const sel = selection;
-    selecting(() => {
+    animating(null, () => {
       setSelection(null);
       setProfileCursor(null);
       if (isMobile) setListSnap(LIST_HALF);

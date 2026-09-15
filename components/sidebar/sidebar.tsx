@@ -91,10 +91,13 @@ export const Sidebar = (p: SidebarProps) => {
   const [more, setMore] = useState<boolean | null>(null);
   const moreOpen = more ?? hasSecondaryFilters(p.filters);
   // Both open a `panel` transition: the block itself reveals, and the three
-  // lists underneath glide down instead of jumping the panel's height.
-  const setMoreOpen = (open: boolean) => animate("panel", () => setMore(open));
-  const setFiltersOpen = (open: boolean) =>
-    animate("panel", () => setManual(open));
+  // lists underneath glide down instead of jumping the panel's height. Not in
+  // the sheet, where nothing is animated this way – see `animating` in
+  // `components/explorer.tsx` for why a phone is left alone.
+  const openBlock = (change: () => void) =>
+    p.variant === "sheet" ? change() : animate("panel", change);
+  const setMoreOpen = (open: boolean) => openBlock(() => setMore(open));
+  const setFiltersOpen = (open: boolean) => openBlock(() => setManual(open));
 
   const lists = useRef<HTMLDivElement>(null);
   const currentRow = p.selection
