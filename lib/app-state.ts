@@ -18,8 +18,14 @@ export interface Selection {
   slug: string;
 }
 
-/** All three selected = no status filter, see `Filters.status`. */
-export const ALL_STATUS: Status[] = STATUS_ORDER;
+/**
+ * All three selected = no status filter, see `Filters.status`. A copy rather
+ * than an alias of `STATUS_ORDER`: the filter's array is handed to callers
+ * that build new arrays from it, and sharing one object under two names would
+ * let a stray sort reach the map icons, the share image and the calibration
+ * script.
+ */
+export const ALL_STATUS: Status[] = [...STATUS_ORDER];
 /** All five road types selected = no type filter, see `Filters.types`. */
 export const ALL_TYPES: RoadType[] = [...ROAD_TYPES];
 /** Stable empty snapshot for the tag filter (`Filters.tags`). */

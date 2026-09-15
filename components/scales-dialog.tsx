@@ -18,6 +18,7 @@ import {
   TOWN_TAGS,
 } from "@/lib/regions";
 import { ladderText, lapseText, VALLEY_TMAX_ERROR } from "@/lib/status";
+import { fmt } from "@/lib/utils";
 
 const SCALES: [string, string][] = [
   [
@@ -144,10 +145,11 @@ export const ScalesDialog = ({
           <p className="text-muted-foreground">
             <b>Abgeleitet, nicht gemessen:</b> Die Klimareihe gilt für die
             Passhöhe. Der Talwert wird mit {lapseText()} bis zum tiefsten
-            Anstiegsbeginn heruntergerechnet und liegt gut ± {VALLEY_TMAX_ERROR}{" "}
-            °C daneben; für Pässe ohne Anstiegsprofil gibt es ihn nicht. Das
-            Tageslicht ist reine Astronomie. Im Detail steht unter dem Status
-            der Grund in einem Satz, mit Zahl und Herkunft.
+            Anstiegsbeginn heruntergerechnet und liegt gut ±{" "}
+            {fmt(VALLEY_TMAX_ERROR)} °C daneben; für Pässe ohne Anstiegsprofil
+            gibt es ihn nicht. Das Tageslicht ist reine Astronomie. Im Detail
+            steht unter dem Status der Grund in einem Satz, mit Zahl und
+            Herkunft.
           </p>
           <p className="text-muted-foreground">
             Der Streifen aus 24 Zellen zeigt das ganze Jahr auf einen Blick –

@@ -37,6 +37,7 @@ import {
   SHORT_DAY_HOURS,
   signalsOf,
   SNOW_BEST_PCT,
+  SNOW_RISKY_PCT,
   STATUS_LABEL,
   STATUS_ORDER,
   valleyTmax,
@@ -134,11 +135,11 @@ const cohortTable = (title: string, pick: (p: Pair) => Status) => {
     const snow = p.bucket?.snowPct ?? 0;
     c.n += 1;
     c.snowSum += snow;
-    if (snow >= 20) c.snowHigh += 1;
+    if (snow >= SNOW_RISKY_PCT) c.snowHigh += 1;
   }
   console.log(`\n${title}`);
   console.log(
-    "| Verdict | n | mean snow-day share | share with snow ≥ 20 % of days |",
+    `| Verdict | n | mean snow-day share | share with snow ≥ ${SNOW_RISKY_PCT} % of days |`,
   );
   console.log("| --- | --- | --- | --- |");
   for (const status of STATUS_ORDER) {

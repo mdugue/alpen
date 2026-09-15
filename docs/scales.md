@@ -58,7 +58,7 @@ flowchart TD
   S --> S1["snow ≥ 20 % · frost ≥ 80 % · altitude"]
   S --> S2["valley tmax ≥ 26 °C → Hitze"]
   S --> S3["rain days ≥ 70 % → nass"]
-  S --> S4["daylight < 10¾ h → kurze Tage"]
+  S --> S4["daylight < 10,75 h → kurze Tage"]
   S --> S5["summit tmax < 8 °C → kalte Abfahrt"]
   S1 & S2 & S3 & S4 & S5 --> L{"any fired?"}
   L -- "yes, first in ladder order" --> R["eingeschränkt<br/>label = that one word"]
@@ -74,7 +74,7 @@ first as one word (`REASON_WORD`, via `badgeWord`), the panel every one as a
 sentence with its number and provenance (`REASON_TEXT`).
 
 The thresholds in the diagram above are not written twice. `SIGNALS` in
-`lib/status.ts` is one table – reason, constant, unit and the clause that
+`lib/status.ts` is one table – reason, value, unit and the clause that
 explains it – in ladder order, and the scales dialog renders its "Vier
 Stufen, eine Leiter" paragraph from it (`ladderText`), so a constant that
 moves reaches the text explaining it. `scripts/analyze-status.ts` reads the
@@ -104,7 +104,11 @@ The three fills differ in lightness as well as hue, so they are told apart at
 closed road keeps reading as a different kind of statement. In the panel every cell
 carries a tooltip – the half-month and the grade in the first line, then the
 sentence from `GRADE_HINT`, with the caveat named for a limited cell
-(`cellHint`, `REASON_PHRASE`). The period control's tooltip lists the four
+(`cellHint`, `REASON_PHRASE`). A limited cell's popover is the only
+explanation that half-month has – the sentences above it describe the
+_selected_ half-month – so `REASON_PHRASE` may carry its own sub-clause,
+while the list of eight in `GRADE_HINT.limited` uses the shorter
+`REASON_SHORT`. The period control's tooltip lists the four
 sentences once.
 
 `Status` (`open | risky | closed`, `lib/schema.ts`) stays three-valued: it is
@@ -138,15 +142,15 @@ prints the cohort tables, the per-half-month distributions of every signal,
 the counts one step either side of every threshold, and every (pass,
 half-month) pair whose verdict changes – re-run it after touching a constant.
 
-| Signal        | Constant            | Value | Reads                                            |
-| ------------- | ------------------- | ----- | ------------------------------------------------ |
-| Schnee        | `SNOW_RISKY_PCT`    | 20 %  | `snowPct`, share of days with ≥ 1 cm             |
-| Frost         | `FROST_RISKY_PCT`   | 80 %  | `frostPct`, share of nights below 0 °C           |
-| Hitze         | `HEAT_VALLEY_TMAX`  | 26 °C | `tmax` derived to the lowest ascent start        |
-| nass          | `WET_LIMITED_PCT`   | 70 %  | `wetPct`, share of days with ≥ 1 mm              |
-| kurze Tage    | `SHORT_DAY_HOURS`   | 10¾ h | day length from `lat`, `lib/daylight.ts`         |
-| kalte Abfahrt | `COLD_DESCENT_TMAX` | 8 °C  | `tmax` at the summit, the afternoon of a descent |
-| beste Zeit    | `SNOW_BEST_PCT`     | 10 %  | `snowPct` inside a run of "gut"                  |
+| Signal        | Constant            | Value   | Reads                                            |
+| ------------- | ------------------- | ------- | ------------------------------------------------ |
+| Schnee        | `SNOW_RISKY_PCT`    | 20 %    | `snowPct`, share of days with ≥ 1 cm             |
+| Frost         | `FROST_RISKY_PCT`   | 80 %    | `frostPct`, share of nights below 0 °C           |
+| Hitze         | `HEAT_VALLEY_TMAX`  | 26 °C   | `tmax` derived to the lowest ascent start        |
+| nass          | `WET_LIMITED_PCT`   | 70 %    | `wetPct`, share of days with ≥ 1 mm              |
+| kurze Tage    | `SHORT_DAY_HOURS`   | 10,75 h | day length from `lat`, `lib/daylight.ts`         |
+| kalte Abfahrt | `COLD_DESCENT_TMAX` | 8 °C    | `tmax` at the summit, the afternoon of a descent |
+| beste Zeit    | `SNOW_BEST_PCT`     | 10 %    | `snowPct` inside a run of "gut"                  |
 
 ### Derived values
 

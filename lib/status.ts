@@ -86,7 +86,7 @@ export const STATUS_LABEL: Record<Status, string> = {
  * as a zod enum because it is the source of the type, but it is server-only
  * (zod must not reach the client), so this literal cannot be derived from it.
  */
-export const STATUS_ORDER: Status[] = ["open", "risky", "closed"];
+export const STATUS_ORDER: readonly Status[] = ["open", "risky", "closed"];
 
 /**
  * Higher is worse: the direction the status sort reads. Note that
@@ -154,16 +154,16 @@ export const LIMITING_REASONS: StatusReason[] = REASON_ORDER.filter(
   (r) => r !== CLOSING_REASON,
 );
 
-/** The caveat as a phrase, for "Fahrbar, aber mit einem Haken: …". */
 /**
- * The caveat as a phrase, for "Fahrbar, aber mit einem Haken: …" and for the
- * list in `GRADE_HINT.limited`. A phrase names the caveat and stops there:
- * what follows from it is `REASON_TEXT`, one line below it in the panel, so a
- * phrase that carried its own explanation said the same thing twice and read
- * as a sub-clause inside a list of eight.
+ * The caveat as a standalone phrase, for "Fahrbar, aber mit einem Haken: …".
+ * This one stands alone: the strip's popover shows it for whichever
+ * half-month is hovered, which is rarely the selected one, so it is the only
+ * explanation that cell has – `REASON_TEXT` above it describes the selected
+ * half-month instead. That is why it may carry its own sub-clause, and why
+ * the list in `GRADE_HINT.limited` uses `REASON_SHORT` rather than this.
  */
 export const REASON_PHRASE: Record<StatusReason, string> = {
-  altitude: "die Höhenlage",
+  altitude: "Höhenlage, Schnee und Eis sind möglich",
   "cold-descent": "eine kalte Abfahrt",
   frost: "Frost in den Nächten",
   heat: "Hitze im Tal",
@@ -171,14 +171,34 @@ export const REASON_PHRASE: Record<StatusReason, string> = {
   "short-day": "kurze Tage",
   snow: "Schneefall",
   wet: "viel Regen",
+  "window-edge":
+    "der Rand des Öffnungsfensters, Öffnung und Sperrung verschieben sich je nach Winter",
+};
+
+/**
+ * The caveat as a bare noun phrase, for the list of eight in
+ * `GRADE_HINT.limited`. A phrase that carries its own sub-clause reads as
+ * part of the list rather than as one item of it, so the list needs the
+ * shorter form – the hand-written sentence this replaced used exactly these
+ * words for the same reason.
+ */
+export const REASON_SHORT: Record<StatusReason, string> = {
+  altitude: "die Höhenlage",
+  "cold-descent": "eine kalte Abfahrt",
+  frost: "Frost",
+  heat: "Hitze im Tal",
+  "outside-window": "Wintersperre",
+  "short-day": "kurze Tage",
+  snow: "Schnee",
+  wet: "viel Regen",
   "window-edge": "der Rand des Öffnungsfensters",
 };
 
 /** "a, b und c" – the German list the generated sentences are built from. */
-const listOf = (parts: string[], last: string): string =>
+const listOf = (parts: string[], conjunction: string): string =>
   parts.length < 2
     ? (parts[0] ?? "")
-    : `${parts.slice(0, -1).join(", ")} ${last} ${parts.at(-1)}`;
+    : `${parts.slice(0, -1).join(", ")} ${conjunction} ${parts.at(-1)}`;
 
 /**
  * The display scale of the strip and the histogram: `open` split into the
@@ -207,7 +227,7 @@ export const GRADE_HINT: Record<Grade, string> = {
     "Die Straße ist in dieser Zeit meist gesperrt, in der Regel wegen der Wintersperre.",
   good: "Nichts spricht gegen die Fahrt. Nur ist es entweder ein kürzerer Abschnitt als die beste Zeit, oder es schneit gelegentlich.",
   limited: `Fahrbar, aber mit einem Haken: ${listOf(
-    LIMITING_REASONS.map((r) => REASON_PHRASE[r]),
+    LIMITING_REASONS.map((r) => REASON_SHORT[r]),
     "oder",
   )}.`,
 };
@@ -363,9 +383,6 @@ export const VALLEY_TMAX_ERROR = 3;
 /** ≈ 15 days per half-month, so a percentage is readable as "x of 15 days". */
 export const daysOf = (pct: number) => Math.round((pct / 100) * 15);
 
-const de = (n: number, digits = 0) =>
-  n.toLocaleString("de-DE", { maximumFractionDigits: digits });
-
 /** One threshold, in the words the scales dialog explains it with. */
 export interface Signal {
   /**
@@ -440,11 +457,12 @@ export const SIGNALS: Signal[] = [
 ];
 
 /** The lapse rate as the dialog says it, e.g. "0,65 °C je 100 m". */
-export const lapseText = (): string => `${de(LAPSE_RATE * 100, 2)} °C je 100 m`;
+export const lapseText = (): string =>
+  `${fmt(LAPSE_RATE * 100, 2)} °C je 100 m`;
 
 /** The value of a signal with its unit, e.g. "20 %" or "10,75 Stunden". */
 export const signalValue = (s: Signal): string =>
-  `${de(s.value, s.digits ?? 0)} ${s.unit}`;
+  `${fmt(s.value, s.digits ?? 0)} ${s.unit}`;
 
 /** A signal's clause with its value filled in, e.g. "Schneefall ab 20 % der Tage". */
 export const signalText = (s: Signal): string =>
@@ -559,20 +577,20 @@ interface ReasonContext {
 export const REASON_TEXT: Record<StatusReason, (ctx: ReasonContext) => string> =
   {
     altitude: ({ pass, t }) =>
-      `${periodLabel(t)} ist auf ${de(pass.elevation)} m Grenzbereich: Schnee und Eis sind möglich, auch wenn die Straße offen ist.`,
+      `${periodLabel(t)} ist auf ${fmt(pass.elevation)} m Grenzbereich: Schnee und Eis sind möglich, auch wenn die Straße offen ist.`,
     "cold-descent": ({ bucket }) =>
-      `Am Gipfel im Schnitt höchstens ${de(bucket?.tmax ?? 0)} °C (ERA5-Land 2015–2024) – mit Fahrtwind ist die Abfahrt eine um den Gefrierpunkt.`,
+      `Am Gipfel im Schnitt höchstens ${fmt(bucket?.tmax ?? 0)} °C (ERA5-Land 2015–2024) – mit Fahrtwind ist die Abfahrt eine um den Gefrierpunkt.`,
     frost: ({ bucket }) =>
       `Frost in ${bucket?.frostPct ?? 0} % der Nächte (≈ ${daysOf(bucket?.frostPct ?? 0)} von 15, ERA5-Land 2015–2024) – nasse Straßen können überfrieren, die Abfahrt wird kalt.`,
     heat: ({ pass, bucket, valley }) =>
-      `Im Tal um ${de(bucket ? (valleyTmax(pass, bucket, valley) ?? 0) : 0)} °C am Nachmittag (aus dem Gipfelwert abgeleitet, ± ${VALLEY_TMAX_ERROR} °C) – ab dem späten Vormittag nur noch oben angenehm.`,
+      `Im Tal um ${fmt(bucket ? (valleyTmax(pass, bucket, valley) ?? 0) : 0)} °C am Nachmittag (aus dem Gipfelwert abgeleitet, ± ${VALLEY_TMAX_ERROR} °C) – ab dem späten Vormittag nur noch oben angenehm.`,
     "outside-window": ({ pass }) =>
       pass.season
         ? `Außerhalb des typischen Öffnungsfensters (${periodLabel(pass.season.opens)} bis ${periodLabel(pass.season.closes)}).`
         : "Außerhalb der typischen Saison.",
     "short-day": ({ pass, t }) => {
       const sun = sunTimes(pass.lat, pass.lon, periodDate(t));
-      return `Nur ${de(sun.dayLength, 1)} Stunden Tageslicht, Sonnenuntergang gegen ${clockTime(sun.sunset)} – für eine lange Runde wird es knapp.`;
+      return `Nur ${fmt(sun.dayLength, 1)} Stunden Tageslicht, Sonnenuntergang gegen ${clockTime(sun.sunset)} – für eine lange Runde wird es knapp.`;
     },
     snow: ({ bucket }) =>
       `Schneefall an ${bucket?.snowPct ?? 0} % der Tage (≈ ${daysOf(bucket?.snowPct ?? 0)} von 15, ERA5-Land 2015–2024) – meist bleibt die Straße befahrbar, planbar ist der Zeitraum aber nicht.`,
@@ -784,7 +802,10 @@ export const tourYear = (tour: Tour, passes: Record<string, Year>): Year => {
     // The members that share the cell's status are the ones the sentence
     // names: status, not grade, because a tour that is "oft gesperrt" is held
     // back by every pass that is closed, not only by the one the reduction
-    // happened to settle on.
+    // happened to settle on. Nothing holds an open tour back, so an open cell
+    // carries no list – it would be every member, never read, and it travels
+    // to the client inside the precomputed `Year`.
+    if (worst.status === "open") return worst;
     const limiting = tour.passes.filter(
       (slug) => passes[slug]?.cells[i]?.status === worst.status,
     );

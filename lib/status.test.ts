@@ -25,6 +25,7 @@ import {
   reasonTexts,
   REASON_ORDER,
   REASON_PHRASE,
+  REASON_SHORT,
   REASON_TEXT,
   REASON_WORD,
   seasonSummary,
@@ -633,6 +634,11 @@ describe("tourYear", () => {
     expect(at(["b", "a"], 7, snowyYears).limiting).toEqual(["b", "a"]);
     // In June only the closed pass holds the tour back, not every member.
     expect(at(["a", "b"], 6, snowyYears).limiting).toEqual(["b"]);
+    // Nothing holds an open tour back, so an open cell carries no list at
+    // all: it would name every member, is never printed, and travels to the
+    // client inside the precomputed `Year`.
+    expect(at(["a", "b"], 8).status).toBe("open");
+    expect(at(["a", "b"], 8).limiting).toBeUndefined();
   });
 
   test("the climate map reaches the passes of a tour", () => {
@@ -726,15 +732,20 @@ test("status matrix for all passes × 24 half-months", () => {
  * moves without the paragraph explaining it moving too, fails here.
  */
 describe("one status vocabulary", () => {
-  test("every reason has a word, a phrase and a sentence", () => {
+  test("every reason has a word, two phrases and a sentence", () => {
     for (const reason of REASON_ORDER) {
       expect(REASON_WORD[reason]).toBeTruthy();
       expect(REASON_PHRASE[reason]).toBeTruthy();
+      expect(REASON_SHORT[reason]).toBeTruthy();
       expect(typeof REASON_TEXT[reason]).toBe("function");
     }
     // And no table carries a key the ladder has never heard of.
-    for (const table of [REASON_WORD, REASON_PHRASE, REASON_TEXT])
+    for (const table of [REASON_WORD, REASON_PHRASE, REASON_SHORT, REASON_TEXT])
       expect(Object.keys(table).toSorted()).toEqual(REASON_ORDER.toSorted());
+    // The short form is what a list of eight can hold: no sub-clause, so no
+    // comma. The standalone phrase may carry one, and two of them do.
+    for (const reason of REASON_ORDER)
+      expect(REASON_SHORT[reason]).not.toContain(",");
   });
 
   test("the limited hint names every reason that can limit, in ladder order", () => {
@@ -743,12 +754,12 @@ describe("one status vocabulary", () => {
       REASON_ORDER.filter((r) => r !== "outside-window"),
     );
     const positions = LIMITING_REASONS.map((r) =>
-      GRADE_HINT.limited.indexOf(REASON_PHRASE[r]),
+      GRADE_HINT.limited.indexOf(REASON_SHORT[r]),
     );
     expect(positions).not.toContain(-1);
     expect(positions).toEqual(positions.toSorted((a, b) => a - b));
     // The closing reason is not among them: a closure is not a caveat.
-    expect(GRADE_HINT.limited).not.toContain(REASON_PHRASE["outside-window"]);
+    expect(GRADE_HINT.limited).not.toContain(REASON_SHORT["outside-window"]);
   });
 
   test("the dialog paragraph carries the value of every threshold", () => {
@@ -769,6 +780,21 @@ describe("one status vocabulary", () => {
     for (const signal of SIGNALS)
       if (signal.reason !== null) expect(REASON_ORDER).toContain(signal.reason);
     expect(SIGNALS.filter((s) => s.reason === null)).toHaveLength(1);
+    // `ladderText` drops reasons without a signal, which is right for the
+    // three calendar rules and wrong for anything else – so the set is pinned
+    // here rather than left to a silent filter.
+    expect(SIGNALS.map((s) => s.reason).filter((r) => r !== null)).toEqual([
+      "snow",
+      "frost",
+      "heat",
+      "wet",
+      "short-day",
+      "cold-descent",
+    ]);
+    expect(LIMITING_REASONS.filter((r) => signalOf(r) === undefined)).toEqual([
+      "window-edge",
+      "altitude",
+    ]);
     // The limiting signals appear in ladder order, which is what makes the
     // paragraph's "das erste Signal in dieser Reihenfolge" true.
     const listed = LIMITING_REASONS.map(signalOf)
