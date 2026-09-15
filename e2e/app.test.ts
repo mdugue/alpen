@@ -329,3 +329,50 @@ test(
     ),
   TIMEOUT,
 );
+
+/**
+ * Instruments the browser's own entry point before the interaction, which is
+ * the only place where a view transition is observable from outside: React
+ * calls it, the classes are then applied by the UA, and a boundary that never
+ * fires leaves no trace in the DOM.
+ */
+const WATCH_TRANSITIONS = `(() => {
+  window.__vt = { pseudos: [], started: 0 };
+  const start = document.startViewTransition.bind(document);
+  document.startViewTransition = (...args) => {
+    window.__vt.started++;
+    const t = start(...args);
+    t.ready.then(() => {
+      for (const a of document.getAnimations()) {
+        const p = a.effect && a.effect.pseudoElement;
+        if (p) window.__vt.pseudos.push(p);
+      }
+    }, () => {});
+    return t;
+  };
+  return true;
+})()`;
+
+test(
+  "11 · selecting a pass morphs its season strip into the panel",
+  () =>
+    withPage(app, "view-transition", {}, async (page) => {
+      await page.waitFor(GALIBIER);
+      await page.evaluate(WATCH_TRANSITIONS);
+      await page.click(GALIBIER);
+      await page.waitFor("#detail-title");
+      // One transition, and both boundaries are in it: the season strip under
+      // the name it shares with the row it came from, and the panel under its
+      // own (`lib/view-transitions.ts`). A boundary that silently never fires
+      // is the failure mode this guards – it leaves the DOM identical.
+      const seen = await page.evaluate<string[]>(
+        "new Promise((done) => setTimeout(() => done(window.__vt.pseudos), 100))",
+      );
+      expect(await page.evaluate<number>("window.__vt.started")).toBe(1);
+      expect(seen).toContain(
+        "::view-transition-group(strip-pass-col-du-galibier)",
+      );
+      expect(seen).toContain("::view-transition-new(detail)");
+    }),
+  TIMEOUT,
+);

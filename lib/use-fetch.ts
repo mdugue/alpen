@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { startTransition, useEffect, useState } from "react";
 
 interface State<T> {
   url: string | null;
@@ -10,6 +10,12 @@ interface State<T> {
 /**
  * Minimal data fetcher. `loading` is derived instead of being set in an
  * effect – replace with SWR or TanStack Query as needs grow.
+ *
+ * The result arrives in a transition, which costs nothing here and is what
+ * lets the caller animate the handover from its placeholder to the answer: a
+ * view transition only runs for an update that is a transition, a deferred
+ * value or a Suspense reveal, and a plain `setState` from a `fetch` is none
+ * of the three (`lib/view-transitions.ts`).
  */
 export default function useFetch<T>(url: string | null) {
   const [state, setState] = useState<State<T>>({
@@ -35,7 +41,7 @@ export default function useFetch<T>(url: string | null) {
           url,
         };
       }
-      if (!cancelled) setState(next);
+      if (!cancelled) startTransition(() => setState(next));
     };
     void load();
     return () => {

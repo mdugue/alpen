@@ -11,6 +11,7 @@ import {
   Sun,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
+import { ViewTransition } from "react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -35,7 +36,27 @@ import {
 } from "@/components/ui/table";
 import type { WeatherDay } from "@/lib/types";
 import useFetch from "@/lib/use-fetch";
+import { MOBILE_QUERY, useMediaQuery } from "@/lib/use-media-query";
 import { cn, fmt } from "@/lib/utils";
+import { LOADED, LOADING } from "@/lib/view-transitions";
+import type { Boundary } from "@/lib/view-transitions";
+
+/**
+ * The handover boundary, where the layout wants one. `null` renders the
+ * children on their own, which is what keeps a phone out of it.
+ */
+const Reveal = ({
+  boundary,
+  children,
+}: {
+  boundary: Boundary | null;
+  children: React.ReactNode;
+}) =>
+  boundary ? (
+    <ViewTransition {...boundary}>{children}</ViewTransition>
+  ) : (
+    children
+  );
 
 /** WMO weather code → icon and German label. */
 const describe = (code: number): [LucideIcon, string] => {
@@ -68,139 +89,155 @@ export const WeatherForecast = ({ slug }: { slug: string }) => {
   const { data, error, loading } = useFetch<{ days: WeatherDay[] }>(
     `/api/weather/${slug}`,
   );
+  // The panel is a sheet on a phone, and nothing inside it animates this way
+  // (`animating` in `components/explorer.tsx`). No boundary in the update
+  // means React opens no view transition, so leaving it out is the whole
+  // switch – an empty one would default back to the browser's own crossfade.
+  const still = useMediaQuery(MOBILE_QUERY);
 
+  // The one thing in this app that is genuinely fetched at runtime, so the one
+  // place with a placeholder to hand over from: it yields downwards, the answer
+  // arrives from below (`lib/view-transitions.ts`).
   if (loading)
     return (
-      <div
-        role="status"
-        aria-busy
-        aria-label="Wetter wird geladen"
-        className="flex flex-col gap-1.5 py-1"
-      >
-        <Skeleton className="h-5 w-full" />
-        <Skeleton className="h-5 w-full" />
-      </div>
+      <Reveal boundary={still ? null : LOADING}>
+        <div
+          role="status"
+          aria-busy
+          aria-label="Wetter wird geladen"
+          className="flex flex-col gap-1.5 py-1"
+        >
+          <Skeleton className="h-5 w-full" />
+          <Skeleton className="h-5 w-full" />
+        </div>
+      </Reveal>
     );
   if (error || !data)
     return (
-      <Empty className="py-3">
-        <EmptyHeader>
-          <EmptyTitle>Wetter nicht verfügbar</EmptyTitle>
-          <EmptyDescription>
-            Open-Meteo antwortet gerade nicht.
-          </EmptyDescription>
-        </EmptyHeader>
-      </Empty>
+      <Reveal boundary={still ? null : LOADED}>
+        <Empty className="py-3">
+          <EmptyHeader>
+            <EmptyTitle>Wetter nicht verfügbar</EmptyTitle>
+            <EmptyDescription>
+              Open-Meteo antwortet gerade nicht.
+            </EmptyDescription>
+          </EmptyHeader>
+        </Empty>
+      </Reveal>
     );
 
   const [today, tomorrow] = data.days;
 
   return (
-    <Collapsible>
-      <div className="flex flex-col">
-        {[
-          [today, "heute"],
-          [tomorrow, "morgen"],
-        ]
-          .filter(([day]) => day)
-          .map(([day, when]) => {
-            const d = day as WeatherDay;
-            const [Icon, label] = describe(d.weatherCode);
-            return (
-              <div
-                key={d.date}
-                className="flex items-center gap-2 py-1 text-xs tabular-nums"
-              >
-                <Icon
-                  className="text-muted-foreground size-4 shrink-0"
-                  aria-label={label}
-                  role="img"
-                />
-                <span className="w-14 shrink-0 font-medium">
-                  {when as string}
-                </span>
-                <span className="w-16 shrink-0">
-                  {fmt(Math.round(d.tmin))}° / {fmt(Math.round(d.tmax))}°
-                </span>
-                <span className="text-muted-foreground w-14 shrink-0">
-                  {fmt(Math.round(d.precipitation))} mm
-                </span>
-                {d.snowfall > 0 && (
-                  <span className="text-status-closed font-semibold">
-                    {fmt(Math.round(d.snowfall))} cm Schnee
-                  </span>
-                )}
-                <span className="text-muted-foreground ml-auto">
-                  {fmt(Math.round(d.windMax))} km/h
-                </span>
-              </div>
-            );
-          })}
-      </div>
-
-      <CollapsibleTrigger
-        render={
-          <Button
-            variant="ghost"
-            size="sm"
-            className="group/week text-muted-foreground mt-1 px-1"
-          />
-        }
-      >
-        Alle 7 Tage
-        <ChevronDown
-          data-icon="inline-end"
-          className="transition-transform group-aria-expanded/week:rotate-180"
-        />
-      </CollapsibleTrigger>
-      <CollapsibleContent>
-        <Table>
-          <TableHeader>
-            <TableRow className="text-muted-foreground [&>th]:h-7 [&>th]:px-1 [&>th]:text-right [&>th:first-child]:pl-0 [&>th:first-child]:text-left">
-              <TableHead>Tag</TableHead>
-              <TableHead>
-                <span className="sr-only">Wetter</span>
-              </TableHead>
-              <TableHead>Tmin</TableHead>
-              <TableHead>Tmax</TableHead>
-              <TableHead>Regen</TableHead>
-              <TableHead>Schnee</TableHead>
-              <TableHead>Wind</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {data.days.map((d) => {
+    <Reveal boundary={still ? null : LOADED}>
+      <Collapsible>
+        <div className="flex flex-col">
+          {[
+            [today, "heute"],
+            [tomorrow, "morgen"],
+          ]
+            .filter(([day]) => day)
+            .map(([day, when]) => {
+              const d = day as WeatherDay;
               const [Icon, label] = describe(d.weatherCode);
               return (
-                <TableRow
+                <div
                   key={d.date}
-                  className="tabular-nums [&>td]:px-1 [&>td]:py-1 [&>td]:text-right [&>td:first-child]:pl-0 [&>td:first-child]:text-left"
+                  className="flex items-center gap-2 py-1 text-xs tabular-nums"
                 >
-                  <TableCell>{weekday(d.date)}</TableCell>
-                  <TableCell>
-                    <Icon
-                      className="text-muted-foreground inline size-3.5"
-                      aria-label={label}
-                      role="img"
-                    />
-                  </TableCell>
-                  <TableCell>{fmt(Math.round(d.tmin))}°</TableCell>
-                  <TableCell>{fmt(Math.round(d.tmax))}°</TableCell>
-                  <TableCell>{fmt(Math.round(d.precipitation))} mm</TableCell>
-                  <TableCell
-                    className={cn(
-                      d.snowfall > 0 && "text-status-closed font-semibold",
-                    )}
-                  >
-                    {d.snowfall > 0 ? `${fmt(Math.round(d.snowfall))} cm` : "–"}
-                  </TableCell>
-                  <TableCell>{fmt(Math.round(d.windMax))} km/h</TableCell>
-                </TableRow>
+                  <Icon
+                    className="text-muted-foreground size-4 shrink-0"
+                    aria-label={label}
+                    role="img"
+                  />
+                  <span className="w-14 shrink-0 font-medium">
+                    {when as string}
+                  </span>
+                  <span className="w-16 shrink-0">
+                    {fmt(Math.round(d.tmin))}° / {fmt(Math.round(d.tmax))}°
+                  </span>
+                  <span className="text-muted-foreground w-14 shrink-0">
+                    {fmt(Math.round(d.precipitation))} mm
+                  </span>
+                  {d.snowfall > 0 && (
+                    <span className="text-status-closed font-semibold">
+                      {fmt(Math.round(d.snowfall))} cm Schnee
+                    </span>
+                  )}
+                  <span className="text-muted-foreground ml-auto">
+                    {fmt(Math.round(d.windMax))} km/h
+                  </span>
+                </div>
               );
             })}
-          </TableBody>
-        </Table>
-      </CollapsibleContent>
-    </Collapsible>
+        </div>
+
+        <CollapsibleTrigger
+          render={
+            <Button
+              variant="ghost"
+              size="sm"
+              className="group/week text-muted-foreground mt-1 px-1"
+            />
+          }
+        >
+          Alle 7 Tage
+          <ChevronDown
+            data-icon="inline-end"
+            className="transition-transform group-aria-expanded/week:rotate-180"
+          />
+        </CollapsibleTrigger>
+        <CollapsibleContent>
+          <Table>
+            <TableHeader>
+              <TableRow className="text-muted-foreground [&>th]:h-7 [&>th]:px-1 [&>th]:text-right [&>th:first-child]:pl-0 [&>th:first-child]:text-left">
+                <TableHead>Tag</TableHead>
+                <TableHead>
+                  <span className="sr-only">Wetter</span>
+                </TableHead>
+                <TableHead>Tmin</TableHead>
+                <TableHead>Tmax</TableHead>
+                <TableHead>Regen</TableHead>
+                <TableHead>Schnee</TableHead>
+                <TableHead>Wind</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {data.days.map((d) => {
+                const [Icon, label] = describe(d.weatherCode);
+                return (
+                  <TableRow
+                    key={d.date}
+                    className="tabular-nums [&>td]:px-1 [&>td]:py-1 [&>td]:text-right [&>td:first-child]:pl-0 [&>td:first-child]:text-left"
+                  >
+                    <TableCell>{weekday(d.date)}</TableCell>
+                    <TableCell>
+                      <Icon
+                        className="text-muted-foreground inline size-3.5"
+                        aria-label={label}
+                        role="img"
+                      />
+                    </TableCell>
+                    <TableCell>{fmt(Math.round(d.tmin))}°</TableCell>
+                    <TableCell>{fmt(Math.round(d.tmax))}°</TableCell>
+                    <TableCell>{fmt(Math.round(d.precipitation))} mm</TableCell>
+                    <TableCell
+                      className={cn(
+                        d.snowfall > 0 && "text-status-closed font-semibold",
+                      )}
+                    >
+                      {d.snowfall > 0
+                        ? `${fmt(Math.round(d.snowfall))} cm`
+                        : "–"}
+                    </TableCell>
+                    <TableCell>{fmt(Math.round(d.windMax))} km/h</TableCell>
+                  </TableRow>
+                );
+              })}
+            </TableBody>
+          </Table>
+        </CollapsibleContent>
+      </Collapsible>
+    </Reveal>
   );
 };

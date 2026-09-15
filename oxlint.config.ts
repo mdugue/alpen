@@ -89,6 +89,19 @@ export default defineConfig({
       rules: { "jsx-a11y/no-noninteractive-element-interactions": "off" },
     },
     {
+      // This hook *is* the data-fetching layer the rule asks for – the app has
+      // exactly one runtime fetch (the weather route) and this is where it
+      // lives. What the rule warns about is already handled: the effect
+      // cancels on unmount and the result is ignored unless its URL is still
+      // the current one. It only started firing when the result moved into
+      // `startTransition` (so the caller can animate the handover from its
+      // placeholder, see `lib/view-transitions.ts`); the same code with a bare
+      // `setState` passes, which is a shape the rule recognises rather than a
+      // race it rules out.
+      files: ["lib/use-fetch.ts"],
+      rules: { "react-doctor/no-fetch-in-effect": "off" },
+    },
+    {
       // `setValue` must keep a stable identity – `explorer.tsx` depends on it
       // for its once-only effects. This is not a memoisation for speed.
       files: ["lib/app-state.ts"],

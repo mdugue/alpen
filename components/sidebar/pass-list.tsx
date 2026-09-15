@@ -1,6 +1,7 @@
 "use client";
 
 import { ArrowDownWideNarrow } from "lucide-react";
+import { ViewTransition } from "react";
 
 import { Rating } from "@/components/rating";
 import { SeasonStrip } from "@/components/season-strip";
@@ -21,6 +22,7 @@ import { roadTypeWord } from "@/lib/regions";
 import { PASS_SORT_LABEL, PASS_SORTS, sortPassRows } from "@/lib/rows";
 import type { PassRow } from "@/lib/rows";
 import { cn, fmtUnit, TOUCH_CONTROL } from "@/lib/utils";
+import { MORPH, ROW, stripName } from "@/lib/view-transitions";
 
 type RatingSort = "beauty" | "fame" | "difficulty" | "traffic";
 const RATING_SORTS: ReadonlySet<PassSort> = new Set([
@@ -96,45 +98,69 @@ export const PassList = ({
         <ListEmpty title="Keine Straßen für diese Filter" />
       ) : (
         <ul>
-          {sorted.map(({ pass, status, reason, favorite, season }) => (
-            <EntityRow
-              key={pass.slug}
-              rowId={`pass:${pass.slug}`}
-              current={currentRow === `pass:${pass.slug}`}
-              title={pass.name}
-              subtitle={
-                <TagLine
-                  tags={pass.tags ?? []}
-                  lead={[roadTypeWord(pass.type), pass.region, pass.country]
-                    .filter(Boolean)
-                    .join(" · ")}
+          {sorted.map(({ pass, status, reason, favorite, season }) => {
+            const current = currentRow === `pass:${pass.slug}`;
+            const strip = (
+              <SeasonStrip cells={season} current={filters.period} />
+            );
+            return (
+              // The row boundary is the list's identity: on a filter change the
+              // rows that survive glide to their new place instead of the list
+              // redrawing as a different list.
+              <ViewTransition key={pass.slug} {...ROW}>
+                <EntityRow
+                  rowId={`pass:${pass.slug}`}
+                  current={current}
+                  title={pass.name}
+                  subtitle={
+                    <TagLine
+                      tags={pass.tags ?? []}
+                      lead={[roadTypeWord(pass.type), pass.region, pass.country]
+                        .filter(Boolean)
+                        .join(" · ")}
+                    />
+                  }
+                  favorite={favorite}
+                  onToggleFavorite={() => onToggleFavorite(pass.slug)}
+                  onSelect={() => onSelect(pass.slug)}
+                  aside={
+                    <>
+                      <span className="text-xs font-medium tabular-nums">
+                        {fmtUnit(pass.elevation, "m")}
+                      </span>
+                      {ratingSort ? (
+                        <Rating
+                          value={pass[ratingSort]}
+                          muted={ratingSort === "traffic"}
+                        />
+                      ) : (
+                        <StatusLabel
+                          status={status}
+                          reason={reason}
+                          className="text-muted-foreground"
+                        />
+                      )}
+                      {
+                        // The strip travels into the detail panel when the pass is
+                        // selected. Only one element may carry a name at a time, so
+                        // the selected row hands it over to the panel's own copy.
+                        current ? (
+                          strip
+                        ) : (
+                          <ViewTransition
+                            name={stripName("pass", pass.slug)}
+                            {...MORPH}
+                          >
+                            {strip}
+                          </ViewTransition>
+                        )
+                      }
+                    </>
+                  }
                 />
-              }
-              favorite={favorite}
-              onToggleFavorite={() => onToggleFavorite(pass.slug)}
-              onSelect={() => onSelect(pass.slug)}
-              aside={
-                <>
-                  <span className="text-xs font-medium tabular-nums">
-                    {fmtUnit(pass.elevation, "m")}
-                  </span>
-                  {ratingSort ? (
-                    <Rating
-                      value={pass[ratingSort]}
-                      muted={ratingSort === "traffic"}
-                    />
-                  ) : (
-                    <StatusLabel
-                      status={status}
-                      reason={reason}
-                      className="text-muted-foreground"
-                    />
-                  )}
-                  <SeasonStrip cells={season} current={filters.period} />
-                </>
-              }
-            />
-          ))}
+              </ViewTransition>
+            );
+          })}
         </ul>
       )}
     </>
