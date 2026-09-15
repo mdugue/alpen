@@ -27,10 +27,10 @@ import passesJson from "../data/passes.json" with { type: "json" };
 import { dayLength } from "../lib/daylight";
 import { valleyElevations } from "../lib/profile";
 import {
-  bestPeriods,
   COLD_DESCENT_TMAX,
   HEAT_VALLEY_TMAX,
   passVerdict,
+  passYear,
   periodLabel,
   PERIODS,
   REASON_ORDER,
@@ -267,7 +267,7 @@ for (const reason of REASON_ORDER) {
 }
 
 /**
- * "Beste Zeit" as `bestPeriods` defines it – the longest circular run of
+ * "Beste Zeit" as `passYear` defines it – the longest circular run of
  * "gut" half-months with fewer than SNOW_BEST_PCT snow days, at least two
  * long – computed from a given status series, so the run can be measured
  * for the plan 04 verdicts and the plan 13 verdicts alike.
@@ -306,11 +306,11 @@ if (!changesOnly) {
   report("plan 13", (p) => p.status);
   // Sanity: the plan 13 run agrees with the library's own definition.
   for (const p of passes) {
-    const best = bestPeriods(p, signalsOf(signals, p.slug));
+    const { best } = passYear(p, signalsOf(signals, p.slug));
     const lib = best
       ? ((PERIODS.indexOf(best[1]) - PERIODS.indexOf(best[0]) + 24) % 24) + 1
       : 0;
     if (lib !== bestRunLength(p, (q) => q.status))
-      console.log(`  mismatch with bestPeriods: ${p.name}`);
+      console.log(`  mismatch with passYear: ${p.name}`);
   }
 }

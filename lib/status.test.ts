@@ -5,34 +5,35 @@ import profilesJson from "@/data/generated/profiles.json" with { type: "json" };
 import passesJson from "@/data/passes.json" with { type: "json" };
 import { valleyElevations } from "@/lib/profile";
 import {
-  bestPeriods,
+  cellAt,
   cellHint,
   climateBucket,
+  gradeOf,
   GRADE_HINT,
-  indexBySlug,
   inputAt,
   isPeriod,
-  passCellNotes,
-  passGrades,
-  passSeason,
   passStatus,
   passVerdict,
+  passYear,
   periodAt,
   periodIndex,
   periodLabel,
   PERIODS,
+  reasonTexts,
   REASON_ORDER,
   seasonSummary,
   signalsOf,
   todayPeriod,
-  tourCellNotes,
-  tourGrades,
-  tourStatus,
-  tourVerdict,
+  tourYear,
   valleyTmax,
-  verdictReasons,
 } from "@/lib/status";
-import type { Grade, Signals, StatusReason } from "@/lib/status";
+import type {
+  Grade,
+  Signals,
+  StatusReason,
+  Year,
+  YearCell,
+} from "@/lib/status";
 import type {
   ClimateBucket,
   ClimateYear,
@@ -83,10 +84,32 @@ const bucket = (over: Partial<ClimateBucket> = {}): ClimateBucket => ({
   ...over,
 });
 
+/** Whether half-month `i` lies in a circular window; mirrors `inRange`. */
+const inWindow = (i: number, [from, to]: [Period, Period]): boolean => {
+  const a = periodIndex(from);
+  const b = periodIndex(to);
+  return a <= b ? i >= a && i <= b : i >= a || i <= b;
+};
+
+/** A "gut" cell, overridden per case. */
+const cell = (over: Partial<YearCell> = {}): YearCell => ({
+  grade: "good",
+  reasons: [],
+  snowy: false,
+  status: "open",
+  ...over,
+});
+
 /** One grade per character: `b` best, `o` good, `r` limited, anything else closed. */
 const grades = (spec: string): Grade[] =>
   [...spec].map((c) =>
     c === "b" ? "best" : c === "o" ? "good" : c === "r" ? "limited" : "closed",
+  );
+
+/** The years of a handful of test passes, keyed by slug, as `getYears` builds them. */
+const yearsOf = (list: Pass[], s?: Signals): Record<string, Year> =>
+  Object.fromEntries(
+    list.map((p) => [p.slug, passYear(p, signalsOf(s, p.slug))]),
   );
 
 const tour = (slugs: string[]): Tour => ({
@@ -182,8 +205,9 @@ describe("the climate series", () => {
       reasons: ["snow"],
       status: "risky",
     });
+    const input = { bucket: bucket({ snowPct: 27 }) };
     expect(
-      verdictReasons(p, 7, { bucket: bucket({ snowPct: 27 }) })[0],
+      reasonTexts(p, 7, passVerdict(p, 7, input).reasons, input)[0],
     ).toContain("Schneefall an 27 % der Tage");
   });
 
@@ -353,38 +377,32 @@ describe("the summer axis (plan 13)", () => {
   test("from June to September all three rideable grades occur", () => {
     const seen = new Set<Grade>();
     for (const x of passes) {
-      const g = passGrades(x, signalsOf(signals, x.slug));
+      const { cells } = passYear(x, signalsOf(signals, x.slug));
       for (let i = periodIndex(6); i <= periodIndex(9.5); i += 1)
-        seen.add(g[i]!);
+        seen.add(cells[i]!.grade);
     }
     expect(seen.has("best")).toBe(true);
     expect(seen.has("good")).toBe(true);
     expect(seen.has("limited")).toBe(true);
   });
 
-  test("grades: best inside the best run, good outside it, limited and closed as the status", () => {
+  test("every cell's grade is its status split by the best window", () => {
     const galibier = bySlug("col-du-galibier");
-    const own = signalsOf(signals, "col-du-galibier");
-    const best = bestPeriods(galibier, own);
-    const g = passGrades(galibier, own);
-    const status = passSeason(galibier, own);
+    const { best, cells } = passYear(
+      galibier,
+      signalsOf(signals, "col-du-galibier"),
+    );
     expect(best).not.toBeNull();
     for (const [i, t] of PERIODS.entries()) {
       const inBest = t >= best![0] && t <= best![1];
-      const expected: Grade =
-        status[i] === "closed"
-          ? "closed"
-          : status[i] === "risky"
-            ? "limited"
-            : inBest
-              ? "best"
-              : "good";
-      expect(g[i], periodLabel(t)).toBe(expected);
+      expect(cells[i]!.grade, periodLabel(t)).toBe(
+        gradeOf(cells[i]!.status, inBest),
+      );
     }
   });
 
   test("a tour cell is the worst grade of its passes", () => {
-    const index = indexBySlug([
+    const years = yearsOf([
       pass({
         elevation: 1000,
         lat: 46.5,
@@ -398,14 +416,14 @@ describe("the summer axis (plan 13)", () => {
         slug: "b",
       }),
     ]);
-    const g = tourGrades(tour(["a", "b"]), index);
-    expect(g[periodIndex(8)]).toBe("best");
-    expect(g[periodIndex(7)]).toBe("limited");
-    expect(g[periodIndex(6)]).toBe("closed");
+    const { cells } = tourYear(tour(["a", "b"]), years);
+    expect(cells[periodIndex(8)]!.grade).toBe("best");
+    expect(cells[periodIndex(7)]!.grade).toBe("limited");
+    expect(cells[periodIndex(6)]!.grade).toBe("closed");
   });
 
-  test("a tour cell's note comes from the pass that sets its grade", () => {
-    const index = indexBySlug([
+  test("a tour cell is taken whole from the pass that sets its grade", () => {
+    const members = [
       pass({
         elevation: 1000,
         lat: 46.5,
@@ -418,61 +436,66 @@ describe("the summer axis (plan 13)", () => {
         season: { closes: 9, opens: 7 },
         slug: "b",
       }),
-    ]);
+    ];
     const snowy = { a: PERIODS.map(() => bucket({ snowPct: 30 })) } as Record<
       string,
       ClimateYear
     >;
-    const notes = tourCellNotes(tour(["a", "b"]), index, { climate: snowy });
-    expect(notes).toHaveLength(24);
-    // August: "a" is limited by snow while "b" is at its best.
-    expect(notes[periodIndex(8)]).toEqual({ reason: "snow", snowy: true });
-    // June: "b" is still closed, and closed outranks limited.
-    expect(notes[periodIndex(6)]!.reason).toBe("outside-window");
-    // Without a caveat anywhere the note is empty rather than missing.
-    expect(tourCellNotes(tour(["a", "b"]), index)[periodIndex(8)]).toEqual({
-      reason: null,
-      snowy: false,
+    const { cells } = tourYear(
+      tour(["a", "b"]),
+      yearsOf(members, { climate: snowy }),
+    );
+    expect(cells).toHaveLength(24);
+    // August: "a" is limited by snow while "b" is at its best, so the colour,
+    // the word and the snow note all come from "a".
+    expect(cells[periodIndex(8)]).toMatchObject({
+      grade: "limited",
+      reasons: ["snow"],
+      snowy: true,
     });
+    // June: "b" is still closed, and closed outranks limited.
+    expect(cells[periodIndex(6)]!.reasons[0]).toBe("outside-window");
+    // Without a caveat anywhere the cell carries none rather than missing.
+    expect(
+      tourYear(tour(["a", "b"]), yearsOf(members)).cells[periodIndex(8)],
+    ).toMatchObject({ reasons: [], snowy: false });
   });
 });
 
 describe("cell hints", () => {
   test("a limited cell names its caveat, a good cell says why it is not the best time", () => {
-    expect(cellHint("limited", { reason: "heat", snowy: false })).toBe(
+    expect(cellHint(cell({ grade: "limited", reasons: ["heat"] }))).toBe(
       "Fahrbar, aber mit einem Haken: Hitze im Tal.",
     );
-    expect(cellHint("good", { reason: null, snowy: true })).toBe(
+    expect(cellHint(cell({ snowy: true }))).toBe(
       "Nichts spricht gegen die Fahrt. Jedoch schneit es gelegentlich.",
     );
-    expect(cellHint("good", { reason: null, snowy: false })).toBe(
+    expect(cellHint(cell({}))).toBe(
       "Nichts spricht gegen die Fahrt. Nur ist es ein kürzerer Abschnitt als die beste Zeit.",
     );
-    // Without a note the general sentence stands.
-    expect(cellHint("best")).toBe(GRADE_HINT.best);
-    expect(cellHint("closed")).toBe(GRADE_HINT.closed);
+    // Best and closed have nothing specific to add, so the general sentence stands.
+    expect(cellHint(cell({ grade: "best" }))).toBe(GRADE_HINT.best);
+    expect(cellHint(cell({ grade: "closed" }))).toBe(GRADE_HINT.closed);
     expect(
-      passCellNotes(
-        bySlug("mont-ventoux"),
-        signalsOf(signals, "mont-ventoux"),
-      )[13],
-    ).toMatchObject({ reason: "heat" });
+      passYear(bySlug("mont-ventoux"), signalsOf(signals, "mont-ventoux"))
+        .cells[13],
+    ).toMatchObject({ reasons: ["heat"] });
   });
 });
 
 describe("season strips and best periods", () => {
-  test("passSeason has one verdict per half-month and matches passStatus", () => {
+  test("passYear has one cell per half-month and matches passStatus", () => {
     const p = passes[0]!;
-    const season = passSeason(p, { climate: climate[p.slug] });
-    expect(season).toHaveLength(24);
-    expect(season[periodIndex(8)]).toBe(
+    const year = passYear(p, { climate: climate[p.slug] });
+    expect(year.cells).toHaveLength(24);
+    expect(cellAt(year, 8).status).toBe(
       passStatus(p, 8, { bucket: climateBucket(climate, p.slug, 8) }),
     );
   });
 
-  test("bestPeriods finds the longest quiet open run", () => {
+  test("the best window is the longest quiet open run", () => {
     const galibier = passes.find((p) => p.slug === "col-du-galibier")!;
-    const best = bestPeriods(galibier, signalsOf(signals, galibier.slug));
+    const { best } = passYear(galibier, signalsOf(signals, galibier.slug));
     expect(best).not.toBeNull();
     const [from, to] = best!;
     expect(from).toBeGreaterThanOrEqual(6);
@@ -480,14 +503,14 @@ describe("season strips and best periods", () => {
     expect(from).toBeLessThan(to);
   });
 
-  test("bestPeriods returns null when nothing lasts two half-months", () => {
+  test("the best window is null when nothing lasts two half-months", () => {
     const p = pass({ elevation: 2600, season: { closes: 7.5, opens: 7 } });
-    expect(bestPeriods(p, null)).toBeNull();
+    expect(passYear(p, null).best).toBeNull();
   });
 
   test("every pass has a plausible best time (acceptance criterion of plan 04)", () => {
-    const withBest = passes.filter((p) =>
-      bestPeriods(p, signalsOf(signals, p.slug)),
+    const withBest = passes.filter(
+      (p) => passYear(p, signalsOf(signals, p.slug)).best,
     );
     expect(withBest.length).toBeGreaterThanOrEqual(80);
   });
@@ -525,53 +548,124 @@ describe("season strips and best periods", () => {
   });
 });
 
-describe("tourStatus", () => {
-  const index = indexBySlug([
+describe("tourYear", () => {
+  const members = [
     pass({ elevation: 1000, season: { closes: 11, opens: 5 }, slug: "a" }),
     pass({ elevation: 1000, season: { closes: 9, opens: 7 }, slug: "b" }),
-  ]);
+  ];
+  const years = yearsOf(members);
+  const snowy = { a: PERIODS.map(() => bucket({ snowPct: 30 })) } as Record<
+    string,
+    ClimateYear
+  >;
+  const snowyYears = yearsOf(members, { climate: snowy });
+  const at = (slugs: string[], t: Period, y = years) =>
+    cellAt(tourYear(tour(slugs), y), t);
 
   test("a tour is as rideable as its worst pass", () => {
-    expect(tourStatus(tour(["a", "b"]), index, 8)).toBe("open");
-    expect(tourStatus(tour(["a", "b"]), index, 7)).toBe("risky");
-    expect(tourStatus(tour(["a", "b"]), index, 6)).toBe("closed");
+    expect(at(["a", "b"], 8).status).toBe("open");
+    expect(at(["a", "b"], 7).status).toBe("risky");
+    expect(at(["a", "b"], 6).status).toBe("closed");
   });
 
   test("unknown pass slugs are ignored", () => {
-    expect(tourStatus(tour(["a", "ghost"]), index, 8)).toBe("open");
+    expect(at(["a", "ghost"], 8).status).toBe("open");
   });
 
-  test("tourVerdict carries the reasons of the pass that limits the tour", () => {
-    const snowy = { a: PERIODS.map(() => bucket({ snowPct: 30 })) } as Record<
-      string,
-      ClimateYear
-    >;
-    expect(tourVerdict(tour(["a", "b"]), index, 8)).toEqual({
-      reasons: [],
-      status: "open",
-    });
+  test("a tour cell carries the reasons of the pass that limits it", () => {
+    expect(at(["a", "b"], 8)).toMatchObject({ reasons: [], status: "open" });
     // Only "a" is snowy in August: its reason is the tour's.
-    expect(
-      tourVerdict(tour(["a", "b"]), index, 8, { climate: snowy }).reasons[0],
-    ).toBe("snow");
+    expect(at(["a", "b"], 8, snowyYears).reasons[0]).toBe("snow");
     // In July both are limited – "b" at its window's edge, "a" by snow – and
     // the reason that ranks earlier on the ladder names the tour.
-    expect(
-      tourVerdict(tour(["a", "b"]), index, 7, { climate: snowy }).reasons[0],
-    ).toBe("window-edge");
+    expect(at(["a", "b"], 7, snowyYears).reasons[0]).toBe("window-edge");
     // A closed pass closes the tour, whatever the others say.
-    expect(tourVerdict(tour(["a", "b"]), index, 6, { climate: snowy })).toEqual(
-      { reasons: ["outside-window"], status: "closed" },
+    expect(at(["a", "b"], 6, snowyYears)).toMatchObject({
+      reasons: ["outside-window"],
+      status: "closed",
+    });
+  });
+
+  // The July cell above is where the two rules this replaced disagreed: the
+  // word came from the ladder ("b", Randzeit) while the strip's note came from
+  // whichever member happened to be listed first ("a", snowy), so a tour cell
+  // could say "Randzeit" next to a popover explaining the snow. One cell, one
+  // pass: the snow note has to follow the word, not the slug order.
+  test("the whole cell comes from one pass, not the word from one and the note from another", () => {
+    expect(at(["a", "b"], 7, snowyYears)).toMatchObject({
+      reasons: ["window-edge"],
+      snowy: false,
+    });
+    // Listing the members the other way round cannot change the answer.
+    expect(at(["b", "a"], 7, snowyYears)).toEqual(
+      at(["a", "b"], 7, snowyYears),
     );
   });
 
   test("the climate map reaches the passes of a tour", () => {
-    const snowy = { a: PERIODS.map(() => bucket({ snowPct: 30 })) } as Record<
-      string,
-      ClimateYear
-    >;
-    expect(tourStatus(tour(["a"]), index, 8)).toBe("open");
-    expect(tourStatus(tour(["a"]), index, 8, { climate: snowy })).toBe("risky");
+    expect(at(["a"], 8).status).toBe("open");
+    expect(at(["a"], 8, snowyYears).status).toBe("risky");
+  });
+
+  // A tour's best window has to clear the same two bars a pass's does, and its
+  // cells have to agree with it. Reading the window back out of the cells
+  // instead of grading the cells from it is two rules for one thing, and they
+  // part company on a lone best half-month: the cell paints "beste Zeit" while
+  // the year reports none. Two of the nine real tours hit exactly that.
+  test("a lone best half-month is not a best time, for a tour either", () => {
+    // Two windows that overlap in a single half-month, which is what it takes:
+    // each member's own window already had to be two long, so a shorter
+    // intersection is the only way to reach one.
+    const barelyOverlapping = [
+      pass({
+        elevation: 1000,
+        lat: 46.5,
+        season: { closes: 4.5, opens: 1 },
+        slug: "a",
+      }),
+      pass({
+        elevation: 1000,
+        lat: 46.5,
+        season: { closes: 5, opens: 3 },
+        slug: "b",
+      }),
+    ];
+    const narrow = yearsOf(barelyOverlapping);
+    // Both are at their best in that one half-month, so the minimum over the
+    // member grades – all the old rule looked at – would have painted it.
+    const shared = PERIODS.filter(
+      (_, i) =>
+        narrow.a!.cells[i]!.grade === "best" &&
+        narrow.b!.cells[i]!.grade === "best",
+    );
+    expect(shared).toHaveLength(1);
+
+    const year = tourYear(tour(["a", "b"]), narrow);
+    expect(year.cells.filter((c) => c.grade === "best")).toHaveLength(0);
+    expect(year.best).toBeNull();
+  });
+
+  test("a tour's cells and its best window never disagree", () => {
+    const overlapping = [
+      pass({
+        elevation: 1000,
+        lat: 46.5,
+        season: { closes: 11, opens: 5 },
+        slug: "a",
+      }),
+      pass({
+        elevation: 1000,
+        lat: 46.5,
+        season: { closes: 10, opens: 6 },
+        slug: "b",
+      }),
+    ];
+    const year = tourYear(tour(["a", "b"]), yearsOf(overlapping));
+    expect(year.best).not.toBeNull();
+    for (const [i, cellOf] of year.cells.entries())
+      expect(cellOf.grade === "best", periodLabel(periodAt(i))).toBe(
+        inWindow(i, year.best!),
+      );
   });
 });
 
@@ -584,8 +678,8 @@ test("status matrix for all passes × 24 half-months", () => {
   const matrix = passes
     .map(
       (p) =>
-        `${passSeason(p, signalsOf(signals, p.slug))
-          .map((s) => code[s])
+        `${passYear(p, signalsOf(signals, p.slug))
+          .cells.map((c) => code[c.status])
           .join("")}  ${p.slug}`,
     )
     .toSorted();

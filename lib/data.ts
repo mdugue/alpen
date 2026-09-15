@@ -15,6 +15,8 @@ import { nearbyTours, townReach } from "@/lib/nearby";
 import type { NearbyTours, TownReach } from "@/lib/nearby";
 import { profileCoords, valleyElevations } from "@/lib/profile";
 import * as S from "@/lib/schema";
+import { passYear, signalsOf, tourYear } from "@/lib/status";
+import type { Signals, Year, Years } from "@/lib/status";
 import type {
   ClimateYear,
   ElevationProfile,
@@ -127,6 +129,34 @@ export const getClimate = async (): Promise<Record<string, ClimateYear>> => {
 export const getValleys = async (): Promise<Record<string, number>> => {
   "use cache";
   return valleyElevations(passes, profiles);
+};
+
+/**
+ * The year of every pass and of every tour: 24 cells with status, grade,
+ * reasons and the snow note, plus the best window (`passYear`, lib/status.ts).
+ *
+ * It is the one derivation the client used to run itself, once per pass per
+ * render: the row, the histogram, the season strip, the badge and the detail
+ * panel each graded all 24 half-months of every pass, so a search keystroke
+ * cost about 21 000 verdicts and nothing guaranteed that two of those chains
+ * agreed about the same pass. Everything it reads – the pass, its climate
+ * series, its valley elevation – is static, so it is computed here instead
+ * (docs/plans/15-pass-year.md).
+ *
+ * Not a file in `data/generated/`: the series depends on the thresholds in
+ * `lib/status.ts` and later on the live closure layer (docs/roadmap.md), so it
+ * belongs in a cached getter that revalidates with the build rather than in
+ * something committed next to the measurements.
+ */
+export const getYears = async (): Promise<Years> => {
+  "use cache";
+  const signals: Signals = { climate, valleys: await getValleys() };
+  const passYears: Record<string, Year> = {};
+  for (const p of passes)
+    passYears[p.slug] = passYear(p, signalsOf(signals, p.slug));
+  const tourYears: Record<string, Year> = {};
+  for (const t of tours) tourYears[t.slug] = tourYear(t, passYears);
+  return { passes: passYears, tours: tourYears };
 };
 
 /** Commons photos per entity, keyed by `photoKey` (see `lib/photos.ts`). */

@@ -25,7 +25,7 @@ scattered. Reading the code found these:
 | which reasons make "eingeschränkt" | `GRADE_HINT.limited` (status.ts:108), the dialog (scales-dialog.tsx:139)                                  | prose lists them by hand, in an order that is not `REASON_ORDER`                                              |
 | threshold values                   | constants (status.ts:267-280), the dialog (scales-dialog.tsx:139-151), analyze-status.ts:136              | the dialog carries seven literals and imports nothing from `lib/status`                                       |
 | "im Tal … abgeleitet"              | `REASON_TEXT.heat` (status.ts:383), `detail-panel.tsx:460`                                                | two independent sentences                                                                                     |
-| which pass limits a tour           | `tourVerdict` (status.ts:457), `detail-panel.tsx:504-514`                                                 | the panel re-derives it with `!== "open"`, so under an "oft gesperrt" badge it prints "Eingeschränkt durch …" |
+| which pass limits a tour           | `tourYear` (status.ts), `detail-panel.tsx` (`limiting`)                                                   | the panel re-derives it with `!== "open"`, so under an "oft gesperrt" badge it prints "Eingeschränkt durch …" |
 | `PASS_SORTS`                       | `app-state.ts:30`, `rows.ts:277`                                                                          | two copies                                                                                                    |
 
 None of these has a test, because none of them is a function.
@@ -101,7 +101,7 @@ Three sentence builders join `REASON_TEXT` and `seasonText` in
   `risky`, otherwise the status label; replaces the check in `statusText`.
 - `valleyText(pass, bucket, valley)`: the one "abgeleitet" sentence, with the
   same "± 3 °C" that `REASON_TEXT.heat` uses.
-- `tourText(verdict)`: `tourVerdict` returns `limiting: Pass[]`, the passes
+- `tourText(cell)`: the tour builder returns `limiting: Pass[]`, the passes
   whose status equals the tour's. The sentence carries the word of that
   status: "Oft gesperrt: Stilfser Joch." or "Eingeschränkt durch Gavia,
   Mortirolo." Never "eingeschränkt" for a closed tour.
@@ -115,7 +115,7 @@ Three sentence builders join `REASON_TEXT` and `seasonText` in
    the dialog paragraph and the legend rendered from the tables. Screenshot
    the dialog, light and dark, and read the generated paragraph aloud once.
 3. **Sentences.** `badgeWord`, `valleyText`, `tourText` with
-   `tourVerdict.limiting`; the panel and the badge print them. Screenshot a
+   the tour builder's `limiting`; the panel and the badge print them. Screenshot a
    tour with a closed pass in the chosen half-month.
 4. **Tests.** Every `StatusReason` has a word, a phrase and a sentence;
    `GRADE_HINT.limited` names every reason in ladder order; the dialog

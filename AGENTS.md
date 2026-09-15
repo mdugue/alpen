@@ -39,38 +39,38 @@ friends do that better and the app links out to them.
 
 ## Where things live
 
-| Topic                                           | File                                                                                                                                                        |
-| ----------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Rideability heuristic                           | `lib/status.ts` (`passVerdict`, the reason ladder `REASON_ORDER`, `Grade`, `tourStatus`); thresholds in `docs/scales.md`                                    |
-| Daylight (sunrise, sunset, day length)          | `lib/daylight.ts`, pure astronomy, no data                                                                                                                  |
-| Data schemas (zod) and inferred types           | `lib/schema.ts`, `lib/types.ts`, `data/schema/*.schema.json` (`bun run data:schema`)                                                                        |
-| Regions and countries (vocabulary)              | `lib/regions.ts`                                                                                                                                            |
-| Data access (cached, validated)                 | `lib/data.ts`                                                                                                                                               |
-| Profile sampling and derived gradients          | `lib/profile.ts`                                                                                                                                            |
-| Filter, selection and URL state (hash keys)     | `lib/app-state.ts`, `components/explorer.tsx`                                                                                                               |
-| Road types and labels (vocabulary)              | `lib/regions.ts` (`ROAD_TYPES`, `ROAD_TAGS`, `isTraverse`, `hasRoadSummit`)                                                                                 |
-| Tag labels: vocabulary, icons, badges           | `lib/regions.ts` (`TOWN_TAGS`, `ROAD_TAGS`, `TAG_LABEL`), `lib/tag-icons.ts`, `components/tags.tsx`                                                         |
-| Search normalisation and haystacks              | `lib/search.ts`                                                                                                                                             |
-| Map, layers, 3D, markers, labels, feature state | `components/map/pass-map.tsx`                                                                                                                               |
-| Basemap: vector style, palette, glyphs          | `lib/basemap.ts`, `lib/palette.ts`, `scripts/build-map-style.ts` (→ `public/map/style-*.json`), `scripts/build-glyphs.ts` (→ `public/map/fonts`, committed) |
-| Map assets: GeoJSON, simplification, hashing    | `lib/map-assets.ts`, `scripts/build-map-assets.ts` (→ `public/map`, git-ignored)                                                                            |
-| Tours within reach, town reach hull             | `lib/nearby.ts`, `lib/geo.ts` (computed on the server in `lib/data.ts`)                                                                                     |
-| Photos: keys, sizes, licence metadata           | `lib/photos.ts`, `scripts/build-photos.ts` (`bun run data:photos`) → `data/generated/photos.json`                                                           |
-| Period scrubber floating over the map           | `components/map/period-scrubber.tsx`                                                                                                                        |
-| Season strip (24 half-months)                   | `components/season-strip.tsx`                                                                                                                               |
-| Filter controls, chips, applied-filter row      | `components/sidebar/filter-panel.tsx`, `components/sidebar/filter-chip.tsx`, `lib/filter-summary.ts`                                                        |
-| Sidebar: search, filters, one list per kind     | `components/sidebar/`, `lib/rows.ts`                                                                                                                        |
-| Detail panel incl. profile/weather/climate      | `components/panel/` (collapsible blocks: `components/panel/section.tsx`)                                                                                    |
-| Bottom sheet on phones (one per panel)          | `components/mobile-sheet.tsx`                                                                                                                               |
-| Precomputation, data checks                     | `scripts/build-data.ts`, `scripts/build-photos.ts`, `scripts/check-data.ts`                                                                                 |
-| Route quality gate: checks and thresholds       | `scripts/lib/validate.ts`; pass-point placement `scripts/locate-pass.ts` (`bun run data:locate`), `scripts/lib/locate.ts`                                   |
-| Name, claim, colours, mark, base URL            | `lib/brand.ts`, `lib/mark.tsx`                                                                                                                              |
-| Icons, share image, manifest, robots, sitemap   | `app/icon.tsx`, `app/apple-icon.tsx`, `app/opengraph-image.tsx`, `app/manifest.ts`, `app/robots.ts`, `app/sitemap.ts`                                       |
-| Legal pages                                     | `app/impressum/`, `app/datenschutz/`                                                                                                                        |
-| Linting and formatting                          | `oxlint.config.ts`, `oxfmt.config.ts`                                                                                                                       |
-| Implementation plans                            | `docs/plans/` (index: `docs/plans/README.md`)                                                                                                               |
-| Project skills                                  | `.agents/skills/implement-plan`, `curate-data`, `preview-app`                                                                                               |
-| Web-session setup (Bun version, deps)           | `.claude/hooks/session-start.sh`, registered in `.claude/settings.json`                                                                                     |
+| Topic                                           | File                                                                                                                                                                                                                     |
+| ----------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Rideability heuristic                           | `lib/status.ts` (`passVerdict`, the reason ladder `REASON_ORDER`, `Grade`); the 24 half-months of one pass or tour in `passYear`/`tourYear`, computed once by `getYears` (`lib/data.ts`); thresholds in `docs/scales.md` |
+| Daylight (sunrise, sunset, day length)          | `lib/daylight.ts`, pure astronomy, no data                                                                                                                                                                               |
+| Data schemas (zod) and inferred types           | `lib/schema.ts`, `lib/types.ts`, `data/schema/*.schema.json` (`bun run data:schema`)                                                                                                                                     |
+| Regions and countries (vocabulary)              | `lib/regions.ts`                                                                                                                                                                                                         |
+| Data access (cached, validated)                 | `lib/data.ts`                                                                                                                                                                                                            |
+| Profile sampling and derived gradients          | `lib/profile.ts`                                                                                                                                                                                                         |
+| Filter, selection and URL state (hash keys)     | `lib/app-state.ts`, `components/explorer.tsx`                                                                                                                                                                            |
+| Road types and labels (vocabulary)              | `lib/regions.ts` (`ROAD_TYPES`, `ROAD_TAGS`, `isTraverse`, `hasRoadSummit`)                                                                                                                                              |
+| Tag labels: vocabulary, icons, badges           | `lib/regions.ts` (`TOWN_TAGS`, `ROAD_TAGS`, `TAG_LABEL`), `lib/tag-icons.ts`, `components/tags.tsx`                                                                                                                      |
+| Search normalisation and haystacks              | `lib/search.ts`                                                                                                                                                                                                          |
+| Map, layers, 3D, markers, labels, feature state | `components/map/pass-map.tsx`                                                                                                                                                                                            |
+| Basemap: vector style, palette, glyphs          | `lib/basemap.ts`, `lib/palette.ts`, `scripts/build-map-style.ts` (→ `public/map/style-*.json`), `scripts/build-glyphs.ts` (→ `public/map/fonts`, committed)                                                              |
+| Map assets: GeoJSON, simplification, hashing    | `lib/map-assets.ts`, `scripts/build-map-assets.ts` (→ `public/map`, git-ignored)                                                                                                                                         |
+| Tours within reach, town reach hull             | `lib/nearby.ts`, `lib/geo.ts` (computed on the server in `lib/data.ts`)                                                                                                                                                  |
+| Photos: keys, sizes, licence metadata           | `lib/photos.ts`, `scripts/build-photos.ts` (`bun run data:photos`) → `data/generated/photos.json`                                                                                                                        |
+| Period scrubber floating over the map           | `components/map/period-scrubber.tsx`                                                                                                                                                                                     |
+| Season strip (24 half-months)                   | `components/season-strip.tsx`                                                                                                                                                                                            |
+| Filter controls, chips, applied-filter row      | `components/sidebar/filter-panel.tsx`, `components/sidebar/filter-chip.tsx`, `lib/filter-summary.ts`                                                                                                                     |
+| Sidebar: search, filters, one list per kind     | `components/sidebar/`, `lib/rows.ts`                                                                                                                                                                                     |
+| Detail panel incl. profile/weather/climate      | `components/panel/` (collapsible blocks: `components/panel/section.tsx`)                                                                                                                                                 |
+| Bottom sheet on phones (one per panel)          | `components/mobile-sheet.tsx`                                                                                                                                                                                            |
+| Precomputation, data checks                     | `scripts/build-data.ts`, `scripts/build-photos.ts`, `scripts/check-data.ts`                                                                                                                                              |
+| Route quality gate: checks and thresholds       | `scripts/lib/validate.ts`; pass-point placement `scripts/locate-pass.ts` (`bun run data:locate`), `scripts/lib/locate.ts`                                                                                                |
+| Name, claim, colours, mark, base URL            | `lib/brand.ts`, `lib/mark.tsx`                                                                                                                                                                                           |
+| Icons, share image, manifest, robots, sitemap   | `app/icon.tsx`, `app/apple-icon.tsx`, `app/opengraph-image.tsx`, `app/manifest.ts`, `app/robots.ts`, `app/sitemap.ts`                                                                                                    |
+| Legal pages                                     | `app/impressum/`, `app/datenschutz/`                                                                                                                                                                                     |
+| Linting and formatting                          | `oxlint.config.ts`, `oxfmt.config.ts`                                                                                                                                                                                    |
+| Implementation plans                            | `docs/plans/` (index: `docs/plans/README.md`)                                                                                                                                                                            |
+| Project skills                                  | `.agents/skills/implement-plan`, `curate-data`, `preview-app`                                                                                                                                                            |
+| Web-session setup (Bun version, deps)           | `.claude/hooks/session-start.sh`, registered in `.claude/settings.json`                                                                                                                                                  |
 
 ## Conventions
 
@@ -145,9 +145,11 @@ friends do that better and the app links out to them.
   stay liftable. The difficulty cells are the one exception to "what happens if
   I press this": a cell moves a window rather than replacing it, so its number
   is how many roads sit at that level. Counting has its own path rather than
-  going through `buildPassRows`, which also grades every pass for all 24
-  half-months for the season strip – about forty times the work, once per option,
-  on every keystroke. And when a combination does run empty, the count line names
+  going through `buildPassRows`: a count needs neither the row objects nor the
+  season strip hanging off them, and the panel asks it once per option on every
+  keystroke. Since plan 15 the saving is allocation rather than arithmetic – both
+  paths read the grades from the precomputed year – but it is still 201 rows
+  built per option to produce one number. And when a combination does run empty, the count line names
   the single filter that would bring the most back rather than saying nothing.
   What is filtered away is written down outside the panel too: `AppliedFilters`
   turns `appliedFilters()` in `lib/filter-summary.ts` into one removable chip

@@ -130,7 +130,7 @@ export const PassList = ({
                       className="text-muted-foreground"
                     />
                   )}
-                  <SeasonStrip grades={season} current={filters.period} />
+                  <SeasonStrip cells={season} current={filters.period} />
                 </>
               }
             />
