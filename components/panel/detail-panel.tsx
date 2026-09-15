@@ -2,6 +2,7 @@
 
 import { ExternalLink, Star, X } from "lucide-react";
 import dynamic from "next/dynamic";
+import type { CSSProperties } from "react";
 import { useEffect, useRef } from "react";
 
 import { ElevationProfile } from "@/components/panel/elevation-profile";
@@ -221,8 +222,8 @@ const Nearby = ({
                 onClick={() => p.onSelect({ kind: "tour", slug: t.slug })}
               >
                 <span
-                  className="inline-block h-1 w-3 rounded"
-                  style={{ background: t.color }}
+                  className="inline-block h-1 w-3 rounded bg-(--tour-color)"
+                  style={{ "--tour-color": t.color } as CSSProperties}
                 />{" "}
                 {t.name}
               </LinkButton>

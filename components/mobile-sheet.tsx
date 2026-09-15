@@ -81,7 +81,8 @@ export const MobileSheet = ({
           // scroll container inside does too – during the drag as well, which
           // is why the swipe movement counts (it goes negative above the
           // topmost snap point, hence the `max`).
-          "[padding-bottom:max(0px,calc(var(--drawer-snap-point-offset,0px)+var(--drawer-swipe-movement-y,0px)))]",
+          "[--sheet-fold:max(0px,calc(var(--drawer-snap-point-offset,0px)+var(--drawer-swipe-movement-y,0px)))]",
+          "pb-(--sheet-fold)",
         )}
       >
         <DrawerTitle className="sr-only">{label}</DrawerTitle>

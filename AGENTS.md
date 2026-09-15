@@ -390,6 +390,23 @@ friends do that better and the app links out to them.
   gone. The two config files only ever _deviate_ from the ultracite preset,
   and every deviation carries the reason next to it – keep it that way rather
   than silencing a rule at the call site.
+- **`@shadcn/lint` checks the design system itself.** It runs as an oxlint JS
+  plugin (`jsPlugins` in `oxlint.config.ts`), reads `components.json` and
+  `app/globals.css`, and turns three of the conventions above from prose into
+  errors: colours only via tokens (`no-raw-colors`), sizes from the scale
+  (`no-arbitrary-values`), and no restyling a component from its call site
+  (`no-restyle`); `no-inline-styles` and `no-unknown-classes` come along with
+  them. Because `components/ui/` is generated and never hand-edited, the
+  remedy those rules normally suggest – add a variant there – is closed off,
+  so `no-restyle` hands spacing and typography to the app (this is dense map
+  furniture; the preset's comfortable defaults are the wrong size) and keeps
+  colour and shape with the design system. Every exception to that is a
+  `contract` in `oxlint.config.ts` naming the one decision behind it. A new
+  radius on a `Card` or an ad-hoc tint on a `Popover` is an error; add a
+  reasoned contract rather than a class.
+  `require-static-classes` is off: it resolves a constant declared in the same
+  file but not one imported from another, and the shared class constants in
+  `lib/utils.ts` are the latter by design.
 
 ## Before opening a PR
 

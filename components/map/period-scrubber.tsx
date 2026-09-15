@@ -1,9 +1,11 @@
 "use client";
 
 import { ChevronLeft, ChevronRight, RotateCcw } from "lucide-react";
+import type { CSSProperties } from "react";
 import { useRef } from "react";
 
 import { GradeLegend } from "@/components/grade-legend";
+import { CELL } from "@/components/season-strip";
 import { Button } from "@/components/ui/button";
 import { ButtonGroup, ButtonGroupText } from "@/components/ui/button-group";
 import {
@@ -13,7 +15,9 @@ import {
 } from "@/components/ui/tooltip";
 import { barTotal } from "@/lib/rows";
 import type { HistogramBar } from "@/lib/rows";
+import type { Grade } from "@/lib/status";
 import {
+  GRADE_ORDER,
   MONTH_INITIALS,
   PERIODS,
   periodAt,
@@ -21,7 +25,28 @@ import {
   periodLabel,
 } from "@/lib/status";
 import type { Period } from "@/lib/types";
-import { cn } from "@/lib/utils";
+import { cn, MAP_GROUP } from "@/lib/utils";
+
+/** Share of one segment in its stack, in percent; 0 when the stack is empty. */
+const percent = (part: number, total: number) =>
+  total === 0 ? 0 : (part / total) * 100;
+
+/**
+ * One bar, bottom to top: the reverse of `GRADE_ORDER`, so the worse grades
+ * sink and the best sits on top of the stack. Taking the order from the same
+ * constant the legend in the tooltip above renders from is what keeps the two
+ * readings of the same four grades in step.
+ *
+ * Three of the four fills are the strip's own (`CELL`), so the bars and the
+ * strips in the list below them read as one ramp. `closed` is the exception
+ * and stays a flat grey: the strip draws it hollow with a red hairline, which
+ * at four pixels wide is mush rather than a ring – and red is the map's own
+ * closure colour, which a backdrop must not compete with.
+ */
+const STACK: [Grade, string][] = GRADE_ORDER.toReversed().map((g) => [
+  g,
+  g === "closed" ? "bg-muted-foreground/25" : CELL[g],
+]);
 
 /**
  * The half-month drives every colour on the map, so it is the one domain
@@ -35,13 +60,7 @@ import { cn } from "@/lib/utils";
  * how many of the passes currently in the list are open, weather-dependent or
  * often closed – the status filter is ignored for those counts (see
  * `statusHistogram`), otherwise the histogram would hide the alternatives.
- * "Often closed" is grey rather than red: red is the map's closure colour and
- * a backdrop must not compete with it.
  */
-/** Share of one segment in its stack, in percent; 0 when the stack is empty. */
-const percent = (part: number, total: number) =>
-  total === 0 ? 0 : (part / total) * 100;
-
 export const PeriodScrubber = ({
   value,
   onChange,
@@ -89,7 +108,7 @@ export const PeriodScrubber = ({
 
   return (
     <div className="w-76 max-w-full min-w-0">
-      <ButtonGroup className="bg-background/60 w-full rounded-md">
+      <ButtonGroup className={cn("w-full", MAP_GROUP)}>
         <Button
           variant="outline"
           size="icon-lg"
@@ -195,27 +214,27 @@ export const PeriodScrubber = ({
                   className="bg-foreground/45 absolute inset-x-px top-0 h-0.5 rounded-full"
                 />
               )}
+              {/* The bar's height and its four slices are data, so they travel
+                  as custom properties rather than as class names: a class per
+                  percentage is a class Tailwind cannot generate. */}
               <span
                 aria-hidden
-                className="flex flex-col justify-end overflow-hidden rounded-xs"
-                style={{ height: `${(barTotal(b) / max) * 100}%` }}
+                className="flex h-(--bar) flex-col justify-end overflow-hidden rounded-xs"
+                style={
+                  { "--bar": `${(barTotal(b) / max) * 100}%` } as CSSProperties
+                }
               >
-                <span
-                  className="bg-muted-foreground/25 shrink-0"
-                  style={{ flexBasis: `${percent(b.closed, barTotal(b))}%` }}
-                />
-                <span
-                  className="bg-grade-limited shrink-0"
-                  style={{ flexBasis: `${percent(b.limited, barTotal(b))}%` }}
-                />
-                <span
-                  className="bg-grade-good shrink-0"
-                  style={{ flexBasis: `${percent(b.good, barTotal(b))}%` }}
-                />
-                <span
-                  className="bg-grade-best shrink-0"
-                  style={{ flexBasis: `${percent(b.best, barTotal(b))}%` }}
-                />
+                {STACK.map(([grade, fill]) => (
+                  <span
+                    key={grade}
+                    className={cn("shrink-0 basis-(--slice)", fill)}
+                    style={
+                      {
+                        "--slice": `${percent(b[grade], barTotal(b))}%`,
+                      } as CSSProperties
+                    }
+                  />
+                ))}
               </span>
             </span>
           ))}
@@ -223,11 +242,13 @@ export const PeriodScrubber = ({
               without reaching into its neighbours. */}
           <span
             aria-hidden
-            style={{
-              left: `${(index / PERIODS.length) * 100}%`,
-              width: `${100 / PERIODS.length}%`,
-            }}
-            className="ring-foreground pointer-events-none absolute -inset-y-1 rounded-md ring-2 ring-inset"
+            style={
+              {
+                "--stop": `${(index / PERIODS.length) * 100}%`,
+                "--stop-w": `${100 / PERIODS.length}%`,
+              } as CSSProperties
+            }
+            className="ring-foreground pointer-events-none absolute -inset-y-1 left-(--stop) w-(--stop-w) rounded-md ring-2 ring-inset"
           />
         </div>
       </div>
