@@ -407,3 +407,65 @@ test(
     ),
   TIMEOUT,
 );
+
+/**
+ * The map's bottom padding on every camera frame. `setPadding` is a `jumpTo`,
+ * so its very first frame already carries the final value; a flight that
+ * re-pads while it moves starts where the camera stood.
+ */
+const RECORD_PADDING = `(() => {
+  const m = window.__alpen?.map;
+  if (!m) return false;
+  window.__pad = [];
+  m.on("move", () => window.__pad.push(m.getPadding().bottom));
+  return true;
+})()`;
+
+test(
+  "12 · the detail sheet re-pads the map along its flight, not in one frame",
+  () =>
+    withPage(
+      app,
+      "mobile-camera-padding",
+      { hash: "#z=10&c=45.5,6.0", mobile: true },
+      async (page) => {
+        // Only a build with NEXT_PUBLIC_TEST_HOOKS=1 exposes the map.
+        if (!(await page.camera())) return;
+        const settled = async () => {
+          const c = await page.camera();
+          return !!c && !c.moving;
+        };
+        // The list sheet opens the way test 6 opens it; the detail sheet then
+        // slides in over it and takes a different share of the screen, which
+        // is the padding change this is about.
+        await waitUntil(async () => {
+          if ((await page.count("input[type=search]")) > 0) return true;
+          await page.clickText("button", "Pass, Tour oder Ort");
+          await Bun.sleep(300);
+          return (await page.count("input[type=search]")) > 0;
+        }, "the list sheet to open");
+        await page.waitFor(GALIBIER);
+        await waitUntil(settled, "the camera at rest behind the open list");
+
+        expect(await page.evaluate<boolean>(RECORD_PADDING)).toBe(true);
+        const before = await page.evaluate<number>(
+          "window.__alpen.map.getPadding().bottom",
+        );
+        await page.click(GALIBIER);
+        await page.waitFor("#detail-title");
+        await waitUntil(settled, "the camera settled on the pass");
+
+        const pad = await page.evaluate<number[]>("window.__pad");
+        const after = pad.at(-1)!;
+        // The sheet in front of the map did change height …
+        expect(Math.abs(after - before)).toBeGreaterThan(100);
+        // … and the camera answered over the whole flight: the first of its
+        // frames still stands where the camera stood.
+        expect(pad.length).toBeGreaterThan(5);
+        expect(Math.abs(pad[0]! - before)).toBeLessThan(
+          Math.abs(after - before) / 2,
+        );
+      },
+    ),
+  TIMEOUT,
+);

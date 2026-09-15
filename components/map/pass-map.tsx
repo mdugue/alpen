@@ -53,6 +53,8 @@ import {
   GLYPHS,
 } from "@/lib/basemap";
 import type { MapAssets } from "@/lib/map-assets";
+import { fitInset, NO_INSET, sameInset, toInset } from "@/lib/map-camera";
+import type { Inset } from "@/lib/map-camera";
 import type { TownReach } from "@/lib/nearby";
 import { PALETTE } from "@/lib/palette";
 import type { Scheme } from "@/lib/palette";
@@ -122,6 +124,13 @@ interface Props {
 const EMPTY = { features: [], type: "FeatureCollection" } as const;
 /** Breathing room around a fitted frame, in pixels; the map padding is added on top. */
 const FIT_PADDING = 48;
+/** The same around a selected tour, which is framed tighter than the whole map. */
+const TOUR_PADDING = 60;
+/** A padding change nothing else moves with: long enough to read as a slide. */
+const PADDING_MS = 400;
+
+const reduceMotion = () =>
+  window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 /**
  * The three tools share one segmented column that stretches to the scrubber's
  * height, so each takes a third of it and the cluster keeps an even edge all
@@ -864,6 +873,17 @@ export const PassMap = ({
   // effect and never a render.
   const hashCamera = useRef(false);
   const fitted = useRef(false);
+  /**
+   * The padding the panels ask for, and whether it has ever been applied. Both
+   * belong to the two camera effects below, never to a render: the first
+   * padding is set outright, every later one rides along with a camera move.
+   */
+  const inset = useRef<Inset>(NO_INSET);
+  const padded = useRef(false);
+  /** The selection the fly-to below has already flown to; `null` while none is. */
+  const flownTo = useRef<string | null>(null);
+  /** One string per selected entity: what the camera effects change on. */
+  const selKey = selection && `${selection.kind}:${selection.slug}`;
   const [base, setBase] = useStored("alpenpaesse:base", BASEMAP_ID);
   // The base the map currently shows. The map is built during the hydration
   // render, where a stored value is not known yet (useSyncExternalStore hands
@@ -1236,15 +1256,39 @@ export const PassMap = ({
     });
   }, [requestedView, ready]);
 
-  // --- Reserve space for the mobile sheet ---------------------------------
+  // --- Reserve space for the panels in front of the map --------------------
+  // The camera centre is drawn in the middle of the *padded* box, so padding is
+  // not a passive margin: `setPadding` is a `jumpTo` and moves the picture by
+  // half of what changed. On a phone that is the detail sheet's 55 % of the
+  // screen arriving in one frame – a jump at the start of every selection made
+  // from the map, and the reason the padding is never set outright here.
+  // Instead a selection carries the new padding into its own flight (the effect
+  // below runs after this one in the same commit, and `inset` is what it
+  // reads), and a padding change with no camera move behind it – a sheet
+  // dragged to another snap point, the sidebar folding away – eases in.
   useEffect(() => {
-    map.current?.setPadding({
+    const m = map.current;
+    if (!m || !ready) return;
+    const next: Inset = {
       bottom: insetBottom,
       left: insetLeft,
       right: 0,
       top: 0,
-    });
-  }, [insetLeft, insetBottom, ready]);
+    };
+    inset.current = next;
+    // The first padding is set outright: the map has not drawn a frame yet, so
+    // there is nothing that could jump, and the opening frame below is fitted
+    // into it.
+    const first = !padded.current;
+    padded.current = true;
+    if (sameInset(toInset(m.getPadding()), next)) return;
+    if (first) {
+      m.setPadding(next);
+      return;
+    }
+    if (selKey && selKey !== flownTo.current) return;
+    m.easeTo({ duration: reduceMotion() ? 0 : PADDING_MS, padding: next });
+  }, [insetLeft, insetBottom, selKey, ready]);
 
   // --- The frame the map opens on -----------------------------------------
   // Without a camera in the hash the overview is not a fixed rectangle but
@@ -1397,27 +1441,30 @@ export const PassMap = ({
     if (!m || !ready || !profileZoom) return;
     m.flyTo({
       center: [profileZoom.lon, profileZoom.lat],
-      duration: window.matchMedia("(prefers-reduced-motion: reduce)").matches
-        ? 0
-        : 900,
+      duration: reduceMotion() ? 0 : 900,
       zoom: Math.max(m.getZoom(), 13),
     });
   }, [profileZoom, ready]);
 
   // --- Fly to selection --------------------------------------------------
+  // The flight carries the padding the panels ask for, so opening the detail
+  // and moving to what it describes is one movement rather than a jump and a
+  // movement. `flownTo` is also what the padding effect above reads to tell a
+  // selection apart from a sheet that was merely dragged.
   useEffect(() => {
     const m = map.current;
-    if (!m || !ready || !selection) return;
-    const reduce = window.matchMedia(
-      "(prefers-reduced-motion: reduce)",
-    ).matches;
-    const duration = reduce ? 0 : 900;
+    if (!m || !ready) return;
+    flownTo.current = selKey;
+    if (!selection) return;
+    const duration = reduceMotion() ? 0 : 900;
+    const padding = inset.current;
     if (selection.kind === "pass") {
       const p = passes.find((x) => x.slug === selection.slug);
       if (p)
         m.flyTo({
           center: [p.lon, p.lat],
           duration,
+          padding,
           zoom: Math.max(m.getZoom(), 11),
         });
     } else if (selection.kind === "town") {
@@ -1426,15 +1473,24 @@ export const PassMap = ({
         m.flyTo({
           center: [t.lon, t.lat],
           duration,
+          padding,
           zoom: Math.max(m.getZoom(), 10.5),
         });
     } else {
       // Precomputed per tour: the routed line's bounds, or the waypoints'.
       const bbox = assets.tourBounds[selection.slug];
-      if (bbox) m.fitBounds(bbox, { duration, padding: 60 });
+      // Not `fitBounds`, which drops the padding before it flies: the frame has
+      // to be measured against where the camera lands (`fitInset`), and the
+      // padding has to travel with it.
+      const camera =
+        bbox &&
+        m.cameraForBounds(bbox, {
+          padding: fitInset(toInset(m.getPadding()), padding, TOUR_PADDING),
+        });
+      if (camera) m.flyTo({ ...camera, duration, padding });
     }
     // oxlint-disable-next-line react/exhaustive-deps
-  }, [selection?.kind, selection?.slug, ready]);
+  }, [selKey, ready]);
 
   const toggle3d = (pressed: boolean) => {
     const m = map.current;
