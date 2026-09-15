@@ -70,15 +70,31 @@ const RADIUS_M = { pass: 2000, town: 2500 };
  */
 const GAP_MS = 3000;
 /**
- * The placeholders come from the file CDN rather than from the API, which is
- * a different budget and a far cheaper request – but there are up to six of
- * them per entity, so they are still paced and still serial.
+ * Gap between placeholder requests. These go to the file CDN rather than to
+ * the API, which is a different budget and a far cheaper request – but there
+ * are up to six per entity and ~1 500 in a first run, and a 20-px width nobody
+ * has asked for before has to be rendered on demand, so the CDN answers a
+ * sustained burst with 429 like anything else. Serial, paced, and the pace
+ * gives way: `slowDown` doubles the gap every time a 429 comes back and the
+ * gap never goes down again within a run, because the run is what provoked it.
+ * Starting low and yielding beats guessing a number that is polite for every
+ * time of day.
  */
-const BLUR_GAP_MS = 150;
+const BLUR_GAP_MS = 400;
+const BLUR_GAP_MAX_MS = 5000;
 const RETRIES = 5;
 const BACKOFF_MS = 10_000;
 
 // ── Commons API ──────────────────────────────────────────────────────────────
+
+/**
+ * Being told to slow down is the only measurement of "too fast" there is, so
+ * it is the one the pace follows. Declared before `request`, which reports it.
+ */
+let blurGap = BLUR_GAP_MS;
+const slowDown = () => {
+  blurGap = Math.min(blurGap * 2, BLUR_GAP_MAX_MS);
+};
 
 /** A rate limit that outlasts the backoff ends the run; it does not fail it. */
 class RateLimitedError extends Error {
@@ -93,6 +109,7 @@ const request = async (url: URL): Promise<Response> => {
   for (let attempt = 0; ; attempt += 1) {
     const res = await fetch(url, { headers: { "User-Agent": UA } });
     if (res.ok) return res;
+    if (res.status === 429) slowDown();
     const retriable = res.status === 429 || res.status >= 500;
     if (!retriable) throw new Error(`Commons ${res.status} – ${url}`);
     if (attempt >= RETRIES)
@@ -198,7 +215,7 @@ const blurFor = async (src: string): Promise<string | undefined> => {
 
   const wait = nextBlurAt - Date.now();
   if (wait > 0) await Bun.sleep(wait);
-  nextBlurAt = Date.now() + BLUR_GAP_MS;
+  nextBlurAt = Date.now() + blurGap;
 
   let blur: string | null = null;
   try {
