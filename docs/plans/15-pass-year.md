@@ -1,6 +1,6 @@
 # 15 · The year of a pass, computed once
 
-**Status:** [done](https://github.com/mdugue/alpen/pull/PR_NUMBER) ·
+**Status:** [done](https://github.com/mdugue/alpen/pull/39) ·
 **Effort:** S–M · **Depends on:** 13 (the reason ladder, the best window) ·
 **Unblocks:** 16, 17; 12 (a destination score reads the same series instead of
 running the verdict again)
