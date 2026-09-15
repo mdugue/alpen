@@ -15,12 +15,19 @@ const jsPlugins = selectJsPlugins(["react-doctor"]);
  */
 const shadcnPlugin = { name: "shadcn", specifier: "@shadcn/lint" };
 
-/**
- * What every component in this app may be told from its call site, see
- * `shadcn/no-restyle` below. A contract *replaces* the rule's own `allow`
- * rather than adding to it, so each of them spreads this in first.
- */
+/** What every component in this app may be told from its call site. */
 const BASE = ["layout", "spacing", "typography"];
+
+/**
+ * One `shadcn/no-restyle` contract: what this component may be told *on top of*
+ * `BASE`. The rule's own `contracts[].allow` replaces the base list rather than
+ * extending it, which is a quiet way to lose the app's spacing everywhere; this
+ * adds the base back so a contract only ever states its exception.
+ */
+const contract = (pattern: string, ...allow: string[]) => ({
+  allow: [...BASE, ...allow],
+  pattern,
+});
 
 /**
  * oxlint replaces ESLint here: its `nextjs` and `react` plugins cover what
@@ -218,59 +225,53 @@ export default defineConfig({
       {
         allow: BASE,
         contracts: [
-          {
-            // The filter chip: "outlined while it is off and filled with the
-            // primary colour while it is on", carried by the border as well as
-            // the fill so it does not rest on hue alone. The mira preset's
-            // pressed Toggle is a faint `bg-muted`, which cannot say that.
-            allow: [...BASE, "rounded-full", "border-border", "aria-pressed:*"],
-            pattern: "^Toggle$",
-          },
-          {
-            // Three shapes a Button takes here that no variant provides: the
-            // pill of the applied-filter chips, the square-cornered full-width
-            // row of a sidebar section header, and the small radius of a panel
-            // section's title. All three are section furniture rather than
-            // buttons, which is also why they drop the ghost variant's hover
-            // and `aria-expanded` fills – "a sidebar section adds no surface".
-            allow: [
-              ...BASE,
-              "rounded-full",
-              "rounded-none",
-              "rounded-sm",
-              "hover:bg-transparent",
-              "hover:bg-muted/50",
-              "aria-expanded:bg-transparent",
-              "text-muted-foreground",
-              "text-muted-foreground/70",
-            ],
-            pattern: "^Button$",
-          },
-          {
-            // The map tool cluster and the scrubber's stepper are one panel
-            // surface floating over the map (`MAP_CLUSTER`), so the group is
-            // translucent and its text label carries no fill of its own.
-            allow: [
-              ...BASE,
-              "bg-background/60",
-              "bg-transparent",
-              "rounded-md",
-            ],
-            pattern: "^ButtonGroup(Text)?$",
-          },
-          {
-            // The sheet sits on the bottom edge of the viewport; a radius and
-            // a border there are drawn off-screen.
-            allow: [...BASE, "rounded-b-none", "border-b-0", "[--*]"],
-            pattern: "^DrawerContent$",
-          },
-          {
-            // The weather table's header is secondary text and its freezing
-            // temperatures carry the status token the rest of the app uses
-            // for a closed pass.
-            allow: [...BASE, "text-muted-foreground", "text-status-*"],
-            pattern: "^Table(Row|Cell)$",
-          },
+          // The filter chip: "outlined while it is off and filled with the
+          // primary colour while it is on", carried by the border as well as
+          // the fill so it does not rest on hue alone. The mira preset's
+          // pressed Toggle is a faint `bg-muted`, which cannot say that.
+          contract(
+            "^Toggle$",
+            "rounded-full",
+            "border-border",
+            "aria-pressed:*",
+          ),
+          // Three shapes a Button takes that no variant provides: the pill of
+          // the applied-filter chips, the square-cornered full-width row of a
+          // sidebar section header, and the small radius of a panel section's
+          // title. All three are section furniture rather than buttons, which
+          // is also why they drop the ghost variant's hover and
+          // `aria-expanded` fills – "a sidebar section adds no surface".
+          contract(
+            "^Button$",
+            "rounded-full",
+            "rounded-none",
+            "rounded-sm",
+            "hover:bg-transparent",
+            "hover:bg-muted/50",
+            "aria-expanded:bg-transparent",
+            "text-muted-foreground",
+            "text-muted-foreground/70",
+          ),
+          // The scrubber's stepper and the column of map tools are one panel
+          // surface floating over the map (`MAP_GROUP`, `MAP_CLUSTER`), so the
+          // group is translucent and its text label carries no fill of its own.
+          contract(
+            "^ButtonGroup(Text)?$",
+            "bg-background/60",
+            "bg-transparent",
+            "rounded-md",
+          ),
+          // The sheet sits on the bottom edge of the viewport; a radius and a
+          // border there are drawn off-screen.
+          contract("^DrawerContent$", "rounded-b-none", "border-b-0", "[--*]"),
+          // The weather table's header is secondary text and its freezing
+          // temperatures carry the status token the rest of the app uses for a
+          // closed pass.
+          contract(
+            "^Table(Row|Cell)$",
+            "text-muted-foreground",
+            "text-status-*",
+          ),
         ],
       },
     ],

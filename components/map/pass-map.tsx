@@ -61,7 +61,14 @@ import { roadTypeWord, TAG_LABEL } from "@/lib/regions";
 import { ascentKey } from "@/lib/route-key";
 import { tagIconSvg } from "@/lib/tag-icons";
 import type { LatLon, Pass, Status, Tag, Tour, Town } from "@/lib/types";
-import { cn, fmtUnit, MAP_CLUSTER, MAP_TOOL, PRESSED } from "@/lib/utils";
+import {
+  cn,
+  fmtUnit,
+  MAP_CLUSTER,
+  MAP_GROUP,
+  MAP_TOOL,
+  PRESSED,
+} from "@/lib/utils";
 
 export interface MapPass extends Pass {
   status: Status;
@@ -1460,7 +1467,7 @@ export const PassMap = ({
           {scrubber}
           <ButtonGroup
             orientation="vertical"
-            className="bg-background/60 shrink-0 rounded-md"
+            className={cn("shrink-0", MAP_GROUP)}
           >
             <Popover>
               <Tooltip>

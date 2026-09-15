@@ -121,12 +121,14 @@ export const AppliedFilters = ({
         <Button
           key={chip.key}
           variant="secondary"
-          size="sm"
           onClick={() => setFilters(chip.clear)}
           aria-label={`Filter „${chip.label}" entfernen`}
+          // The default size is the app's row height already; the lead-in is
+          // the only deviation, so the pill's word does not sit on its curve.
+          // The trailing inset comes from the X's own `data-icon`.
           className={cn(
-            "h-7 shrink-0 rounded-full pr-1.5 pl-3 font-normal",
-            "pointer-coarse:h-9",
+            "shrink-0 rounded-full pl-3 font-normal",
+            TOUCH_CONTROL,
           )}
         >
           {chip.label}
@@ -136,9 +138,11 @@ export const AppliedFilters = ({
       {applied.length > 1 && (
         <Button
           variant="ghost"
-          size="sm"
           onClick={onReset}
-          className="h-7 shrink-0 rounded-full px-2.5 font-normal pointer-coarse:h-9"
+          className={cn(
+            "shrink-0 rounded-full px-2.5 font-normal",
+            TOUCH_CONTROL,
+          )}
         >
           <RotateCcw data-icon="inline-start" />
           Alle
