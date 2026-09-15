@@ -190,6 +190,22 @@ const HIT_GROUPS: readonly (readonly string[])[] = [
 ];
 const HIT_LAYERS = HIT_GROUPS.flat();
 
+/**
+ * How long a click waits before it selects, and how far the next one may sit
+ * from it, for the two to count as one double click.
+ *
+ * A double click is MapLibre's zoom gesture, and the click that starts it must
+ * not open a panel on the way in – so a click does not select at once: it
+ * waits out this window, and a second click inside it drops the first instead
+ * of selecting anything. MapLibre's own tap recognizer allows 500 ms and 30 px
+ * between the two taps; the distance is taken from it, the time is not. Half a
+ * second of lag in front of every panel is felt on every single click, while
+ * the double click slow enough to leak past 300 ms is rare – and it ends on a
+ * zoomed map either way.
+ */
+const DOUBLE_MS = 300;
+const DOUBLE_PX = 30;
+
 interface Hit {
   kind: Selection["kind"];
   slug: string;
@@ -1099,10 +1115,44 @@ export const PassMap = ({
       m.on("moveend", hover);
     }
 
+    /** The selection a click has resolved but not yet handed over. */
+    let pending: ReturnType<typeof setTimeout> | null = null;
+    /** The previous click, to tell the second half of a double click apart. */
+    let clicked: { t: number; x: number; y: number } | null = null;
+    const dropPending = () => {
+      if (pending) clearTimeout(pending);
+      pending = null;
+    };
+
     m.on("click", (e) => {
-      const hit = pickAt(m, e.point.x, e.point.y);
-      if (hit) onSelectRef.current({ kind: hit.kind, slug: hit.slug });
+      const { x, y } = e.point;
+      const t = Date.now();
+      const prev = clicked;
+      clicked = { t, x, y };
+      // A click that follows another one closely is the map's zoom gesture,
+      // not a pick: it drops what the first one lined up and selects nothing
+      // itself. A third click in the same run finds nothing pending and stops
+      // here too, so a run of fast clicks never ends in a panel.
+      if (
+        prev &&
+        t - prev.t < DOUBLE_MS &&
+        Math.hypot(x - prev.x, y - prev.y) < DOUBLE_PX
+      ) {
+        dropPending();
+        return;
+      }
+      const hit = pickAt(m, x, y);
+      dropPending();
+      if (!hit) return;
+      const sel = { kind: hit.kind, slug: hit.slug };
+      pending = setTimeout(() => {
+        pending = null;
+        onSelectRef.current(sel);
+      }, DOUBLE_MS);
     });
+    // A mouse announces the double click itself; a tap on a phone may not, and
+    // the timing above is what catches that one.
+    m.on("dblclick", dropPending);
 
     // Keep the 3D toggle honest when the map is tilted by drag or compass.
     m.on("pitchend", () => {
@@ -1129,6 +1179,7 @@ export const PassMap = ({
 
     return () => {
       ro.disconnect();
+      dropPending();
       m.remove();
       map.current = null;
     };

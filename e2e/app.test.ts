@@ -329,3 +329,77 @@ test(
     ),
   TIMEOUT,
 );
+
+/**
+ * A double click is MapLibre's zoom gesture. Its two halves reach the map as
+ * ordinary clicks, so without the double-click window in `pass-map.tsx` the
+ * first of them would open whatever it happened to land on while the camera
+ * zooms away from it.
+ */
+const DOUBLE_CLICK = (x: number, y: number) => `(() => {
+  const el = document.querySelector("canvas.maplibregl-canvas");
+  const opts = (detail) => ({
+    bubbles: true, button: 0, cancelable: true,
+    clientX: ${x}, clientY: ${y}, detail, view: window,
+  });
+  for (const detail of [1, 2])
+    for (const type of ["mousedown", "mouseup", "click"])
+      el.dispatchEvent(new MouseEvent(type, opts(detail)));
+  el.dispatchEvent(new MouseEvent("dblclick", opts(2)));
+  return true;
+})()`;
+
+/** The Galibier's dot in page pixels, on a map at rest. */
+const PASS_DOT = `(() => {
+  const m = window.__alpen?.map;
+  if (!m || m.isMoving()) return null;
+  const feature = m
+    .queryRenderedFeatures({ layers: ["passes-hit"] })
+    .find((f) => f.properties.slug === "col-du-galibier");
+  if (!feature) return null;
+  const c = m.project(feature.geometry.coordinates);
+  return { x: Math.round(c.x), y: Math.round(c.y), zoom: m.getZoom() };
+})()`;
+
+test(
+  "11 · a double click on the map zooms and opens nothing",
+  () =>
+    withPage(
+      app,
+      "map-double-click",
+      { hash: "#z=12&c=45.064,6.408" },
+      async (page) => {
+        type Dot = { x: number; y: number; zoom: number } | null;
+        const dot = async () => {
+          let d: Dot = null;
+          await waitUntil(async () => {
+            d = await page.evaluate<Dot>(PASS_DOT);
+            return !!d;
+          }, "the Galibier drawn, on a map at rest");
+          return d!;
+        };
+
+        // Straight onto the dot – the worst case, since a single click there
+        // is a selection.
+        const target = await dot();
+        await page.evaluate(DOUBLE_CLICK(target.x, target.y));
+        await waitUntil(
+          async () =>
+            (await page.evaluate<number>("window.__alpen.map.getZoom()")) >
+            target.zoom + 0.5,
+          "the camera zoomed in",
+        );
+        // Well past the window a single click waits out.
+        await Bun.sleep(1000);
+        expect(await page.count("#detail-title")).toBe(0);
+        expect(await page.hash()).not.toContain("pass=");
+
+        // A single click on the same dot still selects.
+        const again = await dot();
+        await page.clickAt(again.x, again.y);
+        await page.waitFor("#detail-title");
+        expect(await page.text("#detail-title")).toBe("Col du Galibier");
+      },
+    ),
+  TIMEOUT,
+);
