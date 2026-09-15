@@ -244,3 +244,145 @@
     font-size: 1rem;
   }
 }
+
+/*
+ * View transitions. The vocabulary – which boundary, which transition type,
+ * which class – lives in lib/view-transitions.ts; this is only the "how".
+ * Unlayered, next to the MapLibre rules, and to be restored after `ui:init`
+ * like everything else below the generated part.
+ *
+ * The page itself is switched off rather than animated. A view transition
+ * covers the whole document, so without the `root` rules below the browser
+ * cross-fades the entire viewport – the full-screen WebGL canvas included – on
+ * every filter chip. Hiding the old snapshot is what does it: the old view is
+ * a static image, the new one is a live representation of the page, so an
+ * unanimated `new` with the `old` out of the way leaves the map running under
+ * the overlay and only the named boundaries animate. The map needs no name of
+ * its own for that.
+ *
+ * What remains is the capture: every transition rasterises the viewport once,
+ * which on this canvas is not free. Hence short durations, and transitions
+ * only on deliberate interactions – never while the period scrubber is dragged.
+ *
+ * The overlay must not eat the pointer either: this is a map people drag, and
+ * a drag that starts 100 ms into a transition has to reach the canvas.
+ */
+:root {
+  --vt-exit: 140ms;
+  --vt-enter: 200ms;
+  --vt-move: 260ms;
+}
+
+::view-transition {
+  pointer-events: none;
+}
+
+::view-transition-group(root) {
+  animation: none;
+}
+::view-transition-old(root) {
+  display: none;
+}
+::view-transition-new(root) {
+  animation: none;
+}
+
+/* A list row appearing or leaving: opacity only. The rows that stay already
+   move (the `auto` update), and movement on top of movement in a list this
+   dense reads as noise. */
+::view-transition-new(.row-in) {
+  animation: var(--vt-enter) ease-out both vt-fade;
+}
+::view-transition-old(.row-out) {
+  animation: var(--vt-exit) ease-in both vt-fade reverse;
+}
+
+/* The detail slide-over and the sidebar: in from their left edge, out the
+   same way, so the panel comes from where the list is. */
+::view-transition-new(.panel-in) {
+  --vt-x: -1rem;
+  animation:
+    var(--vt-enter) ease-out both vt-fade,
+    var(--vt-move) ease-out both vt-slide-x;
+}
+::view-transition-old(.panel-out) {
+  --vt-x: -1rem;
+  animation:
+    var(--vt-exit) ease-in both vt-fade reverse,
+    var(--vt-move) ease-in both vt-slide-x reverse;
+}
+
+/* Another entity selected while the panel is open: the panel stays, its
+   content is exchanged. The blur mid-flight covers the pixel interpolation
+   between two completely different texts. */
+::view-transition-group(.panel-swap),
+::view-transition-group(.morph) {
+  animation-duration: var(--vt-move);
+}
+::view-transition-image-pair(.panel-swap),
+::view-transition-image-pair(.morph) {
+  animation-name: vt-blur;
+  animation-duration: var(--vt-move);
+}
+
+/* A placeholder yielding to what it stood for, and a block opening in the
+   sidebar: down is where content leaves, up is where it arrives. The enter
+   waits for the exit, so the two never overlap. */
+::view-transition-old(.reveal-out) {
+  --vt-y: 0.5rem;
+  animation:
+    var(--vt-exit) ease-out both vt-fade reverse,
+    var(--vt-exit) ease-out both vt-slide-y reverse;
+}
+::view-transition-new(.reveal-in) {
+  --vt-y: 0.5rem;
+  animation:
+    var(--vt-enter) ease-in var(--vt-exit) both vt-fade,
+    var(--vt-move) ease-out both vt-slide-y;
+}
+
+@keyframes vt-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes vt-slide-x {
+  from {
+    translate: var(--vt-x, 0) 0;
+  }
+  to {
+    translate: 0 0;
+  }
+}
+@keyframes vt-slide-y {
+  from {
+    translate: 0 var(--vt-y, 0);
+  }
+  to {
+    translate: 0 0;
+  }
+}
+@keyframes vt-blur {
+  30% {
+    filter: blur(3px);
+  }
+}
+
+/*
+ * The global reduce rule above cannot reach these: it selects `*`, `::before`
+ * and `::after`, and the view-transition pseudo-elements are none of the
+ * three. A positional slide is the most common trigger for motion sensitivity,
+ * so all four parts are cut, not just the movement.
+ */
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-image-pair(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation-delay: 0s !important;
+    animation-duration: 0.01ms !important;
+  }
+}

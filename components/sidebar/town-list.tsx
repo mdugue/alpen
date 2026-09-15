@@ -1,9 +1,12 @@
 "use client";
 
+import { ViewTransition } from "react";
+
 import { EntityRow } from "@/components/sidebar/entity-row";
 import { ListEmpty } from "@/components/sidebar/list-empty";
 import { TagLine } from "@/components/tags";
 import type { TownRow } from "@/lib/rows";
+import { ROW } from "@/lib/view-transitions";
 
 /**
  * The subtitle is the town's own labels rather than the first sentence of
@@ -28,16 +31,19 @@ export const TownList = ({
   return (
     <ul>
       {rows.map(({ town, favorite }) => (
-        <EntityRow
-          key={town.slug}
-          rowId={`town:${town.slug}`}
-          current={currentRow === `town:${town.slug}`}
-          title={town.name}
-          subtitle={<TagLine tags={town.tags} lead={town.country} />}
-          favorite={favorite}
-          onToggleFavorite={() => onToggleFavorite(town.slug)}
-          onSelect={() => onSelect(town.slug)}
-        />
+        // A town carries no season strip, so the row itself is the only
+        // boundary here; see `components/sidebar/pass-list.tsx`.
+        <ViewTransition key={town.slug} {...ROW}>
+          <EntityRow
+            rowId={`town:${town.slug}`}
+            current={currentRow === `town:${town.slug}`}
+            title={town.name}
+            subtitle={<TagLine tags={town.tags} lead={town.country} />}
+            favorite={favorite}
+            onToggleFavorite={() => onToggleFavorite(town.slug)}
+            onSelect={() => onSelect(town.slug)}
+          />
+        </ViewTransition>
       ))}
     </ul>
   );

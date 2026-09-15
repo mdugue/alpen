@@ -58,6 +58,7 @@ friends do that better and the app links out to them.
 | Photos: keys, sizes, licence metadata           | `lib/photos.ts`, `scripts/build-photos.ts` (`bun run data:photos`) → `data/generated/photos.json`                                                           |
 | Period scrubber floating over the map           | `components/map/period-scrubber.tsx`                                                                                                                        |
 | Season strip (24 half-months)                   | `components/season-strip.tsx`                                                                                                                               |
+| View transitions: types, boundaries, names      | `lib/view-transitions.ts`, the rules at the end of `app/globals.css`                                                                                        |
 | Filter controls, chips, applied-filter row      | `components/sidebar/filter-panel.tsx`, `components/sidebar/filter-chip.tsx`, `lib/filter-summary.ts`                                                        |
 | Sidebar: search, filters, one list per kind     | `components/sidebar/`, `lib/rows.ts`                                                                                                                        |
 | Detail panel incl. profile/weather/climate      | `components/panel/` (collapsible blocks: `components/panel/section.tsx`)                                                                                    |
@@ -85,7 +86,8 @@ friends do that better and the app links out to them.
   `className`. Re-running `ui:init` overwrites `app/globals.css`; the domain
   tokens (`--status-open`, `--status-risky`, `--status-closed`, `--tour`,
   `--town`, the strip's `--grade-*` ramp, plus their `@theme inline` lines), the `--text-2xs` step below
-  Tailwind's `text-xs`, the MapLibre rules at the end, the coarse-pointer
+  Tailwind's `text-xs`, the MapLibre rules at the end, the view-transition
+  rules and the coarse-pointer
   font-size rule next to them and the dark-mode setup must be restored
   afterwards.
 - **Sizes come from the scale, not from pixels.** Font sizes, spacing and radii
@@ -201,6 +203,41 @@ friends do that better and the app links out to them.
   visibility is always a `Switch` ("auf der Karte"), one per kind, two-state
   buttons are always a `Toggle`. Without a camera or a selection in the hash
   the map opens on the frame the fit button produces, not on a fixed overview.
+- **Motion is a view transition, and every one of them says something.**
+  Animation in this app goes through React's `<ViewTransition>`; the vocabulary
+  – which boundary, which transition type, which CSS class – is
+  `lib/view-transitions.ts` and the rules at the end of `app/globals.css`.
+  There is one route, so nothing arrives through a navigation: Next's
+  `transitionTypes` on `<Link>` has nothing to do here and every transition is
+  opened by hand with `animate()`, which is also the only way one runs at all –
+  a plain `setState` never animates. Three things move, and each of them
+  answers a question the still frame leaves open. A filter or the sort
+  re-orders the lists, so the rows that survive glide to their new place and
+  the ones that go fade out: the chip then shows what it _did_, not only what
+  it left. Selecting an entity carries the row's season strip into the detail
+  panel under a shared name, which is the one picture that is literally the
+  same in both places; selecting another one while the panel is open crossfades
+  its content in place, because the panel did not move. And the weather
+  forecast, the only thing fetched at runtime, hands over from its skeleton
+  instead of swapping it.
+  Everything else holds still, and that is enforced rather than hoped for:
+  every boundary is `default: "none"` and opts back in per transition type, so
+  a selection does not make 92 rows move and a filter does not make the panel
+  blink. The period scrubber opens no transition at all – it fires while a
+  thumb is dragged and every transition rasterises the viewport once – and the
+  search field writes its query straight through, because the field's value
+  _is_ that state and a deferred update would lag the keystroke. On a phone the
+  selection opens none either: the sheet animates its own transform on every
+  touchmove and a document-wide transition laid over that fights it.
+  The map needs no boundary of its own: the old root snapshot is hidden and the
+  new one is a live representation, so the canvas keeps running under the
+  overlay and only the named boundaries animate. Two consequences are worth
+  knowing. A click that lands in the frame between the capture and the first
+  transition frame reaches nothing – a hand never notices, an e2e that clicks
+  the moment a selector appears does, which is why `Page.settle()` in
+  `test/browser.ts` waits transitions out before every click. And the reduce
+  rule in the base layer cannot reach the view-transition pseudo-elements; they
+  carry their own `prefers-reduced-motion` block.
 - **Charts come from the shadcn `chart` component** (recharts under the hood).
   It is the only heavy dependency in the app, so the one chart that uses it
   (`components/panel/climate-chart.tsx`) is pulled in with `next/dynamic` and

@@ -1,7 +1,7 @@
 "use client";
 
 import { PanelLeftOpen } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, ViewTransition } from "react";
 
 import { PassMap } from "@/components/map/pass-map";
 import type { MapPass } from "@/components/map/pass-map";
@@ -59,6 +59,7 @@ import {
   useViewportHeight,
 } from "@/lib/use-media-query";
 import { cn, MAP_CONTROL, PANEL } from "@/lib/utils";
+import { animate, DETAIL, SIDEBAR } from "@/lib/view-transitions";
 
 interface Props {
   passes: Pass[];
@@ -226,29 +227,65 @@ export const Explorer = ({
     favorite,
   }));
 
-  /** Selecting something also makes it visible and brings the detail up. */
-  const select = (sel: Selection) => {
-    setSelection(sel);
-    setLastSelection(sel);
-    setProfileCursor(null);
-    if (sel.kind === "pass") setShowPasses(true);
-    if (sel.kind === "tour")
-      setHiddenTours((h) => h.filter((s) => s !== sel.slug));
-    if (sel.kind === "town") setShowTowns(true);
-    if (isMobile) {
-      // The detail sheet covers the list; the list waits on its peek row so
-      // nothing of it shows above the detail.
-      setListSnap(LIST_PEEK);
-      setDetailSnap(DETAIL_SNAPS[0]);
-    }
-  };
+  /**
+   * Selecting something also makes it visible and brings the detail up.
+   *
+   * The change is wrapped in a view transition on desktop, where the detail
+   * panel appears next to the sidebar and the season strip of the row travels
+   * into it (`lib/view-transitions.ts`). On a phone it is not: there the sheet
+   * itself is the motion, and it animates its own transform on every touchmove
+   * – a document-wide transition laid over that fights it for the same pixels.
+   */
+  const selecting = (change: () => void) =>
+    isMobile ? change() : animate(null, change);
+
+  const select = (sel: Selection) =>
+    selecting(() => {
+      setSelection(sel);
+      setLastSelection(sel);
+      setProfileCursor(null);
+      if (sel.kind === "pass") setShowPasses(true);
+      if (sel.kind === "tour")
+        setHiddenTours((h) => h.filter((s) => s !== sel.slug));
+      if (sel.kind === "town") setShowTowns(true);
+      if (isMobile) {
+        // The detail sheet covers the list; the list waits on its peek row so
+        // nothing of it shows above the detail.
+        setListSnap(LIST_PEEK);
+        setDetailSnap(DETAIL_SNAPS[0]);
+      }
+    });
+
+  /**
+   * Every change that rebuilds the lists. It opens a `filter` transition, which
+   * is what the rows match on: the ones that survive glide to their new place
+   * and the ones that go fade out, so a chip shows what it did and not only
+   * what it left.
+   *
+   * Two things deliberately do not go through it. The search field writes the
+   * query straight (`setQuery` below): its value _is_ this state, and a
+   * non-urgent update would make the field lag a keystroke behind the thumb.
+   * And the period scrubber keeps its own raw setter – it fires while a thumb
+   * is dragged, and a viewport capture per drag step is the one place where
+   * this gets expensive.
+   */
+  const changeFilters = (update: (f: Filters) => Filters) =>
+    animate("filter", () => setFilters(update));
+
+  const setQuery = (query: string) => setFilters((f) => ({ ...f, query }));
+
+  /** Folding the sidebar away moves the detail panel and the map's padding. */
+  const showSidebar = (open: boolean) =>
+    animate("panel", () => setSidebarOpen(open));
 
   /** Back to the list; focus returns to the row the detail came from. */
   const back = () => {
     const sel = selection;
-    setSelection(null);
-    setProfileCursor(null);
-    if (isMobile) setListSnap(LIST_HALF);
+    selecting(() => {
+      setSelection(null);
+      setProfileCursor(null);
+      if (isMobile) setListSnap(LIST_HALF);
+    });
     requestAnimationFrame(() => {
       const root = sidebarRoot.current;
       const row =
@@ -288,7 +325,8 @@ export const Explorer = ({
       variant={variant}
       peek={variant === "sheet" && listSnap === LIST_PEEK}
       filters={filters}
-      setFilters={setFilters}
+      setFilters={changeFilters}
+      setQuery={setQuery}
       passRows={passRows}
       tourRows={tourRows}
       townRows={townRows}
@@ -306,7 +344,7 @@ export const Explorer = ({
       onToggleFavorite={toggleFavorite}
       onSelect={select}
       selection={selection}
-      onCollapse={() => setSidebarOpen(false)}
+      onCollapse={() => showSidebar(false)}
       onOpenScales={() => setScalesOpen(true)}
       onOpenSearch={
         // The peek row's search button opens the sheet as far as it goes and
@@ -378,7 +416,7 @@ export const Explorer = ({
                       size="icon-lg"
                       variant="outline"
                       className={MAP_CONTROL}
-                      onClick={() => setSidebarOpen(true)}
+                      onClick={() => showSidebar(true)}
                       aria-label="Seitenleiste einblenden"
                     />
                   }
@@ -392,30 +430,42 @@ export const Explorer = ({
         </div>
 
         {!isMobile && sidebarOpen && (
-          <aside
-            ref={sidebarRoot}
-            className={cn(
-              "absolute top-3 bottom-3 left-3 z-20 flex w-96 flex-col overflow-hidden max-lg:hidden xl:w-104",
-              PANEL,
-            )}
-          >
-            {sidebar("aside")}
-          </aside>
+          <ViewTransition {...SIDEBAR}>
+            <aside
+              ref={sidebarRoot}
+              className={cn(
+                "absolute top-3 bottom-3 left-3 z-20 flex w-96 flex-col overflow-hidden max-lg:hidden xl:w-104",
+                PANEL,
+              )}
+            >
+              {sidebar("aside")}
+            </aside>
+          </ViewTransition>
         )}
 
+        {/*
+         * The key is what makes the panel crossfade when another entity is
+         * selected while it is open: it pairs the old content with the new one
+         * instead of updating in place, which is what `share` on the boundary
+         * then animates. It also remounts the panel, as it did before.
+         */}
         {!isMobile && selection && (
-          <section
+          <ViewTransition
             key={`${selection.kind}:${selection.slug}`}
-            aria-label="Details"
-            style={{ left: detailLeft }}
-            className={cn(
-              "absolute top-3 bottom-3 z-20 flex w-88 flex-col overflow-hidden max-lg:hidden xl:w-100",
-              "animate-in fade-in-0 slide-in-from-left-4 duration-200 motion-reduce:animate-none",
-              PANEL,
-            )}
+            name="detail"
+            {...DETAIL}
           >
-            {detailFor(selection)}
-          </section>
+            <section
+              aria-label="Details"
+              style={{ left: detailLeft }}
+              className={cn(
+                "absolute top-3 bottom-3 z-20 flex w-88 flex-col overflow-hidden max-lg:hidden xl:w-100",
+                PANEL,
+              )}
+            >
+              {detailFor(selection)}
+            </section>
+          </ViewTransition>
         )}
 
         {/*

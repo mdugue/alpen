@@ -220,8 +220,30 @@ export class Page {
     );
   }
 
+  /**
+   * Waits out a running view transition. The browser render-blocks the page
+   * between capturing the old state and the first frame of the transition, and
+   * a click that lands inside that window reaches nothing at all – measured
+   * here at up to one frame, invisible to a hand but not to a test that clicks
+   * the moment a selector appears. Every click therefore waits for two frames
+   * and then for the pseudo-element animations to stop running.
+   */
+  async settle(timeout = 3000) {
+    const deadline = Date.now() + timeout;
+    for (;;) {
+      const busy = await this.evaluate<boolean>(
+        `new Promise((done) => requestAnimationFrame(() => requestAnimationFrame(() =>
+            done(document.getAnimations().some((a) =>
+              String(a.effect && a.effect.pseudoElement).startsWith("::view-transition") &&
+              a.playState === "running")))))`,
+      );
+      if (!busy || Date.now() > deadline) return;
+    }
+  }
+
   async click(selector: string) {
     await this.waitFor(selector);
+    await this.settle();
     // Rows sit in a scroll container; actionability needs them in the viewport.
     await this.view.scrollTo(selector);
     await this.view.click(selector);
@@ -237,6 +259,7 @@ export class Page {
    * `text` – for the German link and button labels that carry no test id.
    */
   async clickText(selector: string, text: string) {
+    await this.settle();
     const box = await this.evaluate<{ x: number; y: number } | null>(
       `(() => { const el = [...document.querySelectorAll(${JSON.stringify(selector)})]
           .find((e) => e.textContent.includes(${JSON.stringify(text)}));

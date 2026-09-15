@@ -2,7 +2,7 @@
 
 import { ExternalLink, Star, X } from "lucide-react";
 import dynamic from "next/dynamic";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, ViewTransition } from "react";
 
 import { ElevationProfile } from "@/components/panel/elevation-profile";
 import { PhotoCarousel } from "@/components/panel/photo-carousel";
@@ -66,6 +66,7 @@ import type {
   Town,
 } from "@/lib/types";
 import { cn, fmt, fmtUnit, ICON_TOGGLE, TOUCH_ICON } from "@/lib/utils";
+import { MORPH, stripName } from "@/lib/view-transitions";
 
 /**
  * recharts is the heaviest thing this app would ship; the climate chart is
@@ -307,12 +308,20 @@ const PassDetail = (props: Props & { pass: Pass }) => {
             {reasons.join(" ")}
           </p>
         )}
-        <SeasonStrip
-          grades={grades}
-          notes={passCellNotes(pass, signals)}
-          current={props.period}
-          size="panel"
-        />
+        {/*
+         * The same strip the list row carries, under the same name: selecting
+         * the pass hands the name over from the row, and the 24 cells grow
+         * from the row's 96 px into the panel instead of one picture being
+         * replaced by another. See `lib/view-transitions.ts`.
+         */}
+        <ViewTransition name={stripName("pass", pass.slug)} {...MORPH}>
+          <SeasonStrip
+            grades={grades}
+            notes={passCellNotes(pass, signals)}
+            current={props.period}
+            size="panel"
+          />
+        </ViewTransition>
       </div>
 
       <p className="mt-4 text-xs leading-relaxed">{seasonText(pass)}</p>
@@ -533,12 +542,14 @@ const TourDetail = (props: Props & { tour: Tour }) => {
             Eingeschränkt durch {limiting.map((p) => p.name).join(", ")}.
           </p>
         )}
-        <SeasonStrip
-          grades={tourGrades(tour, passIndex, props)}
-          notes={tourCellNotes(tour, passIndex, props)}
-          current={props.period}
-          size="panel"
-        />
+        <ViewTransition name={stripName("tour", tour.slug)} {...MORPH}>
+          <SeasonStrip
+            grades={tourGrades(tour, passIndex, props)}
+            notes={tourCellNotes(tour, passIndex, props)}
+            current={props.period}
+            size="panel"
+          />
+        </ViewTransition>
       </div>
 
       <p className="mt-4 text-xs leading-relaxed">{tour.description}</p>

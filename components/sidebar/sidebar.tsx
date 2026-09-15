@@ -2,7 +2,7 @@
 
 import { PanelLeftClose, Search, X } from "lucide-react";
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, ViewTransition } from "react";
 
 import {
   AppliedFilters,
@@ -29,12 +29,16 @@ import { hasSecondaryFilters } from "@/lib/filter-summary";
 import type { PassRow, TourRow, TownRow } from "@/lib/rows";
 import type { Tour } from "@/lib/types";
 import { cn, TOUCH_CONTROL } from "@/lib/utils";
+import { animate, BLOCK, GLIDE } from "@/lib/view-transitions";
 
 export interface SidebarProps {
   /** `aside` renders the brand row; the bottom sheet shows its swipe handle instead. */
   variant: "aside" | "sheet";
   filters: Filters;
+  /** Every list-changing decision; opens a view transition (`lib/view-transitions.ts`). */
   setFilters: (update: (f: Filters) => Filters) => void;
+  /** The search field writes straight through: its value is this state, and a deferred one lags the keystroke. */
+  setQuery: (query: string) => void;
   passRows: PassRow[];
   tourRows: TourRow[];
   townRows: TownRow[];
@@ -63,8 +67,6 @@ export interface SidebarProps {
 }
 
 export const Sidebar = (p: SidebarProps) => {
-  const set = <K extends keyof Filters>(key: K, value: Filters[K]) =>
-    p.setFilters((f) => ({ ...f, [key]: value }));
   // The sort is a preference, not a filter: it survives the reset.
   const resetFilters = () =>
     p.setFilters((f) => ({
@@ -88,7 +90,11 @@ export const Sidebar = (p: SidebarProps) => {
   const filtersOpen = manual ?? active > 0;
   const [more, setMore] = useState<boolean | null>(null);
   const moreOpen = more ?? hasSecondaryFilters(p.filters);
-  const setMoreOpen = (open: boolean) => setMore(open);
+  // Both open a `panel` transition: the block itself reveals, and the three
+  // lists underneath glide down instead of jumping the panel's height.
+  const setMoreOpen = (open: boolean) => animate("panel", () => setMore(open));
+  const setFiltersOpen = (open: boolean) =>
+    animate("panel", () => setManual(open));
 
   const lists = useRef<HTMLDivElement>(null);
   const currentRow = p.selection
@@ -168,7 +174,7 @@ export const Sidebar = (p: SidebarProps) => {
                     enterKeyHint="search"
                     spellCheck={false}
                     value={p.filters.query}
-                    onChange={(e) => set("query", e.target.value)}
+                    onChange={(e) => p.setQuery(e.target.value)}
                     placeholder="Pass, Tour oder Ort …"
                     aria-label="Suchen"
                     className="h-full [&::-webkit-search-cancel-button]:appearance-none [&::-webkit-search-decoration]:appearance-none"
@@ -177,7 +183,7 @@ export const Sidebar = (p: SidebarProps) => {
                     <InputGroupAddon align="inline-end">
                       <InputGroupButton
                         size="icon-xs"
-                        onClick={() => set("query", "")}
+                        onClick={() => p.setQuery("")}
                         aria-label="Suche leeren"
                       >
                         <X />
@@ -191,7 +197,7 @@ export const Sidebar = (p: SidebarProps) => {
               <FilterTrigger
                 filters={p.filters}
                 open={filtersOpen}
-                onOpenChange={setManual}
+                onOpenChange={setFiltersOpen}
               />
             )}
           </div>
@@ -212,111 +218,126 @@ export const Sidebar = (p: SidebarProps) => {
           className="min-h-0 flex-1 overflow-y-auto overscroll-contain"
         >
           {filtersOpen && !p.peek && (
-            <div className="border-border border-b">
-              <FilterBody
-                filters={p.filters}
-                setFilters={p.setFilters}
-                counts={{
-                  pass: p.passRows.length,
-                  tour: p.tourRows.length,
-                  town: p.townRows.length,
-                }}
-                totals={p.totals}
-                countWith={p.countWith}
-                onReset={resetFilters}
-                more={moreOpen}
-                onMoreChange={setMoreOpen}
-              />
-            </div>
-          )}
-          <Section
-            open={p.sections.includes("pass")}
-            onOpenChange={toggleSection("pass")}
-            glyph={KIND_GLYPH.pass}
-            label="Pässe & Straßen"
-            count={p.passRows.length}
-            total={p.totals.pass}
-            control={
-              <Switch
-                size="sm"
-                checked={p.showPasses}
-                onCheckedChange={p.setShowPasses}
-                aria-label="Pässe und Straßen auf der Karte anzeigen"
-              />
-            }
-          >
-            <PassList
-              rows={p.passRows}
-              currentRow={currentRow}
-              filters={p.filters}
-              setFilters={p.setFilters}
-              onSelect={(slug) => p.onSelect({ kind: "pass", slug })}
-              onToggleFavorite={(slug) => p.onToggleFavorite("pass", slug)}
-            />
-          </Section>
-          <Section
-            open={p.sections.includes("tour")}
-            onOpenChange={toggleSection("tour")}
-            glyph={KIND_GLYPH.tour}
-            label="Touren"
-            count={p.tourRows.length}
-            total={p.totals.tour}
-            control={
-              <div className="flex items-center gap-2">
-                {visibleTourCount > 0 &&
-                  visibleTourCount < allTourSlugs.length && (
-                    <span className="text-muted-foreground text-2xs tabular-nums">
-                      {visibleTourCount} von {allTourSlugs.length}
-                    </span>
-                  )}
-                <Switch
-                  size="sm"
-                  checked={p.hiddenTours.length === 0}
-                  onCheckedChange={(on) =>
-                    p.setHiddenTours(() => (on ? [] : allTourSlugs))
-                  }
-                  aria-label="Touren auf der Karte anzeigen"
+            <ViewTransition {...BLOCK}>
+              <div className="border-border border-b">
+                <FilterBody
+                  filters={p.filters}
+                  setFilters={p.setFilters}
+                  counts={{
+                    pass: p.passRows.length,
+                    tour: p.tourRows.length,
+                    town: p.townRows.length,
+                  }}
+                  totals={p.totals}
+                  countWith={p.countWith}
+                  onReset={resetFilters}
+                  more={moreOpen}
+                  onMoreChange={setMoreOpen}
                 />
               </div>
-            }
-          >
-            <TourList
-              rows={p.tourRows}
-              currentRow={currentRow}
-              period={p.filters.period}
-              hiddenTours={p.hiddenTours}
-              onToggleTour={(slug, on) =>
-                p.setHiddenTours((h) =>
-                  on ? h.filter((s) => s !== slug) : [...new Set([...h, slug])],
-                )
-              }
-              onSelect={(slug) => p.onSelect({ kind: "tour", slug })}
-              onToggleFavorite={(slug) => p.onToggleFavorite("tour", slug)}
-            />
-          </Section>
-          <Section
-            open={p.sections.includes("town")}
-            onOpenChange={toggleSection("town")}
-            glyph={KIND_GLYPH.town}
-            label="Orte"
-            count={p.townRows.length}
-            total={p.totals.town}
-            control={
-              <Switch
-                size="sm"
-                checked={p.showTowns}
-                onCheckedChange={p.setShowTowns}
-                aria-label="Orte auf der Karte anzeigen"
-              />
-            }
-          >
-            <TownList
-              rows={p.townRows}
-              currentRow={currentRow}
-              onSelect={(slug) => p.onSelect({ kind: "town", slug })}
-              onToggleFavorite={(slug) => p.onToggleFavorite("town", slug)}
-            />
-          </Section>
+            </ViewTransition>
+          )}
+          {/*
+           * The lists are what the filter panel displaces when it opens, and
+           * what a `filter` change re-orders. Only content inside an activated
+           * boundary animates its position, so without this wrapper the whole
+           * block would teleport to its new offset while the panel above it
+           * reveals.
+           */}
+          <ViewTransition {...GLIDE}>
+            <div>
+              <Section
+                open={p.sections.includes("pass")}
+                onOpenChange={toggleSection("pass")}
+                glyph={KIND_GLYPH.pass}
+                label="Pässe & Straßen"
+                count={p.passRows.length}
+                total={p.totals.pass}
+                control={
+                  <Switch
+                    size="sm"
+                    checked={p.showPasses}
+                    onCheckedChange={p.setShowPasses}
+                    aria-label="Pässe und Straßen auf der Karte anzeigen"
+                  />
+                }
+              >
+                <PassList
+                  rows={p.passRows}
+                  currentRow={currentRow}
+                  filters={p.filters}
+                  setFilters={p.setFilters}
+                  onSelect={(slug) => p.onSelect({ kind: "pass", slug })}
+                  onToggleFavorite={(slug) => p.onToggleFavorite("pass", slug)}
+                />
+              </Section>
+              <Section
+                open={p.sections.includes("tour")}
+                onOpenChange={toggleSection("tour")}
+                glyph={KIND_GLYPH.tour}
+                label="Touren"
+                count={p.tourRows.length}
+                total={p.totals.tour}
+                control={
+                  <div className="flex items-center gap-2">
+                    {visibleTourCount > 0 &&
+                      visibleTourCount < allTourSlugs.length && (
+                        <span className="text-muted-foreground text-2xs tabular-nums">
+                          {visibleTourCount} von {allTourSlugs.length}
+                        </span>
+                      )}
+                    <Switch
+                      size="sm"
+                      checked={p.hiddenTours.length === 0}
+                      onCheckedChange={(on) =>
+                        p.setHiddenTours(() => (on ? [] : allTourSlugs))
+                      }
+                      aria-label="Touren auf der Karte anzeigen"
+                    />
+                  </div>
+                }
+              >
+                <TourList
+                  rows={p.tourRows}
+                  currentRow={currentRow}
+                  period={p.filters.period}
+                  hiddenTours={p.hiddenTours}
+                  onToggleTour={(slug, on) =>
+                    p.setHiddenTours((h) =>
+                      on
+                        ? h.filter((s) => s !== slug)
+                        : [...new Set([...h, slug])],
+                    )
+                  }
+                  onSelect={(slug) => p.onSelect({ kind: "tour", slug })}
+                  onToggleFavorite={(slug) => p.onToggleFavorite("tour", slug)}
+                />
+              </Section>
+              <Section
+                open={p.sections.includes("town")}
+                onOpenChange={toggleSection("town")}
+                glyph={KIND_GLYPH.town}
+                label="Orte"
+                count={p.townRows.length}
+                total={p.totals.town}
+                control={
+                  <Switch
+                    size="sm"
+                    checked={p.showTowns}
+                    onCheckedChange={p.setShowTowns}
+                    aria-label="Orte auf der Karte anzeigen"
+                  />
+                }
+              >
+                <TownList
+                  rows={p.townRows}
+                  currentRow={currentRow}
+                  onSelect={(slug) => p.onSelect({ kind: "town", slug })}
+                  onToggleFavorite={(slug) => p.onToggleFavorite("town", slug)}
+                />
+              </Section>
+            </div>
+          </ViewTransition>
         </div>
 
         <div
