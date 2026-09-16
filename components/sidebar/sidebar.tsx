@@ -95,11 +95,16 @@ export const Sidebar = (p: SidebarProps) => {
     town: p.townRows.length,
   };
 
-  // Keep the selected row visible, e.g. after a click on a map marker. On a
-  // phone the detail drawer is usually in front of this list when it happens,
-  // so the scroll is not animated: it would animate a list nobody can see,
-  // against the drawer animation that can be. By the time the detail is
-  // dismissed the row is where it should be.
+  // Keep the selected row visible, e.g. after a click on a map marker.
+  //
+  // `block: "nearest"` is the standard spelling of `scrollIntoViewIfNeeded`:
+  // a row already in view is left alone, so no scroll is started for nothing.
+  // In the sheet layout the behaviour is pinned to the browser's own instant
+  // jump – deliberately no `"smooth"`, which is a scroll animation on the main
+  // thread competing with the two animations that can be seen, the camera's
+  // flight and the detail drawer sliding in over this very list. The list
+  // stays where it is put, so by the time the detail is dismissed the row is
+  // where it should be.
   useEffect(() => {
     if (!currentRow) return;
     lists.current?.querySelector(`[data-row="${currentRow}"]`)?.scrollIntoView({

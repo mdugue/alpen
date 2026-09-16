@@ -45,7 +45,7 @@ import { ascentKey } from "./route-key";
  * moment – and at 42 KB gzipped it is not what makes the page heavy.
  *
  * Never imported by client code – it needs `node:crypto`. Components take the
- * `DetailAssets` type only, which is a map of URLs.
+ * `DetailAssets` type only, which is a map of URLs and photo counts.
  */
 
 /** What the panel reads once an entity is selected. */
@@ -58,12 +58,25 @@ export interface DetailData {
   photos: Photo[];
 }
 
+/** What the page knows about one entity's detail file before fetching it. */
+export interface DetailAsset {
+  /**
+   * How many photos the file holds. The panel opens before the file arrives,
+   * and a carousel that appears afterwards pushes everything under it down –
+   * the one block that used to do that. With the count in the page the panel
+   * reserves the slide's box while it waits, and reserves nothing where there
+   * is no photo to wait for. Two bytes per entity against a visible jump.
+   */
+  photos: number;
+  url: string;
+}
+
 /**
  * Per `${kind}:${slug}` – the key `photoKey` and `nearbyKey` already use – the
- * URL of that entity's file. An entity with nothing to show is absent rather
- * than pointing at an empty file, so the panel makes no request for it.
+ * entity's detail file. An entity with nothing to show is absent rather than
+ * pointing at an empty file, so the panel makes no request for it.
  */
-export type DetailAssets = Record<string, string>;
+export type DetailAssets = Record<string, DetailAsset>;
 
 /** Where the files live under `public/`, and thus their URL prefix. */
 export const DETAIL_ASSET_DIR = "detail";
@@ -125,7 +138,10 @@ export const detailAssets = (
     const f = file(kind, slug, data);
     if (!f) return;
     files.push(f);
-    assets[photoKey(kind, slug)] = `/${DETAIL_ASSET_DIR}/${f.name}`;
+    assets[photoKey(kind, slug)] = {
+      photos: data.photos.length,
+      url: `/${DETAIL_ASSET_DIR}/${f.name}`,
+    };
   };
 
   for (const pass of passes) {

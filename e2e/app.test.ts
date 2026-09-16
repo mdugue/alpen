@@ -433,14 +433,29 @@ test(
 );
 
 /**
- * The map's bottom padding on every camera frame. `setPadding` is a `jumpTo`,
- * so its very first frame already carries the final value; a flight that
- * re-pads while it moves starts where the camera stood.
+ * Watch how the map re-pads. `setPadding` is a `jumpTo`: it moves the picture
+ * by half of what changed, in one frame. Every padding change after the first
+ * one therefore rides a camera move instead (`easeTo`/`flyTo` with `padding`),
+ * which is the whole of `pass-map.tsx`'s padding effect – so counting calls to
+ * `setPadding` asks the question directly.
+ *
+ * Sampling the padding per frame was the older way to ask it, and it cannot be
+ * relied on: MapLibre emits one `move` per frame it draws, and a loaded CI
+ * runner draws two where a quiet machine draws a dozen. With two samples the
+ * first one already sits most of the way to the target, which is what an eased
+ * padding looks like when it is sampled late – indistinguishable from the jump
+ * the test is about. The frames are still recorded, for the failure shot.
  */
 const RECORD_PADDING = `(() => {
   const m = window.__alpen?.map;
   if (!m) return false;
   window.__pad = [];
+  window.__jumped = 0;
+  const setPadding = m.setPadding.bind(m);
+  m.setPadding = (...args) => {
+    window.__jumped += 1;
+    return setPadding(...args);
+  };
   m.on("move", () => window.__pad.push(m.getPadding().bottom));
   return true;
 })()`;
@@ -479,14 +494,13 @@ test(
           return !!c && !c.moving;
         }, "the camera settled on the pass");
 
-        const pad = await page.evaluate<number[]>("window.__pad");
-        const after = pad.at(-1)!;
+        const after = await page.evaluate<number>(
+          "window.__alpen.map.getPadding().bottom",
+        );
         // The sheet in front of the map did take more than half the screen …
         expect(after - before).toBeGreaterThan(100);
-        // … and the camera answered over the whole flight rather than in one
-        // frame: the first of its frames still stands where the camera stood.
-        expect(pad.length).toBeGreaterThan(5);
-        expect(Math.abs(pad[0]! - before)).toBeLessThan((after - before) / 2);
+        // … and the camera carried it there rather than jumping to it.
+        expect(await page.evaluate<number>("window.__jumped")).toBe(0);
       },
     ),
   TIMEOUT,
