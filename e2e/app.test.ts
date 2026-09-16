@@ -461,7 +461,13 @@ test(
         expect(after - before).toBeGreaterThan(100);
         // … and the camera answered over the whole flight rather than in one
         // frame: the first of its frames still stands where the camera stood.
-        expect(pad.length).toBeGreaterThan(5);
+        // More than one frame is the whole claim – how *many* the easing emits
+        // is the machine's, not the app's. A loaded CI runner starves the
+        // frames MapLibre gets to draw, and a count threshold measures that
+        // rather than the jump this test is about; the two checks around this
+        // one already rule a jump out, since a `jumpTo` would put `after` in
+        // the first frame.
+        expect(pad.length).toBeGreaterThan(1);
         expect(Math.abs(pad[0]! - before)).toBeLessThan((after - before) / 2);
       },
     ),
