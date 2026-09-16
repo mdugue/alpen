@@ -277,7 +277,13 @@ const someNeedsBlur = async (photos: Photo[]) => {
 const fillBlur = async (photos: Photo[]) => {
   for (const photo of photos) {
     if (!(REBLUR || (await needsBlur(photo)))) continue;
-    if (photo.blur && !REBLUR) {
+    // Upgrading in place only works when the stored picture is already the
+    // width we want and merely the wrong format – then its own bytes are the
+    // ones to re-encode, and the run costs no request. A placeholder of the
+    // wrong *width* holds too few pixels to become the right one, however it
+    // is encoded, so it falls through and is fetched again.
+    const stored = photo.blur ? await blurWidth(photo.blur) : null;
+    if (photo.blur && !REBLUR && stored === BLUR_WIDTH) {
       const [head, body] = photo.blur.split(",");
       const type = head?.slice("data:".length, head.indexOf(";")) ?? "";
       const again = await blurUri(
