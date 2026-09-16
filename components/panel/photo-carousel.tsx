@@ -7,6 +7,7 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
+import { Skeleton } from "@/components/ui/skeleton";
 import { PHOTO_SIZES, photoSrcSet } from "@/lib/photos";
 import type { Photo } from "@/lib/types";
 import { cn, MAP_CONTROL } from "@/lib/utils";
@@ -29,28 +30,59 @@ import { cn, MAP_CONTROL } from "@/lib/utils";
  * would have brought, the two attributes below bring without it – a `srcset`
  * off Commons' own width ladder (`photoSrcSet`), so a 1x panel fetches 500 px
  * instead of 960, and a placeholder baked into the metadata (`Photo.blur`),
- * painted as the figure's background so the slide opens on the photo's own
- * colours and the sharp file lands on top of them.
+ * laid under the photo so the slide opens on its own colours and the sharp
+ * file lands on top of them.
+ *
+ * The placeholder is `BLUR_WIDTH` px wide and drawn twenty times that, so it
+ * is blurred rather than left to the browser's upscaling: at this scale the
+ * upscaling is visibly blocky, and a blur is what makes a stand-in read as
+ * "not yet sharp" instead of "badly rendered". It sits in a layer of its own
+ * because `filter` applies to an element's children too – on the figure it
+ * would smear the attribution as well – and that layer is scaled up, because
+ * a blur samples past the edges and would otherwise fade them out.
+ *
+ * `count` is what the page knows before the file arrives (`DetailAsset`). The
+ * panel opens first and the photos follow, so without it the carousel would
+ * appear late and push everything below it down; with it the slide's box is
+ * there from the first frame and the photo fills it in place.
  */
-export const PhotoCarousel = ({ photos }: { photos: Photo[] }) => {
-  if (photos.length === 0) return null;
+export const PhotoCarousel = ({
+  count,
+  photos,
+}: {
+  /** Photos this entity has, known before they arrive. */
+  count: number;
+  photos: Photo[];
+}) => {
+  if (photos.length === 0) {
+    // Nothing to wait for: an entity without photos reserves nothing.
+    if (count === 0) return null;
+    return (
+      <Skeleton
+        aria-busy
+        aria-label="Bilder werden geladen"
+        className="mt-3 aspect-video w-full rounded-lg"
+        role="status"
+      />
+    );
+  }
 
   return (
     <Carousel aria-label="Bilder" className="mt-3" opts={{ duration: 18 }}>
       <CarouselContent className="-ml-1.5">
         {photos.map((photo, i) => (
           <CarouselItem className="pl-1.5" key={photo.src}>
-            <figure
-              className="border-border/60 bg-muted relative overflow-hidden rounded-lg border bg-cover bg-center"
-              // The placeholder is 20 px wide; the browser's own upscaling is
-              // the blur, so nothing has to be filtered or faded here.
-              style={
-                photo.blur ? { backgroundImage: `url("${photo.blur}")` } : {}
-              }
-            >
+            <figure className="border-border/60 bg-muted relative overflow-hidden rounded-lg border">
+              {photo.blur && (
+                <div
+                  aria-hidden
+                  className="absolute inset-0 scale-110 bg-cover bg-center blur-md"
+                  style={{ backgroundImage: `url("${photo.blur}")` }}
+                />
+              )}
               <img
                 alt={photo.title}
-                className="aspect-video w-full object-cover"
+                className="relative aspect-video w-full object-cover"
                 decoding="async"
                 height={photo.height}
                 // The first photo is the hero and is visible as the panel

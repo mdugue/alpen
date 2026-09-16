@@ -263,16 +263,32 @@ friends do that better and the app links out to them.
   that ladder and the slide carries a `srcset` off it (`photoSrcSet`,
   `PHOTO_SIZES`): a 1× panel fetches 500 px where it used to fetch 960. And
   the one thing that cannot be fetched in time is precomputed – `Photo.blur`
-  is the same photo 20 px wide as a data URI, painted as the figure's
-  background, so a slide opens on its own colours instead of an empty box and
-  the browser's upscaling is the blur. It travels inside the entity's detail
+  is the same photo `BLUR_WIDTH` px wide as a data URI, laid under the photo
+  in a layer of its own, so a slide opens on its own colours instead of an
+  empty box. That layer is blurred and scaled up rather than left to the
+  browser's upscaling, which at twenty times the width is visibly blocky; it
+  is a layer because `filter` reaches an element's children, and it is scaled
+  because a blur samples past the edges. It travels inside the entity's detail
   file, because a placeholder that needs a request of its own loses the race
   it exists to win; generating one on demand and caching it would lose the
   same race for every first visitor to a pass. No image library is involved
-  either way: Wikimedia renders the 20 px version, `scripts/lib/blur.ts`
+  either way: Wikimedia renders the 40 px version, `scripts/lib/blur.ts`
   strips the metadata it inherits – a wide-gamut photo's ICC profile is 30 KB
   around a 480-byte picture, and re-encoding does not drop it – and
-  `Bun.Image` turns what is left into ~150 bytes of WebP. Attribution is not decoration: every slide carries author
+  `Bun.Image` turns what is left into ~475 bytes of WebP. A hash (BlurHash,
+  ThumbHash) would be twenty times smaller and lower fidelity than that, and
+  would want a decoder and a canvas paint in the frame the panel is trying to
+  keep smooth; the thumbnail is already rendered, so there is nothing to
+  approximate.
+  **And the box is there before the photo is.** The panel opens before its
+  detail file arrives, so `DetailAsset` carries the photo count next to the
+  URL and `PhotoCarousel` reserves the slide while it waits – the block that
+  used to appear late and push everything under it down. An entity with no
+  photos reserves nothing. That is the same rule as the profile skeleton and
+  the chart's placeholder, and the reason the panel is not a server component:
+  a selection would then cost a server round trip where it now costs an
+  immutable file from the CDN, and the jump was never about where the markup
+  came from. Attribution is not decoration: every slide carries author
   and licence, baked into the slide rather than derived from the carousel's
   index, so it cannot drift out of sync with what is on screen.
 - **A sidebar section adds no surface.** The three collapsible lists

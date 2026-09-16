@@ -85,12 +85,15 @@ export const photoSrcSet = (photo: {
 };
 
 /**
- * Width of the placeholder baked into `Photo.blur`: the smallest width
- * Wikimedia renders. Re-encoded as WebP (`scripts/lib/blur.ts`) it is around
- * 150 bytes, some 200 as base64 – big enough that the panel opens on the
- * photo's own colours and shapes instead of an empty box, small enough to
- * travel inside the detail file it belongs to. That is the whole point: a
- * placeholder that needs a request of its own places second in the race it
+ * Width of the placeholder baked into `Photo.blur`, a rung of `THUMB_WIDTHS`.
+ * 20 px was the smallest Wikimedia renders and cost ~220 bytes as a base64
+ * WebP, but drawn twenty times that it is colour blobs; 40 px holds four
+ * times the pixels for ~475, which is the difference between a stand-in that
+ * shows the photo's composition and one that shows its average. 60 px doubles
+ * the bytes again for far less: the picture is about to be blurred, so detail
+ * past this point is spent on something nobody sees. Small enough either way
+ * to travel inside the detail file it belongs to, which is the whole point –
+ * a placeholder that needs a request of its own places second in the race it
  * was supposed to win, so it is precomputed and never generated on demand.
  */
-export const BLUR_WIDTH = 20;
+export const BLUR_WIDTH = 40;

@@ -24,12 +24,15 @@
 
 /**
  * Above this a placeholder is not worth its place in the detail file. Nothing
- * that is genuinely 20 px wide comes near it; what does is a container that
- * carries something other than the picture, and dropping the placeholder is
- * better than shipping it – the panel then opens on its own surface, which is
- * what it did before there were placeholders.
+ * that is genuinely `BLUR_WIDTH` px wide comes near it – the widest measured
+ * is around 600 bytes – and what does is a container carrying something other
+ * than the picture. Dropping it is then better than shipping it: the panel
+ * opens on its own surface, which is what it did before there were
+ * placeholders. The bound is generous on purpose, so that a tall portrait,
+ * whose 40-px width makes it hundreds of pixels high, is not refused for
+ * being honestly large.
  */
-export const BLUR_MAX_BYTES = 2048;
+export const BLUR_MAX_BYTES = 4096;
 
 /**
  * Quality of the re-encoded placeholder. It is 20 px wide and about to be
