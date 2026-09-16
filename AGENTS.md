@@ -58,11 +58,15 @@ friends do that better and the app links out to them.
 | Detail assets: one file per entity, hashing     | `lib/detail-assets.ts`, `scripts/build-detail-assets.ts` (→ `public/detail`, git-ignored)                                                                                                                                                                                                                  |
 | Weather route, Open-Meteo quota and cooldown    | `app/api/weather/[slug]/route.ts`                                                                                                                                                                                                                                                                          |
 | Tours within reach, town reach hull             | `lib/nearby.ts`, `lib/geo.ts` (computed on the server in `lib/data.ts`)                                                                                                                                                                                                                                    |
+| Reach bands, the nearness weight                | `lib/geo.ts` (`REACH_BANDS`, `reachWeight`, `REACH_MAX_KM`); calibrated in `docs/scales.md`                                                                                                                                                                                                                |
+| Destination verdict, ranked reach, the inverse  | `lib/destination.ts` (`destinationAt`, `basesFor`, `gradeOf`), `components/panel/destination.tsx`, `scripts/analyze-destinations.ts`                                                                                                                                                                       |
+| Hover shared by list, map and panel             | `hovered` in `components/explorer.tsx`; the ring and line state in `components/map/pass-map.tsx`                                                                                                                                                                                                           |
+| One tab stop per list; sharing the hash         | `lib/use-roving.ts`, `lib/use-share.ts`                                                                                                                                                                                                                                                                    |
 | Photos: keys, sizes, licence metadata           | `lib/photos.ts`, `scripts/build-photos.ts` (`bun run data:photos`) → `data/generated/photos.json`                                                                                                                                                                                                          |
 | Period scrubber floating over the map           | `components/map/period-scrubber.tsx`                                                                                                                                                                                                                                                                       |
 | Season strip (24 half-months)                   | `components/season-strip.tsx`                                                                                                                                                                                                                                                                              |
 | Filter controls, chips, applied-filter row      | `components/sidebar/filter-panel.tsx`, `components/sidebar/filter-chip.tsx`, `lib/filter-summary.ts`                                                                                                                                                                                                       |
-| Sidebar: search, filters, one list per kind     | `components/sidebar/`, `lib/rows.ts`                                                                                                                                                                                                                                                                       |
+| Sidebar: search, filters, one list per kind     | `components/sidebar/` (tabs: `kind-tabs.tsx`), `lib/rows.ts`                                                                                                                                                                                                                                               |
 | Detail panel incl. profile/weather/climate      | `components/panel/` (collapsible blocks: `components/panel/section.tsx`)                                                                                                                                                                                                                                   |
 | Bottom sheet on phones (one per panel)          | `components/mobile-sheet.tsx`                                                                                                                                                                                                                                                                              |
 | Precomputation, data checks                     | `scripts/build-data.ts`, `scripts/build-photos.ts`, `scripts/check-data.ts`                                                                                                                                                                                                                                |
@@ -259,15 +263,34 @@ friends do that better and the app links out to them.
   Attribution is not decoration: every slide carries author and licence,
   baked into the slide rather than derived from the carousel's index, so it
   cannot drift out of sync with what is on screen.
-- **A sidebar section adds no surface.** The three collapsible lists
-  (`components/sidebar/section.tsx`) carry no background of their own in either
-  state – neither a tint on the header nor the ghost trigger's
-  `aria-expanded` fill – so the panel's frosted backdrop reads through them
-  evenly. That is also why the header does not stick: a pinned header needs a
-  background to stay legible over the rows scrolling under it, and a
-  `backdrop-blur` cannot supply one, because the panel already filters its
-  backdrop and a nested filter never sees the content inside that backdrop
-  root.
+- **One list at a time, chosen by a tab row.** The three kinds used to be
+  collapsible blocks stacked inside one scroll container, which made the
+  sidebar a single 12 841 px column against a 730 px viewport: the tours sat
+  below all 201 roads and the towns below those. `KindTabs`
+  (`components/sidebar/kind-tabs.tsx`) puts the choice in the fixed header and
+  the scroll container holds one list.
+  The tabs also solve what kept the old section headers from sticking. A
+  pinned header needs an opaque background to stay legible over the rows
+  scrolling under it, and a `backdrop-blur` cannot supply one – the panel
+  already filters its backdrop, and a nested filter never sees the content
+  inside that backdrop root. In the header row nothing scrolls underneath, so
+  the counts simply stay on screen, and the count on a tab is the answer to
+  the filter: narrowing to "ab 2.500 m" collapses the tours from 9 to 2 where
+  it can be seen.
+  Each kind's "auf der Karte" switch rides in that list's own toolbar
+  (`ListToolbar`), never beside the tab row: a control next to three tabs
+  reads as acting on all three, and a bare switch says what it does only once
+  it has been flipped, so it carries the words too.
+- **A long list is one tab stop.** Every row used to be two (the bookmark
+  toggle and the row itself) – 562 focusable elements on the built page, so
+  reaching the map meant holding Tab down for several hundred presses, and a
+  screen reader's rotor held two hundred buttons all called "Merken".
+  `useRoving` (`lib/use-roving.ts`) makes each list the composite widget the
+  platform expects: one stop, arrows inside it, Home/End/PageUp/PageDown, and
+  the tab stop stays on the row last focused. It works off the DOM rather than
+  an index in state, because which rows exist changes on every keystroke in
+  the search field. Every bookmark toggle is named after the thing it
+  bookmarks, and `app/page.tsx` carries a skip link to the map.
 - **The panel folds.** Every block below the title is a `Section`
   (`components/panel/section.tsx`), open by default. The panel is a column on a
   map and a phone sheet shows two blocks at a time; whoever wants the climate

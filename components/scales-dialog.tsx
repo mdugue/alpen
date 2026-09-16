@@ -9,6 +9,8 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { RIDEABLE_BEST_SHARE, RIDEABLE_GOOD_SHARE } from "@/lib/destination";
+import { REACH_BANDS, REACH_MAX_KM } from "@/lib/geo";
 import {
   ROAD_TAG,
   ROAD_TAGS,
@@ -19,6 +21,9 @@ import {
 } from "@/lib/regions";
 import { ladderText, lapseText, VALLEY_TMAX_ERROR } from "@/lib/status";
 import { fmt } from "@/lib/utils";
+
+/** A share as a German percentage: 0.8 -> "80 %". */
+const pct = (x: number) => `${fmt(x * 100)} %`;
 
 const SCALES: [string, string][] = [
   [
@@ -158,6 +163,40 @@ export const ScalesDialog = ({
           </p>
           {/* The same legend the period control shows, from GRADE_ORDER. */}
           <GradeLegend className="text-muted-foreground text-xs" />
+        </section>
+        <section className="flex flex-col gap-2">
+          <h3 className="text-base font-semibold">Orte als Standort</h3>
+          <p className="text-muted-foreground">
+            Ein Ort hat keine eigene Klimareihe und keine eigene Saison. Was er
+            hat, sind die Pässe, die er erreicht – und die sind schon bewertet.
+            Alles, was das Ortsdetail zeigt, ist daraus <b>abgeleitet</b> und
+            sagt das auch: die Zahl gut befahrbarer Pässe, der Balken darunter
+            und der Streifen aus 24 Zellen.
+          </p>
+          <p className="text-muted-foreground">
+            <b>Drei Entfernungen statt eines Radius.</b>{" "}
+            {REACH_BANDS.map((b) => `„${b.label}" bis ${fmt(b.maxKm)} km`).join(
+              ", ",
+            )}
+            . Jenseits von {fmt(REACH_MAX_KM)} km endet die Liste. Innerhalb
+            davon zählt Nähe gleitend: ein Pass wird nicht bei einem runden
+            Kilometerwert wertlos, sondern verliert mit der Entfernung an
+            Gewicht. Die Reihenfolge entsteht daraus zusammen mit Zustand,
+            Schönheit und Bekanntheit – ein schöner Pass etwas weiter weg steht
+            deshalb vor einem unscheinbaren vor der Haustür.
+          </p>
+          <p className="text-muted-foreground">
+            <b>Der Streifen zeigt die Saison, nicht die Größe.</b> Er misst
+            jeden Halbmonat an der besten Zeit <i>dieses</i> Orts: ab{" "}
+            {pct(RIDEABLE_BEST_SHARE)} davon „beste Zeit“, ab{" "}
+            {pct(RIDEABLE_GOOD_SHARE)} „gut“, darunter „eingeschränkt“, ohne
+            einen befahrbaren Pass „gesperrt“. Sonst hätte ein großer Ort von
+            Juni bis Oktober durchgehend die höchste Stufe und ein kleiner nie –
+            der Streifen würde die Größe des Orts zeigen statt seines Jahres.
+            Wie viel es überhaupt ist, steht daneben in Worten. Die beiden
+            Anteile sind redaktionell wie alle Zahlen hier;{" "}
+            <code>scripts/analyze-destinations.ts</code> rechnet sie nach.
+          </p>
         </section>
         <section className="flex flex-col gap-2">
           <h3 className="text-base font-semibold">Kartensymbole</h3>

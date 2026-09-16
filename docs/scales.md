@@ -42,6 +42,109 @@ gradient, altitude and a border crossing are numbers next to them, not labels
 among them. The scales dialog lists all fourteen with the sentence that
 defines each, `docs/data-model.md` has the tables.
 
+## Destinations: reach and the derived year
+
+A town has no climate series and no season of its own. What it has is the
+passes it reaches, and every one of those is already graded for all 24
+half-months. Everything the destination block shows is therefore **derived**,
+and says so on screen (Principle 3): the counts, the grade bar and the strip.
+`lib/destination.ts` is the whole of it, `scripts/analyze-destinations.ts` is
+the calibration.
+
+### Reach: three bands and a gradient
+
+The old single radius (60 km) answered "is it in?" and nothing else, so a
+pass 1 km away and one 59 km away read alike while one at 61 km was gone.
+Two mechanisms replace it, deliberately different so neither has to do the
+other's job:
+
+| Band   | up to | what it means on a bike       |
+| ------ | ----- | ----------------------------- |
+| `door` | 18 km | ride out of the door, no car  |
+| `day`  | 45 km | inside a day's loop from here |
+| `trip` | 75 km | worth the transfer            |
+
+- **Bands are what a person reads.** They group the list and they are a
+  sentence – "vier Pässe vor der Haustür" – which a weight can never be.
+- **`reachWeight` is what the machine ranks with.** A cosine ease, 1 at the
+  door, 0 at `REACH_MAX_KM`, so `|w(59) − w(61)| < 0.05` where the old cut was
+  1 → 0. It is a factor in the ordering score, never a filter, and it is never
+  shown: nobody can read "Gewicht 0,62".
+
+`REACH_MAX_KM` (75 km) is where the list stops. A cut-off still exists because
+a list has to end, but the weight is already near zero there, so the edge
+costs almost nothing.
+
+### The grade: relative to this base's own peak, not to a count
+
+`gradeOf` grades a half-month against the **best half-month that base ever
+has**:
+
+| Grade           | condition                                     |
+| --------------- | --------------------------------------------- |
+| `beste Zeit`    | ≥ `RIDEABLE_BEST_SHARE` (0,8) of its own peak |
+| `gut`           | ≥ `RIDEABLE_GOOD_SHARE` (0,5) of its own peak |
+| `eingeschränkt` | at least one rideable pass                    |
+| `oft gesperrt`  | none                                          |
+
+This was an absolute count first – six rideable passes for "beste Zeit",
+three for "gut" – and the measurement killed it. Over all 48 towns × 24
+half-months:
+
+- **47 of 48 towns cleared the top threshold in early September**, 45 of 48 in
+  late July. The top grade landed on 40 % of all cells and on **73 % of the
+  non-winter ones**, so from late June to early October the strip was a solid
+  block for every sizeable base.
+- The median base reaches 26 passes and has 19–26 rideable at its peak, four
+  times the threshold. No absolute number serves both that and Bédoin, which
+  reaches two.
+
+The deeper fault is that an absolute count makes the strip encode two things
+at once: how _big_ a base is and when it is at its _best_. A 24-cell strip is
+a seasonal instrument – its question is "when should I come here" – so it must
+answer only the second. The same year, both ways
+(`# beste Zeit, + gut, . eingeschränkt`, January to December twice over):
+
+```
+Bédoin     reaches  2   relative |    ++++++#     +##     |   absolute |    .......     ...     |
+Innsbruck  reaches 15   relative |       ...+#######.     |   absolute |       ...#########     |
+Bormio     reaches 33   relative |     ......#+++##+.     |   absolute |     ..+.+#########     |
+Cavalese   reaches 43   relative |    .......++.++##+     |   absolute |    .++############     |
+```
+
+Bédoin relative is the case that proves it: a long spring, a hole in high
+summer where the heat on Ventoux makes it punishing, and a second peak in
+September. Absolute, it is a flat dim line and the app knows nothing.
+
+**"How much is there" is not lost, it is said in words.** `destinationText`
+and the grade bar sit directly above the strip – "Von 33 Pässen im Umkreis:
+12 zur besten Zeit, 11 gut, 10 eingeschränkt" – and the line under it names
+what the strip is relative to. The picture carries the shape, the sentence
+carries the magnitude; the same split as the bands and the weight above.
+
+The two shares are set where every base still gets a named best window. At
+0,8 five of the 48 towns – Bormio among them – peaked in a single half-month,
+so `bestRun` found no run of two and the panel's "beste Zeit X – Y" line
+vanished for them; at 0,75 all 48 keep one, with a median length of three
+half-months, and the grade split barely moves (best 20 % of all cells against
+16 %).
+
+The two shares are editorial like every other number here. Re-run
+`bun run scripts/analyze-destinations.ts` after the data grows: section 3 is
+the absolute rule that was dropped, section 4 the relative one in use, and
+section 5 prints the strips above.
+
+### Ranking within a band
+
+`beauty + fame/2`, scaled by the grade in the chosen half-month and by
+`0,35 + reachWeight(km)`. A closed pass is not an argument for a base however
+pretty it is, so the grade is the strongest term; the weight is a factor and
+not a filter, so a genuinely better pass at 70 km can still out-rank a dull
+one at 5 km. The inverse list in a pass panel (`basesFor`, "Orte als
+Standort") uses the same bands and the same weight, scaled by how many passes
+each town reaches instead — because the nearest village is rarely the best
+base.
+
 ## Status per period
 
 `passVerdict()` in `lib/status.ts` answers "how good is it to ride there in

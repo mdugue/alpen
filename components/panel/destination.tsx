@@ -231,9 +231,15 @@ export const DestinationSection = ({
         </p>
         <GradeBar d={d} />
         <SeasonStrip cells={d.year.cells} current={period} size="panel" />
+        {/* What the 24 cells are graded against, said out loud. They are
+            relative to this base's own best half-month, so the strip shows
+            when to come rather than how big the place is; the magnitude is
+            the sentence and the bar above (`gradeOf` in lib/destination.ts). */}
         <p className="text-muted-foreground text-2xs">
           Abgeleitet aus den {d.total} Pässen im Umkreis – der Ort selbst hat
-          keine eigene Klimareihe.
+          keine eigene Klimareihe. Der Streifen zeigt den Jahresverlauf im
+          Verhältnis zur besten Zeit dieses Orts
+          {d.peak > 0 && <> (dann sind {fmt(d.peak)} Pässe gut befahrbar)</>}.
         </p>
       </div>
 

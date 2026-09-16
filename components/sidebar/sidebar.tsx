@@ -10,7 +10,7 @@ import {
   filterCount,
   FilterTrigger,
 } from "@/components/sidebar/filter-panel";
-import { KindTabs } from "@/components/sidebar/kind-tabs";
+import { KIND_LABEL, KindTabs } from "@/components/sidebar/kind-tabs";
 import { PassList } from "@/components/sidebar/pass-list";
 import { TourList } from "@/components/sidebar/tour-list";
 import { TownList } from "@/components/sidebar/town-list";
@@ -23,12 +23,12 @@ import {
   InputGroupInput,
 } from "@/components/ui/input-group";
 import { Switch } from "@/components/ui/switch";
-import { DEFAULT_FILTERS } from "@/lib/app-state";
+import { ALL_KINDS, DEFAULT_FILTERS } from "@/lib/app-state";
 import type { EntityKind, Filters, Selection } from "@/lib/app-state";
 import { hasSecondaryFilters } from "@/lib/filter-summary";
 import type { PassRow, TourRow, TownRow } from "@/lib/rows";
 import type { Tour } from "@/lib/types";
-import { cn, TOUCH_CONTROL } from "@/lib/utils";
+import { cn, fmt, TOUCH_CONTROL } from "@/lib/utils";
 
 export interface SidebarProps {
   /** `aside` renders the brand row; the bottom sheet shows its swipe handle instead. */
@@ -251,6 +251,21 @@ export const Sidebar = (p: SidebarProps) => {
               />
             )}
           </div>
+          {/*
+           * What the app currently holds, on the sheet's peek row. Without it
+           * a phone opens on an empty map with a text box and nothing that
+           * says the app knows 201 roads at all – the first screen contained
+           * no result of any kind. One line of counts is not a preview of the
+           * list (that was tried and removed), it is the label the search
+           * button was missing, and it moves with the filters.
+           */}
+          {p.peek && (
+            <p className="text-muted-foreground text-2xs truncate">
+              {ALL_KINDS.map(
+                (kind) => `${fmt(counts[kind])} ${KIND_LABEL[kind]}`,
+              ).join(" · ")}
+            </p>
+          )}
           {/* What is filtered away stays readable while the panel is shut –
               and on the sheet's peek row, where the panel cannot be opened at
               all, it is the only place that says so. */}

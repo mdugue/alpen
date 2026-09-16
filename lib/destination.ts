@@ -55,29 +55,53 @@ const emptyCount = (): GradeCount => ({
 const rideable = (c: GradeCount) => c.best + c.good;
 
 /**
- * The grade of a destination in one half-month, from the passes it reaches.
+ * The grade of a destination in one half-month – **relative to the best that
+ * base ever gets**, not to an absolute number of passes.
  *
- * Counted in *absolute* passes rather than as a share, and that is the whole
- * judgement. A share punishes exactly the bases this app exists to find: a
- * town with thirty reachable passes of which twelve are open in early October
- * is a far better October destination than a town with three passes of which
- * all three are – the first offers twelve rides, the second offers three. The
- * share says 40 % against 100 % and gets the answer backwards.
+ * This was an absolute count first (six rideable passes = "beste Zeit", three
+ * = "gut") and the data says plainly that it does not work. Measured over all
+ * 48 towns × 24 half-months:
  *
- * The thresholds are a week of riding, a long weekend, and a day: six
- * rideable passes is a holiday, three is a weekend, one is a reason to be
- * there at all. Editorial, like every other number in this app, and said so
- * in the scales dialog.
+ *  - **47 of 48 towns cleared the top threshold in early September**, 45 of 48
+ *    in late July. The top grade landed on 73 % of every non-winter cell, so
+ *    from late June to early October the strip was a solid block for every
+ *    sizeable base and could not be read at all.
+ *  - The median base reaches 26 passes and has 19–26 rideable at its peak –
+ *    four times the threshold. No absolute number works for both that and
+ *    Bédoin, which reaches two.
+ *
+ * The deeper problem is that an absolute count makes the strip encode two
+ * different things at once: how *big* a base is, and when it is at its *best*.
+ * A 24-cell strip is a seasonal instrument – its question is "when should I
+ * come here" – so it must answer only the second. Bédoin under the absolute
+ * rule was a flat dim line all year; relative it shows what is actually true
+ * of Mont Ventoux: a long spring, a hole in high summer where the heat makes
+ * it punishing, and a second peak in September.
+ *
+ * "How much is there" is not lost – it is simply said in words rather than in
+ * colour, right next to the strip, by `destinationText` and the grade bar:
+ * "Von 33 Pässen im Umkreis: 12 zur besten Zeit, 11 gut, 10 eingeschränkt."
+ * The same split as the reach bands: the picture carries the shape, the
+ * sentence carries the magnitude, and neither has to do the other's job.
+ *
+ * The two shares are editorial like every other number here, and documented
+ * in the scales dialog and docs/scales.md. They are set where every base
+ * still gets a named best window: at 0,8 five of the 48 towns – Bormio among
+ * them – peaked in a single half-month and `bestRun` found no run of two, so
+ * the panel's "beste Zeit X – Y" line simply vanished for them. At 0,75 all
+ * 48 keep one, with a median length of three half-months, and the grade split
+ * barely moves. The bottom line stays absolute, because "nothing at all to
+ * ride" is not relative to anything.
  */
-export const RIDEABLE_BEST = 6;
-export const RIDEABLE_GOOD = 3;
+export const RIDEABLE_BEST_SHARE = 0.75;
+export const RIDEABLE_GOOD_SHARE = 0.45;
 
-export const gradeOf = (c: GradeCount): Grade => {
+export const gradeOf = (c: GradeCount, peak: number): Grade => {
   const n = rideable(c);
-  if (n >= RIDEABLE_BEST) return "best";
-  if (n >= RIDEABLE_GOOD) return "good";
-  if (n >= 1) return "limited";
-  return "closed";
+  if (n === 0 || peak === 0) return "closed";
+  if (n >= peak * RIDEABLE_BEST_SHARE) return "best";
+  if (n >= peak * RIDEABLE_GOOD_SHARE) return "good";
+  return "limited";
 };
 
 /** One reachable pass, with everything the panel ranks and groups it by. */
@@ -127,6 +151,8 @@ export interface Destination {
   counts: GradeCount;
   /** How many passes are reachable at all – the denominator of everything above. */
   total: number;
+  /** Rideable passes in this base's best half-month; what the strip is graded against. */
+  peak: number;
   /** Reachable passes, best first. */
   passes: ReachedPass[];
   /** The same, grouped by band in `REACH_BANDS` order; empty bands are dropped. */
@@ -138,17 +164,16 @@ export interface Destination {
  * road's weather, and "die Pässe im Umkreis" is not one road. The count is
  * what explains this cell, and the count is shown next to it.
  */
-const cellOf = (counts: GradeCount): YearCell => ({
-  grade: gradeOf(counts),
-  reasons: [],
-  snowy: false,
-  status:
-    gradeOf(counts) === "closed"
-      ? "closed"
-      : gradeOf(counts) === "limited"
-        ? "risky"
-        : "open",
-});
+const cellOf = (counts: GradeCount, peak: number): YearCell => {
+  const grade = gradeOf(counts, peak);
+  return {
+    grade,
+    reasons: [],
+    snowy: false,
+    status:
+      grade === "closed" ? "closed" : grade === "limited" ? "risky" : "open",
+  };
+};
 
 /**
  * The longest run of half-months at "beste Zeit", as `passYear` computes it
@@ -206,7 +231,10 @@ export const destinationAt = (
     });
   }
   reached.sort((a, b) => b.score - a.score);
-  const cells = perPeriod.map(cellOf);
+  // The whole year is graded against the best half-month this base has, so
+  // the strip shows its season rather than its size (see `gradeOf`).
+  const peak = Math.max(0, ...perPeriod.map(rideable));
+  const cells = perPeriod.map((c) => cellOf(c, peak));
   const counts = perPeriod[periodIndex(period)] ?? emptyCount();
   return {
     bands: REACH_BANDS.map((b) => ({
@@ -216,6 +244,7 @@ export const destinationAt = (
     })).filter((g) => g.passes.length > 0),
     counts,
     passes: reached,
+    peak,
     total: reached.length,
     year: { best: bestRun(cells), cells },
   };
