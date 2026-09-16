@@ -90,14 +90,26 @@ const SIDEBAR_W = { lg: 384, xl: 416 };
 /** The detail panel grows with the viewport; the map keeps the larger half. */
 const DETAIL_W = { lg: 352, xl: 400 };
 /**
- * Bottom sheet positions on phones. The list opens on a peek row that carries
- * the search button (keep `--sheet-peek` in app/globals.css in step, the
- * MapLibre controls sit above it), then half and almost full; the detail sheet
- * leaves the map visible above it or takes nearly the whole screen.
+ * The one bottom sheet on phones, and where it rests: a peek row carrying the
+ * search button and the counts (keep `--sheet-peek` in app/globals.css in
+ * step, the MapLibre controls sit above it), a half screen, and nearly the
+ * whole one.
+ *
+ * The peek is measured rather than rounded: the swipe handle plus the header
+ * row, and no more. A peek taller than its content leaves the top of the
+ * first list row bleeding below the search button – visible, unreadable and
+ * untappable – so `SHEET_PEEK_PX` and `--sheet-peek` in app/globals.css are
+ * one number in two places and have to move together.
+ *
+ * One set for both the list and the detail, because there is one sheet for
+ * both (`MobileSheet` says why the two became one). A detail opens at the
+ * middle stop, which leaves the map visible above what it describes; going
+ * back to the list keeps whatever height was reached, so returning from a
+ * detail read at full height does not throw the list back down.
  */
-const LIST_SNAPS = [80, 0.5, 0.85] as const;
-const DETAIL_SNAPS = [0.55, 0.92] as const;
-const [LIST_PEEK, LIST_HALF, LIST_FULL] = LIST_SNAPS;
+const SHEET_PEEK_PX = 64;
+const SHEET_SNAPS = [SHEET_PEEK_PX, 0.55, 0.92] as const;
+const [SHEET_PEEK, SHEET_HALF, SHEET_FULL] = SHEET_SNAPS;
 
 /**
  * What is selected, and what the detail panel shows – four values that only
@@ -194,8 +206,7 @@ export const Explorer = ({
   // own fold, so coming back lands where the last visit left off.
   const [tab, setTab] = useStored<EntityKind>("alpenpaesse:tab", "pass");
   const [sidebarOpen, setSidebarOpen] = useStored("alpenpaesse:sidebar", true);
-  const [listSnap, setListSnap] = useState<number>(LIST_PEEK);
-  const [detailSnap, setDetailSnap] = useState<number>(DETAIL_SNAPS[0]);
+  const [sheetSnap, setSheetSnap] = useState<number>(SHEET_PEEK);
   const [scalesOpen, setScalesOpen] = useState(false);
   // Where the elevation-profile cursor sits on the road, and a fly-to asked
   // for by a click on it. Both live here because the map draws them and the
@@ -326,12 +337,9 @@ export const Explorer = ({
     if (sel.kind === "tour")
       setHiddenTours((h) => h.filter((s) => s !== sel.slug));
     if (sel.kind === "town") setShowTowns(true);
-    if (isMobile) {
-      // The detail sheet covers the list; the list waits on its peek row so
-      // nothing of it shows above the detail.
-      setListSnap(LIST_PEEK);
-      setDetailSnap(DETAIL_SNAPS[0]);
-    }
+    // The sheet swaps its content for the detail; from the peek row it has to
+    // rise far enough to show it, and from higher up it stays where it is.
+    if (isMobile) setSheetSnap((h) => (h === SHEET_PEEK ? SHEET_HALF : h));
   };
 
   /** Back to the list; focus returns to the row the detail came from. */
@@ -339,7 +347,6 @@ export const Explorer = ({
     const closed = selection;
     dispatch({ kind: "close" });
     setProfileCursor(null);
-    if (isMobile) setListSnap(LIST_HALF);
     requestAnimationFrame(() => {
       const root = sidebarRoot.current;
       const row =
@@ -373,13 +380,14 @@ export const Explorer = ({
       onProfileZoom={setProfileZoom}
       onSelect={select}
       onBack={back}
+      mobile={isMobile}
     />
   );
 
   const sidebar = (variant: "aside" | "sheet") => (
     <Sidebar
       variant={variant}
-      peek={variant === "sheet" && listSnap === LIST_PEEK}
+      peek={variant === "sheet" && sheetSnap === SHEET_PEEK}
       filters={filters}
       setFilters={setFilters}
       passRows={passRows}
@@ -408,16 +416,14 @@ export const Explorer = ({
         // stops there: the field it reveals is the real one, and by the time a
         // thumb reaches it the sheet stands still, so the software keyboard has
         // nothing to fight with.
-        variant === "sheet" ? () => setListSnap(LIST_FULL) : undefined
+        variant === "sheet" ? () => setSheetSnap(SHEET_FULL) : undefined
       }
     />
   );
 
   // Mobile: the map is padded by the sheet in front of it, so camera targets
   // land above the fold.
-  const insetBottom = isMobile
-    ? snapPx(selection ? detailSnap : listSnap, viewportHeight)
-    : 0;
+  const insetBottom = isMobile ? snapPx(sheetSnap, viewportHeight) : 0;
 
   // Desktop: the panels float over the map; the map is padded by their width
   // so camera targets land in the visible part.
@@ -521,33 +527,34 @@ export const Explorer = ({
          * panels on desktop. The list sheet never leaves the screen, the detail
          * sheet slides in over it and is swiped away again.
          */}
+        {/*
+         * One sheet, whose content is the list or the detail. The list is kept
+         * mounted behind a `hidden` while a detail shows, so its scroll
+         * position, its tab and its search survive the round trip – which was
+         * the one good reason the layout used to keep a second sheet for it.
+         */}
         {isMobile && (
-          <>
-            <MobileSheet
-              label="Liste"
-              open
-              snapPoints={LIST_SNAPS}
-              snap={listSnap}
-              onSnapChange={setListSnap}
+          <MobileSheet
+            label={current.shown ? "Details" : "Liste"}
+            open
+            snapPoints={SHEET_SNAPS}
+            snap={sheetSnap}
+            onSnapChange={setSheetSnap}
+            onDismiss={current.shown ? back : undefined}
+          >
+            <div
+              ref={sidebarRoot}
+              hidden={current.shown !== null}
+              className="flex min-h-0 flex-1 flex-col"
             >
-              <div ref={sidebarRoot} className="flex min-h-0 flex-1 flex-col">
-                {sidebar("sheet")}
+              {sidebar("sheet")}
+            </div>
+            {current.shown && (
+              <div className="flex min-h-0 flex-1 flex-col">
+                {detailFor(current.shown)}
               </div>
-            </MobileSheet>
-            <MobileSheet
-              label="Details"
-              open={current.shown !== null}
-              onClose={back}
-              snapPoints={DETAIL_SNAPS}
-              snap={detailSnap}
-              onSnapChange={setDetailSnap}
-            >
-              {/* `last` is what the sheet keeps showing while it slides away,
-                  once there is nothing to show any more. */}
-              {(current.shown ?? current.last) &&
-                detailFor((current.shown ?? current.last)!)}
-            </MobileSheet>
-          </>
+            )}
+          </MobileSheet>
         )}
       </div>
 

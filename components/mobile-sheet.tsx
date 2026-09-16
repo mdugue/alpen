@@ -25,6 +25,15 @@ interface Props {
    * snap point then settles on it instead of dismissing the sheet.
    */
   onClose?: () => void;
+  /**
+   * A swipe past the lowest snap point on a sheet that stays: the gesture is
+   * kept, the dismissal is not. The phone has one sheet and it always holds
+   * something, so flicking a detail away has to mean "back to the list"
+   * rather than "close" – the sheet settles on its lowest snap and this is
+   * called. Without it the gesture would simply be lost, which is the price
+   * the one-sheet layout would otherwise pay.
+   */
+  onDismiss?: () => void;
   /** Lowest first, at least two; a tap on the handle toggles between the first two. */
   snapPoints: readonly [number, number, ...number[]];
   snap: number;
@@ -33,15 +42,25 @@ interface Props {
 }
 
 /**
- * The bottom sheet of the mobile layout: one per panel, so the list and the
- * detail slide over each other the way the two floating panels sit next to each
- * other on desktop. The sheet is non-modal – the map stays visible above it and
- * keeps its taps, which is why an outside press must not dismiss it.
+ * The bottom sheet of the mobile layout. Non-modal – the map stays visible
+ * above it and keeps its taps, which is why an outside press must not dismiss
+ * it – with snap points, so the same sheet is a peek row, a half screen or
+ * nearly the whole one.
+ *
+ * There is exactly **one** of these on screen (`explorer.tsx`). It used to be
+ * two, one per panel, mirroring the two floating panels of the desktop layout
+ * turned by 90°; the analogy is what broke. On desktop the two panels sit
+ * *beside* each other and both are readable at once. Stacked on a phone only
+ * the front one can be seen, so the second sheet's whole job was to be
+ * invisible behind the first – while still contributing a second swipe
+ * handle, a second drag target and a second snap state, and while hiding the
+ * search and the counts completely for as long as a detail was open.
  */
 export const MobileSheet = ({
   label,
   open,
   onClose,
+  onDismiss,
   snapPoints,
   snap,
   onSnapChange,
@@ -66,6 +85,7 @@ export const MobileSheet = ({
         if (onClose) return;
         details.cancel();
         onSnapChange(collapsed);
+        onDismiss?.();
       }}
       onOpenChange={(next) => {
         if (!next) onClose?.();

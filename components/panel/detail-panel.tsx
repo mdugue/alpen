@@ -1,6 +1,6 @@
 "use client";
 
-import { Check, ExternalLink, Share, Star, X } from "lucide-react";
+import { Check, ChevronLeft, ExternalLink, Share, Star, X } from "lucide-react";
 import dynamic from "next/dynamic";
 import { useLayoutEffect, useRef } from "react";
 
@@ -138,6 +138,13 @@ interface Props {
   onProfileZoom: (point: LatLon) => void;
   onSelect: (sel: Selection) => void;
   onBack: () => void;
+  /**
+   * On a phone the detail is not a panel beside the list but the one sheet
+   * *showing* the detail, so leaving it means going back to the list rather
+   * than closing something. The control says so: a labelled back button
+   * instead of a close cross.
+   */
+  mobile?: boolean;
 }
 
 /**
@@ -794,6 +801,17 @@ export const DetailPanel = (props: Props) => {
       }}
     >
       <div className="border-border flex h-10 shrink-0 items-center gap-1 border-b px-2">
+        {props.mobile && (
+          <Button
+            size="sm"
+            variant="ghost"
+            onClick={onBack}
+            className="-ml-1 shrink-0 gap-1 px-2"
+          >
+            <ChevronLeft />
+            Liste
+          </Button>
+        )}
         <p className="text-muted-foreground text-2xs min-w-0 flex-1 truncate pl-2 font-semibold tracking-widest uppercase">
           {kicker}
         </p>
@@ -820,15 +838,17 @@ export const DetailPanel = (props: Props) => {
         >
           <Star className={cn(favorite && "fill-accent text-accent")} />
         </Toggle>
-        <Button
-          size="icon"
-          variant="ghost"
-          onClick={onBack}
-          aria-label="Details schließen"
-          className={TOUCH_ICON}
-        >
-          <X />
-        </Button>
+        {!props.mobile && (
+          <Button
+            size="icon"
+            variant="ghost"
+            onClick={onBack}
+            aria-label="Details schließen"
+            className={TOUCH_ICON}
+          >
+            <X />
+          </Button>
+        )}
       </div>
       <div
         ref={scroller}

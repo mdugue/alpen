@@ -191,27 +191,44 @@ export const Sidebar = (p: SidebarProps) => {
         <div className="border-border relative flex shrink-0 flex-col gap-2 border-b px-3 py-2">
           <div className="flex items-center gap-2">
             {
-              // On the peek row the field is a button that only opens the
-              // sheet: a live input there would have the software keyboard
-              // come up in the same moment as the sheet moves, and the two
-              // animations fight over where the field ends up.
+              /*
+               * On the peek row the search is a **button that looks like a
+               * button**, and it says what it opens.
+               *
+               * Two reasons, and they are different. The first is mechanical:
+               * a live input here would bring the software keyboard up in the
+               * same moment as the sheet moves, and the two animations fight
+               * over where the field ends up – so the field a thumb reaches is
+               * always in a sheet that already stands still. The second is
+               * that the old control lied about it. It was a full-width
+               * outlined box with a magnifier and grey placeholder text, which
+               * is a search field in every app a visitor has ever used; tapping
+               * it and getting a sheet instead of a caret is a small
+               * betrayal every single time. It now reads "Suche" and carries
+               * the counts beside it, so the row also answers the question the
+               * phone's first screen never answered: what is in here at all.
+               */
               p.peek ? (
-                <Button
-                  variant="outline"
-                  onClick={p.onOpenSearch}
-                  className={cn(
-                    "text-muted-foreground flex-1 justify-start font-normal",
-                    TOUCH_CONTROL,
-                  )}
-                >
-                  <Search data-icon="inline-start" />
-                  <span className="truncate">
-                    {p.filters.query || "Pass, Tour oder Ort …"}
-                  </span>
+                <>
+                  <Button
+                    variant="secondary"
+                    onClick={p.onOpenSearch}
+                    className={cn("shrink-0", TOUCH_CONTROL)}
+                  >
+                    <Search data-icon="inline-start" />
+                    {p.filters.query ? `„${p.filters.query}“` : "Suche"}
+                  </Button>
+                  <p className="text-muted-foreground text-2xs min-w-0 flex-1 truncate">
+                    {ALL_KINDS.map(
+                      (kind) => `${fmt(counts[kind])} ${KIND_LABEL[kind]}`,
+                    ).join(" · ")}
+                  </p>
                   {active > 0 && (
-                    <Badge className="ml-auto shrink-0">{active}</Badge>
+                    <Badge variant="secondary" className="shrink-0">
+                      {active} Filter
+                    </Badge>
                   )}
-                </Button>
+                </>
               ) : (
                 <InputGroup className={cn("flex-1", TOUCH_CONTROL)}>
                   <InputGroupAddon>
@@ -251,21 +268,6 @@ export const Sidebar = (p: SidebarProps) => {
               />
             )}
           </div>
-          {/*
-           * What the app currently holds, on the sheet's peek row. Without it
-           * a phone opens on an empty map with a text box and nothing that
-           * says the app knows 201 roads at all – the first screen contained
-           * no result of any kind. One line of counts is not a preview of the
-           * list (that was tried and removed), it is the label the search
-           * button was missing, and it moves with the filters.
-           */}
-          {p.peek && (
-            <p className="text-muted-foreground text-2xs truncate">
-              {ALL_KINDS.map(
-                (kind) => `${fmt(counts[kind])} ${KIND_LABEL[kind]}`,
-              ).join(" · ")}
-            </p>
-          )}
           {/* What is filtered away stays readable while the panel is shut –
               and on the sheet's peek row, where the panel cannot be opened at
               all, it is the only place that says so. */}

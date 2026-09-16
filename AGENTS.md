@@ -183,19 +183,39 @@ friends do that better and the app links out to them.
   collapsible list per kind) and, while something is selected, the detail
   slide-over next to it. Their widths are mirrored in `explorer.tsx`
   (`SIDEBAR_W`, `DETAIL_W`) and fed to MapLibre as left padding so camera
-  targets stay visible. Below `lg` the split is the same, only turned by
-  90°: two `MobileSheet`s (`components/mobile-sheet.tsx`, a `Drawer` with snap
-  points each) hold the same two panels, the list sheet on its peek row and the
-  detail sheet sliding in over it, and the height of whichever is in front is
-  fed to MapLibre as bottom padding. Both keep their own state, so a detail
-  never takes the list's place and the lists keep their scroll position.
+  targets stay visible. Below `lg` there is **one** `MobileSheet`
+  (`components/mobile-sheet.tsx`, the Base UI `Drawer` with `modal={false}` and
+  snap points) and its content is either the list or the detail; its height is
+  fed to MapLibre as bottom padding.
+  It was two sheets, one per panel, on the theory that the mobile layout is the
+  desktop one turned by 90°. That analogy is where it went wrong: on desktop
+  the two panels sit _beside_ each other and both are readable, stacked on a
+  phone only the front one can be seen. The second sheet's whole job was to be
+  invisible behind the first, while still contributing a second swipe handle, a
+  second drag target and a second snap state – and while hiding the search and
+  the counts for as long as a detail was open. The list is now kept mounted
+  behind a `hidden` instead, which preserves its scroll position, its tab and
+  its search, the one thing the second sheet was genuinely buying.
+  Leaving a detail therefore means going _back to the list_, not closing
+  something, and the control says so: a labelled back button on a phone where
+  desktop has a close cross. The swipe-down gesture is kept and re-pointed –
+  `onDismiss` cancels the dismissal, settles on the peek snap and goes back.
   A sheet sizes itself from `--drawer-snap-point-offset`: the popup is a full
   `100dvh` and padded off at the bottom by that offset, so its content box ends
-  at the fold. The peek row carries a **button** that opens the sheet, not the
-  search field itself: a field there would have the software keyboard come up
-  in the same moment as the sheet moves, and the two animations fight over
-  where the field ends up. The field a thumb reaches is always in a sheet that
-  already stands still. What floats over the map is one cluster in its top-left
+  at the fold. The peek snap is therefore measured, not rounded: it is the
+  swipe handle plus the header row and no more (`SHEET_PEEK_PX`, kept in step
+  with `--sheet-peek`), because a peek taller than its content leaves the top
+  of the first list row bleeding below it, visible and untappable.
+  The peek row carries a **button** that opens the sheet, not the search field
+  itself, and it is styled as a button rather than as a field. A field there
+  would have the software keyboard come up in the same moment as the sheet
+  moves, and the two animations fight over where the field ends up – the field
+  a thumb reaches is always in a sheet that already stands still. It used to
+  be an outlined box with a magnifier and grey placeholder text, which is a
+  search field in every app a visitor has ever used, so tapping it and getting
+  a sheet instead of a caret was a small betrayal every time. It reads "Suche"
+  and carries the counts beside it, which is also the only thing on the phone's
+  first screen that says what the app holds. What floats over the map is one cluster in its top-left
   corner (`MAP_CLUSTER`, next to the panels' left edge): the period scrubber
   and, on the same panel surface, the three map tools – layers, 3D, fit. The
   tools are one segmented column in the same outline as the scrubber's own

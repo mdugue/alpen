@@ -14,7 +14,9 @@
 
 :root {
   --radius: 0.625rem;
-  --sheet-peek: 5rem;
+  /* The sheet's peek snap in `components/explorer.tsx` (SHEET_PEEK_PX); the
+     MapLibre corner controls sit above it, so the two move together. */
+  --sheet-peek: 4rem;
   color-scheme: light dark;
 
   --background: oklch(0.985 0.004 90);

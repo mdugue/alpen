@@ -150,11 +150,12 @@ test(
 );
 
 test(
-  "6 · list and detail are separate sheets: peek → list → detail → back",
+  "6 · one sheet, two contents: peek → list → detail → back to the list",
   () =>
     withPage(app, "mobile-sheet", { mobile: true }, async (page) => {
       // The peek row carries a button, not the field: the sheet opens first,
-      // so the software keyboard never arrives while the sheet is moving.
+      // so the software keyboard never arrives while the sheet is moving. It
+      // also says what it opens rather than posing as a search field.
       await page.waitFor('[aria-label="Liste ausklappen"]');
       expect(await page.count("input[type=search]")).toBe(0);
       // The peek row rides in with the sheet, so a tap in its first frames can
@@ -162,7 +163,7 @@ test(
       // again until the field has taken the button's place.
       await waitUntil(async () => {
         if ((await page.count("input[type=search]")) > 0) return true;
-        await page.clickText("button", "Pass, Tour oder Ort");
+        await page.clickText("button", "Suche");
         await Bun.sleep(300);
         return (await page.count("input[type=search]")) > 0;
       }, "the list sheet to open");
@@ -172,10 +173,16 @@ test(
       await page.click(GALIBIER);
       await page.waitFor("#detail-title");
       expect(await page.text("#detail-title")).toBe("Col du Galibier");
-      // The list sheet stays on screen behind the detail sheet, so its rows
-      // are still in the document while the detail is open.
+      // One sheet now holds both, so there is one swipe handle and not two.
+      // The label flips with the snap point, so match either wording.
+      expect(await page.count('[aria-label*="klappen"]')).toBe(1);
+      // The list is kept mounted behind the detail, so its rows – and with
+      // them its scroll position and its tab – survive the round trip.
       expect(await page.count(PASS_ROW)).toBe(all);
-      await page.click('[aria-label="Details schließen"]');
+      // Leaving a detail on a phone means going back to the list, and the
+      // control says so instead of offering a close cross.
+      expect(await page.count('[aria-label="Details schließen"]')).toBe(0);
+      await page.clickText("button", "Liste");
       await page.waitForGone("#detail-title");
       await page.waitFor(PASS_ROW);
       expect(await page.hash()).not.toContain("pass=");
@@ -501,7 +508,7 @@ test(
         };
         await waitUntil(async () => {
           if ((await page.count("input[type=search]")) > 0) return true;
-          await page.clickText("button", "Pass, Tour oder Ort");
+          await page.clickText("button", "Suche");
           await Bun.sleep(300);
           return (await page.count("input[type=search]")) > 0;
         }, "the list sheet to open");
