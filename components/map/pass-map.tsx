@@ -55,17 +55,11 @@ import {
 import type { MapAssets } from "@/lib/map-assets";
 import { fitInset, NO_INSET, sameInset, toInset } from "@/lib/map-camera";
 import type { Inset } from "@/lib/map-camera";
-import {
-  REGION_MAX_ZOOM,
-  regionMarks,
-  regionRideable,
-} from "@/lib/map-regions";
 import type { TownReach } from "@/lib/nearby";
 import { PALETTE } from "@/lib/palette";
 import type { Scheme } from "@/lib/palette";
 import { roadTypeWord, TAG_LABEL } from "@/lib/regions";
 import { ascentKey } from "@/lib/route-key";
-import type { Grade } from "@/lib/status";
 import { STATUS_ORDER } from "@/lib/status";
 import { tagIconSvg } from "@/lib/tag-icons";
 import type { LatLon, Pass, Status, Tag, Tour, Town } from "@/lib/types";
@@ -73,8 +67,6 @@ import { cn, fmtUnit, MAP_CLUSTER, MAP_TOOL, PRESSED } from "@/lib/utils";
 
 export interface MapPass extends Pass {
   status: Status;
-  /** The status split by the best window; the region badges count by it. */
-  grade: Grade;
   favorite: boolean;
 }
 
@@ -108,22 +100,6 @@ interface Props {
    */
   hovered?: Selection | null;
   onHover?: (sel: Selection | null) => void;
-  /**
-   * Bring an entity into view without selecting it – the phone's peek strip
-   * asking "and where is this one?" as its cards go by.
-   *
-   * Deliberately its own prop rather than something the map infers from
-   * `hovered`. A hover that moves the camera is wrong twice over on a desktop:
-   * sweeping a list makes the map lurch under the pointer, and every one of
-   * those lurches is a `moveend`, which is the event the panel's whole
-   * "show where the camera *is*" machinery is built on (`selectionState` in
-   * explorer.tsx). A reveal is asked for explicitly, by the one control whose
-   * entire purpose is to point at something off screen.
-   *
-   * A fresh object per request, like `profileZoom`, so the same card can be
-   * asked for twice.
-   */
-  reveal?: Selection | null;
   onSelect: (sel: Selection) => void;
   onViewChange: (v: MapView) => void;
   /**
@@ -166,23 +142,6 @@ const FIT_PADDING = 48;
 const TOUR_PADDING = 60;
 /** A padding change nothing else moves with: long enough to read as a slide. */
 const PADDING_MS = 400;
-
-/**
- * Is a projected point inside the part of the map the floating panels leave
- * visible? A hover that came from the list may pan to its mark, and "visible"
- * there has to mean visible *to a reader*, not merely inside the canvas – the
- * sidebar and the detail panel cover up to 800 px of it.
- */
-const EDGE = 40;
-const inViewport = (
-  p: { x: number; y: number },
-  box: { width: number; height: number },
-  pad: Inset,
-) =>
-  p.x > pad.left + EDGE &&
-  p.x < box.width - EDGE &&
-  p.y > EDGE &&
-  p.y < box.height - pad.bottom - EDGE;
 
 const reduceMotion = () =>
   window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -856,75 +815,6 @@ const appLayers = (colors: Colors): LayerSpecification[] => {
       source: "hover",
       type: "circle",
     },
-    /**
-     * One badge per region, over the swarm rather than instead of it – the
-     * dots keep saying where the roads are, the badge says how many of them
-     * are rideable in the chosen half-month (`lib/map-regions.ts` argues the
-     * case). It fades out at `REGION_MAX_ZOOM`, where the dots have separated
-     * enough to be counted by eye.
-     */
-    {
-      id: "regions",
-      maxzoom: REGION_MAX_ZOOM,
-      paint: {
-        "circle-color": colors.paper,
-        "circle-opacity": 0.82,
-        "circle-radius": [
-          "interpolate",
-          ["linear"],
-          ["get", "total"],
-          1,
-          14,
-          80,
-          26,
-        ],
-        "circle-stroke-color": [
-          "case",
-          [">=", ["get", "share"], 0.6],
-          colors.open,
-          [">=", ["get", "share"], 0.25],
-          colors.risky,
-          colors.closed,
-        ],
-        "circle-stroke-width": 2.5,
-      },
-      source: "regions",
-      type: "circle",
-    },
-    {
-      id: "regions-label",
-      layout: {
-        "icon-allow-overlap": true,
-        "text-allow-overlap": true,
-        "text-field": ["get", "count"],
-        "text-font": [FONT_BOLD],
-        "text-size": 14,
-      },
-      maxzoom: REGION_MAX_ZOOM,
-      paint: { "text-color": colors.ink },
-      source: "regions",
-      type: "symbol",
-    },
-    {
-      id: "regions-name",
-      layout: {
-        "text-field": ["get", "label"],
-        "text-font": [FONT_BOLD],
-        // One line: the default 10-em wrap broke "Westalpen · 66/72 gut" after
-        // the name and left the separator stranded at the head of line two.
-        "text-max-width": 30,
-        "text-offset": [0, 1.9],
-        "text-size": 11,
-      },
-      maxzoom: REGION_MAX_ZOOM,
-      paint: {
-        "text-color": colors.ink,
-        "text-halo-color": colors.paper,
-        "text-halo-width": 2,
-      },
-      source: "regions",
-      type: "symbol",
-    },
     // Topmost: the profile cursor must stay visible over its own ascent.
     {
       id: "profile-cursor",
@@ -1005,7 +895,6 @@ export const PassMap = ({
   selection,
   hovered = null,
   onHover,
-  reveal = null,
   onSelect,
   onViewChange,
   onCameraSettled,
@@ -1021,11 +910,8 @@ export const PassMap = ({
   const map = useRef<MLMap | null>(null);
   const [ready, setReady] = useState(false);
   const [is3d, setIs3d] = useState(false);
-  // The region badges are a switch of their own, not a fact of the map: a
-  // reader who prefers the bare swarm of dots should be able to have it.
   /** What the hover ring and the hovered line state currently show. */
   const painted = useRef<string | null>(null);
-  const [showRegions, setShowRegions] = useStored("alpenpaesse:regions", true);
   // A shared link (a camera or a selection in the hash) is authoritative about
   // the camera; without one the map opens on what it draws, which is the frame
   // the fit button would produce. Both are refs, not state: they steer one
@@ -1177,7 +1063,6 @@ export const PassMap = ({
         hover: { data: EMPTY, type: "geojson" },
         passes: { data: EMPTY, type: "geojson" },
         reach: { data: EMPTY, type: "geojson" },
-        regions: { data: EMPTY, type: "geojson" },
         // Static files with a content hash in the name (scripts/build-map-assets.ts);
         // promoteId makes the `id` property the feature id for feature state.
         routes: { data: assets.routesUrl, promoteId: "id", type: "geojson" },
@@ -1654,55 +1539,6 @@ export const PassMap = ({
     // oxlint-disable-next-line react/exhaustive-deps
   }, [hovered, ready]);
 
-  // --- Bring a revealed entity into view -----------------------------------
-  // Only what asked for it (the phone's peek strip), only when the mark is
-  // actually behind a panel or off the canvas, and never a zoom: a reveal
-  // answers "where is this", not "show me this".
-  useEffect(() => {
-    const m = map.current;
-    if (!m || !ready || !reveal || m.isMoving()) return;
-    const point =
-      reveal.kind === "pass"
-        ? passes.find((p) => p.slug === reveal.slug)
-        : reveal.kind === "town"
-          ? towns.find((t) => t.slug === reveal.slug)
-          : undefined;
-    if (!point) return;
-    const pad = inset.current;
-    const box = m.getContainer().getBoundingClientRect();
-    if (inViewport(m.project([point.lon, point.lat]), box, pad)) return;
-    m.easeTo({
-      center: [point.lon, point.lat],
-      duration: reduceMotion() ? 0 : 450,
-      padding: pad,
-    });
-    // Intentional: the request is the trigger; the rest is read at that moment.
-    // oxlint-disable-next-line react/exhaustive-deps
-  }, [reveal, ready]);
-
-  // --- The region badges over the overview ---------------------------------
-  // One mark per region at the centroid of the roads actually listed, so a
-  // filtered map moves its badges with what is left (see `lib/map-regions.ts`).
-  useEffect(() => {
-    const m = map.current;
-    if (!m || !ready) return;
-    const marks = showPasses && showRegions ? regionMarks(passes) : [];
-    (m.getSource("regions") as GeoJSONSource | undefined)?.setData({
-      features: marks.map((r) => ({
-        geometry: { coordinates: [r.lon, r.lat], type: "Point" },
-        properties: {
-          count: String(regionRideable(r)),
-          label: `${r.region} · ${regionRideable(r)}/${r.total} gut`,
-          name: r.region,
-          share: r.total ? regionRideable(r) / r.total : 0,
-          total: r.total,
-        },
-        type: "Feature",
-      })),
-      type: "FeatureCollection",
-    });
-  }, [passes, showPasses, showRegions, ready]);
-
   // --- Elevation-profile cursor -------------------------------------------
   // One point, so setData is cheap enough to run on every pointer move.
   useEffect(() => {
@@ -1902,17 +1738,6 @@ export const PassMap = ({
                 </FieldSet>
                 <FieldSet className="gap-2">
                   <FieldLegend variant="label">Overlays</FieldLegend>
-                  <Field orientation="horizontal">
-                    <Switch
-                      size="sm"
-                      id="ov-regions"
-                      checked={showRegions}
-                      onCheckedChange={setShowRegions}
-                    />
-                    <FieldLabel htmlFor="ov-regions" className="font-normal">
-                      Regionen in der Übersicht
-                    </FieldLabel>
-                  </Field>
                   {[
                     { id: "hillshade", name: "Relief-Schummerung" },
                     ...OVERLAYS,

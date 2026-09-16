@@ -8,7 +8,7 @@ import {
 import type { ReachBand } from "@/lib/geo";
 import { cellAt, periodIndex, PERIODS } from "@/lib/status";
 import type { Grade, Year, YearCell, Years } from "@/lib/status";
-import type { LatLon, Pass, Period, Status } from "@/lib/types";
+import type { LatLon, Pass, Period, Status, Town } from "@/lib/types";
 
 /**
  * What a base is worth, for the half-month that is chosen.
@@ -238,4 +238,73 @@ export const destinationText = (d: Destination): string => {
     d.counts.closed > 0 && `${d.counts.closed} oft gesperrt`,
   ].filter((x): x is string => typeof x === "string");
   return `Von ${d.total} Pässen im Umkreis: ${parts.join(", ")}.`;
+};
+
+/** One town within reach, with what it would be worth as a base. */
+export interface ReachedTown {
+  town: Town;
+  km: number;
+  band: ReachBand;
+  /** How many passes are rideable from there in this half-month. */
+  rideable: number;
+  /** How many it reaches at all – the denominator of the line above. */
+  total: number;
+  score: number;
+}
+
+/**
+ * The inverse of `destinationAt`: not "what can I ride from this town" but
+ * "where would I stay to ride this road".
+ *
+ * A pass panel used to answer that with the same flat list of names and
+ * distances the town panel had, which is the weaker half of the same mistake:
+ * the nearest village is not automatically the best base, and the one thing a
+ * planner wants to know about a candidate – what *else* it puts within reach –
+ * was nowhere on the screen. So each town carries its own rideable count,
+ * which is `destinationAt`'s arithmetic run from the town rather than from
+ * here, and the ranking multiplies that by the same smooth nearness weight.
+ *
+ * The two panels are therefore one idea seen from both ends, and they share
+ * every constant: the bands, the weight and the reach.
+ */
+export interface Bases {
+  bands: { band: ReachBand; label: string; towns: ReachedTown[] }[];
+  total: number;
+}
+
+export const basesFor = (
+  at: LatLon,
+  towns: readonly Town[],
+  passes: readonly Pass[],
+  years: Years,
+  period: Period,
+  /** A town panel does not offer itself as a base. */
+  exclude?: string,
+): Bases => {
+  const reached: ReachedTown[] = [];
+  for (const town of towns) {
+    if (town.slug === exclude) continue;
+    const km = haversine(at, town);
+    const band = reachBand(km);
+    if (band === null) continue;
+    const own = destinationAt(town, passes, years, period);
+    const n = rideable(own.counts);
+    reached.push({
+      band,
+      km,
+      rideable: n,
+      score: (0.35 + reachWeight(km)) * (1 + n),
+      total: own.total,
+      town,
+    });
+  }
+  reached.sort((a, b) => b.score - a.score);
+  return {
+    bands: REACH_BANDS.map((b) => ({
+      band: b.key,
+      label: b.label,
+      towns: reached.filter((r) => r.band === b.key),
+    })).filter((g) => g.towns.length > 0),
+    total: reached.length,
+  };
 };

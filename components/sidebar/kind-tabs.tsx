@@ -45,61 +45,55 @@ export const KindTabs = ({
   onChange,
   counts,
   totals,
-  control,
 }: {
   active: EntityKind;
   onChange: (kind: EntityKind) => void;
   counts: Record<EntityKind, number>;
   totals: Record<EntityKind, number>;
-  /** The active kind's map-visibility switch, to the right of the row. */
-  control?: React.ReactNode;
 }) => (
-  <div className="flex items-center gap-1">
-    <div
-      role="tablist"
-      aria-label="Was die Liste zeigt"
-      className="bg-muted/60 flex min-w-0 flex-1 gap-0.5 rounded-lg p-0.5"
-    >
-      {ALL_KINDS.map((kind) => {
-        const on = kind === active;
-        const filtered = counts[kind] !== totals[kind];
-        return (
-          <Button
-            key={kind}
-            role="tab"
-            aria-selected={on}
-            variant="ghost"
-            size="sm"
-            onClick={() => onChange(kind)}
+  <div
+    role="tablist"
+    aria-label="Was die Liste zeigt"
+    className="bg-muted/60 flex min-w-0 gap-0.5 rounded-lg p-0.5"
+  >
+    {ALL_KINDS.map((kind) => {
+      const on = kind === active;
+      const filtered = counts[kind] !== totals[kind];
+      return (
+        <Button
+          key={kind}
+          role="tab"
+          aria-selected={on}
+          variant="ghost"
+          size="sm"
+          onClick={() => onChange(kind)}
+          className={cn(
+            "min-w-0 flex-1 gap-1.5 rounded-md px-1.5 font-normal",
+            on
+              ? "bg-card text-foreground hover:bg-card shadow-sm"
+              : "text-muted-foreground hover:text-foreground",
+            TOUCH_CONTROL,
+          )}
+        >
+          <span
+            className="flex size-3 shrink-0 items-center justify-center"
+            aria-hidden
+          >
+            {KIND_GLYPH[kind]}
+          </span>
+          <span className="truncate text-xs">{KIND_LABEL[kind]}</span>
+          <span
             className={cn(
-              "min-w-0 flex-1 gap-1.5 rounded-md px-1.5 font-normal",
-              on
-                ? "bg-card text-foreground hover:bg-card shadow-sm"
-                : "text-muted-foreground hover:text-foreground",
-              TOUCH_CONTROL,
+              "shrink-0 text-xs tabular-nums",
+              filtered
+                ? "text-foreground font-semibold"
+                : "text-muted-foreground",
             )}
           >
-            <span
-              className="flex size-3 shrink-0 items-center justify-center"
-              aria-hidden
-            >
-              {KIND_GLYPH[kind]}
-            </span>
-            <span className="truncate text-xs">{KIND_LABEL[kind]}</span>
-            <span
-              className={cn(
-                "shrink-0 text-xs tabular-nums",
-                filtered
-                  ? "text-foreground font-semibold"
-                  : "text-muted-foreground",
-              )}
-            >
-              {fmt(counts[kind])}
-            </span>
-          </Button>
-        );
-      })}
-    </div>
-    {control}
+            {fmt(counts[kind])}
+          </span>
+        </Button>
+      );
+    })}
   </div>
 );

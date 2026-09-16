@@ -12,7 +12,6 @@ import {
 } from "@/components/sidebar/filter-panel";
 import { KindTabs } from "@/components/sidebar/kind-tabs";
 import { PassList } from "@/components/sidebar/pass-list";
-import { PeekStrip } from "@/components/sidebar/peek-strip";
 import { TourList } from "@/components/sidebar/tour-list";
 import { TownList } from "@/components/sidebar/town-list";
 import { Badge } from "@/components/ui/badge";
@@ -59,8 +58,6 @@ export interface SidebarProps {
   /** What the pointer is over, on the map or in the list; the two share one highlight. */
   hovered: Selection | null;
   onHover: (sel: Selection | null) => void;
-  /** The peek strip pointing at a card: highlight it *and* bring it into view. */
-  onReveal: (sel: Selection | null) => void;
   onCollapse?: () => void;
   onOpenScales: () => void;
   /** Tap on the peek row's search button: the sheet opens, the field it reveals is the real one. */
@@ -119,44 +116,44 @@ export const Sidebar = (p: SidebarProps) => {
     // oxlint-disable-next-line react/exhaustive-deps
   }, [currentRow, p.tab]);
 
-  /** The active kind's "auf der Karte" switch, next to its own tab. */
-  const mapSwitch = () => {
-    if (p.tab === "pass")
-      return (
-        <Switch
-          size="sm"
-          checked={p.showPasses}
-          onCheckedChange={p.setShowPasses}
-          aria-label="Pässe und Straßen auf der Karte anzeigen"
-        />
-      );
-    if (p.tab === "town")
-      return (
-        <Switch
-          size="sm"
-          checked={p.showTowns}
-          onCheckedChange={p.setShowTowns}
-          aria-label="Orte auf der Karte anzeigen"
-        />
-      );
-    return (
-      <div className="flex items-center gap-1.5">
-        {visibleTourCount > 0 && visibleTourCount < allTourSlugs.length && (
-          <span className="text-muted-foreground text-2xs tabular-nums">
-            {visibleTourCount}/{allTourSlugs.length}
-          </span>
-        )}
-        <Switch
-          size="sm"
-          checked={p.hiddenTours.length === 0}
-          onCheckedChange={(on) =>
-            p.setHiddenTours(() => (on ? [] : allTourSlugs))
-          }
-          aria-label="Touren auf der Karte anzeigen"
-        />
-      </div>
-    );
-  };
+  /**
+   * Each kind's "auf der Karte" switch. It rides in the list's own toolbar
+   * (`ListToolbar`), not beside the tab row: a control next to three tabs
+   * reads as acting on all three.
+   */
+  const passSwitch = (
+    <Switch
+      size="sm"
+      checked={p.showPasses}
+      onCheckedChange={p.setShowPasses}
+      aria-label="Pässe und Straßen auf der Karte anzeigen"
+    />
+  );
+  const townSwitch = (
+    <Switch
+      size="sm"
+      checked={p.showTowns}
+      onCheckedChange={p.setShowTowns}
+      aria-label="Orte auf der Karte anzeigen"
+    />
+  );
+  const tourSwitch = (
+    <span className="flex items-center gap-1.5">
+      {visibleTourCount > 0 && visibleTourCount < allTourSlugs.length && (
+        <span className="tabular-nums">
+          {visibleTourCount}/{allTourSlugs.length}
+        </span>
+      )}
+      <Switch
+        size="sm"
+        checked={p.hiddenTours.length === 0}
+        onCheckedChange={(on) =>
+          p.setHiddenTours(() => (on ? [] : allTourSlugs))
+        }
+        aria-label="Touren auf der Karte anzeigen"
+      />
+    </span>
+  );
 
   const emptyProps = {
     countWith: p.countWith,
@@ -269,32 +266,12 @@ export const Sidebar = (p: SidebarProps) => {
               list of 201 rows is scrolled – which a section header inside the
               container could not do without an opaque background it has no way
               to get (see `KindTabs`). */}
-          {/* The phone's first screen used to be a search box on an empty
-              map. The strip carries the current answer instead – and, because
-              a finger has no hover, doubles as the mobile half of the
-              list↔map link: the card that comes to rest highlights its mark
-              (see `PeekStrip`). */}
-          {p.peek && (
-            <PeekStrip
-              kind={p.tab}
-              passRows={p.passRows}
-              tourRows={p.tourRows}
-              townRows={p.townRows}
-              period={p.filters.period}
-              total={counts[p.tab]}
-              hovered={p.hovered}
-              onReveal={p.onReveal}
-              onSelect={p.onSelect}
-              onOpenList={() => p.onOpenSearch?.()}
-            />
-          )}
           {!p.peek && (
             <KindTabs
               active={p.tab}
               onChange={p.setTab}
               counts={counts}
               totals={p.totals}
-              control={mapSwitch()}
             />
           )}
         </div>
@@ -326,6 +303,7 @@ export const Sidebar = (p: SidebarProps) => {
               filters={p.filters}
               setFilters={p.setFilters}
               empty={emptyProps}
+              mapControl={passSwitch}
               onSelect={(slug) => p.onSelect({ kind: "pass", slug })}
               onToggleFavorite={(slug) => p.onToggleFavorite("pass", slug)}
             />
@@ -339,6 +317,7 @@ export const Sidebar = (p: SidebarProps) => {
               period={p.filters.period}
               hiddenTours={p.hiddenTours}
               empty={emptyProps}
+              mapControl={tourSwitch}
               onToggleTour={(slug, on) =>
                 p.setHiddenTours((h) =>
                   on ? h.filter((s) => s !== slug) : [...new Set([...h, slug])],
@@ -355,6 +334,7 @@ export const Sidebar = (p: SidebarProps) => {
               hovered={p.hovered}
               onHover={p.onHover}
               empty={emptyProps}
+              mapControl={townSwitch}
               onSelect={(slug) => p.onSelect({ kind: "town", slug })}
               onToggleFavorite={(slug) => p.onToggleFavorite("town", slug)}
             />

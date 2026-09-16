@@ -6,6 +6,7 @@ import { Rating } from "@/components/rating";
 import { SeasonStrip } from "@/components/season-strip";
 import { EntityRow } from "@/components/sidebar/entity-row";
 import { ListEmpty } from "@/components/sidebar/list-empty";
+import { ListToolbar } from "@/components/sidebar/list-toolbar";
 import { StatusLabel } from "@/components/status-badge";
 import { TagLine } from "@/components/tags";
 import { Button } from "@/components/ui/button";
@@ -39,6 +40,7 @@ export const PassList = ({
   filters,
   setFilters,
   empty,
+  mapControl,
   onSelect,
   onToggleFavorite,
 }: {
@@ -49,6 +51,8 @@ export const PassList = ({
   filters: Filters;
   setFilters: (update: (f: Filters) => Filters) => void;
   empty: Omit<React.ComponentProps<typeof ListEmpty>, "title">;
+  /** The "auf der Karte" switch for this kind; it lives in the list, not by the tabs. */
+  mapControl: React.ReactNode;
   onSelect: (slug: string) => void;
   onToggleFavorite: (slug: string) => void;
 }) => {
@@ -68,7 +72,7 @@ export const PassList = ({
         the labels. A menu is ordinary markup and keeps the row's own scale,
         and it shows the seven keys in one list instead of behind an OS wheel.
       */}
-      <div className="border-border flex items-center gap-2 border-b px-3 py-1.5">
+      <ListToolbar control={mapControl}>
         <span className="text-muted-foreground text-2xs">Sortieren</span>
         <DropdownMenu>
           <DropdownMenuTrigger
@@ -99,7 +103,7 @@ export const PassList = ({
             </DropdownMenuRadioGroup>
           </DropdownMenuContent>
         </DropdownMenu>
-      </div>
+      </ListToolbar>
 
       {sorted.length === 0 ? (
         <ListEmpty title="Keine Straßen gefunden" {...empty} />

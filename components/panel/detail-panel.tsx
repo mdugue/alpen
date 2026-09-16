@@ -1,11 +1,14 @@
 "use client";
 
-import { Check, ExternalLink, Share2, Star, X } from "lucide-react";
+import { Check, ExternalLink, Share, Star, X } from "lucide-react";
 import dynamic from "next/dynamic";
 import { useLayoutEffect, useRef } from "react";
 
 import { CHART_HEIGHT } from "@/components/panel/chart-size";
-import { DestinationSection } from "@/components/panel/destination";
+import {
+  BasesSection,
+  DestinationSection,
+} from "@/components/panel/destination";
 import {
   ElevationProfile,
   PROFILE_ASPECT,
@@ -35,7 +38,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Toggle } from "@/components/ui/toggle";
 import type { EntityKind, Selection } from "@/lib/app-state";
 import { clockTime, periodDate, sunTimes } from "@/lib/daylight";
-import { destinationAt } from "@/lib/destination";
+import { basesFor, destinationAt } from "@/lib/destination";
 import type { DetailAssets, DetailData } from "@/lib/detail-assets";
 import { haversine, REACH_MAX_KM } from "@/lib/geo";
 import { komootHref, quaeldichHref } from "@/lib/links";
@@ -122,6 +125,13 @@ interface Props {
   years: Years;
   isFavorite: (kind: EntityKind, slug: string) => boolean;
   onToggleFavorite: (kind: EntityKind, slug: string) => void;
+  /**
+   * What the pointer is over, anywhere on screen. Every entity named in this
+   * panel is a link to a mark on the map, so every one of them lights that
+   * mark – the same `hovered` the sidebar rows and the map itself share.
+   */
+  hovered: Selection | null;
+  onHover: (sel: Selection | null) => void;
   /** Road point under the profile cursor, drawn on the map; `null` clears it. */
   onProfileCursor: (point: LatLon | null) => void;
   /** Click on the profile: fly the map to that point to look at the hairpins. */
@@ -184,18 +194,34 @@ const ExternalLinks = ({ links }: { links: [string, string][] }) => (
   </div>
 );
 
+/**
+ * A named entity inside the panel. It is a link to a mark on the map, so it
+ * behaves like one: pointing at it lights the mark, exactly as pointing at a
+ * sidebar row does. Focus counts as pointing, so the keyboard gets it too.
+ */
 const LinkButton = ({
   children,
   onClick,
+  hovered,
+  onHover,
 }: {
   children: React.ReactNode;
   onClick: () => void;
+  hovered?: boolean;
+  onHover?: (over: boolean) => void;
 }) => (
   <Button
     variant="link"
     size="sm"
-    className="h-auto gap-1 px-0 py-0.5"
+    className={cn(
+      "h-auto gap-1 rounded-sm px-0 py-0.5",
+      hovered && "bg-accent/20 -mx-1 px-1",
+    )}
     onClick={onClick}
+    onPointerEnter={onHover && (() => onHover(true))}
+    onPointerLeave={onHover && (() => onHover(false))}
+    onFocus={onHover && (() => onHover(true))}
+    onBlur={onHover && (() => onHover(false))}
   >
     {children}
   </Button>
@@ -214,6 +240,7 @@ const Nearby = ({
   lon,
   exclude,
   skipPasses,
+  skipTowns,
   ...p
 }: Props & {
   lat: number;
@@ -221,6 +248,8 @@ const Nearby = ({
   exclude?: string;
   /** A destination block above already ranks the passes; do not list them twice. */
   skipPasses?: boolean;
+  /** Likewise for the towns, where a bases block above already ranks them. */
+  skipTowns?: boolean;
 }) => {
   const nearPasses = skipPasses
     ? []
@@ -231,13 +260,21 @@ const Nearby = ({
   // Tours are lines, so their reach was measured on the server (lib/nearby.ts).
   const slugs = p.nearbyTours[nearbyKey(p.selection.kind, p.selection.slug)];
   const nearTours = p.tours.filter((t) => slugs?.includes(t.slug));
-  const nearTowns = p.towns
-    .map((x) => ({ d: haversine({ lat, lon }, x), x }))
-    .filter((e) => e.d <= REACH_MAX_KM && e.x.slug !== exclude)
-    .toSorted((a, b) => a.d - b.d);
+  const nearTowns = skipTowns
+    ? []
+    : p.towns
+        .map((x) => ({ d: haversine({ lat, lon }, x), x }))
+        .filter((e) => e.d <= REACH_MAX_KM && e.x.slug !== exclude)
+        .toSorted((a, b) => a.d - b.d);
 
   if (nearPasses.length + nearTours.length + nearTowns.length === 0)
     return null;
+
+  /** The hover wiring every named entity in this block shares. */
+  const link = (kind: EntityKind, slug: string) => ({
+    hovered: p.hovered?.kind === kind && p.hovered.slug === slug,
+    onHover: (over: boolean) => p.onHover(over ? { kind, slug } : null),
+  });
 
   return (
     <Section id="nearby" title={`Im Umkreis von ${REACH_MAX_KM} km`}>
@@ -248,6 +285,7 @@ const Nearby = ({
             nearPasses.map(({ x, d }) => (
               <LinkButton
                 key={x.slug}
+                {...link("pass", x.slug)}
                 onClick={() => p.onSelect({ kind: "pass", slug: x.slug })}
               >
                 <StatusDot
@@ -266,6 +304,7 @@ const Nearby = ({
             nearTours.map((t) => (
               <LinkButton
                 key={t.slug}
+                {...link("tour", t.slug)}
                 onClick={() => p.onSelect({ kind: "tour", slug: t.slug })}
               >
                 <span
@@ -282,6 +321,7 @@ const Nearby = ({
             nearTowns.map(({ x, d }) => (
               <LinkButton
                 key={x.slug}
+                {...link("town", x.slug)}
                 onClick={() => p.onSelect({ kind: "town", slug: x.slug })}
               >
                 <span
@@ -517,7 +557,27 @@ const PassDetail = (props: Props & DetailState & { pass: Pass }) => {
         )}
       </Section>
 
-      <Nearby {...props} lat={pass.lat} lon={pass.lon} exclude={pass.slug} />
+      {/* The inverse of the town panel's list: where this road could be
+          ridden from. Same bands, same weighting, read the other way round. */}
+      <BasesSection
+        bases={basesFor(
+          pass,
+          props.towns,
+          props.passes,
+          props.years,
+          props.period,
+        )}
+        hovered={props.hovered}
+        onHover={props.onHover}
+        onSelect={(slug) => props.onSelect({ kind: "town", slug })}
+      />
+      <Nearby
+        {...props}
+        lat={pass.lat}
+        lon={pass.lon}
+        exclude={pass.slug}
+        skipTowns
+      />
       <ExternalLinks
         links={[
           ["quaeldich.de", quaeldichHref(pass)],
@@ -585,6 +645,12 @@ const TourDetail = (props: Props & { tour: Tour }) => {
             return (
               <LinkButton
                 key={slug}
+                hovered={
+                  props.hovered?.kind === "pass" && props.hovered.slug === slug
+                }
+                onHover={(over) =>
+                  props.onHover(over ? { kind: "pass", slug } : null)
+                }
                 onClick={() => props.onSelect({ kind: "pass", slug })}
               >
                 <StatusDot
@@ -634,6 +700,8 @@ const TownDetail = (props: Props & { town: Town }) => {
       <DestinationSection
         d={destination}
         period={props.period}
+        hovered={props.hovered}
+        onHover={props.onHover}
         onSelect={(slug) => props.onSelect({ kind: "pass", slug })}
       />
       <Nearby
@@ -736,7 +804,7 @@ export const DetailPanel = (props: Props) => {
           aria-label={shared ? "Link kopiert" : `${entity.name} teilen`}
           className={TOUCH_ICON}
         >
-          {shared ? <Check className="text-status-open" /> : <Share2 />}
+          {shared ? <Check className="text-status-open" /> : <Share />}
         </Button>
         <Toggle
           pressed={favorite}

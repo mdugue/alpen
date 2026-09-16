@@ -14,7 +14,7 @@
 
 :root {
   --radius: 0.625rem;
-  --sheet-peek: 9.875rem;
+  --sheet-peek: 5rem;
   color-scheme: light dark;
 
   --background: oklch(0.985 0.004 90);

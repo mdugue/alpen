@@ -91,16 +91,11 @@ const SIDEBAR_W = { lg: 384, xl: 416 };
 const DETAIL_W = { lg: 352, xl: 400 };
 /**
  * Bottom sheet positions on phones. The list opens on a peek row that carries
- * the search button *and* a strip of the current top results (`PeekStrip`),
- * then half and almost full; the detail sheet leaves the map visible above it
- * or takes nearly the whole screen.
- *
- * The peek used to be 80 px, which was the height of a search row and nothing
- * else – so the phone's first screen was a text box on an empty map. It now
- * has to clear the strip as well; keep `--sheet-peek` in app/globals.css in
- * step, since MapLibre's corner controls sit above it.
+ * the search button (keep `--sheet-peek` in app/globals.css in step, the
+ * MapLibre controls sit above it), then half and almost full; the detail sheet
+ * leaves the map visible above it or takes nearly the whole screen.
  */
-const LIST_SNAPS = [158, 0.5, 0.85] as const;
+const LIST_SNAPS = [80, 0.5, 0.85] as const;
 const DETAIL_SNAPS = [0.55, 0.92] as const;
 const [LIST_PEEK, LIST_HALF, LIST_FULL] = LIST_SNAPS;
 
@@ -220,13 +215,6 @@ export const Explorer = ({
    * pointer is not part of a shared link.
    */
   const [hovered, setHovered] = useState<Selection | null>(null);
-  /**
-   * "And where is this one?" – the peek strip's cards as they go by. A fresh
-   * object per request (like `profileZoom`), so the same card asked for twice
-   * moves the map twice. Hovering alone never does: see `reveal` in
-   * `PassMap`'s props for why a camera that follows a pointer is a bug.
-   */
-  const [reveal, setReveal] = useState<Selection | null>(null);
   const { isFavorite, toggle: toggleFavorite } = useFavorites();
   const [, setStoredPeriod] = useStoredPeriod();
   const isMobile = useMediaQuery(MOBILE_QUERY);
@@ -306,14 +294,11 @@ export const Explorer = ({
     signals,
   );
 
-  const mapPasses: MapPass[] = passRows.map(
-    ({ pass, status, grade, favorite }) => ({
-      ...pass,
-      favorite,
-      grade,
-      status,
-    }),
-  );
+  const mapPasses: MapPass[] = passRows.map(({ pass, status, favorite }) => ({
+    ...pass,
+    favorite,
+    status,
+  }));
   // What the list shows for a kind is what the map shows for that kind; the
   // visibility switches only add a layer toggle on top.
   const mapTours = tourRows.map(({ tour: t, status }) => ({
@@ -334,7 +319,6 @@ export const Explorer = ({
     dispatch({ kind: "select", sel });
     setProfileCursor(null);
     setHovered(null);
-    setReveal(null);
     // The lists are one at a time now, so selecting from the map has to bring
     // the right one forward – otherwise the highlighted row is behind a tab.
     setTab(sel.kind);
@@ -383,6 +367,8 @@ export const Explorer = ({
       years={years}
       isFavorite={isFavorite}
       onToggleFavorite={toggleFavorite}
+      hovered={hovered}
+      onHover={setHovered}
       onProfileCursor={setProfileCursor}
       onProfileZoom={setProfileZoom}
       onSelect={select}
@@ -415,10 +401,6 @@ export const Explorer = ({
       selection={selection}
       hovered={hovered}
       onHover={setHovered}
-      onReveal={(sel) => {
-        setHovered(sel);
-        setReveal(sel ? { ...sel } : null);
-      }}
       onCollapse={() => setSidebarOpen(false)}
       onOpenScales={() => setScalesOpen(true)}
       onOpenSearch={
@@ -465,7 +447,6 @@ export const Explorer = ({
             selection={selection}
             hovered={hovered}
             onHover={setHovered}
-            reveal={reveal}
             onSelect={select}
             onViewChange={setView}
             onCameraSettled={() => dispatch({ kind: "arrive" })}

@@ -2,6 +2,7 @@
 
 import { EntityRow } from "@/components/sidebar/entity-row";
 import { ListEmpty } from "@/components/sidebar/list-empty";
+import { ListToolbar } from "@/components/sidebar/list-toolbar";
 import { TagLine } from "@/components/tags";
 import type { Selection } from "@/lib/app-state";
 import type { TownRow } from "@/lib/rows";
@@ -20,6 +21,7 @@ export const TownList = ({
   hovered,
   onHover,
   empty,
+  mapControl,
   onSelect,
   onToggleFavorite,
 }: {
@@ -28,32 +30,39 @@ export const TownList = ({
   hovered: Selection | null;
   onHover: (sel: Selection | null) => void;
   empty: Omit<React.ComponentProps<typeof ListEmpty>, "title">;
+  /** The "auf der Karte" switch for this kind; it lives in the list, not by the tabs. */
+  mapControl: React.ReactNode;
   onSelect: (slug: string) => void;
   onToggleFavorite: (slug: string) => void;
 }) => {
   const rovingList = useRoving<HTMLUListElement>();
   const hoveredSlug = hovered?.kind === "town" ? hovered.slug : null;
-  if (rows.length === 0)
-    return <ListEmpty title="Keine Orte gefunden" {...empty} />;
   return (
-    <ul ref={rovingList}>
-      {rows.map(({ town, favorite }) => (
-        <EntityRow
-          key={town.slug}
-          rowId={`town:${town.slug}`}
-          current={currentRow === `town:${town.slug}`}
-          hovered={hoveredSlug === town.slug}
-          onHover={(over) =>
-            onHover(over ? { kind: "town", slug: town.slug } : null)
-          }
-          name={town.name}
-          title={town.name}
-          subtitle={<TagLine tags={town.tags} lead={town.country} />}
-          favorite={favorite}
-          onToggleFavorite={() => onToggleFavorite(town.slug)}
-          onSelect={() => onSelect(town.slug)}
-        />
-      ))}
-    </ul>
+    <>
+      <ListToolbar control={mapControl} />
+      {rows.length === 0 ? (
+        <ListEmpty title="Keine Orte gefunden" {...empty} />
+      ) : (
+        <ul ref={rovingList}>
+          {rows.map(({ town, favorite }) => (
+            <EntityRow
+              key={town.slug}
+              rowId={`town:${town.slug}`}
+              current={currentRow === `town:${town.slug}`}
+              hovered={hoveredSlug === town.slug}
+              onHover={(over) =>
+                onHover(over ? { kind: "town", slug: town.slug } : null)
+              }
+              name={town.name}
+              title={town.name}
+              subtitle={<TagLine tags={town.tags} lead={town.country} />}
+              favorite={favorite}
+              onToggleFavorite={() => onToggleFavorite(town.slug)}
+              onSelect={() => onSelect(town.slug)}
+            />
+          ))}
+        </ul>
+      )}
+    </>
   );
 };

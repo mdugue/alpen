@@ -16,7 +16,6 @@ import {
   valleyTmax,
 } from "@/lib/status";
 import type {
-  Grade,
   PassIndex,
   Signals,
   StatusReason,
@@ -172,8 +171,6 @@ const reasonOf = (cell: YearCell): StatusReason | null =>
 export interface PassRow {
   pass: Pass;
   status: Status;
-  /** The status split by the best window – what the strip and the region badge paint. */
-  grade: Grade;
   /** The first reason of a limited status – the word next to the dot. */
   reason: StatusReason | null;
   favorite: boolean;
@@ -207,7 +204,6 @@ export const buildPassRows = (
     if (!cell || !statusMatches(cell.status, filters.status)) continue;
     rows.push({
       favorite: isFavorite("pass", pass.slug),
-      grade: cell.grade,
       pass,
       reason: reasonOf(cell),
       season: year.cells,

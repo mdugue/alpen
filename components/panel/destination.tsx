@@ -4,13 +4,19 @@ import { Section } from "@/components/panel/section";
 import { Rating } from "@/components/rating";
 import { SeasonStrip } from "@/components/season-strip";
 import { StatusBadge, StatusDot } from "@/components/status-badge";
-import type { Destination, ReachedPass } from "@/lib/destination";
+import type { Selection } from "@/lib/app-state";
+import type {
+  Bases,
+  Destination,
+  ReachedPass,
+  ReachedTown,
+} from "@/lib/destination";
 import { destinationText, GRADE_ORDER } from "@/lib/destination";
 import { REACH_BANDS, REACH_MAX_KM } from "@/lib/geo";
 import { cellAt, periodLabel } from "@/lib/status";
 import type { Grade } from "@/lib/status";
 import type { Period } from "@/lib/types";
-import { fmt, fmtUnit } from "@/lib/utils";
+import { cn, fmt, fmtUnit } from "@/lib/utils";
 
 /** The strip's own ramp, so the bar and the 24 cells say the same thing. */
 const GRADE_FILL: Record<Grade, string> = {
@@ -56,20 +62,39 @@ const GradeBar = ({ d }: { d: Destination }) => {
  * with a distance next to it cannot answer it. The distance is still there
  * and still exact; it has simply stopped being the only thing said.
  */
+const ROW =
+  "focus-visible:inset-ring-ring/50 grid w-full grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-x-2 rounded-sm px-1 py-1 text-left outline-none focus-visible:inset-ring-2";
+
+/** The row is a pointer target like any list row: it lights its mark on the map. */
+const hoverProps = (on: () => void, off: () => void) => ({
+  onBlur: off,
+  onFocus: on,
+  onPointerEnter: on,
+  onPointerLeave: off,
+});
+
 const PassRow = ({
   r,
   period,
+  hovered,
+  onHover,
   onSelect,
 }: {
   r: ReachedPass;
   period: Period;
+  hovered: boolean;
+  onHover: (over: boolean) => void;
   onSelect: () => void;
 }) => (
   <li>
     <button
       type="button"
       onClick={onSelect}
-      className="hover:bg-muted/60 focus-visible:inset-ring-ring/50 grid w-full grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-x-2 rounded-sm px-1 py-1 text-left outline-none focus-visible:inset-ring-2"
+      {...hoverProps(
+        () => onHover(true),
+        () => onHover(false),
+      )}
+      className={cn(ROW, hovered ? "bg-accent/15" : "hover:bg-muted/60")}
     >
       <StatusDot status={r.status} />
       <span className="min-w-0">
@@ -92,6 +117,74 @@ const PassRow = ({
 );
 
 /**
+ * One town as a candidate base. The count is the whole point of the row: the
+ * nearest village is not automatically the best place to sleep, and "12 von
+ * 33 Pässen gut" is what tells the two apart.
+ */
+const TownRow = ({
+  r,
+  hovered,
+  onHover,
+  onSelect,
+}: {
+  r: ReachedTown;
+  hovered: boolean;
+  onHover: (over: boolean) => void;
+  onSelect: () => void;
+}) => (
+  <li>
+    <button
+      type="button"
+      onClick={onSelect}
+      {...hoverProps(
+        () => onHover(true),
+        () => onHover(false),
+      )}
+      className={cn(ROW, hovered ? "bg-accent/15" : "hover:bg-muted/60")}
+    >
+      <span className="bg-town size-2.5 shrink-0 rounded-full" aria-hidden />
+      <span className="min-w-0">
+        <span className="block truncate text-xs font-medium">
+          {r.town.name}
+        </span>
+        <span className="text-muted-foreground text-2xs">
+          {r.town.country} ·{" "}
+          {r.total === 0
+            ? "kein Pass im Umkreis"
+            : `${fmt(r.rideable)} von ${fmt(r.total)} Pässen gut`}
+        </span>
+      </span>
+      <span className="text-muted-foreground text-2xs tabular-nums">
+        {fmtUnit(r.km, "km")}
+      </span>
+    </button>
+  </li>
+);
+
+/** "VOR DER HAUSTÜR · 5 Pässe bis 18 km" – the same header for both lists. */
+const BandHeader = ({
+  label,
+  n,
+  maxKm,
+  noun,
+}: {
+  label: string;
+  n: number;
+  maxKm: number;
+  noun: string;
+}) => (
+  <p className="text-muted-foreground text-2xs mb-0.5 flex items-baseline gap-1.5 font-semibold tracking-widest uppercase">
+    {label}
+    <span className="font-normal tracking-normal normal-case">
+      {fmt(n)} {noun} · bis {fmtUnit(maxKm, "km")}
+    </span>
+  </p>
+);
+
+const bandMax = (band: string) =>
+  REACH_BANDS.find((b) => b.key === band)!.maxKm;
+
+/**
  * A destination, judged for the chosen half-month.
  *
  * The block leads with a verdict and its reason, exactly as the pass panel
@@ -107,11 +200,16 @@ const PassRow = ({
 export const DestinationSection = ({
   d,
   period,
+  hovered,
+  onHover,
   onSelect,
   title = "Pässe von hier aus",
 }: {
   d: Destination;
   period: Period;
+  /** The entity the pointer is over anywhere on screen; one highlight for all of them. */
+  hovered: Selection | null;
+  onHover: (sel: Selection | null) => void;
   onSelect: (slug: string) => void;
   title?: string;
 }) => {
@@ -152,22 +250,26 @@ export const DestinationSection = ({
           <div className="flex flex-col gap-3">
             {d.bands.map((g) => (
               <div key={g.band}>
-                <p className="text-muted-foreground text-2xs mb-0.5 flex items-baseline gap-1.5 font-semibold tracking-widest uppercase">
-                  {g.label}
-                  <span className="font-normal tracking-normal normal-case">
-                    {fmt(g.passes.length)} Pässe · bis{" "}
-                    {fmtUnit(
-                      REACH_BANDS.find((b) => b.key === g.band)!.maxKm,
-                      "km",
-                    )}
-                  </span>
-                </p>
+                <BandHeader
+                  label={g.label}
+                  n={g.passes.length}
+                  maxKm={bandMax(g.band)}
+                  noun="Pässe"
+                />
                 <ul className="-mx-1 flex flex-col">
                   {g.passes.map((r) => (
                     <PassRow
                       key={r.pass.slug}
                       r={r}
                       period={period}
+                      hovered={
+                        hovered?.kind === "pass" && hovered.slug === r.pass.slug
+                      }
+                      onHover={(over) =>
+                        onHover(
+                          over ? { kind: "pass", slug: r.pass.slug } : null,
+                        )
+                      }
                       onSelect={() => onSelect(r.pass.slug)}
                     />
                   ))}
@@ -180,3 +282,65 @@ export const DestinationSection = ({
     </>
   );
 };
+
+/**
+ * The inverse block: which towns this road could be ridden from.
+ *
+ * It is the same picture as `DestinationSection` read the other way round, so
+ * it uses the same bands, the same nearness weight and the same row shape –
+ * a planner who has understood one has understood the other. What it does not
+ * have is a verdict of its own: a road's season is the road's, and the towns
+ * around it do not change it. So this is a list and not a judgement, and the
+ * judgement each town would carry is one tap away in its own panel.
+ */
+export const BasesSection = ({
+  bases,
+  hovered,
+  onHover,
+  onSelect,
+}: {
+  bases: Bases;
+  hovered: Selection | null;
+  onHover: (sel: Selection | null) => void;
+  onSelect: (slug: string) => void;
+}) => (
+  <Section
+    id="bases"
+    info={`Orte, von denen aus diese Straße erreichbar ist – nach Nähe und danach sortiert, wie viele Pässe der Ort im gewählten Halbmonat sonst noch bietet. Jenseits von ${REACH_MAX_KM} km endet die Liste.`}
+    title="Orte als Standort"
+  >
+    {bases.total === 0 ? (
+      <p className="text-muted-foreground text-xs">
+        Kein Rad-Ort im Umkreis von {REACH_MAX_KM} km.
+      </p>
+    ) : (
+      <div className="flex flex-col gap-3">
+        {bases.bands.map((g) => (
+          <div key={g.band}>
+            <BandHeader
+              label={g.label}
+              n={g.towns.length}
+              maxKm={bandMax(g.band)}
+              noun="Orte"
+            />
+            <ul className="-mx-1 flex flex-col">
+              {g.towns.map((r) => (
+                <TownRow
+                  key={r.town.slug}
+                  r={r}
+                  hovered={
+                    hovered?.kind === "town" && hovered.slug === r.town.slug
+                  }
+                  onHover={(over) =>
+                    onHover(over ? { kind: "town", slug: r.town.slug } : null)
+                  }
+                  onSelect={() => onSelect(r.town.slug)}
+                />
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>
+    )}
+  </Section>
+);
