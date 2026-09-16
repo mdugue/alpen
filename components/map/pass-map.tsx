@@ -134,6 +134,14 @@ const FIT_PADDING = 48;
 const TOUR_PADDING = 60;
 /** A padding change nothing else moves with: long enough to read as a slide. */
 const PADDING_MS = 400;
+/**
+ * The flight a selection starts. It is a wait before the panel, which opens on
+ * arrival rather than into the movement (`selectionState` in `explorer.tsx`,
+ * where the measurement is), so its length is felt directly: at 900 ms the tap
+ * was answered by the map and then by nothing for most of a second, which read
+ * as the panel popping in afterwards rather than following from the tap.
+ */
+const SELECT_MS = 500;
 
 const reduceMotion = () =>
   window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -1470,7 +1478,7 @@ export const PassMap = ({
     if (!m || !ready) return;
     flownTo.current = selKey;
     if (!selection) return;
-    const duration = reduceMotion() ? 0 : 900;
+    const duration = reduceMotion() ? 0 : SELECT_MS;
     const padding = inset.current;
     if (selection.kind === "pass") {
       const p = passes.find((x) => x.slug === selection.slug);

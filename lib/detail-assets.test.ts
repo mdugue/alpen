@@ -67,9 +67,12 @@ describe("detailAssets", () => {
       expect.stringMatching(/^pass-testpass\.[0-9a-f]{8}\.json$/u),
       expect.stringMatching(/^town-testort\.[0-9a-f]{8}\.json$/u),
     ]);
-    expect(assets[photoKey("pass", "testpass")]).toBe(
-      `/${DETAIL_ASSET_DIR}/${files[0]!.name}`,
-    );
+    // The count travels with the URL: the panel reserves the carousel's box
+    // before the file arrives (see `DetailAsset`).
+    expect(assets[photoKey("pass", "testpass")]).toEqual({
+      photos: 1,
+      url: `/${DETAIL_ASSET_DIR}/${files[0]!.name}`,
+    });
     expect(assets[photoKey("tour", "testrunde")]).toBeUndefined();
   });
 

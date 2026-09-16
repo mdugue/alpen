@@ -254,11 +254,43 @@ friends do that better and the app links out to them.
   a rank by name match – and stores only metadata in
   `data/generated/photos.json`: the thumbnail URL, the author, the licence and
   the file page. The files themselves stay on Wikimedia's CDN and reach the
-  browser through a plain `<img>`; they are already the right size and already
-  cached, and mirroring them would put ~25 MB of binaries into the repo.
-  Attribution is not decoration: every slide carries author and licence,
-  baked into the slide rather than derived from the carousel's index, so it
-  cannot drift out of sync with what is on screen.
+  browser through a plain `<img>`, never `next/image`; they are already
+  rendered and already cached, mirroring them would put ~25 MB of binaries
+  into the repo, and the optimiser would add a hop, a `remotePatterns` entry
+  and a bill for the same bytes. What it would have brought is had without
+  it. Wikimedia renders a fixed ladder of widths and answers a direct request
+  for anything else with a 400, so `thumbUrl` composes the smaller rungs of
+  that ladder and the slide carries a `srcset` off it (`photoSrcSet`,
+  `PHOTO_SIZES`): a 1× panel fetches 500 px where it used to fetch 960. And
+  the one thing that cannot be fetched in time is precomputed – `Photo.blur`
+  is the same photo `BLUR_WIDTH` px wide as a data URI, laid under the photo
+  in a layer of its own, so a slide opens on its own colours instead of an
+  empty box. That layer is blurred and scaled up rather than left to the
+  browser's upscaling, which at twenty times the width is visibly blocky; it
+  is a layer because `filter` reaches an element's children, and it is scaled
+  because a blur samples past the edges. It travels inside the entity's detail
+  file, because a placeholder that needs a request of its own loses the race
+  it exists to win; generating one on demand and caching it would lose the
+  same race for every first visitor to a pass. No image library is involved
+  either way: Wikimedia renders the 40 px version, `scripts/lib/blur.ts`
+  strips the metadata it inherits – a wide-gamut photo's ICC profile is 30 KB
+  around a 480-byte picture, and re-encoding does not drop it – and
+  `Bun.Image` turns what is left into ~475 bytes of WebP. A hash (BlurHash,
+  ThumbHash) would be twenty times smaller and lower fidelity than that, and
+  would want a decoder and a canvas paint in the frame the panel is trying to
+  keep smooth; the thumbnail is already rendered, so there is nothing to
+  approximate.
+  **And the box is there before the photo is.** The panel opens before its
+  detail file arrives, so `DetailAsset` carries the photo count next to the
+  URL and `PhotoCarousel` reserves the slide while it waits – the block that
+  used to appear late and push everything under it down. An entity with no
+  photos reserves nothing. That is the same rule as the profile skeleton and
+  the chart's placeholder, and the reason the panel is not a server component:
+  a selection would then cost a server round trip where it now costs an
+  immutable file from the CDN, and the jump was never about where the markup
+  came from. Attribution is not decoration: every slide carries author
+  and licence, baked into the slide rather than derived from the carousel's
+  index, so it cannot drift out of sync with what is on screen.
 - **A sidebar section adds no surface.** The three collapsible lists
   (`components/sidebar/section.tsx`) carry no background of their own in either
   state – neither a tint on the header nor the ghost trigger's
@@ -369,8 +401,10 @@ friends do that better and the app links out to them.
   the page one URL per entity, and `DetailPanel` fetches the one that is
   selected. Measured per prop on the prerendered page, those two were 297 KB
   and 77 KB gzipped of 468 KB; the page now carries 144 KB and a selection
-  costs about 2 KB. A block that waits for the file says so – `PhotoCarousel`
-  renders nothing until it has a photo, the ascent list shows a
+  costs about 2 KB. A block that waits for the file says so, and reserves the
+  box it will fill – `PhotoCarousel` shows a slide-shaped skeleton for as many
+  photos as `DetailAsset.photos` promises and nothing at all where that is
+  zero, the ascent list shows a
   `PROFILE_ASPECT`-shaped skeleton – because everything a list row already
   showed (name, status, season strip, ratings) is in the page and must not
   flicker. What the sidebar reads stays a prop, and that is the line: the

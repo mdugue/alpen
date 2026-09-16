@@ -640,8 +640,8 @@ export const DetailPanel = (props: Props) => {
   // content hash in its name (lib/detail-assets.ts) – so the page does not
   // carry all 201 passes' worth, and looking at the same pass again is free.
   // An entity with neither has no URL and nothing is fetched.
-  const url = props.detail[photoKey(selection.kind, selection.slug)] ?? null;
-  const { data, loading } = useFetch<DetailData>(url);
+  const asset = props.detail[photoKey(selection.kind, selection.slug)];
+  const { data, loading } = useFetch<DetailData>(asset?.url ?? null);
   const loaded: DetailState = {
     loading,
     photos: data?.photos ?? [],
@@ -717,7 +717,7 @@ export const DetailPanel = (props: Props) => {
         >
           {entity.name}
         </h2>
-        <PhotoCarousel photos={loaded.photos} />
+        <PhotoCarousel count={asset?.photos ?? 0} photos={loaded.photos} />
         {selection.kind === "pass" && (
           <PassDetail {...props} {...loaded} pass={entity as Pass} />
         )}
