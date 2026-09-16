@@ -117,70 +117,49 @@ const [LIST_HALF, LIST_FULL] = LIST_SNAPS;
 /** What the floating search bar covers at the bottom; keep `--sheet-peek` in step. */
 const FLOATING_BAR_PX = 64;
 const [DETAIL_HALF, DETAIL_FULL] = DETAIL_SNAPS;
+/**
+ * What the control cluster covers at the top – the period scrubber and the
+ * three map tools – on a phone, where it is nearly as wide as the screen.
+ *
+ * It is padding only there. On a desktop the cluster sits in a corner of a map
+ * that is 900 px tall and reserving a tenth of it would buy nothing; on a phone
+ * the detail sheet already takes 55 % of the screen, so what is left is a band
+ * of some 380 px and the cluster covers a quarter of it. A pass framed into the
+ * band without counting it has the top of its ascent behind the scrubber, which
+ * is the one thing this framing exists to prevent.
+ */
+const MAP_CLUSTER_PX = 120;
 
 /**
- * What is selected, and what the detail panel shows – four values that only
- * ever change together, so they change in one move.
+ * What is selected, and what the detail panel keeps showing while it leaves –
+ * two values that only ever change together, so they change in one move.
  *
- * They are not the same thing: `at` is where the camera is *going*, and
- * everything that answers the tap at once follows it – the map's layers and
- * feature state, the highlighted row, the URL hash. `shown` is where the
- * camera *is*, and that is what the panel renders. A panel that opened with
- * the flight filled in as it went – the file arrived, then the photo, and a
- * block appearing under the one being read pushed it down. One arrival is
- * calmer than three, and it also keeps the most expensive thing the app draws
- * out of the animation's frames: measured on a phone-sized viewport, drawing
- * the panel into a flight cost that flight about a third of its frame rate.
+ * The panel opens with the tap, not with the camera's arrival. Selecting
+ * something is an answer about that thing, and the map's flight is the slower,
+ * secondary half of it: the panel, the map's layers and feature state, the
+ * highlighted row and the URL hash all follow `at` in the same frame, and the
+ * camera sets off once the panel is on screen (`SELECT_DELAY` in
+ * `pass-map.tsx`). That order is what keeps the two out of each other's
+ * frames – drawing the panel *into* a flight cost that flight about a third of
+ * its frame rate on a phone-sized viewport – and it is the honest one: the
+ * expensive thing is what was asked for, the flight is not.
  */
 interface SelectionState {
   at: Selection | null;
-  shown: Selection | null;
   /**
    * What the sheet keeps showing while it slides away; without it the sheet
    * would empty out the moment the selection is cleared.
    */
   last: Selection | null;
-  flying: boolean;
 }
 
-type SelectionAction =
-  | { kind: "select"; sel: Selection }
-  /** A shared link: its selection is part of the first paint, nothing to wait for. */
-  | { kind: "restore"; sel: Selection | null }
-  | { kind: "arrive" }
-  | { kind: "close" };
+const NO_SELECTION: SelectionState = { at: null, last: null };
 
-const NO_SELECTION: SelectionState = {
-  at: null,
-  flying: false,
-  last: null,
-  shown: null,
-};
-
+/** The action *is* the next selection; `null` closes. */
 const selectionState = (
   s: SelectionState,
-  a: SelectionAction,
-): SelectionState => {
-  switch (a.kind) {
-    case "select": {
-      // `shown` stays: whatever the panel has is what it keeps until the
-      // camera lands – nothing at all, when no detail was open.
-      return { at: a.sel, flying: true, last: a.sel, shown: s.shown };
-    }
-    case "restore": {
-      return { at: a.sel, flying: false, last: a.sel ?? s.last, shown: a.sel };
-    }
-    case "arrive": {
-      // The map reports this on every `idle` as well as on `moveend`, so a
-      // state that is not waiting is returned unchanged rather than replaced –
-      // an equal object would re-render the whole page a few times a second.
-      return s.flying ? { ...s, flying: false, shown: s.at } : s;
-    }
-    default: {
-      return { ...s, at: null, flying: false, shown: null };
-    }
-  }
-};
+  sel: Selection | null,
+): SelectionState => ({ at: sel, last: sel ?? s.last });
 
 export const Explorer = ({
   passes,
@@ -270,7 +249,7 @@ export const Explorer = ({
       setView(hashView);
       if (h.view.lat !== undefined || h.view.zoom !== undefined)
         setRequestedView(hashView);
-      dispatch({ kind: "restore", sel: h.selection });
+      dispatch(h.selection);
       if (h.selection) {
         if (h.selection.kind === "pass") setShowPasses(true);
         if (h.selection.kind === "tour")
@@ -335,11 +314,12 @@ export const Explorer = ({
   }));
 
   /**
-   * Selecting something also makes it visible and brings the detail up – which
-   * the camera's arrival does, one flight later (`selectionState` above).
+   * Selecting something makes it visible, brings its detail up in the same
+   * frame and hands the map a target the camera sets off for once the panel
+   * has drawn (`selectionState` above).
    */
   const select = (sel: Selection) => {
-    dispatch({ kind: "select", sel });
+    dispatch(sel);
     setProfileCursor(null);
     setHovered(null);
     // The lists are one at a time now, so selecting from the map has to bring
@@ -361,7 +341,7 @@ export const Explorer = ({
   /** Back to the list; focus returns to the row the detail came from. */
   const back = () => {
     const closed = selection;
-    dispatch({ kind: "close" });
+    dispatch(null);
     setProfileCursor(null);
     requestAnimationFrame(() => {
       const root = sidebarRoot.current;
@@ -430,15 +410,21 @@ export const Explorer = ({
   );
 
   // Mobile: the map is padded by the sheet in front of it, so camera targets
-  // land above the fold.
-  // Whichever drawer is in front pads the map; with none the floating search
-  // bar is all there is to keep clear of.
+  // land above the fold. Whichever drawer is in front pads the map; with none
+  // the floating search bar is all there is to keep clear of.
+  //
+  // The detail sheet's share is claimed in the same commit as the selection,
+  // one flight ahead of the camera – which is precisely what keeps the picture
+  // still: a padding the map has not applied yet cannot move it, and the
+  // flight that follows carries it (`pass-map.tsx`, "Reserve space").
   const insetBottom = isMobile
     ? snapPx(
-        current.shown ? detailSnap : listOpen ? listSnap : 0,
+        selection ? detailSnap : listOpen ? listSnap : 0,
         viewportHeight,
       ) || FLOATING_BAR_PX
     : 0;
+
+  const insetTop = isMobile ? MAP_CLUSTER_PX : 0;
 
   // Desktop: the panels float over the map; the map is padded by their width
   // so camera targets land in the visible part.
@@ -470,12 +456,12 @@ export const Explorer = ({
             onHover={setHovered}
             onSelect={select}
             onViewChange={setView}
-            onCameraSettled={() => dispatch({ kind: "arrive" })}
             profileCursor={profileCursor}
             profileZoom={profileZoom}
             requestedView={requestedView}
             insetLeft={insetLeft}
             insetBottom={insetBottom}
+            insetTop={insetTop}
             scrubber={
               <PeriodScrubber
                 value={filters.period}
@@ -543,9 +529,9 @@ export const Explorer = ({
           </aside>
         )}
 
-        {!isMobile && current.shown && (
+        {!isMobile && selection && (
           <section
-            key={`${current.shown.kind}:${current.shown.slug}`}
+            key={`${selection.kind}:${selection.slug}`}
             aria-label="Details"
             style={{ left: detailLeft }}
             className={cn(
@@ -554,7 +540,7 @@ export const Explorer = ({
               PANEL,
             )}
           >
-            {detailFor(current.shown)}
+            {detailFor(selection)}
           </section>
         )}
 
@@ -587,7 +573,7 @@ export const Explorer = ({
             </MobileSheet>
             <MobileSheet
               label="Details"
-              open={current.shown !== null}
+              open={selection !== null}
               onClose={back}
               snapPoints={DETAIL_SNAPS}
               snap={detailSnap}
@@ -595,8 +581,8 @@ export const Explorer = ({
             >
               {/* `last` is what the drawer keeps showing while it slides away,
                   once there is nothing to show any more. */}
-              {(current.shown ?? current.last) &&
-                detailFor((current.shown ?? current.last)!)}
+              {(selection ?? current.last) &&
+                detailFor((selection ?? current.last)!)}
             </MobileSheet>
           </>
         )}
