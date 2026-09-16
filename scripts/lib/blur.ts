@@ -131,6 +131,26 @@ const stripPng = (bytes: Uint8Array): Uint8Array => {
   return join(keep);
 };
 
+/**
+ * The pixel width of a placeholder that is already stored, or `null` when it
+ * cannot be read. `Photo.blur` records no width of its own, so the picture is
+ * asked – which makes a change to `BLUR_WIDTH` as incremental as a change of
+ * format: the run skips what is already the width it wants and fetches the
+ * rest, instead of refetching all 1 500 because one constant moved.
+ */
+export const blurWidth = async (uri: string): Promise<number | null> => {
+  const [, body] = uri.split(",");
+  if (!body) return null;
+  try {
+    const meta = await new Bun.Image(
+      new Uint8Array(Buffer.from(body, "base64")),
+    ).metadata();
+    return meta.width ?? null;
+  } catch {
+    return null;
+  }
+};
+
 /** The picture without its metadata, for the two formats Commons hands us. */
 export const strip = (bytes: Uint8Array, type: string): Uint8Array => {
   if (type === "image/jpeg") return stripJpeg(bytes);

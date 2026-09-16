@@ -46,7 +46,7 @@ import {
 } from "../lib/photos";
 import { FILES } from "../lib/schema";
 import type { Photo, Photos } from "../lib/types";
-import { blurUri } from "./lib/blur";
+import { blurUri, blurWidth } from "./lib/blur";
 import { best, NEAR_BONUS, rank } from "./lib/photo-rank";
 import type { Page } from "./lib/photo-rank";
 
@@ -82,6 +82,8 @@ const GAP_MS = 3000;
  */
 const BLUR_GAP_MS = 400;
 const BLUR_GAP_MAX_MS = 5000;
+/** Answers in a row without a 429 before the gap is allowed back down. */
+const BLUR_CALM = 25;
 const RETRIES = 5;
 const BACKOFF_MS = 10_000;
 
@@ -90,10 +92,25 @@ const BACKOFF_MS = 10_000;
 /**
  * Being told to slow down is the only measurement of "too fast" there is, so
  * it is the one the pace follows. Declared before `request`, which reports it.
+ *
+ * It recovers, which the first version of this did not: a handful of 429s in
+ * the first minutes doubled the gap to the ceiling and left it there, so a
+ * short burst of pushback set the pace for the whole hour that followed. Now
+ * a stretch of answers with no complaint in it halves the gap back down, to
+ * the starting value and no further. Backing off stays instant – one 429
+ * doubles it again – and only the apology is gradual.
  */
 let blurGap = BLUR_GAP_MS;
+let sinceThrottled = 0;
 const slowDown = () => {
   blurGap = Math.min(blurGap * 2, BLUR_GAP_MAX_MS);
+  sinceThrottled = 0;
+};
+const wentWell = () => {
+  sinceThrottled += 1;
+  if (sinceThrottled < BLUR_CALM) return;
+  sinceThrottled = 0;
+  blurGap = Math.max(blurGap / 2, BLUR_GAP_MS);
 };
 
 /** A rate limit that outlasts the backoff ends the run; it does not fail it. */
@@ -220,6 +237,7 @@ const blurFor = async (src: string): Promise<string | undefined> => {
   let blur: string | null = null;
   try {
     const res = await request(new URL(url));
+    wentWell();
     const type = res.headers.get("content-type")?.split(";")[0] ?? "";
     blur = await blurUri(new Uint8Array(await res.arrayBuffer()), type);
     if (!blur) console.warn(`  ohne Vorschau: ${url} (${type}, zu groß)`);
@@ -241,12 +259,24 @@ const blurFor = async (src: string): Promise<string | undefined> => {
  */
 const WEBP_URI = "data:image/webp;";
 
-/** Anything that is not already a WebP placeholder – missing or older. */
-const needsBlur = (photo: Photo) => !photo.blur?.startsWith(WEBP_URI);
+/**
+ * Anything that is not already a WebP placeholder of the width we want –
+ * missing, an older format, or an older width.
+ */
+const needsBlur = async (photo: Photo) => {
+  if (!photo.blur?.startsWith(WEBP_URI)) return true;
+  return (await blurWidth(photo.blur)) !== BLUR_WIDTH;
+};
+
+/** `Array.some` cannot await, and the width check has to. */
+const someNeedsBlur = async (photos: Photo[]) => {
+  for (const photo of photos) if (await needsBlur(photo)) return true;
+  return false;
+};
 
 const fillBlur = async (photos: Photo[]) => {
   for (const photo of photos) {
-    if (!(needsBlur(photo) || REBLUR)) continue;
+    if (!(REBLUR || (await needsBlur(photo)))) continue;
     if (photo.blur && !REBLUR) {
       const [head, body] = photo.blur.split(",");
       const type = head?.slice("data:".length, head.indexOf(";")) ?? "";
@@ -348,7 +378,7 @@ const main = async () => {
     // Not only "has none": a placeholder in another format is one the
     // re-encoding step had not been written yet when it was fetched, and the
     // upgrade is local, so skipping those would leave them JPEG for good.
-    if (!(wanted(key) && (REBLUR || list.some(needsBlur)))) continue;
+    if (!(wanted(key) && (REBLUR || (await someNeedsBlur(list))))) continue;
     await fillBlur(list);
     await save(photos);
   }
