@@ -231,6 +231,9 @@ friends do that better and the app links out to them.
   `Toggle` disagree about hover, border token and dark fill. The scrubber
   reaches the map through the `scrubber` prop rather than `children`, which is
   what stays free-floating beside the cluster – today the sidebar's own toggle.
+  On a phone the cluster is nearly as wide as the screen, so it is padding
+  there like the sheet below it (`MAP_CLUSTER_PX`, keep it in step with what
+  the cluster actually measures).
   The scrubber carries the
   24 half-months, the histogram of what is rideable and the "heute" marker,
   and every list row repeats the same 24 cells as a `SeasonStrip`. Map
@@ -243,37 +246,55 @@ friends do that better and the app links out to them.
   moves the picture by half of what changed. On a phone that is the detail
   sheet's 55 % of the screen in one frame, a jump at the start of every
   selection. So a selection carries the new padding into its own flight (one
-  movement instead of a jump and a movement, which is also why a tour is framed
-  with `cameraForBounds` + `flyTo` rather than `fitBounds`: that one drops the
-  padding before it flies, and the frame has to be measured against where the
-  camera lands – `fitInset` in `lib/map-camera.ts`), and a padding change with
-  no camera move behind it – a sheet dragged to another snap point, the sidebar
-  folding away – eases in. Only the first padding is set outright, before the
-  map has drawn a frame that could jump.
-- **The panel shows where the camera _is_, not where it is going.** Selecting
-  starts a flight, and `selectionState` in `explorer.tsx` keeps the two apart:
-  `at` is the target, and the map's layers, the highlighted row and the hash
-  follow it at once, so the tap is answered in the same frame; `shown` is what
-  the camera has arrived at, and only that reaches `DetailPanel`. A panel that
-  opens with the flight fills in as it goes – the file arrives, then the photo,
-  then the chart's chunk – and a block appearing under the one being read
-  pushes it down; one arrival is calmer than three. It is also the most
-  expensive thing the app draws (the photo slideshow, the elevation profiles
-  with a polygon per sample, the climate chart with recharts behind it), and on
-  a phone-sized viewport drawing it into a flight cost that flight about a
-  third of its frame rate. `flying` is set by the click rather than by the
-  map's `movestart`, which would arrive one commit too late, and cleared on
-  `moveend` – or on `idle`, the safety net for a selection that never flew.
-  `arrive` returns the state object unchanged when nothing is waiting, because
-  `idle` fires a few times a second. Everything that is still on its way when
-  the panel opens keeps its own height while it waits, so nothing below it ever
-  jumps: the profile skeleton has the drawing's aspect ratio (`PROFILE_ASPECT`)
-  and the chart's `next/dynamic` placeholder its height (`CHART_HEIGHT`,
-  a module of its own so the placeholder does not import recharts). The same
-  rule is why the selected row is put into view without a smooth scroll in the
-  sheet layout: the detail drawer is usually in front of the list when it
-  happens, so it would animate a list nobody can see against the drawer
-  animation that can be seen.
+  movement instead of a jump and a movement, which is also why a pass or a tour
+  is framed with `cameraForBounds` + `flyTo` rather than `fitBounds`: that one
+  drops the padding before it flies, and the frame has to be measured against
+  where the camera lands – `fitInset` in `lib/map-camera.ts`), and a padding
+  change with no camera move behind it – a sheet dragged to another snap point,
+  the sidebar folding away – eases in. Only the first padding is set outright,
+  before the map has drawn a frame that could jump.
+  Which is also the rule while a flight is in the air: it owns the padding
+  until it lands. The panels can ask for another one meanwhile – a sheet dragged
+  to a different snap point, a phone's toolbar changing the viewport height by
+  four pixels – and easing to it there would cut the flight short a frame before
+  it arrived, so what is still owed is applied on `moveend` instead. The panel
+  claims its share one commit _before_ the camera sets off, which is what keeps
+  that opening still: a padding the map has not applied yet cannot move it.
+- **The panel opens with the tap; the camera follows it.** Selecting answers a
+  question about a pass, not about the map, so `DetailPanel` gets the selection
+  in the same frame as the map's layers, the highlighted row and the hash
+  (`selectionState` in `explorer.tsx`, two values: what is selected and what the
+  leaving sheet keeps showing). The flight is the slower half: `pass-map.tsx`
+  leaves the panel `SELECT_DELAY` to draw and then takes `SELECT_MS` – longer
+  than the 500 ms it was, because nothing waits behind it any more – to get
+  there.
+  It ran the other way round first: the map flew and the panel opened on
+  arrival. The reason was real – the panel is the most expensive thing the app
+  draws (the photo slideshow, the elevation profiles with a polygon per sample,
+  the climate chart with recharts behind it), and on a phone-sized viewport
+  drawing it into a flight cost that flight about a third of its frame rate –
+  but the cure put a wait in front of the answer to buy a smooth camera
+  movement, which is the wrong way round. Opening first and moving after keeps
+  the two out of each other's frames just as well, and what waits is now the
+  half nobody asked for. Everything that is still on its way when the panel
+  opens keeps its own height while it waits, so nothing below it ever jumps:
+  the profile skeleton has the drawing's aspect ratio (`PROFILE_ASPECT`) and the
+  chart's `next/dynamic` placeholder its height (`CHART_HEIGHT`, a module of its
+  own so the placeholder does not import recharts). The selected row is put into
+  view without a smooth scroll in the sheet layout: the detail drawer is usually
+  in front of the list when it happens, so it would animate a list nobody can
+  see against the drawer animation that can be seen.
+- **A selection is framed, not centred.** What makes a pass worth a holiday is
+  the road up to it, and both sides of a traverse are what "over the Galibier"
+  means, so selecting one fits the box of all its ascents (`passBounds`,
+  precomputed next to `tourBounds` in `lib/map-assets.ts`) instead of centring
+  on the marker – `PASS_MAX_ZOOM` keeps a short climb from filling the screen
+  with two hairpins, and a pass the map draws no ascent for falls back to its
+  point. On a phone that box has to fit between the detail sheet, which takes
+  55 % of the screen, and the control cluster at the top, which takes a quarter
+  of what is left: `MAP_CLUSTER_PX` is the map's top padding there (and only
+  there – on a 900 px desktop map the cluster sits in a corner and reserving a
+  tenth of the height would buy nothing).
 - **Charts come from the shadcn `chart` component** (recharts under the hood).
   It is the only heavy dependency in the app, so the one chart that uses it
   (`components/panel/climate-chart.tsx`) is pulled in with `next/dynamic` and
@@ -433,7 +454,10 @@ friends do that better and the app links out to them.
   `routes.json` to 5 m and writes one content-hashed GeoJSON per kind into
   `public/map` (git-ignored, cached immutably via `next.config.ts`).
   `lib/data.ts` derives the same file names with `lib/map-assets.ts` and hands
-  the page the URLs plus the tour bounding boxes; MapLibre fetches the files
+  the page the URLs plus one bounding box per tour and per pass – what a
+  selection is framed into, and the one thing a camera cannot wait for a
+  fetch to learn (10 KB for all 201 passes, four rounded numbers each);
+  MapLibre fetches the files
   and tiles them in its worker. `pass-map.tsx` never calls `setData` on the
   `routes` and `tours` sources: which lines show is a layer filter (which also
   keeps hidden lines out of hit-testing), status and selection are feature
@@ -451,7 +475,7 @@ friends do that better and the app links out to them.
   `lib/data.ts` derives the same names with `lib/detail-assets.ts` and hands
   the page one URL per entity, and `DetailPanel` fetches the one that is
   selected. Measured per prop on the prerendered page, those two were 297 KB
-  and 77 KB gzipped of 468 KB; the page now carries 144 KB and a selection
+  and 77 KB gzipped of 468 KB; the page now carries 147 KB and a selection
   costs about 2 KB. A block that waits for the file says so, and reserves the
   box it will fill – `PhotoCarousel` shows a slide-shaped skeleton for as many
   photos as `DetailAsset.photos` promises and nothing at all where that is

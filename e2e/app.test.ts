@@ -489,10 +489,18 @@ test(
         );
         await page.clickAt(dot!.x, dot!.y);
         await page.waitFor("#detail-title");
-        await waitUntil(async () => {
-          const c = await page.camera();
-          return !!c && !c.moving;
-        }, "the camera settled on the pass");
+        // The camera leaves the panel the first frames to itself, so "at rest"
+        // is only an answer once it has set off: without the recorded frames
+        // this would read a camera that has not started yet as one that has
+        // finished (`SELECT_DELAY` in pass-map.tsx). Both in one evaluation,
+        // or the flight can start between the two reads and pass the pair.
+        await waitUntil(
+          () =>
+            page.evaluate<boolean>(
+              "window.__pad.length > 0 && !window.__alpen.map.isMoving()",
+            ),
+          "the camera settled on the pass",
+        );
 
         const after = await page.evaluate<number>(
           "window.__alpen.map.getPadding().bottom",
@@ -507,28 +515,35 @@ test(
 );
 
 /**
- * Whether the detail panel is in the document at the moment the camera lands.
- * The panel shows the selection the camera has *arrived* at (`selectionState`
- * in explorer.tsx), so at `moveend` there is none yet, and it appears – whole,
- * with its photo and its profiles – in one of the commits after.
+ * Whether the detail panel is in the document each time the camera sets off,
+ * and whether that move belongs to the selection at all – the map pads itself
+ * for other reasons too, and a phone's viewport height settling a few pixels
+ * while the list sheet is up is one of them.
+ *
+ * The panel opens with the tap and the flight follows it (`selectionState` in
+ * explorer.tsx), so every move once the selection is in the URL has the panel
+ * on screen in front of it.
  */
-const AT_MOVEEND = `(() => {
+const AT_MOVESTART = `(() => {
   const m = window.__alpen?.map;
   if (!m) return false;
-  window.__atMoveend = [];
-  m.on("moveend", () =>
-    window.__atMoveend.push(!!document.querySelector("#detail-title")),
+  window.__atMove = [];
+  m.on("movestart", () =>
+    window.__atMove.push({
+      panel: !!document.querySelector("#detail-title"),
+      selected: location.hash.includes("pass=col-du-galibier"),
+    }),
   );
   return true;
 })()`;
 
 test(
-  "13 · the detail panel appears when the camera arrives, not while it flies",
+  "13 · the detail panel is up before the camera sets off",
   () =>
     // A camera far from the target, so the flight is a long one.
     withPage(
       app,
-      "detail-on-arrival",
+      "detail-before-flight",
       { hash: "#z=8&c=47.4,13.2", mobile: true },
       async (page) => {
         await page.waitFor("canvas.maplibregl-canvas");
@@ -546,30 +561,79 @@ test(
         await page.waitFor(GALIBIER);
         await waitUntil(settled, "the camera at rest");
 
-        expect(await page.evaluate<boolean>(AT_MOVEEND)).toBe(true);
+        expect(await page.evaluate<boolean>(AT_MOVESTART)).toBe(true);
         await page.click(GALIBIER);
-        // The tap is answered at once on the map and in the hash …
+        // The tap is answered at once – in the hash, and by the panel …
         await waitUntil(
           () => page.hash().then((h) => h.includes("pass=col-du-galibier")),
           "the selection in the hash",
         );
-        // … and the panel follows when the camera has landed, with the photo
-        // and the profile already in it rather than filling in afterwards.
         await page.waitFor("#detail-title");
         expect(await page.text("#detail-title")).toBe("Col du Galibier");
-        await page.waitFor('[aria-label^="Höhenprofil:"]');
+        // … and the camera is the slow half: it sets off once the panel is
+        // there and takes its time getting across the Alps.
+        await waitUntil(
+          () => page.evaluate<number>("window.__atMove.length").then(Boolean),
+          "the camera to set off",
+        );
         await waitUntil(settled, "the camera settled");
+        await page.waitFor('[aria-label^="Höhenprofil:"]');
 
-        const atMoveend = await page.evaluate<boolean[]>("window.__atMoveend");
+        const flight = await page.evaluate<boolean[]>(
+          "window.__atMove.filter((e) => e.selected).map((e) => e.panel)",
+        );
         // The flight happened …
-        expect(atMoveend.length).toBeGreaterThan(0);
-        // … and the panel was not on screen for any of it. Only the last
-        // movement is exempt: the detail drawer mounts with the panel and
-        // takes its share of the screen, and that padding change eases the
-        // camera in behind it (a padding change with no camera move of its
-        // own, see explorer.tsx). By then the panel is up by definition.
-        const flight = atMoveend.slice(0, -1);
-        expect(flight).toEqual(flight.map(() => false));
+        expect(flight.length).toBeGreaterThan(0);
+        // … and the panel was up for all of it, from its first frame on.
+        expect(flight).toEqual(flight.map(() => true));
+      },
+    ),
+  TIMEOUT,
+);
+
+/**
+ * Whether the whole of the Galibier – both ascents and the summit, the box
+ * `passBounds` carries – is inside the part of the map no panel covers. The
+ * padded box *is* that part: the sheet's share at the bottom, the control
+ * cluster's at the top, the floating panels' at the left (`map-camera.ts`).
+ */
+const PASS_IN_VIEW = `(() => {
+  const { map: m, passBounds } = window.__alpen;
+  const [w, s, e, n] = passBounds["col-du-galibier"];
+  const pad = m.getPadding();
+  const box = m.getCanvas().getBoundingClientRect();
+  return [[w, s], [w, n], [e, s], [e, n]]
+    .map((c) => m.project(c))
+    .every(
+      (q) =>
+        q.x >= pad.left &&
+        q.x <= box.width - pad.right &&
+        q.y >= pad.top &&
+        q.y <= box.height - pad.bottom,
+    );
+})()`;
+
+test(
+  "14 · a selected pass is framed whole, clear of the sheet and the controls",
+  () =>
+    // The case a camera centred on the summit could not answer: on a phone the
+    // detail sheet takes more than half the screen, so an ascent of 18 km ran
+    // off the top and the bottom of what was left.
+    withPage(
+      app,
+      "pass-frame",
+      { hash: "#pass=col-du-galibier&t=14", mobile: true },
+      async (page) => {
+        await page.waitFor("canvas.maplibregl-canvas");
+        if (!(await page.camera())) return;
+        await page.waitFor("#detail-title");
+        // Zoomed in *and* at rest: the flight follows the panel rather than
+        // leading it, so a camera at rest may be one that has yet to set off.
+        await waitUntil(async () => {
+          const c = await page.camera();
+          return !!c && !c.moving && c.zoom > 9;
+        }, "the camera framed on the pass");
+        expect(await page.evaluate<boolean>(PASS_IN_VIEW)).toBe(true);
       },
     ),
   TIMEOUT,

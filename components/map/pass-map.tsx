@@ -52,7 +52,7 @@ import {
   FONT_BOLD,
   GLYPHS,
 } from "@/lib/basemap";
-import type { MapAssets } from "@/lib/map-assets";
+import type { Bounds, MapAssets } from "@/lib/map-assets";
 import { fitInset, NO_INSET, sameInset, toInset } from "@/lib/map-camera";
 import type { Inset } from "@/lib/map-camera";
 import type { TownReach } from "@/lib/nearby";
@@ -103,12 +103,6 @@ interface Props {
   onSelect: (sel: Selection) => void;
   onViewChange: (v: MapView) => void;
   /**
-   * The camera has landed. What the detail panel costs most to draw waits for
-   * this rather than competing with the flight for the same frames; see
-   * `flying` in `explorer.tsx`.
-   */
-  onCameraSettled?: () => void;
-  /**
    * Camera requested from outside (a hash pasted into an open page). The map
    * is otherwise the source of truth for its camera, so this is applied only
    * when the object identity changes.
@@ -125,6 +119,8 @@ interface Props {
   insetLeft?: number;
   /** Pixels at the bottom covered by the mobile sheet; camera targets stay above it. */
   insetBottom?: number;
+  /** Pixels at the top covered by the floating control cluster (phones only). */
+  insetTop?: number;
   /**
    * The period scrubber, rendered inside the control cluster next to the three
    * map tools. A slot of its own, because `children` floats free beside the
@@ -140,16 +136,37 @@ const EMPTY = { features: [], type: "FeatureCollection" } as const;
 const FIT_PADDING = 48;
 /** The same around a selected tour, which is framed tighter than the whole map. */
 const TOUR_PADDING = 60;
+/** And around a selected pass, whose box is the smaller of the two framings. */
+const PASS_PADDING = 40;
+/**
+ * How close a pass may be framed. Its box is the ascents, so a short one would
+ * otherwise fill the screen with two hairpins; the point is the road and where
+ * it starts, not the surface of it.
+ */
+const PASS_MAX_ZOOM = 12.5;
 /** A padding change nothing else moves with: long enough to read as a slide. */
 const PADDING_MS = 400;
 /**
- * The flight a selection starts. It is a wait before the panel, which opens on
- * arrival rather than into the movement (`selectionState` in `explorer.tsx`,
- * where the measurement is), so its length is felt directly: at 900 ms the tap
- * was answered by the map and then by nothing for most of a second, which read
- * as the panel popping in afterwards rather than following from the tap.
+ * The camera's share of a selection: how long it leaves the panel alone, and
+ * how long it then takes.
+ *
+ * The panel opens with the tap and the flight follows it
+ * (`selectionState` in `explorer.tsx`). It used to be the other way round –
+ * the map moved and the panel opened on arrival – because the panel is the
+ * most expensive thing the app draws and drawing it into a flight cost that
+ * flight about a third of its frame rate on a phone. That bought a smooth
+ * flight with a wait in front of the answer, which is the wrong way round: the
+ * tap was about the pass, not about the camera. Opening first and moving after
+ * keeps the two out of each other's frames just as well, and now it is the
+ * secondary half that waits.
+ *
+ * The delay is the panel's first paint plus the phone drawer's slide, which
+ * covers most of its distance well inside it. The flight itself is longer than
+ * the 500 ms it was: nothing is waiting behind it any more, so it can be a
+ * movement to follow rather than a jump to sit out.
  */
-const SELECT_MS = 500;
+const SELECT_DELAY = 260;
+const SELECT_MS = 1100;
 
 const reduceMotion = () =>
   window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -905,12 +922,12 @@ export const PassMap = ({
   onHover,
   onSelect,
   onViewChange,
-  onCameraSettled,
   profileCursor = null,
   profileZoom = null,
   requestedView = null,
   insetLeft = 0,
   insetBottom = 0,
+  insetTop = 0,
   scrubber,
   children,
 }: Props) => {
@@ -933,8 +950,21 @@ export const PassMap = ({
    */
   const inset = useRef<Inset>(NO_INSET);
   const padded = useRef(false);
-  /** The selection the fly-to below has already flown to; `null` while none is. */
+  /**
+   * The selection the fly-to below has set off for; `null` while none is. It
+   * is written when the flight starts, not when it is scheduled, so the
+   * padding the panel asks for in between is left to that flight to carry.
+   */
   const flownTo = useRef<string | null>(null);
+  /**
+   * Whether that flight is still in the air. A flight owns the padding until
+   * it lands: the panels can ask for a different one while it is flying – a
+   * sheet dragged to another snap point, a phone's toolbar changing the
+   * viewport height by four pixels – and easing to it there would cut the
+   * flight short a frame before it arrived. What is still owed is applied when
+   * the camera settles, in `moveend`.
+   */
+  const flying = useRef(false);
   /** One string per selected entity: what the camera effects change on. */
   const selKey = selection && `${selection.kind}:${selection.slug}`;
   const [base, setBase] = useStored("alpenpaesse:base", BASEMAP_ID);
@@ -949,14 +979,12 @@ export const PassMap = ({
   // during setup; refs keep them current without rebuilding the map.
   const onSelectRef = useRef(onSelect);
   const onViewChangeRef = useRef(onViewChange);
-  const onSettledRef = useRef(onCameraSettled);
   const onHoverRef = useRef(onHover);
   useEffect(() => {
     onSelectRef.current = onSelect;
     onViewChangeRef.current = onViewChange;
-    onSettledRef.current = onCameraSettled;
     onHoverRef.current = onHover;
-  }, [onSelect, onViewChange, onCameraSettled, onHover]);
+  }, [onSelect, onViewChange, onHover]);
 
   // The hover handler below is registered once during setup; this ref keeps
   // the hulls current without rebuilding the map.
@@ -1111,9 +1139,15 @@ export const PassMap = ({
       zoom: view.zoom,
     });
     map.current = m;
-    // Test hook for the e2e suite (never in a production build).
+    // Test hook for the e2e suite (never in a production build). The pass
+    // boxes travel with it: what a selection is framed into is the thing the
+    // suite checks, and it cannot read a prop from the outside.
     if (process.env.NEXT_PUBLIC_TEST_HOOKS === "1") {
-      (window as unknown as { __alpen?: { map: MLMap } }).__alpen = { map: m };
+      (
+        window as unknown as {
+          __alpen?: { map: MLMap; passBounds: Record<string, Bounds> };
+        }
+      ).__alpen = { map: m, passBounds: assets.passBounds };
     }
     m.addControl(
       new NavigationControl({ showZoom: !coarse, visualizePitch: true }),
@@ -1254,12 +1288,17 @@ export const PassMap = ({
         pitch: m.getPitch(),
         zoom: m.getZoom(),
       });
-      onSettledRef.current?.();
+      // What a padding change asked for while the flight was in the air, now
+      // that there is nothing left to cut short.
+      if (flying.current) {
+        flying.current = false;
+        if (!sameInset(toInset(m.getPadding()), inset.current))
+          m.easeTo({
+            duration: reduceMotion() ? 0 : PADDING_MS,
+            padding: inset.current,
+          });
+      }
     });
-    // `moveend` is the answer; `idle` is the safety net, for a selection whose
-    // flight never happened – an entity the map does not draw – where nothing
-    // else would ever tell the panel to go on.
-    m.on("idle", () => onSettledRef.current?.());
 
     // The container changes size when the sidebar collapses; MapLibre only
     // tracks window resizes on its own.
@@ -1331,9 +1370,10 @@ export const PassMap = ({
   // half of what changed. On a phone that is the detail sheet's 55 % of the
   // screen arriving in one frame – a jump at the start of every selection made
   // from the map, and the reason the padding is never set outright here.
-  // Instead a selection carries the new padding into its own flight (the effect
-  // below runs after this one in the same commit, and `inset` is what it
-  // reads), and a padding change with no camera move behind it – a sheet
+  // Instead a selection carries the new padding into its own flight – the
+  // panel claims its share of the map in the same commit as the selection, a
+  // flight ahead of the camera, and `inset` is what that flight reads when it
+  // sets off – and a padding change with no camera move behind it – a sheet
   // dragged to another snap point, the sidebar folding away – eases in.
   useEffect(() => {
     const m = map.current;
@@ -1342,7 +1382,7 @@ export const PassMap = ({
       bottom: insetBottom,
       left: insetLeft,
       right: 0,
-      top: 0,
+      top: insetTop,
     };
     inset.current = next;
     // The first padding is set outright: the map has not drawn a frame yet, so
@@ -1355,9 +1395,11 @@ export const PassMap = ({
       m.setPadding(next);
       return;
     }
-    if (selKey && selKey !== flownTo.current) return;
+    // A selection whose flight is still to come, or still in the air, owns the
+    // padding; easing it here as well would move the picture twice.
+    if (selKey && (flying.current || selKey !== flownTo.current)) return;
     m.easeTo({ duration: reduceMotion() ? 0 : PADDING_MS, padding: next });
-  }, [insetLeft, insetBottom, selKey, ready]);
+  }, [insetLeft, insetBottom, insetTop, selKey, ready]);
 
   // --- The frame the map opens on -----------------------------------------
   // Without a camera in the hash the overview is not a fixed rectangle but
@@ -1581,48 +1623,92 @@ export const PassMap = ({
   }, [profileZoom, ready]);
 
   // --- Fly to selection --------------------------------------------------
-  // The flight carries the padding the panels ask for, so opening the detail
+  // The panel is already on screen when this moves: a selection opens its
+  // detail in the same commit, and the camera waits `SELECT_DELAY` for that
+  // panel to draw before setting off (`selectionState` in `explorer.tsx`).
+  //
+  // The flight carries the padding those panels ask for, so opening the detail
   // and moving to what it describes is one movement rather than a jump and a
-  // movement. `flownTo` is also what the padding effect above reads to tell a
-  // selection apart from a sheet that was merely dragged.
+  // movement. The padding is read when the flight starts rather than when it
+  // was scheduled – a sheet dragged in between is part of what it has to fly
+  // into – and `flownTo` is set at the same moment, which is what tells the
+  // padding effect above that this selection's padding is spoken for.
   useEffect(() => {
     const m = map.current;
     if (!m || !ready) return;
-    flownTo.current = selKey;
-    if (!selection) return;
-    const duration = reduceMotion() ? 0 : SELECT_MS;
-    const padding = inset.current;
-    if (selection.kind === "pass") {
-      const p = passes.find((x) => x.slug === selection.slug);
-      if (p)
-        m.flyTo({
-          center: [p.lon, p.lat],
-          duration,
-          padding,
-          zoom: Math.max(m.getZoom(), 11),
-        });
-    } else if (selection.kind === "town") {
-      const t = towns.find((x) => x.slug === selection.slug);
-      if (t)
-        m.flyTo({
-          center: [t.lon, t.lat],
-          duration,
-          padding,
-          zoom: Math.max(m.getZoom(), 10.5),
-        });
-    } else {
-      // Precomputed per tour: the routed line's bounds, or the waypoints'.
-      const bbox = assets.tourBounds[selection.slug];
-      // Not `fitBounds`, which drops the padding before it flies: the frame has
-      // to be measured against where the camera lands (`fitInset`), and the
-      // padding has to travel with it.
-      const camera =
-        bbox &&
-        m.cameraForBounds(bbox, {
-          padding: fitInset(toInset(m.getPadding()), padding, TOUR_PADDING),
-        });
-      if (camera) m.flyTo({ ...camera, duration, padding });
+    if (!selection) {
+      flownTo.current = null;
+      return;
     }
+    const still = reduceMotion();
+    const start = () => {
+      const padding = inset.current;
+      const duration = still ? 0 : SELECT_MS;
+      flownTo.current = selKey ?? null;
+      let moved = false;
+      const fly = (camera: Parameters<typeof m.flyTo>[0]) => {
+        moved = true;
+        flying.current = !still;
+        m.flyTo({ ...camera, duration, padding });
+      };
+      /**
+       * Not `fitBounds`, which drops the padding before it flies: the frame has
+       * to be measured against where the camera lands (`fitInset`), and the
+       * padding has to travel with it. A box of no extent – a pass the map
+       * draws no ascent for – has no frame to speak of and is left to the
+       * point below.
+       */
+      const frame = (
+        bbox: Bounds | undefined,
+        extra: number,
+        maxZoom: number,
+      ) =>
+        bbox && (bbox[0] !== bbox[2] || bbox[1] !== bbox[3])
+          ? m.cameraForBounds(bbox, {
+              maxZoom,
+              padding: fitInset(toInset(m.getPadding()), padding, extra),
+            })
+          : undefined;
+      if (selection.kind === "pass") {
+        // A pass is framed by its roads, not centred on its marker: what makes
+        // one worth a holiday is the climb to it, and on a phone the sheet
+        // leaves less than half the screen, so a camera aimed at the summit
+        // pushed both ends of the ascent out of the picture.
+        const camera = frame(
+          assets.passBounds[selection.slug],
+          PASS_PADDING,
+          PASS_MAX_ZOOM,
+        );
+        const p = passes.find((x) => x.slug === selection.slug);
+        if (camera) fly(camera);
+        else if (p)
+          fly({ center: [p.lon, p.lat], zoom: Math.max(m.getZoom(), 11) });
+      } else if (selection.kind === "town") {
+        const t = towns.find((x) => x.slug === selection.slug);
+        if (t)
+          fly({ center: [t.lon, t.lat], zoom: Math.max(m.getZoom(), 10.5) });
+      } else {
+        // Precomputed per tour: the routed line's bounds, or the waypoints'.
+        const camera = frame(
+          assets.tourBounds[selection.slug],
+          TOUR_PADDING,
+          PASS_MAX_ZOOM,
+        );
+        if (camera) fly(camera);
+      }
+      // What the map cannot frame – an entity it does not draw – still owes the
+      // panel its space, or the padding would sit unapplied until some later
+      // sheet drag moved the picture for no reason at all. Only then: a flight
+      // is already carrying it, and a second animation would cut it short.
+      if (!(moved || sameInset(toInset(m.getPadding()), padding)))
+        m.easeTo({ duration: still ? 0 : PADDING_MS, padding });
+    };
+    if (still) {
+      start();
+      return;
+    }
+    const timer = setTimeout(start, SELECT_DELAY);
+    return () => clearTimeout(timer);
     // oxlint-disable-next-line react/exhaustive-deps
   }, [selKey, ready]);
 

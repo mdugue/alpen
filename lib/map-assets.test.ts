@@ -132,6 +132,26 @@ describe("mapAssets", () => {
     expect(assets.tourBounds["ohne-route"]).toEqual([9, 46, 9.5, 46.5]);
   });
 
+  test("a pass is framed by its ascents, the summit included", () => {
+    // Only the northern ascent is routed; the southern one contributes
+    // nothing, and the summit marker keeps the box honest at the top.
+    const { assets } = mapAssets(
+      [{ ...pass, lat: 46.01, lon: 9.02 } as Pass],
+      [],
+      routes,
+    );
+    // The routed ascent reaches from 46 N to 46.0036 N at 9 E; the summit
+    // marker sits north-east of it and widens the box to both.
+    expect(assets.passBounds.testpass).toEqual([9, 46, 9.02, 46.01]);
+    // A pass with no routed ascent at all still has a box: its own point.
+    const bare = mapAssets(
+      [{ ...pass, lat: 46.01, lon: 9.02, slug: "bare" } as Pass],
+      [],
+      {},
+    ).assets;
+    expect(bare.passBounds.bare).toEqual([9.02, 46.01, 9.02, 46.01]);
+  });
+
   test("the same content gives the same name, other content another", () => {
     const a = mapAssets([pass], [tour], routes).files[0]!.name;
     const b = mapAssets([pass], [tour], routes).files[0]!.name;
