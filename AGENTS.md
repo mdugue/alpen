@@ -68,7 +68,7 @@ friends do that better and the app links out to them.
 | Filter controls, chips, applied-filter row      | `components/sidebar/filter-panel.tsx`, `components/sidebar/filter-chip.tsx`, `lib/filter-summary.ts`                                                                                                                                                                                                       |
 | Sidebar: search, filters, one list per kind     | `components/sidebar/` (tabs: `kind-tabs.tsx`), `lib/rows.ts`                                                                                                                                                                                                                                               |
 | Detail panel incl. profile/weather/climate      | `components/panel/` (collapsible blocks: `components/panel/section.tsx`)                                                                                                                                                                                                                                   |
-| Bottom sheet on phones (one per panel)          | `components/mobile-sheet.tsx`                                                                                                                                                                                                                                                                              |
+| Bottom sheet on phones (one, list or detail)    | `components/mobile-sheet.tsx`                                                                                                                                                                                                                                                                              |
 | Precomputation, data checks                     | `scripts/build-data.ts`, `scripts/build-photos.ts`, `scripts/check-data.ts`                                                                                                                                                                                                                                |
 | Route quality gate: checks and thresholds       | `scripts/lib/validate.ts`; pass-point placement `scripts/locate-pass.ts` (`bun run data:locate`), `scripts/lib/locate.ts`                                                                                                                                                                                  |
 | Name, claim, colours, mark, base URL            | `lib/brand.ts`, `lib/mark.tsx`                                                                                                                                                                                                                                                                             |
@@ -179,9 +179,9 @@ friends do that better and the app links out to them.
   `@custom-variant dark (&:is(.dark *))` line that `ui:init` writes.
 - **Layout: the map is the page.** No header, toolbar or footer. On desktop
   the map fills the viewport and two translucent panels float over its left
-  edge: the collapsible sidebar (`components/sidebar/`: search, filters, one
-  collapsible list per kind) and, while something is selected, the detail
-  slide-over next to it. Their widths are mirrored in `explorer.tsx`
+  edge: the collapsible sidebar (`components/sidebar/`: search, filters, and
+  one list per kind behind a tab row) and, while something is selected, the
+  detail slide-over next to it. Their widths are mirrored in `explorer.tsx`
   (`SIDEBAR_W`, `DETAIL_W`) and fed to MapLibre as left padding so camera
   targets stay visible. Below `lg` there is **one** `MobileSheet`
   (`components/mobile-sheet.tsx`, the Base UI `Drawer` with `modal={false}` and
