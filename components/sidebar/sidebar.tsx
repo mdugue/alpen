@@ -10,11 +10,10 @@ import {
   filterCount,
   FilterTrigger,
 } from "@/components/sidebar/filter-panel";
-import { KIND_LABEL, KindTabs } from "@/components/sidebar/kind-tabs";
+import { KindTabs } from "@/components/sidebar/kind-tabs";
 import { PassList } from "@/components/sidebar/pass-list";
 import { TourList } from "@/components/sidebar/tour-list";
 import { TownList } from "@/components/sidebar/town-list";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   InputGroup,
@@ -23,12 +22,12 @@ import {
   InputGroupInput,
 } from "@/components/ui/input-group";
 import { Switch } from "@/components/ui/switch";
-import { ALL_KINDS, DEFAULT_FILTERS } from "@/lib/app-state";
+import { DEFAULT_FILTERS } from "@/lib/app-state";
 import type { EntityKind, Filters, Selection } from "@/lib/app-state";
 import { hasSecondaryFilters } from "@/lib/filter-summary";
 import type { PassRow, TourRow, TownRow } from "@/lib/rows";
 import type { Tour } from "@/lib/types";
-import { cn, fmt, TOUCH_CONTROL } from "@/lib/utils";
+import { cn, TOUCH_CONTROL } from "@/lib/utils";
 
 export interface SidebarProps {
   /** `aside` renders the brand row; the bottom sheet shows its swipe handle instead. */
@@ -60,10 +59,6 @@ export interface SidebarProps {
   onHover: (sel: Selection | null) => void;
   onCollapse?: () => void;
   onOpenScales: () => void;
-  /** Tap on the peek row's search button: the sheet opens, the field it reveals is the real one. */
-  onOpenSearch?: () => void;
-  /** Bottom sheet at its peek height: only the search row is visible. */
-  peek?: boolean;
 }
 
 export const Sidebar = (p: SidebarProps) => {
@@ -100,19 +95,18 @@ export const Sidebar = (p: SidebarProps) => {
     town: p.townRows.length,
   };
 
-  // Keep the selected row visible, e.g. after a click on a map marker. A
-  // selection also starts a camera flight, and on a phone the sheet drops to
-  // its peek row in the same moment – where a smooth scroll would animate a
-  // list nobody can see, against the two animations that can be seen. Peeking,
-  // the row is put in place at once instead; by the time the sheet is pulled
-  // up again it is where it should be.
+  // Keep the selected row visible, e.g. after a click on a map marker. On a
+  // phone the detail drawer is usually in front of this list when it happens,
+  // so the scroll is not animated: it would animate a list nobody can see,
+  // against the drawer animation that can be. By the time the detail is
+  // dismissed the row is where it should be.
   useEffect(() => {
     if (!currentRow) return;
     lists.current?.querySelector(`[data-row="${currentRow}"]`)?.scrollIntoView({
-      behavior: p.peek ? "instant" : "smooth",
+      behavior: p.variant === "sheet" ? "instant" : "smooth",
       block: "nearest",
     });
-    // Intentional: the row is the trigger; `peek` only says how to get there.
+    // Intentional: the row is the trigger; the variant only says how to get there.
     // oxlint-disable-next-line react/exhaustive-deps
   }, [currentRow, p.tab]);
 
@@ -190,114 +184,64 @@ export const Sidebar = (p: SidebarProps) => {
       <div className="flex min-h-0 flex-1 flex-col">
         <div className="border-border relative flex shrink-0 flex-col gap-2 border-b px-3 py-2">
           <div className="flex items-center gap-2">
-            {
-              /*
-               * On the peek row the search is a **button that looks like a
-               * button**, and it says what it opens.
-               *
-               * Two reasons, and they are different. The first is mechanical:
-               * a live input here would bring the software keyboard up in the
-               * same moment as the sheet moves, and the two animations fight
-               * over where the field ends up – so the field a thumb reaches is
-               * always in a sheet that already stands still. The second is
-               * that the old control lied about it. It was a full-width
-               * outlined box with a magnifier and grey placeholder text, which
-               * is a search field in every app a visitor has ever used; tapping
-               * it and getting a sheet instead of a caret is a small
-               * betrayal every single time. It now reads "Suche" and carries
-               * the counts beside it, so the row also answers the question the
-               * phone's first screen never answered: what is in here at all.
-               */
-              p.peek ? (
-                <>
-                  <Button
-                    variant="secondary"
-                    onClick={p.onOpenSearch}
-                    className={cn("shrink-0", TOUCH_CONTROL)}
-                  >
-                    <Search data-icon="inline-start" />
-                    {p.filters.query ? `„${p.filters.query}“` : "Suche"}
-                  </Button>
-                  <p className="text-muted-foreground text-2xs min-w-0 flex-1 truncate">
-                    {ALL_KINDS.map(
-                      (kind) => `${fmt(counts[kind])} ${KIND_LABEL[kind]}`,
-                    ).join(" · ")}
-                  </p>
-                  {active > 0 && (
-                    <Badge variant="secondary" className="shrink-0">
-                      {active} Filter
-                    </Badge>
-                  )}
-                </>
-              ) : (
-                <InputGroup className={cn("flex-1", TOUCH_CONTROL)}>
-                  <InputGroupAddon>
-                    <Search />
-                  </InputGroupAddon>
-                  <InputGroupInput
-                    type="search"
-                    name="q"
-                    autoComplete="off"
-                    enterKeyHint="search"
-                    spellCheck={false}
-                    value={p.filters.query}
-                    onChange={(e) => set("query", e.target.value)}
-                    placeholder="Pass, Tour oder Ort …"
-                    aria-label="Suchen"
-                    className="h-full [&::-webkit-search-cancel-button]:appearance-none [&::-webkit-search-decoration]:appearance-none"
-                  />
-                  {p.filters.query && (
-                    <InputGroupAddon align="inline-end">
-                      <InputGroupButton
-                        size="icon-xs"
-                        onClick={() => set("query", "")}
-                        aria-label="Suche leeren"
-                      >
-                        <X />
-                      </InputGroupButton>
-                    </InputGroupAddon>
-                  )}
-                </InputGroup>
-              )
-            }
-            {!p.peek && (
-              <FilterTrigger
-                filters={p.filters}
-                open={filtersOpen}
-                onOpenChange={setManual}
+            <InputGroup className={cn("flex-1", TOUCH_CONTROL)}>
+              <InputGroupAddon>
+                <Search />
+              </InputGroupAddon>
+              <InputGroupInput
+                type="search"
+                name="q"
+                autoComplete="off"
+                enterKeyHint="search"
+                spellCheck={false}
+                value={p.filters.query}
+                onChange={(e) => set("query", e.target.value)}
+                placeholder="Pass, Tour oder Ort …"
+                aria-label="Suchen"
+                className="h-full [&::-webkit-search-cancel-button]:appearance-none [&::-webkit-search-decoration]:appearance-none"
               />
-            )}
-          </div>
-          {/* What is filtered away stays readable while the panel is shut –
-              and on the sheet's peek row, where the panel cannot be opened at
-              all, it is the only place that says so. */}
-          {!p.peek && (
-            <AppliedFilters
+              {p.filters.query && (
+                <InputGroupAddon align="inline-end">
+                  <InputGroupButton
+                    size="icon-xs"
+                    onClick={() => set("query", "")}
+                    aria-label="Suche leeren"
+                  >
+                    <X />
+                  </InputGroupButton>
+                </InputGroupAddon>
+              )}
+            </InputGroup>
+            <FilterTrigger
               filters={p.filters}
-              setFilters={p.setFilters}
-              onReset={resetFilters}
+              open={filtersOpen}
+              onOpenChange={setManual}
             />
-          )}
+          </div>
+          {/* What is filtered away stays readable while the panel is shut. */}
+          <AppliedFilters
+            filters={p.filters}
+            setFilters={p.setFilters}
+            onReset={resetFilters}
+          />
           {/* The three lists, one at a time. In the fixed header rather than
               in the scroll container, so the counts stay on screen while a
               list of 201 rows is scrolled – which a section header inside the
               container could not do without an opaque background it has no way
               to get (see `KindTabs`). */}
-          {!p.peek && (
-            <KindTabs
-              active={p.tab}
-              onChange={p.setTab}
-              counts={counts}
-              totals={p.totals}
-            />
-          )}
+          <KindTabs
+            active={p.tab}
+            onChange={p.setTab}
+            counts={counts}
+            totals={p.totals}
+          />
         </div>
 
         <div
           ref={lists}
           className="min-h-0 flex-1 overflow-y-auto overscroll-contain"
         >
-          {filtersOpen && !p.peek && (
+          {filtersOpen && (
             <div className="border-border border-b">
               <FilterBody
                 filters={p.filters}
@@ -358,9 +302,7 @@ export const Sidebar = (p: SidebarProps) => {
           )}
         </div>
 
-        <div
-          className={cn("border-border shrink-0 border-t", p.peek && "hidden")}
-        >
+        <div className="border-border shrink-0 border-t">
           <p className="text-muted-foreground text-2xs flex h-8 items-center gap-1 truncate px-3">
             <span className="truncate">
               Status ist eine Heuristik, Skalen sind redaktionell.

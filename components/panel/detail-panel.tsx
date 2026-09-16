@@ -139,12 +139,12 @@ interface Props {
   onSelect: (sel: Selection) => void;
   onBack: () => void;
   /**
-   * On a phone the detail is not a panel beside the list but the one sheet
-   * *showing* the detail, so leaving it means going back to the list rather
-   * than closing something. The control says so: a labelled back button
-   * instead of a close cross.
+   * On a phone with the list drawer open underneath, dismissing the detail
+   * uncovers the list – so the control says "back to the list". Opened from
+   * the map with nothing underneath it simply closes, and says that instead.
+   * Naming the wrong destination is worse than naming none.
    */
-  mobile?: boolean;
+  backToList?: boolean;
 }
 
 /**
@@ -801,11 +801,12 @@ export const DetailPanel = (props: Props) => {
       }}
     >
       <div className="border-border flex h-10 shrink-0 items-center gap-1 border-b px-2">
-        {props.mobile && (
+        {props.backToList && (
           <Button
             size="sm"
             variant="ghost"
             onClick={onBack}
+            aria-label="Zurück zur Liste"
             className="-ml-1 shrink-0 gap-1 px-2"
           >
             <ChevronLeft />
@@ -838,7 +839,7 @@ export const DetailPanel = (props: Props) => {
         >
           <Star className={cn(favorite && "fill-accent text-accent")} />
         </Toggle>
-        {!props.mobile && (
+        {!props.backToList && (
           <Button
             size="icon"
             variant="ghost"

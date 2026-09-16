@@ -20,20 +20,8 @@ interface Props {
   /** Names the sheet for screen readers and its swipe handle ("… ausklappen"). */
   label: string;
   open: boolean;
-  /**
-   * Left out for a sheet that never leaves the screen: a swipe past the lowest
-   * snap point then settles on it instead of dismissing the sheet.
-   */
-  onClose?: () => void;
-  /**
-   * A swipe past the lowest snap point on a sheet that stays: the gesture is
-   * kept, the dismissal is not. The phone has one sheet and it always holds
-   * something, so flicking a detail away has to mean "back to the list"
-   * rather than "close" – the sheet settles on its lowest snap and this is
-   * called. Without it the gesture would simply be lost, which is the price
-   * the one-sheet layout would otherwise pay.
-   */
-  onDismiss?: () => void;
+  /** A swipe down past the lowest snap point, or Escape: the sheet goes away. */
+  onClose: () => void;
   /** Lowest first, at least two; a tap on the handle toggles between the first two. */
   snapPoints: readonly [number, number, ...number[]];
   snap: number;
@@ -44,23 +32,20 @@ interface Props {
 /**
  * The bottom sheet of the mobile layout. Non-modal – the map stays visible
  * above it and keeps its taps, which is why an outside press must not dismiss
- * it – with snap points, so the same sheet is a peek row, a half screen or
- * nearly the whole one.
+ * it – with snap points, so the same sheet is half a screen or nearly the
+ * whole one.
  *
- * There is exactly **one** of these on screen (`explorer.tsx`). It used to be
- * two, one per panel, mirroring the two floating panels of the desktop layout
- * turned by 90°; the analogy is what broke. On desktop the two panels sit
- * *beside* each other and both are readable at once. Stacked on a phone only
- * the front one can be seen, so the second sheet's whole job was to be
- * invisible behind the first – while still contributing a second swipe
- * handle, a second drag target and a second snap state, and while hiding the
- * search and the counts completely for as long as a detail was open.
+ * There are two of them (`explorer.tsx`), the list and the detail, and neither
+ * is mounted until it is asked for: the map is the page on a phone as much as
+ * on a desktop, so nothing covers it at rest. A detail opened from the map has
+ * bare map behind it and closes; one opened from a row has the list behind it
+ * and goes back to it, by the detail drawer closing and uncovering what never
+ * moved.
  */
 export const MobileSheet = ({
   label,
   open,
   onClose,
-  onDismiss,
   snapPoints,
   snap,
   onSnapChange,
@@ -76,19 +61,13 @@ export const MobileSheet = ({
       disablePointerDismissal
       snapPoints={[...snapPoints]}
       snapPoint={snap}
-      onSnapPointChange={(next, details) => {
-        if (next !== null) {
-          onSnapChange(next as number);
-          return;
-        }
-        // `null` is the drawer on its way out after a fast flick downwards.
-        if (onClose) return;
-        details.cancel();
-        onSnapChange(collapsed);
-        onDismiss?.();
+      onSnapPointChange={(next) => {
+        // `null` is the drawer on its way out after a fast flick downwards;
+        // `onOpenChange` handles that one.
+        if (next !== null) onSnapChange(next as number);
       }}
       onOpenChange={(next) => {
-        if (!next) onClose?.();
+        if (!next) onClose();
       }}
     >
       <DrawerContent

@@ -23,6 +23,7 @@ afterAll(() => {
 const PASS_ROW = '[data-row^="pass:"]';
 const GALIBIER = '[data-row="pass:col-du-galibier"]';
 const SLIDER = '[aria-label="Zeitraum"]';
+const BACK_TO_LIST = '[aria-label="Zurück zur Liste"]';
 
 test(
   "1 · loads with all passes and a map canvas",
@@ -150,39 +151,55 @@ test(
 );
 
 test(
-  "6 · one sheet, two contents: peek → list → detail → back to the list",
+  "6 · nothing covers the map until it is asked for; list and detail stack",
   () =>
     withPage(app, "mobile-sheet", { mobile: true }, async (page) => {
-      // The peek row carries a button, not the field: the sheet opens first,
-      // so the software keyboard never arrives while the sheet is moving. It
-      // also says what it opens rather than posing as a search field.
-      await page.waitFor('[aria-label="Liste ausklappen"]');
+      // At rest the map is the page: no drawer, no peek, no swipe handle –
+      // only a floating button over the map's corner, which says what it
+      // opens rather than posing as a search field (the keyboard would
+      // otherwise arrive while the drawer is still moving).
+      await page.waitFor("canvas.maplibregl-canvas");
+      expect(await page.count('[aria-label*="klappen"]')).toBe(0);
       expect(await page.count("input[type=search]")).toBe(0);
-      // The peek row rides in with the sheet, so a tap in its first frames can
-      // land beside the button or before React has attached its handler. Tap
-      // again until the field has taken the button's place.
+
+      // Tapping a road opens the detail drawer on its own – there is no list
+      // underneath it, so it closes rather than going back.
+      await page.navigate("#pass=col-du-galibier");
+      await page.waitFor("#detail-title");
+      expect(await page.text("#detail-title")).toBe("Col du Galibier");
+      expect(await page.count('[aria-label*="klappen"]')).toBe(1);
+      expect(await page.count('[aria-label="Details schließen"]')).toBe(1);
+      await page.waitInViewport('[aria-label="Details schließen"]');
+      await page.click('[aria-label="Details schließen"]');
+      await page.waitForGone("#detail-title");
+
+      // The floating button opens the list drawer. It rides in with its own
+      // animation, so a tap in its first frames can land before React has
+      // attached the handler; tap again until the field is there.
       await waitUntil(async () => {
         if ((await page.count("input[type=search]")) > 0) return true;
         await page.clickText("button", "Suche");
         await Bun.sleep(300);
         return (await page.count("input[type=search]")) > 0;
-      }, "the list sheet to open");
-      await page.waitFor("input[type=search]");
+      }, "the list drawer to open");
       await page.waitFor(PASS_ROW);
       const all = await page.count(PASS_ROW);
+
+      // A row opens a second drawer over the first. Both are mounted, so
+      // there are two swipe handles, and the list keeps its rows – and with
+      // them its scroll position, its tab and its search.
       await page.click(GALIBIER);
       await page.waitFor("#detail-title");
-      expect(await page.text("#detail-title")).toBe("Col du Galibier");
-      // One sheet now holds both, so there is one swipe handle and not two.
-      // The label flips with the snap point, so match either wording.
-      expect(await page.count('[aria-label*="klappen"]')).toBe(1);
-      // The list is kept mounted behind the detail, so its rows – and with
-      // them its scroll position and its tab – survive the round trip.
+      expect(await page.count('[aria-label*="klappen"]')).toBe(2);
       expect(await page.count(PASS_ROW)).toBe(all);
-      // Leaving a detail on a phone means going back to the list, and the
-      // control says so instead of offering a close cross.
+      // Leaving a detail that has a list behind it means going back to it,
+      // and the control says so instead of offering a close cross.
       expect(await page.count('[aria-label="Details schließen"]')).toBe(0);
-      await page.clickText("button", "Liste");
+      // The drawer slides in, so its header is still off the bottom of the
+      // viewport for the first frames and a click aimed at it would land on
+      // nothing at all.
+      await page.waitInViewport(BACK_TO_LIST);
+      await page.click(BACK_TO_LIST);
       await page.waitForGone("#detail-title");
       await page.waitFor(PASS_ROW);
       expect(await page.hash()).not.toContain("pass=");
@@ -532,8 +549,13 @@ test(
         const atMoveend = await page.evaluate<boolean[]>("window.__atMoveend");
         // The flight happened …
         expect(atMoveend.length).toBeGreaterThan(0);
-        // … and the panel was not on screen during any of it.
-        expect(atMoveend).toEqual(atMoveend.map(() => false));
+        // … and the panel was not on screen for any of it. Only the last
+        // movement is exempt: the detail drawer mounts with the panel and
+        // takes its share of the screen, and that padding change eases the
+        // camera in behind it (a padding change with no camera move of its
+        // own, see explorer.tsx). By then the panel is up by definition.
+        const flight = atMoveend.slice(0, -1);
+        expect(flight).toEqual(flight.map(() => false));
       },
     ),
   TIMEOUT,
