@@ -401,8 +401,10 @@ friends do that better and the app links out to them.
   the page one URL per entity, and `DetailPanel` fetches the one that is
   selected. Measured per prop on the prerendered page, those two were 297 KB
   and 77 KB gzipped of 468 KB; the page now carries 144 KB and a selection
-  costs about 2 KB. A block that waits for the file says so – `PhotoCarousel`
-  renders nothing until it has a photo, the ascent list shows a
+  costs about 2 KB. A block that waits for the file says so, and reserves the
+  box it will fill – `PhotoCarousel` shows a slide-shaped skeleton for as many
+  photos as `DetailAsset.photos` promises and nothing at all where that is
+  zero, the ascent list shows a
   `PROFILE_ASPECT`-shaped skeleton – because everything a list row already
   showed (name, status, season strip, ratings) is in the page and must not
   flicker. What the sidebar reads stays a prop, and that is the line: the
