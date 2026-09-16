@@ -1,5 +1,7 @@
 "use client";
 
+import { useState } from "react";
+
 import {
   Carousel,
   CarouselContent,
@@ -25,14 +27,27 @@ import { cn, MAP_CONTROL } from "@/lib/utils";
  * this is a plain `<img>` – they are already the right size and already
  * cached; routing a few hundred of them through the image optimiser would buy
  * nothing.
+ *
+ * Borrowed files can also fail to arrive, and this app is built for exactly
+ * the connection where they do – the holiday Wi-Fi the whole payload
+ * architecture is tuned for. A broken `<img>` renders its alt text in the
+ * frame, so the slide became a grey box holding the file's own Commons title
+ * over two lines, above a caption crediting a photographer for a photo nobody
+ * could see. A slide that failed is therefore dropped rather than patched up:
+ * the carousel renumbers itself around it, and once every slide has failed
+ * the block disappears the same way an entity without photos never shows one.
+ * That is also the honest outcome – there is no placeholder that would not be
+ * a claim about a picture that is not there.
  */
 export const PhotoCarousel = ({ photos }: { photos: Photo[] }) => {
-  if (photos.length === 0) return null;
+  const [broken, setBroken] = useState<string[]>([]);
+  const shown = photos.filter((p) => !broken.includes(p.src));
+  if (shown.length === 0) return null;
 
   return (
     <Carousel aria-label="Bilder" className="mt-3" opts={{ duration: 18 }}>
       <CarouselContent className="-ml-1.5">
-        {photos.map((photo, i) => (
+        {shown.map((photo, i) => (
           <CarouselItem className="pl-1.5" key={photo.src}>
             <figure className="border-border/60 bg-muted relative overflow-hidden rounded-lg border">
               <img
@@ -43,6 +58,11 @@ export const PhotoCarousel = ({ photos }: { photos: Photo[] }) => {
                 // The first photo is the hero and is visible as the panel
                 // opens; the rest are one swipe away and can wait.
                 loading={i === 0 ? "eager" : "lazy"}
+                onError={() =>
+                  setBroken((b) =>
+                    b.includes(photo.src) ? b : [...b, photo.src],
+                  )
+                }
                 src={photo.src}
                 width={photo.width}
               />
@@ -65,9 +85,9 @@ export const PhotoCarousel = ({ photos }: { photos: Photo[] }) => {
                 >
                   {photo.license}
                 </a>
-                {photos.length > 1 && (
+                {shown.length > 1 && (
                   <span className="ml-auto shrink-0 tabular-nums opacity-70">
-                    {i + 1}/{photos.length}
+                    {i + 1}/{shown.length}
                   </span>
                 )}
               </figcaption>
@@ -75,7 +95,7 @@ export const PhotoCarousel = ({ photos }: { photos: Photo[] }) => {
           </CarouselItem>
         ))}
       </CarouselContent>
-      {photos.length > 1 && (
+      {shown.length > 1 && (
         <>
           <CarouselPrevious
             aria-label="Vorheriges Bild"

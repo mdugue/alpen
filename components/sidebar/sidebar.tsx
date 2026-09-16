@@ -10,8 +10,9 @@ import {
   filterCount,
   FilterTrigger,
 } from "@/components/sidebar/filter-panel";
+import { KindTabs } from "@/components/sidebar/kind-tabs";
 import { PassList } from "@/components/sidebar/pass-list";
-import { KIND_GLYPH, Section } from "@/components/sidebar/section";
+import { PeekStrip } from "@/components/sidebar/peek-strip";
 import { TourList } from "@/components/sidebar/tour-list";
 import { TownList } from "@/components/sidebar/town-list";
 import { Badge } from "@/components/ui/badge";
@@ -48,12 +49,18 @@ export interface SidebarProps {
   setShowPasses: (v: boolean) => void;
   showTowns: boolean;
   setShowTowns: (v: boolean) => void;
-  sections: EntityKind[];
-  setSections: (update: (s: EntityKind[]) => EntityKind[]) => void;
+  /** Which of the three lists is on screen. */
+  tab: EntityKind;
+  setTab: (kind: EntityKind) => void;
   onToggleFavorite: (kind: EntityKind, slug: string) => void;
   onSelect: (sel: Selection) => void;
   /** Highlighted in the lists and scrolled into view. */
   selection: Selection | null;
+  /** What the pointer is over, on the map or in the list; the two share one highlight. */
+  hovered: Selection | null;
+  onHover: (sel: Selection | null) => void;
+  /** The peek strip pointing at a card: highlight it *and* bring it into view. */
+  onReveal: (sel: Selection | null) => void;
   onCollapse?: () => void;
   onOpenScales: () => void;
   /** Tap on the peek row's search button: the sheet opens, the field it reveals is the real one. */
@@ -72,10 +79,6 @@ export const Sidebar = (p: SidebarProps) => {
       period: f.period,
       sort: f.sort,
     }));
-  const toggleSection = (kind: EntityKind) => (open: boolean) =>
-    p.setSections((s) =>
-      open ? [...new Set([...s, kind])] : s.filter((k) => k !== kind),
-    );
   const allTourSlugs = p.tours.map((t) => t.slug);
   const visibleTourCount = allTourSlugs.filter(
     (s) => !p.hiddenTours.includes(s),
@@ -88,12 +91,17 @@ export const Sidebar = (p: SidebarProps) => {
   const filtersOpen = manual ?? active > 0;
   const [more, setMore] = useState<boolean | null>(null);
   const moreOpen = more ?? hasSecondaryFilters(p.filters);
-  const setMoreOpen = (open: boolean) => setMore(open);
 
   const lists = useRef<HTMLDivElement>(null);
   const currentRow = p.selection
     ? `${p.selection.kind}:${p.selection.slug}`
     : null;
+
+  const counts = {
+    pass: p.passRows.length,
+    tour: p.tourRows.length,
+    town: p.townRows.length,
+  };
 
   // Keep the selected row visible, e.g. after a click on a map marker. A
   // selection also starts a camera flight, and on a phone the sheet drops to
@@ -109,7 +117,53 @@ export const Sidebar = (p: SidebarProps) => {
     });
     // Intentional: the row is the trigger; `peek` only says how to get there.
     // oxlint-disable-next-line react/exhaustive-deps
-  }, [currentRow]);
+  }, [currentRow, p.tab]);
+
+  /** The active kind's "auf der Karte" switch, next to its own tab. */
+  const mapSwitch = () => {
+    if (p.tab === "pass")
+      return (
+        <Switch
+          size="sm"
+          checked={p.showPasses}
+          onCheckedChange={p.setShowPasses}
+          aria-label="Pässe und Straßen auf der Karte anzeigen"
+        />
+      );
+    if (p.tab === "town")
+      return (
+        <Switch
+          size="sm"
+          checked={p.showTowns}
+          onCheckedChange={p.setShowTowns}
+          aria-label="Orte auf der Karte anzeigen"
+        />
+      );
+    return (
+      <div className="flex items-center gap-1.5">
+        {visibleTourCount > 0 && visibleTourCount < allTourSlugs.length && (
+          <span className="text-muted-foreground text-2xs tabular-nums">
+            {visibleTourCount}/{allTourSlugs.length}
+          </span>
+        )}
+        <Switch
+          size="sm"
+          checked={p.hiddenTours.length === 0}
+          onCheckedChange={(on) =>
+            p.setHiddenTours(() => (on ? [] : allTourSlugs))
+          }
+          aria-label="Touren auf der Karte anzeigen"
+        />
+      </div>
+    );
+  };
+
+  const emptyProps = {
+    countWith: p.countWith,
+    filters: p.filters,
+    onReset: resetFilters,
+    setFilters: p.setFilters,
+  };
 
   return (
     <div className="text-card-foreground flex h-full min-h-0 flex-col">
@@ -157,9 +211,6 @@ export const Sidebar = (p: SidebarProps) => {
                   <span className="truncate">
                     {p.filters.query || "Pass, Tour oder Ort …"}
                   </span>
-                  {/* The peek row is one row high, so the chip row below it
-                      cannot show – the count takes its place and the chips
-                      themselves are one tap away, in the sheet. */}
                   {active > 0 && (
                     <Badge className="ml-auto shrink-0">{active}</Badge>
                   )}
@@ -213,6 +264,39 @@ export const Sidebar = (p: SidebarProps) => {
               onReset={resetFilters}
             />
           )}
+          {/* The three lists, one at a time. In the fixed header rather than
+              in the scroll container, so the counts stay on screen while a
+              list of 201 rows is scrolled – which a section header inside the
+              container could not do without an opaque background it has no way
+              to get (see `KindTabs`). */}
+          {/* The phone's first screen used to be a search box on an empty
+              map. The strip carries the current answer instead – and, because
+              a finger has no hover, doubles as the mobile half of the
+              list↔map link: the card that comes to rest highlights its mark
+              (see `PeekStrip`). */}
+          {p.peek && (
+            <PeekStrip
+              kind={p.tab}
+              passRows={p.passRows}
+              tourRows={p.tourRows}
+              townRows={p.townRows}
+              period={p.filters.period}
+              total={counts[p.tab]}
+              hovered={p.hovered}
+              onReveal={p.onReveal}
+              onSelect={p.onSelect}
+              onOpenList={() => p.onOpenSearch?.()}
+            />
+          )}
+          {!p.peek && (
+            <KindTabs
+              active={p.tab}
+              onChange={p.setTab}
+              counts={counts}
+              totals={p.totals}
+              control={mapSwitch()}
+            />
+          )}
         </div>
 
         <div
@@ -224,75 +308,37 @@ export const Sidebar = (p: SidebarProps) => {
               <FilterBody
                 filters={p.filters}
                 setFilters={p.setFilters}
-                counts={{
-                  pass: p.passRows.length,
-                  tour: p.tourRows.length,
-                  town: p.townRows.length,
-                }}
+                counts={counts}
                 totals={p.totals}
                 countWith={p.countWith}
                 onReset={resetFilters}
                 more={moreOpen}
-                onMoreChange={setMoreOpen}
+                onMoreChange={setMore}
               />
             </div>
           )}
-          <Section
-            open={p.sections.includes("pass")}
-            onOpenChange={toggleSection("pass")}
-            glyph={KIND_GLYPH.pass}
-            label="Pässe & Straßen"
-            count={p.passRows.length}
-            total={p.totals.pass}
-            control={
-              <Switch
-                size="sm"
-                checked={p.showPasses}
-                onCheckedChange={p.setShowPasses}
-                aria-label="Pässe und Straßen auf der Karte anzeigen"
-              />
-            }
-          >
+          {p.tab === "pass" && (
             <PassList
               rows={p.passRows}
               currentRow={currentRow}
+              hovered={p.hovered}
+              onHover={p.onHover}
               filters={p.filters}
               setFilters={p.setFilters}
+              empty={emptyProps}
               onSelect={(slug) => p.onSelect({ kind: "pass", slug })}
               onToggleFavorite={(slug) => p.onToggleFavorite("pass", slug)}
             />
-          </Section>
-          <Section
-            open={p.sections.includes("tour")}
-            onOpenChange={toggleSection("tour")}
-            glyph={KIND_GLYPH.tour}
-            label="Touren"
-            count={p.tourRows.length}
-            total={p.totals.tour}
-            control={
-              <div className="flex items-center gap-2">
-                {visibleTourCount > 0 &&
-                  visibleTourCount < allTourSlugs.length && (
-                    <span className="text-muted-foreground text-2xs tabular-nums">
-                      {visibleTourCount} von {allTourSlugs.length}
-                    </span>
-                  )}
-                <Switch
-                  size="sm"
-                  checked={p.hiddenTours.length === 0}
-                  onCheckedChange={(on) =>
-                    p.setHiddenTours(() => (on ? [] : allTourSlugs))
-                  }
-                  aria-label="Touren auf der Karte anzeigen"
-                />
-              </div>
-            }
-          >
+          )}
+          {p.tab === "tour" && (
             <TourList
               rows={p.tourRows}
               currentRow={currentRow}
+              hovered={p.hovered}
+              onHover={p.onHover}
               period={p.filters.period}
               hiddenTours={p.hiddenTours}
+              empty={emptyProps}
               onToggleTour={(slug, on) =>
                 p.setHiddenTours((h) =>
                   on ? h.filter((s) => s !== slug) : [...new Set([...h, slug])],
@@ -301,30 +347,18 @@ export const Sidebar = (p: SidebarProps) => {
               onSelect={(slug) => p.onSelect({ kind: "tour", slug })}
               onToggleFavorite={(slug) => p.onToggleFavorite("tour", slug)}
             />
-          </Section>
-          <Section
-            open={p.sections.includes("town")}
-            onOpenChange={toggleSection("town")}
-            glyph={KIND_GLYPH.town}
-            label="Orte"
-            count={p.townRows.length}
-            total={p.totals.town}
-            control={
-              <Switch
-                size="sm"
-                checked={p.showTowns}
-                onCheckedChange={p.setShowTowns}
-                aria-label="Orte auf der Karte anzeigen"
-              />
-            }
-          >
+          )}
+          {p.tab === "town" && (
             <TownList
               rows={p.townRows}
               currentRow={currentRow}
+              hovered={p.hovered}
+              onHover={p.onHover}
+              empty={emptyProps}
               onSelect={(slug) => p.onSelect({ kind: "town", slug })}
               onToggleFavorite={(slug) => p.onToggleFavorite("town", slug)}
             />
-          </Section>
+          )}
         </div>
 
         <div

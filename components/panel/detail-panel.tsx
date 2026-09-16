@@ -1,10 +1,11 @@
 "use client";
 
-import { ExternalLink, Star, X } from "lucide-react";
+import { Check, ExternalLink, Share2, Star, X } from "lucide-react";
 import dynamic from "next/dynamic";
-import { useEffect, useRef } from "react";
+import { useLayoutEffect, useRef } from "react";
 
 import { CHART_HEIGHT } from "@/components/panel/chart-size";
+import { DestinationSection } from "@/components/panel/destination";
 import {
   ElevationProfile,
   PROFILE_ASPECT,
@@ -34,8 +35,9 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Toggle } from "@/components/ui/toggle";
 import type { EntityKind, Selection } from "@/lib/app-state";
 import { clockTime, periodDate, sunTimes } from "@/lib/daylight";
+import { destinationAt } from "@/lib/destination";
 import type { DetailAssets, DetailData } from "@/lib/detail-assets";
-import { haversine, NEARBY_RADIUS_KM } from "@/lib/geo";
+import { haversine, REACH_MAX_KM } from "@/lib/geo";
 import { komootHref, quaeldichHref } from "@/lib/links";
 import { nearbyKey } from "@/lib/nearby";
 import type { NearbyTours } from "@/lib/nearby";
@@ -67,6 +69,7 @@ import type {
   Town,
 } from "@/lib/types";
 import useFetch from "@/lib/use-fetch";
+import { useShare } from "@/lib/use-share";
 import { cn, fmt, fmtUnit, ICON_TOGGLE, TOUCH_ICON } from "@/lib/utils";
 
 /**
@@ -210,22 +213,34 @@ const Nearby = ({
   lat,
   lon,
   exclude,
+  skipPasses,
   ...p
-}: Props & { lat: number; lon: number; exclude?: string }) => {
-  const nearPasses = p.passes
-    .map((x) => ({ d: haversine({ lat, lon }, x), x }))
-    .filter((e) => e.d <= NEARBY_RADIUS_KM && e.x.slug !== exclude)
-    .toSorted((a, b) => a.d - b.d);
+}: Props & {
+  lat: number;
+  lon: number;
+  exclude?: string;
+  /** A destination block above already ranks the passes; do not list them twice. */
+  skipPasses?: boolean;
+}) => {
+  const nearPasses = skipPasses
+    ? []
+    : p.passes
+        .map((x) => ({ d: haversine({ lat, lon }, x), x }))
+        .filter((e) => e.d <= REACH_MAX_KM && e.x.slug !== exclude)
+        .toSorted((a, b) => a.d - b.d);
   // Tours are lines, so their reach was measured on the server (lib/nearby.ts).
   const slugs = p.nearbyTours[nearbyKey(p.selection.kind, p.selection.slug)];
   const nearTours = p.tours.filter((t) => slugs?.includes(t.slug));
   const nearTowns = p.towns
     .map((x) => ({ d: haversine({ lat, lon }, x), x }))
-    .filter((e) => e.d <= NEARBY_RADIUS_KM && e.x.slug !== exclude)
+    .filter((e) => e.d <= REACH_MAX_KM && e.x.slug !== exclude)
     .toSorted((a, b) => a.d - b.d);
 
+  if (nearPasses.length + nearTours.length + nearTowns.length === 0)
+    return null;
+
   return (
-    <Section id="nearby" title={`Im Umkreis von ${NEARBY_RADIUS_KM} km`}>
+    <Section id="nearby" title={`Im Umkreis von ${REACH_MAX_KM} km`}>
       <div className="flex flex-col gap-1">
         {nearPasses.length > 0 &&
           group(
@@ -602,13 +617,32 @@ const TourDetail = (props: Props & { tour: Tour }) => {
  */
 const TownDetail = (props: Props & { town: Town }) => {
   const { town } = props;
+  // The verdict of a base is the verdict of what it reaches; nothing about a
+  // town is measured (`lib/destination.ts` says why, and the block says so).
+  const destination = destinationAt(
+    town,
+    props.passes,
+    props.years,
+    props.period,
+  );
   return (
     <>
       <div className="mt-2">
         <TagBadges tags={town.tags} />
       </div>
       <p className="mt-2 text-xs">{town.why}</p>
-      <Nearby {...props} lat={town.lat} lon={town.lon} exclude={town.slug} />
+      <DestinationSection
+        d={destination}
+        period={props.period}
+        onSelect={(slug) => props.onSelect({ kind: "pass", slug })}
+      />
+      <Nearby
+        {...props}
+        lat={town.lat}
+        lon={town.lon}
+        exclude={town.slug}
+        skipPasses
+      />
       <ExternalLinks
         links={[
           [
@@ -635,6 +669,8 @@ export const DetailPanel = (props: Props) => {
   const { selection, onBack } = props;
   const heading = useRef<HTMLHeadingElement>(null);
   const scroller = useRef<HTMLDivElement>(null);
+  // The hash already *is* the shareable state; this only hands it over.
+  const { share, done: shared } = useShare();
 
   // The profiles and the photos of this one entity, as a static file with a
   // content hash in its name (lib/detail-assets.ts) – so the page does not
@@ -651,7 +687,15 @@ export const DetailPanel = (props: Props) => {
   // Move focus and scroll to the top whenever another entity is selected. The
   // selection is the trigger, not something the effect reads – which is what
   // the rule objects to.
-  useEffect(() => {
+  //
+  // A *layout* effect, so the panel owns the focus in the frame it appears in.
+  // As a passive effect this ran after paint, which left a window – one that
+  // widens with everything else the commit has to do – in which the panel was
+  // on screen while focus was still on the row that opened it. Escape then
+  // went to the row, which has no handler for it, and the panel simply would
+  // not close from the keyboard. The e2e suite caught it as a flake; a
+  // keyboard visitor would have caught it as "Escape does nothing".
+  useLayoutEffect(() => {
     scroller.current?.scrollTo({ top: 0 });
     heading.current?.focus({ preventScroll: true });
     // oxlint-disable-next-line react/exhaustive-effect-dependencies
@@ -685,12 +729,25 @@ export const DetailPanel = (props: Props) => {
         <p className="text-muted-foreground text-2xs min-w-0 flex-1 truncate pl-2 font-semibold tracking-widest uppercase">
           {kicker}
         </p>
+        <Button
+          size="icon"
+          variant="ghost"
+          onClick={() => share(`${entity.name} – Alpenpässe`)}
+          aria-label={shared ? "Link kopiert" : `${entity.name} teilen`}
+          className={TOUCH_ICON}
+        >
+          {shared ? <Check className="text-status-open" /> : <Share2 />}
+        </Button>
         <Toggle
           pressed={favorite}
           onPressedChange={() =>
             props.onToggleFavorite(selection.kind, selection.slug)
           }
-          aria-label={favorite ? "Nicht mehr merken" : "Merken"}
+          aria-label={
+            favorite
+              ? `${entity.name} nicht mehr merken`
+              : `${entity.name} merken`
+          }
           className={cn(ICON_TOGGLE, TOUCH_ICON)}
         >
           <Star className={cn(favorite && "fill-accent text-accent")} />

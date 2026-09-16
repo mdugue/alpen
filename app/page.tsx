@@ -86,6 +86,19 @@ const Page = async () => {
 
   return (
     <main className="h-dvh overflow-hidden">
+      {/*
+       * The first tab stop, and the only way past the sidebar without going
+       * through it. The lists are composite widgets now (`lib/use-roving.ts`),
+       * so Tab no longer walks 258 rows – but the filter panel alone is still
+       * forty chips, and a keyboard visitor who wants the map should not have
+       * to pass them.
+       */}
+      <a
+        href="#map"
+        className="bg-card text-foreground ring-ring sr-only rounded-md px-3 py-2 text-sm shadow-lg focus:not-sr-only focus:absolute focus:top-3 focus:left-3 focus:z-50 focus:ring-2"
+      >
+        Zur Karte springen
+      </a>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}

@@ -18,7 +18,6 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import {
-  ALL_KINDS,
   DEFAULT_FILTERS,
   DEFAULT_VIEW,
   defined,
@@ -92,11 +91,16 @@ const SIDEBAR_W = { lg: 384, xl: 416 };
 const DETAIL_W = { lg: 352, xl: 400 };
 /**
  * Bottom sheet positions on phones. The list opens on a peek row that carries
- * the search button (keep `--sheet-peek` in app/globals.css in step, the
- * MapLibre controls sit above it), then half and almost full; the detail sheet
- * leaves the map visible above it or takes nearly the whole screen.
+ * the search button *and* a strip of the current top results (`PeekStrip`),
+ * then half and almost full; the detail sheet leaves the map visible above it
+ * or takes nearly the whole screen.
+ *
+ * The peek used to be 80 px, which was the height of a search row and nothing
+ * else – so the phone's first screen was a text box on an empty map. It now
+ * has to clear the strip as well; keep `--sheet-peek` in app/globals.css in
+ * step, since MapLibre's corner controls sit above it.
  */
-const LIST_SNAPS = [80, 0.5, 0.85] as const;
+const LIST_SNAPS = [158, 0.5, 0.85] as const;
 const DETAIL_SNAPS = [0.55, 0.92] as const;
 const [LIST_PEEK, LIST_HALF, LIST_FULL] = LIST_SNAPS;
 
@@ -191,10 +195,9 @@ export const Explorer = ({
     "alpenpaesse:hiddenTours",
     NO_SLUGS,
   );
-  const [sections, setSections] = useStored<EntityKind[]>(
-    "alpenpaesse:sections",
-    ALL_KINDS,
-  );
+  // Which of the three lists is on screen. A preference like the sidebar's
+  // own fold, so coming back lands where the last visit left off.
+  const [tab, setTab] = useStored<EntityKind>("alpenpaesse:tab", "pass");
   const [sidebarOpen, setSidebarOpen] = useStored("alpenpaesse:sidebar", true);
   const [listSnap, setListSnap] = useState<number>(LIST_PEEK);
   const [detailSnap, setDetailSnap] = useState<number>(DETAIL_SNAPS[0]);
@@ -204,6 +207,26 @@ export const Explorer = ({
   // detail panel produces them.
   const [profileCursor, setProfileCursor] = useState<LatLon | null>(null);
   const [profileZoom, setProfileZoom] = useState<LatLon | null>(null);
+  /**
+   * What the pointer is over – wherever the pointer happens to be. The list
+   * and the map are two halves of one screen showing the same 258 entities,
+   * and until now neither knew what the other was pointing at: a row did
+   * nothing to the map and a mark did nothing to the list. One piece of state
+   * shared by both is the whole fix; it deliberately lives *next to* the
+   * selection rather than inside it, because hovering must never move the
+   * camera, write the hash or open a panel.
+   *
+   * It is not persisted and not in the hash: it describes a pointer, and a
+   * pointer is not part of a shared link.
+   */
+  const [hovered, setHovered] = useState<Selection | null>(null);
+  /**
+   * "And where is this one?" – the peek strip's cards as they go by. A fresh
+   * object per request (like `profileZoom`), so the same card asked for twice
+   * moves the map twice. Hovering alone never does: see `reveal` in
+   * `PassMap`'s props for why a camera that follows a pointer is a bug.
+   */
+  const [reveal, setReveal] = useState<Selection | null>(null);
   const { isFavorite, toggle: toggleFavorite } = useFavorites();
   const [, setStoredPeriod] = useStoredPeriod();
   const isMobile = useMediaQuery(MOBILE_QUERY);
@@ -283,11 +306,14 @@ export const Explorer = ({
     signals,
   );
 
-  const mapPasses: MapPass[] = passRows.map(({ pass, status, favorite }) => ({
-    ...pass,
-    favorite,
-    status,
-  }));
+  const mapPasses: MapPass[] = passRows.map(
+    ({ pass, status, grade, favorite }) => ({
+      ...pass,
+      favorite,
+      grade,
+      status,
+    }),
+  );
   // What the list shows for a kind is what the map shows for that kind; the
   // visibility switches only add a layer toggle on top.
   const mapTours = tourRows.map(({ tour: t, status }) => ({
@@ -307,6 +333,11 @@ export const Explorer = ({
   const select = (sel: Selection) => {
     dispatch({ kind: "select", sel });
     setProfileCursor(null);
+    setHovered(null);
+    setReveal(null);
+    // The lists are one at a time now, so selecting from the map has to bring
+    // the right one forward – otherwise the highlighted row is behind a tab.
+    setTab(sel.kind);
     if (sel.kind === "pass") setShowPasses(true);
     if (sel.kind === "tour")
       setHiddenTours((h) => h.filter((s) => s !== sel.slug));
@@ -377,11 +408,17 @@ export const Explorer = ({
       setShowPasses={setShowPasses}
       showTowns={showTowns}
       setShowTowns={setShowTowns}
-      sections={sections}
-      setSections={setSections}
+      tab={tab}
+      setTab={setTab}
       onToggleFavorite={toggleFavorite}
       onSelect={select}
       selection={selection}
+      hovered={hovered}
+      onHover={setHovered}
+      onReveal={(sel) => {
+        setHovered(sel);
+        setReveal(sel ? { ...sel } : null);
+      }}
       onCollapse={() => setSidebarOpen(false)}
       onOpenScales={() => setScalesOpen(true)}
       onOpenSearch={
@@ -416,7 +453,7 @@ export const Explorer = ({
   return (
     <TooltipProvider delay={400}>
       <div className="relative h-dvh overflow-hidden">
-        <div className="absolute inset-0">
+        <div id="map" tabIndex={-1} className="absolute inset-0">
           <PassMap
             passes={mapPasses}
             tours={mapTours}
@@ -426,6 +463,9 @@ export const Explorer = ({
             showPasses={showPasses}
             showTowns={showTowns}
             selection={selection}
+            hovered={hovered}
+            onHover={setHovered}
+            reveal={reveal}
             onSelect={select}
             onViewChange={setView}
             onCameraSettled={() => dispatch({ kind: "arrive" })}

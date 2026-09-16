@@ -13,7 +13,87 @@ export const haversine = (a: LatLon, b: LatLon): number => {
   return 2 * R * Math.asin(Math.sqrt(x));
 };
 
-export const NEARBY_RADIUS_KM = 60;
+/**
+ * How far a road may sit from a base and still count as "reachable from
+ * here". It is deliberately larger than the 60 km this used to be: the
+ * previous number put a hard wall between a pass at 59 km and one at 61,
+ * and a wall is the wrong shape for the question. The shape is `REACH_BANDS`
+ * below – the cut-off only says where the list stops, and it stops where a
+ * pass genuinely stops being part of a holiday *here* rather than a reason to
+ * stay somewhere else.
+ */
+export const REACH_MAX_KM = 75;
+
+/** Kept as the old name for the precomputed hull and tour reach. */
+export const NEARBY_RADIUS_KM = REACH_MAX_KM;
+
+/**
+ * Distance, as a rider thinks of it instead of as a number.
+ *
+ * A radius answers "is it in?" and nothing else, so a pass 1 km away and one
+ * 59 km away read the same while one at 61 km is gone. Both halves of that are
+ * wrong: the near pass is a different *kind* of thing from the far one, and
+ * the far one does not stop mattering at a round number.
+ *
+ * Two mechanisms replace the one radius, and they are deliberately different
+ * so that neither has to do the other's job:
+ *
+ *  - **Bands** are what a person reads. Three of them, each named after what
+ *    it means for a day on the bike: ride out of the door, a day's loop, or a
+ *    drive first. A band is a sentence ("vier Pässe vor der Haustür"), which
+ *    a weight can never be – nobody can read "Gewicht 0,62".
+ *  - **A weight** is what the machine ranks with. It falls smoothly from 1 at
+ *    the door to 0 at `REACH_MAX_KM`, so ordering a list by
+ *    `beauty × rideability × reachWeight` puts a good near pass above an
+ *    equally good far one without anyone having to see the number.
+ *
+ * That split is the whole idea: the gradient does the ranking, where it is
+ * felt and never read; the bands do the explaining, where they are read and
+ * never computed with. The visitor is asked for no radius and shown no
+ * weight.
+ */
+export const REACH_BANDS = [
+  {
+    hint: "Aus dem Ort heraus, ohne Auto.",
+    key: "door",
+    label: "vor der Haustür",
+    maxKm: 18,
+  },
+  {
+    hint: "In einer Tagesrunde ab dem Ort machbar.",
+    key: "day",
+    label: "Tagesrunde",
+    maxKm: 45,
+  },
+  {
+    hint: "Lohnt den Transfer – ein Ausflugstag.",
+    key: "trip",
+    label: "Ausflug",
+    maxKm: REACH_MAX_KM,
+  },
+] as const;
+
+export type ReachBand = (typeof REACH_BANDS)[number]["key"];
+
+/** Which band a distance falls into; `null` beyond `REACH_MAX_KM`. */
+export const reachBand = (km: number): ReachBand | null =>
+  REACH_BANDS.find((b) => km <= b.maxKm)?.key ?? null;
+
+export const REACH_BAND_LABEL: Record<ReachBand, string> = Object.fromEntries(
+  REACH_BANDS.map((b) => [b.key, b.label]),
+) as Record<ReachBand, string>;
+
+/**
+ * 1 at the door, 0 at `REACH_MAX_KM` and beyond, smooth in between – a
+ * cosine ease rather than a straight line, so the first kilometres out of
+ * town cost almost nothing (they genuinely do not: 5 km of valley is a
+ * warm-up) and the last ones cost a lot.
+ */
+export const reachWeight = (km: number): number => {
+  if (km <= 0) return 1;
+  if (km >= REACH_MAX_KM) return 0;
+  return (1 + Math.cos((km / REACH_MAX_KM) * Math.PI)) / 2;
+};
 
 /**
  * Convex hull of a set of points (monotone chain), in the input's own units –
