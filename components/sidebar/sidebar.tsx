@@ -95,19 +95,28 @@ export const Sidebar = (p: SidebarProps) => {
     ? `${p.selection.kind}:${p.selection.slug}`
     : null;
 
-  // Keep the selected row visible, e.g. after a click on a map marker. A
-  // selection also starts a camera flight, and on a phone the sheet drops to
-  // its peek row in the same moment – where a smooth scroll would animate a
-  // list nobody can see, against the two animations that can be seen. Peeking,
-  // the row is put in place at once instead; by the time the sheet is pulled
-  // up again it is where it should be.
+  // Keep the selected row visible, e.g. after a click on a map marker – on
+  // desktop, where the list stays on screen and the row is the thing that says
+  // which entity the panel belongs to.
+  //
+  // On a phone it is not done at all. The list sheet drops to its peek row in
+  // the same moment as the selection, so the scroll would move a list nobody
+  // can see, and when the sheet is pulled up again the row is found by reading
+  // rather than by having been scrolled to an hour ago. It was a third
+  // animation competing with the two that can be seen – the camera's flight
+  // and the detail sheet sliding in.
+  //
+  // `block: "nearest"` is the standard spelling of `scrollIntoViewIfNeeded`:
+  // a row already in view is left alone, so no scroll is started for nothing.
+  // The default `behavior` is the browser's own instant jump – deliberately no
+  // `"smooth"`, which is a scroll animation on the main thread, running for
+  // the length of the flight it competes with.
   useEffect(() => {
-    if (!currentRow) return;
-    lists.current?.querySelector(`[data-row="${currentRow}"]`)?.scrollIntoView({
-      behavior: p.peek ? "instant" : "smooth",
-      block: "nearest",
-    });
-    // Intentional: the row is the trigger; `peek` only says how to get there.
+    if (!currentRow || p.variant !== "aside") return;
+    lists.current
+      ?.querySelector(`[data-row="${currentRow}"]`)
+      ?.scrollIntoView({ block: "nearest" });
+    // Intentional: the row is the trigger; the variant does not change under it.
     // oxlint-disable-next-line react/exhaustive-deps
   }, [currentRow]);
 
