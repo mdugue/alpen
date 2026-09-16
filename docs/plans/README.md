@@ -42,6 +42,7 @@ that goal; features that only add route-level precision rank last.
 | 20  | [The gate's decisions out of the build script](20-route-decisions.md) | pipeline testable, one retry rule   | M–L    | 00                   | proposed                                               |
 | 21  | [One adapter per external host](21-host-adapters.md)                  | offline pipeline test               | M      | 20                   | proposed                                               |
 | 22  | [Detail data out of the payload](22-detail-data-out-of-payload.md)    | first load, free-tier headroom      | S–M    | 01                   | done                                                   |
+| –   | UI/UX audit round (no plan document)                                  | "where", finding things, a11y       | M      | –                    | [in progress](https://github.com/mdugue/alpen/pull/47) |
 
 Effort: S ≤ 1 day, M 2–3 days, L 4–6 days. 09, 10 and 11 can be interleaved
 with anything; do 09 before 12 so the new entity gets a schema from day one.
@@ -55,6 +56,29 @@ shown, the scene) and **20 → 21** in the pipeline (the gate's decisions, the
 hosts). Within a chain a later plan assumes the earlier one is done and is
 written smaller because of it. 15 and 16 are done, so 17 is the next one in
 that chain; 18 and 20 head the other two and depend on nothing that is open.
+
+## The audit round (PR #47)
+
+One round came out of a UI/UX audit rather than a plan, and it takes ground
+from two plans that are still open. It is recorded here so the table above is
+not read as the whole picture:
+
+- **12 (Destinations)** is partly answered. A town now carries a verdict for
+  the chosen half-month, its own derived 24 cells and a list of the passes it
+  reaches, ranked and grouped by reach band (`lib/destination.ts`,
+  `docs/scales.md`); a pass carries the inverse, "Orte als Standort". What
+  plan 12 still holds is the destination as a _first-class entity_ with its
+  own data file and its own place in the search and the filters — none of that
+  is in PR #47, which derives everything from the towns and passes that
+  already exist.
+- **17 (Detail panel per kind)** is not done and is not made harder. The panel
+  gained two blocks and a shared hover, all through the existing props; the
+  split into one component per kind that plan 17 asks for is untouched.
+
+The round also replaced the single 60 km radius with three named reach bands
+and a smooth nearness weight (`lib/geo.ts`), which every "im Umkreis" feature
+now shares. Anything later that asks "what is near here" should use those
+rather than reintroduce a radius.
 
 ## Status legend
 

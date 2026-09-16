@@ -157,6 +157,29 @@ export class Page {
     }
   }
 
+  /**
+   * Waits until the element is not only rendered but actually inside the
+   * viewport. A drawer slides in, so for its first frames its header sits
+   * below the fold: it has client rects, it is the right element, and a click
+   * aimed at its centre lands on nothing at all.
+   */
+  async waitInViewport(selector: string, timeout = 15_000): Promise<void> {
+    const deadline = Date.now() + timeout;
+    for (;;) {
+      const inside = await this.evaluate<boolean>(
+        `(() => { const el = document.querySelector(${JSON.stringify(selector)});
+          if (!el) return false;
+          const r = el.getBoundingClientRect();
+          return r.width > 0 && r.height > 0 && r.top >= 0 &&
+            r.bottom <= innerHeight && r.left >= 0 && r.right <= innerWidth; })()`,
+      );
+      if (inside) return;
+      if (Date.now() > deadline)
+        throw new Error(`Timeout: ${selector} never reached the viewport`);
+      await Bun.sleep(100);
+    }
+  }
+
   async waitForGone(selector: string, timeout = 15_000): Promise<void> {
     const deadline = Date.now() + timeout;
     for (;;) {

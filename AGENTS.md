@@ -58,13 +58,17 @@ friends do that better and the app links out to them.
 | Detail assets: one file per entity, hashing     | `lib/detail-assets.ts`, `scripts/build-detail-assets.ts` (→ `public/detail`, git-ignored)                                                                                                                                                                                                                  |
 | Weather route, Open-Meteo quota and cooldown    | `app/api/weather/[slug]/route.ts`                                                                                                                                                                                                                                                                          |
 | Tours within reach, town reach hull             | `lib/nearby.ts`, `lib/geo.ts` (computed on the server in `lib/data.ts`)                                                                                                                                                                                                                                    |
+| Reach bands, the nearness weight                | `lib/geo.ts` (`REACH_BANDS`, `reachWeight`, `REACH_MAX_KM`); calibrated in `docs/scales.md`                                                                                                                                                                                                                |
+| Destination verdict, ranked reach, the inverse  | `lib/destination.ts` (`destinationAt`, `basesFor`, `gradeOf`), `components/panel/destination.tsx`, `scripts/analyze-destinations.ts`                                                                                                                                                                       |
+| Hover shared by list, map and panel             | `hovered` in `components/explorer.tsx`; the ring and line state in `components/map/pass-map.tsx`                                                                                                                                                                                                           |
+| One tab stop per list; sharing the hash         | `lib/use-roving.ts`, `lib/use-share.ts`                                                                                                                                                                                                                                                                    |
 | Photos: keys, sizes, licence metadata           | `lib/photos.ts`, `scripts/build-photos.ts` (`bun run data:photos`) → `data/generated/photos.json`                                                                                                                                                                                                          |
 | Period scrubber floating over the map           | `components/map/period-scrubber.tsx`                                                                                                                                                                                                                                                                       |
 | Season strip (24 half-months)                   | `components/season-strip.tsx`                                                                                                                                                                                                                                                                              |
 | Filter controls, chips, applied-filter row      | `components/sidebar/filter-panel.tsx`, `components/sidebar/filter-chip.tsx`, `lib/filter-summary.ts`                                                                                                                                                                                                       |
-| Sidebar: search, filters, one list per kind     | `components/sidebar/`, `lib/rows.ts`                                                                                                                                                                                                                                                                       |
+| Sidebar: search, filters, one list per kind     | `components/sidebar/` (tabs: `kind-tabs.tsx`), `lib/rows.ts`                                                                                                                                                                                                                                               |
 | Detail panel incl. profile/weather/climate      | `components/panel/` (collapsible blocks: `components/panel/section.tsx`)                                                                                                                                                                                                                                   |
-| Bottom sheet on phones (one per panel)          | `components/mobile-sheet.tsx`                                                                                                                                                                                                                                                                              |
+| Drawers on phones (list and detail, separate)   | `components/mobile-sheet.tsx`, `components/map/map-search.tsx`                                                                                                                                                                                                                                             |
 | Precomputation, data checks                     | `scripts/build-data.ts`, `scripts/build-photos.ts`, `scripts/check-data.ts`                                                                                                                                                                                                                                |
 | Route quality gate: checks and thresholds       | `scripts/lib/validate.ts`; pass-point placement `scripts/locate-pass.ts` (`bun run data:locate`), `scripts/lib/locate.ts`                                                                                                                                                                                  |
 | Name, claim, colours, mark, base URL            | `lib/brand.ts`, `lib/mark.tsx`                                                                                                                                                                                                                                                                             |
@@ -175,23 +179,50 @@ friends do that better and the app links out to them.
   `@custom-variant dark (&:is(.dark *))` line that `ui:init` writes.
 - **Layout: the map is the page.** No header, toolbar or footer. On desktop
   the map fills the viewport and two translucent panels float over its left
-  edge: the collapsible sidebar (`components/sidebar/`: search, filters, one
-  collapsible list per kind) and, while something is selected, the detail
-  slide-over next to it. Their widths are mirrored in `explorer.tsx`
+  edge: the collapsible sidebar (`components/sidebar/`: search, filters, and
+  one list per kind behind a tab row) and, while something is selected, the
+  detail slide-over next to it. Their widths are mirrored in `explorer.tsx`
   (`SIDEBAR_W`, `DETAIL_W`) and fed to MapLibre as left padding so camera
-  targets stay visible. Below `lg` the split is the same, only turned by
-  90°: two `MobileSheet`s (`components/mobile-sheet.tsx`, a `Drawer` with snap
-  points each) hold the same two panels, the list sheet on its peek row and the
-  detail sheet sliding in over it, and the height of whichever is in front is
-  fed to MapLibre as bottom padding. Both keep their own state, so a detail
-  never takes the list's place and the lists keep their scroll position.
-  A sheet sizes itself from `--drawer-snap-point-offset`: the popup is a full
-  `100dvh` and padded off at the bottom by that offset, so its content box ends
-  at the fold. The peek row carries a **button** that opens the sheet, not the
-  search field itself: a field there would have the software keyboard come up
-  in the same moment as the sheet moves, and the two animations fight over
-  where the field ends up. The field a thumb reaches is always in a sheet that
-  already stands still. What floats over the map is one cluster in its top-left
+  targets stay visible. Below `lg` there is **no** panel at rest: the map is
+  the page on a phone too, so nothing covers it until something is asked for.
+  What floats over its bottom-left corner is `MapSearch` – a button reading
+  "Suche" (or the current query) with the three counts beside it and the filter
+  badge after them, which is also the only thing on the first screen that says
+  what the app holds. It is a **button** and is styled as one: a field there
+  would bring the software keyboard up in the same moment as the drawer moves,
+  and the two animations fight over where the field ends up – the field a thumb
+  reaches is always in a drawer that already stands still. MapLibre's own
+  corner controls are lifted above the bar by `--sheet-peek`, which needs
+  `!important`: MapLibre's stylesheet is bundled after `globals.css` at equal
+  specificity, so the rule had never applied.
+  From there, **two** independent `MobileSheet`s (`components/mobile-sheet.tsx`,
+  the Base UI `Drawer` with `modal={false}` and snap points), the list and the
+  detail, each mounted only while it is open and each with its own snap state
+  (`LIST_SNAPS`, `DETAIL_SNAPS` in `explorer.tsx`). The search bar opens the
+  list; a tap on the map opens the detail over the bare map; a tap on a list
+  row opens it over the list. Whichever is in front feeds MapLibre its height
+  as bottom padding, and with neither open that is the floating bar's height
+  (`FLOATING_BAR_PX`, kept in step with `--sheet-peek`).
+  It was one sheet holding either content, after a stint as two sheets that
+  were always both on screen. The always-on pair failed because a drawer that
+  cannot leave has to rest somewhere, so the layout grew a peek row, a swipe
+  handle over it and a trigger button inside the thing it triggers – a piece of
+  the list permanently parked on the map before anything had been asked for,
+  and a second handle behind it that did nothing. Collapsing them into one
+  sheet removed the second handle but kept the peek, and made "back to the
+  list" something the app had to reconstruct: a detail reached from the map had
+  no list behind it, and one reached from a row had to keep the list mounted
+  under a `hidden` so its scroll position, its tab and its search survived.
+  Opening on demand settles both. The stack is simply the truth, the list keeps
+  its state by never being unmounted while it is open, and nothing has to rest
+  on screen, so there is no peek snap to measure.
+  What leaving a detail means still depends on what is underneath, and the
+  control says which: a labelled `‹ Liste` back button while the list drawer is
+  open behind it (`backToList` on `DetailPanel`), the `✕` when the detail is
+  alone over the map. A drawer sizes itself from `--drawer-snap-point-offset`:
+  the popup is a full `100dvh` and padded off at the bottom by that offset, so
+  its content box ends at the fold.
+  What else floats over the map is one cluster in its top-left
   corner (`MAP_CLUSTER`, next to the panels' left edge): the period scrubber
   and, on the same panel surface, the three map tools – layers, 3D, fit. The
   tools are one segmented column in the same outline as the scrubber's own
@@ -239,9 +270,10 @@ friends do that better and the app links out to them.
   jumps: the profile skeleton has the drawing's aspect ratio (`PROFILE_ASPECT`)
   and the chart's `next/dynamic` placeholder its height (`CHART_HEIGHT`,
   a module of its own so the placeholder does not import recharts). The same
-  rule is why the selected row is put into view without a smooth scroll while
-  the list sheet is peeking: it would animate a list nobody can see against the
-  two animations that can be seen.
+  rule is why the selected row is put into view without a smooth scroll in the
+  sheet layout: the detail drawer is usually in front of the list when it
+  happens, so it would animate a list nobody can see against the drawer
+  animation that can be seen.
 - **Charts come from the shadcn `chart` component** (recharts under the hood).
   It is the only heavy dependency in the app, so the one chart that uses it
   (`components/panel/climate-chart.tsx`) is pulled in with `next/dynamic` and
@@ -291,15 +323,34 @@ friends do that better and the app links out to them.
   came from. Attribution is not decoration: every slide carries author
   and licence, baked into the slide rather than derived from the carousel's
   index, so it cannot drift out of sync with what is on screen.
-- **A sidebar section adds no surface.** The three collapsible lists
-  (`components/sidebar/section.tsx`) carry no background of their own in either
-  state – neither a tint on the header nor the ghost trigger's
-  `aria-expanded` fill – so the panel's frosted backdrop reads through them
-  evenly. That is also why the header does not stick: a pinned header needs a
-  background to stay legible over the rows scrolling under it, and a
-  `backdrop-blur` cannot supply one, because the panel already filters its
-  backdrop and a nested filter never sees the content inside that backdrop
-  root.
+- **One list at a time, chosen by a tab row.** The three kinds used to be
+  collapsible blocks stacked inside one scroll container, which made the
+  sidebar a single 12 841 px column against a 730 px viewport: the tours sat
+  below all 201 roads and the towns below those. `KindTabs`
+  (`components/sidebar/kind-tabs.tsx`) puts the choice in the fixed header and
+  the scroll container holds one list.
+  The tabs also solve what kept the old section headers from sticking. A
+  pinned header needs an opaque background to stay legible over the rows
+  scrolling under it, and a `backdrop-blur` cannot supply one – the panel
+  already filters its backdrop, and a nested filter never sees the content
+  inside that backdrop root. In the header row nothing scrolls underneath, so
+  the counts simply stay on screen, and the count on a tab is the answer to
+  the filter: narrowing to "ab 2.500 m" collapses the tours from 9 to 2 where
+  it can be seen.
+  Each kind's "auf der Karte" switch rides in that list's own toolbar
+  (`ListToolbar`), never beside the tab row: a control next to three tabs
+  reads as acting on all three, and a bare switch says what it does only once
+  it has been flipped, so it carries the words too.
+- **A long list is one tab stop.** Every row used to be two (the bookmark
+  toggle and the row itself) – 562 focusable elements on the built page, so
+  reaching the map meant holding Tab down for several hundred presses, and a
+  screen reader's rotor held two hundred buttons all called "Merken".
+  `useRoving` (`lib/use-roving.ts`) makes each list the composite widget the
+  platform expects: one stop, arrows inside it, Home/End/PageUp/PageDown, and
+  the tab stop stays on the row last focused. It works off the DOM rather than
+  an index in state, because which rows exist changes on every keystroke in
+  the search field. Every bookmark toggle is named after the thing it
+  bookmarks, and `app/page.tsx` carries a skip link to the map.
 - **The panel folds.** Every block below the title is a `Section`
   (`components/panel/section.tsx`), open by default. The panel is a column on a
   map and a phone sheet shows two blocks at a time; whoever wants the climate

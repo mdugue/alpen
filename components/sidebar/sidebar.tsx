@@ -10,11 +10,10 @@ import {
   filterCount,
   FilterTrigger,
 } from "@/components/sidebar/filter-panel";
+import { KindTabs } from "@/components/sidebar/kind-tabs";
 import { PassList } from "@/components/sidebar/pass-list";
-import { KIND_GLYPH, Section } from "@/components/sidebar/section";
 import { TourList } from "@/components/sidebar/tour-list";
 import { TownList } from "@/components/sidebar/town-list";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   InputGroup,
@@ -48,18 +47,18 @@ export interface SidebarProps {
   setShowPasses: (v: boolean) => void;
   showTowns: boolean;
   setShowTowns: (v: boolean) => void;
-  sections: EntityKind[];
-  setSections: (update: (s: EntityKind[]) => EntityKind[]) => void;
+  /** Which of the three lists is on screen. */
+  tab: EntityKind;
+  setTab: (kind: EntityKind) => void;
   onToggleFavorite: (kind: EntityKind, slug: string) => void;
   onSelect: (sel: Selection) => void;
   /** Highlighted in the lists and scrolled into view. */
   selection: Selection | null;
+  /** What the pointer is over, on the map or in the list; the two share one highlight. */
+  hovered: Selection | null;
+  onHover: (sel: Selection | null) => void;
   onCollapse?: () => void;
   onOpenScales: () => void;
-  /** Tap on the peek row's search button: the sheet opens, the field it reveals is the real one. */
-  onOpenSearch?: () => void;
-  /** Bottom sheet at its peek height: only the search row is visible. */
-  peek?: boolean;
 }
 
 export const Sidebar = (p: SidebarProps) => {
@@ -72,10 +71,6 @@ export const Sidebar = (p: SidebarProps) => {
       period: f.period,
       sort: f.sort,
     }));
-  const toggleSection = (kind: EntityKind) => (open: boolean) =>
-    p.setSections((s) =>
-      open ? [...new Set([...s, kind])] : s.filter((k) => k !== kind),
-    );
   const allTourSlugs = p.tours.map((t) => t.slug);
   const visibleTourCount = allTourSlugs.filter(
     (s) => !p.hiddenTours.includes(s),
@@ -88,37 +83,83 @@ export const Sidebar = (p: SidebarProps) => {
   const filtersOpen = manual ?? active > 0;
   const [more, setMore] = useState<boolean | null>(null);
   const moreOpen = more ?? hasSecondaryFilters(p.filters);
-  const setMoreOpen = (open: boolean) => setMore(open);
 
   const lists = useRef<HTMLDivElement>(null);
   const currentRow = p.selection
     ? `${p.selection.kind}:${p.selection.slug}`
     : null;
 
-  // Keep the selected row visible, e.g. after a click on a map marker – on
-  // desktop, where the list stays on screen and the row is the thing that says
-  // which entity the panel belongs to.
-  //
-  // On a phone it is not done at all. The list sheet drops to its peek row in
-  // the same moment as the selection, so the scroll would move a list nobody
-  // can see, and when the sheet is pulled up again the row is found by reading
-  // rather than by having been scrolled to an hour ago. It was a third
-  // animation competing with the two that can be seen – the camera's flight
-  // and the detail sheet sliding in.
+  const counts = {
+    pass: p.passRows.length,
+    tour: p.tourRows.length,
+    town: p.townRows.length,
+  };
+
+  // Keep the selected row visible, e.g. after a click on a map marker.
   //
   // `block: "nearest"` is the standard spelling of `scrollIntoViewIfNeeded`:
   // a row already in view is left alone, so no scroll is started for nothing.
-  // The default `behavior` is the browser's own instant jump – deliberately no
-  // `"smooth"`, which is a scroll animation on the main thread, running for
-  // the length of the flight it competes with.
+  // In the sheet layout the behaviour is pinned to the browser's own instant
+  // jump – deliberately no `"smooth"`, which is a scroll animation on the main
+  // thread competing with the two animations that can be seen, the camera's
+  // flight and the detail drawer sliding in over this very list. The list
+  // stays where it is put, so by the time the detail is dismissed the row is
+  // where it should be.
   useEffect(() => {
-    if (!currentRow || p.variant !== "aside") return;
-    lists.current
-      ?.querySelector(`[data-row="${currentRow}"]`)
-      ?.scrollIntoView({ block: "nearest" });
-    // Intentional: the row is the trigger; the variant does not change under it.
+    if (!currentRow) return;
+    lists.current?.querySelector(`[data-row="${currentRow}"]`)?.scrollIntoView({
+      behavior: p.variant === "sheet" ? "instant" : "smooth",
+      block: "nearest",
+    });
+    // Intentional: the row is the trigger; the variant only says how to get there.
     // oxlint-disable-next-line react/exhaustive-deps
-  }, [currentRow]);
+  }, [currentRow, p.tab]);
+
+  /**
+   * Each kind's "auf der Karte" switch. It rides in the list's own toolbar
+   * (`ListToolbar`), not beside the tab row: a control next to three tabs
+   * reads as acting on all three.
+   */
+  const passSwitch = (
+    <Switch
+      size="sm"
+      checked={p.showPasses}
+      onCheckedChange={p.setShowPasses}
+      aria-label="Pässe und Straßen auf der Karte anzeigen"
+    />
+  );
+  const townSwitch = (
+    <Switch
+      size="sm"
+      checked={p.showTowns}
+      onCheckedChange={p.setShowTowns}
+      aria-label="Orte auf der Karte anzeigen"
+    />
+  );
+  const tourSwitch = (
+    <span className="flex items-center gap-1.5">
+      {visibleTourCount > 0 && visibleTourCount < allTourSlugs.length && (
+        <span className="tabular-nums">
+          {visibleTourCount}/{allTourSlugs.length}
+        </span>
+      )}
+      <Switch
+        size="sm"
+        checked={p.hiddenTours.length === 0}
+        onCheckedChange={(on) =>
+          p.setHiddenTours(() => (on ? [] : allTourSlugs))
+        }
+        aria-label="Touren auf der Karte anzeigen"
+      />
+    </span>
+  );
+
+  const emptyProps = {
+    countWith: p.countWith,
+    filters: p.filters,
+    onReset: resetFilters,
+    setFilters: p.setFilters,
+  };
 
   return (
     <div className="text-card-foreground flex h-full min-h-0 flex-col">
@@ -148,160 +189,101 @@ export const Sidebar = (p: SidebarProps) => {
       <div className="flex min-h-0 flex-1 flex-col">
         <div className="border-border relative flex shrink-0 flex-col gap-2 border-b px-3 py-2">
           <div className="flex items-center gap-2">
-            {
-              // On the peek row the field is a button that only opens the
-              // sheet: a live input there would have the software keyboard
-              // come up in the same moment as the sheet moves, and the two
-              // animations fight over where the field ends up.
-              p.peek ? (
-                <Button
-                  variant="outline"
-                  onClick={p.onOpenSearch}
-                  className={cn(
-                    "text-muted-foreground flex-1 justify-start font-normal",
-                    TOUCH_CONTROL,
-                  )}
-                >
-                  <Search data-icon="inline-start" />
-                  <span className="truncate">
-                    {p.filters.query || "Pass, Tour oder Ort …"}
-                  </span>
-                  {/* The peek row is one row high, so the chip row below it
-                      cannot show – the count takes its place and the chips
-                      themselves are one tap away, in the sheet. */}
-                  {active > 0 && (
-                    <Badge className="ml-auto shrink-0">{active}</Badge>
-                  )}
-                </Button>
-              ) : (
-                <InputGroup className={cn("flex-1", TOUCH_CONTROL)}>
-                  <InputGroupAddon>
-                    <Search />
-                  </InputGroupAddon>
-                  <InputGroupInput
-                    type="search"
-                    name="q"
-                    autoComplete="off"
-                    enterKeyHint="search"
-                    spellCheck={false}
-                    value={p.filters.query}
-                    onChange={(e) => set("query", e.target.value)}
-                    placeholder="Pass, Tour oder Ort …"
-                    aria-label="Suchen"
-                    className="h-full [&::-webkit-search-cancel-button]:appearance-none [&::-webkit-search-decoration]:appearance-none"
-                  />
-                  {p.filters.query && (
-                    <InputGroupAddon align="inline-end">
-                      <InputGroupButton
-                        size="icon-xs"
-                        onClick={() => set("query", "")}
-                        aria-label="Suche leeren"
-                      >
-                        <X />
-                      </InputGroupButton>
-                    </InputGroupAddon>
-                  )}
-                </InputGroup>
-              )
-            }
-            {!p.peek && (
-              <FilterTrigger
-                filters={p.filters}
-                open={filtersOpen}
-                onOpenChange={setManual}
+            <InputGroup className={cn("flex-1", TOUCH_CONTROL)}>
+              <InputGroupAddon>
+                <Search />
+              </InputGroupAddon>
+              <InputGroupInput
+                type="search"
+                name="q"
+                autoComplete="off"
+                enterKeyHint="search"
+                spellCheck={false}
+                value={p.filters.query}
+                onChange={(e) => set("query", e.target.value)}
+                placeholder="Pass, Tour oder Ort …"
+                aria-label="Suchen"
+                className="h-full [&::-webkit-search-cancel-button]:appearance-none [&::-webkit-search-decoration]:appearance-none"
               />
-            )}
-          </div>
-          {/* What is filtered away stays readable while the panel is shut –
-              and on the sheet's peek row, where the panel cannot be opened at
-              all, it is the only place that says so. */}
-          {!p.peek && (
-            <AppliedFilters
+              {p.filters.query && (
+                <InputGroupAddon align="inline-end">
+                  <InputGroupButton
+                    size="icon-xs"
+                    onClick={() => set("query", "")}
+                    aria-label="Suche leeren"
+                  >
+                    <X />
+                  </InputGroupButton>
+                </InputGroupAddon>
+              )}
+            </InputGroup>
+            <FilterTrigger
               filters={p.filters}
-              setFilters={p.setFilters}
-              onReset={resetFilters}
+              open={filtersOpen}
+              onOpenChange={setManual}
             />
-          )}
+          </div>
+          {/* What is filtered away stays readable while the panel is shut. */}
+          <AppliedFilters
+            filters={p.filters}
+            setFilters={p.setFilters}
+            onReset={resetFilters}
+          />
+          {/* The three lists, one at a time. In the fixed header rather than
+              in the scroll container, so the counts stay on screen while a
+              list of 201 rows is scrolled – which a section header inside the
+              container could not do without an opaque background it has no way
+              to get (see `KindTabs`). */}
+          <KindTabs
+            active={p.tab}
+            onChange={p.setTab}
+            counts={counts}
+            totals={p.totals}
+          />
         </div>
 
         <div
           ref={lists}
           className="min-h-0 flex-1 overflow-y-auto overscroll-contain"
         >
-          {filtersOpen && !p.peek && (
+          {filtersOpen && (
             <div className="border-border border-b">
               <FilterBody
                 filters={p.filters}
                 setFilters={p.setFilters}
-                counts={{
-                  pass: p.passRows.length,
-                  tour: p.tourRows.length,
-                  town: p.townRows.length,
-                }}
+                counts={counts}
                 totals={p.totals}
                 countWith={p.countWith}
                 onReset={resetFilters}
                 more={moreOpen}
-                onMoreChange={setMoreOpen}
+                onMoreChange={setMore}
               />
             </div>
           )}
-          <Section
-            open={p.sections.includes("pass")}
-            onOpenChange={toggleSection("pass")}
-            glyph={KIND_GLYPH.pass}
-            label="Pässe & Straßen"
-            count={p.passRows.length}
-            total={p.totals.pass}
-            control={
-              <Switch
-                size="sm"
-                checked={p.showPasses}
-                onCheckedChange={p.setShowPasses}
-                aria-label="Pässe und Straßen auf der Karte anzeigen"
-              />
-            }
-          >
+          {p.tab === "pass" && (
             <PassList
               rows={p.passRows}
               currentRow={currentRow}
+              hovered={p.hovered}
+              onHover={p.onHover}
               filters={p.filters}
               setFilters={p.setFilters}
+              empty={emptyProps}
+              mapControl={passSwitch}
               onSelect={(slug) => p.onSelect({ kind: "pass", slug })}
               onToggleFavorite={(slug) => p.onToggleFavorite("pass", slug)}
             />
-          </Section>
-          <Section
-            open={p.sections.includes("tour")}
-            onOpenChange={toggleSection("tour")}
-            glyph={KIND_GLYPH.tour}
-            label="Touren"
-            count={p.tourRows.length}
-            total={p.totals.tour}
-            control={
-              <div className="flex items-center gap-2">
-                {visibleTourCount > 0 &&
-                  visibleTourCount < allTourSlugs.length && (
-                    <span className="text-muted-foreground text-2xs tabular-nums">
-                      {visibleTourCount} von {allTourSlugs.length}
-                    </span>
-                  )}
-                <Switch
-                  size="sm"
-                  checked={p.hiddenTours.length === 0}
-                  onCheckedChange={(on) =>
-                    p.setHiddenTours(() => (on ? [] : allTourSlugs))
-                  }
-                  aria-label="Touren auf der Karte anzeigen"
-                />
-              </div>
-            }
-          >
+          )}
+          {p.tab === "tour" && (
             <TourList
               rows={p.tourRows}
               currentRow={currentRow}
+              hovered={p.hovered}
+              onHover={p.onHover}
               period={p.filters.period}
               hiddenTours={p.hiddenTours}
+              empty={emptyProps}
+              mapControl={tourSwitch}
               onToggleTour={(slug, on) =>
                 p.setHiddenTours((h) =>
                   on ? h.filter((s) => s !== slug) : [...new Set([...h, slug])],
@@ -310,35 +292,22 @@ export const Sidebar = (p: SidebarProps) => {
               onSelect={(slug) => p.onSelect({ kind: "tour", slug })}
               onToggleFavorite={(slug) => p.onToggleFavorite("tour", slug)}
             />
-          </Section>
-          <Section
-            open={p.sections.includes("town")}
-            onOpenChange={toggleSection("town")}
-            glyph={KIND_GLYPH.town}
-            label="Orte"
-            count={p.townRows.length}
-            total={p.totals.town}
-            control={
-              <Switch
-                size="sm"
-                checked={p.showTowns}
-                onCheckedChange={p.setShowTowns}
-                aria-label="Orte auf der Karte anzeigen"
-              />
-            }
-          >
+          )}
+          {p.tab === "town" && (
             <TownList
               rows={p.townRows}
               currentRow={currentRow}
+              hovered={p.hovered}
+              onHover={p.onHover}
+              empty={emptyProps}
+              mapControl={townSwitch}
               onSelect={(slug) => p.onSelect({ kind: "town", slug })}
               onToggleFavorite={(slug) => p.onToggleFavorite("town", slug)}
             />
-          </Section>
+          )}
         </div>
 
-        <div
-          className={cn("border-border shrink-0 border-t", p.peek && "hidden")}
-        >
+        <div className="border-border shrink-0 border-t">
           <p className="text-muted-foreground text-2xs flex h-8 items-center gap-1 truncate px-3">
             <span className="truncate">
               Status ist eine Heuristik, Skalen sind redaktionell.

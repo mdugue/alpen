@@ -14,7 +14,10 @@
 
 :root {
   --radius: 0.625rem;
-  --sheet-peek: 5rem;
+  /* What the floating search bar covers at the bottom on a phone
+     (`FLOATING_BAR_PX` in components/explorer.tsx); the MapLibre corner
+     controls sit above it, so the two move together. */
+  --sheet-peek: 4rem;
   color-scheme: light dark;
 
   --background: oklch(0.985 0.004 90);
@@ -219,11 +222,17 @@
   @apply text-muted-foreground!;
 }
 
-/* Below `lg` the sidebar is a bottom sheet; keep MapLibre's corner controls above its peek row. */
+/* Below `lg` a search bar floats at the bottom of the map; keep MapLibre's
+   corner controls above it. */
 @media (width < 64rem) {
   .maplibregl-ctrl-bottom-left,
   .maplibregl-ctrl-bottom-right {
-    bottom: var(--sheet-peek);
+    /* Important, like every other rule here that has to beat maplibre-gl.css:
+       both selectors are one class, and MapLibre's own `bottom: 0` is bundled
+       after this file, so on equal specificity it would win – which it quietly
+       did, leaving the attribution and the scale bar underneath the floating
+       search. */
+    bottom: var(--sheet-peek) !important;
   }
 }
 

@@ -1,10 +1,14 @@
 "use client";
 
-import { ExternalLink, Star, X } from "lucide-react";
+import { Check, ChevronLeft, ExternalLink, Share, Star, X } from "lucide-react";
 import dynamic from "next/dynamic";
-import { useEffect, useRef } from "react";
+import { useLayoutEffect, useRef } from "react";
 
 import { CHART_HEIGHT } from "@/components/panel/chart-size";
+import {
+  BasesSection,
+  DestinationSection,
+} from "@/components/panel/destination";
 import {
   ElevationProfile,
   PROFILE_ASPECT,
@@ -34,8 +38,9 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Toggle } from "@/components/ui/toggle";
 import type { EntityKind, Selection } from "@/lib/app-state";
 import { clockTime, periodDate, sunTimes } from "@/lib/daylight";
+import { basesFor, destinationAt } from "@/lib/destination";
 import type { DetailAssets, DetailData } from "@/lib/detail-assets";
-import { haversine, NEARBY_RADIUS_KM } from "@/lib/geo";
+import { haversine, REACH_MAX_KM } from "@/lib/geo";
 import { komootHref, quaeldichHref } from "@/lib/links";
 import { nearbyKey } from "@/lib/nearby";
 import type { NearbyTours } from "@/lib/nearby";
@@ -67,6 +72,7 @@ import type {
   Town,
 } from "@/lib/types";
 import useFetch from "@/lib/use-fetch";
+import { useShare } from "@/lib/use-share";
 import { cn, fmt, fmtUnit, ICON_TOGGLE, TOUCH_ICON } from "@/lib/utils";
 
 /**
@@ -119,12 +125,26 @@ interface Props {
   years: Years;
   isFavorite: (kind: EntityKind, slug: string) => boolean;
   onToggleFavorite: (kind: EntityKind, slug: string) => void;
+  /**
+   * What the pointer is over, anywhere on screen. Every entity named in this
+   * panel is a link to a mark on the map, so every one of them lights that
+   * mark – the same `hovered` the sidebar rows and the map itself share.
+   */
+  hovered: Selection | null;
+  onHover: (sel: Selection | null) => void;
   /** Road point under the profile cursor, drawn on the map; `null` clears it. */
   onProfileCursor: (point: LatLon | null) => void;
   /** Click on the profile: fly the map to that point to look at the hairpins. */
   onProfileZoom: (point: LatLon) => void;
   onSelect: (sel: Selection) => void;
   onBack: () => void;
+  /**
+   * On a phone with the list drawer open underneath, dismissing the detail
+   * uncovers the list – so the control says "back to the list". Opened from
+   * the map with nothing underneath it simply closes, and says that instead.
+   * Naming the wrong destination is worse than naming none.
+   */
+  backToList?: boolean;
 }
 
 /**
@@ -181,18 +201,34 @@ const ExternalLinks = ({ links }: { links: [string, string][] }) => (
   </div>
 );
 
+/**
+ * A named entity inside the panel. It is a link to a mark on the map, so it
+ * behaves like one: pointing at it lights the mark, exactly as pointing at a
+ * sidebar row does. Focus counts as pointing, so the keyboard gets it too.
+ */
 const LinkButton = ({
   children,
   onClick,
+  hovered,
+  onHover,
 }: {
   children: React.ReactNode;
   onClick: () => void;
+  hovered?: boolean;
+  onHover?: (over: boolean) => void;
 }) => (
   <Button
     variant="link"
     size="sm"
-    className="h-auto gap-1 px-0 py-0.5"
+    className={cn(
+      "h-auto gap-1 rounded-sm px-0 py-0.5",
+      hovered && "bg-accent/20 -mx-1 px-1",
+    )}
     onClick={onClick}
+    onPointerEnter={onHover && (() => onHover(true))}
+    onPointerLeave={onHover && (() => onHover(false))}
+    onFocus={onHover && (() => onHover(true))}
+    onBlur={onHover && (() => onHover(false))}
   >
     {children}
   </Button>
@@ -210,22 +246,45 @@ const Nearby = ({
   lat,
   lon,
   exclude,
+  skipPasses,
+  skipTowns,
   ...p
-}: Props & { lat: number; lon: number; exclude?: string }) => {
-  const nearPasses = p.passes
-    .map((x) => ({ d: haversine({ lat, lon }, x), x }))
-    .filter((e) => e.d <= NEARBY_RADIUS_KM && e.x.slug !== exclude)
-    .toSorted((a, b) => a.d - b.d);
+}: Props & {
+  lat: number;
+  lon: number;
+  exclude?: string;
+  /** A destination block above already ranks the passes; do not list them twice. */
+  skipPasses?: boolean;
+  /** Likewise for the towns, where a bases block above already ranks them. */
+  skipTowns?: boolean;
+}) => {
+  const nearPasses = skipPasses
+    ? []
+    : p.passes
+        .map((x) => ({ d: haversine({ lat, lon }, x), x }))
+        .filter((e) => e.d <= REACH_MAX_KM && e.x.slug !== exclude)
+        .toSorted((a, b) => a.d - b.d);
   // Tours are lines, so their reach was measured on the server (lib/nearby.ts).
   const slugs = p.nearbyTours[nearbyKey(p.selection.kind, p.selection.slug)];
   const nearTours = p.tours.filter((t) => slugs?.includes(t.slug));
-  const nearTowns = p.towns
-    .map((x) => ({ d: haversine({ lat, lon }, x), x }))
-    .filter((e) => e.d <= NEARBY_RADIUS_KM && e.x.slug !== exclude)
-    .toSorted((a, b) => a.d - b.d);
+  const nearTowns = skipTowns
+    ? []
+    : p.towns
+        .map((x) => ({ d: haversine({ lat, lon }, x), x }))
+        .filter((e) => e.d <= REACH_MAX_KM && e.x.slug !== exclude)
+        .toSorted((a, b) => a.d - b.d);
+
+  if (nearPasses.length + nearTours.length + nearTowns.length === 0)
+    return null;
+
+  /** The hover wiring every named entity in this block shares. */
+  const link = (kind: EntityKind, slug: string) => ({
+    hovered: p.hovered?.kind === kind && p.hovered.slug === slug,
+    onHover: (over: boolean) => p.onHover(over ? { kind, slug } : null),
+  });
 
   return (
-    <Section id="nearby" title={`Im Umkreis von ${NEARBY_RADIUS_KM} km`}>
+    <Section id="nearby" title={`Im Umkreis von ${REACH_MAX_KM} km`}>
       <div className="flex flex-col gap-1">
         {nearPasses.length > 0 &&
           group(
@@ -233,6 +292,7 @@ const Nearby = ({
             nearPasses.map(({ x, d }) => (
               <LinkButton
                 key={x.slug}
+                {...link("pass", x.slug)}
                 onClick={() => p.onSelect({ kind: "pass", slug: x.slug })}
               >
                 <StatusDot
@@ -251,6 +311,7 @@ const Nearby = ({
             nearTours.map((t) => (
               <LinkButton
                 key={t.slug}
+                {...link("tour", t.slug)}
                 onClick={() => p.onSelect({ kind: "tour", slug: t.slug })}
               >
                 <span
@@ -267,6 +328,7 @@ const Nearby = ({
             nearTowns.map(({ x, d }) => (
               <LinkButton
                 key={x.slug}
+                {...link("town", x.slug)}
                 onClick={() => p.onSelect({ kind: "town", slug: x.slug })}
               >
                 <span
@@ -502,7 +564,27 @@ const PassDetail = (props: Props & DetailState & { pass: Pass }) => {
         )}
       </Section>
 
-      <Nearby {...props} lat={pass.lat} lon={pass.lon} exclude={pass.slug} />
+      {/* The inverse of the town panel's list: where this road could be
+          ridden from. Same bands, same weighting, read the other way round. */}
+      <BasesSection
+        bases={basesFor(
+          pass,
+          props.towns,
+          props.passes,
+          props.years,
+          props.period,
+        )}
+        hovered={props.hovered}
+        onHover={props.onHover}
+        onSelect={(slug) => props.onSelect({ kind: "town", slug })}
+      />
+      <Nearby
+        {...props}
+        lat={pass.lat}
+        lon={pass.lon}
+        exclude={pass.slug}
+        skipTowns
+      />
       <ExternalLinks
         links={[
           ["quaeldich.de", quaeldichHref(pass)],
@@ -570,6 +652,12 @@ const TourDetail = (props: Props & { tour: Tour }) => {
             return (
               <LinkButton
                 key={slug}
+                hovered={
+                  props.hovered?.kind === "pass" && props.hovered.slug === slug
+                }
+                onHover={(over) =>
+                  props.onHover(over ? { kind: "pass", slug } : null)
+                }
                 onClick={() => props.onSelect({ kind: "pass", slug })}
               >
                 <StatusDot
@@ -602,13 +690,34 @@ const TourDetail = (props: Props & { tour: Tour }) => {
  */
 const TownDetail = (props: Props & { town: Town }) => {
   const { town } = props;
+  // The verdict of a base is the verdict of what it reaches; nothing about a
+  // town is measured (`lib/destination.ts` says why, and the block says so).
+  const destination = destinationAt(
+    town,
+    props.passes,
+    props.years,
+    props.period,
+  );
   return (
     <>
       <div className="mt-2">
         <TagBadges tags={town.tags} />
       </div>
       <p className="mt-2 text-xs">{town.why}</p>
-      <Nearby {...props} lat={town.lat} lon={town.lon} exclude={town.slug} />
+      <DestinationSection
+        d={destination}
+        period={props.period}
+        hovered={props.hovered}
+        onHover={props.onHover}
+        onSelect={(slug) => props.onSelect({ kind: "pass", slug })}
+      />
+      <Nearby
+        {...props}
+        lat={town.lat}
+        lon={town.lon}
+        exclude={town.slug}
+        skipPasses
+      />
       <ExternalLinks
         links={[
           [
@@ -635,6 +744,8 @@ export const DetailPanel = (props: Props) => {
   const { selection, onBack } = props;
   const heading = useRef<HTMLHeadingElement>(null);
   const scroller = useRef<HTMLDivElement>(null);
+  // The hash already *is* the shareable state; this only hands it over.
+  const { share, done: shared } = useShare();
 
   // The profiles and the photos of this one entity, as a static file with a
   // content hash in its name (lib/detail-assets.ts) – so the page does not
@@ -651,7 +762,15 @@ export const DetailPanel = (props: Props) => {
   // Move focus and scroll to the top whenever another entity is selected. The
   // selection is the trigger, not something the effect reads – which is what
   // the rule objects to.
-  useEffect(() => {
+  //
+  // A *layout* effect, so the panel owns the focus in the frame it appears in.
+  // As a passive effect this ran after paint, which left a window – one that
+  // widens with everything else the commit has to do – in which the panel was
+  // on screen while focus was still on the row that opened it. Escape then
+  // went to the row, which has no handler for it, and the panel simply would
+  // not close from the keyboard. The e2e suite caught it as a flake; a
+  // keyboard visitor would have caught it as "Escape does nothing".
+  useLayoutEffect(() => {
     scroller.current?.scrollTo({ top: 0 });
     heading.current?.focus({ preventScroll: true });
     // oxlint-disable-next-line react/exhaustive-effect-dependencies
@@ -682,28 +801,55 @@ export const DetailPanel = (props: Props) => {
       }}
     >
       <div className="border-border flex h-10 shrink-0 items-center gap-1 border-b px-2">
+        {props.backToList && (
+          <Button
+            size="sm"
+            variant="ghost"
+            onClick={onBack}
+            aria-label="Zurück zur Liste"
+            className="-ml-1 shrink-0 gap-1 px-2"
+          >
+            <ChevronLeft />
+            Liste
+          </Button>
+        )}
         <p className="text-muted-foreground text-2xs min-w-0 flex-1 truncate pl-2 font-semibold tracking-widest uppercase">
           {kicker}
         </p>
+        <Button
+          size="icon"
+          variant="ghost"
+          onClick={() => share(`${entity.name} – Alpenpässe`)}
+          aria-label={shared ? "Link kopiert" : `${entity.name} teilen`}
+          className={TOUCH_ICON}
+        >
+          {shared ? <Check className="text-status-open" /> : <Share />}
+        </Button>
         <Toggle
           pressed={favorite}
           onPressedChange={() =>
             props.onToggleFavorite(selection.kind, selection.slug)
           }
-          aria-label={favorite ? "Nicht mehr merken" : "Merken"}
+          aria-label={
+            favorite
+              ? `${entity.name} nicht mehr merken`
+              : `${entity.name} merken`
+          }
           className={cn(ICON_TOGGLE, TOUCH_ICON)}
         >
           <Star className={cn(favorite && "fill-accent text-accent")} />
         </Toggle>
-        <Button
-          size="icon"
-          variant="ghost"
-          onClick={onBack}
-          aria-label="Details schließen"
-          className={TOUCH_ICON}
-        >
-          <X />
-        </Button>
+        {!props.backToList && (
+          <Button
+            size="icon"
+            variant="ghost"
+            onClick={onBack}
+            aria-label="Details schließen"
+            className={TOUCH_ICON}
+          >
+            <X />
+          </Button>
+        )}
       </div>
       <div
         ref={scroller}

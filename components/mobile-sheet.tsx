@@ -20,11 +20,8 @@ interface Props {
   /** Names the sheet for screen readers and its swipe handle ("… ausklappen"). */
   label: string;
   open: boolean;
-  /**
-   * Left out for a sheet that never leaves the screen: a swipe past the lowest
-   * snap point then settles on it instead of dismissing the sheet.
-   */
-  onClose?: () => void;
+  /** A swipe down past the lowest snap point, or Escape: the sheet goes away. */
+  onClose: () => void;
   /** Lowest first, at least two; a tap on the handle toggles between the first two. */
   snapPoints: readonly [number, number, ...number[]];
   snap: number;
@@ -33,10 +30,17 @@ interface Props {
 }
 
 /**
- * The bottom sheet of the mobile layout: one per panel, so the list and the
- * detail slide over each other the way the two floating panels sit next to each
- * other on desktop. The sheet is non-modal – the map stays visible above it and
- * keeps its taps, which is why an outside press must not dismiss it.
+ * The bottom sheet of the mobile layout. Non-modal – the map stays visible
+ * above it and keeps its taps, which is why an outside press must not dismiss
+ * it – with snap points, so the same sheet is half a screen or nearly the
+ * whole one.
+ *
+ * There are two of them (`explorer.tsx`), the list and the detail, and neither
+ * is mounted until it is asked for: the map is the page on a phone as much as
+ * on a desktop, so nothing covers it at rest. A detail opened from the map has
+ * bare map behind it and closes; one opened from a row has the list behind it
+ * and goes back to it, by the detail drawer closing and uncovering what never
+ * moved.
  */
 export const MobileSheet = ({
   label,
@@ -57,18 +61,13 @@ export const MobileSheet = ({
       disablePointerDismissal
       snapPoints={[...snapPoints]}
       snapPoint={snap}
-      onSnapPointChange={(next, details) => {
-        if (next !== null) {
-          onSnapChange(next as number);
-          return;
-        }
-        // `null` is the drawer on its way out after a fast flick downwards.
-        if (onClose) return;
-        details.cancel();
-        onSnapChange(collapsed);
+      onSnapPointChange={(next) => {
+        // `null` is the drawer on its way out after a fast flick downwards;
+        // `onOpenChange` handles that one.
+        if (next !== null) onSnapChange(next as number);
       }}
       onOpenChange={(next) => {
-        if (!next) onClose?.();
+        if (!next) onClose();
       }}
     >
       <DrawerContent

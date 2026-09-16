@@ -6,6 +6,7 @@ import { Rating } from "@/components/rating";
 import { SeasonStrip } from "@/components/season-strip";
 import { EntityRow } from "@/components/sidebar/entity-row";
 import { ListEmpty } from "@/components/sidebar/list-empty";
+import { ListToolbar } from "@/components/sidebar/list-toolbar";
 import { StatusLabel } from "@/components/status-badge";
 import { TagLine } from "@/components/tags";
 import { Button } from "@/components/ui/button";
@@ -16,10 +17,11 @@ import {
   DropdownMenuRadioItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import type { Filters, PassSort } from "@/lib/app-state";
+import type { Filters, PassSort, Selection } from "@/lib/app-state";
 import { roadTypeWord } from "@/lib/regions";
 import { PASS_SORT_LABEL, PASS_SORTS, sortPassRows } from "@/lib/rows";
 import type { PassRow } from "@/lib/rows";
+import { useRoving } from "@/lib/use-roving";
 import { cn, fmtUnit, TOUCH_CONTROL } from "@/lib/utils";
 
 type RatingSort = "beauty" | "fame" | "difficulty" | "traffic";
@@ -33,19 +35,30 @@ const RATING_SORTS: ReadonlySet<PassSort> = new Set([
 export const PassList = ({
   rows,
   currentRow,
+  hovered,
+  onHover,
   filters,
   setFilters,
+  empty,
+  mapControl,
   onSelect,
   onToggleFavorite,
 }: {
   rows: PassRow[];
   currentRow: string | null;
+  hovered: Selection | null;
+  onHover: (sel: Selection | null) => void;
   filters: Filters;
   setFilters: (update: (f: Filters) => Filters) => void;
+  empty: Omit<React.ComponentProps<typeof ListEmpty>, "title">;
+  /** The "auf der Karte" switch for this kind; it lives in the list, not by the tabs. */
+  mapControl: React.ReactNode;
   onSelect: (slug: string) => void;
   onToggleFavorite: (slug: string) => void;
 }) => {
   const sorted = sortPassRows(rows, filters.sort);
+  const rovingList = useRoving<HTMLUListElement>();
+  const hoveredSlug = hovered?.kind === "pass" ? hovered.slug : null;
   const ratingSort = RATING_SORTS.has(filters.sort)
     ? (filters.sort as RatingSort)
     : null;
@@ -59,7 +72,7 @@ export const PassList = ({
         the labels. A menu is ordinary markup and keeps the row's own scale,
         and it shows the seven keys in one list instead of behind an OS wheel.
       */}
-      <div className="border-border flex items-center gap-2 border-b px-3 py-1.5">
+      <ListToolbar control={mapControl}>
         <span className="text-muted-foreground text-2xs">Sortieren</span>
         <DropdownMenu>
           <DropdownMenuTrigger
@@ -90,17 +103,22 @@ export const PassList = ({
             </DropdownMenuRadioGroup>
           </DropdownMenuContent>
         </DropdownMenu>
-      </div>
+      </ListToolbar>
 
       {sorted.length === 0 ? (
-        <ListEmpty title="Keine Straßen für diese Filter" />
+        <ListEmpty title="Keine Straßen gefunden" {...empty} />
       ) : (
-        <ul>
+        <ul ref={rovingList}>
           {sorted.map(({ pass, status, reason, favorite, season }) => (
             <EntityRow
               key={pass.slug}
               rowId={`pass:${pass.slug}`}
               current={currentRow === `pass:${pass.slug}`}
+              hovered={hoveredSlug === pass.slug}
+              onHover={(over) =>
+                onHover(over ? { kind: "pass", slug: pass.slug } : null)
+              }
+              name={pass.name}
               title={pass.name}
               subtitle={
                 <TagLine

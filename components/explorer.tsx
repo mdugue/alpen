@@ -3,12 +3,14 @@
 import { PanelLeftOpen } from "lucide-react";
 import { useEffect, useReducer, useRef, useState } from "react";
 
+import { MapSearch } from "@/components/map/map-search";
 import { PassMap } from "@/components/map/pass-map";
 import type { MapPass } from "@/components/map/pass-map";
 import { PeriodScrubber } from "@/components/map/period-scrubber";
 import { MobileSheet, snapPx } from "@/components/mobile-sheet";
 import { DetailPanel } from "@/components/panel/detail-panel";
 import { ScalesDialog } from "@/components/scales-dialog";
+import { filterCount } from "@/components/sidebar/filter-panel";
 import { Sidebar } from "@/components/sidebar/sidebar";
 import { Button } from "@/components/ui/button";
 import {
@@ -18,7 +20,6 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import {
-  ALL_KINDS,
   DEFAULT_FILTERS,
   DEFAULT_VIEW,
   defined,
@@ -91,14 +92,31 @@ const SIDEBAR_W = { lg: 384, xl: 416 };
 /** The detail panel grows with the viewport; the map keeps the larger half. */
 const DETAIL_W = { lg: 352, xl: 400 };
 /**
- * Bottom sheet positions on phones. The list opens on a peek row that carries
- * the search button (keep `--sheet-peek` in app/globals.css in step, the
- * MapLibre controls sit above it), then half and almost full; the detail sheet
- * leaves the map visible above it or takes nearly the whole screen.
+ * The two bottom sheets on phones, and where each rests.
+ *
+ * Two drawers again, but not the two it started with. The first version kept
+ * the list drawer on screen *always*, resting on a peek row – so a detail
+ * always had a second, useless drawer behind it, and the map was never free of
+ * furniture. Collapsing both into one sheet fixed the overlap and lost the
+ * separation. This keeps both: neither drawer exists until it is asked for.
+ *
+ * Nothing covers the map at rest. `MapSearch` floats over it and opens the
+ * list; the list is dismissed by a swipe and is gone again. A selection opens
+ * the detail drawer over whatever is there – over the list when the tap came
+ * from a row, over the bare map when it came from the map itself – and
+ * dismissing it uncovers exactly what was underneath. That is the model the
+ * two drawers were always trying to express, and it only works because the
+ * one behind is there by choice.
+ *
+ * A detail opens at least as high as the list it covers, so the list's swipe
+ * handle never peeks out above it and leaves two of them on screen.
  */
-const LIST_SNAPS = [80, 0.5, 0.85] as const;
+const LIST_SNAPS = [0.5, 0.92] as const;
 const DETAIL_SNAPS = [0.55, 0.92] as const;
-const [LIST_PEEK, LIST_HALF, LIST_FULL] = LIST_SNAPS;
+const [LIST_HALF, LIST_FULL] = LIST_SNAPS;
+/** What the floating search bar covers at the bottom; keep `--sheet-peek` in step. */
+const FLOATING_BAR_PX = 64;
+const [DETAIL_HALF, DETAIL_FULL] = DETAIL_SNAPS;
 
 /**
  * What is selected, and what the detail panel shows – four values that only
@@ -191,19 +209,35 @@ export const Explorer = ({
     "alpenpaesse:hiddenTours",
     NO_SLUGS,
   );
-  const [sections, setSections] = useStored<EntityKind[]>(
-    "alpenpaesse:sections",
-    ALL_KINDS,
-  );
+  // Which of the three lists is on screen. A preference like the sidebar's
+  // own fold, so coming back lands where the last visit left off.
+  const [tab, setTab] = useStored<EntityKind>("alpenpaesse:tab", "pass");
   const [sidebarOpen, setSidebarOpen] = useStored("alpenpaesse:sidebar", true);
-  const [listSnap, setListSnap] = useState<number>(LIST_PEEK);
-  const [detailSnap, setDetailSnap] = useState<number>(DETAIL_SNAPS[0]);
+  // The list drawer exists only while it is wanted; the detail drawer only
+  // while something is selected. At rest the map carries nothing but the
+  // floating controls.
+  const [listOpen, setListOpen] = useState(false);
+  const [listSnap, setListSnap] = useState<number>(LIST_HALF);
+  const [detailSnap, setDetailSnap] = useState<number>(DETAIL_HALF);
   const [scalesOpen, setScalesOpen] = useState(false);
   // Where the elevation-profile cursor sits on the road, and a fly-to asked
   // for by a click on it. Both live here because the map draws them and the
   // detail panel produces them.
   const [profileCursor, setProfileCursor] = useState<LatLon | null>(null);
   const [profileZoom, setProfileZoom] = useState<LatLon | null>(null);
+  /**
+   * What the pointer is over – wherever the pointer happens to be. The list
+   * and the map are two halves of one screen showing the same 258 entities,
+   * and until now neither knew what the other was pointing at: a row did
+   * nothing to the map and a mark did nothing to the list. One piece of state
+   * shared by both is the whole fix; it deliberately lives *next to* the
+   * selection rather than inside it, because hovering must never move the
+   * camera, write the hash or open a panel.
+   *
+   * It is not persisted and not in the hash: it describes a pointer, and a
+   * pointer is not part of a shared link.
+   */
+  const [hovered, setHovered] = useState<Selection | null>(null);
   const { isFavorite, toggle: toggleFavorite } = useFavorites();
   const [, setStoredPeriod] = useStoredPeriod();
   const isMobile = useMediaQuery(MOBILE_QUERY);
@@ -307,16 +341,21 @@ export const Explorer = ({
   const select = (sel: Selection) => {
     dispatch({ kind: "select", sel });
     setProfileCursor(null);
+    setHovered(null);
+    // The lists are one at a time now, so selecting from the map has to bring
+    // the right one forward – otherwise the highlighted row is behind a tab.
+    setTab(sel.kind);
     if (sel.kind === "pass") setShowPasses(true);
     if (sel.kind === "tour")
       setHiddenTours((h) => h.filter((s) => s !== sel.slug));
     if (sel.kind === "town") setShowTowns(true);
-    if (isMobile) {
-      // The detail sheet covers the list; the list waits on its peek row so
-      // nothing of it shows above the detail.
-      setListSnap(LIST_PEEK);
-      setDetailSnap(DETAIL_SNAPS[0]);
-    }
+    // The detail drawer comes up over whatever is there. It has to cover the
+    // list drawer rather than sit inside it, or both swipe handles show at
+    // once and the screen grows a stack of edges that mean nothing.
+    if (isMobile)
+      setDetailSnap(
+        listOpen && listSnap >= LIST_FULL ? DETAIL_FULL : DETAIL_HALF,
+      );
   };
 
   /** Back to the list; focus returns to the row the detail came from. */
@@ -324,7 +363,6 @@ export const Explorer = ({
     const closed = selection;
     dispatch({ kind: "close" });
     setProfileCursor(null);
-    if (isMobile) setListSnap(LIST_HALF);
     requestAnimationFrame(() => {
       const root = sidebarRoot.current;
       const row =
@@ -352,17 +390,19 @@ export const Explorer = ({
       years={years}
       isFavorite={isFavorite}
       onToggleFavorite={toggleFavorite}
+      hovered={hovered}
+      onHover={setHovered}
       onProfileCursor={setProfileCursor}
       onProfileZoom={setProfileZoom}
       onSelect={select}
       onBack={back}
+      backToList={isMobile && listOpen}
     />
   );
 
   const sidebar = (variant: "aside" | "sheet") => (
     <Sidebar
       variant={variant}
-      peek={variant === "sheet" && listSnap === LIST_PEEK}
       filters={filters}
       setFilters={setFilters}
       passRows={passRows}
@@ -377,27 +417,27 @@ export const Explorer = ({
       setShowPasses={setShowPasses}
       showTowns={showTowns}
       setShowTowns={setShowTowns}
-      sections={sections}
-      setSections={setSections}
+      tab={tab}
+      setTab={setTab}
       onToggleFavorite={toggleFavorite}
       onSelect={select}
       selection={selection}
+      hovered={hovered}
+      onHover={setHovered}
       onCollapse={() => setSidebarOpen(false)}
       onOpenScales={() => setScalesOpen(true)}
-      onOpenSearch={
-        // The peek row's search button opens the sheet as far as it goes and
-        // stops there: the field it reveals is the real one, and by the time a
-        // thumb reaches it the sheet stands still, so the software keyboard has
-        // nothing to fight with.
-        variant === "sheet" ? () => setListSnap(LIST_FULL) : undefined
-      }
     />
   );
 
   // Mobile: the map is padded by the sheet in front of it, so camera targets
   // land above the fold.
+  // Whichever drawer is in front pads the map; with none the floating search
+  // bar is all there is to keep clear of.
   const insetBottom = isMobile
-    ? snapPx(selection ? detailSnap : listSnap, viewportHeight)
+    ? snapPx(
+        current.shown ? detailSnap : listOpen ? listSnap : 0,
+        viewportHeight,
+      ) || FLOATING_BAR_PX
     : 0;
 
   // Desktop: the panels float over the map; the map is padded by their width
@@ -416,7 +456,7 @@ export const Explorer = ({
   return (
     <TooltipProvider delay={400}>
       <div className="relative h-dvh overflow-hidden">
-        <div className="absolute inset-0">
+        <div id="map" tabIndex={-1} className="absolute inset-0">
           <PassMap
             passes={mapPasses}
             tours={mapTours}
@@ -426,6 +466,8 @@ export const Explorer = ({
             showPasses={showPasses}
             showTowns={showTowns}
             selection={selection}
+            hovered={hovered}
+            onHover={setHovered}
             onSelect={select}
             onViewChange={setView}
             onCameraSettled={() => dispatch({ kind: "arrive" })}
@@ -468,6 +510,27 @@ export const Explorer = ({
           </PassMap>
         </div>
 
+        {/*
+         * The phone's way into the list floats over the map's bottom-left
+         * corner – a sibling of the map, not a child of its top-left control
+         * cluster, and within a thumb's reach. MapLibre's own corner controls
+         * are lifted above it by `--sheet-peek`.
+         */}
+        {isMobile && (
+          <div className="absolute bottom-3 left-3 z-20 max-w-[calc(100%-1.5rem)]">
+            <MapSearch
+              counts={{
+                pass: passRows.length,
+                tour: tourRows.length,
+                town: townRows.length,
+              }}
+              query={filters.query}
+              filters={filterCount(filters)}
+              onOpen={() => setListOpen(true)}
+            />
+          </div>
+        )}
+
         {!isMobile && sidebarOpen && (
           <aside
             ref={sidebarRoot}
@@ -496,15 +559,24 @@ export const Explorer = ({
         )}
 
         {/*
-         * Mobile: one sheet per panel, the same split as the two floating
-         * panels on desktop. The list sheet never leaves the screen, the detail
-         * sheet slides in over it and is swiped away again.
+         * Two drawers, neither of them on screen until it is wanted. The list
+         * is opened by the floating search bar and dismissed by a swipe; the
+         * detail comes up over whatever is underneath – the bare map when a
+         * road was tapped, the list when a row was – and uncovers it again.
+         *
+         * They used to be one sheet holding either content, which is what made
+         * "back to the list" a thing the app had to reconstruct: a detail
+         * reached from the map had no list behind it, and one reached from a
+         * row had to keep it mounted under a `hidden` so its scroll position
+         * and its tab survived. As two drawers the stack is simply the truth,
+         * and the list keeps its state by never having been unmounted.
          */}
         {isMobile && (
           <>
             <MobileSheet
               label="Liste"
-              open
+              open={listOpen}
+              onClose={() => setListOpen(false)}
               snapPoints={LIST_SNAPS}
               snap={listSnap}
               onSnapChange={setListSnap}
@@ -521,7 +593,7 @@ export const Explorer = ({
               snap={detailSnap}
               onSnapChange={setDetailSnap}
             >
-              {/* `last` is what the sheet keeps showing while it slides away,
+              {/* `last` is what the drawer keeps showing while it slides away,
                   once there is nothing to show any more. */}
               {(current.shown ?? current.last) &&
                 detailFor((current.shown ?? current.last)!)}
