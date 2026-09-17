@@ -314,3 +314,43 @@ export const inputsHash = (
       ),
     ),
   ).toString(16);
+
+/**
+ * …and what those parts are for each kind of route, so the two sides cannot
+ * drift: `build-data.ts` stamps the hash onto `routes-meta.json` when it
+ * stores a geometry, `check-data.ts` compares it back. Spelled out twice, a
+ * renamed key would make every stored route read as fetched for something
+ * else – and 297 re-routes is not a typo's worth of damage.
+ *
+ * A climb is asked for by where it starts and the marker it ends at, with the
+ * marker's elevation, because that is what the gate measures it against. A
+ * traverse has no marker in its question: it is routed between its two
+ * curated ends and judged against its stated length.
+ */
+export const ascentInputs = (
+  traverse: boolean,
+  p: { elevation: number; lat: number; lon: number },
+  a: {
+    check?: AscentCheck | TourCheck;
+    from: LatLon;
+    km?: number;
+    to?: LatLon;
+  },
+) =>
+  traverse
+    ? inputsHash({ from: a.from, km: a.km, to: a.to }, a.check)
+    : inputsHash(
+        {
+          elevation: p.elevation,
+          from: a.from,
+          summit: { lat: p.lat, lon: p.lon },
+        },
+        a.check,
+      );
+
+/** The same for a tour: its waypoints, its stated length, its `check`. */
+export const tourInputs = (t: {
+  check?: TourCheck;
+  km: number;
+  waypoints: LatLon[];
+}) => inputsHash({ km: t.km, waypoints: t.waypoints }, t.check);

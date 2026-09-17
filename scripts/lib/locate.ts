@@ -1,9 +1,10 @@
 /**
  * Pure helpers for placing a pass coordinate on the road: distance from a
  * point to the nearest way, OSM pass-node candidates ranked against a pass,
- * and the Overpass queries that fetch both. No I/O – `build-data.ts` uses the
- * road distance as a gate, `locate-pass.ts` uses everything interactively,
- * and the unit tests feed both the known-bad points.
+ * and the queries and answer shapes of the two hosts that can supply them –
+ * Overpass and the OSM map API, picked between in `osm.ts`. No I/O –
+ * `build-data.ts` uses the road distance as a gate, `locate-pass.ts` uses
+ * everything interactively, and the unit tests feed both the known-bad points.
  *
  * Why a road distance at all: the DEM check compares heights, and a
  * mountainside can happen to sit at pass height. The Großglockner point read
@@ -140,13 +141,19 @@ const taggedEle = (tags: Record<string, string> = {}) => {
  * without a name or elevation still ranks – toll-road high points rarely have
  * either – it just ranks behind one that has both.
  */
-export const rankCandidates = (
-  pass: Pick<Pass, "name" | "aliases" | "elevation" | "lat" | "lon">,
-  nodes: OverpassNode[],
-): Candidate[] => {
+/**
+ * How well an OSM element's names match the pass: 2 for a name or alias, 1 for
+ * a word of one, 0 for nothing. It reads every `name*` tag, because the Alps
+ * are multilingual and the German name is rarely the only one. Shared by the
+ * pass nodes and the roads: "Villacher Alpenstraße" is how a summit road says
+ * which pass it belongs to.
+ */
+export const nameMatcher = (
+  pass: Pick<Pass, "name" | "aliases">,
+): ((tags?: Record<string, string>) => 0 | 1 | 2) => {
   const full = new Set([pass.name, ...(pass.aliases ?? [])].map(fold));
   const parts = new Set([pass.name, ...(pass.aliases ?? [])].flatMap(words));
-  const nameMatch = (tags: Record<string, string> = {}): 0 | 1 | 2 => {
+  return (tags: Record<string, string> = {}) => {
     const names = Object.entries(tags)
       .filter(
         ([k]) => k === "name" || k.startsWith("name:") || k === "alt_name",
@@ -156,6 +163,13 @@ export const rankCandidates = (
     if (names.some((n) => words(n).some((w) => parts.has(w)))) return 1;
     return 0;
   };
+};
+
+export const rankCandidates = (
+  pass: Pick<Pass, "name" | "aliases" | "elevation" | "lat" | "lon">,
+  nodes: OverpassNode[],
+): Candidate[] => {
+  const nameMatch = nameMatcher(pass);
   const eleGap = (c: Candidate) =>
     c.ele === null ? 9999 : Math.abs(c.ele - pass.elevation);
   return nodes
@@ -172,4 +186,78 @@ export const rankCandidates = (
       (a, b) =>
         b.nameMatch - a.nameMatch || eleGap(a) - eleGap(b) || a.dist - b.dist,
     );
+};
+
+// ── The same facts from the OSM map API ──────────────────────────────────────
+
+/**
+ * Overpass is one host, and when it is unreachable every pass coordinate in
+ * the backlog is stuck behind it. The OSM map API answers a bounding box with
+ * every element inside it instead of a query, which is the same two facts for
+ * more bytes: the drivable ways under a point, and the pass nodes around it.
+ *
+ * The shapes differ in one place. `out geom` inlines a way's coordinates;
+ * the map API sends node ids and the nodes separately. Both reach
+ * `waysWithGeometry`, so the measuring path stays single – `distanceToWays`
+ * never learns where its ways came from.
+ */
+export interface OsmMapWay {
+  id: number;
+  nodes: number[];
+  tags?: Record<string, string>;
+  type: "way";
+}
+export type OsmElement = OverpassNode | OverpassWay | OsmMapWay;
+
+const ROAD_RE = new RegExp(ROAD_HIGHWAYS, "u");
+/** Is this a road at all – the same classes `roadsQuery` asks Overpass for. */
+export const isRoad = (tags: Record<string, string> = {}) =>
+  ROAD_RE.test(tags.highway ?? "");
+
+/** The drivable ways of a batch of elements, coordinates resolved. */
+export const waysWithGeometry = (elements: OsmElement[]): OverpassWay[] => {
+  const nodes = new Map<number, { lat: number; lon: number }>();
+  for (const e of elements)
+    if (e.type === "node") nodes.set(e.id, { lat: e.lat, lon: e.lon });
+  const out: OverpassWay[] = [];
+  for (const e of elements) {
+    if (e.type !== "way" || !isRoad(e.tags)) continue;
+    const geometry =
+      "geometry" in e
+        ? e.geometry
+        : e.nodes.map((id) => nodes.get(id)).filter((n) => n !== undefined);
+    // A way whose nodes are cut off by the bbox edge keeps the part that is
+    // inside it; with fewer than two it has no segment to measure against.
+    if (geometry.length > 1)
+      out.push({ geometry, id: e.id, tags: e.tags, type: "way" });
+  }
+  return out;
+};
+
+/**
+ * The pass and saddle nodes of a bbox answer, cut back to the circle
+ * `candidatesQuery` would have asked for – a box that contains the radius is
+ * wider at its corners, and a candidate 8 km away must not rank as one at 6.
+ */
+export const passNodesWithin = (
+  p: LatLon,
+  radiusKm: number,
+  elements: OsmElement[],
+): OverpassNode[] =>
+  elements.filter(
+    (e): e is OverpassNode =>
+      e.type === "node" &&
+      (e.tags?.mountain_pass === "yes" || e.tags?.natural === "saddle") &&
+      haversine([p.lat, p.lon], [e.lat, e.lon]) <= radiusKm,
+  );
+
+/** The map API's bbox, `minlon,minlat,maxlon,maxlat`, around a point. */
+export const mapBbox = (p: LatLon, radiusKm: number) => {
+  const dLat = radiusKm / 111.32;
+  // Near the poles the cosine would blow the box up; in the Alps it is ~0.7.
+  const dLon =
+    radiusKm / (111.32 * Math.max(0.1, Math.cos((p.lat * Math.PI) / 180)));
+  return [p.lon - dLon, p.lat - dLat, p.lon + dLon, p.lat + dLat]
+    .map((n) => n.toFixed(5))
+    .join(",");
 };

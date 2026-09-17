@@ -7,6 +7,7 @@ import type {
 } from "../../lib/types";
 import {
   LIMITS,
+  ascentInputs,
   ascentMetrics,
   checkAscent,
   checkRoad,
@@ -17,6 +18,7 @@ import {
   inputsHash,
   length,
   roadMetrics,
+  tourInputs,
   tourMetrics,
   withProfile,
 } from "./validate";
@@ -547,5 +549,50 @@ describe("checkRoad", () => {
     expect(checkRoad(0.98)[0]).toStartWith("Passpunkt ");
     expect(checkRoad(null, "Markerpunkt")[0]).toContain("des Markerpunkts");
     expect(checkRoad(0.98, "Markerpunkt")[0]).toStartWith("Markerpunkt ");
+  });
+});
+
+describe("ascentInputs / tourInputs", () => {
+  const pass = { elevation: 2501, lat: 46.5416, lon: 10.4332 };
+  const ascent = { from: { lat: 46.6, lon: 10.42 }, km: 13.4, to: undefined };
+
+  test("a moved marker makes a climb's route stale", () => {
+    // The Umbrail point moved 740 m in September 2026, and the stored route
+    // still ended where it used to be.
+    expect(ascentInputs(false, { ...pass, lat: 46.548 }, ascent)).not.toBe(
+      ascentInputs(false, pass, ascent),
+    );
+  });
+
+  test("a moved marker leaves a traverse's route alone", () => {
+    // A traverse is routed between its two curated ends; the marker is only
+    // where its pin sits on the map.
+    expect(ascentInputs(true, { ...pass, lat: 46.548 }, ascent)).toBe(
+      ascentInputs(true, pass, ascent),
+    );
+  });
+
+  test("a note is not an input", () => {
+    expect(
+      ascentInputs(false, pass, {
+        ...ascent,
+        check: { note: "Mautstraße, im Winter gesperrt" },
+      }),
+    ).toBe(ascentInputs(false, pass, ascent));
+  });
+
+  test("a widened limit is one", () => {
+    expect(
+      ascentInputs(false, pass, {
+        ...ascent,
+        check: { maxKm: 70, note: "über das Stilfser Joch, daher länger" },
+      }),
+    ).not.toBe(ascentInputs(false, pass, ascent));
+  });
+
+  test("a tour is asked for by its waypoints and its stated length", () => {
+    const tour = { km: 55, waypoints: [{ lat: 46.5, lon: 11.8 }] };
+    expect(tourInputs(tour)).toBe(tourInputs({ ...tour }));
+    expect(tourInputs({ ...tour, km: 56 })).not.toBe(tourInputs(tour));
   });
 });
