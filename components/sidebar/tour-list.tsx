@@ -1,5 +1,7 @@
 "use client";
 
+import type { CSSProperties } from "react";
+
 import { SeasonStrip } from "@/components/season-strip";
 import { EntityRow } from "@/components/sidebar/entity-row";
 import { ListEmpty } from "@/components/sidebar/list-empty";
@@ -61,8 +63,8 @@ export const TourList = ({
                 className={cn(!onMap && "opacity-60")}
                 leading={
                   <span
-                    className="h-1.5 w-4 shrink-0 rounded-full"
-                    style={{ background: tour.color }}
+                    className="h-1.5 w-4 shrink-0 rounded-full bg-(--tour-color)"
+                    style={{ "--tour-color": tour.color } as CSSProperties}
                   />
                 }
                 name={tour.name}

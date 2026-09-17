@@ -18,6 +18,7 @@ import {
 } from "maplibre-gl";
 
 import "maplibre-gl/dist/maplibre-gl.css";
+import type { CSSProperties } from "react";
 import { useEffect, useRef, useState } from "react";
 
 import { baseLayers, OVERLAYS, VECTOR_BASE } from "@/components/map/map-style";
@@ -63,7 +64,14 @@ import { ascentKey } from "@/lib/route-key";
 import { STATUS_ORDER } from "@/lib/status";
 import { tagIconSvg } from "@/lib/tag-icons";
 import type { LatLon, Pass, Status, Tag, Tour, Town } from "@/lib/types";
-import { cn, fmtUnit, MAP_CLUSTER, MAP_TOOL, PRESSED } from "@/lib/utils";
+import {
+  cn,
+  fmtUnit,
+  MAP_CLUSTER,
+  MAP_GROUP,
+  MAP_TOOL,
+  PRESSED,
+} from "@/lib/utils";
 
 export interface MapPass extends Pass {
   status: Status;
@@ -1773,8 +1781,8 @@ export const PassMap = ({
       <div ref={container} className="size-full" />
 
       <div
-        style={{ left: insetLeft + 12 }}
-        className="absolute top-3 z-10 flex max-w-[calc(100%-4rem)] items-start gap-2 transition-[left] duration-200 motion-reduce:transition-none"
+        style={{ "--inset-left": `${insetLeft + 12}px` } as CSSProperties}
+        className="absolute top-3 left-(--inset-left) z-10 flex max-w-[calc(100%-4rem)] items-start gap-2 transition-[left] duration-200 motion-reduce:transition-none"
       >
         {children}
         {/*
@@ -1787,7 +1795,7 @@ export const PassMap = ({
           {scrubber}
           <ButtonGroup
             orientation="vertical"
-            className="bg-background/60 shrink-0 rounded-md"
+            className={cn("shrink-0", MAP_GROUP)}
           >
             <Popover>
               <Tooltip>

@@ -1,6 +1,7 @@
 "use client";
 
 import { PanelLeftOpen } from "lucide-react";
+import type { CSSProperties } from "react";
 import { useEffect, useReducer, useRef, useState } from "react";
 
 import { MapSearch } from "@/components/map/map-search";
@@ -533,9 +534,9 @@ export const Explorer = ({
           <section
             key={`${selection.kind}:${selection.slug}`}
             aria-label="Details"
-            style={{ left: detailLeft }}
+            style={{ "--detail-left": `${detailLeft}px` } as CSSProperties}
             className={cn(
-              "absolute top-3 bottom-3 z-20 flex w-88 flex-col overflow-hidden max-lg:hidden xl:w-100",
+              "absolute top-3 bottom-3 left-(--detail-left) z-20 flex w-88 flex-col overflow-hidden max-lg:hidden xl:w-100",
               "animate-in fade-in-0 slide-in-from-left-4 duration-200 motion-reduce:animate-none",
               PANEL,
             )}

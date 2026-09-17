@@ -1,5 +1,7 @@
 "use client";
 
+import type { CSSProperties } from "react";
+
 import { Section } from "@/components/panel/section";
 import { Rating } from "@/components/rating";
 import { SeasonStrip } from "@/components/season-strip";
@@ -46,8 +48,8 @@ const GradeBar = ({ d }: { d: Destination }) => {
         return (
           <span
             key={g}
-            className={GRADE_FILL[g]}
-            style={{ width: `${(n / d.total) * 100}%` }}
+            className={cn("w-(--share)", GRADE_FILL[g])}
+            style={{ "--share": `${(n / d.total) * 100}%` } as CSSProperties}
           />
         );
       })}

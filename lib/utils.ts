@@ -69,6 +69,15 @@ export const PANEL =
   "rounded-xl border border-border/60 bg-card/80 shadow-xl backdrop-blur-md supports-not-[backdrop-filter:blur(0)]:bg-card";
 
 /**
+ * A segmented group inside the map cluster (`MAP_CLUSTER` below) – the
+ * scrubber's own stepper and the column of three map tools, which is why the
+ * two read as one surface. `ButtonGroup` brings no fill of its own and takes its
+ * rounding from its children, so a fill needs the radius with it or the tint
+ * shows square corners behind round buttons.
+ */
+export const MAP_GROUP = "bg-background/60 rounded-md";
+
+/**
  * A group of controls floating over the map, on the panel surface: the period
  * scrubber and the map tools next to it share it, which is what makes the
  * top-left corner read as one interaction area rather than as loose buttons.

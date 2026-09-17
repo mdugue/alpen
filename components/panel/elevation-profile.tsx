@@ -1,5 +1,6 @@
 "use client";
 
+import type { CSSProperties } from "react";
 import { useState } from "react";
 
 import { stepGradient } from "@/lib/profile";
@@ -69,11 +70,10 @@ const Cursor = ({ cx, cy, text }: { cx: number; cy: number; text: string }) => {
         y={10}
         fontSize={9.5}
         textAnchor={flip ? "end" : "start"}
-        className="fill-foreground font-medium tabular-nums"
+        className="fill-foreground stroke-card font-medium tabular-nums"
         paintOrder="stroke"
         strokeWidth={3}
         strokeLinejoin="round"
-        style={{ stroke: "var(--card)" }}
       >
         {text}
       </text>
@@ -268,8 +268,8 @@ export const ElevationProfile = ({
         {GRADIENT_COLORS.map((c) => (
           <span key={c.label} className="inline-flex items-center gap-1">
             <span
-              className="inline-block size-2 rounded-xs"
-              style={{ background: c.color }}
+              className="inline-block size-2 rounded-xs bg-(--swatch)"
+              style={{ "--swatch": c.color } as CSSProperties}
               aria-hidden
             />
             {c.label}

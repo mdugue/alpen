@@ -2,6 +2,7 @@
 
 import { Check, ChevronLeft, ExternalLink, Share, Star, X } from "lucide-react";
 import dynamic from "next/dynamic";
+import type { CSSProperties } from "react";
 import { useLayoutEffect, useRef } from "react";
 
 import { CHART_HEIGHT } from "@/components/panel/chart-size";
@@ -315,8 +316,8 @@ const Nearby = ({
                 onClick={() => p.onSelect({ kind: "tour", slug: t.slug })}
               >
                 <span
-                  className="inline-block h-1 w-3 rounded"
-                  style={{ background: t.color }}
+                  className="inline-block h-1 w-3 rounded bg-(--tour-color)"
+                  style={{ "--tour-color": t.color } as CSSProperties}
                 />{" "}
                 {t.name}
               </LinkButton>
@@ -479,9 +480,11 @@ const PassDetail = (props: Props & DetailState & { pass: Pass }) => {
                   <Skeleton
                     aria-busy
                     aria-label="Höhenprofil wird geladen"
-                    className="mt-1 w-full"
+                    className="mt-1 aspect-(--profile-aspect) w-full"
                     role="status"
-                    style={{ aspectRatio: PROFILE_ASPECT }}
+                    style={
+                      { "--profile-aspect": PROFILE_ASPECT } as CSSProperties
+                    }
                   />
                 )}
               </div>

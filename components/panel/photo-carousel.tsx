@@ -1,5 +1,6 @@
 "use client";
 
+import type { CSSProperties } from "react";
 import { useState } from "react";
 
 import {
@@ -93,8 +94,8 @@ export const PhotoCarousel = ({
               {photo.blur && (
                 <div
                   aria-hidden
-                  className="absolute inset-0 scale-110 bg-cover bg-center blur-md"
-                  style={{ backgroundImage: `url("${photo.blur}")` }}
+                  className="absolute inset-0 scale-110 bg-(image:--blur) bg-cover bg-center blur-md"
+                  style={{ "--blur": `url("${photo.blur}")` } as CSSProperties}
                 />
               )}
               <img
