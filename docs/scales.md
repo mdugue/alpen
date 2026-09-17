@@ -42,6 +42,109 @@ gradient, altitude and a border crossing are numbers next to them, not labels
 among them. The scales dialog lists all fourteen with the sentence that
 defines each, `docs/data-model.md` has the tables.
 
+## Destinations: reach and the derived year
+
+A town has no climate series and no season of its own. What it has is the
+passes it reaches, and every one of those is already graded for all 24
+half-months. Everything the destination block shows is therefore **derived**,
+and says so on screen (Principle 3): the counts, the grade bar and the strip.
+`lib/destination.ts` is the whole of it, `scripts/analyze-destinations.ts` is
+the calibration.
+
+### Reach: three bands and a gradient
+
+The old single radius (60 km) answered "is it in?" and nothing else, so a
+pass 1 km away and one 59 km away read alike while one at 61 km was gone.
+Two mechanisms replace it, deliberately different so neither has to do the
+other's job:
+
+| Band   | up to | what it means on a bike       |
+| ------ | ----- | ----------------------------- |
+| `door` | 18 km | ride out of the door, no car  |
+| `day`  | 45 km | inside a day's loop from here |
+| `trip` | 75 km | worth the transfer            |
+
+- **Bands are what a person reads.** They group the list and they are a
+  sentence – "vier Pässe vor der Haustür" – which a weight can never be.
+- **`reachWeight` is what the machine ranks with.** A cosine ease, 1 at the
+  door, 0 at `REACH_MAX_KM`, so `|w(59) − w(61)| < 0.05` where the old cut was
+  1 → 0. It is a factor in the ordering score, never a filter, and it is never
+  shown: nobody can read "Gewicht 0,62".
+
+`REACH_MAX_KM` (75 km) is where the list stops. A cut-off still exists because
+a list has to end, but the weight is already near zero there, so the edge
+costs almost nothing.
+
+### The grade: relative to this base's own peak, not to a count
+
+`gradeOf` grades a half-month against the **best half-month that base ever
+has**:
+
+| Grade           | condition                                     |
+| --------------- | --------------------------------------------- |
+| `beste Zeit`    | ≥ `RIDEABLE_BEST_SHARE` (0,8) of its own peak |
+| `gut`           | ≥ `RIDEABLE_GOOD_SHARE` (0,5) of its own peak |
+| `eingeschränkt` | at least one rideable pass                    |
+| `oft gesperrt`  | none                                          |
+
+This was an absolute count first – six rideable passes for "beste Zeit",
+three for "gut" – and the measurement killed it. Over all 48 towns × 24
+half-months:
+
+- **47 of 48 towns cleared the top threshold in early September**, 45 of 48 in
+  late July. The top grade landed on 40 % of all cells and on **73 % of the
+  non-winter ones**, so from late June to early October the strip was a solid
+  block for every sizeable base.
+- The median base reaches 26 passes and has 19–26 rideable at its peak, four
+  times the threshold. No absolute number serves both that and Bédoin, which
+  reaches two.
+
+The deeper fault is that an absolute count makes the strip encode two things
+at once: how _big_ a base is and when it is at its _best_. A 24-cell strip is
+a seasonal instrument – its question is "when should I come here" – so it must
+answer only the second. The same year, both ways
+(`# beste Zeit, + gut, . eingeschränkt`, January to December twice over):
+
+```
+Bédoin     reaches  2   relative |    ++++++#     +##     |   absolute |    .......     ...     |
+Innsbruck  reaches 15   relative |       ...+#######.     |   absolute |       ...#########     |
+Bormio     reaches 33   relative |     ......#+++##+.     |   absolute |     ..+.+#########     |
+Cavalese   reaches 43   relative |    .......++.++##+     |   absolute |    .++############     |
+```
+
+Bédoin relative is the case that proves it: a long spring, a hole in high
+summer where the heat on Ventoux makes it punishing, and a second peak in
+September. Absolute, it is a flat dim line and the app knows nothing.
+
+**"How much is there" is not lost, it is said in words.** `destinationText`
+and the grade bar sit directly above the strip – "Von 33 Pässen im Umkreis:
+12 zur besten Zeit, 11 gut, 10 eingeschränkt" – and the line under it names
+what the strip is relative to. The picture carries the shape, the sentence
+carries the magnitude; the same split as the bands and the weight above.
+
+The two shares are set where every base still gets a named best window. At
+0,8 five of the 48 towns – Bormio among them – peaked in a single half-month,
+so `bestRun` found no run of two and the panel's "beste Zeit X – Y" line
+vanished for them; at 0,75 all 48 keep one, with a median length of three
+half-months, and the grade split barely moves (best 20 % of all cells against
+16 %).
+
+The two shares are editorial like every other number here. Re-run
+`bun run scripts/analyze-destinations.ts` after the data grows: section 3 is
+the absolute rule that was dropped, section 4 the relative one in use, and
+section 5 prints the strips above.
+
+### Ranking within a band
+
+`beauty + fame/2`, scaled by the grade in the chosen half-month and by
+`0,35 + reachWeight(km)`. A closed pass is not an argument for a base however
+pretty it is, so the grade is the strongest term; the weight is a factor and
+not a filter, so a genuinely better pass at 70 km can still out-rank a dull
+one at 5 km. The inverse list in a pass panel (`basesFor`, "Orte als
+Standort") uses the same bands and the same weight, scaled by how many passes
+each town reaches instead — because the nearest village is rarely the best
+base.
+
 ## Status per period
 
 `passVerdict()` in `lib/status.ts` answers "how good is it to ride there in
@@ -58,7 +161,7 @@ flowchart TD
   S --> S1["snow ≥ 20 % · frost ≥ 80 % · altitude"]
   S --> S2["valley tmax ≥ 26 °C → Hitze"]
   S --> S3["rain days ≥ 70 % → nass"]
-  S --> S4["daylight < 10¾ h → kurze Tage"]
+  S --> S4["daylight < 10,75 h → kurze Tage"]
   S --> S5["summit tmax < 8 °C → kalte Abfahrt"]
   S1 & S2 & S3 & S4 & S5 --> L{"any fired?"}
   L -- "yes, first in ladder order" --> R["eingeschränkt<br/>label = that one word"]
@@ -70,8 +173,25 @@ flowchart TD
 The ladder order is `REASON_ORDER`: `outside-window → window-edge → snow →
 frost → altitude → heat → wet → short-day → cold-descent`. Every reason that
 fired stays in `StatusVerdict.reasons`, in that order; the badge shows the
-first as one word (`REASON_WORD`), the panel every one as a sentence with its
-number and provenance (`REASON_TEXT`).
+first as one word (`REASON_WORD`, via `badgeWord`), the panel every one as a
+sentence with its number and provenance (`REASON_TEXT`).
+
+The thresholds in the diagram above are not written twice. `SIGNALS` in
+`lib/status.ts` is one table – reason, value, unit and the clause that
+explains it – in ladder order, and the scales dialog renders its "Vier
+Stufen, eine Leiter" paragraph from it (`ladderText`), so a constant that
+moves reaches the text explaining it. `scripts/analyze-status.ts` reads the
+same table when it re-runs the calibration. The reasons without a number –
+the opening window, its edge and the altitude fallback – are calendar rules
+rather than thresholds and are named by `REASON_PHRASE` only.
+
+Three builders in the same module compose the sentences the UI prints, so no
+component joins the word tables itself: `badgeWord(cell)` (the badge and,
+through `statusWord`, the row), `valleyText()` (the one "abgeleitet"
+sentence, always with its `VALLEY_TMAX_ERROR`) and `tourText(cell, names)`
+(the sentence under a tour's badge, carrying the word of the tour's own
+status and naming the members that share it – `YearCell.limiting`, recorded
+by `tourYear`).
 
 Four rungs (`--grade-*` in `app/globals.css` for the fills):
 
@@ -87,7 +207,11 @@ The three fills differ in lightness as well as hue, so they are told apart at
 closed road keeps reading as a different kind of statement. In the panel every cell
 carries a tooltip – the half-month and the grade in the first line, then the
 sentence from `GRADE_HINT`, with the caveat named for a limited cell
-(`cellHint`, `REASON_PHRASE`). The period control's tooltip lists the four
+(`cellHint`, `REASON_PHRASE`). A limited cell's popover is the only
+explanation that half-month has – the sentences above it describe the
+_selected_ half-month – so `REASON_PHRASE` may carry its own sub-clause,
+while the list of eight in `GRADE_HINT.limited` uses the shorter
+`REASON_SHORT`. The period control's tooltip lists the four
 sentences once.
 
 `Status` (`open | risky | closed`, `lib/schema.ts`) stays three-valued: it is
@@ -121,15 +245,15 @@ prints the cohort tables, the per-half-month distributions of every signal,
 the counts one step either side of every threshold, and every (pass,
 half-month) pair whose verdict changes – re-run it after touching a constant.
 
-| Signal        | Constant            | Value | Reads                                            |
-| ------------- | ------------------- | ----- | ------------------------------------------------ |
-| Schnee        | `SNOW_RISKY_PCT`    | 20 %  | `snowPct`, share of days with ≥ 1 cm             |
-| Frost         | `FROST_RISKY_PCT`   | 80 %  | `frostPct`, share of nights below 0 °C           |
-| Hitze         | `HEAT_VALLEY_TMAX`  | 26 °C | `tmax` derived to the lowest ascent start        |
-| nass          | `WET_LIMITED_PCT`   | 70 %  | `wetPct`, share of days with ≥ 1 mm              |
-| kurze Tage    | `SHORT_DAY_HOURS`   | 10¾ h | day length from `lat`, `lib/daylight.ts`         |
-| kalte Abfahrt | `COLD_DESCENT_TMAX` | 8 °C  | `tmax` at the summit, the afternoon of a descent |
-| beste Zeit    | `SNOW_BEST_PCT`     | 10 %  | `snowPct` inside a run of "gut"                  |
+| Signal        | Constant            | Value   | Reads                                            |
+| ------------- | ------------------- | ------- | ------------------------------------------------ |
+| Schnee        | `SNOW_RISKY_PCT`    | 20 %    | `snowPct`, share of days with ≥ 1 cm             |
+| Frost         | `FROST_RISKY_PCT`   | 80 %    | `frostPct`, share of nights below 0 °C           |
+| Hitze         | `HEAT_VALLEY_TMAX`  | 26 °C   | `tmax` derived to the lowest ascent start        |
+| nass          | `WET_LIMITED_PCT`   | 70 %    | `wetPct`, share of days with ≥ 1 mm              |
+| kurze Tage    | `SHORT_DAY_HOURS`   | 10,75 h | day length from `lat`, `lib/daylight.ts`         |
+| kalte Abfahrt | `COLD_DESCENT_TMAX` | 8 °C    | `tmax` at the summit, the afternoon of a descent |
+| beste Zeit    | `SNOW_BEST_PCT`     | 10 %    | `snowPct` inside a run of "gut"                  |
 
 ### Derived values
 

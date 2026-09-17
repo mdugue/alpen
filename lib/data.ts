@@ -9,11 +9,13 @@ import routesJson from "@/data/generated/routes.json";
 import passesJson from "@/data/passes.json";
 import toursJson from "@/data/tours.json";
 import townsJson from "@/data/towns.json";
+import { DETAIL_ASSET_DIR, detailAssets } from "@/lib/detail-assets";
+import type { DetailAssets } from "@/lib/detail-assets";
 import { MAP_ASSET_DIR, mapAssets } from "@/lib/map-assets";
 import type { MapAssets } from "@/lib/map-assets";
 import { nearbyTours, townReach } from "@/lib/nearby";
 import type { NearbyTours, TownReach } from "@/lib/nearby";
-import { profileCoords, valleyElevations } from "@/lib/profile";
+import { profilesWithCoords, valleyElevations } from "@/lib/profile";
 import * as S from "@/lib/schema";
 import { passYear, signalsOf, tourYear } from "@/lib/status";
 import type { Signals, Year, Years } from "@/lib/status";
@@ -22,7 +24,6 @@ import type {
   ElevationProfile,
   Pass,
   Photos,
-  ProfileWithCoords,
   RouteGeometry,
   Tour,
   Town,
@@ -37,15 +38,21 @@ import type {
  * Every file is parsed against its schema once, when this module loads on the
  * server; a file that does not match fails `next build` instead of the UI.
  *
- * The route geometry is the one thing that never leaves the server as props:
- * MapLibre loads it as static GeoJSON from `public/map` (written by
- * `scripts/build-map-assets.ts`). What the page hands the client instead is
- * derived from it – the file URLs, tour bounding boxes, which tours pass near
- * which entity, and the road coordinate of each profile sample. Those
- * derivations sit inside their cached getters, not at module scope: the page
- * fills them once at prerender, while the weather route, which imports
- * `getPass` from here and starts cold on a serverless instance, never runs
- * them.
+ * Two of the files never leave the server as props, because both are read for
+ * one entity at a time while the page would carry all of them:
+ *
+ *   - the route geometry, which MapLibre loads as static GeoJSON from
+ *     `public/map` (`scripts/build-map-assets.ts`),
+ *   - the elevation profiles and the photo metadata, which the detail panel
+ *     loads per entity from `public/detail`
+ *     (`scripts/build-detail-assets.ts`, `lib/detail-assets.ts`).
+ *
+ * What the page hands the client instead is derived from them – the file URLs,
+ * tour bounding boxes, which tours pass near which entity, and the valley
+ * elevation of each pass. Those derivations sit inside their cached getters,
+ * not at module scope: the page fills them once at prerender, while the
+ * weather route, which imports `getPass` from here and starts cold on a
+ * serverless instance, never runs them.
  */
 const passes: Pass[] = S.Passes.parse(passesJson);
 const tours: Tour[] = S.Tours.parse(toursJson);
@@ -72,21 +79,28 @@ export const getTowns = async (): Promise<Town[]> => {
 };
 
 /**
- * URLs of the GeoJSON files MapLibre loads, plus the tour bounding boxes.
- * The names are derived, not read from a manifest, so this is where a build
- * that skipped the script (`next build` instead of `bun run build`) is caught
- * – as a build error, not as a silent 404 in the visitor's browser.
+ * Both asset kinds derive their file names here rather than reading a
+ * manifest, so this is where a build that skipped a script (`next build`
+ * instead of `bun run build`) is caught – as a build error, not as a silent
+ * 404 in the visitor's browser.
  */
+const assertWritten = (dir: string, names: string[], script: string) => {
+  for (const name of names)
+    if (!existsSync(path.join(process.cwd(), "public", dir, name)))
+      throw new Error(
+        `${dir}/${name} fehlt – "bun run scripts/${script}" ausführen (Teil von "bun run build")`,
+      );
+};
+
+/** URLs of the GeoJSON files MapLibre loads, plus the tour bounding boxes. */
 export const getMapAssets = async (): Promise<MapAssets> => {
   "use cache";
   const { assets, files } = mapAssets(passes, tours, routes);
-  for (const f of files) {
-    const file = path.join(process.cwd(), "public", MAP_ASSET_DIR, f.name);
-    if (!existsSync(file))
-      throw new Error(
-        `${MAP_ASSET_DIR}/${f.name} fehlt – "bun run scripts/build-map-assets.ts" ausführen (Teil von "bun run build")`,
-      );
-  }
+  assertWritten(
+    MAP_ASSET_DIR,
+    files.map((f) => f.name),
+    "build-map-assets.ts",
+  );
   return assets;
 };
 
@@ -102,17 +116,27 @@ export const getTownReach = async (): Promise<TownReach> => {
   return townReach(passes, towns);
 };
 
-/** Elevation profiles per ascent, key as `routes.json`, with their sample coordinates. */
-export const getProfiles = async (): Promise<
-  Record<string, ProfileWithCoords>
-> => {
+/**
+ * One URL per entity for the profiles and photos its detail panel needs
+ * (`lib/detail-assets.ts`). The profiles go through `profilesWithCoords`, the
+ * same function the build script runs – the file name is a hash of what it
+ * returns, so the two sides have to derive it identically.
+ */
+export const getDetailAssets = async (): Promise<DetailAssets> => {
   "use cache";
-  return Object.fromEntries(
-    Object.entries(profiles).map(([key, p]) => [
-      key,
-      { ...p, coords: routes[key] ? profileCoords(routes[key]) : undefined },
-    ]),
+  const { assets, files } = detailAssets(
+    passes,
+    tours,
+    towns,
+    profilesWithCoords(profiles, routes),
+    photos,
   );
+  assertWritten(
+    DETAIL_ASSET_DIR,
+    files.map((f) => f.name),
+    "build-detail-assets.ts",
+  );
+  return assets;
 };
 
 /** Climate series per pass slug (24 half-months). */
@@ -157,12 +181,6 @@ export const getYears = async (): Promise<Years> => {
   const tourYears: Record<string, Year> = {};
   for (const t of tours) tourYears[t.slug] = tourYear(t, passYears);
   return { passes: passYears, tours: tourYears };
-};
-
-/** Commons photos per entity, keyed by `photoKey` (see `lib/photos.ts`). */
-export const getPhotos = async (): Promise<Photos> => {
-  "use cache";
-  return photos;
 };
 
 export const getPass = async (slug: string): Promise<Pass | undefined> => {

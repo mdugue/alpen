@@ -88,11 +88,13 @@ export default defineConfig({
     },
     {
       // Commons serves the photos as ready-made thumbnails from its own CDN
-      // (see `lib/photos.ts`): they are already the width the panel asks for
-      // and already cached, so routing a few hundred of them through the image
-      // optimiser would add a hop and a bill and change nothing about what is
-      // downloaded. `next/image` also wants every host in `remotePatterns`,
-      // which would tie the config to whichever Wikimedia host answers.
+      // (see `lib/photos.ts`): they are already cached, and routing a few
+      // hundred of them through the image optimiser would add a hop and a bill
+      // for the same bytes. `next/image` also wants every host in
+      // `remotePatterns`, which would tie the config to whichever Wikimedia
+      // host answers. What it would have brought, the `<img>` carries itself:
+      // a `srcset` off Commons' own width ladder and a precomputed
+      // placeholder (`photoSrcSet`, `Photo.blur`).
       files: ["components/panel/photo-carousel.tsx"],
       rules: {
         "nextjs/no-img-element": "off",
@@ -195,6 +197,8 @@ export default defineConfig({
           // names as the sanctioned inset shadow.
           "max-h-[85vh]",
           "max-w-[calc(100%-4rem)]",
+          "max-w-[calc(100%-1.5rem)]",
+          "max-w-[calc(100vw-1.5rem)]",
           "pb-[env(safe-area-inset-bottom,0px)]",
           "shadow-[inset_2px_0_0_var(--color-accent)]",
         ],
@@ -235,23 +239,40 @@ export default defineConfig({
             "border-border",
             "aria-pressed:*",
           ),
-          // Three shapes a Button takes that no variant provides: the pill of
-          // the applied-filter chips, the square-cornered full-width row of a
-          // sidebar section header, and the small radius of a panel section's
-          // title. All three are section furniture rather than buttons, which
+          // Two shapes a Button takes that no variant provides: the pill of
+          // the filter chips and the applied-filter chips, and the small
+          // radius of a panel section's title and the detail panel's link
+          // rows. The latter are section furniture rather than buttons, which
           // is also why they drop the ghost variant's hover and
           // `aria-expanded` fills – "a sidebar section adds no surface".
           contract(
             "^Button$",
             "rounded-full",
-            "rounded-none",
             "rounded-sm",
             "hover:bg-transparent",
-            "hover:bg-muted/50",
             "aria-expanded:bg-transparent",
             "text-muted-foreground",
             "text-muted-foreground/70",
+            // The kind tabs are a segmented control, not four buttons: the
+            // row is one recessed track and the current tab is the card
+            // lifted out of it. That raised-current-segment look is the whole
+            // affordance and no variant carries it.
+            "rounded-md",
+            "bg-card",
+            "hover:bg-card",
+            "text-foreground",
+            "hover:text-foreground",
+            "shadow-sm",
+            // A link row in the detail panel tints while the entity it names
+            // is hovered on the map, so the two halves point at each other.
+            // It is the row's echo of a map hover, not a button state.
+            "bg-accent/20",
           ),
+          // A skeleton reserves the space of one specific thing, so it takes
+          // that thing's shape – the photo frame it stands in for is
+          // `rounded-lg`. A placeholder in another radius announces itself as
+          // a placeholder, which is the opposite of what it is for.
+          contract("^Skeleton$", "rounded-*"),
           // The scrubber's stepper and the column of map tools are one panel
           // surface floating over the map (`MAP_GROUP`, `MAP_CLUSTER`), so the
           // group is translucent and its text label carries no fill of its own.

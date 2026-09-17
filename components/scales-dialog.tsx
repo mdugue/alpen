@@ -1,5 +1,6 @@
 "use client";
 
+import { GradeLegend } from "@/components/grade-legend";
 import { TagIcon } from "@/components/tags";
 import {
   Dialog,
@@ -8,6 +9,8 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { RIDEABLE_BEST_SHARE, RIDEABLE_GOOD_SHARE } from "@/lib/destination";
+import { REACH_BANDS, REACH_MAX_KM } from "@/lib/geo";
 import {
   ROAD_TAG,
   ROAD_TAGS,
@@ -16,6 +19,11 @@ import {
   TOWN_TAG,
   TOWN_TAGS,
 } from "@/lib/regions";
+import { ladderText, lapseText, VALLEY_TMAX_ERROR } from "@/lib/status";
+import { fmt } from "@/lib/utils";
+
+/** A share as a German percentage: 0.8 -> "80 %". */
+const pct = (x: number) => `${fmt(x * 100)} %`;
 
 const SCALES: [string, string][] = [
   [
@@ -134,33 +142,60 @@ export const ScalesDialog = ({
             gilt der schlechteste Wert ihrer Pässe. Ersetzt keine amtliche
             Sperrauskunft.
           </p>
+          {/* Generated from SIGNALS and the reason ladder in lib/status.ts, so
+              a changed threshold reaches the paragraph that explains it. */}
           <p className="text-muted-foreground">
-            <b>Vier Stufen, eine Leiter.</b> Jedes Signal kann eine Zelle nur
-            senken, nie heben: Schneefall ab 20 % der Tage, Frost in 80 % der
-            Nächte, Hitze im Tal ab 26 °C, Regen an 70 % der Tage, Tage unter
-            10¾ Stunden Licht oder ein Gipfel-Tagesmaximum unter 8 °C machen aus
-            „gut“ ein „eingeschränkt“ – und das erste Signal in dieser
-            Reihenfolge ist das Wort dazu. „Beste Zeit“ ist der längste
-            Abschnitt ohne Vorbehalt und mit weniger als 10 % Schneefalltagen.
-            „Oft gesperrt“ kommt ausschließlich aus dem Öffnungsfenster: eine
-            gesperrte Straße und ein heißes Tal sind nicht dieselbe Art von
-            Aussage.
+            <b>Vier Stufen, eine Leiter.</b> {ladderText()}
           </p>
           <p className="text-muted-foreground">
             <b>Abgeleitet, nicht gemessen:</b> Die Klimareihe gilt für die
-            Passhöhe. Der Talwert wird mit 0,65 °C je 100 m bis zum tiefsten
-            Anstiegsbeginn heruntergerechnet und liegt gut ± 3 °C daneben; für
-            Pässe ohne Anstiegsprofil gibt es ihn nicht. Das Tageslicht ist
-            reine Astronomie. Im Detail steht unter dem Status der Grund in
-            einem Satz, mit Zahl und Herkunft.
+            Passhöhe. Der Talwert wird mit {lapseText()} bis zum tiefsten
+            Anstiegsbeginn heruntergerechnet und liegt gut ±{" "}
+            {fmt(VALLEY_TMAX_ERROR)} °C daneben; für Pässe ohne Anstiegsprofil
+            gibt es ihn nicht. Das Tageslicht ist reine Astronomie. Im Detail
+            steht unter dem Status der Grund in einem Satz, mit Zahl und
+            Herkunft.
           </p>
           <p className="text-muted-foreground">
-            Der Streifen aus 24 Zellen zeigt das ganze Jahr auf einen Blick:
-            grün = beste Zeit (der längste Abschnitt ohne Vorbehalt und mit
-            weniger als 10 % Schneefalltagen), gelb = gut, orange =
-            eingeschränkt, hohl mit rotem Rand = oft gesperrt, umrandet = der
-            gewählte Halbmonat. Im Detail erklärt jede Zelle sich beim
-            Überfahren selbst.
+            Der Streifen aus 24 Zellen zeigt das ganze Jahr auf einen Blick –
+            umrandet ist der gewählte Halbmonat, hohl mit rotem Rand die
+            Sperrung. Im Detail erklärt jede Zelle sich beim Überfahren selbst.
+          </p>
+          {/* The same legend the period control shows, from GRADE_ORDER. */}
+          <GradeLegend className="text-muted-foreground text-xs" />
+        </section>
+        <section className="flex flex-col gap-2">
+          <h3 className="text-base font-semibold">Orte als Standort</h3>
+          <p className="text-muted-foreground">
+            Ein Ort hat keine eigene Klimareihe und keine eigene Saison. Was er
+            hat, sind die Pässe, die er erreicht – und die sind schon bewertet.
+            Alles, was das Ortsdetail zeigt, ist daraus <b>abgeleitet</b> und
+            sagt das auch: die Zahl gut befahrbarer Pässe, der Balken darunter
+            und der Streifen aus 24 Zellen.
+          </p>
+          <p className="text-muted-foreground">
+            <b>Drei Entfernungen statt eines Radius.</b>{" "}
+            {REACH_BANDS.map((b) => `„${b.label}" bis ${fmt(b.maxKm)} km`).join(
+              ", ",
+            )}
+            . Jenseits von {fmt(REACH_MAX_KM)} km endet die Liste. Innerhalb
+            davon zählt Nähe gleitend: ein Pass wird nicht bei einem runden
+            Kilometerwert wertlos, sondern verliert mit der Entfernung an
+            Gewicht. Die Reihenfolge entsteht daraus zusammen mit Zustand,
+            Schönheit und Bekanntheit – ein schöner Pass etwas weiter weg steht
+            deshalb vor einem unscheinbaren vor der Haustür.
+          </p>
+          <p className="text-muted-foreground">
+            <b>Der Streifen zeigt die Saison, nicht die Größe.</b> Er misst
+            jeden Halbmonat an der besten Zeit <i>dieses</i> Orts: ab{" "}
+            {pct(RIDEABLE_BEST_SHARE)} davon „beste Zeit“, ab{" "}
+            {pct(RIDEABLE_GOOD_SHARE)} „gut“, darunter „eingeschränkt“, ohne
+            einen befahrbaren Pass „gesperrt“. Sonst hätte ein großer Ort von
+            Juni bis Oktober durchgehend die höchste Stufe und ein kleiner nie –
+            der Streifen würde die Größe des Orts zeigen statt seines Jahres.
+            Wie viel es überhaupt ist, steht daneben in Worten. Die beiden
+            Anteile sind redaktionell wie alle Zahlen hier;{" "}
+            <code>scripts/analyze-destinations.ts</code> rechnet sie nach.
           </p>
         </section>
         <section className="flex flex-col gap-2">

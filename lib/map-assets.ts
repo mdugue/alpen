@@ -26,7 +26,7 @@ import { ascentKey, tourKey } from "./route-key";
 /** `[west, south, east, north]` in degrees, the GeoJSON bbox order. */
 export type Bounds = [number, number, number, number];
 
-/** What the client needs to draw and frame the lines: two URLs and tour bounds. */
+/** What the client needs to draw and frame the lines: two URLs and the bounds. */
 export interface MapAssets {
   routesUrl: string;
   toursUrl: string;
@@ -35,6 +35,16 @@ export interface MapAssets {
    * tour without a route – so the client never has to know which it is.
    */
   tourBounds: Record<string, Bounds>;
+  /**
+   * Per pass slug: every ascent of that pass at once, plus the summit point.
+   * A pass is not the dot on the map – it is the roads leading to it, and both
+   * sides of a traverse are what "over the Galibier" means – so selecting one
+   * frames the whole thing rather than centring on the marker. The summit is
+   * folded in so a pass without a routed ascent still has a box, and the
+   * numbers are rounded to about ten metres: this travels as a prop for all
+   * 201 passes and a frame needs no more.
+   */
+  passBounds: Record<string, Bounds>;
 }
 
 interface LineFeature {
@@ -127,6 +137,10 @@ export const bounds = (geom: RouteGeometry): Bounds => {
   }
   return [w, s, e, n];
 };
+
+/** Four decimals, about eleven metres – the precision a camera frame needs. */
+const round = (b: Bounds): Bounds =>
+  b.map((n) => Math.round(n * 1e4) / 1e4) as Bounds;
 
 const line = (
   id: string,
@@ -235,8 +249,17 @@ export const mapAssets = (
     tourBounds[t.slug] = bounds(
       routes[tourKey(t.slug)] ?? t.waypoints.map((w) => [w.lat, w.lon]),
     );
+  const passBounds: Record<string, Bounds> = {};
+  for (const p of passes)
+    passBounds[p.slug] = round(
+      bounds([
+        [p.lat, p.lon],
+        ...p.ascents.flatMap((_, i) => routes[ascentKey(p.slug, i)] ?? []),
+      ]),
+    );
   return {
     assets: {
+      passBounds,
       routesUrl: `/${MAP_ASSET_DIR}/${routesFile.name}`,
       tourBounds,
       toursUrl: `/${MAP_ASSET_DIR}/${toursFile.name}`,

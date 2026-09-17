@@ -1,5 +1,9 @@
 import { haversine } from "@/lib/geo";
-import type { ElevationProfile, RouteGeometry } from "@/lib/types";
+import type {
+  ElevationProfile,
+  ProfileWithCoords,
+  RouteGeometry,
+} from "@/lib/types";
 
 /**
  * The geometry of an elevation profile: how it is sampled from a route, and
@@ -27,6 +31,26 @@ const sampleIndices = (length: number): number[] => {
  */
 export const profileCoords = (geom: RouteGeometry): RouteGeometry =>
   sampleIndices(geom.length).map((i) => geom[i]!);
+
+/**
+ * Every profile with its sample coordinates, keyed as `routes.json` – what the
+ * detail files hold and what the panel and the map cursor both read.
+ *
+ * One function rather than the same three lines in two places, because both
+ * sides of a content hash run it: `scripts/build-detail-assets.ts` writes the
+ * file and `lib/data.ts` derives its name. Spelled twice, they would agree
+ * only as long as someone kept them in step; here they cannot drift at all.
+ */
+export const profilesWithCoords = (
+  profiles: Record<string, ElevationProfile>,
+  routes: Record<string, RouteGeometry>,
+): Record<string, ProfileWithCoords> =>
+  Object.fromEntries(
+    Object.entries(profiles).map(([key, p]) => [
+      key,
+      { ...p, coords: routes[key] ? profileCoords(routes[key]) : undefined },
+    ]),
+  );
 
 /**
  * Cumulative distance per sample in km, measured **along the road** and not

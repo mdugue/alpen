@@ -30,7 +30,10 @@ planning happens on hotel Wi-Fi and phones; this is the biggest lever.
 ## Non-goals
 
 Changing how passes, tours and towns themselves reach the client (they are
-small); lazy loading of profiles and climate (optional phase 4).
+small); lazy loading of profiles and climate (optional phase 4 – the profiles
+and the photos went the same way in
+[plan 22](22-detail-data-out-of-payload.md), the climate stayed a prop and
+that document says why).
 
 ## The mechanism in one picture
 

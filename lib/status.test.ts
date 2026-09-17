@@ -5,6 +5,7 @@ import profilesJson from "@/data/generated/profiles.json" with { type: "json" };
 import passesJson from "@/data/passes.json" with { type: "json" };
 import { valleyElevations } from "@/lib/profile";
 import {
+  badgeWord,
   cellAt,
   cellHint,
   climateBucket,
@@ -19,11 +20,23 @@ import {
   periodIndex,
   periodLabel,
   PERIODS,
+  ladderText,
+  LIMITING_REASONS,
   reasonTexts,
   REASON_ORDER,
+  REASON_PHRASE,
+  REASON_SHORT,
+  REASON_TEXT,
+  REASON_WORD,
   seasonSummary,
+  signalOf,
   signalsOf,
+  signalText,
+  SIGNALS,
+  statusRank,
+  STATUS_ORDER,
   todayPeriod,
+  tourText,
   tourYear,
   valleyTmax,
 } from "@/lib/status";
@@ -99,6 +112,16 @@ const cell = (over: Partial<YearCell> = {}): YearCell => ({
   status: "open",
   ...over,
 });
+
+/** Everything a tour cell decides, without the names it prints. */
+const verdict = (c: YearCell) => ({
+  grade: c.grade,
+  reasons: c.reasons,
+  snowy: c.snowy,
+  status: c.status,
+});
+
+const TOUR_NAMES = (slug: string) => ({ a: "Gavia", b: "Stilfser Joch" })[slug];
 
 /** One grade per character: `b` best, `o` good, `r` limited, anything else closed. */
 const grades = (spec: string): Grade[] =>
@@ -596,10 +619,26 @@ describe("tourYear", () => {
       reasons: ["window-edge"],
       snowy: false,
     });
-    // Listing the members the other way round cannot change the answer.
-    expect(at(["b", "a"], 7, snowyYears)).toEqual(
-      at(["a", "b"], 7, snowyYears),
+    // Listing the members the other way round cannot change the verdict.
+    // `limiting` is the exception and is compared below: it is a list of
+    // names for a sentence to print, so it follows the tour's own order.
+    expect(verdict(at(["b", "a"], 7, snowyYears))).toEqual(
+      verdict(at(["a", "b"], 7, snowyYears)),
     );
+  });
+
+  test("a tour cell names the members that hold it back, in the tour's order", () => {
+    // Both are limited in July, so both are named – and in the order the
+    // tour lists them, which is the order the sentence reads.
+    expect(at(["a", "b"], 7, snowyYears).limiting).toEqual(["a", "b"]);
+    expect(at(["b", "a"], 7, snowyYears).limiting).toEqual(["b", "a"]);
+    // In June only the closed pass holds the tour back, not every member.
+    expect(at(["a", "b"], 6, snowyYears).limiting).toEqual(["b"]);
+    // Nothing holds an open tour back, so an open cell carries no list at
+    // all: it would name every member, is never printed, and travels to the
+    // client inside the precomputed `Year`.
+    expect(at(["a", "b"], 8).status).toBe("open");
+    expect(at(["a", "b"], 8).limiting).toBeUndefined();
   });
 
   test("the climate map reaches the passes of a tour", () => {
@@ -684,4 +723,130 @@ test("status matrix for all passes × 24 half-months", () => {
     )
     .toSorted();
   expect(matrix).toMatchSnapshot();
+});
+
+/**
+ * Plan 16: the words about the status have one home, so these are tests of
+ * completeness and of agreement between tables rather than of a computation.
+ * A reason that joins the ladder without its three words, or a threshold that
+ * moves without the paragraph explaining it moving too, fails here.
+ */
+describe("one status vocabulary", () => {
+  test("every reason has a word, two phrases and a sentence", () => {
+    for (const reason of REASON_ORDER) {
+      expect(REASON_WORD[reason]).toBeTruthy();
+      expect(REASON_PHRASE[reason]).toBeTruthy();
+      expect(REASON_SHORT[reason]).toBeTruthy();
+      expect(typeof REASON_TEXT[reason]).toBe("function");
+    }
+    // And no table carries a key the ladder has never heard of.
+    for (const table of [REASON_WORD, REASON_PHRASE, REASON_SHORT, REASON_TEXT])
+      expect(Object.keys(table).toSorted()).toEqual(REASON_ORDER.toSorted());
+    // The short form is what a list of eight can hold: no sub-clause, so no
+    // comma. The standalone phrase may carry one, and two of them do.
+    for (const reason of REASON_ORDER)
+      expect(REASON_SHORT[reason]).not.toContain(",");
+  });
+
+  test("the limited hint names every reason that can limit, in ladder order", () => {
+    // Every reason but the closing one can make a cell "eingeschränkt".
+    expect(LIMITING_REASONS).toEqual(
+      REASON_ORDER.filter((r) => r !== "outside-window"),
+    );
+    const positions = LIMITING_REASONS.map((r) =>
+      GRADE_HINT.limited.indexOf(REASON_SHORT[r]),
+    );
+    expect(positions).not.toContain(-1);
+    expect(positions).toEqual(positions.toSorted((a, b) => a - b));
+    // The closing reason is not among them: a closure is not a caveat.
+    expect(GRADE_HINT.limited).not.toContain(REASON_SHORT["outside-window"]);
+  });
+
+  test("the dialog paragraph carries the value of every threshold", () => {
+    const paragraph = ladderText();
+    // The paragraph is generated from SIGNALS, so it cannot name a different
+    // number than the verdict compares against – that is the point of the
+    // plan. What can still break is a clause with nowhere to put its value,
+    // which would print the threshold nowhere at all.
+    for (const signal of SIGNALS) {
+      expect(signal.reads).toContain("$");
+      expect(signalText(signal)).toContain(
+        String(signal.value).replace(".", ","),
+      );
+      expect(paragraph).toContain(signalText(signal));
+    }
+    // Every numeric signal belongs to a reason the ladder knows, and the one
+    // without a reason is the best window's bar.
+    for (const signal of SIGNALS)
+      if (signal.reason !== null) expect(REASON_ORDER).toContain(signal.reason);
+    expect(SIGNALS.filter((s) => s.reason === null)).toHaveLength(1);
+    // `ladderText` drops reasons without a signal, which is right for the
+    // three calendar rules and wrong for anything else – so the set is pinned
+    // here rather than left to a silent filter.
+    expect(SIGNALS.map((s) => s.reason).filter((r) => r !== null)).toEqual([
+      "snow",
+      "frost",
+      "heat",
+      "wet",
+      "short-day",
+      "cold-descent",
+    ]);
+    expect(LIMITING_REASONS.filter((r) => signalOf(r) === undefined)).toEqual([
+      "window-edge",
+      "altitude",
+    ]);
+    // The limiting signals appear in ladder order, which is what makes the
+    // paragraph's "das erste Signal in dieser Reihenfolge" true.
+    const listed = LIMITING_REASONS.map(signalOf)
+      .filter((s) => s !== undefined)
+      .map((s) => paragraph.indexOf(signalText(s)));
+    expect(listed).toEqual(listed.toSorted((a, b) => a - b));
+  });
+
+  test("a closed tour says the closed word, not the limited one", () => {
+    const closed = cell({ grade: "closed", limiting: ["b"], status: "closed" });
+    expect(tourText(closed, TOUR_NAMES)).toBe("Oft gesperrt: Stilfser Joch.");
+    // This is the defect the plan names: the panel used to print
+    // "Eingeschränkt durch …" under an "oft gesperrt" badge.
+    expect(tourText(closed, TOUR_NAMES)).not.toContain("Eingeschränkt");
+
+    const limited = cell({
+      grade: "limited",
+      limiting: ["a", "b"],
+      reasons: ["heat"],
+      status: "risky",
+    });
+    expect(tourText(limited, TOUR_NAMES)).toBe(
+      "Eingeschränkt durch Gavia, Stilfser Joch.",
+    );
+    // Nothing holds an open tour back, and an unknown member is not named.
+    expect(tourText(cell({ limiting: ["a"] }), TOUR_NAMES)).toBeNull();
+    expect(tourText(closed, () => {})).toBeNull();
+  });
+
+  test("the status order is one list and one direction", () => {
+    expect(STATUS_ORDER).toEqual(["open", "risky", "closed"]);
+    // Higher is worse – the direction the status sort reads.
+    expect(statusRank("open")).toBeLessThan(statusRank("risky"));
+    expect(statusRank("risky")).toBeLessThan(statusRank("closed"));
+  });
+
+  test("the badge says the best window, the caveat or the status", () => {
+    expect(badgeWord(cell({ grade: "best" }))).toBe("beste Zeit");
+    expect(badgeWord(cell())).toBe("gut");
+    expect(
+      badgeWord(cell({ grade: "limited", reasons: ["heat"], status: "risky" })),
+    ).toBe("eingeschränkt: Hitze");
+    // The closing reason keeps its word for the strip's cell hint, but the
+    // badge of a closed cell says the status, never "gesperrt" twice.
+    expect(
+      badgeWord(
+        cell({
+          grade: "closed",
+          reasons: ["outside-window"],
+          status: "closed",
+        }),
+      ),
+    ).toBe("oft gesperrt");
+  });
 });

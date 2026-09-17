@@ -39,38 +39,45 @@ friends do that better and the app links out to them.
 
 ## Where things live
 
-| Topic                                           | File                                                                                                                                                                                                                     |
-| ----------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Rideability heuristic                           | `lib/status.ts` (`passVerdict`, the reason ladder `REASON_ORDER`, `Grade`); the 24 half-months of one pass or tour in `passYear`/`tourYear`, computed once by `getYears` (`lib/data.ts`); thresholds in `docs/scales.md` |
-| Daylight (sunrise, sunset, day length)          | `lib/daylight.ts`, pure astronomy, no data                                                                                                                                                                               |
-| Data schemas (zod) and inferred types           | `lib/schema.ts`, `lib/types.ts`, `data/schema/*.schema.json` (`bun run data:schema`)                                                                                                                                     |
-| Regions and countries (vocabulary)              | `lib/regions.ts`                                                                                                                                                                                                         |
-| Data access (cached, validated)                 | `lib/data.ts`                                                                                                                                                                                                            |
-| Profile sampling and derived gradients          | `lib/profile.ts`                                                                                                                                                                                                         |
-| Filter, selection and URL state (hash keys)     | `lib/app-state.ts`, `components/explorer.tsx`                                                                                                                                                                            |
-| Road types and labels (vocabulary)              | `lib/regions.ts` (`ROAD_TYPES`, `ROAD_TAGS`, `isTraverse`, `hasRoadSummit`)                                                                                                                                              |
-| Tag labels: vocabulary, icons, badges           | `lib/regions.ts` (`TOWN_TAGS`, `ROAD_TAGS`, `TAG_LABEL`), `lib/tag-icons.ts`, `components/tags.tsx`                                                                                                                      |
-| Search normalisation and haystacks              | `lib/search.ts`                                                                                                                                                                                                          |
-| Map, layers, 3D, markers, labels, feature state | `components/map/pass-map.tsx`                                                                                                                                                                                            |
-| Basemap: vector style, palette, glyphs          | `lib/basemap.ts`, `lib/palette.ts`, `scripts/build-map-style.ts` (→ `public/map/style-*.json`), `scripts/build-glyphs.ts` (→ `public/map/fonts`, committed)                                                              |
-| Map assets: GeoJSON, simplification, hashing    | `lib/map-assets.ts`, `scripts/build-map-assets.ts` (→ `public/map`, git-ignored)                                                                                                                                         |
-| Tours within reach, town reach hull             | `lib/nearby.ts`, `lib/geo.ts` (computed on the server in `lib/data.ts`)                                                                                                                                                  |
-| Photos: keys, sizes, licence metadata           | `lib/photos.ts`, `scripts/build-photos.ts` (`bun run data:photos`) → `data/generated/photos.json`                                                                                                                        |
-| Period scrubber floating over the map           | `components/map/period-scrubber.tsx`                                                                                                                                                                                     |
-| Season strip (24 half-months)                   | `components/season-strip.tsx`                                                                                                                                                                                            |
-| Filter controls, chips, applied-filter row      | `components/sidebar/filter-panel.tsx`, `components/sidebar/filter-chip.tsx`, `lib/filter-summary.ts`                                                                                                                     |
-| Sidebar: search, filters, one list per kind     | `components/sidebar/`, `lib/rows.ts`                                                                                                                                                                                     |
-| Detail panel incl. profile/weather/climate      | `components/panel/` (collapsible blocks: `components/panel/section.tsx`)                                                                                                                                                 |
-| Bottom sheet on phones (one per panel)          | `components/mobile-sheet.tsx`                                                                                                                                                                                            |
-| Precomputation, data checks                     | `scripts/build-data.ts`, `scripts/build-photos.ts`, `scripts/check-data.ts`                                                                                                                                              |
-| Route quality gate: checks and thresholds       | `scripts/lib/validate.ts`; pass-point placement `scripts/locate-pass.ts` (`bun run data:locate`), `scripts/lib/locate.ts`                                                                                                |
-| Name, claim, colours, mark, base URL            | `lib/brand.ts`, `lib/mark.tsx`                                                                                                                                                                                           |
-| Icons, share image, manifest, robots, sitemap   | `app/icon.tsx`, `app/apple-icon.tsx`, `app/opengraph-image.tsx`, `app/manifest.ts`, `app/robots.ts`, `app/sitemap.ts`                                                                                                    |
-| Legal pages                                     | `app/impressum/`, `app/datenschutz/`                                                                                                                                                                                     |
-| Linting and formatting                          | `oxlint.config.ts`, `oxfmt.config.ts`                                                                                                                                                                                    |
-| Implementation plans                            | `docs/plans/` (index: `docs/plans/README.md`)                                                                                                                                                                            |
-| Project skills                                  | `.agents/skills/implement-plan`, `curate-data`, `preview-app`                                                                                                                                                            |
-| Web-session setup (Bun version, deps)           | `.claude/hooks/session-start.sh`, registered in `.claude/settings.json`                                                                                                                                                  |
+| Topic                                           | File                                                                                                                                                                                                                                                                                                       |
+| ----------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Rideability heuristic                           | `lib/status.ts` (`passVerdict`, the reason ladder `REASON_ORDER`, `Grade`); the 24 half-months of one pass or tour in `passYear`/`tourYear`, computed once by `getYears` (`lib/data.ts`); thresholds in `SIGNALS` (`docs/scales.md`); the sentences in `badgeWord`, `valleyText`, `tourText`, `ladderText` |
+| Daylight (sunrise, sunset, day length)          | `lib/daylight.ts`, pure astronomy, no data                                                                                                                                                                                                                                                                 |
+| Data schemas (zod) and inferred types           | `lib/schema.ts`, `lib/types.ts`, `data/schema/*.schema.json` (`bun run data:schema`)                                                                                                                                                                                                                       |
+| Regions and countries (vocabulary)              | `lib/regions.ts`                                                                                                                                                                                                                                                                                           |
+| Data access (cached, validated)                 | `lib/data.ts`                                                                                                                                                                                                                                                                                              |
+| Profile sampling and derived gradients          | `lib/profile.ts`                                                                                                                                                                                                                                                                                           |
+| Filter, selection and URL state (hash keys)     | `lib/app-state.ts`, `components/explorer.tsx`                                                                                                                                                                                                                                                              |
+| Road types and labels (vocabulary)              | `lib/regions.ts` (`ROAD_TYPES`, `ROAD_TAGS`, `isTraverse`, `hasRoadSummit`)                                                                                                                                                                                                                                |
+| Tag labels: vocabulary, icons, badges           | `lib/regions.ts` (`TOWN_TAGS`, `ROAD_TAGS`, `TAG_LABEL`), `lib/tag-icons.ts`, `components/tags.tsx`                                                                                                                                                                                                        |
+| Search normalisation and haystacks              | `lib/search.ts`                                                                                                                                                                                                                                                                                            |
+| Map, layers, 3D, markers, labels, feature state | `components/map/pass-map.tsx`                                                                                                                                                                                                                                                                              |
+| Camera padding for the panels in front of it    | `lib/map-camera.ts`, the padding and fly-to effects in `components/map/pass-map.tsx`                                                                                                                                                                                                                       |
+| Basemap: vector style, palette, glyphs          | `lib/basemap.ts`, `lib/palette.ts`, `scripts/build-map-style.ts` (→ `public/map/style-*.json`), `scripts/build-glyphs.ts` (→ `public/map/fonts`, committed)                                                                                                                                                |
+| Map assets: GeoJSON, simplification, hashing    | `lib/map-assets.ts`, `scripts/build-map-assets.ts` (→ `public/map`, git-ignored)                                                                                                                                                                                                                           |
+| Detail assets: one file per entity, hashing     | `lib/detail-assets.ts`, `scripts/build-detail-assets.ts` (→ `public/detail`, git-ignored)                                                                                                                                                                                                                  |
+| Weather route, Open-Meteo quota and cooldown    | `app/api/weather/[slug]/route.ts`                                                                                                                                                                                                                                                                          |
+| Tours within reach, town reach hull             | `lib/nearby.ts`, `lib/geo.ts` (computed on the server in `lib/data.ts`)                                                                                                                                                                                                                                    |
+| Reach bands, the nearness weight                | `lib/geo.ts` (`REACH_BANDS`, `reachWeight`, `REACH_MAX_KM`); calibrated in `docs/scales.md`                                                                                                                                                                                                                |
+| Destination verdict, ranked reach, the inverse  | `lib/destination.ts` (`destinationAt`, `basesFor`, `gradeOf`), `components/panel/destination.tsx`, `scripts/analyze-destinations.ts`                                                                                                                                                                       |
+| Hover shared by list, map and panel             | `hovered` in `components/explorer.tsx`; the ring and line state in `components/map/pass-map.tsx`                                                                                                                                                                                                           |
+| One tab stop per list; sharing the hash         | `lib/use-roving.ts`, `lib/use-share.ts`                                                                                                                                                                                                                                                                    |
+| Photos: keys, sizes, licence metadata           | `lib/photos.ts`, `scripts/build-photos.ts` (`bun run data:photos`) → `data/generated/photos.json`                                                                                                                                                                                                          |
+| Period scrubber floating over the map           | `components/map/period-scrubber.tsx`                                                                                                                                                                                                                                                                       |
+| Season strip (24 half-months)                   | `components/season-strip.tsx`                                                                                                                                                                                                                                                                              |
+| Filter controls, chips, applied-filter row      | `components/sidebar/filter-panel.tsx`, `components/sidebar/filter-chip.tsx`, `lib/filter-summary.ts`                                                                                                                                                                                                       |
+| Sidebar: search, filters, one list per kind     | `components/sidebar/` (tabs: `kind-tabs.tsx`), `lib/rows.ts`                                                                                                                                                                                                                                               |
+| Detail panel incl. profile/weather/climate      | `components/panel/` (collapsible blocks: `components/panel/section.tsx`)                                                                                                                                                                                                                                   |
+| Drawers on phones (list and detail, separate)   | `components/mobile-sheet.tsx`, `components/map/map-search.tsx`                                                                                                                                                                                                                                             |
+| Precomputation, data checks                     | `scripts/build-data.ts`, `scripts/build-photos.ts`, `scripts/check-data.ts`                                                                                                                                                                                                                                |
+| Route quality gate: checks and thresholds       | `scripts/lib/validate.ts`; pass-point placement `scripts/locate-pass.ts` (`bun run data:locate`), `scripts/lib/locate.ts`                                                                                                                                                                                  |
+| Name, claim, colours, mark, base URL            | `lib/brand.ts`, `lib/mark.tsx`                                                                                                                                                                                                                                                                             |
+| Icons, share image, manifest, robots, sitemap   | `app/icon.tsx`, `app/apple-icon.tsx`, `app/opengraph-image.tsx`, `app/manifest.ts`, `app/robots.ts`, `app/sitemap.ts`                                                                                                                                                                                      |
+| Legal pages                                     | `app/impressum/`, `app/datenschutz/`                                                                                                                                                                                                                                                                       |
+| Linting and formatting                          | `oxlint.config.ts`, `oxfmt.config.ts`                                                                                                                                                                                                                                                                      |
+| Implementation plans                            | `docs/plans/` (index: `docs/plans/README.md`)                                                                                                                                                                                                                                                              |
+| Project skills                                  | `.agents/skills/implement-plan`, `curate-data`, `preview-app`                                                                                                                                                                                                                                              |
+| Web-session setup (Bun version, deps)           | `.claude/hooks/session-start.sh`, registered in `.claude/settings.json`                                                                                                                                                                                                                                    |
 
 ## Conventions
 
@@ -172,23 +179,50 @@ friends do that better and the app links out to them.
   `@custom-variant dark (&:is(.dark *))` line that `ui:init` writes.
 - **Layout: the map is the page.** No header, toolbar or footer. On desktop
   the map fills the viewport and two translucent panels float over its left
-  edge: the collapsible sidebar (`components/sidebar/`: search, filters, one
-  collapsible list per kind) and, while something is selected, the detail
-  slide-over next to it. Their widths are mirrored in `explorer.tsx`
+  edge: the collapsible sidebar (`components/sidebar/`: search, filters, and
+  one list per kind behind a tab row) and, while something is selected, the
+  detail slide-over next to it. Their widths are mirrored in `explorer.tsx`
   (`SIDEBAR_W`, `DETAIL_W`) and fed to MapLibre as left padding so camera
-  targets stay visible. Below `lg` the split is the same, only turned by
-  90°: two `MobileSheet`s (`components/mobile-sheet.tsx`, a `Drawer` with snap
-  points each) hold the same two panels, the list sheet on its peek row and the
-  detail sheet sliding in over it, and the height of whichever is in front is
-  fed to MapLibre as bottom padding. Both keep their own state, so a detail
-  never takes the list's place and the lists keep their scroll position.
-  A sheet sizes itself from `--drawer-snap-point-offset`: the popup is a full
-  `100dvh` and padded off at the bottom by that offset, so its content box ends
-  at the fold. The peek row carries a **button** that opens the sheet, not the
-  search field itself: a field there would have the software keyboard come up
-  in the same moment as the sheet moves, and the two animations fight over
-  where the field ends up. The field a thumb reaches is always in a sheet that
-  already stands still. What floats over the map is one cluster in its top-left
+  targets stay visible. Below `lg` there is **no** panel at rest: the map is
+  the page on a phone too, so nothing covers it until something is asked for.
+  What floats over its bottom-left corner is `MapSearch` – a button reading
+  "Suche" (or the current query) with the three counts beside it and the filter
+  badge after them, which is also the only thing on the first screen that says
+  what the app holds. It is a **button** and is styled as one: a field there
+  would bring the software keyboard up in the same moment as the drawer moves,
+  and the two animations fight over where the field ends up – the field a thumb
+  reaches is always in a drawer that already stands still. MapLibre's own
+  corner controls are lifted above the bar by `--sheet-peek`, which needs
+  `!important`: MapLibre's stylesheet is bundled after `globals.css` at equal
+  specificity, so the rule had never applied.
+  From there, **two** independent `MobileSheet`s (`components/mobile-sheet.tsx`,
+  the Base UI `Drawer` with `modal={false}` and snap points), the list and the
+  detail, each mounted only while it is open and each with its own snap state
+  (`LIST_SNAPS`, `DETAIL_SNAPS` in `explorer.tsx`). The search bar opens the
+  list; a tap on the map opens the detail over the bare map; a tap on a list
+  row opens it over the list. Whichever is in front feeds MapLibre its height
+  as bottom padding, and with neither open that is the floating bar's height
+  (`FLOATING_BAR_PX`, kept in step with `--sheet-peek`).
+  It was one sheet holding either content, after a stint as two sheets that
+  were always both on screen. The always-on pair failed because a drawer that
+  cannot leave has to rest somewhere, so the layout grew a peek row, a swipe
+  handle over it and a trigger button inside the thing it triggers – a piece of
+  the list permanently parked on the map before anything had been asked for,
+  and a second handle behind it that did nothing. Collapsing them into one
+  sheet removed the second handle but kept the peek, and made "back to the
+  list" something the app had to reconstruct: a detail reached from the map had
+  no list behind it, and one reached from a row had to keep the list mounted
+  under a `hidden` so its scroll position, its tab and its search survived.
+  Opening on demand settles both. The stack is simply the truth, the list keeps
+  its state by never being unmounted while it is open, and nothing has to rest
+  on screen, so there is no peek snap to measure.
+  What leaving a detail means still depends on what is underneath, and the
+  control says which: a labelled `‹ Liste` back button while the list drawer is
+  open behind it (`backToList` on `DetailPanel`), the `✕` when the detail is
+  alone over the map. A drawer sizes itself from `--drawer-snap-point-offset`:
+  the popup is a full `100dvh` and padded off at the bottom by that offset, so
+  its content box ends at the fold.
+  What else floats over the map is one cluster in its top-left
   corner (`MAP_CLUSTER`, next to the panels' left edge): the period scrubber
   and, on the same panel surface, the three map tools – layers, 3D, fit. The
   tools are one segmented column in the same outline as the scrubber's own
@@ -197,12 +231,70 @@ friends do that better and the app links out to them.
   `Toggle` disagree about hover, border token and dark fill. The scrubber
   reaches the map through the `scrubber` prop rather than `children`, which is
   what stays free-floating beside the cluster – today the sidebar's own toggle.
+  On a phone the cluster is nearly as wide as the screen, so it is padding
+  there like the sheet below it (`MAP_CLUSTER_PX`, keep it in step with what
+  the cluster actually measures).
   The scrubber carries the
   24 half-months, the histogram of what is rideable and the "heute" marker,
   and every list row repeats the same 24 cells as a `SeasonStrip`. Map
   visibility is always a `Switch` ("auf der Karte"), one per kind, two-state
   buttons are always a `Toggle`. Without a camera or a selection in the hash
   the map opens on the frame the fit button produces, not on a fixed overview.
+- **The padding is never set on its own.** What the panels cover reaches
+  MapLibre as camera padding, and padding is not a passive margin: the centre
+  is drawn in the middle of the _padded_ box, so `setPadding` – a `jumpTo` –
+  moves the picture by half of what changed. On a phone that is the detail
+  sheet's 55 % of the screen in one frame, a jump at the start of every
+  selection. So a selection carries the new padding into its own flight (one
+  movement instead of a jump and a movement, which is also why a pass or a tour
+  is framed with `cameraForBounds` + `flyTo` rather than `fitBounds`: that one
+  drops the padding before it flies, and the frame has to be measured against
+  where the camera lands – `fitInset` in `lib/map-camera.ts`), and a padding
+  change with no camera move behind it – a sheet dragged to another snap point,
+  the sidebar folding away – eases in. Only the first padding is set outright,
+  before the map has drawn a frame that could jump.
+  Which is also the rule while a flight is in the air: it owns the padding
+  until it lands. The panels can ask for another one meanwhile – a sheet dragged
+  to a different snap point, a phone's toolbar changing the viewport height by
+  four pixels – and easing to it there would cut the flight short a frame before
+  it arrived, so what is still owed is applied on `moveend` instead. The panel
+  claims its share one commit _before_ the camera sets off, which is what keeps
+  that opening still: a padding the map has not applied yet cannot move it.
+- **The panel opens with the tap; the camera follows it.** Selecting answers a
+  question about a pass, not about the map, so `DetailPanel` gets the selection
+  in the same frame as the map's layers, the highlighted row and the hash
+  (`selectionState` in `explorer.tsx`, two values: what is selected and what the
+  leaving sheet keeps showing). The flight is the slower half: `pass-map.tsx`
+  leaves the panel `SELECT_DELAY` to draw and then takes `SELECT_MS` – longer
+  than the 500 ms it was, because nothing waits behind it any more – to get
+  there.
+  It ran the other way round first: the map flew and the panel opened on
+  arrival. The reason was real – the panel is the most expensive thing the app
+  draws (the photo slideshow, the elevation profiles with a polygon per sample,
+  the climate chart with recharts behind it), and on a phone-sized viewport
+  drawing it into a flight cost that flight about a third of its frame rate –
+  but the cure put a wait in front of the answer to buy a smooth camera
+  movement, which is the wrong way round. Opening first and moving after keeps
+  the two out of each other's frames just as well, and what waits is now the
+  half nobody asked for. Everything that is still on its way when the panel
+  opens keeps its own height while it waits, so nothing below it ever jumps:
+  the profile skeleton has the drawing's aspect ratio (`PROFILE_ASPECT`) and the
+  chart's `next/dynamic` placeholder its height (`CHART_HEIGHT`, a module of its
+  own so the placeholder does not import recharts). The selected row is put into
+  view without a smooth scroll in the sheet layout: the detail drawer is usually
+  in front of the list when it happens, so it would animate a list nobody can
+  see against the drawer animation that can be seen.
+- **A selection is framed, not centred.** What makes a pass worth a holiday is
+  the road up to it, and both sides of a traverse are what "over the Galibier"
+  means, so selecting one fits the box of all its ascents (`passBounds`,
+  precomputed next to `tourBounds` in `lib/map-assets.ts`) instead of centring
+  on the marker – `PASS_MAX_ZOOM` keeps a short climb from filling the screen
+  with two hairpins, and a pass the map draws no ascent for falls back to its
+  point. On a phone that box has to fit between the detail sheet, which takes
+  55 % of the screen, and the control cluster at the top, which takes a quarter
+  of what is left: `MAP_CLUSTER_PX` is the map's top padding there (and only
+  there – on a 900 px desktop map the cluster sits in a corner and reserving a
+  tenth of the height would buy nothing).
 - **Charts come from the shadcn `chart` component** (recharts under the hood).
   It is the only heavy dependency in the app, so the one chart that uses it
   (`components/panel/climate-chart.tsx`) is pulled in with `next/dynamic` and
@@ -215,20 +307,71 @@ friends do that better and the app links out to them.
   a rank by name match – and stores only metadata in
   `data/generated/photos.json`: the thumbnail URL, the author, the licence and
   the file page. The files themselves stay on Wikimedia's CDN and reach the
-  browser through a plain `<img>`; they are already the right size and already
-  cached, and mirroring them would put ~25 MB of binaries into the repo.
-  Attribution is not decoration: every slide carries author and licence,
-  baked into the slide rather than derived from the carousel's index, so it
-  cannot drift out of sync with what is on screen.
-- **A sidebar section adds no surface.** The three collapsible lists
-  (`components/sidebar/section.tsx`) carry no background of their own in either
-  state – neither a tint on the header nor the ghost trigger's
-  `aria-expanded` fill – so the panel's frosted backdrop reads through them
-  evenly. That is also why the header does not stick: a pinned header needs a
-  background to stay legible over the rows scrolling under it, and a
-  `backdrop-blur` cannot supply one, because the panel already filters its
-  backdrop and a nested filter never sees the content inside that backdrop
-  root.
+  browser through a plain `<img>`, never `next/image`; they are already
+  rendered and already cached, mirroring them would put ~25 MB of binaries
+  into the repo, and the optimiser would add a hop, a `remotePatterns` entry
+  and a bill for the same bytes. What it would have brought is had without
+  it. Wikimedia renders a fixed ladder of widths and answers a direct request
+  for anything else with a 400, so `thumbUrl` composes the smaller rungs of
+  that ladder and the slide carries a `srcset` off it (`photoSrcSet`,
+  `PHOTO_SIZES`): a 1× panel fetches 500 px where it used to fetch 960. And
+  the one thing that cannot be fetched in time is precomputed – `Photo.blur`
+  is the same photo `BLUR_WIDTH` px wide as a data URI, laid under the photo
+  in a layer of its own, so a slide opens on its own colours instead of an
+  empty box. That layer is blurred and scaled up rather than left to the
+  browser's upscaling, which at twenty times the width is visibly blocky; it
+  is a layer because `filter` reaches an element's children, and it is scaled
+  because a blur samples past the edges. It travels inside the entity's detail
+  file, because a placeholder that needs a request of its own loses the race
+  it exists to win; generating one on demand and caching it would lose the
+  same race for every first visitor to a pass. No image library is involved
+  either way: Wikimedia renders the 40 px version, `scripts/lib/blur.ts`
+  strips the metadata it inherits – a wide-gamut photo's ICC profile is 30 KB
+  around a 480-byte picture, and re-encoding does not drop it – and
+  `Bun.Image` turns what is left into ~475 bytes of WebP. A hash (BlurHash,
+  ThumbHash) would be twenty times smaller and lower fidelity than that, and
+  would want a decoder and a canvas paint in the frame the panel is trying to
+  keep smooth; the thumbnail is already rendered, so there is nothing to
+  approximate.
+  **And the box is there before the photo is.** The panel opens before its
+  detail file arrives, so `DetailAsset` carries the photo count next to the
+  URL and `PhotoCarousel` reserves the slide while it waits – the block that
+  used to appear late and push everything under it down. An entity with no
+  photos reserves nothing. That is the same rule as the profile skeleton and
+  the chart's placeholder, and the reason the panel is not a server component:
+  a selection would then cost a server round trip where it now costs an
+  immutable file from the CDN, and the jump was never about where the markup
+  came from. Attribution is not decoration: every slide carries author
+  and licence, baked into the slide rather than derived from the carousel's
+  index, so it cannot drift out of sync with what is on screen.
+- **One list at a time, chosen by a tab row.** The three kinds used to be
+  collapsible blocks stacked inside one scroll container, which made the
+  sidebar a single 12 841 px column against a 730 px viewport: the tours sat
+  below all 201 roads and the towns below those. `KindTabs`
+  (`components/sidebar/kind-tabs.tsx`) puts the choice in the fixed header and
+  the scroll container holds one list.
+  The tabs also solve what kept the old section headers from sticking. A
+  pinned header needs an opaque background to stay legible over the rows
+  scrolling under it, and a `backdrop-blur` cannot supply one – the panel
+  already filters its backdrop, and a nested filter never sees the content
+  inside that backdrop root. In the header row nothing scrolls underneath, so
+  the counts simply stay on screen, and the count on a tab is the answer to
+  the filter: narrowing to "ab 2.500 m" collapses the tours from 9 to 2 where
+  it can be seen.
+  Each kind's "auf der Karte" switch rides in that list's own toolbar
+  (`ListToolbar`), never beside the tab row: a control next to three tabs
+  reads as acting on all three, and a bare switch says what it does only once
+  it has been flipped, so it carries the words too.
+- **A long list is one tab stop.** Every row used to be two (the bookmark
+  toggle and the row itself) – 562 focusable elements on the built page, so
+  reaching the map meant holding Tab down for several hundred presses, and a
+  screen reader's rotor held two hundred buttons all called "Merken".
+  `useRoving` (`lib/use-roving.ts`) makes each list the composite widget the
+  platform expects: one stop, arrows inside it, Home/End/PageUp/PageDown, and
+  the tab stop stays on the row last focused. It works off the DOM rather than
+  an index in state, because which rows exist changes on every keystroke in
+  the search field. Every bookmark toggle is named after the thing it
+  bookmarks, and `app/page.tsx` carries a skip link to the map.
 - **The panel folds.** Every block below the title is a `Section`
   (`components/panel/section.tsx`), open by default. The panel is a column on a
   map and a phone sheet shows two blocks at a time; whoever wants the climate
@@ -311,7 +454,10 @@ friends do that better and the app links out to them.
   `routes.json` to 5 m and writes one content-hashed GeoJSON per kind into
   `public/map` (git-ignored, cached immutably via `next.config.ts`).
   `lib/data.ts` derives the same file names with `lib/map-assets.ts` and hands
-  the page the URLs plus the tour bounding boxes; MapLibre fetches the files
+  the page the URLs plus one bounding box per tour and per pass – what a
+  selection is framed into, and the one thing a camera cannot wait for a
+  fetch to learn (10 KB for all 201 passes, four rounded numbers each);
+  MapLibre fetches the files
   and tiles them in its worker. `pass-map.tsx` never calls `setData` on the
   `routes` and `tours` sources: which lines show is a layer filter (which also
   keeps hidden lines out of hit-testing), status and selection are feature
@@ -322,6 +468,24 @@ friends do that better and the app links out to them.
   used to read from the geometry is precomputed on the server: tours within
   reach of an entity (`lib/nearby.ts`) and the road coordinate of every
   profile sample (`ProfileWithCoords`).
+- **Neither does what only one entity's panel reads.** The same rule, one
+  layer up: `scripts/build-detail-assets.ts` writes one content-hashed JSON
+  per pass, tour and town into `public/detail` (git-ignored, cached immutably)
+  holding that entity's elevation profiles and its Commons photo metadata,
+  `lib/data.ts` derives the same names with `lib/detail-assets.ts` and hands
+  the page one URL per entity, and `DetailPanel` fetches the one that is
+  selected. Measured per prop on the prerendered page, those two were 297 KB
+  and 77 KB gzipped of 468 KB; the page now carries 147 KB and a selection
+  costs about 2 KB. A block that waits for the file says so, and reserves the
+  box it will fill – `PhotoCarousel` shows a slide-shaped skeleton for as many
+  photos as `DetailAsset.photos` promises and nothing at all where that is
+  zero, the ascent list shows a
+  `PROFILE_ASPECT`-shaped skeleton – because everything a list row already
+  showed (name, status, season strip, ratings) is in the page and must not
+  flicker. What the sidebar reads stays a prop, and that is the line: the
+  climate series is 42 KB gzipped and `buildPassRows`/`facetCount` read it on
+  every keystroke, so a late arrival would mean a filter counting wrong for a
+  moment (see "A filter is a chip, and no chip lies").
 - **The basemap is generated, and it follows the OS scheme.** The default
   base is a vector style painted from the app's own palette (`lib/basemap.ts`,
   colours in `lib/palette.ts`), tiles from OpenFreeMap, no key. Layer stack,
@@ -383,6 +547,28 @@ friends do that better and the app links out to them.
   `app/page.tsx`. Introducing `cookies()`, `headers()` or `searchParams`
   breaks prerendering – put such things in a separate dynamic child component
   inside `<Suspense>` instead.
+- **The one dynamic route lives inside a free tier, and the numbers are in
+  the file.** `app/api/weather/[slug]` is the only thing a visitor can spend
+  somebody's quota on. Open-Meteo's non-commercial allowance is 10 000 calls
+  a day, so the worst case has to be computed rather than hoped for: one
+  cached call per pass per window, 201 passes, which is why the window is an
+  hour (≈ 4 800/day) and not the half hour it was (≈ 9 600/day). Three rules
+  follow. A window that gets shorter has to be checked against that product
+  again. A successful answer carries `s-maxage`, so the repeats inside a
+  window are served by the CDN and not by the function. And a failure is never
+  left to each visitor to retry: a thrown forecast is not cached, so a rate
+  limit or an outage would arrive undamped, and a module-level cooldown bounds
+  what one warm instance will ask. That cooldown sits _inside_ the cached
+  function, where a cache hit never reaches it – one failing pass must not
+  blank the weather of the other 200 – and it is armed at the failed fetch
+  rather than in the handler, or it would re-arm on its own rejection and
+  never end. It cannot be helped along at the edge: Vercel's CDN stores only
+  200, 404, 410 and the redirects, so a `Cache-Control` on a 502 is inert, and
+  dressing a failure as a 200 to make it cacheable is not worth the lie. The
+  404 for an unknown slug _is_ cacheable and says so. The same arithmetic is why the app is
+  non-commercial in both senses: ads or affiliate links would break Vercel's
+  Hobby terms and Open-Meteo's free tier in the same move. Donations would
+  not.
 - **oxlint and oxfmt, no ESLint.** `bun run lint` is `ultracite check`
   (oxlint plus an oxfmt format check), `bun run lint:fix` writes the fixes.
   oxlint's `nextjs` and `react` plugins cover everything `eslint-config-next`

@@ -23,6 +23,7 @@ afterAll(() => {
 const PASS_ROW = '[data-row^="pass:"]';
 const GALIBIER = '[data-row="pass:col-du-galibier"]';
 const SLIDER = '[aria-label="Zeitraum"]';
+const BACK_TO_LIST = '[aria-label="Zurück zur Liste"]';
 
 test(
   "1 · loads with all passes and a map canvas",
@@ -49,6 +50,10 @@ test(
       await page.waitFor("#detail-title");
       expect(await page.text("#detail-title")).toBe("Col du Galibier");
       expect(await page.hash()).toContain("pass=col-du-galibier");
+      // The profiles are not in the page: the panel fetches the selected
+      // entity's file from `public/detail` (lib/detail-assets.ts). The title
+      // is there immediately, the profile a request later.
+      await page.waitFor('[aria-label^="Höhenprofil:"]');
       await page.press("Escape");
       await page.waitForGone("#detail-title");
       // The panel is gone on commit, the row is focused a frame later
@@ -146,32 +151,55 @@ test(
 );
 
 test(
-  "6 · list and detail are separate sheets: peek → list → detail → back",
+  "6 · nothing covers the map until it is asked for; list and detail stack",
   () =>
     withPage(app, "mobile-sheet", { mobile: true }, async (page) => {
-      // The peek row carries a button, not the field: the sheet opens first,
-      // so the software keyboard never arrives while the sheet is moving.
-      await page.waitFor('[aria-label="Liste ausklappen"]');
+      // At rest the map is the page: no drawer, no peek, no swipe handle –
+      // only a floating button over the map's corner, which says what it
+      // opens rather than posing as a search field (the keyboard would
+      // otherwise arrive while the drawer is still moving).
+      await page.waitFor("canvas.maplibregl-canvas");
+      expect(await page.count('[aria-label*="klappen"]')).toBe(0);
       expect(await page.count("input[type=search]")).toBe(0);
-      // The peek row rides in with the sheet, so a tap in its first frames can
-      // land beside the button or before React has attached its handler. Tap
-      // again until the field has taken the button's place.
-      await waitUntil(async () => {
-        if ((await page.count("input[type=search]")) > 0) return true;
-        await page.clickText("button", "Pass, Tour oder Ort");
-        await Bun.sleep(300);
-        return (await page.count("input[type=search]")) > 0;
-      }, "the list sheet to open");
-      await page.waitFor("input[type=search]");
-      await page.waitFor(PASS_ROW);
-      const all = await page.count(PASS_ROW);
-      await page.click(GALIBIER);
+
+      // Tapping a road opens the detail drawer on its own – there is no list
+      // underneath it, so it closes rather than going back.
+      await page.navigate("#pass=col-du-galibier");
       await page.waitFor("#detail-title");
       expect(await page.text("#detail-title")).toBe("Col du Galibier");
-      // The list sheet stays on screen behind the detail sheet, so its rows
-      // are still in the document while the detail is open.
-      expect(await page.count(PASS_ROW)).toBe(all);
+      expect(await page.count('[aria-label*="klappen"]')).toBe(1);
+      expect(await page.count('[aria-label="Details schließen"]')).toBe(1);
+      await page.waitInViewport('[aria-label="Details schließen"]');
       await page.click('[aria-label="Details schließen"]');
+      await page.waitForGone("#detail-title");
+
+      // The floating button opens the list drawer. It rides in with its own
+      // animation, so a tap in its first frames can land before React has
+      // attached the handler; tap again until the field is there.
+      await waitUntil(async () => {
+        if ((await page.count("input[type=search]")) > 0) return true;
+        await page.clickText("button", "Suche");
+        await Bun.sleep(300);
+        return (await page.count("input[type=search]")) > 0;
+      }, "the list drawer to open");
+      await page.waitFor(PASS_ROW);
+      const all = await page.count(PASS_ROW);
+
+      // A row opens a second drawer over the first. Both are mounted, so
+      // there are two swipe handles, and the list keeps its rows – and with
+      // them its scroll position, its tab and its search.
+      await page.click(GALIBIER);
+      await page.waitFor("#detail-title");
+      expect(await page.count('[aria-label*="klappen"]')).toBe(2);
+      expect(await page.count(PASS_ROW)).toBe(all);
+      // Leaving a detail that has a list behind it means going back to it,
+      // and the control says so instead of offering a close cross.
+      expect(await page.count('[aria-label="Details schließen"]')).toBe(0);
+      // The drawer slides in, so its header is still off the bottom of the
+      // viewport for the first frames and a click aimed at it would land on
+      // nothing at all.
+      await page.waitInViewport(BACK_TO_LIST);
+      await page.click(BACK_TO_LIST);
       await page.waitForGone("#detail-title");
       await page.waitFor(PASS_ROW);
       expect(await page.hash()).not.toContain("pass=");
@@ -325,6 +353,286 @@ test(
         await page.clickAt(named.label!.x, named.label!.y);
         await page.waitFor("#detail-title");
         expect(await page.text("#detail-title")).toBe("Col du Galibier");
+      },
+    ),
+  TIMEOUT,
+);
+
+/**
+ * A double click is MapLibre's zoom gesture. Its two halves reach the map as
+ * ordinary clicks, so without the double-click window in `pass-map.tsx` the
+ * first of them would open whatever it happened to land on while the camera
+ * zooms away from it.
+ */
+const DOUBLE_CLICK = (x: number, y: number) => `(() => {
+  const el = document.querySelector("canvas.maplibregl-canvas");
+  const opts = (detail) => ({
+    bubbles: true, button: 0, cancelable: true,
+    clientX: ${x}, clientY: ${y}, detail, view: window,
+  });
+  for (const detail of [1, 2])
+    for (const type of ["mousedown", "mouseup", "click"])
+      el.dispatchEvent(new MouseEvent(type, opts(detail)));
+  el.dispatchEvent(new MouseEvent("dblclick", opts(2)));
+  return true;
+})()`;
+
+/** The Galibier's dot in page pixels, on a map at rest. */
+const PASS_DOT = `(() => {
+  const m = window.__alpen?.map;
+  if (!m || m.isMoving()) return null;
+  const feature = m
+    .queryRenderedFeatures({ layers: ["passes-hit"] })
+    .find((f) => f.properties.slug === "col-du-galibier");
+  if (!feature) return null;
+  const c = m.project(feature.geometry.coordinates);
+  return { x: Math.round(c.x), y: Math.round(c.y), zoom: m.getZoom() };
+})()`;
+
+test(
+  "11 · a double click on the map zooms and opens nothing",
+  () =>
+    withPage(
+      app,
+      "map-double-click",
+      { hash: "#z=12&c=45.064,6.408" },
+      async (page) => {
+        type Dot = { x: number; y: number; zoom: number } | null;
+        const dot = async () => {
+          let d: Dot = null;
+          await waitUntil(async () => {
+            d = await page.evaluate<Dot>(PASS_DOT);
+            return !!d;
+          }, "the Galibier drawn, on a map at rest");
+          return d!;
+        };
+
+        // Straight onto the dot – the worst case, since a single click there
+        // is a selection.
+        const target = await dot();
+        await page.evaluate(DOUBLE_CLICK(target.x, target.y));
+        await waitUntil(
+          async () =>
+            (await page.evaluate<number>("window.__alpen.map.getZoom()")) >
+            target.zoom + 0.5,
+          "the camera zoomed in",
+        );
+        // Well past the window a single click waits out.
+        await Bun.sleep(1000);
+        expect(await page.count("#detail-title")).toBe(0);
+        expect(await page.hash()).not.toContain("pass=");
+
+        // A single click on the same dot still selects.
+        const again = await dot();
+        await page.clickAt(again.x, again.y);
+        await page.waitFor("#detail-title");
+        expect(await page.text("#detail-title")).toBe("Col du Galibier");
+      },
+    ),
+  TIMEOUT,
+);
+
+/**
+ * Watch how the map re-pads. `setPadding` is a `jumpTo`: it moves the picture
+ * by half of what changed, in one frame. Every padding change after the first
+ * one therefore rides a camera move instead (`easeTo`/`flyTo` with `padding`),
+ * which is the whole of `pass-map.tsx`'s padding effect – so counting calls to
+ * `setPadding` asks the question directly.
+ *
+ * Sampling the padding per frame was the older way to ask it, and it cannot be
+ * relied on: MapLibre emits one `move` per frame it draws, and a loaded CI
+ * runner draws two where a quiet machine draws a dozen. With two samples the
+ * first one already sits most of the way to the target, which is what an eased
+ * padding looks like when it is sampled late – indistinguishable from the jump
+ * the test is about. The frames are still recorded, for the failure shot.
+ */
+const RECORD_PADDING = `(() => {
+  const m = window.__alpen?.map;
+  if (!m) return false;
+  window.__pad = [];
+  window.__jumped = 0;
+  const setPadding = m.setPadding.bind(m);
+  m.setPadding = (...args) => {
+    window.__jumped += 1;
+    return setPadding(...args);
+  };
+  m.on("move", () => window.__pad.push(m.getPadding().bottom));
+  return true;
+})()`;
+
+test(
+  "12 · the detail sheet re-pads the map along its flight, not in one frame",
+  () =>
+    // A tap on the map itself, with the list sheet on its peek row: the case
+    // the padding jumped in, because the sheet in front of the map goes from
+    // 80 px to more than half the screen in that one moment.
+    withPage(
+      app,
+      "mobile-camera-padding",
+      { hash: "#z=12&c=45.064,6.408", mobile: true },
+      async (page) => {
+        // The map hook is set where the map is built, so the canvas is what
+        // says it should be there by now; only a build with
+        // NEXT_PUBLIC_TEST_HOOKS=1 actually sets one.
+        await page.waitFor("canvas.maplibregl-canvas");
+        if (!(await page.camera())) return;
+        type Dot = { x: number; y: number; zoom: number } | null;
+        let dot: Dot = null;
+        await waitUntil(async () => {
+          dot = await page.evaluate<Dot>(PASS_DOT);
+          return !!dot;
+        }, "the Galibier drawn, on a map at rest");
+
+        expect(await page.evaluate<boolean>(RECORD_PADDING)).toBe(true);
+        const before = await page.evaluate<number>(
+          "window.__alpen.map.getPadding().bottom",
+        );
+        await page.clickAt(dot!.x, dot!.y);
+        await page.waitFor("#detail-title");
+        // The camera leaves the panel the first frames to itself, so "at rest"
+        // is not an answer on its own: a camera that has yet to set off reads
+        // exactly like one that has arrived (`SELECT_DELAY` in pass-map.tsx).
+        // What is waited for is the padding itself – the sheet's more than half
+        // the screen, on a map that has stopped moving – in one evaluation, or
+        // the flight can start between two reads and satisfy the pair.
+        await waitUntil(
+          () =>
+            page.evaluate<boolean>(
+              `window.__alpen.map.getPadding().bottom > ${before + 100} &&
+               !window.__alpen.map.isMoving()`,
+            ),
+          "the sheet's padding carried to a camera at rest",
+        );
+        // And the camera carried it there rather than jumping to it.
+        expect(await page.evaluate<number>("window.__jumped")).toBe(0);
+      },
+    ),
+  TIMEOUT,
+);
+
+/**
+ * Whether the detail panel is in the document while the camera crosses the
+ * Alps. The panel opens with the tap and the flight follows it
+ * (`selectionState` in explorer.tsx), so it is on screen for every frame of
+ * that flight – where the old order had it appear only once the camera landed.
+ *
+ * Frames are counted from where the camera *is*, not from a `movestart`: the
+ * map moves for other reasons too – a phone's viewport height settling a few
+ * pixels re-pads it, which is a camera move of its own – and only the flight
+ * takes the centre half a degree from where it began.
+ */
+const RECORD_FLIGHT = `(() => {
+  const m = window.__alpen?.map;
+  if (!m) return false;
+  window.__flight = [];
+  const from = m.getCenter();
+  m.on("move", () => {
+    const c = m.getCenter();
+    if (Math.abs(c.lng - from.lng) + Math.abs(c.lat - from.lat) > 0.5)
+      window.__flight.push(!!document.querySelector("#detail-title"));
+  });
+  return true;
+})()`;
+
+test(
+  "13 · the detail panel is up before the camera sets off",
+  () =>
+    // A camera far from the target, so the flight is a long one.
+    withPage(
+      app,
+      "detail-before-flight",
+      { hash: "#z=8&c=47.4,13.2", mobile: true },
+      async (page) => {
+        await page.waitFor("canvas.maplibregl-canvas");
+        if (!(await page.camera())) return;
+        const settled = async () => {
+          const c = await page.camera();
+          return !!c && !c.moving;
+        };
+        await waitUntil(async () => {
+          if ((await page.count("input[type=search]")) > 0) return true;
+          await page.clickText("button", "Suche");
+          await Bun.sleep(300);
+          return (await page.count("input[type=search]")) > 0;
+        }, "the list sheet to open");
+        await page.waitFor(GALIBIER);
+        await waitUntil(settled, "the camera at rest");
+
+        expect(await page.evaluate<boolean>(RECORD_FLIGHT)).toBe(true);
+        await page.click(GALIBIER);
+        // The tap is answered at once – in the hash, and by the panel …
+        await waitUntil(
+          () => page.hash().then((h) => h.includes("pass=col-du-galibier")),
+          "the selection in the hash",
+        );
+        await page.waitFor("#detail-title");
+        expect(await page.text("#detail-title")).toBe("Col du Galibier");
+        // … and the camera is the slow half: it sets off once the panel is
+        // there and takes its time getting across the Alps. Flown *and*
+        // landed, in one evaluation: either half alone is also true of a
+        // camera that has not started yet.
+        await waitUntil(
+          () =>
+            page.evaluate<boolean>(
+              "window.__flight.length > 0 && !window.__alpen.map.isMoving()",
+            ),
+          "the camera flown and landed on the pass",
+        );
+        await page.waitFor('[aria-label^="Höhenprofil:"]');
+
+        const flight = await page.evaluate<boolean[]>("window.__flight");
+        // The flight happened …
+        expect(flight.length).toBeGreaterThan(0);
+        // … and the panel was up for every frame of it.
+        expect(flight).toEqual(flight.map(() => true));
+      },
+    ),
+  TIMEOUT,
+);
+
+/**
+ * Whether the whole of the Galibier – both ascents and the summit, the box
+ * `passBounds` carries – is inside the part of the map no panel covers. The
+ * padded box *is* that part: the sheet's share at the bottom, the control
+ * cluster's at the top, the floating panels' at the left (`map-camera.ts`).
+ */
+const PASS_IN_VIEW = `(() => {
+  const { map: m, passBounds } = window.__alpen;
+  const [w, s, e, n] = passBounds["col-du-galibier"];
+  const pad = m.getPadding();
+  const box = m.getCanvas().getBoundingClientRect();
+  return [[w, s], [w, n], [e, s], [e, n]]
+    .map((c) => m.project(c))
+    .every(
+      (q) =>
+        q.x >= pad.left &&
+        q.x <= box.width - pad.right &&
+        q.y >= pad.top &&
+        q.y <= box.height - pad.bottom,
+    );
+})()`;
+
+test(
+  "14 · a selected pass is framed whole, clear of the sheet and the controls",
+  () =>
+    // The case a camera centred on the summit could not answer: on a phone the
+    // detail sheet takes more than half the screen, so an ascent of 18 km ran
+    // off the top and the bottom of what was left.
+    withPage(
+      app,
+      "pass-frame",
+      { hash: "#pass=col-du-galibier&t=14", mobile: true },
+      async (page) => {
+        await page.waitFor("canvas.maplibregl-canvas");
+        if (!(await page.camera())) return;
+        await page.waitFor("#detail-title");
+        // Zoomed in *and* at rest: the flight follows the panel rather than
+        // leading it, so a camera at rest may be one that has yet to set off.
+        await waitUntil(async () => {
+          const c = await page.camera();
+          return !!c && !c.moving && c.zoom > 9;
+        }, "the camera framed on the pass");
+        expect(await page.evaluate<boolean>(PASS_IN_VIEW)).toBe(true);
       },
     ),
   TIMEOUT,

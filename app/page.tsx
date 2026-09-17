@@ -2,11 +2,10 @@ import { Explorer } from "@/components/explorer";
 import { SITE_DESCRIPTION, SITE_NAME, siteUrl } from "@/lib/brand";
 import {
   getClimate,
+  getDetailAssets,
   getMapAssets,
   getNearbyTours,
   getPasses,
-  getPhotos,
-  getProfiles,
   getTours,
   getTownReach,
   getTowns,
@@ -44,8 +43,10 @@ const jsonLd = {
  * build time and managed as cached segments via "use cache" (lib/data.ts).
  * This lets Next prerender the page completely; the only dynamic part is the
  * weather request in the detail panel (own route with its own cache lifetime).
- * The route geometry is not part of the page at all: MapLibre fetches it as
- * static GeoJSON (`public/map`), the page only carries the file URLs.
+ * Neither the route geometry nor the profiles and photos are part of the page:
+ * MapLibre fetches the lines as static GeoJSON (`public/map`) and the panel
+ * fetches the selected entity's detail file (`public/detail`); the page only
+ * carries the URLs.
  *
  * The map is the page: no header, no footer – the title lives in the sidebar
  * and the disclaimer in the scales dialog.
@@ -66,11 +67,10 @@ const Page = async () => {
     assets,
     nearbyTours,
     townReach,
-    profiles,
+    detail,
     climate,
     valleys,
     years,
-    photos,
   ] = await Promise.all([
     getPasses(),
     getTours(),
@@ -78,15 +78,27 @@ const Page = async () => {
     getMapAssets(),
     getNearbyTours(),
     getTownReach(),
-    getProfiles(),
+    getDetailAssets(),
     getClimate(),
     getValleys(),
     getYears(),
-    getPhotos(),
   ]);
 
   return (
     <main className="h-dvh overflow-hidden">
+      {/*
+       * The first tab stop, and the only way past the sidebar without going
+       * through it. The lists are composite widgets now (`lib/use-roving.ts`),
+       * so Tab no longer walks 258 rows – but the filter panel alone is still
+       * forty chips, and a keyboard visitor who wants the map should not have
+       * to pass them.
+       */}
+      <a
+        href="#map"
+        className="bg-card text-foreground ring-ring sr-only rounded-md px-3 py-2 text-sm shadow-lg focus:not-sr-only focus:absolute focus:top-3 focus:left-3 focus:z-50 focus:ring-2"
+      >
+        Zur Karte springen
+      </a>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
@@ -98,11 +110,10 @@ const Page = async () => {
         assets={assets}
         nearbyTours={nearbyTours}
         townReach={townReach}
-        profiles={profiles}
+        detail={detail}
         climate={climate}
         valleys={valleys}
         years={years}
-        photos={photos}
         defaultPeriod={todayPeriod()}
       />
     </main>
