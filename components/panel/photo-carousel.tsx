@@ -1,7 +1,5 @@
 "use client";
 
-import { useState } from "react";
-
 import {
   Carousel,
   CarouselContent,
@@ -12,18 +10,44 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import { PHOTO_SIZES, photoSrcSet } from "@/lib/photos";
 import type { Photo } from "@/lib/types";
-import { cn, MAP_CONTROL } from "@/lib/utils";
+import { cn, OVERLAY_CONTROL } from "@/lib/utils";
 
 /**
- * The photos of the selected entity, one swipe apart. A slideshow rather than a
- * grid: six photos in the height of one is what makes room for them in a panel
- * that already carries a season strip, two profiles and a climate chart.
+ * What makes white letters legible on a photograph of anything. Three fifths
+ * of the hero's height, so a title of two lines still sits on the dark end.
+ */
+const Scrim = () => (
+  <div
+    aria-hidden
+    className="absolute inset-x-0 bottom-0 h-3/5 bg-gradient-to-t from-black/85 via-black/45 to-transparent"
+  />
+);
+
+/**
+ * The photos of the selected entity, one swipe apart, as the panel's hero:
+ * edge to edge at the very top, no border, no radius of its own – the panel
+ * (and on a phone the drawer) already has one and clips it. The title, the
+ * kicker and the panel's own controls lie on top of it.
+ *
+ * A slideshow rather than a grid: six photos in the height of one is what
+ * makes room for them in a panel that already carries a season strip, two
+ * profiles and a climate chart. And a *carousel* rather than one static hero,
+ * which is the other thing it could be. The build picks up to six photos per
+ * entity without an editorial step (`scripts/build-photos.ts`), so the first
+ * one is not reliably the best one, and "what does it look like up there"
+ * is a question one picture rarely answers – the reason the app shows photos
+ * at all is that a destination is chosen by the look of it. A hero that can
+ * be swiped costs nothing extra: the slides are already fetched lazily, the
+ * horizontal drag is the gesture the sheet's vertical one leaves free, and
+ * the counter in the corner says there is more without a second control.
  *
  * Every slide carries its own attribution, because that is what the licences
  * demand and because the credit for a photo has to be on the photo, not in a
  * footnote somewhere below. It is baked into each slide instead of being
  * derived from the carousel's current index: no state, nothing to get out of
  * sync, and it is correct while a slide is still half-scrolled into view.
+ * That is also why the scrim is per slide rather than one sheet over the
+ * whole hero – the slides sit edge to edge, so their scrims tile into one.
  *
  * The files are loaded from Wikimedia's CDN (`lib/photos.ts`), which is why
  * this is a plain `<img>` and not `next/image`: they are already rendered,
@@ -44,9 +68,11 @@ import { cn, MAP_CONTROL } from "@/lib/utils";
  * a blur samples past the edges and would otherwise fade them out.
  *
  * `count` is what the page knows before the file arrives (`DetailAsset`). The
- * panel opens first and the photos follow, so without it the carousel would
- * appear late and push everything below it down; with it the slide's box is
- * there from the first frame and the photo fills it in place.
+ * panel opens first and the photos follow, so without it the hero would appear
+ * late and push everything below it down; with it the box is there from the
+ * first frame and the photo fills it in place. It is also what decides the
+ * shape of the whole panel head, one commit before the fetch resolves: an
+ * entity with photos gets the overlaid title, one without gets `fallback`.
  *
  * Borrowed files can also fail to arrive, and this app is built for exactly
  * the connection where they do – the holiday Wi-Fi the whole payload
@@ -55,41 +81,45 @@ import { cn, MAP_CONTROL } from "@/lib/utils";
  * over two lines, above a caption crediting a photographer for a photo nobody
  * could see. A slide that failed is therefore dropped rather than patched up:
  * the carousel renumbers itself around it, and once every slide has failed
- * the block disappears the same way an entity without photos never shows one.
- * That is also the honest outcome – there is no placeholder that would not be
- * a claim about a picture that is not there (the skeleton above is a claim
- * about one that is still on its way, which is a different thing).
+ * the hero gives way to `fallback` – the same title block an entity without
+ * photos gets, because white letters need a picture under them. There is no
+ * placeholder that would not be a claim about a picture that is not there
+ * (the skeleton below is a claim about one that is still on its way, which is
+ * a different thing).
  */
 export const PhotoCarousel = ({
-  count,
+  loading,
   photos,
+  onBroken,
 }: {
-  /** Photos this entity has, known before they arrive. */
-  count: number;
+  /** The detail file is still on its way; the box is reserved meanwhile. */
+  loading: boolean;
+  /** The slides that are still worth showing – the panel filters the failed ones. */
   photos: Photo[];
+  /** One slide's file did not arrive. */
+  onBroken: (src: string) => void;
 }) => {
-  const [broken, setBroken] = useState<string[]>([]);
-  const shown = photos.filter((p) => !broken.includes(p.src));
-  if (photos.length === 0) {
-    // Nothing to wait for: an entity without photos reserves nothing.
-    if (count === 0) return null;
+  const shown = photos;
+
+  if (loading)
     return (
-      <Skeleton
-        aria-busy
-        aria-label="Bilder werden geladen"
-        className="mt-3 aspect-video w-full rounded-lg"
-        role="status"
-      />
+      <>
+        <Skeleton
+          aria-busy
+          aria-label="Bilder werden geladen"
+          className="aspect-video w-full rounded-none"
+          role="status"
+        />
+        <Scrim />
+      </>
     );
-  }
-  if (shown.length === 0) return null;
 
   return (
-    <Carousel aria-label="Bilder" className="mt-3" opts={{ duration: 18 }}>
-      <CarouselContent className="-ml-1.5">
+    <Carousel aria-label="Bilder" opts={{ duration: 18 }}>
+      <CarouselContent className="ml-0">
         {shown.map((photo, i) => (
-          <CarouselItem className="pl-1.5" key={photo.src}>
-            <figure className="border-border/60 bg-muted relative overflow-hidden rounded-lg border">
+          <CarouselItem className="pl-0" key={photo.src}>
+            <figure className="bg-muted relative overflow-hidden">
               {photo.blur && (
                 <div
                   aria-hidden
@@ -105,17 +135,14 @@ export const PhotoCarousel = ({
                 // The first photo is the hero and is visible as the panel
                 // opens; the rest are one swipe away and can wait.
                 loading={i === 0 ? "eager" : "lazy"}
-                onError={() =>
-                  setBroken((br) =>
-                    br.includes(photo.src) ? br : [...br, photo.src],
-                  )
-                }
+                onError={() => onBroken(photo.src)}
                 sizes={PHOTO_SIZES}
                 src={photo.src}
                 srcSet={photoSrcSet(photo)}
                 width={photo.width}
               />
-              <figcaption className="text-2xs absolute inset-x-0 bottom-0 flex items-center gap-1.5 bg-gradient-to-t from-black/80 via-black/45 to-transparent px-2 pt-6 pb-1.5 leading-tight text-white/85">
+              <Scrim />
+              <figcaption className="text-2xs absolute inset-x-0 bottom-0 flex h-6 items-center gap-1.5 px-4 pb-1.5 leading-tight text-white/85">
                 <a
                   className="min-w-0 truncate underline-offset-2 hover:underline"
                   href={photo.page}
@@ -148,11 +175,11 @@ export const PhotoCarousel = ({
         <>
           <CarouselPrevious
             aria-label="Vorheriges Bild"
-            className={cn("left-2", MAP_CONTROL)}
+            className={cn("left-2", OVERLAY_CONTROL)}
           />
           <CarouselNext
             aria-label="Nächstes Bild"
-            className={cn("right-2", MAP_CONTROL)}
+            className={cn("right-2", OVERLAY_CONTROL)}
           />
         </>
       )}

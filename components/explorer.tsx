@@ -7,7 +7,7 @@ import { MapSearch } from "@/components/map/map-search";
 import { PassMap } from "@/components/map/pass-map";
 import type { MapPass } from "@/components/map/pass-map";
 import { PeriodScrubber } from "@/components/map/period-scrubber";
-import { MobileSheet, snapPx } from "@/components/mobile-sheet";
+import { MobileSheet, SHEET_INSET_PX, snapPx } from "@/components/mobile-sheet";
 import { DetailPanel } from "@/components/panel/detail-panel";
 import { ScalesDialog } from "@/components/scales-dialog";
 import { filterCount } from "@/components/sidebar/filter-panel";
@@ -131,6 +131,30 @@ const [DETAIL_HALF, DETAIL_FULL] = DETAIL_SNAPS;
 const MAP_CLUSTER_PX = 120;
 
 /**
+ * What the phone's furniture covers of the map, so camera targets land where
+ * they can be seen.
+ *
+ * The bottom is whichever sheet is in front, plus the margin it keeps to the
+ * screen edge (`SHEET_INSET_PX`); with no sheet open it is the floating search
+ * bar, the only thing left on the map. The top is the control cluster. Both
+ * are zero on a desktop, where the panels pad the map from the left instead
+ * and the cluster sits in a corner of a map 900 px tall.
+ */
+const mapInsets = (
+  isMobile: boolean,
+  snap: number,
+  viewportHeight: number,
+): { bottom: number; top: number } => {
+  if (!isMobile) return { bottom: 0, top: 0 };
+  return {
+    bottom: snap
+      ? snapPx(snap, viewportHeight) + SHEET_INSET_PX
+      : FLOATING_BAR_PX,
+    top: MAP_CLUSTER_PX,
+  };
+};
+
+/**
  * What is selected, and what the detail panel keeps showing while it leaves –
  * two values that only ever change together, so they change in one move.
  *
@@ -197,6 +221,17 @@ export const Explorer = ({
   // floating controls.
   const [listOpen, setListOpen] = useState(false);
   const [listSnap, setListSnap] = useState<number>(LIST_HALF);
+  /**
+   * Whether the detail drawer belongs *inside* the list drawer – which is how
+   * Base UI is told to stack the two, the list scaling back and peeking above
+   * the detail in front of it.
+   *
+   * It is decided when the selection is made and then left alone: what is
+   * underneath a detail is where it was opened from, and that does not change
+   * while it is open. Moving a mounted drawer from one tree to the other would
+   * remount it anyway.
+   */
+  const [detailNested, setDetailNested] = useState(false);
   const [detailSnap, setDetailSnap] = useState<number>(DETAIL_HALF);
   const [scalesOpen, setScalesOpen] = useState(false);
   // Where the elevation-profile cursor sits on the road, and a fly-to asked
@@ -332,10 +367,12 @@ export const Explorer = ({
     // The detail drawer comes up over whatever is there. It has to cover the
     // list drawer rather than sit inside it, or both swipe handles show at
     // once and the screen grows a stack of edges that mean nothing.
-    if (isMobile)
+    if (isMobile) {
       setDetailSnap(
         listOpen && listSnap >= LIST_FULL ? DETAIL_FULL : DETAIL_HALF,
       );
+      setDetailNested(listOpen);
+    }
   };
 
   /** Back to the list; focus returns to the row the detail came from. */
@@ -380,6 +417,32 @@ export const Explorer = ({
     />
   );
 
+  /**
+   * The detail drawer, in one of two places in the tree.
+   *
+   * Base UI takes a drawer rendered inside another drawer as a drawer *on* it:
+   * the one behind scales back, dims and peeks above the one in front, and a
+   * swipe down on the front one uncovers it. That is exactly what opening a
+   * detail from a row means – and what a detail opened from the map must not
+   * claim, because there is nothing behind it to go back to. So which parent
+   * it is rendered under is the whole difference, and `detailNested` is the
+   * answer decided at the tap.
+   */
+  const detailSheet = (
+    <MobileSheet
+      label="Details"
+      open={selection !== null}
+      onClose={back}
+      snapPoints={DETAIL_SNAPS}
+      snap={detailSnap}
+      onSnapChange={setDetailSnap}
+    >
+      {/* `last` is what the drawer keeps showing while it slides away, once
+          there is nothing to show any more. */}
+      {(selection ?? current.last) && detailFor((selection ?? current.last)!)}
+    </MobileSheet>
+  );
+
   const sidebar = (variant: "aside" | "sheet") => (
     <Sidebar
       variant={variant}
@@ -417,14 +480,11 @@ export const Explorer = ({
   // one flight ahead of the camera – which is precisely what keeps the picture
   // still: a padding the map has not applied yet cannot move it, and the
   // flight that follows carries it (`pass-map.tsx`, "Reserve space").
-  const insetBottom = isMobile
-    ? snapPx(
-        selection ? detailSnap : listOpen ? listSnap : 0,
-        viewportHeight,
-      ) || FLOATING_BAR_PX
-    : 0;
-
-  const insetTop = isMobile ? MAP_CLUSTER_PX : 0;
+  const { bottom: insetBottom, top: insetTop } = mapInsets(
+    isMobile,
+    selection ? detailSnap : listOpen ? listSnap : 0,
+    viewportHeight,
+  );
 
   // Desktop: the panels float over the map; the map is padded by their width
   // so camera targets land in the visible part.
@@ -570,20 +630,11 @@ export const Explorer = ({
               <div ref={sidebarRoot} className="flex min-h-0 flex-1 flex-col">
                 {sidebar("sheet")}
               </div>
+              {/* Opened from a row, the detail is a drawer *of* this one. */}
+              {detailNested && detailSheet}
             </MobileSheet>
-            <MobileSheet
-              label="Details"
-              open={selection !== null}
-              onClose={back}
-              snapPoints={DETAIL_SNAPS}
-              snap={detailSnap}
-              onSnapChange={setDetailSnap}
-            >
-              {/* `last` is what the drawer keeps showing while it slides away,
-                  once there is nothing to show any more. */}
-              {(selection ?? current.last) &&
-                detailFor((selection ?? current.last)!)}
-            </MobileSheet>
+            {/* Opened from the map, it stands on its own over the bare map. */}
+            {!detailNested && detailSheet}
           </>
         )}
       </div>

@@ -24,6 +24,8 @@ const PASS_ROW = '[data-row^="pass:"]';
 const GALIBIER = '[data-row="pass:col-du-galibier"]';
 const SLIDER = '[aria-label="Zeitraum"]';
 const BACK_TO_LIST = '[aria-label="Zurück zur Liste"]';
+/** A drawer with another one open on top of it – Base UI's own stack state. */
+const STACKED = "[data-slot=drawer-popup][data-nested-drawer-open]";
 
 test(
   "1 · loads with all passes and a map canvas",
@@ -169,6 +171,8 @@ test(
       expect(await page.text("#detail-title")).toBe("Col du Galibier");
       expect(await page.count('[aria-label*="klappen"]')).toBe(1);
       expect(await page.count('[aria-label="Details schließen"]')).toBe(1);
+      // Nothing behind it, so it is nobody's drawer: no stack.
+      expect(await page.count(STACKED)).toBe(0);
       await page.waitInViewport('[aria-label="Details schließen"]');
       await page.click('[aria-label="Details schließen"]');
       await page.waitForGone("#detail-title");
@@ -192,6 +196,12 @@ test(
       await page.waitFor("#detail-title");
       expect(await page.count('[aria-label*="klappen"]')).toBe(2);
       expect(await page.count(PASS_ROW)).toBe(all);
+      // Opened from a row, the detail is a drawer *on* the list: the one
+      // behind scales back and peeks above it rather than being covered flat.
+      await waitUntil(
+        async () => (await page.count(STACKED)) === 1,
+        "the list drawer stacked behind the detail",
+      );
       // Leaving a detail that has a list behind it means going back to it,
       // and the control says so instead of offering a close cross.
       expect(await page.count('[aria-label="Details schließen"]')).toBe(0);

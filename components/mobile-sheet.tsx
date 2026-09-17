@@ -16,6 +16,19 @@ import { cn } from "@/lib/utils";
 export const snapPx = (snap: number, viewportHeight: number) =>
   snap <= 1 ? Math.round(snap * viewportHeight) : snap;
 
+/**
+ * What the drawer keeps free of the viewport edge – the preset's own
+ * `--drawer-inset`, in pixels, because the camera padding is arithmetic and
+ * cannot read a custom property.
+ *
+ * The sheet used to be pinned flush to the three edges, which is the one
+ * shape a drawer on a map should not have: full-bleed reads as a new page,
+ * and this one is a card lying on a map that stays visible beside it. The
+ * preset's inset (and with it the rounded corners on all four sides) says
+ * that much before anything in the sheet is read.
+ */
+export const SHEET_INSET_PX = 8;
+
 interface Props {
   /** Names the sheet for screen readers and its swipe handle ("… ausklappen"). */
   label: string;
@@ -38,9 +51,10 @@ interface Props {
  * There are two of them (`explorer.tsx`), the list and the detail, and neither
  * is mounted until it is asked for: the map is the page on a phone as much as
  * on a desktop, so nothing covers it at rest. A detail opened from the map has
- * bare map behind it and closes; one opened from a row has the list behind it
- * and goes back to it, by the detail drawer closing and uncovering what never
- * moved.
+ * bare map behind it and closes; one opened from a row is rendered *inside*
+ * the list's drawer, so Base UI stacks the two – the list scales back and
+ * peeks above the detail – and dismissing the front one uncovers a list that
+ * never moved.
  */
 export const MobileSheet = ({
   label,
@@ -72,15 +86,16 @@ export const MobileSheet = ({
     >
       <DrawerContent
         className={cn(
-          "rounded-b-none border-b-0 [--drawer-inset:0px]",
           "data-[swipe-axis=y]:[--drawer-content-max-height:100dvh]",
           // With snap points the popup is a full 100dvh tall and translated
           // down by the offset of the current one. Padding the same amount off
           // its bottom leaves a content box that ends at the fold, so every
           // scroll container inside does too – during the drag as well, which
           // is why the swipe movement counts (it goes negative above the
-          // topmost snap point, hence the `max`).
-          "[padding-bottom:max(0px,calc(var(--drawer-snap-point-offset,0px)+var(--drawer-swipe-movement-y,0px)))]",
+          // topmost snap point, hence the `max`). The inset comes off again:
+          // the popup is lifted by its own bottom margin, so that much of it
+          // is already below the fold.
+          "[padding-bottom:max(0px,calc(var(--drawer-snap-point-offset,0px)+var(--drawer-swipe-movement-y,0px)-var(--drawer-inset,0px)))]",
         )}
       >
         <DrawerTitle className="sr-only">{label}</DrawerTitle>
@@ -91,7 +106,7 @@ export const MobileSheet = ({
           aria-label={`${label} ${isCollapsed ? "ausklappen" : "einklappen"}`}
           className="w-full shrink-0"
         >
-          <DrawerSwipeHandle className="h-6" />
+          <DrawerSwipeHandle className="h-5" />
         </button>
         <div className="flex min-h-0 flex-1 flex-col pb-[env(safe-area-inset-bottom,0px)]">
           {children}

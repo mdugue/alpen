@@ -195,14 +195,27 @@ friends do that better and the app links out to them.
   corner controls are lifted above the bar by `--sheet-peek`, which needs
   `!important`: MapLibre's stylesheet is bundled after `globals.css` at equal
   specificity, so the rule had never applied.
-  From there, **two** independent `MobileSheet`s (`components/mobile-sheet.tsx`,
-  the Base UI `Drawer` with `modal={false}` and snap points), the list and the
-  detail, each mounted only while it is open and each with its own snap state
-  (`LIST_SNAPS`, `DETAIL_SNAPS` in `explorer.tsx`). The search bar opens the
-  list; a tap on the map opens the detail over the bare map; a tap on a list
-  row opens it over the list. Whichever is in front feeds MapLibre its height
-  as bottom padding, and with neither open that is the floating bar's height
+  From there, **two** `MobileSheet`s (`components/mobile-sheet.tsx`, the Base UI
+  `Drawer` with `modal={false}` and snap points), the list and the detail, each
+  mounted only while it is open and each with its own snap state (`LIST_SNAPS`,
+  `DETAIL_SNAPS` in `explorer.tsx`). The search bar opens the list; a tap on the
+  map opens the detail over the bare map; a tap on a list row opens it over the
+  list. Whichever is in front feeds MapLibre its height as bottom padding plus
+  the margin the drawer keeps to the screen edge (`mapInsets`,
+  `SHEET_INSET_PX`); with neither open that is the floating bar's height
   (`FLOATING_BAR_PX`, kept in step with `--sheet-peek`).
+  Neither is full-bleed: the preset's own `--drawer-inset` is left alone, so a
+  sheet is a rounded card lying on a map that stays visible beside it rather
+  than a new page pinned to three edges.
+  **Opened from a row, the detail is a drawer _on_ the list, not merely over
+  it.** Base UI reads a `Drawer.Root` rendered inside another one as a nested
+  drawer and stacks the two – the one behind scales back, dims and peeks above
+  the one in front – which is exactly what going back to the list means. A
+  detail opened from the map must not claim that, because there is nothing
+  behind it, so the same `detailSheet` element is rendered under one of two
+  parents, decided at the tap (`detailNested` in `explorer.tsx`) and then left
+  alone: what is underneath a detail does not change while it is open, and
+  moving a mounted drawer between trees would remount it anyway.
   It was one sheet holding either content, after a stint as two sheets that
   were always both on screen. The always-on pair failed because a drawer that
   cannot leave has to rest somewhere, so the layout grew a peek row, a swipe
@@ -220,8 +233,9 @@ friends do that better and the app links out to them.
   control says which: a labelled `‹ Liste` back button while the list drawer is
   open behind it (`backToList` on `DetailPanel`), the `✕` when the detail is
   alone over the map. A drawer sizes itself from `--drawer-snap-point-offset`:
-  the popup is a full `100dvh` and padded off at the bottom by that offset, so
-  its content box ends at the fold.
+  the popup is a full `100dvh` and padded off at the bottom by that offset less
+  the inset, so its content box ends at the fold – the inset comes off because
+  the popup's own bottom margin has already lifted that much of it below.
   What else floats over the map is one cluster in its top-left
   corner (`MAP_CLUSTER`, next to the panels' left edge): the period scrubber
   and, on the same panel surface, the three map tools – layers, 3D, fit. The
@@ -300,8 +314,11 @@ friends do that better and the app links out to them.
   (`components/panel/climate-chart.tsx`) is pulled in with `next/dynamic` and
   never reaches the first load. Stat tiles and dense rows use `Item`, stepper
   groups use `ButtonGroup`.
-- **Photos are borrowed, not owned.** The detail panel opens with a slideshow
-  of Wikimedia Commons photos (`components/panel/photo-carousel.tsx`).
+- **Photos are borrowed, not owned, and they are the panel's hero.** The detail
+  panel opens on a slideshow of Wikimedia Commons photos
+  (`components/panel/photo-carousel.tsx`) that runs edge to edge at the very
+  top – no border, no radius of its own, the panel's own one clips it – with
+  the kicker, the name and the panel's controls lying on it.
   `scripts/build-photos.ts` picks them once, without an editorial step – a
   geosearch around the pass point, a name filter that keeps signs and maps out,
   a rank by name match – and stores only metadata in
@@ -343,7 +360,31 @@ friends do that better and the app links out to them.
   immutable file from the CDN, and the jump was never about where the markup
   came from. Attribution is not decoration: every slide carries author
   and licence, baked into the slide rather than derived from the carousel's
-  index, so it cannot drift out of sync with what is on screen.
+  index, so it cannot drift out of sync with what is on screen – which is also
+  why the scrim is per slide: the slides sit edge to edge, so their scrims tile
+  into one.
+  **The hero is the whole carousel, not one picture.** The build picks up to
+  six photos per entity with no editorial step, so the first is not reliably
+  the best one, and a destination is chosen by the look of it – one frame
+  rarely answers that. Swiping costs nothing extra: the slides are already
+  lazy, the horizontal drag is the gesture the sheet's vertical one leaves
+  free, and the `1/6` in the corner says there is more without a second
+  control.
+  **Two shapes, one element.** With no photos – or once every slide has failed
+  to load – the kicker and the name stand in the panel's own colours instead of
+  on white. They are the _same_ nodes either way, only differently placed
+  (`hero` in `detail-panel.tsx`): rendered in two branches, the focused heading
+  would leave the document the moment the last slide failed, and with it the
+  Escape that closes the panel. `DetailAsset.photos` decides the shape before
+  the file arrives, so the head never changes shape under a reader.
+  The controls do change tone, because what is under them does: on the hero the
+  row is transparent and each control carries its own translucent surface
+  (`OVERLAY_CONTROL`), past the head the row takes the surface, the controls
+  give theirs up and the name appears next to them – the title was written on
+  the photo and scrolled away with it (`PanelBar`, `solid`). The threshold is
+  measured off the head rather than guessed, and it is held per selection
+  (`pastHead` holds the entity's key), so a new panel starts at the top without
+  an effect writing state after the fact.
 - **One list at a time, chosen by a tab row.** The three kinds used to be
   collapsible blocks stacked inside one scroll container, which made the
   sidebar a single 12 841 px column against a 730 px viewport: the tours sat
