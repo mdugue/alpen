@@ -14,6 +14,18 @@
  * the run can be aborted and resumes. Results belong in the repo – nothing
  * is fetched at runtime.
  *
+ * What a stored route was fetched for is recorded with it: `meta.inputs` is the
+ * hash of the ascent's start, its marker and elevation and its `check`
+ * (`ascentInputs`). Move a coordinate and the hash no longer matches, so the
+ * route is as pending as a missing one – before that, a moved marker left the
+ * old geometry in place and only `data:check` noticed, as an error no command
+ * could clear. Entries from before the hash existed are judged once against
+ * the current limits and stamped only if they still pass.
+ *
+ * OSM is asked through scripts/lib/osm.ts, which falls back from Overpass to
+ * the OSM map API when that host is unreachable – the pass points, and the 27
+ * ascents that wait behind them, must not depend on one server.
+ *
  * The route quality gate (scripts/lib/validate.ts) sits between the router and
  * the store: a geometry is measured, judged, and only then written. What fails
  * lands in rejected.json with its measured values instead of in routes.json, so
@@ -85,13 +97,8 @@ import type {
   TourCheck,
   TourMetrics,
 } from "../lib/types";
-import {
-  distanceToWays,
-  overpassPost,
-  ROAD_RADIUS,
-  roadsQuery,
-} from "./lib/locate";
-import type { OverpassWay } from "./lib/locate";
+import { distanceToWays, ROAD_RADIUS } from "./lib/locate";
+import { osmSource } from "./lib/osm";
 import {
   LIMITS,
   ascentMetrics,
@@ -101,7 +108,8 @@ import {
   checkTour,
   geometryHash,
   tourMetrics,
-  inputsHash,
+  ascentInputs,
+  tourInputs,
   withProfile,
 } from "./lib/validate";
 
@@ -258,9 +266,10 @@ const openMeteo = new Limiter("Open-Meteo", 500, OPEN_METEO_BUDGET);
 const ors = ORS ? new Limiter("OpenRouteService", 38) : null;
 const osrm = new Limiter("OSRM-Demo", 55);
 // Overpass asks for fair use, no key; a handful of batched queries per run.
+// Its fallback, the OSM map API, answers one point per request rather than a
+// whole batch (scripts/lib/osm.ts), so it is paced on its own.
 const overpass = new Limiter("Overpass", 20);
-const OVERPASS =
-  process.env.OVERPASS_URL ?? "https://overpass-api.de/api/interpreter";
+const osmApi = new Limiter("OSM-API", 30);
 
 const getJson = <T>(
   lim: Limiter,
@@ -399,24 +408,31 @@ const routeVia = async (
  * is how Finestre and Nivolet are on the map.
  */
 const route = async (
+  label: string,
   waypoints: LatLon[],
-): Promise<{ geom: RouteGeometry; source: RouteSource }> => {
+): Promise<{ declined: boolean; geom: RouteGeometry; source: RouteSource }> => {
+  let declined = false;
   if (ors && !ors.exhausted) {
     try {
-      return { geom: await routeVia("ors", waypoints), source: "ors" };
+      return {
+        declined,
+        geom: await routeVia("ors", waypoints),
+        source: "ors",
+      };
     } catch (error) {
       if (error instanceof QuotaExhaustedError)
         console.log(
-          "  ORS-Kontingent erschöpft – weiter mit OSRM (Autoprofil), das Gate fängt die Ausreißer ab",
+          `  ORS-Kontingent erschöpft: ${label} – weiter mit OSRM (Autoprofil), das Gate fängt die Ausreißer ab`,
         );
-      else if (error instanceof HttpError && error.status === 404)
+      else if (error instanceof HttpError && error.status === 404) {
+        declined = true;
         console.log(
-          "  ORS fährt diese Straße nicht – weiter mit OSRM (Autoprofil), das Gate fängt die Ausreißer ab",
+          `  ORS fährt diese Straße nicht: ${label} – weiter mit OSRM (Autoprofil), das Gate fängt die Ausreißer ab`,
         );
-      else throw error;
+      } else throw error;
     }
   }
-  return { geom: await routeVia("osrm", waypoints), source: "osrm" };
+  return { declined, geom: await routeVia("osrm", waypoints), source: "osrm" };
 };
 
 /** DEM height at the pass coordinates themselves, to catch a wrong summit point. */
@@ -438,10 +454,17 @@ const summitElevations = async (
   return out;
 };
 
+const osm = osmSource({
+  log: (line) => console.log(line),
+  viaMap: (url, init) => getJson(osmApi, 1, url, init),
+  viaOverpass: (url, init) => getJson(overpass, 1, url, init),
+});
+
 /**
- * Distance from each pass point to the nearest drivable OSM way, one Overpass
- * request per batch. The ways come back with their geometry and the distance
- * is measured locally; a point with no way inside ROAD_RADIUS gets null.
+ * Distance from each pass point to the nearest drivable OSM way, one request
+ * per batch of 25 (one per point while Overpass is out). The ways come back
+ * with their geometry and the distance is measured locally; a point with no
+ * way inside ROAD_RADIUS gets null.
  */
 const roadDistances = async (
   list: Pass[],
@@ -449,13 +472,7 @@ const roadDistances = async (
   const out: Record<string, number | null> = {};
   for (let i = 0; i < list.length; i += 25) {
     const chunk = list.slice(i, i + 25);
-    const { elements } = await getJson<{ elements: OverpassWay[] }>(
-      overpass,
-      1,
-      OVERPASS,
-      overpassPost(roadsQuery(chunk)),
-    );
-    const ways = elements.filter((e) => e.type === "way");
+    const ways = await osm.roads(chunk);
     for (const p of chunk) {
       const d = distanceToWays(p, ways);
       out[p.slug] = d <= ROAD_RADIUS ? +d.toFixed(3) : null;
@@ -619,7 +636,7 @@ const routeJobs: RouteJob[] = [
         return {
           check: a.check as TourCheck | undefined,
           from: a.from,
-          inputs: inputsHash({ from: a.from, km: a.km, to: a.to }, a.check),
+          inputs: ascentInputs(true, p, a),
           key,
           kind: "traverse",
           label,
@@ -632,10 +649,7 @@ const routeJobs: RouteJob[] = [
         check: a.check as AscentCheck | undefined,
         elevation: p.elevation,
         from: a.from,
-        inputs: inputsHash(
-          { elevation: p.elevation, from: a.from, summit },
-          a.check,
-        ),
+        inputs: ascentInputs(false, p, a),
         key,
         kind: "ascent",
         label,
@@ -647,7 +661,7 @@ const routeJobs: RouteJob[] = [
   ),
   ...(tours as Tour[]).map((t): RouteJob => ({
     check: t.check,
-    inputs: inputsHash({ km: t.km, waypoints: t.waypoints }, t.check),
+    inputs: tourInputs(t),
     key: `tour:${t.slug}`,
     kind: "tour",
     label: `Tour ${t.name}`,
@@ -677,15 +691,32 @@ const judge = (job: RouteJob, m: RouteMetrics) =>
 const upgradable = (j: RouteJob) =>
   routes[j.key] !== undefined &&
   ORS !== "" &&
-  (meta[j.key]?.source ?? "osrm") === "osrm";
+  (meta[j.key]?.source ?? "osrm") === "osrm" &&
+  // ORS has been asked about this road and said it does not carry it. Asking
+  // again on every upgrade pass buys the same 404; `--retry-rejected` is the
+  // way back in, for when ORS' own graph has moved.
+  (RETRY_REJECTED || !meta[j.key]?.orsDeclined);
 /**
  * An OSRM route ORS has not been asked about yet. Once ORS has answered and
  * the gate refused that answer (the key is in rejected.json next to the
  * stored route), the OSRM route is as final as it gets and earns its profile.
  */
 const provisional = (j: RouteJob) => upgradable(j) && !(j.key in rejected);
+/**
+ * A stored route was fetched for a question – the ascent's start, the marker,
+ * the `check` – and `meta.inputs` records which one. When the curator moves a
+ * coordinate, the stored geometry still ends where the old marker was: only
+ * `data:check` saw it, as an error no command could clear (Umbrailpass,
+ * September 2026, 750 m short of its moved pass point). So a hash that no
+ * longer matches makes a route as pending as a missing one.
+ *
+ * `reconcileInputs` guarantees the other half: an entry without a hash has
+ * been judged and failed, which is the same verdict by another route.
+ */
+const staleRoute = (j: RouteJob) =>
+  routes[j.key] !== undefined && meta[j.key]?.inputs !== j.inputs;
 const needsRoute = (j: RouteJob) =>
-  !routes[j.key] || (UPGRADE_OSRM && upgradable(j));
+  !routes[j.key] || staleRoute(j) || (UPGRADE_OSRM && upgradable(j));
 /**
  * A rejection is retried when it could come out differently: the curator
  * changed the inputs, or the stored metrics pass the current limits (a limit
@@ -780,6 +811,7 @@ const report = () => {
   const roads = pendingRoads().length + s;
   const up = routeJobs.filter(provisional).length;
   const blocked = routeJobs.filter(summitBlocked).length;
+  const stale = routeJobs.filter(staleRoute).length;
   const kept = Object.keys(rejected).filter((k) => routes[k]).length;
   console.log(
     `Fehlend: ${r} Routen, ${p} Profile, ${c} Klimareihen, ${s} Gipfelhöhen, ${roads} Straßenabstände${
@@ -790,7 +822,11 @@ const report = () => {
       Object.keys(rejected).length
         ? ` · ${Object.keys(rejected).length} abgewiesen (rejected.json)`
         : ""
-    }${up && !UPGRADE_OSRM ? ` · ${up} OSRM-Routen aufrüstbar (--upgrade-osrm)` : ""}${
+    }${stale ? ` · ${stale} veraltet (Koordinaten verschoben)` : ""}${
+      up && !UPGRADE_OSRM
+        ? ` · ${up} OSRM-Routen aufrüstbar (--upgrade-osrm)`
+        : ""
+    }${
       kept
         ? ` · ${kept} davon OSRM-Routen, deren ORS-Kandidat abgewiesen wurde`
         : ""
@@ -802,6 +838,44 @@ const report = () => {
   );
   return r + p + c + s;
 };
+
+/**
+ * `meta.inputs` is younger than the stored routes, so most entries have none.
+ * Stamping them all with today's hash would declare every geometry current,
+ * including the ones that are not; leaving them unstamped would make the whole
+ * set look stale and cost 297 routes and ~30 000 Open-Meteo calls to re-fetch.
+ *
+ * So each is judged once, with the same measurements `data:check` uses and
+ * without a single request: a geometry that still passes its own gate is
+ * stamped and stays, one that fails keeps no hash and is therefore stale –
+ * which is the verdict it earned. After this, "no hash" and "wrong hash" mean
+ * the same thing and `staleRoute` needs to know only one of them.
+ */
+const reconcileInputs = () => {
+  let stale = 0;
+  let stamped = 0;
+  for (const job of routeJobs) {
+    const geom = routes[job.key];
+    const m = meta[job.key];
+    if (!(geom && m) || m.inputs !== undefined) continue;
+    let metrics = measure(job, geom);
+    const prof = profiles[job.key];
+    if (job.kind === "ascent" && prof)
+      metrics = withProfile(metrics as AscentMetrics, prof, job.elevation);
+    if (judge(job, metrics).length) {
+      stale += 1;
+      continue;
+    }
+    meta[job.key] = { ...m, inputs: job.inputs };
+    stamped += 1;
+  }
+  return { stale, stamped };
+};
+const reconciled = reconcileInputs();
+if (reconciled.stale)
+  console.log(
+    `${reconciled.stale} gespeicherte Route(n) halten ihre eigenen Grenzen nicht mehr ein – sie werden neu geholt`,
+  );
 
 if (PENDING_ONLY) {
   console.log(
@@ -879,6 +953,8 @@ if (FORMAT_ONLY) {
   await writing;
   process.exit(0);
 }
+
+if (reconciled.stamped) await write("routes-meta.json", meta);
 
 console.log(
   ORS
@@ -963,9 +1039,15 @@ const accept = async (
   job: RouteJob,
   geom: RouteGeometry,
   source: RouteSource,
+  orsDeclined = false,
 ) => {
   routes[job.key] = geom;
-  meta[job.key] = { fetchedAt: TODAY, source };
+  meta[job.key] = {
+    fetchedAt: TODAY,
+    inputs: job.inputs,
+    source,
+    ...(orsDeclined ? { orsDeclined: true as const } : {}),
+  };
   Reflect.deleteProperty(rejected, job.key);
   await write("routes.json", routes);
   await write("routes-meta.json", meta);
@@ -1001,6 +1083,44 @@ const fetchProfile = async (
 };
 
 /**
+ * ORS was asked again and refused the road again, so the stored car-profile
+ * route is as good as this key gets. Recorded on the spot: without it every
+ * `data:check` asks for an upgrade that cannot come and every `--upgrade-osrm`
+ * re-asks ORS about five roads it has been refusing since the first run.
+ */
+const noteDecline = async (tag: string, job: RouteJob, declined: boolean) => {
+  const m = meta[job.key];
+  if (!m || (m.orsDeclined ?? false) === declined) return;
+  meta[job.key] = declined
+    ? { ...m, orsDeclined: true }
+    : { fetchedAt: m.fetchedAt, inputs: m.inputs, source: m.source };
+  await write("routes-meta.json", meta);
+  if (declined)
+    console.log(
+      `${tag} ORS hat diese Straße endgültig abgelehnt: ${job.label} – die OSRM-Route bleibt, data:check verlangt keine Aufrüstung mehr`,
+    );
+};
+
+/**
+ * What a candidate would replace: the stored route, its meta and its profile,
+ * so a failing candidate can put them back. Nothing to keep when the geometry
+ * is only being re-judged (it *is* the stored route), and nothing when the
+ * stored route is stale – that one answers a question nobody asks any more.
+ */
+const storedFor = (
+  job: RouteJob,
+  fetched: boolean,
+  replace: boolean,
+): Stored | undefined =>
+  fetched && !replace && routes[job.key]
+    ? {
+        geom: routes[job.key]!,
+        meta: meta[job.key],
+        profile: profiles[job.key],
+      }
+    : undefined;
+
+/**
  * Geometry checks, then – for ascents – the profile and its checks. A fresh
  * route is stored as soon as the geometry passes, so a run cut short by the
  * Open-Meteo budget keeps its (free) routing work; the profile checks of the
@@ -1014,18 +1134,19 @@ const gate = async (
   source: RouteSource,
   /** False when the geometry came out of routes.json and is only being judged. */
   fetched = true,
+  /** ORS has no answer for this road; recorded so nothing asks again in vain. */
+  orsDeclined = false,
+  /**
+   * The stored route was fetched for inputs that have since changed, so it is
+   * not a route to fall back on: it is wrong for the question being asked. A
+   * failing candidate therefore takes it with it rather than putting it back.
+   */
+  replace = false,
 ) => {
   const hash = geometryHash(geom);
   // A fetched candidate for a key that already has a route is an upgrade; the
   // stored route has passed the gate and must survive a failing candidate.
-  const keep: Stored | undefined =
-    fetched && routes[job.key]
-      ? {
-          geom: routes[job.key]!,
-          meta: meta[job.key],
-          profile: profiles[job.key],
-        }
-      : undefined;
+  const keep = storedFor(job, fetched, replace);
   let m = measure(job, geom);
   const bad = judge(job, m);
   if (bad.length)
@@ -1037,7 +1158,7 @@ const gate = async (
   const cached =
     rejected[job.key]?.hash === hash ? rejected[job.key]?.profile : undefined;
   const accepted = async () => {
-    await accept(job, geom, source);
+    await accept(job, geom, source, orsDeclined);
     console.log(
       `${tag} Route: ${job.label} (${source}, ${(m as AscentMetrics).km} km)`,
     );
@@ -1133,12 +1254,16 @@ const routeJobsPending = pendingRoutes();
 const routeTag = counter(routeJobsPending.length);
 const routing = routeJobsPending.map(async (job, i) => {
   const tag = routeTag(i);
-  const upgrade = routes[job.key] !== undefined;
+  // A stale route is being replaced, not upgraded: its geometry answers a
+  // question nobody asks any more, so "same source, nothing gained" does not
+  // hold for it.
+  const stale = staleRoute(job);
+  const upgrade = routes[job.key] !== undefined && !stale;
   try {
-    const { geom, source } = await route(job.waypoints);
-    // Same source as before: nothing gained.
-    if (upgrade && (meta[job.key]?.source ?? "osrm") === source) return;
-    await gate(tag, job, geom, source);
+    const { declined, geom, source } = await route(job.label, job.waypoints);
+    if (upgrade && (meta[job.key]?.source ?? "osrm") === source)
+      return await noteDecline(tag, job, declined);
+    await gate(tag, job, geom, source, true, declined, stale);
   } catch (error) {
     if (!(error instanceof QuotaExhaustedError))
       fail(`${tag} Route ${job.label}`, error);
@@ -1186,8 +1311,9 @@ for (const lim of [ors, osrm, openMeteo]) {
     );
 }
 const osrmRoutes = Object.values(meta).filter(
-  (x) => x.source === "osrm",
+  (x) => x.source === "osrm" && !x.orsDeclined,
 ).length;
+const declinedRoutes = Object.values(meta).filter((x) => x.orsDeclined).length;
 console.log(
   `Fertig: ${Object.keys(routes).length} Routen, ${Object.keys(profiles).length} Profile, ` +
     `${Object.keys(climates).length} Klimareihen` +
@@ -1209,5 +1335,9 @@ console.log(
 if (osrmRoutes)
   console.log(
     `${osrmRoutes} Routen stammen vom OSRM-Autoprofil und sollten mit ORS_KEY erneuert werden`,
+  );
+if (declinedRoutes)
+  console.log(
+    `${declinedRoutes} Routen bleiben beim Autoprofil: ORS fährt diese Straßen nicht (--retry-rejected fragt erneut)`,
   );
 report();

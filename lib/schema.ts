@@ -352,6 +352,25 @@ export const RouteSource = z.enum(["ors", "osrm"]);
 export const RouteMeta = z.strictObject({
   /** ISO date of the run that stored the geometry. */
   fetchedAt: z.iso.date(),
+  /**
+   * What the route was asked for when it was fetched (`inputsHash` in
+   * `scripts/lib/validate.ts`): the ascent's start, the marker and its
+   * elevation, the `check` – a tour's waypoints and stated length. A stored
+   * route whose job no longer hashes to this was fetched for coordinates that
+   * have since moved, and `data:build` re-routes it.
+   *
+   * Optional because routes stored before it existed have none. Such an entry
+   * is stamped by the next build, but only once the stored geometry has been
+   * re-judged and passed – so "no hash" never silently means "still current".
+   */
+  inputs: z.string().optional(),
+  /**
+   * ORS answered 404 for this geometry: its road-cycling graph does not carry
+   * this road (Finestre, Nivolet, the toll ramps). The route is the car
+   * profile's and stays that way, so `data:check` asks for no upgrade that
+   * cannot come. Cleared whenever the route is fetched anew.
+   */
+  orsDeclined: z.literal(true).optional(),
   source: RouteSource,
 });
 

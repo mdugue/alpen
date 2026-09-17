@@ -37,11 +37,13 @@ import type {
 } from "../lib/types";
 import { renderJsonSchema, schemaFileFor } from "./emit-json-schema";
 import {
+  ascentInputs,
   checkRoad,
   checkRoadAscent,
   checkSummit,
   checkTour,
   roadMetrics,
+  tourInputs,
   tourMetrics,
   withProfile,
 } from "./lib/validate";
@@ -128,23 +130,46 @@ for (const file of Object.keys(FILES) as (keyof typeof FILES)[]) {
 const days = (iso: string) =>
   Math.round((Date.now() - Date.parse(iso)) / 86_400_000);
 
-/** Shared by ascents and tours: judge what is stored, and note where it came from. */
+/**
+ * Shared by ascents and tours: judge what is stored, note where it came from,
+ * and compare what it was fetched for against what is asked for today.
+ */
 const inspect = (
   key: string,
   label: string,
   metrics: RouteMetrics,
   reasons: string[],
+  /** The hash of today's question; `undefined` skips the comparison. */
+  inputs?: string,
 ) => {
-  const source = meta?.[key]?.source ?? "osrm";
+  const entry = meta?.[key];
+  const source = entry?.source ?? "osrm";
   if (reasons.length)
     errors.push(
       `${key}: gespeicherte Route ist unplausibel – ${reasons.join("; ")} (${label})`,
     );
   // An OSRM route whose ORS candidate was refused is reported with that
-  // rejection below, not as "erneuern": ORS has been asked.
-  else if (source === "osrm" && !(rejected && key in rejected))
+  // rejection below, not as "erneuern": ORS has been asked. So is one ORS
+  // answered 404 for – its road-cycling graph does not carry this road, and
+  // asking again on every run costs a request to hear the same thing.
+  else if (
+    source === "osrm" &&
+    !entry?.orsDeclined &&
+    !(rejected && key in rejected)
+  )
     warnings.push(
       `${key}: Route stammt vom OSRM-Autoprofil – mit ORS_KEY erneuern`,
+    );
+  // The stored geometry answers the question of the day it was fetched. A
+  // moved coordinate leaves it in place – it may even still pass the checks
+  // above, a few hundred metres short of where the marker now is.
+  if (
+    inputs !== undefined &&
+    entry?.inputs !== undefined &&
+    entry.inputs !== inputs
+  )
+    warnings.push(
+      `${key}: Route wurde für andere Eingaben geholt (Koordinaten, Höhe oder check geändert) – bun run data:build holt sie neu`,
     );
   if (EXPLAIN)
     explained.push(
@@ -254,6 +279,7 @@ const checkRoutes = (p: Pass) => {
       `${p.name} ab ${a.label}`,
       m,
       checkRoadAscent(traverse, m, a.check),
+      ascentInputs(traverse, p, a),
     );
   }
 };
@@ -320,7 +346,7 @@ const checkTours = (list: Tour[], spurs: Set<string>, slugs: Set<string>) => {
       continue;
     }
     const m = tourMetrics(geom, t.waypoints, t.km);
-    inspect(key, `Tour ${t.name}`, m, checkTour(m, t.check));
+    inspect(key, `Tour ${t.name}`, m, checkTour(m, t.check), tourInputs(t));
   }
 };
 
