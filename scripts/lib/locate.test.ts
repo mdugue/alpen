@@ -3,10 +3,13 @@ import { describe, expect, test } from "bun:test";
 import {
   candidatesQuery,
   distanceToWays,
+  mapBbox,
+  passNodesWithin,
   rankCandidates,
   roadsQuery,
+  waysWithGeometry,
 } from "./locate";
-import type { OverpassNode, OverpassWay } from "./locate";
+import type { OsmElement, OverpassNode, OverpassWay } from "./locate";
 
 const node = (
   id: number,
@@ -115,5 +118,62 @@ describe("rankCandidates", () => {
       node(1, 47.08, 12.84, { ele: "2503,6" }),
     ]);
     expect(c!.ele).toBe(2504);
+  });
+});
+
+describe("the map API's shape", () => {
+  // The Umbrail pass node with a stretch of the road under it, as the OSM map
+  // API sends it: ways carry node ids, the nodes come separately.
+  const elements: OsmElement[] = [
+    { id: 10, lat: 46.5416, lon: 10.4332, type: "node" },
+    { id: 11, lat: 46.5426, lon: 10.4334, type: "node" },
+    { id: 12, lat: 46.5436, lon: 10.4336, type: "node" },
+    {
+      id: 20,
+      nodes: [10, 11, 12],
+      tags: { highway: "secondary" },
+      type: "way",
+    },
+    {
+      id: 21,
+      nodes: [10, 11],
+      tags: { highway: "path" },
+      type: "way",
+    },
+    node(30, 46.5416, 10.4332, { mountain_pass: "yes", name: "Umbrail" }),
+    node(31, 46.62, 10.44, { name: "weit weg", natural: "saddle" }),
+    node(32, 46.5418, 10.4334, { name: "kein Sattel", natural: "peak" }),
+  ];
+
+  test("a way's node ids become its geometry", () => {
+    const [road, ...rest] = waysWithGeometry(elements);
+    expect(rest).toHaveLength(0);
+    expect(road!.geometry).toHaveLength(3);
+    expect(
+      distanceToWays({ lat: 46.5426, lon: 10.4334 }, [road!]),
+    ).toBeLessThan(0.005);
+  });
+
+  test("a path is no road, whatever it is tagged on", () => {
+    expect(waysWithGeometry(elements).map((w) => w.id)).toEqual([20]);
+  });
+
+  test("pass and saddle nodes inside the radius, nothing else", () => {
+    const found = passNodesWithin({ lat: 46.5416, lon: 10.4332 }, 6, elements);
+    expect(found.map((n) => n.id)).toEqual([30]);
+  });
+
+  test("the bbox is a box around the point, lon first", () => {
+    const [minLon, minLat, maxLon, maxLat] = mapBbox(
+      { lat: 46.5416, lon: 10.4332 },
+      6,
+    )
+      .split(",")
+      .map(Number) as [number, number, number, number];
+    expect(minLat).toBeLessThan(46.5416);
+    expect(maxLat).toBeGreaterThan(46.5416);
+    // 6 km of latitude is 0.054°; the same in longitude is wider at 46°.
+    expect(maxLat - minLat).toBeCloseTo(0.108, 2);
+    expect(maxLon - minLon).toBeGreaterThan(maxLat - minLat);
   });
 });

@@ -31,7 +31,10 @@ friends do that better and the app links out to them.
    `scripts/lib/validate.ts` before it is stored; what fails lands in
    `rejected.json` with its measured values. Judging is separate from measuring
    so `bun run data:check --explain` can re-evaluate every route against a
-   changed threshold offline, without spending API calls.
+   changed threshold offline, without spending API calls. And every stored
+   route records what it was fetched for (`meta.inputs` in
+   `routes-meta.json`): move a coordinate and the next `data:build` routes it
+   again by itself, instead of leaving a geometry that ends at the old marker.
 5. **Destination first.** Judge a feature by whether it helps choose where
    and when to go. Overview beats precision: a season strip for 92 passes is
    worth more than a metre-exact profile for one. Route-level detail ranks
@@ -70,7 +73,7 @@ friends do that better and the app links out to them.
 | Detail panel incl. profile/weather/climate      | `components/panel/` (collapsible blocks: `components/panel/section.tsx`)                                                                                                                                                                                                                                   |
 | Drawers on phones (list and detail, separate)   | `components/mobile-sheet.tsx`, `components/map/map-search.tsx`                                                                                                                                                                                                                                             |
 | Precomputation, data checks                     | `scripts/build-data.ts`, `scripts/build-photos.ts`, `scripts/check-data.ts`                                                                                                                                                                                                                                |
-| Route quality gate: checks and thresholds       | `scripts/lib/validate.ts`; pass-point placement `scripts/locate-pass.ts` (`bun run data:locate`), `scripts/lib/locate.ts`                                                                                                                                                                                  |
+| Route quality gate: checks and thresholds       | `scripts/lib/validate.ts`; pass-point placement `scripts/locate-pass.ts` (`bun run data:locate`), `scripts/lib/locate.ts`; OSM host and its fallback `scripts/lib/osm.ts`                                                                                                                                  |
 | Name, claim, colours, mark, base URL            | `lib/brand.ts`, `lib/mark.tsx`                                                                                                                                                                                                                                                                             |
 | Icons, share image, manifest, robots, sitemap   | `app/icon.tsx`, `app/apple-icon.tsx`, `app/opengraph-image.tsx`, `app/manifest.ts`, `app/robots.ts`, `app/sitemap.ts`                                                                                                                                                                                      |
 | Legal pages                                     | `app/impressum/`, `app/datenschutz/`                                                                                                                                                                                                                                                                       |
