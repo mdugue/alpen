@@ -786,7 +786,7 @@ const PanelBar = ({
 }) => (
   <div
     className={cn(
-      "pointer-events-none absolute inset-x-0 top-0 z-20 flex items-center gap-1.5 p-2 transition-colors duration-200",
+      "pointer-events-none absolute inset-x-0 top-0 z-20 flex items-center gap-1.5 p-2.5 transition-colors duration-200",
       solid &&
         "border-border/60 bg-card/90 supports-not-[backdrop-filter:blur(0)]:bg-card border-b backdrop-blur-md",
     )}
@@ -982,7 +982,10 @@ export const DetailPanel = (props: Props) => {
           // title block – so what has to be measured is measured rather than
           // guessed at a width the panel takes from its layout.
           const head = e.currentTarget.firstElementChild as HTMLElement | null;
-          const limit = Math.max(0, (head?.offsetHeight ?? 0) - BAR_PX);
+          const limit = Math.max(
+            0,
+            (head?.offsetTop ?? 0) + (head?.offsetHeight ?? 0) - BAR_PX,
+          );
           setPastHead(e.currentTarget.scrollTop > limit ? key : null);
         }}
         className="min-h-0 flex-1 overflow-y-auto overscroll-contain pb-6"
@@ -996,7 +999,17 @@ export const DetailPanel = (props: Props) => {
          * last slide failed to load, and with it the Escape that closes the
          * panel.
          */}
-        <div className="relative">
+        <div
+          className={cn(
+            "relative",
+            // A thin margin rather than none at all: the photo is then a card
+            // inside the panel's card, and its corners can be cut concentric
+            // with the panel's own instead of running into them. Full bleed
+            // put the picture's corner exactly where the drawer's radius is,
+            // which is the one place a right angle and a curve cannot agree.
+            hero && "mx-1.5 mt-1.5 overflow-hidden rounded-lg",
+          )}
+        >
           {hero && (
             <PhotoCarousel
               loading={loaded.photos.length === 0}
@@ -1006,12 +1019,15 @@ export const DetailPanel = (props: Props) => {
               }
             />
           )}
+          {/*
+           * 10 px inside a hero that is 6 px inside the panel: the name then
+           * starts on the same line as the numbers under it.
+           */}
           <div
             className={cn(
-              "px-4",
               hero
-                ? "pointer-events-none absolute inset-x-0 bottom-6 text-white"
-                : "pt-11",
+                ? "pointer-events-none absolute inset-x-0 bottom-6 px-2.5 text-white"
+                : "px-4 pt-11",
             )}
           >
             <p

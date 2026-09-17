@@ -142,7 +142,7 @@ export const PhotoCarousel = ({
                 width={photo.width}
               />
               <Scrim />
-              <figcaption className="text-2xs absolute inset-x-0 bottom-0 flex h-6 items-center gap-1.5 px-4 pb-1.5 leading-tight text-white/85">
+              <figcaption className="text-2xs absolute inset-x-0 bottom-0 flex h-6 items-center gap-1.5 px-2.5 pb-1.5 leading-tight text-white/85">
                 <a
                   className="min-w-0 truncate underline-offset-2 hover:underline"
                   href={photo.page}

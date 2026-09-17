@@ -316,9 +316,13 @@ friends do that better and the app links out to them.
   groups use `ButtonGroup`.
 - **Photos are borrowed, not owned, and they are the panel's hero.** The detail
   panel opens on a slideshow of Wikimedia Commons photos
-  (`components/panel/photo-carousel.tsx`) that runs edge to edge at the very
-  top – no border, no radius of its own, the panel's own one clips it – with
-  the kicker, the name and the panel's controls lying on it.
+  (`components/panel/photo-carousel.tsx`) that sits at the very top under a
+  thin margin, with the kicker, the name and the panel's controls lying on it.
+  The margin is 6 px and the photo's own radius is the panel's less that, so
+  the two corners are concentric: full bleed would put the picture's right
+  angle exactly where the card's curve is, which is the one place the two
+  cannot agree. The title is inset 10 px inside the photo, so it starts on the
+  same line as the numbers under it.
   `scripts/build-photos.ts` picks them once, without an editorial step – a
   geosearch around the pass point, a name filter that keeps signs and maps out,
   a rank by name match – and stores only metadata in
