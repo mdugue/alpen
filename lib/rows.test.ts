@@ -8,8 +8,8 @@ import {
   buildTourRows,
   buildTownRows,
   facetCount,
+  seasonBand,
   sortPassRows,
-  statusHistogram,
 } from "@/lib/rows";
 import {
   cellAt,
@@ -145,6 +145,20 @@ const snowy = (snowPct: number): ClimateYear =>
       }) satisfies ClimateBucket,
   );
 
+/** A flat year of one bucket, with the fields under test overridden. */
+const bucketed = (over: Partial<ClimateBucket>): ClimateYear =>
+  PERIODS.map(
+    () =>
+      ({
+        frostPct: 0,
+        snowPct: 0,
+        tmax: 10,
+        tmin: 2,
+        wetPct: 20,
+        ...over,
+      }) satisfies ClimateBucket,
+  );
+
 const periodIndexOf = (t: number) => PERIODS.indexOf(t);
 
 describe("buildPassRows", () => {
@@ -251,7 +265,7 @@ describe("buildPassRows", () => {
     expect(row!.season).toBe(cells);
     expect(row!.season[0]!.grade).toBe("limited");
 
-    const bars = statusHistogram([passes[1]!], own, filters(), never);
+    const { bars } = seasonBand([passes[1]!], own, filters(), never);
     expect(bars[0]).toMatchObject({ best: 0, good: 0, limited: 1 });
 
     // And the detail panel, which reads the cell through `cellAt`.
@@ -609,9 +623,9 @@ describe("sortPassRows", () => {
   });
 });
 
-describe("statusHistogram", () => {
+describe("seasonBand", () => {
   test("one bar per half-month, counting every matching pass", () => {
-    const bars = statusHistogram(passes, years, filters(), never);
+    const { bars } = seasonBand(passes, years, filters(), never);
     expect(bars).toHaveLength(24);
     expect(bars.map((b) => b.period)).toEqual(PERIODS);
     for (const b of bars) expect(barTotal(b)).toBe(passes.length);
@@ -623,7 +637,7 @@ describe("statusHistogram", () => {
   });
 
   test("the status filter is ignored, the other filters are not", () => {
-    const bars = statusHistogram(
+    const { bars } = seasonBand(
       passes,
       years,
       filters({ minFame: 4, status: ["open"] }),
@@ -633,7 +647,7 @@ describe("statusHistogram", () => {
   });
 
   test("no matching pass leaves 24 empty bars rather than nothing", () => {
-    const bars = statusHistogram(
+    const { bars } = seasonBand(
       passes,
       years,
       filters({ query: "gibtsnicht" }),
@@ -647,7 +661,7 @@ describe("statusHistogram", () => {
     const signals = {
       climate: { hoch: snowy(30), mittel: snowy(30), winter: snowy(30) },
     };
-    const bars = statusHistogram(
+    const { bars } = seasonBand(
       passes,
       yearsOf(passes, tours, signals),
       filters(),
@@ -655,6 +669,60 @@ describe("statusHistogram", () => {
       signals,
     );
     expect(bars.every((b) => b.best === 0 && b.good === 0)).toBe(true);
+  });
+
+  test("averages the climate over the counted passes, not over the data", () => {
+    // Two of the three carry a series; the third counts towards the grades
+    // and towards nothing else, so the mean is over two.
+    const signals = {
+      climate: { hoch: bucketed({ tmax: 4 }), mittel: bucketed({ tmax: 10 }) },
+    };
+    const { bars, lat } = seasonBand(
+      passes,
+      yearsOf(passes, tours, signals),
+      filters(),
+      never,
+      signals,
+    );
+    for (const b of bars) {
+      expect(b.tmax).toBe(7);
+      expect(barTotal(b)).toBe(passes.length);
+    }
+    expect(lat).toBe(47);
+  });
+
+  test("no climate series at all leaves the means null, not zero", () => {
+    const { bars } = seasonBand(passes, years, filters(), never);
+    for (const b of bars)
+      expect([b.tmax, b.tmin, b.snowPct, b.wetPct]).toEqual([
+        null,
+        null,
+        null,
+        null,
+      ]);
+  });
+
+  test("the ribbon is the grade of most passes, a tie going to the better", () => {
+    const { bars } = seasonBand(passes, years, filters(), never);
+    // Early January: the two year-round passes are limited, the winter one is
+    // closed – a majority of two.
+    expect(bars[periodIndexOf(1)]).toMatchObject({
+      closed: 1,
+      grade: "limited",
+      limited: 2,
+    });
+    // Early April is one pass each of best, limited and closed: a three-way
+    // tie, and the best of them leads.
+    expect(bars[periodIndexOf(4)]).toMatchObject({
+      best: 1,
+      closed: 1,
+      grade: "best",
+      limited: 1,
+    });
+    expect(
+      seasonBand(passes, years, filters({ query: "gibtsnicht" }), never)
+        .bars[0]!.grade,
+    ).toBeNull();
   });
 });
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { Box, Focus, Layers } from "lucide-react";
+import { MoreHorizontal, Scan } from "lucide-react";
 import type {
   ExpressionSpecification,
   GeoJSONSource,
@@ -36,7 +36,6 @@ import {
 } from "@/components/ui/popover";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Switch } from "@/components/ui/switch";
-import { Toggle } from "@/components/ui/toggle";
 import {
   Tooltip,
   TooltipContent,
@@ -63,7 +62,7 @@ import { ascentKey } from "@/lib/route-key";
 import { STATUS_ORDER } from "@/lib/status";
 import { tagIconSvg } from "@/lib/tag-icons";
 import type { LatLon, Pass, Status, Tag, Tour, Town } from "@/lib/types";
-import { cn, fmtUnit, MAP_CLUSTER, MAP_TOOL, PRESSED } from "@/lib/utils";
+import { cn, fmtUnit, MAP_CLUSTER, MAP_TOOL } from "@/lib/utils";
 
 export interface MapPass extends Pass {
   status: Status;
@@ -119,16 +118,8 @@ interface Props {
   insetLeft?: number;
   /** Pixels at the bottom covered by the mobile sheet; camera targets stay above it. */
   insetBottom?: number;
-  /** Pixels at the top covered by the floating control cluster (phones only). */
+  /** Pixels at the top covered by the shell's header bar. */
   insetTop?: number;
-  /**
-   * The period scrubber, rendered inside the control cluster next to the three
-   * map tools. A slot of its own, because `children` floats free beside the
-   * cluster and must not stretch to its height.
-   */
-  scrubber?: React.ReactNode;
-  /** Free-floating controls left of the cluster (the sidebar's own toggle). */
-  children?: React.ReactNode;
 }
 
 const EMPTY = { features: [], type: "FeatureCollection" } as const;
@@ -171,11 +162,13 @@ const SELECT_MS = 1100;
 const reduceMotion = () =>
   window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 /**
- * The three tools share one segmented column that stretches to the scrubber's
- * height, so each takes a third of it and the cluster keeps an even edge all
- * the way round – a fixed height would leave a margin below the scrubber.
+ * The two tools share one segmented column in the map's top-right corner. They
+ * are the only furniture on the map itself now that the period control has
+ * moved into the shell's bottom bar, so the corner holds what is about the
+ * *picture* – framing it, and what it is drawn on – and nothing about the
+ * domain.
  */
-const TOOL = "h-auto w-9 flex-1";
+const TOOL = "size-9";
 const TERRAIN = { exaggeration: 1.25, source: "dem" } as const;
 /**
  * The tour hatch, in multiples of the line width – so on a band this wide the
@@ -928,8 +921,6 @@ export const PassMap = ({
   insetLeft = 0,
   insetBottom = 0,
   insetTop = 0,
-  scrubber,
-  children,
 }: Props) => {
   const container = useRef<HTMLDivElement>(null);
   const map = useRef<MLMap | null>(null);
@@ -1772,23 +1763,45 @@ export const PassMap = ({
       {/* Plain "absolute inset-0" loses against the unlayered maplibre-gl.css (`.maplibregl-map { position: relative }`). */}
       <div ref={container} className="size-full" />
 
+      {/*
+       * The map's own corner: framing, and what the picture is drawn on. It
+       * sits opposite the sidebar so the two never meet, and below the header
+       * bar, whose height it is given as `insetTop`.
+       */}
       <div
-        style={{ left: insetLeft + 12 }}
-        className="absolute top-3 z-10 flex max-w-[calc(100%-4rem)] items-start gap-2 transition-[left] duration-200 motion-reduce:transition-none"
+        style={{ top: insetTop + 12 }}
+        className="absolute right-3 z-10 transition-[top] duration-200 motion-reduce:transition-none"
       >
-        {children}
-        {/*
-         * One interaction area: the period scrubber and the three map tools on
-         * a single panel surface, the tools segmented in the same outline as
-         * the scrubber's own stepper and stretched to its height. A tool has to
-         * look pressable, and the cluster has to keep an even edge.
-         */}
-        <div className={cn("flex min-w-0 items-stretch gap-1.5", MAP_CLUSTER)}>
-          {scrubber}
+        <div className={cn("flex", MAP_CLUSTER)}>
           <ButtonGroup
             orientation="vertical"
-            className="bg-background/60 shrink-0 rounded-md"
+            className="bg-background/60 rounded-md"
           >
+            <Tooltip>
+              <TooltipTrigger
+                render={
+                  <Button
+                    size="icon-lg"
+                    variant="outline"
+                    className={cn(TOOL, MAP_TOOL)}
+                    onClick={fitToVisible}
+                    aria-label="Ansicht einpassen"
+                  />
+                }
+              >
+                <Scan />
+              </TooltipTrigger>
+              <TooltipContent side="left">
+                Ansicht einpassen – erneut für die ganzen Alpen
+              </TooltipContent>
+            </Tooltip>
+
+            {/*
+             * Everything that changes how the map looks rather than where it
+             * looks, behind one "…": the base, the overlays and the tilt. They
+             * are answered once per visit and then left alone, so they do not
+             * earn a button each on a phone screen.
+             */}
             <Popover>
               <Tooltip>
                 <TooltipTrigger
@@ -1799,17 +1812,17 @@ export const PassMap = ({
                           size="icon-lg"
                           variant="outline"
                           className={cn(TOOL, MAP_TOOL)}
-                          aria-label="Kartenebenen"
+                          aria-label="Ansicht: Karte, Ebenen und 3D"
                         />
                       }
                     />
                   }
                 >
-                  <Layers />
+                  <MoreHorizontal />
                 </TooltipTrigger>
-                <TooltipContent side="right">Kartenebenen</TooltipContent>
+                <TooltipContent side="left">Ansicht</TooltipContent>
               </Tooltip>
-              <PopoverContent align="start" side="right" className="w-60 gap-3">
+              <PopoverContent align="start" side="left" className="w-60 gap-3">
                 <FieldSet className="gap-2">
                   <FieldLegend variant="label">Grundkarte</FieldLegend>
                   <RadioGroup
@@ -1852,45 +1865,22 @@ export const PassMap = ({
                     </Field>
                   ))}
                 </FieldSet>
+                <FieldSet className="gap-2">
+                  <FieldLegend variant="label">Gelände</FieldLegend>
+                  <Field orientation="horizontal">
+                    <Switch
+                      size="sm"
+                      id="terrain-3d"
+                      checked={is3d}
+                      onCheckedChange={toggle3d}
+                    />
+                    <FieldLabel htmlFor="terrain-3d" className="font-normal">
+                      3D-Ansicht
+                    </FieldLabel>
+                  </Field>
+                </FieldSet>
               </PopoverContent>
             </Popover>
-
-            <Tooltip>
-              <TooltipTrigger
-                render={
-                  <Toggle
-                    variant="outline"
-                    size="lg"
-                    pressed={is3d}
-                    onPressedChange={toggle3d}
-                    aria-label="3D-Gelände"
-                    className={cn(TOOL, "px-0", MAP_TOOL, PRESSED)}
-                  />
-                }
-              >
-                <Box />
-              </TooltipTrigger>
-              <TooltipContent side="right">3D-Gelände</TooltipContent>
-            </Tooltip>
-
-            <Tooltip>
-              <TooltipTrigger
-                render={
-                  <Button
-                    size="icon-lg"
-                    variant="outline"
-                    className={cn(TOOL, MAP_TOOL)}
-                    onClick={fitToVisible}
-                    aria-label="Ansicht einpassen"
-                  />
-                }
-              >
-                <Focus />
-              </TooltipTrigger>
-              <TooltipContent side="right">
-                Ansicht einpassen – erneut für die ganzen Alpen
-              </TooltipContent>
-            </Tooltip>
           </ButtonGroup>
         </div>
       </div>

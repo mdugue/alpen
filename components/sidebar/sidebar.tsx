@@ -1,6 +1,6 @@
 "use client";
 
-import { Coffee, PanelLeftClose, Search, X } from "lucide-react";
+import { Coffee, Search, X } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
@@ -31,7 +31,7 @@ import type { Tour } from "@/lib/types";
 import { cn, TOUCH_CONTROL } from "@/lib/utils";
 
 export interface SidebarProps {
-  /** `aside` renders the brand row; the bottom sheet shows its swipe handle instead. */
+  /** Only says how a selected row is scrolled into view; the brand lives in the header. */
   variant: "aside" | "sheet";
   filters: Filters;
   setFilters: (update: (f: Filters) => Filters) => void;
@@ -58,8 +58,14 @@ export interface SidebarProps {
   /** What the pointer is over, on the map or in the list; the two share one highlight. */
   hovered: Selection | null;
   onHover: (sel: Selection | null) => void;
-  onCollapse?: () => void;
   onOpenScales: () => void;
+  /**
+   * Whether the filter panel is unfolded, `null` while nobody has said –
+   * lifted out of here because the phone's "Filter" button in the season bar
+   * opens the list *and* the panel in one press (`explorer.tsx`).
+   */
+  filtersOpen: boolean | null;
+  setFiltersOpen: (open: boolean | null) => void;
 }
 
 export const Sidebar = (p: SidebarProps) => {
@@ -79,9 +85,7 @@ export const Sidebar = (p: SidebarProps) => {
   // The panel opens by itself when a link carries filters; the visitor's own
   // toggling wins from then on. The second half stays folded until it is
   // needed, or until a filter inside it is already set.
-  const [manual, setManual] = useState<boolean | null>(null);
-  const active = filterCount(p.filters);
-  const filtersOpen = manual ?? active > 0;
+  const filtersOpen = p.filtersOpen ?? filterCount(p.filters) > 0;
   const [more, setMore] = useState<boolean | null>(null);
   const moreOpen = more ?? hasSecondaryFilters(p.filters);
 
@@ -164,29 +168,6 @@ export const Sidebar = (p: SidebarProps) => {
 
   return (
     <div className="text-card-foreground flex h-full min-h-0 flex-col">
-      {p.variant === "aside" ? (
-        <div className="border-border flex h-11 shrink-0 items-center gap-2 border-b px-3">
-          <span className="bg-accent h-5 w-1 rounded-full" aria-hidden />
-          <h1 className="font-heading text-sm font-bold tracking-wide uppercase">
-            Alpenpässe
-          </h1>
-          <span className="text-muted-foreground truncate text-xs">
-            Rennradkarte
-          </span>
-          <Button
-            size="icon"
-            variant="ghost"
-            className="ml-auto"
-            onClick={p.onCollapse}
-            aria-label="Seitenleiste ausblenden"
-          >
-            <PanelLeftClose />
-          </Button>
-        </div>
-      ) : (
-        <h1 className="sr-only">Alpenpässe – Rennradkarte</h1>
-      )}
-
       <div className="flex min-h-0 flex-1 flex-col">
         <div className="border-border relative flex shrink-0 flex-col gap-2 border-b px-3 py-2">
           <div className="flex items-center gap-2">
@@ -221,7 +202,7 @@ export const Sidebar = (p: SidebarProps) => {
             <FilterTrigger
               filters={p.filters}
               open={filtersOpen}
-              onOpenChange={setManual}
+              onOpenChange={p.setFiltersOpen}
             />
           </div>
           {/* What is filtered away stays readable while the panel is shut. */}

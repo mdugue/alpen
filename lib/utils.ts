@@ -69,8 +69,18 @@ export const PANEL =
   "rounded-xl border border-border/60 bg-card/80 shadow-xl backdrop-blur-md supports-not-[backdrop-filter:blur(0)]:bg-card";
 
 /**
- * A group of controls floating over the map, on the panel surface: the period
- * scrubber and the map tools next to it share it, which is what makes the
- * top-left corner read as one interaction area rather than as loose buttons.
+ * A group of controls floating over the map, on the panel surface: the map
+ * tools in the top-right corner share it, which is what makes that corner read
+ * as one interaction area rather than as loose buttons.
  */
 export const MAP_CLUSTER = `${PANEL} p-1.5`;
+
+/**
+ * The shell over the map: the header along the top and the season bar along
+ * the bottom. The same translucent material as `PANEL`, but edge to edge and
+ * square – the map does not stop at a card, it runs on underneath. That is the
+ * whole reason these two are allowed to exist at all (docs/ui-conventions.md,
+ * "The map is the page").
+ */
+export const SHELL_BAR =
+  "border-border/60 bg-card/80 backdrop-blur-md supports-not-[backdrop-filter:blur(0)]:bg-card";

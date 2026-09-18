@@ -1,24 +1,20 @@
 "use client";
 
-import { PanelLeftOpen } from "lucide-react";
 import { useEffect, useReducer, useRef, useState } from "react";
 
-import { MapSearch } from "@/components/map/map-search";
+import { AppHeader } from "@/components/app-header";
 import { PassMap } from "@/components/map/pass-map";
 import type { MapPass } from "@/components/map/pass-map";
-import { PeriodScrubber } from "@/components/map/period-scrubber";
 import { MobileSheet, snapPx } from "@/components/mobile-sheet";
 import { DetailPanel } from "@/components/panel/detail-panel";
 import { ScalesDialog } from "@/components/scales-dialog";
+import { SeasonBand, SeasonBandLegend } from "@/components/season-band";
 import { filterCount } from "@/components/sidebar/filter-panel";
+import { KIND_LABEL } from "@/components/sidebar/kind-tabs";
 import { Sidebar } from "@/components/sidebar/sidebar";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { TooltipProvider } from "@/components/ui/tooltip";
 import {
   DEFAULT_FILTERS,
   DEFAULT_VIEW,
@@ -41,9 +37,9 @@ import {
   buildTourRows,
   buildTownRows,
   facetCount,
-  statusHistogram,
+  seasonBand,
 } from "@/lib/rows";
-import { indexBySlug } from "@/lib/status";
+import { indexBySlug, periodIndex } from "@/lib/status";
 import type { Signals, Years } from "@/lib/status";
 import type {
   ClimateYear,
@@ -53,12 +49,13 @@ import type {
   Tour,
   Town,
 } from "@/lib/types";
+import { useHeight } from "@/lib/use-height";
 import {
   MOBILE_QUERY,
   useMediaQuery,
   useViewportHeight,
 } from "@/lib/use-media-query";
-import { cn, MAP_CONTROL, PANEL } from "@/lib/utils";
+import { cn, fmt, PANEL, SHELL_BAR } from "@/lib/utils";
 
 interface Props {
   passes: Pass[];
@@ -100,7 +97,7 @@ const DETAIL_W = { lg: 352, xl: 400 };
  * furniture. Collapsing both into one sheet fixed the overlap and lost the
  * separation. This keeps both: neither drawer exists until it is asked for.
  *
- * Nothing covers the map at rest. `MapSearch` floats over it and opens the
+ * No drawer covers the map at rest. The season bar's "Liste" button opens the
  * list; the list is dismissed by a swipe and is gone again. A selection opens
  * the detail drawer over whatever is there – over the list when the tap came
  * from a row, over the bare map when it came from the map itself – and
@@ -114,21 +111,7 @@ const DETAIL_W = { lg: 352, xl: 400 };
 const LIST_SNAPS = [0.5, 0.92] as const;
 const DETAIL_SNAPS = [0.55, 0.92] as const;
 const [LIST_HALF, LIST_FULL] = LIST_SNAPS;
-/** What the floating search bar covers at the bottom; keep `--sheet-peek` in step. */
-const FLOATING_BAR_PX = 64;
 const [DETAIL_HALF, DETAIL_FULL] = DETAIL_SNAPS;
-/**
- * What the control cluster covers at the top – the period scrubber and the
- * three map tools – on a phone, where it is nearly as wide as the screen.
- *
- * It is padding only there. On a desktop the cluster sits in a corner of a map
- * that is 900 px tall and reserving a tenth of it would buy nothing; on a phone
- * the detail sheet already takes 55 % of the screen, so what is left is a band
- * of some 380 px and the cluster covers a quarter of it. A pass framed into the
- * band without counting it has the top of its ascent behind the scrubber, which
- * is the one thing this framing exists to prevent.
- */
-const MAP_CLUSTER_PX = 120;
 
 /**
  * What is selected, and what the detail panel keeps showing while it leaves –
@@ -196,6 +179,10 @@ export const Explorer = ({
   // while something is selected. At rest the map carries nothing but the
   // floating controls.
   const [listOpen, setListOpen] = useState(false);
+  // Whether the filter panel inside the list is unfolded. It lives here rather
+  // than in the sidebar because the phone's "Filter" button opens the list and
+  // the panel in one press.
+  const [filtersOpen, setFiltersOpen] = useState<boolean | null>(null);
   const [listSnap, setListSnap] = useState<number>(LIST_HALF);
   const [detailSnap, setDetailSnap] = useState<number>(DETAIL_HALF);
   const [scalesOpen, setScalesOpen] = useState(false);
@@ -222,6 +209,8 @@ export const Explorer = ({
   const isMobile = useMediaQuery(MOBILE_QUERY);
   const isXl = useMediaQuery("(width >= 80rem)");
   const viewportHeight = useViewportHeight();
+  const [headerRef, headerHeight] = useHeight();
+  const [barRef, barHeight] = useHeight();
   // Nothing is written to the hash before it has been read once; otherwise the
   // first commit would overwrite a shared link with the defaults.
   const [hashApplied, setHashApplied] = useState(false);
@@ -288,13 +277,13 @@ export const Explorer = ({
    */
   const countWith = (patch: Partial<Filters>) =>
     facetCount(passes, years, filters, isFavorite, patch, signals);
-  const histogram = statusHistogram(
-    passes,
-    years,
-    filters,
-    isFavorite,
-    signals,
-  );
+  /**
+   * The 24 bars the season bar draws, and the headline's counts: the same
+   * arithmetic over the same passes, so the sentence at the top and the ribbon
+   * at the bottom can never disagree.
+   */
+  const band = seasonBand(passes, years, filters, isFavorite, signals);
+  const currentBar = band.bars[periodIndex(filters.period)]!;
 
   const mapPasses: MapPass[] = passRows.map(({ pass, status, favorite }) => ({
     ...pass,
@@ -404,27 +393,27 @@ export const Explorer = ({
       selection={selection}
       hovered={hovered}
       onHover={setHovered}
-      onCollapse={() => setSidebarOpen(false)}
       onOpenScales={() => setScalesOpen(true)}
+      filtersOpen={filtersOpen}
+      setFiltersOpen={setFiltersOpen}
     />
   );
 
-  // Mobile: the map is padded by the sheet in front of it, so camera targets
-  // land above the fold. Whichever drawer is in front pads the map; with none
-  // the floating search bar is all there is to keep clear of.
+  // What the shell covers of the map, measured rather than promised: both bars
+  // are translucent, so the map runs on underneath them and a camera target
+  // behind one is simply unreadable.
   //
-  // The detail sheet's share is claimed in the same commit as the selection,
-  // one flight ahead of the camera – which is precisely what keeps the picture
-  // still: a padding the map has not applied yet cannot move it, and the
-  // flight that follows carries it (`pass-map.tsx`, "Reserve space").
-  const insetBottom = isMobile
-    ? snapPx(
-        selection ? detailSnap : listOpen ? listSnap : 0,
-        viewportHeight,
-      ) || FLOATING_BAR_PX
+  // On a phone whichever drawer is in front covers more than the season bar
+  // does, and that is what counts then. The detail sheet's share is claimed in
+  // the same commit as the selection, one flight ahead of the camera – which is
+  // precisely what keeps the picture still: a padding the map has not applied
+  // yet cannot move it, and the flight that follows carries it
+  // (`pass-map.tsx`, "Reserve space").
+  const sheetPx = isMobile
+    ? snapPx(selection ? detailSnap : listOpen ? listSnap : 0, viewportHeight)
     : 0;
-
-  const insetTop = isMobile ? MAP_CLUSTER_PX : 0;
+  const insetBottom = Math.max(sheetPx, barHeight);
+  const insetTop = headerHeight;
 
   // Desktop: the panels float over the map; the map is padded by their width
   // so camera targets land in the visible part.
@@ -439,9 +428,29 @@ export const Explorer = ({
   );
   const detailLeft = GAP + (!isMobile && sidebarOpen ? sidebarW + GAP : 0);
 
+  const setPeriod = (p: Period) => {
+    setFilters((f) => ({ ...f, period: p }));
+    // Only the control writes the preference; applying a hash never does.
+    setStoredPeriod(p);
+  };
+
+  const listCount = { pass: passRows, tour: tourRows, town: townRows }[tab]
+    .length;
+  const activeFilters = filterCount(filters);
+
+  /*
+   * The shell: a header along the top and the season bar along the bottom,
+   * both of them translucent and both of them *over* the map, which fills the
+   * viewport behind everything. Between them the floating panels, in a
+   * position context of their own, so they start below the header and end
+   * above the bar without either being told a number.
+   */
   return (
     <TooltipProvider delay={400}>
-      <div className="relative h-dvh overflow-hidden">
+      <div
+        className="relative flex h-dvh flex-col overflow-hidden"
+        style={{ "--shell-bottom": `${barHeight}px` } as React.CSSProperties}
+      >
         <div id="map" tabIndex={-1} className="absolute inset-0">
           <PassMap
             passes={mapPasses}
@@ -462,91 +471,102 @@ export const Explorer = ({
             insetLeft={insetLeft}
             insetBottom={insetBottom}
             insetTop={insetTop}
-            scrubber={
-              <PeriodScrubber
-                value={filters.period}
-                today={defaultPeriod}
-                histogram={histogram}
-                onChange={(p) => {
-                  setFilters((f) => ({ ...f, period: p }));
-                  // Only the control writes the preference; applying a hash never does.
-                  setStoredPeriod(p);
-                }}
-              />
+          />
+        </div>
+
+        <div ref={headerRef} className="relative z-20 shrink-0">
+          <AppHeader
+            bar={currentBar}
+            sidebarOpen={isMobile ? undefined : sidebarOpen}
+            onToggleSidebar={
+              isMobile ? undefined : () => setSidebarOpen(!sidebarOpen)
             }
-          >
-            {!isMobile && !sidebarOpen && (
-              <Tooltip>
-                <TooltipTrigger
-                  render={
-                    <Button
-                      size="icon-lg"
-                      variant="outline"
-                      className={MAP_CONTROL}
-                      onClick={() => setSidebarOpen(true)}
-                      aria-label="Seitenleiste einblenden"
-                    />
-                  }
-                >
-                  <PanelLeftOpen />
-                </TooltipTrigger>
-                <TooltipContent>Liste und Filter</TooltipContent>
-              </Tooltip>
-            )}
-          </PassMap>
+            onOpenScales={() => setScalesOpen(true)}
+          />
+        </div>
+
+        {/* The map's own middle: nothing is drawn here, it only gives the two
+            floating panels a box that already excludes the two bars. */}
+        <div className="pointer-events-none relative min-h-0 flex-1">
+          {!isMobile && sidebarOpen && (
+            <aside
+              ref={sidebarRoot}
+              className={cn(
+                "pointer-events-auto absolute top-3 bottom-3 left-3 z-20 flex w-96 flex-col overflow-hidden max-lg:hidden xl:w-104",
+                PANEL,
+              )}
+            >
+              {sidebar("aside")}
+            </aside>
+          )}
+
+          {!isMobile && selection && (
+            <section
+              key={`${selection.kind}:${selection.slug}`}
+              aria-label="Details"
+              style={{ left: detailLeft }}
+              className={cn(
+                "pointer-events-auto absolute top-3 bottom-3 z-20 flex w-88 flex-col overflow-hidden max-lg:hidden xl:w-100",
+                "animate-in fade-in-0 slide-in-from-left-4 duration-200 motion-reduce:animate-none",
+                PANEL,
+              )}
+            >
+              {detailFor(selection)}
+            </section>
+          )}
         </div>
 
         {/*
-         * The phone's way into the list floats over the map's bottom-left
-         * corner – a sibling of the map, not a child of its top-left control
-         * cluster, and within a thumb's reach. MapLibre's own corner controls
-         * are lifted above it by `--sheet-peek`.
+         * The season bar. The band is the app's one domain control, so it gets
+         * the width of the screen rather than a corner of the map: the shape of
+         * the year is the thing a visitor is here to read. Beside it, where
+         * there is room, what its three shapes mean; on a phone, where there is
+         * not, the two ways on – into the list and into the filters.
          */}
-        {isMobile && (
-          <div className="absolute bottom-3 left-3 z-20 max-w-[calc(100%-1.5rem)]">
-            <MapSearch
-              counts={{
-                pass: passRows.length,
-                tour: tourRows.length,
-                town: townRows.length,
+        <div
+          ref={barRef}
+          className={cn(
+            "relative z-20 flex shrink-0 flex-col gap-2 border-t px-3 py-2 lg:flex-row lg:items-start lg:gap-6 lg:px-4",
+            SHELL_BAR,
+          )}
+        >
+          <SeasonBand
+            band={band}
+            value={filters.period}
+            today={defaultPeriod}
+            onChange={setPeriod}
+            className="flex-1"
+          />
+          <SeasonBandLegend className="w-56 shrink-0 max-lg:hidden" />
+          <div className="flex gap-2 lg:hidden">
+            <Button
+              className="flex-1"
+              onClick={() => {
+                setFiltersOpen(false);
+                setListOpen(true);
               }}
-              query={filters.query}
-              filters={filterCount(filters)}
-              onOpen={() => setListOpen(true)}
-            />
+            >
+              {KIND_LABEL[tab]} ({fmt(listCount)})
+            </Button>
+            <Button
+              variant="outline"
+              className="flex-1"
+              onClick={() => {
+                setFiltersOpen(true);
+                setListOpen(true);
+              }}
+            >
+              Filter
+              {activeFilters > 0 && (
+                <Badge variant="secondary">{activeFilters}</Badge>
+              )}
+            </Button>
           </div>
-        )}
-
-        {!isMobile && sidebarOpen && (
-          <aside
-            ref={sidebarRoot}
-            className={cn(
-              "absolute top-3 bottom-3 left-3 z-20 flex w-96 flex-col overflow-hidden max-lg:hidden xl:w-104",
-              PANEL,
-            )}
-          >
-            {sidebar("aside")}
-          </aside>
-        )}
-
-        {!isMobile && selection && (
-          <section
-            key={`${selection.kind}:${selection.slug}`}
-            aria-label="Details"
-            style={{ left: detailLeft }}
-            className={cn(
-              "absolute top-3 bottom-3 z-20 flex w-88 flex-col overflow-hidden max-lg:hidden xl:w-100",
-              "animate-in fade-in-0 slide-in-from-left-4 duration-200 motion-reduce:animate-none",
-              PANEL,
-            )}
-          >
-            {detailFor(selection)}
-          </section>
-        )}
+        </div>
 
         {/*
          * Two drawers, neither of them on screen until it is wanted. The list
-         * is opened by the floating search bar and dismissed by a swipe; the
+         * is opened from the season bar and dismissed by a swipe; the
          * detail comes up over whatever is underneath – the bare map when a
          * road was tapped, the list when a row was – and uncovers it again.
          *

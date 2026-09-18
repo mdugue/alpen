@@ -65,12 +65,12 @@ traverse are what "over the Galibier" means, so selecting one fits the box of
 all its ascents (`passBounds`, precomputed next to `tourBounds` in
 `lib/map-assets.ts`) instead of centring on the marker – `PASS_MAX_ZOOM` keeps
 a short climb from filling the screen with two hairpins, and a pass the map
-draws no ascent for falls back to its point. On a phone that box has to fit
-between the detail sheet, which takes 55 % of the screen, and the control
-cluster at the top, which takes a quarter of what is left: `MAP_CLUSTER_PX` is
-the map's top padding there (and only there – on a 900 px desktop map the
-cluster sits in a corner and reserving a tenth of the height would buy
-nothing).
+draws no ascent for falls back to its point. The box has to fit between the
+shell's two bars, which are translucent but no less opaque to a reader: the
+header's and the season bar's measured heights are the map's top and bottom
+padding at every width (`useHeight` in `explorer.tsx`). On a phone the detail
+sheet takes 55 % of the screen on top of that, and it is the larger of the two
+at the bottom that counts.
 
 ## What is drawn
 
