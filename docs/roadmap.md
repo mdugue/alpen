@@ -94,6 +94,9 @@ or editorial data, each a plan of its own when its turn comes:
 
 ## 9. Smaller ideas
 
-- Imagery per pass (own photos or Wikimedia with license attribution).
 - Weather for tours and towns, not only passes.
 - Print / PDF summary of a destination for the kitchen table.
+
+Done since this list was written: imagery per entity – Wikimedia Commons
+photos with author and licence, picked by `bun run data:photos` and shown in
+the detail panel (see [`data-pipeline.md`](./data-pipeline.md)).

@@ -1,0 +1,157 @@
+# Architecture and toolchain
+
+What the page is allowed to ship, how it is cached, the single dynamic route
+and the tools that check all of it. `AGENTS.md` links to each section and keeps
+the one-line version.
+
+Where the data in those files comes from is
+[`data-pipeline.md`](./data-pipeline.md); what it means is
+[`data-model.md`](./data-model.md).
+
+## What travels as props, and what does not
+
+Four transports, and the rule is what reads the data: the sidebar reads
+everything on every keystroke, so its data is a prop; the panel reads one
+entity at a time, so its data is a file.
+
+```mermaid
+flowchart LR
+  D["data/*.json<br/>data/generated/*.json"] --> P["lib/data.ts · use cache"]
+  D --> MA["build-map-assets.ts"]
+  D --> DA["build-detail-assets.ts"]
+  P -->|"React payload: names, ratings,<br/>seasons, climate, asset URLs"| B["Browser"]
+  MA -->|"public/map/*.geojson<br/>fetched once, tiled in the worker"| B
+  DA -->|"public/detail/&lt;entity&gt;.&lt;hash&gt;.json<br/>~2 KB, fetched on selection"| B
+  B -->|"one call per pass per hour"| W["/api/weather/[slug]"]
+```
+
+### Route geometry never travels as props
+
+`scripts/build-map-assets.ts` (runs before `dev` and `build`, next to the
+worker copy) simplifies `routes.json` to 5 m and writes one content-hashed
+GeoJSON per kind into `public/map` (git-ignored, cached immutably via
+`next.config.ts`). `lib/data.ts` derives the same file names with
+`lib/map-assets.ts` and hands the page the URLs plus one bounding box per tour
+and per pass – what a selection is framed into, and the one thing a camera
+cannot wait for a fetch to learn (10 KB for all 201 passes, four rounded
+numbers each); MapLibre fetches the files and tiles them in its worker.
+`pass-map.tsx` never calls `setData` on the `routes` and `tours` sources: which
+lines show is a layer filter (which also keeps hidden lines out of
+hit-testing), status and selection are feature state. MapLibre keeps that state
+per source and applies it to tiles as they load, so it is set as soon as the
+style is parsed (`style.load`) and needs no re-application when the file
+arrives. Points (passes, towns) stay in-memory sources, because their symbol
+layers need real properties. Anything else the client used to read from the
+geometry is precomputed on the server: tours within reach of an entity
+(`lib/nearby.ts`) and the road coordinate of every profile sample
+(`ProfileWithCoords`).
+
+### Neither does what only one entity's panel reads
+
+The same rule, one layer up: `scripts/build-detail-assets.ts` writes one
+content-hashed JSON per pass, tour and town into `public/detail` (git-ignored,
+cached immutably) holding that entity's elevation profiles and its Commons
+photo metadata, `lib/data.ts` derives the same names with
+`lib/detail-assets.ts` and hands the page one URL per entity, and `DetailPanel`
+fetches the one that is selected. Measured per prop on the prerendered page,
+those two were 297 KB and 77 KB gzipped of 468 KB; the page now carries 147 KB
+and a selection costs about 2 KB. A block that waits for the file says so, and
+reserves the box it will fill – `PhotoCarousel` shows a slide-shaped skeleton
+for as many photos as `DetailAsset.photos` promises and nothing at all where
+that is zero, the ascent list shows a `PROFILE_ASPECT`-shaped skeleton –
+because everything a list row already showed (name, status, season strip,
+ratings) is in the page and must not flicker. What the sidebar reads stays a
+prop, and that is the line: the climate series is 42 KB gzipped and
+`buildPassRows`/`facetCount` read it on every keystroke, so a late arrival
+would mean a filter counting wrong for a moment (see
+["A filter is a chip, and no chip lies"](./ui-conventions.md#a-filter-is-a-chip-and-no-chip-lies)).
+
+## Rendering and caching
+
+### Cache Components
+
+`"use cache"` sits on the data functions and on `app/page.tsx`. Introducing
+`cookies()`, `headers()` or `searchParams` breaks prerendering – put such
+things in a separate dynamic child component inside `<Suspense>` instead.
+
+### React Compiler is on
+
+No manual `useMemo`/`useCallback` for optimisation; oxlint ports the whole
+React Compiler rule set under `react/*` (`set-state-in-effect`, `purity`,
+`immutability`, `refs`, `preserve-manual-memoization`, …) and every one of them
+is an error. `setState` in an effect is needed in exactly one documented place
+(hash initialisation in `explorer.tsx`).
+
+### Site metadata is generated, never committed as a binary
+
+Icons, the share image, the manifest, `robots.txt` and `sitemap.xml` are Next
+metadata routes under `app/`, prerendered at build time. Everything they need –
+name, claim, base URL, the sRGB palette and the mark geometry – lives in
+`lib/brand.ts`, because neither Satori nor a manifest can read CSS variables;
+`lib/mark.tsx` paints that geometry as the badge the favicon, the touch icon
+and the share image all share. Change those two, not the routes. The badge is
+monochrome and has its own small grey scale rather than the UI tokens: it is
+seen at 16 px against unknown browser chrome, where depth has to come from tone
+and the page palette does not carry far enough. `robots.ts` welcomes search
+engines and turns away the training and answer-engine crawlers; pages that
+carry `robots: { index: false }` stay crawlable on purpose, since a crawler has
+to fetch a page to see that.
+
+## The one dynamic route lives inside a free tier, and the numbers are in the file
+
+`app/api/weather/[slug]` is the only thing a visitor can spend somebody's quota
+on. Open-Meteo's non-commercial allowance is 10 000 calls a day, so the worst
+case has to be computed rather than hoped for: one cached call per pass per
+window, 201 passes, which is why the window is an hour (≈ 4 800/day) and not
+the half hour it was (≈ 9 600/day). Three rules follow. A window that gets
+shorter has to be checked against that product again. A successful answer
+carries `s-maxage`, so the repeats inside a window are served by the CDN and
+not by the function. And a failure is never left to each visitor to retry: a
+thrown forecast is not cached, so a rate limit or an outage would arrive
+undamped, and a module-level cooldown bounds what one warm instance will ask.
+That cooldown sits _inside_ the cached function, where a cache hit never
+reaches it – one failing pass must not blank the weather of the other 200 – and
+it is armed at the failed fetch rather than in the handler, or it would re-arm
+on its own rejection and never end. It cannot be helped along at the edge:
+Vercel's CDN stores only 200, 404, 410 and the redirects, so a `Cache-Control`
+on a 502 is inert, and dressing a failure as a 200 to make it cacheable is not
+worth the lie. The 404 for an unknown slug _is_ cacheable and says so. The same
+arithmetic is why the app is non-commercial in both senses: ads or affiliate
+links would break Vercel's Hobby terms and Open-Meteo's free tier in the same
+move. Donations would not, which is why the sidebar footer links to Ko-fi
+(`SUPPORT_URL` in `lib/brand.ts`) and carries nothing else that costs anyone
+money – as a plain link, never the widget, so the privacy page can say that
+nothing loads from there until it is clicked.
+
+## Toolchain
+
+### TypeScript 7 side by side with the 6.0 API
+
+`tsc` (and thus `bun run typecheck` and `next build`) is TypeScript 7,
+installed as `@typescript/native`. The `typescript` package name resolves to
+`@typescript/typescript6` (`tsc6` is that version's binary), because TypeScript
+7.0 has no JavaScript API and the editor language service still wants one –
+`.vscode/settings.json` points `js/ts.tsdk.path` at it. Keep both entries in
+`package.json`.
+
+### Bun is pinned by `engines`, and the web container is dragged up to it
+
+`engines.bun` in `package.json` is the floor, and it is not decoration: on Bun
+1.3 `bun run build` dies in Next's TypeScript step, and `bun run e2e` and the
+`preview-app` skill cannot start at all, because both drive Chrome through
+`Bun.WebView` (Bun 1.4+). Claude Code on the web ships whatever Bun its image
+was built with, so `.claude/hooks/session-start.sh` runs at session start,
+upgrades Bun when it is below that floor and installs the dependencies with
+`--frozen-lockfile` – an older Bun rewrites `bun.lock` to the previous format
+on the first install. The hook only runs in the remote container
+(`CLAUDE_CODE_REMOTE`); a local machine manages its own toolchain. Raise the
+floor in `package.json` and the hook follows.
+
+### oxlint and oxfmt, no ESLint
+
+`bun run lint` is `ultracite check` (oxlint plus an oxfmt format check),
+`bun run lint:fix` writes the fixes. oxlint's `nextjs` and `react` plugins
+cover everything `eslint-config-next` did, React Compiler rules included, so
+ESLint and `eslint-config-next` are gone. The two config files only ever
+_deviate_ from the ultracite preset, and every deviation carries the reason
+next to it – keep it that way rather than silencing a rule at the call site.

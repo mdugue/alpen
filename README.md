@@ -7,10 +7,10 @@ questions, not routing questions:
 - Where should we look for a hotel so that several passes and a loop are within reach?
 - Which destinations should we keep an eye on for single-day and multi-day tours?
 
-Data today: 92 passes with ascents and elevation profiles, 9 loop tours and
-26 cycling towns, each with a rideability estimate for a freely chosen
-half-month, a 7-day forecast and a 2015–2024 climate series at the summit, in
-2D and 3D. The UI is in German.
+Data today: 201 roads with 300 ascents and their elevation profiles, 9 loop
+tours and 48 cycling towns, each with a rideability estimate for a freely
+chosen half-month, a 7-day forecast and a 2015–2024 climate series at the
+summit, in 2D and 3D. The UI is in German.
 
 **What it is not.** A route planner or a navigation tool. Komoot, Strava and
 similar services do turn-by-turn planning far better, and the app links out
@@ -40,20 +40,28 @@ and the climate series are missing.
 | `bun run data:build --status`        | Show what is still missing and what it costs in Open-Meteo calls          |
 | `bun run data:check`                 | Validate references and completeness of the data                          |
 | `bun run data:locate [slug…]`        | Where a pass point belongs: DEM, road distance, OSM candidates (network)  |
+| `bun run data:photos`                | Wikimedia Commons photos per entity → `data/generated/photos.json`        |
+| `bun run data:schema`                | Re-emit `data/schema/*.schema.json` from `lib/schema.ts`                  |
+| `bun run data:backfill`              | Drain the whole precomputation backlog in hourly batches                  |
+| `bun test`                           | Unit tests next to the code                                               |
+| `bun run e2e`                        | Build and drive the app in a headless Chrome                              |
+| `bun run map:glyphs`                 | Rasterise Inter into MapLibre glyph atlases (committed, rarely needed)    |
 | `bun run ui:init` / `bun run ui:add` | (Re)install the shadcn "mira" preset and components                       |
 
 ## Architecture in four sentences
 
 All content data lives as JSON in the repo (`data/`), is imported at build
 time and served through `"use cache"` in `lib/data.ts` as cached segments –
-the start page is therefore fully prerendered. The route geometry is the one
-exception that never becomes React props: `scripts/build-map-assets.ts` writes
-it as content-hashed GeoJSON into `public/map`, MapLibre fetches those files
-once and tiles them in its worker, and every later change of period, filter
-or selection reaches the lines as feature state rather than as new data. The
+the start page is therefore fully prerendered. Two kinds of data never become
+React props: the route geometry, written as content-hashed GeoJSON into
+`public/map` for MapLibre to fetch and tile in its worker, and what only one
+entity's panel reads (its elevation profiles and photo metadata), written as
+one content-hashed JSON per entity into `public/detail`; every later change of
+period, filter or selection reaches the lines as feature state rather than as
+new data. The
 only dynamic source is the weather forecast; it goes through
 `app/api/weather/[slug]/route.ts` with its own cache lifetime so Open-Meteo is
-queried once per pass and half hour instead of once per visitor. All
+queried once per pass and hour instead of once per visitor. All
 interaction state lives in one client component (`components/explorer.tsx`)
 and is mirrored into the URL hash, so every view is shareable (plan 02 in
 `docs/plans/` moves entities to real routes).
@@ -63,26 +71,51 @@ flowchart LR
   J["routes.json"] --> B["build-map-assets.ts<br/>simplify 5 m, content hash"]
   B --> G["public/map/routes.a1b2c3d4.geojson<br/>tours.e5f6a7b8.geojson<br/>immutable, cached for a year"]
   G -- "fetched once by MapLibre,<br/>tiled in its worker" --> M["sources with promoteId"]
-  P["page props<br/>passes, tours, towns, profiles, climate"] --> X["Explorer"]
+  P["page props<br/>passes, tours, towns, climate, asset URLs"] --> X["Explorer"]
   X -- "period, filter or<br/>selection change" --> F["setFilter + setFeatureState<br/>status, selected"]
   F --> M
   M --> L["layers read<br/>feature-state in paint"]
+  X -- "selection" --> D["public/detail/&lt;entity&gt;.&lt;hash&gt;.json<br/>profiles + photos, ~2 KB"]
 ```
+
+Where the data in those files comes from – which host answers which question,
+what each command writes and the states a route passes through – is
+[`docs/data-pipeline.md`](./docs/data-pipeline.md).
 
 ```
 app/            layout, start page, weather route, Impressum, Datenschutz,
                 metadata routes (icons, share image, manifest, robots, sitemap)
 components/     explorer (state) · map (MapLibre) · sidebar (lists, filters) · panel (detail) · ui (shadcn)
 data/           passes.json, tours.json, towns.json  ← source data, hand-maintained
-data/generated/ routes.json, profiles.json, climate.json  ← from data:build, committed
+data/generated/ summits, routes, routes-meta, rejected, profiles, climate, photos
+                ← from data:build and data:photos, committed
+data/schema/    JSON Schema for the editor, from data:schema
 lib/            types, data access, status heuristic, state hooks, brand constants
 scripts/        build-data.ts (precomputation), check-data.ts (validation),
-                build-map-assets.ts (GeoJSON for the map → public/map, git-ignored)
-docs/           scales, data model, roadmap, plans/
+                locate-pass.ts (where a pass point belongs), build-photos.ts,
+                build-map-assets.ts / build-detail-assets.ts (→ public/, git-ignored)
+test/, e2e/     unit tests and the headless-browser suite
+docs/           pipeline, data model, scales, conventions, roadmap, plans/
 .agents/skills/ project skills for agents: implement-plan, curate-data, preview-app
 ```
 
-More in [`AGENTS.md`](./AGENTS.md) and [`docs/`](./docs).
+## Where the documentation is
+
+[`AGENTS.md`](./AGENTS.md) is the index for everything below it: the product
+goal, the principles, a map of the code and the one-line version of every
+convention, each linking to the document that explains it. `CLAUDE.md` is a
+symlink to it, so there is only ever one copy.
+
+| Document                                             | What it answers                                                         |
+| ---------------------------------------------------- | ----------------------------------------------------------------------- |
+| [`docs/data-pipeline.md`](./docs/data-pipeline.md)   | where every number comes from: sources, commands, states, what it costs |
+| [`docs/data-model.md`](./docs/data-model.md)         | what a field means, the schemas, the route quality gate                 |
+| [`docs/scales.md`](./docs/scales.md)                 | the 1–5 scales, the status ladder, the reach bands                      |
+| [`docs/ui-conventions.md`](./docs/ui-conventions.md) | how the interface is built and why                                      |
+| [`docs/map-rendering.md`](./docs/map-rendering.md)   | camera, layers, hit testing, basemap                                    |
+| [`docs/architecture.md`](./docs/architecture.md)     | what the page ships, caching, the weather route, the toolchain          |
+| [`docs/plans/README.md`](./docs/plans/README.md)     | what is being built next                                                |
+| [`docs/roadmap.md`](./docs/roadmap.md)               | what lies beyond the plans                                              |
 
 ## Plans and skills
 
@@ -111,7 +144,8 @@ See `.env.example`. None of them is required to start the app.
   "calls" (an elevation profile ≈ 100, a climate series ≈ 261) with a free
   tier of 5,000/hour and 10,000/day. The script stops itself at this budget
   (default 4,500) and picks up the rest on the next run; the GitHub Action
-  `refresh-data.yml` runs twice a day until nothing is missing.
+  `refresh-data.yml` runs on a push to `data/*.json`, and
+  `bun run data:backfill` drains a larger backlog locally in hourly batches.
 - `NEXT_PUBLIC_SITE_URL` – absolute base URL for canonical links, the share
   images, `robots.txt` and `sitemap.xml`. On Vercel it is derived from
   `VERCEL_PROJECT_PRODUCTION_URL` (or `VERCEL_URL` on a preview), so it is only
