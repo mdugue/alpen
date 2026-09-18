@@ -61,8 +61,9 @@
  *                  tier therefore fits ~40 profiles or ~19 climate series per hour.
  *
  * OPEN_METEO_BUDGET (default 4500) caps the weighted calls per run; what is left
- * over is picked up by the next run (.github/workflows/refresh-data.yml runs
- * twice a day, which uses ~9 000 of the 10 000 daily calls).
+ * over is picked up by the next run (.github/workflows/refresh-data.yml runs on
+ * a push to data/*.json; scripts/backfill.sh drains a larger backlog in hourly
+ * batches, which is what keeps a day inside the 10 000 daily calls).
  *
  * A 429/403 whose body says the hour/day quota is spent stops that host for this
  * run – retrying would only burn the next window. A minutely 429 or a 5xx pauses
