@@ -322,7 +322,7 @@ export const Sidebar = (p: SidebarProps) => {
               Skalen &amp; Quellen
             </Button>
           </p>
-          <p className="text-muted-foreground text-2xs flex items-center gap-3 px-3 pb-2">
+          <div className="text-muted-foreground text-2xs flex items-center gap-3 px-3 pb-2">
             <Link
               href="/impressum"
               className="hover:text-foreground hover:underline"
@@ -335,21 +335,30 @@ export const Sidebar = (p: SidebarProps) => {
             >
               Datenschutz
             </Link>
-            {/* A plain link to Ko-fi, not its widget: nothing loads from
-                there until it is clicked, which is what the privacy page
-                says about it. */}
-            <a
-              href={SUPPORT_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              title="Auf Ko-fi unterstützen"
-              className="hover:text-foreground ml-auto inline-flex items-center gap-1 hover:underline"
+            {/* The one call to action in the footer, so it is a button, in
+                the outline the detail panel gives its external links – not a
+                third muted word in the legal row. It is a plain link to
+                Ko-fi, not its widget: nothing loads from there until it is
+                clicked, which is what the privacy page says about it. */}
+            <Button
+              variant="outline"
+              size="sm"
+              className="ml-auto"
+              render={
+                <a
+                  href={SUPPORT_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  title="Auf Ko-fi unterstützen"
+                />
+              }
+              nativeButton={false}
             >
-              <Coffee className="size-3" aria-hidden />
+              <Coffee data-icon="inline-start" aria-hidden />
               Kaffee spendieren
               <span className="sr-only"> – auf Ko-fi, öffnet in neuem Tab</span>
-            </a>
-          </p>
+            </Button>
+          </div>
         </div>
       </div>
     </div>
