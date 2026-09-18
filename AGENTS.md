@@ -74,7 +74,7 @@ friends do that better and the app links out to them.
 | Drawers on phones (list and detail, separate)   | `components/mobile-sheet.tsx`, `components/map/map-search.tsx`                                                                                                                                                                                                                                             |
 | Precomputation, data checks                     | `scripts/build-data.ts`, `scripts/build-photos.ts`, `scripts/check-data.ts`                                                                                                                                                                                                                                |
 | Route quality gate: checks and thresholds       | `scripts/lib/validate.ts`; pass-point placement `scripts/locate-pass.ts` (`bun run data:locate`), `scripts/lib/locate.ts`; OSM host and its fallback `scripts/lib/osm.ts`                                                                                                                                  |
-| Name, claim, colours, mark, base URL            | `lib/brand.ts`, `lib/mark.tsx`                                                                                                                                                                                                                                                                             |
+| Name, claim, colours, mark, base URL, Ko-fi     | `lib/brand.ts`, `lib/mark.tsx`                                                                                                                                                                                                                                                                             |
 | Icons, share image, manifest, robots, sitemap   | `app/icon.tsx`, `app/apple-icon.tsx`, `app/opengraph-image.tsx`, `app/manifest.ts`, `app/robots.ts`, `app/sitemap.ts`                                                                                                                                                                                      |
 | Legal pages                                     | `app/impressum/`, `app/datenschutz/`                                                                                                                                                                                                                                                                       |
 | Linting and formatting                          | `oxlint.config.ts`, `oxfmt.config.ts`                                                                                                                                                                                                                                                                      |
@@ -571,7 +571,10 @@ friends do that better and the app links out to them.
   404 for an unknown slug _is_ cacheable and says so. The same arithmetic is why the app is
   non-commercial in both senses: ads or affiliate links would break Vercel's
   Hobby terms and Open-Meteo's free tier in the same move. Donations would
-  not.
+  not, which is why the sidebar footer links to Ko-fi (`SUPPORT_URL` in
+  `lib/brand.ts`) and carries nothing else that costs anyone money – as a
+  plain link, never the widget, so the privacy page can say that nothing
+  loads from there until it is clicked.
 - **oxlint and oxfmt, no ESLint.** `bun run lint` is `ultracite check`
   (oxlint plus an oxfmt format check), `bun run lint:fix` writes the fixes.
   oxlint's `nextjs` and `react` plugins cover everything `eslint-config-next`

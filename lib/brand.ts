@@ -36,6 +36,15 @@ export const siteUrl =
       ? `https://${process.env.VERCEL_URL}`
       : "http://localhost:3000");
 
+/**
+ * Where the app can be supported. A donation link is the one kind of money
+ * the app can carry: ads or affiliate links would break Vercel's Hobby terms
+ * and Open-Meteo's free tier in the same move (see the weather route). It is
+ * a plain link, never Ko-fi's widget, so nothing loads from there until it is
+ * clicked – which is what the privacy page promises about it.
+ */
+export const SUPPORT_URL = "https://ko-fi.com/el_manu";
+
 /** sRGB equivalents of the light-theme tokens in app/globals.css. */
 export const BRAND = {
   accent: "#e8b45a",

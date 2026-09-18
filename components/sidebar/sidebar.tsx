@@ -1,6 +1,6 @@
 "use client";
 
-import { PanelLeftClose, Search, X } from "lucide-react";
+import { Coffee, PanelLeftClose, Search, X } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
@@ -24,6 +24,7 @@ import {
 import { Switch } from "@/components/ui/switch";
 import { DEFAULT_FILTERS } from "@/lib/app-state";
 import type { EntityKind, Filters, Selection } from "@/lib/app-state";
+import { SUPPORT_URL } from "@/lib/brand";
 import { hasSecondaryFilters } from "@/lib/filter-summary";
 import type { PassRow, TourRow, TownRow } from "@/lib/rows";
 import type { Tour } from "@/lib/types";
@@ -334,6 +335,20 @@ export const Sidebar = (p: SidebarProps) => {
             >
               Datenschutz
             </Link>
+            {/* A plain link to Ko-fi, not its widget: nothing loads from
+                there until it is clicked, which is what the privacy page
+                says about it. */}
+            <a
+              href={SUPPORT_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              title="Auf Ko-fi unterstützen"
+              className="hover:text-foreground ml-auto inline-flex items-center gap-1 hover:underline"
+            >
+              <Coffee className="size-3" aria-hidden />
+              Kaffee spendieren
+              <span className="sr-only"> – auf Ko-fi, öffnet in neuem Tab</span>
+            </a>
           </p>
         </div>
       </div>
