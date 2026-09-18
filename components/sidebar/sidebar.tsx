@@ -1,6 +1,6 @@
 "use client";
 
-import { PanelLeftClose, Search, X } from "lucide-react";
+import { Coffee, PanelLeftClose, Search, X } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
@@ -24,6 +24,7 @@ import {
 import { Switch } from "@/components/ui/switch";
 import { DEFAULT_FILTERS } from "@/lib/app-state";
 import type { EntityKind, Filters, Selection } from "@/lib/app-state";
+import { SUPPORT_URL } from "@/lib/brand";
 import { hasSecondaryFilters } from "@/lib/filter-summary";
 import type { PassRow, TourRow, TownRow } from "@/lib/rows";
 import type { Tour } from "@/lib/types";
@@ -321,7 +322,7 @@ export const Sidebar = (p: SidebarProps) => {
               Skalen &amp; Quellen
             </Button>
           </p>
-          <p className="text-muted-foreground text-2xs flex items-center gap-3 px-3 pb-2">
+          <div className="text-muted-foreground text-2xs flex items-center gap-3 px-3 pb-2">
             <Link
               href="/impressum"
               className="hover:text-foreground hover:underline"
@@ -334,7 +335,30 @@ export const Sidebar = (p: SidebarProps) => {
             >
               Datenschutz
             </Link>
-          </p>
+            {/* The one call to action in the footer, so it is a button, in
+                the outline the detail panel gives its external links – not a
+                third muted word in the legal row. It is a plain link to
+                Ko-fi, not its widget: nothing loads from there until it is
+                clicked, which is what the privacy page says about it. */}
+            <Button
+              variant="outline"
+              size="sm"
+              className="ml-auto"
+              render={
+                <a
+                  href={SUPPORT_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  title="Auf Ko-fi unterstützen"
+                />
+              }
+              nativeButton={false}
+            >
+              <Coffee data-icon="inline-start" aria-hidden />
+              Kaffee spendieren
+              <span className="sr-only"> – auf Ko-fi, öffnet in neuem Tab</span>
+            </Button>
+          </div>
         </div>
       </div>
     </div>

@@ -51,11 +51,13 @@ const ImpressumPage = () => (
         <h2 className="text-base font-semibold">Hinweis zum Angebot</h2>
         <p className="text-muted-foreground">
           Alpenpässe ist ein privates, nicht-kommerzielles Hobbyprojekt ohne
-          Werbung, ohne Nutzerkonten und ohne Bezahlfunktion. Die App dient der
-          groben Routenplanung für Rennradfahrten in den Alpen und ersetzt keine
-          amtliche Auskunft, insbesondere nicht zu Straßensperrungen oder
-          Straßenzuständen – siehe dazu auch die Hinweise unter „Skalen &amp;
-          Quellen“ in der App.
+          Werbung, ohne Nutzerkonten und ohne eigene Bezahlfunktion. Wer das
+          Projekt unterstützen möchte, kann das freiwillig über die verlinkte
+          Ko-fi-Seite des Betreibers tun; die App selbst bleibt kostenlos und
+          werbefrei. Die App dient der groben Routenplanung für Rennradfahrten
+          in den Alpen und ersetzt keine amtliche Auskunft, insbesondere nicht
+          zu Straßensperrungen oder Straßenzuständen – siehe dazu auch die
+          Hinweise unter „Skalen &amp; Quellen“ in der App.
         </p>
       </section>
 
@@ -71,9 +73,10 @@ const ImpressumPage = () => (
         </p>
         <p className="text-muted-foreground">
           <b>Links:</b> Diese Seite verweist auf Kartenmaterial und Wetterdaten
-          externer Anbieter (siehe Datenschutzerklärung). Für deren Inhalte sind
-          ausschließlich die jeweiligen Betreiber verantwortlich; auf sie hat
-          der Betreiber dieser Seite keinen Einfluss.
+          externer Anbieter sowie auf die Plattform Ko-fi (siehe
+          Datenschutzerklärung). Für deren Inhalte sind ausschließlich die
+          jeweiligen Betreiber verantwortlich; auf sie hat der Betreiber dieser
+          Seite keinen Einfluss.
         </p>
         <p className="text-muted-foreground">
           <b>Urheberrecht:</b> Der Quellcode dieses Projekts ist öffentlich
