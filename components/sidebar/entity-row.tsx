@@ -15,13 +15,18 @@ import { cn, ICON_TOGGLE, TOUCH_ICON } from "@/lib/utils";
  * per row – and on a phone they sit inside the bottom sheet, whose popup gets
  * a custom property written to it on every single touchmove of a drag
  * (`--drawer-swipe-movement-y`, and the snap offset whenever the sheet
- * resizes). Custom properties are inherited and Tailwind resolves one in
- * nearly every utility, so such a write invalidates the style of the whole
- * subtree: with the passes unfolded that was one ~300 ms recalculation per
- * touchmove, which is what made dragging the sheet, scrolling and the filter
- * panel crawl. Contained, a row keeps its own layout, style and paint to
- * itself, and off screen it is skipped altogether; measured on a throttled
- * phone profile the recalculation drops to about a third.
+ * resizes). Custom properties are inherited, and Chrome answers a changed one
+ * by recalculating the style of the whole subtree: with the passes unfolded
+ * that was one ~300 ms recalculation per touchmove, which is what made
+ * dragging the sheet, scrolling and the filter panel crawl. Contained, a row
+ * keeps its own layout, style and paint to itself, and off screen it is
+ * skipped altogether; measured on a throttled phone profile the recalculation
+ * drops to about a third.
+ *
+ * What containment does *not* buy is the row element itself: it is still
+ * visited on every one of those writes, and two hundred of them were still
+ * two thirds of the frame. That is why the rows come in blocks of ten
+ * (`RowList`), each block a skipped subtree of its own.
  *
  * `auto` in the intrinsic size lets a row remember what it measured, so the
  * scrollbar does not jump; the step is the height of a row that has never
@@ -33,7 +38,9 @@ import { cn, ICON_TOGGLE, TOUCH_ICON } from "@/lib/utils";
  *
  *  - `data-roving` marks the body as a stop of the composite widget, so the
  *    list is **one** tab stop with arrow keys inside it rather than one stop
- *    per row (`lib/use-roving.ts` has the measurement).
+ *    per row (`lib/use-roving.ts` has the measurement). The row carries
+ *    `role="listitem"` because a block sits between it and the list, which
+ *    is also why it is a `<div>` and not an `<li>` (`RowList`).
  *  - `name` is what the bookmark toggle is called. Its label used to be the
  *    bare word "Merken", which is fine once and useless two hundred times:
  *    a screen reader's list of buttons was two hundred identical entries
@@ -76,7 +83,8 @@ export const EntityRow = ({
   hovered?: boolean;
   onHover?: (over: boolean) => void;
 }) => (
-  <li
+  <div
+    role="listitem"
     data-current={current || undefined}
     onPointerEnter={onHover ? () => onHover(true) : undefined}
     onPointerLeave={onHover ? () => onHover(false) : undefined}
@@ -131,5 +139,5 @@ export const EntityRow = ({
       )}
       {trailing}
     </div>
-  </li>
+  </div>
 );

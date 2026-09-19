@@ -480,3 +480,21 @@ export const sortPassRows = (rows: PassRow[], sort: PassSort): PassRow[] => {
   };
   return rows.toSorted((a, b) => cmp[sort](a, b) || byName(a, b));
 };
+
+/**
+ * How many rows share one block of a list, and the blocks themselves.
+ *
+ * The number is a measurement, not a taste: the blocks exist so an off-screen
+ * one is skipped whole (`RowList`, components/sidebar/row-list.tsx), and one
+ * that is on screen is paid for in full. Ten is about a screenful of the
+ * bottom sheet at its lower snap point, so at rest one block is rendered and
+ * the rest are not; smaller blocks buy little more and cost a wrapper each.
+ */
+export const ROWS_PER_BLOCK = 10;
+
+export const rowBlocks = <T>(rows: T[]): T[][] => {
+  const blocks: T[][] = [];
+  for (let i = 0; i < rows.length; i += ROWS_PER_BLOCK)
+    blocks.push(rows.slice(i, i + ROWS_PER_BLOCK));
+  return blocks;
+};

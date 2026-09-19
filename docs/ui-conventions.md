@@ -338,6 +338,46 @@ rides in that list's own toolbar (`ListToolbar`), never beside the tab row: a
 control next to three tabs reads as acting on all three, and a bare switch says
 what it does only once it has been flipped, so it carries the words too.
 
+### A long list comes in blocks of ten
+
+The rows of a list sit in blocks of ten (`RowList`,
+`components/sidebar/row-list.tsx`), and a block that is off screen is skipped
+whole (`content-visibility`). That is a measurement, not tidiness. On a phone
+the lists live in the bottom sheet, and Base UI writes a custom property to the
+sheet's popup on every frame of a drag (`--drawer-swipe-movement-y`, and the
+snap offset whenever it resizes). A custom property is inherited, and Chrome
+answers a changed one by recalculating the style of the entire subtree: an
+unrelated `--zzz` written to the popup costs exactly as much as the drawer's
+own property, and redeclaring the property further down does not stop the walk.
+So the price of dragging the sheet is the number of elements under it, and with
+the 201 roads that was 7.5 ms per frame against 3.3 ms for the 9 tours – which
+is exactly the list that stuttered and the two that did not.
+
+Containing each row (`content-visibility` in `EntityRow`) keeps its ~40 inner
+elements out of the walk, but the row element itself is still visited, and 200
+of those were two thirds of the frame. In blocks of ten they are not visited at
+all while their block is off screen: 7.5 ms → 3.7 ms for the roads and
+5.0 ms → 2.7 ms for the towns, measured on the built page at 390 × 844, which
+puts the roads where the tours already were. Windowing the list – with
+`@tanstack/react-virtual` or by hand – measured the same floor and no better:
+it buys a dependency and rows that exist only while they are on screen. Keeping
+every row in the DOM is what keeps `useRoving`'s arrows, `scrollIntoView` on
+the selected row and the browser's own find-in-page working across all 201 of
+them, so the blocks won.
+
+Ten rows is about a screenful at the sheet's lower snap point. Smaller blocks
+measure a little better and cost a wrapper each; larger ones give the saving
+back. The list is a `<div role="list">` and a row a `<div role="listitem">`,
+because a block is an element between the two and `<ul>` may hold nothing but
+`<li>`.
+
+Two things follow for everything else in the sheet. A number that changes with
+the drag must not reach the rows: `select` in `components/explorer.tsx` reads
+the drawer's resting place from a ref rather than from state, because closing
+over the snap point made every snap change a new `select` and re-rendered all
+201 rows behind the sheet (~50 ms, for a value nothing on screen was reading).
+And a row stays cheap: what is added to one is added two hundred times.
+
 ### A long list is one tab stop
 
 Every row used to be two (the bookmark toggle and the row itself) – 562
