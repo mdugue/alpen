@@ -61,16 +61,46 @@ export const MAP_TOOL =
   "border-border hover:bg-input/50 hover:text-foreground dark:bg-input/30";
 
 /**
- * Translucent floating panel over the map – the sidebar, the detail slide-over
- * and the period scrubber are the same surface, so the map reads as the page
- * they float on.
+ * The one material everything over the map is made of. Defined once, because
+ * the moment two of these surfaces carry different numbers the screen grows a
+ * seam – the sidebar meets the header, the header meets the season bar.
+ *
+ * The numbers are the whole point and were measured, not guessed: at
+ * `bg-card/80` over a 12 px blur, a loud backdrop came through as a faint
+ * wash, so the surfaces read as closed plates rather than as glass. 70 % over
+ * the same blur lets the map's structure and colour show without costing the
+ * dense lists their legibility, and `backdrop-saturate-150` is what carries
+ * the *colour* through – it does more for "the map is still there" than
+ * another ten percent of transparency would, and it costs contrast nothing.
+ *
+ * Never stack two of these on top of each other: two 70 % layers compose to
+ * 91 % and the result is the opaque pill this replaced (`MAP_CLUSTER`).
  */
-export const PANEL =
-  "rounded-xl border border-border/60 bg-card/80 shadow-xl backdrop-blur-md supports-not-[backdrop-filter:blur(0)]:bg-card";
+const GLASS =
+  "bg-card/70 backdrop-blur-md backdrop-saturate-150 supports-not-[backdrop-filter:blur(0)]:bg-card";
 
 /**
- * A group of controls floating over the map, on the panel surface: the period
- * scrubber and the map tools next to it share it, which is what makes the
- * top-left corner read as one interaction area rather than as loose buttons.
+ * Translucent floating panel over the map – the sidebar and the detail
+ * slide-over are the same surface as the shell's two bars, so the map reads as
+ * the page they all float on.
  */
-export const MAP_CLUSTER = `${PANEL} p-1.5`;
+export const PANEL = `rounded-xl border border-border/60 shadow-xl ${GLASS}`;
+
+/**
+ * The map's own tools, in one corner: a single glass surface with the tools
+ * segmented inside it.
+ *
+ * It was `PANEL` plus padding, which framed the corner twice – a rounded card
+ * with a rounded group sitting inside it – and read as a white ring around two
+ * buttons. One frame now, and the buttons' own outlines are the dividers.
+ */
+export const MAP_CLUSTER = `rounded-md shadow-md ${GLASS}`;
+
+/**
+ * The shell over the map: the header along the top and the season bar along
+ * the bottom. The same translucent material as `PANEL`, but edge to edge and
+ * square – the map does not stop at a card, it runs on underneath. That is the
+ * whole reason these two are allowed to exist at all (docs/ui-conventions.md,
+ * "The map is the page").
+ */
+export const SHELL_BAR = `border-border/60 ${GLASS}`;

@@ -8,6 +8,7 @@ import {
 } from "@/lib/search";
 import {
   daysOf,
+  GRADE_ORDER,
   inputAt,
   periodIndex,
   PERIODS,
@@ -16,6 +17,7 @@ import {
   valleyTmax,
 } from "@/lib/status";
 import type {
+  Grade,
   PassIndex,
   Signals,
   StatusReason,
@@ -315,41 +317,139 @@ export const barTotal = (b: HistogramBar) =>
   b.best + b.good + b.limited + b.closed;
 
 /**
- * How many of the currently interesting passes are at their best, good,
- * limited or closed per half-month – the backdrop of the period scrubber. The
- * status filter is deliberately ignored: it would hide exactly the
- * alternatives the histogram is there to show. The summer-signal filters read
- * the chosen half-month and are ignored for the same reason.
+ * One half-month of the season band: how many passes are at their best, good,
+ * limited or closed, what the grade of most of them is, and the climate they
+ * average out to.
  */
-export const statusHistogram = (
+export interface SeasonBar extends HistogramBar {
+  /** What most of the counted passes are graded – the band's ribbon. */
+  grade: Grade | null;
+  /**
+   * Means over the counted passes that carry a climate series, null when none
+   * does. They are means over *summits of different heights*, so they are a
+   * property of the current selection and never of "the Alps"; whatever shows
+   * them has to say so (`docs/scales.md`).
+   */
+  tmax: number | null;
+  tmin: number | null;
+  snowPct: number | null;
+  wetPct: number | null;
+}
+
+export interface SeasonBand {
+  bars: SeasonBar[];
+  /** Mean latitude of the counted passes; what a day length is computed for. */
+  lat: number | null;
+}
+
+/**
+ * The grade most of a bar's passes are in. A tie goes to the better grade –
+ * `GRADE_ORDER` runs from best to closed and only a strict majority displaces
+ * what leads – so a half-month split evenly between "gut" and "eingeschränkt"
+ * is not talked down.
+ */
+const dominantGrade = (bar: HistogramBar): Grade | null => {
+  if (barTotal(bar) === 0) return null;
+  let lead = GRADE_ORDER[0]!;
+  for (const grade of GRADE_ORDER) if (bar[grade] > bar[lead]) lead = grade;
+  return lead;
+};
+
+/**
+ * Which passes the period axis is drawn for. The status filter is deliberately
+ * ignored: it would hide exactly the alternatives the band is there to show.
+ * The summer-signal filters read the chosen half-month and are ignored for the
+ * same reason.
+ */
+const bandPasses = (
   passes: Pass[],
-  years: Years,
   filters: Filters,
   isFavorite: Query["isFavorite"],
   signals?: Signals,
-): HistogramBar[] => {
+): Pass[] => {
   const q = query(filters, isFavorite);
   const unbounded = {
     ...filters,
     maxValleyTmax: HEAT_NONE,
     maxWetDays: WET_NONE,
   };
-  const bars: HistogramBar[] = PERIODS.map((period) => ({
+  return passes.filter((pass) =>
+    passMatches(
+      pass,
+      unbounded,
+      q,
+      inputAt(signalsOf(signals, pass.slug), filters.period),
+    ),
+  );
+};
+
+/**
+ * The whole year of the current selection in 24 bars – what the season band
+ * draws. Three quantities per half-month, all of them over the same set of
+ * passes: the grade counts (bar and ribbon), the mean day temperature (bar
+ * height) and the mean share of days with snowfall (the hanging bar).
+ *
+ * Nothing is graded here: the cells come from `getYears`, as everywhere else.
+ */
+export const seasonBand = (
+  passes: Pass[],
+  years: Years,
+  filters: Filters,
+  isFavorite: Query["isFavorite"],
+  signals?: Signals,
+): SeasonBand => {
+  const bars: SeasonBar[] = PERIODS.map((period) => ({
     best: 0,
     closed: 0,
     good: 0,
+    grade: null,
     limited: 0,
     period,
+    snowPct: null,
+    tmax: null,
+    tmin: null,
+    wetPct: null,
   }));
-  for (const pass of passes) {
-    const own = signalsOf(signals, pass.slug);
-    if (!passMatches(pass, unbounded, q, inputAt(own, filters.period)))
-      continue;
+  // Sums and their own counts: a pass without a climate series still counts
+  // towards the grades, so the two denominators are not the same number.
+  const sums = PERIODS.map(() => ({
+    n: 0,
+    snowPct: 0,
+    tmax: 0,
+    tmin: 0,
+    wetPct: 0,
+  }));
+  let latSum = 0;
+  let counted = 0;
+  for (const pass of bandPasses(passes, filters, isFavorite, signals)) {
     const cells = years.passes[pass.slug]?.cells;
     if (!cells) continue;
-    for (let i = 0; i < bars.length; i += 1) bars[i]![cells[i]!.grade] += 1;
+    latSum += pass.lat;
+    counted += 1;
+    const { climate } = signalsOf(signals, pass.slug);
+    for (let i = 0; i < bars.length; i += 1) {
+      bars[i]![cells[i]!.grade] += 1;
+      const bucket = climate?.[i];
+      if (!bucket) continue;
+      const s = sums[i]!;
+      s.n += 1;
+      s.tmax += bucket.tmax;
+      s.tmin += bucket.tmin;
+      s.snowPct += bucket.snowPct;
+      s.wetPct += bucket.wetPct;
+    }
   }
-  return bars;
+  for (const [i, bar] of bars.entries()) {
+    const s = sums[i]!;
+    if (s.n) {
+      bar.tmax = s.tmax / s.n;
+      bar.tmin = s.tmin / s.n;
+      bar.snowPct = s.snowPct / s.n;
+      bar.wetPct = s.wetPct / s.n;
+    }
+    bar.grade = dominantGrade(bar);
+  }
+  return { bars, lat: counted ? latSum / counted : null };
 };
 
 export const PASS_SORT_LABEL: Record<PassSort, string> = {

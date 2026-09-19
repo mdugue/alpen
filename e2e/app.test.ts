@@ -32,11 +32,12 @@ test(
       await page.waitFor(PASS_ROW);
       expect(await page.count(PASS_ROW)).toBe(201);
       await page.waitFor("canvas.maplibregl-canvas");
-      // The period control shows a half-month and its histogram.
+      // The season band shows a half-month, what most passes are in it and
+      // the counts behind that.
       await page.waitForAttribute(
         SLIDER,
         "aria-valuetext",
-        /^(?:Anfang|Ende) \w+: \d+ beste Zeit, \d+ gut/u,
+        /^(?:Anfang|Ende) \w+: .+\. \d+ beste Zeit, \d+ gut/u,
       );
     }),
   TIMEOUT,
@@ -77,7 +78,7 @@ test(
       async (page) => {
         await page.waitFor("#detail-title");
         expect(await page.text("#detail-title")).toBe("Col du Galibier");
-        await page.waitForAttribute(SLIDER, "aria-valuetext", "Anfang Juni");
+        await page.waitForAttribute(SLIDER, "aria-valuetext", /^Anfang Juni:/u);
 
         // The camera of a link without a selection is applied as it stands;
         // with a selection the map flies to it afterwards.
@@ -173,12 +174,12 @@ test(
       await page.click('[aria-label="Details schließen"]');
       await page.waitForGone("#detail-title");
 
-      // The floating button opens the list drawer. It rides in with its own
-      // animation, so a tap in its first frames can land before React has
-      // attached the handler; tap again until the field is there.
+      // The season bar's list button opens the list drawer. It rides in with
+      // its own animation, so a tap in its first frames can land before React
+      // has attached the handler; tap again until the field is there.
       await waitUntil(async () => {
         if ((await page.count("input[type=search]")) > 0) return true;
-        await page.clickText("button", "Suche");
+        await page.clickText("button", "Straßen");
         await Bun.sleep(300);
         return (await page.count("input[type=search]")) > 0;
       }, "the list drawer to open");
@@ -221,15 +222,16 @@ test(
 );
 
 test(
-  "8 · the period scrubber steps, is keyboard operable and is remembered",
+  "8 · the season band steps, is keyboard operable and is remembered",
   () =>
-    withPage(app, "period-scrubber", {}, async (page) => {
+    withPage(app, "season-band", {}, async (page) => {
       await page.waitFor(SLIDER);
       const before = Number(await page.attribute(SLIDER, "aria-valuenow"));
-      await page.click('[aria-label="Späterer Halbmonat"]');
-      await page.waitForAttribute(SLIDER, "aria-valuenow", String(before + 1));
-
+      // The band has no stepper buttons: it is one slider, and the arrow keys
+      // are the whole keyboard interface.
       await page.focus(SLIDER);
+      await page.press("ArrowRight");
+      await page.waitForAttribute(SLIDER, "aria-valuenow", String(before + 1));
       await page.press("ArrowRight");
       await page.waitForAttribute(SLIDER, "aria-valuenow", String(before + 2));
       const chosen = (await page.attribute(SLIDER, "aria-valuetext"))!;
@@ -240,7 +242,7 @@ test(
 
       // … and someone else's link neither shows nor overwrites it.
       await page.navigate("#t=7");
-      await page.waitForAttribute(SLIDER, "aria-valuetext", "Anfang Juli");
+      await page.waitForAttribute(SLIDER, "aria-valuetext", /^Anfang Juli:/u);
       await page.navigate();
       await page.waitForAttribute(SLIDER, "aria-valuetext", chosen);
     }),
@@ -551,7 +553,7 @@ test(
         };
         await waitUntil(async () => {
           if ((await page.count("input[type=search]")) > 0) return true;
-          await page.clickText("button", "Suche");
+          await page.clickText("button", "Straßen");
           await Bun.sleep(300);
           return (await page.count("input[type=search]")) > 0;
         }, "the list sheet to open");
@@ -635,5 +637,45 @@ test(
         expect(await page.evaluate<boolean>(PASS_IN_VIEW)).toBe(true);
       },
     ),
+  TIMEOUT,
+);
+
+const COMPASS = '[aria-label="Nach Norden ausrichten"]';
+const ATTRIB_TEXT = ".maplibregl-ctrl-attrib-inner";
+
+test(
+  "15 · the corner carries only what it has to: a folded attribution, a compass only off north",
+  () =>
+    withPage(app, "map-controls", { mobile: true }, async (page) => {
+      await page.waitFor("canvas.maplibregl-canvas");
+      if (!(await page.camera())) return;
+
+      // Attribution is a licence obligation, so it is one interaction away –
+      // folded, but never gone and never nested deeper than its own ⓘ.
+      await page.waitFor(".maplibregl-ctrl-attrib-button");
+      const shown = `!!document.querySelector("${ATTRIB_TEXT}")?.getClientRects().length`;
+      expect(await page.evaluate<boolean>(shown)).toBe(false);
+      await page.click(".maplibregl-ctrl-attrib-button");
+      await page.waitFor(ATTRIB_TEXT);
+      // Offline the tile servers never report in, so which sources are named
+      // depends on the run; that there is something to read does not.
+      const credit = await page.text(ATTRIB_TEXT);
+      expect(credit?.length).toBeGreaterThan(0);
+
+      // A map pointing north needs no control saying so.
+      expect(await page.count(COMPASS)).toBe(0);
+      // The comma keeps the map itself from travelling back as the result.
+      await page.evaluate("window.__alpen.map.setBearing(-32), true");
+      await page.waitFor(COMPASS);
+      await page.click(COMPASS);
+      await waitUntil(
+        async () =>
+          (await page.count(COMPASS)) === 0 &&
+          (await page.evaluate<number>(
+            "Math.abs(window.__alpen.map.getBearing())",
+          )) < 0.5,
+        "the map back on north and the compass gone with it",
+      );
+    }),
   TIMEOUT,
 );

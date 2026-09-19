@@ -1,6 +1,6 @@
 "use client";
 
-import { Box, Focus, Layers } from "lucide-react";
+import { Compass, MoreHorizontal, Scan } from "lucide-react";
 import type {
   ExpressionSpecification,
   GeoJSONSource,
@@ -8,10 +8,10 @@ import type {
   StyleSpecification,
 } from "maplibre-gl";
 import {
+  AttributionControl,
   LngLat,
   LngLatBounds,
   Map as MLMap,
-  NavigationControl,
   Popup,
   ScaleControl,
   setWorkerUrl,
@@ -36,7 +36,6 @@ import {
 } from "@/components/ui/popover";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Switch } from "@/components/ui/switch";
-import { Toggle } from "@/components/ui/toggle";
 import {
   Tooltip,
   TooltipContent,
@@ -63,7 +62,7 @@ import { ascentKey } from "@/lib/route-key";
 import { STATUS_ORDER } from "@/lib/status";
 import { tagIconSvg } from "@/lib/tag-icons";
 import type { LatLon, Pass, Status, Tag, Tour, Town } from "@/lib/types";
-import { cn, fmtUnit, MAP_CLUSTER, MAP_TOOL, PRESSED } from "@/lib/utils";
+import { cn, fmtUnit, MAP_CLUSTER, MAP_TOOL } from "@/lib/utils";
 
 export interface MapPass extends Pass {
   status: Status;
@@ -119,16 +118,8 @@ interface Props {
   insetLeft?: number;
   /** Pixels at the bottom covered by the mobile sheet; camera targets stay above it. */
   insetBottom?: number;
-  /** Pixels at the top covered by the floating control cluster (phones only). */
+  /** Pixels at the top covered by the shell's header bar. */
   insetTop?: number;
-  /**
-   * The period scrubber, rendered inside the control cluster next to the three
-   * map tools. A slot of its own, because `children` floats free beside the
-   * cluster and must not stretch to its height.
-   */
-  scrubber?: React.ReactNode;
-  /** Free-floating controls left of the cluster (the sidebar's own toggle). */
-  children?: React.ReactNode;
 }
 
 const EMPTY = { features: [], type: "FeatureCollection" } as const;
@@ -171,11 +162,13 @@ const SELECT_MS = 1100;
 const reduceMotion = () =>
   window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 /**
- * The three tools share one segmented column that stretches to the scrubber's
- * height, so each takes a third of it and the cluster keeps an even edge all
- * the way round – a fixed height would leave a margin below the scrubber.
+ * The two tools share one segmented column in the map's top-right corner. They
+ * are the only furniture on the map itself now that the period control has
+ * moved into the shell's bottom bar, so the corner holds what is about the
+ * *picture* – framing it, and what it is drawn on – and nothing about the
+ * domain.
  */
-const TOOL = "h-auto w-9 flex-1";
+const TOOL = "size-9";
 const TERRAIN = { exaggeration: 1.25, source: "dem" } as const;
 /**
  * The tour hatch, in multiples of the line width – so on a band this wide the
@@ -928,13 +921,28 @@ export const PassMap = ({
   insetLeft = 0,
   insetBottom = 0,
   insetTop = 0,
-  scrubber,
-  children,
 }: Props) => {
   const container = useRef<HTMLDivElement>(null);
   const map = useRef<MLMap | null>(null);
   const [ready, setReady] = useState(false);
   const [is3d, setIs3d] = useState(false);
+  /**
+   * Whether the map is turned away from north, and by how much.
+   *
+   * The compass is the one tool that is not always there: a map pointing north
+   * needs no control saying so, and the corner is quieter without it. The
+   * boolean is state, because it mounts and unmounts a button. The angle is a
+   * ref, because the needle follows a drag frame by frame and a re-render per
+   * frame to turn an icon would be the most expensive way to do that.
+   */
+  const [turned, setTurned] = useState(false);
+  const bearing = useRef(0);
+  const needle = useRef<SVGSVGElement | null>(null);
+  /** Points the needle north; also applies the angle it mounts at. */
+  const aimNeedle = (el: SVGSVGElement | null) => {
+    needle.current = el;
+    if (el) el.style.transform = `rotate(${-bearing.current}deg)`;
+  };
   /** What the hover ring and the hovered line state currently show. */
   const painted = useRef<string | null>(null);
   // A shared link (a camera or a selection in the hash) is authoritative about
@@ -1120,16 +1128,14 @@ export const PassMap = ({
       hash.selection !== null;
     const coarse = window.matchMedia("(pointer: coarse)").matches;
     const m = new MLMap({
-      attributionControl: { compact: true },
+      // Placed by hand below, in the corner opposite the tools.
+      attributionControl: false,
       bearing: view.bearing,
       center: [view.lon, view.lat],
       container: container.current,
       locale: {
         "AttributionControl.ToggleAttribution": "Quellenangaben",
         "Map.Title": "Karte",
-        "NavigationControl.ResetBearing": "Nach Norden ausrichten",
-        "NavigationControl.ZoomIn": "Vergrößern",
-        "NavigationControl.ZoomOut": "Verkleinern",
         "ScaleControl.Kilometers": "km",
         "ScaleControl.Meters": "m",
       },
@@ -1149,11 +1155,34 @@ export const PassMap = ({
         }
       ).__alpen = { map: m, passBounds: assets.passBounds };
     }
-    m.addControl(
-      new NavigationControl({ showZoom: !coarse, visualizePitch: true }),
-      "bottom-right",
-    );
+    /*
+     * Provenance, in the corner opposite the tools: the scale bar and, under
+     * it, who the map is by. Both quiet and small – they are read once, not
+     * operated – while everything a visitor presses lives in the top-right
+     * group.
+     *
+     * The attribution stays *on the map* behind a single ⓘ rather than moving
+     * into the view menu: one clearly identifiable interaction is what the
+     * OSM attribution guidelines ask for, and a line inside a menu about map
+     * types is neither identifiable nor one interaction.
+     */
+    m.addControl(new AttributionControl({ compact: true }), "bottom-left");
     m.addControl(new ScaleControl({ unit: "metric" }), "bottom-left");
+    /*
+     * MapLibre opens a compact attribution the first time it has something to
+     * say, and folds it away only once it has been clicked. Nothing else on
+     * this map is open before it is asked for, so it starts folded.
+     *
+     * Marking the container compact *here* is what does that, rather than
+     * removing the open class afterwards: `_updateCompact` adds
+     * `maplibregl-compact-show` only while the container is not compact yet,
+     * and it runs again on every resize and whenever the attributions change –
+     * so a class removed now is back the moment the first source reports in.
+     * Set the flag it tests and it never opens by itself; the ⓘ still toggles.
+     */
+    container.current
+      ?.querySelector(".maplibregl-ctrl-attrib")
+      ?.classList.add("maplibregl-compact");
 
     // `style.load`, not `load`: the latter waits for every source, and the
     // ascent and tour lines are a megabyte of GeoJSON fetched over holiday
@@ -1271,6 +1300,21 @@ export const PassMap = ({
     // A mouse announces the double click itself; a tap on a phone may not, and
     // the timing above is what catches that one.
     m.on("dblclick", dropPending);
+
+    // The needle follows the drag; `rotate` fires per frame, and the boolean
+    // only changes on the first of them, so every later call bails out of the
+    // render. `moveend` covers the flights that carry a bearing with them.
+    const spin = () => {
+      bearing.current = m.getBearing();
+      needle.current?.style.setProperty(
+        "transform",
+        `rotate(${-bearing.current}deg)`,
+      );
+      setTurned(Math.abs(bearing.current) > 0.5);
+    };
+    m.on("rotate", spin);
+    m.on("moveend", spin);
+    spin();
 
     // Keep the 3D toggle honest when the map is tilted by drag or compass.
     m.on("pitchend", () => {
@@ -1772,107 +1816,19 @@ export const PassMap = ({
       {/* Plain "absolute inset-0" loses against the unlayered maplibre-gl.css (`.maplibregl-map { position: relative }`). */}
       <div ref={container} className="size-full" />
 
+      {/*
+       * The map's own corner: which way is up, how it is framed, and what the
+       * picture is drawn on. One group on one glass surface, opposite the
+       * sidebar so the two never meet, and below the header bar, whose height
+       * it is given as `insetTop`. Everything a visitor presses is here; the
+       * bottom-left corner carries only the things that are read.
+       */}
       <div
-        style={{ left: insetLeft + 12 }}
-        className="absolute top-3 z-10 flex max-w-[calc(100%-4rem)] items-start gap-2 transition-[left] duration-200 motion-reduce:transition-none"
+        style={{ top: insetTop + 12 }}
+        className="absolute right-3 z-10 transition-[top] duration-200 motion-reduce:transition-none"
       >
-        {children}
-        {/*
-         * One interaction area: the period scrubber and the three map tools on
-         * a single panel surface, the tools segmented in the same outline as
-         * the scrubber's own stepper and stretched to its height. A tool has to
-         * look pressable, and the cluster has to keep an even edge.
-         */}
-        <div className={cn("flex min-w-0 items-stretch gap-1.5", MAP_CLUSTER)}>
-          {scrubber}
-          <ButtonGroup
-            orientation="vertical"
-            className="bg-background/60 shrink-0 rounded-md"
-          >
-            <Popover>
-              <Tooltip>
-                <TooltipTrigger
-                  render={
-                    <PopoverTrigger
-                      render={
-                        <Button
-                          size="icon-lg"
-                          variant="outline"
-                          className={cn(TOOL, MAP_TOOL)}
-                          aria-label="Kartenebenen"
-                        />
-                      }
-                    />
-                  }
-                >
-                  <Layers />
-                </TooltipTrigger>
-                <TooltipContent side="right">Kartenebenen</TooltipContent>
-              </Tooltip>
-              <PopoverContent align="start" side="right" className="w-60 gap-3">
-                <FieldSet className="gap-2">
-                  <FieldLegend variant="label">Grundkarte</FieldLegend>
-                  <RadioGroup
-                    value={resolveBase(base)}
-                    onValueChange={(v) => switchBase(String(v))}
-                    className="gap-1.5"
-                  >
-                    {[VECTOR_BASE, ...baseLayers()].map((b) => (
-                      <Field key={b.id} orientation="horizontal">
-                        <RadioGroupItem value={b.id} id={`base-${b.id}`} />
-                        <FieldLabel
-                          htmlFor={`base-${b.id}`}
-                          className="font-normal"
-                        >
-                          {b.name}
-                        </FieldLabel>
-                      </Field>
-                    ))}
-                  </RadioGroup>
-                </FieldSet>
-                <FieldSet className="gap-2">
-                  <FieldLegend variant="label">Overlays</FieldLegend>
-                  {[
-                    { id: "hillshade", name: "Relief-Schummerung" },
-                    ...OVERLAYS,
-                  ].map((o) => (
-                    <Field key={o.id} orientation="horizontal">
-                      <Switch
-                        size="sm"
-                        id={`ov-${o.id}`}
-                        checked={overlays.includes(o.id)}
-                        onCheckedChange={() => toggleOverlay(o.id)}
-                      />
-                      <FieldLabel
-                        htmlFor={`ov-${o.id}`}
-                        className="font-normal"
-                      >
-                        {o.name}
-                      </FieldLabel>
-                    </Field>
-                  ))}
-                </FieldSet>
-              </PopoverContent>
-            </Popover>
-
-            <Tooltip>
-              <TooltipTrigger
-                render={
-                  <Toggle
-                    variant="outline"
-                    size="lg"
-                    pressed={is3d}
-                    onPressedChange={toggle3d}
-                    aria-label="3D-Gelände"
-                    className={cn(TOOL, "px-0", MAP_TOOL, PRESSED)}
-                  />
-                }
-              >
-                <Box />
-              </TooltipTrigger>
-              <TooltipContent side="right">3D-Gelände</TooltipContent>
-            </Tooltip>
-
+        <ButtonGroup orientation="vertical" className={MAP_CLUSTER}>
+          {turned && (
             <Tooltip>
               <TooltipTrigger
                 render={
@@ -1880,19 +1836,122 @@ export const PassMap = ({
                     size="icon-lg"
                     variant="outline"
                     className={cn(TOOL, MAP_TOOL)}
-                    onClick={fitToVisible}
-                    aria-label="Ansicht einpassen"
+                    onClick={() =>
+                      map.current?.easeTo({ bearing: 0, duration: 400 })
+                    }
+                    aria-label="Nach Norden ausrichten"
                   />
                 }
               >
-                <Focus />
+                <Compass ref={aimNeedle} />
               </TooltipTrigger>
-              <TooltipContent side="right">
-                Ansicht einpassen – erneut für die ganzen Alpen
+              <TooltipContent side="left">
+                Nach Norden ausrichten
               </TooltipContent>
             </Tooltip>
-          </ButtonGroup>
-        </div>
+          )}
+          <Tooltip>
+            <TooltipTrigger
+              render={
+                <Button
+                  size="icon-lg"
+                  variant="outline"
+                  className={cn(TOOL, MAP_TOOL)}
+                  onClick={fitToVisible}
+                  aria-label="Ansicht einpassen"
+                />
+              }
+            >
+              <Scan />
+            </TooltipTrigger>
+            <TooltipContent side="left">
+              Ansicht einpassen – erneut für die ganzen Alpen
+            </TooltipContent>
+          </Tooltip>
+
+          {/*
+           * Everything that changes how the map looks rather than where it
+           * looks, behind one "…": the base, the overlays and the tilt. They
+           * are answered once per visit and then left alone, so they do not
+           * earn a button each on a phone screen.
+           */}
+          <Popover>
+            <Tooltip>
+              <TooltipTrigger
+                render={
+                  <PopoverTrigger
+                    render={
+                      <Button
+                        size="icon-lg"
+                        variant="outline"
+                        className={cn(TOOL, MAP_TOOL)}
+                        aria-label="Ansicht: Karte, Ebenen und 3D"
+                      />
+                    }
+                  />
+                }
+              >
+                <MoreHorizontal />
+              </TooltipTrigger>
+              <TooltipContent side="left">Ansicht</TooltipContent>
+            </Tooltip>
+            <PopoverContent align="start" side="left" className="w-60 gap-3">
+              <FieldSet className="gap-2">
+                <FieldLegend variant="label">Grundkarte</FieldLegend>
+                <RadioGroup
+                  value={resolveBase(base)}
+                  onValueChange={(v) => switchBase(String(v))}
+                  className="gap-1.5"
+                >
+                  {[VECTOR_BASE, ...baseLayers()].map((b) => (
+                    <Field key={b.id} orientation="horizontal">
+                      <RadioGroupItem value={b.id} id={`base-${b.id}`} />
+                      <FieldLabel
+                        htmlFor={`base-${b.id}`}
+                        className="font-normal"
+                      >
+                        {b.name}
+                      </FieldLabel>
+                    </Field>
+                  ))}
+                </RadioGroup>
+              </FieldSet>
+              <FieldSet className="gap-2">
+                <FieldLegend variant="label">Overlays</FieldLegend>
+                {[
+                  { id: "hillshade", name: "Relief-Schummerung" },
+                  ...OVERLAYS,
+                ].map((o) => (
+                  <Field key={o.id} orientation="horizontal">
+                    <Switch
+                      size="sm"
+                      id={`ov-${o.id}`}
+                      checked={overlays.includes(o.id)}
+                      onCheckedChange={() => toggleOverlay(o.id)}
+                    />
+                    <FieldLabel htmlFor={`ov-${o.id}`} className="font-normal">
+                      {o.name}
+                    </FieldLabel>
+                  </Field>
+                ))}
+              </FieldSet>
+              <FieldSet className="gap-2">
+                <FieldLegend variant="label">Gelände</FieldLegend>
+                <Field orientation="horizontal">
+                  <Switch
+                    size="sm"
+                    id="terrain-3d"
+                    checked={is3d}
+                    onCheckedChange={toggle3d}
+                  />
+                  <FieldLabel htmlFor="terrain-3d" className="font-normal">
+                    3D-Ansicht
+                  </FieldLabel>
+                </Field>
+              </FieldSet>
+            </PopoverContent>
+          </Popover>
+        </ButtonGroup>
       </div>
     </div>
   );
