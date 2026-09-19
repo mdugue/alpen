@@ -71,6 +71,7 @@ friends do that better and the app links out to them.
 | Header bar and its one-sentence headline        | `components/app-header.tsx`, `lib/use-height.ts`                                                                                                                                                                                                                                                           |
 | Filter controls, chips, applied-filter row      | `components/sidebar/filter-panel.tsx`, `components/sidebar/filter-chip.tsx`, `lib/filter-summary.ts`                                                                                                                                                                                                       |
 | Sidebar: search, filters, one list per kind     | `components/sidebar/` (tabs: `kind-tabs.tsx`), `lib/rows.ts`                                                                                                                                                                                                                                               |
+| Rows, their blocks and the drag they sit in     | `components/sidebar/entity-row.tsx`, `components/sidebar/row-list.tsx`, `rowBlocks` in `lib/rows.ts`                                                                                                                                                                                                       |
 | Detail panel incl. profile/weather/climate      | `components/panel/` (collapsible blocks: `components/panel/section.tsx`)                                                                                                                                                                                                                                   |
 | Drawers on phones (list and detail, separate)   | `components/mobile-sheet.tsx`, `components/explorer.tsx`                                                                                                                                                                                                                                                   |
 | Precomputation, data checks                     | `scripts/build-data.ts`, `scripts/build-photos.ts`, `scripts/check-data.ts`                                                                                                                                                                                                                                |
@@ -149,6 +150,11 @@ The component layer, the layout, the sidebar, the detail panel.
 - **One list at a time, chosen by a tab row.** The three kinds sit behind tabs
   in the fixed header; each list's map switch rides in its own toolbar.
   → [why](docs/ui-conventions.md#one-list-at-a-time-chosen-by-a-tab-row)
+- **A long list comes in blocks of ten.** A drag of the bottom sheet writes a
+  custom property to its popup on every frame and Chrome recalculates the whole
+  subtree for it, so the rows sit in blocks that are skipped whole while off
+  screen (`RowList`) – and nothing that changes with the drag may reach them.
+  → [why](docs/ui-conventions.md#a-long-list-comes-in-blocks-of-ten)
 - **A long list is one tab stop.** `useRoving` makes each list the composite
   widget the platform expects: one stop, arrows inside it.
   → [why](docs/ui-conventions.md#a-long-list-is-one-tab-stop)

@@ -3,6 +3,7 @@
 import { EntityRow } from "@/components/sidebar/entity-row";
 import { ListEmpty } from "@/components/sidebar/list-empty";
 import { ListToolbar } from "@/components/sidebar/list-toolbar";
+import { RowList } from "@/components/sidebar/row-list";
 import { TagLine } from "@/components/tags";
 import type { Selection } from "@/lib/app-state";
 import type { TownRow } from "@/lib/rows";
@@ -35,7 +36,7 @@ export const TownList = ({
   onSelect: (slug: string) => void;
   onToggleFavorite: (slug: string) => void;
 }) => {
-  const rovingList = useRoving<HTMLUListElement>();
+  const rovingList = useRoving<HTMLDivElement>();
   const hoveredSlug = hovered?.kind === "town" ? hovered.slug : null;
   return (
     <>
@@ -43,8 +44,8 @@ export const TownList = ({
       {rows.length === 0 ? (
         <ListEmpty title="Keine Orte gefunden" {...empty} />
       ) : (
-        <ul ref={rovingList}>
-          {rows.map(({ town, favorite }) => (
+        <RowList ref={rovingList} items={rows} keyOf={({ town }) => town.slug}>
+          {({ town, favorite }) => (
             <EntityRow
               key={town.slug}
               rowId={`town:${town.slug}`}
@@ -60,8 +61,8 @@ export const TownList = ({
               onToggleFavorite={() => onToggleFavorite(town.slug)}
               onSelect={() => onSelect(town.slug)}
             />
-          ))}
-        </ul>
+          )}
+        </RowList>
       )}
     </>
   );
