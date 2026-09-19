@@ -61,9 +61,21 @@ groups use `ButtonGroup`.
 ### The map is the page, and the shell is over it
 
 The map fills the viewport at every width and nothing is beside it: what is
-not map is a **translucent surface over** it (`SHELL_BAR`, `PANEL` – the same
-`bg-card/80` and backdrop blur), so the map runs on underneath rather than
-stopping at a card. That is the whole of the rule; the shell exists inside it.
+not map is a **translucent surface over** it, so the map runs on underneath
+rather than stopping at a card. That is the whole of the rule; the shell
+exists inside it.
+
+All of those surfaces are one material, `GLASS` in `lib/utils.ts`, which both
+`SHELL_BAR` and `PANEL` build on — one definition, because the moment two of
+them carry different numbers the screen grows a seam where the sidebar meets
+the header. Its numbers were measured against a deliberately loud backdrop
+rather than guessed: at `bg-card/80` almost nothing came through the 12 px
+blur and every surface read as a closed plate. It is `bg-card/70` now, with
+`backdrop-saturate-150` – the saturation is what carries the map's _colour_
+through, and it does more for "the map is still there" than another ten
+percent of transparency would, at no cost in contrast. **Never stack two of
+them**: two 70 % layers compose to 91 %, which is exactly the opaque white
+pill the map tools were until their `ButtonGroup` lost its own fill.
 
 There are exactly two bars. Along the top a `header` (`components/app-header.tsx`)
 with the wordmark and **one sentence**: the chosen half-month and what the

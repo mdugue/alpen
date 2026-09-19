@@ -1773,10 +1773,11 @@ export const PassMap = ({
         className="absolute right-3 z-10 transition-[top] duration-200 motion-reduce:transition-none"
       >
         <div className={cn("flex", MAP_CLUSTER)}>
-          <ButtonGroup
-            orientation="vertical"
-            className="bg-background/60 rounded-md"
-          >
+          {/* No surface of its own: the group sits *on* the cluster's glass,
+              and a second translucent fill over it composes to an opaque pill
+              (`GLASS` in lib/utils.ts). The outline buttons' own borders are
+              what makes it read as segmented. */}
+          <ButtonGroup orientation="vertical" className="rounded-md">
             <Tooltip>
               <TooltipTrigger
                 render={
