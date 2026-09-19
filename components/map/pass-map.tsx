@@ -1,6 +1,6 @@
 "use client";
 
-import { MoreHorizontal, Scan } from "lucide-react";
+import { Compass, MoreHorizontal, Scan } from "lucide-react";
 import type {
   ExpressionSpecification,
   GeoJSONSource,
@@ -8,10 +8,10 @@ import type {
   StyleSpecification,
 } from "maplibre-gl";
 import {
+  AttributionControl,
   LngLat,
   LngLatBounds,
   Map as MLMap,
-  NavigationControl,
   Popup,
   ScaleControl,
   setWorkerUrl,
@@ -926,6 +926,23 @@ export const PassMap = ({
   const map = useRef<MLMap | null>(null);
   const [ready, setReady] = useState(false);
   const [is3d, setIs3d] = useState(false);
+  /**
+   * Whether the map is turned away from north, and by how much.
+   *
+   * The compass is the one tool that is not always there: a map pointing north
+   * needs no control saying so, and the corner is quieter without it. The
+   * boolean is state, because it mounts and unmounts a button. The angle is a
+   * ref, because the needle follows a drag frame by frame and a re-render per
+   * frame to turn an icon would be the most expensive way to do that.
+   */
+  const [turned, setTurned] = useState(false);
+  const bearing = useRef(0);
+  const needle = useRef<SVGSVGElement | null>(null);
+  /** Points the needle north; also applies the angle it mounts at. */
+  const aimNeedle = (el: SVGSVGElement | null) => {
+    needle.current = el;
+    if (el) el.style.transform = `rotate(${-bearing.current}deg)`;
+  };
   /** What the hover ring and the hovered line state currently show. */
   const painted = useRef<string | null>(null);
   // A shared link (a camera or a selection in the hash) is authoritative about
@@ -1111,16 +1128,14 @@ export const PassMap = ({
       hash.selection !== null;
     const coarse = window.matchMedia("(pointer: coarse)").matches;
     const m = new MLMap({
-      attributionControl: { compact: true },
+      // Placed by hand below, in the corner opposite the tools.
+      attributionControl: false,
       bearing: view.bearing,
       center: [view.lon, view.lat],
       container: container.current,
       locale: {
         "AttributionControl.ToggleAttribution": "Quellenangaben",
         "Map.Title": "Karte",
-        "NavigationControl.ResetBearing": "Nach Norden ausrichten",
-        "NavigationControl.ZoomIn": "Vergrößern",
-        "NavigationControl.ZoomOut": "Verkleinern",
         "ScaleControl.Kilometers": "km",
         "ScaleControl.Meters": "m",
       },
@@ -1140,11 +1155,34 @@ export const PassMap = ({
         }
       ).__alpen = { map: m, passBounds: assets.passBounds };
     }
-    m.addControl(
-      new NavigationControl({ showZoom: !coarse, visualizePitch: true }),
-      "bottom-right",
-    );
+    /*
+     * Provenance, in the corner opposite the tools: the scale bar and, under
+     * it, who the map is by. Both quiet and small – they are read once, not
+     * operated – while everything a visitor presses lives in the top-right
+     * group.
+     *
+     * The attribution stays *on the map* behind a single ⓘ rather than moving
+     * into the view menu: one clearly identifiable interaction is what the
+     * OSM attribution guidelines ask for, and a line inside a menu about map
+     * types is neither identifiable nor one interaction.
+     */
+    m.addControl(new AttributionControl({ compact: true }), "bottom-left");
     m.addControl(new ScaleControl({ unit: "metric" }), "bottom-left");
+    /*
+     * MapLibre opens a compact attribution the first time it has something to
+     * say, and folds it away only once it has been clicked. Nothing else on
+     * this map is open before it is asked for, so it starts folded.
+     *
+     * Marking the container compact *here* is what does that, rather than
+     * removing the open class afterwards: `_updateCompact` adds
+     * `maplibregl-compact-show` only while the container is not compact yet,
+     * and it runs again on every resize and whenever the attributions change –
+     * so a class removed now is back the moment the first source reports in.
+     * Set the flag it tests and it never opens by itself; the ⓘ still toggles.
+     */
+    container.current
+      ?.querySelector(".maplibregl-ctrl-attrib")
+      ?.classList.add("maplibregl-compact");
 
     // `style.load`, not `load`: the latter waits for every source, and the
     // ascent and tour lines are a megabyte of GeoJSON fetched over holiday
@@ -1262,6 +1300,21 @@ export const PassMap = ({
     // A mouse announces the double click itself; a tap on a phone may not, and
     // the timing above is what catches that one.
     m.on("dblclick", dropPending);
+
+    // The needle follows the drag; `rotate` fires per frame, and the boolean
+    // only changes on the first of them, so every later call bails out of the
+    // render. `moveend` covers the flights that carry a bearing with them.
+    const spin = () => {
+      bearing.current = m.getBearing();
+      needle.current?.style.setProperty(
+        "transform",
+        `rotate(${-bearing.current}deg)`,
+      );
+      setTurned(Math.abs(bearing.current) > 0.5);
+    };
+    m.on("rotate", spin);
+    m.on("moveend", spin);
+    spin();
 
     // Keep the 3D toggle honest when the map is tilted by drag or compass.
     m.on("pitchend", () => {
@@ -1764,20 +1817,18 @@ export const PassMap = ({
       <div ref={container} className="size-full" />
 
       {/*
-       * The map's own corner: framing, and what the picture is drawn on. It
-       * sits opposite the sidebar so the two never meet, and below the header
-       * bar, whose height it is given as `insetTop`.
+       * The map's own corner: which way is up, how it is framed, and what the
+       * picture is drawn on. One group on one glass surface, opposite the
+       * sidebar so the two never meet, and below the header bar, whose height
+       * it is given as `insetTop`. Everything a visitor presses is here; the
+       * bottom-left corner carries only the things that are read.
        */}
       <div
         style={{ top: insetTop + 12 }}
         className="absolute right-3 z-10 transition-[top] duration-200 motion-reduce:transition-none"
       >
-        <div className={cn("flex", MAP_CLUSTER)}>
-          {/* No surface of its own: the group sits *on* the cluster's glass,
-              and a second translucent fill over it composes to an opaque pill
-              (`GLASS` in lib/utils.ts). The outline buttons' own borders are
-              what makes it read as segmented. */}
-          <ButtonGroup orientation="vertical" className="rounded-md">
+        <ButtonGroup orientation="vertical" className={MAP_CLUSTER}>
+          {turned && (
             <Tooltip>
               <TooltipTrigger
                 render={
@@ -1785,105 +1836,122 @@ export const PassMap = ({
                     size="icon-lg"
                     variant="outline"
                     className={cn(TOOL, MAP_TOOL)}
-                    onClick={fitToVisible}
-                    aria-label="Ansicht einpassen"
+                    onClick={() =>
+                      map.current?.easeTo({ bearing: 0, duration: 400 })
+                    }
+                    aria-label="Nach Norden ausrichten"
                   />
                 }
               >
-                <Scan />
+                <Compass ref={aimNeedle} />
               </TooltipTrigger>
               <TooltipContent side="left">
-                Ansicht einpassen – erneut für die ganzen Alpen
+                Nach Norden ausrichten
               </TooltipContent>
             </Tooltip>
+          )}
+          <Tooltip>
+            <TooltipTrigger
+              render={
+                <Button
+                  size="icon-lg"
+                  variant="outline"
+                  className={cn(TOOL, MAP_TOOL)}
+                  onClick={fitToVisible}
+                  aria-label="Ansicht einpassen"
+                />
+              }
+            >
+              <Scan />
+            </TooltipTrigger>
+            <TooltipContent side="left">
+              Ansicht einpassen – erneut für die ganzen Alpen
+            </TooltipContent>
+          </Tooltip>
 
-            {/*
-             * Everything that changes how the map looks rather than where it
-             * looks, behind one "…": the base, the overlays and the tilt. They
-             * are answered once per visit and then left alone, so they do not
-             * earn a button each on a phone screen.
-             */}
-            <Popover>
-              <Tooltip>
-                <TooltipTrigger
-                  render={
-                    <PopoverTrigger
-                      render={
-                        <Button
-                          size="icon-lg"
-                          variant="outline"
-                          className={cn(TOOL, MAP_TOOL)}
-                          aria-label="Ansicht: Karte, Ebenen und 3D"
-                        />
-                      }
-                    />
-                  }
-                >
-                  <MoreHorizontal />
-                </TooltipTrigger>
-                <TooltipContent side="left">Ansicht</TooltipContent>
-              </Tooltip>
-              <PopoverContent align="start" side="left" className="w-60 gap-3">
-                <FieldSet className="gap-2">
-                  <FieldLegend variant="label">Grundkarte</FieldLegend>
-                  <RadioGroup
-                    value={resolveBase(base)}
-                    onValueChange={(v) => switchBase(String(v))}
-                    className="gap-1.5"
-                  >
-                    {[VECTOR_BASE, ...baseLayers()].map((b) => (
-                      <Field key={b.id} orientation="horizontal">
-                        <RadioGroupItem value={b.id} id={`base-${b.id}`} />
-                        <FieldLabel
-                          htmlFor={`base-${b.id}`}
-                          className="font-normal"
-                        >
-                          {b.name}
-                        </FieldLabel>
-                      </Field>
-                    ))}
-                  </RadioGroup>
-                </FieldSet>
-                <FieldSet className="gap-2">
-                  <FieldLegend variant="label">Overlays</FieldLegend>
-                  {[
-                    { id: "hillshade", name: "Relief-Schummerung" },
-                    ...OVERLAYS,
-                  ].map((o) => (
-                    <Field key={o.id} orientation="horizontal">
-                      <Switch
-                        size="sm"
-                        id={`ov-${o.id}`}
-                        checked={overlays.includes(o.id)}
-                        onCheckedChange={() => toggleOverlay(o.id)}
+          {/*
+           * Everything that changes how the map looks rather than where it
+           * looks, behind one "…": the base, the overlays and the tilt. They
+           * are answered once per visit and then left alone, so they do not
+           * earn a button each on a phone screen.
+           */}
+          <Popover>
+            <Tooltip>
+              <TooltipTrigger
+                render={
+                  <PopoverTrigger
+                    render={
+                      <Button
+                        size="icon-lg"
+                        variant="outline"
+                        className={cn(TOOL, MAP_TOOL)}
+                        aria-label="Ansicht: Karte, Ebenen und 3D"
                       />
+                    }
+                  />
+                }
+              >
+                <MoreHorizontal />
+              </TooltipTrigger>
+              <TooltipContent side="left">Ansicht</TooltipContent>
+            </Tooltip>
+            <PopoverContent align="start" side="left" className="w-60 gap-3">
+              <FieldSet className="gap-2">
+                <FieldLegend variant="label">Grundkarte</FieldLegend>
+                <RadioGroup
+                  value={resolveBase(base)}
+                  onValueChange={(v) => switchBase(String(v))}
+                  className="gap-1.5"
+                >
+                  {[VECTOR_BASE, ...baseLayers()].map((b) => (
+                    <Field key={b.id} orientation="horizontal">
+                      <RadioGroupItem value={b.id} id={`base-${b.id}`} />
                       <FieldLabel
-                        htmlFor={`ov-${o.id}`}
+                        htmlFor={`base-${b.id}`}
                         className="font-normal"
                       >
-                        {o.name}
+                        {b.name}
                       </FieldLabel>
                     </Field>
                   ))}
-                </FieldSet>
-                <FieldSet className="gap-2">
-                  <FieldLegend variant="label">Gelände</FieldLegend>
-                  <Field orientation="horizontal">
+                </RadioGroup>
+              </FieldSet>
+              <FieldSet className="gap-2">
+                <FieldLegend variant="label">Overlays</FieldLegend>
+                {[
+                  { id: "hillshade", name: "Relief-Schummerung" },
+                  ...OVERLAYS,
+                ].map((o) => (
+                  <Field key={o.id} orientation="horizontal">
                     <Switch
                       size="sm"
-                      id="terrain-3d"
-                      checked={is3d}
-                      onCheckedChange={toggle3d}
+                      id={`ov-${o.id}`}
+                      checked={overlays.includes(o.id)}
+                      onCheckedChange={() => toggleOverlay(o.id)}
                     />
-                    <FieldLabel htmlFor="terrain-3d" className="font-normal">
-                      3D-Ansicht
+                    <FieldLabel htmlFor={`ov-${o.id}`} className="font-normal">
+                      {o.name}
                     </FieldLabel>
                   </Field>
-                </FieldSet>
-              </PopoverContent>
-            </Popover>
-          </ButtonGroup>
-        </div>
+                ))}
+              </FieldSet>
+              <FieldSet className="gap-2">
+                <FieldLegend variant="label">Gelände</FieldLegend>
+                <Field orientation="horizontal">
+                  <Switch
+                    size="sm"
+                    id="terrain-3d"
+                    checked={is3d}
+                    onCheckedChange={toggle3d}
+                  />
+                  <FieldLabel htmlFor="terrain-3d" className="font-normal">
+                    3D-Ansicht
+                  </FieldLabel>
+                </Field>
+              </FieldSet>
+            </PopoverContent>
+          </Popover>
+        </ButtonGroup>
       </div>
     </div>
   );

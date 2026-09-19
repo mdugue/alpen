@@ -639,3 +639,43 @@ test(
     ),
   TIMEOUT,
 );
+
+const COMPASS = '[aria-label="Nach Norden ausrichten"]';
+const ATTRIB_TEXT = ".maplibregl-ctrl-attrib-inner";
+
+test(
+  "15 · the corner carries only what it has to: a folded attribution, a compass only off north",
+  () =>
+    withPage(app, "map-controls", { mobile: true }, async (page) => {
+      await page.waitFor("canvas.maplibregl-canvas");
+      if (!(await page.camera())) return;
+
+      // Attribution is a licence obligation, so it is one interaction away –
+      // folded, but never gone and never nested deeper than its own ⓘ.
+      await page.waitFor(".maplibregl-ctrl-attrib-button");
+      const shown = `!!document.querySelector("${ATTRIB_TEXT}")?.getClientRects().length`;
+      expect(await page.evaluate<boolean>(shown)).toBe(false);
+      await page.click(".maplibregl-ctrl-attrib-button");
+      await page.waitFor(ATTRIB_TEXT);
+      // Offline the tile servers never report in, so which sources are named
+      // depends on the run; that there is something to read does not.
+      const credit = await page.text(ATTRIB_TEXT);
+      expect(credit?.length).toBeGreaterThan(0);
+
+      // A map pointing north needs no control saying so.
+      expect(await page.count(COMPASS)).toBe(0);
+      // The comma keeps the map itself from travelling back as the result.
+      await page.evaluate("window.__alpen.map.setBearing(-32), true");
+      await page.waitFor(COMPASS);
+      await page.click(COMPASS);
+      await waitUntil(
+        async () =>
+          (await page.count(COMPASS)) === 0 &&
+          (await page.evaluate<number>(
+            "Math.abs(window.__alpen.map.getBearing())",
+          )) < 0.5,
+        "the map back on north and the compass gone with it",
+      );
+    }),
+  TIMEOUT,
+);

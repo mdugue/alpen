@@ -119,14 +119,38 @@ What the bars cover of the map is **measured**, not promised (`useHeight`,
 padding, and the bottom one is also written back as `--shell-bottom`, which
 lifts MapLibre's own corner controls off the bar. A constant was wrong the
 moment the headline wrapped to a second line, which depends on how many digits
-the counts have. What floats on the map itself is one cluster in its
-**top-right** corner (`MAP_CLUSTER`), opposite the panels so the two never
-meet: fit-to-view, and a "…" popover holding base map, overlays and the 3D
-switch. Those are answered once per visit and left alone, so they do not earn a
-button each on a phone; `MAP_TOOL` settles the outline. Map visibility is
-always a `Switch` ("auf der Karte"), one per kind, two-state buttons are always
-a `Toggle`. Without a camera or a selection in the hash the map opens on the
-frame the fit button produces, not on a fixed overview.
+the counts have.
+
+**The map's own two corners.** Everything a visitor presses is one group in the
+**top-right** (`MAP_CLUSTER`), opposite the panels so the two never meet: the
+compass, fit-to-view, and a "…" popover holding base map, overlays and the 3D
+switch. The last three are answered once per visit and left alone, so they do
+not earn a button each on a phone; `MAP_TOOL` settles the outline. It is one
+glass surface with the buttons segmented inside it, not `PANEL` plus padding –
+that framed the corner twice and read as a white ring around two buttons.
+
+The **compass is the one tool that is not always there**: a map pointing north
+needs no control saying so. It is ours rather than MapLibre's
+`NavigationControl`, which cannot be told to hide itself and brings zoom
+buttons that a scroll wheel and a pinch both make redundant. Whether it shows
+is React state, because it mounts a button; the angle it points at is a ref,
+because the needle follows a drag frame by frame and re-rendering to turn an
+icon would be the most expensive way to do it.
+
+The **bottom-left** carries what is read rather than pressed: the scale bar and,
+under it, who the map is by, both at the smallest weight the scale has. The
+attribution is a licence obligation, so it stays on the map behind a single ⓘ –
+one clearly identifiable interaction, which is what the OSM attribution
+guidelines ask for and what a line inside a menu about map types would not be.
+It starts folded, and the thing that folds it is marking its container compact
+when it is added: MapLibre adds `maplibregl-compact-show` only while the
+container is not compact yet, and it runs that check again on every resize and
+whenever the attributions change, so a class removed afterwards comes back with
+the first source that reports in.
+
+Map visibility is always a `Switch` ("auf der Karte"), one per kind, two-state
+buttons are always a `Toggle`. Without a camera or a selection in the hash the
+map opens on the frame the fit button produces, not on a fixed overview.
 
 Below `lg` no panel rests on the map: from the season bar's two buttons, **two**
 independent `MobileSheet`s (`components/mobile-sheet.tsx`, the Base UI `Drawer`

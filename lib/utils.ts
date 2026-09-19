@@ -87,11 +87,14 @@ const GLASS =
 export const PANEL = `rounded-xl border border-border/60 shadow-xl ${GLASS}`;
 
 /**
- * A group of controls floating over the map, on the panel surface: the map
- * tools in the top-right corner share it, which is what makes that corner read
- * as one interaction area rather than as loose buttons.
+ * The map's own tools, in one corner: a single glass surface with the tools
+ * segmented inside it.
+ *
+ * It was `PANEL` plus padding, which framed the corner twice – a rounded card
+ * with a rounded group sitting inside it – and read as a white ring around two
+ * buttons. One frame now, and the buttons' own outlines are the dividers.
  */
-export const MAP_CLUSTER = `${PANEL} p-1.5`;
+export const MAP_CLUSTER = `rounded-md shadow-md ${GLASS}`;
 
 /**
  * The shell over the map: the header along the top and the season bar along

@@ -213,13 +213,6 @@
   }
 }
 
-/* Align MapLibre controls with the theme tokens */
-.maplibregl-ctrl-group {
-  @apply bg-card! border-border! rounded-lg! border shadow-sm!;
-}
-.maplibregl-ctrl-group button + button {
-  @apply border-border! border-t;
-}
 /*
  * The hover popup is a label, not a target: it must never take the pointer off
  * the mark it describes, or hovering a mark near the edge of the popup would
@@ -231,11 +224,62 @@
 .maplibregl-popup-tip {
   @apply border-t-popover! border-b-popover!;
 }
+/*
+ * The bottom-left corner is provenance, not tools: the scale bar and, under
+ * it, who the map is by. Both are read once and never pressed, so they carry
+ * the least weight anything on this map can – a hairline, the small step of
+ * the scale, and the same glass as everything else instead of a white block.
+ *
+ * MapLibre's own controls are styled here rather than replaced, so a changed
+ * source still reaches the attribution on its own.
+ */
+/* Close enough together to read as one corner rather than two strays. */
+.maplibregl-ctrl-bottom-left .maplibregl-ctrl {
+  @apply mb-1! ml-2.5!;
+}
+.maplibregl-ctrl-scale {
+  @apply bg-card/70! border-border/60! text-muted-foreground! text-2xs! rounded-xs! border! border-t-0! px-1! py-0! leading-4! backdrop-blur-sm!;
+}
 .maplibregl-ctrl-attrib {
-  @apply bg-card/80! text-muted-foreground! text-2xs!;
+  @apply text-muted-foreground! text-2xs!;
 }
 .maplibregl-ctrl-attrib a {
   @apply text-muted-foreground!;
+}
+/*
+ * Folded, the attribution is only its ⓘ, so the container must not carry a
+ * surface of its own – with one it was a white pill with a disc inside it.
+ * Unfolded it is a card like everything else.
+ */
+.maplibregl-ctrl-attrib.maplibregl-compact:not(.maplibregl-compact-show) {
+  @apply bg-transparent! shadow-none!;
+}
+.maplibregl-ctrl-attrib.maplibregl-compact-show,
+.maplibregl-ctrl-attrib:not(.maplibregl-compact) {
+  @apply bg-card/70! backdrop-blur-sm!;
+}
+/*
+ * The ⓘ itself. MapLibre paints it as a dark glyph on a disc, which on a quiet
+ * corner is the loudest thing left on the map; held back until it is aimed at,
+ * it is still the one interaction the attribution needs.
+ */
+.maplibregl-ctrl-attrib-button {
+  @apply bg-card/70! opacity-55! backdrop-blur-sm! transition-opacity;
+}
+.maplibregl-ctrl-attrib-button:hover,
+.maplibregl-ctrl-attrib-button:focus-visible,
+.maplibregl-compact-show .maplibregl-ctrl-attrib-button {
+  @apply opacity-100!;
+}
+/*
+ * The glyph is a background image, not a colour this file can set, so dark
+ * mode inverts it – and only it, which is why the disc goes transparent first:
+ * an inverted `bg-card` would come back as a bright white dot.
+ */
+@media (prefers-color-scheme: dark) {
+  .maplibregl-ctrl-attrib-button {
+    @apply bg-transparent! invert!;
+  }
 }
 
 /* The season bar runs along the bottom of the map at every width; keep
