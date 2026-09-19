@@ -6,6 +6,11 @@ are the single description of every file in `data/`, and
 their established names. Source data is maintained by hand; derived data
 comes from `scripts/build-data.ts`.
 
+This document says what the fields **mean**.
+[`data-pipeline.md`](./data-pipeline.md) says where they **come from** – which
+host answers which question, what each command writes, and the states a route
+travels through between a typed coordinate and a line on the map.
+
 ## How the schemas are used
 
 ```mermaid
@@ -304,7 +309,10 @@ in front of `passVerdict` – and it does not need to be committed: 201 passes �
 
 ### The route quality gate
 
-Nothing reaches `routes.json` unmeasured. A geometry is measured, judged, and
+Nothing reaches `routes.json` unmeasured. This is the gate seen from the data:
+what is measured and what makes it acceptable. The same gate seen from the
+build – when a key is retried, and why – is the state diagram in
+[`data-pipeline.md`](./data-pipeline.md#the-life-of-one-ascent). A geometry is measured, judged, and
 only then written; what fails goes to `rejected.json` instead, so a wrong route
 neither reaches the map nor spends 100 Open-Meteo calls on a useless profile.
 
@@ -355,15 +363,10 @@ the `curate-data` skill.
 
 ### What it costs
 
-Routing is effectively free: ORS allows 2 000 requests a day and the whole
-dataset is ~180 of them, one per ascent and one per tour. Open-Meteo is the
-constraint, and its **hourly** limit binds first – 5 000 calls/h against ~100
-calls per elevation profile, so a run places about 45 profiles before
-`OPEN_METEO_BUDGET` (default 4500) stops it. A climate series costs ~261 calls,
-but that file is complete and its window is frozen, so it no longer contributes.
-
-`bun run data:build --status` shows the backlog and how many runs it needs;
-`scripts/backfill.sh` drains it in hourly batches until nothing is missing.
+Routing is effectively free; Open-Meteo's hourly limit is the constraint, and
+`bun run data:build --status` shows the backlog and how many runs it needs. The
+arithmetic, the per-request weights and the hosts behind them are in
+[`data-pipeline.md`](./data-pipeline.md#what-a-run-costs).
 
 ## Adding a pass
 

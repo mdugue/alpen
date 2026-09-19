@@ -1,5 +1,7 @@
 "use client";
 
+import { createContext, use } from "react";
+
 import {
   Drawer,
   DrawerContent,
@@ -7,14 +9,6 @@ import {
   DrawerTitle,
 } from "@/components/ui/drawer";
 import { cn } from "@/lib/utils";
-
-/**
- * Base UI reads snap points above 1 as pixels and below it as a fraction of
- * the viewport; the map needs the visible sheet height in pixels to pad its
- * camera, so it converts them back here.
- */
-export const snapPx = (snap: number, viewportHeight: number) =>
-  snap <= 1 ? Math.round(snap * viewportHeight) : snap;
 
 /**
  * What the drawer keeps free of the viewport edge – the preset's own
@@ -28,6 +22,48 @@ export const snapPx = (snap: number, viewportHeight: number) =>
  * that much before anything in the sheet is read.
  */
 export const SHEET_INSET_PX = 8;
+
+/**
+ * What an open sheet covers of the map, in pixels – its snap point plus the
+ * margin it keeps to the screen edge. `0` for no sheet at all.
+ *
+ * Base UI reads snap points above 1 as pixels and below it as a fraction of
+ * the viewport; the camera padding is arithmetic and can read neither those
+ * nor the `--drawer-inset` the margin comes from, so both are converted here,
+ * where the sheet's own geometry lives.
+ */
+export const sheetCover = (snap: number, viewportHeight: number) =>
+  snap
+    ? (snap <= 1 ? Math.round(snap * viewportHeight) : snap) + SHEET_INSET_PX
+    : 0;
+
+/**
+ * Whether the sheet a subtree is in has been pulled all the way up – `true`
+ * outside a sheet, where nothing is in the way of a scroll.
+ *
+ * **The content does not scroll until the sheet is at its topmost snap point.**
+ * That is the one rule that makes a sheet over a map draggable at all, and it
+ * is what Apple Maps, Komoot and Strava all do. The drag and the scroll are
+ * the same gesture, so something has to arbitrate, and Base UI arbitrates the
+ * way the platform does: a touch that starts inside a scroll container may
+ * swipe the sheet *down* from the scroll top, but a drag *up* always goes to
+ * the scroller. On a detail sheet whose top half is a photo that means the
+ * sheet could only be enlarged by the 20 px grabber – every other pixel of it
+ * scrolled the text instead.
+ *
+ * Locking the scroll removes the ambiguity rather than dividing the screen up
+ * into regions that behave differently: below the top snap point there is no
+ * scroll container at all, so the whole sheet is a drag handle, and the
+ * gesture that enlarges it is the same one everywhere on it. Once it is up,
+ * the content scrolls and a swipe down from its top edge puts it back.
+ *
+ * It is `overflow: hidden` rather than a handler, because the arbitration
+ * happens in the browser's own gesture routing: what is not scrollable is not
+ * offered the gesture in the first place.
+ */
+const SheetExpanded = createContext(true);
+
+export const useSheetExpanded = () => use(SheetExpanded);
 
 interface Props {
   /** Names the sheet for screen readers and its swipe handle ("… ausklappen"). */
@@ -65,7 +101,8 @@ export const MobileSheet = ({
   onSnapChange,
   children,
 }: Props) => {
-  const [collapsed, expanded] = snapPoints;
+  const [collapsed, ...rest] = snapPoints;
+  const top = rest.at(-1) ?? collapsed;
   const isCollapsed = snap === collapsed;
 
   return (
@@ -102,14 +139,14 @@ export const MobileSheet = ({
         {/* Tap target for everyone who does not swipe: collapsed ↔ expanded. */}
         <button
           type="button"
-          onClick={() => onSnapChange(isCollapsed ? expanded : collapsed)}
+          onClick={() => onSnapChange(isCollapsed ? top : collapsed)}
           aria-label={`${label} ${isCollapsed ? "ausklappen" : "einklappen"}`}
           className="w-full shrink-0"
         >
           <DrawerSwipeHandle className="h-5" />
         </button>
         <div className="flex min-h-0 flex-1 flex-col pb-[env(safe-area-inset-bottom,0px)]">
-          {children}
+          <SheetExpanded value={snap >= top}>{children}</SheetExpanded>
         </div>
       </DrawerContent>
     </Drawer>

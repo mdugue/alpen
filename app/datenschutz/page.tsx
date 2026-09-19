@@ -139,6 +139,29 @@ const DatenschutzPage = () => (
       </section>
 
       <section className="flex flex-col gap-2 text-sm">
+        <h2 className="text-base font-semibold">Unterstützung über Ko-fi</h2>
+        <p className="text-muted-foreground">
+          Die App verlinkt auf die Ko-fi-Seite des Betreibers (ko-fi.com, Ko-fi
+          Labs Limited, Vereinigtes Königreich), über die das Projekt freiwillig
+          unterstützt werden kann. Es handelt sich um einen gewöhnlichen Link,
+          nicht um ein eingebettetes Widget: Beim Laden dieser App wird keine
+          Verbindung zu Ko-fi aufgebaut und es werden keine Daten dorthin
+          übertragen. Erst wenn Sie den Link anklicken, verlassen Sie diese
+          Seite; für die Verarbeitung Ihrer Daten dort gilt ausschließlich die
+          Datenschutzerklärung von Ko-fi unter{" "}
+          <a
+            href="https://more.ko-fi.com/privacy"
+            className="underline"
+            target="_blank"
+            rel="noreferrer"
+          >
+            more.ko-fi.com/privacy
+          </a>
+          .
+        </p>
+      </section>
+
+      <section className="flex flex-col gap-2 text-sm">
         <h2 className="text-base font-semibold">
           Lokale Speicherung im Browser
         </h2>

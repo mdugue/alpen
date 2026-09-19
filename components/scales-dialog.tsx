@@ -1,6 +1,7 @@
 "use client";
 
 import { GradeLegend } from "@/components/grade-legend";
+import { SeasonBandLegend } from "@/components/season-band";
 import { TagIcon } from "@/components/tags";
 import {
   Dialog,
@@ -161,8 +162,20 @@ export const ScalesDialog = ({
             umrandet ist der gewählte Halbmonat, hohl mit rotem Rand die
             Sperrung. Im Detail erklärt jede Zelle sich beim Überfahren selbst.
           </p>
-          {/* The same legend the period control shows, from GRADE_ORDER. */}
+          {/* The same legend the season bar shows, from GRADE_ORDER. */}
           <GradeLegend className="text-muted-foreground text-xs" />
+        </section>
+        <section className="flex flex-col gap-2">
+          <h3 className="text-base font-semibold">Saisonband</h3>
+          <p className="text-muted-foreground">
+            Das Band am unteren Rand ist der Zeitregler und zeigt zugleich, was
+            die Pässe der aktuellen Auswahl über das Jahr machen: drei Größen je
+            Halbmonat, gemittelt über genau diese Pässe – Gipfel
+            unterschiedlicher Höhe, also eine Eigenschaft der Auswahl und keine
+            Aussage über „die Alpen“. Auf schmalen Bildschirmen steht die
+            Legende nur hier.
+          </p>
+          <SeasonBandLegend className="text-muted-foreground text-xs" />
         </section>
         <section className="flex flex-col gap-2">
           <h3 className="text-base font-semibold">Orte als Standort</h3>

@@ -1,9 +1,10 @@
 "use client";
 
-import { PanelLeftClose, Search, X } from "lucide-react";
+import { Coffee, Search, X } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
+import { useSheetExpanded } from "@/components/mobile-sheet";
 import {
   AppliedFilters,
   FilterBody,
@@ -24,13 +25,14 @@ import {
 import { Switch } from "@/components/ui/switch";
 import { DEFAULT_FILTERS } from "@/lib/app-state";
 import type { EntityKind, Filters, Selection } from "@/lib/app-state";
+import { SUPPORT_URL } from "@/lib/brand";
 import { hasSecondaryFilters } from "@/lib/filter-summary";
 import type { PassRow, TourRow, TownRow } from "@/lib/rows";
 import type { Tour } from "@/lib/types";
 import { cn, TOUCH_CONTROL } from "@/lib/utils";
 
 export interface SidebarProps {
-  /** `aside` renders the brand row; the bottom sheet shows its swipe handle instead. */
+  /** Only says how a selected row is scrolled into view; the brand lives in the header. */
   variant: "aside" | "sheet";
   filters: Filters;
   setFilters: (update: (f: Filters) => Filters) => void;
@@ -57,8 +59,14 @@ export interface SidebarProps {
   /** What the pointer is over, on the map or in the list; the two share one highlight. */
   hovered: Selection | null;
   onHover: (sel: Selection | null) => void;
-  onCollapse?: () => void;
   onOpenScales: () => void;
+  /**
+   * Whether the filter panel is unfolded, `null` while nobody has said –
+   * lifted out of here because the phone's "Filter" button in the season bar
+   * opens the list *and* the panel in one press (`explorer.tsx`).
+   */
+  filtersOpen: boolean | null;
+  setFiltersOpen: (open: boolean | null) => void;
 }
 
 export const Sidebar = (p: SidebarProps) => {
@@ -78,13 +86,12 @@ export const Sidebar = (p: SidebarProps) => {
   // The panel opens by itself when a link carries filters; the visitor's own
   // toggling wins from then on. The second half stays folded until it is
   // needed, or until a filter inside it is already set.
-  const [manual, setManual] = useState<boolean | null>(null);
-  const active = filterCount(p.filters);
-  const filtersOpen = manual ?? active > 0;
+  const filtersOpen = p.filtersOpen ?? filterCount(p.filters) > 0;
   const [more, setMore] = useState<boolean | null>(null);
   const moreOpen = more ?? hasSecondaryFilters(p.filters);
 
   const lists = useRef<HTMLDivElement>(null);
+  const expanded = useSheetExpanded();
   const currentRow = p.selection
     ? `${p.selection.kind}:${p.selection.slug}`
     : null;
@@ -163,29 +170,6 @@ export const Sidebar = (p: SidebarProps) => {
 
   return (
     <div className="text-card-foreground flex h-full min-h-0 flex-col">
-      {p.variant === "aside" ? (
-        <div className="border-border flex h-11 shrink-0 items-center gap-2 border-b px-3">
-          <span className="bg-accent h-5 w-1 rounded-full" aria-hidden />
-          <h1 className="font-heading text-sm font-bold tracking-wide uppercase">
-            Alpenpässe
-          </h1>
-          <span className="text-muted-foreground truncate text-xs">
-            Rennradkarte
-          </span>
-          <Button
-            size="icon"
-            variant="ghost"
-            className="ml-auto"
-            onClick={p.onCollapse}
-            aria-label="Seitenleiste ausblenden"
-          >
-            <PanelLeftClose />
-          </Button>
-        </div>
-      ) : (
-        <h1 className="sr-only">Alpenpässe – Rennradkarte</h1>
-      )}
-
       <div className="flex min-h-0 flex-1 flex-col">
         <div className="border-border relative flex shrink-0 flex-col gap-2 border-b px-3 py-2">
           <div className="flex items-center gap-2">
@@ -220,7 +204,7 @@ export const Sidebar = (p: SidebarProps) => {
             <FilterTrigger
               filters={p.filters}
               open={filtersOpen}
-              onOpenChange={setManual}
+              onOpenChange={p.setFiltersOpen}
             />
           </div>
           {/* What is filtered away stays readable while the panel is shut. */}
@@ -244,7 +228,12 @@ export const Sidebar = (p: SidebarProps) => {
 
         <div
           ref={lists}
-          className="min-h-0 flex-1 overflow-y-auto overscroll-contain"
+          className={cn(
+            "min-h-0 flex-1 overscroll-contain",
+            // Below the sheet's top snap point the drag belongs to the sheet,
+            // not to 201 rows (`useSheetExpanded`).
+            expanded ? "overflow-y-auto" : "overflow-hidden",
+          )}
         >
           {filtersOpen && (
             <div className="border-border border-b">
@@ -321,7 +310,7 @@ export const Sidebar = (p: SidebarProps) => {
               Skalen &amp; Quellen
             </Button>
           </p>
-          <p className="text-muted-foreground text-2xs flex items-center gap-3 px-3 pb-2">
+          <div className="text-muted-foreground text-2xs flex items-center gap-3 px-3 pb-2">
             <Link
               href="/impressum"
               className="hover:text-foreground hover:underline"
@@ -334,7 +323,30 @@ export const Sidebar = (p: SidebarProps) => {
             >
               Datenschutz
             </Link>
-          </p>
+            {/* The one call to action in the footer, so it is a button, in
+                the outline the detail panel gives its external links – not a
+                third muted word in the legal row. It is a plain link to
+                Ko-fi, not its widget: nothing loads from there until it is
+                clicked, which is what the privacy page says about it. */}
+            <Button
+              variant="outline"
+              size="sm"
+              className="ml-auto"
+              render={
+                <a
+                  href={SUPPORT_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  title="Auf Ko-fi unterstützen"
+                />
+              }
+              nativeButton={false}
+            >
+              <Coffee data-icon="inline-start" aria-hidden />
+              Kaffee spendieren
+              <span className="sr-only"> – auf Ko-fi, öffnet in neuem Tab</span>
+            </Button>
+          </div>
         </div>
       </div>
     </div>

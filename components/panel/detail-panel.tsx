@@ -2,8 +2,9 @@
 
 import { Check, ChevronLeft, ExternalLink, Share, Star, X } from "lucide-react";
 import dynamic from "next/dynamic";
-import { useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 
+import { useSheetExpanded } from "@/components/mobile-sheet";
 import { CHART_HEIGHT } from "@/components/panel/chart-size";
 import {
   BasesSection,
@@ -748,6 +749,76 @@ const TownDetail = (props: Props & { town: Town }) => {
 };
 
 /**
+ * The panel's head. Two shapes, one element: the kicker and the name lie on
+ * the hero photo where there is one, and stand in the panel's own colours
+ * where there is not – but they are the *same* nodes either way, only
+ * differently placed. Rendering them in two branches would take the heading
+ * out of the document the moment the last slide failed to load.
+ */
+const PanelHead = ({
+  hero,
+  kicker,
+  name,
+  loading,
+  photos,
+  onBroken,
+}: {
+  /** The panel opens on a photograph; the title lies on it rather than above it. */
+  hero: boolean;
+  kicker: string;
+  name: string;
+  /** The detail file is still on its way; the hero reserves its box meanwhile. */
+  loading: boolean;
+  photos: Photo[];
+  onBroken: (src: string) => void;
+}) => (
+  <div
+    className={cn(
+      "relative",
+      // A thin margin rather than none at all: the photo is then a card
+      // inside the panel's card, and its corners can be cut concentric
+      // with the panel's own instead of running into them. Full bleed
+      // put the picture's corner exactly where the drawer's radius is,
+      // which is the one place a right angle and a curve cannot agree.
+      hero && "mx-1.5 mt-1.5 overflow-hidden rounded-lg",
+    )}
+  >
+    {hero && (
+      <PhotoCarousel loading={loading} onBroken={onBroken} photos={photos} />
+    )}
+    {/*
+     * 10 px inside a hero that is 6 px inside the panel: the name then starts
+     * on the same line as the numbers under it.
+     */}
+    <div
+      className={cn(
+        hero
+          ? "pointer-events-none absolute inset-x-0 bottom-6 px-2.5 text-white"
+          : "px-4 pt-11",
+      )}
+    >
+      <p
+        className={cn(
+          "text-2xs truncate font-semibold tracking-widest uppercase",
+          hero ? "text-white/85" : "text-muted-foreground",
+        )}
+      >
+        {kicker}
+      </p>
+      <h2
+        id="detail-title"
+        className={cn(
+          "text-xl leading-tight font-bold tracking-tight text-balance",
+          hero && "drop-shadow-[0_1px_10px_rgb(0_0_0/0.55)]",
+        )}
+      >
+        {name}
+      </h2>
+    </div>
+  </div>
+);
+
+/**
  * The panel's own controls, lying on the hero rather than in a bar above it –
  * which is what lets the photo start at the panel's top edge. The row is
  * transparent there and lets the pointer through, and each control carries its
@@ -868,8 +939,11 @@ const PanelBar = ({
  */
 export const DetailPanel = (props: Props) => {
   const { selection, onBack } = props;
-  const heading = useRef<HTMLHeadingElement>(null);
+  const panel = useRef<HTMLElement>(null);
   const scroller = useRef<HTMLDivElement>(null);
+  // Below the sheet's top snap point nothing scrolls, so the head is on screen
+  // by construction and the bar has no business taking a surface.
+  const expanded = useSheetExpanded();
   // The hash already *is* the shareable state; this only hands it over.
   const { share, done: shared } = useShare();
   /**
@@ -913,11 +987,29 @@ export const DetailPanel = (props: Props) => {
   // went to the row, which has no handler for it, and the panel simply would
   // not close from the keyboard. The e2e suite caught it as a flake; a
   // keyboard visitor would have caught it as "Escape does nothing".
+  //
+  // What takes the focus is the *panel*, not the heading. The heading is
+  // written across the foot of the hero photo, and focusing something that far
+  // down a scroll container asks the browser to bring it into view;
+  // `preventScroll` is the request not to, and it is a request browsers have
+  // not always honoured. Where it was ignored the panel opened already
+  // scrolled – the photo had slid up over its own title, which reads as the
+  // title having disappeared behind the picture. Nothing about the
+  // announcement changes: the section carries `aria-labelledby="detail-title"`
+  // either way. And the scroll reset now runs *after* the focus call rather
+  // than before it, so a browser that scrolls anyway is put back.
   useLayoutEffect(() => {
+    panel.current?.focus({ preventScroll: true });
     scroller.current?.scrollTo({ top: 0 });
-    heading.current?.focus({ preventScroll: true });
     // oxlint-disable-next-line react/exhaustive-effect-dependencies
   }, [selection.kind, selection.slug]);
+
+  // Coming back down from the top snap point, the content starts over at the
+  // hero: a collapsed sheet showing the middle of an article has lost the one
+  // thing it is tall enough to show.
+  useEffect(() => {
+    if (!expanded) scroller.current?.scrollTo({ top: 0 });
+  }, [expanded]);
 
   const entity =
     selection.kind === "pass"
@@ -945,7 +1037,7 @@ export const DetailPanel = (props: Props) => {
     (asset?.photos ?? 0) > 0 &&
     (loaded.photos.length === 0 || shown.length > 0);
   const key = `${selection.kind}:${selection.slug}`;
-  const scrolled = pastHead === key;
+  const scrolled = expanded && pastHead === key;
   /**
    * The control row carries a surface everywhere except on the hero, where the
    * photo's own scrim is what the icons read against. On the way past the head
@@ -956,8 +1048,10 @@ export const DetailPanel = (props: Props) => {
 
   return (
     <section
+      ref={panel}
+      tabIndex={-1}
       aria-labelledby="detail-title"
-      className="relative flex min-h-0 flex-1 flex-col"
+      className="relative flex min-h-0 flex-1 flex-col outline-none"
       onKeyDown={(e) => {
         if (e.key === "Escape") onBack();
       }}
@@ -988,69 +1082,21 @@ export const DetailPanel = (props: Props) => {
           );
           setPastHead(e.currentTarget.scrollTop > limit ? key : null);
         }}
-        className="min-h-0 flex-1 overflow-y-auto overscroll-contain pb-6"
+        className={cn(
+          "min-h-0 flex-1 overscroll-contain pb-6",
+          expanded ? "overflow-y-auto" : "overflow-hidden",
+        )}
       >
-        {/*
-         * The panel's head. Two shapes, one element: the kicker and the name
-         * lie on the hero photo where there is one, and stand in the panel's
-         * own colours where there is not – but they are the *same* nodes
-         * either way, only differently placed. Rendering them in two branches
-         * would take the focused heading out of the document the moment the
-         * last slide failed to load, and with it the Escape that closes the
-         * panel.
-         */}
-        <div
-          className={cn(
-            "relative",
-            // A thin margin rather than none at all: the photo is then a card
-            // inside the panel's card, and its corners can be cut concentric
-            // with the panel's own instead of running into them. Full bleed
-            // put the picture's corner exactly where the drawer's radius is,
-            // which is the one place a right angle and a curve cannot agree.
-            hero && "mx-1.5 mt-1.5 overflow-hidden rounded-lg",
-          )}
-        >
-          {hero && (
-            <PhotoCarousel
-              loading={loaded.photos.length === 0}
-              photos={shown}
-              onBroken={(src) =>
-                setBroken((br) => (br.includes(src) ? br : [...br, src]))
-              }
-            />
-          )}
-          {/*
-           * 10 px inside a hero that is 6 px inside the panel: the name then
-           * starts on the same line as the numbers under it.
-           */}
-          <div
-            className={cn(
-              hero
-                ? "pointer-events-none absolute inset-x-0 bottom-6 px-2.5 text-white"
-                : "px-4 pt-11",
-            )}
-          >
-            <p
-              className={cn(
-                "text-2xs truncate font-semibold tracking-widest uppercase",
-                hero ? "text-white/85" : "text-muted-foreground",
-              )}
-            >
-              {kicker}
-            </p>
-            <h2
-              ref={heading}
-              id="detail-title"
-              tabIndex={-1}
-              className={cn(
-                "text-xl leading-tight font-bold tracking-tight text-balance outline-none",
-                hero && "drop-shadow-[0_1px_10px_rgb(0_0_0/0.55)]",
-              )}
-            >
-              {entity.name}
-            </h2>
-          </div>
-        </div>
+        <PanelHead
+          hero={hero}
+          kicker={kicker}
+          name={entity.name}
+          loading={loaded.photos.length === 0}
+          photos={shown}
+          onBroken={(src) =>
+            setBroken((br) => (br.includes(src) ? br : [...br, src]))
+          }
+        />
         <div className="px-4 pt-3">
           {selection.kind === "pass" && (
             <PassDetail {...props} {...loaded} pass={entity as Pass} />

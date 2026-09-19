@@ -95,6 +95,9 @@ the header of the plan and this table in the same PR that changes the code.
 - Conceptual plans carry a "mechanism in one picture" section: a before and
   an after diagram (Mermaid renders on GitHub; ASCII for sketches). When the
   plan is done, its "after" picture moves into the documentation it changed
-  (`docs/data-model.md`, `docs/scales.md`, README, `AGENTS.md`, a skill), so
-  the docs show the mechanism and not only the API. Each plan's
-  "Documentation" step says where.
+  (`docs/data-pipeline.md`, `docs/data-model.md`, `docs/scales.md`,
+  `docs/ui-conventions.md`, `docs/map-rendering.md`, `docs/architecture.md`,
+  README, a skill), so the docs show the mechanism and not only the API. Each
+  plan's "Documentation" step says where. `AGENTS.md` is the index: a new rule
+  gets its one-line entry there and its reasoning in the document it belongs
+  to, not a second copy.

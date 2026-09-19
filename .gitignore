@@ -10,7 +10,7 @@ scripts/.cache
 # copied by scripts/copy-maplibre-worker.ts
 public/maplibre
 # written by scripts/build-map-assets.ts and scripts/build-map-style.ts;
-# only the glyphs (scripts/fetch-glyphs.ts, committed) are tracked
+# only the glyphs (scripts/build-glyphs.ts, committed) are tracked
 public/map/*
 !public/map/fonts/
 # written by scripts/build-detail-assets.ts
