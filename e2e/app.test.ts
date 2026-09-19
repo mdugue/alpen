@@ -24,6 +24,38 @@ const PASS_ROW = '[data-row^="pass:"]';
 const GALIBIER = '[data-row="pass:col-du-galibier"]';
 const SLIDER = '[aria-label="Zeitraum"]';
 const BACK_TO_LIST = '[aria-label="Zurück zur Liste"]';
+/** A drawer with another one open on top of it – Base UI's own stack state. */
+const STACKED = "[data-slot=drawer-popup][data-nested-drawer-open]";
+/**
+ * The detail panel's scroll container, and whether the title is on screen.
+ * Both answers come from one evaluation, because the sheet is animating and
+ * two reads a moment apart would describe two different snap points.
+ */
+const DETAIL_SCROLL = `(() => {
+  const title = document.querySelector("#detail-title");
+  const box = title?.closest("section")
+    ?.querySelector('div[class*="overscroll-contain"]');
+  if (!box) return null;
+  const rect = title.getBoundingClientRect();
+  return JSON.stringify({
+    overflow: getComputedStyle(box).overflowY,
+    scrollTop: box.scrollTop,
+    scrollable: box.scrollHeight - box.clientHeight > 0,
+    titleOnScreen: rect.top >= 0 && rect.bottom <= innerHeight,
+  });
+})()`;
+
+interface DetailScroll {
+  overflow: string;
+  scrollTop: number;
+  scrollable: boolean;
+  titleOnScreen: boolean;
+}
+
+const detailScroll = async (page: {
+  evaluate: <T>(js: string) => Promise<T>;
+}): Promise<DetailScroll> =>
+  JSON.parse(await page.evaluate<string>(DETAIL_SCROLL));
 
 test(
   "1 · loads with all passes and a map canvas",
@@ -170,6 +202,8 @@ test(
       expect(await page.text("#detail-title")).toBe("Col du Galibier");
       expect(await page.count('[aria-label*="klappen"]')).toBe(1);
       expect(await page.count('[aria-label="Details schließen"]')).toBe(1);
+      // Nothing behind it, so it is nobody's drawer: no stack.
+      expect(await page.count(STACKED)).toBe(0);
       await page.waitInViewport('[aria-label="Details schließen"]');
       await page.click('[aria-label="Details schließen"]');
       await page.waitForGone("#detail-title");
@@ -193,6 +227,12 @@ test(
       await page.waitFor("#detail-title");
       expect(await page.count('[aria-label*="klappen"]')).toBe(2);
       expect(await page.count(PASS_ROW)).toBe(all);
+      // Opened from a row, the detail is a drawer *on* the list: the one
+      // behind scales back and peeks above it rather than being covered flat.
+      await waitUntil(
+        async () => (await page.count(STACKED)) === 1,
+        "the list drawer stacked behind the detail",
+      );
       // Leaving a detail that has a list behind it means going back to it,
       // and the control says so instead of offering a close cross.
       expect(await page.count('[aria-label="Details schließen"]')).toBe(0);
@@ -677,5 +717,56 @@ test(
         "the map back on north and the compass gone with it",
       );
     }),
+  TIMEOUT,
+);
+
+test(
+  "16 · the sheet's content scrolls only once it is all the way up",
+  () =>
+    // The drag and the scroll are one gesture, so below the top snap point the
+    // content does not scroll at all and the whole sheet is a handle – the
+    // rule that makes a sheet whose upper half is a photo enlargeable by
+    // anything other than its 20 px grabber.
+    withPage(
+      app,
+      "sheet-scroll-lock",
+      { hash: "#pass=passo-dello-stelvio", mobile: true },
+      async (page) => {
+        await page.waitFor("#detail-title");
+        await page.waitInViewport("#detail-title");
+
+        // Collapsed: there is more than fits, and none of it scrolls.
+        const collapsed = await detailScroll(page);
+        expect(collapsed.overflow).toBe("hidden");
+        // The title lies at the foot of the hero, so a panel that opened
+        // already scrolled would have taken it off the top of the sheet.
+        expect(collapsed.titleOnScreen).toBe(true);
+        expect(collapsed.scrollTop).toBe(0);
+        expect(collapsed.scrollable).toBe(true);
+
+        // Up at the top snap point it is an ordinary scroll container again.
+        await page.click('[aria-label*="ausklappen"]');
+        await waitUntil(async () => {
+          const up = await detailScroll(page);
+          return up.overflow === "auto";
+        }, "the content scrollable once the sheet is up");
+
+        // And coming back down starts it over at the hero rather than in the
+        // middle of an article the collapsed sheet has no room for.
+        await page.evaluate(
+          `document.querySelector("#detail-title").closest("section")
+             .querySelector('div[class*="overscroll-contain"]').scrollTop = 300`,
+        );
+        const mid = await detailScroll(page);
+        expect(mid.scrollTop).toBe(300);
+        await page.click('[aria-label*="einklappen"]');
+        await waitUntil(async () => {
+          const back = await detailScroll(page);
+          return back.overflow === "hidden" && back.scrollTop === 0;
+        }, "the content locked and back at the top");
+        const reset = await detailScroll(page);
+        expect(reset.titleOnScreen).toBe(true);
+      },
+    ),
   TIMEOUT,
 );

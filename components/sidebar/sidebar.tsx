@@ -4,6 +4,7 @@ import { Coffee, Search, X } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
+import { useSheetExpanded } from "@/components/mobile-sheet";
 import {
   AppliedFilters,
   FilterBody,
@@ -90,6 +91,7 @@ export const Sidebar = (p: SidebarProps) => {
   const moreOpen = more ?? hasSecondaryFilters(p.filters);
 
   const lists = useRef<HTMLDivElement>(null);
+  const expanded = useSheetExpanded();
   const currentRow = p.selection
     ? `${p.selection.kind}:${p.selection.slug}`
     : null;
@@ -226,7 +228,12 @@ export const Sidebar = (p: SidebarProps) => {
 
         <div
           ref={lists}
-          className="min-h-0 flex-1 overflow-y-auto overscroll-contain"
+          className={cn(
+            "min-h-0 flex-1 overscroll-contain",
+            // Below the sheet's top snap point the drag belongs to the sheet,
+            // not to 201 rows (`useSheetExpanded`).
+            expanded ? "overflow-y-auto" : "overflow-hidden",
+          )}
         >
           {filtersOpen && (
             <div className="border-border border-b">

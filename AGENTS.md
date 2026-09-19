@@ -133,7 +133,9 @@ The component layer, the layout, the sidebar, the detail panel.
   at every width; what is not map is a translucent surface on top of it – a
   header carrying one sentence, a season bar carrying the band, two floating
   panels on desktop and two drawers on a phone. What the bars cover is measured
-  and handed to MapLibre as padding.
+  and handed to MapLibre as padding. A drawer is an inset card, a detail opened
+  from a row stacks on the list, and its content scrolls only once it is all
+  the way up.
   → [why](docs/ui-conventions.md#the-map-is-the-page-and-the-shell-is-over-it)
 - **Dark mode follows the OS, nothing else.** `prefers-color-scheme` only – no
   toggle, no `next-themes`.
@@ -156,10 +158,11 @@ The component layer, the layout, the sidebar, the detail panel.
   `sessionStorage` entry, and a source or caveat goes behind the `info`
   popover.
   → [why](docs/ui-conventions.md#the-panel-folds)
-- **Photos are borrowed, not owned.** Commons metadata only, a plain `<img>`
-  with a `srcset`, a precomputed blur placeholder, and the box reserved before
-  the photo arrives.
-  → [why](docs/ui-conventions.md#photos-are-borrowed-not-owned)
+- **Photos are borrowed, not owned, and they are the panel's hero.** Commons
+  metadata only, a plain `<img>` with a `srcset`, a precomputed blur
+  placeholder, and the box reserved before the photo arrives – the whole
+  carousel at the panel's head, with the title and the controls on it.
+  → [why](docs/ui-conventions.md#photos-are-borrowed-not-owned-and-they-are-the-panels-hero)
 
 ### [Map rendering](docs/map-rendering.md)
 

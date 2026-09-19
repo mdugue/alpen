@@ -5,7 +5,7 @@ import { useEffect, useReducer, useRef, useState } from "react";
 import { AppHeader } from "@/components/app-header";
 import { PassMap } from "@/components/map/pass-map";
 import type { MapPass } from "@/components/map/pass-map";
-import { MobileSheet, snapPx } from "@/components/mobile-sheet";
+import { MobileSheet, sheetCover } from "@/components/mobile-sheet";
 import { DetailPanel } from "@/components/panel/detail-panel";
 import { ScalesDialog } from "@/components/scales-dialog";
 import { SeasonBand, SeasonBandLegend } from "@/components/season-band";
@@ -184,6 +184,17 @@ export const Explorer = ({
   // the panel in one press.
   const [filtersOpen, setFiltersOpen] = useState<boolean | null>(null);
   const [listSnap, setListSnap] = useState<number>(LIST_HALF);
+  /**
+   * Whether the detail drawer belongs *inside* the list drawer – which is how
+   * Base UI is told to stack the two, the list scaling back and peeking above
+   * the detail in front of it.
+   *
+   * It is decided when the selection is made and then left alone: what is
+   * underneath a detail is where it was opened from, and that does not change
+   * while it is open. Moving a mounted drawer from one tree to the other would
+   * remount it anyway.
+   */
+  const [detailNested, setDetailNested] = useState(false);
   const [detailSnap, setDetailSnap] = useState<number>(DETAIL_HALF);
   const [scalesOpen, setScalesOpen] = useState(false);
   // Where the elevation-profile cursor sits on the road, and a fly-to asked
@@ -321,10 +332,12 @@ export const Explorer = ({
     // The detail drawer comes up over whatever is there. It has to cover the
     // list drawer rather than sit inside it, or both swipe handles show at
     // once and the screen grows a stack of edges that mean nothing.
-    if (isMobile)
+    if (isMobile) {
       setDetailSnap(
         listOpen && listSnap >= LIST_FULL ? DETAIL_FULL : DETAIL_HALF,
       );
+      setDetailNested(listOpen);
+    }
   };
 
   /** Back to the list; focus returns to the row the detail came from. */
@@ -369,6 +382,32 @@ export const Explorer = ({
     />
   );
 
+  /**
+   * The detail drawer, in one of two places in the tree.
+   *
+   * Base UI takes a drawer rendered inside another drawer as a drawer *on* it:
+   * the one behind scales back, dims and peeks above the one in front, and a
+   * swipe down on the front one uncovers it. That is exactly what opening a
+   * detail from a row means – and what a detail opened from the map must not
+   * claim, because there is nothing behind it to go back to. So which parent
+   * it is rendered under is the whole difference, and `detailNested` is the
+   * answer decided at the tap.
+   */
+  const detailSheet = (
+    <MobileSheet
+      label="Details"
+      open={selection !== null}
+      onClose={back}
+      snapPoints={DETAIL_SNAPS}
+      snap={detailSnap}
+      onSnapChange={setDetailSnap}
+    >
+      {/* `last` is what the drawer keeps showing while it slides away, once
+          there is nothing to show any more. */}
+      {(selection ?? current.last) && detailFor((selection ?? current.last)!)}
+    </MobileSheet>
+  );
+
   const sidebar = (variant: "aside" | "sheet") => (
     <Sidebar
       variant={variant}
@@ -410,7 +449,10 @@ export const Explorer = ({
   // yet cannot move it, and the flight that follows carries it
   // (`pass-map.tsx`, "Reserve space").
   const sheetPx = isMobile
-    ? snapPx(selection ? detailSnap : listOpen ? listSnap : 0, viewportHeight)
+    ? sheetCover(
+        selection ? detailSnap : listOpen ? listSnap : 0,
+        viewportHeight,
+      )
     : 0;
   const insetBottom = Math.max(sheetPx, barHeight);
   const insetTop = headerHeight;
@@ -590,20 +632,11 @@ export const Explorer = ({
               <div ref={sidebarRoot} className="flex min-h-0 flex-1 flex-col">
                 {sidebar("sheet")}
               </div>
+              {/* Opened from a row, the detail is a drawer *of* this one. */}
+              {detailNested && detailSheet}
             </MobileSheet>
-            <MobileSheet
-              label="Details"
-              open={selection !== null}
-              onClose={back}
-              snapPoints={DETAIL_SNAPS}
-              snap={detailSnap}
-              onSnapChange={setDetailSnap}
-            >
-              {/* `last` is what the drawer keeps showing while it slides away,
-                  once there is nothing to show any more. */}
-              {(selection ?? current.last) &&
-                detailFor((selection ?? current.last)!)}
-            </MobileSheet>
+            {/* Opened from the map, it stands on its own over the bare map. */}
+            {!detailNested && detailSheet}
           </>
         )}
       </div>

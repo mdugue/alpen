@@ -178,8 +178,44 @@ means still depends on what is underneath, and the control says which: a
 labelled `‹ Liste` back button while the list drawer is open behind it
 (`backToList` on `DetailPanel`), the `✕` when the detail is alone over the map.
 A drawer sizes itself from `--drawer-snap-point-offset`: the popup is a full
-`100dvh` and padded off at the bottom by that offset, so its content box ends
-at the fold.
+`100dvh` and padded off at the bottom by that offset **less the inset**, so its
+content box ends at the fold – the inset comes off because the popup's own
+bottom margin has already lifted that much of it below.
+
+Neither drawer is full-bleed: the preset's own `--drawer-inset` is left alone,
+so a sheet is a rounded card lying on a map that stays visible beside it rather
+than a new page pinned to three edges. `sheetCover` in `mobile-sheet.tsx` is
+what the camera padding reads – the snap point plus that margin – because the
+arithmetic can read neither a fraction-or-pixels snap point nor a custom
+property.
+
+**Opened from a row, the detail is a drawer _on_ the list, not merely over it.**
+Base UI reads a `Drawer.Root` rendered inside another one as a nested drawer and
+stacks the two – the one behind scales back, dims and peeks above the one in
+front – which is exactly what going back to the list means. A detail opened from
+the map must not claim that, because there is nothing behind it, so the same
+`detailSheet` element is rendered under one of two parents, decided at the tap
+(`detailNested` in `explorer.tsx`) and then left alone: what is underneath a
+detail does not change while it is open, and moving a mounted drawer between
+trees would remount it anyway.
+
+**The content does not scroll until the sheet is at its topmost snap point**
+(`useSheetExpanded`, used by the detail panel's scroller and the sidebar's list
+container). The drag and the scroll are the same gesture, so something has to
+arbitrate, and Base UI arbitrates the way the platform does: a touch that starts
+inside a scroll container may swipe the sheet _down_ from the scroll top, but a
+drag _up_ always goes to the scroller. On a detail sheet whose top half is a
+photo that left the 20 px grabber as the only way to enlarge it – every other
+pixel scrolled the text instead. Locking the scroll removes the ambiguity rather
+than carving the sheet into regions that behave differently: below the top snap
+point there is no scroll container at all, so the whole sheet is a handle and
+the gesture that enlarges it is the same one everywhere on it; once it is up,
+the content scrolls and a swipe down from its top edge puts it back. It is
+`overflow: hidden` rather than a handler, because the arbitration then happens
+in the browser's own gesture routing – what is not scrollable is not offered the
+gesture. Coming back down scrolls the content to the top: a collapsed sheet
+showing the middle of an article has lost the one thing it is tall enough to
+show. This is what Apple Maps, Komoot and Strava all do.
 
 The search field is inside the list sheet, not on the map. It used to float
 over the map's bottom-left corner as a **button** (`MapSearch`), because a
@@ -332,10 +368,49 @@ click – a tooltip needs hover, which a phone cannot give it, and the detail
 panel is where a phone reaches this app most. A header never opens a dialog –
 the scales dialog belongs to the sidebar footer, which is where it stays.
 
-### Photos are borrowed, not owned
+### Photos are borrowed, not owned, and they are the panel's hero
 
-The detail panel opens with a slideshow of Wikimedia Commons photos
-(`components/panel/photo-carousel.tsx`). `scripts/build-photos.ts` picks them
+The detail panel opens **on** a slideshow of Wikimedia Commons photos
+(`components/panel/photo-carousel.tsx`): at the very top under a thin margin,
+with the kicker, the name and the panel's own controls lying on it. The margin
+is 6 px and the photo's radius is the panel's less that, so the two corners are
+concentric – full bleed put the picture's right angle exactly where the card's
+curve is, which is the one place the two cannot agree. The title is inset 10 px
+inside the photo, which is 16 px from the panel's edge: the same column the
+numbers under it start in.
+
+**The hero is the whole carousel, not one picture.** The build picks up to six
+photos per entity with no editorial step, so the first is not reliably the best
+one, and a destination is chosen by the look of it – one frame rarely answers
+that. Swiping costs nothing extra: the slides are already lazy, the horizontal
+drag is the gesture the sheet's vertical one leaves free, and the `1/6` in the
+corner says there is more without a second control.
+
+**Two shapes, one element** (`PanelHead`). With no photos – or once every slide
+has failed to load – the kicker and the name stand in the panel's own colours
+instead of on white, but they are the _same_ nodes either way, only differently
+placed: rendered in two branches, the heading would leave the document the
+moment the last slide failed. `DetailAsset.photos` decides the shape before the
+file arrives, so the head never changes shape under a reader.
+
+**What takes the focus on selection is the panel, not the heading.** The heading
+is written across the foot of the hero, and focusing something that far down a
+scroll container asks the browser to bring it into view; `preventScroll` is the
+request not to, and it is a request browsers have not always honoured. Where it
+was ignored the panel opened already scrolled and the photo had slid up over its
+own title. The section carries `aria-labelledby="detail-title"`, so the
+announcement is the same name either way, and the scroll reset runs after the
+focus call rather than before it.
+
+The controls do change tone, because what is under them does: on the hero the
+row is transparent and each control carries its own translucent surface
+(`OVERLAY_CONTROL`); past the head the row takes the surface, the controls give
+theirs up and the name appears next to them, because the title was written on
+the photo and scrolled away with it (`PanelBar`, `solid`). The threshold is
+measured off the head rather than guessed, and held per selection (`pastHead`
+holds the entity's key) so a new panel starts at the top without an effect
+writing state after the fact – and it only counts while the sheet is up, since
+below that the content cannot have scrolled at all. `scripts/build-photos.ts` picks them
 once, without an editorial step – a geosearch around the pass point, a name
 filter that keeps signs and maps out, a rank by name match – and stores only
 metadata in `data/generated/photos.json`: the thumbnail URL, the author, the
