@@ -110,3 +110,17 @@ export const MAP_CLUSTER = `rounded-md shadow-md ${GLASS}`;
  * "The map is the page").
  */
 export const SHELL_BAR = `border-border/60 ${GLASS}`;
+
+/**
+ * A control lying on the panel's hero photo – the close cross, the star, the
+ * carousel's two arrows.
+ *
+ * It carries its own surface rather than riding on a bar: the hero scrolls
+ * away under these controls and what is behind them a moment later is body
+ * text, so a scrim that works on a photograph would not work there, and a bar
+ * that fades in on scroll is a scroll listener and a threshold for something
+ * a translucent pill says on its own. Blurred and only mostly opaque, so the
+ * picture underneath still reads as one picture.
+ */
+export const OVERLAY_CONTROL =
+  "bg-card/75 shadow-sm backdrop-blur-sm hover:bg-card dark:bg-card/75 dark:hover:bg-card";

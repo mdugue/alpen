@@ -2,8 +2,9 @@
 
 import { Check, ChevronLeft, ExternalLink, Share, Star, X } from "lucide-react";
 import dynamic from "next/dynamic";
-import { useLayoutEffect, useRef } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 
+import { useSheetExpanded } from "@/components/mobile-sheet";
 import { CHART_HEIGHT } from "@/components/panel/chart-size";
 import {
   BasesSection,
@@ -73,7 +74,14 @@ import type {
 } from "@/lib/types";
 import useFetch from "@/lib/use-fetch";
 import { useShare } from "@/lib/use-share";
-import { cn, fmt, fmtUnit, ICON_TOGGLE, TOUCH_ICON } from "@/lib/utils";
+import {
+  cn,
+  fmt,
+  fmtUnit,
+  ICON_TOGGLE,
+  OVERLAY_CONTROL,
+  TOUCH_ICON,
+} from "@/lib/utils";
 
 /**
  * recharts is the heaviest thing this app would ship; the climate chart is
@@ -98,6 +106,12 @@ const ClimateChart = dynamic(
     ),
   },
 );
+
+/**
+ * How tall the floating control row is – what the head has to have scrolled
+ * past before the row takes on a surface and the name.
+ */
+const BAR_PX = 44;
 
 const TRAFFIC_LABEL = [
   "",
@@ -735,6 +749,189 @@ const TownDetail = (props: Props & { town: Town }) => {
 };
 
 /**
+ * The panel's head. Two shapes, one element: the kicker and the name lie on
+ * the hero photo where there is one, and stand in the panel's own colours
+ * where there is not – but they are the *same* nodes either way, only
+ * differently placed. Rendering them in two branches would take the heading
+ * out of the document the moment the last slide failed to load.
+ */
+const PanelHead = ({
+  hero,
+  kicker,
+  name,
+  loading,
+  photos,
+  onBroken,
+}: {
+  /** The panel opens on a photograph; the title lies on it rather than above it. */
+  hero: boolean;
+  kicker: string;
+  name: string;
+  /** The detail file is still on its way; the hero reserves its box meanwhile. */
+  loading: boolean;
+  photos: Photo[];
+  onBroken: (src: string) => void;
+}) => (
+  <div
+    className={cn(
+      "relative",
+      // A thin margin rather than none at all: the photo is then a card
+      // inside the panel's card, and its corners can be cut concentric
+      // with the panel's own instead of running into them. Full bleed
+      // put the picture's corner exactly where the drawer's radius is,
+      // which is the one place a right angle and a curve cannot agree.
+      hero && "mx-1.5 mt-1.5 overflow-hidden rounded-lg",
+    )}
+  >
+    {hero && (
+      <PhotoCarousel loading={loading} onBroken={onBroken} photos={photos} />
+    )}
+    {/*
+     * 10 px inside a hero that is 6 px inside the panel: the name then starts
+     * on the same line as the numbers under it.
+     */}
+    <div
+      className={cn(
+        hero
+          ? "pointer-events-none absolute inset-x-0 bottom-6 px-2.5 text-white"
+          : "px-4 pt-11",
+      )}
+    >
+      <p
+        className={cn(
+          "text-2xs truncate font-semibold tracking-widest uppercase",
+          hero ? "text-white/85" : "text-muted-foreground",
+        )}
+      >
+        {kicker}
+      </p>
+      <h2
+        id="detail-title"
+        className={cn(
+          "text-xl leading-tight font-bold tracking-tight text-balance",
+          hero && "drop-shadow-[0_1px_10px_rgb(0_0_0/0.55)]",
+        )}
+      >
+        {name}
+      </h2>
+    </div>
+  </div>
+);
+
+/**
+ * The panel's own controls, lying on the hero rather than in a bar above it –
+ * which is what lets the photo start at the panel's top edge. The row is
+ * transparent there and lets the pointer through, and each control carries its
+ * own translucent surface (`OVERLAY_CONTROL`) so it reads on a photograph.
+ *
+ * Past the head it becomes an ordinary header instead: the row takes the
+ * surface, the controls give theirs up, and the name appears – because the
+ * title is written on the photo and has scrolled away with it. That is also
+ * the honest reason for the change of tone: what is under the controls a
+ * moment later is body text, and a scrim that works on a photograph does not.
+ */
+const PanelBar = ({
+  name,
+  solid,
+  scrolled,
+  backToList,
+  favorite,
+  shared,
+  onBack,
+  onShare,
+  onToggleFavorite,
+}: {
+  name: string;
+  /** Past the head: the row carries the surface, not the controls. */
+  solid: boolean;
+  /** Past the head, so the name is no longer anywhere else on screen. */
+  scrolled: boolean;
+  /** A list drawer underneath: leaving means going back to it, not closing. */
+  backToList: boolean;
+  favorite: boolean;
+  /** The link has just been handed over; the share icon says so for a moment. */
+  shared: boolean;
+  onBack: () => void;
+  onShare: () => void;
+  onToggleFavorite: () => void;
+}) => (
+  <div
+    className={cn(
+      "pointer-events-none absolute inset-x-0 top-0 z-20 flex items-center gap-1.5 p-2.5 transition-colors duration-200",
+      solid &&
+        "border-border/60 bg-card/90 supports-not-[backdrop-filter:blur(0)]:bg-card border-b backdrop-blur-md",
+    )}
+  >
+    {backToList && (
+      <Button
+        size="sm"
+        variant="ghost"
+        onClick={onBack}
+        aria-label="Zurück zur Liste"
+        className={cn(
+          "pointer-events-auto shrink-0 gap-1 px-2",
+          !solid && OVERLAY_CONTROL,
+        )}
+      >
+        <ChevronLeft />
+        Liste
+      </Button>
+    )}
+    {/* The name, once the head it was written on has scrolled away. */}
+    <p
+      className={cn(
+        "min-w-0 flex-1 truncate text-sm font-semibold transition-opacity duration-200",
+        scrolled ? "opacity-100" : "opacity-0",
+      )}
+      aria-hidden
+    >
+      {name}
+    </p>
+    <Button
+      size="icon"
+      variant="ghost"
+      onClick={onShare}
+      aria-label={shared ? "Link kopiert" : `${name} teilen`}
+      className={cn(
+        "pointer-events-auto",
+        !solid && OVERLAY_CONTROL,
+        TOUCH_ICON,
+      )}
+    >
+      {shared ? <Check className="text-status-open" /> : <Share />}
+    </Button>
+    <Toggle
+      pressed={favorite}
+      onPressedChange={onToggleFavorite}
+      aria-label={favorite ? `${name} nicht mehr merken` : `${name} merken`}
+      className={cn(
+        "pointer-events-auto",
+        ICON_TOGGLE,
+        !solid && OVERLAY_CONTROL,
+        TOUCH_ICON,
+      )}
+    >
+      <Star className={cn(favorite && "fill-accent text-accent")} />
+    </Toggle>
+    {!backToList && (
+      <Button
+        size="icon"
+        variant="ghost"
+        onClick={onBack}
+        aria-label="Details schließen"
+        className={cn(
+          "pointer-events-auto",
+          !solid && OVERLAY_CONTROL,
+          TOUCH_ICON,
+        )}
+      >
+        <X />
+      </Button>
+    )}
+  </div>
+);
+
+/**
  * Detail view of the selected entity. It is a panel of its own in both layouts:
  * the slide-over next to the sidebar on desktop, its own bottom sheet on a
  * phone – so closing it always means the same thing and the lists keep their
@@ -742,10 +939,30 @@ const TownDetail = (props: Props & { town: Town }) => {
  */
 export const DetailPanel = (props: Props) => {
   const { selection, onBack } = props;
-  const heading = useRef<HTMLHeadingElement>(null);
+  const panel = useRef<HTMLElement>(null);
   const scroller = useRef<HTMLDivElement>(null);
+  // Below the sheet's top snap point nothing scrolls, so the head is on screen
+  // by construction and the bar has no business taking a surface.
+  const expanded = useSheetExpanded();
   // The hash already *is* the shareable state; this only hands it over.
   const { share, done: shared } = useShare();
+  /**
+   * Which borrowed files failed. It lives here rather than in the carousel
+   * because it decides the shape of the whole panel head: with every slide
+   * gone there is no picture for white letters to lie on, so the title drops
+   * back into the panel's own colours and the controls grow their surface.
+   *
+   * Keyed by URL, so a list left over from another entity cannot mark the
+   * wrong photo broken – which is why it needs no resetting.
+   */
+  const [broken, setBroken] = useState<string[]>([]);
+  /**
+   * Whether the panel head has scrolled out from under the control row – for
+   * this entity, which is what makes it reset itself: the key changes with
+   * the selection, so a fresh panel starts at the top without an effect
+   * writing state after the fact.
+   */
+  const [pastHead, setPastHead] = useState<string | null>(null);
 
   // The profiles and the photos of this one entity, as a static file with a
   // content hash in its name (lib/detail-assets.ts) – so the page does not
@@ -770,11 +987,29 @@ export const DetailPanel = (props: Props) => {
   // went to the row, which has no handler for it, and the panel simply would
   // not close from the keyboard. The e2e suite caught it as a flake; a
   // keyboard visitor would have caught it as "Escape does nothing".
+  //
+  // What takes the focus is the *panel*, not the heading. The heading is
+  // written across the foot of the hero photo, and focusing something that far
+  // down a scroll container asks the browser to bring it into view;
+  // `preventScroll` is the request not to, and it is a request browsers have
+  // not always honoured. Where it was ignored the panel opened already
+  // scrolled – the photo had slid up over its own title, which reads as the
+  // title having disappeared behind the picture. Nothing about the
+  // announcement changes: the section carries `aria-labelledby="detail-title"`
+  // either way. And the scroll reset now runs *after* the focus call rather
+  // than before it, so a browser that scrolls anyway is put back.
   useLayoutEffect(() => {
+    panel.current?.focus({ preventScroll: true });
     scroller.current?.scrollTo({ top: 0 });
-    heading.current?.focus({ preventScroll: true });
     // oxlint-disable-next-line react/exhaustive-effect-dependencies
   }, [selection.kind, selection.slug]);
+
+  // Coming back down from the top snap point, the content starts over at the
+  // hero: a collapsed sheet showing the middle of an article has lost the one
+  // thing it is tall enough to show.
+  useEffect(() => {
+    if (!expanded) scroller.current?.scrollTo({ top: 0 });
+  }, [expanded]);
 
   const entity =
     selection.kind === "pass"
@@ -791,89 +1026,89 @@ export const DetailPanel = (props: Props) => {
         ? "Rundtour"
         : `Rad-Ort · ${(entity as Town).country}`;
   const favorite = props.isFavorite(selection.kind, selection.slug);
+  const shown = loaded.photos.filter((ph) => !broken.includes(ph.src));
+  /**
+   * Whether the panel opens on a photograph. Known from the page's own
+   * `DetailAsset` before the file with the photos in it arrives, so the head
+   * has its shape from the first frame and nothing below it jumps; it only
+   * gives way once every slide has failed to load.
+   */
+  const hero =
+    (asset?.photos ?? 0) > 0 &&
+    (loaded.photos.length === 0 || shown.length > 0);
+  const key = `${selection.kind}:${selection.slug}`;
+  const scrolled = expanded && pastHead === key;
+  /**
+   * The control row carries a surface everywhere except on the hero, where the
+   * photo's own scrim is what the icons read against. On the way past the head
+   * it takes one on, and with it the name – which is the other half of why it
+   * is worth knowing: the title lies on the photo and scrolls away with it.
+   */
+  const solid = !hero || scrolled;
 
   return (
     <section
+      ref={panel}
+      tabIndex={-1}
       aria-labelledby="detail-title"
-      className="flex min-h-0 flex-1 flex-col"
+      className="relative flex min-h-0 flex-1 flex-col outline-none"
       onKeyDown={(e) => {
         if (e.key === "Escape") onBack();
       }}
     >
-      <div className="border-border flex h-10 shrink-0 items-center gap-1 border-b px-2">
-        {props.backToList && (
-          <Button
-            size="sm"
-            variant="ghost"
-            onClick={onBack}
-            aria-label="Zurück zur Liste"
-            className="-ml-1 shrink-0 gap-1 px-2"
-          >
-            <ChevronLeft />
-            Liste
-          </Button>
-        )}
-        <p className="text-muted-foreground text-2xs min-w-0 flex-1 truncate pl-2 font-semibold tracking-widest uppercase">
-          {kicker}
-        </p>
-        <Button
-          size="icon"
-          variant="ghost"
-          onClick={() => share(`${entity.name} – Alpenpässe`)}
-          aria-label={shared ? "Link kopiert" : `${entity.name} teilen`}
-          className={TOUCH_ICON}
-        >
-          {shared ? <Check className="text-status-open" /> : <Share />}
-        </Button>
-        <Toggle
-          pressed={favorite}
-          onPressedChange={() =>
-            props.onToggleFavorite(selection.kind, selection.slug)
-          }
-          aria-label={
-            favorite
-              ? `${entity.name} nicht mehr merken`
-              : `${entity.name} merken`
-          }
-          className={cn(ICON_TOGGLE, TOUCH_ICON)}
-        >
-          <Star className={cn(favorite && "fill-accent text-accent")} />
-        </Toggle>
-        {!props.backToList && (
-          <Button
-            size="icon"
-            variant="ghost"
-            onClick={onBack}
-            aria-label="Details schließen"
-            className={TOUCH_ICON}
-          >
-            <X />
-          </Button>
-        )}
-      </div>
+      <PanelBar
+        name={entity.name}
+        solid={solid}
+        scrolled={scrolled}
+        backToList={!!props.backToList}
+        favorite={favorite}
+        shared={shared}
+        onBack={onBack}
+        onShare={() => share(`${entity.name} – Alpenpässe`)}
+        onToggleFavorite={() =>
+          props.onToggleFavorite(selection.kind, selection.slug)
+        }
+      />
       <div
         ref={scroller}
         data-scroller
-        className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-4 pt-3 pb-6"
+        onScroll={(e) => {
+          // The head is the first child either way – the hero or the plain
+          // title block – so what has to be measured is measured rather than
+          // guessed at a width the panel takes from its layout.
+          const head = e.currentTarget.firstElementChild as HTMLElement | null;
+          const limit = Math.max(
+            0,
+            (head?.offsetTop ?? 0) + (head?.offsetHeight ?? 0) - BAR_PX,
+          );
+          setPastHead(e.currentTarget.scrollTop > limit ? key : null);
+        }}
+        className={cn(
+          "min-h-0 flex-1 overscroll-contain pb-6",
+          expanded ? "overflow-y-auto" : "overflow-hidden",
+        )}
       >
-        <h2
-          ref={heading}
-          id="detail-title"
-          tabIndex={-1}
-          className="text-xl leading-tight font-bold tracking-tight text-balance outline-none"
-        >
-          {entity.name}
-        </h2>
-        <PhotoCarousel count={asset?.photos ?? 0} photos={loaded.photos} />
-        {selection.kind === "pass" && (
-          <PassDetail {...props} {...loaded} pass={entity as Pass} />
-        )}
-        {selection.kind === "tour" && (
-          <TourDetail {...props} tour={entity as Tour} />
-        )}
-        {selection.kind === "town" && (
-          <TownDetail {...props} town={entity as Town} />
-        )}
+        <PanelHead
+          hero={hero}
+          kicker={kicker}
+          name={entity.name}
+          loading={loaded.photos.length === 0}
+          photos={shown}
+          onBroken={(src) =>
+            setBroken((br) => (br.includes(src) ? br : [...br, src]))
+          }
+        />
+        <div className="px-4 pt-3">
+          {selection.kind === "pass" && (
+            <PassDetail {...props} {...loaded} pass={entity as Pass} />
+          )}
+          {selection.kind === "tour" && (
+            <TourDetail {...props} tour={entity as Tour} />
+          )}
+          {selection.kind === "town" && (
+            <TownDetail {...props} town={entity as Town} />
+          )}
+        </div>
       </div>
     </section>
   );

@@ -1,5 +1,7 @@
 "use client";
 
+import { createContext, use } from "react";
+
 import {
   Drawer,
   DrawerContent,
@@ -9,12 +11,59 @@ import {
 import { cn } from "@/lib/utils";
 
 /**
- * Base UI reads snap points above 1 as pixels and below it as a fraction of
- * the viewport; the map needs the visible sheet height in pixels to pad its
- * camera, so it converts them back here.
+ * What the drawer keeps free of the viewport edge – the preset's own
+ * `--drawer-inset`, in pixels, because the camera padding is arithmetic and
+ * cannot read a custom property.
+ *
+ * The sheet used to be pinned flush to the three edges, which is the one
+ * shape a drawer on a map should not have: full-bleed reads as a new page,
+ * and this one is a card lying on a map that stays visible beside it. The
+ * preset's inset (and with it the rounded corners on all four sides) says
+ * that much before anything in the sheet is read.
  */
-export const snapPx = (snap: number, viewportHeight: number) =>
-  snap <= 1 ? Math.round(snap * viewportHeight) : snap;
+export const SHEET_INSET_PX = 8;
+
+/**
+ * What an open sheet covers of the map, in pixels – its snap point plus the
+ * margin it keeps to the screen edge. `0` for no sheet at all.
+ *
+ * Base UI reads snap points above 1 as pixels and below it as a fraction of
+ * the viewport; the camera padding is arithmetic and can read neither those
+ * nor the `--drawer-inset` the margin comes from, so both are converted here,
+ * where the sheet's own geometry lives.
+ */
+export const sheetCover = (snap: number, viewportHeight: number) =>
+  snap
+    ? (snap <= 1 ? Math.round(snap * viewportHeight) : snap) + SHEET_INSET_PX
+    : 0;
+
+/**
+ * Whether the sheet a subtree is in has been pulled all the way up – `true`
+ * outside a sheet, where nothing is in the way of a scroll.
+ *
+ * **The content does not scroll until the sheet is at its topmost snap point.**
+ * That is the one rule that makes a sheet over a map draggable at all, and it
+ * is what Apple Maps, Komoot and Strava all do. The drag and the scroll are
+ * the same gesture, so something has to arbitrate, and Base UI arbitrates the
+ * way the platform does: a touch that starts inside a scroll container may
+ * swipe the sheet *down* from the scroll top, but a drag *up* always goes to
+ * the scroller. On a detail sheet whose top half is a photo that means the
+ * sheet could only be enlarged by the 20 px grabber – every other pixel of it
+ * scrolled the text instead.
+ *
+ * Locking the scroll removes the ambiguity rather than dividing the screen up
+ * into regions that behave differently: below the top snap point there is no
+ * scroll container at all, so the whole sheet is a drag handle, and the
+ * gesture that enlarges it is the same one everywhere on it. Once it is up,
+ * the content scrolls and a swipe down from its top edge puts it back.
+ *
+ * It is `overflow: hidden` rather than a handler, because the arbitration
+ * happens in the browser's own gesture routing: what is not scrollable is not
+ * offered the gesture in the first place.
+ */
+const SheetExpanded = createContext(true);
+
+export const useSheetExpanded = () => use(SheetExpanded);
 
 interface Props {
   /** Names the sheet for screen readers and its swipe handle ("… ausklappen"). */
@@ -38,9 +87,10 @@ interface Props {
  * There are two of them (`explorer.tsx`), the list and the detail, and neither
  * is mounted until it is asked for: the map is the page on a phone as much as
  * on a desktop, so nothing covers it at rest. A detail opened from the map has
- * bare map behind it and closes; one opened from a row has the list behind it
- * and goes back to it, by the detail drawer closing and uncovering what never
- * moved.
+ * bare map behind it and closes; one opened from a row is rendered *inside*
+ * the list's drawer, so Base UI stacks the two – the list scales back and
+ * peeks above the detail – and dismissing the front one uncovers a list that
+ * never moved.
  */
 export const MobileSheet = ({
   label,
@@ -51,7 +101,8 @@ export const MobileSheet = ({
   onSnapChange,
   children,
 }: Props) => {
-  const [collapsed, expanded] = snapPoints;
+  const [collapsed, ...rest] = snapPoints;
+  const top = rest.at(-1) ?? collapsed;
   const isCollapsed = snap === collapsed;
 
   return (
@@ -72,24 +123,26 @@ export const MobileSheet = ({
     >
       <DrawerContent
         className={cn(
-          "rounded-b-none border-b-0 [--drawer-inset:0px]",
           "data-[swipe-axis=y]:[--drawer-content-max-height:100dvh]",
           // With snap points the popup is a full 100dvh tall and translated
           // down by the offset of the current one. Padding the same amount off
           // its bottom leaves a content box that ends at the fold, so every
           // scroll container inside does too (it goes negative above the
-          // topmost snap point, hence the `max`).
-          "[padding-bottom:max(0px,calc(var(--drawer-snap-point-offset,0px)+var(--drawer-swipe-movement-y,0px)))]",
-          // …but not while the finger is down. The swipe movement is written
-          // to the popup on every frame of a drag, so a padding that reads it
+          // topmost snap point, hence the `max`). The inset comes off again:
+          // the popup is lifted by its own bottom margin, so that much of it
+          // is already below the fold.
+          "[padding-bottom:max(0px,calc(var(--drawer-snap-point-offset,0px)+var(--drawer-swipe-movement-y,0px)-var(--drawer-inset,0px)))]",
+          // …except while the finger is down. The swipe movement is written to
+          // the popup on every frame of a drag, so a padding that reads it
           // re-lays-out the whole sheet – on a phone, a list of two hundred
-          // rows – once per frame, and that is a layout nobody sees: what
-          // falls below the fold is clipped by the viewport either way. A
-          // padding of zero is the one value that is always safe while
-          // dragging, because the content box is then the full height of the
-          // popup and can never end short of the fold, however far the sheet
-          // is pulled. The true padding returns when the sheet settles, and
-          // the scroll container only ever shrinks by it, so nothing jumps.
+          // rows – once per frame (measured: 162 layouts per drag against 19
+          // without it), and it is a layout nobody sees: a content box that
+          // reaches past the fold is clipped by the viewport either way. Zero
+          // is the one value that is always safe while dragging, because the
+          // box is then the full height of the popup and can never end short
+          // of the fold, however far the sheet is pulled. The true padding is
+          // back when the sheet settles, and the box only ever shrinks by it,
+          // so nothing that is on screen moves.
           "data-swiping:[padding-bottom:0px]",
         )}
       >
@@ -97,14 +150,14 @@ export const MobileSheet = ({
         {/* Tap target for everyone who does not swipe: collapsed ↔ expanded. */}
         <button
           type="button"
-          onClick={() => onSnapChange(isCollapsed ? expanded : collapsed)}
+          onClick={() => onSnapChange(isCollapsed ? top : collapsed)}
           aria-label={`${label} ${isCollapsed ? "ausklappen" : "einklappen"}`}
           className="w-full shrink-0"
         >
-          <DrawerSwipeHandle className="h-6" />
+          <DrawerSwipeHandle className="h-5" />
         </button>
         <div className="flex min-h-0 flex-1 flex-col pb-[env(safe-area-inset-bottom,0px)]">
-          {children}
+          <SheetExpanded value={snap >= top}>{children}</SheetExpanded>
         </div>
       </DrawerContent>
     </Drawer>
