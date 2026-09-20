@@ -345,16 +345,19 @@ export const Explorer = ({
     if (sel.kind === "tour")
       setHiddenTours((h) => h.filter((s) => s !== sel.slug));
     if (sel.kind === "town") setShowTowns(true);
-    // The detail drawer comes up over whatever is there. It has to cover the
-    // list drawer rather than sit inside it, or both swipe handles show at
-    // once and the screen grows a stack of edges that mean nothing.
+    // The detail drawer comes up over whatever is there: stacked on the list
+    // when the tap came from a row, alone over the map when it came from the
+    // map itself – and at least as high as the list it covers, so the list's
+    // handle never peeks out above it. Both read the drawer's resting place
+    // from the ref rather than from state, which is what keeps `select` the
+    // same function across a drag (see `listRest`).
     if (isMobile) {
       setDetailSnap(
         listRest.current.open && listRest.current.snap >= LIST_FULL
           ? DETAIL_FULL
           : DETAIL_HALF,
       );
-      setDetailNested(listOpen);
+      setDetailNested(listRest.current.open);
     }
   };
 
