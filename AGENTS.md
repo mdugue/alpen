@@ -157,6 +157,10 @@ The component layer, the layout, the sidebar, the detail panel.
   subtree for it, so the rows sit in blocks that are skipped whole while off
   screen (`RowList`) – and nothing that changes with the drag may reach them.
   → [why](docs/ui-conventions.md#a-long-list-comes-in-blocks-of-ten)
+- **A drag of the sheet may spend the frame on nothing else.** No content box
+  resizing, no backdrop filter, no scrolling layer while the finger is down.
+  Windowing the list instead was measured and bought nothing.
+  → [why](docs/ui-conventions.md#a-drag-of-the-sheet-may-spend-the-frame-on-nothing-else)
 - **A long list is one tab stop.** `useRoving` makes each list the composite
   widget the platform expects: one stop, arrows inside it.
   → [why](docs/ui-conventions.md#a-long-list-is-one-tab-stop)

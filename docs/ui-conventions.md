@@ -371,12 +371,63 @@ back. The list is a `<div role="list">` and a row a `<div role="listitem">`,
 because a block is an element between the two and `<ul>` may hold nothing but
 `<li>`.
 
+All of those numbers are the style half of the frame, and the style half is not
+the frame: the drag stayed rough after them. What the whole frame is spent on
+is the next section.
+
 Two things follow for everything else in the sheet. A number that changes with
 the drag must not reach the rows: `select` in `components/explorer.tsx` reads
 the drawer's resting place from a ref rather than from state, because closing
 over the snap point made every snap change a new `select` and re-rendered all
 201 rows behind the sheet (~50 ms, for a value nothing on screen was reading).
 And a row stays cheap: what is added to one is added two hundred times.
+
+### A drag of the sheet may spend the frame on nothing else
+
+Measure the whole frame rather than its style half and the row count stops
+being the story. On the built page, a real touch drag under 4× CPU throttling,
+median frame time:
+
+| what is in the sheet                                 | frame    |
+| ---------------------------------------------------- | -------- |
+| the roads, in blocks                                 | 50–66 ms |
+| the roads with every season strip removed            | 50 ms    |
+| every row reduced to a text node                     | 50 ms    |
+| **only the twenty rows on screen, the rest deleted** | 66–83 ms |
+| the list not rendered at all                         | 17–33 ms |
+
+The fourth row is windowing at its strongest – every row beyond the viewport
+gone from the DOM, which is what `@tanstack/react-virtual` would leave – and it
+is no better than what is there. Rendering _anything_ substantial in a sheet
+that is moving costs the frame; how much of it there is barely matters. So the
+rule is not "fewer rows", it is that the gesture gets the frame to itself, and
+three things were taking it:
+
+- **The content box may not resize while the finger is down.** The sheet's
+  padding reads `--drawer-swipe-movement-y`, which is written on every frame of
+  a drag, so the box – and every scroll container in it – was re-laid-out sixty
+  times a second. While `data-swiping` is set the padding is zero, the one
+  value that can never end the box short of the fold however far the sheet is
+  pulled; what reaches past the fold is clipped anyway. Measured: **162 layouts
+  per drag drop to 19**, and the tours' whole drag from 16.5 s to 9.8 s of task
+  time.
+- **No backdrop filter during the gesture.** A blurred backdrop is produced
+  again whenever what is in front of it moves, and a dragged sheet moves across
+  all four glass surfaces. For the length of the drag they are the opaque
+  plates they already fall back to where `backdrop-filter` is missing (`glass`
+  in `lib/utils.ts`, the rule in `app/globals.css`).
+- **No scrolling layer during the gesture.** An `overflow` element inside a
+  transformed ancestor is kept on a scrolling layer that the browser re-makes
+  while the ancestor moves. The gesture belongs to the sheet, so the two
+  scrollers inside one (`data-scroller`) clip for its length – the same idea as
+  `useSheetExpanded` above, which already takes the scroll away _below_ the top
+  snap point; this covers the drag that starts _at_ it.
+
+What is honest about these numbers: they come from headless Chromium with the
+CPU throttled, and the phone that prompted the work is an iPhone, where none of
+it can be measured from here. The three rules are each a piece of work removed
+rather than a guess at a browser, which is why they are worth having either
+way.
 
 ### A long list is one tab stop
 
