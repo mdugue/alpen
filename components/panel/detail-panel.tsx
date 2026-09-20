@@ -853,6 +853,7 @@ export const DetailPanel = (props: Props) => {
       </div>
       <div
         ref={scroller}
+        data-scroller
         className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-4 pt-3 pb-6"
       >
         <h2

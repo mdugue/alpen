@@ -226,6 +226,7 @@ export const Sidebar = (p: SidebarProps) => {
 
         <div
           ref={lists}
+          data-scroller
           className="min-h-0 flex-1 overflow-y-auto overscroll-contain"
         >
           {filtersOpen && (

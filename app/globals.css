@@ -310,3 +310,41 @@
     font-size: 1rem;
   }
 }
+
+/*
+ * While a bottom sheet is being dragged, the surfaces over the map are plates
+ * rather than glass.
+ *
+ * `backdrop-filter` is the most expensive thing on this screen: the blurred
+ * image behind a surface has to be produced again whenever what is behind or
+ * in front of it moves, and a sheet being dragged moves across all of them,
+ * every frame, on the one device that has the least to spare. For the length
+ * of the gesture the same surface is drawn opaque instead – the fallback the
+ * `supports-not-[backdrop-filter]` branch already describes, and at
+ * `bg-card/70` over an unblurred map the dense type would be the thing to
+ * suffer otherwise.
+ *
+ * Unlayered and with `:has()`, because the drag is a state of the drawer's
+ * popup and the surfaces are its uncles: nothing in the React tree knows about
+ * both.
+ */
+body:has([data-slot="drawer-popup"][data-swiping]) .glass {
+  background-color: var(--color-card);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+/*
+ * And the list inside a sheet stops being a scroll container for the length of
+ * the drag.
+ *
+ * Nothing is lost by it: the gesture belongs to the sheet, so the list is not
+ * scrolling anyway. What is gained is the scrolling layer a browser keeps for
+ * an `overflow` element inside a transformed ancestor – on WebKit that layer
+ * is re-made while the ancestor moves, which is the whole sheet's content
+ * painted again on every frame of a drag. The scroll position survives:
+ * `overflow: hidden` clips, it does not scroll back to the top.
+ */
+[data-slot="drawer-popup"][data-swiping] [data-scroller] {
+  overflow: hidden;
+}

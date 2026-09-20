@@ -77,10 +77,20 @@ export const MobileSheet = ({
           // With snap points the popup is a full 100dvh tall and translated
           // down by the offset of the current one. Padding the same amount off
           // its bottom leaves a content box that ends at the fold, so every
-          // scroll container inside does too – during the drag as well, which
-          // is why the swipe movement counts (it goes negative above the
+          // scroll container inside does too (it goes negative above the
           // topmost snap point, hence the `max`).
           "[padding-bottom:max(0px,calc(var(--drawer-snap-point-offset,0px)+var(--drawer-swipe-movement-y,0px)))]",
+          // …but not while the finger is down. The swipe movement is written
+          // to the popup on every frame of a drag, so a padding that reads it
+          // re-lays-out the whole sheet – on a phone, a list of two hundred
+          // rows – once per frame, and that is a layout nobody sees: what
+          // falls below the fold is clipped by the viewport either way. A
+          // padding of zero is the one value that is always safe while
+          // dragging, because the content box is then the full height of the
+          // popup and can never end short of the fold, however far the sheet
+          // is pulled. The true padding returns when the sheet settles, and
+          // the scroll container only ever shrinks by it, so nothing jumps.
+          "data-swiping:[padding-bottom:0px]",
         )}
       >
         <DrawerTitle className="sr-only">{label}</DrawerTitle>
