@@ -47,33 +47,21 @@
  * that pass: a point that is 300 m off in height is not on the road, and every
  * route to it ends short and every profile paid for it is wasted.
  *
- * Rate limits. Every upstream host gets its own pacer; requests to one host are
- * sequential, the pipelines for different hosts (routing vs. Open-Meteo) run in
- * parallel. Open-Meteo bills weighted "calls", so the pacer spaces requests by
- * weight and a per-run budget stops the run before the hourly quota does.
- *
- *   OSRM demo      1 request/s, no key ("Do not exceed 1 request per second")
- *   ORS free       40 requests/min, 2 000/day; 403 "Quota exceeded" once spent
- *   Open-Meteo     600 calls/min, 5 000/h, 10 000/day per IP, shared by ALL
- *                  open-meteo.com hosts. 1 call = 1 location × ≤14 days × ≤10
- *                  variables. Observed: an elevation request with 100 points costs
- *                  ~100 calls, a 10-year daily climate request ~261 calls. The free
- *                  tier therefore fits ~40 profiles or ~19 climate series per hour.
- *
- * OPEN_METEO_BUDGET (default 4500) caps the weighted calls per run; what is left
- * over is picked up by the next run (.github/workflows/refresh-data.yml runs on
- * a push to data/*.json; scripts/backfill.sh drains a larger backlog in hourly
- * batches, which is what keeps a day inside the 10 000 daily calls).
- *
- * A 429/403 whose body says the hour/day quota is spent stops that host for this
- * run – retrying would only burn the next window. A minutely 429 or a 5xx pauses
- * the host (Retry-After or 60 s) and retries.
+ * Every request goes through scripts/lib/transport.ts – one pacer per host,
+ * the Open-Meteo budget (OPEN_METEO_BUDGET, default 4500 weighted calls per
+ * run), Retry-After and the quota words are all there – and the questions
+ * themselves are the functions of scripts/lib/hosts.ts. What is left over when
+ * the budget is spent is picked up by the next run
+ * (.github/workflows/refresh-data.yml runs on a push to data/*.json;
+ * scripts/backfill.sh drains a larger backlog in hourly batches, which is what
+ * keeps a day inside the 10 000 daily calls).
  */
 import { mkdir } from "node:fs/promises";
 
 import passes from "../data/passes.json" with { type: "json" };
 import tours from "../data/tours.json" with { type: "json" };
 import {
+  PROFILE_POINTS,
   profileCoords,
   profileDistances,
   profileStats,
@@ -98,10 +86,23 @@ import type {
   TourCheck,
   TourMetrics,
 } from "../lib/types";
+import {
+  CLIMATE_WEIGHT,
+  ELEVATION_BATCH,
+  ORS_KEY,
+  openMeteo,
+  ors,
+  osrm,
+} from "./lib/hosts";
 import { distanceToWays, ROAD_RADIUS } from "./lib/locate";
 import { osmSource } from "./lib/osm";
 import {
-  LIMITS,
+  HttpError,
+  liveTransport,
+  OPEN_METEO_HOURLY,
+  QuotaExhaustedError,
+} from "./lib/transport";
+import {
   ascentMetrics,
   checkRoad,
   checkRoadAscent,
@@ -115,7 +116,6 @@ import {
 } from "./lib/validate";
 
 const OUT = new URL("../data/generated/", import.meta.url);
-const ORS = process.env.ORS_KEY ?? "";
 const STATUS_ONLY = process.argv.includes("--status");
 const PENDING_ONLY = process.argv.includes("--pending");
 const FORMAT_ONLY = process.argv.includes("--format");
@@ -127,25 +127,10 @@ const ONLY = process.argv[process.argv.indexOf("--only") + 1];
 const isOnly = (key: string) =>
   !process.argv.includes("--only") ||
   (ONLY !== undefined && key.includes(ONLY));
-/** Point a local OSRM at this to cross-check ORS, see docs/plans/00-…md. */
-const OSRM_HOST = process.env.OSRM_HOST ?? "https://router.project-osrm.org";
-/**
- * How far ORS may snap a waypoint onto the road network. Deliberately the same
- * number as the gate's `maxStartDist`: the router is allowed to move a start
- * exactly as far as the gate still considers it the same start.
- */
-const SNAP_RADIUS = LIMITS.ascent.maxStartDist;
 const TODAY = new Date().toISOString().slice(0, 10);
-const OPEN_METEO_BUDGET = Number(process.env.OPEN_METEO_BUDGET ?? 4500);
-/** The binding limit in practice: 5 000 calls/h ≈ 50 elevation profiles. */
-const OPEN_METEO_HOURLY = 5000;
-const CLIMATE_FROM = "2015-01-01";
-const CLIMATE_TO = "2024-12-31";
-const PROFILE_POINTS = 100;
-/** Open-Meteo weight of one climate request: one call per started 14-day period. */
-const CLIMATE_WEIGHT = Math.ceil(
-  (Date.parse(CLIMATE_TO) - Date.parse(CLIMATE_FROM)) / 86_400_000 / 14,
-);
+/** Constructed here, asked nothing until a pipeline runs: --status stays offline. */
+const transport = liveTransport();
+const OPEN_METEO_BUDGET = transport.host("openMeteo").budget;
 /** Open-Meteo weight of one elevation request: one call per location. */
 const PROFILE_WEIGHT = PROFILE_POINTS;
 
@@ -185,212 +170,6 @@ const write = (name: Generated, data: Record<string, unknown>) =>
     return Bun.write(new URL(name, OUT), format(data));
   }));
 
-// ---------------------------------------------------------------------------
-// Per-host rate limiting
-
-class QuotaExhaustedError extends Error {
-  name = "QuotaExhaustedError";
-
-  constructor(host: string, reason: string) {
-    super(`${host}: ${reason}`);
-  }
-}
-
-/**
- * A response the host answered but refused. Carries the status so a caller can
- * tell "this host will not answer this question" (ORS 404 on a road it does not
- * route) from "this request was wrong" (400, 401) – the first has a fallback,
- * the second is a bug and has to surface.
- */
-class HttpError extends Error {
-  name = "HttpError";
-  status: number;
-
-  constructor(status: number, message: string) {
-    super(message);
-    this.status = status;
-  }
-}
-
-/**
- * Sequential per-host pacer. `weight` is what the host bills for the request;
- * the gap to the next request is weight / callsPerMinute.
- */
-class Limiter {
-  private chain: Promise<unknown> = Promise.resolve();
-  private nextAt = 0;
-  /** Set once the host's quota (or our budget) is spent; remaining tasks skip. */
-  exhausted: string | null = null;
-  requests = 0;
-  used = 0;
-
-  readonly name: string;
-  private readonly callsPerMinute: number;
-  private readonly budget: number;
-
-  constructor(name: string, callsPerMinute: number, budget = Infinity) {
-    this.name = name;
-    this.callsPerMinute = callsPerMinute;
-    this.budget = budget;
-  }
-
-  run<T>(fn: () => Promise<T>, weight = 1): Promise<T> {
-    const p = this.chain.then(async () => {
-      if (!this.exhausted && this.used + weight > this.budget)
-        this.exhausted = `Budget von ${this.budget} Calls für diesen Lauf erreicht`;
-      if (this.exhausted)
-        throw new QuotaExhaustedError(this.name, this.exhausted);
-      const wait = this.nextAt - Date.now();
-      if (wait > 0) await Bun.sleep(wait);
-      this.nextAt = Date.now() + (weight * 60_000) / this.callsPerMinute;
-      this.used += weight;
-      this.requests += 1;
-      return await fn();
-    });
-    this.chain = p.catch(() => {
-      // Failures surface through `p`; the chain only sequences the calls.
-    });
-    return p;
-  }
-
-  pause(ms: number) {
-    this.nextAt = Math.max(this.nextAt, Date.now() + ms);
-  }
-}
-
-// Elevation and archive share one quota (per IP, across all open-meteo.com hosts).
-const openMeteo = new Limiter("Open-Meteo", 500, OPEN_METEO_BUDGET);
-// Both routers exist side by side: ORS is asked first, and when its daily quota
-// runs out the run continues on the OSRM demo instead of stopping. The gate
-// makes that safe, and the upgrade pass re-fetches those keys on the next run
-// with quota left.
-const ors = ORS ? new Limiter("OpenRouteService", 38) : null;
-const osrm = new Limiter("OSRM-Demo", 55);
-// Overpass asks for fair use, no key; a handful of batched queries per run.
-// Its fallback, the OSM map API, answers one point per request rather than a
-// whole batch (scripts/lib/osm.ts), so it is paced on its own.
-const overpass = new Limiter("Overpass", 20);
-const osmApi = new Limiter("OSM-API", 30);
-
-const getJson = <T>(
-  lim: Limiter,
-  weight: number,
-  url: string,
-  init?: RequestInit,
-): Promise<T> =>
-  lim.run(async () => {
-    for (let attempt = 0; attempt < 5; attempt += 1) {
-      const res = await fetch(url, init);
-      if (res.ok) return (await res.json()) as T;
-
-      const body = await res.text().catch(() => "");
-      const reason = (() => {
-        try {
-          return (
-            (JSON.parse(body) as { reason?: string; error?: string }).reason ??
-            body
-          );
-        } catch {
-          return body;
-        }
-      })()
-        .replaceAll(/\s+/gu, " ")
-        .trim()
-        .slice(0, 120);
-
-      // Open-Meteo: 429 "Hourly/Daily API request limit exceeded"; ORS: 403 "Quota exceeded" (daily).
-      if (
-        (res.status === 429 && /hourly|daily/iu.test(reason)) ||
-        (res.status === 403 && /quota/iu.test(reason))
-      ) {
-        lim.exhausted = reason;
-        throw new QuotaExhaustedError(lim.name, reason);
-      }
-      if (res.status === 429 || res.status >= 500) {
-        const retryAfter = Number(res.headers.get("retry-after")) * 1000;
-        const wait =
-          retryAfter > 0
-            ? Math.min(retryAfter, 90_000)
-            : res.status === 429
-              ? 60_000
-              : 5000 * (attempt + 1);
-        console.log(
-          `  ${lim.name} ${res.status} (${reason || "keine Angabe"}), warte ${wait / 1000}s …`,
-        );
-        lim.pause(wait);
-        await Bun.sleep(wait);
-        continue;
-      }
-      throw new HttpError(
-        res.status,
-        `${res.status} ${reason} ${url.slice(0, 80)}`,
-      );
-    }
-    throw new Error(`${lim.name}: aufgegeben nach 5 Versuchen`);
-  }, weight);
-
-// ---------------------------------------------------------------------------
-// Fetchers
-
-const routeVia = async (
-  source: RouteSource,
-  waypoints: LatLon[],
-): Promise<RouteGeometry> => {
-  const out: RouteGeometry = [];
-  const push = (cs: RouteGeometry) =>
-    out.push(...(out.length ? cs.slice(1) : cs));
-
-  if (source === "ors") {
-    for (let i = 0; i < waypoints.length - 1; i += 49) {
-      const chunk = waypoints.slice(i, Math.min(i + 50, waypoints.length));
-      const json = await getJson<{
-        features: { geometry: { coordinates: [number, number][] } }[];
-      }>(
-        ors!,
-        1,
-        "https://api.openrouteservice.org/v2/directions/cycling-road/geojson",
-        {
-          body: JSON.stringify({
-            coordinates: chunk.map((c) => [c.lon, c.lat]),
-            instructions: false,
-            // Some ascent starts sit in a village centre > 350 m (ORS default) from a cycling-road edge.
-            radiuses: chunk.map(() => SNAP_RADIUS * 1000),
-          }),
-          headers: { Authorization: ORS, "Content-Type": "application/json" },
-          method: "POST",
-        },
-      );
-      push(
-        json.features[0]!.geometry.coordinates.map(([x, y]) => [
-          +y.toFixed(5),
-          +x.toFixed(5),
-        ]),
-      );
-    }
-  } else {
-    for (let i = 0; i < waypoints.length - 1; i += 11) {
-      const chunk = waypoints.slice(i, Math.min(i + 12, waypoints.length));
-      const coords = chunk.map((c) => `${c.lon},${c.lat}`).join(";");
-      const json = await getJson<{
-        code: string;
-        routes: { geometry: { coordinates: [number, number][] } }[];
-      }>(
-        osrm,
-        1,
-        `${OSRM_HOST}/route/v1/driving/${coords}?overview=full&geometries=geojson`,
-      );
-      if (json.code !== "Ok") throw new Error(json.code);
-      push(
-        json.routes[0]!.geometry.coordinates.map(([x, y]) => [
-          +y.toFixed(5),
-          +x.toFixed(5),
-        ]),
-      );
-    }
-  }
-  return out;
-};
-
 /**
  * ORS first, OSRM as the fallback – for the two reasons ORS legitimately has
  * no answer:
@@ -413,11 +192,11 @@ const route = async (
   waypoints: LatLon[],
 ): Promise<{ declined: boolean; geom: RouteGeometry; source: RouteSource }> => {
   let declined = false;
-  if (ors && !ors.exhausted) {
+  if (ORS_KEY && !transport.host("ors").exhausted) {
     try {
       return {
         declined,
-        geom: await routeVia("ors", waypoints),
+        geom: await ors.route(transport, waypoints),
         source: "ors",
       };
     } catch (error) {
@@ -433,7 +212,11 @@ const route = async (
       } else throw error;
     }
   }
-  return { declined, geom: await routeVia("osrm", waypoints), source: "osrm" };
+  return {
+    declined,
+    geom: await osrm.route(transport, waypoints),
+    source: "osrm",
+  };
 };
 
 /** DEM height at the pass coordinates themselves, to catch a wrong summit point. */
@@ -441,25 +224,16 @@ const summitElevations = async (
   list: Pass[],
 ): Promise<Record<string, Summit>> => {
   const out: Record<string, Summit> = {};
-  for (let i = 0; i < list.length; i += PROFILE_POINTS) {
-    const chunk = list.slice(i, i + PROFILE_POINTS);
-    const { elevation } = await getJson<{ elevation: number[] }>(
-      openMeteo,
-      chunk.length,
-      `https://api.open-meteo.com/v1/elevation?latitude=${chunk.map((p) => p.lat).join(",")}` +
-        `&longitude=${chunk.map((p) => p.lon).join(",")}`,
-    );
+  for (let i = 0; i < list.length; i += ELEVATION_BATCH) {
+    const chunk = list.slice(i, i + ELEVATION_BATCH);
+    const elevation = await openMeteo.elevation(transport, chunk);
     for (const [j, p] of chunk.entries())
       out[p.slug] = { dem: Math.round(elevation[j]!), lat: p.lat, lon: p.lon };
   }
   return out;
 };
 
-const osm = osmSource({
-  log: (line) => console.log(line),
-  viaMap: (url, init) => getJson(osmApi, 1, url, init),
-  viaOverpass: (url, init) => getJson(overpass, 1, url, init),
-});
+const osm = osmSource({ log: (line) => console.log(line), transport });
 
 /**
  * Distance from each pass point to the nearest drivable OSM way, one request
@@ -484,11 +258,9 @@ const roadDistances = async (
 
 /** Elevations from the Copernicus DEM (Open-Meteo, no key needed). */
 const profile = async (geom: RouteGeometry): Promise<ElevationProfile> => {
-  const pts = profileCoords(geom);
-  const { elevation } = await getJson<{ elevation: number[] }>(
-    openMeteo,
-    PROFILE_WEIGHT,
-    `https://api.open-meteo.com/v1/elevation?latitude=${pts.map((c) => c[0]).join(",")}&longitude=${pts.map((c) => c[1]).join(",")}`,
+  const elevation = await openMeteo.elevation(
+    transport,
+    profileCoords(geom).map(([lat, lon]) => ({ lat, lon })),
   );
 
   // Elevation gain with 10 m smoothing, otherwise DEM noise adds up
@@ -516,21 +288,7 @@ const profile = async (geom: RouteGeometry): Promise<ElevationProfile> => {
 
 /** ERA5-Land 2015–2024, condensed into 24 half-months. */
 const climate = async (pass: Pass): Promise<ClimateYear> => {
-  const d = await getJson<{
-    daily: {
-      time: string[];
-      temperature_2m_max: (number | null)[];
-      temperature_2m_min: (number | null)[];
-      snowfall_sum: (number | null)[];
-      precipitation_sum: (number | null)[];
-    };
-  }>(
-    openMeteo,
-    CLIMATE_WEIGHT,
-    `https://archive-api.open-meteo.com/v1/archive?latitude=${pass.lat}&longitude=${pass.lon}` +
-      `&elevation=${pass.elevation}&start_date=${CLIMATE_FROM}&end_date=${CLIMATE_TO}` +
-      `&daily=temperature_2m_max,temperature_2m_min,snowfall_sum,precipitation_sum&timezone=Europe%2FBerlin`,
-  );
+  const daily = await openMeteo.archive(transport, pass);
   const buckets = Array.from({ length: 24 }, () => ({
     frost: 0,
     n: 0,
@@ -539,9 +297,9 @@ const climate = async (pass: Pass): Promise<ClimateYear> => {
     tx: 0,
     wet: 0,
   }));
-  for (const [i, t] of d.daily.time.entries()) {
-    const tmax = d.daily.temperature_2m_max[i];
-    const tmin = d.daily.temperature_2m_min[i];
+  for (const [i, t] of daily.time.entries()) {
+    const tmax = daily.temperature_2m_max[i];
+    const tmin = daily.temperature_2m_min[i];
     if (typeof tmax !== "number" || typeof tmin !== "number") continue;
     const month = +t.slice(5, 7);
     const day = +t.slice(8, 10);
@@ -549,9 +307,9 @@ const climate = async (pass: Pass): Promise<ClimateYear> => {
     b.n += 1;
     b.tx += tmax;
     b.tn += tmin;
-    if ((d.daily.snowfall_sum[i] ?? 0) >= 1) b.snow += 1;
+    if ((daily.snowfall_sum[i] ?? 0) >= 1) b.snow += 1;
     if (tmin < 0) b.frost += 1;
-    if ((d.daily.precipitation_sum[i] ?? 0) >= 1) b.wet += 1;
+    if ((daily.precipitation_sum[i] ?? 0) >= 1) b.wet += 1;
   }
   return buckets.map((b) =>
     b.n
@@ -691,7 +449,7 @@ const judge = (job: RouteJob, m: RouteMetrics) =>
  */
 const upgradable = (j: RouteJob) =>
   routes[j.key] !== undefined &&
-  ORS !== "" &&
+  ORS_KEY !== "" &&
   (meta[j.key]?.source ?? "osrm") === "osrm" &&
   // ORS has been asked about this road and said it does not carry it. Asking
   // again on every upgrade pass buys the same 404; `--retry-rejected` is the
@@ -958,8 +716,8 @@ if (FORMAT_ONLY) {
 if (reconciled.stamped) await write("routes-meta.json", meta);
 
 console.log(
-  ORS
-    ? `Routing über OpenRouteService (Rennrad-Profil), Fallback OSRM – ORS_KEY vorhanden (${ORS.length} Zeichen)`
+  ORS_KEY
+    ? `Routing über OpenRouteService (Rennrad-Profil), Fallback OSRM – ORS_KEY vorhanden (${ORS_KEY.length} Zeichen)`
     : "Routing über OSRM-Demo (Autoprofil) – ORS_KEY ist NICHT gesetzt, deshalb Autoprofil",
 );
 if (RETRY_REJECTED && Object.keys(rejected).length)
@@ -1171,7 +929,7 @@ const gate = async (
   // pass will replace the geometry and the profile would have to be paid for
   // a second time. 100 Open-Meteo calls is far too much to spend on a road we
   // already know is the wrong one.
-  const deferred = source === "osrm" && ORS !== "" && !rejected[job.key];
+  const deferred = source === "osrm" && ORS_KEY !== "" && !rejected[job.key];
   if (!ofRoad(job) || deferred) {
     if (fetched) await accepted();
     if (deferred)
@@ -1311,8 +1069,11 @@ const climating = climatePending.map(async (pass, i) => {
 await Promise.all([...routing, ...profiling, ...climating]);
 await writing;
 
-for (const lim of [ors, osrm, openMeteo]) {
-  if (lim?.exhausted)
+const routerOrs = transport.host("ors");
+const routerOsrm = transport.host("osrm");
+const meteo = transport.host("openMeteo");
+for (const lim of [routerOrs, routerOsrm, meteo]) {
+  if (lim.exhausted)
     console.log(
       `${lim.name}: Kontingent erschöpft (${lim.exhausted}) – Rest im nächsten Lauf`,
     );
@@ -1324,16 +1085,16 @@ const declinedRoutes = Object.values(meta).filter((x) => x.orsDeclined).length;
 console.log(
   `Fertig: ${Object.keys(routes).length} Routen, ${Object.keys(profiles).length} Profile, ` +
     `${Object.keys(climates).length} Klimareihen` +
-    ` (${openMeteo.requests} Open-Meteo-Requests ≈ ${openMeteo.used} Calls)`,
+    ` (${meteo.requests} Open-Meteo-Requests ≈ ${meteo.used} Calls)`,
 );
 // Split by router on purpose: a combined count cannot answer "did ORS run at
 // all?", which is the first question when every stored route says osrm.
 console.log(
-  `Routing: ${ors?.requests ?? 0} ORS-Requests, ${osrm.requests} OSRM-Requests${
-    ORS
-      ? ors?.exhausted
-        ? ` – ORS gestoppt: ${ors.exhausted}`
-        : ors?.requests
+  `Routing: ${routerOrs.requests} ORS-Requests, ${routerOsrm.requests} OSRM-Requests${
+    ORS_KEY
+      ? routerOrs.exhausted
+        ? ` – ORS gestoppt: ${routerOrs.exhausted}`
+        : routerOrs.requests
           ? ""
           : " – ORS war eingerichtet, wurde aber nie gebraucht (nichts zu routen?)"
       : " – ohne ORS_KEY, deshalb Autoprofil"

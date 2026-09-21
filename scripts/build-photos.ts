@@ -27,33 +27,30 @@
  * Incremental by default: an entity that already has photos is skipped, so a
  * rerun after adding one pass costs one request. `--refresh` overrides that.
  *
- * Rate limit. The Commons API asks for a descriptive User-Agent and moderate
- * serial use; requests are serial with `GAP_MS` in between and back off when it
- * answers 429 anyway. If it keeps saying 429 the run stops and reports how many
- * entities are left rather than hammering – what it had is already on disk, and
- * the next run picks up there. Every entity is written as it arrives for the
- * same reason: an interrupted run must not throw away an hour of requests.
+ * Rate limit. The Commons API and its file CDN are two hosts of the transport
+ * (`scripts/lib/transport.ts`): serial, paced, and backing off when one of
+ * them answers 429 anyway. If the API keeps saying 429 the run stops and
+ * reports how many entities are left rather than hammering – what it had is
+ * already on disk, and the next run picks up there. Every entity is written as
+ * it arrives for the same reason: an interrupted run must not throw away an
+ * hour of requests.
  */
 import passes from "../data/passes.json" with { type: "json" };
 import tours from "../data/tours.json" with { type: "json" };
 import towns from "../data/towns.json" with { type: "json" };
-import {
-  BLUR_WIDTH,
-  PHOTO_LIMIT,
-  PHOTO_WIDTH,
-  photoKey,
-  thumbUrl,
-} from "../lib/photos";
+import { BLUR_WIDTH, PHOTO_LIMIT, photoKey, thumbUrl } from "../lib/photos";
 import { FILES } from "../lib/schema";
 import type { Photo, Photos } from "../lib/types";
 import { blurUri, blurWidth } from "./lib/blur";
+import { commons } from "./lib/hosts";
 import { best, NEAR_BONUS, rank } from "./lib/photo-rank";
-import type { Page } from "./lib/photo-rank";
+import {
+  liveTransport,
+  QuotaExhaustedError,
+  RateLimitedError,
+} from "./lib/transport";
 
 const OUT = new URL("../data/generated/photos.json", import.meta.url);
-const API = "https://commons.wikimedia.org/w/api.php";
-const UA =
-  "alpenpaesse-data-build/1.0 (https://github.com/mdugue/alpen; mail@manuel.fyi)";
 const REFRESH = process.argv.includes("--refresh");
 /** Fetch every placeholder again, without asking Commons for the photos. */
 const REBLUR = process.argv.includes("--blur");
@@ -62,139 +59,23 @@ const ONLY = process.argv.includes("--only")
   : undefined;
 /** How far around a pass point or town centre Commons is asked to look. */
 const RADIUS_M = { pass: 2000, town: 2500 };
-/**
- * Gap between requests. The whole run is ~120 of them, so three seconds costs
- * six minutes even from cold – and Commons' budget for an anonymous client is
- * small enough that one per second walks into a 429 whose Retry-After is
- * longer than the gap it saved.
- */
-const GAP_MS = 3000;
-/**
- * Gap between placeholder requests. These go to the file CDN rather than to
- * the API, which is a different budget and a far cheaper request – but there
- * are up to six per entity and ~1 500 in a first run, and a 20-px width nobody
- * has asked for before has to be rendered on demand, so the CDN answers a
- * sustained burst with 429 like anything else. Serial, paced, and the pace
- * gives way: `slowDown` doubles the gap every time a 429 comes back and the
- * gap never goes down again within a run, because the run is what provoked it.
- * Starting low and yielding beats guessing a number that is polite for every
- * time of day.
- */
-const BLUR_GAP_MS = 400;
-const BLUR_GAP_MAX_MS = 5000;
-/** Answers in a row without a 429 before the gap is allowed back down. */
-const BLUR_CALM = 25;
-const RETRIES = 5;
-const BACKOFF_MS = 10_000;
+const transport = liveTransport();
 
 // ── Commons API ──────────────────────────────────────────────────────────────
-
-/**
- * Being told to slow down is the only measurement of "too fast" there is, so
- * it is the one the pace follows. Declared before `request`, which reports it.
- *
- * It recovers, which the first version of this did not: a handful of 429s in
- * the first minutes doubled the gap to the ceiling and left it there, so a
- * short burst of pushback set the pace for the whole hour that followed. Now
- * a stretch of answers with no complaint in it halves the gap back down, to
- * the starting value and no further. Backing off stays instant – one 429
- * doubles it again – and only the apology is gradual.
- */
-let blurGap = BLUR_GAP_MS;
-let sinceThrottled = 0;
-const slowDown = () => {
-  blurGap = Math.min(blurGap * 2, BLUR_GAP_MAX_MS);
-  sinceThrottled = 0;
-};
-const wentWell = () => {
-  sinceThrottled += 1;
-  if (sinceThrottled < BLUR_CALM) return;
-  sinceThrottled = 0;
-  blurGap = Math.max(blurGap / 2, BLUR_GAP_MS);
-};
-
-/** A rate limit that outlasts the backoff ends the run; it does not fail it. */
-class RateLimitedError extends Error {
-  name = "RateLimitedError";
-}
-
-/**
- * Commons answers a burst with 429 and names how long to wait. Retrying is
- * worth it, but only a few times, and never faster than the header asks.
- */
-const request = async (url: URL): Promise<Response> => {
-  for (let attempt = 0; ; attempt += 1) {
-    const res = await fetch(url, { headers: { "User-Agent": UA } });
-    if (res.ok) return res;
-    if (res.status === 429) slowDown();
-    const retriable = res.status === 429 || res.status >= 500;
-    if (!retriable) throw new Error(`Commons ${res.status} – ${url}`);
-    if (attempt >= RETRIES)
-      throw new RateLimitedError(
-        `Commons antwortet weiterhin mit ${res.status} (${RETRIES} Versuche)`,
-      );
-    const after = Number(res.headers.get("retry-after"));
-    const pause =
-      Number.isFinite(after) && after > 0
-        ? after * 1000
-        : BACKOFF_MS * 2 ** attempt;
-    console.warn(`  ${res.status}, ${Math.round(pause / 1000)} s Pause`);
-    await Bun.sleep(pause);
-  }
-};
-
-let nextAt = 0;
-const api = async (params: Record<string, string>): Promise<Page[]> => {
-  const wait = nextAt - Date.now();
-  if (wait > 0) await Bun.sleep(wait);
-  nextAt = Date.now() + GAP_MS;
-
-  const url = new URL(API);
-  for (const [k, v] of Object.entries({
-    action: "query",
-    format: "json",
-    formatversion: "2",
-    iiextmetadatafilter: "Artist|Credit|LicenseShortName|LicenseUrl",
-    iiprop: "url|size|mime|extmetadata",
-    iiurlwidth: String(PHOTO_WIDTH),
-    prop: "imageinfo",
-    ...params,
-  }))
-    url.searchParams.set(k, v);
-
-  const res = await request(url);
-  const body = (await res.json()) as { query?: { pages?: Page[] } };
-  return body.query?.pages ?? [];
-};
 
 /** Everything Commons has within `radius` of the point, best first. */
 const nearby = async (
   at: { lat: number; lon: number },
   radius: number,
   name: string,
-) =>
-  rank(
-    await api({
-      generator: "geosearch",
-      ggscoord: `${at.lat}|${at.lon}`,
-      ggslimit: "50",
-      ggsnamespace: "6",
-      ggsradius: String(radius),
-    }),
-    name,
-  );
+) => rank(await commons.geosearch(transport, at, radius), name);
 
 /** The same by name, for the places whose photos carry no coordinate. */
 const byName = async (name: string) =>
-  rank(
-    await api({
-      generator: "search",
-      gsrlimit: "30",
-      gsrnamespace: "6",
-      gsrsearch: `filetype:bitmap ${name}`,
-    }),
-    name,
-  ).map((r) => ({ ...r, score: r.score - NEAR_BONUS }));
+  rank(await commons.search(transport, name), name).map((r) => ({
+    ...r,
+    score: r.score - NEAR_BONUS,
+  }));
 
 const forPlace = async (
   at: { lat: number; lon: number },
@@ -216,7 +97,6 @@ const forPlace = async (
  * with its neighbour: one file is fetched once per run.
  */
 const blurCache = new Map<string, string | null>();
-let nextBlurAt = 0;
 
 const blurFor = async (src: string): Promise<string | undefined> => {
   const cached = blurCache.get(src);
@@ -230,16 +110,10 @@ const blurFor = async (src: string): Promise<string | undefined> => {
     return undefined;
   }
 
-  const wait = nextBlurAt - Date.now();
-  if (wait > 0) await Bun.sleep(wait);
-  nextBlurAt = Date.now() + blurGap;
-
   let blur: string | null = null;
   try {
-    const res = await request(new URL(url));
-    wentWell();
-    const type = res.headers.get("content-type")?.split(";")[0] ?? "";
-    blur = await blurUri(new Uint8Array(await res.arrayBuffer()), type);
+    const { bytes, type } = await commons.thumbnail(transport, url);
+    blur = await blurUri(bytes, type);
     if (!blur) console.warn(`  ohne Vorschau: ${url} (${type}, zu groß)`);
   } catch (error) {
     // A missing placeholder is a cosmetic loss, never a reason to drop a photo
@@ -350,7 +224,13 @@ const main = async () => {
     try {
       found = await forPlace(place, RADIUS_M[place.kind], place.name);
     } catch (error) {
-      if (!(error instanceof RateLimitedError)) throw error;
+      if (
+        !(
+          error instanceof RateLimitedError ||
+          error instanceof QuotaExhaustedError
+        )
+      )
+        throw error;
       stopped = error.message;
       break;
     }

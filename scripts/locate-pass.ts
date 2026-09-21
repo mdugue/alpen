@@ -41,8 +41,12 @@
  *
  * Needs the network (OSM and Open-Meteo, no keys). The OSM facts come from
  * Overpass, or – while that host is unreachable – from the OSM map API;
- * `scripts/lib/osm.ts` picks, says which, and either way it is a few requests
- * per pass, nothing worth a pacer beyond a short pause between them.
+ * `scripts/lib/osm.ts` picks and says which. Every request goes through the
+ * transport (`scripts/lib/transport.ts`), which paces each host and waits out
+ * a 429 – `roadTop` asks for hundreds of heights per pass, which is what
+ * walked into one before the pacing existed – and stops the run once
+ * Open-Meteo says the hour is spent, because sitting out sixty of those would
+ * be an hour of pretending to work.
  */
 import passes from "../data/passes.json" with { type: "json" };
 import { profileCoords } from "../lib/profile";
@@ -53,6 +57,7 @@ import type {
   RouteGeometry,
   Summit,
 } from "../lib/types";
+import { ELEVATION_BATCH, openMeteo } from "./lib/hosts";
 import {
   CANDIDATE_RADIUS,
   distanceToWays,
@@ -62,7 +67,7 @@ import {
 } from "./lib/locate";
 import type { Candidate } from "./lib/locate";
 import { osmSource } from "./lib/osm";
-import type { GetJson } from "./lib/osm";
+import { liveTransport } from "./lib/transport";
 import { LIMITS, checkRoad, checkSummit, haversine } from "./lib/validate";
 
 const GEN = new URL("../data/generated/", import.meta.url);
@@ -90,72 +95,15 @@ const profiles = await readJson<Record<string, ElevationProfile>>(
   {},
 );
 
-/** A refused answer's body – its text is what says *why* it was refused. */
-const bodyOf = async (res: Response) => {
-  try {
-    return await res.text();
-  } catch {
-    return "";
-  }
-};
-
-/**
- * Both OSM hosts answer JSON; a refusal carries its status and its body, which
- * is where "too many nodes" comes from. The pause in front is the whole pacing
- * this script needs: it works one pass at a time and never has more than two
- * requests in the air, one per host.
- */
-const getJson: GetJson = async (url, init) => {
-  await Bun.sleep(300);
-  const res = await fetch(url, init);
-  if (!res.ok) {
-    const body = await bodyOf(res);
-    throw new Error(`${new URL(url).host} ${res.status} ${body.slice(0, 120)}`);
-  }
-  const json: unknown = await res.json();
-  return json;
-};
-const osm = osmSource({
-  log: (line) => console.log(line),
-  viaMap: getJson,
-  viaOverpass: getJson,
-});
-/**
- * Open-Meteo bills one call per coordinate and allows 600 a minute, so a
- * request for 100 points has to be spaced ten seconds from the next one. This
- * script asks for hundreds of points per pass (`roadTop`), which is what
- * walked into a 429 before the pacer existed. The gap is kept here rather than
- * per request, because it is the *calls* that are billed, not the requests;
- * a 429 on top of that is waited out once, since the minute always passes.
- */
-let nextDem = 0;
+const transport = liveTransport();
+const osm = osmSource({ log: (line) => console.log(line), transport });
+/** DEM heights, rounded to the metre; nothing is asked for an empty list. */
 const dem = async (
   points: { lat: number; lon: number }[],
 ): Promise<number[]> => {
   if (!points.length) return [];
-  const wait = nextDem - Date.now();
-  if (wait > 0) await Bun.sleep(wait);
-  nextDem = Date.now() + (points.length * 60_000) / 600;
-  const res = await fetch(
-    `https://api.open-meteo.com/v1/elevation?latitude=${points.map((p) => p.lat).join(",")}&longitude=${points.map((p) => p.lon).join(",")}`,
-  );
-  if (res.status === 429) {
-    const body = await bodyOf(res);
-    const reason = body.replaceAll(/\s+/gu, " ").slice(0, 120);
-    // A minute passes on its own; an hour or a day does not, and sitting out
-    // sixty of these would be an hour of pretending to work.
-    if (/hourly|daily/iu.test(reason))
-      throw new Error(
-        `Open-Meteo: ${reason} – die Höhen dieses Laufs sind aufgebraucht, später weitermachen`,
-      );
-    console.log(`  Open-Meteo bremst (${reason}) – eine Minute warten …`);
-    await Bun.sleep(60_000);
-    return await dem(points);
-  }
-  if (!res.ok) throw new Error(`Open-Meteo ${res.status}`);
-  return ((await res.json()) as { elevation: number[] }).elevation.map((e) =>
-    Math.round(e),
-  );
+  const heights = await openMeteo.elevation(transport, points);
+  return heights.map(Math.round);
 };
 
 interface Sample {
@@ -218,8 +166,6 @@ const ROAD_TOP_RADIUS = Number(
  * whole grid in one query anyway.
  */
 const TILE_RADIUS = 2;
-/** One Open-Meteo elevation request carries this many coordinates. */
-const DEM_BATCH = 100;
 
 interface RoadTop {
   dem: number;
@@ -295,7 +241,7 @@ const roadTop = async (p: Pass): Promise<RoadTop | null> => {
 
   let sampled = 0;
   const highest = async (xs: typeof points) => {
-    const batch = thin(xs, DEM_BATCH);
+    const batch = thin(xs, ELEVATION_BATCH);
     if (!batch.length) return null;
     sampled += batch.length;
     const ele = await dem(batch);

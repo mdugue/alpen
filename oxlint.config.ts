@@ -50,15 +50,17 @@ export default defineConfig({
       rules: { "typescript/no-unnecessary-type-parameters": "off" },
     },
     {
-      // The build script serialises its API calls and its file writes on
-      // promise chains (`this.chain`, `writing`); `await` has no way to hand
-      // the chain on to the next caller. It also keeps its error class next
-      // to the rate limiter that throws it.
-      files: ["scripts/build-data.ts"],
-      rules: {
-        "max-classes-per-file": "off",
-        "promise/prefer-await-to-then": "off",
-      },
+      // The build script serialises its file writes and the transport its
+      // API calls per host on promise chains (`writing`, `this.chain`);
+      // `await` has no way to hand the chain on to the next caller.
+      files: ["scripts/build-data.ts", "scripts/lib/transport.ts"],
+      rules: { "promise/prefer-await-to-then": "off" },
+    },
+    {
+      // The transport keeps its error classes next to the rate limiter that
+      // throws them.
+      files: ["scripts/lib/transport.ts"],
+      rules: { "max-classes-per-file": "off" },
     },
     {
       // The build script talks to rate-limited APIs: requests are sequential

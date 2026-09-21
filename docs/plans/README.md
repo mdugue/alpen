@@ -40,7 +40,7 @@ that goal; features that only add route-level precision rank last.
 | 18  | [Selection, visibility and camera](18-selection-visibility-camera.md) | one rule, 02 as adapter                   | M      | –                    | superseded by [28](28-app-state.md), [29](29-camera-machine.md) |
 | 19  | [A map scene between the rows and MapLibre](19-map-scene.md)          | map testable without WebGL                | M–L    | 18, 01               | superseded by [30](30-map-scene.md)                             |
 | 20  | [The gate's decisions out of the build script](20-route-decisions.md) | pipeline testable, one retry rule         | M–L    | 00                   | superseded by [32](32-pipeline-planner.md)                      |
-| 21  | [One adapter per external host](21-host-adapters.md)                  | offline pipeline test                     | M      | 20                   | superseded by [32](32-pipeline-planner.md)                      |
+| 21  | [One adapter per external host](21-host-adapters.md)                  | offline pipeline test                     | M      | 20                   | superseded by [32](32-pipeline-planner.md), done as its phase A |
 | 22  | [Detail data out of the payload](22-detail-data-out-of-payload.md)    | first load, free-tier headroom            | S–M    | 01                   | done                                                            |
 | 23  | [Low southern regions](23-low-southern-regions.md)                    | "when" in spring and autumn               | L      | 14                   | [done](https://github.com/mdugue/alpen/pull/59)                 |
 | 24  | [Depth per destination](24-depth-per-destination.md)                  | "where", honest counts, readability       | M      | 00                   | [in progress](https://github.com/mdugue/alpen/pull/59)          |
@@ -51,7 +51,7 @@ that goal; features that only add route-level precision rank last.
 | 29  | [The camera as a machine](29-camera-machine.md)                       | camera testable without WebGL             | M–L    | 28                   | proposed                                                        |
 | 30  | [The scene: what the map shows, as a value](30-map-scene.md)          | map testable without WebGL, one hover     | M–L    | 28, 01               | proposed                                                        |
 | 31  | [The panel as a model](31-panel-model.md)                             | testable panel, 16 finished, 02, 12       | L      | 15, 16, 28           | proposed                                                        |
-| 32  | [The pipeline as plan → execute → apply](32-pipeline-planner.md)      | pipeline testable offline, one retry rule | L      | 00                   | proposed                                                        |
+| 32  | [The pipeline as plan → execute → apply](32-pipeline-planner.md)      | pipeline testable offline, one retry rule | L      | 00                   | in progress (phase A done)                                      |
 | 33  | [Functional core, imperative shell](33-functional-core.md)            | the target the five add up to             | M      | 28–32                | proposed                                                        |
 | –   | UI/UX audit round (no plan document)                                  | "where", finding things, a11y             | M      | –                    | [in progress](https://github.com/mdugue/alpen/pull/47)          |
 

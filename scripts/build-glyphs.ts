@@ -26,9 +26,10 @@ import { promisify } from "node:util";
 
 import { FONT_BOLD, FONT_ITALIC, FONT_REGULAR } from "../lib/basemap";
 import { MAP_ASSET_DIR } from "../lib/map-assets";
+import { github } from "./lib/hosts";
+import { liveTransport } from "./lib/transport";
 
 const INTER_VERSION = "4.1";
-const INTER_ZIP = `https://github.com/rsms/inter/releases/download/v${INTER_VERSION}/Inter-${INTER_VERSION}.zip`;
 const FONTNIK = "fontnik@0.7.7";
 /** Fontstack name → static TTF inside the release zip. */
 const FONTS: Record<string, string> = {
@@ -57,9 +58,13 @@ await mkdir(CACHE, { recursive: true });
 // 1. The font.
 const zip = new URL(`Inter-${INTER_VERSION}.zip`, CACHE);
 if (!existsSync(zip)) {
-  const res = await fetch(INTER_ZIP);
-  if (!res.ok) throw new Error(`${res.status} for ${INTER_ZIP}`);
-  await Bun.write(zip, await res.arrayBuffer());
+  const { bytes } = await github.release(
+    liveTransport(),
+    "rsms/inter",
+    `v${INTER_VERSION}`,
+    `Inter-${INTER_VERSION}.zip`,
+  );
+  await Bun.write(zip, bytes);
 }
 const ttfDir = new URL("ttf/", CACHE);
 await run([

@@ -65,17 +65,17 @@ because it is about next week.
 
 ## The stages, by command
 
-| Command                                       | Run it when                                                 | Asks                                                   | Writes                                                                                   |
-| --------------------------------------------- | ----------------------------------------------------------- | ------------------------------------------------------ | ---------------------------------------------------------------------------------------- |
-| _(edit by hand)_                              | a pass, tour or town is added or corrected                  | –                                                      | `data/*.json`                                                                            |
-| `bun run data:locate [slug…]`                 | the gate blocks a pass, or a marker looks wrong             | Overpass (or OSM map API), Open-Meteo                  | nothing, unless `--apply` moves a coordinate in `data/passes.json`                       |
-| `bun run data:build`                          | after any source-data change; resumable, skips what is done | OSM, ORS/OSRM, Open-Meteo                              | `data/generated/{summits,routes,routes-meta,rejected,profiles,climate}.json`             |
-| `bun run data:photos`                         | after adding an entity, or to refresh the slideshow         | Wikimedia Commons                                      | `data/generated/photos.json`                                                             |
-| `bun run data:check [--explain]`              | before every commit that touches data; runs in CI           | nothing – offline                                      | nothing; prints errors and warnings                                                      |
-| `bun run data:schema`                         | in the same PR as a change to `lib/schema.ts`               | nothing                                                | `data/schema/*.schema.json`                                                              |
-| `bun run scripts/analyze-coverage.ts [slug…]` | before a curation round: where is a base thin?              | Overpass, cached per base in `scripts/.cache/coverage` | nothing; prints listed roads, candidates and single-sided passes per base and reach band |
-| `bun run map:glyphs`                          | only when the font or the glyph ranges change               | the Inter release, fontnik                             | `public/map/fonts` (committed)                                                           |
-| `bun dev` / `bun run build`                   | always                                                      | nothing                                                | `public/map`, `public/detail`, `public/maplibre` (all git-ignored)                       |
+| Command                                       | Run it when                                                 | Asks                                                      | Writes                                                                                   |
+| --------------------------------------------- | ----------------------------------------------------------- | --------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
+| _(edit by hand)_                              | a pass, tour or town is added or corrected                  | –                                                         | `data/*.json`                                                                            |
+| `bun run data:locate [slug…]`                 | the gate blocks a pass, or a marker looks wrong             | Overpass (or OSM map API), Open-Meteo                     | nothing, unless `--apply` moves a coordinate in `data/passes.json`                       |
+| `bun run data:build`                          | after any source-data change; resumable, skips what is done | OSM, ORS/OSRM, Open-Meteo                                 | `data/generated/{summits,routes,routes-meta,rejected,profiles,climate}.json`             |
+| `bun run data:photos`                         | after adding an entity, or to refresh the slideshow         | Wikimedia Commons                                         | `data/generated/photos.json`                                                             |
+| `bun run data:check [--explain]`              | before every commit that touches data; runs in CI           | nothing – offline                                         | nothing; prints errors and warnings                                                      |
+| `bun run data:schema`                         | in the same PR as a change to `lib/schema.ts`               | nothing                                                   | `data/schema/*.schema.json`                                                              |
+| `bun run scripts/analyze-coverage.ts [slug…]` | before a curation round: where is a base thin?              | Overpass, recorded per query in `scripts/.cache/coverage` | nothing; prints listed roads, candidates and single-sided passes per base and reach band |
+| `bun run map:glyphs`                          | only when the font or the glyph ranges change               | the Inter release, fontnik                                | `public/map/fonts` (committed)                                                           |
+| `bun dev` / `bun run build`                   | always                                                      | nothing                                                   | `public/map`, `public/detail`, `public/maplibre` (all git-ignored)                       |
 
 The coverage report is how a candidate becomes an entry: it asks Overpass for
 every `mountain_pass` and `natural=saddle` node within `REACH_MAX_KM` of a base
@@ -97,6 +97,21 @@ nothing is missing.
 
 Every host in stage 2, what it is good at, and what it cannot do. Nothing here
 is asked at runtime.
+
+Every request a script makes goes through one seam. `scripts/lib/hosts.ts`
+holds one function per question – `ors.route`, `osrm.route`,
+`openMeteo.elevation`, `openMeteo.archive`, `overpass.query`, `osmMap.bbox`,
+`commons.geosearch`, `commons.search`, `commons.thumbnail`, `github.release` –
+and each composes its URL, names the weight the host bills and parses the
+answer with a zod schema, so a host's address and its answer shape exist in
+that file and nowhere else. The function takes a `Transport`
+(`scripts/lib/transport.ts`): the live one keeps a pacer per host from the
+`HOSTS` table – the gap, the Open-Meteo budget, `Retry-After`, the words that
+say a quota is spent – and is the only `fetch` under `scripts/`; the fixture
+one answers from recorded files (`<dir>/<host>/<hash>.json`, keyed by method,
+URL and body), which is the coverage report's cache today and the way the
+gate will run offline in a test. `scripts/lib/osm.ts` sits on the same seam
+and decides between Overpass and the map API.
 
 | Source                                        | Abbreviation                                                                                                                    | Answers                                                             | Format                     | Key / limit                                     | Strong at                                                                                          | Weak at                                                                                                                           |
 | --------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------- | -------------------------- | ----------------------------------------------- | -------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |

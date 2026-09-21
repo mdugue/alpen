@@ -16,7 +16,7 @@ jobs:
       - run: bun install --frozen-lockfile
       - run: bun run typecheck
       - run: bun run lint
-      - run: bun test lib
+      - run: bun run test
       - run: bun run build
       # Last on purpose: the route gate fails this step for as long as the
       # coordinate backlog in rejected.json is unfixed, and a data backlog must
