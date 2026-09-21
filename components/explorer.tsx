@@ -196,6 +196,18 @@ export const Explorer = ({
    */
   const [detailNested, setDetailNested] = useState(false);
   const [detailSnap, setDetailSnap] = useState<number>(DETAIL_HALF);
+  /**
+   * Where the list drawer rests, for `select` to read without depending on it.
+   *
+   * `select` is handed to the sidebar, the map and the panel, so a new one
+   * rebuilds the list it is passed to – and a selection is the one thing that
+   * has to be cheap. Closed over as state, every snap point the drawer passes
+   * through made a new `select`, and dragging the sheet rebuilt all 201 road
+   * rows behind it for a number nothing in the list was reading – measured at
+   * ~50 ms of script per snap change more than the same drag over the 9 tours.
+   * A ref written after the commit says the same thing without being reactive.
+   */
+  const listRest = useRef({ open: false, snap: LIST_HALF as number });
   const [scalesOpen, setScalesOpen] = useState(false);
   // Where the elevation-profile cursor sits on the road, and a fly-to asked
   // for by a click on it. Both live here because the map draws them and the
@@ -313,6 +325,10 @@ export const Explorer = ({
     favorite,
   }));
 
+  useEffect(() => {
+    listRest.current = { open: listOpen, snap: listSnap };
+  }, [listOpen, listSnap]);
+
   /**
    * Selecting something makes it visible, brings its detail up in the same
    * frame and hands the map a target the camera sets off for once the panel
@@ -329,14 +345,19 @@ export const Explorer = ({
     if (sel.kind === "tour")
       setHiddenTours((h) => h.filter((s) => s !== sel.slug));
     if (sel.kind === "town") setShowTowns(true);
-    // The detail drawer comes up over whatever is there. It has to cover the
-    // list drawer rather than sit inside it, or both swipe handles show at
-    // once and the screen grows a stack of edges that mean nothing.
+    // The detail drawer comes up over whatever is there: stacked on the list
+    // when the tap came from a row, alone over the map when it came from the
+    // map itself – and at least as high as the list it covers, so the list's
+    // handle never peeks out above it. Both read the drawer's resting place
+    // from the ref rather than from state, which is what keeps `select` the
+    // same function across a drag (see `listRest`).
     if (isMobile) {
       setDetailSnap(
-        listOpen && listSnap >= LIST_FULL ? DETAIL_FULL : DETAIL_HALF,
+        listRest.current.open && listRest.current.snap >= LIST_FULL
+          ? DETAIL_FULL
+          : DETAIL_HALF,
       );
-      setDetailNested(listOpen);
+      setDetailNested(listRest.current.open);
     }
   };
 

@@ -1071,6 +1071,7 @@ export const DetailPanel = (props: Props) => {
       />
       <div
         ref={scroller}
+        data-scroller
         onScroll={(e) => {
           // The head is the first child either way – the hero or the plain
           // title block – so what has to be measured is measured rather than

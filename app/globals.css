@@ -310,3 +310,88 @@
     font-size: 1rem;
   }
 }
+
+/*
+ * What the drawer derives from the drag stays on the drawer.
+ *
+ * Base UI writes the finger's position to the popup on every frame of a drag
+ * (`--drawer-swipe-movement-y`) and registers that property as non-inheriting,
+ * so that writing it restyles one element. The preset then computes
+ * `--translate-y` and the `--stack-*` values from it in plain custom
+ * properties – and a plain custom property is inherited, so its new computed
+ * value is handed to every element under the popup, sixty times a second: the
+ * whole list restyled per frame, which is why the 201 roads stuttered and the
+ * 9 tours did not. Measured on the built page (390 × 844, 4× CPU throttle, one
+ * drag of 90 moves): 1354 ms of style recalculation with them inherited,
+ * 203 ms without, and 38 layouts against 6.
+ *
+ * Only the popup itself reads them (its `transform`), so nothing below misses
+ * them. `--bleed` and `--peek` are left alone: they never change, and the
+ * popup's `::after` reads `--bleed` by inheritance. `syntax: "*"` with no
+ * initial value keeps `var(--translate-x, 0px)` falling back as before.
+ * `components/ui/` is generated, hence here and not there.
+ */
+@property --translate-x {
+  syntax: "*";
+  inherits: false;
+}
+@property --translate-y {
+  syntax: "*";
+  inherits: false;
+}
+@property --stack-progress {
+  syntax: "*";
+  inherits: false;
+}
+@property --stack-peek-offset {
+  syntax: "*";
+  inherits: false;
+}
+@property --stack-scale {
+  syntax: "*";
+  inherits: false;
+}
+@property --stack-shrink {
+  syntax: "*";
+  inherits: false;
+}
+
+/*
+ * While a bottom sheet is being dragged, the surfaces over the map are plates
+ * rather than glass.
+ *
+ * `backdrop-filter` is the most expensive thing on this screen: the blurred
+ * image behind a surface has to be produced again whenever what is behind or
+ * in front of it moves, and a sheet being dragged moves across all of them,
+ * every frame, on the one device that has the least to spare. For the length
+ * of the gesture the same surface is drawn opaque instead – the fallback the
+ * `supports-not-[backdrop-filter]` branch already describes, and at
+ * `bg-card/70` over an unblurred map the dense type would be the thing to
+ * suffer otherwise.
+ *
+ * Unlayered and with `:has()`, because the drag is a state of the drawer's
+ * popup and the surfaces are its uncles: nothing in the React tree knows about
+ * both.
+ */
+body:has([data-slot="drawer-popup"][data-swiping]) .glass {
+  background-color: var(--color-card);
+  /* Prefixed first: lightningcss drops the unprefixed line when it comes
+   * before the prefixed one, and Chromium and Firefox read only that one. */
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+
+/*
+ * And the list inside a sheet stops being a scroll container for the length of
+ * the drag.
+ *
+ * Nothing is lost by it: the gesture belongs to the sheet, so the list is not
+ * scrolling anyway. What is gained is the scrolling layer a browser keeps for
+ * an `overflow` element inside a transformed ancestor – on WebKit that layer
+ * is re-made while the ancestor moves, which is the whole sheet's content
+ * painted again on every frame of a drag. The scroll position survives:
+ * `overflow: hidden` clips, it does not scroll back to the top.
+ */
+[data-slot="drawer-popup"][data-swiping] [data-scroller] {
+  overflow: hidden;
+}

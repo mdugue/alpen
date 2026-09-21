@@ -71,6 +71,7 @@ friends do that better and the app links out to them.
 | Header bar and its one-sentence headline        | `components/app-header.tsx`, `lib/use-height.ts`                                                                                                                                                                                                                                                           |
 | Filter controls, chips, applied-filter row      | `components/sidebar/filter-panel.tsx`, `components/sidebar/filter-chip.tsx`, `lib/filter-summary.ts`                                                                                                                                                                                                       |
 | Sidebar: search, filters, one list per kind     | `components/sidebar/` (tabs: `kind-tabs.tsx`), `lib/rows.ts`                                                                                                                                                                                                                                               |
+| Rows, their blocks and the drag they sit in     | `components/sidebar/entity-row.tsx`, `components/sidebar/row-list.tsx`, `rowBlocks` in `lib/rows.ts`                                                                                                                                                                                                       |
 | Detail panel incl. profile/weather/climate      | `components/panel/` (collapsible blocks: `components/panel/section.tsx`)                                                                                                                                                                                                                                   |
 | Drawers on phones (list and detail, separate)   | `components/mobile-sheet.tsx`, `components/explorer.tsx`                                                                                                                                                                                                                                                   |
 | Precomputation, data checks                     | `scripts/build-data.ts`, `scripts/build-photos.ts`, `scripts/check-data.ts`                                                                                                                                                                                                                                |
@@ -151,6 +152,20 @@ The component layer, the layout, the sidebar, the detail panel.
 - **One list at a time, chosen by a tab row.** The three kinds sit behind tabs
   in the fixed header; each list's map switch rides in its own toolbar.
   → [why](docs/ui-conventions.md#one-list-at-a-time-chosen-by-a-tab-row)
+- **What the drawer derives from the drag stays on the drawer.** The preset
+  computes `--translate-x`/`-y` and four `--stack-*` values (`-progress`,
+  `-peek-offset`, `-scale`, `-shrink`) in inherited custom properties, so every drag frame restyled the whole list; `app/globals.css`
+  registers them `inherits: false`. Check them after `ui:init`, and compare a
+  stutter on the device, one change per build.
+  → [why](docs/ui-conventions.md#what-the-drawer-derives-from-the-drag-stays-on-the-drawer)
+- **A long list comes in blocks of ten.** Rows and blocks are
+  `content-visibility` subtrees that are skipped while off screen (`RowList`),
+  every row stays in the DOM – and nothing that changes with the drag may reach
+  them.
+  → [why](docs/ui-conventions.md#a-long-list-comes-in-blocks-of-ten)
+- **A drag of the sheet may spend the frame on nothing else.** No content box
+  resizing, no backdrop filter, no scrolling layer while the finger is down.
+  → [why](docs/ui-conventions.md#a-drag-of-the-sheet-may-spend-the-frame-on-nothing-else)
 - **A long list is one tab stop.** `useRoving` makes each list the composite
   widget the platform expects: one stop, arrows inside it.
   → [why](docs/ui-conventions.md#a-long-list-is-one-tab-stop)
