@@ -1,6 +1,12 @@
 import { describe, expect, test } from "bun:test";
 
-import { fitInset, NO_INSET, sameInset, toInset } from "@/lib/map-camera";
+import {
+  fitInset,
+  NO_INSET,
+  sameInset,
+  shellEdge,
+  toInset,
+} from "@/lib/map-camera";
 
 test("toInset fills in the sides MapLibre leaves out", () => {
   expect(toInset({ left: 400 })).toEqual({
@@ -54,5 +60,17 @@ describe("fitInset", () => {
     );
     expect(fit.left + fit.right).toBe(48 + 48 - 364);
     expect(fit.top).toBe(48);
+  });
+});
+
+describe("shellEdge", () => {
+  test("a phone's bar sits on the edge and nothing stands left of it", () => {
+    expect(shellEdge(true, 96, 400, 12)).toEqual({ bottom: 96, left: 0 });
+  });
+  test("a desktop card keeps the gap and stands beside the panels", () => {
+    expect(shellEdge(false, 80, 396, 12)).toEqual({ bottom: 92, left: 396 });
+  });
+  test("with no panel open the card keeps the gap from the left edge", () => {
+    expect(shellEdge(false, 80, 0, 12)).toEqual({ bottom: 92, left: 12 });
   });
 });

@@ -85,11 +85,20 @@ screen's answer to "what is this", it is derived from the same `seasonBand`
 the band at the bottom draws, and it moves with every filter – a slogan would
 have said nothing and would have been wrong by lunchtime. Below `lg` it drops
 the "gut" clause to stay inside two lines. Along the bottom the **season bar**:
-the `SeasonBand` (`components/season-band.tsx`), on desktop with its legend
-beside it, on a phone with the two ways on – into the list and into the
-filters – under it. The band is the app's one domain control, and it is the
-width of the screen because the shape of the year is what a visitor came to
-read.
+the `SeasonBand` (`components/season-band.tsx`), on a phone with the two ways
+on – into the list and into the filters – under it. On desktop the same bar is
+a **card** of the panels' material at the foot of the map, standing right
+beside the panels at their gap and capped at `max-w-xl`: the 24 columns read
+as a chart at that width and were a stretched ribbon at the width of a screen,
+and the list keeps the full height instead of ending above the bar. What the
+three shapes mean is behind the card's ⓘ (a popover) and in the scales
+dialog; the card carries no legend beside the band.
+
+MapLibre's own bottom-left controls – the scale bar and the attribution –
+stand at the first free pixel of the map: `--shell-bottom` and `--shell-left`
+on the shell, measured in `explorer.tsx` (`shellEdge` in `lib/map-camera.ts`)
+and read in `globals.css`. Before that, the floating sidebar covered them on
+desktop.
 
 The band is the period control _and_ a chart of the current selection. Each of
 its 24 columns carries three quantities over the passes the filters leave: bar

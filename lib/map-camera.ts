@@ -58,3 +58,21 @@ export const fitInset = (now: Inset, next: Inset, extra: number): Inset => {
     top: extra + y,
   };
 };
+
+/**
+ * Where the map's own corner controls (scale bar, attribution) and the season
+ * band stand: the first free pixel at the map's bottom-left. On a phone the
+ * band is a bar along the bottom edge and nothing stands left of it. On
+ * desktop the floating panels take the left (`panels`, their widths and gaps,
+ * `0` when none is open) and the band is a card `gap` px above the edge –
+ * beside the panels, or at the same gap from the edge when there are none.
+ */
+export const shellEdge = (
+  mobile: boolean,
+  barHeight: number,
+  panels: number,
+  gap: number,
+): { bottom: number; left: number } =>
+  mobile
+    ? { bottom: barHeight, left: 0 }
+    : { bottom: barHeight + gap, left: panels || gap };
