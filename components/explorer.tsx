@@ -8,7 +8,7 @@ import type { MapPass } from "@/components/map/pass-map";
 import { MobileSheet, sheetCover } from "@/components/mobile-sheet";
 import { DetailPanel } from "@/components/panel/detail-panel";
 import { ScalesDialog } from "@/components/scales-dialog";
-import { SeasonBand, SeasonBandLegend } from "@/components/season-band";
+import { SeasonBand } from "@/components/season-band";
 import { filterCount } from "@/components/sidebar/filter-panel";
 import { KIND_LABEL } from "@/components/sidebar/kind-tabs";
 import { Sidebar } from "@/components/sidebar/sidebar";
@@ -31,6 +31,7 @@ import {
 import type { EntityKind, Filters, MapView, Selection } from "@/lib/app-state";
 import type { DetailAssets } from "@/lib/detail-assets";
 import type { MapAssets } from "@/lib/map-assets";
+import { shellEdge } from "@/lib/map-camera";
 import type { NearbyTours, TownReach } from "@/lib/nearby";
 import {
   buildPassRows,
@@ -475,7 +476,6 @@ export const Explorer = ({
         viewportHeight,
       )
     : 0;
-  const insetBottom = Math.max(sheetPx, barHeight);
   const insetTop = headerHeight;
 
   // Desktop: the panels float over the map; the map is padded by their width
@@ -490,6 +490,11 @@ export const Explorer = ({
     desktopPanels.length ? GAP : 0,
   );
   const detailLeft = GAP + (!isMobile && sidebarOpen ? sidebarW + GAP : 0);
+  // On desktop the season card covers its height plus the gap it keeps from
+  // the edge; the corner controls sit at the edge, in the corner it leaves.
+  // The card stands right beside the panels, at their gap from the edge.
+  const shell = shellEdge(isMobile, barHeight, insetLeft, GAP);
+  const insetBottom = Math.max(sheetPx, shell.cover);
 
   const setPeriod = (p: Period) => {
     setFilters((f) => ({ ...f, period: p }));
@@ -502,17 +507,29 @@ export const Explorer = ({
   const activeFilters = filterCount(filters);
 
   /*
-   * The shell: a header along the top and the season bar along the bottom,
-   * both of them translucent and both of them *over* the map, which fills the
-   * viewport behind everything. Between them the floating panels, in a
-   * position context of their own, so they start below the header and end
-   * above the bar without either being told a number.
+   * The shell: a header along the top and, on a phone, the season bar along
+   * the bottom, both of them translucent and both of them *over* the map,
+   * which fills the viewport behind everything. Between them the floating
+   * panels, in a position context of their own, so they start below the
+   * header and end above the bar without either being told a number. On
+   * desktop the bar is a card in that same box, beside the panels, and the
+   * panels run the full height.
+   *
+   * `--shell-bottom` lifts MapLibre's corner controls (scale bar and
+   * attribution) above the bar on a phone; on desktop they sit in the
+   * bottom-right corner, which the card leaves free, and `--shell-left` is
+   * where the card starts.
    */
   return (
     <TooltipProvider delay={400}>
       <div
         className="relative flex h-dvh flex-col overflow-hidden"
-        style={{ "--shell-bottom": `${barHeight}px` } as React.CSSProperties}
+        style={
+          {
+            "--shell-bottom": `${shell.controls}px`,
+            "--shell-left": `${shell.left}px`,
+          } as React.CSSProperties
+        }
       >
         <div id="map" tabIndex={-1} className="absolute inset-0">
           <PassMap
@@ -548,9 +565,9 @@ export const Explorer = ({
           />
         </div>
 
-        {/* The map's own middle: nothing is drawn here, it only gives the two
-            floating panels a box that already excludes the two bars. */}
-        <div className="pointer-events-none relative min-h-0 flex-1">
+        {/* The map's own middle: a box below the header that the floating
+            panels fill on desktop and that the season bar ends on a phone. */}
+        <div className="pointer-events-none relative flex min-h-0 flex-1 flex-col justify-end">
           {!isMobile && sidebarOpen && (
             <aside
               ref={sidebarRoot}
@@ -577,53 +594,59 @@ export const Explorer = ({
               {detailFor(selection)}
             </section>
           )}
-        </div>
 
-        {/*
-         * The season bar. The band is the app's one domain control, so it gets
-         * the width of the screen rather than a corner of the map: the shape of
-         * the year is the thing a visitor is here to read. Beside it, where
-         * there is room, what its three shapes mean; on a phone, where there is
-         * not, the two ways on – into the list and into the filters.
-         */}
-        <div
-          ref={barRef}
-          className={cn(
-            "relative z-20 flex shrink-0 flex-col gap-2 border-t px-3 py-2 lg:flex-row lg:items-start lg:gap-6 lg:px-4",
-            SHELL_BAR,
-          )}
-        >
-          <SeasonBand
-            band={band}
-            value={filters.period}
-            today={defaultPeriod}
-            onChange={setPeriod}
-            className="flex-1"
-          />
-          <SeasonBandLegend className="w-56 shrink-0 max-lg:hidden" />
-          <div className="flex gap-2 lg:hidden">
-            <Button
-              className="flex-1"
-              onClick={() => {
-                setFiltersOpen(false);
-                setListOpen(true);
-              }}
-            >
-              {KIND_LABEL[tab]} ({fmt(listCount)})
-            </Button>
-            <Button
-              variant="outline"
-              className="flex-1"
-              onClick={() => {
-                setFiltersOpen(true);
-                setListOpen(true);
-              }}
-            >
-              Filter
-              {activeFilters > 0 && (
-                <Badge variant="secondary">{activeFilters}</Badge>
-              )}
-            </Button>
+          {/*
+           * The season bar. The band is the app's one domain control. On a
+           * phone it runs along the bottom of the screen, with the two ways
+           * on – into the list and into the filters – under it. On desktop
+           * it is a card of the same material as the panels, standing beside
+           * them at the foot of the map and capped in width: 24 columns read
+           * better at the width of a chart than stretched across a screen,
+           * and the list keeps the full height. It stops short of the
+           * bottom-right corner (`lg:right-40`), where the scale bar and the
+           * attribution sit in a row. What its three shapes mean is one
+           * popover away, and in the scales dialog.
+           */}
+          <div
+            ref={barRef}
+            className={cn(
+              "pointer-events-auto z-20 flex shrink-0 flex-col gap-2 px-3 py-2",
+              "max-lg:relative max-lg:border-t",
+              "lg:absolute lg:right-40 lg:bottom-3 lg:left-(--shell-left) lg:max-w-xl lg:rounded-xl lg:border lg:px-4 lg:py-3 lg:shadow-xl",
+              SHELL_BAR,
+            )}
+          >
+            <SeasonBand
+              band={band}
+              value={filters.period}
+              today={defaultPeriod}
+              onChange={setPeriod}
+              legend={!isMobile}
+            />
+            <div className="flex gap-2 lg:hidden">
+              <Button
+                className="flex-1"
+                onClick={() => {
+                  setFiltersOpen(false);
+                  setListOpen(true);
+                }}
+              >
+                {KIND_LABEL[tab]} ({fmt(listCount)})
+              </Button>
+              <Button
+                variant="outline"
+                className="flex-1"
+                onClick={() => {
+                  setFiltersOpen(true);
+                  setListOpen(true);
+                }}
+              >
+                Filter
+                {activeFilters > 0 && (
+                  <Badge variant="secondary">{activeFilters}</Badge>
+                )}
+              </Button>
+            </div>
           </div>
         </div>
 

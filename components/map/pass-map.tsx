@@ -62,6 +62,7 @@ import { ascentKey } from "@/lib/route-key";
 import { STATUS_ORDER } from "@/lib/status";
 import { tagIconSvg } from "@/lib/tag-icons";
 import type { LatLon, Pass, Status, Tag, Tour, Town } from "@/lib/types";
+import { MOBILE_QUERY } from "@/lib/use-media-query";
 import { cn, fmtUnit, MAP_CLUSTER, MAP_TOOL } from "@/lib/utils";
 
 export interface MapPass extends Pass {
@@ -1156,33 +1157,59 @@ export const PassMap = ({
       ).__alpen = { map: m, passBounds: assets.passBounds };
     }
     /*
-     * Provenance, in the corner opposite the tools: the scale bar and, under
-     * it, who the map is by. Both quiet and small – they are read once, not
-     * operated – while everything a visitor presses lives in the top-right
-     * group.
+     * Provenance: the scale bar and who the map is by. Both quiet and small –
+     * they are read once, not operated – while everything a visitor presses
+     * lives in the top-right group. On a phone they stack in the bottom-left
+     * corner above the season bar; on desktop, where the season card stands
+     * beside the panels on the left, they sit in a row in the bottom-right
+     * corner, the one corner nothing else claims. MapLibre fixes a control's
+     * corner when it is added, so a change of layout re-adds them – which is
+     * also what keeps the compact attribution unfolding towards the map
+     * rather than off its edge.
      *
      * The attribution stays *on the map* behind a single ⓘ rather than moving
      * into the view menu: one clearly identifiable interaction is what the
      * OSM attribution guidelines ask for, and a line inside a menu about map
      * types is neither identifiable nor one interaction.
      */
-    m.addControl(new AttributionControl({ compact: true }), "bottom-left");
-    m.addControl(new ScaleControl({ unit: "metric" }), "bottom-left");
-    /*
-     * MapLibre opens a compact attribution the first time it has something to
-     * say, and folds it away only once it has been clicked. Nothing else on
-     * this map is open before it is asked for, so it starts folded.
-     *
-     * Marking the container compact *here* is what does that, rather than
-     * removing the open class afterwards: `_updateCompact` adds
-     * `maplibregl-compact-show` only while the container is not compact yet,
-     * and it runs again on every resize and whenever the attributions change –
-     * so a class removed now is back the moment the first source reports in.
-     * Set the flag it tests and it never opens by itself; the ⓘ still toggles.
-     */
-    container.current
-      ?.querySelector(".maplibregl-ctrl-attrib")
-      ?.classList.add("maplibregl-compact");
+    const attribution = new AttributionControl({ compact: true });
+    const scale = new ScaleControl({ unit: "metric" });
+    const mobileQuery = window.matchMedia(MOBILE_QUERY);
+    let provenancePlaced = false;
+    const placeProvenance = () => {
+      if (provenancePlaced) {
+        m.removeControl(attribution);
+        m.removeControl(scale);
+      }
+      provenancePlaced = true;
+      if (mobileQuery.matches) {
+        m.addControl(attribution, "bottom-left");
+        m.addControl(scale, "bottom-left");
+      } else {
+        // A right corner takes each new control on its *left*, so the ⓘ
+        // goes in first and keeps the corner; the scale bar stands beside it.
+        m.addControl(attribution, "bottom-right");
+        m.addControl(scale, "bottom-right");
+      }
+      /*
+       * MapLibre opens a compact attribution the first time it has something
+       * to say, and folds it away only once it has been clicked. Nothing else
+       * on this map is open before it is asked for, so it starts folded.
+       *
+       * Marking the container compact *here* is what does that, rather than
+       * removing the open class afterwards: `_updateCompact` adds
+       * `maplibregl-compact-show` only while the container is not compact
+       * yet, and it runs again on every resize and whenever the attributions
+       * change – so a class removed now is back the moment the first source
+       * reports in. Set the flag it tests and it never opens by itself; the
+       * ⓘ still toggles.
+       */
+      container.current
+        ?.querySelector(".maplibregl-ctrl-attrib")
+        ?.classList.add("maplibregl-compact");
+    };
+    placeProvenance();
+    mobileQuery.addEventListener("change", placeProvenance);
 
     // `style.load`, not `load`: the latter waits for every source, and the
     // ascent and tour lines are a megabyte of GeoJSON fetched over holiday
@@ -1351,6 +1378,7 @@ export const PassMap = ({
 
     return () => {
       ro.disconnect();
+      mobileQuery.removeEventListener("change", placeProvenance);
       dropPending();
       m.remove();
       map.current = null;
