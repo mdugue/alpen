@@ -15,12 +15,10 @@ import { cn, ICON_TOGGLE, TOUCH_ICON } from "@/lib/utils";
  * own layout, style and paint to itself, and off screen it is skipped
  * altogether: whatever restyles the list (a filter chip, a state change of
  * the sheet around it) pays for the rows on screen, not for nine thousand
- * elements. The rows come in blocks of ten on top of that (`RowList`), each
- * block a skipped subtree of its own, so that the row elements of an
- * off-screen block are not visited either.
+ * elements.
  *
- * Both were introduced against a restyle of the whole list on every frame of
- * a sheet drag. Its cause was elsewhere – inherited custom properties in the
+ * It was introduced against a restyle of the whole list on every frame of a
+ * sheet drag. Its cause was elsewhere – inherited custom properties in the
  * drawer preset, registered as non-inheriting in `app/globals.css` since –
  * and `docs/ui-conventions.md` has what the containment still measures
  * without it.
@@ -35,9 +33,7 @@ import { cn, ICON_TOGGLE, TOUCH_ICON } from "@/lib/utils";
  *
  *  - `data-roving` marks the body as a stop of the composite widget, so the
  *    list is **one** tab stop with arrow keys inside it rather than one stop
- *    per row (`lib/use-roving.ts` has the measurement). The row carries
- *    `role="listitem"` because a block sits between it and the list, which
- *    is also why it is a `<div>` and not an `<li>` (`RowList`).
+ *    per row (`lib/use-roving.ts` has the measurement).
  *  - `name` is what the bookmark toggle is called. Its label used to be the
  *    bare word "Merken", which is fine once and useless two hundred times:
  *    a screen reader's list of buttons was two hundred identical entries
@@ -80,8 +76,7 @@ export const EntityRow = ({
   hovered?: boolean;
   onHover?: (over: boolean) => void;
 }) => (
-  <div
-    role="listitem"
+  <li
     data-current={current || undefined}
     onPointerEnter={onHover ? () => onHover(true) : undefined}
     onPointerLeave={onHover ? () => onHover(false) : undefined}
@@ -136,5 +131,5 @@ export const EntityRow = ({
       )}
       {trailing}
     </div>
-  </div>
+  </li>
 );
