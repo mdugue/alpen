@@ -237,7 +237,7 @@ or editorial data, each a plan of its own when its turn comes:
   a height and latitude; the short day as a note on the cell rather than a
   rung of the ladder; or a winter verdict that only frost and snow can
   lower. Each is a change to `lib/status.ts` with `analyze-status.ts
-  --changes` as the read-back, and a decision to be made with the strips on
+--changes` as the read-back, and a decision to be made with the strips on
   screen, not in a plan.
 
 Done since this list was written: imagery per entity – Wikimedia Commons
