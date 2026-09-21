@@ -42,8 +42,8 @@ that goal; features that only add route-level precision rank last.
 | 20  | [The gate's decisions out of the build script](20-route-decisions.md) | pipeline testable, one retry rule   | M–L    | 00                   | proposed                                               |
 | 21  | [One adapter per external host](21-host-adapters.md)                  | offline pipeline test               | M      | 20                   | proposed                                               |
 | 22  | [Detail data out of the payload](22-detail-data-out-of-payload.md)    | first load, free-tier headroom      | S–M    | 01                   | done                                                   |
-| 23  | [Low southern regions](23-low-southern-regions.md)                    | "when" in spring and autumn         | L      | 14                   | in progress                                            |
-| 24  | [Depth per destination](24-depth-per-destination.md)                  | "where", honest counts, readability | M      | 00                   | in progress                                            |
+| 23  | [Low southern regions](23-low-southern-regions.md)                    | "when" in spring and autumn         | L      | 14                   | [done](https://github.com/mdugue/alpen/pull/59)        |
+| 24  | [Depth per destination](24-depth-per-destination.md)                  | "where", honest counts, readability | M      | 00                   | [in progress](https://github.com/mdugue/alpen/pull/59) |
 | 25  | [Vosges and Jura](25-vosges-and-jura.md)                              | the weekend, a second range         | M–L    | 09, 05               | proposed                                               |
 | 26  | [Pyrenees](26-pyrenees.md)                                            | the Tour's other mountains          | M–L    | 25, 24               | proposed                                               |
 | 27  | [Gravel](27-gravel.md)                                                | a second discipline                 | L–XL   | 14, 16, 13           | proposed                                               |

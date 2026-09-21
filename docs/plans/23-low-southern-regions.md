@@ -1,8 +1,9 @@
 # 23 · Low southern regions
 
-**Status:** in progress – steps 1–6 (the five areas, towns, loops, aliases,
-photos) as source data; the routes, profiles and climate series are drained by
-the refresh workflow, and step 7 (the read-back) follows once they are in ·
+**Status:** done ([#59](https://github.com/mdugue/alpen/pull/59)) – the five
+areas, their towns and loops, routed through ORS and the gate, with the
+climate series in and the read-back done; what the second round finds is in
+"Risks and open questions" ·
 **Effort:** L (S for code, the rest is curation) ·
 **Depends on:** 14 (the traverse types: the coast and the lakes are balcony
 and valley roads as much as passes); benefits from 24 (the coverage report
@@ -219,6 +220,15 @@ series, i.e. roughly two and three hours of Open-Meteo windows respectively
   of the first round, as were the Baldo spur to San Valentino (it is the
   Brentonico side of the Bocca di Navene) and the Lago di Tenno road (the
   Ballino covers it).
+- **The read-back with every series in:** Bédoin now has two windows, March
+  to June and September to early October, and reads "Hitze" in July and
+  August – the shape the plan asked for. Three roads changed once their
+  profiles were in: the Baldo crossing scheitels at the Bocca del Creer
+  (1 617 m), not at the Bocca di Navene 200 m below it, so the entry is
+  named after the Creer; the Punta Veleno road reaches the summit itself
+  (1 148 m) before dropping into Prada Alta, so the marker sits there; and
+  the Col de Nice from Contes runs over the Col de Châteauneuf, so it keeps
+  its eastern side only.
 - **The read-back so far (step 7, with 27 of 62 climate series in):** the
   Ligurian and Lombard roads come out as the plan hoped – Poggio, Cipressa,
   Bignone, Nava and Langan are "beste Zeit" from March to June, "Hitze" from
