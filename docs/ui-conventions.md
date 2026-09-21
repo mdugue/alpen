@@ -398,35 +398,31 @@ this stutter in headless Chromium alone and did not cure the phone. The lesson
 is the method: a drag that stutters on a device is compared on that device,
 one change per build, before anything is concluded from a profile.
 
-### A long list comes in blocks of ten
+### A long list keeps every row, and each row keeps to itself
 
-The rows of a list sit in blocks of ten (`RowList`,
-`components/sidebar/row-list.tsx`), each row and each block a
-`content-visibility: auto` subtree, so what is off screen is skipped – its
+Each row of a list is a `content-visibility: auto` subtree (`EntityRow`,
+`components/sidebar/entity-row.tsx`), so what is off screen is skipped – its
 style, its layout and its paint. With 201 roads at ~40 elements a row that is
 most of nine thousand elements the browser does not have to keep up to date
 while a filter chip changes the list or the sheet's state changes around it.
 
-The blocks were introduced against the restyle described above, before its
-cause was known: a row that contains its ~40 inner elements is still visited
-itself, and in blocks of ten the rows of an off-screen block are not
-(7.5 ms → 3.7 ms of style per drag frame for the roads, in Chromium). With
-the cause removed that saving is gone – 203 ms of style per drag with the
-blocks, 223 ms without – and what is left is a trade: the frame a drag starts
-in is 33 ms with them and 133 ms without (throttled), against one frame of
-~150 ms when a block first comes into view as the sheet is pulled up. They
-stay because they are in and harmless, not
-because the drag needs them; removing them would be a simplification, to be
-judged on a phone.
+Every row stays in the DOM. Windowing the list – with
+`@tanstack/react-virtual` or by hand – measured no better than containment,
+and it would cost `useRoving`'s arrows, `scrollIntoView` on the selected row
+and the browser's own find-in-page across all 201 rows.
 
-Every row stays in the DOM either way. Windowing the list – with
-`@tanstack/react-virtual` or by hand – measured no better than the blocks, and
-it would cost `useRoving`'s arrows, `scrollIntoView` on the selected row and
-the browser's own find-in-page across all 201 rows.
-
-Ten rows is about a screenful at the sheet's lower snap point. The list is a
-`<div role="list">` and a row a `<div role="listitem">`, because a block is an
-element between the two and `<ul>` may hold nothing but `<li>`.
+For a while the rows also sat in blocks of ten, each block a skipped subtree
+of its own, so that the row elements of an off-screen block were not visited
+either. That was introduced against the restyle described above, before its
+cause was known, and it halved it (7.5 ms → 3.7 ms of style per drag frame for
+the roads, in Chromium). With the cause removed the saving was gone – 203 ms
+of style per drag with the blocks, 223 ms without – and what it cost was a
+wrapper between the list and its rows, which turned `<ul>`/`<li>` into
+`<div role="list">`/`<div role="listitem">`. The blocks were taken out again;
+the list is a plain `<ul>`. What they still traded, should it come up on a
+phone: the frame a drag starts in was 33 ms with them and 133 ms without
+(throttled), against one frame of ~150 ms when a block first came into view
+as the sheet was pulled up.
 
 Two things follow for everything else in the sheet. A number that changes with
 the drag must not reach the rows: `select` in `components/explorer.tsx` reads

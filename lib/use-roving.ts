@@ -26,8 +26,8 @@ import { useEffect, useRef } from "react";
  * falls back to its first row.
  *
  * The listeners are attached in the effect rather than handed back as JSX
- * props: the list is a plain `<div role="list">`, and a list carrying key and
- * pointer handlers is exactly what `jsx-a11y/no-noninteractive-element-interactions`
+ * props: the list is a plain `<ul>`, and a `<ul>` carrying key and pointer
+ * handlers is exactly what `jsx-a11y/no-noninteractive-element-interactions`
  * is there to catch. Here the element genuinely is the composite widget and
  * the rows inside it are the interactive parts, which is the shape the DOM
  * listener expresses and the JSX prop does not.

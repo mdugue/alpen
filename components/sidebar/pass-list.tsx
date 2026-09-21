@@ -7,7 +7,6 @@ import { SeasonStrip } from "@/components/season-strip";
 import { EntityRow } from "@/components/sidebar/entity-row";
 import { ListEmpty } from "@/components/sidebar/list-empty";
 import { ListToolbar } from "@/components/sidebar/list-toolbar";
-import { RowList } from "@/components/sidebar/row-list";
 import { StatusLabel } from "@/components/status-badge";
 import { TagLine } from "@/components/tags";
 import { Button } from "@/components/ui/button";
@@ -58,7 +57,7 @@ export const PassList = ({
   onToggleFavorite: (slug: string) => void;
 }) => {
   const sorted = sortPassRows(rows, filters.sort);
-  const rovingList = useRoving<HTMLDivElement>();
+  const rovingList = useRoving<HTMLUListElement>();
   const hoveredSlug = hovered?.kind === "pass" ? hovered.slug : null;
   const ratingSort = RATING_SORTS.has(filters.sort)
     ? (filters.sort as RatingSort)
@@ -109,12 +108,8 @@ export const PassList = ({
       {sorted.length === 0 ? (
         <ListEmpty title="Keine Straßen gefunden" {...empty} />
       ) : (
-        <RowList
-          ref={rovingList}
-          items={sorted}
-          keyOf={({ pass }) => pass.slug}
-        >
-          {({ pass, status, reason, favorite, season }) => (
+        <ul ref={rovingList}>
+          {sorted.map(({ pass, status, reason, favorite, season }) => (
             <EntityRow
               key={pass.slug}
               rowId={`pass:${pass.slug}`}
@@ -157,8 +152,8 @@ export const PassList = ({
                 </>
               }
             />
-          )}
-        </RowList>
+          ))}
+        </ul>
       )}
     </>
   );
