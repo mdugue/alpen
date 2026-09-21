@@ -23,8 +23,9 @@ styling (status badges, etc.) goes into the consuming component via
 tokens (`--status-open`, `--status-risky`, `--status-closed`, `--tour`,
 `--town`, the strip's `--grade-*` ramp, plus their `@theme inline` lines), the
 `--text-2xs` step below Tailwind's `text-xs`, the MapLibre rules at the end,
-the coarse-pointer font-size rule next to them and the dark-mode setup must be
-restored afterwards.
+the coarse-pointer font-size rule next to them, the drawer's `@property` rules
+and the sheet-drag rules after it, and the dark-mode setup must be restored
+afterwards.
 
 ### Sizes come from the scale, not from pixels
 
@@ -85,11 +86,22 @@ screen's answer to "what is this", it is derived from the same `seasonBand`
 the band at the bottom draws, and it moves with every filter – a slogan would
 have said nothing and would have been wrong by lunchtime. Below `lg` it drops
 the "gut" clause to stay inside two lines. Along the bottom the **season bar**:
-the `SeasonBand` (`components/season-band.tsx`), on desktop with its legend
-beside it, on a phone with the two ways on – into the list and into the
-filters – under it. The band is the app's one domain control, and it is the
-width of the screen because the shape of the year is what a visitor came to
-read.
+the `SeasonBand` (`components/season-band.tsx`), on a phone with the two ways
+on – into the list and into the filters – under it. On desktop the same bar is
+a **card** of the panels' material at the foot of the map, standing right
+beside the panels at their gap and capped at `max-w-xl`: the 24 columns read
+as a chart at that width and were a stretched ribbon at the width of a screen,
+and the list keeps the full height instead of ending above the bar. What the
+three shapes mean is behind the card's ⓘ (a popover) and in the scales
+dialog; the card carries no legend beside the band.
+
+MapLibre's own provenance controls – the scale bar and the attribution ⓘ –
+stack in the bottom-left corner above the bar on a phone (`--shell-bottom`,
+measured in `explorer.tsx`) and sit in one row in the bottom-right corner on
+desktop, the one corner the card leaves free (`lg:right-40`): MapLibre fixes a
+control's corner when it is added, so `pass-map.tsx` re-adds them when the
+layout changes. Before that, the floating sidebar covered them on desktop.
+The arithmetic is `shellEdge` in `lib/map-camera.ts`.
 
 The band is the period control _and_ a chart of the current selection. Each of
 its 24 columns carries three quantities over the passes the filters leave: bar
@@ -337,6 +349,137 @@ the tours from 9 to 2 where it can be seen. Each kind's "auf der Karte" switch
 rides in that list's own toolbar (`ListToolbar`), never beside the tab row: a
 control next to three tabs reads as acting on all three, and a bare switch says
 what it does only once it has been flipped, so it carries the words too.
+
+### What the drawer derives from the drag stays on the drawer
+
+Dragging the bottom sheet stuttered on a phone with the 201 roads in it and
+not with the 48 towns or the 9 tours, and the cause was six custom properties.
+Base UI writes the finger's position to the drawer's popup on every frame of a
+drag (`--drawer-swipe-movement-y`) and registers that property with
+`inherits: false`, precisely so that writing it restyles one element. The
+shadcn preset then computes `--translate-y` and the `--stack-*` values from it
+in _plain_ custom properties (`components/ui/drawer.tsx`) – and a plain custom
+property is inherited. Its computed value changes with the finger, so the new
+value is handed to every element under the popup, sixty times a second: the
+whole list restyled per frame, at a price set by the number of elements in it
+(9,027 under the roads, 1,572 under the towns, 455 under the tours).
+
+`app/globals.css` therefore registers the six derived properties
+(`--translate-x`, `--translate-y`, `--stack-progress`, `--stack-peek-offset`,
+`--stack-scale`, `--stack-shrink`) as non-inheriting too. Only the popup reads
+them, in its own `transform`, so nothing below misses them. `syntax: "*"`
+without an initial value keeps `var(--translate-x, 0px)` falling back as it
+did; `--bleed` and `--peek` stay plain, because they never change and the
+popup's `::after` reads `--bleed` by inheritance. The rules live in the
+stylesheet because `components/ui/` is generated – and whoever regenerates it
+checks that a new preset has not added a derived property the drag changes.
+
+Measured on the built page at 390 × 844 under 4× CPU throttling, one touch
+drag of 90 moves (headless Chromium):
+
+| list          | style recalculation | layouts |
+| ------------- | ------------------- | ------- |
+| roads, before | 1354 ms             | 38      |
+| roads, after  | 203 ms              | 6       |
+| towns, before | 958 ms              | 20      |
+| towns, after  | 145 ms              | 4       |
+| tours, before | 1177 ms             | 2       |
+| tours, after  | 155 ms              | 2       |
+
+And confirmed where it matters: two builds of the same commit served side by
+side to the iPhone that prompted the work, differing in these rules only – the
+one without them stutters, the one with them does not.
+
+Chromium hides the dependence on the row count in those numbers, because it
+skips the style of `content-visibility` subtrees that are off screen (the next
+section); WebKit evidently does not, which is why the phone told the three
+lists apart and the profile did not. Two earlier rounds of work went after
+this stutter in headless Chromium alone and did not cure the phone. The lesson
+is the method: a drag that stutters on a device is compared on that device,
+one change per build, before anything is concluded from a profile.
+
+### A long list comes in blocks of ten
+
+The rows of a list sit in blocks of ten (`RowList`,
+`components/sidebar/row-list.tsx`), each row and each block a
+`content-visibility: auto` subtree, so what is off screen is skipped – its
+style, its layout and its paint. With 201 roads at ~40 elements a row that is
+most of nine thousand elements the browser does not have to keep up to date
+while a filter chip changes the list or the sheet's state changes around it.
+
+The blocks were introduced against the restyle described above, before its
+cause was known: a row that contains its ~40 inner elements is still visited
+itself, and in blocks of ten the rows of an off-screen block are not
+(7.5 ms → 3.7 ms of style per drag frame for the roads, in Chromium). With
+the cause removed that saving is gone – 203 ms of style per drag with the
+blocks, 223 ms without – and what is left is a trade: the frame a drag starts
+in is 33 ms with them and 133 ms without (throttled), against one frame of
+~150 ms when a block first comes into view as the sheet is pulled up. They
+stay because they are in and harmless, not
+because the drag needs them; removing them would be a simplification, to be
+judged on a phone.
+
+Every row stays in the DOM either way. Windowing the list – with
+`@tanstack/react-virtual` or by hand – measured no better than the blocks, and
+it would cost `useRoving`'s arrows, `scrollIntoView` on the selected row and
+the browser's own find-in-page across all 201 rows.
+
+Ten rows is about a screenful at the sheet's lower snap point. The list is a
+`<div role="list">` and a row a `<div role="listitem">`, because a block is an
+element between the two and `<ul>` may hold nothing but `<li>`.
+
+Two things follow for everything else in the sheet. A number that changes with
+the drag must not reach the rows: `select` in `components/explorer.tsx` reads
+the drawer's resting place from a ref rather than from state, because closing
+over the snap point made every snap change a new `select` and re-rendered all
+201 rows behind the sheet (~50 ms, for a value nothing on screen was reading).
+And a row stays cheap: what is added to one is added two hundred times.
+
+### A drag of the sheet may spend the frame on nothing else
+
+Apart from the restyle above, three things were found taking the frame of a
+drag, each of them work that nobody sees. They were found while the restyle
+was still there, in a Chromium profile that showed the same frame time
+whatever was in the sheet – the roads, the roads reduced to text nodes, only
+the twenty rows on screen – and was read as "the row count is not the story".
+On the phone the row count _was_ the story, so that reading is not repeated
+here; the three rules stand on what each of them removes:
+
+- **The content box may not resize while the finger is down.** The sheet's
+  padding reads `--drawer-swipe-movement-y`, which is written on every frame of
+  a drag, so the box – and every scroll container in it – was re-laid-out sixty
+  times a second. While `data-swiping` is set the padding is zero, the one
+  value that can never end the box short of the fold however far the sheet is
+  pulled; what reaches past the fold is clipped anyway. Measured with the
+  restyle still in place: 162 layouts per drag dropped to 19, and the tours'
+  whole drag from 16.5 s to 9.8 s of task time. With the properties registered
+  the same drag lays out 22 times either way – the restyle was what turned a
+  padding into a relayout of everything under it.
+- **No backdrop filter during the gesture.** A blurred backdrop is produced
+  again whenever what is in front of it moves, and a dragged sheet moves across
+  all four glass surfaces. For the length of the drag they are the opaque
+  plates they already fall back to where `backdrop-filter` is missing (`glass`
+  in `lib/utils.ts`, the rule in `app/globals.css`).
+- **No scrolling layer during the gesture.** An `overflow` element inside a
+  transformed ancestor is kept on a scrolling layer that the browser re-makes
+  while the ancestor moves. The gesture belongs to the sheet, so the two
+  scrollers inside one (`data-scroller`) clip for its length – the same idea as
+  `useSheetExpanded` above, which already takes the scroll away _below_ the top
+  snap point; this covers the drag that starts _at_ it.
+
+What is honest about these numbers: they come from headless Chromium with the
+CPU throttled, they were taken while the derived properties above were still
+inherited, and on the iPhone that prompted the work these three rules did not
+cure the stutter – registering the properties did. Re-measured on the fixed
+build, each rule put back on its own, they no longer show at all: the drag
+holds a 16.7 ms median frame whichever way round, at 632 ms of style
+recalculation against 647 ms with the live padding, 633 ms with the blur and
+683 ms with the scroller. So what they are worth on the device is untested –
+which is the one place the stutter was ever real – and what they cost is a
+drag that is drawn as plates rather than glass. They stay because each of them
+is work removed rather than a guess at a browser; if the phone cannot tell the
+two builds apart, they are three rules and a `data-scroller` attribute to
+delete.
 
 ### A long list is one tab stop
 

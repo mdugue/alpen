@@ -75,9 +75,15 @@ export const MAP_TOOL =
  *
  * Never stack two of these on top of each other: two 70 % layers compose to
  * 91 % and the result is the opaque pill this replaced (`MAP_CLUSTER`).
+ *
+ * The bare `glass` class carries no styles of its own; it is the handle
+ * `app/globals.css` needs to take the blur off every one of these surfaces
+ * while a bottom sheet is being dragged. A backdrop filter is the one thing
+ * on this screen that is re-evaluated whenever anything in front of it moves,
+ * and on a phone that is a frame the drag does not get.
  */
 const GLASS =
-  "bg-card/70 backdrop-blur-md backdrop-saturate-150 supports-not-[backdrop-filter:blur(0)]:bg-card";
+  "glass bg-card/70 backdrop-blur-md backdrop-saturate-150 supports-not-[backdrop-filter:blur(0)]:bg-card";
 
 /**
  * Translucent floating panel over the map – the sidebar and the detail
