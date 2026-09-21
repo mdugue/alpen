@@ -35,7 +35,7 @@ and the climate series are missing.
 | `bun dev`                            | Development server                                                        |
 | `bun run build` / `bun start`        | Production build and server                                               |
 | `bun run typecheck`                  | `tsc --noEmit`                                                            |
-| `bun run lint` / `bun run lint:fix`  | oxlint + oxfmt via ultracite (incl. React Compiler rules)                 |
+| `bun run lint` / `bun run lint:fix`  | oxlint + oxfmt via ultracite (React Compiler and type-aware rules incl.)  |
 | `bun run data:build`                 | Fetch routes, elevation profiles, climate → `data/generated/` (resumable) |
 | `bun run data:build --status`        | Show what is still missing and what it costs in Open-Meteo calls          |
 | `bun run data:check`                 | Validate references and completeness of the data                          |

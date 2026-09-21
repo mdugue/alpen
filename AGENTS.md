@@ -257,9 +257,9 @@ What the page ships, how it is cached, the one dynamic route, the tools.
   The floor is load-bearing; `.claude/hooks/session-start.sh` upgrades the
   remote container to it.
   → [why](docs/architecture.md#bun-is-pinned-by-engines-and-the-web-container-is-dragged-up-to-it)
-- **oxlint and oxfmt, no ESLint.** `bun run lint` is `ultracite check`; the
-  configs only ever deviate from the preset, with the reason next to each
-  deviation.
+- **oxlint and oxfmt, no ESLint.** `bun run lint` is `ultracite check`, the
+  type-aware rules included (`oxlint-tsgolint`); the configs only ever deviate
+  from the preset, with the reason next to each deviation.
   → [why](docs/architecture.md#oxlint-and-oxfmt-no-eslint)
 
 ## Before opening a PR

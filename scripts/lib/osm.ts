@@ -36,7 +36,7 @@ import {
   waysWithGeometry,
   roadsQuery,
 } from "./locate";
-import type { OsmElement, OverpassNode, OverpassWay } from "./locate";
+import type { OsmElement, OverpassWay } from "./locate";
 
 export const OVERPASS_URL =
   process.env.OVERPASS_URL ?? "https://overpass-api.de/api/interpreter";
@@ -56,7 +56,7 @@ export interface OsmOptions {
 }
 
 const elementsOf = (json: unknown) =>
-  ((json as { elements?: OsmElement[] }).elements ?? []) as OsmElement[];
+  (json as { elements?: OsmElement[] }).elements ?? [];
 
 /** One line, no stack: the reason belongs in the log, the trace does not. */
 const reasonOf = (error: unknown) =>
@@ -158,7 +158,7 @@ export const osmSource = (opts: OsmOptions) => {
       const viaOverpass = await overpass(candidatesQuery(p, radiusKm));
       return viaOverpass === null
         ? passNodesWithin(p, radiusKm, await map(p, radiusKm))
-        : (viaOverpass.filter((e) => e.type === "node") as OverpassNode[]);
+        : viaOverpass.filter((e) => e.type === "node");
     },
     /**
      * The drivable ways near any of the points. The result is one flat list

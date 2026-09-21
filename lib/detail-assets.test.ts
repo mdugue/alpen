@@ -63,10 +63,8 @@ describe("detailAssets", () => {
     // The tour has neither a photo nor a profile, so it gets no file and no
     // URL – and the panel makes no request for it.
     expect(files).toHaveLength(2);
-    expect(files.map((f) => f.name)).toEqual([
-      expect.stringMatching(/^pass-testpass\.[0-9a-f]{8}\.json$/u),
-      expect.stringMatching(/^town-testort\.[0-9a-f]{8}\.json$/u),
-    ]);
+    expect(files[0]?.name).toMatch(/^pass-testpass\.[0-9a-f]{8}\.json$/u);
+    expect(files[1]?.name).toMatch(/^town-testort\.[0-9a-f]{8}\.json$/u);
     // The count travels with the URL: the panel reserves the carousel's box
     // before the file arrives (see `DetailAsset`).
     expect(assets[photoKey("pass", "testpass")]).toEqual({

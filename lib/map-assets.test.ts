@@ -31,7 +31,7 @@ describe("simplify", () => {
     // The 20 m bump stays; its neighbours sit 10 m off the new diagonals and go.
     const out = simplify(road(20), 12);
     expect(out).toHaveLength(3);
-    expect(out[1]).toEqual(road(20)[2]!);
+    expect(out[1]).toEqual(road(20)[2]);
     // At 5 m those neighbours are kept as well.
     expect(simplify(road(20), 5)).toHaveLength(5);
   });
@@ -119,14 +119,14 @@ describe("mapAssets", () => {
       [tour, { ...tour, slug: "ohne-route" }],
       routes,
     );
-    expect(files.map((f) => f.name)).toEqual([
-      expect.stringMatching(/^routes\.[0-9a-f]{8}\.geojson$/u),
-      expect.stringMatching(/^tours\.[0-9a-f]{8}\.geojson$/u),
-    ]);
+    expect(files).toHaveLength(2);
+    expect(files[0]?.name).toMatch(/^routes\.[0-9a-f]{8}\.geojson$/u);
+    expect(files[1]?.name).toMatch(/^tours\.[0-9a-f]{8}\.geojson$/u);
     expect(assets.routesUrl).toBe(`/map/${files[0]!.name}`);
     expect(assets.toursUrl).toBe(`/map/${files[1]!.name}`);
     // Only the routed tour is drawn …
-    expect(JSON.parse(files[1]!.body).features).toHaveLength(1);
+    const drawn = JSON.parse(files[1]!.body) as { features: unknown[] };
+    expect(drawn.features).toHaveLength(1);
     // … but both can be framed.
     expect(assets.tourBounds.testrunde).toEqual(bounds(road(20)));
     expect(assets.tourBounds["ohne-route"]).toEqual([9, 46, 9.5, 46.5]);
@@ -136,7 +136,7 @@ describe("mapAssets", () => {
     // Only the northern ascent is routed; the southern one contributes
     // nothing, and the summit marker keeps the box honest at the top.
     const { assets } = mapAssets(
-      [{ ...pass, lat: 46.01, lon: 9.02 } as Pass],
+      [{ ...pass, lat: 46.01, lon: 9.02 }],
       [],
       routes,
     );
@@ -145,7 +145,7 @@ describe("mapAssets", () => {
     expect(assets.passBounds.testpass).toEqual([9, 46, 9.02, 46.01]);
     // A pass with no routed ascent at all still has a box: its own point.
     const bare = mapAssets(
-      [{ ...pass, lat: 46.01, lon: 9.02, slug: "bare" } as Pass],
+      [{ ...pass, lat: 46.01, lon: 9.02, slug: "bare" }],
       [],
       {},
     ).assets;

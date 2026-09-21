@@ -1,5 +1,6 @@
 "use client";
 
+import type { FeatureCollection } from "geojson";
 import { Compass, MoreHorizontal, Scan } from "lucide-react";
 import type {
   ExpressionSpecification,
@@ -8,6 +9,8 @@ import type {
   LayerSpecification,
   StyleSpecification,
 } from "maplibre-gl";
+
+import "maplibre-gl/dist/maplibre-gl.css";
 import {
   AttributionControl,
   LngLat,
@@ -17,8 +20,6 @@ import {
   ScaleControl,
   setWorkerUrl,
 } from "maplibre-gl";
-
-import "maplibre-gl/dist/maplibre-gl.css";
 import { useEffect, useRef, useState } from "react";
 
 import { baseLayers, OVERLAYS, VECTOR_BASE } from "@/components/map/map-style";
@@ -125,7 +126,7 @@ interface Props {
   insetTop?: number;
 }
 
-const EMPTY = { features: [], type: "FeatureCollection" } as const;
+const EMPTY: FeatureCollection = { features: [], type: "FeatureCollection" };
 /** Breathing room around a fitted frame, in pixels; the map padding is added on top. */
 const FIT_PADDING = 48;
 /** The same around a selected tour, which is framed tighter than the whole map. */
@@ -1107,7 +1108,7 @@ export const PassMap = ({
   const paintReach = (slug: string | null) => {
     const m = map.current;
     const ring = slug ? reachRef.current[slug] : undefined;
-    (m?.getSource("reach") as GeoJSONSource | undefined)?.setData({
+    void m?.getSource<GeoJSONSource>("reach")?.setData({
       features: ring
         ? [
             {
@@ -1204,7 +1205,7 @@ export const PassMap = ({
         routes: { data: assets.routesUrl, promoteId: "id", type: "geojson" },
         tours: { data: assets.toursUrl, promoteId: "id", type: "geojson" },
         towns: { data: EMPTY, type: "geojson" },
-      } as StyleSpecification["sources"],
+      },
       version: 8,
     };
 
@@ -1471,7 +1472,9 @@ export const PassMap = ({
 
     // The container changes size when the sidebar collapses; MapLibre only
     // tracks window resizes on its own.
-    const ro = new ResizeObserver(() => m.resize());
+    const ro = new ResizeObserver(() => {
+      m.resize();
+    });
     ro.observe(container.current);
 
     return () => {
@@ -1642,7 +1645,7 @@ export const PassMap = ({
     const m = map.current;
     if (!m || !ready) return;
     const selPass = selection?.kind === "pass" ? selection.slug : null;
-    (m.getSource("passes") as GeoJSONSource | undefined)?.setData({
+    void m.getSource<GeoJSONSource>("passes")?.setData({
       features: (showPasses ? passes : []).map((p) => ({
         geometry: { coordinates: [p.lon, p.lat], type: "Point" },
         properties: {
@@ -1664,7 +1667,7 @@ export const PassMap = ({
     const m = map.current;
     if (!m || !ready) return;
     const selTown = selection?.kind === "town" ? selection.slug : null;
-    (m.getSource("towns") as GeoJSONSource | undefined)?.setData({
+    void m.getSource<GeoJSONSource>("towns")?.setData({
       features: showTowns
         ? towns.map((t) => ({
             geometry: { coordinates: [t.lon, t.lat], type: "Point" },
@@ -1743,7 +1746,7 @@ export const PassMap = ({
         : hovered?.kind === "town"
           ? towns.find((t) => t.slug === hovered.slug)
           : undefined;
-    (m.getSource("hover") as GeoJSONSource | undefined)?.setData({
+    void m.getSource<GeoJSONSource>("hover")?.setData({
       features: point
         ? [
             {
@@ -1779,7 +1782,7 @@ export const PassMap = ({
   useEffect(() => {
     const m = map.current;
     if (!m || !ready) return;
-    (m.getSource("cursor") as GeoJSONSource | undefined)?.setData({
+    void m.getSource<GeoJSONSource>("cursor")?.setData({
       features: profileCursor
         ? [
             {
@@ -1977,9 +1980,9 @@ export const PassMap = ({
                     size="icon-lg"
                     variant="outline"
                     className={cn(TOOL, MAP_TOOL)}
-                    onClick={() =>
-                      map.current?.easeTo({ bearing: 0, duration: 400 })
-                    }
+                    onClick={() => {
+                      map.current?.easeTo({ bearing: 0, duration: 400 });
+                    }}
                     aria-label="Nach Norden ausrichten"
                   />
                 }

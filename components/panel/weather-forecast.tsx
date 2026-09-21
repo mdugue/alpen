@@ -94,17 +94,17 @@ export const WeatherForecast = ({ slug }: { slug: string }) => {
     );
 
   const [today, tomorrow] = data.days;
+  const rows: [WeatherDay | undefined, string][] = [
+    [today, "heute"],
+    [tomorrow, "morgen"],
+  ];
 
   return (
     <Collapsible>
       <div className="flex flex-col">
-        {[
-          [today, "heute"],
-          [tomorrow, "morgen"],
-        ]
-          .filter(([day]) => day)
-          .map(([day, when]) => {
-            const d = day as WeatherDay;
+        {rows
+          .filter((row): row is [WeatherDay, string] => row[0] !== undefined)
+          .map(([d, when]) => {
             const [Icon, label] = describe(d.weatherCode);
             return (
               <div
@@ -116,9 +116,7 @@ export const WeatherForecast = ({ slug }: { slug: string }) => {
                   aria-label={label}
                   role="img"
                 />
-                <span className="w-14 shrink-0 font-medium">
-                  {when as string}
-                </span>
+                <span className="w-14 shrink-0 font-medium">{when}</span>
                 <span className="w-16 shrink-0">
                   {fmt(Math.round(d.tmin))}° / {fmt(Math.round(d.tmax))}°
                 </span>
