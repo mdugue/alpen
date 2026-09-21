@@ -125,14 +125,37 @@ nothing loads from there until it is clicked.
 
 ## Toolchain
 
-### TypeScript 7 side by side with the 6.0 API
+### TypeScript 7, one compiler under its own name
 
-`tsc` (and thus `bun run typecheck` and `next build`) is TypeScript 7,
-installed as `@typescript/native`. The `typescript` package name resolves to
-`@typescript/typescript6` (`tsc6` is that version's binary), because TypeScript
-7.0 has no JavaScript API and the editor language service still wants one –
-`.vscode/settings.json` points `js/ts.tsdk.path` at it. Keep both entries in
-`package.json`.
+`typescript` is TypeScript 7, and it is the only TypeScript in the tree. Both
+`bun run typecheck` and `next build` compile with it.
+
+It used to be two packages: `@typescript/native` aliased to TypeScript 7 for
+the `tsc` binary, and the `typescript` name aliased to `@typescript/typescript6`
+for the editor's language service. That arrangement quietly type-checked the
+build with a different compiler than `bun run typecheck`, because `next build`
+resolves the `typescript` package name and that name was 6.0. Collapsing the
+two cost nothing and made Next's TypeScript step about three times faster
+(12s → 4s on this repo), because the build now runs the native compiler
+instead of the JavaScript one.
+
+Two things follow from having only TypeScript 7:
+
+- **The `typescript` dependency is load-bearing, not decoration.** Remove it and
+  `next build` does not skip its TypeScript step – it installs a TypeScript
+  itself, with whichever package manager it detects, rewriting `package.json`
+  and dropping a foreign lockfile next to `bun.lock`.
+- **The editor is on its own.** TypeScript 7 ships `tsc` and an `unstable` API,
+  no `tsserver.js` and no full JavaScript API, so there is no workspace language
+  service to point an editor at; `.vscode/settings.json` no longer sets
+  `js/ts.tsdk.path`. The editor falls back to its own bundled TypeScript, which
+  is a release behind the compiler – `bun run typecheck` is the authority, and
+  CI runs it. For TypeScript 7 in the editor, install its native-preview
+  extension.
+
+Do not add TypeScript 6 back under its own name to get the language service:
+it pulls in `@typescript/old`, which also claims the `tsc` binary, and
+`bun run typecheck` then silently runs the old compiler.
 
 ### Bun is pinned by `engines`, and the web container is dragged up to it
 

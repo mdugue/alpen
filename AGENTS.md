@@ -242,10 +242,10 @@ What the page ships, how it is cached, the one dynamic route, the tools.
   file.** `/api/weather/[slug]`: an hour-long window, `s-maxage` so the CDN
   serves the repeats, and a cooldown inside the cached function.
   → [why](docs/architecture.md#the-one-dynamic-route-lives-inside-a-free-tier-and-the-numbers-are-in-the-file)
-- **TypeScript 7 side by side with the 6.0 API.** `tsc` is
-  `@typescript/native`; the `typescript` name resolves to 6.0 for the editor.
-  Keep both entries.
-  → [why](docs/architecture.md#typescript-7-side-by-side-with-the-60-api)
+- **TypeScript 7, one compiler under its own name.** `typescript` is 7 and the
+  only TypeScript here; `typecheck` and `next build` share it. Never drop it –
+  the build installs its own and rewrites `package.json`.
+  → [why](docs/architecture.md#typescript-7-one-compiler-under-its-own-name)
 - **Bun is pinned by `engines`, and the web container is dragged up to it.**
   The floor is load-bearing; `.claude/hooks/session-start.sh` upgrades the
   remote container to it.
