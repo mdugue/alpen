@@ -10,23 +10,20 @@ import { cn, ICON_TOGGLE, TOUCH_ICON } from "@/lib/utils";
  * column. No interactive element is nested inside another – the body is its
  * own button, so Enter/Space and focus come for free.
  *
- * A row is a containment boundary (`content-visibility`), and that is what
- * keeps the phone usable. The lists are long – 201 roads alone, ~40 elements
- * per row – and on a phone they sit inside the bottom sheet, whose popup gets
- * a custom property written to it on every single touchmove of a drag
- * (`--drawer-swipe-movement-y`, and the snap offset whenever the sheet
- * resizes). Custom properties are inherited, and Chrome answers a changed one
- * by recalculating the style of the whole subtree: with the passes unfolded
- * that was one ~300 ms recalculation per touchmove, which is what made
- * dragging the sheet, scrolling and the filter panel crawl. Contained, a row
- * keeps its own layout, style and paint to itself, and off screen it is
- * skipped altogether; measured on a throttled phone profile the recalculation
- * drops to about a third.
+ * A row is a containment boundary (`content-visibility`). The lists are long
+ * – 201 roads alone, ~40 elements per row – and contained, a row keeps its
+ * own layout, style and paint to itself, and off screen it is skipped
+ * altogether: whatever restyles the list (a filter chip, a state change of
+ * the sheet around it) pays for the rows on screen, not for nine thousand
+ * elements. The rows come in blocks of ten on top of that (`RowList`), each
+ * block a skipped subtree of its own, so that the row elements of an
+ * off-screen block are not visited either.
  *
- * What containment does *not* buy is the row element itself: it is still
- * visited on every one of those writes, and two hundred of them were still
- * two thirds of the frame. That is why the rows come in blocks of ten
- * (`RowList`), each block a skipped subtree of its own.
+ * Both were introduced against a restyle of the whole list on every frame of
+ * a sheet drag. Its cause was elsewhere – inherited custom properties in the
+ * drawer preset, registered as non-inheriting in `app/globals.css` since –
+ * and `docs/ui-conventions.md` has what the containment still measures
+ * without it.
  *
  * `auto` in the intrinsic size lets a row remember what it measured, so the
  * scrollbar does not jump; the step is the height of a row that has never

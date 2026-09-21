@@ -152,14 +152,19 @@ The component layer, the layout, the sidebar, the detail panel.
 - **One list at a time, chosen by a tab row.** The three kinds sit behind tabs
   in the fixed header; each list's map switch rides in its own toolbar.
   → [why](docs/ui-conventions.md#one-list-at-a-time-chosen-by-a-tab-row)
-- **A long list comes in blocks of ten.** A drag of the bottom sheet writes a
-  custom property to its popup on every frame and Chrome recalculates the whole
-  subtree for it, so the rows sit in blocks that are skipped whole while off
-  screen (`RowList`) – and nothing that changes with the drag may reach them.
+- **What the drawer derives from the drag stays on the drawer.** The preset
+  computes `--translate-y` and the `--stack-*` values in inherited custom
+  properties, so every drag frame restyled the whole list; `app/globals.css`
+  registers them `inherits: false`. Check them after `ui:init`, and compare a
+  stutter on the device, one change per build.
+  → [why](docs/ui-conventions.md#what-the-drawer-derives-from-the-drag-stays-on-the-drawer)
+- **A long list comes in blocks of ten.** Rows and blocks are
+  `content-visibility` subtrees that are skipped while off screen (`RowList`),
+  every row stays in the DOM – and nothing that changes with the drag may reach
+  them.
   → [why](docs/ui-conventions.md#a-long-list-comes-in-blocks-of-ten)
 - **A drag of the sheet may spend the frame on nothing else.** No content box
   resizing, no backdrop filter, no scrolling layer while the finger is down.
-  Windowing the list instead was measured and bought nothing.
   → [why](docs/ui-conventions.md#a-drag-of-the-sheet-may-spend-the-frame-on-nothing-else)
 - **A long list is one tab stop.** `useRoving` makes each list the composite
   widget the platform expects: one stop, arrows inside it.

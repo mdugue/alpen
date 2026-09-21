@@ -23,8 +23,9 @@ styling (status badges, etc.) goes into the consuming component via
 tokens (`--status-open`, `--status-risky`, `--status-closed`, `--tour`,
 `--town`, the strip's `--grade-*` ramp, plus their `@theme inline` lines), the
 `--text-2xs` step below Tailwind's `text-xs`, the MapLibre rules at the end,
-the coarse-pointer font-size rule next to them and the dark-mode setup must be
-restored afterwards.
+the coarse-pointer font-size rule next to them, the drawer's `@property` rules
+and the sheet-drag rules after it, and the dark-mode setup must be restored
+afterwards.
 
 ### Sizes come from the scale, not from pixels
 
@@ -338,42 +339,83 @@ rides in that list's own toolbar (`ListToolbar`), never beside the tab row: a
 control next to three tabs reads as acting on all three, and a bare switch says
 what it does only once it has been flipped, so it carries the words too.
 
+### What the drawer derives from the drag stays on the drawer
+
+Dragging the bottom sheet stuttered on a phone with the 201 roads in it and
+not with the 48 towns or the 9 tours, and the cause was six custom properties.
+Base UI writes the finger's position to the drawer's popup on every frame of a
+drag (`--drawer-swipe-movement-y`) and registers that property with
+`inherits: false`, precisely so that writing it restyles one element. The
+shadcn preset then computes `--translate-y` and the `--stack-*` values from it
+in _plain_ custom properties (`components/ui/drawer.tsx`) – and a plain custom
+property is inherited. Its computed value changes with the finger, so the new
+value is handed to every element under the popup, sixty times a second: the
+whole list restyled per frame, at a price set by the number of elements in it
+(9,027 under the roads, 1,572 under the towns, 455 under the tours).
+
+`app/globals.css` therefore registers the six derived properties
+(`--translate-x`, `--translate-y`, `--stack-progress`, `--stack-peek-offset`,
+`--stack-scale`, `--stack-shrink`) as non-inheriting too. Only the popup reads
+them, in its own `transform`, so nothing below misses them. `syntax: "*"`
+without an initial value keeps `var(--translate-x, 0px)` falling back as it
+did; `--bleed` and `--peek` stay plain, because they never change and the
+popup's `::after` reads `--bleed` by inheritance. The rules live in the
+stylesheet because `components/ui/` is generated – and whoever regenerates it
+checks that a new preset has not added a derived property the drag changes.
+
+Measured on the built page at 390 × 844 under 4× CPU throttling, one touch
+drag of 90 moves (headless Chromium):
+
+| list          | style recalculation | layouts |
+| ------------- | ------------------- | ------- |
+| roads, before | 1354 ms             | 38      |
+| roads, after  | 203 ms              | 6       |
+| towns, before | 958 ms              | 20      |
+| towns, after  | 145 ms              | 4       |
+| tours, before | 1177 ms             | 2       |
+| tours, after  | 155 ms              | 2       |
+
+And confirmed where it matters: two builds of the same commit served side by
+side to the iPhone that prompted the work, differing in these rules only – the
+one without them stutters, the one with them does not.
+
+Chromium hides the dependence on the row count in those numbers, because it
+skips the style of `content-visibility` subtrees that are off screen (the next
+section); WebKit evidently does not, which is why the phone told the three
+lists apart and the profile did not. Two earlier rounds of work went after
+this stutter in headless Chromium alone and did not cure the phone. The lesson
+is the method: a drag that stutters on a device is compared on that device,
+one change per build, before anything is concluded from a profile.
+
 ### A long list comes in blocks of ten
 
 The rows of a list sit in blocks of ten (`RowList`,
-`components/sidebar/row-list.tsx`), and a block that is off screen is skipped
-whole (`content-visibility`). That is a measurement, not tidiness. On a phone
-the lists live in the bottom sheet, and Base UI writes a custom property to the
-sheet's popup on every frame of a drag (`--drawer-swipe-movement-y`, and the
-snap offset whenever it resizes). A custom property is inherited, and Chrome
-answers a changed one by recalculating the style of the entire subtree: an
-unrelated `--zzz` written to the popup costs exactly as much as the drawer's
-own property, and redeclaring the property further down does not stop the walk.
-So the price of dragging the sheet is the number of elements under it, and with
-the 201 roads that was 7.5 ms per frame against 3.3 ms for the 9 tours – which
-is exactly the list that stuttered and the two that did not.
+`components/sidebar/row-list.tsx`), each row and each block a
+`content-visibility: auto` subtree, so what is off screen is skipped – its
+style, its layout and its paint. With 201 roads at ~40 elements a row that is
+most of nine thousand elements the browser does not have to keep up to date
+while a filter chip changes the list or the sheet's state changes around it.
 
-Containing each row (`content-visibility` in `EntityRow`) keeps its ~40 inner
-elements out of the walk, but the row element itself is still visited, and 200
-of those were two thirds of the frame. In blocks of ten they are not visited at
-all while their block is off screen: 7.5 ms → 3.7 ms for the roads and
-5.0 ms → 2.7 ms for the towns, measured on the built page at 390 × 844, which
-puts the roads where the tours already were. Windowing the list – with
-`@tanstack/react-virtual` or by hand – measured the same floor and no better:
-it buys a dependency and rows that exist only while they are on screen. Keeping
-every row in the DOM is what keeps `useRoving`'s arrows, `scrollIntoView` on
-the selected row and the browser's own find-in-page working across all 201 of
-them, so the blocks won.
+The blocks were introduced against the restyle described above, before its
+cause was known: a row that contains its ~40 inner elements is still visited
+itself, and in blocks of ten the rows of an off-screen block are not
+(7.5 ms → 3.7 ms of style per drag frame for the roads, in Chromium). With
+the cause removed that saving is gone – 203 ms of style per drag with the
+blocks, 223 ms without – and what is left is a trade: the frame a drag starts
+in is 33 ms with them and 133 ms without (throttled), against one frame of
+~150 ms when a block first comes into view as the sheet is pulled up. They
+stay because they are in and harmless, not
+because the drag needs them; removing them would be a simplification, to be
+judged on a phone.
 
-Ten rows is about a screenful at the sheet's lower snap point. Smaller blocks
-measure a little better and cost a wrapper each; larger ones give the saving
-back. The list is a `<div role="list">` and a row a `<div role="listitem">`,
-because a block is an element between the two and `<ul>` may hold nothing but
-`<li>`.
+Every row stays in the DOM either way. Windowing the list – with
+`@tanstack/react-virtual` or by hand – measured no better than the blocks, and
+it would cost `useRoving`'s arrows, `scrollIntoView` on the selected row and
+the browser's own find-in-page across all 201 rows.
 
-All of those numbers are the style half of the frame, and the style half is not
-the frame: the drag stayed rough after them. What the whole frame is spent on
-is the next section.
+Ten rows is about a screenful at the sheet's lower snap point. The list is a
+`<div role="list">` and a row a `<div role="listitem">`, because a block is an
+element between the two and `<ul>` may hold nothing but `<li>`.
 
 Two things follow for everything else in the sheet. A number that changes with
 the drag must not reach the rows: `select` in `components/explorer.tsx` reads
@@ -384,24 +426,13 @@ And a row stays cheap: what is added to one is added two hundred times.
 
 ### A drag of the sheet may spend the frame on nothing else
 
-Measure the whole frame rather than its style half and the row count stops
-being the story. On the built page, a real touch drag under 4× CPU throttling,
-median frame time:
-
-| what is in the sheet                                 | frame    |
-| ---------------------------------------------------- | -------- |
-| the roads, in blocks                                 | 50–66 ms |
-| the roads with every season strip removed            | 50 ms    |
-| every row reduced to a text node                     | 50 ms    |
-| **only the twenty rows on screen, the rest deleted** | 66–83 ms |
-| the list not rendered at all                         | 17–33 ms |
-
-The fourth row is windowing at its strongest – every row beyond the viewport
-gone from the DOM, which is what `@tanstack/react-virtual` would leave – and it
-is no better than what is there. Rendering _anything_ substantial in a sheet
-that is moving costs the frame; how much of it there is barely matters. So the
-rule is not "fewer rows", it is that the gesture gets the frame to itself, and
-three things were taking it:
+Apart from the restyle above, three things were found taking the frame of a
+drag, each of them work that nobody sees. They were found while the restyle
+was still there, in a Chromium profile that showed the same frame time
+whatever was in the sheet – the roads, the roads reduced to text nodes, only
+the twenty rows on screen – and was read as "the row count is not the story".
+On the phone the row count _was_ the story, so that reading is not repeated
+here; the three rules stand on what each of them removes:
 
 - **The content box may not resize while the finger is down.** The sheet's
   padding reads `--drawer-swipe-movement-y`, which is written on every frame of
@@ -424,10 +455,10 @@ three things were taking it:
   snap point; this covers the drag that starts _at_ it.
 
 What is honest about these numbers: they come from headless Chromium with the
-CPU throttled, and the phone that prompted the work is an iPhone, where none of
-it can be measured from here. The three rules are each a piece of work removed
-rather than a guess at a browser, which is why they are worth having either
-way.
+CPU throttled, they were taken while the derived properties above were still
+inherited, and on the iPhone that prompted the work these three rules did not
+cure the stutter – registering the properties did. They are each a piece of
+work removed rather than a guess at a browser, which is why they stay.
 
 ### A long list is one tab stop
 

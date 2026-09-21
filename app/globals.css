@@ -312,6 +312,51 @@
 }
 
 /*
+ * What the drawer derives from the drag stays on the drawer.
+ *
+ * Base UI writes the finger's position to the popup on every frame of a drag
+ * (`--drawer-swipe-movement-y`) and registers that property as non-inheriting,
+ * so that writing it restyles one element. The preset then computes
+ * `--translate-y` and the `--stack-*` values from it in plain custom
+ * properties – and a plain custom property is inherited, so its new computed
+ * value is handed to every element under the popup, sixty times a second: the
+ * whole list restyled per frame, which is why the 201 roads stuttered and the
+ * 9 tours did not. Measured on the built page (390 × 844, 4× CPU throttle, one
+ * drag of 90 moves): 1354 ms of style recalculation with them inherited,
+ * 203 ms without, and 38 layouts against 6.
+ *
+ * Only the popup itself reads them (its `transform`), so nothing below misses
+ * them. `--bleed` and `--peek` are left alone: they never change, and the
+ * popup's `::after` reads `--bleed` by inheritance. `syntax: "*"` with no
+ * initial value keeps `var(--translate-x, 0px)` falling back as before.
+ * `components/ui/` is generated, hence here and not there.
+ */
+@property --translate-x {
+  syntax: "*";
+  inherits: false;
+}
+@property --translate-y {
+  syntax: "*";
+  inherits: false;
+}
+@property --stack-progress {
+  syntax: "*";
+  inherits: false;
+}
+@property --stack-peek-offset {
+  syntax: "*";
+  inherits: false;
+}
+@property --stack-scale {
+  syntax: "*";
+  inherits: false;
+}
+@property --stack-shrink {
+  syntax: "*";
+  inherits: false;
+}
+
+/*
  * While a bottom sheet is being dragged, the surfaces over the map are plates
  * rather than glass.
  *

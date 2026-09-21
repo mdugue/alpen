@@ -5,28 +5,22 @@ import { rowBlocks } from "@/lib/rows";
 /**
  * One list of rows, in blocks of ten.
  *
- * The blocks are there for one measurement. On a phone the lists sit inside
- * the bottom sheet, and the sheet's popup gets a custom property written to it
- * on every frame of a drag (`--drawer-swipe-movement-y`, and the snap offset
- * whenever it resizes). A custom property is inherited, and Chrome answers a
- * changed one by recalculating the style of the **whole** subtree – measured
- * here: an unrelated `--zzz` written to the popup costs exactly as much as the
- * drawer's own property, and redeclaring the property further down does not
- * stop the walk. So the cost of dragging the sheet is the number of elements
- * under it, and with the 201 roads that was 7.5 ms per frame against 3.3 ms
- * for the 9 tours – which is precisely the difference between the list that
- * stutters and the two that do not.
- *
  * A row already keeps its own layout, style and paint to itself
  * (`content-visibility` in `EntityRow`), but the row element itself is still
- * visited: 200 of them are two thirds of the bill. Inside a block that is off
- * screen they are not visited at all, because the skipped subtree is the
- * block. Twenty-one blocks replace two hundred rows in that walk, which halves
- * the frame – 7.5 ms → 3.7 ms for the roads, 5.0 ms → 2.7 ms for the towns,
- * measured on the built page at 390 × 844 – and leaves the roads where the
- * tours already were. Windowing the list down to the rows on screen, with
- * `@tanstack/react-virtual` or by hand, measured the same floor and no better:
- * it would buy a dependency and rows that exist only while they are looked at.
+ * visited whenever the list is restyled. Inside a block that is off screen it
+ * is not, because the skipped subtree is the block: twenty-one blocks stand in
+ * for two hundred rows.
+ *
+ * They were introduced against a restyle of the whole list on every frame of
+ * a sheet drag, and halved it (7.5 ms → 3.7 ms per frame for the roads, in
+ * Chromium). The cause of that restyle was the drawer preset's inherited
+ * custom properties, which `app/globals.css` now registers as non-inheriting;
+ * with it gone the blocks measure next to nothing during a drag, and
+ * `docs/ui-conventions.md` says what is left of the case for them.
+ *
+ * Windowing the list down to the rows on screen, with
+ * `@tanstack/react-virtual` or by hand, measured no better than the blocks: it
+ * would buy a dependency and rows that exist only while they are looked at.
  * Every row staying in the DOM is what keeps `useRoving`'s arrows,
  * `scrollIntoView` on the selected row and the browser's own find-in-page
  * working on all 201 of them.
