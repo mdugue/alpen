@@ -29,19 +29,19 @@
       "source": "vercel/next.js",
       "sourceType": "github",
       "skillPath": "skills/next-cache-components-optimizer/SKILL.md",
-      "computedHash": "60f603cd578249e5bfc6e192032b20bf7e74764554bdd319fdc543be0b563052"
+      "computedHash": "c62f6c13119c4e9027268edaa07291c33d74a676e1bd93583349c07efd990f6b"
     },
     "next-dev-loop": {
       "source": "vercel/next.js",
       "sourceType": "github",
       "skillPath": "skills/next-dev-loop/SKILL.md",
-      "computedHash": "d604c9440a736b08836fe782e8c0bf6a596d00c4e20e3e245e4a4394efbf74f4"
+      "computedHash": "18d8a8f48b8dc50e084de85afe6bd517a178c83684d45c1ebd16cf396428bedf"
     },
     "next-partial-prefetching-adoption": {
       "source": "vercel/next.js",
       "sourceType": "github",
       "skillPath": "skills/next-partial-prefetching-adoption/SKILL.md",
-      "computedHash": "ed8e8106385248d02a9da25f66e5434202b98ae131873abd0a70851e2ad061f5"
+      "computedHash": "1ca75b686e91327da75bc3c286ba037a1f7e6a8d613ce77682c634520e019791"
     },
     "shadcn": {
       "source": "shadcn-ui/ui",
@@ -53,25 +53,25 @@
       "source": "vercel-labs/agent-skills",
       "sourceType": "github",
       "skillPath": "skills/composition-patterns/SKILL.md",
-      "computedHash": "575757e3e25761c8c562d6e395d29f0b76c98b1273c0bd72d88e6ab1bc9c7d42"
+      "computedHash": "f98931159fa9c7fed043bcd18a891a46dcf89ababa38df13a4c5b7b30dc0ce07"
     },
     "vercel-react-best-practices": {
       "source": "vercel-labs/agent-skills",
       "sourceType": "github",
       "skillPath": "skills/react-best-practices/SKILL.md",
-      "computedHash": "ca7b0c0c6e5f2750043f7f0cd72d16ac4e2abc48f9b5500d047a4b77a2506212"
+      "computedHash": "3219a1944e404ffc14d1d9d6aef6dd2e3855b81387ee0a044ccbfe14d34c2357"
     },
     "vercel-react-view-transitions": {
       "source": "vercel-labs/agent-skills",
       "sourceType": "github",
       "skillPath": "skills/react-view-transitions/SKILL.md",
-      "computedHash": "2033ef20681c90d4f93deee719e55e019c254e496d9bf80381c27cc539292001"
+      "computedHash": "73fddafed488c308ee0799178432801fe10aa338451948ea05f4200541053040"
     },
     "web-design-guidelines": {
       "source": "vercel-labs/agent-skills",
       "sourceType": "github",
       "skillPath": "skills/web-design-guidelines/SKILL.md",
-      "computedHash": "f3bc47f890f42a44db1007ab390709ec368e4b8c089baee6b0007182236ac474"
+      "computedHash": "a6a44d5498f7e8f68289902f3dedfc6f38ae0cee1e96527c80724cf27f727c2a"
     }
   }
 }
