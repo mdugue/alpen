@@ -375,8 +375,10 @@
  */
 body:has([data-slot="drawer-popup"][data-swiping]) .glass {
   background-color: var(--color-card);
-  backdrop-filter: none;
+  /* Prefixed first: lightningcss drops the unprefixed line when it comes
+   * before the prefixed one, and Chromium and Firefox read only that one. */
   -webkit-backdrop-filter: none;
+  backdrop-filter: none;
 }
 
 /*

@@ -484,9 +484,10 @@ export const sortPassRows = (rows: PassRow[], sort: PassSort): PassRow[] => {
 /**
  * How many rows share one block of a list, and the blocks themselves.
  *
- * The number is a measurement, not a taste: the blocks exist so an off-screen
- * one is skipped whole (`RowList`, components/sidebar/row-list.tsx), and one
- * that is on screen is paid for in full. Ten is about a screenful of the
+ * The blocks exist so an off-screen one is skipped whole (`RowList`,
+ * components/sidebar/row-list.tsx), and one that is on screen is paid for in
+ * full; what that still buys is in docs/ui-conventions.md ("A long list comes
+ * in blocks of ten"). Ten is about a screenful of the
  * bottom sheet at its lower snap point, so at rest one block is rendered and
  * the rest are not; smaller blocks buy little more and cost a wrapper each.
  */

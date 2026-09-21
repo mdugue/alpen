@@ -153,8 +153,8 @@ The component layer, the layout, the sidebar, the detail panel.
   in the fixed header; each list's map switch rides in its own toolbar.
   → [why](docs/ui-conventions.md#one-list-at-a-time-chosen-by-a-tab-row)
 - **What the drawer derives from the drag stays on the drawer.** The preset
-  computes `--translate-y` and the `--stack-*` values in inherited custom
-  properties, so every drag frame restyled the whole list; `app/globals.css`
+  computes `--translate-x`/`-y` and four `--stack-*` values (`-progress`,
+  `-peek-offset`, `-scale`, `-shrink`) in inherited custom properties, so every drag frame restyled the whole list; `app/globals.css`
   registers them `inherits: false`. Check them after `ui:init`, and compare a
   stutter on the device, one change per build.
   → [why](docs/ui-conventions.md#what-the-drawer-derives-from-the-drag-stays-on-the-drawer)

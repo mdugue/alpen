@@ -127,7 +127,7 @@ export const MobileSheet = ({
           // With snap points the popup is a full 100dvh tall and translated
           // down by the offset of the current one. Padding the same amount off
           // its bottom leaves a content box that ends at the fold, so every
-          // scroll container inside does too (it goes negative above the
+          // scroll container inside does too (the sum goes negative above the
           // topmost snap point, hence the `max`). The inset comes off again:
           // the popup is lifted by its own bottom margin, so that much of it
           // is already below the fold.
@@ -142,8 +142,15 @@ export const MobileSheet = ({
           // box is then the full height of the popup and can never end short
           // of the fold, however far the sheet is pulled. The true padding is
           // back when the sheet settles, and the box only ever shrinks by it,
-          // so nothing that is on screen moves.
-          "data-swiping:[padding-bottom:0px]",
+          // so nothing that is on screen moves – below the top snap point,
+          // where the content is locked at `scrollTop` 0. At the top it may be
+          // scrolled to its end, and a box that grows there clamps the scroll
+          // and drops the content by the padding (60 px, measured). So there
+          // the padding keeps its resting value instead: it reads nothing that
+          // changes per frame either, and from the top a drag only goes down.
+          snap === top
+            ? "data-swiping:[padding-bottom:max(0px,calc(var(--drawer-snap-point-offset,0px)-var(--drawer-inset,0px)))]"
+            : "data-swiping:pb-0",
         )}
       >
         <DrawerTitle className="sr-only">{label}</DrawerTitle>
