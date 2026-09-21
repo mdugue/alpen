@@ -1,8 +1,15 @@
 # 21 · One adapter per external host
 
-**Status:** proposed · **Effort:** M · **Depends on:** 20 (decisions that can
-be imported) · **Unblocks:** an offline pipeline test; roadmap 1 (closure
+**Status:** superseded by [32](32-pipeline-planner.md) · **Effort:** M ·
+**Depends on:** 20 (decisions that can be imported) · **Unblocks:** an offline pipeline test; roadmap 1 (closure
 sources) and 4 (Overpass traffic) plug in as hosts
+
+> **Superseded 2026-09-21.** Re-measured at `6c1897b`: four pacers (not
+> three) and five `fetch(` sites – PR #50 hand-rolled the duplicate this
+> plan predicted in `locate-pass.ts`. It also built `scripts/lib/osm.ts`,
+> which is the seam this plan describes with two live adapters, so the seam
+> is real and the risk is retired. The transport, the hosts and the fixture
+> adapter are phase A of [plan 32](32-pipeline-planner.md).
 
 ## Goal
 

@@ -1,9 +1,18 @@
 # 19 · A map scene between the rows and MapLibre
 
-**Status:** proposed · **Effort:** M–L · **Depends on:** 18 (one `shown`,
-one selection), 01 (filters and feature state) · **Unblocks:** the official
+**Status:** superseded by [30](30-map-scene.md) · **Effort:** M–L ·
+**Depends on:** 18 (one `shown`, one selection), 01 (filters and feature state) · **Unblocks:** the official
 closure status on the map (a scene input, not an effect edit), 12
 (destinations as a fifth mark come in through the scene)
+
+> **Superseded 2026-09-21.** Re-measured at `6c1897b`: the four effects
+> this plan targets are the least changed part of a file that grew from
+> 1 571 to 1 986 lines; the e2e now names layer ids at four sites and
+> patches `setPadding`. Two things this plan did not see: the map keeps two
+> hover states that disagree (a town hovered in the list draws no hull), and
+> `HIT_GROUPS` hand-mirrors label ids that `appLayers` generates. The scene,
+> the layer table, one hover and a pure `pick` are [plan 30](30-map-scene.md);
+> its non-goal on `pickAt` is reopened there.
 
 ## Goal
 
