@@ -439,9 +439,11 @@ here; the three rules stand on what each of them removes:
   a drag, so the box – and every scroll container in it – was re-laid-out sixty
   times a second. While `data-swiping` is set the padding is zero, the one
   value that can never end the box short of the fold however far the sheet is
-  pulled; what reaches past the fold is clipped anyway. Measured: **162 layouts
-  per drag drop to 19**, and the tours' whole drag from 16.5 s to 9.8 s of task
-  time.
+  pulled; what reaches past the fold is clipped anyway. Measured with the
+  restyle still in place: 162 layouts per drag dropped to 19, and the tours'
+  whole drag from 16.5 s to 9.8 s of task time. With the properties registered
+  the same drag lays out 22 times either way – the restyle was what turned a
+  padding into a relayout of everything under it.
 - **No backdrop filter during the gesture.** A blurred backdrop is produced
   again whenever what is in front of it moves, and a dragged sheet moves across
   all four glass surfaces. For the length of the drag they are the opaque
@@ -457,8 +459,16 @@ here; the three rules stand on what each of them removes:
 What is honest about these numbers: they come from headless Chromium with the
 CPU throttled, they were taken while the derived properties above were still
 inherited, and on the iPhone that prompted the work these three rules did not
-cure the stutter – registering the properties did. They are each a piece of
-work removed rather than a guess at a browser, which is why they stay.
+cure the stutter – registering the properties did. Re-measured on the fixed
+build, each rule put back on its own, they no longer show at all: the drag
+holds a 16.7 ms median frame whichever way round, at 632 ms of style
+recalculation against 647 ms with the live padding, 633 ms with the blur and
+683 ms with the scroller. So what they are worth on the device is untested –
+which is the one place the stutter was ever real – and what they cost is a
+drag that is drawn as plates rather than glass. They stay because each of them
+is work removed rather than a guess at a browser; if the phone cannot tell the
+two builds apart, they are three rules and a `data-scroller` attribute to
+delete.
 
 ### A long list is one tab stop
 
