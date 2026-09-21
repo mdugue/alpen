@@ -8057,9 +8057,10 @@
   ]
  },
  {
-  "slug": "bocca-di-navene",
-  "name": "Bocca di Navene",
+  "slug": "bocca-del-creer",
+  "name": "Bocca del Creer",
   "aliases": [
+   "Bocca di Navene",
    "Monte Baldo",
    "San Valentino"
   ],
@@ -8069,10 +8070,10 @@
   ],
   "country": "IT",
   "region": "Dolomiten",
-  "lat": 45.788,
-  "lon": 10.8726,
-  "elevation": 1425,
-  "classicAscent": "18 km, 6 % ab Brentonico",
+  "lat": 45.7986,
+  "lon": 10.8938,
+  "elevation": 1617,
+  "classicAscent": "21 km, 6 % ab Brentonico",
   "beauty": 5,
   "fame": 3,
   "difficulty": 4,
@@ -8082,7 +8083,7 @@
    "closes": 11,
    "maintained": false
   },
-  "note": "Die Straße über den Monte Baldo: von Brentonico über San Valentino auf den Kamm, dann 1 300 m fast senkrecht über dem Gardasee hinunter nach Navene. Die Seeseite ist eng, steil und die schönste Abfahrt am See; im Winter gesperrt.",
+  "note": "Die Straße über den Monte Baldo: von Brentonico über San Valentino auf den Kamm zur Bocca del Creer, dann über die Bocca di Navene 1 500 m fast senkrecht über dem Gardasee hinunter nach Navene. Die Seeseite ist eng, steil und die schönste Abfahrt am See; im Winter gesperrt.",
   "ascents": [
    {
     "from": {
@@ -8110,9 +8111,9 @@
   "type": "spur",
   "country": "IT",
   "region": "Dolomiten",
-  "lat": 45.6742,
-  "lon": 10.7809,
-  "elevation": 1005,
+  "lat": 45.6948,
+  "lon": 10.7926,
+  "elevation": 1148,
   "classicAscent": "9 km, 11 % ab Castelletto di Brenzone",
   "beauty": 4,
   "fame": 3,
@@ -8123,7 +8124,7 @@
    "closes": 12,
    "maintained": false
   },
-  "note": "Vom Gardaseeufer bei Brenzone bis Prada Alta am Monte Baldo: neun Kilometer mit elf Prozent im Schnitt und Rampen bis 20 %, der steilste Anstieg am See. Das Gift im Namen ist verdient; oben im Winter Schnee.",
+  "note": "Vom Gardaseeufer bei Brenzone bis auf die Punta Veleno am Monte Baldo: gut neun Kilometer mit elf Prozent im Schnitt und Rampen bis 20 %, der steilste Anstieg am See. Oben kippt die Straße nach Prada Alta hinüber. Das Gift im Namen ist verdient; im Winter oben Schnee.",
   "ascents": [
    {
     "from": {
@@ -9028,7 +9029,7 @@
   "difficulty": 1,
   "traffic": 2,
   "season": null,
-  "note": "Der Hügel zwischen dem Paillon von L'Escarène und dem von Contes; kurz, ganzjährig offen, und mit Braus und Saint-Roch der Rest der Runde.",
+  "note": "Der Hügel zwischen dem Paillon von L'Escarène und dem von Contes; kurz, ganzjährig offen, und mit Braus und Saint-Roch der Rest der Runde. Von Contes her führt die Straße über den Col de Châteauneuf, deshalb nur die Ostseite.",
   "ascents": [
    {
     "from": {
@@ -9036,13 +9037,6 @@
      "lon": 7.3557
     },
     "label": "L'Escarène (Ost)"
-   },
-   {
-    "from": {
-     "lat": 43.812,
-     "lon": 7.3146
-    },
-    "label": "Contes (West)"
    }
   ]
  },
