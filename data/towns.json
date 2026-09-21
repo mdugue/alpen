@@ -876,5 +876,322 @@
    "Julische Alpen"
   ],
   "why": "Soča-Tal, Vršič, Mangart, Predil; Verleih, Outdoor-Basis."
+ },
+ {
+  "slug": "sanremo",
+  "name": "Sanremo",
+  "country": "IT",
+  "lat": 43.817,
+  "lon": 7.7751,
+  "tags": [
+   "hub",
+   "season",
+   "train",
+   "workshops"
+  ],
+  "aliases": [
+   "San Remo",
+   "Riviera dei Fiori",
+   "Ligurien",
+   "Liguria"
+  ],
+  "why": "Ziel von Mailand–Sanremo und das Winterrevier der Profis: Poggio, Cipressa, Bignone, dahinter Langan, Teglia und Oggia. Bahnhof, Radläden, Meerblick von jedem Anstieg."
+ },
+ {
+  "slug": "alassio",
+  "name": "Alassio",
+  "country": "IT",
+  "lat": 44.008,
+  "lon": 8.173,
+  "tags": [
+   "season",
+   "train",
+   "hotels"
+  ],
+  "aliases": [
+   "Albenga",
+   "Riviera di Ponente"
+  ],
+  "why": "Badeort mit Radhotels, im Frühjahr Trainingsbasis der Teams: Colle San Bernardo, Scravaion, Melogno und der Colle di Nava im Tagesradius. Bahnhof an der Küstenlinie."
+ },
+ {
+  "slug": "finale-ligure",
+  "name": "Finale Ligure",
+  "country": "IT",
+  "lat": 44.1691,
+  "lon": 8.3436,
+  "tags": [
+   "hub",
+   "season",
+   "train",
+   "workshops"
+  ],
+  "aliases": [
+   "Finale",
+   "Finalborgo"
+  ],
+  "why": "Die Mountainbike-Hauptstadt Italiens hat die Werkstätten und Verleiher, die dem Rennrad genauso helfen; der Melogno beginnt in Finalborgo, Scravaion und Faiallo sind Tagesrunden. Bahnhof im Ort."
+ },
+ {
+  "slug": "imperia",
+  "name": "Imperia",
+  "country": "IT",
+  "lat": 43.8862,
+  "lon": 8.0286,
+  "tags": [
+   "season",
+   "train",
+   "quiet"
+  ],
+  "aliases": [
+   "Oneglia",
+   "Porto Maurizio"
+  ],
+  "why": "Die ruhigere Basis zwischen Sanremo und Alassio: Colle San Bartolomeo und Ginestro direkt hinter der Stadt, Nava und Oggia als Runde über Pieve di Teco. Bahnhof."
+ },
+ {
+  "slug": "bellagio",
+  "name": "Bellagio",
+  "country": "IT",
+  "lat": 45.9873,
+  "lon": 9.2613,
+  "tags": [
+   "hub",
+   "scenic",
+   "passes"
+  ],
+  "aliases": [
+   "Comer See",
+   "Lago di Como",
+   "Larianisches Dreieck"
+  ],
+  "why": "Am Fuß des Ghisallo: die Lombardia-Runde über Sormano, der Monte San Primo, und mit der Fähre Varenna und der Agueglio. Kein Bahnhof, dafür die Schiffe."
+ },
+ {
+  "slug": "lecco",
+  "name": "Lecco",
+  "country": "IT",
+  "lat": 45.8554,
+  "lon": 9.3896,
+  "tags": [
+   "passes",
+   "train",
+   "workshops"
+  ],
+  "aliases": [
+   "Valsassina"
+  ],
+  "why": "Bahnknoten am Ostarm des Comer Sees: Piani dei Resinelli, Culmine di San Pietro, Valcava und Ghisallo im Tagesradius, Radläden in der Stadt."
+ },
+ {
+  "slug": "lugano",
+  "name": "Lugano",
+  "country": "CH",
+  "lat": 46.0038,
+  "lon": 8.9512,
+  "tags": [
+   "season",
+   "train",
+   "workshops"
+  ],
+  "aliases": [
+   "Tessin",
+   "Ticino",
+   "Luganersee"
+  ],
+  "why": "Mildes Tessin mit Bahnhof: Bellavista am Generoso, Sighignola und Bisbino über den Seen, Monte Ceneri und Alpe di Neggia im Norden. Fährt sich ab März."
+ },
+ {
+  "slug": "locarno",
+  "name": "Locarno",
+  "country": "CH",
+  "lat": 46.1696,
+  "lon": 8.7955,
+  "tags": [
+   "season",
+   "train",
+   "quiet"
+  ],
+  "aliases": [
+   "Lago Maggiore",
+   "Ascona",
+   "Tessin"
+  ],
+  "why": "Am Lago Maggiore mit den stillen Talstraßen der Verzasca und des Maggiatals vor der Tür, die Alpe di Neggia gegenüber. Bahnhof; im März schon Frühling."
+ },
+ {
+  "slug": "stresa",
+  "name": "Stresa",
+  "country": "IT",
+  "lat": 45.8837,
+  "lon": 8.539,
+  "tags": [
+   "season",
+   "train",
+   "scenic"
+  ],
+  "aliases": [
+   "Lago Maggiore",
+   "Borromäische Inseln"
+  ],
+  "why": "Der Mottarone beginnt vor dem Hotel; über Armeno und Gignese die freie Auffahrt, dazu Ortasee und die Alpe di Neggia jenseits des Sees. Bahnhof an der Simplonlinie."
+ },
+ {
+  "slug": "riva-del-garda",
+  "name": "Riva del Garda",
+  "country": "IT",
+  "lat": 45.8848,
+  "lon": 10.8397,
+  "tags": [
+   "hub",
+   "season",
+   "workshops",
+   "hotels"
+  ],
+  "aliases": [
+   "Gardasee",
+   "Lago di Garda",
+   "Arco",
+   "Torbole"
+  ],
+  "why": "Der Nordzipfel des Gardasees: Ballino, Ampola und Ledro, Monte Velo und Santa Barbara vor der Tür, Bocca di Navene und Punta Veleno am Ostufer. Werkstätten, Radhotels, Saison ab März."
+ },
+ {
+  "slug": "malcesine",
+  "name": "Malcesine",
+  "country": "IT",
+  "lat": 45.7643,
+  "lon": 10.8101,
+  "tags": [
+   "season",
+   "scenic",
+   "hotels"
+  ],
+  "aliases": [
+   "Monte Baldo",
+   "Brenzone"
+  ],
+  "why": "Unter dem Monte Baldo am Ostufer: Bocca di Navene über Navene, Punta Veleno bei Brenzone, dazu die Straße nach Riva und Arco. Radhotels und eine lange Saison."
+ },
+ {
+  "slug": "bassano-del-grappa",
+  "name": "Bassano del Grappa",
+  "country": "IT",
+  "lat": 45.7669,
+  "lon": 11.7343,
+  "tags": [
+   "passes",
+   "train",
+   "season"
+  ],
+  "aliases": [
+   "Monte Grappa",
+   "Valsugana"
+  ],
+  "why": "Die Stadt unter dem Monte Grappa: Semonzo, Romano und Possagno beginnen vor der Tür, das Asiago-Plateau liegt dahinter. Bahnhof; fährt sich fast das ganze Jahr."
+ },
+ {
+  "slug": "rovereto",
+  "name": "Rovereto",
+  "country": "IT",
+  "lat": 45.8865,
+  "lon": 11.0452,
+  "tags": [
+   "passes",
+   "train",
+   "season"
+  ],
+  "aliases": [
+   "Vallagarina",
+   "Etschtal"
+  ],
+  "why": "Bahnknoten im Etschtal mit Santa Barbara, Pian delle Fugazze, Bordala und Sommo ab der Stadt, Bondone und Gardasee im Tagesradius. Mild genug für Frühjahr und Herbst."
+ },
+ {
+  "slug": "malaucene",
+  "name": "Malaucène",
+  "country": "FR",
+  "lat": 44.1733,
+  "lon": 5.1321,
+  "tags": [
+   "season",
+   "workshops",
+   "quiet"
+  ],
+  "aliases": [
+   "Ventoux",
+   "Mont Serein"
+  ],
+  "why": "Die Nordseite des Ventoux beginnt im Ort, die Madeleine schließt die Runde nach Bédoin; Dentelles, Fontaube und Col d'Ey im Tagesradius. Radläden und Verleih."
+ },
+ {
+  "slug": "vaison-la-romaine",
+  "name": "Vaison-la-Romaine",
+  "country": "FR",
+  "lat": 44.2408,
+  "lon": 5.0757,
+  "tags": [
+   "season",
+   "quiet",
+   "scenic"
+  ],
+  "aliases": [
+   "Vaucluse",
+   "Dentelles de Montmirail"
+  ],
+  "why": "Römerstadt zwischen Ventoux und Baronnies: Dentelles, Fontaube, Col d'Ey und Soubeyrand als Runden, der Ventoux von Malaucène in Reichweite. Ruhig und lange fahrbar."
+ },
+ {
+  "slug": "buis-les-baronnies",
+  "name": "Buis-les-Baronnies",
+  "country": "FR",
+  "lat": 44.2768,
+  "lon": 5.2748,
+  "tags": [
+   "passes",
+   "quiet",
+   "season"
+  ],
+  "aliases": [
+   "Baronnies",
+   "Drôme provençale"
+  ],
+  "why": "Das Dorf mitten in den Baronnies: Col d'Ey, Fontaube, Soubeyrand, Perty und Macuègne in jede Richtung, fast ohne Autos, mit dem Ventoux am Horizont."
+ },
+ {
+  "slug": "nizza",
+  "name": "Nizza",
+  "country": "FR",
+  "lat": 43.7009,
+  "lon": 7.2684,
+  "tags": [
+   "hub",
+   "season",
+   "train",
+   "workshops"
+  ],
+  "aliases": [
+   "Nice",
+   "Côte d'Azur",
+   "Alpes-Maritimes"
+  ],
+  "why": "Winterquartier des Pelotons: Col d'Èze, Châteauneuf, Vence, Madone und Braus ab der Stadt, Turini und Bleine als Tagesrunden. Bahnhof, Flughafen, Radläden."
+ },
+ {
+  "slug": "menton",
+  "name": "Menton",
+  "country": "FR",
+  "lat": 43.7753,
+  "lon": 7.5029,
+  "tags": [
+   "season",
+   "train",
+   "scenic"
+  ],
+  "aliases": [
+   "Roquebrune",
+   "Riviera"
+  ],
+  "why": "Zwischen Monaco und der Grenze: Col de la Madone und Castillon beginnen am Meer, Sospel und Braus dahinter, Ventimiglia und die Riviera dei Fiori in einer Stunde. Bahnhof."
  }
 ]

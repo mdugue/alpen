@@ -370,7 +370,12 @@ arithmetic, the per-request weights and the hosts behind them are in
 
 ## Adding a pass
 
-1. Add an entry to `data/passes.json` (slug following the same pattern).
+1. Add an entry to `data/passes.json` (slug following the same pattern). A
+   `pass` carries every side that is a classic climb; if it has one, its
+   `note` says why the other side is not one. `data:check` prints the number
+   of single-sided passes as information, and the coverage report
+   (`bun run scripts/analyze-coverage.ts`, `docs/data-pipeline.md`) names
+   them per base together with the passes in reach the file does not list.
 2. `ORS_KEY=… bun run data:build` – fetches only the new routes, profiles and
    the climate series, and runs each new route through the gate.
 3. `bun run data:check` – validates the schema, references and completeness,

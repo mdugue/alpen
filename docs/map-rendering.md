@@ -125,6 +125,33 @@ _outermost_ stop function, the selection case goes inside the stops
 (`tourWidth`) – the same reason the pass hit radius is one `interpolate` with a
 `max` per stop rather than a `max` around one.
 
+### The overview draws by fame, the list draws everything
+
+```mermaid
+flowchart LR
+  P["passes.json<br/>fame 1–5"] --> F["one step filter on the zoom<br/>(lib/prominence.ts)"]
+  F --> Z1["zoom < 7.5<br/>fame 4 and 5"]
+  F --> Z2["7.5 ≤ zoom < 8.5<br/>fame 3 and up"]
+  F --> Z3["zoom ≥ 8.5<br/>every road"]
+  S["selected · hovered · favourite"] -->|"always drawn"| Z1
+```
+
+Two hundred dots read at zoom 7; four hundred would not, and the file is
+heading there (`docs/plans/24-depth-per-destination.md`). So the pass dots have
+a level of detail: a `step` on `["zoom"]` – the one place a MapLibre filter may
+read the zoom – with a fame floor per level (`PROMINENCE` in
+`lib/prominence.ts`), on the dot layer and on its hit layer, so a hidden pass
+does not answer the pointer either. It is a level of detail and not a filter:
+the list is untouched, no chip carries it, and the line in the map's bottom
+corner says which level is showing ("Bei dieser Zoomstufe: bekannte Pässe"),
+falling silent once everything is drawn. What the visitor put on the map or is
+pointing at ignores the rule – a selected dot is always drawn, a favourite is
+a star at every zoom, and the hovered pass is drawn again from the one-feature
+hover source (`hover-mark`), so a row hovered in the list never rings an empty
+patch of map. The labels keep their own, older ladder; a dot always appears
+before its name. The lines are not thinned: an ascent is a few pixels wide and
+reads as texture where a dot would read as noise.
+
 ## What answers the pointer is not what is drawn
 
 ```mermaid

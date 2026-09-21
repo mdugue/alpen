@@ -1,6 +1,7 @@
 # 24 · Depth per destination
 
-**Status:** proposed · **Effort:** M for code, then ongoing curation ·
+**Status:** in progress – steps 1–3 done, 4 (the split) waits for the 300th
+entry, 5 (curation rounds) is plan 23 and what follows it · **Effort:** M for code, then ongoing curation ·
 **Depends on:** 00 (the gate measures what is added), the reach bands of
 PR #47 · **Unblocks:** 23, 25 and 26 have a measure to curate against; 12
 gets destinations whose numbers mean something
@@ -185,3 +186,13 @@ list draws everything").
   in the derivation and a decision for later, with screenshots.
 - **The 600 m / 1 000 m floor** is a starting value; the report prints how
   many candidates each floor admits so it can be tuned with numbers.
+- **The baseline (September 2026, 48 towns, 201 roads)** confirmed the
+  expectation: the thinnest day bands are Bédoin (0), Innsbruck (2),
+  Mayrhofen (2), Berchtesgaden (1), Kitzbühel (2) and Schladming (4); Cuneo
+  reaches 4 in a day and has 30 candidates. 747 distinct candidates above
+  1 000 m across all bases. Plan 23 answers Bédoin; the Austrian and Bavarian
+  pre-Alps are the next round.
+- **Overpass mirrors.** `overpass-api.de` refused every connection during
+  the first run; `OVERPASS_URL=https://overpass.openstreetmap.fr/api/interpreter`
+  answered all 48 queries. The report needs Overpass – the map-API fallback
+  cannot answer a 75 km circle – so it names the host in its first line.

@@ -613,5 +613,380 @@
     "lon": 13.789
    }
   ]
+ },
+ {
+  "slug": "riviera-dei-fiori-runde",
+  "name": "Riviera-dei-Fiori-Runde",
+  "color": "#c2703a",
+  "km": 96,
+  "elevationGain": 2000,
+  "passes": [
+   "colle-san-bartolomeo",
+   "colle-d-oggia"
+  ],
+  "season": "Ganzjährig; Januar und Februar oben am Oggia gelegentlich Schnee.",
+  "description": "Von Imperia über den Colle San Bartolomeo nach Pieve di Teco, durch Rezzo auf den Colle d'Oggia und über Carpasio und das Argentina-Tal zurück an die Küste – die Winterrunde der Sanremo-Profis.",
+  "waypoints": [
+   {
+    "lat": 43.8862,
+    "lon": 8.0286
+   },
+   {
+    "lat": 43.9676,
+    "lon": 7.9841
+   },
+   {
+    "lat": 44.0102,
+    "lon": 7.9521
+   },
+   {
+    "lat": 44.047,
+    "lon": 7.9149
+   },
+   {
+    "lat": 44.0214,
+    "lon": 7.8714
+   },
+   {
+    "lat": 43.9824,
+    "lon": 7.8698
+   },
+   {
+    "lat": 43.9598,
+    "lon": 7.8665
+   },
+   {
+    "lat": 43.8614,
+    "lon": 7.8523
+   },
+   {
+    "lat": 43.8862,
+    "lon": 8.0286
+   }
+  ]
+ },
+ {
+  "slug": "melogno-scravaion-runde",
+  "name": "Melogno-Scravaion-Runde",
+  "color": "#7a9a4a",
+  "km": 88,
+  "elevationGain": 1700,
+  "passes": [
+   "colle-del-melogno",
+   "colle-scravaion"
+  ],
+  "season": "Ganzjährig; nach Schneefall am Melogno kurz gesperrt.",
+  "description": "Von Finale Ligure über Finalborgo auf den Colle del Melogno, durch Calizzano und Bardineto zum Colle Scravaion und über Castelvecchio und Albenga an der Küste zurück.",
+  "waypoints": [
+   {
+    "lat": 44.1691,
+    "lon": 8.3436
+   },
+   {
+    "lat": 44.1759,
+    "lon": 8.3273
+   },
+   {
+    "lat": 44.2303,
+    "lon": 8.197
+   },
+   {
+    "lat": 44.2369,
+    "lon": 8.1145
+   },
+   {
+    "lat": 44.1931,
+    "lon": 8.1325
+   },
+   {
+    "lat": 44.1595,
+    "lon": 8.1205
+   },
+   {
+    "lat": 44.1298,
+    "lon": 8.1166
+   },
+   {
+    "lat": 44.0493,
+    "lon": 8.2131
+   },
+   {
+    "lat": 44.1691,
+    "lon": 8.3436
+   }
+  ]
+ },
+ {
+  "slug": "valcava-culmine-runde",
+  "name": "Valcava-Culmine-Runde",
+  "color": "#5b7fb5",
+  "km": 100,
+  "elevationGain": 2600,
+  "passes": [
+   "passo-di-valcava",
+   "culmine-di-san-pietro"
+  ],
+  "season": "April bis November; beide Pässe im Winter oben mit Schnee.",
+  "description": "Von Lecco über Torre de' Busi steil auf den Passo di Valcava, durch das Valle Imagna und das Val Taleggio zum Culmine di San Pietro und über Moggio und die Valsassina zurück nach Lecco.",
+  "waypoints": [
+   {
+    "lat": 45.8554,
+    "lon": 9.3896
+   },
+   {
+    "lat": 45.7797,
+    "lon": 9.4808
+   },
+   {
+    "lat": 45.7882,
+    "lon": 9.5142
+   },
+   {
+    "lat": 45.8273,
+    "lon": 9.4953
+   },
+   {
+    "lat": 45.8117,
+    "lon": 9.536
+   },
+   {
+    "lat": 45.8909,
+    "lon": 9.5401
+   },
+   {
+    "lat": 45.9022,
+    "lon": 9.4939
+   },
+   {
+    "lat": 45.9324,
+    "lon": 9.4865
+   },
+   {
+    "lat": 45.8961,
+    "lon": 9.424
+   },
+   {
+    "lat": 45.8554,
+    "lon": 9.3896
+   }
+  ]
+ },
+ {
+  "slug": "lombardia-runde",
+  "name": "Lombardia-Runde",
+  "color": "#a05a8c",
+  "km": 62,
+  "elevationGain": 1500,
+  "passes": [
+   "madonna-del-ghisallo",
+   "muro-di-sormano"
+  ],
+  "season": "Ganzjährig; am Sormano im Winter gelegentlich Schnee.",
+  "description": "Das Finale des Giro di Lombardia ab Bellagio: über den Ghisallo nach Asso, durch Sormano über den Muro auf die Colma und am See entlang über Nesso zurück nach Bellagio.",
+  "waypoints": [
+   {
+    "lat": 45.9873,
+    "lon": 9.2613
+   },
+   {
+    "lat": 45.9237,
+    "lon": 9.2672
+   },
+   {
+    "lat": 45.8613,
+    "lon": 9.2695
+   },
+   {
+    "lat": 45.8778,
+    "lon": 9.2487
+   },
+   {
+    "lat": 45.883,
+    "lon": 9.229
+   },
+   {
+    "lat": 45.9114,
+    "lon": 9.1571
+   },
+   {
+    "lat": 45.9873,
+    "lon": 9.2613
+   }
+  ]
+ },
+ {
+  "slug": "ballino-runde",
+  "name": "Ballino-Runde",
+  "color": "#4a8a9a",
+  "km": 62,
+  "elevationGain": 1100,
+  "passes": [
+   "passo-del-ballino"
+  ],
+  "season": "Ganzjährig; im Winter oben am Ballino gelegentlich Schnee.",
+  "description": "Von Riva über Tenno und den Lago di Tenno auf den Passo del Ballino, über Fiavè und Ponte Arche ins Sarcatal und über Sarche und Arco zurück an den See.",
+  "waypoints": [
+   {
+    "lat": 45.8848,
+    "lon": 10.8397
+   },
+   {
+    "lat": 45.9188,
+    "lon": 10.8328
+   },
+   {
+    "lat": 45.9744,
+    "lon": 10.8199
+   },
+   {
+    "lat": 46.0367,
+    "lon": 10.8713
+   },
+   {
+    "lat": 46.0459,
+    "lon": 10.9515
+   },
+   {
+    "lat": 45.9181,
+    "lon": 10.8861
+   },
+   {
+    "lat": 45.8848,
+    "lon": 10.8397
+   }
+  ]
+ },
+ {
+  "slug": "grappa-runde",
+  "name": "Grappa-Runde",
+  "color": "#8a6a3a",
+  "km": 79,
+  "elevationGain": 1900,
+  "passes": [
+   "cima-grappa"
+  ],
+  "season": "Ganzjährig geräumt; nach Schneefall oben zeitweise gesperrt.",
+  "description": "Von Bassano über Semonzo auf den Monte Grappa und über Possagno hinunter, am Fuß des Bergs zurück nach Bassano – hinauf auf der klassischen Seite, hinab auf der stillen.",
+  "waypoints": [
+   {
+    "lat": 45.7669,
+    "lon": 11.7343
+   },
+   {
+    "lat": 45.8154,
+    "lon": 11.7889
+   },
+   {
+    "lat": 45.8726,
+    "lon": 11.8014
+   },
+   {
+    "lat": 45.8549,
+    "lon": 11.8816
+   },
+   {
+    "lat": 45.7962,
+    "lon": 11.7584
+   },
+   {
+    "lat": 45.7669,
+    "lon": 11.7343
+   }
+  ]
+ },
+ {
+  "slug": "ventoux-runde",
+  "name": "Ventoux-Runde",
+  "color": "#b8563a",
+  "km": 55,
+  "elevationGain": 1700,
+  "passes": [
+   "mont-ventoux",
+   "col-de-la-madeleine-bedoin"
+  ],
+  "season": "Mai bis November, solange die Gipfelstraße offen ist.",
+  "description": "Von Bédoin die klassische Seite auf den Mont Ventoux, hinunter nach Malaucène und über den Col de la Madeleine zurück nach Bédoin.",
+  "waypoints": [
+   {
+    "lat": 44.124,
+    "lon": 5.1807
+   },
+   {
+    "lat": 44.174,
+    "lon": 5.278
+   },
+   {
+    "lat": 44.1733,
+    "lon": 5.1321
+   },
+   {
+    "lat": 44.1412,
+    "lon": 5.1294
+   },
+   {
+    "lat": 44.124,
+    "lon": 5.1807
+   }
+  ]
+ },
+ {
+  "slug": "baronnies-runde",
+  "name": "Baronnies-Runde",
+  "color": "#7d6fa8",
+  "km": 108,
+  "elevationGain": 2100,
+  "passes": [
+   "col-de-perty",
+   "col-de-macuegne",
+   "col-de-fontaube"
+  ],
+  "season": "Ganzjährig; nach Schneefall am Perty kurz gesperrt.",
+  "description": "Von Buis-les-Baronnies über Saint-Auban auf den Col de Perty, durch Laborel und Séderon über den Col de Macuègne nach Montbrun, unter der Ventoux-Nordwand über Brantes auf den Col de Fontaube und über Eygaliers zurück nach Buis.",
+  "waypoints": [
+   {
+    "lat": 44.2768,
+    "lon": 5.2748
+   },
+   {
+    "lat": 44.2885,
+    "lon": 5.4168
+   },
+   {
+    "lat": 44.2872,
+    "lon": 5.5498
+   },
+   {
+    "lat": 44.2928,
+    "lon": 5.596
+   },
+   {
+    "lat": 44.2035,
+    "lon": 5.537
+   },
+   {
+    "lat": 44.1821,
+    "lon": 5.51
+   },
+   {
+    "lat": 44.1752,
+    "lon": 5.4413
+   },
+   {
+    "lat": 44.1932,
+    "lon": 5.3337
+   },
+   {
+    "lat": 44.2082,
+    "lon": 5.313
+   },
+   {
+    "lat": 44.2391,
+    "lon": 5.2812
+   },
+   {
+    "lat": 44.2768,
+    "lon": 5.2748
+   }
+  ]
  }
 ]

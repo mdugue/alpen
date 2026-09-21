@@ -1,6 +1,9 @@
 # 23 · Low southern regions
 
-**Status:** proposed · **Effort:** L (S for code, the rest is curation) ·
+**Status:** in progress – steps 1–6 (the five areas, towns, loops, aliases,
+photos) as source data; the routes, profiles and climate series are drained by
+the refresh workflow, and step 7 (the read-back) follows once they are in ·
+**Effort:** L (S for code, the rest is curation) ·
 **Depends on:** 14 (the traverse types: the coast and the lakes are balcony
 and valley roads as much as passes); benefits from 24 (the coverage report
 says where a base is thin) · **Unblocks:** the "Anfang Oktober" and "Ende
@@ -212,4 +215,15 @@ series, i.e. roughly two and three hours of Open-Meteo windows respectively
   ± 3 °C caveat stays on screen. Nothing to change, but the read-back in step
   7 is where a surprise would show.
 - **Mont Faron** and the Dentelles are on the edge of "a road worth a
-  holiday"; decide with the numbers, drop without regret.
+  holiday"; decide with the numbers, drop without regret. Both were left out
+  of the first round, as were the Baldo spur to San Valentino (it is the
+  Brentonico side of the Bocca di Navene) and the Lago di Tenno road (the
+  Ballino covers it).
+- **The budget above is an hourly number; the daily one is the wall.**
+  Open-Meteo allows 10 000 calls a day, so ~120 profiles and ~62 climate
+  series are three days of the free tier, not five hours. The first round
+  therefore commits the source data and the summit checks and leaves the
+  routes, profiles and climate series to the refresh workflow, which needs a
+  handful of dispatches an hour apart (`.github/workflows/refresh-data.yml`).
+  Until they are in, the new roads show as dots without an ascent line and
+  with a season-only status, and the read-back of step 7 cannot be done.

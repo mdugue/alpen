@@ -5173,6 +5173,13 @@
      "lon": 11.8816
     },
     "label": "Possagno (Ost)"
+   },
+   {
+    "from": {
+     "lat": 45.7962,
+     "lon": 11.7584
+    },
+    "label": "Romano d'Ezzelino (Südwest)"
    }
   ]
  },
@@ -7009,6 +7016,2135 @@
      "lon": 6.9249
     },
     "km": 14.3
+   }
+  ]
+ },
+ {
+  "slug": "colle-di-nava",
+  "name": "Colle di Nava",
+  "aliases": [
+   "Nava"
+  ],
+  "type": "pass",
+  "country": "IT",
+  "region": "Westalpen",
+  "lat": 44.0849,
+  "lon": 7.8729,
+  "elevation": 934,
+  "classicAscent": "16 km, 4 % ab Pieve di Teco",
+  "beauty": 3,
+  "fame": 3,
+  "difficulty": 2,
+  "traffic": 3,
+  "season": null,
+  "note": "Der Übergang von der Riviera ins Tanaro-Tal, ganzjährig offen und die Straße, über die der Giro und die Milano–Torino-Klassiker ins Ligurische kamen. Von Pieve di Teco lang und gleichmäßig, von Ormea über Ponte di Nava kürzer; Lavendelfelder am Scheitel.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 44.047,
+     "lon": 7.9149
+    },
+    "label": "Pieve di Teco (Süd)"
+   },
+   {
+    "from": {
+     "lat": 44.1489,
+     "lon": 7.9126
+    },
+    "label": "Ormea (Nord)"
+   }
+  ]
+ },
+ {
+  "slug": "colle-san-bartolomeo",
+  "name": "Colle San Bartolomeo",
+  "type": "pass",
+  "country": "IT",
+  "region": "Westalpen",
+  "lat": 44.0102,
+  "lon": 7.9521,
+  "elevation": 625,
+  "classicAscent": "11 km, 5 % ab Chiusavecchia",
+  "beauty": 3,
+  "fame": 2,
+  "difficulty": 2,
+  "traffic": 2,
+  "season": null,
+  "note": "Verbindet das Impero-Tal hinter Imperia mit dem Arroscia-Tal von Pieve di Teco, ganzjährig offen. Ein Wintertrainingsanstieg der Profis von der Riviera: Olivenhaine, kaum Verkehr, oben ein Dorf.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 43.9676,
+     "lon": 7.9841
+    },
+    "label": "Chiusavecchia (Süd)"
+   },
+   {
+    "from": {
+     "lat": 44.047,
+     "lon": 7.9149
+    },
+    "label": "Pieve di Teco (Nord)"
+   }
+  ]
+ },
+ {
+  "slug": "passo-del-ginestro",
+  "name": "Passo del Ginestro",
+  "type": "pass",
+  "country": "IT",
+  "region": "Westalpen",
+  "lat": 44.0071,
+  "lon": 7.9909,
+  "elevation": 677,
+  "classicAscent": "9 km, 6 % ab Chiusanico",
+  "beauty": 3,
+  "fame": 2,
+  "difficulty": 2,
+  "traffic": 1,
+  "season": null,
+  "note": "Der stille Nachbar des Colle San Bartolomeo, ganzjährig offen: von Chiusanico durch Oliven und Ginster hinauf, oben Blick auf beide Täler, hinunter nach Cesio ins Arroscia-Tal.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 43.9724,
+     "lon": 7.9911
+    },
+    "label": "Chiusanico (Süd)"
+   },
+   {
+    "from": {
+     "lat": 44.0073,
+     "lon": 7.9735
+    },
+    "label": "Cesio (Nord)"
+   }
+  ]
+ },
+ {
+  "slug": "colle-del-melogno",
+  "name": "Colle del Melogno",
+  "aliases": [
+   "Melogno"
+  ],
+  "type": "pass",
+  "country": "IT",
+  "region": "Westalpen",
+  "lat": 44.2303,
+  "lon": 8.197,
+  "elevation": 1028,
+  "classicAscent": "17 km, 5 % ab Finale Ligure",
+  "beauty": 4,
+  "fame": 3,
+  "difficulty": 3,
+  "traffic": 2,
+  "season": null,
+  "note": "Der Hausberg von Finale Ligure: durch die Buchenwälder des Melogno auf 1 000 m, oben die Festung von 1880 und im Winter gelegentlich Schnee, sonst ganzjährig offen. Von Calizzano aus die kürzere, weniger befahrene Seite.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 44.1759,
+     "lon": 8.3273
+    },
+    "label": "Finalborgo (Süd)"
+   },
+   {
+    "from": {
+     "lat": 44.2369,
+     "lon": 8.1145
+    },
+    "label": "Calizzano (West)"
+   }
+  ]
+ },
+ {
+  "slug": "passo-del-faiallo",
+  "name": "Passo del Faiallo",
+  "aliases": [
+   "Faiallo"
+  ],
+  "type": "pass",
+  "country": "IT",
+  "region": "Westalpen",
+  "lat": 44.4588,
+  "lon": 8.6692,
+  "elevation": 1060,
+  "classicAscent": "24 km, 4 % ab Voltri",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 1,
+  "season": null,
+  "note": "Vom Meer bei Genua-Voltri über Mele und das Kloster Acquasanta auf den Kamm der Ligurischen Alpen; oben liegt die Küste 1 000 m tiefer im Dunst, dahinter die Po-Ebene. Ganzjährig offen, im Winter nach Schneefall kurz gesperrt.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 44.4286,
+     "lon": 8.7542
+    },
+    "label": "Voltri (Süd)"
+   }
+  ]
+ },
+ {
+  "slug": "passo-del-turchino",
+  "name": "Passo del Turchino",
+  "aliases": [
+   "Turchino"
+  ],
+  "type": "pass",
+  "country": "IT",
+  "region": "Westalpen",
+  "lat": 44.4879,
+  "lon": 8.7338,
+  "elevation": 530,
+  "classicAscent": "12 km, 3 % ab Voltri",
+  "beauty": 2,
+  "fame": 4,
+  "difficulty": 1,
+  "traffic": 4,
+  "season": null,
+  "note": "Der Pass, an dem Mailand–Sanremo das Meer erreicht: nach 140 km Ebene der erste Anstieg, oben der kurze Tunnel, dann der Blick auf die Riviera. Als Straße unspektakulär und mit Verkehr; als Ort Radsportgeschichte. Ganzjährig offen.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 44.4286,
+     "lon": 8.7542
+    },
+    "label": "Voltri (Süd)"
+   }
+  ]
+ },
+ {
+  "slug": "monte-beigua",
+  "name": "Monte Beigua",
+  "aliases": [
+   "Beigua"
+  ],
+  "type": "spur",
+  "country": "IT",
+  "region": "Westalpen",
+  "lat": 44.4326,
+  "lon": 8.5661,
+  "elevation": 1284,
+  "classicAscent": "20 km, 6 % ab Varazze",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 1,
+  "season": null,
+  "note": "Von Varazze über Alpicella auf den höchsten Punkt der ligurischen Küstenberge, die Straße endet an den Antennen mit Blick vom Meer bis in die Alpen. Ganzjährig offen; oben oft Wind.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 44.3593,
+     "lon": 8.5753
+    },
+    "label": "Varazze"
+   },
+   {
+    "from": {
+     "lat": 44.479,
+     "lon": 8.4902
+    },
+    "label": "Sassello"
+   }
+  ]
+ },
+ {
+  "slug": "passo-teglia",
+  "name": "Passo Teglia",
+  "aliases": [
+   "Passo di Teglia"
+  ],
+  "type": "pass",
+  "country": "IT",
+  "region": "Westalpen",
+  "lat": 43.9953,
+  "lon": 7.8336,
+  "elevation": 1390,
+  "classicAscent": "17 km, 6 % ab Molini di Triora",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 1,
+  "season": null,
+  "note": "Der höchste asphaltierte Übergang des Sanremo-Hinterlands, zwischen dem Argentina-Tal und Rezzo. Kaum Verkehr, Kastanienwald, oben Weide und Kamm. Ganzjährig offen, nach Schneefall im Januar und Februar zeitweise nicht.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 43.9903,
+     "lon": 7.7744
+    },
+    "label": "Molini di Triora (West)"
+   },
+   {
+    "from": {
+     "lat": 44.0214,
+     "lon": 7.8714
+    },
+    "label": "Rezzo (Ost)"
+   }
+  ]
+ },
+ {
+  "slug": "colle-d-oggia",
+  "name": "Colle d'Oggia",
+  "aliases": [
+   "Oggia"
+  ],
+  "type": "pass",
+  "country": "IT",
+  "region": "Westalpen",
+  "lat": 43.9824,
+  "lon": 7.8698,
+  "elevation": 1157,
+  "classicAscent": "14 km, 6 % ab Carpasio",
+  "beauty": 3,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 1,
+  "season": null,
+  "note": "Von Carpasio im Argentina-Hinterland hinauf und nach Rezzo hinunter: die Runde, mit der Sanremo-Profis den Winter verbringen. Ganzjährig offen, fast ohne Autos.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 43.9598,
+     "lon": 7.8665
+    },
+    "label": "Carpasio (Süd)"
+   },
+   {
+    "from": {
+     "lat": 44.0214,
+     "lon": 7.8714
+    },
+    "label": "Rezzo (Nord)"
+   }
+  ]
+ },
+ {
+  "slug": "colle-langan",
+  "name": "Colle Langan",
+  "aliases": [
+   "Langan"
+  ],
+  "type": "pass",
+  "country": "IT",
+  "region": "Westalpen",
+  "lat": 43.9679,
+  "lon": 7.7316,
+  "elevation": 1127,
+  "classicAscent": "18 km, 5 % ab Pigna",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 1,
+  "season": null,
+  "note": "Zwischen dem Nervia-Tal von Pigna und dem Argentina-Tal von Molini di Triora, ganzjährig offen. Auf der Pigna-Seite lang und einsam durch Wald, oben der Blick auf den Monte Toraggio; die Straße, die die beiden schönsten Täler des Hinterlands verbindet.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 43.9327,
+     "lon": 7.6633
+    },
+    "label": "Pigna (West)"
+   },
+   {
+    "from": {
+     "lat": 43.9903,
+     "lon": 7.7744
+    },
+    "label": "Molini di Triora (Ost)"
+   }
+  ]
+ },
+ {
+  "slug": "monte-bignone",
+  "name": "Monte Bignone",
+  "aliases": [
+   "Bignone",
+   "San Romolo"
+  ],
+  "type": "spur",
+  "country": "IT",
+  "region": "Westalpen",
+  "lat": 43.8773,
+  "lon": 7.7412,
+  "elevation": 1037,
+  "classicAscent": "16 km, 6 % ab Sanremo",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 4,
+  "traffic": 1,
+  "season": null,
+  "note": "Der Berg über Sanremo: vom Hafen durch die Villen, über San Romolo und die Kehren bis zum Ende des Asphalts gut 1 000 m über dem Meer; der Gipfel darüber gehört den Antennen und einer Schotterpiste. Ganzjährig offen und die längste Auffahrt der Riviera dei Fiori.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 43.817,
+     "lon": 7.7751
+    },
+    "label": "Sanremo"
+   }
+  ]
+ },
+ {
+  "slug": "cipressa",
+  "name": "Cipressa",
+  "type": "pass",
+  "roadSummit": true,
+  "country": "IT",
+  "region": "Westalpen",
+  "lat": 43.8515,
+  "lon": 7.9307,
+  "elevation": 248,
+  "classicAscent": "5,6 km, 4 % ab San Lorenzo al Mare",
+  "beauty": 3,
+  "fame": 5,
+  "difficulty": 1,
+  "traffic": 2,
+  "season": null,
+  "note": "Ein Dorfhügel über der Küste und der Anstieg, an dem Mailand–Sanremo seit 1982 auseinanderfällt. Von der Aurelia hinauf ins Dorf, oben Oliven, dann die Abfahrt nach Santo Stefano al Mare. Ganzjährig offen; berühmt ist er, schwer nicht.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 43.8547,
+     "lon": 7.9637
+    },
+    "label": "San Lorenzo al Mare (Ost)"
+   }
+  ]
+ },
+ {
+  "slug": "poggio-di-sanremo",
+  "name": "Poggio",
+  "aliases": [
+   "Poggio di Sanremo",
+   "Poggio di San Remo"
+  ],
+  "type": "pass",
+  "roadSummit": true,
+  "country": "IT",
+  "region": "Westalpen",
+  "lat": 43.8311,
+  "lon": 7.8139,
+  "elevation": 179,
+  "classicAscent": "3,7 km, 4 % ab Arma di Taggia",
+  "beauty": 3,
+  "fame": 5,
+  "difficulty": 1,
+  "traffic": 2,
+  "season": null,
+  "note": "Die letzten vier Kilometer bergauf von Mailand–Sanremo: 160 m über dem Meer, Gewächshäuser, vier Kehren und oben das Dorf, dann die Abfahrt in die Via Roma. Ganzjährig offen und jeden Tag von Rennrädern befahren, die den Sprint nachstellen.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 43.8251,
+     "lon": 7.8378
+    },
+    "label": "Bussana (Ost)"
+   }
+  ]
+ },
+ {
+  "slug": "colle-scravaion",
+  "name": "Colle Scravaion",
+  "aliases": [
+   "Scravaion"
+  ],
+  "type": "pass",
+  "country": "IT",
+  "region": "Westalpen",
+  "lat": 44.1595,
+  "lon": 8.1205,
+  "elevation": 814,
+  "classicAscent": "13 km, 5 % ab Castelvecchio di Rocca Barbena",
+  "beauty": 3,
+  "fame": 2,
+  "difficulty": 2,
+  "traffic": 2,
+  "season": null,
+  "note": "Der Übergang hinter Albenga nach Bardineto und Calizzano, ganzjährig offen. Über das Burgdorf Castelvecchio auf der Südseite gleichmäßig hinauf; die Melogno-Runde von Finale kommt hier zurück ans Meer.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 44.1298,
+     "lon": 8.1166
+    },
+    "label": "Castelvecchio di Rocca Barbena (Süd)"
+   },
+   {
+    "from": {
+     "lat": 44.1931,
+     "lon": 8.1325
+    },
+    "label": "Bardineto (Nord)"
+   }
+  ]
+ },
+ {
+  "slug": "colle-san-bernardo-di-garessio",
+  "name": "Colle San Bernardo",
+  "aliases": [
+   "Colle San Bernardo di Garessio"
+  ],
+  "type": "pass",
+  "country": "IT",
+  "region": "Westalpen",
+  "lat": 44.1773,
+  "lon": 8.0474,
+  "elevation": 957,
+  "classicAscent": "17 km, 5 % ab Erli",
+  "beauty": 3,
+  "fame": 2,
+  "difficulty": 2,
+  "traffic": 2,
+  "season": null,
+  "note": "Die alte Straße von Albenga nach Garessio ins Tanaro-Tal, ganzjährig offen. Von Erli an der Neva hinauf durch Kastanien, auf der Nordseite kurz und steil nach Garessio; verbindet die Riviera mit den Runden von Ormea und Nava.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 44.1375,
+     "lon": 8.1031
+    },
+    "label": "Erli (Süd)"
+   },
+   {
+    "from": {
+     "lat": 44.1972,
+     "lon": 8.0298
+    },
+    "label": "Garessio (Nord)"
+   }
+  ]
+ },
+ {
+  "slug": "monte-ceneri",
+  "name": "Monte Ceneri",
+  "aliases": [
+   "Passo del Monte Ceneri",
+   "Ceneri"
+  ],
+  "type": "pass",
+  "country": "CH",
+  "region": "Zentralalpen",
+  "lat": 46.1392,
+  "lon": 8.9071,
+  "elevation": 558,
+  "classicAscent": "8 km, 4 % ab Cadenazzo",
+  "beauty": 2,
+  "fame": 2,
+  "difficulty": 1,
+  "traffic": 3,
+  "season": null,
+  "note": "Der niedrige Übergang zwischen Sopraceneri und Sottoceneri, seit dem Basistunnel entlastet, aber weiter eine Durchgangsstraße. Kein Ziel für sich, doch die Verbindung zwischen Locarno und Lugano, ganzjährig offen.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.151,
+     "lon": 8.9459
+    },
+    "label": "Cadenazzo (Nord)"
+   },
+   {
+    "from": {
+     "lat": 46.123,
+     "lon": 8.923
+    },
+    "label": "Rivera (Süd)"
+   }
+  ]
+ },
+ {
+  "slug": "alpe-di-neggia",
+  "name": "Alpe di Neggia",
+  "aliases": [
+   "Passo dell'Alpe di Neggia",
+   "Neggia"
+  ],
+  "type": "pass",
+  "country": "CH",
+  "region": "Zentralalpen",
+  "lat": 46.1107,
+  "lon": 8.8455,
+  "elevation": 1395,
+  "classicAscent": "17 km, 7 % ab Vira Gambarogno",
+  "beauty": 5,
+  "fame": 2,
+  "difficulty": 4,
+  "traffic": 1,
+  "season": {
+   "opens": 4.5,
+   "closes": 11.5,
+   "maintained": false
+  },
+  "note": "Vom Lago Maggiore am Gambarogno-Ufer 1 200 m hinauf, in Kehren durch Kastanienwald mit dem See unter sich; hinter der Passhöhe geht es nach Indemini hinunter, das nur von der italienischen Seite ans Straßennetz hängt. Oben meist von Dezember bis April Schnee.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.0971,
+     "lon": 8.922
+    },
+    "label": "Vira Gambarogno (Ost)"
+   },
+   {
+    "from": {
+     "lat": 46.0945,
+     "lon": 8.826
+    },
+    "label": "Indemini (West)"
+   }
+  ]
+ },
+ {
+  "slug": "sighignola",
+  "name": "Sighignola",
+  "aliases": [
+   "Balcone d'Italia",
+   "Monte Sighignola"
+  ],
+  "type": "spur",
+  "country": "IT",
+  "region": "Zentralalpen",
+  "lat": 45.9679,
+  "lon": 8.993,
+  "elevation": 1305,
+  "classicAscent": "11 km, 7 % ab Lanzo d'Intelvi",
+  "beauty": 5,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 1,
+  "season": {
+   "opens": 4,
+   "closes": 12,
+   "maintained": false
+  },
+  "note": "Der Balcone d'Italia: die Straße endet an der Schweizer Grenze auf einer Kanzel 1 000 m über dem Luganersee, mit Lugano und den Walliser Viertausendern im Blick. Aus dem Val d'Intelvi ruhig und gleichmäßig; im Winter oben nicht geräumt.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 45.9791,
+     "lon": 9.0208
+    },
+    "label": "Lanzo d'Intelvi"
+   }
+  ]
+ },
+ {
+  "slug": "monte-bisbino",
+  "name": "Monte Bisbino",
+  "aliases": [
+   "Bisbino"
+  ],
+  "type": "spur",
+  "country": "IT",
+  "region": "Zentralalpen",
+  "lat": 45.8735,
+  "lon": 9.0674,
+  "elevation": 1308,
+  "classicAscent": "17 km, 6 % ab Cernobbio",
+  "beauty": 4,
+  "fame": 3,
+  "difficulty": 4,
+  "traffic": 1,
+  "season": {
+   "opens": 4,
+   "closes": 12,
+   "maintained": false
+  },
+  "note": "Vom Comer See bei Cernobbio durch 17 km Wald auf den Gipfel mit der Wallfahrtskirche, der Blick reicht über den ganzen Südteil des Sees bis Mailand. Der Hausberg der Comasker Radfahrer; im Winter oben oft Schnee.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 45.8414,
+     "lon": 9.0759
+    },
+    "label": "Cernobbio"
+   }
+  ]
+ },
+ {
+  "slug": "monte-generoso-bellavista",
+  "name": "Monte Generoso (Bellavista)",
+  "aliases": [
+   "Bellavista",
+   "Generoso"
+  ],
+  "type": "spur",
+  "country": "CH",
+  "region": "Zentralalpen",
+  "lat": 45.9075,
+  "lon": 9.0018,
+  "elevation": 1182,
+  "classicAscent": "12 km, 8 % ab Rovio",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 4,
+  "traffic": 1,
+  "season": {
+   "opens": 4,
+   "closes": 12,
+   "maintained": false
+  },
+  "note": "Die Straße endet an der Bergstation Bellavista der Generoso-Bahn, 900 m über dem Luganersee; der Gipfel bleibt der Bahn und den Wanderern. Von Rovio steil und still, mit dem See im Rücken. Oben im Winter Schnee.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 45.9331,
+     "lon": 8.9885
+    },
+    "label": "Rovio"
+   }
+  ]
+ },
+ {
+  "slug": "valle-verzasca",
+  "name": "Valle Verzasca",
+  "aliases": [
+   "Verzasca",
+   "Verzascatal"
+  ],
+  "type": "valley",
+  "tags": [
+   "reservoir",
+   "gorge"
+  ],
+  "country": "CH",
+  "region": "Zentralalpen",
+  "lat": 46.2592,
+  "lon": 8.8386,
+  "elevation": 536,
+  "classicAscent": "28 km, 2,5 % von Gordola nach Sonogno",
+  "beauty": 5,
+  "fame": 3,
+  "difficulty": 2,
+  "traffic": 2,
+  "season": null,
+  "note": "Über die Staumauer, an der James Bond sprang, dann am smaragdgrünen Fluss entlang bis ans Talende in Sonogno. Ganzjährig offen; im Sommer an Wochenenden voll mit Badegästen, im Frühjahr und Herbst still.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.1814,
+     "lon": 8.8634
+    },
+    "label": "Gordola",
+    "km": 28,
+    "to": {
+     "lat": 46.3503,
+     "lon": 8.7863
+    }
+   }
+  ]
+ },
+ {
+  "slug": "val-bavona",
+  "name": "Val Bavona",
+  "aliases": [
+   "Bavona",
+   "Valle Maggia"
+  ],
+  "type": "valley",
+  "country": "CH",
+  "region": "Zentralalpen",
+  "lat": 46.3739,
+  "lon": 8.5474,
+  "elevation": 690,
+  "classicAscent": "16 km, 3 % von Cevio nach San Carlo",
+  "beauty": 5,
+  "fame": 2,
+  "difficulty": 2,
+  "traffic": 1,
+  "season": null,
+  "note": "Das obere Ende des Maggiatals: eine Straße zwischen Granitwänden und Wasserfällen, ohne Stromnetz und fast ohne Autos, bis zur Seilbahn von San Carlo. Ganzjährig offen, nach starken Regen zeitweise gesperrt.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.317,
+     "lon": 8.6018
+    },
+    "label": "Cevio",
+    "km": 16,
+    "to": {
+     "lat": 46.4088,
+     "lon": 8.5278
+    }
+   }
+  ]
+ },
+ {
+  "slug": "mottarone",
+  "name": "Mottarone",
+  "aliases": [
+   "Monte Mottarone"
+  ],
+  "type": "spur",
+  "country": "IT",
+  "region": "Zentralalpen",
+  "lat": 45.8812,
+  "lon": 8.456,
+  "elevation": 1426,
+  "classicAscent": "20 km, 6 % ab Armeno",
+  "beauty": 4,
+  "fame": 3,
+  "difficulty": 4,
+  "traffic": 2,
+  "season": {
+   "opens": 4,
+   "closes": 12,
+   "maintained": false
+  },
+  "note": "Der Aussichtsberg zwischen Lago Maggiore und Ortasee, Giro-Bergankunft 2009. Die freie Auffahrt kommt von Armeno über Gignese; die Straße von Stresa ist eine Privatstraße mit Maut. Oben von Dezember bis März meist Schnee.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 45.8225,
+     "lon": 8.4392
+    },
+    "label": "Armeno (Süd)"
+   }
+  ]
+ },
+ {
+  "slug": "passo-di-valcava",
+  "name": "Passo di Valcava",
+  "aliases": [
+   "Valcava"
+  ],
+  "type": "pass",
+  "country": "IT",
+  "region": "Zentralalpen",
+  "lat": 45.7882,
+  "lon": 9.5142,
+  "elevation": 1340,
+  "classicAscent": "11,6 km, 10 % ab Torre de' Busi",
+  "beauty": 3,
+  "fame": 3,
+  "difficulty": 5,
+  "traffic": 1,
+  "season": {
+   "opens": 4,
+   "closes": 12,
+   "maintained": false
+  },
+  "note": "Von Torre de' Busi einer der steilsten Anstiege Norditaliens: 1 000 Höhenmeter mit zweistelligem Schnitt und Rampen bis 17 %. Giro-Passage 2008. Die Ostseite aus dem Valle Imagna ist die zahme; oben im Winter Schnee.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 45.7797,
+     "lon": 9.4808
+    },
+    "label": "Torre de' Busi (West)"
+   },
+   {
+    "from": {
+     "lat": 45.8273,
+     "lon": 9.4953
+    },
+    "label": "Valsecca (Ost)"
+   }
+  ]
+ },
+ {
+  "slug": "culmine-di-san-pietro",
+  "name": "Culmine di San Pietro",
+  "aliases": [
+   "Passo Culmine di San Pietro"
+  ],
+  "type": "pass",
+  "country": "IT",
+  "region": "Zentralalpen",
+  "lat": 45.9022,
+  "lon": 9.4939,
+  "elevation": 1258,
+  "classicAscent": "9 km, 6 % ab Moggio",
+  "beauty": 3,
+  "fame": 3,
+  "difficulty": 3,
+  "traffic": 1,
+  "season": {
+   "opens": 4,
+   "closes": 12,
+   "maintained": false
+  },
+  "note": "Der Übergang von der Valsassina ins Val Taleggio, Giro-Passage 2008 und 2018; von Moggio kurz und gleichmäßig, von Vedeseta die längere, stillere Seite. Oben im Winter Schnee.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 45.9324,
+     "lon": 9.4865
+    },
+    "label": "Moggio (West)"
+   },
+   {
+    "from": {
+     "lat": 45.8909,
+     "lon": 9.5401
+    },
+    "label": "Vedeseta (Ost)"
+   }
+  ]
+ },
+ {
+  "slug": "monte-san-primo",
+  "name": "Monte San Primo",
+  "aliases": [
+   "San Primo"
+  ],
+  "type": "spur",
+  "country": "IT",
+  "region": "Zentralalpen",
+  "lat": 45.9034,
+  "lon": 9.2054,
+  "elevation": 1047,
+  "classicAscent": "14 km, 6 % ab Bellagio",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 1,
+  "season": {
+   "opens": 4,
+   "closes": 12,
+   "maintained": false
+  },
+  "note": "Über den Ghisallo hinaus und von Magreglio weiter zum Parco Monte San Primo, wo der Asphalt endet: der höchste Punkt des Larianischen Dreiecks, mit dem Comer See zu beiden Seiten. Im Winter oben Schnee.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 45.9873,
+     "lon": 9.2613
+    },
+    "label": "Bellagio"
+   }
+  ]
+ },
+ {
+  "slug": "selvino",
+  "name": "Selvino",
+  "type": "pass",
+  "roadSummit": true,
+  "country": "IT",
+  "region": "Zentralalpen",
+  "lat": 45.7812,
+  "lon": 9.7519,
+  "elevation": 947,
+  "classicAscent": "11,4 km, 5,6 % ab Nembro",
+  "beauty": 3,
+  "fame": 3,
+  "difficulty": 3,
+  "traffic": 2,
+  "season": null,
+  "note": "Der Hausberg der Bergamasker: 21 Kehren von Nembro hinauf ins Dorf auf der Hochfläche, seit Felice Gimondi die Straße, auf der hier jeder das Fahren lernt. Ganzjährig geräumt; die Fortsetzung nach Aviatico ins Val Serina macht die Runde.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 45.744,
+     "lon": 9.7593
+    },
+    "label": "Nembro (Süd)"
+   }
+  ]
+ },
+ {
+  "slug": "colle-gallo",
+  "name": "Colle Gallo",
+  "aliases": [
+   "Colle del Gallo"
+  ],
+  "type": "pass",
+  "country": "IT",
+  "region": "Zentralalpen",
+  "lat": 45.7535,
+  "lon": 9.8739,
+  "elevation": 754,
+  "classicAscent": "8 km, 6 % ab Gaverina Terme",
+  "beauty": 3,
+  "fame": 3,
+  "difficulty": 2,
+  "traffic": 2,
+  "season": null,
+  "note": "Zwischen Val Seriana und Val Cavallina; oben das Santuario mit der Madonna dei Ciclisti, dem Gegenstück zum Ghisallo. Giro-Passage 2011 und Trainingsstrecke der Bergamasker Profis. Ganzjährig offen.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 45.7558,
+     "lon": 9.8867
+    },
+    "label": "Gaverina Terme (Ost)"
+   },
+   {
+    "from": {
+     "lat": 45.7837,
+     "lon": 9.8255
+    },
+    "label": "Cene (West)"
+   }
+  ]
+ },
+ {
+  "slug": "piani-dei-resinelli",
+  "name": "Piani dei Resinelli",
+  "aliases": [
+   "Resinelli",
+   "Piani Resinelli"
+  ],
+  "type": "spur",
+  "country": "IT",
+  "region": "Zentralalpen",
+  "lat": 45.9044,
+  "lon": 9.3927,
+  "elevation": 1279,
+  "classicAscent": "9 km, 8 % ab Ballabio",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 4,
+  "traffic": 1,
+  "season": {
+   "opens": 4,
+   "closes": 12,
+   "maintained": false
+  },
+  "note": "Von Ballabio in Kehren unter die Wände der Grigna, die Straße endet auf der Hochfläche der Resinelli mit Blick auf Lecco und den See. Steil und schattig; im Winter oben Schnee.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 45.8961,
+     "lon": 9.424
+    },
+    "label": "Ballabio"
+   }
+  ]
+ },
+ {
+  "slug": "passo-di-agueglio",
+  "name": "Passo di Agueglio",
+  "aliases": [
+   "Agueglio",
+   "Esino Lario"
+  ],
+  "type": "pass",
+  "country": "IT",
+  "region": "Zentralalpen",
+  "lat": 46.0059,
+  "lon": 9.3226,
+  "elevation": 1140,
+  "classicAscent": "13 km, 7 % ab Varenna",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 1,
+  "season": {
+   "opens": 4,
+   "closes": 12,
+   "maintained": false
+  },
+  "note": "Vom Comer See bei Varenna über Perledo und Esino Lario hinauf und nach Parlasco in die Valsassina hinunter; die Seeseite mit Blick auf Bellagio ist die schöne. Oben im Winter Schnee.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.01,
+     "lon": 9.2832
+    },
+    "label": "Varenna (West)"
+   },
+   {
+    "from": {
+     "lat": 46.0182,
+     "lon": 9.3446
+    },
+    "label": "Parlasco (Ost)"
+   }
+  ]
+ },
+ {
+  "slug": "bocca-di-navene",
+  "name": "Bocca di Navene",
+  "aliases": [
+   "Monte Baldo",
+   "San Valentino"
+  ],
+  "type": "pass",
+  "tags": [
+   "panorama"
+  ],
+  "country": "IT",
+  "region": "Dolomiten",
+  "lat": 45.788,
+  "lon": 10.8726,
+  "elevation": 1425,
+  "classicAscent": "18 km, 6 % ab Brentonico",
+  "beauty": 5,
+  "fame": 3,
+  "difficulty": 4,
+  "traffic": 1,
+  "season": {
+   "opens": 5,
+   "closes": 11,
+   "maintained": false
+  },
+  "note": "Die Straße über den Monte Baldo: von Brentonico über San Valentino auf den Kamm, dann 1 300 m fast senkrecht über dem Gardasee hinunter nach Navene. Die Seeseite ist eng, steil und die schönste Abfahrt am See; im Winter gesperrt.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 45.8188,
+     "lon": 10.956
+    },
+    "label": "Brentonico (Ost)"
+   },
+   {
+    "from": {
+     "lat": 45.7991,
+     "lon": 10.8382
+    },
+    "label": "Navene (West)"
+   }
+  ]
+ },
+ {
+  "slug": "punta-veleno",
+  "name": "Punta Veleno",
+  "aliases": [
+   "Prada Alta",
+   "Veleno"
+  ],
+  "type": "spur",
+  "country": "IT",
+  "region": "Dolomiten",
+  "lat": 45.6742,
+  "lon": 10.7809,
+  "elevation": 1005,
+  "classicAscent": "9 km, 11 % ab Castelletto di Brenzone",
+  "beauty": 4,
+  "fame": 3,
+  "difficulty": 5,
+  "traffic": 1,
+  "season": {
+   "opens": 4,
+   "closes": 12,
+   "maintained": false
+  },
+  "note": "Vom Gardaseeufer bei Brenzone bis Prada Alta am Monte Baldo: neun Kilometer mit elf Prozent im Schnitt und Rampen bis 20 %, der steilste Anstieg am See. Das Gift im Namen ist verdient; oben im Winter Schnee.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 45.6947,
+     "lon": 10.7717
+    },
+    "label": "Castelletto di Brenzone"
+   }
+  ]
+ },
+ {
+  "slug": "passo-del-ballino",
+  "name": "Passo del Ballino",
+  "aliases": [
+   "Ballino"
+  ],
+  "type": "pass",
+  "country": "IT",
+  "region": "Dolomiten",
+  "lat": 45.9744,
+  "lon": 10.8199,
+  "elevation": 750,
+  "classicAscent": "13 km, 5 % ab Riva del Garda",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 2,
+  "traffic": 3,
+  "season": null,
+  "note": "Von Riva über Tenno und am Lago di Tenno vorbei auf die Hochfläche von Fiavè: der klassische Einstieg vom Gardasee ins Trentino, ganzjährig offen und mit Verkehr an Wochenenden.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 45.8848,
+     "lon": 10.8397
+    },
+    "label": "Riva del Garda (Süd)"
+   },
+   {
+    "from": {
+     "lat": 46.0367,
+     "lon": 10.8713
+    },
+    "label": "Ponte Arche (Nord)"
+   }
+  ]
+ },
+ {
+  "slug": "passo-d-ampola",
+  "name": "Passo d'Ampola",
+  "aliases": [
+   "Ampola",
+   "Valle di Ledro",
+   "Ledrotal"
+  ],
+  "type": "pass",
+  "country": "IT",
+  "region": "Dolomiten",
+  "lat": 45.8644,
+  "lon": 10.6455,
+  "elevation": 747,
+  "classicAscent": "26 km, 3 % ab Riva del Garda",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 2,
+  "traffic": 3,
+  "season": null,
+  "note": "Von Riva durch die Ponale-Galerie ins Ledrotal, am See entlang und über den flachen Ampola nach Storo. Kein Berg, ein Tal; ganzjährig offen, die Ponale-Kehren am Beginn sind das Ereignis.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 45.8848,
+     "lon": 10.8397
+    },
+    "label": "Riva del Garda (Ost)"
+   },
+   {
+    "from": {
+     "lat": 45.8491,
+     "lon": 10.5799
+    },
+    "label": "Storo (West)"
+   }
+  ]
+ },
+ {
+  "slug": "passo-santa-barbara",
+  "name": "Passo Santa Barbara",
+  "aliases": [
+   "Santa Barbara",
+   "Val di Gresta"
+  ],
+  "type": "pass",
+  "country": "IT",
+  "region": "Dolomiten",
+  "lat": 45.8963,
+  "lon": 10.9403,
+  "elevation": 1169,
+  "classicAscent": "14 km, 7 % ab Rovereto",
+  "beauty": 3,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 1,
+  "season": {
+   "opens": 4,
+   "closes": 12,
+   "maintained": false
+  },
+  "note": "Von Rovereto durch die Kehren über Isera auf den Übergang in die Val di Gresta, Bergankunft der Giro-Etappe 2018 nach Arco. Die Westseite von Nago über Ronzo ist die stillere. Oben im Winter Schnee.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 45.8865,
+     "lon": 11.0452
+    },
+    "label": "Rovereto (Ost)"
+   },
+   {
+    "from": {
+     "lat": 45.8776,
+     "lon": 10.89
+    },
+    "label": "Nago (West)"
+   }
+  ]
+ },
+ {
+  "slug": "passo-vezzena",
+  "name": "Passo Vezzena",
+  "aliases": [
+   "Vezzena"
+  ],
+  "type": "pass",
+  "country": "IT",
+  "region": "Dolomiten",
+  "lat": 45.9566,
+  "lon": 11.3286,
+  "elevation": 1402,
+  "classicAscent": "13 km, 7 % ab Caldonazzo",
+  "beauty": 3,
+  "fame": 3,
+  "difficulty": 4,
+  "traffic": 2,
+  "season": null,
+  "note": "Vom Caldonazzosee durch die Kehren des Menador auf die Hochfläche von Lavarone und Asiago; die Nordseite ist der Anstieg, die Südseite vom Asiago-Plateau kaum einer. Ganzjährig geräumt.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 45.9915,
+     "lon": 11.2621
+    },
+    "label": "Caldonazzo (Nord)"
+   },
+   {
+    "from": {
+     "lat": 45.8754,
+     "lon": 11.5107
+    },
+    "label": "Asiago (Süd)"
+   }
+  ]
+ },
+ {
+  "slug": "pian-delle-fugazze",
+  "name": "Pian delle Fugazze",
+  "aliases": [
+   "Passo Pian delle Fugazze",
+   "Fugazze"
+  ],
+  "type": "pass",
+  "country": "IT",
+  "region": "Dolomiten",
+  "lat": 45.7602,
+  "lon": 11.1733,
+  "elevation": 1163,
+  "classicAscent": "19 km, 5 % ab Rovereto",
+  "beauty": 3,
+  "fame": 3,
+  "difficulty": 3,
+  "traffic": 2,
+  "season": null,
+  "note": "Der Übergang vom Etschtal in die Val Leogra unter dem Pasubio, Weltkriegsfront und Giro-Passage. Von Rovereto durch das Vallarsa lang, von Valli del Pasubio kurz und steil. Ganzjährig geräumt.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 45.8865,
+     "lon": 11.0452
+    },
+    "label": "Rovereto (West)"
+   },
+   {
+    "from": {
+     "lat": 45.7399,
+     "lon": 11.2609
+    },
+    "label": "Valli del Pasubio (Ost)"
+   }
+  ]
+ },
+ {
+  "slug": "passo-xomo",
+  "name": "Passo Xomo",
+  "aliases": [
+   "Xomo"
+  ],
+  "type": "pass",
+  "country": "IT",
+  "region": "Dolomiten",
+  "lat": 45.7771,
+  "lon": 11.2376,
+  "elevation": 1058,
+  "classicAscent": "7 km, 8 % ab Sant'Antonio",
+  "beauty": 3,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 1,
+  "season": null,
+  "note": "Der kleine Nachbar der Fugazze über Valli del Pasubio, kurz und steil, mit dem Strada degli Scarubbi als Schotterfortsetzung Richtung Pasubio. Auf der Posina-Seite still. Ganzjährig offen, im Winter nach Schneefall nicht.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 45.7554,
+     "lon": 11.2188
+    },
+    "label": "Sant'Antonio (Süd)"
+   },
+   {
+    "from": {
+     "lat": 45.7911,
+     "lon": 11.2625
+    },
+    "label": "Posina (Nord)"
+   }
+  ]
+ },
+ {
+  "slug": "monte-velo",
+  "name": "Monte Velo",
+  "aliases": [
+   "Velo"
+  ],
+  "type": "spur",
+  "country": "IT",
+  "region": "Dolomiten",
+  "lat": 45.9079,
+  "lon": 10.9355,
+  "elevation": 1067,
+  "classicAscent": "13 km, 7 % ab Arco",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 1,
+  "season": {
+   "opens": 4,
+   "closes": 12,
+   "maintained": false
+  },
+  "note": "Von Arco auf die Almen über dem Sarcatal, wo der Asphalt an den Wiesen des Monte Velo endet; der Gardasee liegt tief unten im Süden. Der Haus-Anstieg der Arco-Kletterer auf dem Rennrad; im Winter oben Schnee.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 45.9181,
+     "lon": 10.8861
+    },
+    "label": "Arco"
+   }
+  ]
+ },
+ {
+  "slug": "valvestino",
+  "name": "Valvestino",
+  "aliases": [
+   "Lago di Valvestino",
+   "Strada della Valvestino"
+  ],
+  "type": "balcony",
+  "tags": [
+   "reservoir",
+   "tunnels"
+  ],
+  "country": "IT",
+  "region": "Dolomiten",
+  "lat": 45.7645,
+  "lon": 10.621,
+  "elevation": 520,
+  "classicAscent": "22 km, 3 % von Gargnano nach Magasa",
+  "beauty": 5,
+  "fame": 2,
+  "difficulty": 2,
+  "traffic": 1,
+  "season": null,
+  "note": "Von Gargnano am Gardasee in Kehren hinauf, dann in Tunneln und Galerien hoch über dem Fjord des Valvestino-Stausees bis ins Bergdorf Magasa. Ganzjährig offen, fast ohne Autos.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 45.6881,
+     "lon": 10.6635
+    },
+    "label": "Gargnano",
+    "km": 22,
+    "to": {
+     "lat": 45.7814,
+     "lon": 10.616
+    }
+   }
+  ]
+ },
+ {
+  "slug": "passo-sommo",
+  "name": "Passo Sommo",
+  "aliases": [
+   "Sommo",
+   "Folgaria"
+  ],
+  "type": "pass",
+  "country": "IT",
+  "region": "Dolomiten",
+  "lat": 45.9196,
+  "lon": 11.2062,
+  "elevation": 1341,
+  "classicAscent": "16 km, 7 % ab Calliano",
+  "beauty": 3,
+  "fame": 2,
+  "difficulty": 4,
+  "traffic": 2,
+  "season": null,
+  "note": "Vom Etschtal bei Calliano über Folgaria auf die Hochfläche der Vigolana; der Anstieg ist die Kehrenstraße bis Folgaria, der Pass dahinter nur noch ein Hügel. Ganzjährig geräumt.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 45.9342,
+     "lon": 11.0943
+    },
+    "label": "Calliano (West)"
+   }
+  ]
+ },
+ {
+  "slug": "passo-delle-fittanze",
+  "name": "Passo delle Fittanze",
+  "aliases": [
+   "Fittanze della Sega",
+   "Lessinia"
+  ],
+  "type": "pass",
+  "country": "IT",
+  "region": "Dolomiten",
+  "lat": 45.6839,
+  "lon": 10.9791,
+  "elevation": 1399,
+  "classicAscent": "16 km, 8 % ab Ala",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 4,
+  "traffic": 1,
+  "season": {
+   "opens": 5,
+   "closes": 11.5,
+   "maintained": false
+  },
+  "note": "Vom Etschtal bei Ala über Sega di Ala auf den Kamm der Lessinia: 1 200 Höhenmeter mit langen Rampen um 10 %, oben Karst und Weide. Die Südseite ist das Plateau von Erbezzo, kein Anstieg. Im Winter gesperrt.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 45.7579,
+     "lon": 11.0018
+    },
+    "label": "Ala (Nord)"
+   }
+  ]
+ },
+ {
+  "slug": "passo-di-campogrosso",
+  "name": "Passo di Campogrosso",
+  "aliases": [
+   "Campogrosso"
+  ],
+  "type": "pass",
+  "country": "IT",
+  "region": "Dolomiten",
+  "lat": 45.729,
+  "lon": 11.1689,
+  "elevation": 1453,
+  "classicAscent": "11 km, 9 % ab Recoaro Terme",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 4,
+  "traffic": 1,
+  "season": {
+   "opens": 5,
+   "closes": 11,
+   "maintained": false
+  },
+  "note": "Von Recoaro Terme unter die Wände der Kleinen Dolomiten, steil und schattig bis zur Passhöhe mit dem Rifugio. Nur von Süden asphaltiert: die Nordseite zum Pian delle Fugazze ist eine Schotterstraße. Im Winter gesperrt.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 45.7052,
+     "lon": 11.2249
+    },
+    "label": "Recoaro Terme (Süd)"
+   }
+  ]
+ },
+ {
+  "slug": "col-de-la-madeleine-bedoin",
+  "name": "Col de la Madeleine (Bédoin)",
+  "aliases": [
+   "Madeleine de Bédoin"
+  ],
+  "type": "pass",
+  "country": "FR",
+  "region": "Westalpen",
+  "lat": 44.1412,
+  "lon": 5.1294,
+  "elevation": 448,
+  "classicAscent": "3 km, 4 % ab Malaucène",
+  "beauty": 3,
+  "fame": 2,
+  "difficulty": 1,
+  "traffic": 2,
+  "season": null,
+  "note": "Der kleine Übergang zwischen Malaucène und Bédoin, der die Ventoux-Runde schließt: kurz, mit Blick auf den Berg und die Dentelles. Ganzjährig offen. Nicht zu verwechseln mit dem großen Col de la Madeleine in Savoyen.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 44.1733,
+     "lon": 5.1321
+    },
+    "label": "Malaucène (Nord)"
+   },
+   {
+    "from": {
+     "lat": 44.124,
+     "lon": 5.1807
+    },
+    "label": "Bédoin (Süd)"
+   }
+  ]
+ },
+ {
+  "slug": "col-de-notre-dame-des-abeilles",
+  "name": "Col de Notre-Dame des Abeilles",
+  "aliases": [
+   "Col des Abeilles",
+   "Abeilles"
+  ],
+  "type": "pass",
+  "country": "FR",
+  "region": "Westalpen",
+  "lat": 44.0931,
+  "lon": 5.3298,
+  "elevation": 997,
+  "classicAscent": "11 km, 5 % ab Flassan",
+  "beauty": 3,
+  "fame": 2,
+  "difficulty": 2,
+  "traffic": 2,
+  "season": null,
+  "note": "Die Straße von Bédoin nach Sault durch den Wald der Südflanke des Ventoux, ganzjährig offen; der zweite Weg nach Sault neben der Nesque, gleichmäßig und ohne Kehren.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 44.0981,
+     "lon": 5.2407
+    },
+    "label": "Flassan (West)"
+   },
+   {
+    "from": {
+     "lat": 44.0918,
+     "lon": 5.4088
+    },
+    "label": "Sault (Ost)"
+   }
+  ]
+ },
+ {
+  "slug": "col-de-murs",
+  "name": "Col de Murs",
+  "aliases": [
+   "Murs"
+  ],
+  "type": "pass",
+  "country": "FR",
+  "region": "Westalpen",
+  "lat": 43.9771,
+  "lon": 5.2259,
+  "elevation": 627,
+  "classicAscent": "10 km, 4 % ab Venasque",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 2,
+  "traffic": 1,
+  "season": null,
+  "note": "Von Venasque über die Monts de Vaucluse ins Dorf Murs und weiter nach Gordes: Kalk, Eichen, Lavendel und kaum Verkehr. Ganzjährig offen; die Verbindung vom Ventoux-Land in den Luberon.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 43.9962,
+     "lon": 5.1465
+    },
+    "label": "Venasque (Nord)"
+   },
+   {
+    "from": {
+     "lat": 43.9512,
+     "lon": 5.2423
+    },
+    "label": "Murs (Süd)"
+   }
+  ]
+ },
+ {
+  "slug": "col-de-perty",
+  "name": "Col de Perty",
+  "aliases": [
+   "Perty"
+  ],
+  "type": "pass",
+  "country": "FR",
+  "region": "Westalpen",
+  "lat": 44.2872,
+  "lon": 5.5498,
+  "elevation": 1302,
+  "classicAscent": "12 km, 6 % ab Saint-Auban-sur-l'Ouvèze",
+  "beauty": 4,
+  "fame": 3,
+  "difficulty": 3,
+  "traffic": 1,
+  "season": null,
+  "note": "Der höchste Pass der Baronnies, Tour-de-France-Passage 2006 und 2012: von der Ouvèze aus dem Wald in einen weiten Kessel, oben Blick auf Ventoux und Lure. Ganzjährig offen, nach Schneefall kurz nicht.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 44.2885,
+     "lon": 5.4168
+    },
+    "label": "Saint-Auban-sur-l'Ouvèze (West)"
+   },
+   {
+    "from": {
+     "lat": 44.2928,
+     "lon": 5.596
+    },
+    "label": "Laborel (Ost)"
+   }
+  ]
+ },
+ {
+  "slug": "col-de-soubeyrand",
+  "name": "Col de Soubeyrand",
+  "aliases": [
+   "Soubeyrand"
+  ],
+  "type": "pass",
+  "country": "FR",
+  "region": "Westalpen",
+  "lat": 44.3718,
+  "lon": 5.3539,
+  "elevation": 994,
+  "classicAscent": "9 km, 6 % ab Sainte-Jalle",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 2,
+  "traffic": 1,
+  "season": null,
+  "note": "Von Sainte-Jalle über den Kamm ins Eygues-Tal bei Curnier: Kehren durch Eichen und Lavendel, kaum ein Auto, Tour-Passage 2012. Ganzjährig offen.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 44.3451,
+     "lon": 5.2833
+    },
+    "label": "Sainte-Jalle (Süd)"
+   },
+   {
+    "from": {
+     "lat": 44.3855,
+     "lon": 5.2347
+    },
+    "label": "Curnier (Nord)"
+   }
+  ]
+ },
+ {
+  "slug": "col-d-ey",
+  "name": "Col d'Ey",
+  "aliases": [
+   "Ey"
+  ],
+  "type": "pass",
+  "country": "FR",
+  "region": "Westalpen",
+  "lat": 44.3127,
+  "lon": 5.2777,
+  "elevation": 718,
+  "classicAscent": "7 km, 5 % ab Buis-les-Baronnies",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 2,
+  "traffic": 1,
+  "season": null,
+  "note": "Der Hausberg von Buis-les-Baronnies, kurz und gleichmäßig zwischen Olivenhainen und Aprikosen, oben der Blick auf den Ventoux. Ganzjährig offen; Auftakt jeder Baronnies-Runde.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 44.2768,
+     "lon": 5.2748
+    },
+    "label": "Buis-les-Baronnies (Süd)"
+   },
+   {
+    "from": {
+     "lat": 44.3451,
+     "lon": 5.2833
+    },
+    "label": "Sainte-Jalle (Nord)"
+   }
+  ]
+ },
+ {
+  "slug": "col-de-fontaube",
+  "name": "Col de Fontaube",
+  "aliases": [
+   "Fontaube"
+  ],
+  "type": "pass",
+  "country": "FR",
+  "region": "Westalpen",
+  "lat": 44.2082,
+  "lon": 5.313,
+  "elevation": 635,
+  "classicAscent": "5 km, 5 % ab Eygaliers",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 2,
+  "traffic": 1,
+  "season": null,
+  "note": "Von Buis über Eygaliers auf den Kamm und ins Toulourenc-Tal unter der Nordwand des Ventoux hinunter; die Straße führt weiter nach Brantes und Montbrun. Ganzjährig offen und fast ohne Verkehr.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 44.2391,
+     "lon": 5.2812
+    },
+    "label": "Eygaliers (Nord)"
+   },
+   {
+    "from": {
+     "lat": 44.1932,
+     "lon": 5.3337
+    },
+    "label": "Brantes (Süd)"
+   }
+  ]
+ },
+ {
+  "slug": "col-de-macuegne",
+  "name": "Col de Macuègne",
+  "aliases": [
+   "Macuegne"
+  ],
+  "type": "pass",
+  "country": "FR",
+  "region": "Westalpen",
+  "lat": 44.1821,
+  "lon": 5.51,
+  "elevation": 1068,
+  "classicAscent": "8 km, 5 % ab Montbrun-les-Bains",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 2,
+  "traffic": 1,
+  "season": null,
+  "note": "Zwischen Montbrun-les-Bains und Séderon, über Lavendelfelder und Buchenwald mit dem Ventoux im Rücken. Ganzjährig offen, still; der Rückweg der Perty-Runde.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 44.1752,
+     "lon": 5.4413
+    },
+    "label": "Montbrun-les-Bains (West)"
+   },
+   {
+    "from": {
+     "lat": 44.2035,
+     "lon": 5.537
+    },
+    "label": "Séderon (Ost)"
+   }
+  ]
+ },
+ {
+  "slug": "col-de-l-homme-mort",
+  "name": "Col de l'Homme Mort",
+  "aliases": [
+   "Homme Mort"
+  ],
+  "type": "pass",
+  "country": "FR",
+  "region": "Westalpen",
+  "lat": 44.1571,
+  "lon": 5.4977,
+  "elevation": 1213,
+  "classicAscent": "10 km, 5 % ab Montbrun-les-Bains",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 2,
+  "traffic": 1,
+  "season": null,
+  "note": "Der Übergang von Montbrun auf das Lavendelplateau von Ferrassières und Sault, ganzjährig offen; die Westseite vom Plateau ist kaum ein Anstieg, die Ostseite eine ruhige Waldstraße mit Blick auf die Lure.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 44.1752,
+     "lon": 5.4413
+    },
+    "label": "Montbrun-les-Bains (Ost)"
+   }
+  ]
+ },
+ {
+  "slug": "col-de-castillon",
+  "name": "Col de Castillon",
+  "aliases": [
+   "Castillon"
+  ],
+  "type": "pass",
+  "country": "FR",
+  "region": "Westalpen",
+  "lat": 43.8395,
+  "lon": 7.4602,
+  "elevation": 728,
+  "classicAscent": "13 km, 5 % ab Menton",
+  "beauty": 4,
+  "fame": 3,
+  "difficulty": 2,
+  "traffic": 3,
+  "season": null,
+  "note": "Der direkte Weg von Menton nach Sospel, ganzjährig offen: vom Meer durch die Schlucht des Careï und über das wiederaufgebaute Dorf Castillon auf den Pass, hinunter ins Bévéra-Tal. Verkehr auf der Mentoner Seite.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 43.7753,
+     "lon": 7.5029
+    },
+    "label": "Menton (Süd)"
+   },
+   {
+    "from": {
+     "lat": 43.8786,
+     "lon": 7.4498
+    },
+    "label": "Sospel (Nord)"
+   }
+  ]
+ },
+ {
+  "slug": "col-d-eze",
+  "name": "Col d'Èze",
+  "aliases": [
+   "Grande Corniche",
+   "La Turbie"
+  ],
+  "type": "pass",
+  "country": "FR",
+  "region": "Westalpen",
+  "lat": 43.734,
+  "lon": 7.3466,
+  "elevation": 507,
+  "classicAscent": "10 km, 5 % ab Nizza",
+  "beauty": 4,
+  "fame": 4,
+  "difficulty": 2,
+  "traffic": 3,
+  "season": null,
+  "note": "Das Bergzeitfahren von Paris–Nizza, jahrzehntelang der Schlussakt des Rennens: von Nizza über die Grande Corniche mit dem Meer unter sich zum Col, dahinter La Turbie und Monaco. Ganzjährig offen, viel befahren; die Ostseite ab Èze ist keine zwei Kilometer und keine eigene Auffahrt.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 43.7009,
+     "lon": 7.2684
+    },
+    "label": "Nizza (West)"
+   }
+  ]
+ },
+ {
+  "slug": "col-saint-roch",
+  "name": "Col Saint-Roch",
+  "aliases": [
+   "Saint-Roch"
+  ],
+  "type": "pass",
+  "country": "FR",
+  "region": "Westalpen",
+  "lat": 43.896,
+  "lon": 7.3386,
+  "elevation": 991,
+  "classicAscent": "9 km, 6 % ab Lucéram",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 1,
+  "season": null,
+  "note": "Zwischen Lucéram und Coaraze, zwei Bergdörfern des Paillon-Hinterlands: ruhig, ganzjährig offen und die Verbindung, mit der aus Braus und Turini eine Runde wird.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 43.8847,
+     "lon": 7.3609
+    },
+    "label": "Lucéram (Ost)"
+   },
+   {
+    "from": {
+     "lat": 43.8639,
+     "lon": 7.2953
+    },
+    "label": "Coaraze (West)"
+   }
+  ]
+ },
+ {
+  "slug": "col-de-bleine",
+  "name": "Col de Bleine",
+  "aliases": [
+   "Bleine"
+  ],
+  "type": "pass",
+  "country": "FR",
+  "region": "Westalpen",
+  "lat": 43.8151,
+  "lon": 6.8039,
+  "elevation": 1439,
+  "classicAscent": "11 km, 6 % ab Saint-Auban",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 1,
+  "season": null,
+  "note": "Der höchste Übergang zwischen Estéron und dem Plateau von Thorenc, Paris–Nizza-Passage; auf der Nordseite Kehren durch Buchenwald, oben Wiesen und Kalkkämme. Ganzjährig offen, nach Schneefall kurz gesperrt.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 43.8487,
+     "lon": 6.7263
+    },
+    "label": "Saint-Auban (Nord)"
+   },
+   {
+    "from": {
+     "lat": 43.8048,
+     "lon": 6.8049
+    },
+    "label": "Thorenc (Süd)"
+   }
+  ]
+ },
+ {
+  "slug": "col-de-l-orme",
+  "name": "Col de l'Orme",
+  "aliases": [
+   "Orme",
+   "Peïra-Cava"
+  ],
+  "type": "pass",
+  "country": "FR",
+  "region": "Westalpen",
+  "lat": 43.9005,
+  "lon": 7.3624,
+  "elevation": 1005,
+  "classicAscent": "5 km, 7 % ab Lucéram",
+  "beauty": 3,
+  "fame": 2,
+  "difficulty": 2,
+  "traffic": 1,
+  "season": null,
+  "note": "Die erste Stufe von Lucéram hinauf nach Peïra-Cava und zum Turini; ein eigener Pass nur auf dem Papier, doch die Straße, auf der die Nizzaer Runden über den Turini beginnen. Ganzjährig offen.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 43.8847,
+     "lon": 7.3609
+    },
+    "label": "Lucéram (Süd)"
+   }
+  ]
+ },
+ {
+  "slug": "col-de-nice",
+  "name": "Col de Nice",
+  "type": "pass",
+  "country": "FR",
+  "region": "Westalpen",
+  "lat": 43.8269,
+  "lon": 7.3505,
+  "elevation": 414,
+  "classicAscent": "4 km, 5 % ab L'Escarène",
+  "beauty": 3,
+  "fame": 2,
+  "difficulty": 1,
+  "traffic": 2,
+  "season": null,
+  "note": "Der Hügel zwischen dem Paillon von L'Escarène und dem von Contes; kurz, ganzjährig offen, und mit Braus und Saint-Roch der Rest der Runde.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 43.8342,
+     "lon": 7.3557
+    },
+    "label": "L'Escarène (Ost)"
+   },
+   {
+    "from": {
+     "lat": 43.812,
+     "lon": 7.3146
+    },
+    "label": "Contes (West)"
+   }
+  ]
+ },
+ {
+  "slug": "col-de-la-porte",
+  "name": "Col de la Porte",
+  "aliases": [
+   "Porte"
+  ],
+  "type": "pass",
+  "country": "FR",
+  "region": "Westalpen",
+  "lat": 43.9076,
+  "lon": 7.3336,
+  "elevation": 1057,
+  "classicAscent": "12 km, 6 % ab Coaraze",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 1,
+  "season": null,
+  "note": "Über Coaraze hinaus zum Übergang nach Lucéram, ein Stück oberhalb des Col Saint-Roch: still, mit Blick auf die Dörfer des Paillon. Ganzjährig offen.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 43.8639,
+     "lon": 7.2953
+    },
+    "label": "Coaraze (Süd)"
+   }
+  ]
+ },
+ {
+  "slug": "col-de-chateauneuf",
+  "name": "Col de Châteauneuf",
+  "aliases": [
+   "Chateauneuf",
+   "Tourrette-Levens"
+  ],
+  "type": "pass",
+  "country": "FR",
+  "region": "Westalpen",
+  "lat": 43.8004,
+  "lon": 7.2928,
+  "elevation": 627,
+  "classicAscent": "9 km, 5 % ab Saint-André-de-la-Roche",
+  "beauty": 3,
+  "fame": 2,
+  "difficulty": 2,
+  "traffic": 3,
+  "season": null,
+  "note": "Der erste Berg hinter Nizza Richtung Tourrette-Levens und Contes, Auftakt vieler Trainingsrunden aus der Stadt; mit Verkehr, ganzjährig offen.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 43.7373,
+     "lon": 7.2873
+    },
+    "label": "Saint-André-de-la-Roche (Süd)"
+   },
+   {
+    "from": {
+     "lat": 43.812,
+     "lon": 7.3146
+    },
+    "label": "Contes (Ost)"
+   }
+  ]
+ },
+ {
+  "slug": "col-de-brouis",
+  "name": "Col de Brouis",
+  "aliases": [
+   "Brouis"
+  ],
+  "type": "pass",
+  "country": "FR",
+  "region": "Westalpen",
+  "lat": 43.9243,
+  "lon": 7.4765,
+  "elevation": 879,
+  "classicAscent": "9 km, 5 % ab Sospel",
+  "beauty": 3,
+  "fame": 2,
+  "difficulty": 2,
+  "traffic": 2,
+  "season": null,
+  "note": "Von Sospel ins Roya-Tal nach Breil: der Übergang, der Sospel mit Tende und der Bahnlinie verbindet. Ganzjährig offen; von Breil die längere Seite.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 43.8786,
+     "lon": 7.4498
+    },
+    "label": "Sospel (West)"
+   },
+   {
+    "from": {
+     "lat": 43.9375,
+     "lon": 7.514
+    },
+    "label": "Breil-sur-Roya (Ost)"
    }
   ]
  }

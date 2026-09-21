@@ -483,8 +483,16 @@ if (EXPLAIN) {
 for (const w of warnings) console.warn(`WARN  ${w}`);
 for (const e of errors) console.error(`FEHLER ${e}`);
 const rejectedCount = Object.keys(rejected ?? {}).length;
+// Information, not a warning: a pass carries every side that is a classic
+// climb, and a single-sided one says in its note why the other side is not
+// (a motorway feeder, a gravel track, a tunnel). The count is printed in every
+// data PR so the number stays visible; the note is the honest state for many
+// of them, so nothing here nags (docs/plans/24-depth-per-destination.md).
+const singleSided = (passes ?? []).filter(
+  (p) => p.type === "pass" && p.ascents.length === 1,
+).length;
 console.log(
-  `${passes?.length ?? 0} Pässe, ${tours?.length ?? 0} Touren, ${towns?.length ?? 0} Orte · ${Object.keys(routes ?? {}).length} Routen geprüft${
+  `${passes?.length ?? 0} Pässe (${singleSided} davon einseitig), ${tours?.length ?? 0} Touren, ${towns?.length ?? 0} Orte · ${Object.keys(routes ?? {}).length} Routen geprüft${
     rejectedCount ? `, ${rejectedCount} abgewiesen` : ""
   } · ${errors.length} Fehler, ${warnings.length} Warnungen`,
 );

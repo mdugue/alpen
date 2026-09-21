@@ -62,6 +62,8 @@ friends do that better and the app links out to them.
 | Weather route, Open-Meteo quota and cooldown    | `app/api/weather/[slug]/route.ts`                                                                                                                                                                                                                                                                          |
 | Tours within reach, town reach hull             | `lib/nearby.ts`, `lib/geo.ts` (computed on the server in `lib/data.ts`)                                                                                                                                                                                                                                    |
 | Reach bands, the nearness weight                | `lib/geo.ts` (`REACH_BANDS`, `reachWeight`, `REACH_MAX_KM`); calibrated in `docs/scales.md`                                                                                                                                                                                                                |
+| Level of detail on the map (by fame)            | `lib/prominence.ts`; the filters and the corner line in `components/map/pass-map.tsx`                                                                                                                                                                                                                      |
+| Coverage per base: what is listed, what is not  | `scripts/analyze-coverage.ts`, `scripts/lib/coverage.ts` (Overpass, cached in `scripts/.cache/coverage`)                                                                                                                                                                                                   |
 | Destination verdict, ranked reach, the inverse  | `lib/destination.ts` (`destinationAt`, `basesFor`, `gradeOf`), `components/panel/destination.tsx`, `scripts/analyze-destinations.ts`                                                                                                                                                                       |
 | Hover shared by list, map and panel             | `hovered` in `components/explorer.tsx`; the ring and line state in `components/map/pass-map.tsx`                                                                                                                                                                                                           |
 | One tab stop per list; sharing the hash         | `lib/use-roving.ts`, `lib/use-share.ts`                                                                                                                                                                                                                                                                    |
@@ -185,6 +187,11 @@ The camera, the layer stack, hit testing, colours, the basemap.
   `line-opacity` composites every hairpin overlap twice; the layer property is
   data-constant, so per-feature differences go into width or colour.
   → [why](docs/map-rendering.md#translucent-lines-need-line-layer-opacity-not-line-opacity)
+- **The overview draws by fame, the list draws everything.** The pass dots
+  and their hit layer thin out by fame below zoom 8.5 (`lib/prominence.ts`);
+  what is selected, hovered or a favourite is always drawn, and the corner
+  line says which level is showing. Not a filter: no chip, the list untouched.
+  → [why](docs/map-rendering.md#the-overview-draws-by-fame-the-list-draws-everything)
 - **What answers the pointer is not what is drawn.** A transparent `*-hit`
   layer per kind, one `queryRenderedFeatures`, and `HIT_GROUPS` – not the style
   – decides who wins.
