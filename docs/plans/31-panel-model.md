@@ -4,8 +4,9 @@
 **Depends on:** 15, 16 (done), 28 (the resolved entity and `entityKey`
 arrive from the reducer) · **Supersedes:** 17 · **Unblocks:** 02 (an entity
 page renders the same model on the server), 12 (a destination detail is a
-fourth kind, not a fourth branch), 24 (the coverage report reads the reach
-module), 33 (the model is the fourth piece of the functional core)
+fourth kind, not a fourth branch), 24 (its coverage report already reads
+the reach bands from `lib/geo.ts` and reads the reach module afterwards), 33
+(the model is the fourth piece of the functional core)
 
 ## Goal
 

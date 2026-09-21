@@ -3,8 +3,9 @@
 **Status:** proposed · **Effort:** L (six phases, one PR each) ·
 **Depends on:** 00 (the gate) · **Supersedes:** 20, 21 · **Unblocks:**
 roadmap 1 (a closures step is one more host and one more job kind), 12
-(destinations enter the pipeline as jobs), 24 (the coverage report reads
-the same decisions), 33 (the pipeline half of the functional core)
+(destinations enter the pipeline as jobs), 24 (its coverage report's
+Overpass call is one more host behind the transport), 33 (the pipeline half
+of the functional core)
 
 ## Goal
 
@@ -60,7 +61,8 @@ grew, and in two places the duplication they predicted has happened.
   `locate-pass.ts` 130-137 with the same gap arithmetic as `Limiter.run`
   (245) and the same quota test (146 versus 303); `build-photos.ts` has two
   (125-168 and the adaptive blur pacer 103-114); `build-glyphs.ts:60` fetches
-  bare. The body normalisation exists three times, the elevation URL three
+  bare, and PR #59 added a sixth bare site, `scripts/lib/coverage.ts:84`,
+  against Overpass with a cache of its own. The body normalisation exists three times, the elevation URL three
   times. **And one host already has the seam plan 21 describes**:
   `scripts/lib/osm.ts` takes `viaMap`/`viaOverpass` as injected fetchers
   (48-56, 76), with two live adapters (build-data.ts:458, locate-pass.ts:117).
@@ -165,8 +167,10 @@ words of a host are known there and nowhere else. `liveTransport(env)` is
 today's `Limiter`, `getJson`, `HttpError` and `QuotaExhaustedError`, moved
 without change; `fixtureTransport(dir, { record })` answers from
 `scripts/fixtures/<host>/<hash>.json` and records with `RECORD_FIXTURES=1`.
-`locate-pass.ts` and `build-photos.ts` drop their own pacers; the blur host
-is one more host with its adaptive gap inside the live transport.
+`locate-pass.ts`, `build-photos.ts` and `scripts/lib/coverage.ts` drop
+their own fetches and pacers; the blur host is one more host with its
+adaptive gap inside the live transport, and the coverage cache becomes the
+fixture transport's record mode.
 
 ### Phase B · The decisions (plan 20)
 

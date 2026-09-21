@@ -49,7 +49,7 @@ const chunk = (type: string, payload: number[]) => [
   0,
   0,
   payload.length,
-  ...[...type].map((c) => c.codePointAt(0) ?? 0),
+  ...Array.from(type, (c) => c.codePointAt(0) ?? 0),
   ...payload,
   0,
   0,

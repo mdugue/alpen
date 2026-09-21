@@ -130,7 +130,7 @@ const words = (s: string) =>
     .filter((w) => w.length > 3);
 
 /** The OSM `ele` tag as a rounded number; "2503,6" occurs too. */
-const taggedEle = (tags: Record<string, string> = {}) => {
+export const taggedEle = (tags: Record<string, string> = {}) => {
   const n = Number((tags.ele ?? "").replace(",", "."));
   return tags.ele && Number.isFinite(n) ? Math.round(n) : null;
 };

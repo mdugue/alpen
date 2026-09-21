@@ -42,8 +42,8 @@ that goal; features that only add route-level precision rank last.
 | 20  | [The gate's decisions out of the build script](20-route-decisions.md) | pipeline testable, one retry rule         | M–L    | 00                   | superseded by [32](32-pipeline-planner.md)                      |
 | 21  | [One adapter per external host](21-host-adapters.md)                  | offline pipeline test                     | M      | 20                   | superseded by [32](32-pipeline-planner.md)                      |
 | 22  | [Detail data out of the payload](22-detail-data-out-of-payload.md)    | first load, free-tier headroom            | S–M    | 01                   | done                                                            |
-| 23  | [Low southern regions](23-low-southern-regions.md)                    | "when" in spring and autumn               | L      | 14                   | proposed                                                        |
-| 24  | [Depth per destination](24-depth-per-destination.md)                  | "where", honest counts, readability       | M      | 00                   | proposed                                                        |
+| 23  | [Low southern regions](23-low-southern-regions.md)                    | "when" in spring and autumn               | L      | 14                   | [done](https://github.com/mdugue/alpen/pull/59)                 |
+| 24  | [Depth per destination](24-depth-per-destination.md)                  | "where", honest counts, readability       | M      | 00                   | [in progress](https://github.com/mdugue/alpen/pull/59)          |
 | 25  | [Vosges and Jura](25-vosges-and-jura.md)                              | the weekend, a second range               | M–L    | 09, 05               | proposed                                                        |
 | 26  | [Pyrenees](26-pyrenees.md)                                            | the Tour's other mountains                | M–L    | 25, 24               | proposed                                                        |
 | 27  | [Gravel](27-gravel.md)                                                | a second discipline                       | L–XL   | 14, 16, 13           | proposed                                                        |
@@ -99,7 +99,10 @@ A second review (2026-09-21, at `6c1897b`) walked the hot spots since the
 first one – `pass-map.tsx` (+415 lines), `detail-panel.tsx` (+63 %),
 `explorer.tsx`, `build-data.ts` – and re-measured plans 17 to 21. None had
 decayed; most had grown, and two of their claims had gone stale (noted in
-their headers). Eighteen findings were grouped into five clusters that share
+their headers). PRs #59 and #60 landed on `main` while the plans were
+written; every line number in them is as of `6c1897b` and says so, and the
+claims were re-checked against #59's map changes. Eighteen findings were
+grouped into five clusters that share
 their seams, so that they are less work together than apart, and one plan
 names what the five add up to:
 

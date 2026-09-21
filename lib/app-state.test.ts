@@ -64,15 +64,15 @@ describe("parseHash", () => {
   });
 
   test("only one selection kind, passes first", () => {
-    expect(parseHash("#tour=sellaronda")!.selection).toEqual({
+    expect(parseHash("#tour=sellaronda").selection).toEqual({
       kind: "tour",
       slug: "sellaronda",
     });
-    expect(parseHash("#town=bormio")!.selection).toEqual({
+    expect(parseHash("#town=bormio").selection).toEqual({
       kind: "town",
       slug: "bormio",
     });
-    expect(parseHash("#pass=a&tour=b")!.selection).toEqual({
+    expect(parseHash("#pass=a&tour=b").selection).toEqual({
       kind: "pass",
       slug: "a",
     });

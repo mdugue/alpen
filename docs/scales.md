@@ -14,6 +14,13 @@ honesty.
 | **Difficulty** | short or flat             | ordinary alpine pass  | > 1,000 m of elevation gain with ramps above 10 %, or very long and high   |
 | **Traffic**    | almost car-free, dead end | ordinary pass traffic | through road (Simplon, Lautaret, Julier)                                   |
 
+Fame is anchored on Grand Tour history, and that anchor is what keeps the
+scale honest in the south: a Ligurian or Provençal col that the winter-training
+crowd knows and nobody else is a 2, and a 3 needs a reason in the note
+(Milano–Sanremo, Il Lombardia, a Tour or Paris–Nice passage). The Poggio and
+the Cipressa are fame 5 with difficulty 1 – the scales dialog already says that
+fame is not difficulty, and those two are the proof.
+
 For anyone wanting to make this objective: `difficulty` could be computed from
 `profiles.json` (length, average gradient, maximum ramp, summit elevation),
 `traffic` approximately from the OSM road classes along the routed ascent. Both

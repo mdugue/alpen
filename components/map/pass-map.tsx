@@ -1,12 +1,16 @@
 "use client";
 
+import type { FeatureCollection } from "geojson";
 import { Compass, MoreHorizontal, Scan } from "lucide-react";
 import type {
   ExpressionSpecification,
   GeoJSONSource,
+  IControl,
   LayerSpecification,
   StyleSpecification,
 } from "maplibre-gl";
+
+import "maplibre-gl/dist/maplibre-gl.css";
 import {
   AttributionControl,
   LngLat,
@@ -16,8 +20,6 @@ import {
   ScaleControl,
   setWorkerUrl,
 } from "maplibre-gl";
-
-import "maplibre-gl/dist/maplibre-gl.css";
 import { useEffect, useRef, useState } from "react";
 
 import { baseLayers, OVERLAYS, VECTOR_BASE } from "@/components/map/map-style";
@@ -57,6 +59,7 @@ import type { Inset } from "@/lib/map-camera";
 import type { TownReach } from "@/lib/nearby";
 import { PALETTE } from "@/lib/palette";
 import type { Scheme } from "@/lib/palette";
+import { prominenceFilter, prominenceWord } from "@/lib/prominence";
 import { roadTypeWord, TAG_LABEL } from "@/lib/regions";
 import { ascentKey } from "@/lib/route-key";
 import { STATUS_ORDER } from "@/lib/status";
@@ -123,7 +126,7 @@ interface Props {
   insetTop?: number;
 }
 
-const EMPTY = { features: [], type: "FeatureCollection" } as const;
+const EMPTY: FeatureCollection = { features: [], type: "FeatureCollection" };
 /** Breathing room around a fitted frame, in pixels; the map padding is added on top. */
 const FIT_PADDING = 48;
 /** The same around a selected tour, which is framed tighter than the whole map. */
@@ -171,6 +174,50 @@ const reduceMotion = () =>
  */
 const TOOL = "size-9";
 const TERRAIN = { exaggeration: 1.25, source: "dem" } as const;
+
+/**
+ * The legend line for the level of detail (`lib/prominence.ts`): "Bei dieser
+ * Zoomstufe: bekannte Pässe" while the overview is thinned by fame, nothing
+ * once every road is drawn. A MapLibre control rather than a React node, so
+ * it sits in a corner the way the scale bar and the attribution do – read,
+ * not pressed – and keeps clear of the season bar with them.
+ * It is silent while the passes are switched off: a line about which passes
+ * are drawn is a lie when none are.
+ */
+class DetailLevelControl implements IControl {
+  private el: HTMLDivElement | null = null;
+  private map: MLMap | null = null;
+  private shown = true;
+  private readonly update = () => {
+    if (!this.el || !this.map) return;
+    const word = this.shown ? prominenceWord(this.map.getZoom()) : null;
+    this.el.textContent = word ? `Bei dieser Zoomstufe: ${word}` : "";
+    this.el.hidden = !word;
+  };
+
+  onAdd(m: MLMap) {
+    this.map = m;
+    this.el = document.createElement("div");
+    this.el.className =
+      "maplibregl-ctrl bg-card/70 border-border/60 text-muted-foreground text-2xs rounded-xs border px-1 leading-4 backdrop-blur-sm";
+    m.on("zoom", this.update);
+    this.update();
+    return this.el;
+  }
+
+  onRemove(m: MLMap) {
+    m.off("zoom", this.update);
+    this.el?.remove();
+    this.el = null;
+    this.map = null;
+  }
+
+  /** Whether the passes are drawn at all – with them off the line is hidden. */
+  setShown(shown: boolean) {
+    this.shown = shown;
+    this.update();
+  }
+}
 /**
  * The tour hatch, in multiples of the line width – so on a band this wide the
  * numbers have to be well below 1 to read as a texture at all. Widen the band
@@ -546,6 +593,49 @@ const appLayers = (colors: Colors): LayerSpecification[] => {
       stop(4, 1.8),
     ];
   };
+  const isSelected = ["==", ["get", "selected"], 1] as const;
+  const isFavorite = ["==", ["get", "favorite"], 1] as const;
+  /**
+   * One pass dot: status by hue, closure by hollowness, fame by size and
+   * weight. Shared by the pass layer and the hovered mark, which is the same
+   * dot drawn from another source.
+   */
+  const passPaint = {
+    // "closed" is additionally encoded as a hollow circle so that the
+    // three states do not rely on hue alone.
+    "circle-color": [
+      "case",
+      ["==", ["get", "status"], "closed"],
+      colors.paper,
+      statusColor,
+    ],
+    "circle-opacity": [
+      "case",
+      [">=", ["get", "fame"], 4],
+      0.95,
+      ["==", ["get", "fame"], 3],
+      0.8,
+      0.62,
+    ],
+    "circle-pitch-alignment": "map",
+    "circle-radius": passRadius(),
+    "circle-stroke-color": [
+      "case",
+      isSelected,
+      colors.ink,
+      ["==", ["get", "status"], "closed"],
+      colors.closed,
+      colors.paper,
+    ],
+    "circle-stroke-width": [
+      "case",
+      isSelected,
+      3,
+      ["==", ["get", "status"], "closed"],
+      2.5,
+      1.5,
+    ],
+  } as never;
   const routeColor = [
     "match",
     ["coalesce", ["feature-state", "status"], "none"],
@@ -664,11 +754,20 @@ const appLayers = (colors: Colors): LayerSpecification[] => {
       type: "symbol",
     },
     hitPoint("towns-hit", "towns"),
-    hitPoint(
-      "passes-hit",
-      "passes",
-      passRadius(coarse ? HIT_RADIUS : HIT_RADIUS_FINE),
-    ),
+    {
+      ...hitPoint(
+        "passes-hit",
+        "passes",
+        passRadius(coarse ? HIT_RADIUS : HIT_RADIUS_FINE),
+      ),
+      // The hit area follows the rule the dot follows, or a hidden pass still
+      // answers the pointer; a favourite is drawn as a star at every zoom.
+      filter: prominenceFilter((minFame) =>
+        minFame === null
+          ? true
+          : ["any", isSelected, isFavorite, [">=", ["get", "fame"], minFame]],
+      ) as never,
+    },
     // Below the passes: MapLibre places labels from the top of the style
     // down, so a pass label wins the collision against a town name. The
     // passes are what the map is read for; the town is the answer to the
@@ -710,45 +809,34 @@ const appLayers = (colors: Colors): LayerSpecification[] => {
       type: "symbol",
     },
     {
-      filter: ["!=", ["get", "favorite"], 1],
+      // The overview draws by fame (`lib/prominence.ts`): the famous passes
+      // at every zoom, the known ones from 7.5, everything from 8.5. What is
+      // selected is always drawn; a favourite is a star, in the layer below.
+      filter: prominenceFilter((minFame) => [
+        "all",
+        ["!=", ["get", "favorite"], 1],
+        ...(minFame === null
+          ? []
+          : [["any", isSelected, [">=", ["get", "fame"], minFame]]]),
+      ]) as never,
       id: "passes",
-      paint: {
-        // "closed" is additionally encoded as a hollow circle so that the
-        // three states do not rely on hue alone.
-        "circle-color": [
-          "case",
-          ["==", ["get", "status"], "closed"],
-          colors.paper,
-          statusColor,
-        ],
-        "circle-opacity": [
-          "case",
-          [">=", ["get", "fame"], 4],
-          0.95,
-          ["==", ["get", "fame"], 3],
-          0.8,
-          0.62,
-        ],
-        "circle-pitch-alignment": "map",
-        "circle-radius": passRadius(),
-        "circle-stroke-color": [
-          "case",
-          ["==", ["get", "selected"], 1],
-          colors.ink,
-          ["==", ["get", "status"], "closed"],
-          colors.closed,
-          colors.paper,
-        ],
-        "circle-stroke-width": [
-          "case",
-          ["==", ["get", "selected"], 1],
-          3,
-          ["==", ["get", "status"], "closed"],
-          2.5,
-          1.5,
-        ],
-      },
+      paint: passPaint,
       source: "passes",
+      type: "circle",
+    },
+    // The hovered pass, drawn again from its own one-feature source: at a
+    // zoom where the rule hides its dot, a row hovered in the list would
+    // otherwise ring an empty patch of map. Where the dot is drawn anyway the
+    // two coincide exactly.
+    {
+      filter: [
+        "all",
+        ["==", ["get", "kind"], "pass"],
+        ["!=", ["get", "favorite"], 1],
+      ],
+      id: "hover-mark",
+      paint: passPaint,
+      source: "hover",
       type: "circle",
     },
     {
@@ -937,6 +1025,10 @@ export const PassMap = ({
    * frame to turn an icon would be the most expensive way to do that.
    */
   const [turned, setTurned] = useState(false);
+  const detailLevel = useRef<DetailLevelControl | null>(null);
+  useEffect(() => {
+    detailLevel.current?.setShown(showPasses);
+  }, [showPasses, ready]);
   const bearing = useRef(0);
   const needle = useRef<SVGSVGElement | null>(null);
   /** Points the needle north; also applies the angle it mounts at. */
@@ -1016,7 +1108,7 @@ export const PassMap = ({
   const paintReach = (slug: string | null) => {
     const m = map.current;
     const ring = slug ? reachRef.current[slug] : undefined;
-    (m?.getSource("reach") as GeoJSONSource | undefined)?.setData({
+    void m?.getSource<GeoJSONSource>("reach")?.setData({
       features: ring
         ? [
             {
@@ -1113,7 +1205,7 @@ export const PassMap = ({
         routes: { data: assets.routesUrl, promoteId: "id", type: "geojson" },
         tours: { data: assets.toursUrl, promoteId: "id", type: "geojson" },
         towns: { data: EMPTY, type: "geojson" },
-      } as StyleSpecification["sources"],
+      },
       version: 8,
     };
 
@@ -1174,22 +1266,29 @@ export const PassMap = ({
      */
     const attribution = new AttributionControl({ compact: true });
     const scale = new ScaleControl({ unit: "metric" });
+    // The level-of-detail line travels with the provenance: it is read, not
+    // pressed, and it must not sit under the sidebar on desktop.
+    detailLevel.current = new DetailLevelControl();
+    const level = detailLevel.current;
     const mobileQuery = window.matchMedia(MOBILE_QUERY);
     let provenancePlaced = false;
     const placeProvenance = () => {
       if (provenancePlaced) {
         m.removeControl(attribution);
         m.removeControl(scale);
+        m.removeControl(level);
       }
       provenancePlaced = true;
       if (mobileQuery.matches) {
         m.addControl(attribution, "bottom-left");
         m.addControl(scale, "bottom-left");
+        m.addControl(level, "bottom-left");
       } else {
         // A right corner takes each new control on its *left*, so the ⓘ
         // goes in first and keeps the corner; the scale bar stands beside it.
         m.addControl(attribution, "bottom-right");
         m.addControl(scale, "bottom-right");
+        m.addControl(level, "bottom-right");
       }
       /*
        * MapLibre opens a compact attribution the first time it has something
@@ -1373,7 +1472,9 @@ export const PassMap = ({
 
     // The container changes size when the sidebar collapses; MapLibre only
     // tracks window resizes on its own.
-    const ro = new ResizeObserver(() => m.resize());
+    const ro = new ResizeObserver(() => {
+      m.resize();
+    });
     ro.observe(container.current);
 
     return () => {
@@ -1544,7 +1645,7 @@ export const PassMap = ({
     const m = map.current;
     if (!m || !ready) return;
     const selPass = selection?.kind === "pass" ? selection.slug : null;
-    (m.getSource("passes") as GeoJSONSource | undefined)?.setData({
+    void m.getSource<GeoJSONSource>("passes")?.setData({
       features: (showPasses ? passes : []).map((p) => ({
         geometry: { coordinates: [p.lon, p.lat], type: "Point" },
         properties: {
@@ -1566,7 +1667,7 @@ export const PassMap = ({
     const m = map.current;
     if (!m || !ready) return;
     const selTown = selection?.kind === "town" ? selection.slug : null;
-    (m.getSource("towns") as GeoJSONSource | undefined)?.setData({
+    void m.getSource<GeoJSONSource>("towns")?.setData({
       features: showTowns
         ? towns.map((t) => ({
             geometry: { coordinates: [t.lon, t.lat], type: "Point" },
@@ -1645,12 +1746,27 @@ export const PassMap = ({
         : hovered?.kind === "town"
           ? towns.find((t) => t.slug === hovered.slug)
           : undefined;
-    (m.getSource("hover") as GeoJSONSource | undefined)?.setData({
+    void m.getSource<GeoJSONSource>("hover")?.setData({
       features: point
         ? [
             {
               geometry: { coordinates: [point.lon, point.lat], type: "Point" },
-              properties: {},
+              // What `hover-mark` paints the dot from – the same properties
+              // the pass source carries, so the two dots come out identical.
+              properties:
+                hovered?.kind === "pass" && "fame" in point
+                  ? {
+                      fame: point.fame,
+                      favorite: point.favorite ? 1 : 0,
+                      kind: "pass",
+                      selected:
+                        selection?.kind === "pass" &&
+                        selection.slug === point.slug
+                          ? 1
+                          : 0,
+                      status: point.status,
+                    }
+                  : { kind: hovered?.kind ?? "" },
               type: "Feature",
             },
           ]
@@ -1666,7 +1782,7 @@ export const PassMap = ({
   useEffect(() => {
     const m = map.current;
     if (!m || !ready) return;
-    (m.getSource("cursor") as GeoJSONSource | undefined)?.setData({
+    void m.getSource<GeoJSONSource>("cursor")?.setData({
       features: profileCursor
         ? [
             {
@@ -1864,9 +1980,9 @@ export const PassMap = ({
                     size="icon-lg"
                     variant="outline"
                     className={cn(TOOL, MAP_TOOL)}
-                    onClick={() =>
-                      map.current?.easeTo({ bearing: 0, duration: 400 })
-                    }
+                    onClick={() => {
+                      map.current?.easeTo({ bearing: 0, duration: 400 });
+                    }}
                     aria-label="Nach Norden ausrichten"
                   />
                 }

@@ -234,8 +234,8 @@ export const checkRoadAscent = (
   check?: AscentCheck | TourCheck,
 ): string[] =>
   traverse
-    ? checkTour(metrics as TourMetrics, check as TourCheck)
-    : checkAscent(metrics as AscentMetrics, check as AscentCheck);
+    ? checkTour(metrics as TourMetrics, check)
+    : checkAscent(metrics as AscentMetrics, check);
 
 /**
  * What the entry's marker is called in a finding. A `pass` and a `spur` put

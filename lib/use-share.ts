@@ -30,7 +30,7 @@ export const useShare = () => {
   const share = async (title: string) => {
     const url = window.location.href;
     try {
-      if (navigator.share) {
+      if (typeof navigator.share === "function") {
         await navigator.share({ title, url });
         return;
       }
