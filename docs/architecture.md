@@ -178,3 +178,19 @@ cover everything `eslint-config-next` did, React Compiler rules included, so
 ESLint and `eslint-config-next` are gone. The two config files only ever
 _deviate_ from the ultracite preset, and every deviation carries the reason
 next to it – keep it that way rather than silencing a rule at the call site.
+
+The type-aware rules run as well. `oxlint-tsgolint` (typescript-go) executes
+the `typescript/*` rules that need type information – `no-floating-promises`,
+`no-misused-promises`, `no-unnecessary-type-assertion` and their kin – and
+`options.typeAware` in `oxlint.config.ts` switches them on, so `bun run lint`,
+the editor and CI see the same findings. The pass reads `tsconfig.json`, adds
+about three seconds to the syntax pass, and builds a TypeScript program of its
+own; `bun run typecheck` stays the type check (`--type-check` would only repeat
+it). The package version tracks TypeScript – `7.0.2xxx` is TypeScript 7.0.2
+plus a patch counter – so bump it together with `typescript`. MapLibre's
+typings use the `GeoJSON` global from `@types/geojson`, which tsc finds on its
+own and tsgolint only when `tsconfig.json` names it in `types` – hence that
+entry and the explicit devDependency. The preset enables every rule tsgolint
+implements; the noisy ones (`strict-boolean-expressions`,
+`no-confusing-void-expression`, `no-unsafe-type-assertion`) are tuned or
+switched off in the config, each with its reason.

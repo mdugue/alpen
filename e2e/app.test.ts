@@ -55,7 +55,7 @@ interface DetailScroll {
 const detailScroll = async (page: {
   evaluate: <T>(js: string) => Promise<T>;
 }): Promise<DetailScroll> =>
-  JSON.parse(await page.evaluate<string>(DETAIL_SCROLL));
+  JSON.parse(await page.evaluate<string>(DETAIL_SCROLL)) as DetailScroll;
 
 test(
   "1 · loads with all passes and a map canvas",

@@ -32,12 +32,22 @@ export default defineConfig({
     ".claude/skills",
   ],
   jsPlugins: jsPlugins.jsPlugins,
+  // Type-aware rules run through `oxlint-tsgolint` (typescript-go). The
+  // preset already enables them; without this switch they are inert.
+  options: { typeAware: true },
   overrides: [
     {
       // `"use cache"` requires the function to be async even when it only
       // returns imported JSON.
       files: ["lib/data.ts"],
       rules: { "require-await": "off" },
+    },
+    {
+      // `useFetch<Detail>(url)` names the payload once, at the call. The rule
+      // calls a type parameter that only reaches the return type an assertion
+      // in disguise – which is what typing a fetched JSON file is.
+      files: ["lib/use-fetch.ts"],
+      rules: { "typescript/no-unnecessary-type-parameters": "off" },
     },
     {
       // The build script serialises its API calls and its file writes on
@@ -138,10 +148,41 @@ export default defineConfig({
     // explain why right above the suppression; this rule objects to the
     // existence of the suppression, which would leave nowhere to put it.
     "react/rule-suppression": "off",
+    // An effect that only sometimes has something to clean up returns nothing
+    // on the other path. The rule wants `return undefined` there, which
+    // `unicorn/no-useless-undefined` in the same preset forbids; between the
+    // two, the effect idiom wins.
+    "typescript/consistent-return": "off",
+    // `onClick={() => setOpen(true)}` is the handler idiom of the whole UI; the
+    // block body the rule asks for adds two lines per handler and says less.
+    "typescript/no-confusing-void-expression": [
+      "error",
+      { ignoreArrowShorthand: true },
+    ],
     // `noUncheckedIndexedAccess` is on, and the profile, climate and route
     // code walks parallel arrays by index. Guarding every access would bury
     // the maths; the assertions mark the invariant instead.
     "typescript/no-non-null-assertion": "off",
+    // Every narrowing `as` is flagged, and most of them are test fixtures
+    // (`{ slug, ascents } as Pass`) or parsed JSON typed where it is read.
+    // Like the non-null assertion above, the cast marks the invariant.
+    "typescript/no-unsafe-type-assertion": "off",
+    // A function that hands on a promise it did not make (`() => withPage(…)`
+    // in every e2e test) needs neither `async` nor `await`. Together with
+    // `return-await: always` this rule rewrites each of them into
+    // `async () => await f()`, which says nothing the shorter form does not.
+    "typescript/promise-function-async": "off",
+    // `if (pass.aliases?.length)` and `if (title)` read as the check they are:
+    // absent and empty are the same case everywhere in this code, on purpose.
+    // The defaults keep the object case and forbid the other three.
+    "typescript/strict-boolean-expressions": [
+      "error",
+      {
+        allowNullableBoolean: true,
+        allowNullableNumber: true,
+        allowNullableString: true,
+      },
+    ],
   },
   settings: jsPluginSettings,
 });

@@ -163,9 +163,7 @@ export const SeasonBand = ({
   const index = periodIndex(value);
   const todayIndex = today === undefined ? -1 : periodIndex(today);
   const bar = band.bars[index]!;
-  const temps = band.bars
-    .map((b) => b.tmax)
-    .filter((t) => t !== null) as number[];
+  const temps = band.bars.map((b) => b.tmax).filter((t) => t !== null);
   const lo = temps.length ? Math.min(...temps) : 0;
   const hi = temps.length ? Math.max(...temps) : 0;
 

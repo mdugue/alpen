@@ -82,7 +82,7 @@ export const EntityRow = ({
 }) => (
   <div
     role="listitem"
-    data-current={current || undefined}
+    data-current={current ? true : undefined}
     onPointerEnter={onHover ? () => onHover(true) : undefined}
     onPointerLeave={onHover ? () => onHover(false) : undefined}
     className={cn(
@@ -131,7 +131,7 @@ export const EntityRow = ({
       </span>
     </button>
     <div className="flex items-center gap-2 pr-3 text-right">
-      {aside && (
+      {aside !== undefined && (
         <div className="flex flex-col items-end gap-0.5 text-xs">{aside}</div>
       )}
       {trailing}
