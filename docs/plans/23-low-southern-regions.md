@@ -219,6 +219,22 @@ series, i.e. roughly two and three hours of Open-Meteo windows respectively
   of the first round, as were the Baldo spur to San Valentino (it is the
   Brentonico side of the Bocca di Navene) and the Lago di Tenno road (the
   Ballino covers it).
+- **The read-back so far (step 7, with 27 of 62 climate series in):** the
+  Ligurian and Lombard roads come out as the plan hoped – Poggio, Cipressa,
+  Bignone, Nava and Langan are "beste Zeit" from March to June, "Hitze" from
+  late June to August (valley 27–31 °C at the coast, up to 31 °C in the
+  Nesque and the Ventoux valley), good again in September. Sanremo reaches
+  28 roads and gets its spring and autumn windows. What still reads "best"
+  all summer is Bédoin, because the nine Provence series are among the 35
+  not yet fetched; that changes with the next backfill run.
+- **The winter is capped by the short-day signal, not by the south.** From
+  late October to mid-February every road in the file is "eingeschränkt:
+  kurze Tage" (`SHORT_DAY_HOURS`, 10.75 h), the coast included – so no base
+  can grade better than "eingeschränkt" in winter, and the question "Ligurien
+  im Januar" gets a cautious answer even where the climate would allow a
+  warmer one. The thresholds are a non-goal here; the decision whether a
+  low road on the coast should be judged by daylight alone is written up in
+  `docs/roadmap.md` §10.
 - **The budget above is an hourly number; the daily one is the wall.**
   Open-Meteo allows 10 000 calls a day, so ~120 profiles and ~62 climate
   series are three days of the free tier, not five hours. The first round
