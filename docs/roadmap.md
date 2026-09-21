@@ -227,6 +227,18 @@ or editorial data, each a plan of its own when its turn comes:
 
 - Weather for tours and towns, not only passes.
 - Print / PDF summary of a destination for the kitchen table.
+- The short-day signal as the only judge of winter. With the southern areas
+  in (plan 23), every road from late October to mid-February reads
+  "eingeschränkt: kurze Tage" regardless of climate – Poggio and Cipressa
+  with 0 % frost and 14 °C at the top in late November exactly like the
+  Stelvio. That is what a daylight threshold does, and it means the app
+  cannot say "Ligurien im Januar" better than "eingeschränkt". Options, in
+  the order they should be tried: a lower `SHORT_DAY_HOURS` for roads under
+  a height and latitude; the short day as a note on the cell rather than a
+  rung of the ladder; or a winter verdict that only frost and snow can
+  lower. Each is a change to `lib/status.ts` with `analyze-status.ts
+--changes` as the read-back, and a decision to be made with the strips on
+  screen, not in a plan.
 
 Done since this list was written: imagery per entity – Wikimedia Commons
 photos with author and licence, picked by `bun run data:photos` and shown in

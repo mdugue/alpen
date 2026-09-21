@@ -5,6 +5,7 @@
  */
 import { afterAll, beforeAll, expect, test } from "bun:test";
 
+import passes from "@/data/passes.json" with { type: "json" };
 import { startApp, waitUntil, withPage } from "@/test/browser";
 import type { App } from "@/test/browser";
 
@@ -62,7 +63,9 @@ test(
   () =>
     withPage(app, "loads", {}, async (page) => {
       await page.waitFor(PASS_ROW);
-      expect(await page.count(PASS_ROW)).toBe(201);
+      // Every road in the file is a row: the count comes from the data, so a
+      // curation PR does not have to touch this test.
+      expect(await page.count(PASS_ROW)).toBe(passes.length);
       await page.waitFor("canvas.maplibregl-canvas");
       // The season band shows a half-month, what most passes are in it and
       // the counts behind that.

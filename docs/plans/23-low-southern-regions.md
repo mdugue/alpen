@@ -1,6 +1,10 @@
 # 23 · Low southern regions
 
-**Status:** proposed · **Effort:** L (S for code, the rest is curation) ·
+**Status:** done ([#59](https://github.com/mdugue/alpen/pull/59)) – the five
+areas, their towns and loops, routed through ORS and the gate, with the
+climate series in and the read-back done; what the second round finds is in
+"Risks and open questions" ·
+**Effort:** L (S for code, the rest is curation) ·
 **Depends on:** 14 (the traverse types: the coast and the lakes are balcony
 and valley roads as much as passes); benefits from 24 (the coverage report
 says where a base is thin) · **Unblocks:** the "Anfang Oktober" and "Ende
@@ -212,4 +216,40 @@ series, i.e. roughly two and three hours of Open-Meteo windows respectively
   ± 3 °C caveat stays on screen. Nothing to change, but the read-back in step
   7 is where a surprise would show.
 - **Mont Faron** and the Dentelles are on the edge of "a road worth a
-  holiday"; decide with the numbers, drop without regret.
+  holiday"; decide with the numbers, drop without regret. Both were left out
+  of the first round, as were the Baldo spur to San Valentino (it is the
+  Brentonico side of the Bocca di Navene) and the Lago di Tenno road (the
+  Ballino covers it).
+- **The read-back with every series in:** Bédoin now has two windows, March
+  to June and September to early October, and reads "Hitze" in July and
+  August – the shape the plan asked for. Three roads changed once their
+  profiles were in: the Baldo crossing scheitels at the Bocca del Creer
+  (1 617 m), not at the Bocca di Navene 200 m below it, so the entry is
+  named after the Creer; the Punta Veleno road reaches the summit itself
+  (1 148 m) before dropping into Prada Alta, so the marker sits there; and
+  the Col de Nice from Contes runs over the Col de Châteauneuf, so it keeps
+  its eastern side only.
+- **The read-back so far (step 7, with 27 of 62 climate series in):** the
+  Ligurian and Lombard roads come out as the plan hoped – Poggio, Cipressa,
+  Bignone, Nava and Langan are "beste Zeit" from March to June, "Hitze" from
+  late June to August (valley 27–31 °C at the coast, up to 31 °C in the
+  Nesque and the Ventoux valley), good again in September. Sanremo reaches
+  28 roads and gets its spring and autumn windows. What still reads "best"
+  all summer is Bédoin, because the nine Provence series are among the 35
+  not yet fetched; that changes with the next backfill run.
+- **The winter is capped by the short-day signal, not by the south.** From
+  late October to mid-February every road in the file is "eingeschränkt:
+  kurze Tage" (`SHORT_DAY_HOURS`, 10.75 h), the coast included – so no base
+  can grade better than "eingeschränkt" in winter, and the question "Ligurien
+  im Januar" gets a cautious answer even where the climate would allow a
+  warmer one. The thresholds are a non-goal here; the decision whether a
+  low road on the coast should be judged by daylight alone is written up in
+  `docs/roadmap.md` §10.
+- **The budget above is an hourly number; the daily one is the wall.**
+  Open-Meteo allows 10 000 calls a day, so ~120 profiles and ~62 climate
+  series are three days of the free tier, not five hours. The first round
+  therefore commits the source data and the summit checks and leaves the
+  routes, profiles and climate series to the refresh workflow, which needs a
+  handful of dispatches an hour apart (`.github/workflows/refresh-data.yml`).
+  Until they are in, the new roads show as dots without an ascent line and
+  with a season-only status, and the read-back of step 7 cannot be done.

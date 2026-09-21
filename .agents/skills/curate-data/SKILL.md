@@ -22,7 +22,12 @@ authoritative. In addition:
 - **Ascents**: `from` is a point on the road in the valley village where the
   classic climb starts; `label` names the village and, for two-sided passes,
   the side ("Valloire (Nord)"). One or two ascents; three only for famous
-  passes with three distinct roads.
+  passes with three distinct roads. A `pass` is a crossing, so it carries
+  every side that is a classic climb – a rider planning a loop needs both –
+  and a single-sided `pass` says in its `note` why the other side is not one
+  (a motorway feeder, a gravel track, a tunnel). `data:check` prints how many
+  passes are single-sided; `bun run scripts/analyze-coverage.ts` names them
+  per base.
 - **Scales**: editorial, 1–5, per `docs/scales.md`. Do not derive them from
   numbers; do compare with neighbours so the ordering is defensible
   ("is this really harder than Mortirolo?").
