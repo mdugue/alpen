@@ -860,7 +860,7 @@
   "slug": "grappa-runde",
   "name": "Grappa-Runde",
   "color": "#8a6a3a",
-  "km": 79,
+  "km": 70,
   "elevationGain": 1900,
   "passes": [
    "cima-grappa"

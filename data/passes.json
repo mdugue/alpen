@@ -7166,16 +7166,16 @@
   "type": "pass",
   "country": "IT",
   "region": "Westalpen",
-  "lat": 44.4588,
-  "lon": 8.6692,
-  "elevation": 1060,
+  "lat": 44.4617,
+  "lon": 8.6676,
+  "elevation": 1058,
   "classicAscent": "24 km, 4 % ab Voltri",
   "beauty": 4,
   "fame": 2,
   "difficulty": 3,
   "traffic": 1,
   "season": null,
-  "note": "Vom Meer bei Genua-Voltri über Mele und das Kloster Acquasanta auf den Kamm der Ligurischen Alpen; oben liegt die Küste 1 000 m tiefer im Dunst, dahinter die Po-Ebene. Ganzjährig offen, im Winter nach Schneefall kurz gesperrt.",
+  "note": "Vom Meer bei Genua-Voltri über Mele und das Kloster Acquasanta auf den Kamm der Ligurischen Alpen; oben liegt die Küste 1 000 m tiefer im Dunst, dahinter die Po-Ebene. Der Scheitel der Straße liegt ein paar hundert Meter neben dem eigentlichen Sattel. Ganzjährig offen, im Winter nach Schneefall kurz gesperrt.",
   "ascents": [
    {
     "from": {
@@ -8184,20 +8184,20 @@
   "lat": 45.8644,
   "lon": 10.6455,
   "elevation": 747,
-  "classicAscent": "26 km, 3 % ab Riva del Garda",
+  "classicAscent": "15 km, 1 % ab Molina di Ledro",
   "beauty": 4,
   "fame": 2,
   "difficulty": 2,
   "traffic": 3,
   "season": null,
-  "note": "Von Riva durch die Ponale-Galerie ins Ledrotal, am See entlang und über den flachen Ampola nach Storo. Kein Berg, ein Tal; ganzjährig offen, die Ponale-Kehren am Beginn sind das Ereignis.",
+  "note": "Der flache Übergang am Ende des Ledrotals nach Storo: von Molina am See entlang, kaum Steigung, dann hinunter ins Chiese-Tal. Kein Berg, ein Tal; ganzjährig offen. Von Riva herauf führt die autofreie Ponale-Strecke, die kein Router als Straße kennt – die Auffahrt beginnt deshalb erst in Molina.",
   "ascents": [
    {
     "from": {
-     "lat": 45.8848,
-     "lon": 10.8397
+     "lat": 45.8713,
+     "lon": 10.7756
     },
-    "label": "Riva del Garda (Ost)"
+    "label": "Molina di Ledro (Ost)"
    },
    {
     "from": {
@@ -8405,9 +8405,9 @@
   ],
   "country": "IT",
   "region": "Dolomiten",
-  "lat": 45.7645,
-  "lon": 10.621,
-  "elevation": 520,
+  "lat": 45.7709,
+  "lon": 10.6114,
+  "elevation": 850,
   "classicAscent": "22 km, 3 % von Gargnano nach Magasa",
   "beauty": 5,
   "fame": 2,
