@@ -4,6 +4,7 @@ import { SeasonStrip } from "@/components/season-strip";
 import { EntityRow } from "@/components/sidebar/entity-row";
 import { ListEmpty } from "@/components/sidebar/list-empty";
 import { ListToolbar } from "@/components/sidebar/list-toolbar";
+import { RowList } from "@/components/sidebar/row-list";
 import { StatusLabel } from "@/components/status-badge";
 import { Switch } from "@/components/ui/switch";
 import type { Selection } from "@/lib/app-state";
@@ -38,7 +39,7 @@ export const TourList = ({
   onSelect: (slug: string) => void;
   onToggleFavorite: (slug: string) => void;
 }) => {
-  const rovingList = useRoving<HTMLUListElement>();
+  const rovingList = useRoving<HTMLDivElement>();
   const hoveredSlug = hovered?.kind === "tour" ? hovered.slug : null;
   return (
     <>
@@ -46,8 +47,8 @@ export const TourList = ({
       {rows.length === 0 ? (
         <ListEmpty title="Keine Touren gefunden" {...empty} />
       ) : (
-        <ul ref={rovingList}>
-          {rows.map(({ tour, status, reason, favorite, season }) => {
+        <RowList ref={rovingList} items={rows} keyOf={({ tour }) => tour.slug}>
+          {({ tour, status, reason, favorite, season }) => {
             const onMap = !hiddenTours.includes(tour.slug);
             return (
               <EntityRow
@@ -95,8 +96,8 @@ export const TourList = ({
                 }
               />
             );
-          })}
-        </ul>
+          }}
+        </RowList>
       )}
     </>
   );

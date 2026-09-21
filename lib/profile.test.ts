@@ -29,8 +29,8 @@ describe("profileCoords", () => {
     const geom = straight(500);
     const pts = profileCoords(geom);
     expect(pts).toHaveLength(PROFILE_POINTS);
-    expect(pts[0]).toEqual(geom[0]!);
-    expect(pts.at(-1)).toEqual(geom.at(-1)!);
+    expect(pts[0]).toEqual(geom[0]);
+    expect(pts.at(-1)).toEqual(geom.at(-1));
   });
 
   test("shorter routes are sampled point for point", () => {
@@ -176,7 +176,7 @@ describe("withRoadDistances", () => {
       maxKmGradient: 0,
       start: 0,
       top: 0,
-    } as ElevationProfile;
+    };
     expect(withRoadDistances(p, straight(300, 100))).toBe(p);
   });
 });

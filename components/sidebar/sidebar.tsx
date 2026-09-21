@@ -228,6 +228,7 @@ export const Sidebar = (p: SidebarProps) => {
 
         <div
           ref={lists}
+          data-scroller
           className={cn(
             "min-h-0 flex-1 overscroll-contain",
             // Below the sheet's top snap point the drag belongs to the sheet,

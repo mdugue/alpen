@@ -8,6 +8,8 @@ import {
   buildTourRows,
   buildTownRows,
   facetCount,
+  rowBlocks,
+  ROWS_PER_BLOCK,
   seasonBand,
   sortPassRows,
 } from "@/lib/rows";
@@ -766,5 +768,23 @@ describe("facetCount", () => {
         buildPassRows(passes, years, f, never).length,
       );
     }
+  });
+});
+
+describe("rowBlocks", () => {
+  test("blocks are full except the last one, and nothing is lost", () => {
+    const rows = Array.from({ length: 201 }, (_, i) => i);
+    const blocks = rowBlocks(rows);
+    expect(blocks.length).toBe(21);
+    expect(blocks.slice(0, -1).every((b) => b.length === ROWS_PER_BLOCK)).toBe(
+      true,
+    );
+    expect(blocks.at(-1)?.length).toBe(1);
+    expect(blocks.flat()).toEqual(rows);
+  });
+
+  test("a short list is one block, an empty one none", () => {
+    expect(rowBlocks([1, 2, 3])).toEqual([[1, 2, 3]]);
+    expect(rowBlocks([])).toEqual([]);
   });
 });

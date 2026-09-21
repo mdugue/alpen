@@ -68,7 +68,9 @@ a short climb from filling the screen with two hairpins, and a pass the map
 draws no ascent for falls back to its point. The box has to fit between the
 shell's two bars, which are translucent but no less opaque to a reader: the
 header's and the season bar's measured heights are the map's top and bottom
-padding at every width (`useHeight` in `explorer.tsx`). On a phone the detail
+padding at every width (`useHeight` in `explorer.tsx`; on desktop the bar is
+a card and its gap from the edge counts too, `shellEdge` in
+`lib/map-camera.ts`). On a phone the detail
 sheet takes 55 % of the screen on top of that, and it is the larger of the two
 at the bottom that counts.
 

@@ -125,14 +125,37 @@ nothing loads from there until it is clicked.
 
 ## Toolchain
 
-### TypeScript 7 side by side with the 6.0 API
+### TypeScript 7, one compiler under its own name
 
-`tsc` (and thus `bun run typecheck` and `next build`) is TypeScript 7,
-installed as `@typescript/native`. The `typescript` package name resolves to
-`@typescript/typescript6` (`tsc6` is that version's binary), because TypeScript
-7.0 has no JavaScript API and the editor language service still wants one –
-`.vscode/settings.json` points `js/ts.tsdk.path` at it. Keep both entries in
-`package.json`.
+`typescript` is TypeScript 7, and it is the only TypeScript in the tree. Both
+`bun run typecheck` and `next build` compile with it.
+
+It used to be two packages: `@typescript/native` aliased to TypeScript 7 for
+the `tsc` binary, and the `typescript` name aliased to `@typescript/typescript6`
+for the editor's language service. That arrangement quietly type-checked the
+build with a different compiler than `bun run typecheck`, because `next build`
+resolves the `typescript` package name and that name was 6.0. Collapsing the
+two cost nothing and made Next's TypeScript step about three times faster
+(12s → 4s on this repo), because the build now runs the native compiler
+instead of the JavaScript one.
+
+Two things follow from having only TypeScript 7:
+
+- **The `typescript` dependency is load-bearing, not decoration.** Remove it and
+  `next build` does not skip its TypeScript step – it installs a TypeScript
+  itself, with whichever package manager it detects, rewriting `package.json`
+  and dropping a foreign lockfile next to `bun.lock`.
+- **The editor is on its own.** TypeScript 7 ships `tsc` and an `unstable` API,
+  no `tsserver.js` and no full JavaScript API, so there is no workspace language
+  service to point an editor at; `.vscode/settings.json` no longer sets
+  `js/ts.tsdk.path`. The editor falls back to its own bundled TypeScript, which
+  is a release behind the compiler – `bun run typecheck` is the authority, and
+  CI runs it. For TypeScript 7 in the editor, install its native-preview
+  extension.
+
+Do not add TypeScript 6 back under its own name to get the language service:
+it pulls in `@typescript/old`, which also claims the `tsc` binary, and
+`bun run typecheck` then silently runs the old compiler.
 
 ### Bun is pinned by `engines`, and the web container is dragged up to it
 
@@ -155,3 +178,19 @@ cover everything `eslint-config-next` did, React Compiler rules included, so
 ESLint and `eslint-config-next` are gone. The two config files only ever
 _deviate_ from the ultracite preset, and every deviation carries the reason
 next to it – keep it that way rather than silencing a rule at the call site.
+
+The type-aware rules run as well. `oxlint-tsgolint` (typescript-go) executes
+the `typescript/*` rules that need type information – `no-floating-promises`,
+`no-misused-promises`, `no-unnecessary-type-assertion` and their kin – and
+`options.typeAware` in `oxlint.config.ts` switches them on, so `bun run lint`,
+the editor and CI see the same findings. The pass reads `tsconfig.json`, adds
+about three seconds to the syntax pass, and builds a TypeScript program of its
+own; `bun run typecheck` stays the type check (`--type-check` would only repeat
+it). The package version tracks TypeScript – `7.0.2xxx` is TypeScript 7.0.2
+plus a patch counter – so bump it together with `typescript`. MapLibre's
+typings use the `GeoJSON` global from `@types/geojson`, which tsc finds on its
+own and tsgolint only when `tsconfig.json` names it in `types` – hence that
+entry and the explicit devDependency. The preset enables every rule tsgolint
+implements; the noisy ones (`strict-boolean-expressions`,
+`no-confusing-void-expression`, `no-unsafe-type-assertion`) are tuned or
+switched off in the config, each with its reason.

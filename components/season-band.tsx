@@ -1,10 +1,15 @@
 "use client";
 
-import { RotateCcw } from "lucide-react";
+import { Info, RotateCcw } from "lucide-react";
 import { useRef } from "react";
 
 import { CELL } from "@/components/season-strip";
 import { Button } from "@/components/ui/button";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import {
   Tooltip,
   TooltipContent,
@@ -28,8 +33,9 @@ import { cn, fmt } from "@/lib/utils";
 
 /**
  * The half-month drives every colour on the map, so it is the one domain
- * control that has a bar of its own: the band runs the full width of the
- * screen along the bottom, over the map like everything else.
+ * control that has a bar of its own: along the bottom of the screen on a
+ * phone, a card at the foot of the map beside the panels on desktop – over
+ * the map like everything else.
  *
  * Each of the 24 columns carries three quantities of the passes currently in
  * the list, not one colour:
@@ -100,10 +106,10 @@ const spoken = (bar: SeasonBar, lat: number | null) =>
     .join(". ");
 
 /**
- * What the three shapes of a column mean. Beside the band where there is room
- * for it, and in the scales dialog, which is where a phone reads it – three
- * lines of legend next to a band that is already only 390 px wide would leave
- * neither of them legible.
+ * What the three shapes of a column mean. Behind the band's ⓘ on desktop
+ * (`legend`), and in the scales dialog, which is where a phone reads it –
+ * three lines of legend next to a band that is already only 390 px wide would
+ * leave neither of them legible.
  */
 export const SeasonBandLegend = ({ className }: { className?: string }) => (
   <dl className={cn("text-2xs flex flex-col gap-1.5", className)}>
@@ -141,6 +147,7 @@ export const SeasonBand = ({
   value,
   onChange,
   today,
+  legend = false,
   className,
 }: {
   band: Band;
@@ -148,15 +155,15 @@ export const SeasonBand = ({
   onChange: (p: Period) => void;
   /** Today's half-month, marked on the rail and offered as the way back. */
   today?: Period;
+  /** Offer the legend behind an ⓘ beside the label. */
+  legend?: boolean;
   className?: string;
 }) => {
   const rail = useRef<HTMLDivElement>(null);
   const index = periodIndex(value);
   const todayIndex = today === undefined ? -1 : periodIndex(today);
   const bar = band.bars[index]!;
-  const temps = band.bars
-    .map((b) => b.tmax)
-    .filter((t) => t !== null) as number[];
+  const temps = band.bars.map((b) => b.tmax).filter((t) => t !== null);
   const lo = temps.length ? Math.min(...temps) : 0;
   const hi = temps.length ? Math.max(...temps) : 0;
 
@@ -197,6 +204,25 @@ export const SeasonBand = ({
           <span className="lg:hidden">{summary(bar, band.lat, false)}</span>
           <span className="max-lg:hidden">{summary(bar, band.lat, true)}</span>
         </span>
+        {legend && (
+          <Popover>
+            <PopoverTrigger
+              render={
+                <Button
+                  size="icon"
+                  variant="ghost"
+                  className="shrink-0"
+                  aria-label="Was die Balken bedeuten"
+                />
+              }
+            >
+              <Info />
+            </PopoverTrigger>
+            <PopoverContent side="top" align="end" className="w-72">
+              <SeasonBandLegend className="text-muted-foreground" />
+            </PopoverContent>
+          </Popover>
+        )}
         {today !== undefined && (
           <Tooltip>
             <TooltipTrigger

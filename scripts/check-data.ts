@@ -412,7 +412,7 @@ for (const t of tours ?? []) checkFor.set(tourKey(t.slug), t.check);
 
 const rejudge = (key: string, r: RouteRejection) =>
   key.startsWith("tour:")
-    ? checkTour(r.metrics as TourMetrics, checkFor.get(key) as Tour["check"])
+    ? checkTour(r.metrics as TourMetrics, checkFor.get(key))
     : checkRoadAscent(traverseKeys.has(key), r.metrics, checkFor.get(key));
 
 for (const [key, r] of Object.entries(rejected ?? {})) {

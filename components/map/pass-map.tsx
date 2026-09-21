@@ -1,5 +1,6 @@
 "use client";
 
+import type { FeatureCollection } from "geojson";
 import { Compass, MoreHorizontal, Scan } from "lucide-react";
 import type {
   ExpressionSpecification,
@@ -8,6 +9,8 @@ import type {
   LayerSpecification,
   StyleSpecification,
 } from "maplibre-gl";
+
+import "maplibre-gl/dist/maplibre-gl.css";
 import {
   AttributionControl,
   LngLat,
@@ -17,8 +20,6 @@ import {
   ScaleControl,
   setWorkerUrl,
 } from "maplibre-gl";
-
-import "maplibre-gl/dist/maplibre-gl.css";
 import { useEffect, useRef, useState } from "react";
 
 import { baseLayers, OVERLAYS, VECTOR_BASE } from "@/components/map/map-style";
@@ -64,6 +65,7 @@ import { ascentKey } from "@/lib/route-key";
 import { STATUS_ORDER } from "@/lib/status";
 import { tagIconSvg } from "@/lib/tag-icons";
 import type { LatLon, Pass, Status, Tag, Tour, Town } from "@/lib/types";
+import { MOBILE_QUERY } from "@/lib/use-media-query";
 import { cn, fmtUnit, MAP_CLUSTER, MAP_TOOL } from "@/lib/utils";
 
 export interface MapPass extends Pass {
@@ -124,7 +126,7 @@ interface Props {
   insetTop?: number;
 }
 
-const EMPTY = { features: [], type: "FeatureCollection" } as const;
+const EMPTY: FeatureCollection = { features: [], type: "FeatureCollection" };
 /** Breathing room around a fitted frame, in pixels; the map padding is added on top. */
 const FIT_PADDING = 48;
 /** The same around a selected tour, which is framed tighter than the whole map. */
@@ -1106,7 +1108,7 @@ export const PassMap = ({
   const paintReach = (slug: string | null) => {
     const m = map.current;
     const ring = slug ? reachRef.current[slug] : undefined;
-    (m?.getSource("reach") as GeoJSONSource | undefined)?.setData({
+    void m?.getSource<GeoJSONSource>("reach")?.setData({
       features: ring
         ? [
             {
@@ -1203,7 +1205,7 @@ export const PassMap = ({
         routes: { data: assets.routesUrl, promoteId: "id", type: "geojson" },
         tours: { data: assets.toursUrl, promoteId: "id", type: "geojson" },
         towns: { data: EMPTY, type: "geojson" },
-      } as StyleSpecification["sources"],
+      },
       version: 8,
     };
 
@@ -1247,37 +1249,66 @@ export const PassMap = ({
       ).__alpen = { map: m, passBounds: assets.passBounds };
     }
     /*
-     * Provenance, in the corner opposite the tools: the scale bar and, under
-     * it, who the map is by. Both quiet and small – they are read once, not
-     * operated – while everything a visitor presses lives in the top-right
-     * group.
+     * Provenance: the scale bar and who the map is by. Both quiet and small –
+     * they are read once, not operated – while everything a visitor presses
+     * lives in the top-right group. On a phone they stack in the bottom-left
+     * corner above the season bar; on desktop, where the season card stands
+     * beside the panels on the left, they sit in a row in the bottom-right
+     * corner, the one corner nothing else claims. MapLibre fixes a control's
+     * corner when it is added, so a change of layout re-adds them – which is
+     * also what keeps the compact attribution unfolding towards the map
+     * rather than off its edge.
      *
      * The attribution stays *on the map* behind a single ⓘ rather than moving
      * into the view menu: one clearly identifiable interaction is what the
      * OSM attribution guidelines ask for, and a line inside a menu about map
      * types is neither identifiable nor one interaction.
      */
-    m.addControl(new AttributionControl({ compact: true }), "bottom-left");
-    m.addControl(new ScaleControl({ unit: "metric" }), "bottom-left");
-    // Bottom right, not with the scale bar: on desktop the sidebar floats over
-    // the bottom-left corner, and a line nobody can read says nothing.
+    const attribution = new AttributionControl({ compact: true });
+    const scale = new ScaleControl({ unit: "metric" });
+    // The level-of-detail line travels with the provenance: it is read, not
+    // pressed, and it must not sit under the sidebar on desktop.
     detailLevel.current = new DetailLevelControl();
-    m.addControl(detailLevel.current, "bottom-right");
-    /*
-     * MapLibre opens a compact attribution the first time it has something to
-     * say, and folds it away only once it has been clicked. Nothing else on
-     * this map is open before it is asked for, so it starts folded.
-     *
-     * Marking the container compact *here* is what does that, rather than
-     * removing the open class afterwards: `_updateCompact` adds
-     * `maplibregl-compact-show` only while the container is not compact yet,
-     * and it runs again on every resize and whenever the attributions change –
-     * so a class removed now is back the moment the first source reports in.
-     * Set the flag it tests and it never opens by itself; the ⓘ still toggles.
-     */
-    container.current
-      ?.querySelector(".maplibregl-ctrl-attrib")
-      ?.classList.add("maplibregl-compact");
+    const level = detailLevel.current;
+    const mobileQuery = window.matchMedia(MOBILE_QUERY);
+    let provenancePlaced = false;
+    const placeProvenance = () => {
+      if (provenancePlaced) {
+        m.removeControl(attribution);
+        m.removeControl(scale);
+        m.removeControl(level);
+      }
+      provenancePlaced = true;
+      if (mobileQuery.matches) {
+        m.addControl(attribution, "bottom-left");
+        m.addControl(scale, "bottom-left");
+        m.addControl(level, "bottom-left");
+      } else {
+        // A right corner takes each new control on its *left*, so the ⓘ
+        // goes in first and keeps the corner; the scale bar stands beside it.
+        m.addControl(attribution, "bottom-right");
+        m.addControl(scale, "bottom-right");
+        m.addControl(level, "bottom-right");
+      }
+      /*
+       * MapLibre opens a compact attribution the first time it has something
+       * to say, and folds it away only once it has been clicked. Nothing else
+       * on this map is open before it is asked for, so it starts folded.
+       *
+       * Marking the container compact *here* is what does that, rather than
+       * removing the open class afterwards: `_updateCompact` adds
+       * `maplibregl-compact-show` only while the container is not compact
+       * yet, and it runs again on every resize and whenever the attributions
+       * change – so a class removed now is back the moment the first source
+       * reports in. Set the flag it tests and it never opens by itself; the
+       * ⓘ still toggles.
+       */
+      container.current
+        ?.querySelector(".maplibregl-ctrl-attrib")
+        ?.classList.add("maplibregl-compact");
+    };
+    placeProvenance();
+    mobileQuery.addEventListener("change", placeProvenance);
 
     // `style.load`, not `load`: the latter waits for every source, and the
     // ascent and tour lines are a megabyte of GeoJSON fetched over holiday
@@ -1441,11 +1472,14 @@ export const PassMap = ({
 
     // The container changes size when the sidebar collapses; MapLibre only
     // tracks window resizes on its own.
-    const ro = new ResizeObserver(() => m.resize());
+    const ro = new ResizeObserver(() => {
+      m.resize();
+    });
     ro.observe(container.current);
 
     return () => {
       ro.disconnect();
+      mobileQuery.removeEventListener("change", placeProvenance);
       dropPending();
       m.remove();
       map.current = null;
@@ -1611,7 +1645,7 @@ export const PassMap = ({
     const m = map.current;
     if (!m || !ready) return;
     const selPass = selection?.kind === "pass" ? selection.slug : null;
-    (m.getSource("passes") as GeoJSONSource | undefined)?.setData({
+    void m.getSource<GeoJSONSource>("passes")?.setData({
       features: (showPasses ? passes : []).map((p) => ({
         geometry: { coordinates: [p.lon, p.lat], type: "Point" },
         properties: {
@@ -1633,7 +1667,7 @@ export const PassMap = ({
     const m = map.current;
     if (!m || !ready) return;
     const selTown = selection?.kind === "town" ? selection.slug : null;
-    (m.getSource("towns") as GeoJSONSource | undefined)?.setData({
+    void m.getSource<GeoJSONSource>("towns")?.setData({
       features: showTowns
         ? towns.map((t) => ({
             geometry: { coordinates: [t.lon, t.lat], type: "Point" },
@@ -1712,7 +1746,7 @@ export const PassMap = ({
         : hovered?.kind === "town"
           ? towns.find((t) => t.slug === hovered.slug)
           : undefined;
-    (m.getSource("hover") as GeoJSONSource | undefined)?.setData({
+    void m.getSource<GeoJSONSource>("hover")?.setData({
       features: point
         ? [
             {
@@ -1748,7 +1782,7 @@ export const PassMap = ({
   useEffect(() => {
     const m = map.current;
     if (!m || !ready) return;
-    (m.getSource("cursor") as GeoJSONSource | undefined)?.setData({
+    void m.getSource<GeoJSONSource>("cursor")?.setData({
       features: profileCursor
         ? [
             {
@@ -1946,9 +1980,9 @@ export const PassMap = ({
                     size="icon-lg"
                     variant="outline"
                     className={cn(TOOL, MAP_TOOL)}
-                    onClick={() =>
-                      map.current?.easeTo({ bearing: 0, duration: 400 })
-                    }
+                    onClick={() => {
+                      map.current?.easeTo({ bearing: 0, duration: 400 });
+                    }}
                     aria-label="Nach Norden ausrichten"
                   />
                 }

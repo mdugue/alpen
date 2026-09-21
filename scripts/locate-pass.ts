@@ -112,7 +112,8 @@ const getJson: GetJson = async (url, init) => {
     const body = await bodyOf(res);
     throw new Error(`${new URL(url).host} ${res.status} ${body.slice(0, 120)}`);
   }
-  return res.json();
+  const json: unknown = await res.json();
+  return json;
 };
 const osm = osmSource({
   log: (line) => console.log(line),
@@ -149,7 +150,7 @@ const dem = async (
       );
     console.log(`  Open-Meteo bremst (${reason}) – eine Minute warten …`);
     await Bun.sleep(60_000);
-    return dem(points);
+    return await dem(points);
   }
   if (!res.ok) throw new Error(`Open-Meteo ${res.status}`);
   return ((await res.json()) as { elevation: number[] }).elevation.map((e) =>

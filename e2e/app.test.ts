@@ -5,6 +5,7 @@
  */
 import { afterAll, beforeAll, expect, test } from "bun:test";
 
+import passes from "@/data/passes.json" with { type: "json" };
 import { startApp, waitUntil, withPage } from "@/test/browser";
 import type { App } from "@/test/browser";
 
@@ -55,14 +56,16 @@ interface DetailScroll {
 const detailScroll = async (page: {
   evaluate: <T>(js: string) => Promise<T>;
 }): Promise<DetailScroll> =>
-  JSON.parse(await page.evaluate<string>(DETAIL_SCROLL));
+  JSON.parse(await page.evaluate<string>(DETAIL_SCROLL)) as DetailScroll;
 
 test(
   "1 · loads with all passes and a map canvas",
   () =>
     withPage(app, "loads", {}, async (page) => {
       await page.waitFor(PASS_ROW);
-      expect(await page.count(PASS_ROW)).toBe(201);
+      // Every road in the file is a row: the count comes from the data, so a
+      // curation PR does not have to touch this test.
+      expect(await page.count(PASS_ROW)).toBe(passes.length);
       await page.waitFor("canvas.maplibregl-canvas");
       // The season band shows a half-month, what most passes are in it and
       // the counts behind that.
@@ -619,6 +622,16 @@ test(
               "window.__flight.length > 0 && !window.__alpen.map.isMoving()",
             ),
           "the camera flown and landed on the pass",
+          // Longer than the default, because this is the one wait in the suite
+          // whose length is the machine's rather than the app's: the flight
+          // crosses the Alps over a software GL context, and measured on one
+          // machine at three CPU speeds it lands after 2.6 s, 7.6 s and – at
+          // an eighth of the speed – anywhere between 4.5 s and 17.3 s. The
+          // default 15 s is inside that spread, which is why CI failed here on
+          // a slow runner while the same commit passed locally. The assertions
+          // below are what the test is about and are unchanged; only the
+          // patience is.
+          45_000,
         );
         await page.waitFor('[aria-label^="Höhenprofil:"]');
 

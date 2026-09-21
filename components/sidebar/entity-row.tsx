@@ -10,18 +10,20 @@ import { cn, ICON_TOGGLE, TOUCH_ICON } from "@/lib/utils";
  * column. No interactive element is nested inside another – the body is its
  * own button, so Enter/Space and focus come for free.
  *
- * A row is a containment boundary (`content-visibility`), and that is what
- * keeps the phone usable. The lists are long – 201 roads alone, ~40 elements
- * per row – and on a phone they sit inside the bottom sheet, whose popup gets
- * a custom property written to it on every single touchmove of a drag
- * (`--drawer-swipe-movement-y`, and the snap offset whenever the sheet
- * resizes). Custom properties are inherited and Tailwind resolves one in
- * nearly every utility, so such a write invalidates the style of the whole
- * subtree: with the passes unfolded that was one ~300 ms recalculation per
- * touchmove, which is what made dragging the sheet, scrolling and the filter
- * panel crawl. Contained, a row keeps its own layout, style and paint to
- * itself, and off screen it is skipped altogether; measured on a throttled
- * phone profile the recalculation drops to about a third.
+ * A row is a containment boundary (`content-visibility`). The lists are long
+ * – 201 roads alone, ~40 elements per row – and contained, a row keeps its
+ * own layout, style and paint to itself, and off screen it is skipped
+ * altogether: whatever restyles the list (a filter chip, a state change of
+ * the sheet around it) pays for the rows on screen, not for nine thousand
+ * elements. The rows come in blocks of ten on top of that (`RowList`), each
+ * block a skipped subtree of its own, so that the row elements of an
+ * off-screen block are not visited either.
+ *
+ * Both were introduced against a restyle of the whole list on every frame of
+ * a sheet drag. Its cause was elsewhere – inherited custom properties in the
+ * drawer preset, registered as non-inheriting in `app/globals.css` since –
+ * and `docs/ui-conventions.md` has what the containment still measures
+ * without it.
  *
  * `auto` in the intrinsic size lets a row remember what it measured, so the
  * scrollbar does not jump; the step is the height of a row that has never
@@ -33,7 +35,9 @@ import { cn, ICON_TOGGLE, TOUCH_ICON } from "@/lib/utils";
  *
  *  - `data-roving` marks the body as a stop of the composite widget, so the
  *    list is **one** tab stop with arrow keys inside it rather than one stop
- *    per row (`lib/use-roving.ts` has the measurement).
+ *    per row (`lib/use-roving.ts` has the measurement). The row carries
+ *    `role="listitem"` because a block sits between it and the list, which
+ *    is also why it is a `<div>` and not an `<li>` (`RowList`).
  *  - `name` is what the bookmark toggle is called. Its label used to be the
  *    bare word "Merken", which is fine once and useless two hundred times:
  *    a screen reader's list of buttons was two hundred identical entries
@@ -76,8 +80,9 @@ export const EntityRow = ({
   hovered?: boolean;
   onHover?: (over: boolean) => void;
 }) => (
-  <li
-    data-current={current || undefined}
+  <div
+    role="listitem"
+    data-current={current ? true : undefined}
     onPointerEnter={onHover ? () => onHover(true) : undefined}
     onPointerLeave={onHover ? () => onHover(false) : undefined}
     className={cn(
@@ -126,10 +131,10 @@ export const EntityRow = ({
       </span>
     </button>
     <div className="flex items-center gap-2 pr-3 text-right">
-      {aside && (
+      {aside !== undefined && (
         <div className="flex flex-col items-end gap-0.5 text-xs">{aside}</div>
       )}
       {trailing}
     </div>
-  </li>
+  </div>
 );
