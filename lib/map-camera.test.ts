@@ -64,13 +64,21 @@ describe("fitInset", () => {
 });
 
 describe("shellEdge", () => {
-  test("a phone's bar sits on the edge and nothing stands left of it", () => {
-    expect(shellEdge(true, 96, 400, 12)).toEqual({ bottom: 96, left: 0 });
+  test("a phone's bar carries the controls and covers its height", () => {
+    expect(shellEdge(true, 96, 400, 12)).toEqual({
+      controls: 96,
+      cover: 96,
+      left: 0,
+    });
   });
-  test("a desktop card keeps the gap and stands beside the panels", () => {
-    expect(shellEdge(false, 80, 396, 12)).toEqual({ bottom: 92, left: 396 });
+  test("a desktop card stands beside the panels and covers the gap too", () => {
+    expect(shellEdge(false, 80, 396, 12)).toEqual({
+      controls: 0,
+      cover: 92,
+      left: 396,
+    });
   });
   test("with no panel open the card keeps the gap from the left edge", () => {
-    expect(shellEdge(false, 80, 0, 12)).toEqual({ bottom: 92, left: 12 });
+    expect(shellEdge(false, 80, 0, 12).left).toBe(12);
   });
 });

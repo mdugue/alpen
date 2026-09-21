@@ -14,14 +14,12 @@
 
 :root {
   --radius: 0.625rem;
-  /* What the shell covers of the map at its bottom-left corner: the season
-     bar (or, on desktop, the season card) from below and the floating panels
-     from the left. Measured and written back by `components/explorer.tsx`,
-     because the bar's height depends on what is in it; these are only the
-     values before the first measurement. The MapLibre corner controls sit at
-     the first free pixel, so they move together. */
+  /* What the shell's bottom bar covers of the map on a phone. Measured and
+     written back by `components/explorer.tsx`, because the bar's height
+     depends on what is in it; this is only the value before the first
+     measurement. The MapLibre corner controls sit above it, so the two move
+     together; on desktop it is 0 and the controls sit in the free corner. */
   --shell-bottom: 6rem;
-  --shell-left: 0px;
   color-scheme: light dark;
 
   --background: oklch(0.985 0.004 90);
@@ -285,9 +283,8 @@
   }
 }
 
-/* The season bar (a card beside the panels on desktop) runs along the bottom
-   of the map at every width, and on desktop the panels stand on its left edge;
-   keep MapLibre's corner controls above the one and right of the other. */
+/* On a phone the season bar runs along the bottom of the map; keep MapLibre's
+   corner controls above it. */
 .maplibregl-ctrl-bottom-left,
 .maplibregl-ctrl-bottom-right {
   /* Important, like every other rule here that has to beat maplibre-gl.css:
@@ -296,8 +293,14 @@
      did, leaving the attribution and the scale bar underneath the bar. */
   bottom: var(--shell-bottom) !important;
 }
-.maplibregl-ctrl-bottom-left {
-  left: var(--shell-left) !important;
+/* On desktop the two provenance controls share the bottom-right corner in one
+   row – the scale bar, then the ⓘ in the corner itself – rather than stacked,
+   which read as two strays beside the season card. */
+.maplibregl-ctrl-bottom-right {
+  @apply lg:flex lg:items-end;
+}
+.maplibregl-ctrl-bottom-right .maplibregl-ctrl {
+  @apply mr-2.5! mb-1.5!;
 }
 
 /*

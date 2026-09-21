@@ -94,11 +94,13 @@ and the list keeps the full height instead of ending above the bar. What the
 three shapes mean is behind the card's ⓘ (a popover) and in the scales
 dialog; the card carries no legend beside the band.
 
-MapLibre's own bottom-left controls – the scale bar and the attribution –
-stand at the first free pixel of the map: `--shell-bottom` and `--shell-left`
-on the shell, measured in `explorer.tsx` (`shellEdge` in `lib/map-camera.ts`)
-and read in `globals.css`. Before that, the floating sidebar covered them on
-desktop.
+MapLibre's own provenance controls – the scale bar and the attribution ⓘ –
+stack in the bottom-left corner above the bar on a phone (`--shell-bottom`,
+measured in `explorer.tsx`) and sit in one row in the bottom-right corner on
+desktop, the one corner the card leaves free (`lg:right-40`): MapLibre fixes a
+control's corner when it is added, so `pass-map.tsx` re-adds them when the
+layout changes. Before that, the floating sidebar covered them on desktop.
+The arithmetic is `shellEdge` in `lib/map-camera.ts`.
 
 The band is the period control _and_ a chart of the current selection. Each of
 its 24 columns carries three quantities over the passes the filters leave: bar

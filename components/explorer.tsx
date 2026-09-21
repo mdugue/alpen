@@ -469,11 +469,11 @@ export const Explorer = ({
     desktopPanels.length ? GAP : 0,
   );
   const detailLeft = GAP + (!isMobile && sidebarOpen ? sidebarW + GAP : 0);
-  // The season card stands right beside the panels, and the map's corner
-  // controls stand on top of it – both at the first free pixel of the map.
-  // On desktop the card covers its height plus the gap it keeps from the edge.
+  // On desktop the season card covers its height plus the gap it keeps from
+  // the edge; the corner controls sit at the edge, in the corner it leaves.
+  // The card stands right beside the panels, at their gap from the edge.
   const shell = shellEdge(isMobile, barHeight, insetLeft, GAP);
-  const insetBottom = Math.max(sheetPx, shell.bottom);
+  const insetBottom = Math.max(sheetPx, shell.cover);
 
   const setPeriod = (p: Period) => {
     setFilters((f) => ({ ...f, period: p }));
@@ -494,10 +494,10 @@ export const Explorer = ({
    * desktop the bar is a card in that same box, beside the panels, and the
    * panels run the full height.
    *
-   * The two custom properties place MapLibre's corner controls (scale bar and
-   * attribution) at the first free pixel of the map: above the bar or the
-   * card, and – on desktop – right of the panels, which would otherwise cover
-   * them.
+   * `--shell-bottom` lifts MapLibre's corner controls (scale bar and
+   * attribution) above the bar on a phone; on desktop they sit in the
+   * bottom-right corner, which the card leaves free, and `--shell-left` is
+   * where the card starts.
    */
   return (
     <TooltipProvider delay={400}>
@@ -505,7 +505,7 @@ export const Explorer = ({
         className="relative flex h-dvh flex-col overflow-hidden"
         style={
           {
-            "--shell-bottom": `${shell.bottom}px`,
+            "--shell-bottom": `${shell.controls}px`,
             "--shell-left": `${shell.left}px`,
           } as React.CSSProperties
         }
@@ -581,15 +581,17 @@ export const Explorer = ({
            * it is a card of the same material as the panels, standing beside
            * them at the foot of the map and capped in width: 24 columns read
            * better at the width of a chart than stretched across a screen,
-           * and the list keeps the full height. What its three shapes mean
-           * is one popover away, and in the scales dialog.
+           * and the list keeps the full height. It stops short of the
+           * bottom-right corner (`lg:right-40`), where the scale bar and the
+           * attribution sit in a row. What its three shapes mean is one
+           * popover away, and in the scales dialog.
            */}
           <div
             ref={barRef}
             className={cn(
               "pointer-events-auto z-20 flex shrink-0 flex-col gap-2 px-3 py-2",
               "max-lg:relative max-lg:border-t",
-              "lg:absolute lg:right-3 lg:bottom-3 lg:left-(--shell-left) lg:max-w-xl lg:rounded-xl lg:border lg:px-4 lg:py-3 lg:shadow-xl",
+              "lg:absolute lg:right-40 lg:bottom-3 lg:left-(--shell-left) lg:max-w-xl lg:rounded-xl lg:border lg:px-4 lg:py-3 lg:shadow-xl",
               SHELL_BAR,
             )}
           >
