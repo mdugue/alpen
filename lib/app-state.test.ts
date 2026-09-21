@@ -5,257 +5,35 @@ import {
   countCriteria,
   DEFAULT_FILTERS,
   DEFAULT_VIEW,
-  defined,
+  DETAIL_SNAPS,
   hasActiveFilters,
+  initialState,
+  isShown,
+  LIST_SNAPS,
   pickedMembers,
-  parseHash,
+  reconcileShown,
+  reduce,
   resolvePeriod,
-  serializeHash,
+  shownTours,
   statusMatches,
   toggleLevel,
   toggleMember,
 } from "@/lib/app-state";
-import type { Filters, MapView, Selection } from "@/lib/app-state";
+import type { AppState, Env, Filters, Selection } from "@/lib/app-state";
+import { parseHash } from "@/lib/hash";
+import { entityKey } from "@/lib/route-key";
 
 const filters = (over: Partial<Filters> = {}): Filters => ({
   ...DEFAULT_FILTERS,
   ...over,
 });
-const view = (over: Partial<MapView> = {}): MapView => ({
-  ...DEFAULT_VIEW,
-  ...over,
-});
-
-describe("parseHash", () => {
-  test("reads filters, selection and camera", () => {
-    const h = parseHash(
-      "#pass=col-du-galibier&t=6&z=9&c=45.06,6.41&f=4&m=2000&q=gal&s=open,risky&pi=60&b=30&d=2-4&v=2&be=4&o=beauty",
-    );
-    expect(h.filters).toEqual({
-      difficulty: [2, 4],
-      maxTraffic: 2,
-      minBeauty: 4,
-      minElevation: 2000,
-      minFame: 4,
-      period: 6,
-      query: "gal",
-      sort: "beauty",
-      status: ["open", "risky"],
-    });
-    expect(h.selection).toEqual({ kind: "pass", slug: "col-du-galibier" });
-    expect(h.view).toEqual({
-      bearing: 30,
-      lat: 45.06,
-      lon: 6.41,
-      pitch: 60,
-      zoom: 9,
-    });
-  });
-
-  test("works with and without the leading #, and ignores unknown keys", () => {
-    expect(parseHash("t=6&unknown=1")).toEqual(parseHash("#t=6"));
-  });
-
-  test("an empty hash leaves everything undefined", () => {
-    const h = parseHash("");
-    expect(h.selection).toBeNull();
-    expect(Object.values(h.filters).every((v) => v === undefined)).toBe(true);
-    expect(Object.values(h.view).every((v) => v === undefined)).toBe(true);
-  });
-
-  test("only one selection kind, passes first", () => {
-    expect(parseHash("#tour=sellaronda").selection).toEqual({
-      kind: "tour",
-      slug: "sellaronda",
-    });
-    expect(parseHash("#town=bormio").selection).toEqual({
-      kind: "town",
-      slug: "bormio",
-    });
-    expect(parseHash("#pass=a&tour=b").selection).toEqual({
-      kind: "pass",
-      slug: "a",
-    });
-  });
-
-  test("legacy and special status values from older links", () => {
-    expect(parseHash("#s=openRisky").filters.status).toEqual(["open", "risky"]);
-    expect(parseHash("#s=all").filters.status).toBeUndefined();
-    // "none" used to hide everything; no control produces it any more.
-    expect(parseHash("#s=none").filters.status).toBeUndefined();
-    expect(parseHash("#s=open,nonsense").filters.status).toEqual(["open"]);
-    expect(parseHash("#s=nonsense").filters.status).toBeUndefined();
-  });
-
-  test("nonsense numbers are dropped rather than becoming NaN", () => {
-    expect(parseHash("#c=abc,def").view.lat).toBeUndefined();
-    expect(parseHash("#c=abc,def").view.lon).toBeUndefined();
-    expect(parseHash("#c=45.06").view.lat).toBeUndefined();
-    expect(parseHash("#c=45.06,6.41,9").view.lat).toBeUndefined();
-    expect(parseHash("#t=99").filters.period).toBeUndefined();
-    expect(parseHash("#t=abc").filters.period).toBeUndefined();
-    expect(parseHash("#t=6.25").filters.period).toBeUndefined();
-    expect(parseHash("#z=abc").view.zoom).toBeUndefined();
-  });
-
-  test("the filter keys from plan 05 are validated", () => {
-    expect(parseHash("#d=1-3&v=2&o=beauty").filters).toMatchObject({
-      difficulty: [1, 3],
-      maxTraffic: 2,
-      sort: "beauty",
-    });
-    // A reversed window is turned around.
-    expect(parseHash("#d=4-2").filters.difficulty).toEqual([2, 4]);
-    expect(parseHash("#d=3").filters.difficulty).toEqual([3, 3]);
-    expect(parseHash("#d=0-9").filters.difficulty).toBeUndefined();
-    expect(parseHash("#v=7").filters.maxTraffic).toBeUndefined();
-    // Only what the selects offer, and whole numbers only.
-    expect(parseHash("#v=4").filters.maxTraffic).toBeUndefined();
-    expect(parseHash("#be=2").filters.minBeauty).toBeUndefined();
-    expect(parseHash("#f=99").filters.minFame).toBeUndefined();
-    expect(parseHash("#f=4").filters.minFame).toBe(4);
-    expect(parseHash("#f=5").filters.minFame).toBe(5);
-    expect(parseHash("#f=2").filters.minFame).toBeUndefined();
-    expect(parseHash("#m=2000oops").filters.minElevation).toBeUndefined();
-    expect(parseHash("#m=2000").filters.minElevation).toBe(2000);
-    // Only the thresholds the chips offer.
-    expect(parseHash("#m=1700").filters.minElevation).toBeUndefined();
-    expect(parseHash("#be=abc").filters.minBeauty).toBeUndefined();
-    expect(parseHash("#o=nonsense").filters.sort).toBeUndefined();
-  });
-
-  test("the summer-signal keys from plan 13 round-trip and are validated", () => {
-    expect(parseHash("#h=26&w=6").filters).toMatchObject({
-      maxValleyTmax: 26,
-      maxWetDays: 6,
-    });
-    // Only the rungs of the two ladders. `w` counts rain days now, so the old
-    // percentages are not values it can hold at all.
-    expect(parseHash("#h=27").filters.maxValleyTmax).toBeUndefined();
-    expect(parseHash("#h=28").filters.maxValleyTmax).toBe(28);
-    expect(parseHash("#w=5").filters.maxWetDays).toBeUndefined();
-    expect(parseHash("#w=50").filters.maxWetDays).toBeUndefined();
-    expect(parseHash("#w=10").filters.maxWetDays).toBe(10);
-    expect(parseHash("#s=open,risky").filters).toMatchObject({
-      maxValleyTmax: undefined,
-      maxWetDays: undefined,
-      status: ["open", "risky"],
-    });
-    const out = serializeHash(
-      filters({ maxValleyTmax: 22, maxWetDays: 8 }),
-      null,
-      DEFAULT_VIEW,
-    );
-    expect(out).toContain("h=22");
-    expect(out).toContain("w=8");
-    expect(parseHash(out).filters).toMatchObject({
-      maxValleyTmax: 22,
-      maxWetDays: 8,
-    });
-    expect(serializeHash(filters(), null, DEFAULT_VIEW)).not.toMatch(/[hw]=/u);
-  });
-});
 
 describe("plan 14 road types and labels", () => {
-  test("a and e read a subset of their vocabulary, in vocabulary order", () => {
-    const h = parseHash("#a=valley,spur&e=toll,carfree");
-    expect(h.filters.types).toEqual(["spur", "valley"]);
-    expect(h.filters.tags).toEqual(["carfree", "toll"]);
-  });
-
-  test("unknown members drop out, a value that leaves nothing is no filter", () => {
-    expect(parseHash("#a=spur,autobahn").filters.types).toEqual(["spur"]);
-    expect(parseHash("#a=autobahn").filters.types).toBeUndefined();
-    expect(parseHash("#e=schnee").filters.tags).toBeUndefined();
-  });
-
-  test("both survive the round trip, the defaults leave the hash", () => {
-    const hash = serializeHash(
-      filters({ tags: ["toll"], types: ["pass", "spur"] }),
-      null,
-      view(),
-    );
-    expect(hash).toContain("a=pass,spur");
-    expect(hash).toContain("e=toll");
-    const back = parseHash(hash);
-    expect(back.filters.types).toEqual(["pass", "spur"]);
-    expect(back.filters.tags).toEqual(["toll"]);
-    expect(serializeHash(filters(), null, view())).not.toMatch(/[ae]=/u);
-  });
-
   test("both count as one criterion each", () => {
     expect(countCriteria(filters({ types: ["balcony"] }))).toBe(1);
     expect(countCriteria(filters({ tags: ["carfree", "glacier"] }))).toBe(1);
     expect(hasActiveFilters(filters({ types: ["balcony"] }))).toBe(true);
     expect(hasActiveFilters(filters({ tags: ["toll"] }))).toBe(true);
-  });
-});
-
-describe("serializeHash", () => {
-  test("writes only what differs from the defaults", () => {
-    expect(
-      serializeHash(
-        filters({ period: 7 }),
-        null,
-        view({ lat: 46.3, lon: 9.6, zoom: 6.5 }),
-      ),
-    ).toBe("c=46.3000,9.6000&t=7&z=6.50");
-  });
-
-  test("filters, selection and a tilted camera are carried", () => {
-    const hash = serializeHash(
-      filters({
-        difficulty: [2, 5],
-        maxTraffic: 3,
-        minBeauty: 4,
-        minElevation: 2000,
-        minFame: 4,
-        period: 6,
-        query: "gal",
-        sort: "traffic",
-        status: ["open"],
-      }),
-      { kind: "pass", slug: "col-du-galibier" },
-      view({ bearing: 30, pitch: 60 }),
-    );
-    expect(hash).toContain("d=2-5");
-    const back = parseHash(hash);
-    expect(back.filters.period).toBe(6);
-    expect(back.filters.status).toEqual(["open"]);
-    expect(back.filters.minFame).toBe(4);
-    expect(back.filters.minElevation).toBe(2000);
-    expect(back.filters.difficulty).toEqual([2, 5]);
-    expect(back.filters.maxTraffic).toBe(3);
-    expect(back.filters.minBeauty).toBe(4);
-    expect(back.filters.sort).toBe("traffic");
-    expect(back.filters.query).toBe("gal");
-    expect(back.selection).toEqual({ kind: "pass", slug: "col-du-galibier" });
-    expect(back.view.pitch).toBe(60);
-    expect(back.view.bearing).toBe(30);
-  });
-
-  test("an empty set never reaches the hash – it is no filter", () => {
-    // `toggleMember` cannot produce one; a hand-written link with it opens
-    // unfiltered rather than on an empty list.
-    const hash = serializeHash(filters({ status: [] }), null, view());
-    expect(parseHash(hash).filters.status).toBeUndefined();
-    expect(parseHash("#a=").filters.types).toBeUndefined();
-  });
-
-  test("round trip through parse and serialize is stable", () => {
-    const selection: Selection = { kind: "town", slug: "bormio" };
-    const first = serializeHash(
-      filters({ period: 9.5, query: "bor" }),
-      selection,
-      view({ zoom: 8.25 }),
-    );
-    const parsed = parseHash(first);
-    const second = serializeHash(
-      { ...DEFAULT_FILTERS, ...defined(parsed.filters) },
-      parsed.selection,
-      { ...DEFAULT_VIEW, ...defined(parsed.view) },
-    );
-    expect(second).toBe(first);
   });
 });
 
@@ -328,5 +106,349 @@ describe("resolvePeriod", () => {
   });
   test("without either, today's half-month from the server", () => {
     expect(resolvePeriod(undefined, null, 5.5)).toBe(5.5);
+  });
+});
+
+describe("entityKey", () => {
+  test("is the kind and the slug, from a selection or from the pair", () => {
+    expect(entityKey("pass", "stilfser-joch")).toBe("pass:stilfser-joch");
+    expect(entityKey({ kind: "tour", slug: "sellaronda" })).toBe(
+      "tour:sellaronda",
+    );
+  });
+});
+
+const TOURS = ["sellaronda", "stelvio-runde"];
+const desktop: Env = { mobile: false, tours: TOURS };
+const phone: Env = { mobile: true, tours: TOURS };
+const [LIST_HALF, LIST_FULL] = LIST_SNAPS;
+const [DETAIL_HALF, DETAIL_FULL] = DETAIL_SNAPS;
+const GALIBIER: Selection = { kind: "pass", slug: "col-du-galibier" };
+const SELLARONDA: Selection = { kind: "tour", slug: "sellaronda" };
+const BORMIO: Selection = { kind: "town", slug: "bormio" };
+
+/** A state with something to clear: a hover, a cursor, everything hidden. */
+const busy = (over: Partial<AppState> = {}): AppState => ({
+  ...initialState({ defaultPeriod: 7, tours: TOURS }),
+  hovered: BORMIO,
+  profileCursor: { lat: 46, lon: 9 },
+  shown: { hiddenTours: [...TOURS], passes: false, towns: false },
+  ...over,
+});
+
+describe("shown", () => {
+  test("isShown and shownTours read the one value", () => {
+    const shown = { hiddenTours: ["sellaronda"], passes: false, towns: true };
+    expect(isShown(shown, "pass", "x")).toBe(false);
+    expect(isShown(shown, "town", "x")).toBe(true);
+    expect(isShown(shown, "tour", "sellaronda")).toBe(false);
+    expect(isShown(shown, "tour", "stelvio-runde")).toBe(true);
+    expect(shownTours(shown, TOURS)).toEqual(["stelvio-runde"]);
+  });
+
+  test("reconcileShown drops slugs that left the data and keeps the rest", () => {
+    const shown = {
+      hiddenTours: ["gone", "sellaronda"],
+      passes: true,
+      towns: true,
+    };
+    expect(reconcileShown(shown, TOURS).hiddenTours).toEqual(["sellaronda"]);
+    const clean = { hiddenTours: ["sellaronda"], passes: true, towns: true };
+    expect(reconcileShown(clean, TOURS)).toBe(clean);
+  });
+});
+
+describe("reduce · select", () => {
+  test.each([
+    [
+      "a row, with the list drawer open",
+      phone,
+      { open: true, snap: LIST_HALF },
+    ],
+    [
+      "the map, with no list behind it",
+      phone,
+      { open: false, snap: LIST_HALF },
+    ],
+    ["a row on desktop", desktop, { open: false, snap: LIST_HALF }],
+  ])(
+    "from %s sets the tab, clears the pointer and reveals the kind",
+    (_, env, list) => {
+      const before = busy({ sheet: { ...busy().sheet, list }, tab: "town" });
+      const s = reduce(before, { selection: GALIBIER, type: "select" }, env);
+      expect(s.selection).toEqual(GALIBIER);
+      expect(s.last).toEqual(GALIBIER);
+      expect(s.tab).toBe("pass");
+      expect(s.hovered).toBeNull();
+      expect(s.profileCursor).toBeNull();
+      expect(s.shown.passes).toBe(true);
+      expect(s.shown.towns).toBe(false);
+    },
+  );
+
+  test("from the hash, by way of load", () => {
+    const s = reduce(
+      busy({ tab: "pass" }),
+      { hash: parseHash("#tour=sellaronda"), stored: {}, type: "load" },
+      desktop,
+    );
+    expect(s.selection).toEqual(SELLARONDA);
+    expect(s.tab).toBe("tour");
+    expect(s.hovered).toBeNull();
+    expect(s.profileCursor).toBeNull();
+    expect(s.shown.hiddenTours).toEqual(["stelvio-runde"]);
+  });
+
+  test("reveals each kind in its own way", () => {
+    const town = reduce(busy(), { selection: BORMIO, type: "select" }, desktop);
+    expect(town.shown).toEqual({
+      hiddenTours: [...TOURS],
+      passes: false,
+      towns: true,
+    });
+    const tour = reduce(
+      busy(),
+      { selection: SELLARONDA, type: "select" },
+      desktop,
+    );
+    expect(tour.shown.hiddenTours).toEqual(["stelvio-runde"]);
+    // Already shown: the same object, so nothing downstream re-renders for it.
+    const shown = initialState({ defaultPeriod: 7 });
+    expect(
+      reduce(shown, { selection: GALIBIER, type: "select" }, desktop).shown,
+    ).toBe(shown.shown);
+  });
+
+  test.each([
+    ["closed list", { open: false, snap: LIST_FULL }, DETAIL_HALF, false],
+    ["list at half", { open: true, snap: LIST_HALF }, DETAIL_HALF, true],
+    ["list all the way up", { open: true, snap: LIST_FULL }, DETAIL_FULL, true],
+  ])(
+    "on a phone, over a %s, picks the detail snap and nesting",
+    (_, list, snap, nested) => {
+      const before = busy({ sheet: { ...busy().sheet, list } });
+      const s = reduce(before, { selection: GALIBIER, type: "select" }, phone);
+      expect(s.sheet.detail).toEqual({ nested, snap });
+      expect(s.sheet.list).toEqual(list);
+    },
+  );
+
+  test("on desktop the sheets are left alone", () => {
+    const before = busy({
+      sheet: { ...busy().sheet, list: { open: true, snap: LIST_FULL } },
+    });
+    const s = reduce(before, { selection: GALIBIER, type: "select" }, desktop);
+    expect(s.sheet).toBe(before.sheet);
+  });
+});
+
+describe("reduce · back", () => {
+  test("clears the selection, the hover and the cursor, keeps what the sheet shows", () => {
+    const open = reduce(busy(), { selection: GALIBIER, type: "select" }, phone);
+    const s = reduce(
+      { ...open, hovered: BORMIO, profileCursor: { lat: 46, lon: 9 } },
+      { type: "back" },
+      phone,
+    );
+    expect(s.selection).toBeNull();
+    expect(s.last).toEqual(GALIBIER);
+    expect(s.hovered).toBeNull();
+    expect(s.profileCursor).toBeNull();
+    expect(s.tab).toBe("pass");
+  });
+});
+
+describe("reduce · load", () => {
+  test("resolves the period as the link, then the visitor's choice, then today", () => {
+    const stored = { period: 9 as const };
+    expect(
+      initialState({ defaultPeriod: 5.5, hash: parseHash("#t=7"), stored })
+        .filters.period,
+    ).toBe(7);
+    expect(initialState({ defaultPeriod: 5.5, stored }).filters.period).toBe(9);
+    expect(initialState({ defaultPeriod: 5.5 }).filters.period).toBe(5.5);
+  });
+
+  test("the visitor's own period is what was stored, never what the link says", () => {
+    const s = initialState({
+      defaultPeriod: 5.5,
+      hash: parseHash("#t=7"),
+      stored: { period: 9 },
+    });
+    expect(s.ownPeriod).toBe(9);
+    expect(
+      initialState({ defaultPeriod: 5.5, hash: parseHash("#t=7") }).ownPeriod,
+    ).toBeNull();
+    const chosen = reduce(s, { period: 3, type: "period" }, desktop);
+    expect(chosen.filters.period).toBe(3);
+    expect(chosen.ownPeriod).toBe(3);
+  });
+
+  test("a second load, as on hashchange, resolves the same way without a period", () => {
+    const first = reduce(
+      initialState({ defaultPeriod: 5.5 }),
+      { hash: parseHash("#t=7&q=gal"), stored: { period: 9 }, type: "load" },
+      desktop,
+    );
+    expect(first.filters.period).toBe(7);
+    expect(first.loaded).toBe(true);
+    const second = reduce(
+      first,
+      { hash: parseHash("#q=stel"), stored: { period: 9 }, type: "load" },
+      desktop,
+    );
+    expect(second.filters.period).toBe(9);
+    expect(second.filters.query).toBe("stel");
+    const third = reduce(
+      second,
+      { hash: parseHash(""), stored: {}, type: "load" },
+      desktop,
+    );
+    expect(third.filters.period).toBe(5.5);
+    expect(third.filters.query).toBe("");
+  });
+
+  test("a link without an entity closes what was open, as Escape does", () => {
+    const open = reduce(busy(), { selection: GALIBIER, type: "select" }, phone);
+    const s = reduce(
+      { ...open, hovered: BORMIO },
+      { hash: parseHash("#t=6"), stored: {}, type: "load" },
+      phone,
+    );
+    expect(s.selection).toBeNull();
+    expect(s.last).toEqual(GALIBIER);
+    expect(s.hovered).toBeNull();
+    expect(s.profileCursor).toBeNull();
+  });
+
+  test("with #tour=… while the pass tab is open ends with the tour tab", () => {
+    const s = reduce(
+      initialState({ defaultPeriod: 7, tours: TOURS }),
+      {
+        hash: parseHash("#tour=sellaronda"),
+        stored: { tab: "pass" },
+        type: "load",
+      },
+      desktop,
+    );
+    expect(s.tab).toBe("tour");
+    expect(s.selection).toEqual(SELLARONDA);
+  });
+
+  test("a stale slug in hiddenTours is dropped, the stored tab and switches kept", () => {
+    const stored = {
+      shown: {
+        hiddenTours: ["gone", "sellaronda"],
+        passes: false,
+        towns: true,
+      },
+      tab: "town" as const,
+    };
+    const s = initialState({ defaultPeriod: 7, stored, tours: TOURS });
+    expect(s.shown).toEqual({
+      hiddenTours: ["sellaronda"],
+      passes: false,
+      towns: true,
+    });
+    expect(s.tab).toBe("town");
+  });
+
+  test("the camera is requested only when the link carries one", () => {
+    expect(
+      initialState({ defaultPeriod: 7, hash: parseHash("#t=6") }).requestedView,
+    ).toBeNull();
+    const s = initialState({
+      defaultPeriod: 7,
+      hash: parseHash("#z=9&c=45.06,6.41"),
+    });
+    expect(s.requestedView).toEqual({
+      ...DEFAULT_VIEW,
+      lat: 45.06,
+      lon: 6.41,
+      zoom: 9,
+    });
+    expect(s.view).toEqual(s.requestedView!);
+  });
+
+  test("the empty inputs give the state the server renders", () => {
+    const s = initialState({ defaultPeriod: 7 });
+    expect(s.loaded).toBe(false);
+    expect(s.selection).toBeNull();
+    expect(s.filters).toEqual(filters({ period: 7 }));
+    expect(s.shown).toEqual({ hiddenTours: [], passes: true, towns: true });
+    expect(s.sheet.list.open).toBe(false);
+  });
+});
+
+describe("reduce · the switches and the sheets", () => {
+  const start = initialState({ defaultPeriod: 7, tours: TOURS });
+
+  test("toggleKind, toggleTour and the master switch", () => {
+    const s1 = reduce(
+      start,
+      { kind: "town", on: false, type: "toggleKind" },
+      desktop,
+    );
+    expect(s1.shown.towns).toBe(false);
+    const s2 = reduce(
+      s1,
+      { on: false, slug: "sellaronda", type: "toggleTour" },
+      desktop,
+    );
+    expect(s2.shown.hiddenTours).toEqual(["sellaronda"]);
+    // Twice off is once off.
+    expect(
+      reduce(s2, { on: false, slug: "sellaronda", type: "toggleTour" }, desktop)
+        .shown.hiddenTours,
+    ).toEqual(["sellaronda"]);
+    const s3 = reduce(s2, { on: false, type: "toggleTours" }, desktop);
+    expect(s3.shown.hiddenTours).toEqual(TOURS);
+    expect(
+      reduce(s3, { on: true, type: "toggleTours" }, desktop).shown.hiddenTours,
+    ).toEqual([]);
+    expect(
+      reduce(s3, { on: true, slug: "sellaronda", type: "toggleTour" }, desktop)
+        .shown.hiddenTours,
+    ).toEqual(["stelvio-runde"]);
+  });
+
+  test("filters take an updater, hover and cursor are plain sets", () => {
+    const s = reduce(
+      start,
+      { type: "filters", update: (f) => ({ ...f, query: "gal" }) },
+      desktop,
+    );
+    expect(s.filters.query).toBe("gal");
+    expect(
+      reduce(s, { selection: BORMIO, type: "hover" }, desktop).hovered,
+    ).toEqual(BORMIO);
+    expect(
+      reduce(s, { at: { lat: 1, lon: 2 }, type: "profileCursor" }, desktop)
+        .profileCursor,
+    ).toEqual({ lat: 1, lon: 2 });
+    expect(reduce(s, { tab: "town", type: "tab" }, desktop).tab).toBe("town");
+  });
+
+  test("the list drawer opens with or without its filter panel, and each sheet snaps on its own", () => {
+    const list = reduce(
+      start,
+      { filters: true, open: true, type: "list" },
+      phone,
+    );
+    expect(list.sheet.list.open).toBe(true);
+    expect(list.sheet.filters).toBe(true);
+    const up = reduce(
+      list,
+      { sheet: "list", snap: LIST_FULL, type: "snap" },
+      phone,
+    );
+    expect(up.sheet.list.snap).toBe(LIST_FULL);
+    expect(up.sheet.detail.snap).toBe(DETAIL_HALF);
+    const closed = reduce(up, { open: false, type: "list" }, phone);
+    expect(closed.sheet.list).toEqual({ open: false, snap: LIST_FULL });
+    expect(closed.sheet.filters).toBe(true);
+    expect(
+      reduce(closed, { open: null, type: "filtersOpen" }, phone).sheet.filters,
+    ).toBeNull();
   });
 });

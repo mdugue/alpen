@@ -19,7 +19,7 @@ export const TourList = ({
   hovered,
   onHover,
   period,
-  hiddenTours,
+  isShown,
   empty,
   mapControl,
   onToggleTour,
@@ -31,7 +31,8 @@ export const TourList = ({
   hovered: Selection | null;
   onHover: (sel: Selection | null) => void;
   period: Period;
-  hiddenTours: string[];
+  /** Whether a tour's "auf der Karte" switch is on (`isShown`, lib/app-state.ts). */
+  isShown: (slug: string) => boolean;
   empty: Omit<React.ComponentProps<typeof ListEmpty>, "title">;
   /** The "auf der Karte" switch for this kind; it lives in the list, not by the tabs. */
   mapControl: React.ReactNode;
@@ -49,7 +50,7 @@ export const TourList = ({
       ) : (
         <RowList ref={rovingList} items={rows} keyOf={({ tour }) => tour.slug}>
           {({ tour, status, reason, favorite, season }) => {
-            const onMap = !hiddenTours.includes(tour.slug);
+            const onMap = isShown(tour.slug);
             return (
               <EntityRow
                 key={tour.slug}

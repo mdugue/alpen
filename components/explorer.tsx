@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useReducer, useRef, useState } from "react";
+import { useReducer, useRef, useState } from "react";
 
 import { AppHeader } from "@/components/app-header";
 import { PassMap } from "@/components/map/pass-map";
@@ -16,31 +16,34 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import {
-  DEFAULT_FILTERS,
-  DEFAULT_VIEW,
-  defined,
-  NO_SLUGS,
-  readHash,
-  readStoredPeriod,
-  resolvePeriod,
-  useFavorites,
-  useStored,
-  useStoredPeriod,
-  writeHash,
+  DETAIL_SNAPS,
+  initialState,
+  isShown,
+  LIST_SNAPS,
+  reduce,
 } from "@/lib/app-state";
-import type { EntityKind, Filters, MapView, Selection } from "@/lib/app-state";
+import type {
+  Action,
+  AppState,
+  Env,
+  Filters,
+  Selection,
+} from "@/lib/app-state";
 import type { DetailAssets } from "@/lib/detail-assets";
+import { useHashAdapter } from "@/lib/hash-adapter";
 import type { MapAssets } from "@/lib/map-assets";
 import { shellEdge } from "@/lib/map-camera";
 import type { NearbyTours, TownReach } from "@/lib/nearby";
+import { entityKey } from "@/lib/route-key";
 import {
   buildPassRows,
   buildTourRows,
   buildTownRows,
+  currentBar,
   facetCount,
   seasonBand,
 } from "@/lib/rows";
-import { indexBySlug, periodIndex } from "@/lib/status";
+import { indexBySlug } from "@/lib/status";
 import type { Signals, Years } from "@/lib/status";
 import type {
   ClimateYear,
@@ -56,6 +59,7 @@ import {
   useMediaQuery,
   useViewportHeight,
 } from "@/lib/use-media-query";
+import { useFavorites, useStorageAdapter, useStored } from "@/lib/use-stored";
 import { cn, fmt, PANEL, SHELL_BAR } from "@/lib/utils";
 
 interface Props {
@@ -89,62 +93,12 @@ const GAP = 12;
 const SIDEBAR_W = { lg: 384, xl: 416 };
 /** The detail panel grows with the viewport; the map keeps the larger half. */
 const DETAIL_W = { lg: 352, xl: 400 };
-/**
- * The two bottom sheets on phones, and where each rests.
- *
- * Two drawers again, but not the two it started with. The first version kept
- * the list drawer on screen *always*, resting on a peek row – so a detail
- * always had a second, useless drawer behind it, and the map was never free of
- * furniture. Collapsing both into one sheet fixed the overlap and lost the
- * separation. This keeps both: neither drawer exists until it is asked for.
- *
- * No drawer covers the map at rest. The season bar's "Liste" button opens the
- * list; the list is dismissed by a swipe and is gone again. A selection opens
- * the detail drawer over whatever is there – over the list when the tap came
- * from a row, over the bare map when it came from the map itself – and
- * dismissing it uncovers exactly what was underneath. That is the model the
- * two drawers were always trying to express, and it only works because the
- * one behind is there by choice.
- *
- * A detail opens at least as high as the list it covers, so the list's swipe
- * handle never peeks out above it and leaves two of them on screen.
- */
-const LIST_SNAPS = [0.5, 0.92] as const;
-const DETAIL_SNAPS = [0.55, 0.92] as const;
-const [LIST_HALF, LIST_FULL] = LIST_SNAPS;
-const [DETAIL_HALF, DETAIL_FULL] = DETAIL_SNAPS;
 
 /**
- * What is selected, and what the detail panel keeps showing while it leaves –
- * two values that only ever change together, so they change in one move.
- *
- * The panel opens with the tap, not with the camera's arrival. Selecting
- * something is an answer about that thing, and the map's flight is the slower,
- * secondary half of it: the panel, the map's layers and feature state, the
- * highlighted row and the URL hash all follow `at` in the same frame, and the
- * camera sets off once the panel is on screen (`SELECT_DELAY` in
- * `pass-map.tsx`). That order is what keeps the two out of each other's
- * frames – drawing the panel *into* a flight cost that flight about a third of
- * its frame rate on a phone-sized viewport – and it is the honest one: the
- * expensive thing is what was asked for, the flight is not.
+ * The composition: everything the explorer decides is `reduce` in
+ * `lib/app-state.ts`, fed by the hash and the storage adapters; what is left
+ * here is the layout, the rows and the wiring of `dispatch` into the panels.
  */
-interface SelectionState {
-  at: Selection | null;
-  /**
-   * What the sheet keeps showing while it slides away; without it the sheet
-   * would empty out the moment the selection is cleared.
-   */
-  last: Selection | null;
-}
-
-const NO_SELECTION: SelectionState = { at: null, last: null };
-
-/** The action *is* the next selection; `null` closes. */
-const selectionState = (
-  s: SelectionState,
-  sel: Selection | null,
-): SelectionState => ({ at: sel, last: sel ?? s.last });
-
 export const Explorer = ({
   passes,
   tours,
@@ -159,143 +113,35 @@ export const Explorer = ({
   defaultPeriod,
 }: Props) => {
   const signals: Signals = { climate, valleys };
-  const [filters, setFilters] = useState<Filters>({
-    ...DEFAULT_FILTERS,
-    period: defaultPeriod,
-  });
-  const [current, dispatch] = useReducer(selectionState, NO_SELECTION);
-  const selection = current.at;
-  const [view, setView] = useState<MapView>(DEFAULT_VIEW);
-  const [showPasses, setShowPasses] = useStored("alpenpaesse:showPasses", true);
-  const [showTowns, setShowTowns] = useStored("alpenpaesse:showTowns", true);
-  const [hiddenTours, setHiddenTours] = useStored<string[]>(
-    "alpenpaesse:hiddenTours",
-    NO_SLUGS,
-  );
-  // Which of the three lists is on screen. A preference like the sidebar's
-  // own fold, so coming back lands where the last visit left off.
-  const [tab, setTab] = useStored<EntityKind>("alpenpaesse:tab", "pass");
-  const [sidebarOpen, setSidebarOpen] = useStored("alpenpaesse:sidebar", true);
-  // The list drawer exists only while it is wanted; the detail drawer only
-  // while something is selected. At rest the map carries nothing but the
-  // floating controls.
-  const [listOpen, setListOpen] = useState(false);
-  // Whether the filter panel inside the list is unfolded. It lives here rather
-  // than in the sidebar because the phone's "Filter" button opens the list and
-  // the panel in one press.
-  const [filtersOpen, setFiltersOpen] = useState<boolean | null>(null);
-  const [listSnap, setListSnap] = useState<number>(LIST_HALF);
-  /**
-   * Whether the detail drawer belongs *inside* the list drawer – which is how
-   * Base UI is told to stack the two, the list scaling back and peeking above
-   * the detail in front of it.
-   *
-   * It is decided when the selection is made and then left alone: what is
-   * underneath a detail is where it was opened from, and that does not change
-   * while it is open. Moving a mounted drawer from one tree to the other would
-   * remount it anyway.
-   */
-  const [detailNested, setDetailNested] = useState(false);
-  const [detailSnap, setDetailSnap] = useState<number>(DETAIL_HALF);
-  /**
-   * Where the list drawer rests, for `select` to read without depending on it.
-   *
-   * `select` is handed to the sidebar, the map and the panel, so a new one
-   * rebuilds the list it is passed to – and a selection is the one thing that
-   * has to be cheap. Closed over as state, every snap point the drawer passes
-   * through made a new `select`, and dragging the sheet rebuilt all 201 road
-   * rows behind it for a number nothing in the list was reading – measured at
-   * ~50 ms of script per snap change more than the same drag over the 9 tours.
-   * A ref written after the commit says the same thing without being reactive.
-   */
-  const listRest = useRef<{ open: boolean; snap: number }>({
-    open: false,
-    snap: LIST_HALF,
-  });
-  const [scalesOpen, setScalesOpen] = useState(false);
-  // Where the elevation-profile cursor sits on the road, and a fly-to asked
-  // for by a click on it. Both live here because the map draws them and the
-  // detail panel produces them.
-  const [profileCursor, setProfileCursor] = useState<LatLon | null>(null);
-  const [profileZoom, setProfileZoom] = useState<LatLon | null>(null);
-  /**
-   * What the pointer is over – wherever the pointer happens to be. The list
-   * and the map are two halves of one screen showing the same 258 entities,
-   * and until now neither knew what the other was pointing at: a row did
-   * nothing to the map and a mark did nothing to the list. One piece of state
-   * shared by both is the whole fix; it deliberately lives *next to* the
-   * selection rather than inside it, because hovering must never move the
-   * camera, write the hash or open a panel.
-   *
-   * It is not persisted and not in the hash: it describes a pointer, and a
-   * pointer is not part of a shared link.
-   */
-  const [hovered, setHovered] = useState<Selection | null>(null);
-  const { isFavorite, toggle: toggleFavorite } = useFavorites();
-  const [, setStoredPeriod] = useStoredPeriod();
   const isMobile = useMediaQuery(MOBILE_QUERY);
+  const env: Env = { mobile: isMobile, tours: tours.map((t) => t.slug) };
+  const [state, dispatch] = useReducer(
+    (s: AppState, a: Action) => reduce(s, a, env),
+    { defaultPeriod },
+    initialState,
+  );
+  useHashAdapter(state, dispatch);
+  useStorageAdapter(state);
+  const { filters, hovered, selection, sheet, shown, tab } = state;
+
+  const [sidebarOpen, setSidebarOpen] = useStored("alpenpaesse:sidebar", true);
+  const [scalesOpen, setScalesOpen] = useState(false);
+  // A fly-to asked for by a click on the elevation profile: the panel produces
+  // it, the map consumes it, and it is not state anybody else reads.
+  const [profileZoom, setProfileZoom] = useState<LatLon | null>(null);
+  const { isFavorite, toggle: toggleFavorite } = useFavorites();
   const isXl = useMediaQuery("(width >= 80rem)");
   const viewportHeight = useViewportHeight();
   const [headerRef, headerHeight] = useHeight();
   const [barRef, barHeight] = useHeight();
-  // Nothing is written to the hash before it has been read once; otherwise the
-  // first commit would overwrite a shared link with the defaults.
-  const [hashApplied, setHashApplied] = useState(false);
-  // Camera from a hash pasted into an open page; the map applies it once.
-  const [requestedView, setRequestedView] = useState<MapView | null>(null);
   const sidebarRoot = useRef<HTMLDivElement>(null);
 
-  // Initial state from the URL hash (shareable view). Deliberately in an effect:
-  // there is no hash during the server render, and reading it in the first
-  // render would cause a hydration mismatch. The same listener applies a hash
-  // pasted into the address bar of an already open page (a same-document
-  // navigation, which never remounts); the hash is authoritative then.
-  useEffect(() => {
-    const apply = () => {
-      const h = readHash();
-      const hashView = { ...DEFAULT_VIEW, ...defined(h.view) };
-      // Precedence: a shared link wins, then the visitor's own last choice,
-      // then today's half-month from the server.
-      const period = resolvePeriod(
-        h.filters.period,
-        readStoredPeriod(),
-        defaultPeriod,
-      );
-      setFilters({ ...DEFAULT_FILTERS, ...defined(h.filters), period });
-      setView(hashView);
-      if (h.view.lat !== undefined || h.view.zoom !== undefined)
-        setRequestedView(hashView);
-      dispatch(h.selection);
-      if (h.selection) {
-        if (h.selection.kind === "pass") setShowPasses(true);
-        if (h.selection.kind === "tour")
-          setHiddenTours((t) => t.filter((s) => s !== h.selection!.slug));
-        if (h.selection.kind === "town") setShowTowns(true);
-      }
-      setHashApplied(true);
-    };
-    apply();
-    window.addEventListener("hashchange", apply);
-    return () => window.removeEventListener("hashchange", apply);
-    // Intentional: the stored-state setters are stable.
-    // oxlint-disable-next-line react/exhaustive-deps
-  }, []);
-
-  useEffect(() => {
-    if (hashApplied) writeHash(filters, selection, view);
-  }, [hashApplied, filters, selection, view]);
-
   const passIndex = indexBySlug(passes);
-  const passRows = buildPassRows(passes, years, filters, isFavorite, signals);
-  const tourRows = buildTourRows(
-    tours,
-    passIndex,
-    years,
-    filters,
-    isFavorite,
-    signals,
-  );
-  const townRows = buildTownRows(towns, filters, isFavorite);
+  const rows = {
+    pass: buildPassRows(passes, years, filters, isFavorite, signals),
+    tour: buildTourRows(tours, passIndex, years, filters, isFavorite, signals),
+    town: buildTownRows(towns, filters, isFavorite),
+  };
   /**
    * The number on every filter chip. The patch both applies the option and
    * lifts its own group's filter, which is what makes the count answer "what
@@ -310,73 +156,39 @@ export const Explorer = ({
    * at the bottom can never disagree.
    */
   const band = seasonBand(passes, years, filters, isFavorite, signals);
-  const currentBar = band.bars[periodIndex(filters.period)]!;
+  const bar = currentBar(band, filters.period);
 
-  const mapPasses: MapPass[] = passRows.map(({ pass, status, favorite }) => ({
+  const mapPasses: MapPass[] = rows.pass.map(({ pass, status, favorite }) => ({
     ...pass,
     favorite,
     status,
   }));
   // What the list shows for a kind is what the map shows for that kind; the
   // visibility switches only add a layer toggle on top.
-  const mapTours = tourRows.map(({ tour: t, status }) => ({
+  const mapTours = rows.tour.map(({ tour: t, status }) => ({
     ...t,
     status,
-    visible: !hiddenTours.includes(t.slug),
+    visible: isShown(shown, "tour", t.slug),
   }));
-  const mapTowns = townRows.map(({ town, favorite }) => ({
+  const mapTowns = rows.town.map(({ town, favorite }) => ({
     ...town,
     favorite,
   }));
 
-  useEffect(() => {
-    listRest.current = { open: listOpen, snap: listSnap };
-  }, [listOpen, listSnap]);
-
-  /**
-   * Selecting something makes it visible, brings its detail up in the same
-   * frame and hands the map a target the camera sets off for once the panel
-   * has drawn (`selectionState` above).
-   */
-  const select = (sel: Selection) => {
-    dispatch(sel);
-    setProfileCursor(null);
-    setHovered(null);
-    // The lists are one at a time now, so selecting from the map has to bring
-    // the right one forward – otherwise the highlighted row is behind a tab.
-    setTab(sel.kind);
-    if (sel.kind === "pass") setShowPasses(true);
-    if (sel.kind === "tour")
-      setHiddenTours((h) => h.filter((s) => s !== sel.slug));
-    if (sel.kind === "town") setShowTowns(true);
-    // The detail drawer comes up over whatever is there: stacked on the list
-    // when the tap came from a row, alone over the map when it came from the
-    // map itself – and at least as high as the list it covers, so the list's
-    // handle never peeks out above it. Both read the drawer's resting place
-    // from the ref rather than from state, which is what keeps `select` the
-    // same function across a drag (see `listRest`).
-    if (isMobile) {
-      setDetailSnap(
-        listRest.current.open && listRest.current.snap >= LIST_FULL
-          ? DETAIL_FULL
-          : DETAIL_HALF,
-      );
-      setDetailNested(listRest.current.open);
-    }
-  };
+  const select = (sel: Selection) =>
+    dispatch({ selection: sel, type: "select" });
+  const hover = (sel: Selection | null) =>
+    dispatch({ selection: sel, type: "hover" });
 
   /** Back to the list; focus returns to the row the detail came from. */
   const back = () => {
     const closed = selection;
-    dispatch(null);
-    setProfileCursor(null);
+    dispatch({ type: "back" });
     requestAnimationFrame(() => {
       const root = sidebarRoot.current;
       const row =
         closed &&
-        root?.querySelector<HTMLElement>(
-          `[data-row="${closed.kind}:${closed.slug}"]`,
-        );
+        root?.querySelector<HTMLElement>(`[data-row="${entityKey(closed)}"]`);
       (row ?? root?.querySelector<HTMLElement>("input[type=search]"))?.focus({
         preventScroll: !row,
       });
@@ -398,12 +210,12 @@ export const Explorer = ({
       isFavorite={isFavorite}
       onToggleFavorite={toggleFavorite}
       hovered={hovered}
-      onHover={setHovered}
-      onProfileCursor={setProfileCursor}
+      onHover={hover}
+      onProfileCursor={(at) => dispatch({ at, type: "profileCursor" })}
       onProfileZoom={setProfileZoom}
       onSelect={select}
       onBack={back}
-      backToList={isMobile && listOpen}
+      backToList={isMobile && sheet.list.open}
     />
   );
 
@@ -415,8 +227,8 @@ export const Explorer = ({
    * swipe down on the front one uncovers it. That is exactly what opening a
    * detail from a row means – and what a detail opened from the map must not
    * claim, because there is nothing behind it to go back to. So which parent
-   * it is rendered under is the whole difference, and `detailNested` is the
-   * answer decided at the tap.
+   * it is rendered under is the whole difference, and `sheet.detail.nested`
+   * is the answer decided at the tap.
    */
   const detailSheet = (
     <MobileSheet
@@ -424,12 +236,12 @@ export const Explorer = ({
       open={selection !== null}
       onClose={back}
       snapPoints={DETAIL_SNAPS}
-      snap={detailSnap}
-      onSnapChange={setDetailSnap}
+      snap={sheet.detail.snap}
+      onSnapChange={(snap) => dispatch({ sheet: "detail", snap, type: "snap" })}
     >
       {/* `last` is what the drawer keeps showing while it slides away, once
           there is nothing to show any more. */}
-      {(selection ?? current.last) && detailFor((selection ?? current.last)!)}
+      {(selection ?? state.last) && detailFor((selection ?? state.last)!)}
     </MobileSheet>
   );
 
@@ -437,29 +249,18 @@ export const Explorer = ({
     <Sidebar
       variant={variant}
       filters={filters}
-      setFilters={setFilters}
-      passRows={passRows}
-      tourRows={tourRows}
-      townRows={townRows}
+      rows={rows}
       totals={{ pass: passes.length, tour: tours.length, town: towns.length }}
       countWith={countWith}
       tours={tours}
-      hiddenTours={hiddenTours}
-      setHiddenTours={setHiddenTours}
-      showPasses={showPasses}
-      setShowPasses={setShowPasses}
-      showTowns={showTowns}
-      setShowTowns={setShowTowns}
+      shown={shown}
       tab={tab}
-      setTab={setTab}
-      onToggleFavorite={toggleFavorite}
-      onSelect={select}
       selection={selection}
       hovered={hovered}
-      onHover={setHovered}
+      dispatch={dispatch}
+      onToggleFavorite={toggleFavorite}
       onOpenScales={() => setScalesOpen(true)}
-      filtersOpen={filtersOpen}
-      setFiltersOpen={setFiltersOpen}
+      filtersOpen={sheet.filters}
     />
   );
 
@@ -475,7 +276,7 @@ export const Explorer = ({
   // (`pass-map.tsx`, "Reserve space").
   const sheetPx = isMobile
     ? sheetCover(
-        selection ? detailSnap : listOpen ? listSnap : 0,
+        selection ? sheet.detail.snap : sheet.list.open ? sheet.list.snap : 0,
         viewportHeight,
       )
     : 0;
@@ -499,14 +300,6 @@ export const Explorer = ({
   const shell = shellEdge(isMobile, barHeight, insetLeft, GAP);
   const insetBottom = Math.max(sheetPx, shell.cover);
 
-  const setPeriod = (p: Period) => {
-    setFilters((f) => ({ ...f, period: p }));
-    // Only the control writes the preference; applying a hash never does.
-    setStoredPeriod(p);
-  };
-
-  const listCount = { pass: passRows, tour: tourRows, town: townRows }[tab]
-    .length;
   const activeFilters = filterCount(filters);
 
   /*
@@ -541,16 +334,16 @@ export const Explorer = ({
             towns={mapTowns}
             townReach={townReach}
             assets={assets}
-            showPasses={showPasses}
-            showTowns={showTowns}
+            showPasses={shown.passes}
+            showTowns={shown.towns}
             selection={selection}
             hovered={hovered}
-            onHover={setHovered}
+            onHover={hover}
             onSelect={select}
-            onViewChange={setView}
-            profileCursor={profileCursor}
+            onViewChange={(view) => dispatch({ type: "view", view })}
+            profileCursor={state.profileCursor}
             profileZoom={profileZoom}
-            requestedView={requestedView}
+            requestedView={state.requestedView}
             insetLeft={insetLeft}
             insetBottom={insetBottom}
             insetTop={insetTop}
@@ -559,7 +352,7 @@ export const Explorer = ({
 
         <div ref={headerRef} className="relative z-20 shrink-0">
           <AppHeader
-            bar={currentBar}
+            bar={bar}
             sidebarOpen={isMobile ? undefined : sidebarOpen}
             onToggleSidebar={
               isMobile ? undefined : () => setSidebarOpen(!sidebarOpen)
@@ -585,7 +378,7 @@ export const Explorer = ({
 
           {!isMobile && selection && (
             <section
-              key={`${selection.kind}:${selection.slug}`}
+              key={entityKey(selection)}
               aria-label="Details"
               style={{ left: detailLeft }}
               className={cn(
@@ -621,28 +414,26 @@ export const Explorer = ({
           >
             <SeasonBand
               band={band}
-              value={filters.period}
-              today={defaultPeriod}
-              onChange={setPeriod}
+              bar={bar}
+              today={state.today}
+              onChange={(period) => dispatch({ period, type: "period" })}
               legend={!isMobile}
             />
             <div className="flex gap-2 lg:hidden">
               <Button
                 className="flex-1"
-                onClick={() => {
-                  setFiltersOpen(false);
-                  setListOpen(true);
-                }}
+                onClick={() =>
+                  dispatch({ filters: false, open: true, type: "list" })
+                }
               >
-                {KIND_LABEL[tab]} ({fmt(listCount)})
+                {KIND_LABEL[tab]} ({fmt(rows[tab].length)})
               </Button>
               <Button
                 variant="outline"
                 className="flex-1"
-                onClick={() => {
-                  setFiltersOpen(true);
-                  setListOpen(true);
-                }}
+                onClick={() =>
+                  dispatch({ filters: true, open: true, type: "list" })
+                }
               >
                 Filter
                 {activeFilters > 0 && (
@@ -670,20 +461,22 @@ export const Explorer = ({
           <>
             <MobileSheet
               label="Liste"
-              open={listOpen}
-              onClose={() => setListOpen(false)}
+              open={sheet.list.open}
+              onClose={() => dispatch({ open: false, type: "list" })}
               snapPoints={LIST_SNAPS}
-              snap={listSnap}
-              onSnapChange={setListSnap}
+              snap={sheet.list.snap}
+              onSnapChange={(snap) =>
+                dispatch({ sheet: "list", snap, type: "snap" })
+              }
             >
               <div ref={sidebarRoot} className="flex min-h-0 flex-1 flex-col">
                 {sidebar("sheet")}
               </div>
               {/* Opened from a row, the detail is a drawer *of* this one. */}
-              {detailNested && detailSheet}
+              {sheet.detail.nested && detailSheet}
             </MobileSheet>
             {/* Opened from the map, it stands on its own over the bare map. */}
-            {!detailNested && detailSheet}
+            {!sheet.detail.nested && detailSheet}
           </>
         )}
       </div>

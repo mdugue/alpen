@@ -37,8 +37,8 @@ still: a padding the map has not applied yet cannot move it.
 
 Selecting answers a question about a pass, not about the map, so `DetailPanel`
 gets the selection in the same frame as the map's layers, the highlighted row
-and the hash (`selectionState` in `explorer.tsx`, two values: what is selected
-and what the leaving sheet keeps showing). The flight is the slower half:
+and the hash (`selection` and `last` in `lib/app-state.ts`, two values: what is
+selected and what the leaving sheet keeps showing). The flight is the slower half:
 `pass-map.tsx` leaves the panel `SELECT_DELAY` to draw and then takes
 `SELECT_MS` – longer than the 500 ms it was, because nothing waits behind it
 any more – to get there. It ran the other way round first: the map flew and the

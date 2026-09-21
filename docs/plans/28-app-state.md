@@ -1,6 +1,8 @@
 # 28 · One app state: the reducer and its adapters
 
-**Status:** proposed · **Effort:** M · **Depends on:** 15, 16 (done) ·
+**Status:** in progress (steps 1–3 on branch
+`claude/plan-folder-implementations-nf4lgj`; steps 4 and 5 open) ·
+**Effort:** M · **Depends on:** 15, 16 (done) ·
 **Supersedes:** 18 · **Unblocks:** 29 (the camera reads one selection key
 and one inset), 30 (the scene reads one `shown`), 31 (the panel gets the
 resolved entity), 02 (the router is the second adapter of the same reducer),
@@ -276,3 +278,20 @@ this reducer's transport.
   file passes about 300 lines, split by slice but keep one `reduce`.
 - **Context or props.** Either is fine under React Compiler; the sheet's
   drag frame decides – measure it after the change, one variant per build.
+  Decided in steps 1–3: props, with one `dispatch` handed down.
+- **Where the resolution runs.** The design above says "on the first render,
+  not in an effect"; the implementation resolves in a `useLayoutEffect`
+  (`useHashAdapter`), and the reason is hydration. There is no hash and no
+  storage during the server render, so the client's first render has to start
+  from the same empty inputs – resolving in the `useState` initialiser would
+  make the hydrating markup differ from the server's. A layout effect runs
+  after that render has committed and re-renders synchronously before the
+  browser paints, so the first paint the hydrated page makes already names
+  the stored half-month and the rows are built once for it; the static HTML
+  still shows today's half-month until the script arrives, as a static page
+  must. `initialState` stays pure and is table-tested with real inputs; the
+  page calls it with empty ones.
+- **`entityKey` lives in `lib/route-key.ts`**, not in `lib/app-state.ts`:
+  `next.config.ts` loads `lib/detail-assets.ts` outside the bundler, where a
+  module reaching the `@/` alias cannot be followed, and the detail assets are
+  keyed by it. The dependency-free key module already held the other keys.

@@ -6,7 +6,7 @@ import {
   detailAssets,
 } from "@/lib/detail-assets";
 import type { DetailData } from "@/lib/detail-assets";
-import { photoKey } from "@/lib/photos";
+import { entityKey } from "@/lib/route-key";
 import type {
   Pass,
   Photo,
@@ -67,11 +67,11 @@ describe("detailAssets", () => {
     expect(files[1]?.name).toMatch(/^town-testort\.[0-9a-f]{8}\.json$/u);
     // The count travels with the URL: the panel reserves the carousel's box
     // before the file arrives (see `DetailAsset`).
-    expect(assets[photoKey("pass", "testpass")]).toEqual({
+    expect(assets[entityKey("pass", "testpass")]).toEqual({
       photos: 1,
       url: `/${DETAIL_ASSET_DIR}/${files[0]!.name}`,
     });
-    expect(assets[photoKey("tour", "testrunde")]).toBeUndefined();
+    expect(assets[entityKey("tour", "testrunde")]).toBeUndefined();
   });
 
   test("every written name is one the build script would prune", () => {

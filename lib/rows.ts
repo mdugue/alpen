@@ -452,6 +452,10 @@ export const seasonBand = (
   return { bars, lat: counted ? latSum / counted : null };
 };
 
+/** The bar of the chosen half-month – what the headline and the band's label both read. */
+export const currentBar = (band: SeasonBand, period: Period): SeasonBar =>
+  band.bars[periodIndex(period)]!;
+
 export const PASS_SORT_LABEL: Record<PassSort, string> = {
   beauty: "Schönheit",
   difficulty: "Schwierigkeit",

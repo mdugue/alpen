@@ -43,11 +43,9 @@ import { basesFor, destinationAt } from "@/lib/destination";
 import type { DetailAssets, DetailData } from "@/lib/detail-assets";
 import { haversine, REACH_MAX_KM } from "@/lib/geo";
 import { komootHref, quaeldichHref } from "@/lib/links";
-import { nearbyKey } from "@/lib/nearby";
 import type { NearbyTours } from "@/lib/nearby";
-import { photoKey } from "@/lib/photos";
 import { isTraverse, ROAD_TYPE } from "@/lib/regions";
-import { ascentKey } from "@/lib/route-key";
+import { ascentKey, entityKey } from "@/lib/route-key";
 import {
   cellAt,
   daysOf,
@@ -279,7 +277,7 @@ const Nearby = ({
         .filter((e) => e.d <= REACH_MAX_KM && e.x.slug !== exclude)
         .toSorted((a, b) => a.d - b.d);
   // Tours are lines, so their reach was measured on the server (lib/nearby.ts).
-  const slugs = p.nearbyTours[nearbyKey(p.selection.kind, p.selection.slug)];
+  const slugs = p.nearbyTours[entityKey(p.selection)];
   const nearTours = p.tours.filter((t) => slugs?.includes(t.slug));
   const nearTowns = skipTowns
     ? []
@@ -969,7 +967,7 @@ export const DetailPanel = (props: Props) => {
   // content hash in its name (lib/detail-assets.ts) – so the page does not
   // carry all 201 passes' worth, and looking at the same pass again is free.
   // An entity with neither has no URL and nothing is fetched.
-  const asset = props.detail[photoKey(selection.kind, selection.slug)];
+  const asset = props.detail[entityKey(selection)];
   const { data, loading } = useFetch<DetailData>(asset?.url ?? null);
   const loaded: DetailState = {
     loading,
@@ -1037,7 +1035,7 @@ export const DetailPanel = (props: Props) => {
   const hero =
     (asset?.photos ?? 0) > 0 &&
     (loaded.photos.length === 0 || shown.length > 0);
-  const key = `${selection.kind}:${selection.slug}`;
+  const key = entityKey(selection);
   const scrolled = expanded && pastHead === key;
   /**
    * The control row carries a surface everywhere except on the hero, where the

@@ -3,7 +3,6 @@ import { describe, expect, test } from "bun:test";
 import {
   BLUR_WIDTH,
   PHOTO_WIDTH,
-  photoKey,
   photoSrcSet,
   THUMB_WIDTHS,
   thumbUrl,
@@ -11,12 +10,6 @@ import {
 
 const DIR = "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9c";
 const SRC = `${DIR}/Ospiz_Albulapass.jpg/960px-Ospiz_Albulapass.jpg`;
-
-describe("photoKey", () => {
-  test("is the kind and the slug", () => {
-    expect(photoKey("pass", "stilfser-joch")).toBe("pass:stilfser-joch");
-  });
-});
 
 describe("thumbUrl", () => {
   test("rewrites the width in the last segment only", () => {

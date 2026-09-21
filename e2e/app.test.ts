@@ -783,3 +783,32 @@ test(
     ),
   TIMEOUT,
 );
+
+test(
+  "17 · a stored half-month is what the hydrated page paints",
+  () =>
+    withPage(app, "stored-period", {}, async (page) => {
+      // The preference is written by the period control only; here it is
+      // planted directly and the page opened afresh on top of it.
+      await page.evaluate('localStorage.setItem("alpenpaesse:period", "3")');
+      await page.navigate();
+      await page.waitFor(PASS_ROW);
+      // The static HTML names today's half-month until the script arrives;
+      // `load` runs in a layout effect, so the first paint after hydration
+      // already names the stored one and nothing flips afterwards. The moment
+      // of hydration cannot be caught from outside reliably, so what is
+      // asserted is the settled headline, the band and the hash they wrote.
+      await page.waitForAttribute(SLIDER, "aria-valuetext", /^Anfang März:/u);
+      expect(await page.text("header p")).toMatch(/^Anfang März:/u);
+      expect(await page.hash()).toContain("t=3");
+      // A shared link wins over the preference and leaves it untouched.
+      await page.navigate("#t=7");
+      await page.waitForAttribute(SLIDER, "aria-valuetext", /^Anfang Juli:/u);
+      expect(
+        await page.evaluate<string | null>(
+          'localStorage.getItem("alpenpaesse:period")',
+        ),
+      ).toBe("3");
+    }),
+  TIMEOUT,
+);

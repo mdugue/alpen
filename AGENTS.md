@@ -50,7 +50,7 @@ friends do that better and the app links out to them.
 | Regions and countries (vocabulary)              | `lib/regions.ts`                                                                                                                                                                                                                                                                                           |
 | Data access (cached, validated)                 | `lib/data.ts`                                                                                                                                                                                                                                                                                              |
 | Profile sampling and derived gradients          | `lib/profile.ts`                                                                                                                                                                                                                                                                                           |
-| Filter, selection and URL state (hash keys)     | `lib/app-state.ts`, `components/explorer.tsx`                                                                                                                                                                                                                                                              |
+| Filter, selection and URL state (hash keys)     | `lib/app-state.ts` (`reduce`, `initialState`, `Shown`), `entityKey` in `lib/route-key.ts`, the hash keys in `lib/hash.ts`, the adapters `lib/hash-adapter.ts` (`useHashAdapter`) and `lib/use-stored.ts` (`useStorageAdapter`, `readStoredState`); dispatched from `components/explorer.tsx`               |
 | Road types and labels (vocabulary)              | `lib/regions.ts` (`ROAD_TYPES`, `ROAD_TAGS`, `isTraverse`, `hasRoadSummit`)                                                                                                                                                                                                                                |
 | Tag labels: vocabulary, icons, badges           | `lib/regions.ts` (`TOWN_TAGS`, `ROAD_TAGS`, `TAG_LABEL`), `lib/tag-icons.ts`, `components/tags.tsx`                                                                                                                                                                                                        |
 | Search normalisation and haystacks              | `lib/search.ts`                                                                                                                                                                                                                                                                                            |
@@ -140,6 +140,11 @@ The component layer, the layout, the sidebar, the detail panel.
   from a row stacks on the list, and its content scrolls only once it is all
   the way up.
   → [why](docs/ui-conventions.md#the-map-is-the-page-and-the-shell-is-over-it)
+- **One reducer, two adapters.** Everything the explorer decides is one
+  `reduce` in `lib/app-state.ts`; selecting something is one case with every
+  consequence, and the hash and the storage feed `load` and subscribe to the
+  state instead of being written to by hand.
+  → [why](docs/ui-conventions.md#one-reducer-two-adapters)
 - **Dark mode follows the OS, nothing else.** `prefers-color-scheme` only – no
   toggle, no `next-themes`.
   → [why](docs/ui-conventions.md#dark-mode-follows-the-os-nothing-else)

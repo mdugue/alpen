@@ -207,9 +207,9 @@ stacks the two – the one behind scales back, dims and peeks above the one in
 front – which is exactly what going back to the list means. A detail opened from
 the map must not claim that, because there is nothing behind it, so the same
 `detailSheet` element is rendered under one of two parents, decided at the tap
-(`detailNested` in `explorer.tsx`) and then left alone: what is underneath a
-detail does not change while it is open, and moving a mounted drawer between
-trees would remount it anyway.
+(`sheet.detail.nested`, set by the `select` case of `reduce`) and then left
+alone: what is underneath a detail does not change while it is open, and moving
+a mounted drawer between trees would remount it anyway.
 
 **The content does not scroll until the sheet is at its topmost snap point**
 (`useSheetExpanded`, used by the detail panel's scroller and the sidebar's list
@@ -258,6 +258,55 @@ stateDiagram-v2
 
 Whichever drawer is in front feeds MapLibre its height as bottom padding; with
 neither open that is the season bar's measured height.
+
+### One reducer, two adapters
+
+Everything the explorer decides – the selection and its consequences, the tab,
+the hover, the half-month, the filters, what the map shows, the phone's sheet
+snaps – is one pure reducer, `reduce(state, action, env)` in
+`lib/app-state.ts`, with table tests. `Explorer` holds it in a `useReducer`
+and hands the panels the values they read plus `dispatch`; it derives nothing
+a second time.
+
+```mermaid
+flowchart LR
+  H["hash adapter<br/>parseHash → load · state → serializeHash"] --> A
+  ST["storage adapter<br/>readStoredState → load · state → keys"] --> A
+  UI["rows · map · panel · sheet<br/>dispatch"] --> A
+  A["lib/app-state.ts<br/>reduce(state, action, env)<br/>selection · last · tab · hovered · cursor<br/>filters incl. period · shown · sheet"]
+  A --> SB["Sidebar reads shown, rows"]
+  A --> PM["PassMap reads key, shown"]
+  A --> DP["panel gets the selection"]
+  A --> SBd["SeasonBand gets the current bar"]
+```
+
+Two rules follow from the picture. **Selecting something is one reducer
+case.** `select` sets the selection and what the leaving sheet keeps showing,
+brings the kind's tab forward, clears the hover and the profile cursor,
+reveals the kind on the map and, on a phone, picks the detail drawer's snap
+and nesting from where the list drawer rests. A tap on a row, a tap on the
+map and a `#tour=…` pasted into the address bar all go through it – which is
+what it took for a pasted hash to bring the right tab forward, and for Escape
+to stop leaving the last hovered entity ringed: the rule used to be written
+three times, and the copies had drifted apart.
+
+**The hash and the storage are adapters.** Neither is read during a render
+and neither is written by a control. `useHashAdapter` (`lib/hash-adapter.ts`)
+turns the hash and the stored slices into one `load` action in a layout
+effect after hydration – the server and the hydrating client both start from
+`initialState` with empty inputs, so the markup matches, and the layout
+effect re-renders before the browser paints, so the first hydrated paint
+already carries the shared link and the visitor's own half-month – and again
+on every `hashchange`; afterwards it serialises the state back into the hash.
+`useStorageAdapter` (`lib/use-stored.ts`) writes the persisted slices – the
+switches, the tab, the visitor's own period – whenever they change. Both wait
+for `state.loaded`: the first commit holds the defaults, and writing those
+would overwrite a shared link or the last visit's settings before they have
+been read. What is shown on the map is one value, `Shown`, read through
+`isShown` and `shownTours` and reconciled against the data on load, so a
+tour that left `data/tours.json` cannot keep the master switch reading "off".
+An entity's identity is `entityKey` (`lib/route-key.ts`, the dependency-free
+key module `next.config.ts` can load) and nothing else spells it.
 
 ### Dark mode follows the OS, nothing else
 

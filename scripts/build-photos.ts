@@ -37,13 +37,8 @@
 import passes from "../data/passes.json" with { type: "json" };
 import tours from "../data/tours.json" with { type: "json" };
 import towns from "../data/towns.json" with { type: "json" };
-import {
-  BLUR_WIDTH,
-  PHOTO_LIMIT,
-  PHOTO_WIDTH,
-  photoKey,
-  thumbUrl,
-} from "../lib/photos";
+import { BLUR_WIDTH, PHOTO_LIMIT, PHOTO_WIDTH, thumbUrl } from "../lib/photos";
+import { entityKey } from "../lib/route-key";
 import { FILES } from "../lib/schema";
 import type { Photo, Photos } from "../lib/types";
 import { blurUri, blurWidth } from "./lib/blur";
@@ -339,13 +334,13 @@ const main = async () => {
     ? []
     : places.filter(
         (p) =>
-          wanted(p.slug) && (REFRESH || !photos.has(photoKey(p.kind, p.slug))),
+          wanted(p.slug) && (REFRESH || !photos.has(entityKey(p.kind, p.slug))),
       );
 
   let done = 0;
   let stopped: string | null = null;
   for (const place of todo) {
-    const key = photoKey(place.kind, place.slug);
+    const key = entityKey(place.kind, place.slug);
     let found: Photo[];
     try {
       found = await forPlace(place, RADIUS_M[place.kind], place.name);
@@ -368,10 +363,10 @@ const main = async () => {
   for (const tour of tours) {
     if (!wanted(tour.slug)) continue;
     const borrowed = tour.passes
-      .map((slug) => photos.get(photoKey("pass", slug))?.[0])
+      .map((slug) => photos.get(entityKey("pass", slug))?.[0])
       .filter((p): p is Photo => Boolean(p))
       .slice(0, PHOTO_LIMIT);
-    const key = photoKey("tour", tour.slug);
+    const key = entityKey("tour", tour.slug);
     if (borrowed.length > 0) photos.set(key, borrowed);
     else photos.delete(key);
   }

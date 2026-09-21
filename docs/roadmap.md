@@ -80,7 +80,8 @@ first (below); the plan comes after, and inherits the numbers.
 Design hypotheses, held until the spike confirms or refutes them:
 
 1. **The answer is an app state, not a text.** Filters, selection and camera
-   are already one serialisable object (`HashState` in `lib/app-state.ts`).
+   are already one serialisable object (`HashState` in `lib/hash.ts`, the
+   `load` action of `lib/app-state.ts`).
    An answer is a sentence plus a list of such states, shown as chips; a
    chip applied is a shareable link. The text explains, the app shows.
 2. **The model translates, the app judges.** The model turns "erste
@@ -187,7 +188,7 @@ promises honesty.
 
 GPX/FIT upload or Strava integration, matching against pass coordinates,
 checkmarks in the lists, filter "still open and not yet ridden". The favorites
-infrastructure in `lib/app-state.ts` is the template. Fits the destination
+infrastructure in `lib/use-stored.ts` is the template. Fits the destination
 goal ("where are the passes we have not done yet").
 
 ## 8. More summer signals

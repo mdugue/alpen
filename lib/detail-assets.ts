@@ -16,8 +16,7 @@ import type {
 // themselves free of them may be imported here – which is why the profile
 // derivation both hash sides share lives in `lib/profile.ts` (it reaches
 // `lib/geo.ts`) and not in this file.
-import { photoKey } from "./photos";
-import { ascentKey } from "./route-key";
+import { ascentKey, entityKey } from "./route-key";
 
 /**
  * What the detail panel needs about *one* entity, as a static file per entity –
@@ -72,7 +71,7 @@ export interface DetailAsset {
 }
 
 /**
- * Per `${kind}:${slug}` – the key `photoKey` and `nearbyKey` already use – the
+ * Per `entityKey` – the key `photos.json` and `nearbyTours` already use – the
  * entity's detail file. An entity with nothing to show is absent rather than
  * pointing at an empty file, so the panel makes no request for it.
  */
@@ -138,7 +137,7 @@ export const detailAssets = (
     const f = file(kind, slug, data);
     if (!f) return;
     files.push(f);
-    assets[photoKey(kind, slug)] = {
+    assets[entityKey(kind, slug)] = {
       photos: data.photos.length,
       url: `/${DETAIL_ASSET_DIR}/${f.name}`,
     };
@@ -152,17 +151,17 @@ export const detailAssets = (
       if (profile) own[key] = profile;
     }
     add("pass", pass.slug, {
-      photos: photos[photoKey("pass", pass.slug)] ?? [],
+      photos: photos[entityKey("pass", pass.slug)] ?? [],
       ...(Object.keys(own).length ? { profiles: own } : {}),
     });
   }
   for (const tour of tours)
     add("tour", tour.slug, {
-      photos: photos[photoKey("tour", tour.slug)] ?? [],
+      photos: photos[entityKey("tour", tour.slug)] ?? [],
     });
   for (const town of towns)
     add("town", town.slug, {
-      photos: photos[photoKey("town", town.slug)] ?? [],
+      photos: photos[entityKey("town", town.slug)] ?? [],
     });
 
   return { assets, files };

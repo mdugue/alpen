@@ -7,6 +7,7 @@ import {
   buildPassRows,
   buildTourRows,
   buildTownRows,
+  currentBar,
   facetCount,
   rowBlocks,
   ROWS_PER_BLOCK,
@@ -646,6 +647,12 @@ describe("seasonBand", () => {
       never,
     );
     for (const b of bars) expect(barTotal(b)).toBe(1);
+  });
+
+  test("currentBar is the column of the chosen half-month", () => {
+    const band = seasonBand(passes, years, filters(), never);
+    expect(currentBar(band, 4)).toBe(band.bars[periodIndexOf(4)]!);
+    expect(currentBar(band, 12.5).period).toBe(12.5);
   });
 
   test("no matching pass leaves 24 empty bars rather than nothing", () => {

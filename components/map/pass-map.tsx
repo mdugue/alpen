@@ -43,7 +43,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { DEFAULT_VIEW, readHash, useStored } from "@/lib/app-state";
+import { DEFAULT_VIEW } from "@/lib/app-state";
 import type { MapView, Selection } from "@/lib/app-state";
 import {
   BASEMAP_ID,
@@ -53,6 +53,7 @@ import {
   FONT_BOLD,
   GLYPHS,
 } from "@/lib/basemap";
+import { readHash } from "@/lib/hash-adapter";
 import type { Bounds, MapAssets } from "@/lib/map-assets";
 import { fitInset, NO_INSET, sameInset, toInset } from "@/lib/map-camera";
 import type { Inset } from "@/lib/map-camera";
@@ -61,11 +62,12 @@ import { PALETTE } from "@/lib/palette";
 import type { Scheme } from "@/lib/palette";
 import { prominenceFilter, prominenceWord } from "@/lib/prominence";
 import { roadTypeWord, TAG_LABEL } from "@/lib/regions";
-import { ascentKey } from "@/lib/route-key";
+import { ascentKey, entityKey } from "@/lib/route-key";
 import { STATUS_ORDER } from "@/lib/status";
 import { tagIconSvg } from "@/lib/tag-icons";
 import type { LatLon, Pass, Status, Tag, Tour, Town } from "@/lib/types";
 import { MOBILE_QUERY } from "@/lib/use-media-query";
+import { useStored } from "@/lib/use-stored";
 import { cn, fmtUnit, MAP_CLUSTER, MAP_TOOL } from "@/lib/utils";
 
 export interface MapPass extends Pass {
@@ -1067,7 +1069,7 @@ export const PassMap = ({
    */
   const flying = useRef(false);
   /** One string per selected entity: what the camera effects change on. */
-  const selKey = selection && `${selection.kind}:${selection.slug}`;
+  const selKey = selection && entityKey(selection);
   const [base, setBase] = useStored("alpenpaesse:base", BASEMAP_ID);
   // The base the map currently shows. The map is built during the hydration
   // render, where a stored value is not known yet (useSyncExternalStore hands
@@ -1351,7 +1353,7 @@ export const PassMap = ({
         hoverKey = null;
         return;
       }
-      const key = `${hit.kind}:${hit.slug}`;
+      const key = entityKey(hit.kind, hit.slug);
       if (key !== hoverKey) {
         hoverKey = key;
         // The list highlights the same row; one piece of state, two halves of
@@ -1715,7 +1717,7 @@ export const PassMap = ({
     const m = map.current;
     if (!m || !ready) return;
     const was = painted.current;
-    const key = hovered ? `${hovered.kind}:${hovered.slug}` : null;
+    const key = hovered ? entityKey(hovered) : null;
     if (was === key) return;
     painted.current = key;
 

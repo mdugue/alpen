@@ -1,6 +1,5 @@
-import type { EntityKind } from "@/lib/app-state";
 import { convexHull, expandRing, haversine, NEARBY_RADIUS_KM } from "@/lib/geo";
-import { tourKey } from "@/lib/route-key";
+import { entityKey, tourKey } from "@/lib/route-key";
 import type { LatLon, Pass, RouteGeometry, Tour, Town } from "@/lib/types";
 
 /**
@@ -11,12 +10,10 @@ import type { LatLon, Pass, RouteGeometry, Tour, Town } from "@/lib/types";
  * haversines are nothing – it is the walk along 60 000 route coordinates
  * that had to go.
  *
- * Key: `pass:<slug>`, `tour:<slug>` (measured from the tour's first waypoint,
- * as the panel does) or `town:<slug>`; value: tour slugs in `tours.json` order.
+ * Key: `entityKey` (a tour is measured from its first waypoint, as the panel
+ * does); value: tour slugs in `tours.json` order.
  */
 export type NearbyTours = Record<string, string[]>;
-
-export const nearbyKey = (kind: EntityKind, slug: string) => `${kind}:${slug}`;
 
 /** A tour without a routed geometry is judged by its waypoints, as before. */
 const tourLine = (
@@ -39,9 +36,9 @@ export const nearbyTours = (
   const near = (at: LatLon) =>
     lines.filter(([, line]) => within(line, at, radiusKm)).map(([s]) => s);
   const out: NearbyTours = {};
-  for (const p of passes) out[nearbyKey("pass", p.slug)] = near(p);
-  for (const t of tours) out[nearbyKey("tour", t.slug)] = near(t.waypoints[0]!);
-  for (const t of towns) out[nearbyKey("town", t.slug)] = near(t);
+  for (const p of passes) out[entityKey("pass", p.slug)] = near(p);
+  for (const t of tours) out[entityKey("tour", t.slug)] = near(t.waypoints[0]!);
+  for (const t of towns) out[entityKey("town", t.slug)] = near(t);
   return out;
 };
 

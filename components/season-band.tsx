@@ -144,14 +144,15 @@ export const SeasonBandLegend = ({ className }: { className?: string }) => (
 
 export const SeasonBand = ({
   band,
-  value,
+  bar,
   onChange,
   today,
   legend = false,
   className,
 }: {
   band: Band;
-  value: Period;
+  /** The chosen half-month's column (`currentBar`), the one the headline reads too. */
+  bar: SeasonBar;
   onChange: (p: Period) => void;
   /** Today's half-month, marked on the rail and offered as the way back. */
   today?: Period;
@@ -160,9 +161,9 @@ export const SeasonBand = ({
   className?: string;
 }) => {
   const rail = useRef<HTMLDivElement>(null);
+  const value = bar.period;
   const index = periodIndex(value);
   const todayIndex = today === undefined ? -1 : periodIndex(today);
-  const bar = band.bars[index]!;
   const temps = band.bars.map((b) => b.tmax).filter((t) => t !== null);
   const lo = temps.length ? Math.min(...temps) : 0;
   const hi = temps.length ? Math.max(...temps) : 0;

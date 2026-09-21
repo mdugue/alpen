@@ -13,7 +13,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { NO_SECTIONS, SECTIONS_KEY, useStored } from "@/lib/app-state";
+import { NO_SECTIONS, SECTIONS_KEY, useStored } from "@/lib/use-stored";
 
 /**
  * The one heading level inside the detail panel: small caps, a hairline, and

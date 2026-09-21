@@ -340,7 +340,7 @@ export const Photo = z.strictObject({
   width: z.int().positive(),
 });
 
-/** Key: `pass:<slug>`, `tour:<slug>` or `town:<slug>`, see `photoKey`. */
+/** Key: `pass:<slug>`, `tour:<slug>` or `town:<slug>`, see `entityKey` in `lib/route-key.ts`. */
 export const Photos = z.record(z.string(), z.array(Photo));
 
 // ── The route quality gate (scripts/lib/validate.ts) ─────────────────────────
