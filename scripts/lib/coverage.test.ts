@@ -13,28 +13,27 @@ const pass = (
   lon: number,
   ascents = 2,
   type: Pass["type"] = "pass",
-): Pass =>
-  ({
-    ascents: Array.from({ length: ascents }, () => ({
-      from: { lat, lon },
-      label: "x",
-    })),
-    beauty: 3,
-    classicAscent: "",
-    country: "IT",
-    difficulty: 3,
-    elevation: 2000,
-    fame: 3,
-    lat,
-    lon,
-    name: slug,
-    note: "",
-    region: "Zentralalpen",
-    season: null,
-    slug,
-    traffic: 2,
-    type,
-  }) as Pass;
+): Pass => ({
+  ascents: Array.from({ length: ascents }, () => ({
+    from: { lat, lon },
+    label: "x",
+  })),
+  beauty: 3,
+  classicAscent: "",
+  country: "IT",
+  difficulty: 3,
+  elevation: 2000,
+  fame: 3,
+  lat,
+  lon,
+  name: slug,
+  note: "",
+  region: "Zentralalpen",
+  season: null,
+  slug,
+  traffic: 2,
+  type,
+});
 
 const node = (
   id: number,
