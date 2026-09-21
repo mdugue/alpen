@@ -20,7 +20,7 @@ import {
   STATUS_ORDER,
 } from "@/lib/status";
 import type { Signals } from "@/lib/status";
-import type { ClimateYear, ElevationProfile, Pass } from "@/lib/types";
+import type { Pass } from "@/lib/types";
 import { fmt } from "@/lib/utils";
 
 /**
@@ -42,11 +42,8 @@ const PERIOD = 10.5;
  * open here.
  */
 const signals: Signals = {
-  climate: climateJson as unknown as Record<string, ClimateYear>,
-  valleys: valleyElevations(
-    passes as Pass[],
-    profilesJson as unknown as Record<string, ElevationProfile>,
-  ),
+  climate: climateJson,
+  valleys: valleyElevations(passes, profilesJson),
 };
 
 export const alt = `${SITE_NAME} – welche Pässe, Touren und Rad-Orte sind wann mit dem Rennrad befahrbar?`;

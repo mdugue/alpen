@@ -245,7 +245,7 @@ class Limiter {
       this.nextAt = Date.now() + (weight * 60_000) / this.callsPerMinute;
       this.used += weight;
       this.requests += 1;
-      return fn();
+      return await fn();
     });
     this.chain = p.catch(() => {
       // Failures surface through `p`; the chain only sequences the calls.
@@ -635,7 +635,7 @@ const routeJobs: RouteJob[] = [
       // its stated length; a climb is routed to the marker (`roadMetrics`).
       if (isTraverse(p.type))
         return {
-          check: a.check as TourCheck | undefined,
+          check: a.check,
           from: a.from,
           inputs: ascentInputs(true, p, a),
           key,
@@ -647,7 +647,7 @@ const routeJobs: RouteJob[] = [
           waypoints: [a.from, a.to ?? summit],
         };
       return {
-        check: a.check as AscentCheck | undefined,
+        check: a.check,
         elevation: p.elevation,
         from: a.from,
         inputs: ascentInputs(false, p, a),
@@ -938,9 +938,9 @@ if (BACKFILL_ONLY) {
   await write("rejected.json", rejected);
   await writing;
   console.log(
-    `Nachgerechnet: ${changed} Profile geändert, ${cached} zwischengespeicherte in rejected.json` +
-      `${noRoute ? `, ${noRoute} ohne passende Route` : ""}` +
-      `${mismatched ? `, ${mismatched} mit abweichender Stützstellenzahl` : ""}`,
+    `Nachgerechnet: ${changed} Profile geändert, ${cached} zwischengespeicherte in rejected.json${
+      noRoute ? `, ${noRoute} ohne passende Route` : ""
+    }${mismatched ? `, ${mismatched} mit abweichender Stützstellenzahl` : ""}`,
   );
   process.exit(0);
 }
@@ -1150,8 +1150,10 @@ const gate = async (
   const keep = storedFor(job, fetched, replace);
   let m = measure(job, geom);
   const bad = judge(job, m);
-  if (bad.length)
-    return reject(tag, job, bad, m, source, hash, undefined, keep);
+  if (bad.length) {
+    await reject(tag, job, bad, m, source, hash, undefined, keep);
+    return;
+  }
 
   // A cached profile from an earlier rejection is only valid for the very same
   // geometry; otherwise it has to be paid for again. Read it before accept()
@@ -1169,7 +1171,7 @@ const gate = async (
   // pass will replace the geometry and the profile would have to be paid for
   // a second time. 100 Open-Meteo calls is far too much to spend on a road we
   // already know is the wrong one.
-  const deferred = source === "osrm" && ORS && !rejected[job.key];
+  const deferred = source === "osrm" && ORS !== "" && !rejected[job.key];
   if (!ofRoad(job) || deferred) {
     if (fetched) await accepted();
     if (deferred)
@@ -1200,8 +1202,10 @@ const gate = async (
   if (job.kind === "ascent") {
     m = withProfile(m as AscentMetrics, prof, job.elevation);
     const badProfile = judge(job, m);
-    if (badProfile.length)
-      return reject(tag, job, badProfile, m, source, hash, prof, keep);
+    if (badProfile.length) {
+      await reject(tag, job, badProfile, m, source, hash, prof, keep);
+      return;
+    }
   }
   if (keep) await accepted();
   profiles[job.key] = prof;
@@ -1262,8 +1266,10 @@ const routing = routeJobsPending.map(async (job, i) => {
   const upgrade = routes[job.key] !== undefined && !stale;
   try {
     const { declined, geom, source } = await route(job.label, job.waypoints);
-    if (upgrade && (meta[job.key]?.source ?? "osrm") === source)
-      return await noteDecline(tag, job, declined);
+    if (upgrade && (meta[job.key]?.source ?? "osrm") === source) {
+      await noteDecline(tag, job, declined);
+      return;
+    }
     await gate(tag, job, geom, source, true, declined, stale);
   } catch (error) {
     if (!(error instanceof QuotaExhaustedError))

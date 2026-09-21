@@ -47,7 +47,6 @@ import type { Signals, StatusReason, StatusVerdict } from "../lib/status";
 import type {
   ClimateBucket,
   ClimateYear,
-  ElevationProfile,
   Pass,
   Period,
   Status,
@@ -55,10 +54,7 @@ import type {
 
 const passes = passesJson as Pass[];
 const climate = climateJson as unknown as Record<string, ClimateYear>;
-const valleys = valleyElevations(
-  passes,
-  profilesJson as unknown as Record<string, ElevationProfile>,
-);
+const valleys = valleyElevations(passes, profilesJson);
 const signals: Signals = { climate, valleys };
 const changesOnly = process.argv.includes("--changes");
 
@@ -293,11 +289,10 @@ if (!changesOnly) {
     const runs = passes.map((p) => ({ length: bestRunLength(p, pick), p }));
     const withBest = runs.filter((r) => r.length > 0);
     console.log(
-      `\nBeste Zeit (${title}): ${withBest.length} of ${passes.length} passes have one; run lengths ` +
-        `${runs
-          .map((r) => r.length)
-          .toSorted((a, b) => a - b)
-          .join(",")}`,
+      `\nBeste Zeit (${title}): ${withBest.length} of ${passes.length} passes have one; run lengths ${runs
+        .map((r) => r.length)
+        .toSorted((a, b) => a - b)
+        .join(",")}`,
     );
     for (const r of runs) {
       if (r.length === 0)

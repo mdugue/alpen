@@ -50,7 +50,6 @@ import type {
 import type {
   ClimateBucket,
   ClimateYear,
-  ElevationProfile,
   Pass,
   Period,
   Status,
@@ -59,10 +58,7 @@ import type {
 
 const passes = passesJson as Pass[];
 const climate = climateJson as unknown as Record<string, ClimateYear>;
-const valleys = valleyElevations(
-  passes,
-  profilesJson as unknown as Record<string, ElevationProfile>,
-);
+const valleys = valleyElevations(passes, profilesJson);
 const signals: Signals = { climate, valleys };
 const bySlug = (slug: string): Pass => {
   const p = passes.find((x) => x.slug === slug);
@@ -125,7 +121,7 @@ const TOUR_NAMES = (slug: string) => ({ a: "Gavia", b: "Stilfser Joch" })[slug];
 
 /** One grade per character: `b` best, `o` good, `r` limited, anything else closed. */
 const grades = (spec: string): Grade[] =>
-  [...spec].map((c) =>
+  Array.from(spec, (c) =>
     c === "b" ? "best" : c === "o" ? "good" : c === "r" ? "limited" : "closed",
   );
 

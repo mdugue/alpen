@@ -208,7 +208,10 @@ export const Explorer = ({
    * ~50 ms of script per snap change more than the same drag over the 9 tours.
    * A ref written after the commit says the same thing without being reactive.
    */
-  const listRest = useRef({ open: false, snap: LIST_HALF as number });
+  const listRest = useRef<{ open: boolean; snap: number }>({
+    open: false,
+    snap: LIST_HALF,
+  });
   const [scalesOpen, setScalesOpen] = useState(false);
   // Where the elevation-profile cursor sits on the road, and a fly-to asked
   // for by a click on it. Both live here because the map draws them and the

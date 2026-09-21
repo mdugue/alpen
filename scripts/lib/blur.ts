@@ -77,7 +77,7 @@ const stripJpeg = (bytes: Uint8Array): Uint8Array => {
   while (i < bytes.length - 3) {
     // Not where a marker should be: leave the file alone.
     if (bytes[i] !== 0xff) return bytes;
-    const marker = bytes[i + 1] as number;
+    const marker = bytes[i + 1]!;
     // Padding (FF FF) and the standalone markers carry no length.
     if (marker === 0xff) {
       i += 1;

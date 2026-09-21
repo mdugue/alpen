@@ -477,7 +477,8 @@ const PassDetail = (props: Props & DetailState & { pass: Pass }) => {
                   <span className="text-xs font-medium">{a.label}</span>
                   <span className="text-muted-foreground text-xs tabular-nums">
                     {profile && profileLine(profile, isTraverse(pass.type))}
-                    {!(profile || props.loading) &&
+                    {!profile &&
+                      !props.loading &&
                       "Kein Höhenprofil vorhanden."}
                   </span>
                 </div>
@@ -517,7 +518,7 @@ const PassDetail = (props: Props & DetailState & { pass: Pass }) => {
         info="ERA5-Land 2015–2024, ein 10-km-Raster – auf Passhöhe eher zu mild."
         title="Jahresklima"
       >
-        {bucket && climate ? (
+        {bucket ? (
           <>
             <ItemGroup className="grid grid-cols-3 gap-1.5">
               {(
@@ -1064,7 +1065,9 @@ export const DetailPanel = (props: Props) => {
         favorite={favorite}
         shared={shared}
         onBack={onBack}
-        onShare={() => share(`${entity.name} – Alpenpässe`)}
+        onShare={() => {
+          void share(`${entity.name} – Alpenpässe`);
+        }}
         onToggleFavorite={() =>
           props.onToggleFavorite(selection.kind, selection.slug)
         }
