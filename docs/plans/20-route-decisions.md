@@ -1,9 +1,20 @@
 # 20 · The gate's decisions out of the build script
 
-**Status:** proposed · **Effort:** M–L · **Depends on:** 00 (the gate) ·
+**Status:** superseded by [32](32-pipeline-planner.md) · **Effort:** M–L ·
+**Depends on:** 00 (the gate) ·
 **Unblocks:** 21 (an offline pipeline test needs decisions it can import),
 roadmap 1 (a closures step reuses the job list), 12 (destinations enter the
 pipeline as jobs)
+
+> **Superseded 2026-09-21.** Re-measured at `6c1897b`: sixteen
+> derivations (not eight) over six mutable records, `gate()` is six
+> functions and 242 lines, the route key is bypassed at eleven sites, the
+> retry rule is told seven times and `backfill.sh` still contradicts it.
+> New: `check-data.ts` disagrees with the build in two measurable ways,
+> `--only` is honoured by two of nine counters, the keep/restore path has
+> never run against the stored data (0 of 9 rejections sit beside a stored
+> route), and two spent migrations run on every invocation. All of it is
+> phase B of [plan 32](32-pipeline-planner.md).
 
 ## Goal
 

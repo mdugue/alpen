@@ -1,10 +1,18 @@
 # 17 · Detail panel per kind
 
-**Status:** proposed · **Effort:** M · **Depends on:** 15 (the year arrives
-instead of its inputs), 16 (the sentences come from `lib/status.ts`); easier
+**Status:** superseded by [31](31-panel-model.md) · **Effort:** M ·
+**Depends on:** 15 (the year arrives instead of its inputs), 16 (the sentences come from `lib/status.ts`); easier
 after 18 (the selection resolves itself) · **Unblocks:** 02 (an entity page
 renders the same per-kind module on the server), 12 (a destination detail is
 a fourth kind, not a fourth branch)
+
+> **Superseded 2026-09-21.** Re-measured at `6c1897b`: `Props` has 19
+> fields (not 16), the file is 1 115 lines (not 682), the kind is cast seven
+> times, `Nearby` reads ten fields, and PR #47 put `basesFor` and
+> `destinationAt` inside the kind branches. The split this plan describes is
+> phase D of [plan 31](31-panel-model.md), after the fetch state, the
+> sentences and the reach have each become one value; `PanelHead` and
+> `PanelBar` (PR #49) are already the shape the kind modules should take.
 
 ## Goal
 

@@ -1,8 +1,21 @@
 # 18 · Selection, visibility and camera: decided once
 
-**Status:** proposed · **Effort:** M · **Depends on:** – · **Unblocks:** 19
-(the scene reads one "shown"), 02 (the router becomes the second adapter of
+**Status:** superseded by [28](28-app-state.md) and
+[29](29-camera-machine.md) · **Effort:** M · **Depends on:** – ·
+**Unblocks:** 19 (the scene reads one "shown"), 02 (the router becomes the second adapter of
 the same rule), plan 11 item 3 (the context is this module's transport)
+
+> **Superseded 2026-09-21.** Re-measured at `6c1897b`: the composite key
+> is formatted at nine sites (not six); the reveal rule is one full and two
+> partial copies that have diverged (a pasted hash does not set the tab,
+> `back()` does not clear the hover); the camera-moving call sites are
+> thirteen (not ten), and the sheet's cover is now a camera input. Two
+> corrections: the two `defined` helpers no longer "check `NaN` differently"
+> (both use `Number.isNaN`; keep the deletion, drop the bug framing), and the
+> non-goal "the five camera entry points stay in the map" is re-decided –
+> 363 of the map's 415 new lines accumulated under it. The selection, the
+> shown value, the period and the sheet state are [plan 28](28-app-state.md);
+> the camera and the geometry are [plan 29](29-camera-machine.md).
 
 ## Goal
 
