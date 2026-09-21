@@ -42,6 +42,11 @@ that goal; features that only add route-level precision rank last.
 | 20  | [The gate's decisions out of the build script](20-route-decisions.md) | pipeline testable, one retry rule   | M–L    | 00                   | proposed                                               |
 | 21  | [One adapter per external host](21-host-adapters.md)                  | offline pipeline test               | M      | 20                   | proposed                                               |
 | 22  | [Detail data out of the payload](22-detail-data-out-of-payload.md)    | first load, free-tier headroom      | S–M    | 01                   | done                                                   |
+| 23  | [Low southern regions](23-low-southern-regions.md)                    | "when" in spring and autumn         | L      | 14                   | proposed                                               |
+| 24  | [Depth per destination](24-depth-per-destination.md)                  | "where", honest counts, readability | M      | 00                   | proposed                                               |
+| 25  | [Vosges and Jura](25-vosges-and-jura.md)                              | the weekend, a second range         | M–L    | 09, 05               | proposed                                               |
+| 26  | [Pyrenees](26-pyrenees.md)                                            | the Tour's other mountains          | M–L    | 25, 24               | proposed                                               |
+| 27  | [Gravel](27-gravel.md)                                                | a second discipline                 | L–XL   | 14, 16, 13           | proposed                                               |
 | –   | UI/UX audit round (no plan document)                                  | "where", finding things, a11y       | M      | –                    | [in progress](https://github.com/mdugue/alpen/pull/47) |
 
 Effort: S ≤ 1 day, M 2–3 days, L 4–6 days. 09, 10 and 11 can be interleaved
@@ -79,6 +84,21 @@ The round also replaced the single 60 km radius with three named reach bands
 and a smooth nearness weight (`lib/geo.ts`), which every "im Umkreis" feature
 now shares. Anything later that asks "what is near here" should use those
 rather than reintroduce a radius.
+
+## The region and discipline plans (23–27)
+
+Plans 23 to 27 came out of a product conversation (September 2026) about
+where the app should grow: more depth in the south, more depth everywhere,
+ranges beyond the Alps, and a second discipline. They are mostly curation
+with a small mechanism each, and the mechanisms nest: **24** gives the
+measure (a coverage report per base) that **23**, **25** and **26** curate
+against; **25** builds the range vocabulary and the "Gebirge" chip that
+**26** reuses with bounds per range; **27** is independent of the four and
+waits for 14 and 16. 23 can start now and 24's code is small enough to run
+alongside it; 25 before 26; 27 whenever 14 is done. The idea that did not
+become a plan – questions in natural language, an agent – is written up in
+[`docs/roadmap.md`](../roadmap.md) §4 with what is decided, what is open
+and the spike that turns it into a plan.
 
 ## Status legend
 
