@@ -48,8 +48,12 @@
  * run – retrying would only burn the next window. A minutely 429 or a 5xx pauses
  * the host (Retry-After or the host's own backoff) and retries.
  *
- * The second adapter, `fixtureTransport`, answers from recorded files – today
- * the coverage report's cache (`scripts/analyze-coverage.ts`).
+ * The second adapter, `fixtureTransport`, answers from recorded files. Two
+ * callers use it: the coverage report keeps its cache in one
+ * (`scripts/analyze-coverage.ts`, recording on `--refresh`), and the offline
+ * pipeline test replays one (`scripts/pipeline.test.ts`, recording on
+ * `RECORD_FIXTURES=1`) – the whole route gate, in `bun test`, with no key and
+ * no host.
  */
 import { createHash } from "node:crypto";
 import { mkdir } from "node:fs/promises";
@@ -126,7 +130,7 @@ interface HostSpec extends RetryPolicy {
  * One row per host – the only place a pace, a budget or a retry policy is
  * written down. `ors` and `osrm` exist side by side: ORS is asked first, and
  * when its daily quota runs out the run continues on the OSRM demo instead of
- * stopping (`scripts/build-data.ts` decides that; the gate makes it safe).
+ * stopping (`scripts/lib/pipeline.ts` decides that; the gate makes it safe).
  * Open-Meteo's elevation and archive hosts share one quota per IP, so they are
  * one row.
  */

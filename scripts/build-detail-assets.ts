@@ -17,16 +17,15 @@
  * carry: profiles for all 201 passes and photo metadata for every entity, both
  * read by one panel about one entity at a time.
  */
-import { mkdir, readdir, rm } from "node:fs/promises";
-
 import photosJson from "../data/generated/photos.json" with { type: "json" };
 import profilesJson from "../data/generated/profiles.json" with { type: "json" };
 import passesJson from "../data/passes.json" with { type: "json" };
 import toursJson from "../data/tours.json" with { type: "json" };
 import townsJson from "../data/towns.json" with { type: "json" };
+import { writeDerived } from "../lib/derived-file";
 import {
   DETAIL_ASSET_DIR,
-  DETAIL_ASSET_NAME,
+  DETAIL_FILES,
   detailAssets,
 } from "../lib/detail-assets";
 import { profilesWithCoords } from "../lib/profile";
@@ -58,16 +57,11 @@ const { files } = detailAssets(
   photos,
 );
 
-await mkdir(OUT, { recursive: true });
-const keep = new Set(files.map((f) => f.name));
-for (const name of await readdir(OUT))
-  if (DETAIL_ASSET_NAME.test(name) && !keep.has(name))
-    await rm(new URL(name, OUT));
+await writeDerived({ files, out: OUT, prune: DETAIL_FILES.prune });
 
 let bytes = 0;
 let gzipped = 0;
 for (const f of files) {
-  await Bun.write(new URL(f.name, OUT), f.body);
   bytes += f.body.length;
   gzipped += Bun.gzipSync(f.body).length;
 }

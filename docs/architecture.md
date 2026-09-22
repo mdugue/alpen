@@ -138,6 +138,13 @@ geometry is precomputed on the server: tours within reach of an entity
 (`lib/nearby.ts`) and the road coordinate of every profile sample
 (`ProfileWithCoords`).
 
+Both this file and the per-entity detail files below are named by
+`lib/derived-file.ts`, which owns the content hash, the name it produces, the
+pattern that prunes last build's names and the source `next.config.ts` caches
+for a year. The three have to agree or the app serves a stale file forever,
+so they are one definition with one test rather than three spellings that
+happen to match today.
+
 ### Neither does what only one entity's panel reads
 
 The same rule, one layer up: `scripts/build-detail-assets.ts` writes one

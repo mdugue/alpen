@@ -1,7 +1,8 @@
 # 32 · The pipeline as plan → execute → apply
 
 **Status:** in progress – phases A and B in
-[#62](https://github.com/mdugue/alpen/pull/62) ·
+[#62](https://github.com/mdugue/alpen/pull/62), C and D on the same branch;
+E and F open ·
 **Effort:** L (six phases, one PR each) ·
 **Depends on:** 00 (the gate) · **Supersedes:** 20, 21 · **Unblocks:**
 roadmap 1 (a closures step is one more host and one more job kind), 12
@@ -210,6 +211,17 @@ lacks it.
 the report against fixtures. `bun test` runs it because `"test"` is widened
 to `bun test lib scripts` (or a `bunfig.toml` test root).
 
+Done. The executing half of `build-data.ts` moved to `runPipeline`
+(`scripts/lib/pipeline.ts`), so the test drives the same function the script
+drives rather than a copy; the script is 205 lines instead of 626. The
+scenario is `scripts/fixtures/scenario.ts` – the Galibier's two sides, the
+Lautaret below it and a loop – and the answers are seven files under
+`scripts/fixtures/<host>/`, written by hand from geometry already in
+`data/generated/routes.json`; `RECORD_FIXTURES=1` replaces them with real
+answers in one run. It covers the accepted route with its profile, the
+rejection that keeps its measured values, and the keep/restore path where an
+upgrade candidate fails beside a route that already passed.
+
 ### Phase D · Derived files as one module
 
 `lib/derived-file.ts`: `(kind, body, dir) → { name, prune, cachePattern }`
@@ -217,6 +229,13 @@ owns the hash, the name, the prune regex and the shape `next.config.ts`
 promises; `mapAssets` and `detailAssets` are its two callers, the three
 build scripts become parse → produce → hand over, and the invariant test
 runs once for both sides.
+
+Done. `derivedDir` builds the three spellings from one stem and extension and
+`writeDerived` is the one mkdir-and-prune loop; `MAP_FILES` and
+`DETAIL_FILES` are its two callers, `next.config.ts` reads their
+`cachePattern`, and `lib/derived-file.test.ts` asserts for both directories
+that every name written is pruned and cached and that an unhashed name beside
+them (the two basemap styles) is neither.
 
 ### Phase E · The photo pipeline's choosing
 

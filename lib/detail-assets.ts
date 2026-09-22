@@ -1,5 +1,3 @@
-import { createHash } from "node:crypto";
-
 import type { EntityKind } from "@/lib/app-state";
 import type {
   Pass,
@@ -16,6 +14,7 @@ import type {
 // themselves free of them may be imported here – which is why the profile
 // derivation both hash sides share lives in `lib/profile.ts` (it reaches
 // `lib/geo.ts`) and not in this file.
+import { derivedDir } from "./derived-file";
 import { ascentKey, entityKey } from "./route-key";
 
 /**
@@ -43,8 +42,9 @@ import { ascentKey, entityKey } from "./route-key";
  * climate that arrives late would mean a sidebar that counts wrong for a
  * moment – and at 42 KB gzipped it is not what makes the page heavy.
  *
- * Never imported by client code – it needs `node:crypto`. Components take the
- * `DetailAssets` type only, which is a map of URLs and photo counts.
+ * Never imported by client code – through `lib/derived-file.ts` it reaches
+ * `node:crypto` and `node:fs`. Components take the `DetailAssets` type only,
+ * which is a map of URLs and photo counts.
  */
 
 /** What the panel reads once an entity is selected. */
@@ -77,18 +77,21 @@ export interface DetailAsset {
  */
 export type DetailAssets = Record<string, DetailAsset>;
 
-/** Where the files live under `public/`, and thus their URL prefix. */
-export const DETAIL_ASSET_DIR = "detail";
-
 /**
- * What the script writes and prunes, and what `next.config.ts` caches for a
- * year – the two have to describe the same set of names, or the header rule
- * would promise immutability to something the pruner may replace. Named for
- * this directory rather than `ASSET_NAME`, which `lib/map-assets.ts` already
- * exports for the GeoJSON shape.
+ * The name, the prune pattern and the cache rule of one entity's file, as one
+ * value (`lib/derived-file.ts`) – the three have to describe the same set of
+ * names, or the header rule would promise immutability to something the
+ * pruner may replace.
  */
-export const DETAIL_ASSET_NAME =
-  /^(?:pass|tour|town)-[a-z0-9-]+\.[0-9a-f]{8}\.json$/u;
+export const DETAIL_FILES = derivedDir({
+  dir: "detail",
+  ext: "json",
+  param: "entity",
+  stem: "(?:pass|tour|town)-[a-z0-9-]+",
+});
+
+/** Where the files live under `public/`, and thus their URL prefix. */
+export const DETAIL_ASSET_DIR = DETAIL_FILES.dir;
 
 export interface DetailFile {
   /** `pass-stilfser-joch.a1b2c3d4.json` – 8 hex digits of SHA-256 of `body`. */
@@ -102,7 +105,7 @@ export interface DetailFile {
  * whatever machine runs `dev`.
  */
 const fileName = (kind: EntityKind, slug: string, body: string) =>
-  `${kind}-${slug}.${createHash("sha256").update(body).digest("hex").slice(0, 8)}.json`;
+  DETAIL_FILES.name(`${kind}-${slug}`, body);
 
 const file = (
   kind: EntityKind,
@@ -139,7 +142,7 @@ export const detailAssets = (
     files.push(f);
     assets[entityKey(kind, slug)] = {
       photos: data.photos.length,
-      url: `/${DETAIL_ASSET_DIR}/${f.name}`,
+      url: DETAIL_FILES.url(f.name),
     };
   };
 

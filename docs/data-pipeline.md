@@ -70,10 +70,10 @@ flowchart LR
   ST["stored state, as a value<br/>read once, validated"] --> P
   FL["flags: only · retry · upgrade"] --> P
   P["plan(state, flags) → jobs<br/>scripts/lib/decide.ts · pure"]
-  P --> X["execute(jobs, transport)<br/>scripts/lib/hosts.ts"]
+  P --> X["execute(jobs, transport)<br/>scripts/lib/pipeline.ts · scripts/lib/hosts.ts"]
   X --> T{"Transport"}
   T --> LIVE["live: Limiter per host,<br/>Retry-After, budget"]
-  T --> FIX["fixture: recorded answers"]
+  T --> FIX["fixture: recorded answers<br/>the whole gate in bun test"]
   X --> A["apply(state, results) → state', report<br/>scripts/lib/decide.ts · pure"]
   A --> W["write · validated"]
   P -.-> CD["data:check · --explain · --status · --pending<br/>views of the same plan"]
@@ -89,6 +89,15 @@ one `Transport`, and `afterGate` turns each verdict into the records that
 follow from it – including the one that used to be reachable only through a
 live run: a router's answer that fails the gate where a route is already
 stored leaves that route on the map.
+
+That executing half is `runPipeline` (`scripts/lib/pipeline.ts`), a function of
+its arguments rather than the body of a script, so the same three steps run on
+recorded answers: `scripts/pipeline.test.ts` takes two passes and a tour
+through `plan → execute → apply` against the files in `scripts/fixtures/`,
+writes the state into a temporary directory and reads it back through the
+schemas `data/generated` is validated with. `data:build` is what is left over –
+the command line, the live transport with its budgets, and the lines about the
+hosts a run talked to.
 
 Three consequences worth knowing. `data:build --status`, `data:build --pending`
 and the report a run prints are three renderings of one plan, so they cannot
@@ -156,7 +165,9 @@ and ways, a Commons file whose image info has no size. The function takes a
 from the `HOSTS` table – the gap, the Open-Meteo budget, `Retry-After`, the
 words that say a quota is spent – and is the only `fetch` under `scripts/`;
 the fixture one answers from recorded files (`<dir>/<host>/<hash>.json`, keyed
-by method, URL and body), and is what the coverage report keeps its cache in.
+by method, URL and body), and is both the coverage report's cache and what
+runs the whole gate offline in `bun test` (`RECORD_FIXTURES=1` refreshes those
+answers from the hosts in one run).
 `scripts/lib/osm.ts` sits on the same seam and decides between Overpass and
 the map API.
 
@@ -204,6 +215,14 @@ The rule behind the "In git" column: a file is committed when producing it
 costs an API call, and derived when producing it costs only CPU. That is why
 `routes.json` is in the repository and the simplified GeoJSON next to it is
 not.
+
+The four rows under `public/` whose name carries a content hash follow one rule,
+written down once in `lib/derived-file.ts`: the name is the stem, eight hex
+digits of the SHA-256 of the body and the extension. The same value carries the
+pattern the build script prunes by and the path rule `next.config.ts` caches for
+a year, because the three have to describe the same set of names – a header that
+promises immutability to a name the pruner may replace is a stale file nobody
+can clear.
 
 ## The life of one ascent
 

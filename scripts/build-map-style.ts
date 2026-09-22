@@ -15,20 +15,22 @@
  * Runs before `dev` and `build` (package.json), next to the route geometry;
  * `public/map` is git-ignored except for the fonts.
  */
-import { mkdir } from "node:fs/promises";
-
 import { basemapStyle, GLYPHS } from "../lib/basemap";
 import { siteUrl } from "../lib/brand";
+import { writeDerived } from "../lib/derived-file";
 import { MAP_ASSET_DIR } from "../lib/map-assets";
 
 const OUT = new URL(`../public/${MAP_ASSET_DIR}/`, import.meta.url);
-await mkdir(OUT, { recursive: true });
 
-for (const scheme of ["light", "dark"] as const) {
-  const name = `style-${scheme}.json`;
-  const body = JSON.stringify(basemapStyle(scheme, `${siteUrl}${GLYPHS}`));
-  await Bun.write(new URL(name, OUT), body);
+// No hash and no pruning: the two names are fixed, and the geometry files
+// beside them belong to scripts/build-map-assets.ts, which runs first.
+const files = (["light", "dark"] as const).map((scheme) => ({
+  body: JSON.stringify(basemapStyle(scheme, `${siteUrl}${GLYPHS}`)),
+  name: `style-${scheme}.json`,
+}));
+await writeDerived({ files, out: OUT });
+
+for (const f of files)
   console.log(
-    `${MAP_ASSET_DIR}/${name}: ${Math.round(body.length / 1024).toLocaleString("de-DE")} KB`,
+    `${MAP_ASSET_DIR}/${f.name}: ${Math.round(f.body.length / 1024).toLocaleString("de-DE")} KB`,
   );
-}

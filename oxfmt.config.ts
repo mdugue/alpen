@@ -27,6 +27,10 @@ export default defineConfig({
     // Curated content, reviewed with `bun run data:check`; the formatter must
     // not silently reindent it.
     "data",
+    // Recorded host answers, written one per line by the transport's record
+    // mode (`RECORD_FIXTURES=1`); reformatting them is churn the next
+    // recording undoes. The scenario beside them is source and is formatted.
+    "scripts/fixtures/**/*.json",
     // A frozen design prototype kept for reference, not living source.
     "docs/prototype.html",
   ],

@@ -18,11 +18,10 @@
  * bytes. The gate has judged the geometry in routes.json; what is simplified
  * here is a rendering copy, the stored data stays untouched.
  */
-import { mkdir, readdir, rm } from "node:fs/promises";
-
 import passesJson from "../data/passes.json" with { type: "json" };
 import toursJson from "../data/tours.json" with { type: "json" };
-import { ASSET_NAME, MAP_ASSET_DIR, mapAssets } from "../lib/map-assets";
+import { writeDerived } from "../lib/derived-file";
+import { MAP_ASSET_DIR, MAP_FILES, mapAssets } from "../lib/map-assets";
 import * as S from "../lib/schema";
 
 const OUT = new URL(`../public/${MAP_ASSET_DIR}/`, import.meta.url);
@@ -38,22 +37,16 @@ const routes = S.Routes.parse(
 );
 
 const { files } = mapAssets(passes, tours, routes);
-
-await mkdir(OUT, { recursive: true });
-const keep = new Set(files.map((f) => f.name));
-for (const name of await readdir(OUT))
-  if (ASSET_NAME.test(name) && !keep.has(name)) await rm(new URL(name, OUT));
+await writeDerived({ files, out: OUT, prune: MAP_FILES.prune });
 
 const kb = (n: number) => `${Math.round(n / 1024).toLocaleString("de-DE")} KB`;
 const count = (n: number) => n.toLocaleString("de-DE");
 const rawPoints = Object.values(routes).reduce((n, g) => n + g.length, 0);
 
-for (const f of files) {
-  await Bun.write(new URL(f.name, OUT), f.body);
+for (const f of files)
   console.log(
     `${MAP_ASSET_DIR}/${f.name}: ${kb(f.body.length)}, ${count(f.points)} Punkte, ${kb(Bun.gzipSync(f.body).length)} gzip`,
   );
-}
 console.log(
   `routes.json: ${kb(routesFile.size)} mit ${count(rawPoints)} Punkten vor der Vereinfachung`,
 );

@@ -2,6 +2,7 @@ import { describe, expect, test } from "bun:test";
 
 import {
   bounds,
+  MAP_FILES,
   mapAssets,
   routeFeatures,
   simplify,
@@ -130,6 +131,14 @@ describe("mapAssets", () => {
     // … but both can be framed.
     expect(assets.tourBounds.testrunde).toEqual(bounds(road(20)));
     expect(assets.tourBounds["ohne-route"]).toEqual([9, 46, 9.5, 46.5]);
+  });
+
+  test("every written name is one the build script would prune", () => {
+    // Same invariant as on the detail side: a name the script does not
+    // recognise would linger in `public/map` for good. What that shape is, and
+    // that `next.config.ts` caches the same set, is `lib/derived-file.test.ts`.
+    for (const f of mapAssets([pass], [tour], routes).files)
+      expect(MAP_FILES.prune.test(f.name)).toBe(true);
   });
 
   test("a pass is framed by its ascents, the summit included", () => {
