@@ -4,7 +4,7 @@ import {
   basesFor,
   destinationAt,
   destinationText,
-  gradeOf,
+  gradeOfBase,
 } from "@/lib/destination";
 import { reachBand, REACH_MAX_KM, reachWeight } from "@/lib/geo";
 import { PERIODS } from "@/lib/status";
@@ -74,27 +74,27 @@ describe("reach bands", () => {
 /** A cell with `n` rideable passes and nothing else. */
 const counts = (n: number) => ({ best: n, closed: 0, good: 0, limited: 0 });
 
-describe("gradeOf", () => {
+describe("gradeOfBase", () => {
   test("grades against this base's own peak, not an absolute count", () => {
     // The measurement that forced this: an absolute threshold put 47 of 48
     // towns at the top grade in September. A base is at its best when it is
     // near its *own* best, whether that best is forty passes or two.
-    expect(gradeOf(counts(40), 40)).toBe("best");
-    expect(gradeOf(counts(2), 2)).toBe("best");
+    expect(gradeOfBase(counts(40), 40)).toBe("best");
+    expect(gradeOfBase(counts(2), 2)).toBe("best");
   });
 
   test("so a big base in a weak half-month is not at its best", () => {
     // Ten rideable passes is a lot in absolute terms and a quarter of what
     // this base offers in September; the strip has to show that dip.
-    expect(gradeOf(counts(10), 40)).toBe("limited");
-    expect(gradeOf(counts(22), 40)).toBe("good");
+    expect(gradeOfBase(counts(10), 40)).toBe("limited");
+    expect(gradeOfBase(counts(22), 40)).toBe("good");
   });
 
   test("nothing rideable is a closed destination, whatever the peak", () => {
-    expect(gradeOf({ best: 0, closed: 9, good: 0, limited: 3 }, 40)).toBe(
+    expect(gradeOfBase({ best: 0, closed: 9, good: 0, limited: 3 }, 40)).toBe(
       "closed",
     );
-    expect(gradeOf(counts(0), 0)).toBe("closed");
+    expect(gradeOfBase(counts(0), 0)).toBe("closed");
   });
 });
 

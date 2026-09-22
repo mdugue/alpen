@@ -84,7 +84,7 @@ costs almost nothing.
 
 ### The grade: relative to this base's own peak, not to a count
 
-`gradeOf` grades a half-month against the **best half-month that base ever
+`gradeOfBase` grades a half-month against the **best half-month that base ever
 has**:
 
 | Grade           | condition                                     |

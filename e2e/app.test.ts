@@ -24,6 +24,7 @@ afterAll(() => {
 const PASS_ROW = '[data-row^="pass:"]';
 const GALIBIER = '[data-row="pass:col-du-galibier"]';
 const SLIDER = '[aria-label="Zeitraum"]';
+const DETAIL_PANEL = 'section[aria-labelledby="detail-title"]';
 const BACK_TO_LIST = '[aria-label="Zurück zur Liste"]';
 /** A drawer with another one open on top of it – Base UI's own stack state. */
 const STACKED = "[data-slot=drawer-popup][data-nested-drawer-open]";
@@ -810,5 +811,43 @@ test(
         ),
       ).toBe("3");
     }),
+  TIMEOUT,
+);
+
+test(
+  "18 · a detail file that never arrives ends the wait instead of extending it",
+  () =>
+    // The file is content-hashed and immutable, so the one way it goes missing
+    // is a stale deploy answering a 404 – which used to leave an `aria-busy`
+    // skeleton on screen forever (lib/detail-state.ts).
+    withPage(
+      app,
+      "detail-file-blocked",
+      { block: ["*/detail/*.json"], hash: "#pass=col-du-galibier" },
+      async (page) => {
+        await page.waitFor("#detail-title");
+        expect(await page.text("#detail-title")).toBe("Col du Galibier");
+        const panelSays = async (sentence: string) => {
+          const text = await page.text(DETAIL_PANEL);
+          return !!text?.includes(sentence);
+        };
+        // The page's own count says this pass has photos, so the head opened
+        // as a hero – and gave it up when nothing arrived.
+        await waitUntil(
+          () => panelSays("Keine Fotos geladen"),
+          "the panel saying the photos did not arrive",
+        );
+        // The profile block says its own half of it, rather than drawing a
+        // placeholder for something that is not on its way.
+        await waitUntil(
+          () => panelSays("Kein Höhenprofil vorhanden."),
+          "the profile block saying there is none",
+        );
+        await waitUntil(
+          async () => (await page.count("[aria-busy]")) === 0,
+          "no skeleton left waiting",
+        );
+      },
+    ),
   TIMEOUT,
 );

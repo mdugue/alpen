@@ -1,6 +1,7 @@
 # 31 · The panel as a model: data in, three thin renderers out
 
-**Status:** proposed · **Effort:** L (four phases, one PR each) ·
+**Status:** in progress – phases A and B done, C and D open ·
+**Effort:** L (four phases, one PR each) ·
 **Depends on:** 15, 16 (done), 28 (the resolved entity and `entityKey`
 arrive from the reducer) · **Supersedes:** 17 · **Unblocks:** 02 (an entity
 page renders the same model on the server), 12 (a destination detail is a
@@ -117,7 +118,7 @@ flowchart TD
 ```mermaid
 flowchart TD
   E["Explorer · selection, period, hovered (28)"] --> DM["lib/detail-model.ts<br/>detailModel(selection, data, state): DetailModel<br/>pure, bun test"]
-  DS["lib/detail-state.ts<br/>absent | pending | ready | failed<br/>fetch adapter injected"] --> DM
+  DS["lib/detail-state.ts<br/>absent | pending | ready | failed<br/>pure transition, hook on top"] --> DM
   RW["lib/reach.ts<br/>withinReach(point, …): banded, ranked, minus what is shown"] --> DM
   SW["lib/status.ts<br/>bestText · climateText · reasonParagraph · VerdictBox input"] --> DM
   DM -->|"PassModel"| P["PassDetail · renders"]
@@ -136,12 +137,16 @@ type DetailState =
   | { phase: "pending"; photos: number } // the count the page already knows
   | { phase: "ready"; photos: Photo[]; profiles: Profiles; broken: ReadonlySet<string> }
   | { phase: "failed" };
-useDetailState(asset: DetailAsset | undefined, fetcher = defaultFetcher): DetailState;
+detailState(asset, fetched: Fetched<DetailData>, broken): DetailState; // pure
+useDetailState(asset: DetailAsset | undefined): { state: DetailState; markBroken };
 heroShape(state: DetailState): "hero" | "plain"; // the one decision, six rows of test
 ```
 
-The fetcher is injected: production uses `useFetch`, tests an in-memory one
-that answers `ready` or `failed`. `PanelHead`, the profile block and the
+The seam is the transition, not the fetcher: `detailState` takes what a fetch
+said as a value, so the four phases are a table test with no network and no
+DOM, and the hook is the thin half over `useFetch`. A fetcher parameter was
+the first shape and cannot be had – passing a hook is what the
+`react(hooks)` lint rule forbids. `PanelHead`, the profile block and the
 "nicht vorhanden" sentences read one value; `broken` lives in the state,
 reported by the carousel through one callback; the stale prose in
 `photo-carousel.tsx` and the `shown` alias go. The weather block's fetch is
@@ -154,9 +159,12 @@ the model for reading `error` and stays as it is.
 `lib/status.ts`, each pinned by a test; `fmt` formats the day length. One
 `VerdictBox` renders from a cell at the three call sites. `GRADE_ORDER` and
 `statusOf` are imported by `lib/destination.ts`, not copied; the second
-`gradeOf` is renamed to say what it grades (`gradeOfBase`). The 16 exports
-with no external caller become module-private, so the interface names only
-what has a reader. Plan 16's header flips to done in the same PR, as its
+`gradeOf` is renamed to say what it grades (`gradeOfBase`). The exports with
+no external caller become module-private – the 16 measured above minus
+`statusOf`, which `lib/destination.ts` now imports, plus `REASON_TEXT`,
+`reasonTexts` and `valleyText`, whose last external caller was the JSX the
+three sentence builders replace; `climateBucket` had no caller at all and
+goes. 55 exports are left, each with a reader outside the module. Plan 16's header flips to done in the same PR, as its
 acceptance criteria already pass.
 
 ### Phase C · One reach module

@@ -16,10 +16,10 @@ import {
 } from "@/components/panel/elevation-profile";
 import { PhotoCarousel } from "@/components/panel/photo-carousel";
 import { Section } from "@/components/panel/section";
+import { VerdictBox } from "@/components/panel/verdict-box";
 import { WeatherForecast } from "@/components/panel/weather-forecast";
 import { Rating } from "@/components/rating";
-import { SeasonStrip } from "@/components/season-strip";
-import { StatusBadge, StatusDot } from "@/components/status-badge";
+import { StatusDot } from "@/components/status-badge";
 import { TagBadges } from "@/components/tags";
 import { Button } from "@/components/ui/button";
 import {
@@ -38,26 +38,32 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import { Toggle } from "@/components/ui/toggle";
 import type { EntityKind, Selection } from "@/lib/app-state";
-import { clockTime, periodDate, sunTimes } from "@/lib/daylight";
 import { basesFor, destinationAt } from "@/lib/destination";
-import type { DetailAssets, DetailData } from "@/lib/detail-assets";
+import type { DetailAssets } from "@/lib/detail-assets";
+import {
+  heroShape,
+  profilesOf,
+  shownPhotos,
+  useDetailState,
+} from "@/lib/detail-state";
+import type { DetailState } from "@/lib/detail-state";
 import { haversine, REACH_MAX_KM } from "@/lib/geo";
 import { komootHref, quaeldichHref } from "@/lib/links";
 import type { NearbyTours } from "@/lib/nearby";
 import { isTraverse, ROAD_TYPE } from "@/lib/regions";
 import { ascentKey, entityKey } from "@/lib/route-key";
 import {
+  bestText,
   cellAt,
+  climateText,
   daysOf,
   indexBySlug,
   inputAt,
   periodIndex,
-  periodLabel,
-  reasonTexts,
+  reasonParagraph,
   seasonText,
-  tourText,
-  valleyText,
   signalsOf,
+  tourText,
 } from "@/lib/status";
 import type { Years } from "@/lib/status";
 import type {
@@ -70,7 +76,6 @@ import type {
   Tour,
   Town,
 } from "@/lib/types";
-import useFetch from "@/lib/use-fetch";
 import { useShare } from "@/lib/use-share";
 import {
   cn,
@@ -157,18 +162,6 @@ interface Props {
    * Naming the wrong destination is worse than naming none.
    */
   backToList?: boolean;
-}
-
-/**
- * The selected entity's detail file: what it carried, and whether it is still
- * on the way. The panel renders before it arrives – the name, the status, the
- * season strip and the ratings are all in the page – so the two blocks that
- * wait for it say so rather than appearing out of nowhere.
- */
-interface DetailState {
-  profiles: Record<string, ProfileWithCoords>;
-  photos: Photo[];
-  loading: boolean;
 }
 
 /**
@@ -359,16 +352,16 @@ const Nearby = ({
   );
 };
 
-const PassDetail = (props: Props & DetailState & { pass: Pass }) => {
+const PassDetail = (props: Props & { loaded: DetailState; pass: Pass }) => {
   const { pass } = props;
+  const profiles = profilesOf(props.loaded);
+  const waiting = props.loaded.phase === "pending";
   const climate = props.climate[pass.slug];
   const bucket = climate?.[periodIndex(props.period)];
   const signals = signalsOf(props, pass.slug);
   const input = inputAt(signals, props.period);
   const year = props.years.passes[pass.slug];
   const cell = cellAt(year, props.period);
-  const reasons = reasonTexts(pass, props.period, cell.reasons, input);
-  const sun = sunTimes(pass.lat, pass.lon, periodDate(props.period));
 
   return (
     <>
@@ -384,28 +377,12 @@ const PassDetail = (props: Props & DetailState & { pass: Pass }) => {
         </div>
       )}
 
-      {/* The "when" answer, boxed: verdict, why, the whole year, best time. */}
-      <div className="bg-muted/40 border-border/70 mt-3 flex flex-col gap-2 rounded-lg border p-3">
-        <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
-          <StatusBadge cell={cell} period={props.period} />
-          {year?.best && (
-            <span className="text-muted-foreground text-xs">
-              beste Zeit {periodLabel(year.best[0])} –{" "}
-              {periodLabel(year.best[1])}
-            </span>
-          )}
-        </div>
-        {reasons.length > 0 && (
-          <p className="text-muted-foreground text-xs leading-relaxed">
-            {reasons.join(" ")}
-          </p>
-        )}
-        <SeasonStrip
-          cells={year?.cells ?? []}
-          current={props.period}
-          size="panel"
-        />
-      </div>
+      <VerdictBox
+        best={bestText(year)}
+        period={props.period}
+        text={reasonParagraph(pass, props.period, cell.reasons, input)}
+        year={year}
+      />
 
       <p className="mt-4 text-xs leading-relaxed">{seasonText(pass)}</p>
       <p className="text-muted-foreground mt-1.5 text-xs leading-relaxed">
@@ -468,16 +445,14 @@ const PassDetail = (props: Props & DetailState & { pass: Pass }) => {
         )}
         <div className="flex flex-col gap-4">
           {pass.ascents.map((a, i) => {
-            const profile = props.profiles[ascentKey(pass.slug, i)];
+            const profile = profiles[ascentKey(pass.slug, i)];
             return (
               <div key={a.label}>
                 <div className="flex flex-wrap items-baseline justify-between gap-x-2">
                   <span className="text-xs font-medium">{a.label}</span>
                   <span className="text-muted-foreground text-xs tabular-nums">
                     {profile && profileLine(profile, isTraverse(pass.type))}
-                    {!profile &&
-                      !props.loading &&
-                      "Kein Höhenprofil vorhanden."}
+                    {!profile && !waiting && "Kein Höhenprofil vorhanden."}
                   </span>
                 </div>
                 {profile && (
@@ -488,7 +463,7 @@ const PassDetail = (props: Props & DetailState & { pass: Pass }) => {
                     onZoomTo={props.onProfileZoom}
                   />
                 )}
-                {!profile && props.loading && (
+                {!profile && waiting && (
                   <Skeleton
                     aria-busy
                     aria-label="Höhenprofil wird geladen"
@@ -555,13 +530,7 @@ const PassDetail = (props: Props & DetailState & { pass: Pass }) => {
             {/* The derived values, labelled as such – the summit values above
                 are what the series measured (Principle 3). */}
             <p className="text-muted-foreground text-2xs mt-1.5">
-              {periodLabel(props.period)} auf {fmtUnit(pass.elevation, "m")};
-              Niederschlag an {bucket.wetPct} % der Tage.{" "}
-              {valleyText(pass, bucket, signals.valley)} Tag{" "}
-              {sun.dayLength.toLocaleString("de-DE", {
-                maximumFractionDigits: 1,
-              })}{" "}
-              h, Sonne {clockTime(sun.sunrise)}–{clockTime(sun.sunset)}.
+              {climateText(pass, bucket, signals, props.period)}
             </p>
             <ClimateChart climate={climate} period={props.period} />
           </>
@@ -638,19 +607,7 @@ const TourDetail = (props: Props & { tour: Tour }) => {
         <span className="ml-1">hm · {tour.passes.length} Pässe</span>
       </p>
 
-      <div className="bg-muted/40 border-border/70 mt-3 flex flex-col gap-2 rounded-lg border p-3">
-        <StatusBadge cell={cell} period={props.period} />
-        {limited && (
-          <p className="text-muted-foreground text-xs leading-relaxed">
-            {limited}
-          </p>
-        )}
-        <SeasonStrip
-          cells={year?.cells ?? []}
-          current={props.period}
-          size="panel"
-        />
-      </div>
+      <VerdictBox period={props.period} text={limited} year={year} />
 
       <p className="mt-4 text-xs leading-relaxed">{tour.description}</p>
       <p className="text-muted-foreground mt-1.5 text-xs leading-relaxed">
@@ -766,8 +723,13 @@ const PanelHead = ({
   hero: boolean;
   kicker: string;
   name: string;
-  /** The detail file is still on its way; the hero reserves its box meanwhile. */
+  /**
+   * The detail file is on its way (`DetailState.phase === "pending"`) and the
+   * hero reserves its box meanwhile. A file that failed is not loading: it
+   * ends the wait rather than extending it.
+   */
   loading: boolean;
+  /** The slides worth showing; the failed ones are already out (`shownPhotos`). */
   photos: Photo[];
   onBroken: (src: string) => void;
 }) => (
@@ -946,16 +908,6 @@ export const DetailPanel = (props: Props) => {
   // The hash already *is* the shareable state; this only hands it over.
   const { share, done: shared } = useShare();
   /**
-   * Which borrowed files failed. It lives here rather than in the carousel
-   * because it decides the shape of the whole panel head: with every slide
-   * gone there is no picture for white letters to lie on, so the title drops
-   * back into the panel's own colours and the controls grow their surface.
-   *
-   * Keyed by URL, so a list left over from another entity cannot mark the
-   * wrong photo broken – which is why it needs no resetting.
-   */
-  const [broken, setBroken] = useState<string[]>([]);
-  /**
    * Whether the panel head has scrolled out from under the control row – for
    * this entity, which is what makes it reset itself: the key changes with
    * the selection, so a fresh panel starts at the top without an effect
@@ -968,12 +920,7 @@ export const DetailPanel = (props: Props) => {
   // carry all 201 passes' worth, and looking at the same pass again is free.
   // An entity with neither has no URL and nothing is fetched.
   const asset = props.detail[entityKey(selection)];
-  const { data, loading } = useFetch<DetailData>(asset?.url ?? null);
-  const loaded: DetailState = {
-    loading,
-    photos: data?.photos ?? [],
-    profiles: data?.profiles ?? {},
-  };
+  const { state, markBroken } = useDetailState(asset);
 
   // Move focus and scroll to the top whenever another entity is selected. The
   // selection is the trigger, not something the effect reads – which is what
@@ -1025,16 +972,7 @@ export const DetailPanel = (props: Props) => {
         ? "Rundtour"
         : `Rad-Ort · ${(entity as Town).country}`;
   const favorite = props.isFavorite(selection.kind, selection.slug);
-  const shown = loaded.photos.filter((ph) => !broken.includes(ph.src));
-  /**
-   * Whether the panel opens on a photograph. Known from the page's own
-   * `DetailAsset` before the file with the photos in it arrives, so the head
-   * has its shape from the first frame and nothing below it jumps; it only
-   * gives way once every slide has failed to load.
-   */
-  const hero =
-    (asset?.photos ?? 0) > 0 &&
-    (loaded.photos.length === 0 || shown.length > 0);
+  const hero = heroShape(state) === "hero";
   const key = entityKey(selection);
   const scrolled = expanded && pastHead === key;
   /**
@@ -1093,15 +1031,21 @@ export const DetailPanel = (props: Props) => {
           hero={hero}
           kicker={kicker}
           name={entity.name}
-          loading={loaded.photos.length === 0}
-          photos={shown}
-          onBroken={(src) =>
-            setBroken((br) => (br.includes(src) ? br : [...br, src]))
-          }
+          loading={state.phase === "pending"}
+          photos={shownPhotos(state)}
+          onBroken={markBroken}
         />
         <div className="px-4 pt-3">
+          {/* The file promised photos and did not arrive. Saying so is the
+              honest end of the wait: the head has already given up its hero,
+              and the profile block says the same thing in its own words. */}
+          {state.phase === "failed" && (asset?.photos ?? 0) > 0 && (
+            <p className="text-muted-foreground text-2xs">
+              Keine Fotos geladen – die Bilddatei ist nicht angekommen.
+            </p>
+          )}
           {selection.kind === "pass" && (
-            <PassDetail {...props} {...loaded} pass={entity as Pass} />
+            <PassDetail {...props} loaded={state} pass={entity as Pass} />
           )}
           {selection.kind === "tour" && (
             <TourDetail {...props} tour={entity as Tour} />

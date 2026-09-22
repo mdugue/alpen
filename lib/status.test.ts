@@ -6,10 +6,10 @@ import passesJson from "@/data/passes.json" with { type: "json" };
 import { valleyElevations } from "@/lib/profile";
 import {
   badgeWord,
+  bestText,
   cellAt,
   cellHint,
-  climateBucket,
-  gradeOf,
+  climateText,
   GRADE_HINT,
   inputAt,
   isPeriod,
@@ -21,20 +21,17 @@ import {
   periodLabel,
   PERIODS,
   ladderText,
-  LIMITING_REASONS,
-  reasonTexts,
+  reasonParagraph,
   REASON_ORDER,
-  REASON_PHRASE,
   REASON_SHORT,
-  REASON_TEXT,
-  REASON_WORD,
   seasonSummary,
-  signalOf,
   signalsOf,
-  signalText,
   SIGNALS,
+  STATUS_LABEL,
+  statusOf,
   statusRank,
   STATUS_ORDER,
+  statusWord,
   todayPeriod,
   tourText,
   tourYear,
@@ -55,6 +52,7 @@ import type {
   Status,
   Tour,
 } from "@/lib/types";
+import { fmt } from "@/lib/utils";
 
 const passes = passesJson as Pass[];
 const climate = climateJson as unknown as Record<string, ClimateYear>;
@@ -118,6 +116,10 @@ const verdict = (c: YearCell) => ({
 });
 
 const TOUR_NAMES = (slug: string) => ({ a: "Gavia", b: "Stilfser Joch" })[slug];
+
+/** A signal's clause with its value filled in, as `ladderText` prints it. */
+const reads = (s: (typeof SIGNALS)[number]) =>
+  s.reads.replace("$", `${fmt(s.value, s.digits ?? 0)} ${s.unit}`);
 
 /** One grade per character: `b` best, `o` good, `r` limited, anything else closed. */
 const grades = (spec: string): Grade[] =>
@@ -226,7 +228,7 @@ describe("the climate series", () => {
     });
     const input = { bucket: bucket({ snowPct: 27 }) };
     expect(
-      reasonTexts(p, 7, passVerdict(p, 7, input).reasons, input)[0],
+      reasonParagraph(p, 7, passVerdict(p, 7, input).reasons, input),
     ).toContain("Schneefall an 27 % der Tage");
   });
 
@@ -291,7 +293,7 @@ describe("the climate series", () => {
       const p = passes.find((x) => x.slug === slug);
       expect(p, slug).toBeDefined();
       expect(
-        passStatus(p!, t, { bucket: climateBucket(climate, slug, t) }),
+        passStatus(p!, t, inputAt({ climate: climate[slug] }, t)),
         `${slug} ${periodLabel(t)}`,
       ).toBe(expected);
     }
@@ -413,10 +415,22 @@ describe("the summer axis (plan 13)", () => {
     );
     expect(best).not.toBeNull();
     for (const [i, t] of PERIODS.entries()) {
+      const { grade, status } = cells[i]!;
       const inBest = t >= best![0] && t <= best![1];
-      expect(cells[i]!.grade, periodLabel(t)).toBe(
-        gradeOf(cells[i]!.status, inBest),
+      // The split written out rather than taken from the function that makes
+      // it: closed stays closed, risky is the caveat, and open is only "beste
+      // Zeit" inside the window.
+      expect(grade, periodLabel(t)).toBe(
+        status === "closed"
+          ? "closed"
+          : status === "risky"
+            ? "limited"
+            : inBest
+              ? "best"
+              : "good",
       );
+      // And the way back is the same split read the other way round.
+      expect(statusOf(grade), periodLabel(t)).toBe(status);
     }
   });
 
@@ -508,7 +522,7 @@ describe("season strips and best periods", () => {
     const year = passYear(p, { climate: climate[p.slug] });
     expect(year.cells).toHaveLength(24);
     expect(cellAt(year, 8).status).toBe(
-      passStatus(p, 8, { bucket: climateBucket(climate, p.slug, 8) }),
+      passStatus(p, 8, inputAt({ climate: climate[p.slug] }, 8)),
     );
   });
 
@@ -729,15 +743,30 @@ test("status matrix for all passes × 24 half-months", () => {
  */
 describe("one status vocabulary", () => {
   test("every reason has a word, two phrases and a sentence", () => {
+    // The four tables are the module's own; what is pinned here is what they
+    // produce, which is what the panel and the strip actually show.
+    const p = pass({});
     for (const reason of REASON_ORDER) {
-      expect(REASON_WORD[reason]).toBeTruthy();
-      expect(REASON_PHRASE[reason]).toBeTruthy();
-      expect(REASON_SHORT[reason]).toBeTruthy();
-      expect(typeof REASON_TEXT[reason]).toBe("function");
+      // The word, on the badge of a limited cell.
+      const word = statusWord("risky", reason);
+      expect(word, reason).toContain(STATUS_LABEL.risky);
+      if (reason !== "outside-window") expect(word, reason).toContain(":");
+      // The standalone phrase, in the strip's popover.
+      expect(
+        cellHint(
+          cell({ grade: "limited", reasons: [reason], status: "risky" }),
+        ),
+        reason,
+      ).toMatch(/^Fahrbar, aber mit einem Haken: .+\.$/u);
+      // The bare noun phrase, for the list of eight in the legend.
+      expect(REASON_SHORT[reason], reason).toBeTruthy();
+      // And the sentence with its number, in the panel's paragraph.
+      expect(reasonParagraph(p, 7, [reason]), reason).toBeTruthy();
     }
-    // And no table carries a key the ladder has never heard of.
-    for (const table of [REASON_WORD, REASON_PHRASE, REASON_SHORT, REASON_TEXT])
-      expect(Object.keys(table).toSorted()).toEqual(REASON_ORDER.toSorted());
+    // No table carries a key the ladder has never heard of.
+    expect(Object.keys(REASON_SHORT).toSorted()).toEqual(
+      REASON_ORDER.toSorted(),
+    );
     // The short form is what a list of eight can hold: no sub-clause, so no
     // comma. The standalone phrase may carry one, and two of them do.
     for (const reason of REASON_ORDER)
@@ -746,10 +775,8 @@ describe("one status vocabulary", () => {
 
   test("the limited hint names every reason that can limit, in ladder order", () => {
     // Every reason but the closing one can make a cell "eingeschränkt".
-    expect(LIMITING_REASONS).toEqual(
-      REASON_ORDER.filter((r) => r !== "outside-window"),
-    );
-    const positions = LIMITING_REASONS.map((r) =>
+    const limiting = REASON_ORDER.filter((r) => r !== "outside-window");
+    const positions = limiting.map((r) =>
       GRADE_HINT.limited.indexOf(REASON_SHORT[r]),
     );
     expect(positions).not.toContain(-1);
@@ -766,10 +793,8 @@ describe("one status vocabulary", () => {
     // which would print the threshold nowhere at all.
     for (const signal of SIGNALS) {
       expect(signal.reads).toContain("$");
-      expect(signalText(signal)).toContain(
-        String(signal.value).replace(".", ","),
-      );
-      expect(paragraph).toContain(signalText(signal));
+      expect(reads(signal)).toContain(String(signal.value).replace(".", ","));
+      expect(paragraph).toContain(reads(signal));
     }
     // Every numeric signal belongs to a reason the ladder knows, and the one
     // without a reason is the best window's bar.
@@ -787,16 +812,72 @@ describe("one status vocabulary", () => {
       "short-day",
       "cold-descent",
     ]);
-    expect(LIMITING_REASONS.filter((r) => signalOf(r) === undefined)).toEqual([
-      "window-edge",
-      "altitude",
-    ]);
+    const named = new Set(
+      SIGNALS.map((s) => s.reason).filter((r) => r !== null),
+    );
+    expect(
+      REASON_ORDER.filter((r) => r !== "outside-window" && !named.has(r)),
+    ).toEqual(["window-edge", "altitude"]);
     // The limiting signals appear in ladder order, which is what makes the
     // paragraph's "das erste Signal in dieser Reihenfolge" true.
-    const listed = LIMITING_REASONS.map(signalOf)
-      .filter((s) => s !== undefined)
-      .map((s) => paragraph.indexOf(signalText(s)));
+    const listed = SIGNALS.filter((s) => s.reason !== null).map((s) =>
+      paragraph.indexOf(reads(s)),
+    );
     expect(listed).toEqual(listed.toSorted((a, b) => a - b));
+  });
+
+  test("the best window is one sentence at every site that names it", () => {
+    expect(bestText({ best: [7, 9.5], cells: [] })).toBe(
+      "beste Zeit Anfang Juli – Ende September",
+    );
+    // A year without a run worth the name says nothing rather than naming a
+    // window of one half-month.
+    expect(bestText({ best: null, cells: [] })).toBeNull();
+    expect(bestText()).toBeNull();
+  });
+
+  test("the caveats of a cell are one paragraph, most important first", () => {
+    const p = pass({ elevation: 1500, season: { closes: 10.5, opens: 6 } });
+    const input = { bucket: bucket({ snowPct: 30, wetPct: 80 }), valley: 800 };
+    const paragraph = reasonParagraph(
+      p,
+      7,
+      passVerdict(p, 7, input).reasons,
+      input,
+    );
+    expect(paragraph).toContain("Schneefall an 30 % der Tage");
+    expect(paragraph).toContain("Regen an 80 % der Tage");
+    expect(paragraph!.indexOf("Schneefall")).toBeLessThan(
+      paragraph!.indexOf("Regen"),
+    );
+    // Nothing holds the half-month back, so there is no paragraph – not an
+    // empty one the box would still make room for.
+    expect(reasonParagraph(p, 7, [])).toBeNull();
+  });
+
+  test("the climate paragraph names what is derived and formats like the rest", () => {
+    const p = pass({ elevation: 2000, lat: 47 });
+    const text = climateText(
+      p,
+      bucket({ tmax: 12, wetPct: 20 }),
+      { valley: 900 },
+      7,
+    );
+    expect(text).toStartWith(
+      "Anfang Juli auf 2.000\u00A0m; Niederschlag an 20 % der Tage.",
+    );
+    // Principle 3: the derived value never shows without the word and its
+    // error, and the summit value it comes from stands above it in the panel.
+    expect(text).toContain(
+      "Im Tal (900\u00A0m) um 19 °C, abgeleitet (± 3 °C).",
+    );
+    // The day length goes through `fmt` like every other number, rather than
+    // through a locale call of the panel's own.
+    expect(text).toMatch(/Tag [\d,]+ h, Sonne \d{2}:\d{2}–\d{2}:\d{2}\.$/u);
+    // No ascent profile, no valley to derive from – and it says so.
+    expect(climateText(p, bucket(), {}, 7)).toContain(
+      "Talwert nicht ableitbar",
+    );
   });
 
   test("a closed tour says the closed word, not the limited one", () => {

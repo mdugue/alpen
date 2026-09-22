@@ -6,7 +6,7 @@ import {
   REACH_MAX_KM,
 } from "@/lib/geo";
 import type { ReachBand } from "@/lib/geo";
-import { cellAt, periodIndex, PERIODS } from "@/lib/status";
+import { cellAt, periodIndex, PERIODS, statusOf } from "@/lib/status";
 import type { Grade, Year, YearCell, Years } from "@/lib/status";
 import type { LatLon, Pass, Period, Status, Town } from "@/lib/types";
 
@@ -36,13 +36,6 @@ export interface GradeCount {
   limited: number;
   closed: number;
 }
-
-export const GRADE_ORDER: readonly Grade[] = [
-  "best",
-  "good",
-  "limited",
-  "closed",
-];
 
 const emptyCount = (): GradeCount => ({
   best: 0,
@@ -96,7 +89,7 @@ const rideable = (c: GradeCount) => c.best + c.good;
 export const RIDEABLE_BEST_SHARE = 0.75;
 export const RIDEABLE_GOOD_SHARE = 0.45;
 
-export const gradeOf = (c: GradeCount, peak: number): Grade => {
+export const gradeOfBase = (c: GradeCount, peak: number): Grade => {
   const n = rideable(c);
   if (n === 0 || peak === 0) return "closed";
   if (n >= peak * RIDEABLE_BEST_SHARE) return "best";
@@ -165,14 +158,8 @@ export interface Destination {
  * what explains this cell, and the count is shown next to it.
  */
 const cellOf = (counts: GradeCount, peak: number): YearCell => {
-  const grade = gradeOf(counts, peak);
-  return {
-    grade,
-    reasons: [],
-    snowy: false,
-    status:
-      grade === "closed" ? "closed" : grade === "limited" ? "risky" : "open",
-  };
+  const grade = gradeOfBase(counts, peak);
+  return { grade, reasons: [], snowy: false, status: statusOf(grade) };
 };
 
 /**
@@ -232,7 +219,7 @@ export const destinationAt = (
   }
   reached.sort((a, b) => b.score - a.score);
   // The whole year is graded against the best half-month this base has, so
-  // the strip shows its season rather than its size (see `gradeOf`).
+  // the strip shows its season rather than its size (see `gradeOfBase`).
   const peak = Math.max(0, ...perPeriod.map(rideable));
   const cells = perPeriod.map((c) => cellOf(c, peak));
   const counts = perPeriod[periodIndex(period)] ?? emptyCount();

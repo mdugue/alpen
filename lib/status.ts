@@ -130,7 +130,7 @@ export const REASON_ORDER: StatusReason[] = [
 ];
 
 /** The one word the badge and the strip carry for a limited cell. */
-export const REASON_WORD: Record<StatusReason, string> = {
+const REASON_WORD: Record<StatusReason, string> = {
   altitude: "Höhe",
   "cold-descent": "kalte Abfahrt",
   frost: "Frost",
@@ -147,10 +147,10 @@ export const REASON_WORD: Record<StatusReason, string> = {
  * "eingeschränkt" – a snowy or a hot half-month is not a closure – so the
  * reasons behind "eingeschränkt" are the ladder without this one.
  */
-export const CLOSING_REASON: StatusReason = "outside-window";
+const CLOSING_REASON: StatusReason = "outside-window";
 
 /** Every reason that can make a cell "eingeschränkt", in ladder order. */
-export const LIMITING_REASONS: StatusReason[] = REASON_ORDER.filter(
+const LIMITING_REASONS: StatusReason[] = REASON_ORDER.filter(
   (r) => r !== CLOSING_REASON,
 );
 
@@ -162,7 +162,7 @@ export const LIMITING_REASONS: StatusReason[] = REASON_ORDER.filter(
  * half-month instead. That is why it may carry its own sub-clause, and why
  * the list in `GRADE_HINT.limited` uses `REASON_SHORT` rather than this.
  */
-export const REASON_PHRASE: Record<StatusReason, string> = {
+const REASON_PHRASE: Record<StatusReason, string> = {
   altitude: "Höhenlage, Schnee und Eis sind möglich",
   "cold-descent": "eine kalte Abfahrt",
   frost: "Frost in den Nächten",
@@ -290,14 +290,14 @@ export const cellHint = (cell: YearCell): string => {
 export const GRADE_ORDER: Grade[] = ["best", "good", "limited", "closed"];
 
 /** Worse is lower; a tour cell is the minimum over its passes. */
-export const GRADE_RANK: Record<Grade, number> = {
+const GRADE_RANK: Record<Grade, number> = {
   best: 3,
   closed: 0,
   good: 2,
   limited: 1,
 };
 
-export const gradeOf = (status: Status, inBest: boolean): Grade =>
+const gradeOf = (status: Status, inBest: boolean): Grade =>
   status === "closed"
     ? "closed"
     : status === "risky"
@@ -324,7 +324,7 @@ export interface VerdictInput {
 }
 
 /** The signals of one pass for all 24 half-months. */
-export interface PassSignals {
+interface PassSignals {
   climate?: ClimateYear | null;
   valley?: number | null;
 }
@@ -360,7 +360,7 @@ export const inputAt = (
  * re-run them after a change.
  */
 export const SNOW_RISKY_PCT = 20;
-export const FROST_RISKY_PCT = 80;
+const FROST_RISKY_PCT = 80;
 /** "Beste Zeit" only counts half-months that are quieter than this. */
 export const SNOW_BEST_PCT = 10;
 /** Mean daily maximum in the valley, derived from the summit value. */
@@ -372,7 +372,7 @@ export const SHORT_DAY_HOURS = 10.75;
 /** Mean daily maximum at the summit: the warmest moment of the descent. */
 export const COLD_DESCENT_TMAX = 8;
 /** Standard-atmosphere lapse rate in °C per m. */
-export const LAPSE_RATE = 0.0065;
+const LAPSE_RATE = 0.0065;
 /**
  * How far the derived valley value sits from a measured one, in °C. Principle
  * 3: it travels with every sentence that prints the derived value, so the
@@ -384,7 +384,7 @@ export const VALLEY_TMAX_ERROR = 3;
 export const daysOf = (pct: number) => Math.round((pct / 100) * 15);
 
 /** One threshold, in the words the scales dialog explains it with. */
-export interface Signal {
+interface Signal {
   /**
    * The reason the threshold fires, or null for the bar the best window has
    * to clear – that one lifts nothing and lowers nothing, it only decides
@@ -461,19 +461,18 @@ export const lapseText = (): string =>
   `${fmt(LAPSE_RATE * 100, 2)} °C je 100 m`;
 
 /** The value of a signal with its unit, e.g. "20 %" or "10,75 Stunden". */
-export const signalValue = (s: Signal): string =>
+const signalValue = (s: Signal): string =>
   `${fmt(s.value, s.digits ?? 0)} ${s.unit}`;
 
 /** A signal's clause with its value filled in, e.g. "Schneefall ab 20 % der Tage". */
-export const signalText = (s: Signal): string =>
-  s.reads.replace("$", signalValue(s));
+const signalText = (s: Signal): string => s.reads.replace("$", signalValue(s));
 
 /** The signal of one reason, for the dialog and the calibration script. */
-export const signalOf = (reason: StatusReason): Signal | undefined =>
+const signalOf = (reason: StatusReason): Signal | undefined =>
   SIGNALS.find((s) => s.reason === reason);
 
 /** The bar the best window has to clear: the one signal without a reason. */
-export const BEST_SIGNAL: Signal = SIGNALS.find((s) => s.reason === null)!;
+const BEST_SIGNAL: Signal = SIGNALS.find((s) => s.reason === null)!;
 
 /**
  * The "Vier Stufen, eine Leiter" sentence of the scales dialog, in ladder
@@ -574,35 +573,34 @@ interface ReasonContext {
  * sentence names its number and where it comes from: a share of days from a
  * ten-year average, a derived valley value, an astronomical day length.
  */
-export const REASON_TEXT: Record<StatusReason, (ctx: ReasonContext) => string> =
-  {
-    altitude: ({ pass, t }) =>
-      `${periodLabel(t)} ist auf ${fmt(pass.elevation)} m Grenzbereich: Schnee und Eis sind möglich, auch wenn die Straße offen ist.`,
-    "cold-descent": ({ bucket }) =>
-      `Am Gipfel im Schnitt höchstens ${fmt(bucket?.tmax ?? 0)} °C (ERA5-Land 2015–2024) – mit Fahrtwind ist die Abfahrt eine um den Gefrierpunkt.`,
-    frost: ({ bucket }) =>
-      `Frost in ${bucket?.frostPct ?? 0} % der Nächte (≈ ${daysOf(bucket?.frostPct ?? 0)} von 15, ERA5-Land 2015–2024) – nasse Straßen können überfrieren, die Abfahrt wird kalt.`,
-    heat: ({ pass, bucket, valley }) =>
-      `Im Tal um ${fmt(bucket ? (valleyTmax(pass, bucket, valley) ?? 0) : 0)} °C am Nachmittag (aus dem Gipfelwert abgeleitet, ± ${VALLEY_TMAX_ERROR} °C) – ab dem späten Vormittag nur noch oben angenehm.`,
-    "outside-window": ({ pass }) =>
+const REASON_TEXT: Record<StatusReason, (ctx: ReasonContext) => string> = {
+  altitude: ({ pass, t }) =>
+    `${periodLabel(t)} ist auf ${fmt(pass.elevation)} m Grenzbereich: Schnee und Eis sind möglich, auch wenn die Straße offen ist.`,
+  "cold-descent": ({ bucket }) =>
+    `Am Gipfel im Schnitt höchstens ${fmt(bucket?.tmax ?? 0)} °C (ERA5-Land 2015–2024) – mit Fahrtwind ist die Abfahrt eine um den Gefrierpunkt.`,
+  frost: ({ bucket }) =>
+    `Frost in ${bucket?.frostPct ?? 0} % der Nächte (≈ ${daysOf(bucket?.frostPct ?? 0)} von 15, ERA5-Land 2015–2024) – nasse Straßen können überfrieren, die Abfahrt wird kalt.`,
+  heat: ({ pass, bucket, valley }) =>
+    `Im Tal um ${fmt(bucket ? (valleyTmax(pass, bucket, valley) ?? 0) : 0)} °C am Nachmittag (aus dem Gipfelwert abgeleitet, ± ${VALLEY_TMAX_ERROR} °C) – ab dem späten Vormittag nur noch oben angenehm.`,
+  "outside-window": ({ pass }) =>
+    pass.season
+      ? `Außerhalb des typischen Öffnungsfensters (${periodLabel(pass.season.opens)} bis ${periodLabel(pass.season.closes)}).`
+      : "Außerhalb der typischen Saison.",
+  "short-day": ({ pass, t }) => {
+    const sun = sunTimes(pass.lat, pass.lon, periodDate(t));
+    return `Nur ${fmt(sun.dayLength, 1)} Stunden Tageslicht, Sonnenuntergang gegen ${clockTime(sun.sunset)} – für eine lange Runde wird es knapp.`;
+  },
+  snow: ({ bucket }) =>
+    `Schneefall an ${bucket?.snowPct ?? 0} % der Tage (≈ ${daysOf(bucket?.snowPct ?? 0)} von 15, ERA5-Land 2015–2024) – meist bleibt die Straße befahrbar, planbar ist der Zeitraum aber nicht.`,
+  wet: ({ bucket }) =>
+    `Regen an ${bucket?.wetPct ?? 0} % der Tage (≈ ${daysOf(bucket?.wetPct ?? 0)} von 15, ERA5-Land 2015–2024) – Staulage; ein trockenes Fenster ist Glückssache.`,
+  "window-edge": ({ pass }) =>
+    `Am Rand des Öffnungsfensters${
       pass.season
-        ? `Außerhalb des typischen Öffnungsfensters (${periodLabel(pass.season.opens)} bis ${periodLabel(pass.season.closes)}).`
-        : "Außerhalb der typischen Saison.",
-    "short-day": ({ pass, t }) => {
-      const sun = sunTimes(pass.lat, pass.lon, periodDate(t));
-      return `Nur ${fmt(sun.dayLength, 1)} Stunden Tageslicht, Sonnenuntergang gegen ${clockTime(sun.sunset)} – für eine lange Runde wird es knapp.`;
-    },
-    snow: ({ bucket }) =>
-      `Schneefall an ${bucket?.snowPct ?? 0} % der Tage (≈ ${daysOf(bucket?.snowPct ?? 0)} von 15, ERA5-Land 2015–2024) – meist bleibt die Straße befahrbar, planbar ist der Zeitraum aber nicht.`,
-    wet: ({ bucket }) =>
-      `Regen an ${bucket?.wetPct ?? 0} % der Tage (≈ ${daysOf(bucket?.wetPct ?? 0)} von 15, ERA5-Land 2015–2024) – Staulage; ein trockenes Fenster ist Glückssache.`,
-    "window-edge": ({ pass }) =>
-      `Am Rand des Öffnungsfensters${
-        pass.season
-          ? ` (${periodLabel(pass.season.opens)} bis ${periodLabel(pass.season.closes)})`
-          : ""
-      } – Öffnung und Sperrung verschieben sich je nach Winter um Wochen.`,
-  };
+        ? ` (${periodLabel(pass.season.opens)} bis ${periodLabel(pass.season.closes)})`
+        : ""
+    } – Öffnung und Sperrung verschieben sich je nach Winter um Wochen.`,
+};
 
 /**
  * The sentences behind a cell's reasons, most important first. The reasons
@@ -610,7 +608,7 @@ export const REASON_TEXT: Record<StatusReason, (ctx: ReasonContext) => string> =
  * them, and running the verdict a second time to read them back is how the
  * panel and the row used to be able to disagree.
  */
-export const reasonTexts = (
+const reasonTexts = (
   pass: Pass,
   t: Period,
   reasons: StatusReason[],
@@ -638,13 +636,6 @@ export type PassIndex = Map<string, Pass>;
 
 export const indexBySlug = (passes: Pass[]): PassIndex =>
   new Map(passes.map((p) => [p.slug, p]));
-
-/** The climate bucket of one pass for one half-month, if a series exists. */
-export const climateBucket = (
-  climate: Record<string, ClimateYear> | undefined,
-  slug: string,
-  t: Period,
-): ClimateBucket | null => climate?.[slug]?.[periodIndex(t)] ?? null;
 
 /** Longest run of `true` in a circular series of 24; null when there is none. */
 interface Run {
@@ -866,7 +857,7 @@ export const badgeWord = (cell: YearCell): string =>
  * derived number never shows without the word and without its error, and the
  * error is the one `REASON_TEXT.heat` prints.
  */
-export const valleyText = (
+const valleyText = (
   pass: Pass,
   bucket: ClimateBucket,
   valley: number | null | undefined,
@@ -875,6 +866,49 @@ export const valleyText = (
   return tmax === null || valley === null || valley === undefined
     ? "Talwert nicht ableitbar, kein Anstiegsprofil."
     : `Im Tal (${fmtUnit(valley, "m")}) um ${fmt(Math.round(tmax))} °C, abgeleitet (± ${VALLEY_TMAX_ERROR} °C).`;
+};
+
+/**
+ * The one "beste Zeit X – Y" line, next to the badge of a pass, a tour or a
+ * base. Null where the year has no run worth the name: a single quiet
+ * half-month is not a season.
+ */
+export const bestText = (year?: Year): string | null =>
+  year?.best
+    ? `beste Zeit ${periodLabel(year.best[0])} – ${periodLabel(year.best[1])}`
+    : null;
+
+/**
+ * The paragraph under a pass's badge: every caveat of the chosen half-month,
+ * most important first. The reasons come from the cell rather than from a
+ * second verdict, so the paragraph and the badge describe one half-month.
+ */
+export const reasonParagraph = (
+  pass: Pass,
+  t: Period,
+  reasons: StatusReason[],
+  input?: VerdictInput | null,
+): string | null => {
+  const texts = reasonTexts(pass, t, reasons, input);
+  return texts.length > 0 ? texts.join(" ") : null;
+};
+
+/**
+ * The "abgeleitet" paragraph under the climate figures: what the half-month
+ * is like at the summit, what that makes of the valley, and how much daylight
+ * there is for it. The summit numbers above it are what the series measured;
+ * everything derived from them is named as derived and carries its error
+ * (Principle 3), and the day length is formatted like every other number in
+ * the app rather than by a locale call of its own.
+ */
+export const climateText = (
+  pass: Pass,
+  bucket: ClimateBucket,
+  signals: PassSignals,
+  t: Period,
+): string => {
+  const sun = sunTimes(pass.lat, pass.lon, periodDate(t));
+  return `${periodLabel(t)} auf ${fmtUnit(pass.elevation, "m")}; Niederschlag an ${fmt(bucket.wetPct)} % der Tage. ${valleyText(pass, bucket, signals.valley)} Tag ${fmt(sun.dayLength, 1)} h, Sonne ${clockTime(sun.sunrise)}–${clockTime(sun.sunset)}.`;
 };
 
 /**

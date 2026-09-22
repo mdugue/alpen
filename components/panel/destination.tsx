@@ -1,9 +1,10 @@
 "use client";
 
 import { Section } from "@/components/panel/section";
+import { VerdictBox } from "@/components/panel/verdict-box";
 import { Rating } from "@/components/rating";
 import { SeasonStrip } from "@/components/season-strip";
-import { StatusBadge, StatusDot } from "@/components/status-badge";
+import { StatusDot } from "@/components/status-badge";
 import type { Selection } from "@/lib/app-state";
 import type {
   Bases,
@@ -11,9 +12,9 @@ import type {
   ReachedPass,
   ReachedTown,
 } from "@/lib/destination";
-import { destinationText, GRADE_ORDER } from "@/lib/destination";
+import { destinationText } from "@/lib/destination";
 import { REACH_BANDS, REACH_MAX_KM } from "@/lib/geo";
-import { cellAt, periodLabel } from "@/lib/status";
+import { bestText, GRADE_ORDER } from "@/lib/status";
 import type { Grade } from "@/lib/status";
 import type { Period } from "@/lib/types";
 import { cn, fmt, fmtUnit } from "@/lib/utils";
@@ -212,82 +213,69 @@ export const DestinationSection = ({
   onHover: (sel: Selection | null) => void;
   onSelect: (slug: string) => void;
   title?: string;
-}) => {
-  const cell = cellAt(d.year, period);
-  return (
-    <>
-      <div className="bg-muted/40 border-border/70 mt-3 flex flex-col gap-2 rounded-lg border p-3">
-        <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
-          <StatusBadge cell={cell} period={period} />
-          {d.year.best && (
-            <span className="text-muted-foreground text-xs">
-              beste Zeit {periodLabel(d.year.best[0])} –{" "}
-              {periodLabel(d.year.best[1])}
-            </span>
-          )}
-        </div>
-        <p className="text-muted-foreground text-xs leading-relaxed">
-          {destinationText(d)}
-        </p>
-        <GradeBar d={d} />
-        <SeasonStrip cells={d.year.cells} current={period} size="panel" />
-        {/* What the 24 cells are graded against, said out loud. They are
-            relative to this base's own best half-month, so the strip shows
-            when to come rather than how big the place is; the magnitude is
-            the sentence and the bar above (`gradeOf` in lib/destination.ts). */}
-        <p className="text-muted-foreground text-2xs">
-          Abgeleitet aus den {d.total} Pässen im Umkreis – der Ort selbst hat
-          keine eigene Klimareihe. Der Streifen zeigt den Jahresverlauf im
-          Verhältnis zur besten Zeit dieses Orts
-          {d.peak > 0 && <> (dann sind {fmt(d.peak)} Pässe gut befahrbar)</>}.
-        </p>
-      </div>
+}) => (
+  <>
+    <VerdictBox
+      bar={<GradeBar d={d} />}
+      best={bestText(d.year)}
+      period={period}
+      text={destinationText(d)}
+      year={d.year}
+    >
+      {/* What the 24 cells are graded against, said out loud. They are
+          relative to this base's own best half-month, so the strip shows when
+          to come rather than how big the place is; the magnitude is the
+          sentence and the bar above (`gradeOfBase` in lib/destination.ts). */}
+      <p className="text-muted-foreground text-2xs">
+        Abgeleitet aus den {d.total} Pässen im Umkreis – der Ort selbst hat
+        keine eigene Klimareihe. Der Streifen zeigt den Jahresverlauf im
+        Verhältnis zur besten Zeit dieses Orts
+        {d.peak > 0 && <> (dann sind {fmt(d.peak)} Pässe gut befahrbar)</>}.
+      </p>
+    </VerdictBox>
 
-      <Section
-        id="destination-passes"
-        info={`Nach Zustand im gewählten Halbmonat, Schönheit und Nähe sortiert. Nähe zählt gleitend: ein Pass wird nicht bei einem runden Kilometerwert wertlos, sondern verliert mit der Entfernung an Gewicht. Jenseits von ${REACH_MAX_KM} km endet die Liste.`}
-        title={title}
-      >
-        {d.total === 0 ? (
-          <p className="text-muted-foreground text-xs">
-            Kein Pass im Umkreis von {REACH_MAX_KM} km.
-          </p>
-        ) : (
-          <div className="flex flex-col gap-3">
-            {d.bands.map((g) => (
-              <div key={g.band}>
-                <BandHeader
-                  label={g.label}
-                  n={g.passes.length}
-                  maxKm={bandMax(g.band)}
-                  noun="Pässe"
-                />
-                <ul className="-mx-1 flex flex-col">
-                  {g.passes.map((r) => (
-                    <PassRow
-                      key={r.pass.slug}
-                      r={r}
-                      period={period}
-                      hovered={
-                        hovered?.kind === "pass" && hovered.slug === r.pass.slug
-                      }
-                      onHover={(over) =>
-                        onHover(
-                          over ? { kind: "pass", slug: r.pass.slug } : null,
-                        )
-                      }
-                      onSelect={() => onSelect(r.pass.slug)}
-                    />
-                  ))}
-                </ul>
-              </div>
-            ))}
-          </div>
-        )}
-      </Section>
-    </>
-  );
-};
+    <Section
+      id="destination-passes"
+      info={`Nach Zustand im gewählten Halbmonat, Schönheit und Nähe sortiert. Nähe zählt gleitend: ein Pass wird nicht bei einem runden Kilometerwert wertlos, sondern verliert mit der Entfernung an Gewicht. Jenseits von ${REACH_MAX_KM} km endet die Liste.`}
+      title={title}
+    >
+      {d.total === 0 ? (
+        <p className="text-muted-foreground text-xs">
+          Kein Pass im Umkreis von {REACH_MAX_KM} km.
+        </p>
+      ) : (
+        <div className="flex flex-col gap-3">
+          {d.bands.map((g) => (
+            <div key={g.band}>
+              <BandHeader
+                label={g.label}
+                n={g.passes.length}
+                maxKm={bandMax(g.band)}
+                noun="Pässe"
+              />
+              <ul className="-mx-1 flex flex-col">
+                {g.passes.map((r) => (
+                  <PassRow
+                    key={r.pass.slug}
+                    r={r}
+                    period={period}
+                    hovered={
+                      hovered?.kind === "pass" && hovered.slug === r.pass.slug
+                    }
+                    onHover={(over) =>
+                      onHover(over ? { kind: "pass", slug: r.pass.slug } : null)
+                    }
+                    onSelect={() => onSelect(r.pass.slug)}
+                  />
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+      )}
+    </Section>
+  </>
+);
 
 /**
  * The inverse block: which towns this road could be ridden from.

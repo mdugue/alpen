@@ -5,6 +5,7 @@ import type { Pass, RouteGeometry, Tour } from "@/lib/types";
 // Relative on purpose: next.config.ts loads this module outside the bundler,
 // where the "@/" alias is not resolved for transitive imports.
 import { ascentKey, tourKey } from "./route-key";
+import { fmt } from "./utils";
 
 /**
  * The static GeoJSON files MapLibre loads instead of the page shipping route
@@ -201,7 +202,7 @@ export const tourFeatures = (
         kind: "tour",
         name: t.name,
         slug: t.slug,
-        subtitle: `ca. ${t.km} km · ${t.elevationGain.toLocaleString("de-DE")} hm`,
+        subtitle: `ca. ${fmt(t.km)} km · ${fmt(t.elevationGain)} hm`,
       }),
     ];
   });

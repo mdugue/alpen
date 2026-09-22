@@ -99,7 +99,7 @@ const summary = (bar: SeasonBar, lat: number | null, long: boolean) => {
 const spoken = (bar: SeasonBar, lat: number | null) =>
   [
     `${periodLabel(bar.period)}: ${bar.grade ? `meist ${GRADE_LABEL[bar.grade]}` : "kein Pass in dieser Auswahl"}`,
-    `${bar.best} beste Zeit, ${bar.good} gut, ${bar.limited} eingeschränkt, ${bar.closed} oft gesperrt`,
+    GRADE_ORDER.map((g) => `${fmt(bar[g])} ${GRADE_LABEL[g]}`).join(", "),
     summary(bar, lat, true),
   ]
     .filter(Boolean)

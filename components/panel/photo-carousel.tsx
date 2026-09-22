@@ -67,12 +67,12 @@ const Scrim = () => (
  * would smear the attribution as well – and that layer is scaled up, because
  * a blur samples past the edges and would otherwise fade them out.
  *
- * `count` is what the page knows before the file arrives (`DetailAsset`). The
- * panel opens first and the photos follow, so without it the hero would appear
- * late and push everything below it down; with it the box is there from the
- * first frame and the photo fills it in place. It is also what decides the
- * shape of the whole panel head, one commit before the fetch resolves: an
- * entity with photos gets the overlaid title, one without gets `fallback`.
+ * While the file is still on its way the box is reserved at the hero's own
+ * height rather than left empty: the panel opens first and the photos follow,
+ * and a carousel that appeared afterwards would push everything below it down.
+ * What is known that early is the count in the page's `DetailAsset`, which is
+ * also what decides the shape of the whole panel head (`heroShape` in
+ * lib/detail-state.ts).
  *
  * Borrowed files can also fail to arrive, and this app is built for exactly
  * the connection where they do – the holiday Wi-Fi the whole payload
@@ -80,12 +80,12 @@ const Scrim = () => (
  * frame, so the slide became a grey box holding the file's own Commons title
  * over two lines, above a caption crediting a photographer for a photo nobody
  * could see. A slide that failed is therefore dropped rather than patched up:
- * the carousel renumbers itself around it, and once every slide has failed
- * the hero gives way to `fallback` – the same title block an entity without
- * photos gets, because white letters need a picture under them. There is no
- * placeholder that would not be a claim about a picture that is not there
- * (the skeleton below is a claim about one that is still on its way, which is
- * a different thing).
+ * it is reported through `onBroken` and the carousel renumbers itself around
+ * it, and once every slide has failed the head gives way to the plain title
+ * block an entity without photos gets, because white letters need a picture
+ * under them. There is no placeholder that would not be a claim about a
+ * picture that is not there (the skeleton below is a claim about one that is
+ * still on its way, which is a different thing).
  */
 export const PhotoCarousel = ({
   loading,
@@ -94,13 +94,11 @@ export const PhotoCarousel = ({
 }: {
   /** The detail file is still on its way; the box is reserved meanwhile. */
   loading: boolean;
-  /** The slides that are still worth showing – the panel filters the failed ones. */
+  /** The slides that are still worth showing – the failed ones are already out. */
   photos: Photo[];
   /** One slide's file did not arrive. */
   onBroken: (src: string) => void;
 }) => {
-  const shown = photos;
-
   if (loading)
     return (
       <>
@@ -117,7 +115,7 @@ export const PhotoCarousel = ({
   return (
     <Carousel aria-label="Bilder" opts={{ duration: 18 }}>
       <CarouselContent className="ml-0">
-        {shown.map((photo, i) => (
+        {photos.map((photo, i) => (
           <CarouselItem className="pl-0" key={photo.src}>
             <figure className="bg-muted relative overflow-hidden">
               {photo.blur && (
@@ -161,9 +159,9 @@ export const PhotoCarousel = ({
                 >
                   {photo.license}
                 </a>
-                {shown.length > 1 && (
+                {photos.length > 1 && (
                   <span className="ml-auto shrink-0 tabular-nums opacity-70">
-                    {i + 1}/{shown.length}
+                    {i + 1}/{photos.length}
                   </span>
                 )}
               </figcaption>
@@ -171,7 +169,7 @@ export const PhotoCarousel = ({
           </CarouselItem>
         ))}
       </CarouselContent>
-      {shown.length > 1 && (
+      {photos.length > 1 && (
         <>
           <CarouselPrevious
             aria-label="Vorheriges Bild"
