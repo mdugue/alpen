@@ -8,6 +8,95 @@ Where the data in those files comes from is
 [`data-pipeline.md`](./data-pipeline.md); what it means is
 [`data-model.md`](./data-model.md).
 
+## Functional core, imperative shell
+
+**Decisions are values; effects apply them.** The app is four pure modules
+behind four adapters, and the pipeline is the same shape one layer down. A
+decision is a function of its arguments, so it has a table test; an effect
+takes the value that function produced and hands it to the platform, so it has
+nothing left to decide.
+
+```mermaid
+flowchart LR
+  subgraph ADAPT["adapters · imperative shell"]
+    HA["hash adapter<br/>parseHash → action · state → hash"]
+    SA["storage adapter<br/>STORAGE table · useSyncExternalStore"]
+    MA["MapLibre adapter<br/>applyScene · applyCamera · events → actions"]
+    FA["fetch adapter<br/>useDetailState fetcher · weather"]
+  end
+  subgraph CORE["functional core · lib/ · bun test"]
+    R["reduce(state, action)"]
+    C["camera(state, event)<br/>→ [state, commands]"]
+    S["buildScene(input)<br/>· pick"]
+    D["detailModel(selection, data, state)"]
+  end
+  HA --> R
+  SA --> R
+  R --> C
+  R --> S
+  R --> D
+  C --> MA
+  S --> MA
+  MA -- "moveend · hover · click" --> R
+  FA --> D
+  D --> V["three thin renderers"]
+  subgraph PIPE["pipeline · scripts/"]
+    P["plan(state, flags)"] --> X["execute(jobs, transport)"] --> A["apply(state, results)"]
+    X --> T["live · fixture"]
+  end
+```
+
+### The five invariants
+
+1. **`lib/` is pure.** No module under `lib/` reads `window`, `document`,
+   `location`, `localStorage`, `sessionStorage`, `fetch`, `matchMedia`,
+   `navigator`, `history` or the two DOM observers, and none imports
+   `maplibre-gl` for anything but its types – except the adapters below.
+   Checked by `no-restricted-globals` and `no-restricted-imports` over
+   `lib/**` in `oxlint.config.ts`, where the allow-list stands with a comment
+   per entry saying which world the file is a window onto.
+2. **Every effect applies a value.** A `useEffect` under `components/` calls
+   an adapter with a value the core produced; it does not branch on state to
+   decide what to call. The map's effects are one per input – the build, the
+   scene, the five camera events, the four the environment changes – and a
+   reviewer can name what each one applies.
+3. **One transport per world.** The hash is read and written in one file,
+   `alpenpaesse:` is spelled in one table, and the MapLibre calls that move
+   the camera or change what is drawn live in the two appliers. Checked by
+   `scripts/check-seams.ts`, which runs inside `bun run lint` and therefore in
+   CI; its `SEAMS` table carries the reason per owner.
+4. **The core carries the tests.** `bun test` covers the reducer, the camera
+   machine, the scene, the pick, the detail model and the offline pipeline.
+   The e2e suite is ten scenarios of smoke: one timeout for the suite, none
+   per scenario, no monkey-patching, and nothing read off `window.__alpen` but
+   the map handle.
+5. **A new feature enters as data.** The official closure status
+   ([`roadmap.md`](./roadmap.md) §1) is one pipeline job kind, one field on
+   the row, one scene input and one reducer case, and it needs no effect
+   edited. That is the test of whether the seams are real.
+
+### The four adapters, and the three hooks beside them
+
+| Adapter                                                      | World                                                   |
+| ------------------------------------------------------------ | ------------------------------------------------------- |
+| `lib/hash-adapter.ts` (`useHashAdapter`, `cameraIntent`)     | `location.hash` in as `load`, the state out as the hash |
+| `lib/use-stored.ts` (`useStorageAdapter`, `readStoredState`) | `localStorage` and `sessionStorage`, behind `STORAGE`   |
+| `components/map/apply-scene.ts`, `apply-camera.ts`           | MapLibre: the scene's difference, the camera's commands |
+| `lib/use-fetch.ts` (through `lib/detail-state.ts`)           | `fetch`, as the three answers a request can give        |
+
+Three more hooks touch the platform and are on the same allow-list, because
+they read it rather than decide anything with it: `lib/use-media-query.ts`
+(`matchMedia` and the viewport height, including the map's whole environment
+as one value), `lib/use-height.ts` (a `ResizeObserver` on the shell's two
+bars) and `lib/use-roving.ts` (a `MutationObserver` and focus, turning a list
+into one tab stop). Every entry needs its comment and its reason; when the
+list passes eight, review it rather than extending it.
+
+The core is four functions with names, not a framework: the reducer is a
+switch, the camera is a switch, the scene and the model are functions. The
+moment a generic dispatcher, a middleware chain or a "store" abstraction
+appears, this has failed in the other direction.
+
 ## What travels as props, and what does not
 
 Four transports, and the rule is what reads the data: the sidebar reads

@@ -34,7 +34,7 @@ import { useStored } from "@/lib/use-stored";
  * from the sidebar footer, so a header never opens one.
  *
  * Which sections are folded is kept per session and shared by all of them
- * (`alpenpaesse:closedSections` in the `STORAGE` table), so it survives
+ * (the `closedSections` slot of the `STORAGE` table), so it survives
  * switching to the next pass but not the next visit. Stored are the *closed*
  * ids: a section that did not exist yet opens by itself.
  */
@@ -54,7 +54,7 @@ export const Section = ({
   info?: string;
   children: React.ReactNode;
 }) => {
-  const [closed, setClosed] = useStored("alpenpaesse:closedSections");
+  const [closed, setClosed] = useStored("closedSections");
 
   return (
     <Collapsible

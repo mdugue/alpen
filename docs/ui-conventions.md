@@ -126,10 +126,11 @@ drag a column, arrows and Home/End on the keyboard, no stepper buttons. The
 Between the bars, on desktop, the two floating panels: the collapsible sidebar
 (`components/sidebar/`: search, filters, and one list per kind behind a tab
 row) and, while something is selected, the detail slide-over next to it. Their
-widths are mirrored in `explorer.tsx` (`SIDEBAR_W`, `DETAIL_W`) and fed to
-MapLibre as left padding so camera targets stay visible. They live in a middle
-`div` that is what is left between the two bars, so neither is told a number to
-stay clear of. The sidebar's own toggle is in the header, and the sidebar
+widths come from `PANEL_W` in `lib/shell-geometry.ts` – once, as the classes'
+custom properties and as MapLibre's left padding, so camera targets stay
+visible. They live in a middle `div` that is what is left between the two bars,
+so neither is told a number to stay clear of. Where all of it stands is
+`components/shell.tsx`; what it says is the explorer's. The sidebar's own toggle is in the header, and the sidebar
 carries no brand row of its own – the header owns the `h1`.
 
 What the bars cover of the map is **measured**, not promised (`useHeight`,
@@ -174,9 +175,10 @@ Below `lg` no panel rests on the map: from the season bar's two buttons, **two**
 independent `MobileSheet`s (`components/mobile-sheet.tsx`, the Base UI `Drawer`
 with `modal={false}` and snap points), the list and the detail, each mounted
 only while it is open and each with its own snap state (`LIST_SNAPS`,
-`DETAIL_SNAPS` in `explorer.tsx`). "Liste" opens the list on its list; "Filter"
-opens the same sheet with the filter panel unfolded, which is why that fold is
-state in `explorer.tsx` and not in the sidebar. A tap on the map opens the
+`DETAIL_SNAPS` in `lib/app-state.ts`, mounted by `components/shell.tsx`).
+"Liste" opens the list on its list; "Filter" opens the same sheet with the
+filter panel unfolded, which is why that fold is `sheet.filters` in the
+reducer and not state in the sidebar. A tap on the map opens the
 detail over the bare map; a tap on a list row opens it over the list. Whichever
 is in front feeds MapLibre its height as bottom padding when that is more than
 the season bar covers. It was one sheet holding either content, after a stint
@@ -273,8 +275,11 @@ Everything the explorer decides – the selection and its consequences, the tab,
 the hover, the half-month, the filters, what the map shows, the phone's sheet
 snaps – is one pure reducer, `reduce(state, action, env)` in
 `lib/app-state.ts`, with table tests. `Explorer` holds it in a `useReducer`
-and hands the panels the values they read plus `dispatch`; it derives nothing
-a second time.
+and hands the parts the values they read plus `dispatch`; it derives nothing
+a second time and holds no effect of its own – the two it has are the
+adapters. Where those parts stand is `components/shell.tsx`, which is the
+other half of the same split (docs/architecture.md, "Functional core,
+imperative shell").
 
 ```mermaid
 flowchart LR

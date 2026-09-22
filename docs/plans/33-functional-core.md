@@ -1,7 +1,12 @@
 # 33 · Functional core, imperative shell
 
-**Status:** proposed · **Effort:** M (the closing steps; the substance is
-delivered by 28–32) · **Depends on:** 28, 29, 30, 31, 32 · **Unblocks:** 02
+**Status:** done ([#62](https://github.com/mdugue/alpen/pull/62)) – the seam
+rules, `Explorer` as composition, the e2e as smoke, plan 02 re-read and the
+documentation; the size ceilings below are recorded in the PR, and three of
+the four are still missed · **Effort:** M (the closing steps; the substance is
+delivered by 28–32) · **Depends on:** 28, 29, 30, 31, 32 (phases A and B;
+C to F are still open, so the pipeline's derived files, photos and
+calibration have not moved yet) · **Unblocks:** 02
 (the router is an adapter swap), roadmap 1 (the official closure status is
 a scene input, a reducer case and a pipeline job, no effect touched), 12,
 24, 27 (each arrives as data through the same core)

@@ -71,7 +71,8 @@ import {
   passLabelId,
   SOURCE,
 } from "@/lib/map-layers";
-import { pick } from "@/lib/map-pick";
+import { DOUBLE_MS, isDoubleClick, pick } from "@/lib/map-pick";
+import type { Tap } from "@/lib/map-pick";
 import { buildScene } from "@/lib/map-scene";
 import type { Scene } from "@/lib/map-scene";
 import type { TownReach } from "@/lib/nearby";
@@ -251,22 +252,6 @@ const HIT_WIDTH_FINE = 18;
 const HIT_MARGIN = 6;
 /** Slack around the pointer, so a near miss on a label still counts. */
 const HIT_SLOP = 4;
-
-/**
- * How long a click waits before it selects, and how far the next one may sit
- * from it, for the two to count as one double click.
- *
- * A double click is MapLibre's zoom gesture, and the click that starts it must
- * not open a panel on the way in – so a click does not select at once: it
- * waits out this window, and a second click inside it drops the first instead
- * of selecting anything. MapLibre's own tap recognizer allows 500 ms and 30 px
- * between the two taps; the distance is taken from it, the time is not. Half a
- * second of lag in front of every panel is felt on every single click, while
- * the double click slow enough to leak past 300 ms is rare – and it ends on a
- * zoomed map either way.
- */
-const DOUBLE_MS = 300;
-const DOUBLE_PX = 30;
 
 /**
  * The one entity under a point, resolved across every hit layer at once.
@@ -1008,14 +993,14 @@ export const PassMap = ({
   }));
   /** One string per selected entity: what the camera effects change on. */
   const selKey = selection && entityKey(selection);
-  const [base, setBase] = useStored("alpenpaesse:base");
+  const [base, setBase] = useStored("base");
   // The base the map currently shows. The map is built during the hydration
   // render, where a stored value is not known yet (useSyncExternalStore hands
   // out the server snapshot); the effect below catches up once it is.
   const appliedBase = useRef(BASEMAP_ID);
   /** And the scheme it was painted in, for the same reason. */
   const appliedScheme = useRef<Scheme>("light");
-  const [overlays, setOverlays] = useStored("alpenpaesse:overlays");
+  const [overlays, setOverlays] = useStored("overlays");
   // Callbacks are needed in map event handlers that are only registered
   // during setup; refs keep them current without rebuilding the map.
   const onSelectRef = useRef(onSelect);
@@ -1230,30 +1215,26 @@ export const PassMap = ({
     /** The selection a click has resolved but not yet handed over. */
     let pending: ReturnType<typeof setTimeout> | null = null;
     /** The previous click, to tell the second half of a double click apart. */
-    let clicked: { t: number; x: number; y: number } | null = null;
+    let clicked: Tap | null = null;
     const dropPending = () => {
       if (pending) clearTimeout(pending);
       pending = null;
     };
 
     m.on("click", (e) => {
-      const { x, y } = e.point;
-      const t = Date.now();
+      const tap: Tap = { t: Date.now(), x: e.point.x, y: e.point.y };
       const prev = clicked;
-      clicked = { t, x, y };
+      clicked = tap;
       // A click that follows another one closely is the map's zoom gesture,
-      // not a pick: it drops what the first one lined up and selects nothing
-      // itself. A third click in the same run finds nothing pending and stops
-      // here too, so a run of fast clicks never ends in a panel.
-      if (
-        prev &&
-        t - prev.t < DOUBLE_MS &&
-        Math.hypot(x - prev.x, y - prev.y) < DOUBLE_PX
-      ) {
+      // not a pick (`isDoubleClick`, lib/map-pick.ts): it drops what the first
+      // one lined up and selects nothing itself. A third click in the same run
+      // finds nothing pending and stops here too, so a run of fast clicks
+      // never ends in a panel.
+      if (isDoubleClick(prev, tap)) {
         dropPending();
         return;
       }
-      const hit = pickAt(m, x, y);
+      const hit = pickAt(m, tap.x, tap.y);
       dropPending();
       if (!hit) return;
       pending = setTimeout(() => {

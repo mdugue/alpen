@@ -16,6 +16,38 @@
 import type { Selection } from "@/lib/app-state";
 import { HIT_GROUPS, LAYERS } from "@/lib/map-layers";
 
+/**
+ * How long a click waits before it selects, and how far the next one may sit
+ * from it, for the two to count as one double click.
+ *
+ * A double click is MapLibre's zoom gesture, and the click that starts it must
+ * not open a panel on the way in – so a click does not select at once: it
+ * waits out this window, and a second click inside it drops the first instead
+ * of selecting anything. MapLibre's own tap recognizer allows 500 ms and 30 px
+ * between the two taps; the distance is taken from it, the time is not. Half a
+ * second of lag in front of every panel is felt on every single click, while
+ * the double click slow enough to leak past 300 ms is rare – and it ends on a
+ * zoomed map either way.
+ */
+export const DOUBLE_MS = 300;
+const DOUBLE_PX = 30;
+
+/** Where and when the map was clicked. */
+export interface Tap {
+  t: number;
+  x: number;
+  y: number;
+}
+
+/**
+ * Whether this click is the second half of a double click and therefore not a
+ * pick at all. `null` for the first click of a session, which never is one.
+ */
+export const isDoubleClick = (previous: Tap | null, tap: Tap): boolean =>
+  previous !== null &&
+  tap.t - previous.t < DOUBLE_MS &&
+  Math.hypot(tap.x - previous.x, tap.y - previous.y) < DOUBLE_PX;
+
 /** One rendered feature, as much of it as the decision needs. */
 export interface Hit {
   /** The layer that answered – what ranks the hit and names its kind. */

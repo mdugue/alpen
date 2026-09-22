@@ -35,38 +35,45 @@ interface Favorites {
 const NO_FAVORITES: Favorites = { pass: [], tour: [], town: [] };
 
 /**
- * Every `alpenpaesse:*` key there is, with its area and its default – the one
- * place a storage key is spelled. `useStored` takes a key of this table and
- * nothing else, which is what keeps a default a module constant: a caller that
- * handed in a fresh array each render only worked because of the cache below,
- * and `useSyncExternalStore` needs a snapshot that keeps its identity.
+ * What this app calls its own in a shared origin. Spelled here and nowhere
+ * else, which is what makes the table below the one place a storage key is
+ * written down (docs/architecture.md, "Decisions are values").
+ */
+const PREFIX = "alpenpaesse:";
+
+/**
+ * Every slot there is, with its area and its default. `useStored` takes a name
+ * of this table and nothing else, which is what keeps a default a module
+ * constant: a caller that handed in a fresh array each render only worked
+ * because of the cache below, and `useSyncExternalStore` needs a snapshot that
+ * keeps its identity.
  */
 const STORAGE = {
   /** Which basemap the map draws. */
-  "alpenpaesse:base": slot<string>("local", BASEMAP_ID),
+  base: slot<string>("local", BASEMAP_ID),
   /** Which blocks of the detail panel are folded away, by `Section` id. */
-  "alpenpaesse:closedSections": slot<string[]>("session", []),
-  "alpenpaesse:favorites": slot<Favorites>("local", NO_FAVORITES),
+  closedSections: slot<string[]>("session", []),
+  favorites: slot<Favorites>("local", NO_FAVORITES),
   /** The tours kept off the map; stored as the hidden ones (`Shown`). */
-  "alpenpaesse:hiddenTours": slot<string[]>("local", []),
+  hiddenTours: slot<string[]>("local", []),
   /** Which of the basemap's overlays are on. */
-  "alpenpaesse:overlays": slot<string[]>("local", ["hillshade"]),
+  overlays: slot<string[]>("local", ["hillshade"]),
   /**
    * The visitor's own last choice of half-month. It beats the server's
    * "today", and a shared link (hash `t`) beats both – opening someone else's
    * link never overwrites the preference, because only the period control
    * writes here (`ownPeriod` in `lib/app-state.ts`).
    */
-  "alpenpaesse:period": slot<Period | null>("local", null),
-  "alpenpaesse:showPasses": slot<boolean>("local", true),
-  "alpenpaesse:showTowns": slot<boolean>("local", true),
+  period: slot<Period | null>("local", null),
+  showPasses: slot<boolean>("local", true),
+  showTowns: slot<boolean>("local", true),
   /** Whether the desktop sidebar is unfolded. */
-  "alpenpaesse:sidebar": slot<boolean>("local", true),
+  sidebar: slot<boolean>("local", true),
   /**
    * Which of the three lists is on screen. A preference like the sidebar's own
    * fold, so coming back lands where the last visit left off.
    */
-  "alpenpaesse:tab": slot<EntityKind>("local", "pass"),
+  tab: slot<EntityKind>("local", "pass"),
 };
 
 type StorageKey = keyof typeof STORAGE;
@@ -92,7 +99,7 @@ const readStored = <K extends StorageKey>(key: K): Value<K> => {
   const { area, value: initial } = STORAGE[key];
   let raw: string | null = null;
   try {
-    raw = storage(area).getItem(key);
+    raw = storage(area).getItem(PREFIX + key);
   } catch {
     // Blocked storage: still hand back one stable reference per key.
     const blocked = cache.get(key);
@@ -125,7 +132,7 @@ const writeStored = <K extends StorageKey>(key: K, value: Value<K>) => {
   const raw = JSON.stringify(value);
   if (cache.get(key)?.raw === raw) return;
   try {
-    storage(STORAGE[key].area).setItem(key, raw);
+    storage(STORAGE[key].area).setItem(PREFIX + key, raw);
   } catch {
     /* Private mode or similar – then simply without persistence */
   }
@@ -149,7 +156,7 @@ export const useStored = <K extends StorageKey>(key: K) => {
 };
 
 export const useFavorites = () => {
-  const [favorites, setFavorites] = useStored("alpenpaesse:favorites");
+  const [favorites, setFavorites] = useStored("favorites");
   const isFavorite = (kind: EntityKind, slug: string) =>
     favorites[kind].includes(slug);
   const toggle = (kind: EntityKind, slug: string) =>
@@ -181,11 +188,11 @@ const isKind = (v: unknown): v is EntityKind =>
  * half-month that is not one of the 24 is no preference at all.
  */
 export const readStoredState = (): StoredState => {
-  const tab: unknown = readStored("alpenpaesse:tab");
-  const hidden: unknown = readStored("alpenpaesse:hiddenTours");
-  const period: unknown = readStored("alpenpaesse:period");
-  const passes: unknown = readStored("alpenpaesse:showPasses");
-  const towns: unknown = readStored("alpenpaesse:showTowns");
+  const tab: unknown = readStored("tab");
+  const hidden: unknown = readStored("hiddenTours");
+  const period: unknown = readStored("period");
+  const passes: unknown = readStored("showPasses");
+  const towns: unknown = readStored("showTowns");
   return {
     period: isPeriod(period) ? period : null,
     shown: {
@@ -194,7 +201,7 @@ export const readStoredState = (): StoredState => {
       hiddenTours:
         Array.isArray(hidden) && hidden.every((s) => typeof s === "string")
           ? hidden
-          : STORAGE["alpenpaesse:hiddenTours"].value,
+          : STORAGE.hiddenTours.value,
       // Anything but an explicit `false` is on: a switch is never off by accident.
       passes: passes !== false,
       towns: towns !== false,
@@ -227,13 +234,13 @@ const slice = <K extends StorageKey>(
  * here and a row in `STORAGE`.
  */
 const PERSISTED: Slice[] = [
-  slice("alpenpaesse:showPasses", (s) => s.shown.passes),
-  slice("alpenpaesse:showTowns", (s) => s.shown.towns),
-  slice("alpenpaesse:hiddenTours", (s) => s.shown.hiddenTours),
-  slice("alpenpaesse:tab", (s) => s.tab),
+  slice("showPasses", (s) => s.shown.passes),
+  slice("showTowns", (s) => s.shown.towns),
+  slice("hiddenTours", (s) => s.shown.hiddenTours),
+  slice("tab", (s) => s.tab),
   // `ownPeriod` rather than `filters.period`: a half-month applied from a
   // shared link is not the visitor's choice and must not become it.
-  slice("alpenpaesse:period", (s) => s.ownPeriod ?? undefined),
+  slice("period", (s) => s.ownPeriod ?? undefined),
 ];
 
 /**

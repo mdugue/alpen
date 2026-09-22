@@ -38,7 +38,9 @@ jobs:
       - run: bun install --frozen-lockfile
       # The test hook (window.__alpen) only exists in a build with this flag.
       - run: NEXT_PUBLIC_TEST_HOOKS=1 bun run build
-      - run: bun test e2e
+      # One timeout for the suite (`e2e:run`), none per scenario: a headless
+      # Chrome on a software GL context needs more than the 5 s default.
+      - run: bun run e2e:run
         env:
           CHROME: ${{ steps.chrome.outputs.chrome-path }}
       - uses: actions/upload-artifact@v7

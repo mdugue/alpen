@@ -1,7 +1,7 @@
 import { describe, expect, test } from "bun:test";
 
 import { HIT_GROUPS, HIT_LAYERS, LAYERS, PASS_LABELS } from "@/lib/map-layers";
-import { pick } from "@/lib/map-pick";
+import { DOUBLE_MS, isDoubleClick, pick } from "@/lib/map-pick";
 import type { Hit } from "@/lib/map-pick";
 
 /** Degrees straight onto pixels: one degree of longitude is one pixel. */
@@ -101,5 +101,43 @@ describe("what is not an answer", () => {
     expect(pick([], AT, project)).toBeNull();
     expect(pick([at("basemap-peaks", "galibier")], AT, project)).toBeNull();
     expect(pick([at(LAYERS.pass.hit, "")], AT, project)).toBeNull();
+  });
+});
+
+/**
+ * A double click is MapLibre's zoom gesture, and both of its halves arrive as
+ * ordinary clicks. The first of them must not open a panel on its way into a
+ * zoom, which is what every case here is about.
+ */
+const tap = (t: number, x = 0, y = 0) => ({ t, x, y });
+
+describe("the double-click window", () => {
+  test("the first click of a session is never the second half of one", () => {
+    expect(isDoubleClick(null, tap(0))).toBe(false);
+  });
+
+  test("close in time and in place: the zoom gesture, not a pick", () => {
+    expect(isDoubleClick(tap(0), tap(DOUBLE_MS - 1))).toBe(true);
+    expect(isDoubleClick(tap(0), tap(120, 20, 20))).toBe(true);
+  });
+
+  test("a slow second click is a pick of its own", () => {
+    expect(isDoubleClick(tap(0), tap(DOUBLE_MS))).toBe(false);
+    expect(isDoubleClick(tap(0), tap(DOUBLE_MS + 500))).toBe(false);
+  });
+
+  test("a second click somewhere else is a pick of its own", () => {
+    expect(isDoubleClick(tap(0), tap(100, 40, 0))).toBe(false);
+    expect(isDoubleClick(tap(0), tap(100, 0, 31))).toBe(false);
+  });
+
+  test("a run of fast clicks stays a gesture all the way through", () => {
+    const run = [tap(0), tap(100), tap(200), tap(300), tap(400)];
+    expect(run.slice(1).map((t, i) => isDoubleClick(run[i]!, t))).toEqual([
+      true,
+      true,
+      true,
+      true,
+    ]);
   });
 });

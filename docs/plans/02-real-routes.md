@@ -1,8 +1,10 @@
 # 02 · Real routes instead of the hash
 
 **Status:** proposed · **Effort:** L · **Depends on:** 01 (smaller payload
-first, otherwise every prerendered route carries the geometry) ·
-**Unblocks:** 08, per-entity share previews, search traffic
+first, otherwise every prerendered route carries the geometry), 28 and 33
+(the router is an adapter swap rather than a rewrite: the selection is a
+reducer case either way) · **Unblocks:** 08, per-entity share previews,
+search traffic
 
 ## Goal
 
@@ -13,9 +15,9 @@ streamed in. Camera, period and filters stay client-side in the hash.
 
 ## Why now
 
-- `lib/app-state.ts` writes every state change with `history.replaceState`, so
-  there is never a history entry: the desktop back button leaves the site and
-  the Android back gesture exits the app while a pass is open.
+- `lib/hash-adapter.ts` writes every state change with `history.replaceState`,
+  so there is never a history entry: the desktop back button leaves the site
+  and the Android back gesture exits the app while a pass is open.
 - There is one URL and one Open Graph image for 127 entities. Sharing "look at
   this pass" produces the generic card.
 - Nothing is crawlable, so the app cannot be found by people searching for
@@ -84,28 +86,46 @@ instant.
 
 ### Selection comes from the URL
 
-- `Explorer` derives `selection` from `usePathname()` (`/pass/x` →
-  `{ kind: "pass", slug: "x" }`) instead of `useState`.
-- `select(sel)` becomes `router.push(hrefFor(sel) + window.location.hash)`.
-  Pushing a path without the hash would drop the camera and period, so the
-  hash is appended explicitly.
-- `back()` calls `router.back()` when the previous entry belongs to the app
-  (track a counter in `sessionStorage`), otherwise `router.push("/" + hash)`.
+The router **replaces the hash adapter of plan 28 and emits the same
+actions**. Nothing about the selection itself moves: it stays a case of
+`reduce` (`lib/app-state.ts`) with every consequence in it – the sheet stack,
+the tab, the hover it clears – and the new adapter is one more thing that can
+raise `select`, `back` and `load`.
+
+- A router adapter beside `lib/hash-adapter.ts` reads `usePathname()`
+  (`/pass/x` → `{ kind: "pass", slug: "x" }`) and dispatches
+  `{ type: "select" }`, or `{ type: "back" }` on `/`; the hash keeps its half
+  of the `load` action (camera, period, filters).
+- Going the other way, the adapter turns a state whose selection has changed
+  into `router.push(hrefFor(selection) + location.hash)` where it writes
+  `history.replaceState` today. Pushing a path without the hash would drop the
+  camera and the period, so the hash is appended explicitly.
+- `back` still dispatches `{ type: "back" }`; the adapter turns that into
+  `router.back()` when the previous entry belongs to the app (track a counter
+  in `sessionStorage`), otherwise `router.push("/" + hash)`.
 - Rows use `<Link href prefetch={false}>` so 92 rows do not prefetch 92 RSC
   payloads; prefetch on hover/focus via `router.prefetch` if navigation feels
   slow (it should not, the pages are static).
-- Map clicks call `select` as today.
+- Map clicks dispatch `select` as today.
+- The opening camera stays one value: `cameraIntent` (lib/hash-adapter.ts)
+  reads it off the link, and the map is built with it (plan 29).
 
 ### Detail on the server
 
 `pass/[slug]/page.tsx` reads `getPass(slug)`, the pass's profiles and climate
-from `lib/data.ts` and renders `PassDetail` as a server component. Only the
-selected pass's profiles and climate ship with that route. Client islands stay
-small: favourite toggle, nearby links, the profile cursor (plan 07), the
+from `lib/data.ts` and renders `PassDetail` as a server component. The
+per-kind split it assumed already exists: `components/panel/pass-detail.tsx`,
+`tour-detail.tsx` and `town-detail.tsx` each render one `detailModel`
+(`lib/detail-model.ts`, plan 31), so what is left here is which side of the
+wire the model is built on. Only the selected pass's profiles and climate ship
+with that route – and since plan 22 they do not ship with the page at all but
+arrive as one content-hashed file per entity (`lib/detail-assets.ts`), which
+is the fallback for anything this route does not prerender. Client islands
+stay small: favourite toggle, nearby links, the profile cursor (plan 07), the
 period-dependent bits. The period comes from the hash, so period-dependent
 text (status badge, climate bucket) is rendered by a client component that
-reads it from the explorer context (plan 11, item 3) and receives the full
-climate series as a prop.
+reads it from the reducer's state and receives the full climate series as a
+prop.
 
 ### Weather
 
@@ -121,8 +141,10 @@ async function Weather({ slug }: { slug: string }) {
 <Suspense fallback={<WeatherSkeleton />}><Weather slug={slug} /></Suspense>
 ```
 
-Static shell plus a streamed hole; `app/api/weather/[slug]/route.ts` and
-`lib/use-fetch.ts` are deleted.
+Static shell plus a streamed hole; `app/api/weather/[slug]/route.ts` is
+deleted. `lib/use-fetch.ts` stays: since plan 22 it is also how the detail
+file arrives (`lib/detail-state.ts`), which is the one fetch adapter of the
+core and not the weather's.
 
 ### Metadata and share images
 
@@ -137,9 +159,10 @@ Static shell plus a streamed hole; `app/api/weather/[slug]/route.ts` and
 
 ### Old links
 
-`#pass=slug` links exist in the wild. In the hash effect: if the hash carries
-`pass`, `tour` or `town`, strip it and `router.replace` to the new path with
-the remaining hash. Keep this for a year, then drop it.
+`#pass=slug` links exist in the wild. In the router adapter: if the hash
+carries `pass`, `tour` or `town` (`parseHash` reads it, lib/hash.ts), strip it
+and `router.replace` to the new path with the remaining hash. Keep this for a
+year, then drop it.
 
 ### Mobile
 
@@ -156,13 +179,14 @@ active, `back` returns to the list.
    segments with `generateStaticParams` and `dynamicParams = false`; detail
    still rendered by the existing client `DetailPanel`, selection derived from
    the pathname; rows become links.
-3. Server-rendered detail: split `DetailPanel` into server `PassDetail` /
-   `TourDetail` / `TownDetail` plus client islands; weather via Suspense;
-   delete the API route.
+3. Server-rendered detail: move the model behind the three per-kind modules
+   (`components/panel/*-detail.tsx`) to the server, keep the client islands;
+   weather via Suspense; delete the API route.
 4. Metadata, per-entity OG images, sitemap, robots.
-5. Old-hash migration and clean-up of `Selection` state in `lib/app-state.ts`.
-6. Update `AGENTS.md` ("Filter, selection and URL state" row) and the README
-   architecture paragraph.
+5. Old-hash migration, and the hash adapter reduced to what stays in the hash
+   (camera, period, filters).
+6. Update `AGENTS.md` ("Filter, selection and URL state" row, and the adapter
+   row of "Where things live") and the README architecture paragraph.
 
 ### Documentation
 
@@ -187,6 +211,10 @@ points at the layout and the dynamic segments.
 
 - Next's router and manual `replaceState` on the same path: supported since
   Next 14.1 for search params; verify for hash-only updates in the spike.
+- Two adapters feeding one reducer have to agree about which of them owns the
+  selection, or a push and a `load` will fight over it. The seam check
+  (`scripts/check-seams.ts`) keeps `location.hash` in one file; keeping the
+  push there too is what stops a second owner appearing.
 - `Activity` preserves page state: a dialog that was open when the user
   navigated away stays open on return. Derive transient UI state from the
   URL or reset it in a `useLayoutEffect` cleanup as the Next guide describes.

@@ -8,6 +8,49 @@ import react from "ultracite/oxlint/react";
 const jsPlugins = selectJsPlugins(["react-doctor"]);
 
 /**
+ * The worlds a module under `lib/` may not reach into by itself, each with the
+ * adapter that owns it. `scripts/check-seams.ts` carries the other half of the
+ * invariant – the greps a lint rule cannot express.
+ */
+const RESTRICTED_GLOBALS = [
+  {
+    message: "The DOM belongs to components/; lib/ takes values.",
+    name: "document",
+  },
+  { message: "`fetch` belongs to lib/use-fetch.ts.", name: "fetch" },
+  { message: "The hash belongs to lib/hash-adapter.ts.", name: "history" },
+  { message: "The hash belongs to lib/hash-adapter.ts.", name: "location" },
+  {
+    message: "Web storage belongs to lib/use-stored.ts.",
+    name: "localStorage",
+  },
+  {
+    message: "Media queries belong to lib/use-media-query.ts.",
+    name: "matchMedia",
+  },
+  {
+    message: "The DOM belongs to components/; lib/ takes values.",
+    name: "MutationObserver",
+  },
+  {
+    message: "The platform belongs to the adapters in lib/use-*.ts.",
+    name: "navigator",
+  },
+  {
+    message: "The DOM belongs to components/; lib/ takes values.",
+    name: "ResizeObserver",
+  },
+  {
+    message: "Web storage belongs to lib/use-stored.ts.",
+    name: "sessionStorage",
+  },
+  {
+    message: "The browser belongs to the adapters in lib/use-*.ts.",
+    name: "window",
+  },
+];
+
+/**
  * oxlint replaces ESLint here: its `nextjs` and `react` plugins cover what
  * `eslint-config-next` used to, React Compiler rules included.
  *
@@ -36,6 +79,78 @@ export default defineConfig({
   // preset already enables them; without this switch they are inert.
   options: { typeAware: true },
   overrides: [
+    {
+      /*
+       * The seam of the functional core (docs/architecture.md, "Functional
+       * core, imperative shell"): `lib/` decides, `components/` applies. A
+       * module that reads the platform for itself cannot be answered by a
+       * table test, which is how the decisions in plans 15, 16 and 22 ended up
+       * spread across the effects that carried them out.
+       *
+       * The adapters are the exception and are listed by name below, one
+       * comment each saying which world the file is a window onto. Everything
+       * else under `lib/` is a function of its arguments.
+       */
+      files: ["lib/**"],
+      rules: {
+        "no-restricted-globals": [
+          "error",
+          {
+            // `window.matchMedia` and `globalThis.fetch` say the same thing as
+            // the bare names and have to fail the same way.
+            checkGlobalObject: true,
+            globals: RESTRICTED_GLOBALS,
+          },
+        ],
+        "no-restricted-imports": [
+          "error",
+          {
+            paths: [
+              {
+                allowTypeImports: true,
+                message:
+                  "MapLibre is an adapter's business: the map is driven from components/map/apply-scene.ts and apply-camera.ts. Types are fine.",
+                name: "maplibre-gl",
+              },
+            ],
+          },
+        ],
+      },
+    },
+    {
+      files: [
+        // The hash: `location.hash` in, `history.replaceState` out.
+        "lib/hash-adapter.ts",
+        // `localStorage` and `sessionStorage`, behind the `STORAGE` table.
+        "lib/use-stored.ts",
+        // `window.matchMedia` and the viewport height, as one value per query.
+        "lib/use-media-query.ts",
+        // `fetch`, as the three answers a request can give.
+        "lib/use-fetch.ts",
+        // `ResizeObserver`: what the shell's two bars actually measure.
+        "lib/use-height.ts",
+        // `navigator.share` and the clipboard, with `window.location.href`.
+        "lib/use-share.ts",
+        // `MutationObserver` and focus: a list of rows as one composite widget.
+        "lib/use-roving.ts",
+      ],
+      rules: { "no-restricted-globals": "off" },
+    },
+    {
+      // The explorer hands the shell its parts as slots, and three of them
+      // take something only the shell knows: what the bars and panels leave of
+      // the map, which of the sidebar's two places is being filled, and which
+      // entity the detail drawer still shows while it slides away. They are
+      // called, never rendered as an element, so nothing remounts – which is
+      // what the rule is there to prevent.
+      files: ["components/explorer.tsx"],
+      rules: {
+        "react/no-unstable-nested-components": [
+          "error",
+          { allowAsProps: true },
+        ],
+      },
+    },
     {
       // `"use cache"` requires the function to be async even when it only
       // returns imported JSON.
@@ -110,9 +225,9 @@ export default defineConfig({
     },
   ],
   rules: {
-    // `baseVerdict` sits at 21 and `Explorer` at 22: the heuristic and the
-    // layout both branch a lot by nature, and splitting them would only move
-    // the branches.
+    // The route gate sits at 25 and `baseReasons` at 21: the pipeline's one
+    // decision point and the heuristic both branch a lot by nature, and
+    // splitting them would only move the branches.
     complexity: ["error", 25],
     // Guard clauses (`if (!pass) continue;`) and early `return (<jsx/>)` both
     // read fine without braces; no setting of this rule accepts both.

@@ -26,7 +26,7 @@ that goal; features that only add route-level precision rank last.
 | 12  | [Destinations](12-destinations.md)                                    | "where"                                   | L      | 09                   | proposed                                                             |
 | 13  | [Summer axis](13-summer-axis.md)                                      | "when" in summer, honesty                 | M–L    | 04                   | [done](https://github.com/mdugue/alpen/pull/17)                      |
 | 05  | [Filters and search](05-filters-and-search.md)                        | finding things                            | S–M    | –                    | [done](https://github.com/mdugue/alpen/pull/9)                       |
-| 02  | [Real routes instead of the hash](02-real-routes.md)                  | sharing, back button, SEO                 | L      | 01                   | proposed                                                             |
+| 02  | [Real routes instead of the hash](02-real-routes.md)                  | sharing, back button, SEO                 | L      | 01, 28, 33           | proposed                                                             |
 | 06  | [A basemap that matches the theme](06-basemap.md)                     | dark mode, map quality                    | M      | –                    | [done](https://github.com/mdugue/alpen/pull/22)                      |
 | 09  | [Schema validation with zod](09-schema-validation.md)                 | data safety                               | S      | –                    | [done](https://github.com/mdugue/alpen/pull/9)                       |
 | 10  | [Tests](10-tests.md)                                                  | refactor safety                           | M      | –                    | [done](https://github.com/mdugue/alpen/pull/4)                       |
@@ -52,7 +52,7 @@ that goal; features that only add route-level precision rank last.
 | 30  | [The scene: what the map shows, as a value](30-map-scene.md)          | map testable without WebGL, one hover     | M–L    | 28, 01               | done ([#62](https://github.com/mdugue/alpen/pull/62))                |
 | 31  | [The panel as a model](31-panel-model.md)                             | testable panel, 16 finished, 02, 12       | L      | 15, 16, 28           | done ([#62](https://github.com/mdugue/alpen/pull/62))                |
 | 32  | [The pipeline as plan → execute → apply](32-pipeline-planner.md)      | pipeline testable offline, one retry rule | L      | 00                   | [in progress](https://github.com/mdugue/alpen/pull/62) (phases A, B) |
-| 33  | [Functional core, imperative shell](33-functional-core.md)            | the target the five add up to             | M      | 28–32                | proposed                                                             |
+| 33  | [Functional core, imperative shell](33-functional-core.md)            | the target the five add up to             | M      | 28–32                | done ([#62](https://github.com/mdugue/alpen/pull/62))                |
 | –   | UI/UX audit round (no plan document)                                  | "where", finding things, a11y             | M      | –                    | [in progress](https://github.com/mdugue/alpen/pull/47)               |
 
 Effort: S ≤ 1 day, M 2–3 days, L 4–6 days. 09, 10 and 11 can be interleaved
