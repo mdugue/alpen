@@ -162,7 +162,11 @@ export default defineConfig({
       // The pipeline serialises its file writes and the transport its
       // API calls per host on promise chains (`writing`, `this.chain`);
       // `await` has no way to hand the chain on to the next caller.
-      files: ["scripts/lib/pipeline.ts", "scripts/lib/transport.ts"],
+      files: [
+        "scripts/build-data.ts",
+        "scripts/lib/pipeline.ts",
+        "scripts/lib/transport.ts",
+      ],
       rules: { "promise/prefer-await-to-then": "off" },
     },
     {
