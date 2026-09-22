@@ -2,7 +2,7 @@ import type { Pass, RouteGeometry, Tour } from "@/lib/types";
 
 // Relative on purpose: next.config.ts loads this module outside the bundler,
 // where the "@/" alias is not resolved for transitive imports.
-import { derivedDir } from "./derived-file";
+import { canonicalJson, derivedDir } from "./derived-file";
 import { ascentKey, tourKey } from "./route-key";
 
 /**
@@ -233,7 +233,7 @@ export interface AssetFile {
 }
 
 const assetFile = (kind: "routes" | "tours", c: Collection): AssetFile => {
-  const body = JSON.stringify(c);
+  const body = canonicalJson(c);
   return {
     body,
     name: MAP_FILES.name(kind, body),

@@ -4,7 +4,7 @@ import { tmpdir } from "node:os";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
 
-import { derivedDir, writeDerived } from "@/lib/derived-file";
+import { canonicalJson, derivedDir, writeDerived } from "@/lib/derived-file";
 import { DETAIL_FILES } from "@/lib/detail-assets";
 import { MAP_FILES } from "@/lib/map-assets";
 
@@ -155,5 +155,49 @@ describe("writeDerived", () => {
     const out = new URL("nested/", await tempDir());
     await writeDerived({ files: [{ body: "x", name: "a.txt" }], out });
     expect(await Bun.file(new URL("a.txt", out)).text()).toBe("x");
+  });
+});
+
+/**
+ * The same data with its keys in the opposite order. Built key by key rather
+ * than written out: this repo's formatter sorts an object literal's keys, so a
+ * second literal in the other order would be reformatted into the first and
+ * the test would assert nothing.
+ */
+const reordered = (o: Record<string, unknown>): Record<string, unknown> =>
+  Object.fromEntries(Object.entries(o).toReversed());
+
+describe("canonicalJson", () => {
+  /**
+   * The bug this pins cost a broken build: the script that writes a detail
+   * file and the page that derives its name built the same data by two routes,
+   * and the routes disagreed about key order. Both hashed their own
+   * serialisation, so the page asked for a name nothing had written.
+   */
+  test("the same content in two key orders is one string", () => {
+    const a = { artist: "Bonzon", blur: "data:…", height: 640 };
+    const b = reordered(a);
+    expect(JSON.stringify(a)).not.toBe(JSON.stringify(b));
+    expect(canonicalJson(a)).toBe(canonicalJson(b));
+    expect(DETAIL_FILES.name("pass-x", canonicalJson(a))).toBe(
+      DETAIL_FILES.name("pass-x", canonicalJson(b)),
+    );
+  });
+
+  test("it sorts every level, not only the top one", () => {
+    const a = { photos: [{ artist: "A", src: "u" }], profiles: { up: 1 } };
+    const b = { ...reordered(a), photos: [reordered(a.photos[0]!)] };
+    expect(JSON.stringify(a)).not.toBe(JSON.stringify(b));
+    expect(canonicalJson(a)).toBe(canonicalJson(b));
+  });
+
+  test("arrays keep their order – it is content, not spelling", () => {
+    expect(canonicalJson({ a: [3, 1, 2] })).toBe('{"a":[3,1,2]}');
+  });
+
+  test("null is a value, not an object to sort", () => {
+    expect(canonicalJson(reordered({ a: 1, b: null }))).toBe(
+      '{"a":1,"b":null}',
+    );
   });
 });

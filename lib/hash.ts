@@ -148,10 +148,7 @@ const FILTER_KEYS = {
   /** Road types "pass,spur". */
   a: { field: "types", parser: parseAsSubset(ROAD_TYPES) },
   /** Min. beauty. */
-  be: {
-    field: "minBeauty",
-    parser: parseAsOneOf(BEAUTY_OPTIONS),
-  },
+  be: { field: "minBeauty", parser: parseAsOneOf(BEAUTY_OPTIONS) },
   /** Difficulty window "2-4". */
   d: { field: "difficulty", parser: parseAsRange },
   /** Road labels "toll,carfree". */
@@ -159,15 +156,9 @@ const FILTER_KEYS = {
   /** Min. fame. */
   f: { field: "minFame", parser: parseAsOneOf(FAME_OPTIONS) },
   /** Max. valley heat in °C. */
-  h: {
-    field: "maxValleyTmax",
-    parser: parseAsOneOf(HEAT_OPTIONS),
-  },
+  h: { field: "maxValleyTmax", parser: parseAsOneOf(HEAT_OPTIONS) },
   /** Min. elevation in m. */
-  m: {
-    field: "minElevation",
-    parser: parseAsOneOf(ELEVATION_OPTIONS),
-  },
+  m: { field: "minElevation", parser: parseAsOneOf(ELEVATION_OPTIONS) },
   /** Pass sort key. */
   o: { field: "sort", parser: parseAsStringLiteral(PASS_SORTS) },
   /** Search text. */
@@ -177,10 +168,7 @@ const FILTER_KEYS = {
   /** Half-month, 1 … 12.5 – what the app opens on, so every link carries it. */
   t: { always: true, field: "period", parser: parseAsPeriod },
   /** Max. traffic. */
-  v: {
-    field: "maxTraffic",
-    parser: parseAsOneOf(TRAFFIC_OPTIONS),
-  },
+  v: { field: "maxTraffic", parser: parseAsOneOf(TRAFFIC_OPTIONS) },
   /** Max. rain days of 15. */
   w: { field: "maxWetDays", parser: parseAsOneOf(WET_OPTIONS) },
 } as const satisfies Record<string, FilterKey>;

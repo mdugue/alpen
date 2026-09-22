@@ -44,6 +44,36 @@ export interface DerivedSpec {
 }
 
 /**
+ * The body of a derived file, with every object's keys in one fixed order.
+ *
+ * The name is a hash of the body, and both sides of that promise build the
+ * body themselves: the script writes the file, `lib/data.ts` derives the name
+ * it expects. A plain `JSON.stringify` makes the hash depend on the order the
+ * keys happen to be in, which is a property of *who built the object*, not of
+ * what it says – so the same data reached by two paths hashed differently and
+ * the page asked for a file the script had never written. It was the reader
+ * that changed (`scripts/lib/data-files.ts` hands back what the file says,
+ * where a `zod` parse hands back a copy in the schema's key order), but the
+ * fragility was here, and an invariant that only holds while every caller
+ * takes the same route is not one.
+ *
+ * Sorting is done in a replacer rather than over a deep copy: `JSON.stringify`
+ * walks whatever the replacer returns, so one pass sorts every level and the
+ * arrays – the coordinate lists, which are most of the bytes – are handed
+ * straight through.
+ */
+export const canonicalJson = (value: unknown): string =>
+  JSON.stringify(value, (_key, v: unknown) =>
+    typeof v === "object" && v !== null && !Array.isArray(v)
+      ? Object.fromEntries(
+          Object.entries(v as Record<string, unknown>).toSorted(([a], [b]) =>
+            a < b ? -1 : 1,
+          ),
+        )
+      : v,
+  );
+
+/**
  * Eight hex digits. Enough that two versions of one file never collide in
  * practice, short enough that a name stays readable in a build log.
  */

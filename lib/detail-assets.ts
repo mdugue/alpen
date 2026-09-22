@@ -14,7 +14,7 @@ import type {
 // themselves free of them may be imported here – which is why the profile
 // derivation both hash sides share lives in `lib/profile.ts` (it reaches
 // `lib/geo.ts`) and not in this file.
-import { derivedDir } from "./derived-file";
+import { canonicalJson, derivedDir } from "./derived-file";
 import { ascentKey, entityKey } from "./route-key";
 
 /**
@@ -114,7 +114,7 @@ const file = (
 ): DetailFile | null => {
   // Nothing to show: no file, no URL, and so no request from the panel.
   if (data.photos.length === 0 && !data.profiles) return null;
-  const body = JSON.stringify(data);
+  const body = canonicalJson(data);
   return { body, name: fileName(kind, slug, body) };
 };
 
