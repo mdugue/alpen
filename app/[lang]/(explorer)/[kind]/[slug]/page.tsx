@@ -63,7 +63,7 @@ export const generateMetadata = async ({
       type: "website",
       url,
     },
-    // The site name is appended by the title template in app/layout.tsx.
+    // The site name is appended by the title template in app/[lang]/layout.tsx.
     title,
     twitter: { description, title },
   };

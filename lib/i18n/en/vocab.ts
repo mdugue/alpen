@@ -44,7 +44,7 @@ export const vocab = {
     only: (n: number) => `only ${n}`,
     under: (t: number) => `under ${t} °C`,
     upTo: (n: number) => `up to ${n}`,
-    upToOf15: (n: number) => `up to ${n} of 15`,
+    wetDays: (n: number) => `up to ${n} of 15`,
   },
   prominence: {
     famous: "famous passes",
@@ -212,5 +212,9 @@ export const vocab = {
       hint: "Road-bike shops with a workshop and rental bikes in town.",
       label: "Workshops & rental",
     },
+  },
+  unit: {
+    approx: "approx.",
+    climb: "m+",
   },
 } satisfies typeof de;

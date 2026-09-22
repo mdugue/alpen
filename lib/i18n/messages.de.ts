@@ -19,6 +19,19 @@ import { vocab } from "./de/vocab";
  *
  * Interpolations are plain functions, so a sentence can change its shape
  * between languages instead of pasting numbers into a fixed frame.
+ *
+ * The glossary, so a new string lands on the same word as the old ones
+ * (German → English): Pass → pass · Straße → road · Tour/Rundtour → loop ·
+ * Ort → town · Reiseziel → destination · Halbmonat → half-month · beste
+ * Zeit → best time · gut → good · eingeschränkt → limited · oft gesperrt →
+ * often closed · gemerkt → favourite · Schönheit → beauty · Schwierigkeit →
+ * difficulty · Verkehr → traffic · Bekanntheit → fame · Höhe → elevation ·
+ * Belag → surface · Gebirge → range · Anstieg/Auffahrt → ascent ·
+ * Höhenmeter (hm) → m+ (compact) / m of climbing (prose) · Rennrad → road
+ * bike · Rad-Ort → cycling town · Öffnungsfenster → opening window ·
+ * Wintersperre → winter closure · wetterabhängig → weather-dependent ·
+ * abgeleitet → derived · Skalen & Quellen → scales & sources · vor der
+ * Haustür → on the doorstep · Tagesrunde → day loop · Ausflug → day trip.
  */
 export const de = {
   /** The season band: the summary line, the legend, the slider and the two ways into the drawers. */

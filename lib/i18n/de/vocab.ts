@@ -50,7 +50,7 @@ export const vocab = {
     only: (n: number) => `nur ${n}`,
     under: (t: number) => `unter ${t} °C`,
     upTo: (n: number) => `bis ${n}`,
-    upToOf15: (n: number) => `bis ${n} von 15`,
+    wetDays: (n: number) => `bis ${n} von 15`,
   },
   /** The legend line while the overview is thinned by fame. */
   prominence: {
@@ -88,4 +88,9 @@ export const vocab = {
   },
   surface: SURFACE,
   townTag: TOWN_TAG,
+  /** The unit words that are not international: the metres of climbing, and "about". */
+  unit: {
+    approx: "ca.",
+    climb: "hm",
+  },
 };

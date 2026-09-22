@@ -8,10 +8,10 @@ import {
   LANGS,
   langOf,
   langParams,
-  langPrefix,
   messagesOf,
   OG_LOCALE,
 } from "@/lib/i18n";
+import { homeHref } from "@/lib/routes";
 
 import "../globals.css";
 
@@ -48,12 +48,12 @@ export const generateMetadata = async ({
   const { lang: raw } = await params;
   const lang = langOf(raw);
   const { site } = messagesOf(lang);
-  const home = langPrefix(lang) || "/";
+  const home = homeHref(lang);
   return {
     alternates: {
       canonical: home,
       languages: {
-        ...Object.fromEntries(LANGS.map((l) => [l, langPrefix(l) || "/"])),
+        ...Object.fromEntries(LANGS.map((l) => [l, homeHref(l)])),
         "x-default": "/",
       },
     },

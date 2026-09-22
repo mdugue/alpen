@@ -105,41 +105,59 @@ type Translated = (typeof TRANSLATIONS)[keyof typeof TRANSLATIONS];
 /** One list with the translated fields laid over each record. */
 const localize = <T extends { slug: string }, P extends object>(
   list: T[],
-  translations: Record<string, P> | undefined,
+  translations: Record<string, P>,
 ): T[] =>
-  translations
-    ? list.map((item) => {
-        const own = translations[item.slug];
-        return own ? { ...item, ...own } : item;
-      })
-    : list;
+  list.map((item) => {
+    const own = translations[item.slug];
+    return own ? { ...item, ...own } : item;
+  });
 
-/** The German lists, or the English ones laid over them. */
-const localized = (lang: Lang) => {
+/** A pass with its prose and its ascent labels (matched by index) in the other language. */
+const localizePass = (
+  pass: Pass,
+  own: (typeof TRANSLATIONS)["en"]["passes"][string] | undefined,
+): Pass => {
+  if (!own) return pass;
+  const { ascents: labels, ...prose } = own;
+  return {
+    ...pass,
+    ...prose,
+    ascents: labels
+      ? pass.ascents.map((a, j) => (labels[j] ? { ...a, label: labels[j] } : a))
+      : pass.ascents,
+  };
+};
+
+interface Lists {
+  destinations: Destination[];
+  passes: Pass[];
+  tours: Tour[];
+  towns: Town[];
+}
+
+/**
+ * The German lists, or the other language's laid over them – built once per
+ * language: every prerendered route asks for its entity, and the four lists
+ * do not change between two of them.
+ */
+const LISTS = new Map<Lang, Lists>();
+const localized = (lang: Lang): Lists => {
+  const cached = LISTS.get(lang);
+  if (cached) return cached;
   const t: Translated | undefined =
     lang === DEFAULT_LANG
       ? undefined
       : TRANSLATIONS[lang as keyof typeof TRANSLATIONS];
-  const localizedPasses = t
-    ? localize(passes, t.passes).map((p, i) => {
-        const labels = t.passes[p.slug]?.ascents;
-        const original = passes[i]!;
-        return labels
-          ? {
-              ...p,
-              ascents: original.ascents.map((a, j) =>
-                labels[j] ? { ...a, label: labels[j] } : a,
-              ),
-            }
-          : { ...p, ascents: original.ascents };
-      })
-    : passes;
-  return {
-    destinations: localize(destinations, t?.destinations),
-    passes: localizedPasses,
-    tours: localize(tours, t?.tours),
-    towns: localize(towns, t?.towns),
-  };
+  const lists: Lists = t
+    ? {
+        destinations: localize(destinations, t.destinations),
+        passes: passes.map((p) => localizePass(p, t.passes[p.slug])),
+        tours: localize(tours, t.tours),
+        towns: localize(towns, t.towns),
+      }
+    : { destinations, passes, tours, towns };
+  LISTS.set(lang, lists);
+  return lists;
 };
 
 /**

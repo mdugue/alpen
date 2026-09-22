@@ -119,14 +119,15 @@ export const status = {
       `Typically open ${window}${maintained}.`,
   },
   signal: {
-    best: "fewer than $ snowfall days",
-    "cold-descent": "a summit daily maximum below $",
-    frost: "frost on $ of nights",
-    heat: "heat in the valley from $",
-    "short-day": "days with under $ of light",
-    snow: "snowfall on $ of days or more",
-    "snow-cover": "snow cover on $ of days on an unpaved road",
-    wet: "rain on $ of days",
+    best: (value: string) => `fewer than ${value} snowfall days`,
+    "cold-descent": (value: string) => `a summit daily maximum below ${value}`,
+    frost: (value: string) => `frost on ${value} of nights`,
+    heat: (value: string) => `heat in the valley from ${value}`,
+    "short-day": (value: string) => `days with under ${value} of light`,
+    snow: (value: string) => `snowfall on ${value} of days or more`,
+    "snow-cover": (value: string) =>
+      `snow cover on ${value} of days on an unpaved road`,
+    wet: (value: string) => `rain on ${value} of days`,
   },
   summary: {
     allYear: "all year",

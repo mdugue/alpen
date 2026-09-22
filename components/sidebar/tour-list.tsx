@@ -89,7 +89,7 @@ export const TourList = ({
                   <>
                     <span className="text-xs font-medium whitespace-nowrap tabular-nums">
                       {fmtUnit(tour.km, "km")} ·{" "}
-                      {fmtUnit(tour.elevationGain, "hm")}
+                      {fmtUnit(tour.elevationGain, t.vocab.unit.climb)}
                     </span>
                     <StatusLabel
                       status={status}

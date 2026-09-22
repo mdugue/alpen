@@ -25,7 +25,7 @@ import type { Selection, Shown } from "@/lib/app-state";
 import { isShown } from "@/lib/app-state";
 import { circleRing } from "@/lib/geo";
 import type { Bounds } from "@/lib/geo";
-import { surfaceWord, typeWord } from "@/lib/i18n";
+import { surfaceWord, typeWord, vocabOf } from "@/lib/i18n";
 import type { Lang } from "@/lib/i18n";
 import { visibleBounds } from "@/lib/map-camera";
 import type { TownReach } from "@/lib/nearby";
@@ -33,7 +33,7 @@ import { HOME_RANGE, inBox, RANGE_BOUNDS, rangeOf } from "@/lib/regions";
 import { ascentKey } from "@/lib/route-key";
 import type { PassRow, Rows } from "@/lib/rows";
 import type { LatLon, Status, Surface, Tag } from "@/lib/types";
-import { fmt, fmtUnit } from "@/lib/utils";
+import { fmtUnit } from "@/lib/utils";
 
 /** MapLibre reads properties as numbers and strings; a flag is 0 or 1. */
 type Flag = 0 | 1;
@@ -281,7 +281,7 @@ export const buildScene = (input: SceneInput): Scene => {
         anchor: [(box[0] + box[2]) / 2, (box[1] + box[3]) / 2],
         lang,
         name: tourRow.tour.name,
-        subtitle: `ca. ${fmt(tourRow.tour.km, 0, lang)} km · ${fmt(tourRow.tour.elevationGain, 0, lang)} hm`,
+        subtitle: `${vocabOf(lang).unit.approx} ${fmtUnit(tourRow.tour.km, "km", 0, lang)} · ${fmtUnit(tourRow.tour.elevationGain, vocabOf(lang).unit.climb, 0, lang)}`,
         tags: [],
       };
     if (destinationRow)

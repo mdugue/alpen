@@ -2,8 +2,9 @@
 
 import { createContext, useContext } from "react";
 
-import { DEFAULT_LANG, localeOf, messagesOf } from "@/lib/i18n";
+import { DEFAULT_LANG, messagesOf } from "@/lib/i18n";
 import type { Lang, Messages } from "@/lib/i18n";
+import { fmt, fmtUnit } from "@/lib/utils";
 
 /**
  * The language of the page, for every client component that says a word
@@ -32,15 +33,9 @@ export const useT = (): {
   fmtUnit: (n: number, unit: string, digits?: number) => string;
 } => {
   const lang = useContext(LangContext);
-  const locale = localeOf(lang);
-  const fmt = (n: number, digits = 0) =>
-    n.toLocaleString(locale, {
-      maximumFractionDigits: digits,
-      minimumFractionDigits: 0,
-    });
   return {
-    fmt,
-    fmtUnit: (n, unit, digits = 0) => `${fmt(n, digits)} ${unit}`,
+    fmt: (n, digits = 0) => fmt(n, digits, lang),
+    fmtUnit: (n, unit, digits = 0) => fmtUnit(n, unit, digits, lang),
     lang,
     t: messagesOf(lang),
   };

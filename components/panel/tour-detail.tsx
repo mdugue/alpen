@@ -30,7 +30,8 @@ export const TourDetail = ({
           {fmt(tour.elevationGain)}
         </span>
         <span className="ml-1">
-          hm · {t.panel.tour.passCount(fmt(tour.passes.length))}
+          {t.vocab.unit.climb} ·{" "}
+          {t.panel.tour.passCount(fmt(tour.passes.length))}
         </span>
       </p>
 

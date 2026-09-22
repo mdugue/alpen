@@ -129,7 +129,8 @@ export const DestinationDetail = ({
               >
                 <StatusDot status={cell.status} /> {tour.name}
                 <span className="text-muted-foreground tabular-nums">
-                  {fmtUnit(tour.km, "km")} · {fmtUnit(tour.elevationGain, "hm")}
+                  {fmtUnit(tour.km, "km")} ·{" "}
+                  {fmtUnit(tour.elevationGain, t.vocab.unit.climb)}
                 </span>
               </LinkButton>
             ))}

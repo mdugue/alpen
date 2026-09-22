@@ -28,9 +28,17 @@ Everything in the design below, with these departures:
 - **The editorial prose** is `data/i18n/en/{passes,tours,towns,destinations}.json`
   with a first machine draft, hand-checked, merged in `lib/data.ts`; the
   coverage is an `INFO` line of `bun run data:check`.
-- **The first-visit hint** is a small dismissible link in the header for a
-  browser whose language is English and nothing stored (`alpenpaesse:lang`);
-  the map's basemap labels stay as they are (plan 06 uses `name` only).
+- **The first-visit hint** is a small dismissible box under the header for
+  a browser whose language is the other one and nothing stored
+  (`alpenpaesse:lang`) – symmetric, so a German browser on `/en` is offered
+  the German version too. The toggle and the hint's link store where they
+  lead, a dismissal stores the page's language; either way the hint is asked
+  once. The basemap labels read `name:en` on the English page
+  (`nameOf` in `lib/basemap.ts`), and `scripts/build-map-style.ts` writes
+  one style file per scheme and language for the editors.
+- **Verified in step 1**: the build log lists `/de` and `/en` as `○`
+  (static), and the browser suite opens `/` and `/pass/…` through the
+  rewrite on every run.
 
 ## Goal
 

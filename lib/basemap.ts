@@ -463,8 +463,9 @@ export const basemapLayerIds = (scheme: Scheme): string[] => {
 
 /**
  * A complete, standalone style – what `scripts/build-map-style.ts` writes to
- * `public/map/style-{light,dark}.json`. `glyphs` defaults to the app's own
- * path; a style editor needs it absolute.
+ * `public/map/style-{light,dark}.json` and, with the English labels,
+ * `style-{light,dark}-en.json`. `glyphs` defaults to the app's own path; a
+ * style editor needs it absolute.
  */
 export const basemapStyle = (
   scheme: Scheme,

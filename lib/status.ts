@@ -408,7 +408,7 @@ export const signalKey = (s: Signal): SignalKey =>
 
 /** A signal's clause with its value filled in, e.g. "Schneefall ab 20 % der Tage". */
 const signalText = (s: Signal, lang: Lang): string =>
-  words(lang).signal[signalKey(s)].replace("$", signalValue(s, lang));
+  words(lang).signal[signalKey(s)](signalValue(s, lang));
 
 /** The signal of one reason, for the dialog and the calibration script. */
 const signalOf = (reason: StatusReason): Signal | undefined =>
@@ -552,7 +552,7 @@ interface ReasonContext {
 }
 
 /** The pass's window as the sentences quote it, or null without one. */
-const windowOf_ = (pass: Pass, lang: Lang): string | null =>
+const passWindow = (pass: Pass, lang: Lang): string | null =>
   pass.season ? windowText(pass.season, lang) : null;
 
 /**
@@ -580,7 +580,7 @@ const REASON_TEXT: Record<StatusReason, (ctx: ReasonContext) => string> = {
       VALLEY_TMAX_ERROR,
     ),
   "outside-window": ({ pass, lang }) => {
-    const window = windowOf_(pass, lang);
+    const window = passWindow(pass, lang);
     return window
       ? words(lang).reason.outsideWindow(window)
       : words(lang).reason.outsideSeason;
@@ -602,7 +602,7 @@ const REASON_TEXT: Record<StatusReason, (ctx: ReasonContext) => string> = {
   wet: ({ bucket, lang }) =>
     words(lang).reason.wet(bucket?.wetPct ?? 0, daysOf(bucket?.wetPct ?? 0)),
   "window-edge": ({ pass, lang }) =>
-    words(lang).reason.windowEdge(windowOf_(pass, lang)),
+    words(lang).reason.windowEdge(passWindow(pass, lang)),
 };
 
 /**

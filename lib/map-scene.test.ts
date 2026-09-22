@@ -393,7 +393,7 @@ describe("hover", () => {
       anchor: [6.2, 45.2],
       lang: "de",
       name: "La Marmotte",
-      subtitle: "ca. 174 km · 5.000 hm",
+      subtitle: `ca. ${fmtUnit(174, "km")} · ${fmtUnit(5000, "hm")}`,
       tags: [],
     });
   });

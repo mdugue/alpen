@@ -134,16 +134,17 @@ export const status = {
     typical: (window: string, maintained: string) =>
       `Typisch offen ${window}${maintained}.`,
   },
-  /** The clause of each threshold in the scales dialog; `$` is the value with its unit. */
+  /** The clause of each threshold in the scales dialog, given the value with its unit. */
   signal: {
-    best: "weniger als $ Schneefalltagen",
-    "cold-descent": "ein Gipfel-Tagesmaximum unter $",
-    frost: "Frost in $ der Nächte",
-    heat: "Hitze im Tal ab $",
-    "short-day": "Tage unter $ Licht",
-    snow: "Schneefall ab $ der Tage",
-    "snow-cover": "auf ungeteerter Straße eine Schneedecke an $ der Tage",
-    wet: "Regen an $ der Tage",
+    best: (value: string) => `weniger als ${value} Schneefalltagen`,
+    "cold-descent": (value: string) => `ein Gipfel-Tagesmaximum unter ${value}`,
+    frost: (value: string) => `Frost in ${value} der Nächte`,
+    heat: (value: string) => `Hitze im Tal ab ${value}`,
+    "short-day": (value: string) => `Tage unter ${value} Licht`,
+    snow: (value: string) => `Schneefall ab ${value} der Tage`,
+    "snow-cover": (value: string) =>
+      `auf ungeteerter Straße eine Schneedecke an ${value} der Tage`,
+    wet: (value: string) => `Regen an ${value} der Tage`,
   },
   /** One sentence for the 24 cells of a strip, for screen readers. */
   summary: {

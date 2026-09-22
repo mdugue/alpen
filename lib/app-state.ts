@@ -71,7 +71,7 @@ export const RATING_MAX = 5;
  */
 export type OptionLabel =
   | { kind: "any" }
-  | { kind: "from" | "upTo" | "only" | "under" | "upToOf15"; n: number }
+  | { kind: "from" | "upTo" | "only" | "under" | "wetDays"; n: number }
   | { kind: "elevationFrom"; m: number };
 export type Options = readonly (readonly [value: number, label: OptionLabel])[];
 export const TRAFFIC_OPTIONS = [
@@ -151,10 +151,10 @@ export const WET_NONE = 15;
  */
 export const WET_OPTIONS = [
   [WET_NONE, { kind: "any" }],
-  [10, { kind: "upToOf15", n: 10 }],
-  [8, { kind: "upToOf15", n: 8 }],
-  [6, { kind: "upToOf15", n: 6 }],
-  [4, { kind: "upToOf15", n: 4 }],
+  [10, { kind: "wetDays", n: 10 }],
+  [8, { kind: "wetDays", n: 8 }],
+  [6, { kind: "wetDays", n: 6 }],
+  [4, { kind: "wetDays", n: 4 }],
 ] as const satisfies Options;
 
 /**

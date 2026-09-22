@@ -94,7 +94,7 @@ const profileLine = (
 ) =>
   [
     fmtUnit(profile.km, "km", 1),
-    ...(traverse ? [] : [fmtUnit(profile.elevationGain, "hm")]),
+    ...(traverse ? [] : [fmtUnit(profile.elevationGain, t.vocab.unit.climb)]),
     t.panel.ascents.average(fmt(profile.avgGradient, 1)),
     ...(traverse
       ? []

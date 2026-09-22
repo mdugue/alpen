@@ -677,12 +677,27 @@ const coverage = (
   }
 };
 coverage("passes", passes, passesEn, ["note", "classicAscent"]);
+// The ascent labels are matched by index, so a list of the wrong length
+// would put a label on the wrong side – a warning, unlike a missing field.
+for (const p of passes ?? []) {
+  const labels = passesEn?.[p.slug]?.ascents;
+  if (labels && labels.length !== p.ascents.length)
+    warnings.push(
+      `i18n/en/passes.json: ${p.slug} hat ${labels.length} Auffahrtsnamen, die Straße ${p.ascents.length}`,
+    );
+}
+if (passes && passesEn) {
+  const missing = passes.filter((p) => !passesEn[p.slug]?.ascents).length;
+  if (missing)
+    translationGaps.push(`passes.ascents ${missing}/${passes.length}`);
+}
 coverage("tours", tours, toursEn, ["description", "note"]);
 coverage("towns", towns, townsEn, ["why"]);
 coverage("destinations", destinations, destinationsEn, [
   "character",
   "multiDay",
   "access",
+  "note",
 ]);
 if (translationGaps.length)
   console.log(

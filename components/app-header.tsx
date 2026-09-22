@@ -89,18 +89,18 @@ const never = () => () => {
   /* nothing subscribed, nothing to release */
 };
 const browserLang = () => navigator.language.slice(0, 2).toLowerCase();
-const useLangHint = (lang: Lang, otherHref: string) => {
+const useLangHint = (lang: Lang) => {
   const [stored, setStored] = useStored("lang");
   // The browser's language is an external value the server does not have:
   // null in the prerender, read once the client is up.
   const browser = useSyncExternalStore(never, browserLang, () => null);
-  if (stored !== null || browser === null || browser !== otherLang(lang))
-    return null;
-  return {
-    accept: () => setStored(otherLang(lang)),
-    dismiss: () => setStored(lang),
-    href: otherHref,
-  };
+  /** The toggle and the hint's link store where they lead, so the hint is asked once. */
+  const choose = () => setStored(otherLang(lang));
+  const hint =
+    stored !== null || browser === null || browser !== otherLang(lang)
+      ? null
+      : { dismiss: () => setStored(lang) };
+  return { choose, hint };
 };
 
 export const AppHeader = ({
@@ -124,7 +124,7 @@ export const AppHeader = ({
 }) => {
   const { t, lang } = useT();
   const other = otherLang(lang);
-  const hint = useLangHint(lang, otherHref);
+  const { choose, hint } = useLangHint(lang);
   return (
     <header
       className={cn(
@@ -183,7 +183,9 @@ export const AppHeader = ({
         variant="ghost"
         size="sm"
         className="shrink-0 font-semibold tracking-wide uppercase"
-        render={<a href={otherHref} hrefLang={other} lang={other} />}
+        render={
+          <a href={otherHref} hrefLang={other} lang={other} onClick={choose} />
+        }
         nativeButton={false}
       >
         {other}
@@ -212,7 +214,7 @@ export const AppHeader = ({
             hrefLang={other}
             lang={other}
             className="text-foreground font-semibold underline"
-            onClick={hint.accept}
+            onClick={choose}
           >
             {t.header.hintOpen}
           </a>

@@ -46,9 +46,10 @@ export const optionText = (
   return w[o.kind](o.n);
 };
 
-const optionLabel = (options: Options, value: number, lang: Lang) => {
+/** The label of the option a value picks; the empty string for a value no chip carries. */
+const optionLabel = (options: Options, value: number, lang: Lang): string => {
   const label = options.find(([v]) => v === value)?.[1];
-  return label ? optionText(label, lang) : undefined;
+  return label ? optionText(label, lang) : "";
 };
 
 /** "Schwierigkeit 3" for one level, "Schwierigkeit 2–4" for a window. */
@@ -132,19 +133,19 @@ export const appliedFilters = (
   if (f.maxTraffic < RATING_MAX)
     add(
       "traffic",
-      v.filter.traffic(optionLabel(TRAFFIC_OPTIONS, f.maxTraffic, lang) ?? ""),
+      v.filter.traffic(optionLabel(TRAFFIC_OPTIONS, f.maxTraffic, lang)),
       (g) => ({ ...g, maxTraffic: RATING_MAX }),
     );
   if (f.minBeauty > RATING_MIN)
     add(
       "beauty",
-      v.filter.beauty(optionLabel(BEAUTY_OPTIONS, f.minBeauty, lang) ?? ""),
+      v.filter.beauty(optionLabel(BEAUTY_OPTIONS, f.minBeauty, lang)),
       (g) => ({ ...g, minBeauty: RATING_MIN }),
     );
   if (f.minFame > 1)
     add(
       "fame",
-      v.filter.fame(optionLabel(FAME_OPTIONS, f.minFame, lang) ?? ""),
+      v.filter.fame(optionLabel(FAME_OPTIONS, f.minFame, lang)),
       (g) => ({
         ...g,
         minFame: 1,

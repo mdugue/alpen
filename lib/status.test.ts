@@ -122,7 +122,7 @@ const REASON_SHORT = WORDS.reasonShort;
 
 /** A signal's clause with its value filled in, as `ladderText` prints it. */
 const reads = (s: (typeof SIGNALS)[number]) =>
-  WORDS.signal[signalKey(s)].replace("$", signalValue(s));
+  WORDS.signal[signalKey(s)](signalValue(s));
 
 /** One grade per character: `b` best, `o` good, `r` limited, anything else closed. */
 const grades = (spec: string): Grade[] =>
@@ -860,7 +860,7 @@ describe("one status vocabulary", () => {
     // plan. What can still break is a clause with nowhere to put its value,
     // which would print the threshold nowhere at all.
     for (const signal of SIGNALS) {
-      expect(WORDS.signal[signalKey(signal)]).toContain("$");
+      expect(WORDS.signal[signalKey(signal)]("§")).toContain("§");
       expect(reads(signal)).toContain(String(signal.value).replace(".", ","));
       expect(paragraph).toContain(reads(signal));
     }
