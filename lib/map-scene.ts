@@ -26,7 +26,13 @@ import { isShown } from "@/lib/app-state";
 import type { Bounds } from "@/lib/map-assets";
 import { visibleBounds } from "@/lib/map-camera";
 import type { TownReach } from "@/lib/nearby";
-import { roadTypeWord } from "@/lib/regions";
+import {
+  HOME_RANGE,
+  inBox,
+  RANGE_BOUNDS,
+  rangeOf,
+  roadTypeWord,
+} from "@/lib/regions";
 import { ascentKey } from "@/lib/route-key";
 import type { PassRow, Rows } from "@/lib/rows";
 import type { LatLon, Status, Tag } from "@/lib/types";
@@ -110,6 +116,14 @@ export interface Scene {
   cursor: FeatureCollection<Point, Record<string, never>>;
   /** What "fit to visible" frames; `null` while nothing is drawn. */
   bounds: Bounds | null;
+  /**
+   * What the map opens on: the drawn roads and loops of the home range
+   * (`HOME_RANGE`), or everything drawn when none of it is there – a range
+   * chip pressed before the map was ready, say. The Alps and the Pyrenees are
+   * 600 km apart, and a first screen holding both shows neither
+   * (docs/plans/26-pyrenees.md).
+   */
+  opening: Bounds | null;
 }
 
 export interface SceneInput {
@@ -237,16 +251,34 @@ export const buildScene = (input: SceneInput): Scene => {
     return null;
   };
 
+  const tours = rows.tour.map(({ tour }) => ({
+    slug: tour.slug,
+    visible: isShown(shown, "tour", tour.slug),
+  }));
+  const bounds = visibleBounds(
+    rows.pass.map((r) => r.pass),
+    tours,
+    tourBounds,
+    shown.passes,
+  );
+  const home = RANGE_BOUNDS[HOME_RANGE];
+  const opening = visibleBounds(
+    rows.pass
+      .map((r) => r.pass)
+      .filter((p) => rangeOf(p.region) === HOME_RANGE),
+    // A loop has no region: it is at home where its box's centre is.
+    tours.filter(({ slug }) => {
+      const b = tourBounds[slug];
+      return (
+        b && inBox(home, { lat: (b[1] + b[3]) / 2, lon: (b[0] + b[2]) / 2 })
+      );
+    }),
+    tourBounds,
+    shown.passes,
+  );
+
   return {
-    bounds: visibleBounds(
-      rows.pass.map((r) => r.pass),
-      rows.tour.map(({ tour }) => ({
-        slug: tour.slug,
-        visible: isShown(shown, "tour", tour.slug),
-      })),
-      tourBounds,
-      shown.passes,
-    ),
+    bounds,
     cursor: collection(
       profileCursor
         ? [{ at: [profileCursor.lon, profileCursor.lat], props: {} }]
@@ -279,6 +311,7 @@ export const buildScene = (input: SceneInput): Scene => {
       ),
       popup: popup(),
     },
+    opening: opening ?? bounds,
     passes: collection<PassProps>(
       (shown.passes ? rows.pass : []).map((row) => ({
         at: [row.pass.lon, row.pass.lat],

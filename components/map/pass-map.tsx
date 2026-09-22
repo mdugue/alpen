@@ -636,11 +636,12 @@ export const PassMap = ({
     if (intent) send({ intent, type: "intent" });
   }, [intent, send]);
 
-  // What the map draws is what it opens on, so this is dispatched again until
-  // something has been framed: the lines and dots may arrive after the style.
+  // What the map draws of the home range is what it opens on, so this is
+  // dispatched again until something has been framed: the lines and dots may
+  // arrive after the style.
   useEffect(() => {
-    if (ready) send({ bounds: scene.bounds, type: "ready" });
-  }, [ready, scene.bounds, send]);
+    if (ready) send({ bounds: scene.opening, type: "ready" });
+  }, [ready, scene.opening, send]);
 
   useEffect(() => {
     if (!ready) return;

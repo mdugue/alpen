@@ -11,32 +11,64 @@
  * map covers (docs/plans/25-vosges-and-jura.md). The order is the display
  * order, the Alps first because they are where the app began.
  */
-export const RANGES = ["Alpen", "Vogesen", "Jura"] as const;
+export const RANGES = ["Alpen", "Vogesen", "Jura", "Pyrenäen"] as const;
 
 export type RangeName = (typeof RANGES)[number];
 
-export const RANGE: Record<RangeName, { label: string; hint: string }> = {
+/**
+ * The range the map opens on (`Scene.opening`, lib/map-scene.ts). The Alps
+ * are where the app began and where most of its roads are; a range 600 km
+ * away is reached through its chip, the search and a shared link, not by
+ * zooming the first screen out until nothing in it is readable
+ * (docs/plans/26-pyrenees.md). The fit button's second press goes to
+ * `DEFAULT_VIEW`, which is centred on the same range.
+ */
+export const HOME_RANGE: RangeName = "Alpen";
+
+/**
+ * Label, hint, and the range in a sentence: German declines the article, and
+ * three of the four are plural where the Jura is not – "in den Alpen" but
+ * "im Jura", "außerhalb der Vogesen" but "außerhalb des Juras" – so the
+ * phrases are written per range rather than glued to the label.
+ */
+export const RANGE: Record<
+  RangeName,
+  { label: string; hint: string; inside: string; outside: string }
+> = {
   Alpen: {
     hint: "Von den Seealpen bis nach Slowenien – Westalpen, Zentralalpen, Ostalpen und Dolomiten.",
+    inside: "in den Alpen",
     label: "Alpen",
+    outside: "außerhalb der Alpen",
   },
   Jura: {
     hint: "Grand Colombier, Mont du Chat, Faucille, Chasseral: lange Saison, wenig Verkehr, zwei Stunden ab Basel.",
+    inside: "im Jura",
     label: "Jura",
+    outside: "außerhalb des Juras",
+  },
+  Pyrenäen: {
+    hint: "Tourmalet, Aubisque, Peyresourde, Ariège und Andorra: die anderen Berge der Tour, mit der langen Saison der spanischen Seite.",
+    inside: "in den Pyrenäen",
+    label: "Pyrenäen",
+    outside: "außerhalb der Pyrenäen",
   },
   Vogesen: {
     hint: "Grand Ballon, Schlucht, Ballon d'Alsace und die Route des Crêtes: das Wochenende ab Freiburg, Basel oder Karlsruhe.",
+    inside: "in den Vogesen",
     label: "Vogesen",
+    outside: "außerhalb der Vogesen",
   },
 };
 
 /**
- * Which regions each range holds. The Vosges and the Jura are one region each
- * until the data asks for a split; the Alps keep their four.
+ * Which regions each range holds. The Vosges, the Jura and the Pyrenees are
+ * one region each until the data asks for a split; the Alps keep their four.
  */
 export const RANGE_REGIONS = {
   Alpen: ["Westalpen", "Zentralalpen", "Ostalpen", "Dolomiten"],
   Jura: ["Jura"],
+  Pyrenäen: ["Pyrenäen"],
   Vogesen: ["Vogesen"],
 } as const satisfies Record<RangeName, readonly string[]>;
 
@@ -45,7 +77,53 @@ export const REGIONS = [
   ...RANGE_REGIONS.Alpen,
   ...RANGE_REGIONS.Vogesen,
   ...RANGE_REGIONS.Jura,
+  ...RANGE_REGIONS.Pyrenäen,
 ] as const;
+
+/** A box in degrees, both ends inclusive. */
+export interface GeoBox {
+  lat: readonly [min: number, max: number];
+  lon: readonly [min: number, max: number];
+}
+
+/**
+ * Where each range lies. `LatLon` in the schema used to be one box around the
+ * Alps – a typo guard, so a swapped pair or a missing digit fails the schema
+ * instead of landing a pass in the sea. One box wide enough for the Pyrenees
+ * too would catch nothing, so the guard is kept per range: a road's marker
+ * and every ascent's ends have to lie inside the box of its own range, and
+ * a tour's waypoints inside the box of its passes' range (`data:check`).
+ * Towns are checked against the union only; their range comes from reach.
+ *
+ * The Vosges and the Jura lie inside the Alps' box, so the guard catches a
+ * road filed on the wrong side of the 600 km between the Alps and the
+ * Pyrenees, and a coordinate typed into the sea – not a Jura road filed as
+ * "Westalpen". That one is the curator's to read off the map.
+ */
+export const RANGE_BOUNDS: Record<RangeName, GeoBox> = {
+  Alpen: { lat: [43, 49], lon: [4, 16] },
+  Jura: { lat: [45, 48], lon: [5, 8] },
+  Pyrenäen: { lat: [42, 43.5], lon: [-2, 3.5] },
+  Vogesen: { lat: [47, 49], lon: [6, 8] },
+};
+
+/** The union of every range's box: what a coordinate may be at all. */
+export const LATLON_BOUNDS: GeoBox = {
+  lat: [
+    Math.min(...RANGES.map((r) => RANGE_BOUNDS[r].lat[0])),
+    Math.max(...RANGES.map((r) => RANGE_BOUNDS[r].lat[1])),
+  ],
+  lon: [
+    Math.min(...RANGES.map((r) => RANGE_BOUNDS[r].lon[0])),
+    Math.max(...RANGES.map((r) => RANGE_BOUNDS[r].lon[1])),
+  ],
+};
+
+export const inBox = (box: GeoBox, p: { lat: number; lon: number }) =>
+  p.lat >= box.lat[0] &&
+  p.lat <= box.lat[1] &&
+  p.lon >= box.lon[0] &&
+  p.lon <= box.lon[1];
 
 export type RegionName = (typeof REGIONS)[number];
 
@@ -56,13 +134,24 @@ const REGION_RANGE = Object.fromEntries(
 /** The range a region belongs to. */
 export const rangeOf = (region: RegionName): RangeName => REGION_RANGE[region];
 
-export const COUNTRIES = ["FR", "IT", "CH", "AT", "DE", "SI"] as const;
+export const COUNTRIES = [
+  "FR",
+  "IT",
+  "CH",
+  "AT",
+  "DE",
+  "SI",
+  "ES",
+  "AD",
+] as const;
 
 /** German names for the country codes, so "frankreich" and "fr" both search. */
 export const COUNTRY_NAME: Record<(typeof COUNTRIES)[number], string> = {
+  AD: "Andorra",
   AT: "Österreich",
   CH: "Schweiz",
   DE: "Deutschland",
+  ES: "Spanien",
   FR: "Frankreich",
   IT: "Italien",
   SI: "Slowenien",

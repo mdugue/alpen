@@ -8,6 +8,7 @@ import { RowList } from "@/components/sidebar/row-list";
 import { StatusLabel } from "@/components/status-badge";
 import { Switch } from "@/components/ui/switch";
 import type { Selection } from "@/lib/app-state";
+import { RANGE } from "@/lib/regions";
 import { entityKey } from "@/lib/route-key";
 import type { TourRow } from "@/lib/rows";
 import type { Period } from "@/lib/types";
@@ -23,6 +24,7 @@ export const TourList = ({
   isShown,
   empty,
   mapControl,
+  showRange,
   onToggleTour,
   onSelect,
   onToggleFavorite,
@@ -37,6 +39,8 @@ export const TourList = ({
   empty: Omit<React.ComponentProps<typeof ListEmpty>, "title">;
   /** The "auf der Karte" switch for this kind; it lives in the list, not by the tabs. */
   mapControl: React.ReactNode;
+  /** Name the range first once the data holds more than one. */
+  showRange: boolean;
   onToggleTour: (slug: string, on: boolean) => void;
   onSelect: (slug: string) => void;
   onToggleFavorite: (slug: string) => void;
@@ -50,7 +54,7 @@ export const TourList = ({
         <ListEmpty title="Keine Touren gefunden" {...empty} />
       ) : (
         <RowList ref={rovingList} items={rows} keyOf={({ tour }) => tour.slug}>
-          {({ tour, status, reason, favorite, season, window }) => {
+          {({ tour, status, reason, favorite, season, window, range }) => {
             const onMap = isShown(tour.slug);
             return (
               <EntityRow
@@ -70,7 +74,13 @@ export const TourList = ({
                 }
                 name={tour.name}
                 title={tour.name}
-                subtitle={`${tour.passes.length} Pässe · ${window}`}
+                subtitle={[
+                  showRange && range ? RANGE[range].label : null,
+                  `${tour.passes.length} Pässe`,
+                  window,
+                ]
+                  .filter(Boolean)
+                  .join(" · ")}
                 favorite={favorite}
                 onToggleFavorite={() => onToggleFavorite(tour.slug)}
                 onSelect={() => onSelect(tour.slug)}

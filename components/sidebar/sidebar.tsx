@@ -280,6 +280,7 @@ export const Sidebar = (p: SidebarProps) => {
               isShown={(slug) => isShown(p.shown, "tour", slug)}
               empty={emptyProps}
               mapControl={tourSwitch}
+              showRange={p.ranges.length > 1}
               onToggleTour={(slug, on) =>
                 p.dispatch({ on, slug, type: "toggleTour" })
               }
@@ -295,6 +296,7 @@ export const Sidebar = (p: SidebarProps) => {
               onHover={onHover}
               empty={emptyProps}
               mapControl={townSwitch}
+              showRange={p.ranges.length > 1}
               onSelect={onSelect("town")}
               onToggleFavorite={(slug) => p.onToggleFavorite("town", slug)}
             />

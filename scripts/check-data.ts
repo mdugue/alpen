@@ -26,7 +26,15 @@
  * must neither block a merge nor stop the refresh workflow from committing
  * what it fetched.
  */
-import { isTraverse, ROAD_TYPE } from "../lib/regions";
+import {
+  inBox,
+  isTraverse,
+  RANGE,
+  RANGE_BOUNDS,
+  rangeOf,
+  ROAD_TYPE,
+} from "../lib/regions";
+import type { RangeName } from "../lib/regions";
 import { ascentKey, entityKey, parseRouteKey, tourKey } from "../lib/route-key";
 import { FILES } from "../lib/schema";
 import type { DataFileName } from "../lib/schema";
@@ -327,6 +335,27 @@ const checkPasses = (list: Pass[]) => {
 const checkTours = (list: Tour[], byPass: Map<string, Pass>) => {
   dupes(list, "Touren");
   for (const t of list) {
+    // A loop has no region of its own: its range is its passes', which have
+    // to agree on one, and its waypoints lie in that range's box – the same
+    // typo guard the schema holds a road's marker to (`RANGE_BOUNDS`).
+    const ranges = new Set<RangeName>();
+    for (const s of t.passes) {
+      const p = byPass.get(s);
+      if (p) ranges.add(rangeOf(p.region));
+    }
+    if (ranges.size > 1)
+      errors.push(
+        `Tour ${t.slug}: Pässe aus ${[...ranges].map((r) => RANGE[r].label).join(" und ")} – eine Runde liegt in einem Gebirge`,
+      );
+    const [range] = ranges;
+    if (range) {
+      const box = RANGE_BOUNDS[range];
+      for (const [i, w] of t.waypoints.entries())
+        if (!inBox(box, w))
+          errors.push(
+            `Tour ${t.slug}: Wegpunkt ${i} liegt ${RANGE[range].outside} (${box.lat.join("–")}° N, ${box.lon.join("–")}° E)`,
+          );
+    }
     for (const s of t.passes) {
       const p = byPass.get(s);
       if (!p) {

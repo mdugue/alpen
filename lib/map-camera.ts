@@ -373,7 +373,8 @@ const onMoveend = (
 
 /**
  * What the map opens on: the link's camera, the frame around what it names, or
- * – with neither – everything the map draws. The first two win, because a
+ * – with neither – what the map draws of the home range (`Scene.opening`). The
+ * first two win, because a
  * selection is flown to and framing everything first would only be a camera
  * move the visitor never asked for. The fit waits for something to frame: the
  * lines and the dots may arrive after the style does.

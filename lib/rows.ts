@@ -258,7 +258,25 @@ export interface TourRow {
   season: YearCell[];
   /** The loop's window in the row's words: "Anfang Mai bis Ende Oktober" or "wie ihre Pässe". */
   window: string;
+  /**
+   * The range the loop lies in: that of its passes, which `data:check` holds
+   * to one. Absent when none of them is known. One definition for the row,
+   * the scene's opening frame and the frame guard.
+   */
+  range?: RangeName;
 }
+
+/** A loop's range is its passes' – the first known one, since they share it. */
+export const tourRange = (
+  tour: Tour,
+  passes: PassIndex,
+): RangeName | undefined => {
+  for (const slug of tour.passes) {
+    const p = passes.get(slug);
+    if (p) return rangeOf(p.region);
+  }
+  return undefined;
+};
 
 export const buildTourRows = (
   tours: Tour[],
@@ -281,6 +299,7 @@ export const buildTourRows = (
     if (!cell || !filters.status.includes(cell.status)) continue;
     rows.push({
       favorite,
+      range: tourRange(tour, passes),
       reason: reasonOf(cell),
       season: year.cells,
       status: cell.status,
@@ -294,6 +313,8 @@ export const buildTourRows = (
 export interface TownRow {
   town: Town;
   favorite: boolean;
+  /** The range the town belongs to through its reach; the row names it once there is more than one. */
+  range?: RangeName;
 }
 
 /**
@@ -320,7 +341,7 @@ export const buildTownRows = (
     )
       continue;
     if (!q.matches(townHaystack(town, range))) continue;
-    rows.push({ favorite, town });
+    rows.push({ favorite, range, town });
   }
   return rows.toSorted((a, b) => a.town.name.localeCompare(b.town.name, "de"));
 };

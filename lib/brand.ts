@@ -18,6 +18,13 @@ export const SITE_TITLE = `${SITE_NAME} – ${SITE_TAGLINE}`;
 /**
  * The app is a planning aid for holidays, not a navigation tool – the
  * description says so, because that is what people search for.
+ *
+ * The name stays "Alpenpässe" with the Jura, the Vosges and the Pyrenees in
+ * the vocabulary (plans 25 and 26): the domain is `alpen.manuel.fyi`, and a
+ * rename waits for a fourth range to make the stretch a lie. The description
+ * and the claim name a range once its roads are in – not before, because a
+ * description that promises the Pyrenees over a map without one Pyrenean
+ * road is exactly what Principle 3 forbids.
  */
 export const SITE_DESCRIPTION =
   "Wohin mit dem Rennrad, und wann? Alpenpässe, Auffahrten mit Höhenprofil, Rundtouren und Rad-Orte auf einer Karte – mit Befahrbarkeit je Halbmonat, Wetter und Klima.";

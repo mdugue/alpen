@@ -6,6 +6,7 @@ import { ListToolbar } from "@/components/sidebar/list-toolbar";
 import { RowList } from "@/components/sidebar/row-list";
 import { TagLine } from "@/components/tags";
 import type { Selection } from "@/lib/app-state";
+import { RANGE } from "@/lib/regions";
 import { entityKey } from "@/lib/route-key";
 import type { TownRow } from "@/lib/rows";
 import { useRoving } from "@/lib/use-roving";
@@ -24,10 +25,13 @@ export const TownList = ({
   onHover,
   empty,
   mapControl,
+  showRange,
   onSelect,
   onToggleFavorite,
 }: {
   rows: readonly TownRow[];
+  /** Name the range beside the country once the data holds more than one. */
+  showRange: boolean;
   currentRow: string | null;
   hovered: Selection | null;
   onHover: (sel: Selection | null) => void;
@@ -46,7 +50,7 @@ export const TownList = ({
         <ListEmpty title="Keine Orte gefunden" {...empty} />
       ) : (
         <RowList ref={rovingList} items={rows} keyOf={({ town }) => town.slug}>
-          {({ town, favorite }) => (
+          {({ town, favorite, range }) => (
             <EntityRow
               key={town.slug}
               rowId={entityKey("town", town.slug)}
@@ -57,7 +61,17 @@ export const TownList = ({
               }
               name={town.name}
               title={town.name}
-              subtitle={<TagLine tags={town.tags} lead={town.country} />}
+              subtitle={
+                <TagLine
+                  tags={town.tags}
+                  lead={[
+                    showRange && range ? RANGE[range].label : null,
+                    town.country,
+                  ]
+                    .filter(Boolean)
+                    .join(" · ")}
+                />
+              }
               favorite={favorite}
               onToggleFavorite={() => onToggleFavorite(town.slug)}
               onSelect={() => onSelect(town.slug)}

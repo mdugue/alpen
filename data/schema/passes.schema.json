@@ -85,12 +85,12 @@
               "properties": {
                 "lat": {
                   "type": "number",
-                  "minimum": 43,
+                  "minimum": 42,
                   "maximum": 49
                 },
                 "lon": {
                   "type": "number",
-                  "minimum": 4,
+                  "minimum": -2,
                   "maximum": 16
                 }
               },
@@ -113,12 +113,12 @@
               "properties": {
                 "lat": {
                   "type": "number",
-                  "minimum": 43,
+                  "minimum": 42,
                   "maximum": 49
                 },
                 "lon": {
                   "type": "number",
-                  "minimum": 4,
+                  "minimum": -2,
                   "maximum": 16
                 }
               },
@@ -165,12 +165,12 @@
       },
       "lat": {
         "type": "number",
-        "minimum": 43,
+        "minimum": 42,
         "maximum": 49
       },
       "lon": {
         "type": "number",
-        "minimum": 4,
+        "minimum": -2,
         "maximum": 16
       },
       "name": {
@@ -192,7 +192,8 @@
           "Ostalpen",
           "Dolomiten",
           "Vogesen",
-          "Jura"
+          "Jura",
+          "Pyrenäen"
         ]
       },
       "roadSummit": {

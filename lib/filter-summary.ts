@@ -118,6 +118,16 @@ export const appliedFilters = (f: Filters): AppliedFilter[] => {
   return out;
 };
 
+/**
+ * The ranges a chip narrowed the list to, as one phrase for the headline –
+ * "Jura" or "Jura, Vogesen" – and `null` while every range is in: the
+ * headline says where it counts only once that is not everywhere.
+ */
+export const rangeWord = (f: Filters): string | null => {
+  const picked = pickedMembers(f.ranges, ALL_RANGES);
+  return picked.length ? picked.map((r) => RANGE[r].label).join(", ") : null;
+};
+
 /** How many decisions the panel currently carries – the badge on its trigger. */
 export const filterCount = (f: Filters) => appliedFilters(f).length;
 

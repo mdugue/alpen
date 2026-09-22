@@ -106,3 +106,27 @@ describe("WeatherDay", () => {
     expect(WeatherDay.safeParse({ ...day, tmin: "kalt" }).success).toBe(false);
   });
 });
+
+describe("Pass · the range box", () => {
+  test("the marker and every ride's ends lie inside the box of the road's own range", () => {
+    // A Pyrenean col at an alpine coordinate: the region says Pyrenäen, the
+    // marker sits in the Alps. One box for all ranges would let it through.
+    expect(
+      issues(road({ lat: 46, lon: 10, region: "Pyrenäen" })).join(" "),
+    ).toContain("Punkt liegt außerhalb der Pyrenäen");
+    expect(
+      Pass.safeParse(road({ lat: 42.9, lon: 0.1, region: "Pyrenäen" })).success,
+    ).toBe(true);
+    // An ascent that starts in another range is the same mistake.
+    expect(
+      issues(
+        road({
+          ascents: [{ from: { lat: 42.9, lon: 0.2 }, label: "Luz" }],
+          region: "Dolomiten",
+        }),
+      ).join(" "),
+    ).toContain("Auffahrt liegt außerhalb der Alpen");
+    // The union still refuses what no range holds at all.
+    expect(Pass.safeParse(road({ lat: 51, lon: 10 })).success).toBe(false);
+  });
+});

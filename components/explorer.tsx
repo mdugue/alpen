@@ -20,7 +20,7 @@ import type {
   Filters,
   Selection,
 } from "@/lib/app-state";
-import { filterCount } from "@/lib/filter-summary";
+import { filterCount, rangeWord } from "@/lib/filter-summary";
 import { useHashAdapter } from "@/lib/hash-adapter";
 import type { PageData } from "@/lib/page-data";
 import { entityKey } from "@/lib/route-key";
@@ -185,6 +185,7 @@ export const Explorer = ({ data, defaultPeriod }: Props) => {
         header={
           <AppHeader
             bar={bar}
+            where={rangeWord(filters)}
             sidebarOpen={isMobile ? undefined : sidebarOpen}
             onToggleSidebar={
               isMobile ? undefined : () => setSidebarOpen(!sidebarOpen)

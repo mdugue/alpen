@@ -140,6 +140,25 @@ a card and its gap from the edge counts too). On a phone the detail sheet takes
 bottom that counts. All of it is one calculation, `shellGeometry` in
 `lib/shell-geometry.ts`.
 
+### The map opens on the home range
+
+With nothing in the link the map opens on the frame around what it draws –
+but of the home range only (`HOME_RANGE` in `lib/regions.ts`, the Alps), not
+of everything. The Alps and the Pyrenees are 600 km apart, and a first
+screen that held both would show neither: the alpine dots would be a smear
+at zoom 5. So `buildScene` carries two boxes, `bounds` around everything
+drawn – what the fit button frames, pressed on purpose – and `opening`
+around the home range's roads and loops, which is what `onReady` in the
+camera fits (plan 26). A loop is at home where its passes are
+(`TourRow.range`), the one definition `data:check` and the frame guard read
+too; with nothing of the home range drawn, a Pyrenees chip pressed say, the
+opening frame is what is drawn. `lib/default-frame.test.ts` holds every
+range's own frame to a readable zoom at a laptop's viewport under the
+sidebar, so a range whose roads spread too far to read fails the build
+rather than the visitor. The other ranges are reached through their chip,
+the search and a shared link; a link carrying a range chip opens fitted to
+what it lists, like every link without a camera.
+
 ## What is drawn
 
 Bottom to top, and because MapLibre places labels from the top of the style

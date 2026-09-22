@@ -22,6 +22,7 @@ const passRow = (pass: Pass, extra: Partial<PassRow> = {}): PassRow => ({
 
 const tourRow = (tour: Tour, extra: Partial<TourRow> = {}): TourRow => ({
   favorite: false,
+  range: "Alpen",
   reason: null,
   season: [],
   status: "open",
@@ -149,6 +150,56 @@ describe("what is drawn", () => {
       }),
     );
     expect(nothing.bounds).toBeNull();
+  });
+
+  test("the map opens on the home range, not on everything it draws", () => {
+    const tourmalet = passRow({
+      ...galibier,
+      lat: 42.9,
+      lon: 0.15,
+      region: "Pyrenäen",
+      slug: "tourmalet",
+    });
+    const scene = buildScene(
+      input({
+        rows: {
+          pass: [passRow(galibier), tourmalet],
+          tour: [],
+          town: [],
+        },
+      }),
+    );
+    // The fit button frames both; the opening frame holds the Alps alone.
+    expect(scene.bounds![0]).toBeLessThan(1);
+    expect(scene.opening).toEqual([
+      galibier.lon,
+      galibier.lat,
+      galibier.lon,
+      galibier.lat,
+    ]);
+    // A loop is at home where its passes are, not where its box happens to
+    // lie: a Pyrenean loop stays out of the opening frame.
+    const raid = tourRow(makeTour("raid", ["tourmalet"]), {
+      range: "Pyrenäen",
+    });
+    const withLoop = buildScene(
+      input({
+        rows: { pass: [passRow(galibier)], tour: [raid], town: [] },
+        tourBounds: { raid: [-0.5, 42.8, 0.5, 43.2] },
+      }),
+    );
+    expect(withLoop.opening).toEqual([
+      galibier.lon,
+      galibier.lat,
+      galibier.lon,
+      galibier.lat,
+    ]);
+    // With nothing of the home range drawn – a Pyrenees chip pressed, say –
+    // the opening frame is what is drawn.
+    const away = buildScene(
+      input({ rows: { pass: [tourmalet], tour: [], town: [] } }),
+    );
+    expect(away.opening).toEqual(away.bounds);
   });
 
   test("the profile cursor is a point of its own", () => {

@@ -41,7 +41,9 @@ What was one line here is now five plans (September 2026):
   mechanism is built (`RANGES` in `lib/regions.ts`); the two ranges' roads
   are the curation that is still open.
 - **[26 · Pyrenees](./plans/26-pyrenees.md)** – bounds per range, two more
-  countries, and the first screen once two ranges are 600 km apart.
+  countries, and the first screen once two ranges are 600 km apart. The
+  mechanism is built (`RANGE_BOUNDS`, `HOME_RANGE`, `ES` and `AD`); the
+  roads are the curation that is still open.
 - **[27 · Gravel](./plans/27-gravel.md)** – a surface on every road, a
   closing rung from the snow cover instead of a barrier, the mountain routing
   profile, dashed lines and a "Belag" chip. Mountain biking is a different

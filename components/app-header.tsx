@@ -37,9 +37,26 @@ const counts = (bar: SeasonBar, long: boolean) =>
     .filter(Boolean)
     .join(", ");
 
-const Headline = ({ bar, long }: { bar: SeasonBar; long: boolean }) => (
+/**
+ * "Anfang Oktober:" – or "Anfang Oktober, Pyrenäen:" once a range chip is
+ * pressed. The range is the "where" the sentence is about then, and a
+ * headline counting Pyrenean passes under the word Alpenpässe owes the
+ * reader that one word (docs/plans/26-pyrenees.md).
+ */
+const Headline = ({
+  bar,
+  long,
+  where,
+}: {
+  bar: SeasonBar;
+  long: boolean;
+  where: string | null;
+}) => (
   <p className="min-w-0 text-sm leading-snug text-pretty">
-    <span className="font-semibold">{periodLabel(bar.period)}:</span>{" "}
+    <span className="font-semibold">
+      {periodLabel(bar.period)}
+      {where ? `, ${where}` : ""}:
+    </span>{" "}
     {barTotal(bar) === 0
       ? "kein Pass in dieser Auswahl."
       : `${counts(bar, long)}.`}
@@ -48,12 +65,15 @@ const Headline = ({ bar, long }: { bar: SeasonBar; long: boolean }) => (
 
 export const AppHeader = ({
   bar,
+  where = null,
   sidebarOpen,
   onToggleSidebar,
   onOpenScales,
 }: {
   /** The chosen half-month; the headline is its counts. */
   bar: SeasonBar;
+  /** The ranges a chip narrowed the list to, as one phrase; `null` for all of them. */
+  where?: string | null;
   /** Desktop only: no sidebar toggle is rendered without a handler. */
   sidebarOpen?: boolean;
   onToggleSidebar?: () => void;
@@ -98,10 +118,10 @@ export const AppHeader = ({
     </div>
 
     <div className="lg:hidden">
-      <Headline bar={bar} long={false} />
+      <Headline bar={bar} long={false} where={where} />
     </div>
     <div className="min-w-0 max-lg:hidden">
-      <Headline bar={bar} long />
+      <Headline bar={bar} long where={where} />
     </div>
 
     <span className="text-muted-foreground ml-auto shrink-0 text-xs max-lg:hidden">

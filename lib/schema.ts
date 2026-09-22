@@ -2,7 +2,12 @@ import { z } from "zod";
 
 import {
   COUNTRIES,
+  inBox,
   isTraverse,
+  LATLON_BOUNDS,
+  RANGE,
+  RANGE_BOUNDS,
+  rangeOf,
   REGIONS,
   ROAD_TAGS,
   ROAD_TYPE,
@@ -37,9 +42,14 @@ export const Status = z.enum(["open", "risky", "closed"]);
 
 export const Rating = z.int().min(1).max(5);
 
+/**
+ * A coordinate anywhere the app has a range: the union of `RANGE_BOUNDS`. The
+ * real typo guard is per range – `Pass` below holds its marker and its ascents
+ * to the box of its own range, `data:check` a tour's waypoints to its passes'.
+ */
 export const LatLon = z.strictObject({
-  lat: z.number().min(43).max(49),
-  lon: z.number().min(4).max(16),
+  lat: z.number().min(LATLON_BOUNDS.lat[0]).max(LATLON_BOUNDS.lat[1]),
+  lon: z.number().min(LATLON_BOUNDS.lon[0]).max(LATLON_BOUNDS.lon[1]),
 });
 
 /**
@@ -213,7 +223,25 @@ export const Pass = z
    */
   .superRefine((road, ctx) => {
     const traverse = isTraverse(road.type);
+    // The marker and every ride's ends inside the box of the road's own
+    // range: one wide box would let a Pyrenean col sit in "Westalpen".
+    const range = rangeOf(road.region);
+    const box = RANGE_BOUNDS[range];
+    const outside = (p: { lat: number; lon: number }) => !inBox(box, p);
+    const where = `${RANGE[range].outside} (${box.lat.join("–")}° N, ${box.lon.join("–")}° E) – Koordinate oder Region prüfen`;
+    if (outside(road))
+      ctx.addIssue({
+        code: "custom",
+        message: `Punkt liegt ${where}`,
+        path: [],
+      });
     for (const [i, a] of road.ascents.entries()) {
+      if (outside(a.from) || (a.to !== undefined && outside(a.to)))
+        ctx.addIssue({
+          code: "custom",
+          message: `Auffahrt liegt ${where}`,
+          path: ["ascents", i],
+        });
       if (traverse && (a.to === undefined || a.km === undefined))
         ctx.addIssue({
           code: "custom",
