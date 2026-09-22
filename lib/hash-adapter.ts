@@ -124,6 +124,8 @@ export const useHashAdapter = (
   const [pushed, setPushed] = useStored("pushed");
   /** Whether the link the page opened on carried its selection in the hash. */
   const legacy = useRef(false);
+  /** The path of the entry pushed last, for the popstate listener to compare against. */
+  const lastPushed = useRef<string | null>(null);
   /** The path the state last agreed with, for the two effects that compare against it. */
   const seenPath = useRef<string | null>(null);
   useLayoutEffect(() => {
@@ -143,12 +145,16 @@ export const useHashAdapter = (
         !selectionOf(window.location.pathname);
     };
     apply();
-    // Only a traversal that changed the path is one of the entries counted;
-    // a hash-only step (a manual edit of the hash, the browser restoring a
-    // different camera) leaves the count alone.
+    // Only a traversal away from the entry this adapter pushed last is one
+    // of the counted entries popped; a hash-only step (a manual edit of the
+    // hash, the browser restoring a different camera) leaves the count
+    // alone. Compared against the pushed path rather than the current one:
+    // React renders a popstate synchronously, so by the time this listener
+    // runs the path effect below has already caught up.
     const onPop = () => {
-      if (window.location.pathname !== seenPath.current)
-        setPushed((n) => Math.max(0, n - 1));
+      if (window.location.pathname === lastPushed.current) return;
+      lastPushed.current = window.location.pathname;
+      setPushed((n) => Math.max(0, n - 1));
     };
     window.addEventListener("hashchange", apply);
     window.addEventListener("popstate", onPop);
@@ -217,6 +223,7 @@ export const useHashAdapter = (
         { scroll: false },
       );
     } else if (selection) {
+      lastPushed.current = hrefFor(selection);
       setPushed((n) => n + 1);
       // oxlint-disable-next-line react-doctor/nextjs-no-client-side-redirect
       router.push(hrefFor(selection) + window.location.hash, { scroll: false });
