@@ -1,10 +1,10 @@
 # 29 · The camera as a machine: one owner, one command
 
-**Status:** in progress – steps 1 and 2 are on this branch, steps 3 and 4 are
-open · **Effort:** M–L · **Depends on:** 28 (the selection
-key and the sheet state arrive as values) · **Unblocks:** 30 (the scene's
-applier shares the MapLibre adapter), 02 (the router's camera intent is one
-event), 33 (the machine is the second piece of the functional core)
+**Status:** [done](https://github.com/mdugue/alpen/pull/62) · **Effort:** M–L
+· **Depends on:** 28 (the selection key and the sheet state arrive as values) ·
+**Unblocks:** 30 (the scene's applier shares the MapLibre adapter), 02 (the
+router's camera intent is one event), 33 (the machine is the second piece of
+the functional core)
 
 ## Goal
 
@@ -233,12 +233,30 @@ One PR each.
 2. **One `moveend`, one hash write.** _Done._ The three handlers become one
    listener; e2e 12-14 become machine tests; what remains of them is a
    smoke check with a normal timeout.
-3. **Geometry and environment.** `lib/shell-geometry.ts`, the environment
-   prop, `sheetCover` moved, `SHEET_INSET_PX` and the pixel constants gone,
-   `--shell-*` from one place, `lg:right-40` derived from the same source.
-4. **Ambient clean-up.** `readHash` and `defined` out; `switchBase`, the
-   duplicate `coarsePointer` and `scheme` gone; `overlays` reconciled;
-   `window.__alpen` reduced.
+3. **Geometry and environment.** _Done._ `lib/shell-geometry.ts`, the
+   environment prop, `sheetCover` moved, `SHEET_INSET_PX` and the pixel
+   constants gone, `--shell-*` from one place, `lg:right-40` derived from the
+   same source.
+4. **Ambient clean-up.** _Done._ `switchBase`, the duplicate `coarsePointer`
+   and `scheme` gone; `overlays` reconciled; `window.__alpen` reduced.
+   `readHash` and the duplicate `defined` had already left the map with steps
+   1 and 2.
+
+### What steps 3 and 4 settled differently
+
+- **The widths are custom properties, not a second table.** `shellGeometry`
+  returns the numbers _and_ the `--shell-*` properties the classes read
+  (`w-(--shell-sidebar)`, `lg:right-(--shell-right)`), which is the only form
+  of "one source" that survives a Tailwind step being renamed.
+- **The drawer's inset is measured, not read as a token.** A custom property
+  is not resolved to pixels by `getComputedStyle`, so what is read is the
+  popup's own bottom margin – which is what `--drawer-inset` is spent on.
+- **The provenance controls stay placed with the map.** They only _move_ in
+  an effect: added after the style has parsed, MapLibre's attribution has
+  something to say before the compact flag is set and unfolds itself.
+- **`window.__alpen` is the map alone.** `passBounds` did not move into a test
+  – `flightFor`'s traces already pin it – but into the e2e itself, which
+  derives the boxes from the app's own `mapAssets` over the app's own data.
 
 ### What steps 1 and 2 settled differently
 

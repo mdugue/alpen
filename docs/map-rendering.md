@@ -33,6 +33,24 @@ what is still owed is applied on `moveend` instead. The panel claims its share
 one commit _before_ the camera sets off, which is what keeps that opening
 still: a padding the map has not applied yet cannot move it.
 
+What the padding is _made_ of is a second question, and it has one answer:
+`shellGeometry` (`lib/shell-geometry.ts`), a pure `(bars, viewport, sheet,
+panels) → { inset, widths, vars }` with its own unit tests. The same numbers
+feed the camera and, as the `--shell-*` custom properties `vars` carries, the
+Tailwind classes the panels and the season card are laid out with – so a panel
+width exists once rather than twice, and `sheetCover` converts Base UI's two
+ways of spelling a snap point plus the drawer's own `--drawer-inset`, which is
+measured off a mounted popup (`useSheetInset`) rather than copied out of a
+generated file.
+
+What the map asks the _device_ is one prop as well: `MapEnvironment`
+(`lib/use-media-query.ts`) carries the colour scheme, whether the pointer is
+coarse, whether motion is unwanted and whether the shell is the phone one.
+`appLayers` takes it as an argument, which is what finally makes it the pure
+function its doc comment always claimed; a scheme change is a re-render rather
+than a listener the map registers on its own, and `window.matchMedia` appears
+nowhere else.
+
 None of that is a property of the padding: it is a property of what the camera
 is doing at the moment the padding changes. So the rules are one transition
 table, `camera(state, event, env) → [state, commands]` in `lib/map-camera.ts`,
@@ -111,10 +129,10 @@ draws no ascent for falls back to its point. The box has to fit between the
 shell's two bars, which are translucent but no less opaque to a reader: the
 header's and the season bar's measured heights are the map's top and bottom
 padding at every width (`useHeight` in `explorer.tsx`; on desktop the bar is
-a card and its gap from the edge counts too, `shellEdge` in
-`lib/map-camera.ts`). On a phone the detail
-sheet takes 55 % of the screen on top of that, and it is the larger of the two
-at the bottom that counts.
+a card and its gap from the edge counts too). On a phone the detail sheet takes
+55 % of the screen on top of that, and it is the larger of the two at the
+bottom that counts. All of it is one calculation, `shellGeometry` in
+`lib/shell-geometry.ts`.
 
 ## What is drawn
 

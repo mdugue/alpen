@@ -5,13 +5,29 @@
  */
 import { afterAll, beforeAll, expect, test } from "bun:test";
 
+import routesJson from "@/data/generated/routes.json" with { type: "json" };
 import passes from "@/data/passes.json" with { type: "json" };
+import toursJson from "@/data/tours.json" with { type: "json" };
+import { mapAssets } from "@/lib/map-assets";
+import type { Bounds } from "@/lib/map-assets";
 import { HIT_LAYERS, LAYERS, OVERLAY } from "@/lib/map-layers";
+import * as S from "@/lib/schema";
 import { startApp, waitUntil, withPage } from "@/test/browser";
 import type { App } from "@/test/browser";
 
 const TIMEOUT = 90_000;
 let app: App;
+
+/**
+ * The boxes a selection is framed into, worked out the way `lib/data.ts` works
+ * them out – so what the suite measures the camera against is the app's own
+ * arithmetic over the app's own data, not a number copied into a test.
+ */
+const { passBounds } = mapAssets(
+  S.Passes.parse(passes),
+  S.Tours.parse(toursJson),
+  S.Routes.parse(routesJson),
+).assets;
 
 beforeAll(async () => {
   app = await startApp();
@@ -500,6 +516,23 @@ const RECORD_HASH = `(() => {
   return true;
 })()`;
 
+/**
+ * The state scenario 12 is about, asked in one go: the sheet's padding on a map
+ * that has stopped moving, with the address bar carrying the very centre the
+ * map is on. Returns the recorded writes, or `null` while any of it is still
+ * on its way.
+ */
+const SETTLED = (before: number) => `(() => {
+  const m = window.__alpen.map;
+  if (m.isMoving() || m.getPadding().bottom <= ${before + 100}) return null;
+  const c = m.getCenter();
+  const hash = location.hash;
+  if (!hash.includes("c=" + c.lat.toFixed(4) + "," + c.lng.toFixed(4)))
+    return null;
+  if (!hash.includes("pass=col-du-galibier")) return null;
+  return JSON.stringify(window.__writes);
+})()`;
+
 test(
   "12 · a tap on the map re-pads for the sheet and writes the hash twice",
   () =>
@@ -529,28 +562,28 @@ test(
         );
         await page.clickAt(dot!.x, dot!.y);
         await page.waitFor("#detail-title");
-        // The camera leaves the panel the first frames to itself, so "at rest"
-        // is not an answer on its own: a camera that has yet to set off reads
-        // exactly like one that has arrived (`SELECT_DELAY`, lib/map-camera.ts).
-        // What is waited for is the padding itself – the sheet's more than half
-        // the screen, on a map that has stopped moving – in one evaluation, or
-        // the flight can start between two reads and satisfy the pair.
-        await waitUntil(
-          () =>
-            page.evaluate<boolean>(
-              `window.__alpen.map.getPadding().bottom > ${before + 100} &&
-               !window.__alpen.map.isMoving()`,
-            ),
-          "the sheet's padding carried to a camera at rest",
-        );
+        // The settled state, in one evaluation, because every half of it is
+        // true on its own at some point in between: the camera leaves the panel
+        // the first frames to itself, so one that has yet to set off reads
+        // exactly like one that has arrived (`SELECT_DELAY`, lib/map-camera.ts);
+        // the padding only grows once the flight carries it; and between a
+        // flight landing and the padding it could not carry easing in, the map
+        // stands still with the address bar a camera behind. What is waited for
+        // is all three at once – the sheet's more than half the screen, a map
+        // that has stopped, and a hash that carries the centre the map is
+        // actually on – which is the state this scenario is about.
+        let recorded = "";
+        await waitUntil(async () => {
+          const writes = await page.evaluate<string | null>(SETTLED(before));
+          if (writes) recorded = writes;
+          return writes !== null;
+        }, "the sheet's padding carried, the camera at rest and in the hash");
         // Two hashes: the selection, and the camera it settles at. Distinct
         // ones rather than calls, because Next's router echoes every
         // `replaceState` with the path in front of the same hash – and it is
         // the camera positions that used to pile up, one per frame the flight
         // came to rest on.
-        const writes = JSON.parse(
-          await page.evaluate<string>("JSON.stringify(window.__writes)"),
-        ) as string[];
+        const writes = JSON.parse(recorded) as string[];
         expect(new Set(writes).size).toBe(2);
         expect(writes.at(-1)).toContain("pass=col-du-galibier");
       },
@@ -643,10 +676,14 @@ test(
  * `passBounds` carries – is inside the part of the map no panel covers. The
  * padded box *is* that part: the sheet's share at the bottom, the control
  * cluster's at the top, the floating panels' at the left (`map-camera.ts`).
+ *
+ * The box is derived here from the same data and the same `mapAssets` the app
+ * hands the map, rather than being carried out through the test hook: what the
+ * window exposes is the map itself, and nothing a test can work out for itself.
  */
-const PASS_IN_VIEW = `(() => {
-  const { map: m, passBounds } = window.__alpen;
-  const [w, s, e, n] = passBounds["col-du-galibier"];
+const PASS_IN_VIEW = (box: Bounds) => `(() => {
+  const m = window.__alpen.map;
+  const [w, s, e, n] = ${JSON.stringify(box)};
   const pad = m.getPadding();
   const box = m.getCanvas().getBoundingClientRect();
   return [[w, s], [w, n], [e, s], [e, n]]
@@ -680,7 +717,11 @@ test(
           const c = await page.camera();
           return !!c && !c.moving && c.zoom > 9;
         }, "the camera framed on the pass");
-        expect(await page.evaluate<boolean>(PASS_IN_VIEW)).toBe(true);
+        expect(
+          await page.evaluate<boolean>(
+            PASS_IN_VIEW(passBounds["col-du-galibier"]!),
+          ),
+        ).toBe(true);
       },
     ),
   TIMEOUT,

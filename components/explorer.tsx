@@ -4,7 +4,7 @@ import { useReducer, useRef, useState } from "react";
 
 import { AppHeader } from "@/components/app-header";
 import { PassMap } from "@/components/map/pass-map";
-import { MobileSheet, sheetCover } from "@/components/mobile-sheet";
+import { MobileSheet, useSheetInset } from "@/components/mobile-sheet";
 import { DetailPanel } from "@/components/panel/detail-panel";
 import { ScalesDialog } from "@/components/scales-dialog";
 import { SeasonBand } from "@/components/season-band";
@@ -28,7 +28,6 @@ import type {
 } from "@/lib/app-state";
 import { filterCount } from "@/lib/filter-summary";
 import { useHashAdapter } from "@/lib/hash-adapter";
-import { shellEdge } from "@/lib/map-camera";
 import type { PageData } from "@/lib/page-data";
 import { entityKey } from "@/lib/route-key";
 import {
@@ -39,12 +38,13 @@ import {
   facetCount,
   seasonBand,
 } from "@/lib/rows";
+import { shellGeometry } from "@/lib/shell-geometry";
 import { indexBySlug } from "@/lib/status";
 import type { Signals } from "@/lib/status";
 import type { LatLon, Period } from "@/lib/types";
 import { useHeight } from "@/lib/use-height";
 import {
-  MOBILE_QUERY,
+  useMapEnvironment,
   useMediaQuery,
   useViewportHeight,
 } from "@/lib/use-media-query";
@@ -58,12 +58,6 @@ interface Props {
   defaultPeriod: Period;
 }
 
-/** Floating panel geometry on desktop (px); keep in sync with the Tailwind widths below. */
-const GAP = 12;
-const SIDEBAR_W = { lg: 384, xl: 416 };
-/** The detail panel grows with the viewport; the map keeps the larger half. */
-const DETAIL_W = { lg: 352, xl: 400 };
-
 /**
  * The composition: everything the explorer decides is `reduce` in
  * `lib/app-state.ts`, fed by the hash and the storage adapters; what is left
@@ -73,7 +67,11 @@ export const Explorer = ({ data, defaultPeriod }: Props) => {
   const { assets, climate, passes, tours, townReach, towns, valleys, years } =
     data;
   const signals: Signals = { climate, valleys };
-  const isMobile = useMediaQuery(MOBILE_QUERY);
+  // Everything the map draws differently for, in one value; the shell reads
+  // the same `mobile` the map does, so the two can never disagree about which
+  // layout is on screen.
+  const mapEnv = useMapEnvironment();
+  const isMobile = mapEnv.mobile;
   const env: Env = {
     mobile: isMobile,
     today: defaultPeriod,
@@ -106,6 +104,7 @@ export const Explorer = ({ data, defaultPeriod }: Props) => {
   const { isFavorite, toggle: toggleFavorite } = useFavorites();
   const isXl = useMediaQuery("(width >= 80rem)");
   const viewportHeight = useViewportHeight();
+  const sheetInset = useSheetInset();
   const [headerRef, headerHeight] = useHeight();
   const [barRef, barHeight] = useHeight();
   const sidebarRoot = useRef<HTMLDivElement>(null);
@@ -215,41 +214,32 @@ export const Explorer = ({ data, defaultPeriod }: Props) => {
     />
   );
 
-  // What the shell covers of the map, measured rather than promised: both bars
-  // are translucent, so the map runs on underneath them and a camera target
-  // behind one is simply unreadable.
+  // Where everything stands and what it covers of the map, in one calculation
+  // (`shellGeometry`, lib/shell-geometry.ts): the same numbers feed the camera
+  // padding and, as custom properties, the classes below, so no width is
+  // spelled twice.
   //
-  // On a phone whichever drawer is in front covers more than the season bar
-  // does, and that is what counts then. The detail sheet's share is claimed in
-  // the same commit as the selection, one flight ahead of the camera – which is
-  // precisely what keeps the picture still: a padding the map has not applied
-  // yet cannot move it, and the flight that follows carries it
-  // (`pass-map.tsx`, "Reserve space").
-  const sheetPx = isMobile
-    ? sheetCover(
-        selection ? sheet.detail.snap : sheet.list.open ? sheet.list.snap : 0,
-        viewportHeight,
-      )
-    : 0;
-  const insetTop = headerHeight;
-
-  // Desktop: the panels float over the map; the map is padded by their width
-  // so camera targets land in the visible part.
-  const sidebarW = isXl ? SIDEBAR_W.xl : SIDEBAR_W.lg;
-  const detailW = isXl ? DETAIL_W.xl : DETAIL_W.lg;
-  const desktopPanels = isMobile
-    ? []
-    : [sidebarOpen ? sidebarW : 0, selection ? detailW : 0].filter(Boolean);
-  const insetLeft = desktopPanels.reduce(
-    (x, w) => x + w + GAP,
-    desktopPanels.length ? GAP : 0,
-  );
-  const detailLeft = GAP + (!isMobile && sidebarOpen ? sidebarW + GAP : 0);
-  // On desktop the season card covers its height plus the gap it keeps from
-  // the edge; the corner controls sit at the edge, in the corner it leaves.
-  // The card stands right beside the panels, at their gap from the edge.
-  const shell = shellEdge(isMobile, barHeight, insetLeft, GAP);
-  const insetBottom = Math.max(sheetPx, shell.cover);
+  // What the bars cover is measured rather than promised: both are translucent,
+  // so the map runs on underneath them and a camera target behind one is simply
+  // unreadable. The detail sheet's share is claimed in the same commit as the
+  // selection, one flight ahead of the camera – which is precisely what keeps
+  // the picture still: a padding the map has not applied yet cannot move it,
+  // and the flight that follows carries it.
+  const shell = shellGeometry({
+    bars: { header: headerHeight, season: barHeight },
+    panels: { detail: selection !== null, sidebar: sidebarOpen },
+    sheet: {
+      inset: sheetInset,
+      snap: isMobile
+        ? selection
+          ? sheet.detail.snap
+          : sheet.list.open
+            ? sheet.list.snap
+            : 0
+        : 0,
+    },
+    viewport: { height: viewportHeight, mobile: isMobile, wide: isXl },
+  });
 
   const activeFilters = filterCount(filters);
 
@@ -262,21 +252,17 @@ export const Explorer = ({ data, defaultPeriod }: Props) => {
    * desktop the bar is a card in that same box, beside the panels, and the
    * panels run the full height.
    *
-   * `--shell-bottom` lifts MapLibre's corner controls (scale bar and
-   * attribution) above the bar on a phone; on desktop they sit in the
-   * bottom-right corner, which the card leaves free, and `--shell-left` is
-   * where the card starts.
+   * Every measurement in it comes from `shell.vars`: the two panel widths and
+   * the detail panel's left edge, where the season card starts
+   * (`--shell-left`) and stops (`--shell-right`, the corner the scale bar and
+   * the attribution share on desktop), and how far MapLibre's corner controls
+   * are lifted off the bottom edge on a phone (`--shell-bottom`).
    */
   return (
     <TooltipProvider delay={400}>
       <div
         className="relative flex h-dvh flex-col overflow-hidden"
-        style={
-          {
-            "--shell-bottom": `${shell.controls}px`,
-            "--shell-left": `${shell.left}px`,
-          } as React.CSSProperties
-        }
+        style={shell.vars}
       >
         <div id="map" tabIndex={-1} className="absolute inset-0">
           {/* What the list shows for a kind is what the map shows for that
@@ -296,9 +282,8 @@ export const Explorer = ({ data, defaultPeriod }: Props) => {
             profileCursor={profileCursor}
             profileZoom={profileZoom}
             requestedView={requestedView}
-            insetLeft={insetLeft}
-            insetBottom={insetBottom}
-            insetTop={insetTop}
+            inset={shell.inset}
+            env={mapEnv}
           />
         </div>
 
@@ -320,7 +305,7 @@ export const Explorer = ({ data, defaultPeriod }: Props) => {
             <aside
               ref={sidebarRoot}
               className={cn(
-                "pointer-events-auto absolute top-3 bottom-3 left-3 z-20 flex w-96 flex-col overflow-hidden max-lg:hidden xl:w-104",
+                "pointer-events-auto absolute top-3 bottom-3 left-3 z-20 flex w-(--shell-sidebar) flex-col overflow-hidden max-lg:hidden",
                 PANEL,
               )}
             >
@@ -332,9 +317,8 @@ export const Explorer = ({ data, defaultPeriod }: Props) => {
             <section
               key={entityKey(selection)}
               aria-label="Details"
-              style={{ left: detailLeft }}
               className={cn(
-                "pointer-events-auto absolute top-3 bottom-3 z-20 flex w-88 flex-col overflow-hidden max-lg:hidden xl:w-100",
+                "pointer-events-auto absolute top-3 bottom-3 left-(--shell-detail-left) z-20 flex w-(--shell-detail) flex-col overflow-hidden max-lg:hidden",
                 "animate-in fade-in-0 slide-in-from-left-4 duration-200 motion-reduce:animate-none",
                 PANEL,
               )}
@@ -351,8 +335,8 @@ export const Explorer = ({ data, defaultPeriod }: Props) => {
            * them at the foot of the map and capped in width: 24 columns read
            * better at the width of a chart than stretched across a screen,
            * and the list keeps the full height. It stops short of the
-           * bottom-right corner (`lg:right-40`), where the scale bar and the
-           * attribution sit in a row. What its three shapes mean is one
+           * bottom-right corner, where the scale bar and the attribution sit
+           * in a row (`--shell-right`). What its three shapes mean is one
            * popover away, and in the scales dialog.
            */}
           <div
@@ -360,7 +344,7 @@ export const Explorer = ({ data, defaultPeriod }: Props) => {
             className={cn(
               "pointer-events-auto z-20 flex shrink-0 flex-col gap-2 px-3 py-2",
               "max-lg:relative max-lg:border-t",
-              "lg:absolute lg:right-40 lg:bottom-3 lg:left-(--shell-left) lg:max-w-xl lg:rounded-xl lg:border lg:px-4 lg:py-3 lg:shadow-xl",
+              "lg:absolute lg:right-(--shell-right) lg:bottom-3 lg:left-(--shell-left) lg:max-w-xl lg:rounded-xl lg:border lg:px-4 lg:py-3 lg:shadow-xl",
               SHELL_BAR,
             )}
           >

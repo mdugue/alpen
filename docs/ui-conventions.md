@@ -96,12 +96,18 @@ three shapes mean is behind the card's ⓘ (a popover) and in the scales
 dialog; the card carries no legend beside the band.
 
 MapLibre's own provenance controls – the scale bar and the attribution ⓘ –
-stack in the bottom-left corner above the bar on a phone (`--shell-bottom`,
-measured in `explorer.tsx`) and sit in one row in the bottom-right corner on
-desktop, the one corner the card leaves free (`lg:right-40`): MapLibre fixes a
+stack in the bottom-left corner above the bar on a phone (`--shell-bottom`) and
+sit in one row in the bottom-right corner on desktop, the one corner the card
+leaves free (`--shell-right`, which is where the card stops): MapLibre fixes a
 control's corner when it is added, so `pass-map.tsx` re-adds them when the
 layout changes. Before that, the floating sidebar covered them on desktop.
-The arithmetic is `shellEdge` in `lib/map-camera.ts`.
+
+The arithmetic behind all of it – the two panel widths, where the detail panel
+starts, where the card starts and stops, and what each of them takes from the
+map as camera padding – is `shellGeometry` in `lib/shell-geometry.ts`. It
+returns the numbers _and_ the `--shell-*` custom properties the classes read,
+so no width is spelled twice: `w-(--shell-sidebar)` and the pixel arithmetic
+have one source.
 
 The band is the period control _and_ a chart of the current selection. Each of
 its 24 columns carries three quantities over the passes the filters leave: bar

@@ -15,8 +15,8 @@
 :root {
   --radius: 0.625rem;
   /* What the shell's bottom bar covers of the map on a phone. Measured and
-     written back by `components/explorer.tsx`, because the bar's height
-     depends on what is in it; this is only the value before the first
+     written back by `shellGeometry` (lib/shell-geometry.ts), because the bar's
+     height depends on what is in it; this is only the value before the first
      measurement. The MapLibre corner controls sit above it, so the two move
      together; on desktop it is 0 and the controls sit in the free corner. */
   --shell-bottom: 6rem;

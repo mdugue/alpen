@@ -56,6 +56,8 @@ friends do that better and the app links out to them.
 | Search normalisation and haystacks              | `lib/search.ts`                                                                                                                                                                                                                                                                                                                            |
 | Map, layers, 3D, markers, labels, feature state | `components/map/pass-map.tsx`; the layer ids in `lib/map-layers.ts` (`LAYERS`, `HIT_GROUPS` derived from it), what the map draws in `lib/map-scene.ts` (`buildScene`), handed over by `applyScene` in `components/map/apply-scene.ts`                                                                                                      |
 | Where the camera goes, and the padding it takes | `camera` in `lib/map-camera.ts` (the machine, its traces in `lib/map-camera.test.ts`), `applyCamera` in `components/map/apply-camera.ts`, the events dispatched from `components/map/pass-map.tsx`                                                                                                                                         |
+| What the shell covers of the map, panel widths  | `lib/shell-geometry.ts` (`shellGeometry`, `sheetCover`): one calculation for the camera padding, the panel widths and the `--shell-*` custom properties the classes read; the drawer's own inset is measured by `useSheetInset` in `components/mobile-sheet.tsx`                                                                           |
+| What the device does differently                | `MapEnvironment` in `lib/use-media-query.ts` (`useMapEnvironment`), built in `components/explorer.tsx` and handed to `PassMap` as one `env` prop                                                                                                                                                                                           |
 | Basemap: vector style, palette, glyphs          | `lib/basemap.ts`, `lib/palette.ts`, `scripts/build-map-style.ts` (→ `public/map/style-*.json`), `scripts/build-glyphs.ts` (→ `public/map/fonts`, committed)                                                                                                                                                                                |
 | Map assets: GeoJSON, simplification, hashing    | `lib/map-assets.ts`, `scripts/build-map-assets.ts` (→ `public/map`, git-ignored)                                                                                                                                                                                                                                                           |
 | Detail assets: one file per entity, hashing     | `lib/detail-assets.ts`, `scripts/build-detail-assets.ts` (→ `public/detail`, git-ignored)                                                                                                                                                                                                                                                  |
@@ -200,7 +202,10 @@ The camera, the layer stack, hit testing, colours, the basemap.
   travels inside a flight or eases in – and a flight owns it until `moveend`.
   Which of the two it is, is a transition in `camera` (`lib/map-camera.ts`),
   not a boolean over refs: the map turns what happens into events and hands
-  the commands to `applyCamera`.
+  the commands to `applyCamera`. What the padding is made of is one
+  calculation, `shellGeometry` in `lib/shell-geometry.ts`, which the classes
+  read as custom properties, and what the device does differently is one
+  `MapEnvironment` prop rather than a `matchMedia` call inside the map.
   → [why](docs/map-rendering.md#the-padding-is-never-set-on-its-own)
 - **The panel opens with the tap; the camera follows it.** The selection
   reaches the panel in the same frame as the map; the flight is the half that

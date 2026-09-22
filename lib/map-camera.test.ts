@@ -16,7 +16,6 @@ import {
   sameInset,
   SELECT_DELAY,
   SELECT_MS,
-  shellEdge,
   toInset,
   TOUR_PADDING,
   TOWN_MIN_ZOOM,
@@ -83,26 +82,6 @@ describe("fitInset", () => {
     );
     expect(fit.left + fit.right).toBe(48 + 48 - 364);
     expect(fit.top).toBe(48);
-  });
-});
-
-describe("shellEdge", () => {
-  test("a phone's bar carries the controls and covers its height", () => {
-    expect(shellEdge(true, 96, 400, 12)).toEqual({
-      controls: 96,
-      cover: 96,
-      left: 0,
-    });
-  });
-  test("a desktop card stands beside the panels and covers the gap too", () => {
-    expect(shellEdge(false, 80, 396, 12)).toEqual({
-      controls: 0,
-      cover: 92,
-      left: 396,
-    });
-  });
-  test("with no panel open the card keeps the gap from the left edge", () => {
-    expect(shellEdge(false, 80, 0, 12).left).toBe(12);
   });
 });
 

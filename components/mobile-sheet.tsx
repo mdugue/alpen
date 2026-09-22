@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, use } from "react";
+import { createContext, use, useSyncExternalStore } from "react";
 
 import {
   Drawer,
@@ -11,31 +11,53 @@ import {
 import { cn } from "@/lib/utils";
 
 /**
- * What the drawer keeps free of the viewport edge – the preset's own
- * `--drawer-inset`, in pixels, because the camera padding is arithmetic and
- * cannot read a custom property.
+ * What a drawer keeps free of the viewport edge, in pixels.
  *
- * The sheet used to be pinned flush to the three edges, which is the one
- * shape a drawer on a map should not have: full-bleed reads as a new page,
- * and this one is a card lying on a map that stays visible beside it. The
- * preset's inset (and with it the rounded corners on all four sides) says
- * that much before anything in the sheet is read.
+ * The camera padding is arithmetic and cannot read a custom property, and the
+ * sheet in front of the map is the largest thing that padding is made of – so
+ * the number has to exist in JavaScript. It is *measured* off a mounted popup
+ * rather than written down twice: the token is the preset's own
+ * `--drawer-inset` in `components/ui/drawer.tsx`, a generated file that
+ * `bun run ui:init` rewrites, and a copy of it here would have gone quietly
+ * stale the first time the preset changed its spacing.
+ *
+ * What is measured is the popup's own bottom margin, which is what
+ * `--drawer-inset` is spent on and the one form of it the browser resolves to
+ * pixels. It is read once, the first time a sheet is on screen, and the shell
+ * is told through `useSheetInset`.
+ *
+ * The sheet used to be pinned flush to the three edges, which is the one shape
+ * a drawer on a map should not have: full-bleed reads as a new page, and this
+ * one is a card lying on a map that stays visible beside it. The preset's inset
+ * (and with it the rounded corners on all four sides) says that much before
+ * anything in the sheet is read.
  */
-export const SHEET_INSET_PX = 8;
+let sheetInset = 0;
+const watchers = new Set<() => void>();
 
-/**
- * What an open sheet covers of the map, in pixels – its snap point plus the
- * margin it keeps to the screen edge. `0` for no sheet at all.
- *
- * Base UI reads snap points above 1 as pixels and below it as a fraction of
- * the viewport; the camera padding is arithmetic and can read neither those
- * nor the `--drawer-inset` the margin comes from, so both are converted here,
- * where the sheet's own geometry lives.
- */
-export const sheetCover = (snap: number, viewportHeight: number) =>
-  snap
-    ? (snap <= 1 ? Math.round(snap * viewportHeight) : snap) + SHEET_INSET_PX
-    : 0;
+const measureInset = (el: HTMLElement | null) => {
+  const popup = el?.closest("[data-slot=drawer-popup]");
+  if (!popup || sheetInset) return;
+  // A used value, so it is always "<n>px" – the one form of the token the
+  // browser resolves for us.
+  const px = Number(getComputedStyle(popup).marginBottom.replace(/px$/u, ""));
+  if (!Number.isFinite(px) || px === 0) return;
+  sheetInset = px;
+  for (const notify of watchers) notify();
+};
+
+/** The measured inset; `0` until a sheet has been on screen once. */
+export const useSheetInset = (): number =>
+  useSyncExternalStore(
+    (onChange) => {
+      watchers.add(onChange);
+      return () => {
+        watchers.delete(onChange);
+      };
+    },
+    () => sheetInset,
+    () => 0,
+  );
 
 /** What the sheet a subtree is in knows about itself. */
 export interface SheetState {
@@ -191,7 +213,11 @@ export const MobileSheet = ({
         >
           <DrawerSwipeHandle className="h-5" />
         </button>
-        <div className="flex min-h-0 flex-1 flex-col pb-[env(safe-area-inset-bottom,0px)]">
+        {/* Inside the popup, which is what carries the inset the shell needs. */}
+        <div
+          ref={measureInset}
+          className="flex min-h-0 flex-1 flex-col pb-[env(safe-area-inset-bottom,0px)]"
+        >
           <Expanded value={snap >= top}>
             <Over value={over}>{children}</Over>
           </Expanded>
