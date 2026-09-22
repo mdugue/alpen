@@ -998,7 +998,7 @@
    "closes": 10.5,
    "maintained": true
   },
-  "note": "Mautstraße, planmäßig bis Mitte/Ende Oktober offen, dann bis Juni gesperrt.",
+  "note": "Mautstraße, planmäßig bis Mitte/Ende Oktober offen, dann bis Juni gesperrt. Räder fahren mautfrei.",
   "quaeldich": "timmelsjoch",
   "ascents": [
    {
@@ -1044,7 +1044,7 @@
    "closes": 11,
    "maintained": true
   },
-  "note": "Mautstraße, meist bis Ende Oktober offen. Bielerhöhe mit Stausee.",
+  "note": "Mautstraße, meist bis Ende Oktober offen. Bielerhöhe mit Stausee. Räder fahren mautfrei.",
   "quaeldich": "silvretta-hochalpenstrasse",
   "ascents": [
    {
@@ -1081,7 +1081,7 @@
   "difficulty": 5,
   "traffic": 1,
   "season": null,
-  "note": "Stichstraße, meist bis in den Spätherbst befahrbar. Kurz und sehr steil.",
+  "note": "Stichstraße, meist bis in den Spätherbst befahrbar. Kurz und sehr steil. Mautstraße für Autos, Räder fahren frei.",
   "quaeldich": "kitzbueheler-horn",
   "ascents": [
    {
@@ -1116,7 +1116,7 @@
   "difficulty": 3,
   "traffic": 2,
   "season": null,
-  "note": "Höchste Höhenstraße Deutschlands, Maut, ganzjährig geräumt.",
+  "note": "Höchste Höhenstraße Deutschlands, Maut, ganzjährig geräumt. Für Autos wird kassiert, Räder fahren frei.",
   "quaeldich": "rossfeld-hoehenringstrasse",
   "ascents": [
    {
@@ -1306,7 +1306,7 @@
    "closes": 10.5,
    "maintained": true
   },
-  "note": "Mautstraße, meist bis Ende Oktober offen, dann bis Mai gesperrt.",
+  "note": "Mautstraße, meist bis Ende Oktober offen, dann bis Mai gesperrt. Für Autos wird kassiert, Räder fahren frei; bei vollem Parkplatz wird die Straße für Autos gesperrt, nicht für Räder.",
   "quaeldich": "tre-cime-di-lavaredo",
   "ascents": [
    {
@@ -2567,7 +2567,7 @@
   "difficulty": 5,
   "traffic": 2,
   "season": null,
-  "note": "Höchste Asphaltstraße Österreichs (Tiefenbach-Tunnel). Sperrungen kurzfristig bei Schnee, oben Skibetrieb.",
+  "note": "Höchste Asphaltstraße Österreichs (Tiefenbach-Tunnel). Sperrungen kurzfristig bei Schnee, oben Skibetrieb. Mautstraße für Autos, Räder fahren frei.",
   "quaeldich": "oetztaler-gletscherstrasse",
   "ascents": [
    {
@@ -2824,7 +2824,7 @@
    "closes": 10.5,
    "maintained": true
   },
-  "note": "Mautstraße zum Kölnbreinspeicher, planmäßig bis Mitte/Ende Oktober offen.",
+  "note": "Mautstraße zum Kölnbreinspeicher, planmäßig bis Mitte/Ende Oktober offen. Räder fahren mautfrei.",
   "quaeldich": "malta-hochalmstrasse",
   "ascents": [
    {
@@ -2860,7 +2860,7 @@
    "closes": 11,
    "maintained": true
   },
-  "note": "Mautstraße (Eisentalhöhe), planmäßig bis Ende Oktober offen.",
+  "note": "Mautstraße (Eisentalhöhe), planmäßig bis Ende Oktober offen. Räder fahren mautfrei.",
   "quaeldich": "nockalmstrasse",
   "ascents": [
    {
@@ -2974,7 +2974,7 @@
    "closes": 11,
    "maintained": true
   },
-  "note": "Mautstraße, meist bis Ende Oktober oder länger offen.",
+  "note": "Mautstraße, meist bis Ende Oktober oder länger offen. Räder fahren mautfrei.",
   "quaeldich": "villacher-alpenstrasse",
   "ascents": [
    {

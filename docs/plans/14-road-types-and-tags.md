@@ -1,9 +1,10 @@
 # 14 · Road types and tags
 
-**Status:** in progress – steps 1–4 done except that the `note` of nine of
-the ten existing `toll` entries does not yet say whether bikes pay; 5 under
-way (Frankreich fertig; Dolomiten, Ostalpen, Zentralalpen und Piemont
-teilweise – 110 Straßen stehen, die offenen Kandidaten tragen ihren Grund),
+**Status:** in progress – steps 1–4 done (every `toll` note now says
+whether bikes pay); 5 under way (Frankreich fertig; Dolomiten, Ostalpen,
+Zentralalpen und Piemont teilweise – 110 Straßen stehen, die offenen
+Kandidaten tragen ihren Grund; the remaining candidates need Open-Meteo and
+Overpass, which answered 429 and 403 from the last session's network);
 6 (rename) open ·
 **Effort:** L (M for code, the rest is curation) ·
 **Depends on:** 09 (schema), 05 (filters) · **Unblocks:** the sporting roads
