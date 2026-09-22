@@ -1,10 +1,8 @@
-import type { EntityKind } from "@/lib/app-state";
-
 /**
  * Photos come from Wikimedia Commons and are precomputed into
  * `data/generated/photos.json` by `scripts/build-photos.ts`; this module holds
- * what the script, the data layer and the panel have to agree on. Client-safe:
- * no dependencies beyond a type.
+ * what the script, the data layer and the panel have to agree on. Client-safe
+ * and dependency-free; `photos.json` is keyed by `entityKey` (`lib/route-key.ts`).
  *
  * Only the metadata lives in the repo. The files themselves stay on Wikimedia's
  * CDN and the browser loads them from `Photo.src` – the one place where an
@@ -12,9 +10,6 @@ import type { EntityKind } from "@/lib/app-state";
  * hundred photos would put ~25 MB of binaries into a repository whose largest
  * file today is a 3 MB JSON.
  */
-
-/** Key of `photos.json`, the same shape as `nearbyKey` in `lib/nearby.ts`. */
-export const photoKey = (kind: EntityKind, slug: string) => `${kind}:${slug}`;
 
 /**
  * Width asked of Commons for the stored thumbnail. The detail panel is around

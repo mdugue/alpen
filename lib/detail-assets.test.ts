@@ -1,12 +1,12 @@
 import { describe, expect, test } from "bun:test";
 
 import {
-  DETAIL_ASSET_NAME,
   DETAIL_ASSET_DIR,
+  DETAIL_FILES,
   detailAssets,
 } from "@/lib/detail-assets";
 import type { DetailData } from "@/lib/detail-assets";
-import { photoKey } from "@/lib/photos";
+import { entityKey } from "@/lib/route-key";
 import type {
   Pass,
   Photo,
@@ -67,29 +67,20 @@ describe("detailAssets", () => {
     expect(files[1]?.name).toMatch(/^town-testort\.[0-9a-f]{8}\.json$/u);
     // The count travels with the URL: the panel reserves the carousel's box
     // before the file arrives (see `DetailAsset`).
-    expect(assets[photoKey("pass", "testpass")]).toEqual({
+    expect(assets[entityKey("pass", "testpass")]).toEqual({
       photos: 1,
       url: `/${DETAIL_ASSET_DIR}/${files[0]!.name}`,
     });
-    expect(assets[photoKey("tour", "testrunde")]).toBeUndefined();
+    expect(assets[entityKey("tour", "testrunde")]).toBeUndefined();
   });
 
   test("every written name is one the build script would prune", () => {
     // The script removes files of this shape that are not in the current set;
     // a name it does not recognise would linger in `public/detail` for good.
+    // What that shape is, and that `next.config.ts` caches the same set, is
+    // `lib/derived-file.test.ts`.
     for (const f of build().files)
-      expect(DETAIL_ASSET_NAME.test(f.name)).toBe(true);
-  });
-
-  test("the pattern admits the three kinds and nothing else", () => {
-    // `next.config.ts` promises a year of immutability to the same shape, so
-    // the pattern may not be looser than what the script actually writes.
-    expect(DETAIL_ASSET_NAME.test("tour-sellaronda.0123abcd.json")).toBe(true);
-    expect(DETAIL_ASSET_NAME.test("plan-sellaronda.0123abcd.json")).toBe(false);
-    expect(DETAIL_ASSET_NAME.test("pass-stilfser-joch.json")).toBe(false);
-    expect(DETAIL_ASSET_NAME.test("pass-stilfser-joch.0123abc.json")).toBe(
-      false,
-    );
+      expect(DETAIL_FILES.prune.test(f.name)).toBe(true);
   });
 
   test("a pass carries its own ascents' profiles and its own photos", () => {

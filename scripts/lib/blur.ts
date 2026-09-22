@@ -131,24 +131,101 @@ const stripPng = (bytes: Uint8Array): Uint8Array => {
   return join(keep);
 };
 
-/**
- * The pixel width of a placeholder that is already stored, or `null` when it
- * cannot be read. `Photo.blur` records no width of its own, so the picture is
- * asked – which makes a change to `BLUR_WIDTH` as incremental as a change of
- * format: the run skips what is already the width it wants and fetches the
- * rest, instead of refetching all 1 500 because one constant moved.
- */
-export const blurWidth = async (uri: string): Promise<number | null> => {
-  const [, body] = uri.split(",");
-  if (!body) return null;
-  try {
-    const meta = await new Bun.Image(
-      new Uint8Array(Buffer.from(body, "base64")),
-    ).metadata();
-    return meta.width ?? null;
-  } catch {
-    return null;
+/** The frame headers that carry a JPEG's dimensions; every other SOF is a marker. */
+const JPEG_FRAME = new Set([
+  0xc0, 0xc1, 0xc2, 0xc3, 0xc5, 0xc6, 0xc7, 0xc9, 0xca, 0xcb, 0xcd, 0xce, 0xcf,
+]);
+
+/** Width out of the frame header, walking the marker list as `stripJpeg` does. */
+const jpegWidth = (bytes: Uint8Array, view: DataView): number | null => {
+  let i = 2;
+  while (i + 9 <= bytes.length) {
+    if (bytes[i] !== 0xff) return null;
+    const marker = bytes[i + 1]!;
+    if (marker === 0xff) {
+      i += 1;
+      continue;
+    }
+    if (
+      marker === 0xd8 ||
+      marker === 0x01 ||
+      (marker >= 0xd0 && marker <= 0xd7)
+    ) {
+      i += 2;
+      continue;
+    }
+    if (JPEG_FRAME.has(marker)) return view.getUint16(i + 7);
+    const length = view.getUint16(i + 2);
+    // From the start of scan on there is no marker list left to walk.
+    if (marker === 0xda || length < 2) return null;
+    i += 2 + length;
   }
+  return null;
+};
+
+const WEBP_MAGIC = "RIFF";
+/** Width out of the bitstream header of the three WebP flavours. */
+const webpWidth = (bytes: Uint8Array, view: DataView): number | null => {
+  const chunk = String.fromCodePoint(...bytes.subarray(12, 16));
+  if (chunk === "VP8 ")
+    return bytes[23] === 0x9d && bytes[24] === 0x01 && bytes[25] === 0x2a
+      ? view.getUint16(26, true) % 0x40_00
+      : null;
+  // Lossless: the signature byte, then the width less one in 14 bits.
+  if (chunk === "VP8L")
+    return bytes[20] === 0x2f ? (view.getUint16(21, true) % 0x40_00) + 1 : null;
+  if (chunk === "VP8X") return (view.getUint32(24, true) % 0x1_00_00_00) + 1;
+  return null;
+};
+
+const ascii = (bytes: Uint8Array, at: number, text: string) =>
+  String.fromCodePoint(...bytes.subarray(at, at + text.length)) === text;
+
+/** The width in the container's own header, for the three formats stored here. */
+const pixelWidth = (bytes: Uint8Array): number | null => {
+  const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
+  if (ascii(bytes, 0, WEBP_MAGIC) && ascii(bytes, 8, "WEBP"))
+    return webpWidth(bytes, view);
+  // The IHDR chunk is the first, and its width the first thing in it.
+  if (!PNG_MAGIC.some((b, n) => bytes[n] !== b)) return view.getUint32(16);
+  if (bytes[0] === 0xff && bytes[1] === 0xd8) return jpegWidth(bytes, view);
+  return null;
+};
+
+/** A stored placeholder as the record holds it, without decoding the picture. */
+export interface StoredBlur {
+  bytes: Uint8Array;
+  /** The media type the data URI declares. */
+  type: string;
+  /** The pixel width in the picture's own header. */
+  width: number;
+}
+
+/**
+ * What `Photo.blur` already holds, or `null` when the URI is not a base64
+ * image or its header does not say. `Photo.blur` records no width of its own,
+ * so the picture carries it – which makes a change to `BLUR_WIDTH` as
+ * incremental as a change of format: the run skips what is already the width
+ * it wants and fetches the rest, instead of refetching all 1 500 because one
+ * constant moved.
+ *
+ * Read out of the header rather than decoded. The question "is this the
+ * placeholder we want" is asked of every stored photo on every run, including
+ * the runs that have nothing to do, and the first thirty bytes answer it;
+ * decoding 1 500 pictures to learn their width is the kind of work a no-op run
+ * should not do.
+ */
+export const storedBlur = (uri: string): StoredBlur | null => {
+  const comma = uri.indexOf(",");
+  if (!uri.startsWith("data:") || comma === -1) return null;
+  const head = uri.slice("data:".length, comma);
+  if (!head.endsWith(";base64")) return null;
+  const bytes = new Uint8Array(Buffer.from(uri.slice(comma + 1), "base64"));
+  if (bytes.length < 32) return null;
+  const width = pixelWidth(bytes);
+  return width === null || width <= 0
+    ? null
+    : { bytes, type: head.slice(0, -";base64".length), width };
 };
 
 /** The picture without its metadata, for the two formats Commons hands us. */

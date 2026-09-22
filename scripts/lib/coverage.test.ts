@@ -2,7 +2,7 @@ import { expect, test } from "bun:test";
 
 import type { Pass } from "../../lib/types";
 import { coverageOf, coverageQuery, reportLines } from "./coverage";
-import type { OverpassNode } from "./locate";
+import type { OverpassNode } from "./hosts";
 
 /** Bormio. */
 const base = { lat: 46.468, lon: 10.372 };

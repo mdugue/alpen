@@ -4,8 +4,8 @@ import profilesJson from "../data/generated/profiles.json" with { type: "json" }
 /**
  * Calibration for the rideability heuristic (docs/plans/04 and 13).
  *
- *   bun run scripts/analyze-status.ts            # everything below
- *   bun run scripts/analyze-status.ts --changes  # only the changed (pass, period) pairs
+ *   bun run analyze:status            # everything below
+ *   bun run analyze:status --changes  # only the changed (pass, period) pairs
  *
  * Sections:
  *   1. The plan 04 cohort table: the window/altitude heuristic alone against
@@ -16,6 +16,11 @@ import profilesJson from "../data/generated/profiles.json" with { type: "json" }
  *   3. Threshold counts: for every signal the pairs and passes hit at the
  *      chosen constant and one step either side, so a change is a one-line
  *      diff with visible consequences.
+ * It tabulates and judges nothing: every verdict below comes from `passYear`,
+ * read three times per pass with `reasons` restricted to what each generation
+ * of the heuristic knew (`YearRule`), so a table here cannot disagree with
+ * what the app shows.
+ *
  *   4. Changes: every pair whose verdict or first reason differs from the
  *      plan 04 heuristic (window, altitude, snow, frost), grouped by the
  *      reason that decided, and the "Beste Zeit" run lengths before (plan 04)
@@ -25,25 +30,22 @@ import profilesJson from "../data/generated/profiles.json" with { type: "json" }
  */
 import passesJson from "../data/passes.json" with { type: "json" };
 import { dayLength } from "../lib/daylight";
+import { periodIndex, periodLabel, PERIODS } from "../lib/period";
 import { valleyElevations } from "../lib/profile";
 import {
   COLD_DESCENT_TMAX,
   HEAT_VALLEY_TMAX,
-  passVerdict,
   passYear,
-  periodLabel,
-  PERIODS,
   REASON_ORDER,
   SHORT_DAY_HOURS,
   signalsOf,
-  SNOW_BEST_PCT,
   SNOW_RISKY_PCT,
   STATUS_LABEL,
   STATUS_ORDER,
   valleyTmax,
   WET_LIMITED_PCT,
 } from "../lib/status";
-import type { Signals, StatusReason, StatusVerdict } from "../lib/status";
+import type { Signals, StatusReason, Year } from "../lib/status";
 import type {
   ClimateBucket,
   ClimateYear,
@@ -51,6 +53,7 @@ import type {
   Period,
   Status,
 } from "../lib/types";
+import { quantile } from "./lib/stats";
 
 const passes = passesJson as Pass[];
 const climate = climateJson as unknown as Record<string, ClimateYear>;
@@ -72,44 +75,47 @@ interface Pair {
   reason: StatusReason | undefined;
 }
 
-const WINTER = new Set<StatusReason>([
+/** The reasons plan 04 knew, so `passYear` reads a year as that plan would. */
+const WINTER: StatusReason[] = [
   "outside-window",
   "window-edge",
   "snow",
   "frost",
   "altitude",
-]);
+];
 
-/** The verdict as plan 04 knew it: only the winter reasons count. */
-const winterOnly = (v: StatusVerdict): StatusVerdict => {
-  const reasons = v.reasons.filter((r) => WINTER.has(r));
-  return {
-    reasons,
-    status:
-      v.status === "closed" ? "closed" : reasons.length ? "risky" : "open",
-  };
-};
+/** One pass as three generations of the heuristic read it. */
+interface Years {
+  /** Window, altitude and calendar alone (plan 04's "before"). */
+  bare: Year;
+  /** Plus snow and frost (plan 04's "after", the heuristic before plan 13). */
+  base: Year;
+  /** Every signal (plan 13). */
+  full: Year;
+}
 
+const years = new Map<string, Years>();
 const pairs: Pair[] = [];
 for (const pass of passes) {
   const own = signalsOf(signals, pass.slug);
-  for (const [i, t] of PERIODS.entries()) {
-    const bucket = own.climate?.[i] ?? null;
-    const bare = winterOnly(passVerdict(pass, t));
-    const full = passVerdict(pass, t, { bucket, valley: own.valley });
-    const base = winterOnly(full);
+  // Without the climate series there is nothing but window, altitude and
+  // calendar left to say, which is exactly plan 04's "before".
+  const bare = passYear(pass, null, { reasons: WINTER });
+  const base = passYear(pass, own, { reasons: WINTER });
+  const full = passYear(pass, own);
+  years.set(pass.slug, { bare, base, full });
+  for (const [i, t] of PERIODS.entries())
     pairs.push({
-      bare: bare.status,
-      base: base.status,
-      baseReason: base.reasons[0],
-      bucket,
+      bare: bare.cells[i]!.status,
+      base: base.cells[i]!.status,
+      baseReason: base.cells[i]!.reasons[0],
+      bucket: own.climate?.[i] ?? null,
       pass,
-      reason: full.reasons[0],
-      status: full.status,
+      reason: full.cells[i]!.reasons[0],
+      status: full.cells[i]!.status,
       t,
       valley: own.valley ?? undefined,
     });
-  }
 }
 
 // ── 1. Plan 04 cohort table ──────────────────────────────────────────────────
@@ -148,10 +154,6 @@ const cohortTable = (title: string, pick: (p: Pair) => Status) => {
 
 // ── 2. Distributions of the summer signals ───────────────────────────────────
 
-const quantile = (values: number[], q: number) => {
-  const s = values.toSorted((a, b) => a - b);
-  return s[Math.min(s.length - 1, Math.floor(q * (s.length - 1)))] ?? 0;
-};
 const distribution = (
   title: string,
   value: (p: Pair) => number | null,
@@ -264,29 +266,18 @@ for (const reason of REASON_ORDER) {
     console.log(`    ${describe(p)}`);
 }
 
-/**
- * "Beste Zeit" as `passYear` defines it – the longest circular run of
- * "gut" half-months with fewer than SNOW_BEST_PCT snow days, at least two
- * long – computed from a given status series, so the run can be measured
- * for the plan 04 verdicts and the plan 13 verdicts alike.
- */
-const bestRunLength = (pass: Pass, pick: (p: Pair) => Status): number => {
-  const flags = pairs
-    .filter((p) => p.pass === pass)
-    .map((p) => pick(p) === "open" && (p.bucket?.snowPct ?? 0) < SNOW_BEST_PCT);
-  if (flags.every(Boolean)) return flags.length;
-  let best = 0;
-  let length = 0;
-  for (let i = 0; i < 2 * flags.length; i += 1) {
-    length = flags[i % flags.length] ? length + 1 : 0;
-    best = Math.max(best, Math.min(length, flags.length));
-  }
-  return best >= 2 ? best : 0;
-};
+/** How many half-months a named best time covers; 0 where there is none. */
+const runLength = (year: Year): number =>
+  year.best
+    ? ((periodIndex(year.best[1]) - periodIndex(year.best[0]) + 24) % 24) + 1
+    : 0;
 
 if (!changesOnly) {
-  const report = (title: string, pick: (p: Pair) => Status) => {
-    const runs = passes.map((p) => ({ length: bestRunLength(p, pick), p }));
+  const report = (title: string, pick: (y: Years) => Year) => {
+    const runs = passes.map((p) => ({
+      length: runLength(pick(years.get(p.slug)!)),
+      p,
+    }));
     const withBest = runs.filter((r) => r.length > 0);
     console.log(
       `\nBeste Zeit (${title}): ${withBest.length} of ${passes.length} passes have one; run lengths ${runs
@@ -299,15 +290,6 @@ if (!changesOnly) {
         console.log(`  none: ${r.p.name} (${r.p.elevation} m)`);
     }
   };
-  report("plan 04", (p) => p.base);
-  report("plan 13", (p) => p.status);
-  // Sanity: the plan 13 run agrees with the library's own definition.
-  for (const p of passes) {
-    const { best } = passYear(p, signalsOf(signals, p.slug));
-    const lib = best
-      ? ((PERIODS.indexOf(best[1]) - PERIODS.indexOf(best[0]) + 24) % 24) + 1
-      : 0;
-    if (lib !== bestRunLength(p, (q) => q.status))
-      console.log(`  mismatch with passYear: ${p.name}`);
-  }
+  report("plan 04", (y) => y.base);
+  report("plan 13", (y) => y.full);
 }

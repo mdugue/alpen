@@ -1,5 +1,6 @@
 import { Badge } from "@/components/ui/badge";
-import { badgeWord, periodLabel, statusWord } from "@/lib/status";
+import { periodLabel } from "@/lib/period";
+import { badgeWord, statusWord } from "@/lib/status";
 import type { StatusReason, YearCell } from "@/lib/status";
 import type { Period, Status } from "@/lib/types";
 import { cn } from "@/lib/utils";

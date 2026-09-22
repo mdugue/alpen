@@ -84,7 +84,7 @@ costs almost nothing.
 
 ### The grade: relative to this base's own peak, not to a count
 
-`gradeOf` grades a half-month against the **best half-month that base ever
+`gradeOfBase` grades a half-month against the **best half-month that base ever
 has**:
 
 | Grade           | condition                                     |
@@ -137,7 +137,7 @@ half-months, and the grade split barely moves (best 20 % of all cells against
 16 %).
 
 The two shares are editorial like every other number here. Re-run
-`bun run scripts/analyze-destinations.ts` after the data grows: section 3 is
+`bun run analyze:destinations` after the data grows: section 3 is
 the absolute rule that was dropped, section 4 the relative one in use, and
 section 5 prints the strips above.
 
@@ -147,7 +147,7 @@ section 5 prints the strips above.
 `0,35 + reachWeight(km)`. A closed pass is not an argument for a base however
 pretty it is, so the grade is the strongest term; the weight is a factor and
 not a filter, so a genuinely better pass at 70 km can still out-rank a dull
-one at 5 km. The inverse list in a pass panel (`basesFor`, "Orte als
+one at 5 km. The inverse list in a pass panel (`basesOf`, "Orte als
 Standort") uses the same bands and the same weight, scaled by how many passes
 each town reaches instead — because the nearest village is rarely the best
 base.
@@ -247,10 +247,10 @@ amber one.
 
 All constants sit in `lib/status.ts`; the tables they were read off are in
 `docs/plans/04-climate-aware-status.md` (snow, frost) and
-`docs/plans/13-summer-axis.md` (the rest). `bun run scripts/analyze-status.ts`
-prints the cohort tables, the per-half-month distributions of every signal,
-the counts one step either side of every threshold, and every (pass,
-half-month) pair whose verdict changes – re-run it after touching a constant.
+`docs/plans/13-summer-axis.md` (the rest). `bun run analyze:status` prints the
+cohort tables, the per-half-month distributions of every signal, the counts one
+step either side of every threshold, and every (pass, half-month) pair whose
+verdict changes – re-run it after touching a constant.
 
 | Signal        | Constant            | Value   | Reads                                            |
 | ------------- | ------------------- | ------- | ------------------------------------------------ |

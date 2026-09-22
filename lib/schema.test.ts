@@ -1,6 +1,6 @@
 import { describe, expect, test } from "bun:test";
 
-import { Pass } from "@/lib/schema";
+import { Pass, WeatherDay } from "@/lib/schema";
 
 /**
  * The rules that only the parent's `type` can decide, and that therefore live
@@ -77,5 +77,32 @@ describe("Pass", () => {
     expect(Pass.safeParse(road({ tags: ["toll", "carfree"] })).success).toBe(
       true,
     );
+  });
+});
+
+/**
+ * Open-Meteo answers a day or a variable it has no value for with `null`, and
+ * one of those must cost the panel that cell rather than the whole week.
+ */
+describe("WeatherDay", () => {
+  const day = {
+    date: "2026-07-01",
+    precipitation: 0,
+    snowfall: 0,
+    tmax: 21,
+    tmin: 9,
+    weatherCode: 1,
+    windMax: 12,
+  };
+
+  test("a measurement the host has no value for is a missing cell, not a broken day", () => {
+    expect(WeatherDay.safeParse({ ...day, snowfall: null }).success).toBe(true);
+    expect(
+      WeatherDay.safeParse({ ...day, tmax: null, windMax: null }).success,
+    ).toBe(true);
+    // The date is what the row is keyed and labelled by, so it stays required,
+    // and a value that is neither a number nor absent is still an error.
+    expect(WeatherDay.safeParse({ ...day, date: null }).success).toBe(false);
+    expect(WeatherDay.safeParse({ ...day, tmin: "kalt" }).success).toBe(false);
   });
 });

@@ -18,42 +18,33 @@
  * bytes. The gate has judged the geometry in routes.json; what is simplified
  * here is a rendering copy, the stored data stays untouched.
  */
-import { mkdir, readdir, rm } from "node:fs/promises";
-
-import passesJson from "../data/passes.json" with { type: "json" };
-import toursJson from "../data/tours.json" with { type: "json" };
-import { ASSET_NAME, MAP_ASSET_DIR, mapAssets } from "../lib/map-assets";
-import * as S from "../lib/schema";
+import { writeDerived } from "../lib/derived-file";
+import { MAP_ASSET_DIR, MAP_FILES, mapAssets } from "../lib/map-assets";
+import { FILES } from "../lib/schema";
+import { mustRead, render } from "./lib/data-files";
 
 const OUT = new URL(`../public/${MAP_ASSET_DIR}/`, import.meta.url);
-const routesFile = Bun.file(
-  new URL("../data/generated/routes.json", import.meta.url),
-);
 
-const passes = S.Passes.parse(passesJson);
-const tours = S.Tours.parse(toursJson);
-// The first `data:build` has not happened yet: an empty map is still a map.
-const routes = S.Routes.parse(
-  (await routesFile.exists()) ? await routesFile.json() : {},
-);
+const passes = await mustRead("passes.json");
+const tours = await mustRead("tours.json");
+// Missing before the first `data:build`, and then an empty map is still a map:
+// which files may be absent and what they read as is `FILES` (lib/schema.ts).
+const routes = await mustRead("generated/routes.json");
 
 const { files } = mapAssets(passes, tours, routes);
-
-await mkdir(OUT, { recursive: true });
-const keep = new Set(files.map((f) => f.name));
-for (const name of await readdir(OUT))
-  if (ASSET_NAME.test(name) && !keep.has(name)) await rm(new URL(name, OUT));
+await writeDerived({ files, out: OUT, prune: MAP_FILES.prune });
 
 const kb = (n: number) => `${Math.round(n / 1024).toLocaleString("de-DE")} KB`;
 const count = (n: number) => n.toLocaleString("de-DE");
 const rawPoints = Object.values(routes).reduce((n, g) => n + g.length, 0);
+// The stored size, without reading the file a second time: `data:check` holds
+// it to exactly this rendering, so the two cannot drift apart.
+const rawBytes = render(FILES["generated/routes.json"].layout, routes).length;
 
-for (const f of files) {
-  await Bun.write(new URL(f.name, OUT), f.body);
+for (const f of files)
   console.log(
     `${MAP_ASSET_DIR}/${f.name}: ${kb(f.body.length)}, ${count(f.points)} Punkte, ${kb(Bun.gzipSync(f.body).length)} gzip`,
   );
-}
 console.log(
-  `routes.json: ${kb(routesFile.size)} mit ${count(rawPoints)} Punkten vor der Vereinfachung`,
+  `routes.json: ${kb(rawBytes)} mit ${count(rawPoints)} Punkten vor der Vereinfachung`,
 );

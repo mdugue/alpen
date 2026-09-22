@@ -3,6 +3,8 @@ import { describe, expect, test } from "bun:test";
 import type {
   AscentMetrics,
   ElevationProfile,
+  RoadType,
+  Summit,
   TourMetrics,
 } from "../../lib/types";
 import {
@@ -17,11 +19,15 @@ import {
   geometryHash,
   inputsHash,
   length,
+  limitsJudged,
+  markerWords,
   roadMetrics,
+  suspectPoint,
   tourInputs,
   tourMetrics,
   withProfile,
 } from "./validate";
+import type { Marker } from "./validate";
 
 /**
  * The 11 ascents that were stored wrong before the gate existed, with the values
@@ -594,5 +600,129 @@ describe("ascentInputs / tourInputs", () => {
     const tour = { km: 55, waypoints: [{ lat: 46.5, lon: 11.8 }] };
     expect(tourInputs(tour)).toBe(tourInputs({ ...tour }));
     expect(tourInputs({ ...tour, km: 56 })).not.toBe(tourInputs(tour));
+  });
+});
+
+const marker = (type: RoadType): Marker => ({
+  elevation: 1732,
+  lat: 46.6,
+  lon: 13.7,
+  slug: "villacher-alpenstrasse",
+  type,
+});
+const summit = (over: Partial<Summit> = {}): Summit => ({
+  dem: 1732,
+  lat: 46.6,
+  lon: 13.7,
+  roadDist: 0.02,
+  ...over,
+});
+/** Nothing at all has been read at this coordinate yet. */
+const unmeasured = undefined;
+const blocking = (m: Marker, s: Summit | undefined) =>
+  suspectPoint(m, s)?.reasons.filter((r) => r.blocks) ?? [];
+const texts = (m: Marker, s: Summit | undefined) =>
+  suspectPoint(m, s)?.reasons.map((r) => r.text) ?? [];
+
+describe("suspectPoint", () => {
+  test("a marker that checks out has nothing to say", () => {
+    expect(suspectPoint(marker("pass"), summit())).toBeNull();
+  });
+
+  test("each type is named in its own words", () => {
+    expect(markerWords("pass").marker).toBe("Passpunkt");
+    expect(markerWords("spur").marker).toBe("Scheitelpunkt");
+    expect(markerWords("balcony").marker).toBe("Markerpunkt");
+    for (const [type, word] of [
+      ["pass", "Gipfelhöhe"],
+      ["spur", "Scheitelhöhe"],
+      ["plateau", "Markerhöhe"],
+      ["balcony", "Markerhöhe"],
+      ["valley", "Markerhöhe"],
+    ] as const)
+      expect(texts(marker(type), unmeasured)[0]).toContain(word);
+  });
+
+  test("never measured, or measured somewhere else: nothing is blocked by it", () => {
+    expect(texts(marker("pass"), unmeasured)[0]).toContain("ungeprüft");
+    expect(blocking(marker("pass"), unmeasured)).toEqual([]);
+    const moved = texts(marker("pass"), summit({ lat: 46.7 }));
+    expect(moved[0]).toContain("verschoben");
+    expect(blocking(marker("pass"), summit({ lat: 46.7 }))).toEqual([]);
+  });
+
+  test("a height the DEM disagrees with holds the rides back", () => {
+    const [found] = blocking(marker("spur"), summit({ dem: 945 }));
+    expect(found?.text).toContain("DEM-Höhe am Scheitelpunkt");
+    expect(found?.text).toContain("Scheitelkoordinate prüfen");
+    expect(found?.text).toContain(
+      "die Auffahrten werden bis dahin nicht geroutet",
+    );
+  });
+
+  test("a marker beside the road does too, and says which road to put it on", () => {
+    const [found] = blocking(marker("valley"), summit({ roadDist: 0.12 }));
+    expect(found?.text).toContain("Markerpunkt 120 m von der nächsten Straße");
+    expect(found?.text).toContain("Markerkoordinate auf die Straße legen");
+    expect(found?.text).toContain(
+      "die Strecken werden bis dahin nicht geroutet",
+    );
+  });
+
+  test("an unmeasured road distance is the curator's business, not the gate's", () => {
+    const s = summit({ roadDist: unmeasured });
+    expect(texts(marker("pass"), s)).toEqual([
+      "Straßenabstand ungeprüft (bun run data:build)",
+    ]);
+    expect(blocking(marker("pass"), s)).toEqual([]);
+  });
+
+  test("no road within the search radius at all is a finding", () => {
+    expect(
+      blocking(marker("pass"), summit({ roadDist: null }))[0]?.text,
+    ).toContain("keine Straße in der Nähe des Passpunkts");
+  });
+});
+
+describe("limitsJudged", () => {
+  test("a candidate that never got a profile leaves three of six unjudged", () => {
+    const m: AscentMetrics = {
+      endDist: 0.1,
+      gain: null,
+      km: 20,
+      peakAt: null,
+      startDist: 0.1,
+      topDelta: null,
+    };
+    expect(limitsJudged(false, m)).toEqual({
+      judged: ["Länge", "Start", "Ende"],
+      unjudged: ["Profilhöhe", "höchster Punkt", "Anstieg"],
+    });
+  });
+
+  test("with a profile every ascent limit was read", () => {
+    const m: AscentMetrics = {
+      endDist: 0.1,
+      gain: 1500,
+      km: 20,
+      peakAt: 0.9,
+      startDist: 0.1,
+      topDelta: 5,
+    };
+    expect(limitsJudged(false, m).unjudged).toEqual([]);
+  });
+
+  test("a tour has only the three the geometry carries", () => {
+    const m: TourMetrics = {
+      endDist: 0.1,
+      km: 174,
+      kmDelta: 0.01,
+      startDist: 0.1,
+      statedKm: 172,
+    };
+    expect(limitsJudged(true, m)).toEqual({
+      judged: ["Länge", "Start", "Ende"],
+      unjudged: [],
+    });
   });
 });

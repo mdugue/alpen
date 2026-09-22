@@ -15,7 +15,11 @@ the same rule), plan 11 item 3 (the context is this module's transport)
 > non-goal "the five camera entry points stay in the map" is re-decided –
 > 363 of the map's 415 new lines accumulated under it. The selection, the
 > shown value, the period and the sheet state are [plan 28](28-app-state.md);
-> the camera and the geometry are [plan 29](29-camera-machine.md).
+> the camera and the geometry are [plan 29](29-camera-machine.md). The
+> selection rule now lives as the `select` case of `reduce` in
+> `lib/app-state.ts`, the shown value as `Shown` with `isShown` and
+> `reconcileShown` there, and the entity key as `entityKey` in
+> `lib/route-key.ts` (plan 28, steps 1–3).
 
 ## Goal
 

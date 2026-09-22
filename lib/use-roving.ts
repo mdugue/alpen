@@ -34,6 +34,34 @@ import { useEffect, useRef } from "react";
  */
 const ROW = "[data-roving]";
 
+const STEP: Record<string, number> = {
+  ArrowDown: 1,
+  ArrowUp: -1,
+  PageDown: 10,
+  PageUp: -10,
+};
+
+/**
+ * Which row a key moves the focus to, or `null` when the key is none of the
+ * list's business and belongs to the platform – Enter opening the row, Tab
+ * leaving the widget, a letter reaching the search field.
+ *
+ * `from` is the row the key was pressed on, or -1 when the focus is not on a
+ * row at all; the ends do not wrap, because a list of 201 roads read by a
+ * screen reader is a place to walk, not a carousel.
+ */
+export const rovingTarget = (
+  key: string,
+  from: number,
+  count: number,
+): number | null => {
+  if (count === 0) return null;
+  const last = count - 1;
+  const step = STEP[key];
+  if (step === undefined) return { End: last, Home: 0 }[key] ?? null;
+  return Math.min(last, Math.max(0, from + step));
+};
+
 export const useRoving = <T extends HTMLElement>() => {
   const ref = useRef<T>(null);
 
@@ -60,25 +88,11 @@ export const useRoving = <T extends HTMLElement>() => {
       sync();
     };
 
-    const STEP: Record<string, number> = {
-      ArrowDown: 1,
-      ArrowUp: -1,
-      PageDown: 10,
-      PageUp: -10,
-    };
-
     const onKeyDown = (e: KeyboardEvent) => {
       const all = rows();
-      if (all.length === 0) return;
       const from = (e.target as HTMLElement | null)?.closest<HTMLElement>(ROW);
-      const i = from ? all.indexOf(from) : -1;
-      const step = STEP[e.key];
-      const last = all.length - 1;
-      const to =
-        step === undefined
-          ? { End: last, Home: 0 }[e.key]
-          : Math.min(last, Math.max(0, i + step));
-      if (to === undefined) return;
+      const to = rovingTarget(e.key, from ? all.indexOf(from) : -1, all.length);
+      if (to === null) return;
       const next = all[to];
       e.preventDefault();
       next?.focus();

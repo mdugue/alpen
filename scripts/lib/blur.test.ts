@@ -1,6 +1,6 @@
 import { describe, expect, test } from "bun:test";
 
-import { BLUR_MAX_BYTES, blurUri, strip } from "./blur";
+import { BLUR_MAX_BYTES, blurUri, storedBlur, strip } from "./blur";
 
 /** A minimal but well-formed JPEG: SOI, the segments, SOS, data, EOI. */
 const segment = (marker: number, payload: number[]) => [
@@ -139,5 +139,44 @@ describe("blurUri", () => {
 
   test("refuses an answer that is not an image at all", async () => {
     expect(await blurUri(THUMB, "text/html")).toBeNull();
+  });
+});
+
+const uri = (bytes: Uint8Array, type: string) =>
+  `data:${type};base64,${Buffer.from(bytes).toString("base64")}`;
+
+describe("storedBlur", () => {
+  test("reads the width of what it wrote, without decoding the picture", async () => {
+    const written = (await blurUri(THUMB, "image/jpeg")) ?? "";
+    expect(storedBlur(written)).toMatchObject({
+      type: "image/webp",
+      width: 20,
+    });
+  });
+
+  test("reads a JPEG and a PNG the same way", () => {
+    const sof = segment(0xc0, [8, 0, 11, 0, 20, 3, 1, 0x11, 0, 2, 0x11, 1]);
+    expect(storedBlur(uri(jpeg(sof), "image/jpeg"))).toMatchObject({
+      type: "image/jpeg",
+      width: 20,
+    });
+    const ihdr = chunk("IHDR", [0, 0, 0, 20, 0, 0, 0, 11, 8, 2, 0, 0, 0]);
+    expect(
+      storedBlur(uri(png(ihdr, chunk("IEND", [])), "image/png")),
+    ).toMatchObject({ type: "image/png", width: 20 });
+  });
+
+  test("hands back the bytes, which is what an upgrade re-encodes", async () => {
+    // A placeholder written before the re-encoding step existed: it holds the
+    // picture already, so it becomes a WebP from its own bytes and no request
+    // is spent on it.
+    const { bytes, type } = storedBlur(uri(THUMB, "image/jpeg"))!;
+    expect(await blurUri(bytes, type)).toBe(await blurUri(THUMB, "image/jpeg"));
+  });
+
+  test("says nothing about a URI that is not a base64 picture", () => {
+    expect(storedBlur("https://example.org/a.png")).toBeNull();
+    expect(storedBlur("data:image/webp,plain")).toBeNull();
+    expect(storedBlur(uri(new Uint8Array(64), "image/webp"))).toBeNull();
   });
 });

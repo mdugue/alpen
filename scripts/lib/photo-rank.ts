@@ -12,27 +12,13 @@
  * those out and put the photo that names the place first; a summit under a
  * metre of snow is a fair answer to "what does it look like up there".
  *
+ * The answer shapes it works on – `Page` and its `ImageInfo` – are the ones
+ * `hosts.ts` parses the Commons answer into, so the fields are described once.
+ *
  * Pure functions, no I/O, no imports from the app.
  */
 import type { Photo } from "../../lib/types";
-
-/** The parts of one `imageinfo` entry that the choice depends on. */
-export interface ImageInfo {
-  descriptionurl: string;
-  extmetadata?: Record<string, { value?: string } | undefined>;
-  height: number;
-  mime: string;
-  /** The thumbnail Commons rendered for the requested width, if any. */
-  thumburl?: string;
-  url: string;
-  width: number;
-}
-
-/** One page of an `action=query` answer, in the order the API returned it. */
-export interface Page {
-  imageinfo?: ImageInfo[];
-  title: string;
-}
+import type { ImageInfo, Page } from "./hosts";
 
 export interface Ranked {
   photo: Photo;

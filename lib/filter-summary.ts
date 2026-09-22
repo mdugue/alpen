@@ -1,6 +1,7 @@
 import {
   ALL_STATUS,
   ALL_TYPES,
+  DEFAULT_FILTERS,
   BEAUTY_OPTIONS,
   ELEVATION_OPTIONS,
   FAME_OPTIONS,
@@ -109,6 +110,37 @@ export const appliedFilters = (f: Filters): AppliedFilter[] => {
     }));
   return out;
 };
+
+/** How many decisions the panel currently carries – the badge on its trigger. */
+export const filterCount = (f: Filters) => appliedFilters(f).length;
+
+/**
+ * Back to no filter at all. The period and the sort survive it: the
+ * half-month is the app's one domain control and lives in the season bar, and
+ * the sort is a preference rather than a decision about what is shown.
+ */
+export const resetFilters = (f: Filters): Filters => ({
+  ...DEFAULT_FILTERS,
+  period: f.period,
+  sort: f.sort,
+});
+
+/**
+ * Which single applied filter, lifted on its own, brings the most back –
+ * "ohne „ab 2.500 m" wären es 188". Only asked once a list is empty, so it
+ * costs nothing while the panel is doing its job. An applied chip's `clear`
+ * hands back a whole `Filters`, which is a valid patch for `countWith`, so no
+ * second seam is needed; a filter that brings nothing back is no relief and
+ * is left out.
+ */
+export const bestRelief = (
+  f: Filters,
+  countWith: (patch: Partial<Filters>) => number,
+): { chip: AppliedFilter; n: number } | undefined =>
+  appliedFilters(f)
+    .map((chip) => ({ chip, n: countWith(chip.clear(f)) }))
+    .filter((r) => r.n > 0)
+    .toSorted((a, b) => b.n - a.n)[0];
 
 /**
  * Whether anything in the second half of the panel is set. It decides whether

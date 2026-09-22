@@ -167,7 +167,7 @@ rejects duplicates). Search folds accents, ß and punctuation on both sides
 genuinely different names such as "Stilfser Joch".
 
 **Time reckoning:** A `Period` is a half-month. `10` = early October,
-`10.5` = late October. `PERIODS` in `lib/status.ts` lists all 24.
+`10.5` = late October. `PERIODS` in `lib/period.ts` lists all 24.
 
 Which half-month the app shows is decided in this order:
 
@@ -261,8 +261,9 @@ see plan 01.
 through the Stelvio's 48 hairpins comes out two kilometres short, and
 `profile.km` would disagree with the gate's `ascentMetrics.km`, which has always
 measured the full geometry. Everything derived from `dist` and `ele` – `km`,
-`avgGradient`, `maxKmGradient` – can be recomputed offline with
-`bun run data:build --backfill`.
+`avgGradient`, `maxKmGradient` – are recomputed from the stored route whenever
+a profile is reused (`withRoadDistances` in `lib/profile.ts`), so a cached
+profile can never carry distances the current code would not have written.
 
 The steepest kilometre is an estimate, not a measurement: the samples are a few
 hundred metres apart and carry DEM noise, and a maximum over ninety windows
@@ -277,13 +278,16 @@ change – the script skips everything that already exists.
 Some derivations are computed by a `"use cache"` getter in `lib/data.ts` while
 the page is prerendered, rather than committed next to the measurements: they
 depend on rules and thresholds in `lib/`, so a file would go stale the moment
-one of those changed, with nothing to notice it.
+one of those changed, with nothing to notice it. The page awaits all of them at
+once as `getPageData()`, which is the only exported entry point besides
+`getPass(slug)` – the weather route's, whose cold start must not drag the
+derivations in.
 
 | Getter           | Value                                                                                                             |
 | ---------------- | ----------------------------------------------------------------------------------------------------------------- |
 | `getValleys`     | the lowest ascent start per pass – the elevation the summit climate is taken down to for the heat signal          |
 | `getProfiles`    | the road coordinate of every profile sample (`ProfileWithCoords`), so no route geometry reaches the client        |
-| `getNearbyTours` | which tours run within 60 km of each pass, tour start and town (`lib/nearby.ts`)                                  |
+| `getNearbyTours` | which tours run within reach of each pass, tour start and town, and how near their road comes (`lib/nearby.ts`)   |
 | `getTownReach`   | the area each town reaches, as a hull over its passes                                                             |
 | `getYears`       | the **year of every pass and tour**: 24 cells with status, grade, reasons and the snow note, plus the best window |
 
@@ -385,6 +389,5 @@ If the gate rejects the new ascent, `rejected.json` names the measured value
 that broke a limit. There are exactly three ways out, and the `curate-data`
 skill describes when each applies: fix the coordinates, set `ascent.check` with
 a note, or change the limit itself. Each of them is picked up by the next
-`data:build` on its own: a rejection remembers the inputs it was routed for and
-is retried when they change or when its stored metrics pass the current limits,
-and not otherwise.
+`data:build` on its own – [the retry
+rule](./data-pipeline.md#the-retry-rule) says when and why.

@@ -1,4 +1,7 @@
+import { z } from "zod";
+
 import { getPass } from "@/lib/data";
+import * as S from "@/lib/schema";
 import type { WeatherDay } from "@/lib/types";
 
 /**
@@ -38,6 +41,42 @@ const REVALIDATE_S = 3600;
 const COOL_DOWN_S = 60;
 let coolDownUntil = 0;
 
+/**
+ * What Open-Meteo answers, as far as this route asked for it: one column per
+ * variable, all as long as `time`. The zip below turns the columns into the
+ * rows the panel reads, and each row goes through `WeatherDay` – so a column
+ * that came up short, or a value that is neither a number nor the `null` the
+ * host sends for a value it has none of, fails here instead of reaching the
+ * panel as something it cannot read. The object is not strict on purpose:
+ * Open-Meteo sends the coordinates, the timezone and the units alongside, and
+ * a variable added upstream is no reason to drop a forecast.
+ */
+const Forecast = z
+  .object({
+    daily: z.object({
+      precipitation_sum: z.array(z.unknown()),
+      snowfall_sum: z.array(z.unknown()),
+      temperature_2m_max: z.array(z.unknown()),
+      temperature_2m_min: z.array(z.unknown()),
+      time: z.array(z.unknown()),
+      weather_code: z.array(z.unknown()),
+      wind_speed_10m_max: z.array(z.unknown()),
+    }),
+  })
+  .transform(({ daily }): WeatherDay[] =>
+    daily.time.map((date, i) =>
+      S.WeatherDay.parse({
+        date,
+        precipitation: daily.precipitation_sum[i],
+        snowfall: daily.snowfall_sum[i],
+        tmax: daily.temperature_2m_max[i],
+        tmin: daily.temperature_2m_min[i],
+        weatherCode: daily.weather_code[i],
+        windMax: daily.wind_speed_10m_max[i],
+      }),
+    ),
+  );
+
 const forecast = async (
   lat: number,
   lon: number,
@@ -56,33 +95,23 @@ const forecast = async (
 
   // The cooldown is armed where it is earned, not in the handler: a handler
   // that armed it on every rejection would re-arm on its own "pausiert" throw
-  // and, under steady traffic, never let the window end.
-  let res: Response;
+  // and, under steady traffic, never let the window end. The reading of the
+  // answer is inside for the same reason – an answer this route cannot make
+  // sense of is the host failing too, and a throw that escapes here is not
+  // cached, so every later visitor would fetch the same unreadable answer
+  // again.
   try {
-    res = await fetch(
+    const res = await fetch(
       `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&elevation=${elevation}` +
         "&daily=temperature_2m_max,temperature_2m_min,precipitation_sum,snowfall_sum,wind_speed_10m_max,weather_code" +
         "&timezone=Europe%2FBerlin&forecast_days=7",
     );
     if (!res.ok) throw new Error(`Open-Meteo ${res.status}`);
+    return Forecast.parse(await res.json());
   } catch (error) {
     coolDownUntil = Date.now() + COOL_DOWN_S * 1000;
     throw error;
   }
-
-  const { daily } = (await res.json()) as {
-    daily: Record<string, (number | string)[]>;
-  };
-
-  return (daily.time as string[]).map((date, i) => ({
-    date,
-    precipitation: daily.precipitation_sum![i] as number,
-    snowfall: daily.snowfall_sum![i] as number,
-    tmax: daily.temperature_2m_max![i] as number,
-    tmin: daily.temperature_2m_min![i] as number,
-    weatherCode: daily.weather_code![i] as number,
-    windMax: daily.wind_speed_10m_max![i] as number,
-  }));
 };
 
 /**
@@ -100,7 +129,11 @@ export const GET = async (
   ctx: { params: Promise<{ slug: string }> },
 ) => {
   const { slug } = await ctx.params;
-  const pass = await getPass(slug);
+  // The path segment is the one string a visitor hands this route, so it is
+  // held against the rule every slug in `data/` is held against (`S.Slug`)
+  // before anything is looked up with it. Whatever cannot name a pass gets the
+  // same cacheable 404 as a pass that does not exist.
+  const pass = S.Slug.safeParse(slug).success ? getPass(slug) : undefined;
   if (!pass)
     return Response.json(
       { error: "unbekannter Pass" },

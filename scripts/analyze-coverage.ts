@@ -21,14 +21,15 @@
  * elevation because in the Alps that is the best free proxy for "worth a
  * holiday". The human decides; nothing here becomes data.
  *
- * The answers are cached per bounding box in scripts/.cache/coverage (git-
- * ignored), so the second run is offline and free. Overpass is the only host
- * that can answer a 75 km circle – the OSM map API's fallback in osm.ts stops
- * at a bounding box a few kilometres wide – so when it is down the run says
- * so and stops; OVERPASS_URL picks a mirror.
+ * The answers are recorded per query in scripts/.cache/coverage (git-ignored)
+ * by the fixture transport, so the second run is offline and free. The gap
+ * between two live requests is the transport's Overpass pace – 3 s, the rate
+ * every script keeps towards that host – rather than the 2 s this report used
+ * to time itself. Overpass is the only host that can answer a 75 km circle –
+ * the OSM map API's fallback in osm.ts stops at a bounding box a few
+ * kilometres wide – so when it is down the run says so and stops;
+ * OVERPASS_URL picks a mirror.
  */
-import { mkdir } from "node:fs/promises";
-
 import passesJson from "../data/passes.json" with { type: "json" };
 import townsJson from "../data/towns.json" with { type: "json" };
 import { REACH_MAX_KM } from "../lib/geo";
@@ -40,9 +41,9 @@ import {
   reportLines,
   summaryLine,
 } from "./lib/coverage";
-import { overpassPost } from "./lib/locate";
-import type { OverpassNode } from "./lib/locate";
-import { OVERPASS_URL } from "./lib/osm";
+import { OVERPASS_URL, overpass } from "./lib/hosts";
+import type { OverpassNode } from "./lib/hosts";
+import { fixtureTransport, liveTransport } from "./lib/transport";
 
 const passes = S.Passes.parse(passesJson);
 const towns = S.Towns.parse(townsJson);
@@ -64,29 +65,18 @@ const selected = only.length
   ? towns.filter((t) => only.some((o) => t.slug.includes(o)))
   : towns;
 
-const CACHE = new URL(".cache/coverage/", import.meta.url);
-await mkdir(CACHE, { recursive: true });
-/** Between two Overpass requests, ms – a public mirror, asked politely. */
-const GAP_MS = 2000;
+/** Recorded answers; `--refresh` asks Overpass again and overwrites them. */
+const transport = fixtureTransport(
+  new URL(".cache/coverage/", import.meta.url),
+  { live: liveTransport(), record: REFRESH },
+);
 
 const nodesAround = async (t: {
   lat: number;
   lon: number;
-}): Promise<{ cached: boolean; nodes: OverpassNode[] }> => {
-  const file = Bun.file(
-    new URL(
-      `${t.lat.toFixed(3)}_${t.lon.toFixed(3)}_${REACH_MAX_KM}.json`,
-      CACHE,
-    ),
-  );
-  if (!REFRESH && (await file.exists()))
-    return { cached: true, nodes: (await file.json()) as OverpassNode[] };
-  const res = await fetch(OVERPASS_URL, overpassPost(coverageQuery(t)));
-  if (!res.ok) throw new Error(`Overpass ${res.status} ${res.statusText}`);
-  const json = (await res.json()) as { elements?: OverpassNode[] };
-  const nodes = (json.elements ?? []).filter((e) => e.type === "node");
-  await Bun.write(file, JSON.stringify(nodes));
-  return { cached: false, nodes };
+}): Promise<OverpassNode[]> => {
+  const elements = await overpass.query(transport, coverageQuery(t));
+  return elements.filter((e): e is OverpassNode => e.type === "node");
 };
 
 console.log(
@@ -94,28 +84,24 @@ console.log(
 );
 
 const rows: string[] = [];
-let asked = 0;
 const distinct = new Set<number>();
 for (const t of selected) {
-  let answer: Awaited<ReturnType<typeof nodesAround>>;
+  let nodes: OverpassNode[];
   try {
-    if (asked > 0) await Bun.sleep(GAP_MS);
-    answer = await nodesAround(t);
+    nodes = await nodesAround(t);
   } catch (error) {
     console.error(
       `${t.name}: Overpass antwortet nicht (${(error as Error).message}) – dieser Bericht braucht den Host; OVERPASS_URL=… wählt einen Spiegel`,
     );
     process.exit(1);
   }
-  if (!answer.cached) asked += 1;
-  const cov = coverageOf(t, answer.nodes, passes, FLOOR);
+  const cov = coverageOf(t, nodes, passes, FLOOR);
   for (const line of reportLines(t, cov, TOP)) console.log(line);
   console.log();
   const byFloor = Object.fromEntries(
     FLOORS.map((f) => [
       f,
-      Object.values(coverageOf(t, answer.nodes, passes, f).candidates).flat()
-        .length,
+      Object.values(coverageOf(t, nodes, passes, f).candidates).flat().length,
     ]),
   );
   for (const c of Object.values(cov.candidates).flat()) distinct.add(c.osm);
@@ -135,5 +121,5 @@ for (const row of rows.toSorted(
 ))
   console.log(row.slice(row.indexOf("|") + 1));
 console.log(
-  `\n${selected.length} Orte, ${asked} Overpass-Anfragen (${selected.length - asked} aus dem Cache), ${distinct.size} verschiedene Kandidaten ab ${FLOOR} m`,
+  `\n${selected.length} Orte, ${transport.recorded} Overpass-Anfragen (${transport.replayed} aus dem Cache), ${distinct.size} verschiedene Kandidaten ab ${FLOOR} m`,
 );

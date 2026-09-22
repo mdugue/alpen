@@ -43,12 +43,13 @@ below 16 px, and on a map that fills the viewport that zoom has no way back. An
 unlayered rule at the end of `app/globals.css` gives every control 16 px on a
 coarse pointer – unlayered because it has to beat the `text-xs` utilities the
 components carry – and `TOUCH_CONTROL` and `TOUCH_ICON` in `lib/utils.ts` grow
-the boxes to match, on the same `pointer-coarse` condition (`TOUCH_SELECT` did
-the same for a native select and is unused, see below). With a mouse everything
-stays as dense as it was. The rule cuts both ways: a control that is _not_ a
-text field gains nothing from the 16 px and loses the row's scale, which is why
-the app has no `<select>` left – the sort picker is a `DropdownMenu` and the
-filters are chips, both ordinary markup the rule never touches.
+the boxes to match, on the same `pointer-coarse` condition. With a mouse
+everything stays as dense as it was. The rule cuts both ways: a control that is
+_not_ a text field gains nothing from the 16 px and loses the row's scale,
+which is why the app has no `<select>` left – the sort picker is a
+`DropdownMenu` and the filters are chips, both ordinary markup the rule never
+touches. There is no `TOUCH_SELECT` beside the other two any more: it grew the
+box of a native select, and this app has not had one for a long time.
 
 ### Charts come from the shadcn `chart` component (recharts under the hood)
 
@@ -96,12 +97,18 @@ three shapes mean is behind the card's ⓘ (a popover) and in the scales
 dialog; the card carries no legend beside the band.
 
 MapLibre's own provenance controls – the scale bar and the attribution ⓘ –
-stack in the bottom-left corner above the bar on a phone (`--shell-bottom`,
-measured in `explorer.tsx`) and sit in one row in the bottom-right corner on
-desktop, the one corner the card leaves free (`lg:right-40`): MapLibre fixes a
-control's corner when it is added, so `pass-map.tsx` re-adds them when the
-layout changes. Before that, the floating sidebar covered them on desktop.
-The arithmetic is `shellEdge` in `lib/map-camera.ts`.
+stack in the bottom-left corner above the bar on a phone (`--shell-bottom`) and
+sit in one row in the bottom-right corner on desktop, the one corner the card
+leaves free (`--shell-right`, which is where the card stops): MapLibre fixes a
+control's corner when it is added, so `apply-environment.ts` re-adds them when
+the layout changes. Before that, the floating sidebar covered them on desktop.
+
+The arithmetic behind all of it – the two panel widths, where the detail panel
+starts, where the card starts and stops, and what each of them takes from the
+map as camera padding – is `shellGeometry` in `lib/shell-geometry.ts`. It
+returns the numbers _and_ the `--shell-*` custom properties the classes read,
+so no width is spelled twice: `w-(--shell-sidebar)` and the pixel arithmetic
+have one source.
 
 The band is the period control _and_ a chart of the current selection. Each of
 its 24 columns carries three quantities over the passes the filters leave: bar
@@ -120,10 +127,11 @@ drag a column, arrows and Home/End on the keyboard, no stepper buttons. The
 Between the bars, on desktop, the two floating panels: the collapsible sidebar
 (`components/sidebar/`: search, filters, and one list per kind behind a tab
 row) and, while something is selected, the detail slide-over next to it. Their
-widths are mirrored in `explorer.tsx` (`SIDEBAR_W`, `DETAIL_W`) and fed to
-MapLibre as left padding so camera targets stay visible. They live in a middle
-`div` that is what is left between the two bars, so neither is told a number to
-stay clear of. The sidebar's own toggle is in the header, and the sidebar
+widths come from `PANEL_W` in `lib/shell-geometry.ts` – once, as the classes'
+custom properties and as MapLibre's left padding, so camera targets stay
+visible. They live in a middle `div` that is what is left between the two bars,
+so neither is told a number to stay clear of. Where all of it stands is
+`components/shell.tsx`; what it says is the explorer's. The sidebar's own toggle is in the header, and the sidebar
 carries no brand row of its own – the header owns the `h1`.
 
 What the bars cover of the map is **measured**, not promised (`useHeight`,
@@ -168,9 +176,10 @@ Below `lg` no panel rests on the map: from the season bar's two buttons, **two**
 independent `MobileSheet`s (`components/mobile-sheet.tsx`, the Base UI `Drawer`
 with `modal={false}` and snap points), the list and the detail, each mounted
 only while it is open and each with its own snap state (`LIST_SNAPS`,
-`DETAIL_SNAPS` in `explorer.tsx`). "Liste" opens the list on its list; "Filter"
-opens the same sheet with the filter panel unfolded, which is why that fold is
-state in `explorer.tsx` and not in the sidebar. A tap on the map opens the
+`DETAIL_SNAPS` in `lib/app-state.ts`, mounted by `components/shell.tsx`).
+"Liste" opens the list on its list; "Filter" opens the same sheet with the
+filter panel unfolded, which is why that fold is `sheet.filters` in the
+reducer and not state in the sidebar. A tap on the map opens the
 detail over the bare map; a tap on a list row opens it over the list. Whichever
 is in front feeds MapLibre its height as bottom padding when that is more than
 the season bar covers. It was one sheet holding either content, after a stint
@@ -187,8 +196,10 @@ survived. Opening on demand settles both. The stack is simply the truth, the
 list keeps its state by never being unmounted while it is open, and nothing has
 to rest on screen, so there is no peek snap to measure. What leaving a detail
 means still depends on what is underneath, and the control says which: a
-labelled `‹ Liste` back button while the list drawer is open behind it
-(`backToList` on `DetailPanel`), the `✕` when the detail is alone over the map.
+labelled `‹ Liste` back button while the list drawer is open behind it, the `✕`
+when the detail is alone over the map. The panel learns which from the sheet it
+is in (`useSheet().over`), so the two facts a subtree needs about its drawer –
+is it expanded, does it lie on another – travel the one way.
 A drawer sizes itself from `--drawer-snap-point-offset`: the popup is a full
 `100dvh` and padded off at the bottom by that offset **less the inset**, so its
 content box ends at the fold – the inset comes off because the popup's own
@@ -207,13 +218,13 @@ stacks the two – the one behind scales back, dims and peeks above the one in
 front – which is exactly what going back to the list means. A detail opened from
 the map must not claim that, because there is nothing behind it, so the same
 `detailSheet` element is rendered under one of two parents, decided at the tap
-(`detailNested` in `explorer.tsx`) and then left alone: what is underneath a
-detail does not change while it is open, and moving a mounted drawer between
-trees would remount it anyway.
+(`sheet.detail.nested`, set by the `select` case of `reduce`) and then left
+alone: what is underneath a detail does not change while it is open, and moving
+a mounted drawer between trees would remount it anyway.
 
 **The content does not scroll until the sheet is at its topmost snap point**
-(`useSheetExpanded`, used by the detail panel's scroller and the sidebar's list
-container). The drag and the scroll are the same gesture, so something has to
+(`useSheet().expanded`, read by the detail panel's scroller and the sidebar's
+list container). The drag and the scroll are the same gesture, so something has to
 arbitrate, and Base UI arbitrates the way the platform does: a touch that starts
 inside a scroll container may swipe the sheet _down_ from the scroll top, but a
 drag _up_ always goes to the scroller. On a detail sheet whose top half is a
@@ -258,6 +269,67 @@ stateDiagram-v2
 
 Whichever drawer is in front feeds MapLibre its height as bottom padding; with
 neither open that is the season bar's measured height.
+
+### One reducer, two adapters
+
+Everything the explorer decides – the selection and its consequences, the tab,
+the hover, the half-month, the filters, what the map shows, the phone's sheet
+snaps – is one pure reducer, `reduce(state, action, env)` in
+`lib/app-state.ts`, with table tests. `Explorer` holds it in a `useReducer`
+and hands the parts the values they read plus `dispatch`; it derives nothing
+a second time and holds no effect of its own – the two it has are the
+adapters. Where those parts stand is `components/shell.tsx`, which is the
+other half of the same split (docs/architecture.md, "Functional core,
+imperative shell").
+
+```mermaid
+flowchart LR
+  H["hash adapter<br/>parseHash → load · state → serializeHash"] --> A
+  ST["storage adapter<br/>readStoredState → load · state → keys"] --> A
+  UI["rows · map · panel · sheet<br/>dispatch"] --> A
+  A["lib/app-state.ts<br/>reduce(state, action, env)<br/>selection · last · tab · hovered · cursor<br/>filters incl. period · shown · sheet"]
+  A --> SB["Sidebar reads shown, rows"]
+  A --> PM["PassMap reads key, shown"]
+  A --> DP["panel gets the selection"]
+  A --> SBd["SeasonBand gets the current bar"]
+```
+
+Two rules follow from the picture. **Selecting something is one reducer
+case.** `select` sets the selection and what the leaving sheet keeps showing,
+brings the kind's tab forward, clears the hover and the profile cursor,
+reveals the kind on the map and, on a phone, picks the detail drawer's snap
+and nesting from where the list drawer rests. A tap on a row, a tap on the
+map and a `#tour=…` pasted into the address bar all go through it – which is
+what it took for a pasted hash to bring the right tab forward, and for Escape
+to stop leaving the last hovered entity ringed: the rule used to be written
+three times, and the copies had drifted apart.
+
+**The hash and the storage are adapters.** Neither is read during a render,
+and no control writes to either: a control dispatches, and what the adapters
+persist is what the reducer made of it – which is how a half-month from a
+shared link applies without becoming the visitor's own preference.
+`useHashAdapter` (`lib/hash-adapter.ts`) turns the hash and the stored slices
+into one `load` action in a layout effect after hydration, and again on every
+`hashchange`; afterwards it serialises the state back into the hash. Why that
+reading is a layout effect and not the state's initialiser is hydration; the
+hook's doc comment is the one place it is written out. A camera in the hash is
+read once and in one of two ways, decided by which hash this is: the one the
+page opened on becomes the `CameraIntent` the map is _built_ with
+(`cameraIntent`), and only a hash that arrives at a page already open becomes
+`requestedView`, which moves the camera that is there. Doing both for one hash
+is what took a shared link's pass off the flight that frames it – every link
+the app writes carries a camera, so that was every shared link with an entity
+in it. `useStorageAdapter`
+(`lib/use-stored.ts`) writes the persisted slices – the switches, the tab, the
+visitor's own period – whenever they change, under the keys of the `STORAGE`
+table, which is where every `alpenpaesse:*` key is spelled, with its area and
+its default. Both adapters wait for `state.loaded`: the first commit holds the
+defaults, and writing those would overwrite a shared link or the last visit's
+settings before they have been read. What is shown on the map is one value,
+`Shown`, read through `isShown` and `shownTourCount` and reconciled against the
+data on load, so a tour that left `data/tours.json` cannot keep the master
+switch reading "off". An entity's identity is `entityKey`
+(`lib/route-key.ts`, which pulls in nothing else) and nothing else spells it.
 
 ### Dark mode follows the OS, nothing else
 
@@ -429,11 +501,13 @@ Ten rows is about a screenful at the sheet's lower snap point. The list is a
 element between the two and `<ul>` may hold nothing but `<li>`.
 
 Two things follow for everything else in the sheet. A number that changes with
-the drag must not reach the rows: `select` in `components/explorer.tsx` reads
-the drawer's resting place from a ref rather than from state, because closing
-over the snap point made every snap change a new `select` and re-rendered all
-201 rows behind the sheet (~50 ms, for a value nothing on screen was reading).
-And a row stays cheap: what is added to one is added two hundred times.
+the drag must not reach the rows: where the drawer rests is the reducer's
+`sheet` slice (`lib/app-state.ts`), read where the rule that needs it lives –
+the `select` case, which picks the detail drawer's snap from it. What the rows
+are handed is `dispatch`, which never changes, so a snap change is no longer a
+new `select` re-rendering all 201 rows behind the sheet (~50 ms, for a value
+nothing on screen was reading). And a row stays cheap: what is added to one is
+added two hundred times.
 
 ### A drag of the sheet may spend the frame on nothing else
 
@@ -464,8 +538,8 @@ here; the three rules stand on what each of them removes:
   transformed ancestor is kept on a scrolling layer that the browser re-makes
   while the ancestor moves. The gesture belongs to the sheet, so the two
   scrollers inside one (`data-scroller`) clip for its length – the same idea as
-  `useSheetExpanded` above, which already takes the scroll away _below_ the top
-  snap point; this covers the drag that starts _at_ it.
+  `useSheet().expanded` above, which already takes the scroll away _below_ the
+  top snap point; this covers the drag that starts _at_ it.
 
 What is honest about these numbers: they come from headless Chromium with the
 CPU throttled, they were taken while the derived properties above were still
@@ -490,9 +564,11 @@ buttons all called "Merken". `useRoving` (`lib/use-roving.ts`) makes each list
 the composite widget the platform expects: one stop, arrows inside it,
 Home/End/PageUp/PageDown, and the tab stop stays on the row last focused. It
 works off the DOM rather than an index in state, because which rows exist
-changes on every keystroke in the search field. Every bookmark toggle is named
-after the thing it bookmarks, and `app/page.tsx` carries a skip link to the
-map.
+changes on every keystroke in the search field; where a key takes the focus is
+`rovingTarget` beside it, a pure function of the key, the row it was pressed on
+and how many there are, so the ends and the keys the platform keeps are a table
+test rather than a browser. Every bookmark toggle is named after the thing it
+bookmarks, and `app/page.tsx` carries a skip link to the map.
 
 ## The detail panel
 
@@ -502,14 +578,52 @@ Every block below the title is a `Section` (`components/panel/section.tsx`),
 open by default. The panel is a column on a map and a phone sheet shows two
 blocks at a time; whoever wants the climate should not scroll past two
 elevation profiles first. Which blocks are folded is one `sessionStorage` entry
-shared by all of them (`SECTIONS_KEY`), keyed by section id and holding the
-_closed_ ones: a fold carries over to the next pass looked at, a new section
-opens by itself, and the next visit starts unfolded again. A section title says
-what the block is and nothing else; where a source or its caveat has to be
-named, one short sentence sits behind the `info` popover, opened by tap or
-click – a tooltip needs hover, which a phone cannot give it, and the detail
-panel is where a phone reaches this app most. A header never opens a dialog –
-the scales dialog belongs to the sidebar footer, which is where it stays.
+shared by all of them (`alpenpaesse:closedSections` in the `STORAGE` table,
+`lib/use-stored.ts`), keyed by section id and holding the _closed_ ones: a fold
+carries over to the next pass looked at, a new section opens by itself, and the
+next visit starts unfolded again. The ids are a closed set (`BlockId`, declared
+with the panel model) rather than free strings, so a block cannot be spelled two
+ways and lose its fold. A section title says what the block is and nothing else;
+where a source or its caveat has to be named, one short sentence sits behind the
+`info` popover, opened by tap or click – a tooltip needs hover, which a phone
+cannot give it, and the detail panel is where a phone reaches this app most. A
+header never opens a dialog – the scales dialog belongs to the sidebar footer,
+which is where it stays.
+
+### Model in, markup out
+
+**What a pass, a tour or a town shows is a value, and the components render
+it.** `detailModel(selection, data, state)` (`lib/detail-model.ts`) resolves the
+entity once and returns one discriminated `DetailModel`: the entity itself, its
+verdict and every German sentence it shows, what is within reach of it, which
+blocks apply, and how far its detail file has got (`DetailState`,
+`lib/detail-state.ts`). `PassDetail`, `TourDetail` and `TownDetail` take their
+half of that value plus one `PanelActions` object, and nothing else. The shell
+(`detail-panel.tsx`) is the head, the control row and one three-way switch on
+`model.kind`.
+
+The three things that convention buys:
+
+- **The kind is decided once.** It used to be found, cast and branched on in
+  three places, each branch taking all nineteen of the shell's props and reading
+  six of them, so adding a field to what a pass shows meant reading the whole
+  file to find out who else was passing it on.
+- **Every sentence has one home.** The model calls `lib/status.ts`
+  (`bestText`, `reasonParagraph`, `climateText`, `tourText`, `seasonText`) and
+  the components print what comes back. No German is glued together in JSX, so
+  the same fact cannot be worded two ways in two blocks.
+- **It is testable without a browser.** The model is a pure function – `period`,
+  `hovered` and the fetch state are arguments, never hooks – so `bun test`
+  renders all three kinds from one fixture with `renderToStaticMarkup`
+  (`components/panel/kind-detail.test.tsx`), and the same model will render on
+  the server for an entity page (`docs/plans/02-*`).
+
+**"What is near here" is one module.** `lib/reach.ts` measures distance in the
+bands, the weight and the reach of `lib/geo.ts` and hands back one `Reach`
+value; `inBands` reads it the way a rider thinks about a day, `byDistance` reads
+it nearest-first for the "Im Umkreis" block. The two readings are deliberate and
+come from one computation. What a ranked block above already shows is `claimed`
+in the same call, so no block has to be told by a flag what a sibling drew.
 
 ### Photos are borrowed, not owned, and they are the panel's hero
 

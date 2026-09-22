@@ -71,7 +71,7 @@ export const metadata: Metadata = {
 // Keep in sync with --background in app/globals.css (light / dark).
 export const viewport: Viewport = {
   themeColor: [
-    { color: BRAND.paper, media: "(prefers-color-scheme: light)" },
+    { color: BRAND.day, media: "(prefers-color-scheme: light)" },
     { color: BRAND.night, media: "(prefers-color-scheme: dark)" },
   ],
   viewportFit: "cover",

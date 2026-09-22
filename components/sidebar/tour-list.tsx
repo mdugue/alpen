@@ -8,6 +8,7 @@ import { RowList } from "@/components/sidebar/row-list";
 import { StatusLabel } from "@/components/status-badge";
 import { Switch } from "@/components/ui/switch";
 import type { Selection } from "@/lib/app-state";
+import { entityKey } from "@/lib/route-key";
 import type { TourRow } from "@/lib/rows";
 import type { Period } from "@/lib/types";
 import { useRoving } from "@/lib/use-roving";
@@ -19,19 +20,20 @@ export const TourList = ({
   hovered,
   onHover,
   period,
-  hiddenTours,
+  isShown,
   empty,
   mapControl,
   onToggleTour,
   onSelect,
   onToggleFavorite,
 }: {
-  rows: TourRow[];
+  rows: readonly TourRow[];
   currentRow: string | null;
   hovered: Selection | null;
   onHover: (sel: Selection | null) => void;
   period: Period;
-  hiddenTours: string[];
+  /** Whether a tour's "auf der Karte" switch is on (`isShown`, lib/app-state.ts). */
+  isShown: (slug: string) => boolean;
   empty: Omit<React.ComponentProps<typeof ListEmpty>, "title">;
   /** The "auf der Karte" switch for this kind; it lives in the list, not by the tabs. */
   mapControl: React.ReactNode;
@@ -49,12 +51,12 @@ export const TourList = ({
       ) : (
         <RowList ref={rovingList} items={rows} keyOf={({ tour }) => tour.slug}>
           {({ tour, status, reason, favorite, season }) => {
-            const onMap = !hiddenTours.includes(tour.slug);
+            const onMap = isShown(tour.slug);
             return (
               <EntityRow
                 key={tour.slug}
-                rowId={`tour:${tour.slug}`}
-                current={currentRow === `tour:${tour.slug}`}
+                rowId={entityKey("tour", tour.slug)}
+                current={currentRow === entityKey("tour", tour.slug)}
                 hovered={hoveredSlug === tour.slug}
                 onHover={(over) =>
                   onHover(over ? { kind: "tour", slug: tour.slug } : null)

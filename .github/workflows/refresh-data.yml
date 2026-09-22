@@ -1,7 +1,7 @@
 name: Refresh data
 
 # Fetches missing routes, elevation profiles, climate series and photos and
-# commits them.
+# commits them, together with the status snapshot they move.
 #
 # There is deliberately no schedule. Nothing in the pipeline is time-varying:
 # the climate window is frozen (CLIMATE_FROM/CLIMATE_TO), and routes and
@@ -56,6 +56,20 @@ jobs:
       # fills the gaps a new pass or town left (scripts/build-photos.ts).
       - run: bun run data:photos
         continue-on-error: true
+      # The status matrix over all passes × 24 half-months is computed from the
+      # climate series and the profiles this run just fetched, so the snapshot
+      # beside it (lib/__snapshots__) is as much a product of a refresh as the
+      # JSON is, and it is updated and committed with it.
+      #
+      # It has to happen here rather than in a follow-up: a push by this
+      # workflow's token starts no CI run, and a pull request opened with that
+      # same token starts none either, so anything left undone here reaches
+      # `main` red with nothing saying so (seen at 0ef82da). Like the check
+      # below, a failure must not cost this run the data it paid for – the
+      # commit comes first and the job fails afterwards.
+      - id: snapshot
+        run: bun test lib --update-snapshots
+        continue-on-error: true
       # The check must not cost this run its work: the fetched data is committed
       # first and the job fails afterwards, so a failing check (a stored route
       # that violates a limit) still surfaces without discarding the paid-for
@@ -65,11 +79,15 @@ jobs:
         continue-on-error: true
       - name: Commit
         run: |
-          git add data/generated/*.json
+          git add data/generated/*.json lib/__snapshots__
           git diff --cached --quiet && { echo "Nichts zu committen"; exit 0; }
           git -c user.name=github-actions[bot] -c user.email=41898282+github-actions[bot]@users.noreply.github.com \
             commit -m "chore(data): refresh precomputed data" -m "$(bun run --silent data:build --status)"
           git push
+      - if: steps.snapshot.outcome == 'failure'
+        run: |
+          echo "bun test lib ist fehlgeschlagen – der Snapshot ist womöglich nicht aktualisiert, der Fehler steht oben."
+          exit 1
       - if: steps.check.outcome == 'failure'
         run: |
           echo "data:check ist fehlgeschlagen – die Daten sind trotzdem eingecheckt, der Fehler steht oben."

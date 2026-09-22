@@ -1,14 +1,10 @@
-import {
-  haversine,
-  REACH_BANDS,
-  reachBand,
-  reachWeight,
-  REACH_MAX_KM,
-} from "@/lib/geo";
-import type { ReachBand } from "@/lib/geo";
-import { cellAt, periodIndex, PERIODS } from "@/lib/status";
-import type { Grade, Year, YearCell, Years } from "@/lib/status";
-import type { LatLon, Pass, Period, Status, Town } from "@/lib/types";
+import { REACH_MAX_KM } from "@/lib/geo";
+import { PERIODS, periodIndex } from "@/lib/period";
+import { emptyCount, inBands, reachCounts, rideable } from "@/lib/reach";
+import type { Band, GradeCount, ReachedPass, ReachedTown } from "@/lib/reach";
+import { statusOf } from "@/lib/status";
+import type { Grade, Year, YearCell } from "@/lib/status";
+import type { Period } from "@/lib/types";
 
 /**
  * What a base is worth, for the half-month that is chosen.
@@ -20,7 +16,9 @@ import type { LatLon, Pass, Period, Status, Town } from "@/lib/types";
  * a verdict for the chosen half-month, the whole year behind it, and the
  * reasons visible next to both.
  *
- * Nothing here measures anything new. A town has no climate series and no
+ * Nothing here measures anything new, and since plan 31 nothing here measures
+ * anything at all: what is within reach of a point is `lib/reach.ts`, and this
+ * module only judges what that hands it. A town has no climate series and no
  * season of its own; what it has is the passes it reaches, and every one of
  * those was already graded for all 24 half-months by `getYears`. A
  * destination's year is therefore *derived*, and it says so wherever it shows
@@ -28,31 +26,6 @@ import type { LatLon, Pass, Period, Status, Town } from "@/lib/types";
  * Umkreis", and the passes it was derived from stay listed underneath with
  * their own strips.
  */
-
-/** How many reachable passes sit at each grade in one half-month. */
-export interface GradeCount {
-  best: number;
-  good: number;
-  limited: number;
-  closed: number;
-}
-
-export const GRADE_ORDER: readonly Grade[] = [
-  "best",
-  "good",
-  "limited",
-  "closed",
-];
-
-const emptyCount = (): GradeCount => ({
-  best: 0,
-  closed: 0,
-  good: 0,
-  limited: 0,
-});
-
-/** Passes a rider would actually go out for: the two upper grades. */
-const rideable = (c: GradeCount) => c.best + c.good;
 
 /**
  * The grade of a destination in one half-month – **relative to the best that
@@ -96,53 +69,33 @@ const rideable = (c: GradeCount) => c.best + c.good;
 export const RIDEABLE_BEST_SHARE = 0.75;
 export const RIDEABLE_GOOD_SHARE = 0.45;
 
-export const gradeOf = (c: GradeCount, peak: number): Grade => {
-  const n = rideable(c);
-  if (n === 0 || peak === 0) return "closed";
-  if (n >= peak * RIDEABLE_BEST_SHARE) return "best";
-  if (n >= peak * RIDEABLE_GOOD_SHARE) return "good";
-  return "limited";
-};
-
-/** One reachable pass, with everything the panel ranks and groups it by. */
-export interface ReachedPass {
-  pass: Pass;
-  km: number;
-  band: ReachBand;
-  /** The pass's own status in the chosen half-month. */
-  status: Status;
-  grade: Grade;
-  /** The pass's 24 cells, for the strip in the row. */
-  season: YearCell[];
-  /** What the list is ordered by; never shown. */
-  score: number;
+/**
+ * The two shares as an argument, so that asking what another pair would do to
+ * the strip – or what the absolute rule did, which is the same comparison
+ * against a fixed reference instead of the base's own peak – is one call in
+ * `scripts/analyze-destinations.ts` rather than the ladder written out again.
+ */
+export interface GradeShares {
+  best: number;
+  good: number;
 }
 
-/**
- * How a reachable pass is ranked. Three factors, each of which a planner
- * would name out loud if asked why one pass comes before another:
- *
- *  - **is it rideable now** – a closed pass is not an argument for a base in
- *    that half-month, however beautiful it is, so the grade is the coarse
- *    sort and the strongest term;
- *  - **is it worth riding** – beauty and fame, the editorial scales;
- *  - **is it near** – `reachWeight`, the smooth one, which is what keeps a
- *    pass at 12 km ahead of an equally pretty one at 70 without a radius
- *    having to decide anything.
- *
- * The weight is a factor and not a filter, which is the point of the whole
- * exercise: at 70 km a pass has to be genuinely better to out-rank a nearer
- * one, rather than being thrown away for being over a round number.
- */
-const GRADE_SCORE: Record<Grade, number> = {
-  best: 1,
-  closed: 0.1,
-  good: 0.8,
-  limited: 0.35,
+const SHARES: GradeShares = {
+  best: RIDEABLE_BEST_SHARE,
+  good: RIDEABLE_GOOD_SHARE,
 };
 
-const scoreOf = (pass: Pass, grade: Grade, km: number) =>
-  GRADE_SCORE[grade] * (pass.beauty + pass.fame / 2) * (0.35 + reachWeight(km));
+export const gradeOfBase = (
+  c: GradeCount,
+  peak: number,
+  shares: GradeShares = SHARES,
+): Grade => {
+  const n = rideable(c);
+  if (n === 0 || peak === 0) return "closed";
+  if (n >= peak * shares.best) return "best";
+  if (n >= peak * shares.good) return "good";
+  return "limited";
+};
 
 export interface Destination {
   /** The 24 derived cells, for a `SeasonStrip`. */
@@ -156,7 +109,7 @@ export interface Destination {
   /** Reachable passes, best first. */
   passes: ReachedPass[];
   /** The same, grouped by band in `REACH_BANDS` order; empty bands are dropped. */
-  bands: { band: ReachBand; label: string; passes: ReachedPass[] }[];
+  bands: Band<ReachedPass>[];
 }
 
 /**
@@ -165,14 +118,8 @@ export interface Destination {
  * what explains this cell, and the count is shown next to it.
  */
 const cellOf = (counts: GradeCount, peak: number): YearCell => {
-  const grade = gradeOf(counts, peak);
-  return {
-    grade,
-    reasons: [],
-    snowy: false,
-    status:
-      grade === "closed" ? "closed" : grade === "limited" ? "risky" : "open",
-  };
+  const grade = gradeOfBase(counts, peak);
+  return { grade, reasons: [], snowy: false, status: statusOf(grade) };
 };
 
 /**
@@ -196,53 +143,21 @@ const bestRun = (cells: YearCell[]): [Period, Period] | null => {
 };
 
 /**
- * Everything the destination panel shows, for one point on the map and one
- * half-month. Pure: it reads the precomputed years and the passes it is
- * handed and measures nothing but distance.
+ * The judgement over passes already measured – what the panel model uses, so
+ * the block above the list and the list itself come out of one reach.
  */
-export const destinationAt = (
-  at: LatLon,
-  passes: readonly Pass[],
-  years: Years,
+export const destinationOf = (
+  reached: ReachedPass[],
   period: Period,
-  /** A town does not count itself; a pass panel excludes its own road. */
-  exclude?: string,
 ): Destination => {
-  const reached: ReachedPass[] = [];
-  const perPeriod = PERIODS.map(emptyCount);
-  for (const pass of passes) {
-    if (pass.slug === exclude) continue;
-    const km = haversine(at, pass);
-    const band = reachBand(km);
-    if (band === null) continue;
-    const year = years.passes[pass.slug];
-    if (!year) continue;
-    for (const [i, cell] of year.cells.entries())
-      perPeriod[i]![cell.grade] += 1;
-    const cell = cellAt(year, period);
-    reached.push({
-      band,
-      grade: cell.grade,
-      km,
-      pass,
-      score: scoreOf(pass, cell.grade, km),
-      season: year.cells,
-      status: cell.status,
-    });
-  }
-  reached.sort((a, b) => b.score - a.score);
+  const perPeriod = reachCounts(reached);
   // The whole year is graded against the best half-month this base has, so
-  // the strip shows its season rather than its size (see `gradeOf`).
+  // the strip shows its season rather than its size (see `gradeOfBase`).
   const peak = Math.max(0, ...perPeriod.map(rideable));
   const cells = perPeriod.map((c) => cellOf(c, peak));
-  const counts = perPeriod[periodIndex(period)] ?? emptyCount();
   return {
-    bands: REACH_BANDS.map((b) => ({
-      band: b.key,
-      label: b.label,
-      passes: reached.filter((r) => r.band === b.key),
-    })).filter((g) => g.passes.length > 0),
-    counts,
+    bands: inBands(reached),
+    counts: perPeriod[periodIndex(period)] ?? emptyCount(),
     passes: reached,
     peak,
     total: reached.length,
@@ -269,71 +184,27 @@ export const destinationText = (d: Destination): string => {
   return `Von ${d.total} Pässen im Umkreis: ${parts.join(", ")}.`;
 };
 
-/** One town within reach, with what it would be worth as a base. */
-export interface ReachedTown {
-  town: Town;
-  km: number;
-  band: ReachBand;
-  /** How many passes are rideable from there in this half-month. */
-  rideable: number;
-  /** How many it reaches at all – the denominator of the line above. */
-  total: number;
-  score: number;
-}
-
 /**
- * The inverse of `destinationAt`: not "what can I ride from this town" but
+ * The inverse of `destinationOf`: not "what can I ride from this town" but
  * "where would I stay to ride this road".
  *
  * A pass panel used to answer that with the same flat list of names and
  * distances the town panel had, which is the weaker half of the same mistake:
  * the nearest village is not automatically the best base, and the one thing a
  * planner wants to know about a candidate – what *else* it puts within reach –
- * was nowhere on the screen. So each town carries its own rideable count,
- * which is `destinationAt`'s arithmetic run from the town rather than from
- * here, and the ranking multiplies that by the same smooth nearness weight.
+ * was nowhere on the screen. So each town carries its own rideable count, and
+ * the ranking multiplies that by the same smooth nearness weight
+ * (`reachedTowns`, lib/reach.ts).
  *
  * The two panels are therefore one idea seen from both ends, and they share
  * every constant: the bands, the weight and the reach.
  */
 export interface Bases {
-  bands: { band: ReachBand; label: string; towns: ReachedTown[] }[];
+  bands: Band<ReachedTown>[];
   total: number;
 }
 
-export const basesFor = (
-  at: LatLon,
-  towns: readonly Town[],
-  passes: readonly Pass[],
-  years: Years,
-  period: Period,
-  /** A town panel does not offer itself as a base. */
-  exclude?: string,
-): Bases => {
-  const reached: ReachedTown[] = [];
-  for (const town of towns) {
-    if (town.slug === exclude) continue;
-    const km = haversine(at, town);
-    const band = reachBand(km);
-    if (band === null) continue;
-    const own = destinationAt(town, passes, years, period);
-    const n = rideable(own.counts);
-    reached.push({
-      band,
-      km,
-      rideable: n,
-      score: (0.35 + reachWeight(km)) * (1 + n),
-      total: own.total,
-      town,
-    });
-  }
-  reached.sort((a, b) => b.score - a.score);
-  return {
-    bands: REACH_BANDS.map((b) => ({
-      band: b.key,
-      label: b.label,
-      towns: reached.filter((r) => r.band === b.key),
-    })).filter((g) => g.towns.length > 0),
-    total: reached.length,
-  };
-};
+export const basesOf = (reached: ReachedTown[]): Bases => ({
+  bands: inBands(reached),
+  total: reached.length,
+});

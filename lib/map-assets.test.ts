@@ -2,6 +2,7 @@ import { describe, expect, test } from "bun:test";
 
 import {
   bounds,
+  MAP_FILES,
   mapAssets,
   routeFeatures,
   simplify,
@@ -88,17 +89,18 @@ describe("features", () => {
     const f = routeFeatures([pass], routes);
     expect(f).toHaveLength(1);
     expect(f[0]!.id).toBe("testpass:0");
+    // Nothing the hover label reads: it is looked up from the entity, so the
+    // file carries only what addresses the line (lib/map-scene.ts).
     expect(f[0]!.properties).toEqual({
       id: "testpass:0",
       kind: "route",
       name: "Testpass",
       slug: "testpass",
-      subtitle: "Auffahrt ab Nord",
     });
     expect(f[0]!.geometry.coordinates[0]).toEqual([9, 46]);
   });
 
-  test("tours carry colour and a German subtitle", () => {
+  test("tours carry the colour and the name drawn along the line", () => {
     const f = tourFeatures([tour], routes);
     expect(f[0]!.properties).toEqual({
       color: "#123456",
@@ -106,7 +108,6 @@ describe("features", () => {
       kind: "tour",
       name: "Testrunde",
       slug: "testrunde",
-      subtitle: "ca. 120 km · 3.000 hm",
     });
     expect(tourFeatures([{ ...tour, slug: "ohne-route" }], routes)).toEqual([]);
   });
@@ -130,6 +131,14 @@ describe("mapAssets", () => {
     // … but both can be framed.
     expect(assets.tourBounds.testrunde).toEqual(bounds(road(20)));
     expect(assets.tourBounds["ohne-route"]).toEqual([9, 46, 9.5, 46.5]);
+  });
+
+  test("every written name is one the build script would prune", () => {
+    // Same invariant as on the detail side: a name the script does not
+    // recognise would linger in `public/map` for good. What that shape is, and
+    // that `next.config.ts` caches the same set, is `lib/derived-file.test.ts`.
+    for (const f of mapAssets([pass], [tour], routes).files)
+      expect(MAP_FILES.prune.test(f.name)).toBe(true);
   });
 
   test("a pass is framed by its ascents, the summit included", () => {

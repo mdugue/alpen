@@ -20,7 +20,7 @@ export const schemaFileFor = (file: string) =>
   `${file.replace(/^generated\//u, "").replace(/\.json$/u, "")}.schema.json`;
 
 export const renderJsonSchema = (file: keyof typeof FILES): string => {
-  const json = z.toJSONSchema(FILES[file], {
+  const json = z.toJSONSchema(FILES[file].schema, {
     target: "draft-2020-12",
     // Refinements (season window, dist/ele length) have no JSON Schema
     // counterpart; the editor gets the structure, check-data the full rules.

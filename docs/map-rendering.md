@@ -33,12 +33,77 @@ what is still owed is applied on `moveend` instead. The panel claims its share
 one commit _before_ the camera sets off, which is what keeps that opening
 still: a padding the map has not applied yet cannot move it.
 
+What the padding is _made_ of is a second question, and it has one answer:
+`shellGeometry` (`lib/shell-geometry.ts`), a pure `(bars, viewport, sheet,
+panels) → { inset, vars }` with its own unit tests. The same numbers
+feed the camera and, as the `--shell-*` custom properties `vars` carries, the
+Tailwind classes the panels and the season card are laid out with – so a panel
+width exists once rather than twice, and `sheetCover` converts Base UI's two
+ways of spelling a snap point plus the drawer's own `--drawer-inset`, which is
+measured off a mounted popup (`useSheetInset`) rather than copied out of a
+generated file.
+
+What the map asks the _device_ is one prop as well: `MapEnvironment`
+(`lib/use-media-query.ts`) carries the colour scheme, whether the pointer is
+coarse, whether motion is unwanted and whether the shell is the phone one.
+`appLayers` takes it as an argument, which is what finally makes it the pure
+function its doc comment always claimed; a scheme change is a re-render rather
+than a listener the map registers on its own, and `window.matchMedia` appears
+nowhere else.
+
+None of that is a property of the padding: it is a property of what the camera
+is doing at the moment the padding changes. So the rules are one transition
+table, `camera(state, event, env) → [state, commands]` in `lib/map-camera.ts`,
+and `pass-map.tsx` only turns what happens – a selection, a new inset, a shared
+link, `moveend`, the delay timer, the style parsing – into events and hands the
+commands to `applyCamera` (`components/map/apply-camera.ts`), the one place the
+MapLibre camera methods are called. A whole selection is therefore a list of
+events in a unit test, with no WebGL in sight, which is where the traces below
+are pinned (`lib/map-camera.test.ts`).
+
+| State        | Event                    | → State    | Commands                        |
+| ------------ | ------------------------ | ---------- | ------------------------------- |
+| `cold`       | `intent`                 | `cold`     | –                               |
+| `cold`       | `inset`                  | `cold`     | – (collected for the first one) |
+| `cold`       | `ready`                  | `idle`     | `setPadding`, `fitBounds`¹      |
+| `idle`       | `ready` (not yet fitted) | `idle`     | `fitBounds`¹                    |
+| `idle`       | `inset`                  | `idle`     | `easeTo` unless `sameInset`     |
+| `idle`       | `moveend`                | `idle`     | `writeHash`                     |
+| `idle`       | `selection`              | `awaiting` | `schedule`                      |
+| `awaiting`   | `inset`                  | `awaiting` | – (the flight will carry it)    |
+| `awaiting`   | `moveend` (not by hand)  | `awaiting` | – (an older flight landing)     |
+| `awaiting`   | `moveend` (by hand)      | `idle`     | `cancel`, `writeHash`           |
+| `awaiting`   | `selection`              | `awaiting` | `cancel`, `schedule`            |
+| `awaiting`   | `delay`                  | `flying`   | `flyTo`²                        |
+| `flying`     | `inset`                  | `flying`   | – (the flight owns the padding) |
+| `flying`     | `selection`              | `awaiting` | `schedule`                      |
+| `flying`     | `moveend`                | `idle`     | `writeHash`                     |
+| `flying`     | `moveend` (padding owed) | `settling` | `easeTo`                        |
+| `settling`   | `moveend`                | `idle`     | `writeHash`                     |
+| any but cold | `requestedView`          | `idle`     | `cancel`³, `jumpTo`             |
+
+¹ Only with nothing in the link to open on, and only once there is something to
+frame. ² With `easeTo` instead when the map has no frame and no point for the
+selection – what it cannot frame still owes the panel its space. ³ Only when a
+flight was scheduled.
+
+The last row is a hash pasted into an open page and nothing else: the hash the
+page opened on reaches the machine as the `intent`, never as a `requestedView`
+(`load` in `lib/app-state.ts`). Both at once would cancel the very flight the
+link's own selection scheduled.
+
+Two of those rows are bugs that the shape of the thing prevents rather than
+fixes. A flight for A landing inside B's delay window settles nothing, so it
+can no longer ease A's leftover padding into the flight B is about to make; and
+the hash is written once per settled flight rather than once per frame the
+camera came to rest on.
+
 ### The panel opens with the tap; the camera follows it
 
 Selecting answers a question about a pass, not about the map, so `DetailPanel`
 gets the selection in the same frame as the map's layers, the highlighted row
-and the hash (`selectionState` in `explorer.tsx`, two values: what is selected
-and what the leaving sheet keeps showing). The flight is the slower half:
+and the hash (`selection` and `last` in `lib/app-state.ts`, two values: what is
+selected and what the leaving sheet keeps showing). The flight is the slower half:
 `pass-map.tsx` leaves the panel `SELECT_DELAY` to draw and then takes
 `SELECT_MS` – longer than the 500 ms it was, because nothing waits behind it
 any more – to get there. It ran the other way round first: the map flew and the
@@ -68,11 +133,12 @@ a short climb from filling the screen with two hairpins, and a pass the map
 draws no ascent for falls back to its point. The box has to fit between the
 shell's two bars, which are translucent but no less opaque to a reader: the
 header's and the season bar's measured heights are the map's top and bottom
-padding at every width (`useHeight` in `explorer.tsx`; on desktop the bar is
-a card and its gap from the edge counts too, `shellEdge` in
-`lib/map-camera.ts`). On a phone the detail
-sheet takes 55 % of the screen on top of that, and it is the larger of the two
-at the bottom that counts.
+padding at every width (`useHeight` in `components/shell.tsx`; on desktop the
+bar is
+a card and its gap from the edge counts too). On a phone the detail sheet takes
+55 % of the screen on top of that, and it is the larger of the two at the
+bottom that counts. All of it is one calculation, `shellGeometry` in
+`lib/shell-geometry.ts`.
 
 ## What is drawn
 
@@ -154,12 +220,58 @@ patch of map. The labels keep their own, older ladder; a dot always appears
 before its name. The lines are not thinned: an ascent is a few pixels wide and
 reads as texture where a dot would read as noise.
 
+## What the map draws is a value
+
+```mermaid
+flowchart LR
+  E["rows · shown · selection · hovered<br/>(components/explorer.tsx)"] --> B["buildScene<br/>lib/map-scene.ts"]
+  L["LAYERS<br/>lib/layer-ids.ts"] --> B
+  B --> S["Scene: filters · feature state ·<br/>point features · ring, lines, hull, label · bounds"]
+  S --> A["applyScene(host, prev, next)<br/>components/map/apply-scene.ts"]
+  A -->|"only what changed"| M["setFilter · setFeatureState ·<br/>setData · the popup"]
+```
+
+The map draws a value, not the result of a handful of effects. `buildScene`
+takes the three lists of rows, the "auf der Karte" switches, the selection and
+the hover and returns one `Scene`: which ascents and tours the filters let
+through, the feature state of each of them, the pass and town features with
+the properties the style paints from, the hover surfaces – the ring, the wider
+lines, the reach hull and the label – and the box a fit frames. It is pure, so
+what the map shows is tested without a WebGL context (`lib/map-scene.test.ts`).
+
+`applyScene` is the only place `setFilter`, `setFeatureState` and `setData` are
+called, the sibling of `applyCamera` and the same shape: a host, a value and no
+decisions of its own. It hands MapLibre the difference between the scene it
+applied last and the one it has now, because a scene is rebuilt on every render
+and a `setData` on a source of two hundred points re-tiles it in the worker – a
+hover that changes nothing has to cost nothing, which a recording host pins
+down in `components/map/apply-scene.test.ts`. An id that leaves the scene needs
+no write: its line is filtered out, and when the filter lets it through again
+it is missing from the applied scene and written in full.
+
+One hover, therefore, for both halves of the screen. The map's pointer reports
+what it is over and paints nothing itself; the row in the list reports the same
+way, and both are answered by the same scene – which is why a town hovered in
+the list now outlines what it reaches, as one hovered on the map always did.
+The label points at the entity rather than at the pointer: a hit on an ascent
+is a hit on its pass, so it stands where the ring does, and a tour, which has
+no point of its own, is labelled at the centre of its box. On a coarse pointer
+there is no label at all – a finger that touches a mark has already tapped it,
+and a popup under it would cover what was just tapped.
+
+Every layer id lives in `LAYERS` (`lib/layer-ids.ts`): per kind the mark, the
+names beside it and the transparent hit layer, with the pass labels generated
+from the same fame ladder the style builds them from. The style, the applier,
+the pick and the e2e read that one table, so a layer renamed or a sixth fame
+level added cannot quietly stop answering the pointer.
+
 ## What answers the pointer is not what is drawn
 
 ```mermaid
 flowchart LR
   Q["pointer at x, y"] --> R["one queryRenderedFeatures<br/>over every *-hit layer"]
-  R --> G["HIT_GROUPS decides,<br/>nearest mark wins inside a group"]
+  R --> P["pick(features, at, project)<br/>lib/map-pick.ts"]
+  P --> G["HIT_GROUPS decides,<br/>nearest mark wins inside a group"]
   G --> A["1 · marks — pass dot, town dot"]
   G --> B["2 · names — the label layers"]
   G --> C["3 · lines — ascent before tour band"]
@@ -171,23 +283,42 @@ per point, a wide line per route, sized from the pointer – about 44 px on
 touch, half of that with a mouse – and never narrower than the mark plus a
 margin. A name is part of its mark: the label layers answer the pointer too.
 Because several layers answer for the same pixel, there is no handler per
-layer: `pickAt` runs one `queryRenderedFeatures` over all of them and decides
-which single entity a hover or a click means. `HIT_GROUPS` spells the priority
-out rather than taking it from the style, because the two disagree – marks
-before names before lines, and the tour band lies _under_ the ascents but
-reaches past them, so a click inside it hits both and the ascent is the more
-specific answer – and within a group the mark nearest the pointer wins. A hit
-layer needs the same filter as the layer it widens, or a hidden tour still
-answers. The hover popup is a label, not a target: it is suppressed on a coarse
-pointer and click-through everywhere (`app/globals.css`).
+layer: the map runs one `queryRenderedFeatures` over all of them and asks
+`pick` which single entity a hover or a click means. `pick` decides over plain
+records – a layer id, a slug, a point – and a `project` function, so the rule
+behind every click is tested without a map (`lib/map-pick.test.ts`).
+`HIT_GROUPS` spells the priority out rather than taking it from the style,
+because the two disagree – marks before names before lines, and the tour band
+lies _under_ the ascents but reaches past them, so a click inside it hits both
+and the ascent is the more specific answer – and within a group the mark
+nearest the pointer wins. An ascent is answered as its pass: the hit's kind
+comes from the layer that answered, and the route layers belong to a pass. A
+hit layer needs the same filter as the layer it widens, or a hidden tour still
+answers, which is why both carry the same scene field. The hover popup is a
+label, not a target: it is suppressed on a coarse pointer and click-through
+everywhere (`app/globals.css`).
 
 ## Colours and the basemap
 
 ### Colours only via tokens
 
-MapLibre cannot read CSS variables; `pass-map.tsx` reads them once via
-`getComputedStyle` (`readColors`). Add new map colours there rather than
+MapLibre cannot read CSS variables; the map reads them once via
+`getComputedStyle` (`readColors` in `components/map/app-layers.ts`, the module
+that holds every paint expression). Add new map colours there rather than
 hard-coding them.
+
+What is painted before there is a document to read – the generated basemap
+style, and the icons, the share image and the manifest in `lib/brand.ts` –
+cannot do that, so `TOKENS` in `lib/palette.ts` carries the tokens as sRGB and
+everything outside the document reads that one table. It is a copy, and a copy
+is only allowed to exist while something says when it has stopped being one:
+`bun run palette` (`scripts/check-palette.ts`, inside `bun run lint`) converts
+every `oklch()` in `app/globals.css` and fails on a difference. The two copies
+that preceded it – one in `lib/palette.ts`, one in `lib/brand.ts` – had drifted
+from the stylesheet and from each other over every token they shared, which is
+the whole argument for the check. The rest of `PALETTE` is the basemap's own
+tones (land, water, wood, roads, its labels): chosen against the tokens, not
+derived from them, and so not part of the comparison.
 
 ### The basemap is generated, and it follows the OS scheme
 
@@ -206,7 +337,7 @@ roads that matter are the app's lines, and the status and tour colours are what
 should dominate. Labels prefer `name:de`. The raster alternatives (OSM,
 OpenTopoMap, CyclOSM, Esri, satellite) stay in the layer popover; a raster base
 is one layer below the hillshade. Switching base or scheme never rebuilds the
-map: `applyBase` in `pass-map.tsx` swaps only the layers whose id starts with
+map: `applyBase` (`components/map/app-layers.ts`) swaps only the layers whose id starts with
 `base`, and a `prefers-color-scheme` change re-reads the tokens, repaints the
 icons and sets every paint property of the app's layers again from the same
 `appLayers` definition the style was built from – camera, sources, filters and
@@ -223,5 +354,6 @@ Its web worker is resolved via `import.meta.url`, which Turbopack does not
 serve, so `scripts/copy-maplibre-worker.ts` copies the worker into
 `public/maplibre` (git-ignored, runs before `dev` and `build`) and
 `pass-map.tsx` calls `setWorkerUrl`. And computed CSS custom properties come
-back as `lab()`, which MapLibre cannot parse; `toRgb` in `pass-map.tsx`
-converts them through a canvas pixel before they reach the style.
+back as `lab()`, which MapLibre cannot parse; `toRgb` in
+`components/map/app-layers.ts` converts them through a canvas pixel before they
+reach the style.

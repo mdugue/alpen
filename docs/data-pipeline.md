@@ -63,19 +63,70 @@ clone builds the whole app offline. Stage 4 is derived on every `dev` and
 the single exception to all of it: the forecast, which cannot be precomputed
 because it is about next week.
 
+### Every script has the same three steps
+
+```mermaid
+flowchart LR
+  ST["stored state, as a value<br/>read once, validated"] --> P
+  FL["flags: only · retry · upgrade"] --> P
+  P["plan(state, flags) → jobs<br/>scripts/lib/decide.ts · pure"]
+  P --> X["execute(jobs, transport)<br/>scripts/lib/pipeline.ts · scripts/lib/hosts.ts"]
+  X --> T{"Transport"}
+  T --> LIVE["live: Limiter per host,<br/>Retry-After, budget"]
+  T --> FIX["fixture: recorded answers<br/>the whole gate in bun test"]
+  X --> A["apply(state, results) → state', report<br/>scripts/lib/decide.ts · pure"]
+  A --> W["write · validated"]
+  P -.-> CD["data:check · --explain · --status · --pending<br/>views of the same plan"]
+```
+
+**Deciding, asking and storing are three separate things.** `plan` reads the
+curated data and what is already stored and says which jobs exist and what each
+one needs – which routes are missing, which rejections are worth retrying,
+which profiles are paid for, which markers hold their road's rides back. It
+asks nothing and writes nothing, so every rule in it is a table test
+(`scripts/lib/decide.test.ts`). The pipelines then execute those jobs through
+one `Transport`, and `afterGate` turns each verdict into the records that
+follow from it – including the one that used to be reachable only through a
+live run: a router's answer that fails the gate where a route is already
+stored leaves that route on the map.
+
+That executing half is `runPipeline` (`scripts/lib/pipeline.ts`), a function of
+its arguments rather than the body of a script, so the same three steps run on
+recorded answers: `scripts/pipeline.test.ts` takes two passes and a tour
+through `plan → execute → apply` against the files in `scripts/fixtures/`,
+writes the state into a temporary directory and reads it back through the
+schemas `data/generated` is validated with. `data:build` is what is left over –
+the command line, the live transport with its budgets, and the lines about the
+hosts a run talked to.
+
+Three consequences worth knowing. `data:build --status`, `data:build --pending`
+and the report a run prints are three renderings of one plan, so they cannot
+disagree about what is missing. `--only` is applied to the plan, so it filters
+every job kind and every counter rather than two of nine. And `data:check`
+calls the same `plan`: what it says about a key is what the next build will do
+with it, not a second derivation of it.
+
+Reading and writing `data/` is one pair as well. `FILES` in `lib/schema.ts`
+carries, per file, the schema, where it lives, whether it may be missing and
+how it is laid out; `readData`/`writeData` (`scripts/lib/data-files.ts`) are
+the only two functions that touch those files. Nothing is written without
+being validated first, and what a reader hands back is what the file says –
+not the copy zod rebuilt, which would come back in the schema's key order and
+reformat a file a run only meant to add one entry to.
+
 ## The stages, by command
 
-| Command                                       | Run it when                                                 | Asks                                                   | Writes                                                                                   |
-| --------------------------------------------- | ----------------------------------------------------------- | ------------------------------------------------------ | ---------------------------------------------------------------------------------------- |
-| _(edit by hand)_                              | a pass, tour or town is added or corrected                  | –                                                      | `data/*.json`                                                                            |
-| `bun run data:locate [slug…]`                 | the gate blocks a pass, or a marker looks wrong             | Overpass (or OSM map API), Open-Meteo                  | nothing, unless `--apply` moves a coordinate in `data/passes.json`                       |
-| `bun run data:build`                          | after any source-data change; resumable, skips what is done | OSM, ORS/OSRM, Open-Meteo                              | `data/generated/{summits,routes,routes-meta,rejected,profiles,climate}.json`             |
-| `bun run data:photos`                         | after adding an entity, or to refresh the slideshow         | Wikimedia Commons                                      | `data/generated/photos.json`                                                             |
-| `bun run data:check [--explain]`              | before every commit that touches data; runs in CI           | nothing – offline                                      | nothing; prints errors and warnings                                                      |
-| `bun run data:schema`                         | in the same PR as a change to `lib/schema.ts`               | nothing                                                | `data/schema/*.schema.json`                                                              |
-| `bun run scripts/analyze-coverage.ts [slug…]` | before a curation round: where is a base thin?              | Overpass, cached per base in `scripts/.cache/coverage` | nothing; prints listed roads, candidates and single-sided passes per base and reach band |
-| `bun run map:glyphs`                          | only when the font or the glyph ranges change               | the Inter release, fontnik                             | `public/map/fonts` (committed)                                                           |
-| `bun dev` / `bun run build`                   | always                                                      | nothing                                                | `public/map`, `public/detail`, `public/maplibre` (all git-ignored)                       |
+| Command                                       | Run it when                                                 | Asks                                                      | Writes                                                                                   |
+| --------------------------------------------- | ----------------------------------------------------------- | --------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
+| _(edit by hand)_                              | a pass, tour or town is added or corrected                  | –                                                         | `data/*.json`                                                                            |
+| `bun run data:locate [slug…]`                 | the gate blocks a pass, or a marker looks wrong             | Overpass (or OSM map API), Open-Meteo                     | nothing, unless `--apply` moves a coordinate in `data/passes.json`                       |
+| `bun run data:build`                          | after any source-data change; resumable, skips what is done | OSM, ORS/OSRM, Open-Meteo                                 | `data/generated/{summits,routes,routes-meta,rejected,profiles,climate}.json`             |
+| `bun run data:photos`                         | after adding an entity, or to refresh the slideshow         | Wikimedia Commons                                         | `data/generated/photos.json`                                                             |
+| `bun run data:check [--explain]`              | before every commit that touches data; runs in CI           | nothing – offline                                         | nothing; prints errors and warnings                                                      |
+| `bun run data:schema`                         | in the same PR as a change to `lib/schema.ts`               | nothing                                                   | `data/schema/*.schema.json`                                                              |
+| `bun run scripts/analyze-coverage.ts [slug…]` | before a curation round: where is a base thin?              | Overpass, recorded per query in `scripts/.cache/coverage` | nothing; prints listed roads, candidates and single-sided passes per base and reach band |
+| `bun run map:glyphs`                          | only when the font or the glyph ranges change               | the Inter release, fontnik                                | `public/map/fonts` (committed)                                                           |
+| `bun dev` / `bun run build`                   | always                                                      | nothing                                                   | `public/map`, `public/detail`, `public/maplibre` (all git-ignored)                       |
 
 The coverage report is how a candidate becomes an entry: it asks Overpass for
 every `mountain_pass` and `natural=saddle` node within `REACH_MAX_KM` of a base
@@ -86,17 +137,39 @@ entry with its four scales, its season and its note, runs `data:locate` on the
 point and `data:build` on the rest – nothing is imported. The second run is
 offline: the answers are cached, `--refresh` asks again.
 
-Three flags of `data:build` matter often enough to name here: `--status` counts
-the backlog and what it costs in Open-Meteo calls, `--retry-rejected` asks
-again for everything the gate refused, and `--upgrade-osrm` re-routes the
-car-profile routes once an `ORS_KEY` is available. `scripts/backfill.sh`
-(`bun run data:backfill`) simply runs `data:build` in hourly batches until
-nothing is missing.
+Four flags of `data:build` matter often enough to name here: `--status` counts
+the backlog and what it costs in Open-Meteo calls, `--only <text>` restricts
+the whole run – and every counter with it – to the keys containing that text,
+`--retry-rejected` asks again for everything the gate refused (see
+[the retry rule](#the-retry-rule): normally nothing has to), and
+`--upgrade-osrm` re-routes the car-profile routes once an `ORS_KEY` is
+available. `scripts/backfill.sh` (`bun run data:backfill`) simply runs
+`data:build` in hourly batches until nothing is missing.
 
 ## Where the facts come from
 
 Every host in stage 2, what it is good at, and what it cannot do. Nothing here
 is asked at runtime.
+
+Every request a script makes goes through one seam. `scripts/lib/hosts.ts`
+holds one function per question – `ors.route`, `osrm.route`,
+`openMeteo.elevation`, `openMeteo.archive`, `overpass.query`, `osmMap.bbox`,
+`commons.geosearch`, `commons.search`, `commons.thumbnail`, `github.release` –
+and each composes its URL, names the weight the host bills and parses the
+answer with a zod schema, so a host's address and its answer shape exist in
+that file and nowhere else – the shapes the pure modules measure and rank on
+are inferred from those schemas. A row of an answer that cannot be read is
+skipped rather than taken for the whole answer: a relation among the OSM nodes
+and ways, a Commons file whose image info has no size. The function takes a
+`Transport` (`scripts/lib/transport.ts`): the live one keeps a pacer per host
+from the `HOSTS` table – the gap, the Open-Meteo budget, `Retry-After`, the
+words that say a quota is spent – and is the only `fetch` under `scripts/`;
+the fixture one answers from recorded files (`<dir>/<host>/<hash>.json`, keyed
+by method, URL and body), and is both the coverage report's cache and what
+runs the whole gate offline in `bun test` (`RECORD_FIXTURES=1` refreshes those
+answers from the hosts in one run).
+`scripts/lib/osm.ts` sits on the same seam and decides between Overpass and
+the map API.
 
 | Source                                        | Abbreviation                                                                                                                    | Answers                                                             | Format                     | Key / limit                                     | Strong at                                                                                          | Weak at                                                                                                                           |
 | --------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------- | -------------------------- | ----------------------------------------------- | -------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
@@ -143,6 +216,14 @@ costs an API call, and derived when producing it costs only CPU. That is why
 `routes.json` is in the repository and the simplified GeoJSON next to it is
 not.
 
+The four rows under `public/` whose name carries a content hash follow one rule,
+written down once in `lib/derived-file.ts`: the name is the stem, eight hex
+digits of the SHA-256 of the body and the extension. The same value carries the
+pattern the build script prunes by and the path rule `next.config.ts` caches for
+a year, because the three have to describe the same set of names – a header that
+promises immutability to a name the pruner may replace is a stale file nobody
+can clear.
+
 ## The life of one ascent
 
 An ascent is one entry in a pass's `ascents` array, and it travels through the
@@ -173,8 +254,12 @@ stateDiagram-v2
   Stored --> Pending: it is an OSRM route<br/>and --upgrade-osrm runs
 ```
 
-Two of those arrows are the ones that are easy to get wrong, so they are worth
-saying in words:
+### The retry rule
+
+Two of those arrows are the ones that are easy to get wrong, and this is the
+one place they are written down – the skill, [`data-model.md`](./data-model.md)
+and `scripts/backfill.sh` point here rather than paraphrasing, because a rule
+told five times is a rule that will be told wrong once.
 
 - **A route is pending when its question changed, not only when it is
   missing.** `meta.inputs` hashes what the route was fetched _for_ – the
@@ -185,6 +270,12 @@ saying in words:
   changed, or its stored metrics would pass today's limits (because a limit
   moved or an `ascent.check` was added). Otherwise the router would give the
   same answer and the run would only rewrite a timestamp.
+
+Both follow from the same idea: a request is worth making when its answer could
+be different. So **fixing a coordinate needs nothing but `bun run data:build`**
+– the retry happens by itself. `--retry-rejected` is for the one case the rule
+cannot see, the router's own map data having moved, and it is the only reason
+to reach for it.
 
 A tour (`tour:<slug>`) runs through the same states, measured against the tour
 limits instead of the ascent limits, and earns no elevation profile. A pass's
@@ -219,16 +310,16 @@ keeps 201 passes inside the free tier is in
 
 ## Where to look when something is wrong
 
-| Symptom                                          | Look at                                                                                          |
-| ------------------------------------------------ | ------------------------------------------------------------------------------------------------ |
-| A pass has no line on the map                    | `rejected.json` for its key, then `bun run data:check --explain`                                 |
-| `data:check` errors on a stored route            | the route was hand-edited or a limit moved; re-measure with `--explain`, then `--retry-rejected` |
-| Every ascent of one pass is missing              | the summit gate: `summits.json`, then `bun run data:locate <slug>`                               |
-| A route looks like a car detour                  | `routes-meta.json` says `osrm`; re-run with `ORS_KEY` and `--upgrade-osrm`                       |
-| Profiles are missing after a successful run      | the Open-Meteo budget ran out – `--status`, then run again or use `data:backfill`                |
-| The climate chart is empty for a new pass        | `climate.json` has no entry yet; one run costs ~261 calls                                        |
-| A photo is wrong or missing                      | `bun run data:photos --only <slug> --refresh`                                                    |
-| The map draws nothing at all after a fresh clone | `public/map` is git-ignored; `bun dev` regenerates it                                            |
+| Symptom                                          | Look at                                                                                    |
+| ------------------------------------------------ | ------------------------------------------------------------------------------------------ |
+| A pass has no line on the map                    | `rejected.json` for its key, then `bun run data:check --explain`                           |
+| `data:check` errors on a stored route            | the route was hand-edited or a limit moved; re-measure with `--explain`, then `data:build` |
+| Every ascent of one pass is missing              | the summit gate: `summits.json`, then `bun run data:locate <slug>`                         |
+| A route looks like a car detour                  | `routes-meta.json` says `osrm`; re-run with `ORS_KEY` and `--upgrade-osrm`                 |
+| Profiles are missing after a successful run      | the Open-Meteo budget ran out – `--status`, then run again or use `data:backfill`          |
+| The climate chart is empty for a new pass        | `climate.json` has no entry yet; one run costs ~261 calls                                  |
+| A photo is wrong or missing                      | `bun run data:photos --only <slug> --refresh`                                              |
+| The map draws nothing at all after a fresh clone | `public/map` is git-ignored; `bun dev` regenerates it                                      |
 
 ## Glossary
 

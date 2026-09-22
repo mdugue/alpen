@@ -1,7 +1,12 @@
 # 33 · Functional core, imperative shell
 
-**Status:** proposed · **Effort:** M (the closing steps; the substance is
-delivered by 28–32) · **Depends on:** 28, 29, 30, 31, 32 · **Unblocks:** 02
+**Status:** done ([#62](https://github.com/mdugue/alpen/pull/62)) – the seam
+rules, `Explorer` as composition, the e2e as smoke, plan 02 re-read and the
+documentation. Two of the four size ceilings and one of the two effect
+counts are still missed; what is missed and by how much is at the foot of
+"The invariants" below · **Effort:** M (the closing steps; the substance is
+delivered by 28–32) · **Depends on:** 28, 29, 30, 31, 32 (all six phases)
+· **Unblocks:** 02
 (the router is an adapter swap), roadmap 1 (the official closure status is
 a scene input, a reducer case and a pipeline job, no effect touched), 12,
 24, 27 (each arrives as data through the same core)
@@ -107,8 +112,8 @@ flowchart LR
    the weather route only. Checks: the greps in plans 28-31.
 4. **The core carries the tests.** `bun test` covers the reducer, the
    machine, the scene, the pick, the model and the pipeline; the e2e is at
-   most ten scenarios with default timeouts, no monkey-patching, and reads
-   nothing off `window.__alpen` but the map handle.
+   most ten scenarios with a timeout measured rather than guessed, no
+   monkey-patching, and reads nothing off `window.__alpen` but the map handle.
 5. **The litmus test.** A new feature enters as data: the official closure
    status (roadmap 1) is one pipeline job kind, one field on the row, one
    scene input and one reducer case, and it needs no effect edited. The plan
@@ -118,6 +123,44 @@ Sizes are smells, not rules, but they are recorded: `pass-map.tsx` at most
 700 lines (from 1 986), `explorer.tsx` at most 350 (from 691),
 `detail-panel.tsx` at most 120 as the shell (from 1 115), `build-data.ts`
 at most 400 (from 1 344).
+
+#### What the plan missed, measured
+
+Two of the four sizes and one of the two effect counts are over. The numbers
+are here rather than only in the PR, because a ceiling nobody can see is a
+ceiling nobody keeps.
+
+| What                                | Ceiling | Was   | Is  | Over by |
+| ----------------------------------- | ------- | ----- | --- | ------- |
+| `components/map/pass-map.tsx`       | 700     | 1 986 | 909 | 209     |
+| `components/panel/detail-panel.tsx` | 120     | 1 115 | 235 | 115     |
+| `components/explorer.tsx`           | 350     | 691   | 257 | –       |
+| `scripts/build-data.ts`             | 400     | 1 344 | 205 | –       |
+| effects in `pass-map.tsx`           | 6       | 17    | 12  | 6       |
+| effects in `explorer.tsx`           | 2       | 3     | 0   | –       |
+
+The map is still what both misses are about, and both got closer after the
+first reading of this table. The five effects that pushed the base map, the
+overlays, the colour scheme, the 3D switch and the corner controls into
+MapLibre are one `MapEnvironment` and one `applyEnvironment` beside
+`applyScene` and `applyCamera`, which is what took the file to 909 lines and
+the effects to twelve. Each of the twelve hands one value to an adapter,
+which is the invariant above; what the ceiling of six wanted is fewer
+_inputs_, and plan 29 deliberately chose one effect per camera input instead
+("five prop changes, five events"). What is left of the gap is the map's own
+setup and its tools popover, and that is a plan of its own rather than a line
+to squeeze into this one. The panel's head and bar left for their own files;
+its remainder is the weather block and the shell's own wiring.
+
+The e2e timeout is the third criterion that had to give. "Default timeouts"
+was written before anyone timed the scenarios, and Bun's default is 5 s: on
+the CI runner the ten take between 0.8 s and 6.3 s, so two of them would
+never have passed under it. The scenarios drive a real Chromium over a real
+build, and that is what they are for. What was wrong was the 90 s the file
+carried instead – fourteen times the slowest, which is not a timeout but a
+suite that hangs for a minute and a half before it says so. It is 20 s now,
+about three times the slowest measured scenario: enough headroom for a cold
+runner, little enough that a hang is reported while anyone is still watching.
 
 ### What each plan delivers to the core
 
@@ -136,11 +179,15 @@ at most 400 (from 1 344).
    entry saying which world it touches.
 2. **`Explorer` as composition.** Whatever the five plans left: the context
    or the props decided once, no derived state, no import from
-   `components/sidebar/` or `components/map/` for a domain value.
+   `components/sidebar/` or `components/map/` for a domain value. Plan 28 got
+   it from 691 lines to 500 and left the rest here: the shell's layout – the
+   header, the season card, the two floating panels and the two drawers – is
+   a component of its own, and `Explorer` is then the composition its name
+   claims.
 3. **The e2e as smoke.** Delete scenarios the core tests now cover; keep
    load, a selection on desktop and phone, a shared link, the filters, dark
-   mode, and the closure of the detail; default timeouts; `window.__alpen`
-   reduced to the handle.
+   mode, and the closure of the detail; the timeout cut to what the
+   scenarios measure; `window.__alpen` reduced to the handle.
 4. **Plan 02 re-read.** Its design section says the router replaces the
    hash adapter of plan 28 and emits the same actions; nothing else in it
    changes.

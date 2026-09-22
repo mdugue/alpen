@@ -8,6 +8,99 @@ Where the data in those files comes from is
 [`data-pipeline.md`](./data-pipeline.md); what it means is
 [`data-model.md`](./data-model.md).
 
+## Functional core, imperative shell
+
+**Decisions are values; effects apply them.** The app is four pure modules
+behind four adapters, and the pipeline is the same shape one layer down. A
+decision is a function of its arguments, so it has a table test; an effect
+takes the value that function produced and hands it to the platform, so it has
+nothing left to decide.
+
+```mermaid
+flowchart LR
+  subgraph ADAPT["adapters · imperative shell"]
+    HA["hash adapter<br/>parseHash → action · state → hash"]
+    SA["storage adapter<br/>STORAGE table · useSyncExternalStore"]
+    MA["MapLibre adapter<br/>applyScene · applyCamera · events → actions"]
+    FA["fetch adapter<br/>useDetailState fetcher · weather"]
+  end
+  subgraph CORE["functional core · lib/ · bun test"]
+    R["reduce(state, action)"]
+    C["camera(state, event)<br/>→ [state, commands]"]
+    S["buildScene(input)<br/>· pick"]
+    D["detailModel(selection, data, state)"]
+  end
+  HA --> R
+  SA --> R
+  R --> C
+  R --> S
+  R --> D
+  C --> MA
+  S --> MA
+  MA -- "moveend · hover · click" --> R
+  FA --> D
+  D --> V["three thin renderers"]
+  subgraph PIPE["pipeline · scripts/"]
+    P["plan(state, flags)"] --> X["execute(jobs, transport)"] --> A["apply(state, results)"]
+    X --> T["live · fixture"]
+  end
+```
+
+### The five invariants
+
+1. **`lib/` is pure.** No module under `lib/` reads `window`, `document`,
+   `location`, `localStorage`, `sessionStorage`, `fetch`, `matchMedia`,
+   `navigator`, `history` or the two DOM observers, and none imports
+   `maplibre-gl` for anything but its types – except the adapters below.
+   Checked by `no-restricted-globals` and `no-restricted-imports` over
+   `lib/**` in `oxlint.config.ts`. Each adapter gets the rule again rather
+   than switched off – minus the globals it owns, with a comment saying which
+   world it is a window onto – so an adapter is still held to every world it
+   is not.
+2. **Every effect applies a value.** A `useEffect` under `components/` calls
+   an adapter with a value the core produced; it does not branch on state to
+   decide what to call. The map's effects are one per input – the build, the
+   scene, the five camera events, the four the environment changes – and a
+   reviewer can name what each one applies.
+3. **One transport per world.** The hash is read and written in one file,
+   `alpenpaesse:` is spelled in one table, the MapLibre calls that move the
+   camera or swap its data live in the two appliers, and the ones that change
+   the style – layers, terrain, the icon atlas – live where those layers are
+   defined (`components/map/app-layers.ts`) and in the map's own setup. Checked
+   by `scripts/check-seams.ts`, which runs inside `bun run lint` and therefore
+   in CI; its `SEAMS` table carries the reason per owner.
+4. **The core carries the tests.** `bun test` covers the reducer, the camera
+   machine, the scene, the pick, the detail model and the offline pipeline.
+   The e2e suite is ten scenarios of smoke: one timeout for the suite, none
+   per scenario, no monkey-patching, and nothing read off `window.__alpen` but
+   the map handle.
+5. **A new feature enters as data.** The official closure status
+   ([`roadmap.md`](./roadmap.md) §1) is one pipeline job kind, one field on
+   the row, one scene input and one reducer case, and it needs no effect
+   edited. That is the test of whether the seams are real.
+
+### The four adapters, and the three hooks beside them
+
+| Adapter                                                      | World                                                   |
+| ------------------------------------------------------------ | ------------------------------------------------------- |
+| `lib/hash-adapter.ts` (`useHashAdapter`, `cameraIntent`)     | `location.hash` in as `load`, the state out as the hash |
+| `lib/use-stored.ts` (`useStorageAdapter`, `readStoredState`) | `localStorage` and `sessionStorage`, behind `STORAGE`   |
+| `components/map/apply-scene.ts`, `apply-camera.ts`           | MapLibre: the scene's difference, the camera's commands |
+| `lib/use-fetch.ts` (through `lib/detail-state.ts`)           | `fetch`, as the three answers a request can give        |
+
+Three more hooks touch the platform and are on the same allow-list, because
+they read it rather than decide anything with it: `lib/use-media-query.ts`
+(`matchMedia` and the viewport height, including the map's whole environment
+as one value), `lib/use-height.ts` (a `ResizeObserver` on the shell's two
+bars) and `lib/use-roving.ts` (a `MutationObserver` and focus, turning a list
+into one tab stop). Every entry needs its comment and its reason; when the
+list passes eight, review it rather than extending it.
+
+The core is four functions with names, not a framework: the reducer is a
+switch, the camera is a switch, the scene and the model are functions. The
+moment a generic dispatcher, a middleware chain or a "store" abstraction
+appears, this has failed in the other direction.
+
 ## What travels as props, and what does not
 
 Four transports, and the rule is what reads the data: the sidebar reads
@@ -16,7 +109,7 @@ entity at a time, so its data is a file.
 
 ```mermaid
 flowchart LR
-  D["data/*.json<br/>data/generated/*.json"] --> P["lib/data.ts · use cache"]
+  D["data/*.json<br/>data/generated/*.json"] --> P["lib/data.ts"]
   D --> MA["build-map-assets.ts"]
   D --> DA["build-detail-assets.ts"]
   P -->|"React payload: names, ratings,<br/>seasons, climate, asset URLs"| B["Browser"]
@@ -35,16 +128,26 @@ GeoJSON per kind into `public/map` (git-ignored, cached immutably via
 and per pass – what a selection is framed into, and the one thing a camera
 cannot wait for a fetch to learn (10 KB for all 201 passes, four rounded
 numbers each); MapLibre fetches the files and tiles them in its worker.
-`pass-map.tsx` never calls `setData` on the `routes` and `tours` sources: which
-lines show is a layer filter (which also keeps hidden lines out of
-hit-testing), status and selection are feature state. MapLibre keeps that state
+Nothing ever calls `setData` on the `routes` and `tours` sources: which lines
+show is a layer filter (which also keeps hidden lines out of hit-testing),
+status, hover and selection are feature state – both of them scene fields
+(`lib/map-scene.ts`), applied by `applyScene`. MapLibre keeps that state
 per source and applies it to tiles as they load, so it is set as soon as the
 style is parsed (`style.load`) and needs no re-application when the file
 arrives. Points (passes, towns) stay in-memory sources, because their symbol
-layers need real properties. Anything else the client used to read from the
+layers need real properties; the lines carry only what addresses them, since
+what the hover label says is looked up from the entity rather than read off a
+rendered feature. Anything else the client used to read from the
 geometry is precomputed on the server: tours within reach of an entity
 (`lib/nearby.ts`) and the road coordinate of every profile sample
 (`ProfileWithCoords`).
+
+Both this file and the per-entity detail files below are named by
+`lib/derived-file.ts`, which owns the content hash, the name it produces, the
+pattern that prunes last build's names and the source `next.config.ts` caches
+for a year. The three have to agree or the app serves a stale file forever,
+so they are one definition with one test rather than three spellings that
+happen to match today.
 
 ### Neither does what only one entity's panel reads
 
@@ -70,9 +173,22 @@ would mean a filter counting wrong for a moment (see
 
 ### Cache Components
 
-`"use cache"` sits on the data functions and on `app/page.tsx`. Introducing
-`cookies()`, `headers()` or `searchParams` breaks prerendering – put such
-things in a separate dynamic child component inside `<Suspense>` instead.
+`"use cache"` sits on `app/page.tsx`, and that is the only place it sits.
+Everything the page shows comes from JSON imported at build time, so
+`lib/data.ts` is plain synchronous code: the page's own cache entry covers the
+derivations it runs – the asset URLs, the reachable tours, the town hulls, the
+graded year of every pass – and they are run once, at prerender. The getters
+used to carry a `"use cache"` each. None of them had a lifetime, a tag or a
+second caller, so the only thing the extra entries bought was a second copy of
+the same values in the cache store; `next build` reports `○ /` either way.
+(The weather route is the other cached thing, and it is cached for a reason of
+its own: an upstream call per pass per hour. See below.)
+
+A `"use cache"` function has to be `async` even where it awaits nothing, which
+is why `app/page.tsx` is async and carries the one `require-await` exception in
+`oxlint.config.ts`. Introducing `cookies()`, `headers()` or `searchParams`
+breaks prerendering – put such things in a separate dynamic child component
+inside `<Suspense>` instead.
 
 ### React Compiler is on
 
@@ -80,14 +196,18 @@ No manual `useMemo`/`useCallback` for optimisation; oxlint ports the whole
 React Compiler rule set under `react/*` (`set-state-in-effect`, `purity`,
 `immutability`, `refs`, `preserve-manual-memoization`, …) and every one of them
 is an error. `setState` in an effect is needed in exactly one documented place
-(hash initialisation in `explorer.tsx`).
+(`useHashAdapter` in `lib/hash-adapter.ts`, which dispatches the `load` action
+from a layout effect after hydration).
 
 ### Site metadata is generated, never committed as a binary
 
 Icons, the share image, the manifest, `robots.txt` and `sitemap.xml` are Next
 metadata routes under `app/`, prerendered at build time. Everything they need –
-name, claim, base URL, the sRGB palette and the mark geometry – lives in
+name, claim, base URL, the colours and the mark geometry – lives in
 `lib/brand.ts`, because neither Satori nor a manifest can read CSS variables;
+its colours are the tokens of `TOKENS` (`lib/palette.ts`), the one sRGB mirror
+of `app/globals.css`, which `bun run palette` holds against the stylesheet
+(see ["Colours only via tokens"](./map-rendering.md#colours-only-via-tokens)).
 `lib/mark.tsx` paints that geometry as the badge the favicon, the touch icon
 and the share image all share. Change those two, not the routes. The badge is
 monochrome and has its own small grey scale rather than the UI tokens: it is
@@ -111,8 +231,12 @@ thrown forecast is not cached, so a rate limit or an outage would arrive
 undamped, and a module-level cooldown bounds what one warm instance will ask.
 That cooldown sits _inside_ the cached function, where a cache hit never
 reaches it – one failing pass must not blank the weather of the other 200 – and
-it is armed at the failed fetch rather than in the handler, or it would re-arm
-on its own rejection and never end. It cannot be helped along at the edge:
+it is armed wherever the host fails it – the fetch, the status, an answer this
+route cannot read – rather than in the handler, or it would re-arm on its own
+rejection and never end. What Open-Meteo has no value for is a `null`, and it
+stays one cell wide: `WeatherDay` takes a null measurement and the panel prints
+a dash for it, because a week with one empty snowfall is still a forecast and
+losing all seven days over it is not a trade anybody would make. It cannot be helped along at the edge:
 Vercel's CDN stores only 200, 404, 410 and the redirects, so a `Cache-Control`
 on a 502 is inert, and dressing a failure as a 200 to make it cacheable is not
 worth the lie. The 404 for an unknown slug _is_ cacheable and says so. The same

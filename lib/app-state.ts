@@ -1,16 +1,6 @@
-"use client";
-import {
-  createLoader,
-  createParser,
-  createSerializer,
-  parseAsString,
-  parseAsStringLiteral,
-} from "nuqs";
-import { useCallback, useSyncExternalStore } from "react";
-
-import { ROAD_TAGS, ROAD_TYPES } from "@/lib/regions";
-import { isPeriod, STATUS_ORDER } from "@/lib/status";
-import type { Period, RoadTag, RoadType, Status } from "@/lib/types";
+import { ROAD_TYPES } from "@/lib/regions";
+import { STATUS_ORDER } from "@/lib/status";
+import type { LatLon, Period, RoadTag, RoadType, Status } from "@/lib/types";
 
 export type EntityKind = "pass" | "tour" | "town";
 export interface Selection {
@@ -31,8 +21,17 @@ export const ALL_TYPES: RoadType[] = [...ROAD_TYPES];
 /** Stable empty snapshot for the tag filter (`Filters.tags`). */
 export const NO_TAGS: RoadTag[] = [];
 export const ALL_KINDS: EntityKind[] = ["pass", "tour", "town"];
-/** Stable initial values for array-valued stored keys (useSyncExternalStore needs stable snapshots). */
-export const NO_SLUGS: string[] = [];
+/**
+ * What each kind is called, beside the vocabulary it labels rather than beside
+ * the tab row that draws it – the season bar names the current list too, and
+ * `STATUS_LABEL` sits next to `STATUS_ORDER` for the same reason. "Straßen"
+ * rather than "Pässe": the list holds spurs and valley roads as well.
+ */
+export const KIND_LABEL: Record<EntityKind, string> = {
+  pass: "Straßen",
+  tour: "Touren",
+  town: "Orte",
+};
 
 export const PASS_SORTS = [
   "elevation",
@@ -244,7 +243,7 @@ export interface Filters {
 
 /**
  * The period here is only a placeholder: the page is handed today's half-month
- * by the server and the visitor's own choice wins over both (see `Explorer`).
+ * by the server and the visitor's own choice wins over both (`load` below).
  */
 export const DEFAULT_FILTERS: Filters = {
   difficulty: [RATING_MIN, RATING_MAX],
@@ -262,25 +261,6 @@ export const DEFAULT_FILTERS: Filters = {
   tags: NO_TAGS,
   types: ALL_TYPES,
 };
-
-/** How many of the pass criteria are active – the badge on the filter trigger. */
-export const countCriteria = (f: Filters) =>
-  (f.minFame > 1 ? 1 : 0) +
-  (f.minElevation > 0 ? 1 : 0) +
-  (f.difficulty[0] > RATING_MIN || f.difficulty[1] < RATING_MAX ? 1 : 0) +
-  (f.maxTraffic < RATING_MAX ? 1 : 0) +
-  (f.minBeauty > RATING_MIN ? 1 : 0) +
-  (f.maxValleyTmax < HEAT_NONE ? 1 : 0) +
-  (f.maxWetDays < WET_NONE ? 1 : 0) +
-  (f.types.length === ALL_TYPES.length ? 0 : 1) +
-  (f.tags.length > 0 ? 1 : 0);
-
-/** True when any filter apart from the period and the sort is active. */
-export const hasActiveFilters = (f: Filters) =>
-  f.status.length !== ALL_STATUS.length ||
-  countCriteria(f) > 0 ||
-  f.query.trim() !== "" ||
-  f.favoritesOnly;
 
 export interface MapView {
   lat: number;
@@ -306,388 +286,428 @@ export const defined = <T extends object>(o: T): Partial<T> =>
     ),
   ) as Partial<T>;
 
+// ── What the map shows ───────────────────────────────────────────────────────
+
+/**
+ * The "auf der Karte" switches: passes and towns as one bit each, tours as the
+ * hidden ones – so a tour added to the data is on the map until somebody turns
+ * it off. Not a filter: what the list shows for a kind is what the map draws
+ * for that kind, and this only adds a layer toggle on top of it.
+ */
+export interface Shown {
+  passes: boolean;
+  towns: boolean;
+  hiddenTours: string[];
+}
+
+export const ALL_SHOWN: Shown = {
+  hiddenTours: [],
+  passes: true,
+  towns: true,
+};
+
+/** The switch of a kind that has one. */
+const SWITCH = { pass: "passes", town: "towns" } as const;
+
+export const isShown = (shown: Shown, kind: EntityKind, slug: string) =>
+  kind === "tour" ? !shown.hiddenTours.includes(slug) : shown[SWITCH[kind]];
+
+/**
+ * How many of `total` tours the map draws – the n/m beside the master switch,
+ * and "all of them" is what that switch is on for. Counted from the hidden
+ * ones rather than from the slugs, because `reconcileShown` has already
+ * dropped whatever left the data.
+ */
+export const shownTourCount = (shown: Shown, total: number) =>
+  total - shown.hiddenTours.length;
+
+/**
+ * Drops hidden slugs that left `data/tours.json`. Without it a stale slug in
+ * storage kept the master switch reading "off" while every tour was drawn.
+ */
+export const reconcileShown = (
+  shown: Shown,
+  tourSlugs: readonly string[],
+): Shown => {
+  const hiddenTours = shown.hiddenTours.filter((s) => tourSlugs.includes(s));
+  return hiddenTours.length === shown.hiddenTours.length
+    ? shown
+    : { ...shown, hiddenTours };
+};
+
+/** Selecting something makes it visible: nobody asks for a detail of what is hidden. */
+const reveal = (shown: Shown, sel: Selection): Shown => {
+  if (isShown(shown, sel.kind, sel.slug)) return shown;
+  return sel.kind === "tour"
+    ? { ...shown, hiddenTours: shown.hiddenTours.filter((s) => s !== sel.slug) }
+    : { ...shown, [SWITCH[sel.kind]]: true };
+};
+
+// ── The phone's two sheets ───────────────────────────────────────────────────
+
+/**
+ * The two bottom sheets on phones, and where each rests.
+ *
+ * Two drawers again, but not the two it started with. The first version kept
+ * the list drawer on screen *always*, resting on a peek row – so a detail
+ * always had a second, useless drawer behind it, and the map was never free of
+ * furniture. Collapsing both into one sheet fixed the overlap and lost the
+ * separation. This keeps both: neither drawer exists until it is asked for.
+ *
+ * No drawer covers the map at rest. The season bar's "Liste" button opens the
+ * list; the list is dismissed by a swipe and is gone again. A selection opens
+ * the detail drawer over whatever is there – over the list when the tap came
+ * from a row, over the bare map when it came from the map itself – and
+ * dismissing it uncovers exactly what was underneath. That is the model the
+ * two drawers were always trying to express, and it only works because the
+ * one behind is there by choice.
+ */
+export const LIST_SNAPS = [0.5, 0.92] as const;
+export const DETAIL_SNAPS = [0.55, 0.92] as const;
+const [LIST_HALF, LIST_FULL] = LIST_SNAPS;
+const [DETAIL_HALF, DETAIL_FULL] = DETAIL_SNAPS;
+
+export interface SheetState {
+  /** The list drawer exists only while it is wanted. */
+  list: { open: boolean; snap: number };
+  /**
+   * Whether the filter panel inside the list is unfolded, `null` while nobody
+   * has said. Here rather than in the sidebar because the phone's "Filter"
+   * button opens the list and the panel in one press.
+   */
+  filters: boolean | null;
+  detail: {
+    snap: number;
+    /**
+     * Whether the detail drawer belongs *inside* the list drawer – which is
+     * how Base UI is told to stack the two, the list scaling back and peeking
+     * above the detail in front of it.
+     *
+     * It is decided when the selection is made and then left alone: what is
+     * underneath a detail is where it was opened from, and that does not
+     * change while it is open. Moving a mounted drawer from one tree to the
+     * other would remount it anyway.
+     */
+    nested: boolean;
+  };
+}
+
+const SHEETS_AT_REST: SheetState = {
+  detail: { nested: false, snap: DETAIL_HALF },
+  filters: null,
+  list: { open: false, snap: LIST_HALF },
+};
+
+// ── The app state ────────────────────────────────────────────────────────────
+
+export interface AppState {
+  /**
+   * Whether `load` has run: what the hash and the storage said has been read
+   * in. Until then nothing is written back to either – the first commit holds
+   * the defaults, and writing those would overwrite a shared link or the last
+   * visit's settings before they have been read.
+   */
+  loaded: boolean;
+  /**
+   * What is selected. The panel opens with the tap, not with the camera's
+   * arrival: selecting something is an answer about that thing, and the map's
+   * flight is the slower, secondary half of it. The panel, the map's layers
+   * and feature state, the highlighted row and the URL hash all follow this
+   * value in the same frame, and the camera sets off once the panel is on
+   * screen (`SELECT_DELAY` in `pass-map.tsx`). That order is what keeps the
+   * two out of each other's frames – drawing the panel *into* a flight cost
+   * that flight about a third of its frame rate on a phone-sized viewport –
+   * and it is the honest one: the expensive thing is what was asked for, the
+   * flight is not.
+   */
+  selection: Selection | null;
+  /**
+   * What the sheet keeps showing while it slides away; without it the sheet
+   * would empty out the moment the selection is cleared.
+   */
+  last: Selection | null;
+  /** Which of the three lists is on screen. */
+  tab: EntityKind;
+  /**
+   * What the pointer is over – wherever the pointer happens to be. The list
+   * and the map are two halves of one screen showing the same entities, and
+   * one piece of state shared by both is what lets a row ring its mark and a
+   * mark tint its row. It deliberately lives *next to* the selection rather
+   * than inside it, because hovering must never move the camera, write the
+   * hash or open a panel.
+   *
+   * It is not persisted and not in the hash: it describes a pointer, and a
+   * pointer is not part of a shared link.
+   */
+  hovered: Selection | null;
+  /** Where the elevation-profile cursor sits on the road; the map draws it. */
+  profileCursor: LatLon | null;
+  /**
+   * The fly-to a click on the elevation profile asked for; the map flies to it.
+   *
+   * Its sibling above, and here for the same reason: what the explorer decides
+   * is one reducer, and a `useState` beside it would be a second one. A fresh
+   * point per click, so the same spot can be asked for twice – which is also
+   * why it is never compared by value. Ephemeral like the hover: not
+   * persisted, not in the hash, and cleared with the selection it belongs to,
+   * because a profile point is a point on *that* entity's road.
+   */
+  profileZoom: LatLon | null;
+  filters: Filters;
+  /**
+   * The visitor's own last choice of half-month, and the only thing the
+   * period preference is written from: `filters.period` is what is applied,
+   * and a half-month from a shared link lands there without becoming the
+   * visitor's own.
+   */
+  ownPeriod: Period | null;
+  view: MapView;
+  /** Camera from a hash pasted into an open page; the map applies it once. */
+  requestedView: MapView | null;
+  shown: Shown;
+  sheet: SheetState;
+}
+
+/** The persisted slices, as the storage adapter reads them (`lib/use-stored.ts`). */
+export interface StoredState {
+  period?: Period | null;
+  shown?: Shown;
+  tab?: EntityKind;
+}
+
+/**
+ * What a shared link can carry: a shape over the three values above, which is
+ * why it is declared here rather than beside the parser. `lib/hash.ts` reads
+ * this module's vocabulary – the option ladders a hash value is validated
+ * against, the defaults it falls back to – so the dependency runs one way and
+ * the two modules do not import each other.
+ */
 export interface HashState {
   filters: Partial<Filters>;
   selection: Selection | null;
   view: Partial<MapView>;
 }
 
-// ── The URL hash ─────────────────────────────────────────────────────────────
-//
-// View state lives in the URL hash (shareable), bookmarks and map settings in
-// localStorage (private, per device). The page stays static, so the state
-// goes into the hash rather than the query string; nuqs only lends its
-// parsers here, no router adapter is involved.
-//
-//   t     half-month, 1 … 12.5             z     zoom
-//   c     centre "lat,lon"                 pi,b  pitch and bearing (only when tilted)
-//   s     statuses "open,risky"        q     search text
-//   f     min. fame                        m     min. elevation in m
-//   d     difficulty window "2-4"          v     max. traffic
-//   be    min. beauty                      o     pass sort key
-//   h     max. valley heat in °C           w     max. rain days of 15
-//   a     road types "pass,spur"           e     road labels "toll,carfree"
-//   pass | tour | town   the selected entity's slug
-//
-// Every key is validated on the way in: unknown values fall back to the
-// default rather than reaching the state.
+export const EMPTY_HASH: HashState = { filters: {}, selection: null, view: {} };
 
-const parseAsPeriod = createParser<Period>({
-  parse: (v) => {
-    const n = Number(v);
-    return isPeriod(n) ? n : null;
-  },
-  serialize: String,
-});
-const parseAsFixed = (digits: number) =>
-  createParser<number>({
-    parse: (v) => {
-      const n = Number(v);
-      return Number.isFinite(n) ? n : null;
-    },
-    serialize: (n) => n.toFixed(digits),
-  });
-/** Both halves have to be numbers; half a pair is no camera at all. */
-const parseAsCenter = createParser<[lat: number, lon: number]>({
-  parse: (v) => {
-    const pair = v.split(",").map(Number);
-    return pair.length === 2 && pair.every((n) => Number.isFinite(n))
-      ? (pair as [number, number])
-      : null;
-  },
-  serialize: ([lat, lon]) => `${lat.toFixed(4)},${lon.toFixed(4)}`,
-});
+export type Action =
+  /** The world read in: on hydration, and again on every `hashchange`. */
+  | { type: "load"; hash: HashState; stored: StoredState }
+  | { type: "select"; selection: Selection }
+  | { type: "back" }
+  | { type: "hover"; selection: Selection | null }
+  | { type: "profileCursor"; at: LatLon | null }
+  | { type: "profileZoom"; at: LatLon }
+  | { type: "view"; view: MapView }
+  | { type: "filters"; update: (f: Filters) => Filters }
+  | { type: "period"; period: Period }
+  | { type: "tab"; tab: EntityKind }
+  | { type: "toggleKind"; kind: "pass" | "town"; on: boolean }
+  | { type: "toggleTour"; slug: string; on: boolean }
+  /** The master switch over every tour. */
+  | { type: "toggleTours"; on: boolean }
+  /** Opens or closes the list drawer, with or without its filter panel. */
+  | { type: "list"; open: boolean; filters?: boolean }
+  | { type: "snap"; sheet: "list" | "detail"; snap: number }
+  | { type: "filtersOpen"; open: boolean | null };
+
+/** What the reducer needs from outside the state and never changes it. */
+export interface Env {
+  /** Whether the two sheets are the layout (`MOBILE_QUERY`). */
+  mobile: boolean;
+  /** Today's half-month, computed on the server; where the period falls back to. */
+  today: Period;
+  /** Every tour's slug, for `reconcileShown` and the master switch. */
+  tours: readonly string[];
+}
+
 /**
- * `s=open,risky`; the legacy values `open` and `openRisky` from older links
- * still work. `none` used to mean "hide everything" – no control produces that
- * any more (`toggleMember`), so an old link with it opens unfiltered.
+ * Selecting something: the one copy of the rule. The row's tab comes forward
+ * (the lists are one at a time, and a highlighted row behind a tab is no
+ * answer), the hover and the profile cursor are cleared, the kind is revealed
+ * on the map, and on a phone the detail drawer comes up over whatever is
+ * there – stacked on the list when it is open, alone over the map otherwise,
+ * and at least as high as the list it covers, so the list's swipe handle never
+ * peeks out above it and leaves two of them on screen.
  */
-const parseAsStatus = createParser<Status[]>({
-  eq: (a, b) => a.length === b.length && a.every((s) => b.includes(s)),
-  parse: (raw) => {
-    if (raw === "openRisky") return ["open", "risky"];
-    const list = ALL_STATUS.filter((s) => raw.split(",").includes(s));
-    return list.length ? list : null;
-  },
-  serialize: (list) => list.join(","),
-});
-/**
- * A comma-joined subset of a fixed vocabulary, in vocabulary order – `a=pass,spur`,
- * `e=toll,carfree`. Unknown members are dropped rather than rejected, so an
- * old link keeps the part of its filter this build still understands; a value
- * that leaves nothing behind is no filter at all and falls back to the
- * default – `none` included, see `parseAsStatus`.
- */
-const parseAsSubset = <T extends string>(vocabulary: readonly T[]) =>
-  createParser<T[]>({
-    eq: (a, b) => a.length === b.length && a.every((x) => b.includes(x)),
-    parse: (raw) => {
-      const picked = raw.split(",");
-      const list = vocabulary.filter((v) => picked.includes(v));
-      return list.length ? list : null;
-    },
-    serialize: (list) => list.join(","),
-  });
-
-const RATINGS = [1, 2, 3, 4, 5] as const;
-/** Exactly one of the given values; anything else is not a filter. */
-const parseAsOneOf = (values: readonly number[]) =>
-  createParser<number>({
-    parse: (v) => (values.includes(Number(v)) ? Number(v) : null),
-    serialize: String,
-  });
-/** `d=2-4`; `d=3` means exactly 3. */
-const parseAsRange = createParser<[number, number]>({
-  eq: (a, b) => a[0] === b[0] && a[1] === b[1],
-  parse: (raw) => {
-    const [lo, hi = lo] = raw.split("-").map(Number);
-    if (!RATINGS.includes(lo as never) || !RATINGS.includes(hi as never))
-      return null;
-    return lo! <= hi! ? [lo!, hi!] : [hi!, lo!];
-  },
-  serialize: ([lo, hi]) => (lo === hi ? String(lo) : `${lo}-${hi}`),
-});
-
-/** Reading: a missing or invalid value is `null`, which `parseHash` turns into "not given". */
-const HASH = {
-  a: parseAsSubset(ROAD_TYPES),
-  b: parseAsFixed(0),
-  be: parseAsOneOf(BEAUTY_OPTIONS.map(([v]) => v)),
-  c: parseAsCenter,
-  d: parseAsRange,
-  e: parseAsSubset(ROAD_TAGS),
-  f: parseAsOneOf(FAME_OPTIONS.map(([v]) => v)),
-  h: parseAsOneOf(HEAT_OPTIONS.map(([v]) => v)),
-  m: parseAsOneOf(ELEVATION_OPTIONS.map(([v]) => v)),
-  o: parseAsStringLiteral(PASS_SORTS),
-  pass: parseAsString,
-  pi: parseAsFixed(0),
-  q: parseAsString,
-  s: parseAsStatus,
-  t: parseAsPeriod,
-  tour: parseAsString,
-  town: parseAsString,
-  v: parseAsOneOf(TRAFFIC_OPTIONS.map(([v]) => v)),
-  w: parseAsOneOf(WET_OPTIONS.map(([v]) => v)),
-  z: parseAsFixed(2),
-};
-/** Writing: a value equal to its default leaves the hash. */
-const HASH_OUT = {
-  ...HASH,
-  a: HASH.a.withDefault(DEFAULT_FILTERS.types),
-  be: HASH.be.withDefault(DEFAULT_FILTERS.minBeauty),
-  d: HASH.d.withDefault(DEFAULT_FILTERS.difficulty),
-  e: HASH.e.withDefault(DEFAULT_FILTERS.tags),
-  f: HASH.f.withDefault(DEFAULT_FILTERS.minFame),
-  h: HASH.h.withDefault(DEFAULT_FILTERS.maxValleyTmax),
-  m: HASH.m.withDefault(DEFAULT_FILTERS.minElevation),
-  o: HASH.o.withDefault(DEFAULT_FILTERS.sort),
-  q: HASH.q.withDefault(DEFAULT_FILTERS.query),
-  s: HASH.s.withDefault(DEFAULT_FILTERS.status),
-  v: HASH.v.withDefault(DEFAULT_FILTERS.maxTraffic),
-  w: HASH.w.withDefault(DEFAULT_FILTERS.maxWetDays),
-};
-const loadHash = createLoader(HASH);
-const serialize = createSerializer(HASH_OUT, { clearOnDefault: true });
-
-/** `parseHash` is the pure half of `readHash`, so the parsing can be tested without a window. */
-export const parseHash = (hash: string): HashState => {
-  const h = loadHash(new URLSearchParams(hash.replace(/^#/u, "")));
-  const given = <K extends keyof typeof HASH>(key: K) => h[key] ?? undefined;
-  const selection: Selection | null = h.pass
-    ? { kind: "pass", slug: h.pass }
-    : h.tour
-      ? { kind: "tour", slug: h.tour }
-      : h.town
-        ? { kind: "town", slug: h.town }
-        : null;
+const select = (state: AppState, selection: Selection, env: Env): AppState => {
+  const { list } = state.sheet;
+  const sheet: SheetState = env.mobile
+    ? {
+        ...state.sheet,
+        detail: {
+          nested: list.open,
+          snap: list.open && list.snap >= LIST_FULL ? DETAIL_FULL : DETAIL_HALF,
+        },
+      }
+    : state.sheet;
   return {
-    filters: {
-      difficulty: given("d"),
-      maxTraffic: given("v"),
-      maxValleyTmax: given("h"),
-      maxWetDays: given("w"),
-      minBeauty: given("be"),
-      minElevation: given("m"),
-      minFame: given("f"),
-      period: given("t"),
-      query: given("q"),
-      sort: given("o"),
-      status: given("s"),
-      tags: given("e"),
-      types: given("a"),
-    },
+    ...state,
+    hovered: null,
+    last: selection,
+    profileCursor: null,
+    profileZoom: null,
     selection,
-    view: {
-      bearing: given("b"),
-      lat: h.c?.[0],
-      lon: h.c?.[1],
-      pitch: given("pi"),
-      zoom: given("z"),
-    },
+    sheet,
+    shown: reveal(state.shown, selection),
+    tab: selection.kind,
   };
 };
 
-export const readHash = (): HashState => {
-  if (typeof window === "undefined")
-    return { filters: {}, selection: null, view: {} };
-  return parseHash(window.location.hash);
-};
-
-/** Pure half of `writeHash`: the hash body without the leading "#". */
-export const serializeHash = (
-  filters: Filters,
-  selection: Selection | null,
-  view: MapView,
-): string => {
-  const tilted = view.pitch > 1;
-  return serialize({
-    a: filters.types,
-    b: tilted ? view.bearing : null,
-    be: filters.minBeauty,
-    c: [view.lat, view.lon],
-    d: filters.difficulty,
-    e: filters.tags,
-    f: filters.minFame,
-    h: filters.maxValleyTmax,
-    m: filters.minElevation,
-    o: filters.sort,
-    pass: selection?.kind === "pass" ? selection.slug : null,
-    pi: tilted ? view.pitch : null,
-    q: filters.query,
-    s: filters.status,
-    t: filters.period,
-    tour: selection?.kind === "tour" ? selection.slug : null,
-    town: selection?.kind === "town" ? selection.slug : null,
-    v: filters.maxTraffic,
-    w: filters.maxWetDays,
-    z: view.zoom,
-  }).replace(/^\?/u, "");
-};
-
-export const writeHash = (
-  filters: Filters,
-  selection: Selection | null,
-  view: MapView,
-) => {
-  history.replaceState(null, "", `#${serializeHash(filters, selection, view)}`);
-};
+/** Nothing selected any more; `last` stays so the leaving sheet has something to show. */
+const close = (state: AppState): AppState => ({
+  ...state,
+  hovered: null,
+  profileCursor: null,
+  profileZoom: null,
+  selection: null,
+});
 
 /**
- * Web-storage hook with an SSR-safe initial value. The value is read via
- * useSyncExternalStore so that the first client render matches the server
- * HTML and no setState in an effect is needed.
- *
- * Two areas, because the two kinds of state have different lifetimes: what the
- * visitor decided about the app (favourites, period, which lists are open)
- * belongs in `localStorage` and outlives the tab; how they arranged one
- * sitting (which detail blocks they folded away) belongs in `sessionStorage`
- * and is forgotten with it.
+ * What the hash and the storage say, applied: the filters and the camera are
+ * the defaults under whatever the link carries. A selection in the link is
+ * selected the way a tap selects, so the tab, the reveal and the sheet all
+ * follow; a link without one closes whatever was open.
  */
-export type StorageArea = "local" | "session";
-
-const listeners = new Set<() => void>();
-/** Keyed by area *and* key: the two areas may hold the same name. */
-const cache = new Map<string, { raw: string | null; value: unknown }>();
-
-const storage = (where: StorageArea) =>
-  where === "local" ? localStorage : sessionStorage;
-
-const subscribe = (onChange: () => void) => {
-  listeners.add(onChange);
-  window.addEventListener("storage", onChange);
-  return () => {
-    listeners.delete(onChange);
-    window.removeEventListener("storage", onChange);
+const load = (
+  state: AppState,
+  hash: HashState,
+  stored: StoredState,
+  env: Env,
+): AppState => {
+  const view = { ...DEFAULT_VIEW, ...defined(hash.view) };
+  const next: AppState = {
+    ...state,
+    filters: {
+      ...DEFAULT_FILTERS,
+      ...defined(hash.filters),
+      // The half-month the app opens on: a shared link wins over the
+      // visitor's own last choice, which wins over today's half-month from
+      // the server (docs/data-model.md, "Time reckoning").
+      period: hash.filters.period ?? stored.period ?? env.today,
+    },
+    ownPeriod: stored.period ?? null,
+    // Only a hash that arrives at an open page asks the camera for anything.
+    // The one the page opened on is what the map is *built* with (`cameraIntent`,
+    // lib/hash-adapter.ts), and asking for it a second time would take the
+    // camera off the flight that frames what the same link names – every link
+    // the app writes carries a camera, so that is every shared link with an
+    // entity in it.
+    requestedView:
+      state.loaded &&
+      (hash.view.lat !== undefined || hash.view.zoom !== undefined)
+        ? view
+        : state.requestedView,
+    shown: reconcileShown(stored.shown ?? state.shown, env.tours),
+    tab: stored.tab ?? state.tab,
+    view,
   };
+  return hash.selection ? select(next, hash.selection, env) : close(next);
 };
 
-const readStored = <T>(key: string, initial: T, where: StorageArea): T => {
-  const id = `${where}:${key}`;
-  let raw: string | null = null;
-  try {
-    raw = storage(where).getItem(key);
-  } catch {
-    // Blocked storage: still hand back one stable reference per key.
-    const hit = cache.get(id);
-    if (hit) return hit.value as T;
-    cache.set(id, { raw: null, value: initial });
-    return initial;
-  }
-  const hit = cache.get(id);
-  // Keep referentially stable, otherwise useSyncExternalStore renders endlessly.
-  if (hit && hit.raw === raw) return hit.value as T;
-  let value = initial;
-  if (raw !== null) {
-    try {
-      value = JSON.parse(raw) as T;
-    } catch {
-      value = initial;
+export const reduce = (state: AppState, action: Action, env: Env): AppState => {
+  switch (action.type) {
+    case "load": {
+      return { ...load(state, action.hash, action.stored, env), loaded: true };
+    }
+    case "select": {
+      return select(state, action.selection, env);
+    }
+    case "back": {
+      return close(state);
+    }
+    case "hover": {
+      return { ...state, hovered: action.selection };
+    }
+    case "profileCursor": {
+      return { ...state, profileCursor: action.at };
+    }
+    case "profileZoom": {
+      return { ...state, profileZoom: action.at };
+    }
+    case "view": {
+      return { ...state, view: action.view };
+    }
+    case "filters": {
+      return { ...state, filters: action.update(state.filters) };
+    }
+    case "period": {
+      return {
+        ...state,
+        filters: { ...state.filters, period: action.period },
+        ownPeriod: action.period,
+      };
+    }
+    case "tab": {
+      return { ...state, tab: action.tab };
+    }
+    case "toggleKind": {
+      return {
+        ...state,
+        shown: { ...state.shown, [SWITCH[action.kind]]: action.on },
+      };
+    }
+    case "toggleTour": {
+      const { hiddenTours } = state.shown;
+      const next = action.on
+        ? hiddenTours.filter((s) => s !== action.slug)
+        : [...new Set([...hiddenTours, action.slug])];
+      return { ...state, shown: { ...state.shown, hiddenTours: next } };
+    }
+    case "toggleTours": {
+      return {
+        ...state,
+        shown: { ...state.shown, hiddenTours: action.on ? [] : [...env.tours] },
+      };
+    }
+    case "list": {
+      return {
+        ...state,
+        sheet: {
+          ...state.sheet,
+          filters: action.filters ?? state.sheet.filters,
+          list: { ...state.sheet.list, open: action.open },
+        },
+      };
+    }
+    case "snap": {
+      return {
+        ...state,
+        sheet: {
+          ...state.sheet,
+          [action.sheet]: { ...state.sheet[action.sheet], snap: action.snap },
+        },
+      };
+    }
+    case "filtersOpen": {
+      return { ...state, sheet: { ...state.sheet, filters: action.open } };
+    }
+    default: {
+      // Every action has its case above; a new one is a type error here.
+      return action satisfies never;
     }
   }
-  cache.set(id, { raw, value });
-  return value;
-};
-
-export const useStored = <T>(
-  key: string,
-  initial: T,
-  where: StorageArea = "local",
-) => {
-  const value = useSyncExternalStore(
-    subscribe,
-    () => readStored(key, initial, where),
-    () => initial,
-  );
-
-  const setValue = useCallback(
-    (next: T | ((prev: T) => T)) => {
-      const resolved =
-        typeof next === "function"
-          ? (next as (prev: T) => T)(readStored(key, initial, where))
-          : next;
-      const raw = JSON.stringify(resolved);
-      try {
-        storage(where).setItem(key, raw);
-      } catch {
-        /* Private mode or similar – then simply without persistence */
-      }
-      cache.set(`${where}:${key}`, { raw, value: resolved });
-      for (const l of listeners) l();
-    },
-    [key, initial, where],
-  );
-
-  return [value, setValue] as const;
-};
-
-export interface Favorites {
-  pass: string[];
-  tour: string[];
-  town: string[];
-}
-export const NO_FAVORITES: Favorites = { pass: [], tour: [], town: [] };
-
-export const useFavorites = () => {
-  const [favorites, setFavorites] = useStored<Favorites>(
-    "alpenpaesse:favorites",
-    NO_FAVORITES,
-  );
-  const isFavorite = (kind: EntityKind, slug: string) =>
-    favorites[kind].includes(slug);
-  const toggle = (kind: EntityKind, slug: string) =>
-    setFavorites((f) => ({
-      ...f,
-      [kind]: f[kind].includes(slug)
-        ? f[kind].filter((s) => s !== slug)
-        : [...f[kind], slug],
-    }));
-  const count =
-    favorites.pass.length + favorites.tour.length + favorites.town.length;
-  return {
-    clear: () => setFavorites(NO_FAVORITES),
-    count,
-    favorites,
-    isFavorite,
-    toggle,
-  };
 };
 
 /**
- * Which blocks of the detail panel the visitor folded away, by `Section` id.
- * Stored as the *closed* ones, so a block that did not exist yet opens by
- * itself, and in `sessionStorage`: folding the climate away applies to the
- * next pass looked at, not to the next visit a month later.
+ * The state before anything has been read: today's half-month, nothing
+ * selected, everything shown. It is what both the server and the hydrating
+ * client render – identical, so no hydration mismatch – and the `load` action
+ * dispatched once hydrated is what the hash and the storage make of it
+ * (`useHashAdapter`), which is where the resolution is tested.
  */
-export const SECTIONS_KEY = "alpenpaesse:closedSections";
-/** Stable empty snapshot for `SECTIONS_KEY`, as `NO_SLUGS` is for the tours. */
-export const NO_SECTIONS: string[] = [];
-
-export const PERIOD_KEY = "alpenpaesse:period";
-
-/**
- * The visitor's own last choice of half-month. It beats the server's "today",
- * and a shared link (hash `t`) beats both – opening someone else's link never
- * overwrites the preference, because only the period control writes here.
- */
-export const useStoredPeriod = () => useStored<Period | null>(PERIOD_KEY, null);
-
-/**
- * Precedence for the half-month the app opens on: a shared link wins over the
- * visitor's own last choice, which wins over today's half-month from the
- * server (see docs/data-model.md, "Time reckoning").
- */
-export const resolvePeriod = (
-  fromHash: Period | undefined,
-  stored: Period | null,
-  today: Period,
-): Period => fromHash ?? stored ?? today;
-
-/** The stored period outside React, for the one-shot hash initialisation. */
-export const readStoredPeriod = (): Period | null => {
-  const value = readStored<Period | null>(PERIOD_KEY, null, "local");
-  return isPeriod(value) ? value : null;
-};
-
-export const statusMatches = (status: Status, filter: Status[]) =>
-  filter.includes(status);
+export const initialState = (today: Period): AppState => ({
+  filters: { ...DEFAULT_FILTERS, period: today },
+  hovered: null,
+  last: null,
+  loaded: false,
+  ownPeriod: null,
+  profileCursor: null,
+  profileZoom: null,
+  requestedView: null,
+  selection: null,
+  sheet: SHEETS_AT_REST,
+  shown: ALL_SHOWN,
+  tab: "pass",
+  view: DEFAULT_VIEW,
+});

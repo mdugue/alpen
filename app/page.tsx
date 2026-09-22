@@ -1,18 +1,7 @@
 import { Explorer } from "@/components/explorer";
 import { SITE_DESCRIPTION, SITE_NAME, siteUrl } from "@/lib/brand";
-import {
-  getClimate,
-  getDetailAssets,
-  getMapAssets,
-  getNearbyTours,
-  getPasses,
-  getTours,
-  getTownReach,
-  getTowns,
-  getValleys,
-  getYears,
-} from "@/lib/data";
-import { todayPeriod } from "@/lib/status";
+import { getPageData } from "@/lib/data";
+import { todayPeriod } from "@/lib/period";
 
 /**
  * Structured data for the map page. Deliberately without ratings or reviews:
@@ -39,10 +28,11 @@ const jsonLd = {
 };
 
 /**
- * Everything on this page is static: the data lives in the repo, is loaded at
- * build time and managed as cached segments via "use cache" (lib/data.ts).
- * This lets Next prerender the page completely; the only dynamic part is the
- * weather request in the detail panel (own route with its own cache lifetime).
+ * Everything on this page is static: the data lives in the repo and is loaded
+ * at build time (lib/data.ts), and this `"use cache"` is the one boundary that
+ * covers it – which lets Next prerender the page completely. The only dynamic
+ * part is the weather request in the detail panel (own route with its own
+ * cache lifetime).
  * Neither the route geometry nor the profiles and photos are part of the page:
  * MapLibre fetches the lines as static GeoJSON (`public/map`) and the panel
  * fetches the selected entity's detail file (`public/detail`); the page only
@@ -60,29 +50,7 @@ const jsonLd = {
 const Page = async () => {
   "use cache";
 
-  const [
-    passes,
-    tours,
-    towns,
-    assets,
-    nearbyTours,
-    townReach,
-    detail,
-    climate,
-    valleys,
-    years,
-  ] = await Promise.all([
-    getPasses(),
-    getTours(),
-    getTowns(),
-    getMapAssets(),
-    getNearbyTours(),
-    getTownReach(),
-    getDetailAssets(),
-    getClimate(),
-    getValleys(),
-    getYears(),
-  ]);
+  const data = getPageData();
 
   return (
     <main className="h-dvh overflow-hidden">
@@ -103,19 +71,7 @@ const Page = async () => {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <Explorer
-        passes={passes}
-        tours={tours}
-        towns={towns}
-        assets={assets}
-        nearbyTours={nearbyTours}
-        townReach={townReach}
-        detail={detail}
-        climate={climate}
-        valleys={valleys}
-        years={years}
-        defaultPeriod={todayPeriod()}
-      />
+      <Explorer data={data} defaultPeriod={todayPeriod()} />
     </main>
   );
 };

@@ -9,9 +9,9 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { SITE_NAME, SITE_TAGLINE } from "@/lib/brand";
+import { periodLabel } from "@/lib/period";
 import { barTotal } from "@/lib/rows";
 import type { SeasonBar } from "@/lib/rows";
-import { periodLabel } from "@/lib/status";
 import { cn, fmt, SHELL_BAR } from "@/lib/utils";
 
 /**

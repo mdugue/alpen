@@ -1,7 +1,7 @@
 import type { NextConfig } from "next";
 
-import { DETAIL_ASSET_DIR } from "./lib/detail-assets";
-import { MAP_ASSET_DIR } from "./lib/map-assets";
+import { DETAIL_FILES } from "./lib/detail-assets";
+import { MAP_FILES } from "./lib/map-assets";
 
 const nextConfig: NextConfig = {
   // Cache Components: everything is dynamic by default, caching is explicit
@@ -16,15 +16,13 @@ const nextConfig: NextConfig = {
   // geometry (scripts/build-map-assets.ts) and the per-entity detail files
   // (scripts/build-detail-assets.ts) – carries a content hash in its name, so
   // it may be cached for good. Without these rules Vercel serves public/ with
-  // max-age=0 and revalidates on every visit. Only the hashed names match
-  // (same shape as the ASSET_NAME patterns in the two lib modules): anything
-  // else under those directories keeps the default and stays updatable.
+  // max-age=0 and revalidates on every visit. The rules come from the modules
+  // that write and prune those names (`lib/derived-file.ts`), so the promise
+  // cannot outgrow what it is made about: anything else under those
+  // directories keeps the default and stays updatable.
   headers: () =>
     Promise.resolve(
-      [
-        `/${MAP_ASSET_DIR}/:kind(routes|tours).:hash([0-9a-f]{8}).geojson`,
-        `/${DETAIL_ASSET_DIR}/:entity((?:pass|tour|town)-[a-z0-9-]+).:hash([0-9a-f]{8}).json`,
-      ].map((source) => ({
+      [MAP_FILES.cachePattern, DETAIL_FILES.cachePattern].map((source) => ({
         headers: [
           {
             key: "Cache-Control",

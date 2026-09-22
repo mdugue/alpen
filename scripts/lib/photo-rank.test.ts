@@ -1,5 +1,6 @@
 import { describe, expect, test } from "bun:test";
 
+import type { ImageInfo, Page } from "./hosts";
 import {
   best,
   fileName,
@@ -11,7 +12,6 @@ import {
   toPhoto,
   usable,
 } from "./photo-rank";
-import type { ImageInfo, Page } from "./photo-rank";
 
 const CDN = "https://upload.wikimedia.org/wikipedia/commons";
 

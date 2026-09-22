@@ -1,4 +1,5 @@
 import { defineConfig } from "oxlint";
+import type { DummyRuleMap } from "oxlint";
 import core from "ultracite/oxlint/core";
 import { jsPluginSettings, selectJsPlugins } from "ultracite/oxlint/js-plugins";
 import next from "ultracite/oxlint/next";
@@ -6,6 +7,63 @@ import nextJsPlugins from "ultracite/oxlint/next/js-plugins";
 import react from "ultracite/oxlint/react";
 
 const jsPlugins = selectJsPlugins(["react-doctor"]);
+
+/**
+ * The worlds a module under `lib/` may not reach into by itself, each with the
+ * adapter that owns it. `scripts/check-seams.ts` carries the other half of the
+ * invariant – the greps a lint rule cannot express.
+ */
+const RESTRICTED_GLOBALS = [
+  {
+    message: "The DOM belongs to components/; lib/ takes values.",
+    name: "document",
+  },
+  { message: "`fetch` belongs to lib/use-fetch.ts.", name: "fetch" },
+  { message: "The hash belongs to lib/hash-adapter.ts.", name: "history" },
+  { message: "The hash belongs to lib/hash-adapter.ts.", name: "location" },
+  {
+    message: "Web storage belongs to lib/use-stored.ts.",
+    name: "localStorage",
+  },
+  {
+    message: "Media queries belong to lib/use-media-query.ts.",
+    name: "matchMedia",
+  },
+  {
+    message: "The DOM belongs to components/; lib/ takes values.",
+    name: "MutationObserver",
+  },
+  {
+    message: "The platform belongs to the adapters in lib/use-*.ts.",
+    name: "navigator",
+  },
+  {
+    message: "The DOM belongs to components/; lib/ takes values.",
+    name: "ResizeObserver",
+  },
+  {
+    message: "Web storage belongs to lib/use-stored.ts.",
+    name: "sessionStorage",
+  },
+  {
+    message: "The browser belongs to the adapters in lib/use-*.ts.",
+    name: "window",
+  },
+];
+
+/**
+ * The same rule again for one adapter, minus the globals it owns – so the
+ * file is still held to every world it is *not* a window onto.
+ */
+const except = (...owned: string[]): DummyRuleMap => ({
+  "no-restricted-globals": [
+    "error",
+    {
+      checkGlobalObject: true,
+      globals: RESTRICTED_GLOBALS.filter((g) => !owned.includes(g.name)),
+    },
+  ],
+});
 
 /**
  * oxlint replaces ESLint here: its `nextjs` and `react` plugins cover what
@@ -37,10 +95,99 @@ export default defineConfig({
   options: { typeAware: true },
   overrides: [
     {
-      // `"use cache"` requires the function to be async even when it only
-      // returns imported JSON.
-      files: ["lib/data.ts"],
-      rules: { "require-await": "off" },
+      /*
+       * The seam of the functional core (docs/architecture.md, "Functional
+       * core, imperative shell"): `lib/` decides, `components/` applies. A
+       * module that reads the platform for itself cannot be answered by a
+       * table test, which is how the decisions in plans 15, 16 and 22 ended up
+       * spread across the effects that carried them out.
+       *
+       * The adapters are the exception and are listed by name below, one
+       * comment each saying which world the file is a window onto. Everything
+       * else under `lib/` is a function of its arguments.
+       */
+      files: ["lib/**"],
+      rules: {
+        "no-restricted-globals": [
+          "error",
+          {
+            // `window.matchMedia` and `globalThis.fetch` say the same thing as
+            // the bare names and have to fail the same way.
+            checkGlobalObject: true,
+            globals: RESTRICTED_GLOBALS,
+          },
+        ],
+        "no-restricted-imports": [
+          "error",
+          {
+            paths: [
+              {
+                allowTypeImports: true,
+                message:
+                  "MapLibre is an adapter's business: the map is driven from components/map/apply-scene.ts and apply-camera.ts. Types are fine.",
+                name: "maplibre-gl",
+              },
+            ],
+          },
+        ],
+      },
+    },
+    // The adapters, one override each. The rule is *re-declared* rather than
+    // switched off, minus the globals that file is the window onto: turning it
+    // off per file made the comment beside each name unenforced, so nothing
+    // stopped the roving-focus hook from reaching for storage. `window` stays
+    // allowed wherever the adapter subscribes through it
+    // (`window.addEventListener`), which `checkGlobalObject` would otherwise
+    // read as a way around every other name.
+    {
+      // The hash: `location.hash` in, `history.replaceState` out.
+      files: ["lib/hash-adapter.ts"],
+      rules: except("history", "location", "window"),
+    },
+    {
+      // `localStorage` and `sessionStorage`, behind the `STORAGE` table.
+      files: ["lib/use-stored.ts"],
+      rules: except("localStorage", "sessionStorage", "window"),
+    },
+    {
+      // `window.matchMedia` and the viewport height, as one value per query.
+      files: ["lib/use-media-query.ts"],
+      rules: except("matchMedia", "window"),
+    },
+    {
+      // `fetch`, as the three answers a request can give.
+      files: ["lib/use-fetch.ts"],
+      rules: except("fetch"),
+    },
+    {
+      // `ResizeObserver`: what the shell's two bars actually measure.
+      files: ["lib/use-height.ts"],
+      rules: except("ResizeObserver"),
+    },
+    {
+      // `navigator.share` and the clipboard, with `window.location.href`.
+      files: ["lib/use-share.ts"],
+      rules: except("location", "navigator", "window"),
+    },
+    {
+      // `MutationObserver` and focus: a list of rows as one composite widget.
+      files: ["lib/use-roving.ts"],
+      rules: except("MutationObserver"),
+    },
+    {
+      // The explorer hands the shell its parts as slots, and three of them
+      // take something only the shell knows: what the bars and panels leave of
+      // the map, which of the sidebar's two places is being filled, and which
+      // entity the detail drawer still shows while it slides away. They are
+      // called, never rendered as an element, so nothing remounts – which is
+      // what the rule is there to prevent.
+      files: ["components/explorer.tsx"],
+      rules: {
+        "react/no-unstable-nested-components": [
+          "error",
+          { allowAsProps: true },
+        ],
+      },
     },
     {
       // `useFetch<Detail>(url)` names the payload once, at the call. The rule
@@ -50,23 +197,31 @@ export default defineConfig({
       rules: { "typescript/no-unnecessary-type-parameters": "off" },
     },
     {
-      // The build script serialises its API calls and its file writes on
-      // promise chains (`this.chain`, `writing`); `await` has no way to hand
-      // the chain on to the next caller. It also keeps its error class next
-      // to the rate limiter that throws it.
-      files: ["scripts/build-data.ts"],
-      rules: {
-        "max-classes-per-file": "off",
-        "promise/prefer-await-to-then": "off",
-      },
+      // The pipeline serialises its file writes and the transport its
+      // API calls per host on promise chains (`writing`, `this.chain`);
+      // `await` has no way to hand the chain on to the next caller.
+      files: ["scripts/lib/pipeline.ts", "scripts/lib/transport.ts"],
+      rules: { "promise/prefer-await-to-then": "off" },
+    },
+    {
+      // The transport keeps its error classes next to the rate limiter that
+      // throws them.
+      files: ["scripts/lib/transport.ts"],
+      rules: { "max-classes-per-file": "off" },
     },
     {
       // The build script talks to rate-limited APIs: requests are sequential
       // on purpose and the retry loop awaits each attempt. The browser
       // harness polls the page the same way: every wait is a loop that must
-      // await one probe before deciding whether to make the next one.
+      // await one probe before deciding whether to make the next one. Both
+      // rules say the same thing about the same loops, so both are off here;
+      // otherwise the second one pushes exactly these loops into a `while`
+      // with a hand-kept index, which is the shape that gets an off-by-one.
       files: ["scripts/**", ".agents/skills/**", "test/**", "e2e/**"],
-      rules: { "no-await-in-loop": "off" },
+      rules: {
+        "no-await-in-loop": "off",
+        "react-doctor/async-await-in-loop": "off",
+      },
     },
     {
       // This file *is* the lazily loaded chunk: `detail-panel.tsx` pulls it in
@@ -90,27 +245,17 @@ export default defineConfig({
       },
     },
     {
-      // The JSON-LD block is the one sanctioned use of the prop.
+      // The JSON-LD block is the one sanctioned use of the prop. And a
+      // `"use cache"` function has to be async even where it awaits nothing:
+      // the page's data is imported JSON, read synchronously (lib/data.ts).
       files: ["app/page.tsx"],
-      rules: { "react/no-danger": "off" },
-    },
-    {
-      // Escape closes the detail panel; the section is the panel, not a
-      // control, so it carries the handler.
-      files: ["components/panel/detail-panel.tsx"],
-      rules: { "jsx-a11y/no-noninteractive-element-interactions": "off" },
-    },
-    {
-      // `setValue` must keep a stable identity – `explorer.tsx` depends on it
-      // for its once-only effects. This is not a memoisation for speed.
-      files: ["lib/app-state.ts"],
-      rules: { "react-doctor/react-compiler-no-manual-memoization": "off" },
+      rules: { "react/no-danger": "off", "require-await": "off" },
     },
   ],
   rules: {
-    // `baseVerdict` sits at 21 and `Explorer` at 22: the heuristic and the
-    // layout both branch a lot by nature, and splitting them would only move
-    // the branches.
+    // The route gate sits at 25 and `baseReasons` at 21: the pipeline's one
+    // decision point and the heuristic both branch a lot by nature, and
+    // splitting them would only move the branches.
     complexity: ["error", 25],
     // Guard clauses (`if (!pass) continue;`) and early `return (<jsx/>)` both
     // read fine without braces; no setting of this rule accepts both.

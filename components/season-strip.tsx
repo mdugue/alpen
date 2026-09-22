@@ -4,14 +4,12 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import {
-  cellHint,
-  GRADE_LABEL,
   MONTH_INITIALS,
   periodIndex,
   periodLabel,
   PERIODS,
-  seasonSummary,
-} from "@/lib/status";
+} from "@/lib/period";
+import { cellHint, GRADE_LABEL, seasonSummary } from "@/lib/status";
 import type { Grade, YearCell } from "@/lib/status";
 import type { Period } from "@/lib/types";
 import { cn } from "@/lib/utils";

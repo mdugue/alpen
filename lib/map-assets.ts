@@ -1,9 +1,8 @@
-import { createHash } from "node:crypto";
-
 import type { Pass, RouteGeometry, Tour } from "@/lib/types";
 
 // Relative on purpose: next.config.ts loads this module outside the bundler,
 // where the "@/" alias is not resolved for transitive imports.
+import { canonicalJson, derivedDir } from "./derived-file";
 import { ascentKey, tourKey } from "./route-key";
 
 /**
@@ -17,9 +16,10 @@ import { ascentKey, tourKey } from "./route-key";
  * sync and nothing generated to commit: the name *is* the content hash, which
  * is also what makes the files safe to cache for a year.
  *
- * Never imported by client code – it needs `node:crypto`. It is not marked
- * `server-only` because `next.config.ts` and the Bun script import it outside
- * the React bundler, where that package would throw. Components take the
+ * Never imported by client code – through `lib/derived-file.ts` it reaches
+ * `node:crypto` and `node:fs`. It is not marked `server-only` because
+ * `next.config.ts` and the Bun script import it outside the React bundler,
+ * where that package would throw. Components take the
  * `MapAssets` type only: two URLs and a bounding box per tour.
  */
 
@@ -158,15 +158,19 @@ const line = (
 
 /**
  * One line per ascent that has a routed geometry, keyed like `routes.json`.
- * The properties are what the popup and the click handler in `pass-map.tsx`
- * read; status and selection come as feature state.
+ *
+ * The properties are what the map addresses the line by: `slug` is what the
+ * ascent filter and the pick read, `id` is the feature id promoted for feature
+ * state. What the hover label says is not among them – it is looked up from
+ * the entity (`buildScene`, lib/map-scene.ts), so a line and the dot two
+ * hundred metres away cannot say different things about the same road.
  */
 export const routeFeatures = (
   passes: readonly Pass[],
   routes: Record<string, RouteGeometry>,
 ): LineFeature[] =>
   passes.flatMap((p) =>
-    p.ascents.flatMap((a, i) => {
+    p.ascents.flatMap((_, i) => {
       const key = ascentKey(p.slug, i);
       const geom = routes[key];
       if (!geom) return [];
@@ -176,7 +180,6 @@ export const routeFeatures = (
           kind: "route",
           name: p.name,
           slug: p.slug,
-          subtitle: `Auffahrt ab ${a.label}`,
         }),
       ];
     }),
@@ -199,18 +202,27 @@ export const tourFeatures = (
         color: t.color,
         id: t.slug,
         kind: "tour",
+        // `name` is drawn along the line; `color` paints it.
         name: t.name,
         slug: t.slug,
-        subtitle: `ca. ${t.km} km · ${t.elevationGain.toLocaleString("de-DE")} hm`,
       }),
     ];
   });
 
-/** Where the files live under `public/`, and thus their URL prefix. */
-export const MAP_ASSET_DIR = "map";
+/**
+ * The name, the prune pattern and the cache rule of the two GeoJSON files, as
+ * one value (`lib/derived-file.ts`): `scripts/build-map-assets.ts` writes and
+ * prunes, `next.config.ts` caches, and neither spells the shape a second time.
+ */
+export const MAP_FILES = derivedDir({
+  dir: "map",
+  ext: "geojson",
+  param: "kind",
+  stem: "routes|tours",
+});
 
-/** What the script writes and prunes, and what `next.config.ts` caches for a year. */
-export const ASSET_NAME = /^(?:routes|tours)\.[0-9a-f]{8}\.geojson$/u;
+/** Where the files live under `public/`, and thus their URL prefix. */
+export const MAP_ASSET_DIR = MAP_FILES.dir;
 
 export interface AssetFile {
   /** `routes.a1b2c3d4.geojson` – the hash is the first 8 hex digits of SHA-256 of `body`. */
@@ -221,11 +233,10 @@ export interface AssetFile {
 }
 
 const assetFile = (kind: "routes" | "tours", c: Collection): AssetFile => {
-  const body = JSON.stringify(c);
-  const hash = createHash("sha256").update(body).digest("hex").slice(0, 8);
+  const body = canonicalJson(c);
   return {
     body,
-    name: `${kind}.${hash}.geojson`,
+    name: MAP_FILES.name(kind, body),
     points: c.features.reduce((n, f) => n + f.geometry.coordinates.length, 0),
   };
 };
@@ -260,9 +271,9 @@ export const mapAssets = (
   return {
     assets: {
       passBounds,
-      routesUrl: `/${MAP_ASSET_DIR}/${routesFile.name}`,
+      routesUrl: MAP_FILES.url(routesFile.name),
       tourBounds,
-      toursUrl: `/${MAP_ASSET_DIR}/${toursFile.name}`,
+      toursUrl: MAP_FILES.url(toursFile.name),
     },
     files: [routesFile, toursFile],
   };

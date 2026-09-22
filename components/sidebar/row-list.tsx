@@ -41,7 +41,7 @@ export const RowList = <T,>({
   children,
   ref,
 }: {
-  items: T[];
+  items: readonly T[];
   /** Stable key for the block – the first row's slug. */
   keyOf: (item: T) => string;
   children: (item: T) => React.ReactNode;

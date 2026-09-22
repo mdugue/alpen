@@ -1,6 +1,8 @@
 # 32 · The pipeline as plan → execute → apply
 
-**Status:** proposed · **Effort:** L (six phases, one PR each) ·
+**Status:** done – all six phases in
+[#62](https://github.com/mdugue/alpen/pull/62) ·
+**Effort:** L (six phases, one PR each) ·
 **Depends on:** 00 (the gate) · **Supersedes:** 20, 21 · **Unblocks:**
 roadmap 1 (a closures step is one more host and one more job kind), 12
 (destinations enter the pipeline as jobs), 24 (its coverage report's
@@ -166,11 +168,19 @@ from `osm.ts`), `commons.geosearch`, `commons.file` – each taking a
 words of a host are known there and nowhere else. `liveTransport(env)` is
 today's `Limiter`, `getJson`, `HttpError` and `QuotaExhaustedError`, moved
 without change; `fixtureTransport(dir, { record })` answers from
-`scripts/fixtures/<host>/<hash>.json` and records with `RECORD_FIXTURES=1`.
+`<dir>/<host>/<hash>.json`, and whoever builds it decides when it records
+(`--refresh` for the coverage cache; phase C adds the env switch for the
+fixtures it keeps).
 `locate-pass.ts`, `build-photos.ts` and `scripts/lib/coverage.ts` drop
 their own fetches and pacers; the blur host is one more host with its
 adaptive gap inside the live transport, and the coverage cache becomes the
 fixture transport's record mode.
+
+Two numbers phase A did not keep as they were, each written down where it
+sits: `locate-pass.ts` gets no Open-Meteo budget of its own, because it
+stores nothing to resume from and a person is waiting for the answer, and
+the OSM hosts are paced for every script from the `HOSTS` table (3 s for
+Overpass, 2 s for the map API) rather than per script.
 
 ### Phase B · The decisions (plan 20)
 
@@ -200,6 +210,17 @@ lacks it.
 the report against fixtures. `bun test` runs it because `"test"` is widened
 to `bun test lib scripts` (or a `bunfig.toml` test root).
 
+Done. The executing half of `build-data.ts` moved to `runPipeline`
+(`scripts/lib/pipeline.ts`), so the test drives the same function the script
+drives rather than a copy; the script is 205 lines instead of 626. The
+scenario is `scripts/fixtures/scenario.ts` – the Galibier's two sides, the
+Lautaret below it and a loop – and the answers are seven files under
+`scripts/fixtures/<host>/`, written by hand from geometry already in
+`data/generated/routes.json`; `RECORD_FIXTURES=1` replaces them with real
+answers in one run. It covers the accepted route with its profile, the
+rejection that keeps its measured values, and the keep/restore path where an
+upgrade candidate fails beside a route that already passed.
+
 ### Phase D · Derived files as one module
 
 `lib/derived-file.ts`: `(kind, body, dir) → { name, prune, cachePattern }`
@@ -207,6 +228,13 @@ owns the hash, the name, the prune regex and the shape `next.config.ts`
 promises; `mapAssets` and `detailAssets` are its two callers, the three
 build scripts become parse → produce → hand over, and the invariant test
 runs once for both sides.
+
+Done. `derivedDir` builds the three spellings from one stem and extension and
+`writeDerived` is the one mkdir-and-prune loop; `MAP_FILES` and
+`DETAIL_FILES` are its two callers, `next.config.ts` reads their
+`cachePattern`, and `lib/derived-file.test.ts` asserts for both directories
+that every name written is pruned and cached and that an unhashed name beside
+them (the two basemap styles) is neither.
 
 ### Phase E · The photo pipeline's choosing
 
@@ -216,12 +244,31 @@ answers and the previous `photos.json` and returns the next one; the script
 executes through the transport and writes. `Photo` objects are not mutated;
 "needs a placeholder" is decided from the stored record, not by decoding.
 
+Done. `scripts/lib/photo-pipeline.ts` holds the five rules as functions over
+an explicit state – `placeJobs`, `photosFor`, `borrowed`, `blurJob`,
+`withPhotos` – and `runPhotos` executes them through the transport; the script
+is 95 lines instead of 274 and does nothing but read, write and print. Nothing
+is written into a `Photo`: a placeholder produces a new record, which is what
+lets a tour borrow a pass's photo without inheriting a later change by
+accident. `storedBlur` (`scripts/lib/blur.ts`) reads a stored placeholder's
+format and width out of its own header, so a run with nothing to do decodes no
+picture at all – 2 002 `Bun.Image` decodes before, none now.
+
 ### Phase F · The calibration scripts tabulate
 
 `passYear` and `gradeOf` take their constants as parameters with today's
 values as defaults, so "this rule with that constant" is an argument, not a
 copy; `analyze-status.ts` and `analyze-destinations.ts` only tabulate, share
 one `quantile`, and get `package.json` entries.
+
+Done. `passYear` takes a `YearRule` (`reasons`, `snowBestPct`) and
+`gradeOfBase` a pair of `GradeShares`, both defaulted to today's values;
+`analyze-status.ts` reads each pass as three `Year`s instead of restating the
+verdict and the run rule, and its run-time self-check is gone with them.
+`scripts/lib/stats.ts` is the one `quantile` – the nearest rank downwards,
+which is what `analyze-status.ts` always meant; five of the 24 rows of
+section 2 of the destinations report move by one rank, and every grade, split
+and strip is unchanged.
 
 ## Steps
 
@@ -249,8 +296,16 @@ transport; plans 20 and 21 headers point here; plan 11 items 13, 17, 19 and
 - Phase B: `decideRoute`, `decideProfile`, `afterGate` and `suspectPoint`
   have table tests including the keep/restore path with a rejection beside
   a stored route; `data:check` no longer warns `Profil fehlt` for a
-  summit-blocked ascent; `--explain` prints "bereits neu versucht" for a
-  rejection whose inputs changed; `--only X` filters every counter;
+  summit-blocked ascent; a rejection whose inputs changed is reported as
+  queued rather than as something to force – `data:check` says "Koordinaten
+  sind korrigiert – der nächste bun run data:build fragt von selbst neu" and
+  `--explain` marks the row "Eingaben geändert – wird neu gefragt", both read
+  off `decideRoute`'s own verdict rather than re-derived (the plan sketched
+  the phrase as "bereits neu versucht", which claims a past run; what the
+  verdict knows is that the next one is due). No rejection carries changed
+  inputs today, so neither line shows in the current output; the verdict
+  behind them is pinned by `decideRoute`'s table test; `--only X` filters
+  every counter;
   `reconcileInputs` and `--backfill` are gone; `startsWith("tour:")` appears
   nowhere; `backfill.sh` no longer recommends `--retry-rejected` after a
   coordinate fix.

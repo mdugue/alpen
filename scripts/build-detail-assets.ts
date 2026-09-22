@@ -17,36 +17,27 @@
  * carry: profiles for all 201 passes and photo metadata for every entity, both
  * read by one panel about one entity at a time.
  */
-import { mkdir, readdir, rm } from "node:fs/promises";
-
-import photosJson from "../data/generated/photos.json" with { type: "json" };
-import profilesJson from "../data/generated/profiles.json" with { type: "json" };
-import passesJson from "../data/passes.json" with { type: "json" };
-import toursJson from "../data/tours.json" with { type: "json" };
-import townsJson from "../data/towns.json" with { type: "json" };
+import { writeDerived } from "../lib/derived-file";
 import {
   DETAIL_ASSET_DIR,
-  DETAIL_ASSET_NAME,
+  DETAIL_FILES,
   detailAssets,
 } from "../lib/detail-assets";
 import { profilesWithCoords } from "../lib/profile";
-import * as S from "../lib/schema";
+import { mustRead } from "./lib/data-files";
 
 const OUT = new URL(`../public/${DETAIL_ASSET_DIR}/`, import.meta.url);
-const routesFile = Bun.file(
-  new URL("../data/generated/routes.json", import.meta.url),
-);
 
-const passes = S.Passes.parse(passesJson);
-const tours = S.Tours.parse(toursJson);
-const towns = S.Towns.parse(townsJson);
-const photos = S.Photos.parse(photosJson);
-const profiles = S.Profiles.parse(profilesJson);
-// The first `data:build` has not happened yet: a panel without a profile is
-// still a panel (same reason as in scripts/build-map-assets.ts).
-const routes = S.Routes.parse(
-  (await routesFile.exists()) ? await routesFile.json() : {},
-);
+// Every file read through the one pair (scripts/lib/data-files.ts), which is
+// also where "the first `data:build` has not happened yet" is answered: a
+// generated file that is still missing reads as its `FILES.empty` value, and a
+// panel without a profile is still a panel.
+const passes = await mustRead("passes.json");
+const tours = await mustRead("tours.json");
+const towns = await mustRead("towns.json");
+const photos = await mustRead("generated/photos.json");
+const profiles = await mustRead("generated/profiles.json");
+const routes = await mustRead("generated/routes.json");
 
 // The same function `lib/data.ts` runs to derive the names: the file name is a
 // hash of what it returns, so the two sides cannot spell this differently.
@@ -58,16 +49,11 @@ const { files } = detailAssets(
   photos,
 );
 
-await mkdir(OUT, { recursive: true });
-const keep = new Set(files.map((f) => f.name));
-for (const name of await readdir(OUT))
-  if (DETAIL_ASSET_NAME.test(name) && !keep.has(name))
-    await rm(new URL(name, OUT));
+await writeDerived({ files, out: OUT, prune: DETAIL_FILES.prune });
 
 let bytes = 0;
 let gzipped = 0;
 for (const f of files) {
-  await Bun.write(new URL(f.name, OUT), f.body);
   bytes += f.body.length;
   gzipped += Bun.gzipSync(f.body).length;
 }

@@ -4,11 +4,10 @@ import { Coffee, Search, X } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
-import { useSheetExpanded } from "@/components/mobile-sheet";
+import { useSheet } from "@/components/mobile-sheet";
 import {
   AppliedFilters,
   FilterBody,
-  filterCount,
   FilterTrigger,
 } from "@/components/sidebar/filter-panel";
 import { KindTabs } from "@/components/sidebar/kind-tabs";
@@ -23,66 +22,66 @@ import {
   InputGroupInput,
 } from "@/components/ui/input-group";
 import { Switch } from "@/components/ui/switch";
-import { DEFAULT_FILTERS } from "@/lib/app-state";
-import type { EntityKind, Filters, Selection } from "@/lib/app-state";
+import { isShown, shownTourCount } from "@/lib/app-state";
+import type {
+  Action,
+  EntityKind,
+  Filters,
+  Selection,
+  Shown,
+} from "@/lib/app-state";
 import { SUPPORT_URL } from "@/lib/brand";
-import { hasSecondaryFilters } from "@/lib/filter-summary";
-import type { PassRow, TourRow, TownRow } from "@/lib/rows";
-import type { Tour } from "@/lib/types";
+import {
+  filterCount,
+  hasSecondaryFilters,
+  resetFilters,
+} from "@/lib/filter-summary";
+import { entityKey } from "@/lib/route-key";
+import type { Rows } from "@/lib/rows";
 import { cn, TOUCH_CONTROL } from "@/lib/utils";
 
 export interface SidebarProps {
   /** Only says how a selected row is scrolled into view; the brand lives in the header. */
   variant: "aside" | "sheet";
   filters: Filters;
-  setFilters: (update: (f: Filters) => Filters) => void;
-  passRows: PassRow[];
-  tourRows: TourRow[];
-  townRows: TownRow[];
+  /** The three filtered lists; one is on screen at a time. */
+  rows: Rows;
   totals: Record<EntityKind, number>;
   /** How many roads a filter change would leave – the number on every chip. */
   countWith: (patch: Partial<Filters>) => number;
-  tours: Tour[];
-  hiddenTours: string[];
-  setHiddenTours: (update: (h: string[]) => string[]) => void;
-  showPasses: boolean;
-  setShowPasses: (v: boolean) => void;
-  showTowns: boolean;
-  setShowTowns: (v: boolean) => void;
+  /** The "auf der Karte" switches. */
+  shown: Shown;
   /** Which of the three lists is on screen. */
   tab: EntityKind;
-  setTab: (kind: EntityKind) => void;
-  onToggleFavorite: (kind: EntityKind, slug: string) => void;
-  onSelect: (sel: Selection) => void;
   /** Highlighted in the lists and scrolled into view. */
   selection: Selection | null;
   /** What the pointer is over, on the map or in the list; the two share one highlight. */
   hovered: Selection | null;
-  onHover: (sel: Selection | null) => void;
+  /** Everything the sidebar decides goes through `reduce` (`lib/app-state.ts`). */
+  dispatch: (action: Action) => void;
+  onToggleFavorite: (kind: EntityKind, slug: string) => void;
   onOpenScales: () => void;
   /**
    * Whether the filter panel is unfolded, `null` while nobody has said –
-   * lifted out of here because the phone's "Filter" button in the season bar
-   * opens the list *and* the panel in one press (`explorer.tsx`).
+   * state of the sheet rather than of this component because the phone's
+   * "Filter" button in the season bar opens the list *and* the panel in one
+   * press (`explorer.tsx`).
    */
   filtersOpen: boolean | null;
-  setFiltersOpen: (open: boolean | null) => void;
 }
 
 export const Sidebar = (p: SidebarProps) => {
+  const setFilters = (update: (f: Filters) => Filters) =>
+    p.dispatch({ type: "filters", update });
   const set = <K extends keyof Filters>(key: K, value: Filters[K]) =>
-    p.setFilters((f) => ({ ...f, [key]: value }));
-  // The sort is a preference, not a filter: it survives the reset.
-  const resetFilters = () =>
-    p.setFilters((f) => ({
-      ...DEFAULT_FILTERS,
-      period: f.period,
-      sort: f.sort,
-    }));
-  const allTourSlugs = p.tours.map((t) => t.slug);
-  const visibleTourCount = allTourSlugs.filter(
-    (s) => !p.hiddenTours.includes(s),
-  ).length;
+    setFilters((f) => ({ ...f, [key]: value }));
+  const reset = () => setFilters(resetFilters);
+  const onSelect = (kind: EntityKind) => (slug: string) =>
+    p.dispatch({ selection: { kind, slug }, type: "select" });
+  const onHover = (sel: Selection | null) =>
+    p.dispatch({ selection: sel, type: "hover" });
+  const tourCount = p.totals.tour;
+  const visibleTourCount = shownTourCount(p.shown, tourCount);
   // The panel opens by itself when a link carries filters; the visitor's own
   // toggling wins from then on. The second half stays folded until it is
   // needed, or until a filter inside it is already set.
@@ -91,15 +90,13 @@ export const Sidebar = (p: SidebarProps) => {
   const moreOpen = more ?? hasSecondaryFilters(p.filters);
 
   const lists = useRef<HTMLDivElement>(null);
-  const expanded = useSheetExpanded();
-  const currentRow = p.selection
-    ? `${p.selection.kind}:${p.selection.slug}`
-    : null;
+  const { expanded } = useSheet();
+  const currentRow = p.selection ? entityKey(p.selection) : null;
 
   const counts = {
-    pass: p.passRows.length,
-    tour: p.tourRows.length,
-    town: p.townRows.length,
+    pass: p.rows.pass.length,
+    tour: p.rows.tour.length,
+    town: p.rows.town.length,
   };
 
   // Keep the selected row visible, e.g. after a click on a map marker.
@@ -130,32 +127,34 @@ export const Sidebar = (p: SidebarProps) => {
   const passSwitch = (
     <Switch
       size="sm"
-      checked={p.showPasses}
-      onCheckedChange={p.setShowPasses}
+      checked={p.shown.passes}
+      onCheckedChange={(on) =>
+        p.dispatch({ kind: "pass", on, type: "toggleKind" })
+      }
       aria-label="Pässe und Straßen auf der Karte anzeigen"
     />
   );
   const townSwitch = (
     <Switch
       size="sm"
-      checked={p.showTowns}
-      onCheckedChange={p.setShowTowns}
+      checked={p.shown.towns}
+      onCheckedChange={(on) =>
+        p.dispatch({ kind: "town", on, type: "toggleKind" })
+      }
       aria-label="Orte auf der Karte anzeigen"
     />
   );
   const tourSwitch = (
     <span className="flex items-center gap-1.5">
-      {visibleTourCount > 0 && visibleTourCount < allTourSlugs.length && (
+      {visibleTourCount > 0 && visibleTourCount < tourCount && (
         <span className="tabular-nums">
-          {visibleTourCount}/{allTourSlugs.length}
+          {visibleTourCount}/{tourCount}
         </span>
       )}
       <Switch
         size="sm"
-        checked={p.hiddenTours.length === 0}
-        onCheckedChange={(on) =>
-          p.setHiddenTours(() => (on ? [] : allTourSlugs))
-        }
+        checked={visibleTourCount === tourCount}
+        onCheckedChange={(on) => p.dispatch({ on, type: "toggleTours" })}
         aria-label="Touren auf der Karte anzeigen"
       />
     </span>
@@ -164,8 +163,8 @@ export const Sidebar = (p: SidebarProps) => {
   const emptyProps = {
     countWith: p.countWith,
     filters: p.filters,
-    onReset: resetFilters,
-    setFilters: p.setFilters,
+    onReset: reset,
+    setFilters,
   };
 
   return (
@@ -204,14 +203,14 @@ export const Sidebar = (p: SidebarProps) => {
             <FilterTrigger
               filters={p.filters}
               open={filtersOpen}
-              onOpenChange={p.setFiltersOpen}
+              onOpenChange={(open) => p.dispatch({ open, type: "filtersOpen" })}
             />
           </div>
           {/* What is filtered away stays readable while the panel is shut. */}
           <AppliedFilters
             filters={p.filters}
-            setFilters={p.setFilters}
-            onReset={resetFilters}
+            setFilters={setFilters}
+            onReset={reset}
           />
           {/* The three lists, one at a time. In the fixed header rather than
               in the scroll container, so the counts stay on screen while a
@@ -220,7 +219,7 @@ export const Sidebar = (p: SidebarProps) => {
               to get (see `KindTabs`). */}
           <KindTabs
             active={p.tab}
-            onChange={p.setTab}
+            onChange={(tab) => p.dispatch({ tab, type: "tab" })}
             counts={counts}
             totals={p.totals}
           />
@@ -232,7 +231,7 @@ export const Sidebar = (p: SidebarProps) => {
           className={cn(
             "min-h-0 flex-1 overscroll-contain",
             // Below the sheet's top snap point the drag belongs to the sheet,
-            // not to 201 rows (`useSheetExpanded`).
+            // not to 201 rows (`useSheet`).
             expanded ? "overflow-y-auto" : "overflow-hidden",
           )}
         >
@@ -240,11 +239,11 @@ export const Sidebar = (p: SidebarProps) => {
             <div className="border-border border-b">
               <FilterBody
                 filters={p.filters}
-                setFilters={p.setFilters}
+                setFilters={setFilters}
                 counts={counts}
                 totals={p.totals}
                 countWith={p.countWith}
-                onReset={resetFilters}
+                onReset={reset}
                 more={moreOpen}
                 onMoreChange={setMore}
               />
@@ -252,46 +251,44 @@ export const Sidebar = (p: SidebarProps) => {
           )}
           {p.tab === "pass" && (
             <PassList
-              rows={p.passRows}
+              rows={p.rows.pass}
               currentRow={currentRow}
               hovered={p.hovered}
-              onHover={p.onHover}
+              onHover={onHover}
               filters={p.filters}
-              setFilters={p.setFilters}
+              setFilters={setFilters}
               empty={emptyProps}
               mapControl={passSwitch}
-              onSelect={(slug) => p.onSelect({ kind: "pass", slug })}
+              onSelect={onSelect("pass")}
               onToggleFavorite={(slug) => p.onToggleFavorite("pass", slug)}
             />
           )}
           {p.tab === "tour" && (
             <TourList
-              rows={p.tourRows}
+              rows={p.rows.tour}
               currentRow={currentRow}
               hovered={p.hovered}
-              onHover={p.onHover}
+              onHover={onHover}
               period={p.filters.period}
-              hiddenTours={p.hiddenTours}
+              isShown={(slug) => isShown(p.shown, "tour", slug)}
               empty={emptyProps}
               mapControl={tourSwitch}
               onToggleTour={(slug, on) =>
-                p.setHiddenTours((h) =>
-                  on ? h.filter((s) => s !== slug) : [...new Set([...h, slug])],
-                )
+                p.dispatch({ on, slug, type: "toggleTour" })
               }
-              onSelect={(slug) => p.onSelect({ kind: "tour", slug })}
+              onSelect={onSelect("tour")}
               onToggleFavorite={(slug) => p.onToggleFavorite("tour", slug)}
             />
           )}
           {p.tab === "town" && (
             <TownList
-              rows={p.townRows}
+              rows={p.rows.town}
               currentRow={currentRow}
               hovered={p.hovered}
-              onHover={p.onHover}
+              onHover={onHover}
               empty={emptyProps}
               mapControl={townSwitch}
-              onSelect={(slug) => p.onSelect({ kind: "town", slug })}
+              onSelect={onSelect("town")}
               onToggleFavorite={(slug) => p.onToggleFavorite("town", slug)}
             />
           )}

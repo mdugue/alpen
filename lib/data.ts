@@ -15,6 +15,7 @@ import { MAP_ASSET_DIR, mapAssets } from "@/lib/map-assets";
 import type { MapAssets } from "@/lib/map-assets";
 import { nearbyTours, townReach } from "@/lib/nearby";
 import type { NearbyTours, TownReach } from "@/lib/nearby";
+import type { PageData } from "@/lib/page-data";
 import { profilesWithCoords, valleyElevations } from "@/lib/profile";
 import * as S from "@/lib/schema";
 import { passYear, signalsOf, tourYear } from "@/lib/status";
@@ -31,9 +32,13 @@ import type {
 
 /**
  * All data is static and lives in the repo. It is imported at build time –
- * no network access, no revalidation needed. The functions are async +
- * "use cache" so that Cache Components treat them as cached segments and the
- * page is prerendered completely.
+ * no network access, nothing to revalidate – so nothing here is cached and
+ * nothing here is async. The one cache boundary is `app/page.tsx`, whose
+ * `"use cache"` covers this whole module's work: what these functions derive
+ * is derived once, at prerender, and lands in the page's own cache entry.
+ * They used to carry a `"use cache"` each, which bought a second copy of the
+ * same values in the cache store and nothing else – no getter has a lifetime,
+ * a tag or a second caller to tell it apart from the page.
  *
  * Every file is parsed against its schema once, when this module loads on the
  * server; a file that does not match fails `next build` instead of the UI.
@@ -49,10 +54,10 @@ import type {
  *
  * What the page hands the client instead is derived from them – the file URLs,
  * tour bounding boxes, which tours pass near which entity, and the valley
- * elevation of each pass. Those derivations sit inside their cached getters,
- * not at module scope: the page fills them once at prerender, while the
- * weather route, which imports `getPass` from here and starts cold on a
- * serverless instance, never runs them.
+ * elevation of each pass. Those derivations sit inside the getters, not at
+ * module scope: the page runs them once at prerender, while the weather
+ * route, which imports `getPass` from here and starts cold on a serverless
+ * instance, never runs them.
  */
 const passes: Pass[] = S.Passes.parse(passesJson);
 const tours: Tour[] = S.Tours.parse(toursJson);
@@ -62,21 +67,6 @@ const climate: Record<string, ClimateYear> = S.Climate.parse(climateJson);
 const profiles: Record<string, ElevationProfile> =
   S.Profiles.parse(profilesJson);
 const photos: Photos = S.Photos.parse(photosJson);
-
-export const getPasses = async (): Promise<Pass[]> => {
-  "use cache";
-  return passes;
-};
-
-export const getTours = async (): Promise<Tour[]> => {
-  "use cache";
-  return tours;
-};
-
-export const getTowns = async (): Promise<Town[]> => {
-  "use cache";
-  return towns;
-};
 
 /**
  * Both asset kinds derive their file names here rather than reading a
@@ -93,8 +83,7 @@ const assertWritten = (dir: string, names: string[], script: string) => {
 };
 
 /** URLs of the GeoJSON files MapLibre loads, plus the tour bounding boxes. */
-export const getMapAssets = async (): Promise<MapAssets> => {
-  "use cache";
+const getMapAssets = (): MapAssets => {
   const { assets, files } = mapAssets(passes, tours, routes);
   assertWritten(
     MAP_ASSET_DIR,
@@ -105,16 +94,11 @@ export const getMapAssets = async (): Promise<MapAssets> => {
 };
 
 /** Tours within reach of each pass, tour start and town, see `lib/nearby.ts`. */
-export const getNearbyTours = async (): Promise<NearbyTours> => {
-  "use cache";
-  return nearbyTours(passes, tours, towns, routes);
-};
+const getNearbyTours = (): NearbyTours =>
+  nearbyTours(passes, tours, towns, routes);
 
 /** The area each town reaches, as a hull over its passes; see `lib/nearby.ts`. */
-export const getTownReach = async (): Promise<TownReach> => {
-  "use cache";
-  return townReach(passes, towns);
-};
+const getTownReach = (): TownReach => townReach(passes, towns);
 
 /**
  * One URL per entity for the profiles and photos its detail panel needs
@@ -122,8 +106,7 @@ export const getTownReach = async (): Promise<TownReach> => {
  * same function the build script runs – the file name is a hash of what it
  * returns, so the two sides have to derive it identically.
  */
-export const getDetailAssets = async (): Promise<DetailAssets> => {
-  "use cache";
+const getDetailAssets = (): DetailAssets => {
   const { assets, files } = detailAssets(
     passes,
     tours,
@@ -139,21 +122,13 @@ export const getDetailAssets = async (): Promise<DetailAssets> => {
   return assets;
 };
 
-/** Climate series per pass slug (24 half-months). */
-export const getClimate = async (): Promise<Record<string, ClimateYear>> => {
-  "use cache";
-  return climate;
-};
-
 /**
  * Lowest ascent start per pass slug – the elevation the valley heat is derived
  * to (`valleyTmax`, lib/status.ts). Derived here so the client never needs the
  * profiles for it.
  */
-export const getValleys = async (): Promise<Record<string, number>> => {
-  "use cache";
-  return valleyElevations(passes, profiles);
-};
+const getValleys = (): Record<string, number> =>
+  valleyElevations(passes, profiles);
 
 /**
  * The year of every pass and of every tour: 24 cells with status, grade,
@@ -169,12 +144,11 @@ export const getValleys = async (): Promise<Record<string, number>> => {
  *
  * Not a file in `data/generated/`: the series depends on the thresholds in
  * `lib/status.ts` and later on the live closure layer (docs/roadmap.md), so it
- * belongs in a cached getter that revalidates with the build rather than in
- * something committed next to the measurements.
+ * belongs with the page, which is rebuilt with them, rather than in something
+ * committed next to the measurements.
  */
-export const getYears = async (): Promise<Years> => {
-  "use cache";
-  const signals: Signals = { climate, valleys: await getValleys() };
+const getYears = (valleys: Record<string, number>): Years => {
+  const signals: Signals = { climate, valleys };
   const passYears: Record<string, Year> = {};
   for (const p of passes)
     passYears[p.slug] = passYear(p, signalsOf(signals, p.slug));
@@ -183,7 +157,38 @@ export const getYears = async (): Promise<Years> => {
   return { passes: passYears, tours: tourYears };
 };
 
-export const getPass = async (slug: string): Promise<Pass | undefined> => {
-  "use cache";
-  return passes.find((p) => p.slug === slug);
+export const getPass = (slug: string): Pass | undefined =>
+  passes.find((p) => p.slug === slug);
+
+/**
+ * Everything the page hands the client, as one value.
+ *
+ * The derivations above are the page's own business – it wants all of them,
+ * every time, and nothing else ever wanted one on its own – so the caller
+ * stops carrying the names it only ever passed on
+ * (docs/plans/31-panel-model.md). The four files it simply hands through are
+ * read straight off the parsed constants; a getter around a constant only
+ * hides which of the two a name is.
+ *
+ * `getPass` stays separate and stays exported: the weather route imports it
+ * and starts cold on a serverless instance, and the constraint at the top of
+ * this file is precisely that it must not drag the derivations in.
+ */
+export const getPageData = (): PageData => {
+  // The valleys are walked once and handed on: the page carries them and the
+  // year is graded against them, and there is no cache left to make the second
+  // walk free.
+  const valleys = getValleys();
+  return {
+    assets: getMapAssets(),
+    climate,
+    detail: getDetailAssets(),
+    nearbyTours: getNearbyTours(),
+    passes,
+    tours,
+    townReach: getTownReach(),
+    towns,
+    valleys,
+    years: getYears(valleys),
+  };
 };

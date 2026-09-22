@@ -15,8 +15,8 @@ import { REACH_BANDS, REACH_MAX_KM, haversine, reachBand } from "../../lib/geo";
 import type { ReachBand } from "../../lib/geo";
 import { fold } from "../../lib/search";
 import type { Pass } from "../../lib/types";
+import type { OverpassNode } from "./hosts";
 import { nameMatcher, taggedEle } from "./locate";
-import type { OverpassNode } from "./locate";
 
 /** A node this close to a marker is that entry. */
 export const MATCH_KM = 0.5;

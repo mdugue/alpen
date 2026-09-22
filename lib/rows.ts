@@ -1,5 +1,6 @@
-import { HEAT_NONE, statusMatches, WET_NONE } from "@/lib/app-state";
+import { HEAT_NONE, WET_NONE } from "@/lib/app-state";
 import type { EntityKind, Filters, PassSort } from "@/lib/app-state";
+import { periodIndex, PERIODS } from "@/lib/period";
 import {
   matches,
   passHaystack,
@@ -10,8 +11,6 @@ import {
   daysOf,
   GRADE_ORDER,
   inputAt,
-  periodIndex,
-  PERIODS,
   signalsOf,
   statusRank,
   valleyTmax,
@@ -26,9 +25,6 @@ import type {
   Years,
 } from "@/lib/status";
 import type { Pass, Period, Status, Tour, Town } from "@/lib/types";
-
-export { PASS_SORTS } from "@/lib/app-state";
-export type { PassSort } from "@/lib/app-state";
 
 /**
  * One filtered list per entity kind. Search and the favourites toggle apply
@@ -157,7 +153,7 @@ const countPasses = (
     const input = inputAt(signalsOf(signals, pass.slug), filters.period);
     if (!passMatches(pass, filters, q, input)) continue;
     const cell = years.passes[pass.slug]?.cells[i];
-    if (!cell || !statusMatches(cell.status, filters.status)) continue;
+    if (!cell || !filters.status.includes(cell.status)) continue;
     n += 1;
   }
   return n;
@@ -180,12 +176,46 @@ export interface PassRow {
   season: YearCell[];
 }
 
+export const PASS_SORT_LABEL: Record<PassSort, string> = {
+  beauty: "Schönheit",
+  difficulty: "Schwierigkeit",
+  elevation: "Höhe",
+  fame: "Bekanntheit",
+  name: "Name",
+  status: "Status",
+  traffic: "Verkehr",
+};
+
+const byName = (a: PassRow, b: PassRow) =>
+  a.pass.name.localeCompare(b.pass.name, "de");
+
+/** Direction is fixed per key: the "best" value first. */
+export const sortPassRows = (rows: PassRow[], sort: PassSort): PassRow[] => {
+  const cmp: Record<PassSort, (a: PassRow, b: PassRow) => number> = {
+    beauty: (a, b) => b.pass.beauty - a.pass.beauty,
+    difficulty: (a, b) => b.pass.difficulty - a.pass.difficulty,
+    elevation: (a, b) => b.pass.elevation - a.pass.elevation,
+    fame: (a, b) => b.pass.fame - a.pass.fame,
+    name: byName,
+    status: (a, b) =>
+      statusRank(a.status) - statusRank(b.status) ||
+      b.pass.elevation - a.pass.elevation,
+    traffic: (a, b) => a.pass.traffic - b.pass.traffic,
+  };
+  return rows.toSorted((a, b) => cmp[sort](a, b) || byName(a, b));
+};
+
 /**
  * The status, the word next to it and the strip all come out of one `Year`
  * (`getYears`, lib/data.ts), which is what keeps the row and the detail panel
  * from ever disagreeing about the same pass. The criteria filters still read
  * the raw signals: they ask about the chosen half-month's heat and rain, not
  * about the verdict.
+ *
+ * The sort is applied here rather than in the list, because `Filters.sort` is
+ * a member of `Filters` like any other: the rows that cross this seam are the
+ * rows the list draws, the map orders its markers by and the headline counts,
+ * and sorting past it gave the three of them three orderings.
  */
 export const buildPassRows = (
   passes: Pass[],
@@ -203,7 +233,7 @@ export const buildPassRows = (
     const year = years.passes[pass.slug];
     if (!year) continue;
     const cell = year.cells[i];
-    if (!cell || !statusMatches(cell.status, filters.status)) continue;
+    if (!cell || !filters.status.includes(cell.status)) continue;
     rows.push({
       favorite: isFavorite("pass", pass.slug),
       pass,
@@ -212,7 +242,7 @@ export const buildPassRows = (
       status: cell.status,
     });
   }
-  return rows;
+  return sortPassRows(rows, filters.sort);
 };
 
 export interface TourRow {
@@ -242,7 +272,7 @@ export const buildTourRows = (
     const year = years.tours[tour.slug];
     if (!year) continue;
     const cell = year.cells[i];
-    if (!cell || !statusMatches(cell.status, filters.status)) continue;
+    if (!cell || !filters.status.includes(cell.status)) continue;
     rows.push({
       favorite,
       reason: reasonOf(cell),
@@ -274,6 +304,18 @@ export const buildTownRows = (
   }
   return rows.toSorted((a, b) => a.town.name.localeCompare(b.town.name, "de"));
 };
+
+/**
+ * The three filtered lists, as the explorer builds them once and hands them
+ * on. The sidebar draws one of them at a time, the map draws all three as
+ * marks; both read the same object, which is why it is one type rather than
+ * the same three fields spelled out at each end.
+ */
+export interface Rows {
+  pass: readonly PassRow[];
+  tour: readonly TourRow[];
+  town: readonly TownRow[];
+}
 
 /**
  * How many roads a filter chip would leave, counted **disjunctively**: the
@@ -452,34 +494,9 @@ export const seasonBand = (
   return { bars, lat: counted ? latSum / counted : null };
 };
 
-export const PASS_SORT_LABEL: Record<PassSort, string> = {
-  beauty: "Schönheit",
-  difficulty: "Schwierigkeit",
-  elevation: "Höhe",
-  fame: "Bekanntheit",
-  name: "Name",
-  status: "Status",
-  traffic: "Verkehr",
-};
-
-const byName = (a: PassRow, b: PassRow) =>
-  a.pass.name.localeCompare(b.pass.name, "de");
-
-/** Direction is fixed per key: the "best" value first. */
-export const sortPassRows = (rows: PassRow[], sort: PassSort): PassRow[] => {
-  const cmp: Record<PassSort, (a: PassRow, b: PassRow) => number> = {
-    beauty: (a, b) => b.pass.beauty - a.pass.beauty,
-    difficulty: (a, b) => b.pass.difficulty - a.pass.difficulty,
-    elevation: (a, b) => b.pass.elevation - a.pass.elevation,
-    fame: (a, b) => b.pass.fame - a.pass.fame,
-    name: byName,
-    status: (a, b) =>
-      statusRank(a.status) - statusRank(b.status) ||
-      b.pass.elevation - a.pass.elevation,
-    traffic: (a, b) => a.pass.traffic - b.pass.traffic,
-  };
-  return rows.toSorted((a, b) => cmp[sort](a, b) || byName(a, b));
-};
+/** The bar of the chosen half-month – what the headline and the band's label both read. */
+export const currentBar = (band: SeasonBand, period: Period): SeasonBar =>
+  band.bars[periodIndex(period)]!;
 
 /**
  * How many rows share one block of a list, and the blocks themselves.
@@ -493,7 +510,7 @@ export const sortPassRows = (rows: PassRow[], sort: PassSort): PassRow[] => {
  */
 export const ROWS_PER_BLOCK = 10;
 
-export const rowBlocks = <T>(rows: T[]): T[][] => {
+export const rowBlocks = <T>(rows: readonly T[]): T[][] => {
   const blocks: T[][] = [];
   for (let i = 0; i < rows.length; i += ROWS_PER_BLOCK)
     blocks.push(rows.slice(i, i + ROWS_PER_BLOCK));

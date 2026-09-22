@@ -80,14 +80,15 @@ first (below); the plan comes after, and inherits the numbers.
 Design hypotheses, held until the spike confirms or refutes them:
 
 1. **The answer is an app state, not a text.** Filters, selection and camera
-   are already one serialisable object (`HashState` in `lib/app-state.ts`).
+   are already one serialisable object (`HashState` in `lib/hash.ts`, the
+   `load` action of `lib/app-state.ts`).
    An answer is a sentence plus a list of such states, shown as chips; a
    chip applied is a shareable link. The text explains, the app shows.
 2. **The model translates, the app judges.** The model turns "erste
    Herbstferienwoche" into a half-month (and asks about the Bundesland if it
    matters), "ein paar schöne Pässe" into beauty ≥ 4 with three in reach,
    "nicht so fit" into difficulty ≤ 3. Rideability, reach and the best
-   window come from `passYear`, `destinationAt` and `basesFor`, called as
+   window come from `passYear`, `destinationOf` and `basesOf`, called as
    tools and quoted in the app's own words (`GRADE_LABEL`, `REASON_WORD`).
    The model never grades a pass; that is Principle 3 applied to a model.
 3. **No retrieval layer.** The whole dataset – every road with region,
@@ -187,7 +188,7 @@ promises honesty.
 
 GPX/FIT upload or Strava integration, matching against pass coordinates,
 checkmarks in the lists, filter "still open and not yet ridden". The favorites
-infrastructure in `lib/app-state.ts` is the template. Fits the destination
+infrastructure in `lib/use-stored.ts` is the template. Fits the destination
 goal ("where are the passes we have not done yet").
 
 ## 8. More summer signals

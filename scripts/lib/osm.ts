@@ -21,42 +21,36 @@
  * because a host that just refused a connection will refuse the next one too
  * and each retry costs the wall-clock of a timeout.
  *
- * The I/O is injected. `build-data.ts` hands in its own rate-limited fetcher
- * per host, `locate-pass.ts` a plain one – so this module has no pacer of its
- * own and the pure measuring helpers in `locate.ts` stay pure.
+ * The I/O is the `Transport` handed in (`scripts/lib/transport.ts`), which
+ * paces both hosts; the two questions themselves are `overpass.query` and
+ * `osmMap.bbox` in `hosts.ts`. So this module has no pacer of its own and the
+ * pure measuring helpers in `locate.ts` stay pure.
  */
 import type { LatLon } from "../../lib/types";
+import {
+  OSM_MAP_URL,
+  OVERPASS_URL,
+  osmMap,
+  overpass as overpassHost,
+} from "./hosts";
+import type { OsmElement, OverpassWay } from "./hosts";
 import {
   CANDIDATE_RADIUS,
   ROAD_RADIUS,
   candidatesQuery,
   mapBbox,
-  overpassPost,
   passNodesWithin,
   waysWithGeometry,
   roadsQuery,
 } from "./locate";
-import type { OsmElement, OverpassWay } from "./locate";
-
-export const OVERPASS_URL =
-  process.env.OVERPASS_URL ?? "https://overpass-api.de/api/interpreter";
-/** `.json` rather than the XML default – the elements then read like Overpass'. */
-export const OSM_MAP_URL =
-  process.env.OSM_MAP_URL ?? "https://api.openstreetmap.org/api/0.6/map.json";
-
-/** Fetches and parses; throws for anything that is not a 200. */
-export type GetJson = (url: string, init?: RequestInit) => Promise<unknown>;
+import type { Transport } from "./transport";
 
 export interface OsmOptions {
   log?: (line: string) => void;
   /** Force the map API, e.g. with `OVERPASS_URL=""`. */
   overpass?: boolean;
-  viaMap: GetJson;
-  viaOverpass: GetJson;
+  transport: Transport;
 }
-
-const elementsOf = (json: unknown) =>
-  (json as { elements?: OsmElement[] }).elements ?? [];
 
 /** One line, no stack: the reason belongs in the log, the trace does not. */
 const reasonOf = (error: unknown) =>
@@ -97,9 +91,7 @@ export const osmSource = (opts: OsmOptions) => {
   const overpass = async (query: string): Promise<OsmElement[] | null> => {
     if (overpassDown) return null;
     try {
-      return elementsOf(
-        await opts.viaOverpass(OVERPASS_URL, overpassPost(query)),
-      );
+      return await overpassHost.query(opts.transport, query);
     } catch (error) {
       overpassDown = reasonOf(error);
       log(
@@ -124,9 +116,7 @@ export const osmSource = (opts: OsmOptions) => {
 
     for (let r = radiusKm, tries = 0; ; r /= 2, tries += 1) {
       try {
-        const elements = elementsOf(
-          await opts.viaMap(`${OSM_MAP_URL}?bbox=${mapBbox(p, r)}`),
-        );
+        const elements = await osmMap.bbox(opts.transport, mapBbox(p, r));
         // Only a box that was asked for in full answers for a later, smaller
         // one; a halved box would answer for a question it does not cover.
         if (tries === 0) {

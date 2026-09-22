@@ -1,6 +1,7 @@
 # 20 · The gate's decisions out of the build script
 
-**Status:** superseded by [32](32-pipeline-planner.md) · **Effort:** M–L ·
+**Status:** superseded by [32](32-pipeline-planner.md), carried out as its
+phase B in [#62](https://github.com/mdugue/alpen/pull/62) · **Effort:** M–L ·
 **Depends on:** 00 (the gate) ·
 **Unblocks:** 21 (an offline pipeline test needs decisions it can import),
 roadmap 1 (a closures step reuses the job list), 12 (destinations enter the
@@ -14,7 +15,10 @@ pipeline as jobs)
 > `--only` is honoured by two of nine counters, the keep/restore path has
 > never run against the stored data (0 of 9 rejections sit beside a stored
 > route), and two spent migrations run on every invocation. All of it is
-> phase B of [plan 32](32-pipeline-planner.md).
+> phase B of [plan 32](32-pipeline-planner.md), which has since carried it
+> out: the decisions are `scripts/lib/decide.ts`, the retry rule is told once
+> in [`data-pipeline.md`](../data-pipeline.md#the-retry-rule), and nothing
+> below is left to do here.
 
 ## Goal
 

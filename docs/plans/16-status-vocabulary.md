@@ -11,8 +11,12 @@ translates one table)
 > without threshold literals, the four tests). PR #47 then reintroduced part
 > of what this plan removed – a second `GRADE_ORDER` and a second `gradeOf`
 > in `lib/destination.ts`, the "beste Zeit" sentence twice in JSX, a dead
-> `statusOf` whose body is inlined – and the "abgeleitet" paragraph is still
-> assembled in JSX. That tail is phase B of [plan 31](31-panel-model.md).
+> `statusOf` whose body is inlined – and the "abgeleitet" paragraph was still
+> assembled in JSX. Phase B of [plan 31](31-panel-model.md) closed that tail:
+> `GRADE_ORDER` and `statusOf` are `lib/status.ts`'s alone and
+> `lib/destination.ts` imports them, the destination grade is `gradeOfBase`,
+> and the three remaining sentences are `bestText`, `reasonParagraph` and
+> `climateText`, each pinned by a test.
 
 ## Goal
 

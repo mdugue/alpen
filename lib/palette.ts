@@ -1,23 +1,78 @@
 /**
- * The map's colours as sRGB, one set per colour scheme.
+ * The app's colours as sRGB: the tokens, and the map's own tones on top of
+ * them.
  *
- * MapLibre cannot read CSS custom properties, so what the basemap style needs
- * is spelled out here. The first block of each scheme mirrors the tokens in
- * `app/globals.css` (keep them in sync when the palette moves; plan 11,
- * item 14, wants one module for these and the copies in `lib/brand.ts`). The
- * second block exists only for the map: the quiet tones for land, water, wood
- * and glaciers, the roads and the basemap's own labels. They are chosen
- * against the tokens, not derived from them – a road must sit under a status
- * colour without competing, and the land must be a shade off the panels so
- * the panels still read as panels.
+ * Three places need a colour that no stylesheet can give them – MapLibre,
+ * which cannot read a custom property, and Satori and the web manifest, which
+ * render outside the document altogether (`lib/brand.ts`). They used to keep a
+ * copy each, and the two copies of the same token had already drifted apart.
+ * So `TOKENS` is the one mirror of `app/globals.css`, and
+ * `bun run palette` (scripts/check-palette.ts) converts the stylesheet's own
+ * `oklch()` values and fails on a difference – the copy cannot rot quietly any
+ * more, which is the only thing that makes a copy acceptable.
+ *
+ * `PALETTE` is that mirror plus what exists for the basemap alone: the quiet
+ * tones for land, water, wood and glaciers, the roads and the basemap's own
+ * labels. Those are chosen against the tokens, not derived from them – a road
+ * must sit under a status colour without competing, and the land must be a
+ * shade off the panels so the panels still read as panels.
  *
  * The app's own layers (passes, ascents, tours, towns) still read their
  * colours from the live CSS tokens at runtime (`readColors` in
- * `components/map/pass-map.tsx`); this module is what the basemap and its
+ * `components/map/app-layers.ts`); this module is what the basemap and its
  * generated style files are painted with. See `lib/basemap.ts`.
  */
 
 export type Scheme = "light" | "dark";
+
+/**
+ * The tokens of `app/globals.css`, converted to sRGB. Every key is the custom
+ * property's name without its dashes, and that is not a convention the check
+ * can be talked out of: `mutedForeground` is looked up as `--muted-foreground`
+ * in the stylesheet, so a token renamed in one place fails in the other.
+ */
+export interface Tokens {
+  background: string;
+  card: string;
+  foreground: string;
+  mutedForeground: string;
+  primary: string;
+  accent: string;
+  statusOpen: string;
+  statusRisky: string;
+  statusClosed: string;
+  tour: string;
+  town: string;
+}
+
+export const TOKENS: Record<Scheme, Tokens> = {
+  dark: {
+    accent: "#e8aa4e",
+    background: "#0d1013",
+    card: "#181b1f",
+    foreground: "#f0eeeb",
+    mutedForeground: "#a39e94",
+    primary: "#d5cdb8",
+    statusClosed: "#ef6661",
+    statusOpen: "#47b777",
+    statusRisky: "#efac44",
+    tour: "#a792ce",
+    town: "#73abda",
+  },
+  light: {
+    accent: "#ebae51",
+    background: "#fbfaf7",
+    card: "#ffffff",
+    foreground: "#1c1713",
+    mutedForeground: "#6f6860",
+    primary: "#253444",
+    statusClosed: "#c53637",
+    statusOpen: "#258651",
+    statusRisky: "#e1a035",
+    tour: "#8874ae",
+    town: "#2a5885",
+  },
+};
 
 export interface MapPalette {
   // --- Mirrors of app/globals.css --------------------------------------
@@ -61,50 +116,52 @@ export interface MapPalette {
   highlight: string;
 }
 
+/** The token half of a scheme's palette, under the names the map uses. */
+const mirror = (t: Tokens) => ({
+  accent: t.accent,
+  background: t.background,
+  ink: t.foreground,
+  muted: t.mutedForeground,
+  paper: t.card,
+  status: {
+    closed: t.statusClosed,
+    open: t.statusOpen,
+    risky: t.statusRisky,
+  },
+  tour: t.tour,
+  town: t.town,
+});
+
 export const PALETTE: Record<Scheme, MapPalette> = {
   dark: {
-    accent: "#e8aa4e",
-    background: "#0d1013",
+    ...mirror(TOKENS.dark),
     boundary: "#4d535c",
     built: "#272b32",
     glacier: "#2c3139",
     highlight: "#7c828b",
-    ink: "#f0eeeb",
     label: "#c6c1b8",
     labelMuted: "#8f8a80",
     labelWater: "#7fa3bd",
     land: "#20242b",
-    muted: "#a39e94",
-    paper: "#181b1f",
     road: "#343941",
     roadCasing: "#1b1e24",
     shade: "#000000",
-    status: { closed: "#ef6661", open: "#47b777", risky: "#efac44" },
-    tour: "#a792ce",
-    town: "#73abda",
     water: "#151a21",
     wood: "#1e2421",
   },
   light: {
-    accent: "#ebae51",
-    background: "#fbfaf7",
+    ...mirror(TOKENS.light),
     boundary: "#b3aa9d",
     built: "#ebe6dd",
     glacier: "#f9fbfc",
     highlight: "#ffffff",
-    ink: "#1c1713",
     label: "#4a453e",
     labelMuted: "#6b655c",
     labelWater: "#4a6f8a",
     land: "#f4f1ea",
-    muted: "#6f6860",
-    paper: "#ffffff",
     road: "#ffffff",
     roadCasing: "#d3cdc2",
     shade: "#7a7168",
-    status: { closed: "#c53637", open: "#258651", risky: "#e1a035" },
-    tour: "#8874ae",
-    town: "#2a5885",
     water: "#c9d6dc",
     wood: "#e2e6d8",
   },

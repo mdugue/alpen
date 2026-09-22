@@ -13,7 +13,8 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { NO_SECTIONS, SECTIONS_KEY, useStored } from "@/lib/app-state";
+import type { BlockId } from "@/lib/detail-model";
+import { useStored } from "@/lib/use-stored";
 
 /**
  * The one heading level inside the detail panel: small caps, a hairline, and
@@ -33,9 +34,9 @@ import { NO_SECTIONS, SECTIONS_KEY, useStored } from "@/lib/app-state";
  * from the sidebar footer, so a header never opens one.
  *
  * Which sections are folded is kept per session and shared by all of them
- * (`SECTIONS_KEY`), so it survives switching to the next pass but not the next
- * visit. Stored are the *closed* ids: a section that did not exist yet opens
- * by itself.
+ * (the `closedSections` slot of the `STORAGE` table), so it survives
+ * switching to the next pass but not the next visit. Stored are the *closed*
+ * ids: a section that did not exist yet opens by itself.
  */
 export const Section = ({
   id,
@@ -43,21 +44,22 @@ export const Section = ({
   info,
   children,
 }: {
-  /** Stable across entities – that is what makes the fold carry over. */
-  id: string;
+  /**
+   * Stable across entities – that is what makes the fold carry over – and one
+   * of the closed set the panel model declares (`BLOCKS`), so a block cannot
+   * be spelled two ways and lose its fold.
+   */
+  id: BlockId;
   title: string;
   info?: string;
   children: React.ReactNode;
 }) => {
-  const [closed, setClosed] = useStored<string[]>(
-    SECTIONS_KEY,
-    NO_SECTIONS,
-    "session",
-  );
+  const [closed, setClosed] = useStored("closedSections");
 
   return (
     <Collapsible
       className="mt-6"
+      data-block={id}
       onOpenChange={(open) =>
         setClosed((ids) =>
           open ? ids.filter((x) => x !== id) : [...ids, id].toSorted(),

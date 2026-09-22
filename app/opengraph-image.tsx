@@ -10,10 +10,10 @@ import tours from "@/data/tours.json";
 import towns from "@/data/towns.json";
 import { BRAND, SITE_NAME } from "@/lib/brand";
 import { MarkBadge } from "@/lib/mark";
+import { periodLabel } from "@/lib/period";
 import { valleyElevations } from "@/lib/profile";
 import {
   inputAt,
-  periodLabel,
   passStatus,
   signalsOf,
   STATUS_LABEL,
@@ -95,7 +95,7 @@ export default function Image() {
   return new ImageResponse(
     <div
       style={{
-        background: BRAND.paper,
+        background: BRAND.day,
         color: BRAND.ink,
         display: "flex",
         fontFamily: "Oxanium",
@@ -117,7 +117,7 @@ export default function Image() {
             cy={d.y}
             r={d.r}
             fill={BRAND.status[d.status]}
-            stroke={BRAND.paper}
+            stroke={BRAND.day}
             strokeWidth={2.5}
           />
         ))}

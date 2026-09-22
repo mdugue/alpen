@@ -78,12 +78,15 @@ bun run scripts/check-data.ts || {
 
 Das Gate hat etwas abgewiesen. Die drei Wege daraus:
   1. Koordinaten in data/passes.json korrigieren (Passpunkt oder ascent.from)
-     und danach: bun run scripts/build-data.ts --retry-rejected
+     und danach: bun run scripts/build-data.ts
   2. Wenn die Auffahrt wirklich so ist (Straße endet unterhalb des Gipfels):
      check (an der Auffahrt oder der Tour) mit maxTopDelta/maxKm … und einer note setzen.
   3. Wenn die Grenze selbst falsch ist: LIMITS in scripts/lib/validate.ts
      ändern und mit `bun run data:check --explain` prüfen, was das für alle
      anderen Routen bedeutet – das kostet keine API-Calls.
+
+Jeder dieser drei Wege wird vom nächsten Lauf von selbst aufgegriffen – warum,
+steht in docs/data-pipeline.md, Abschnitt "The retry rule".
 EOF
   exit 1
 }
