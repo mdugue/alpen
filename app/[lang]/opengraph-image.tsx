@@ -4,6 +4,8 @@ import passes from "@/data/passes.json";
 import tours from "@/data/tours.json";
 import towns from "@/data/towns.json";
 import { BRAND, SITE_NAME } from "@/lib/brand";
+import { DEFAULT_LANG, isLang, LANGS, messagesOf } from "@/lib/i18n";
+import type { Lang } from "@/lib/i18n";
 import { MarkBadge } from "@/lib/mark";
 import { periodLabel } from "@/lib/period";
 import {
@@ -22,21 +24,30 @@ import { fmt } from "@/lib/utils";
  * half-month – the arc of the Alps emerges on its own (`lib/share-image.tsx`,
  * which the entity routes draw from too). The lockup (mark, wordmark,
  * accent) is the one from lib/brand.ts, so a link preview and the browser
- * tab show the same thing.
+ * tab show the same thing. One per language (plan 08): the words on it come
+ * from the message files, the dots are the same.
  */
+export const generateStaticParams = () => LANGS.map((lang) => ({ lang }));
 
 export const alt = `${SITE_NAME} – welche Pässe, Touren und Rad-Orte sind wann mit dem Rennrad befahrbar?`;
 export const size = SHARE_SIZE;
 export const contentType = "image/png";
 
-export default async function Image() {
+export default async function Image({
+  params,
+}: {
+  params: Promise<{ lang: string }>;
+}) {
+  const { lang: raw } = await params;
+  const lang: Lang = isLang(raw) ? raw : DEFAULT_LANG;
+  const { share } = messagesOf(lang);
   const { dots } = dotMap();
   // Same words as the sidebar sections, so the preview and the app agree.
-  const counts = [
-    `${fmt(passes.length)} Pässe`,
-    `${fmt(tours.length)} Touren`,
-    `${fmt(towns.length)} Orte`,
-  ].join(" · ");
+  const counts = share.counts(
+    fmt(passes.length),
+    fmt(tours.length),
+    fmt(towns.length),
+  );
 
   return new ImageResponse(
     <div
@@ -85,7 +96,7 @@ export default async function Image() {
             marginTop: 20,
           }}
         >
-          Welche Region lohnt sich wann?
+          {share.headline}
         </div>
         <div
           style={{

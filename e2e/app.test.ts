@@ -310,6 +310,35 @@ test("5b · an entity route is a page of its own, and the back button closes it"
     },
   ));
 
+test("5c · the English version lives under /en, and the toggle keeps the place", () =>
+  withPage(
+    app,
+    "english",
+    { hash: "en/pass/col-du-galibier#t=6" },
+    async (page) => {
+      await page.waitFor("#detail-title");
+      expect(await page.evaluate<string>("document.documentElement.lang")).toBe(
+        "en",
+      );
+      expect(await page.path()).toBe("/en/pass/col-du-galibier");
+      // The kind tabs read the English words; the rows keep their names.
+      await page.clickText('[role="tab"]', "Roads");
+      await page.waitFor('[data-row="pass:passo-dello-stelvio"]');
+      // The toggle is a plain link to the same place without the prefix.
+      await page.click('a[hreflang="de"]');
+      await waitUntil(
+        async () => (await page.path()) === "/pass/col-du-galibier",
+        "the German route",
+      );
+      // A full load: the new document is there once its panel is.
+      await page.waitFor("#detail-title");
+      expect(await page.evaluate<string>("document.documentElement.lang")).toBe(
+        "de",
+      );
+      expect(await page.hash()).toContain("t=6");
+    },
+  ));
+
 test("6 · a stored half-month is applied, a shared link beats it", () =>
   withPage(app, "stored-period", {}, async (page) => {
     // The preference is written by the period control only; here it is

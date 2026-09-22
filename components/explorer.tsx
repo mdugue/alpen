@@ -3,6 +3,7 @@
 import { useReducer, useRef, useState } from "react";
 
 import { AppHeader } from "@/components/app-header";
+import { useT } from "@/components/i18n";
 import { PassMap } from "@/components/map/pass-map";
 import { DetailPanel } from "@/components/panel/detail-panel";
 import { SelectionContext } from "@/components/panel/weather-slot";
@@ -13,7 +14,7 @@ import { Sidebar } from "@/components/sidebar/sidebar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { ALL_RANGES, initialState, KIND_LABEL, reduce } from "@/lib/app-state";
+import { ALL_RANGES, initialState, reduce } from "@/lib/app-state";
 import type {
   Action,
   AppState,
@@ -40,7 +41,6 @@ import type { Signals } from "@/lib/status";
 import type { Period } from "@/lib/types";
 import { useMapEnvironment } from "@/lib/use-media-query";
 import { useFavorites, useStorageAdapter, useStored } from "@/lib/use-stored";
-import { fmt } from "@/lib/utils";
 
 interface Props {
   /** Everything the page loaded, as one value (`getPageData`, lib/data.ts). */
@@ -77,6 +77,7 @@ export const Explorer = ({ data, defaultPeriod, children }: Props) => {
     years,
   } = data;
   const signals: Signals = { climate, valleys };
+  const { t, fmt } = useT();
   // Everything the map draws differently for, in one value; the shell reads
   // the same `mobile` the map does, so the two can never disagree about which
   // layout is on screen.
@@ -86,7 +87,7 @@ export const Explorer = ({ data, defaultPeriod, children }: Props) => {
     mobile: isMobile,
     rangeBounds: assets.rangeBounds,
     today: defaultPeriod,
-    tours: tours.map((t) => t.slug),
+    tours: tours.map((tour) => tour.slug),
   };
   const [state, dispatch] = useReducer(
     (s: AppState, a: Action) => reduce(s, a, env),
@@ -119,9 +120,9 @@ export const Explorer = ({ data, defaultPeriod, children }: Props) => {
   const townIndex = indexBySlug(towns);
   /** The area each town lies in, by name – the one naming it as a base first. */
   const townAreas = Object.fromEntries(
-    towns.map((t) => [
-      t.slug,
-      destinationsOfTown(t.slug, destinations, destinationMembers)[0]?.name,
+    towns.map((town) => [
+      town.slug,
+      destinationsOfTown(town.slug, destinations, destinationMembers)[0]?.name,
     ]),
   );
   const rows = {
@@ -244,7 +245,7 @@ export const Explorer = ({ data, defaultPeriod, children }: Props) => {
                     dispatch({ filters: false, open: true, type: "list" })
                   }
                 >
-                  {KIND_LABEL[tab]} ({fmt(rows[tab].length)})
+                  {t.kinds[tab]} ({fmt(rows[tab].length)})
                 </Button>
                 <Button
                   variant="outline"

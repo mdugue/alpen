@@ -2,6 +2,7 @@
 
 import { PanelLeftClose, PanelLeftOpen } from "lucide-react";
 
+import { useT } from "@/components/i18n";
 import { Button } from "@/components/ui/button";
 import {
   Tooltip,
@@ -9,6 +10,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { SITE_NAME, SITE_TAGLINE } from "@/lib/brand";
+import { switchLangHref } from "@/lib/hash-adapter";
 import { periodLabel } from "@/lib/period";
 import { barTotal } from "@/lib/rows";
 import type { SeasonBar } from "@/lib/rows";
@@ -78,62 +80,90 @@ export const AppHeader = ({
   sidebarOpen?: boolean;
   onToggleSidebar?: () => void;
   onOpenScales: () => void;
-}) => (
-  <header
-    className={cn(
-      "flex flex-col gap-0.5 border-b px-3 py-1.5 lg:flex-row lg:items-center lg:gap-4 lg:py-2",
-      SHELL_BAR,
-    )}
-  >
-    <div className="flex shrink-0 items-center gap-2">
-      {onToggleSidebar && (
-        <Tooltip>
-          <TooltipTrigger
-            render={
-              <Button
-                size="icon"
-                variant="ghost"
-                className="-ml-1 max-lg:hidden"
-                onClick={onToggleSidebar}
-                aria-label={
-                  sidebarOpen ? "Seitenleiste ausblenden" : "Liste und Filter"
-                }
-              />
-            }
-          >
-            {sidebarOpen ? <PanelLeftClose /> : <PanelLeftOpen />}
-          </TooltipTrigger>
-          <TooltipContent>
-            {sidebarOpen ? "Seitenleiste ausblenden" : "Liste und Filter"}
-          </TooltipContent>
-        </Tooltip>
+}) => {
+  const { t, lang } = useT();
+  const other = lang === "de" ? "en" : "de";
+  return (
+    <header
+      className={cn(
+        "flex flex-col gap-0.5 border-b px-3 py-1.5 lg:flex-row lg:items-center lg:gap-4 lg:py-2",
+        SHELL_BAR,
       )}
-      <span className="bg-accent h-5 w-1 rounded-full" aria-hidden />
-      <h1 className="font-heading text-sm font-bold tracking-wide uppercase">
-        {SITE_NAME}
-      </h1>
-      <span className="text-muted-foreground truncate text-xs">
-        {SITE_TAGLINE}
-      </span>
-    </div>
-
-    <div className="lg:hidden">
-      <Headline bar={bar} long={false} where={where} />
-    </div>
-    <div className="min-w-0 max-lg:hidden">
-      <Headline bar={bar} long where={where} />
-    </div>
-
-    <span className="text-muted-foreground ml-auto shrink-0 text-xs max-lg:hidden">
-      Klima 2015–2024 · Prognose 7 Tage
-    </span>
-    <Button
-      variant="outline"
-      size="sm"
-      className="shrink-0 max-lg:hidden"
-      onClick={onOpenScales}
     >
-      Skalen &amp; Quellen
-    </Button>
-  </header>
-);
+      <div className="flex shrink-0 items-center gap-2">
+        {onToggleSidebar && (
+          <Tooltip>
+            <TooltipTrigger
+              render={
+                <Button
+                  size="icon"
+                  variant="ghost"
+                  className="-ml-1 max-lg:hidden"
+                  onClick={onToggleSidebar}
+                  aria-label={
+                    sidebarOpen ? t.header.hideSidebar : t.header.listAndFilters
+                  }
+                />
+              }
+            >
+              {sidebarOpen ? <PanelLeftClose /> : <PanelLeftOpen />}
+            </TooltipTrigger>
+            <TooltipContent>
+              {sidebarOpen ? t.header.hideSidebar : t.header.listAndFilters}
+            </TooltipContent>
+          </Tooltip>
+        )}
+        <span className="bg-accent h-5 w-1 rounded-full" aria-hidden />
+        <h1 className="font-heading text-sm font-bold tracking-wide uppercase">
+          {SITE_NAME}
+        </h1>
+        <span className="text-muted-foreground truncate text-xs">
+          {SITE_TAGLINE}
+        </span>
+      </div>
+
+      <div className="lg:hidden">
+        <Headline bar={bar} long={false} where={where} />
+      </div>
+      <div className="min-w-0 max-lg:hidden">
+        <Headline bar={bar} long where={where} />
+      </div>
+
+      <span className="text-muted-foreground ml-auto shrink-0 text-xs max-lg:hidden">
+        {t.header.dataLine}
+      </span>
+      {/* The other language, as a plain link: the same path under the other
+        prefix, with the hash – camera, half-month, selection – carried along
+        (`switchLangHref`). A full load on purpose: the page under the other
+        prefix is another prerender, and the text of every row changes with
+        it. The href is read at the click, so the link is never stale. */}
+      <Button
+        variant="ghost"
+        size="sm"
+        className="shrink-0 font-semibold tracking-wide uppercase"
+        render={
+          <a
+            href={switchLangHref(other)}
+            hrefLang={other}
+            lang={other}
+            onClick={(e) => {
+              e.currentTarget.href = switchLangHref(other);
+            }}
+          />
+        }
+        nativeButton={false}
+      >
+        {other}
+        <span className="sr-only"> – {t.header.switchTo}</span>
+      </Button>
+      <Button
+        variant="outline"
+        size="sm"
+        className="shrink-0 max-lg:hidden"
+        onClick={onOpenScales}
+      >
+        {t.header.scales}
+      </Button>
+    </header>
+  );
+};

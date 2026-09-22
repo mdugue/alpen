@@ -6,6 +6,7 @@ import { Weather } from "@/components/panel/weather";
 import { WeatherSkeleton } from "@/components/panel/weather-forecast";
 import { WeatherSlot } from "@/components/panel/weather-slot";
 import { getEntity, staticParams } from "@/lib/data";
+import { DEFAULT_LANG, isLang, LANGS, OG_LOCALE } from "@/lib/i18n";
 import { hrefFor, selectionOf } from "@/lib/routes";
 import { entityDescription, entityTitle } from "@/lib/share-text";
 
@@ -22,16 +23,17 @@ import { entityDescription, entityTitle } from "@/lib/share-text";
  */
 export const generateStaticParams = () => staticParams();
 
-type Params = Promise<{ kind: string; slug: string }>;
+type Params = Promise<{ kind: string; lang: string; slug: string }>;
 
 /** The entity a path names, or nothing – which the page turns into a 404. */
 const entityOf = async (params: Params) => {
-  const { kind, slug } = await params;
+  const { kind, lang: raw, slug } = await params;
+  const lang = isLang(raw) ? raw : DEFAULT_LANG;
   // The params arrive decoded; the path form is what `selectionOf` reads.
   const selection = selectionOf(`/${kind}/${encodeURIComponent(slug)}`);
   if (!selection) return null;
   const entity = getEntity(selection);
-  return entity ? { entity, selection } : null;
+  return entity ? { entity, lang, selection } : null;
 };
 
 export const generateMetadata = async ({
@@ -41,14 +43,25 @@ export const generateMetadata = async ({
 }): Promise<Metadata> => {
   const found = await entityOf(params);
   if (!found) return {};
-  const { entity, selection } = found;
+  const { entity, lang, selection } = found;
   const title = entityTitle(entity);
   const description = entityDescription(entity);
-  const url = hrefFor(selection);
+  const url = hrefFor(selection, lang);
   return {
-    alternates: { canonical: url },
+    alternates: {
+      canonical: url,
+      languages: Object.fromEntries(
+        LANGS.map((l) => [l, hrefFor(selection, l)]),
+      ),
+    },
     description,
-    openGraph: { description, title, type: "website", url },
+    openGraph: {
+      description,
+      locale: OG_LOCALE[lang],
+      title,
+      type: "website",
+      url,
+    },
     // The site name is appended by the title template in app/layout.tsx.
     title,
     twitter: { description, title },

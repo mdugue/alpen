@@ -1,9 +1,10 @@
 "use client";
 
+import { useT } from "@/components/i18n";
 import { Button } from "@/components/ui/button";
 import type { EntityKind } from "@/lib/app-state";
-import { ALL_KINDS, KIND_LABEL } from "@/lib/app-state";
-import { cn, fmt, TOUCH_CONTROL } from "@/lib/utils";
+import { ALL_KINDS } from "@/lib/app-state";
+import { cn, TOUCH_CONTROL } from "@/lib/utils";
 
 /** Legend glyphs; the same shapes the map uses for the four kinds. */
 export const KIND_GLYPH: Record<EntityKind, React.ReactNode> = {
@@ -47,50 +48,53 @@ export const KindTabs = ({
   onChange: (kind: EntityKind) => void;
   counts: Record<EntityKind, number>;
   totals: Record<EntityKind, number>;
-}) => (
-  <div
-    role="tablist"
-    aria-label="Was die Liste zeigt"
-    className="bg-muted/60 flex min-w-0 gap-0.5 rounded-lg p-0.5"
-  >
-    {ALL_KINDS.map((kind) => {
-      const on = kind === active;
-      const filtered = counts[kind] !== totals[kind];
-      return (
-        <Button
-          key={kind}
-          role="tab"
-          aria-selected={on}
-          variant="ghost"
-          size="sm"
-          onClick={() => onChange(kind)}
-          className={cn(
-            "min-w-0 flex-1 gap-1.5 rounded-md px-1.5 font-normal",
-            on
-              ? "bg-card text-foreground hover:bg-card shadow-sm"
-              : "text-muted-foreground hover:text-foreground",
-            TOUCH_CONTROL,
-          )}
-        >
-          <span
-            className="flex size-3 shrink-0 items-center justify-center"
-            aria-hidden
-          >
-            {KIND_GLYPH[kind]}
-          </span>
-          <span className="truncate text-xs">{KIND_LABEL[kind]}</span>
-          <span
+}) => {
+  const { t, fmt } = useT();
+  return (
+    <div
+      role="tablist"
+      aria-label={t.sidebar.whatTheListShows}
+      className="bg-muted/60 flex min-w-0 gap-0.5 rounded-lg p-0.5"
+    >
+      {ALL_KINDS.map((kind) => {
+        const on = kind === active;
+        const filtered = counts[kind] !== totals[kind];
+        return (
+          <Button
+            key={kind}
+            role="tab"
+            aria-selected={on}
+            variant="ghost"
+            size="sm"
+            onClick={() => onChange(kind)}
             className={cn(
-              "shrink-0 text-xs tabular-nums",
-              filtered
-                ? "text-foreground font-semibold"
-                : "text-muted-foreground",
+              "min-w-0 flex-1 gap-1.5 rounded-md px-1.5 font-normal",
+              on
+                ? "bg-card text-foreground hover:bg-card shadow-sm"
+                : "text-muted-foreground hover:text-foreground",
+              TOUCH_CONTROL,
             )}
           >
-            {fmt(counts[kind])}
-          </span>
-        </Button>
-      );
-    })}
-  </div>
-);
+            <span
+              className="flex size-3 shrink-0 items-center justify-center"
+              aria-hidden
+            >
+              {KIND_GLYPH[kind]}
+            </span>
+            <span className="truncate text-xs">{t.kinds[kind]}</span>
+            <span
+              className={cn(
+                "shrink-0 text-xs tabular-nums",
+                filtered
+                  ? "text-foreground font-semibold"
+                  : "text-muted-foreground",
+              )}
+            >
+              {fmt(counts[kind])}
+            </span>
+          </Button>
+        );
+      })}
+    </div>
+  );
+};

@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Inter, Oxanium } from "next/font/google";
+import { notFound } from "next/navigation";
 
 import {
   BRAND,
@@ -8,8 +9,9 @@ import {
   SITE_TITLE,
   siteUrl,
 } from "@/lib/brand";
+import { isLang, LANGS, langPrefix, OG_LOCALE } from "@/lib/i18n";
 
-import "./globals.css";
+import "../globals.css";
 
 const inter = Inter({
   display: "swap",
@@ -22,8 +24,18 @@ const oxanium = Oxanium({
   variable: "--font-oxanium",
 });
 
+/**
+ * The two languages, prerendered from one tree (plan 08): the segment is
+ * the root parameter, `next.config.ts` rewrites the prefix-free German
+ * paths onto `/de`, and the English pages live under `/en`.
+ */
+export const generateStaticParams = () => LANGS.map((lang) => ({ lang }));
+
 export const metadata: Metadata = {
-  alternates: { canonical: "/" },
+  alternates: {
+    canonical: "/",
+    languages: Object.fromEntries(LANGS.map((l) => [l, `${langPrefix(l)}/`])),
+  },
   appleWebApp: { capable: true, statusBarStyle: "default", title: SITE_NAME },
   applicationName: SITE_NAME,
   authors: [{ name: "Manuel Dugué", url: "https://manuel.fyi" }],
@@ -47,7 +59,7 @@ export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   openGraph: {
     description: SITE_DESCRIPTION,
-    locale: "de_DE",
+    locale: OG_LOCALE.de,
     siteName: SITE_NAME,
     title: SITE_TITLE,
     type: "website",
@@ -77,10 +89,20 @@ export const viewport: Viewport = {
   viewportFit: "cover",
 };
 
-const RootLayout = ({ children }: { children: React.ReactNode }) => (
-  <html lang="de" className={`${inter.variable} ${oxanium.variable}`}>
-    <body className="h-dvh overflow-hidden antialiased">{children}</body>
-  </html>
-);
+const RootLayout = async ({
+  children,
+  params,
+}: {
+  children: React.ReactNode;
+  params: Promise<{ lang: string }>;
+}) => {
+  const { lang } = await params;
+  if (!isLang(lang)) notFound();
+  return (
+    <html lang={lang} className={`${inter.variable} ${oxanium.variable}`}>
+      <body className="h-dvh overflow-hidden antialiased">{children}</body>
+    </html>
+  );
+};
 
 export default RootLayout;

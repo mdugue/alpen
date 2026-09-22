@@ -255,7 +255,7 @@ export default defineConfig({
       // The JSON-LD block is the one sanctioned use of the prop. And a
       // `"use cache"` function has to be async even where it awaits nothing:
       // the layout's data is imported JSON, read synchronously (lib/data.ts).
-      files: ["app/(explorer)/layout.tsx"],
+      files: ["app/[[]lang[]]/(explorer)/layout.tsx"],
       rules: { "react/no-danger": "off", "require-await": "off" },
     },
   ],

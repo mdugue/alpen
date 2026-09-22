@@ -1,4 +1,6 @@
 import type { EntityKind, Selection } from "@/lib/app-state";
+import { DEFAULT_LANG, langOfPath, langPrefix } from "@/lib/i18n";
+import type { Lang } from "@/lib/i18n";
 
 /**
  * The URL of an entity, and the entity of a URL (docs/plans/02-real-routes.md).
@@ -26,9 +28,13 @@ const KIND_OF = new Map<string, EntityKind>(
   ]),
 );
 
-/** The path of an entity, without the hash. */
-export const hrefFor = (selection: Selection): string =>
-  `/${SEGMENT[selection.kind]}/${encodeURIComponent(selection.slug)}`;
+/** The path of an entity in one language, without the hash. */
+export const hrefFor = (selection: Selection, lang: Lang = DEFAULT_LANG) =>
+  `${langPrefix(lang)}/${SEGMENT[selection.kind]}/${encodeURIComponent(selection.slug)}`;
+
+/** The start page in one language: `/` or `/en`. */
+export const homeHref = (lang: Lang = DEFAULT_LANG): string =>
+  langPrefix(lang) || "/";
 
 /**
  * The entity a path names, or `null` for the start page and for anything
@@ -37,7 +43,9 @@ export const hrefFor = (selection: Selection): string =>
  * reducer selects whatever a path says and the panel shows nothing for it.
  */
 export const selectionOf = (pathname: string): Selection | null => {
-  const [seg, slug, rest] = pathname.replace(/^\//u, "").split("/");
+  const [seg, slug, rest] = langOfPath(pathname)
+    .rest.replace(/^\//u, "")
+    .split("/");
   if (!seg || !slug || rest !== undefined) return null;
   const kind = KIND_OF.get(seg);
   if (!kind) return null;

@@ -4,6 +4,7 @@ import { Coffee, Search, X } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
+import { useT } from "@/components/i18n";
 import { useSheet } from "@/components/mobile-sheet";
 import { CompareSheet } from "@/components/sidebar/compare-sheet";
 import { DestinationList } from "@/components/sidebar/destination-list";
@@ -80,6 +81,7 @@ export interface SidebarProps {
 }
 
 export const Sidebar = (p: SidebarProps) => {
+  const { t } = useT();
   const setFilters = (update: (f: Filters) => Filters) =>
     p.dispatch({ type: "filters", update });
   const set = <K extends keyof Filters>(key: K, value: Filters[K]) =>
@@ -201,8 +203,8 @@ export const Sidebar = (p: SidebarProps) => {
                 spellCheck={false}
                 value={p.filters.query}
                 onChange={(e) => set("query", e.target.value)}
-                placeholder="Reiseziel, Pass, Tour oder Ort …"
-                aria-label="Suchen"
+                placeholder={t.sidebar.searchPlaceholder}
+                aria-label={t.sidebar.search}
                 className="h-full [&::-webkit-search-cancel-button]:appearance-none [&::-webkit-search-decoration]:appearance-none"
               />
               {p.filters.query && (
@@ -210,7 +212,7 @@ export const Sidebar = (p: SidebarProps) => {
                   <InputGroupButton
                     size="icon-xs"
                     onClick={() => set("query", "")}
-                    aria-label="Suche leeren"
+                    aria-label={t.sidebar.clearSearch}
                   >
                     <X />
                   </InputGroupButton>
@@ -349,16 +351,14 @@ export const Sidebar = (p: SidebarProps) => {
 
         <div className="border-border shrink-0 border-t">
           <p className="text-muted-foreground text-2xs flex h-8 items-center gap-1 truncate px-3">
-            <span className="truncate">
-              Status ist eine Heuristik, Skalen sind redaktionell.
-            </span>
+            <span className="truncate">{t.sidebar.footerNote}</span>
             <Button
               variant="link"
               size="sm"
               className="h-auto shrink-0 p-0"
               onClick={p.onOpenScales}
             >
-              Skalen &amp; Quellen
+              {t.header.scales}
             </Button>
           </p>
           <div className="text-muted-foreground text-2xs flex items-center gap-3 px-3 pb-2">
@@ -394,7 +394,7 @@ export const Sidebar = (p: SidebarProps) => {
               nativeButton={false}
             >
               <Coffee data-icon="inline-start" aria-hidden />
-              Kaffee spendieren
+              {t.sidebar.support}
               <span className="sr-only"> – auf Ko-fi, öffnet in neuem Tab</span>
             </Button>
           </div>

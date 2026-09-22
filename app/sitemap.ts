@@ -2,6 +2,7 @@ import type { MetadataRoute } from "next";
 
 import { siteUrl } from "@/lib/brand";
 import { staticParams } from "@/lib/data";
+import { LANGS, langPrefix } from "@/lib/i18n";
 
 /**
  * The start page and one entry per entity route (plan 02): every pass, tour,
@@ -18,20 +19,23 @@ import { staticParams } from "@/lib/data";
 const BUILD_TIME = new Date();
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  return [
-    {
-      changeFrequency: "weekly",
-      images: [`${siteUrl}/opengraph-image`],
-      lastModified: BUILD_TIME,
-      priority: 1,
-      url: siteUrl,
-    },
-    ...staticParams().map(({ kind, slug }) => ({
-      changeFrequency: "monthly" as const,
-      images: [`${siteUrl}/${kind}/${slug}/opengraph-image`],
-      lastModified: BUILD_TIME,
-      priority: kind === "ziel" ? 0.8 : 0.6,
-      url: `${siteUrl}/${kind}/${slug}`,
-    })),
-  ];
+  return LANGS.flatMap((lang) => {
+    const base = `${siteUrl}${langPrefix(lang)}`;
+    return [
+      {
+        changeFrequency: "weekly" as const,
+        images: [`${base}/opengraph-image`],
+        lastModified: BUILD_TIME,
+        priority: lang === "de" ? 1 : 0.9,
+        url: base,
+      },
+      ...staticParams().map(({ kind, slug }) => ({
+        changeFrequency: "monthly" as const,
+        images: [`${base}/${kind}/${slug}/opengraph-image`],
+        lastModified: BUILD_TIME,
+        priority: kind === "ziel" ? 0.8 : 0.6,
+        url: `${base}/${kind}/${slug}`,
+      })),
+    ];
+  });
 }

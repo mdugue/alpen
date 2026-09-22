@@ -1,6 +1,10 @@
+import { lang as rootLang } from "next/root-params";
+
 import { Explorer } from "@/components/explorer";
+import { I18nProvider } from "@/components/i18n";
 import { SITE_DESCRIPTION, SITE_NAME, siteUrl } from "@/lib/brand";
 import { getPageData } from "@/lib/data";
+import { DEFAULT_LANG, isLang } from "@/lib/i18n";
 import { todayPeriod } from "@/lib/period";
 
 /**
@@ -55,6 +59,11 @@ const jsonLd = {
 const ExplorerLayout = async ({ children }: { children: React.ReactNode }) => {
   "use cache";
 
+  // The root parameter is part of this entry's cache key, so the layout is
+  // prerendered once per language; the root layout has already 404ed
+  // anything that is not one.
+  const raw = await rootLang();
+  const lang = isLang(raw) ? raw : DEFAULT_LANG;
   const data = getPageData();
 
   return (
@@ -76,9 +85,11 @@ const ExplorerLayout = async ({ children }: { children: React.ReactNode }) => {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <Explorer data={data} defaultPeriod={todayPeriod()}>
-        {children}
-      </Explorer>
+      <I18nProvider lang={lang}>
+        <Explorer data={data} defaultPeriod={todayPeriod()}>
+          {children}
+        </Explorer>
+      </I18nProvider>
     </main>
   );
 };

@@ -2,6 +2,7 @@
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 
+import { useLang } from "@/components/i18n";
 import { DEFAULT_VIEW, defined, EMPTY_HASH } from "@/lib/app-state";
 import type {
   Action,
@@ -12,9 +13,16 @@ import type {
   Selection,
 } from "@/lib/app-state";
 import { parseHash, serializeHash } from "@/lib/hash";
+import { langOfPath, langPrefix } from "@/lib/i18n";
+import type { Lang } from "@/lib/i18n";
 import type { CameraIntent } from "@/lib/map-camera";
 import { entityKey } from "@/lib/route-key";
-import { hrefFor, selectionOf, withoutLegacySelection } from "@/lib/routes";
+import {
+  homeHref,
+  hrefFor,
+  selectionOf,
+  withoutLegacySelection,
+} from "@/lib/routes";
 import { readStoredState, useStored } from "@/lib/use-stored";
 
 /**
@@ -108,6 +116,7 @@ export const useHashAdapter = (
 ): CameraIntent | null => {
   const router = useRouter();
   const pathname = usePathname();
+  const lang = useLang();
   // The opening camera, and only that: a link pasted later reaches the map as
   // a `requestedView` or as a selection, both of which say what to do with the
   // camera that is already there.
@@ -219,14 +228,16 @@ export const useHashAdapter = (
       legacy.current = false;
       // oxlint-disable-next-line react-doctor/nextjs-no-client-side-redirect
       router.replace(
-        hrefFor(selection) + withoutLegacySelection(window.location.hash),
+        hrefFor(selection, lang) + withoutLegacySelection(window.location.hash),
         { scroll: false },
       );
     } else if (selection) {
-      lastPushed.current = hrefFor(selection);
+      lastPushed.current = hrefFor(selection, lang);
       setPushed((n) => n + 1);
       // oxlint-disable-next-line react-doctor/nextjs-no-client-side-redirect
-      router.push(hrefFor(selection) + window.location.hash, { scroll: false });
+      router.push(hrefFor(selection, lang) + window.location.hash, {
+        scroll: false,
+      });
     } else if (pushed > 0) {
       // Every entry this adapter pushed, in one step: `back()` after two
       // selections would land on the first one and reopen it.
@@ -234,12 +245,25 @@ export const useHashAdapter = (
       window.history.go(-pushed);
     } else {
       // oxlint-disable-next-line react-doctor/nextjs-no-client-side-redirect
-      router.push(`/${window.location.hash}`, { scroll: false });
+      router.push(homeHref(lang) + window.location.hash, { scroll: false });
     }
     // Intentional: the selection is the trigger; the path is read where it
     // is compared, in the same tick.
     // oxlint-disable-next-line react/exhaustive-deps
-  }, [loaded, selectionKey, router, pushed, setPushed]);
+  }, [loaded, selectionKey, router, pushed, setPushed, lang]);
 
   return intent;
+};
+
+/**
+ * The same view in the other language: the path with its prefix swapped and
+ * the hash carried along, so the camera, the half-month and the selection
+ * survive the switch (plan 08). Read at the moment of the click, which is
+ * why it is a function and lives here, with the one reader of the address
+ * bar.
+ */
+export const switchLangHref = (to: Lang): string => {
+  if (typeof window === "undefined") return homeHref(to);
+  const { rest } = langOfPath(window.location.pathname);
+  return `${langPrefix(to)}${rest === "/" && to !== "de" ? "" : rest}${window.location.hash}`;
 };

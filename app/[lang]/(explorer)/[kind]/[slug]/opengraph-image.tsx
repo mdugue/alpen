@@ -66,7 +66,7 @@ const lineOf = (e: Found): string => {
 export default async function Image({
   params,
 }: {
-  params: Promise<{ kind: string; slug: string }>;
+  params: Promise<{ kind: string; lang: string; slug: string }>;
 }) {
   const { kind, slug } = await params;
   const selection = selectionOf(`/${kind}/${encodeURIComponent(slug)}`);
