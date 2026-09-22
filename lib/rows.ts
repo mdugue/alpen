@@ -13,6 +13,7 @@ import {
   inputAt,
   signalsOf,
   statusRank,
+  tourWindowWord,
   valleyTmax,
 } from "@/lib/status";
 import type {
@@ -252,6 +253,8 @@ export interface TourRow {
   reason: StatusReason | null;
   favorite: boolean;
   season: YearCell[];
+  /** The loop's window in the row's words: "Anfang Mai bis Ende Oktober" or "wie ihre Pässe". */
+  window: string;
 }
 
 export const buildTourRows = (
@@ -279,6 +282,7 @@ export const buildTourRows = (
       season: year.cells,
       status: cell.status,
       tour,
+      window: tourWindowWord(tour),
     });
   }
   return rows.toSorted((a, b) => b.tour.elevationGain - a.tour.elevationGain);

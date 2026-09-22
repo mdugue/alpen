@@ -31,6 +31,7 @@ import { ascentKey, entityKey, parseRouteKey, tourKey } from "../lib/route-key";
 import { FILES } from "../lib/schema";
 import type { DataFileName } from "../lib/schema";
 import { fold } from "../lib/search";
+import { windowText } from "../lib/status";
 import type {
   AscentMetrics,
   Pass,
@@ -51,6 +52,7 @@ import type {
   Stored,
 } from "./lib/decide";
 import { ORS_KEY } from "./lib/hosts";
+import { misquotedIn } from "./lib/quoted";
 import {
   checkRoadAscent,
   checkTour,
@@ -108,6 +110,13 @@ for (const file of Object.keys(FILES) as DataFileName[]) {
       `data/schema/${schemaFileFor(file)} ist veraltet (bun run data:schema)`,
     );
 }
+
+// The thresholds are restated in prose – the gate's limits in the skill and
+// two diagrams, the status constants in docs/scales.md – and a constant that
+// moved while the sentence kept the old number is the same kind of staleness
+// as the schema files above. `scripts/lib/quoted.ts` says which document
+// quotes which constant, and how.
+errors.push(...(await misquotedIn(new URL("../", import.meta.url))));
 
 // ── 2. What the next build would do ──────────────────────────────────────────
 
@@ -315,16 +324,31 @@ const checkPasses = (list: Pass[]) => {
   }
 };
 
-const checkTours = (list: Tour[], spurs: Set<string>, slugs: Set<string>) => {
+const checkTours = (list: Tour[], byPass: Map<string, Pass>) => {
   dupes(list, "Touren");
   for (const t of list) {
     for (const s of t.passes) {
-      if (!slugs.has(s)) errors.push(`Tour ${t.slug}: unbekannter Pass ${s}`);
+      const p = byPass.get(s);
+      if (!p) {
+        errors.push(`Tour ${t.slug}: unbekannter Pass ${s}`);
+        continue;
+      }
       // A road that ends at its summit cannot be crossed, so a tour listing it
       // either has the wrong pass or the pass is wrongly marked.
-      else if (spurs.has(s))
+      if (p.type === "spur")
         warnings.push(
           `Tour ${t.slug}: ${s} ist eine Stichstraße – eine Runde kann dort nicht hinüber`,
+        );
+      // A loop's own window may narrow what its passes allow, never widen it:
+      // a loop that claims to open in May over a pass that opens in June says
+      // something its passes contradict, and the strip would show the pass.
+      if (
+        t.season &&
+        p.season &&
+        (t.season.opens < p.season.opens || t.season.closes > p.season.closes)
+      )
+        warnings.push(
+          `Tour ${t.slug}: Fenster ${windowText(t.season)} reicht über das von ${s} (${windowText(p.season)}) hinaus – die Runde kann nicht länger offen sein als ihr Pass`,
         );
     }
     const key = tourKey(t.slug);
@@ -376,12 +400,7 @@ const checkTowns = (list: Town[]) => {
 
 if (passes) checkPasses(passes);
 // Without a valid pass list every reference would read as unknown.
-if (tours && passes)
-  checkTours(
-    tours,
-    new Set(passes.filter((p) => p.type === "spur").map((p) => p.slug)),
-    new Set(passes.map((p) => p.slug)),
-  );
+if (tours && passes) checkTours(tours, new Map(passes.map((p) => [p.slug, p])));
 if (towns) checkTowns(towns);
 
 // Rejections are unfinished curation: either the coordinates in data/*.json are

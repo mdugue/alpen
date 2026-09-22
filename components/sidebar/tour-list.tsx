@@ -50,7 +50,7 @@ export const TourList = ({
         <ListEmpty title="Keine Touren gefunden" {...empty} />
       ) : (
         <RowList ref={rovingList} items={rows} keyOf={({ tour }) => tour.slug}>
-          {({ tour, status, reason, favorite, season }) => {
+          {({ tour, status, reason, favorite, season, window }) => {
             const onMap = isShown(tour.slug);
             return (
               <EntityRow
@@ -70,7 +70,7 @@ export const TourList = ({
                 }
                 name={tour.name}
                 title={tour.name}
-                subtitle={`${tour.passes.length} Pässe · ${tour.season.split(";")[0]}`}
+                subtitle={`${tour.passes.length} Pässe · ${window}`}
                 favorite={favorite}
                 onToggleFavorite={() => onToggleFavorite(tour.slug)}
                 onSelect={() => onSelect(tour.slug)}

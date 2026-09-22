@@ -39,7 +39,7 @@ export const TourDetail = ({
 
       <p className="mt-4 text-xs leading-relaxed">{tour.description}</p>
       <p className="text-muted-foreground mt-1.5 text-xs leading-relaxed">
-        {tour.season}
+        {model.season}
       </p>
 
       <Section id="tour-passes" title="Pässe der Runde">

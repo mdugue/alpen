@@ -58,8 +58,11 @@ authoritative. In addition:
 - **aliases** (plan 05): other spellings and other-language names, never the
   name itself.
 - **Tours**: `passes` in ride order; `waypoints` closed for loops (last =
-  first); `km` and `elevationGain` from a trusted source until plan 11 item 8
-  computes them.
+  first); `km` and `elevationGain` from a trusted source. `season` is the
+  loop's own window as two half-months like a pass's, or `null` when the
+  passes alone decide; it may be narrower than the passes' windows, never
+  wider (`data:check` warns). `note` carries what the window cannot: the
+  event day, the cobbles, the plan B.
 - **Towns**: `why` is one sentence naming the surrounding passes and the
   infrastructure (workshop, rental, bike hotel).
 - **Destinations** (plan 12): follow `docs/destinations.md` once it exists.

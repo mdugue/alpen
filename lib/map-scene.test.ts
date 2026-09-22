@@ -26,6 +26,7 @@ const tourRow = (tour: Tour, extra: Partial<TourRow> = {}): TourRow => ({
   season: [],
   status: "open",
   tour,
+  window: "wie ihre Pässe",
   ...extra,
 });
 

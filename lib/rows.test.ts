@@ -76,8 +76,9 @@ const tour = (over: Partial<Tour> & { slug: string }): Tour => ({
   elevationGain: 2000,
   km: 100,
   name: over.slug,
+  note: "",
   passes: [],
-  season: "",
+  season: null,
   waypoints: [],
   ...over,
 });

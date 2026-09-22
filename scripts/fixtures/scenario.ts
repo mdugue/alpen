@@ -124,8 +124,9 @@ const runde: Tour = {
   /** What the subsampled loop measures, so the tour passes on its length. */
   km: 35,
   name: "Fixtur-Runde",
+  note: "",
   passes: ["fixtur-galibier"],
-  season: "",
+  season: null,
   slug: "fixtur-runde",
   waypoints: [
     { lat: 46.549, lon: 11.874 },

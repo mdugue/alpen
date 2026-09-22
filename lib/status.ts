@@ -7,6 +7,7 @@ import type {
   Period,
   Status,
   Tour,
+  TourSeason,
 } from "@/lib/types";
 import { fmt, fmtUnit } from "@/lib/utils";
 
@@ -313,7 +314,7 @@ export const SHORT_DAY_HOURS = 10.75;
 /** Mean daily maximum at the summit: the warmest moment of the descent. */
 export const COLD_DESCENT_TMAX = 8;
 /** Standard-atmosphere lapse rate in °C per m. */
-const LAPSE_RATE = 0.0065;
+export const LAPSE_RATE = 0.0065;
 /**
  * How far the derived valley value sits from a measured one, in °C. Principle
  * 3: it travels with every sentence that prints the derived value, so the
@@ -402,7 +403,7 @@ export const lapseText = (): string =>
   `${fmt(LAPSE_RATE * 100, 2)} °C je 100 m`;
 
 /** The value of a signal with its unit, e.g. "20 %" or "10,75 Stunden". */
-const signalValue = (s: Signal): string =>
+export const signalValue = (s: Signal): string =>
   `${fmt(s.value, s.digits ?? 0)} ${s.unit}`;
 
 /** A signal's clause with its value filled in, e.g. "Schneefall ab 20 % der Tage". */
@@ -443,6 +444,19 @@ export const valleyTmax = (
     ? null
     : bucket.tmax + LAPSE_RATE * (pass.elevation - valley);
 
+/**
+ * What a curated window says about one half-month: closed outside it, limited
+ * in its first and last half-month (openings and closures move by weeks from
+ * one winter to the next), nothing inside. One rule for a pass and a loop –
+ * `TourSeason` is the two half-months both carry, a pass's `maintained` is
+ * not read here.
+ */
+const windowReasons = (s: TourSeason, t: Period): StatusReason[] => {
+  if (t < s.opens || t >= s.closes) return ["outside-window"];
+  if (t < s.opens + 0.5 || t >= s.closes - 0.5) return ["window-edge"];
+  return [];
+};
+
 /** Opening window, altitude and calendar – the reasons the heuristic knew before the climate series. */
 const baseReasons = (pass: Pass, t: Period): StatusReason[] => {
   const s = pass.season;
@@ -452,8 +466,8 @@ const baseReasons = (pass: Pass, t: Period): StatusReason[] => {
     if (t >= 12 || t < 3) return ["altitude"];
     return [];
   }
-  if (t < s.opens || t >= s.closes) return ["outside-window"];
-  if (t < s.opens + 0.5 || t >= s.closes - 0.5) return ["window-edge"];
+  const fromWindow = windowReasons(s, t);
+  if (fromWindow.length) return fromWindow;
   if (!s.maintained) {
     if (pass.elevation >= 2300 && (t >= 10 || t < 6.5)) return ["altitude"];
     if (pass.elevation >= 1800 && (t >= 10.5 || t < 6)) return ["altitude"];
@@ -564,14 +578,40 @@ const reasonTexts = (
     }),
   );
 
+/** "Anfang Juni bis Ende Oktober" – the window as the row and the panel say it. */
+export const windowText = (s: TourSeason): string =>
+  `${periodLabel(s.opens)} bis ${periodLabel(s.closes)}`;
+
 export const seasonText = (pass: Pass): string => {
   const s = pass.season;
   if (!s)
     return "Ganzjährig befahrbar (Winterräumung); Schnee und Kälte je nach Höhe.";
-  return `Typisch offen ${periodLabel(s.opens)} bis ${periodLabel(s.closes)}${
+  return `Typisch offen ${windowText(s)}${
     s.maintained ? " (bewirtschaftete Mautstraße, wird geräumt)" : ""
   }.`;
 };
+
+/**
+ * The season line of a loop: its own window where the curator knows one, and
+ * "whenever its passes are" otherwise – the strip next to it is what shows
+ * the passes' answer, so the sentence does not repeat it. The curated note
+ * follows in the same paragraph.
+ */
+export const tourSeasonText = (tour: Tour): string => {
+  const window = tour.season
+    ? `Typisch ${windowText(tour.season)}.`
+    : "Fahrbar, solange die Pässe der Runde offen sind.";
+  return tour.note ? `${window} ${tour.note}` : window;
+};
+
+/**
+ * The short form for a row: "Anfang Mai bis Ende Oktober", or "wie ihre
+ * Pässe" for a loop without a window of its own. Not "ganzjährig": a loop
+ * over passes that shut for the winter is not open all year, and `null` says
+ * only that the passes decide (Principle 3).
+ */
+export const tourWindowWord = (tour: Tour): string =>
+  tour.season ? windowText(tour.season) : "wie ihre Pässe";
 
 export type PassIndex = Map<string, Pass>;
 
@@ -747,26 +787,43 @@ const UNCONSTRAINED: YearCell = {
  * its best – which is what a tour cell has to be, since a tour is at its best
  * only where all of its passes are. Among equal grades the pass whose first
  * reason ranks earliest on the ladder wins.
+ *
+ * A loop with a window of its own (`Tour.season`) brings one more candidate
+ * to that reduction: the window's verdict for the half-month, read by the
+ * same rule a pass's window is. It names no member – the loop as a whole is
+ * what the curator closed – so its cell carries an empty `limiting` list and
+ * `tourText` says the window instead.
  */
 export const tourYear = (tour: Tour, passes: Record<string, Year>): Year => {
   const own = tour.passes
     .map((slug) => passes[slug])
     .filter((year) => year !== undefined);
+  const windowCell = (i: number): YearCell | undefined => {
+    if (!tour.season) return undefined;
+    const reasons = windowReasons(tour.season, periodAt(i));
+    if (!reasons.length) return undefined;
+    const status: Status = reasons[0] === CLOSING_REASON ? "closed" : "risky";
+    return {
+      grade: gradeOf(status, false),
+      limiting: [],
+      reasons,
+      snowy: false,
+      status,
+    };
+  };
+  /** Strictly worse than what stands, or as bad and earlier on the ladder. */
+  const beats = (cell: YearCell, worst: YearCell) => {
+    const d = GRADE_RANK[cell.grade] - GRADE_RANK[worst.grade];
+    return (
+      d < 0 || (d === 0 && ladderRank(cell.reasons) < ladderRank(worst.reasons))
+    );
+  };
   const cells = PERIODS.map((_, i) => {
     let worst: YearCell | undefined;
     for (const year of own) {
       const cell = year.cells[i];
       if (!cell) continue;
-      if (!worst) {
-        worst = cell;
-        continue;
-      }
-      const d = GRADE_RANK[cell.grade] - GRADE_RANK[worst.grade];
-      if (
-        d < 0 ||
-        (d === 0 && ladderRank(cell.reasons) < ladderRank(worst.reasons))
-      )
-        worst = cell;
+      if (!worst || beats(cell, worst)) worst = cell;
     }
     if (!worst) return UNCONSTRAINED;
     // The members that share the cell's status are the ones the sentence
@@ -775,11 +832,18 @@ export const tourYear = (tour: Tour, passes: Record<string, Year>): Year => {
     // happened to settle on. Nothing holds an open tour back, so an open cell
     // carries no list – it would be every member, never read, and it travels
     // to the client inside the precomputed `Year`.
-    if (worst.status === "open") return worst;
-    const limiting = tour.passes.filter(
-      (slug) => passes[slug]?.cells[i]?.status === worst.status,
-    );
-    return { ...worst, limiting };
+    if (worst.status !== "open")
+      worst = {
+        ...worst,
+        limiting: tour.passes.filter(
+          (slug) => passes[slug]?.cells[i]?.status === worst!.status,
+        ),
+      };
+    // The loop's own window comes last and only wins outright: where a
+    // member is as bad for the same reason, that member is named – a closed
+    // Iseran under a closed window is still the Iseran's doing.
+    const window = windowCell(i);
+    return window && beats(window, worst) ? window : worst;
   });
   // A member's grade is "best" only inside that member's own best window, so
   // the minimum is "best" exactly where every pass is – which is the tour's
@@ -910,16 +974,30 @@ const capitalise = (word: string) =>
  * not open, which printed "Eingeschränkt durch …" under an "oft gesperrt"
  * badge; the cell's `limiting` comes out of `tourYear` instead, so the
  * sentence and the badge always describe the same set.
+ *
+ * A cell the loop's own window produced names no member; it says the window
+ * ("Oft gesperrt: außerhalb des typischen Fensters Anfang Mai bis Ende
+ * Oktober."), which is the only thing there is to say about it.
  */
 export const tourText = (
+  tour: Tour,
   cell: YearCell,
   names: (slug: string) => string | undefined,
 ): string | null => {
   const join = TOUR_JOIN[cell.status];
   if (join === null) return null;
+  const word = capitalise(STATUS_LABEL[cell.status]);
+  // The window's cell is the one that names nobody (`tourYear`); a member's
+  // cell whose names cannot be resolved is not it, and stays silent.
+  if (cell.limiting?.length === 0 && tour.season) {
+    const window = windowText(tour.season);
+    return cell.reasons[0] === CLOSING_REASON
+      ? `${word}: außerhalb des typischen Fensters ${window}.`
+      : `${word}: am Rand des typischen Fensters ${window}.`;
+  }
   const list = (cell.limiting ?? []).map(names).filter((n) => n !== undefined);
   if (list.length === 0) return null;
-  return `${capitalise(STATUS_LABEL[cell.status])}${join} ${list.join(", ")}.`;
+  return `${word}${join} ${list.join(", ")}.`;
 };
 /**
  * One sentence for the 24 cells of a season strip, so screen readers get the

@@ -98,16 +98,35 @@ export const Ascent = z.strictObject({
   to: LatLon.optional(),
 });
 
+/** The typical opening window of a road or a loop, as two half-months. */
+const SeasonWindow = {
+  /** Typical winter closure as a Period. */
+  closes: Period,
+  /** Typical opening as a Period. */
+  opens: Period,
+};
+
+const windowOrdered = (s: { opens: number; closes: number }) =>
+  s.opens < s.closes;
+
 export const PassSeason = z
   .object({
-    /** Typical winter closure as a Period. */
-    closes: Period,
+    ...SeasonWindow,
     /** Managed toll road – it is cleared, no altitude penalty. */
     maintained: z.boolean().optional(),
-    /** Typical opening as a Period. */
-    opens: Period,
   })
-  .refine((s) => s.opens < s.closes, "Saisonfenster verdreht");
+  .refine(windowOrdered, "Saisonfenster verdreht");
+
+/**
+ * A loop's own window, where its curator knows one: the same two half-months
+ * as a pass carries, and read the same way by `tourYear` (`lib/status.ts`) –
+ * outside the window the loop is closed, at its edges limited, and inside it
+ * the member passes decide. No `maintained`: a loop is not cleared, its passes
+ * are. `null` says the loop is rideable whenever its passes are.
+ */
+export const TourSeason = z
+  .strictObject(SeasonWindow)
+  .refine(windowOrdered, "Saisonfenster verdreht");
 
 export const Region = z.enum(REGIONS);
 export const Country = z.enum(COUNTRIES);
@@ -229,9 +248,16 @@ export const Tour = z.strictObject({
   elevationGain: z.number().nonnegative(),
   km: z.number().positive(),
   name: z.string().min(2),
+  /**
+   * What the window cannot say: the event that closes the roads for a day,
+   * the cobbles that turn slick in rain, the plan B once a pass shuts. One or
+   * two German sentences; empty where there is nothing to add.
+   */
+  note: z.string(),
   /** Pass slugs from which the status is derived. */
   passes: z.array(Slug).min(1),
-  season: z.string(),
+  /** The loop's own opening window, see `TourSeason`; null = whenever its passes are open. */
+  season: TourSeason.nullable(),
   slug: Slug,
   waypoints: z.array(LatLon).min(2),
 });

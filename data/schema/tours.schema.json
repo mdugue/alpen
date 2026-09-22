@@ -45,6 +45,9 @@
         "type": "string",
         "minLength": 2
       },
+      "note": {
+        "type": "string"
+      },
       "passes": {
         "minItems": 1,
         "type": "array",
@@ -54,7 +57,27 @@
         }
       },
       "season": {
-        "type": "string"
+        "anyOf": [
+          {
+            "type": "object",
+            "properties": {
+              "closes": {
+                "type": "number"
+              },
+              "opens": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "closes",
+              "opens"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "null"
+          }
+        ]
       },
       "slug": {
         "type": "string",
@@ -91,6 +114,7 @@
       "elevationGain",
       "km",
       "name",
+      "note",
       "passes",
       "season",
       "slug",

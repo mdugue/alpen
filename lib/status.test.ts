@@ -28,7 +28,9 @@ import {
   statusRank,
   STATUS_ORDER,
   statusWord,
+  tourSeasonText,
   tourText,
+  tourWindowWord,
   tourYear,
   valleyTmax,
 } from "@/lib/status";
@@ -134,8 +136,9 @@ const tour = (slugs: string[]): Tour => ({
   elevationGain: 2000,
   km: 100,
   name: "Testtour",
+  note: "",
   passes: slugs,
-  season: "",
+  season: null,
   slug: "t",
   waypoints: [],
 });
@@ -702,6 +705,74 @@ describe("tourYear", () => {
         inWindow(i, year.best!),
       );
   });
+
+  // A loop's own window is one more candidate in the worst-of reduction, read
+  // by the same rule a pass's window is: closed outside, limited at the edges,
+  // nothing inside – where the members decide as before.
+  test("a tour's own window closes it outside and limits it at the edges", () => {
+    const loop = { ...tour(["a"]), season: { closes: 10, opens: 6 } };
+    const year = tourYear(loop, years);
+    // "a" alone is open from early May; the loop's window says late May is
+    // outside and early June its edge.
+    expect(cellAt(year, 5.5)).toMatchObject({
+      limiting: [],
+      reasons: ["outside-window"],
+      status: "closed",
+    });
+    expect(cellAt(year, 6)).toMatchObject({
+      limiting: [],
+      reasons: ["window-edge"],
+      status: "risky",
+    });
+    expect(cellAt(year, 8).status).toBe("open");
+    // "a" is at its own edge in early October and the loop's window closes
+    // there: the closure ranks worse, and it is the window's.
+    expect(cellAt(year, 10)).toMatchObject({
+      limiting: [],
+      status: "closed",
+    });
+    // The sentence names the window where no member is to blame.
+    expect(tourText(loop, cellAt(year, 5.5), TOUR_NAMES)).toBe(
+      "Oft gesperrt: außerhalb des typischen Fensters Anfang Juni bis Anfang Oktober.",
+    );
+    expect(tourText(loop, cellAt(year, 6), TOUR_NAMES)).toBe(
+      "Eingeschränkt: am Rand des typischen Fensters Anfang Juni bis Anfang Oktober.",
+    );
+    // Without a window nothing changes.
+    expect(cellAt(tourYear(tour(["a"]), years), 5.5).status).toBe("open");
+  });
+
+  test("a member as closed as the window is named, not the window", () => {
+    // "b" is closed before July; the loop's window says the same of June.
+    // The member is what a rider can look up, so the member is named.
+    const loop = { ...tour(["a", "b"]), season: { closes: 10, opens: 6 } };
+    const june = cellAt(tourYear(loop, years), 6.5);
+    expect(june).toMatchObject({ limiting: ["b"], status: "closed" });
+    expect(tourText(loop, june, TOUR_NAMES)).toBe(
+      "Oft gesperrt: Stilfser Joch.",
+    );
+    // A member whose name cannot be resolved is not mistaken for the window.
+    expect(tourText(loop, june, () => {})).toBeNull();
+  });
+});
+
+describe("tourSeasonText and tourWindowWord", () => {
+  test("a loop says its window, or that its passes decide", () => {
+    const loop = {
+      ...tour(["a"]),
+      note: "Bike Day im Juni.",
+      season: { closes: 10.5, opens: 5 },
+    };
+    expect(tourSeasonText(loop)).toBe(
+      "Typisch Anfang Mai bis Ende Oktober. Bike Day im Juni.",
+    );
+    expect(tourWindowWord(loop)).toBe("Anfang Mai bis Ende Oktober");
+    expect(tourSeasonText(tour(["a"]))).toBe(
+      "Fahrbar, solange die Pässe der Runde offen sind.",
+    );
+    // Not "ganzjährig": a loop without a window is open when its passes are.
+    expect(tourWindowWord(tour(["a"]))).toBe("wie ihre Pässe");
+  });
 });
 
 /**
@@ -868,10 +939,14 @@ describe("one status vocabulary", () => {
 
   test("a closed tour says the closed word, not the limited one", () => {
     const closed = cell({ grade: "closed", limiting: ["b"], status: "closed" });
-    expect(tourText(closed, TOUR_NAMES)).toBe("Oft gesperrt: Stilfser Joch.");
+    expect(tourText(tour(["a", "b"]), closed, TOUR_NAMES)).toBe(
+      "Oft gesperrt: Stilfser Joch.",
+    );
     // This is the defect the plan names: the panel used to print
     // "Eingeschränkt durch …" under an "oft gesperrt" badge.
-    expect(tourText(closed, TOUR_NAMES)).not.toContain("Eingeschränkt");
+    expect(tourText(tour(["a", "b"]), closed, TOUR_NAMES)).not.toContain(
+      "Eingeschränkt",
+    );
 
     const limited = cell({
       grade: "limited",
@@ -879,12 +954,14 @@ describe("one status vocabulary", () => {
       reasons: ["heat"],
       status: "risky",
     });
-    expect(tourText(limited, TOUR_NAMES)).toBe(
+    expect(tourText(tour(["a", "b"]), limited, TOUR_NAMES)).toBe(
       "Eingeschränkt durch Gavia, Stilfser Joch.",
     );
     // Nothing holds an open tour back, and an unknown member is not named.
-    expect(tourText(cell({ limiting: ["a"] }), TOUR_NAMES)).toBeNull();
-    expect(tourText(closed, () => {})).toBeNull();
+    expect(
+      tourText(tour(["a", "b"]), cell({ limiting: ["a"] }), TOUR_NAMES),
+    ).toBeNull();
+    expect(tourText(tour(["a", "b"]), closed, () => {})).toBeNull();
   });
 
   test("the status order is one list and one direction", () => {

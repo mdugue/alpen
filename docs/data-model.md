@@ -187,9 +187,37 @@ overwrites the visitor's own preference.
 
 ### `data/tours.json`
 
-`passes` contains pass **slugs**; the tour status is computed from them as the
-worst status among the passes involved. `waypoints` are rough anchor points
-that routing connects into a line.
+```jsonc
+{
+  "slug": "la-marmotte",
+  "name": "La Marmotte",
+  "color": "#c2410c",
+  "km": 174, // from the event or a trusted source; the gate measures against it
+  "elevationGain": 5000,
+  "passes": [
+    "col-du-glandon",
+    "col-du-telegraphe",
+    "col-du-galibier",
+    "alpe-d-huez",
+  ],
+  "note": "Der Galibier gibt das Fenster vor; Veranstaltung Anfang Juli.",
+  "season": { "opens": 6, "closes": 10.5 }, // the loop's own window; null = whenever its passes are open
+  "description": "…",
+  "waypoints": [{ "lat": 45.06, "lon": 6.03 }, "…"],
+}
+```
+
+`passes` contains pass **slugs** in ride order; per half-month the tour takes
+the cell of the member pass that holds it back (`tourYear`, `lib/status.ts`).
+`season` is the loop's own window where the curator knows one – the same two
+half-months a pass carries, read by the same rule: closed outside it, limited
+in its first and last half-month, and inside it the passes decide. It may
+narrow what the passes allow, never widen it; `data:check` warns when a loop
+claims to be open longer than one of its passes. `null` says the loop is
+rideable whenever its passes are. What the window cannot say goes into
+`note`: the event that closes the roads for a day, the cobbles that turn
+slick in rain, the plan B once a pass shuts. `waypoints` are rough anchor
+points that routing connects into a line.
 
 ### `data/towns.json`
 

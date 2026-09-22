@@ -64,8 +64,9 @@ const tour = (over: Partial<Tour> = {}): Tour => ({
   elevationGain: 4000,
   km: 174,
   name: "Marmotte",
+  note: "",
   passes: ["stilfser-joch"],
-  season: "",
+  season: null,
   slug: "marmotte",
   waypoints: [
     { lat: 45, lon: 6 },

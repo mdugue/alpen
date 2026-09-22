@@ -197,8 +197,9 @@ describe("tourHaystack and townHaystack", () => {
     elevationGain: 2500,
     km: 80,
     name: "Stilfserjoch-Umbrail-Runde",
+    note: "",
     passes: ["passo-dello-stelvio"],
-    season: "",
+    season: null,
     slug: "stelvio-runde",
     waypoints: [],
   };

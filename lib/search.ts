@@ -67,7 +67,7 @@ export const passHaystack = (pass: Pass): string => {
 
 /** Not cached: the haystack depends on the pass names handed in, and there are only a handful of tours. */
 export const tourHaystack = (tour: Tour, passNames: string[]): string =>
-  fold([tour.name, tour.description, ...passNames].join(" "));
+  fold([tour.name, tour.description, tour.note, ...passNames].join(" "));
 
 export const townHaystack = (town: Town): string => {
   let hay = townHay.get(town);

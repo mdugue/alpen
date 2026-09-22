@@ -16,6 +16,7 @@ import {
   reasonParagraph,
   seasonText,
   signalsOf,
+  tourSeasonText,
   tourText,
 } from "@/lib/status";
 import type { Year, YearCell } from "@/lib/status";
@@ -130,6 +131,8 @@ export interface TourModel extends Common {
   kind: "tour";
   tour: Tour;
   verdict: Verdict;
+  /** The season paragraph: the loop's own window, or that its passes decide, then the note. */
+  season: string;
   /** The passes of the round, in the tour's own order; unknown slugs are dropped. */
   members: { pass: Pass; cell: YearCell }[];
 }
@@ -240,13 +243,14 @@ export const detailModel = (
       // A tour is a line; the panel has always read its surroundings from the
       // first waypoint, and the server measured the tours the same way.
       reach: reachOf(tour.waypoints[0]!),
+      season: tourSeasonText(tour),
       tour,
       verdict: {
         best: null,
         // The passes that hold the tour back come from the cell, not from a
         // second pass over the members: the sentence and the badge describe
         // one set.
-        text: tourText(cell, (slug) => data.passIndex.get(slug)?.name),
+        text: tourText(tour, cell, (slug) => data.passIndex.get(slug)?.name),
         year,
       },
     };

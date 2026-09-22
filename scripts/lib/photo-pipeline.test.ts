@@ -53,8 +53,9 @@ const tour = (slug: string, passes: string[]): Tour => ({
   elevationGain: 1000,
   km: 50,
   name: slug,
+  note: "",
   passes,
-  season: "",
+  season: null,
   slug,
   waypoints: [
     { lat: 46.5, lon: 11.8 },

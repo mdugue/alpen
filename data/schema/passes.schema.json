@@ -204,11 +204,11 @@
               "closes": {
                 "type": "number"
               },
-              "maintained": {
-                "type": "boolean"
-              },
               "opens": {
                 "type": "number"
+              },
+              "maintained": {
+                "type": "boolean"
               }
             },
             "required": [
