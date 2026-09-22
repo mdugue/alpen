@@ -215,25 +215,22 @@ export const readStoredState = (): StoredState => {
  * the state says about it. `undefined` means "nothing to say yet", which is
  * what keeps a shared link's half-month out of the preference.
  */
-interface Slice {
-  write: (state: AppState) => void;
-}
-const slice = <K extends StorageKey>(
-  key: K,
-  from: (state: AppState) => Value<K> | undefined,
-): Slice => ({
-  write: (state) => {
+const slice =
+  <K extends StorageKey>(
+    key: K,
+    from: (state: AppState) => Value<K> | undefined,
+  ) =>
+  (state: AppState) => {
     const value = from(state);
     if (value !== undefined) writeStored(key, value);
-  },
-});
+  };
 
 /**
  * Everything the reducer owns that outlives the tab, one row per key, under
  * the keys `readStoredState` reads back. Adding a persisted slice is a row
  * here and a row in `STORAGE`.
  */
-const PERSISTED: Slice[] = [
+const PERSISTED = [
   slice("showPasses", (s) => s.shown.passes),
   slice("showTowns", (s) => s.shown.towns),
   slice("hiddenTours", (s) => s.shown.hiddenTours),
@@ -255,7 +252,7 @@ const PERSISTED: Slice[] = [
  */
 export const writePersisted = (state: AppState) => {
   if (!state.loaded) return;
-  for (const persisted of PERSISTED) persisted.write(state);
+  for (const write of PERSISTED) write(state);
 };
 
 /** The storage adapter: the state as it is committed, written through. */

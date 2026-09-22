@@ -1,6 +1,6 @@
 import { describe, expect, test } from "bun:test";
 
-import { HIT_GROUPS, HIT_LAYERS, LAYERS, PASS_LABELS } from "@/lib/map-layers";
+import { HIT_GROUPS, HIT_LAYERS, LAYERS, PASS_LABELS } from "@/lib/layer-ids";
 import { DOUBLE_MS, isDoubleClick, pick } from "@/lib/map-pick";
 import type { Hit } from "@/lib/map-pick";
 

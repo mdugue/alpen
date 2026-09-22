@@ -1,6 +1,6 @@
 import { describe, expect, test } from "bun:test";
 
-import { BLOCKS, detailModel } from "@/lib/detail-model";
+import { detailModel } from "@/lib/detail-model";
 import type { DetailState } from "@/lib/detail-state";
 import { entityKey } from "@/lib/route-key";
 import {
@@ -52,20 +52,6 @@ describe("detailModel", () => {
     );
     expect(modelOf("tour", "runde")!.kicker).toBe("Rundtour");
     expect(modelOf("town", "bormio")!.kicker).toBe("Rad-Ort · IT");
-  });
-
-  test("each kind declares the blocks it shows", () => {
-    for (const kind of ["pass", "tour", "town"] as const)
-      expect(
-        modelOf(
-          kind,
-          kind === "pass"
-            ? "stilfser-joch"
-            : kind === "tour"
-              ? "runde"
-              : "bormio",
-        )!.blocks,
-      ).toEqual(BLOCKS[kind]);
   });
 
   test("every German sentence comes out of the model, not out of JSX", () => {

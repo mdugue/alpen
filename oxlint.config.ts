@@ -1,4 +1,5 @@
 import { defineConfig } from "oxlint";
+import type { DummyRuleMap } from "oxlint";
 import core from "ultracite/oxlint/core";
 import { jsPluginSettings, selectJsPlugins } from "ultracite/oxlint/js-plugins";
 import next from "ultracite/oxlint/next";
@@ -49,6 +50,20 @@ const RESTRICTED_GLOBALS = [
     name: "window",
   },
 ];
+
+/**
+ * The same rule again for one adapter, minus the globals it owns – so the
+ * file is still held to every world it is *not* a window onto.
+ */
+const except = (...owned: string[]): DummyRuleMap => ({
+  "no-restricted-globals": [
+    "error",
+    {
+      checkGlobalObject: true,
+      globals: RESTRICTED_GLOBALS.filter((g) => !owned.includes(g.name)),
+    },
+  ],
+});
 
 /**
  * oxlint replaces ESLint here: its `nextjs` and `react` plugins cover what
@@ -117,24 +132,47 @@ export default defineConfig({
         ],
       },
     },
+    // The adapters, one override each. The rule is *re-declared* rather than
+    // switched off, minus the globals that file is the window onto: turning it
+    // off per file made the comment beside each name unenforced, so nothing
+    // stopped the roving-focus hook from reaching for storage. `window` stays
+    // allowed wherever the adapter subscribes through it
+    // (`window.addEventListener`), which `checkGlobalObject` would otherwise
+    // read as a way around every other name.
     {
-      files: [
-        // The hash: `location.hash` in, `history.replaceState` out.
-        "lib/hash-adapter.ts",
-        // `localStorage` and `sessionStorage`, behind the `STORAGE` table.
-        "lib/use-stored.ts",
-        // `window.matchMedia` and the viewport height, as one value per query.
-        "lib/use-media-query.ts",
-        // `fetch`, as the three answers a request can give.
-        "lib/use-fetch.ts",
-        // `ResizeObserver`: what the shell's two bars actually measure.
-        "lib/use-height.ts",
-        // `navigator.share` and the clipboard, with `window.location.href`.
-        "lib/use-share.ts",
-        // `MutationObserver` and focus: a list of rows as one composite widget.
-        "lib/use-roving.ts",
-      ],
-      rules: { "no-restricted-globals": "off" },
+      // The hash: `location.hash` in, `history.replaceState` out.
+      files: ["lib/hash-adapter.ts"],
+      rules: except("history", "location", "window"),
+    },
+    {
+      // `localStorage` and `sessionStorage`, behind the `STORAGE` table.
+      files: ["lib/use-stored.ts"],
+      rules: except("localStorage", "sessionStorage", "window"),
+    },
+    {
+      // `window.matchMedia` and the viewport height, as one value per query.
+      files: ["lib/use-media-query.ts"],
+      rules: except("matchMedia", "window"),
+    },
+    {
+      // `fetch`, as the three answers a request can give.
+      files: ["lib/use-fetch.ts"],
+      rules: except("fetch"),
+    },
+    {
+      // `ResizeObserver`: what the shell's two bars actually measure.
+      files: ["lib/use-height.ts"],
+      rules: except("ResizeObserver"),
+    },
+    {
+      // `navigator.share` and the clipboard, with `window.location.href`.
+      files: ["lib/use-share.ts"],
+      rules: except("location", "navigator", "window"),
+    },
+    {
+      // `MutationObserver` and focus: a list of rows as one composite widget.
+      files: ["lib/use-roving.ts"],
+      rules: except("MutationObserver"),
     },
     {
       // The explorer hands the shell its parts as slots, and three of them

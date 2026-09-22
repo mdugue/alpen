@@ -68,12 +68,6 @@ const profiles: Record<string, ElevationProfile> =
   S.Profiles.parse(profilesJson);
 const photos: Photos = S.Photos.parse(photosJson);
 
-const getPasses = (): Pass[] => passes;
-
-const getTours = (): Tour[] => tours;
-
-const getTowns = (): Town[] => towns;
-
 /**
  * Both asset kinds derive their file names here rather than reading a
  * manifest, so this is where a build that skipped a script (`next build`
@@ -128,9 +122,6 @@ const getDetailAssets = (): DetailAssets => {
   return assets;
 };
 
-/** Climate series per pass slug (24 half-months). */
-const getClimate = (): Record<string, ClimateYear> => climate;
-
 /**
  * Lowest ascent start per pass slug – the elevation the valley heat is derived
  * to (`valleyTmax`, lib/status.ts). Derived here so the client never needs the
@@ -172,10 +163,12 @@ export const getPass = (slug: string): Pass | undefined =>
 /**
  * Everything the page hands the client, as one value.
  *
- * The ten getters above are the page's own business – it wants all of them,
+ * The derivations above are the page's own business – it wants all of them,
  * every time, and nothing else ever wanted one on its own – so the caller
- * stops carrying ten names it only ever passes on
- * (docs/plans/31-panel-model.md).
+ * stops carrying the names it only ever passed on
+ * (docs/plans/31-panel-model.md). The four files it simply hands through are
+ * read straight off the parsed constants; a getter around a constant only
+ * hides which of the two a name is.
  *
  * `getPass` stays separate and stays exported: the weather route imports it
  * and starts cold on a serverless instance, and the constraint at the top of
@@ -188,13 +181,13 @@ export const getPageData = (): PageData => {
   const valleys = getValleys();
   return {
     assets: getMapAssets(),
-    climate: getClimate(),
+    climate,
     detail: getDetailAssets(),
     nearbyTours: getNearbyTours(),
-    passes: getPasses(),
-    tours: getTours(),
+    passes,
+    tours,
     townReach: getTownReach(),
-    towns: getTowns(),
+    towns,
     valleys,
     years: getYears(valleys),
   };

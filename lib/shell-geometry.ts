@@ -86,14 +86,12 @@ export interface ShellInput {
 export interface Shell {
   /** What the shell covers of the map, and thus the camera's padding. */
   inset: Inset;
-  /** Where the floating panels stand, in pixels. */
-  widths: { sidebar: number; detail: number; detailLeft: number };
   /**
-   * The same numbers for the classes that need them: the panel widths, the
-   * detail panel's left edge, where the season card starts and stops, and how
-   * far MapLibre's corner controls are lifted off the bottom edge. Set on the
-   * shell's root element, read with `w-(--shell-sidebar)` and its like, so no
-   * width is spelled twice.
+   * Where the floating panels stand, for the classes that need it: the panel
+   * widths, the detail panel's left edge, where the season card starts and
+   * stops, and how far MapLibre's corner controls are lifted off the bottom
+   * edge. Set on the shell's root element, read with `w-(--shell-sidebar)` and
+   * its like, so no width is spelled twice.
    */
   vars: Record<string, string>;
 }
@@ -165,6 +163,5 @@ export const shellGeometry = ({
       "--shell-right": `${CORNER_W}px`,
       "--shell-sidebar": `${sidebar}px`,
     },
-    widths: { detail, detailLeft, sidebar },
   };
 };

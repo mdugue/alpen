@@ -2,8 +2,9 @@
 /**
  * One transport per world (docs/architecture.md, "Functional core, imperative
  * shell"): the hash is read and written in one file, a storage key is spelled
- * in one table, and the map is moved and redrawn by the two appliers. Every
- * other module takes and hands on values.
+ * in one table, the map is moved and its data swapped by the two appliers, and
+ * the style is changed only where it is defined. Every other module takes and
+ * hands on values.
  *
  *   bun run seams
  *
@@ -61,6 +62,26 @@ const SEAMS: Seam[] = [
         "the scene applier: the difference between the scene the map shows and the one `buildScene` (lib/map-scene.ts) built",
     },
     world: "the map",
+  },
+  {
+    /*
+     * The style itself – layers, terrain, the icon atlas – as opposed to the
+     * data and the camera above. It is its own seam because it has its own
+     * owners: the map's paint lives in `app-layers.ts` as definitions, and the
+     * effects in `pass-map.tsx` re-apply those definitions when the scheme,
+     * the base or the 3D switch changes. Without this row the header would
+     * claim the two appliers redraw everything, and a reader looking for the
+     * hillshade would open `apply-scene.ts` and not find it.
+     */
+    spelling:
+      /\.(?:setPaintProperty|setLayoutProperty|setTerrain|setStyle|addLayer|removeLayer|addSource|removeSource|addImage|updateImage)\(/u,
+    through: {
+      "components/map/app-layers.ts":
+        "where every layer is defined: the base stack is swapped under the running map and the canvas icons are added to it",
+      "components/map/pass-map.tsx":
+        "the map's own setup: the style is built once here, and a scheme, base or 3D change re-applies it from the same definitions",
+    },
+    world: "the map's style",
   },
 ];
 

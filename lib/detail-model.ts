@@ -59,8 +59,11 @@ export type BlockId =
   | "destination-passes";
 
 /**
- * Which blocks each kind can show, in the order it shows them – the table that
- * used to be three JSX branches. Can, not does: `nearby` renders nothing for
+ * Which blocks each kind can show, in the order it shows them. The three kind
+ * modules render that order in JSX; this is the list they are held to, by the
+ * test that reads the `data-block` ids back out of the rendered panel
+ * (`components/panel/kind-detail.test.tsx`) – which is why the order lives
+ * here and not only in the markup. Can, not does: `nearby` renders nothing for
  * an entity with nothing inside `REACH_MAX_KM`, so a reader counting sections
  * has to ask the block, not this list. It is also the vocabulary of the fold
  * state:
@@ -101,7 +104,6 @@ interface Common {
    * shows – measured once in `lib/reach.ts` and read two ways.
    */
   reach: Reach;
-  blocks: BlockId[];
 }
 
 export interface PassModel extends Common {
@@ -155,7 +157,6 @@ export const detailModel = (
 ): DetailModel | null => {
   const { period } = state;
   const common = {
-    blocks: BLOCKS[selection.kind],
     detail: state.detail,
     hovered: state.hovered,
     period,

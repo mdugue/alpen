@@ -1,12 +1,13 @@
 import { describe, expect, test } from "bun:test";
 
 import {
-  basesFor,
-  destinationAt,
+  basesOf,
+  destinationOf,
   destinationText,
   gradeOfBase,
 } from "@/lib/destination";
 import { REACH_MAX_KM } from "@/lib/geo";
+import { reachedPasses, reachedTowns } from "@/lib/reach";
 import type { Grade } from "@/lib/status";
 import { makePass, makeTown, ORIGIN, PERIOD, yearsOf } from "@/test/fixtures";
 
@@ -46,7 +47,7 @@ describe("gradeOfBase", () => {
   });
 });
 
-describe("destinationAt", () => {
+describe("destinationOf", () => {
   const passes = [
     makePass("near", 5),
     makePass("day", 30),
@@ -54,7 +55,7 @@ describe("destinationAt", () => {
     makePass("beyond", 120),
   ];
   const years = yearsOf(passes.map((p) => [p.slug, "best"] as [string, Grade]));
-  const d = destinationAt(ORIGIN, passes, years, PERIOD);
+  const d = destinationOf(reachedPasses(ORIGIN, passes, years, PERIOD), PERIOD);
 
   test("judges what lib/reach.ts measured and nothing further out", () => {
     expect(d.passes.map((r) => r.pass.slug)).toEqual(["near", "day", "far"]);
@@ -71,7 +72,10 @@ describe("destinationAt", () => {
   });
 
   test("a base with nothing near says so", () => {
-    const empty = destinationAt({ lat: 0, lon: 0 }, passes, years, PERIOD);
+    const empty = destinationOf(
+      reachedPasses({ lat: 0, lon: 0 }, passes, years, PERIOD),
+      PERIOD,
+    );
     expect(empty.total).toBe(0);
     expect(destinationText(empty)).toContain("Kein Pass");
   });
@@ -81,18 +85,20 @@ describe("destinationAt", () => {
   });
 });
 
-describe("basesFor", () => {
+describe("basesOf", () => {
   const passes = [
     makePass("here", 0),
     ...Array.from({ length: 8 }, (_, i) => makePass(`p${i}`, 100 + i * 0.1)),
   ];
   const years = yearsOf(passes.map((p) => [p.slug, "best"] as [string, Grade]));
-  const bases = basesFor(
-    ORIGIN,
-    [makeTown("poor", 8), makeTown("rich", 30)],
-    passes,
-    years,
-    PERIOD,
+  const bases = basesOf(
+    reachedTowns(
+      ORIGIN,
+      [makeTown("poor", 8), makeTown("rich", 30)],
+      passes,
+      years,
+      PERIOD,
+    ),
   );
 
   test("groups the towns by the same bands", () => {
@@ -102,24 +108,28 @@ describe("basesFor", () => {
 
   test("the reach cut-off is the same one", () => {
     expect(
-      basesFor(
-        ORIGIN,
-        [makeTown("far", REACH_MAX_KM + 10)],
-        passes,
-        years,
-        PERIOD,
+      basesOf(
+        reachedTowns(
+          ORIGIN,
+          [makeTown("far", REACH_MAX_KM + 10)],
+          passes,
+          years,
+          PERIOD,
+        ),
       ).total,
     ).toBe(0);
   });
 
   test("a town panel does not offer itself as a base", () => {
-    const self = basesFor(
-      ORIGIN,
-      [makeTown("poor", 8), makeTown("rich", 30)],
-      passes,
-      years,
-      PERIOD,
-      "poor",
+    const self = basesOf(
+      reachedTowns(
+        ORIGIN,
+        [makeTown("poor", 8), makeTown("rich", 30)],
+        passes,
+        years,
+        PERIOD,
+        "poor",
+      ),
     );
     expect(self.bands.flatMap((b) => b.items).map((t) => t.town.slug)).toEqual([
       "rich",

@@ -508,6 +508,10 @@ export const camera = (
   }
 };
 
+/** A box of no extent – a pass whose ascents the map has none of – is no box. */
+const box = (b: Bounds | undefined): Bounds | null =>
+  b && (b[0] !== b[2] || b[1] !== b[3]) ? b : null;
+
 /**
  * Where a selection's flight goes, read off what the map has to draw it with.
  *
@@ -517,10 +521,6 @@ export const camera = (
  * ascent out of the picture. A box of no extent – a pass the map draws no
  * ascent for – has no frame to speak of and falls back to the marker.
  */
-/** A box of no extent – a pass whose ascents the map has none of – is no box. */
-const box = (b: Bounds | undefined): Bounds | null =>
-  b && (b[0] !== b[2] || b[1] !== b[3]) ? b : null;
-
 export const flightFor = (
   selection: Selection,
   world: {

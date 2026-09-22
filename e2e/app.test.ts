@@ -22,9 +22,9 @@ import { afterAll, beforeAll, expect, test } from "bun:test";
 import routesJson from "@/data/generated/routes.json" with { type: "json" };
 import passes from "@/data/passes.json" with { type: "json" };
 import toursJson from "@/data/tours.json" with { type: "json" };
+import { HIT_LAYERS, LAYERS } from "@/lib/layer-ids";
 import { mapAssets } from "@/lib/map-assets";
 import type { Bounds } from "@/lib/map-assets";
-import { HIT_LAYERS, LAYERS } from "@/lib/map-layers";
 import * as S from "@/lib/schema";
 import { startApp, waitUntil, withPage } from "@/test/browser";
 import type { App } from "@/test/browser";
@@ -278,7 +278,7 @@ test("6 · a stored half-month is applied, a shared link beats it", () =>
  * pointer is the transparent layer over it.
  *
  * The ids come from the one table the style is built from
- * (`LAYERS`, lib/map-layers.ts), so a layer renamed on one side and not the
+ * (`LAYERS`, lib/layer-ids.ts), so a layer renamed on one side and not the
  * other fails here rather than silently going quiet – which is also why the
  * whole table is checked against the running map: a fame level added to the
  * label ladder has to answer the pointer too.

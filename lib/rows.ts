@@ -27,9 +27,6 @@ import type {
 } from "@/lib/status";
 import type { Pass, Period, Status, Tour, Town } from "@/lib/types";
 
-export { PASS_SORTS } from "@/lib/app-state";
-export type { PassSort } from "@/lib/app-state";
-
 /**
  * One filtered list per entity kind. Search and the favourites toggle apply
  * to all three, the status filter and the pass criteria to passes and, via
@@ -310,6 +307,18 @@ export const buildTownRows = (
 };
 
 /**
+ * The three filtered lists, as the explorer builds them once and hands them
+ * on. The sidebar draws one of them at a time, the map draws all three as
+ * marks; both read the same object, which is why it is one type rather than
+ * the same three fields spelled out at each end.
+ */
+export interface Rows {
+  pass: readonly PassRow[];
+  tour: readonly TourRow[];
+  town: readonly TownRow[];
+}
+
+/**
  * How many roads a filter chip would leave, counted **disjunctively**: the
  * patch carries both the option and the lifting of its own group's filter,
  * because a group's own selection must not decide its own options' numbers.
@@ -502,7 +511,7 @@ export const currentBar = (band: SeasonBand, period: Period): SeasonBar =>
  */
 export const ROWS_PER_BLOCK = 10;
 
-export const rowBlocks = <T>(rows: T[]): T[][] => {
+export const rowBlocks = <T>(rows: readonly T[]): T[][] => {
   const blocks: T[][] = [];
   for (let i = 0; i < rows.length; i += ROWS_PER_BLOCK)
     blocks.push(rows.slice(i, i + ROWS_PER_BLOCK));

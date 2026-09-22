@@ -1,6 +1,6 @@
 #!/usr/bin/env bun
 /**
- * Calibration for the destination grade (`gradeOf` in lib/destination.ts).
+ * Calibration for the destination grade (`gradeOfBase` in lib/destination.ts).
  *
  *   bun run analyze:destinations
  *
@@ -21,7 +21,7 @@
  *      rule that was tried first and abandoned: read the share at the top
  *      grade against section 4, and the strips in section 6.
  *   4. What a **relative** rule does – the grade as a share of each base's own
- *      peak half-month, which is what `gradeOf` now uses.
+ *      peak half-month, which is what `gradeOfBase` now uses.
  *   5. Whether every base still gets a named "beste Zeit" window – the check
  *      that picked the exact share, since a threshold set too high leaves a
  *      base peaking in a single half-month and no window to name.

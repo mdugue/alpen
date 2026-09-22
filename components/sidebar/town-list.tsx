@@ -27,7 +27,7 @@ export const TownList = ({
   onSelect,
   onToggleFavorite,
 }: {
-  rows: TownRow[];
+  rows: readonly TownRow[];
   currentRow: string | null;
   hovered: Selection | null;
   onHover: (sel: Selection | null) => void;

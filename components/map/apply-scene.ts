@@ -2,7 +2,7 @@
 
 import type { GeoJSONSource, Map as MLMap, Popup } from "maplibre-gl";
 
-import { LAYERS, layersOf, SOURCE } from "@/lib/map-layers";
+import { LAYERS, layersOf, SOURCE } from "@/lib/layer-ids";
 import type { PopupContent, Ring, Scene } from "@/lib/map-scene";
 import { TAG_LABEL } from "@/lib/regions";
 import { tagIconSvg } from "@/lib/tag-icons";

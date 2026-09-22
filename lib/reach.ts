@@ -144,7 +144,7 @@ export const reachedPasses = (
  * How the reachable passes fall across the grades in one half-month – the two
  * numbers a candidate base is ranked by, and nothing else.
  *
- * This is the entry point `basesFor` needs. It used to run the whole
+ * This is the entry point `reachedTowns` needs. It used to run the whole
  * destination arithmetic per town, which allocated a `ReachedPass` with 24
  * cells for every reachable pass of every candidate and then kept a count of
  * two.

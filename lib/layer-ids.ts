@@ -1,11 +1,12 @@
 /**
- * Every layer the app draws over the basemap, and the source under it, as one
- * table.
+ * The id of every layer the app draws over the basemap, and of the source
+ * under it, as one table. Ids only – what those layers are *painted* with is
+ * `components/map/app-layers.ts`.
  *
  * Four sides read the same ids: the style builds the layers from it
- * (`appLayers` in components/map/pass-map.tsx), the applier addresses them by
- * it (`applyScene`), the pick ranks them by it (`lib/map-pick.ts`) and the e2e
- * asks the running map whether it has them. `HIT_GROUPS` is derived here
+ * (`appLayers`), the applier addresses them by it (`applyScene`), the pick
+ * ranks them by it (`lib/map-pick.ts`) and the e2e asks the running map
+ * whether it has them. `HIT_GROUPS` is derived here
  * rather than written out a second time, because the two used to be written
  * out twice: the labels are one id per fame level, and a sixth level added to
  * the ladder below would have been drawn and would silently have stopped

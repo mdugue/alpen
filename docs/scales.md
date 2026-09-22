@@ -147,7 +147,7 @@ section 5 prints the strips above.
 `0,35 + reachWeight(km)`. A closed pass is not an argument for a base however
 pretty it is, so the grade is the strongest term; the weight is a factor and
 not a filter, so a genuinely better pass at 70 km can still out-rank a dull
-one at 5 km. The inverse list in a pass panel (`basesFor`, "Orte als
+one at 5 km. The inverse list in a pass panel (`basesOf`, "Orte als
 Standort") uses the same bands and the same weight, scaled by how many passes
 each town reaches instead — because the nearest village is rarely the best
 base.

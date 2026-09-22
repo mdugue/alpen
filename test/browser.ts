@@ -116,11 +116,6 @@ export interface OpenOptions {
   /** 390 × 844 with touch emulation. */
   mobile?: boolean;
   dark?: boolean;
-  /**
-   * URL patterns ("*" allowed) blocked besides the foreign origins – for the
-   * app's own static files, whose absence is a state the page has to survive.
-   */
-  block?: string[];
 }
 
 /** One page under test; thin wrapper over the view with the waits we need. */
@@ -393,9 +388,7 @@ const openPage = async (app: App, options: OpenOptions = {}): Promise<Page> => {
   // Hermetic: the base is http, so every https request is a tile, DEM or
   // glyph server. Blocking is enough for MapLibre to reach "load".
   await view.cdp("Network.enable");
-  await view.cdp("Network.setBlockedURLs", {
-    urls: ["https://*", ...(options.block ?? [])],
-  });
+  await view.cdp("Network.setBlockedURLs", { urls: ["https://*"] });
   page.errors.push(...errors);
   await page.navigate(options.hash ?? "");
   return page;

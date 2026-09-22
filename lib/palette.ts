@@ -19,7 +19,7 @@
  *
  * The app's own layers (passes, ascents, tours, towns) still read their
  * colours from the live CSS tokens at runtime (`readColors` in
- * `components/map/pass-map.tsx`); this module is what the basemap and its
+ * `components/map/app-layers.ts`); this module is what the basemap and its
  * generated style files are painted with. See `lib/basemap.ts`.
  */
 

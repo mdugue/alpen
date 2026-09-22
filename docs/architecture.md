@@ -53,18 +53,22 @@ flowchart LR
    `navigator`, `history` or the two DOM observers, and none imports
    `maplibre-gl` for anything but its types – except the adapters below.
    Checked by `no-restricted-globals` and `no-restricted-imports` over
-   `lib/**` in `oxlint.config.ts`, where the allow-list stands with a comment
-   per entry saying which world the file is a window onto.
+   `lib/**` in `oxlint.config.ts`. Each adapter gets the rule again rather
+   than switched off – minus the globals it owns, with a comment saying which
+   world it is a window onto – so an adapter is still held to every world it
+   is not.
 2. **Every effect applies a value.** A `useEffect` under `components/` calls
    an adapter with a value the core produced; it does not branch on state to
    decide what to call. The map's effects are one per input – the build, the
    scene, the five camera events, the four the environment changes – and a
    reviewer can name what each one applies.
 3. **One transport per world.** The hash is read and written in one file,
-   `alpenpaesse:` is spelled in one table, and the MapLibre calls that move
-   the camera or change what is drawn live in the two appliers. Checked by
-   `scripts/check-seams.ts`, which runs inside `bun run lint` and therefore in
-   CI; its `SEAMS` table carries the reason per owner.
+   `alpenpaesse:` is spelled in one table, the MapLibre calls that move the
+   camera or swap its data live in the two appliers, and the ones that change
+   the style – layers, terrain, the icon atlas – live where those layers are
+   defined (`components/map/app-layers.ts`) and in the map's own setup. Checked
+   by `scripts/check-seams.ts`, which runs inside `bun run lint` and therefore
+   in CI; its `SEAMS` table carries the reason per owner.
 4. **The core carries the tests.** `bun test` covers the reducer, the camera
    machine, the scene, the pick, the detail model and the offline pipeline.
    The e2e suite is ten scenarios of smoke: one timeout for the suite, none

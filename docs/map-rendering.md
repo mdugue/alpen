@@ -35,7 +35,7 @@ still: a padding the map has not applied yet cannot move it.
 
 What the padding is _made_ of is a second question, and it has one answer:
 `shellGeometry` (`lib/shell-geometry.ts`), a pure `(bars, viewport, sheet,
-panels) → { inset, widths, vars }` with its own unit tests. The same numbers
+panels) → { inset, vars }` with its own unit tests. The same numbers
 feed the camera and, as the `--shell-*` custom properties `vars` carries, the
 Tailwind classes the panels and the season card are laid out with – so a panel
 width exists once rather than twice, and `sheetCover` converts Base UI's two
@@ -225,7 +225,7 @@ reads as texture where a dot would read as noise.
 ```mermaid
 flowchart LR
   E["rows · shown · selection · hovered<br/>(components/explorer.tsx)"] --> B["buildScene<br/>lib/map-scene.ts"]
-  L["LAYERS<br/>lib/map-layers.ts"] --> B
+  L["LAYERS<br/>lib/layer-ids.ts"] --> B
   B --> S["Scene: filters · feature state ·<br/>point features · ring, lines, hull, label · bounds"]
   S --> A["applyScene(host, prev, next)<br/>components/map/apply-scene.ts"]
   A -->|"only what changed"| M["setFilter · setFeatureState ·<br/>setData · the popup"]
@@ -259,7 +259,7 @@ no point of its own, is labelled at the centre of its box. On a coarse pointer
 there is no label at all – a finger that touches a mark has already tapped it,
 and a popup under it would cover what was just tapped.
 
-Every layer id lives in `LAYERS` (`lib/map-layers.ts`): per kind the mark, the
+Every layer id lives in `LAYERS` (`lib/layer-ids.ts`): per kind the mark, the
 names beside it and the transparent hit layer, with the pass labels generated
 from the same fame ladder the style builds them from. The style, the applier,
 the pick and the e2e read that one table, so a layer renamed or a sixth fame
@@ -302,8 +302,9 @@ everywhere (`app/globals.css`).
 
 ### Colours only via tokens
 
-MapLibre cannot read CSS variables; `pass-map.tsx` reads them once via
-`getComputedStyle` (`readColors`). Add new map colours there rather than
+MapLibre cannot read CSS variables; the map reads them once via
+`getComputedStyle` (`readColors` in `components/map/app-layers.ts`, the module
+that holds every paint expression). Add new map colours there rather than
 hard-coding them.
 
 What is painted before there is a document to read – the generated basemap
@@ -336,7 +337,7 @@ roads that matter are the app's lines, and the status and tour colours are what
 should dominate. Labels prefer `name:de`. The raster alternatives (OSM,
 OpenTopoMap, CyclOSM, Esri, satellite) stay in the layer popover; a raster base
 is one layer below the hillshade. Switching base or scheme never rebuilds the
-map: `applyBase` in `pass-map.tsx` swaps only the layers whose id starts with
+map: `applyBase` (`components/map/app-layers.ts`) swaps only the layers whose id starts with
 `base`, and a `prefers-color-scheme` change re-reads the tokens, repaints the
 icons and sets every paint property of the app's layers again from the same
 `appLayers` definition the style was built from – camera, sources, filters and
@@ -353,5 +354,6 @@ Its web worker is resolved via `import.meta.url`, which Turbopack does not
 serve, so `scripts/copy-maplibre-worker.ts` copies the worker into
 `public/maplibre` (git-ignored, runs before `dev` and `build`) and
 `pass-map.tsx` calls `setWorkerUrl`. And computed CSS custom properties come
-back as `lab()`, which MapLibre cannot parse; `toRgb` in `pass-map.tsx`
-converts them through a canvas pixel before they reach the style.
+back as `lab()`, which MapLibre cannot parse; `toRgb` in
+`components/map/app-layers.ts` converts them through a canvas pixel before they
+reach the style.

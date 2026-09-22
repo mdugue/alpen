@@ -66,13 +66,15 @@ describe("shellGeometry · a phone", () => {
 
 describe("shellGeometry · a desktop", () => {
   test("both panels: their widths, the gaps, and the card beside them", () => {
-    const { inset, vars, widths } = shellGeometry(desktop);
+    const { inset, vars } = shellGeometry(desktop);
     // 12 + 384 + 12 + 352 + 12
     expect(inset.left).toBe(772);
     // The card stands a gap above the bottom edge, so it covers that too.
     expect(inset.bottom).toBe(92);
     expect(inset.top).toBe(64);
-    expect(widths).toEqual({ detail: 352, detailLeft: 408, sidebar: 384 });
+    expect(vars["--shell-sidebar"]).toBe("384px");
+    expect(vars["--shell-detail"]).toBe("352px");
+    expect(vars["--shell-detail-left"]).toBe("408px");
     expect(vars["--shell-left"]).toBe("772px");
     // The controls sit at the edge, in the corner the card leaves free.
     expect(vars["--shell-bottom"]).toBe("0px");
@@ -85,7 +87,7 @@ describe("shellGeometry · a desktop", () => {
       panels: { detail: false, sidebar: true },
     });
     expect(sidebar.inset.left).toBe(408);
-    expect(sidebar.widths.detailLeft).toBe(408);
+    expect(sidebar.vars["--shell-detail-left"]).toBe("408px");
 
     const detail = shellGeometry({
       ...desktop,
@@ -93,7 +95,7 @@ describe("shellGeometry · a desktop", () => {
     });
     expect(detail.inset.left).toBe(376);
     // With no sidebar the detail panel stands at the gap itself.
-    expect(detail.widths.detailLeft).toBe(12);
+    expect(detail.vars["--shell-detail-left"]).toBe("12px");
   });
 
   test("no panel: nothing on the left, and the card keeps the gap", () => {
@@ -106,11 +108,10 @@ describe("shellGeometry · a desktop", () => {
   });
 
   test("the wider step grows both panels, and everything derived from them", () => {
-    const { inset, vars, widths } = shellGeometry({
+    const { inset, vars } = shellGeometry({
       ...desktop,
       viewport: { ...desktop.viewport, wide: true },
     });
-    expect(widths).toEqual({ detail: 400, detailLeft: 440, sidebar: 416 });
     expect(inset.left).toBe(852);
     expect(vars["--shell-sidebar"]).toBe("416px");
     expect(vars["--shell-detail"]).toBe("400px");

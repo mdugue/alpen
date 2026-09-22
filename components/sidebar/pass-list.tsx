@@ -18,10 +18,11 @@ import {
   DropdownMenuRadioItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { PASS_SORTS } from "@/lib/app-state";
 import type { Filters, PassSort, Selection } from "@/lib/app-state";
 import { roadTypeWord } from "@/lib/regions";
 import { entityKey } from "@/lib/route-key";
-import { PASS_SORT_LABEL, PASS_SORTS } from "@/lib/rows";
+import { PASS_SORT_LABEL } from "@/lib/rows";
 import type { PassRow } from "@/lib/rows";
 import { useRoving } from "@/lib/use-roving";
 import { cn, fmtUnit, TOUCH_CONTROL } from "@/lib/utils";
@@ -46,7 +47,7 @@ export const PassList = ({
   onSelect,
   onToggleFavorite,
 }: {
-  rows: PassRow[];
+  rows: readonly PassRow[];
   currentRow: string | null;
   hovered: Selection | null;
   onHover: (sel: Selection | null) => void;

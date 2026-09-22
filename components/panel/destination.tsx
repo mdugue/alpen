@@ -197,7 +197,6 @@ export const DestinationSection = ({
   hovered,
   onHover,
   onSelect,
-  title = "Pässe von hier aus",
 }: {
   d: Destination;
   period: Period;
@@ -205,7 +204,6 @@ export const DestinationSection = ({
   hovered: Selection | null;
   onHover: (sel: Selection | null) => void;
   onSelect: (slug: string) => void;
-  title?: string;
 }) => (
   <>
     <VerdictBox
@@ -230,7 +228,7 @@ export const DestinationSection = ({
     <Section
       id="destination-passes"
       info={`Nach Zustand im gewählten Halbmonat, Schönheit und Nähe sortiert. Nähe zählt gleitend: ein Pass wird nicht bei einem runden Kilometerwert wertlos, sondern verliert mit der Entfernung an Gewicht. Jenseits von ${REACH_MAX_KM} km endet die Liste.`}
-      title={title}
+      title="Pässe von hier aus"
     >
       {d.total === 0 ? (
         <p className="text-muted-foreground text-xs">

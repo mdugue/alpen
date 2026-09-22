@@ -88,7 +88,7 @@ Design hypotheses, held until the spike confirms or refutes them:
    Herbstferienwoche" into a half-month (and asks about the Bundesland if it
    matters), "ein paar schöne Pässe" into beauty ≥ 4 with three in reach,
    "nicht so fit" into difficulty ≤ 3. Rideability, reach and the best
-   window come from `passYear`, `destinationAt` and `basesFor`, called as
+   window come from `passYear`, `destinationOf` and `basesOf`, called as
    tools and quoted in the app's own words (`GRADE_LABEL`, `REASON_WORD`).
    The model never grades a pass; that is Principle 3 applied to a model.
 3. **No retrieval layer.** The whole dataset – every road with region,

@@ -37,7 +37,7 @@ import {
   resetFilters,
 } from "@/lib/filter-summary";
 import { entityKey } from "@/lib/route-key";
-import type { PassRow, TourRow, TownRow } from "@/lib/rows";
+import type { Rows } from "@/lib/rows";
 import { cn, TOUCH_CONTROL } from "@/lib/utils";
 
 export interface SidebarProps {
@@ -45,7 +45,7 @@ export interface SidebarProps {
   variant: "aside" | "sheet";
   filters: Filters;
   /** The three filtered lists; one is on screen at a time. */
-  rows: { pass: PassRow[]; tour: TourRow[]; town: TownRow[] };
+  rows: Rows;
   totals: Record<EntityKind, number>;
   /** How many roads a filter change would leave – the number on every chip. */
   countWith: (patch: Partial<Filters>) => number;

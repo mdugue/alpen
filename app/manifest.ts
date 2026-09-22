@@ -10,7 +10,7 @@ import { BRAND, SITE_CLAIM, SITE_NAME, SITE_TAGLINE } from "@/lib/brand";
  */
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    background_color: BRAND.paper,
+    background_color: BRAND.day,
     categories: ["travel", "sports", "navigation"],
     description: SITE_CLAIM,
     dir: "ltr",
@@ -32,6 +32,6 @@ export default function manifest(): MetadataRoute.Manifest {
     scope: "/",
     short_name: SITE_NAME,
     start_url: "/",
-    theme_color: BRAND.paper,
+    theme_color: BRAND.day,
   };
 }

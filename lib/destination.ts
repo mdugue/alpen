@@ -1,16 +1,9 @@
 import { REACH_MAX_KM } from "@/lib/geo";
-import {
-  emptyCount,
-  inBands,
-  reachCounts,
-  reachedPasses,
-  reachedTowns,
-  rideable,
-} from "@/lib/reach";
+import { emptyCount, inBands, reachCounts, rideable } from "@/lib/reach";
 import type { Band, GradeCount, ReachedPass, ReachedTown } from "@/lib/reach";
 import { PERIODS, periodIndex, statusOf } from "@/lib/status";
-import type { Grade, Year, YearCell, Years } from "@/lib/status";
-import type { LatLon, Pass, Period, Town } from "@/lib/types";
+import type { Grade, Year, YearCell } from "@/lib/status";
+import type { Period } from "@/lib/types";
 
 /**
  * What a base is worth, for the half-month that is chosen.
@@ -172,20 +165,6 @@ export const destinationOf = (
 };
 
 /**
- * Everything the destination panel shows, for one point on the map and one
- * half-month. Pure: `lib/reach.ts` measures, this counts and judges.
- */
-export const destinationAt = (
-  at: LatLon,
-  passes: readonly Pass[],
-  years: Years,
-  period: Period,
-  /** A town does not count itself; a pass panel excludes its own road. */
-  exclude?: string,
-): Destination =>
-  destinationOf(reachedPasses(at, passes, years, period, exclude), period);
-
-/**
  * The sentence under a destination's badge. It names the count, because the
  * count is what the grade was made of – the badge says "beste Zeit" and this
  * says why that is so, in the same breath.
@@ -205,7 +184,7 @@ export const destinationText = (d: Destination): string => {
 };
 
 /**
- * The inverse of `destinationAt`: not "what can I ride from this town" but
+ * The inverse of `destinationOf`: not "what can I ride from this town" but
  * "where would I stay to ride this road".
  *
  * A pass panel used to answer that with the same flat list of names and
@@ -228,13 +207,3 @@ export const basesOf = (reached: ReachedTown[]): Bases => ({
   bands: inBands(reached),
   total: reached.length,
 });
-
-export const basesFor = (
-  at: LatLon,
-  towns: readonly Town[],
-  passes: readonly Pass[],
-  years: Years,
-  period: Period,
-  /** A town panel does not offer itself as a base. */
-  exclude?: string,
-): Bases => basesOf(reachedTowns(at, towns, passes, years, period, exclude));

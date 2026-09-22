@@ -173,8 +173,8 @@ describe("reachedTowns", () => {
   });
 
   test("it keeps two numbers per town and no pass objects", () => {
-    // What the old `basesFor` allocated a 24-cell `ReachedPass` per reachable
-    // pass per candidate to arrive at.
+    // What the old destination-per-town arithmetic allocated a 24-cell
+    // `ReachedPass` per reachable pass per candidate to arrive at.
     expect(Object.keys(reached[0]!).toSorted()).toEqual([
       "band",
       "km",

@@ -95,7 +95,7 @@ export default function Image() {
   return new ImageResponse(
     <div
       style={{
-        background: BRAND.paper,
+        background: BRAND.day,
         color: BRAND.ink,
         display: "flex",
         fontFamily: "Oxanium",
@@ -117,7 +117,7 @@ export default function Image() {
             cy={d.y}
             r={d.r}
             fill={BRAND.status[d.status]}
-            stroke={BRAND.paper}
+            stroke={BRAND.day}
             strokeWidth={2.5}
           />
         ))}

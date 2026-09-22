@@ -3,7 +3,7 @@ import { describe, expect, test } from "bun:test";
 import { applyScene, popupHtml } from "@/components/map/apply-scene";
 import type { SceneHost } from "@/components/map/apply-scene";
 import { ALL_SHOWN } from "@/lib/app-state";
-import { LAYERS, SOURCE } from "@/lib/map-layers";
+import { LAYERS, SOURCE } from "@/lib/layer-ids";
 import { buildScene } from "@/lib/map-scene";
 import type { SceneInput } from "@/lib/map-scene";
 import { ascentKey } from "@/lib/route-key";

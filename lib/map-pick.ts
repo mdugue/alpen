@@ -14,7 +14,7 @@
  */
 
 import type { Selection } from "@/lib/app-state";
-import { HIT_GROUPS, LAYERS } from "@/lib/map-layers";
+import { HIT_GROUPS, LAYERS } from "@/lib/layer-ids";
 
 /**
  * How long a click waits before it selects, and how far the next one may sit

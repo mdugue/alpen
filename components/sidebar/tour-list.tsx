@@ -27,7 +27,7 @@ export const TourList = ({
   onSelect,
   onToggleFavorite,
 }: {
-  rows: TourRow[];
+  rows: readonly TourRow[];
   currentRow: string | null;
   hovered: Selection | null;
   onHover: (sel: Selection | null) => void;

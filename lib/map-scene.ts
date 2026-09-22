@@ -28,7 +28,7 @@ import { visibleBounds } from "@/lib/map-camera";
 import type { TownReach } from "@/lib/nearby";
 import { roadTypeWord } from "@/lib/regions";
 import { ascentKey } from "@/lib/route-key";
-import type { PassRow, TourRow, TownRow } from "@/lib/rows";
+import type { PassRow, Rows } from "@/lib/rows";
 import type { LatLon, Status, Tag } from "@/lib/types";
 import { fmt, fmtUnit } from "@/lib/utils";
 
@@ -113,11 +113,7 @@ export interface Scene {
 }
 
 export interface SceneInput {
-  rows: {
-    pass: readonly PassRow[];
-    tour: readonly TourRow[];
-    town: readonly TownRow[];
-  };
+  rows: Rows;
   shown: Shown;
   selection: Selection | null;
   hovered: Selection | null;

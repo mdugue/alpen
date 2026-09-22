@@ -60,7 +60,7 @@ export const useSheetInset = (): number =>
   );
 
 /** What the sheet a subtree is in knows about itself. */
-export interface SheetState {
+export interface EnclosingSheet {
   /**
    * Whether the sheet has been pulled all the way up – `true` outside a
    * sheet, where nothing is in the way of a scroll.
@@ -107,7 +107,7 @@ export interface SheetState {
 const Expanded = createContext(true);
 const Over = createContext(false);
 
-export const useSheet = (): SheetState => ({
+export const useSheet = (): EnclosingSheet => ({
   expanded: use(Expanded),
   over: use(Over),
 });
@@ -115,7 +115,7 @@ export const useSheet = (): SheetState => ({
 interface Props {
   /** Names the sheet for screen readers and its swipe handle ("… ausklappen"). */
   label: string;
-  /** Rendered inside another sheet, which it stacks on; see `SheetState`. */
+  /** Rendered inside another sheet, which it stacks on; see `EnclosingSheet`. */
   over?: boolean;
   open: boolean;
   /** A swipe down past the lowest snap point, or Escape: the sheet goes away. */
