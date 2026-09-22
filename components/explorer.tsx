@@ -34,7 +34,7 @@ import {
 } from "@/lib/rows";
 import { indexBySlug } from "@/lib/status";
 import type { Signals } from "@/lib/status";
-import type { LatLon, Period } from "@/lib/types";
+import type { Period } from "@/lib/types";
 import { useMapEnvironment } from "@/lib/use-media-query";
 import { useFavorites, useStorageAdapter, useStored } from "@/lib/use-stored";
 import { fmt } from "@/lib/utils";
@@ -79,6 +79,7 @@ export const Explorer = ({ data, defaultPeriod }: Props) => {
     hovered,
     last,
     profileCursor,
+    profileZoom,
     requestedView,
     selection,
     sheet,
@@ -88,9 +89,6 @@ export const Explorer = ({ data, defaultPeriod }: Props) => {
 
   const [sidebarOpen, setSidebarOpen] = useStored("sidebar");
   const [scalesOpen, setScalesOpen] = useState(false);
-  // A fly-to asked for by a click on the elevation profile: the panel produces
-  // it, the map consumes it, and it is not state anybody else reads.
-  const [profileZoom, setProfileZoom] = useState<LatLon | null>(null);
   const { isFavorite, toggle: toggleFavorite } = useFavorites();
   const sidebarRoot = useRef<HTMLDivElement>(null);
 
@@ -245,7 +243,7 @@ export const Explorer = ({ data, defaultPeriod }: Props) => {
               onBack: back,
               onHover: hover,
               onProfileCursor: (at) => dispatch({ at, type: "profileCursor" }),
-              onProfileZoom: setProfileZoom,
+              onProfileZoom: (at) => dispatch({ at, type: "profileZoom" }),
               onSelect: select,
               onToggleFavorite: () => toggleFavorite(sel.kind, sel.slug),
             }}

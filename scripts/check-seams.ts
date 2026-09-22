@@ -67,19 +67,19 @@ const SEAMS: Seam[] = [
     /*
      * The style itself – layers, terrain, the icon atlas – as opposed to the
      * data and the camera above. It is its own seam because it has its own
-     * owners: the map's paint lives in `app-layers.ts` as definitions, and the
-     * effects in `pass-map.tsx` re-apply those definitions when the scheme,
-     * the base or the 3D switch changes. Without this row the header would
-     * claim the two appliers redraw everything, and a reader looking for the
-     * hillshade would open `apply-scene.ts` and not find it.
+     * owners: the map's paint lives in `app-layers.ts` as definitions, and
+     * `apply-environment.ts` re-applies those definitions when the scheme, the
+     * base, an overlay or the 3D switch changes. Without this row the header
+     * would claim the two appliers redraw everything, and a reader looking for
+     * the hillshade would open `apply-scene.ts` and not find it.
      */
     spelling:
       /\.(?:setPaintProperty|setLayoutProperty|setTerrain|setStyle|addLayer|removeLayer|addSource|removeSource|addImage|updateImage)\(/u,
     through: {
       "components/map/app-layers.ts":
         "where every layer is defined: the base stack is swapped under the running map and the canvas icons are added to it",
-      "components/map/pass-map.tsx":
-        "the map's own setup: the style is built once here, and a scheme, base or 3D change re-applies it from the same definitions",
+      "components/map/apply-environment.ts":
+        "the environment applier: the difference between the environment the map is in and the one it should be in, carried out in one fixed order",
     },
     world: "the map's style",
   },

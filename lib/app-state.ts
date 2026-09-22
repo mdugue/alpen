@@ -442,6 +442,17 @@ export interface AppState {
   hovered: Selection | null;
   /** Where the elevation-profile cursor sits on the road; the map draws it. */
   profileCursor: LatLon | null;
+  /**
+   * The fly-to a click on the elevation profile asked for; the map flies to it.
+   *
+   * Its sibling above, and here for the same reason: what the explorer decides
+   * is one reducer, and a `useState` beside it would be a second one. A fresh
+   * point per click, so the same spot can be asked for twice – which is also
+   * why it is never compared by value. Ephemeral like the hover: not
+   * persisted, not in the hash, and cleared with the selection it belongs to,
+   * because a profile point is a point on *that* entity's road.
+   */
+  profileZoom: LatLon | null;
   filters: Filters;
   /**
    * The visitor's own last choice of half-month, and the only thing the
@@ -486,6 +497,7 @@ export type Action =
   | { type: "back" }
   | { type: "hover"; selection: Selection | null }
   | { type: "profileCursor"; at: LatLon | null }
+  | { type: "profileZoom"; at: LatLon }
   | { type: "view"; view: MapView }
   | { type: "filters"; update: (f: Filters) => Filters }
   | { type: "period"; period: Period }
@@ -534,6 +546,7 @@ const select = (state: AppState, selection: Selection, env: Env): AppState => {
     hovered: null,
     last: selection,
     profileCursor: null,
+    profileZoom: null,
     selection,
     sheet,
     shown: reveal(state.shown, selection),
@@ -546,6 +559,7 @@ const close = (state: AppState): AppState => ({
   ...state,
   hovered: null,
   profileCursor: null,
+  profileZoom: null,
   selection: null,
 });
 
@@ -607,6 +621,9 @@ export const reduce = (state: AppState, action: Action, env: Env): AppState => {
     }
     case "profileCursor": {
       return { ...state, profileCursor: action.at };
+    }
+    case "profileZoom": {
+      return { ...state, profileZoom: action.at };
     }
     case "view": {
       return { ...state, view: action.view };
@@ -686,6 +703,7 @@ export const initialState = (today: Period): AppState => ({
   loaded: false,
   ownPeriod: null,
   profileCursor: null,
+  profileZoom: null,
   requestedView: null,
   selection: null,
   sheet: SHEETS_AT_REST,

@@ -106,6 +106,7 @@ const busy = (over: Partial<AppState> = {}): AppState => ({
   ...initialState(TODAY),
   hovered: BORMIO,
   profileCursor: { lat: 46, lon: 9 },
+  profileZoom: { lat: 46, lon: 9 },
   shown: { hiddenTours: [...TOURS], passes: false, towns: false },
   ...over,
 });
@@ -156,6 +157,7 @@ describe("reduce · select", () => {
       expect(s.tab).toBe("pass");
       expect(s.hovered).toBeNull();
       expect(s.profileCursor).toBeNull();
+      expect(s.profileZoom).toBeNull();
       expect(s.shown.passes).toBe(true);
       expect(s.shown.towns).toBe(false);
     },
@@ -221,7 +223,12 @@ describe("reduce · back", () => {
   test("clears the selection, the hover and the cursor, keeps what the sheet shows", () => {
     const open = reduce(busy(), { selection: GALIBIER, type: "select" }, phone);
     const s = reduce(
-      { ...open, hovered: BORMIO, profileCursor: { lat: 46, lon: 9 } },
+      {
+        ...open,
+        hovered: BORMIO,
+        profileCursor: { lat: 46, lon: 9 },
+        profileZoom: { lat: 46, lon: 9 },
+      },
       { type: "back" },
       phone,
     );
@@ -229,6 +236,7 @@ describe("reduce · back", () => {
     expect(s.last).toEqual(GALIBIER);
     expect(s.hovered).toBeNull();
     expect(s.profileCursor).toBeNull();
+    expect(s.profileZoom).toBeNull();
     expect(s.tab).toBe("pass");
   });
 });
@@ -396,6 +404,32 @@ describe("reduce · the switches and the sheets", () => {
         .profileCursor,
     ).toEqual({ lat: 1, lon: 2 });
     expect(reduce(s, { tab: "town", type: "tab" }, desktop).tab).toBe("town");
+  });
+
+  test("a profile fly-to is a request, not a value: identity is what carries it", () => {
+    const at = { lat: 46.5, lon: 10.4 };
+    const asked = reduce(
+      initialState(TODAY),
+      { at, type: "profileZoom" },
+      desktop,
+    );
+    // The map flies on the object's identity, so the same point clicked twice
+    // has to arrive as two different objects and be kept as the second one.
+    expect(asked.profileZoom).toBe(at);
+    const again = reduce(
+      asked,
+      { at: { ...at }, type: "profileZoom" },
+      desktop,
+    );
+    expect(again.profileZoom).toEqual(at);
+    expect(again.profileZoom).not.toBe(at);
+    // It belongs to the entity whose profile it was clicked on, so it goes
+    // where the cursor goes: with the selection.
+    expect(
+      reduce(asked, { selection: GALIBIER, type: "select" }, desktop)
+        .profileZoom,
+    ).toBeNull();
+    expect(reduce(asked, { type: "back" }, desktop).profileZoom).toBeNull();
   });
 
   test("the list drawer opens with or without its filter panel, and each sheet snaps on its own", () => {

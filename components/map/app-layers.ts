@@ -96,6 +96,13 @@ export const readColors = (el: HTMLElement) => {
     paper: v("--card", "#ffffff"),
     risky: v("--status-risky", "#d9932a"),
     town: v("--town", "#1f4e79"),
+    /**
+     * A road whose status is not known – an ascent whose feature state has not
+     * arrived yet. The muted token rather than a grey spelled out here: it is
+     * the one the rest of the app says "no answer" in, and it follows the OS
+     * scheme with everything else.
+     */
+    unknown: v("--muted-foreground", "#888888"),
   };
 };
 
@@ -260,17 +267,23 @@ export const appLayers = (
     source,
     type: "circle",
   });
-  const statusColor = [
-    "match",
-    ["get", "status"],
-    "open",
-    colors.open,
-    "risky",
-    colors.risky,
-    "closed",
-    colors.closed,
-    "#888888",
-  ] as never;
+  /**
+   * The status colours, keyed by wherever the status is kept.
+   *
+   * A pass dot reads it off the feature – the point source is rewritten
+   * whenever the half-month changes – and an ascent off its feature state,
+   * because the geometry is a static file that must never be re-uploaded. Two
+   * lookups, one ladder: the arms come from `STATUS_ORDER`, so a fourth status
+   * is one entry in `lib/status.ts` rather than two expressions here.
+   */
+  const statusBy = (where: ExpressionSpecification) =>
+    [
+      "match",
+      where,
+      ...STATUS_ORDER.flatMap((s) => [s, colors[s]]),
+      colors.unknown,
+    ] as never;
+  const statusColor = statusBy(["get", "status"]);
   // The ascent and tour lines carry status and selection as feature state,
   // so a period, filter or selection change never re-uploads geometry.
   const selected = ["==", ["feature-state", "selected"], 1];
@@ -344,17 +357,11 @@ export const appLayers = (
       1.5,
     ],
   } as never;
-  const routeColor = [
-    "match",
-    ["coalesce", ["feature-state", "status"], "none"],
-    "open",
-    colors.open,
-    "risky",
-    colors.risky,
-    "closed",
-    colors.closed,
-    "#888888",
-  ] as never;
+  const routeColor = statusBy([
+    "coalesce",
+    ["feature-state", "status"],
+    "none",
+  ]);
   /**
    * A pixel width for the tour lines: it grows with the zoom and again while
    * the tour is selected. The zoom interpolation has to sit at the very top of

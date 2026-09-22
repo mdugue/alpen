@@ -2,29 +2,27 @@
 
 import type { FeatureCollection } from "geojson";
 import { Compass, MoreHorizontal, Scan } from "lucide-react";
-import type { IControl, StyleSpecification } from "maplibre-gl";
+import type { StyleSpecification } from "maplibre-gl";
 
 import "maplibre-gl/dist/maplibre-gl.css";
-import {
-  AttributionControl,
-  LngLat,
-  Map as MLMap,
-  Popup,
-  ScaleControl,
-  setWorkerUrl,
-} from "maplibre-gl";
+import { LngLat, Map as MLMap, Popup, setWorkerUrl } from "maplibre-gl";
 import { useEffect, useRef, useState } from "react";
 
 import {
   addIcons,
   appLayers,
-  applyBase,
   baseStack,
   hillshadeLayer,
-  hillshadePaint,
   readColors,
 } from "@/components/map/app-layers";
 import { useCamera } from "@/components/map/apply-camera";
+import {
+  applyEnvironment,
+  buildEnv,
+  placeProvenance,
+  provenanceControls,
+} from "@/components/map/apply-environment";
+import type { MapEnv, Provenance } from "@/components/map/apply-environment";
 import { applyScene, sceneHost } from "@/components/map/apply-scene";
 import type { SceneHost } from "@/components/map/apply-scene";
 import { baseLayers, OVERLAYS, VECTOR_BASE } from "@/components/map/map-style";
@@ -50,12 +48,7 @@ import {
 } from "@/components/ui/tooltip";
 import { DEFAULT_VIEW } from "@/lib/app-state";
 import type { MapView, Selection, Shown } from "@/lib/app-state";
-import {
-  BASEMAP_ID,
-  BASEMAP_SOURCE,
-  BASEMAP_SOURCE_ID,
-  GLYPHS,
-} from "@/lib/basemap";
+import { BASEMAP_SOURCE, BASEMAP_SOURCE_ID, GLYPHS } from "@/lib/basemap";
 import { HIT_LAYERS, SOURCE } from "@/lib/layer-ids";
 import type { MapAssets } from "@/lib/map-assets";
 import {
@@ -71,8 +64,6 @@ import type { Tap } from "@/lib/map-pick";
 import { buildScene } from "@/lib/map-scene";
 import type { Scene } from "@/lib/map-scene";
 import type { TownReach } from "@/lib/nearby";
-import type { Scheme } from "@/lib/palette";
-import { prominenceWord } from "@/lib/prominence";
 import { entityKey } from "@/lib/route-key";
 import type { Rows } from "@/lib/rows";
 import type { LatLon } from "@/lib/types";
@@ -169,51 +160,7 @@ const PROFILE_MS = 900;
  * domain.
  */
 const TOOL = "size-9";
-const TERRAIN = { exaggeration: 1.25, source: "dem" } as const;
 
-/**
- * The legend line for the level of detail (`lib/prominence.ts`): "Bei dieser
- * Zoomstufe: bekannte Pässe" while the overview is thinned by fame, nothing
- * once every road is drawn. A MapLibre control rather than a React node, so
- * it sits in a corner the way the scale bar and the attribution do – read,
- * not pressed – and keeps clear of the season bar with them.
- * It is silent while the passes are switched off: a line about which passes
- * are drawn is a lie when none are.
- */
-class DetailLevelControl implements IControl {
-  private el: HTMLDivElement | null = null;
-  private map: MLMap | null = null;
-  private shown = true;
-  private readonly update = () => {
-    if (!this.el || !this.map) return;
-    const word = this.shown ? prominenceWord(this.map.getZoom()) : null;
-    this.el.textContent = word ? `Bei dieser Zoomstufe: ${word}` : "";
-    this.el.hidden = !word;
-  };
-
-  onAdd(m: MLMap) {
-    this.map = m;
-    this.el = document.createElement("div");
-    this.el.className =
-      "maplibregl-ctrl bg-card/70 border-border/60 text-muted-foreground text-2xs rounded-xs border px-1 leading-4 backdrop-blur-sm";
-    m.on("zoom", this.update);
-    this.update();
-    return this.el;
-  }
-
-  onRemove(m: MLMap) {
-    m.off("zoom", this.update);
-    this.el?.remove();
-    this.el = null;
-    this.map = null;
-  }
-
-  /** Whether the passes are drawn at all – with them off the line is hidden. */
-  setShown(shown: boolean) {
-    this.shown = shown;
-    this.update();
-  }
-}
 /** Slack around the pointer, so a near miss on a label still counts. */
 const HIT_SLOP = 4;
 
@@ -248,57 +195,6 @@ const pickAt = (m: MLMap, x: number, y: number): Selection | null => {
     (at) => m.project([at[0], at[1]]),
   );
 };
-
-/** The scale bar, the attribution ⓘ and the level-of-detail line, as a set. */
-interface Provenance {
-  attribution: AttributionControl;
-  scale: ScaleControl;
-  level: DetailLevelControl;
-}
-
-/**
- * Puts the three quiet controls in the corner the layout leaves them.
- *
- * On a phone they stack in the bottom-left corner above the season bar; on
- * desktop, where the season card stands beside the panels on the left, they sit
- * in a row in the bottom-right corner, the one corner nothing else claims.
- * MapLibre fixes a control's corner when it is added, so a change of layout
- * re-adds them – which is also what keeps the compact attribution unfolding
- * towards the map rather than off its edge.
- */
-const placeProvenance = (
-  m: MLMap,
-  controls: Provenance,
-  mobile: boolean,
-  root: HTMLElement | null,
-) => {
-  // A right corner takes each new control on its *left*, so the ⓘ goes in
-  // first and keeps the corner; the scale bar stands beside it.
-  const corner = mobile ? "bottom-left" : "bottom-right";
-  for (const control of [controls.attribution, controls.scale, controls.level])
-    m.addControl(control, corner);
-  /*
-   * MapLibre opens a compact attribution the first time it has something to
-   * say, and folds it away only once it has been clicked. Nothing else on this
-   * map is open before it is asked for, so it starts folded.
-   *
-   * Marking the container compact *here* is what does that, rather than
-   * removing the open class afterwards: `_updateCompact` adds
-   * `maplibregl-compact-show` only while the container is not compact yet, and
-   * it runs again on every resize and whenever the attributions change – so a
-   * class removed now is back the moment the first source reports in. Set the
-   * flag it tests and it never opens by itself; the ⓘ still toggles. Which is
-   * also why the controls go in while the style is still parsing: an
-   * attribution that has something to say before the flag is set says it.
-   */
-  root
-    ?.querySelector(".maplibregl-ctrl-attrib")
-    ?.classList.add("maplibregl-compact");
-};
-
-/** A stored base that no longer exists (a keyed raster, say) falls back to the default. */
-const resolveBase = (id: string) =>
-  id === BASEMAP_ID || baseLayers().some((b) => b.id === id) ? id : BASEMAP_ID;
 
 // MapLibre resolves its worker via import.meta.url, which Turbopack does not
 // serve; scripts/copy-maplibre-worker.ts places a copy under public/maplibre.
@@ -335,13 +231,8 @@ export const PassMap = ({
    * frame to turn an icon would be the most expensive way to do that.
    */
   const [turned, setTurned] = useState(false);
-  const detailLevel = useRef<DetailLevelControl | null>(null);
-  useEffect(() => {
-    detailLevel.current?.setShown(shown.passes);
-  }, [shown.passes, ready]);
-  /** The three controls in the map's quiet corner, and which layout put them there. */
+  /** The three controls in the map's quiet corner. */
   const provenance = useRef<Provenance | null>(null);
-  const placedFor = useRef<boolean | null>(null);
   const bearing = useRef(0);
   const needle = useRef<SVGSVGElement | null>(null);
   /** Points the needle north; also applies the angle it mounts at. */
@@ -381,13 +272,33 @@ export const PassMap = ({
   /** One string per selected entity: what the camera effects change on. */
   const selKey = selection && entityKey(selection);
   const [base, setBase] = useStored("base");
-  // The base the map currently shows. The map is built during the hydration
-  // render, where a stored value is not known yet (useSyncExternalStore hands
-  // out the server snapshot); the effect below catches up once it is.
-  const appliedBase = useRef(BASEMAP_ID);
-  /** And the scheme it was painted in, for the same reason. */
-  const appliedScheme = useRef<Scheme>("light");
   const [overlays, setOverlays] = useStored("overlays");
+  /**
+   * The environment the map should be in, as one value: what the device says
+   * and what the view menu was set to. The effect below hands the applier the
+   * difference to the one the map *is* in (`applyEnvironment`,
+   * components/map/apply-environment.ts), which is why none of it needs a
+   * "has this been applied yet" ref of its own any more.
+   *
+   * `is3d` lives here rather than beside the map because the terrain is its
+   * only consequence: the switch reads this value back, and nothing else in
+   * the component sets a terrain.
+   */
+  const mapEnv = buildEnv({
+    base,
+    device: env,
+    overlays,
+    passes: shown.passes,
+    terrain: is3d,
+  });
+  /**
+   * The environment the map is in. Seeded with what the style was built from
+   * rather than left empty: the map is built during the hydration render,
+   * where a stored value is not known yet (`useSyncExternalStore` hands out
+   * the server snapshot), so the first difference is exactly what the stored
+   * values changed.
+   */
+  const appliedEnv = useRef<MapEnv | null>(null);
   // Callbacks are needed in map event handlers that are only registered
   // during setup; refs keep them current without rebuilding the map.
   const onSelectRef = useRef(onSelect);
@@ -415,9 +326,11 @@ export const PassMap = ({
   useEffect(() => {
     if (!container.current || map.current || !intent) return;
     const colors = readColors(container.current);
-    appliedBase.current = resolveBase(base);
-    appliedScheme.current = env.scheme;
-    const { ground, detail } = baseStack(appliedBase.current, env.scheme);
+    // What the style below is built from is what the environment applier is
+    // told the map is already in – terrain excepted, which the style carries
+    // none of and the applier switches on once `is3d` says so.
+    appliedEnv.current = { ...mapEnv, terrain: false };
+    const { ground, detail } = baseStack(mapEnv.base, env.scheme);
 
     const style: StyleSpecification = {
       glyphs: GLYPHS,
@@ -533,14 +446,8 @@ export const PassMap = ({
      * OSM attribution guidelines ask for, and a line inside a menu about map
      * types is neither identifiable nor one interaction.
      */
-    detailLevel.current = new DetailLevelControl();
-    const controls: Provenance = {
-      attribution: new AttributionControl({ compact: true }),
-      level: detailLevel.current,
-      scale: new ScaleControl({ unit: "metric" }),
-    };
+    const controls = provenanceControls();
     provenance.current = controls;
-    placedFor.current = env.mobile;
     placeProvenance(m, controls, env.mobile, container.current);
 
     // `style.load`, not `load`: the latter waits for every source, and the
@@ -548,12 +455,12 @@ export const PassMap = ({
     // Wi-Fi. Once the style is parsed the sources exist, so the markers,
     // filters and feature state can go in at once; the lines follow when
     // their files arrive (state set before that is applied as they load).
+    // A link that carries a tilt opens tilted, and the terrain that belongs to
+    // it is the environment applier's to switch on – the style itself carries
+    // none, so `is3d` is the whole of it.
     m.on("style.load", () => {
       addIcons(m, colors);
-      if (view.pitch > 1) {
-        m.setTerrain(TERRAIN);
-        setIs3d(true);
-      }
+      if (view.pitch > 1) setIs3d(true);
       setReady(true);
     });
 
@@ -647,11 +554,10 @@ export const PassMap = ({
     m.on("rotate", spin);
     spin();
 
-    // Keep the 3D toggle honest when the map is tilted by drag or compass.
+    // Keep the 3D toggle honest when the map is tilted by drag or compass;
+    // the terrain follows it through the environment, in both directions.
     m.on("pitchend", () => {
-      const pitched = m.getPitch() > 1;
-      setIs3d(pitched);
-      if (pitched && !m.getTerrain()) m.setTerrain(TERRAIN);
+      setIs3d(m.getPitch() > 1);
     });
 
     /*
@@ -689,75 +595,28 @@ export const PassMap = ({
     // oxlint-disable-next-line react/exhaustive-deps
   }, [intent, send]);
 
-  // --- Which corner the provenance stands in -------------------------------
-  // Placed with the map and moved when the layout changes under it; what each
-  // corner means is `placeProvenance` above.
+  // --- What the map is in --------------------------------------------------
+  /**
+   * The environment, handed to MapLibre as the difference to the one it is in
+   * (`applyEnvironment`, components/map/apply-environment.ts).
+   *
+   * This was five effects – the level-of-detail line, the corner the
+   * provenance stands in, the base, the overlays and the colour scheme – each
+   * with its own "has this been applied yet" ref, and a sixth `setTerrain`
+   * scattered over the style's load, the pitch listener and the 3D switch.
+   * Nothing said which of them ran first, and the two that write the base
+   * stack both did. One value, applied in one place, has one order, and it is
+   * written down in the applier.
+   */
   useEffect(() => {
     const m = map.current;
+    const root = container.current;
     const controls = provenance.current;
-    if (!m || !controls || placedFor.current === env.mobile) return;
-    placedFor.current = env.mobile;
-    for (const control of [
-      controls.attribution,
-      controls.scale,
-      controls.level,
-    ])
-      m.removeControl(control);
-    placeProvenance(m, controls, env.mobile, container.current);
-  }, [env.mobile]);
-
-  // --- Which base ----------------------------------------------------------
-  useEffect(() => {
-    const m = map.current;
-    if (!m || !ready) return;
-    const next = resolveBase(base);
-    if (next === appliedBase.current) return;
-    appliedBase.current = next;
-    applyBase(m, next, env.scheme);
-  }, [base, ready, env.scheme]);
-
-  // --- Which overlays ------------------------------------------------------
-  // What is on is applied from the stored value rather than only at the switch
-  // that changed it, for the reason the base has an effect too: the map is
-  // built before the stored value is known, so the first style carries the
-  // defaults and this is what catches up.
-  useEffect(() => {
-    const m = map.current;
-    if (!m || !ready) return;
-    for (const id of ["hillshade", ...OVERLAYS.map((o) => o.id)])
-      m.setLayoutProperty(
-        id === "hillshade" ? "hillshade" : `ov-${id}`,
-        "visibility",
-        overlays.includes(id) ? "visible" : "none",
-      );
-  }, [overlays, ready]);
-
-  // --- Follow the OS colour scheme -----------------------------------------
-  // The tokens flip with it: the base is swapped for its twin, the icons are
-  // repainted and every paint property of the app's layers is set again from
-  // the definition the style was built from. Camera, sources, filters and
-  // feature state are not touched, so nothing is lost or reloaded.
-  //
-  // The map is built in the scheme that was current then, so this is a change
-  // and not a first application: the ref is what tells the two apart, and it
-  // is why re-running on a base change costs nothing.
-  useEffect(() => {
-    const m = map.current;
-    const el = container.current;
-    if (!m || !el || !ready || appliedScheme.current === env.scheme) return;
-    const s = env.scheme;
-    appliedScheme.current = s;
-    const colors = readColors(el);
-    addIcons(m, colors);
-    if (resolveBase(base) === BASEMAP_ID) applyBase(m, BASEMAP_ID, s);
-    const repaint = (id: string, paint: object) => {
-      for (const [k, v] of Object.entries(paint) as [never, never][])
-        m.setPaintProperty(id, k, v);
-    };
-    repaint("hillshade", hillshadePaint(s));
-    for (const layer of appLayers(colors, env))
-      repaint(layer.id, layer.paint ?? {});
-  }, [ready, base, env]);
+    const prev = appliedEnv.current;
+    if (!m || !root || !controls || !prev || !ready) return;
+    applyEnvironment({ controls, map: m, root }, mapEnv, prev);
+    appliedEnv.current = mapEnv;
+  }, [mapEnv, ready]);
 
   // --- The camera ----------------------------------------------------------
   // Five prop changes, five events, and the machine decides what each one
@@ -795,10 +654,13 @@ export const PassMap = ({
     // oxlint-disable-next-line react/exhaustive-deps
   }, [selKey, ready]);
 
-  const { bottom, left, right, top } = inset;
+  // The inset itself, not its four numbers spelled out: `shellGeometry`
+  // (lib/shell-geometry.ts) is a memoised call, so the value only changes when
+  // one of the edges does – and `onInset` (lib/map-camera.ts) compares the
+  // edges anyway before it moves anything.
   useEffect(() => {
-    send({ inset: { bottom, left, right, top }, type: "inset" });
-  }, [bottom, left, right, top, send]);
+    send({ inset, type: "inset" });
+  }, [inset, send]);
 
   useEffect(() => {
     if (ready && requestedView)
@@ -842,11 +704,9 @@ export const PassMap = ({
     ]);
   }, [profileZoom, ready, issue, env.reduceMotion]);
 
+  /** The terrain is the environment's; this only says which way the switch is. */
   const toggle3d = (pressed: boolean) => {
-    const m = map.current;
-    if (!m) return;
     setIs3d(pressed);
-    m.setTerrain(pressed ? TERRAIN : null);
     // Coming back down straightens the map out as well: a tilted view is the
     // only reason to be turned away from north in the first place.
     issue([
@@ -990,7 +850,7 @@ export const PassMap = ({
               <FieldSet className="gap-2">
                 <FieldLegend variant="label">Grundkarte</FieldLegend>
                 <RadioGroup
-                  value={resolveBase(base)}
+                  value={mapEnv.base}
                   onValueChange={(v) => setBase(String(v))}
                   className="gap-1.5"
                 >
@@ -1032,7 +892,7 @@ export const PassMap = ({
                   <Switch
                     size="sm"
                     id="terrain-3d"
-                    checked={is3d}
+                    checked={mapEnv.terrain}
                     onCheckedChange={toggle3d}
                   />
                   <FieldLabel htmlFor="terrain-3d" className="font-normal">
