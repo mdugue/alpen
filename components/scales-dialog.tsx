@@ -22,6 +22,8 @@ import {
   ROAD_TAGS,
   ROAD_TYPE,
   ROAD_TYPES,
+  SURFACE,
+  SURFACES,
   TOWN_TAG,
   TOWN_TAGS,
 } from "@/lib/regions";
@@ -163,6 +165,26 @@ export const ScalesDialog = ({
                   {ROAD_TAG[tag].label}
                 </dt>
                 <dd className="text-muted-foreground">{ROAD_TAG[tag].hint}</dd>
+              </div>
+            ))}
+          </dl>
+        </section>
+        <section className="flex flex-col gap-2">
+          <h3 className="text-base font-semibold">Belag</h3>
+          <p className="text-muted-foreground">
+            Jede Straße sagt, worauf sie gefahren wird. Die vier Skalen gelten
+            innerhalb der Disziplin: Bekanntheit ist Bekanntheit unter
+            Gravelfahrern, Schwierigkeit rechnet den Belag mit (6 % Schotter
+            fahren sich wie 9 % Asphalt), Verkehr bleibt eine Skala – die Via
+            del Sale trägt an Mauttagen Motorräder. Eine ungeteerte Straße räumt
+            niemand: was sie schließt, ist die Schneedecke, nicht eine Schranke
+            – die Leiter unten sagt, ab wann.
+          </p>
+          <dl className="grid grid-cols-[auto_1fr] gap-x-3 gap-y-1">
+            {SURFACES.map((x) => (
+              <div key={x} className="contents">
+                <dt className="font-semibold">{SURFACE[x].label}</dt>
+                <dd className="text-muted-foreground">{SURFACE[x].hint}</dd>
               </div>
             ))}
           </dl>

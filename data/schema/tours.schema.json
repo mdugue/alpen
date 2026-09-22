@@ -83,6 +83,14 @@
         "type": "string",
         "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
       },
+      "surface": {
+        "type": "string",
+        "enum": [
+          "asphalt",
+          "gravel",
+          "mixed"
+        ]
+      },
       "waypoints": {
         "minItems": 2,
         "type": "array",
@@ -118,6 +126,7 @@
       "passes",
       "season",
       "slug",
+      "surface",
       "waypoints"
     ],
     "additionalProperties": false

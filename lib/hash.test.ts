@@ -284,6 +284,7 @@ const ROWS = {
   ranges: { key: "g", value: ["Jura"] },
   sort: { key: "o", value: "beauty" },
   status: { key: "s", value: ["open", "risky"] },
+  surfaces: { key: "bl", value: ["gravel", "mixed"] },
   tags: { key: "e", value: ["toll"] },
   types: { key: "a", value: ["pass", "spur"] },
 } satisfies { [K in keyof Filters]: Row<K> };
@@ -302,7 +303,7 @@ describe("every filter key", () => {
     expect(Object.keys(ROWS).toSorted()).toEqual(
       Object.keys(DEFAULT_FILTERS).toSorted(),
     );
-    expect(hashed).toHaveLength(14);
+    expect(hashed).toHaveLength(15);
   });
 
   test("each key carries a non-default value there and back", () => {
@@ -335,7 +336,7 @@ describe("every filter key", () => {
         }),
       ),
     ).toBe(
-      "a=pass,spur&b=30&be=4&c=46.5253,10.4541&d=2-4&e=toll&f=4&g=Jura&h=22&m=2000&o=beauty&pi=60&q=stelvio&s=open,risky&t=6.5&v=3&w=8&z=9.75",
+      "a=pass,spur&b=30&be=4&bl=gravel,mixed&c=46.5253,10.4541&d=2-4&e=toll&f=4&g=Jura&h=22&m=2000&o=beauty&pi=60&q=stelvio&s=open,risky&t=6.5&v=3&w=8&z=9.75",
     );
   });
 

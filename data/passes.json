@@ -1,6 +1,7 @@
 [
  {
   "slug": "col-du-galibier",
+  "surface": "asphalt",
   "name": "Col du Galibier",
   "type": "pass",
   "country": "FR",
@@ -39,6 +40,7 @@
  },
  {
   "slug": "alpe-d-huez",
+  "surface": "asphalt",
   "name": "Alpe d'Huez",
   "type": "pass",
   "country": "FR",
@@ -66,6 +68,7 @@
  },
  {
   "slug": "col-de-l-iseran",
+  "surface": "asphalt",
   "name": "Col de l'Iseran",
   "type": "pass",
   "country": "FR",
@@ -104,6 +107,7 @@
  },
  {
   "slug": "col-de-la-bonette",
+  "surface": "asphalt",
   "name": "Col de la Bonette",
   "type": "pass",
   "aliases": [
@@ -146,6 +150,7 @@
  },
  {
   "slug": "col-d-izoard",
+  "surface": "asphalt",
   "name": "Col d'Izoard",
   "type": "pass",
   "country": "FR",
@@ -184,6 +189,7 @@
  },
  {
   "slug": "col-de-la-madeleine",
+  "surface": "asphalt",
   "name": "Col de la Madeleine",
   "type": "pass",
   "country": "FR",
@@ -222,6 +228,7 @@
  },
  {
   "slug": "col-de-la-croix-de-fer",
+  "surface": "asphalt",
   "name": "Col de la Croix de Fer",
   "type": "pass",
   "country": "FR",
@@ -260,6 +267,7 @@
  },
  {
   "slug": "col-de-la-loze",
+  "surface": "asphalt",
   "name": "Col de la Loze",
   "type": "pass",
   "country": "FR",
@@ -298,6 +306,7 @@
  },
  {
   "slug": "mont-ventoux",
+  "surface": "asphalt",
   "name": "Mont Ventoux",
   "type": "pass",
   "country": "FR",
@@ -343,6 +352,7 @@
  },
  {
   "slug": "colle-dell-agnello",
+  "surface": "asphalt",
   "name": "Colle dell'Agnello",
   "type": "pass",
   "aliases": [
@@ -384,11 +394,9 @@
  },
  {
   "slug": "colle-delle-finestre",
+  "surface": "mixed",
   "name": "Colle delle Finestre",
   "type": "pass",
-  "tags": [
-   "surface"
-  ],
   "country": "IT",
   "region": "Westalpen",
   "lat": 45.072,
@@ -418,6 +426,7 @@
  },
  {
   "slug": "passo-dello-stelvio",
+  "surface": "asphalt",
   "name": "Passo dello Stelvio",
   "type": "pass",
   "tags": [
@@ -464,6 +473,7 @@
  },
  {
   "slug": "passo-di-gavia",
+  "surface": "asphalt",
   "name": "Passo di Gavia",
   "type": "pass",
   "country": "IT",
@@ -502,6 +512,7 @@
  },
  {
   "slug": "passo-del-mortirolo",
+  "surface": "asphalt",
   "name": "Passo del Mortirolo",
   "type": "pass",
   "country": "IT",
@@ -536,6 +547,7 @@
  },
  {
   "slug": "umbrailpass",
+  "surface": "asphalt",
   "name": "Umbrailpass",
   "type": "pass",
   "aliases": [
@@ -570,6 +582,7 @@
  },
  {
   "slug": "furkapass",
+  "surface": "asphalt",
   "name": "Furkapass",
   "type": "pass",
   "country": "CH",
@@ -608,6 +621,7 @@
  },
  {
   "slug": "grimselpass",
+  "surface": "asphalt",
   "name": "Grimselpass",
   "type": "pass",
   "country": "CH",
@@ -646,6 +660,7 @@
  },
  {
   "slug": "sustenpass",
+  "surface": "asphalt",
   "name": "Sustenpass",
   "type": "pass",
   "country": "CH",
@@ -684,6 +699,7 @@
  },
  {
   "slug": "nufenenpass",
+  "surface": "asphalt",
   "name": "Nufenenpass",
   "type": "pass",
   "aliases": [
@@ -725,11 +741,12 @@
  },
  {
   "slug": "gotthard-tremola",
+  "surface": "asphalt",
   "name": "Gotthard (Tremola)",
   "type": "pass",
   "tags": [
    "hairpins",
-   "surface"
+   "cobbles"
   ],
   "aliases": [
    "San Gottardo",
@@ -771,6 +788,7 @@
  },
  {
   "slug": "grosse-scheidegg",
+  "surface": "asphalt",
   "name": "Grosse Scheidegg",
   "type": "pass",
   "tags": [
@@ -812,6 +830,7 @@
  },
  {
   "slug": "klausenpass",
+  "surface": "asphalt",
   "name": "Klausenpass",
   "type": "pass",
   "country": "CH",
@@ -850,6 +869,7 @@
  },
  {
   "slug": "albulapass",
+  "surface": "asphalt",
   "name": "Albulapass",
   "type": "pass",
   "country": "CH",
@@ -888,6 +908,7 @@
  },
  {
   "slug": "col-du-grand-saint-bernard",
+  "surface": "asphalt",
   "name": "Col du Grand Saint-Bernard",
   "type": "pass",
   "aliases": [
@@ -930,6 +951,7 @@
  },
  {
   "slug": "grossglockner-hochalpenstrasse",
+  "surface": "asphalt",
   "name": "Großglockner Hochalpenstraße",
   "type": "pass",
   "tags": [
@@ -975,6 +997,7 @@
  },
  {
   "slug": "timmelsjoch",
+  "surface": "asphalt",
   "name": "Timmelsjoch",
   "type": "pass",
   "tags": [
@@ -1019,6 +1042,7 @@
  },
  {
   "slug": "silvretta-hochalpenstrasse",
+  "surface": "asphalt",
   "name": "Silvretta Hochalpenstraße",
   "type": "pass",
   "tags": [
@@ -1065,6 +1089,7 @@
  },
  {
   "slug": "kitzbueheler-horn",
+  "surface": "asphalt",
   "name": "Kitzbüheler Horn",
   "type": "spur",
   "tags": [
@@ -1095,6 +1120,7 @@
  },
  {
   "slug": "rossfeld-panoramastrasse",
+  "surface": "asphalt",
   "name": "Roßfeld-Panoramastraße",
   "type": "pass",
   "tags": [
@@ -1130,6 +1156,7 @@
  },
  {
   "slug": "passo-pordoi",
+  "surface": "asphalt",
   "name": "Passo Pordoi",
   "type": "pass",
   "aliases": [
@@ -1167,6 +1194,7 @@
  },
  {
   "slug": "passo-giau",
+  "surface": "asphalt",
   "name": "Passo Giau",
   "type": "pass",
   "country": "IT",
@@ -1205,6 +1233,7 @@
  },
  {
   "slug": "passo-fedaia",
+  "surface": "asphalt",
   "name": "Passo Fedaia",
   "type": "pass",
   "tags": [
@@ -1245,6 +1274,7 @@
  },
  {
   "slug": "passo-sella",
+  "surface": "asphalt",
   "name": "Passo Sella",
   "type": "pass",
   "aliases": [
@@ -1282,6 +1312,7 @@
  },
  {
   "slug": "tre-cime-di-lavaredo",
+  "surface": "asphalt",
   "name": "Tre Cime di Lavaredo",
   "type": "spur",
   "tags": [
@@ -1320,6 +1351,7 @@
  },
  {
   "slug": "monte-zoncolan",
+  "surface": "asphalt",
   "name": "Monte Zoncolan",
   "type": "pass",
   "country": "IT",
@@ -1354,6 +1386,7 @@
  },
  {
   "slug": "col-de-vars",
+  "surface": "asphalt",
   "name": "Col de Vars",
   "type": "pass",
   "country": "FR",
@@ -1392,6 +1425,7 @@
  },
  {
   "slug": "col-du-lautaret",
+  "surface": "asphalt",
   "name": "Col du Lautaret",
   "type": "pass",
   "country": "FR",
@@ -1426,6 +1460,7 @@
  },
  {
   "slug": "col-du-glandon",
+  "surface": "asphalt",
   "name": "Col du Glandon",
   "type": "pass",
   "country": "FR",
@@ -1464,6 +1499,7 @@
  },
  {
   "slug": "col-de-joux-plane",
+  "surface": "asphalt",
   "name": "Col de Joux Plane",
   "type": "pass",
   "country": "FR",
@@ -1495,6 +1531,7 @@
  },
  {
   "slug": "col-de-la-colombiere",
+  "surface": "asphalt",
   "name": "Col de la Colombière",
   "type": "pass",
   "country": "FR",
@@ -1533,6 +1570,7 @@
  },
  {
   "slug": "cormet-de-roselend",
+  "surface": "asphalt",
   "name": "Cormet de Roselend",
   "type": "pass",
   "tags": [
@@ -1574,6 +1612,7 @@
  },
  {
   "slug": "col-du-petit-saint-bernard",
+  "surface": "asphalt",
   "name": "Col du Petit Saint-Bernard",
   "type": "pass",
   "aliases": [
@@ -1616,6 +1655,7 @@
  },
  {
   "slug": "col-du-mont-cenis",
+  "surface": "asphalt",
   "name": "Col du Mont Cenis",
   "type": "pass",
   "aliases": [
@@ -1657,6 +1697,7 @@
  },
  {
   "slug": "col-de-la-cayolle",
+  "surface": "asphalt",
   "name": "Col de la Cayolle",
   "type": "pass",
   "country": "FR",
@@ -1695,6 +1736,7 @@
  },
  {
   "slug": "col-d-allos",
+  "surface": "asphalt",
   "name": "Col d'Allos",
   "type": "pass",
   "country": "FR",
@@ -1733,6 +1775,7 @@
  },
  {
   "slug": "col-des-champs",
+  "surface": "asphalt",
   "name": "Col des Champs",
   "type": "pass",
   "country": "FR",
@@ -1771,6 +1814,7 @@
  },
  {
   "slug": "col-de-la-lombarde",
+  "surface": "asphalt",
   "name": "Col de la Lombarde",
   "type": "pass",
   "country": "FR/IT",
@@ -1809,6 +1853,7 @@
  },
  {
   "slug": "col-de-turini",
+  "surface": "asphalt",
   "name": "Col de Turini",
   "type": "pass",
   "country": "FR",
@@ -1843,6 +1888,7 @@
  },
  {
   "slug": "col-de-la-couillole",
+  "surface": "asphalt",
   "name": "Col de la Couillole",
   "type": "pass",
   "country": "FR",
@@ -1877,6 +1923,7 @@
  },
  {
   "slug": "colle-del-nivolet",
+  "surface": "asphalt",
   "name": "Colle del Nivolet",
   "type": "spur",
   "tags": [
@@ -1912,6 +1959,7 @@
  },
  {
   "slug": "colle-fauniera",
+  "surface": "asphalt",
   "name": "Colle Fauniera",
   "type": "pass",
   "aliases": [
@@ -1953,6 +2001,7 @@
  },
  {
   "slug": "colle-di-sampeyre",
+  "surface": "asphalt",
   "name": "Colle di Sampeyre",
   "type": "pass",
   "country": "IT",
@@ -1991,6 +2040,7 @@
  },
  {
   "slug": "colle-san-carlo",
+  "surface": "asphalt",
   "name": "Colle San Carlo",
   "type": "pass",
   "country": "IT",
@@ -2029,6 +2079,7 @@
  },
  {
   "slug": "simplonpass",
+  "surface": "asphalt",
   "name": "Simplonpass",
   "type": "pass",
   "aliases": [
@@ -2066,6 +2117,7 @@
  },
  {
   "slug": "lukmanierpass",
+  "surface": "asphalt",
   "name": "Lukmanierpass",
   "type": "pass",
   "aliases": [
@@ -2107,6 +2159,7 @@
  },
  {
   "slug": "oberalppass",
+  "surface": "asphalt",
   "name": "Oberalppass",
   "type": "pass",
   "country": "CH",
@@ -2145,6 +2198,7 @@
  },
  {
   "slug": "passo-san-bernardino",
+  "surface": "asphalt",
   "name": "Passo San Bernardino",
   "type": "pass",
   "country": "CH",
@@ -2183,6 +2237,7 @@
  },
  {
   "slug": "spluegenpass",
+  "surface": "asphalt",
   "name": "Splügenpass",
   "type": "pass",
   "aliases": [
@@ -2224,6 +2279,7 @@
  },
  {
   "slug": "julierpass",
+  "surface": "asphalt",
   "name": "Julierpass",
   "type": "pass",
   "aliases": [
@@ -2261,6 +2317,7 @@
  },
  {
   "slug": "malojapass",
+  "surface": "asphalt",
   "name": "Malojapass",
   "type": "pass",
   "aliases": [
@@ -2291,6 +2348,7 @@
  },
  {
   "slug": "berninapass",
+  "surface": "asphalt",
   "name": "Berninapass",
   "type": "pass",
   "country": "CH",
@@ -2325,6 +2383,7 @@
  },
  {
   "slug": "flueelapass",
+  "surface": "asphalt",
   "name": "Flüelapass",
   "type": "pass",
   "country": "CH",
@@ -2363,6 +2422,7 @@
  },
  {
   "slug": "ofenpass",
+  "surface": "asphalt",
   "name": "Ofenpass",
   "type": "pass",
   "aliases": [
@@ -2400,6 +2460,7 @@
  },
  {
   "slug": "passo-del-foscagno",
+  "surface": "asphalt",
   "name": "Passo del Foscagno",
   "type": "pass",
   "country": "IT",
@@ -2434,6 +2495,7 @@
  },
  {
   "slug": "passo-del-tonale",
+  "surface": "asphalt",
   "name": "Passo del Tonale",
   "type": "pass",
   "country": "IT",
@@ -2468,6 +2530,7 @@
  },
  {
   "slug": "passo-san-marco",
+  "surface": "asphalt",
   "name": "Passo San Marco",
   "type": "pass",
   "country": "IT",
@@ -2506,6 +2569,7 @@
  },
  {
   "slug": "passo-crocedomini",
+  "surface": "asphalt",
   "name": "Passo Crocedomini",
   "type": "pass",
   "country": "IT",
@@ -2547,6 +2611,7 @@
  },
  {
   "slug": "oetztaler-gletscherstrasse",
+  "surface": "asphalt",
   "name": "Ötztaler Gletscherstraße",
   "type": "spur",
   "tags": [
@@ -2581,6 +2646,7 @@
  },
  {
   "slug": "kuehtai",
+  "surface": "asphalt",
   "name": "Kühtai",
   "type": "pass",
   "country": "AT",
@@ -2615,6 +2681,7 @@
  },
  {
   "slug": "jaufenpass",
+  "surface": "asphalt",
   "name": "Jaufenpass",
   "type": "pass",
   "aliases": [
@@ -2656,6 +2723,7 @@
  },
  {
   "slug": "penserjoch",
+  "surface": "asphalt",
   "name": "Penserjoch",
   "type": "pass",
   "aliases": [
@@ -2697,6 +2765,7 @@
  },
  {
   "slug": "hahntennjoch",
+  "surface": "asphalt",
   "name": "Hahntennjoch",
   "type": "pass",
   "country": "AT",
@@ -2735,6 +2804,7 @@
  },
  {
   "slug": "arlbergpass",
+  "surface": "asphalt",
   "name": "Arlbergpass",
   "type": "pass",
   "country": "AT",
@@ -2769,6 +2839,7 @@
  },
  {
   "slug": "gerlospass",
+  "surface": "asphalt",
   "name": "Gerlospass",
   "type": "pass",
   "country": "AT",
@@ -2803,6 +2874,7 @@
  },
  {
   "slug": "malta-hochalmstrasse",
+  "surface": "asphalt",
   "name": "Malta-Hochalmstraße",
   "type": "spur",
   "tags": [
@@ -2838,6 +2910,7 @@
  },
  {
   "slug": "nockalmstrasse",
+  "surface": "asphalt",
   "name": "Nockalmstraße",
   "type": "pass",
   "tags": [
@@ -2881,6 +2954,7 @@
  },
  {
   "slug": "turracher-hoehe",
+  "surface": "asphalt",
   "name": "Turracher Höhe",
   "type": "pass",
   "country": "AT",
@@ -2915,6 +2989,7 @@
  },
  {
   "slug": "soelkpass",
+  "surface": "asphalt",
   "name": "Sölkpass",
   "type": "pass",
   "country": "AT",
@@ -2953,6 +3028,7 @@
  },
  {
   "slug": "villacher-alpenstrasse",
+  "surface": "asphalt",
   "name": "Villacher Alpenstraße",
   "type": "spur",
   "tags": [
@@ -2988,11 +3064,12 @@
  },
  {
   "slug": "vrsic",
+  "surface": "asphalt",
   "name": "Vršič",
   "type": "pass",
   "tags": [
    "hairpins",
-   "surface"
+   "cobbles"
   ],
   "aliases": [
    "Werschetz"
@@ -3033,6 +3110,7 @@
  },
  {
   "slug": "mangart-sattel",
+  "surface": "asphalt",
   "name": "Mangart-Sattel",
   "type": "spur",
   "tags": [
@@ -3071,6 +3149,7 @@
  },
  {
   "slug": "passo-falzarego",
+  "surface": "asphalt",
   "name": "Passo Falzarego",
   "type": "pass",
   "country": "IT",
@@ -3105,6 +3184,7 @@
  },
  {
   "slug": "passo-valparola",
+  "surface": "asphalt",
   "name": "Passo Valparola",
   "type": "pass",
   "country": "IT",
@@ -3132,6 +3212,7 @@
  },
  {
   "slug": "passo-gardena",
+  "surface": "asphalt",
   "name": "Passo Gardena",
   "type": "pass",
   "aliases": [
@@ -3170,6 +3251,7 @@
  },
  {
   "slug": "passo-campolongo",
+  "surface": "asphalt",
   "name": "Passo Campolongo",
   "type": "pass",
   "country": "IT",
@@ -3204,6 +3286,7 @@
  },
  {
   "slug": "passo-rolle",
+  "surface": "asphalt",
   "name": "Passo Rolle",
   "type": "pass",
   "country": "IT",
@@ -3238,6 +3321,7 @@
  },
  {
   "slug": "passo-san-pellegrino",
+  "surface": "asphalt",
   "name": "Passo San Pellegrino",
   "type": "pass",
   "country": "IT",
@@ -3272,6 +3356,7 @@
  },
  {
   "slug": "passo-manghen",
+  "surface": "asphalt",
   "name": "Passo Manghen",
   "type": "pass",
   "country": "IT",
@@ -3310,6 +3395,7 @@
  },
  {
   "slug": "passo-delle-erbe",
+  "surface": "asphalt",
   "name": "Passo delle Erbe",
   "type": "pass",
   "aliases": [
@@ -3351,6 +3437,7 @@
  },
  {
   "slug": "passo-staulanza",
+  "surface": "asphalt",
   "name": "Passo Staulanza",
   "type": "pass",
   "country": "IT",
@@ -3385,6 +3472,7 @@
  },
  {
   "slug": "passo-duran",
+  "surface": "asphalt",
   "name": "Passo Duran",
   "type": "pass",
   "country": "IT",
@@ -3419,6 +3507,7 @@
  },
  {
   "slug": "passo-monte-croce-comelico",
+  "surface": "asphalt",
   "name": "Passo Monte Croce Comelico",
   "type": "pass",
   "aliases": [
@@ -3456,6 +3545,7 @@
  },
  {
   "slug": "combe-laval",
+  "surface": "asphalt",
   "name": "Combe Laval",
   "aliases": [
    "Col de la Machine",
@@ -3492,6 +3582,7 @@
  },
  {
   "slug": "gorges-de-la-bourne",
+  "surface": "asphalt",
   "name": "Gorges de la Bourne",
   "type": "balcony",
   "tags": [
@@ -3527,6 +3618,7 @@
  },
  {
   "slug": "col-du-rousset",
+  "surface": "asphalt",
   "name": "Col du Rousset",
   "type": "pass",
   "tags": [
@@ -3557,6 +3649,7 @@
  },
  {
   "slug": "col-du-granon",
+  "surface": "asphalt",
   "name": "Col du Granon",
   "type": "spur",
   "country": "FR",
@@ -3587,6 +3680,7 @@
  },
  {
   "slug": "val-thorens",
+  "surface": "asphalt",
   "name": "Val Thorens",
   "type": "spur",
   "country": "FR",
@@ -3613,6 +3707,7 @@
  },
  {
   "slug": "les-arcs",
+  "surface": "asphalt",
   "name": "Arc 2000",
   "aliases": [
    "Les Arcs"
@@ -3642,6 +3737,7 @@
  },
  {
   "slug": "orcieres-merlette",
+  "surface": "asphalt",
   "name": "Orcières-Merlette",
   "type": "spur",
   "country": "FR",
@@ -3668,6 +3764,7 @@
  },
  {
   "slug": "pra-loup",
+  "surface": "asphalt",
   "name": "Pra-Loup",
   "type": "spur",
   "country": "FR",
@@ -3694,6 +3791,7 @@
  },
  {
   "slug": "le-chazelet",
+  "surface": "asphalt",
   "name": "Le Chazelet",
   "aliases": [
    "Plateau d'Emparis"
@@ -3726,6 +3824,7 @@
  },
  {
   "slug": "plateau-des-glieres",
+  "surface": "asphalt",
   "name": "Plateau des Glières",
   "type": "spur",
   "tags": [
@@ -3759,6 +3858,7 @@
  },
  {
   "slug": "col-de-sarenne",
+  "surface": "asphalt",
   "name": "Col de Sarenne",
   "type": "pass",
   "country": "FR",
@@ -3789,6 +3889,7 @@
  },
  {
   "slug": "col-du-telegraphe",
+  "surface": "asphalt",
   "name": "Col du Télégraphe",
   "type": "pass",
   "country": "FR",
@@ -3815,6 +3916,7 @@
  },
  {
   "slug": "col-du-chaussy",
+  "surface": "asphalt",
   "name": "Col du Chaussy",
   "aliases": [
    "Lacets de Montvernier"
@@ -3847,6 +3949,7 @@
  },
  {
   "slug": "col-du-mollard",
+  "surface": "asphalt",
   "name": "Col du Mollard",
   "type": "pass",
   "country": "FR",
@@ -3877,6 +3980,7 @@
  },
  {
   "slug": "col-du-pre",
+  "surface": "asphalt",
   "name": "Col du Pré",
   "type": "pass",
   "tags": [
@@ -3911,6 +4015,7 @@
  },
  {
   "slug": "col-des-aravis",
+  "surface": "asphalt",
   "name": "Col des Aravis",
   "type": "pass",
   "country": "FR",
@@ -3937,6 +4042,7 @@
  },
  {
   "slug": "col-des-saisies",
+  "surface": "asphalt",
   "name": "Col des Saisies",
   "type": "pass",
   "country": "FR",
@@ -3963,6 +4069,7 @@
  },
  {
   "slug": "col-de-la-forclaz-de-montmin",
+  "surface": "asphalt",
   "name": "Col de la Forclaz de Montmin",
   "type": "pass",
   "tags": [
@@ -3992,6 +4099,7 @@
  },
  {
   "slug": "semnoz",
+  "surface": "asphalt",
   "name": "Semnoz",
   "aliases": [
    "Crêt de Châtillon"
@@ -4028,6 +4136,7 @@
  },
  {
   "slug": "col-de-romme",
+  "surface": "asphalt",
   "name": "Col de Romme",
   "type": "pass",
   "country": "FR",
@@ -4054,6 +4163,7 @@
  },
  {
   "slug": "col-de-la-ramaz",
+  "surface": "asphalt",
   "name": "Col de la Ramaz",
   "type": "pass",
   "country": "FR",
@@ -4084,6 +4194,7 @@
  },
  {
   "slug": "col-d-ornon",
+  "surface": "asphalt",
   "name": "Col d'Ornon",
   "type": "pass",
   "country": "FR",
@@ -4110,6 +4221,7 @@
  },
  {
   "slug": "col-du-noyer",
+  "surface": "asphalt",
   "name": "Col du Noyer",
   "type": "pass",
   "tags": [
@@ -4143,6 +4255,7 @@
  },
  {
   "slug": "col-de-montgenevre",
+  "surface": "asphalt",
   "name": "Col de Montgenèvre",
   "type": "pass",
   "country": "FR",
@@ -4169,6 +4282,7 @@
  },
  {
   "slug": "col-de-braus",
+  "surface": "asphalt",
   "name": "Col de Braus",
   "type": "pass",
   "tags": [
@@ -4198,6 +4312,7 @@
  },
  {
   "slug": "col-de-vence",
+  "surface": "asphalt",
   "name": "Col de Vence",
   "type": "pass",
   "country": "FR",
@@ -4224,6 +4339,7 @@
  },
  {
   "slug": "col-de-la-madone",
+  "surface": "asphalt",
   "name": "Col de la Madone",
   "type": "pass",
   "country": "FR",
@@ -4250,6 +4366,7 @@
  },
  {
   "slug": "col-saint-martin",
+  "surface": "asphalt",
   "name": "Col Saint-Martin",
   "aliases": [
    "Col de la Colmiane"
@@ -4279,6 +4396,7 @@
  },
  {
   "slug": "route-de-presles",
+  "surface": "asphalt",
   "name": "Route de Presles",
   "type": "balcony",
   "tags": [
@@ -4314,6 +4432,7 @@
  },
  {
   "slug": "gorges-du-nan",
+  "surface": "asphalt",
   "name": "Gorges du Nan",
   "type": "balcony",
   "tags": [
@@ -4349,6 +4468,7 @@
  },
  {
   "slug": "gorges-du-cians",
+  "surface": "asphalt",
   "name": "Gorges du Cians",
   "type": "balcony",
   "tags": [
@@ -4384,6 +4504,7 @@
  },
  {
   "slug": "gorges-de-daluis",
+  "surface": "asphalt",
   "name": "Gorges de Daluis",
   "type": "balcony",
   "tags": [
@@ -4419,6 +4540,7 @@
  },
  {
   "slug": "corniche-sublime",
+  "surface": "asphalt",
   "name": "Corniche Sublime",
   "aliases": [
    "Gorges du Verdon"
@@ -4457,6 +4579,7 @@
  },
  {
   "slug": "gorges-de-la-nesque",
+  "surface": "asphalt",
   "name": "Gorges de la Nesque",
   "type": "balcony",
   "tags": [
@@ -4491,6 +4614,7 @@
  },
  {
   "slug": "gorges-du-guil",
+  "surface": "asphalt",
   "name": "Gorges du Guil",
   "type": "balcony",
   "tags": [
@@ -4526,6 +4650,7 @@
  },
  {
   "slug": "vallee-de-la-claree",
+  "surface": "asphalt",
   "name": "Vallée de la Clarée",
   "type": "valley",
   "tags": [
@@ -4564,6 +4689,7 @@
  },
  {
   "slug": "vallee-de-l-ubaye",
+  "surface": "asphalt",
   "name": "Vallée de l'Ubaye",
   "type": "valley",
   "country": "FR",
@@ -4599,6 +4725,7 @@
  },
  {
   "slug": "vallee-des-chapieux",
+  "surface": "asphalt",
   "name": "Vallée des Chapieux",
   "type": "valley",
   "country": "FR",
@@ -4634,6 +4761,7 @@
  },
  {
   "slug": "cirque-du-fer-a-cheval",
+  "surface": "asphalt",
   "name": "Cirque du Fer-à-Cheval",
   "type": "valley",
   "country": "FR",
@@ -4665,6 +4793,7 @@
  },
  {
   "slug": "passo-di-costalunga",
+  "surface": "asphalt",
   "name": "Passo di Costalunga",
   "type": "pass",
   "aliases": [
@@ -4705,6 +4834,7 @@
  },
  {
   "slug": "nigerpass",
+  "surface": "asphalt",
   "name": "Nigerpass",
   "type": "pass",
   "aliases": [
@@ -4734,6 +4864,7 @@
  },
  {
   "slug": "passo-valles",
+  "surface": "asphalt",
   "name": "Passo Valles",
   "type": "pass",
   "country": "IT",
@@ -4771,6 +4902,7 @@
  },
  {
   "slug": "monte-bondone",
+  "surface": "asphalt",
   "name": "Monte Bondone",
   "type": "pass",
   "tags": [
@@ -4807,6 +4939,7 @@
  },
  {
   "slug": "passo-tre-croci",
+  "surface": "asphalt",
   "name": "Passo Tre Croci",
   "type": "pass",
   "country": "IT",
@@ -4840,6 +4973,7 @@
  },
  {
   "slug": "campo-carlo-magno",
+  "surface": "asphalt",
   "name": "Campo Carlo Magno",
   "type": "pass",
   "aliases": [
@@ -4877,6 +5011,7 @@
  },
  {
   "slug": "passo-furcia",
+  "surface": "asphalt",
   "name": "Passo Furcia",
   "type": "pass",
   "aliases": [
@@ -4907,6 +5042,7 @@
  },
  {
   "slug": "passo-san-boldo",
+  "surface": "asphalt",
   "name": "Passo San Boldo",
   "type": "pass",
   "tags": [
@@ -4937,6 +5073,7 @@
  },
  {
   "slug": "passo-cibiana",
+  "surface": "asphalt",
   "name": "Passo Cibiana",
   "type": "pass",
   "country": "IT",
@@ -4963,6 +5100,7 @@
  },
  {
   "slug": "gampenjoch",
+  "surface": "asphalt",
   "name": "Gampenjoch",
   "type": "pass",
   "aliases": [
@@ -5000,6 +5138,7 @@
  },
  {
   "slug": "passo-lavaze",
+  "surface": "asphalt",
   "name": "Passo Lavazè",
   "type": "pass",
   "aliases": [
@@ -5036,6 +5175,7 @@
  },
  {
   "slug": "mendelpass",
+  "surface": "asphalt",
   "name": "Mendelpass",
   "type": "pass",
   "tags": [
@@ -5075,6 +5215,7 @@
  },
  {
   "slug": "passo-brocon",
+  "surface": "asphalt",
   "name": "Passo Brocon",
   "type": "pass",
   "country": "IT",
@@ -5101,6 +5242,7 @@
  },
  {
   "slug": "passo-cereda",
+  "surface": "asphalt",
   "name": "Passo Cereda",
   "type": "pass",
   "country": "IT",
@@ -5134,6 +5276,7 @@
  },
  {
   "slug": "cima-grappa",
+  "surface": "asphalt",
   "name": "Cima Grappa",
   "type": "pass",
   "tags": [
@@ -5185,6 +5328,7 @@
  },
  {
   "slug": "strada-della-forra",
+  "surface": "asphalt",
   "name": "Strada della Forra",
   "type": "pass",
   "tags": [
@@ -5219,6 +5363,7 @@
  },
  {
   "slug": "seiser-alm",
+  "surface": "asphalt",
   "name": "Seiser Alm",
   "type": "plateau",
   "tags": [
@@ -5258,6 +5403,7 @@
  },
  {
   "slug": "rittner-hochplateau",
+  "surface": "asphalt",
   "name": "Rittner Hochplateau",
   "type": "plateau",
   "tags": [
@@ -5297,6 +5443,7 @@
  },
  {
   "slug": "altopiano-di-asiago",
+  "surface": "asphalt",
   "name": "Altopiano di Asiago",
   "type": "plateau",
   "aliases": [
@@ -5332,6 +5479,7 @@
  },
  {
   "slug": "altopiano-del-cansiglio",
+  "surface": "asphalt",
   "name": "Altopiano del Cansiglio",
   "type": "plateau",
   "country": "IT",
@@ -5363,6 +5511,7 @@
  },
  {
   "slug": "val-di-genova",
+  "surface": "asphalt",
   "name": "Val di Genova",
   "type": "valley",
   "tags": [
@@ -5401,6 +5550,7 @@
  },
  {
   "slug": "ultental-weissbrunn",
+  "surface": "asphalt",
   "name": "Ultental",
   "type": "valley",
   "tags": [
@@ -5444,6 +5594,7 @@
  },
  {
   "slug": "martelltal",
+  "surface": "asphalt",
   "name": "Martelltal",
   "type": "valley",
   "tags": [
@@ -5486,6 +5637,7 @@
  },
  {
   "slug": "schnalstal-kurzras",
+  "surface": "asphalt",
   "name": "Schnalstal",
   "type": "valley",
   "tags": [
@@ -5525,6 +5677,7 @@
  },
  {
   "slug": "villnoesstal",
+  "surface": "asphalt",
   "name": "Villnößtal",
   "type": "valley",
   "aliases": [
@@ -5564,6 +5717,7 @@
  },
  {
   "slug": "hochtannbergpass",
+  "surface": "asphalt",
   "name": "Hochtannbergpass",
   "type": "pass",
   "country": "AT",
@@ -5597,6 +5751,7 @@
  },
  {
   "slug": "furkajoch",
+  "surface": "asphalt",
   "name": "Furkajoch",
   "type": "pass",
   "country": "AT",
@@ -5627,6 +5782,7 @@
  },
  {
   "slug": "faschinajoch",
+  "surface": "asphalt",
   "name": "Faschinajoch",
   "type": "pass",
   "country": "AT",
@@ -5660,6 +5816,7 @@
  },
  {
   "slug": "staller-sattel",
+  "surface": "asphalt",
   "name": "Staller Sattel",
   "type": "pass",
   "aliases": [
@@ -5700,6 +5857,7 @@
  },
  {
   "slug": "ploeckenpass",
+  "surface": "asphalt",
   "name": "Plöckenpass",
   "type": "pass",
   "aliases": [
@@ -5736,6 +5894,7 @@
  },
  {
   "slug": "nassfeldpass",
+  "surface": "asphalt",
   "name": "Nassfeldpass",
   "type": "pass",
   "aliases": [
@@ -5772,6 +5931,7 @@
  },
  {
   "slug": "wurzenpass",
+  "surface": "asphalt",
   "name": "Wurzenpass",
   "type": "pass",
   "aliases": [
@@ -5808,6 +5968,7 @@
  },
  {
   "slug": "loiblpass",
+  "surface": "asphalt",
   "name": "Loiblpass",
   "type": "pass",
   "aliases": [
@@ -5848,6 +6009,7 @@
  },
  {
   "slug": "seebergsattel",
+  "surface": "asphalt",
   "name": "Seebergsattel",
   "type": "pass",
   "aliases": [
@@ -5877,6 +6039,7 @@
  },
  {
   "slug": "kesselberg",
+  "surface": "asphalt",
   "name": "Kesselberg",
   "type": "pass",
   "tags": [
@@ -5906,6 +6069,7 @@
  },
  {
   "slug": "sudelfeld",
+  "surface": "asphalt",
   "name": "Sudelfeld",
   "type": "pass",
   "aliases": [
@@ -5943,6 +6107,7 @@
  },
  {
   "slug": "riedbergpass",
+  "surface": "asphalt",
   "name": "Riedbergpass",
   "type": "pass",
   "country": "DE",
@@ -5969,6 +6134,7 @@
  },
  {
   "slug": "oberjoch",
+  "surface": "asphalt",
   "name": "Oberjoch",
   "type": "pass",
   "tags": [
@@ -5998,6 +6164,7 @@
  },
  {
   "slug": "sella-nevea",
+  "surface": "asphalt",
   "name": "Sella Nevea",
   "type": "pass",
   "aliases": [
@@ -6027,6 +6194,7 @@
  },
  {
   "slug": "predilpass",
+  "surface": "asphalt",
   "name": "Predilpass",
   "type": "pass",
   "aliases": [
@@ -6064,6 +6232,7 @@
  },
  {
   "slug": "kaunertaler-gletscherstrasse",
+  "surface": "asphalt",
   "name": "Kaunertaler Gletscherstraße",
   "type": "spur",
   "tags": [
@@ -6099,6 +6268,7 @@
  },
  {
   "slug": "loser-panoramastrasse",
+  "surface": "asphalt",
   "name": "Loser Panoramastraße",
   "type": "spur",
   "tags": [
@@ -6133,6 +6303,7 @@
  },
  {
   "slug": "postalm",
+  "surface": "asphalt",
   "name": "Postalm",
   "type": "plateau",
   "tags": [
@@ -6171,6 +6342,7 @@
  },
  {
   "slug": "sportgastein",
+  "surface": "asphalt",
   "name": "Sportgastein",
   "type": "spur",
   "tags": [
@@ -6208,6 +6380,7 @@
  },
  {
   "slug": "hochkar",
+  "surface": "asphalt",
   "name": "Hochkar Alpenstraße",
   "type": "spur",
   "tags": [
@@ -6242,6 +6415,7 @@
  },
  {
   "slug": "kals-lucknerhaus",
+  "surface": "asphalt",
   "name": "Kalser Glocknerstraße",
   "type": "spur",
   "tags": [
@@ -6279,6 +6453,7 @@
  },
  {
   "slug": "pitztal-mittelberg",
+  "surface": "asphalt",
   "name": "Pitztal",
   "type": "valley",
   "tags": [
@@ -6317,6 +6492,7 @@
  },
  {
   "slug": "col-de-la-forclaz-martigny",
+  "surface": "asphalt",
   "name": "Col de la Forclaz",
   "type": "pass",
   "aliases": [
@@ -6346,6 +6522,7 @@
  },
  {
   "slug": "col-des-montets",
+  "surface": "asphalt",
   "name": "Col des Montets",
   "type": "pass",
   "country": "FR",
@@ -6372,6 +6549,7 @@
  },
  {
   "slug": "col-des-mosses",
+  "surface": "asphalt",
   "name": "Col des Mosses",
   "type": "pass",
   "country": "CH",
@@ -6398,6 +6576,7 @@
  },
  {
   "slug": "col-du-pillon",
+  "surface": "asphalt",
   "name": "Col du Pillon",
   "type": "pass",
   "country": "CH",
@@ -6424,6 +6603,7 @@
  },
  {
   "slug": "col-de-la-croix",
+  "surface": "asphalt",
   "name": "Col de la Croix",
   "type": "pass",
   "country": "CH",
@@ -6454,6 +6634,7 @@
  },
  {
   "slug": "jaunpass",
+  "surface": "asphalt",
   "name": "Jaunpass",
   "type": "pass",
   "aliases": [
@@ -6483,6 +6664,7 @@
  },
  {
   "slug": "pragelpass",
+  "surface": "asphalt",
   "name": "Pragelpass",
   "type": "pass",
   "tags": [
@@ -6516,6 +6698,7 @@
  },
  {
   "slug": "glaubenbielen",
+  "surface": "asphalt",
   "name": "Glaubenbielen",
   "type": "pass",
   "aliases": [
@@ -6549,6 +6732,7 @@
  },
  {
   "slug": "glaubenberg",
+  "surface": "asphalt",
   "name": "Glaubenberg",
   "type": "pass",
   "country": "CH",
@@ -6579,6 +6763,7 @@
  },
  {
   "slug": "ibergeregg",
+  "surface": "asphalt",
   "name": "Ibergeregg",
   "type": "pass",
   "country": "CH",
@@ -6605,6 +6790,7 @@
  },
  {
   "slug": "schwaegalp",
+  "surface": "asphalt",
   "name": "Schwägalp",
   "type": "pass",
   "country": "CH",
@@ -6631,6 +6817,7 @@
  },
  {
   "slug": "forcola-di-livigno",
+  "surface": "asphalt",
   "name": "Forcola di Livigno",
   "type": "pass",
   "country": "CH/IT",
@@ -6661,6 +6848,7 @@
  },
  {
   "slug": "passo-d-eira",
+  "surface": "asphalt",
   "name": "Passo d'Eira",
   "type": "pass",
   "country": "IT",
@@ -6687,6 +6875,7 @@
  },
  {
   "slug": "passo-del-vivione",
+  "surface": "asphalt",
   "name": "Passo del Vivione",
   "type": "pass",
   "country": "IT",
@@ -6717,6 +6906,7 @@
  },
  {
   "slug": "passo-del-maniva",
+  "surface": "asphalt",
   "name": "Passo del Maniva",
   "type": "pass",
   "aliases": [
@@ -6750,6 +6940,7 @@
  },
  {
   "slug": "madonna-del-ghisallo",
+  "surface": "asphalt",
   "name": "Madonna del Ghisallo",
   "type": "pass",
   "country": "IT",
@@ -6776,6 +6967,7 @@
  },
  {
   "slug": "muro-di-sormano",
+  "surface": "asphalt",
   "name": "Muro di Sormano",
   "type": "pass",
   "aliases": [
@@ -6805,6 +6997,7 @@
  },
  {
   "slug": "passo-dell-aprica",
+  "surface": "asphalt",
   "name": "Passo dell'Aprica",
   "type": "pass",
   "country": "IT",
@@ -6838,6 +7031,7 @@
  },
  {
   "slug": "col-du-sanetsch",
+  "surface": "asphalt",
   "name": "Col du Sanetsch",
   "type": "spur",
   "tags": [
@@ -6875,6 +7069,7 @@
  },
  {
   "slug": "sestriere",
+  "surface": "asphalt",
   "name": "Sestriere",
   "type": "pass",
   "aliases": [
@@ -6904,6 +7099,7 @@
  },
  {
   "slug": "valsavarenche",
+  "surface": "asphalt",
   "name": "Valsavarenche",
   "type": "valley",
   "aliases": [
@@ -6942,6 +7138,7 @@
  },
  {
   "slug": "valgrisenche",
+  "surface": "asphalt",
   "name": "Valgrisenche",
   "type": "valley",
   "tags": [
@@ -6983,6 +7180,7 @@
  },
  {
   "slug": "valle-maira",
+  "surface": "asphalt",
   "name": "Valle Maira",
   "type": "valley",
   "aliases": [
@@ -7021,6 +7219,7 @@
  },
  {
   "slug": "colle-di-nava",
+  "surface": "asphalt",
   "name": "Colle di Nava",
   "aliases": [
    "Nava"
@@ -7057,6 +7256,7 @@
  },
  {
   "slug": "colle-san-bartolomeo",
+  "surface": "asphalt",
   "name": "Colle San Bartolomeo",
   "type": "pass",
   "country": "IT",
@@ -7090,6 +7290,7 @@
  },
  {
   "slug": "passo-del-ginestro",
+  "surface": "asphalt",
   "name": "Passo del Ginestro",
   "type": "pass",
   "country": "IT",
@@ -7123,6 +7324,7 @@
  },
  {
   "slug": "colle-del-melogno",
+  "surface": "asphalt",
   "name": "Colle del Melogno",
   "aliases": [
    "Melogno"
@@ -7159,6 +7361,7 @@
  },
  {
   "slug": "passo-del-faiallo",
+  "surface": "asphalt",
   "name": "Passo del Faiallo",
   "aliases": [
    "Faiallo"
@@ -7188,6 +7391,7 @@
  },
  {
   "slug": "passo-del-turchino",
+  "surface": "asphalt",
   "name": "Passo del Turchino",
   "aliases": [
    "Turchino"
@@ -7217,6 +7421,7 @@
  },
  {
   "slug": "monte-beigua",
+  "surface": "asphalt",
   "name": "Monte Beigua",
   "aliases": [
    "Beigua"
@@ -7253,6 +7458,7 @@
  },
  {
   "slug": "passo-teglia",
+  "surface": "asphalt",
   "name": "Passo Teglia",
   "aliases": [
    "Passo di Teglia"
@@ -7289,6 +7495,7 @@
  },
  {
   "slug": "colle-d-oggia",
+  "surface": "asphalt",
   "name": "Colle d'Oggia",
   "aliases": [
    "Oggia"
@@ -7325,6 +7532,7 @@
  },
  {
   "slug": "colle-langan",
+  "surface": "asphalt",
   "name": "Colle Langan",
   "aliases": [
    "Langan"
@@ -7361,6 +7569,7 @@
  },
  {
   "slug": "monte-bignone",
+  "surface": "asphalt",
   "name": "Monte Bignone",
   "aliases": [
    "Bignone",
@@ -7391,6 +7600,7 @@
  },
  {
   "slug": "cipressa",
+  "surface": "asphalt",
   "name": "Cipressa",
   "type": "pass",
   "roadSummit": true,
@@ -7418,6 +7628,7 @@
  },
  {
   "slug": "poggio-di-sanremo",
+  "surface": "asphalt",
   "name": "Poggio",
   "aliases": [
    "Poggio di Sanremo",
@@ -7449,6 +7660,7 @@
  },
  {
   "slug": "colle-scravaion",
+  "surface": "asphalt",
   "name": "Colle Scravaion",
   "aliases": [
    "Scravaion"
@@ -7485,6 +7697,7 @@
  },
  {
   "slug": "colle-san-bernardo-di-garessio",
+  "surface": "asphalt",
   "name": "Colle San Bernardo",
   "aliases": [
    "Colle San Bernardo di Garessio"
@@ -7521,6 +7734,7 @@
  },
  {
   "slug": "monte-ceneri",
+  "surface": "asphalt",
   "name": "Monte Ceneri",
   "aliases": [
    "Passo del Monte Ceneri",
@@ -7558,6 +7772,7 @@
  },
  {
   "slug": "alpe-di-neggia",
+  "surface": "asphalt",
   "name": "Alpe di Neggia",
   "aliases": [
    "Passo dell'Alpe di Neggia",
@@ -7599,6 +7814,7 @@
  },
  {
   "slug": "sighignola",
+  "surface": "asphalt",
   "name": "Sighignola",
   "aliases": [
    "Balcone d'Italia",
@@ -7633,6 +7849,7 @@
  },
  {
   "slug": "monte-bisbino",
+  "surface": "asphalt",
   "name": "Monte Bisbino",
   "aliases": [
    "Bisbino"
@@ -7666,6 +7883,7 @@
  },
  {
   "slug": "monte-generoso-bellavista",
+  "surface": "asphalt",
   "name": "Monte Generoso (Bellavista)",
   "aliases": [
    "Bellavista",
@@ -7700,6 +7918,7 @@
  },
  {
   "slug": "valle-verzasca",
+  "surface": "asphalt",
   "name": "Valle Verzasca",
   "aliases": [
    "Verzasca",
@@ -7739,6 +7958,7 @@
  },
  {
   "slug": "val-bavona",
+  "surface": "asphalt",
   "name": "Val Bavona",
   "aliases": [
    "Bavona",
@@ -7774,6 +7994,7 @@
  },
  {
   "slug": "mottarone",
+  "surface": "asphalt",
   "name": "Mottarone",
   "aliases": [
    "Monte Mottarone"
@@ -7807,6 +8028,7 @@
  },
  {
   "slug": "passo-di-valcava",
+  "surface": "asphalt",
   "name": "Passo di Valcava",
   "aliases": [
    "Valcava"
@@ -7847,6 +8069,7 @@
  },
  {
   "slug": "culmine-di-san-pietro",
+  "surface": "asphalt",
   "name": "Culmine di San Pietro",
   "aliases": [
    "Passo Culmine di San Pietro"
@@ -7887,6 +8110,7 @@
  },
  {
   "slug": "monte-san-primo",
+  "surface": "asphalt",
   "name": "Monte San Primo",
   "aliases": [
    "San Primo"
@@ -7920,6 +8144,7 @@
  },
  {
   "slug": "selvino",
+  "surface": "asphalt",
   "name": "Selvino",
   "type": "pass",
   "roadSummit": true,
@@ -7947,6 +8172,7 @@
  },
  {
   "slug": "colle-gallo",
+  "surface": "asphalt",
   "name": "Colle Gallo",
   "aliases": [
    "Colle del Gallo"
@@ -7983,6 +8209,7 @@
  },
  {
   "slug": "piani-dei-resinelli",
+  "surface": "asphalt",
   "name": "Piani dei Resinelli",
   "aliases": [
    "Resinelli",
@@ -8017,6 +8244,7 @@
  },
  {
   "slug": "passo-di-agueglio",
+  "surface": "asphalt",
   "name": "Passo di Agueglio",
   "aliases": [
    "Agueglio",
@@ -8058,6 +8286,7 @@
  },
  {
   "slug": "bocca-del-creer",
+  "surface": "asphalt",
   "name": "Bocca del Creer",
   "aliases": [
    "Bocca di Navene",
@@ -8103,6 +8332,7 @@
  },
  {
   "slug": "punta-veleno",
+  "surface": "asphalt",
   "name": "Punta Veleno",
   "aliases": [
    "Prada Alta",
@@ -8137,6 +8367,7 @@
  },
  {
   "slug": "passo-del-ballino",
+  "surface": "asphalt",
   "name": "Passo del Ballino",
   "aliases": [
    "Ballino"
@@ -8173,6 +8404,7 @@
  },
  {
   "slug": "passo-d-ampola",
+  "surface": "asphalt",
   "name": "Passo d'Ampola",
   "aliases": [
    "Ampola",
@@ -8211,6 +8443,7 @@
  },
  {
   "slug": "passo-santa-barbara",
+  "surface": "asphalt",
   "name": "Passo Santa Barbara",
   "aliases": [
    "Santa Barbara",
@@ -8252,6 +8485,7 @@
  },
  {
   "slug": "passo-vezzena",
+  "surface": "asphalt",
   "name": "Passo Vezzena",
   "aliases": [
    "Vezzena"
@@ -8288,6 +8522,7 @@
  },
  {
   "slug": "pian-delle-fugazze",
+  "surface": "asphalt",
   "name": "Pian delle Fugazze",
   "aliases": [
    "Passo Pian delle Fugazze",
@@ -8325,6 +8560,7 @@
  },
  {
   "slug": "passo-xomo",
+  "surface": "asphalt",
   "name": "Passo Xomo",
   "aliases": [
    "Xomo"
@@ -8361,6 +8597,7 @@
  },
  {
   "slug": "monte-velo",
+  "surface": "asphalt",
   "name": "Monte Velo",
   "aliases": [
    "Velo"
@@ -8394,6 +8631,7 @@
  },
  {
   "slug": "valvestino",
+  "surface": "asphalt",
   "name": "Valvestino",
   "aliases": [
    "Lago di Valvestino",
@@ -8433,6 +8671,7 @@
  },
  {
   "slug": "passo-sommo",
+  "surface": "asphalt",
   "name": "Passo Sommo",
   "aliases": [
    "Sommo",
@@ -8463,6 +8702,7 @@
  },
  {
   "slug": "passo-delle-fittanze",
+  "surface": "asphalt",
   "name": "Passo delle Fittanze",
   "aliases": [
    "Fittanze della Sega",
@@ -8497,6 +8737,7 @@
  },
  {
   "slug": "passo-di-campogrosso",
+  "surface": "asphalt",
   "name": "Passo di Campogrosso",
   "aliases": [
    "Campogrosso"
@@ -8530,6 +8771,7 @@
  },
  {
   "slug": "col-de-la-madeleine-bedoin",
+  "surface": "asphalt",
   "name": "Col de la Madeleine (Bédoin)",
   "aliases": [
    "Madeleine de Bédoin"
@@ -8566,6 +8808,7 @@
  },
  {
   "slug": "col-de-notre-dame-des-abeilles",
+  "surface": "asphalt",
   "name": "Col de Notre-Dame des Abeilles",
   "aliases": [
    "Col des Abeilles",
@@ -8603,6 +8846,7 @@
  },
  {
   "slug": "col-de-murs",
+  "surface": "asphalt",
   "name": "Col de Murs",
   "aliases": [
    "Murs"
@@ -8639,6 +8883,7 @@
  },
  {
   "slug": "col-de-perty",
+  "surface": "asphalt",
   "name": "Col de Perty",
   "aliases": [
    "Perty"
@@ -8675,6 +8920,7 @@
  },
  {
   "slug": "col-de-soubeyrand",
+  "surface": "asphalt",
   "name": "Col de Soubeyrand",
   "aliases": [
    "Soubeyrand"
@@ -8711,6 +8957,7 @@
  },
  {
   "slug": "col-d-ey",
+  "surface": "asphalt",
   "name": "Col d'Ey",
   "aliases": [
    "Ey"
@@ -8747,6 +8994,7 @@
  },
  {
   "slug": "col-de-fontaube",
+  "surface": "asphalt",
   "name": "Col de Fontaube",
   "aliases": [
    "Fontaube"
@@ -8783,6 +9031,7 @@
  },
  {
   "slug": "col-de-macuegne",
+  "surface": "asphalt",
   "name": "Col de Macuègne",
   "aliases": [
    "Macuegne"
@@ -8819,6 +9068,7 @@
  },
  {
   "slug": "col-de-l-homme-mort",
+  "surface": "asphalt",
   "name": "Col de l'Homme Mort",
   "aliases": [
    "Homme Mort"
@@ -8848,6 +9098,7 @@
  },
  {
   "slug": "col-de-castillon",
+  "surface": "asphalt",
   "name": "Col de Castillon",
   "aliases": [
    "Castillon"
@@ -8884,6 +9135,7 @@
  },
  {
   "slug": "col-d-eze",
+  "surface": "asphalt",
   "name": "Col d'Èze",
   "aliases": [
    "Grande Corniche",
@@ -8914,6 +9166,7 @@
  },
  {
   "slug": "col-saint-roch",
+  "surface": "asphalt",
   "name": "Col Saint-Roch",
   "aliases": [
    "Saint-Roch"
@@ -8950,6 +9203,7 @@
  },
  {
   "slug": "col-de-bleine",
+  "surface": "asphalt",
   "name": "Col de Bleine",
   "aliases": [
    "Bleine"
@@ -8986,6 +9240,7 @@
  },
  {
   "slug": "col-de-l-orme",
+  "surface": "asphalt",
   "name": "Col de l'Orme",
   "aliases": [
    "Orme",
@@ -9016,6 +9271,7 @@
  },
  {
   "slug": "col-de-nice",
+  "surface": "asphalt",
   "name": "Col de Nice",
   "type": "pass",
   "country": "FR",
@@ -9042,6 +9298,7 @@
  },
  {
   "slug": "col-de-la-porte",
+  "surface": "asphalt",
   "name": "Col de la Porte",
   "aliases": [
    "Porte"
@@ -9071,6 +9328,7 @@
  },
  {
   "slug": "col-de-chateauneuf",
+  "surface": "asphalt",
   "name": "Col de Châteauneuf",
   "aliases": [
    "Chateauneuf",
@@ -9108,6 +9366,7 @@
  },
  {
   "slug": "col-de-brouis",
+  "surface": "asphalt",
   "name": "Col de Brouis",
   "aliases": [
    "Brouis"

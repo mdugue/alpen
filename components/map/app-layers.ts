@@ -22,6 +22,7 @@ import { BASEMAP_ID, basemapLayers, FONT_BOLD } from "@/lib/basemap";
 import {
   DESTINATION_EDGE,
   LAYERS,
+  ROUTE_DASH,
   OVERLAY,
   PASS_LABELS,
   passLabelId,
@@ -322,6 +323,12 @@ export const appLayers = (
    * weight. Shared by the pass layer and the hovered mark, which is the same
    * dot drawn from another source.
    */
+  /** An unpaved road's dot and line (plan 27): a ring, and a dash over the line. */
+  const isUnpavedDot: ExpressionSpecification = [
+    "!=",
+    ["get", "surface"],
+    "asphalt",
+  ];
   const passPaint = {
     // "closed" is additionally encoded as a hollow circle so that the
     // three states do not rely on hue alone.
@@ -347,6 +354,9 @@ export const appLayers = (
       colors.ink,
       ["==", ["get", "status"], "closed"],
       colors.closed,
+      // An unpaved road: a dark ring, the dot's own colour still the status.
+      isUnpavedDot,
+      colors.ink,
       colors.paper,
     ],
     "circle-stroke-width": [
@@ -355,6 +365,8 @@ export const appLayers = (
       3,
       ["==", ["get", "status"], "closed"],
       2.5,
+      isUnpavedDot,
+      2,
       1.5,
     ],
   } as never;
@@ -522,6 +534,26 @@ export const appLayers = (
         // width a selection has: pointing at a row says "this one", opening
         // it says "this one, and here is everything about it".
         "line-width": ["case", selected, 6, hoveredLine, 5, 3.5],
+      },
+      source: SOURCE.routes,
+      type: "line",
+    },
+    // The dash over an unpaved ascent, in the paper colour so the status
+    // colour of the line shows through the gaps: `line-dasharray` is not
+    // data-driven, so the layer is the split – painted transparent on
+    // asphalt, and it carries the route filter like the line under it.
+    {
+      id: ROUTE_DASH,
+      layout: { "line-cap": "butt", "line-join": "round" },
+      paint: {
+        "line-color": [
+          "case",
+          ["==", ["get", "surface"], "asphalt"],
+          "rgba(0, 0, 0, 0)",
+          colors.paper,
+        ],
+        "line-dasharray": [1.5, 1.5],
+        "line-width": ["case", selected, 2.5, hoveredLine, 2, 1.5],
       },
       source: SOURCE.routes,
       type: "line",

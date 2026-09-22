@@ -56,6 +56,7 @@ const pass = (over: Partial<Pass> & { slug: string }): Pass => ({
   note: "",
   region: "Ostalpen",
   season: null,
+  surface: "asphalt",
   traffic: 3,
   type: "pass",
   ...over,
@@ -68,6 +69,7 @@ const passes = [
     name: "Hochpass",
     region: "Westalpen",
     slug: "hoch",
+    surface: "asphalt",
   }),
   pass({ elevation: 1500, fame: 3, name: "Mittelpass", slug: "mittel" }),
   pass({
@@ -89,6 +91,7 @@ const tour = (over: Partial<Tour> & { slug: string }): Tour => ({
   note: "",
   passes: [],
   season: null,
+  surface: "asphalt",
   waypoints: [],
   ...over,
 });
@@ -98,6 +101,7 @@ const tours = [
     name: "Kurze Runde",
     passes: ["mittel"],
     slug: "kurz",
+    surface: "asphalt",
   }),
   tour({
     elevationGain: 3000,

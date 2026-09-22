@@ -40,6 +40,7 @@ export const makePass = (
     region: "Zentralalpen",
     season: { closes: 10.5, opens: 6 },
     slug,
+    surface: "asphalt",
     traffic: 3,
     type: "pass",
     ...extra,
@@ -76,6 +77,7 @@ export const makeTour = (
   passes,
   season: { closes: 9.5, opens: 7 },
   slug,
+  surface: "asphalt",
   waypoints: [ORIGIN, { lat: 46.1, lon: 10.1 }],
   ...extra,
 });

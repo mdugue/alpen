@@ -94,6 +94,7 @@ const galibier: Pass = {
   region: "Westalpen",
   season: null,
   slug: "fixtur-galibier",
+  surface: "asphalt",
   traffic: 3,
   type: "pass",
 };
@@ -113,6 +114,7 @@ const lautaret: Pass = {
   region: "Westalpen",
   season: null,
   slug: "fixtur-lautaret",
+  surface: "asphalt",
   traffic: 4,
   type: "pass",
 };
@@ -128,6 +130,7 @@ const runde: Tour = {
   passes: ["fixtur-galibier"],
   season: null,
   slug: "fixtur-runde",
+  surface: "asphalt",
   waypoints: [
     { lat: 46.549, lon: 11.874 },
     { lat: 46.519, lon: 11.874 },

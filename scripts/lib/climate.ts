@@ -16,6 +16,8 @@ import type { DailySeries } from "./hosts";
 
 /** What a day has to bring to count. */
 export const CLIMATE_DAY = {
+  /** Snow cover in m that closes an unpaved road for the day (plan 27). */
+  coverM: 0.1,
   /** Fresh snow in cm. Less is a dusting that no road authority reacts to. */
   snowCm: 1,
   /** Precipitation in mm – below this a day reads as dry to a rider. */
@@ -40,6 +42,9 @@ export const halfMonthOf = (iso: string): number | null => {
  */
 export const bucketClimate = (daily: DailySeries): ClimateYear => {
   const buckets = Array.from({ length: HALF_MONTHS }, () => ({
+    cover: 0,
+    /** Days with a depth value – the cover's own denominator. */
+    coverN: 0,
     frost: 0,
     n: 0,
     snow: 0,
@@ -58,12 +63,20 @@ export const bucketClimate = (daily: DailySeries): ClimateYear => {
     b.tx += tmax;
     b.tn += tmin;
     if ((daily.snowfall_sum[i] ?? 0) >= CLIMATE_DAY.snowCm) b.snow += 1;
+    const depth = daily.snow_depth_mean?.[i];
+    if (typeof depth === "number") {
+      b.coverN += 1;
+      if (depth >= CLIMATE_DAY.coverM) b.cover += 1;
+    }
     if (tmin < 0) b.frost += 1;
     if ((daily.precipitation_sum[i] ?? 0) >= CLIMATE_DAY.wetMm) b.wet += 1;
   }
   return buckets.map((b) =>
     b.n
       ? {
+          ...(b.coverN
+            ? { coverPct: Math.round((b.cover / b.coverN) * 100) }
+            : {}),
           frostPct: Math.round((b.frost / b.n) * 100),
           snowPct: Math.round((b.snow / b.n) * 100),
           tmax: +(b.tx / b.n).toFixed(1),

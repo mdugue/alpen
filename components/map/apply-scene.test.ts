@@ -88,6 +88,7 @@ describe("the first scene", () => {
     applyScene(host, null, scene());
     expect(of(calls, "filter")).toEqual([
       LAYERS.route.mark,
+      ...LAYERS.route.labels,
       LAYERS.route.hit,
       LAYERS.tour.mark,
       ...LAYERS.tour.labels,
@@ -169,7 +170,11 @@ describe("the difference", () => {
         },
       }),
     );
-    expect(of(calls, "filter")).toEqual([LAYERS.route.mark, LAYERS.route.hit]);
+    expect(of(calls, "filter")).toEqual([
+      LAYERS.route.mark,
+      ...LAYERS.route.labels,
+      LAYERS.route.hit,
+    ]);
     // The tours said nothing new, so their three layers were left alone.
     expect(of(calls, "filter")).not.toContain(LAYERS.tour.mark);
   });

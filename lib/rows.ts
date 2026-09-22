@@ -75,6 +75,7 @@ const interesting = (pass: Pass, f: Filters) =>
   pass.beauty >= f.minBeauty &&
   pass.difficulty >= f.difficulty[0] &&
   f.types.includes(pass.type) &&
+  f.surfaces.includes(pass.surface) &&
   f.ranges.includes(rangeOf(pass.region));
 
 /**
@@ -125,6 +126,9 @@ const tourMatches = (
   q: Query,
   signals?: Signals,
 ): boolean => {
+  // A loop is ridden with what its roads demand, so it answers the surface
+  // chip with its own surface rather than through one member.
+  if (!filters.surfaces.includes(tour.surface)) return false;
   const own = tour.passes
     .map((s) => passes.get(s))
     .filter((p) => p !== undefined);

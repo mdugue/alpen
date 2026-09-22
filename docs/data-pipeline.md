@@ -146,6 +146,15 @@ the whole run – and every counter with it – to the keys containing that text
 available. `scripts/backfill.sh` (`bun run data:backfill`) simply runs
 `data:build` in hourly batches until nothing is missing.
 
+The profile follows the surface (plan 27): `profileOf` in
+`scripts/lib/validate.ts` asks ORS for `cycling-road` on asphalt and
+`cycling-mountain` on gravel and mixed roads, and the mountain profile enters
+`meta.inputs`, so setting a surface re-routes the road by itself. The OSRM
+fallback is a car profile and will usually refuse a track; the run says so
+("Schotter ohne ORS") and the gate rejects what it drives round – a gravel
+road needs an `ORS_KEY` or, for the rare road no router carries, curated
+geometry, which is not built yet.
+
 ## Where the facts come from
 
 Every host in stage 2, what it is good at, and what it cannot do. Nothing here

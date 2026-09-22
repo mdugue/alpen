@@ -34,6 +34,12 @@ authoritative. In addition:
 - **Season**: half-months (`10` = early October, `10.5` = late October);
   `null` for roads cleared all year; `maintained: true` only for managed toll
   roads that are actually cleared.
+- **`surface`**: what the road is rolled on – `asphalt`, `gravel` or
+  `mixed` (asphalt with a gravel stretch a road bike cannot take; the note
+  says where). Required; it picks the routing profile and, for gravel, the
+  snow cover as the closing rung (`docs/scales.md`). A loop's `surface`
+  follows its roads (`data:check` holds it to them). Cobbles are a label
+  (`cobbles`), not a surface.
 - **`type`**: what kind of road the entry is – `pass`, `spur`, `plateau`,
   `balcony` or `valley` (`ROAD_TYPES` in `lib/regions.ts`). Required on every
   entry. The rule is operational: if the ascents climb to the entry's own

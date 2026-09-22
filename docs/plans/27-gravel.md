@@ -1,6 +1,17 @@
 # 27 · Gravel
 
-**Status:** proposed · **Effort:** L–XL (M for the schema and the routing, M
+**Status:** mechanism done (September 2026), data open – `surface` on every
+road and loop with the migration and the `cobbles` rename, the profile by
+surface in the jobs and in `meta.inputs`, `coverPct` in the buckets and the
+`snow-cover` rung with its two provisional shares, the "Belag" chips, the
+dashed line and the ringed dot, the words in the kicker and the popup, the
+dialog and the docs. Open, because every host it needs was rate-limited this
+session: the archive run for `snow_depth` (the field is read when it comes;
+until then a gravel road is never closed on a guess), the first data batch
+(it needs `data:locate` and an `ORS_KEY`), the curated-geometry escape hatch
+(no road needs it yet) and the tagline (waits for twenty gravel roads).
+`locate.ts` already includes tracks in its road query ·
+**Effort:** L–XL (M for the schema and the routing, M
 for the snow-cover signal, M for the UI, the rest is curation) ·
 **Depends on:** 14 (types and tags: the gravel classics are plateaus and
 spurs), 16 (one status vocabulary: the new reason word has one home), 13

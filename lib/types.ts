@@ -22,6 +22,8 @@ export type Region = z.infer<typeof S.Region>;
 export type Country = z.infer<typeof S.Country>;
 export type RoadType = z.infer<typeof S.RoadType>;
 export type RoadTag = z.infer<typeof S.RoadTag>;
+/** What a road is rolled on: asphalt, gravel or both (plan 27). */
+export type Surface = z.infer<typeof S.Surface>;
 /** One road worth the journey: a pass, a spur, a high, balcony or valley road. */
 export type Pass = z.infer<typeof S.Pass>;
 export type Tour = z.infer<typeof S.Tour>;

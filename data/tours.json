@@ -1,6 +1,7 @@
 [
  {
   "slug": "sellaronda",
+  "surface": "asphalt",
   "name": "Sellaronda",
   "color": "#8d7bb5",
   "km": 52,
@@ -54,6 +55,7 @@
  },
  {
   "slug": "maratona-dles-dolomites-lang",
+  "surface": "asphalt",
   "name": "Maratona dles Dolomites (lang)",
   "color": "#b57a99",
   "km": 138,
@@ -142,6 +144,7 @@
  },
  {
   "slug": "route-des-grandes-alpes",
+  "surface": "asphalt",
   "name": "Route des Grandes Alpes",
   "color": "#c4956a",
   "km": 700,
@@ -316,6 +319,7 @@
  },
  {
   "slug": "oetztaler-radmarathon",
+  "surface": "asphalt",
   "name": "Ötztaler Radmarathon",
   "color": "#6f9fb0",
   "km": 227,
@@ -380,6 +384,7 @@
  },
  {
   "slug": "la-marmotte",
+  "surface": "asphalt",
   "name": "La Marmotte",
   "color": "#7f86b8",
   "km": 174,
@@ -448,6 +453,7 @@
  },
  {
   "slug": "andermatt-drei-paesse-runde",
+  "surface": "asphalt",
   "name": "Andermatt Drei-Pässe-Runde",
   "color": "#6fa89f",
   "km": 120,
@@ -508,6 +514,7 @@
  },
  {
   "slug": "stilfserjoch-umbrail-runde",
+  "surface": "asphalt",
   "name": "Stilfserjoch–Umbrail-Runde",
   "color": "#b09068",
   "km": 70,
@@ -551,6 +558,7 @@
  },
  {
   "slug": "gavia-mortirolo-runde",
+  "surface": "asphalt",
   "name": "Gavia–Mortirolo-Runde",
   "color": "#9a7fb0",
   "km": 130,
@@ -606,6 +614,7 @@
  },
  {
   "slug": "vrsic-predil-runde",
+  "surface": "asphalt",
   "name": "Vršič–Predil-Runde",
   "color": "#6e8ab8",
   "km": 105,
@@ -652,6 +661,7 @@
  },
  {
   "slug": "riviera-dei-fiori-runde",
+  "surface": "asphalt",
   "name": "Riviera-dei-Fiori-Runde",
   "color": "#c2703a",
   "km": 96,
@@ -704,6 +714,7 @@
  },
  {
   "slug": "melogno-scravaion-runde",
+  "surface": "asphalt",
   "name": "Melogno-Scravaion-Runde",
   "color": "#7a9a4a",
   "km": 88,
@@ -756,6 +767,7 @@
  },
  {
   "slug": "valcava-culmine-runde",
+  "surface": "asphalt",
   "name": "Valcava-Culmine-Runde",
   "color": "#5b7fb5",
   "km": 100,
@@ -815,6 +827,7 @@
  },
  {
   "slug": "lombardia-runde",
+  "surface": "asphalt",
   "name": "Lombardia-Runde",
   "color": "#a05a8c",
   "km": 62,
@@ -859,6 +872,7 @@
  },
  {
   "slug": "ballino-runde",
+  "surface": "asphalt",
   "name": "Ballino-Runde",
   "color": "#4a8a9a",
   "km": 62,
@@ -902,6 +916,7 @@
  },
  {
   "slug": "grappa-runde",
+  "surface": "asphalt",
   "name": "Grappa-Runde",
   "color": "#8a6a3a",
   "km": 70,
@@ -941,6 +956,7 @@
  },
  {
   "slug": "ventoux-runde",
+  "surface": "asphalt",
   "name": "Ventoux-Runde",
   "color": "#b8563a",
   "km": 55,
@@ -980,6 +996,7 @@
  },
  {
   "slug": "baronnies-runde",
+  "surface": "asphalt",
   "name": "Baronnies-Runde",
   "color": "#7d6fa8",
   "km": 108,

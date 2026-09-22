@@ -39,11 +39,12 @@ import {
   ascentMetrics,
   checkRoadAscent,
   checkTour,
+  profileOf,
   suspectPoint,
   tourInputs,
   tourMetrics,
 } from "./validate";
-import type { Finding, Marker } from "./validate";
+import type { Finding, Marker, RoutingProfile } from "./validate";
 
 /** Everything `data:build` has written so far, as one value. */
 export interface Stored {
@@ -89,6 +90,8 @@ export type RouteJob = {
   inputs: string;
   key: string;
   label: string;
+  /** The router's graph, from the road's surface (`profileOf`). */
+  profile: RoutingProfile;
   waypoints: LatLon[];
 } & (
   | {
@@ -127,6 +130,7 @@ export const routeJobs = (passes: Pass[], tours: Tour[]): RouteJob[] => [
   ...passes.flatMap((p) => {
     const marker = markerOf(p);
     const summit = { lat: p.lat, lon: p.lon };
+    const profile = profileOf(p.surface);
     return p.ascents.map((a, i): RouteJob => {
       const key = ascentKey(p.slug, i);
       const label = `${p.name} ab ${a.label}`;
@@ -136,11 +140,12 @@ export const routeJobs = (passes: Pass[], tours: Tour[]): RouteJob[] => [
         return {
           check: a.check,
           from: a.from,
-          inputs: ascentInputs(true, p, a),
+          inputs: ascentInputs(true, p, a, profile),
           key,
           kind: "traverse",
           label,
           marker,
+          profile,
           statedKm: a.km ?? 0,
           to: a.to ?? summit,
           waypoints: [a.from, a.to ?? summit],
@@ -148,21 +153,23 @@ export const routeJobs = (passes: Pass[], tours: Tour[]): RouteJob[] => [
       return {
         check: a.check,
         from: a.from,
-        inputs: ascentInputs(false, p, a),
+        inputs: ascentInputs(false, p, a, profile),
         key,
         kind: "ascent",
         label,
         marker,
+        profile,
         waypoints: [a.from, summit],
       };
     });
   }),
   ...tours.map((t): RouteJob => ({
     check: t.check,
-    inputs: tourInputs(t),
+    inputs: tourInputs(t, profileOf(t.surface)),
     key: tourKey(t.slug),
     kind: "tour",
     label: `Tour ${t.name}`,
+    profile: profileOf(t.surface),
     statedKm: t.km,
     waypoints: t.waypoints,
   })),

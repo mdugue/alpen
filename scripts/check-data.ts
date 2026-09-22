@@ -35,6 +35,7 @@ import {
   RANGE_BOUNDS,
   rangeOf,
   ROAD_TYPE,
+  surfaceOfRoads,
 } from "../lib/regions";
 import type { RangeName } from "../lib/regions";
 import { ascentKey, entityKey, parseRouteKey, tourKey } from "../lib/route-key";
@@ -337,6 +338,22 @@ const checkPasses = (list: Pass[]) => {
   }
 };
 
+/**
+ * A loop is ridden with what its roads demand: gravel or mixed the moment one
+ * member is, asphalt only when every one is (plan 27). Written down rather
+ * than derived, so the file says it – and held to the roads here.
+ */
+const checkTourSurface = (t: Tour, byPass: Map<string, Pass>) => {
+  const surfaces = t.passes
+    .map((s) => byPass.get(s)?.surface)
+    .filter((x) => x !== undefined);
+  const expected = surfaceOfRoads(surfaces);
+  if (surfaces.length && t.surface !== expected)
+    errors.push(
+      `Tour ${t.slug}: surface "${t.surface}" – nach ihren Pässen wäre es "${expected}"`,
+    );
+};
+
 const checkTours = (list: Tour[], byPass: Map<string, Pass>) => {
   dupes(list, "Touren");
   for (const t of list) {
@@ -385,6 +402,7 @@ const checkTours = (list: Tour[], byPass: Map<string, Pass>) => {
           `Tour ${t.slug}: Fenster ${windowText(t.season)} reicht über das von ${s} (${windowText(p.season)}) hinaus – die Runde kann nicht länger offen sein als ihr Pass`,
         );
     }
+    checkTourSurface(t, byPass);
     const key = tourKey(t.slug);
     const job = jobs.get(key);
     const geom = routes?.[key];

@@ -22,6 +22,7 @@ const pass = (over: Partial<Pass> & { slug: string; name: string }): Pass => ({
   note: "",
   region: "Zentralalpen",
   season: null,
+  surface: "asphalt",
   traffic: 4,
   type: "pass",
   ...over,
@@ -37,6 +38,7 @@ const passes: Pass[] = [
     ],
     name: "Passo dello Stelvio",
     slug: "passo-dello-stelvio",
+    surface: "asphalt",
   }),
   pass({
     aliases: ["Grossglockner", "Glockner"],
@@ -213,6 +215,7 @@ describe("tourHaystack and townHaystack", () => {
     passes: ["passo-dello-stelvio"],
     season: null,
     slug: "stelvio-runde",
+    surface: "asphalt",
     waypoints: [],
   };
   const town: Town = {

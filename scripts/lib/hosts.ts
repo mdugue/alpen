@@ -26,6 +26,7 @@ import { PHOTO_WIDTH } from "../../lib/photos";
 import type { LatLon, RouteGeometry } from "../../lib/types";
 import type { Bytes, Transport } from "./transport";
 import { LIMITS } from "./validate";
+import type { RoutingProfile } from "./validate";
 
 export const ORS_KEY = process.env.ORS_KEY ?? "";
 const OSRM_HOST = process.env.OSRM_HOST ?? "https://router.project-osrm.org";
@@ -110,13 +111,21 @@ const stitched = async (
 };
 
 export const ors = {
-  /** The road-cycling route through the waypoints, 50 per request. */
-  route: (t: Transport, waypoints: LatLon[]) =>
+  /**
+   * The route through the waypoints, 50 per request, on the graph the road's
+   * surface asks for (`profileOf`): road cycling for asphalt, mountain for
+   * gravel and mixed.
+   */
+  route: (
+    t: Transport,
+    waypoints: LatLon[],
+    profile: RoutingProfile = "cycling-road",
+  ) =>
     stitched(waypoints, 50, async (chunk) => {
       const json = OrsAnswer.parse(
         await t.getJson(
           "ors",
-          "https://api.openrouteservice.org/v2/directions/cycling-road/geojson",
+          `https://api.openrouteservice.org/v2/directions/${profile}/geojson`,
           {
             body: JSON.stringify({
               coordinates: chunk.map((c) => [c.lon, c.lat]),
@@ -172,6 +181,8 @@ const Elevation = z.object({ elevation: z.array(z.number()) });
 const Daily = z.object({
   daily: z.object({
     precipitation_sum: z.array(z.number().nullable()),
+    /** Daily mean snow depth in m; only in a series fetched with it (plan 27). */
+    snow_depth_mean: z.array(z.number().nullable()).optional(),
     snowfall_sum: z.array(z.number().nullable()),
     temperature_2m_max: z.array(z.number().nullable()),
     temperature_2m_min: z.array(z.number().nullable()),

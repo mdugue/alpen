@@ -25,6 +25,7 @@ import {
 import {
   ALL_RANGES,
   ALL_STATUS,
+  ALL_SURFACES,
   ALL_TYPES,
   BEAUTY_OPTIONS,
   ELEVATION_OPTIONS,
@@ -45,8 +46,8 @@ import {
   difficultyLabel,
   filterCount,
 } from "@/lib/filter-summary";
-import { RANGE, ROAD_TAG, ROAD_TAGS, ROAD_TYPE } from "@/lib/regions";
-import type { RangeName } from "@/lib/regions";
+import { RANGE, ROAD_TAG, ROAD_TAGS, ROAD_TYPE, SURFACE } from "@/lib/regions";
+import type { RangeName, Surface } from "@/lib/regions";
 import { STATUS_LABEL } from "@/lib/status";
 import type { RoadTag, RoadType, Status } from "@/lib/types";
 import { cn, fmt, TOUCH_CONTROL } from "@/lib/utils";
@@ -211,6 +212,7 @@ export const FilterBody = ({
   const pickedRanges = pickedMembers(filters.ranges, ALL_RANGES);
   const pickedStatus = pickedMembers(filters.status, ALL_STATUS);
   const pickedTypes = pickedMembers(filters.types, ALL_TYPES);
+  const pickedSurfaces = pickedMembers(filters.surfaces, ALL_SURFACES);
   const [lo, hi] = filters.difficulty;
   const wholeScale = lo === RATING_MIN && hi === RATING_MAX;
   const count = filterCount(filters);
@@ -349,6 +351,29 @@ export const FilterBody = ({
                 }
               >
                 {ROAD_TYPE[t].label}
+              </FilterChip>
+            ))}
+          </ChipGroup>
+
+          {/* Road stays the default: all three pressed is no filter, and a
+              road cyclist who presses nothing sees the gravel roads among the
+              rest, dashed and named (plan 27). */}
+          <ChipGroup id="f-surfaces" label="Belag">
+            {ALL_SURFACES.map((x: Surface) => (
+              <FilterChip
+                key={x}
+                label={SURFACE[x].label}
+                hint={SURFACE[x].hint}
+                count={countWith({ surfaces: [x] })}
+                pressed={pickedSurfaces.includes(x)}
+                onPressedChange={() =>
+                  set(
+                    "surfaces",
+                    toggleMember(filters.surfaces, ALL_SURFACES, x),
+                  )
+                }
+              >
+                {SURFACE[x].label}
               </FilterChip>
             ))}
           </ChipGroup>

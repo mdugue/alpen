@@ -134,7 +134,8 @@ erDiagram
   ROAD {
     string slug
     enum type "pass | spur | plateau | balcony | valley"
-    list tags "panorama, glacier, gorge, reservoir, carfree, toll, hairpins, surface, tunnels"
+    list tags "panorama, glacier, gorge, reservoir, carfree, toll, hairpins, cobbles, tunnels"
+    enum surface "asphalt | gravel | mixed"
     bool roadSummit "technical, only on a pass: no mountain_pass node"
     list ascents "from, label – plus to, km for a traverse"
   }
@@ -173,17 +174,17 @@ is the order it is drawn in: the badges in the panel and the strip of glyphs
 in the sidebar row both follow the array, so a hand-sorted entry shows up as
 a differently sorted row.
 
-| Tag         | Label (UI)             | Given when                                                                           |
-| ----------- | ---------------------- | ------------------------------------------------------------------------------------ |
-| `panorama`  | Panoramastraße         | the road was built for the view and says so in its name or its layout                |
-| `glacier`   | Gletscherstraße        | ends at or runs along a glacier                                                      |
-| `gorge`     | Schlucht               | a significant stretch runs through a gorge or canyon                                 |
-| `reservoir` | Stausee                | the road exists because of a dam and ends at or along the lake                       |
-| `carfree`   | Autofrei               | closed to cars, at least on fixed days (say which in `note`)                         |
-| `toll`      | Maut                   | a fee is charged; whether bikes pay goes into `note`                                 |
-| `hairpins`  | Kehrenbauwerk          | the hairpins are a monument in themselves (Tremola, Vršič, San Boldo)                |
-| `surface`   | Pflaster oder Schotter | a stretch that is not smooth asphalt – cobbles, gravel top – changes the tyre choice |
-| `tunnels`   | Tunnel & Galerien      | unlit tunnels or galleries a rider has to plan for                                   |
+| Tag         | Label (UI)        | Given when                                                                               |
+| ----------- | ----------------- | ---------------------------------------------------------------------------------------- |
+| `panorama`  | Panoramastraße    | the road was built for the view and says so in its name or its layout                    |
+| `glacier`   | Gletscherstraße   | ends at or runs along a glacier                                                          |
+| `gorge`     | Schlucht          | a significant stretch runs through a gorge or canyon                                     |
+| `reservoir` | Stausee           | the road exists because of a dam and ends at or along the lake                           |
+| `carfree`   | Autofrei          | closed to cars, at least on fixed days (say which in `note`)                             |
+| `toll`      | Maut              | a fee is charged; whether bikes pay goes into `note`                                     |
+| `hairpins`  | Kehrenbauwerk     | the hairpins are a monument in themselves (Tremola, Vršič, San Boldo)                    |
+| `cobbles`   | Pflaster          | a cobbled stretch – Tremola, Vršič – changes the tyre, not the bike; gravel is `surface` |
+| `tunnels`   | Tunnel & Galerien | unlit tunnels or galleries a rider has to plan for                                       |
 
 `toll` and `season.maintained` are independent: maintained means cleared, toll
 means paid for. The Großglockner is both, the Simplon is cleared and free, a

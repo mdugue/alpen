@@ -229,6 +229,14 @@
         "type": "string",
         "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
       },
+      "surface": {
+        "type": "string",
+        "enum": [
+          "asphalt",
+          "gravel",
+          "mixed"
+        ]
+      },
       "tags": {
         "type": "array",
         "items": {
@@ -241,7 +249,7 @@
             "carfree",
             "toll",
             "hairpins",
-            "surface",
+            "cobbles",
             "tunnels"
           ]
         }
@@ -277,6 +285,7 @@
       "region",
       "season",
       "slug",
+      "surface",
       "traffic",
       "type"
     ],

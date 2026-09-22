@@ -60,7 +60,7 @@ friends do that better and the app links out to them.
 | Data access (cached, validated)                 | `lib/data.ts`                                                                                                                                                                                                                                                                                                                              |
 | Profile sampling and derived gradients          | `lib/profile.ts`                                                                                                                                                                                                                                                                                                                           |
 | The path, the hash keys, the entity key         | the paths in `lib/routes.ts` (`hrefFor`, `selectionOf`), the keys in `lib/hash.ts` (`parseHash`, `serializeHash`), `entityKey` in `lib/route-key.ts`, `initialState` and `Shown` in `lib/app-state.ts`; dispatched from `components/explorer.tsx`                                                                                          |
-| Road types and labels (vocabulary)              | `lib/regions.ts` (`ROAD_TYPES`, `ROAD_TAGS`, `isTraverse`, `hasRoadSummit`)                                                                                                                                                                                                                                                                |
+| Road types, labels and surfaces (vocabulary)    | `lib/regions.ts` (`ROAD_TYPES`, `ROAD_TAGS`, `SURFACES`, `surfaceOfRoads`, `isTraverse`, `hasRoadSummit`); the profile a surface is routed with `profileOf` (`scripts/lib/validate.ts`)                                                                                                                                                    |
 | Tag labels: vocabulary, icons, badges           | `lib/regions.ts` (`TOWN_TAGS`, `ROAD_TAGS`, `TAG_LABEL`), `lib/tag-icons.ts`, `components/tags.tsx`                                                                                                                                                                                                                                        |
 | Search normalisation and haystacks              | `lib/search.ts`                                                                                                                                                                                                                                                                                                                            |
 | Map, layers, 3D, markers, labels, feature state | `components/map/pass-map.tsx`; what every layer is painted with in `components/map/app-layers.ts` (`appLayers`, `readColors`, `applyBase`, the icons), the layer ids in `lib/layer-ids.ts` (`LAYERS`, `HIT_GROUPS` derived from it), the double-click window in `lib/map-pick.ts`                                                          |
@@ -274,6 +274,10 @@ What the page ships, how it is cached, the one dynamic route, the tools.
   `oxlint.config.ts` and by `scripts/check-seams.ts`, both inside
   `bun run lint`.
   → [why](docs/architecture.md#functional-core-imperative-shell)
+- **The surface decides the routing profile and the closing rung.** One field
+  (`surface`), read in three places: ORS's graph and `meta.inputs`, the
+  `snow-cover` rung instead of the barrier, the dashed line and the ring.
+  → [why](docs/scales.md#gravel-the-surface-decides-the-routing-profile-and-the-closing-rung)
 - **Route geometry never travels as props.** Content-hashed GeoJSON in
   `public/map`; visibility is a layer filter, status and selection are feature
   state.

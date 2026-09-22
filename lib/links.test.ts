@@ -16,6 +16,7 @@ const pass = (over: Partial<Pass> & { slug: string; name: string }): Pass => ({
   note: "",
   region: "Zentralalpen",
   season: null,
+  surface: "asphalt",
   traffic: 4,
   type: "pass",
   ...over,
@@ -29,6 +30,7 @@ describe("quaeldichHref", () => {
           name: "Passo dello Stelvio",
           quaeldich: "stilfser-joch",
           slug: "passo-dello-stelvio",
+          surface: "asphalt",
         }),
       ),
     ).toBe("https://www.quaeldich.de/paesse/stilfser-joch/");

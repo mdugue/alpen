@@ -75,6 +75,7 @@ const pass = (over: Partial<Pass>): Pass => ({
   region: "Ostalpen",
   season: null,
   slug: "test",
+  surface: "asphalt",
   traffic: 3,
   type: "pass",
   ...over,
@@ -140,6 +141,7 @@ const tour = (slugs: string[]): Tour => ({
   passes: slugs,
   season: null,
   slug: "t",
+  surface: "asphalt",
   waypoints: [],
 });
 
@@ -310,7 +312,7 @@ describe("the summer axis (plan 13)", () => {
       "short-day",
       "cold-descent",
     ]);
-    expect(REASON_ORDER).toHaveLength(9);
+    expect(REASON_ORDER).toHaveLength(10);
   });
 
   test("the calibration cases from plan 13", () => {
@@ -862,6 +864,7 @@ describe("one status vocabulary", () => {
     // three calendar rules and wrong for anything else – so the set is pinned
     // here rather than left to a silent filter.
     expect(SIGNALS.map((s) => s.reason).filter((r) => r !== null)).toEqual([
+      "snow-cover",
       "snow",
       "frost",
       "heat",

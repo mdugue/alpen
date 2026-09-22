@@ -33,10 +33,11 @@ import {
   RANGE_BOUNDS,
   rangeOf,
   roadTypeWord,
+  surfaceWord,
 } from "@/lib/regions";
 import { ascentKey } from "@/lib/route-key";
 import type { PassRow, Rows } from "@/lib/rows";
-import type { LatLon, Status, Tag } from "@/lib/types";
+import type { LatLon, Status, Surface, Tag } from "@/lib/types";
 import { fmt, fmtUnit } from "@/lib/utils";
 
 /** MapLibre reads properties as numbers and strings; a flag is 0 or 1. */
@@ -52,6 +53,8 @@ export interface PassProps {
   selected: Flag;
   slug: string;
   status: Status;
+  /** An unpaved road's dot carries a ring (plan 27). */
+  surface: Surface;
 }
 
 export interface TownProps {
@@ -186,7 +189,11 @@ const slugOf = (sel: Selection | null, kind: Selection["kind"]) =>
 
 /** The one line under a road's name: how high it goes and what kind of road it is. */
 const roadSubtitle = (row: PassRow) =>
-  [fmtUnit(row.pass.elevation, "m"), roadTypeWord(row.pass.type)]
+  [
+    fmtUnit(row.pass.elevation, "m"),
+    roadTypeWord(row.pass.type),
+    surfaceWord(row.pass.surface),
+  ]
     .filter(Boolean)
     .join(" · ");
 
@@ -357,6 +364,7 @@ export const buildScene = (input: SceneInput): Scene => {
                   kind: "pass",
                   selected: flag(markedPass.pass.slug === selPass),
                   status: markedPass.status,
+                  surface: markedPass.pass.surface,
                 },
               },
             ]
@@ -382,6 +390,7 @@ export const buildScene = (input: SceneInput): Scene => {
           selected: flag(row.pass.slug === selPass),
           slug: row.pass.slug,
           status: row.status,
+          surface: row.pass.surface,
         },
       })),
     ),

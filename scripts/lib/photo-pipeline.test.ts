@@ -33,6 +33,7 @@ const pass = (slug: string, name = slug): Pass => ({
   region: "Dolomiten",
   season: null,
   slug,
+  surface: "asphalt",
   traffic: 3,
   type: "pass",
 });
@@ -57,6 +58,7 @@ const tour = (slug: string, passes: string[]): Tour => ({
   passes,
   season: null,
   slug,
+  surface: "asphalt",
   waypoints: [
     { lat: 46.5, lon: 11.8 },
     { lat: 46.4, lon: 11.7 },

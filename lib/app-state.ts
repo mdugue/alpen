@@ -1,6 +1,6 @@
 import type { Bounds } from "@/lib/geo";
-import { RANGES, ROAD_TYPES } from "@/lib/regions";
-import type { RangeName } from "@/lib/regions";
+import { RANGES, ROAD_TYPES, SURFACES } from "@/lib/regions";
+import type { RangeName, Surface } from "@/lib/regions";
 import { STATUS_ORDER } from "@/lib/status";
 import type { LatLon, Period, RoadTag, RoadType, Status } from "@/lib/types";
 
@@ -28,6 +28,8 @@ export const ALL_STATUS: Status[] = [...STATUS_ORDER];
 export const ALL_TYPES: RoadType[] = [...ROAD_TYPES];
 /** Every range selected = no range filter, see `Filters.ranges`. */
 export const ALL_RANGES: RangeName[] = [...RANGES];
+/** All three surfaces selected = no surface filter, see `Filters.surfaces`. */
+export const ALL_SURFACES: Surface[] = [...SURFACES];
 /** Stable empty snapshot for the tag filter (`Filters.tags`). */
 export const NO_TAGS: RoadTag[] = [];
 /** The tab order: the areas first, because they are the answer the goal asks for. */
@@ -248,6 +250,12 @@ export interface Filters {
    */
   types: RoadType[];
   /**
+   * What the road is rolled on; all three = no filter, the default – nothing a
+   * road cyclist sees changes unless the "Belag" chip is pressed (plan 27). A
+   * loop filters through its own surface, which its roads decide.
+   */
+  surfaces: Surface[];
+  /**
    * Editorial road labels that all have to be present (and-semantics): two
    * selected labels mean "car-free *and* glacier", which is what a planner
    * asks two filters for. Empty = no filter. Not applied to tours – a label
@@ -278,6 +286,7 @@ export const DEFAULT_FILTERS: Filters = {
   ranges: ALL_RANGES,
   sort: "elevation",
   status: ALL_STATUS,
+  surfaces: ALL_SURFACES,
   tags: NO_TAGS,
   types: ALL_TYPES,
 };

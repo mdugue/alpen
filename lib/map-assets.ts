@@ -175,6 +175,8 @@ export const routeFeatures = (
           kind: "route",
           name: p.name,
           slug: p.slug,
+          // What the line is drawn with: a gravel ascent is dashed (plan 27).
+          surface: p.surface,
         }),
       ];
     }),

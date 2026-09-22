@@ -22,6 +22,7 @@ const road = (over: Record<string, unknown>) => ({
   region: "Dolomiten",
   season: null,
   slug: "teststrasse",
+  surface: "asphalt",
   traffic: 3,
   type: "pass",
   ...over,

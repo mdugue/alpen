@@ -1,5 +1,6 @@
 import { clockTime, dayLength, periodDate, sunTimes } from "@/lib/daylight";
 import { periodAt, periodIndex, periodLabel, PERIODS } from "@/lib/period";
+import { isUnpaved } from "@/lib/regions";
 import type {
   ClimateBucket,
   ClimateYear,
@@ -46,6 +47,7 @@ export const statusRank = (status: Status): number =>
  */
 export type StatusReason =
   | "outside-window"
+  | "snow-cover"
   | "window-edge"
   | "snow"
   | "frost"
@@ -62,6 +64,7 @@ export type StatusReason =
  */
 export const REASON_ORDER: StatusReason[] = [
   "outside-window",
+  "snow-cover",
   "window-edge",
   "snow",
   "frost",
@@ -81,20 +84,25 @@ const REASON_WORD: Record<StatusReason, string> = {
   "outside-window": "gesperrt",
   "short-day": "kurze Tage",
   snow: "Schnee",
+  "snow-cover": "zugeschneit",
   wet: "nass",
   "window-edge": "Randzeit",
 };
 
 /**
- * The one reason that closes a road. Every other signal can only make a cell
- * "eingeschränkt" – a snowy or a hot half-month is not a closure – so the
- * reasons behind "eingeschränkt" are the ladder without this one.
+ * The two reasons that close a road: a barrier, for asphalt; the snow cover,
+ * for gravel – nobody plows a military road, it opens when the snow is gone
+ * (plan 27). Every other signal can only make a cell "eingeschränkt" – a
+ * snowy or a hot half-month is not a closure – so the reasons behind
+ * "eingeschränkt" are the ladder without these. The cover can limit as well
+ * as close: below `COVER_CLOSED_PCT` and above `COVER_LIMITED_PCT` it is a
+ * caveat, which is why it stands in both lists.
  */
-const CLOSING_REASON: StatusReason = "outside-window";
+export const CLOSING_REASONS: StatusReason[] = ["outside-window", "snow-cover"];
 
 /** Every reason that can make a cell "eingeschränkt", in ladder order. */
 const LIMITING_REASONS: StatusReason[] = REASON_ORDER.filter(
-  (r) => r !== CLOSING_REASON,
+  (r) => r !== "outside-window",
 );
 
 /**
@@ -113,6 +121,7 @@ const REASON_PHRASE: Record<StatusReason, string> = {
   "outside-window": "Wintersperre",
   "short-day": "kurze Tage",
   snow: "Schneefall",
+  "snow-cover": "Altschnee auf der ungeteerten Straße",
   wet: "viel Regen",
   "window-edge":
     "der Rand des Öffnungsfensters, Öffnung und Sperrung verschieben sich je nach Winter",
@@ -133,6 +142,7 @@ export const REASON_SHORT: Record<StatusReason, string> = {
   "outside-window": "Wintersperre",
   "short-day": "kurze Tage",
   snow: "Schnee",
+  "snow-cover": "Altschnee",
   wet: "viel Regen",
   "window-edge": "der Rand des Öffnungsfensters",
 };
@@ -167,7 +177,7 @@ export const GRADE_LABEL: Record<Grade, string> = {
 export const GRADE_HINT: Record<Grade, string> = {
   best: "Die verlässlichsten Wochen des Jahres für diesen Pass: Nichts spricht gegen die Fahrt, und Schnee ist selten.",
   closed:
-    "Die Straße ist in dieser Zeit meist gesperrt, in der Regel wegen der Wintersperre.",
+    "Die Straße ist in dieser Zeit meist gesperrt – wegen der Wintersperre, oder auf einer ungeteerten Straße wegen der Schneedecke.",
   good: "Nichts spricht gegen die Fahrt. Nur ist es entweder ein kürzerer Abschnitt als die beste Zeit, oder es schneit gelegentlich.",
   limited: `Fahrbar, aber mit einem Haken: ${listOf(
     LIMITING_REASONS.map((r) => REASON_SHORT[r]),
@@ -304,6 +314,16 @@ export const inputAt = (
  */
 export const SNOW_RISKY_PCT = 20;
 const FROST_RISKY_PCT = 80;
+/**
+ * Snow cover on an unpaved road (plan 27): the share of days with a depth
+ * above `CLIMATE_DAY.coverM` at the marker. Above the first the road is
+ * closed – the ungroomed equivalent of a barrier – above the second it is a
+ * caveat. Provisional: set from the plan's expectation (the Assietta closed
+ * November to May, open July to September) until the archive backfill lets
+ * `analyze:status` print the distribution.
+ */
+export const COVER_CLOSED_PCT = 50;
+export const COVER_LIMITED_PCT = 20;
 /** "Beste Zeit" only counts half-months that are quieter than this. */
 const SNOW_BEST_PCT = 10;
 /** Mean daily maximum in the valley, derived from the summit value. */
@@ -354,6 +374,12 @@ interface Signal {
  * not thresholds, and `REASON_PHRASE` is what names them.
  */
 export const SIGNALS: Signal[] = [
+  {
+    reads: "auf ungeteerter Straße eine Schneedecke an $ der Tage",
+    reason: "snow-cover",
+    unit: "%",
+    value: COVER_LIMITED_PCT,
+  },
   {
     reads: "Schneefall ab $ der Tage",
     reason: "snow",
@@ -428,7 +454,7 @@ export const ladderText = (): string =>
       .filter((s) => s !== undefined)
       .map(signalText),
     "oder",
-  )} machen aus „gut“ ein „eingeschränkt“ – und das erste Signal in dieser Reihenfolge ist das Wort dazu. „Beste Zeit“ ist der längste Abschnitt ohne Vorbehalt und mit ${signalText(BEST_SIGNAL)}. „Oft gesperrt“ kommt ausschließlich aus dem Öffnungsfenster: eine gesperrte Straße und ein heißes Tal sind nicht dieselbe Art von Aussage.`;
+  )} machen aus „gut“ ein „eingeschränkt“ – und das erste Signal in dieser Reihenfolge ist das Wort dazu. „Beste Zeit“ ist der längste Abschnitt ohne Vorbehalt und mit ${signalText(BEST_SIGNAL)}. „Oft gesperrt“ kommt aus dem Öffnungsfenster – und auf ungeteerter Straße aus der Schneedecke ab ${fmt(COVER_CLOSED_PCT)} % der Tage: eine gesperrte oder zugeschneite Straße und ein heißes Tal sind nicht dieselbe Art von Aussage.`;
 
 /**
  * The valley's mean daily maximum, derived from the summit series with the
@@ -498,6 +524,15 @@ export const passVerdict = (
   if (reasons.includes("outside-window"))
     return { reasons: ["outside-window"], status: "closed" };
   const b = input?.bucket;
+  // The closing rung of an unpaved road is the snow cover, where the series
+  // carries it: a barrier closes a pass, the snow closes a track. Without
+  // the value the road is judged by every other rung and never closed –
+  // which the strip shows as it is, rather than guessing a closure.
+  if (b && isUnpaved(pass.surface) && b.coverPct !== undefined) {
+    if (b.coverPct >= COVER_CLOSED_PCT)
+      return { reasons: ["snow-cover"], status: "closed" };
+    if (b.coverPct >= COVER_LIMITED_PCT) reasons.push("snow-cover");
+  }
   if (b) {
     if (b.snowPct >= SNOW_RISKY_PCT) reasons.push("snow");
     if (b.frostPct >= FROST_RISKY_PCT) reasons.push("frost");
@@ -548,6 +583,8 @@ const REASON_TEXT: Record<StatusReason, (ctx: ReasonContext) => string> = {
   },
   snow: ({ bucket }) =>
     `Schneefall an ${bucket?.snowPct ?? 0} % der Tage (≈ ${daysOf(bucket?.snowPct ?? 0)} von 15, ERA5-Land 2015–2024) – meist bleibt die Straße befahrbar, planbar ist der Zeitraum aber nicht.`,
+  "snow-cover": ({ bucket }) =>
+    `Schneedecke an ${bucket?.coverPct ?? 0} % der Tage (≈ ${daysOf(bucket?.coverPct ?? 0)} von 15, ERA5-Land 2015–2024) – eine ungeteerte Straße räumt niemand, sie ist offen, sobald der Schnee weg ist.`,
   wet: ({ bucket }) =>
     `Regen an ${bucket?.wetPct ?? 0} % der Tage (≈ ${daysOf(bucket?.wetPct ?? 0)} von 15, ERA5-Land 2015–2024) – Staulage; ein trockenes Fenster ist Glückssache.`,
   "window-edge": ({ pass }) =>
@@ -805,7 +842,7 @@ export const tourYear = (tour: Tour, passes: Record<string, Year>): Year => {
     if (!tour.season) return undefined;
     const reasons = windowReasons(tour.season, periodAt(i));
     if (!reasons.length) return undefined;
-    const status: Status = reasons[0] === CLOSING_REASON ? "closed" : "risky";
+    const status: Status = reasons[0] === "outside-window" ? "closed" : "risky";
     return {
       grade: gradeOf(status, false),
       limiting: [],
@@ -875,15 +912,16 @@ export const cellAt = (year: Year | undefined, t: Period): YearCell =>
 
 /**
  * "gut", "eingeschränkt: Hitze" or "oft gesperrt": the status label and, where
- * a caveat applies, the one word of its first reason. `CLOSING_REASON` is
- * excluded because it never coexists with "eingeschränkt"; its word exists for
- * the strip's cell hint.
+ * a caveat applies, the one word of its first reason. The window's closing
+ * reason is excluded because it never coexists with "eingeschränkt"; its word
+ * exists for the strip's cell hint. The snow cover is not: below the closing
+ * share it is a caveat with a word of its own.
  */
 export const statusWord = (
   status: Status,
   reason?: StatusReason | null,
 ): string =>
-  status === "risky" && reason && reason !== CLOSING_REASON
+  status === "risky" && reason && reason !== "outside-window"
     ? `${STATUS_LABEL[status]}: ${REASON_WORD[reason]}`
     : STATUS_LABEL[status];
 
@@ -994,7 +1032,7 @@ export const tourText = (
   // cell whose names cannot be resolved is not it, and stays silent.
   if (cell.limiting?.length === 0 && tour.season) {
     const window = windowText(tour.season);
-    return cell.reasons[0] === CLOSING_REASON
+    return cell.reasons[0] === "outside-window"
       ? `${word}: außerhalb des typischen Fensters ${window}.`
       : `${word}: am Rand des typischen Fensters ${window}.`;
   }

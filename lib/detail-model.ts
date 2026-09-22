@@ -12,7 +12,7 @@ import type { PageBundle } from "@/lib/page-data";
 import { periodIndex } from "@/lib/period";
 import { reachedPasses, reachedTowns, withinReach } from "@/lib/reach";
 import type { Reach, ReachKind } from "@/lib/reach";
-import { ROAD_TYPE } from "@/lib/regions";
+import { ROAD_TYPE, surfaceWord } from "@/lib/regions";
 import { entityKey } from "@/lib/route-key";
 import {
   bestText,
@@ -93,7 +93,10 @@ export const BLOCKS: Record<DetailModel["kind"], BlockId[]> = {
 /** What stands over the name in the panel head. */
 const KICKER = {
   destination: (d: Destination) => `Reiseziel · ${d.country}`,
-  pass: (p: Pass) => `${ROAD_TYPE[p.type].label} · ${p.region} · ${p.country}`,
+  pass: (p: Pass) =>
+    [ROAD_TYPE[p.type].label, surfaceWord(p.surface), p.region, p.country]
+      .filter(Boolean)
+      .join(" · "),
   tour: () => "Rundtour",
   town: (t: Town) => `Rad-Ort · ${t.country}`,
 };

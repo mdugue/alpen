@@ -27,7 +27,7 @@ import type {
   Selection,
 } from "@/lib/app-state";
 import { isPeriod } from "@/lib/period";
-import { RANGES, ROAD_TAGS, ROAD_TYPES } from "@/lib/regions";
+import { RANGES, ROAD_TAGS, ROAD_TYPES, SURFACES } from "@/lib/regions";
 import type { Period, Status } from "@/lib/types";
 
 // ── The URL hash ─────────────────────────────────────────────────────────────
@@ -170,6 +170,8 @@ const FILTER_KEYS = {
   a: { field: "types", parser: parseAsSubset(ROAD_TYPES) },
   /** Min. beauty. */
   be: { field: "minBeauty", parser: parseAsOneOf(BEAUTY_OPTIONS) },
+  /** Surfaces "gravel,mixed" (Belag). */
+  bl: { field: "surfaces", parser: parseAsSubset(SURFACES) },
   /** Difficulty window "2-4". */
   d: { field: "difficulty", parser: parseAsRange },
   /** Road labels "toll,carfree". */

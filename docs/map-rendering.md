@@ -169,7 +169,7 @@ name, and both win against the basemap's own place names.
 flowchart TB
   L9["app labels · profile cursor"]
   L8["passes · towns (marks)"]
-  L7["ascents — solid, status colour"]
+  L7["ascents — solid, status colour; unpaved ones dashed over it, their dots ringed"]
   L6["tour bands — hatched, translucent, under the ascents"]
   L5["the hovered town's reach hull"]
   L4["raster overlays (optional base, cycling overlay)"]

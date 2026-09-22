@@ -24,6 +24,7 @@ import type {
   RouteGeometry,
   RouteMetrics,
   Summit,
+  Surface,
   TourCheck,
   TourMetrics,
 } from "../../lib/types";
@@ -477,6 +478,24 @@ export const inputsHash = (
  * traverse has no marker in its question: it is routed between its two
  * curated ends and judged against its stated length.
  */
+/**
+ * The OpenRouteService profile a road is routed with: the road-cycling graph
+ * for asphalt, the mountain-bike graph for gravel and mixed – the road graph
+ * leaves tracks out (plan 27). Here, beside the inputs, because the profile
+ * is one of them: a changed surface re-routes by itself.
+ */
+export type RoutingProfile = "cycling-road" | "cycling-mountain";
+export const profileOf = (surface: Surface): RoutingProfile =>
+  surface === "asphalt" ? "cycling-road" : "cycling-mountain";
+
+/**
+ * The profile enters the hash only when it is not the road one, so the routes
+ * stored before the surface existed keep their hash: every one of them was
+ * asked with the road profile.
+ */
+const profilePart = (profile?: RoutingProfile) =>
+  profile && profile !== "cycling-road" ? { profile } : {};
+
 export const ascentInputs = (
   traverse: boolean,
   p: { elevation: number; lat: number; lon: number },
@@ -486,21 +505,33 @@ export const ascentInputs = (
     km?: number;
     to?: LatLon;
   },
+  profile?: RoutingProfile,
 ) =>
   traverse
-    ? inputsHash({ from: a.from, km: a.km, to: a.to }, a.check)
+    ? inputsHash(
+        { from: a.from, km: a.km, to: a.to, ...profilePart(profile) },
+        a.check,
+      )
     : inputsHash(
         {
           elevation: p.elevation,
           from: a.from,
           summit: { lat: p.lat, lon: p.lon },
+          ...profilePart(profile),
         },
         a.check,
       );
 
-/** The same for a tour: its waypoints, its stated length, its `check`. */
-export const tourInputs = (t: {
-  check?: TourCheck;
-  km: number;
-  waypoints: LatLon[];
-}) => inputsHash({ km: t.km, waypoints: t.waypoints }, t.check);
+/** The same for a tour: its waypoints, its stated length, its `check`, its profile. */
+export const tourInputs = (
+  t: {
+    check?: TourCheck;
+    km: number;
+    waypoints: LatLon[];
+  },
+  profile?: RoutingProfile,
+) =>
+  inputsHash(
+    { km: t.km, waypoints: t.waypoints, ...profilePart(profile) },
+    t.check,
+  );

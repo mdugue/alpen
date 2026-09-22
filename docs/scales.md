@@ -49,6 +49,34 @@ gradient, altitude and a border crossing are numbers next to them, not labels
 among them. The scales dialog lists all fourteen with the sentence that
 defines each, `docs/data-model.md` has the tables.
 
+### Gravel: the surface decides the routing profile and the closing rung
+
+`surface` (`asphalt`, `gravel`, `mixed`; `SURFACES` in `lib/regions.ts`) is
+the one field a road carries for the second discipline (plan 27), and it is
+read in three places rather than sprinkled through the app. The **routing
+profile**: `profileOf` in `scripts/lib/validate.ts` picks OpenRouteService's
+road-cycling graph for asphalt and its mountain graph for the rest – the road
+graph leaves tracks out – and the profile enters `meta.inputs`, so a changed
+surface re-routes by itself; only a mountain profile enters the hash, which is
+what keeps every route stored before the field existed valid. The **closing
+rung**: nobody plows a military road, so `outside-window` (a barrier) closes
+asphalt while the snow cover closes a track – `snow-cover` in the ladder,
+with the two shares above, read off `ClimateBucket.coverPct`; a series
+without the value (every one until the archive is asked for `snow_depth`)
+grades a gravel road by the other rungs and never closes it, which the strip
+shows as it is rather than guessing. The **picture**: an unpaved ascent is
+dashed over its status colour and its dot carries a dark ring, so a road
+cyclist who has pressed no chip still sees what the Assietta is.
+
+The four scales stay and are judged inside the discipline: fame is fame among
+gravel riders, difficulty includes the surface (a 6 % gravel ramp rides like a
+9 % asphalt one), traffic is usually 1 and stays a scale because the Via del
+Sale carries motorcycles on toll days. `cobbles` ("Pflaster") is what the old
+`surface` label became: cobbles change the tyre, not the discipline. The two
+cover constants are provisional – set from the plan's expectation until a
+backfill lets `analyze:status` print the distribution – and the scales dialog
+says so with the rest of the ladder.
+
 ## Destinations: reach and the derived year
 
 A town has no climate series and no season of its own. What it has is the
@@ -266,15 +294,17 @@ cohort tables, the per-half-month distributions of every signal, the counts one
 step either side of every threshold, and every (pass, half-month) pair whose
 verdict changes – re-run it after touching a constant.
 
-| Signal        | Constant            | Value   | Reads                                            |
-| ------------- | ------------------- | ------- | ------------------------------------------------ |
-| Schnee        | `SNOW_RISKY_PCT`    | 20 %    | `snowPct`, share of days with ≥ 1 cm             |
-| Frost         | `FROST_RISKY_PCT`   | 80 %    | `frostPct`, share of nights below 0 °C           |
-| Hitze         | `HEAT_VALLEY_TMAX`  | 26 °C   | `tmax` derived to the lowest ascent start        |
-| nass          | `WET_LIMITED_PCT`   | 70 %    | `wetPct`, share of days with ≥ 1 mm              |
-| kurze Tage    | `SHORT_DAY_HOURS`   | 10,75 h | day length from `lat`, `lib/daylight.ts`         |
-| kalte Abfahrt | `COLD_DESCENT_TMAX` | 8 °C    | `tmax` at the summit, the afternoon of a descent |
-| beste Zeit    | `SNOW_BEST_PCT`     | 10 %    | `snowPct` inside a run of "gut"                  |
+| Signal        | Constant            | Value   | Reads                                                                               |
+| ------------- | ------------------- | ------- | ----------------------------------------------------------------------------------- |
+| Schnee        | `SNOW_RISKY_PCT`    | 20 %    | `snowPct`, share of days with ≥ 1 cm                                                |
+| Frost         | `FROST_RISKY_PCT`   | 80 %    | `frostPct`, share of nights below 0 °C                                              |
+| Hitze         | `HEAT_VALLEY_TMAX`  | 26 °C   | `tmax` derived to the lowest ascent start                                           |
+| nass          | `WET_LIMITED_PCT`   | 70 %    | `wetPct`, share of days with ≥ 1 mm                                                 |
+| kurze Tage    | `SHORT_DAY_HOURS`   | 10,75 h | day length from `lat`, `lib/daylight.ts`                                            |
+| kalte Abfahrt | `COLD_DESCENT_TMAX` | 8 °C    | `tmax` at the summit, the afternoon of a descent                                    |
+| beste Zeit    | `SNOW_BEST_PCT`     | 10 %    | `snowPct` inside a run of "gut"                                                     |
+| zugeschneit   | `COVER_LIMITED_PCT` | 20 %    | `coverPct`, share of days with ≥ 10 cm of snow cover – unpaved roads only, a caveat |
+| zugeschneit   | `COVER_CLOSED_PCT`  | 50 %    | `coverPct` – unpaved roads only, closes the road the way a barrier closes a pass    |
 
 ### Derived values
 

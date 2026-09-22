@@ -2,6 +2,7 @@ import { z } from "zod";
 
 import {
   COUNTRIES,
+  SURFACES,
   inBox,
   isTraverse,
   LATLON_BOUNDS,
@@ -142,6 +143,7 @@ export const Region = z.enum(REGIONS);
 export const Country = z.enum(COUNTRIES);
 export const RoadType = z.enum(ROAD_TYPES);
 export const RoadTag = z.enum(ROAD_TAGS);
+export const Surface = z.enum(SURFACES);
 
 export const Pass = z
   .strictObject({
@@ -198,6 +200,12 @@ export const Pass = z
     /** null = cleared all year round. */
     season: PassSeason.nullable(),
     slug: Slug,
+    /**
+     * What the road is rolled on (see `SURFACE`, plan 27). Required like the
+     * type: an entry that does not say what it is rolled on is an entry nobody
+     * has looked at. It picks the routing profile and the closing rung.
+     */
+    surface: Surface,
     /**
      * What riding the road is like, as editorial labels (see `ROAD_TAG`).
      * Optional: plenty of roads are simply a climb, and an empty strip of glyphs
@@ -287,6 +295,12 @@ export const Tour = z.strictObject({
   /** The loop's own opening window, see `TourSeason`; null = whenever its passes are open. */
   season: TourSeason.nullable(),
   slug: Slug,
+  /**
+   * `gravel` or `mixed` if any member road is, else `asphalt` – written
+   * down rather than derived so the file says what a loop is ridden with,
+   * and held to its roads by `data:check`.
+   */
+  surface: Surface,
   waypoints: z.array(LatLon).min(2),
 });
 
@@ -382,6 +396,13 @@ export const ElevationProfile = z
   .refine((p) => p.dist.length === p.ele.length, "dist und ele ungleich lang");
 
 export const ClimateBucket = z.strictObject({
+  /**
+   * Share of days with a snow cover above `CLIMATE_DAY.coverM` at the marker
+   * (plan 27) – what closes an unpaved road, which no barrier closes. Optional
+   * until the archive has been asked for `snow_depth`; a series without it
+   * grades a gravel road by every other rung and never closes it.
+   */
+  coverPct: z.number().min(0).max(100).optional(),
   /** Share of days with frost (Tmin < 0 °C), in percent. */
   frostPct: z.number().min(0).max(100),
   /** Share of days with snowfall ≥ 1 cm, in percent. */

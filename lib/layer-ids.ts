@@ -55,6 +55,12 @@ export interface LayerSet {
 
 /** The outline of a destination's circle; the fill is its `mark`. */
 export const DESTINATION_EDGE = "destinations-edge";
+/**
+ * The dash laid over an unpaved ascent (plan 27). Part of the route set below
+ * – it carries the same filter – rather than a layer of its own: a gravel
+ * line hidden by the list must not keep its dashes.
+ */
+export const ROUTE_DASH = "routes-dash";
 
 /**
  * The five kinds the map draws. `route` is a pass's ascents: its own lines and
@@ -77,7 +83,9 @@ export const LAYERS = {
   },
   route: {
     hit: "routes-hit",
-    labels: [],
+    // Not a name, but it carries the filter like one: the dash over an
+    // unpaved ascent lives and dies with the line under it.
+    labels: [ROUTE_DASH],
     mark: "routes",
     source: SOURCE.routes,
   },

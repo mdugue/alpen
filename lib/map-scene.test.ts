@@ -134,6 +134,7 @@ describe("what is drawn", () => {
       selected: 0,
       slug: "galibier",
       status: "risky",
+      surface: "asphalt",
     });
     expect(townMark(scene, "bormio")).toEqual({
       favorite: 0,
@@ -288,6 +289,7 @@ describe("hover", () => {
       kind: "pass",
       selected: 0,
       status: "open",
+      surface: "asphalt",
     });
     expect(scene.routes.state[ascentKey("galibier", 0)]?.hovered).toBe(1);
     expect(scene.routes.state[ascentKey("galibier", 1)]?.hovered).toBe(1);

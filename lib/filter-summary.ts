@@ -1,6 +1,7 @@
 import {
   ALL_RANGES,
   ALL_STATUS,
+  ALL_SURFACES,
   ALL_TYPES,
   DEFAULT_FILTERS,
   BEAUTY_OPTIONS,
@@ -14,7 +15,7 @@ import {
   WET_OPTIONS,
 } from "@/lib/app-state";
 import type { Filters, Options } from "@/lib/app-state";
-import { RANGE, ROAD_TAG, ROAD_TYPE } from "@/lib/regions";
+import { RANGE, ROAD_TAG, ROAD_TYPE, SURFACE } from "@/lib/regions";
 import { STATUS_LABEL } from "@/lib/status";
 
 /**
@@ -68,6 +69,12 @@ export const appliedFilters = (f: Filters): AppliedFilter[] => {
     add("types", types.map((t) => ROAD_TYPE[t].label).join(", "), (g) => ({
       ...g,
       types: ALL_TYPES,
+    }));
+  const surfaces = pickedMembers(f.surfaces, ALL_SURFACES);
+  if (surfaces.length)
+    add("surfaces", surfaces.map((x) => SURFACE[x].label).join(", "), (g) => ({
+      ...g,
+      surfaces: ALL_SURFACES,
     }));
   // One chip per label: they stack with and-semantics, so each one is its own decision.
   for (const tag of f.tags)

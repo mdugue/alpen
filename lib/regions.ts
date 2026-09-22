@@ -305,7 +305,7 @@ export const ROAD_TAGS = [
   "carfree",
   "toll",
   "hairpins",
-  "surface",
+  "cobbles",
   "tunnels",
 ] as const;
 
@@ -315,6 +315,10 @@ export const ROAD_TAG: Record<RoadTagName, { label: string; hint: string }> = {
   carfree: {
     hint: "Für Autos gesperrt, mindestens an festen Tagen – wann, steht in der Notiz.",
     label: "Autofrei",
+  },
+  cobbles: {
+    hint: "Ein Stück ist gepflastert – Tremola, Vršič –, das ändert die Reifenwahl, nicht das Rad.",
+    label: "Pflaster",
   },
   glacier: {
     hint: "Endet an einem Gletscher oder führt an ihm entlang.",
@@ -336,10 +340,6 @@ export const ROAD_TAG: Record<RoadTagName, { label: string; hint: string }> = {
     hint: "Die Straße gibt es wegen einer Staumauer; sie endet am See oder führt an ihm entlang.",
     label: "Stausee",
   },
-  surface: {
-    hint: "Ein Stück ist kein glatter Asphalt – Pflaster oder Schotterdecke –, das ändert die Reifenwahl.",
-    label: "Pflaster oder Schotter",
-  },
   toll: {
     hint: "Mautstraße; ob Räder zahlen, steht in der Notiz. Unabhängig davon, ob sie geräumt wird.",
     label: "Maut",
@@ -360,3 +360,49 @@ export const TAG_LABEL: Record<
   (typeof TOWN_TAGS)[number] | RoadTagName,
   { label: string; hint: string }
 > = { ...TOWN_TAG, ...ROAD_TAG };
+
+/**
+ * What a road is rolled on (plan 27). One field that decides three things:
+ * the routing profile (`scripts/lib/pipeline.ts`), the closing rung of the
+ * ladder – a barrier for asphalt, the snow cover for the rest
+ * (`lib/status.ts`) – and the line the map draws it with. `mixed` is a road
+ * with a gravel stretch a road bike cannot take, the Finestre; per-ascent
+ * surfaces are not modelled, the note says which side. Road stays the
+ * default: nothing a road cyclist sees changes unless the "Belag" chip is
+ * pressed.
+ */
+export const SURFACES = ["asphalt", "gravel", "mixed"] as const;
+export type Surface = (typeof SURFACES)[number];
+
+export const SURFACE: Record<Surface, { label: string; hint: string }> = {
+  asphalt: {
+    hint: "Durchgehend asphaltiert – die Straße, die ein Rennrad fährt.",
+    label: "Asphalt",
+  },
+  gravel: {
+    hint: "Ungeteert – Schotter, Militärstraße, Almweg: Gravel- oder Mountainbike, und offen, sobald der Schnee weg ist.",
+    label: "Schotter",
+  },
+  mixed: {
+    hint: "Asphalt mit einem Schotterstück, das kein Rennrad fährt – die Notiz sagt, wo.",
+    label: "gemischt",
+  },
+};
+
+/** The one word beside the type word in the panel and the popup; nothing for asphalt, like a plain pass. */
+export const surfaceWord = (surface: Surface): string | null =>
+  surface === "asphalt" ? null : SURFACE[surface].label;
+
+/** Whether the road is ridden with something other than a road bike. */
+export const isUnpaved = (surface: Surface): boolean => surface !== "asphalt";
+
+/**
+ * What a loop is ridden with, from its roads: gravel when every road is,
+ * asphalt when every road is, mixed as soon as they differ or one is mixed.
+ * `data:check` holds `Tour.surface` to this.
+ */
+export const surfaceOfRoads = (surfaces: readonly Surface[]): Surface => {
+  const set = new Set(surfaces);
+  if (set.has("mixed") || set.size > 1) return "mixed";
+  return set.has("gravel") ? "gravel" : "asphalt";
+};

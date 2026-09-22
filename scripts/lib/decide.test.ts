@@ -19,6 +19,7 @@ import {
   storedFor,
 } from "./decide";
 import type { Flags, Judged, Stored } from "./decide";
+import { ascentInputs } from "./validate";
 
 const pass = (over: Partial<Pass> = {}): Pass => ({
   ascents: [
@@ -38,6 +39,7 @@ const pass = (over: Partial<Pass> = {}): Pass => ({
   region: "Ostalpen",
   season: null,
   slug: "stilfser-joch",
+  surface: "asphalt",
   traffic: 3,
   type: "pass",
   ...over,
@@ -68,6 +70,7 @@ const tour = (over: Partial<Tour> = {}): Tour => ({
   passes: ["stilfser-joch"],
   season: null,
   slug: "marmotte",
+  surface: "asphalt",
   waypoints: [
     { lat: 45, lon: 6 },
     { lat: 45.2, lon: 6.2 },
@@ -627,5 +630,21 @@ describe("afterDecline", () => {
     expect(
       afterDecline(job, declined, false)?.meta?.[job.key],
     ).not.toHaveProperty("orsDeclined");
+  });
+});
+
+describe("the routing profile (plan 27)", () => {
+  test("follows the surface, and only a mountain profile enters the inputs", () => {
+    const paved = routeJobs([pass()], [])[0]!;
+    const gravel = routeJobs([pass({ surface: "gravel" })], [])[0]!;
+    expect(paved.profile).toBe("cycling-road");
+    expect(gravel.profile).toBe("cycling-mountain");
+    // A road stored before the surface existed keeps its hash: every one of
+    // them was asked with the road profile.
+    expect(paved.inputs).toBe(ascentInputs(false, pass(), pass().ascents[0]!));
+    expect(gravel.inputs).not.toBe(paved.inputs);
+    expect(routeJobs([], [tour({ surface: "mixed" })])[0]!.profile).toBe(
+      "cycling-mountain",
+    );
   });
 });
