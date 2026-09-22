@@ -2,6 +2,7 @@
 
 import { Star } from "lucide-react";
 
+import { useT } from "@/components/i18n";
 import { Toggle } from "@/components/ui/toggle";
 import { cn, ICON_TOGGLE, TOUCH_ICON } from "@/lib/utils";
 
@@ -79,62 +80,67 @@ export const EntityRow = ({
   /** The pointer is over this entity – here or on the map; one highlight for both. */
   hovered?: boolean;
   onHover?: (over: boolean) => void;
-}) => (
-  <div
-    role="listitem"
-    data-current={current ? true : undefined}
-    onPointerEnter={onHover ? () => onHover(true) : undefined}
-    onPointerLeave={onHover ? () => onHover(false) : undefined}
-    className={cn(
-      "border-border grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-x-1 border-b",
-      "[contain-intrinsic-size:auto_--spacing(12)] [content-visibility:auto]",
-      // The hover tint is the same surface the selected row carries, at half
-      // the weight and without the accent bar: the map and the list answer
-      // the pointer in one another's half of the screen, and the two states
-      // have to be told apart at a glance – "this is what you are pointing
-      // at" against "this is what is open".
-      hovered && !current && "bg-accent/8",
-      current && "bg-accent/15 shadow-[inset_2px_0_0_var(--color-accent)]",
-      className,
-    )}
-  >
-    <Toggle
-      pressed={favorite}
-      onPressedChange={onToggleFavorite}
-      aria-label={favorite ? `${name} nicht mehr merken` : `${name} merken`}
-      tabIndex={-1}
-      className={cn(ICON_TOGGLE, TOUCH_ICON, "ml-1.5")}
-    >
-      <Star
-        className={cn(
-          favorite ? "fill-accent text-accent" : "text-muted-foreground/60",
-        )}
-      />
-    </Toggle>
-    <button
-      type="button"
-      data-row={rowId}
-      data-roving
-      tabIndex={-1}
-      aria-current={current ? "true" : undefined}
-      onClick={onSelect}
-      onFocus={onHover ? () => onHover(true) : undefined}
-      onBlur={onHover ? () => onHover(false) : undefined}
-      className="focus-visible:inset-ring-ring/50 min-w-0 rounded-sm py-2 pr-1 text-left outline-none focus-visible:inset-ring-2"
-    >
-      <span className="flex items-center gap-1.5 text-xs leading-tight font-medium">
-        {leading}
-        <span className="truncate">{title}</span>
-      </span>
-      <span className="text-muted-foreground mt-0.5 block truncate text-xs">
-        {subtitle}
-      </span>
-    </button>
-    <div className="flex items-center gap-2 pr-3 text-right">
-      {aside !== undefined && (
-        <div className="flex flex-col items-end gap-0.5 text-xs">{aside}</div>
+}) => {
+  const { t } = useT();
+  return (
+    <div
+      role="listitem"
+      data-current={current ? true : undefined}
+      onPointerEnter={onHover ? () => onHover(true) : undefined}
+      onPointerLeave={onHover ? () => onHover(false) : undefined}
+      className={cn(
+        "border-border grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-x-1 border-b",
+        "[contain-intrinsic-size:auto_--spacing(12)] [content-visibility:auto]",
+        // The hover tint is the same surface the selected row carries, at half
+        // the weight and without the accent bar: the map and the list answer
+        // the pointer in one another's half of the screen, and the two states
+        // have to be told apart at a glance – "this is what you are pointing
+        // at" against "this is what is open".
+        hovered && !current && "bg-accent/8",
+        current && "bg-accent/15 shadow-[inset_2px_0_0_var(--color-accent)]",
+        className,
       )}
-      {trailing}
+    >
+      <Toggle
+        pressed={favorite}
+        onPressedChange={onToggleFavorite}
+        aria-label={
+          favorite ? t.sidebar.row.unsave(name) : t.sidebar.row.save(name)
+        }
+        tabIndex={-1}
+        className={cn(ICON_TOGGLE, TOUCH_ICON, "ml-1.5")}
+      >
+        <Star
+          className={cn(
+            favorite ? "fill-accent text-accent" : "text-muted-foreground/60",
+          )}
+        />
+      </Toggle>
+      <button
+        type="button"
+        data-row={rowId}
+        data-roving
+        tabIndex={-1}
+        aria-current={current ? "true" : undefined}
+        onClick={onSelect}
+        onFocus={onHover ? () => onHover(true) : undefined}
+        onBlur={onHover ? () => onHover(false) : undefined}
+        className="focus-visible:inset-ring-ring/50 min-w-0 rounded-sm py-2 pr-1 text-left outline-none focus-visible:inset-ring-2"
+      >
+        <span className="flex items-center gap-1.5 text-xs leading-tight font-medium">
+          {leading}
+          <span className="truncate">{title}</span>
+        </span>
+        <span className="text-muted-foreground mt-0.5 block truncate text-xs">
+          {subtitle}
+        </span>
+      </button>
+      <div className="flex items-center gap-2 pr-3 text-right">
+        {aside !== undefined && (
+          <div className="flex flex-col items-end gap-0.5 text-xs">{aside}</div>
+        )}
+        {trailing}
+      </div>
     </div>
-  </div>
-);
+  );
+};

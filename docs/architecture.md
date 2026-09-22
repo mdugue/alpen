@@ -173,7 +173,7 @@ would mean a filter counting wrong for a moment (see
 
 ### Cache Components
 
-`"use cache"` sits on `app/(explorer)/layout.tsx`, and that is the only place
+`"use cache"` sits on `app/[lang]/(explorer)/layout.tsx`, and that is the only place
 it sits on the page's path. Everything the explorer shows comes from JSON
 imported at build time, so `lib/data.ts` is plain synchronous code: the
 layout's own cache entry covers the derivations it runs – the asset URLs, the
@@ -193,7 +193,7 @@ inside `<Suspense>` instead.
 
 ### The explorer is a layout, and every entity is a route
 
-Since plan 02 the explorer is `app/(explorer)/layout.tsx`, and under it lie
+Since plan 02 the explorer is `app/[lang]/(explorer)/layout.tsx`, and under it lie
 the start page (`/`, an empty detail slot) and one dynamic segment,
 `[kind]/[slug]`, prerendered for every pass, tour, town and destination
 (`generateStaticParams` from `staticParams` in `lib/data.ts`; an unknown

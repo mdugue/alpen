@@ -26,7 +26,12 @@ import {
 import type { MapEnv, Provenance } from "@/components/map/apply-environment";
 import { applyScene, sceneHost } from "@/components/map/apply-scene";
 import type { SceneHost } from "@/components/map/apply-scene";
-import { baseLayers, OVERLAYS, VECTOR_BASE } from "@/components/map/map-style";
+import {
+  baseLayers,
+  OVERLAYS,
+  overlayName,
+  vectorBase,
+} from "@/components/map/map-style";
 import { Button } from "@/components/ui/button";
 import { ButtonGroup } from "@/components/ui/button-group";
 import {
@@ -229,7 +234,7 @@ export const PassMap = ({
   inset = NO_INSET,
   env,
 }: Props) => {
-  const { lang } = useT();
+  const { lang, t } = useT();
   const container = useRef<HTMLDivElement>(null);
   const map = useRef<MLMap | null>(null);
   const [ready, setReady] = useState(false);
@@ -301,6 +306,7 @@ export const PassMap = ({
   const mapEnv = buildEnv({
     base,
     device: env,
+    lang,
     overlays,
     passes: shown.passes,
     terrain: is3d,
@@ -344,7 +350,7 @@ export const PassMap = ({
     // told the map is already in – terrain excepted, which the style carries
     // none of and the applier switches on once `is3d` says so.
     appliedEnv.current = { ...mapEnv, terrain: false };
-    const { ground, detail } = baseStack(mapEnv.base, env.scheme);
+    const { ground, detail } = baseStack(mapEnv.base, env.scheme, lang);
 
     const style: StyleSpecification = {
       glyphs: GLYPHS,
@@ -378,7 +384,7 @@ export const PassMap = ({
           type: "raster-dem",
         },
         ...Object.fromEntries(
-          baseLayers().map((b) => [
+          baseLayers(lang).map((b) => [
             b.id,
             {
               attribution: b.attribution,
@@ -432,8 +438,8 @@ export const PassMap = ({
       center: [view.lon, view.lat],
       container: container.current,
       locale: {
-        "AttributionControl.ToggleAttribution": "Quellenangaben",
-        "Map.Title": "Karte",
+        "AttributionControl.ToggleAttribution": t.map.attribution,
+        "Map.Title": t.map.title,
         "ScaleControl.Kilometers": "km",
         "ScaleControl.Meters": "m",
       },
@@ -461,7 +467,7 @@ export const PassMap = ({
      * OSM attribution guidelines ask for, and a line inside a menu about map
      * types is neither identifiable nor one interaction.
      */
-    const controls = provenanceControls();
+    const controls = provenanceControls(lang);
     provenance.current = controls;
     placeProvenance(m, controls, env.mobile, container.current);
 
@@ -812,15 +818,13 @@ export const PassMap = ({
                     onClick={() => {
                       issue([{ bearing: 0, cmd: "easeTo", duration: 400 }]);
                     }}
-                    aria-label="Nach Norden ausrichten"
+                    aria-label={t.map.alignNorth}
                   />
                 }
               >
                 <Compass ref={aimNeedle} />
               </TooltipTrigger>
-              <TooltipContent side="left">
-                Nach Norden ausrichten
-              </TooltipContent>
+              <TooltipContent side="left">{t.map.alignNorth}</TooltipContent>
             </Tooltip>
           )}
           <Tooltip>
@@ -831,15 +835,13 @@ export const PassMap = ({
                   variant="outline"
                   className={cn(TOOL, MAP_TOOL)}
                   onClick={fitToVisible}
-                  aria-label="Ansicht einpassen"
+                  aria-label={t.map.fit}
                 />
               }
             >
               <Scan />
             </TooltipTrigger>
-            <TooltipContent side="left">
-              Ansicht einpassen – erneut für die ganzen Alpen
-            </TooltipContent>
+            <TooltipContent side="left">{t.map.fitHint}</TooltipContent>
           </Tooltip>
 
           {/*
@@ -858,7 +860,7 @@ export const PassMap = ({
                         size="icon-lg"
                         variant="outline"
                         className={cn(TOOL, MAP_TOOL)}
-                        aria-label="Ansicht: Karte, Ebenen und 3D"
+                        aria-label={t.map.viewMenu}
                       />
                     }
                   />
@@ -866,17 +868,17 @@ export const PassMap = ({
               >
                 <MoreHorizontal />
               </TooltipTrigger>
-              <TooltipContent side="left">Ansicht</TooltipContent>
+              <TooltipContent side="left">{t.map.view}</TooltipContent>
             </Tooltip>
             <PopoverContent align="start" side="left" className="w-60 gap-3">
               <FieldSet className="gap-2">
-                <FieldLegend variant="label">Grundkarte</FieldLegend>
+                <FieldLegend variant="label">{t.map.base}</FieldLegend>
                 <RadioGroup
                   value={mapEnv.base}
                   onValueChange={(v) => setBase(String(v))}
                   className="gap-1.5"
                 >
-                  {[VECTOR_BASE, ...baseLayers()].map((b) => (
+                  {[vectorBase(lang), ...baseLayers(lang)].map((b) => (
                     <Field key={b.id} orientation="horizontal">
                       <RadioGroupItem value={b.id} id={`base-${b.id}`} />
                       <FieldLabel
@@ -890,10 +892,13 @@ export const PassMap = ({
                 </RadioGroup>
               </FieldSet>
               <FieldSet className="gap-2">
-                <FieldLegend variant="label">Overlays</FieldLegend>
+                <FieldLegend variant="label">{t.map.overlays}</FieldLegend>
                 {[
-                  { id: "hillshade", name: "Relief-Schummerung" },
-                  ...OVERLAYS,
+                  { id: "hillshade", name: t.map.hillshade },
+                  ...OVERLAYS.map((o) => ({
+                    id: o.id,
+                    name: overlayName(o.id, lang),
+                  })),
                 ].map((o) => (
                   <Field key={o.id} orientation="horizontal">
                     <Switch
@@ -909,7 +914,7 @@ export const PassMap = ({
                 ))}
               </FieldSet>
               <FieldSet className="gap-2">
-                <FieldLegend variant="label">Gelände</FieldLegend>
+                <FieldLegend variant="label">{t.map.terrain}</FieldLegend>
                 <Field orientation="horizontal">
                   <Switch
                     size="sm"
@@ -918,7 +923,7 @@ export const PassMap = ({
                     onCheckedChange={toggle3d}
                   />
                   <FieldLabel htmlFor="terrain-3d" className="font-normal">
-                    3D-Ansicht
+                    {t.map.threeD}
                   </FieldLabel>
                 </Field>
               </FieldSet>

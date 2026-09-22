@@ -265,7 +265,7 @@ export const Explorer = ({ data, defaultPeriod, children }: Props) => {
                     dispatch({ filters: true, open: true, type: "list" })
                   }
                 >
-                  Filter
+                  {t.band.filters}
                   {activeFilters > 0 && (
                     <Badge variant="secondary">{activeFilters}</Badge>
                   )}

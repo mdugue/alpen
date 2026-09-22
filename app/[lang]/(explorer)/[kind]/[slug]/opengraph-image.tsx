@@ -2,6 +2,8 @@ import { ImageResponse } from "next/og";
 
 import { BRAND, SITE_NAME } from "@/lib/brand";
 import { getEntity, staticParams } from "@/lib/data";
+import { langOf } from "@/lib/i18n";
+import type { Lang } from "@/lib/i18n";
 import { MarkBadge } from "@/lib/mark";
 import { selectionOf } from "@/lib/routes";
 import { DotLayer, dotMap, SHARE_SIZE, shareFonts } from "@/lib/share-image";
@@ -14,9 +16,12 @@ import type { LatLon } from "@/lib/types";
  * entity ringed, its name, and the line that holds at share time. The
  * half-month cannot be known then, so the card shows the typical season
  * rather than a status – a status would be a claim about a day the card
- * knows nothing about (Principle 3).
+ * knows nothing about (Principle 3). One per language (plan 08): the words
+ * on it follow the route's segment, the dots are the same.
  */
 export const generateStaticParams = () => staticParams();
+// A static export, so one text for both languages: Next reads `alt` from the
+// module, not from the params.
 export const alt = `${SITE_NAME} – Karte mit der markierten Straße, Tour, dem Ort oder Reiseziel`;
 export const size = SHARE_SIZE;
 export const contentType = "image/png";
@@ -45,17 +50,17 @@ const pointOf = (e: Found): LatLon => {
 };
 
 /** The one line under the name: the season where there is one, else the description. */
-const lineOf = (e: Found): string => {
+const lineOf = (e: Found, lang: Lang): string => {
   switch (e.kind) {
     case "pass": {
-      return seasonText(e.pass);
+      return seasonText(e.pass, lang);
     }
     case "tour": {
-      return tourSeasonText(e.tour);
+      return tourSeasonText(e.tour, lang);
     }
     case "town":
     case "destination": {
-      return entityDescription(e);
+      return entityDescription(e, lang);
     }
     default: {
       return e satisfies never;
@@ -68,13 +73,14 @@ export default async function Image({
 }: {
   params: Promise<{ kind: string; lang: string; slug: string }>;
 }) {
-  const { kind, slug } = await params;
+  const { kind, lang: raw, slug } = await params;
+  const lang = langOf(raw);
   const selection = selectionOf(`/${kind}/${encodeURIComponent(slug)}`);
-  const entity = selection && getEntity(selection);
+  const entity = selection && getEntity(selection, lang);
   const { dots, project } = dotMap();
   const mark = entity ? project(pointOf(entity)) : null;
-  const title = entity ? entityTitle(entity) : SITE_NAME;
-  const line = entity ? lineOf(entity) : "";
+  const title = entity ? entityTitle(entity, lang) : SITE_NAME;
+  const line = entity ? lineOf(entity, lang) : "";
 
   return new ImageResponse(
     <div

@@ -205,8 +205,9 @@ export const resetFilters = (f: Filters): Filters => ({
 export const bestRelief = (
   f: Filters,
   countWith: (patch: Partial<Filters>) => number,
+  lang: Lang = DEFAULT_LANG,
 ): { chip: AppliedFilter; n: number } | undefined =>
-  appliedFilters(f)
+  appliedFilters(f, lang)
     .map((chip) => ({ chip, n: countWith(chip.clear(f)) }))
     .filter((r) => r.n > 0)
     .toSorted((a, b) => b.n - a.n)[0];

@@ -1,5 +1,6 @@
 "use client";
 
+import { useT } from "@/components/i18n";
 import { Section } from "@/components/panel/section";
 import { VerdictBox } from "@/components/panel/verdict-box";
 import { Rating } from "@/components/rating";
@@ -9,12 +10,13 @@ import type { Selection } from "@/lib/app-state";
 import type { Bases, BaseVerdict } from "@/lib/destination";
 import { destinationText } from "@/lib/destination";
 import { REACH_MAX_KM } from "@/lib/geo";
+import type { ReachBand } from "@/lib/geo";
 import type { Band, GradeCount, ReachedPass, ReachedTown } from "@/lib/reach";
 import { isHovered } from "@/lib/route-key";
 import { bestText, GRADE_ORDER } from "@/lib/status";
 import type { Grade } from "@/lib/status";
 import type { Period } from "@/lib/types";
-import { cn, fmt, fmtUnit } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 
 /** The strip's own ramp, so the bar and the 24 cells say the same thing. */
 const GRADE_FILL: Record<Grade, string> = {
@@ -92,36 +94,39 @@ const PassRow = ({
   hovered: boolean;
   onHover: (over: boolean) => void;
   onSelect: () => void;
-}) => (
-  <li>
-    <button
-      type="button"
-      onClick={onSelect}
-      {...hoverProps(
-        () => onHover(true),
-        () => onHover(false),
-      )}
-      className={cn(ROW, hovered ? "bg-accent/15" : "hover:bg-muted/60")}
-    >
-      <StatusDot status={r.status} />
-      <span className="min-w-0">
-        <span className="block truncate text-xs font-medium">
-          {r.pass.name}
+}) => {
+  const { fmtUnit } = useT();
+  return (
+    <li>
+      <button
+        type="button"
+        onClick={onSelect}
+        {...hoverProps(
+          () => onHover(true),
+          () => onHover(false),
+        )}
+        className={cn(ROW, hovered ? "bg-accent/15" : "hover:bg-muted/60")}
+      >
+        <StatusDot status={r.status} />
+        <span className="min-w-0">
+          <span className="block truncate text-xs font-medium">
+            {r.pass.name}
+          </span>
+          <span className="text-muted-foreground text-2xs flex items-center gap-1.5">
+            <Rating value={r.pass.beauty} className="[&>span]:h-1.5" />
+            {fmtUnit(r.pass.elevation, "m")}
+          </span>
         </span>
-        <span className="text-muted-foreground text-2xs flex items-center gap-1.5">
-          <Rating value={r.pass.beauty} className="[&>span]:h-1.5" />
-          {fmtUnit(r.pass.elevation, "m")}
+        <span className="flex flex-col items-end gap-0.5">
+          <span className="text-muted-foreground text-2xs tabular-nums">
+            {fmtUnit(r.km, "km")}
+          </span>
+          <SeasonStrip cells={r.season} current={period} className="w-16" />
         </span>
-      </span>
-      <span className="flex flex-col items-end gap-0.5">
-        <span className="text-muted-foreground text-2xs tabular-nums">
-          {fmtUnit(r.km, "km")}
-        </span>
-        <SeasonStrip cells={r.season} current={period} className="w-16" />
-      </span>
-    </button>
-  </li>
-);
+      </button>
+    </li>
+  );
+};
 
 /**
  * One town as a candidate base. The count is the whole point of the row: the
@@ -138,55 +143,61 @@ const TownRow = ({
   hovered: boolean;
   onHover: (over: boolean) => void;
   onSelect: () => void;
-}) => (
-  <li>
-    <button
-      type="button"
-      onClick={onSelect}
-      {...hoverProps(
-        () => onHover(true),
-        () => onHover(false),
-      )}
-      className={cn(ROW, hovered ? "bg-accent/15" : "hover:bg-muted/60")}
-    >
-      <span className="bg-town size-2.5 shrink-0 rounded-full" aria-hidden />
-      <span className="min-w-0">
-        <span className="block truncate text-xs font-medium">
-          {r.town.name}
+}) => {
+  const { t, fmt, fmtUnit } = useT();
+  return (
+    <li>
+      <button
+        type="button"
+        onClick={onSelect}
+        {...hoverProps(
+          () => onHover(true),
+          () => onHover(false),
+        )}
+        className={cn(ROW, hovered ? "bg-accent/15" : "hover:bg-muted/60")}
+      >
+        <span className="bg-town size-2.5 shrink-0 rounded-full" aria-hidden />
+        <span className="min-w-0">
+          <span className="block truncate text-xs font-medium">
+            {r.town.name}
+          </span>
+          <span className="text-muted-foreground text-2xs">
+            {r.town.country} ·{" "}
+            {r.total === 0
+              ? t.panel.base.townNone
+              : t.panel.base.townLine(fmt(r.rideable), fmt(r.total))}
+          </span>
         </span>
-        <span className="text-muted-foreground text-2xs">
-          {r.town.country} ·{" "}
-          {r.total === 0
-            ? "kein Pass im Umkreis"
-            : `${fmt(r.rideable)} von ${fmt(r.total)} Pässen gut`}
+        <span className="text-muted-foreground text-2xs tabular-nums">
+          {fmtUnit(r.km, "km")}
         </span>
-      </span>
-      <span className="text-muted-foreground text-2xs tabular-nums">
-        {fmtUnit(r.km, "km")}
-      </span>
-    </button>
-  </li>
-);
+      </button>
+    </li>
+  );
+};
 
 /** "VOR DER HAUSTÜR · 5 Pässe bis 18 km" – the same header for both lists. */
 const BandHeader = ({
-  label,
+  band,
   n,
   maxKm,
   noun,
 }: {
-  label: string;
+  band: ReachBand;
   n: number;
   maxKm: number;
   noun: string;
-}) => (
-  <p className="text-muted-foreground text-2xs mb-0.5 flex items-baseline gap-1.5 font-semibold tracking-widest uppercase">
-    {label}
-    <span className="font-normal tracking-normal normal-case">
-      {fmt(n)} {noun} · bis {fmtUnit(maxKm, "km")}
-    </span>
-  </p>
-);
+}) => {
+  const { t, fmt, fmtUnit } = useT();
+  return (
+    <p className="text-muted-foreground text-2xs mb-0.5 flex items-baseline gap-1.5 font-semibold tracking-widest uppercase">
+      {t.vocab.band[band].label}
+      <span className="font-normal tracking-normal normal-case">
+        {t.panel.base.bandCount(fmt(n), noun, fmtUnit(maxKm, "km"))}
+      </span>
+    </p>
+  );
+};
 
 /**
  * The banded list both blocks draw – a function, the way `group` is one in
@@ -203,7 +214,7 @@ const bandList = <T,>(
     {bands.map((g) => (
       <div key={g.band}>
         <BandHeader
-          label={g.label}
+          band={g.band}
           maxKm={g.maxKm}
           n={g.items.length}
           noun={noun}
@@ -240,55 +251,55 @@ export const DestinationSection = ({
   hovered: Selection | null;
   onHover: (sel: Selection | null) => void;
   onSelect: (slug: string) => void;
-}) => (
-  <>
-    <VerdictBox
-      bar={
-        <GradeBar counts={d.counts} total={d.total} text={destinationText(d)} />
-      }
-      best={bestText(d.year)}
-      period={period}
-      text={destinationText(d)}
-      year={d.year}
-    >
-      {/* What the 24 cells are graded against, said out loud. They are
+}) => {
+  const { t, lang, fmt } = useT();
+  const text = destinationText(d, lang);
+  return (
+    <>
+      <VerdictBox
+        bar={<GradeBar counts={d.counts} total={d.total} text={text} />}
+        best={bestText(d.year, lang)}
+        period={period}
+        text={text}
+        year={d.year}
+      >
+        {/* What the 24 cells are graded against, said out loud. They are
           relative to this base's own best half-month, so the strip shows when
           to come rather than how big the place is; the magnitude is the
           sentence and the bar above (`gradeOfBase` in lib/destination.ts). */}
-      <p className="text-muted-foreground text-2xs">
-        Abgeleitet aus den {d.total} Pässen im Umkreis – der Ort selbst hat
-        keine eigene Klimareihe. Der Streifen zeigt den Jahresverlauf im
-        Verhältnis zur besten Zeit dieses Orts
-        {d.peak > 0 && <> (dann sind {fmt(d.peak)} Pässe gut befahrbar)</>}.
-      </p>
-    </VerdictBox>
-
-    <Section
-      id="destination-passes"
-      info={`Nach Zustand im gewählten Halbmonat, Schönheit und Nähe sortiert. Nähe zählt gleitend: ein Pass wird nicht bei einem runden Kilometerwert wertlos, sondern verliert mit der Entfernung an Gewicht. Jenseits von ${REACH_MAX_KM} km endet die Liste.`}
-      title="Pässe von hier aus"
-    >
-      {d.total === 0 ? (
-        <p className="text-muted-foreground text-xs">
-          Kein Pass im Umkreis von {REACH_MAX_KM} km.
+        <p className="text-muted-foreground text-2xs">
+          {t.panel.base.derived(fmt(d.total))}
+          {d.peak > 0 && t.panel.base.derivedPeak(fmt(d.peak))}.
         </p>
-      ) : (
-        bandList(d.bands, "Pässe", (r) => (
-          <PassRow
-            key={r.pass.slug}
-            r={r}
-            period={period}
-            hovered={isHovered(hovered, "pass", r.pass.slug)}
-            onHover={(over) =>
-              onHover(over ? { kind: "pass", slug: r.pass.slug } : null)
-            }
-            onSelect={() => onSelect(r.pass.slug)}
-          />
-        ))
-      )}
-    </Section>
-  </>
-);
+      </VerdictBox>
+
+      <Section
+        id="destination-passes"
+        info={t.panel.base.passesInfo(REACH_MAX_KM)}
+        title={t.panel.base.passesTitle}
+      >
+        {d.total === 0 ? (
+          <p className="text-muted-foreground text-xs">
+            {t.vocab.reach.noneWithin(REACH_MAX_KM)}
+          </p>
+        ) : (
+          bandList(d.bands, t.panel.base.passes, (r) => (
+            <PassRow
+              key={r.pass.slug}
+              r={r}
+              period={period}
+              hovered={isHovered(hovered, "pass", r.pass.slug)}
+              onHover={(over) =>
+                onHover(over ? { kind: "pass", slug: r.pass.slug } : null)
+              }
+              onSelect={() => onSelect(r.pass.slug)}
+            />
+          ))
+        )}
+      </Section>
+    </>
+  );
+};
 
 /**
  * The inverse block: which towns this road could be ridden from.
@@ -310,28 +321,31 @@ export const BasesSection = ({
   hovered: Selection | null;
   onHover: (sel: Selection | null) => void;
   onSelect: (slug: string) => void;
-}) => (
-  <Section
-    id="bases"
-    info={`Orte, von denen aus diese Straße erreichbar ist – nach Nähe und danach sortiert, wie viele Pässe der Ort im gewählten Halbmonat sonst noch bietet. Jenseits von ${REACH_MAX_KM} km endet die Liste.`}
-    title="Orte als Standort"
-  >
-    {bases.total === 0 ? (
-      <p className="text-muted-foreground text-xs">
-        Kein Rad-Ort im Umkreis von {REACH_MAX_KM} km.
-      </p>
-    ) : (
-      bandList(bases.bands, "Orte", (r) => (
-        <TownRow
-          key={r.town.slug}
-          r={r}
-          hovered={isHovered(hovered, "town", r.town.slug)}
-          onHover={(over) =>
-            onHover(over ? { kind: "town", slug: r.town.slug } : null)
-          }
-          onSelect={() => onSelect(r.town.slug)}
-        />
-      ))
-    )}
-  </Section>
-);
+}) => {
+  const { t } = useT();
+  return (
+    <Section
+      id="bases"
+      info={t.panel.base.basesInfo(REACH_MAX_KM)}
+      title={t.panel.base.basesTitle}
+    >
+      {bases.total === 0 ? (
+        <p className="text-muted-foreground text-xs">
+          {t.panel.base.basesNone(REACH_MAX_KM)}
+        </p>
+      ) : (
+        bandList(bases.bands, t.panel.base.towns, (r) => (
+          <TownRow
+            key={r.town.slug}
+            r={r}
+            hovered={isHovered(hovered, "town", r.town.slug)}
+            onHover={(over) =>
+              onHover(over ? { kind: "town", slug: r.town.slug } : null)
+            }
+            onSelect={() => onSelect(r.town.slug)}
+          />
+        ))
+      )}
+    </Section>
+  );
+};

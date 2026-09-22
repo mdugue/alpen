@@ -321,7 +321,9 @@ test("5c · the English version lives under /en, and the toggle keeps the place"
         "en",
       );
       expect(await page.path()).toBe("/en/pass/col-du-galibier");
-      // The kind tabs read the English words; the rows keep their names.
+      // The panel, the tabs and the badge read the English words; the rows
+      // keep their names.
+      await page.waitFor('[aria-label="Close details"]');
       await page.clickText('[role="tab"]', "Roads");
       await page.waitFor('[data-row="pass:passo-dello-stelvio"]');
       // The toggle is a plain link to the same place without the prefix.

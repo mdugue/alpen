@@ -1,5 +1,6 @@
 "use client";
 
+import { useT } from "@/components/i18n";
 import { SeasonStrip } from "@/components/season-strip";
 import { EntityRow } from "@/components/sidebar/entity-row";
 import { ListEmpty } from "@/components/sidebar/list-empty";
@@ -8,12 +9,11 @@ import { RowList } from "@/components/sidebar/row-list";
 import { StatusLabel } from "@/components/status-badge";
 import { Switch } from "@/components/ui/switch";
 import type { Selection } from "@/lib/app-state";
-import { RANGE } from "@/lib/regions";
 import { entityKey } from "@/lib/route-key";
 import type { TourRow } from "@/lib/rows";
 import type { Period } from "@/lib/types";
 import { useRoving } from "@/lib/use-roving";
-import { cn, fmtUnit } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 
 export const TourList = ({
   rows,
@@ -45,13 +45,14 @@ export const TourList = ({
   onSelect: (slug: string) => void;
   onToggleFavorite: (slug: string) => void;
 }) => {
+  const { t, fmt, fmtUnit } = useT();
   const rovingList = useRoving<HTMLDivElement>();
   const hoveredSlug = hovered?.kind === "tour" ? hovered.slug : null;
   return (
     <>
       <ListToolbar control={mapControl} />
       {rows.length === 0 ? (
-        <ListEmpty title="Keine Touren gefunden" {...empty} />
+        <ListEmpty title={t.sidebar.empty.noTours} {...empty} />
       ) : (
         <RowList ref={rovingList} items={rows} keyOf={({ tour }) => tour.slug}>
           {({ tour, status, reason, favorite, season, window, range }) => {
@@ -75,8 +76,8 @@ export const TourList = ({
                 name={tour.name}
                 title={tour.name}
                 subtitle={[
-                  showRange && range ? RANGE[range].label : null,
-                  `${tour.passes.length} Pässe`,
+                  showRange && range ? t.vocab.range[range].label : null,
+                  t.sidebar.lists.passes(fmt(tour.passes.length)),
                   window,
                 ]
                   .filter(Boolean)
@@ -103,7 +104,7 @@ export const TourList = ({
                     size="sm"
                     checked={onMap}
                     onCheckedChange={(on) => onToggleTour(tour.slug, on)}
-                    aria-label={`${tour.name} auf der Karte anzeigen`}
+                    aria-label={t.sidebar.lists.showTour(tour.name)}
                   />
                 }
               />

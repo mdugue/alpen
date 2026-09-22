@@ -2,7 +2,7 @@ import { lang as rootLang } from "next/root-params";
 
 import { Explorer } from "@/components/explorer";
 import { I18nProvider } from "@/components/i18n";
-import { SITE_DESCRIPTION, SITE_NAME, siteUrl } from "@/lib/brand";
+import { SITE_NAME, siteUrl } from "@/lib/brand";
 import { getPageData } from "@/lib/data";
 import { langOf, langPrefix, messagesOf } from "@/lib/i18n";
 import type { Lang } from "@/lib/i18n";
@@ -24,7 +24,7 @@ const jsonLd = (lang: Lang) => ({
     url: "https://manuel.fyi",
   },
   browserRequirements: "Requires JavaScript and WebGL.",
-  description: SITE_DESCRIPTION,
+  description: messagesOf(lang).site.description,
   inLanguage: lang,
   isAccessibleForFree: true,
   name: SITE_NAME,
@@ -65,7 +65,7 @@ const ExplorerLayout = async ({ children }: { children: React.ReactNode }) => {
   // anything that is not one.
   const raw = await rootLang();
   const lang = langOf(raw);
-  const data = getPageData();
+  const data = getPageData(lang);
 
   return (
     <main className="h-dvh overflow-hidden">

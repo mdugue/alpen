@@ -14,7 +14,7 @@ import {
   SHARE_SIZE,
   shareFonts,
 } from "@/lib/share-image";
-import { STATUS_LABEL, STATUS_ORDER } from "@/lib/status";
+import { STATUS_ORDER, statusLabel } from "@/lib/status";
 import { fmt } from "@/lib/utils";
 
 /**
@@ -28,6 +28,8 @@ import { fmt } from "@/lib/utils";
  */
 export const generateStaticParams = () => langParams();
 
+// A static export, so one text for both languages: Next reads `alt` from the
+// module, not from the params.
 export const alt = `${SITE_NAME} – welche Pässe, Touren und Rad-Orte sind wann mit dem Rennrad befahrbar?`;
 export const size = SHARE_SIZE;
 export const contentType = "image/png";
@@ -43,9 +45,9 @@ export default async function Image({
   const { dots } = dotMap();
   // Same words as the sidebar sections, so the preview and the app agree.
   const counts = share.counts(
-    fmt(passes.length),
-    fmt(tours.length),
-    fmt(towns.length),
+    fmt(passes.length, 0, lang),
+    fmt(tours.length, 0, lang),
+    fmt(towns.length, 0, lang),
   );
 
   return new ImageResponse(
@@ -142,7 +144,7 @@ export default async function Image({
               width: 26,
             }}
           />
-          <span>{periodLabel(SHARE_PERIOD)}</span>
+          <span>{periodLabel(SHARE_PERIOD, lang)}</span>
         </div>
         {STATUS_ORDER.map((s) => (
           <div
@@ -157,7 +159,7 @@ export default async function Image({
                 width: 14,
               }}
             />
-            <span>{STATUS_LABEL[s]}</span>
+            <span>{statusLabel(s, lang)}</span>
           </div>
         ))}
       </div>

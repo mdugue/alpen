@@ -1,5 +1,8 @@
+"use client";
+
+import { useT } from "@/components/i18n";
 import { CELL } from "@/components/season-strip";
-import { GRADE_LABEL, GRADE_ORDER, gradeHint } from "@/lib/status";
+import { GRADE_ORDER, gradeHint, gradeLabel } from "@/lib/status";
 import { cn } from "@/lib/utils";
 
 /**
@@ -15,20 +18,23 @@ export const GradeLegend = ({
   className?: string;
   /** Optional trailing note, e.g. the counts of the half-month. */
   hint?: string;
-}) => (
-  <dl className={cn("text-2xs flex flex-col gap-1", className)}>
-    {GRADE_ORDER.map((g) => (
-      <div key={g} className="flex items-start gap-1.5">
-        <dt className="flex shrink-0 items-center gap-1 font-semibold">
-          <span
-            aria-hidden
-            className={cn("inline-block size-2 rounded-xs", CELL[g])}
-          />
-          {GRADE_LABEL[g]}
-        </dt>
-        <dd className="opacity-80">{gradeHint(g)}</dd>
-      </div>
-    ))}
-    {hint && <div className="mt-0.5">{hint}</div>}
-  </dl>
-);
+}) => {
+  const { lang } = useT();
+  return (
+    <dl className={cn("text-2xs flex flex-col gap-1", className)}>
+      {GRADE_ORDER.map((g) => (
+        <div key={g} className="flex items-start gap-1.5">
+          <dt className="flex shrink-0 items-center gap-1 font-semibold">
+            <span
+              aria-hidden
+              className={cn("inline-block size-2 rounded-xs", CELL[g])}
+            />
+            {gradeLabel(g, lang)}
+          </dt>
+          <dd className="opacity-80">{gradeHint(g, lang)}</dd>
+        </div>
+      ))}
+      {hint && <div className="mt-0.5">{hint}</div>}
+    </dl>
+  );
+};

@@ -1,12 +1,12 @@
 "use client";
 
+import { useT } from "@/components/i18n";
 import { EntityRow } from "@/components/sidebar/entity-row";
 import { ListEmpty } from "@/components/sidebar/list-empty";
 import { ListToolbar } from "@/components/sidebar/list-toolbar";
 import { RowList } from "@/components/sidebar/row-list";
 import { TagLine } from "@/components/tags";
 import type { Selection } from "@/lib/app-state";
-import { RANGE } from "@/lib/regions";
 import { entityKey } from "@/lib/route-key";
 import type { TownRow } from "@/lib/rows";
 import { useRoving } from "@/lib/use-roving";
@@ -41,13 +41,14 @@ export const TownList = ({
   onSelect: (slug: string) => void;
   onToggleFavorite: (slug: string) => void;
 }) => {
+  const { t } = useT();
   const rovingList = useRoving<HTMLDivElement>();
   const hoveredSlug = hovered?.kind === "town" ? hovered.slug : null;
   return (
     <>
       <ListToolbar control={mapControl} />
       {rows.length === 0 ? (
-        <ListEmpty title="Keine Orte gefunden" {...empty} />
+        <ListEmpty title={t.sidebar.empty.noTowns} {...empty} />
       ) : (
         <RowList ref={rovingList} items={rows} keyOf={({ town }) => town.slug}>
           {({ town, favorite, range, area }) => (
@@ -65,7 +66,7 @@ export const TownList = ({
                 <TagLine
                   tags={town.tags}
                   lead={[
-                    showRange && range ? RANGE[range].label : null,
+                    showRange && range ? t.vocab.range[range].label : null,
                     town.country,
                     area,
                   ]

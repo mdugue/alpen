@@ -39,6 +39,7 @@ import {
   hasSecondaryFilters,
   resetFilters,
 } from "@/lib/filter-summary";
+import { langPrefix } from "@/lib/i18n";
 import type { RangeName } from "@/lib/regions";
 import { entityKey } from "@/lib/route-key";
 import type { Rows } from "@/lib/rows";
@@ -81,7 +82,7 @@ export interface SidebarProps {
 }
 
 export const Sidebar = (p: SidebarProps) => {
-  const { t } = useT();
+  const { t, fmt, lang } = useT();
   const setFilters = (update: (f: Filters) => Filters) =>
     p.dispatch({ type: "filters", update });
   const set = <K extends keyof Filters>(key: K, value: Filters[K]) =>
@@ -150,7 +151,7 @@ export const Sidebar = (p: SidebarProps) => {
       onCheckedChange={(on) =>
         p.dispatch({ kind: "pass", on, type: "toggleKind" })
       }
-      aria-label="Pässe und Straßen auf der Karte anzeigen"
+      aria-label={t.sidebar.lists.showPasses}
     />
   );
   const townSwitch = (
@@ -160,21 +161,21 @@ export const Sidebar = (p: SidebarProps) => {
       onCheckedChange={(on) =>
         p.dispatch({ kind: "town", on, type: "toggleKind" })
       }
-      aria-label="Orte auf der Karte anzeigen"
+      aria-label={t.sidebar.lists.showTowns}
     />
   );
   const tourSwitch = (
     <span className="flex items-center gap-1.5">
       {visibleTourCount > 0 && visibleTourCount < tourCount && (
         <span className="tabular-nums">
-          {visibleTourCount}/{tourCount}
+          {fmt(visibleTourCount)}/{fmt(tourCount)}
         </span>
       )}
       <Switch
         size="sm"
         checked={visibleTourCount === tourCount}
         onCheckedChange={(on) => p.dispatch({ on, type: "toggleTours" })}
-        aria-label="Touren auf der Karte anzeigen"
+        aria-label={t.sidebar.lists.showTours}
       />
     </span>
   );
@@ -363,16 +364,16 @@ export const Sidebar = (p: SidebarProps) => {
           </p>
           <div className="text-muted-foreground text-2xs flex items-center gap-3 px-3 pb-2">
             <Link
-              href="/impressum"
+              href={`${langPrefix(lang)}/impressum`}
               className="hover:text-foreground hover:underline"
             >
-              Impressum
+              {t.sidebar.footer.imprint}
             </Link>
             <Link
-              href="/datenschutz"
+              href={`${langPrefix(lang)}/datenschutz`}
               className="hover:text-foreground hover:underline"
             >
-              Datenschutz
+              {t.sidebar.footer.privacy}
             </Link>
             {/* The one call to action in the footer, so it is a button, in
                 the outline the detail panel gives its external links – not a
@@ -388,14 +389,14 @@ export const Sidebar = (p: SidebarProps) => {
                   href={SUPPORT_URL}
                   target="_blank"
                   rel="noopener noreferrer"
-                  title="Auf Ko-fi unterstützen"
+                  title={t.sidebar.footer.supportTitle}
                 />
               }
               nativeButton={false}
             >
               <Coffee data-icon="inline-start" aria-hidden />
               {t.sidebar.support}
-              <span className="sr-only"> – auf Ko-fi, öffnet in neuem Tab</span>
+              <span className="sr-only">{t.sidebar.footer.supportSr}</span>
             </Button>
           </div>
         </div>

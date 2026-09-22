@@ -4,6 +4,7 @@ import { useEffect, useSyncExternalStore } from "react";
 import { ALL_KINDS } from "@/lib/app-state";
 import type { AppState, EntityKind, StoredState } from "@/lib/app-state";
 import { BASEMAP_ID } from "@/lib/basemap";
+import type { Lang } from "@/lib/i18n";
 import { isPeriod } from "@/lib/period";
 import type { Period } from "@/lib/types";
 
@@ -57,6 +58,13 @@ const STORAGE = {
   favorites: slot<Favorites>("local", NO_FAVORITES),
   /** The tours kept off the map; stored as the hidden ones (`Shown`). */
   hiddenTours: slot<string[]>("local", []),
+  /**
+   * The language the visitor chose or was offered (plan 08): the first-visit
+   * hint in the header shows only while nothing is stored, and a visit to
+   * the other language or a dismissal writes here. Read by the hint alone –
+   * the language itself is the path.
+   */
+  lang: slot<Lang | null>("local", null),
   /** Which of the basemap's overlays are on. */
   overlays: slot<string[]>("local", ["hillshade"]),
   /**

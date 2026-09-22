@@ -2,6 +2,7 @@
 
 import { ExternalLink } from "lucide-react";
 
+import { useT } from "@/components/i18n";
 import type { PanelActions } from "@/components/panel/actions";
 import { Section } from "@/components/panel/section";
 import { StatusDot } from "@/components/status-badge";
@@ -11,7 +12,7 @@ import type { ReachingModel } from "@/lib/detail-model";
 import { REACH_MAX_KM } from "@/lib/geo";
 import { byDistance } from "@/lib/reach";
 import { isHovered } from "@/lib/route-key";
-import { cn, fmtUnit } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 
 /**
  * A named entity inside the panel. It is a link to a mark on the map, so it
@@ -46,23 +47,26 @@ export const LinkButton = ({
   </Button>
 );
 
-export const ExternalLinks = ({ links }: { links: [string, string][] }) => (
-  <div className="mt-4 flex flex-wrap gap-1.5">
-    {links.map(([label, href]) => (
-      <Button
-        key={label}
-        variant="outline"
-        size="sm"
-        render={<a href={href} target="_blank" rel="noopener noreferrer" />}
-        nativeButton={false}
-      >
-        {label}
-        <ExternalLink data-icon="inline-end" />
-        <span className="sr-only"> (öffnet in neuem Tab)</span>
-      </Button>
-    ))}
-  </div>
-);
+export const ExternalLinks = ({ links }: { links: [string, string][] }) => {
+  const { t } = useT();
+  return (
+    <div className="mt-4 flex flex-wrap gap-1.5">
+      {links.map(([label, href]) => (
+        <Button
+          key={label}
+          variant="outline"
+          size="sm"
+          render={<a href={href} target="_blank" rel="noopener noreferrer" />}
+          nativeButton={false}
+        >
+          {label}
+          <ExternalLink data-icon="inline-end" />
+          <span className="sr-only">{t.panel.external.newTab}</span>
+        </Button>
+      ))}
+    </div>
+  );
+};
 
 /** One labelled row of the nearby list. */
 const group = (label: string, items: React.ReactNode) => (
@@ -91,6 +95,7 @@ export const Nearby = ({
   model: ReachingModel;
   actions: PanelActions;
 }) => {
+  const { t, fmtUnit } = useT();
   const { hovered, reach } = model;
   const passes = byDistance(reach.passes);
   const tours = byDistance(reach.tours);
@@ -105,11 +110,11 @@ export const Nearby = ({
   });
 
   return (
-    <Section id="nearby" title={`Im Umkreis von ${REACH_MAX_KM} km`}>
+    <Section id="nearby" title={t.panel.nearby.title(REACH_MAX_KM)}>
       <div className="flex flex-col gap-1">
         {passes.length > 0 &&
           group(
-            "Pässe",
+            t.panel.nearby.passes,
             passes.map((r) => (
               <LinkButton key={r.pass.slug} {...link("pass", r.pass.slug)}>
                 <StatusDot status={r.status} /> {r.pass.name}
@@ -121,7 +126,7 @@ export const Nearby = ({
           )}
         {tours.length > 0 &&
           group(
-            "Touren",
+            t.panel.nearby.tours,
             tours.map((r) => (
               <LinkButton key={r.tour.slug} {...link("tour", r.tour.slug)}>
                 <span
@@ -134,7 +139,7 @@ export const Nearby = ({
           )}
         {towns.length > 0 &&
           group(
-            "Orte",
+            t.panel.nearby.towns,
             towns.map((r) => (
               <LinkButton key={r.town.slug} {...link("town", r.town.slug)}>
                 <span

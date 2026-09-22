@@ -2,9 +2,9 @@
 
 import { useState } from "react";
 
+import { useT } from "@/components/i18n";
 import { stepGradient } from "@/lib/profile";
 import type { ElevationProfile as Profile, RouteGeometry } from "@/lib/types";
-import { fmt } from "@/lib/utils";
 
 /** Gradient classes; fixed colours on purpose so profiles compare across passes. */
 const GRADIENT_COLORS = [
@@ -93,6 +93,7 @@ export const ElevationProfile = ({
   onCursor,
   onZoomTo,
 }: Props) => {
+  const { t, fmt } = useT();
   const [cursor, setCursor] = useState<number | null>(null);
 
   const lo = Math.floor((Math.min(...profile.ele) - 40) / 100) * 100;
@@ -131,8 +132,17 @@ export const ElevationProfile = ({
   };
 
   const readout = (i: number) =>
-    `km ${fmt(profile.dist[i]!, 1)} · ${fmt(profile.ele[i]!)} m · ${fmt(stepGradient(profile, i), 1)} %`;
-  const summary = `Höhenprofil: ${fmt(profile.km, 1)} km von ${fmt(profile.start)} auf ${fmt(profile.top)} m, im Mittel ${fmt(profile.avgGradient, 1)} %`;
+    t.panel.profile.readout(
+      fmt(profile.dist[i]!, 1),
+      fmt(profile.ele[i]!),
+      fmt(stepGradient(profile, i), 1),
+    );
+  const summary = t.panel.profile.summary(
+    fmt(profile.km, 1),
+    fmt(profile.start),
+    fmt(profile.top),
+    fmt(profile.avgGradient, 1),
+  );
 
   const onKeyDown = (e: React.KeyboardEvent) => {
     const at = cursor ?? 0;
@@ -164,9 +174,7 @@ export const ElevationProfile = ({
         aria-valuemax={last}
         aria-valuenow={cursor ?? 0}
         aria-valuetext={
-          cursor === null
-            ? `${summary}. Mit den Pfeiltasten am Profil entlang.`
-            : readout(cursor)
+          cursor === null ? t.panel.profile.keyHint(summary) : readout(cursor)
         }
         onKeyDown={onKeyDown}
         onBlur={() => move(null)}

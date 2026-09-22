@@ -2,6 +2,7 @@
 
 import { Columns3 } from "lucide-react";
 
+import { useT } from "@/components/i18n";
 import { SeasonStrip } from "@/components/season-strip";
 import { EntityRow } from "@/components/sidebar/entity-row";
 import { ListEmpty } from "@/components/sidebar/list-empty";
@@ -10,12 +11,10 @@ import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { COMPARE_MAX } from "@/lib/app-state";
 import type { Selection } from "@/lib/app-state";
-import { RANGE } from "@/lib/regions";
 import { entityKey } from "@/lib/route-key";
 import type { DestinationRow } from "@/lib/rows";
 import type { Period } from "@/lib/types";
 import { useRoving } from "@/lib/use-roving";
-import { fmt } from "@/lib/utils";
 
 /**
  * The list the product goal asks for first: the areas, ranked by what is
@@ -56,6 +55,7 @@ export const DestinationList = ({
   onSelect: (slug: string) => void;
   onToggleFavorite: (slug: string) => void;
 }) => {
+  const { t, fmt } = useT();
   const rovingList = useRoving<HTMLDivElement>();
   const hoveredSlug = hovered?.kind === "destination" ? hovered.slug : null;
   const full = compare.length >= COMPARE_MAX;
@@ -64,8 +64,8 @@ export const DestinationList = ({
       <div className="text-muted-foreground text-2xs flex h-9 items-center justify-between gap-2 px-3">
         <span className="truncate">
           {compare.length === 0
-            ? `Bis zu ${COMPARE_MAX} Reiseziele zum Vergleich wählen`
-            : `${fmt(compare.length)} von ${COMPARE_MAX} zum Vergleich`}
+            ? t.sidebar.compare.pick(fmt(COMPARE_MAX))
+            : t.sidebar.compare.picked(fmt(compare.length), fmt(COMPARE_MAX))}
         </span>
         <Button
           variant="outline"
@@ -74,11 +74,11 @@ export const DestinationList = ({
           onClick={onOpenCompare}
         >
           <Columns3 data-icon="inline-start" aria-hidden />
-          Vergleichen
+          {t.sidebar.compare.open}
         </Button>
       </div>
       {rows.length === 0 ? (
-        <ListEmpty title="Keine Reiseziele gefunden" {...empty} />
+        <ListEmpty title={t.sidebar.empty.noDestinations} {...empty} />
       ) : (
         <RowList
           ref={rovingList}
@@ -105,9 +105,9 @@ export const DestinationList = ({
                 name={destination.name}
                 title={destination.name}
                 subtitle={[
-                  showRange && range ? RANGE[range].label : null,
+                  showRange && range ? t.vocab.range[range].label : null,
                   destination.country,
-                  baseTowns.map((t) => t.name).join(", ") || null,
+                  baseTowns.map((town) => town.name).join(", ") || null,
                 ]
                   .filter(Boolean)
                   .join(" · ")}
@@ -128,7 +128,7 @@ export const DestinationList = ({
                     checked={picked}
                     disabled={!picked && full}
                     onCheckedChange={(on) => onCompare(destination.slug, on)}
-                    aria-label={`${destination.name} vergleichen`}
+                    aria-label={t.sidebar.compare.toggle(destination.name)}
                   />
                 }
               />

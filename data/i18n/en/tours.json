@@ -1,0 +1,70 @@
+{
+ "andermatt-drei-paesse-runde": {
+  "description": "Furka – Grimsel – Susten, back through the Schöllenen gorge.",
+  "note": "Alpenbrevet in late August."
+ },
+ "ballino-runde": {
+  "description": "From Riva via Tenno and the Lago di Tenno up to the Passo del Ballino, via Fiavè and Ponte Arche into the Sarca valley and back to the lake via Sarche and Arco.",
+  "note": "Occasional snow at the top of the Ballino in winter."
+ },
+ "baronnies-runde": {
+  "description": "From Buis-les-Baronnies via Saint-Auban up to the Col de Perty, through Laborel and Séderon over the Col de Macuègne to Montbrun, beneath the north face of the Ventoux via Brantes up to the Col de Fontaube and back to Buis via Eygaliers.",
+  "note": "Briefly closed after snowfall on the Perty."
+ },
+ "gavia-mortirolo-runde": {
+  "description": "Bormio – Gavia – Ponte di Legno – Edolo – Mortirolo from Monno – Mazzo – Bormio.",
+  "note": "The Gavia sets the window."
+ },
+ "grappa-runde": {
+  "description": "From Bassano via Semonzo up to the Monte Grappa and down via Possagno, back to Bassano along the foot of the mountain – up the classic side, down the quiet one.",
+  "note": "Temporarily closed at the top after snowfall."
+ },
+ "la-marmotte": {
+  "description": "Bourg d'Oisans – Glandon – Télégraphe – Galibier – Lautaret – Alpe d'Huez.",
+  "note": "The Galibier sets the window; event in early July."
+ },
+ "lombardia-runde": {
+  "description": "The finale of the Giro di Lombardia from Bellagio: over the Ghisallo to Asso, through Sormano over the Muro up to the Colma and along the lake via Nesso back to Bellagio.",
+  "note": "Occasional snow on the Sormano in winter."
+ },
+ "maratona-dles-dolomites-lang": {
+  "description": "Sellaronda plus Campolongo (twice), Giau, Falzarego and Valparola from La Villa.",
+  "note": "Event in early July; the passes are closed on the day."
+ },
+ "melogno-scravaion-runde": {
+  "description": "From Finale Ligure via Finalborgo up to the Colle del Melogno, through Calizzano and Bardineto to the Colle Scravaion and back along the coast via Castelvecchio and Albenga.",
+  "note": "Briefly closed after snowfall on the Melogno."
+ },
+ "oetztaler-radmarathon": {
+  "description": "Sölden – Kühtai – Innsbruck – Brenner – Jaufenpass – Timmelsjoch – Sölden.",
+  "note": "Event in late August; the Timmelsjoch toll is free for bikes."
+ },
+ "riviera-dei-fiori-runde": {
+  "description": "From Imperia over the Colle San Bartolomeo to Pieve di Teco, through Rezzo up to the Colle d'Oggia and back to the coast via Carpasio and the Argentina valley – the winter loop of the Sanremo pros.",
+  "note": "Occasional snow at the top of the Oggia in January and February."
+ },
+ "route-des-grandes-alpes": {
+  "description": "Thonon-les-Bains to Menton over 17 passes, typically 6–8 stages.",
+  "note": "The Iseran sets the window; in October only with a plan B over the Mont Cenis."
+ },
+ "sellaronda": {
+  "description": "Classic Dolomites loop around the Sella massif from Corvara, clockwise.",
+  "note": "Car-free Sellaronda Bike Day in June and in September."
+ },
+ "stilfserjoch-umbrail-runde": {
+  "description": "Prad – Stilfserjoch (48 hairpins) – Umbrail – Santa Maria – Glurns – Prad.",
+  "note": "Car-free Stelvio Bike Day in late August or early September."
+ },
+ "valcava-culmine-runde": {
+  "description": "From Lecco via Torre de' Busi steeply up to the Passo di Valcava, through the Valle Imagna and the Val Taleggio to the Culmine di San Pietro and back to Lecco via Moggio and the Valsassina.",
+  "note": "Both passes lie under snow at the top in winter."
+ },
+ "ventoux-runde": {
+  "description": "From Bédoin up the classic side of the Mont Ventoux, down to Malaucène and back to Bédoin over the Col de la Madeleine.",
+  "note": "The loop works as long as the Ventoux summit road is open."
+ },
+ "vrsic-predil-runde": {
+  "description": "Kranjska Gora – Vršič – Soča valley – Bovec – Predil – Tarvisio – Kranjska Gora.",
+  "note": "The cobbles on the Vršič are slippery when wet."
+ }
+}

@@ -102,6 +102,10 @@ const [
   rejected,
   summits,
   photos,
+  passesEn,
+  toursEn,
+  townsEn,
+  destinationsEn,
 ] = await Promise.all([
   load("passes.json"),
   load("tours.json"),
@@ -114,6 +118,10 @@ const [
   load("generated/rejected.json"),
   load("generated/summits.json"),
   load("generated/photos.json"),
+  load("i18n/en/passes.json"),
+  load("i18n/en/tours.json"),
+  load("i18n/en/towns.json"),
+  load("i18n/en/destinations.json"),
 ]);
 
 for (const file of Object.keys(FILES) as DataFileName[]) {
@@ -640,6 +648,45 @@ if (series.length && withCover.length < series.length)
 if (alone.length)
   console.log(
     `INFO  ${alone.length} Straßen in keinem Reiseziel: ${alone.join(", ")}`,
+  );
+// The English prose (plan 08): a missing field falls back to German in the
+// English UI, so the gap is counted rather than failed – and an entry for a
+// slug that no longer exists is a warning, like any other orphan.
+const translationGaps: string[] = [];
+const coverage = (
+  what: string,
+  list: { slug: string }[] | null,
+  translations: Record<string, object> | null,
+  fields: string[],
+) => {
+  if (!list || !translations) return;
+  const slugs = new Set(list.map((x) => x.slug));
+  for (const key of Object.keys(translations))
+    if (!slugs.has(key))
+      warnings.push(`i18n/en/${what}.json: verwaister Eintrag ${key}`);
+  for (const field of fields) {
+    const missing = list.filter(
+      (x) =>
+        (x as Record<string, unknown>)[field] !== undefined &&
+        (translations[x.slug] as Record<string, unknown> | undefined)?.[
+          field
+        ] === undefined,
+    ).length;
+    if (missing)
+      translationGaps.push(`${what}.${field} ${missing}/${list.length}`);
+  }
+};
+coverage("passes", passes, passesEn, ["note", "classicAscent"]);
+coverage("tours", tours, toursEn, ["description", "note"]);
+coverage("towns", towns, townsEn, ["why"]);
+coverage("destinations", destinations, destinationsEn, [
+  "character",
+  "multiDay",
+  "access",
+]);
+if (translationGaps.length)
+  console.log(
+    `INFO  Englische Texte fehlen (Rückfall auf Deutsch): ${translationGaps.join(", ")}`,
   );
 console.log(
   `${passes?.length ?? 0} Pässe (${singleSided} davon einseitig), ${tours?.length ?? 0} Touren, ${towns?.length ?? 0} Orte, ${destinations?.length ?? 0} Reiseziele · ${Object.keys(routes ?? {}).length} Routen geprüft${

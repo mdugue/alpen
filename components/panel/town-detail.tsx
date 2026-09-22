@@ -1,5 +1,6 @@
 "use client";
 
+import { useT } from "@/components/i18n";
 import type { PanelActions } from "@/components/panel/actions";
 import { DestinationSection } from "@/components/panel/destination";
 import { ExternalLinks, LinkButton, Nearby } from "@/components/panel/nearby";
@@ -22,6 +23,7 @@ export const TownDetail = ({
   model: TownModel;
   actions: PanelActions;
 }) => {
+  const { t } = useT();
   const { town } = model;
   return (
     <>
@@ -33,7 +35,7 @@ export const TownDetail = ({
           holiday it belongs to; the ones that name it as a base come first. */}
       {model.areas.length > 0 && (
         <p className="text-muted-foreground mt-1.5 flex flex-wrap items-center gap-x-1.5 text-xs">
-          Reiseziel:
+          {t.panel.town.destinationLead}
           {model.areas.map((area) => (
             <LinkButton
               key={area.slug}
@@ -63,12 +65,12 @@ export const TownDetail = ({
       <ExternalLinks
         links={[
           [
-            "Werkstätten (OSM)",
-            `https://www.openstreetmap.org/search?query=${encodeURIComponent(`Fahrradwerkstatt ${town.name}`)}`,
+            t.panel.town.workshops,
+            `https://www.openstreetmap.org/search?query=${encodeURIComponent(t.panel.town.workshopsQuery(town.name))}`,
           ],
           [
-            "Radläden (Google)",
-            `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`bike shop ${town.name}`)}`,
+            t.panel.town.bikeShops,
+            `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(t.panel.town.bikeShopsQuery(town.name))}`,
           ],
         ]}
       />

@@ -1,8 +1,36 @@
 # 08 · English toggle
 
-**Status:** proposed · **Effort:** M–L (code M, translation of ~130 short
-texts about a day) · **Depends on:** 02 (route structure), ideally 06 (map
-labels) · **Unblocks:** an audience beyond German speakers
+**Status:** done ([#63](https://github.com/mdugue/alpen/pull/63)) ·
+**Effort:** M–L (code M, translation of ~700 short texts) · **Depends on:**
+02 (route structure), ideally 06 (map labels) · **Unblocks:** an audience
+beyond German speakers
+
+## What was built
+
+Everything in the design below, with these departures:
+
+- **No `dynamicParams = false`**: Cache Components allow none, so an unknown
+  language is `notFound()` in the root layout, like an unknown slug.
+- **The toggle sits in the header**, not in the sidebar brand row: one
+  place on every width, and it is a plain `<a>` with a full load rather than
+  a `Link` – the other prefix is another prerender and every row's text
+  changes with it. Its `href` is a value of the state (`switchLangHref`),
+  so the server and the client render the same link.
+- **The words are split by area** (`lib/i18n/de/*.ts`, `en/*.ts`) and
+  composed in `messages.de.ts`; the core's sentence functions take the
+  language as a trailing argument with a German default, so the scripts and
+  the tests keep their words. The vocabulary tables in `lib/regions.ts` and
+  `lib/geo.ts` stay the German source, the English `vocab` section writes
+  its own.
+- **The share images live under `[lang]`** (`app/[lang]/opengraph-image.tsx`
+  and the entity one), so each language gets its own and nothing outside a
+  layout resolves an image any more.
+- **The editorial prose** is `data/i18n/en/{passes,tours,towns,destinations}.json`
+  with a first machine draft, hand-checked, merged in `lib/data.ts`; the
+  coverage is an `INFO` line of `bun run data:check`.
+- **The first-visit hint** is a small dismissible link in the header for a
+  browser whose language is English and nothing stored (`alpenpaesse:lang`);
+  the map's basemap labels stay as they are (plan 06 uses `name` only).
 
 ## Goal
 

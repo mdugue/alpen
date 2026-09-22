@@ -1,5 +1,6 @@
 "use client";
 
+import { useT } from "@/components/i18n";
 import type { PanelActions } from "@/components/panel/actions";
 import { GradeBar } from "@/components/panel/destination";
 import { ExternalLinks, LinkButton } from "@/components/panel/nearby";
@@ -12,7 +13,6 @@ import { TagLine } from "@/components/tags";
 import type { DestinationModel } from "@/lib/detail-model";
 import { isHovered } from "@/lib/route-key";
 import { bestText } from "@/lib/status";
-import { fmt, fmtUnit } from "@/lib/utils";
 
 /**
  * What a destination shows, from its model and nothing else: the verdict of
@@ -29,6 +29,7 @@ export const DestinationDetail = ({
   model: DestinationModel;
   actions: PanelActions;
 }) => {
+  const { t, lang, fmt, fmtUnit } = useT();
   const { destination: d, verdict } = model;
   return (
     <>
@@ -42,30 +43,27 @@ export const DestinationDetail = ({
             text={model.text}
           />
         }
-        best={bestText(verdict.year)}
+        best={bestText(verdict.year, lang)}
         period={model.period}
         text={model.text}
         year={verdict.year}
       >
         <p className="text-muted-foreground text-2xs">
-          Abgeleitet aus den {fmt(verdict.total)} Straßen im Gebiet – ein
-          Reiseziel hat keine eigene Klimareihe. Der Streifen zeigt den
-          Jahresverlauf im Verhältnis zur besten Zeit dieses Gebiets
-          {verdict.peak > 0 && (
-            <> (dann sind {fmt(verdict.peak)} Straßen gut befahrbar)</>
-          )}
+          {t.panel.destination.derived(fmt(verdict.total))}
+          {verdict.peak > 0 &&
+            t.panel.destination.derivedPeak(fmt(verdict.peak))}
           .
         </p>
       </VerdictBox>
 
       <Section
         id="area-passes"
-        info={`Alle Straßen im Umkreis von ${fmt(d.radiusKm)} km um die Gebietsmitte, plus die redaktionell dazugezählten, minus die ausgenommenen. Sortiert nach Zustand im gewählten Halbmonat, dann Schönheit.`}
-        title="Straßen im Gebiet"
+        info={t.panel.destination.roadsInfo(fmt(d.radiusKm))}
+        title={t.panel.destination.roadsTitle}
       >
         {model.passes.length === 0 ? (
           <p className="text-muted-foreground text-xs">
-            Keine Straße im Gebiet.
+            {t.panel.destination.roadsNone}
           </p>
         ) : (
           <ul className="-mx-1 flex flex-col">
@@ -109,10 +107,10 @@ export const DestinationDetail = ({
         )}
       </Section>
 
-      <Section id="area-tours" title="Rundtouren">
+      <Section id="area-tours" title={t.panel.destination.toursTitle}>
         {model.tours.length === 0 ? (
           <p className="text-muted-foreground text-xs">
-            Keine Rundtour beginnt in diesem Gebiet.
+            {t.panel.destination.toursNone}
           </p>
         ) : (
           <div className="flex flex-col items-start">
@@ -141,12 +139,12 @@ export const DestinationDetail = ({
 
       <Section
         id="area-towns"
-        info="Die als Standort empfohlenen Orte zuerst, dann die übrigen im Gebiet. „Unterkunft suchen“ öffnet eine Kartensuche nach Hotels im Ort – ohne Buchungsanbieter, ohne Provision; „Werkstätten“ die OSM-Suche nach Fahrradwerkstätten."
-        title="Orte als Standort"
+        info={t.panel.destination.townsInfo}
+        title={t.panel.destination.townsTitle}
       >
         {model.towns.length === 0 ? (
           <p className="text-muted-foreground text-xs">
-            Kein Rad-Ort im Gebiet.
+            {t.panel.destination.townsNone}
           </p>
         ) : (
           <ul className="flex flex-col gap-2">
@@ -171,7 +169,9 @@ export const DestinationDetail = ({
                     />
                     {town.name}
                     {base && (
-                      <span className="text-muted-foreground">· Standort</span>
+                      <span className="text-muted-foreground">
+                        · {t.panel.destination.baseMark}
+                      </span>
                     )}
                   </LinkButton>
                   <TagLine tags={town.tags} lead={town.country} />
@@ -179,12 +179,12 @@ export const DestinationDetail = ({
                     <ExternalLinks
                       links={[
                         [
-                          "Unterkunft suchen",
-                          `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`Hotels ${town.name}`)}`,
+                          t.panel.destination.lodging,
+                          `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(t.panel.destination.lodgingQuery(town.name))}`,
                         ],
                         [
-                          "Werkstätten (OSM)",
-                          `https://www.openstreetmap.org/search?query=${encodeURIComponent(`Fahrradwerkstatt ${town.name}`)}`,
+                          t.panel.town.workshops,
+                          `https://www.openstreetmap.org/search?query=${encodeURIComponent(t.panel.town.workshopsQuery(town.name))}`,
                         ],
                       ]}
                     />
@@ -196,7 +196,7 @@ export const DestinationDetail = ({
         )}
       </Section>
 
-      <Section id="area-travel" title="Mehrtägig und Anreise">
+      <Section id="area-travel" title={t.panel.destination.travelTitle}>
         <p className="text-xs leading-relaxed">{d.multiDay}</p>
         <p className="text-muted-foreground mt-1.5 text-xs leading-relaxed">
           {d.access}

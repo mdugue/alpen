@@ -2,6 +2,7 @@
 
 import { createContext, use, useSyncExternalStore } from "react";
 
+import { useT } from "@/components/i18n";
 import {
   Drawer,
   DrawerContent,
@@ -151,6 +152,7 @@ export const MobileSheet = ({
   onSnapChange,
   children,
 }: Props) => {
+  const { t } = useT();
   const [collapsed, ...rest] = snapPoints;
   const top = rest.at(-1) ?? collapsed;
   const isCollapsed = snap === collapsed;
@@ -208,7 +210,9 @@ export const MobileSheet = ({
         <button
           type="button"
           onClick={() => onSnapChange(isCollapsed ? top : collapsed)}
-          aria-label={`${label} ${isCollapsed ? "ausklappen" : "einklappen"}`}
+          aria-label={
+            isCollapsed ? t.header.expand(label) : t.header.collapse(label)
+          }
           className="w-full shrink-0"
         >
           <DrawerSwipeHandle className="h-5" />

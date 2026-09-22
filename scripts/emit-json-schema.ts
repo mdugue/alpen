@@ -15,9 +15,18 @@ import { FILES } from "../lib/schema";
 const OUT = new URL("../data/schema/", import.meta.url);
 const CHECK = process.argv.includes("--check");
 
-/** `passes.json` → `passes.schema.json`, `generated/routes.json` → `routes.schema.json`. */
+/**
+ * `passes.json` → `passes.schema.json`, `generated/routes.json` →
+ * `routes.schema.json`, `i18n/en/passes.json` → `passes.en.schema.json`.
+ */
 export const schemaFileFor = (file: string) =>
-  `${file.replace(/^generated\//u, "").replace(/\.json$/u, "")}.schema.json`;
+  `${file
+    .replace(/^generated\//u, "")
+    .replace(
+      /^i18n\/(?<lang>\w+)\/(?<name>\w+)\.json$/u,
+      "$<name>.$<lang>.json",
+    )
+    .replace(/\.json$/u, "")}.schema.json`;
 
 export const renderJsonSchema = (file: keyof typeof FILES): string => {
   const json = z.toJSONSchema(FILES[file].schema, {

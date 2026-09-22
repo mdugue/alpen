@@ -53,6 +53,22 @@
       "url": "./data/schema/towns.schema.json"
     },
     {
+      "fileMatch": ["/data/i18n/en/passes.json"],
+      "url": "./data/schema/passes.en.schema.json"
+    },
+    {
+      "fileMatch": ["/data/i18n/en/tours.json"],
+      "url": "./data/schema/tours.en.schema.json"
+    },
+    {
+      "fileMatch": ["/data/i18n/en/towns.json"],
+      "url": "./data/schema/towns.en.schema.json"
+    },
+    {
+      "fileMatch": ["/data/i18n/en/destinations.json"],
+      "url": "./data/schema/destinations.en.schema.json"
+    },
+    {
       "fileMatch": ["/data/generated/routes.json"],
       "url": "./data/schema/routes.schema.json"
     },

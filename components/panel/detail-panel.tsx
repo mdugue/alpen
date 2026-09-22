@@ -12,6 +12,7 @@ import { PassDetail } from "@/components/panel/pass-detail";
 import { TourDetail } from "@/components/panel/tour-detail";
 import { TownDetail } from "@/components/panel/town-detail";
 import type { Selection } from "@/lib/app-state";
+import { SITE_NAME } from "@/lib/brand";
 import { detailModel } from "@/lib/detail-model";
 import {
   heroShape,
@@ -62,7 +63,7 @@ export const DetailPanel = ({
   /** The pass page's streamed forecast, shown in the weather block (plan 02). */
   weather?: React.ReactNode;
 }) => {
-  const { lang } = useT();
+  const { t, lang } = useT();
   const panel = useRef<HTMLElement>(null);
   const scroller = useRef<HTMLDivElement>(null);
   // Below the sheet's top snap point nothing scrolls, so the head is on screen
@@ -189,7 +190,7 @@ export const DetailPanel = ({
         shared={shared}
         onBack={actions.onBack}
         onShare={() => {
-          void share(`${model.name} – Alpenpässe`);
+          void share(`${model.name} – ${SITE_NAME}`);
         }}
         onToggleFavorite={actions.onToggleFavorite}
       />
@@ -223,7 +224,7 @@ export const DetailPanel = ({
               and the profile block says the same thing in its own words. */}
           {state.phase === "failed" && (asset?.photos ?? 0) > 0 && (
             <p className="text-muted-foreground text-2xs">
-              Keine Fotos geladen – die Bilddatei ist nicht angekommen.
+              {t.panel.photos.notLoaded}
             </p>
           )}
           {model.kind === "pass" && (

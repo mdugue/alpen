@@ -18,16 +18,19 @@
 import { basemapStyle, GLYPHS } from "../lib/basemap";
 import { siteUrl } from "../lib/brand";
 import { writeDerived } from "../lib/derived-file";
+import { LANGS, langPrefix } from "../lib/i18n/lang";
 import { MAP_ASSET_DIR } from "../lib/map-assets";
 
 const OUT = new URL(`../public/${MAP_ASSET_DIR}/`, import.meta.url);
 
 // No hash and no pruning: the two names are fixed, and the geometry files
 // beside them belong to scripts/build-map-assets.ts, which runs first.
-const files = (["light", "dark"] as const).map((scheme) => ({
-  body: JSON.stringify(basemapStyle(scheme, `${siteUrl}${GLYPHS}`)),
-  name: `style-${scheme}.json`,
-}));
+const files = (["light", "dark"] as const).flatMap((scheme) =>
+  LANGS.map((lang) => ({
+    body: JSON.stringify(basemapStyle(scheme, `${siteUrl}${GLYPHS}`, lang)),
+    name: `style-${scheme}${langPrefix(lang).replace("/", "-")}.json`,
+  })),
+);
 await writeDerived({ files, out: OUT });
 
 for (const f of files)

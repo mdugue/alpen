@@ -375,6 +375,39 @@ export const Destination = z.strictObject({
 
 export const Destinations = z.array(Destination);
 
+// ── Editorial prose in another language (plan 08) ───────────────────────────
+
+/**
+ * The curated prose of one entity in another language, keyed by slug in
+ * `data/i18n/<lang>/*.json`; every field is optional, and a missing one falls
+ * back to the German (`lib/data.ts`), which `data:check` counts so the
+ * coverage stays visible. Proper names are not here – a name is not
+ * translated – and neither is anything measured.
+ */
+export const PassTranslation = z.strictObject({
+  /** The ascent labels by index, for the direction words in them ("Nord"). */
+  ascents: z.array(z.string().min(1)).optional(),
+  classicAscent: z.string().min(1).optional(),
+  note: z.string().min(1).optional(),
+});
+export const TourTranslation = z.strictObject({
+  description: z.string().min(1).optional(),
+  note: z.string().min(1).optional(),
+});
+export const TownTranslation = z.strictObject({
+  why: z.string().min(1).optional(),
+});
+export const DestinationTranslation = z.strictObject({
+  access: z.string().min(1).optional(),
+  character: z.string().min(1).optional(),
+  multiDay: z.string().min(1).optional(),
+  note: z.string().min(1).optional(),
+});
+export const PassTranslations = z.record(Slug, PassTranslation);
+export const TourTranslations = z.record(Slug, TourTranslation);
+export const TownTranslations = z.record(Slug, TownTranslation);
+export const DestinationTranslations = z.record(Slug, DestinationTranslation);
+
 // ── Output of scripts/build-data.ts ──────────────────────────────────────────
 
 /** Road geometry as [lat, lon] pairs. */
@@ -619,6 +652,12 @@ const generated = <S extends z.ZodType>(schema: S): DataFile<S> => ({
   layout: "byKey",
   schema,
 });
+/** Hand-checked like the curated files, but keyed and allowed to be missing. */
+const translated = <S extends z.ZodType>(schema: S): DataFile<S> => ({
+  empty: {},
+  layout: "indented",
+  schema,
+});
 
 /**
  * Which schema validates which file, where it lives, whether it may be missing
@@ -637,6 +676,10 @@ export const FILES = {
   "generated/routes-meta.json": generated(RoutesMeta),
   "generated/routes.json": generated(Routes),
   "generated/summits.json": generated(Summits),
+  "i18n/en/destinations.json": translated(DestinationTranslations),
+  "i18n/en/passes.json": translated(PassTranslations),
+  "i18n/en/tours.json": translated(TourTranslations),
+  "i18n/en/towns.json": translated(TownTranslations),
   "passes.json": curated(Passes),
   "tours.json": curated(Tours),
   "towns.json": curated(Towns),

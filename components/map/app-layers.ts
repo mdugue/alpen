@@ -19,6 +19,7 @@ import type {
 
 import { OVERLAYS } from "@/components/map/map-style";
 import { BASEMAP_ID, basemapLayers, FONT_BOLD } from "@/lib/basemap";
+import type { Lang } from "@/lib/i18n";
 import {
   DESTINATION_EDGE,
   LAYERS,
@@ -208,16 +209,17 @@ export const hillshadeLayer = (
 export const baseStack = (
   id: string,
   s: Scheme,
+  lang: Lang,
 ): { ground: LayerSpecification[]; detail: LayerSpecification[] } =>
   id === BASEMAP_ID
-    ? basemapLayers(s)
+    ? basemapLayers(s, lang)
     : { detail: [], ground: [{ id: "base", source: id, type: "raster" }] };
 
 /** Swaps the base under a running map; everything above it stays put. */
-export const applyBase = (m: MLMap, id: string, s: Scheme) => {
+export const applyBase = (m: MLMap, id: string, s: Scheme, lang: Lang) => {
   for (const l of m.getStyle().layers)
     if (l.id === "base" || l.id.startsWith("base-")) m.removeLayer(l.id);
-  const { ground, detail } = baseStack(id, s);
+  const { ground, detail } = baseStack(id, s, lang);
   for (const l of ground) m.addLayer(l, "hillshade");
   for (const l of detail) m.addLayer(l, ABOVE_BASE);
 };

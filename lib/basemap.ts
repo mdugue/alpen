@@ -5,6 +5,8 @@ import type {
   StyleSpecification,
 } from "maplibre-gl";
 
+import { DEFAULT_LANG, localeOf } from "@/lib/i18n/lang";
+import type { Lang } from "@/lib/i18n/lang";
 import { PALETTE } from "@/lib/palette";
 import type { Scheme } from "@/lib/palette";
 
@@ -60,10 +62,13 @@ export const FONT_REGULAR = "Inter Regular";
 export const FONT_ITALIC = "Inter Italic";
 export const FONT_BOLD = "Inter SemiBold";
 
-/** German name where OpenStreetMap has one, else the Latin spelling. */
-const NAME: ExpressionSpecification = [
+/**
+ * The name in the page's language where OpenStreetMap has one, else the
+ * Latin spelling (plan 08: the English page reads `name:en`).
+ */
+const nameOf = (lang: Lang): ExpressionSpecification => [
   "coalesce",
-  ["get", "name:de"],
+  ["get", `name:${lang}`],
   ["get", "name:latin"],
   ["get", "name"],
 ];
@@ -186,8 +191,9 @@ const groundLayers = (scheme: Scheme): LayerSpecification[] => {
 };
 
 /** The layers after the hillshade: lines and labels. */
-const detailLayers = (scheme: Scheme): LayerSpecification[] => {
+const detailLayers = (scheme: Scheme, lang: Lang): LayerSpecification[] => {
   const p = PALETTE[scheme];
+  const NAME = nameOf(lang);
   const halo = { "text-halo-color": p.land, "text-halo-width": 1.3 };
   const road = (
     id: string,
@@ -376,7 +382,7 @@ const detailLayers = (scheme: Scheme): LayerSpecification[] => {
           [
             "number-format",
             ["get", "ele"],
-            { locale: "de-DE", "max-fraction-digits": 0 },
+            { locale: localeOf(lang), "max-fraction-digits": 0 },
           ],
           " m",
         ],
@@ -444,8 +450,8 @@ const detailLayers = (scheme: Scheme): LayerSpecification[] => {
  * The basemap's layers in two groups, so the caller can slot its hillshade
  * between them. All ids start with `base-`.
  */
-export const basemapLayers = (scheme: Scheme) => ({
-  detail: detailLayers(scheme),
+export const basemapLayers = (scheme: Scheme, lang: Lang = DEFAULT_LANG) => ({
+  detail: detailLayers(scheme, lang),
   ground: groundLayers(scheme),
 });
 
@@ -463,12 +469,13 @@ export const basemapLayerIds = (scheme: Scheme): string[] => {
 export const basemapStyle = (
   scheme: Scheme,
   glyphs: string = GLYPHS,
+  lang: Lang = DEFAULT_LANG,
 ): StyleSpecification => {
-  const { ground, detail } = basemapLayers(scheme);
+  const { ground, detail } = basemapLayers(scheme, lang);
   return {
     glyphs,
     layers: [...ground, ...detail],
-    name: `Alpenpässe ${scheme === "dark" ? "dunkel" : "hell"}`,
+    name: `Alpenpässe ${scheme} ${lang}`,
     sources: { [BASEMAP_SOURCE_ID]: BASEMAP_SOURCE },
     version: 8,
   };

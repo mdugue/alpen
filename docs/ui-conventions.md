@@ -585,7 +585,46 @@ changes on every keystroke in the search field; where a key takes the focus is
 `rovingTarget` beside it, a pure function of the key, the row it was pressed on
 and how many there are, so the ends and the keys the platform keeps are a table
 test rather than a browser. Every bookmark toggle is named after the thing it
-bookmarks, and `app/page.tsx` carries a skip link to the map.
+bookmarks, and the explorer layout carries a skip link to the map.
+
+## The two languages
+
+### Every word has one home, and it is not the component
+
+Plan 08 put an English version under `/en`, and the question was where the
+words go. The answer is one typed object per language: `lib/i18n/messages.de.ts`
+is the source of truth, split into one section per area (`de/status.ts`,
+`de/vocab.ts`, `de/sidebar.ts`, `de/panel.ts`, `de/map.ts`, `de/scales.ts`),
+and `messages.en.ts` `satisfies` its type, so a key that exists in one file
+and not the other fails `typecheck` rather than showing up as a blank. An
+interpolation is a plain function (`nearby: (km) => \`Im Umkreis von ${km} km\``),
+so a sentence can change its shape between languages instead of pasting a
+number into a fixed frame.
+
+Who reads them: a client component calls `useT()` (`components/i18n.tsx`) and
+gets `{ t, lang, fmt, fmtUnit }` – the words and a number format bound to the
+page's locale. A function of the core that says something – `statusWord`,
+`cellHint`, `bestText`, `periodLabel`, `appliedFilters`, `areaText` – takes
+the language as its last argument, German by default, so `lib/status.ts` and
+the scripts keep their sentences and the tests keep theirs; the vocabulary
+tables in `lib/regions.ts` and `lib/geo.ts` stay German and are what the
+German `vocab` section points at, while the English one writes its own. The
+provider is a React context under `components/`, and nothing under `lib/`
+imports it: the explorer hands the language to `useHashAdapter`, and the
+scene, the detail model and the row builders take it as an argument.
+
+What is not a message: the curated prose. That is `data/i18n/en/*.json`,
+keyed by slug and merged over the German records field by field in
+`lib/data.ts`, with a German fallback for what is not translated yet – which
+`bun run data:check` counts, so the coverage is a number in every data PR
+rather than a surprise in the panel. Proper names are never translated;
+the legal pages stay German with an English note.
+
+The toggle is a plain link (`switchLangHref`): the same path under the other
+prefix with the hash behind it, computed from the state rather than read off
+the address bar, so the server and the client render the same `href`. A full
+load on purpose – the page under the other prefix is another prerender, and
+every row's text changes with it.
 
 ## The detail panel
 

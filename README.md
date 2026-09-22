@@ -53,8 +53,8 @@ and the climate series are missing.
 
 All content data lives as JSON in the repo (`data/`), is imported at build
 time and read synchronously in `lib/data.ts` inside the one `"use cache"` on
-`app/(explorer)/layout.tsx` – the start page and every entity route under it
-are therefore fully prerendered. Two kinds of data never become
+`app/[lang]/(explorer)/layout.tsx` – the start page and every entity route
+under it are therefore fully prerendered, once per language. Two kinds of data never become
 React props: the route geometry, written as content-hashed GeoJSON into
 `public/map` for MapLibre to fetch and tile in its worker, and what only one
 entity's panel reads (its elevation profiles and photo metadata), written as
@@ -73,7 +73,7 @@ https://alpen.manuel.fyi/pass/col-du-galibier#t=10&z=9&c=45.06,6.41
 ```
 
 Every pass, tour, town and destination is a prerendered route with its own
-title, description and share image (`app/(explorer)/[kind]/[slug]`); the
+title, description and share image (`app/[lang]/(explorer)/[kind]/[slug]`); the
 layout around it – map, lists, season bar – stays mounted while the path
 changes (`lib/hash-adapter.ts` turns the path into the reducer's `select` and
 `back`, and the state into `router.push`):
@@ -108,16 +108,37 @@ Where the data in those files comes from – which host answers which question,
 what each command writes and the states a route passes through – is
 [`docs/data-pipeline.md`](./docs/data-pipeline.md).
 
+Two languages, one tree (plan 08): every route lives under `app/[lang]`,
+German stays prefix-free and canonical, English lives under `/en`, and
+`next.config.ts` rewrites the prefix-free paths onto `/de` – no proxy, no
+redirect, both prerendered:
+
+| Request                       | Rewrite           | Route file                                     | Language  |
+| ----------------------------- | ----------------- | ---------------------------------------------- | --------- |
+| `/`                           | → `/de`           | `app/[lang]/(explorer)/page.tsx`               | de        |
+| `/pass/col-du-galibier`       | → `/de/pass/…`    | `app/[lang]/(explorer)/[kind]/[slug]/page.tsx` | de        |
+| `/en`                         | (none)            | `app/[lang]/(explorer)/page.tsx`               | en        |
+| `/en/pass/col-du-galibier`    | (none)            | `app/[lang]/(explorer)/[kind]/[slug]/page.tsx` | en        |
+| `/impressum`, `/en/impressum` | → `/de/…`, (none) | `app/[lang]/impressum/page.tsx`                | de (both) |
+
+The words are `lib/i18n/messages.de.ts` (the source, typed) and
+`messages.en.ts` (held to its shape, so a missing key is a type error); the
+curated prose is `data/i18n/en/*.json`, merged over the German records in
+`lib/data.ts` with a German fallback that `bun run data:check` counts. The
+toggle in the header is a plain link to the same view under the other prefix,
+hash and all.
+
 ```
-app/            layout, the explorer layout with the start page and the
-                entity routes, Impressum, Datenschutz, metadata routes
-                (icons, share images, manifest, robots, sitemap)
+app/            [lang]/: layout, the explorer layout with the start page and
+                the entity routes, Impressum, Datenschutz, the share images;
+                at the root the metadata routes (icons, manifest, robots, sitemap)
 components/     explorer (state) · map (MapLibre) · sidebar (lists, filters) · panel (detail) · ui (shadcn)
-data/           passes.json, tours.json, towns.json  ← source data, hand-maintained
+data/           passes.json, tours.json, towns.json, destinations.json  ← source data, hand-maintained
+data/i18n/en/   the curated prose in English, keyed by slug, hand-checked
 data/generated/ summits, routes, routes-meta, rejected, profiles, climate, photos
                 ← from data:build and data:photos, committed
 data/schema/    JSON Schema for the editor, from data:schema
-lib/            types, data access, status heuristic, state hooks, brand constants
+lib/            types, data access, status heuristic, state hooks, brand constants, i18n/ (the words)
 scripts/        build-data.ts (precomputation), check-data.ts (validation),
                 locate-pass.ts (where a pass point belongs), build-photos.ts,
                 build-map-assets.ts / build-detail-assets.ts (→ public/, git-ignored)

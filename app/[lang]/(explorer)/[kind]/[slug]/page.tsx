@@ -32,7 +32,7 @@ const entityOf = async (params: Params) => {
   // The params arrive decoded; the path form is what `selectionOf` reads.
   const selection = selectionOf(`/${kind}/${encodeURIComponent(slug)}`);
   if (!selection) return null;
-  const entity = getEntity(selection);
+  const entity = getEntity(selection, lang);
   return entity ? { entity, lang, selection } : null;
 };
 
@@ -44,8 +44,8 @@ export const generateMetadata = async ({
   const found = await entityOf(params);
   if (!found) return {};
   const { entity, lang, selection } = found;
-  const title = entityTitle(entity);
-  const description = entityDescription(entity);
+  const title = entityTitle(entity, lang);
+  const description = entityDescription(entity, lang);
   const url = hrefFor(selection, lang);
   return {
     alternates: {

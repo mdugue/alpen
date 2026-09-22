@@ -1,5 +1,6 @@
 "use client";
 
+import { useT } from "@/components/i18n";
 import type { PanelActions } from "@/components/panel/actions";
 import { LinkButton, Nearby } from "@/components/panel/nearby";
 import { Section } from "@/components/panel/section";
@@ -7,7 +8,6 @@ import { VerdictBox } from "@/components/panel/verdict-box";
 import { StatusDot } from "@/components/status-badge";
 import type { TourModel } from "@/lib/detail-model";
 import { isHovered } from "@/lib/route-key";
-import { fmt, fmtUnit } from "@/lib/utils";
 
 /** What a tour shows, from its model and nothing else. */
 export const TourDetail = ({
@@ -17,6 +17,7 @@ export const TourDetail = ({
   model: TourModel;
   actions: PanelActions;
 }) => {
+  const { t, fmt, fmtUnit } = useT();
   const { tour } = model;
   return (
     <>
@@ -28,7 +29,9 @@ export const TourDetail = ({
         <span className="text-foreground text-2xl leading-none font-bold tabular-nums">
           {fmt(tour.elevationGain)}
         </span>
-        <span className="ml-1">hm · {tour.passes.length} Pässe</span>
+        <span className="ml-1">
+          hm · {t.panel.tour.passCount(fmt(tour.passes.length))}
+        </span>
       </p>
 
       <VerdictBox
@@ -42,7 +45,7 @@ export const TourDetail = ({
         {model.season}
       </p>
 
-      <Section id="tour-passes" title="Pässe der Runde">
+      <Section id="tour-passes" title={t.panel.tour.passesTitle}>
         <div className="flex flex-col items-start">
           {model.members.map(({ cell, pass }) => (
             <LinkButton

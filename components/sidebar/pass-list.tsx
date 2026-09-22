@@ -26,7 +26,7 @@ import { entityKey } from "@/lib/route-key";
 import { sortLabel } from "@/lib/rows";
 import type { PassRow } from "@/lib/rows";
 import { useRoving } from "@/lib/use-roving";
-import { cn, fmtUnit, TOUCH_CONTROL } from "@/lib/utils";
+import { cn, TOUCH_CONTROL } from "@/lib/utils";
 
 type RatingSort = "beauty" | "fame" | "difficulty" | "traffic";
 const RATING_SORTS: ReadonlySet<PassSort> = new Set([
@@ -60,7 +60,7 @@ export const PassList = ({
   onSelect: (slug: string) => void;
   onToggleFavorite: (slug: string) => void;
 }) => {
-  const { lang } = useT();
+  const { t, lang, fmtUnit } = useT();
   const rovingList = useRoving<HTMLDivElement>();
   const hoveredSlug = hovered?.kind === "pass" ? hovered.slug : null;
   const ratingSort = RATING_SORTS.has(filters.sort)
@@ -77,14 +77,18 @@ export const PassList = ({
         and it shows the seven keys in one list instead of behind an OS wheel.
       */}
       <ListToolbar control={mapControl}>
-        <span className="text-muted-foreground text-2xs">Sortieren</span>
+        <span className="text-muted-foreground text-2xs">
+          {t.sidebar.lists.sort}
+        </span>
         <DropdownMenu>
           <DropdownMenuTrigger
             render={
               <Button
                 variant="ghost"
                 size="sm"
-                aria-label={`Sortieren nach: ${sortLabel(filters.sort, lang)}`}
+                aria-label={t.sidebar.lists.sortBy(
+                  sortLabel(filters.sort, lang),
+                )}
                 className={cn("-my-0.5 px-2 font-normal", TOUCH_CONTROL)}
               />
             }
@@ -110,7 +114,7 @@ export const PassList = ({
       </ListToolbar>
 
       {rows.length === 0 ? (
-        <ListEmpty title="Keine Straßen gefunden" {...empty} />
+        <ListEmpty title={t.sidebar.empty.noPasses} {...empty} />
       ) : (
         <RowList ref={rovingList} items={rows} keyOf={({ pass }) => pass.slug}>
           {({ pass, status, reason, favorite, season }) => (

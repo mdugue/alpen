@@ -12,6 +12,8 @@ import {
 } from "@/components/map/app-layers";
 import { baseLayers, OVERLAYS } from "@/components/map/map-style";
 import { BASEMAP_ID } from "@/lib/basemap";
+import { messagesOf } from "@/lib/i18n";
+import type { Lang } from "@/lib/i18n";
 import { prominenceWord } from "@/lib/prominence";
 import type { MapEnvironment } from "@/lib/use-media-query";
 
@@ -42,15 +44,26 @@ const TERRAIN = { exaggeration: 1.25, source: "dem" } as const;
  * not pressed – and keeps clear of the season bar with them.
  * It is silent while the passes are switched off: a line about which passes
  * are drawn is a lie when none are.
+ *
+ * It is built with the page's language, like the map itself: switching the
+ * language is a full load (`AppHeader`), so it never changes under it.
  */
 class DetailLevelControl implements IControl {
   private el: HTMLDivElement | null = null;
   private map: MLMap | null = null;
   private shown = true;
+  private readonly lang: Lang;
+
+  constructor(lang: Lang) {
+    this.lang = lang;
+  }
+
   private readonly update = () => {
     if (!this.el || !this.map) return;
-    const word = this.shown ? prominenceWord(this.map.getZoom()) : null;
-    this.el.textContent = word ? `Bei dieser Zoomstufe: ${word}` : "";
+    const word = this.shown
+      ? prominenceWord(this.map.getZoom(), this.lang)
+      : null;
+    this.el.textContent = word ? messagesOf(this.lang).map.levelLine(word) : "";
     this.el.hidden = !word;
   };
 
@@ -89,9 +102,9 @@ export interface Provenance {
 const inCorner = (c: Provenance) => [c.attribution, c.scale, c.level];
 
 /** Built once with the map, so the corner can be changed without rebuilding them. */
-export const provenanceControls = (): Provenance => ({
+export const provenanceControls = (lang: Lang): Provenance => ({
   attribution: new AttributionControl({ compact: true }),
-  level: new DetailLevelControl(),
+  level: new DetailLevelControl(lang),
   scale: new ScaleControl({ unit: "metric" }),
 });
 
@@ -153,6 +166,8 @@ export interface MapEnv {
   terrain: boolean;
   /** Whether pass dots are drawn – the level-of-detail line is silent without them. */
   passes: boolean;
+  /** The page's language: the basemap's labels are read in it. */
+  lang: Lang;
 }
 
 /** A stored base that no longer exists (a keyed raster, say) falls back to the default. */
@@ -219,7 +234,8 @@ export const applyEnvironment = (
   // The base under everything. The map is built before the stored value is
   // known (`useSyncExternalStore` hands out the server snapshot during
   // hydration), so this is also what catches up with it.
-  if (prev.base !== env.base) applyBase(m, env.base, env.device.scheme);
+  if (prev.base !== env.base)
+    applyBase(m, env.base, env.device.scheme, env.lang);
 
   // The overlays, the hillshade among them – same reason, same catching up.
   for (const id of ["hillshade", ...OVERLAYS.map((o) => o.id)]) {
@@ -244,7 +260,7 @@ export const applyEnvironment = (
     const s = env.device.scheme;
     const colors = readColors(root);
     addIcons(m, colors);
-    if (env.base === BASEMAP_ID) applyBase(m, BASEMAP_ID, s);
+    if (env.base === BASEMAP_ID) applyBase(m, BASEMAP_ID, s, env.lang);
     const repaint = (id: string, paint: object) => {
       for (const [k, v] of Object.entries(paint) as [never, never][])
         m.setPaintProperty(id, k, v);

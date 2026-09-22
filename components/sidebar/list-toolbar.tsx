@@ -1,5 +1,7 @@
 "use client";
 
+import { useT } from "@/components/i18n";
+
 /**
  * The row above a list: whatever that kind needs on the left, and its
  * "auf der Karte" switch on the right.
@@ -19,12 +21,15 @@ export const ListToolbar = ({
   /** Left side, e.g. the sort picker. */
   children?: React.ReactNode;
   control: React.ReactNode;
-}) => (
-  <div className="border-border flex items-center gap-2 border-b px-3 py-1.5">
-    {children}
-    <label className="text-muted-foreground text-2xs ml-auto flex shrink-0 items-center gap-1.5">
-      auf der Karte
-      {control}
-    </label>
-  </div>
-);
+}) => {
+  const { t } = useT();
+  return (
+    <div className="border-border flex items-center gap-2 border-b px-3 py-1.5">
+      {children}
+      <label className="text-muted-foreground text-2xs ml-auto flex shrink-0 items-center gap-1.5">
+        {t.sidebar.lists.onMap}
+        {control}
+      </label>
+    </div>
+  );
+};

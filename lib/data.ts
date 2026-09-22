@@ -7,6 +7,10 @@ import climateJson from "@/data/generated/climate.json";
 import photosJson from "@/data/generated/photos.json";
 import profilesJson from "@/data/generated/profiles.json";
 import routesJson from "@/data/generated/routes.json";
+import destinationsEn from "@/data/i18n/en/destinations.json";
+import passesEn from "@/data/i18n/en/passes.json";
+import toursEn from "@/data/i18n/en/tours.json";
+import townsEn from "@/data/i18n/en/towns.json";
 import passesJson from "@/data/passes.json";
 import toursJson from "@/data/tours.json";
 import townsJson from "@/data/towns.json";
@@ -15,6 +19,8 @@ import { membersOf } from "@/lib/destination";
 import type { DestinationMembers } from "@/lib/destination";
 import { DETAIL_ASSET_DIR, detailAssets } from "@/lib/detail-assets";
 import type { DetailAssets } from "@/lib/detail-assets";
+import { DEFAULT_LANG } from "@/lib/i18n";
+import type { Lang } from "@/lib/i18n";
 import { MAP_ASSET_DIR, mapAssets } from "@/lib/map-assets";
 import type { MapAssets } from "@/lib/map-assets";
 import { nearbyTours, townRanges, townReach } from "@/lib/nearby";
@@ -76,6 +82,65 @@ const climate: Record<string, ClimateYear> = S.Climate.parse(climateJson);
 const profiles: Record<string, ElevationProfile> =
   S.Profiles.parse(profilesJson);
 const photos: Photos = S.Photos.parse(photosJson);
+
+/**
+ * The curated prose in English (plan 08), keyed by slug and merged over the
+ * German record field by field: a field the file does not carry stays
+ * German, so a half-translated entry is a German sentence in an English
+ * panel rather than a blank – `data:check` counts what is still missing.
+ * The German records are the only ones parsed against the full schema; the
+ * merge never adds a field and never touches a name or a number.
+ */
+const TRANSLATIONS = {
+  en: {
+    destinations: S.DestinationTranslations.parse(destinationsEn),
+    passes: S.PassTranslations.parse(passesEn),
+    tours: S.TourTranslations.parse(toursEn),
+    towns: S.TownTranslations.parse(townsEn),
+  },
+} satisfies Partial<Record<Lang, unknown>>;
+
+type Translated = (typeof TRANSLATIONS)[keyof typeof TRANSLATIONS];
+
+/** One list with the translated fields laid over each record. */
+const localize = <T extends { slug: string }, P extends object>(
+  list: T[],
+  translations: Record<string, P> | undefined,
+): T[] =>
+  translations
+    ? list.map((item) => {
+        const own = translations[item.slug];
+        return own ? { ...item, ...own } : item;
+      })
+    : list;
+
+/** The German lists, or the English ones laid over them. */
+const localized = (lang: Lang) => {
+  const t: Translated | undefined =
+    lang === DEFAULT_LANG
+      ? undefined
+      : TRANSLATIONS[lang as keyof typeof TRANSLATIONS];
+  const localizedPasses = t
+    ? localize(passes, t.passes).map((p, i) => {
+        const labels = t.passes[p.slug]?.ascents;
+        const original = passes[i]!;
+        return labels
+          ? {
+              ...p,
+              ascents: original.ascents.map((a, j) =>
+                labels[j] ? { ...a, label: labels[j] } : a,
+              ),
+            }
+          : { ...p, ascents: original.ascents };
+      })
+    : passes;
+  return {
+    destinations: localize(destinations, t?.destinations),
+    passes: localizedPasses,
+    tours: localize(tours, t?.tours),
+    towns: localize(towns, t?.towns),
+  };
+};
 
 /**
  * Both asset kinds derive their file names here rather than reading a
@@ -186,22 +251,28 @@ export const getPass = (slug: string): Pass | undefined =>
  * image read for one path. A find over a few hundred records, run once per
  * prerendered page; nothing here drags the derivations in.
  */
-export const getEntity = (selection: Selection): Entity | undefined => {
+export const getEntity = (
+  selection: Selection,
+  lang: Lang = DEFAULT_LANG,
+): Entity | undefined => {
+  const lists = localized(lang);
   switch (selection.kind) {
     case "pass": {
-      const pass = getPass(selection.slug);
+      const pass = lists.passes.find((p) => p.slug === selection.slug);
       return pass && { kind: "pass", pass };
     }
     case "tour": {
-      const tour = tours.find((t) => t.slug === selection.slug);
+      const tour = lists.tours.find((t) => t.slug === selection.slug);
       return tour && { kind: "tour", tour };
     }
     case "town": {
-      const town = towns.find((t) => t.slug === selection.slug);
+      const town = lists.towns.find((t) => t.slug === selection.slug);
       return town && { kind: "town", town };
     }
     case "destination": {
-      const destination = destinations.find((d) => d.slug === selection.slug);
+      const destination = lists.destinations.find(
+        (d) => d.slug === selection.slug,
+      );
       return destination && { destination, kind: "destination" };
     }
     default: {
@@ -232,23 +303,27 @@ export const staticParams = (): { kind: Segment; slug: string }[] => [
  * and starts cold on a serverless instance, and the constraint at the top of
  * this file is precisely that it must not drag the derivations in.
  */
-export const getPageData = (): PageData => {
+export const getPageData = (lang: Lang = DEFAULT_LANG): PageData => {
   // The valleys are walked once and handed on: the page carries them and the
   // year is graded against them, and there is no cache left to make the second
   // walk free.
   const valleys = getValleys();
+  // Only the prose changes with the language; everything derived – the years,
+  // the reach, the members – is derived from the German records, which carry
+  // the same names, numbers and coordinates.
+  const lists = localized(lang);
   return {
     assets: getMapAssets(),
     climate,
     destinationMembers: getDestinationMembers(),
-    destinations,
+    destinations: lists.destinations,
     detail: getDetailAssets(),
     nearbyTours: getNearbyTours(),
-    passes,
-    tours,
+    passes: lists.passes,
+    tours: lists.tours,
     townRanges: townRanges(passes, towns),
     townReach: getTownReach(),
-    towns,
+    towns: lists.towns,
     valleys,
     years: getYears(valleys),
   };
