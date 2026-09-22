@@ -1,8 +1,7 @@
 # 32 · The pipeline as plan → execute → apply
 
-**Status:** in progress – phases A and B in
-[#62](https://github.com/mdugue/alpen/pull/62), C and D on the same branch;
-E and F open ·
+**Status:** done – all six phases in
+[#62](https://github.com/mdugue/alpen/pull/62) ·
 **Effort:** L (six phases, one PR each) ·
 **Depends on:** 00 (the gate) · **Supersedes:** 20, 21 · **Unblocks:**
 roadmap 1 (a closures step is one more host and one more job kind), 12
@@ -245,12 +244,31 @@ answers and the previous `photos.json` and returns the next one; the script
 executes through the transport and writes. `Photo` objects are not mutated;
 "needs a placeholder" is decided from the stored record, not by decoding.
 
+Done. `scripts/lib/photo-pipeline.ts` holds the five rules as functions over
+an explicit state – `placeJobs`, `photosFor`, `borrowed`, `blurJob`,
+`withPhotos` – and `runPhotos` executes them through the transport; the script
+is 95 lines instead of 274 and does nothing but read, write and print. Nothing
+is written into a `Photo`: a placeholder produces a new record, which is what
+lets a tour borrow a pass's photo without inheriting a later change by
+accident. `storedBlur` (`scripts/lib/blur.ts`) reads a stored placeholder's
+format and width out of its own header, so a run with nothing to do decodes no
+picture at all – 2 002 `Bun.Image` decodes before, none now.
+
 ### Phase F · The calibration scripts tabulate
 
 `passYear` and `gradeOf` take their constants as parameters with today's
 values as defaults, so "this rule with that constant" is an argument, not a
 copy; `analyze-status.ts` and `analyze-destinations.ts` only tabulate, share
 one `quantile`, and get `package.json` entries.
+
+Done. `passYear` takes a `YearRule` (`reasons`, `snowBestPct`) and
+`gradeOfBase` a pair of `GradeShares`, both defaulted to today's values;
+`analyze-status.ts` reads each pass as three `Year`s instead of restating the
+verdict and the run rule, and its run-time self-check is gone with them.
+`scripts/lib/stats.ts` is the one `quantile` – the nearest rank downwards,
+which is what `analyze-status.ts` always meant; five of the 24 rows of
+section 2 of the destinations report move by one rank, and every grade, split
+and strip is unchanged.
 
 ## Steps
 

@@ -35,6 +35,15 @@ describe("gradeOfBase", () => {
     );
     expect(gradeOfBase(counts(0), 0)).toBe("closed");
   });
+
+  test("the two shares are an argument, which is what calibrates them", () => {
+    // `scripts/analyze-destinations.ts` reads the same 24 cells at several
+    // pairs of shares; at a peak of one the comparison is the absolute rule
+    // that was tried first.
+    expect(gradeOfBase(counts(22), 40, { best: 0.5, good: 0.2 })).toBe("best");
+    expect(gradeOfBase(counts(4), 1, { best: 6, good: 3 })).toBe("good");
+    expect(gradeOfBase(counts(6), 1, { best: 6, good: 3 })).toBe("best");
+  });
 });
 
 describe("destinationAt", () => {

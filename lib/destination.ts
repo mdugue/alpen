@@ -75,11 +75,31 @@ import type { LatLon, Pass, Period, Town } from "@/lib/types";
 export const RIDEABLE_BEST_SHARE = 0.75;
 export const RIDEABLE_GOOD_SHARE = 0.45;
 
-export const gradeOfBase = (c: GradeCount, peak: number): Grade => {
+/**
+ * The two shares as an argument, so that asking what another pair would do to
+ * the strip – or what the absolute rule did, which is the same comparison
+ * against a fixed reference instead of the base's own peak – is one call in
+ * `scripts/analyze-destinations.ts` rather than the ladder written out again.
+ */
+export interface GradeShares {
+  best: number;
+  good: number;
+}
+
+const SHARES: GradeShares = {
+  best: RIDEABLE_BEST_SHARE,
+  good: RIDEABLE_GOOD_SHARE,
+};
+
+export const gradeOfBase = (
+  c: GradeCount,
+  peak: number,
+  shares: GradeShares = SHARES,
+): Grade => {
   const n = rideable(c);
   if (n === 0 || peak === 0) return "closed";
-  if (n >= peak * RIDEABLE_BEST_SHARE) return "best";
-  if (n >= peak * RIDEABLE_GOOD_SHARE) return "good";
+  if (n >= peak * shares.best) return "best";
+  if (n >= peak * shares.good) return "good";
   return "limited";
 };
 

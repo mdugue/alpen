@@ -699,6 +699,33 @@ const windowOf = (flags: boolean[]): [Period, Period] | null => {
   return [periodAt(run.start), periodAt(run.start + run.length - 1)];
 };
 
+/** What a year is read with; the app varies neither, a calibration run both. */
+export interface YearRule {
+  /** The reasons that count. Fewer of them is the heuristic of an earlier plan. */
+  reasons?: readonly StatusReason[];
+  /** Snow days above which a half-month is too quiet for no best time. */
+  snowBestPct?: number;
+}
+
+/**
+ * The same verdict with only some of its reasons. The rule that any reason at
+ * all lowers a cell and only the window closes a road is `passVerdict`'s, and
+ * it holds for a verdict read with fewer signals too – stated here rather than
+ * wherever a comparison is drawn, because two statements of it are two rules.
+ */
+const limitTo = (
+  v: StatusVerdict,
+  keep: readonly StatusReason[],
+): StatusVerdict => {
+  const reasons = v.reasons.filter((r) => keep.includes(r));
+  if (reasons.length === v.reasons.length) return v;
+  return {
+    reasons,
+    status:
+      v.status === "closed" ? "closed" : reasons.length ? "risky" : "open",
+  };
+};
+
 /**
  * The whole year of one pass in one value: the status, grade and caveats of
  * every half-month, plus where the best window lies. This is the only place
@@ -711,13 +738,24 @@ const windowOf = (flags: boolean[]): [Period, Period] | null => {
  * quiet in the climate series (under `SNOW_BEST_PCT` snow days). Since every
  * reason makes a cell "eingeschränkt", that run is free of heat, rain, short
  * days and cold descents by construction.
+ *
+ * `rule` is what the app never varies and a calibration run does: which
+ * signals count and where the bar for a quiet half-month sits. Asking for a
+ * year the way an earlier generation of the heuristic would have read it is
+ * then an argument (`scripts/analyze-status.ts`) rather than a second
+ * implementation of the run rule that can drift from this one.
  */
-export const passYear = (pass: Pass, signals?: PassSignals | null): Year => {
+export const passYear = (
+  pass: Pass,
+  signals?: PassSignals | null,
+  rule: YearRule = {},
+): Year => {
+  const { reasons = REASON_ORDER, snowBestPct = SNOW_BEST_PCT } = rule;
   const verdicts = PERIODS.map((t) =>
-    passVerdict(pass, t, inputAt(signals, t)),
+    limitTo(passVerdict(pass, t, inputAt(signals, t)), reasons),
   );
   const snowy = PERIODS.map(
-    (_, i) => (signals?.climate?.[i]?.snowPct ?? 0) >= SNOW_BEST_PCT,
+    (_, i) => (signals?.climate?.[i]?.snowPct ?? 0) >= snowBestPct,
   );
   const best = windowOf(
     verdicts.map((v, i) => v.status === "open" && !snowy[i]),

@@ -22,6 +22,8 @@
     "data:locate": "bun run scripts/locate-pass.ts",
     "data:backfill": "bash scripts/backfill.sh",
     "data:schema": "bun run scripts/emit-json-schema.ts",
+    "analyze:status": "bun run scripts/analyze-status.ts",
+    "analyze:destinations": "bun run scripts/analyze-destinations.ts",
     "palette": "bun run scripts/check-palette.ts",
     "seams": "bun run scripts/check-seams.ts",
     "map:glyphs": "bun run scripts/build-glyphs.ts",

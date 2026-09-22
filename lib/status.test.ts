@@ -536,6 +536,35 @@ describe("season strips and best periods", () => {
     expect(from).toBeLessThan(to);
   });
 
+  test("the snow bar of the best window is an argument", () => {
+    // What `scripts/analyze-status.ts` varies: the same pass read with
+    // another constant, instead of a second implementation of the run rule.
+    const p = passes.find((x) => x.slug === "col-du-galibier")!;
+    const own = signalsOf(signals, p.slug);
+    const quiet = passYear(p, own, { snowBestPct: 100 });
+    const strict = passYear(p, own, { snowBestPct: 0 });
+    expect(quiet.cells.every((c) => !c.snowy)).toBe(true);
+    expect(strict.cells.every((c) => c.snowy)).toBe(true);
+    expect(strict.best).toBeNull();
+  });
+
+  test("and so is which reasons count at all", () => {
+    // The heuristic as plan 04 knew it: no heat, no rain, no short days.
+    const p = passes.find((x) => x.slug === "mont-ventoux")!;
+    const own = signalsOf(signals, p.slug);
+    const full = passYear(p, own);
+    const winter = passYear(p, own, { reasons: ["outside-window", "snow"] });
+    expect(full.cells.some((c) => c.reasons.includes("heat"))).toBe(true);
+    expect(winter.cells.some((c) => c.reasons.includes("heat"))).toBe(false);
+    // A cell held back only by the dropped reasons is open again, and what
+    // the window closes stays closed.
+    expect(
+      winter.cells.filter((c) => c.status === "open").length,
+    ).toBeGreaterThan(full.cells.filter((c) => c.status === "open").length);
+    for (const [i, c] of full.cells.entries())
+      if (c.status === "closed") expect(winter.cells[i]!.status).toBe("closed");
+  });
+
   test("the best window is null when nothing lasts two half-months", () => {
     const p = pass({ elevation: 2600, season: { closes: 7.5, opens: 7 } });
     expect(passYear(p, null).best).toBeNull();

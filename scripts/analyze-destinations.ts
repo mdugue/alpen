@@ -2,12 +2,16 @@
 /**
  * Calibration for the destination grade (`gradeOf` in lib/destination.ts).
  *
- *   bun run scripts/analyze-destinations.ts
+ *   bun run analyze:destinations
  *
  * A destination's 24 cells are derived from the passes it reaches, so the
  * question "when is this base at its best" needs a rule for turning a count
  * of rideable passes into a grade. This script is the evidence for the rule
  * that was chosen, and the way to re-check it when the data grows.
+ *
+ * It tabulates and judges nothing: every grade below is `gradeOfBase` with
+ * another pair of shares, so no section can drift from the rule it is evidence
+ * for.
  *
  * Sections:
  *   1. How many passes each base reaches at all – the spread the rule has to
@@ -29,12 +33,19 @@ import climateJson from "../data/generated/climate.json" with { type: "json" };
 import profilesJson from "../data/generated/profiles.json" with { type: "json" };
 import passesJson from "../data/passes.json" with { type: "json" };
 import townsJson from "../data/towns.json" with { type: "json" };
-import { RIDEABLE_BEST_SHARE, RIDEABLE_GOOD_SHARE } from "../lib/destination";
+import {
+  gradeOfBase,
+  RIDEABLE_BEST_SHARE,
+  RIDEABLE_GOOD_SHARE,
+} from "../lib/destination";
+import type { GradeShares } from "../lib/destination";
 import { haversine, reachBand } from "../lib/geo";
 import { valleyElevations } from "../lib/profile";
+import { emptyCount } from "../lib/reach";
 import * as S from "../lib/schema";
 import { passYear, periodLabel, PERIODS, signalsOf } from "../lib/status";
 import type { Grade } from "../lib/status";
+import { quantile } from "./lib/stats";
 
 const passes = S.Passes.parse(passesJson);
 const towns = S.Towns.parse(townsJson);
@@ -62,10 +73,6 @@ const rideable = reach.map((near) =>
 const peaks = rideable.map((r) => Math.max(...r));
 const cells = rideable.flat();
 
-const quantile = (xs: readonly number[], q: number) => {
-  const s = [...xs].toSorted((a, b) => a - b);
-  return s[Math.min(s.length - 1, Math.floor(q * s.length))] ?? 0;
-};
 const pad = (n: number, w = 3) => String(n).padStart(w);
 const share = (n: number) =>
   `${((n / cells.length) * 100).toFixed(0)} %`.padStart(5);
@@ -94,6 +101,25 @@ for (const [i, period] of PERIODS.entries()) {
   );
 }
 
+/**
+ * The grade rule itself, so that what section 3 and section 4 compare are two
+ * arguments to `gradeOfBase` rather than two copies of its ladder. A count of
+ * rideable passes is all it reads, and the absolute rule is the same
+ * comparison against a fixed reference, which a peak of one makes it.
+ */
+const relative = (n: number, peak: number, shares?: GradeShares) =>
+  gradeOfBase({ ...emptyCount(), good: n }, peak, shares);
+const absolute = (n: number, [good, best]: readonly [number, number]) =>
+  gradeOfBase({ ...emptyCount(), good: n }, 1, { best, good });
+
+/** The absolute thresholds that were tried, the first of them the one section 6 draws. */
+const ABSOLUTE = [
+  [3, 6],
+  [3, 8],
+  [4, 10],
+  [5, 15],
+] as const;
+
 const split = (grade: (n: number, peak: number) => Grade) => {
   const tally: Record<Grade, number> = {
     best: 0,
@@ -107,15 +133,10 @@ const split = (grade: (n: number, peak: number) => Grade) => {
 };
 
 console.log("\n3. An ABSOLUTE rule (the one that was tried first and dropped)");
-for (const [good, best] of [
-  [3, 6],
-  [3, 8],
-  [4, 10],
-  [5, 15],
-] as const)
+for (const rule of ABSOLUTE)
   console.log(
-    `   gut >= ${pad(good, 2)}  beste Zeit >= ${pad(best, 2)}   ${split((n) =>
-      n >= best ? "best" : n >= good ? "good" : n >= 1 ? "limited" : "closed",
+    `   gut >= ${pad(rule[0], 2)}  beste Zeit >= ${pad(rule[1], 2)}   ${split(
+      (n) => absolute(n, rule),
     )}`,
   );
 
@@ -128,13 +149,7 @@ for (const [hi, lo] of [
   const mark = hi === RIDEABLE_BEST_SHARE ? " <-" : "";
   console.log(
     `   beste Zeit >= ${hi}  gut >= ${lo}      ${split((n, peak) =>
-      n === 0 || peak === 0
-        ? "closed"
-        : n >= peak * hi
-          ? "best"
-          : n >= peak * lo
-            ? "good"
-            : "limited",
+      relative(n, peak, { best: hi, good: lo }),
     )}${mark}`,
   );
 }
@@ -151,7 +166,15 @@ const runLength = (flags: readonly boolean[]) => {
 };
 for (const hi of [0.85, 0.8, RIDEABLE_BEST_SHARE, 0.7] as const) {
   const lens = rideable.map((own, t) =>
-    runLength(own.map((n) => n > 0 && n >= (peaks[t] ?? 0) * hi)),
+    runLength(
+      own.map(
+        (n) =>
+          relative(n, peaks[t] ?? 0, {
+            best: hi,
+            good: RIDEABLE_GOOD_SHARE,
+          }) === "best",
+      ),
+    ),
   );
   console.log(
     `   beste Zeit >= ${hi}   ${pad(lens.filter((l) => l >= 2).length, 2)}/${towns.length} Orte mit Fenster >= 2` +
@@ -182,28 +205,8 @@ for (const name of [
   if (t === -1) continue;
   const own = rideable[t] ?? [];
   const peak = peaks[t] ?? 0;
-  const rel = own
-    .map(
-      (n) =>
-        GLYPH[
-          n === 0
-            ? "closed"
-            : n >= peak * RIDEABLE_BEST_SHARE
-              ? "best"
-              : n >= peak * RIDEABLE_GOOD_SHARE
-                ? "good"
-                : "limited"
-        ],
-    )
-    .join("");
-  const abs = own
-    .map(
-      (n) =>
-        GLYPH[
-          n === 0 ? "closed" : n >= 6 ? "best" : n >= 3 ? "good" : "limited"
-        ],
-    )
-    .join("");
+  const rel = own.map((n) => GLYPH[relative(n, peak)]).join("");
+  const abs = own.map((n) => GLYPH[absolute(n, ABSOLUTE[0])]).join("");
   console.log(
     `   ${name.padEnd(12)} erreicht ${pad(reach[t]?.length ?? 0, 2)}, Spitze ${pad(peak, 2)}` +
       `   relativ |${rel}|   absolut |${abs}|`,
