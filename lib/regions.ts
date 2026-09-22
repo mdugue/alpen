@@ -3,12 +3,58 @@
  * schema (server), the filters (client) and the search haystacks – this
  * module must stay free of zod so it can reach the client bundle.
  */
+/**
+ * One level above the region: the mountain range. A road's range is a
+ * function of its region (`rangeOf`), so no data file carries it and every
+ * generated key stays as it is; what the level buys is a word the search
+ * knows, a chip that frames the range and a brand line that says what the
+ * map covers (docs/plans/25-vosges-and-jura.md). The order is the display
+ * order, the Alps first because they are where the app began.
+ */
+export const RANGES = ["Alpen", "Vogesen", "Jura"] as const;
+
+export type RangeName = (typeof RANGES)[number];
+
+export const RANGE: Record<RangeName, { label: string; hint: string }> = {
+  Alpen: {
+    hint: "Von den Seealpen bis nach Slowenien – Westalpen, Zentralalpen, Ostalpen und Dolomiten.",
+    label: "Alpen",
+  },
+  Jura: {
+    hint: "Grand Colombier, Mont du Chat, Faucille, Chasseral: lange Saison, wenig Verkehr, zwei Stunden ab Basel.",
+    label: "Jura",
+  },
+  Vogesen: {
+    hint: "Grand Ballon, Schlucht, Ballon d'Alsace und die Route des Crêtes: das Wochenende ab Freiburg, Basel oder Karlsruhe.",
+    label: "Vogesen",
+  },
+};
+
+/**
+ * Which regions each range holds. The Vosges and the Jura are one region each
+ * until the data asks for a split; the Alps keep their four.
+ */
+export const RANGE_REGIONS = {
+  Alpen: ["Westalpen", "Zentralalpen", "Ostalpen", "Dolomiten"],
+  Jura: ["Jura"],
+  Vogesen: ["Vogesen"],
+} as const satisfies Record<RangeName, readonly string[]>;
+
+/** The flat union, in range order – what the schema's `Region` enum is made of. */
 export const REGIONS = [
-  "Westalpen",
-  "Zentralalpen",
-  "Ostalpen",
-  "Dolomiten",
+  ...RANGE_REGIONS.Alpen,
+  ...RANGE_REGIONS.Vogesen,
+  ...RANGE_REGIONS.Jura,
 ] as const;
+
+export type RegionName = (typeof REGIONS)[number];
+
+const REGION_RANGE = Object.fromEntries(
+  RANGES.flatMap((range) => RANGE_REGIONS[range].map((r) => [r, range])),
+) as Record<RegionName, RangeName>;
+
+/** The range a region belongs to. */
+export const rangeOf = (region: RegionName): RangeName => REGION_RANGE[region];
 
 export const COUNTRIES = ["FR", "IT", "CH", "AT", "DE", "SI"] as const;
 

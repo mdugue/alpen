@@ -13,7 +13,7 @@ import { DETAIL_ASSET_DIR, detailAssets } from "@/lib/detail-assets";
 import type { DetailAssets } from "@/lib/detail-assets";
 import { MAP_ASSET_DIR, mapAssets } from "@/lib/map-assets";
 import type { MapAssets } from "@/lib/map-assets";
-import { nearbyTours, townReach } from "@/lib/nearby";
+import { nearbyTours, townRanges, townReach } from "@/lib/nearby";
 import type { NearbyTours, TownReach } from "@/lib/nearby";
 import type { PageData } from "@/lib/page-data";
 import { profilesWithCoords, valleyElevations } from "@/lib/profile";
@@ -186,6 +186,7 @@ export const getPageData = (): PageData => {
     nearbyTours: getNearbyTours(),
     passes,
     tours,
+    townRanges: townRanges(passes, towns),
     townReach: getTownReach(),
     towns,
     valleys,

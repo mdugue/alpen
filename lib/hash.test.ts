@@ -270,6 +270,7 @@ const ROWS = {
   // on, so it is written even when it equals the default.
   period: { elides: false, key: "t", value: 6.5 },
   query: { key: "q", value: "stelvio" },
+  ranges: { key: "g", value: ["Jura"] },
   sort: { key: "o", value: "beauty" },
   status: { key: "s", value: ["open", "risky"] },
   tags: { key: "e", value: ["toll"] },
@@ -290,7 +291,7 @@ describe("every filter key", () => {
     expect(Object.keys(ROWS).toSorted()).toEqual(
       Object.keys(DEFAULT_FILTERS).toSorted(),
     );
-    expect(hashed).toHaveLength(13);
+    expect(hashed).toHaveLength(14);
   });
 
   test("each key carries a non-default value there and back", () => {
@@ -324,7 +325,7 @@ describe("every filter key", () => {
         }),
       ),
     ).toBe(
-      "a=pass,spur&b=30&be=4&c=46.5253,10.4541&d=2-4&e=toll&f=4&h=22&m=2000&o=beauty&pass=stilfser-joch&pi=60&q=stelvio&s=open,risky&t=6.5&v=3&w=8&z=9.75",
+      "a=pass,spur&b=30&be=4&c=46.5253,10.4541&d=2-4&e=toll&f=4&g=Jura&h=22&m=2000&o=beauty&pass=stilfser-joch&pi=60&q=stelvio&s=open,risky&t=6.5&v=3&w=8&z=9.75",
     );
   });
 

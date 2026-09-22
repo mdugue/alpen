@@ -13,6 +13,7 @@ import {
 import { RIDEABLE_BEST_SHARE, RIDEABLE_GOOD_SHARE } from "@/lib/destination";
 import { REACH_BANDS, REACH_MAX_KM } from "@/lib/geo";
 import {
+  RANGE,
   ROAD_TAG,
   ROAD_TAGS,
   ROAD_TYPE,
@@ -20,6 +21,7 @@ import {
   TOWN_TAG,
   TOWN_TAGS,
 } from "@/lib/regions";
+import type { RangeName } from "@/lib/regions";
 import { ladderText, lapseText, VALLEY_TMAX_ERROR } from "@/lib/status";
 import { fmt } from "@/lib/utils";
 
@@ -48,9 +50,17 @@ const SCALES: [string, string][] = [
 export const ScalesDialog = ({
   open,
   onOpenChange,
+  ranges,
 }: {
   open: boolean;
   onOpenChange: (v: boolean) => void;
+  /**
+   * The ranges the data holds a road for. The section that explains them
+   * shows only once there are two: a dialog that names the Vosges' roads
+   * while the map cannot show one would promise what the data does not
+   * hold (Principle 3) – the same reason the brand line waits.
+   */
+  ranges: readonly RangeName[];
 }) => (
   <Dialog open={open} onOpenChange={onOpenChange}>
     <DialogContent className="max-h-[85vh] grid-rows-[auto_minmax(0,1fr)] sm:max-w-2xl">
@@ -103,6 +113,26 @@ export const ScalesDialog = ({
             ))}
           </dl>
         </section>
+        {ranges.length > 1 && (
+          <section className="flex flex-col gap-2">
+            <h3 className="text-base font-semibold">Gebirge und Regionen</h3>
+            <p className="text-muted-foreground">
+              Jede Straße liegt in einer Region, und jede Region in einem
+              Gebirge. Das Gebirge ist ein Filter und zugleich ein Ausschnitt:
+              Wer eines wählt, sieht seine Straßen in der Liste und auf der
+              Karte. Ein Ort gehört zum Gebirge der nächsten Straße in seiner
+              Reichweite.
+            </p>
+            <dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-2">
+              {ranges.map((range) => (
+                <div key={range} className="contents">
+                  <dt className="font-semibold">{RANGE[range].label}</dt>
+                  <dd className="text-muted-foreground">{RANGE[range].hint}</dd>
+                </div>
+              ))}
+            </dl>
+          </section>
+        )}
         <section className="flex flex-col gap-2">
           <h3 className="text-base font-semibold">Art und Merkmale</h3>
           <p className="text-muted-foreground">

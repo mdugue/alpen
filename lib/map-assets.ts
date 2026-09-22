@@ -3,6 +3,8 @@ import type { Pass, RouteGeometry, Tour } from "@/lib/types";
 // Relative on purpose: next.config.ts loads this module outside the bundler,
 // where the "@/" alias is not resolved for transitive imports.
 import { canonicalJson, derivedDir } from "./derived-file";
+import { rangeOf } from "./regions";
+import type { RangeName } from "./regions";
 import { ascentKey, tourKey } from "./route-key";
 
 /**
@@ -45,6 +47,12 @@ export interface MapAssets {
    * 201 passes and a frame needs no more.
    */
   passBounds: Record<string, Bounds>;
+  /**
+   * Per range that has roads: the box around all of them, markers and
+   * ascents. What the "Gebirge" chip frames when it is pressed; a range
+   * without a road has no box and no chip.
+   */
+  rangeBounds: Partial<Record<RangeName, Bounds>>;
 }
 
 interface LineFeature {
@@ -261,16 +269,23 @@ export const mapAssets = (
       routes[tourKey(t.slug)] ?? t.waypoints.map((w) => [w.lat, w.lon]),
     );
   const passBounds: Record<string, Bounds> = {};
-  for (const p of passes)
-    passBounds[p.slug] = round(
-      bounds([
-        [p.lat, p.lon],
-        ...p.ascents.flatMap((_, i) => routes[ascentKey(p.slug, i)] ?? []),
-      ]),
-    );
+  const byRange = new Map<RangeName, RouteGeometry>();
+  for (const p of passes) {
+    const points: RouteGeometry = [
+      [p.lat, p.lon],
+      ...p.ascents.flatMap((_, i) => routes[ascentKey(p.slug, i)] ?? []),
+    ];
+    passBounds[p.slug] = round(bounds(points));
+    const range = rangeOf(p.region);
+    byRange.set(range, [...(byRange.get(range) ?? []), ...points]);
+  }
+  const rangeBounds: Partial<Record<RangeName, Bounds>> = {};
+  for (const [range, points] of byRange)
+    rangeBounds[range] = round(bounds(points));
   return {
     assets: {
       passBounds,
+      rangeBounds,
       routesUrl: MAP_FILES.url(routesFile.name),
       tourBounds,
       toursUrl: MAP_FILES.url(toursFile.name),

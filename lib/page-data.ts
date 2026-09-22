@@ -1,6 +1,7 @@
 import type { DetailAssets } from "@/lib/detail-assets";
 import type { MapAssets } from "@/lib/map-assets";
 import type { NearbyTours, TownReach } from "@/lib/nearby";
+import type { RangeName } from "@/lib/regions";
 import type { PassIndex, Years } from "@/lib/status";
 import type { ClimateYear, Pass, Tour, Town } from "@/lib/types";
 
@@ -27,6 +28,12 @@ export interface PageData {
   nearbyTours: NearbyTours;
   /** The area each town reaches, drawn on hover; see `lib/nearby.ts`. */
   townReach: TownReach;
+  /**
+   * The range each town belongs to, through the nearest road in its reach
+   * (`townRanges`, lib/nearby.ts); absent for a town beyond every road's
+   * reach. A town carries no region of its own, so this is derived.
+   */
+  townRanges: Partial<Record<string, RangeName>>;
   /** One URL per entity for its profiles and photos; see `lib/detail-assets.ts`. */
   detail: DetailAssets;
   climate: Record<string, ClimateYear>;

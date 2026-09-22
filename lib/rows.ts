@@ -1,6 +1,8 @@
-import { HEAT_NONE, WET_NONE } from "@/lib/app-state";
+import { ALL_RANGES, HEAT_NONE, WET_NONE } from "@/lib/app-state";
 import type { EntityKind, Filters, PassSort } from "@/lib/app-state";
 import { periodIndex, PERIODS } from "@/lib/period";
+import { rangeOf } from "@/lib/regions";
+import type { RangeName } from "@/lib/regions";
 import {
   matches,
   passHaystack,
@@ -61,7 +63,8 @@ const interesting = (pass: Pass, f: Filters) =>
   pass.fame >= f.minFame &&
   pass.beauty >= f.minBeauty &&
   pass.difficulty >= f.difficulty[0] &&
-  f.types.includes(pass.type);
+  f.types.includes(pass.type) &&
+  f.ranges.includes(rangeOf(pass.region));
 
 /**
  * Upper bounds, "not harder, busier, hotter or wetter than": every pass of a
@@ -293,8 +296,15 @@ export interface TownRow {
   favorite: boolean;
 }
 
+/**
+ * Towns know one criterion: the range, through the nearest road in their reach
+ * (`townRanges`, computed on the server). A town far from every road has no
+ * range: it is listed while no range is asked for, and it drops out once one
+ * is – "the Jura's towns" cannot include a town no Jura road is near.
+ */
 export const buildTownRows = (
   towns: Town[],
+  townRanges: Partial<Record<string, RangeName>>,
   filters: Filters,
   isFavorite: Query["isFavorite"],
 ): TownRow[] => {
@@ -303,7 +313,13 @@ export const buildTownRows = (
   for (const town of towns) {
     const favorite = isFavorite("town", town.slug);
     if (q.favoritesOnly && !favorite) continue;
-    if (!q.matches(townHaystack(town))) continue;
+    const range = townRanges[town.slug];
+    if (
+      filters.ranges.length !== ALL_RANGES.length &&
+      (!range || !filters.ranges.includes(range))
+    )
+      continue;
+    if (!q.matches(townHaystack(town, range))) continue;
     rows.push({ favorite, town });
   }
   return rows.toSorted((a, b) => a.town.name.localeCompare(b.town.name, "de"));

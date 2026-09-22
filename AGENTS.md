@@ -56,7 +56,7 @@ friends do that better and the app links out to them.
 | The calendar: months, the 24 half-months        | `lib/period.ts` (`MONTHS`, `PERIODS`, `periodLabel`, `periodIndex`, `periodAt`, `isPeriod`, `todayPeriod`), vocabulary only – the heuristic is one of its readers                                                                                                                                                                          |
 | Daylight (sunrise, sunset, day length)          | `lib/daylight.ts`, pure astronomy, no data                                                                                                                                                                                                                                                                                                 |
 | Data schemas (zod) and inferred types           | `lib/schema.ts` (`FILES`: schema, layout, may it be missing), `lib/types.ts`, `data/schema/*.schema.json` (`bun run data:schema`); the one reader/writer pair `scripts/lib/data-files.ts`                                                                                                                                                  |
-| Regions and countries (vocabulary)              | `lib/regions.ts`                                                                                                                                                                                                                                                                                                                           |
+| Ranges, regions and countries (vocabulary)      | `lib/regions.ts` (`RANGES`, `RANGE_REGIONS`, `rangeOf`, `REGIONS`, `COUNTRIES`); a town's range from its reach in `lib/nearby.ts` (`townRanges`), the box a range chip frames in `lib/map-assets.ts` (`rangeBounds`)                                                                                                                       |
 | Data access (cached, validated)                 | `lib/data.ts`                                                                                                                                                                                                                                                                                                                              |
 | Profile sampling and derived gradients          | `lib/profile.ts`                                                                                                                                                                                                                                                                                                                           |
 | Hash keys, the entity key, who dispatches       | the keys in `lib/hash.ts` (`parseHash`, `serializeHash`), `entityKey` in `lib/route-key.ts`, `initialState` and `Shown` in `lib/app-state.ts`; dispatched from `components/explorer.tsx`                                                                                                                                                   |
@@ -162,7 +162,9 @@ The component layer, the layout, the sidebar, the detail panel.
   → [why](docs/ui-conventions.md#dark-mode-follows-the-os-nothing-else)
 - **A filter is a chip, and no chip lies.** Every filter is a chip carrying the
   count it would leave, counted disjunctively; no slider, no select, nothing
-  applied on a button.
+  applied on a button. One chip also frames: the range ("Gebirge") asks the
+  camera for the box around what it leaves, through the camera machine, and
+  only when pressed – a link carrying it opens like any other link.
   → [why](docs/ui-conventions.md#a-filter-is-a-chip-and-no-chip-lies)
 - **The panel scrolls with the lists, not above them.** The filter panel is the
   first thing inside the list's scroll container, not a growing block in the

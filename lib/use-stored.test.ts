@@ -40,7 +40,12 @@ for (const name of ["localStorage", "sessionStorage"])
   });
 
 const TODAY: Period = 7;
-const env: Env = { mobile: false, today: TODAY, tours: ["sellaronda"] };
+const env: Env = {
+  mobile: false,
+  rangeBounds: {},
+  today: TODAY,
+  tours: ["sellaronda"],
+};
 const loaded = (hash = ""): AppState =>
   reduce(
     initialState(TODAY),

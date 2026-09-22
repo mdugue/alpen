@@ -113,6 +113,18 @@ describe("passHaystack", () => {
     expect(find("chianale")).toEqual([]);
   });
 
+  test("the range word finds a road, so 'jura' and 'vogesen' will find theirs", () => {
+    // Every fixture is alpine; the word reaches all of them and none by its
+    // region alone.
+    expect(find("alpen")).toHaveLength(passes.length);
+    expect(find("jura")).toEqual([]);
+    expect(
+      passHaystack(
+        pass({ name: "Grand Colombier", region: "Jura", slug: "gc" }),
+      ),
+    ).toContain("jura");
+  });
+
   test("the folded haystack is cached per object", () => {
     const p = passes[0]!;
     expect(passHaystack(p)).toBe(passHaystack(p));
@@ -230,5 +242,11 @@ describe("tourHaystack and townHaystack", () => {
     expect(matches(townHaystack(town), "werkstatt")).toBe(true);
     expect(matches(townHaystack(town), "mekka")).toBe(true);
     expect(matches(townHaystack(town), "bahnanschluss")).toBe(false);
+  });
+  test("a town is found through the range it was handed, and only then", () => {
+    expect(matches(townHaystack(town, "Alpen"), "alpen")).toBe(true);
+    expect(matches(townHaystack(town), "alpen")).toBe(false);
+    // The cached haystack is the town's own; the range does not stick to it.
+    expect(matches(townHaystack(town, "Jura"), "alpen")).toBe(false);
   });
 });

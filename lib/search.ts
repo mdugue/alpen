@@ -1,10 +1,13 @@
 import {
   COUNTRY_NAME,
   countriesOf,
+  RANGE,
+  rangeOf,
   ROAD_TAG,
   ROAD_TYPE,
   TOWN_TAG,
 } from "@/lib/regions";
+import type { RangeName } from "@/lib/regions";
 import type { Pass, Tour, Town } from "@/lib/types";
 
 /**
@@ -42,6 +45,10 @@ const firstSentence = (s: string) => s.split(/(?<=[.!?])\s/u)[0] ?? s;
 // Haystacks are folded once per entity object; the data never changes at runtime.
 const passHay = new WeakMap<Pass, string>();
 const townHay = new WeakMap<Town, string>();
+/** The range labels folded once: a town's haystack appends one per keystroke. */
+const RANGE_WORD = Object.fromEntries(
+  Object.entries(RANGE).map(([k, v]) => [k, fold(v.label)]),
+) as Record<RangeName, string>;
 
 export const passHaystack = (pass: Pass): string => {
   let hay = passHay.get(pass);
@@ -51,6 +58,8 @@ export const passHaystack = (pass: Pass): string => {
         pass.name,
         ...(pass.aliases ?? []),
         pass.region,
+        // "jura" and "vogesen" find their roads; "alpen" finds the rest.
+        RANGE[rangeOf(pass.region)].label,
         // "stich", "autofrei" and "gletscher" have to find the entries that
         // carry the label, so the vocabulary's own words join the haystack.
         ROAD_TYPE[pass.type].label,
@@ -69,7 +78,12 @@ export const passHaystack = (pass: Pass): string => {
 export const tourHaystack = (tour: Tour, passNames: string[]): string =>
   fold([tour.name, tour.description, tour.note, ...passNames].join(" "));
 
-export const townHaystack = (town: Town): string => {
+/**
+ * A town carries no region; its range is what the server derived from the
+ * roads in its reach (`townRanges`), so the word is handed in rather than
+ * read off the town – and left out for a town beyond every road's reach.
+ */
+export const townHaystack = (town: Town, range?: RangeName): string => {
   let hay = townHay.get(town);
   if (hay === undefined) {
     hay = fold(
@@ -83,5 +97,5 @@ export const townHaystack = (town: Town): string => {
     );
     townHay.set(town, hay);
   }
-  return hay;
+  return range ? `${hay} ${RANGE_WORD[range]}` : hay;
 };

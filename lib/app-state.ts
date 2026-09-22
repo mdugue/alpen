@@ -1,4 +1,6 @@
-import { ROAD_TYPES } from "@/lib/regions";
+import type { Bounds } from "@/lib/map-assets";
+import { RANGES, ROAD_TYPES } from "@/lib/regions";
+import type { RangeName } from "@/lib/regions";
 import { STATUS_ORDER } from "@/lib/status";
 import type { LatLon, Period, RoadTag, RoadType, Status } from "@/lib/types";
 
@@ -18,6 +20,8 @@ export interface Selection {
 export const ALL_STATUS: Status[] = [...STATUS_ORDER];
 /** All five road types selected = no type filter, see `Filters.types`. */
 export const ALL_TYPES: RoadType[] = [...ROAD_TYPES];
+/** Every range selected = no range filter, see `Filters.ranges`. */
+export const ALL_RANGES: RangeName[] = [...RANGES];
 /** Stable empty snapshot for the tag filter (`Filters.tags`). */
 export const NO_TAGS: RoadTag[] = [];
 export const ALL_KINDS: EntityKind[] = ["pass", "tour", "town"];
@@ -201,6 +205,13 @@ export interface Filters {
   /** Statuses that stay visible; all three = no filter. Passes and tours. */
   status: Status[];
   /**
+   * Which mountain ranges stay in the lists; every range = no filter. A road's
+   * range follows from its region (`rangeOf`), a tour's from its passes like
+   * every lower bound, a town's from the nearest road in its reach
+   * (`PageData.townRanges`) – so this is the one criterion towns see.
+   */
+  ranges: RangeName[];
+  /**
    * The pass criteria below apply to passes and, through their passes, to
    * tours: a tour needs one pass that clears the lower bounds (elevation,
    * fame, beauty, min. difficulty) and every pass has to respect the upper
@@ -256,6 +267,7 @@ export const DEFAULT_FILTERS: Filters = {
   minFame: 1,
   period: 10,
   query: "",
+  ranges: ALL_RANGES,
   sort: "elevation",
   status: ALL_STATUS,
   tags: NO_TAGS,
@@ -276,6 +288,17 @@ export const DEFAULT_VIEW: MapView = {
   lon: 9.6,
   pitch: 0,
   zoom: 6.5,
+};
+
+/** The box around several boxes; `null` for none. A fresh array, so a press is a new request. */
+export const unionBounds = (list: readonly Bounds[]): Bounds | null => {
+  if (list.length === 0) return null;
+  return [
+    Math.min(...list.map((b) => b[0])),
+    Math.min(...list.map((b) => b[1])),
+    Math.max(...list.map((b) => b[2])),
+    Math.max(...list.map((b) => b[3])),
+  ];
 };
 
 /** Drops keys that are undefined (or NaN) so a spread does not overwrite defaults. */
@@ -453,6 +476,15 @@ export interface AppState {
    * because a profile point is a point on *that* entity's road.
    */
   profileZoom: LatLon | null;
+  /**
+   * The frame a range chip asked for; the map fits it. The first filter that
+   * moves the camera: a range is a place, and "show me the Jura" is answered
+   * by the list *and* the picture. Ephemeral like `profileZoom` – a fresh box
+   * per press, never persisted, never in the hash – and it is the chip that
+   * asks, not the filter: a link carrying `g=Jura` and no camera opens fitted
+   * to what it lists, the way every such link does (`onReady` in the camera).
+   */
+  requestedFit: Bounds | null;
   filters: Filters;
   /**
    * The visitor's own last choice of half-month, and the only thing the
@@ -500,6 +532,13 @@ export type Action =
   | { type: "profileZoom"; at: LatLon }
   | { type: "view"; view: MapView }
   | { type: "filters"; update: (f: Filters) => Filters }
+  /**
+   * A range chip pressed: the filter toggled like any member of a set, and –
+   * where the press narrows the list to ranges the map has a box for – the
+   * camera asked to frame them. Lifting the filter frames nothing: the
+   * visitor is back to everything and the camera is where they left it.
+   */
+  | { type: "range"; range: RangeName }
   | { type: "period"; period: Period }
   | { type: "tab"; tab: EntityKind }
   | { type: "toggleKind"; kind: "pass" | "town"; on: boolean }
@@ -519,6 +558,8 @@ export interface Env {
   today: Period;
   /** Every tour's slug, for `reconcileShown` and the master switch. */
   tours: readonly string[];
+  /** The box around each range's roads (`rangeBounds`, lib/map-assets.ts); what a range chip frames. */
+  rangeBounds: Partial<Record<RangeName, Bounds>>;
 }
 
 /**
@@ -631,6 +672,25 @@ export const reduce = (state: AppState, action: Action, env: Env): AppState => {
     case "filters": {
       return { ...state, filters: action.update(state.filters) };
     }
+    case "range": {
+      const ranges = toggleMember(
+        state.filters.ranges,
+        ALL_RANGES,
+        action.range,
+      );
+      return {
+        ...state,
+        filters: { ...state.filters, ranges },
+        requestedFit:
+          ranges.length === ALL_RANGES.length
+            ? state.requestedFit
+            : (unionBounds(
+                ranges
+                  .map((r) => env.rangeBounds[r])
+                  .filter((b) => b !== undefined),
+              ) ?? state.requestedFit),
+      };
+    }
     case "period": {
       return {
         ...state,
@@ -704,6 +764,7 @@ export const initialState = (today: Period): AppState => ({
   ownPeriod: null,
   profileCursor: null,
   profileZoom: null,
+  requestedFit: null,
   requestedView: null,
   selection: null,
   sheet: SHEETS_AT_REST,

@@ -23,6 +23,7 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import {
+  ALL_RANGES,
   ALL_STATUS,
   ALL_TYPES,
   BEAUTY_OPTIONS,
@@ -44,7 +45,8 @@ import {
   difficultyLabel,
   filterCount,
 } from "@/lib/filter-summary";
-import { ROAD_TAG, ROAD_TAGS, ROAD_TYPE } from "@/lib/regions";
+import { RANGE, ROAD_TAG, ROAD_TAGS, ROAD_TYPE } from "@/lib/regions";
+import type { RangeName } from "@/lib/regions";
 import { STATUS_LABEL } from "@/lib/status";
 import type { RoadTag, RoadType, Status } from "@/lib/types";
 import { cn, fmt, TOUCH_CONTROL } from "@/lib/utils";
@@ -172,6 +174,8 @@ export const FilterBody = ({
   counts,
   totals,
   countWith,
+  ranges,
+  onRange,
   onReset,
   more,
   onMoreChange,
@@ -189,6 +193,14 @@ export const FilterBody = ({
    * it also keeps the numbers still while a group is being tapped.
    */
   countWith: (patch: Partial<Filters>) => number;
+  /**
+   * The ranges the data holds a road for. The group only shows with two or
+   * more: a chip row of one is a statement, not a choice, and "Alpen 262 ·
+   * Vogesen 0" would list a range the map cannot show yet.
+   */
+  ranges: readonly RangeName[];
+  /** A range chip pressed – the one chip that also frames (`range` in `reduce`). */
+  onRange: (range: RangeName) => void;
   onReset: () => void;
   /** The second half of the panel; its state lives with the panel's own. */
   more: boolean;
@@ -196,6 +208,7 @@ export const FilterBody = ({
 }) => {
   const set = <K extends keyof Filters>(key: K, value: Filters[K]) =>
     setFilters((f) => ({ ...f, [key]: value }));
+  const pickedRanges = pickedMembers(filters.ranges, ALL_RANGES);
   const pickedStatus = pickedMembers(filters.status, ALL_STATUS);
   const pickedTypes = pickedMembers(filters.types, ALL_TYPES);
   const [lo, hi] = filters.difficulty;
@@ -205,6 +218,27 @@ export const FilterBody = ({
 
   return (
     <div className="grid gap-4 px-3 pt-3 pb-4">
+      {/* The range first: it is the "where" before every other decision, and
+          it is the one chip that moves the camera too – a range is a place,
+          and a list of Jura roads under a picture of the Dolomites answers
+          only half the question. */}
+      {ranges.length > 1 && (
+        <ChipGroup id="f-ranges" label="Gebirge">
+          {ranges.map((r) => (
+            <FilterChip
+              key={r}
+              label={RANGE[r].label}
+              hint={RANGE[r].hint}
+              count={countWith({ ranges: [r] })}
+              pressed={pickedRanges.includes(r)}
+              onPressedChange={() => onRange(r)}
+            >
+              {RANGE[r].label}
+            </FilterChip>
+          ))}
+        </ChipGroup>
+      )}
+
       <ChipGroup id="f-status" label="Zustand im gewählten Zeitraum">
         {ALL_STATUS.map((s: Status) => {
           const on = pickedStatus.includes(s);

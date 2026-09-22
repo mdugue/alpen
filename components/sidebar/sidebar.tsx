@@ -36,6 +36,7 @@ import {
   hasSecondaryFilters,
   resetFilters,
 } from "@/lib/filter-summary";
+import type { RangeName } from "@/lib/regions";
 import { entityKey } from "@/lib/route-key";
 import type { Rows } from "@/lib/rows";
 import { cn, TOUCH_CONTROL } from "@/lib/utils";
@@ -49,6 +50,10 @@ export interface SidebarProps {
   totals: Record<EntityKind, number>;
   /** How many roads a filter change would leave – the number on every chip. */
   countWith: (patch: Partial<Filters>) => number;
+  /** The ranges the data holds a road for; the "Gebirge" group shows with two or more. */
+  ranges: readonly RangeName[];
+  /** A range chip pressed: the filter and, with it, the frame (`range` in `reduce`). */
+  onRange: (range: RangeName) => void;
   /** The "auf der Karte" switches. */
   shown: Shown;
   /** Which of the three lists is on screen. */
@@ -243,6 +248,8 @@ export const Sidebar = (p: SidebarProps) => {
                 counts={counts}
                 totals={p.totals}
                 countWith={p.countWith}
+                ranges={p.ranges}
+                onRange={p.onRange}
                 onReset={reset}
                 more={moreOpen}
                 onMoreChange={setMore}

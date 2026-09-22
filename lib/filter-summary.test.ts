@@ -34,6 +34,7 @@ describe("appliedFilters", () => {
         minBeauty: 4,
         minElevation: 2000,
         minFame: 5,
+        ranges: ["Jura", "Vogesen"],
         status: ["open", "risky"],
         tags: ["carfree", "glacier"],
         types: ["pass", "spur"],
@@ -41,6 +42,7 @@ describe("appliedFilters", () => {
     );
     expect(chips.map((c) => c.label)).toEqual([
       "nur Gemerkte",
+      "Jura, Vogesen",
       "gut oder eingeschränkt",
       "Pass, Stichstraße",
       "Autofrei",

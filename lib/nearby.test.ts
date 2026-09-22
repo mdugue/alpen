@@ -1,6 +1,6 @@
 import { expect, test } from "bun:test";
 
-import { nearbyTours, townReach } from "@/lib/nearby";
+import { nearbyTours, townRanges, townReach } from "@/lib/nearby";
 import type { Pass, RouteGeometry, Tour, Town } from "@/lib/types";
 
 // One degree of latitude is ~111 km; 0.5° ≈ 56 km, 1° ≈ 111 km.
@@ -77,6 +77,22 @@ test("a town's reach is the padded hull over the passes within radius", () => {
   const ring = reach.ort!;
   expect(ring.length).toBeGreaterThanOrEqual(3);
   expect(Math.max(...ring.map(([, lat]) => lat))).toBeLessThan(47);
+});
+
+test("a town takes the range of the nearest road in reach, or none", () => {
+  const passes = [
+    { lat: 46.1, lon: 9, region: "Zentralalpen", slug: "nah" } as Pass,
+    { lat: 46.4, lon: 9, region: "Jura", slug: "fern" } as Pass,
+  ];
+  const towns = [
+    { lat: 46, lon: 9, slug: "ort" } as Town,
+    { lat: 46.5, lon: 9, slug: "jura-ort" } as Town,
+    { lat: 49, lon: 9, slug: "weit" } as Town,
+  ];
+  expect(townRanges(passes, towns, 60)).toEqual({
+    "jura-ort": "Jura",
+    ort: "Alpen",
+  });
 });
 
 test("a town without enough passes around it has no hull", () => {

@@ -50,7 +50,7 @@ import { DEFAULT_VIEW } from "@/lib/app-state";
 import type { MapView, Selection, Shown } from "@/lib/app-state";
 import { BASEMAP_SOURCE, BASEMAP_SOURCE_ID, GLYPHS } from "@/lib/basemap";
 import { HIT_LAYERS, SOURCE } from "@/lib/layer-ids";
-import type { MapAssets } from "@/lib/map-assets";
+import type { Bounds, MapAssets } from "@/lib/map-assets";
 import {
   FIT_MS,
   FIT_PADDING,
@@ -124,6 +124,12 @@ interface Props {
    * when the object identity changes.
    */
   requestedView?: MapView | null;
+  /**
+   * A frame asked for by the range chip (`requestedFit` in `lib/app-state.ts`).
+   * A fresh box per press, applied when the object identity changes, like the
+   * view above.
+   */
+  requestedFit?: Bounds | null;
   /** Road point under the elevation-profile cursor, marked on the ascent. */
   profileCursor?: LatLon | null;
   /**
@@ -214,6 +220,7 @@ export const PassMap = ({
   profileCursor = null,
   profileZoom = null,
   requestedView = null,
+  requestedFit = null,
   inset = NO_INSET,
   env,
 }: Props) => {
@@ -666,6 +673,11 @@ export const PassMap = ({
     if (ready && requestedView)
       send({ type: "requestedView", view: requestedView });
   }, [requestedView, ready, send]);
+
+  useEffect(() => {
+    if (ready && requestedFit)
+      send({ bounds: requestedFit, type: "requestedFit" });
+  }, [requestedFit, ready, send]);
 
   // --- What the map shows --------------------------------------------------
   /**

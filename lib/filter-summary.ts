@@ -1,4 +1,5 @@
 import {
+  ALL_RANGES,
   ALL_STATUS,
   ALL_TYPES,
   DEFAULT_FILTERS,
@@ -13,7 +14,7 @@ import {
   WET_OPTIONS,
 } from "@/lib/app-state";
 import type { Filters, Options } from "@/lib/app-state";
-import { ROAD_TAG, ROAD_TYPE } from "@/lib/regions";
+import { RANGE, ROAD_TAG, ROAD_TYPE } from "@/lib/regions";
 import { STATUS_LABEL } from "@/lib/status";
 
 /**
@@ -50,6 +51,12 @@ export const appliedFilters = (f: Filters): AppliedFilter[] => {
 
   if (f.favoritesOnly)
     add("favorites", "nur Gemerkte", (g) => ({ ...g, favoritesOnly: false }));
+  const ranges = pickedMembers(f.ranges, ALL_RANGES);
+  if (ranges.length)
+    add("ranges", ranges.map((r) => RANGE[r].label).join(", "), (g) => ({
+      ...g,
+      ranges: ALL_RANGES,
+    }));
   const status = pickedMembers(f.status, ALL_STATUS);
   if (status.length)
     add("status", status.map((s) => STATUS_LABEL[s]).join(" oder "), (g) => ({

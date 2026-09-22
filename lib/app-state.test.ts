@@ -1,6 +1,7 @@
 import { describe, expect, test } from "bun:test";
 
 import {
+  ALL_RANGES,
   ALL_STATUS,
   DEFAULT_FILTERS,
   DEFAULT_VIEW,
@@ -23,6 +24,7 @@ import type {
   StoredState,
 } from "@/lib/app-state";
 import { parseHash } from "@/lib/hash";
+import type { Bounds } from "@/lib/map-assets";
 import { entityKey } from "@/lib/route-key";
 import type { Period } from "@/lib/types";
 
@@ -69,8 +71,13 @@ describe("entityKey", () => {
 
 const TOURS = ["sellaronda", "stelvio-runde"];
 const TODAY: Period = 7;
-const desktop: Env = { mobile: false, today: TODAY, tours: TOURS };
-const phone: Env = { mobile: true, today: TODAY, tours: TOURS };
+const desktop: Env = {
+  mobile: false,
+  rangeBounds: {},
+  today: TODAY,
+  tours: TOURS,
+};
+const phone: Env = { ...desktop, mobile: true };
 const [LIST_HALF, LIST_FULL] = LIST_SNAPS;
 const [DETAIL_HALF, DETAIL_FULL] = DETAIL_SNAPS;
 const GALIBIER: Selection = { kind: "pass", slug: "col-du-galibier" };
@@ -404,6 +411,30 @@ describe("reduce · the switches and the sheets", () => {
         .profileCursor,
     ).toEqual({ lat: 1, lon: 2 });
     expect(reduce(s, { tab: "town", type: "tab" }, desktop).tab).toBe("town");
+  });
+
+  test("a range chip filters like any member of a set, and frames what it leaves", () => {
+    const bounds = {
+      Alpen: [5, 44, 14, 48] as Bounds,
+      Jura: [5.5, 45.9, 7.3, 47.5] as Bounds,
+    };
+    const env: Env = { ...desktop, rangeBounds: bounds };
+    const jura = reduce(start, { range: "Jura", type: "range" }, env);
+    expect(jura.filters.ranges).toEqual(["Jura"]);
+    expect(jura.requestedFit).toEqual(bounds.Jura);
+    // A second range pressed: both stay in the list and the frame holds both.
+    const both = reduce(jura, { range: "Alpen", type: "range" }, env);
+    expect(both.filters.ranges).toEqual(["Alpen", "Jura"]);
+    expect(both.requestedFit).toEqual([5, 44, 14, 48]);
+    // Pressing the last one out lifts the filter and asks the camera nothing:
+    // the visitor is back to everything and the map stays where it is.
+    const lifted = reduce(jura, { range: "Jura", type: "range" }, env);
+    expect(lifted.filters.ranges).toEqual(ALL_RANGES);
+    expect(lifted.requestedFit).toBe(jura.requestedFit);
+    // A range the map has no box for narrows the list and frames nothing new.
+    const vosges = reduce(start, { range: "Vogesen", type: "range" }, env);
+    expect(vosges.filters.ranges).toEqual(["Vogesen"]);
+    expect(vosges.requestedFit).toBeNull();
   });
 
   test("a profile fly-to is a request, not a value: identity is what carries it", () => {

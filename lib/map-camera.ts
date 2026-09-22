@@ -167,6 +167,10 @@ export const visibleBounds = (
   return box;
 };
 
+/** A box of no extent – a pass whose ascents the map has none of – is no box. */
+const box = (b: Bounds | undefined): Bounds | null =>
+  b && (b[0] !== b[2] || b[1] !== b[3]) ? b : null;
+
 // ── The machine ──────────────────────────────────────────────────────────────
 
 /** What a selection's flight aims at. */
@@ -210,6 +214,8 @@ export type CameraEvent =
   | { type: "inset"; inset: Inset }
   /** A camera pasted into the address bar of an open page. */
   | { type: "requestedView"; view: MapView }
+  /** A frame asked for by a control – the range chip – rather than a selection. */
+  | { type: "requestedFit"; bounds: Bounds }
   /** `SELECT_DELAY` has elapsed. */
   | { type: "delay" }
   | { type: "moveend"; byUser: boolean };
@@ -509,16 +515,50 @@ export const camera = (
       ];
     }
 
+    case "requestedFit": {
+      // A press on the range chip: the same standing as a hand on the map – it
+      // outranks a flight still scheduled, and the frame is fitted into the
+      // padding the panels ask for, which the fit carries the way a selection's
+      // flight does. A box of no extent – a range whose one road has no drawn
+      // ascent – is flown to as a point, like a pass without one.
+      if (state.phase === "cold") return [state, []];
+      const padding = asked(state);
+      const bounds = box(event.bounds);
+      const point: FlightPoint = {
+        lat: event.bounds[1],
+        lon: event.bounds[0],
+        minZoom: PASS_MIN_ZOOM,
+      };
+      return [
+        { fitted: true, padded: padding, phase: "idle" },
+        [
+          ...(state.phase === "awaiting"
+            ? [{ cmd: "cancel" } as CameraCommand]
+            : []),
+          {
+            cmd: "flyTo",
+            duration: env.reduceMotion ? 0 : FIT_MS,
+            padding,
+            target: bounds
+              ? {
+                  bounds,
+                  extra: FIT_PADDING,
+                  fallback: point,
+                  kind: "bounds",
+                  maxZoom: PASS_MAX_ZOOM,
+                }
+              : { kind: "point", point },
+          },
+        ],
+      ];
+    }
+
     default: {
       // Every event has its case above; a new one is a type error here.
       return [event satisfies never, []];
     }
   }
 };
-
-/** A box of no extent – a pass whose ascents the map has none of – is no box. */
-const box = (b: Bounds | undefined): Bounds | null =>
-  b && (b[0] !== b[2] || b[1] !== b[3]) ? b : null;
 
 /**
  * Where a selection's flight goes, read off what the map has to draw it with.

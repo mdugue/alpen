@@ -1,6 +1,15 @@
 # 25 · Vosges and Jura: a second and a third range
 
-**Status:** proposed · **Effort:** M for code, L for curation ·
+**Status:** in progress – steps 1–3 and 6 done (the vocabulary, the search
+word, the "Gebirge" chip with its frame, the town range); step 4 half: the
+frame guard is a minimum opening zoom rather than a box test, because the
+map opens on the frame around what it draws and a far range would zoom that
+frame out, not fall out of it; the brand line and the dialog section on the
+ranges wait for the first road outside the Alps, and so does the chip, which
+shows once two ranges hold a road (Principle 3: nothing names a range the
+map cannot show); step 5, the data, needs Open-Meteo and Overpass, which
+answered 429 and 403 in the session that built the mechanism ·
+**Effort:** M for code, L for curation ·
 **Depends on:** 09 (schema), 05 (filters and search) · **Unblocks:** 26
 (the Pyrenees reuse the range mechanism), the weekend answer for the
 German-speaking audience

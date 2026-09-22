@@ -114,6 +114,7 @@ export const bundleOf = (
 ): PageBundle => ({
   assets: {
     passBounds: {},
+    rangeBounds: {},
     routesUrl: "/map/routes.00000000.geojson",
     tourBounds: {},
     toursUrl: "/map/tours.00000000.geojson",
@@ -124,6 +125,7 @@ export const bundleOf = (
   passIndex: indexBySlug(passes),
   passes,
   tours,
+  townRanges: {},
   townReach: {},
   towns,
   valleys: {},

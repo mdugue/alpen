@@ -1,4 +1,6 @@
 import { convexHull, expandRing, haversine, NEARBY_RADIUS_KM } from "@/lib/geo";
+import { rangeOf } from "@/lib/regions";
+import type { RangeName } from "@/lib/regions";
 import { entityKey, tourKey } from "@/lib/route-key";
 import type { LatLon, Pass, RouteGeometry, Tour, Town } from "@/lib/types";
 
@@ -99,6 +101,30 @@ export const townReach = (
       REACH_PADDING_KM,
     ).map((p) => [p.lon, p.lat] as [number, number]);
     if (ring.length >= 3) out[town.slug] = ring;
+  }
+  return out;
+};
+
+/**
+ * The range a town belongs to: that of the nearest road within `radiusKm`.
+ * A town carries no region of its own – it is a base, and a base is chosen for
+ * what it reaches – so the nearest road decides. Beyond every road's reach a
+ * town has no range and is left out; the range chip then never hides it.
+ */
+export const townRanges = (
+  passes: readonly Pass[],
+  towns: readonly Town[],
+  radiusKm = NEARBY_RADIUS_KM,
+): Partial<Record<string, RangeName>> => {
+  const out: Partial<Record<string, RangeName>> = {};
+  for (const town of towns) {
+    let nearest: { km: number; range: RangeName } | null = null;
+    for (const p of passes) {
+      const km = haversine(town, p);
+      if (km <= radiusKm && (!nearest || km < nearest.km))
+        nearest = { km, range: rangeOf(p.region) };
+    }
+    if (nearest) out[town.slug] = nearest.range;
   }
   return out;
 };

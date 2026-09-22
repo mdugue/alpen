@@ -26,7 +26,7 @@ import type {
   Selection,
 } from "@/lib/app-state";
 import { isPeriod } from "@/lib/period";
-import { ROAD_TAGS, ROAD_TYPES } from "@/lib/regions";
+import { RANGES, ROAD_TAGS, ROAD_TYPES } from "@/lib/regions";
 import type { Period, Status } from "@/lib/types";
 
 // ── The URL hash ─────────────────────────────────────────────────────────────
@@ -85,7 +85,7 @@ const parseAsStatus = createParser<Status[]>({
 });
 /**
  * A comma-joined subset of a fixed vocabulary, in vocabulary order – `a=pass,spur`,
- * `e=toll,carfree`. Unknown members are dropped rather than rejected, so an
+ * `e=toll,carfree`, `g=Jura`. Unknown members are dropped rather than rejected, so an
  * old link keeps the part of its filter this build still understands; a value
  * that leaves nothing behind is no filter at all and falls back to the
  * default – `none` included, see `parseAsStatus`.
@@ -155,6 +155,8 @@ const FILTER_KEYS = {
   e: { field: "tags", parser: parseAsSubset(ROAD_TAGS) },
   /** Min. fame. */
   f: { field: "minFame", parser: parseAsOneOf(FAME_OPTIONS) },
+  /** Mountain ranges "Jura,Vogesen" (Gebirge). */
+  g: { field: "ranges", parser: parseAsSubset(RANGES) },
   /** Max. valley heat in °C. */
   h: { field: "maxValleyTmax", parser: parseAsOneOf(HEAT_OPTIONS) },
   /** Min. elevation in m. */

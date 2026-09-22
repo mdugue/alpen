@@ -50,7 +50,7 @@ vocabularies (regions, countries, road types, road and town labels) live in
   "name": "Col du Galibier",
   "aliases": ["Galibier"], // optional: other spellings people search for
   "country": "FR", // "CH/IT" for border passes
-  "region": "Westalpen", // Westalpen | Zentralalpen | Ostalpen | Dolomiten
+  "region": "Westalpen", // REGIONS in lib/regions.ts; the range follows from it, see below
   "type": "pass", // required: pass | spur | plateau | balcony | valley
   "tags": ["panorama", "toll"], // optional: editorial labels in ROAD_TAGS order, see below
   "lat": 45.064,
@@ -84,6 +84,28 @@ reads – with a mandatory `note` saying why:
 `season.maintained: true` marks managed toll roads (Grossglockner, Timmelsjoch,
 Nockalm …). They are cleared of snow and therefore get no elevation penalty in
 the status heuristic.
+
+#### Region and range
+
+`region` is one of a fixed list, and one level above it sits the **range**
+(`RANGES` in `lib/regions.ts`, plan 25). The range is a function of the
+region – `rangeOf("Westalpen")` is `"Alpen"` – so no data file carries it and
+every generated key stays as it is; what the level buys is a word the search
+knows, the "Gebirge" chip, and a town's place: a town has no region of its
+own and takes the range of the nearest road in its reach (`townRanges`,
+`lib/nearby.ts`).
+
+| Range     | Regions                                      | Label (UI) |
+| --------- | -------------------------------------------- | ---------- |
+| `Alpen`   | Westalpen, Zentralalpen, Ostalpen, Dolomiten | Alpen      |
+| `Vogesen` | Vogesen                                      | Vogesen    |
+| `Jura`    | Jura                                         | Jura       |
+
+A new range is a vocabulary edit: its name in `RANGES`, its regions in
+`RANGE_REGIONS`, its label and hint in `RANGE`. `data:check` accepts the new
+region from that moment. The "Gebirge" chip group only shows once two ranges
+hold a road, and a range's chip frames the box around its roads
+(`rangeBounds`, `lib/map-assets.ts`).
 
 #### What kind of road it is, and what riding it is like
 

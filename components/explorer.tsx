@@ -12,7 +12,7 @@ import { Sidebar } from "@/components/sidebar/sidebar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { initialState, KIND_LABEL, reduce } from "@/lib/app-state";
+import { ALL_RANGES, initialState, KIND_LABEL, reduce } from "@/lib/app-state";
 import type {
   Action,
   AppState,
@@ -54,8 +54,17 @@ interface Props {
  * are counted into, and the wiring of `dispatch` into each part.
  */
 export const Explorer = ({ data, defaultPeriod }: Props) => {
-  const { assets, climate, passes, tours, townReach, towns, valleys, years } =
-    data;
+  const {
+    assets,
+    climate,
+    passes,
+    tours,
+    townRanges,
+    townReach,
+    towns,
+    valleys,
+    years,
+  } = data;
   const signals: Signals = { climate, valleys };
   // Everything the map draws differently for, in one value; the shell reads
   // the same `mobile` the map does, so the two can never disagree about which
@@ -64,6 +73,7 @@ export const Explorer = ({ data, defaultPeriod }: Props) => {
   const isMobile = mapEnv.mobile;
   const env: Env = {
     mobile: isMobile,
+    rangeBounds: assets.rangeBounds,
     today: defaultPeriod,
     tours: tours.map((t) => t.slug),
   };
@@ -80,6 +90,7 @@ export const Explorer = ({ data, defaultPeriod }: Props) => {
     last,
     profileCursor,
     profileZoom,
+    requestedFit,
     requestedView,
     selection,
     sheet,
@@ -96,8 +107,10 @@ export const Explorer = ({ data, defaultPeriod }: Props) => {
   const rows = {
     pass: buildPassRows(passes, years, filters, isFavorite, signals),
     tour: buildTourRows(tours, passIndex, years, filters, isFavorite, signals),
-    town: buildTownRows(towns, filters, isFavorite),
+    town: buildTownRows(towns, townRanges, filters, isFavorite),
   };
+  /** The ranges the data holds a road for – the chips the "Gebirge" group shows. */
+  const ranges = ALL_RANGES.filter((r) => assets.rangeBounds[r] !== undefined);
   /**
    * The number on every filter chip. The patch both applies the option and
    * lifts its own group's filter, which is what makes the count answer "what
@@ -163,6 +176,7 @@ export const Explorer = ({ data, defaultPeriod }: Props) => {
             intent={intent}
             profileCursor={profileCursor}
             profileZoom={profileZoom}
+            requestedFit={requestedFit}
             requestedView={requestedView}
             inset={inset}
             env={mapEnv}
@@ -222,6 +236,8 @@ export const Explorer = ({ data, defaultPeriod }: Props) => {
               town: towns.length,
             }}
             countWith={countWith}
+            ranges={ranges}
+            onRange={(range) => dispatch({ range, type: "range" })}
             shown={shown}
             tab={tab}
             selection={selection}
@@ -251,7 +267,11 @@ export const Explorer = ({ data, defaultPeriod }: Props) => {
         )}
       />
 
-      <ScalesDialog open={scalesOpen} onOpenChange={setScalesOpen} />
+      <ScalesDialog
+        open={scalesOpen}
+        onOpenChange={setScalesOpen}
+        ranges={ranges}
+      />
     </TooltipProvider>
   );
 };

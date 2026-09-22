@@ -358,10 +358,30 @@ describe("plan 05 criteria", () => {
     expect(rows({ maxTraffic: 3 })).toEqual(["lang", "kurz"]);
   });
 
-  test("towns see only search and favourites", () => {
+  test("towns see search, favourites and the range, nothing else", () => {
     expect(
-      buildTownRows(towns, filters({ maxTraffic: 1, minBeauty: 5 }), never),
+      buildTownRows(towns, {}, filters({ maxTraffic: 1, minBeauty: 5 }), never),
     ).toHaveLength(2);
+    const ranges = { aosta: "Alpen" as const };
+    // Bormio has no road in reach here, so it has no range: listed while
+    // nothing is asked, gone once a range is – it cannot be "a Jura town".
+    expect(
+      buildTownRows(towns, ranges, filters(), never).map((r) => r.town.slug),
+    ).toEqual(["aosta", "bormio"]);
+    expect(
+      buildTownRows(towns, ranges, filters({ ranges: ["Alpen"] }), never).map(
+        (r) => r.town.slug,
+      ),
+    ).toEqual(["aosta"]);
+    expect(
+      buildTownRows(towns, ranges, filters({ ranges: ["Jura"] }), never),
+    ).toEqual([]);
+    // The range word finds the town, through the range it was handed.
+    expect(
+      buildTownRows(towns, ranges, filters({ query: "alpen" }), never).map(
+        (r) => r.town.slug,
+      ),
+    ).toEqual(["aosta"]);
   });
 });
 
@@ -571,15 +591,15 @@ describe("buildTourRows", () => {
 describe("buildTownRows", () => {
   test("sorted by name, searchable, favourites only", () => {
     expect(
-      buildTownRows(towns, filters(), never).map((r) => r.town.slug),
+      buildTownRows(towns, {}, filters(), never).map((r) => r.town.slug),
     ).toEqual(["aosta", "bormio"]);
     expect(
-      buildTownRows(towns, filters({ query: "stelvio" }), never).map(
+      buildTownRows(towns, {}, filters({ query: "stelvio" }), never).map(
         (r) => r.town.slug,
       ),
     ).toEqual(["bormio"]);
     expect(
-      buildTownRows(towns, filters({ favoritesOnly: true }), never),
+      buildTownRows(towns, {}, filters({ favoritesOnly: true }), never),
     ).toHaveLength(0);
   });
 });

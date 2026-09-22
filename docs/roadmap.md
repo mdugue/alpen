@@ -37,7 +37,9 @@ What was one line here is now five plans (September 2026):
   readable, and the split of `passes.json` past 300 entries.
 - **[25 · Vosges and Jura](./plans/25-vosges-and-jura.md)** – the first ranges
   that are not the Alps, and the mechanism for every range after them: one
-  level above the region, a "Gebirge" chip, the brand line.
+  level above the region, a "Gebirge" chip that frames, the brand line. The
+  mechanism is built (`RANGES` in `lib/regions.ts`); the two ranges' roads
+  are the curation that is still open.
 - **[26 · Pyrenees](./plans/26-pyrenees.md)** – bounds per range, two more
   countries, and the first screen once two ranges are 600 km apart.
 - **[27 · Gravel](./plans/27-gravel.md)** – a surface on every road, a

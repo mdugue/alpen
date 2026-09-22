@@ -393,6 +393,20 @@ trigger, so the two can never disagree. Nothing is applied on a button – the
 count line at the end of the panel says what the current answer is, which is
 what makes live filtering answerable at all.
 
+One chip also moves the camera: the range ("Gebirge"). A range is a place,
+and "show me the Jura" is answered by the list _and_ the picture – a list of
+Jura roads under a picture of the Dolomites answers half the question. The
+chip is a filter like every member of a set (`Filters.ranges`, the hash key
+`g`), and pressing it into the list also asks the camera for the box around
+the ranges that stay (`requestedFit` in `lib/app-state.ts`, the `range`
+action); lifting the filter asks for nothing, so the visitor comes back to
+everything with the map where they left it. The frame travels through the
+camera machine like a selection's flight, padding included (`requestedFit`
+in `lib/map-camera.ts`), and it is the chip that asks, never the filter: a
+link carrying `g=Jura` and no camera opens fitted to what it lists, the way
+every such link does, and one with a camera opens on that. The group shows only once two
+ranges hold a road – a chip row of one is a statement, not a choice.
+
 ### The panel scrolls with the lists, not above them
 
 The sidebar's header is a fixed row and holds only the search field, the
