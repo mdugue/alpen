@@ -1,6 +1,7 @@
 # 30 · The scene: what the map shows, as a value
 
-**Status:** proposed · **Effort:** M–L · **Depends on:** 28 (one `shown`,
+**Status:** done ([#62](https://github.com/mdugue/alpen/pull/62)) ·
+**Effort:** M–L · **Depends on:** 28 (one `shown`,
 one selection, one `hovered`), 01 (filters and feature state); shares the
 MapLibre adapter with 29 · **Supersedes:** 19 · **Unblocks:** the official
 closure status on the map (a scene input, not an effect edit), 12

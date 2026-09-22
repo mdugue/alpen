@@ -4,7 +4,6 @@ import type { FeatureCollection } from "geojson";
 import { Compass, MoreHorizontal, Scan } from "lucide-react";
 import type {
   ExpressionSpecification,
-  GeoJSONSource,
   IControl,
   LayerSpecification,
   StyleSpecification,
@@ -22,6 +21,8 @@ import {
 import { useEffect, useRef, useState } from "react";
 
 import { useCamera } from "@/components/map/apply-camera";
+import { applyScene, sceneHost } from "@/components/map/apply-scene";
+import type { SceneHost } from "@/components/map/apply-scene";
 import { baseLayers, OVERLAYS, VECTOR_BASE } from "@/components/map/map-style";
 import { Button } from "@/components/ui/button";
 import { ButtonGroup } from "@/components/ui/button-group";
@@ -44,7 +45,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { DEFAULT_VIEW } from "@/lib/app-state";
-import type { MapView, Selection } from "@/lib/app-state";
+import type { MapView, Selection, Shown } from "@/lib/app-state";
 import {
   BASEMAP_ID,
   BASEMAP_SOURCE,
@@ -54,53 +55,59 @@ import {
   GLYPHS,
 } from "@/lib/basemap";
 import type { Bounds, MapAssets } from "@/lib/map-assets";
-import {
-  FIT_MS,
-  FIT_PADDING,
-  fitDone,
-  flightFor,
-  visibleBounds,
-} from "@/lib/map-camera";
+import { FIT_MS, FIT_PADDING, fitDone, flightFor } from "@/lib/map-camera";
 import type { CameraIntent } from "@/lib/map-camera";
+import {
+  HIT_LAYERS,
+  LAYERS,
+  OVERLAY,
+  PASS_LABELS,
+  passLabelId,
+  SOURCE,
+} from "@/lib/map-layers";
+import { pick } from "@/lib/map-pick";
+import { buildScene } from "@/lib/map-scene";
+import type { Scene } from "@/lib/map-scene";
 import type { TownReach } from "@/lib/nearby";
 import { PALETTE } from "@/lib/palette";
 import type { Scheme } from "@/lib/palette";
 import { prominenceFilter, prominenceWord } from "@/lib/prominence";
-import { roadTypeWord, TAG_LABEL } from "@/lib/regions";
-import { ascentKey, entityKey } from "@/lib/route-key";
+import { entityKey } from "@/lib/route-key";
+import type { PassRow, TourRow, TownRow } from "@/lib/rows";
 import { STATUS_ORDER } from "@/lib/status";
-import { tagIconSvg } from "@/lib/tag-icons";
-import type { LatLon, Pass, Status, Tag, Tour, Town } from "@/lib/types";
-import { MOBILE_QUERY } from "@/lib/use-media-query";
+import type { LatLon } from "@/lib/types";
+import { MOBILE_QUERY, useMediaQuery } from "@/lib/use-media-query";
 import { useStored } from "@/lib/use-stored";
-import { cn, fmtUnit, MAP_CLUSTER, MAP_TOOL } from "@/lib/utils";
-
-export interface MapPass extends Pass {
-  status: Status;
-  favorite: boolean;
-}
+import { cn, MAP_CLUSTER, MAP_TOOL } from "@/lib/utils";
 
 interface Props {
-  /** The passes the list shows: drawn as markers, their ascents highlighted. */
-  passes: MapPass[];
-  /** The tours the list shows; `visible` is the "auf der Karte" switch. */
-  tours: (Tour & { status: Status; visible: boolean })[];
-  towns: (Town & { favorite: boolean })[];
+  /**
+   * What the three lists show – the same rows, drawn as marks, lines and
+   * names. `buildScene` (lib/map-scene.ts) turns them into what the map
+   * draws; nothing is translated on the way in.
+   */
+  rows: {
+    pass: readonly PassRow[];
+    tour: readonly TourRow[];
+    town: readonly TownRow[];
+  };
+  /** The "auf der Karte" switches: the layer toggle on top of the lists. */
+  shown: Shown;
   /**
    * The area each town reaches – the hull over the passes within reach,
-   * precomputed in `lib/nearby.ts`. Drawn while a town is hovered or selected,
-   * so "was ist von hier aus erreichbar" is answered on the map itself.
+   * precomputed in `lib/nearby.ts`. Drawn while a town is hovered, in the list
+   * or on the map, so "was ist von hier aus erreichbar" is answered on the map
+   * itself. A selected town is flown to instead: from inside the hull there is
+   * nothing to see.
    */
   townReach: TownReach;
   /**
    * The ascent and tour lines never arrive as props: MapLibre fetches them as
    * static GeoJSON from these URLs and tiles them in its worker. Which lines
-   * show and how is set through layer filters and feature state below.
+   * show and how is a layer filter and feature state, both of them scene
+   * fields.
    */
   assets: MapAssets;
-  /** "auf der Karte" for the pass section: markers, labels and ascents at once. */
-  showPasses: boolean;
-  showTowns: boolean;
   selection: Selection | null;
   /**
    * What the pointer is over, from either half of the screen. The map both
@@ -218,7 +225,8 @@ const ABOVE_BASE = `ov-${OVERLAYS[0].id}`;
 const scheme = (): Scheme =>
   window.matchMedia(DARK_QUERY).matches ? "dark" : "light";
 
-const coarsePointer = () => window.matchMedia("(pointer: coarse)").matches;
+const COARSE_QUERY = "(pointer: coarse)";
+const coarsePointer = () => window.matchMedia(COARSE_QUERY).matches;
 
 /**
  * What the pointer may aim at, in pixels. A pass dot is 5 to 15 px across, a
@@ -240,33 +248,6 @@ const HIT_MARGIN = 6;
 const HIT_SLOP = 4;
 
 /**
- * The layers that answer hover and click, in falling priority. The order is
- * spelled out rather than taken from the style, because the two disagree:
- * marks first, then the names beside them, then the lines – a name is a small
- * deliberate target, a line covers half the map, and both would otherwise
- * swallow the dot they belong to; and the tour band lies *under* the ascents
- * but reaches past them, so a click inside it hits both and the ascent is the
- * more specific answer. Within a group the nearer mark wins – passes and
- * towns share the first one – so a generous hit area never steals the click
- * from the mark actually aimed at.
- */
-const HIT_GROUPS: readonly (readonly string[])[] = [
-  ["passes-hit", "towns-hit"],
-  [
-    "pass-label-5",
-    "pass-label-4",
-    "pass-label-3",
-    "pass-label-2",
-    "pass-label-1",
-    "towns-label",
-  ],
-  ["tours-label"],
-  ["routes-hit"],
-  ["tours-hit"],
-];
-const HIT_LAYERS = HIT_GROUPS.flat();
-
-/**
  * How long a click waits before it selects, and how far the next one may sit
  * from it, for the two to count as one double click.
  *
@@ -282,21 +263,15 @@ const HIT_LAYERS = HIT_GROUPS.flat();
 const DOUBLE_MS = 300;
 const DOUBLE_PX = 30;
 
-interface Hit {
-  kind: Selection["kind"];
-  slug: string;
-  /** The feature's own properties – what the hover popup is built from. */
-  props: Record<string, string>;
-  /** Where the popup points: the mark itself, or the pointer on a line. */
-  anchor: [number, number];
-}
-
 /**
- * The one entity under a point, resolved across all hit layers at once.
+ * The one entity under a point, resolved across every hit layer at once.
+ *
  * A single query instead of a handler per layer: overlapping areas are the
- * normal case here, and only one of them may win a click.
+ * normal case here, and only one of them may win a click. Which one is
+ * `pick` (lib/map-pick.ts) – a decision over plain records, so the rule
+ * behind every click is tested without a map.
  */
-const pickAt = (m: MLMap, x: number, y: number): Hit | null => {
+const pickAt = (m: MLMap, x: number, y: number): Selection | null => {
   const layers = HIT_LAYERS.filter((id) => m.getLayer(id));
   if (layers.length === 0) return null;
   const features = m.queryRenderedFeatures(
@@ -306,33 +281,18 @@ const pickAt = (m: MLMap, x: number, y: number): Hit | null => {
     ],
     { layers },
   );
-  let best: Hit | null = null;
-  let bestRank = Number.POSITIVE_INFINITY;
-  let bestDist = Number.POSITIVE_INFINITY;
-  for (const f of features) {
-    const rank = HIT_GROUPS.findIndex((g) => g.includes(f.layer.id));
-    if (rank === -1 || rank > bestRank) continue;
-    const props = f.properties as Record<string, string>;
-    if (!props.slug) continue;
-    const at =
-      f.geometry.type === "Point"
-        ? (f.geometry.coordinates as [number, number])
-        : null;
-    const p = at ? m.project(at) : null;
-    const dist = p ? Math.hypot(p.x - x, p.y - y) : 0;
-    if (rank === bestRank && dist >= bestDist) continue;
-    const pointer = m.unproject([x, y]);
-    bestRank = rank;
-    bestDist = dist;
-    best = {
-      anchor: at ?? [pointer.lng, pointer.lat],
-      // An ascent belongs to its pass; everything else names its own kind.
-      kind: props.kind === "route" ? "pass" : (props.kind as Selection["kind"]),
-      props,
-      slug: props.slug,
-    };
-  }
-  return best;
+  return pick(
+    features.map((f) => ({
+      layer: f.layer.id,
+      point:
+        f.geometry.type === "Point"
+          ? (f.geometry.coordinates as [number, number])
+          : null,
+      slug: String(f.properties.slug ?? ""),
+    })),
+    { x, y },
+    (at) => m.project([at[0], at[1]]),
+  );
 };
 
 /** A stored base that no longer exists (a keyed raster, say) falls back to the default. */
@@ -660,24 +620,24 @@ const appLayers = (colors: Colors): LayerSpecification[] => {
     // its passes (lib/nearby.ts). Bottom of the app's stack, so
     // every line and dot stays readable on top of it.
     {
-      id: "town-reach-fill",
+      id: OVERLAY.hull,
       paint: { "fill-color": colors.town, "fill-opacity": 0.12 },
-      source: "reach",
+      source: SOURCE.reach,
       type: "fill",
     },
     {
-      id: "town-reach-line",
+      id: OVERLAY.hullEdge,
       paint: {
         "line-color": colors.town,
         "line-dasharray": [3, 2],
         "line-opacity": 0.7,
         "line-width": 1.5,
       },
-      source: "reach",
+      source: SOURCE.reach,
       type: "line",
     },
-    hitLine("tours-hit", "tours"),
-    hitLine("routes-hit", "routes"),
+    hitLine(LAYERS.tour.hit, SOURCE.tours),
+    hitLine(LAYERS.route.hit, SOURCE.routes),
     // A tour is the union of several ascents – the Sellaronda *is* its four
     // passes – so it is drawn as what it is: a band wide enough to hold them,
     // laid *under* the ascents so it reaches past them on both sides. What a
@@ -696,7 +656,7 @@ const appLayers = (colors: Colors): LayerSpecification[] => {
     // flattens the whole layer to one surface first and composites that once,
     // which is what makes a translucent band usable in switchbacks at all.
     {
-      id: "tours",
+      id: LAYERS.tour.mark,
       layout: { "line-cap": "butt", "line-join": "round" },
       paint: {
         "line-color": ["get", "color"],
@@ -704,14 +664,14 @@ const appLayers = (colors: Colors): LayerSpecification[] => {
         "line-layer-opacity": 0.62,
         "line-width": tourLine,
       },
-      source: "tours",
+      source: SOURCE.tours,
       type: "line",
     },
     // The ascent, on top of the band that holds it: solid and opaque, because
     // the status colour is the stronger signal and must not be tinted by the
     // tour it belongs to.
     {
-      id: "routes",
+      id: LAYERS.route.mark,
       layout: { "line-cap": "round", "line-join": "round" },
       paint: {
         "line-color": routeColor,
@@ -720,11 +680,11 @@ const appLayers = (colors: Colors): LayerSpecification[] => {
         // it says "this one, and here is everything about it".
         "line-width": ["case", selected, 6, hoveredLine, 5, 3.5],
       },
-      source: "routes",
+      source: SOURCE.routes,
       type: "line",
     },
     {
-      id: "tours-label",
+      id: LAYERS.tour.labels[0],
       layout: {
         "symbol-placement": "line",
         "symbol-spacing": 600,
@@ -737,14 +697,14 @@ const appLayers = (colors: Colors): LayerSpecification[] => {
         "text-halo-color": colors.paper,
         "text-halo-width": 1.5,
       },
-      source: "tours",
+      source: SOURCE.tours,
       type: "symbol",
     },
-    hitPoint("towns-hit", "towns"),
+    hitPoint(LAYERS.town.hit, SOURCE.towns),
     {
       ...hitPoint(
-        "passes-hit",
-        "passes",
+        LAYERS.pass.hit,
+        SOURCE.passes,
         passRadius(coarse ? HIT_RADIUS : HIT_RADIUS_FINE),
       ),
       // The hit area follows the rule the dot follows, or a hidden pass still
@@ -760,7 +720,7 @@ const appLayers = (colors: Colors): LayerSpecification[] => {
     // passes are what the map is read for; the town is the answer to the
     // second question, not the first.
     {
-      id: "towns",
+      id: LAYERS.town.mark,
       layout: {
         "icon-allow-overlap": true,
         "icon-image": [
@@ -773,11 +733,11 @@ const appLayers = (colors: Colors): LayerSpecification[] => {
         ],
         "icon-size": ["interpolate", ["linear"], ["zoom"], 5, 0.6, 13, 0.85],
       },
-      source: "towns",
+      source: SOURCE.towns,
       type: "symbol",
     },
     {
-      id: "towns-label",
+      id: LAYERS.town.labels[0],
       layout: {
         "text-field": ["get", "name"],
         "text-font": [FONT_BOLD],
@@ -792,7 +752,7 @@ const appLayers = (colors: Colors): LayerSpecification[] => {
         "text-halo-color": colors.paper,
         "text-halo-width": 2,
       },
-      source: "towns",
+      source: SOURCE.towns,
       type: "symbol",
     },
     {
@@ -806,9 +766,9 @@ const appLayers = (colors: Colors): LayerSpecification[] => {
           ? []
           : [["any", isSelected, [">=", ["get", "fame"], minFame]]]),
       ]) as never,
-      id: "passes",
+      id: LAYERS.pass.mark,
       paint: passPaint,
-      source: "passes",
+      source: SOURCE.passes,
       type: "circle",
     },
     // The hovered pass, drawn again from its own one-feature source: at a
@@ -821,9 +781,9 @@ const appLayers = (colors: Colors): LayerSpecification[] => {
         ["==", ["get", "kind"], "pass"],
         ["!=", ["get", "favorite"], 1],
       ],
-      id: "hover-mark",
+      id: OVERLAY.mark,
       paint: passPaint,
-      source: "hover",
+      source: SOURCE.hover,
       type: "circle",
     },
     {
@@ -840,19 +800,11 @@ const appLayers = (colors: Colors): LayerSpecification[] => {
         ],
         "icon-size": ["interpolate", ["linear"], ["zoom"], 6, 0.5, 12, 0.9],
       },
-      source: "passes",
+      source: SOURCE.passes,
       type: "symbol",
     },
     // Labels staggered by prominence; MapLibre resolves collisions
-    ...(
-      [
-        [5, 0],
-        [4, 7],
-        [3, 8],
-        [2, 9.5],
-        [1, 10.5],
-      ] as const
-    ).map(([fame, minzoom]) => ({
+    ...PASS_LABELS.map(({ fame, minzoom }) => ({
       filter:
         fame === 5
           ? ([
@@ -867,7 +819,7 @@ const appLayers = (colors: Colors): LayerSpecification[] => {
               ["!=", ["get", "selected"], 1],
               ["!=", ["get", "favorite"], 1],
             ] as never),
-      id: `pass-label-${fame}`,
+      id: passLabelId(fame),
       layout: {
         "symbol-sort-key": ["-", 6, ["get", "fame"]] as never,
         "text-field": ["get", "name"] as never,
@@ -884,7 +836,7 @@ const appLayers = (colors: Colors): LayerSpecification[] => {
         "text-halo-width": 1.6,
         "text-opacity": fame <= 2 ? 0.85 : 1,
       },
-      source: "passes",
+      source: SOURCE.passes,
       type: "symbol" as const,
     })),
     /**
@@ -896,7 +848,7 @@ const appLayers = (colors: Colors): LayerSpecification[] => {
      * one-feature source, so hovering never rewrites the 201-point source.
      */
     {
-      id: "hover-ring",
+      id: OVERLAY.ring,
       paint: {
         "circle-color": "transparent",
         "circle-opacity": 0,
@@ -906,12 +858,12 @@ const appLayers = (colors: Colors): LayerSpecification[] => {
         "circle-stroke-opacity": 0.9,
         "circle-stroke-width": 3,
       },
-      source: "hover",
+      source: SOURCE.hover,
       type: "circle",
     },
     // Topmost: the profile cursor must stay visible over its own ascent.
     {
-      id: "profile-cursor",
+      id: OVERLAY.cursor,
       paint: {
         "circle-color": colors.paper,
         "circle-pitch-alignment": "map",
@@ -919,68 +871,17 @@ const appLayers = (colors: Colors): LayerSpecification[] => {
         "circle-stroke-color": colors.ink,
         "circle-stroke-width": 2.5,
       },
-      source: "cursor",
+      source: SOURCE.cursor,
       type: "circle",
     },
   ] as LayerSpecification[];
 };
 
-const escapeHtml = (s: string) =>
-  s.replaceAll(
-    /[&<>"']/gu,
-    (c) =>
-      ({ '"': "&quot;", "&": "&amp;", "'": "&#39;", "<": "&lt;", ">": "&gt;" })[
-        c
-      ]!,
-  );
-
-/**
- * The hover popup's body: the name, the one line the mark carries (a road's
- * height and kind, a tour's own line) and the editorial labels with the same
- * glyphs the sidebar and the panel use – `lib/tag-icons.ts` exists because
- * this popup is an HTML string and not React. A town has labels and no
- * subtitle: what it is, is what the labels say.
- */
-/**
- * What the hover popup reads off a road: its name, the one line under it and
- * its labels. One function rather than an object literal in the marker
- * effect, because the ascents read it too – see `roadPopupRef` – and a popup
- * that says one thing over the dot and another over the line belonging to it
- * is the kind of drift nobody notices until a screenshot.
- */
-const roadPopup = (p: MapPass): Record<string, string> => ({
-  name: p.name,
-  subtitle: [fmtUnit(p.elevation, "m"), roadTypeWord(p.type)]
-    .filter(Boolean)
-    .join(" · "),
-  tags: (p.tags ?? []).join(","),
-});
-
-const popupHtml = (p: Record<string, string>) => {
-  const title = `<b>${escapeHtml(p.name ?? "")}</b>`;
-  // Feature properties are strings; only what the vocabulary knows is drawn.
-  const tags = (p.tags ?? "")
-    .split(",")
-    .filter((t): t is Tag => t in TAG_LABEL);
-  const subtitle = p.subtitle ? `<br>${escapeHtml(p.subtitle)}` : "";
-  if (tags.length === 0) return `${title}${subtitle}`;
-  const chips = tags
-    .map(
-      (t) =>
-        `<span class="flex items-center gap-1">${tagIconSvg(t)}${escapeHtml(TAG_LABEL[t].label)}</span>`,
-    )
-    .join("");
-  return `${title}${subtitle}<div class="mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs">${chips}</div>`;
-};
-
 export const PassMap = ({
-  passes,
-  tours,
-  towns,
+  rows,
+  shown,
   townReach,
   assets,
-  showPasses,
-  showTowns,
   selection,
   hovered = null,
   onHover,
@@ -1010,8 +911,8 @@ export const PassMap = ({
   const [turned, setTurned] = useState(false);
   const detailLevel = useRef<DetailLevelControl | null>(null);
   useEffect(() => {
-    detailLevel.current?.setShown(showPasses);
-  }, [showPasses, ready]);
+    detailLevel.current?.setShown(shown.passes);
+  }, [shown.passes, ready]);
   const bearing = useRef(0);
   const needle = useRef<SVGSVGElement | null>(null);
   /** Points the needle north; also applies the angle it mounts at. */
@@ -1019,8 +920,27 @@ export const PassMap = ({
     needle.current = el;
     if (el) el.style.transform = `rotate(${-bearing.current}deg)`;
   };
-  /** What the hover ring and the hovered line state currently show. */
-  const painted = useRef<string | null>(null);
+  /**
+   * What the map draws, as one value, and what of it has been applied.
+   *
+   * The scene is built from the props on every render (`buildScene`,
+   * lib/map-scene.ts) and the effect below hands MapLibre the difference to
+   * the last one – so a hover that changes nothing costs nothing, and nothing
+   * the map shows is decided in an effect any more.
+   */
+  const coarse = useMediaQuery(COARSE_QUERY);
+  const scene = buildScene({
+    env: { coarse },
+    hovered,
+    profileCursor,
+    rows,
+    selection,
+    shown,
+    tourBounds: assets.tourBounds,
+    townReach,
+  });
+  const applied = useRef<Scene | null>(null);
+  const host = useRef<SceneHost | null>(null);
   /**
    * Every camera move the map makes by itself goes through this one machine
    * (`camera` in lib/map-camera.ts): the effects below turn a prop change into
@@ -1047,44 +967,16 @@ export const PassMap = ({
     onHoverRef.current = onHover;
   }, [onSelect, onHover]);
 
-  // The hover handler below is registered once during setup; this ref keeps
-  // the hulls current without rebuilding the map.
-  const reachRef = useRef<TownReach>(townReach);
-
   /**
-   * Each road's popup body by slug. An ascent line *is* its road – `pickAt`
-   * already answers a hit on one with `kind: "pass"` – but the route features
-   * come from the static GeoJSON file, which carries the slug and nothing
-   * else. Without this lookup the wide hit area over a line would open a
-   * popup holding a bare name where the dot two hundred metres away shows the
-   * height, the type and the labels.
+   * What the pointer is over, as the map last heard it. The map reports a
+   * hover and is answered by the scene like any other half of the screen, so
+   * this is not a second hover state: it is what keeps the pointer from
+   * dispatching the same entity on every mouse move across one dot.
    */
-  const roadPopupRef = useRef(new Map<string, Record<string, string>>());
+  const hoveredRef = useRef<Selection | null>(hovered);
   useEffect(() => {
-    roadPopupRef.current = new Map(passes.map((p) => [p.slug, roadPopup(p)]));
-  }, [passes]);
-
-  /** Draws one town's reach hull, or clears the layer. */
-  const paintReach = (slug: string | null) => {
-    const m = map.current;
-    const ring = slug ? reachRef.current[slug] : undefined;
-    void m?.getSource<GeoJSONSource>("reach")?.setData({
-      features: ring
-        ? [
-            {
-              geometry: { coordinates: [ring], type: "Polygon" },
-              properties: {},
-              type: "Feature",
-            },
-          ]
-        : [],
-      type: "FeatureCollection",
-    });
-  };
-
-  /** The box around everything currently drawn; `null` while nothing is. */
-  const drawn = () =>
-    visibleBounds(passes, tours, assets.tourBounds, showPasses);
+    hoveredRef.current = hovered;
+  }, [hovered]);
 
   // --- Build the map once ------------------------------------------------
   // Once the intent is known, which is one tick after the first commit: the
@@ -1152,21 +1044,29 @@ export const PassMap = ({
             },
           ]),
         ),
-        cursor: { data: EMPTY, type: "geojson" },
-        hover: { data: EMPTY, type: "geojson" },
-        passes: { data: EMPTY, type: "geojson" },
-        reach: { data: EMPTY, type: "geojson" },
+        // What the scene writes: empty until it has been applied once.
+        [SOURCE.cursor]: { data: EMPTY, type: "geojson" },
+        [SOURCE.hover]: { data: EMPTY, type: "geojson" },
+        [SOURCE.passes]: { data: EMPTY, type: "geojson" },
+        [SOURCE.reach]: { data: EMPTY, type: "geojson" },
         // Static files with a content hash in the name (scripts/build-map-assets.ts);
         // promoteId makes the `id` property the feature id for feature state.
-        routes: { data: assets.routesUrl, promoteId: "id", type: "geojson" },
-        tours: { data: assets.toursUrl, promoteId: "id", type: "geojson" },
-        towns: { data: EMPTY, type: "geojson" },
+        [SOURCE.routes]: {
+          data: assets.routesUrl,
+          promoteId: "id",
+          type: "geojson",
+        },
+        [SOURCE.tours]: {
+          data: assets.toursUrl,
+          promoteId: "id",
+          type: "geojson",
+        },
+        [SOURCE.towns]: { data: EMPTY, type: "geojson" },
       },
       version: 8,
     };
 
     const { view } = intent;
-    const coarse = window.matchMedia("(pointer: coarse)").matches;
     const m = new MLMap({
       // Placed by hand below, in the corner opposite the tools.
       attributionControl: false,
@@ -1279,49 +1179,29 @@ export const PassMap = ({
       closeOnClick: false,
       offset: 12,
     });
-    /** The entity under the pointer as `kind:slug`, to rebuild only on change. */
-    let hoverKey: string | null = null;
+    host.current = sceneHost(m, popup);
     /** Last pointer position, so a moving map re-reads what is under it. */
     let at: { x: number; y: number } | null = null;
 
     const hover = () => {
-      // While the map moves there is nothing to aim at, and a popup following
+      // While the map moves there is nothing to aim at, and a label following
       // a drag is only noise.
       const hit = at && !m.isMoving() ? pickAt(m, at.x, at.y) : null;
       m.getCanvas().style.cursor = hit ? "pointer" : "";
-      if (!hit) {
-        popup.remove();
-        if (hoverKey) {
-          paintReach(null);
-          onHoverRef.current?.(null);
-        }
-        hoverKey = null;
+      const was = hoveredRef.current;
+      if ((hit && was && entityKey(hit) === entityKey(was)) || (!hit && !was))
         return;
-      }
-      const key = entityKey(hit.kind, hit.slug);
-      if (key !== hoverKey) {
-        hoverKey = key;
-        // The list highlights the same row; one piece of state, two halves of
-        // the screen (`hovered` in explorer.tsx).
-        onHoverRef.current?.({ kind: hit.kind, slug: hit.slug });
-        // A route feature knows only its slug; its road knows the rest.
-        const props =
-          hit.props.kind === "route"
-            ? (roadPopupRef.current.get(hit.slug) ?? hit.props)
-            : hit.props;
-        popup.setHTML(popupHtml(props));
-        // Hovering a town also outlines what it reaches. Only on hover:
-        // selecting one flies the camera in, and from inside the hull there is
-        // nothing to see. The outline goes when the pointer does.
-        paintReach(hit.kind === "town" ? hit.slug : null);
-      }
-      // `addTo` on an open popup re-appends its element, so it is only ever
-      // added once per hover; the anchor follows the pointer along a line.
-      popup.setLngLat(hit.anchor);
-      if (!popup.isOpen()) popup.addTo(m);
+      // The map reports what its pointer is over and draws nothing itself: the
+      // ring, the wider lines, the reach hull and the label all come back
+      // through the scene, which is what makes a mark hovered here and a row
+      // hovered in the list answer with the same picture (`hovered` in
+      // explorer.tsx). Noted before it is dispatched, so the rest of the
+      // pointer events in this frame do not repeat it.
+      hoveredRef.current = hit;
+      onHoverRef.current?.(hit);
     };
 
-    // Hover is a mouse affordance; a finger has none, and a popup under it
+    // Hover is a mouse affordance; a finger has none, and a label under it
     // would cover what was just tapped.
     if (!coarse) {
       m.on("mousemove", (e) => {
@@ -1333,7 +1213,6 @@ export const PassMap = ({
         hover();
       });
     }
-
     /** The selection a click has resolved but not yet handed over. */
     let pending: ReturnType<typeof setTimeout> | null = null;
     /** The previous click, to tell the second half of a double click apart. */
@@ -1363,10 +1242,9 @@ export const PassMap = ({
       const hit = pickAt(m, x, y);
       dropPending();
       if (!hit) return;
-      const sel = { kind: hit.kind, slug: hit.slug };
       pending = setTimeout(() => {
         pending = null;
-        onSelectRef.current(sel);
+        onSelectRef.current(hit);
       }, DOUBLE_MS);
     });
     // A mouse announces the double click itself; a tap on a phone may not, and
@@ -1426,7 +1304,7 @@ export const PassMap = ({
       m.remove();
       map.current = null;
     };
-    // Intentional: build only once. Data arrives via the effects below.
+    // Intentional: build only once. What it draws arrives as the scene below.
     // oxlint-disable-next-line react/exhaustive-deps
   }, [intent, send]);
 
@@ -1481,10 +1359,8 @@ export const PassMap = ({
   // What the map draws is what it opens on, so this is dispatched again until
   // something has been framed: the lines and dots may arrive after the style.
   useEffect(() => {
-    if (ready) send({ bounds: drawn(), type: "ready" });
-    // `drawn` reads the props in the deps and nothing else.
-    // oxlint-disable-next-line react/exhaustive-deps
-  }, [ready, passes, tours, showPasses, assets, send]);
+    if (ready) send({ bounds: scene.bounds, type: "ready" });
+  }, [ready, scene.bounds, send]);
 
   useEffect(() => {
     if (!ready) return;
@@ -1493,9 +1369,9 @@ export const PassMap = ({
       target: selection
         ? flightFor(selection, {
             passBounds: assets.passBounds,
-            passes,
+            passes: rows.pass.map((r) => r.pass),
             tourBounds: assets.tourBounds,
-            towns,
+            towns: rows.town.map((r) => r.town),
           })
         : null,
       type: "selection",
@@ -1517,210 +1393,27 @@ export const PassMap = ({
       send({ type: "requestedView", view: requestedView });
   }, [requestedView, ready, send]);
 
-  // --- Which ascents show, and how -----------------------------------------
-  // The geometry stays in the worker; a filter keeps the lines of filtered-out
-  // passes out of the picture and out of hit-testing, feature state colours
-  // the rest. MapLibre applies state set before the file has arrived to the
-  // tiles as they load, so nothing here waits for the source.
-  useEffect(() => {
-    const m = map.current;
-    if (!m || !ready) return;
-    const selPass = selection?.kind === "pass" ? selection.slug : null;
-    const shown = [
-      "in",
-      ["get", "slug"],
-      ["literal", showPasses ? passes.map((p) => p.slug) : []],
-    ] as never;
-    for (const layer of ["routes", "routes-hit"]) m.setFilter(layer, shown);
-    for (const p of passes)
-      for (const [i] of p.ascents.entries())
-        m.setFeatureState(
-          { id: ascentKey(p.slug, i), source: "routes" },
-          { selected: p.slug === selPass ? 1 : 0, status: p.status },
-        );
-  }, [passes, selection, showPasses, ready]);
-
-  // --- Which tours show, and how -------------------------------------------
-  // A handful of tours: the filter with the visible slugs is as cheap as
-  // feature state and also keeps a hidden tour from answering hover and click.
-  useEffect(() => {
-    const m = map.current;
-    if (!m || !ready) return;
-    const visible = tours.filter((t) => t.visible).map((t) => t.slug);
-    const filter = ["in", ["get", "slug"], ["literal", visible]] as never;
-    for (const layer of ["tours", "tours-label", "tours-hit"])
-      m.setFilter(layer, filter);
-    for (const t of tours)
-      m.setFeatureState(
-        { id: t.slug, source: "tours" },
-        {
-          selected:
-            selection?.kind === "tour" && selection.slug === t.slug ? 1 : 0,
-        },
-      );
-  }, [tours, selection, ready]);
-
-  // --- Markers: passes and towns ------------------------------------------
-  // Points, a few hundred of them; their symbol layers need real properties
-  // (icon by favourite and status, label filters by fame), which feature
-  // state cannot drive, so these two sources are still written as GeoJSON.
-  useEffect(() => {
-    const m = map.current;
-    if (!m || !ready) return;
-    const selPass = selection?.kind === "pass" ? selection.slug : null;
-    void m.getSource<GeoJSONSource>("passes")?.setData({
-      features: (showPasses ? passes : []).map((p) => ({
-        geometry: { coordinates: [p.lon, p.lat], type: "Point" },
-        properties: {
-          ...roadPopup(p),
-          fame: p.fame,
-          favorite: p.favorite ? 1 : 0,
-          kind: "pass",
-          selected: p.slug === selPass ? 1 : 0,
-          slug: p.slug,
-          status: p.status,
-        },
-        type: "Feature",
-      })),
-      type: "FeatureCollection",
-    });
-  }, [passes, selection, showPasses, ready]);
-
-  useEffect(() => {
-    const m = map.current;
-    if (!m || !ready) return;
-    const selTown = selection?.kind === "town" ? selection.slug : null;
-    void m.getSource<GeoJSONSource>("towns")?.setData({
-      features: showTowns
-        ? towns.map((t) => ({
-            geometry: { coordinates: [t.lon, t.lat], type: "Point" },
-            properties: {
-              favorite: t.favorite ? 1 : 0,
-              kind: "town",
-              name: t.name,
-              selected: t.slug === selTown ? 1 : 0,
-              slug: t.slug,
-              tags: t.tags.join(","),
-            },
-            type: "Feature",
-          }))
-        : [],
-      type: "FeatureCollection",
-    });
-  }, [towns, selection, showTowns, ready]);
-
-  // --- The reach hull of the hovered town ---------------------------------
-  // Nothing is hovered while this runs, so the layer is cleared with it: the
-  // towns may have just been switched off under the pointer.
-  useEffect(() => {
-    if (!ready) return;
-    reachRef.current = townReach;
-    paintReach(null);
-    // `paintReach` only reads refs and the map instance, both stable.
-    // oxlint-disable-next-line react/exhaustive-deps
-  }, [townReach, showTowns, ready]);
-
-  // --- What the pointer is over -------------------------------------------
+  // --- What the map shows --------------------------------------------------
   /**
-   * The answer to a hover, wherever it came from. A point gets the ring; a
-   * tour and a road get a wider line through feature state, because a ring
-   * around a 40 km loop means nothing.
+   * The scene, handed to MapLibre as the difference to the one before it
+   * (`applyScene`, components/map/apply-scene.ts).
    *
-   * Only the two entities that changed are touched – the one being left and
-   * the one being entered. The selection effect above can afford to walk all
-   * 201 passes and write feature state for every ascent, because a selection
-   * happens once per click; a hover happens on every pointer move across a
-   * list, and ~400 `setFeatureState` calls per move is enough repaint work to
-   * visibly starve a flight in progress. `painted` is what was drawn last, so
-   * the effect knows what to undo.
+   * This was four effects and two hover states: one deciding what the ascents
+   * show, one the tours, two writing the point sources, and beside them a
+   * `hoverKey` owned by the map's pointer and a `painted` ref owned by the
+   * `hovered` prop. Nothing reconciled the two, which is why a town hovered in
+   * the list drew no reach hull and a pass filtered out under the pointer kept
+   * its ascents highlighted. One value, applied in one place, cannot disagree
+   * with itself.
+   *
+   * Feature state set before the static line files have arrived is applied to
+   * the tiles as they load, so nothing here waits for a source.
    */
   useEffect(() => {
-    const m = map.current;
-    if (!m || !ready) return;
-    const was = painted.current;
-    const key = hovered ? entityKey(hovered) : null;
-    if (was === key) return;
-    painted.current = key;
-
-    /** Sets or clears the line state of one entity. */
-    const paintLines = (sel: Selection, on: number) => {
-      if (sel.kind === "tour") {
-        m.setFeatureState({ id: sel.slug, source: "tours" }, { hovered: on });
-        return;
-      }
-      if (sel.kind !== "pass") return;
-      const pass = passes.find((p) => p.slug === sel.slug);
-      for (const [i] of pass?.ascents.entries() ?? [])
-        m.setFeatureState(
-          { id: ascentKey(sel.slug, i), source: "routes" },
-          { hovered: on },
-        );
-    };
-
-    if (was) {
-      const [kind, slug] = was.split(":") as [Selection["kind"], string];
-      paintLines({ kind, slug }, 0);
-    }
-    if (hovered) paintLines(hovered, 1);
-
-    const point =
-      hovered?.kind === "pass"
-        ? passes.find((p) => p.slug === hovered.slug)
-        : hovered?.kind === "town"
-          ? towns.find((t) => t.slug === hovered.slug)
-          : undefined;
-    void m.getSource<GeoJSONSource>("hover")?.setData({
-      features: point
-        ? [
-            {
-              geometry: { coordinates: [point.lon, point.lat], type: "Point" },
-              // What `hover-mark` paints the dot from – the same properties
-              // the pass source carries, so the two dots come out identical.
-              properties:
-                hovered?.kind === "pass" && "fame" in point
-                  ? {
-                      fame: point.fame,
-                      favorite: point.favorite ? 1 : 0,
-                      kind: "pass",
-                      selected:
-                        selection?.kind === "pass" &&
-                        selection.slug === point.slug
-                          ? 1
-                          : 0,
-                      status: point.status,
-                    }
-                  : { kind: hovered?.kind ?? "" },
-              type: "Feature",
-            },
-          ]
-        : [],
-      type: "FeatureCollection",
-    });
-    // Intentional: the hover is the trigger; the lists are only looked up in it.
-    // oxlint-disable-next-line react/exhaustive-deps
-  }, [hovered, ready]);
-
-  // --- Elevation-profile cursor -------------------------------------------
-  // One point, so setData is cheap enough to run on every pointer move.
-  useEffect(() => {
-    const m = map.current;
-    if (!m || !ready) return;
-    void m.getSource<GeoJSONSource>("cursor")?.setData({
-      features: profileCursor
-        ? [
-            {
-              geometry: {
-                coordinates: [profileCursor.lon, profileCursor.lat],
-                type: "Point",
-              },
-              properties: {},
-              type: "Feature",
-            },
-          ]
-        : [],
-      type: "FeatureCollection",
-    });
-  }, [profileCursor, ready]);
+    if (!ready || !host.current) return;
+    applyScene(host.current, applied.current, scene);
+    applied.current = scene;
+  }, [scene, ready]);
 
   // Click on the profile: close enough to count the hairpins.
   useEffect(() => {
@@ -1774,7 +1467,7 @@ export const PassMap = ({
   const fitToVisible = () => {
     const m = map.current;
     if (!m) return;
-    const bounds = drawn();
+    const { bounds } = scene;
     const target = bounds
       ? m.cameraForBounds(bounds, { padding: FIT_PADDING })
       : undefined;

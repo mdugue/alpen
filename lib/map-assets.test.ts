@@ -88,17 +88,18 @@ describe("features", () => {
     const f = routeFeatures([pass], routes);
     expect(f).toHaveLength(1);
     expect(f[0]!.id).toBe("testpass:0");
+    // Nothing the hover label reads: it is looked up from the entity, so the
+    // file carries only what addresses the line (lib/map-scene.ts).
     expect(f[0]!.properties).toEqual({
       id: "testpass:0",
       kind: "route",
       name: "Testpass",
       slug: "testpass",
-      subtitle: "Auffahrt ab Nord",
     });
     expect(f[0]!.geometry.coordinates[0]).toEqual([9, 46]);
   });
 
-  test("tours carry colour and a German subtitle", () => {
+  test("tours carry the colour and the name drawn along the line", () => {
     const f = tourFeatures([tour], routes);
     expect(f[0]!.properties).toEqual({
       color: "#123456",
@@ -106,7 +107,6 @@ describe("features", () => {
       kind: "tour",
       name: "Testrunde",
       slug: "testrunde",
-      subtitle: "ca. 120 km · 3.000 hm",
     });
     expect(tourFeatures([{ ...tour, slug: "ohne-route" }], routes)).toEqual([]);
   });

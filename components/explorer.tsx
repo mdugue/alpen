@@ -4,7 +4,6 @@ import { useReducer, useRef, useState } from "react";
 
 import { AppHeader } from "@/components/app-header";
 import { PassMap } from "@/components/map/pass-map";
-import type { MapPass } from "@/components/map/pass-map";
 import { MobileSheet, sheetCover } from "@/components/mobile-sheet";
 import { DetailPanel } from "@/components/panel/detail-panel";
 import { ScalesDialog } from "@/components/scales-dialog";
@@ -16,7 +15,6 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import {
   DETAIL_SNAPS,
   initialState,
-  isShown,
   KIND_LABEL,
   LIST_SNAPS,
   reduce,
@@ -133,23 +131,6 @@ export const Explorer = ({ data, defaultPeriod }: Props) => {
    */
   const band = seasonBand(passes, years, filters, isFavorite, signals);
   const bar = currentBar(band, filters.period);
-
-  const mapPasses: MapPass[] = rows.pass.map(({ pass, status, favorite }) => ({
-    ...pass,
-    favorite,
-    status,
-  }));
-  // What the list shows for a kind is what the map shows for that kind; the
-  // visibility switches only add a layer toggle on top.
-  const mapTours = rows.tour.map(({ tour: t, status }) => ({
-    ...t,
-    status,
-    visible: isShown(shown, "tour", t.slug),
-  }));
-  const mapTowns = rows.town.map(({ town, favorite }) => ({
-    ...town,
-    favorite,
-  }));
 
   const select = (sel: Selection) =>
     dispatch({ selection: sel, type: "select" });
@@ -298,14 +279,14 @@ export const Explorer = ({ data, defaultPeriod }: Props) => {
         }
       >
         <div id="map" tabIndex={-1} className="absolute inset-0">
+          {/* What the list shows for a kind is what the map shows for that
+              kind; the visibility switches only add a layer toggle on top,
+              and `buildScene` (lib/map-scene.ts) reads both. */}
           <PassMap
-            passes={mapPasses}
-            tours={mapTours}
-            towns={mapTowns}
+            rows={rows}
+            shown={shown}
             townReach={townReach}
             assets={assets}
-            showPasses={shown.passes}
-            showTowns={shown.towns}
             selection={selection}
             hovered={hovered}
             onHover={hover}

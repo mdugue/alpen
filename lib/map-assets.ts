@@ -5,7 +5,6 @@ import type { Pass, RouteGeometry, Tour } from "@/lib/types";
 // Relative on purpose: next.config.ts loads this module outside the bundler,
 // where the "@/" alias is not resolved for transitive imports.
 import { ascentKey, tourKey } from "./route-key";
-import { fmt } from "./utils";
 
 /**
  * The static GeoJSON files MapLibre loads instead of the page shipping route
@@ -159,15 +158,19 @@ const line = (
 
 /**
  * One line per ascent that has a routed geometry, keyed like `routes.json`.
- * The properties are what the popup and the click handler in `pass-map.tsx`
- * read; status and selection come as feature state.
+ *
+ * The properties are what the map addresses the line by: `slug` is what the
+ * ascent filter and the pick read, `id` is the feature id promoted for feature
+ * state. What the hover label says is not among them – it is looked up from
+ * the entity (`buildScene`, lib/map-scene.ts), so a line and the dot two
+ * hundred metres away cannot say different things about the same road.
  */
 export const routeFeatures = (
   passes: readonly Pass[],
   routes: Record<string, RouteGeometry>,
 ): LineFeature[] =>
   passes.flatMap((p) =>
-    p.ascents.flatMap((a, i) => {
+    p.ascents.flatMap((_, i) => {
       const key = ascentKey(p.slug, i);
       const geom = routes[key];
       if (!geom) return [];
@@ -177,7 +180,6 @@ export const routeFeatures = (
           kind: "route",
           name: p.name,
           slug: p.slug,
-          subtitle: `Auffahrt ab ${a.label}`,
         }),
       ];
     }),
@@ -200,9 +202,9 @@ export const tourFeatures = (
         color: t.color,
         id: t.slug,
         kind: "tour",
+        // `name` is drawn along the line; `color` paints it.
         name: t.name,
         slug: t.slug,
-        subtitle: `ca. ${fmt(t.km)} km · ${fmt(t.elevationGain)} hm`,
       }),
     ];
   });

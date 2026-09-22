@@ -35,13 +35,16 @@ GeoJSON per kind into `public/map` (git-ignored, cached immutably via
 and per pass – what a selection is framed into, and the one thing a camera
 cannot wait for a fetch to learn (10 KB for all 201 passes, four rounded
 numbers each); MapLibre fetches the files and tiles them in its worker.
-`pass-map.tsx` never calls `setData` on the `routes` and `tours` sources: which
-lines show is a layer filter (which also keeps hidden lines out of
-hit-testing), status and selection are feature state. MapLibre keeps that state
+Nothing ever calls `setData` on the `routes` and `tours` sources: which lines
+show is a layer filter (which also keeps hidden lines out of hit-testing),
+status, hover and selection are feature state – both of them scene fields
+(`lib/map-scene.ts`), applied by `applyScene`. MapLibre keeps that state
 per source and applies it to tiles as they load, so it is set as soon as the
 style is parsed (`style.load`) and needs no re-application when the file
 arrives. Points (passes, towns) stay in-memory sources, because their symbol
-layers need real properties. Anything else the client used to read from the
+layers need real properties; the lines carry only what addresses them, since
+what the hover label says is looked up from the entity rather than read off a
+rendered feature. Anything else the client used to read from the
 geometry is precomputed on the server: tours within reach of an entity
 (`lib/nearby.ts`) and the road coordinate of every profile sample
 (`ProfileWithCoords`).

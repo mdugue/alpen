@@ -6,6 +6,7 @@
 import { afterAll, beforeAll, expect, test } from "bun:test";
 
 import passes from "@/data/passes.json" with { type: "json" };
+import { HIT_LAYERS, LAYERS, OVERLAY } from "@/lib/map-layers";
 import { startApp, waitUntil, withPage } from "@/test/browser";
 import type { App } from "@/test/browser";
 
@@ -336,35 +337,38 @@ test(
 
 /**
  * The map's hit areas: what is drawn is a few pixels wide, what answers the
- * pointer is the transparent layer over it – and the name next to a mark
- * counts as part of the mark.
+ * pointer is the transparent layer over it.
+ *
+ * The ids come from the one table the style is built from
+ * (`LAYERS`, lib/map-layers.ts), so a layer renamed on one side and not the
+ * other fails here rather than silently going quiet – which is also why the
+ * whole table is checked against the running map: a fame level added to the
+ * label ladder has to answer the pointer too.
  */
 const HIT_POINTS = `(() => {
   const m = window.__alpen?.map;
   if (!m) return null;
   const feature = m
-    .queryRenderedFeatures({ layers: ["passes-hit"] })
+    .queryRenderedFeatures({ layers: [${JSON.stringify(LAYERS.pass.hit)}] })
     .find((f) => f.properties.slug === "col-du-galibier");
   if (!feature) return null;
   const c = m.project(feature.geometry.coordinates);
-  const labels = ["pass-label-5", "pass-label-4", "pass-label-3"]
-    .filter((id) => m.getLayer(id));
-  // A point that only the name answers: on the label, clear of every mark.
-  const onlyLabel = (x, y) =>
-    m.queryRenderedFeatures([x, y], { layers: labels })
-      .some((f) => f.properties.slug === "col-du-galibier") &&
-    m.queryRenderedFeatures([x, y], { layers: ["passes-hit", "towns-hit"] })
-      .length === 0;
-  let label = null;
-  for (let d = 16; d <= 200 && !label; d += 4)
-    for (const [dx, dy] of [[d, 0], [-d, 0], [0, d], [0, -d]])
-      if (!label && onlyLabel(c.x + dx, c.y + dy))
-        label = { x: c.x + dx, y: c.y + dy };
-  return { dot: { x: c.x, y: c.y }, label, moving: m.isMoving() };
+  // Beside the dot: the drawn circle ends at about 14 px, the hit area at 19.
+  const beside = [c.x + 16, c.y];
+  const answers = (layer) =>
+    m.queryRenderedFeatures(beside, { layers: [layer] })
+      .some((f) => f.properties.slug === "col-du-galibier");
+  return {
+    dot: { x: c.x, y: c.y },
+    missing: ${JSON.stringify(HIT_LAYERS)}.filter((id) => !m.getLayer(id)),
+    drawn: answers(${JSON.stringify(LAYERS.pass.mark)}),
+    hit: answers(${JSON.stringify(LAYERS.pass.hit)}),
+    moving: m.isMoving(),
+  };
 })()`;
 
 test(
-  "10 · a pass answers beside its dot and on its name",
+  "10 · a pass answers beside its dot, where nothing is drawn",
   () =>
     // A camera, no selection: nothing floats over the map and nothing flies.
     withPage(
@@ -374,29 +378,25 @@ test(
       async (page) => {
         type Points = {
           dot: { x: number; y: number };
-          label: { x: number; y: number } | null;
+          missing: string[];
+          drawn: boolean;
+          hit: boolean;
           moving: boolean;
         } | null;
-        const points = async () => {
-          let p: Points = null;
-          await waitUntil(async () => {
-            p = await page.evaluate<Points>(HIT_POINTS);
-            return !!p && !p.moving && !!p.label;
-          }, "the Galibier drawn with its name, on a map at rest");
-          return p!;
-        };
+        let p: Points = null;
+        await waitUntil(async () => {
+          p = await page.evaluate<Points>(HIT_POINTS);
+          return !!p && !p.moving;
+        }, "the Galibier drawn, on a map at rest");
+        const points = p!;
 
-        // Beside the dot: the drawn circle ends at 13 px, the hit area at 19.
-        const beside = await points();
-        await page.clickAt(beside.dot.x + 16, beside.dot.y);
-        await page.waitFor("#detail-title");
-        expect(await page.text("#detail-title")).toBe("Col du Galibier");
-
-        // And on the name, which is a target of its own.
-        await page.press("Escape");
-        await page.waitForGone("#detail-title");
-        const named = await points();
-        await page.clickAt(named.label!.x, named.label!.y);
+        // Every layer the pick queries is in the style under that name.
+        expect(points.missing).toEqual([]);
+        // 16 px beside the summit the dot itself answers nothing …
+        expect(points.drawn).toBe(false);
+        // … its hit area does, and a click there opens the pass.
+        expect(points.hit).toBe(true);
+        await page.clickAt(points.dot.x + 16, points.dot.y);
         await page.waitFor("#detail-title");
         expect(await page.text("#detail-title")).toBe("Col du Galibier");
       },
@@ -841,5 +841,47 @@ test(
         );
       },
     ),
+  TIMEOUT,
+);
+
+/**
+ * One hover, both halves of the screen.
+ *
+ * The hull of what a town reaches used to be painted by the map's own pointer
+ * alone, so pointing at a row said nothing about the town it names – the two
+ * hover states never met (docs/plans/30-map-scene.md). Now the row reports the
+ * hover and the scene answers it, which is what this checks from the outside.
+ */
+const REACH_DRAWN = `(() => {
+  const m = window.__alpen?.map;
+  if (!m) return -1;
+  return m.queryRenderedFeatures({ layers: [${JSON.stringify(OVERLAY.hull)}] }).length;
+})()`;
+
+test(
+  "19 · a town hovered in the list outlines what it reaches",
+  () =>
+    withPage(app, "town-hover-reach", {}, async (page) => {
+      await page.waitFor("canvas.maplibregl-canvas");
+      if (!(await page.camera())) return;
+      await page.clickText("button", "Orte");
+      const row = '[data-row="town:bormio"]';
+      await page.waitFor(row);
+      // Nothing is pointed at, so nothing is outlined.
+      expect(await page.evaluate<number>(REACH_DRAWN)).toBe(0);
+
+      // The row reports the hover the same way the map's pointer does; focus
+      // is the half of it a headless run can produce.
+      await page.focus(row);
+      await waitUntil(
+        async () => (await page.evaluate<number>(REACH_DRAWN)) > 0,
+        "the hull of what Bormio reaches, drawn from a hover in the list",
+      );
+      await page.evaluate("document.activeElement.blur()");
+      await waitUntil(
+        async () => (await page.evaluate<number>(REACH_DRAWN)) === 0,
+        "the outline gone with the pointer",
+      );
+    }),
   TIMEOUT,
 );

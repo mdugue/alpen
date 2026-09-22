@@ -196,12 +196,58 @@ patch of map. The labels keep their own, older ladder; a dot always appears
 before its name. The lines are not thinned: an ascent is a few pixels wide and
 reads as texture where a dot would read as noise.
 
+## What the map draws is a value
+
+```mermaid
+flowchart LR
+  E["rows · shown · selection · hovered<br/>(components/explorer.tsx)"] --> B["buildScene<br/>lib/map-scene.ts"]
+  L["LAYERS<br/>lib/map-layers.ts"] --> B
+  B --> S["Scene: filters · feature state ·<br/>point features · ring, lines, hull, label · bounds"]
+  S --> A["applyScene(host, prev, next)<br/>components/map/apply-scene.ts"]
+  A -->|"only what changed"| M["setFilter · setFeatureState ·<br/>setData · the popup"]
+```
+
+The map draws a value, not the result of a handful of effects. `buildScene`
+takes the three lists of rows, the "auf der Karte" switches, the selection and
+the hover and returns one `Scene`: which ascents and tours the filters let
+through, the feature state of each of them, the pass and town features with
+the properties the style paints from, the hover surfaces – the ring, the wider
+lines, the reach hull and the label – and the box a fit frames. It is pure, so
+what the map shows is tested without a WebGL context (`lib/map-scene.test.ts`).
+
+`applyScene` is the only place `setFilter`, `setFeatureState` and `setData` are
+called, the sibling of `applyCamera` and the same shape: a host, a value and no
+decisions of its own. It hands MapLibre the difference between the scene it
+applied last and the one it has now, because a scene is rebuilt on every render
+and a `setData` on a source of two hundred points re-tiles it in the worker – a
+hover that changes nothing has to cost nothing, which a recording host pins
+down in `components/map/apply-scene.test.ts`. An id that leaves the scene needs
+no write: its line is filtered out, and when the filter lets it through again
+it is missing from the applied scene and written in full.
+
+One hover, therefore, for both halves of the screen. The map's pointer reports
+what it is over and paints nothing itself; the row in the list reports the same
+way, and both are answered by the same scene – which is why a town hovered in
+the list now outlines what it reaches, as one hovered on the map always did.
+The label points at the entity rather than at the pointer: a hit on an ascent
+is a hit on its pass, so it stands where the ring does, and a tour, which has
+no point of its own, is labelled at the centre of its box. On a coarse pointer
+there is no label at all – a finger that touches a mark has already tapped it,
+and a popup under it would cover what was just tapped.
+
+Every layer id lives in `LAYERS` (`lib/map-layers.ts`): per kind the mark, the
+names beside it and the transparent hit layer, with the pass labels generated
+from the same fame ladder the style builds them from. The style, the applier,
+the pick and the e2e read that one table, so a layer renamed or a sixth fame
+level added cannot quietly stop answering the pointer.
+
 ## What answers the pointer is not what is drawn
 
 ```mermaid
 flowchart LR
   Q["pointer at x, y"] --> R["one queryRenderedFeatures<br/>over every *-hit layer"]
-  R --> G["HIT_GROUPS decides,<br/>nearest mark wins inside a group"]
+  R --> P["pick(features, at, project)<br/>lib/map-pick.ts"]
+  P --> G["HIT_GROUPS decides,<br/>nearest mark wins inside a group"]
   G --> A["1 · marks — pass dot, town dot"]
   G --> B["2 · names — the label layers"]
   G --> C["3 · lines — ascent before tour band"]
@@ -213,15 +259,20 @@ per point, a wide line per route, sized from the pointer – about 44 px on
 touch, half of that with a mouse – and never narrower than the mark plus a
 margin. A name is part of its mark: the label layers answer the pointer too.
 Because several layers answer for the same pixel, there is no handler per
-layer: `pickAt` runs one `queryRenderedFeatures` over all of them and decides
-which single entity a hover or a click means. `HIT_GROUPS` spells the priority
-out rather than taking it from the style, because the two disagree – marks
-before names before lines, and the tour band lies _under_ the ascents but
-reaches past them, so a click inside it hits both and the ascent is the more
-specific answer – and within a group the mark nearest the pointer wins. A hit
-layer needs the same filter as the layer it widens, or a hidden tour still
-answers. The hover popup is a label, not a target: it is suppressed on a coarse
-pointer and click-through everywhere (`app/globals.css`).
+layer: the map runs one `queryRenderedFeatures` over all of them and asks
+`pick` which single entity a hover or a click means. `pick` decides over plain
+records – a layer id, a slug, a point – and a `project` function, so the rule
+behind every click is tested without a map (`lib/map-pick.test.ts`).
+`HIT_GROUPS` spells the priority out rather than taking it from the style,
+because the two disagree – marks before names before lines, and the tour band
+lies _under_ the ascents but reaches past them, so a click inside it hits both
+and the ascent is the more specific answer – and within a group the mark
+nearest the pointer wins. An ascent is answered as its pass: the hit's kind
+comes from the layer that answered, and the route layers belong to a pass. A
+hit layer needs the same filter as the layer it widens, or a hidden tour still
+answers, which is why both carry the same scene field. The hover popup is a
+label, not a target: it is suppressed on a coarse pointer and click-through
+everywhere (`app/globals.css`).
 
 ## Colours and the basemap
 
