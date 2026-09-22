@@ -1,4 +1,7 @@
+import { map } from "./en/map";
 import { panel } from "./en/panel";
+import { scales } from "./en/scales";
+import { sidebar } from "./en/sidebar";
 import { status } from "./en/status";
 import { vocab } from "./en/vocab";
 import type { Messages } from "./messages.de";
@@ -24,20 +27,15 @@ export const en = {
     englishNote:
       "This page is in German: it is the legal notice a site operated from Germany has to carry, and a translation would not be the binding text.",
   },
+  map,
   panel,
+  scales,
   share: {
     counts: (passes: string, tours: string, towns: string) =>
       `${passes} passes · ${tours} loops · ${towns} towns`,
     headline: "Which region is worth it, and when?",
   },
-  sidebar: {
-    clearSearch: "Clear the search",
-    footerNote: "The status is a heuristic, the scales are editorial.",
-    search: "Search",
-    searchPlaceholder: "Destination, pass, loop or town …",
-    support: "Buy me a coffee",
-    whatTheListShows: "What the list shows",
-  },
+  sidebar,
   status,
   vocab,
 } satisfies Messages;

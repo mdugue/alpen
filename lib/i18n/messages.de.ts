@@ -1,4 +1,7 @@
+import { map } from "./de/map";
 import { panel } from "./de/panel";
+import { scales } from "./de/scales";
+import { sidebar } from "./de/sidebar";
 import { status } from "./de/status";
 import { vocab } from "./de/vocab";
 
@@ -34,21 +37,16 @@ export const de = {
   legal: {
     englishNote: null as string | null,
   },
+  map,
   panel,
+  scales,
   share: {
     /** The three counts under the wordmark of the share image. */
     counts: (passes: string, tours: string, towns: string) =>
       `${passes} Pässe · ${tours} Touren · ${towns} Orte`,
     headline: "Welche Region lohnt sich wann?",
   },
-  sidebar: {
-    clearSearch: "Suche leeren",
-    footerNote: "Status ist eine Heuristik, Skalen sind redaktionell.",
-    search: "Suchen",
-    searchPlaceholder: "Reiseziel, Pass, Tour oder Ort …",
-    support: "Kaffee spendieren",
-    whatTheListShows: "Was die Liste zeigt",
-  },
+  sidebar,
   status,
   vocab,
 };
