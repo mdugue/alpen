@@ -87,6 +87,11 @@ frame. ² With `easeTo` instead when the map has no frame and no point for the
 selection – what it cannot frame still owes the panel its space. ³ Only when a
 flight was scheduled.
 
+The last row is a hash pasted into an open page and nothing else: the hash the
+page opened on reaches the machine as the `intent`, never as a `requestedView`
+(`load` in `lib/app-state.ts`). Both at once would cancel the very flight the
+link's own selection scheduled.
+
 Two of those rows are bugs that the shape of the thing prevents rather than
 fixes. A flight for A landing inside B's delay window settles nothing, so it
 can no longer ease A's leftover padding into the flight B is about to make; and

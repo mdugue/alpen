@@ -244,15 +244,23 @@ const PERSISTED: Slice[] = [
 ];
 
 /**
- * The storage adapter's subscription: every row of `PERSISTED` is offered the
- * state after each commit, and `writeStored` keeps the ones that did not
- * change. Nothing is written before `load` has run – the first commit holds
- * the defaults, and writing those would overwrite what the last visit left
- * behind before it has been read.
+ * One commit offered to every row of `PERSISTED`, and `writeStored` keeps the
+ * ones that did not change. Nothing is written before `load` has run – the
+ * first commit holds the defaults, and writing those would overwrite what the
+ * last visit left behind before it has been read.
+ *
+ * Beside the hook rather than inside it so the write path can be driven from
+ * a reducer state alone (`lib/use-stored.test.ts`); what the hook adds is the
+ * "after every commit".
  */
+export const writePersisted = (state: AppState) => {
+  if (!state.loaded) return;
+  for (const persisted of PERSISTED) persisted.write(state);
+};
+
+/** The storage adapter: the state as it is committed, written through. */
 export const useStorageAdapter = (state: AppState) => {
   useEffect(() => {
-    if (!state.loaded) return;
-    for (const persisted of PERSISTED) persisted.write(state);
+    writePersisted(state);
   }, [state]);
 };

@@ -573,10 +573,17 @@ const load = (
       period: hash.filters.period ?? stored.period ?? env.today,
     },
     ownPeriod: stored.period ?? null,
+    // Only a hash that arrives at an open page asks the camera for anything.
+    // The one the page opened on is what the map is *built* with (`cameraIntent`,
+    // lib/hash-adapter.ts), and asking for it a second time would take the
+    // camera off the flight that frames what the same link names – every link
+    // the app writes carries a camera, so that is every shared link with an
+    // entity in it.
     requestedView:
-      hash.view.lat === undefined && hash.view.zoom === undefined
-        ? state.requestedView
-        : view,
+      state.loaded &&
+      (hash.view.lat !== undefined || hash.view.zoom !== undefined)
+        ? view
+        : state.requestedView,
     shown: reconcileShown(stored.shown ?? state.shown, env.tours),
     tab: stored.tab ?? state.tab,
     view,

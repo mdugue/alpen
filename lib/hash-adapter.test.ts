@@ -18,6 +18,19 @@ test("a link with a camera is opened on that camera", () => {
   });
 });
 
+test("a camera in the link wins over what the link names", () => {
+  // Every link the app writes carries a camera, so this is what a shared link
+  // of a selected pass looks like: the map opens on the sharer's view and the
+  // selection's own flight follows it.
+  expect(
+    cameraIntent({
+      ...EMPTY_HASH,
+      selection: { kind: "pass", slug: "col-du-galibier" },
+      view: { lat: 45.06, lon: 6.4, zoom: 12 },
+    }).kind,
+  ).toBe("view");
+});
+
 test("a link that only names a pass is left to that pass's flight", () => {
   expect(
     cameraIntent({

@@ -76,7 +76,20 @@ test("1 · loads with all passes and a map canvas", () =>
 
 test("2 · selecting a pass opens the detail panel, Escape returns focus to the row", () =>
   withPage(app, "select-pass", {}, async (page) => {
-    await page.click(GALIBIER);
+    // A row is reached and opened without a pointer: the list is one tab stop
+    // and the arrows move inside it (`useRoving`, lib/use-roving.ts), so the
+    // focus steps on from the first row …
+    await page.waitFor(PASS_ROW);
+    const first = await page.attribute(PASS_ROW, "data-row");
+    await page.focus(PASS_ROW);
+    await page.press("ArrowDown");
+    await waitUntil(async () => {
+      const row = await page.activeRow();
+      return row !== null && row !== first;
+    }, "the arrow key to move the focus one row on");
+    // … and Enter on the row the focus sits on opens it.
+    await page.focus(GALIBIER);
+    await page.press("Enter");
     await page.waitFor("#detail-title");
     expect(await page.text("#detail-title")).toBe("Col du Galibier");
     expect(await page.hash()).toContain("pass=col-du-galibier");
@@ -112,6 +125,16 @@ test("3 · a shared link restores selection, period and camera", () =>
       await page.waitFor("#detail-title");
       expect(await page.text("#detail-title")).toBe("Col du Galibier");
       await page.waitForAttribute(SLIDER, "aria-valuetext", /^Anfang Juni:/u);
+
+      // The link carries a camera as well – the app writes one into every
+      // hash – and the pass is framed all the same: the link's view is what
+      // the map is *built* with, not a camera asked for on top of it, which
+      // would take the flight away before it set off (`load`, lib/app-state.ts).
+      if (await page.camera())
+        await waitUntil(async () => {
+          const c = await page.camera();
+          return !!c && !c.moving && c.zoom > 9.5;
+        }, "the camera framed on the pass, past the link's own zoom of 9");
 
       // The camera of a link without a selection is applied as it stands;
       // with a selection the map flies to it afterwards.
@@ -296,6 +319,10 @@ test("7 · a pass answers beside its dot, where nothing is drawn", () =>
         hit: boolean;
         moving: boolean;
       } | null;
+      // Only a build with NEXT_PUBLIC_TEST_HOOKS=1 exposes the map; without
+      // it there is nothing to query and the wait below would sit out the
+      // suite's timeout.
+      if (!(await page.camera())) return;
       let p: Points = null;
       await waitUntil(async () => {
         p = await page.evaluate<Points>(HIT_POINTS);

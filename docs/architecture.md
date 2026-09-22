@@ -227,8 +227,12 @@ thrown forecast is not cached, so a rate limit or an outage would arrive
 undamped, and a module-level cooldown bounds what one warm instance will ask.
 That cooldown sits _inside_ the cached function, where a cache hit never
 reaches it – one failing pass must not blank the weather of the other 200 – and
-it is armed at the failed fetch rather than in the handler, or it would re-arm
-on its own rejection and never end. It cannot be helped along at the edge:
+it is armed wherever the host fails it – the fetch, the status, an answer this
+route cannot read – rather than in the handler, or it would re-arm on its own
+rejection and never end. What Open-Meteo has no value for is a `null`, and it
+stays one cell wide: `WeatherDay` takes a null measurement and the panel prints
+a dash for it, because a week with one empty snowfall is still a forecast and
+losing all seven days over it is not a trade anybody would make. It cannot be helped along at the edge:
 Vercel's CDN stores only 200, 404, 410 and the redirects, so a `Cache-Control`
 on a 502 is inert, and dressing a failure as a 200 to make it cacheable is not
 worth the lie. The 404 for an unknown slug _is_ cacheable and says so. The same

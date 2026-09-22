@@ -93,6 +93,14 @@ const load = (
     env,
   );
 
+/** A hash pasted into the address bar of the open page: the second `load`. */
+const hashchange = (
+  state: AppState,
+  hash: string,
+  env: Env = desktop,
+): AppState =>
+  reduce(state, { hash: parseHash(hash), stored: {}, type: "load" }, env);
+
 /** A state with something to clear: a hover, a cursor, everything hidden. */
 const busy = (over: Partial<AppState> = {}): AppState => ({
   ...initialState(TODAY),
@@ -301,16 +309,34 @@ describe("reduce · load", () => {
     expect(s.tab).toBe("town");
   });
 
-  test("the camera is requested only when the link carries one", () => {
-    expect(load("#t=6").requestedView).toBeNull();
-    const s = load("#z=9&c=45.06,6.41");
-    expect(s.requestedView).toEqual({
+  test("the camera is requested by a later hash, never by the one that opened the page", () => {
+    // The hash the page opened on is what the map is built from
+    // (`cameraIntent`, lib/hash-adapter.ts). Requesting it a second time
+    // would take the camera off the flight that frames what the link names,
+    // and a link that names something carries a camera every time: the app
+    // writes one into every hash it produces.
+    const opened = load("#pass=col-du-galibier&z=9&c=45.06,6.41");
+    expect(opened.selection).toEqual(GALIBIER);
+    expect(opened.view).toEqual({
       ...DEFAULT_VIEW,
       lat: 45.06,
       lon: 6.41,
       zoom: 9,
     });
-    expect(s.view).toEqual(s.requestedView!);
+    expect(opened.requestedView).toBeNull();
+
+    // The same link pasted into the address bar of the open page is a camera
+    // the built map has to be moved to.
+    const pasted = hashchange(opened, "#z=11&c=46.50,11.30");
+    expect(pasted.requestedView).toEqual({
+      ...DEFAULT_VIEW,
+      lat: 46.5,
+      lon: 11.3,
+      zoom: 11,
+    });
+    expect(pasted.view).toEqual(pasted.requestedView!);
+    // A hash without a camera asks for none.
+    expect(hashchange(opened, "#t=6").requestedView).toBeNull();
   });
 
   test("before anything is read, the state the server renders", () => {

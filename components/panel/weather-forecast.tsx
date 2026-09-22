@@ -37,8 +37,18 @@ import type { WeatherDay } from "@/lib/types";
 import useFetch from "@/lib/use-fetch";
 import { cn, fmt } from "@/lib/utils";
 
-/** WMO weather code → icon and German label. */
-const describe = (code: number): [LucideIcon, string] => {
+/**
+ * A value Open-Meteo has none of. One empty cell costs the cell and nothing
+ * else: the rest of the day, and the rest of the week, is still a forecast
+ * (`WeatherDay` in lib/schema.ts).
+ */
+const MISSING = "–";
+const value = (n: number | null, unit = "") =>
+  n === null ? MISSING : `${fmt(Math.round(n))}${unit}`;
+
+/** WMO weather code → icon and German label; a day without one gets neither. */
+const describe = (code: number | null): [LucideIcon, string] | null => {
+  if (code === null) return null;
   if (code === 0) return [Sun, "sonnig"];
   if (code <= 2) return [CloudSun, "leicht bewölkt"];
   if (code === 3) return [Cloud, "bedeckt"];
@@ -105,31 +115,38 @@ export const WeatherForecast = ({ slug }: { slug: string }) => {
         {rows
           .filter((row): row is [WeatherDay, string] => row[0] !== undefined)
           .map(([d, when]) => {
-            const [Icon, label] = describe(d.weatherCode);
+            const [Icon, label] = describe(d.weatherCode) ?? [];
+            // A day without a figure for it had no snow as far as the panel
+            // is concerned: it says so by saying nothing.
+            const snow = d.snowfall ?? 0;
             return (
               <div
                 key={d.date}
                 className="flex items-center gap-2 py-1 text-xs tabular-nums"
               >
-                <Icon
-                  className="text-muted-foreground size-4 shrink-0"
-                  aria-label={label}
-                  role="img"
-                />
+                {Icon ? (
+                  <Icon
+                    className="text-muted-foreground size-4 shrink-0"
+                    aria-label={label}
+                    role="img"
+                  />
+                ) : (
+                  <span className="size-4 shrink-0" />
+                )}
                 <span className="w-14 shrink-0 font-medium">{when}</span>
                 <span className="w-16 shrink-0">
-                  {fmt(Math.round(d.tmin))}° / {fmt(Math.round(d.tmax))}°
+                  {value(d.tmin, "°")} / {value(d.tmax, "°")}
                 </span>
                 <span className="text-muted-foreground w-14 shrink-0">
-                  {fmt(Math.round(d.precipitation))} mm
+                  {value(d.precipitation, " mm")}
                 </span>
-                {d.snowfall > 0 && (
+                {snow > 0 && (
                   <span className="text-status-closed font-semibold">
-                    {fmt(Math.round(d.snowfall))} cm Schnee
+                    {value(d.snowfall, " cm")} Schnee
                   </span>
                 )}
                 <span className="text-muted-foreground ml-auto">
-                  {fmt(Math.round(d.windMax))} km/h
+                  {value(d.windMax, " km/h")}
                 </span>
               </div>
             );
@@ -168,7 +185,8 @@ export const WeatherForecast = ({ slug }: { slug: string }) => {
           </TableHeader>
           <TableBody>
             {data.days.map((d) => {
-              const [Icon, label] = describe(d.weatherCode);
+              const [Icon, label] = describe(d.weatherCode) ?? [];
+              const snow = d.snowfall ?? 0;
               return (
                 <TableRow
                   key={d.date}
@@ -176,23 +194,27 @@ export const WeatherForecast = ({ slug }: { slug: string }) => {
                 >
                   <TableCell>{weekday(d.date)}</TableCell>
                   <TableCell>
-                    <Icon
-                      className="text-muted-foreground inline size-3.5"
-                      aria-label={label}
-                      role="img"
-                    />
+                    {Icon ? (
+                      <Icon
+                        className="text-muted-foreground inline size-3.5"
+                        aria-label={label}
+                        role="img"
+                      />
+                    ) : (
+                      MISSING
+                    )}
                   </TableCell>
-                  <TableCell>{fmt(Math.round(d.tmin))}°</TableCell>
-                  <TableCell>{fmt(Math.round(d.tmax))}°</TableCell>
-                  <TableCell>{fmt(Math.round(d.precipitation))} mm</TableCell>
+                  <TableCell>{value(d.tmin, "°")}</TableCell>
+                  <TableCell>{value(d.tmax, "°")}</TableCell>
+                  <TableCell>{value(d.precipitation, " mm")}</TableCell>
                   <TableCell
                     className={cn(
-                      d.snowfall > 0 && "text-status-closed font-semibold",
+                      snow > 0 && "text-status-closed font-semibold",
                     )}
                   >
-                    {d.snowfall > 0 ? `${fmt(Math.round(d.snowfall))} cm` : "–"}
+                    {snow > 0 ? value(d.snowfall, " cm") : MISSING}
                   </TableCell>
-                  <TableCell>{fmt(Math.round(d.windMax))} km/h</TableCell>
+                  <TableCell>{value(d.windMax, " km/h")}</TableCell>
                 </TableRow>
               );
             })}

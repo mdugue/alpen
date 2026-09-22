@@ -59,8 +59,11 @@ export type BlockId =
   | "destination-passes";
 
 /**
- * Which blocks each kind shows, in the order it shows them – the table that
- * used to be three JSX branches. It is also the vocabulary of the fold state:
+ * Which blocks each kind can show, in the order it shows them – the table that
+ * used to be three JSX branches. Can, not does: `nearby` renders nothing for
+ * an entity with nothing inside `REACH_MAX_KM`, so a reader counting sections
+ * has to ask the block, not this list. It is also the vocabulary of the fold
+ * state:
  * `Section` takes a `BlockId` and nothing else, so a block that is folded away
  * keeps its fold across entities because it cannot be spelled two ways.
  */

@@ -281,6 +281,27 @@ describe("camera · a selection", () => {
     expect(state).toEqual({ fitted: true, padded: PANELS, phase: "idle" });
   });
 
+  test("a link with a camera and a pass opens on the camera and flies on to it", () => {
+    // What every shared link of a selected entity looks like, because the app
+    // writes a camera into every hash it produces. The link's view is what the
+    // map is built with and arrives as the intent; nothing asks for it a
+    // second time, so the flight that frames the pass is never cancelled
+    // (`load` in lib/app-state.ts).
+    const { trace } = drive([
+      ...opened("view"),
+      { key: "pass:col-du-galibier", target: GALIBIER, type: "selection" },
+      { inset: PANELS, type: "inset" },
+      { type: "delay" },
+      { byUser: false, type: "moveend" },
+    ]);
+    expect(trace).toEqual([
+      { cmd: "setPadding", padding: SIDEBAR },
+      { cmd: "schedule", ms: SELECT_DELAY },
+      { cmd: "flyTo", duration: SELECT_MS, padding: PANELS, target: GALIBIER },
+      { cmd: "writeHash" },
+    ]);
+  });
+
   test("a padding asked for mid-air lands with the flight, not into it", () => {
     const { per, state } = drive([
       ...opened("selection", BOX, PANELS),

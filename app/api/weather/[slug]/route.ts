@@ -45,8 +45,9 @@ let coolDownUntil = 0;
  * What Open-Meteo answers, as far as this route asked for it: one column per
  * variable, all as long as `time`. The zip below turns the columns into the
  * rows the panel reads, and each row goes through `WeatherDay` – so a column
- * that came up short, or a value that is not a number, fails here instead of
- * reaching the panel as an empty cell. The object is not strict on purpose:
+ * that came up short, or a value that is neither a number nor the `null` the
+ * host sends for a value it has none of, fails here instead of reaching the
+ * panel as something it cannot read. The object is not strict on purpose:
  * Open-Meteo sends the coordinates, the timezone and the units alongside, and
  * a variable added upstream is no reason to drop a forecast.
  */
@@ -94,21 +95,23 @@ const forecast = async (
 
   // The cooldown is armed where it is earned, not in the handler: a handler
   // that armed it on every rejection would re-arm on its own "pausiert" throw
-  // and, under steady traffic, never let the window end.
-  let res: Response;
+  // and, under steady traffic, never let the window end. The reading of the
+  // answer is inside for the same reason – an answer this route cannot make
+  // sense of is the host failing too, and a throw that escapes here is not
+  // cached, so every later visitor would fetch the same unreadable answer
+  // again.
   try {
-    res = await fetch(
+    const res = await fetch(
       `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&elevation=${elevation}` +
         "&daily=temperature_2m_max,temperature_2m_min,precipitation_sum,snowfall_sum,wind_speed_10m_max,weather_code" +
         "&timezone=Europe%2FBerlin&forecast_days=7",
     );
     if (!res.ok) throw new Error(`Open-Meteo ${res.status}`);
+    return Forecast.parse(await res.json());
   } catch (error) {
     coolDownUntil = Date.now() + COOL_DOWN_S * 1000;
     throw error;
   }
-
-  return Forecast.parse(await res.json());
 };
 
 /**

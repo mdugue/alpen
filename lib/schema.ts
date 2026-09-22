@@ -448,15 +448,23 @@ export const Summit = z.strictObject({
 /** Key: pass slug. */
 export const Summits = z.record(Slug, Summit);
 
-/** One day of the Open-Meteo forecast served by `app/api/weather/[slug]`. */
+/**
+ * One day of the Open-Meteo forecast served by `app/api/weather/[slug]`.
+ *
+ * Every measurement is nullable because the host answers a day or a variable
+ * it has no value for with `null`, and a forecast is worth having with a cell
+ * missing: requiring a number here cost the visitor the whole week over one
+ * empty snowfall. The date is not – it is what the row is keyed and labelled
+ * by – and a value that is neither a number nor absent is still an error.
+ */
 export const WeatherDay = z.strictObject({
   date: z.string(),
-  precipitation: z.number(),
-  snowfall: z.number(),
-  tmax: z.number(),
-  tmin: z.number(),
-  weatherCode: z.number(),
-  windMax: z.number(),
+  precipitation: z.number().nullable(),
+  snowfall: z.number().nullable(),
+  tmax: z.number().nullable(),
+  tmin: z.number().nullable(),
+  weatherCode: z.number().nullable(),
+  windMax: z.number().nullable(),
 });
 
 /**

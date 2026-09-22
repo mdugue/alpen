@@ -311,7 +311,14 @@ shared link applies without becoming the visitor's own preference.
 into one `load` action in a layout effect after hydration, and again on every
 `hashchange`; afterwards it serialises the state back into the hash. Why that
 reading is a layout effect and not the state's initialiser is hydration; the
-hook's doc comment is the one place it is written out. `useStorageAdapter`
+hook's doc comment is the one place it is written out. A camera in the hash is
+read once and in one of two ways, decided by which hash this is: the one the
+page opened on becomes the `CameraIntent` the map is _built_ with
+(`cameraIntent`), and only a hash that arrives at a page already open becomes
+`requestedView`, which moves the camera that is there. Doing both for one hash
+is what took a shared link's pass off the flight that frames it – every link
+the app writes carries a camera, so that was every shared link with an entity
+in it. `useStorageAdapter`
 (`lib/use-stored.ts`) writes the persisted slices – the switches, the tab, the
 visitor's own period – whenever they change, under the keys of the `STORAGE`
 table, which is where every `alpenpaesse:*` key is spelled, with its area and
@@ -557,9 +564,11 @@ buttons all called "Merken". `useRoving` (`lib/use-roving.ts`) makes each list
 the composite widget the platform expects: one stop, arrows inside it,
 Home/End/PageUp/PageDown, and the tab stop stays on the row last focused. It
 works off the DOM rather than an index in state, because which rows exist
-changes on every keystroke in the search field. Every bookmark toggle is named
-after the thing it bookmarks, and `app/page.tsx` carries a skip link to the
-map.
+changes on every keystroke in the search field; where a key takes the focus is
+`rovingTarget` beside it, a pure function of the key, the row it was pressed on
+and how many there are, so the ends and the keys the platform keeps are a table
+test rather than a browser. Every bookmark toggle is named after the thing it
+bookmarks, and `app/page.tsx` carries a skip link to the map.
 
 ## The detail panel
 
