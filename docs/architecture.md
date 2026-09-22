@@ -281,6 +281,12 @@ nothing loads from there until it is clicked.
 `typescript` is TypeScript 7, and it is the only TypeScript in the tree. Both
 `bun run typecheck` and `next build` compile with it.
 
+`bun run typecheck` runs `next typegen` first: the types of `next/root-params`
+(the `lang` segment, plan 08) are generated into `.next/types`, and without
+them `lang()` is `any` – which `tsc` lets pass and the type-aware lint rules
+do not. CI runs the typecheck before the lint for that reason, and a fresh
+checkout has the types the moment it has run either the typecheck or a build.
+
 It used to be two packages: `@typescript/native` aliased to TypeScript 7 for
 the `tsc` binary, and the `typescript` name aliased to `@typescript/typescript6`
 for the editor's language service. That arrangement quietly type-checked the

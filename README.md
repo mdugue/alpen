@@ -34,7 +34,7 @@ and the climate series are missing.
 | ------------------------------------ | ------------------------------------------------------------------------- |
 | `bun dev`                            | Development server                                                        |
 | `bun run build` / `bun start`        | Production build and server                                               |
-| `bun run typecheck`                  | `tsc --noEmit`                                                            |
+| `bun run typecheck`                  | `next typegen && tsc --noEmit` – the route types first, then the compiler |
 | `bun run lint` / `bun run lint:fix`  | oxlint + oxfmt via ultracite (React Compiler and type-aware rules incl.)  |
 | `bun run seams` / `bun run palette`  | The two repo checks inside `lint`: the adapters, and the sRGB mirror      |
 | `bun run data:build`                 | Fetch routes, elevation profiles, climate → `data/generated/` (resumable) |
