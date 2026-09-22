@@ -93,6 +93,42 @@ export const heroShape = (state: DetailState): "hero" | "plain" =>
     : "plain";
 
 /**
+ * How tall the floating control row is – what the head has to have scrolled
+ * past before the row takes on a surface and the name.
+ */
+export const BAR_PX = 44;
+
+/** What the panel measured of its head; an `HTMLElement` has both. */
+export interface HeadBox {
+  offsetTop: number;
+  offsetHeight: number;
+}
+
+/**
+ * Whether the panel head has scrolled out from under the control row – the
+ * decision behind the bar's two shapes, so the component is left with the
+ * measuring alone.
+ *
+ * The head goes under the row rather than off the top of it, so the threshold
+ * is the head's own foot minus the row's height. A head shorter than the row
+ * has no threshold at all: the clamp is what keeps a negative limit from
+ * making the bar solid at a scroll position of zero, which is the panel
+ * opening already scrolled.
+ *
+ * There is no hysteresis and none is wanted: the change is a fade of two
+ * colours over 200 ms, not a layout, and a band around the threshold would
+ * only make the fade start at two different places depending on the
+ * direction.
+ *
+ * @param scrollTop where the panel's scroller stands
+ * @param head the first child of the scroller – the hero or the plain title
+ *   block – or `null` before there is one
+ */
+export const pastHead = (scrollTop: number, head: HeadBox | null): boolean =>
+  scrollTop >
+  Math.max(0, (head?.offsetTop ?? 0) + (head?.offsetHeight ?? 0) - BAR_PX);
+
+/**
  * The state of one entity's detail file, and the way back for the carousel.
  *
  * Which borrowed files failed belongs here rather than in the carousel that

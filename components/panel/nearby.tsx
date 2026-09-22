@@ -2,13 +2,15 @@
 
 import { ExternalLink } from "lucide-react";
 
+import type { PanelActions } from "@/components/panel/actions";
 import { Section } from "@/components/panel/section";
 import { StatusDot } from "@/components/status-badge";
 import { Button } from "@/components/ui/button";
-import type { EntityKind, Selection } from "@/lib/app-state";
+import type { EntityKind } from "@/lib/app-state";
+import type { DetailModel } from "@/lib/detail-model";
 import { REACH_MAX_KM } from "@/lib/geo";
 import { byDistance } from "@/lib/reach";
-import type { Reach } from "@/lib/reach";
+import { isHovered } from "@/lib/route-key";
 import { cn, fmtUnit } from "@/lib/utils";
 
 /**
@@ -82,16 +84,14 @@ const group = (label: string, items: React.ReactNode) => (
  * which is what the two `skip*` flags used to be for.
  */
 export const Nearby = ({
-  reach,
-  hovered,
-  onHover,
-  onSelect,
+  model,
+  actions,
 }: {
-  reach: Reach;
-  hovered: Selection | null;
-  onHover: (sel: Selection | null) => void;
-  onSelect: (sel: Selection) => void;
+  /** Read for its `reach` and its `hovered`, which every model carries. */
+  model: DetailModel;
+  actions: PanelActions;
 }) => {
+  const { hovered, reach } = model;
   const passes = byDistance(reach.passes);
   const tours = byDistance(reach.tours);
   const towns = byDistance(reach.towns);
@@ -99,9 +99,9 @@ export const Nearby = ({
 
   /** The hover wiring every named entity in this block shares. */
   const link = (kind: EntityKind, slug: string) => ({
-    hovered: hovered?.kind === kind && hovered.slug === slug,
-    onClick: () => onSelect({ kind, slug }),
-    onHover: (over: boolean) => onHover(over ? { kind, slug } : null),
+    hovered: isHovered(hovered, kind, slug),
+    onClick: () => actions.onSelect({ kind, slug }),
+    onHover: (over: boolean) => actions.onHover(over ? { kind, slug } : null),
   });
 
   return (

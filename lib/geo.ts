@@ -79,10 +79,6 @@ export type ReachBand = (typeof REACH_BANDS)[number]["key"];
 export const reachBand = (km: number): ReachBand | null =>
   REACH_BANDS.find((b) => km <= b.maxKm)?.key ?? null;
 
-export const REACH_BAND_LABEL: Record<ReachBand, string> = Object.fromEntries(
-  REACH_BANDS.map((b) => [b.key, b.label]),
-) as Record<ReachBand, string>;
-
 /**
  * 1 at the door, 0 at `REACH_MAX_KM` and beyond, smooth in between – a
  * cosine ease rather than a straight line, so the first kilometres out of

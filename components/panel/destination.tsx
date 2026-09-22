@@ -9,7 +9,8 @@ import type { Selection } from "@/lib/app-state";
 import type { Bases, Destination } from "@/lib/destination";
 import { destinationText } from "@/lib/destination";
 import { REACH_MAX_KM } from "@/lib/geo";
-import type { ReachedPass, ReachedTown } from "@/lib/reach";
+import type { Band, ReachedPass, ReachedTown } from "@/lib/reach";
+import { isHovered } from "@/lib/route-key";
 import { bestText, GRADE_ORDER } from "@/lib/status";
 import type { Grade } from "@/lib/status";
 import type { Period } from "@/lib/types";
@@ -179,6 +180,32 @@ const BandHeader = ({
 );
 
 /**
+ * The banded list both blocks draw – a function, the way `group` is one in
+ * `nearby.tsx`, because the two are the same picture read in opposite
+ * directions and while they stood side by side as two copies they drifted a
+ * class at a time. What differs is the noun in the header and what one row is.
+ */
+const bandList = <T,>(
+  bands: Band<T>[],
+  noun: string,
+  row: (item: T) => React.ReactNode,
+) => (
+  <div className="flex flex-col gap-3">
+    {bands.map((g) => (
+      <div key={g.band}>
+        <BandHeader
+          label={g.label}
+          maxKm={g.maxKm}
+          n={g.items.length}
+          noun={noun}
+        />
+        <ul className="-mx-1 flex flex-col">{g.items.map(row)}</ul>
+      </div>
+    ))}
+  </div>
+);
+
+/**
  * A destination, judged for the chosen half-month.
  *
  * The block leads with a verdict and its reason, exactly as the pass panel
@@ -235,34 +262,18 @@ export const DestinationSection = ({
           Kein Pass im Umkreis von {REACH_MAX_KM} km.
         </p>
       ) : (
-        <div className="flex flex-col gap-3">
-          {d.bands.map((g) => (
-            <div key={g.band}>
-              <BandHeader
-                label={g.label}
-                n={g.items.length}
-                maxKm={g.maxKm}
-                noun="Pässe"
-              />
-              <ul className="-mx-1 flex flex-col">
-                {g.items.map((r) => (
-                  <PassRow
-                    key={r.pass.slug}
-                    r={r}
-                    period={period}
-                    hovered={
-                      hovered?.kind === "pass" && hovered.slug === r.pass.slug
-                    }
-                    onHover={(over) =>
-                      onHover(over ? { kind: "pass", slug: r.pass.slug } : null)
-                    }
-                    onSelect={() => onSelect(r.pass.slug)}
-                  />
-                ))}
-              </ul>
-            </div>
-          ))}
-        </div>
+        bandList(d.bands, "Pässe", (r) => (
+          <PassRow
+            key={r.pass.slug}
+            r={r}
+            period={period}
+            hovered={isHovered(hovered, "pass", r.pass.slug)}
+            onHover={(over) =>
+              onHover(over ? { kind: "pass", slug: r.pass.slug } : null)
+            }
+            onSelect={() => onSelect(r.pass.slug)}
+          />
+        ))
       )}
     </Section>
   </>
@@ -299,33 +310,17 @@ export const BasesSection = ({
         Kein Rad-Ort im Umkreis von {REACH_MAX_KM} km.
       </p>
     ) : (
-      <div className="flex flex-col gap-3">
-        {bases.bands.map((g) => (
-          <div key={g.band}>
-            <BandHeader
-              label={g.label}
-              n={g.items.length}
-              maxKm={g.maxKm}
-              noun="Orte"
-            />
-            <ul className="-mx-1 flex flex-col">
-              {g.items.map((r) => (
-                <TownRow
-                  key={r.town.slug}
-                  r={r}
-                  hovered={
-                    hovered?.kind === "town" && hovered.slug === r.town.slug
-                  }
-                  onHover={(over) =>
-                    onHover(over ? { kind: "town", slug: r.town.slug } : null)
-                  }
-                  onSelect={() => onSelect(r.town.slug)}
-                />
-              ))}
-            </ul>
-          </div>
-        ))}
-      </div>
+      bandList(bases.bands, "Orte", (r) => (
+        <TownRow
+          key={r.town.slug}
+          r={r}
+          hovered={isHovered(hovered, "town", r.town.slug)}
+          onHover={(over) =>
+            onHover(over ? { kind: "town", slug: r.town.slug } : null)
+          }
+          onSelect={() => onSelect(r.town.slug)}
+        />
+      ))
     )}
   </Section>
 );

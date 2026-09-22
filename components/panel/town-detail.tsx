@@ -35,12 +35,7 @@ export const TownDetail = ({
         onHover={actions.onHover}
         onSelect={(slug) => actions.onSelect({ kind: "pass", slug })}
       />
-      <Nearby
-        reach={model.reach}
-        hovered={model.hovered}
-        onHover={actions.onHover}
-        onSelect={actions.onSelect}
-      />
+      <Nearby actions={actions} model={model} />
       <ExternalLinks
         links={[
           [

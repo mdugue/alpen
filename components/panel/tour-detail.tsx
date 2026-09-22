@@ -6,6 +6,7 @@ import { Section } from "@/components/panel/section";
 import { VerdictBox } from "@/components/panel/verdict-box";
 import { StatusDot } from "@/components/status-badge";
 import type { TourModel } from "@/lib/detail-model";
+import { isHovered } from "@/lib/route-key";
 import { fmt, fmtUnit } from "@/lib/utils";
 
 /** What a tour shows, from its model and nothing else. */
@@ -46,10 +47,7 @@ export const TourDetail = ({
           {model.members.map(({ cell, pass }) => (
             <LinkButton
               key={pass.slug}
-              hovered={
-                model.hovered?.kind === "pass" &&
-                model.hovered.slug === pass.slug
-              }
+              hovered={isHovered(model.hovered, "pass", pass.slug)}
               onHover={(over) =>
                 actions.onHover(over ? { kind: "pass", slug: pass.slug } : null)
               }
@@ -66,12 +64,7 @@ export const TourDetail = ({
         </div>
       </Section>
 
-      <Nearby
-        reach={model.reach}
-        hovered={model.hovered}
-        onHover={actions.onHover}
-        onSelect={actions.onSelect}
-      />
+      <Nearby actions={actions} model={model} />
     </>
   );
 };

@@ -2,12 +2,14 @@ import { describe, expect, test } from "bun:test";
 
 import type { DetailAsset, DetailData } from "@/lib/detail-assets";
 import {
+  BAR_PX,
   detailState,
   heroShape,
+  pastHead,
   profilesOf,
   shownPhotos,
 } from "@/lib/detail-state";
-import type { DetailState, Fetched } from "@/lib/detail-state";
+import type { DetailState, Fetched, HeadBox } from "@/lib/detail-state";
 import type { Photo } from "@/lib/types";
 
 const asset = (photos: number): DetailAsset => ({
@@ -135,5 +137,39 @@ describe("the shape of the head", () => {
     ];
     for (const [what, state, shape] of rows)
       expect(heroShape(state), what).toBe(shape);
+  });
+});
+
+/** A head of `height` px, `top` px down the scroller. */
+const head = (height: number, top = 0): HeadBox => ({
+  offsetHeight: height,
+  offsetTop: top,
+});
+
+describe("when the head has scrolled under the control row", () => {
+  test("the threshold is the head's foot, less the row's own height", () => {
+    const tall = head(300);
+    // A hero 6 px inside the panel: the head does not start at the top.
+    const inset = head(300, 6);
+    // Shorter than the bar, so the clamp is what decides – a plain title
+    // block on a phone is not much taller than the row over it.
+    const short = head(BAR_PX - 10);
+    const rows: [string, number, HeadBox | null, boolean][] = [
+      ["at the top", 0, tall, false],
+      ["one short of the threshold", 300 - BAR_PX - 1, tall, false],
+      ["exactly on it – still under the row", 300 - BAR_PX, tall, false],
+      ["one past it", 300 - BAR_PX + 1, tall, true],
+      ["well past it", 1000, tall, true],
+      ["the head's own offset counts", 306 - BAR_PX, inset, false],
+      ["and pushes the threshold out", 306 - BAR_PX + 1, inset, true],
+      ["a head shorter than the bar: at the top", 0, short, false],
+      ["…and one pixel down", 1, short, true],
+      // Before the first paint there is nothing to measure, and a bar that
+      // went solid at zero would open the panel looking scrolled.
+      ["nothing measured yet", 0, null, false],
+      ["nothing measured, but scrolled", 1, null, true],
+    ];
+    for (const [what, top, box, expected] of rows)
+      expect(pastHead(top, box), what).toBe(expected);
   });
 });

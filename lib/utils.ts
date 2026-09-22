@@ -12,14 +12,6 @@ export const fmtUnit = (n: number, unit: string, digits = 0) =>
   `${fmt(n, digits)} ${unit}`;
 
 /**
- * The mira preset renders a pressed Toggle as a faint `bg-muted`; where the
- * state must be unmistakable (map tools, status chips) the pressed state is
- * painted with the primary colour instead.
- */
-export const PRESSED =
-  "aria-pressed:bg-primary aria-pressed:text-primary-foreground aria-pressed:hover:bg-primary/90 aria-pressed:hover:text-primary-foreground";
-
-/**
  * The mira preset has no icon-only Toggle size; this squares a default-size
  * Toggle to match Button's `icon` (size-7) so star and map toggles line up
  * with the buttons next to them.
@@ -33,21 +25,8 @@ export const ICON_TOGGLE = "size-7 px-0";
  * height would clip. With a mouse the sizes stay as they are.
  */
 export const TOUCH_CONTROL = "pointer-coarse:h-9";
-/**
- * The same for `NativeSelect`, whose `className` lands on the wrapper, not on
- * the control – and whose own `data-[size=sm]` height is more specific than a
- * plain child selector, hence the important modifier. Nothing uses it today:
- * the app has no native select left, because the 16 px the coarse-pointer rule
- * forces on one is a headline in a dense row (see the sort menu in
- * `components/sidebar/pass-list.tsx`). Kept for the next one that is genuinely
- * better native.
- */
-export const TOUCH_SELECT = "pointer-coarse:[&>select]:h-9!";
 /** The same for icon-only buttons and toggles, which have no label to aim at. */
 export const TOUCH_ICON = "pointer-coarse:size-9";
-
-/** Opaque surface for controls floating over map tiles (outline buttons are translucent in dark mode). */
-export const MAP_CONTROL = "bg-card shadow-md dark:bg-card";
 
 /**
  * One map tool. The three sit in a segmented group next to the period

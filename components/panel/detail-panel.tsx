@@ -1,224 +1,33 @@
 "use client";
 
-import { Check, ChevronLeft, Share, Star, X } from "lucide-react";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 
 import { useSheet } from "@/components/mobile-sheet";
 import type { PanelActions } from "@/components/panel/actions";
+import { PanelBar } from "@/components/panel/panel-bar";
+import { PanelHead } from "@/components/panel/panel-head";
 import { PassDetail } from "@/components/panel/pass-detail";
-import { PhotoCarousel } from "@/components/panel/photo-carousel";
 import { TourDetail } from "@/components/panel/tour-detail";
 import { TownDetail } from "@/components/panel/town-detail";
-import { Button } from "@/components/ui/button";
-import { Toggle } from "@/components/ui/toggle";
 import type { Selection } from "@/lib/app-state";
 import { detailModel } from "@/lib/detail-model";
-import { heroShape, shownPhotos, useDetailState } from "@/lib/detail-state";
+import {
+  heroShape,
+  pastHead,
+  shownPhotos,
+  useDetailState,
+} from "@/lib/detail-state";
 import type { PageBundle } from "@/lib/page-data";
 import { entityKey } from "@/lib/route-key";
-import type { Period, Photo } from "@/lib/types";
+import type { Period } from "@/lib/types";
 import { useShare } from "@/lib/use-share";
-import { cn, ICON_TOGGLE, OVERLAY_CONTROL, TOUCH_ICON } from "@/lib/utils";
-
-/**
- * How tall the floating control row is – what the head has to have scrolled
- * past before the row takes on a surface and the name.
- */
-const BAR_PX = 44;
+import { cn } from "@/lib/utils";
 
 /** A layer over the page that closes on Escape itself (see the effect below). */
 const LAYER = "[data-slot=dialog-content],[data-slot=popover-content]";
 
 /** Elements in which Escape belongs to whatever is being typed. */
 const TYPED = new Set(["INPUT", "TEXTAREA"]);
-
-/**
- * The panel's head. Two shapes, one element: the kicker and the name lie on
- * the hero photo where there is one, and stand in the panel's own colours
- * where there is not – but they are the *same* nodes either way, only
- * differently placed. Rendering them in two branches would take the heading
- * out of the document the moment the last slide failed to load.
- */
-const PanelHead = ({
-  hero,
-  kicker,
-  name,
-  loading,
-  photos,
-  onBroken,
-}: {
-  /** The panel opens on a photograph; the title lies on it rather than above it. */
-  hero: boolean;
-  kicker: string;
-  name: string;
-  /**
-   * The detail file is on its way (`DetailState.phase === "pending"`) and the
-   * hero reserves its box meanwhile. A file that failed is not loading: it
-   * ends the wait rather than extending it.
-   */
-  loading: boolean;
-  /** The slides worth showing; the failed ones are already out (`shownPhotos`). */
-  photos: Photo[];
-  onBroken: (src: string) => void;
-}) => (
-  <div
-    className={cn(
-      "relative",
-      // A thin margin rather than none at all: the photo is then a card
-      // inside the panel's card, and its corners can be cut concentric
-      // with the panel's own instead of running into them. Full bleed
-      // put the picture's corner exactly where the drawer's radius is,
-      // which is the one place a right angle and a curve cannot agree.
-      hero && "mx-1.5 mt-1.5 overflow-hidden rounded-lg",
-    )}
-  >
-    {hero && (
-      <PhotoCarousel loading={loading} onBroken={onBroken} photos={photos} />
-    )}
-    {/*
-     * 10 px inside a hero that is 6 px inside the panel: the name then starts
-     * on the same line as the numbers under it.
-     */}
-    <div
-      className={cn(
-        hero
-          ? "pointer-events-none absolute inset-x-0 bottom-6 px-2.5 text-white"
-          : "px-4 pt-11",
-      )}
-    >
-      <p
-        className={cn(
-          "text-2xs truncate font-semibold tracking-widest uppercase",
-          hero ? "text-white/85" : "text-muted-foreground",
-        )}
-      >
-        {kicker}
-      </p>
-      <h2
-        id="detail-title"
-        className={cn(
-          "text-xl leading-tight font-bold tracking-tight text-balance",
-          hero && "drop-shadow-[0_1px_10px_rgb(0_0_0/0.55)]",
-        )}
-      >
-        {name}
-      </h2>
-    </div>
-  </div>
-);
-
-/**
- * The panel's own controls, lying on the hero rather than in a bar above it –
- * which is what lets the photo start at the panel's top edge. The row is
- * transparent there and lets the pointer through, and each control carries its
- * own translucent surface (`OVERLAY_CONTROL`) so it reads on a photograph.
- *
- * Past the head it becomes an ordinary header instead: the row takes the
- * surface, the controls give theirs up, and the name appears – because the
- * title is written on the photo and has scrolled away with it. That is also
- * the honest reason for the change of tone: what is under the controls a
- * moment later is body text, and a scrim that works on a photograph does not.
- */
-const PanelBar = ({
-  name,
-  solid,
-  scrolled,
-  backToList,
-  favorite,
-  shared,
-  onBack,
-  onShare,
-  onToggleFavorite,
-}: {
-  name: string;
-  /** Past the head: the row carries the surface, not the controls. */
-  solid: boolean;
-  /** Past the head, so the name is no longer anywhere else on screen. */
-  scrolled: boolean;
-  /** A list drawer underneath: leaving means going back to it, not closing. */
-  backToList: boolean;
-  favorite: boolean;
-  /** The link has just been handed over; the share icon says so for a moment. */
-  shared: boolean;
-  onBack: () => void;
-  onShare: () => void;
-  onToggleFavorite: () => void;
-}) => (
-  <div
-    className={cn(
-      "pointer-events-none absolute inset-x-0 top-0 z-20 flex items-center gap-1.5 p-2.5 transition-colors duration-200",
-      solid &&
-        "border-border/60 bg-card/90 supports-not-[backdrop-filter:blur(0)]:bg-card border-b backdrop-blur-md",
-    )}
-  >
-    {backToList && (
-      <Button
-        size="sm"
-        variant="ghost"
-        onClick={onBack}
-        aria-label="Zurück zur Liste"
-        className={cn(
-          "pointer-events-auto shrink-0 gap-1 px-2",
-          !solid && OVERLAY_CONTROL,
-        )}
-      >
-        <ChevronLeft />
-        Liste
-      </Button>
-    )}
-    {/* The name, once the head it was written on has scrolled away. */}
-    <p
-      className={cn(
-        "min-w-0 flex-1 truncate text-sm font-semibold transition-opacity duration-200",
-        scrolled ? "opacity-100" : "opacity-0",
-      )}
-      aria-hidden
-    >
-      {name}
-    </p>
-    <Button
-      size="icon"
-      variant="ghost"
-      onClick={onShare}
-      aria-label={shared ? "Link kopiert" : `${name} teilen`}
-      className={cn(
-        "pointer-events-auto",
-        !solid && OVERLAY_CONTROL,
-        TOUCH_ICON,
-      )}
-    >
-      {shared ? <Check className="text-status-open" /> : <Share />}
-    </Button>
-    <Toggle
-      pressed={favorite}
-      onPressedChange={onToggleFavorite}
-      aria-label={favorite ? `${name} nicht mehr merken` : `${name} merken`}
-      className={cn(
-        "pointer-events-auto",
-        ICON_TOGGLE,
-        !solid && OVERLAY_CONTROL,
-        TOUCH_ICON,
-      )}
-    >
-      <Star className={cn(favorite && "fill-accent text-accent")} />
-    </Toggle>
-    {!backToList && (
-      <Button
-        size="icon"
-        variant="ghost"
-        onClick={onBack}
-        aria-label="Details schließen"
-        className={cn(
-          "pointer-events-auto",
-          !solid && OVERLAY_CONTROL,
-          TOUCH_ICON,
-        )}
-      >
-        <X />
-      </Button>
-    )}
-  </div>
-);
 
 /**
  * Detail view of the selected entity. It is a panel of its own in both layouts:
@@ -263,7 +72,7 @@ export const DetailPanel = ({
    * the selection, so a fresh panel starts at the top without an effect
    * writing state after the fact.
    */
-  const [pastHead, setPastHead] = useState<string | null>(null);
+  const [headPassed, setHeadPassed] = useState<string | null>(null);
 
   // The profiles and the photos of this one entity, as a static file with a
   // content hash in its name (lib/detail-assets.ts) – so the page does not
@@ -348,7 +157,7 @@ export const DetailPanel = ({
 
   const hero = heroShape(state) === "hero";
   const key = entityKey(selection);
-  const scrolled = expanded && pastHead === key;
+  const scrolled = expanded && headPassed === key;
   /**
    * The control row carries a surface everywhere except on the hero, where the
    * photo's own scrim is what the icons read against. On the way past the head
@@ -383,13 +192,10 @@ export const DetailPanel = ({
         onScroll={(e) => {
           // The head is the first child either way – the hero or the plain
           // title block – so what has to be measured is measured rather than
-          // guessed at a width the panel takes from its layout.
+          // guessed at a width the panel takes from its layout. Only the
+          // measuring is here; what it means is `pastHead` in lib.
           const head = e.currentTarget.firstElementChild as HTMLElement | null;
-          const limit = Math.max(
-            0,
-            (head?.offsetTop ?? 0) + (head?.offsetHeight ?? 0) - BAR_PX,
-          );
-          setPastHead(e.currentTarget.scrollTop > limit ? key : null);
+          setHeadPassed(pastHead(e.currentTarget.scrollTop, head) ? key : null);
         }}
         className={cn(
           "min-h-0 flex-1 overscroll-contain pb-6",

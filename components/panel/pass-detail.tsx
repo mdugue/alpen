@@ -301,12 +301,7 @@ export const PassDetail = ({
         onHover={actions.onHover}
         onSelect={(slug) => actions.onSelect({ kind: "town", slug })}
       />
-      <Nearby
-        reach={model.reach}
-        hovered={model.hovered}
-        onHover={actions.onHover}
-        onSelect={actions.onSelect}
-      />
+      <Nearby actions={actions} model={model} />
       <ExternalLinks
         links={[
           ["quaeldich.de", quaeldichHref(pass)],

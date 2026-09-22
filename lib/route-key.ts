@@ -62,3 +62,18 @@ export const entityKey: EntityKeyFn = (
   sel: Selection | EntityKind,
   slug?: string,
 ) => (typeof sel === "string" ? `${sel}:${slug}` : `${sel.kind}:${sel.slug}`);
+
+/**
+ * Whether the pointer is on this entity – the one comparison, written here
+ * beside the key it is built from.
+ *
+ * It was spelled out four times in the panel (`hovered?.kind === k &&
+ * hovered.slug === s`), and half of it is enough to light the wrong mark: a
+ * town and a pass that share a slug are two entities, and a test that forgets
+ * the kind says they are one.
+ */
+export const isHovered = (
+  hovered: Selection | null,
+  kind: EntityKind,
+  slug: string,
+): boolean => hovered !== null && entityKey(hovered) === entityKey(kind, slug);
