@@ -130,25 +130,27 @@ Two of the four sizes and one of the two effect counts are over. The numbers
 are here rather than only in the PR, because a ceiling nobody can see is a
 ceiling nobody keeps.
 
-| What                                | Ceiling | Was   | Is    | Over by |
-| ----------------------------------- | ------- | ----- | ----- | ------- |
-| `components/map/pass-map.tsx`       | 700     | 1 986 | 1 049 | 349     |
-| `components/panel/detail-panel.tsx` | 120     | 1 115 | 429   | 309     |
-| `components/explorer.tsx`           | 350     | 691   | 259   | –       |
-| `scripts/build-data.ts`             | 400     | 1 344 | 205   | –       |
-| effects in `pass-map.tsx`           | 6       | 17    | 15    | 9       |
-| effects in `explorer.tsx`           | 2       | 3     | 0     | –       |
+| What                                | Ceiling | Was   | Is  | Over by |
+| ----------------------------------- | ------- | ----- | --- | ------- |
+| `components/map/pass-map.tsx`       | 700     | 1 986 | 909 | 209     |
+| `components/panel/detail-panel.tsx` | 120     | 1 115 | 235 | 115     |
+| `components/explorer.tsx`           | 350     | 691   | 257 | –       |
+| `scripts/build-data.ts`             | 400     | 1 344 | 205 | –       |
+| effects in `pass-map.tsx`           | 6       | 17    | 12  | 6       |
+| effects in `explorer.tsx`           | 2       | 3     | 0   | –       |
 
-The map is what both misses are about. Its fifteen effects each hand one
-value to an adapter, which is the invariant above; what the ceiling of six
-wanted is fewer _inputs_, and plan 29 deliberately chose one effect per
-camera input instead ("five prop changes, five events"). Closing the gap
-means the four environment effects – the base map, the overlays, the colour
-scheme, where the corner controls stand – becoming one `applyEnvironment`
-beside `applyScene` and `applyCamera`, and the style and the corner controls
-leaving the file the way the paint expressions did. That is a plan of its
-own, not a line to squeeze into this one. The panel's remainder is its head,
-its bar and the weather block, still inline in the shell.
+The map is still what both misses are about, and both got closer after the
+first reading of this table. The five effects that pushed the base map, the
+overlays, the colour scheme, the 3D switch and the corner controls into
+MapLibre are one `MapEnvironment` and one `applyEnvironment` beside
+`applyScene` and `applyCamera`, which is what took the file to 909 lines and
+the effects to twelve. Each of the twelve hands one value to an adapter,
+which is the invariant above; what the ceiling of six wanted is fewer
+_inputs_, and plan 29 deliberately chose one effect per camera input instead
+("five prop changes, five events"). What is left of the gap is the map's own
+setup and its tools popover, and that is a plan of its own rather than a line
+to squeeze into this one. The panel's head and bar left for their own files;
+its remainder is the weather block and the shell's own wiring.
 
 The e2e timeout is the third criterion that had to give. "Default timeouts"
 was written before anyone timed the scenarios, and Bun's default is 5 s: on
