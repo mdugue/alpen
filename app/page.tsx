@@ -1,7 +1,7 @@
 import { Explorer } from "@/components/explorer";
 import { SITE_DESCRIPTION, SITE_NAME, siteUrl } from "@/lib/brand";
 import { getPageData } from "@/lib/data";
-import { todayPeriod } from "@/lib/status";
+import { todayPeriod } from "@/lib/period";
 
 /**
  * Structured data for the map page. Deliberately without ratings or reviews:

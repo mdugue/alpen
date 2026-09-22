@@ -1,7 +1,8 @@
 import { REACH_MAX_KM } from "@/lib/geo";
+import { PERIODS, periodIndex } from "@/lib/period";
 import { emptyCount, inBands, reachCounts, rideable } from "@/lib/reach";
 import type { Band, GradeCount, ReachedPass, ReachedTown } from "@/lib/reach";
-import { PERIODS, periodIndex, statusOf } from "@/lib/status";
+import { statusOf } from "@/lib/status";
 import type { Grade, Year, YearCell } from "@/lib/status";
 import type { Period } from "@/lib/types";
 

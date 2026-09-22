@@ -30,14 +30,12 @@ import profilesJson from "../data/generated/profiles.json" with { type: "json" }
  */
 import passesJson from "../data/passes.json" with { type: "json" };
 import { dayLength } from "../lib/daylight";
+import { periodIndex, periodLabel, PERIODS } from "../lib/period";
 import { valleyElevations } from "../lib/profile";
 import {
   COLD_DESCENT_TMAX,
   HEAT_VALLEY_TMAX,
   passYear,
-  periodIndex,
-  periodLabel,
-  PERIODS,
   REASON_ORDER,
   SHORT_DAY_HOURS,
   signalsOf,

@@ -25,8 +25,8 @@ import type {
   Options,
   Selection,
 } from "@/lib/app-state";
+import { isPeriod } from "@/lib/period";
 import { ROAD_TAGS, ROAD_TYPES } from "@/lib/regions";
-import { isPeriod } from "@/lib/status";
 import type { Period, Status } from "@/lib/types";
 
 // ── The URL hash ─────────────────────────────────────────────────────────────

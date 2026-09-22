@@ -1,5 +1,6 @@
 import { HEAT_NONE, WET_NONE } from "@/lib/app-state";
 import type { EntityKind, Filters, PassSort } from "@/lib/app-state";
+import { periodIndex, PERIODS } from "@/lib/period";
 import {
   matches,
   passHaystack,
@@ -10,8 +11,6 @@ import {
   daysOf,
   GRADE_ORDER,
   inputAt,
-  periodIndex,
-  PERIODS,
   signalsOf,
   statusRank,
   valleyTmax,

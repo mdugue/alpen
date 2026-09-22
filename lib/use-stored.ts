@@ -4,7 +4,7 @@ import { useEffect, useSyncExternalStore } from "react";
 import { ALL_KINDS } from "@/lib/app-state";
 import type { AppState, EntityKind, StoredState } from "@/lib/app-state";
 import { BASEMAP_ID } from "@/lib/basemap";
-import { isPeriod } from "@/lib/status";
+import { isPeriod } from "@/lib/period";
 import type { Period } from "@/lib/types";
 
 /**

@@ -167,7 +167,7 @@ rejects duplicates). Search folds accents, ß and punctuation on both sides
 genuinely different names such as "Stilfser Joch".
 
 **Time reckoning:** A `Period` is a half-month. `10` = early October,
-`10.5` = late October. `PERIODS` in `lib/status.ts` lists all 24.
+`10.5` = late October. `PERIODS` in `lib/period.ts` lists all 24.
 
 Which half-month the app shows is decided in this order:
 

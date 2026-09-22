@@ -40,10 +40,11 @@ import {
 } from "../lib/destination";
 import type { GradeShares } from "../lib/destination";
 import { haversine, reachBand } from "../lib/geo";
+import { periodLabel, PERIODS } from "../lib/period";
 import { valleyElevations } from "../lib/profile";
 import { emptyCount } from "../lib/reach";
 import * as S from "../lib/schema";
-import { passYear, periodLabel, PERIODS, signalsOf } from "../lib/status";
+import { passYear, signalsOf } from "../lib/status";
 import type { Grade } from "../lib/status";
 import { quantile } from "./lib/stats";
 

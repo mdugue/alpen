@@ -2,6 +2,7 @@ import { describe, expect, test } from "bun:test";
 
 import { DEFAULT_FILTERS } from "@/lib/app-state";
 import type { Filters } from "@/lib/app-state";
+import { PERIODS } from "@/lib/period";
 import {
   barTotal,
   buildPassRows,
@@ -18,7 +19,6 @@ import {
   cellAt,
   indexBySlug,
   passYear,
-  PERIODS,
   signalsOf,
   tourYear,
 } from "@/lib/status";

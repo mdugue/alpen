@@ -1,5 +1,6 @@
 import type { PageBundle } from "@/lib/page-data";
-import { indexBySlug, PERIODS } from "@/lib/status";
+import { PERIODS } from "@/lib/period";
+import { indexBySlug } from "@/lib/status";
 import type { Grade, Year, YearCell, Years } from "@/lib/status";
 import type { Pass, Period, Tour, Town } from "@/lib/types";
 

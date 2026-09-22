@@ -3,6 +3,7 @@ import { basesOf, destinationOf } from "@/lib/destination";
 import type { Bases, Destination } from "@/lib/destination";
 import type { DetailState } from "@/lib/detail-state";
 import type { PageBundle } from "@/lib/page-data";
+import { periodIndex } from "@/lib/period";
 import { reachedPasses, reachedTowns, withinReach } from "@/lib/reach";
 import type { Reach, ReachKind } from "@/lib/reach";
 import { ROAD_TYPE } from "@/lib/regions";
@@ -12,7 +13,6 @@ import {
   cellAt,
   climateText,
   inputAt,
-  periodIndex,
   reasonParagraph,
   seasonText,
   signalsOf,

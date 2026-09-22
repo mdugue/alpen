@@ -10,10 +10,10 @@ import tours from "@/data/tours.json";
 import towns from "@/data/towns.json";
 import { BRAND, SITE_NAME } from "@/lib/brand";
 import { MarkBadge } from "@/lib/mark";
+import { periodLabel } from "@/lib/period";
 import { valleyElevations } from "@/lib/profile";
 import {
   inputAt,
-  periodLabel,
   passStatus,
   signalsOf,
   STATUS_LABEL,

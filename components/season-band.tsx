@@ -16,17 +16,16 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { dayLength } from "@/lib/daylight";
-import type { SeasonBand as Band, SeasonBar } from "@/lib/rows";
 import {
-  GRADE_LABEL,
-  GRADE_ORDER,
   MONTH_INITIALS,
   MONTHS,
   periodAt,
   periodIndex,
   periodLabel,
   PERIODS,
-} from "@/lib/status";
+} from "@/lib/period";
+import type { SeasonBand as Band, SeasonBar } from "@/lib/rows";
+import { GRADE_LABEL, GRADE_ORDER } from "@/lib/status";
 import type { Grade } from "@/lib/status";
 import type { Period } from "@/lib/types";
 import { cn, fmt } from "@/lib/utils";

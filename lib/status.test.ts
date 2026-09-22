@@ -3,6 +3,7 @@ import { describe, expect, test } from "bun:test";
 import climateJson from "@/data/generated/climate.json" with { type: "json" };
 import profilesJson from "@/data/generated/profiles.json" with { type: "json" };
 import passesJson from "@/data/passes.json" with { type: "json" };
+import { periodAt, periodIndex, periodLabel, PERIODS } from "@/lib/period";
 import { valleyElevations } from "@/lib/profile";
 import {
   badgeWord,
@@ -12,14 +13,9 @@ import {
   climateText,
   GRADE_HINT,
   inputAt,
-  isPeriod,
   passStatus,
   passVerdict,
   passYear,
-  periodAt,
-  periodIndex,
-  periodLabel,
-  PERIODS,
   ladderText,
   reasonParagraph,
   REASON_ORDER,
@@ -32,7 +28,6 @@ import {
   statusRank,
   STATUS_ORDER,
   statusWord,
-  todayPeriod,
   tourText,
   tourYear,
   valleyTmax,
@@ -143,44 +138,6 @@ const tour = (slugs: string[]): Tour => ({
   season: "",
   slug: "t",
   waypoints: [],
-});
-
-describe("periods", () => {
-  test("24 half-months round trip through index and label", () => {
-    expect(PERIODS).toHaveLength(24);
-    expect(PERIODS.map(periodIndex)).toEqual(
-      Array.from({ length: 24 }, (_, i) => i),
-    );
-    expect(PERIODS.map((t) => periodAt(periodIndex(t)))).toEqual(PERIODS);
-    expect(periodLabel(1)).toBe("Anfang Januar");
-    expect(periodLabel(10)).toBe("Anfang Oktober");
-    expect(periodLabel(10.5)).toBe("Ende Oktober");
-    expect(periodLabel(12.5)).toBe("Ende Dezember");
-  });
-
-  test("periodAt wraps around the year", () => {
-    expect(periodAt(24)).toBe(1);
-    expect(periodAt(-1)).toBe(12.5);
-  });
-
-  test("isPeriod guards values from the hash or storage", () => {
-    expect(isPeriod(6)).toBe(true);
-    expect(isPeriod(6.5)).toBe(true);
-    expect(isPeriod(0)).toBe(false);
-    expect(isPeriod(13)).toBe(false);
-    expect(isPeriod(6.25)).toBe(false);
-    expect(isPeriod("6")).toBe(false);
-    expect(isPeriod(Number.NaN)).toBe(false);
-  });
-
-  test("todayPeriod splits the month at the 15th, in Europe/Berlin", () => {
-    expect(todayPeriod(new Date("2026-05-01T12:00:00Z"))).toBe(5);
-    expect(todayPeriod(new Date("2026-05-15T12:00:00Z"))).toBe(5);
-    expect(todayPeriod(new Date("2026-05-16T12:00:00Z"))).toBe(5.5);
-    expect(todayPeriod(new Date("2026-12-31T12:00:00Z"))).toBe(12.5);
-    // 00:30 Berlin time on 1 June is still 22:30 UTC on 31 May.
-    expect(todayPeriod(new Date("2026-05-31T22:30:00Z"))).toBe(6);
-  });
 });
 
 describe("passStatus without a climate series", () => {

@@ -20,7 +20,7 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart";
 import type { ChartConfig } from "@/components/ui/chart";
-import { MONTHS, periodLabel, PERIODS } from "@/lib/status";
+import { MONTHS, periodLabel, PERIODS } from "@/lib/period";
 import type { ClimateYear, Period } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
