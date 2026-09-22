@@ -40,20 +40,21 @@
  *                  answers with no complaint in it halves it back down, to the
  *                  starting value and no further.
  *
- * OPEN_METEO_BUDGET (default 4500) caps the weighted calls per run; what is left
- * over is picked up by the next run (.github/workflows/refresh-data.yml runs on
- * a push to data/*.json; scripts/backfill.sh drains a larger backlog in hourly
- * batches, which is what keeps a day inside the 10 000 daily calls).
+ * OPEN_METEO_BUDGET (default 4500) caps the weighted calls per run. What a run
+ * does with what it did not get to is the script's business, not this module's –
+ * scripts/build-data.ts says how the backlog is drained.
  *
  * A 429/403 whose body says the hour/day quota is spent stops that host for this
  * run – retrying would only burn the next window. A minutely 429 or a 5xx pauses
  * the host (Retry-After or the host's own backoff) and retries.
  *
- * The second adapter, `fixtureTransport`, answers from recorded files: the
- * coverage report's cache, and the way the gate will run offline in a test.
+ * The second adapter, `fixtureTransport`, answers from recorded files – today
+ * the coverage report's cache (`scripts/analyze-coverage.ts`).
  */
 import { createHash } from "node:crypto";
 import { mkdir } from "node:fs/promises";
+import path from "node:path";
+import { pathToFileURL } from "node:url";
 
 export type HostId =
   | "ors"
@@ -149,8 +150,6 @@ export const HOSTS: Record<HostId, HostSpec> = {
   overpass: { ...STEPPED, callsPerMinute: 20, name: "Overpass" },
 };
 const HOST_IDS = Object.keys(HOSTS) as HostId[];
-/** The binding Open-Meteo limit in practice: 5 000 calls/h ≈ 50 elevation profiles. */
-export const OPEN_METEO_HOURLY = 5000;
 
 export class QuotaExhaustedError extends Error {
   name = "QuotaExhaustedError";
@@ -285,6 +284,12 @@ export interface LiveOptions {
   env?: Record<string, string | undefined>;
   log?: (line: string) => void;
   clock?: Clock;
+  /**
+   * A per-run budget instead of the host's own. `Infinity` hands the stopping
+   * back to the host's quota, which is what a script wants that writes nothing
+   * and is watched by the person who started it (`scripts/locate-pass.ts`).
+   */
+  budgets?: Partial<Record<HostId, number>>;
 }
 
 /** A refused answer's reason: the JSON `reason`/`error` field, else the body. */
@@ -312,13 +317,16 @@ export const liveTransport = ({
   env = process.env,
   log = (line) => console.log(line),
   clock = { now: Date.now, sleep: Bun.sleep },
+  budgets = {},
 }: LiveOptions = {}): LiveTransport => {
   const limiters = Object.fromEntries(
     HOST_IDS.map((id) => {
       const spec = HOSTS[id];
-      const budget = spec.budget
-        ? Number(env[spec.budget.env] ?? spec.budget.fallback)
-        : Infinity;
+      const budget =
+        budgets[id] ??
+        (spec.budget
+          ? Number(env[spec.budget.env] ?? spec.budget.fallback)
+          : Infinity);
       return [id, new Limiter(spec, budget, clock)];
     }),
   ) as Record<HostId, Limiter>;
@@ -347,6 +355,10 @@ export const liveTransport = ({
         }
         if (res.status === 429 || res.status >= 500) {
           if (res.status === 429) lim.slowDown();
+          // Nothing follows the last attempt, so waiting for it would only
+          // add the backoff – up to five minutes on the Commons hosts – to a
+          // run that has already given up.
+          if (attempt === spec.attempts - 1) break;
           const retryAfter = Number(res.headers.get("retry-after")) * 1000;
           const wait =
             retryAfter > 0
@@ -396,10 +408,7 @@ interface Fixture {
 }
 
 export interface FixtureOptions {
-  /**
-   * Ask `live` again and overwrite what is on disk – `RECORD_FIXTURES=1` in
-   * the scripts that keep fixtures, `--refresh` for a cache.
-   */
+  /** Ask `live` again and overwrite what is on disk – `--refresh` for a cache. */
   record?: boolean;
   /**
    * Where a missing answer comes from. Without it a question that has no
@@ -434,7 +443,10 @@ export const fixtureTransport = (
   dir: URL | string,
   { record = false, live }: FixtureOptions = {},
 ): FixtureTransport => {
-  const base = dir instanceof URL ? dir : new URL(`${dir}/`, "file://");
+  // A relative path is relative to where the script was started, not to the
+  // filesystem root – which is what `new URL(dir, "file://")` would make of it.
+  const base =
+    dir instanceof URL ? dir : pathToFileURL(`${path.resolve(dir)}${path.sep}`);
   const fileOf = (host: HostId, url: string, init?: RequestInit) =>
     new URL(`${host}/${fixtureKey(url, init)}.json`, base);
   const count = { recorded: 0, replayed: 0 };
@@ -457,7 +469,7 @@ export const fixtureTransport = (
     }
     if (!live)
       throw new Error(
-        `Kein Fixture für ${host} ${url.slice(0, 80)} – mit RECORD_FIXTURES=1 aufnehmen`,
+        `Kein Fixture für ${host} ${url.slice(0, 80)} – im Aufnahmemodus des Skripts aufnehmen (record)`,
       );
     const value = await fromLive();
     const fixture: Fixture = {

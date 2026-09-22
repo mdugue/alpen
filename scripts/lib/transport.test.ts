@@ -197,14 +197,31 @@ describe("liveTransport", () => {
     expect(error.message.length).toBeLessThan(160);
   });
 
-  test("gives up after the host's attempts", async () => {
-    const { calls, t } = setup(
+  test("gives up after the host's attempts, without waiting out the last one", async () => {
+    const { calls, sleeps, t } = setup(
       Array.from({ length: 5 }, () => () => refused(500)),
     );
     const error = await rejection(t.getJson("osrm", "https://osrm/1"));
     expect(error).toBeInstanceOf(RateLimitedError);
     expect(error.message).toBe("OSRM-Demo: aufgegeben nach 5 Versuchen");
     expect(calls).toHaveLength(5);
+    // Four pauses for five attempts: nothing follows the fifth.
+    expect(sleeps).toEqual([5000, 10_000, 15_000, 20_000]);
+  });
+
+  test("a budget handed in beats the environment and the table", async () => {
+    const { clock } = fakeClock();
+    const { fetch } = fakeFetch([ok, ok]);
+    const t = liveTransport({
+      budgets: { openMeteo: Infinity },
+      clock,
+      env: { OPEN_METEO_BUDGET: "150" },
+      fetch,
+    });
+    expect(t.host("openMeteo").budget).toBe(Infinity);
+    await t.getJson("openMeteo", "https://meteo/1", undefined, 100);
+    await t.getJson("openMeteo", "https://meteo/2", undefined, 100);
+    expect(t.host("openMeteo").used).toBe(200);
   });
 
   test("Commons: six attempts, doubling backoff, Retry-After uncapped", async () => {
@@ -221,6 +238,9 @@ describe("liveTransport", () => {
       await rejection(stubborn.t.getJson("commons", "https://commons/api")),
     ).toBeInstanceOf(RateLimitedError);
     expect(stubborn.calls).toHaveLength(6);
+    // Five pauses for six attempts – the sixth backoff would be 320 s spent
+    // waiting for a request that is never sent.
+    expect(stubborn.sleeps).toEqual([10_000, 20_000, 40_000, 80_000, 160_000]);
   });
 
   test("the CDN's gap doubles on a 429 and comes back down after 25 calm answers", async () => {
@@ -337,6 +357,15 @@ describe("fixtureTransport", () => {
       expect([...replayed.bytes]).toEqual([9, 8]);
       expect(replayed.type).toBe("image/png");
       expect(calls()).toBe(1);
+    }));
+
+  test("a relative directory is relative to where the script runs", () =>
+    withDir(async (dir) => {
+      const { live } = countingLive();
+      const relative = path.relative(process.cwd(), dir);
+      expect(path.isAbsolute(relative)).toBe(false);
+      await fixtureTransport(relative, { live }).getJson("osrm", "https://x/1");
+      expect(await readdir(path.join(dir, "osrm"))).toHaveLength(1);
     }));
 
   test("without live, a missing fixture is an error", () =>

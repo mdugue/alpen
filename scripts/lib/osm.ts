@@ -33,6 +33,7 @@ import {
   osmMap,
   overpass as overpassHost,
 } from "./hosts";
+import type { OsmElement, OverpassWay } from "./hosts";
 import {
   CANDIDATE_RADIUS,
   ROAD_RADIUS,
@@ -42,7 +43,6 @@ import {
   waysWithGeometry,
   roadsQuery,
 } from "./locate";
-import type { OsmElement, OverpassWay } from "./locate";
 import type { Transport } from "./transport";
 
 export interface OsmOptions {

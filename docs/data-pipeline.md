@@ -104,14 +104,17 @@ holds one function per question – `ors.route`, `osrm.route`,
 `commons.geosearch`, `commons.search`, `commons.thumbnail`, `github.release` –
 and each composes its URL, names the weight the host bills and parses the
 answer with a zod schema, so a host's address and its answer shape exist in
-that file and nowhere else. The function takes a `Transport`
-(`scripts/lib/transport.ts`): the live one keeps a pacer per host from the
-`HOSTS` table – the gap, the Open-Meteo budget, `Retry-After`, the words that
-say a quota is spent – and is the only `fetch` under `scripts/`; the fixture
-one answers from recorded files (`<dir>/<host>/<hash>.json`, keyed by method,
-URL and body), which is the coverage report's cache today and the way the
-gate will run offline in a test. `scripts/lib/osm.ts` sits on the same seam
-and decides between Overpass and the map API.
+that file and nowhere else – the shapes the pure modules measure and rank on
+are inferred from those schemas. A row of an answer that cannot be read is
+skipped rather than taken for the whole answer: a relation among the OSM nodes
+and ways, a Commons file whose image info has no size. The function takes a
+`Transport` (`scripts/lib/transport.ts`): the live one keeps a pacer per host
+from the `HOSTS` table – the gap, the Open-Meteo budget, `Retry-After`, the
+words that say a quota is spent – and is the only `fetch` under `scripts/`;
+the fixture one answers from recorded files (`<dir>/<host>/<hash>.json`, keyed
+by method, URL and body), and is what the coverage report keeps its cache in.
+`scripts/lib/osm.ts` sits on the same seam and decides between Overpass and
+the map API.
 
 | Source                                        | Abbreviation                                                                                                                    | Answers                                                             | Format                     | Key / limit                                     | Strong at                                                                                          | Weak at                                                                                                                           |
 | --------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------- | -------------------------- | ----------------------------------------------- | -------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |

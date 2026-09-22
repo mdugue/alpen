@@ -4,7 +4,17 @@
  * request body, the weight Open-Meteo bills and the answer's shape are known
  * here and nowhere else. A script that spends API calls validates what it
  * gets (principle 4 in AGENTS.md): every answer a script reads structured
- * fields from goes through a zod schema before a number of it is trusted.
+ * fields from goes through a zod schema before a number of it is trusted, and
+ * the shapes the pure modules work on are inferred from those schemas
+ * (`OsmElement` for `locate.ts`, `Page` for `photo-rank.ts`) so that a shape
+ * is described once rather than written down a second time by hand.
+ *
+ * An answer is a list of rows, and a row a host cannot deliver in full is
+ * dropped rather than taken for the whole answer: Commons indexes files whose
+ * image info is missing the fields the ranking reads, and an OSM box holds
+ * relations among its nodes and ways. Skipping them is what the hand-written
+ * filters did before the schemas existed, and a run that ends on one of them
+ * is a run that fetched nothing.
  *
  * The hosts are configured by environment: `ORS_KEY` (without it there is no
  * road-cycling router), `OSRM_HOST` to point a local OSRM at the data (see
@@ -14,9 +24,6 @@ import { z } from "zod";
 
 import { PHOTO_WIDTH } from "../../lib/photos";
 import type { LatLon, RouteGeometry } from "../../lib/types";
-import { overpassPost } from "./locate";
-import type { OsmElement } from "./locate";
-import type { Page } from "./photo-rank";
 import type { Bytes, Transport } from "./transport";
 import { LIMITS } from "./validate";
 
@@ -31,6 +38,29 @@ export const OSM_MAP_URL =
 const COMMONS_UA =
   "alpenpaesse-data-build/1.0 (https://github.com/mdugue/alpen; mail@manuel.fyi)";
 const COMMONS_API = "https://commons.wikimedia.org/w/api.php";
+
+/**
+ * A list in the sizes one request may carry. `overlap` repeats that many of
+ * the previous chunk's last entries in the next one, which is what a route
+ * through more waypoints than fit needs: the last point of one chunk is the
+ * first of the next, so the pieces meet on the road rather than beside it.
+ */
+const chunks = <T>(xs: T[], size: number, overlap = 0): T[][] => {
+  const out: T[][] = [];
+  for (let i = 0; i < xs.length - overlap; i += size - overlap)
+    out.push(xs.slice(i, i + size));
+  return out;
+};
+
+/** The rows of an answer that parse; a row that does not is skipped. */
+const parsable = <T>(rows: unknown[], row: z.ZodType<T>): T[] => {
+  const out: T[] = [];
+  for (const r of rows) {
+    const parsed = row.safeParse(r);
+    if (parsed.success) out.push(parsed.data);
+  }
+  return out;
+};
 
 /**
  * How far ORS may snap a waypoint onto the road network. Deliberately the same
@@ -70,17 +100,16 @@ const stitched = async (
   waypoints: LatLon[],
   perRequest: number,
   ask: (chunk: LatLon[]) => Promise<RouteGeometry>,
-  from = 0,
-  out: RouteGeometry = [],
 ): Promise<RouteGeometry> => {
-  if (from >= waypoints.length - 1) return out;
-  const cs = await ask(
-    waypoints.slice(from, Math.min(from + perRequest, waypoints.length)),
-  );
-  return await stitched(waypoints, perRequest, ask, from + perRequest - 1, [
-    ...out,
-    ...(out.length ? cs.slice(1) : cs),
-  ]);
+  const pieces = chunks(waypoints, perRequest, 1);
+  const out: RouteGeometry = [];
+  let i = 0;
+  while (i < pieces.length) {
+    const cs = await ask(pieces[i]!);
+    out.push(...(out.length ? cs.slice(1) : cs));
+    i += 1;
+  }
+  return out;
 };
 
 export const ors = {
@@ -129,7 +158,11 @@ export const osrm = {
 // ---------------------------------------------------------------------------
 // Open-Meteo
 
-/** One elevation request carries this many coordinates, and is billed one call each. */
+/**
+ * One elevation request carries this many coordinates, and is billed one call
+ * each. A longer list is split here rather than by the caller, so no caller
+ * can forget – the way `ors.route` and `osrm.route` chunk their waypoints.
+ */
 export const ELEVATION_BATCH = 100;
 const CLIMATE_FROM = "2015-01-01";
 const CLIMATE_TO = "2024-12-31";
@@ -166,16 +199,30 @@ export const openMeteo = {
         CLIMATE_WEIGHT,
       ),
     ).daily,
-  /** Copernicus DEM heights, one per point, in the points' order. */
-  elevation: async (t: Transport, points: LatLon[]): Promise<number[]> =>
-    Elevation.parse(
-      await t.getJson(
-        "openMeteo",
-        `https://api.open-meteo.com/v1/elevation?latitude=${points.map((p) => p.lat).join(",")}&longitude=${points.map((p) => p.lon).join(",")}`,
-        undefined,
-        points.length,
-      ),
-    ).elevation,
+  /**
+   * Copernicus DEM heights, one per point, in the points' order –
+   * `ELEVATION_BATCH` points per request, billed one call per point.
+   */
+  elevation: async (t: Transport, points: LatLon[]): Promise<number[]> => {
+    const batches = chunks(points, ELEVATION_BATCH);
+    const out: number[] = [];
+    let i = 0;
+    while (i < batches.length) {
+      const chunk = batches[i]!;
+      out.push(
+        ...Elevation.parse(
+          await t.getJson(
+            "openMeteo",
+            `https://api.open-meteo.com/v1/elevation?latitude=${chunk.map((p) => p.lat).join(",")}&longitude=${chunk.map((p) => p.lon).join(",")}`,
+            undefined,
+            chunk.length,
+          ),
+        ).elevation,
+      );
+      i += 1;
+    }
+    return out;
+  },
 };
 
 // ---------------------------------------------------------------------------
@@ -189,34 +236,53 @@ const OsmNode = z.object({
   tags: Tags,
   type: z.literal("node"),
 });
-/** Overpass `out geom` carries the coordinates inline; the map API the node ids. */
-const OsmWay = z.union([
-  z.object({
-    geometry: z.array(z.object({ lat: z.number(), lon: z.number() })),
-    id: z.number(),
-    tags: Tags,
-    type: z.literal("way"),
-  }),
-  z.object({
-    id: z.number(),
-    nodes: z.array(z.number()),
-    tags: Tags,
-    type: z.literal("way"),
-  }),
-]);
-/** Relations and whatever else a box holds pass through and are dropped. */
-const Elements = z.object({
-  elements: z
-    .array(z.union([OsmNode, OsmWay, z.object({ type: z.string() })]))
-    .optional(),
+/** Overpass `out geom` carries the coordinates inline … */
+const OsmGeomWay = z.object({
+  geometry: z.array(z.object({ lat: z.number(), lon: z.number() })),
+  id: z.number(),
+  tags: Tags,
+  type: z.literal("way"),
 });
-const isElement = (e: { type: string }): e is OsmElement =>
-  e.type === "node" || e.type === "way";
+/** … the map API the node ids, resolved in `waysWithGeometry`. */
+const OsmNodesWay = z.object({
+  id: z.number(),
+  nodes: z.array(z.number()),
+  tags: Tags,
+  type: z.literal("way"),
+});
+const OsmElementRow = z.union([OsmNode, OsmGeomWay, OsmNodesWay]);
+const Elements = z.object({ elements: z.array(z.unknown()).optional() });
+
+export type OverpassNode = z.infer<typeof OsmNode>;
+export type OverpassWay = z.infer<typeof OsmGeomWay>;
+export type OsmElement = z.infer<typeof OsmElementRow>;
+
+/**
+ * The nodes and ways of an answer. A bounding box holds relations too, and
+ * they are dropped here the way the measuring filtered them out before – as
+ * is a node without coordinates or a way without either a geometry or its
+ * node ids, because what is half-read is not a measurement.
+ */
 const elementsOf = (json: unknown): OsmElement[] =>
-  (Elements.parse(json).elements ?? []).filter(isElement);
+  parsable(Elements.parse(json).elements ?? [], OsmElementRow);
+
+/**
+ * A POST to Overpass. The Apache in front of overpass-api.de answers a bare
+ * `fetch` with 406 before the query is ever parsed – it wants the form
+ * content type and a User-Agent it recognises as a client rather than a
+ * runtime default.
+ */
+const overpassPost = (query: string): RequestInit => ({
+  body: `data=${encodeURIComponent(query)}`,
+  headers: {
+    "Content-Type": "application/x-www-form-urlencoded",
+    "User-Agent": "alpen-data/1.0 (https://github.com/mdugue/alpen)",
+  },
+  method: "POST",
+});
 
 export const overpass = {
-  /** The nodes and ways an Overpass QL query selects. */
+  /** The nodes and ways an Overpass QL query selects (`locate.ts` writes it). */
   query: async (t: Transport, query: string): Promise<OsmElement[]> =>
     elementsOf(await t.getJson("overpass", OVERPASS_URL, overpassPost(query))),
 };
@@ -230,37 +296,30 @@ export const osmMap = {
 // ---------------------------------------------------------------------------
 // Wikimedia Commons
 
-const Pages = z.object({
-  query: z
-    .object({
-      pages: z
-        .array(
-          z.object({
-            imageinfo: z
-              .array(
-                z.object({
-                  descriptionurl: z.string(),
-                  extmetadata: z
-                    .record(
-                      z.string(),
-                      z.object({ value: z.string().optional() }).optional(),
-                    )
-                    .optional(),
-                  height: z.number(),
-                  mime: z.string(),
-                  thumburl: z.string().optional(),
-                  url: z.string(),
-                  width: z.number(),
-                }),
-              )
-              .optional(),
-            title: z.string(),
-          }),
-        )
-        .optional(),
-    })
+/** The parts of one `imageinfo` entry that the choice depends on. */
+const CommonsImageInfo = z.object({
+  descriptionurl: z.string(),
+  extmetadata: z
+    .record(z.string(), z.object({ value: z.string().optional() }).optional())
     .optional(),
+  height: z.number(),
+  mime: z.string(),
+  /** The thumbnail Commons rendered for the requested width, if any. */
+  thumburl: z.string().optional(),
+  url: z.string(),
+  width: z.number(),
 });
+/** One page of an `action=query` answer, in the order the API returned it. */
+const CommonsPage = z.object({
+  imageinfo: z.array(CommonsImageInfo).optional(),
+  title: z.string(),
+});
+const Pages = z.object({
+  query: z.object({ pages: z.array(z.unknown()).optional() }).optional(),
+});
+
+export type ImageInfo = z.infer<typeof CommonsImageInfo>;
+export type Page = z.infer<typeof CommonsPage>;
 
 /** An `action=query` for files with their image info, plus the generator's own parameters. */
 const commonsQuery = async (
@@ -284,7 +343,10 @@ const commonsQuery = async (
       headers: { "User-Agent": COMMONS_UA },
     }),
   );
-  return json.query?.pages ?? [];
+  // Commons indexes files whose image info has no size, no file URL or no
+  // description page. Such a page cannot be ranked or credited, so it is
+  // dropped here rather than allowed to end a run of 120 requests.
+  return parsable(json.query?.pages ?? [], CommonsPage);
 };
 
 export const commons = {

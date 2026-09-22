@@ -11,7 +11,6 @@ import {
   osrm,
   overpass,
 } from "./hosts";
-import { overpassPost } from "./locate";
 import type { HostId, Transport } from "./transport";
 import { LIMITS } from "./validate";
 
@@ -194,6 +193,30 @@ describe("openMeteo", () => {
     ]);
   });
 
+  test("elevation: more points than one request carries are split and joined", async () => {
+    const points = Array.from({ length: 101 }, (_, i) => ({
+      lat: 46 + i / 1000,
+      lon: 10,
+    }));
+    const { asked, t } = recording([
+      { elevation: Array.from({ length: 100 }, () => 2000) },
+      { elevation: [1500] },
+    ]);
+    const heights = await openMeteo.elevation(t, points);
+    expect(heights).toHaveLength(101);
+    expect(heights.at(-1)).toBe(1500);
+    expect(asked.map((q) => q.weight)).toEqual([100, 1]);
+    expect(asked[1]!.url).toBe(
+      "https://api.open-meteo.com/v1/elevation?latitude=46.1&longitude=10",
+    );
+  });
+
+  test("elevation: an empty list asks nothing", async () => {
+    const { asked, t } = recording([]);
+    expect(await openMeteo.elevation(t, [])).toEqual([]);
+    expect(asked).toHaveLength(0);
+  });
+
   test("a malformed answer does not become a number", async () => {
     const { t } = recording([{ elevation: ["high"] }]);
     expect(await rejection(openMeteo.elevation(t, [a]))).toBeInstanceOf(Error);
@@ -225,14 +248,38 @@ describe("osm", () => {
       way,
       mapWay,
     ]);
+    // The Apache in front of overpass-api.de answers anything else with a 406.
     expect(asked).toEqual([
       {
         host: "overpass",
-        init: overpassPost("[out:json];node(1);out;"),
+        init: {
+          body: "data=%5Bout%3Ajson%5D%3Bnode(1)%3Bout%3B",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "User-Agent": "alpen-data/1.0 (https://github.com/mdugue/alpen)",
+          },
+          method: "POST",
+        },
         url: "https://overpass-api.de/api/interpreter",
         weight: undefined,
       },
     ]);
+  });
+
+  test("an element that cannot be read is skipped, not kept as its type", async () => {
+    const node = { id: 1, lat: 46.2, lon: 10.1, type: "node" as const };
+    const { t } = recording([
+      {
+        elements: [
+          node,
+          // No coordinates, no geometry, no node ids: nothing to measure.
+          { id: 2, tags: { name: "x" }, type: "node" },
+          { id: 3, type: "way" },
+          { id: 4, members: [], type: "relation" },
+        ],
+      },
+    ]);
+    expect(await overpass.query(t, "[out:json];out;")).toEqual([node]);
   });
 
   test("osmMap.bbox asks the map API for the box as JSON", async () => {
@@ -280,6 +327,22 @@ describe("commons", () => {
         weight: undefined,
       },
     ]);
+  });
+
+  test("a page whose image info cannot be read is skipped, not the whole answer", async () => {
+    const { t } = recording([
+      {
+        query: {
+          pages: [
+            // Commons indexes files whose imageinfo lacks the size or the URL.
+            { imageinfo: [{ mime: "image/jpeg", width: 1600 }], title: "F:a" },
+            { title: 42 },
+            page,
+          ],
+        },
+      },
+    ]);
+    expect(await commons.geosearch(t, a, 2000)).toEqual([page]);
   });
 
   test("search by name, bitmaps only; no pages is an empty list", async () => {

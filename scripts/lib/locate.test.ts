@@ -1,5 +1,6 @@
 import { describe, expect, test } from "bun:test";
 
+import type { OsmElement, OverpassNode, OverpassWay } from "./hosts";
 import {
   candidatesQuery,
   distanceToWays,
@@ -9,7 +10,6 @@ import {
   roadsQuery,
   waysWithGeometry,
 } from "./locate";
-import type { OsmElement, OverpassNode, OverpassWay } from "./locate";
 
 const node = (
   id: number,

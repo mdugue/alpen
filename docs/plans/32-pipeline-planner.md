@@ -1,6 +1,7 @@
 # 32 · The pipeline as plan → execute → apply
 
-**Status:** in progress – phase A done in `claude/p32-worktree` · **Effort:** L (six phases, one PR each) ·
+**Status:** in progress – phase A in [#62](https://github.com/mdugue/alpen/pull/62) ·
+**Effort:** L (six phases, one PR each) ·
 **Depends on:** 00 (the gate) · **Supersedes:** 20, 21 · **Unblocks:**
 roadmap 1 (a closures step is one more host and one more job kind), 12
 (destinations enter the pipeline as jobs), 24 (its coverage report's
@@ -166,11 +167,19 @@ from `osm.ts`), `commons.geosearch`, `commons.file` – each taking a
 words of a host are known there and nowhere else. `liveTransport(env)` is
 today's `Limiter`, `getJson`, `HttpError` and `QuotaExhaustedError`, moved
 without change; `fixtureTransport(dir, { record })` answers from
-`scripts/fixtures/<host>/<hash>.json` and records with `RECORD_FIXTURES=1`.
+`<dir>/<host>/<hash>.json`, and whoever builds it decides when it records
+(`--refresh` for the coverage cache; phase C adds the env switch for the
+fixtures it keeps).
 `locate-pass.ts`, `build-photos.ts` and `scripts/lib/coverage.ts` drop
 their own fetches and pacers; the blur host is one more host with its
 adaptive gap inside the live transport, and the coverage cache becomes the
 fixture transport's record mode.
+
+Two numbers phase A did not keep as they were, each written down where it
+sits: `locate-pass.ts` gets no Open-Meteo budget of its own, because it
+stores nothing to resume from and a person is waiting for the answer, and
+the OSM hosts are paced for every script from the `HOSTS` table (3 s for
+Overpass, 2 s for the map API) rather than per script.
 
 ### Phase B · The decisions (plan 20)
 

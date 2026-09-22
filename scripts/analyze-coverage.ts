@@ -22,10 +22,13 @@
  * holiday". The human decides; nothing here becomes data.
  *
  * The answers are recorded per query in scripts/.cache/coverage (git-ignored)
- * by the fixture transport, so the second run is offline and free. Overpass is
- * the only host that can answer a 75 km circle – the OSM map API's fallback in
- * osm.ts stops at a bounding box a few kilometres wide – so when it is down
- * the run says so and stops; OVERPASS_URL picks a mirror.
+ * by the fixture transport, so the second run is offline and free. The gap
+ * between two live requests is the transport's Overpass pace – 3 s, the rate
+ * every script keeps towards that host – rather than the 2 s this report used
+ * to time itself. Overpass is the only host that can answer a 75 km circle –
+ * the OSM map API's fallback in osm.ts stops at a bounding box a few
+ * kilometres wide – so when it is down the run says so and stops;
+ * OVERPASS_URL picks a mirror.
  */
 import passesJson from "../data/passes.json" with { type: "json" };
 import townsJson from "../data/towns.json" with { type: "json" };
@@ -39,7 +42,7 @@ import {
   summaryLine,
 } from "./lib/coverage";
 import { OVERPASS_URL, overpass } from "./lib/hosts";
-import type { OverpassNode } from "./lib/locate";
+import type { OverpassNode } from "./lib/hosts";
 import { fixtureTransport, liveTransport } from "./lib/transport";
 
 const passes = S.Passes.parse(passesJson);

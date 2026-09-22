@@ -46,7 +46,10 @@
  * a 429 – `roadTop` asks for hundreds of heights per pass, which is what
  * walked into one before the pacing existed – and stops the run once
  * Open-Meteo says the hour is spent, because sitting out sixty of those would
- * be an hour of pretending to work.
+ * be an hour of pretending to work. The paces are the table's rather than the
+ * ones this script used to keep for itself – Open-Meteo at 500 calls a minute
+ * instead of 600, Overpass at 3 s and the map API at 2 s instead of 0.3 s –
+ * because a host's budget is one host's budget, however many scripts ask.
  */
 import passes from "../data/passes.json" with { type: "json" };
 import { profileCoords } from "../lib/profile";
@@ -95,7 +98,15 @@ const profiles = await readJson<Record<string, ElevationProfile>>(
   {},
 );
 
-const transport = liveTransport();
+/**
+ * No per-run budget on Open-Meteo, unlike `data:build`: a build stops early so
+ * the next hour's run can continue where it left off, but this script stores
+ * nothing to continue from and a person is waiting for its answer. So the
+ * stopping is left to the host – a spent hour or day still ends the run – and
+ * a long `data:locate` over the whole backlog is not cut off in the middle of
+ * the passes it was started for.
+ */
+const transport = liveTransport({ budgets: { openMeteo: Infinity } });
 const osm = osmSource({ log: (line) => console.log(line), transport });
 /** DEM heights, rounded to the metre; nothing is asked for an empty list. */
 const dem = async (

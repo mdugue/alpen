@@ -47,14 +47,14 @@
  * that pass: a point that is 300 m off in height is not on the road, and every
  * route to it ends short and every profile paid for it is wasted.
  *
- * Every request goes through scripts/lib/transport.ts – one pacer per host,
- * the Open-Meteo budget (OPEN_METEO_BUDGET, default 4500 weighted calls per
- * run), Retry-After and the quota words are all there – and the questions
- * themselves are the functions of scripts/lib/hosts.ts. What is left over when
- * the budget is spent is picked up by the next run
+ * Every request goes through scripts/lib/transport.ts – the pacing, the
+ * per-run budget (OPEN_METEO_BUDGET), Retry-After and the words that say a
+ * quota is spent are written down there, once, for every host – and the
+ * questions themselves are the functions of scripts/lib/hosts.ts. What the
+ * budget did not reach is picked up by the next run
  * (.github/workflows/refresh-data.yml runs on a push to data/*.json;
  * scripts/backfill.sh drains a larger backlog in hourly batches, which is what
- * keeps a day inside the 10 000 daily calls).
+ * keeps a day inside Open-Meteo's 10 000 daily calls).
  */
 import { mkdir } from "node:fs/promises";
 
@@ -86,22 +86,10 @@ import type {
   TourCheck,
   TourMetrics,
 } from "../lib/types";
-import {
-  CLIMATE_WEIGHT,
-  ELEVATION_BATCH,
-  ORS_KEY,
-  openMeteo,
-  ors,
-  osrm,
-} from "./lib/hosts";
+import { CLIMATE_WEIGHT, ORS_KEY, openMeteo, ors, osrm } from "./lib/hosts";
 import { distanceToWays, ROAD_RADIUS } from "./lib/locate";
 import { osmSource } from "./lib/osm";
-import {
-  HttpError,
-  liveTransport,
-  OPEN_METEO_HOURLY,
-  QuotaExhaustedError,
-} from "./lib/transport";
+import { HttpError, liveTransport, QuotaExhaustedError } from "./lib/transport";
 import {
   ascentMetrics,
   checkRoad,
@@ -131,7 +119,14 @@ const TODAY = new Date().toISOString().slice(0, 10);
 /** Constructed here, asked nothing until a pipeline runs: --status stays offline. */
 const transport = liveTransport();
 const OPEN_METEO_BUDGET = transport.host("openMeteo").budget;
-/** Open-Meteo weight of one elevation request: one call per location. */
+/** The binding Open-Meteo limit in practice: 5 000 calls/h ≈ 50 elevation profiles. */
+const OPEN_METEO_HOURLY = 5000;
+/**
+ * What one profile costs, for the estimate below. Open-Meteo bills one call
+ * per location and `openMeteo.elevation` charges exactly that, so this is the
+ * cap `profileCoords` samples to – the estimate can only be an upper bound,
+ * since a geometry with fewer points than the cap is cheaper.
+ */
 const PROFILE_WEIGHT = PROFILE_POINTS;
 
 const readJson = async <T>(name: string, fallback: T): Promise<T> => {
@@ -223,13 +218,10 @@ const route = async (
 const summitElevations = async (
   list: Pass[],
 ): Promise<Record<string, Summit>> => {
+  const elevation = await openMeteo.elevation(transport, list);
   const out: Record<string, Summit> = {};
-  for (let i = 0; i < list.length; i += ELEVATION_BATCH) {
-    const chunk = list.slice(i, i + ELEVATION_BATCH);
-    const elevation = await openMeteo.elevation(transport, chunk);
-    for (const [j, p] of chunk.entries())
-      out[p.slug] = { dem: Math.round(elevation[j]!), lat: p.lat, lon: p.lon };
-  }
+  for (const [i, p] of list.entries())
+    out[p.slug] = { dem: Math.round(elevation[i]!), lat: p.lat, lon: p.lon };
   return out;
 };
 

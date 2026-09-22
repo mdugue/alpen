@@ -1,8 +1,9 @@
 /**
  * Pure helpers for placing a pass coordinate on the road: distance from a
  * point to the nearest way, OSM pass-node candidates ranked against a pass,
- * and the queries and answer shapes of the two hosts that can supply them –
- * Overpass and the OSM map API, picked between in `osm.ts`. No I/O –
+ * and the queries for the two hosts that can supply them – Overpass and the
+ * OSM map API, picked between in `osm.ts`. The answers arrive in the shapes
+ * `hosts.ts` parses them into, so nothing here describes them again. No I/O –
  * `build-data.ts` uses the road distance as a gate, `locate-pass.ts` uses
  * everything interactively, and the unit tests feed both the known-bad points.
  *
@@ -12,6 +13,7 @@
  */
 import { fold } from "../../lib/search";
 import type { LatLon, Pass } from "../../lib/types";
+import type { OsmElement, OverpassNode, OverpassWay } from "./hosts";
 import { haversine } from "./validate";
 
 /**
@@ -26,36 +28,6 @@ export const ROAD_HIGHWAYS =
 export const ROAD_RADIUS = 0.3;
 /** Search radius for OSM pass nodes around a suspect point, km. */
 export const CANDIDATE_RADIUS = 6;
-
-/**
- * A POST to Overpass. The Apache in front of overpass-api.de answers a bare
- * `fetch` with 406 before the query is ever parsed – it wants the form
- * content type and a User-Agent it recognises as a client rather than a
- * runtime default. Both call sites go through here so they cannot drift.
- */
-export const overpassPost = (query: string): RequestInit => ({
-  body: `data=${encodeURIComponent(query)}`,
-  headers: {
-    "Content-Type": "application/x-www-form-urlencoded",
-    "User-Agent": "alpen-data/1.0 (https://github.com/mdugue/alpen)",
-  },
-  method: "POST",
-});
-
-/** Overpass `out geom` way: the node coordinates come inline. */
-export interface OverpassWay {
-  geometry: { lat: number; lon: number }[];
-  id: number;
-  tags?: Record<string, string>;
-  type: "way";
-}
-export interface OverpassNode {
-  id: number;
-  lat: number;
-  lon: number;
-  tags?: Record<string, string>;
-  type: "node";
-}
 
 /**
  * Distance in km from a point to a segment, on a local flat projection – the
@@ -190,31 +162,25 @@ export const rankCandidates = (
 
 // ── The same facts from the OSM map API ──────────────────────────────────────
 
-/**
- * Overpass is one host, and when it is unreachable every pass coordinate in
- * the backlog is stuck behind it. The OSM map API answers a bounding box with
- * every element inside it instead of a query, which is the same two facts for
- * more bytes: the drivable ways under a point, and the pass nodes around it.
- *
- * The shapes differ in one place. `out geom` inlines a way's coordinates;
- * the map API sends node ids and the nodes separately. Both reach
- * `waysWithGeometry`, so the measuring path stays single – `distanceToWays`
- * never learns where its ways came from.
- */
-export interface OsmMapWay {
-  id: number;
-  nodes: number[];
-  tags?: Record<string, string>;
-  type: "way";
-}
-export type OsmElement = OverpassNode | OverpassWay | OsmMapWay;
+// Overpass is one host, and when it is unreachable every pass coordinate in
+// the backlog is stuck behind it. The OSM map API answers a bounding box with
+// every element inside it instead of a query, which is the same two facts for
+// more bytes: the drivable ways under a point, and the pass nodes around it.
+// Which host answered is `osm.ts`'s decision; the helpers below take either.
 
 const ROAD_RE = new RegExp(ROAD_HIGHWAYS, "u");
 /** Is this a road at all – the same classes `roadsQuery` asks Overpass for. */
 export const isRoad = (tags: Record<string, string> = {}) =>
   ROAD_RE.test(tags.highway ?? "");
 
-/** The drivable ways of a batch of elements, coordinates resolved. */
+/**
+ * The drivable ways of a batch of elements, coordinates resolved.
+ *
+ * The two hosts' shapes differ in one place: `out geom` inlines a way's
+ * coordinates, the map API sends node ids and the nodes separately. Both reach
+ * here, so the measuring path stays single – `distanceToWays` never learns
+ * where its ways came from.
+ */
 export const waysWithGeometry = (elements: OsmElement[]): OverpassWay[] => {
   const nodes = new Map<number, { lat: number; lon: number }>();
   for (const e of elements)

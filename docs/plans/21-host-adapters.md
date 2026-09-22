@@ -1,6 +1,7 @@
 # 21 · One adapter per external host
 
-**Status:** superseded by [32](32-pipeline-planner.md), whose phase A is this plan – done in `claude/p32-worktree` · **Effort:** M ·
+**Status:** superseded by [32](32-pipeline-planner.md), whose phase A is this
+plan ([#62](https://github.com/mdugue/alpen/pull/62)) · **Effort:** M ·
 **Depends on:** 20 (decisions that can be imported) · **Unblocks:** an offline pipeline test; roadmap 1 (closure
 sources) and 4 (Overpass traffic) plug in as hosts
 
