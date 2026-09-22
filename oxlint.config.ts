@@ -152,12 +152,6 @@ export default defineConfig({
       },
     },
     {
-      // `"use cache"` requires the function to be async even when it only
-      // returns imported JSON.
-      files: ["lib/data.ts"],
-      rules: { "require-await": "off" },
-    },
-    {
       // `useFetch<Detail>(url)` names the payload once, at the call. The rule
       // calls a type parameter that only reaches the return type an assertion
       // in disguise – which is what typing a fetched JSON file is.
@@ -165,10 +159,10 @@ export default defineConfig({
       rules: { "typescript/no-unnecessary-type-parameters": "off" },
     },
     {
-      // The build script serialises its file writes and the transport its
+      // The pipeline serialises its file writes and the transport its
       // API calls per host on promise chains (`writing`, `this.chain`);
       // `await` has no way to hand the chain on to the next caller.
-      files: ["scripts/build-data.ts", "scripts/lib/transport.ts"],
+      files: ["scripts/lib/pipeline.ts", "scripts/lib/transport.ts"],
       rules: { "promise/prefer-await-to-then": "off" },
     },
     {
@@ -213,15 +207,11 @@ export default defineConfig({
       },
     },
     {
-      // The JSON-LD block is the one sanctioned use of the prop.
+      // The JSON-LD block is the one sanctioned use of the prop. And a
+      // `"use cache"` function has to be async even where it awaits nothing:
+      // the page's data is imported JSON, read synchronously (lib/data.ts).
       files: ["app/page.tsx"],
-      rules: { "react/no-danger": "off" },
-    },
-    {
-      // Escape closes the detail panel; the section is the panel, not a
-      // control, so it carries the handler.
-      files: ["components/panel/detail-panel.tsx"],
-      rules: { "jsx-a11y/no-noninteractive-element-interactions": "off" },
+      rules: { "react/no-danger": "off", "require-await": "off" },
     },
   ],
   rules: {

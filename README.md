@@ -36,6 +36,7 @@ and the climate series are missing.
 | `bun run build` / `bun start`        | Production build and server                                               |
 | `bun run typecheck`                  | `tsc --noEmit`                                                            |
 | `bun run lint` / `bun run lint:fix`  | oxlint + oxfmt via ultracite (React Compiler and type-aware rules incl.)  |
+| `bun run seams` / `bun run palette`  | The two repo checks inside `lint`: the adapters, and the sRGB mirror      |
 | `bun run data:build`                 | Fetch routes, elevation profiles, climate → `data/generated/` (resumable) |
 | `bun run data:build --status`        | Show what is still missing and what it costs in Open-Meteo calls          |
 | `bun run data:check`                 | Validate references and completeness of the data                          |
@@ -51,8 +52,8 @@ and the climate series are missing.
 ## Architecture in four sentences
 
 All content data lives as JSON in the repo (`data/`), is imported at build
-time and served through `"use cache"` in `lib/data.ts` as cached segments –
-the start page is therefore fully prerendered. Two kinds of data never become
+time and read synchronously in `lib/data.ts` inside the one `"use cache"` on
+`app/page.tsx` – the start page is therefore fully prerendered. Two kinds of data never become
 React props: the route geometry, written as content-hashed GeoJSON into
 `public/map` for MapLibre to fetch and tile in its worker, and what only one
 entity's panel reads (its elevation profiles and photo metadata), written as

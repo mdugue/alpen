@@ -4,9 +4,12 @@
  * sitemap.
  *
  * Neither Satori (next/og) nor a manifest can read CSS custom properties, so
- * the sRGB equivalents of the tokens in app/globals.css are spelled out here –
- * one place to change instead of six. Keep them in sync when the palette moves.
+ * the colours come from `TOKENS` (lib/palette.ts), the one sRGB mirror of
+ * app/globals.css – checked against the stylesheet by `bun run palette`. This
+ * file used to keep a second copy of the same tokens, and by the time the two
+ * were compared they disagreed about every one of them.
  */
+import { TOKENS } from "@/lib/palette";
 
 export const SITE_NAME = "Alpenpässe";
 export const SITE_TAGLINE = "Rennradkarte";
@@ -45,19 +48,19 @@ export const siteUrl =
  */
 export const SUPPORT_URL = "https://ko-fi.com/el_manu";
 
-/** sRGB equivalents of the light-theme tokens in app/globals.css. */
+/** The light-theme tokens under the names everything outside the shell uses. */
 export const BRAND = {
-  accent: "#e8b45a",
-  ink: "#2b2a27",
-  muted: "#8a8275",
-  /** --background in the dark theme, used as the dark browser chrome colour. */
-  night: "#1a1c22",
-  paper: "#fbfaf7",
-  primary: "#2f3d55",
+  accent: TOKENS.light.accent,
+  ink: TOKENS.light.foreground,
+  muted: TOKENS.light.mutedForeground,
+  /** `--background` of the dark theme, the dark browser chrome colour. */
+  night: TOKENS.dark.background,
+  paper: TOKENS.light.background,
+  primary: TOKENS.light.primary,
   status: {
-    closed: "#c0463e",
-    open: "#4a9a6a",
-    risky: "#e0a93f",
+    closed: TOKENS.light.statusClosed,
+    open: TOKENS.light.statusOpen,
+    risky: TOKENS.light.statusRisky,
   },
 } as const;
 

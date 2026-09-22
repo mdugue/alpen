@@ -84,6 +84,14 @@ test("2 · selecting a pass opens the detail panel, Escape returns focus to the 
     // entity's file from `public/detail` (lib/detail-assets.ts). The title
     // is there immediately, the profile a request later.
     await page.waitFor('[aria-label^="Höhenprofil:"]');
+    // In a text field the key belongs to the field – Chrome empties a search
+    // input with it – so the panel stays open.
+    await page.focus('input[type="search"]');
+    await page.press("Escape");
+    expect(await page.text("#detail-title")).toBe("Col du Galibier");
+    // Everywhere else it closes the panel, whether or not the focus is still
+    // in it: it is opened from the map as often as from a row.
+    await page.evaluate("document.activeElement?.blur()");
     await page.press("Escape");
     await page.waitForGone("#detail-title");
     // The panel is gone on commit, the row is focused a frame later

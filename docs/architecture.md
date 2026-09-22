@@ -105,7 +105,7 @@ entity at a time, so its data is a file.
 
 ```mermaid
 flowchart LR
-  D["data/*.json<br/>data/generated/*.json"] --> P["lib/data.ts · use cache"]
+  D["data/*.json<br/>data/generated/*.json"] --> P["lib/data.ts"]
   D --> MA["build-map-assets.ts"]
   D --> DA["build-detail-assets.ts"]
   P -->|"React payload: names, ratings,<br/>seasons, climate, asset URLs"| B["Browser"]
@@ -162,9 +162,22 @@ would mean a filter counting wrong for a moment (see
 
 ### Cache Components
 
-`"use cache"` sits on the data functions and on `app/page.tsx`. Introducing
-`cookies()`, `headers()` or `searchParams` breaks prerendering – put such
-things in a separate dynamic child component inside `<Suspense>` instead.
+`"use cache"` sits on `app/page.tsx`, and that is the only place it sits.
+Everything the page shows comes from JSON imported at build time, so
+`lib/data.ts` is plain synchronous code: the page's own cache entry covers the
+derivations it runs – the asset URLs, the reachable tours, the town hulls, the
+graded year of every pass – and they are run once, at prerender. The getters
+used to carry a `"use cache"` each. None of them had a lifetime, a tag or a
+second caller, so the only thing the extra entries bought was a second copy of
+the same values in the cache store; `next build` reports `○ /` either way.
+(The weather route is the other cached thing, and it is cached for a reason of
+its own: an upstream call per pass per hour. See below.)
+
+A `"use cache"` function has to be `async` even where it awaits nothing, which
+is why `app/page.tsx` is async and carries the one `require-await` exception in
+`oxlint.config.ts`. Introducing `cookies()`, `headers()` or `searchParams`
+breaks prerendering – put such things in a separate dynamic child component
+inside `<Suspense>` instead.
 
 ### React Compiler is on
 
@@ -179,8 +192,11 @@ from a layout effect after hydration).
 
 Icons, the share image, the manifest, `robots.txt` and `sitemap.xml` are Next
 metadata routes under `app/`, prerendered at build time. Everything they need –
-name, claim, base URL, the sRGB palette and the mark geometry – lives in
+name, claim, base URL, the colours and the mark geometry – lives in
 `lib/brand.ts`, because neither Satori nor a manifest can read CSS variables;
+its colours are the tokens of `TOKENS` (`lib/palette.ts`), the one sRGB mirror
+of `app/globals.css`, which `bun run palette` holds against the stylesheet
+(see ["Colours only via tokens"](./map-rendering.md#colours-only-via-tokens)).
 `lib/mark.tsx` paints that geometry as the badge the favicon, the touch icon
 and the share image all share. Change those two, not the routes. The badge is
 monochrome and has its own small grey scale rather than the UI tokens: it is

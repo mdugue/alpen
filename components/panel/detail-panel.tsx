@@ -26,6 +26,12 @@ import { cn, ICON_TOGGLE, OVERLAY_CONTROL, TOUCH_ICON } from "@/lib/utils";
  */
 const BAR_PX = 44;
 
+/** A layer over the page that closes on Escape itself (see the effect below). */
+const LAYER = "[data-slot=dialog-content],[data-slot=popover-content]";
+
+/** Elements in which Escape belongs to whatever is being typed. */
+const TYPED = new Set(["INPUT", "TEXTAREA"]);
+
 /**
  * The panel's head. Two shapes, one element: the kicker and the name lie on
  * the hero photo where there is one, and stand in the panel's own colours
@@ -301,6 +307,38 @@ export const DetailPanel = ({
     if (!expanded) scroller.current?.scrollTo({ top: 0 });
   }, [expanded]);
 
+  /**
+   * Escape closes the panel from anywhere on the page, not only from inside
+   * it. The panel takes the focus when it opens, but a click on the map, a
+   * scroll of the list or a tap on a control puts the focus somewhere else,
+   * and a key that then does nothing reads as a key that does not work.
+   *
+   * Two things own Escape ahead of the panel and keep it. A layer over the
+   * page – the scales dialog, a source popover – closes itself with it, and
+   * closing the panel underneath at the same time would take away what the
+   * visitor was about to return to. And in a text field the key belongs to
+   * the field: Chrome empties a search input with it. Both are asked about
+   * here rather than left to the order the listeners happen to run in, which
+   * the portal a dialog renders into does not settle.
+   *
+   * The listener is on `document` while the panel is mounted, which is while
+   * something is selected – so there is no state to ask about and nothing to
+   * clean up beyond the listener itself.
+   */
+  const { onBack } = actions;
+  useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key !== "Escape" || e.defaultPrevented) return;
+      if (document.querySelector(LAYER)) return;
+      const target = e.target as HTMLElement | null;
+      if (target && (target.isContentEditable || TYPED.has(target.tagName)))
+        return;
+      onBack();
+    };
+    document.addEventListener("keydown", onKeyDown);
+    return () => document.removeEventListener("keydown", onKeyDown);
+  }, [onBack]);
+
   const model = detailModel(selection, data, {
     detail: state,
     hovered,
@@ -325,9 +363,6 @@ export const DetailPanel = ({
       tabIndex={-1}
       aria-labelledby="detail-title"
       className="relative flex min-h-0 flex-1 flex-col outline-none"
-      onKeyDown={(e) => {
-        if (e.key === "Escape") actions.onBack();
-      }}
     >
       <PanelBar
         name={model.name}

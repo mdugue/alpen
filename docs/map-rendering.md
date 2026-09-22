@@ -301,6 +301,19 @@ MapLibre cannot read CSS variables; `pass-map.tsx` reads them once via
 `getComputedStyle` (`readColors`). Add new map colours there rather than
 hard-coding them.
 
+What is painted before there is a document to read – the generated basemap
+style, and the icons, the share image and the manifest in `lib/brand.ts` –
+cannot do that, so `TOKENS` in `lib/palette.ts` carries the tokens as sRGB and
+everything outside the document reads that one table. It is a copy, and a copy
+is only allowed to exist while something says when it has stopped being one:
+`bun run palette` (`scripts/check-palette.ts`, inside `bun run lint`) converts
+every `oklch()` in `app/globals.css` and fails on a difference. The two copies
+that preceded it – one in `lib/palette.ts`, one in `lib/brand.ts` – had drifted
+from the stylesheet and from each other over every token they shared, which is
+the whole argument for the check. The rest of `PALETTE` is the basemap's own
+tones (land, water, wood, roads, its labels): chosen against the tokens, not
+derived from them, and so not part of the comparison.
+
 ### The basemap is generated, and it follows the OS scheme
 
 The default base is a vector style painted from the app's own palette
