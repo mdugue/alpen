@@ -69,6 +69,7 @@ const RANK = new Map(
 
 /** An ascent belongs to its pass; every other kind answers for itself. */
 const KIND: Record<keyof typeof LAYERS, Selection["kind"]> = {
+  destination: "destination",
   pass: "pass",
   route: "pass",
   tour: "tour",

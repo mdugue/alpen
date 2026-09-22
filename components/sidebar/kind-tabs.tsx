@@ -5,15 +5,18 @@ import type { EntityKind } from "@/lib/app-state";
 import { ALL_KINDS, KIND_LABEL } from "@/lib/app-state";
 import { cn, fmt, TOUCH_CONTROL } from "@/lib/utils";
 
-/** Legend glyphs; the same shapes the map uses for the three kinds. */
+/** Legend glyphs; the same shapes the map uses for the four kinds. */
 export const KIND_GLYPH: Record<EntityKind, React.ReactNode> = {
+  destination: (
+    <span className="bg-accent/30 border-accent size-3 rounded-full border" />
+  ),
   pass: <span className="border-foreground/70 size-3 rounded-full border-2" />,
   tour: <span className="bg-tour h-1.5 w-4 rounded-full" />,
   town: <span className="bg-town size-2.5 rounded-full" />,
 };
 
 /**
- * Which of the three lists is on screen.
+ * Which of the four lists is on screen.
  *
  * They used to be three collapsible blocks stacked inside one scroll
  * container, which made the sidebar a single **12 841 px** column against a

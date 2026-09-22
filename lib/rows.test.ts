@@ -2,9 +2,11 @@ import { describe, expect, test } from "bun:test";
 
 import { DEFAULT_FILTERS } from "@/lib/app-state";
 import type { Filters } from "@/lib/app-state";
+import { membersOf } from "@/lib/destination";
 import { PERIODS } from "@/lib/period";
 import {
   barTotal,
+  buildDestinationRows,
   buildPassRows,
   buildTourRows,
   buildTownRows,
@@ -23,7 +25,14 @@ import {
   tourYear,
 } from "@/lib/status";
 import type { Signals, Year, Years } from "@/lib/status";
-import type { ClimateBucket, ClimateYear, Pass, Tour, Town } from "@/lib/types";
+import type {
+  ClimateBucket,
+  ClimateYear,
+  Destination,
+  Pass,
+  Tour,
+  Town,
+} from "@/lib/types";
 
 const filters = (over: Partial<Filters> = {}): Filters => ({
   ...DEFAULT_FILTERS,
@@ -31,6 +40,7 @@ const filters = (over: Partial<Filters> = {}): Filters => ({
   ...over,
 });
 const never = () => false;
+type Favorite = (kind: string, slug: string) => boolean;
 
 const pass = (over: Partial<Pass> & { slug: string }): Pass => ({
   ascents: [],
@@ -829,5 +839,80 @@ describe("rowBlocks", () => {
   test("a short list is one block, an empty one none", () => {
     expect(rowBlocks([1, 2, 3])).toEqual([[1, 2, 3]]);
     expect(rowBlocks([])).toEqual([]);
+  });
+});
+
+const area = (over: Partial<Destination> & { slug: string }): Destination => ({
+  access: "",
+  baseTowns: [],
+  center: { lat: 46, lon: 10 },
+  character: "",
+  country: "IT",
+  exclude: [],
+  include: [],
+  multiDay: "",
+  name: over.slug,
+  radiusKm: 30,
+  ...over,
+});
+
+describe("buildDestinationRows (plan 12)", () => {
+  const roads = [
+    pass({ beauty: 5, lat: 46, lon: 10, name: "Nah", slug: "nah" }),
+    pass({ beauty: 2, lat: 46, lon: 10.2, name: "Mittel", slug: "mittel" }),
+    pass({ beauty: 4, lat: 47, lon: 12, name: "Fern", slug: "fern" }),
+  ];
+  const roadIndex = indexBySlug(roads);
+  const bases: Town[] = [
+    {
+      country: "IT",
+      lat: 46,
+      lon: 10.05,
+      name: "Bormio",
+      slug: "bormio",
+      tags: [],
+      why: "",
+    } as unknown as Town,
+  ];
+  const areas = [
+    area({ baseTowns: ["bormio"], name: "Ortler", slug: "ortler" }),
+    area({ center: { lat: 47, lon: 12 }, name: "Tauern", slug: "tauern" }),
+  ];
+  const members = Object.fromEntries(
+    areas.map((d) => [d.slug, membersOf(d, roads, [], bases)]),
+  );
+  const rows = (over: Partial<Filters> = {}, fav: Favorite = never) =>
+    buildDestinationRows(
+      areas,
+      members,
+      roadIndex,
+      indexBySlug(bases),
+      yearsOf(roads, []),
+      filters(over),
+      fav,
+    );
+
+  test("ranks by the beauty that is rideable, and names the bases", () => {
+    const [first, second] = rows();
+    expect(first?.destination.slug).toBe("ortler");
+    expect(first?.baseTowns.map((t) => t.name)).toEqual(["Bormio"]);
+    expect(first?.text).toBe("2 von 2 Straßen gut");
+    expect(second?.destination.slug).toBe("tauern");
+    expect(first!.score).toBeGreaterThan(second!.score);
+  });
+
+  test("sees search, favourites and the range, not the road criteria", () => {
+    expect(rows({ minBeauty: 5 })).toHaveLength(2);
+    expect(rows({ query: "bormio" }).map((r) => r.destination.slug)).toEqual([
+      "ortler",
+    ]);
+    expect(rows({ favoritesOnly: true })).toHaveLength(0);
+    expect(
+      rows(
+        { favoritesOnly: true },
+        (kind, slug) => kind === "destination" && slug === "tauern",
+      ).map((r) => r.destination.slug),
+    ).toEqual(["tauern"]);
+    expect(rows({ ranges: ["Jura"] })).toHaveLength(0);
   });
 });

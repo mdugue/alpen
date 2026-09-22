@@ -13,6 +13,7 @@ import {
   reconcileShown,
   reduce,
   shownTourCount,
+  toggleCompare,
   toggleLevel,
   toggleMember,
 } from "@/lib/app-state";
@@ -23,8 +24,8 @@ import type {
   Selection,
   StoredState,
 } from "@/lib/app-state";
+import type { Bounds } from "@/lib/geo";
 import { parseHash } from "@/lib/hash";
-import type { Bounds } from "@/lib/map-assets";
 import { entityKey } from "@/lib/route-key";
 import type { Period } from "@/lib/types";
 
@@ -57,6 +58,48 @@ describe("filters", () => {
     expect(toggleLevel([2, 4], 2)).toEqual([3, 4]);
     expect(toggleLevel([2, 4], 3)).toEqual([3, 3]);
     expect(toggleLevel([3, 3], 3)).toEqual([1, 5]);
+  });
+});
+
+describe("compare (plan 12)", () => {
+  test("toggleCompare adds up to three, drops on demand and never duplicates", () => {
+    expect(toggleCompare([], "a", true)).toEqual(["a"]);
+    expect(toggleCompare(["a"], "a", true)).toEqual(["a"]);
+    expect(toggleCompare(["a", "b", "c"], "d", true)).toEqual(["a", "b", "c"]);
+    expect(toggleCompare(["a", "b"], "a", false)).toEqual(["b"]);
+  });
+
+  test("a destination is always shown and selecting one reveals nothing", () => {
+    const shown = { hiddenTours: [], passes: false, towns: false };
+    expect(isShown(shown, "destination", "oisans")).toBe(true);
+    const state = reduce(
+      { ...initialState(8), shown },
+      { selection: { kind: "destination", slug: "oisans" }, type: "select" },
+      { mobile: false, rangeBounds: {}, today: 8, tours: [] },
+    );
+    expect(state.shown).toBe(shown);
+    expect(state.tab).toBe("destination");
+  });
+
+  test("the comparison comes in with the link and goes out with the state", () => {
+    const env: Env = { mobile: false, rangeBounds: {}, today: 8, tours: [] };
+    let state = reduce(
+      initialState(8),
+      { hash: parseHash("#vgl=oisans,engadin"), stored: {}, type: "load" },
+      env,
+    );
+    expect(state.compare).toEqual(["oisans", "engadin"]);
+    state = reduce(state, { on: true, slug: "ubaye", type: "compare" }, env);
+    expect(state.compare).toEqual(["oisans", "engadin", "ubaye"]);
+    state = reduce(state, { on: false, slug: "engadin", type: "compare" }, env);
+    expect(state.compare).toEqual(["oisans", "ubaye"]);
+    // A link without `vgl` clears it: the hash is authoritative on load.
+    state = reduce(
+      state,
+      { hash: parseHash(""), stored: {}, type: "load" },
+      env,
+    );
+    expect(state.compare).toEqual([]);
   });
 });
 

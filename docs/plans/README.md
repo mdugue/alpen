@@ -23,7 +23,7 @@ that goal; features that only add route-level precision rank last.
 | 01  | [Map data out of the React payload](01-map-data-out-of-payload.md)    | first load on holiday Wi-Fi               | M      | 00 for complete data | [done](https://github.com/mdugue/alpen/pull/14)                 |
 | 03  | [Make the period the hero](03-period-hero.md)                         | "when"                                    | M      | –                    | [done](https://github.com/mdugue/alpen/pull/4)                  |
 | 04  | [Climate-aware status](04-climate-aware-status.md)                    | "when", honesty                           | S–M    | –                    | [done](https://github.com/mdugue/alpen/pull/4)                  |
-| 12  | [Destinations](12-destinations.md)                                    | "where"                                   | L      | 09                   | proposed                                                        |
+| 12  | [Destinations](12-destinations.md)                                    | "where"                                   | L      | 09                   | done                                                            |
 | 13  | [Summer axis](13-summer-axis.md)                                      | "when" in summer, honesty                 | M–L    | 04                   | [done](https://github.com/mdugue/alpen/pull/17)                 |
 | 05  | [Filters and search](05-filters-and-search.md)                        | finding things                            | S–M    | –                    | [done](https://github.com/mdugue/alpen/pull/9)                  |
 | 02  | [Real routes instead of the hash](02-real-routes.md)                  | sharing, back button, SEO                 | L      | 01, 28, 33           | proposed                                                        |
@@ -76,14 +76,13 @@ One round came out of a UI/UX audit rather than a plan, and it takes ground
 from two plans that are still open. It is recorded here so the table above is
 not read as the whole picture:
 
-- **12 (Destinations)** is partly answered. A town now carries a verdict for
+- **12 (Destinations)** was half answered by it. A town carries a verdict for
   the chosen half-month, its own derived 24 cells and a list of the passes it
   reaches, ranked and grouped by reach band (`lib/destination.ts`,
-  `docs/scales.md`); a pass carries the inverse, "Orte als Standort". What
-  plan 12 still holds is the destination as a _first-class entity_ with its
-  own data file and its own place in the search and the filters — none of that
-  is in PR #47, which derives everything from the towns and passes that
-  already exist.
+  `docs/scales.md`); a pass carries the inverse, "Orte als Standort". The
+  other half – the destination as a _first-class entity_ with its own data
+  file, its own tab, its circle on the map and the compare sheet – is plan 12
+  itself, done since, on the same `lib/destination.ts`.
 - **17 (Detail panel per kind)** was not done and was not made harder by the
   round; it landed afterwards as phase D of [31](31-panel-model.md).
 

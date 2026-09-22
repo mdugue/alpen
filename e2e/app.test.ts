@@ -22,12 +22,12 @@ import { afterAll, beforeAll, expect, test } from "bun:test";
 import routesJson from "@/data/generated/routes.json" with { type: "json" };
 import passes from "@/data/passes.json" with { type: "json" };
 import toursJson from "@/data/tours.json" with { type: "json" };
+import type { Bounds } from "@/lib/geo";
 import { HIT_LAYERS, LAYERS } from "@/lib/layer-ids";
 import { mapAssets } from "@/lib/map-assets";
-import type { Bounds } from "@/lib/map-assets";
 import * as S from "@/lib/schema";
 import { startApp, waitUntil, withPage } from "@/test/browser";
-import type { App } from "@/test/browser";
+import type { App, Page } from "@/test/browser";
 
 let app: App;
 
@@ -52,6 +52,11 @@ afterAll(() => {
 });
 
 const PASS_ROW = '[data-row^="pass:"]';
+/**
+ * The list opens on the areas (plan 12); the road tests switch to the roads
+ * first, the way a visitor does – by the tab.
+ */
+const showRoads = (page: Page) => page.clickText('[role="tab"]', "Straßen");
 const GALIBIER = '[data-row="pass:col-du-galibier"]';
 const SLIDER = '[aria-label="Zeitraum"]';
 const BACK_TO_LIST = '[aria-label="Zurück zur Liste"]';
@@ -60,6 +65,7 @@ const STACKED = "[data-slot=drawer-popup][data-nested-drawer-open]";
 
 test("1 · loads with all passes and a map canvas", () =>
   withPage(app, "loads", {}, async (page) => {
+    await showRoads(page);
     await page.waitFor(PASS_ROW);
     // Every road in the file is a row: the count comes from the data, so a
     // curation PR does not have to touch this test.
@@ -76,6 +82,7 @@ test("1 · loads with all passes and a map canvas", () =>
 
 test("2 · selecting a pass opens the detail panel, Escape returns focus to the row", () =>
   withPage(app, "select-pass", {}, async (page) => {
+    await showRoads(page);
     // A row is reached and opened without a pointer: the list is one tab stop
     // and the arrows move inside it (`useRoving`, lib/use-roving.ts), so the
     // focus steps on from the first row …
@@ -153,6 +160,7 @@ test("3 · a shared link restores selection, period and camera", () =>
 test("4 · a status chip narrows the lists and the applied-filter chip undoes it", () =>
   // Early January: nothing is "gut", so the counts and the disabled chip bite.
   withPage(app, "status-filter", { hash: "#t=1" }, async (page) => {
+    await showRoads(page);
     await page.waitFor(PASS_ROW);
     const all = await page.count(PASS_ROW);
     // The status picker is a row of chips inside the filter panel: no popup
@@ -215,6 +223,7 @@ test("5 · nothing covers the map until it is asked for; list and detail stack",
     // has attached the handler; tap again until the field is there.
     await waitUntil(async () => {
       if ((await page.count("input[type=search]")) > 0) return true;
+      // The tab followed the tap on the road, so the button names the roads.
       await page.clickText("button", "Straßen");
       await Bun.sleep(300);
       return (await page.count("input[type=search]")) > 0;
@@ -254,6 +263,7 @@ test("6 · a stored half-month is applied, a shared link beats it", () =>
     // planted directly and the page opened afresh on top of it.
     await page.evaluate('localStorage.setItem("alpenpaesse:period", "3")');
     await page.navigate();
+    await showRoads(page);
     await page.waitFor(PASS_ROW);
     // The static HTML names today's half-month until the script arrives;
     // `load` runs in a layout effect, so the first paint after hydration

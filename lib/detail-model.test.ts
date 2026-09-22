@@ -32,12 +32,15 @@ const data = bundleOf(passes, tours, towns, years, {
   },
 });
 
-const modelOf = (kind: "pass" | "tour" | "town", slug: string) =>
-  detailModel({ kind, slug }, data, {
+const modelOf = (kind: "pass" | "tour" | "town", slug: string) => {
+  const model = detailModel({ kind, slug }, data, {
     detail: absent,
     hovered: null,
     period: PERIOD,
   });
+  // The three kinds with a point of their own; an area has no reach block.
+  return model?.kind === "destination" ? null : model;
+};
 
 describe("detailModel", () => {
   test("an entity the page does not have resolves to nothing", () => {

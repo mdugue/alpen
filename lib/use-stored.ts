@@ -27,12 +27,13 @@ interface Slot<T> {
 }
 const slot = <T>(area: StorageArea, value: T): Slot<T> => ({ area, value });
 
-interface Favorites {
-  pass: string[];
-  tour: string[];
-  town: string[];
-}
-const NO_FAVORITES: Favorites = { pass: [], tour: [], town: [] };
+type Favorites = Record<EntityKind, string[]>;
+const NO_FAVORITES: Favorites = {
+  destination: [],
+  pass: [],
+  tour: [],
+  town: [],
+};
 
 /**
  * What this app calls its own in a shared origin. Spelled here and nowhere
@@ -70,10 +71,11 @@ const STORAGE = {
   /** Whether the desktop sidebar is unfolded. */
   sidebar: slot<boolean>("local", true),
   /**
-   * Which of the three lists is on screen. A preference like the sidebar's own
-   * fold, so coming back lands where the last visit left off.
+   * Which of the four lists is on screen. A preference like the sidebar's own
+   * fold, so coming back lands where the last visit left off; the first visit
+   * lands on the areas (`initialState`).
    */
-  tab: slot<EntityKind>("local", "pass"),
+  tab: slot<EntityKind>("local", ALL_KINDS[0]!),
 };
 
 type StorageKey = keyof typeof STORAGE;
@@ -155,16 +157,23 @@ export const useStored = <K extends StorageKey>(key: K) => {
   return [value, setValue] as const;
 };
 
+/**
+ * A kind this build added is missing from what an earlier visit stored, so
+ * every read goes through this: a stored object is not trusted to carry every
+ * key.
+ */
+const favoritesOf = (f: Favorites, kind: EntityKind) => f[kind] ?? [];
+
 export const useFavorites = () => {
   const [favorites, setFavorites] = useStored("favorites");
   const isFavorite = (kind: EntityKind, slug: string) =>
-    favorites[kind].includes(slug);
+    favoritesOf(favorites, kind).includes(slug);
   const toggle = (kind: EntityKind, slug: string) =>
     setFavorites((f) => ({
       ...f,
-      [kind]: f[kind].includes(slug)
-        ? f[kind].filter((s) => s !== slug)
-        : [...f[kind], slug],
+      [kind]: favoritesOf(f, kind).includes(slug)
+        ? favoritesOf(f, kind).filter((s) => s !== slug)
+        : [...favoritesOf(f, kind), slug],
     }));
   // Only the two the explorer asks for: a `favorites` array, a `count` and a
   // `clear` were all handed back too, and no caller ever took one.
@@ -178,7 +187,7 @@ const isKind = (v: unknown): v is EntityKind =>
  * The persisted slices the reducer owns, read outside React for the `load`
  * action (`lib/hash-adapter.ts`). What is in storage is not trusted further
  * than its shape: a slug that no longer exists is dropped by `reconcileShown`,
- * a tab name this build does not know falls back to the passes, and a
+ * a tab name this build does not know falls back to the first list, and a
  * half-month that is not one of the 24 is no preference at all.
  */
 export const readStoredState = (): StoredState => {
@@ -200,7 +209,7 @@ export const readStoredState = (): StoredState => {
       passes: passes !== false,
       towns: towns !== false,
     },
-    tab: isKind(tab) ? tab : "pass",
+    tab: isKind(tab) ? tab : ALL_KINDS[0]!,
   };
 };
 

@@ -1,10 +1,19 @@
-import { REACH_MAX_KM } from "@/lib/geo";
+import { bounds, haversine, REACH_MAX_KM } from "@/lib/geo";
+import type { Bounds } from "@/lib/geo";
 import { PERIODS, periodIndex } from "@/lib/period";
 import { emptyCount, inBands, reachCounts, rideable } from "@/lib/reach";
 import type { Band, GradeCount, ReachedPass, ReachedTown } from "@/lib/reach";
-import { statusOf } from "@/lib/status";
-import type { Grade, Year, YearCell } from "@/lib/status";
-import type { Period } from "@/lib/types";
+import { cellAt, statusOf } from "@/lib/status";
+import type { Grade, PassIndex, Year, YearCell, Years } from "@/lib/status";
+import type {
+  Destination,
+  LatLon,
+  Pass,
+  Period,
+  Tour,
+  Town,
+} from "@/lib/types";
+import { fmt } from "@/lib/utils";
 
 /**
  * What a base is worth, for the half-month that is chosen.
@@ -97,7 +106,7 @@ export const gradeOfBase = (
   return "limited";
 };
 
-export interface Destination {
+export interface BaseVerdict {
   /** The 24 derived cells, for a `SeasonStrip`. */
   year: Year;
   /** The grade counts of the chosen half-month. */
@@ -149,7 +158,7 @@ const bestRun = (cells: YearCell[]): [Period, Period] | null => {
 export const destinationOf = (
   reached: ReachedPass[],
   period: Period,
-): Destination => {
+): BaseVerdict => {
   const perPeriod = reachCounts(reached);
   // The whole year is graded against the best half-month this base has, so
   // the strip shows its season rather than its size (see `gradeOfBase`).
@@ -170,7 +179,7 @@ export const destinationOf = (
  * count is what the grade was made of – the badge says "beste Zeit" and this
  * says why that is so, in the same breath.
  */
-export const destinationText = (d: Destination): string => {
+export const destinationText = (d: BaseVerdict): string => {
   const n = rideable(d.counts);
   if (d.total === 0) return `Kein Pass im Umkreis von ${REACH_MAX_KM} km.`;
   if (n === 0)
@@ -208,3 +217,144 @@ export const basesOf = (reached: ReachedTown[]): Bases => ({
   bands: inBands(reached),
   total: reached.length,
 });
+
+// ── Destinations as curated areas (plan 12) ──────────────────────────────────
+
+/**
+ * What lies inside a curated area, derived once at prerender: every road
+ * within `radiusKm` of the centre plus `include` minus `exclude`, every town
+ * within the radius plus the bases named, every loop with a waypoint inside
+ * the radius, and the box around all of it – what selecting the area frames.
+ * Nothing here is written to a file: a road added to `passes.json` joins its
+ * area by itself, and a changed radius moves the membership with it
+ * (`docs/destinations.md`).
+ */
+export interface DestinationMembers {
+  passes: string[];
+  tours: string[];
+  towns: string[];
+  bounds: Bounds;
+}
+
+/** Whether a point lies within the area's radius. */
+export const insideOf = (d: Destination, p: LatLon): boolean =>
+  haversine(d.center, p) <= d.radiusKm;
+
+/**
+ * Whether a road belongs to the area: within the radius or on the `include`
+ * list, and not on the `exclude` list. The one spelling of the rule –
+ * `data:check` reads it too, so a road it calls standalone is one the page
+ * lists in no area.
+ */
+export const isMember = (d: Destination, p: Pass): boolean =>
+  (insideOf(d, p) || d.include.includes(p.slug)) && !d.exclude.includes(p.slug);
+
+export const membersOf = (
+  d: Destination,
+  passes: readonly Pass[],
+  tours: readonly Tour[],
+  towns: readonly Town[],
+): DestinationMembers => {
+  const inside = (p: LatLon) => insideOf(d, p);
+  const own = passes.filter((p) => isMember(d, p));
+  const ownTowns = towns.filter(
+    (t) => inside(t) || d.baseTowns.includes(t.slug),
+  );
+  const ownTours = tours.filter((t) => t.waypoints.some(inside));
+  const points: [number, number][] = [
+    [d.center.lat, d.center.lon],
+    ...own.map((p): [number, number] => [p.lat, p.lon]),
+    ...ownTowns.map((t): [number, number] => [t.lat, t.lon]),
+  ];
+  return {
+    bounds: bounds(points),
+    passes: own.map((p) => p.slug),
+    tours: ownTours.map((t) => t.slug),
+    towns: ownTowns.map((t) => t.slug),
+  };
+};
+
+/** The areas a town belongs to, the ones that name it as a base first. */
+export const destinationsOfTown = (
+  slug: string,
+  destinations: readonly Destination[],
+  members: Record<string, DestinationMembers>,
+): Destination[] =>
+  destinations
+    .filter((d) => members[d.slug]?.towns.includes(slug))
+    .toSorted(
+      (a, b) =>
+        Number(b.baseTowns.includes(slug)) - Number(a.baseTowns.includes(slug)),
+    );
+
+/**
+ * How much great riding an area holds in one half-month: the beauty of its
+ * open roads, plus two fifths of the beauty of its limited ones. Editorial
+ * like every number here (the scales dialog says so) – it ranks the list of
+ * areas for the chosen half-month and is never shown as a value, the way the
+ * reach weight is not. A closed road counts nothing: a holiday is not booked
+ * for a road that is shut.
+ */
+export const RISKY_WEIGHT = 0.4;
+
+export const areaScore = (
+  memberSlugs: readonly string[],
+  passes: PassIndex,
+  years: Years,
+  period: Period,
+): number => {
+  let score = 0;
+  for (const slug of memberSlugs) {
+    const pass = passes.get(slug);
+    const year = years.passes[slug];
+    if (!pass || !year) continue;
+    const { status } = cellAt(year, period);
+    if (status === "open") score += pass.beauty;
+    else if (status === "risky") score += RISKY_WEIGHT * pass.beauty;
+  }
+  return score;
+};
+
+/**
+ * The verdict of an area, derived the way a base's is (`gradeOfBase`): the
+ * counts of its member roads per half-month, graded against the area's own
+ * best half-month, and the best window read off the cells. No reach here –
+ * the members are what the curator drew the circle around, not what lies
+ * within a band of one point.
+ */
+export interface AreaVerdict {
+  year: Year;
+  counts: GradeCount;
+  total: number;
+  peak: number;
+}
+
+export const areaVerdict = (
+  memberSlugs: readonly string[],
+  years: Years,
+  period: Period,
+): AreaVerdict => {
+  const perPeriod = Array.from({ length: 24 }, emptyCount);
+  let total = 0;
+  for (const slug of memberSlugs) {
+    const year = years.passes[slug];
+    if (!year) continue;
+    total += 1;
+    for (const [i, cell] of year.cells.entries())
+      perPeriod[i]![cell.grade] += 1;
+  }
+  const peak = Math.max(0, ...perPeriod.map(rideable));
+  const cells = perPeriod.map((c) => cellOf(c, peak));
+  return {
+    counts: perPeriod[periodIndex(period)] ?? emptyCount(),
+    peak,
+    total,
+    year: { best: bestRun(cells), cells },
+  };
+};
+
+/** "7 von 9 Straßen gut" – the row's one line, and the compare sheet's. */
+export const areaText = (v: AreaVerdict): string => {
+  if (v.total === 0) return "keine Straße im Gebiet";
+  return `${fmt(rideable(v.counts))} von ${fmt(v.total)} Straßen gut`;
+};

@@ -50,7 +50,7 @@ export const TownList = ({
         <ListEmpty title="Keine Orte gefunden" {...empty} />
       ) : (
         <RowList ref={rovingList} items={rows} keyOf={({ town }) => town.slug}>
-          {({ town, favorite, range }) => (
+          {({ town, favorite, range, area }) => (
             <EntityRow
               key={town.slug}
               rowId={entityKey("town", town.slug)}
@@ -67,6 +67,7 @@ export const TownList = ({
                   lead={[
                     showRange && range ? RANGE[range].label : null,
                     town.country,
+                    area,
                   ]
                     .filter(Boolean)
                     .join(" · ")}

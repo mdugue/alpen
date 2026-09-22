@@ -152,6 +152,20 @@ Standort") uses the same bands and the same weight, scaled by how many passes
 each town reaches instead — because the nearest village is rarely the best
 base.
 
+### An area, judged like a base
+
+A destination (`docs/destinations.md`) is judged the way a base is, over its
+members instead of over a reach: the roads inside the circle, their 24 cells
+counted per half-month, graded against the area's own peak with the two
+shares above. There is no band and no nearness weight – the curator drew the
+circle, and everything in it counts once.
+
+What ranks the list of areas is a score that is never shown:
+Σ beauty of the open roads + `RISKY_WEIGHT` (0,4) × Σ beauty of the limited
+ones, nothing for a closed road (`areaScore` in `lib/destination.ts`). It is
+editorial like the scales it sums, and it will be tuned after the app has
+planned one real trip; the scales dialog says both.
+
 ## Status per period
 
 `passVerdict()` in `lib/status.ts` answers "how good is it to ride there in

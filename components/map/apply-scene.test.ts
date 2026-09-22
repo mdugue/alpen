@@ -69,7 +69,12 @@ const scene = (extra: Partial<SceneInput> = {}) =>
     env: { coarse: false },
     hovered: null,
     profileCursor: null,
-    rows: { pass: [row(galibier), row(stelvio)], tour: [], town: [town] },
+    rows: {
+      destination: [],
+      pass: [row(galibier), row(stelvio)],
+      tour: [],
+      town: [town],
+    },
     selection: null,
     shown: ALL_SHOWN,
     tourBounds: {},
@@ -95,6 +100,7 @@ describe("the first scene", () => {
     expect(of(calls, "data")).toEqual([
       SOURCE.passes,
       SOURCE.towns,
+      SOURCE.destinations,
       SOURCE.hover,
       SOURCE.cursor,
       SOURCE.reach,
@@ -154,7 +160,14 @@ describe("the difference", () => {
     applyScene(
       host,
       scene(),
-      scene({ rows: { pass: [row(galibier)], tour: [], town: [town] } }),
+      scene({
+        rows: {
+          destination: [],
+          pass: [row(galibier)],
+          tour: [],
+          town: [town],
+        },
+      }),
     );
     expect(of(calls, "filter")).toEqual([LAYERS.route.mark, LAYERS.route.hit]);
     // The tours said nothing new, so their three layers were left alone.

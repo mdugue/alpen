@@ -314,6 +314,52 @@ export const Passes = z.array(Pass);
 export const Tours = z.array(Tour);
 export const Towns = z.array(Town);
 
+/**
+ * A riding area (plan 12): a centre, a radius and the editorial prose a base
+ * needs – what it is like, what a week there looks like, how to get there.
+ * What lies inside is not written down: the member roads, loops and towns
+ * are derived at prerender from the radius, plus `include` and minus
+ * `exclude` (`membersOf`, lib/destination.ts), so a road added to
+ * `passes.json` joins its area by itself. The rules for the numbers are in
+ * `docs/destinations.md`.
+ */
+export const Destination = z.strictObject({
+  /** How to get there without and with a car: one or two sentences. */
+  access: z.string().min(1),
+  /** Where to look for a hotel first: town slugs, in the order they are named. */
+  /** Where to stay, at most three; none while no town of `towns.json` lies inside. */
+  baseTowns: z.array(Slug).max(3),
+  /** The centre the radius is measured from – usually the main base. */
+  center: LatLon,
+  /** Two sentences: the roads that make the area, and what riding it is like. */
+  character: z.string().min(1),
+  /** Like a road's: one country or a pair, "FR/IT". */
+  country: z
+    .string()
+    .regex(/^[A-Z]{2}(?:\/[A-Z]{2})?$/u, 'Land: "IT" oder "CH/IT"')
+    .refine(
+      (c) => c.split("/").every((x) => COUNTRIES.includes(x as never)),
+      `Land: eines von ${COUNTRIES.join(", ")}`,
+    ),
+  /** Roads inside the radius that belong to a neighbour instead. */
+  exclude: z.array(Slug),
+  /** Roads outside the radius that belong here anyway – taste over geometry. */
+  include: z.array(Slug),
+  /** What a multi-day stay looks like: how many days, which stages lead on. */
+  multiDay: z.string().min(1),
+  name: z.string().min(2),
+  note: z.string().optional(),
+  /**
+   * How far a road may lie from the centre and still count, in km. At most
+   * the reach limit: an area wider than a day's loop from its centre is two
+   * areas.
+   */
+  radiusKm: z.number().min(10).max(75),
+  slug: Slug,
+});
+
+export const Destinations = z.array(Destination);
+
 // ── Output of scripts/build-data.ts ──────────────────────────────────────────
 
 /** Road geometry as [lat, lon] pairs. */
@@ -561,6 +607,7 @@ const generated = <S extends z.ZodType>(schema: S): DataFile<S> => ({
  * path under `data/`.
  */
 export const FILES = {
+  "destinations.json": curated(Destinations),
   "generated/climate.json": generated(Climate),
   "generated/photos.json": generated(Photos),
   "generated/profiles.json": generated(Profiles),

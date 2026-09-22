@@ -1,0 +1,98 @@
+{
+  "$id": "destinations.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "properties": {
+      "access": {
+        "type": "string",
+        "minLength": 1
+      },
+      "baseTowns": {
+        "maxItems": 3,
+        "type": "array",
+        "items": {
+          "type": "string",
+          "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+        }
+      },
+      "center": {
+        "type": "object",
+        "properties": {
+          "lat": {
+            "type": "number",
+            "minimum": 42,
+            "maximum": 49
+          },
+          "lon": {
+            "type": "number",
+            "minimum": -2,
+            "maximum": 16
+          }
+        },
+        "required": [
+          "lat",
+          "lon"
+        ],
+        "additionalProperties": false
+      },
+      "character": {
+        "type": "string",
+        "minLength": 1
+      },
+      "country": {
+        "type": "string",
+        "pattern": "^[A-Z]{2}(?:\\/[A-Z]{2})?$"
+      },
+      "exclude": {
+        "type": "array",
+        "items": {
+          "type": "string",
+          "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+        }
+      },
+      "include": {
+        "type": "array",
+        "items": {
+          "type": "string",
+          "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+        }
+      },
+      "multiDay": {
+        "type": "string",
+        "minLength": 1
+      },
+      "name": {
+        "type": "string",
+        "minLength": 2
+      },
+      "note": {
+        "type": "string"
+      },
+      "radiusKm": {
+        "type": "number",
+        "minimum": 10,
+        "maximum": 75
+      },
+      "slug": {
+        "type": "string",
+        "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+      }
+    },
+    "required": [
+      "access",
+      "baseTowns",
+      "center",
+      "character",
+      "country",
+      "exclude",
+      "include",
+      "multiDay",
+      "name",
+      "radiusKm",
+      "slug"
+    ],
+    "additionalProperties": false
+  }
+}

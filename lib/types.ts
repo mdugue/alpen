@@ -26,6 +26,8 @@ export type RoadTag = z.infer<typeof S.RoadTag>;
 export type Pass = z.infer<typeof S.Pass>;
 export type Tour = z.infer<typeof S.Tour>;
 export type Town = z.infer<typeof S.Town>;
+/** A riding area as curated: centre, radius, bases and the prose (plan 12). */
+export type Destination = z.infer<typeof S.Destination>;
 export type TownTag = z.infer<typeof S.TownTag>;
 /** An editorial label of either vocabulary; the two share no name. */
 export type Tag = TownTag | RoadTag;

@@ -41,8 +41,13 @@ const writeHash = (
   filters: Filters,
   selection: Selection | null,
   view: MapView,
+  compare: readonly string[],
 ) => {
-  history.replaceState(null, "", `#${serializeHash(filters, selection, view)}`);
+  history.replaceState(
+    null,
+    "",
+    `#${serializeHash(filters, selection, view, compare)}`,
+  );
 };
 
 /**
@@ -87,9 +92,9 @@ export const useHashAdapter = (
     return () => window.removeEventListener("hashchange", apply);
   }, [dispatch]);
 
-  const { filters, loaded, selection, view } = state;
+  const { compare, filters, loaded, selection, view } = state;
   useEffect(() => {
-    if (loaded) writeHash(filters, selection, view);
-  }, [loaded, filters, selection, view]);
+    if (loaded) writeHash(filters, selection, view, compare);
+  }, [loaded, filters, selection, view, compare]);
   return intent;
 };

@@ -103,12 +103,13 @@ const sameProps = (a: object, b: object): boolean => {
   );
 };
 
+/** Point and polygon collections alike: `same` walks nested coordinates. */
 const samePoints = (
   a: {
-    features: { geometry: { coordinates: number[] }; properties: object }[];
+    features: { geometry: { coordinates: unknown[] }; properties: object }[];
   },
   b: {
-    features: { geometry: { coordinates: number[] }; properties: object }[];
+    features: { geometry: { coordinates: unknown[] }; properties: object }[];
   },
 ): boolean =>
   a.features.length === b.features.length &&
@@ -186,6 +187,11 @@ export const applyScene = (
     host.setData(SOURCE.passes, next.passes);
   if (!prev || !samePoints(prev.towns, next.towns))
     host.setData(SOURCE.towns, next.towns);
+  // The rings are rebuilt per scene, so the comparison walks the coordinates:
+  // 36 circles of 49 points is what a hover over the list would otherwise
+  // re-tile in the worker.
+  if (!prev || !samePoints(prev.destinations, next.destinations))
+    host.setData(SOURCE.destinations, next.destinations);
   if (!prev || !samePoints(prev.hover.mark, next.hover.mark))
     host.setData(SOURCE.hover, next.hover.mark);
   if (!prev || !samePoints(prev.cursor, next.cursor))

@@ -1,10 +1,16 @@
-import type { Bounds } from "@/lib/map-assets";
+import type { Bounds } from "@/lib/geo";
 import { RANGES, ROAD_TYPES } from "@/lib/regions";
 import type { RangeName } from "@/lib/regions";
 import { STATUS_ORDER } from "@/lib/status";
 import type { LatLon, Period, RoadTag, RoadType, Status } from "@/lib/types";
 
-export type EntityKind = "pass" | "tour" | "town";
+/**
+ * The four kinds the app lists and selects. A destination is a curated area
+ * over the other three (docs/destinations.md): it has no mark on the map but
+ * a circle, no switch of its own, and it is the list the product goal names
+ * first – "which regions are good in early October".
+ */
+export type EntityKind = "destination" | "pass" | "tour" | "town";
 export interface Selection {
   kind: EntityKind;
   slug: string;
@@ -24,7 +30,8 @@ export const ALL_TYPES: RoadType[] = [...ROAD_TYPES];
 export const ALL_RANGES: RangeName[] = [...RANGES];
 /** Stable empty snapshot for the tag filter (`Filters.tags`). */
 export const NO_TAGS: RoadTag[] = [];
-export const ALL_KINDS: EntityKind[] = ["pass", "tour", "town"];
+/** The tab order: the areas first, because they are the answer the goal asks for. */
+export const ALL_KINDS: EntityKind[] = ["destination", "pass", "tour", "town"];
 /**
  * What each kind is called, beside the vocabulary it labels rather than beside
  * the tab row that draws it – the season bar names the current list too, and
@@ -32,6 +39,7 @@ export const ALL_KINDS: EntityKind[] = ["pass", "tour", "town"];
  * rather than "Pässe": the list holds spurs and valley roads as well.
  */
 export const KIND_LABEL: Record<EntityKind, string> = {
+  destination: "Reiseziele",
   pass: "Straßen",
   tour: "Touren",
   town: "Orte",
@@ -332,8 +340,14 @@ export const ALL_SHOWN: Shown = {
 /** The switch of a kind that has one. */
 const SWITCH = { pass: "passes", town: "towns" } as const;
 
+/**
+ * Whether the map draws this entity. A destination has no switch: its circle
+ * is the overview and is drawn whenever the zoom is low enough for it.
+ */
 export const isShown = (shown: Shown, kind: EntityKind, slug: string) =>
-  kind === "tour" ? !shown.hiddenTours.includes(slug) : shown[SWITCH[kind]];
+  kind === "tour"
+    ? !shown.hiddenTours.includes(slug)
+    : kind === "destination" || shown[SWITCH[kind]];
 
 /**
  * How many of `total` tours the map draws – the n/m beside the master switch,
@@ -360,7 +374,9 @@ export const reconcileShown = (
 
 /** Selecting something makes it visible: nobody asks for a detail of what is hidden. */
 const reveal = (shown: Shown, sel: Selection): Shown => {
-  if (isShown(shown, sel.kind, sel.slug)) return shown;
+  // A destination is always shown, so the first line answers for it.
+  if (isShown(shown, sel.kind, sel.slug) || sel.kind === "destination")
+    return shown;
   return sel.kind === "tour"
     ? { ...shown, hiddenTours: shown.hiddenTours.filter((s) => s !== sel.slug) }
     : { ...shown, [SWITCH[sel.kind]]: true };
@@ -449,7 +465,7 @@ export interface AppState {
    * would empty out the moment the selection is cleared.
    */
   last: Selection | null;
-  /** Which of the three lists is on screen. */
+  /** Which of the four lists is on screen. */
   tab: EntityKind;
   /**
    * What the pointer is over – wherever the pointer happens to be. The list
@@ -485,6 +501,13 @@ export interface AppState {
    * to what it lists, the way every such link does (`onReady` in the camera).
    */
   requestedFit: Bounds | null;
+  /**
+   * The destinations picked for the side-by-side sheet, at most `COMPARE_MAX`
+   * (docs/plans/12-destinations.md). In the hash as `vgl` – a comparison is
+   * exactly the kind of thing that is sent to the person one travels with –
+   * and not in storage: it belongs to one decision, not to the device.
+   */
+  compare: string[];
   filters: Filters;
   /**
    * The visitor's own last choice of half-month, and the only thing the
@@ -518,9 +541,38 @@ export interface HashState {
   filters: Partial<Filters>;
   selection: Selection | null;
   view: Partial<MapView>;
+  /** The compared destinations (`vgl`); empty for none. */
+  compare: string[];
 }
 
-export const EMPTY_HASH: HashState = { filters: {}, selection: null, view: {} };
+export const EMPTY_HASH: HashState = {
+  compare: [],
+  filters: {},
+  selection: null,
+  view: {},
+};
+
+/**
+ * How many destinations the sheet sets side by side. Three, because the sheet
+ * is three columns on a phone and a holiday decision is rarely between more.
+ */
+export const COMPARE_MAX = 3;
+
+/**
+ * One destination added to or dropped from the comparison; a fourth is
+ * refused. A press that changes nothing hands back the same array, so the
+ * state stays the same object and nothing downstream rewrites for it.
+ */
+export const toggleCompare = (
+  current: string[],
+  slug: string,
+  on: boolean,
+): string[] => {
+  const has = current.includes(slug);
+  if (!on) return has ? current.filter((s) => s !== slug) : current;
+  if (has || current.length >= COMPARE_MAX) return current;
+  return [...current, slug];
+};
 
 export type Action =
   /** The world read in: on hydration, and again on every `hashchange`. */
@@ -539,6 +591,8 @@ export type Action =
    * visitor is back to everything and the camera is where they left it.
    */
   | { type: "range"; range: RangeName }
+  /** A destination's "vergleichen" toggle. */
+  | { type: "compare"; slug: string; on: boolean }
   | { type: "period"; period: Period }
   | { type: "tab"; tab: EntityKind }
   | { type: "toggleKind"; kind: "pass" | "town"; on: boolean }
@@ -619,6 +673,7 @@ const load = (
   const view = { ...DEFAULT_VIEW, ...defined(hash.view) };
   const next: AppState = {
     ...state,
+    compare: hash.compare,
     filters: {
       ...DEFAULT_FILTERS,
       ...defined(hash.filters),
@@ -691,6 +746,12 @@ export const reduce = (state: AppState, action: Action, env: Env): AppState => {
               ) ?? state.requestedFit),
       };
     }
+    case "compare": {
+      return {
+        ...state,
+        compare: toggleCompare(state.compare, action.slug, action.on),
+      };
+    }
     case "period": {
       return {
         ...state,
@@ -757,6 +818,7 @@ export const reduce = (state: AppState, action: Action, env: Env): AppState => {
  * (`useHashAdapter`), which is where the resolution is tested.
  */
 export const initialState = (today: Period): AppState => ({
+  compare: [],
   filters: { ...DEFAULT_FILTERS, period: today },
   hovered: null,
   last: null,
@@ -769,6 +831,8 @@ export const initialState = (today: Period): AppState => ({
   selection: null,
   sheet: SHEETS_AT_REST,
   shown: ALL_SHOWN,
-  tab: "pass",
+  // The first list is the areas: the first screen answers "which regions are
+  // good in this half-month" before anything else (docs/plans/12-destinations.md).
+  tab: ALL_KINDS[0]!,
   view: DEFAULT_VIEW,
 });

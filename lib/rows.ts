@@ -1,9 +1,12 @@
 import { ALL_RANGES, HEAT_NONE, WET_NONE } from "@/lib/app-state";
 import type { EntityKind, Filters, PassSort } from "@/lib/app-state";
+import { areaScore, areaText, areaVerdict } from "@/lib/destination";
+import type { AreaVerdict, DestinationMembers } from "@/lib/destination";
 import { periodIndex, PERIODS } from "@/lib/period";
 import { rangeOf } from "@/lib/regions";
 import type { RangeName } from "@/lib/regions";
 import {
+  destinationHaystack,
   matches,
   passHaystack,
   tourHaystack,
@@ -23,11 +26,19 @@ import type {
   PassIndex,
   Signals,
   StatusReason,
+  TownIndex,
   VerdictInput,
   YearCell,
   Years,
 } from "@/lib/status";
-import type { Pass, Period, Status, Tour, Town } from "@/lib/types";
+import type {
+  Destination,
+  Pass,
+  Period,
+  Status,
+  Tour,
+  Town,
+} from "@/lib/types";
 
 /**
  * One filtered list per entity kind. Search and the favourites toggle apply
@@ -315,6 +326,8 @@ export interface TownRow {
   favorite: boolean;
   /** The range the town belongs to through its reach; the row names it once there is more than one. */
   range?: RangeName;
+  /** The name of the area the town lies in, the one naming it as a base first (`townAreas`). */
+  area?: string;
 }
 
 /**
@@ -328,6 +341,8 @@ export const buildTownRows = (
   townRanges: Partial<Record<string, RangeName>>,
   filters: Filters,
   isFavorite: Query["isFavorite"],
+  /** Per town slug, the name of its area – the row's way up to the holiday it belongs to. */
+  townAreas: Partial<Record<string, string>> = {},
 ): TownRow[] => {
   const q = query(filters, isFavorite);
   const rows: TownRow[] = [];
@@ -341,18 +356,113 @@ export const buildTownRows = (
     )
       continue;
     if (!q.matches(townHaystack(town, range))) continue;
-    rows.push({ favorite, range, town });
+    rows.push({ area: townAreas[town.slug], favorite, range, town });
   }
   return rows.toSorted((a, b) => a.town.name.localeCompare(b.town.name, "de"));
 };
 
+export interface DestinationRow {
+  destination: Destination;
+  /** What the area holds, as the server derived it. */
+  members: DestinationMembers;
+  /** The counts of the chosen half-month and the derived year (`areaVerdict`). */
+  verdict: AreaVerdict;
+  /** "7 von 9 Straßen gut" – the row's line and the compare sheet's. */
+  text: string;
+  /** What the list is ranked by for the chosen half-month (`areaScore`). */
+  score: number;
+  favorite: boolean;
+  /** The 24 derived cells for the season strip. */
+  season: YearCell[];
+  /** The towns named as bases, resolved; unknown slugs are dropped. */
+  baseTowns: Town[];
+  /** The range the area lies in: its first member road's. */
+  range?: RangeName;
+}
+
+/** An area's range is its roads' – the first known one, like a loop's. */
+export const destinationRange = (
+  members: DestinationMembers,
+  passes: PassIndex,
+): RangeName | undefined => {
+  for (const slug of members.passes) {
+    const p = passes.get(slug);
+    if (p) return rangeOf(p.region);
+  }
+  return undefined;
+};
+
 /**
- * The three filtered lists, as the explorer builds them once and hands them
- * on. The sidebar draws one of them at a time, the map draws all three as
+ * The destinations, ranked by what is rideable in the chosen half-month.
+ * Only search, favourites and the range reach them: the road criteria describe
+ * one road, and an area is judged on all of its roads, filtered or not – a
+ * planner asking for "ab 2.500 m" still wants to know what else the area
+ * holds. The status filter is left out for the same reason the season band
+ * leaves it out: it would hide the alternatives the list is there to show.
+ */
+export const buildDestinationRows = (
+  destinations: readonly Destination[],
+  members: Record<string, DestinationMembers>,
+  passes: PassIndex,
+  towns: TownIndex,
+  years: Years,
+  filters: Filters,
+  isFavorite: Query["isFavorite"],
+): DestinationRow[] => {
+  const q = query(filters, isFavorite);
+  const rows: DestinationRow[] = [];
+  for (const destination of destinations) {
+    const favorite = isFavorite("destination", destination.slug);
+    if (q.favoritesOnly && !favorite) continue;
+    const own = members[destination.slug];
+    if (!own) continue;
+    const range = destinationRange(own, passes);
+    if (
+      filters.ranges.length !== ALL_RANGES.length &&
+      (!range || !filters.ranges.includes(range))
+    )
+      continue;
+    const baseTowns = destination.baseTowns
+      .map((slug) => towns.get(slug))
+      .filter((t) => t !== undefined);
+    if (
+      !q.matches(
+        destinationHaystack(
+          destination,
+          baseTowns.map((t) => t.name),
+          range,
+        ),
+      )
+    )
+      continue;
+    const verdict = areaVerdict(own.passes, years, filters.period);
+    rows.push({
+      baseTowns,
+      destination,
+      favorite,
+      members: own,
+      range,
+      score: areaScore(own.passes, passes, years, filters.period),
+      season: verdict.year.cells,
+      text: areaText(verdict),
+      verdict,
+    });
+  }
+  return rows.toSorted(
+    (a, b) =>
+      b.score - a.score ||
+      a.destination.name.localeCompare(b.destination.name, "de"),
+  );
+};
+
+/**
+ * The four filtered lists, as the explorer builds them once and hands them
+ * on. The sidebar draws one of them at a time, the map draws all four as
  * marks; both read the same object, which is why it is one type rather than
- * the same three fields spelled out at each end.
+ * the same four fields spelled out at each end.
  */
 export interface Rows {
+  destination: readonly DestinationRow[];
   pass: readonly PassRow[];
   tour: readonly TourRow[];
   town: readonly TownRow[];

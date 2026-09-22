@@ -2,9 +2,10 @@
 
 import type { PanelActions } from "@/components/panel/actions";
 import { DestinationSection } from "@/components/panel/destination";
-import { ExternalLinks, Nearby } from "@/components/panel/nearby";
+import { ExternalLinks, LinkButton, Nearby } from "@/components/panel/nearby";
 import { TagBadges } from "@/components/tags";
 import type { TownModel } from "@/lib/detail-model";
+import { isHovered } from "@/lib/route-key";
 
 /**
  * What a town shows, from its model and nothing else.
@@ -28,6 +29,29 @@ export const TownDetail = ({
         <TagBadges tags={town.tags} />
       </div>
       <p className="mt-2 text-xs">{town.why}</p>
+      {/* The areas this town lies in – the way back up from a base to the
+          holiday it belongs to; the ones that name it as a base come first. */}
+      {model.areas.length > 0 && (
+        <p className="text-muted-foreground mt-1.5 flex flex-wrap items-center gap-x-1.5 text-xs">
+          Reiseziel:
+          {model.areas.map((area) => (
+            <LinkButton
+              key={area.slug}
+              hovered={isHovered(model.hovered, "destination", area.slug)}
+              onHover={(over) =>
+                actions.onHover(
+                  over ? { kind: "destination", slug: area.slug } : null,
+                )
+              }
+              onClick={() =>
+                actions.onSelect({ kind: "destination", slug: area.slug })
+              }
+            >
+              {area.name}
+            </LinkButton>
+          ))}
+        </p>
+      )}
       <DestinationSection
         d={model.destination}
         period={model.period}

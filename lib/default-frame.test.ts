@@ -2,8 +2,8 @@ import { expect, test } from "bun:test";
 
 import passesJson from "@/data/passes.json" with { type: "json" };
 import toursJson from "@/data/tours.json" with { type: "json" };
-import { bounds } from "@/lib/map-assets";
-import type { Bounds } from "@/lib/map-assets";
+import { bounds } from "@/lib/geo";
+import type { Bounds } from "@/lib/geo";
 import { FIT_PADDING } from "@/lib/map-camera";
 import {
   HOME_RANGE,
@@ -102,12 +102,14 @@ test("every range with roads frames at a readable zoom on its own", () => {
   }
 });
 
+/** A box as its two corners, `[lat, lon]` each – what `bounds` takes. */
+const corners = (b: Bounds): [number, number][] => [
+  [b[1], b[0]],
+  [b[3], b[2]],
+];
+
 test("the Vosges and the Jura would fit the home frame, the Pyrenees would not", () => {
   const home = rangeBox(HOME_RANGE)!;
-  const corners = (b: Bounds): [number, number][] => [
-    [b[1], b[0]],
-    [b[3], b[2]],
-  ];
   // The two ranges' spans from plan 25, added to the alpine roads.
   const withVosgesAndJura = bounds([
     ...corners(home),

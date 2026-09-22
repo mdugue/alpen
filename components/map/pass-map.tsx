@@ -49,8 +49,9 @@ import {
 import { DEFAULT_VIEW } from "@/lib/app-state";
 import type { MapView, Selection, Shown } from "@/lib/app-state";
 import { BASEMAP_SOURCE, BASEMAP_SOURCE_ID, GLYPHS } from "@/lib/basemap";
+import type { Bounds } from "@/lib/geo";
 import { HIT_LAYERS, SOURCE } from "@/lib/layer-ids";
-import type { Bounds, MapAssets } from "@/lib/map-assets";
+import type { MapAssets } from "@/lib/map-assets";
 import {
   FIT_MS,
   FIT_PADDING,
@@ -73,7 +74,7 @@ import { cn, MAP_CLUSTER, MAP_TOOL } from "@/lib/utils";
 
 interface Props {
   /**
-   * What the three lists show – the same rows, drawn as marks, lines and
+   * What the four lists show – the same rows, drawn as marks, lines and
    * names. `buildScene` (lib/map-scene.ts) turns them into what the map
    * draws; nothing is translated on the way in.
    */
@@ -95,6 +96,8 @@ interface Props {
    * fields.
    */
   assets: MapAssets;
+  /** The box around each destination's members – what selecting one frames. */
+  destinationBounds: Record<string, Bounds>;
   selection: Selection | null;
   /**
    * What the pointer is over, from either half of the screen. The map both
@@ -211,6 +214,7 @@ export const PassMap = ({
   shown,
   townReach,
   assets,
+  destinationBounds,
   selection,
   hovered = null,
   onHover,
@@ -396,6 +400,7 @@ export const PassMap = ({
         ),
         // What the scene writes: empty until it has been applied once.
         [SOURCE.cursor]: { data: EMPTY, type: "geojson" },
+        [SOURCE.destinations]: { data: EMPTY, type: "geojson" },
         [SOURCE.hover]: { data: EMPTY, type: "geojson" },
         [SOURCE.passes]: { data: EMPTY, type: "geojson" },
         [SOURCE.reach]: { data: EMPTY, type: "geojson" },
@@ -649,6 +654,7 @@ export const PassMap = ({
       key: selKey,
       target: selection
         ? flightFor(selection, {
+            destinationBounds,
             passBounds: assets.passBounds,
             passes: rows.pass.map((r) => r.pass),
             tourBounds: assets.tourBounds,

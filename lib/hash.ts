@@ -10,6 +10,7 @@ import type { SingleParserBuilder } from "nuqs";
 import {
   ALL_STATUS,
   BEAUTY_OPTIONS,
+  COMPARE_MAX,
   DEFAULT_FILTERS,
   ELEVATION_OPTIONS,
   FAME_OPTIONS,
@@ -38,7 +39,8 @@ import type { Period, Status } from "@/lib/types";
 //
 //   z     zoom                             c     centre "lat,lon"
 //   pi,b  pitch and bearing (only when tilted)
-//   pass | tour | town   the selected entity's slug
+//   pass | tour | town | ziel   the selected entity's slug
+//   vgl   the destinations set side by side, "oisans,engadin"
 //
 // Every filter has a key too; those are `FILTER_KEYS` below, one row each.
 // Every key is validated on the way in: unknown values fall back to the
@@ -100,6 +102,23 @@ const parseAsSubset = <T extends string>(vocabulary: readonly T[]) =>
     },
     serialize: (list) => list.join(","),
   });
+
+/**
+ * `vgl=oisans,engadin`: a comma-joined list of slugs, cut to `COMPARE_MAX`.
+ * Slugs are not validated against the data here – the hash knows no data –
+ * so the sheet drops what it cannot find.
+ */
+const parseAsSlugs = createParser<string[]>({
+  eq: (a, b) => a.length === b.length && a.every((x, i) => x === b[i]),
+  parse: (raw) => {
+    const list = [...new Set(raw.split(",").filter(Boolean))].slice(
+      0,
+      COMPARE_MAX,
+    );
+    return list.length ? list : null;
+  },
+  serialize: (list) => list.join(","),
+});
 
 const RATINGS = [1, 2, 3, 4, 5] as const;
 /**
@@ -202,7 +221,9 @@ const HASH = inKeyOrder({
   pi: parseAsFixed(0),
   tour: parseAsString,
   town: parseAsString,
+  vgl: parseAsSlugs,
   z: parseAsFixed(2),
+  ziel: parseAsString,
 });
 /**
  * The row's parser carrying its default. A row is one of thirteen parser
@@ -240,8 +261,11 @@ export const parseHash = (hash: string): HashState => {
       ? { kind: "tour", slug: h.tour }
       : h.town
         ? { kind: "town", slug: h.town }
-        : null;
+        : h.ziel
+          ? { kind: "destination", slug: h.ziel }
+          : null;
   return {
+    compare: h.vgl ?? [],
     filters: Object.fromEntries(
       filterRows.map(([key, row]) => [row.field, given(key)]),
     ),
@@ -261,6 +285,7 @@ export const serializeHash = (
   filters: Filters,
   selection: Selection | null,
   view: MapView,
+  compare: readonly string[] = [],
 ): string => {
   const tilted = view.pitch > 1;
   return serialize({
@@ -273,6 +298,8 @@ export const serializeHash = (
     pi: tilted ? view.pitch : null,
     tour: selection?.kind === "tour" ? selection.slug : null,
     town: selection?.kind === "town" ? selection.slug : null,
+    vgl: compare.length ? [...compare] : null,
     z: view.zoom,
+    ziel: selection?.kind === "destination" ? selection.slug : null,
   }).replace(/^\?/u, "");
 };

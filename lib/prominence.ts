@@ -21,6 +21,14 @@ export const PROMINENCE = [
   { fromZoom: 8.5, minFame: 1, word: null },
 ] as const;
 
+/**
+ * Up to which zoom the destination circles are drawn: the overview's own
+ * threshold. Where every road is drawn the circles have done their job – the
+ * roads are the texture, the areas are the reading of it – and past this zoom
+ * a disc 50 km across covers the whole screen and answers every idle click.
+ */
+export const DESTINATION_MAX_ZOOM = PROMINENCE.at(-1)!.fromZoom;
+
 /** From which zoom on a road of this fame is drawn on the overview. */
 export const minzoomOf = (fame: number): number =>
   PROMINENCE.find((p) => fame >= p.minFame)?.fromZoom ??

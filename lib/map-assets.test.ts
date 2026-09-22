@@ -1,7 +1,7 @@
 import { describe, expect, test } from "bun:test";
 
+import { bounds } from "@/lib/geo";
 import {
-  bounds,
   MAP_FILES,
   mapAssets,
   routeFeatures,

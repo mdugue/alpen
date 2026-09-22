@@ -298,6 +298,46 @@ Wolkenstein, "Wallis" finds Brig and Martigny. Unlike a pass alias it may
 therefore be shared by several towns; what `data:check` rejects is an alias
 that collides with another town's _name_, or one a town gives itself twice.
 
+### `data/destinations.json`
+
+A riding area, as `docs/destinations.md` describes it: a circle with a base.
+Schema `Destination` in `lib/schema.ts`.
+
+| Field                             | Meaning                                                                                                                                            |
+| --------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `slug`, `name`, `country`         | As for a town; `country` may be a pair (`FR/IT`)                                                                                                   |
+| `center`, `radiusKm`              | The circle: where the riding starts, and how far a rider goes for a climb (10–75 km)                                                               |
+| `include`, `exclude`              | Road slugs added beyond the radius or cut inside it – corrections to the circle, and `data:check` warns when one says what the circle already says |
+| `baseTowns`                       | Town slugs to stay in; inside the circle as a rule, listed first in the panel, with a lodging search                                               |
+| `character`, `multiDay`, `access` | One or two sentences each: what riding here is like, what the area is for, how one gets there                                                      |
+| `note`                            | Optional, what does not fit the three                                                                                                              |
+
+Nothing in the file is a number about riding: membership and the verdict are
+derived (below). The entity diagram, with plan 12's "after":
+
+```mermaid
+erDiagram
+  DESTINATION ||--o{ ROAD : "within radius, plus include, minus exclude"
+  DESTINATION ||--o{ TOUR : "a waypoint within radius"
+  DESTINATION ||--o{ TOWN : "baseTowns and within radius"
+  TOUR }o--o{ ROAD : "passes[]"
+  DESTINATION {
+    string slug
+    string name
+    latlon center
+    number radiusKm
+    list baseTowns
+    list include
+    list exclude
+    string character
+    string multiDay
+    string access
+  }
+```
+
+A road may lie in several areas or in none; `data:check` prints the roads in
+none as one information line.
+
 ## Derived data (`bun run data:build`)
 
 | File               | Key                                       | Contents                                                                                                                                                       |
@@ -349,13 +389,14 @@ once as `getPageData()`, which is the only exported entry point besides
 `getPass(slug)` – the weather route's, whose cold start must not drag the
 derivations in.
 
-| Getter           | Value                                                                                                             |
-| ---------------- | ----------------------------------------------------------------------------------------------------------------- |
-| `getValleys`     | the lowest ascent start per pass – the elevation the summit climate is taken down to for the heat signal          |
-| `getProfiles`    | the road coordinate of every profile sample (`ProfileWithCoords`), so no route geometry reaches the client        |
-| `getNearbyTours` | which tours run within reach of each pass, tour start and town, and how near their road comes (`lib/nearby.ts`)   |
-| `getTownReach`   | the area each town reaches, as a hull over its passes                                                             |
-| `getYears`       | the **year of every pass and tour**: 24 cells with status, grade, reasons and the snow note, plus the best window |
+| Getter                  | Value                                                                                                             |
+| ----------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| `getValleys`            | the lowest ascent start per pass – the elevation the summit climate is taken down to for the heat signal          |
+| `getProfiles`           | the road coordinate of every profile sample (`ProfileWithCoords`), so no route geometry reaches the client        |
+| `getNearbyTours`        | which tours run within reach of each pass, tour start and town, and how near their road comes (`lib/nearby.ts`)   |
+| `getTownReach`          | the area each town reaches, as a hull over its passes                                                             |
+| `getDestinationMembers` | what each destination holds – roads, loops, towns and the box around them (`membersOf`, `lib/destination.ts`)     |
+| `getYears`              | the **year of every pass and tour**: 24 cells with status, grade, reasons and the snow note, plus the best window |
 
 The year is what the whole app reads. `passYear()` in `lib/status.ts` runs the
 verdict over all 24 half-months of a pass, `tourYear()` takes per half-month the

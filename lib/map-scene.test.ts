@@ -2,11 +2,11 @@ import { describe, expect, test } from "bun:test";
 
 import { ALL_SHOWN } from "@/lib/app-state";
 import type { Selection, Shown } from "@/lib/app-state";
-import type { Bounds } from "@/lib/map-assets";
+import type { Bounds } from "@/lib/geo";
 import { buildScene } from "@/lib/map-scene";
 import type { Scene, SceneInput } from "@/lib/map-scene";
 import { ascentKey } from "@/lib/route-key";
-import type { PassRow, TourRow, TownRow } from "@/lib/rows";
+import type { DestinationRow, PassRow, TourRow, TownRow } from "@/lib/rows";
 import type { Pass, Tour, Town } from "@/lib/types";
 import { fmtUnit } from "@/lib/utils";
 import { makePass, makeTour, makeTown } from "@/test/fixtures";
@@ -68,6 +68,7 @@ const input = (extra: Partial<SceneInput> = {}): SceneInput => ({
   hovered: null,
   profileCursor: null,
   rows: {
+    destination: [],
     pass: [passRow(galibier), passRow(stelvio)],
     tour: [tourRow(marmotte)],
     town: [townRow(bormio)],
@@ -119,6 +120,7 @@ describe("what is drawn", () => {
     const scene = buildScene(
       input({
         rows: {
+          destination: [],
           pass: [passRow(galibier, { favorite: true, status: "risky" })],
           tour: [],
           town: [townRow(bormio)],
@@ -145,7 +147,7 @@ describe("what is drawn", () => {
     expect(buildScene(input()).bounds).not.toBeNull();
     const nothing = buildScene(
       input({
-        rows: { pass: [], tour: [], town: [] },
+        rows: { destination: [], pass: [], tour: [], town: [] },
         shown: { ...ALL_SHOWN, passes: false },
       }),
     );
@@ -163,6 +165,7 @@ describe("what is drawn", () => {
     const scene = buildScene(
       input({
         rows: {
+          destination: [],
           pass: [passRow(galibier), tourmalet],
           tour: [],
           town: [],
@@ -184,7 +187,12 @@ describe("what is drawn", () => {
     });
     const withLoop = buildScene(
       input({
-        rows: { pass: [passRow(galibier)], tour: [raid], town: [] },
+        rows: {
+          destination: [],
+          pass: [passRow(galibier)],
+          tour: [raid],
+          town: [],
+        },
         tourBounds: { raid: [-0.5, 42.8, 0.5, 43.2] },
       }),
     );
@@ -197,7 +205,9 @@ describe("what is drawn", () => {
     // With nothing of the home range drawn – a Pyrenees chip pressed, say –
     // the opening frame is what is drawn.
     const away = buildScene(
-      input({ rows: { pass: [tourmalet], tour: [], town: [] } }),
+      input({
+        rows: { destination: [], pass: [tourmalet], tour: [], town: [] },
+      }),
     );
     expect(away.opening).toEqual(away.bounds);
   });
@@ -225,6 +235,7 @@ describe("selection", () => {
     const scene = buildScene(
       input({
         rows: {
+          destination: [],
           pass: [passRow(galibier, { status: "closed" })],
           tour: [],
           town: [],
@@ -297,12 +308,72 @@ describe("hover", () => {
     const scene = buildScene(
       input({
         hovered: { kind: "pass", slug: "galibier" },
-        rows: { pass: [passRow(stelvio)], tour: [], town: [] },
+        rows: { destination: [], pass: [passRow(stelvio)], tour: [], town: [] },
       }),
     );
     expect(scene.hover.mark.features).toEqual([]);
     expect(scene.hover.popup).toBeNull();
     expect(Object.keys(scene.routes.state)).toEqual([ascentKey("stelvio", 0)]);
+  });
+
+  test("a destination is a ring under everything, lit when hovered or selected", () => {
+    const area: DestinationRow = {
+      baseTowns: [],
+      destination: {
+        access: "",
+        baseTowns: [],
+        center: { lat: 46, lon: 10 },
+        character: "",
+        country: "IT",
+        exclude: [],
+        include: [],
+        multiDay: "",
+        name: "Testgebiet",
+        radiusKm: 30,
+        slug: "test",
+      },
+      favorite: false,
+      members: {
+        bounds: [10, 46, 10.3, 46.1],
+        passes: ["galibier"],
+        tours: [],
+        towns: [],
+      },
+      score: 3,
+      season: [],
+      text: "1 von 1 Straßen gut",
+      verdict: {
+        counts: { best: 1, closed: 0, good: 0, limited: 0 },
+        peak: 1,
+        total: 1,
+        year: { best: null, cells: [] },
+      },
+    };
+    const scene = buildScene(
+      input({
+        hovered: { kind: "destination", slug: "test" },
+        rows: { destination: [area], pass: [], tour: [], town: [] },
+      }),
+    );
+    const [feature] = scene.destinations.features;
+    expect(feature?.properties).toMatchObject({
+      hovered: 1,
+      name: "Testgebiet",
+      selected: 0,
+      share: 1,
+      slug: "test",
+    });
+    // A closed ring of 49 points, 30 km either side of the centre.
+    const ring = feature!.geometry.coordinates[0]!;
+    expect(ring).toHaveLength(49);
+    expect(ring[0]).toEqual(ring.at(-1));
+    expect(ring[0]![0]).toBeGreaterThan(10.3);
+    expect(scene.hover.popup).toEqual({
+      anchor: [10, 46],
+      name: "Testgebiet",
+      subtitle: "1 von 1 Straßen gut",
+      tags: [],
+    });
   });
 
   test("a hovered tour is labelled at the centre of its box", () => {

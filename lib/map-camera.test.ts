@@ -1,6 +1,6 @@
 import { describe, expect, test } from "bun:test";
 
-import type { Bounds } from "@/lib/map-assets";
+import type { Bounds } from "@/lib/geo";
 import {
   camera,
   COLD,
@@ -125,6 +125,9 @@ describe("fitDone", () => {
 
 describe("flightFor", () => {
   const world = {
+    destinationBounds: {
+      oisans: [5.9, 44.9, 6.5, 45.3] as Bounds,
+    },
     passBounds: {
       "col-du-galibier": [6.3, 45, 6.5, 45.1] as Bounds,
       "flat-pass": [6.4, 45.06, 6.4, 45.06] as Bounds,

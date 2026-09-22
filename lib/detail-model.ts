@@ -1,6 +1,12 @@
 import type { Selection } from "@/lib/app-state";
-import { basesOf, destinationOf } from "@/lib/destination";
-import type { Bases, Destination } from "@/lib/destination";
+import {
+  areaText,
+  areaVerdict,
+  basesOf,
+  destinationOf,
+  destinationsOfTown,
+} from "@/lib/destination";
+import type { AreaVerdict, Bases, BaseVerdict } from "@/lib/destination";
 import type { DetailState } from "@/lib/detail-state";
 import type { PageBundle } from "@/lib/page-data";
 import { periodIndex } from "@/lib/period";
@@ -16,6 +22,7 @@ import {
   reasonParagraph,
   seasonText,
   signalsOf,
+  statusRank,
   tourSeasonText,
   tourText,
 } from "@/lib/status";
@@ -23,6 +30,7 @@ import type { Year, YearCell } from "@/lib/status";
 import type {
   ClimateBucket,
   ClimateYear,
+  Destination,
   LatLon,
   Pass,
   Period,
@@ -57,7 +65,11 @@ export type BlockId =
   | "bases"
   | "nearby"
   | "tour-passes"
-  | "destination-passes";
+  | "destination-passes"
+  | "area-passes"
+  | "area-tours"
+  | "area-towns"
+  | "area-travel";
 
 /**
  * Which blocks each kind can show, in the order it shows them. The three kind
@@ -72,6 +84,7 @@ export type BlockId =
  * keeps its fold across entities because it cannot be spelled two ways.
  */
 export const BLOCKS: Record<DetailModel["kind"], BlockId[]> = {
+  destination: ["area-passes", "area-tours", "area-towns", "area-travel"],
   pass: ["rating", "ascents", "weather", "climate", "bases", "nearby"],
   tour: ["tour-passes", "nearby"],
   town: ["destination-passes", "nearby"],
@@ -79,6 +92,7 @@ export const BLOCKS: Record<DetailModel["kind"], BlockId[]> = {
 
 /** What stands over the name in the panel head. */
 const KICKER = {
+  destination: (d: Destination) => `Reiseziel · ${d.country}`,
   pass: (p: Pass) => `${ROAD_TYPE[p.type].label} · ${p.region} · ${p.country}`,
   tour: () => "Rundtour",
   town: (t: Town) => `Rad-Ort · ${t.country}`,
@@ -100,6 +114,10 @@ interface Common {
   kicker: string;
   name: string;
   detail: DetailState;
+}
+
+/** The three kinds with a point of their own, and so a "what is near it" block. */
+interface Reaching extends Common {
   /**
    * What else is within reach, minus what this kind's own ranked block already
    * shows – measured once in `lib/reach.ts` and read two ways.
@@ -107,7 +125,7 @@ interface Common {
   reach: Reach;
 }
 
-export interface PassModel extends Common {
+export interface PassModel extends Reaching {
   kind: "pass";
   pass: Pass;
   cell: YearCell;
@@ -127,7 +145,7 @@ export interface PassModel extends Common {
   bases: Bases;
 }
 
-export interface TourModel extends Common {
+export interface TourModel extends Reaching {
   kind: "tour";
   tour: Tour;
   verdict: Verdict;
@@ -137,14 +155,37 @@ export interface TourModel extends Common {
   members: { pass: Pass; cell: YearCell }[];
 }
 
-export interface TownModel extends Common {
+export interface TownModel extends Reaching {
   kind: "town";
   town: Town;
   /** The verdict of a base is the verdict of what it reaches. */
-  destination: Destination;
+  destination: BaseVerdict;
+  /** The areas this town lies in, the ones naming it as a base first. */
+  areas: Destination[];
 }
 
-export type DetailModel = PassModel | TourModel | TownModel;
+/**
+ * What a destination shows: the area as curated, its members resolved, the
+ * verdict derived from the members' years. No reach block – the members are
+ * what the curator drew the circle around, and a second list of "what else is
+ * near the centre" would only repeat them with distances.
+ */
+export interface DestinationModel extends Common {
+  kind: "destination";
+  destination: Destination;
+  verdict: AreaVerdict;
+  /** "7 von 9 Straßen gut" – the sentence under the badge. */
+  text: string;
+  /** The member roads, best cell first, then by beauty and elevation; `season` is the road's own strip. */
+  passes: { pass: Pass; cell: YearCell; season: YearCell[] }[];
+  tours: { tour: Tour; cell: YearCell }[];
+  /** The towns inside, the named bases first. */
+  towns: Town[];
+}
+
+export type DetailModel = PassModel | TourModel | TownModel | DestinationModel;
+/** The models the nearby block reads: every kind but the area, which has no point to measure from. */
+export type ReachingModel = Exclude<DetailModel, DestinationModel>;
 
 /** The browser state the model is read for; none of it is reached for here. */
 export interface DetailInput {
@@ -256,10 +297,63 @@ export const detailModel = (
     };
   }
 
+  if (selection.kind === "destination") {
+    const destination = data.destinations.find(
+      (d) => d.slug === selection.slug,
+    );
+    const members = data.destinationMembers[selection.slug];
+    if (!destination || !members) return null;
+    const verdict = areaVerdict(members.passes, data.years, period);
+    const isBase = (slug: string) => destination.baseTowns.includes(slug);
+    return {
+      ...common,
+      destination,
+      kicker: KICKER.destination(destination),
+      kind: "destination",
+      name: destination.name,
+      passes: members.passes
+        .map((slug) => data.passIndex.get(slug))
+        .filter((pass) => pass !== undefined)
+        .map((pass) => ({
+          cell: cellAt(data.years.passes[pass.slug], period),
+          pass,
+          season: data.years.passes[pass.slug]?.cells ?? [],
+        }))
+        .toSorted(
+          (a, b) =>
+            statusRank(a.cell.status) - statusRank(b.cell.status) ||
+            b.pass.beauty - a.pass.beauty ||
+            b.pass.elevation - a.pass.elevation,
+        ),
+      text: areaText(verdict),
+      tours: members.tours
+        .map((slug) => data.tours.find((t) => t.slug === slug))
+        .filter((tour) => tour !== undefined)
+        .map((tour) => ({
+          cell: cellAt(data.years.tours[tour.slug], period),
+          tour,
+        })),
+      towns: members.towns
+        .map((slug) => data.townIndex.get(slug))
+        .filter((town) => town !== undefined)
+        .toSorted(
+          (a, b) =>
+            Number(isBase(b.slug)) - Number(isBase(a.slug)) ||
+            a.name.localeCompare(b.name, "de"),
+        ),
+      verdict,
+    };
+  }
+
   const town = data.towns.find((t) => t.slug === selection.slug);
   if (!town) return null;
   return {
     ...common,
+    areas: destinationsOfTown(
+      town.slug,
+      data.destinations,
+      data.destinationMembers,
+    ),
     // The passes are the town panel's own ranked block, one fold above.
     destination: destinationOf(
       reachedPasses(town, data.passes, data.years, period),

@@ -171,6 +171,30 @@ describe("plan 14 road types and labels", () => {
   });
 });
 
+describe("destinations in the hash (plan 12)", () => {
+  test("`ziel` selects a destination and `vgl` carries the comparison", () => {
+    const h = parseHash("#ziel=oisans&vgl=oisans,engadin,oisans,ubaye,ventoux");
+    expect(h.selection).toEqual({ kind: "destination", slug: "oisans" });
+    // Deduplicated and cut to the sheet's three columns.
+    expect(h.compare).toEqual(["oisans", "engadin", "ubaye"]);
+    expect(parseHash("#vgl=").compare).toEqual([]);
+    expect(parseHash("").compare).toEqual([]);
+  });
+
+  test("both travel out and back", () => {
+    const hash = serializeHash(
+      filters(),
+      { kind: "destination", slug: "engadin" },
+      view(),
+      ["engadin", "oisans"],
+    );
+    expect(hash).toContain("ziel=engadin");
+    expect(hash).toContain("vgl=engadin,oisans");
+    expect(parseHash(hash).compare).toEqual(["engadin", "oisans"]);
+    expect(serializeHash(filters(), null, view(), [])).not.toMatch(/vgl=/u);
+  });
+});
+
 describe("serializeHash", () => {
   test("writes only what differs from the defaults", () => {
     expect(

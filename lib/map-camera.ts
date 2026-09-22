@@ -29,7 +29,7 @@
 
 import type { MapView, Selection } from "@/lib/app-state";
 import { haversine } from "@/lib/geo";
-import type { Bounds } from "@/lib/map-assets";
+import type { Bounds } from "@/lib/geo";
 
 /** Padding on all four edges in pixels, every side filled in. */
 export interface Inset {
@@ -96,6 +96,8 @@ export const PASS_MAX_ZOOM = 12.5;
 /** Where a pass with no drawn ascent, and a town, are at least zoomed to. */
 export const PASS_MIN_ZOOM = 11;
 export const TOWN_MIN_ZOOM = 10.5;
+/** A destination never flies closer than this: it is an overview, and its members are the detail. */
+export const DESTINATION_MAX_ZOOM_FIT = 10;
 /** A padding change nothing else moves with: long enough to read as a slide. */
 export const PADDING_MS = 400;
 /**
@@ -575,6 +577,8 @@ export const flightFor = (
   world: {
     passBounds: Record<string, Bounds>;
     tourBounds: Record<string, Bounds>;
+    /** The box around each destination's members (`membersOf`). */
+    destinationBounds: Record<string, Bounds>;
     passes: readonly { slug: string; lat: number; lon: number }[];
     towns: readonly { slug: string; lat: number; lon: number }[];
   },
@@ -589,6 +593,20 @@ export const flightFor = (
   if (selection.kind === "town") {
     const point = at(world.towns, TOWN_MIN_ZOOM);
     return point && { kind: "point", point };
+  }
+  // An area is framed by what it holds, with the room a fit gets: the circle
+  // is the overview's picture, the members are what selecting it is about.
+  if (selection.kind === "destination") {
+    const bounds = box(world.destinationBounds[selection.slug]);
+    return (
+      bounds && {
+        bounds,
+        extra: FIT_PADDING,
+        fallback: null,
+        kind: "bounds",
+        maxZoom: DESTINATION_MAX_ZOOM_FIT,
+      }
+    );
   }
   if (selection.kind === "tour") {
     const bounds = box(world.tourBounds[selection.slug]);

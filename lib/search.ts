@@ -8,7 +8,7 @@ import {
   TOWN_TAG,
 } from "@/lib/regions";
 import type { RangeName } from "@/lib/regions";
-import type { Pass, Tour, Town } from "@/lib/types";
+import type { Destination, Pass, Tour, Town } from "@/lib/types";
 
 /**
  * Search the way people spell things: "grossglockner" finds "Großglockner",
@@ -97,5 +97,18 @@ export const townHaystack = (town: Town, range?: RangeName): string => {
     );
     townHay.set(town, hay);
   }
+  return range ? `${hay} ${RANGE_WORD[range]}` : hay;
+};
+
+/**
+ * A destination is found by its name, its country and the towns one would
+ * stay in; the prose is not searched – "Verkehr" would match half the areas.
+ */
+export const destinationHaystack = (
+  d: Destination,
+  baseTownNames: readonly string[],
+  range?: RangeName,
+): string => {
+  const hay = fold([d.name, d.country, ...baseTownNames].join(" "));
   return range ? `${hay} ${RANGE_WORD[range]}` : hay;
 };

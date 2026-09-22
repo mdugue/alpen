@@ -1,6 +1,6 @@
 ---
 name: curate-data
-description: "Add or edit passes, tours, towns and (later) destinations in data/*.json: slug rules, coordinates, editorial 1–5 scales per docs/scales.md, season windows, ascent start points, aliases; then run data:build and data:check and review the routed result. Use when the user wants to add a pass, tour or town, fix a rating or a season, add search aliases, or refresh precomputed data."
+description: "Add or edit passes, tours, towns and destinations in data/*.json: slug rules, coordinates, editorial 1–5 scales per docs/scales.md, season windows, ascent start points, aliases; then run data:build and data:check and review the routed result. Use when the user wants to add a pass, tour, town or destination, fix a rating or a season, add search aliases, or refresh precomputed data."
 ---
 
 Hand-maintained data is the product. Every edit follows the same loop:
@@ -106,6 +106,16 @@ below is either a command or a look at its output.
 Without the network step 2 cannot run; the build then does the same two
 measurements itself and simply holds the ascents back until the point is
 right, so nothing wrong is routed either way.
+
+## Destinations
+
+A destination is a circle with a base (`data/destinations.json`); the
+editorial rules – where the centre goes, how wide the radius is, what
+`include`/`exclude` are for, the register of the three sentences – are in
+`docs/destinations.md`, with the checklist for adding one. Nothing in the
+file is a number: membership and the verdict are derived at build time, and
+`data:check` warns about a correction the circle already makes and prints
+the roads that lie in no area.
 
 ## Loop
 

@@ -4,6 +4,7 @@ import { useEffect, useLayoutEffect, useRef, useState } from "react";
 
 import { useSheet } from "@/components/mobile-sheet";
 import type { PanelActions } from "@/components/panel/actions";
+import { DestinationDetail } from "@/components/panel/destination-detail";
 import { PanelBar } from "@/components/panel/panel-bar";
 import { PanelHead } from "@/components/panel/panel-head";
 import { PassDetail } from "@/components/panel/pass-detail";
@@ -35,9 +36,9 @@ const TYPED = new Set(["INPUT", "TEXTAREA"]);
  * phone – so closing it always means the same thing and the lists keep their
  * scroll position underneath.
  *
- * Model in, markup out: what a pass, a tour or a town shows is `detailModel`
- * (lib/detail-model.ts), and the shell renders the head, the control row and
- * one of the three kind modules. It resolves nothing about the entity itself,
+ * Model in, markup out: what a pass, a tour, a town or a destination shows is
+ * `detailModel` (lib/detail-model.ts), and the shell renders the head, the
+ * control row and one of the four kind modules. It resolves nothing about the entity itself,
  * which is why the kind appears exactly once here.
  */
 export const DetailPanel = ({
@@ -227,6 +228,9 @@ export const DetailPanel = ({
           )}
           {model.kind === "town" && (
             <TownDetail actions={actions} model={model} />
+          )}
+          {model.kind === "destination" && (
+            <DestinationDetail actions={actions} model={model} />
           )}
         </div>
       </div>

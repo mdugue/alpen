@@ -20,11 +20,13 @@ import type {
   Filters,
   Selection,
 } from "@/lib/app-state";
+import { destinationsOfTown } from "@/lib/destination";
 import { filterCount, rangeWord } from "@/lib/filter-summary";
 import { useHashAdapter } from "@/lib/hash-adapter";
 import type { PageData } from "@/lib/page-data";
 import { entityKey } from "@/lib/route-key";
 import {
+  buildDestinationRows,
   buildPassRows,
   buildTourRows,
   buildTownRows,
@@ -57,6 +59,8 @@ export const Explorer = ({ data, defaultPeriod }: Props) => {
   const {
     assets,
     climate,
+    destinationMembers,
+    destinations,
     passes,
     tours,
     townRanges,
@@ -85,6 +89,7 @@ export const Explorer = ({ data, defaultPeriod }: Props) => {
   const intent = useHashAdapter(state, dispatch);
   useStorageAdapter(state);
   const {
+    compare,
     filters,
     hovered,
     last,
@@ -104,11 +109,32 @@ export const Explorer = ({ data, defaultPeriod }: Props) => {
   const sidebarRoot = useRef<HTMLDivElement>(null);
 
   const passIndex = indexBySlug(passes);
+  const townIndex = indexBySlug(towns);
+  /** The area each town lies in, by name – the one naming it as a base first. */
+  const townAreas = Object.fromEntries(
+    towns.map((t) => [
+      t.slug,
+      destinationsOfTown(t.slug, destinations, destinationMembers)[0]?.name,
+    ]),
+  );
   const rows = {
+    destination: buildDestinationRows(
+      destinations,
+      destinationMembers,
+      passIndex,
+      townIndex,
+      years,
+      filters,
+      isFavorite,
+    ),
     pass: buildPassRows(passes, years, filters, isFavorite, signals),
     tour: buildTourRows(tours, passIndex, years, filters, isFavorite, signals),
-    town: buildTownRows(towns, townRanges, filters, isFavorite),
+    town: buildTownRows(towns, townRanges, filters, isFavorite, townAreas),
   };
+  /** What selecting an area frames: the box around its members (`membersOf`). */
+  const destinationBounds = Object.fromEntries(
+    Object.entries(destinationMembers).map(([slug, m]) => [slug, m.bounds]),
+  );
   /** The ranges the data holds a road for – the chips the "Gebirge" group shows. */
   const ranges = ALL_RANGES.filter((r) => assets.rangeBounds[r] !== undefined);
   /**
@@ -168,6 +194,7 @@ export const Explorer = ({ data, defaultPeriod }: Props) => {
             shown={shown}
             townReach={townReach}
             assets={assets}
+            destinationBounds={destinationBounds}
             selection={selection}
             hovered={hovered}
             onHover={hover}
@@ -231,7 +258,9 @@ export const Explorer = ({ data, defaultPeriod }: Props) => {
             variant={variant}
             filters={filters}
             rows={rows}
+            compare={compare}
             totals={{
+              destination: destinations.length,
               pass: passes.length,
               tour: tours.length,
               town: towns.length,
@@ -252,7 +281,7 @@ export const Explorer = ({ data, defaultPeriod }: Props) => {
         detail={(sel) => (
           <DetailPanel
             selection={sel}
-            data={{ ...data, passIndex }}
+            data={{ ...data, passIndex, townIndex }}
             period={filters.period}
             hovered={hovered}
             favorite={isFavorite(sel.kind, sel.slug)}

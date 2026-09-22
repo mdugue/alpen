@@ -3,6 +3,8 @@ import type { Pass, RouteGeometry, Tour } from "@/lib/types";
 // Relative on purpose: next.config.ts loads this module outside the bundler,
 // where the "@/" alias is not resolved for transitive imports.
 import { canonicalJson, derivedDir } from "./derived-file";
+import { bounds } from "./geo";
+import type { Bounds } from "./geo";
 import { rangeOf } from "./regions";
 import type { RangeName } from "./regions";
 import { ascentKey, tourKey } from "./route-key";
@@ -26,7 +28,6 @@ import { ascentKey, tourKey } from "./route-key";
  */
 
 /** `[west, south, east, north]` in degrees, the GeoJSON bbox order. */
-export type Bounds = [number, number, number, number];
 
 /** What the client needs to draw and frame the lines: two URLs and the bounds. */
 export interface MapAssets {
@@ -130,20 +131,6 @@ export const simplify = (
     stack.push([a, worst], [worst, b]);
   }
   return geom.filter((_, i) => keep[i]);
-};
-
-export const bounds = (geom: RouteGeometry): Bounds => {
-  let w = Infinity;
-  let s = Infinity;
-  let e = -Infinity;
-  let n = -Infinity;
-  for (const [lat, lon] of geom) {
-    if (lon < w) w = lon;
-    if (lon > e) e = lon;
-    if (lat < s) s = lat;
-    if (lat > n) n = lat;
-  }
-  return [w, s, e, n];
 };
 
 /** Four decimals, about eleven metres – the precision a camera frame needs. */

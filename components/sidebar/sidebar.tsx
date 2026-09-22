@@ -5,6 +5,8 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
 import { useSheet } from "@/components/mobile-sheet";
+import { CompareSheet } from "@/components/sidebar/compare-sheet";
+import { DestinationList } from "@/components/sidebar/destination-list";
 import {
   AppliedFilters,
   FilterBody,
@@ -45,8 +47,10 @@ export interface SidebarProps {
   /** Only says how a selected row is scrolled into view; the brand lives in the header. */
   variant: "aside" | "sheet";
   filters: Filters;
-  /** The three filtered lists; one is on screen at a time. */
+  /** The four filtered lists; one is on screen at a time. */
   rows: Rows;
+  /** The destinations picked for the compare sheet (`AppState.compare`). */
+  compare: readonly string[];
   totals: Record<EntityKind, number>;
   /** How many roads a filter change would leave – the number on every chip. */
   countWith: (patch: Partial<Filters>) => number;
@@ -93,12 +97,20 @@ export const Sidebar = (p: SidebarProps) => {
   const filtersOpen = p.filtersOpen ?? filterCount(p.filters) > 0;
   const [more, setMore] = useState<boolean | null>(null);
   const moreOpen = more ?? hasSecondaryFilters(p.filters);
+  const [compareOpen, setCompareOpen] = useState(false);
+  // The sheet's columns, in the order they were picked; a slug the rows do not
+  // hold – filtered away, or from a link naming an area this build has not
+  // got – draws no column.
+  const compared = p.compare
+    .map((slug) => p.rows.destination.find((r) => r.destination.slug === slug))
+    .filter((r) => r !== undefined);
 
   const lists = useRef<HTMLDivElement>(null);
   const { expanded } = useSheet();
   const currentRow = p.selection ? entityKey(p.selection) : null;
 
   const counts = {
+    destination: p.rows.destination.length,
     pass: p.rows.pass.length,
     tour: p.rows.tour.length,
     town: p.rows.town.length,
@@ -189,7 +201,7 @@ export const Sidebar = (p: SidebarProps) => {
                 spellCheck={false}
                 value={p.filters.query}
                 onChange={(e) => set("query", e.target.value)}
-                placeholder="Pass, Tour oder Ort …"
+                placeholder="Reiseziel, Pass, Tour oder Ort …"
                 aria-label="Suchen"
                 className="h-full [&::-webkit-search-cancel-button]:appearance-none [&::-webkit-search-decoration]:appearance-none"
               />
@@ -217,7 +229,7 @@ export const Sidebar = (p: SidebarProps) => {
             setFilters={setFilters}
             onReset={reset}
           />
-          {/* The three lists, one at a time. In the fixed header rather than
+          {/* The four lists, one at a time. In the fixed header rather than
               in the scroll container, so the counts stay on screen while a
               list of 201 rows is scrolled – which a section header inside the
               container could not do without an opaque background it has no way
@@ -255,6 +267,26 @@ export const Sidebar = (p: SidebarProps) => {
                 onMoreChange={setMore}
               />
             </div>
+          )}
+          {p.tab === "destination" && (
+            <DestinationList
+              rows={p.rows.destination}
+              currentRow={currentRow}
+              hovered={p.hovered}
+              onHover={onHover}
+              period={p.filters.period}
+              empty={emptyProps}
+              showRange={p.ranges.length > 1}
+              compare={p.compare}
+              onCompare={(slug, on) =>
+                p.dispatch({ on, slug, type: "compare" })
+              }
+              onOpenCompare={() => setCompareOpen(true)}
+              onSelect={onSelect("destination")}
+              onToggleFavorite={(slug) =>
+                p.onToggleFavorite("destination", slug)
+              }
+            />
           )}
           {p.tab === "pass" && (
             <PassList
@@ -302,6 +334,18 @@ export const Sidebar = (p: SidebarProps) => {
             />
           )}
         </div>
+
+        <CompareSheet
+          open={compareOpen}
+          onOpenChange={setCompareOpen}
+          rows={compared}
+          period={p.filters.period}
+          onRemove={(slug) => p.dispatch({ on: false, slug, type: "compare" })}
+          onSelect={(slug) => {
+            setCompareOpen(false);
+            onSelect("destination")(slug);
+          }}
+        />
 
         <div className="border-border shrink-0 border-t">
           <p className="text-muted-foreground text-2xs flex h-8 items-center gap-1 truncate px-3">

@@ -18,12 +18,13 @@
  * list and the map answer one another with the same picture.
  */
 
-import type { FeatureCollection, Point } from "geojson";
+import type { FeatureCollection, Point, Polygon } from "geojson";
 import type { FilterSpecification } from "maplibre-gl";
 
 import type { Selection, Shown } from "@/lib/app-state";
 import { isShown } from "@/lib/app-state";
-import type { Bounds } from "@/lib/map-assets";
+import { circleRing } from "@/lib/geo";
+import type { Bounds } from "@/lib/geo";
 import { visibleBounds } from "@/lib/map-camera";
 import type { TownReach } from "@/lib/nearby";
 import {
@@ -58,6 +59,24 @@ export interface TownProps {
   name: string;
   selected: Flag;
   slug: string;
+}
+
+/**
+ * A destination's circle: its name, and how much of it is rideable in the
+ * chosen half-month as a share from 0 to 1 – what the outline is tinted by.
+ * The hover rides in the properties rather than in feature state because the
+ * source is rewritten from the rows anyway, and one path is fewer than two.
+ */
+export interface DestinationProps {
+  favorite: Flag;
+  hovered: Flag;
+  name: string;
+  /** Rideable roads over all roads, 0 for an area without a graded road. */
+  share: number;
+  selected: Flag;
+  slug: string;
+  /** "7 von 9 Straßen gut" – the second line of the label. */
+  text: string;
 }
 
 /**
@@ -106,6 +125,8 @@ export interface Scene {
   tours: { filter: FilterSpecification; state: Record<string, TourState> };
   passes: FeatureCollection<Point, PassProps>;
   towns: FeatureCollection<Point, TownProps>;
+  /** The destination circles, under everything else; drawn in the overview only. */
+  destinations: FeatureCollection<Polygon, DestinationProps>;
   hover: {
     mark: FeatureCollection<Point, HoverProps>;
     /** The hovered town's reach hull, straight out of `townReach`. */
@@ -180,9 +201,11 @@ export const buildScene = (input: SceneInput): Scene => {
     tourBounds,
     townReach,
   } = input;
+  const selDestination = slugOf(selection, "destination");
   const selPass = slugOf(selection, "pass");
   const selTour = slugOf(selection, "tour");
   const selTown = slugOf(selection, "town");
+  const hoverDestination = slugOf(hovered, "destination");
   const hoverPass = slugOf(hovered, "pass");
   const hoverTour = slugOf(hovered, "tour");
   const hoverTown = slugOf(hovered, "town");
@@ -218,6 +241,9 @@ export const buildScene = (input: SceneInput): Scene => {
   const tourRow = hoverTour
     ? visibleTours.find((r) => r.tour.slug === hoverTour)
     : undefined;
+  const destinationRow = hoverDestination
+    ? rows.destination.find((r) => r.destination.slug === hoverDestination)
+    : undefined;
   // Only what is drawn answers a hover: a kind switched off the map has no
   // mark to ring, no hull to outline and nothing to label.
   const markedPass = shown.passes ? passRow : undefined;
@@ -246,6 +272,16 @@ export const buildScene = (input: SceneInput): Scene => {
         anchor: [(box[0] + box[2]) / 2, (box[1] + box[3]) / 2],
         name: tourRow.tour.name,
         subtitle: `ca. ${fmt(tourRow.tour.km)} km · ${fmt(tourRow.tour.elevationGain)} hm`,
+        tags: [],
+      };
+    if (destinationRow)
+      return {
+        anchor: [
+          destinationRow.destination.center.lon,
+          destinationRow.destination.center.lat,
+        ],
+        name: destinationRow.destination.name,
+        subtitle: destinationRow.text,
         tags: [],
       };
     return null;
@@ -284,6 +320,30 @@ export const buildScene = (input: SceneInput): Scene => {
         ? [{ at: [profileCursor.lon, profileCursor.lat], props: {} }]
         : [],
     ),
+    destinations: {
+      features: rows.destination.map((row) => ({
+        geometry: {
+          coordinates: [
+            circleRing(row.destination.center, row.destination.radiusKm),
+          ],
+          type: "Polygon",
+        },
+        properties: {
+          favorite: flag(row.favorite),
+          hovered: flag(row.destination.slug === hoverDestination),
+          name: row.destination.name,
+          selected: flag(row.destination.slug === selDestination),
+          share: row.verdict.total
+            ? (row.verdict.counts.best + row.verdict.counts.good) /
+              row.verdict.total
+            : 0,
+          slug: row.destination.slug,
+          text: row.text,
+        },
+        type: "Feature",
+      })),
+      type: "FeatureCollection",
+    },
     hover: {
       hull: (markedTown && townReach[markedTown.town.slug]) ?? null,
       mark: collection<HoverProps>(

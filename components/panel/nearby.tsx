@@ -7,7 +7,7 @@ import { Section } from "@/components/panel/section";
 import { StatusDot } from "@/components/status-badge";
 import { Button } from "@/components/ui/button";
 import type { EntityKind } from "@/lib/app-state";
-import type { DetailModel } from "@/lib/detail-model";
+import type { ReachingModel } from "@/lib/detail-model";
 import { REACH_MAX_KM } from "@/lib/geo";
 import { byDistance } from "@/lib/reach";
 import { isHovered } from "@/lib/route-key";
@@ -87,8 +87,8 @@ export const Nearby = ({
   model,
   actions,
 }: {
-  /** Read for its `reach` and its `hovered`, which every model carries. */
-  model: DetailModel;
+  /** Read for its `reach` and its `hovered`; an area has no point to measure from. */
+  model: ReachingModel;
   actions: PanelActions;
 }) => {
   const { hovered, reach } = model;

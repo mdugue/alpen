@@ -10,7 +10,11 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { RIDEABLE_BEST_SHARE, RIDEABLE_GOOD_SHARE } from "@/lib/destination";
+import {
+  RIDEABLE_BEST_SHARE,
+  RIDEABLE_GOOD_SHARE,
+  RISKY_WEIGHT,
+} from "@/lib/destination";
 import { REACH_BANDS, REACH_MAX_KM } from "@/lib/geo";
 import {
   RANGE,
@@ -239,6 +243,26 @@ export const ScalesDialog = ({
             Wie viel es überhaupt ist, steht daneben in Worten. Die beiden
             Anteile sind redaktionell wie alle Zahlen hier;{" "}
             <code>scripts/analyze-destinations.ts</code> rechnet sie nach.
+          </p>
+        </section>
+        <section className="flex flex-col gap-2">
+          <h3 className="text-base font-semibold">Reiseziele</h3>
+          <p className="text-muted-foreground">
+            Ein Reiseziel ist ein redaktionell gezogener Kreis: eine Mitte, ein
+            Radius, dazu einzelne Straßen, die dazugezählt oder ausgenommen
+            sind, und die Orte, die als Standort taugen. Was im Kreis liegt, ist
+            die Mitgliedschaft – sie wird beim Bauen der Seite bestimmt, nicht
+            von Hand gepflegt. Alle Zahlen eines Reiseziels sind wie beim Ort{" "}
+            <b>abgeleitet</b>: „7 von 9 Straßen gut“ zählt die Straßen im Gebiet
+            nach ihrem Status im gewählten Halbmonat, der Streifen misst jeden
+            Halbmonat an der besten Zeit dieses Gebiets.
+          </p>
+          <p className="text-muted-foreground">
+            <b>Die Reihenfolge der Liste</b> ist eine Punktzahl, die nirgends
+            gezeigt wird: die Schönheit jeder offenen Straße voll, die jeder
+            eingeschränkten mit {fmt(RISKY_WEIGHT * 100)} %, eine gesperrte
+            zählt nichts. Redaktionell wie alles hier – sie ordnet, sie misst
+            nicht.
           </p>
         </section>
         <section className="flex flex-col gap-2">

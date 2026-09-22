@@ -103,11 +103,11 @@ describe("the storage adapter", () => {
       reduce(loaded(), { kind: "town", on: false, type: "toggleKind" }, env),
     );
     expect(valueOf("showTowns")).toBe("false");
-    expect(valueOf("tab")).toBe('"pass"');
+    expect(valueOf("tab")).toBe('"destination"');
     const stored = readStoredState();
     expect(stored.shown?.towns).toBe(false);
     expect(stored.shown?.passes).toBe(true);
-    expect(stored.tab).toBe("pass");
+    expect(stored.tab).toBe("destination");
 
     // A second commit of an unchanged state wakes no reader: what is already
     // under the key is not written again.

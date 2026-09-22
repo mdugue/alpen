@@ -6,10 +6,10 @@ import { Rating } from "@/components/rating";
 import { SeasonStrip } from "@/components/season-strip";
 import { StatusDot } from "@/components/status-badge";
 import type { Selection } from "@/lib/app-state";
-import type { Bases, Destination } from "@/lib/destination";
+import type { Bases, BaseVerdict } from "@/lib/destination";
 import { destinationText } from "@/lib/destination";
 import { REACH_MAX_KM } from "@/lib/geo";
-import type { Band, ReachedPass, ReachedTown } from "@/lib/reach";
+import type { Band, GradeCount, ReachedPass, ReachedTown } from "@/lib/reach";
 import { isHovered } from "@/lib/route-key";
 import { bestText, GRADE_ORDER } from "@/lib/status";
 import type { Grade } from "@/lib/status";
@@ -25,27 +25,36 @@ const GRADE_FILL: Record<Grade, string> = {
 };
 
 /**
- * How the reachable passes fall across the four grades, as one bar. The same
+ * How the counted passes fall across the four grades, as one bar. The same
  * stack the period scrubber draws behind its 24 half-months, for one
- * half-month and one base – so the two read as one picture and a visitor who
- * has understood the scrubber has already understood this.
+ * half-month and one base or area – so the two read as one picture and a
+ * visitor who has understood the scrubber has already understood this.
  */
-const GradeBar = ({ d }: { d: Destination }) => {
-  if (d.total === 0) return null;
+export const GradeBar = ({
+  counts,
+  total,
+  text,
+}: {
+  counts: GradeCount;
+  total: number;
+  /** What the bar says to a screen reader: the sentence beside it. */
+  text: string;
+}) => {
+  if (total === 0) return null;
   return (
     <div
       className="bg-muted flex h-2.5 w-full overflow-hidden rounded-full"
       role="img"
-      aria-label={destinationText(d)}
+      aria-label={text}
     >
       {GRADE_ORDER.map((g) => {
-        const n = d.counts[g];
+        const n = counts[g];
         if (n === 0) return null;
         return (
           <span
             key={g}
             className={GRADE_FILL[g]}
-            style={{ width: `${(n / d.total) * 100}%` }}
+            style={{ width: `${(n / total) * 100}%` }}
           />
         );
       })}
@@ -225,7 +234,7 @@ export const DestinationSection = ({
   onHover,
   onSelect,
 }: {
-  d: Destination;
+  d: BaseVerdict;
   period: Period;
   /** The entity the pointer is over anywhere on screen; one highlight for all of them. */
   hovered: Selection | null;
@@ -234,7 +243,9 @@ export const DestinationSection = ({
 }) => (
   <>
     <VerdictBox
-      bar={<GradeBar d={d} />}
+      bar={
+        <GradeBar counts={d.counts} total={d.total} text={destinationText(d)} />
+      }
       best={bestText(d.year)}
       period={period}
       text={destinationText(d)}

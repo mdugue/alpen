@@ -13,9 +13,10 @@
  * answering the pointer.
  */
 
-/** The GeoJSON sources; the three at the end are written by the scene alone. */
+/** The GeoJSON sources; all but the two static files are written by the scene alone. */
 export const SOURCE = {
   cursor: "cursor",
+  destinations: "destinations",
   hover: "hover",
   passes: "passes",
   reach: "reach",
@@ -52,12 +53,22 @@ export interface LayerSet {
   source: string;
 }
 
+/** The outline of a destination's circle; the fill is its `mark`. */
+export const DESTINATION_EDGE = "destinations-edge";
+
 /**
- * The four kinds the map draws. `route` is a pass's ascents: its own lines and
+ * The five kinds the map draws. `route` is a pass's ascents: its own lines and
  * its own hit layer, but never its own selection – an ascent belongs to its
- * pass, which is what `pick` answers with.
+ * pass, which is what `pick` answers with. `destination` is a circle under
+ * everything else, drawn only in the overview (`DESTINATION_MAX_ZOOM`).
  */
 export const LAYERS = {
+  destination: {
+    hit: "destinations-hit",
+    labels: ["destinations-label"],
+    mark: "destinations",
+    source: SOURCE.destinations,
+  },
   pass: {
     hit: "passes-hit",
     labels: PASS_LABELS.map((l) => passLabelId(l.fame)),
@@ -123,6 +134,10 @@ export const HIT_GROUPS: readonly (readonly string[])[] = [
   [...LAYERS.tour.labels],
   [LAYERS.route.hit],
   [LAYERS.tour.hit],
+  // A disc up to 150 km across is the least specific answer there is: its
+  // name is a target, the disc only answers where nothing else does.
+  [...LAYERS.destination.labels],
+  [LAYERS.destination.hit],
 ];
 
 export const HIT_LAYERS: readonly string[] = HIT_GROUPS.flat();

@@ -8,6 +8,7 @@ import type {
   Status,
   Tour,
   TourSeason,
+  Town,
 } from "@/lib/types";
 import { fmt, fmtUnit } from "@/lib/utils";
 
@@ -614,9 +615,11 @@ export const tourWindowWord = (tour: Tour): string =>
   tour.season ? windowText(tour.season) : "wie ihre Pässe";
 
 export type PassIndex = Map<string, Pass>;
+export type TownIndex = Map<string, Town>;
 
-export const indexBySlug = (passes: Pass[]): PassIndex =>
-  new Map(passes.map((p) => [p.slug, p]));
+export const indexBySlug = <T extends { slug: string }>(
+  list: readonly T[],
+): Map<string, T> => new Map(list.map((x) => [x.slug, x]));
 
 /** Longest run of `true` in a circular series of 24; null when there is none. */
 interface Run {

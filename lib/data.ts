@@ -2,6 +2,7 @@ import "server-only";
 import { existsSync } from "node:fs";
 import path from "node:path";
 
+import destinationsJson from "@/data/destinations.json";
 import climateJson from "@/data/generated/climate.json";
 import photosJson from "@/data/generated/photos.json";
 import profilesJson from "@/data/generated/profiles.json";
@@ -9,6 +10,8 @@ import routesJson from "@/data/generated/routes.json";
 import passesJson from "@/data/passes.json";
 import toursJson from "@/data/tours.json";
 import townsJson from "@/data/towns.json";
+import { membersOf } from "@/lib/destination";
+import type { DestinationMembers } from "@/lib/destination";
 import { DETAIL_ASSET_DIR, detailAssets } from "@/lib/detail-assets";
 import type { DetailAssets } from "@/lib/detail-assets";
 import { MAP_ASSET_DIR, mapAssets } from "@/lib/map-assets";
@@ -22,6 +25,7 @@ import { passYear, signalsOf, tourYear } from "@/lib/status";
 import type { Signals, Year, Years } from "@/lib/status";
 import type {
   ClimateYear,
+  Destination,
   ElevationProfile,
   Pass,
   Photos,
@@ -62,6 +66,7 @@ import type {
 const passes: Pass[] = S.Passes.parse(passesJson);
 const tours: Tour[] = S.Tours.parse(toursJson);
 const towns: Town[] = S.Towns.parse(townsJson);
+const destinations: Destination[] = S.Destinations.parse(destinationsJson);
 const routes: Record<string, RouteGeometry> = S.Routes.parse(routesJson);
 const climate: Record<string, ClimateYear> = S.Climate.parse(climateJson);
 const profiles: Record<string, ElevationProfile> =
@@ -96,6 +101,18 @@ const getMapAssets = (): MapAssets => {
 /** Tours within reach of each pass, tour start and town, see `lib/nearby.ts`. */
 const getNearbyTours = (): NearbyTours =>
   nearbyTours(passes, tours, towns, routes);
+
+/**
+ * What each destination holds – the roads within its radius plus its
+ * `include` minus its `exclude`, the towns and loops inside it, and the box
+ * around all of it (`membersOf`, lib/destination.ts). Derived here rather
+ * than written by `data:build`: a road added to `passes.json` joins its area
+ * without a second file to regenerate.
+ */
+const getDestinationMembers = (): Record<string, DestinationMembers> =>
+  Object.fromEntries(
+    destinations.map((d) => [d.slug, membersOf(d, passes, tours, towns)]),
+  );
 
 /** The area each town reaches, as a hull over its passes; see `lib/nearby.ts`. */
 const getTownReach = (): TownReach => townReach(passes, towns);
@@ -182,6 +199,8 @@ export const getPageData = (): PageData => {
   return {
     assets: getMapAssets(),
     climate,
+    destinationMembers: getDestinationMembers(),
+    destinations,
     detail: getDetailAssets(),
     nearbyTours: getNearbyTours(),
     passes,

@@ -1,4 +1,6 @@
 #!/usr/bin/env bun
+import { insideOf, isMember } from "../lib/destination";
+import { haversine } from "../lib/geo";
 /**
  * Validates every file in `data/` against `lib/schema.ts`, then checks the
  * cross references, completeness and route quality the schemas cannot see.
@@ -42,6 +44,7 @@ import { fold } from "../lib/search";
 import { windowText } from "../lib/status";
 import type {
   AscentMetrics,
+  Destination,
   Pass,
   RouteMetrics,
   RouteRejection,
@@ -90,6 +93,7 @@ const [
   passes,
   tours,
   towns,
+  destinations,
   routes,
   profiles,
   climate,
@@ -101,6 +105,7 @@ const [
   load("passes.json"),
   load("tours.json"),
   load("towns.json"),
+  load("destinations.json"),
   load("generated/routes.json"),
   load("generated/profiles.json"),
   load("generated/climate.json"),
@@ -427,10 +432,63 @@ const checkTowns = (list: Town[]) => {
   }
 };
 
+/**
+ * A destination refers to roads and towns by slug, and its lists are
+ * corrections to a radius: `include` reaches past it, `exclude` cuts inside
+ * it. A correction that the radius already makes is a warning – the list
+ * says something the circle says too, and the next radius change will make
+ * one of them wrong. Which road belongs to no area at all is printed as
+ * information at the end (docs/destinations.md).
+ */
+const checkDestinations = (
+  list: Destination[],
+  byPass: Map<string, Pass>,
+  byTown: Map<string, Town>,
+) => {
+  dupes(list, "Reiseziele");
+  for (const d of list) {
+    const inside = (p: { lat: number; lon: number }) => insideOf(d, p);
+    for (const slug of d.baseTowns) {
+      const t = byTown.get(slug);
+      if (!t) errors.push(`${d.slug}: Standort ${slug} unbekannt`);
+      else if (!inside(t))
+        warnings.push(
+          `${d.slug}: Standort ${slug} liegt ${Math.round(haversine(d.center, t))} km von der Mitte – außerhalb des Radius von ${d.radiusKm} km`,
+        );
+    }
+    for (const slug of d.include) {
+      const p = byPass.get(slug);
+      if (!p) errors.push(`${d.slug}: include ${slug} unbekannt`);
+      else if (inside(p))
+        warnings.push(`${d.slug}: include ${slug} liegt ohnehin im Radius`);
+      if (d.exclude.includes(slug))
+        errors.push(`${d.slug}: ${slug} in include und exclude`);
+    }
+    for (const slug of d.exclude) {
+      const p = byPass.get(slug);
+      if (!p) errors.push(`${d.slug}: exclude ${slug} unbekannt`);
+      else if (!inside(p))
+        warnings.push(`${d.slug}: exclude ${slug} liegt ohnehin außerhalb`);
+    }
+    if (![...byPass.values()].some((p) => isMember(d, p)))
+      errors.push(`${d.slug}: keine Straße im Gebiet`);
+  }
+};
+
+/** Roads in no area: listed so that "standalone" is a decision, not an oversight. */
+const standalone = (list: Destination[], roads: Pass[]): string[] =>
+  roads.filter((p) => !list.some((d) => isMember(d, p))).map((p) => p.slug);
+
 if (passes) checkPasses(passes);
 // Without a valid pass list every reference would read as unknown.
 if (tours && passes) checkTours(tours, new Map(passes.map((p) => [p.slug, p])));
 if (towns) checkTowns(towns);
+if (destinations && passes && towns)
+  checkDestinations(
+    destinations,
+    new Map(passes.map((p) => [p.slug, p])),
+    new Map(towns.map((t) => [t.slug, t])),
+  );
 
 // Rejections are unfinished curation: either the coordinates in data/*.json are
 // wrong, or a limit in validate.ts is. Both need a human, neither blocks a merge.
@@ -544,8 +602,16 @@ const rejectedCount = Object.keys(rejected ?? {}).length;
 const singleSided = (passes ?? []).filter(
   (p) => p.type === "pass" && p.ascents.length === 1,
 ).length;
+// Also information: a road outside every destination is fine when it is a
+// lone road nobody would build a holiday around, and a gap in the areas when
+// it is not. The list makes that a decision the curator sees.
+const alone = passes && destinations ? standalone(destinations, passes) : [];
+if (alone.length)
+  console.log(
+    `INFO  ${alone.length} Straßen in keinem Reiseziel: ${alone.join(", ")}`,
+  );
 console.log(
-  `${passes?.length ?? 0} Pässe (${singleSided} davon einseitig), ${tours?.length ?? 0} Touren, ${towns?.length ?? 0} Orte · ${Object.keys(routes ?? {}).length} Routen geprüft${
+  `${passes?.length ?? 0} Pässe (${singleSided} davon einseitig), ${tours?.length ?? 0} Touren, ${towns?.length ?? 0} Orte, ${destinations?.length ?? 0} Reiseziele · ${Object.keys(routes ?? {}).length} Routen geprüft${
     rejectedCount ? `, ${rejectedCount} abgewiesen` : ""
   } · ${errors.length} Fehler, ${warnings.length} Warnungen`,
 );

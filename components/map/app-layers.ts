@@ -20,6 +20,7 @@ import type {
 import { OVERLAYS } from "@/components/map/map-style";
 import { BASEMAP_ID, basemapLayers, FONT_BOLD } from "@/lib/basemap";
 import {
+  DESTINATION_EDGE,
   LAYERS,
   OVERLAY,
   PASS_LABELS,
@@ -28,7 +29,7 @@ import {
 } from "@/lib/layer-ids";
 import { PALETTE } from "@/lib/palette";
 import type { Scheme } from "@/lib/palette";
-import { prominenceFilter } from "@/lib/prominence";
+import { DESTINATION_MAX_ZOOM, prominenceFilter } from "@/lib/prominence";
 import { STATUS_ORDER } from "@/lib/status";
 import type { MapEnvironment } from "@/lib/use-media-query";
 
@@ -383,7 +384,81 @@ export const appLayers = (
   // – and still reach past it on both sides.
   const tourLine = tourWidth(9, 12);
 
+  /** Rideable share → the outline's colour: closed red through open green. */
+  const shareColor: ExpressionSpecification = [
+    "interpolate",
+    ["linear"],
+    ["get", "share"],
+    0,
+    colors.closed,
+    0.5,
+    colors.risky,
+    1,
+    colors.open,
+  ];
+  const isDestinationLit: ExpressionSpecification = [
+    "any",
+    ["==", ["get", "selected"], 1],
+    ["==", ["get", "hovered"], 1],
+  ];
+
   return [
+    // The destinations: a soft disc per area, the overview's own reading of
+    // the dots inside it, at the very bottom of the stack (plan 12). The disc
+    // fades out towards `DESTINATION_MAX_ZOOM`, where every road is drawn and
+    // a disc up to 150 km across would cover the screen; only its ring and
+    // its name stay for the selected or hovered area, so a flight into one
+    // still shows which one it is. The hit layer stops at that zoom outright,
+    // so a click on an empty valley at zoom 10 opens nothing.
+    //
+    // `["zoom"]` may only feed a top-level `interpolate`, so the zoom is the
+    // outer expression and what differs per feature sits in its stops.
+    {
+      id: LAYERS.destination.mark,
+      paint: {
+        "fill-color": colors.accent,
+        "fill-opacity": [
+          "interpolate",
+          ["linear"],
+          ["zoom"],
+          DESTINATION_MAX_ZOOM - 1,
+          ["case", isDestinationLit, 0.22, 0.12],
+          DESTINATION_MAX_ZOOM,
+          0,
+        ],
+      },
+      source: SOURCE.destinations,
+      type: "fill",
+    },
+    {
+      id: DESTINATION_EDGE,
+      paint: {
+        "line-color": shareColor,
+        // `line-opacity` rather than the layer's: the lit ring has to outlive
+        // the fade, which is a per-feature difference. Two rings cross at a
+        // point, not along a hairpin, so the double composite the rule guards
+        // against is two pixels wide here.
+        "line-opacity": [
+          "interpolate",
+          ["linear"],
+          ["zoom"],
+          DESTINATION_MAX_ZOOM - 1,
+          ["case", isDestinationLit, 0.9, 0.6],
+          DESTINATION_MAX_ZOOM,
+          ["case", isDestinationLit, 0.9, 0],
+        ],
+        "line-width": ["case", ["==", ["get", "selected"], 1], 2.5, 1.5],
+      },
+      source: SOURCE.destinations,
+      type: "line",
+    },
+    {
+      id: LAYERS.destination.hit,
+      maxzoom: DESTINATION_MAX_ZOOM,
+      paint: { "fill-color": colors.ink, "fill-opacity": 0 },
+      source: SOURCE.destinations,
+      type: "fill",
+    },
     // The area one town reaches, drawn while it is hovered: the hull over
     // its passes (lib/nearby.ts). Bottom of the app's stack, so
     // every line and dot stays readable on top of it.
@@ -572,6 +647,52 @@ export const appLayers = (
       type: "symbol",
     },
     // Labels staggered by prominence; MapLibre resolves collisions
+    // The area's name over its centre, with the count under it, in the
+    // overview – and past it for the selected or hovered area, like its ring. Below the pass labels in the list, so MapLibre places the
+    // pass names first: a famous pass wins its collision against the area it
+    // lies in.
+    {
+      id: LAYERS.destination.labels[0],
+      layout: {
+        "symbol-sort-key": ["-", 1, ["get", "share"]] as never,
+        "text-field": [
+          "format",
+          ["get", "name"],
+          {},
+          "\n",
+          {},
+          ["get", "text"],
+          { "font-scale": 0.8 },
+        ] as never,
+        "text-font": [FONT_BOLD],
+        "text-line-height": 1.25,
+        "text-size": [
+          "interpolate",
+          ["linear"],
+          ["zoom"],
+          5,
+          11,
+          8,
+          13,
+        ] as never,
+      },
+      paint: {
+        "text-color": colors.ink,
+        "text-halo-color": colors.paper,
+        "text-halo-width": 1.5,
+        "text-opacity": [
+          "interpolate",
+          ["linear"],
+          ["zoom"],
+          DESTINATION_MAX_ZOOM - 1,
+          1,
+          DESTINATION_MAX_ZOOM,
+          ["case", isDestinationLit, 1, 0],
+        ],
+      },
+      source: SOURCE.destinations,
+      type: "symbol",
+    },
     ...PASS_LABELS.map(({ fame, minzoom }) => ({
       filter:
         fame === 5

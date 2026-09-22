@@ -1,5 +1,54 @@
 import type { LatLon } from "@/lib/types";
 
+/** `[west, south, east, north]` in degrees – the box MapLibre frames. */
+export type Bounds = [number, number, number, number];
+
+/**
+ * The box around a list of `[lat, lon]` points. Here rather than beside the
+ * map assets, where it started: the assets module needs node's crypto and fs
+ * and is never imported by client code, while the box around a destination's
+ * members is read by the panel and the scene.
+ */
+export const bounds = (
+  points: readonly (readonly [number, number])[],
+): Bounds => {
+  let w = Infinity;
+  let s = Infinity;
+  let e = -Infinity;
+  let n = -Infinity;
+  for (const [lat, lon] of points) {
+    if (lon < w) w = lon;
+    if (lon > e) e = lon;
+    if (lat < s) s = lat;
+    if (lat > n) n = lat;
+  }
+  return [w, s, e, n];
+};
+
+/**
+ * A circle of `radiusKm` around a point as a closed ring of `[lon, lat]`
+ * pairs – what the map draws a destination as. Flat-earth over one degree of
+ * latitude, with the longitude stretched by the cosine: at 75 km the error
+ * is well under the width of the line it is drawn with.
+ */
+export const circleRing = (
+  center: LatLon,
+  radiusKm: number,
+  steps = 48,
+): [number, number][] => {
+  const dLat = radiusKm / 111.32;
+  const dLon = dLat / Math.cos((center.lat * Math.PI) / 180);
+  const ring: [number, number][] = [];
+  for (let i = 0; i <= steps; i += 1) {
+    const a = (i / steps) * 2 * Math.PI;
+    ring.push([
+      center.lon + dLon * Math.cos(a),
+      center.lat + dLat * Math.sin(a),
+    ]);
+  }
+  return ring;
+};
+
 /** Great-circle distance in km. */
 export const haversine = (a: LatLon, b: LatLon): number => {
   const R = 6371;
