@@ -41,19 +41,6 @@ export const ALL_SURFACES: Surface[] = [...SURFACES];
 export const NO_TAGS: RoadTag[] = [];
 /** The tab order: the areas first, because they are the answer the goal asks for. */
 export const ALL_KINDS: EntityKind[] = ["destination", "pass", "tour", "town"];
-/**
- * What each kind is called, beside the vocabulary it labels rather than beside
- * the tab row that draws it – the season bar names the current list too, and
- * `STATUS_LABEL` sits next to `STATUS_ORDER` for the same reason. "Straßen"
- * rather than "Pässe": the list holds spurs and valley roads as well.
- */
-export const KIND_LABEL: Record<EntityKind, string> = {
-  destination: "Reiseziele",
-  pass: "Straßen",
-  tour: "Touren",
-  town: "Orte",
-};
-
 export const PASS_SORTS = [
   "elevation",
   "name",
@@ -78,18 +65,26 @@ export const RATING_MAX = 5;
  * show. Wording: `ab` for a lower bound, `bis` for an upper bound, `nur` for
  * the end of the scale.
  */
-export type Options = readonly (readonly [value: number, label: string])[];
+/**
+ * What a threshold chip says, as a shape rather than a string: the word is
+ * the language's (`vocab.option`, `lib/i18n`), the number is the value's.
+ */
+export type OptionLabel =
+  | { kind: "any" }
+  | { kind: "from" | "upTo" | "only" | "under" | "upToOf15"; n: number }
+  | { kind: "elevationFrom"; m: number };
+export type Options = readonly (readonly [value: number, label: OptionLabel])[];
 export const TRAFFIC_OPTIONS = [
-  [5, "egal"],
-  [3, "bis 3"],
-  [2, "bis 2"],
-  [1, "nur 1"],
+  [5, { kind: "any" }],
+  [3, { kind: "upTo", n: 3 }],
+  [2, { kind: "upTo", n: 2 }],
+  [1, { kind: "only", n: 1 }],
 ] as const satisfies Options;
 export const BEAUTY_OPTIONS = [
-  [1, "egal"],
-  [3, "ab 3"],
-  [4, "ab 4"],
-  [5, "nur 5"],
+  [1, { kind: "any" }],
+  [3, { kind: "from", n: 3 }],
+  [4, { kind: "from", n: 4 }],
+  [5, { kind: "only", n: 5 }],
 ] as const satisfies Options;
 /**
  * The full ladder, "nur 5" included: nine roads carry it – Galibier, Alpe
@@ -98,10 +93,10 @@ export const BEAUTY_OPTIONS = [
  * somebody planning their first Alpine week asks.
  */
 export const FAME_OPTIONS = [
-  [1, "egal"],
-  [3, "ab 3"],
-  [4, "ab 4"],
-  [5, "nur 5"],
+  [1, { kind: "any" }],
+  [3, { kind: "from", n: 3 }],
+  [4, { kind: "from", n: 4 }],
+  [5, { kind: "only", n: 5 }],
 ] as const satisfies Options;
 /**
  * Pass height as a few round thresholds rather than a slider: the question is
@@ -109,10 +104,10 @@ export const FAME_OPTIONS = [
  * threshold is a chip a thumb can hit.
  */
 export const ELEVATION_OPTIONS = [
-  [0, "egal"],
-  [1500, "ab 1.500 m"],
-  [2000, "ab 2.000 m"],
-  [2500, "ab 2.500 m"],
+  [0, { kind: "any" }],
+  [1500, { kind: "elevationFrom", m: 1500 }],
+  [2000, { kind: "elevationFrom", m: 2000 }],
+  [2500, { kind: "elevationFrom", m: 2500 }],
 ] as const satisfies Options;
 /**
  * The raw summer signals, so the data that makes July queryable is not buried
@@ -132,11 +127,11 @@ export const HEAT_NONE = 99;
  * mid-July; what a rung is worth in a given half-month is on its chip.
  */
 export const HEAT_OPTIONS = [
-  [HEAT_NONE, "egal"],
-  [28, "unter 28 °C"],
-  [26, "unter 26 °C"],
-  [24, "unter 24 °C"],
-  [22, "unter 22 °C"],
+  [HEAT_NONE, { kind: "any" }],
+  [28, { kind: "under", n: 28 }],
+  [26, { kind: "under", n: 26 }],
+  [24, { kind: "under", n: 24 }],
+  [22, { kind: "under", n: 22 }],
 ] as const satisfies Options;
 /** All fifteen days of the half-month: no filter. */
 export const WET_NONE = 15;
@@ -155,11 +150,11 @@ export const WET_NONE = 15;
  * "unter 26 °C" is "kein Hitze-Hinweis".
  */
 export const WET_OPTIONS = [
-  [WET_NONE, "egal"],
-  [10, "bis 10 von 15"],
-  [8, "bis 8 von 15"],
-  [6, "bis 6 von 15"],
-  [4, "bis 4 von 15"],
+  [WET_NONE, { kind: "any" }],
+  [10, { kind: "upToOf15", n: 10 }],
+  [8, { kind: "upToOf15", n: 8 }],
+  [6, { kind: "upToOf15", n: 6 }],
+  [4, { kind: "upToOf15", n: 4 }],
 ] as const satisfies Options;
 
 /**

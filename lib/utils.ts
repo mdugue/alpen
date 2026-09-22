@@ -1,15 +1,27 @@
+import { localeOf } from "@/lib/i18n/lang";
+import type { Lang } from "@/lib/i18n/lang";
+
 export { cn } from "cn";
 
-/** Formats a number using German locale conventions (e.g. "2.764"). */
-export const fmt = (n: number, digits = 0) =>
-  n.toLocaleString("de-DE", {
+/**
+ * Formats a number in the conventions of the page's language: "2.764" in
+ * German, "2,764" in English (plan 08). German is the default, so a caller
+ * that says nothing keeps its words; a client component takes the language
+ * from `useT()`, which binds it.
+ */
+export const fmt = (n: number, digits = 0, lang: Lang = "de") =>
+  n.toLocaleString(localeOf(lang), {
     maximumFractionDigits: digits,
     minimumFractionDigits: 0,
   });
 
 /** Number plus unit with a non-breaking space: "2.757 m", "24,3 km". */
-export const fmtUnit = (n: number, unit: string, digits = 0) =>
-  `${fmt(n, digits)} ${unit}`;
+export const fmtUnit = (
+  n: number,
+  unit: string,
+  digits = 0,
+  lang: Lang = "de",
+) => `${fmt(n, digits, lang)} ${unit}`;
 
 /**
  * The mira preset has no icon-only Toggle size; this squares a default-size

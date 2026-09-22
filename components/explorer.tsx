@@ -24,7 +24,8 @@ import type {
 } from "@/lib/app-state";
 import { destinationsOfTown } from "@/lib/destination";
 import { filterCount, rangeWord } from "@/lib/filter-summary";
-import { useHashAdapter } from "@/lib/hash-adapter";
+import { switchLangHref, useHashAdapter } from "@/lib/hash-adapter";
+import { otherLang } from "@/lib/i18n";
 import type { PageData } from "@/lib/page-data";
 import { entityKey } from "@/lib/route-key";
 import {
@@ -77,7 +78,7 @@ export const Explorer = ({ data, defaultPeriod, children }: Props) => {
     years,
   } = data;
   const signals: Signals = { climate, valleys };
-  const { t, fmt } = useT();
+  const { t, fmt, lang } = useT();
   // Everything the map draws differently for, in one value; the shell reads
   // the same `mobile` the map does, so the two can never disagree about which
   // layout is on screen.
@@ -94,7 +95,7 @@ export const Explorer = ({ data, defaultPeriod, children }: Props) => {
     defaultPeriod,
     initialState,
   );
-  const intent = useHashAdapter(state, dispatch);
+  const intent = useHashAdapter(state, dispatch, lang);
   useStorageAdapter(state);
   const {
     compare,
@@ -134,9 +135,18 @@ export const Explorer = ({ data, defaultPeriod, children }: Props) => {
       years,
       filters,
       isFavorite,
+      lang,
     ),
     pass: buildPassRows(passes, years, filters, isFavorite, signals),
-    tour: buildTourRows(tours, passIndex, years, filters, isFavorite, signals),
+    tour: buildTourRows(
+      tours,
+      passIndex,
+      years,
+      filters,
+      isFavorite,
+      signals,
+      lang,
+    ),
     town: buildTownRows(towns, townRanges, filters, isFavorite, townAreas),
   };
   /** What selecting an area frames: the box around its members (`membersOf`). */
@@ -227,6 +237,7 @@ export const Explorer = ({ data, defaultPeriod, children }: Props) => {
                 isMobile ? undefined : () => setSidebarOpen(!sidebarOpen)
               }
               onOpenScales={() => setScalesOpen(true)}
+              otherHref={switchLangHref(state, otherLang(lang))}
             />
           }
           band={

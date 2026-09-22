@@ -2,9 +2,9 @@
 
 import type { GeoJSONSource, Map as MLMap, Popup } from "maplibre-gl";
 
+import { tagLabel } from "@/lib/i18n";
 import { LAYERS, layersOf, SOURCE } from "@/lib/layer-ids";
 import type { PopupContent, Ring, Scene } from "@/lib/map-scene";
-import { TAG_LABEL } from "@/lib/regions";
 import { tagIconSvg } from "@/lib/tag-icons";
 
 /**
@@ -57,7 +57,7 @@ export const popupHtml = (content: PopupContent) => {
   const chips = content.tags
     .map(
       (t) =>
-        `<span class="flex items-center gap-1">${tagIconSvg(t)}${escapeHtml(TAG_LABEL[t].label)}</span>`,
+        `<span class="flex items-center gap-1">${tagIconSvg(t)}${escapeHtml(tagLabel(t, content.lang))}</span>`,
     )
     .join("");
   return `${title}${subtitle}<div class="mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs">${chips}</div>`;

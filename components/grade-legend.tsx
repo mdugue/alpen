@@ -1,5 +1,5 @@
 import { CELL } from "@/components/season-strip";
-import { GRADE_HINT, GRADE_LABEL, GRADE_ORDER } from "@/lib/status";
+import { GRADE_LABEL, GRADE_ORDER, gradeHint } from "@/lib/status";
 import { cn } from "@/lib/utils";
 
 /**
@@ -26,7 +26,7 @@ export const GradeLegend = ({
           />
           {GRADE_LABEL[g]}
         </dt>
-        <dd className="opacity-80">{GRADE_HINT[g]}</dd>
+        <dd className="opacity-80">{gradeHint(g)}</dd>
       </div>
     ))}
     {hint && <div className="mt-0.5">{hint}</div>}

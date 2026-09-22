@@ -9,7 +9,14 @@ import {
   SITE_TITLE,
   siteUrl,
 } from "@/lib/brand";
-import { isLang, LANGS, langPrefix, OG_LOCALE } from "@/lib/i18n";
+import {
+  isLang,
+  LANGS,
+  langOf,
+  langParams,
+  langPrefix,
+  OG_LOCALE,
+} from "@/lib/i18n";
 
 import "../globals.css";
 
@@ -29,13 +36,34 @@ const oxanium = Oxanium({
  * the root parameter, `next.config.ts` rewrites the prefix-free German
  * paths onto `/de`, and the English pages live under `/en`.
  */
-export const generateStaticParams = () => LANGS.map((lang) => ({ lang }));
+export const generateStaticParams = () => langParams();
+
+/**
+ * The start page of each language: its own canonical, the other language as
+ * an alternate, German as the default for a visitor without a match. An
+ * entity route sets the same three for its own path.
+ */
+export const generateMetadata = async ({
+  params,
+}: {
+  params: Promise<{ lang: string }>;
+}): Promise<Metadata> => {
+  const { lang: raw } = await params;
+  const lang = langOf(raw);
+  const home = langPrefix(lang) || "/";
+  return {
+    alternates: {
+      canonical: home,
+      languages: {
+        ...Object.fromEntries(LANGS.map((l) => [l, langPrefix(l) || "/"])),
+        "x-default": "/",
+      },
+    },
+    openGraph: { locale: OG_LOCALE[lang], url: home },
+  };
+};
 
 export const metadata: Metadata = {
-  alternates: {
-    canonical: "/",
-    languages: Object.fromEntries(LANGS.map((l) => [l, `${langPrefix(l)}/`])),
-  },
   appleWebApp: { capable: true, statusBarStyle: "default", title: SITE_NAME },
   applicationName: SITE_NAME,
   authors: [{ name: "Manuel Dugué", url: "https://manuel.fyi" }],
@@ -59,11 +87,9 @@ export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   openGraph: {
     description: SITE_DESCRIPTION,
-    locale: OG_LOCALE.de,
     siteName: SITE_NAME,
     title: SITE_TITLE,
     type: "website",
-    url: "/",
   },
   // Search engines are welcome; the crawlers that are not are turned away in
   // app/robots.ts.

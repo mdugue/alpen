@@ -18,11 +18,18 @@ import { LANGS, langPrefix } from "@/lib/i18n";
  */
 const BUILD_TIME = new Date();
 
+/** The same path in every language, for the `hreflang` entries of one URL. */
+const languagesOf = (path: string): Record<string, string> =>
+  Object.fromEntries(
+    LANGS.map((lang) => [lang, `${siteUrl}${langPrefix(lang)}${path}`]),
+  );
+
 export default function sitemap(): MetadataRoute.Sitemap {
   return LANGS.flatMap((lang) => {
     const base = `${siteUrl}${langPrefix(lang)}`;
     return [
       {
+        alternates: { languages: languagesOf("") },
         changeFrequency: "weekly" as const,
         images: [`${base}/opengraph-image`],
         lastModified: BUILD_TIME,
@@ -30,6 +37,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
         url: base,
       },
       ...staticParams().map(({ kind, slug }) => ({
+        alternates: { languages: languagesOf(`/${kind}/${slug}`) },
         changeFrequency: "monthly" as const,
         images: [`${base}/${kind}/${slug}/opengraph-image`],
         lastModified: BUILD_TIME,

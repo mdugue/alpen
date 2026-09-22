@@ -263,14 +263,6 @@ export const ROAD_TYPE: Record<RoadTypeName, { label: string; hint: string }> =
   };
 
 /**
- * The type as a word where a list or a popup shows one, and nothing for a
- * `pass`: "Pass" on nine entries out of ten says nothing the list does not
- * already say. The detail panel stands alone and names every type.
- */
-export const roadTypeWord = (type: RoadTypeName): string | undefined =>
-  type === "pass" ? undefined : ROAD_TYPE[type].label;
-
-/**
  * The types whose ride is the traverse itself rather than a climb to the
  * entry's marker. Their ascents carry `to` and `km` and are measured against
  * the tour limits – `minPeakAt` and "ends at the summit" are the right checks
@@ -310,6 +302,9 @@ export const ROAD_TAGS = [
 ] as const;
 
 export type RoadTagName = (typeof ROAD_TAGS)[number];
+export type TownTagName = (typeof TOWN_TAGS)[number];
+/** A tag of either vocabulary; which one it belongs to is `tagLabel`'s question (`lib/i18n`). */
+export type TagName = TownTagName | RoadTagName;
 
 export const ROAD_TAG: Record<RoadTagName, { label: string; hint: string }> = {
   carfree: {
@@ -356,10 +351,10 @@ export const ROAD_TAG: Record<RoadTagName, { label: string; hint: string }> = {
  * map's popup. The two vocabularies share no name; `lib/tag-icons.test.ts`
  * fails if they ever did.
  */
-export const TAG_LABEL: Record<
-  (typeof TOWN_TAGS)[number] | RoadTagName,
-  { label: string; hint: string }
-> = { ...TOWN_TAG, ...ROAD_TAG };
+export const TAG_LABEL: Record<TagName, { label: string; hint: string }> = {
+  ...TOWN_TAG,
+  ...ROAD_TAG,
+};
 
 /**
  * What a road is rolled on (plan 27). One field that decides three things:
@@ -388,10 +383,6 @@ export const SURFACE: Record<SurfaceName, { label: string; hint: string }> = {
     label: "Gemischt",
   },
 };
-
-/** The one word beside the type word in the panel and the popup; nothing for asphalt, like a plain pass. */
-export const surfaceWord = (surface: SurfaceName): string | null =>
-  surface === "asphalt" ? null : SURFACE[surface].label;
 
 /** Whether the road is ridden with something other than a road bike. */
 export const isUnpaved = (surface: SurfaceName): boolean =>

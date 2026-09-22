@@ -8,6 +8,7 @@ import "maplibre-gl/dist/maplibre-gl.css";
 import { LngLat, Map as MLMap, Popup, setWorkerUrl } from "maplibre-gl";
 import { useEffect, useRef, useState } from "react";
 
+import { useT } from "@/components/i18n";
 import {
   addIcons,
   appLayers,
@@ -228,6 +229,7 @@ export const PassMap = ({
   inset = NO_INSET,
   env,
 }: Props) => {
+  const { lang } = useT();
   const container = useRef<HTMLDivElement>(null);
   const map = useRef<MLMap | null>(null);
   const [ready, setReady] = useState(false);
@@ -262,6 +264,7 @@ export const PassMap = ({
   const scene = buildScene({
     env: { coarse: env.coarsePointer },
     hovered,
+    lang,
     profileCursor,
     rows,
     selection,

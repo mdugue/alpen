@@ -1,6 +1,7 @@
 import { describe, expect, test } from "bun:test";
 
-import { isUnpaved, surfaceOfRoads, surfaceWord } from "@/lib/regions";
+import { surfaceWord } from "@/lib/i18n";
+import { isUnpaved, surfaceOfRoads } from "@/lib/regions";
 import {
   COVER_CLOSED_PCT,
   COVER_LIMITED_PCT,

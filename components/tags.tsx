@@ -1,7 +1,8 @@
 "use client";
 
+import { useT } from "@/components/i18n";
 import { Badge } from "@/components/ui/badge";
-import { TAG_LABEL } from "@/lib/regions";
+import { tagLabel } from "@/lib/i18n";
 import { ICON_ATTRS, TAG_ICON } from "@/lib/tag-icons";
 import type { Tag } from "@/lib/types";
 import { cn } from "@/lib/utils";
@@ -49,16 +50,19 @@ export const TagIcon = ({
 );
 
 /** The detail panel: one badge per label, icon in front of the word. */
-export const TagBadges = ({ tags }: { tags: Tag[] }) => (
-  <div className="flex flex-wrap gap-1">
-    {tags.map((tag) => (
-      <Badge key={tag} variant="secondary" className="gap-1">
-        <TagIcon tag={tag} />
-        {TAG_LABEL[tag].label}
-      </Badge>
-    ))}
-  </div>
-);
+export const TagBadges = ({ tags }: { tags: Tag[] }) => {
+  const { lang } = useT();
+  return (
+    <div className="flex flex-wrap gap-1">
+      {tags.map((tag) => (
+        <Badge key={tag} variant="secondary" className="gap-1">
+          <TagIcon tag={tag} />
+          {tagLabel(tag, lang)}
+        </Badge>
+      ))}
+    </div>
+  );
+};
 
 /**
  * The sidebar row: the glyphs alone. Three labels spelled out are wider than
@@ -75,16 +79,19 @@ export const TagLine = ({
   tags: Tag[];
   /** Put in front of the labels, e.g. the country code or the road type. */
   lead?: string;
-}) => (
-  <span className="flex items-center gap-x-1.5">
-    {lead && (
-      <span className="truncate">{tags.length ? `${lead} ·` : lead}</span>
-    )}
-    {tags.map((tag) => (
-      <span key={tag} className="inline-flex" title={TAG_LABEL[tag].label}>
-        <TagIcon tag={tag} className="size-3.5" />
-        <span className="sr-only">{TAG_LABEL[tag].label}</span>
-      </span>
-    ))}
-  </span>
-);
+}) => {
+  const { lang } = useT();
+  return (
+    <span className="flex items-center gap-x-1.5">
+      {lead && (
+        <span className="truncate">{tags.length ? `${lead} ·` : lead}</span>
+      )}
+      {tags.map((tag) => (
+        <span key={tag} className="inline-flex" title={tagLabel(tag, lang)}>
+          <TagIcon tag={tag} className="size-3.5" />
+          <span className="sr-only">{tagLabel(tag, lang)}</span>
+        </span>
+      ))}
+    </span>
+  );
+};

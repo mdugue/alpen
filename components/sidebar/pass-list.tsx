@@ -2,6 +2,7 @@
 
 import { ArrowDownWideNarrow } from "lucide-react";
 
+import { useT } from "@/components/i18n";
 import { Rating } from "@/components/rating";
 import { SeasonStrip } from "@/components/season-strip";
 import { EntityRow } from "@/components/sidebar/entity-row";
@@ -20,9 +21,9 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { PASS_SORTS } from "@/lib/app-state";
 import type { Filters, PassSort, Selection } from "@/lib/app-state";
-import { roadTypeWord } from "@/lib/regions";
+import { typeWord } from "@/lib/i18n";
 import { entityKey } from "@/lib/route-key";
-import { PASS_SORT_LABEL } from "@/lib/rows";
+import { sortLabel } from "@/lib/rows";
 import type { PassRow } from "@/lib/rows";
 import { useRoving } from "@/lib/use-roving";
 import { cn, fmtUnit, TOUCH_CONTROL } from "@/lib/utils";
@@ -59,6 +60,7 @@ export const PassList = ({
   onSelect: (slug: string) => void;
   onToggleFavorite: (slug: string) => void;
 }) => {
+  const { lang } = useT();
   const rovingList = useRoving<HTMLDivElement>();
   const hoveredSlug = hovered?.kind === "pass" ? hovered.slug : null;
   const ratingSort = RATING_SORTS.has(filters.sort)
@@ -82,13 +84,13 @@ export const PassList = ({
               <Button
                 variant="ghost"
                 size="sm"
-                aria-label={`Sortieren nach: ${PASS_SORT_LABEL[filters.sort]}`}
+                aria-label={`Sortieren nach: ${sortLabel(filters.sort, lang)}`}
                 className={cn("-my-0.5 px-2 font-normal", TOUCH_CONTROL)}
               />
             }
           >
             <ArrowDownWideNarrow data-icon="inline-start" />
-            {PASS_SORT_LABEL[filters.sort]}
+            {sortLabel(filters.sort, lang)}
           </DropdownMenuTrigger>
           <DropdownMenuContent align="start">
             <DropdownMenuRadioGroup
@@ -99,7 +101,7 @@ export const PassList = ({
             >
               {PASS_SORTS.map((k) => (
                 <DropdownMenuRadioItem key={k} value={k}>
-                  {PASS_SORT_LABEL[k]}
+                  {sortLabel(k, lang)}
                 </DropdownMenuRadioItem>
               ))}
             </DropdownMenuRadioGroup>
@@ -125,7 +127,7 @@ export const PassList = ({
               subtitle={
                 <TagLine
                   tags={pass.tags ?? []}
-                  lead={[roadTypeWord(pass.type), pass.region, pass.country]
+                  lead={[typeWord(pass.type, lang), pass.region, pass.country]
                     .filter(Boolean)
                     .join(" · ")}
                 />

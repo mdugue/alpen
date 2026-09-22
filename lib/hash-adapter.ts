@@ -2,7 +2,6 @@
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 
-import { useLang } from "@/components/i18n";
 import { DEFAULT_VIEW, defined, EMPTY_HASH } from "@/lib/app-state";
 import type {
   Action,
@@ -13,7 +12,6 @@ import type {
   Selection,
 } from "@/lib/app-state";
 import { parseHash, serializeHash } from "@/lib/hash";
-import { langOfPath, langPrefix } from "@/lib/i18n";
 import type { Lang } from "@/lib/i18n";
 import type { CameraIntent } from "@/lib/map-camera";
 import { entityKey } from "@/lib/route-key";
@@ -113,10 +111,11 @@ const sameSelection = (a: Selection | null, b: Selection | null) =>
 export const useHashAdapter = (
   state: AppState,
   dispatch: (action: Action) => void,
+  /** The page's language: the prefix every pushed path carries. */
+  lang: Lang,
 ): CameraIntent | null => {
   const router = useRouter();
   const pathname = usePathname();
-  const lang = useLang();
   // The opening camera, and only that: a link pasted later reaches the map as
   // a `requestedView` or as a selection, both of which say what to do with the
   // camera that is already there.
@@ -256,14 +255,11 @@ export const useHashAdapter = (
 };
 
 /**
- * The same view in the other language: the path with its prefix swapped and
- * the hash carried along, so the camera, the half-month and the selection
- * survive the switch (plan 08). Read at the moment of the click, which is
- * why it is a function and lives here, with the one reader of the address
- * bar.
+ * The same view in the other language: the selection's path under the other
+ * prefix with the state's hash behind it, so the camera, the half-month and
+ * the selection survive the switch (plan 08). A value of the state rather
+ * than a read of the address bar, so the server and the client render the
+ * same href.
  */
-export const switchLangHref = (to: Lang): string => {
-  if (typeof window === "undefined") return homeHref(to);
-  const { rest } = langOfPath(window.location.pathname);
-  return `${langPrefix(to)}${rest === "/" && to !== "de" ? "" : rest}${window.location.hash}`;
-};
+export const switchLangHref = (state: AppState, to: Lang): string =>
+  `${state.selection ? hrefFor(state.selection, to) : homeHref(to)}#${serializeHash(state.filters, state.view, state.compare)}`;

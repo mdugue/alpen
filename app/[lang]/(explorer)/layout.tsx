@@ -4,7 +4,8 @@ import { Explorer } from "@/components/explorer";
 import { I18nProvider } from "@/components/i18n";
 import { SITE_DESCRIPTION, SITE_NAME, siteUrl } from "@/lib/brand";
 import { getPageData } from "@/lib/data";
-import { DEFAULT_LANG, isLang } from "@/lib/i18n";
+import { langOf, langPrefix, messagesOf } from "@/lib/i18n";
+import type { Lang } from "@/lib/i18n";
 import { todayPeriod } from "@/lib/period";
 
 /**
@@ -12,7 +13,7 @@ import { todayPeriod } from "@/lib/period";
  * the 1–5 scales are editorial judgements (docs/scales.md) and must not show up
  * as measured values in a search result either.
  */
-const jsonLd = {
+const jsonLd = (lang: Lang) => ({
   "@context": "https://schema.org",
   "@type": "WebApplication",
   about: { "@type": "Place", name: "Alpen" },
@@ -24,12 +25,12 @@ const jsonLd = {
   },
   browserRequirements: "Requires JavaScript and WebGL.",
   description: SITE_DESCRIPTION,
-  inLanguage: "de",
+  inLanguage: lang,
   isAccessibleForFree: true,
   name: SITE_NAME,
   offers: { "@type": "Offer", price: 0, priceCurrency: "EUR" },
-  url: siteUrl,
-};
+  url: `${siteUrl}${langPrefix(lang)}`,
+});
 
 /**
  * The explorer is a layout, not a page (plan 02): the map, the lists and the
@@ -63,7 +64,7 @@ const ExplorerLayout = async ({ children }: { children: React.ReactNode }) => {
   // prerendered once per language; the root layout has already 404ed
   // anything that is not one.
   const raw = await rootLang();
-  const lang = isLang(raw) ? raw : DEFAULT_LANG;
+  const lang = langOf(raw);
   const data = getPageData();
 
   return (
@@ -79,11 +80,11 @@ const ExplorerLayout = async ({ children }: { children: React.ReactNode }) => {
         href="#map"
         className="bg-card text-foreground ring-ring sr-only rounded-md px-3 py-2 text-sm shadow-lg focus:not-sr-only focus:absolute focus:top-3 focus:left-3 focus:z-50 focus:ring-2"
       >
-        Zur Karte springen
+        {messagesOf(lang).header.skipToMap}
       </a>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd(lang)) }}
       />
       <I18nProvider lang={lang}>
         <Explorer data={data} defaultPeriod={todayPeriod()}>

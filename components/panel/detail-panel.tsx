@@ -2,6 +2,7 @@
 
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 
+import { useT } from "@/components/i18n";
 import { useSheet } from "@/components/mobile-sheet";
 import type { PanelActions } from "@/components/panel/actions";
 import { DestinationDetail } from "@/components/panel/destination-detail";
@@ -61,6 +62,7 @@ export const DetailPanel = ({
   /** The pass page's streamed forecast, shown in the weather block (plan 02). */
   weather?: React.ReactNode;
 }) => {
+  const { lang } = useT();
   const panel = useRef<HTMLElement>(null);
   const scroller = useRef<HTMLDivElement>(null);
   // Below the sheet's top snap point nothing scrolls, so the head is on screen
@@ -155,6 +157,7 @@ export const DetailPanel = ({
   const model = detailModel(selection, data, {
     detail: state,
     hovered,
+    lang,
     period,
   });
   if (!model) return null;

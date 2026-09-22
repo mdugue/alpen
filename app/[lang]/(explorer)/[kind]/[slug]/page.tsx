@@ -6,7 +6,7 @@ import { Weather } from "@/components/panel/weather";
 import { WeatherSkeleton } from "@/components/panel/weather-forecast";
 import { WeatherSlot } from "@/components/panel/weather-slot";
 import { getEntity, staticParams } from "@/lib/data";
-import { DEFAULT_LANG, isLang, LANGS, OG_LOCALE } from "@/lib/i18n";
+import { LANGS, langOf, OG_LOCALE } from "@/lib/i18n";
 import { hrefFor, selectionOf } from "@/lib/routes";
 import { entityDescription, entityTitle } from "@/lib/share-text";
 
@@ -28,7 +28,7 @@ type Params = Promise<{ kind: string; lang: string; slug: string }>;
 /** The entity a path names, or nothing – which the page turns into a 404. */
 const entityOf = async (params: Params) => {
   const { kind, lang: raw, slug } = await params;
-  const lang = isLang(raw) ? raw : DEFAULT_LANG;
+  const lang = langOf(raw);
   // The params arrive decoded; the path form is what `selectionOf` reads.
   const selection = selectionOf(`/${kind}/${encodeURIComponent(slug)}`);
   if (!selection) return null;
@@ -50,9 +50,10 @@ export const generateMetadata = async ({
   return {
     alternates: {
       canonical: url,
-      languages: Object.fromEntries(
-        LANGS.map((l) => [l, hrefFor(selection, l)]),
-      ),
+      languages: {
+        ...Object.fromEntries(LANGS.map((l) => [l, hrefFor(selection, l)])),
+        "x-default": hrefFor(selection),
+      },
     },
     description,
     openGraph: {

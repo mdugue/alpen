@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { lang as rootLang } from "next/root-params";
 
-import { DEFAULT_LANG, isLang, messagesOf } from "@/lib/i18n";
+import { langOf, langPrefix, messagesOf } from "@/lib/i18n";
 import { homeHref } from "@/lib/routes";
 
 export const metadata: Metadata = {
@@ -15,7 +15,7 @@ export const metadata: Metadata = {
 
 const ImpressumPage = async () => {
   const raw = await rootLang();
-  const lang = isLang(raw) ? raw : DEFAULT_LANG;
+  const lang = langOf(raw);
   const note = messagesOf(lang).legal.englishNote;
   return (
     <main className="bg-background text-foreground h-dvh overflow-y-auto px-4 py-10">
@@ -97,7 +97,7 @@ const ImpressumPage = async () => {
 
         <p className="text-muted-foreground text-xs">
           Siehe auch:{" "}
-          <Link href="/datenschutz" className="underline">
+          <Link href={`${langPrefix(lang)}/datenschutz`} className="underline">
             Datenschutzerklärung
           </Link>
         </p>

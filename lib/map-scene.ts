@@ -25,16 +25,11 @@ import type { Selection, Shown } from "@/lib/app-state";
 import { isShown } from "@/lib/app-state";
 import { circleRing } from "@/lib/geo";
 import type { Bounds } from "@/lib/geo";
+import { surfaceWord, typeWord } from "@/lib/i18n";
+import type { Lang } from "@/lib/i18n";
 import { visibleBounds } from "@/lib/map-camera";
 import type { TownReach } from "@/lib/nearby";
-import {
-  HOME_RANGE,
-  inBox,
-  RANGE_BOUNDS,
-  rangeOf,
-  roadTypeWord,
-  surfaceWord,
-} from "@/lib/regions";
+import { HOME_RANGE, inBox, RANGE_BOUNDS, rangeOf } from "@/lib/regions";
 import { ascentKey } from "@/lib/route-key";
 import type { PassRow, Rows } from "@/lib/rows";
 import type { LatLon, Status, Surface, Tag } from "@/lib/types";
@@ -121,6 +116,8 @@ export interface PopupContent {
   name: string;
   subtitle: string | null;
   tags: readonly Tag[];
+  /** The language the tag labels are drawn in. */
+  lang: Lang;
 }
 
 export interface Scene {
@@ -167,6 +164,8 @@ export interface SceneInput {
    * tap opens says all of it and more.
    */
   env: { coarse: boolean };
+  /** The page's language: the words of the popup. */
+  lang: Lang;
 }
 
 const collection = <P>(
@@ -188,11 +187,11 @@ const slugOf = (sel: Selection | null, kind: Selection["kind"]) =>
   sel?.kind === kind ? sel.slug : null;
 
 /** The one line under a road's name: how high it goes and what kind of road it is. */
-const roadSubtitle = (row: PassRow) =>
+const roadSubtitle = (row: PassRow, lang: Lang) =>
   [
-    fmtUnit(row.pass.elevation, "m"),
-    roadTypeWord(row.pass.type),
-    surfaceWord(row.pass.surface),
+    fmtUnit(row.pass.elevation, "m", 0, lang),
+    typeWord(row.pass.type, lang),
+    surfaceWord(row.pass.surface, lang),
   ]
     .filter(Boolean)
     .join(" · ");
@@ -201,6 +200,7 @@ export const buildScene = (input: SceneInput): Scene => {
   const {
     env,
     hovered,
+    lang,
     profileCursor,
     rows,
     selection,
@@ -262,13 +262,15 @@ export const buildScene = (input: SceneInput): Scene => {
     if (markedPass)
       return {
         anchor: [markedPass.pass.lon, markedPass.pass.lat],
+        lang,
         name: markedPass.pass.name,
-        subtitle: roadSubtitle(markedPass),
+        subtitle: roadSubtitle(markedPass, lang),
         tags: markedPass.pass.tags ?? [],
       };
     if (markedTown)
       return {
         anchor: [markedTown.town.lon, markedTown.town.lat],
+        lang,
         // What a town is, is what its labels say; it needs no second line.
         name: markedTown.town.name,
         subtitle: null,
@@ -277,8 +279,9 @@ export const buildScene = (input: SceneInput): Scene => {
     if (tourRow && box)
       return {
         anchor: [(box[0] + box[2]) / 2, (box[1] + box[3]) / 2],
+        lang,
         name: tourRow.tour.name,
-        subtitle: `ca. ${fmt(tourRow.tour.km)} km · ${fmt(tourRow.tour.elevationGain)} hm`,
+        subtitle: `ca. ${fmt(tourRow.tour.km, 0, lang)} km · ${fmt(tourRow.tour.elevationGain, 0, lang)} hm`,
         tags: [],
       };
     if (destinationRow)
@@ -287,6 +290,7 @@ export const buildScene = (input: SceneInput): Scene => {
           destinationRow.destination.center.lon,
           destinationRow.destination.center.lat,
         ],
+        lang,
         name: destinationRow.destination.name,
         subtitle: destinationRow.text,
         tags: [],

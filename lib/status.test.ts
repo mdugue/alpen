@@ -3,6 +3,7 @@ import { describe, expect, test } from "bun:test";
 import climateJson from "@/data/generated/climate.json" with { type: "json" };
 import profilesJson from "@/data/generated/profiles.json" with { type: "json" };
 import passesJson from "@/data/passes.json" with { type: "json" };
+import { messagesOf } from "@/lib/i18n";
 import { periodAt, periodIndex, periodLabel, PERIODS } from "@/lib/period";
 import { valleyElevations } from "@/lib/profile";
 import {
@@ -11,7 +12,7 @@ import {
   cellAt,
   cellHint,
   climateText,
-  GRADE_HINT,
+  gradeHint,
   inputAt,
   passStatus,
   passVerdict,
@@ -19,10 +20,11 @@ import {
   ladderText,
   reasonParagraph,
   REASON_ORDER,
-  REASON_SHORT,
   seasonSummary,
   signalsOf,
   SIGNALS,
+  signalKey,
+  signalValue,
   STATUS_LABEL,
   statusOf,
   statusRank,
@@ -49,7 +51,6 @@ import type {
   Status,
   Tour,
 } from "@/lib/types";
-import { fmt } from "@/lib/utils";
 
 const passes = passesJson as Pass[];
 const climate = climateJson as unknown as Record<string, ClimateYear>;
@@ -115,9 +116,13 @@ const verdict = (c: YearCell) => ({
 
 const TOUR_NAMES = (slug: string) => ({ a: "Gavia", b: "Stilfser Joch" })[slug];
 
+/** The German words of the heuristic, the ones every sentence here is checked against. */
+const WORDS = messagesOf("de").status;
+const REASON_SHORT = WORDS.reasonShort;
+
 /** A signal's clause with its value filled in, as `ladderText` prints it. */
 const reads = (s: (typeof SIGNALS)[number]) =>
-  s.reads.replace("$", `${fmt(s.value, s.digits ?? 0)} ${s.unit}`);
+  WORDS.signal[signalKey(s)].replace("$", signalValue(s));
 
 /** One grade per character: `b` best, `o` good, `r` limited, anything else closed. */
 const grades = (spec: string): Grade[] =>
@@ -470,7 +475,7 @@ describe("cell hints", () => {
     );
     // Best has nothing specific to add, so the general sentence stands; a
     // closed cell names what closed it – the barrier, or the snow on a track.
-    expect(cellHint(cell({ grade: "best" }))).toBe(GRADE_HINT.best);
+    expect(cellHint(cell({ grade: "best" }))).toBe(gradeHint("best"));
     expect(cellHint(cell({ grade: "closed" }))).toContain("Wintersperre");
     expect(
       cellHint(cell({ grade: "closed", reasons: ["snow-cover"] })),
@@ -840,12 +845,12 @@ describe("one status vocabulary", () => {
     // Every reason but the closing one can make a cell "eingeschränkt".
     const limiting = REASON_ORDER.filter((r) => r !== "outside-window");
     const positions = limiting.map((r) =>
-      GRADE_HINT.limited.indexOf(REASON_SHORT[r]),
+      gradeHint("limited").indexOf(REASON_SHORT[r]),
     );
     expect(positions).not.toContain(-1);
     expect(positions).toEqual(positions.toSorted((a, b) => a - b));
     // The closing reason is not among them: a closure is not a caveat.
-    expect(GRADE_HINT.limited).not.toContain(REASON_SHORT["outside-window"]);
+    expect(gradeHint("limited")).not.toContain(REASON_SHORT["outside-window"]);
   });
 
   test("the dialog paragraph carries the value of every threshold", () => {
@@ -855,7 +860,7 @@ describe("one status vocabulary", () => {
     // plan. What can still break is a clause with nowhere to put its value,
     // which would print the threshold nowhere at all.
     for (const signal of SIGNALS) {
-      expect(signal.reads).toContain("$");
+      expect(WORDS.signal[signalKey(signal)]).toContain("$");
       expect(reads(signal)).toContain(String(signal.value).replace(".", ","));
       expect(paragraph).toContain(reads(signal));
     }

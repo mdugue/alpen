@@ -8,11 +8,12 @@ import {
 } from "@/lib/destination";
 import type { AreaVerdict, Bases, BaseVerdict } from "@/lib/destination";
 import type { DetailState } from "@/lib/detail-state";
+import { messagesOf, surfaceWord, vocabOf } from "@/lib/i18n";
+import type { Lang } from "@/lib/i18n";
 import type { PageBundle } from "@/lib/page-data";
 import { periodIndex } from "@/lib/period";
 import { reachedPasses, reachedTowns, withinReach } from "@/lib/reach";
 import type { Reach, ReachKind } from "@/lib/reach";
-import { ROAD_TYPE, surfaceWord } from "@/lib/regions";
 import { entityKey } from "@/lib/route-key";
 import {
   bestText,
@@ -92,13 +93,19 @@ export const BLOCKS: Record<DetailModel["kind"], BlockId[]> = {
 
 /** What stands over the name in the panel head. */
 const KICKER = {
-  destination: (d: Destination) => `Reiseziel · ${d.country}`,
-  pass: (p: Pass) =>
-    [ROAD_TYPE[p.type].label, surfaceWord(p.surface), p.region, p.country]
+  destination: (d: Destination, lang: Lang) =>
+    messagesOf(lang).panel.kicker.destination(d.country),
+  pass: (p: Pass, lang: Lang) =>
+    [
+      vocabOf(lang).roadType[p.type].label,
+      surfaceWord(p.surface, lang),
+      p.region,
+      p.country,
+    ]
       .filter(Boolean)
       .join(" · "),
-  tour: () => "Rundtour",
-  town: (t: Town) => `Rad-Ort · ${t.country}`,
+  tour: (lang: Lang) => messagesOf(lang).panel.kicker.tour,
+  town: (t: Town, lang: Lang) => messagesOf(lang).panel.kicker.town(t.country),
 };
 
 /** What the verdict box reads: the graded year and the two lines beside it. */
@@ -195,6 +202,8 @@ export interface DetailInput {
   period: Period;
   hovered: Selection | null;
   detail: DetailState;
+  /** The page's language: every sentence of the model is in it. */
+  lang: Lang;
 }
 
 export const detailModel = (
@@ -202,7 +211,7 @@ export const detailModel = (
   data: PageBundle,
   state: DetailInput,
 ): DetailModel | null => {
-  const { period } = state;
+  const { lang, period } = state;
   const common = {
     detail: state.detail,
     hovered: state.hovered,
@@ -244,23 +253,26 @@ export const detailModel = (
       bucket,
       cell,
       climate,
-      kicker: KICKER.pass(pass),
+      kicker: KICKER.pass(pass, lang),
       kind: "pass",
       name: pass.name,
       pass,
       reach: reachOf(pass, ["towns"], pass.slug),
       sentences: {
-        climate: bucket ? climateText(pass, bucket, signals, period) : null,
+        climate: bucket
+          ? climateText(pass, bucket, signals, period, lang)
+          : null,
         note: pass.note,
-        season: seasonText(pass),
+        season: seasonText(pass, lang),
       },
       verdict: {
-        best: bestText(year),
+        best: bestText(year, lang),
         text: reasonParagraph(
           pass,
           period,
           cell.reasons,
           inputAt(signals, period),
+          lang,
         ),
         year,
       },
@@ -274,7 +286,7 @@ export const detailModel = (
     const cell = cellAt(year, period);
     return {
       ...common,
-      kicker: KICKER.tour(),
+      kicker: KICKER.tour(lang),
       kind: "tour",
       members: tour.passes
         .map((slug) => data.passIndex.get(slug))
@@ -287,14 +299,19 @@ export const detailModel = (
       // A tour is a line; the panel has always read its surroundings from the
       // first waypoint, and the server measured the tours the same way.
       reach: reachOf(tour.waypoints[0]!),
-      season: tourSeasonText(tour),
+      season: tourSeasonText(tour, lang),
       tour,
       verdict: {
         best: null,
         // The passes that hold the tour back come from the cell, not from a
         // second pass over the members: the sentence and the badge describe
         // one set.
-        text: tourText(tour, cell, (slug) => data.passIndex.get(slug)?.name),
+        text: tourText(
+          tour,
+          cell,
+          (slug) => data.passIndex.get(slug)?.name,
+          lang,
+        ),
         year,
       },
     };
@@ -311,7 +328,7 @@ export const detailModel = (
     return {
       ...common,
       destination,
-      kicker: KICKER.destination(destination),
+      kicker: KICKER.destination(destination, lang),
       kind: "destination",
       name: destination.name,
       passes: members.passes
@@ -328,7 +345,7 @@ export const detailModel = (
             b.pass.beauty - a.pass.beauty ||
             b.pass.elevation - a.pass.elevation,
         ),
-      text: areaText(verdict),
+      text: areaText(verdict, lang),
       tours: members.tours
         .map((slug) => data.tours.find((t) => t.slug === slug))
         .filter((tour) => tour !== undefined)
@@ -362,7 +379,7 @@ export const detailModel = (
       reachedPasses(town, data.passes, data.years, period),
       period,
     ),
-    kicker: KICKER.town(town),
+    kicker: KICKER.town(town, lang),
     kind: "town",
     name: town.name,
     reach: reachOf(town, ["passes"], town.slug),

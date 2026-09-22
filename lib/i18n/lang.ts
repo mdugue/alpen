@@ -12,6 +12,17 @@ export const DEFAULT_LANG: Lang = "de";
 
 export const isLang = (v: unknown): v is Lang => LANGS.includes(v as Lang);
 
+/** The language a route segment names, German for anything that is not one. */
+export const langOf = (raw: unknown): Lang =>
+  isLang(raw) ? raw : DEFAULT_LANG;
+
+/** The one other language – what the toggle offers. */
+export const otherLang = (lang: Lang): Lang => (lang === "de" ? "en" : "de");
+
+/** `generateStaticParams` of every route under `app/[lang]`. */
+export const langParams = (): { lang: Lang }[] =>
+  LANGS.map((lang) => ({ lang }));
+
 /** What a path starts with in this language: nothing for German, `/en` otherwise. */
 export const langPrefix = (lang: Lang): string =>
   lang === DEFAULT_LANG ? "" : `/${lang}`;
@@ -32,5 +43,5 @@ export const langOfPath = (pathname: string): { lang: Lang; rest: string } => {
 export const localeOf = (lang: Lang): string =>
   lang === "en" ? "en-GB" : "de-DE";
 
-/** The `<html lang>` and the Open Graph locale. */
+/** The Open Graph locale of each language (`og:locale`). */
 export const OG_LOCALE: Record<Lang, string> = { de: "de_DE", en: "en_GB" };

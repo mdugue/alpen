@@ -1,3 +1,7 @@
+import { panel } from "./de/panel";
+import { status } from "./de/status";
+import { vocab } from "./de/vocab";
+
 /**
  * Every word the interface says, in German – the source of truth. The
  * English file satisfies this file's type, so a key that exists in one and
@@ -18,6 +22,7 @@ export const de = {
     listAndFilters: "Liste und Filter",
     noPass: "kein Pass in dieser Auswahl.",
     scales: "Skalen & Quellen",
+    skipToMap: "Zur Karte springen",
     switchTo: "English version",
   },
   kinds: {
@@ -29,6 +34,7 @@ export const de = {
   legal: {
     englishNote: null as string | null,
   },
+  panel,
   share: {
     /** The three counts under the wordmark of the share image. */
     counts: (passes: string, tours: string, towns: string) =>
@@ -43,6 +49,8 @@ export const de = {
     support: "Kaffee spendieren",
     whatTheListShows: "Was die Liste zeigt",
   },
+  status,
+  vocab,
 };
 
 export type Messages = typeof de;

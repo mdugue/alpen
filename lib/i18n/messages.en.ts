@@ -1,3 +1,6 @@
+import { panel } from "./en/panel";
+import { status } from "./en/status";
+import { vocab } from "./en/vocab";
 import type { Messages } from "./messages.de";
 
 /** The English words, held to the German file's shape by the type. */
@@ -8,6 +11,7 @@ export const en = {
     listAndFilters: "List and filters",
     noPass: "no pass in this selection.",
     scales: "Scales & sources",
+    skipToMap: "Skip to the map",
     switchTo: "Deutsche Version",
   },
   kinds: {
@@ -20,6 +24,7 @@ export const en = {
     englishNote:
       "This page is in German: it is the legal notice a site operated from Germany has to carry, and a translation would not be the binding text.",
   },
+  panel,
   share: {
     counts: (passes: string, tours: string, towns: string) =>
       `${passes} passes · ${tours} loops · ${towns} towns`,
@@ -33,4 +38,6 @@ export const en = {
     support: "Buy me a coffee",
     whatTheListShows: "What the list shows",
   },
+  status,
+  vocab,
 } satisfies Messages;

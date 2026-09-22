@@ -8,6 +8,7 @@
  * about snow, heat and daylight, for a calendar. Nothing here knows anything
  * about a pass: it is vocabulary, and the heuristic is one of its readers.
  */
+import type { Lang } from "@/lib/i18n/lang";
 import type { Period } from "@/lib/types";
 
 export const MONTHS = [
@@ -26,13 +27,43 @@ export const MONTHS = [
 ] as const;
 
 /** Month initials for compact scales (J F M A M J J A S O N D). */
+/** The English months, for `periodLabel` under `/en` (plan 08). */
+export const MONTHS_EN = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+] as const;
+
+/** The month names of one language, in calendar order. */
+export const monthsOf = (lang: Lang = "de"): readonly string[] =>
+  lang === "en" ? MONTHS_EN : MONTHS;
+
 export const MONTH_INITIALS = MONTHS.map((m) => m[0]!);
 
-/** "Anfang Oktober" / "Ende Oktober" (early/late October) for a Period. */
-export const periodLabel = (t: Period): string =>
-  `${t % 1 ? "Ende" : "Anfang"} ${MONTHS[Math.floor(t) - 1]}`;
+/** The first letter of each month, for the axis under a strip. */
+export const monthInitialsOf = (lang: Lang = "de"): string[] =>
+  monthsOf(lang).map((m) => m[0]!);
 
-/** All 24 half-month points in time. */
+/**
+ * "Anfang Oktober" / "early October": the half-month as the whole app says
+ * it. German is the default so a caller that says nothing keeps its words.
+ */
+export const periodLabel = (t: Period, lang: Lang = "de"): string => {
+  const month = monthsOf(lang)[Math.floor(t) - 1];
+  return lang === "en"
+    ? `${t % 1 ? "late" : "early"} ${month}`
+    : `${t % 1 ? "Ende" : "Anfang"} ${month}`;
+};
+
 export const PERIODS: Period[] = Array.from(
   { length: 24 },
   (_, i) => Math.floor(i / 2) + 1 + (i % 2 ? 0.5 : 0),

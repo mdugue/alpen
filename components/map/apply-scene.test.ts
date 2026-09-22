@@ -68,6 +68,7 @@ const scene = (extra: Partial<SceneInput> = {}) =>
   buildScene({
     env: { coarse: false },
     hovered: null,
+    lang: "de",
     profileCursor: null,
     rows: {
       destination: [],
@@ -184,6 +185,7 @@ describe("the label", () => {
   test("carries the name, the line under it and a glyph per label", () => {
     const html = popupHtml({
       anchor: [6.4, 45.06],
+      lang: "de",
       name: "Col du Galibier",
       subtitle: "2.642 m",
       tags: ["hairpins"],
@@ -197,6 +199,7 @@ describe("the label", () => {
   test("escapes what comes out of the data files", () => {
     const html = popupHtml({
       anchor: [0, 0],
+      lang: "de",
       name: '<script>"x"</script>',
       subtitle: null,
       tags: [],

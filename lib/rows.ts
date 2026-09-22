@@ -2,6 +2,8 @@ import { ALL_RANGES, HEAT_NONE, WET_NONE } from "@/lib/app-state";
 import type { EntityKind, Filters, PassSort } from "@/lib/app-state";
 import { areaScore, areaText, areaVerdict } from "@/lib/destination";
 import type { AreaVerdict, DestinationMembers } from "@/lib/destination";
+import { DEFAULT_LANG, vocabOf } from "@/lib/i18n";
+import type { Lang } from "@/lib/i18n";
 import { periodIndex, PERIODS } from "@/lib/period";
 import { rangeOf } from "@/lib/regions";
 import type { RangeName } from "@/lib/regions";
@@ -195,15 +197,9 @@ export interface PassRow {
   season: YearCell[];
 }
 
-export const PASS_SORT_LABEL: Record<PassSort, string> = {
-  beauty: "Schönheit",
-  difficulty: "Schwierigkeit",
-  elevation: "Höhe",
-  fame: "Bekanntheit",
-  name: "Name",
-  status: "Status",
-  traffic: "Verkehr",
-};
+/** What a sort is called in the toolbar's menu. */
+export const sortLabel = (sort: PassSort, lang: Lang = DEFAULT_LANG): string =>
+  vocabOf(lang).sort[sort];
 
 const byName = (a: PassRow, b: PassRow) =>
   a.pass.name.localeCompare(b.pass.name, "de");
@@ -300,6 +296,7 @@ export const buildTourRows = (
   filters: Filters,
   isFavorite: Query["isFavorite"],
   signals?: Signals,
+  lang: Lang = DEFAULT_LANG,
 ): TourRow[] => {
   const q = query(filters, isFavorite);
   const i = periodIndex(filters.period);
@@ -319,7 +316,7 @@ export const buildTourRows = (
       season: year.cells,
       status: cell.status,
       tour,
-      window: tourWindowWord(tour),
+      window: tourWindowWord(tour, lang),
     });
   }
   return rows.toSorted((a, b) => b.tour.elevationGain - a.tour.elevationGain);
@@ -412,6 +409,7 @@ export const buildDestinationRows = (
   years: Years,
   filters: Filters,
   isFavorite: Query["isFavorite"],
+  lang: Lang = DEFAULT_LANG,
 ): DestinationRow[] => {
   const q = query(filters, isFavorite);
   const rows: DestinationRow[] = [];
@@ -448,7 +446,7 @@ export const buildDestinationRows = (
       range,
       score: areaScore(own.passes, passes, years, filters.period),
       season: verdict.year.cells,
-      text: areaText(verdict),
+      text: areaText(verdict, lang),
       verdict,
     });
   }

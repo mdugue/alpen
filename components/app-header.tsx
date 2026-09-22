@@ -10,7 +10,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { SITE_NAME, SITE_TAGLINE } from "@/lib/brand";
-import { switchLangHref } from "@/lib/hash-adapter";
+import { otherLang } from "@/lib/i18n";
 import { periodLabel } from "@/lib/period";
 import { barTotal } from "@/lib/rows";
 import type { SeasonBar } from "@/lib/rows";
@@ -71,6 +71,7 @@ export const AppHeader = ({
   sidebarOpen,
   onToggleSidebar,
   onOpenScales,
+  otherHref,
 }: {
   /** The chosen half-month; the headline is its counts. */
   bar: SeasonBar;
@@ -80,9 +81,11 @@ export const AppHeader = ({
   sidebarOpen?: boolean;
   onToggleSidebar?: () => void;
   onOpenScales: () => void;
+  /** The same view in the other language (`switchLangHref`). */
+  otherHref: string;
 }) => {
   const { t, lang } = useT();
-  const other = lang === "de" ? "en" : "de";
+  const other = otherLang(lang);
   return (
     <header
       className={cn(
@@ -136,21 +139,12 @@ export const AppHeader = ({
         prefix, with the hash – camera, half-month, selection – carried along
         (`switchLangHref`). A full load on purpose: the page under the other
         prefix is another prerender, and the text of every row changes with
-        it. The href is read at the click, so the link is never stale. */}
+        it. */}
       <Button
         variant="ghost"
         size="sm"
         className="shrink-0 font-semibold tracking-wide uppercase"
-        render={
-          <a
-            href={switchLangHref(other)}
-            hrefLang={other}
-            lang={other}
-            onClick={(e) => {
-              e.currentTarget.href = switchLangHref(other);
-            }}
-          />
-        }
+        render={<a href={otherHref} hrefLang={other} lang={other} />}
         nativeButton={false}
       >
         {other}

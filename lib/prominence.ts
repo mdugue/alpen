@@ -1,3 +1,6 @@
+import { DEFAULT_LANG, vocabOf } from "@/lib/i18n";
+import type { Lang } from "@/lib/i18n";
+
 /**
  * The overview draws by fame, the list draws everything.
  *
@@ -16,9 +19,9 @@
  * fame 3 from 8, fame 2 from 9.5); a dot always appears before its name.
  */
 export const PROMINENCE = [
-  { fromZoom: 0, minFame: 4, word: "berühmte Pässe" },
-  { fromZoom: 7.5, minFame: 3, word: "bekannte Pässe" },
-  { fromZoom: 8.5, minFame: 1, word: null },
+  { fromZoom: 0, level: "famous", minFame: 4 },
+  { fromZoom: 7.5, level: "known", minFame: 3 },
+  { fromZoom: 8.5, level: null, minFame: 1 },
 ] as const;
 
 /**
@@ -38,8 +41,15 @@ export const minzoomOf = (fame: number): number =>
  * The legend line for a zoom: "bekannte Pässe" while the overview is thinned,
  * `null` once every road is drawn and there is nothing to say.
  */
-export const prominenceWord = (zoom: number): string | null =>
-  [...PROMINENCE].toReversed().find((p) => zoom >= p.fromZoom)?.word ?? null;
+export const prominenceWord = (
+  zoom: number,
+  lang: Lang = DEFAULT_LANG,
+): string | null => {
+  const level = [...PROMINENCE]
+    .toReversed()
+    .find((p) => zoom >= p.fromZoom)?.level;
+  return level ? vocabOf(lang).prominence[level] : null;
+};
 
 /**
  * A MapLibre filter that applies the rule: a top-level `step` on the zoom –

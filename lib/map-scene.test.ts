@@ -66,6 +66,7 @@ const REACH: Record<string, [number, number][]> = {
 const input = (extra: Partial<SceneInput> = {}): SceneInput => ({
   env: { coarse: false },
   hovered: null,
+  lang: "de",
   profileCursor: null,
   rows: {
     destination: [],
@@ -273,6 +274,7 @@ describe("hover", () => {
     expect(scene.hover.hull).toBe(REACH.bormio!);
     expect(scene.hover.popup).toEqual({
       anchor: [bormio.lon, bormio.lat],
+      lang: "de",
       name: "Bormio",
       subtitle: null,
       tags: ["hotels"],
@@ -297,6 +299,7 @@ describe("hover", () => {
     expect(scene.hover.hull).toBeNull();
     expect(scene.hover.popup).toEqual({
       anchor: [galibier.lon, galibier.lat],
+      lang: "de",
       name: "Col du Galibier",
       // A road says how high it goes; only a pass keeps its type to itself.
       subtitle: fmtUnit(2642, "m"),
@@ -372,6 +375,7 @@ describe("hover", () => {
     expect(ring[0]![0]).toBeGreaterThan(10.3);
     expect(scene.hover.popup).toEqual({
       anchor: [10, 46],
+      lang: "de",
       name: "Testgebiet",
       subtitle: "1 von 1 Straßen gut",
       tags: [],
@@ -387,6 +391,7 @@ describe("hover", () => {
     expect(scene.hover.mark.features).toEqual([]);
     expect(scene.hover.popup).toEqual({
       anchor: [6.2, 45.2],
+      lang: "de",
       name: "La Marmotte",
       subtitle: "ca. 174 km · 5.000 hm",
       tags: [],

@@ -2,10 +2,12 @@
 
 import type { ReactNode } from "react";
 
+import { useT } from "@/components/i18n";
 import { Rating } from "@/components/rating";
 import { Toggle } from "@/components/ui/toggle";
 import type { Options } from "@/lib/app-state";
 import { thresholdChips } from "@/lib/app-state";
+import { optionText } from "@/lib/filter-summary";
 import { cn, fmt, TOUCH_CONTROL } from "@/lib/utils";
 
 /**
@@ -159,23 +161,27 @@ export const ThresholdChips = ({
   /** How many roads each option would leave; see `FilterChip.count`. */
   count?: (value: number) => number;
 }) => {
+  const { lang } = useT();
   const [[none]] = options as unknown as [[number, string]];
   return (
     <ChipGroup id={id} label={label} hint={hint}>
-      {thresholdChips(options).map(([v, text]) => (
-        <FilterChip
-          key={v}
-          label={text}
-          count={count?.(v)}
-          pressed={value === v}
-          onPressedChange={(on) => onChange(on ? v : none)}
-        >
-          {/* `current`, because the pressed chip's surface *is* the primary
+      {thresholdChips(options).map(([v, option]) => {
+        const text = optionText(option, lang);
+        return (
+          <FilterChip
+            key={v}
+            label={text}
+            count={count?.(v)}
+            pressed={value === v}
+            onPressedChange={(on) => onChange(on ? v : none)}
+          >
+            {/* `current`, because the pressed chip's surface *is* the primary
               colour and a primary bar would vanish on it. */}
-          {scale && <Rating value={v} tone="current" />}
-          {text}
-        </FilterChip>
-      ))}
+            {scale && <Rating value={v} tone="current" />}
+            {text}
+          </FilterChip>
+        );
+      })}
     </ChipGroup>
   );
 };

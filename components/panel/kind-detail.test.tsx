@@ -86,6 +86,7 @@ const modelOf = <K extends DetailModel["kind"]>(kind: K, slug: string) => {
   const model = detailModel({ kind, slug }, data, {
     detail: state,
     hovered: null,
+    lang: "de",
     period: PERIOD,
   });
   // A narrow, not a cast: the fixture has the entity, so the discriminant is
