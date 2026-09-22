@@ -194,16 +194,21 @@ export const useHashAdapter = (
 
   // The selection changed in the app – a row, a marker, the close control –
   // so the path follows it, with the hash carried along: a push without it
-  // would drop the camera and the half-month.
+  // would drop the camera and the half-month. One navigation per change:
+  // the effect re-runs when the count of pushed entries changes, and while
+  // the push it just made is still on its way the path has not caught up
+  // yet – without the guard that re-run pushed the same route again, and
+  // again (the CI run of the review fixes hung on exactly that).
+  const inFlight = useRef<string | null>(null);
   useEffect(() => {
-    if (
-      !loaded ||
-      sameSelection(selectionOf(window.location.pathname), selection)
-    )
+    if (!loaded) return;
+    if (sameSelection(selectionOf(window.location.pathname), selection)) {
+      inFlight.current = null;
       return;
-    // The push is the adapter's whole job, not a redirect: the panel is
-    // already open on the selection, and the layout under the route does not
-    // change – nothing flashes.
+    }
+    const target = selectionKey ?? "/";
+    if (inFlight.current === target) return;
+    inFlight.current = target;
     if (selection && legacy.current) {
       legacy.current = false;
       // oxlint-disable-next-line react-doctor/nextjs-no-client-side-redirect
@@ -228,5 +233,6 @@ export const useHashAdapter = (
     // is compared, in the same tick.
     // oxlint-disable-next-line react/exhaustive-deps
   }, [loaded, selectionKey, router, pushed, setPushed]);
+
   return intent;
 };
