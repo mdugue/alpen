@@ -10,6 +10,7 @@ import routesJson from "@/data/generated/routes.json";
 import passesJson from "@/data/passes.json";
 import toursJson from "@/data/tours.json";
 import townsJson from "@/data/towns.json";
+import type { Selection } from "@/lib/app-state";
 import { membersOf } from "@/lib/destination";
 import type { DestinationMembers } from "@/lib/destination";
 import { DETAIL_ASSET_DIR, detailAssets } from "@/lib/detail-assets";
@@ -20,7 +21,9 @@ import { nearbyTours, townRanges, townReach } from "@/lib/nearby";
 import type { NearbyTours, TownReach } from "@/lib/nearby";
 import type { PageData } from "@/lib/page-data";
 import { profilesWithCoords, valleyElevations } from "@/lib/profile";
+import { SEGMENT } from "@/lib/routes";
 import * as S from "@/lib/schema";
+import type { Entity } from "@/lib/share-text";
 import { passYear, signalsOf, tourYear } from "@/lib/status";
 import type { Signals, Year, Years } from "@/lib/status";
 import type {
@@ -176,6 +179,43 @@ const getYears = (valleys: Record<string, number>): Years => {
 
 export const getPass = (slug: string): Pass | undefined =>
   passes.find((p) => p.slug === slug);
+
+/**
+ * The entity behind a route (plan 02): what `generateMetadata` and the share
+ * image read for one path. A find over a few hundred records, run once per
+ * prerendered page; nothing here drags the derivations in.
+ */
+export const getEntity = (selection: Selection): Entity | undefined => {
+  switch (selection.kind) {
+    case "pass": {
+      const pass = getPass(selection.slug);
+      return pass && { kind: "pass", pass };
+    }
+    case "tour": {
+      const tour = tours.find((t) => t.slug === selection.slug);
+      return tour && { kind: "tour", tour };
+    }
+    case "town": {
+      const town = towns.find((t) => t.slug === selection.slug);
+      return town && { kind: "town", town };
+    }
+    case "destination": {
+      const destination = destinations.find((d) => d.slug === selection.slug);
+      return destination && { destination, kind: "destination" };
+    }
+    default: {
+      return selection.kind satisfies never;
+    }
+  }
+};
+
+/** Every entity route there is, for `generateStaticParams` and the sitemap. */
+export const staticParams = (): { kind: string; slug: string }[] => [
+  ...passes.map((p) => ({ kind: SEGMENT.pass, slug: p.slug })),
+  ...tours.map((t) => ({ kind: SEGMENT.tour, slug: t.slug })),
+  ...towns.map((t) => ({ kind: SEGMENT.town, slug: t.slug })),
+  ...destinations.map((d) => ({ kind: SEGMENT.destination, slug: d.slug })),
+];
 
 /**
  * Everything the page hands the client, as one value.

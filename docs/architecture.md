@@ -81,12 +81,12 @@ flowchart LR
 
 ### The four adapters, and the three hooks beside them
 
-| Adapter                                                      | World                                                   |
-| ------------------------------------------------------------ | ------------------------------------------------------- |
-| `lib/hash-adapter.ts` (`useHashAdapter`, `cameraIntent`)     | `location.hash` in as `load`, the state out as the hash |
-| `lib/use-stored.ts` (`useStorageAdapter`, `readStoredState`) | `localStorage` and `sessionStorage`, behind `STORAGE`   |
-| `components/map/apply-scene.ts`, `apply-camera.ts`           | MapLibre: the scene's difference, the camera's commands |
-| `lib/use-fetch.ts` (through `lib/detail-state.ts`)           | `fetch`, as the three answers a request can give        |
+| Adapter                                                      | World                                                                                                 |
+| ------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------- |
+| `lib/hash-adapter.ts` (`useHashAdapter`, `cameraIntent`)     | the address bar: path and hash in as `load`, the selection out as `router.push`, the rest as the hash |
+| `lib/use-stored.ts` (`useStorageAdapter`, `readStoredState`) | `localStorage` and `sessionStorage`, behind `STORAGE`                                                 |
+| `components/map/apply-scene.ts`, `apply-camera.ts`           | MapLibre: the scene's difference, the camera's commands                                               |
+| `lib/use-fetch.ts` (through `lib/detail-state.ts`)           | `fetch`, as the three answers a request can give                                                      |
 
 Three more hooks touch the platform and are on the same allow-list, because
 they read it rather than decide anything with it: `lib/use-media-query.ts`
@@ -173,22 +173,45 @@ would mean a filter counting wrong for a moment (see
 
 ### Cache Components
 
-`"use cache"` sits on `app/page.tsx`, and that is the only place it sits.
-Everything the page shows comes from JSON imported at build time, so
-`lib/data.ts` is plain synchronous code: the page's own cache entry covers the
-derivations it runs – the asset URLs, the reachable tours, the town hulls, the
-graded year of every pass – and they are run once, at prerender. The getters
-used to carry a `"use cache"` each. None of them had a lifetime, a tag or a
-second caller, so the only thing the extra entries bought was a second copy of
-the same values in the cache store; `next build` reports `○ /` either way.
-(The weather route is the other cached thing, and it is cached for a reason of
-its own: an upstream call per pass per hour. See below.)
+`"use cache"` sits on `app/(explorer)/layout.tsx`, and that is the only place
+it sits on the page's path. Everything the explorer shows comes from JSON
+imported at build time, so `lib/data.ts` is plain synchronous code: the
+layout's own cache entry covers the derivations it runs – the asset URLs, the
+reachable tours, the town hulls, the destination membership, the graded year
+of every pass – and they are run once, at prerender. The getters used to
+carry a `"use cache"` each. None of them had a lifetime, a tag or a second
+caller, so the only thing the extra entries bought was a second copy of the
+same values in the cache store; `next build` reports `○` either way. (The
+weather is the other cached thing, and it is cached for a reason of its own:
+an upstream call per pass per hour. See below.)
 
 A `"use cache"` function has to be `async` even where it awaits nothing, which
-is why `app/page.tsx` is async and carries the one `require-await` exception in
+is why the layout is async and carries the one `require-await` exception in
 `oxlint.config.ts`. Introducing `cookies()`, `headers()` or `searchParams`
 breaks prerendering – put such things in a separate dynamic child component
 inside `<Suspense>` instead.
+
+### The explorer is a layout, and every entity is a route
+
+Since plan 02 the explorer is `app/(explorer)/layout.tsx`, and under it lie
+the start page (`/`, an empty detail slot) and one dynamic segment,
+`[kind]/[slug]`, prerendered for every pass, tour, town and destination
+(`generateStaticParams` from `staticParams` in `lib/data.ts`; an unknown
+path is `notFound()`, since Cache Components allow no `dynamicParams`). The segment words are
+`lib/routes.ts` (`SEGMENT`, `hrefFor`, `selectionOf`): `/pass/x`, `/tour/x`,
+`/ort/x`, `/ziel/x`. Each route carries its own title, description
+(`lib/share-text.ts`) and share image (the dot map from `lib/share-image.tsx`
+with the entity ringed), and the sitemap lists them all.
+
+The layout persists across those routes, so the map, the lists and their
+state stay mounted; what the child page renders is a _slot_ the explorer hands
+to the panel (`children` → `DetailPanel` → `PassDetail`), and a pass's slot
+is its forecast, streamed into a Suspense hole (`components/panel/weather.tsx`).
+The slot checks its slug against the selection (`WeatherSlot`), so pass A's
+weather is never shown under pass B's name while B's page is still on its
+way. The selection itself does not come from the page: it is a case of the
+reducer as before, and the address-bar adapter turns the path into `select`
+and `back` and the state into `router.push` – see the adapters table.
 
 ### React Compiler is on
 
@@ -219,27 +242,31 @@ to fetch a page to see that.
 
 ## The one dynamic route lives inside a free tier, and the numbers are in the file
 
-`app/api/weather/[slug]` is the only thing a visitor can spend somebody's quota
+The forecast (`lib/weather.ts`, streamed by `components/panel/weather.tsx`
+into the pass route) is the only thing a visitor can spend somebody's quota
 on. Open-Meteo's non-commercial allowance is 10 000 calls a day, so the worst
 case has to be computed rather than hoped for: one cached call per pass per
-window, 201 passes, which is why the window is an hour (≈ 4 800/day) and not
-the half hour it was (≈ 9 600/day). Three rules follow. A window that gets
-shorter has to be checked against that product again. A successful answer
-carries `s-maxage`, so the repeats inside a window are served by the CDN and
-not by the function. And a failure is never left to each visitor to retry: a
-thrown forecast is not cached, so a rate limit or an outage would arrive
-undamped, and a module-level cooldown bounds what one warm instance will ask.
-That cooldown sits _inside_ the cached function, where a cache hit never
-reaches it – one failing pass must not blank the weather of the other 200 – and
-it is armed wherever the host fails it – the fetch, the status, an answer this
-route cannot read – rather than in the handler, or it would re-arm on its own
-rejection and never end. What Open-Meteo has no value for is a `null`, and it
-stays one cell wide: `WeatherDay` takes a null measurement and the panel prints
-a dash for it, because a week with one empty snowfall is still a forecast and
-losing all seven days over it is not a trade anybody would make. It cannot be helped along at the edge:
-Vercel's CDN stores only 200, 404, 410 and the redirects, so a `Cache-Control`
-on a 502 is inert, and dressing a failure as a 200 to make it cacheable is not
-worth the lie. The 404 for an unknown slug _is_ cacheable and says so. The same
+window, 262 passes, which is why the window is an hour (≈ 6 300/day) and not
+a half hour (≈ 12 600/day). Three rules follow. A window that gets shorter
+has to be checked against that product again. The forecast is never part of
+a prerender – `connection()` comes first, so `next build` asks Open-Meteo for
+nothing and a page never bakes in a week-old "heute" – and a visit inside a
+window is answered from the cache entry, not from the host. And a failure is
+never left to each visitor to retry: a thrown forecast is not cached, so a
+rate limit or an outage would arrive undamped, and a module-level cooldown
+bounds what one warm instance will ask. That cooldown sits _inside_ the
+cached function, where a cache hit never reaches it – one failing pass must
+not blank the weather of the other 261 – and it is armed wherever the host
+fails it – the fetch, the status, an answer this cannot read – rather than in
+the caller, or it would re-arm on its own rejection and never end. What
+Open-Meteo has no value for is a `null`, and it stays one cell wide:
+`WeatherDay` takes a null measurement and the panel prints a dash for it,
+because a week with one empty snowfall is still a forecast and losing all
+seven days over it is not a trade anybody would make. A failure is rendered
+as "Wetter nicht verfügbar" in the block's place, never thrown into the
+page. Until plan 02 this was `app/api/weather/[slug]/route.ts` with
+`s-maxage` for the CDN; the function is the same, the transport is the page.
+The same
 arithmetic is why the app is non-commercial in both senses: ads or affiliate
 links would break Vercel's Hobby terms and Open-Meteo's free tier in the same
 move. Donations would not, which is why the sidebar footer links to Ko-fi

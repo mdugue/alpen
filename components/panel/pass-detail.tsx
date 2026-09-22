@@ -12,7 +12,7 @@ import {
 import { ExternalLinks, Nearby } from "@/components/panel/nearby";
 import { Section } from "@/components/panel/section";
 import { VerdictBox } from "@/components/panel/verdict-box";
-import { WeatherForecast } from "@/components/panel/weather-forecast";
+import { WeatherSkeleton } from "@/components/panel/weather-forecast";
 import { Rating } from "@/components/rating";
 import { TagBadges } from "@/components/tags";
 import {
@@ -99,9 +99,12 @@ const profileLine = (profile: ProfileWithCoords, traverse: boolean) =>
 export const PassDetail = ({
   model,
   actions,
+  weather,
 }: {
   model: PassModel;
   actions: PanelActions;
+  /** The forecast the pass's route streamed in; absent until it has arrived. */
+  weather?: React.ReactNode;
 }) => {
   const { bucket, pass, period } = model;
   const profiles = profilesOf(model.detail);
@@ -228,7 +231,10 @@ export const PassDetail = ({
         info="Vorhersage von Open-Meteo für die Passhöhe, sieben Tage."
         title="Aktuelles Wetter"
       >
-        <WeatherForecast slug={pass.slug} />
+        {/* Rendered on the server for this pass's route and streamed in
+            (`components/panel/weather.tsx`); until the route's payload has
+            arrived the block shows what it will look like. */}
+        {weather ?? <WeatherSkeleton />}
       </Section>
 
       <Section

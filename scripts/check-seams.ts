@@ -36,7 +36,7 @@ const SEAMS: Seam[] = [
     spelling: /\blocation\.hash\b/u,
     through: {
       "lib/hash-adapter.ts":
-        "the hash adapter: the link in as a `load` action, the state out as `history.replaceState`",
+        "the address-bar adapter: the path and the hash in as a `load` action, the selection out as `router.push`, the rest as `history.replaceState`",
     },
     world: "the address bar",
   },

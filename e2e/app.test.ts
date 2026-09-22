@@ -99,7 +99,13 @@ test("2 · selecting a pass opens the detail panel, Escape returns focus to the 
     await page.press("Enter");
     await page.waitFor("#detail-title");
     expect(await page.text("#detail-title")).toBe("Col du Galibier");
-    expect(await page.hash()).toContain("pass=col-du-galibier");
+    // The selection is the path (plan 02); the hash carries the rest. The
+    // push is a transition, so it lands a moment after the panel.
+    await waitUntil(
+      async () => (await page.path()) === "/pass/col-du-galibier",
+      "the pass's route",
+    );
+    expect(await page.hash()).not.toContain("pass=");
     // The profiles are not in the page: the panel fetches the selected
     // entity's file from `public/detail` (lib/detail-assets.ts). The title
     // is there immediately, the profile a request later.
@@ -120,7 +126,7 @@ test("2 · selecting a pass opens the detail panel, Escape returns focus to the 
       async () => (await page.activeRow()) === "pass:col-du-galibier",
       "focus back on the row",
     );
-    expect(await page.hash()).not.toContain("pass=");
+    expect(await page.path()).toBe("/");
   }));
 
 test("3 · a shared link restores selection, period and camera", () =>
@@ -129,8 +135,17 @@ test("3 · a shared link restores selection, period and camera", () =>
     "shared-link",
     { hash: "#pass=col-du-galibier&t=6&z=9&c=45.06,6.41" },
     async (page) => {
+      // A link from before the routes: the selection it carries is applied
+      // and the address bar moves to the pass's own path, the rest of the
+      // hash kept (`useHashAdapter`, lib/hash-adapter.ts).
       await page.waitFor("#detail-title");
       expect(await page.text("#detail-title")).toBe("Col du Galibier");
+      await waitUntil(
+        async () => (await page.path()) === "/pass/col-du-galibier",
+        "the old link moved over to the route",
+      );
+      expect(await page.hash()).not.toContain("pass=");
+      expect(await page.hash()).toContain("t=6");
       await page.waitForAttribute(SLIDER, "aria-valuetext", /^Anfang Juni:/u);
 
       // The link carries a camera as well – the app writes one into every
@@ -254,8 +269,46 @@ test("5 · nothing covers the map until it is asked for; list and detail stack",
     await page.click(BACK_TO_LIST);
     await page.waitForGone("#detail-title");
     await page.waitFor(PASS_ROW);
-    expect(await page.hash()).not.toContain("pass=");
+    expect(await page.path()).toBe("/");
   }));
+
+test("5b · an entity route is a page of its own, and the back button closes it", () =>
+  withPage(
+    app,
+    "entity-route",
+    { hash: "pass/col-du-galibier#t=6" },
+    async (page) => {
+      // A direct visit: prerendered with the pass's own title, and the panel
+      // open on it without a hash saying so.
+      await page.waitFor("#detail-title");
+      expect(await page.text("#detail-title")).toBe("Col du Galibier");
+      expect(await page.evaluate<string>("document.title")).toContain(
+        "Col du Galibier",
+      );
+      expect(await page.path()).toBe("/pass/col-du-galibier");
+      // A second selection is a history entry, so back returns to the first …
+      await showRoads(page);
+      await page.click('[data-row="pass:passo-dello-stelvio"]');
+      await waitUntil(
+        async () => (await page.path()) === "/pass/passo-dello-stelvio",
+        "the second pass's route",
+      );
+      await page.back();
+      await waitUntil(
+        async () => (await page.text("#detail-title")) === "Col du Galibier",
+        "the first pass again after back",
+      );
+      // … and closing the panel now goes forward to the start page rather than
+      // back out of the site: the entry behind this one is not the app's.
+      await page.click('[aria-label="Details schließen"]');
+      await page.waitForGone("#detail-title");
+      await waitUntil(
+        async () => (await page.path()) === "/",
+        "the start page",
+      );
+      expect(await page.hash()).toContain("t=6");
+    },
+  ));
 
 test("6 · a stored half-month is applied, a shared link beats it", () =>
   withPage(app, "stored-period", {}, async (page) => {

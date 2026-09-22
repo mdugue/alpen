@@ -48,6 +48,7 @@ export const DetailPanel = ({
   hovered,
   favorite,
   actions,
+  weather,
 }: {
   selection: Selection;
   /** Everything the page loaded, plus the index the explorer already holds. */
@@ -57,6 +58,8 @@ export const DetailPanel = ({
   hovered: Selection | null;
   favorite: boolean;
   actions: PanelActions;
+  /** The pass page's streamed forecast, shown in the weather block (plan 02). */
+  weather?: React.ReactNode;
 }) => {
   const panel = useRef<HTMLElement>(null);
   const scroller = useRef<HTMLDivElement>(null);
@@ -221,7 +224,7 @@ export const DetailPanel = ({
             </p>
           )}
           {model.kind === "pass" && (
-            <PassDetail actions={actions} model={model} />
+            <PassDetail actions={actions} model={model} weather={weather} />
           )}
           {model.kind === "tour" && (
             <TourDetail actions={actions} model={model} />

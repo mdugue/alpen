@@ -4,7 +4,7 @@ import { getPageData } from "@/lib/data";
 import { todayPeriod } from "@/lib/period";
 
 /**
- * Structured data for the map page. Deliberately without ratings or reviews:
+ * Structured data for the map. Deliberately without ratings or reviews:
  * the 1–5 scales are editorial judgements (docs/scales.md) and must not show up
  * as measured values in a search result either.
  */
@@ -28,26 +28,31 @@ const jsonLd = {
 };
 
 /**
- * Everything on this page is static: the data lives in the repo and is loaded
+ * The explorer is a layout, not a page (plan 02): the map, the lists and the
+ * season bar stay mounted while the path under it changes from `/` to
+ * `/pass/x` and back, and the child page only fills the detail slot – for a
+ * pass, the weather streamed into a Suspense hole. `children` passes through
+ * the `"use cache"` untouched, which is what lets the layout be prerendered
+ * once for every entity route.
+ *
+ * Everything else here is static: the data lives in the repo and is loaded
  * at build time (lib/data.ts), and this `"use cache"` is the one boundary that
- * covers it – which lets Next prerender the page completely. The only dynamic
- * part is the weather request in the detail panel (own route with its own
- * cache lifetime).
- * Neither the route geometry nor the profiles and photos are part of the page:
- * MapLibre fetches the lines as static GeoJSON (`public/map`) and the panel
- * fetches the selected entity's detail file (`public/detail`); the page only
- * carries the URLs.
+ * covers it – which lets Next prerender the layout completely. Neither the
+ * route geometry nor the profiles and photos are part of it: MapLibre fetches
+ * the lines as static GeoJSON (`public/map`) and the panel fetches the
+ * selected entity's detail file (`public/detail`); the page only carries the
+ * URLs.
  *
  * The map is the page: no header, no footer – the title lives in the sidebar
  * and the disclaimer in the scales dialog.
  *
  * The half-month the app opens on is computed here, in Europe/Berlin: the
- * cached page is revalidated within 15 minutes, so the prerendered HTML is
+ * cached layout is revalidated within 15 minutes, so the prerendered HTML is
  * never more than that behind the calendar and the first paint shows no flash
  * of some other period. A hash or the visitor's stored choice wins over it in
  * the client (see `Explorer`).
  */
-const Page = async () => {
+const ExplorerLayout = async ({ children }: { children: React.ReactNode }) => {
   "use cache";
 
   const data = getPageData();
@@ -71,9 +76,11 @@ const Page = async () => {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <Explorer data={data} defaultPeriod={todayPeriod()} />
+      <Explorer data={data} defaultPeriod={todayPeriod()}>
+        {children}
+      </Explorer>
     </main>
   );
 };
 
-export default Page;
+export default ExplorerLayout;

@@ -1,12 +1,13 @@
 import type { MetadataRoute } from "next";
 
 import { siteUrl } from "@/lib/brand";
+import { staticParams } from "@/lib/data";
 
 /**
- * The app is a single page – filters, period and selection live in the URL
- * fragment, which crawlers neither see nor need. So the sitemap has exactly one
- * entry, plus the share image so it can be picked up as an image result. Once
- * entities get real routes (`docs/plans/02-real-routes.md`), they belong here.
+ * The start page and one entry per entity route (plan 02): every pass, tour,
+ * town and destination has its own prerendered path with its own share
+ * image, and this is where a crawler is told so. Filters, period and camera
+ * live in the URL fragment, which crawlers neither see nor need.
  *
  * /impressum and /datenschutz are deliberately missing: they are `noindex`
  * (see their metadata), and a sitemap is a request to index.
@@ -25,5 +26,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 1,
       url: siteUrl,
     },
+    ...staticParams().map(({ kind, slug }) => ({
+      changeFrequency: "monthly" as const,
+      images: [`${siteUrl}/${kind}/${slug}/opengraph-image`],
+      lastModified: BUILD_TIME,
+      priority: kind === "ziel" ? 0.8 : 0.6,
+      url: `${siteUrl}/${kind}/${slug}`,
+    })),
   ];
 }

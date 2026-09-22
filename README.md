@@ -53,19 +53,30 @@ and the climate series are missing.
 
 All content data lives as JSON in the repo (`data/`), is imported at build
 time and read synchronously in `lib/data.ts` inside the one `"use cache"` on
-`app/page.tsx` – the start page is therefore fully prerendered. Two kinds of data never become
+`app/(explorer)/layout.tsx` – the start page and every entity route under it
+are therefore fully prerendered. Two kinds of data never become
 React props: the route geometry, written as content-hashed GeoJSON into
 `public/map` for MapLibre to fetch and tile in its worker, and what only one
 entity's panel reads (its elevation profiles and photo metadata), written as
 one content-hashed JSON per entity into `public/detail`; every later change of
 period, filter or selection reaches the lines as feature state rather than as
 new data. The
-only dynamic source is the weather forecast; it goes through
-`app/api/weather/[slug]/route.ts` with its own cache lifetime so Open-Meteo is
-queried once per pass and hour instead of once per visitor. All
-interaction state lives in one client component (`components/explorer.tsx`)
-and is mirrored into the URL hash, so every view is shareable (plan 02 in
-`docs/plans/` moves entities to real routes).
+only dynamic source is the weather forecast; it is streamed into the pass
+route with its own cache lifetime (`lib/weather.ts`) so Open-Meteo is
+queried once per pass and hour instead of once per visitor. The selection is
+the path and everything else is the hash, so every view is shareable and the
+back button closes the panel:
+
+```
+https://alpen.manuel.fyi/pass/col-du-galibier#t=10&z=9&c=45.06,6.41
+                        └── selection ──┘ └ period ┘ └── camera ──┘
+```
+
+Every pass, tour, town and destination is a prerendered route with its own
+title, description and share image (`app/(explorer)/[kind]/[slug]`); the
+layout around it – map, lists, season bar – stays mounted while the path
+changes (`lib/hash-adapter.ts` turns the path into the reducer's `select` and
+`back`, and the state into `router.push`).
 
 ```mermaid
 flowchart LR
@@ -84,8 +95,9 @@ what each command writes and the states a route passes through – is
 [`docs/data-pipeline.md`](./docs/data-pipeline.md).
 
 ```
-app/            layout, start page, weather route, Impressum, Datenschutz,
-                metadata routes (icons, share image, manifest, robots, sitemap)
+app/            layout, the explorer layout with the start page and the
+                entity routes, Impressum, Datenschutz, metadata routes
+                (icons, share images, manifest, robots, sitemap)
 components/     explorer (state) · map (MapLibre) · sidebar (lists, filters) · panel (detail) · ui (shadcn)
 data/           passes.json, tours.json, towns.json  ← source data, hand-maintained
 data/generated/ summits, routes, routes-meta, rejected, profiles, climate, photos

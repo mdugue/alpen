@@ -140,9 +140,16 @@ export default defineConfig({
     // (`window.addEventListener`), which `checkGlobalObject` would otherwise
     // read as a way around every other name.
     {
-      // The hash: `location.hash` in, `history.replaceState` out.
+      // The address bar: the path and `location.hash` in, `router.push` and
+      // `history.replaceState` out.
       files: ["lib/hash-adapter.ts"],
       rules: except("history", "location", "window"),
+    },
+    {
+      // The one upstream call the app makes, server-only: Open-Meteo, inside
+      // the cached `forecast` with its quota arithmetic and cooldown.
+      files: ["lib/weather.ts"],
+      rules: except("fetch"),
     },
     {
       // `localStorage` and `sessionStorage`, behind the `STORAGE` table.
@@ -247,8 +254,8 @@ export default defineConfig({
     {
       // The JSON-LD block is the one sanctioned use of the prop. And a
       // `"use cache"` function has to be async even where it awaits nothing:
-      // the page's data is imported JSON, read synchronously (lib/data.ts).
-      files: ["app/page.tsx"],
+      // the layout's data is imported JSON, read synchronously (lib/data.ts).
+      files: ["app/(explorer)/layout.tsx"],
       rules: { "react/no-danger": "off", "require-await": "off" },
     },
   ],

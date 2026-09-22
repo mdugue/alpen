@@ -5,6 +5,7 @@ import { useReducer, useRef, useState } from "react";
 import { AppHeader } from "@/components/app-header";
 import { PassMap } from "@/components/map/pass-map";
 import { DetailPanel } from "@/components/panel/detail-panel";
+import { SelectionContext } from "@/components/panel/weather-slot";
 import { ScalesDialog } from "@/components/scales-dialog";
 import { SeasonBand } from "@/components/season-band";
 import { Shell } from "@/components/shell";
@@ -46,6 +47,12 @@ interface Props {
   data: PageData;
   /** Today's half-month, computed on the server in Europe/Berlin. */
   defaultPeriod: Period;
+  /**
+   * The entity page under the layout (plan 02): what the server rendered for
+   * the path – a pass's streamed weather – shown in the panel's own block.
+   * `null` on the start page.
+   */
+  children?: React.ReactNode;
 }
 
 /**
@@ -55,7 +62,7 @@ interface Props {
  * (components/shell.tsx). What is left here is the rows, the sentences they
  * are counted into, and the wiring of `dispatch` into each part.
  */
-export const Explorer = ({ data, defaultPeriod }: Props) => {
+export const Explorer = ({ data, defaultPeriod, children }: Props) => {
   const {
     assets,
     climate,
@@ -176,126 +183,130 @@ export const Explorer = ({ data, defaultPeriod }: Props) => {
 
   return (
     <TooltipProvider delay={400}>
-      <Shell
-        mobile={isMobile}
-        sidebarOpen={sidebarOpen}
-        selection={selection}
-        last={last}
-        sheet={sheet}
-        dispatch={dispatch}
-        onBack={back}
-        listRef={sidebarRoot}
-        map={(inset) => (
-          /* What the list shows for a kind is what the map shows for that
+      <SelectionContext.Provider value={selection}>
+        <Shell
+          mobile={isMobile}
+          sidebarOpen={sidebarOpen}
+          selection={selection}
+          last={last}
+          sheet={sheet}
+          dispatch={dispatch}
+          onBack={back}
+          listRef={sidebarRoot}
+          map={(inset) => (
+            /* What the list shows for a kind is what the map shows for that
              kind; the visibility switches only add a layer toggle on top,
              and `buildScene` (lib/map-scene.ts) reads both. */
-          <PassMap
-            rows={rows}
-            shown={shown}
-            townReach={townReach}
-            assets={assets}
-            destinationBounds={destinationBounds}
-            selection={selection}
-            hovered={hovered}
-            onHover={hover}
-            onSelect={select}
-            onViewChange={(view) => dispatch({ type: "view", view })}
-            intent={intent}
-            profileCursor={profileCursor}
-            profileZoom={profileZoom}
-            requestedFit={requestedFit}
-            requestedView={requestedView}
-            inset={inset}
-            env={mapEnv}
-          />
-        )}
-        header={
-          <AppHeader
-            bar={bar}
-            where={rangeWord(filters)}
-            sidebarOpen={isMobile ? undefined : sidebarOpen}
-            onToggleSidebar={
-              isMobile ? undefined : () => setSidebarOpen(!sidebarOpen)
-            }
-            onOpenScales={() => setScalesOpen(true)}
-          />
-        }
-        band={
-          <>
-            <SeasonBand
-              band={band}
-              bar={bar}
-              today={defaultPeriod}
-              onChange={(period) => dispatch({ period, type: "period" })}
-              legend={!isMobile}
+            <PassMap
+              rows={rows}
+              shown={shown}
+              townReach={townReach}
+              assets={assets}
+              destinationBounds={destinationBounds}
+              selection={selection}
+              hovered={hovered}
+              onHover={hover}
+              onSelect={select}
+              onViewChange={(view) => dispatch({ type: "view", view })}
+              intent={intent}
+              profileCursor={profileCursor}
+              profileZoom={profileZoom}
+              requestedFit={requestedFit}
+              requestedView={requestedView}
+              inset={inset}
+              env={mapEnv}
             />
-            <div className="flex gap-2 lg:hidden">
-              <Button
-                className="flex-1"
-                onClick={() =>
-                  dispatch({ filters: false, open: true, type: "list" })
-                }
-              >
-                {KIND_LABEL[tab]} ({fmt(rows[tab].length)})
-              </Button>
-              <Button
-                variant="outline"
-                className="flex-1"
-                onClick={() =>
-                  dispatch({ filters: true, open: true, type: "list" })
-                }
-              >
-                Filter
-                {activeFilters > 0 && (
-                  <Badge variant="secondary">{activeFilters}</Badge>
-                )}
-              </Button>
-            </div>
-          </>
-        }
-        sidebar={(variant) => (
-          <Sidebar
-            variant={variant}
-            filters={filters}
-            rows={rows}
-            compare={compare}
-            totals={{
-              destination: destinations.length,
-              pass: passes.length,
-              tour: tours.length,
-              town: towns.length,
-            }}
-            countWith={countWith}
-            ranges={ranges}
-            onRange={(range) => dispatch({ range, type: "range" })}
-            shown={shown}
-            tab={tab}
-            selection={selection}
-            hovered={hovered}
-            dispatch={dispatch}
-            onToggleFavorite={toggleFavorite}
-            onOpenScales={() => setScalesOpen(true)}
-            filtersOpen={sheet.filters}
-          />
-        )}
-        detail={(sel) => (
-          <DetailPanel
-            selection={sel}
-            data={{ ...data, passIndex, townIndex }}
-            period={filters.period}
-            hovered={hovered}
-            favorite={isFavorite(sel.kind, sel.slug)}
-            actions={{
-              onBack: back,
-              onHover: hover,
-              onProfileCursor: (at) => dispatch({ at, type: "profileCursor" }),
-              onProfileZoom: (at) => dispatch({ at, type: "profileZoom" }),
-              onSelect: select,
-              onToggleFavorite: () => toggleFavorite(sel.kind, sel.slug),
-            }}
-          />
-        )}
-      />
+          )}
+          header={
+            <AppHeader
+              bar={bar}
+              where={rangeWord(filters)}
+              sidebarOpen={isMobile ? undefined : sidebarOpen}
+              onToggleSidebar={
+                isMobile ? undefined : () => setSidebarOpen(!sidebarOpen)
+              }
+              onOpenScales={() => setScalesOpen(true)}
+            />
+          }
+          band={
+            <>
+              <SeasonBand
+                band={band}
+                bar={bar}
+                today={defaultPeriod}
+                onChange={(period) => dispatch({ period, type: "period" })}
+                legend={!isMobile}
+              />
+              <div className="flex gap-2 lg:hidden">
+                <Button
+                  className="flex-1"
+                  onClick={() =>
+                    dispatch({ filters: false, open: true, type: "list" })
+                  }
+                >
+                  {KIND_LABEL[tab]} ({fmt(rows[tab].length)})
+                </Button>
+                <Button
+                  variant="outline"
+                  className="flex-1"
+                  onClick={() =>
+                    dispatch({ filters: true, open: true, type: "list" })
+                  }
+                >
+                  Filter
+                  {activeFilters > 0 && (
+                    <Badge variant="secondary">{activeFilters}</Badge>
+                  )}
+                </Button>
+              </div>
+            </>
+          }
+          sidebar={(variant) => (
+            <Sidebar
+              variant={variant}
+              filters={filters}
+              rows={rows}
+              compare={compare}
+              totals={{
+                destination: destinations.length,
+                pass: passes.length,
+                tour: tours.length,
+                town: towns.length,
+              }}
+              countWith={countWith}
+              ranges={ranges}
+              onRange={(range) => dispatch({ range, type: "range" })}
+              shown={shown}
+              tab={tab}
+              selection={selection}
+              hovered={hovered}
+              dispatch={dispatch}
+              onToggleFavorite={toggleFavorite}
+              onOpenScales={() => setScalesOpen(true)}
+              filtersOpen={sheet.filters}
+            />
+          )}
+          detail={(sel) => (
+            <DetailPanel
+              selection={sel}
+              data={{ ...data, passIndex, townIndex }}
+              period={filters.period}
+              hovered={hovered}
+              favorite={isFavorite(sel.kind, sel.slug)}
+              actions={{
+                onBack: back,
+                onHover: hover,
+                onProfileCursor: (at) =>
+                  dispatch({ at, type: "profileCursor" }),
+                onProfileZoom: (at) => dispatch({ at, type: "profileZoom" }),
+                onSelect: select,
+                onToggleFavorite: () => toggleFavorite(sel.kind, sel.slug),
+              }}
+              weather={children}
+            />
+          )}
+        />
+      </SelectionContext.Provider>
 
       <ScalesDialog
         open={scalesOpen}

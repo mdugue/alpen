@@ -33,9 +33,9 @@ const nextConfig: NextConfig = {
       })),
     ),
 
-  // The pass, tour and town data is static and imported at build time;
-  // the only dynamic source is the weather forecast
-  // (see app/api/weather/[slug]/route.ts).
+  // The pass, tour, town and destination data is static and imported at
+  // build time; the only dynamic source is the weather forecast, streamed
+  // into the pass route (see components/panel/weather.tsx, lib/weather.ts).
   // React Compiler: memoises the client components automatically
   reactCompiler: true,
 };

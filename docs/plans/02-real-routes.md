@@ -1,6 +1,16 @@
 # 02 · Real routes instead of the hash
 
-**Status:** proposed · **Effort:** L · **Depends on:** 01 (smaller payload
+**Status:** done (September 2026) – the explorer as a layout, one prerendered
+route per pass, tour, town and destination (`/pass`, `/tour`, `/ort`,
+`/ziel`) with title, description and share image, the address-bar adapter
+pushing the selection and reading it back, the weather streamed into the pass
+route's Suspense hole with `connection()` in front (so a build asks
+Open-Meteo for nothing), the API route gone, old `#pass=` links moved over,
+the sitemap. Deviation, on purpose: the panel's prose is not rendered on the
+server – the model reads the half-month, the hover and the detail file, and
+rendering it a second time would cost a second model for text the route's
+description already carries; the rows stay buttons (the adapter pushes) rather
+than links · **Effort:** L · **Depends on:** 01 (smaller payload
 first, otherwise every prerendered route carries the geometry), 28 and 33
 (the router is an adapter swap rather than a rewrite: the selection is a
 reducer case either way) · **Unblocks:** 08, per-entity share previews,

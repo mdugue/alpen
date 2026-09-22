@@ -34,7 +34,6 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import type { WeatherDay } from "@/lib/types";
-import useFetch from "@/lib/use-fetch";
 import { cn, fmt } from "@/lib/utils";
 
 /**
@@ -68,42 +67,38 @@ const weekday = (date: string) =>
     weekday: "short",
   });
 
+/** What the block looks like while the route's payload is on its way. */
+export const WeatherSkeleton = () => (
+  <div
+    role="status"
+    aria-busy
+    aria-label="Wetter wird geladen"
+    className="flex flex-col gap-1.5 py-1"
+  >
+    <Skeleton className="h-5 w-full" />
+    <Skeleton className="h-5 w-full" />
+  </div>
+);
+
+/** The server could not get a forecast; the rest of the panel is unaffected. */
+export const WeatherUnavailable = () => (
+  <Empty className="py-3">
+    <EmptyHeader>
+      <EmptyTitle>Wetter nicht verfügbar</EmptyTitle>
+      <EmptyDescription>Open-Meteo antwortet gerade nicht.</EmptyDescription>
+    </EmptyHeader>
+  </Empty>
+);
+
 /**
- * Forecast at pass altitude, from our own cached route. The panel is about
- * choosing a destination, not about planning tomorrow's ride: today and
- * tomorrow are shown as two dense rows, the rest of the week stays one click
- * away.
+ * Forecast at pass altitude, rendered on the server for the pass's route and
+ * streamed in (`components/panel/weather.tsx`); this is the table, a client
+ * component only for the fold. The panel is about choosing a destination,
+ * not about planning tomorrow's ride: today and tomorrow are shown as two
+ * dense rows, the rest of the week stays one click away.
  */
-export const WeatherForecast = ({ slug }: { slug: string }) => {
-  const { data, error, loading } = useFetch<{ days: WeatherDay[] }>(
-    `/api/weather/${slug}`,
-  );
-
-  if (loading)
-    return (
-      <div
-        role="status"
-        aria-busy
-        aria-label="Wetter wird geladen"
-        className="flex flex-col gap-1.5 py-1"
-      >
-        <Skeleton className="h-5 w-full" />
-        <Skeleton className="h-5 w-full" />
-      </div>
-    );
-  if (error || !data)
-    return (
-      <Empty className="py-3">
-        <EmptyHeader>
-          <EmptyTitle>Wetter nicht verfügbar</EmptyTitle>
-          <EmptyDescription>
-            Open-Meteo antwortet gerade nicht.
-          </EmptyDescription>
-        </EmptyHeader>
-      </Empty>
-    );
-
-  const [today, tomorrow] = data.days;
+export const WeatherForecast = ({ days }: { days: WeatherDay[] }) => {
+  const [today, tomorrow] = days;
   const rows: [WeatherDay | undefined, string][] = [
     [today, "heute"],
     [tomorrow, "morgen"],
@@ -184,7 +179,7 @@ export const WeatherForecast = ({ slug }: { slug: string }) => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {data.days.map((d) => {
+            {days.map((d) => {
               const [Icon, label] = describe(d.weatherCode) ?? [];
               const snow = d.snowfall ?? 0;
               return (

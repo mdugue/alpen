@@ -295,6 +295,16 @@ export class Page {
     return this.evaluate<string>("location.hash");
   }
 
+  /** The path – since plan 02 the selection: `/pass/col-du-galibier`. */
+  path() {
+    return this.evaluate<string>("location.pathname");
+  }
+
+  /** The browser's back button. */
+  back() {
+    return this.evaluate("history.back()");
+  }
+
   /** `data-row` of the focused element, for the focus-return checks. */
   activeRow() {
     return this.evaluate<string | null>(
