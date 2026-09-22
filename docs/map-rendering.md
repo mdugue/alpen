@@ -33,6 +33,48 @@ what is still owed is applied on `moveend` instead. The panel claims its share
 one commit _before_ the camera sets off, which is what keeps that opening
 still: a padding the map has not applied yet cannot move it.
 
+None of that is a property of the padding: it is a property of what the camera
+is doing at the moment the padding changes. So the rules are one transition
+table, `camera(state, event, env) → [state, commands]` in `lib/map-camera.ts`,
+and `pass-map.tsx` only turns what happens – a selection, a new inset, a shared
+link, `moveend`, the delay timer, the style parsing – into events and hands the
+commands to `applyCamera` (`components/map/apply-camera.ts`), the one place the
+MapLibre camera methods are called. A whole selection is therefore a list of
+events in a unit test, with no WebGL in sight, which is where the traces below
+are pinned (`lib/map-camera.test.ts`).
+
+| State        | Event                    | → State    | Commands                        |
+| ------------ | ------------------------ | ---------- | ------------------------------- |
+| `cold`       | `intent`                 | `cold`     | –                               |
+| `cold`       | `inset`                  | `cold`     | – (collected for the first one) |
+| `cold`       | `ready`                  | `idle`     | `setPadding`, `fitBounds`¹      |
+| `idle`       | `ready` (not yet fitted) | `idle`     | `fitBounds`¹                    |
+| `idle`       | `inset`                  | `idle`     | `easeTo` unless `sameInset`     |
+| `idle`       | `moveend`                | `idle`     | `writeHash`                     |
+| `idle`       | `selection`              | `awaiting` | `schedule`                      |
+| `awaiting`   | `inset`                  | `awaiting` | – (the flight will carry it)    |
+| `awaiting`   | `moveend` (not by hand)  | `awaiting` | – (an older flight landing)     |
+| `awaiting`   | `moveend` (by hand)      | `idle`     | `cancel`, `writeHash`           |
+| `awaiting`   | `selection`              | `awaiting` | `cancel`, `schedule`            |
+| `awaiting`   | `delay`                  | `flying`   | `flyTo`²                        |
+| `flying`     | `inset`                  | `flying`   | – (the flight owns the padding) |
+| `flying`     | `selection`              | `awaiting` | `schedule`                      |
+| `flying`     | `moveend`                | `idle`     | `writeHash`                     |
+| `flying`     | `moveend` (padding owed) | `settling` | `easeTo`                        |
+| `settling`   | `moveend`                | `idle`     | `writeHash`                     |
+| any but cold | `requestedView`          | `idle`     | `cancel`³, `jumpTo`             |
+
+¹ Only with nothing in the link to open on, and only once there is something to
+frame. ² With `easeTo` instead when the map has no frame and no point for the
+selection – what it cannot frame still owes the panel its space. ³ Only when a
+flight was scheduled.
+
+Two of those rows are bugs that the shape of the thing prevents rather than
+fixes. A flight for A landing inside B's delay window settles nothing, so it
+can no longer ease A's leftover padding into the flight B is about to make; and
+the hash is written once per settled flight rather than once per frame the
+camera came to rest on.
+
 ### The panel opens with the tap; the camera follows it
 
 Selecting answers a question about a pass, not about the map, so `DetailPanel`

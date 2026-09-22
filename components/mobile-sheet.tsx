@@ -37,37 +37,64 @@ export const sheetCover = (snap: number, viewportHeight: number) =>
     ? (snap <= 1 ? Math.round(snap * viewportHeight) : snap) + SHEET_INSET_PX
     : 0;
 
-/**
- * Whether the sheet a subtree is in has been pulled all the way up – `true`
- * outside a sheet, where nothing is in the way of a scroll.
- *
- * **The content does not scroll until the sheet is at its topmost snap point.**
- * That is the one rule that makes a sheet over a map draggable at all, and it
- * is what Apple Maps, Komoot and Strava all do. The drag and the scroll are
- * the same gesture, so something has to arbitrate, and Base UI arbitrates the
- * way the platform does: a touch that starts inside a scroll container may
- * swipe the sheet *down* from the scroll top, but a drag *up* always goes to
- * the scroller. On a detail sheet whose top half is a photo that means the
- * sheet could only be enlarged by the 20 px grabber – every other pixel of it
- * scrolled the text instead.
- *
- * Locking the scroll removes the ambiguity rather than dividing the screen up
- * into regions that behave differently: below the top snap point there is no
- * scroll container at all, so the whole sheet is a drag handle, and the
- * gesture that enlarges it is the same one everywhere on it. Once it is up,
- * the content scrolls and a swipe down from its top edge puts it back.
- *
- * It is `overflow: hidden` rather than a handler, because the arbitration
- * happens in the browser's own gesture routing: what is not scrollable is not
- * offered the gesture in the first place.
- */
-const SheetExpanded = createContext(true);
+/** What the sheet a subtree is in knows about itself. */
+export interface SheetState {
+  /**
+   * Whether the sheet has been pulled all the way up – `true` outside a
+   * sheet, where nothing is in the way of a scroll.
+   *
+   * **The content does not scroll until the sheet is at its topmost snap
+   * point.** That is the one rule that makes a sheet over a map draggable at
+   * all, and it is what Apple Maps, Komoot and Strava all do. The drag and
+   * the scroll are the same gesture, so something has to arbitrate, and Base
+   * UI arbitrates the way the platform does: a touch that starts inside a
+   * scroll container may swipe the sheet *down* from the scroll top, but a
+   * drag *up* always goes to the scroller. On a detail sheet whose top half
+   * is a photo that means the sheet could only be enlarged by the 20 px
+   * grabber – every other pixel of it scrolled the text instead.
+   *
+   * Locking the scroll removes the ambiguity rather than dividing the screen
+   * up into regions that behave differently: below the top snap point there
+   * is no scroll container at all, so the whole sheet is a drag handle, and
+   * the gesture that enlarges it is the same one everywhere on it. Once it is
+   * up, the content scrolls and a swipe down from its top edge puts it back.
+   *
+   * It is `overflow: hidden` rather than a handler, because the arbitration
+   * happens in the browser's own gesture routing: what is not scrollable is
+   * not offered the gesture in the first place.
+   */
+  expanded: boolean;
+  /**
+   * This sheet lies on another one, which comes back when it goes away. The
+   * detail panel reads it for the one word on its leftmost control: rendered
+   * inside the list drawer, leaving means going back to the list; over the
+   * bare map it simply closes, and says that instead. Naming the wrong
+   * destination is worse than naming none – and the panel now learns both
+   * facts from the sheet it is in, rather than one from a context and one
+   * from a prop threaded down through the explorer.
+   */
+  over: boolean;
+}
 
-export const useSheetExpanded = () => use(SheetExpanded);
+/**
+ * Two contexts rather than one carrying an object: a provider value that is
+ * built in the render is a new object every frame, and a sheet re-renders on
+ * every drag frame. Both facts are booleans, so they travel as booleans and
+ * are put back together on the reading side.
+ */
+const Expanded = createContext(true);
+const Over = createContext(false);
+
+export const useSheet = (): SheetState => ({
+  expanded: use(Expanded),
+  over: use(Over),
+});
 
 interface Props {
   /** Names the sheet for screen readers and its swipe handle ("… ausklappen"). */
   label: string;
+  /** Rendered inside another sheet, which it stacks on; see `SheetState`. */
+  over?: boolean;
   open: boolean;
   /** A swipe down past the lowest snap point, or Escape: the sheet goes away. */
   onClose: () => void;
@@ -94,6 +121,7 @@ interface Props {
  */
 export const MobileSheet = ({
   label,
+  over = false,
   open,
   onClose,
   snapPoints,
@@ -164,7 +192,9 @@ export const MobileSheet = ({
           <DrawerSwipeHandle className="h-5" />
         </button>
         <div className="flex min-h-0 flex-1 flex-col pb-[env(safe-area-inset-bottom,0px)]">
-          <SheetExpanded value={snap >= top}>{children}</SheetExpanded>
+          <Expanded value={snap >= top}>
+            <Over value={over}>{children}</Over>
+          </Expanded>
         </div>
       </DrawerContent>
     </Drawer>

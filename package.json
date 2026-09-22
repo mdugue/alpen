@@ -12,7 +12,7 @@
     "start": "next start",
     "lint": "ultracite check",
     "lint:fix": "ultracite fix",
-    "test": "bun test lib scripts",
+    "test": "bun test lib scripts components",
     "e2e": "NEXT_PUBLIC_TEST_HOOKS=1 bun run build && bun test e2e",
     "typecheck": "tsc --noEmit",
     "data:build": "bun run scripts/build-data.ts",

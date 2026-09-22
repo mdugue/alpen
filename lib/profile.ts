@@ -1,4 +1,5 @@
 import { haversine } from "@/lib/geo";
+import { ascentKey } from "@/lib/route-key";
 import type {
   ElevationProfile,
   ProfileWithCoords,
@@ -161,9 +162,9 @@ export const profileStats = (dist: number[], ele: number[]) => {
 /**
  * Brings a profile's distance-dependent fields up to date from the route it
  * belongs to, keeping the elevations – which are the part that costs an API
- * call. Used by the `--backfill` migration and whenever a profile cached from
- * an earlier rejection is reused for the very same geometry, so a cached
- * profile can never carry distances the current code would not have written.
+ * call. Used whenever a profile cached from an earlier rejection is reused for
+ * the very same geometry, so a cached profile can never carry distances the
+ * current code would not have written.
  * Returns the profile unchanged when the route no longer has as many sample
  * points as the profile has elevations.
  */
@@ -188,7 +189,7 @@ export const valleyElevations = (
   const out: Record<string, number> = {};
   for (const p of passes) {
     const starts = p.ascents
-      .map((_, i) => profiles[`${p.slug}:${i}`]?.start)
+      .map((_, i) => profiles[ascentKey(p.slug, i)]?.start)
       .filter((e): e is number => typeof e === "number");
     if (starts.length) out[p.slug] = Math.min(...starts);
   }

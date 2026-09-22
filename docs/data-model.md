@@ -278,13 +278,16 @@ change – the script skips everything that already exists.
 Some derivations are computed by a `"use cache"` getter in `lib/data.ts` while
 the page is prerendered, rather than committed next to the measurements: they
 depend on rules and thresholds in `lib/`, so a file would go stale the moment
-one of those changed, with nothing to notice it.
+one of those changed, with nothing to notice it. The page awaits all of them at
+once as `getPageData()`, which is the only exported entry point besides
+`getPass(slug)` – the weather route's, whose cold start must not drag the
+derivations in.
 
 | Getter           | Value                                                                                                             |
 | ---------------- | ----------------------------------------------------------------------------------------------------------------- |
 | `getValleys`     | the lowest ascent start per pass – the elevation the summit climate is taken down to for the heat signal          |
 | `getProfiles`    | the road coordinate of every profile sample (`ProfileWithCoords`), so no route geometry reaches the client        |
-| `getNearbyTours` | which tours run within 60 km of each pass, tour start and town (`lib/nearby.ts`)                                  |
+| `getNearbyTours` | which tours run within reach of each pass, tour start and town, and how near their road comes (`lib/nearby.ts`)   |
 | `getTownReach`   | the area each town reaches, as a hull over its passes                                                             |
 | `getYears`       | the **year of every pass and tour**: 24 cells with status, grade, reasons and the snow note, plus the best window |
 

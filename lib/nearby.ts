@@ -2,6 +2,18 @@ import { convexHull, expandRing, haversine, NEARBY_RADIUS_KM } from "@/lib/geo";
 import { entityKey, tourKey } from "@/lib/route-key";
 import type { LatLon, Pass, RouteGeometry, Tour, Town } from "@/lib/types";
 
+/** One tour within reach of an entity, as the server measured it. */
+export interface NearbyTour {
+  slug: string;
+  /**
+   * Kilometres from the entity to the nearest point of the tour's road. A
+   * tour is a line, so this is the only distance it has – and it is what lets
+   * `lib/reach.ts` band and rank a tour the way it bands a pass, instead of
+   * leaving the one kind of neighbour without a place in the vocabulary.
+   */
+  km: number;
+}
+
 /**
  * Which tours pass within `NEARBY_RADIUS_KM` of each entity, precomputed on
  * the server so the detail panel's "Im Umkreis" list needs no tour geometry
@@ -11,9 +23,10 @@ import type { LatLon, Pass, RouteGeometry, Tour, Town } from "@/lib/types";
  * that had to go.
  *
  * Key: `entityKey` (a tour is measured from its first waypoint, as the panel
- * does); value: tour slugs in `tours.json` order.
+ * does); value: the tours in `tours.json` order, ranked afterwards by whoever
+ * reads them.
  */
-export type NearbyTours = Record<string, string[]>;
+export type NearbyTours = Record<string, NearbyTour[]>;
 
 /** A tour without a routed geometry is judged by its waypoints, as before. */
 const tourLine = (
@@ -22,8 +35,17 @@ const tourLine = (
 ): RouteGeometry =>
   routes[tourKey(tour.slug)] ?? tour.waypoints.map((w) => [w.lat, w.lon]);
 
-const within = (line: RouteGeometry, at: LatLon, km: number) =>
-  line.some(([lat, lon]) => haversine(at, { lat, lon }) <= km);
+/**
+ * How near the road comes, in km – `Infinity` for an empty line. A loop
+ * rather than `Math.min(...)`: a routed tour is thousands of coordinates, and
+ * that many spread arguments is what a call stack is not for.
+ */
+const distanceTo = (line: RouteGeometry, at: LatLon) => {
+  let min = Number.POSITIVE_INFINITY;
+  for (const [lat, lon] of line)
+    min = Math.min(min, haversine(at, { lat, lon }));
+  return min;
+};
 
 export const nearbyTours = (
   passes: readonly Pass[],
@@ -33,8 +55,13 @@ export const nearbyTours = (
   radiusKm = NEARBY_RADIUS_KM,
 ): NearbyTours => {
   const lines = tours.map((t) => [t.slug, tourLine(t, routes)] as const);
-  const near = (at: LatLon) =>
-    lines.filter(([, line]) => within(line, at, radiusKm)).map(([s]) => s);
+  const near = (at: LatLon): NearbyTour[] =>
+    lines
+      .map(([slug, line]) => ({ km: distanceTo(line, at), slug }))
+      // One decimal is as fine as a reach band can read, and the value travels
+      // to every client as part of the page.
+      .filter((t) => t.km <= radiusKm)
+      .map((t) => ({ km: +t.km.toFixed(1), slug: t.slug }));
   const out: NearbyTours = {};
   for (const p of passes) out[entityKey("pass", p.slug)] = near(p);
   for (const t of tours) out[entityKey("tour", t.slug)] = near(t.waypoints[0]!);

@@ -479,35 +479,29 @@ test(
 );
 
 /**
- * Watch how the map re-pads. `setPadding` is a `jumpTo`: it moves the picture
- * by half of what changed, in one frame. Every padding change after the first
- * one therefore rides a camera move instead (`easeTo`/`flyTo` with `padding`),
- * which is the whole of `pass-map.tsx`'s padding effect – so counting calls to
- * `setPadding` asks the question directly.
+ * How often one selection rewrites the address bar, and where the camera and
+ * the sheet end up.
  *
- * Sampling the padding per frame was the older way to ask it, and it cannot be
- * relied on: MapLibre emits one `move` per frame it draws, and a loaded CI
- * runner draws two where a quiet machine draws a dozen. With two samples the
- * first one already sits most of the way to the target, which is what an eased
- * padding looks like when it is sampled late – indistinguishable from the jump
- * the test is about. The frames are still recorded, for the failure shot.
+ * What the padding does on the way there is the camera machine's business and
+ * is pinned by its traces (`camera` in lib/map-camera.ts): that the first
+ * padding is the only one set outright, that a selection's flight carries the
+ * sheet's share rather than jumping to it, and that the hash is written once
+ * when the camera settles. What no unit test can say is whether the app is
+ * wired to that machine at all, which is what is left here.
  */
-const RECORD_PADDING = `(() => {
-  const m = window.__alpen?.map;
-  if (!m) return false;
-  window.__pad = [];
-  window.__jumped = 0;
-  const setPadding = m.setPadding.bind(m);
-  m.setPadding = (...args) => {
-    window.__jumped += 1;
-    return setPadding(...args);
+const RECORD_HASH = `(() => {
+  if (!window.__alpen?.map) return false;
+  window.__writes = [];
+  const replaceState = history.replaceState.bind(history);
+  history.replaceState = (...args) => {
+    window.__writes.push(String(args[2]).replace(/^[^#]*/u, ""));
+    return replaceState(...args);
   };
-  m.on("move", () => window.__pad.push(m.getPadding().bottom));
   return true;
 })()`;
 
 test(
-  "12 · the detail sheet re-pads the map along its flight, not in one frame",
+  "12 · a tap on the map re-pads for the sheet and writes the hash twice",
   () =>
     // A tap on the map itself, with the list sheet on its peek row: the case
     // the padding jumped in, because the sheet in front of the map goes from
@@ -529,7 +523,7 @@ test(
           return !!dot;
         }, "the Galibier drawn, on a map at rest");
 
-        expect(await page.evaluate<boolean>(RECORD_PADDING)).toBe(true);
+        expect(await page.evaluate<boolean>(RECORD_HASH)).toBe(true);
         const before = await page.evaluate<number>(
           "window.__alpen.map.getPadding().bottom",
         );
@@ -537,7 +531,7 @@ test(
         await page.waitFor("#detail-title");
         // The camera leaves the panel the first frames to itself, so "at rest"
         // is not an answer on its own: a camera that has yet to set off reads
-        // exactly like one that has arrived (`SELECT_DELAY` in pass-map.tsx).
+        // exactly like one that has arrived (`SELECT_DELAY`, lib/map-camera.ts).
         // What is waited for is the padding itself – the sheet's more than half
         // the screen, on a map that has stopped moving – in one evaluation, or
         // the flight can start between two reads and satisfy the pair.
@@ -549,8 +543,16 @@ test(
             ),
           "the sheet's padding carried to a camera at rest",
         );
-        // And the camera carried it there rather than jumping to it.
-        expect(await page.evaluate<number>("window.__jumped")).toBe(0);
+        // Two hashes: the selection, and the camera it settles at. Distinct
+        // ones rather than calls, because Next's router echoes every
+        // `replaceState` with the path in front of the same hash – and it is
+        // the camera positions that used to pile up, one per frame the flight
+        // came to rest on.
+        const writes = JSON.parse(
+          await page.evaluate<string>("JSON.stringify(window.__writes)"),
+        ) as string[];
+        expect(new Set(writes).size).toBe(2);
+        expect(writes.at(-1)).toContain("pass=col-du-galibier");
       },
     ),
   TIMEOUT,
@@ -614,27 +616,17 @@ test(
         await page.waitFor("#detail-title");
         expect(await page.text("#detail-title")).toBe("Col du Galibier");
         // … and the camera is the slow half: it sets off once the panel is
-        // there and takes its time getting across the Alps. Flown *and*
-        // landed, in one evaluation: either half alone is also true of a
-        // camera that has not started yet.
+        // there. Only that it sets off is waited for, not that it arrives:
+        // where it arrives is scenario 14, and how long a flight across the
+        // Alps takes over a software GL context is the runner's business
+        // rather than the app's – measured on one machine at three CPU speeds
+        // it landed after 2.6 s, 7.6 s and anywhere between 4.5 s and 17.3 s,
+        // which is what used to make this the one wait in the suite with a
+        // timeout of its own.
         await waitUntil(
-          () =>
-            page.evaluate<boolean>(
-              "window.__flight.length > 0 && !window.__alpen.map.isMoving()",
-            ),
-          "the camera flown and landed on the pass",
-          // Longer than the default, because this is the one wait in the suite
-          // whose length is the machine's rather than the app's: the flight
-          // crosses the Alps over a software GL context, and measured on one
-          // machine at three CPU speeds it lands after 2.6 s, 7.6 s and – at
-          // an eighth of the speed – anywhere between 4.5 s and 17.3 s. The
-          // default 15 s is inside that spread, which is why CI failed here on
-          // a slow runner while the same commit passed locally. The assertions
-          // below are what the test is about and are unchanged; only the
-          // patience is.
-          45_000,
+          () => page.evaluate<boolean>("window.__flight.length > 0"),
+          "the camera on its way to the pass",
         );
-        await page.waitFor('[aria-label^="Höhenprofil:"]');
 
         const flight = await page.evaluate<boolean[]>("window.__flight");
         // The flight happened …

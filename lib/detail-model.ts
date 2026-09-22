@@ -1,0 +1,266 @@
+import type { Selection } from "@/lib/app-state";
+import { basesOf, destinationOf } from "@/lib/destination";
+import type { Bases, Destination } from "@/lib/destination";
+import type { DetailState } from "@/lib/detail-state";
+import type { PageBundle } from "@/lib/page-data";
+import { reachedPasses, reachedTowns, withinReach } from "@/lib/reach";
+import type { Reach, ReachKind } from "@/lib/reach";
+import { ROAD_TYPE } from "@/lib/regions";
+import { entityKey } from "@/lib/route-key";
+import {
+  bestText,
+  cellAt,
+  climateText,
+  inputAt,
+  periodIndex,
+  reasonParagraph,
+  seasonText,
+  signalsOf,
+  tourText,
+} from "@/lib/status";
+import type { Year, YearCell } from "@/lib/status";
+import type {
+  ClimateBucket,
+  ClimateYear,
+  LatLon,
+  Pass,
+  Period,
+  Tour,
+  Town,
+} from "@/lib/types";
+
+/**
+ * What the detail panel shows, as a value.
+ *
+ * The panel was a shell that found the entity, cast it seven times, branched
+ * on its kind three more and handed all nineteen of its props to whichever
+ * branch won – which is why adding a field to what a pass shows meant reading
+ * a thousand lines to find out who else was passing it on
+ * (docs/plans/31-panel-model.md). `detailModel` resolves once and returns one
+ * discriminated value; the three kind modules under `components/panel/` take
+ * their half of it and render markup.
+ *
+ * It is a pure function of the page's data and three pieces of browser state,
+ * all of them arguments: the chosen half-month, what the pointer is over, and
+ * where the entity's detail file has got to. Nothing here reads a hook, a
+ * storage key or the DOM, which is what will let plan 02 render the same model
+ * on the server for an entity page.
+ */
+
+/** Every folding block of the panel, by `Section` id. */
+export type BlockId =
+  | "rating"
+  | "ascents"
+  | "weather"
+  | "climate"
+  | "bases"
+  | "nearby"
+  | "tour-passes"
+  | "destination-passes";
+
+/**
+ * Which blocks each kind shows, in the order it shows them – the table that
+ * used to be three JSX branches. It is also the vocabulary of the fold state:
+ * `Section` takes a `BlockId` and nothing else, so a block that is folded away
+ * keeps its fold across entities because it cannot be spelled two ways.
+ */
+export const BLOCKS: Record<DetailModel["kind"], BlockId[]> = {
+  pass: ["rating", "ascents", "weather", "climate", "bases", "nearby"],
+  tour: ["tour-passes", "nearby"],
+  town: ["destination-passes", "nearby"],
+};
+
+/** What stands over the name in the panel head. */
+const KICKER = {
+  pass: (p: Pass) => `${ROAD_TYPE[p.type].label} · ${p.region} · ${p.country}`,
+  tour: () => "Rundtour",
+  town: (t: Town) => `Rad-Ort · ${t.country}`,
+};
+
+/** What the verdict box reads: the graded year and the two lines beside it. */
+export interface Verdict {
+  year: Year | undefined;
+  /** The best window, as `bestText` writes it; a tour names none. */
+  best: string | null;
+  /** The one sentence under the badge: why the verdict is what it is. */
+  text: string | null;
+}
+
+interface Common {
+  period: Period;
+  /** What the pointer is over, anywhere on screen; every name here lights a mark. */
+  hovered: Selection | null;
+  kicker: string;
+  name: string;
+  detail: DetailState;
+  /**
+   * What else is within reach, minus what this kind's own ranked block already
+   * shows – measured once in `lib/reach.ts` and read two ways.
+   */
+  reach: Reach;
+  blocks: BlockId[];
+}
+
+export interface PassModel extends Common {
+  kind: "pass";
+  pass: Pass;
+  cell: YearCell;
+  verdict: Verdict;
+  /** Every German line the pass panel shows outside the verdict box. */
+  sentences: {
+    season: string;
+    /** The pass's own note, as curated. */
+    note: string;
+    /** The "abgeleitet" paragraph; absent with no climate series. */
+    climate: string | null;
+  };
+  /** The climate series and the bucket of the chosen half-month. */
+  climate: ClimateYear | undefined;
+  bucket: ClimateBucket | null;
+  /** Towns this road could be ridden from, banded and ranked. */
+  bases: Bases;
+}
+
+export interface TourModel extends Common {
+  kind: "tour";
+  tour: Tour;
+  verdict: Verdict;
+  /** The passes of the round, in the tour's own order; unknown slugs are dropped. */
+  members: { pass: Pass; cell: YearCell }[];
+}
+
+export interface TownModel extends Common {
+  kind: "town";
+  town: Town;
+  /** The verdict of a base is the verdict of what it reaches. */
+  destination: Destination;
+}
+
+export type DetailModel = PassModel | TourModel | TownModel;
+
+/** The browser state the model is read for; none of it is reached for here. */
+export interface DetailInput {
+  period: Period;
+  hovered: Selection | null;
+  detail: DetailState;
+}
+
+export const detailModel = (
+  selection: Selection,
+  data: PageBundle,
+  state: DetailInput,
+): DetailModel | null => {
+  const { period } = state;
+  const common = {
+    blocks: BLOCKS[selection.kind],
+    detail: state.detail,
+    hovered: state.hovered,
+    period,
+  };
+  /** The one reach call, with what is fixed for this selection filled in. */
+  const reachOf = (
+    at: LatLon,
+    claimed?: ReachKind[],
+    /** The entity's own slug, where the entity is a point among its own kind. */
+    exclude?: string,
+  ): Reach =>
+    withinReach(at, {
+      claimed,
+      exclude,
+      passes: data.passes,
+      period,
+      tourReach: data.nearbyTours[entityKey(selection)] ?? [],
+      tours: data.tours,
+      towns: data.towns,
+      years: data.years,
+    });
+
+  if (selection.kind === "pass") {
+    const pass = data.passes.find((p) => p.slug === selection.slug);
+    if (!pass) return null;
+    const year = data.years.passes[pass.slug];
+    const cell = cellAt(year, period);
+    const signals = signalsOf(data, pass.slug);
+    const climate = data.climate[pass.slug];
+    const bucket = climate?.[periodIndex(period)] ?? null;
+    return {
+      ...common,
+      // The towns are the pass panel's own ranked block, so the reach leaves
+      // them out rather than listing them again under a second heading.
+      bases: basesOf(
+        reachedTowns(pass, data.towns, data.passes, data.years, period),
+      ),
+      bucket,
+      cell,
+      climate,
+      kicker: KICKER.pass(pass),
+      kind: "pass",
+      name: pass.name,
+      pass,
+      reach: reachOf(pass, ["towns"], pass.slug),
+      sentences: {
+        climate: bucket ? climateText(pass, bucket, signals, period) : null,
+        note: pass.note,
+        season: seasonText(pass),
+      },
+      verdict: {
+        best: bestText(year),
+        text: reasonParagraph(
+          pass,
+          period,
+          cell.reasons,
+          inputAt(signals, period),
+        ),
+        year,
+      },
+    };
+  }
+
+  if (selection.kind === "tour") {
+    const tour = data.tours.find((t) => t.slug === selection.slug);
+    if (!tour) return null;
+    const year = data.years.tours[tour.slug];
+    const cell = cellAt(year, period);
+    return {
+      ...common,
+      kicker: KICKER.tour(),
+      kind: "tour",
+      members: tour.passes
+        .map((slug) => data.passIndex.get(slug))
+        .filter((pass) => pass !== undefined)
+        .map((pass) => ({
+          cell: cellAt(data.years.passes[pass.slug], period),
+          pass,
+        })),
+      name: tour.name,
+      // A tour is a line; the panel has always read its surroundings from the
+      // first waypoint, and the server measured the tours the same way.
+      reach: reachOf(tour.waypoints[0]!),
+      tour,
+      verdict: {
+        best: null,
+        // The passes that hold the tour back come from the cell, not from a
+        // second pass over the members: the sentence and the badge describe
+        // one set.
+        text: tourText(cell, (slug) => data.passIndex.get(slug)?.name),
+        year,
+      },
+    };
+  }
+
+  const town = data.towns.find((t) => t.slug === selection.slug);
+  if (!town) return null;
+  return {
+    ...common,
+    // The passes are the town panel's own ranked block, one fold above.
+    destination: destinationOf(
+      reachedPasses(town, data.passes, data.years, period),
+      period,
+    ),
+    kicker: KICKER.town(town),
+    kind: "town",
+    name: town.name,
+    reach: reachOf(town, ["passes"], town.slug),
+    town,
+  };
+};

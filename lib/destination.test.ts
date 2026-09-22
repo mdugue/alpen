@@ -6,70 +6,9 @@ import {
   destinationText,
   gradeOfBase,
 } from "@/lib/destination";
-import { reachBand, REACH_MAX_KM, reachWeight } from "@/lib/geo";
-import { PERIODS } from "@/lib/status";
-import type { Grade, Year, YearCell, Years } from "@/lib/status";
-import type { Pass, Town } from "@/lib/types";
-
-const cell = (grade: Grade): YearCell => ({
-  grade,
-  reasons: [],
-  snowy: false,
-  status:
-    grade === "closed" ? "closed" : grade === "limited" ? "risky" : "open",
-});
-
-const year = (grade: Grade): Year => ({
-  best: null,
-  cells: PERIODS.map(() => cell(grade)),
-});
-
-/** A pass `km` east of (46, 10); one degree of longitude there is ~77 km. */
-const pass = (slug: string, km: number, extra: Partial<Pass> = {}): Pass =>
-  ({
-    ascents: [],
-    beauty: 3,
-    classicAscent: "",
-    country: "IT",
-    difficulty: 3,
-    elevation: 2000,
-    fame: 3,
-    lat: 46,
-    lon: 10 + km / 77.3,
-    name: slug,
-    note: "",
-    region: "Zentralalpen",
-    season: "",
-    slug,
-    traffic: 3,
-    type: "pass",
-    ...extra,
-  }) as unknown as Pass;
-
-const years = (entries: [string, Grade][]): Years => ({
-  passes: Object.fromEntries(entries.map(([slug, g]) => [slug, year(g)])),
-  tours: {},
-});
-
-describe("reach bands", () => {
-  test("name the distance instead of cutting it", () => {
-    expect(reachBand(5)).toBe("door");
-    expect(reachBand(30)).toBe("day");
-    expect(reachBand(70)).toBe("trip");
-    expect(reachBand(REACH_MAX_KM + 1)).toBeNull();
-  });
-
-  test("the weight falls smoothly and never cliffs", () => {
-    expect(reachWeight(0)).toBe(1);
-    expect(reachWeight(REACH_MAX_KM)).toBe(0);
-    // The old failure mode: 59 km and 61 km were worlds apart. They are now
-    // within a few percent of each other, which is what they should be.
-    expect(Math.abs(reachWeight(59) - reachWeight(61))).toBeLessThan(0.05);
-    // And it is monotone.
-    for (let km = 1; km < REACH_MAX_KM; km += 1)
-      expect(reachWeight(km)).toBeLessThan(reachWeight(km - 1));
-  });
-});
+import { REACH_MAX_KM } from "@/lib/geo";
+import type { Grade } from "@/lib/status";
+import { makePass, makeTown, ORIGIN, PERIOD, yearsOf } from "@/test/fixtures";
 
 /** A cell with `n` rideable passes and nothing else. */
 const counts = (n: number) => ({ best: n, closed: 0, good: 0, limited: 0 });
@@ -100,49 +39,22 @@ describe("gradeOfBase", () => {
 
 describe("destinationAt", () => {
   const passes = [
-    pass("near", 5),
-    pass("day", 30),
-    pass("far", 70),
-    pass("beyond", 120),
+    makePass("near", 5),
+    makePass("day", 30),
+    makePass("far", 70),
+    makePass("beyond", 120),
   ];
-  const y = years([
-    ["near", "best"],
-    ["day", "best"],
-    ["far", "best"],
-    ["beyond", "best"],
-  ]);
-  const d = destinationAt({ lat: 46, lon: 10 }, passes, y, PERIODS[12]!);
+  const years = yearsOf(passes.map((p) => [p.slug, "best"] as [string, Grade]));
+  const d = destinationAt(ORIGIN, passes, years, PERIOD);
 
-  test("stops at the reach, not at the old radius", () => {
+  test("judges what lib/reach.ts measured and nothing further out", () => {
     expect(d.passes.map((r) => r.pass.slug)).toEqual(["near", "day", "far"]);
     expect(d.total).toBe(3);
   });
 
   test("groups by band in order and keeps every reached pass", () => {
     expect(d.bands.map((b) => b.band)).toEqual(["door", "day", "trip"]);
-    expect(d.bands.flatMap((b) => b.passes).length).toBe(d.total);
-  });
-
-  test("ranks the nearer of two equal passes first, without excluding the far one", () => {
-    const i = (slug: string) => d.passes.findIndex((r) => r.pass.slug === slug);
-    expect(i("near")).toBeLessThan(i("day"));
-    expect(i("day")).toBeLessThan(i("far"));
-  });
-
-  test("a better far pass can still out-rank a dull near one", () => {
-    const mixed = destinationAt(
-      { lat: 46, lon: 10 },
-      [
-        pass("dull", 5, { beauty: 1, fame: 1 }),
-        pass("gem", 60, { beauty: 5, fame: 5 }),
-      ],
-      years([
-        ["dull", "best"],
-        ["gem", "best"],
-      ]),
-      PERIODS[12]!,
-    );
-    expect(mixed.passes[0]!.pass.slug).toBe("gem");
+    expect(d.bands.flatMap((b) => b.items)).toHaveLength(d.total);
   });
 
   test("the derived year has one cell per half-month", () => {
@@ -150,7 +62,7 @@ describe("destinationAt", () => {
   });
 
   test("a base with nothing near says so", () => {
-    const empty = destinationAt({ lat: 0, lon: 0 }, passes, y, PERIODS[12]!);
+    const empty = destinationAt({ lat: 0, lon: 0 }, passes, years, PERIOD);
     expect(empty.total).toBe(0);
     expect(destinationText(empty)).toContain("Kein Pass");
   });
@@ -160,35 +72,18 @@ describe("destinationAt", () => {
   });
 });
 
-/** A town `km` east of (46, 10). */
-const town = (slug: string, km: number): Town =>
-  ({
-    country: "IT",
-    lat: 46,
-    lon: 10 + km / 77.3,
-    name: slug,
-    slug,
-    tags: [],
-    why: "",
-  }) as unknown as Town;
-
 describe("basesFor", () => {
-  // Two candidate bases for a road at the origin, and a cluster of eight more
-  // passes 100 km east. `rich` sits at 30 km, so the cluster is 70 km from it
-  // and inside its reach; `poor` sits at 8 km, where the same cluster is 92 km
-  // away and out of it. The nearer town is therefore the worse base, which is
-  // exactly the case a plain distance sort gets backwards.
   const passes = [
-    pass("here", 0),
-    ...Array.from({ length: 8 }, (_, i) => pass(`p${i}`, 100 + i * 0.1)),
+    makePass("here", 0),
+    ...Array.from({ length: 8 }, (_, i) => makePass(`p${i}`, 100 + i * 0.1)),
   ];
-  const y = years(passes.map((p) => [p.slug, "best"] as [string, Grade]));
+  const years = yearsOf(passes.map((p) => [p.slug, "best"] as [string, Grade]));
   const bases = basesFor(
-    { lat: 46, lon: 10 },
-    [town("poor", 8), town("rich", 30)],
+    ORIGIN,
+    [makeTown("poor", 8), makeTown("rich", 30)],
     passes,
-    y,
-    PERIODS[12]!,
+    years,
+    PERIOD,
   );
 
   test("groups the towns by the same bands", () => {
@@ -196,35 +91,28 @@ describe("basesFor", () => {
     expect(bases.bands.map((b) => b.band)).toEqual(["door", "day"]);
   });
 
-  test("a town is judged by what it reaches, not only by how near it is", () => {
-    const all = bases.bands.flatMap((b) => b.towns);
-    const rich = all.find((t) => t.town.slug === "rich")!;
-    const poor = all.find((t) => t.town.slug === "poor")!;
-    expect(rich.rideable).toBeGreaterThan(poor.rideable);
-    expect(rich.score).toBeGreaterThan(poor.score);
-  });
-
   test("the reach cut-off is the same one", () => {
-    const far = basesFor(
-      { lat: 46, lon: 10 },
-      [town("far", REACH_MAX_KM + 10)],
-      passes,
-      y,
-      PERIODS[12]!,
-    );
-    expect(far.total).toBe(0);
+    expect(
+      basesFor(
+        ORIGIN,
+        [makeTown("far", REACH_MAX_KM + 10)],
+        passes,
+        years,
+        PERIOD,
+      ).total,
+    ).toBe(0);
   });
 
   test("a town panel does not offer itself as a base", () => {
     const self = basesFor(
-      { lat: 46, lon: 10 },
-      [town("poor", 8), town("rich", 30)],
+      ORIGIN,
+      [makeTown("poor", 8), makeTown("rich", 30)],
       passes,
-      y,
-      PERIODS[12]!,
+      years,
+      PERIOD,
       "poor",
     );
-    expect(self.bands.flatMap((b) => b.towns).map((t) => t.town.slug)).toEqual([
+    expect(self.bands.flatMap((b) => b.items).map((t) => t.town.slug)).toEqual([
       "rich",
     ]);
   });

@@ -1,708 +1,30 @@
 "use client";
 
-import { Check, ChevronLeft, ExternalLink, Share, Star, X } from "lucide-react";
-import dynamic from "next/dynamic";
+import { Check, ChevronLeft, Share, Star, X } from "lucide-react";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 
-import { useSheetExpanded } from "@/components/mobile-sheet";
-import { CHART_HEIGHT } from "@/components/panel/chart-size";
-import {
-  BasesSection,
-  DestinationSection,
-} from "@/components/panel/destination";
-import {
-  ElevationProfile,
-  PROFILE_ASPECT,
-} from "@/components/panel/elevation-profile";
+import { useSheet } from "@/components/mobile-sheet";
+import type { PanelActions } from "@/components/panel/actions";
+import { PassDetail } from "@/components/panel/pass-detail";
 import { PhotoCarousel } from "@/components/panel/photo-carousel";
-import { Section } from "@/components/panel/section";
-import { VerdictBox } from "@/components/panel/verdict-box";
-import { WeatherForecast } from "@/components/panel/weather-forecast";
-import { Rating } from "@/components/rating";
-import { StatusDot } from "@/components/status-badge";
-import { TagBadges } from "@/components/tags";
+import { TourDetail } from "@/components/panel/tour-detail";
+import { TownDetail } from "@/components/panel/town-detail";
 import { Button } from "@/components/ui/button";
-import {
-  Empty,
-  EmptyDescription,
-  EmptyHeader,
-  EmptyTitle,
-} from "@/components/ui/empty";
-import {
-  Item,
-  ItemContent,
-  ItemDescription,
-  ItemGroup,
-  ItemTitle,
-} from "@/components/ui/item";
-import { Skeleton } from "@/components/ui/skeleton";
 import { Toggle } from "@/components/ui/toggle";
-import type { EntityKind, Selection } from "@/lib/app-state";
-import { basesFor, destinationAt } from "@/lib/destination";
-import type { DetailAssets } from "@/lib/detail-assets";
-import {
-  heroShape,
-  profilesOf,
-  shownPhotos,
-  useDetailState,
-} from "@/lib/detail-state";
-import type { DetailState } from "@/lib/detail-state";
-import { haversine, REACH_MAX_KM } from "@/lib/geo";
-import { komootHref, quaeldichHref } from "@/lib/links";
-import type { NearbyTours } from "@/lib/nearby";
-import { isTraverse, ROAD_TYPE } from "@/lib/regions";
-import { ascentKey, entityKey } from "@/lib/route-key";
-import {
-  bestText,
-  cellAt,
-  climateText,
-  daysOf,
-  indexBySlug,
-  inputAt,
-  periodIndex,
-  reasonParagraph,
-  seasonText,
-  signalsOf,
-  tourText,
-} from "@/lib/status";
-import type { Years } from "@/lib/status";
-import type {
-  ClimateYear,
-  LatLon,
-  Pass,
-  Period,
-  Photo,
-  ProfileWithCoords,
-  Tour,
-  Town,
-} from "@/lib/types";
+import type { Selection } from "@/lib/app-state";
+import { detailModel } from "@/lib/detail-model";
+import { heroShape, shownPhotos, useDetailState } from "@/lib/detail-state";
+import type { PageBundle } from "@/lib/page-data";
+import { entityKey } from "@/lib/route-key";
+import type { Period, Photo } from "@/lib/types";
 import { useShare } from "@/lib/use-share";
-import {
-  cn,
-  fmt,
-  fmtUnit,
-  ICON_TOGGLE,
-  OVERLAY_CONTROL,
-  TOUCH_ICON,
-} from "@/lib/utils";
-
-/**
- * recharts is the heaviest thing this app would ship; the climate chart is
- * the only user of it and only appears once a pass is selected, so it stays
- * in its own chunk.
- */
-const ClimateChart = dynamic(
-  async () => {
-    const m = await import("@/components/panel/climate-chart");
-    return m.ClimateChart;
-  },
-  {
-    // The chunk arrives a moment after the panel, and without a placeholder of
-    // the chart's own height everything below it jumps when it does.
-    loading: () => (
-      <Skeleton
-        aria-busy
-        aria-label="Klimadiagramm wird geladen"
-        className={cn("mt-3 w-full", CHART_HEIGHT)}
-        role="status"
-      />
-    ),
-  },
-);
+import { cn, ICON_TOGGLE, OVERLAY_CONTROL, TOUCH_ICON } from "@/lib/utils";
 
 /**
  * How tall the floating control row is – what the head has to have scrolled
  * past before the row takes on a surface and the name.
  */
 const BAR_PX = 44;
-
-const TRAFFIC_LABEL = [
-  "",
-  "fast autofrei",
-  "ruhig",
-  "normal",
-  "viel",
-  "Durchgangsstraße",
-];
-
-interface Props {
-  selection: Selection;
-  period: Period;
-  passes: Pass[];
-  tours: Tour[];
-  towns: Town[];
-  /** Precomputed on the server: which tours run within reach of each entity. */
-  nearbyTours: NearbyTours;
-  /** One URL per entity for its profiles and photos; see `lib/detail-assets.ts`. */
-  detail: DetailAssets;
-  climate: Record<string, ClimateYear>;
-  /** Lowest ascent start per pass, for the derived valley heat. */
-  valleys: Record<string, number>;
-  /** The 24 graded half-months of every pass and tour (`getYears`, lib/data.ts). */
-  years: Years;
-  isFavorite: (kind: EntityKind, slug: string) => boolean;
-  onToggleFavorite: (kind: EntityKind, slug: string) => void;
-  /**
-   * What the pointer is over, anywhere on screen. Every entity named in this
-   * panel is a link to a mark on the map, so every one of them lights that
-   * mark – the same `hovered` the sidebar rows and the map itself share.
-   */
-  hovered: Selection | null;
-  onHover: (sel: Selection | null) => void;
-  /** Road point under the profile cursor, drawn on the map; `null` clears it. */
-  onProfileCursor: (point: LatLon | null) => void;
-  /** Click on the profile: fly the map to that point to look at the hairpins. */
-  onProfileZoom: (point: LatLon) => void;
-  onSelect: (sel: Selection) => void;
-  onBack: () => void;
-  /**
-   * On a phone with the list drawer open underneath, dismissing the detail
-   * uncovers the list – so the control says "back to the list". Opened from
-   * the map with nothing underneath it simply closes, and says that instead.
-   * Naming the wrong destination is worse than naming none.
-   */
-  backToList?: boolean;
-}
-
-/**
- * The one line of numbers over an elevation profile – and on a traverse, two
- * numbers fewer.
- *
- * `elevationGain` and `maxKmGradient` accumulate over a hundred DEM samples,
- * and a 90 m Copernicus cell in a gorge averages the road, the wall above it
- * and the river below into one height. On a climb that noise disappears under
- * the real ascent; on a balcony road there is no real ascent to hide it, and
- * the Gorges du Cians come out at 1 766 Hm for 974 m of net climb. Showing
- * that next to "Ø 4,8 %" would present a measurement the data cannot support
- * (principle 3), so the traverse types get `km`, the average and the two end
- * heights – `avgGradient` reads `start` and `top` only, two samples instead of
- * a hundred, and is sound either way. The section's info tooltip says why the
- * other two are missing.
- */
-const profileLine = (profile: ProfileWithCoords, traverse: boolean) =>
-  [
-    fmtUnit(profile.km, "km", 1),
-    ...(traverse ? [] : [fmtUnit(profile.elevationGain, "hm")]),
-    `Ø ${fmt(profile.avgGradient, 1)} %`,
-    ...(traverse ? [] : [`steilster km ${fmt(profile.maxKmGradient, 1)} %`]),
-    `${fmt(profile.start)} → ${fmtUnit(profile.top, "m")}`,
-  ].join(" · ");
-
-const ExternalLinks = ({ links }: { links: [string, string][] }) => (
-  <div className="mt-4 flex flex-wrap gap-1.5">
-    {links.map(([label, href]) => (
-      <Button
-        key={label}
-        variant="outline"
-        size="sm"
-        render={<a href={href} target="_blank" rel="noopener noreferrer" />}
-        nativeButton={false}
-      >
-        {label}
-        <ExternalLink data-icon="inline-end" />
-        <span className="sr-only"> (öffnet in neuem Tab)</span>
-      </Button>
-    ))}
-  </div>
-);
-
-/**
- * A named entity inside the panel. It is a link to a mark on the map, so it
- * behaves like one: pointing at it lights the mark, exactly as pointing at a
- * sidebar row does. Focus counts as pointing, so the keyboard gets it too.
- */
-const LinkButton = ({
-  children,
-  onClick,
-  hovered,
-  onHover,
-}: {
-  children: React.ReactNode;
-  onClick: () => void;
-  hovered?: boolean;
-  onHover?: (over: boolean) => void;
-}) => (
-  <Button
-    variant="link"
-    size="sm"
-    className={cn(
-      "h-auto gap-1 rounded-sm px-0 py-0.5",
-      hovered && "bg-accent/20 -mx-1 px-1",
-    )}
-    onClick={onClick}
-    onPointerEnter={onHover && (() => onHover(true))}
-    onPointerLeave={onHover && (() => onHover(false))}
-    onFocus={onHover && (() => onHover(true))}
-    onBlur={onHover && (() => onHover(false))}
-  >
-    {children}
-  </Button>
-);
-
-/** One labelled row of the nearby list. */
-const group = (label: string, items: React.ReactNode) => (
-  <div className="flex flex-wrap items-baseline gap-x-3 gap-y-0.5">
-    <span className="text-muted-foreground text-xs">{label}</span>
-    {items}
-  </div>
-);
-
-const Nearby = ({
-  lat,
-  lon,
-  exclude,
-  skipPasses,
-  skipTowns,
-  ...p
-}: Props & {
-  lat: number;
-  lon: number;
-  exclude?: string;
-  /** A destination block above already ranks the passes; do not list them twice. */
-  skipPasses?: boolean;
-  /** Likewise for the towns, where a bases block above already ranks them. */
-  skipTowns?: boolean;
-}) => {
-  const nearPasses = skipPasses
-    ? []
-    : p.passes
-        .map((x) => ({ d: haversine({ lat, lon }, x), x }))
-        .filter((e) => e.d <= REACH_MAX_KM && e.x.slug !== exclude)
-        .toSorted((a, b) => a.d - b.d);
-  // Tours are lines, so their reach was measured on the server (lib/nearby.ts).
-  const slugs = p.nearbyTours[entityKey(p.selection)];
-  const nearTours = p.tours.filter((t) => slugs?.includes(t.slug));
-  const nearTowns = skipTowns
-    ? []
-    : p.towns
-        .map((x) => ({ d: haversine({ lat, lon }, x), x }))
-        .filter((e) => e.d <= REACH_MAX_KM && e.x.slug !== exclude)
-        .toSorted((a, b) => a.d - b.d);
-
-  if (nearPasses.length + nearTours.length + nearTowns.length === 0)
-    return null;
-
-  /** The hover wiring every named entity in this block shares. */
-  const link = (kind: EntityKind, slug: string) => ({
-    hovered: p.hovered?.kind === kind && p.hovered.slug === slug,
-    onHover: (over: boolean) => p.onHover(over ? { kind, slug } : null),
-  });
-
-  return (
-    <Section id="nearby" title={`Im Umkreis von ${REACH_MAX_KM} km`}>
-      <div className="flex flex-col gap-1">
-        {nearPasses.length > 0 &&
-          group(
-            "Pässe",
-            nearPasses.map(({ x, d }) => (
-              <LinkButton
-                key={x.slug}
-                {...link("pass", x.slug)}
-                onClick={() => p.onSelect({ kind: "pass", slug: x.slug })}
-              >
-                <StatusDot
-                  status={cellAt(p.years.passes[x.slug], p.period).status}
-                />{" "}
-                {x.name}
-                <span className="text-muted-foreground">
-                  {fmtUnit(d, "km")}
-                </span>
-              </LinkButton>
-            )),
-          )}
-        {nearTours.length > 0 &&
-          group(
-            "Touren",
-            nearTours.map((t) => (
-              <LinkButton
-                key={t.slug}
-                {...link("tour", t.slug)}
-                onClick={() => p.onSelect({ kind: "tour", slug: t.slug })}
-              >
-                <span
-                  className="inline-block h-1 w-3 rounded"
-                  style={{ background: t.color }}
-                />{" "}
-                {t.name}
-              </LinkButton>
-            )),
-          )}
-        {nearTowns.length > 0 &&
-          group(
-            "Orte",
-            nearTowns.map(({ x, d }) => (
-              <LinkButton
-                key={x.slug}
-                {...link("town", x.slug)}
-                onClick={() => p.onSelect({ kind: "town", slug: x.slug })}
-              >
-                <span
-                  className="bg-town inline-block size-2 rounded-full"
-                  aria-hidden
-                />{" "}
-                {x.name}
-                <span className="text-muted-foreground">
-                  {fmtUnit(d, "km")}
-                </span>
-              </LinkButton>
-            )),
-          )}
-      </div>
-    </Section>
-  );
-};
-
-const PassDetail = (props: Props & { loaded: DetailState; pass: Pass }) => {
-  const { pass } = props;
-  const profiles = profilesOf(props.loaded);
-  const waiting = props.loaded.phase === "pending";
-  const climate = props.climate[pass.slug];
-  const bucket = climate?.[periodIndex(props.period)];
-  const signals = signalsOf(props, pass.slug);
-  const input = inputAt(signals, props.period);
-  const year = props.years.passes[pass.slug];
-  const cell = cellAt(year, props.period);
-
-  return (
-    <>
-      <p className="text-muted-foreground mt-0.5 text-xs">
-        <span className="text-foreground text-2xl leading-none font-bold tabular-nums">
-          {fmt(pass.elevation)}
-        </span>
-        <span className="ml-1">m · {pass.classicAscent}</span>
-      </p>
-      {pass.tags && pass.tags.length > 0 && (
-        <div className="mt-2">
-          <TagBadges tags={pass.tags} />
-        </div>
-      )}
-
-      <VerdictBox
-        best={bestText(year)}
-        period={props.period}
-        text={reasonParagraph(pass, props.period, cell.reasons, input)}
-        year={year}
-      />
-
-      <p className="mt-4 text-xs leading-relaxed">{seasonText(pass)}</p>
-      <p className="text-muted-foreground mt-1.5 text-xs leading-relaxed">
-        {pass.note}
-      </p>
-
-      <Section
-        id="rating"
-        info="Redaktionelle Einschätzung auf einer Skala von 1 bis 5, keine gemessenen Werte."
-        title="Bewertung"
-      >
-        <dl className="grid grid-cols-[auto_1fr] items-center gap-x-3 gap-y-1.5 text-xs">
-          {(
-            [
-              ["Schönheit", <Rating key="b" value={pass.beauty} />],
-              ["Bekanntheit", <Rating key="f" value={pass.fame} />],
-              ["Schwierigkeit", <Rating key="d" value={pass.difficulty} />],
-              [
-                "Verkehr",
-                <span key="t" className="flex items-center gap-2">
-                  <Rating value={pass.traffic} muted />
-                  <span className="text-muted-foreground text-xs">
-                    {TRAFFIC_LABEL[pass.traffic]}
-                  </span>
-                </span>,
-              ],
-            ] as [string, React.ReactNode][]
-          ).map(([label, value]) => (
-            <div key={label} className="contents">
-              <dt className="text-muted-foreground text-xs">{label}</dt>
-              <dd>{value}</dd>
-            </div>
-          ))}
-        </dl>
-      </Section>
-
-      {/* A traverse is not climbed to a summit, so what is drawn below is the
-          road itself; "Auffahrten" would name the wrong thing. */}
-      <Section
-        id="ascents"
-        info={
-          isTraverse(pass.type)
-            ? "Geroutete Straße, 100 Höhenpunkte aus einem Geländemodell – zum Vergleichen gut, nicht metergenau. Höhenmeter und steilster Kilometer stehen hier nicht: auf einer fast flachen Straße in einer Schlucht misst das Modell mehr Auf und Ab als die Straße hat."
-            : "Geroutete Straße, 100 Höhenpunkte aus einem Geländemodell – zum Vergleichen gut, nicht metergenau."
-        }
-        title={isTraverse(pass.type) ? "Strecke" : "Auffahrten"}
-      >
-        {pass.type === "spur" && (
-          <p className="text-muted-foreground mb-3 text-xs leading-relaxed">
-            Stichstraße: Die Straße endet oben, hinunter geht es dieselbe
-            Auffahrt zurück.
-          </p>
-        )}
-        {pass.ascents.length === 0 && (
-          <Empty className="py-3">
-            <EmptyHeader>
-              <EmptyTitle>Keine Auffahrt hinterlegt</EmptyTitle>
-            </EmptyHeader>
-          </Empty>
-        )}
-        <div className="flex flex-col gap-4">
-          {pass.ascents.map((a, i) => {
-            const profile = profiles[ascentKey(pass.slug, i)];
-            return (
-              <div key={a.label}>
-                <div className="flex flex-wrap items-baseline justify-between gap-x-2">
-                  <span className="text-xs font-medium">{a.label}</span>
-                  <span className="text-muted-foreground text-xs tabular-nums">
-                    {profile && profileLine(profile, isTraverse(pass.type))}
-                    {!profile && !waiting && "Kein Höhenprofil vorhanden."}
-                  </span>
-                </div>
-                {profile && (
-                  <ElevationProfile
-                    profile={profile}
-                    coords={profile.coords}
-                    onCursor={props.onProfileCursor}
-                    onZoomTo={props.onProfileZoom}
-                  />
-                )}
-                {!profile && waiting && (
-                  <Skeleton
-                    aria-busy
-                    aria-label="Höhenprofil wird geladen"
-                    className="mt-1 w-full"
-                    role="status"
-                    style={{ aspectRatio: PROFILE_ASPECT }}
-                  />
-                )}
-              </div>
-            );
-          })}
-        </div>
-      </Section>
-
-      <Section
-        id="weather"
-        info="Vorhersage von Open-Meteo für die Passhöhe, sieben Tage."
-        title="Aktuelles Wetter"
-      >
-        <WeatherForecast slug={pass.slug} />
-      </Section>
-
-      <Section
-        id="climate"
-        info="ERA5-Land 2015–2024, ein 10-km-Raster – auf Passhöhe eher zu mild."
-        title="Jahresklima"
-      >
-        {bucket ? (
-          <>
-            <ItemGroup className="grid grid-cols-3 gap-1.5">
-              {(
-                [
-                  [
-                    `${fmt(bucket.tmax)}° / ${fmt(bucket.tmin)}°`,
-                    "Ø Tag / Nacht",
-                  ],
-                  [
-                    `${bucket.frostPct} %`,
-                    `Frost · ${daysOf(bucket.frostPct)} von 15 Tagen`,
-                  ],
-                  [
-                    `${bucket.snowPct} %`,
-                    `Schnee · ${daysOf(bucket.snowPct)} von 15 Tagen`,
-                  ],
-                ] as [string, string][]
-              ).map(([value, label]) => (
-                <Item
-                  key={label}
-                  variant="muted"
-                  size="xs"
-                  className="flex-col items-start gap-0.5"
-                >
-                  <ItemContent className="gap-0">
-                    <ItemTitle className="text-sm leading-tight tabular-nums">
-                      {value}
-                    </ItemTitle>
-                    <ItemDescription className="text-2xs line-clamp-none leading-tight text-pretty">
-                      {label}
-                    </ItemDescription>
-                  </ItemContent>
-                </Item>
-              ))}
-            </ItemGroup>
-            {/* The derived values, labelled as such – the summit values above
-                are what the series measured (Principle 3). */}
-            <p className="text-muted-foreground text-2xs mt-1.5">
-              {climateText(pass, bucket, signals, props.period)}
-            </p>
-            <ClimateChart climate={climate} period={props.period} />
-          </>
-        ) : (
-          <Empty className="py-3">
-            <EmptyHeader>
-              <EmptyTitle>Keine Klimareihe</EmptyTitle>
-              <EmptyDescription>
-                Für diesen Pass liegen noch keine Klimadaten vor.
-              </EmptyDescription>
-            </EmptyHeader>
-          </Empty>
-        )}
-      </Section>
-
-      {/* The inverse of the town panel's list: where this road could be
-          ridden from. Same bands, same weighting, read the other way round. */}
-      <BasesSection
-        bases={basesFor(
-          pass,
-          props.towns,
-          props.passes,
-          props.years,
-          props.period,
-        )}
-        hovered={props.hovered}
-        onHover={props.onHover}
-        onSelect={(slug) => props.onSelect({ kind: "town", slug })}
-      />
-      <Nearby
-        {...props}
-        lat={pass.lat}
-        lon={pass.lon}
-        exclude={pass.slug}
-        skipTowns
-      />
-      <ExternalLinks
-        links={[
-          ["quaeldich.de", quaeldichHref(pass)],
-          ["komoot", komootHref(pass.name, pass.lat, pass.lon)],
-          [
-            "Google Maps",
-            `https://www.google.com/maps/search/?api=1&query=${pass.lat},${pass.lon}`,
-          ],
-          [
-            "OSM",
-            `https://www.openstreetmap.org/?mlat=${pass.lat}&mlon=${pass.lon}#map=14/${pass.lat}/${pass.lon}`,
-          ],
-        ]}
-      />
-    </>
-  );
-};
-
-const TourDetail = (props: Props & { tour: Tour }) => {
-  const { tour } = props;
-  const passIndex = indexBySlug(props.passes);
-  const year = props.years.tours[tour.slug];
-  const cell = cellAt(year, props.period);
-  // The passes that hold the tour back come from the cell, not from a second
-  // pass over the members: the sentence and the badge describe one set.
-  const limited = tourText(cell, (slug) => passIndex.get(slug)?.name);
-
-  return (
-    <>
-      <p className="text-muted-foreground mt-0.5 text-xs">
-        <span className="text-foreground text-2xl leading-none font-bold tabular-nums">
-          {fmt(tour.km)}
-        </span>
-        <span className="ml-1">km · </span>
-        <span className="text-foreground text-2xl leading-none font-bold tabular-nums">
-          {fmt(tour.elevationGain)}
-        </span>
-        <span className="ml-1">hm · {tour.passes.length} Pässe</span>
-      </p>
-
-      <VerdictBox period={props.period} text={limited} year={year} />
-
-      <p className="mt-4 text-xs leading-relaxed">{tour.description}</p>
-      <p className="text-muted-foreground mt-1.5 text-xs leading-relaxed">
-        {tour.season}
-      </p>
-
-      <Section id="tour-passes" title="Pässe der Runde">
-        <div className="flex flex-col items-start">
-          {tour.passes.map((slug) => {
-            const p = passIndex.get(slug);
-            if (!p) return null;
-            return (
-              <LinkButton
-                key={slug}
-                hovered={
-                  props.hovered?.kind === "pass" && props.hovered.slug === slug
-                }
-                onHover={(over) =>
-                  props.onHover(over ? { kind: "pass", slug } : null)
-                }
-                onClick={() => props.onSelect({ kind: "pass", slug })}
-              >
-                <StatusDot
-                  status={cellAt(props.years.passes[slug], props.period).status}
-                />{" "}
-                {p.name}
-                <span className="text-muted-foreground tabular-nums">
-                  {fmtUnit(p.elevation, "m")}
-                </span>
-              </LinkButton>
-            );
-          })}
-        </div>
-      </Section>
-
-      <Nearby
-        {...props}
-        lat={tour.waypoints[0]!.lat}
-        lon={tour.waypoints[0]!.lon}
-      />
-    </>
-  );
-};
-
-/**
- * The labels say in two words why the town is in the list at all – a planner
- * scanning bases wants "Radsport-Mekka" or "Ruhig" before the prose. What each
- * label means, and that it is an editorial judgement rather than a count, is
- * explained once in the scales dialog.
- */
-const TownDetail = (props: Props & { town: Town }) => {
-  const { town } = props;
-  // The verdict of a base is the verdict of what it reaches; nothing about a
-  // town is measured (`lib/destination.ts` says why, and the block says so).
-  const destination = destinationAt(
-    town,
-    props.passes,
-    props.years,
-    props.period,
-  );
-  return (
-    <>
-      <div className="mt-2">
-        <TagBadges tags={town.tags} />
-      </div>
-      <p className="mt-2 text-xs">{town.why}</p>
-      <DestinationSection
-        d={destination}
-        period={props.period}
-        hovered={props.hovered}
-        onHover={props.onHover}
-        onSelect={(slug) => props.onSelect({ kind: "pass", slug })}
-      />
-      <Nearby
-        {...props}
-        lat={town.lat}
-        lon={town.lon}
-        exclude={town.slug}
-        skipPasses
-      />
-      <ExternalLinks
-        links={[
-          [
-            "Werkstätten (OSM)",
-            `https://www.openstreetmap.org/search?query=${encodeURIComponent(`Fahrradwerkstatt ${town.name}`)}`,
-          ],
-          [
-            "Radläden (Google)",
-            `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`bike shop ${town.name}`)}`,
-          ],
-        ]}
-      />
-    </>
-  );
-};
 
 /**
  * The panel's head. Two shapes, one element: the kicker and the name lie on
@@ -897,14 +219,36 @@ const PanelBar = ({
  * the slide-over next to the sidebar on desktop, its own bottom sheet on a
  * phone – so closing it always means the same thing and the lists keep their
  * scroll position underneath.
+ *
+ * Model in, markup out: what a pass, a tour or a town shows is `detailModel`
+ * (lib/detail-model.ts), and the shell renders the head, the control row and
+ * one of the three kind modules. It resolves nothing about the entity itself,
+ * which is why the kind appears exactly once here.
  */
-export const DetailPanel = (props: Props) => {
-  const { selection, onBack } = props;
+export const DetailPanel = ({
+  selection,
+  data,
+  period,
+  hovered,
+  favorite,
+  actions,
+}: {
+  selection: Selection;
+  /** Everything the page loaded, plus the index the explorer already holds. */
+  data: PageBundle;
+  period: Period;
+  /** What the pointer is over, anywhere on screen. */
+  hovered: Selection | null;
+  favorite: boolean;
+  actions: PanelActions;
+}) => {
   const panel = useRef<HTMLElement>(null);
   const scroller = useRef<HTMLDivElement>(null);
   // Below the sheet's top snap point nothing scrolls, so the head is on screen
-  // by construction and the bar has no business taking a surface.
-  const expanded = useSheetExpanded();
+  // by construction and the bar has no business taking a surface. `over` is
+  // the same fact the sheet already knows: a detail rendered inside the list
+  // drawer has a list behind it to go back to, one over the bare map has not.
+  const { expanded, over } = useSheet();
   // The hash already *is* the shareable state; this only hands it over.
   const { share, done: shared } = useShare();
   /**
@@ -917,9 +261,9 @@ export const DetailPanel = (props: Props) => {
 
   // The profiles and the photos of this one entity, as a static file with a
   // content hash in its name (lib/detail-assets.ts) – so the page does not
-  // carry all 201 passes' worth, and looking at the same pass again is free.
+  // carry all 262 passes' worth, and looking at the same pass again is free.
   // An entity with neither has no URL and nothing is fetched.
-  const asset = props.detail[entityKey(selection)];
+  const asset = data.detail[entityKey(selection)];
   const { state, markBroken } = useDetailState(asset);
 
   // Move focus and scroll to the top whenever another entity is selected. The
@@ -957,21 +301,13 @@ export const DetailPanel = (props: Props) => {
     if (!expanded) scroller.current?.scrollTo({ top: 0 });
   }, [expanded]);
 
-  const entity =
-    selection.kind === "pass"
-      ? props.passes.find((p) => p.slug === selection.slug)
-      : selection.kind === "tour"
-        ? props.tours.find((t) => t.slug === selection.slug)
-        : props.towns.find((t) => t.slug === selection.slug);
-  if (!entity) return null;
+  const model = detailModel(selection, data, {
+    detail: state,
+    hovered,
+    period,
+  });
+  if (!model) return null;
 
-  const kicker =
-    selection.kind === "pass"
-      ? `${ROAD_TYPE[(entity as Pass).type].label} · ${(entity as Pass).region} · ${(entity as Pass).country}`
-      : selection.kind === "tour"
-        ? "Rundtour"
-        : `Rad-Ort · ${(entity as Town).country}`;
-  const favorite = props.isFavorite(selection.kind, selection.slug);
   const hero = heroShape(state) === "hero";
   const key = entityKey(selection);
   const scrolled = expanded && pastHead === key;
@@ -990,23 +326,21 @@ export const DetailPanel = (props: Props) => {
       aria-labelledby="detail-title"
       className="relative flex min-h-0 flex-1 flex-col outline-none"
       onKeyDown={(e) => {
-        if (e.key === "Escape") onBack();
+        if (e.key === "Escape") actions.onBack();
       }}
     >
       <PanelBar
-        name={entity.name}
+        name={model.name}
         solid={solid}
         scrolled={scrolled}
-        backToList={!!props.backToList}
+        backToList={over}
         favorite={favorite}
         shared={shared}
-        onBack={onBack}
+        onBack={actions.onBack}
         onShare={() => {
-          void share(`${entity.name} – Alpenpässe`);
+          void share(`${model.name} – Alpenpässe`);
         }}
-        onToggleFavorite={() =>
-          props.onToggleFavorite(selection.kind, selection.slug)
-        }
+        onToggleFavorite={actions.onToggleFavorite}
       />
       <div
         ref={scroller}
@@ -1029,8 +363,8 @@ export const DetailPanel = (props: Props) => {
       >
         <PanelHead
           hero={hero}
-          kicker={kicker}
-          name={entity.name}
+          kicker={model.kicker}
+          name={model.name}
           loading={state.phase === "pending"}
           photos={shownPhotos(state)}
           onBroken={markBroken}
@@ -1044,14 +378,14 @@ export const DetailPanel = (props: Props) => {
               Keine Fotos geladen – die Bilddatei ist nicht angekommen.
             </p>
           )}
-          {selection.kind === "pass" && (
-            <PassDetail {...props} loaded={state} pass={entity as Pass} />
+          {model.kind === "pass" && (
+            <PassDetail actions={actions} model={model} />
           )}
-          {selection.kind === "tour" && (
-            <TourDetail {...props} tour={entity as Tour} />
+          {model.kind === "tour" && (
+            <TourDetail actions={actions} model={model} />
           )}
-          {selection.kind === "town" && (
-            <TownDetail {...props} town={entity as Town} />
+          {model.kind === "town" && (
+            <TownDetail actions={actions} model={model} />
           )}
         </div>
       </div>

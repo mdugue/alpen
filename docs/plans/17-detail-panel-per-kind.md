@@ -13,6 +13,9 @@ a fourth kind, not a fourth branch)
 > phase D of [plan 31](31-panel-model.md), after the fetch state, the
 > sentences and the reach have each become one value; `PanelHead` and
 > `PanelBar` (PR #49) are already the shape the kind modules should take.
+> That phase landed in [#62](https://github.com/mdugue/alpen/pull/62): the
+> three modules are `components/panel/pass-detail.tsx`, `tour-detail.tsx` and
+> `town-detail.tsx`, each taking a `DetailModel` and one `PanelActions`.
 
 ## Goal
 

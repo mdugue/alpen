@@ -55,12 +55,12 @@ friends do that better and the app links out to them.
 | Tag labels: vocabulary, icons, badges           | `lib/regions.ts` (`TOWN_TAGS`, `ROAD_TAGS`, `TAG_LABEL`), `lib/tag-icons.ts`, `components/tags.tsx`                                                                                                                                                                                                                                        |
 | Search normalisation and haystacks              | `lib/search.ts`                                                                                                                                                                                                                                                                                                                            |
 | Map, layers, 3D, markers, labels, feature state | `components/map/pass-map.tsx`                                                                                                                                                                                                                                                                                                              |
-| Camera padding for the panels in front of it    | `lib/map-camera.ts`, the padding and fly-to effects in `components/map/pass-map.tsx`                                                                                                                                                                                                                                                       |
+| Where the camera goes, and the padding it takes | `camera` in `lib/map-camera.ts` (the machine, its traces in `lib/map-camera.test.ts`), `applyCamera` in `components/map/apply-camera.ts`, the events dispatched from `components/map/pass-map.tsx`                                                                                                                                         |
 | Basemap: vector style, palette, glyphs          | `lib/basemap.ts`, `lib/palette.ts`, `scripts/build-map-style.ts` (→ `public/map/style-*.json`), `scripts/build-glyphs.ts` (→ `public/map/fonts`, committed)                                                                                                                                                                                |
 | Map assets: GeoJSON, simplification, hashing    | `lib/map-assets.ts`, `scripts/build-map-assets.ts` (→ `public/map`, git-ignored)                                                                                                                                                                                                                                                           |
 | Detail assets: one file per entity, hashing     | `lib/detail-assets.ts`, `scripts/build-detail-assets.ts` (→ `public/detail`, git-ignored)                                                                                                                                                                                                                                                  |
 | Weather route, Open-Meteo quota and cooldown    | `app/api/weather/[slug]/route.ts`                                                                                                                                                                                                                                                                                                          |
-| Tours within reach, town reach hull             | `lib/nearby.ts`, `lib/geo.ts` (computed on the server in `lib/data.ts`)                                                                                                                                                                                                                                                                    |
+| Tours within reach, town reach hull             | `lib/nearby.ts`, `lib/geo.ts` (computed on the server in `lib/data.ts`); what is near one point at a time: `lib/reach.ts` (`withinReach`, `reachCount`)                                                                                                                                                                                    |
 | Reach bands, the nearness weight                | `lib/geo.ts` (`REACH_BANDS`, `reachWeight`, `REACH_MAX_KM`); calibrated in `docs/scales.md`                                                                                                                                                                                                                                                |
 | Level of detail on the map (by fame)            | `lib/prominence.ts`; the filters and the corner line in `components/map/pass-map.tsx`                                                                                                                                                                                                                                                      |
 | Coverage per base: what is listed, what is not  | `scripts/analyze-coverage.ts`, `scripts/lib/coverage.ts` (Overpass, cached in `scripts/.cache/coverage`)                                                                                                                                                                                                                                   |
@@ -74,7 +74,7 @@ friends do that better and the app links out to them.
 | Filter controls, chips, applied-filter row      | `components/sidebar/filter-panel.tsx`, `components/sidebar/filter-chip.tsx`, `lib/filter-summary.ts`                                                                                                                                                                                                                                       |
 | Sidebar: search, filters, one list per kind     | `components/sidebar/` (tabs: `kind-tabs.tsx`), `lib/rows.ts`                                                                                                                                                                                                                                                                               |
 | Rows, their blocks and the drag they sit in     | `components/sidebar/entity-row.tsx`, `components/sidebar/row-list.tsx`, `rowBlocks` in `lib/rows.ts`                                                                                                                                                                                                                                       |
-| Detail panel incl. profile/weather/climate      | `components/panel/` (collapsible blocks: `components/panel/section.tsx`, the verdict box: `components/panel/verdict-box.tsx`); the detail file's four phases in `lib/detail-state.ts`                                                                                                                                                      |
+| Detail panel incl. profile/weather/climate      | `detailModel` (`lib/detail-model.ts`) and the renderers `components/panel/{pass,tour,town}-detail.tsx` under the shell `detail-panel.tsx`; blocks `section.tsx`, verdict box `verdict-box.tsx`, fetch phases `lib/detail-state.ts`, reach `lib/reach.ts`                                                                                   |
 | Drawers on phones (list and detail, separate)   | `components/mobile-sheet.tsx`, `components/explorer.tsx`                                                                                                                                                                                                                                                                                   |
 | Precomputation, data checks                     | `scripts/build-data.ts`, `scripts/build-photos.ts`, `scripts/check-data.ts`; what each run decides is `plan`/`afterGate` in `scripts/lib/decide.ts` (pure, table-tested), the climate buckets `scripts/lib/climate.ts`                                                                                                                     |
 | Route quality gate: checks and thresholds       | `scripts/lib/validate.ts` (`LIMITS`, `suspectPoint` for a marker); pass-point placement `scripts/locate-pass.ts` (`bun run data:locate`), `scripts/lib/locate.ts`                                                                                                                                                                          |
@@ -177,10 +177,15 @@ The component layer, the layout, the sidebar, the detail panel.
 - **A long list is one tab stop.** `useRoving` makes each list the composite
   widget the platform expects: one stop, arrows inside it.
   → [why](docs/ui-conventions.md#a-long-list-is-one-tab-stop)
-- **The panel folds.** Every block is a `Section`; the folded ones are one
-  `sessionStorage` entry, and a source or caveat goes behind the `info`
-  popover.
+- **The panel folds.** Every block is a `Section` with a `BlockId`; the folded
+  ones are one `sessionStorage` entry, and a source or caveat goes behind the
+  `info` popover.
   → [why](docs/ui-conventions.md#the-panel-folds)
+- **Model in, markup out.** `detailModel` resolves the selected entity once and
+  returns one value – sentences, reach, blocks, `DetailState`; the three kind
+  modules take their half of it and one `PanelActions`, and every "what is near
+  here" comes from `lib/reach.ts`.
+  → [why](docs/ui-conventions.md#model-in-markup-out)
 - **Photos are borrowed, not owned, and they are the panel's hero.** Commons
   metadata only, a plain `<img>` with a `srcset`, a precomputed blur
   placeholder, and the box reserved before the photo arrives – the whole
@@ -193,6 +198,9 @@ The camera, the layer stack, hit testing, colours, the basemap.
 
 - **The padding is never set on its own.** Padding moves the camera, so it
   travels inside a flight or eases in – and a flight owns it until `moveend`.
+  Which of the two it is, is a transition in `camera` (`lib/map-camera.ts`),
+  not a boolean over refs: the map turns what happens into events and hands
+  the commands to `applyCamera`.
   → [why](docs/map-rendering.md#the-padding-is-never-set-on-its-own)
 - **The panel opens with the tap; the camera follows it.** The selection
   reaches the panel in the same frame as the map; the flight is the half that

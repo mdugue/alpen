@@ -1,6 +1,7 @@
 # 29 · The camera as a machine: one owner, one command
 
-**Status:** proposed · **Effort:** M–L · **Depends on:** 28 (the selection
+**Status:** in progress – steps 1 and 2 are on this branch, steps 3 and 4 are
+open · **Effort:** M–L · **Depends on:** 28 (the selection
 key and the sheet state arrive as values) · **Unblocks:** 30 (the scene's
 applier shares the MapLibre adapter), 02 (the router's camera intent is one
 event), 33 (the machine is the second piece of the functional core)
@@ -223,13 +224,13 @@ env)` becomes pure in fact; the `coarsePointer` and `scheme` helpers and
 
 One PR each.
 
-1. **Machine.** `camera`, the types, golden-trace tests: select → fly →
+1. **Machine.** _Done._ `camera`, the types, golden-trace tests: select → fly →
    moveend; a second selection during a flight; an inset change during a
    flight; `requestedView`; load with a view, with a selection, with
    nothing; reduced motion; a user drag while idle. `PassMap` dispatches
    events into it and applies the commands; the six refs are deleted. No
    visible change.
-2. **One `moveend`, one hash write.** The three handlers become one
+2. **One `moveend`, one hash write.** _Done._ The three handlers become one
    listener; e2e 12-14 become machine tests; what remains of them is a
    smoke check with a normal timeout.
 3. **Geometry and environment.** `lib/shell-geometry.ts`, the environment
@@ -238,6 +239,29 @@ One PR each.
 4. **Ambient clean-up.** `readHash` and `defined` out; `switchBase`, the
    duplicate `coarsePointer` and `scheme` gone; `overlays` reconciled;
    `window.__alpen` reduced.
+
+### What steps 1 and 2 settled differently
+
+- **No `resize` event.** The `ResizeObserver` tells MapLibre its canvas
+  changed and asks nothing of the camera, so a case every phase ignores would
+  be a case that lies. The `moveend` `resize()` fires goes through the machine
+  like any other.
+- **`CameraEnv` is `reduceMotion` alone.** The fit button's tolerance is not a
+  transition: it is `fitDone` beside `FIT_TOLERANCE` in the same module, pure
+  and tested. The button asks the map where a box would put the camera
+  (`cameraForBounds`, the one question only a map can answer) and issues
+  `fitBounds` or a flight back to the overview.
+- **`setPadding` is a command.** "The first padding is set outright" is a rule
+  worth keeping, and the alternative – an `easeTo` of no duration – is the same
+  jump under a name that hides it.
+- **The intent carries the view.** It is what the map is built with, so the map
+  waits one tick for it instead of reading the hash itself; `CameraIntent` is
+  `{ kind, view }` rather than a union, because the view is owed in all three
+  cases (a tilt in the link is not a camera, but it is still what the map is
+  built with).
+- **`flightFor` is the pure half of a flight**, `cameraForBounds` the MapLibre
+  half: the command carries the box, the breathing room, the maximum zoom and
+  the point to fall back to.
 
 ### Documentation
 

@@ -1,6 +1,6 @@
 # 31 · The panel as a model: data in, three thin renderers out
 
-**Status:** in progress – phases A and B done, C and D open ·
+**Status:** done ([#62](https://github.com/mdugue/alpen/pull/62)) ·
 **Effort:** L (four phases, one PR each) ·
 **Depends on:** 15, 16 (done), 28 (the resolved entity and `entityKey`
 arrive from the reducer) · **Supersedes:** 17 · **Unblocks:** 02 (an entity

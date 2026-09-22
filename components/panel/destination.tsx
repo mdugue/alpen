@@ -6,14 +6,10 @@ import { Rating } from "@/components/rating";
 import { SeasonStrip } from "@/components/season-strip";
 import { StatusDot } from "@/components/status-badge";
 import type { Selection } from "@/lib/app-state";
-import type {
-  Bases,
-  Destination,
-  ReachedPass,
-  ReachedTown,
-} from "@/lib/destination";
+import type { Bases, Destination } from "@/lib/destination";
 import { destinationText } from "@/lib/destination";
-import { REACH_BANDS, REACH_MAX_KM } from "@/lib/geo";
+import { REACH_MAX_KM } from "@/lib/geo";
+import type { ReachedPass, ReachedTown } from "@/lib/reach";
 import { bestText, GRADE_ORDER } from "@/lib/status";
 import type { Grade } from "@/lib/status";
 import type { Period } from "@/lib/types";
@@ -182,9 +178,6 @@ const BandHeader = ({
   </p>
 );
 
-const bandMax = (band: string) =>
-  REACH_BANDS.find((b) => b.key === band)!.maxKm;
-
 /**
  * A destination, judged for the chosen half-month.
  *
@@ -249,12 +242,12 @@ export const DestinationSection = ({
             <div key={g.band}>
               <BandHeader
                 label={g.label}
-                n={g.passes.length}
-                maxKm={bandMax(g.band)}
+                n={g.items.length}
+                maxKm={g.maxKm}
                 noun="Pässe"
               />
               <ul className="-mx-1 flex flex-col">
-                {g.passes.map((r) => (
+                {g.items.map((r) => (
                   <PassRow
                     key={r.pass.slug}
                     r={r}
@@ -313,12 +306,12 @@ export const BasesSection = ({
           <div key={g.band}>
             <BandHeader
               label={g.label}
-              n={g.towns.length}
-              maxKm={bandMax(g.band)}
+              n={g.items.length}
+              maxKm={g.maxKm}
               noun="Orte"
             />
             <ul className="-mx-1 flex flex-col">
-              {g.towns.map((r) => (
+              {g.items.map((r) => (
                 <TownRow
                   key={r.town.slug}
                   r={r}

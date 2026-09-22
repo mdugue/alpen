@@ -14,7 +14,6 @@ import "maplibre-gl/dist/maplibre-gl.css";
 import {
   AttributionControl,
   LngLat,
-  LngLatBounds,
   Map as MLMap,
   Popup,
   ScaleControl,
@@ -22,6 +21,7 @@ import {
 } from "maplibre-gl";
 import { useEffect, useRef, useState } from "react";
 
+import { useCamera } from "@/components/map/apply-camera";
 import { baseLayers, OVERLAYS, VECTOR_BASE } from "@/components/map/map-style";
 import { Button } from "@/components/ui/button";
 import { ButtonGroup } from "@/components/ui/button-group";
@@ -43,7 +43,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { DEFAULT_VIEW, defined } from "@/lib/app-state";
+import { DEFAULT_VIEW } from "@/lib/app-state";
 import type { MapView, Selection } from "@/lib/app-state";
 import {
   BASEMAP_ID,
@@ -53,10 +53,15 @@ import {
   FONT_BOLD,
   GLYPHS,
 } from "@/lib/basemap";
-import { readHash } from "@/lib/hash-adapter";
 import type { Bounds, MapAssets } from "@/lib/map-assets";
-import { fitInset, NO_INSET, sameInset, toInset } from "@/lib/map-camera";
-import type { Inset } from "@/lib/map-camera";
+import {
+  FIT_MS,
+  FIT_PADDING,
+  fitDone,
+  flightFor,
+  visibleBounds,
+} from "@/lib/map-camera";
+import type { CameraIntent } from "@/lib/map-camera";
 import type { TownReach } from "@/lib/nearby";
 import { PALETTE } from "@/lib/palette";
 import type { Scheme } from "@/lib/palette";
@@ -106,7 +111,19 @@ interface Props {
   hovered?: Selection | null;
   onHover?: (sel: Selection | null) => void;
   onSelect: (sel: Selection) => void;
+  /**
+   * Where the camera has come to rest, once it has: the hash adapter writes it
+   * (`writeHash` in `lib/map-camera.ts`). Not every frame of a flight – a link
+   * to a camera still on its way is a link to nowhere in particular.
+   */
   onViewChange: (v: MapView) => void;
+  /**
+   * What the opening camera owes the link the page was opened with, read from
+   * the hash before the map is built (`cameraIntent`, lib/hash-adapter.ts).
+   * The map is built on its `view` and waits for it, which is also why it is
+   * the one prop with no default: `null` means the hash has not been read yet.
+   */
+  intent: CameraIntent | null;
   /**
    * Camera requested from outside (a hash pasted into an open page). The map
    * is otherwise the source of truth for its camera, so this is applied only
@@ -129,41 +146,9 @@ interface Props {
 }
 
 const EMPTY: FeatureCollection = { features: [], type: "FeatureCollection" };
-/** Breathing room around a fitted frame, in pixels; the map padding is added on top. */
-const FIT_PADDING = 48;
-/** The same around a selected tour, which is framed tighter than the whole map. */
-const TOUR_PADDING = 60;
-/** And around a selected pass, whose box is the smaller of the two framings. */
-const PASS_PADDING = 40;
-/**
- * How close a pass may be framed. Its box is the ascents, so a short one would
- * otherwise fill the screen with two hairpins; the point is the road and where
- * it starts, not the surface of it.
- */
-const PASS_MAX_ZOOM = 12.5;
-/** A padding change nothing else moves with: long enough to read as a slide. */
-const PADDING_MS = 400;
-/**
- * The camera's share of a selection: how long it leaves the panel alone, and
- * how long it then takes.
- *
- * The panel opens with the tap and the flight follows it (the `select` case
- * of `reduce`, lib/app-state.ts). It used to be the other way round –
- * the map moved and the panel opened on arrival – because the panel is the
- * most expensive thing the app draws and drawing it into a flight cost that
- * flight about a third of its frame rate on a phone. That bought a smooth
- * flight with a wait in front of the answer, which is the wrong way round: the
- * tap was about the pass, not about the camera. Opening first and moving after
- * keeps the two out of each other's frames just as well, and now it is the
- * secondary half that waits.
- *
- * The delay is the panel's first paint plus the phone drawer's slide, which
- * covers most of its distance well inside it. The flight itself is longer than
- * the 500 ms it was: nothing is waiting behind it any more, so it can be a
- * movement to follow rather than a jump to sit out.
- */
-const SELECT_DELAY = 260;
-const SELECT_MS = 1100;
+/** A click on the elevation profile: close enough to count the hairpins. */
+const PROFILE_ZOOM = 13;
+const PROFILE_MS = 900;
 
 const reduceMotion = () =>
   window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -1001,6 +986,7 @@ export const PassMap = ({
   onHover,
   onSelect,
   onViewChange,
+  intent,
   profileCursor = null,
   profileZoom = null,
   requestedView = null,
@@ -1035,34 +1021,15 @@ export const PassMap = ({
   };
   /** What the hover ring and the hovered line state currently show. */
   const painted = useRef<string | null>(null);
-  // A shared link (a camera or a selection in the hash) is authoritative about
-  // the camera; without one the map opens on what it draws, which is the frame
-  // the fit button would produce. Both are refs, not state: they steer one
-  // effect and never a render.
-  const hashCamera = useRef(false);
-  const fitted = useRef(false);
   /**
-   * The padding the panels ask for, and whether it has ever been applied. Both
-   * belong to the two camera effects below, never to a render: the first
-   * padding is set outright, every later one rides along with a camera move.
+   * Every camera move the map makes by itself goes through this one machine
+   * (`camera` in lib/map-camera.ts): the effects below turn a prop change into
+   * an event, `send` hands back the commands and the adapter carries them out.
+   * Nothing here branches on where the camera happens to be.
    */
-  const inset = useRef<Inset>(NO_INSET);
-  const padded = useRef(false);
-  /**
-   * The selection the fly-to below has set off for; `null` while none is. It
-   * is written when the flight starts, not when it is scheduled, so the
-   * padding the panel asks for in between is left to that flight to carry.
-   */
-  const flownTo = useRef<string | null>(null);
-  /**
-   * Whether that flight is still in the air. A flight owns the padding until
-   * it lands: the panels can ask for a different one while it is flying – a
-   * sheet dragged to another snap point, a phone's toolbar changing the
-   * viewport height by four pixels – and easing to it there would cut the
-   * flight short a frame before it arrived. What is still owed is applied when
-   * the camera settles, in `moveend`.
-   */
-  const flying = useRef(false);
+  const { issue, send } = useCamera(map, onViewChange, () => ({
+    reduceMotion: reduceMotion(),
+  }));
   /** One string per selected entity: what the camera effects change on. */
   const selKey = selection && entityKey(selection);
   const [base, setBase] = useStored("alpenpaesse:base");
@@ -1074,13 +1041,11 @@ export const PassMap = ({
   // Callbacks are needed in map event handlers that are only registered
   // during setup; refs keep them current without rebuilding the map.
   const onSelectRef = useRef(onSelect);
-  const onViewChangeRef = useRef(onViewChange);
   const onHoverRef = useRef(onHover);
   useEffect(() => {
     onSelectRef.current = onSelect;
-    onViewChangeRef.current = onViewChange;
     onHoverRef.current = onHover;
-  }, [onSelect, onViewChange, onHover]);
+  }, [onSelect, onHover]);
 
   // The hover handler below is registered once during setup; this ref keeps
   // the hulls current without rebuilding the map.
@@ -1117,20 +1082,16 @@ export const PassMap = ({
     });
   };
 
-  /** Bounds of everything currently drawn; empty while nothing is. */
-  const visibleBounds = () => {
-    const b = new LngLatBounds();
-    if (showPasses) for (const p of passes) b.extend([p.lon, p.lat]);
-    for (const t of tours) {
-      const bbox = assets.tourBounds[t.slug];
-      if (t.visible && bbox) b.extend(bbox);
-    }
-    return b;
-  };
+  /** The box around everything currently drawn; `null` while nothing is. */
+  const drawn = () =>
+    visibleBounds(passes, tours, assets.tourBounds, showPasses);
 
   // --- Build the map once ------------------------------------------------
+  // Once the intent is known, which is one tick after the first commit: the
+  // map is built on the camera a shared link carries, and reading the hash for
+  // it is the hash adapter's business, not the map's.
   useEffect(() => {
-    if (!container.current || map.current) return;
+    if (!container.current || map.current || !intent) return;
     const colors = readColors(container.current);
     const initialScheme = scheme();
     appliedBase.current = resolveBase(base);
@@ -1204,16 +1165,7 @@ export const PassMap = ({
       version: 8,
     };
 
-    // The hash is read here rather than taken from props: this effect runs
-    // before the parent's hash initialisation, and the map is built only once.
-    const hash = readHash();
-    const view = { ...DEFAULT_VIEW, ...defined(hash.view) };
-    // A selection counts too: the map flies to it, so framing everything
-    // first would only be a camera move the visitor never asked for.
-    hashCamera.current =
-      hash.view.lat !== undefined ||
-      hash.view.zoom !== undefined ||
-      hash.selection !== null;
+    const { view } = intent;
     const coarse = window.matchMedia("(pointer: coarse)").matches;
     const m = new MLMap({
       // Placed by hand below, in the corner opposite the tools.
@@ -1380,7 +1332,6 @@ export const PassMap = ({
         at = null;
         hover();
       });
-      m.on("moveend", hover);
     }
 
     /** The selection a click has resolved but not yet handed over. */
@@ -1434,7 +1385,6 @@ export const PassMap = ({
       setTurned(Math.abs(bearing.current) > 0.5);
     };
     m.on("rotate", spin);
-    m.on("moveend", spin);
     spin();
 
     // Keep the 3D toggle honest when the map is tilted by drag or compass.
@@ -1444,25 +1394,22 @@ export const PassMap = ({
       if (pitched && !m.getTerrain()) m.setTerrain(TERRAIN);
     });
 
-    m.on("moveend", () => {
-      const c = m.getCenter();
-      onViewChangeRef.current({
-        bearing: m.getBearing(),
-        lat: c.lat,
-        lon: c.lng,
-        pitch: m.getPitch(),
-        zoom: m.getZoom(),
-      });
-      // What a padding change asked for while the flight was in the air, now
-      // that there is nothing left to cut short.
-      if (flying.current) {
-        flying.current = false;
-        if (!sameInset(toInset(m.getPadding()), inset.current))
-          m.easeTo({
-            duration: reduceMotion() ? 0 : PADDING_MS,
-            padding: inset.current,
-          });
-      }
+    /*
+     * One listener for everything a camera at rest settles: what is under the
+     * pointer now that the picture has moved, where the needle points, and the
+     * camera's own next move.
+     *
+     * There were three of these, registered in three places, and which of them
+     * ran first decided whether a flight's leftover padding was applied before
+     * or after the hash was written. Now the order is one function's three
+     * lines, and only the third of them decides anything: `byUser` tells a
+     * drag, a wheel and a pinch – the moves MapLibre makes on the visitor's
+     * own behalf, and the only ones carrying a DOM event – from the app's.
+     */
+    m.on("moveend", (e) => {
+      if (!coarse) hover();
+      spin();
+      send({ byUser: Boolean(e.originalEvent), type: "moveend" });
     });
 
     // The container changes size when the sidebar collapses; MapLibre only
@@ -1481,7 +1428,7 @@ export const PassMap = ({
     };
     // Intentional: build only once. Data arrives via the effects below.
     // oxlint-disable-next-line react/exhaustive-deps
-  }, []);
+  }, [intent, send]);
 
   // --- Which base ----------------------------------------------------------
   useEffect(() => {
@@ -1520,74 +1467,55 @@ export const PassMap = ({
     return () => mql.removeEventListener("change", onChange);
   }, [ready, base]);
 
-  // --- Camera requested via the URL hash ----------------------------------
+  // --- The camera ----------------------------------------------------------
+  // Five prop changes, five events, and the machine decides what each one
+  // costs (`camera`, lib/map-camera.ts). The order they stand in is the order
+  // they run in within one commit, and it is load-bearing twice: the opening
+  // camera is known before the map reports for duty, and a selection is
+  // announced before the padding its panel claims – so that padding belongs to
+  // the flight instead of easing in ahead of it.
   useEffect(() => {
-    const m = map.current;
-    if (!m || !ready || !requestedView) return;
-    m.jumpTo({
-      bearing: requestedView.bearing,
-      center: [requestedView.lon, requestedView.lat],
-      pitch: requestedView.pitch,
-      zoom: requestedView.zoom,
-    });
-  }, [requestedView, ready]);
+    if (intent) send({ intent, type: "intent" });
+  }, [intent, send]);
 
-  // --- Reserve space for the panels in front of the map --------------------
-  // The camera centre is drawn in the middle of the *padded* box, so padding is
-  // not a passive margin: `setPadding` is a `jumpTo` and moves the picture by
-  // half of what changed. On a phone that is the detail sheet's 55 % of the
-  // screen arriving in one frame – a jump at the start of every selection made
-  // from the map, and the reason the padding is never set outright here.
-  // Instead a selection carries the new padding into its own flight – the
-  // panel claims its share of the map in the same commit as the selection, a
-  // flight ahead of the camera, and `inset` is what that flight reads when it
-  // sets off – and a padding change with no camera move behind it – a sheet
-  // dragged to another snap point, the sidebar folding away – eases in.
+  // What the map draws is what it opens on, so this is dispatched again until
+  // something has been framed: the lines and dots may arrive after the style.
   useEffect(() => {
-    const m = map.current;
-    if (!m || !ready) return;
-    const next: Inset = {
-      bottom: insetBottom,
-      left: insetLeft,
-      right: 0,
-      top: insetTop,
-    };
-    inset.current = next;
-    // The first padding is set outright: the map has not drawn a frame yet, so
-    // there is nothing that could jump, and the opening frame below is fitted
-    // into it.
-    const first = !padded.current;
-    padded.current = true;
-    if (sameInset(toInset(m.getPadding()), next)) return;
-    if (first) {
-      m.setPadding(next);
-      return;
-    }
-    // A selection whose flight is still to come, or still in the air, owns the
-    // padding; easing it here as well would move the picture twice.
-    if (selKey && (flying.current || selKey !== flownTo.current)) return;
-    m.easeTo({ duration: reduceMotion() ? 0 : PADDING_MS, padding: next });
-  }, [insetLeft, insetBottom, insetTop, selKey, ready]);
-
-  // --- The frame the map opens on -----------------------------------------
-  // Without a camera in the hash the overview is not a fixed rectangle but
-  // whatever is drawn, so the first look is already the answer to "where are
-  // these passes" – the same frame the fit button produces. A camera or a
-  // selection in the hash wins; the selection flies to its own target.
-  useEffect(() => {
-    const m = map.current;
-    if (!m || !ready || fitted.current) return;
-    if (hashCamera.current || selection) {
-      fitted.current = true;
-      return;
-    }
-    const b = visibleBounds();
-    if (b.isEmpty()) return;
-    fitted.current = true;
-    m.fitBounds(b, { animate: false, padding: FIT_PADDING });
-    // Intentional: this runs once, as soon as there is something to frame.
+    if (ready) send({ bounds: drawn(), type: "ready" });
+    // `drawn` reads the props in the deps and nothing else.
     // oxlint-disable-next-line react/exhaustive-deps
-  }, [ready, passes, tours, selection]);
+  }, [ready, passes, tours, showPasses, assets, send]);
+
+  useEffect(() => {
+    if (!ready) return;
+    send({
+      key: selKey,
+      target: selection
+        ? flightFor(selection, {
+            passBounds: assets.passBounds,
+            passes,
+            tourBounds: assets.tourBounds,
+            towns,
+          })
+        : null,
+      type: "selection",
+    });
+    // Intentional: the selection is the trigger; the boxes are only looked up
+    // in it, and a filtered list must not re-fly the camera.
+    // oxlint-disable-next-line react/exhaustive-deps
+  }, [selKey, ready]);
+
+  useEffect(() => {
+    send({
+      inset: { bottom: insetBottom, left: insetLeft, right: 0, top: insetTop },
+      type: "inset",
+    });
+  }, [insetLeft, insetBottom, insetTop, send]);
+
+  useEffect(() => {
+    if (ready && requestedView)
+      send({ type: "requestedView", view: requestedView });
+  }, [requestedView, ready, send]);
 
   // --- Which ascents show, and how -----------------------------------------
   // The geometry stays in the worker; a filter keeps the lines of filtered-out
@@ -1796,117 +1724,31 @@ export const PassMap = ({
 
   // Click on the profile: close enough to count the hairpins.
   useEffect(() => {
-    const m = map.current;
-    if (!m || !ready || !profileZoom) return;
-    m.flyTo({
-      center: [profileZoom.lon, profileZoom.lat],
-      duration: reduceMotion() ? 0 : 900,
-      zoom: Math.max(m.getZoom(), 13),
-    });
-  }, [profileZoom, ready]);
-
-  // --- Fly to selection --------------------------------------------------
-  // The panel is already on screen when this moves: a selection opens its
-  // detail in the same commit, and the camera waits `SELECT_DELAY` for that
-  // panel to draw before setting off (the `select` case of `reduce`,
-  // lib/app-state.ts).
-  //
-  // The flight carries the padding those panels ask for, so opening the detail
-  // and moving to what it describes is one movement rather than a jump and a
-  // movement. The padding is read when the flight starts rather than when it
-  // was scheduled – a sheet dragged in between is part of what it has to fly
-  // into – and `flownTo` is set at the same moment, which is what tells the
-  // padding effect above that this selection's padding is spoken for.
-  useEffect(() => {
-    const m = map.current;
-    if (!m || !ready) return;
-    if (!selection) {
-      flownTo.current = null;
-      return;
-    }
-    const still = reduceMotion();
-    const start = () => {
-      const padding = inset.current;
-      const duration = still ? 0 : SELECT_MS;
-      flownTo.current = selKey ?? null;
-      let moved = false;
-      const fly = (camera: Parameters<typeof m.flyTo>[0]) => {
-        moved = true;
-        flying.current = !still;
-        m.flyTo({ ...camera, duration, padding });
-      };
-      /**
-       * Not `fitBounds`, which drops the padding before it flies: the frame has
-       * to be measured against where the camera lands (`fitInset`), and the
-       * padding has to travel with it. A box of no extent – a pass the map
-       * draws no ascent for – has no frame to speak of and is left to the
-       * point below.
-       */
-      const frame = (
-        bbox: Bounds | undefined,
-        extra: number,
-        maxZoom: number,
-      ) =>
-        bbox && (bbox[0] !== bbox[2] || bbox[1] !== bbox[3])
-          ? m.cameraForBounds(bbox, {
-              maxZoom,
-              padding: fitInset(toInset(m.getPadding()), padding, extra),
-            })
-          : undefined;
-      if (selection.kind === "pass") {
-        // A pass is framed by its roads, not centred on its marker: what makes
-        // one worth a holiday is the climb to it, and on a phone the sheet
-        // leaves less than half the screen, so a camera aimed at the summit
-        // pushed both ends of the ascent out of the picture.
-        const camera = frame(
-          assets.passBounds[selection.slug],
-          PASS_PADDING,
-          PASS_MAX_ZOOM,
-        );
-        const p = passes.find((x) => x.slug === selection.slug);
-        if (camera) fly(camera);
-        else if (p)
-          fly({ center: [p.lon, p.lat], zoom: Math.max(m.getZoom(), 11) });
-      } else if (selection.kind === "town") {
-        const t = towns.find((x) => x.slug === selection.slug);
-        if (t)
-          fly({ center: [t.lon, t.lat], zoom: Math.max(m.getZoom(), 10.5) });
-      } else {
-        // Precomputed per tour: the routed line's bounds, or the waypoints'.
-        const camera = frame(
-          assets.tourBounds[selection.slug],
-          TOUR_PADDING,
-          PASS_MAX_ZOOM,
-        );
-        if (camera) fly(camera);
-      }
-      // What the map cannot frame – an entity it does not draw – still owes the
-      // panel its space, or the padding would sit unapplied until some later
-      // sheet drag moved the picture for no reason at all. Only then: a flight
-      // is already carrying it, and a second animation would cut it short.
-      if (!(moved || sameInset(toInset(m.getPadding()), padding)))
-        m.easeTo({ duration: still ? 0 : PADDING_MS, padding });
-    };
-    if (still) {
-      start();
-      return;
-    }
-    const timer = setTimeout(start, SELECT_DELAY);
-    return () => clearTimeout(timer);
-    // oxlint-disable-next-line react/exhaustive-deps
-  }, [selKey, ready]);
+    if (!ready || !profileZoom) return;
+    issue([
+      {
+        cmd: "flyTo",
+        duration: reduceMotion() ? 0 : PROFILE_MS,
+        target: {
+          kind: "point",
+          point: { ...profileZoom, minZoom: PROFILE_ZOOM },
+        },
+      },
+    ]);
+  }, [profileZoom, ready, issue]);
 
   const toggle3d = (pressed: boolean) => {
     const m = map.current;
     if (!m) return;
     setIs3d(pressed);
-    if (pressed) {
-      m.setTerrain(TERRAIN);
-      m.easeTo({ duration: 700, pitch: 60 });
-    } else {
-      m.setTerrain(null);
-      m.easeTo({ bearing: 0, duration: 600, pitch: 0 });
-    }
+    m.setTerrain(pressed ? TERRAIN : null);
+    // Coming back down straightens the map out as well: a tilted view is the
+    // only reason to be turned away from north in the first place.
+    issue([
+      pressed
+        ? { cmd: "easeTo", duration: 700, pitch: 60 }
+        : { bearing: 0, cmd: "easeTo", duration: 600, pitch: 0 },
+    ]);
   };
 
   const switchBase = (id: string) => setBase(id);
@@ -1924,31 +1766,40 @@ export const PassMap = ({
   /**
    * Fit the view to everything currently drawn. Pressed again while already
    * fitted (or when nothing is drawn) it returns to the whole-Alps overview.
+   *
+   * `cameraForBounds` is the one question only the map can answer – where a
+   * box would put the camera at this size and padding; whether that is where
+   * the camera already stands is `fitDone` (lib/map-camera.ts).
    */
   const fitToVisible = () => {
     const m = map.current;
     if (!m) return;
-    const b = visibleBounds();
-    const target = b.isEmpty()
-      ? undefined
-      : m.cameraForBounds(b, { padding: FIT_PADDING });
-    const alreadyFitted =
-      target?.zoom !== undefined &&
-      Math.abs(m.getZoom() - target.zoom) < 0.05 &&
-      m
-        .getCenter()
-        .distanceTo(LngLat.convert(target.center as [number, number])) < 2000;
-    if (!target || alreadyFitted) {
-      m.flyTo({
-        bearing: 0,
-        center: [DEFAULT_VIEW.lon, DEFAULT_VIEW.lat],
-        duration: 800,
-        pitch: 0,
-        zoom: DEFAULT_VIEW.zoom,
-      });
-    } else {
-      m.fitBounds(b, { duration: 800, padding: FIT_PADDING });
-    }
+    const bounds = drawn();
+    const target = bounds
+      ? m.cameraForBounds(bounds, { padding: FIT_PADDING })
+      : undefined;
+    const at = m.getCenter();
+    const zoom = target?.zoom;
+    const to =
+      target && zoom !== undefined
+        ? LngLat.convert(target.center as [number, number])
+        : null;
+    const already =
+      to !== null &&
+      zoom !== undefined &&
+      fitDone(
+        { lat: at.lat, lon: at.lng, zoom: m.getZoom() },
+        { lat: to.lat, lon: to.lng, zoom },
+      );
+    issue([
+      bounds && !already
+        ? { bounds, cmd: "fitBounds", duration: FIT_MS, padding: FIT_PADDING }
+        : {
+            cmd: "flyTo",
+            duration: FIT_MS,
+            target: { kind: "view", view: DEFAULT_VIEW },
+          },
+    ]);
   };
 
   return (
@@ -1977,7 +1828,7 @@ export const PassMap = ({
                     variant="outline"
                     className={cn(TOOL, MAP_TOOL)}
                     onClick={() => {
-                      map.current?.easeTo({ bearing: 0, duration: 400 });
+                      issue([{ bearing: 0, cmd: "easeTo", duration: 400 }]);
                     }}
                     aria-label="Nach Norden ausrichten"
                   />

@@ -13,6 +13,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import type { BlockId } from "@/lib/detail-model";
 import { useStored } from "@/lib/use-stored";
 
 /**
@@ -43,8 +44,12 @@ export const Section = ({
   info,
   children,
 }: {
-  /** Stable across entities – that is what makes the fold carry over. */
-  id: string;
+  /**
+   * Stable across entities – that is what makes the fold carry over – and one
+   * of the closed set the panel model declares (`BLOCKS`), so a block cannot
+   * be spelled two ways and lose its fold.
+   */
+  id: BlockId;
   title: string;
   info?: string;
   children: React.ReactNode;
@@ -54,6 +59,7 @@ export const Section = ({
   return (
     <Collapsible
       className="mt-6"
+      data-block={id}
       onOpenChange={(open) =>
         setClosed((ids) =>
           open ? ids.filter((x) => x !== id) : [...ids, id].toSorted(),

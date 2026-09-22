@@ -29,12 +29,19 @@ test("a tour counts as nearby when any point of its road is within reach", () =>
     [{ lat: 46.25, lon: 9.3, slug: "ort" } as Town],
     routes,
   );
-  expect(out).toEqual({
+  expect(
+    Object.fromEntries(
+      Object.entries(out).map(([k, v]) => [k, v.map((t) => t.slug)]),
+    ),
+  ).toEqual({
     "pass:fern": [],
     "pass:nah": ["runde"],
     "tour:runde": ["runde"],
     "town:ort": ["runde"],
   });
+  // The distance is to the road, not to a waypoint: 46.75 is 28 km from the
+  // tour's northern end and 0 km from nothing – the line stops at 46.5.
+  expect(out["pass:nah"]![0]!.km).toBeCloseTo(27.8, 0);
 });
 
 test("without a routed geometry the waypoints stand in for the road", () => {
@@ -45,7 +52,7 @@ test("without a routed geometry the waypoints stand in for the road", () => {
     {},
   );
   // 46.25/9.4 is ~44 km from either waypoint – near.
-  expect(out["pass:zwischen"]).toEqual(["runde"]);
+  expect(out["pass:zwischen"]!.map((t) => t.slug)).toEqual(["runde"]);
   expect(
     nearbyTours(
       [{ lat: 46.25, lon: 9.4, slug: "zwischen" } as Pass],

@@ -15,6 +15,7 @@ import { MAP_ASSET_DIR, mapAssets } from "@/lib/map-assets";
 import type { MapAssets } from "@/lib/map-assets";
 import { nearbyTours, townReach } from "@/lib/nearby";
 import type { NearbyTours, TownReach } from "@/lib/nearby";
+import type { PageData } from "@/lib/page-data";
 import { profilesWithCoords, valleyElevations } from "@/lib/profile";
 import * as S from "@/lib/schema";
 import { passYear, signalsOf, tourYear } from "@/lib/status";
@@ -63,17 +64,17 @@ const profiles: Record<string, ElevationProfile> =
   S.Profiles.parse(profilesJson);
 const photos: Photos = S.Photos.parse(photosJson);
 
-export const getPasses = async (): Promise<Pass[]> => {
+const getPasses = async (): Promise<Pass[]> => {
   "use cache";
   return passes;
 };
 
-export const getTours = async (): Promise<Tour[]> => {
+const getTours = async (): Promise<Tour[]> => {
   "use cache";
   return tours;
 };
 
-export const getTowns = async (): Promise<Town[]> => {
+const getTowns = async (): Promise<Town[]> => {
   "use cache";
   return towns;
 };
@@ -93,7 +94,7 @@ const assertWritten = (dir: string, names: string[], script: string) => {
 };
 
 /** URLs of the GeoJSON files MapLibre loads, plus the tour bounding boxes. */
-export const getMapAssets = async (): Promise<MapAssets> => {
+const getMapAssets = async (): Promise<MapAssets> => {
   "use cache";
   const { assets, files } = mapAssets(passes, tours, routes);
   assertWritten(
@@ -105,13 +106,13 @@ export const getMapAssets = async (): Promise<MapAssets> => {
 };
 
 /** Tours within reach of each pass, tour start and town, see `lib/nearby.ts`. */
-export const getNearbyTours = async (): Promise<NearbyTours> => {
+const getNearbyTours = async (): Promise<NearbyTours> => {
   "use cache";
   return nearbyTours(passes, tours, towns, routes);
 };
 
 /** The area each town reaches, as a hull over its passes; see `lib/nearby.ts`. */
-export const getTownReach = async (): Promise<TownReach> => {
+const getTownReach = async (): Promise<TownReach> => {
   "use cache";
   return townReach(passes, towns);
 };
@@ -122,7 +123,7 @@ export const getTownReach = async (): Promise<TownReach> => {
  * same function the build script runs – the file name is a hash of what it
  * returns, so the two sides have to derive it identically.
  */
-export const getDetailAssets = async (): Promise<DetailAssets> => {
+const getDetailAssets = async (): Promise<DetailAssets> => {
   "use cache";
   const { assets, files } = detailAssets(
     passes,
@@ -140,7 +141,7 @@ export const getDetailAssets = async (): Promise<DetailAssets> => {
 };
 
 /** Climate series per pass slug (24 half-months). */
-export const getClimate = async (): Promise<Record<string, ClimateYear>> => {
+const getClimate = async (): Promise<Record<string, ClimateYear>> => {
   "use cache";
   return climate;
 };
@@ -150,7 +151,7 @@ export const getClimate = async (): Promise<Record<string, ClimateYear>> => {
  * to (`valleyTmax`, lib/status.ts). Derived here so the client never needs the
  * profiles for it.
  */
-export const getValleys = async (): Promise<Record<string, number>> => {
+const getValleys = async (): Promise<Record<string, number>> => {
   "use cache";
   return valleyElevations(passes, profiles);
 };
@@ -172,7 +173,7 @@ export const getValleys = async (): Promise<Record<string, number>> => {
  * belongs in a cached getter that revalidates with the build rather than in
  * something committed next to the measurements.
  */
-export const getYears = async (): Promise<Years> => {
+const getYears = async (): Promise<Years> => {
   "use cache";
   const signals: Signals = { climate, valleys: await getValleys() };
   const passYears: Record<string, Year> = {};
@@ -186,4 +187,56 @@ export const getYears = async (): Promise<Years> => {
 export const getPass = async (slug: string): Promise<Pass | undefined> => {
   "use cache";
   return passes.find((p) => p.slug === slug);
+};
+
+/**
+ * Everything the page hands the client, in one await.
+ *
+ * The ten getters above are the page's own business – it wants all of them,
+ * every time, and nothing else ever wanted one on its own. Behind this one
+ * name they stay a cached segment each, so Cache Components still prerenders
+ * the page in pieces, and the caller stops carrying ten names it only ever
+ * passes on (docs/plans/31-panel-model.md).
+ *
+ * `getPass` stays separate and stays exported: the weather route imports it
+ * and starts cold on a serverless instance, and the constraint at the top of
+ * this file is precisely that it must not drag the derivations in.
+ */
+export const getPageData = async (): Promise<PageData> => {
+  "use cache";
+  const [
+    passList,
+    tourList,
+    townList,
+    assets,
+    nearby,
+    reach,
+    detail,
+    climateOf,
+    valleys,
+    years,
+  ] = await Promise.all([
+    getPasses(),
+    getTours(),
+    getTowns(),
+    getMapAssets(),
+    getNearbyTours(),
+    getTownReach(),
+    getDetailAssets(),
+    getClimate(),
+    getValleys(),
+    getYears(),
+  ]);
+  return {
+    assets,
+    climate: climateOf,
+    detail,
+    nearbyTours: nearby,
+    passes: passList,
+    tours: tourList,
+    townReach: reach,
+    towns: townList,
+    valleys,
+    years,
+  };
 };

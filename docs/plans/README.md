@@ -48,9 +48,9 @@ that goal; features that only add route-level precision rank last.
 | 26  | [Pyrenees](26-pyrenees.md)                                            | the Tour's other mountains                | M–L    | 25, 24               | proposed                                                             |
 | 27  | [Gravel](27-gravel.md)                                                | a second discipline                       | L–XL   | 14, 16, 13           | proposed                                                             |
 | 28  | [One app state: the reducer and its adapters](28-app-state.md)        | one rule per decision, two live bugs      | M      | 15, 16               | [done](https://github.com/mdugue/alpen/pull/62)                      |
-| 29  | [The camera as a machine](29-camera-machine.md)                       | camera testable without WebGL             | M–L    | 28                   | proposed                                                             |
+| 29  | [The camera as a machine](29-camera-machine.md)                       | camera testable without WebGL             | M–L    | 28                   | in progress (steps 1–2)                                              |
 | 30  | [The scene: what the map shows, as a value](30-map-scene.md)          | map testable without WebGL, one hover     | M–L    | 28, 01               | proposed                                                             |
-| 31  | [The panel as a model](31-panel-model.md)                             | testable panel, 16 finished, 02, 12       | L      | 15, 16, 28           | in progress (phases A and B)                                         |
+| 31  | [The panel as a model](31-panel-model.md)                             | testable panel, 16 finished, 02, 12       | L      | 15, 16, 28           | done ([#62](https://github.com/mdugue/alpen/pull/62))                |
 | 32  | [The pipeline as plan → execute → apply](32-pipeline-planner.md)      | pipeline testable offline, one retry rule | L      | 00                   | [in progress](https://github.com/mdugue/alpen/pull/62) (phases A, B) |
 | 33  | [Functional core, imperative shell](33-functional-core.md)            | the target the five add up to             | M      | 28–32                | proposed                                                             |
 | –   | UI/UX audit round (no plan document)                                  | "where", finding things, a11y             | M      | –                    | [in progress](https://github.com/mdugue/alpen/pull/47)               |
@@ -84,14 +84,14 @@ not read as the whole picture:
   own data file and its own place in the search and the filters — none of that
   is in PR #47, which derives everything from the towns and passes that
   already exist.
-- **17 (Detail panel per kind)** is not done and is not made harder. The panel
-  gained two blocks and a shared hover, all through the existing props; the
-  split into one component per kind that plan 17 asks for is untouched.
+- **17 (Detail panel per kind)** was not done and was not made harder by the
+  round; it landed afterwards as phase D of [31](31-panel-model.md).
 
 The round also replaced the single 60 km radius with three named reach bands
-and a smooth nearness weight (`lib/geo.ts`), which every "im Umkreis" feature
-now shares. Anything later that asks "what is near here" should use those
-rather than reintroduce a radius.
+and a smooth nearness weight (`lib/geo.ts`). Everything that asks "what is near
+here" now goes through `lib/reach.ts`, which is the one place those bands, that
+weight and the server's tour measurement are read; a new block asks it rather
+than measuring for itself.
 
 ## The second architecture review (plans 28–33)
 

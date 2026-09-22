@@ -187,8 +187,10 @@ survived. Opening on demand settles both. The stack is simply the truth, the
 list keeps its state by never being unmounted while it is open, and nothing has
 to rest on screen, so there is no peek snap to measure. What leaving a detail
 means still depends on what is underneath, and the control says which: a
-labelled `‹ Liste` back button while the list drawer is open behind it
-(`backToList` on `DetailPanel`), the `✕` when the detail is alone over the map.
+labelled `‹ Liste` back button while the list drawer is open behind it, the `✕`
+when the detail is alone over the map. The panel learns which from the sheet it
+is in (`useSheet().over`), so the two facts a subtree needs about its drawer –
+is it expanded, does it lie on another – travel the one way.
 A drawer sizes itself from `--drawer-snap-point-offset`: the popup is a full
 `100dvh` and padded off at the bottom by that offset **less the inset**, so its
 content box ends at the fold – the inset comes off because the popup's own
@@ -212,8 +214,8 @@ alone: what is underneath a detail does not change while it is open, and moving
 a mounted drawer between trees would remount it anyway.
 
 **The content does not scroll until the sheet is at its topmost snap point**
-(`useSheetExpanded`, used by the detail panel's scroller and the sidebar's list
-container). The drag and the scroll are the same gesture, so something has to
+(`useSheet().expanded`, read by the detail panel's scroller and the sidebar's
+list container). The drag and the scroll are the same gesture, so something has to
 arbitrate, and Base UI arbitrates the way the platform does: a touch that starts
 inside a scroll container may swipe the sheet _down_ from the scroll top, but a
 drag _up_ always goes to the scroller. On a detail sheet whose top half is a
@@ -518,8 +520,8 @@ here; the three rules stand on what each of them removes:
   transformed ancestor is kept on a scrolling layer that the browser re-makes
   while the ancestor moves. The gesture belongs to the sheet, so the two
   scrollers inside one (`data-scroller`) clip for its length – the same idea as
-  `useSheetExpanded` above, which already takes the scroll away _below_ the top
-  snap point; this covers the drag that starts _at_ it.
+  `useSheet().expanded` above, which already takes the scroll away _below_ the
+  top snap point; this covers the drag that starts _at_ it.
 
 What is honest about these numbers: they come from headless Chromium with the
 CPU throttled, they were taken while the derived properties above were still
@@ -556,14 +558,52 @@ Every block below the title is a `Section` (`components/panel/section.tsx`),
 open by default. The panel is a column on a map and a phone sheet shows two
 blocks at a time; whoever wants the climate should not scroll past two
 elevation profiles first. Which blocks are folded is one `sessionStorage` entry
-shared by all of them (`SECTIONS_KEY`), keyed by section id and holding the
-_closed_ ones: a fold carries over to the next pass looked at, a new section
-opens by itself, and the next visit starts unfolded again. A section title says
-what the block is and nothing else; where a source or its caveat has to be
-named, one short sentence sits behind the `info` popover, opened by tap or
-click – a tooltip needs hover, which a phone cannot give it, and the detail
-panel is where a phone reaches this app most. A header never opens a dialog –
-the scales dialog belongs to the sidebar footer, which is where it stays.
+shared by all of them (`alpenpaesse:closedSections` in the `STORAGE` table,
+`lib/use-stored.ts`), keyed by section id and holding the _closed_ ones: a fold
+carries over to the next pass looked at, a new section opens by itself, and the
+next visit starts unfolded again. The ids are a closed set (`BlockId`, declared
+with the panel model) rather than free strings, so a block cannot be spelled two
+ways and lose its fold. A section title says what the block is and nothing else;
+where a source or its caveat has to be named, one short sentence sits behind the
+`info` popover, opened by tap or click – a tooltip needs hover, which a phone
+cannot give it, and the detail panel is where a phone reaches this app most. A
+header never opens a dialog – the scales dialog belongs to the sidebar footer,
+which is where it stays.
+
+### Model in, markup out
+
+**What a pass, a tour or a town shows is a value, and the components render
+it.** `detailModel(selection, data, state)` (`lib/detail-model.ts`) resolves the
+entity once and returns one discriminated `DetailModel`: the entity itself, its
+verdict and every German sentence it shows, what is within reach of it, which
+blocks apply, and how far its detail file has got (`DetailState`,
+`lib/detail-state.ts`). `PassDetail`, `TourDetail` and `TownDetail` take their
+half of that value plus one `PanelActions` object, and nothing else. The shell
+(`detail-panel.tsx`) is the head, the control row and one three-way switch on
+`model.kind`.
+
+The three things that convention buys:
+
+- **The kind is decided once.** It used to be found, cast and branched on in
+  three places, each branch taking all nineteen of the shell's props and reading
+  six of them, so adding a field to what a pass shows meant reading the whole
+  file to find out who else was passing it on.
+- **Every sentence has one home.** The model calls `lib/status.ts`
+  (`bestText`, `reasonParagraph`, `climateText`, `tourText`, `seasonText`) and
+  the components print what comes back. No German is glued together in JSX, so
+  the same fact cannot be worded two ways in two blocks.
+- **It is testable without a browser.** The model is a pure function – `period`,
+  `hovered` and the fetch state are arguments, never hooks – so `bun test`
+  renders all three kinds from one fixture with `renderToStaticMarkup`
+  (`components/panel/kind-detail.test.tsx`), and the same model will render on
+  the server for an entity page (`docs/plans/02-*`).
+
+**"What is near here" is one module.** `lib/reach.ts` measures distance in the
+bands, the weight and the reach of `lib/geo.ts` and hands back one `Reach`
+value; `inBands` reads it the way a rider thinks about a day, `byDistance` reads
+it nearest-first for the "Im Umkreis" block. The two readings are deliberate and
+come from one computation. What a ranked block above already shows is `claimed`
+in the same call, so no block has to be told by a flag what a sibling drew.
 
 ### Photos are borrowed, not owned, and they are the panel's hero
 

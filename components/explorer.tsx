@@ -28,12 +28,10 @@ import type {
   Filters,
   Selection,
 } from "@/lib/app-state";
-import type { DetailAssets } from "@/lib/detail-assets";
 import { filterCount } from "@/lib/filter-summary";
 import { useHashAdapter } from "@/lib/hash-adapter";
-import type { MapAssets } from "@/lib/map-assets";
 import { shellEdge } from "@/lib/map-camera";
-import type { NearbyTours, TownReach } from "@/lib/nearby";
+import type { PageData } from "@/lib/page-data";
 import { entityKey } from "@/lib/route-key";
 import {
   buildPassRows,
@@ -44,15 +42,8 @@ import {
   seasonBand,
 } from "@/lib/rows";
 import { indexBySlug } from "@/lib/status";
-import type { Signals, Years } from "@/lib/status";
-import type {
-  ClimateYear,
-  LatLon,
-  Pass,
-  Period,
-  Tour,
-  Town,
-} from "@/lib/types";
+import type { Signals } from "@/lib/status";
+import type { LatLon, Period } from "@/lib/types";
 import { useHeight } from "@/lib/use-height";
 import {
   MOBILE_QUERY,
@@ -63,27 +54,8 @@ import { useFavorites, useStorageAdapter, useStored } from "@/lib/use-stored";
 import { cn, fmt, PANEL, SHELL_BAR } from "@/lib/utils";
 
 interface Props {
-  passes: Pass[];
-  tours: Tour[];
-  towns: Town[];
-  /** Where MapLibre loads the ascent and tour lines from, see `lib/map-assets.ts`. */
-  assets: MapAssets;
-  nearbyTours: NearbyTours;
-  /** The area each town reaches, drawn on hover; see `lib/nearby.ts`. */
-  townReach: TownReach;
-  /**
-   * Where the detail panel loads the selected entity's profiles and photos
-   * from, one file per entity; see `lib/detail-assets.ts`.
-   */
-  detail: DetailAssets;
-  climate: Record<string, ClimateYear>;
-  /** Lowest ascent start per pass, for the derived valley heat (`lib/status.ts`). */
-  valleys: Record<string, number>;
-  /**
-   * The 24 graded half-months of every pass and tour, computed once on the
-   * server (`getYears`, lib/data.ts). Nothing here grades a pass itself.
-   */
-  years: Years;
+  /** Everything the page loaded, as one value (`getPageData`, lib/data.ts). */
+  data: PageData;
   /** Today's half-month, computed on the server in Europe/Berlin. */
   defaultPeriod: Period;
 }
@@ -99,19 +71,9 @@ const DETAIL_W = { lg: 352, xl: 400 };
  * `lib/app-state.ts`, fed by the hash and the storage adapters; what is left
  * here is the layout, the rows and the wiring of `dispatch` into the panels.
  */
-export const Explorer = ({
-  passes,
-  tours,
-  towns,
-  assets,
-  nearbyTours,
-  townReach,
-  detail,
-  climate,
-  valleys,
-  years,
-  defaultPeriod,
-}: Props) => {
+export const Explorer = ({ data, defaultPeriod }: Props) => {
+  const { assets, climate, passes, tours, townReach, towns, valleys, years } =
+    data;
   const signals: Signals = { climate, valleys };
   const isMobile = useMediaQuery(MOBILE_QUERY);
   const env: Env = {
@@ -124,7 +86,7 @@ export const Explorer = ({
     defaultPeriod,
     initialState,
   );
-  useHashAdapter(state, dispatch);
+  const intent = useHashAdapter(state, dispatch);
   useStorageAdapter(state);
   const {
     filters,
@@ -212,24 +174,18 @@ export const Explorer = ({
   const detailFor = (sel: Selection) => (
     <DetailPanel
       selection={sel}
+      data={{ ...data, passIndex }}
       period={filters.period}
-      passes={passes}
-      tours={tours}
-      towns={towns}
-      nearbyTours={nearbyTours}
-      detail={detail}
-      climate={climate}
-      valleys={valleys}
-      years={years}
-      isFavorite={isFavorite}
-      onToggleFavorite={toggleFavorite}
       hovered={hovered}
-      onHover={hover}
-      onProfileCursor={(at) => dispatch({ at, type: "profileCursor" })}
-      onProfileZoom={setProfileZoom}
-      onSelect={select}
-      onBack={back}
-      backToList={isMobile && sheet.list.open}
+      favorite={isFavorite(sel.kind, sel.slug)}
+      actions={{
+        onBack: back,
+        onHover: hover,
+        onProfileCursor: (at) => dispatch({ at, type: "profileCursor" }),
+        onProfileZoom: setProfileZoom,
+        onSelect: select,
+        onToggleFavorite: () => toggleFavorite(sel.kind, sel.slug),
+      }}
     />
   );
 
@@ -250,6 +206,7 @@ export const Explorer = ({
       open={selection !== null}
       onClose={back}
       snapPoints={DETAIL_SNAPS}
+      over={sheet.detail.nested}
       snap={sheet.detail.snap}
       onSnapChange={(snap) => dispatch({ sheet: "detail", snap, type: "snap" })}
     >
@@ -354,6 +311,7 @@ export const Explorer = ({
             onHover={hover}
             onSelect={select}
             onViewChange={(view) => dispatch({ type: "view", view })}
+            intent={intent}
             profileCursor={profileCursor}
             profileZoom={profileZoom}
             requestedView={requestedView}

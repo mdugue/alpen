@@ -1,17 +1,6 @@
 import { Explorer } from "@/components/explorer";
 import { SITE_DESCRIPTION, SITE_NAME, siteUrl } from "@/lib/brand";
-import {
-  getClimate,
-  getDetailAssets,
-  getMapAssets,
-  getNearbyTours,
-  getPasses,
-  getTours,
-  getTownReach,
-  getTowns,
-  getValleys,
-  getYears,
-} from "@/lib/data";
+import { getPageData } from "@/lib/data";
 import { todayPeriod } from "@/lib/status";
 
 /**
@@ -60,29 +49,7 @@ const jsonLd = {
 const Page = async () => {
   "use cache";
 
-  const [
-    passes,
-    tours,
-    towns,
-    assets,
-    nearbyTours,
-    townReach,
-    detail,
-    climate,
-    valleys,
-    years,
-  ] = await Promise.all([
-    getPasses(),
-    getTours(),
-    getTowns(),
-    getMapAssets(),
-    getNearbyTours(),
-    getTownReach(),
-    getDetailAssets(),
-    getClimate(),
-    getValleys(),
-    getYears(),
-  ]);
+  const data = await getPageData();
 
   return (
     <main className="h-dvh overflow-hidden">
@@ -103,19 +70,7 @@ const Page = async () => {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <Explorer
-        passes={passes}
-        tours={tours}
-        towns={towns}
-        assets={assets}
-        nearbyTours={nearbyTours}
-        townReach={townReach}
-        detail={detail}
-        climate={climate}
-        valleys={valleys}
-        years={years}
-        defaultPeriod={todayPeriod()}
-      />
+      <Explorer data={data} defaultPeriod={todayPeriod()} />
     </main>
   );
 };
