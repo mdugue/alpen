@@ -17,6 +17,14 @@
  * lands" is a transition there rather than a boolean read by three schedulers
  * (docs/plans/29-camera-machine.md). `applyCamera` in `components/map/` is the
  * only place the commands meet MapLibre.
+ *
+ * The app reaches for ten of the names below – `camera`, `COLD`, `toInset`,
+ * `fitInset` and the `Inset` type from the two appliers and the shell,
+ * `flightFor`, `fitDone`, `FIT_MS`, `FIT_PADDING` and `NO_INSET` from the map
+ * component, `visibleBounds` from the scene. The rest are the thresholds this
+ * file decides with, exported so the tests can name a duration or a padding
+ * instead of repeating its number: a test that spelled `600` would still pass
+ * after the flight was made slower, and say nothing about it.
  */
 
 import type { MapView, Selection } from "@/lib/app-state";
@@ -119,7 +127,7 @@ export const FIT_MS = 800;
  * "already there" and offer the whole-Alps overview instead. Half a zoom step
  * is too coarse to notice and two kilometres is inside the width of one pass.
  */
-export const FIT_TOLERANCE = { km: 2, zoom: 0.05 };
+const FIT_TOLERANCE = { km: 2, zoom: 0.05 };
 
 /** Whether the camera is close enough to a fitted frame to count as on it. */
 export const fitDone = (

@@ -166,15 +166,9 @@ export const useFavorites = () => {
         ? f[kind].filter((s) => s !== slug)
         : [...f[kind], slug],
     }));
-  const count =
-    favorites.pass.length + favorites.tour.length + favorites.town.length;
-  return {
-    clear: () => setFavorites(NO_FAVORITES),
-    count,
-    favorites,
-    isFavorite,
-    toggle,
-  };
+  // Only the two the explorer asks for: a `favorites` array, a `count` and a
+  // `clear` were all handed back too, and no caller ever took one.
+  return { isFavorite, toggle };
 };
 
 const isKind = (v: unknown): v is EntityKind =>

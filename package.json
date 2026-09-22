@@ -14,7 +14,7 @@
     "lint:fix": "ultracite fix",
     "test": "bun test lib scripts components",
     "e2e": "NEXT_PUBLIC_TEST_HOOKS=1 bun run build && bun run e2e:run",
-    "e2e:run": "bun test --timeout 90000 e2e",
+    "e2e:run": "bun test --timeout 20000 e2e",
     "typecheck": "tsc --noEmit",
     "data:build": "bun run scripts/build-data.ts",
     "data:check": "bun run scripts/check-data.ts",

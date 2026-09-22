@@ -112,8 +112,8 @@ flowchart LR
    the weather route only. Checks: the greps in plans 28-31.
 4. **The core carries the tests.** `bun test` covers the reducer, the
    machine, the scene, the pick, the model and the pipeline; the e2e is at
-   most ten scenarios with default timeouts, no monkey-patching, and reads
-   nothing off `window.__alpen` but the map handle.
+   most ten scenarios with a timeout measured rather than guessed, no
+   monkey-patching, and reads nothing off `window.__alpen` but the map handle.
 5. **The litmus test.** A new feature enters as data: the official closure
    status (roadmap 1) is one pipeline job kind, one field on the row, one
    scene input and one reducer case, and it needs no effect edited. The plan
@@ -150,6 +150,16 @@ leaving the file the way the paint expressions did. That is a plan of its
 own, not a line to squeeze into this one. The panel's remainder is its head,
 its bar and the weather block, still inline in the shell.
 
+The e2e timeout is the third criterion that had to give. "Default timeouts"
+was written before anyone timed the scenarios, and Bun's default is 5 s: on
+the CI runner the ten take between 0.8 s and 6.3 s, so two of them would
+never have passed under it. The scenarios drive a real Chromium over a real
+build, and that is what they are for. What was wrong was the 90 s the file
+carried instead – fourteen times the slowest, which is not a timeout but a
+suite that hangs for a minute and a half before it says so. It is 20 s now,
+about three times the slowest measured scenario: enough headroom for a cold
+runner, little enough that a hang is reported while anyone is still watching.
+
 ### What each plan delivers to the core
 
 | Plan | Core module                         | Adapter                         | Leaves behind                                        |
@@ -174,8 +184,8 @@ its bar and the weather block, still inline in the shell.
    claims.
 3. **The e2e as smoke.** Delete scenarios the core tests now cover; keep
    load, a selection on desktop and phone, a shared link, the filters, dark
-   mode, and the closure of the detail; default timeouts; `window.__alpen`
-   reduced to the handle.
+   mode, and the closure of the detail; the timeout cut to what the
+   scenarios measure; `window.__alpen` reduced to the handle.
 4. **Plan 02 re-read.** Its design section says the router replaces the
    hash adapter of plan 28 and emits the same actions; nothing else in it
    changes.

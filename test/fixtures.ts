@@ -14,7 +14,7 @@ import type { Pass, Period, Tour, Town } from "@/lib/types";
  * one degree of longitude at 46° N is about 77,3 km.
  */
 
-export const KM_PER_DEGREE = 77.3;
+const KM_PER_DEGREE = 77.3;
 
 export const ORIGIN = { lat: 46, lon: 10 };
 
@@ -87,7 +87,7 @@ export const cellOf = (grade: Grade): YearCell => ({
 });
 
 /** A flat year at one grade – enough for everything that reads a strip. */
-export const yearOf = (grade: Grade): Year => ({
+const yearOf = (grade: Grade): Year => ({
   best: null,
   cells: PERIODS.map(() => cellOf(grade)),
 });
