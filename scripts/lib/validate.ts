@@ -467,18 +467,6 @@ export const inputsHash = (
   ).toString(16);
 
 /**
- * …and what those parts are for each kind of route, so the two sides cannot
- * drift: `build-data.ts` stamps the hash onto `routes-meta.json` when it
- * stores a geometry, `check-data.ts` compares it back. Spelled out twice, a
- * renamed key would make every stored route read as fetched for something
- * else – and 297 re-routes is not a typo's worth of damage.
- *
- * A climb is asked for by where it starts and the marker it ends at, with the
- * marker's elevation, because that is what the gate measures it against. A
- * traverse has no marker in its question: it is routed between its two
- * curated ends and judged against its stated length.
- */
-/**
  * The OpenRouteService profile a road is routed with: the road-cycling graph
  * for asphalt, the mountain-bike graph for gravel and mixed – the road graph
  * leaves tracks out (plan 27). Here, beside the inputs, because the profile
@@ -496,6 +484,18 @@ export const profileOf = (surface: Surface): RoutingProfile =>
 const profilePart = (profile?: RoutingProfile) =>
   profile && profile !== "cycling-road" ? { profile } : {};
 
+/**
+ * …and what those parts are for each kind of route, so the two sides cannot
+ * drift: `build-data.ts` stamps the hash onto `routes-meta.json` when it
+ * stores a geometry, `check-data.ts` compares it back. Spelled out twice, a
+ * renamed key would make every stored route read as fetched for something
+ * else – and 297 re-routes is not a typo's worth of damage.
+ *
+ * A climb is asked for by where it starts and the marker it ends at, with the
+ * marker's elevation, because that is what the gate measures it against. A
+ * traverse has no marker in its question: it is routed between its two
+ * curated ends and judged against its stated length.
+ */
 export const ascentInputs = (
   traverse: boolean,
   p: { elevation: number; lat: number; lon: number },

@@ -228,6 +228,9 @@ if (!changesOnly) {
   distribution("2b. Rain days (%)", (p) => p.bucket?.wetPct ?? null, 0);
   distribution("2c. Summit tmax (°C)", (p) => p.bucket?.tmax ?? null);
   distribution("2d. Day length (h)", (p) => dayLength(p.pass.lat, p.t), 2);
+  // Empty until the archive has been asked for the snow depth (plan 27);
+  // the two cover shares are set against this table once it fills.
+  distribution("2e. Snow cover (%)", (p) => p.bucket?.coverPct ?? null, 0);
 
   thresholdCounts(
     `3a. Heat: valley tmax ≥ threshold (HEAT_VALLEY_TMAX = ${HEAT_VALLEY_TMAX})`,

@@ -47,6 +47,7 @@ vocabularies (regions, countries, road types, road and town labels) live in
 ```jsonc
 {
   "slug": "col-du-galibier", // stable, derived from the name; umlauts → ae/oe/ue
+  "surface": "asphalt", // asphalt | gravel | mixed – picks the routing profile and the closing rung
   "name": "Col du Galibier",
   "aliases": ["Galibier"], // optional: other spellings people search for
   "country": "FR", // COUNTRIES in lib/regions.ts; "CH/IT" for border passes
@@ -152,13 +153,14 @@ it. The rule is operational, not aesthetic: if the ascents climb to the
 entry's own point it is a `pass` or a `spur`; if the ride is the traverse
 itself it is one of the other three.
 
-| `type`    | Label (UI)   | What it is                                            | Examples                                             |
-| --------- | ------------ | ----------------------------------------------------- | ---------------------------------------------------- |
-| `pass`    | Pass         | a crossing: up one side, down another                 | Stilfser Joch, Galibier, Nockalmstraße               |
-| `spur`    | Stichstraße  | a climb to a point where the road ends                | Tre Cime, Ötztaler Gletscherstraße, Kitzbüheler Horn |
-| `plateau` | Höhenstraße  | stays up instead of crossing once: high road, plateau | Zillertaler Höhenstraße, Seiser Alm, Ritten          |
-| `balcony` | Balkonstraße | cut into a wall, no summit the ride aims at           | Combe Laval, Gorges de la Bourne, Gorges du Cians    |
-| `valley`  | Talstraße    | a quiet dead-end valley, little gradient              | Vallée de la Clarée, Val Ferret, Sertigtal           |
+| `type`    | Label (UI)   | What it is                                                                                                                                                                                                                                                                                               | Examples                                             |
+| --------- | ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------- |
+| `pass`    | Pass         | a crossing: up one side, down another                                                                                                                                                                                                                                                                    | Stilfser Joch, Galibier, Nockalmstraße               |
+| `spur`    | Stichstraße  | a climb to a point where the road ends                                                                                                                                                                                                                                                                   | Tre Cime, Ötztaler Gletscherstraße, Kitzbüheler Horn |
+| `surface` | Belag        | what it is rolled on (plan 27) – not a type, the second axis: `asphalt`, `gravel`, or `mixed` for asphalt with a gravel stretch a road bike cannot take; it picks the routing profile and, unpaved, the snow cover as the closing rung (`docs/scales.md`); a loop carries at least what its roads demand | Assietta `gravel`, Finestre `mixed`                  |
+| `plateau` | Höhenstraße  | stays up instead of crossing once: high road, plateau                                                                                                                                                                                                                                                    | Zillertaler Höhenstraße, Seiser Alm, Ritten          |
+| `balcony` | Balkonstraße | cut into a wall, no summit the ride aims at                                                                                                                                                                                                                                                              | Combe Laval, Gorges de la Bourne, Gorges du Cians    |
+| `valley`  | Talstraße    | a quiet dead-end valley, little gradient                                                                                                                                                                                                                                                                 | Vallée de la Clarée, Val Ferret, Sertigtal           |
 
 A `spur` cannot be crossed, so `data:check` warns when a tour lists one and
 the detail panel says so under "Auffahrten". The three traverse types carry

@@ -1,8 +1,15 @@
 import type { Bounds } from "@/lib/geo";
 import { RANGES, ROAD_TYPES, SURFACES } from "@/lib/regions";
-import type { RangeName, Surface } from "@/lib/regions";
+import type { RangeName } from "@/lib/regions";
 import { STATUS_ORDER } from "@/lib/status";
-import type { LatLon, Period, RoadTag, RoadType, Status } from "@/lib/types";
+import type {
+  LatLon,
+  Period,
+  RoadTag,
+  RoadType,
+  Status,
+  Surface,
+} from "@/lib/types";
 
 /**
  * The four kinds the app lists and selects. A destination is a curated area

@@ -549,7 +549,7 @@ export const appLayers = (
         "line-color": [
           "case",
           ["==", ["get", "surface"], "asphalt"],
-          "rgba(0, 0, 0, 0)",
+          "transparent",
           colors.paper,
         ],
         "line-dasharray": [1.5, 1.5],

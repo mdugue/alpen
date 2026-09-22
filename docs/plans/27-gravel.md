@@ -10,7 +10,15 @@ session: the archive run for `snow_depth` (the field is read when it comes;
 until then a gravel road is never closed on a guess), the first data batch
 (it needs `data:locate` and an `ORS_KEY`), the curated-geometry escape hatch
 (no road needs it yet) and the tagline (waits for twenty gravel roads).
-`locate.ts` already includes tracks in its road query ·
+`locate.ts` already includes every track in its road query, without the
+`tracktype` filter and for every surface – broader than the plan, and the
+gate catches what that lets through. Two rules differ from the text on
+purpose: only a mountain profile enters `meta.inputs`, so the routes stored
+before the field existed keep their hash; and a loop's surface is held to
+_at least_ its roads, so a loop whose connecting stretches are gravel can say
+so. The archive request itself is not widened until a live run has confirmed
+the variable and its cost – the bucket function reads `snow_depth_mean` the
+day the series carries it ·
 **Effort:** L–XL (M for the schema and the routing, M
 for the snow-cover signal, M for the UI, the rest is curation) ·
 **Depends on:** 14 (types and tags: the gravel classics are plateaus and

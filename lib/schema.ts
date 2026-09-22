@@ -296,9 +296,10 @@ export const Tour = z.strictObject({
   season: TourSeason.nullable(),
   slug: Slug,
   /**
-   * `gravel` or `mixed` if any member road is, else `asphalt` – written
-   * down rather than derived so the file says what a loop is ridden with,
-   * and held to its roads by `data:check`.
+   * What the loop is ridden with: at least what its roads demand (`gravel`
+   * or `mixed` the moment one member is), and more where the connecting
+   * stretches are gravel. Written down rather than derived so the file can
+   * say so; `data:check` holds it to the roads.
    */
   surface: Surface,
   waypoints: z.array(LatLon).min(2),

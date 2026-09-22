@@ -163,16 +163,19 @@ export const routeJobs = (passes: Pass[], tours: Tour[]): RouteJob[] => [
       };
     });
   }),
-  ...tours.map((t): RouteJob => ({
-    check: t.check,
-    inputs: tourInputs(t, profileOf(t.surface)),
-    key: tourKey(t.slug),
-    kind: "tour",
-    label: `Tour ${t.name}`,
-    profile: profileOf(t.surface),
-    statedKm: t.km,
-    waypoints: t.waypoints,
-  })),
+  ...tours.map((t): RouteJob => {
+    const profile = profileOf(t.surface);
+    return {
+      check: t.check,
+      inputs: tourInputs(t, profile),
+      key: tourKey(t.slug),
+      kind: "tour",
+      label: `Tour ${t.name}`,
+      profile,
+      statedKm: t.km,
+      waypoints: t.waypoints,
+    };
+  }),
 ];
 
 /** Measure a geometry; the profile fields stay null until one has been fetched. */

@@ -49,16 +49,21 @@ export interface LayerSet {
   labels: readonly string[];
   /** The transparent layer over the mark, as wide as the pointer needs. */
   hit: string;
-  /** The source all three read. */
+  /**
+   * Layers drawn with the mark and filtered with it, but neither a name nor
+   * a target: the dash over an unpaved ascent. They are never aimed at.
+   */
+  companions?: readonly string[];
+  /** The source all of them read. */
   source: string;
 }
 
 /** The outline of a destination's circle; the fill is its `mark`. */
 export const DESTINATION_EDGE = "destinations-edge";
 /**
- * The dash laid over an unpaved ascent (plan 27). Part of the route set below
- * – it carries the same filter – rather than a layer of its own: a gravel
- * line hidden by the list must not keep its dashes.
+ * The dash laid over an unpaved ascent (plan 27). A companion of the route
+ * set below – it carries the same filter – rather than a layer of its own: a
+ * gravel line hidden by the list must not keep its dashes.
  */
 export const ROUTE_DASH = "routes-dash";
 
@@ -82,10 +87,9 @@ export const LAYERS = {
     source: SOURCE.passes,
   },
   route: {
+    companions: [ROUTE_DASH],
     hit: "routes-hit",
-    // Not a name, but it carries the filter like one: the dash over an
-    // unpaved ascent lives and dies with the line under it.
-    labels: [ROUTE_DASH],
+    labels: [],
     mark: "routes",
     source: SOURCE.routes,
   },
@@ -122,6 +126,7 @@ export const OVERLAY = {
 export const layersOf = (set: LayerSet): string[] => [
   set.mark,
   ...set.labels,
+  ...(set.companions ?? []),
   set.hit,
 ];
 

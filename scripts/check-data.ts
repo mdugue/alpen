@@ -340,17 +340,19 @@ const checkPasses = (list: Pass[]) => {
 
 /**
  * A loop is ridden with what its roads demand: gravel or mixed the moment one
- * member is, asphalt only when every one is (plan 27). Written down rather
- * than derived, so the file says it – and held to the roads here.
+ * member is (plan 27). Written down rather than derived, so the file can say
+ * more than its roads do – and held to at least what they say here.
  */
 const checkTourSurface = (t: Tour, byPass: Map<string, Pass>) => {
   const surfaces = t.passes
     .map((s) => byPass.get(s)?.surface)
     .filter((x) => x !== undefined);
+  // At least what the roads say: a loop may declare more gravel than its
+  // roads (the connecting stretches), never less.
   const expected = surfaceOfRoads(surfaces);
-  if (surfaces.length && t.surface !== expected)
+  if (surfaces.length && t.surface === "asphalt" && expected !== "asphalt")
     errors.push(
-      `Tour ${t.slug}: surface "${t.surface}" – nach ihren Pässen wäre es "${expected}"`,
+      `Tour ${t.slug}: surface "asphalt" – ihre Pässe verlangen mindestens "${expected}"`,
     );
 };
 
@@ -624,6 +626,17 @@ const singleSided = (passes ?? []).filter(
 // lone road nobody would build a holiday around, and a gap in the areas when
 // it is not. The list makes that a decision the curator sees.
 const alone = passes && destinations ? standalone(destinations, passes) : [];
+// The snow cover closes an unpaved road (plan 27); a series without it grades
+// such a road by every other rung and never closes it. Counted, not warned:
+// the archive has not been asked for it yet, and that is a run, not a bug.
+const series = Object.values(climate ?? {});
+const withCover = series.filter((c) =>
+  c.some((b) => b?.coverPct !== undefined),
+);
+if (series.length && withCover.length < series.length)
+  console.log(
+    `INFO  Schneedecke (coverPct) fehlt in ${series.length - withCover.length} von ${series.length} Klimareihen – ungeteerte Straßen werden bis zum Archivlauf nie „gesperrt“`,
+  );
 if (alone.length)
   console.log(
     `INFO  ${alone.length} Straßen in keinem Reiseziel: ${alone.join(", ")}`,

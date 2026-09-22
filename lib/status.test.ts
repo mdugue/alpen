@@ -468,9 +468,13 @@ describe("cell hints", () => {
     expect(cellHint(cell({}))).toBe(
       "Nichts spricht gegen die Fahrt. Nur ist es ein kürzerer Abschnitt als die beste Zeit.",
     );
-    // Best and closed have nothing specific to add, so the general sentence stands.
+    // Best has nothing specific to add, so the general sentence stands; a
+    // closed cell names what closed it – the barrier, or the snow on a track.
     expect(cellHint(cell({ grade: "best" }))).toBe(GRADE_HINT.best);
-    expect(cellHint(cell({ grade: "closed" }))).toBe(GRADE_HINT.closed);
+    expect(cellHint(cell({ grade: "closed" }))).toContain("Wintersperre");
+    expect(
+      cellHint(cell({ grade: "closed", reasons: ["snow-cover"] })),
+    ).toContain("unter Schnee");
     expect(
       passYear(bySlug("mont-ventoux"), signalsOf(signals, "mont-ventoux"))
         .cells[13],

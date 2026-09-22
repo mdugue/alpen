@@ -116,11 +116,7 @@ export const ors = {
    * surface asks for (`profileOf`): road cycling for asphalt, mountain for
    * gravel and mixed.
    */
-  route: (
-    t: Transport,
-    waypoints: LatLon[],
-    profile: RoutingProfile = "cycling-road",
-  ) =>
+  route: (t: Transport, waypoints: LatLon[], profile: RoutingProfile) =>
     stitched(waypoints, 50, async (chunk) => {
       const json = OrsAnswer.parse(
         await t.getJson(

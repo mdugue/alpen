@@ -47,9 +47,9 @@ import {
   filterCount,
 } from "@/lib/filter-summary";
 import { RANGE, ROAD_TAG, ROAD_TAGS, ROAD_TYPE, SURFACE } from "@/lib/regions";
-import type { RangeName, Surface } from "@/lib/regions";
+import type { RangeName } from "@/lib/regions";
 import { STATUS_LABEL } from "@/lib/status";
-import type { RoadTag, RoadType, Status } from "@/lib/types";
+import type { RoadTag, RoadType, Status, Surface } from "@/lib/types";
 import { cn, fmt, TOUCH_CONTROL } from "@/lib/utils";
 
 const LEVELS = [1, 2, 3, 4, 5] as const;

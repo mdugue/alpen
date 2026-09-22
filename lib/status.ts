@@ -98,11 +98,12 @@ const REASON_WORD: Record<StatusReason, string> = {
  * as close: below `COVER_CLOSED_PCT` and above `COVER_LIMITED_PCT` it is a
  * caveat, which is why it stands in both lists.
  */
-export const CLOSING_REASONS: StatusReason[] = ["outside-window", "snow-cover"];
+export const WINDOW_CLOSING: StatusReason = "outside-window";
+export const CLOSING_REASONS: StatusReason[] = [WINDOW_CLOSING, "snow-cover"];
 
 /** Every reason that can make a cell "eingeschränkt", in ladder order. */
 const LIMITING_REASONS: StatusReason[] = REASON_ORDER.filter(
-  (r) => r !== "outside-window",
+  (r) => r !== WINDOW_CLOSING,
 );
 
 /**
@@ -232,6 +233,11 @@ export interface Years {
 export const cellHint = (cell: YearCell): string => {
   if (cell.grade === "limited" && cell.reasons[0])
     return `Fahrbar, aber mit einem Haken: ${REASON_PHRASE[cell.reasons[0]]}.`;
+  // A closed cell names what closed it: the barrier, or the snow on a track.
+  if (cell.grade === "closed")
+    return cell.reasons[0] === "snow-cover"
+      ? "Die ungeteerte Straße liegt in dieser Zeit meist unter Schnee – niemand räumt sie."
+      : "Die Straße ist in dieser Zeit meist gesperrt, in der Regel wegen der Wintersperre.";
   if (cell.grade === "good")
     return cell.snowy
       ? "Nichts spricht gegen die Fahrt. Jedoch schneit es gelegentlich."
@@ -521,8 +527,8 @@ export const passVerdict = (
   input?: VerdictInput | null,
 ): StatusVerdict => {
   const reasons = baseReasons(pass, t);
-  if (reasons.includes("outside-window"))
-    return { reasons: ["outside-window"], status: "closed" };
+  if (reasons.includes(WINDOW_CLOSING))
+    return { reasons: [WINDOW_CLOSING], status: "closed" };
   const b = input?.bucket;
   // The closing rung of an unpaved road is the snow cover, where the series
   // carries it: a barrier closes a pass, the snow closes a track. Without
@@ -921,7 +927,7 @@ export const statusWord = (
   status: Status,
   reason?: StatusReason | null,
 ): string =>
-  status === "risky" && reason && reason !== "outside-window"
+  status === "risky" && reason && reason !== WINDOW_CLOSING
     ? `${STATUS_LABEL[status]}: ${REASON_WORD[reason]}`
     : STATUS_LABEL[status];
 
@@ -1032,7 +1038,7 @@ export const tourText = (
   // cell whose names cannot be resolved is not it, and stays silent.
   if (cell.limiting?.length === 0 && tour.season) {
     const window = windowText(tour.season);
-    return cell.reasons[0] === "outside-window"
+    return cell.reasons[0] === WINDOW_CLOSING
       ? `${word}: außerhalb des typischen Fensters ${window}.`
       : `${word}: am Rand des typischen Fensters ${window}.`;
   }

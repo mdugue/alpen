@@ -372,9 +372,9 @@ export const TAG_LABEL: Record<
  * pressed.
  */
 export const SURFACES = ["asphalt", "gravel", "mixed"] as const;
-export type Surface = (typeof SURFACES)[number];
+export type SurfaceName = (typeof SURFACES)[number];
 
-export const SURFACE: Record<Surface, { label: string; hint: string }> = {
+export const SURFACE: Record<SurfaceName, { label: string; hint: string }> = {
   asphalt: {
     hint: "Durchgehend asphaltiert – die Straße, die ein Rennrad fährt.",
     label: "Asphalt",
@@ -385,23 +385,26 @@ export const SURFACE: Record<Surface, { label: string; hint: string }> = {
   },
   mixed: {
     hint: "Asphalt mit einem Schotterstück, das kein Rennrad fährt – die Notiz sagt, wo.",
-    label: "gemischt",
+    label: "Gemischt",
   },
 };
 
 /** The one word beside the type word in the panel and the popup; nothing for asphalt, like a plain pass. */
-export const surfaceWord = (surface: Surface): string | null =>
+export const surfaceWord = (surface: SurfaceName): string | null =>
   surface === "asphalt" ? null : SURFACE[surface].label;
 
 /** Whether the road is ridden with something other than a road bike. */
-export const isUnpaved = (surface: Surface): boolean => surface !== "asphalt";
+export const isUnpaved = (surface: SurfaceName): boolean =>
+  surface !== "asphalt";
 
 /**
  * What a loop is ridden with, from its roads: gravel when every road is,
  * asphalt when every road is, mixed as soon as they differ or one is mixed.
  * `data:check` holds `Tour.surface` to this.
  */
-export const surfaceOfRoads = (surfaces: readonly Surface[]): Surface => {
+export const surfaceOfRoads = (
+  surfaces: readonly SurfaceName[],
+): SurfaceName => {
   const set = new Set(surfaces);
   if (set.has("mixed") || set.size > 1) return "mixed";
   return set.has("gravel") ? "gravel" : "asphalt";
