@@ -101,13 +101,10 @@ const stitched = async (
   perRequest: number,
   ask: (chunk: LatLon[]) => Promise<RouteGeometry>,
 ): Promise<RouteGeometry> => {
-  const pieces = chunks(waypoints, perRequest, 1);
   const out: RouteGeometry = [];
-  let i = 0;
-  while (i < pieces.length) {
-    const cs = await ask(pieces[i]!);
+  for (const piece of chunks(waypoints, perRequest, 1)) {
+    const cs = await ask(piece);
     out.push(...(out.length ? cs.slice(1) : cs));
-    i += 1;
   }
   return out;
 };
@@ -204,11 +201,8 @@ export const openMeteo = {
    * `ELEVATION_BATCH` points per request, billed one call per point.
    */
   elevation: async (t: Transport, points: LatLon[]): Promise<number[]> => {
-    const batches = chunks(points, ELEVATION_BATCH);
     const out: number[] = [];
-    let i = 0;
-    while (i < batches.length) {
-      const chunk = batches[i]!;
+    for (const chunk of chunks(points, ELEVATION_BATCH)) {
       out.push(
         ...Elevation.parse(
           await t.getJson(
@@ -219,7 +213,6 @@ export const openMeteo = {
           ),
         ).elevation,
       );
-      i += 1;
     }
     return out;
   },

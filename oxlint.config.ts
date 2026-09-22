@@ -66,9 +66,15 @@ export default defineConfig({
       // The build script talks to rate-limited APIs: requests are sequential
       // on purpose and the retry loop awaits each attempt. The browser
       // harness polls the page the same way: every wait is a loop that must
-      // await one probe before deciding whether to make the next one.
+      // await one probe before deciding whether to make the next one. Both
+      // rules say the same thing about the same loops, so both are off here;
+      // otherwise the second one pushes exactly these loops into a `while`
+      // with a hand-kept index, which is the shape that gets an off-by-one.
       files: ["scripts/**", ".agents/skills/**", "test/**", "e2e/**"],
-      rules: { "no-await-in-loop": "off" },
+      rules: {
+        "no-await-in-loop": "off",
+        "react-doctor/async-await-in-loop": "off",
+      },
     },
     {
       // This file *is* the lazily loaded chunk: `detail-panel.tsx` pulls it in
