@@ -1,15 +1,16 @@
 "use client";
-import { useCallback, useEffect, useSyncExternalStore } from "react";
+import { useEffect, useSyncExternalStore } from "react";
 
-import { ALL_KINDS, NO_SLUGS } from "@/lib/app-state";
-import type { AppState, EntityKind, Shown, StoredState } from "@/lib/app-state";
+import { ALL_KINDS } from "@/lib/app-state";
+import type { AppState, EntityKind, StoredState } from "@/lib/app-state";
+import { BASEMAP_ID } from "@/lib/basemap";
 import { isPeriod } from "@/lib/status";
 import type { Period } from "@/lib/types";
 
 /**
- * Web-storage hook with an SSR-safe initial value. The value is read via
- * useSyncExternalStore so that the first client render matches the server
- * HTML and no setState in an effect is needed.
+ * Web storage with an SSR-safe initial value. Every value is read through
+ * `useSyncExternalStore`, so the first client render matches the server HTML
+ * and no `setState` in an effect is needed.
  *
  * Two areas, because the two kinds of state have different lifetimes: what the
  * visitor decided about the app (favourites, period, which lists are open)
@@ -17,11 +18,63 @@ import type { Period } from "@/lib/types";
  * sitting (which detail blocks they folded away) belongs in `sessionStorage`
  * and is forgotten with it.
  */
-export type StorageArea = "local" | "session";
+type StorageArea = "local" | "session";
+
+interface Slot<T> {
+  area: StorageArea;
+  /** What the key is worth before anybody has stored anything under it. */
+  value: T;
+}
+const slot = <T>(area: StorageArea, value: T): Slot<T> => ({ area, value });
+
+interface Favorites {
+  pass: string[];
+  tour: string[];
+  town: string[];
+}
+const NO_FAVORITES: Favorites = { pass: [], tour: [], town: [] };
+
+/**
+ * Every `alpenpaesse:*` key there is, with its area and its default – the one
+ * place a storage key is spelled. `useStored` takes a key of this table and
+ * nothing else, which is what keeps a default a module constant: a caller that
+ * handed in a fresh array each render only worked because of the cache below,
+ * and `useSyncExternalStore` needs a snapshot that keeps its identity.
+ */
+const STORAGE = {
+  /** Which basemap the map draws. */
+  "alpenpaesse:base": slot<string>("local", BASEMAP_ID),
+  /** Which blocks of the detail panel are folded away, by `Section` id. */
+  "alpenpaesse:closedSections": slot<string[]>("session", []),
+  "alpenpaesse:favorites": slot<Favorites>("local", NO_FAVORITES),
+  /** The tours kept off the map; stored as the hidden ones (`Shown`). */
+  "alpenpaesse:hiddenTours": slot<string[]>("local", []),
+  /** Which of the basemap's overlays are on. */
+  "alpenpaesse:overlays": slot<string[]>("local", ["hillshade"]),
+  /**
+   * The visitor's own last choice of half-month. It beats the server's
+   * "today", and a shared link (hash `t`) beats both – opening someone else's
+   * link never overwrites the preference, because only the period control
+   * writes here (`ownPeriod` in `lib/app-state.ts`).
+   */
+  "alpenpaesse:period": slot<Period | null>("local", null),
+  "alpenpaesse:showPasses": slot<boolean>("local", true),
+  "alpenpaesse:showTowns": slot<boolean>("local", true),
+  /** Whether the desktop sidebar is unfolded. */
+  "alpenpaesse:sidebar": slot<boolean>("local", true),
+  /**
+   * Which of the three lists is on screen. A preference like the sidebar's own
+   * fold, so coming back lands where the last visit left off.
+   */
+  "alpenpaesse:tab": slot<EntityKind>("local", "pass"),
+};
+
+type StorageKey = keyof typeof STORAGE;
+type Value<K extends StorageKey> = (typeof STORAGE)[K]["value"];
 
 const listeners = new Set<() => void>();
-/** Keyed by area *and* key: the two areas may hold the same name. */
-const cache = new Map<string, { raw: string | null; value: unknown }>();
+/** One cached snapshot per key, so a re-read hands back the same reference. */
+const cache = new Map<StorageKey, { raw: string | null; value: unknown }>();
 
 const storage = (where: StorageArea) =>
   where === "local" ? localStorage : sessionStorage;
@@ -35,84 +88,68 @@ const subscribe = (onChange: () => void) => {
   };
 };
 
-const readStored = <T>(key: string, initial: T, where: StorageArea): T => {
-  const id = `${where}:${key}`;
+const readStored = <K extends StorageKey>(key: K): Value<K> => {
+  const { area, value: initial } = STORAGE[key];
   let raw: string | null = null;
   try {
-    raw = storage(where).getItem(key);
+    raw = storage(area).getItem(key);
   } catch {
     // Blocked storage: still hand back one stable reference per key.
-    const hit = cache.get(id);
-    if (hit) return hit.value as T;
-    cache.set(id, { raw: null, value: initial });
+    const blocked = cache.get(key);
+    if (blocked) return blocked.value as Value<K>;
+    cache.set(key, { raw: null, value: initial });
     return initial;
   }
-  const hit = cache.get(id);
+  const hit = cache.get(key);
   // Keep referentially stable, otherwise useSyncExternalStore renders endlessly.
-  if (hit && hit.raw === raw) return hit.value as T;
-  let value = initial;
+  if (hit && hit.raw === raw) return hit.value as Value<K>;
+  let value: unknown = initial;
   if (raw !== null) {
     try {
-      value = JSON.parse(raw) as T;
+      value = JSON.parse(raw);
     } catch {
       value = initial;
     }
   }
-  cache.set(id, { raw, value });
-  return value;
+  cache.set(key, { raw, value });
+  return value as Value<K>;
 };
 
-/** Writes one key and tells every `useStored` of it; a blocked storage keeps the value for the tab. */
-const writeStored = (key: string, value: unknown, where: StorageArea) => {
+/**
+ * Writes one key and tells every reader of it. A value that is already stored
+ * under the key is not written again: the adapter below offers every persisted
+ * slice on every commit, and a write would wake every `useStored` in the tree
+ * for nothing. A blocked storage keeps the value for the tab.
+ */
+const writeStored = <K extends StorageKey>(key: K, value: Value<K>) => {
   const raw = JSON.stringify(value);
+  if (cache.get(key)?.raw === raw) return;
   try {
-    storage(where).setItem(key, raw);
+    storage(STORAGE[key].area).setItem(key, raw);
   } catch {
     /* Private mode or similar – then simply without persistence */
   }
-  cache.set(`${where}:${key}`, { raw, value });
+  cache.set(key, { raw, value });
   for (const l of listeners) l();
 };
 
-export const useStored = <T>(
-  key: string,
-  initial: T,
-  where: StorageArea = "local",
-) => {
-  const value = useSyncExternalStore(
+export const useStored = <K extends StorageKey>(key: K) => {
+  const value = useSyncExternalStore<Value<K>>(
     subscribe,
-    () => readStored(key, initial, where),
-    () => initial,
+    () => readStored(key),
+    () => STORAGE[key].value,
   );
-
-  const setValue = useCallback(
-    (next: T | ((prev: T) => T)) => {
-      writeStored(
-        key,
-        typeof next === "function"
-          ? (next as (prev: T) => T)(readStored(key, initial, where))
-          : next,
-        where,
-      );
-    },
-    [key, initial, where],
-  );
-
+  const setValue = (update: Value<K> | ((prev: Value<K>) => Value<K>)) => {
+    writeStored(
+      key,
+      typeof update === "function" ? update(readStored(key)) : update,
+    );
+  };
   return [value, setValue] as const;
 };
 
-export interface Favorites {
-  pass: string[];
-  tour: string[];
-  town: string[];
-}
-export const NO_FAVORITES: Favorites = { pass: [], tour: [], town: [] };
-
 export const useFavorites = () => {
-  const [favorites, setFavorites] = useStored<Favorites>(
-    "alpenpaesse:favorites",
-    NO_FAVORITES,
-  );
+  const [favorites, setFavorites] = useStored("alpenpaesse:favorites");
   const isFavorite = (kind: EntityKind, slug: string) =>
     favorites[kind].includes(slug);
   const toggle = (kind: EntityKind, slug: string) =>
@@ -133,38 +170,6 @@ export const useFavorites = () => {
   };
 };
 
-/**
- * Which blocks of the detail panel the visitor folded away, by `Section` id.
- * Stored as the *closed* ones, so a block that did not exist yet opens by
- * itself, and in `sessionStorage`: folding the climate away applies to the
- * next pass looked at, not to the next visit a month later.
- */
-export const SECTIONS_KEY = "alpenpaesse:closedSections";
-/** Stable empty snapshot for `SECTIONS_KEY`, as `NO_SLUGS` is for the tours. */
-export const NO_SECTIONS: string[] = [];
-
-export const PERIOD_KEY = "alpenpaesse:period";
-
-/**
- * The visitor's own last choice of half-month. It beats the server's "today",
- * and a shared link (hash `t`) beats both – opening someone else's link never
- * overwrites the preference, because only the period control writes here
- * (`ownPeriod` in `lib/app-state.ts`).
- */
-export const readStoredPeriod = (): Period | null => {
-  const value = readStored<Period | null>(PERIOD_KEY, null, "local");
-  return isPeriod(value) ? value : null;
-};
-
-const SHOW_PASSES_KEY = "alpenpaesse:showPasses";
-const SHOW_TOWNS_KEY = "alpenpaesse:showTowns";
-const HIDDEN_TOURS_KEY = "alpenpaesse:hiddenTours";
-/**
- * Which of the three lists is on screen. A preference like the sidebar's own
- * fold, so coming back lands where the last visit left off.
- */
-const TAB_KEY = "alpenpaesse:tab";
-
 const isKind = (v: unknown): v is EntityKind =>
   ALL_KINDS.includes(v as EntityKind);
 
@@ -172,57 +177,75 @@ const isKind = (v: unknown): v is EntityKind =>
  * The persisted slices the reducer owns, read outside React for the `load`
  * action (`lib/hash-adapter.ts`). What is in storage is not trusted further
  * than its shape: a slug that no longer exists is dropped by `reconcileShown`,
- * a tab name this build does not know falls back to the passes.
+ * a tab name this build does not know falls back to the passes, and a
+ * half-month that is not one of the 24 is no preference at all.
  */
 export const readStoredState = (): StoredState => {
-  const tab = readStored<unknown>(TAB_KEY, "pass", "local");
-  const hidden = readStored<unknown>(HIDDEN_TOURS_KEY, NO_SLUGS, "local");
-  // The stored array itself when it is one, so a load that changes nothing
-  // hands the reducer the reference it already holds.
-  const hiddenTours =
-    Array.isArray(hidden) && hidden.every((s) => typeof s === "string")
-      ? hidden
-      : NO_SLUGS;
-  const shown: Shown = {
-    hiddenTours,
-    // Anything but an explicit `false` is on: a switch is never off by accident.
-    passes: readStored<unknown>(SHOW_PASSES_KEY, true, "local") !== false,
-    towns: readStored<unknown>(SHOW_TOWNS_KEY, true, "local") !== false,
-  };
+  const tab: unknown = readStored("alpenpaesse:tab");
+  const hidden: unknown = readStored("alpenpaesse:hiddenTours");
+  const period: unknown = readStored("alpenpaesse:period");
+  const passes: unknown = readStored("alpenpaesse:showPasses");
+  const towns: unknown = readStored("alpenpaesse:showTowns");
   return {
-    period: readStoredPeriod(),
-    shown,
+    period: isPeriod(period) ? period : null,
+    shown: {
+      // The stored array itself when it is one, so a load that changes nothing
+      // hands the reducer the reference it already holds.
+      hiddenTours:
+        Array.isArray(hidden) && hidden.every((s) => typeof s === "string")
+          ? hidden
+          : STORAGE["alpenpaesse:hiddenTours"].value,
+      // Anything but an explicit `false` is on: a switch is never off by accident.
+      passes: passes !== false,
+      towns: towns !== false,
+    },
     tab: isKind(tab) ? tab : "pass",
   };
 };
 
 /**
- * The storage adapter's subscription: the slices of the state that outlive
- * the tab are written whenever they change, under the keys `readStoredState`
- * reads them back from. Nothing is written before `load` has run – the first
- * commit holds the defaults, and writing those would overwrite what the last
- * visit left behind before it has been read.
- *
- * `ownPeriod` rather than `filters.period`: a half-month applied from a shared
- * link is not the visitor's choice and must not become it.
+ * One persisted slice of the state: which key it is written under and what
+ * the state says about it. `undefined` means "nothing to say yet", which is
+ * what keeps a shared link's half-month out of the preference.
+ */
+interface Slice {
+  write: (state: AppState) => void;
+}
+const slice = <K extends StorageKey>(
+  key: K,
+  from: (state: AppState) => Value<K> | undefined,
+): Slice => ({
+  write: (state) => {
+    const value = from(state);
+    if (value !== undefined) writeStored(key, value);
+  },
+});
+
+/**
+ * Everything the reducer owns that outlives the tab, one row per key, under
+ * the keys `readStoredState` reads back. Adding a persisted slice is a row
+ * here and a row in `STORAGE`.
+ */
+const PERSISTED: Slice[] = [
+  slice("alpenpaesse:showPasses", (s) => s.shown.passes),
+  slice("alpenpaesse:showTowns", (s) => s.shown.towns),
+  slice("alpenpaesse:hiddenTours", (s) => s.shown.hiddenTours),
+  slice("alpenpaesse:tab", (s) => s.tab),
+  // `ownPeriod` rather than `filters.period`: a half-month applied from a
+  // shared link is not the visitor's choice and must not become it.
+  slice("alpenpaesse:period", (s) => s.ownPeriod ?? undefined),
+];
+
+/**
+ * The storage adapter's subscription: every row of `PERSISTED` is offered the
+ * state after each commit, and `writeStored` keeps the ones that did not
+ * change. Nothing is written before `load` has run – the first commit holds
+ * the defaults, and writing those would overwrite what the last visit left
+ * behind before it has been read.
  */
 export const useStorageAdapter = (state: AppState) => {
-  const { loaded, ownPeriod, shown, tab } = state;
-  const { hiddenTours, passes, towns } = shown;
   useEffect(() => {
-    if (loaded) writeStored(SHOW_PASSES_KEY, passes, "local");
-  }, [loaded, passes]);
-  useEffect(() => {
-    if (loaded) writeStored(SHOW_TOWNS_KEY, towns, "local");
-  }, [loaded, towns]);
-  useEffect(() => {
-    if (loaded) writeStored(HIDDEN_TOURS_KEY, hiddenTours, "local");
-  }, [loaded, hiddenTours]);
-  useEffect(() => {
-    if (loaded) writeStored(TAB_KEY, tab, "local");
-  }, [loaded, tab]);
-  useEffect(() => {
-    if (loaded && ownPeriod !== null)
-      writeStored(PERIOD_KEY, ownPeriod, "local");
-  }, [loaded, ownPeriod]);
+    if (!state.loaded) return;
+    for (const persisted of PERSISTED) persisted.write(state);
+  }, [state]);
 };

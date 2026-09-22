@@ -8,6 +8,7 @@ import { RowList } from "@/components/sidebar/row-list";
 import { StatusLabel } from "@/components/status-badge";
 import { Switch } from "@/components/ui/switch";
 import type { Selection } from "@/lib/app-state";
+import { entityKey } from "@/lib/route-key";
 import type { TourRow } from "@/lib/rows";
 import type { Period } from "@/lib/types";
 import { useRoving } from "@/lib/use-roving";
@@ -54,8 +55,8 @@ export const TourList = ({
             return (
               <EntityRow
                 key={tour.slug}
-                rowId={`tour:${tour.slug}`}
-                current={currentRow === `tour:${tour.slug}`}
+                rowId={entityKey("tour", tour.slug)}
+                current={currentRow === entityKey("tour", tour.slug)}
                 hovered={hoveredSlug === tour.slug}
                 onHover={(over) =>
                   onHover(over ? { kind: "tour", slug: tour.slug } : null)

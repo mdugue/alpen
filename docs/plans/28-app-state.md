@@ -1,7 +1,6 @@
 # 28 · One app state: the reducer and its adapters
 
-**Status:** in progress (steps 1–3 on branch
-`claude/plan-folder-implementations-nf4lgj`; steps 4 and 5 open) ·
+**Status:** [done](https://github.com/mdugue/alpen/pull/62) ·
 **Effort:** M · **Depends on:** 15, 16 (done) ·
 **Supersedes:** 18 · **Unblocks:** 29 (the camera reads one selection key
 and one inset), 30 (the scene reads one `shown`), 31 (the panel gets the
@@ -264,6 +263,12 @@ this reducer's transport.
   their tests; `bestRelief` is tested once and used twice.
 - `Sidebar` receives at most 15 props; `Explorer` is at most 350 lines and
   holds no `useState` for anything the reducer owns; `listRest` is gone.
+  Met except for the line count: `Explorer` is 500 lines (from 691), and what
+  is left of it is the shell's layout and the comments that explain it, not
+  state. Cutting it further means lifting the shell into a component of its
+  own, which is plan 33's "`Explorer` as composition" step; it is recorded
+  there rather than done here, because a layout move belongs in a diff that
+  changes nothing else.
 - `bun run e2e` passes, plus one scenario: with a stored period, the first
   painted headline already names it (no flip).
 - `serializeHash` produces the same string for the same state as before
@@ -280,17 +285,11 @@ this reducer's transport.
   drag frame decides – measure it after the change, one variant per build.
   Decided in steps 1–3: props, with one `dispatch` handed down.
 - **Where the resolution runs.** The design above says "on the first render,
-  not in an effect"; the implementation resolves in a `useLayoutEffect`
-  (`useHashAdapter`), and the reason is hydration. There is no hash and no
-  storage during the server render, so the client's first render has to start
-  from the same empty inputs – resolving in the `useState` initialiser would
-  make the hydrating markup differ from the server's. A layout effect runs
-  after that render has committed and re-renders synchronously before the
-  browser paints, so the first paint the hydrated page makes already names
-  the stored half-month and the rows are built once for it; the static HTML
-  still shows today's half-month until the script arrives, as a static page
-  must. `initialState` stays pure and is table-tested with real inputs; the
-  page calls it with empty ones.
+  not in an effect"; the implementation resolves in a `useLayoutEffect`, and
+  the reason is hydration – written out once, in the doc comment of
+  `useHashAdapter` (`lib/hash-adapter.ts`). `initialState` stays pure and is
+  what both the server and the hydrating client render; the `load` action the
+  hook dispatches is what the precedence is table-tested through.
 - **`entityKey` lives in `lib/route-key.ts`**, not in `lib/app-state.ts`:
   `next.config.ts` loads `lib/detail-assets.ts` outside the bundler, where a
   module reaching the `@/` alias cannot be followed, and the detail assets are

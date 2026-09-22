@@ -6,17 +6,17 @@ import type {
   Action,
   AppState,
   Filters,
+  HashState,
   MapView,
   Selection,
 } from "@/lib/app-state";
 import { parseHash, serializeHash } from "@/lib/hash";
-import type { HashState } from "@/lib/hash";
 import { readStoredState } from "@/lib/use-stored";
 
 export const readHash = (): HashState =>
   typeof window === "undefined" ? EMPTY_HASH : parseHash(window.location.hash);
 
-export const writeHash = (
+const writeHash = (
   filters: Filters,
   selection: Selection | null,
   view: MapView,

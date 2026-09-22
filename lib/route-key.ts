@@ -4,10 +4,14 @@ import type { EntityKind, Selection } from "./app-state";
  * The keys of `data/generated/routes.json` (and of the profiles, metadata and
  * rejections that follow it): one per ascent, one per tour. Built here so the
  * map assets, the nearby computation and the panel cannot drift apart on a
- * string literal. Client-safe and free of imports: `next.config.ts` loads
- * `lib/detail-assets.ts` outside the bundler, where nothing that reaches the
- * "@/" alias can be followed, which is why the entity key lives here rather
- * than beside the state that uses it.
+ * string literal.
+ *
+ * This is also where `entityKey` lives rather than beside the state that uses
+ * it, and why the module imports nothing that survives compilation: the detail
+ * assets are keyed by it, and `next.config.ts` loads `lib/detail-assets.ts`
+ * outside the bundler, where a module reaching the "@/" alias cannot be
+ * followed. The two types below are erased, so nothing is resolved at run
+ * time.
  */
 export const ascentKey = (passSlug: string, index: number) =>
   `${passSlug}:${index}`;

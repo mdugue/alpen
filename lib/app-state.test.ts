@@ -2,70 +2,36 @@ import { describe, expect, test } from "bun:test";
 
 import {
   ALL_STATUS,
-  countCriteria,
   DEFAULT_FILTERS,
   DEFAULT_VIEW,
   DETAIL_SNAPS,
-  hasActiveFilters,
   initialState,
   isShown,
   LIST_SNAPS,
   pickedMembers,
   reconcileShown,
   reduce,
-  resolvePeriod,
-  shownTours,
-  statusMatches,
+  shownTourCount,
   toggleLevel,
   toggleMember,
 } from "@/lib/app-state";
-import type { AppState, Env, Filters, Selection } from "@/lib/app-state";
+import type {
+  AppState,
+  Env,
+  Filters,
+  Selection,
+  StoredState,
+} from "@/lib/app-state";
 import { parseHash } from "@/lib/hash";
 import { entityKey } from "@/lib/route-key";
+import type { Period } from "@/lib/types";
 
 const filters = (over: Partial<Filters> = {}): Filters => ({
   ...DEFAULT_FILTERS,
   ...over,
 });
 
-describe("plan 14 road types and labels", () => {
-  test("both count as one criterion each", () => {
-    expect(countCriteria(filters({ types: ["balcony"] }))).toBe(1);
-    expect(countCriteria(filters({ tags: ["carfree", "glacier"] }))).toBe(1);
-    expect(hasActiveFilters(filters({ types: ["balcony"] }))).toBe(true);
-    expect(hasActiveFilters(filters({ tags: ["toll"] }))).toBe(true);
-  });
-});
-
 describe("filters", () => {
-  test("hasActiveFilters ignores the period and the sort", () => {
-    expect(hasActiveFilters(filters({ period: 3 }))).toBe(false);
-    expect(hasActiveFilters(filters({ sort: "name" }))).toBe(false);
-    expect(hasActiveFilters(filters({ difficulty: [1, 4] }))).toBe(true);
-    expect(hasActiveFilters(filters({ maxTraffic: 2 }))).toBe(true);
-    expect(hasActiveFilters(filters({ minFame: 4 }))).toBe(true);
-    expect(hasActiveFilters(filters({ status: ["open"] }))).toBe(true);
-    expect(hasActiveFilters(filters({ query: "  " }))).toBe(false);
-    expect(hasActiveFilters(filters({ favoritesOnly: true }))).toBe(true);
-  });
-
-  test("countCriteria counts every criterion once", () => {
-    expect(countCriteria(filters())).toBe(0);
-    expect(
-      countCriteria(
-        filters({
-          difficulty: [2, 4],
-          maxTraffic: 2,
-          maxValleyTmax: 28,
-          maxWetDays: 6,
-          minBeauty: 4,
-          minElevation: 2000,
-          minFame: 3,
-        }),
-      ),
-    ).toBe(7);
-  });
-
   test("toggleMember never leaves an empty or a full set behind", () => {
     expect(toggleMember(ALL_STATUS, ALL_STATUS, "open")).toEqual(["open"]);
     expect(toggleMember(["open"], ALL_STATUS, "closed")).toEqual([
@@ -90,23 +56,6 @@ describe("filters", () => {
     expect(toggleLevel([2, 4], 3)).toEqual([3, 3]);
     expect(toggleLevel([3, 3], 3)).toEqual([1, 5]);
   });
-
-  test("statusMatches follows the visible set", () => {
-    expect(statusMatches("open", ALL_STATUS)).toBe(true);
-    expect(statusMatches("closed", ["open", "risky"])).toBe(false);
-  });
-});
-
-describe("resolvePeriod", () => {
-  test("a shared link wins over the stored choice and over today", () => {
-    expect(resolvePeriod(7, 9, 5.5)).toBe(7);
-  });
-  test("without a link the visitor's own last choice wins", () => {
-    expect(resolvePeriod(undefined, 9, 5.5)).toBe(9);
-  });
-  test("without either, today's half-month from the server", () => {
-    expect(resolvePeriod(undefined, null, 5.5)).toBe(5.5);
-  });
 });
 
 describe("entityKey", () => {
@@ -119,17 +68,34 @@ describe("entityKey", () => {
 });
 
 const TOURS = ["sellaronda", "stelvio-runde"];
-const desktop: Env = { mobile: false, tours: TOURS };
-const phone: Env = { mobile: true, tours: TOURS };
+const TODAY: Period = 7;
+const desktop: Env = { mobile: false, today: TODAY, tours: TOURS };
+const phone: Env = { mobile: true, today: TODAY, tours: TOURS };
 const [LIST_HALF, LIST_FULL] = LIST_SNAPS;
 const [DETAIL_HALF, DETAIL_FULL] = DETAIL_SNAPS;
 const GALIBIER: Selection = { kind: "pass", slug: "col-du-galibier" };
 const SELLARONDA: Selection = { kind: "tour", slug: "sellaronda" };
 const BORMIO: Selection = { kind: "town", slug: "bormio" };
 
+/**
+ * The world read in, the way the hash adapter reads it in: the one path from
+ * the empty state the server renders to a state with a link and a last visit
+ * in it.
+ */
+const load = (
+  hash: string,
+  stored: StoredState = {},
+  env: Env = desktop,
+): AppState =>
+  reduce(
+    initialState(env.today),
+    { hash: parseHash(hash), stored, type: "load" },
+    env,
+  );
+
 /** A state with something to clear: a hover, a cursor, everything hidden. */
 const busy = (over: Partial<AppState> = {}): AppState => ({
-  ...initialState({ defaultPeriod: 7, tours: TOURS }),
+  ...initialState(TODAY),
   hovered: BORMIO,
   profileCursor: { lat: 46, lon: 9 },
   shown: { hiddenTours: [...TOURS], passes: false, towns: false },
@@ -137,13 +103,14 @@ const busy = (over: Partial<AppState> = {}): AppState => ({
 });
 
 describe("shown", () => {
-  test("isShown and shownTours read the one value", () => {
+  test("isShown and shownTourCount read the one value", () => {
     const shown = { hiddenTours: ["sellaronda"], passes: false, towns: true };
     expect(isShown(shown, "pass", "x")).toBe(false);
     expect(isShown(shown, "town", "x")).toBe(true);
     expect(isShown(shown, "tour", "sellaronda")).toBe(false);
     expect(isShown(shown, "tour", "stelvio-runde")).toBe(true);
-    expect(shownTours(shown, TOURS)).toEqual(["stelvio-runde"]);
+    expect(shownTourCount(shown, TOURS.length)).toBe(1);
+    expect(shownTourCount({ ...shown, hiddenTours: [] }, TOURS.length)).toBe(2);
   });
 
   test("reconcileShown drops slugs that left the data and keeps the rest", () => {
@@ -213,7 +180,7 @@ describe("reduce · select", () => {
     );
     expect(tour.shown.hiddenTours).toEqual(["stelvio-runde"]);
     // Already shown: the same object, so nothing downstream re-renders for it.
-    const shown = initialState({ defaultPeriod: 7 });
+    const shown = initialState(TODAY);
     expect(
       reduce(shown, { selection: GALIBIER, type: "select" }, desktop).shown,
     ).toBe(shown.shown);
@@ -259,50 +226,39 @@ describe("reduce · back", () => {
 });
 
 describe("reduce · load", () => {
+  const may: Env = { ...desktop, today: 5.5 };
+
   test("resolves the period as the link, then the visitor's choice, then today", () => {
     const stored = { period: 9 as const };
-    expect(
-      initialState({ defaultPeriod: 5.5, hash: parseHash("#t=7"), stored })
-        .filters.period,
-    ).toBe(7);
-    expect(initialState({ defaultPeriod: 5.5, stored }).filters.period).toBe(9);
-    expect(initialState({ defaultPeriod: 5.5 }).filters.period).toBe(5.5);
+    expect(load("#t=7", stored, may).filters.period).toBe(7);
+    expect(load("", stored, may).filters.period).toBe(9);
+    expect(load("", {}, may).filters.period).toBe(5.5);
   });
 
   test("the visitor's own period is what was stored, never what the link says", () => {
-    const s = initialState({
-      defaultPeriod: 5.5,
-      hash: parseHash("#t=7"),
-      stored: { period: 9 },
-    });
+    const s = load("#t=7", { period: 9 }, may);
     expect(s.ownPeriod).toBe(9);
-    expect(
-      initialState({ defaultPeriod: 5.5, hash: parseHash("#t=7") }).ownPeriod,
-    ).toBeNull();
+    expect(load("#t=7", {}, may).ownPeriod).toBeNull();
     const chosen = reduce(s, { period: 3, type: "period" }, desktop);
     expect(chosen.filters.period).toBe(3);
     expect(chosen.ownPeriod).toBe(3);
   });
 
   test("a second load, as on hashchange, resolves the same way without a period", () => {
-    const first = reduce(
-      initialState({ defaultPeriod: 5.5 }),
-      { hash: parseHash("#t=7&q=gal"), stored: { period: 9 }, type: "load" },
-      desktop,
-    );
+    const first = load("#t=7&q=gal", { period: 9 }, may);
     expect(first.filters.period).toBe(7);
     expect(first.loaded).toBe(true);
     const second = reduce(
       first,
       { hash: parseHash("#q=stel"), stored: { period: 9 }, type: "load" },
-      desktop,
+      may,
     );
     expect(second.filters.period).toBe(9);
     expect(second.filters.query).toBe("stel");
     const third = reduce(
       second,
       { hash: parseHash(""), stored: {}, type: "load" },
-      desktop,
+      may,
     );
     expect(third.filters.period).toBe(5.5);
     expect(third.filters.query).toBe("");
@@ -322,15 +278,7 @@ describe("reduce · load", () => {
   });
 
   test("with #tour=… while the pass tab is open ends with the tour tab", () => {
-    const s = reduce(
-      initialState({ defaultPeriod: 7, tours: TOURS }),
-      {
-        hash: parseHash("#tour=sellaronda"),
-        stored: { tab: "pass" },
-        type: "load",
-      },
-      desktop,
-    );
+    const s = load("#tour=sellaronda", { tab: "pass" });
     expect(s.tab).toBe("tour");
     expect(s.selection).toEqual(SELLARONDA);
   });
@@ -344,7 +292,7 @@ describe("reduce · load", () => {
       },
       tab: "town" as const,
     };
-    const s = initialState({ defaultPeriod: 7, stored, tours: TOURS });
+    const s = load("", stored);
     expect(s.shown).toEqual({
       hiddenTours: ["sellaronda"],
       passes: false,
@@ -354,13 +302,8 @@ describe("reduce · load", () => {
   });
 
   test("the camera is requested only when the link carries one", () => {
-    expect(
-      initialState({ defaultPeriod: 7, hash: parseHash("#t=6") }).requestedView,
-    ).toBeNull();
-    const s = initialState({
-      defaultPeriod: 7,
-      hash: parseHash("#z=9&c=45.06,6.41"),
-    });
+    expect(load("#t=6").requestedView).toBeNull();
+    const s = load("#z=9&c=45.06,6.41");
     expect(s.requestedView).toEqual({
       ...DEFAULT_VIEW,
       lat: 45.06,
@@ -370,8 +313,8 @@ describe("reduce · load", () => {
     expect(s.view).toEqual(s.requestedView!);
   });
 
-  test("the empty inputs give the state the server renders", () => {
-    const s = initialState({ defaultPeriod: 7 });
+  test("before anything is read, the state the server renders", () => {
+    const s = initialState(TODAY);
     expect(s.loaded).toBe(false);
     expect(s.selection).toBeNull();
     expect(s.filters).toEqual(filters({ period: 7 }));
@@ -381,7 +324,7 @@ describe("reduce · load", () => {
 });
 
 describe("reduce · the switches and the sheets", () => {
-  const start = initialState({ defaultPeriod: 7, tours: TOURS });
+  const start = load("");
 
   test("toggleKind, toggleTour and the master switch", () => {
     const s1 = reduce(

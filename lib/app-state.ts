@@ -1,4 +1,3 @@
-import type { HashState } from "@/lib/hash";
 import { ROAD_TYPES } from "@/lib/regions";
 import { STATUS_ORDER } from "@/lib/status";
 import type { LatLon, Period, RoadTag, RoadType, Status } from "@/lib/types";
@@ -22,8 +21,17 @@ export const ALL_TYPES: RoadType[] = [...ROAD_TYPES];
 /** Stable empty snapshot for the tag filter (`Filters.tags`). */
 export const NO_TAGS: RoadTag[] = [];
 export const ALL_KINDS: EntityKind[] = ["pass", "tour", "town"];
-/** Stable initial values for array-valued stored keys (useSyncExternalStore needs stable snapshots). */
-export const NO_SLUGS: string[] = [];
+/**
+ * What each kind is called, beside the vocabulary it labels rather than beside
+ * the tab row that draws it – the season bar names the current list too, and
+ * `STATUS_LABEL` sits next to `STATUS_ORDER` for the same reason. "Straßen"
+ * rather than "Pässe": the list holds spurs and valley roads as well.
+ */
+export const KIND_LABEL: Record<EntityKind, string> = {
+  pass: "Straßen",
+  tour: "Touren",
+  town: "Orte",
+};
 
 export const PASS_SORTS = [
   "elevation",
@@ -254,25 +262,6 @@ export const DEFAULT_FILTERS: Filters = {
   types: ALL_TYPES,
 };
 
-/** How many of the pass criteria are active – the badge on the filter trigger. */
-export const countCriteria = (f: Filters) =>
-  (f.minFame > 1 ? 1 : 0) +
-  (f.minElevation > 0 ? 1 : 0) +
-  (f.difficulty[0] > RATING_MIN || f.difficulty[1] < RATING_MAX ? 1 : 0) +
-  (f.maxTraffic < RATING_MAX ? 1 : 0) +
-  (f.minBeauty > RATING_MIN ? 1 : 0) +
-  (f.maxValleyTmax < HEAT_NONE ? 1 : 0) +
-  (f.maxWetDays < WET_NONE ? 1 : 0) +
-  (f.types.length === ALL_TYPES.length ? 0 : 1) +
-  (f.tags.length > 0 ? 1 : 0);
-
-/** True when any filter apart from the period and the sort is active. */
-export const hasActiveFilters = (f: Filters) =>
-  f.status.length !== ALL_STATUS.length ||
-  countCriteria(f) > 0 ||
-  f.query.trim() !== "" ||
-  f.favoritesOnly;
-
 export interface MapView {
   lat: number;
   lon: number;
@@ -297,20 +286,6 @@ export const defined = <T extends object>(o: T): Partial<T> =>
     ),
   ) as Partial<T>;
 
-/**
- * Precedence for the half-month the app opens on: a shared link wins over the
- * visitor's own last choice, which wins over today's half-month from the
- * server (see docs/data-model.md, "Time reckoning").
- */
-export const resolvePeriod = (
-  fromHash: Period | undefined,
-  stored: Period | null,
-  today: Period,
-): Period => fromHash ?? stored ?? today;
-
-export const statusMatches = (status: Status, filter: Status[]) =>
-  filter.includes(status);
-
 // ── What the map shows ───────────────────────────────────────────────────────
 
 /**
@@ -326,7 +301,7 @@ export interface Shown {
 }
 
 export const ALL_SHOWN: Shown = {
-  hiddenTours: NO_SLUGS,
+  hiddenTours: [],
   passes: true,
   towns: true,
 };
@@ -337,9 +312,14 @@ const SWITCH = { pass: "passes", town: "towns" } as const;
 export const isShown = (shown: Shown, kind: EntityKind, slug: string) =>
   kind === "tour" ? !shown.hiddenTours.includes(slug) : shown[SWITCH[kind]];
 
-/** The tours the map draws, in the order given. */
-export const shownTours = (shown: Shown, tourSlugs: readonly string[]) =>
-  tourSlugs.filter((slug) => !shown.hiddenTours.includes(slug));
+/**
+ * How many of `total` tours the map draws – the n/m beside the master switch,
+ * and "all of them" is what that switch is on for. Counted from the hidden
+ * ones rather than from the slugs, because `reconcileShown` has already
+ * dropped whatever left the data.
+ */
+export const shownTourCount = (shown: Shown, total: number) =>
+  total - shown.hiddenTours.length;
 
 /**
  * Drops hidden slugs that left `data/tours.json`. Without it a stale slug in
@@ -428,8 +408,6 @@ export interface AppState {
    * visit's settings before they have been read.
    */
   loaded: boolean;
-  /** Today's half-month, from the server; where the period falls back to. */
-  today: Period;
   /**
    * What is selected. The panel opens with the tap, not with the camera's
    * arrival: selecting something is an answer about that thing, and the map's
@@ -486,6 +464,19 @@ export interface StoredState {
   tab?: EntityKind;
 }
 
+/**
+ * What a shared link can carry: a shape over the three values above, which is
+ * why it is declared here rather than beside the parser. `lib/hash.ts` reads
+ * this module's vocabulary – the option ladders a hash value is validated
+ * against, the defaults it falls back to – so the dependency runs one way and
+ * the two modules do not import each other.
+ */
+export interface HashState {
+  filters: Partial<Filters>;
+  selection: Selection | null;
+  view: Partial<MapView>;
+}
+
 export const EMPTY_HASH: HashState = { filters: {}, selection: null, view: {} };
 
 export type Action =
@@ -512,6 +503,8 @@ export type Action =
 export interface Env {
   /** Whether the two sheets are the layout (`MOBILE_QUERY`). */
   mobile: boolean;
+  /** Today's half-month, computed on the server; where the period falls back to. */
+  today: Period;
   /** Every tour's slug, for `reconcileShown` and the master switch. */
   tours: readonly string[];
 }
@@ -557,12 +550,10 @@ const close = (state: AppState): AppState => ({
 });
 
 /**
- * What the hash and the storage say, applied. The precedence for the
- * half-month is the shared link, then the visitor's own last choice, then
- * today (`resolvePeriod`); the filters and the camera are the defaults under
- * whatever the link carries. A selection in the link is selected the way a
- * tap selects, so the tab, the reveal and the sheet all follow; a link
- * without one closes whatever was open.
+ * What the hash and the storage say, applied: the filters and the camera are
+ * the defaults under whatever the link carries. A selection in the link is
+ * selected the way a tap selects, so the tab, the reveal and the sheet all
+ * follow; a link without one closes whatever was open.
  */
 const load = (
   state: AppState,
@@ -576,11 +567,10 @@ const load = (
     filters: {
       ...DEFAULT_FILTERS,
       ...defined(hash.filters),
-      period: resolvePeriod(
-        hash.filters.period,
-        stored.period ?? null,
-        state.today,
-      ),
+      // The half-month the app opens on: a shared link wins over the
+      // visitor's own last choice, which wins over today's half-month from
+      // the server (docs/data-model.md, "Time reckoning").
+      period: hash.filters.period ?? stored.period ?? env.today,
     },
     ownPeriod: stored.period ?? null,
     requestedView:
@@ -677,40 +667,22 @@ export const reduce = (state: AppState, action: Action, env: Env): AppState => {
 
 /**
  * The state before anything has been read: today's half-month, nothing
- * selected, everything shown. With a `hash` and `stored` it is what `load`
- * makes of them, which is how the resolution is tested; the page itself
- * starts from the empty inputs on both the server and the hydrating client
- * (identical, so no hydration mismatch) and dispatches `load` once hydrated
- * (`useHashAdapter`).
+ * selected, everything shown. It is what both the server and the hydrating
+ * client render – identical, so no hydration mismatch – and the `load` action
+ * dispatched once hydrated is what the hash and the storage make of it
+ * (`useHashAdapter`), which is where the resolution is tested.
  */
-export const initialState = ({
-  defaultPeriod,
-  hash = EMPTY_HASH,
-  stored = {},
-  tours = [],
-}: {
-  defaultPeriod: Period;
-  hash?: HashState;
-  stored?: StoredState;
-  tours?: readonly string[];
-}): AppState =>
-  load(
-    {
-      filters: { ...DEFAULT_FILTERS, period: defaultPeriod },
-      hovered: null,
-      last: null,
-      loaded: false,
-      ownPeriod: null,
-      profileCursor: null,
-      requestedView: null,
-      selection: null,
-      sheet: SHEETS_AT_REST,
-      shown: ALL_SHOWN,
-      tab: "pass",
-      today: defaultPeriod,
-      view: DEFAULT_VIEW,
-    },
-    hash,
-    stored,
-    { mobile: false, tours },
-  );
+export const initialState = (today: Period): AppState => ({
+  filters: { ...DEFAULT_FILTERS, period: today },
+  hovered: null,
+  last: null,
+  loaded: false,
+  ownPeriod: null,
+  profileCursor: null,
+  requestedView: null,
+  selection: null,
+  sheet: SHEETS_AT_REST,
+  shown: ALL_SHOWN,
+  tab: "pass",
+  view: DEFAULT_VIEW,
+});

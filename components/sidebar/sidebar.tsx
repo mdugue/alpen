@@ -8,7 +8,6 @@ import { useSheetExpanded } from "@/components/mobile-sheet";
 import {
   AppliedFilters,
   FilterBody,
-  filterCount,
   FilterTrigger,
 } from "@/components/sidebar/filter-panel";
 import { KindTabs } from "@/components/sidebar/kind-tabs";
@@ -23,7 +22,7 @@ import {
   InputGroupInput,
 } from "@/components/ui/input-group";
 import { Switch } from "@/components/ui/switch";
-import { DEFAULT_FILTERS, isShown, shownTours } from "@/lib/app-state";
+import { isShown, shownTourCount } from "@/lib/app-state";
 import type {
   Action,
   EntityKind,
@@ -32,10 +31,13 @@ import type {
   Shown,
 } from "@/lib/app-state";
 import { SUPPORT_URL } from "@/lib/brand";
-import { hasSecondaryFilters } from "@/lib/filter-summary";
+import {
+  filterCount,
+  hasSecondaryFilters,
+  resetFilters,
+} from "@/lib/filter-summary";
 import { entityKey } from "@/lib/route-key";
 import type { PassRow, TourRow, TownRow } from "@/lib/rows";
-import type { Tour } from "@/lib/types";
 import { cn, TOUCH_CONTROL } from "@/lib/utils";
 
 export interface SidebarProps {
@@ -47,7 +49,6 @@ export interface SidebarProps {
   totals: Record<EntityKind, number>;
   /** How many roads a filter change would leave – the number on every chip. */
   countWith: (patch: Partial<Filters>) => number;
-  tours: Tour[];
   /** The "auf der Karte" switches. */
   shown: Shown;
   /** Which of the three lists is on screen. */
@@ -74,19 +75,13 @@ export const Sidebar = (p: SidebarProps) => {
     p.dispatch({ type: "filters", update });
   const set = <K extends keyof Filters>(key: K, value: Filters[K]) =>
     setFilters((f) => ({ ...f, [key]: value }));
-  // The sort is a preference, not a filter: it survives the reset.
-  const resetFilters = () =>
-    setFilters((f) => ({
-      ...DEFAULT_FILTERS,
-      period: f.period,
-      sort: f.sort,
-    }));
+  const reset = () => setFilters(resetFilters);
   const onSelect = (kind: EntityKind) => (slug: string) =>
     p.dispatch({ selection: { kind, slug }, type: "select" });
   const onHover = (sel: Selection | null) =>
     p.dispatch({ selection: sel, type: "hover" });
-  const allTourSlugs = p.tours.map((t) => t.slug);
-  const visibleTourCount = shownTours(p.shown, allTourSlugs).length;
+  const tourCount = p.totals.tour;
+  const visibleTourCount = shownTourCount(p.shown, tourCount);
   // The panel opens by itself when a link carries filters; the visitor's own
   // toggling wins from then on. The second half stays folded until it is
   // needed, or until a filter inside it is already set.
@@ -151,14 +146,14 @@ export const Sidebar = (p: SidebarProps) => {
   );
   const tourSwitch = (
     <span className="flex items-center gap-1.5">
-      {visibleTourCount > 0 && visibleTourCount < allTourSlugs.length && (
+      {visibleTourCount > 0 && visibleTourCount < tourCount && (
         <span className="tabular-nums">
-          {visibleTourCount}/{allTourSlugs.length}
+          {visibleTourCount}/{tourCount}
         </span>
       )}
       <Switch
         size="sm"
-        checked={p.shown.hiddenTours.length === 0}
+        checked={visibleTourCount === tourCount}
         onCheckedChange={(on) => p.dispatch({ on, type: "toggleTours" })}
         aria-label="Touren auf der Karte anzeigen"
       />
@@ -168,7 +163,7 @@ export const Sidebar = (p: SidebarProps) => {
   const emptyProps = {
     countWith: p.countWith,
     filters: p.filters,
-    onReset: resetFilters,
+    onReset: reset,
     setFilters,
   };
 
@@ -215,7 +210,7 @@ export const Sidebar = (p: SidebarProps) => {
           <AppliedFilters
             filters={p.filters}
             setFilters={setFilters}
-            onReset={resetFilters}
+            onReset={reset}
           />
           {/* The three lists, one at a time. In the fixed header rather than
               in the scroll container, so the counts stay on screen while a
@@ -248,7 +243,7 @@ export const Sidebar = (p: SidebarProps) => {
                 counts={counts}
                 totals={p.totals}
                 countWith={p.countWith}
-                onReset={resetFilters}
+                onReset={reset}
                 more={moreOpen}
                 onMoreChange={setMore}
               />

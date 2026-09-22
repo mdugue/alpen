@@ -17,16 +17,10 @@ import {
   TRAFFIC_OPTIONS,
   WET_OPTIONS,
 } from "@/lib/app-state";
-import type { Filters, MapView, Selection } from "@/lib/app-state";
+import type { Filters, HashState, MapView, Selection } from "@/lib/app-state";
 import { ROAD_TAGS, ROAD_TYPES } from "@/lib/regions";
 import { isPeriod } from "@/lib/status";
 import type { Period, Status } from "@/lib/types";
-
-export interface HashState {
-  filters: Partial<Filters>;
-  selection: Selection | null;
-  view: Partial<MapView>;
-}
 
 // ── The URL hash ─────────────────────────────────────────────────────────────
 //

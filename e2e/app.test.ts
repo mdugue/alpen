@@ -557,8 +557,8 @@ test(
 
 /**
  * Whether the detail panel is in the document while the camera crosses the
- * Alps. The panel opens with the tap and the flight follows it
- * (`selectionState` in explorer.tsx), so it is on screen for every frame of
+ * Alps. The panel opens with the tap and the flight follows it (the `select`
+ * case of `reduce`, lib/app-state.ts), so it is on screen for every frame of
  * that flight – where the old order had it appear only once the camera landed.
  *
  * Frames are counted from where the camera *is*, not from a `movestart`: the
@@ -785,7 +785,7 @@ test(
 );
 
 test(
-  "17 · a stored half-month is what the hydrated page paints",
+  "17 · a stored half-month is applied, a shared link beats it",
   () =>
     withPage(app, "stored-period", {}, async (page) => {
       // The preference is written by the period control only; here it is

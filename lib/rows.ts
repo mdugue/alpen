@@ -1,4 +1,4 @@
-import { HEAT_NONE, statusMatches, WET_NONE } from "@/lib/app-state";
+import { HEAT_NONE, WET_NONE } from "@/lib/app-state";
 import type { EntityKind, Filters, PassSort } from "@/lib/app-state";
 import {
   matches,
@@ -157,7 +157,7 @@ const countPasses = (
     const input = inputAt(signalsOf(signals, pass.slug), filters.period);
     if (!passMatches(pass, filters, q, input)) continue;
     const cell = years.passes[pass.slug]?.cells[i];
-    if (!cell || !statusMatches(cell.status, filters.status)) continue;
+    if (!cell || !filters.status.includes(cell.status)) continue;
     n += 1;
   }
   return n;
@@ -180,12 +180,46 @@ export interface PassRow {
   season: YearCell[];
 }
 
+export const PASS_SORT_LABEL: Record<PassSort, string> = {
+  beauty: "Schönheit",
+  difficulty: "Schwierigkeit",
+  elevation: "Höhe",
+  fame: "Bekanntheit",
+  name: "Name",
+  status: "Status",
+  traffic: "Verkehr",
+};
+
+const byName = (a: PassRow, b: PassRow) =>
+  a.pass.name.localeCompare(b.pass.name, "de");
+
+/** Direction is fixed per key: the "best" value first. */
+export const sortPassRows = (rows: PassRow[], sort: PassSort): PassRow[] => {
+  const cmp: Record<PassSort, (a: PassRow, b: PassRow) => number> = {
+    beauty: (a, b) => b.pass.beauty - a.pass.beauty,
+    difficulty: (a, b) => b.pass.difficulty - a.pass.difficulty,
+    elevation: (a, b) => b.pass.elevation - a.pass.elevation,
+    fame: (a, b) => b.pass.fame - a.pass.fame,
+    name: byName,
+    status: (a, b) =>
+      statusRank(a.status) - statusRank(b.status) ||
+      b.pass.elevation - a.pass.elevation,
+    traffic: (a, b) => a.pass.traffic - b.pass.traffic,
+  };
+  return rows.toSorted((a, b) => cmp[sort](a, b) || byName(a, b));
+};
+
 /**
  * The status, the word next to it and the strip all come out of one `Year`
  * (`getYears`, lib/data.ts), which is what keeps the row and the detail panel
  * from ever disagreeing about the same pass. The criteria filters still read
  * the raw signals: they ask about the chosen half-month's heat and rain, not
  * about the verdict.
+ *
+ * The sort is applied here rather than in the list, because `Filters.sort` is
+ * a member of `Filters` like any other: the rows that cross this seam are the
+ * rows the list draws, the map orders its markers by and the headline counts,
+ * and sorting past it gave the three of them three orderings.
  */
 export const buildPassRows = (
   passes: Pass[],
@@ -203,7 +237,7 @@ export const buildPassRows = (
     const year = years.passes[pass.slug];
     if (!year) continue;
     const cell = year.cells[i];
-    if (!cell || !statusMatches(cell.status, filters.status)) continue;
+    if (!cell || !filters.status.includes(cell.status)) continue;
     rows.push({
       favorite: isFavorite("pass", pass.slug),
       pass,
@@ -212,7 +246,7 @@ export const buildPassRows = (
       status: cell.status,
     });
   }
-  return rows;
+  return sortPassRows(rows, filters.sort);
 };
 
 export interface TourRow {
@@ -242,7 +276,7 @@ export const buildTourRows = (
     const year = years.tours[tour.slug];
     if (!year) continue;
     const cell = year.cells[i];
-    if (!cell || !statusMatches(cell.status, filters.status)) continue;
+    if (!cell || !filters.status.includes(cell.status)) continue;
     rows.push({
       favorite,
       reason: reasonOf(cell),
@@ -455,35 +489,6 @@ export const seasonBand = (
 /** The bar of the chosen half-month – what the headline and the band's label both read. */
 export const currentBar = (band: SeasonBand, period: Period): SeasonBar =>
   band.bars[periodIndex(period)]!;
-
-export const PASS_SORT_LABEL: Record<PassSort, string> = {
-  beauty: "Schönheit",
-  difficulty: "Schwierigkeit",
-  elevation: "Höhe",
-  fame: "Bekanntheit",
-  name: "Name",
-  status: "Status",
-  traffic: "Verkehr",
-};
-
-const byName = (a: PassRow, b: PassRow) =>
-  a.pass.name.localeCompare(b.pass.name, "de");
-
-/** Direction is fixed per key: the "best" value first. */
-export const sortPassRows = (rows: PassRow[], sort: PassSort): PassRow[] => {
-  const cmp: Record<PassSort, (a: PassRow, b: PassRow) => number> = {
-    beauty: (a, b) => b.pass.beauty - a.pass.beauty,
-    difficulty: (a, b) => b.pass.difficulty - a.pass.difficulty,
-    elevation: (a, b) => b.pass.elevation - a.pass.elevation,
-    fame: (a, b) => b.pass.fame - a.pass.fame,
-    name: byName,
-    status: (a, b) =>
-      statusRank(a.status) - statusRank(b.status) ||
-      b.pass.elevation - a.pass.elevation,
-    traffic: (a, b) => a.pass.traffic - b.pass.traffic,
-  };
-  return rows.toSorted((a, b) => cmp[sort](a, b) || byName(a, b));
-};
 
 /**
  * How many rows share one block of a list, and the blocks themselves.

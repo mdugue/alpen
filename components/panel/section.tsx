@@ -13,7 +13,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { NO_SECTIONS, SECTIONS_KEY, useStored } from "@/lib/use-stored";
+import { useStored } from "@/lib/use-stored";
 
 /**
  * The one heading level inside the detail panel: small caps, a hairline, and
@@ -33,9 +33,9 @@ import { NO_SECTIONS, SECTIONS_KEY, useStored } from "@/lib/use-stored";
  * from the sidebar footer, so a header never opens one.
  *
  * Which sections are folded is kept per session and shared by all of them
- * (`SECTIONS_KEY`), so it survives switching to the next pass but not the next
- * visit. Stored are the *closed* ids: a section that did not exist yet opens
- * by itself.
+ * (`alpenpaesse:closedSections` in the `STORAGE` table), so it survives
+ * switching to the next pass but not the next visit. Stored are the *closed*
+ * ids: a section that did not exist yet opens by itself.
  */
 export const Section = ({
   id,
@@ -49,11 +49,7 @@ export const Section = ({
   info?: string;
   children: React.ReactNode;
 }) => {
-  const [closed, setClosed] = useStored<string[]>(
-    SECTIONS_KEY,
-    NO_SECTIONS,
-    "session",
-  );
+  const [closed, setClosed] = useStored("alpenpaesse:closedSections");
 
   return (
     <Collapsible

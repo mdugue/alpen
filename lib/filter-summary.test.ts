@@ -2,7 +2,13 @@ import { describe, expect, test } from "bun:test";
 
 import { ALL_STATUS, ALL_TYPES, DEFAULT_FILTERS } from "@/lib/app-state";
 import type { Filters } from "@/lib/app-state";
-import { appliedFilters, difficultyLabel } from "@/lib/filter-summary";
+import {
+  appliedFilters,
+  bestRelief,
+  difficultyLabel,
+  filterCount,
+  resetFilters,
+} from "@/lib/filter-summary";
 
 const filters = (over: Partial<Filters> = {}): Filters => ({
   ...DEFAULT_FILTERS,
@@ -70,5 +76,60 @@ describe("appliedFilters", () => {
   test("difficultyLabel", () => {
     expect(difficultyLabel([3, 3])).toBe("Schwierigkeit 3");
     expect(difficultyLabel([1, 4])).toBe("Schwierigkeit 1–4");
+  });
+});
+
+describe("filterCount", () => {
+  test("counts the chips the row lists, the period and the sort excluded", () => {
+    expect(filterCount(filters())).toBe(0);
+    expect(filterCount(filters({ period: 3, query: "x", sort: "name" }))).toBe(
+      0,
+    );
+    expect(
+      filterCount(
+        filters({ maxTraffic: 2, minElevation: 2000, tags: ["toll"] }),
+      ),
+    ).toBe(3);
+  });
+});
+
+describe("resetFilters", () => {
+  test("lifts every filter and keeps the period and the sort", () => {
+    const f = filters({
+      favoritesOnly: true,
+      maxTraffic: 2,
+      period: 3,
+      query: "stelvio",
+      sort: "name",
+      types: ["spur"],
+    });
+    const reset = resetFilters(f);
+    expect(filterCount(reset)).toBe(0);
+    expect(reset.query).toBe("");
+    expect(reset.period).toBe(3);
+    expect(reset.sort).toBe("name");
+  });
+});
+
+describe("bestRelief", () => {
+  // A stand-in for the row count: lifting the height bound brings 40 roads
+  // back, lifting the traffic bound 9.
+  const countWith = (patch: Partial<Filters>) => {
+    const f = { ...filters({ maxTraffic: 2, minElevation: 2000 }), ...patch };
+    return (f.minElevation === 0 ? 40 : 0) + (f.maxTraffic === 5 ? 9 : 0);
+  };
+
+  test("names the one filter that brings the most back", () => {
+    const relief = bestRelief(
+      filters({ maxTraffic: 2, minElevation: 2000 }),
+      countWith,
+    );
+    expect(relief?.chip.key).toBe("elevation");
+    expect(relief?.n).toBe(40);
+  });
+
+  test("no relief when nothing is applied, and none that brings nothing back", () => {
+    expect(bestRelief(filters(), countWith)).toBeUndefined();
+    expect(bestRelief(filters({ minBeauty: 4 }), () => 0)).toBeUndefined();
   });
 });

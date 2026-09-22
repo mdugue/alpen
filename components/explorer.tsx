@@ -9,8 +9,6 @@ import { MobileSheet, sheetCover } from "@/components/mobile-sheet";
 import { DetailPanel } from "@/components/panel/detail-panel";
 import { ScalesDialog } from "@/components/scales-dialog";
 import { SeasonBand } from "@/components/season-band";
-import { filterCount } from "@/components/sidebar/filter-panel";
-import { KIND_LABEL } from "@/components/sidebar/kind-tabs";
 import { Sidebar } from "@/components/sidebar/sidebar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -19,6 +17,7 @@ import {
   DETAIL_SNAPS,
   initialState,
   isShown,
+  KIND_LABEL,
   LIST_SNAPS,
   reduce,
 } from "@/lib/app-state";
@@ -30,6 +29,7 @@ import type {
   Selection,
 } from "@/lib/app-state";
 import type { DetailAssets } from "@/lib/detail-assets";
+import { filterCount } from "@/lib/filter-summary";
 import { useHashAdapter } from "@/lib/hash-adapter";
 import type { MapAssets } from "@/lib/map-assets";
 import { shellEdge } from "@/lib/map-camera";
@@ -114,17 +114,31 @@ export const Explorer = ({
 }: Props) => {
   const signals: Signals = { climate, valleys };
   const isMobile = useMediaQuery(MOBILE_QUERY);
-  const env: Env = { mobile: isMobile, tours: tours.map((t) => t.slug) };
+  const env: Env = {
+    mobile: isMobile,
+    today: defaultPeriod,
+    tours: tours.map((t) => t.slug),
+  };
   const [state, dispatch] = useReducer(
     (s: AppState, a: Action) => reduce(s, a, env),
-    { defaultPeriod },
+    defaultPeriod,
     initialState,
   );
   useHashAdapter(state, dispatch);
   useStorageAdapter(state);
-  const { filters, hovered, selection, sheet, shown, tab } = state;
+  const {
+    filters,
+    hovered,
+    last,
+    profileCursor,
+    requestedView,
+    selection,
+    sheet,
+    shown,
+    tab,
+  } = state;
 
-  const [sidebarOpen, setSidebarOpen] = useStored("alpenpaesse:sidebar", true);
+  const [sidebarOpen, setSidebarOpen] = useStored("alpenpaesse:sidebar");
   const [scalesOpen, setScalesOpen] = useState(false);
   // A fly-to asked for by a click on the elevation profile: the panel produces
   // it, the map consumes it, and it is not state anybody else reads.
@@ -241,7 +255,7 @@ export const Explorer = ({
     >
       {/* `last` is what the drawer keeps showing while it slides away, once
           there is nothing to show any more. */}
-      {(selection ?? state.last) && detailFor((selection ?? state.last)!)}
+      {(selection ?? last) && detailFor((selection ?? last)!)}
     </MobileSheet>
   );
 
@@ -252,7 +266,6 @@ export const Explorer = ({
       rows={rows}
       totals={{ pass: passes.length, tour: tours.length, town: towns.length }}
       countWith={countWith}
-      tours={tours}
       shown={shown}
       tab={tab}
       selection={selection}
@@ -341,9 +354,9 @@ export const Explorer = ({
             onHover={hover}
             onSelect={select}
             onViewChange={(view) => dispatch({ type: "view", view })}
-            profileCursor={state.profileCursor}
+            profileCursor={profileCursor}
             profileZoom={profileZoom}
-            requestedView={state.requestedView}
+            requestedView={requestedView}
             insetLeft={insetLeft}
             insetBottom={insetBottom}
             insetTop={insetTop}
@@ -415,7 +428,7 @@ export const Explorer = ({
             <SeasonBand
               band={band}
               bar={bar}
-              today={state.today}
+              today={defaultPeriod}
               onChange={(period) => dispatch({ period, type: "period" })}
               legend={!isMobile}
             />

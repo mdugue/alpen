@@ -478,15 +478,17 @@ describe("plan 14 type and label filters", () => {
       (r) => r.pass.slug,
     );
 
+  // The rows come back sorted (`buildPassRows`); these three are the same
+  // height, so the default key falls through to the name.
   test("all five types selected is no filter", () => {
-    expect(slugs({})).toEqual(["uebergang", "stich", "balkon"]);
+    expect(slugs({})).toEqual(["balkon", "stich", "uebergang"]);
   });
 
   test("a type set keeps exactly its members", () => {
     expect(slugs({ types: ["spur"] })).toEqual(["stich"]);
     expect(slugs({ types: ["spur", "plateau", "balcony", "valley"] })).toEqual([
-      "stich",
       "balkon",
+      "stich",
     ]);
   });
 
@@ -583,6 +585,19 @@ describe("buildTownRows", () => {
 
 describe("sortPassRows", () => {
   const rows = buildPassRows(passes, years, filters({ period: 4 }), never);
+
+  test("buildPassRows has already applied `Filters.sort`", () => {
+    expect(
+      buildPassRows(passes, years, filters({ sort: "name" }), never).map(
+        (r) => r.pass.slug,
+      ),
+    ).toEqual(["hoch", "mittel", "winter"]);
+    expect(
+      buildPassRows(passes, years, filters({ sort: "traffic" }), never).map(
+        (r) => r.pass.slug,
+      ),
+    ).toEqual(sortPassRows(rows, "traffic").map((r) => r.pass.slug));
+  });
 
   test("each key puts the best value first, name breaks ties", () => {
     expect(sortPassRows(rows, "elevation").map((r) => r.pass.slug)).toEqual([

@@ -136,7 +136,11 @@ at most 400 (from 1 344).
    entry saying which world it touches.
 2. **`Explorer` as composition.** Whatever the five plans left: the context
    or the props decided once, no derived state, no import from
-   `components/sidebar/` or `components/map/` for a domain value.
+   `components/sidebar/` or `components/map/` for a domain value. Plan 28 got
+   it from 691 lines to 500 and left the rest here: the shell's layout – the
+   header, the season card, the two floating panels and the two drawers – is
+   a component of its own, and `Explorer` is then the composition its name
+   claims.
 3. **The e2e as smoke.** Delete scenarios the core tests now cover; keep
    load, a selection on desktop and phone, a shared link, the filters, dark
    mode, and the closure of the detail; default timeouts; `window.__alpen`

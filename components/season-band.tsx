@@ -161,8 +161,7 @@ export const SeasonBand = ({
   className?: string;
 }) => {
   const rail = useRef<HTMLDivElement>(null);
-  const value = bar.period;
-  const index = periodIndex(value);
+  const index = periodIndex(bar.period);
   const todayIndex = today === undefined ? -1 : periodIndex(today);
   const temps = band.bars.map((b) => b.tmax).filter((t) => t !== null);
   const lo = temps.length ? Math.min(...temps) : 0;
@@ -170,7 +169,7 @@ export const SeasonBand = ({
 
   const go = (i: number) => {
     const next = periodAt(Math.min(PERIODS.length - 1, Math.max(0, i)));
-    if (next !== value) onChange(next);
+    if (next !== bar.period) onChange(next);
   };
 
   const fromPointer = (clientX: number) => {
@@ -199,7 +198,7 @@ export const SeasonBand = ({
     <div className={cn("flex min-w-0 flex-col gap-1", className)}>
       <div className="flex min-w-0 items-baseline gap-2">
         <span className="font-heading shrink-0 text-sm font-bold lg:text-base">
-          {periodLabel(value)}
+          {periodLabel(bar.period)}
         </span>
         <span className="text-muted-foreground min-w-0 flex-1 truncate text-xs tabular-nums">
           <span className="lg:hidden">{summary(bar, band.lat, false)}</span>
@@ -233,7 +232,7 @@ export const SeasonBand = ({
                   variant="ghost"
                   className="shrink-0"
                   onClick={() => onChange(today)}
-                  disabled={value === today}
+                  disabled={bar.period === today}
                   aria-label={`Zurück zu heute (${periodLabel(today)})`}
                 />
               }

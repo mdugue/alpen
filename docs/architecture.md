@@ -80,7 +80,8 @@ No manual `useMemo`/`useCallback` for optimisation; oxlint ports the whole
 React Compiler rule set under `react/*` (`set-state-in-effect`, `purity`,
 `immutability`, `refs`, `preserve-manual-memoization`, …) and every one of them
 is an error. `setState` in an effect is needed in exactly one documented place
-(hash initialisation in `explorer.tsx`).
+(`useHashAdapter` in `lib/hash-adapter.ts`, which dispatches the `load` action
+from a layout effect after hydration).
 
 ### Site metadata is generated, never committed as a binary
 

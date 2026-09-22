@@ -6,6 +6,7 @@ import { ListToolbar } from "@/components/sidebar/list-toolbar";
 import { RowList } from "@/components/sidebar/row-list";
 import { TagLine } from "@/components/tags";
 import type { Selection } from "@/lib/app-state";
+import { entityKey } from "@/lib/route-key";
 import type { TownRow } from "@/lib/rows";
 import { useRoving } from "@/lib/use-roving";
 
@@ -48,8 +49,8 @@ export const TownList = ({
           {({ town, favorite }) => (
             <EntityRow
               key={town.slug}
-              rowId={`town:${town.slug}`}
-              current={currentRow === `town:${town.slug}`}
+              rowId={entityKey("town", town.slug)}
+              current={currentRow === entityKey("town", town.slug)}
               hovered={hoveredSlug === town.slug}
               onHover={(over) =>
                 onHover(over ? { kind: "town", slug: town.slug } : null)

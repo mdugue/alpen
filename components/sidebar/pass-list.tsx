@@ -20,7 +20,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import type { Filters, PassSort, Selection } from "@/lib/app-state";
 import { roadTypeWord } from "@/lib/regions";
-import { PASS_SORT_LABEL, PASS_SORTS, sortPassRows } from "@/lib/rows";
+import { entityKey } from "@/lib/route-key";
+import { PASS_SORT_LABEL, PASS_SORTS } from "@/lib/rows";
 import type { PassRow } from "@/lib/rows";
 import { useRoving } from "@/lib/use-roving";
 import { cn, fmtUnit, TOUCH_CONTROL } from "@/lib/utils";
@@ -57,7 +58,6 @@ export const PassList = ({
   onSelect: (slug: string) => void;
   onToggleFavorite: (slug: string) => void;
 }) => {
-  const sorted = sortPassRows(rows, filters.sort);
   const rovingList = useRoving<HTMLDivElement>();
   const hoveredSlug = hovered?.kind === "pass" ? hovered.slug : null;
   const ratingSort = RATING_SORTS.has(filters.sort)
@@ -106,19 +106,15 @@ export const PassList = ({
         </DropdownMenu>
       </ListToolbar>
 
-      {sorted.length === 0 ? (
+      {rows.length === 0 ? (
         <ListEmpty title="Keine Straßen gefunden" {...empty} />
       ) : (
-        <RowList
-          ref={rovingList}
-          items={sorted}
-          keyOf={({ pass }) => pass.slug}
-        >
+        <RowList ref={rovingList} items={rows} keyOf={({ pass }) => pass.slug}>
           {({ pass, status, reason, favorite, season }) => (
             <EntityRow
               key={pass.slug}
-              rowId={`pass:${pass.slug}`}
-              current={currentRow === `pass:${pass.slug}`}
+              rowId={entityKey("pass", pass.slug)}
+              current={currentRow === entityKey("pass", pass.slug)}
               hovered={hoveredSlug === pass.slug}
               onHover={(over) =>
                 onHover(over ? { kind: "pass", slug: pass.slug } : null)

@@ -290,23 +290,26 @@ what it took for a pasted hash to bring the right tab forward, and for Escape
 to stop leaving the last hovered entity ringed: the rule used to be written
 three times, and the copies had drifted apart.
 
-**The hash and the storage are adapters.** Neither is read during a render
-and neither is written by a control. `useHashAdapter` (`lib/hash-adapter.ts`)
-turns the hash and the stored slices into one `load` action in a layout
-effect after hydration – the server and the hydrating client both start from
-`initialState` with empty inputs, so the markup matches, and the layout
-effect re-renders before the browser paints, so the first hydrated paint
-already carries the shared link and the visitor's own half-month – and again
-on every `hashchange`; afterwards it serialises the state back into the hash.
-`useStorageAdapter` (`lib/use-stored.ts`) writes the persisted slices – the
-switches, the tab, the visitor's own period – whenever they change. Both wait
-for `state.loaded`: the first commit holds the defaults, and writing those
-would overwrite a shared link or the last visit's settings before they have
-been read. What is shown on the map is one value, `Shown`, read through
-`isShown` and `shownTours` and reconciled against the data on load, so a
-tour that left `data/tours.json` cannot keep the master switch reading "off".
-An entity's identity is `entityKey` (`lib/route-key.ts`, the dependency-free
-key module `next.config.ts` can load) and nothing else spells it.
+**The hash and the storage are adapters.** Neither is read during a render,
+and no control writes to either: a control dispatches, and what the adapters
+persist is what the reducer made of it – which is how a half-month from a
+shared link applies without becoming the visitor's own preference.
+`useHashAdapter` (`lib/hash-adapter.ts`) turns the hash and the stored slices
+into one `load` action in a layout effect after hydration, and again on every
+`hashchange`; afterwards it serialises the state back into the hash. Why that
+reading is a layout effect and not the state's initialiser is hydration; the
+hook's doc comment is the one place it is written out. `useStorageAdapter`
+(`lib/use-stored.ts`) writes the persisted slices – the switches, the tab, the
+visitor's own period – whenever they change, under the keys of the `STORAGE`
+table, which is where every `alpenpaesse:*` key is spelled, with its area and
+its default. Both adapters wait for `state.loaded`: the first commit holds the
+defaults, and writing those would overwrite a shared link or the last visit's
+settings before they have been read. What is shown on the map is one value,
+`Shown`, read through `isShown` and `shownTourCount` and reconciled against the
+data on load, so a tour that left `data/tours.json` cannot keep the master
+switch reading "off". An entity's identity is `entityKey`
+(`lib/route-key.ts`, the key module `next.config.ts` can load) and nothing
+else spells it.
 
 ### Dark mode follows the OS, nothing else
 
@@ -478,11 +481,13 @@ Ten rows is about a screenful at the sheet's lower snap point. The list is a
 element between the two and `<ul>` may hold nothing but `<li>`.
 
 Two things follow for everything else in the sheet. A number that changes with
-the drag must not reach the rows: `select` in `components/explorer.tsx` reads
-the drawer's resting place from a ref rather than from state, because closing
-over the snap point made every snap change a new `select` and re-rendered all
-201 rows behind the sheet (~50 ms, for a value nothing on screen was reading).
-And a row stays cheap: what is added to one is added two hundred times.
+the drag must not reach the rows: where the drawer rests is the reducer's
+`sheet` slice (`lib/app-state.ts`), read where the rule that needs it lives –
+the `select` case, which picks the detail drawer's snap from it. What the rows
+are handed is `dispatch`, which never changes, so a snap change is no longer a
+new `select` re-rendering all 201 rows behind the sheet (~50 ms, for a value
+nothing on screen was reading). And a row stays cheap: what is added to one is
+added two hundred times.
 
 ### A drag of the sheet may spend the frame on nothing else
 

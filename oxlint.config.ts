@@ -102,12 +102,6 @@ export default defineConfig({
       files: ["components/panel/detail-panel.tsx"],
       rules: { "jsx-a11y/no-noninteractive-element-interactions": "off" },
     },
-    {
-      // `setValue` must keep a stable identity – `explorer.tsx` depends on it
-      // for its once-only effects. This is not a memoisation for speed.
-      files: ["lib/app-state.ts"],
-      rules: { "react-doctor/react-compiler-no-manual-memoization": "off" },
-    },
   ],
   rules: {
     // `baseVerdict` sits at 21 and `Explorer` at 22: the heuristic and the

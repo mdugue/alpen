@@ -38,16 +38,18 @@ import {
   WET_OPTIONS,
 } from "@/lib/app-state";
 import type { EntityKind, Filters } from "@/lib/app-state";
-import { appliedFilters, difficultyLabel } from "@/lib/filter-summary";
+import {
+  appliedFilters,
+  bestRelief,
+  difficultyLabel,
+  filterCount,
+} from "@/lib/filter-summary";
 import { ROAD_TAG, ROAD_TAGS, ROAD_TYPE } from "@/lib/regions";
 import { STATUS_LABEL } from "@/lib/status";
 import type { RoadTag, RoadType, Status } from "@/lib/types";
 import { cn, fmt, TOUCH_CONTROL } from "@/lib/utils";
 
 const LEVELS = [1, 2, 3, 4, 5] as const;
-
-/** How many decisions the panel currently carries – the badge on its trigger. */
-export const filterCount = (f: Filters) => appliedFilters(f).length;
 
 /**
  * The button that opens the panel, at the end of the search row. The badge
@@ -199,17 +201,7 @@ export const FilterBody = ({
   const [lo, hi] = filters.difficulty;
   const wholeScale = lo === RATING_MIN && hi === RATING_MAX;
   const count = filterCount(filters);
-  // Which single applied filter, lifted on its own, brings the most back.
-  // Only asked once the list is empty, so it costs nothing while the panel is
-  // doing its job. An applied chip's `clear` hands back a whole `Filters`,
-  // which is a valid patch for `countWith` – no second seam needed.
-  const relief =
-    counts.pass > 0
-      ? null
-      : appliedFilters(filters)
-          .map((chip) => ({ chip, n: countWith(chip.clear(filters)) }))
-          .filter((r) => r.n > 0)
-          .toSorted((a, b) => b.n - a.n)[0];
+  const relief = counts.pass > 0 ? null : bestRelief(filters, countWith);
 
   return (
     <div className="grid gap-4 px-3 pt-3 pb-4">

@@ -43,7 +43,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { DEFAULT_VIEW } from "@/lib/app-state";
+import { DEFAULT_VIEW, defined } from "@/lib/app-state";
 import type { MapView, Selection } from "@/lib/app-state";
 import {
   BASEMAP_ID,
@@ -147,8 +147,8 @@ const PADDING_MS = 400;
  * The camera's share of a selection: how long it leaves the panel alone, and
  * how long it then takes.
  *
- * The panel opens with the tap and the flight follows it
- * (`selectionState` in `explorer.tsx`). It used to be the other way round –
+ * The panel opens with the tap and the flight follows it (the `select` case
+ * of `reduce`, lib/app-state.ts). It used to be the other way round –
  * the map moved and the panel opened on arrival – because the panel is the
  * most expensive thing the app draws and drawing it into a flight cost that
  * flight about a third of its frame rate on a phone. That bought a smooth
@@ -988,11 +988,6 @@ const popupHtml = (p: Record<string, string>) => {
   return `${title}${subtitle}<div class="mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs">${chips}</div>`;
 };
 
-const defined = <T extends object>(o: T): Partial<T> =>
-  Object.fromEntries(
-    Object.entries(o).filter(([, v]) => v !== undefined && !Number.isNaN(v)),
-  ) as Partial<T>;
-
 export const PassMap = ({
   passes,
   tours,
@@ -1070,14 +1065,12 @@ export const PassMap = ({
   const flying = useRef(false);
   /** One string per selected entity: what the camera effects change on. */
   const selKey = selection && entityKey(selection);
-  const [base, setBase] = useStored("alpenpaesse:base", BASEMAP_ID);
+  const [base, setBase] = useStored("alpenpaesse:base");
   // The base the map currently shows. The map is built during the hydration
   // render, where a stored value is not known yet (useSyncExternalStore hands
   // out the server snapshot); the effect below catches up once it is.
   const appliedBase = useRef(BASEMAP_ID);
-  const [overlays, setOverlays] = useStored<string[]>("alpenpaesse:overlays", [
-    "hillshade",
-  ]);
+  const [overlays, setOverlays] = useStored("alpenpaesse:overlays");
   // Callbacks are needed in map event handlers that are only registered
   // during setup; refs keep them current without rebuilding the map.
   const onSelectRef = useRef(onSelect);
@@ -1815,7 +1808,8 @@ export const PassMap = ({
   // --- Fly to selection --------------------------------------------------
   // The panel is already on screen when this moves: a selection opens its
   // detail in the same commit, and the camera waits `SELECT_DELAY` for that
-  // panel to draw before setting off (`selectionState` in `explorer.tsx`).
+  // panel to draw before setting off (the `select` case of `reduce`,
+  // lib/app-state.ts).
   //
   // The flight carries the padding those panels ask for, so opening the detail
   // and moving to what it describes is one movement rather than a jump and a

@@ -12,7 +12,7 @@ import {
   EmptyTitle,
 } from "@/components/ui/empty";
 import type { Filters } from "@/lib/app-state";
-import { appliedFilters } from "@/lib/filter-summary";
+import { appliedFilters, bestRelief } from "@/lib/filter-summary";
 import { fmt } from "@/lib/utils";
 
 /**
@@ -25,11 +25,11 @@ import { fmt } from "@/lib/utils";
  * thing a live-filtering list can do, and this list filters live on every
  * keystroke.
  *
- * The relief line is the same arithmetic the filter panel already runs ("ohne
- * „ab 2.500 m" wären es 188"), which was the best idea in the panel and was
- * only ever visible inside it. Here it is a button: the sentence names the one
- * filter that would bring the most back, and pressing it lifts exactly that
- * one.
+ * The relief line is the same arithmetic the filter panel already runs
+ * (`bestRelief`, lib/filter-summary.ts), which was the best idea in the panel
+ * and was only ever visible inside it. Here it is a button: the sentence names
+ * the one filter that would bring the most back, and pressing it lifts exactly
+ * that one.
  */
 export const ListEmpty = ({
   title,
@@ -47,13 +47,7 @@ export const ListEmpty = ({
 }) => {
   const applied = appliedFilters(filters);
   const hasQuery = filters.query.trim().length > 0;
-  // Which single applied filter, lifted on its own, brings the most back.
-  const relief = countWith
-    ? applied
-        .map((chip) => ({ chip, n: countWith(chip.clear(filters)) }))
-        .filter((r) => r.n > 0)
-        .toSorted((a, b) => b.n - a.n)[0]
-    : undefined;
+  const relief = countWith ? bestRelief(filters, countWith) : undefined;
 
   return (
     <Empty className="gap-2 py-8">
