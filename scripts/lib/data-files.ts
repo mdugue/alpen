@@ -12,7 +12,8 @@
  * A reader never throws on bad content. It hands back what it found wrong, as
  * the sentences `data:check` prints, so the caller decides whether that is a
  * report or the end of the run – a build must stop, a check has forty more
- * things to say first.
+ * things to say first. `mustRead` is that first decision, once, for every
+ * caller that cannot go on without the file.
  */
 import type { z } from "zod";
 
@@ -120,4 +121,23 @@ export const writeData = async <K extends DataFileName>(
   if (!result.success)
     throw new Error(`${issueLines(file, result.error)[0]} – nicht geschrieben`);
   await Bun.write(new URL(file, dir), render(spec.layout, data));
+};
+
+/**
+ * `readData` for the callers that cannot go on without the file: what the
+ * reader found wrong becomes one warning per line, and content it could not
+ * parse at all ends the run. A file that `FILES` allows to be missing still
+ * reads as its `empty` value – the first `data:build` has not happened yet,
+ * and an empty map is still a map – so this throws only over content that is
+ * there and wrong.
+ */
+export const mustRead = async <K extends DataFileName>(
+  file: K,
+  dir?: URL,
+): Promise<Data<K>> => {
+  const { data, problems } = await readData(file, dir);
+  if (!data)
+    throw new Error(`${file} ist unbrauchbar:\n  ${problems.join("\n  ")}`);
+  for (const p of problems) console.warn(`WARN  ${p}`);
+  return data;
 };

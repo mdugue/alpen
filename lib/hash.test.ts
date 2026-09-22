@@ -238,3 +238,100 @@ describe("serializeHash", () => {
     expect(second).toBe(first);
   });
 });
+
+// ── The uniform filter keys, as a table ──────────────────────────────────────
+//
+// `lib/hash.ts` derives parser, default and both directions of every filter
+// key from one row each. This is the independent, hand-written copy of that
+// row set: a key that disappears, is renamed or loses its default elision
+// fails here rather than in a review. `favoritesOnly` is the one filter that
+// never travels – it is private and lives in localStorage – and saying so is
+// what makes the row set exhaustive over `Filters`.
+
+interface Row<K extends keyof Filters> {
+  /** The hash key, or null for a filter that deliberately stays out of the hash. */
+  key: string | null;
+  /** A value that differs from the default, for the round trip. */
+  value?: Filters[K];
+  /** False for the key that is written even when it equals its default. */
+  elides?: boolean;
+}
+
+const ROWS = {
+  difficulty: { key: "d", value: [2, 4] },
+  favoritesOnly: { key: null },
+  maxTraffic: { key: "v", value: 3 },
+  maxValleyTmax: { key: "h", value: 22 },
+  maxWetDays: { key: "w", value: 8 },
+  minBeauty: { key: "be", value: 4 },
+  minElevation: { key: "m", value: 2000 },
+  minFame: { key: "f", value: 4 },
+  // The half-month is the one key every link carries: it is what the app opens
+  // on, so it is written even when it equals the default.
+  period: { elides: false, key: "t", value: 6.5 },
+  query: { key: "q", value: "stelvio" },
+  sort: { key: "o", value: "beauty" },
+  status: { key: "s", value: ["open", "risky"] },
+  tags: { key: "e", value: ["toll"] },
+  types: { key: "a", value: ["pass", "spur"] },
+} satisfies { [K in keyof Filters]: Row<K> };
+
+const rows = Object.entries(ROWS) as [
+  keyof Filters,
+  Row<keyof Filters> & { key: string },
+][];
+const hashed = rows.filter(([, row]) => row.key !== null);
+/** `a=…` at the start of the hash or after an `&`, never a suffix of another key. */
+const carries = (hash: string, key: string) =>
+  new RegExp(`(^|&)${key}=`, "u").test(hash);
+
+describe("every filter key", () => {
+  test("the table covers `Filters` exactly", () => {
+    expect(Object.keys(ROWS).toSorted()).toEqual(
+      Object.keys(DEFAULT_FILTERS).toSorted(),
+    );
+    expect(hashed).toHaveLength(13);
+  });
+
+  test("each key carries a non-default value there and back", () => {
+    for (const [field, row] of hashed) {
+      const hash = serializeHash(filters({ [field]: row.value }), null, view());
+      expect(carries(hash, row.key)).toBe(true);
+      expect(parseHash(hash).filters[field]).toEqual(row.value);
+    }
+  });
+
+  test("a default value leaves the hash", () => {
+    const hash = serializeHash(filters(), null, view());
+    for (const [, row] of hashed)
+      expect(carries(hash, row.key)).toBe(row.elides === false);
+  });
+
+  test("the whole hash of a populated state, byte for byte", () => {
+    const populated = Object.fromEntries(
+      hashed.map(([field, row]) => [field, row.value]),
+    ) as Partial<Filters>;
+    expect(
+      serializeHash(
+        filters(populated),
+        { kind: "pass", slug: "stilfser-joch" },
+        view({
+          bearing: 30,
+          lat: 46.5253,
+          lon: 10.4541,
+          pitch: 60,
+          zoom: 9.75,
+        }),
+      ),
+    ).toBe(
+      "a=pass,spur&b=30&be=4&c=46.5253,10.4541&d=2-4&e=toll&f=4&h=22&m=2000&o=beauty&pass=stilfser-joch&pi=60&q=stelvio&s=open,risky&t=6.5&v=3&w=8&z=9.75",
+    );
+  });
+
+  test("the two bespoke status values survive the table", () => {
+    // Neither is uniform: `openRisky` is a legacy spelling of a two-member
+    // list, `none` used to mean "hide everything" and now means no filter.
+    expect(parseHash("#s=openRisky").filters.status).toEqual(["open", "risky"]);
+    expect(parseHash("#s=none").filters.status).toBeUndefined();
+  });
+});

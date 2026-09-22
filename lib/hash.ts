@@ -5,6 +5,7 @@ import {
   parseAsString,
   parseAsStringLiteral,
 } from "nuqs";
+import type { SingleParserBuilder } from "nuqs";
 
 import {
   ALL_STATUS,
@@ -17,7 +18,13 @@ import {
   TRAFFIC_OPTIONS,
   WET_OPTIONS,
 } from "@/lib/app-state";
-import type { Filters, HashState, MapView, Selection } from "@/lib/app-state";
+import type {
+  Filters,
+  HashState,
+  MapView,
+  Options,
+  Selection,
+} from "@/lib/app-state";
 import { ROAD_TAGS, ROAD_TYPES } from "@/lib/regions";
 import { isPeriod } from "@/lib/status";
 import type { Period, Status } from "@/lib/types";
@@ -29,16 +36,11 @@ import type { Period, Status } from "@/lib/types";
 // goes into the hash rather than the query string; nuqs only lends its
 // parsers here, no router adapter is involved.
 //
-//   t     half-month, 1 … 12.5             z     zoom
-//   c     centre "lat,lon"                 pi,b  pitch and bearing (only when tilted)
-//   s     statuses "open,risky"        q     search text
-//   f     min. fame                        m     min. elevation in m
-//   d     difficulty window "2-4"          v     max. traffic
-//   be    min. beauty                      o     pass sort key
-//   h     max. valley heat in °C           w     max. rain days of 15
-//   a     road types "pass,spur"           e     road labels "toll,carfree"
+//   z     zoom                             c     centre "lat,lon"
+//   pi,b  pitch and bearing (only when tilted)
 //   pass | tour | town   the selected entity's slug
 //
+// Every filter has a key too; those are `FILTER_KEYS` below, one row each.
 // Every key is validated on the way in: unknown values fall back to the
 // default rather than reaching the state.
 
@@ -100,10 +102,16 @@ const parseAsSubset = <T extends string>(vocabulary: readonly T[]) =>
   });
 
 const RATINGS = [1, 2, 3, 4, 5] as const;
-/** Exactly one of the given values; anything else is not a filter. */
-const parseAsOneOf = (values: readonly number[]) =>
+/**
+ * Exactly one rung of a threshold group; anything else is not a filter. It
+ * takes the group itself rather than a list of numbers, so the promise on
+ * `Options` – a link never applies a filter the chips cannot show – is one
+ * expression rather than a `.map` per key.
+ */
+const parseAsOneOf = (options: Options) =>
   createParser<number>({
-    parse: (v) => (values.includes(Number(v)) ? Number(v) : null),
+    parse: (v) =>
+      options.some(([value]) => value === Number(v)) ? Number(v) : null,
     serialize: String,
   });
 /** `d=2-4`; `d=3` means exactly 3. */
@@ -118,44 +126,112 @@ const parseAsRange = createParser<[number, number]>({
   serialize: ([lo, hi]) => (lo === hi ? String(lo) : `${lo}-${hi}`),
 });
 
+/**
+ * One row per filter that travels in the hash: the key, the field of `Filters`
+ * it carries, how it is read. The four things a key needs – a parser going in,
+ * a default that elides it going out, an entry in each direction – are derived
+ * from this table instead of being spelled out four times, which is four
+ * places to forget a key in. `favoritesOnly` has no row on purpose: bookmarks
+ * are private and stay in localStorage. That the table covers `Filters` is a
+ * test (`lib/hash.test.ts`), which also pins the hash a populated state writes.
+ */
+type FilterKey = {
+  [F in keyof Filters]: {
+    /** Written even when it equals the default. */
+    always?: true;
+    field: F;
+    parser: SingleParserBuilder<Filters[F]>;
+  };
+}[keyof Filters];
+
+const FILTER_KEYS = {
+  /** Road types "pass,spur". */
+  a: { field: "types", parser: parseAsSubset(ROAD_TYPES) },
+  /** Min. beauty. */
+  be: {
+    field: "minBeauty",
+    parser: parseAsOneOf(BEAUTY_OPTIONS),
+  },
+  /** Difficulty window "2-4". */
+  d: { field: "difficulty", parser: parseAsRange },
+  /** Road labels "toll,carfree". */
+  e: { field: "tags", parser: parseAsSubset(ROAD_TAGS) },
+  /** Min. fame. */
+  f: { field: "minFame", parser: parseAsOneOf(FAME_OPTIONS) },
+  /** Max. valley heat in °C. */
+  h: {
+    field: "maxValleyTmax",
+    parser: parseAsOneOf(HEAT_OPTIONS),
+  },
+  /** Min. elevation in m. */
+  m: {
+    field: "minElevation",
+    parser: parseAsOneOf(ELEVATION_OPTIONS),
+  },
+  /** Pass sort key. */
+  o: { field: "sort", parser: parseAsStringLiteral(PASS_SORTS) },
+  /** Search text. */
+  q: { field: "query", parser: parseAsString },
+  /** Statuses "open,risky". */
+  s: { field: "status", parser: parseAsStatus },
+  /** Half-month, 1 … 12.5 – what the app opens on, so every link carries it. */
+  t: { always: true, field: "period", parser: parseAsPeriod },
+  /** Max. traffic. */
+  v: {
+    field: "maxTraffic",
+    parser: parseAsOneOf(TRAFFIC_OPTIONS),
+  },
+  /** Max. rain days of 15. */
+  w: { field: "maxWetDays", parser: parseAsOneOf(WET_OPTIONS) },
+} as const satisfies Record<string, FilterKey>;
+
+type FilterHashKey = keyof typeof FILTER_KEYS;
+type Rows = typeof FILTER_KEYS;
+const filterRows = Object.entries(FILTER_KEYS) as [
+  FilterHashKey,
+  Rows[FilterHashKey],
+][];
+
+/**
+ * nuqs writes a hash in the order of the map it was built with, so a key's
+ * place in a link must not depend on which half of that map it came from.
+ */
+const inKeyOrder = <T extends object>(map: T): T =>
+  Object.fromEntries(
+    Object.entries(map).toSorted(([a], [b]) => (a < b ? -1 : 1)),
+  ) as T;
+
 /** Reading: a missing or invalid value is `null`, which `parseHash` turns into "not given". */
-const HASH = {
-  a: parseAsSubset(ROAD_TYPES),
+const HASH = inKeyOrder({
+  ...(Object.fromEntries(filterRows.map(([key, row]) => [key, row.parser])) as {
+    [K in FilterHashKey]: Rows[K]["parser"];
+  }),
   b: parseAsFixed(0),
-  be: parseAsOneOf(BEAUTY_OPTIONS.map(([v]) => v)),
   c: parseAsCenter,
-  d: parseAsRange,
-  e: parseAsSubset(ROAD_TAGS),
-  f: parseAsOneOf(FAME_OPTIONS.map(([v]) => v)),
-  h: parseAsOneOf(HEAT_OPTIONS.map(([v]) => v)),
-  m: parseAsOneOf(ELEVATION_OPTIONS.map(([v]) => v)),
-  o: parseAsStringLiteral(PASS_SORTS),
   pass: parseAsString,
   pi: parseAsFixed(0),
-  q: parseAsString,
-  s: parseAsStatus,
-  t: parseAsPeriod,
   tour: parseAsString,
   town: parseAsString,
-  v: parseAsOneOf(TRAFFIC_OPTIONS.map(([v]) => v)),
-  w: parseAsOneOf(WET_OPTIONS.map(([v]) => v)),
   z: parseAsFixed(2),
-};
-/** Writing: a value equal to its default leaves the hash. */
+});
+/**
+ * The row's parser carrying its default. A row is one of thirteen parser
+ * types, and the one thing that union cannot do is call a method whose `this`
+ * is a single member of it – so the parser is widened for the call, once here.
+ */
+const withDefault = (row: Rows[FilterHashKey]) =>
+  (row.parser as SingleParserBuilder<unknown>).withDefault(
+    DEFAULT_FILTERS[row.field],
+  );
+
+/** Writing: a value equal to its default leaves the hash – `t` excepted, see its row. */
 const HASH_OUT = {
   ...HASH,
-  a: HASH.a.withDefault(DEFAULT_FILTERS.types),
-  be: HASH.be.withDefault(DEFAULT_FILTERS.minBeauty),
-  d: HASH.d.withDefault(DEFAULT_FILTERS.difficulty),
-  e: HASH.e.withDefault(DEFAULT_FILTERS.tags),
-  f: HASH.f.withDefault(DEFAULT_FILTERS.minFame),
-  h: HASH.h.withDefault(DEFAULT_FILTERS.maxValleyTmax),
-  m: HASH.m.withDefault(DEFAULT_FILTERS.minElevation),
-  o: HASH.o.withDefault(DEFAULT_FILTERS.sort),
-  q: HASH.q.withDefault(DEFAULT_FILTERS.query),
-  s: HASH.s.withDefault(DEFAULT_FILTERS.status),
-  v: HASH.v.withDefault(DEFAULT_FILTERS.maxTraffic),
-  w: HASH.w.withDefault(DEFAULT_FILTERS.maxWetDays),
+  ...(Object.fromEntries(
+    filterRows
+      .filter(([, row]) => !("always" in row))
+      .map(([key, row]) => [key, withDefault(row)]),
+  ) as Partial<{ [K in FilterHashKey]: Rows[K]["parser"] }>),
 };
 const loadHash = createLoader(HASH);
 const serialize = createSerializer(HASH_OUT, { clearOnDefault: true });
@@ -176,21 +252,9 @@ export const parseHash = (hash: string): HashState => {
         ? { kind: "town", slug: h.town }
         : null;
   return {
-    filters: {
-      difficulty: given("d"),
-      maxTraffic: given("v"),
-      maxValleyTmax: given("h"),
-      maxWetDays: given("w"),
-      minBeauty: given("be"),
-      minElevation: given("m"),
-      minFame: given("f"),
-      period: given("t"),
-      query: given("q"),
-      sort: given("o"),
-      status: given("s"),
-      tags: given("e"),
-      types: given("a"),
-    },
+    filters: Object.fromEntries(
+      filterRows.map(([key, row]) => [row.field, given(key)]),
+    ),
     selection,
     view: {
       bearing: given("b"),
@@ -210,25 +274,15 @@ export const serializeHash = (
 ): string => {
   const tilted = view.pitch > 1;
   return serialize({
-    a: filters.types,
+    ...(Object.fromEntries(
+      filterRows.map(([key, row]) => [key, filters[row.field]]),
+    ) as { [K in FilterHashKey]: Filters[Rows[K]["field"]] }),
     b: tilted ? view.bearing : null,
-    be: filters.minBeauty,
     c: [view.lat, view.lon],
-    d: filters.difficulty,
-    e: filters.tags,
-    f: filters.minFame,
-    h: filters.maxValleyTmax,
-    m: filters.minElevation,
-    o: filters.sort,
     pass: selection?.kind === "pass" ? selection.slug : null,
     pi: tilted ? view.pitch : null,
-    q: filters.query,
-    s: filters.status,
-    t: filters.period,
     tour: selection?.kind === "tour" ? selection.slug : null,
     town: selection?.kind === "town" ? selection.slug : null,
-    v: filters.maxTraffic,
-    w: filters.maxWetDays,
     z: view.zoom,
   }).replace(/^\?/u, "");
 };

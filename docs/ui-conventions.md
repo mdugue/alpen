@@ -43,12 +43,13 @@ below 16 px, and on a map that fills the viewport that zoom has no way back. An
 unlayered rule at the end of `app/globals.css` gives every control 16 px on a
 coarse pointer – unlayered because it has to beat the `text-xs` utilities the
 components carry – and `TOUCH_CONTROL` and `TOUCH_ICON` in `lib/utils.ts` grow
-the boxes to match, on the same `pointer-coarse` condition (`TOUCH_SELECT` did
-the same for a native select and is unused, see below). With a mouse everything
-stays as dense as it was. The rule cuts both ways: a control that is _not_ a
-text field gains nothing from the 16 px and loses the row's scale, which is why
-the app has no `<select>` left – the sort picker is a `DropdownMenu` and the
-filters are chips, both ordinary markup the rule never touches.
+the boxes to match, on the same `pointer-coarse` condition. With a mouse
+everything stays as dense as it was. The rule cuts both ways: a control that is
+_not_ a text field gains nothing from the 16 px and loses the row's scale,
+which is why the app has no `<select>` left – the sort picker is a
+`DropdownMenu` and the filters are chips, both ordinary markup the rule never
+touches. There is no `TOUCH_SELECT` beside the other two any more: it grew the
+box of a native select, and this app has not had one for a long time.
 
 ### Charts come from the shadcn `chart` component (recharts under the hood)
 
@@ -99,8 +100,8 @@ MapLibre's own provenance controls – the scale bar and the attribution ⓘ –
 stack in the bottom-left corner above the bar on a phone (`--shell-bottom`) and
 sit in one row in the bottom-right corner on desktop, the one corner the card
 leaves free (`--shell-right`, which is where the card stops): MapLibre fixes a
-control's corner when it is added, so `pass-map.tsx` re-adds them when the
-layout changes. Before that, the floating sidebar covered them on desktop.
+control's corner when it is added, so `apply-environment.ts` re-adds them when
+the layout changes. Before that, the floating sidebar covered them on desktop.
 
 The arithmetic behind all of it – the two panel widths, where the detail panel
 starts, where the card starts and stops, and what each of them takes from the
@@ -328,8 +329,7 @@ settings before they have been read. What is shown on the map is one value,
 `Shown`, read through `isShown` and `shownTourCount` and reconciled against the
 data on load, so a tour that left `data/tours.json` cannot keep the master
 switch reading "off". An entity's identity is `entityKey`
-(`lib/route-key.ts`, the key module `next.config.ts` can load) and nothing
-else spells it.
+(`lib/route-key.ts`, which pulls in nothing else) and nothing else spells it.
 
 ### Dark mode follows the OS, nothing else
 

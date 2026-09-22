@@ -70,32 +70,42 @@ const OPEN_METEO_HOURLY = 5000;
  */
 const PROFILE_WEIGHT = PROFILE_POINTS;
 
-/** The one sentence `--status`, `--pending` and both ends of a run render from. */
+/**
+ * The one sentence `--status`, `--pending` and both ends of a run render from.
+ *
+ * What is always there is the head: the five counts of what is missing, zero
+ * included, and behind them the call estimate as soon as anything would be
+ * paid for. What follows are the caveats, one clause each, separated by `·`
+ * and written only when their count is not zero – a run with nothing to
+ * caveat ends after the head.
+ */
 export const reportLine = (
   c: Counts,
   opts: { budget: number; upgradeOsrm: boolean },
 ): string => {
   const calls =
     c.newProfiles * PROFILE_WEIGHT + c.climate * CLIMATE_WEIGHT + c.summits;
-  return `Fehlend: ${c.routes} Routen, ${c.profiles} Profile, ${c.climate} Klimareihen, ${c.summits} Gipfelhöhen, ${c.roads} Straßenabstände${
+  const head = `Fehlend: ${c.routes} Routen, ${c.profiles} Profile, ${c.climate} Klimareihen, ${c.summits} Gipfelhöhen, ${c.roads} Straßenabstände${
     calls
       ? ` (≈ ${calls} Open-Meteo-Calls ≈ ${Math.ceil(calls / Math.min(opts.budget, OPEN_METEO_HOURLY))} Läufe à ${opts.budget})`
       : ""
-  }${c.rejected ? ` · ${c.rejected} abgewiesen (rejected.json)` : ""}${
-    c.stale ? ` · ${c.stale} veraltet (Koordinaten verschoben)` : ""
-  }${
-    c.upgradable && !opts.upgradeOsrm
-      ? ` · ${c.upgradable} OSRM-Routen aufrüstbar (--upgrade-osrm)`
-      : ""
-  }${
-    c.kept
-      ? ` · ${c.kept} davon OSRM-Routen, deren ORS-Kandidat abgewiesen wurde`
-      : ""
-  }${
-    c.blocked
-      ? ` · ${c.blocked} Auffahrten warten auf eine korrigierte Passkoordinate (Höhe oder Straßenabstand)`
-      : ""
   }`;
+
+  const clauses: string[] = [];
+  if (c.rejected) clauses.push(`${c.rejected} abgewiesen (rejected.json)`);
+  if (c.stale) clauses.push(`${c.stale} veraltet (Koordinaten verschoben)`);
+  if (c.upgradable && !opts.upgradeOsrm)
+    clauses.push(`${c.upgradable} OSRM-Routen aufrüstbar (--upgrade-osrm)`);
+  if (c.kept)
+    clauses.push(
+      `${c.kept} davon OSRM-Routen, deren ORS-Kandidat abgewiesen wurde`,
+    );
+  if (c.blocked)
+    clauses.push(
+      `${c.blocked} Auffahrten warten auf eine korrigierte Passkoordinate (Höhe oder Straßenabstand)`,
+    );
+
+  return [head, ...clauses].join(" · ");
 };
 
 /** Takes the parts of the state that changed wherever they are kept. */
