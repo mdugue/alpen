@@ -37,19 +37,10 @@
  * it arrives for the same reason: an interrupted run must not throw away an
  * hour of requests.
  */
-import type { DataFileName } from "../lib/schema";
-import { readData, writeData } from "./lib/data-files";
-import type { Data } from "./lib/data-files";
+import { mustRead, writeData } from "./lib/data-files";
 import { runPhotos } from "./lib/photo-pipeline";
 import type { PhotoFlags, StoredPhotos } from "./lib/photo-pipeline";
 import { liveTransport } from "./lib/transport";
-
-const read = async <K extends DataFileName>(file: K): Promise<Data<K>> => {
-  const { data, problems } = await readData(file);
-  if (!data)
-    throw new Error(`${file} ist unbrauchbar:\n  ${problems.join("\n  ")}`);
-  return data;
-};
 
 const argOf = (name: string) =>
   process.argv.includes(name)
@@ -68,16 +59,16 @@ const save = (photos: StoredPhotos) =>
 
 const { asked, photos, stopped, todo } = await runPhotos({
   curated: {
-    passes: await read("passes.json"),
-    tours: await read("tours.json"),
-    towns: await read("towns.json"),
+    passes: await mustRead("passes.json"),
+    tours: await mustRead("tours.json"),
+    towns: await mustRead("towns.json"),
   },
   flags,
   log: (line) => {
     console.log(line);
   },
   save,
-  state: await read("generated/photos.json"),
+  state: await mustRead("generated/photos.json"),
   transport: liveTransport(),
   warn: (line) => {
     console.warn(line);

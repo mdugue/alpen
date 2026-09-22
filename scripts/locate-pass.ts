@@ -54,10 +54,8 @@
 import { profileCoords } from "../lib/profile";
 import { hasRoadSummit, isTraverse, ROAD_TYPE } from "../lib/regions";
 import { ascentKey } from "../lib/route-key";
-import type { DataFileName } from "../lib/schema";
 import type { Pass } from "../lib/types";
-import { readData, writeData } from "./lib/data-files";
-import type { Data } from "./lib/data-files";
+import { mustRead, writeData } from "./lib/data-files";
 import { ELEVATION_BATCH, openMeteo } from "./lib/hosts";
 import {
   CANDIDATE_RADIUS,
@@ -84,17 +82,10 @@ const wanted = process.argv
   .slice(2)
   .filter((a, i) => !a.startsWith("--") && process.argv[i + 1] !== "--radius");
 
-/** Reads through the one pair, so a hand-edited file is caught here too. */
-const read = async <K extends DataFileName>(file: K): Promise<Data<K>> => {
-  const { data, problems } = await readData(file);
-  if (!data)
-    throw new Error(`${file} ist unbrauchbar:\n  ${problems.join("\n  ")}`);
-  return data;
-};
-const passes = await read("passes.json");
-const summits = await read("generated/summits.json");
-const routes = await read("generated/routes.json");
-const profiles = await read("generated/profiles.json");
+const passes = await mustRead("passes.json");
+const summits = await mustRead("generated/summits.json");
+const routes = await mustRead("generated/routes.json");
+const profiles = await mustRead("generated/profiles.json");
 
 /**
  * No per-run budget on Open-Meteo, unlike `data:build`: a build stops early so

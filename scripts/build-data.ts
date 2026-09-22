@@ -59,8 +59,7 @@
  */
 import { mkdir } from "node:fs/promises";
 
-import type { DataFileName } from "../lib/schema";
-import { readData } from "./lib/data-files";
+import { mustRead } from "./lib/data-files";
 import { plan } from "./lib/decide";
 import type { Flags, Stored } from "./lib/decide";
 import { ORS_KEY } from "./lib/hosts";
@@ -86,28 +85,20 @@ const OPEN_METEO_BUDGET = transport.host("openMeteo").budget;
 
 // ── The stored state, read once and validated ────────────────────────────────
 
-const read = async <K extends DataFileName>(file: K) => {
-  const { data, problems } = await readData(file);
-  if (!data)
-    throw new Error(`${file} ist unbrauchbar:\n  ${problems.join("\n  ")}`);
-  for (const p of problems) console.warn(`WARN  ${p}`);
-  return data;
-};
-
 await mkdir(new URL("../data/generated/", import.meta.url), {
   recursive: true,
 });
 const curated = {
-  passes: await read("passes.json"),
-  tours: await read("tours.json"),
+  passes: await mustRead("passes.json"),
+  tours: await mustRead("tours.json"),
 };
 const state: Stored = {
-  climates: await read("generated/climate.json"),
-  meta: await read("generated/routes-meta.json"),
-  profiles: await read("generated/profiles.json"),
-  rejected: await read("generated/rejected.json"),
-  routes: await read("generated/routes.json"),
-  summits: await read("generated/summits.json"),
+  climates: await mustRead("generated/climate.json"),
+  meta: await mustRead("generated/routes-meta.json"),
+  profiles: await mustRead("generated/profiles.json"),
+  rejected: await mustRead("generated/rejected.json"),
+  routes: await mustRead("generated/routes.json"),
+  summits: await mustRead("generated/summits.json"),
 };
 const save = saveTo();
 
