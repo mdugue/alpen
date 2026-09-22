@@ -27,7 +27,8 @@ type Params = Promise<{ kind: string; slug: string }>;
 /** The entity a path names, or nothing – which the page turns into a 404. */
 const entityOf = async (params: Params) => {
   const { kind, slug } = await params;
-  const selection = selectionOf(`/${kind}/${slug}`);
+  // The params arrive decoded; the path form is what `selectionOf` reads.
+  const selection = selectionOf(`/${kind}/${encodeURIComponent(slug)}`);
   if (!selection) return null;
   const entity = getEntity(selection);
   return entity ? { entity, selection } : null;

@@ -69,7 +69,7 @@ export default async function Image({
   params: Promise<{ kind: string; slug: string }>;
 }) {
   const { kind, slug } = await params;
-  const selection = selectionOf(`/${kind}/${slug}`);
+  const selection = selectionOf(`/${kind}/${encodeURIComponent(slug)}`);
   const entity = selection && getEntity(selection);
   const { dots, project } = dotMap();
   const mark = entity ? project(pointOf(entity)) : null;

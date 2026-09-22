@@ -15,7 +15,7 @@ import { parseHash, serializeHash } from "@/lib/hash";
 import type { CameraIntent } from "@/lib/map-camera";
 import { entityKey } from "@/lib/route-key";
 import { hrefFor, selectionOf, withoutLegacySelection } from "@/lib/routes";
-import { readStoredState } from "@/lib/use-stored";
+import { readStoredState, useStored } from "@/lib/use-stored";
 
 /**
  * What the address bar says: the selection from the path (`lib/routes.ts`),
@@ -113,15 +113,19 @@ export const useHashAdapter = (
   // camera that is already there.
   const [intent, setIntent] = useState<CameraIntent | null>(null);
   /**
-   * How many entries this adapter pushed that are still ahead of the start:
-   * closing the panel pops one of them rather than pushing a third, so back
-   * and the close control leave the same history behind. Every `popstate`
-   * – the visitor's own back or forward – takes one off; a forward counted
-   * as a back only costs a push instead of a pop, never a wrong page.
+   * How many entries this adapter pushed that are still ahead of the page it
+   * opened on: closing the panel pops one of them rather than pushing a
+   * third, so back and the close control leave the same history behind. A
+   * session slot rather than a ref, so a reload on a pushed route keeps the
+   * count. Every `popstate` – the visitor's own back or forward – takes one
+   * off; a forward counted as a back only costs a push instead of a pop,
+   * never a wrong page.
    */
-  const pushed = useRef(0);
+  const [pushed, setPushed] = useStored("pushed");
   /** Whether the link the page opened on carried its selection in the hash. */
   const legacy = useRef(false);
+  /** The path the state last agreed with, for the two effects that compare against it. */
+  const seenPath = useRef<string | null>(null);
   useLayoutEffect(() => {
     const apply = () => {
       const hash = readHash();
@@ -131,12 +135,20 @@ export const useHashAdapter = (
       // above; the effect below brings the address bar up to date, as a
       // replace rather than a push – the visitor arrived on this link, they
       // did not navigate to it.
+      // Only the link the page opened on: a hash pasted later into an open
+      // page is a navigation like any other and is pushed.
       legacy.current =
-        hash.selection !== null && !selectionOf(window.location.pathname);
+        seenPath.current === null &&
+        hash.selection !== null &&
+        !selectionOf(window.location.pathname);
     };
     apply();
+    // Only a traversal that changed the path is one of the entries counted;
+    // a hash-only step (a manual edit of the hash, the browser restoring a
+    // different camera) leaves the count alone.
     const onPop = () => {
-      pushed.current = Math.max(0, pushed.current - 1);
+      if (window.location.pathname !== seenPath.current)
+        setPushed((n) => Math.max(0, n - 1));
     };
     window.addEventListener("hashchange", apply);
     window.addEventListener("popstate", onPop);
@@ -144,7 +156,7 @@ export const useHashAdapter = (
       window.removeEventListener("hashchange", apply);
       window.removeEventListener("popstate", onPop);
     };
-  }, [dispatch, router]);
+  }, [dispatch, setPushed]);
 
   const { compare, filters, loaded, selection, view } = state;
   const pathSelection = selectionOf(pathname);
@@ -167,7 +179,6 @@ export const useHashAdapter = (
   // sight after `load`, and on a link from before the routes, the state is
   // ahead of the path and it is the effect below that brings the path up;
   // dispatching `back` for that mismatch would close what the link opened.
-  const seenPath = useRef<string | null>(null);
   useEffect(() => {
     if (!loaded) return;
     const was = seenPath.current;
@@ -201,11 +212,14 @@ export const useHashAdapter = (
         { scroll: false },
       );
     } else if (selection) {
-      pushed.current += 1;
+      setPushed((n) => n + 1);
       // oxlint-disable-next-line react-doctor/nextjs-no-client-side-redirect
       router.push(hrefFor(selection) + window.location.hash, { scroll: false });
-    } else if (pushed.current > 0) {
-      router.back();
+    } else if (pushed > 0) {
+      // Every entry this adapter pushed, in one step: `back()` after two
+      // selections would land on the first one and reopen it.
+      setPushed(0);
+      window.history.go(-pushed);
     } else {
       // oxlint-disable-next-line react-doctor/nextjs-no-client-side-redirect
       router.push(`/${window.location.hash}`, { scroll: false });
@@ -213,6 +227,6 @@ export const useHashAdapter = (
     // Intentional: the selection is the trigger; the path is read where it
     // is compared, in the same tick.
     // oxlint-disable-next-line react/exhaustive-deps
-  }, [loaded, selectionKey, router]);
+  }, [loaded, selectionKey, router, pushed, setPushed]);
   return intent;
 };

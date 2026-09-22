@@ -24,6 +24,7 @@ describe("entity routes (plan 02)", () => {
     expect(selectionOf("/pass")).toBeNull();
     expect(selectionOf("/pass/x/y")).toBeNull();
     expect(selectionOf("/blog/x")).toBeNull();
+    expect(selectionOf("/pass/%E0")).toBeNull();
   });
 
   test("an old link's selection leaves the hash, the rest stays", () => {

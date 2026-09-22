@@ -66,6 +66,13 @@ const STORAGE = {
    * writes here (`ownPeriod` in `lib/app-state.ts`).
    */
   period: slot<Period | null>("local", null),
+  /**
+   * How many history entries the address-bar adapter pushed that are still
+   * ahead of the page it opened on (`useHashAdapter`), so closing the panel
+   * pops one of them rather than pushing a third – and still does after a
+   * reload, which is what makes it a session slot rather than a ref.
+   */
+  pushed: slot<number>("session", 0),
   showPasses: slot<boolean>("local", true),
   showTowns: slot<boolean>("local", true),
   /** Whether the desktop sidebar is unfolded. */

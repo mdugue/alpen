@@ -11,15 +11,16 @@ import type { EntityKind, Selection } from "@/lib/app-state";
  * in both languages. Two functions, one table, so the pages, the sitemap and
  * the adapter cannot spell a path three ways.
  */
-export const SEGMENT: Record<EntityKind, string> = {
+export const SEGMENT = {
   destination: "ziel",
   pass: "pass",
   tour: "tour",
   town: "ort",
-};
+} as const satisfies Record<EntityKind, string>;
+export type Segment = (typeof SEGMENT)[EntityKind];
 
-const KIND_OF = new Map(
-  (Object.entries(SEGMENT) as [EntityKind, string][]).map(([kind, seg]) => [
+const KIND_OF = new Map<string, EntityKind>(
+  (Object.entries(SEGMENT) as [EntityKind, Segment][]).map(([kind, seg]) => [
     seg,
     kind,
   ]),
@@ -39,7 +40,14 @@ export const selectionOf = (pathname: string): Selection | null => {
   const [seg, slug, rest] = pathname.replace(/^\//u, "").split("/");
   if (!seg || !slug || rest !== undefined) return null;
   const kind = KIND_OF.get(seg);
-  return kind ? { kind, slug: decodeURIComponent(slug) } : null;
+  if (!kind) return null;
+  // A slug is `[a-z0-9-]`, so decoding is the identity for every real one;
+  // what a hand-typed `%E0` throws is no selection either.
+  try {
+    return { kind, slug: decodeURIComponent(slug) };
+  } catch {
+    return null;
+  }
 };
 
 /**

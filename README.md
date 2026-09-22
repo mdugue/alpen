@@ -76,7 +76,21 @@ Every pass, tour, town and destination is a prerendered route with its own
 title, description and share image (`app/(explorer)/[kind]/[slug]`); the
 layout around it – map, lists, season bar – stays mounted while the path
 changes (`lib/hash-adapter.ts` turns the path into the reducer's `select` and
-`back`, and the state into `router.push`).
+`back`, and the state into `router.push`):
+
+```mermaid
+sequenceDiagram
+  participant U as Visitor
+  participant L as (explorer)/layout<br/>map + sidebar, stays mounted
+  participant R as Next router
+  participant P as [kind]/[slug]/page<br/>prerendered
+  U->>L: taps a row or a marker → reduce(select)
+  L->>R: router.push("/pass/x" + location.hash)
+  R->>P: fetches the route's payload
+  P-->>L: the detail slot – the weather streams into its Suspense hole
+  U->>R: browser back
+  R-->>L: pathname "/" → reduce(back); the map stays where it is
+```
 
 ```mermaid
 flowchart LR

@@ -304,13 +304,16 @@ what it took for a pasted hash to bring the right tab forward, and for Escape
 to stop leaving the last hovered entity ringed: the rule used to be written
 three times, and the copies had drifted apart.
 
-**The hash and the storage are adapters.** Neither is read during a render,
-and no control writes to either: a control dispatches, and what the adapters
-persist is what the reducer made of it – which is how a half-month from a
-shared link applies without becoming the visitor's own preference.
-`useHashAdapter` (`lib/hash-adapter.ts`) turns the hash and the stored slices
-into one `load` action in a layout effect after hydration, and again on every
-`hashchange`; afterwards it serialises the state back into the hash. Why that
+**The address bar and the storage are adapters.** Neither is read during a
+render, and no control writes to either: a control dispatches, and what the
+adapters persist is what the reducer made of it – which is how a half-month
+from a shared link applies without becoming the visitor's own preference.
+`useHashAdapter` (`lib/hash-adapter.ts`) turns the path, the hash and the
+stored slices into one `load` action in a layout effect after hydration, and
+again on every `hashchange`; afterwards it serialises the state back – the
+selection as the path (`router.push`, since plan 02, so the back button
+closes the panel), everything else as the hash – and a path that changes
+under the app comes back in as `select` or `back`. Why that
 reading is a layout effect and not the state's initialiser is hydration; the
 hook's doc comment is the one place it is written out. A camera in the hash is
 read once and in one of two ways, decided by which hash this is: the one the

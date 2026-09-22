@@ -6,7 +6,13 @@ route per pass, tour, town and destination (`/pass`, `/tour`, `/ort`,
 pushing the selection and reading it back, the weather streamed into the pass
 route's Suspense hole with `connection()` in front (so a build asks
 Open-Meteo for nothing), the API route gone, old `#pass=` links moved over,
-the sitemap. Deviation, on purpose: the panel's prose is not rendered on the
+the sitemap. Deviations, on purpose: one dynamic segment `[kind]/[slug]`
+rather than three folders, so the metadata and the share image are written
+once; no `dynamicParams = false`, which Cache Components refuse – an unknown
+path is `notFound()`; the pushed entries are counted in `sessionStorage`
+through the storage adapter's own table (`pushed` in `STORAGE`), so a reload
+keeps the count; `WeatherSlot` holds pass A's forecast back while pass B's
+route is still on its way; the panel's prose is not rendered on the
 server – the model reads the half-month, the hover and the detail file, and
 rendering it a second time would cost a second model for text the route's
 description already carries; the rows stay buttons (the adapter pushes) rather

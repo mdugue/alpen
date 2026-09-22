@@ -22,7 +22,7 @@ flowchart LR
     HA["hash adapter<br/>parseHash → action · state → hash"]
     SA["storage adapter<br/>STORAGE table · useSyncExternalStore"]
     MA["MapLibre adapter<br/>applyScene · applyCamera · events → actions"]
-    FA["fetch adapter<br/>useDetailState fetcher · weather"]
+    FA["fetch adapter<br/>useDetailState fetcher"]
   end
   subgraph CORE["functional core · lib/ · bun test"]
     R["reduce(state, action)"]
@@ -115,7 +115,7 @@ flowchart LR
   P -->|"React payload: names, ratings,<br/>seasons, climate, asset URLs"| B["Browser"]
   MA -->|"public/map/*.geojson<br/>fetched once, tiled in the worker"| B
   DA -->|"public/detail/&lt;entity&gt;.&lt;hash&gt;.json<br/>~2 KB, fetched on selection"| B
-  B -->|"one call per pass per hour"| W["/api/weather/[slug]"]
+  B -->|"one call per pass per hour"| W["forecast() · lib/weather.ts<br/>streamed into the pass route"]
 ```
 
 ### Route geometry never travels as props

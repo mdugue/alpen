@@ -22,6 +22,7 @@ import type { NearbyTours, TownReach } from "@/lib/nearby";
 import type { PageData } from "@/lib/page-data";
 import { profilesWithCoords, valleyElevations } from "@/lib/profile";
 import { SEGMENT } from "@/lib/routes";
+import type { Segment } from "@/lib/routes";
 import * as S from "@/lib/schema";
 import type { Entity } from "@/lib/share-text";
 import { passYear, signalsOf, tourYear } from "@/lib/status";
@@ -210,7 +211,7 @@ export const getEntity = (selection: Selection): Entity | undefined => {
 };
 
 /** Every entity route there is, for `generateStaticParams` and the sitemap. */
-export const staticParams = (): { kind: string; slug: string }[] => [
+export const staticParams = (): { kind: Segment; slug: string }[] => [
   ...passes.map((p) => ({ kind: SEGMENT.pass, slug: p.slug })),
   ...tours.map((t) => ({ kind: SEGMENT.tour, slug: t.slug })),
   ...towns.map((t) => ({ kind: SEGMENT.town, slug: t.slug })),
