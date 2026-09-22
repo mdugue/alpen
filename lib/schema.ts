@@ -359,11 +359,10 @@ export const RouteMeta = z.strictObject({
    * route whose job no longer hashes to this was fetched for coordinates that
    * have since moved, and `data:build` re-routes it.
    *
-   * Optional because routes stored before it existed have none. Such an entry
-   * is stamped by the next build, but only once the stored geometry has been
-   * re-judged and passed – so "no hash" never silently means "still current".
+   * Required: every entry the build writes carries one, and an entry without
+   * it would read as "still current" without ever having been judged.
    */
-  inputs: z.string().optional(),
+  inputs: z.string().min(1),
   /**
    * ORS answered 404 for this geometry: its road-cycling graph does not carry
    * this road (Finestre, Nivolet, the toll ramps). The route is the car
@@ -415,9 +414,8 @@ export const RouteRejection = z.strictObject({
    * (`inputsHash` in `scripts/lib/validate.ts`). The next build retries a
    * rejected key by itself once this changes or the stored metrics would pass
    * the current limits; while both hold, retrying only repeats the rejection.
-   * Missing on entries written before the field existed: they are retried once.
    */
-  inputs: z.string().min(1).optional(),
+  inputs: z.string().min(1),
   lastSeen: z.iso.date(),
   metrics: RouteMetrics,
   /** Cached so a retry after a threshold change costs no Open-Meteo calls. */
@@ -461,16 +459,57 @@ export const WeatherDay = z.strictObject({
   windMax: z.number(),
 });
 
-/** Which schema validates which file; used by check-data and emit-json-schema. */
+/**
+ * How a file is laid out on disk. `indented` is the hand-maintained shape –
+ * one level of indentation, so an entry stays readable and a diff shows the
+ * field that changed. `byKey` is one sorted key per line with a compact value:
+ * a diff of `routes.json` then names the ascent that moved instead of
+ * reformatting 100 000 lines.
+ */
+export type Layout = "byKey" | "indented";
+
+/** Everything a script has to know about one file in `data/`. */
+export interface DataFile<S extends z.ZodType = z.ZodType> {
+  /**
+   * What a reader sees while the file does not exist yet – the generated ones
+   * appear with the first run that needs them. `undefined` means the file has
+   * to be there; a missing `passes.json` is not an empty list of passes.
+   */
+  empty?: unknown;
+  layout: Layout;
+  schema: S;
+}
+
+const curated = <S extends z.ZodType>(schema: S): DataFile<S> => ({
+  layout: "indented",
+  schema,
+});
+const generated = <S extends z.ZodType>(schema: S): DataFile<S> => ({
+  empty: {},
+  layout: "byKey",
+  schema,
+});
+
+/**
+ * Which schema validates which file, where it lives, whether it may be missing
+ * and how it is written. One table, because six readers and three writers used
+ * to decide each of those for themselves – and a writer that forgot the
+ * validation is how a malformed answer reaches the repository. The one
+ * `read`/`write` pair over it is `scripts/lib/data-files.ts`; the key is the
+ * path under `data/`.
+ */
 export const FILES = {
-  "generated/climate.json": Climate,
-  "generated/photos.json": Photos,
-  "generated/profiles.json": Profiles,
-  "generated/rejected.json": Rejected,
-  "generated/routes-meta.json": RoutesMeta,
-  "generated/routes.json": Routes,
-  "generated/summits.json": Summits,
-  "passes.json": Passes,
-  "tours.json": Tours,
-  "towns.json": Towns,
+  "generated/climate.json": generated(Climate),
+  "generated/photos.json": generated(Photos),
+  "generated/profiles.json": generated(Profiles),
+  "generated/rejected.json": generated(Rejected),
+  "generated/routes-meta.json": generated(RoutesMeta),
+  "generated/routes.json": generated(Routes),
+  "generated/summits.json": generated(Summits),
+  "passes.json": curated(Passes),
+  "tours.json": curated(Tours),
+  "towns.json": curated(Towns),
 } as const;
+
+/** The name of one file in `data/`, as `FILES` spells it. */
+export type DataFileName = keyof typeof FILES;

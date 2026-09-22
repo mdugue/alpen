@@ -18,6 +18,36 @@ export const ascentKey = (passSlug: string, index: number) =>
 
 export const tourKey = (tourSlug: string) => `tour:${tourSlug}`;
 
+/** What a route key says it is: one ride of a road, or a tour. */
+export type RouteKey =
+  | { index: number; kind: "ascent"; slug: string }
+  | { kind: "tour"; slug: string };
+
+const TOUR_PREFIX = "tour:";
+
+/**
+ * The inverse of `ascentKey` and `tourKey`, for the places that read a key
+ * back rather than write one: a rejection, an orphaned entry in a generated
+ * file, a line of `data:check`. `null` for anything neither function could
+ * have produced – a generated file may carry a key from a pass that has since
+ * been renamed, and guessing at it would be worse than saying so.
+ *
+ * Spelling a key by hand is how the two sides drift: before this existed, the
+ * test for the tour prefix stood in three files and each decided for itself
+ * what the rest of the string meant.
+ */
+export const parseRouteKey = (key: string): RouteKey | null => {
+  if (key.startsWith(TOUR_PREFIX)) {
+    const slug = key.slice(TOUR_PREFIX.length);
+    return slug ? { kind: "tour", slug } : null;
+  }
+  const cut = key.lastIndexOf(":");
+  const tail = key.slice(cut + 1);
+  return cut > 0 && /^\d+$/u.test(tail)
+    ? { index: Number(tail), kind: "ascent", slug: key.slice(0, cut) }
+    : null;
+};
+
 /**
  * The kind and the slug, joined by a colon – the one spelling of an entity's
  * identity. It keys `photos.json`, `nearbyTours`, the detail assets, the rows'

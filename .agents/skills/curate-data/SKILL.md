@@ -179,13 +179,11 @@ three ways out, in this order of preference:
 
 1. **The data is wrong.** Almost always the case. Move the pass coordinate onto
    the road at the summit, or `ascent.from` into the valley village, then
-   `bun run data:build`. The rejection remembers the inputs it was routed for,
-   so the next build retries it by itself – and only then; a rejection whose
-   inputs and limits are unchanged is not asked again, because the answer would
-   be the same. This is free: re-routing costs no Open-Meteo calls and the
-   profile is reused when the geometry comes back unchanged.
-   `--retry-rejected` forces a retry regardless, for the case that the
-   router's map data changed. The tell-tale of a wrong pass point: _both_
+   `bun run data:build` – nothing else. The next build retries the rejection by
+   itself; when and why is [the retry
+   rule](../../../docs/data-pipeline.md#the-retry-rule). This is free:
+   re-routing costs no Open-Meteo calls and the profile is reused when the
+   geometry comes back unchanged. The tell-tale of a wrong pass point: _both_
    ascents end at the identical distance from it (Großglockner 535 m,
    Couillole 1.6 km) – two roads cannot be wrong by the same amount.
 2. **The ascent really is like that.** Kitzbüheler Horn ends at the Alpenhaus

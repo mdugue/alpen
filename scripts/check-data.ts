@@ -13,18 +13,23 @@
  * dataset immediately – offline, without a single API call. That is what makes
  * the numbers in `LIMITS` tunable rather than folklore.
  *
+ * What it says about a key that is missing something, it says from the build's
+ * own plan (`scripts/lib/decide.ts`): the verdicts here are the ones the next
+ * `data:build` will act on, not a second derivation of them. That is why a
+ * profile is not asked for behind a marker the build refuses to route to.
+ *
  * Errors and warnings are split by what they protect. A stored route that fails
- * a check is an error: that is the invariant, nothing wrong is served. A route
- * the gate refused is a warning: it is unfinished curation – a coordinate to
- * fix, an `ascent.check` to set, or a limit to revisit – and it must neither
- * block a merge nor stop the refresh workflow from committing what it fetched.
- * Plan 11 promotes it, together with "Route fehlt", once the backlog is gone.
+ * a check is an error: that is the invariant, nothing wrong is served. What is
+ * merely missing is a warning, because it is unfinished work rather than a
+ * regression – a coordinate to fix, an `ascent.check` to set, a limit to
+ * revisit, or simply a run of `data:build` that has not happened yet – and it
+ * must neither block a merge nor stop the refresh workflow from committing
+ * what it fetched.
  */
-import type { z } from "zod";
-
 import { isTraverse, ROAD_TYPE } from "../lib/regions";
-import { ascentKey, tourKey } from "../lib/route-key";
+import { ascentKey, entityKey, parseRouteKey, tourKey } from "../lib/route-key";
 import { FILES } from "../lib/schema";
+import type { DataFileName } from "../lib/schema";
 import { fold } from "../lib/search";
 import type {
   AscentMetrics,
@@ -36,15 +41,21 @@ import type {
   Town,
 } from "../lib/types";
 import { renderJsonSchema, schemaFileFor } from "./emit-json-schema";
+import { readData } from "./lib/data-files";
+import type { Data } from "./lib/data-files";
+import { judge, measure, plan } from "./lib/decide";
+import type {
+  ProfileVerdict,
+  RouteJob,
+  RouteVerdict,
+  Stored,
+} from "./lib/decide";
+import { ORS_KEY } from "./lib/hosts";
 import {
-  ascentInputs,
-  checkRoad,
   checkRoadAscent,
-  checkSummit,
   checkTour,
-  roadMetrics,
-  tourInputs,
-  tourMetrics,
+  limitsJudged,
+  suspectPoint,
   withProfile,
 } from "./lib/validate";
 
@@ -56,40 +67,13 @@ const explained: string[] = [];
 
 // ── 1. Shape: every file against its schema ──────────────────────────────────
 
-const HAND_MAINTAINED = ["passes.json", "tours.json", "towns.json"] as const;
-
-const load = async <K extends keyof typeof FILES>(
+/** Whatever the file says, plus its problems on the error list. */
+const load = async <K extends DataFileName>(
   file: K,
-): Promise<z.infer<(typeof FILES)[K]> | null> => {
-  const f = Bun.file(new URL(file, DATA));
-  // The gate's files appear with the first run that needs them.
-  if (!(await f.exists())) return {} as z.infer<(typeof FILES)[K]>;
-  const raw = await f.text();
-  let data: unknown;
-  try {
-    data = JSON.parse(raw);
-  } catch (error) {
-    errors.push(`${file}: kein gültiges JSON (${(error as Error).message})`);
-    return null;
-  }
-  // Hand-maintained files keep one canonical layout so diffs stay readable.
-  if (
-    HAND_MAINTAINED.includes(file as never) &&
-    raw !== `${JSON.stringify(data, null, 1)}\n`
-  )
-    errors.push(
-      `${file}: nicht kanonisch formatiert (JSON.stringify(data, null, 1) + Zeilenumbruch)`,
-    );
-  const result = FILES[file].safeParse(data);
-  if (result.success) return result.data as z.infer<(typeof FILES)[K]>;
-  for (const issue of result.error.issues) {
-    const path = issue.path
-      .map((p) => (typeof p === "number" ? `[${p}]` : `.${String(p)}`))
-      .join("")
-      .replace(/^\./u, "");
-    errors.push(`${file} › ${path || "(root)"}: ${issue.message}`);
-  }
-  return null;
+): Promise<Data<K> | null> => {
+  const { data, problems } = await readData(file);
+  errors.push(...problems);
+  return data;
 };
 
 const [
@@ -116,7 +100,7 @@ const [
   load("generated/photos.json"),
 ]);
 
-for (const file of Object.keys(FILES) as (keyof typeof FILES)[]) {
+for (const file of Object.keys(FILES) as DataFileName[]) {
   const target = Bun.file(new URL(`schema/${schemaFileFor(file)}`, DATA));
   const current = (await target.exists()) ? await target.text() : null;
   if (current !== renderJsonSchema(file))
@@ -125,7 +109,63 @@ for (const file of Object.keys(FILES) as (keyof typeof FILES)[]) {
     );
 }
 
-// ── 2. The route quality gate ────────────────────────────────────────────────
+// ── 2. What the next build would do ──────────────────────────────────────────
+
+/**
+ * A file that failed its schema reads as empty here, so the plan can still be
+ * made for everything else; the warnings that depend on such a file are held
+ * back one by one below, and the schema failure is already an error.
+ */
+const stored: Stored = {
+  climates: climate ?? {},
+  meta: meta ?? {},
+  profiles: profiles ?? {},
+  rejected: rejected ?? {},
+  routes: routes ?? {},
+  summits: summits ?? {},
+};
+const planned =
+  passes && tours
+    ? plan(
+        { passes, tours },
+        stored,
+        // The build's own flags, so the verdicts are the ones it would act on.
+        // `--only` does not apply: a check reports on everything.
+        {
+          only: undefined,
+          ors: ORS_KEY !== "",
+          retryRejected: false,
+          upgradeOsrm: false,
+        },
+      )
+    : null;
+const jobs = new Map<string, RouteJob>(
+  planned?.routes.map(({ job }) => [job.key, job]),
+);
+const routeVerdict = new Map<string, RouteVerdict>(
+  planned?.routes.map(({ job, verdict }) => [job.key, verdict]),
+);
+const profileVerdict = new Map<string, ProfileVerdict>(
+  planned?.profiles.map(({ job, verdict }) => [job.key, verdict]),
+);
+/** A key the next build will ask the router about, missing route or not. */
+const willFetch = (key: string) => {
+  const act = routeVerdict.get(key)?.act;
+  return act === "fetch" || act === "retry";
+};
+
+/**
+ * The measured values of one route, keys in a fixed order. A rejection keeps
+ * them as the run that wrote it spelled them, and two lines of this listing
+ * have to be comparable by eye – the freshly measured ones and the stored ones
+ * alike.
+ */
+const values = (m: RouteMetrics) =>
+  JSON.stringify(
+    Object.fromEntries(
+      Object.entries(m).toSorted(([a], [b]) => (a < b ? -1 : 1)),
+    ),
+  );
 
 const days = (iso: string) =>
   Math.round((Date.now() - Date.parse(iso)) / 86_400_000);
@@ -173,7 +213,7 @@ const inspect = (
     );
   if (EXPLAIN)
     explained.push(
-      `${reasons.length ? "✗" : "·"} ${key.padEnd(36)} ${source.padEnd(4)} ${JSON.stringify(metrics)}${reasons.length ? `\n      ${reasons.join("\n      ")}` : ""}`,
+      `${reasons.length ? "✗" : "·"} ${key.padEnd(36)} ${source.padEnd(4)} ${values(metrics)}${reasons.length ? `\n      ${reasons.join("\n      ")}` : ""}`,
     );
 };
 
@@ -187,100 +227,49 @@ const dupes = (list: { slug: string }[], what: string) => {
   }
 };
 
-/**
- * The marker in the words of the type, because a warning that names the wrong
- * thing sends the curator looking for a mistake the entry cannot have. Three
- * kinds, not two:
- *
- * - a **pass** is a saddle, usually with a `mountain_pass` node in OSM, and
- *   its rides climb to it from both sides;
- * - a **spur** has no saddle at all – it ends where the asphalt does, which
- *   this codebase calls the Scheitel, and the way down is the way up again;
- * - a **traverse** aims at no high point whatsoever. Its marker is a point
- *   somewhere along the road and its rides are stretches across, not climbs.
- */
-const MARKER_WORDS = {
-  pass: {
-    coord: "Passkoordinate",
-    height: "Gipfelhöhe",
-    marker: "Passpunkt",
-    rides: "Auffahrten",
-  },
-  spur: {
-    coord: "Scheitelkoordinate",
-    height: "Scheitelhöhe",
-    marker: "Scheitelpunkt",
-    rides: "Auffahrten",
-  },
-  traverse: {
-    coord: "Markerkoordinate",
-    height: "Markerhöhe",
-    marker: "Markerpunkt",
-    rides: "Strecken",
-  },
-} as const;
-
-const markerWords = (type: Pass["type"]) =>
-  isTraverse(type)
-    ? MARKER_WORDS.traverse
-    : type === "spur"
-      ? MARKER_WORDS.spur
-      : MARKER_WORDS.pass;
-
-/** The DEM height at the marker, if it was read at the current coordinate. */
-const summitWarnings = (p: Pass): string[] => {
-  const w = markerWords(p.type);
-  const summit = summits?.[p.slug];
-  if (summit === undefined)
-    return [`${p.slug}: ${w.height} ungeprüft (bun run data:build)`];
-  if (summit.lat !== p.lat || summit.lon !== p.lon)
-    return [
-      `${p.slug}: ${w.height} ungeprüft – ${w.coord} wurde verschoben (bun run data:build)`,
-    ];
-  const out = checkSummit(summit.dem, p.elevation, w.marker).map(
-    (r) =>
-      `${p.slug}: ${r} – ${w.coord} prüfen (DEM ${summit.dem} m, angegeben ${p.elevation} m); die ${w.rides} werden bis dahin nicht geroutet (bun run data:locate ${p.slug})`,
-  );
-  if (summit.roadDist === undefined)
-    out.push(`${p.slug}: Straßenabstand ungeprüft (bun run data:build)`);
-  out.push(
-    ...checkRoad(summit.roadDist, w.marker).map(
-      (r) =>
-        `${p.slug}: ${r} – ${w.coord} auf die Straße legen; die ${w.rides} werden bis dahin nicht geroutet (bun run data:locate ${p.slug})`,
-    ),
-  );
-  return out;
-};
+/** What the marker of this entry says about itself, in the words of its type. */
+const summitWarnings = (p: Pass): string[] =>
+  suspectPoint(
+    {
+      elevation: p.elevation,
+      lat: p.lat,
+      lon: p.lon,
+      slug: p.slug,
+      type: p.type,
+    },
+    summits?.[p.slug],
+  )?.reasons.map((r) => `${p.slug}: ${r.text}`) ?? [];
 
 /**
- * Every stored ride of one road, measured the way its type is measured
- * (`roadMetrics`): a climb against the marker, a traverse against its two
- * curated ends and its stated length.
+ * Every stored ride of one road, measured the way its type is measured: a
+ * climb against the marker, a traverse against its two curated ends and its
+ * stated length – both through the same `measure`/`judge` pair the build uses.
  */
 const checkRoutes = (p: Pass) => {
   const traverse = isTraverse(p.type);
   for (const [i, a] of p.ascents.entries()) {
-    const key = `${p.slug}:${i}`;
+    const key = ascentKey(p.slug, i);
+    const job = jobs.get(key);
     const geom = routes?.[key];
-    if (!geom) {
-      if (routes && !(rejected && key in rejected))
-        warnings.push(`${key}: Route fehlt (bun run data:build)`);
+    if (!(job && geom)) {
+      // A missing route is backlog, never a regression: it is either one the
+      // next build fetches, a rejection (reported below) or a ride behind a
+      // marker the build refuses to route to (reported above).
+      if (routes && willFetch(key))
+        warnings.push(
+          `${key}: Route fehlt – der nächste bun run data:build holt sie`,
+        );
       continue;
     }
-    let m = roadMetrics(traverse, geom, a, { lat: p.lat, lon: p.lon });
+    let m = measure(job, geom);
     const prof = profiles?.[key];
     // The profile only feeds the climb metrics; a traverse is judged on
     // length and ends, which the geometry alone already carries.
     if (prof && !traverse)
       m = withProfile(m as AscentMetrics, prof, p.elevation);
-    else if (profiles && !prof) warnings.push(`${key}: Profil fehlt`);
-    inspect(
-      key,
-      `${p.name} ab ${a.label}`,
-      m,
-      checkRoadAscent(traverse, m, a.check),
-      ascentInputs(traverse, p, a),
-    );
+    else if (profiles && !prof && profileVerdict.get(key)?.act !== "blocked")
+      warnings.push(`${key}: Profil fehlt`);
+    inspect(key, `${p.name} ab ${a.label}`, m, judge(job, m), job.inputs);
   }
 };
 
@@ -321,7 +310,7 @@ const checkPasses = (list: Pass[]) => {
     checkRoutes(p);
     if (climate && !(p.slug in climate))
       warnings.push(`${p.slug}: Klimareihe fehlt`);
-    if (photos && !(`pass:${p.slug}` in photos))
+    if (photos && !(entityKey("pass", p.slug) in photos))
       warnings.push(`${p.slug}: keine Fotos (bun run data:photos)`);
   }
 };
@@ -338,15 +327,18 @@ const checkTours = (list: Tour[], spurs: Set<string>, slugs: Set<string>) => {
           `Tour ${t.slug}: ${s} ist eine Stichstraße – eine Runde kann dort nicht hinüber`,
         );
     }
-    const key = `tour:${t.slug}`;
+    const key = tourKey(t.slug);
+    const job = jobs.get(key);
     const geom = routes?.[key];
-    if (!geom) {
-      if (routes && !(rejected && key in rejected))
-        warnings.push(`Tour ${t.slug}: Route fehlt`);
+    if (!(job && geom)) {
+      if (routes && willFetch(key))
+        warnings.push(
+          `Tour ${t.slug}: Route fehlt – der nächste bun run data:build holt sie`,
+        );
       continue;
     }
-    const m = tourMetrics(geom, t.waypoints, t.km);
-    inspect(key, `Tour ${t.name}`, m, checkTour(m, t.check), tourInputs(t));
+    const m = measure(job, geom);
+    inspect(key, `Tour ${t.name}`, m, judge(job, m), job.inputs);
   }
 };
 
@@ -396,52 +388,56 @@ if (towns) checkTowns(towns);
 // wrong, or a limit in validate.ts is. Both need a human, neither blocks a merge.
 // The stored reasons are history; the verdict is recomputed against the current
 // limits and the entry's own `check`, so a changed threshold shows up here.
-const checkFor = new Map<
-  string,
-  Pass["ascents"][number]["check"] | Tour["check"]
->();
-/** Ascent keys of the types whose rides are measured as a traverse, see `roadMetrics`. */
-const traverseKeys = new Set<string>();
-for (const p of passes ?? [])
-  for (const [i, a] of p.ascents.entries()) {
-    const key = ascentKey(p.slug, i);
-    checkFor.set(key, a.check);
-    if (isTraverse(p.type)) traverseKeys.add(key);
-  }
-for (const t of tours ?? []) checkFor.set(tourKey(t.slug), t.check);
-
-const rejudge = (key: string, r: RouteRejection) =>
-  key.startsWith("tour:")
-    ? checkTour(r.metrics as TourMetrics, checkFor.get(key))
-    : checkRoadAscent(traverseKeys.has(key), r.metrics, checkFor.get(key));
+/** Measured the way a tour is: a traverse ride, a tour, or an orphaned tour key. */
+const asTour = (key: string) => {
+  const job = jobs.get(key);
+  return job ? job.kind !== "ascent" : parseRouteKey(key)?.kind === "tour";
+};
+const rejudge = (key: string, r: RouteRejection) => {
+  const job = jobs.get(key);
+  if (job) return judge(job, r.metrics);
+  // An orphan: no pass or tour claims this key any more, so there is no
+  // `check` to widen anything and the key itself says how it was measured.
+  return asTour(key)
+    ? checkTour(r.metrics as TourMetrics)
+    : checkRoadAscent(false, r.metrics);
+};
 
 for (const [key, r] of Object.entries(rejected ?? {})) {
   const now = rejudge(key, r);
-  const where = key.startsWith("tour:") ? "der Tour" : "der Auffahrt";
+  const where =
+    parseRouteKey(key)?.kind === "tour" ? "der Tour" : "der Auffahrt";
   // A rejection next to a stored route is the ORS candidate that failed to
   // replace an OSRM route; the OSRM route stays on the map.
   const kept = routes && key in routes ? (meta?.[key]?.source ?? "osrm") : null;
   const what = kept ? `${r.source}-Kandidat abgewiesen` : "abgewiesen";
+  // "Would pass today" is a claim about the limits that could actually be
+  // read: a candidate that never got a profile carries no top delta, no peak
+  // position and no gain, and three of six limits then go unjudged.
+  const { judged, unjudged } = limitsJudged(asTour(key), r.metrics);
+  const scope = `geprüft: ${judged.join(", ")}${
+    unjudged.length ? `; ohne Profil ungeprüft: ${unjudged.join(", ")}` : ""
+  }`;
   warnings.push(
     now.length
       ? `${key}: ${what} seit ${r.firstSeen} (${days(r.firstSeen)} Tage, ${r.source}) – ${now.join("; ")}${kept ? `; die ${kept}-Route bleibt` : ""}\n       Koordinaten in data/*.json korrigieren oder check an ${where} mit Begründung setzen – der nächste Lauf versucht es dann von selbst (erzwingen: bun run data:build --retry-rejected)`
-      : `${key}: ${what} seit ${r.firstSeen}, würde mit den heutigen Grenzen bestehen – der nächste bun run data:build versucht es erneut`,
+      : `${key}: ${what} seit ${r.firstSeen}, würde mit den heutigen Grenzen bestehen (${scope}) – der nächste bun run data:build versucht es erneut`,
   );
   if (EXPLAIN)
     explained.push(
-      `${now.length ? "✗" : "↺"} ${key.padEnd(36)} ${r.source.padEnd(4)} ${JSON.stringify(r.metrics)} (${what}${now.length ? "" : ", würde jetzt bestehen"})`,
+      `${now.length ? "✗" : "↺"} ${key.padEnd(36)} ${r.source.padEnd(4)} ${values(r.metrics)} (${what}${now.length ? "" : `, würde jetzt bestehen – ${scope}`})`,
     );
 }
 
 // Generated keys that no longer belong to a pass or tour are stale, not wrong.
 if (passes && tours) {
   const ascentKeys = new Set(
-    passes.flatMap((p) => p.ascents.map((_, i) => `${p.slug}:${i}`)),
+    passes.flatMap((p) => p.ascents.map((_, i) => ascentKey(p.slug, i))),
   );
   // Routes exist for ascents and tours, profiles for ascents only.
   const routeKeys = new Set([
     ...ascentKeys,
-    ...tours.map((t) => `tour:${t.slug}`),
+    ...tours.map((t) => tourKey(t.slug)),
   ]);
   for (const key of Object.keys(routes ?? {}))
     if (!routeKeys.has(key))
@@ -464,9 +460,9 @@ if (passes && tours) {
       warnings.push(`summits.json: verwaiste Gipfelhöhe ${key}`);
   // Photos are keyed by entity, not by route: `pass:…`, `tour:…`, `town:…`.
   const entityKeys = new Set([
-    ...passes.map((p) => `pass:${p.slug}`),
-    ...tours.map((t) => `tour:${t.slug}`),
-    ...(towns ?? []).map((t) => `town:${t.slug}`),
+    ...passes.map((p) => entityKey("pass", p.slug)),
+    ...tours.map((t) => entityKey("tour", t.slug)),
+    ...(towns ?? []).map((t) => entityKey("town", t.slug)),
   ]);
   for (const key of Object.keys(photos ?? {}))
     if (!entityKeys.has(key))

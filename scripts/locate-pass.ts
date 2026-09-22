@@ -51,15 +51,13 @@
  * instead of 600, Overpass at 3 s and the map API at 2 s instead of 0.3 s –
  * because a host's budget is one host's budget, however many scripts ask.
  */
-import passes from "../data/passes.json" with { type: "json" };
 import { profileCoords } from "../lib/profile";
 import { hasRoadSummit, isTraverse, ROAD_TYPE } from "../lib/regions";
-import type {
-  ElevationProfile,
-  Pass,
-  RouteGeometry,
-  Summit,
-} from "../lib/types";
+import { ascentKey } from "../lib/route-key";
+import type { DataFileName } from "../lib/schema";
+import type { Pass } from "../lib/types";
+import { readData, writeData } from "./lib/data-files";
+import type { Data } from "./lib/data-files";
 import { ELEVATION_BATCH, openMeteo } from "./lib/hosts";
 import {
   CANDIDATE_RADIUS,
@@ -71,9 +69,8 @@ import {
 import type { Candidate } from "./lib/locate";
 import { osmSource } from "./lib/osm";
 import { liveTransport } from "./lib/transport";
-import { LIMITS, checkRoad, checkSummit, haversine } from "./lib/validate";
+import { checkSummit, haversine, LIMITS, suspectPoint } from "./lib/validate";
 
-const GEN = new URL("../data/generated/", import.meta.url);
 const APPLY = process.argv.includes("--apply");
 /**
  * Without Overpass. The road distance then stays unmeasured – except for the
@@ -87,16 +84,17 @@ const wanted = process.argv
   .slice(2)
   .filter((a, i) => !a.startsWith("--") && process.argv[i + 1] !== "--radius");
 
-const readJson = async <T>(name: string, fallback: T): Promise<T> => {
-  const f = Bun.file(new URL(name, GEN));
-  return (await f.exists()) ? ((await f.json()) as T) : fallback;
+/** Reads through the one pair, so a hand-edited file is caught here too. */
+const read = async <K extends DataFileName>(file: K): Promise<Data<K>> => {
+  const { data, problems } = await readData(file);
+  if (!data)
+    throw new Error(`${file} ist unbrauchbar:\n  ${problems.join("\n  ")}`);
+  return data;
 };
-const summits = await readJson<Record<string, Summit>>("summits.json", {});
-const routes = await readJson<Record<string, RouteGeometry>>("routes.json", {});
-const profiles = await readJson<Record<string, ElevationProfile>>(
-  "profiles.json",
-  {},
-);
+const passes = await read("passes.json");
+const summits = await read("generated/summits.json");
+const routes = await read("generated/routes.json");
+const profiles = await read("generated/profiles.json");
 
 /**
  * No per-run budget on Open-Meteo, unlike `data:build`: a build stops early so
@@ -140,7 +138,7 @@ interface Sample {
 const highestSample = async (p: Pass): Promise<Sample | null> => {
   let best: Sample | null = null;
   for (const [i] of p.ascents.entries()) {
-    const key = `${p.slug}:${i}`;
+    const key = ascentKey(p.slug, i);
     const geom = routes[key];
     if (!geom) continue;
     const coords = profileCoords(geom);
@@ -273,17 +271,19 @@ const roadTop = async (p: Pass): Promise<RoadTop | null> => {
 };
 
 /** The stored point is suspect when the gate holds it back or has not measured it yet. */
-const suspect = (p: Pass) => {
-  const s = summits[p.slug];
-  if (!s || s.lat !== p.lat || s.lon !== p.lon) return true;
-  return (
-    checkSummit(s.dem, p.elevation).length > 0 ||
-    checkRoad(s.roadDist).length > 0 ||
-    s.roadDist === undefined
-  );
-};
+const suspect = (p: Pass) =>
+  suspectPoint(
+    {
+      elevation: p.elevation,
+      lat: p.lat,
+      lon: p.lon,
+      slug: p.slug,
+      type: p.type,
+    },
+    summits[p.slug],
+  ) !== null;
 
-const list = (passes as Pass[]).filter((p) =>
+const list = passes.filter((p) =>
   wanted.length ? wanted.includes(p.slug) : suspect(p),
 );
 for (const w of wanted)
@@ -470,10 +470,7 @@ if (osm.fallback && !OFFLINE)
     `\nOSM-Antworten kamen aus der Karten-API, nicht von Overpass (${osm.fallback}).`,
   );
 if (applied) {
-  await Bun.write(
-    new URL("../data/passes.json", import.meta.url),
-    `${JSON.stringify(passes, null, 1)}\n`,
-  );
+  await writeData("passes.json", passes);
   console.log(
     `\n${applied} Passpunkt(e) in data/passes.json verschoben – jetzt: bun run data:build && bun run data:check`,
   );

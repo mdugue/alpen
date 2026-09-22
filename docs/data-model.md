@@ -261,8 +261,9 @@ see plan 01.
 through the Stelvio's 48 hairpins comes out two kilometres short, and
 `profile.km` would disagree with the gate's `ascentMetrics.km`, which has always
 measured the full geometry. Everything derived from `dist` and `ele` – `km`,
-`avgGradient`, `maxKmGradient` – can be recomputed offline with
-`bun run data:build --backfill`.
+`avgGradient`, `maxKmGradient` – are recomputed from the stored route whenever
+a profile is reused (`withRoadDistances` in `lib/profile.ts`), so a cached
+profile can never carry distances the current code would not have written.
 
 The steepest kilometre is an estimate, not a measurement: the samples are a few
 hundred metres apart and carry DEM noise, and a maximum over ninety windows
@@ -385,6 +386,5 @@ If the gate rejects the new ascent, `rejected.json` names the measured value
 that broke a limit. There are exactly three ways out, and the `curate-data`
 skill describes when each applies: fix the coordinates, set `ascent.check` with
 a note, or change the limit itself. Each of them is picked up by the next
-`data:build` on its own: a rejection remembers the inputs it was routed for and
-is retried when they change or when its stored metrics pass the current limits,
-and not otherwise.
+`data:build` on its own – [the retry
+rule](./data-pipeline.md#the-retry-rule) says when and why.

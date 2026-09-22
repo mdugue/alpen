@@ -173,6 +173,7 @@
     "required": [
       "firstSeen",
       "hash",
+      "inputs",
       "lastSeen",
       "metrics",
       "reasons",

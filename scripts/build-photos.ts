@@ -35,14 +35,13 @@
  * it arrives for the same reason: an interrupted run must not throw away an
  * hour of requests.
  */
-import passes from "../data/passes.json" with { type: "json" };
-import tours from "../data/tours.json" with { type: "json" };
-import towns from "../data/towns.json" with { type: "json" };
 import { BLUR_WIDTH, PHOTO_LIMIT, thumbUrl } from "../lib/photos";
 import { entityKey } from "../lib/route-key";
-import { FILES } from "../lib/schema";
-import type { Photo, Photos } from "../lib/types";
+import type { DataFileName } from "../lib/schema";
+import type { Photo } from "../lib/types";
 import { blurUri, blurWidth } from "./lib/blur";
+import { readData, writeData } from "./lib/data-files";
+import type { Data } from "./lib/data-files";
 import { commons } from "./lib/hosts";
 import { best, NEAR_BONUS, rank } from "./lib/photo-rank";
 import {
@@ -51,7 +50,16 @@ import {
   RateLimitedError,
 } from "./lib/transport";
 
-const OUT = new URL("../data/generated/photos.json", import.meta.url);
+const read = async <K extends DataFileName>(file: K): Promise<Data<K>> => {
+  const { data, problems } = await readData(file);
+  if (!data)
+    throw new Error(`${file} ist unbrauchbar:\n  ${problems.join("\n  ")}`);
+  return data;
+};
+const passes = await read("passes.json");
+const tours = await read("tours.json");
+const towns = await read("towns.json");
+
 const REFRESH = process.argv.includes("--refresh");
 /** Fetch every placeholder again, without asking Commons for the photos. */
 const REBLUR = process.argv.includes("--blur");
@@ -177,33 +185,13 @@ const fillBlur = async (photos: Photo[]) => {
 
 const wanted = (slug: string) => !ONLY || slug.includes(ONLY);
 
-/**
- * One sorted key per line, compact value – the same layout the other generated
- * files use, so a diff shows which entity changed rather than the whole file.
- */
-const save = async (photos: Map<string, Photo[]>) => {
-  const result = FILES["generated/photos.json"].safeParse(
-    Object.fromEntries(photos),
-  );
-  if (!result.success) {
-    const [issue] = result.error.issues;
-    throw new Error(`photos.json: ${issue?.path.join(".")}: ${issue?.message}`);
-  }
-  await Bun.write(
-    OUT,
-    `{\n${[...photos.keys()]
-      .toSorted()
-      .map((k) => `  ${JSON.stringify(k)}: ${JSON.stringify(photos.get(k))}`)
-      .join(",\n")}\n}\n`,
-  );
-};
+/** Validated and laid out by the one writer, like every other file in `data/`. */
+const save = (photos: Map<string, Photo[]>) =>
+  writeData("generated/photos.json", Object.fromEntries(photos));
 
 const main = async () => {
-  const file = Bun.file(OUT);
   const photos = new Map<string, Photo[]>(
-    Object.entries(
-      (await file.exists()) ? ((await file.json()) as Photos) : {},
-    ),
+    Object.entries(await read("generated/photos.json")),
   );
 
   const places = [

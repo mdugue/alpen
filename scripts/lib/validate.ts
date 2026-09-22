@@ -8,16 +8,22 @@
  * whole dataset with a different limit is a local computation over JSON and
  * costs no API calls at all (see `bun run data:check --explain`).
  *
- * Pure functions, no I/O, no imports from the app – so the unit tests of
- * plan 10 can feed them the known-bad fixtures directly.
+ * Pure functions and no I/O, so the unit tests can feed them the known-bad
+ * fixtures directly. The one thing this module takes from the app is the road
+ * vocabulary (`isTraverse`), because `suspectPoint` has to name a marker in
+ * the words of its own type; the measuring below is free of it and takes the
+ * decision as a `traverse` flag.
  */
+import { isTraverse } from "../../lib/regions";
 import type {
   AscentCheck,
   AscentMetrics,
   ElevationProfile,
   LatLon,
+  RoadType,
   RouteGeometry,
   RouteMetrics,
+  Summit,
   TourCheck,
   TourMetrics,
 } from "../../lib/types";
@@ -275,6 +281,150 @@ export const checkRoad = (
         `${marker} ${fmtKm(roadDist)} von der nächsten Straße entfernt > ${fmtKm(LIMITS.summit.maxRoadDist)}`,
       ]
     : [];
+};
+
+/**
+ * The marker in the words of the type, because a finding that names the wrong
+ * thing sends the curator looking for a mistake the entry cannot have. Three
+ * kinds, not two:
+ *
+ * - a **pass** is a saddle, usually with a `mountain_pass` node in OSM, and
+ *   its rides climb to it from both sides;
+ * - a **spur** has no saddle at all – it ends where the asphalt does, which
+ *   this codebase calls the Scheitel, and the way down is the way up again;
+ * - a **traverse** aims at no high point whatsoever. Its marker is a point
+ *   somewhere along the road and its rides are stretches across, not climbs.
+ */
+export const MARKER_WORDS = {
+  pass: {
+    coord: "Passkoordinate",
+    height: "Gipfelhöhe",
+    marker: "Passpunkt",
+    rides: "Auffahrten",
+  },
+  spur: {
+    coord: "Scheitelkoordinate",
+    height: "Scheitelhöhe",
+    marker: "Scheitelpunkt",
+    rides: "Auffahrten",
+  },
+  traverse: {
+    coord: "Markerkoordinate",
+    height: "Markerhöhe",
+    marker: "Markerpunkt",
+    rides: "Strecken",
+  },
+} as const;
+
+export type MarkerWords = (typeof MARKER_WORDS)[keyof typeof MARKER_WORDS];
+
+export const markerWords = (type: RoadType): MarkerWords =>
+  isTraverse(type)
+    ? MARKER_WORDS.traverse
+    : type === "spur"
+      ? MARKER_WORDS.spur
+      : MARKER_WORDS.pass;
+
+/** One thing that is wrong with a marker, or not known about it yet. */
+export interface MarkerReason {
+  /** True while the rides of this road are held back because of it. */
+  blocks: boolean;
+  text: string;
+}
+
+/** What is to be said about one marker, in the words of its own type. */
+export interface Finding {
+  reasons: MarkerReason[];
+  words: MarkerWords;
+}
+
+/** The entry a marker belongs to – everything `suspectPoint` judges it by. */
+export type Marker = {
+  elevation: number;
+  slug: string;
+  type: RoadType;
+} & LatLon;
+
+/**
+ * Is this marker where it says it is? The one answer for a question four
+ * places used to answer differently: the build (which rides may be routed),
+ * `data:check` (what the curator reads), `data:locate` (which passes to look
+ * at) and the build's log line after it has measured a batch.
+ *
+ * Two kinds of reason, because they call for different things. A **blocking**
+ * one has been measured and fails – the marker is not on the road, or not at
+ * the height the entry claims – and while it stands, routing the rides of that
+ * road would only pay for geometries that end in the wrong place. An
+ * **unmeasured** one is not a fault at all: nothing has been read at this
+ * coordinate yet, or the road distance predates the check. Those are the
+ * curator's answer, the one `data:check` has always given – the next build
+ * fills them in by itself and nothing waits for them.
+ */
+export const suspectPoint = (
+  marker: Marker,
+  summit: Summit | undefined,
+): Finding | null => {
+  const words = markerWords(marker.type);
+  const said = (reasons: MarkerReason[]) =>
+    reasons.length ? { reasons, words } : null;
+  if (summit === undefined)
+    return said([
+      { blocks: false, text: `${words.height} ungeprüft (bun run data:build)` },
+    ]);
+  if (summit.lat !== marker.lat || summit.lon !== marker.lon)
+    return said([
+      {
+        blocks: false,
+        text: `${words.height} ungeprüft – ${words.coord} wurde verschoben (bun run data:build)`,
+      },
+    ]);
+  const held = (rest: string) =>
+    `${words.coord} ${rest}; die ${words.rides} werden bis dahin nicht geroutet (bun run data:locate ${marker.slug})`;
+  const reasons: MarkerReason[] = checkSummit(
+    summit.dem,
+    marker.elevation,
+    words.marker,
+  ).map((r) => ({
+    blocks: true,
+    text: `${r} – ${held(`prüfen (DEM ${summit.dem} m, angegeben ${marker.elevation} m)`)}`,
+  }));
+  if (summit.roadDist === undefined)
+    reasons.push({
+      blocks: false,
+      text: "Straßenabstand ungeprüft (bun run data:build)",
+    });
+  reasons.push(
+    ...checkRoad(summit.roadDist, words.marker).map((r) => ({
+      blocks: true,
+      text: `${r} – ${held("auf die Straße legen")}`,
+    })),
+  );
+  return said(reasons);
+};
+
+/**
+ * Which limits these metrics can be weighed against, and which a `null` leaves
+ * unjudged. A rejection keeps its measured values, and the three that come
+ * from an elevation profile are missing whenever the candidate never got one –
+ * so "would pass today" is a claim about the limits that were actually read,
+ * and saying which is the difference between a verdict and a guess.
+ */
+export const limitsJudged = (
+  traverse: boolean,
+  metrics: RouteMetrics,
+): { judged: string[]; unjudged: string[] } => {
+  const always = ["Länge", "Start", "Ende"];
+  if (traverse) return { judged: always, unjudged: [] };
+  const m = metrics as AscentMetrics;
+  const judged = [...always];
+  const unjudged: string[] = [];
+  for (const [name, value] of [
+    ["Profilhöhe", m.topDelta],
+    ["höchster Punkt", m.peakAt],
+    ["Anstieg", m.gain],
+  ] as const)
+    (value === null ? unjudged : judged).push(name);
+  return { judged, unjudged };
 };
 
 /**

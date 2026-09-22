@@ -1,6 +1,7 @@
 # 32 · The pipeline as plan → execute → apply
 
-**Status:** in progress – phase A in [#62](https://github.com/mdugue/alpen/pull/62) ·
+**Status:** in progress – phases A and B in
+[#62](https://github.com/mdugue/alpen/pull/62) ·
 **Effort:** L (six phases, one PR each) ·
 **Depends on:** 00 (the gate) · **Supersedes:** 20, 21 · **Unblocks:**
 roadmap 1 (a closures step is one more host and one more job kind), 12
