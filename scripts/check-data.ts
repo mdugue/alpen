@@ -418,14 +418,23 @@ for (const [key, r] of Object.entries(rejected ?? {})) {
   const scope = `geprüft: ${judged.join(", ")}${
     unjudged.length ? `; ohne Profil ungeprüft: ${unjudged.join(", ")}` : ""
   }`;
+  // What the build would do with this key, asked of the plan rather than
+  // guessed: a rejection whose inputs the curator has already changed is
+  // queued for a retry, and saying so is the whole promise the automatic
+  // rule makes – otherwise the curator is told to force what is already due.
+  const queued = routeVerdict.get(key)?.act === "retry";
   warnings.push(
     now.length
-      ? `${key}: ${what} seit ${r.firstSeen} (${days(r.firstSeen)} Tage, ${r.source}) – ${now.join("; ")}${kept ? `; die ${kept}-Route bleibt` : ""}\n       Koordinaten in data/*.json korrigieren oder check an ${where} mit Begründung setzen – der nächste Lauf versucht es dann von selbst (erzwingen: bun run data:build --retry-rejected)`
+      ? `${key}: ${what} seit ${r.firstSeen} (${days(r.firstSeen)} Tage, ${r.source}) – ${now.join("; ")}${kept ? `; die ${kept}-Route bleibt` : ""}\n       ${
+          queued
+            ? "Koordinaten sind korrigiert – der nächste bun run data:build fragt von selbst neu"
+            : `Koordinaten in data/*.json korrigieren oder check an ${where} mit Begründung setzen – der nächste Lauf versucht es dann von selbst (erzwingen: bun run data:build --retry-rejected)`
+        }`
       : `${key}: ${what} seit ${r.firstSeen}, würde mit den heutigen Grenzen bestehen (${scope}) – der nächste bun run data:build versucht es erneut`,
   );
   if (EXPLAIN)
     explained.push(
-      `${now.length ? "✗" : "↺"} ${key.padEnd(36)} ${r.source.padEnd(4)} ${values(r.metrics)} (${what}${now.length ? "" : `, würde jetzt bestehen – ${scope}`})`,
+      `${now.length ? "✗" : "↺"} ${key.padEnd(36)} ${r.source.padEnd(4)} ${values(r.metrics)} (${what}${now.length ? (queued ? ", Eingaben geändert – wird neu gefragt" : "") : `, würde jetzt bestehen – ${scope}`})`,
     );
 }
 

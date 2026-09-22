@@ -310,7 +310,7 @@ const gradeOf = (status: Status, inBest: boolean): Grade =>
 export const statusOf = (grade: Grade): Status =>
   grade === "closed" ? "closed" : grade === "limited" ? "risky" : "open";
 
-export interface StatusVerdict {
+interface StatusVerdict {
   status: Status;
   /** Every reason that fired, in ladder order; `reasons[0]` is the label. */
   reasons: StatusReason[];
@@ -362,7 +362,7 @@ export const inputAt = (
 export const SNOW_RISKY_PCT = 20;
 const FROST_RISKY_PCT = 80;
 /** "Beste Zeit" only counts half-months that are quieter than this. */
-export const SNOW_BEST_PCT = 10;
+const SNOW_BEST_PCT = 10;
 /** Mean daily maximum in the valley, derived from the summit value. */
 export const HEAT_VALLEY_TMAX = 26;
 /** Share of days with ≥ 1 mm: two rain days in three. */

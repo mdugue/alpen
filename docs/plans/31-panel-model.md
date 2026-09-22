@@ -164,7 +164,11 @@ no external caller become module-private – the 16 measured above minus
 `statusOf`, which `lib/destination.ts` now imports, plus `REASON_TEXT`,
 `reasonTexts` and `valleyText`, whose last external caller was the JSX the
 three sentence builders replace; `climateBucket` had no caller at all and
-goes. 55 exports are left, each with a reader outside the module. Plan 16's header flips to done in the same PR, as its
+goes. 54 exports are left. Two of them, `passVerdict` and `REASON_SHORT`,
+are reached only by this module's own test: the first is the heuristic every
+sentence is built on and the second is the list the legend is generated
+from, so both are worth pinning directly rather than only through a caller.
+Plan 16's header flips to done in the same PR, as its
 acceptance criteria already pass.
 
 ### Phase C · One reach module
@@ -234,9 +238,10 @@ points at the module instead of the rule.
   detail URL); `PanelHead`'s `loading` doc matches what is passed.
 - Phase B: `grep -rn "beste Zeit" components` finds one site; `GRADE_ORDER`
   and `statusOf` are defined once; `toLocaleString` appears in `lib/utils.ts`
-  only; `lib/status.ts` exports at most 55 names, every one with a caller
-  outside the module; every German sentence the panel shows is produced by
-  a tested function.
+  only; `lib/status.ts` exports at most 55 names (54), every one with a
+  caller outside the module except `passVerdict` and `REASON_SHORT`, which
+  the design section above says why it keeps; every German sentence the
+  panel shows is produced by a tested function.
 - Phase C: `haversine` is not imported by anything under `components/`;
   `skipPasses`/`skipTowns` are gone; `basesFor` allocates no `ReachedPass`.
 - Phase D: `DetailPanel` receives at most 8 props; no `as Pass`/`as Tour`/

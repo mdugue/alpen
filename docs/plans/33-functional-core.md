@@ -2,11 +2,11 @@
 
 **Status:** done ([#62](https://github.com/mdugue/alpen/pull/62)) – the seam
 rules, `Explorer` as composition, the e2e as smoke, plan 02 re-read and the
-documentation; the size ceilings below are recorded in the PR, and three of
-the four are still missed · **Effort:** M (the closing steps; the substance is
-delivered by 28–32) · **Depends on:** 28, 29, 30, 31, 32 (phases A and B;
-C to F are still open, so the pipeline's derived files, photos and
-calibration have not moved yet) · **Unblocks:** 02
+documentation. Two of the four size ceilings and one of the two effect
+counts are still missed; what is missed and by how much is at the foot of
+"The invariants" below · **Effort:** M (the closing steps; the substance is
+delivered by 28–32) · **Depends on:** 28, 29, 30, 31, 32 (all six phases)
+· **Unblocks:** 02
 (the router is an adapter swap), roadmap 1 (the official closure status is
 a scene input, a reducer case and a pipeline job, no effect touched), 12,
 24, 27 (each arrives as data through the same core)
@@ -123,6 +123,32 @@ Sizes are smells, not rules, but they are recorded: `pass-map.tsx` at most
 700 lines (from 1 986), `explorer.tsx` at most 350 (from 691),
 `detail-panel.tsx` at most 120 as the shell (from 1 115), `build-data.ts`
 at most 400 (from 1 344).
+
+#### What the plan missed, measured
+
+Two of the four sizes and one of the two effect counts are over. The numbers
+are here rather than only in the PR, because a ceiling nobody can see is a
+ceiling nobody keeps.
+
+| What                                | Ceiling | Was   | Is    | Over by |
+| ----------------------------------- | ------- | ----- | ----- | ------- |
+| `components/map/pass-map.tsx`       | 700     | 1 986 | 1 049 | 349     |
+| `components/panel/detail-panel.tsx` | 120     | 1 115 | 429   | 309     |
+| `components/explorer.tsx`           | 350     | 691   | 259   | –       |
+| `scripts/build-data.ts`             | 400     | 1 344 | 205   | –       |
+| effects in `pass-map.tsx`           | 6       | 17    | 15    | 9       |
+| effects in `explorer.tsx`           | 2       | 3     | 0     | –       |
+
+The map is what both misses are about. Its fifteen effects each hand one
+value to an adapter, which is the invariant above; what the ceiling of six
+wanted is fewer _inputs_, and plan 29 deliberately chose one effect per
+camera input instead ("five prop changes, five events"). Closing the gap
+means the four environment effects – the base map, the overlays, the colour
+scheme, where the corner controls stand – becoming one `applyEnvironment`
+beside `applyScene` and `applyCamera`, and the style and the corner controls
+leaving the file the way the paint expressions did. That is a plan of its
+own, not a line to squeeze into this one. The panel's remainder is its head,
+its bar and the weather block, still inline in the shell.
 
 ### What each plan delivers to the core
 

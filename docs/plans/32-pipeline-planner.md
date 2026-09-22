@@ -296,8 +296,16 @@ transport; plans 20 and 21 headers point here; plan 11 items 13, 17, 19 and
 - Phase B: `decideRoute`, `decideProfile`, `afterGate` and `suspectPoint`
   have table tests including the keep/restore path with a rejection beside
   a stored route; `data:check` no longer warns `Profil fehlt` for a
-  summit-blocked ascent; `--explain` prints "bereits neu versucht" for a
-  rejection whose inputs changed; `--only X` filters every counter;
+  summit-blocked ascent; a rejection whose inputs changed is reported as
+  queued rather than as something to force – `data:check` says "Koordinaten
+  sind korrigiert – der nächste bun run data:build fragt von selbst neu" and
+  `--explain` marks the row "Eingaben geändert – wird neu gefragt", both read
+  off `decideRoute`'s own verdict rather than re-derived (the plan sketched
+  the phrase as "bereits neu versucht", which claims a past run; what the
+  verdict knows is that the next one is due). No rejection carries changed
+  inputs today, so neither line shows in the current output; the verdict
+  behind them is pinned by `decideRoute`'s table test; `--only X` filters
+  every counter;
   `reconcileInputs` and `--backfill` are gone; `startsWith("tour:")` appears
   nowhere; `backfill.sh` no longer recommends `--retry-rejected` after a
   coordinate fix.
