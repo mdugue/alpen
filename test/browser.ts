@@ -48,16 +48,28 @@ const chromePath = (): string | undefined => {
   return Bun.file(fallback).size > 0 ? fallback : undefined;
 };
 
-/** Polls until the check passes; the message names what was waited for. */
+/**
+ * Polls until the check passes; the message names what was waited for. A
+ * check that throws counts as "not yet": a poll across a redirect asks a page
+ * that is navigating away ("Inspected target navigated or closed"), and the
+ * next poll asks the page it arrived at. The last error is kept for the
+ * timeout's message, so a check that can never succeed still says why.
+ */
 export const waitUntil = async (
   check: () => Promise<boolean>,
   what: string,
   timeout = 15_000,
 ) => {
   const deadline = Date.now() + timeout;
+  let last: unknown;
   for (;;) {
-    if (await check()) return;
-    if (Date.now() > deadline) throw new Error(`Timeout: ${what}`);
+    try {
+      if (await check()) return;
+    } catch (error) {
+      last = error;
+    }
+    if (Date.now() > deadline)
+      throw new Error(`Timeout: ${what}`, { cause: last });
     await Bun.sleep(100);
   }
 };
