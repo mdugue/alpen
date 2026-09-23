@@ -118,6 +118,7 @@ export const Shell = ({
   const detailSheet = (
     <MobileSheet
       label={t.header.details}
+      handle={t.header.drawer.details}
       open={selection !== null}
       onClose={onBack}
       snapPoints={DETAIL_SNAPS}
@@ -215,6 +216,7 @@ export const Shell = ({
         <>
           <MobileSheet
             label={t.header.list}
+            handle={t.header.drawer.list}
             open={sheet.list.open}
             onClose={() => dispatch({ open: false, type: "list" })}
             snapPoints={LIST_SNAPS}

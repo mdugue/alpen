@@ -9,6 +9,7 @@ import {
   filterCount,
   resetFilters,
 } from "@/lib/filter-summary";
+import { DE } from "@/lib/i18n/dictionaries";
 
 const filters = (over: Partial<Filters> = {}): Filters => ({
   ...DEFAULT_FILTERS,
@@ -17,9 +18,12 @@ const filters = (over: Partial<Filters> = {}): Filters => ({
 
 describe("appliedFilters", () => {
   test("nothing applied, nothing listed – period, sort and search included", () => {
-    expect(appliedFilters(filters())).toEqual([]);
+    expect(appliedFilters(filters(), DE)).toEqual([]);
     expect(
-      appliedFilters(filters({ period: 3, query: "stelvio", sort: "name" })),
+      appliedFilters(
+        filters({ period: 3, query: "stelvio", sort: "name" }),
+        DE,
+      ),
     ).toEqual([]);
   });
 
@@ -39,6 +43,7 @@ describe("appliedFilters", () => {
         tags: ["carfree", "glacier"],
         types: ["pass", "spur"],
       }),
+      DE,
     );
     expect(chips.map((c) => c.label)).toEqual([
       "nur Gemerkte",
@@ -65,7 +70,7 @@ describe("appliedFilters", () => {
       tags: ["carfree", "toll"],
       types: ["valley"],
     });
-    const chips = appliedFilters(f);
+    const chips = appliedFilters(f, DE);
     const by = (key: string) => chips.find((c) => c.key === key)!.clear(f);
     expect(by("status").status).toEqual(ALL_STATUS);
     expect(by("status").types).toEqual(["valley"]);
@@ -76,20 +81,21 @@ describe("appliedFilters", () => {
   });
 
   test("difficultyLabel", () => {
-    expect(difficultyLabel([3, 3])).toBe("Schwierigkeit 3");
-    expect(difficultyLabel([1, 4])).toBe("Schwierigkeit 1–4");
+    expect(difficultyLabel([3, 3], DE)).toBe("Schwierigkeit 3");
+    expect(difficultyLabel([1, 4], DE)).toBe("Schwierigkeit 1–4");
   });
 });
 
 describe("filterCount", () => {
   test("counts the chips the row lists, the period and the sort excluded", () => {
-    expect(filterCount(filters())).toBe(0);
-    expect(filterCount(filters({ period: 3, query: "x", sort: "name" }))).toBe(
-      0,
-    );
+    expect(filterCount(filters(), DE)).toBe(0);
+    expect(
+      filterCount(filters({ period: 3, query: "x", sort: "name" }), DE),
+    ).toBe(0);
     expect(
       filterCount(
         filters({ maxTraffic: 2, minElevation: 2000, tags: ["toll"] }),
+        DE,
       ),
     ).toBe(3);
   });
@@ -106,7 +112,7 @@ describe("resetFilters", () => {
       types: ["spur"],
     });
     const reset = resetFilters(f);
-    expect(filterCount(reset)).toBe(0);
+    expect(filterCount(reset, DE)).toBe(0);
     expect(reset.query).toBe("");
     expect(reset.period).toBe(3);
     expect(reset.sort).toBe("name");
@@ -125,13 +131,14 @@ describe("bestRelief", () => {
     const relief = bestRelief(
       filters({ maxTraffic: 2, minElevation: 2000 }),
       countWith,
+      DE,
     );
     expect(relief?.chip.key).toBe("elevation");
     expect(relief?.n).toBe(40);
   });
 
   test("no relief when nothing is applied, and none that brings nothing back", () => {
-    expect(bestRelief(filters(), countWith)).toBeUndefined();
-    expect(bestRelief(filters({ minBeauty: 4 }), () => 0)).toBeUndefined();
+    expect(bestRelief(filters(), countWith, DE)).toBeUndefined();
+    expect(bestRelief(filters({ minBeauty: 4 }), () => 0, DE)).toBeUndefined();
   });
 });

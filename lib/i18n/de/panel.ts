@@ -8,14 +8,14 @@
 export const panel = {
   /** The line over each ascent's profile, and what the profile block says. */
   ascents: {
-    average: (pct: string) => `Ø ${pct} %`,
+    average: "Ø {pct} %",
     info: "Geroutete Straße, 100 Höhenpunkte aus einem Geländemodell – zum Vergleichen gut, nicht metergenau.",
     infoTraverse:
       "Geroutete Straße, 100 Höhenpunkte aus einem Geländemodell – zum Vergleichen gut, nicht metergenau. Höhenmeter und steilster Kilometer stehen hier nicht: auf einer fast flachen Straße in einer Schlucht misst das Modell mehr Auf und Ab als die Straße hat.",
     noProfile: "Kein Höhenprofil vorhanden.",
     none: "Keine Auffahrt hinterlegt",
     spur: "Stichstraße: Die Straße endet oben, hinunter geht es dieselbe Auffahrt zurück.",
-    steepestKm: (pct: string) => `steilster km ${pct} %`,
+    steepestKm: "steilster km {pct} %",
     title: "Auffahrten",
     titleTraverse: "Strecke",
   },
@@ -25,29 +25,27 @@ export const panel = {
     close: "Details schließen",
     linkCopied: "Link kopiert",
     list: "Liste",
-    save: (name: string) => `${name} merken`,
-    share: (name: string) => `${name} teilen`,
-    unsave: (name: string) => `${name} nicht mehr merken`,
+    save: "{name} merken",
+    share: "{name} teilen",
+    unsave: "{name} nicht mehr merken",
   },
   /** A town judged as a base, and the inverse: the bases of one road. */
   base: {
     /** "VOR DER HAUSTÜR · 5 Pässe bis 18 km" – the count after the band's name. */
-    bandCount: (n: string, noun: string, maxKm: string) =>
-      `${n} ${noun} · bis ${maxKm}`,
-    basesInfo: (km: number) =>
-      `Orte, von denen aus diese Straße erreichbar ist – nach Nähe und danach sortiert, wie viele Pässe der Ort im gewählten Halbmonat sonst noch bietet. Jenseits von ${km} km endet die Liste.`,
-    basesNone: (km: number) => `Kein Rad-Ort im Umkreis von ${km} km.`,
+    bandCount: "{n} {noun} · bis {maxKm}",
+    basesInfo:
+      "Orte, von denen aus diese Straße erreichbar ist – nach Nähe und danach sortiert, wie viele Pässe der Ort im gewählten Halbmonat sonst noch bietet. Jenseits von {km} km endet die Liste.",
+    basesNone: "Kein Rad-Ort im Umkreis von {km} km.",
     basesTitle: "Orte als Standort",
     /** What the strip under the badge is derived from; the peak clause follows it. */
-    derived: (total: string) =>
-      `Abgeleitet aus den ${total} Pässen im Umkreis – der Ort selbst hat keine eigene Klimareihe. Der Streifen zeigt den Jahresverlauf im Verhältnis zur besten Zeit dieses Orts`,
-    derivedPeak: (peak: string) => ` (dann sind ${peak} Pässe gut befahrbar)`,
+    derived:
+      "Abgeleitet aus den {total} Pässen im Umkreis – der Ort selbst hat keine eigene Klimareihe. Der Streifen zeigt den Jahresverlauf im Verhältnis zur besten Zeit dieses Orts",
+    derivedPeak: " (dann sind {peak} Pässe gut befahrbar)",
     passes: "Pässe",
-    passesInfo: (km: number) =>
-      `Nach Zustand im gewählten Halbmonat, Schönheit und Nähe sortiert. Nähe zählt gleitend: ein Pass wird nicht bei einem runden Kilometerwert wertlos, sondern verliert mit der Entfernung an Gewicht. Jenseits von ${km} km endet die Liste.`,
+    passesInfo:
+      "Nach Zustand im gewählten Halbmonat, Schönheit und Nähe sortiert. Nähe zählt gleitend: ein Pass wird nicht bei einem runden Kilometerwert wertlos, sondern verliert mit der Entfernung an Gewicht. Jenseits von {km} km endet die Liste.",
     passesTitle: "Pässe von hier aus",
-    townLine: (rideable: string, total: string) =>
-      `${rideable} von ${total} Pässen gut`,
+    townLine: "{rideable} von {total} Pässen gut",
     townNone: "kein Pass im Umkreis",
     towns: "Orte",
   },
@@ -62,24 +60,24 @@ export const panel = {
   /** The climate block: three tiles and the chart under them. */
   climate: {
     dayNight: "Ø Tag / Nacht",
-    frost: (days: string) => `Frost · ${days} von 15 Tagen`,
+    frost: "Frost · {days} von 15 Tagen",
     info: "ERA5-Land 2015–2024, ein 10-km-Raster – auf Passhöhe eher zu mild.",
     noneText: "Für diesen Pass liegen noch keine Klimadaten vor.",
     noneTitle: "Keine Klimareihe",
-    snow: (days: string) => `Schnee · ${days} von 15 Tagen`,
+    snow: "Schnee · {days} von 15 Tagen",
     title: "Jahresklima",
   },
   /** The area panel: what it holds and how one gets there. */
   destination: {
     baseMark: "Standort",
-    derived: (total: string) =>
-      `Abgeleitet aus den ${total} Straßen im Gebiet – ein Reiseziel hat keine eigene Klimareihe. Der Streifen zeigt den Jahresverlauf im Verhältnis zur besten Zeit dieses Gebiets`,
-    derivedPeak: (peak: string) => ` (dann sind ${peak} Straßen gut befahrbar)`,
+    derived:
+      "Abgeleitet aus den {total} Straßen im Gebiet – ein Reiseziel hat keine eigene Klimareihe. Der Streifen zeigt den Jahresverlauf im Verhältnis zur besten Zeit dieses Gebiets",
+    derivedPeak: " (dann sind {peak} Straßen gut befahrbar)",
     lodging: "Unterkunft suchen",
     /** The map search behind "Unterkunft suchen". */
-    lodgingQuery: (town: string) => `Hotels ${town}`,
-    roadsInfo: (km: string) =>
-      `Alle Straßen im Umkreis von ${km} km um die Gebietsmitte, plus die redaktionell dazugezählten, minus die ausgenommenen. Sortiert nach Zustand im gewählten Halbmonat, dann Schönheit.`,
+    lodgingQuery: "Hotels {town}",
+    roadsInfo:
+      "Alle Straßen im Umkreis von {km} km um die Gebietsmitte, plus die redaktionell dazugezählten, minus die ausgenommenen. Sortiert nach Zustand im gewählten Halbmonat, dann Schönheit.",
     roadsNone: "Keine Straße im Gebiet.",
     roadsTitle: "Straßen im Gebiet",
     toursNone: "Keine Rundtour beginnt in diesem Gebiet.",
@@ -95,14 +93,14 @@ export const panel = {
     newTab: " (öffnet in neuem Tab)",
   },
   kicker: {
-    destination: (country: string) => `Reiseziel · ${country}`,
+    destination: "Reiseziel · {country}",
     tour: "Rundtour",
-    town: (country: string) => `Rad-Ort · ${country}`,
+    town: "Rad-Ort · {country}",
   },
   /** What else is around here, nearest first. */
   nearby: {
     passes: "Pässe",
-    title: (km: number) => `Im Umkreis von ${km} km`,
+    title: "Im Umkreis von {km} km",
     tours: "Touren",
     towns: "Orte",
   },
@@ -114,18 +112,15 @@ export const panel = {
     notLoaded: "Keine Fotos geladen – die Bilddatei ist nicht angekommen.",
     previous: "Vorheriges Bild",
     unknownArtist: "unbekannt",
-    viewOnCommons: (title: string) =>
-      `${title} – auf Wikimedia Commons ansehen`,
+    viewOnCommons: "{title} – auf Wikimedia Commons ansehen",
   },
   /** The scrubbable elevation profile: its summary and its readout. */
   profile: {
-    keyHint: (summary: string) =>
-      `${summary}. Mit den Pfeiltasten am Profil entlang.`,
+    keyHint: "{summary}. Mit den Pfeiltasten am Profil entlang.",
     loading: "Höhenprofil wird geladen",
-    readout: (km: string, elevation: string, gradient: string) =>
-      `km ${km} · ${elevation} m · ${gradient} %`,
-    summary: (km: string, start: string, top: string, average: string) =>
-      `Höhenprofil: ${km} km von ${start} auf ${top} m, im Mittel ${average} %`,
+    readout: "km {km} · {elevation} m · {gradient} %",
+    summary:
+      "Höhenprofil: {km} km von {start} auf {top} m, im Mittel {average} %",
   },
   /** The editorial 1–5 scales of a road. */
   rating: {
@@ -147,22 +142,22 @@ export const panel = {
   },
   /** The block heading's source note. */
   section: {
-    sourceHint: (title: string) => `${title}: Hinweis zur Quelle`,
+    sourceHint: "{title}: Hinweis zur Quelle",
   },
   /** The loop panel. */
   tour: {
-    passCount: (n: string) => `${n} Pässe`,
+    passCount: "{n} Pässe",
     passesTitle: "Pässe der Runde",
   },
   /** The town panel. */
   town: {
     bikeShops: "Radläden (Google)",
     /** The map search behind "Radläden". */
-    bikeShopsQuery: (town: string) => `bike shop ${town}`,
+    bikeShopsQuery: "bike shop {town}",
     destinationLead: "Reiseziel:",
     workshops: "Werkstätten (OSM)",
     /** The OSM search behind "Werkstätten". */
-    workshopsQuery: (town: string) => `Fahrradwerkstatt ${town}`,
+    workshopsQuery: "Fahrradwerkstatt {town}",
   },
   /** The forecast block: two rows, the whole week behind a fold. */
   weather: {
@@ -199,4 +194,4 @@ export const panel = {
     unavailableText: "Open-Meteo antwortet gerade nicht.",
     unavailableTitle: "Wetter nicht verfügbar",
   },
-};
+} as const;

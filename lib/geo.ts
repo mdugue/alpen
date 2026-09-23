@@ -102,24 +102,9 @@ export const NEARBY_RADIUS_KM = REACH_MAX_KM;
  * weight.
  */
 export const REACH_BANDS = [
-  {
-    hint: "Aus dem Ort heraus, ohne Auto.",
-    key: "door",
-    label: "vor der Haustür",
-    maxKm: 18,
-  },
-  {
-    hint: "In einer Tagesrunde ab dem Ort machbar.",
-    key: "day",
-    label: "Tagesrunde",
-    maxKm: 45,
-  },
-  {
-    hint: "Lohnt den Transfer – ein Ausflugstag.",
-    key: "trip",
-    label: "Ausflug",
-    maxKm: REACH_MAX_KM,
-  },
+  { key: "door", maxKm: 18 },
+  { key: "day", maxKm: 45 },
+  { key: "trip", maxKm: REACH_MAX_KM },
 ] as const;
 
 export type ReachBand = (typeof REACH_BANDS)[number]["key"];

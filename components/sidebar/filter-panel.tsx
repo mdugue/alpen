@@ -47,9 +47,9 @@ import {
   difficultyLabel,
   filterCount,
 } from "@/lib/filter-summary";
+import { fill } from "@/lib/i18n/fill";
 import { ROAD_TAGS } from "@/lib/regions";
 import type { RangeName } from "@/lib/regions";
-import { statusLabel } from "@/lib/status";
 import type { RoadTag, RoadType, Status, Surface } from "@/lib/types";
 import { cn, TOUCH_CONTROL } from "@/lib/utils";
 
@@ -72,7 +72,7 @@ export const FilterTrigger = ({
   className?: string;
 }) => {
   const { t } = useT();
-  const count = filterCount(filters);
+  const count = filterCount(filters, t);
   return (
     <Button
       variant={count > 0 ? "secondary" : "outline"}
@@ -110,8 +110,8 @@ export const AppliedFilters = ({
   onReset: () => void;
   className?: string;
 }) => {
-  const { t, lang } = useT();
-  const applied = appliedFilters(filters, lang);
+  const { t } = useT();
+  const applied = appliedFilters(filters, t);
   if (applied.length === 0) return null;
   return (
     <div
@@ -131,7 +131,7 @@ export const AppliedFilters = ({
           variant="secondary"
           size="sm"
           onClick={() => setFilters(chip.clear)}
-          aria-label={t.sidebar.filters.remove(chip.label)}
+          aria-label={fill(t.sidebar.filters.remove, { label: chip.label })}
           className={cn(
             "h-7 shrink-0 rounded-full pr-1.5 pl-3 font-normal",
             "pointer-coarse:h-9",
@@ -210,7 +210,7 @@ export const FilterBody = ({
   more: boolean;
   onMoreChange: (open: boolean) => void;
 }) => {
-  const { t, lang, fmt } = useT();
+  const { t, fmt } = useT();
   const words = t.vocab;
   const set = <K extends keyof Filters>(key: K, value: Filters[K]) =>
     setFilters((f) => ({ ...f, [key]: value }));
@@ -220,8 +220,8 @@ export const FilterBody = ({
   const pickedSurfaces = pickedMembers(filters.surfaces, ALL_SURFACES);
   const [lo, hi] = filters.difficulty;
   const wholeScale = lo === RATING_MIN && hi === RATING_MAX;
-  const count = filterCount(filters);
-  const relief = counts.pass > 0 ? null : bestRelief(filters, countWith, lang);
+  const count = filterCount(filters, t);
+  const relief = counts.pass > 0 ? null : bestRelief(filters, countWith, t);
   const reliefLabel = relief?.chip.label ?? "";
 
   return (
@@ -253,7 +253,7 @@ export const FilterBody = ({
           return (
             <FilterChip
               key={s}
-              label={statusLabel(s, lang)}
+              label={t.status.label[s]}
               count={countWith({ status: [s] })}
               pressed={on}
               onPressedChange={() =>
@@ -261,7 +261,7 @@ export const FilterBody = ({
               }
             >
               <StatusDot status={s} hollow={!on} />
-              {statusLabel(s, lang)}
+              {t.status.label[s]}
             </FilterChip>
           );
         })}
@@ -280,15 +280,13 @@ export const FilterBody = ({
         id="f-difficulty"
         label={t.sidebar.filters.difficulty}
         value={
-          wholeScale
-            ? words.option.any
-            : difficultyLabel(filters.difficulty, lang)
+          wholeScale ? words.option.any : difficultyLabel(filters.difficulty, t)
         }
       >
         {LEVELS.map((n) => (
           <FilterChip
             key={n}
-            label={words.filter.difficulty(n, n)}
+            label={fill(words.filter.difficultyOne, { level: n })}
             count={countWith({ difficulty: [n, n] })}
             pressed={!wholeScale && n >= lo && n <= hi}
             onPressedChange={() =>
@@ -479,7 +477,7 @@ export const FilterBody = ({
         >
           {counts.pass === 0 && relief ? (
             <>
-              {t.sidebar.filters.noRoadsWithout(reliefLabel)}
+              {fill(t.sidebar.filters.noRoadsWithout, { label: reliefLabel })}
               <span className="text-foreground font-medium tabular-nums">
                 {fmt(relief.n)}
               </span>
@@ -490,7 +488,7 @@ export const FilterBody = ({
               <span className="text-foreground font-medium tabular-nums">
                 {fmt(counts.pass)}
               </span>{" "}
-              {t.sidebar.filters.countRoads(fmt(totals.pass))}
+              {fill(t.sidebar.filters.countRoads, { total: fmt(totals.pass) })}
               {", "}
               <span className="text-foreground font-medium tabular-nums">
                 {fmt(counts.tour)}

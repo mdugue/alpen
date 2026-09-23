@@ -1,5 +1,4 @@
-import { DEFAULT_LANG, vocabOf } from "@/lib/i18n";
-import type { Lang } from "@/lib/i18n";
+import type { Messages } from "@/lib/i18n";
 
 /**
  * The overview draws by fame, the list draws everything.
@@ -41,14 +40,9 @@ export const minzoomOf = (fame: number): number =>
  * The legend line for a zoom: "bekannte Pässe" while the overview is thinned,
  * `null` once every road is drawn and there is nothing to say.
  */
-export const prominenceWord = (
-  zoom: number,
-  lang: Lang = DEFAULT_LANG,
-): string | null => {
-  const level = [...PROMINENCE]
-    .toReversed()
-    .find((p) => zoom >= p.fromZoom)?.level;
-  return level ? vocabOf(lang).prominence[level] : null;
+export const prominenceWord = (zoom: number, w: Messages): string | null => {
+  const level = PROMINENCE.findLast((p) => zoom >= p.fromZoom)?.level;
+  return level ? w.vocab.prominence[level] : null;
 };
 
 /**

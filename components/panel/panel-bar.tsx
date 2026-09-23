@@ -5,6 +5,7 @@ import { Check, ChevronLeft, Share, Star, X } from "lucide-react";
 import { useT } from "@/components/i18n";
 import { Button } from "@/components/ui/button";
 import { Toggle } from "@/components/ui/toggle";
+import { fill } from "@/lib/i18n/fill";
 import { cn, ICON_TOGGLE, OVERLAY_CONTROL, TOUCH_ICON } from "@/lib/utils";
 
 /**
@@ -82,7 +83,9 @@ export const PanelBar = ({
         size="icon"
         variant="ghost"
         onClick={onShare}
-        aria-label={shared ? t.panel.bar.linkCopied : t.panel.bar.share(name)}
+        aria-label={
+          shared ? t.panel.bar.linkCopied : fill(t.panel.bar.share, { name })
+        }
         className={cn(
           "pointer-events-auto",
           !solid && OVERLAY_CONTROL,
@@ -95,7 +98,9 @@ export const PanelBar = ({
         pressed={favorite}
         onPressedChange={onToggleFavorite}
         aria-label={
-          favorite ? t.panel.bar.unsave(name) : t.panel.bar.save(name)
+          favorite
+            ? fill(t.panel.bar.unsave, { name })
+            : fill(t.panel.bar.save, { name })
         }
         className={cn(
           "pointer-events-auto",

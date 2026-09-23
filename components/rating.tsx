@@ -1,6 +1,7 @@
 "use client";
 
 import { useT } from "@/components/i18n";
+import { fill } from "@/lib/i18n/fill";
 import { cn } from "@/lib/utils";
 
 /** Editorial 1–5 scale as bars; explained in the scales dialog. */
@@ -24,7 +25,7 @@ export const Rating = ({
   return (
     <span
       role="img"
-      aria-label={t.sidebar.rating(fmt(value))}
+      aria-label={fill(t.sidebar.rating, { value: fmt(value) })}
       className={cn("inline-flex gap-0.5 align-middle", className)}
     >
       {[1, 2, 3, 4, 5].map((i) => (

@@ -28,13 +28,12 @@ import { haversine } from "../lib/geo";
  * must neither block a merge nor stop the refresh workflow from committing
  * what it fetched.
  */
+import { DE } from "../lib/i18n/dictionaries";
 import {
   inBox,
   isTraverse,
-  RANGE,
   RANGE_BOUNDS,
   rangeOf,
-  ROAD_TYPE,
   surfaceOfRoads,
 } from "../lib/regions";
 import type { RangeName } from "../lib/regions";
@@ -335,7 +334,7 @@ const checkPasses = (list: Pass[]) => {
     // `false` is worse: it reads as "kein Straßenscheitel" and does nothing.
     if (p.roadSummit !== undefined && p.type !== "pass")
       warnings.push(
-        `${p.slug}: roadSummit wird bei einer ${ROAD_TYPE[p.type].label} nicht gelesen – der Scheitel liegt dort immer auf der Straße; Zeile entfernen`,
+        `${p.slug}: roadSummit wird bei einer ${DE.vocab.roadType[p.type].label} nicht gelesen – der Scheitel liegt dort immer auf der Straße; Zeile entfernen`,
       );
 
     checkRoutes(p);
@@ -377,7 +376,7 @@ const checkTours = (list: Tour[], byPass: Map<string, Pass>) => {
     }
     if (ranges.size > 1)
       errors.push(
-        `Tour ${t.slug}: Pässe aus ${[...ranges].map((r) => RANGE[r].label).join(" und ")} – eine Runde liegt in einem Gebirge`,
+        `Tour ${t.slug}: Pässe aus ${[...ranges].map((r) => DE.vocab.range[r].label).join(" und ")} – eine Runde liegt in einem Gebirge`,
       );
     const [range] = ranges;
     if (range) {
@@ -385,7 +384,7 @@ const checkTours = (list: Tour[], byPass: Map<string, Pass>) => {
       for (const [i, w] of t.waypoints.entries())
         if (!inBox(box, w))
           errors.push(
-            `Tour ${t.slug}: Wegpunkt ${i} liegt ${RANGE[range].outside} (${box.lat.join("–")}° N, ${box.lon.join("–")}° E)`,
+            `Tour ${t.slug}: Wegpunkt ${i} liegt ${DE.vocab.range[range].outside} (${box.lat.join("–")}° N, ${box.lon.join("–")}° E)`,
           );
     }
     for (const s of t.passes) {
@@ -409,7 +408,7 @@ const checkTours = (list: Tour[], byPass: Map<string, Pass>) => {
         (t.season.opens < p.season.opens || t.season.closes > p.season.closes)
       )
         warnings.push(
-          `Tour ${t.slug}: Fenster ${windowText(t.season)} reicht über das von ${s} (${windowText(p.season)}) hinaus – die Runde kann nicht länger offen sein als ihr Pass`,
+          `Tour ${t.slug}: Fenster ${windowText(t.season, DE)} reicht über das von ${s} (${windowText(p.season, DE)}) hinaus – die Runde kann nicht länger offen sein als ihr Pass`,
         );
     }
     checkTourSurface(t, byPass);

@@ -310,7 +310,7 @@ test("5b · an entity route is a page of its own, and the back button closes it"
     },
   ));
 
-test("5c · the English version lives under /en, and the toggle keeps the place", () =>
+test("5c · the English version lives under /en, and the language menu keeps the place", () =>
   withPage(
     app,
     "english",
@@ -326,7 +326,10 @@ test("5c · the English version lives under /en, and the toggle keeps the place"
       await page.waitFor('[aria-label="Close details"]');
       await page.clickText('[role="tab"]', "Roads");
       await page.waitFor('[data-row="pass:passo-dello-stelvio"]');
-      // The toggle is a plain link to the same place without the prefix.
+      // The language is the last group of the map's view menu, and the other
+      // one is a plain link to the same place without the prefix.
+      await page.click('[aria-label="View: map, layers, 3D and language"]');
+      await page.waitFor('a[hreflang="de"]');
       await page.click('a[hreflang="de"]');
       await waitUntil(
         async () => (await page.path()) === "/pass/col-du-galibier",
@@ -338,6 +341,35 @@ test("5c · the English version lives under /en, and the toggle keeps the place"
         "de",
       );
       expect(await page.hash()).toContain("t=6");
+    },
+  ));
+
+test("5d · the root speaks the browser's language until one is picked", () =>
+  withPage(
+    app,
+    "root-language",
+    { acceptLanguage: "en-GB,en;q=0.9", hash: "#t=6" },
+    async (page) => {
+      // An English browser arriving at the bare root is sent to /en, and the
+      // fragment travels with the redirect.
+      await waitUntil(async () => (await page.path()) === "/en", "/en");
+      expect(await page.hash()).toContain("t=6");
+      await page.waitFor('[aria-label="View: map, layers, 3D and language"]');
+      // Picking German leads to the root, which is not sent back: the request
+      // comes from a page of this site.
+      await page.click('[aria-label="View: map, layers, 3D and language"]');
+      await page.waitFor('a[hreflang="de"]');
+      await page.click('a[hreflang="de"]');
+      await waitUntil(async () => (await page.path()) === "/", "the root");
+      await page.waitFor(
+        '[aria-label="Ansicht: Karte, Ebenen, 3D und Sprache"]',
+      );
+      // And the pick is remembered: a fresh arrival stays German.
+      await page.navigate();
+      await page.waitFor(
+        '[aria-label="Ansicht: Karte, Ebenen, 3D und Sprache"]',
+      );
+      expect(await page.path()).toBe("/");
     },
   ));
 

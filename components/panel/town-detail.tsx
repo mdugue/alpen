@@ -6,6 +6,7 @@ import { DestinationSection } from "@/components/panel/destination";
 import { ExternalLinks, LinkButton, Nearby } from "@/components/panel/nearby";
 import { TagBadges } from "@/components/tags";
 import type { TownModel } from "@/lib/detail-model";
+import { fill } from "@/lib/i18n/fill";
 import { isHovered } from "@/lib/route-key";
 
 /**
@@ -66,11 +67,11 @@ export const TownDetail = ({
         links={[
           [
             t.panel.town.workshops,
-            `https://www.openstreetmap.org/search?query=${encodeURIComponent(t.panel.town.workshopsQuery(town.name))}`,
+            `https://www.openstreetmap.org/search?query=${encodeURIComponent(fill(t.panel.town.workshopsQuery, { town: town.name }))}`,
           ],
           [
             t.panel.town.bikeShops,
-            `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(t.panel.town.bikeShopsQuery(town.name))}`,
+            `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(fill(t.panel.town.bikeShopsQuery, { town: town.name }))}`,
           ],
         ]}
       />

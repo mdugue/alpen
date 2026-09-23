@@ -33,6 +33,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import type { PassModel } from "@/lib/detail-model";
 import { profilesOf } from "@/lib/detail-state";
 import type { Messages } from "@/lib/i18n";
+import { fill } from "@/lib/i18n/fill";
 import { komootHref, quaeldichHref } from "@/lib/links";
 import { isTraverse } from "@/lib/regions";
 import { ascentKey } from "@/lib/route-key";
@@ -95,10 +96,14 @@ const profileLine = (
   [
     fmtUnit(profile.km, "km", 1),
     ...(traverse ? [] : [fmtUnit(profile.elevationGain, t.vocab.unit.climb)]),
-    t.panel.ascents.average(fmt(profile.avgGradient, 1)),
+    fill(t.panel.ascents.average, { pct: fmt(profile.avgGradient, 1) }),
     ...(traverse
       ? []
-      : [t.panel.ascents.steepestKm(fmt(profile.maxKmGradient, 1))]),
+      : [
+          fill(t.panel.ascents.steepestKm, {
+            pct: fmt(profile.maxKmGradient, 1),
+          }),
+        ]),
     `${fmt(profile.start)} → ${fmtUnit(profile.top, "m")}`,
   ].join(" · ");
 
@@ -259,11 +264,15 @@ export const PassDetail = ({
                   ],
                   [
                     `${bucket.frostPct} %`,
-                    t.panel.climate.frost(fmt(daysOf(bucket.frostPct))),
+                    fill(t.panel.climate.frost, {
+                      days: fmt(daysOf(bucket.frostPct)),
+                    }),
                   ],
                   [
                     `${bucket.snowPct} %`,
-                    t.panel.climate.snow(fmt(daysOf(bucket.snowPct))),
+                    fill(t.panel.climate.snow, {
+                      days: fmt(daysOf(bucket.snowPct)),
+                    }),
                   ],
                 ] as [string, string][]
               ).map(([value, label]) => (

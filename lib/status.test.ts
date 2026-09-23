@@ -3,7 +3,8 @@ import { describe, expect, test } from "bun:test";
 import climateJson from "@/data/generated/climate.json" with { type: "json" };
 import profilesJson from "@/data/generated/profiles.json" with { type: "json" };
 import passesJson from "@/data/passes.json" with { type: "json" };
-import { messagesOf } from "@/lib/i18n";
+import { fill } from "@/lib/i18n";
+import { DE } from "@/lib/i18n/dictionaries";
 import { periodAt, periodIndex, periodLabel, PERIODS } from "@/lib/period";
 import { valleyElevations } from "@/lib/profile";
 import {
@@ -25,7 +26,6 @@ import {
   SIGNALS,
   signalKey,
   signalValue,
-  STATUS_LABEL,
   statusOf,
   statusRank,
   STATUS_ORDER,
@@ -117,12 +117,12 @@ const verdict = (c: YearCell) => ({
 const TOUR_NAMES = (slug: string) => ({ a: "Gavia", b: "Stilfser Joch" })[slug];
 
 /** The German words of the heuristic, the ones every sentence here is checked against. */
-const WORDS = messagesOf("de").status;
+const WORDS = DE.status;
 const REASON_SHORT = WORDS.reasonShort;
 
 /** A signal's clause with its value filled in, as `ladderText` prints it. */
 const reads = (s: (typeof SIGNALS)[number]) =>
-  WORDS.signal[signalKey(s)](signalValue(s));
+  fill(WORDS.signal[signalKey(s)], { value: signalValue(s, DE) });
 
 /** One grade per character: `b` best, `o` good, `r` limited, anything else closed. */
 const grades = (spec: string): Grade[] =>
@@ -195,7 +195,7 @@ describe("the climate series", () => {
     });
     const input = { bucket: bucket({ snowPct: 27 }) };
     expect(
-      reasonParagraph(p, 7, passVerdict(p, 7, input).reasons, input),
+      reasonParagraph(p, 7, passVerdict(p, 7, input).reasons, input, DE),
     ).toContain("Schneefall an 27 % der Tage");
   });
 
@@ -261,7 +261,7 @@ describe("the climate series", () => {
       expect(p, slug).toBeDefined();
       expect(
         passStatus(p!, t, inputAt({ climate: climate[slug] }, t)),
-        `${slug} ${periodLabel(t)}`,
+        `${slug} ${periodLabel(t, DE)}`,
       ).toBe(expected);
     }
   });
@@ -333,8 +333,8 @@ describe("the summer axis (plan 13)", () => {
         t,
         inputAt(signalsOf(signals, slug), t),
       );
-      expect(v.status, `${slug} ${periodLabel(t)}`).toBe("risky");
-      expect(v.reasons[0], `${slug} ${periodLabel(t)}`).toBe(reason);
+      expect(v.status, `${slug} ${periodLabel(t, DE)}`).toBe("risky");
+      expect(v.reasons[0], `${slug} ${periodLabel(t, DE)}`).toBe(reason);
     }
     // Galibier and Iseran stay cool in the valley.
     for (const slug of ["col-du-galibier", "col-de-l-iseran"]) {
@@ -355,7 +355,7 @@ describe("the summer axis (plan 13)", () => {
           valley: valleys[x.slug],
         });
         if (v.status === "closed")
-          expect(v.reasons, `${x.slug} ${periodLabel(t)}`).toEqual([
+          expect(v.reasons, `${x.slug} ${periodLabel(t, DE)}`).toEqual([
             "outside-window",
           ]);
       }
@@ -387,7 +387,7 @@ describe("the summer axis (plan 13)", () => {
       // The split written out rather than taken from the function that makes
       // it: closed stays closed, risky is the caveat, and open is only "beste
       // Zeit" inside the window.
-      expect(grade, periodLabel(t)).toBe(
+      expect(grade, periodLabel(t, DE)).toBe(
         status === "closed"
           ? "closed"
           : status === "risky"
@@ -397,7 +397,7 @@ describe("the summer axis (plan 13)", () => {
               : "good",
       );
       // And the way back is the same split read the other way round.
-      expect(statusOf(grade), periodLabel(t)).toBe(status);
+      expect(statusOf(grade), periodLabel(t, DE)).toBe(status);
     }
   });
 
@@ -464,21 +464,21 @@ describe("the summer axis (plan 13)", () => {
 
 describe("cell hints", () => {
   test("a limited cell names its caveat, a good cell says why it is not the best time", () => {
-    expect(cellHint(cell({ grade: "limited", reasons: ["heat"] }))).toBe(
+    expect(cellHint(cell({ grade: "limited", reasons: ["heat"] }), DE)).toBe(
       "Fahrbar, aber mit einem Haken: Hitze im Tal.",
     );
-    expect(cellHint(cell({ snowy: true }))).toBe(
+    expect(cellHint(cell({ snowy: true }), DE)).toBe(
       "Nichts spricht gegen die Fahrt. Jedoch schneit es gelegentlich.",
     );
-    expect(cellHint(cell({}))).toBe(
+    expect(cellHint(cell({}), DE)).toBe(
       "Nichts spricht gegen die Fahrt. Nur ist es ein kürzerer Abschnitt als die beste Zeit.",
     );
     // Best has nothing specific to add, so the general sentence stands; a
     // closed cell names what closed it – the barrier, or the snow on a track.
-    expect(cellHint(cell({ grade: "best" }))).toBe(gradeHint("best"));
-    expect(cellHint(cell({ grade: "closed" }))).toContain("Wintersperre");
+    expect(cellHint(cell({ grade: "best" }), DE)).toBe(gradeHint("best", DE));
+    expect(cellHint(cell({ grade: "closed" }), DE)).toContain("Wintersperre");
     expect(
-      cellHint(cell({ grade: "closed", reasons: ["snow-cover"] })),
+      cellHint(cell({ grade: "closed", reasons: ["snow-cover"] }), DE),
     ).toContain("unter Schnee");
     expect(
       passYear(bySlug("mont-ventoux"), signalsOf(signals, "mont-ventoux"))
@@ -549,19 +549,19 @@ describe("season strips and best periods", () => {
   });
 
   test("seasonSummary describes the strip in one sentence", () => {
-    expect(seasonSummary(grades("xxxxxxxxxxrooooooorxxxxx"))).toBe(
+    expect(seasonSummary(grades("xxxxxxxxxxrooooooorxxxxx"), DE)).toBe(
       "Saison: gut Ende Juni bis Ende September, eingeschränkt Anfang Juni bis Anfang Oktober.",
     );
-    expect(seasonSummary(grades("xxxxxxxxxxrobbbbooorxxxx"))).toBe(
+    expect(seasonSummary(grades("xxxxxxxxxxrobbbbooorxxxx"), DE)).toBe(
       "Saison: beste Zeit Anfang Juli bis Ende August, gut Ende Juni bis Anfang Oktober, eingeschränkt Anfang Juni bis Ende Oktober.",
     );
-    expect(seasonSummary(grades("o".repeat(24)))).toBe(
+    expect(seasonSummary(grades("o".repeat(24)), DE)).toBe(
       "Saison: gut ganzjährig.",
     );
-    expect(seasonSummary(grades("x".repeat(24)))).toBe(
+    expect(seasonSummary(grades("x".repeat(24)), DE)).toBe(
       "Saison: ganzjährig oft gesperrt.",
     );
-    expect(seasonSummary(grades("xxxxxxxxxxxxrrxxxxxxxxxx"))).toBe(
+    expect(seasonSummary(grades("xxxxxxxxxxxxrrxxxxxxxxxx"), DE)).toBe(
       "Saison: eingeschränkt Anfang Juli bis Ende Juli, sonst oft gesperrt.",
     );
   });
@@ -569,13 +569,13 @@ describe("season strips and best periods", () => {
   test("seasonSummary names a grade whenever it occurs, even in a shorter run than the best one", () => {
     // Two best, a closed gap, two good: the longest "best or good" run is the
     // best run itself, so a length comparison would hide the good cells.
-    expect(seasonSummary(grades("xxxxxxbbxooxxxxxxxxxxxxx"))).toBe(
+    expect(seasonSummary(grades("xxxxxxbbxooxxxxxxxxxxxxx"), DE)).toBe(
       "Saison: beste Zeit Anfang April bis Ende April, gut Ende Mai bis Anfang Juni.",
     );
-    expect(seasonSummary(grades("xxxxxxbbxrrxxxxxxxxxxxxx"))).toBe(
+    expect(seasonSummary(grades("xxxxxxbbxrrxxxxxxxxxxxxx"), DE)).toBe(
       "Saison: beste Zeit Anfang April bis Ende April, eingeschränkt Ende Mai bis Anfang Juni.",
     );
-    expect(seasonSummary(grades("oooooooooooobbbbbbbbbbbb"))).toBe(
+    expect(seasonSummary(grades("oooooooooooobbbbbbbbbbbb"), DE)).toBe(
       "Saison: beste Zeit Anfang Juli bis Ende Dezember, gut ganzjährig.",
     );
   });
@@ -712,7 +712,7 @@ describe("tourYear", () => {
     const year = tourYear(tour(["a", "b"]), yearsOf(overlapping));
     expect(year.best).not.toBeNull();
     for (const [i, cellOf] of year.cells.entries())
-      expect(cellOf.grade === "best", periodLabel(periodAt(i))).toBe(
+      expect(cellOf.grade === "best", periodLabel(periodAt(i), DE)).toBe(
         inWindow(i, year.best!),
       );
   });
@@ -743,10 +743,10 @@ describe("tourYear", () => {
       status: "closed",
     });
     // The sentence names the window where no member is to blame.
-    expect(tourText(loop, cellAt(year, 5.5), TOUR_NAMES)).toBe(
+    expect(tourText(loop, cellAt(year, 5.5), TOUR_NAMES, DE)).toBe(
       "Oft gesperrt: außerhalb des typischen Fensters Anfang Juni bis Anfang Oktober.",
     );
-    expect(tourText(loop, cellAt(year, 6), TOUR_NAMES)).toBe(
+    expect(tourText(loop, cellAt(year, 6), TOUR_NAMES, DE)).toBe(
       "Eingeschränkt: am Rand des typischen Fensters Anfang Juni bis Anfang Oktober.",
     );
     // Without a window nothing changes.
@@ -759,11 +759,11 @@ describe("tourYear", () => {
     const loop = { ...tour(["a", "b"]), season: { closes: 10, opens: 6 } };
     const june = cellAt(tourYear(loop, years), 6.5);
     expect(june).toMatchObject({ limiting: ["b"], status: "closed" });
-    expect(tourText(loop, june, TOUR_NAMES)).toBe(
+    expect(tourText(loop, june, TOUR_NAMES, DE)).toBe(
       "Oft gesperrt: Stilfser Joch.",
     );
     // A member whose name cannot be resolved is not mistaken for the window.
-    expect(tourText(loop, june, () => {})).toBeNull();
+    expect(tourText(loop, june, () => {}, DE)).toBeNull();
   });
 });
 
@@ -774,15 +774,15 @@ describe("tourSeasonText and tourWindowWord", () => {
       note: "Bike Day im Juni.",
       season: { closes: 10.5, opens: 5 },
     };
-    expect(tourSeasonText(loop)).toBe(
+    expect(tourSeasonText(loop, DE)).toBe(
       "Typisch Anfang Mai bis Ende Oktober. Bike Day im Juni.",
     );
-    expect(tourWindowWord(loop)).toBe("Anfang Mai bis Ende Oktober");
-    expect(tourSeasonText(tour(["a"]))).toBe(
+    expect(tourWindowWord(loop, DE)).toBe("Anfang Mai bis Ende Oktober");
+    expect(tourSeasonText(tour(["a"]), DE)).toBe(
       "Fahrbar, solange die Pässe der Runde offen sind.",
     );
     // Not "ganzjährig": a loop without a window is open when its passes are.
-    expect(tourWindowWord(tour(["a"]))).toBe("wie ihre Pässe");
+    expect(tourWindowWord(tour(["a"]), DE)).toBe("wie ihre Pässe");
   });
 });
 
@@ -813,23 +813,28 @@ describe("one status vocabulary", () => {
   test("every reason has a word, two phrases and a sentence", () => {
     // The four tables are the module's own; what is pinned here is what they
     // produce, which is what the panel and the strip actually show.
-    const p = pass({});
+    // A window of its own, because only a curated window has an edge to name.
+    const p = pass({ season: { closes: 10.5, opens: 6 } });
     for (const reason of REASON_ORDER) {
       // The word, on the badge of a limited cell.
-      const word = statusWord("risky", reason);
-      expect(word, reason).toContain(STATUS_LABEL.risky);
+      const word = statusWord("risky", reason, DE);
+      expect(word, reason).toContain(DE.status.label.risky);
       if (reason !== "outside-window") expect(word, reason).toContain(":");
       // The standalone phrase, in the strip's popover.
       expect(
         cellHint(
           cell({ grade: "limited", reasons: [reason], status: "risky" }),
+          DE,
         ),
         reason,
       ).toMatch(/^Fahrbar, aber mit einem Haken: .+\.$/u);
       // The bare noun phrase, for the list of eight in the legend.
       expect(REASON_SHORT[reason], reason).toBeTruthy();
       // And the sentence with its number, in the panel's paragraph.
-      expect(reasonParagraph(p, 7, [reason]), reason).toBeTruthy();
+      expect(
+        reasonParagraph(p, 7, [reason], undefined, DE),
+        reason,
+      ).toBeTruthy();
     }
     // No table carries a key the ladder has never heard of.
     expect(Object.keys(REASON_SHORT).toSorted()).toEqual(
@@ -845,22 +850,24 @@ describe("one status vocabulary", () => {
     // Every reason but the closing one can make a cell "eingeschränkt".
     const limiting = REASON_ORDER.filter((r) => r !== "outside-window");
     const positions = limiting.map((r) =>
-      gradeHint("limited").indexOf(REASON_SHORT[r]),
+      gradeHint("limited", DE).indexOf(REASON_SHORT[r]),
     );
     expect(positions).not.toContain(-1);
     expect(positions).toEqual(positions.toSorted((a, b) => a - b));
     // The closing reason is not among them: a closure is not a caveat.
-    expect(gradeHint("limited")).not.toContain(REASON_SHORT["outside-window"]);
+    expect(gradeHint("limited", DE)).not.toContain(
+      REASON_SHORT["outside-window"],
+    );
   });
 
   test("the dialog paragraph carries the value of every threshold", () => {
-    const paragraph = ladderText();
+    const paragraph = ladderText(DE);
     // The paragraph is generated from SIGNALS, so it cannot name a different
     // number than the verdict compares against – that is the point of the
     // plan. What can still break is a clause with nowhere to put its value,
     // which would print the threshold nowhere at all.
     for (const signal of SIGNALS) {
-      expect(WORDS.signal[signalKey(signal)]("§")).toContain("§");
+      expect(WORDS.signal[signalKey(signal)]).toContain("{value}");
       expect(reads(signal)).toContain(String(signal.value).replace(".", ","));
       expect(paragraph).toContain(reads(signal));
     }
@@ -896,13 +903,13 @@ describe("one status vocabulary", () => {
   });
 
   test("the best window is one sentence at every site that names it", () => {
-    expect(bestText({ best: [7, 9.5], cells: [] })).toBe(
+    expect(bestText({ best: [7, 9.5], cells: [] }, DE)).toBe(
       "beste Zeit Anfang Juli – Ende September",
     );
     // A year without a run worth the name says nothing rather than naming a
     // window of one half-month.
-    expect(bestText({ best: null, cells: [] })).toBeNull();
-    expect(bestText()).toBeNull();
+    expect(bestText({ best: null, cells: [] }, DE)).toBeNull();
+    expect(bestText(undefined, DE)).toBeNull();
   });
 
   test("the caveats of a cell are one paragraph, most important first", () => {
@@ -913,6 +920,7 @@ describe("one status vocabulary", () => {
       7,
       passVerdict(p, 7, input).reasons,
       input,
+      DE,
     );
     expect(paragraph).toContain("Schneefall an 30 % der Tage");
     expect(paragraph).toContain("Regen an 80 % der Tage");
@@ -921,7 +929,7 @@ describe("one status vocabulary", () => {
     );
     // Nothing holds the half-month back, so there is no paragraph – not an
     // empty one the box would still make room for.
-    expect(reasonParagraph(p, 7, [])).toBeNull();
+    expect(reasonParagraph(p, 7, [], undefined, DE)).toBeNull();
   });
 
   test("the climate paragraph names what is derived and formats like the rest", () => {
@@ -931,6 +939,7 @@ describe("one status vocabulary", () => {
       bucket({ tmax: 12, wetPct: 20 }),
       { valley: 900 },
       7,
+      DE,
     );
     expect(text).toStartWith(
       "Anfang Juli auf 2.000\u00A0m; Niederschlag an 20 % der Tage.",
@@ -944,19 +953,19 @@ describe("one status vocabulary", () => {
     // through a locale call of the panel's own.
     expect(text).toMatch(/Tag [\d,]+ h, Sonne \d{2}:\d{2}–\d{2}:\d{2}\.$/u);
     // No ascent profile, no valley to derive from – and it says so.
-    expect(climateText(p, bucket(), {}, 7)).toContain(
+    expect(climateText(p, bucket(), {}, 7, DE)).toContain(
       "Talwert nicht ableitbar",
     );
   });
 
   test("a closed tour says the closed word, not the limited one", () => {
     const closed = cell({ grade: "closed", limiting: ["b"], status: "closed" });
-    expect(tourText(tour(["a", "b"]), closed, TOUR_NAMES)).toBe(
+    expect(tourText(tour(["a", "b"]), closed, TOUR_NAMES, DE)).toBe(
       "Oft gesperrt: Stilfser Joch.",
     );
     // This is the defect the plan names: the panel used to print
     // "Eingeschränkt durch …" under an "oft gesperrt" badge.
-    expect(tourText(tour(["a", "b"]), closed, TOUR_NAMES)).not.toContain(
+    expect(tourText(tour(["a", "b"]), closed, TOUR_NAMES, DE)).not.toContain(
       "Eingeschränkt",
     );
 
@@ -966,14 +975,14 @@ describe("one status vocabulary", () => {
       reasons: ["heat"],
       status: "risky",
     });
-    expect(tourText(tour(["a", "b"]), limited, TOUR_NAMES)).toBe(
+    expect(tourText(tour(["a", "b"]), limited, TOUR_NAMES, DE)).toBe(
       "Eingeschränkt durch Gavia, Stilfser Joch.",
     );
     // Nothing holds an open tour back, and an unknown member is not named.
     expect(
-      tourText(tour(["a", "b"]), cell({ limiting: ["a"] }), TOUR_NAMES),
+      tourText(tour(["a", "b"]), cell({ limiting: ["a"] }), TOUR_NAMES, DE),
     ).toBeNull();
-    expect(tourText(tour(["a", "b"]), closed, () => {})).toBeNull();
+    expect(tourText(tour(["a", "b"]), closed, () => {}, DE)).toBeNull();
   });
 
   test("the status order is one list and one direction", () => {
@@ -984,10 +993,13 @@ describe("one status vocabulary", () => {
   });
 
   test("the badge says the best window, the caveat or the status", () => {
-    expect(badgeWord(cell({ grade: "best" }))).toBe("beste Zeit");
-    expect(badgeWord(cell())).toBe("gut");
+    expect(badgeWord(cell({ grade: "best" }), DE)).toBe("beste Zeit");
+    expect(badgeWord(cell(), DE)).toBe("gut");
     expect(
-      badgeWord(cell({ grade: "limited", reasons: ["heat"], status: "risky" })),
+      badgeWord(
+        cell({ grade: "limited", reasons: ["heat"], status: "risky" }),
+        DE,
+      ),
     ).toBe("eingeschränkt: Hitze");
     // The closing reason keeps its word for the strip's cell hint, but the
     // badge of a closed cell says the status, never "gesperrt" twice.
@@ -998,6 +1010,7 @@ describe("one status vocabulary", () => {
           reasons: ["outside-window"],
           status: "closed",
         }),
+        DE,
       ),
     ).toBe("oft gesperrt");
   });

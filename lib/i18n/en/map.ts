@@ -1,4 +1,5 @@
 import type { map as de } from "../de/map";
+import type { Layout } from "../fill";
 
 export const map = {
   alignNorth: "Point north",
@@ -8,7 +9,9 @@ export const map = {
   fit: "Fit the view",
   fitHint: "Fit the view – again for the whole of the Alps",
   hillshade: "Hillshade",
-  levelLine: (word: string) => `At this zoom level: ${word}`,
+  /** The view menu's last group: the same place in the other language. */
+  language: "Language",
+  levelLine: "At this zoom level: {word}",
   osmContributors: "© OpenStreetMap contributors",
   overlays: "Overlays",
   satellite: "Satellite",
@@ -17,5 +20,5 @@ export const map = {
   title: "Map",
   vectorBase: "Map (light/dark automatically)",
   view: "View",
-  viewMenu: "View: map, layers and 3D",
-} satisfies typeof de;
+  viewMenu: "View: map, layers, 3D and language",
+} as const satisfies Layout<typeof de>;

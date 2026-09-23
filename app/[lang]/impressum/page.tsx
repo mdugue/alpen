@@ -1,9 +1,9 @@
 import { ArrowLeft } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
-import { lang as rootLang } from "next/root-params";
 
-import { langOf, langPrefix, messagesOf } from "@/lib/i18n";
+import { langPrefix } from "@/lib/i18n";
+import { getDictionary } from "@/lib/i18n/server";
 import { homeHref } from "@/lib/routes";
 
 export const metadata: Metadata = {
@@ -14,9 +14,8 @@ export const metadata: Metadata = {
 };
 
 const ImpressumPage = async () => {
-  const raw = await rootLang();
-  const lang = langOf(raw);
-  const note = messagesOf(lang).legal.englishNote;
+  const { lang, legal } = await getDictionary();
+  const note = legal.englishNote;
   return (
     <main className="bg-background text-foreground h-dvh overflow-y-auto px-4 py-10">
       <div className="mx-auto flex max-w-2xl flex-col gap-8">

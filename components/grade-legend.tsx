@@ -2,7 +2,7 @@
 
 import { useT } from "@/components/i18n";
 import { CELL } from "@/components/season-strip";
-import { GRADE_ORDER, gradeHint, gradeLabel } from "@/lib/status";
+import { GRADE_ORDER, gradeHint } from "@/lib/status";
 import { cn } from "@/lib/utils";
 
 /**
@@ -19,7 +19,7 @@ export const GradeLegend = ({
   /** Optional trailing note, e.g. the counts of the half-month. */
   hint?: string;
 }) => {
-  const { lang } = useT();
+  const { t } = useT();
   return (
     <dl className={cn("text-2xs flex flex-col gap-1", className)}>
       {GRADE_ORDER.map((g) => (
@@ -29,9 +29,9 @@ export const GradeLegend = ({
               aria-hidden
               className={cn("inline-block size-2 rounded-xs", CELL[g])}
             />
-            {gradeLabel(g, lang)}
+            {t.status.grade[g]}
           </dt>
-          <dd className="opacity-80">{gradeHint(g, lang)}</dd>
+          <dd className="opacity-80">{gradeHint(g, t)}</dd>
         </div>
       ))}
       {hint && <div className="mt-0.5">{hint}</div>}

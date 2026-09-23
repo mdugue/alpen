@@ -21,8 +21,8 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart";
 import type { ChartConfig } from "@/components/ui/chart";
-import type { Lang, Messages } from "@/lib/i18n";
-import { monthsOf, periodLabel, PERIODS } from "@/lib/period";
+import type { Messages } from "@/lib/i18n";
+import { periodLabel, PERIODS } from "@/lib/period";
 import type { ClimateYear, Period } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
@@ -65,8 +65,8 @@ const formatValue = (
 };
 
 /** The month name as the axis writes it: three letters, in the page's language. */
-const monthTick = (i: number, lang: Lang) =>
-  i % 2 === 0 ? monthsOf(lang)[i / 2]!.slice(0, 3) : "";
+const monthTick = (i: number, w: Messages) =>
+  i % 2 === 0 ? w.calendar.months[i / 2]!.slice(0, 3) : "";
 
 export const ClimateChart = ({
   climate,
@@ -75,15 +75,15 @@ export const ClimateChart = ({
   climate: ClimateYear;
   period: Period;
 }) => {
-  const { t: words, lang, fmt } = useT();
+  const { t: words, fmt } = useT();
   const config = chartConfig(words.panel.chart);
-  const data = PERIODS.map((t, i) => {
+  const data = PERIODS.map((p, i) => {
     const bucket = climate[i];
     return {
       frostPct: bucket?.frostPct ?? null,
-      label: periodLabel(t, lang),
-      month: monthTick(i, lang),
-      period: t,
+      label: periodLabel(p, words),
+      month: monthTick(i, words),
+      period: p,
       snowPct: bucket?.snowPct ?? null,
       tmax: bucket?.tmax ?? null,
       tmin: bucket?.tmin ?? null,
@@ -125,7 +125,7 @@ export const ClimateChart = ({
         />
         <ReferenceLine
           yAxisId="pct"
-          x={periodLabel(period, lang)}
+          x={periodLabel(period, words)}
           stroke="var(--foreground)"
           strokeWidth={1}
           strokeDasharray="2 2"

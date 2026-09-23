@@ -52,7 +52,7 @@ export const StatusLabel = ({
   reason?: StatusReason | null;
   className?: string;
 }) => {
-  const { lang } = useT();
+  const { t } = useT();
   return (
     <span
       className={cn(
@@ -61,7 +61,7 @@ export const StatusLabel = ({
       )}
     >
       <StatusDot status={status} />
-      {statusWord(status, reason, lang)}
+      {statusWord(status, reason, t)}
     </span>
   );
 };
@@ -79,12 +79,12 @@ export const StatusBadge = ({
   cell: YearCell;
   period?: Period;
 }) => {
-  const { lang } = useT();
+  const { t } = useT();
   return (
     <Badge variant="outline" className="gap-1.5">
       <StatusDot status={cell.status} />
-      {badgeWord(cell, lang)}
-      {period !== undefined && ` · ${periodLabel(period, lang)}`}
+      {badgeWord(cell, t)}
+      {period !== undefined && ` · ${periodLabel(period, t)}`}
     </Badge>
   );
 };

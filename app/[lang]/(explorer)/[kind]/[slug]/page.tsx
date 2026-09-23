@@ -5,9 +5,10 @@ import { Suspense } from "react";
 import { Weather } from "@/components/panel/weather";
 import { WeatherSkeleton } from "@/components/panel/weather-forecast";
 import { WeatherSlot } from "@/components/panel/weather-slot";
-import { getEntity, staticParams } from "@/lib/data";
-import { LANGS, langOf, OG_LOCALE } from "@/lib/i18n";
-import { hrefFor, selectionOf } from "@/lib/routes";
+import { entityAt, staticParams } from "@/lib/data";
+import { LANGS, OG_LOCALE } from "@/lib/i18n";
+import { getDictionary } from "@/lib/i18n/server";
+import { hrefFor } from "@/lib/routes";
 import { entityDescription, entityTitle } from "@/lib/share-text";
 
 /**
@@ -23,29 +24,24 @@ import { entityDescription, entityTitle } from "@/lib/share-text";
  */
 export const generateStaticParams = () => staticParams();
 
-type Params = Promise<{ kind: string; lang: string; slug: string }>;
+type Props = PageProps<"/[lang]/[kind]/[slug]">;
 
-/** The entity a path names, or nothing – which the page turns into a 404. */
-const entityOf = async (params: Params) => {
-  const { kind, lang: raw, slug } = await params;
-  const lang = langOf(raw);
-  // The params arrive decoded; the path form is what `selectionOf` reads.
-  const selection = selectionOf(`/${kind}/${encodeURIComponent(slug)}`);
-  if (!selection) return null;
-  const entity = getEntity(selection, lang);
-  return entity ? { entity, lang, selection } : null;
+/** The entity a path names, in the page's language, or nothing – which the page turns into a 404. */
+const entityOf = async (params: Props["params"]) => {
+  const [{ kind, slug }, w] = await Promise.all([params, getDictionary()]);
+  const found = entityAt(kind, slug, w.lang);
+  return found && { ...found, w };
 };
 
 export const generateMetadata = async ({
   params,
-}: {
-  params: Params;
-}): Promise<Metadata> => {
+}: Props): Promise<Metadata> => {
   const found = await entityOf(params);
   if (!found) return {};
-  const { entity, lang, selection } = found;
-  const title = entityTitle(entity, lang);
-  const description = entityDescription(entity, lang);
+  const { entity, selection, w } = found;
+  const { lang } = w;
+  const title = entityTitle(entity, w);
+  const description = entityDescription(entity, w);
   const url = hrefFor(selection, lang);
   return {
     alternates: {
@@ -69,7 +65,7 @@ export const generateMetadata = async ({
   };
 };
 
-const EntityPage = async ({ params }: { params: Params }) => {
+const EntityPage = async ({ params }: Props) => {
   const found = await entityOf(params);
   if (!found) notFound();
   const { entity, selection } = found;

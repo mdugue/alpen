@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { COMPARE_MAX } from "@/lib/app-state";
 import type { Selection } from "@/lib/app-state";
+import { fill } from "@/lib/i18n/fill";
 import { entityKey } from "@/lib/route-key";
 import type { DestinationRow } from "@/lib/rows";
 import type { Period } from "@/lib/types";
@@ -64,8 +65,11 @@ export const DestinationList = ({
       <div className="text-muted-foreground text-2xs flex h-9 items-center justify-between gap-2 px-3">
         <span className="truncate">
           {compare.length === 0
-            ? t.sidebar.compare.pick(fmt(COMPARE_MAX))
-            : t.sidebar.compare.picked(fmt(compare.length), fmt(COMPARE_MAX))}
+            ? fill(t.sidebar.compare.pick, { max: fmt(COMPARE_MAX) })
+            : fill(t.sidebar.compare.picked, {
+                max: fmt(COMPARE_MAX),
+                n: fmt(compare.length),
+              })}
         </span>
         <Button
           variant="outline"
@@ -128,7 +132,9 @@ export const DestinationList = ({
                     checked={picked}
                     disabled={!picked && full}
                     onCheckedChange={(on) => onCompare(destination.slug, on)}
-                    aria-label={t.sidebar.compare.toggle(destination.name)}
+                    aria-label={fill(t.sidebar.compare.toggle, {
+                      name: destination.name,
+                    })}
                   />
                 }
               />

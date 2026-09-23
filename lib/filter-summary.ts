@@ -15,9 +15,8 @@ import {
   WET_OPTIONS,
 } from "@/lib/app-state";
 import type { Filters, OptionLabel, Options } from "@/lib/app-state";
-import { DEFAULT_LANG, vocabOf } from "@/lib/i18n";
-import type { Lang } from "@/lib/i18n";
-import { statusLabel } from "@/lib/status";
+import type { Messages } from "@/lib/i18n";
+import { fill } from "@/lib/i18n/fill";
 import { fmt } from "@/lib/utils";
 
 /**
@@ -36,33 +35,31 @@ export interface AppliedFilter {
 }
 
 /** The label of one threshold chip in the page's language: "ab 3", "unter 26 °C". */
-export const optionText = (
-  o: OptionLabel,
-  lang: Lang = DEFAULT_LANG,
-): string => {
-  const w = vocabOf(lang).option;
-  if (o.kind === "any") return w.any;
-  if (o.kind === "elevationFrom") return w.elevationFrom(fmt(o.m, 0, lang));
-  return w[o.kind](o.n);
+export const optionText = (o: OptionLabel, w: Messages): string => {
+  const say = w.vocab.option;
+  if (o.kind === "any") return say.any;
+  if (o.kind === "elevationFrom")
+    return fill(say.elevationFrom, { m: fmt(o.m, 0, w.lang) });
+  return fill(say[o.kind], { n: fmt(o.n, 0, w.lang) });
 };
 
 /** The label of the option a value picks; the empty string for a value no chip carries. */
-const optionLabel = (options: Options, value: number, lang: Lang): string => {
+const optionLabel = (options: Options, value: number, w: Messages): string => {
   const label = options.find(([v]) => v === value)?.[1];
-  return label ? optionText(label, lang) : "";
+  return label ? optionText(label, w) : "";
 };
 
 /** "Schwierigkeit 3" for one level, "Schwierigkeit 2–4" for a window. */
 export const difficultyLabel = (
   [lo, hi]: readonly [number, number],
-  lang: Lang = DEFAULT_LANG,
-) => vocabOf(lang).filter.difficulty(lo, hi);
+  w: Messages,
+) =>
+  lo === hi
+    ? fill(w.vocab.filter.difficultyOne, { level: lo })
+    : fill(w.vocab.filter.difficulty, { hi, lo });
 
-export const appliedFilters = (
-  f: Filters,
-  lang: Lang = DEFAULT_LANG,
-): AppliedFilter[] => {
-  const v = vocabOf(lang);
+export const appliedFilters = (f: Filters, w: Messages): AppliedFilter[] => {
+  const v = w.vocab;
   const out: AppliedFilter[] = [];
   const add = (
     key: string,
@@ -87,7 +84,7 @@ export const appliedFilters = (
   if (status.length)
     add(
       "status",
-      status.map((s) => statusLabel(s, lang)).join(v.filter.statusOr),
+      status.map((s) => w.status.label[s]).join(v.filter.statusOr),
       (g) => ({
         ...g,
         status: ALL_STATUS,
@@ -117,14 +114,14 @@ export const appliedFilters = (
     }));
   const [lo, hi] = f.difficulty;
   if (lo > RATING_MIN || hi < RATING_MAX)
-    add("difficulty", difficultyLabel(f.difficulty, lang), (g) => ({
+    add("difficulty", difficultyLabel(f.difficulty, w), (g) => ({
       ...g,
       difficulty: [RATING_MIN, RATING_MAX],
     }));
   if (f.minElevation > 0)
     add(
       "elevation",
-      optionLabel(ELEVATION_OPTIONS, f.minElevation, lang),
+      optionLabel(ELEVATION_OPTIONS, f.minElevation, w),
       (g) => ({
         ...g,
         minElevation: 0,
@@ -133,33 +130,39 @@ export const appliedFilters = (
   if (f.maxTraffic < RATING_MAX)
     add(
       "traffic",
-      v.filter.traffic(optionLabel(TRAFFIC_OPTIONS, f.maxTraffic, lang)),
+      fill(v.filter.traffic, {
+        option: optionLabel(TRAFFIC_OPTIONS, f.maxTraffic, w),
+      }),
       (g) => ({ ...g, maxTraffic: RATING_MAX }),
     );
   if (f.minBeauty > RATING_MIN)
     add(
       "beauty",
-      v.filter.beauty(optionLabel(BEAUTY_OPTIONS, f.minBeauty, lang)),
+      fill(v.filter.beauty, {
+        option: optionLabel(BEAUTY_OPTIONS, f.minBeauty, w),
+      }),
       (g) => ({ ...g, minBeauty: RATING_MIN }),
     );
   if (f.minFame > 1)
     add(
       "fame",
-      v.filter.fame(optionLabel(FAME_OPTIONS, f.minFame, lang)),
+      fill(v.filter.fame, {
+        option: optionLabel(FAME_OPTIONS, f.minFame, w),
+      }),
       (g) => ({
         ...g,
         minFame: 1,
       }),
     );
-  const heat = optionLabel(HEAT_OPTIONS, f.maxValleyTmax, lang);
+  const heat = optionLabel(HEAT_OPTIONS, f.maxValleyTmax, w);
   if (heat && f.maxValleyTmax !== HEAT_OPTIONS[0][0])
-    add("heat", v.filter.valley(heat), (g) => ({
+    add("heat", fill(v.filter.valley, { option: heat }), (g) => ({
       ...g,
       maxValleyTmax: HEAT_OPTIONS[0][0],
     }));
-  const wet = optionLabel(WET_OPTIONS, f.maxWetDays, lang);
+  const wet = optionLabel(WET_OPTIONS, f.maxWetDays, w);
   if (wet && f.maxWetDays !== WET_OPTIONS[0][0])
-    add("wet", v.filter.wetDays(wet), (g) => ({
+    add("wet", fill(v.filter.wetDays, { option: wet }), (g) => ({
       ...g,
       maxWetDays: WET_OPTIONS[0][0],
     }));
@@ -171,18 +174,16 @@ export const appliedFilters = (
  * "Jura" or "Jura, Vogesen" – and `null` while every range is in: the
  * headline says where it counts only once that is not everywhere.
  */
-export const rangeWord = (
-  f: Filters,
-  lang: Lang = DEFAULT_LANG,
-): string | null => {
+export const rangeWord = (f: Filters, w: Messages): string | null => {
   const picked = pickedMembers(f.ranges, ALL_RANGES);
   return picked.length
-    ? picked.map((r) => vocabOf(lang).range[r].label).join(", ")
+    ? picked.map((r) => w.vocab.range[r].label).join(", ")
     : null;
 };
 
 /** How many decisions the panel currently carries – the badge on its trigger. */
-export const filterCount = (f: Filters) => appliedFilters(f).length;
+export const filterCount = (f: Filters, w: Messages) =>
+  appliedFilters(f, w).length;
 
 /**
  * Back to no filter at all. The period and the sort survive it: the
@@ -206,9 +207,9 @@ export const resetFilters = (f: Filters): Filters => ({
 export const bestRelief = (
   f: Filters,
   countWith: (patch: Partial<Filters>) => number,
-  lang: Lang = DEFAULT_LANG,
+  w: Messages,
 ): { chip: AppliedFilter; n: number } | undefined =>
-  appliedFilters(f, lang)
+  appliedFilters(f, w)
     .map((chip) => ({ chip, n: countWith(chip.clear(f)) }))
     .filter((r) => r.n > 0)
     .toSorted((a, b) => b.n - a.n)[0];

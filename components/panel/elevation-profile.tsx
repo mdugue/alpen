@@ -3,6 +3,7 @@
 import { useState } from "react";
 
 import { useT } from "@/components/i18n";
+import { fill } from "@/lib/i18n/fill";
 import { stepGradient } from "@/lib/profile";
 import type { ElevationProfile as Profile, RouteGeometry } from "@/lib/types";
 
@@ -132,17 +133,17 @@ export const ElevationProfile = ({
   };
 
   const readout = (i: number) =>
-    t.panel.profile.readout(
-      fmt(profile.dist[i]!, 1),
-      fmt(profile.ele[i]!),
-      fmt(stepGradient(profile, i), 1),
-    );
-  const summary = t.panel.profile.summary(
-    fmt(profile.km, 1),
-    fmt(profile.start),
-    fmt(profile.top),
-    fmt(profile.avgGradient, 1),
-  );
+    fill(t.panel.profile.readout, {
+      elevation: fmt(profile.ele[i]!),
+      gradient: fmt(stepGradient(profile, i), 1),
+      km: fmt(profile.dist[i]!, 1),
+    });
+  const summary = fill(t.panel.profile.summary, {
+    average: fmt(profile.avgGradient, 1),
+    km: fmt(profile.km, 1),
+    start: fmt(profile.start),
+    top: fmt(profile.top),
+  });
 
   const onKeyDown = (e: React.KeyboardEvent) => {
     const at = cursor ?? 0;
@@ -174,7 +175,9 @@ export const ElevationProfile = ({
         aria-valuemax={last}
         aria-valuenow={cursor ?? 0}
         aria-valuetext={
-          cursor === null ? t.panel.profile.keyHint(summary) : readout(cursor)
+          cursor === null
+            ? fill(t.panel.profile.keyHint, { summary })
+            : readout(cursor)
         }
         onKeyDown={onKeyDown}
         onBlur={() => move(null)}

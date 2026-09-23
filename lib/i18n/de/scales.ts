@@ -22,8 +22,8 @@ export const scales = {
     intro:
       "Ein Reiseziel ist ein redaktionell gezogener Kreis: eine Mitte, ein Radius, dazu einzelne Straßen, die dazugezählt oder ausgenommen sind, und die Orte, die als Standort taugen. Was im Kreis liegt, ist die Mitgliedschaft – sie wird beim Bauen der Seite bestimmt, nicht von Hand gepflegt. Alle Zahlen eines Reiseziels sind wie beim Ort **abgeleitet**: „7 von 9 Straßen gut“ zählt die Straßen im Gebiet nach ihrem Status im gewählten Halbmonat, der Streifen misst jeden Halbmonat an der besten Zeit dieses Gebiets.",
     /** `riskyPct` is the weight of a limited road, as a whole number. */
-    order: (riskyPct: string) =>
-      `**Die Reihenfolge der Liste** ist eine Punktzahl, die nirgends gezeigt wird: die Schönheit jeder offenen Straße voll, die jeder eingeschränkten mit ${riskyPct} %, eine gesperrte zählt nichts. Redaktionell wie alles hier – sie ordnet, sie misst nicht.`,
+    order:
+      "**Die Reihenfolge der Liste** ist eine Punktzahl, die nirgends gezeigt wird: die Schönheit jeder offenen Straße voll, die jeder eingeschränkten mit {riskyPct} %, eine gesperrte zählt nichts. Redaktionell wie alles hier – sie ordnet, sie misst nicht.",
   },
   notes: {
     heading: "Hinweise",
@@ -60,13 +60,13 @@ export const scales = {
   },
   status: {
     /** `lapse` is `lapseText`, `error` the valley value's margin in °C. */
-    derived: (lapse: string, error: string) =>
-      `**Abgeleitet, nicht gemessen:** Die Klimareihe gilt für die Passhöhe. Der Talwert wird mit ${lapse} bis zum tiefsten Anstiegsbeginn heruntergerechnet und liegt gut ± ${error} °C daneben; für Pässe ohne Anstiegsprofil gibt es ihn nicht. Das Tageslicht ist reine Astronomie. Im Detail steht unter dem Status der Grund in einem Satz, mit Zahl und Herkunft.`,
+    derived:
+      "**Abgeleitet, nicht gemessen:** Die Klimareihe gilt für die Passhöhe. Der Talwert wird mit {lapse} bis zum tiefsten Anstiegsbeginn heruntergerechnet und liegt gut ± {error} °C daneben; für Pässe ohne Anstiegsprofil gibt es ihn nicht. Das Tageslicht ist reine Astronomie. Im Detail steht unter dem Status der Grund in einem Satz, mit Zahl und Herkunft.",
     heading: "Status je Zeitraum",
     intro:
       "Heuristik aus typischem Öffnungsfenster (halbmonatsgenau), Passhöhe, Jahreszeit, der Klimareihe des Passes (ERA5-Land 2015–2024) und dem Tageslicht. Sie beantwortet „wie gut ist es, dort in diesem Halbmonat zu fahren“, nicht nur „kommt man drüber“. Für Rundtouren gilt der schlechteste Wert ihrer Pässe. Ersetzt keine amtliche Sperrauskunft.",
     /** The paragraph generated from the signals (`ladderText`), under its lead. */
-    ladder: (text: string) => `**Vier Stufen, eine Leiter.** ${text}`,
+    ladder: "**Vier Stufen, eine Leiter.** {text}",
     strip:
       "Der Streifen aus 24 Zellen zeigt das ganze Jahr auf einen Blick – umrandet ist der gewählte Halbmonat, hohl mit rotem Rand die Sperrung. Im Detail erklärt jede Zelle sich beim Überfahren selbst.",
   },
@@ -86,20 +86,20 @@ export const scales = {
   },
   townsAsBase: {
     /** One reach band with its limit: „vor der Tür" bis 15 km. */
-    bandItem: (label: string, km: string) => `„${label}" bis ${km} km`,
+    bandItem: '„{label}" bis {km} km',
     /** `list` joins the `bandItem`s, `maxKm` is where the list ends. */
-    bands: (list: string, maxKm: string) =>
-      `**Drei Entfernungen statt eines Radius.** ${list}. Jenseits von ${maxKm} km endet die Liste. Innerhalb davon zählt Nähe gleitend: ein Pass wird nicht bei einem runden Kilometerwert wertlos, sondern verliert mit der Entfernung an Gewicht. Die Reihenfolge entsteht daraus zusammen mit Zustand, Schönheit und Bekanntheit – ein schöner Pass etwas weiter weg steht deshalb vor einem unscheinbaren vor der Haustür.`,
+    bands:
+      "**Drei Entfernungen statt eines Radius.** {list}. Jenseits von {maxKm} km endet die Liste. Innerhalb davon zählt Nähe gleitend: ein Pass wird nicht bei einem runden Kilometerwert wertlos, sondern verliert mit der Entfernung an Gewicht. Die Reihenfolge entsteht daraus zusammen mit Zustand, Schönheit und Bekanntheit – ein schöner Pass etwas weiter weg steht deshalb vor einem unscheinbaren vor der Haustür.",
     heading: "Orte als Standort",
     intro:
       "Ein Ort hat keine eigene Klimareihe und keine eigene Saison. Was er hat, sind die Pässe, die er erreicht – und die sind schon bewertet. Alles, was das Ortsdetail zeigt, ist daraus **abgeleitet** und sagt das auch: die Zahl gut befahrbarer Pässe, der Balken darunter und der Streifen aus 24 Zellen.",
     /** The two shares arrive as percentages, "80 %" and "50 %". */
-    stripMeasures: (best: string, good: string) =>
-      `**Der Streifen zeigt die Saison, nicht die Größe.** Er misst jeden Halbmonat an der besten Zeit _dieses_ Orts: ab ${best} davon „beste Zeit“, ab ${good} „gut“, darunter „eingeschränkt“, ohne einen befahrbaren Pass „gesperrt“. Sonst hätte ein großer Ort von Juni bis Oktober durchgehend die höchste Stufe und ein kleiner nie – der Streifen würde die Größe des Orts zeigen statt seines Jahres. Wie viel es überhaupt ist, steht daneben in Worten. Die beiden Anteile sind redaktionell wie alle Zahlen hier; \`scripts/analyze-destinations.ts\` rechnet sie nach.`,
+    stripMeasures:
+      "**Der Streifen zeigt die Saison, nicht die Größe.** Er misst jeden Halbmonat an der besten Zeit _dieses_ Orts: ab {best} davon „beste Zeit“, ab {good} „gut“, darunter „eingeschränkt“, ohne einen befahrbaren Pass „gesperrt“. Sonst hätte ein großer Ort von Juni bis Oktober durchgehend die höchste Stufe und ein kleiner nie – der Streifen würde die Größe des Orts zeigen statt seines Jahres. Wie viel es überhaupt ist, steht daneben in Worten. Die beiden Anteile sind redaktionell wie alle Zahlen hier; `scripts/analyze-destinations.ts` rechnet sie nach.",
   },
   types: {
     heading: "Art und Merkmale",
     intro:
       "Die **Art** sagt, wie die Straße im Gelände liegt – jede Straße hat genau eine. Die **Merkmale** sagen, wie sich das Fahren dort anfühlt; eine Straße trägt keines, eines oder mehrere. Auch sie sind redaktionelle Labels, keine gezählten Werte: Was die Daten messen – Länge, Steigung, Höhe, Grenzübertritt – steht als Zahl daneben und nicht hier.",
   },
-};
+} as const;

@@ -8,6 +8,7 @@ import {
   membersOf,
   RISKY_WEIGHT,
 } from "@/lib/destination";
+import { DE } from "@/lib/i18n/dictionaries";
 import { indexBySlug } from "@/lib/status";
 import type { Destination } from "@/lib/types";
 import { makePass, makeTour, makeTown, PERIOD, yearsOf } from "@/test/fixtures";
@@ -108,8 +109,8 @@ describe("areaScore and areaVerdict", () => {
     expect(v.counts).toEqual({ best: 1, closed: 1, good: 0, limited: 1 });
     expect(v.peak).toBe(1);
     expect(v.year.cells).toHaveLength(24);
-    expect(areaText(v)).toBe("1 von 3 Straßen gut");
-    expect(areaText(areaVerdict([], years, PERIOD))).toBe(
+    expect(areaText(v, DE)).toBe("1 von 3 Straßen gut");
+    expect(areaText(areaVerdict([], years, PERIOD), DE)).toBe(
       "keine Straße im Gebiet",
     );
   });

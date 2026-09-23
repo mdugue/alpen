@@ -1,4 +1,5 @@
 import type { vocab as de } from "../de/vocab";
+import type { Layout } from "../fill";
 
 /** The English vocabulary, held to the German tables' shape. */
 export const vocab = {
@@ -27,24 +28,24 @@ export const vocab = {
     SI: "Slovenia",
   },
   filter: {
-    beauty: (option: string) => `Beauty ${option}`,
-    difficulty: (lo: number, hi: number) =>
-      lo === hi ? `Difficulty ${lo}` : `Difficulty ${lo}–${hi}`,
-    fame: (option: string) => `Fame ${option}`,
+    beauty: "Beauty {option}",
+    difficulty: "Difficulty {lo}–{hi}",
+    difficultyOne: "Difficulty {level}",
+    fame: "Fame {option}",
     favoritesOnly: "favourites only",
     statusOr: " or ",
-    traffic: (option: string) => `Traffic ${option}`,
-    valley: (option: string) => `Valley ${option}`,
-    wetDays: (option: string) => `Rain days ${option}`,
+    traffic: "Traffic {option}",
+    valley: "Valley {option}",
+    wetDays: "Rain days {option}",
   },
   option: {
     any: "any",
-    elevationFrom: (m: string) => `from ${m} m`,
-    from: (n: number) => `from ${n}`,
-    only: (n: number) => `only ${n}`,
-    under: (t: number) => `under ${t} °C`,
-    upTo: (n: number) => `up to ${n}`,
-    wetDays: (n: number) => `up to ${n} of 15`,
+    elevationFrom: "from {m} m",
+    from: "from {n}",
+    only: "only {n}",
+    under: "under {n} °C",
+    upTo: "up to {n}",
+    wetDays: "up to {n} of 15",
   },
   prominence: {
     famous: "famous passes",
@@ -77,20 +78,27 @@ export const vocab = {
     },
   },
   reach: {
-    areaLine: (rideable: string, total: string) =>
-      `${rideable} of ${total} roads good`,
+    areaLine: "{rideable} of {total} roads good",
     areaNone: "no road in the area",
     count: {
-      best: (n: number) => `${n} at their best`,
-      closed: (n: number) => `${n} often closed`,
-      good: (n: number) => `${n} good`,
-      limited: (n: number) => `${n} limited`,
+      best: "{n} at their best",
+      closed: "{n} often closed",
+      good: "{n} good",
+      limited: "{n} limited",
     },
-    noneRideable: (total: number) =>
-      `None of the ${total} passes within reach is good to ride in this half-month.`,
-    noneWithin: (km: number) => `No pass within ${km} km.`,
-    ofTotal: (total: number, parts: string) =>
-      `Of ${total} passes within reach: ${parts}.`,
+    noneRideable:
+      "None of the {total} passes within reach is good to ride in this half-month.",
+    noneWithin: "No pass within {km} km.",
+    ofTotal: "Of {total} passes within reach: {parts}.",
+  },
+  region: {
+    Dolomiten: "Dolomites",
+    Jura: "Jura",
+    Ostalpen: "Eastern Alps",
+    Pyrenäen: "Pyrenees",
+    Vogesen: "Vosges",
+    Westalpen: "Western Alps",
+    Zentralalpen: "Central Alps",
   },
   roadTag: {
     carfree: {
@@ -217,4 +225,4 @@ export const vocab = {
     approx: "approx.",
     climb: "m+",
   },
-} satisfies typeof de;
+} as const satisfies Layout<typeof de>;

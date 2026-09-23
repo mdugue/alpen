@@ -97,7 +97,7 @@ export const Sidebar = (p: SidebarProps) => {
   // The panel opens by itself when a link carries filters; the visitor's own
   // toggling wins from then on. The second half stays folded until it is
   // needed, or until a filter inside it is already set.
-  const filtersOpen = p.filtersOpen ?? filterCount(p.filters) > 0;
+  const filtersOpen = p.filtersOpen ?? filterCount(p.filters, t) > 0;
   const [more, setMore] = useState<boolean | null>(null);
   const moreOpen = more ?? hasSecondaryFilters(p.filters);
   const [compareOpen, setCompareOpen] = useState(false);

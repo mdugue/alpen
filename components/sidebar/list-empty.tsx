@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/empty";
 import type { Filters } from "@/lib/app-state";
 import { appliedFilters, bestRelief } from "@/lib/filter-summary";
+import { fill } from "@/lib/i18n/fill";
 
 /**
  * The one empty state, with the way out inside it.
@@ -45,10 +46,10 @@ export const ListEmpty = ({
   /** How many roads a filter patch would leave; see `facetCount` in `lib/rows.ts`. */
   countWith?: (patch: Partial<Filters>) => number;
 }) => {
-  const { t, lang, fmt } = useT();
-  const applied = appliedFilters(filters, lang);
+  const { t, fmt } = useT();
+  const applied = appliedFilters(filters, t);
   const hasQuery = filters.query.trim().length > 0;
-  const relief = countWith ? bestRelief(filters, countWith, lang) : undefined;
+  const relief = countWith ? bestRelief(filters, countWith, t) : undefined;
   const reliefLabel = relief?.chip.label ?? "";
 
   return (
@@ -60,9 +61,11 @@ export const ListEmpty = ({
         <EmptyTitle>{title}</EmptyTitle>
         <EmptyDescription>
           {hasQuery
-            ? t.sidebar.empty.queryMatchesNothing(
-                filters.query.trim(),
-                applied.length > 0,
+            ? fill(
+                applied.length > 0
+                  ? t.sidebar.empty.queryMatchesNothingFiltered
+                  : t.sidebar.empty.queryMatchesNothing,
+                { query: filters.query.trim() },
               )
             : t.sidebar.empty.filtersMatchNothing}
         </EmptyDescription>
@@ -83,7 +86,10 @@ export const ListEmpty = ({
             variant="outline"
             onClick={() => setFilters(relief.chip.clear)}
           >
-            {t.sidebar.empty.without(reliefLabel, fmt(relief.n))}
+            {fill(t.sidebar.empty.without, {
+              label: reliefLabel,
+              n: fmt(relief.n),
+            })}
           </Button>
         )}
         {applied.length > 0 && (

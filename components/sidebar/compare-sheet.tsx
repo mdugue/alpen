@@ -13,6 +13,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { fill } from "@/lib/i18n/fill";
 import type { DestinationRow } from "@/lib/rows";
 import { cellAt } from "@/lib/status";
 import type { Period } from "@/lib/types";
@@ -89,7 +90,9 @@ export const CompareSheet = ({
                       <Button
                         variant="ghost"
                         size="icon-xs"
-                        aria-label={t.sidebar.compare.remove(d.name)}
+                        aria-label={fill(t.sidebar.compare.remove, {
+                          name: d.name,
+                        })}
                         onClick={() => onRemove(d.slug)}
                       >
                         <X />

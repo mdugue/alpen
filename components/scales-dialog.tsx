@@ -19,7 +19,7 @@ import {
   RISKY_WEIGHT,
 } from "@/lib/destination";
 import { REACH_BANDS, REACH_MAX_KM } from "@/lib/geo";
-import { vocabOf } from "@/lib/i18n";
+import { fill } from "@/lib/i18n/fill";
 import { ROAD_TAGS, ROAD_TYPES, SURFACES, TOWN_TAGS } from "@/lib/regions";
 import type { RangeName, TagName } from "@/lib/regions";
 import { ladderText, lapseText, VALLEY_TMAX_ERROR } from "@/lib/status";
@@ -106,9 +106,9 @@ export const ScalesDialog = ({
    */
   ranges: readonly RangeName[];
 }) => {
-  const { t, lang, fmt } = useT();
+  const { t, fmt } = useT();
   const s = t.scales;
-  const v = vocabOf(lang);
+  const v = t.vocab;
   /** A share as a percentage in the page's locale: 0.8 -> "80 %". */
   const pct = (x: number) => `${fmt(x * 100)} %`;
 
@@ -184,8 +184,13 @@ export const ScalesDialog = ({
             <P>{s.status.intro}</P>
             {/* Generated from SIGNALS and the reason ladder in lib/status.ts, so
                 a changed threshold reaches the paragraph that explains it. */}
-            <P>{s.status.ladder(ladderText(lang))}</P>
-            <P>{s.status.derived(lapseText(lang), fmt(VALLEY_TMAX_ERROR))}</P>
+            <P>{fill(s.status.ladder, { text: ladderText(t) })}</P>
+            <P>
+              {fill(s.status.derived, {
+                error: fmt(VALLEY_TMAX_ERROR),
+                lapse: lapseText(t),
+              })}
+            </P>
             <P>{s.status.strip}</P>
             {/* The same legend the season bar shows, from GRADE_ORDER. */}
             <GradeLegend className="text-muted-foreground text-xs" />
@@ -197,23 +202,30 @@ export const ScalesDialog = ({
           <Section heading={s.townsAsBase.heading}>
             <P>{s.townsAsBase.intro}</P>
             <P>
-              {s.townsAsBase.bands(
-                REACH_BANDS.map((b) =>
-                  s.townsAsBase.bandItem(v.band[b.key].label, fmt(b.maxKm)),
+              {fill(s.townsAsBase.bands, {
+                list: REACH_BANDS.map((b) =>
+                  fill(s.townsAsBase.bandItem, {
+                    km: fmt(b.maxKm),
+                    label: v.band[b.key].label,
+                  }),
                 ).join(", "),
-                fmt(REACH_MAX_KM),
-              )}
+                maxKm: fmt(REACH_MAX_KM),
+              })}
             </P>
             <P>
-              {s.townsAsBase.stripMeasures(
-                pct(RIDEABLE_BEST_SHARE),
-                pct(RIDEABLE_GOOD_SHARE),
-              )}
+              {fill(s.townsAsBase.stripMeasures, {
+                best: pct(RIDEABLE_BEST_SHARE),
+                good: pct(RIDEABLE_GOOD_SHARE),
+              })}
             </P>
           </Section>
           <Section heading={s.destinations.heading}>
             <P>{s.destinations.intro}</P>
-            <P>{s.destinations.order(fmt(RISKY_WEIGHT * 100))}</P>
+            <P>
+              {fill(s.destinations.order, {
+                riskyPct: fmt(RISKY_WEIGHT * 100),
+              })}
+            </P>
           </Section>
           <Section heading={s.symbols.heading}>
             <P>{s.symbols.text}</P>

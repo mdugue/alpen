@@ -1,15 +1,16 @@
 import type { panel as de } from "../de/panel";
+import type { Layout } from "../fill";
 
 export const panel = {
   ascents: {
-    average: (pct: string) => `avg ${pct} %`,
+    average: "avg {pct} %",
     info: "Routed road, 100 elevation samples from a terrain model – good for comparing, not accurate to the metre.",
     infoTraverse:
       "Routed road, 100 elevation samples from a terrain model – good for comparing, not accurate to the metre. Climbing and steepest kilometre are left out here: on a nearly flat road through a gorge the model measures more up and down than the road has.",
     noProfile: "No elevation profile available.",
     none: "No ascent recorded",
     spur: "Dead-end road: the road ends at the top, and the way down is the same ascent.",
-    steepestKm: (pct: string) => `steepest km ${pct} %`,
+    steepestKm: "steepest km {pct} %",
     title: "Ascents",
     titleTraverse: "Road",
   },
@@ -18,26 +19,24 @@ export const panel = {
     close: "Close details",
     linkCopied: "Link copied",
     list: "List",
-    save: (name: string) => `Save ${name}`,
-    share: (name: string) => `Share ${name}`,
-    unsave: (name: string) => `Remove ${name} from favourites`,
+    save: "Save {name}",
+    share: "Share {name}",
+    unsave: "Remove {name} from favourites",
   },
   base: {
-    bandCount: (n: string, noun: string, maxKm: string) =>
-      `${n} ${noun} · up to ${maxKm}`,
-    basesInfo: (km: number) =>
-      `Towns this road can be ridden from – sorted by nearness, then by how many other passes the town offers in the chosen half-month. The list ends beyond ${km} km.`,
-    basesNone: (km: number) => `No cycling town within ${km} km.`,
+    bandCount: "{n} {noun} · up to {maxKm}",
+    basesInfo:
+      "Towns this road can be ridden from – sorted by nearness, then by how many other passes the town offers in the chosen half-month. The list ends beyond {km} km.",
+    basesNone: "No cycling town within {km} km.",
     basesTitle: "Towns to stay in",
-    derived: (total: string) =>
-      `Derived from the ${total} passes within reach – the town itself has no climate series of its own. The strip shows the course of the year relative to this town's best time`,
-    derivedPeak: (peak: string) => ` (${peak} passes are good to ride then)`,
+    derived:
+      "Derived from the {total} passes within reach – the town itself has no climate series of its own. The strip shows the course of the year relative to this town's best time",
+    derivedPeak: " ({peak} passes are good to ride then)",
     passes: "passes",
-    passesInfo: (km: number) =>
-      `Sorted by condition in the chosen half-month, beauty and nearness. Nearness counts smoothly: a pass does not become worthless at a round number of kilometres, it loses weight with distance. The list ends beyond ${km} km.`,
+    passesInfo:
+      "Sorted by condition in the chosen half-month, beauty and nearness. Nearness counts smoothly: a pass does not become worthless at a round number of kilometres, it loses weight with distance. The list ends beyond {km} km.",
     passesTitle: "Passes from here",
-    townLine: (rideable: string, total: string) =>
-      `${rideable} of ${total} passes good`,
+    townLine: "{rideable} of {total} passes good",
     townNone: "no pass within reach",
     towns: "towns",
   },
@@ -50,22 +49,22 @@ export const panel = {
   },
   climate: {
     dayNight: "avg day / night",
-    frost: (days: string) => `Frost · ${days} of 15 days`,
+    frost: "Frost · {days} of 15 days",
     info: "ERA5-Land 2015–2024, a 10 km grid – rather too mild at pass height.",
     noneText: "No climate data for this pass yet.",
     noneTitle: "No climate series",
-    snow: (days: string) => `Snow · ${days} of 15 days`,
+    snow: "Snow · {days} of 15 days",
     title: "Climate over the year",
   },
   destination: {
     baseMark: "base",
-    derived: (total: string) =>
-      `Derived from the ${total} roads in the area – a destination has no climate series of its own. The strip shows the course of the year relative to this area's best time`,
-    derivedPeak: (peak: string) => ` (${peak} roads are good to ride then)`,
+    derived:
+      "Derived from the {total} roads in the area – a destination has no climate series of its own. The strip shows the course of the year relative to this area's best time",
+    derivedPeak: " ({peak} roads are good to ride then)",
     lodging: "Find accommodation",
-    lodgingQuery: (town: string) => `Hotels ${town}`,
-    roadsInfo: (km: string) =>
-      `Every road within ${km} km of the area's centre, plus the ones added editorially, minus the ones excluded. Sorted by condition in the chosen half-month, then beauty.`,
+    lodgingQuery: "Hotels {town}",
+    roadsInfo:
+      "Every road within {km} km of the area's centre, plus the ones added editorially, minus the ones excluded. Sorted by condition in the chosen half-month, then beauty.",
     roadsNone: "No road in the area.",
     roadsTitle: "Roads in the area",
     toursNone: "No loop starts in this area.",
@@ -80,13 +79,13 @@ export const panel = {
     newTab: " (opens in a new tab)",
   },
   kicker: {
-    destination: (country: string) => `Destination · ${country}`,
+    destination: "Destination · {country}",
     tour: "Loop",
-    town: (country: string) => `Cycling town · ${country}`,
+    town: "Cycling town · {country}",
   },
   nearby: {
     passes: "Passes",
-    title: (km: number) => `Within ${km} km`,
+    title: "Within {km} km",
     tours: "Loops",
     towns: "Towns",
   },
@@ -97,16 +96,14 @@ export const panel = {
     notLoaded: "No photos loaded – the image file did not arrive.",
     previous: "Previous photo",
     unknownArtist: "unknown",
-    viewOnCommons: (title: string) => `${title} – view on Wikimedia Commons`,
+    viewOnCommons: "{title} – view on Wikimedia Commons",
   },
   profile: {
-    keyHint: (summary: string) =>
-      `${summary}. Use the arrow keys to move along the profile.`,
+    keyHint: "{summary}. Use the arrow keys to move along the profile.",
     loading: "Loading elevation profile",
-    readout: (km: string, elevation: string, gradient: string) =>
-      `km ${km} · ${elevation} m · ${gradient} %`,
-    summary: (km: string, start: string, top: string, average: string) =>
-      `Elevation profile: ${km} km from ${start} to ${top} m, ${average} % on average`,
+    readout: "km {km} · {elevation} m · {gradient} %",
+    summary:
+      "Elevation profile: {km} km from {start} to {top} m, {average} % on average",
   },
   rating: {
     beauty: "Beauty",
@@ -125,18 +122,18 @@ export const panel = {
     ],
   },
   section: {
-    sourceHint: (title: string) => `${title}: note on the source`,
+    sourceHint: "{title}: note on the source",
   },
   tour: {
-    passCount: (n: string) => `${n} passes`,
+    passCount: "{n} passes",
     passesTitle: "Passes of the loop",
   },
   town: {
     bikeShops: "Bike shops (Google)",
-    bikeShopsQuery: (town: string) => `bike shop ${town}`,
+    bikeShopsQuery: "bike shop {town}",
     destinationLead: "Destination:",
     workshops: "Workshops (OSM)",
-    workshopsQuery: (town: string) => `bicycle repair ${town}`,
+    workshopsQuery: "bicycle repair {town}",
   },
   weather: {
     allDays: "All 7 days",
@@ -170,4 +167,4 @@ export const panel = {
     unavailableText: "Open-Meteo is not responding right now.",
     unavailableTitle: "Weather unavailable",
   },
-} satisfies typeof de;
+} as const satisfies Layout<typeof de>;

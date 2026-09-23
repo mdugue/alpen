@@ -22,8 +22,8 @@ import {
 import { PASS_SORTS } from "@/lib/app-state";
 import type { Filters, PassSort, Selection } from "@/lib/app-state";
 import { typeWord } from "@/lib/i18n";
+import { fill } from "@/lib/i18n/fill";
 import { entityKey } from "@/lib/route-key";
-import { sortLabel } from "@/lib/rows";
 import type { PassRow } from "@/lib/rows";
 import { useRoving } from "@/lib/use-roving";
 import { cn, TOUCH_CONTROL } from "@/lib/utils";
@@ -60,7 +60,7 @@ export const PassList = ({
   onSelect: (slug: string) => void;
   onToggleFavorite: (slug: string) => void;
 }) => {
-  const { t, lang, fmtUnit } = useT();
+  const { t, fmtUnit } = useT();
   const rovingList = useRoving<HTMLDivElement>();
   const hoveredSlug = hovered?.kind === "pass" ? hovered.slug : null;
   const ratingSort = RATING_SORTS.has(filters.sort)
@@ -86,15 +86,15 @@ export const PassList = ({
               <Button
                 variant="ghost"
                 size="sm"
-                aria-label={t.sidebar.lists.sortBy(
-                  sortLabel(filters.sort, lang),
-                )}
+                aria-label={fill(t.sidebar.lists.sortBy, {
+                  label: t.vocab.sort[filters.sort],
+                })}
                 className={cn("-my-0.5 px-2 font-normal", TOUCH_CONTROL)}
               />
             }
           >
             <ArrowDownWideNarrow data-icon="inline-start" />
-            {sortLabel(filters.sort, lang)}
+            {t.vocab.sort[filters.sort]}
           </DropdownMenuTrigger>
           <DropdownMenuContent align="start">
             <DropdownMenuRadioGroup
@@ -105,7 +105,7 @@ export const PassList = ({
             >
               {PASS_SORTS.map((k) => (
                 <DropdownMenuRadioItem key={k} value={k}>
-                  {sortLabel(k, lang)}
+                  {t.vocab.sort[k]}
                 </DropdownMenuRadioItem>
               ))}
             </DropdownMenuRadioGroup>
@@ -131,7 +131,11 @@ export const PassList = ({
               subtitle={
                 <TagLine
                   tags={pass.tags ?? []}
-                  lead={[typeWord(pass.type, lang), pass.region, pass.country]
+                  lead={[
+                    typeWord(pass.type, t),
+                    t.vocab.region[pass.region],
+                    pass.country,
+                  ]
                     .filter(Boolean)
                     .join(" · ")}
                 />

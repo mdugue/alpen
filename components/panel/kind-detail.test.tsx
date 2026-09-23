@@ -2,6 +2,7 @@ import { describe, expect, test } from "bun:test";
 
 import { renderToStaticMarkup } from "react-dom/server";
 
+import { I18nProvider } from "@/components/i18n";
 import type { PanelActions } from "@/components/panel/actions";
 import { DestinationDetail } from "@/components/panel/destination-detail";
 import { PassDetail } from "@/components/panel/pass-detail";
@@ -11,6 +12,7 @@ import { membersOf } from "@/lib/destination";
 import { BLOCKS, detailModel } from "@/lib/detail-model";
 import type { DetailModel } from "@/lib/detail-model";
 import type { DetailState } from "@/lib/detail-state";
+import { DE } from "@/lib/i18n/dictionaries";
 import { entityKey } from "@/lib/route-key";
 import type { Destination } from "@/lib/types";
 import {
@@ -86,8 +88,8 @@ const modelOf = <K extends DetailModel["kind"]>(kind: K, slug: string) => {
   const model = detailModel({ kind, slug }, data, {
     detail: state,
     hovered: null,
-    lang: "de",
     period: PERIOD,
+    w: DE,
   });
   // A narrow, not a cast: the fixture has the entity, so the discriminant is
   // the proof rather than an assertion over it.
@@ -95,20 +97,24 @@ const modelOf = <K extends DetailModel["kind"]>(kind: K, slug: string) => {
   return model as Extract<DetailModel, { kind: K }>;
 };
 
+/** The panels read their words from the provider, as they do on the page. */
+const render = (node: React.ReactNode) =>
+  renderToStaticMarkup(<I18nProvider messages={DE}>{node}</I18nProvider>);
+
 const html = {
-  destination: renderToStaticMarkup(
+  destination: render(
     <DestinationDetail
       actions={actions}
       model={modelOf("destination", "valtellina")}
     />,
   ),
-  pass: renderToStaticMarkup(
+  pass: render(
     <PassDetail actions={actions} model={modelOf("pass", "stilfser-joch")} />,
   ),
-  tour: renderToStaticMarkup(
+  tour: render(
     <TourDetail actions={actions} model={modelOf("tour", "runde")} />,
   ),
-  town: renderToStaticMarkup(
+  town: render(
     <TownDetail actions={actions} model={modelOf("town", "bormio")} />,
   ),
 };

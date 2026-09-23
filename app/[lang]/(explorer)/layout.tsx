@@ -1,22 +1,25 @@
-import { lang as rootLang } from "next/root-params";
-
 import { Explorer } from "@/components/explorer";
 import { I18nProvider } from "@/components/i18n";
 import { SITE_NAME, siteUrl } from "@/lib/brand";
 import { getPageData } from "@/lib/data";
-import { langOf, langPrefix, messagesOf } from "@/lib/i18n";
-import type { Lang } from "@/lib/i18n";
+import { langPrefix } from "@/lib/i18n";
+import type { Messages } from "@/lib/i18n";
+import { getDictionary } from "@/lib/i18n/server";
 import { todayPeriod } from "@/lib/period";
+import { RANGES } from "@/lib/regions";
 
 /**
  * Structured data for the map. Deliberately without ratings or reviews:
  * the 1–5 scales are editorial judgements (docs/scales.md) and must not show up
  * as measured values in a search result either.
  */
-const jsonLd = (lang: Lang) => ({
+const jsonLd = (w: Messages) => ({
   "@context": "https://schema.org",
   "@type": "WebApplication",
-  about: { "@type": "Place", name: "Alpen" },
+  about: RANGES.map((r) => ({
+    "@type": "Place",
+    name: w.vocab.range[r].label,
+  })),
   applicationCategory: "TravelApplication",
   author: {
     "@type": "Person",
@@ -24,12 +27,12 @@ const jsonLd = (lang: Lang) => ({
     url: "https://manuel.fyi",
   },
   browserRequirements: "Requires JavaScript and WebGL.",
-  description: messagesOf(lang).site.description,
-  inLanguage: lang,
+  description: w.site.description,
+  inLanguage: w.lang,
   isAccessibleForFree: true,
   name: SITE_NAME,
   offers: { "@type": "Offer", price: 0, priceCurrency: "EUR" },
-  url: `${siteUrl}${langPrefix(lang)}`,
+  url: `${siteUrl}${langPrefix(w.lang)}`,
 });
 
 /**
@@ -56,16 +59,18 @@ const jsonLd = (lang: Lang) => ({
  * never more than that behind the calendar and the first paint shows no flash
  * of some other period. A hash or the visitor's stored choice wins over it in
  * the client (see `Explorer`).
+ *
+ * The words reach the client the same way the data does: as a value, one
+ * language per page (`getDictionary` reads the root parameter, which makes it
+ * part of this entry's cache key – the layout is prerendered once per
+ * language). No component imports a dictionary, so the other language never
+ * reaches the browser.
  */
-const ExplorerLayout = async ({ children }: { children: React.ReactNode }) => {
+const ExplorerLayout = async ({ children }: LayoutProps<"/[lang]">) => {
   "use cache";
 
-  // The root parameter is part of this entry's cache key, so the layout is
-  // prerendered once per language; the root layout has already 404ed
-  // anything that is not one.
-  const raw = await rootLang();
-  const lang = langOf(raw);
-  const data = getPageData(lang);
+  const w = await getDictionary();
+  const data = getPageData(w.lang);
 
   return (
     <main className="h-dvh overflow-hidden">
@@ -80,13 +85,13 @@ const ExplorerLayout = async ({ children }: { children: React.ReactNode }) => {
         href="#map"
         className="bg-card text-foreground ring-ring sr-only rounded-md px-3 py-2 text-sm shadow-lg focus:not-sr-only focus:absolute focus:top-3 focus:left-3 focus:z-50 focus:ring-2"
       >
-        {messagesOf(lang).header.skipToMap}
+        {w.header.skipToMap}
       </a>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd(lang)) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd(w)) }}
       />
-      <I18nProvider lang={lang}>
+      <I18nProvider messages={w}>
         <Explorer data={data} defaultPeriod={todayPeriod()}>
           {children}
         </Explorer>

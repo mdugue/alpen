@@ -63,7 +63,7 @@ export const DetailPanel = ({
   /** The pass page's streamed forecast, shown in the weather block (plan 02). */
   weather?: React.ReactNode;
 }) => {
-  const { t, lang } = useT();
+  const { t } = useT();
   const panel = useRef<HTMLElement>(null);
   const scroller = useRef<HTMLDivElement>(null);
   // Below the sheet's top snap point nothing scrolls, so the head is on screen
@@ -158,8 +158,8 @@ export const DetailPanel = ({
   const model = detailModel(selection, data, {
     detail: state,
     hovered,
-    lang,
     period,
+    w: t,
   });
   if (!model) return null;
 

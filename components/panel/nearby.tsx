@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import type { EntityKind } from "@/lib/app-state";
 import type { ReachingModel } from "@/lib/detail-model";
 import { REACH_MAX_KM } from "@/lib/geo";
+import { fill } from "@/lib/i18n/fill";
 import { byDistance } from "@/lib/reach";
 import { isHovered } from "@/lib/route-key";
 import { cn } from "@/lib/utils";
@@ -110,7 +111,10 @@ export const Nearby = ({
   });
 
   return (
-    <Section id="nearby" title={t.panel.nearby.title(REACH_MAX_KM)}>
+    <Section
+      id="nearby"
+      title={fill(t.panel.nearby.title, { km: REACH_MAX_KM })}
+    >
       <div className="flex flex-col gap-1">
         {passes.length > 0 &&
           group(

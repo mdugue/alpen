@@ -11,27 +11,15 @@
  */
 import { TOKENS } from "@/lib/palette";
 
-export const SITE_NAME = "Alpenpässe";
-export const SITE_TAGLINE = "Rennradkarte";
-export const SITE_TITLE = `${SITE_NAME} – ${SITE_TAGLINE}`;
-
 /**
- * The app is a planning aid for holidays, not a navigation tool – the
- * description says so, because that is what people search for.
- *
- * The name stays "Alpenpässe" with the Jura, the Vosges and the Pyrenees in
- * the vocabulary (plans 25 and 26): the domain is `alpen.manuel.fyi`, and a
- * rename waits for a fourth range to make the stretch a lie. The description
- * and the claim name a range once its roads are in – not before, because a
- * description that promises the Pyrenees over a map without one Pyrenean
- * road is exactly what Principle 3 forbids.
+ * The name, in every language – a name is not translated. It stays
+ * "Alpenpässe" with the Jura, the Vosges and the Pyrenees in the vocabulary
+ * (plans 25 and 26): the domain is `alpen.manuel.fyi`, and a rename waits for
+ * a fourth range to make the stretch a lie. The tagline, the description and
+ * the claim are words, so they live in the dictionaries (`site` in
+ * `lib/i18n/messages.*.ts`).
  */
-export const SITE_DESCRIPTION =
-  "Wohin mit dem Rennrad, und wann? Alpenpässe, Auffahrten mit Höhenprofil, Rundtouren und Rad-Orte auf einer Karte – mit Befahrbarkeit je Halbmonat, Wetter und Klima.";
-
-/** Short form for the share image and the manifest, where space is tight. */
-export const SITE_CLAIM =
-  "Pässe, Rundtouren und Rad-Orte in den Alpen – nach Befahrbarkeit je Halbmonat.";
+export const SITE_NAME = "Alpenpässe";
 
 /**
  * Absolute base URL. Vercel provides the production host; a preview deployment

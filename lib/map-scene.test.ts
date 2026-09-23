@@ -3,6 +3,7 @@ import { describe, expect, test } from "bun:test";
 import { ALL_SHOWN } from "@/lib/app-state";
 import type { Selection, Shown } from "@/lib/app-state";
 import type { Bounds } from "@/lib/geo";
+import { DE } from "@/lib/i18n/dictionaries";
 import { buildScene } from "@/lib/map-scene";
 import type { Scene, SceneInput } from "@/lib/map-scene";
 import { ascentKey } from "@/lib/route-key";
@@ -66,7 +67,6 @@ const REACH: Record<string, [number, number][]> = {
 const input = (extra: Partial<SceneInput> = {}): SceneInput => ({
   env: { coarse: false },
   hovered: null,
-  lang: "de",
   profileCursor: null,
   rows: {
     destination: [],
@@ -78,6 +78,7 @@ const input = (extra: Partial<SceneInput> = {}): SceneInput => ({
   shown: ALL_SHOWN,
   tourBounds: TOUR_BOUNDS,
   townReach: REACH,
+  w: DE,
   ...extra,
 });
 
@@ -274,10 +275,9 @@ describe("hover", () => {
     expect(scene.hover.hull).toBe(REACH.bormio!);
     expect(scene.hover.popup).toEqual({
       anchor: [bormio.lon, bormio.lat],
-      lang: "de",
       name: "Bormio",
       subtitle: null,
-      tags: ["hotels"],
+      tags: [["hotels", "Bike-Hotels"]],
     });
   });
 
@@ -299,11 +299,10 @@ describe("hover", () => {
     expect(scene.hover.hull).toBeNull();
     expect(scene.hover.popup).toEqual({
       anchor: [galibier.lon, galibier.lat],
-      lang: "de",
       name: "Col du Galibier",
       // A road says how high it goes; only a pass keeps its type to itself.
       subtitle: fmtUnit(2642, "m"),
-      tags: ["hairpins"],
+      tags: [["hairpins", "Kehrenbauwerk"]],
     });
   });
 
@@ -375,7 +374,6 @@ describe("hover", () => {
     expect(ring[0]![0]).toBeGreaterThan(10.3);
     expect(scene.hover.popup).toEqual({
       anchor: [10, 46],
-      lang: "de",
       name: "Testgebiet",
       subtitle: "1 von 1 Straßen gut",
       tags: [],
@@ -391,7 +389,6 @@ describe("hover", () => {
     expect(scene.hover.mark.features).toEqual([]);
     expect(scene.hover.popup).toEqual({
       anchor: [6.2, 45.2],
-      lang: "de",
       name: "La Marmotte",
       subtitle: `ca. ${fmtUnit(174, "km")} · ${fmtUnit(5000, "hm")}`,
       tags: [],

@@ -2,8 +2,7 @@ import { ALL_RANGES, HEAT_NONE, WET_NONE } from "@/lib/app-state";
 import type { EntityKind, Filters, PassSort } from "@/lib/app-state";
 import { areaScore, areaText, areaVerdict } from "@/lib/destination";
 import type { AreaVerdict, DestinationMembers } from "@/lib/destination";
-import { DEFAULT_LANG, vocabOf } from "@/lib/i18n";
-import type { Lang } from "@/lib/i18n";
+import type { Messages } from "@/lib/i18n";
 import { periodIndex, PERIODS } from "@/lib/period";
 import { rangeOf } from "@/lib/regions";
 import type { RangeName } from "@/lib/regions";
@@ -54,14 +53,21 @@ interface Query {
   matches: (haystack: string) => boolean;
   favoritesOnly: boolean;
   isFavorite: (kind: EntityKind, slug: string) => boolean;
+  /** The page's words, which the haystacks are built in (`lib/search.ts`). */
+  w: Messages;
 }
 
-const query = (filters: Filters, isFavorite: Query["isFavorite"]): Query => {
+const query = (
+  filters: Filters,
+  isFavorite: Query["isFavorite"],
+  w: Messages,
+): Query => {
   const q = filters.query.trim();
   return {
     favoritesOnly: filters.favoritesOnly,
     isFavorite,
     matches: (haystack) => !q || matches(haystack, q),
+    w,
   };
 };
 
@@ -117,7 +123,7 @@ const passMatches = (
   // reaches a tour.
   if (!filters.tags.every((t) => pass.tags?.includes(t))) return false;
   if (q.favoritesOnly && !q.isFavorite("pass", pass.slug)) return false;
-  return q.matches(passHaystack(pass));
+  return q.matches(passHaystack(pass, q.w));
 };
 
 /** The pass criteria reach a tour through the passes it crosses. */
@@ -165,9 +171,10 @@ const countPasses = (
   years: Years,
   filters: Filters,
   isFavorite: Query["isFavorite"],
+  w: Messages,
   signals?: Signals,
 ): number => {
-  const q = query(filters, isFavorite);
+  const q = query(filters, isFavorite, w);
   const i = periodIndex(filters.period);
   let n = 0;
   for (const pass of passes) {
@@ -196,10 +203,6 @@ export interface PassRow {
   /** The 24 cells for the season strip; the pass's own `Year`, not a copy. */
   season: YearCell[];
 }
-
-/** What a sort is called in the toolbar's menu. */
-export const sortLabel = (sort: PassSort, lang: Lang = DEFAULT_LANG): string =>
-  vocabOf(lang).sort[sort];
 
 const byName = (a: PassRow, b: PassRow) =>
   a.pass.name.localeCompare(b.pass.name, "de");
@@ -237,9 +240,10 @@ export const buildPassRows = (
   years: Years,
   filters: Filters,
   isFavorite: Query["isFavorite"],
+  w: Messages,
   signals?: Signals,
 ): PassRow[] => {
-  const q = query(filters, isFavorite);
+  const q = query(filters, isFavorite, w);
   const i = periodIndex(filters.period);
   const rows: PassRow[] = [];
   for (const pass of passes) {
@@ -295,10 +299,10 @@ export const buildTourRows = (
   years: Years,
   filters: Filters,
   isFavorite: Query["isFavorite"],
+  w: Messages,
   signals?: Signals,
-  lang: Lang = DEFAULT_LANG,
 ): TourRow[] => {
-  const q = query(filters, isFavorite);
+  const q = query(filters, isFavorite, w);
   const i = periodIndex(filters.period);
   const rows: TourRow[] = [];
   for (const tour of tours) {
@@ -316,7 +320,7 @@ export const buildTourRows = (
       season: year.cells,
       status: cell.status,
       tour,
-      window: tourWindowWord(tour, lang),
+      window: tourWindowWord(tour, w),
     });
   }
   return rows.toSorted((a, b) => b.tour.elevationGain - a.tour.elevationGain);
@@ -342,10 +346,11 @@ export const buildTownRows = (
   townRanges: Partial<Record<string, RangeName>>,
   filters: Filters,
   isFavorite: Query["isFavorite"],
+  w: Messages,
   /** Per town slug, the name of its area – the row's way up to the holiday it belongs to. */
   townAreas: Partial<Record<string, string>> = {},
 ): TownRow[] => {
-  const q = query(filters, isFavorite);
+  const q = query(filters, isFavorite, w);
   const rows: TownRow[] = [];
   for (const town of towns) {
     const favorite = isFavorite("town", town.slug);
@@ -356,7 +361,7 @@ export const buildTownRows = (
       (!range || !filters.ranges.includes(range))
     )
       continue;
-    if (!q.matches(townHaystack(town, range))) continue;
+    if (!q.matches(townHaystack(town, range, w))) continue;
     rows.push({ area: townAreas[town.slug], favorite, range, town });
   }
   return rows.toSorted((a, b) => a.town.name.localeCompare(b.town.name, "de"));
@@ -409,9 +414,9 @@ export const buildDestinationRows = (
   years: Years,
   filters: Filters,
   isFavorite: Query["isFavorite"],
-  lang: Lang = DEFAULT_LANG,
+  w: Messages,
 ): DestinationRow[] => {
-  const q = query(filters, isFavorite);
+  const q = query(filters, isFavorite, w);
   const rows: DestinationRow[] = [];
   for (const destination of destinations) {
     const favorite = isFavorite("destination", destination.slug);
@@ -433,6 +438,7 @@ export const buildDestinationRows = (
           destination,
           baseTowns.map((t) => t.name),
           range,
+          w,
         ),
       )
     )
@@ -446,7 +452,7 @@ export const buildDestinationRows = (
       range,
       score: areaScore(own.passes, passes, years, filters.period),
       season: verdict.year.cells,
-      text: areaText(verdict, lang),
+      text: areaText(verdict, w),
       verdict,
     });
   }
@@ -495,9 +501,10 @@ export const facetCount = (
   filters: Filters,
   isFavorite: Query["isFavorite"],
   patch: Partial<Filters>,
+  w: Messages,
   signals?: Signals,
 ): number =>
-  countPasses(passes, years, { ...filters, ...patch }, isFavorite, signals);
+  countPasses(passes, years, { ...filters, ...patch }, isFavorite, w, signals);
 
 export interface HistogramBar {
   period: Period;
@@ -560,9 +567,10 @@ const bandPasses = (
   passes: Pass[],
   filters: Filters,
   isFavorite: Query["isFavorite"],
+  w: Messages,
   signals?: Signals,
 ): Pass[] => {
-  const q = query(filters, isFavorite);
+  const q = query(filters, isFavorite, w);
   const unbounded = {
     ...filters,
     maxValleyTmax: HEAT_NONE,
@@ -591,6 +599,7 @@ export const seasonBand = (
   years: Years,
   filters: Filters,
   isFavorite: Query["isFavorite"],
+  w: Messages,
   signals?: Signals,
 ): SeasonBand => {
   const bars: SeasonBar[] = PERIODS.map((period) => ({
@@ -616,7 +625,7 @@ export const seasonBand = (
   }));
   let latSum = 0;
   let counted = 0;
-  for (const pass of bandPasses(passes, filters, isFavorite, signals)) {
+  for (const pass of bandPasses(passes, filters, isFavorite, w, signals)) {
     const cells = years.passes[pass.slug]?.cells;
     if (!cells) continue;
     latSum += pass.lat;

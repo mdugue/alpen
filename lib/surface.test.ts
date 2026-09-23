@@ -1,6 +1,7 @@
 import { describe, expect, test } from "bun:test";
 
 import { surfaceWord } from "@/lib/i18n";
+import { DE } from "@/lib/i18n/dictionaries";
 import { isUnpaved, surfaceOfRoads } from "@/lib/regions";
 import {
   COVER_CLOSED_PCT,
@@ -36,8 +37,8 @@ describe("the surface vocabulary", () => {
   });
 
   test("asphalt says nothing, everything else says its word", () => {
-    expect(surfaceWord("asphalt")).toBeNull();
-    expect(surfaceWord("gravel")).toBe("Schotter");
+    expect(surfaceWord("asphalt", DE)).toBeNull();
+    expect(surfaceWord("gravel", DE)).toBe("Schotter");
     expect(isUnpaved("mixed")).toBe(true);
   });
 });
@@ -63,7 +64,7 @@ describe("the snow-cover rung", () => {
     });
     expect(limited.status).toBe("risky");
     expect(limited.reasons[0]).toBe("snow-cover");
-    expect(statusWord("risky", "snow-cover")).toBe(
+    expect(statusWord("risky", "snow-cover", DE)).toBe(
       "eingeschränkt: zugeschneit",
     );
   });

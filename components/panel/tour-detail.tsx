@@ -7,6 +7,7 @@ import { Section } from "@/components/panel/section";
 import { VerdictBox } from "@/components/panel/verdict-box";
 import { StatusDot } from "@/components/status-badge";
 import type { TourModel } from "@/lib/detail-model";
+import { fill } from "@/lib/i18n/fill";
 import { isHovered } from "@/lib/route-key";
 
 /** What a tour shows, from its model and nothing else. */
@@ -31,7 +32,7 @@ export const TourDetail = ({
         </span>
         <span className="ml-1">
           {t.vocab.unit.climb} ·{" "}
-          {t.panel.tour.passCount(fmt(tour.passes.length))}
+          {fill(t.panel.tour.passCount, { n: fmt(tour.passes.length) })}
         </span>
       </p>
 

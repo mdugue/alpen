@@ -1,5 +1,6 @@
 import { describe, expect, test } from "bun:test";
 
+import { DE } from "@/lib/i18n/dictionaries";
 import {
   fold,
   matches,
@@ -71,7 +72,7 @@ const passes: Pass[] = [
 ];
 
 const find = (query: string) =>
-  passes.filter((p) => matches(passHaystack(p), query)).map((p) => p.slug);
+  passes.filter((p) => matches(passHaystack(p, DE), query)).map((p) => p.slug);
 
 describe("fold", () => {
   test("strips accents, ß, punctuation and dashes", () => {
@@ -90,7 +91,7 @@ describe("fold", () => {
 
 describe("matches", () => {
   test("every token has to occur somewhere", () => {
-    const hay = passHaystack(passes[0]!);
+    const hay = passHaystack(passes[0]!, DE);
     expect(matches(hay, "stelvio prad")).toBe(true);
     expect(matches(hay, "stelvio gavia")).toBe(false);
     expect(matches(hay, "")).toBe(true);
@@ -123,13 +124,14 @@ describe("passHaystack", () => {
     expect(
       passHaystack(
         pass({ name: "Grand Colombier", region: "Jura", slug: "gc" }),
+        DE,
       ),
     ).toContain("jura");
   });
 
   test("the folded haystack is cached per object", () => {
     const p = passes[0]!;
-    expect(passHaystack(p)).toBe(passHaystack(p));
+    expect(passHaystack(p, DE)).toBe(passHaystack(p, DE));
   });
 });
 
@@ -168,7 +170,7 @@ describe("passHaystack carries the road vocabulary", () => {
     }),
   ];
   const findRoad = (query: string) =>
-    roads.filter((p) => matches(passHaystack(p), query)).map((p) => p.slug);
+    roads.filter((p) => matches(passHaystack(p, DE), query)).map((p) => p.slug);
 
   test("the acceptance queries from plan 14", () => {
     expect(findRoad("stichstrasse")).toEqual([
@@ -198,7 +200,7 @@ describe("passHaystack carries the road vocabulary", () => {
 
   test("a label answers where the name says nothing", () => {
     const scheidegg = roads[1]!;
-    expect(matches(passHaystack(scheidegg), "autofrei")).toBe(true);
+    expect(matches(passHaystack(scheidegg, DE), "autofrei")).toBe(true);
     // Nothing in "Große Scheidegg" is about cars: the label is what answers.
     expect(matches(fold(scheidegg.name), "autofrei")).toBe(false);
   });
@@ -235,21 +237,23 @@ describe("tourHaystack and townHaystack", () => {
     expect(matches(hay, "galibier")).toBe(false);
   });
   test("a town is found through its country name", () => {
-    expect(matches(townHaystack(town), "italien")).toBe(true);
-    expect(matches(townHaystack(town), "bormio it")).toBe(true);
+    expect(matches(townHaystack(town, undefined, DE), "italien")).toBe(true);
+    expect(matches(townHaystack(town, undefined, DE), "bormio it")).toBe(true);
   });
   test("a town is found through the valley it sits in and through its labels", () => {
-    expect(matches(townHaystack(town), "veltlin")).toBe(true);
-    expect(matches(townHaystack(town), "valtellina")).toBe(true);
+    expect(matches(townHaystack(town, undefined, DE), "veltlin")).toBe(true);
+    expect(matches(townHaystack(town, undefined, DE), "valtellina")).toBe(true);
     // The labels are prose in the haystack, so a stem finds them too.
-    expect(matches(townHaystack(town), "werkstatt")).toBe(true);
-    expect(matches(townHaystack(town), "mekka")).toBe(true);
-    expect(matches(townHaystack(town), "bahnanschluss")).toBe(false);
+    expect(matches(townHaystack(town, undefined, DE), "werkstatt")).toBe(true);
+    expect(matches(townHaystack(town, undefined, DE), "mekka")).toBe(true);
+    expect(matches(townHaystack(town, undefined, DE), "bahnanschluss")).toBe(
+      false,
+    );
   });
   test("a town is found through the range it was handed, and only then", () => {
-    expect(matches(townHaystack(town, "Alpen"), "alpen")).toBe(true);
-    expect(matches(townHaystack(town), "alpen")).toBe(false);
+    expect(matches(townHaystack(town, "Alpen", DE), "alpen")).toBe(true);
+    expect(matches(townHaystack(town, undefined, DE), "alpen")).toBe(false);
     // The cached haystack is the town's own; the range does not stick to it.
-    expect(matches(townHaystack(town, "Jura"), "alpen")).toBe(false);
+    expect(matches(townHaystack(town, "Jura", DE), "alpen")).toBe(false);
   });
 });

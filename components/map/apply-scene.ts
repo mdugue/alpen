@@ -2,7 +2,6 @@
 
 import type { GeoJSONSource, Map as MLMap, Popup } from "maplibre-gl";
 
-import { tagLabel } from "@/lib/i18n";
 import { LAYERS, layersOf, SOURCE } from "@/lib/layer-ids";
 import type { PopupContent, Ring, Scene } from "@/lib/map-scene";
 import { tagIconSvg } from "@/lib/tag-icons";
@@ -56,8 +55,8 @@ export const popupHtml = (content: PopupContent) => {
   if (content.tags.length === 0) return `${title}${subtitle}`;
   const chips = content.tags
     .map(
-      (t) =>
-        `<span class="flex items-center gap-1">${tagIconSvg(t)}${escapeHtml(tagLabel(t, content.lang))}</span>`,
+      ([tag, label]) =>
+        `<span class="flex items-center gap-1">${tagIconSvg(tag)}${escapeHtml(label)}</span>`,
     )
     .join("");
   return `${title}${subtitle}<div class="mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs">${chips}</div>`;

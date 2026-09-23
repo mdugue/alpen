@@ -15,6 +15,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import type { BlockId } from "@/lib/detail-model";
+import { fill } from "@/lib/i18n/fill";
 import { useStored } from "@/lib/use-stored";
 
 /**
@@ -93,7 +94,7 @@ export const Section = ({
               openOnHover
               render={
                 <Button
-                  aria-label={t.panel.section.sourceHint(title)}
+                  aria-label={fill(t.panel.section.sourceHint, { title })}
                   className="text-muted-foreground/70"
                   size="icon-sm"
                   variant="ghost"

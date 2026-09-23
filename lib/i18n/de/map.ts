@@ -11,8 +11,10 @@ export const map = {
   fit: "Ansicht einpassen",
   fitHint: "Ansicht einpassen – erneut für die ganzen Alpen",
   hillshade: "Relief-Schummerung",
+  /** The view menu's last group: the same place in the other language. */
+  language: "Sprache",
   /** The corner line while the overview is thinned by fame (`prominenceWord`). */
-  levelLine: (word: string) => `Bei dieser Zoomstufe: ${word}`,
+  levelLine: "Bei dieser Zoomstufe: {word}",
   osmContributors: "© OpenStreetMap-Mitwirkende",
   overlays: "Overlays",
   satellite: "Satellit",
@@ -23,5 +25,5 @@ export const map = {
   /** The generated vector base, listed first in the view menu. */
   vectorBase: "Karte (hell/dunkel automatisch)",
   view: "Ansicht",
-  viewMenu: "Ansicht: Karte, Ebenen und 3D",
-};
+  viewMenu: "Ansicht: Karte, Ebenen, 3D und Sprache",
+} as const;

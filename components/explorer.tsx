@@ -25,7 +25,6 @@ import type {
 import { destinationsOfTown } from "@/lib/destination";
 import { filterCount, rangeWord } from "@/lib/filter-summary";
 import { switchLangHref, useHashAdapter } from "@/lib/hash-adapter";
-import { otherLang } from "@/lib/i18n";
 import type { PageData } from "@/lib/page-data";
 import { entityKey } from "@/lib/route-key";
 import {
@@ -135,19 +134,19 @@ export const Explorer = ({ data, defaultPeriod, children }: Props) => {
       years,
       filters,
       isFavorite,
-      lang,
+      t,
     ),
-    pass: buildPassRows(passes, years, filters, isFavorite, signals),
+    pass: buildPassRows(passes, years, filters, isFavorite, t, signals),
     tour: buildTourRows(
       tours,
       passIndex,
       years,
       filters,
       isFavorite,
+      t,
       signals,
-      lang,
     ),
-    town: buildTownRows(towns, townRanges, filters, isFavorite, townAreas),
+    town: buildTownRows(towns, townRanges, filters, isFavorite, t, townAreas),
   };
   /** What selecting an area frames: the box around its members (`membersOf`). */
   const destinationBounds = Object.fromEntries(
@@ -162,15 +161,15 @@ export const Explorer = ({ data, defaultPeriod, children }: Props) => {
    * `facetCount` explains why that is the only honest arithmetic here.
    */
   const countWith = (patch: Partial<Filters>) =>
-    facetCount(passes, years, filters, isFavorite, patch, signals);
+    facetCount(passes, years, filters, isFavorite, patch, t, signals);
   /**
    * The 24 bars the season bar draws, and the headline's counts: the same
    * arithmetic over the same passes, so the sentence at the top and the ribbon
    * at the bottom can never disagree.
    */
-  const band = seasonBand(passes, years, filters, isFavorite, signals);
+  const band = seasonBand(passes, years, filters, isFavorite, t, signals);
   const bar = currentBar(band, filters.period);
-  const activeFilters = filterCount(filters);
+  const activeFilters = filterCount(filters, t);
 
   const select = (sel: Selection) =>
     dispatch({ selection: sel, type: "select" });
@@ -226,18 +225,18 @@ export const Explorer = ({ data, defaultPeriod, children }: Props) => {
               requestedView={requestedView}
               inset={inset}
               env={mapEnv}
+              langHref={(to) => switchLangHref(state, to)}
             />
           )}
           header={
             <AppHeader
               bar={bar}
-              where={rangeWord(filters)}
+              where={rangeWord(filters, t)}
               sidebarOpen={isMobile ? undefined : sidebarOpen}
               onToggleSidebar={
                 isMobile ? undefined : () => setSidebarOpen(!sidebarOpen)
               }
               onOpenScales={() => setScalesOpen(true)}
-              otherHref={switchLangHref(state, otherLang(lang))}
             />
           }
           band={

@@ -35,10 +35,27 @@ const signals: Signals = {
   valleys: valleyElevations(passes, profilesJson),
 };
 
+/** A font file as the `ArrayBuffer` the image renderer parses. */
+const fontFile = async (name: string): Promise<ArrayBuffer> => {
+  const bytes = await readFile(path.join(process.cwd(), "assets/fonts", name));
+  return bytes.buffer.slice(
+    bytes.byteOffset,
+    bytes.byteOffset + bytes.byteLength,
+  );
+};
+
+/**
+ * The two cuts of the brand face. Cached, because reading a file is IO and a
+ * share image is rendered like a page under Cache Components: uncached IO in
+ * it is an error rather than a slow render. Plain `ArrayBuffer`s, because a
+ * `Buffer` comes back out of the cache as a bare typed array, which the
+ * renderer's font parser refuses.
+ */
 export const shareFonts = async () => {
+  "use cache";
   const [bold, medium] = await Promise.all([
-    readFile(path.join(process.cwd(), "assets/fonts/Oxanium-Bold.ttf")),
-    readFile(path.join(process.cwd(), "assets/fonts/Oxanium-Medium.ttf")),
+    fontFile("Oxanium-Bold.ttf"),
+    fontFile("Oxanium-Medium.ttf"),
   ]);
   return [
     {

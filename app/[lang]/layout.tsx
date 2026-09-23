@@ -3,14 +3,8 @@ import { Inter, Oxanium } from "next/font/google";
 import { notFound } from "next/navigation";
 
 import { BRAND, SITE_NAME, siteUrl } from "@/lib/brand";
-import {
-  isLang,
-  LANGS,
-  langOf,
-  langParams,
-  messagesOf,
-  OG_LOCALE,
-} from "@/lib/i18n";
+import { isLang, LANGS, langParams, OG_LOCALE } from "@/lib/i18n";
+import { getDictionary } from "@/lib/i18n/server";
 import { homeHref } from "@/lib/routes";
 
 import "../globals.css";
@@ -35,19 +29,12 @@ export const generateStaticParams = () => langParams();
 
 /**
  * The start page of each language: its title, description and keywords in
- * that language (`site` in the message files – German is `lib/brand.ts`),
- * its own canonical, the other language as an alternate, German as the
- * default for a visitor without a match. An entity route sets the same
- * three paths for its own.
+ * that language (`site` in the message files), its own canonical, the other
+ * language as an alternate, German as the default for a visitor without a
+ * match. An entity route sets the same three paths for its own.
  */
-export const generateMetadata = async ({
-  params,
-}: {
-  params: Promise<{ lang: string }>;
-}): Promise<Metadata> => {
-  const { lang: raw } = await params;
-  const lang = langOf(raw);
-  const { site } = messagesOf(lang);
+export const generateMetadata = async (): Promise<Metadata> => {
+  const { lang, site } = await getDictionary();
   const home = homeHref(lang);
   return {
     alternates: {
@@ -64,7 +51,7 @@ export const generateMetadata = async ({
     creator: "Manuel Dugué",
     description: site.description,
     formatDetection: { telephone: false },
-    keywords: site.keywords,
+    keywords: [...site.keywords],
     // Absolute URLs for the share images; Vercel provides the production host.
     metadataBase: new URL(siteUrl),
     openGraph: {
@@ -100,13 +87,7 @@ export const viewport: Viewport = {
   viewportFit: "cover",
 };
 
-const RootLayout = async ({
-  children,
-  params,
-}: {
-  children: React.ReactNode;
-  params: Promise<{ lang: string }>;
-}) => {
+const RootLayout = async ({ children, params }: LayoutProps<"/[lang]">) => {
   const { lang } = await params;
   if (!isLang(lang)) notFound();
   return (

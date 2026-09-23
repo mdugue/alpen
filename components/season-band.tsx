@@ -17,17 +17,11 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { dayLength } from "@/lib/daylight";
-import type { Lang, Messages } from "@/lib/i18n";
-import {
-  monthInitialsOf,
-  monthsOf,
-  periodAt,
-  periodIndex,
-  periodLabel,
-  PERIODS,
-} from "@/lib/period";
+import type { Messages } from "@/lib/i18n";
+import { fill } from "@/lib/i18n/fill";
+import { periodAt, periodIndex, periodLabel, PERIODS } from "@/lib/period";
 import type { SeasonBand as Band, SeasonBar } from "@/lib/rows";
-import { GRADE_ORDER, gradeLabel } from "@/lib/status";
+import { GRADE_ORDER } from "@/lib/status";
 import type { Grade } from "@/lib/status";
 import type { Period } from "@/lib/types";
 import { cn, fmt } from "@/lib/utils";
@@ -84,42 +78,38 @@ const COLUMN_PCT = 100 / PERIODS.length;
 const ramp = (value: number, lo: number, hi: number) =>
   hi === lo ? 0.5 : (value - lo) / (hi - lo);
 
-/** The words and the number format the two sentences below are built with. */
-interface Words {
-  lang: Lang;
-  t: Messages["band"];
-}
-
 /** "9,4 °C / −1,2 °C · 25 % Schnee · 31 % nass · 11 h Tageslicht" */
 const summary = (
   bar: SeasonBar,
   lat: number | null,
   long: boolean,
-  { lang, t }: Words,
+  w: Messages,
 ) => {
+  const n = (x: number, digits = 0) => fmt(x, digits, w.lang);
   const parts: string[] = [];
   if (bar.tmax !== null && bar.tmin !== null)
-    parts.push(`${fmt(bar.tmax, 1, lang)} / ${fmt(bar.tmin, 1, lang)} °C`);
-  if (bar.snowPct !== null) parts.push(t.snow(fmt(bar.snowPct, 0, lang)));
-  if (bar.wetPct !== null) parts.push(t.wet(fmt(bar.wetPct, 0, lang)));
+    parts.push(`${n(bar.tmax, 1)} / ${n(bar.tmin, 1)} °C`);
+  if (bar.snowPct !== null)
+    parts.push(fill(w.band.snow, { pct: n(bar.snowPct) }));
+  if (bar.wetPct !== null) parts.push(fill(w.band.wet, { pct: n(bar.wetPct) }));
   if (long && lat !== null)
-    parts.push(t.daylight(fmt(dayLength(lat, bar.period), 1, lang)));
+    parts.push(
+      fill(w.band.daylight, { hours: n(dayLength(lat, bar.period), 1) }),
+    );
   return parts.join(" · ");
 };
 
 /** What a screen reader hears instead of 24 columns of colour. */
-const spoken = (bar: SeasonBar, lat: number | null, words: Words) => {
-  const { lang, t } = words;
-  return [
-    `${periodLabel(bar.period, lang)}: ${bar.grade ? t.mostly(gradeLabel(bar.grade, lang)) : t.noPass}`,
+const spoken = (bar: SeasonBar, lat: number | null, w: Messages) =>
+  [
+    `${periodLabel(bar.period, w)}: ${bar.grade ? fill(w.band.mostly, { grade: w.status.grade[bar.grade] }) : w.band.noPass}`,
     GRADE_ORDER.map(
-      (g) => `${fmt(bar[g], 0, lang)} ${gradeLabel(g, lang)}`,
+      (g) => `${fmt(bar[g], 0, w.lang)} ${w.status.grade[g]}`,
     ).join(", "),
-    summary(bar, lat, true, words),
+    summary(bar, lat, true, w),
   ]
     .filter(Boolean)
     .join(". ");
-};
 
 /**
  * What the three shapes of a column mean. Behind the band's ⓘ on desktop
@@ -179,12 +169,11 @@ export const SeasonBand = ({
   legend?: boolean;
   className?: string;
 }) => {
-  const { t: messages, lang } = useT();
-  const words: Words = { lang, t: messages.band };
+  const { t } = useT();
   const rail = useRef<HTMLDivElement>(null);
   const index = periodIndex(bar.period);
   const todayIndex = today === undefined ? -1 : periodIndex(today);
-  const temps = band.bars.map((b) => b.tmax).filter((t) => t !== null);
+  const temps = band.bars.map((b) => b.tmax).filter((x) => x !== null);
   const lo = temps.length ? Math.min(...temps) : 0;
   const hi = temps.length ? Math.max(...temps) : 0;
 
@@ -219,14 +208,12 @@ export const SeasonBand = ({
     <div className={cn("flex min-w-0 flex-col gap-1", className)}>
       <div className="flex min-w-0 items-baseline gap-2">
         <span className="font-heading shrink-0 text-sm font-bold lg:text-base">
-          {periodLabel(bar.period, lang)}
+          {periodLabel(bar.period, t)}
         </span>
         <span className="text-muted-foreground min-w-0 flex-1 truncate text-xs tabular-nums">
-          <span className="lg:hidden">
-            {summary(bar, band.lat, false, words)}
-          </span>
+          <span className="lg:hidden">{summary(bar, band.lat, false, t)}</span>
           <span className="max-lg:hidden">
-            {summary(bar, band.lat, true, words)}
+            {summary(bar, band.lat, true, t)}
           </span>
         </span>
         {legend && (
@@ -237,7 +224,7 @@ export const SeasonBand = ({
                   size="icon"
                   variant="ghost"
                   className="shrink-0"
-                  aria-label={words.t.whatBarsMean}
+                  aria-label={t.band.whatBarsMean}
                 />
               }
             >
@@ -258,14 +245,16 @@ export const SeasonBand = ({
                   className="shrink-0"
                   onClick={() => onChange(today)}
                   disabled={bar.period === today}
-                  aria-label={words.t.backToToday(periodLabel(today, lang))}
+                  aria-label={fill(t.band.backToToday, {
+                    label: periodLabel(today, t),
+                  })}
                 />
               }
             >
               <RotateCcw />
             </TooltipTrigger>
             <TooltipContent>
-              {words.t.today(periodLabel(today, lang))}
+              {fill(t.band.today, { label: periodLabel(today, t) })}
             </TooltipContent>
           </Tooltip>
         )}
@@ -275,11 +264,11 @@ export const SeasonBand = ({
         ref={rail}
         role="slider"
         tabIndex={0}
-        aria-label={words.t.period}
+        aria-label={t.band.period}
         aria-valuemin={1}
         aria-valuemax={PERIODS.length}
         aria-valuenow={index + 1}
-        aria-valuetext={spoken(bar, band.lat, words)}
+        aria-valuetext={spoken(bar, band.lat, t)}
         onKeyDown={onKeyDown}
         onPointerDown={(e) => {
           e.currentTarget.setPointerCapture(e.pointerId);
@@ -308,7 +297,7 @@ export const SeasonBand = ({
             <span
               aria-hidden
               className="flex h-7 items-end lg:h-10"
-              title={`${periodLabel(b.period, lang)}: ${spoken(b, band.lat, words)}`}
+              title={`${periodLabel(b.period, t)}: ${spoken(b, band.lat, t)}`}
             >
               <span
                 className="w-full rounded-t-xs"
@@ -352,18 +341,16 @@ export const SeasonBand = ({
         aria-hidden
         className="text-muted-foreground text-2xs flex leading-none"
       >
-        {monthInitialsOf(lang).map((m, i) => (
+        {t.calendar.months.map((month, i) => (
           <span
-            key={m + String(i)}
+            key={month}
             className={cn(
               "flex-1 text-center",
               Math.floor(index / 2) === i && "text-foreground font-semibold",
             )}
           >
-            <span className="lg:hidden">{m}</span>
-            <span className="max-lg:hidden">
-              {monthsOf(lang)[i]!.slice(0, 3)}
-            </span>
+            <span className="lg:hidden">{month[0]}</span>
+            <span className="max-lg:hidden">{month.slice(0, 3)}</span>
           </span>
         ))}
       </div>

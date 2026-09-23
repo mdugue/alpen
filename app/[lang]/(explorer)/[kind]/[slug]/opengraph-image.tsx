@@ -1,13 +1,14 @@
 import { ImageResponse } from "next/og";
 
 import { BRAND, SITE_NAME } from "@/lib/brand";
-import { getEntity, staticParams } from "@/lib/data";
-import { langOf } from "@/lib/i18n";
-import type { Lang } from "@/lib/i18n";
+import { entityAt } from "@/lib/data";
+import { fill, langOf } from "@/lib/i18n";
+import type { Messages } from "@/lib/i18n";
+import { messagesOf } from "@/lib/i18n/dictionaries";
 import { MarkBadge } from "@/lib/mark";
-import { selectionOf } from "@/lib/routes";
 import { DotLayer, dotMap, SHARE_SIZE, shareFonts } from "@/lib/share-image";
 import { entityDescription, entityTitle } from "@/lib/share-text";
+import type { Entity } from "@/lib/share-text";
 import { seasonText, tourSeasonText } from "@/lib/status";
 import type { LatLon } from "@/lib/types";
 
@@ -19,17 +20,36 @@ import type { LatLon } from "@/lib/types";
  * knows nothing about (Principle 3). One per language (plan 08): the words
  * on it follow the route's segment, the dots are the same.
  */
-export const generateStaticParams = () => staticParams();
-// A static export, so one text for both languages: Next reads `alt` from the
-// module, not from the params.
-export const alt = `${SITE_NAME} – Karte mit der markierten Straße, Tour, dem Ort oder Reiseziel`;
-export const size = SHARE_SIZE;
-export const contentType = "image/png";
 
-type Found = NonNullable<ReturnType<typeof getEntity>>;
+interface Segments {
+  kind: string;
+  lang: string;
+  slug: string;
+}
+
+/** The entity and the words of a route's segments; no entity for a path that names none. */
+const read = ({ kind, lang: raw, slug }: Segments) => {
+  const w = messagesOf(langOf(raw));
+  return { entity: entityAt(kind, slug, w.lang)?.entity, w };
+};
+
+/** The alt text names the entity, in the route's language (a static `alt` could do neither). */
+export const generateImageMetadata = ({ params }: { params: Segments }) => {
+  const { entity, w } = read(params);
+  return [
+    {
+      alt: entity
+        ? fill(w.share.entity.alt, { title: entityTitle(entity, w) })
+        : w.share.alt,
+      contentType: "image/png",
+      id: "card",
+      size: SHARE_SIZE,
+    },
+  ];
+};
 
 /** Where the ring goes: the entity's own point, a loop's first waypoint, an area's centre. */
-const pointOf = (e: Found): LatLon => {
+const pointOf = (e: Entity): LatLon => {
   switch (e.kind) {
     case "pass": {
       return e.pass;
@@ -50,17 +70,17 @@ const pointOf = (e: Found): LatLon => {
 };
 
 /** The one line under the name: the season where there is one, else the description. */
-const lineOf = (e: Found, lang: Lang): string => {
+const lineOf = (e: Entity, w: Messages): string => {
   switch (e.kind) {
     case "pass": {
-      return seasonText(e.pass, lang);
+      return seasonText(e.pass, w);
     }
     case "tour": {
-      return tourSeasonText(e.tour, lang);
+      return tourSeasonText(e.tour, w);
     }
     case "town":
     case "destination": {
-      return entityDescription(e, lang);
+      return entityDescription(e, w);
     }
     default: {
       return e satisfies never;
@@ -68,19 +88,12 @@ const lineOf = (e: Found, lang: Lang): string => {
   }
 };
 
-export default async function Image({
-  params,
-}: {
-  params: Promise<{ kind: string; lang: string; slug: string }>;
-}) {
-  const { kind, lang: raw, slug } = await params;
-  const lang = langOf(raw);
-  const selection = selectionOf(`/${kind}/${encodeURIComponent(slug)}`);
-  const entity = selection && getEntity(selection, lang);
+export default async function Image({ params }: { params: Promise<Segments> }) {
+  const { entity, w } = read(await params);
   const { dots, project } = dotMap();
   const mark = entity ? project(pointOf(entity)) : null;
-  const title = entity ? entityTitle(entity, lang) : SITE_NAME;
-  const line = entity ? lineOf(entity, lang) : "";
+  const title = entity ? entityTitle(entity, w) : SITE_NAME;
+  const line = entity ? lineOf(entity, w) : "";
 
   return new ImageResponse(
     <div
@@ -143,6 +156,6 @@ export default async function Image({
         </div>
       </div>
     </div>,
-    { ...size, fonts: await shareFonts() },
+    { ...SHARE_SIZE, fonts: await shareFonts() },
   );
 }

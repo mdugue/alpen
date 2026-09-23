@@ -4,7 +4,8 @@ import passes from "@/data/passes.json";
 import tours from "@/data/tours.json";
 import towns from "@/data/towns.json";
 import { BRAND, SITE_NAME } from "@/lib/brand";
-import { langOf, langParams, messagesOf } from "@/lib/i18n";
+import { fill, langOf } from "@/lib/i18n";
+import { messagesOf } from "@/lib/i18n/dictionaries";
 import { MarkBadge } from "@/lib/mark";
 import { periodLabel } from "@/lib/period";
 import {
@@ -14,25 +15,31 @@ import {
   SHARE_SIZE,
   shareFonts,
 } from "@/lib/share-image";
-import { STATUS_ORDER, statusLabel } from "@/lib/status";
+import { STATUS_ORDER } from "@/lib/status";
 import { fmt } from "@/lib/utils";
 
 /**
- * Share image, rendered once at build time. The graphic is the data itself:
- * every pass as a dot at its real position, coloured by rideability for one
- * half-month – the arc of the Alps emerges on its own (`lib/share-image.tsx`,
- * which the entity routes draw from too). The lockup (mark, wordmark,
- * accent) is the one from lib/brand.ts, so a link preview and the browser
- * tab show the same thing. One per language (plan 08): the words on it come
- * from the message files, the dots are the same.
+ * Share image. The graphic is the data itself: every pass as a dot at its
+ * real position, coloured by rideability for one half-month – the arc of the
+ * Alps emerges on its own (`lib/share-image.tsx`, which the entity routes
+ * draw from too). The lockup (mark, wordmark, accent) is the one from
+ * lib/brand.ts, so a link preview and the browser tab show the same thing.
+ * One per language (plan 08): the words on it and its alt text come from the
+ * message files, the dots are the same – `generateImageMetadata` rather than
+ * a static `alt`, which would be one text for both.
  */
-export const generateStaticParams = () => langParams();
-
-// A static export, so one text for both languages: Next reads `alt` from the
-// module, not from the params.
-export const alt = `${SITE_NAME} – welche Pässe, Touren und Rad-Orte sind wann mit dem Rennrad befahrbar?`;
-export const size = SHARE_SIZE;
-export const contentType = "image/png";
+export const generateImageMetadata = ({
+  params,
+}: {
+  params?: { lang?: string };
+}) => [
+  {
+    alt: messagesOf(langOf(params?.lang)).share.alt,
+    contentType: "image/png",
+    id: "card",
+    size: SHARE_SIZE,
+  },
+];
 
 export default async function Image({
   params,
@@ -41,14 +48,14 @@ export default async function Image({
 }) {
   const { lang: raw } = await params;
   const lang = langOf(raw);
-  const { share } = messagesOf(lang);
+  const w = messagesOf(lang);
   const { dots } = dotMap();
   // Same words as the sidebar sections, so the preview and the app agree.
-  const counts = share.counts(
-    fmt(passes.length, 0, lang),
-    fmt(tours.length, 0, lang),
-    fmt(towns.length, 0, lang),
-  );
+  const counts = fill(w.share.counts, {
+    passes: fmt(passes.length, 0, lang),
+    tours: fmt(tours.length, 0, lang),
+    towns: fmt(towns.length, 0, lang),
+  });
 
   return new ImageResponse(
     <div
@@ -97,7 +104,7 @@ export default async function Image({
             marginTop: 20,
           }}
         >
-          {share.headline}
+          {w.share.headline}
         </div>
         <div
           style={{
@@ -144,7 +151,7 @@ export default async function Image({
               width: 26,
             }}
           />
-          <span>{periodLabel(SHARE_PERIOD, lang)}</span>
+          <span>{periodLabel(SHARE_PERIOD, w)}</span>
         </div>
         {STATUS_ORDER.map((s) => (
           <div
@@ -159,11 +166,11 @@ export default async function Image({
                 width: 14,
               }}
             />
-            <span>{statusLabel(s, lang)}</span>
+            <span>{w.status.label[s]}</span>
           </div>
         ))}
       </div>
     </div>,
-    { ...size, fonts: await shareFonts() },
+    { ...SHARE_SIZE, fonts: await shareFonts() },
   );
 }

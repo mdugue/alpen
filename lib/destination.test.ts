@@ -7,6 +7,7 @@ import {
   gradeOfBase,
 } from "@/lib/destination";
 import { REACH_MAX_KM } from "@/lib/geo";
+import { DE } from "@/lib/i18n/dictionaries";
 import { reachedPasses, reachedTowns } from "@/lib/reach";
 import type { Grade } from "@/lib/status";
 import { makePass, makeTown, ORIGIN, PERIOD, yearsOf } from "@/test/fixtures";
@@ -77,11 +78,11 @@ describe("destinationOf", () => {
       PERIOD,
     );
     expect(empty.total).toBe(0);
-    expect(destinationText(empty)).toContain("Kein Pass");
+    expect(destinationText(empty, DE)).toContain("Kein Pass");
   });
 
   test("the sentence names the counts the badge was made of", () => {
-    expect(destinationText(d)).toContain("3 zur besten Zeit");
+    expect(destinationText(d, DE)).toContain("3 zur besten Zeit");
   });
 });
 

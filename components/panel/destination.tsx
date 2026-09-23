@@ -11,6 +11,7 @@ import type { Bases, BaseVerdict } from "@/lib/destination";
 import { destinationText } from "@/lib/destination";
 import { REACH_MAX_KM } from "@/lib/geo";
 import type { ReachBand } from "@/lib/geo";
+import { fill } from "@/lib/i18n/fill";
 import type { Band, GradeCount, ReachedPass, ReachedTown } from "@/lib/reach";
 import { isHovered } from "@/lib/route-key";
 import { bestText, GRADE_ORDER } from "@/lib/status";
@@ -165,7 +166,10 @@ const TownRow = ({
             {r.town.country} ·{" "}
             {r.total === 0
               ? t.panel.base.townNone
-              : t.panel.base.townLine(fmt(r.rideable), fmt(r.total))}
+              : fill(t.panel.base.townLine, {
+                  rideable: fmt(r.rideable),
+                  total: fmt(r.total),
+                })}
           </span>
         </span>
         <span className="text-muted-foreground text-2xs tabular-nums">
@@ -193,7 +197,11 @@ const BandHeader = ({
     <p className="text-muted-foreground text-2xs mb-0.5 flex items-baseline gap-1.5 font-semibold tracking-widest uppercase">
       {t.vocab.band[band].label}
       <span className="font-normal tracking-normal normal-case">
-        {t.panel.base.bandCount(fmt(n), noun, fmtUnit(maxKm, "km"))}
+        {fill(t.panel.base.bandCount, {
+          maxKm: fmtUnit(maxKm, "km"),
+          n: fmt(n),
+          noun,
+        })}
       </span>
     </p>
   );
@@ -252,13 +260,13 @@ export const DestinationSection = ({
   onHover: (sel: Selection | null) => void;
   onSelect: (slug: string) => void;
 }) => {
-  const { t, lang, fmt } = useT();
-  const text = destinationText(d, lang);
+  const { t, fmt } = useT();
+  const text = destinationText(d, t);
   return (
     <>
       <VerdictBox
         bar={<GradeBar counts={d.counts} total={d.total} text={text} />}
-        best={bestText(d.year, lang)}
+        best={bestText(d.year, t)}
         period={period}
         text={text}
         year={d.year}
@@ -268,19 +276,19 @@ export const DestinationSection = ({
           to come rather than how big the place is; the magnitude is the
           sentence and the bar above (`gradeOfBase` in lib/destination.ts). */}
         <p className="text-muted-foreground text-2xs">
-          {t.panel.base.derived(fmt(d.total))}
-          {d.peak > 0 && t.panel.base.derivedPeak(fmt(d.peak))}.
+          {fill(t.panel.base.derived, { total: fmt(d.total) })}
+          {d.peak > 0 && fill(t.panel.base.derivedPeak, { peak: fmt(d.peak) })}.
         </p>
       </VerdictBox>
 
       <Section
         id="destination-passes"
-        info={t.panel.base.passesInfo(REACH_MAX_KM)}
+        info={fill(t.panel.base.passesInfo, { km: REACH_MAX_KM })}
         title={t.panel.base.passesTitle}
       >
         {d.total === 0 ? (
           <p className="text-muted-foreground text-xs">
-            {t.vocab.reach.noneWithin(REACH_MAX_KM)}
+            {fill(t.vocab.reach.noneWithin, { km: REACH_MAX_KM })}
           </p>
         ) : (
           bandList(d.bands, t.panel.base.passes, (r) => (
@@ -326,12 +334,12 @@ export const BasesSection = ({
   return (
     <Section
       id="bases"
-      info={t.panel.base.basesInfo(REACH_MAX_KM)}
+      info={fill(t.panel.base.basesInfo, { km: REACH_MAX_KM })}
       title={t.panel.base.basesTitle}
     >
       {bases.total === 0 ? (
         <p className="text-muted-foreground text-xs">
-          {t.panel.base.basesNone(REACH_MAX_KM)}
+          {fill(t.panel.base.basesNone, { km: REACH_MAX_KM })}
         </p>
       ) : (
         bandList(bases.bands, t.panel.base.towns, (r) => (

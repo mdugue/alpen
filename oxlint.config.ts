@@ -51,6 +51,32 @@ const RESTRICTED_GLOBALS = [
   },
 ];
 
+/** MapLibre is driven from two adapters; everything else under `lib/` may read its types. */
+const MAPLIBRE = {
+  allowTypeImports: true,
+  message:
+    "MapLibre is an adapter's business: the map is driven from components/map/apply-scene.ts and apply-camera.ts. Types are fine.",
+  name: "maplibre-gl",
+};
+
+/**
+ * The dictionaries are the server's (plan 08, docs/architecture.md): a page's
+ * words reach the browser as a value from its layout, one language per page
+ * (`I18nProvider`), and a component asks `useT()`. A value import of either
+ * dictionary from code the browser runs would ship both languages to every
+ * page; the `Messages` type is fine anywhere.
+ */
+const DICTIONARIES = [
+  "@/lib/i18n/dictionaries",
+  "@/lib/i18n/messages.de",
+  "@/lib/i18n/messages.en",
+].map((name) => ({
+  allowTypeImports: true,
+  message:
+    "The words reach the browser as a value (`useT()` in a component, an argument in lib/); the dictionaries are for the server, the scripts and the tests.",
+  name,
+}));
+
 /**
  * The same rule again for one adapter, minus the globals it owns – so the
  * file is still held to every world it is *not* a window onto.
@@ -119,18 +145,27 @@ export default defineConfig({
         ],
         "no-restricted-imports": [
           "error",
-          {
-            paths: [
-              {
-                allowTypeImports: true,
-                message:
-                  "MapLibre is an adapter's business: the map is driven from components/map/apply-scene.ts and apply-camera.ts. Types are fine.",
-                name: "maplibre-gl",
-              },
-            ],
-          },
+          { paths: [MAPLIBRE, ...DICTIONARIES] },
         ],
       },
+    },
+    {
+      // What the browser runs holds no dictionary either (see DICTIONARIES).
+      files: ["components/**"],
+      rules: {
+        "no-restricted-imports": ["error", { paths: DICTIONARIES }],
+      },
+    },
+    {
+      // Server-only modules and the tests may hold both languages: the schema
+      // is zod and never reaches the client, `getDictionary` is where the
+      // server picks one, and a test reads the German words it checks.
+      files: ["lib/schema.ts", "lib/i18n/server.ts", "lib/**/*.test.ts"],
+      rules: { "no-restricted-imports": ["error", { paths: [MAPLIBRE] }] },
+    },
+    {
+      files: ["components/**/*.test.ts", "components/**/*.test.tsx"],
+      rules: { "no-restricted-imports": "off" },
     },
     // The adapters, one override each. The rule is *re-declared* rather than
     // switched off, minus the globals that file is the window onto: turning it

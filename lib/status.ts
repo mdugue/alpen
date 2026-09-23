@@ -1,6 +1,6 @@
 import { clockTime, dayLength, periodDate, sunTimes } from "@/lib/daylight";
-import { DEFAULT_LANG, messagesOf } from "@/lib/i18n";
-import type { Lang, Messages } from "@/lib/i18n";
+import type { Messages, Msg } from "@/lib/i18n";
+import { fill } from "@/lib/i18n/fill";
 import { periodAt, periodIndex, periodLabel, PERIODS } from "@/lib/period";
 import { isUnpaved } from "@/lib/regions";
 import type {
@@ -15,24 +15,15 @@ import type {
 } from "@/lib/types";
 import { fmt, fmtUnit } from "@/lib/utils";
 
-/**
- * The words of the heuristic in one language (plan 08): every sentence below
- * is built from `messagesOf(lang).status`, German unless a caller says
- * otherwise, so the scripts and the tests keep their words and a client
- * component hands the page's language down from `useT()`.
+/*
+ * Every sentence below is built from `w.status`, the words of the page's
+ * language, which the caller hands in as the last argument (plan 08): a
+ * client component from `useT()`, the server from `messagesOf`, a script or a
+ * test the German `DE`. The three-valued status is the vocabulary of the
+ * filter, the hash, the map and the dot, and its labels (`status.label`)
+ * answer "how good is it to ride there", not "is the road open": a July cell
+ * whose problem is heat is not "meist offen".
  */
-const words = (lang: Lang) => messagesOf(lang).status;
-
-/**
- * The three-valued status is the vocabulary of the filter, the hash, the map
- * and the dot. Its labels answer "how good is it to ride there", not "is the
- * road open": a July cell whose problem is heat is not "meist offen".
- */
-export const STATUS_LABEL: Record<Status, string> = words(DEFAULT_LANG).label;
-
-/** The status label in the page's language. */
-export const statusLabel = (status: Status, lang: Lang = DEFAULT_LANG) =>
-  words(lang).label[status];
 
 /**
  * The three statuses, best first – the one list the filter, the share image
@@ -124,12 +115,6 @@ const listOf = (parts: string[], conjunction: string): string =>
  */
 export type Grade = "best" | "good" | "limited" | "closed";
 
-export const GRADE_LABEL: Record<Grade, string> = words(DEFAULT_LANG).grade;
-
-/** The grade label in the page's language. */
-export const gradeLabel = (grade: Grade, lang: Lang = DEFAULT_LANG) =>
-  words(lang).grade[grade];
-
 /**
  * One plain sentence per grade – what the colour says, in the words a rider
  * would use. These are the general sentences for the legend; a cell in the
@@ -137,16 +122,16 @@ export const gradeLabel = (grade: Grade, lang: Lang = DEFAULT_LANG) =>
  * (`cellHint`): which caveat a limited cell has, and why a good cell is not
  * the best time. The rules behind it are in docs/scales.md and the dialog.
  */
-export const gradeHint = (grade: Grade, lang: Lang = DEFAULT_LANG): string => {
-  const w = words(lang);
+export const gradeHint = (grade: Grade, w: Messages): string => {
+  const s = w.status;
   return grade === "limited"
-    ? w.gradeHint.limited(
-        listOf(
-          LIMITING_REASONS.map((r) => w.reasonShort[r]),
-          w.or,
+    ? fill(s.gradeHint.limited, {
+        reasons: listOf(
+          LIMITING_REASONS.map((r) => s.reasonShort[r]),
+          s.or,
         ),
-      )
-    : w.gradeHint[grade];
+      })
+    : s.gradeHint[grade];
 };
 
 /**
@@ -193,18 +178,18 @@ export interface Years {
  * caveat of a limited cell, the reason a good cell is not the best time – and
  * the general sentence otherwise.
  */
-export const cellHint = (cell: YearCell, lang: Lang = DEFAULT_LANG): string => {
-  const w = words(lang);
+export const cellHint = (cell: YearCell, w: Messages): string => {
+  const s = w.status;
   if (cell.grade === "limited" && cell.reasons[0])
-    return w.cell.limited(w.reasonPhrase[cell.reasons[0]]);
+    return fill(s.cell.limited, { phrase: s.reasonPhrase[cell.reasons[0]] });
   // A closed cell names what closed it: the barrier, or the snow on a track.
   if (cell.grade === "closed")
     return cell.reasons[0] === "snow-cover"
-      ? w.cell.closedCover
-      : w.cell.closedBarrier;
+      ? s.cell.closedCover
+      : s.cell.closedBarrier;
   if (cell.grade === "good")
-    return cell.snowy ? w.cell.goodSnowy : w.cell.goodShort;
-  return gradeHint(cell.grade, lang);
+    return cell.snowy ? s.cell.goodSnowy : s.cell.goodShort;
+  return gradeHint(cell.grade, w);
 };
 
 /** The order the legend lists the grades in: best first. */
@@ -324,12 +309,10 @@ interface Signal {
   reason: StatusReason | null;
   /** The constant the verdict compares against. */
   value: number;
-  /** Written after the value: "%", "°C", "Stunden". */
-  unit: string;
+  /** Written after the value; `hours` is the word `status.hours`, which has a translation. */
+  unit: "%" | "°C" | "hours";
   /** Decimal places the value is printed with. */
   digits?: number;
-  /** Whether the unit is the hours word, which has a translation. */
-  hours?: boolean;
 }
 
 /**
@@ -370,9 +353,8 @@ export const SIGNALS: Signal[] = [
   },
   {
     digits: 2,
-    hours: true,
     reason: "short-day",
-    unit: "Stunden",
+    unit: "hours",
     value: SHORT_DAY_HOURS,
   },
   {
@@ -388,12 +370,12 @@ export const SIGNALS: Signal[] = [
 ];
 
 /** The lapse rate as the dialog says it, e.g. "0,65 °C je 100 m". */
-export const lapseText = (lang: Lang = DEFAULT_LANG): string =>
-  words(lang).lapse(fmt(LAPSE_RATE * 100, 2, lang));
+export const lapseText = (w: Messages): string =>
+  fill(w.status.lapse, { rate: fmt(LAPSE_RATE * 100, 2, w.lang) });
 
 /** The value of a signal with its unit, e.g. "20 %" or "10,75 Stunden". */
-export const signalValue = (s: Signal, lang: Lang = DEFAULT_LANG): string =>
-  `${fmt(s.value, s.digits ?? 0, lang)} ${s.hours ? words(lang).hours : s.unit}`;
+export const signalValue = (s: Signal, w: Messages): string =>
+  `${fmt(s.value, s.digits ?? 0, w.lang)} ${s.unit === "hours" ? w.status.hours : s.unit}`;
 
 /** The clause of a signal in the message files, by its reason; the bar without one is `best`. */
 type SignalKey = keyof Messages["status"]["signal"];
@@ -407,8 +389,8 @@ export const signalKey = (s: Signal): SignalKey =>
   (s.reason ?? "best") as SignalKey;
 
 /** A signal's clause with its value filled in, e.g. "Schneefall ab 20 % der Tage". */
-const signalText = (s: Signal, lang: Lang): string =>
-  words(lang).signal[signalKey(s)](signalValue(s, lang));
+const signalText = (s: Signal, w: Messages): string =>
+  fill(w.status.signal[signalKey(s)], { value: signalValue(s, w) });
 
 /** The signal of one reason, for the dialog and the calibration script. */
 const signalOf = (reason: StatusReason): Signal | undefined =>
@@ -422,19 +404,17 @@ const BEST_SIGNAL: Signal = SIGNALS.find((s) => s.reason === null)!;
  * order. Generated rather than written out so a changed threshold cannot sit
  * in `SIGNALS` while the paragraph that explains it still names the old one.
  */
-export const ladderText = (lang: Lang = DEFAULT_LANG): string => {
-  const w = words(lang);
-  return w.ladder(
-    listOf(
+export const ladderText = (w: Messages): string =>
+  fill(w.status.ladder, {
+    bestSignal: signalText(BEST_SIGNAL, w),
+    coverClosed: fmt(COVER_CLOSED_PCT, 0, w.lang),
+    signals: listOf(
       LIMITING_REASONS.map(signalOf)
         .filter((s) => s !== undefined)
-        .map((s) => signalText(s, lang)),
-      w.or,
+        .map((s) => signalText(s, w)),
+      w.status.or,
     ),
-    signalText(BEST_SIGNAL, lang),
-    fmt(COVER_CLOSED_PCT, 0, lang),
-  );
-};
+  });
 
 /**
  * The valley's mean daily maximum, derived from the summit series with the
@@ -533,14 +513,20 @@ export const passStatus = (
 ): Status => passVerdict(pass, t, input).status;
 
 /** "Anfang Juni bis Ende Oktober" – the window as the row and the panel say it. */
-export const windowText = (s: TourSeason, lang: Lang = DEFAULT_LANG): string =>
-  words(lang).window(periodLabel(s.opens, lang), periodLabel(s.closes, lang));
+export const windowText = (s: TourSeason, w: Messages): string =>
+  fill(w.status.window, {
+    from: periodLabel(s.opens, w),
+    to: periodLabel(s.closes, w),
+  });
 
-export const seasonText = (pass: Pass, lang: Lang = DEFAULT_LANG): string => {
+export const seasonText = (pass: Pass, w: Messages): string => {
   const s = pass.season;
-  const w = words(lang).season;
-  if (!s) return w.allYear;
-  return w.typical(windowText(s, lang), s.maintained ? w.maintained : "");
+  const say = w.status.season;
+  if (!s) return say.allYear;
+  return fill(say.typical, {
+    maintained: s.maintained ? say.maintained : "",
+    window: windowText(s, w),
+  });
 };
 
 interface ReasonContext {
@@ -548,12 +534,14 @@ interface ReasonContext {
   t: Period;
   bucket?: ClimateBucket | null;
   valley?: number | null;
-  lang: Lang;
+  w: Messages;
 }
 
-/** The pass's window as the sentences quote it, or null without one. */
-const passWindow = (pass: Pass, lang: Lang): string | null =>
-  pass.season ? windowText(pass.season, lang) : null;
+/** A share of days, and the same share as "≈ n of 15" days. */
+const shareText = (
+  message: Msg<"pct" | "days">,
+  pct: number | undefined = 0,
+): string => fill(message, { days: daysOf(pct), pct });
 
 /**
  * One sentence per reason – the honesty principle made visible. Every
@@ -562,47 +550,47 @@ const passWindow = (pass: Pass, lang: Lang): string | null =>
  * words are the message file's; the numbers are formatted here.
  */
 const REASON_TEXT: Record<StatusReason, (ctx: ReasonContext) => string> = {
-  altitude: ({ pass, t, lang }) =>
-    words(lang).reason.altitude(
-      periodLabel(t, lang),
-      fmt(pass.elevation, 0, lang),
-    ),
-  "cold-descent": ({ bucket, lang }) =>
-    words(lang).reason.coldDescent(fmt(bucket?.tmax ?? 0, 0, lang)),
-  frost: ({ bucket, lang }) =>
-    words(lang).reason.frost(
-      bucket?.frostPct ?? 0,
-      daysOf(bucket?.frostPct ?? 0),
-    ),
-  heat: ({ pass, bucket, valley, lang }) =>
-    words(lang).reason.heat(
-      fmt(bucket ? (valleyTmax(pass, bucket, valley) ?? 0) : 0, 0, lang),
-      VALLEY_TMAX_ERROR,
-    ),
-  "outside-window": ({ pass, lang }) => {
-    const window = passWindow(pass, lang);
-    return window
-      ? words(lang).reason.outsideWindow(window)
-      : words(lang).reason.outsideSeason;
-  },
-  "short-day": ({ pass, t, lang }) => {
+  altitude: ({ pass, t, w }) =>
+    fill(w.status.reason.altitude, {
+      elevation: fmt(pass.elevation, 0, w.lang),
+      period: periodLabel(t, w),
+    }),
+  "cold-descent": ({ bucket, w }) =>
+    fill(w.status.reason.coldDescent, {
+      tmax: fmt(bucket?.tmax ?? 0, 0, w.lang),
+    }),
+  frost: ({ bucket, w }) => shareText(w.status.reason.frost, bucket?.frostPct),
+  heat: ({ pass, bucket, valley, w }) =>
+    fill(w.status.reason.heat, {
+      error: VALLEY_TMAX_ERROR,
+      tmax: fmt(
+        bucket ? (valleyTmax(pass, bucket, valley) ?? 0) : 0,
+        0,
+        w.lang,
+      ),
+    }),
+  "outside-window": ({ pass, w }) =>
+    pass.season
+      ? fill(w.status.reason.outsideWindow, {
+          window: windowText(pass.season, w),
+        })
+      : w.status.reason.outsideSeason,
+  "short-day": ({ pass, t, w }) => {
     const sun = sunTimes(pass.lat, pass.lon, periodDate(t));
-    return words(lang).reason.shortDay(
-      fmt(sun.dayLength, 1, lang),
-      clockTime(sun.sunset),
-    );
+    return fill(w.status.reason.shortDay, {
+      hours: fmt(sun.dayLength, 1, w.lang),
+      sunset: clockTime(sun.sunset),
+    });
   },
-  snow: ({ bucket, lang }) =>
-    words(lang).reason.snow(bucket?.snowPct ?? 0, daysOf(bucket?.snowPct ?? 0)),
-  "snow-cover": ({ bucket, lang }) =>
-    words(lang).reason.snowCover(
-      bucket?.coverPct ?? 0,
-      daysOf(bucket?.coverPct ?? 0),
-    ),
-  wet: ({ bucket, lang }) =>
-    words(lang).reason.wet(bucket?.wetPct ?? 0, daysOf(bucket?.wetPct ?? 0)),
-  "window-edge": ({ pass, lang }) =>
-    words(lang).reason.windowEdge(passWindow(pass, lang)),
+  snow: ({ bucket, w }) => shareText(w.status.reason.snow, bucket?.snowPct),
+  "snow-cover": ({ bucket, w }) =>
+    shareText(w.status.reason.snowCover, bucket?.coverPct),
+  wet: ({ bucket, w }) => shareText(w.status.reason.wet, bucket?.wetPct),
+  // Only a curated window has an edge (`windowReasons`), so the pass carries one.
+  "window-edge": ({ pass, w }) =>
+    fill(w.status.reason.windowEdge, {
+      window: windowText(pass.season!, w),
+    }),
 };
 
 /**
@@ -616,15 +604,15 @@ const reasonTexts = (
   t: Period,
   reasons: StatusReason[],
   input: VerdictInput | null | undefined,
-  lang: Lang,
+  w: Messages,
 ): string[] =>
   reasons.map((r) =>
     REASON_TEXT[r]({
       bucket: input?.bucket,
-      lang,
       pass,
       t,
       valley: input?.valley,
+      w,
     }),
   );
 
@@ -634,14 +622,10 @@ const reasonTexts = (
  * the passes' answer, so the sentence does not repeat it. The curated note
  * follows in the same paragraph.
  */
-export const tourSeasonText = (
-  tour: Tour,
-  lang: Lang = DEFAULT_LANG,
-): string => {
-  const w = words(lang).season;
+export const tourSeasonText = (tour: Tour, w: Messages): string => {
   const window = tour.season
-    ? w.tourOwn(windowText(tour.season, lang))
-    : w.tourPasses;
+    ? fill(w.status.season.tourOwn, { window: windowText(tour.season, w) })
+    : w.status.season.tourPasses;
   return tour.note ? `${window} ${tour.note}` : window;
 };
 
@@ -651,11 +635,8 @@ export const tourSeasonText = (
  * over passes that shut for the winter is not open all year, and `null` says
  * only that the passes decide (Principle 3).
  */
-export const tourWindowWord = (
-  tour: Tour,
-  lang: Lang = DEFAULT_LANG,
-): string =>
-  tour.season ? windowText(tour.season, lang) : words(lang).season.likePasses;
+export const tourWindowWord = (tour: Tour, w: Messages): string =>
+  tour.season ? windowText(tour.season, w) : w.status.season.likePasses;
 
 export type PassIndex = Map<string, Pass>;
 export type TownIndex = Map<string, Town>;
@@ -925,14 +906,12 @@ export const cellAt = (year: Year | undefined, t: Period): YearCell =>
  */
 export const statusWord = (
   status: Status,
-  reason?: StatusReason | null,
-  lang: Lang = DEFAULT_LANG,
-): string => {
-  const w = words(lang);
-  return status === "risky" && reason && reason !== WINDOW_CLOSING
-    ? `${w.label[status]}: ${w.reasonWord[reason]}`
-    : w.label[status];
-};
+  reason: StatusReason | null | undefined,
+  w: Messages,
+): string =>
+  status === "risky" && reason && reason !== WINDOW_CLOSING
+    ? `${w.status.label[status]}: ${w.status.reasonWord[reason]}`
+    : w.status.label[status];
 
 /**
  * What the badge prints for one cell. A cell inside the best window says so
@@ -940,10 +919,10 @@ export const statusWord = (
  * rather than re-deriving the three parts, so it cannot describe a half-month
  * the strip next to it paints differently.
  */
-export const badgeWord = (cell: YearCell, lang: Lang = DEFAULT_LANG): string =>
+export const badgeWord = (cell: YearCell, w: Messages): string =>
   cell.grade === "best"
-    ? words(lang).grade.best
-    : statusWord(cell.status, cell.reasons[0], lang);
+    ? w.status.grade.best
+    : statusWord(cell.status, cell.reasons[0], w);
 
 /**
  * The one "abgeleitet" sentence for the valley value – Principle 3: the
@@ -954,17 +933,16 @@ const valleyText = (
   pass: Pass,
   bucket: ClimateBucket,
   valley: number | null | undefined,
-  lang: Lang,
+  w: Messages,
 ): string => {
   const tmax = valleyTmax(pass, bucket, valley);
-  const w = words(lang).valley;
   return tmax === null || valley === null || valley === undefined
-    ? w.none
-    : w.derived(
-        fmtUnit(valley, "m", 0, lang),
-        fmt(Math.round(tmax), 0, lang),
-        VALLEY_TMAX_ERROR,
-      );
+    ? w.status.valley.none
+    : fill(w.status.valley.derived, {
+        error: VALLEY_TMAX_ERROR,
+        tmax: fmt(Math.round(tmax), 0, w.lang),
+        valley: fmtUnit(valley, "m", 0, w.lang),
+      });
 };
 
 /**
@@ -972,15 +950,12 @@ const valleyText = (
  * base. Null where the year has no run worth the name: a single quiet
  * half-month is not a season.
  */
-export const bestText = (
-  year?: Year,
-  lang: Lang = DEFAULT_LANG,
-): string | null =>
+export const bestText = (year: Year | undefined, w: Messages): string | null =>
   year?.best
-    ? words(lang).best(
-        periodLabel(year.best[0], lang),
-        periodLabel(year.best[1], lang),
-      )
+    ? fill(w.status.best, {
+        from: periodLabel(year.best[0], w),
+        to: periodLabel(year.best[1], w),
+      })
     : null;
 
 /**
@@ -992,10 +967,10 @@ export const reasonParagraph = (
   pass: Pass,
   t: Period,
   reasons: StatusReason[],
-  input?: VerdictInput | null,
-  lang: Lang = DEFAULT_LANG,
+  input: VerdictInput | null | undefined,
+  w: Messages,
 ): string | null => {
-  const texts = reasonTexts(pass, t, reasons, input, lang);
+  const texts = reasonTexts(pass, t, reasons, input, w);
   return texts.length > 0 ? texts.join(" ") : null;
 };
 
@@ -1012,18 +987,18 @@ export const climateText = (
   bucket: ClimateBucket,
   signals: PassSignals,
   t: Period,
-  lang: Lang = DEFAULT_LANG,
+  w: Messages,
 ): string => {
   const sun = sunTimes(pass.lat, pass.lon, periodDate(t));
-  return words(lang).climate(
-    periodLabel(t, lang),
-    fmtUnit(pass.elevation, "m", 0, lang),
-    fmt(bucket.wetPct, 0, lang),
-    valleyText(pass, bucket, signals.valley, lang),
-    fmt(sun.dayLength, 1, lang),
-    clockTime(sun.sunrise),
-    clockTime(sun.sunset),
-  );
+  return fill(w.status.climate, {
+    elevation: fmtUnit(pass.elevation, "m", 0, w.lang),
+    hours: fmt(sun.dayLength, 1, w.lang),
+    period: periodLabel(t, w),
+    sunrise: clockTime(sun.sunrise),
+    sunset: clockTime(sun.sunset),
+    valley: valleyText(pass, bucket, signals.valley, w),
+    wetPct: fmt(bucket.wetPct, 0, w.lang),
+  });
 };
 
 const capitalise = (word: string) =>
@@ -1045,36 +1020,35 @@ export const tourText = (
   tour: Tour,
   cell: YearCell,
   names: (slug: string) => string | undefined,
-  lang: Lang = DEFAULT_LANG,
+  w: Messages,
 ): string | null => {
   // Nothing limits an open tour, so `open` has no sentence.
   if (cell.status === "open") return null;
-  const w = words(lang);
-  const word = capitalise(w.label[cell.status]);
+  const say = w.status.tour;
+  const word = capitalise(w.status.label[cell.status]);
   // The window's cell is the one that names nobody (`tourYear`); a member's
   // cell whose names cannot be resolved is not it, and stays silent.
   if (cell.limiting?.length === 0 && tour.season) {
-    const window = windowText(tour.season, lang);
-    return cell.reasons[0] === WINDOW_CLOSING
-      ? w.tour.outsideWindow(word, window)
-      : w.tour.windowEdge(word, window);
+    const window = windowText(tour.season, w);
+    return fill(
+      cell.reasons[0] === WINDOW_CLOSING ? say.outsideWindow : say.windowEdge,
+      { window, word },
+    );
   }
   const list = (cell.limiting ?? []).map(names).filter((n) => n !== undefined);
   if (list.length === 0) return null;
-  return cell.status === "closed"
-    ? w.tour.closedBy(word, list.join(", "))
-    : w.tour.limitedBy(word, list.join(", "));
+  return fill(cell.status === "closed" ? say.closedBy : say.limitedBy, {
+    names: list.join(", "),
+    word,
+  });
 };
 /**
  * One sentence for the 24 cells of a season strip, so screen readers get the
  * same overview the colours give: "beste Zeit Anfang Juli bis Ende September,
  * gut Anfang Juni bis Anfang Oktober, eingeschränkt bis Ende Oktober".
  */
-export const seasonSummary = (
-  grades: Grade[],
-  lang: Lang = DEFAULT_LANG,
-): string => {
-  const w = words(lang);
+export const seasonSummary = (grades: Grade[], w: Messages): string => {
+  const s = w.status;
   const n = grades.length;
   // A run "holds" a grade when one of its cells has it: `good` and `rideable`
   // are supersets of `best`, so the longest of them may be the best run
@@ -1093,19 +1067,19 @@ export const seasonSummary = (
     grades.map((g) => g !== "closed"),
     holds("limited"),
   );
-  if (!rideable) return w.summary.closedAllYear;
+  if (!rideable) return s.summary.closedAllYear;
   const span = (run: Run) =>
     run.length === n
-      ? w.summary.allYear
-      : w.window(
-          periodLabel(periodAt(run.start), lang),
-          periodLabel(periodAt(run.start + run.length - 1), lang),
-        );
-  if (!good) return w.summary.limitedOnly(span(rideable));
+      ? s.summary.allYear
+      : fill(s.window, {
+          from: periodLabel(periodAt(run.start), w),
+          to: periodLabel(periodAt(run.start + run.length - 1), w),
+        });
+  if (!good) return fill(s.summary.limitedOnly, { span: span(rideable) });
   const parts: string[] = [];
-  if (best) parts.push(`${w.grade.best} ${span(best)}`);
-  if (grades.includes("good")) parts.push(`${w.grade.good} ${span(good)}`);
+  if (best) parts.push(`${s.grade.best} ${span(best)}`);
+  if (grades.includes("good")) parts.push(`${s.grade.good} ${span(good)}`);
   if (grades.includes("limited"))
-    parts.push(`${w.grade.limited} ${span(rideable)}`);
-  return w.summary.parts(parts.join(", "));
+    parts.push(`${s.grade.limited} ${span(rideable)}`);
+  return fill(s.summary.parts, { parts: parts.join(", ") });
 };

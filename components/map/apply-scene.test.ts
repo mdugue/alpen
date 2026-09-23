@@ -3,6 +3,7 @@ import { describe, expect, test } from "bun:test";
 import { applyScene, popupHtml } from "@/components/map/apply-scene";
 import type { SceneHost } from "@/components/map/apply-scene";
 import { ALL_SHOWN } from "@/lib/app-state";
+import { DE } from "@/lib/i18n/dictionaries";
 import { LAYERS, SOURCE } from "@/lib/layer-ids";
 import { buildScene } from "@/lib/map-scene";
 import type { SceneInput } from "@/lib/map-scene";
@@ -68,7 +69,6 @@ const scene = (extra: Partial<SceneInput> = {}) =>
   buildScene({
     env: { coarse: false },
     hovered: null,
-    lang: "de",
     profileCursor: null,
     rows: {
       destination: [],
@@ -80,6 +80,7 @@ const scene = (extra: Partial<SceneInput> = {}) =>
     shown: ALL_SHOWN,
     tourBounds: {},
     townReach: REACH,
+    w: DE,
     ...extra,
   });
 
@@ -185,10 +186,9 @@ describe("the label", () => {
   test("carries the name, the line under it and a glyph per label", () => {
     const html = popupHtml({
       anchor: [6.4, 45.06],
-      lang: "de",
       name: "Col du Galibier",
       subtitle: "2.642 m",
-      tags: ["hairpins"],
+      tags: [["hairpins", "Kehrenbauwerk"]],
     });
     expect(html).toContain("<b>Col du Galibier</b>");
     expect(html).toContain("2.642 m");
@@ -199,7 +199,6 @@ describe("the label", () => {
   test("escapes what comes out of the data files", () => {
     const html = popupHtml({
       anchor: [0, 0],
-      lang: "de",
       name: '<script>"x"</script>',
       subtitle: null,
       tags: [],

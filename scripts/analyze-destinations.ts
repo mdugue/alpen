@@ -40,6 +40,7 @@ import {
 } from "../lib/destination";
 import type { GradeShares } from "../lib/destination";
 import { haversine, reachBand } from "../lib/geo";
+import { DE } from "../lib/i18n/dictionaries";
 import { periodLabel, PERIODS } from "../lib/period";
 import { valleyElevations } from "../lib/profile";
 import { emptyCount } from "../lib/reach";
@@ -96,7 +97,7 @@ console.log("\n2. Rideable passes per half-month, across bases");
 for (const [i, period] of PERIODS.entries()) {
   const col = rideable.map((r) => r[i] ?? 0);
   console.log(
-    `   ${periodLabel(period).padEnd(17)}min=${pad(Math.min(...col))}` +
+    `   ${periodLabel(period, DE).padEnd(17)}min=${pad(Math.min(...col))}` +
       ` p25=${pad(quantile(col, 0.25))} med=${pad(quantile(col, 0.5))}` +
       ` p75=${pad(quantile(col, 0.75))} max=${pad(Math.max(...col))}`,
   );

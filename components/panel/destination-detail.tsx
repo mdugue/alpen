@@ -11,6 +11,7 @@ import { SeasonStrip } from "@/components/season-strip";
 import { StatusDot } from "@/components/status-badge";
 import { TagLine } from "@/components/tags";
 import type { DestinationModel } from "@/lib/detail-model";
+import { fill } from "@/lib/i18n/fill";
 import { isHovered } from "@/lib/route-key";
 import { bestText } from "@/lib/status";
 
@@ -29,7 +30,7 @@ export const DestinationDetail = ({
   model: DestinationModel;
   actions: PanelActions;
 }) => {
-  const { t, lang, fmt, fmtUnit } = useT();
+  const { t, fmt, fmtUnit } = useT();
   const { destination: d, verdict } = model;
   return (
     <>
@@ -43,22 +44,22 @@ export const DestinationDetail = ({
             text={model.text}
           />
         }
-        best={bestText(verdict.year, lang)}
+        best={bestText(verdict.year, t)}
         period={model.period}
         text={model.text}
         year={verdict.year}
       >
         <p className="text-muted-foreground text-2xs">
-          {t.panel.destination.derived(fmt(verdict.total))}
+          {fill(t.panel.destination.derived, { total: fmt(verdict.total) })}
           {verdict.peak > 0 &&
-            t.panel.destination.derivedPeak(fmt(verdict.peak))}
+            fill(t.panel.destination.derivedPeak, { peak: fmt(verdict.peak) })}
           .
         </p>
       </VerdictBox>
 
       <Section
         id="area-passes"
-        info={t.panel.destination.roadsInfo(fmt(d.radiusKm))}
+        info={fill(t.panel.destination.roadsInfo, { km: fmt(d.radiusKm) })}
         title={t.panel.destination.roadsTitle}
       >
         {model.passes.length === 0 ? (
@@ -181,11 +182,11 @@ export const DestinationDetail = ({
                       links={[
                         [
                           t.panel.destination.lodging,
-                          `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(t.panel.destination.lodgingQuery(town.name))}`,
+                          `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(fill(t.panel.destination.lodgingQuery, { town: town.name }))}`,
                         ],
                         [
                           t.panel.town.workshops,
-                          `https://www.openstreetmap.org/search?query=${encodeURIComponent(t.panel.town.workshopsQuery(town.name))}`,
+                          `https://www.openstreetmap.org/search?query=${encodeURIComponent(fill(t.panel.town.workshopsQuery, { town: town.name }))}`,
                         ],
                       ]}
                     />

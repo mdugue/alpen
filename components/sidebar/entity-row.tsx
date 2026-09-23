@@ -4,6 +4,7 @@ import { Star } from "lucide-react";
 
 import { useT } from "@/components/i18n";
 import { Toggle } from "@/components/ui/toggle";
+import { fill } from "@/lib/i18n/fill";
 import { cn, ICON_TOGGLE, TOUCH_ICON } from "@/lib/utils";
 
 /**
@@ -105,7 +106,9 @@ export const EntityRow = ({
         pressed={favorite}
         onPressedChange={onToggleFavorite}
         aria-label={
-          favorite ? t.sidebar.row.unsave(name) : t.sidebar.row.save(name)
+          favorite
+            ? fill(t.sidebar.row.unsave, { name })
+            : fill(t.sidebar.row.save, { name })
         }
         tabIndex={-1}
         className={cn(ICON_TOGGLE, TOUCH_ICON, "ml-1.5")}

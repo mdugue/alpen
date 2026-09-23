@@ -8,6 +8,7 @@ import { Toggle } from "@/components/ui/toggle";
 import type { Options } from "@/lib/app-state";
 import { thresholdChips } from "@/lib/app-state";
 import { optionText } from "@/lib/filter-summary";
+import { fill } from "@/lib/i18n/fill";
 import { cn, TOUCH_CONTROL } from "@/lib/utils";
 
 /**
@@ -67,7 +68,7 @@ export const FilterChip = ({
       aria-label={
         count === undefined || !label
           ? label
-          : t.sidebar.filters.roadsLeft(label, fmt(count))
+          : fill(t.sidebar.filters.roadsLeft, { label, n: fmt(count) })
       }
       title={hint}
       className={cn(
@@ -166,12 +167,12 @@ export const ThresholdChips = ({
   /** How many roads each option would leave; see `FilterChip.count`. */
   count?: (value: number) => number;
 }) => {
-  const { lang } = useT();
+  const { t } = useT();
   const [[none]] = options as unknown as [[number, string]];
   return (
     <ChipGroup id={id} label={label} hint={hint}>
       {thresholdChips(options).map(([v, option]) => {
-        const text = optionText(option, lang);
+        const text = optionText(option, t);
         return (
           <FilterChip
             key={v}

@@ -26,6 +26,7 @@ import {
 import type { MapEnv, Provenance } from "@/components/map/apply-environment";
 import { applyScene, sceneHost } from "@/components/map/apply-scene";
 import type { SceneHost } from "@/components/map/apply-scene";
+import { LanguageField } from "@/components/map/language-field";
 import {
   baseLayers,
   OVERLAYS,
@@ -56,6 +57,7 @@ import { DEFAULT_VIEW } from "@/lib/app-state";
 import type { MapView, Selection, Shown } from "@/lib/app-state";
 import { BASEMAP_SOURCE, BASEMAP_SOURCE_ID, GLYPHS } from "@/lib/basemap";
 import type { Bounds } from "@/lib/geo";
+import type { Lang } from "@/lib/i18n";
 import { HIT_LAYERS, SOURCE } from "@/lib/layer-ids";
 import type { MapAssets } from "@/lib/map-assets";
 import {
@@ -160,6 +162,8 @@ interface Props {
    * the map, one of them in a function documented as pure.
    */
   env: MapEnvironment;
+  /** The same place in another language, for the view menu (`switchLangHref`). */
+  langHref: (to: Lang) => string;
 }
 
 const EMPTY: FeatureCollection = { features: [], type: "FeatureCollection" };
@@ -233,6 +237,7 @@ export const PassMap = ({
   requestedFit = null,
   inset = NO_INSET,
   env,
+  langHref,
 }: Props) => {
   const { lang, t } = useT();
   const container = useRef<HTMLDivElement>(null);
@@ -269,13 +274,13 @@ export const PassMap = ({
   const scene = buildScene({
     env: { coarse: env.coarsePointer },
     hovered,
-    lang,
     profileCursor,
     rows,
     selection,
     shown,
     tourBounds: assets.tourBounds,
     townReach,
+    w: t,
   });
   const applied = useRef<Scene | null>(null);
   const host = useRef<SceneHost | null>(null);
@@ -306,10 +311,10 @@ export const PassMap = ({
   const mapEnv = buildEnv({
     base,
     device: env,
-    lang,
     overlays,
     passes: shown.passes,
     terrain: is3d,
+    w: t,
   });
   /**
    * The environment the map is in. Seeded with what the style was built from
@@ -384,7 +389,7 @@ export const PassMap = ({
           type: "raster-dem",
         },
         ...Object.fromEntries(
-          baseLayers(lang).map((b) => [
+          baseLayers(t).map((b) => [
             b.id,
             {
               attribution: b.attribution,
@@ -467,7 +472,7 @@ export const PassMap = ({
      * OSM attribution guidelines ask for, and a line inside a menu about map
      * types is neither identifiable nor one interaction.
      */
-    const controls = provenanceControls(lang);
+    const controls = provenanceControls(t);
     provenance.current = controls;
     placeProvenance(m, controls, env.mobile, container.current);
 
@@ -846,9 +851,10 @@ export const PassMap = ({
 
           {/*
            * Everything that changes how the map looks rather than where it
-           * looks, behind one "…": the base, the overlays and the tilt. They
-           * are answered once per visit and then left alone, so they do not
-           * earn a button each on a phone screen.
+           * looks, behind one "…": the base, the overlays and the tilt – and
+           * the language the whole page speaks. They are answered once per
+           * visit and then left alone, so they do not earn a button each on
+           * a phone screen.
            */}
           <Popover>
             <Tooltip>
@@ -878,7 +884,7 @@ export const PassMap = ({
                   onValueChange={(v) => setBase(String(v))}
                   className="gap-1.5"
                 >
-                  {[vectorBase(lang), ...baseLayers(lang)].map((b) => (
+                  {[vectorBase(t), ...baseLayers(t)].map((b) => (
                     <Field key={b.id} orientation="horizontal">
                       <RadioGroupItem value={b.id} id={`base-${b.id}`} />
                       <FieldLabel
@@ -897,7 +903,7 @@ export const PassMap = ({
                   { id: "hillshade", name: t.map.hillshade },
                   ...OVERLAYS.map((o) => ({
                     id: o.id,
-                    name: overlayName(o.id, lang),
+                    name: overlayName(o.id, t),
                   })),
                 ].map((o) => (
                   <Field key={o.id} orientation="horizontal">
@@ -927,6 +933,7 @@ export const PassMap = ({
                   </FieldLabel>
                 </Field>
               </FieldSet>
+              <LanguageField hrefOf={langHref} />
             </PopoverContent>
           </Popover>
         </ButtonGroup>

@@ -1,7 +1,9 @@
 /**
- * The fixed vocabularies of the data: regions and countries. Shared by the
- * schema (server), the filters (client) and the search haystacks – this
- * module must stay free of zod so it can reach the client bundle.
+ * The fixed vocabularies of the data: ranges, regions, countries, tags, road
+ * types and surfaces. Shared by the schema (server), the filters (client) and
+ * the search haystacks – this module must stay free of zod so it can reach
+ * the client bundle. It holds the keys only: what each is called, and the
+ * hint that explains it, is `vocab` in the message files (plan 08).
  */
 /**
  * One level above the region: the mountain range. A road's range is a
@@ -24,42 +26,6 @@ export type RangeName = (typeof RANGES)[number];
  * `DEFAULT_VIEW`, which is centred on the same range.
  */
 export const HOME_RANGE: RangeName = "Alpen";
-
-/**
- * Label, hint, and the range in a sentence: German declines the article, and
- * three of the four are plural where the Jura is not – "in den Alpen" but
- * "im Jura", "außerhalb der Vogesen" but "außerhalb des Juras" – so the
- * phrases are written per range rather than glued to the label.
- */
-export const RANGE: Record<
-  RangeName,
-  { label: string; hint: string; inside: string; outside: string }
-> = {
-  Alpen: {
-    hint: "Von den Seealpen bis nach Slowenien – Westalpen, Zentralalpen, Ostalpen und Dolomiten.",
-    inside: "in den Alpen",
-    label: "Alpen",
-    outside: "außerhalb der Alpen",
-  },
-  Jura: {
-    hint: "Grand Colombier, Mont du Chat, Faucille, Chasseral: lange Saison, wenig Verkehr, zwei Stunden ab Basel.",
-    inside: "im Jura",
-    label: "Jura",
-    outside: "außerhalb des Juras",
-  },
-  Pyrenäen: {
-    hint: "Tourmalet, Aubisque, Peyresourde, Ariège und Andorra: die anderen Berge der Tour, mit der langen Saison der spanischen Seite.",
-    inside: "in den Pyrenäen",
-    label: "Pyrenäen",
-    outside: "außerhalb der Pyrenäen",
-  },
-  Vogesen: {
-    hint: "Grand Ballon, Schlucht, Ballon d'Alsace und die Route des Crêtes: das Wochenende ab Freiburg, Basel oder Karlsruhe.",
-    inside: "in den Vogesen",
-    label: "Vogesen",
-    outside: "außerhalb der Vogesen",
-  },
-};
 
 /**
  * Which regions each range holds. The Vosges, the Jura and the Pyrenees are
@@ -145,18 +111,6 @@ export const COUNTRIES = [
   "AD",
 ] as const;
 
-/** German names for the country codes, so "frankreich" and "fr" both search. */
-export const COUNTRY_NAME: Record<(typeof COUNTRIES)[number], string> = {
-  AD: "Andorra",
-  AT: "Österreich",
-  CH: "Schweiz",
-  DE: "Deutschland",
-  ES: "Spanien",
-  FR: "Frankreich",
-  IT: "Italien",
-  SI: "Slowenien",
-};
-
 /** "CH/IT" → ["CH", "IT"]. */
 export const countriesOf = (country: string) => country.split("/");
 
@@ -178,48 +132,6 @@ export const TOWN_TAGS = [
   "season",
 ] as const;
 
-export const TOWN_TAG: Record<
-  (typeof TOWN_TAGS)[number],
-  { label: string; hint: string }
-> = {
-  events: {
-    hint: "Start oder Zentrum eines großen Radmarathons.",
-    label: "Marathon-Ort",
-  },
-  hotels: {
-    hint: "Unterkünfte mit Radkeller, Waschplatz und Tourenservice.",
-    label: "Bike-Hotels",
-  },
-  hub: {
-    hint: "Fester Begriff im Rennradkalender: im Sommer voller Rennräder, Servicepoints, Trainingsziel.",
-    label: "Radsport-Mekka",
-  },
-  passes: {
-    hint: "Mehrere klassische Anstiege beginnen ohne Anfahrt vor der Haustür.",
-    label: "Pässe vor der Tür",
-  },
-  quiet: {
-    hint: "Wenig Durchgangsverkehr: Nebental statt Transitachse.",
-    label: "Ruhig",
-  },
-  scenic: {
-    hint: "Lage und Landschaft sind selbst ein Grund, hierher zu fahren.",
-    label: "Besonders schön",
-  },
-  season: {
-    hint: "Tief und mild gelegen – fährt sich früh im Jahr und noch spät im Herbst.",
-    label: "Lange Saison",
-  },
-  train: {
-    hint: "Ohne Auto erreichbar: Bahnhof im Ort oder im Tal darunter.",
-    label: "Bahnanschluss",
-  },
-  workshops: {
-    hint: "Rennradläden mit Werkstatt und Leihrädern am Ort.",
-    label: "Werkstätten & Verleih",
-  },
-};
-
 /**
  * What kind of road an entry is: how it lies in the terrain. Single-valued and
  * mutually exclusive, and it decides how the route quality gate measures the
@@ -237,30 +149,6 @@ export const ROAD_TYPES = [
 ] as const;
 
 export type RoadTypeName = (typeof ROAD_TYPES)[number];
-
-export const ROAD_TYPE: Record<RoadTypeName, { label: string; hint: string }> =
-  {
-    balcony: {
-      hint: "In eine Wand gehauen, ohne Gipfel, auf den die Fahrt zuläuft: Combe Laval, Gorges de la Bourne.",
-      label: "Balkonstraße",
-    },
-    pass: {
-      hint: "Ein Übergang: auf der einen Seite hinauf, auf der anderen hinunter.",
-      label: "Pass",
-    },
-    plateau: {
-      hint: "Bleibt oben, statt einmal überzuqueren: Höhenstraße, Hochebene.",
-      label: "Höhenstraße",
-    },
-    spur: {
-      hint: "Ein Anstieg zu einem Punkt, an dem die Straße endet – hinunter geht es dieselbe Auffahrt zurück.",
-      label: "Stichstraße",
-    },
-    valley: {
-      hint: "Ein ruhiges Sackgassental mit wenig Steigung.",
-      label: "Talstraße",
-    },
-  };
 
 /**
  * The types whose ride is the traverse itself rather than a climb to the
@@ -306,56 +194,6 @@ export type TownTagName = (typeof TOWN_TAGS)[number];
 /** A tag of either vocabulary; which one it belongs to is `tagLabel`'s question (`lib/i18n`). */
 export type TagName = TownTagName | RoadTagName;
 
-export const ROAD_TAG: Record<RoadTagName, { label: string; hint: string }> = {
-  carfree: {
-    hint: "Für Autos gesperrt, mindestens an festen Tagen – wann, steht in der Notiz.",
-    label: "Autofrei",
-  },
-  cobbles: {
-    hint: "Ein Stück ist gepflastert – Tremola, Vršič –, das ändert die Reifenwahl, nicht das Rad.",
-    label: "Pflaster",
-  },
-  glacier: {
-    hint: "Endet an einem Gletscher oder führt an ihm entlang.",
-    label: "Gletscherstraße",
-  },
-  gorge: {
-    hint: "Ein nennenswertes Stück führt durch eine Schlucht oder einen Canyon.",
-    label: "Schlucht",
-  },
-  hairpins: {
-    hint: "Das Kehrenbauwerk ist selbst ein Denkmal – Tremola, Lacets de Montvernier, San Boldo.",
-    label: "Kehrenbauwerk",
-  },
-  panorama: {
-    hint: "Für die Aussicht gebaut, und Name oder Streckenführung sagen das auch.",
-    label: "Panoramastraße",
-  },
-  reservoir: {
-    hint: "Die Straße gibt es wegen einer Staumauer; sie endet am See oder führt an ihm entlang.",
-    label: "Stausee",
-  },
-  toll: {
-    hint: "Mautstraße; ob Räder zahlen, steht in der Notiz. Unabhängig davon, ob sie geräumt wird.",
-    label: "Maut",
-  },
-  tunnels: {
-    hint: "Unbeleuchtete Tunnel oder Galerien, mit denen zu rechnen ist.",
-    label: "Tunnel & Galerien",
-  },
-};
-
-/**
- * Both label vocabularies under one roof, for the three places that draw a tag
- * without caring which list it came from: the icon table, the badge and the
- * map's popup. The two vocabularies share no name; `lib/tag-icons.test.ts`
- * fails if they ever did.
- */
-export const TAG_LABEL: Record<TagName, { label: string; hint: string }> = {
-  ...TOWN_TAG,
-  ...ROAD_TAG,
-};
-
 /**
  * What a road is rolled on (plan 27). One field that decides three things:
  * the routing profile (`scripts/lib/pipeline.ts`), the closing rung of the
@@ -368,21 +206,6 @@ export const TAG_LABEL: Record<TagName, { label: string; hint: string }> = {
  */
 export const SURFACES = ["asphalt", "gravel", "mixed"] as const;
 export type SurfaceName = (typeof SURFACES)[number];
-
-export const SURFACE: Record<SurfaceName, { label: string; hint: string }> = {
-  asphalt: {
-    hint: "Durchgehend asphaltiert – die Straße, die ein Rennrad fährt.",
-    label: "Asphalt",
-  },
-  gravel: {
-    hint: "Ungeteert – Schotter, Militärstraße, Almweg: Gravel- oder Mountainbike, und offen, sobald der Schnee weg ist.",
-    label: "Schotter",
-  },
-  mixed: {
-    hint: "Asphalt mit einem Schotterstück, das kein Rennrad fährt – die Notiz sagt, wo.",
-    label: "Gemischt",
-  },
-};
 
 /** Whether the road is ridden with something other than a road bike. */
 export const isUnpaved = (surface: SurfaceName): boolean =>

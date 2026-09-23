@@ -1,4 +1,5 @@
 import type { scales as de } from "../de/scales";
+import type { Layout } from "../fill";
 
 export const scales = {
   band: {
@@ -16,8 +17,8 @@ export const scales = {
     heading: "Destinations",
     intro:
       "A destination is an editorially drawn circle: a centre, a radius, plus single roads counted in or left out, and the towns that make a good base. What lies inside the circle is the membership – it is determined when the site is built, not maintained by hand. All numbers of a destination are **derived**, as they are for a town: “7 of 9 roads good” counts the roads in the area by their status in the chosen half-month, and the strip measures every half-month against this area's best time.",
-    order: (riskyPct: string) =>
-      `**The order of the list** is a score that is shown nowhere: the beauty of every open road in full, that of every limited one at ${riskyPct} %, a closed one counts nothing. Editorial like everything here – it orders, it does not measure.`,
+    order:
+      "**The order of the list** is a score that is shown nowhere: the beauty of every open road in full, that of every limited one at {riskyPct} %, a closed one counts nothing. Editorial like everything here – it orders, it does not measure.",
   },
   notes: {
     heading: "Notes",
@@ -52,12 +53,12 @@ export const scales = {
     ] as [string, string][],
   },
   status: {
-    derived: (lapse: string, error: string) =>
-      `**Derived, not measured:** The climate series applies to the summit elevation. The valley value is computed down at ${lapse} to the lowest ascent start and is easily ± ${error} °C off; passes without an ascent profile have none. The daylight is pure astronomy. In the detail, the reason stands under the status in one sentence, with number and source.`,
+    derived:
+      "**Derived, not measured:** The climate series applies to the summit elevation. The valley value is computed down at {lapse} to the lowest ascent start and is easily ± {error} °C off; passes without an ascent profile have none. The daylight is pure astronomy. In the detail, the reason stands under the status in one sentence, with number and source.",
     heading: "Status per period",
     intro:
       "A heuristic from the typical opening window (to the half-month), summit elevation, season, the pass's climate series (ERA5-Land 2015–2024) and the daylight. It answers “how good is it to ride there in this half-month”, not just “can you get over”. For loops the worst value of their passes applies. No substitute for official closure information.",
-    ladder: (text: string) => `**Four rungs, one ladder.** ${text}`,
+    ladder: "**Four rungs, one ladder.** {text}",
     strip:
       "The strip of 24 cells shows the whole year at a glance – the chosen half-month is outlined, the closure hollow with a red edge. In the detail every cell explains itself on hover.",
   },
@@ -76,18 +77,18 @@ export const scales = {
       "Every cycling town carries up to four features. In the list they stand as icons, in the detail and on the map with text. They too are editorial: they say what stands out on site, and are no counted workshops or hotels.",
   },
   townsAsBase: {
-    bandItem: (label: string, km: string) => `“${label}” up to ${km} km`,
-    bands: (list: string, maxKm: string) =>
-      `**Three distances instead of one radius.** ${list}. Beyond ${maxKm} km the list ends. Within it, nearness counts gradually: a pass does not become worthless at a round kilometre value, but loses weight with distance. The order comes from that together with condition, beauty and fame – which is why a beautiful pass a little further away stands before a plain one on the doorstep.`,
+    bandItem: "“{label}” up to {km} km",
+    bands:
+      "**Three distances instead of one radius.** {list}. Beyond {maxKm} km the list ends. Within it, nearness counts gradually: a pass does not become worthless at a round kilometre value, but loses weight with distance. The order comes from that together with condition, beauty and fame – which is why a beautiful pass a little further away stands before a plain one on the doorstep.",
     heading: "Towns as a base",
     intro:
       "A town has no climate series and no season of its own. What it has are the passes it reaches – and those are already rated. Everything the town detail shows is **derived** from that and says so: the number of passes in good condition, the bar beneath it and the strip of 24 cells.",
-    stripMeasures: (best: string, good: string) =>
-      `**The strip shows the season, not the size.** It measures every half-month against the best time of _this_ town: from ${best} of it “best time”, from ${good} “good”, below that “limited”, without a single rideable pass “closed”. Otherwise a large town would hold the top rung from June to October without a break and a small one never – the strip would show the size of the town instead of its year. How much it is at all stands beside it in words. The two shares are editorial like all numbers here; \`scripts/analyze-destinations.ts\` checks them.`,
+    stripMeasures:
+      "**The strip shows the season, not the size.** It measures every half-month against the best time of _this_ town: from {best} of it “best time”, from {good} “good”, below that “limited”, without a single rideable pass “closed”. Otherwise a large town would hold the top rung from June to October without a break and a small one never – the strip would show the size of the town instead of its year. How much it is at all stands beside it in words. The two shares are editorial like all numbers here; `scripts/analyze-destinations.ts` checks them.",
   },
   types: {
     heading: "Type and features",
     intro:
       "The **type** says how the road lies in the terrain – every road has exactly one. The **features** say how riding there feels; a road carries none, one or several. They too are editorial labels, not counted values: what the data measures – length, gradient, elevation, border crossing – stands beside it as a number and not here.",
   },
-} satisfies typeof de;
+} as const satisfies Layout<typeof de>;

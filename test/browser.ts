@@ -116,6 +116,12 @@ export interface OpenOptions {
   /** 390 × 844 with touch emulation. */
   mobile?: boolean;
   dark?: boolean;
+  /**
+   * The browser's `Accept-Language`. German unless a scenario asks otherwise:
+   * the root negotiates it (`proxy.ts`), and every other scenario reads the
+   * German page.
+   */
+  acceptLanguage?: string;
 }
 
 /** One page under test; thin wrapper over the view with the waits we need. */
@@ -399,6 +405,9 @@ const openPage = async (app: App, options: OpenOptions = {}): Promise<Page> => {
   // glyph server. Blocking is enough for MapLibre to reach "load".
   await view.cdp("Network.enable");
   await view.cdp("Network.setBlockedURLs", { urls: ["https://*"] });
+  await view.cdp("Network.setExtraHTTPHeaders", {
+    headers: { "Accept-Language": options.acceptLanguage ?? "de-DE,de;q=0.9" },
+  });
   page.errors.push(...errors);
   await page.navigate(options.hash ?? "");
   return page;

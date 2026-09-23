@@ -1,4 +1,5 @@
 import type { sidebar as de } from "../de/sidebar";
+import type { Layout } from "../fill";
 
 /** The English words of the sidebar, held to the German file's shape. */
 export const sidebar = {
@@ -10,12 +11,12 @@ export const sidebar = {
     loops: "Loops",
     none: "No destination picked – switch on up to three in the list to compare them.",
     open: "Compare",
-    pick: (max: string) => `Pick up to ${max} destinations to compare`,
-    picked: (n: string, max: string) => `${n} of ${max} to compare`,
-    remove: (name: string) => `Remove ${name} from the comparison`,
+    pick: "Pick up to {max} destinations to compare",
+    picked: "{n} of {max} to compare",
+    remove: "Remove {name} from the comparison",
     roads: "Roads",
     title: "Destinations compared",
-    toggle: (name: string) => `Compare ${name}`,
+    toggle: "Compare {name}",
     towns: "Towns",
   },
   empty: {
@@ -24,16 +25,17 @@ export const sidebar = {
     noPasses: "No roads found",
     noTours: "No loops found",
     noTowns: "No towns found",
-    queryMatchesNothing: (query: string, withFilters: boolean) =>
-      `"${query}" matches no entry${withFilters ? " – together with the filters you set" : ""}.`,
+    queryMatchesNothing: '"{query}" matches no entry.',
+    queryMatchesNothingFiltered:
+      '"{query}" matches no entry – together with the filters you set.',
     resetAll: "Reset all filters",
-    without: (label: string, n: string) => `Without "${label}": ${n}`,
+    without: 'Without "{label}": {n}',
   },
   filters: {
     active: "Active filters",
     all: "All",
     beauty: "Beauty, 5 is the most beautiful",
-    countRoads: (total: string) => `of ${total} roads`,
+    countRoads: "of {total} roads",
     countTours: "loops",
     difficulty: "Difficulty",
     elevation: "Elevation of the summit",
@@ -41,14 +43,13 @@ export const sidebar = {
     favoritesOnly: "Favourites only",
     heat: "Valley heat (derived)",
     more: "More filters",
-    noRoadsWithout: (label: string) =>
-      `No roads. Without "${label}" there would be `,
+    noRoadsWithout: 'No roads. Without "{label}" there would be ',
     open: "Filter",
     range: "Range",
-    remove: (label: string) => `Remove the "${label}" filter`,
+    remove: 'Remove the "{label}" filter',
     reset: "Reset",
     roadType: "Type of road",
-    roadsLeft: (label: string, n: string) => `${label}, ${n} roads`,
+    roadsLeft: "{label}, {n} roads",
     status: "Status in the chosen period",
     surface: "Surface",
     tags: "Features",
@@ -65,24 +66,24 @@ export const sidebar = {
   footerNote: "The status is a heuristic, the scales are editorial.",
   lists: {
     onMap: "on the map",
-    passes: (n: string) => `${n} passes`,
+    passes: "{n} passes",
     showPasses: "Show passes and roads on the map",
-    showTour: (name: string) => `Show ${name} on the map`,
+    showTour: "Show {name} on the map",
     showTours: "Show loops on the map",
     showTowns: "Show towns on the map",
     sort: "Sort",
-    sortBy: (label: string) => `Sort by: ${label}`,
+    sortBy: "Sort by: {label}",
   },
-  rating: (value: string) => `${value} of 5`,
+  rating: "{value} of 5",
   row: {
-    save: (name: string) => `Save ${name}`,
-    unsave: (name: string) => `Remove ${name} from the favourites`,
+    save: "Save {name}",
+    unsave: "Remove {name} from the favourites",
   },
   search: "Search",
   searchPlaceholder: "Destination, pass, loop or town …",
   strip: {
-    cell: (period: string, grade: string) => `${period}: ${grade}`,
+    cell: "{period}: {grade}",
   },
   support: "Buy me a coffee",
   whatTheListShows: "What the list shows",
-} satisfies typeof de;
+} as const satisfies Layout<typeof de>;

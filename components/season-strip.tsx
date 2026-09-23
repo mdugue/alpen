@@ -6,13 +6,9 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import {
-  monthInitialsOf,
-  periodIndex,
-  periodLabel,
-  PERIODS,
-} from "@/lib/period";
-import { cellHint, gradeLabel, seasonSummary } from "@/lib/status";
+import { fill } from "@/lib/i18n/fill";
+import { periodIndex, periodLabel, PERIODS } from "@/lib/period";
+import { cellHint, seasonSummary } from "@/lib/status";
 import type { Grade, YearCell } from "@/lib/status";
 import type { Period } from "@/lib/types";
 import { cn } from "@/lib/utils";
@@ -56,14 +52,17 @@ export const SeasonStrip = ({
   size?: "row" | "panel";
   className?: string;
 }) => {
-  const { t, lang } = useT();
+  const { t } = useT();
   const panel = size === "panel";
   const grades = cells.map((c) => c.grade);
   const currentIndex = current === undefined ? -1 : periodIndex(current);
   const cellWord = (period: Period, grade: Grade) =>
-    t.sidebar.strip.cell(periodLabel(period, lang), gradeLabel(grade, lang));
+    fill(t.sidebar.strip.cell, {
+      grade: t.status.grade[grade],
+      period: periodLabel(period, t),
+    });
   const label = [
-    seasonSummary(grades, lang),
+    seasonSummary(grades, t),
     current !== undefined && grades[currentIndex]
       ? `${cellWord(current, grades[currentIndex])}.`
       : "",
@@ -106,10 +105,10 @@ export const SeasonStrip = ({
               />
               <PopoverContent className="w-56 gap-1" side="top">
                 <p className="text-sm font-semibold">
-                  {periodLabel(PERIODS[i]!, lang)} · {gradeLabel(grade, lang)}
+                  {periodLabel(PERIODS[i]!, t)} · {t.status.grade[grade]}
                 </p>
                 <p className="text-muted-foreground text-xs">
-                  {cellHint(cells[i]!, lang)}
+                  {cellHint(cells[i]!, t)}
                 </p>
               </PopoverContent>
             </Popover>
@@ -127,11 +126,13 @@ export const SeasonStrip = ({
           aria-hidden
           className="text-muted-foreground text-2xs mt-0.5 flex leading-none"
         >
-          {monthInitialsOf(lang).map((m, i) => (
-            <span key={m + String(i)} className="flex-1 text-center">
-              {m}
-            </span>
-          ))}
+          {t.calendar.months
+            .map((m) => m[0]!)
+            .map((m, i) => (
+              <span key={m + String(i)} className="flex-1 text-center">
+                {m}
+              </span>
+            ))}
         </div>
       )}
     </div>

@@ -6,48 +6,68 @@ import { scales } from "./en/scales";
 import { sidebar } from "./en/sidebar";
 import { status } from "./en/status";
 import { vocab } from "./en/vocab";
-import type { Messages } from "./messages.de";
+import type { Layout } from "./fill";
+import type { de } from "./messages.de";
 
-/** The English words, held to the German file's shape by the type. */
+/** The English words, held to the German file's layout by the type and to its placeholders by a test. */
 export const en = {
   band: {
-    backToToday: (label: string) => `Back to today (${label})`,
-    daylight: (hours: string) => `${hours} h of daylight`,
+    backToToday: "Back to today ({label})",
+    daylight: "{hours} h of daylight",
     filters: "Filters",
     legend: {
       bar: "Bar height = mean daily maximum of the passes shown",
       ribbon: "Band = rideability of most of them",
       snow: "Hanging bar = share of days with snowfall",
     },
-    mostly: (grade: string) => `mostly ${grade}`,
+    mostly: "mostly {grade}",
     noPass: "no pass in this selection",
     period: "Period",
-    snow: (pct: string) => `${pct} % snow`,
-    today: (label: string) => `today: ${label}`,
-    wet: (pct: string) => `${pct} % wet`,
+    snow: "{pct} % snow",
+    today: "today: {label}",
+    wet: "{pct} % wet",
     whatBarsMean: "What the bars mean",
   },
+  calendar: {
+    early: "early {month}",
+    late: "late {month}",
+    months: [
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December",
+    ],
+  },
   header: {
-    collapse: (label: string) => `Collapse ${label.toLowerCase()}`,
     counts: {
-      best: (n: string) => `${n} passes at their best time`,
-      closed: (n: string) => `${n} often closed`,
-      good: (n: string) => `${n} good`,
-      limited: (n: string) => `${n} limited`,
+      best: "{n} passes at their best time",
+      closed: "{n} often closed",
+      good: "{n} good",
+      limited: "{n} limited",
     },
     dataLine: "Climate 2015–2024 · 7-day forecast",
     details: "Details",
-    expand: (label: string) => `Expand ${label.toLowerCase()}`,
+    drawer: {
+      details: {
+        collapse: "Collapse the details",
+        expand: "Expand the details",
+      },
+      list: { collapse: "Collapse the list", expand: "Expand the list" },
+    },
     hideSidebar: "Hide the sidebar",
-    hint: "Diese Karte gibt es auch auf Deutsch.",
-    hintDismiss: "Ausblenden",
-    hintOpen: "Deutsche Version",
     list: "List",
     listAndFilters: "List and filters",
     noPass: "no pass in this selection.",
     scales: "Scales & sources",
     skipToMap: "Skip to the map",
-    switchTo: "Deutsche Version",
   },
   kinds: {
     destination: "Destinations",
@@ -55,6 +75,7 @@ export const en = {
     tour: "Loops",
     town: "Towns",
   },
+  lang: "en",
   legal: {
     englishNote:
       "This page is in German: it is the legal notice a site operated from Germany has to carry, and a translation would not be the binding text.",
@@ -63,23 +84,25 @@ export const en = {
   panel,
   scales,
   share: {
-    counts: (passes: string, tours: string, towns: string) =>
-      `${passes} passes · ${tours} loops · ${towns} towns`,
+    alt: `${SITE_NAME} – which passes, loops and cycling towns can be ridden when?`,
+    counts: "{passes} passes · {tours} loops · {towns} towns",
     entity: {
+      alt: `{title} – marked on the ${SITE_NAME} map`,
       destination: "Destination",
-      destinationDescription: (country: string) => `Destination (${country}).`,
+      destinationDescription: "Destination ({country}).",
       loop: "Loop",
-      loopDescription: (km: string, gain: string, passes: string) =>
-        `Loop, about ${km} km and ${gain} m of climbing over ${passes} passes.`,
-      passDescription: (type: string, inside: string, country: string) =>
-        `${type} ${inside} (${country}).`,
+      loopDescription:
+        "Loop, about {km} km and {gain} m of climbing over {passes} passes.",
+      passDescription: "{type} {inside} ({country}).",
       town: "Cycling town",
-      townDescription: (country: string) => `Cycling town (${country}).`,
+      townDescription: "Cycling town ({country}).",
     },
     headline: "Which region is worth it, and when?",
   },
   sidebar,
   site: {
+    claim:
+      "Passes, loops and cycling towns in the Alps – by rideability per half-month.",
     description:
       "Where to go with the road bike, and when? Alpine passes, ascents with elevation profiles, loops and cycling towns on one map – with rideability per half-month, weather and climate.",
     keywords: [
@@ -99,4 +122,4 @@ export const en = {
   },
   status,
   vocab,
-} satisfies Messages;
+} as const satisfies Layout<typeof de>;

@@ -27,7 +27,7 @@ import { nearbyTours, townRanges, townReach } from "@/lib/nearby";
 import type { NearbyTours, TownReach } from "@/lib/nearby";
 import type { PageData } from "@/lib/page-data";
 import { profilesWithCoords, valleyElevations } from "@/lib/profile";
-import { SEGMENT } from "@/lib/routes";
+import { SEGMENT, selectionOf } from "@/lib/routes";
 import type { Segment } from "@/lib/routes";
 import * as S from "@/lib/schema";
 import type { Entity } from "@/lib/share-text";
@@ -297,6 +297,22 @@ export const getEntity = (
       return selection.kind satisfies never;
     }
   }
+};
+
+/**
+ * The entity a route's two segments name, with its selection – what the
+ * page, its metadata and its share image all start from. `null` for a path
+ * that names nothing, which the page turns into a 404.
+ */
+export const entityAt = (
+  kind: string,
+  slug: string,
+  lang: Lang,
+): { entity: Entity; selection: Selection } | null => {
+  // The params arrive decoded; the path form is what `selectionOf` reads.
+  const selection = selectionOf(`/${kind}/${encodeURIComponent(slug)}`);
+  const entity = selection && getEntity(selection, lang);
+  return selection && entity ? { entity, selection } : null;
 };
 
 /** Every entity route there is, for `generateStaticParams` and the sitemap. */

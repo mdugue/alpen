@@ -1,13 +1,12 @@
 import { BASEMAP_ID } from "@/lib/basemap";
-import { DEFAULT_LANG, messagesOf } from "@/lib/i18n";
-import type { Lang } from "@/lib/i18n";
+import type { Messages } from "@/lib/i18n";
 
 /**
  * The default: the vector map generated from the app's palette
  * (`lib/basemap.ts`), light or dark with the OS. Listed first in the popover.
  */
-export const vectorBase = (lang: Lang = DEFAULT_LANG) =>
-  ({ id: BASEMAP_ID, name: messagesOf(lang).map.vectorBase }) as const;
+export const vectorBase = (w: Messages) =>
+  ({ id: BASEMAP_ID, name: w.map.vectorBase }) as const;
 
 /** A raster alternative in the layer popover. */
 export interface BaseLayerDef {
@@ -23,8 +22,8 @@ export interface BaseLayerDef {
  * it is set. The names and the OSM attribution are words the visitor reads,
  * so they come in the page's language.
  */
-export const baseLayers = (lang: Lang = DEFAULT_LANG): BaseLayerDef[] => {
-  const t = messagesOf(lang).map;
+export const baseLayers = (w: Messages): BaseLayerDef[] => {
+  const t = w.map;
   const OSM = t.osmContributors;
   const list: BaseLayerDef[] = [
     {
@@ -114,14 +113,5 @@ export const OVERLAYS = [
 export type OverlayId = (typeof OVERLAYS)[number]["id"];
 
 /** What the view menu calls each overlay, in the page's language. */
-export const overlayName = (id: OverlayId, lang: Lang = DEFAULT_LANG) => {
-  const t = messagesOf(lang).map;
-  switch (id) {
-    case "waymarked": {
-      return t.cycleRoutes;
-    }
-    default: {
-      return id satisfies never;
-    }
-  }
-};
+export const overlayName = (id: OverlayId, w: Messages): string =>
+  ({ waymarked: w.map.cycleRoutes })[id];

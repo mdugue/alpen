@@ -1,4 +1,5 @@
 #!/usr/bin/env bun
+import { DE } from "../lib/i18n/dictionaries";
 /**
  * Where does a pass point belong? For one pass, several, or every pass the
  * gate currently holds back, this prints what the data says about the stored
@@ -52,7 +53,7 @@
  * because a host's budget is one host's budget, however many scripts ask.
  */
 import { profileCoords } from "../lib/profile";
-import { hasRoadSummit, isTraverse, ROAD_TYPE } from "../lib/regions";
+import { hasRoadSummit, isTraverse } from "../lib/regions";
 import { ascentKey } from "../lib/route-key";
 import type { Pass } from "../lib/types";
 import { mustRead, writeData } from "./lib/data-files";
@@ -348,7 +349,7 @@ for (const p of list) {
   );
   if (isTraverse(p.type))
     console.log(
-      `  ${ROAD_TYPE[p.type].label}: kein Gipfel, auf den die Fahrt zuläuft – der Punkt ist gesetzt, hier stehen nur seine Messwerte`,
+      `  ${DE.vocab.roadType[p.type].label}: kein Gipfel, auf den die Fahrt zuläuft – der Punkt ist gesetzt, hier stehen nur seine Messwerte`,
     );
   else if (hasRoadSummit(p))
     console.log(

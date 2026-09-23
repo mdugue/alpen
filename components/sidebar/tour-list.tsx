@@ -9,6 +9,7 @@ import { RowList } from "@/components/sidebar/row-list";
 import { StatusLabel } from "@/components/status-badge";
 import { Switch } from "@/components/ui/switch";
 import type { Selection } from "@/lib/app-state";
+import { fill } from "@/lib/i18n/fill";
 import { entityKey } from "@/lib/route-key";
 import type { TourRow } from "@/lib/rows";
 import type { Period } from "@/lib/types";
@@ -77,7 +78,7 @@ export const TourList = ({
                 title={tour.name}
                 subtitle={[
                   showRange && range ? t.vocab.range[range].label : null,
-                  t.sidebar.lists.passes(fmt(tour.passes.length)),
+                  fill(t.sidebar.lists.passes, { n: fmt(tour.passes.length) }),
                   window,
                 ]
                   .filter(Boolean)
@@ -104,7 +105,9 @@ export const TourList = ({
                     size="sm"
                     checked={onMap}
                     onCheckedChange={(on) => onToggleTour(tour.slug, on)}
-                    aria-label={t.sidebar.lists.showTour(tour.name)}
+                    aria-label={fill(t.sidebar.lists.showTour, {
+                      name: tour.name,
+                    })}
                   />
                 }
               />

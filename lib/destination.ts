@@ -1,11 +1,11 @@
 import { bounds, haversine, REACH_MAX_KM } from "@/lib/geo";
 import type { Bounds } from "@/lib/geo";
-import { DEFAULT_LANG, vocabOf } from "@/lib/i18n";
-import type { Lang } from "@/lib/i18n";
+import type { Messages } from "@/lib/i18n";
+import { fill } from "@/lib/i18n/fill";
 import { PERIODS, periodIndex } from "@/lib/period";
 import { emptyCount, inBands, reachCounts, rideable } from "@/lib/reach";
 import type { Band, GradeCount, ReachedPass, ReachedTown } from "@/lib/reach";
-import { cellAt, statusOf } from "@/lib/status";
+import { cellAt, GRADE_ORDER, statusOf } from "@/lib/status";
 import type { Grade, PassIndex, Year, YearCell, Years } from "@/lib/status";
 import type {
   Destination,
@@ -181,21 +181,15 @@ export const destinationOf = (
  * count is what the grade was made of – the badge says "beste Zeit" and this
  * says why that is so, in the same breath.
  */
-export const destinationText = (
-  d: BaseVerdict,
-  lang: Lang = DEFAULT_LANG,
-): string => {
-  const n = rideable(d.counts);
-  const w = vocabOf(lang).reach;
-  if (d.total === 0) return w.noneWithin(REACH_MAX_KM);
-  if (n === 0) return w.noneRideable(d.total);
-  const parts = [
-    d.counts.best > 0 && w.count.best(d.counts.best),
-    d.counts.good > 0 && w.count.good(d.counts.good),
-    d.counts.limited > 0 && w.count.limited(d.counts.limited),
-    d.counts.closed > 0 && w.count.closed(d.counts.closed),
-  ].filter((x): x is string => typeof x === "string");
-  return w.ofTotal(d.total, parts.join(", "));
+export const destinationText = (d: BaseVerdict, w: Messages): string => {
+  const say = w.vocab.reach;
+  if (d.total === 0) return fill(say.noneWithin, { km: REACH_MAX_KM });
+  if (rideable(d.counts) === 0)
+    return fill(say.noneRideable, { total: d.total });
+  const parts = GRADE_ORDER.filter((g) => d.counts[g] > 0).map((g) =>
+    fill(say.count[g], { n: d.counts[g] }),
+  );
+  return fill(say.ofTotal, { parts: parts.join(", "), total: d.total });
 };
 
 /**
@@ -359,8 +353,10 @@ export const areaVerdict = (
 };
 
 /** "7 von 9 Straßen gut" – the row's one line, and the compare sheet's. */
-export const areaText = (v: AreaVerdict, lang: Lang = DEFAULT_LANG): string => {
-  const w = vocabOf(lang).reach;
-  if (v.total === 0) return w.areaNone;
-  return w.areaLine(fmt(rideable(v.counts), 0, lang), fmt(v.total, 0, lang));
-};
+export const areaText = (v: AreaVerdict, w: Messages): string =>
+  v.total === 0
+    ? w.vocab.reach.areaNone
+    : fill(w.vocab.reach.areaLine, {
+        rideable: fmt(rideable(v.counts), 0, w.lang),
+        total: fmt(v.total, 0, w.lang),
+      });

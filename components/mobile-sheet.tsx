@@ -2,7 +2,6 @@
 
 import { createContext, use, useSyncExternalStore } from "react";
 
-import { useT } from "@/components/i18n";
 import {
   Drawer,
   DrawerContent,
@@ -114,8 +113,10 @@ export const useSheet = (): EnclosingSheet => ({
 });
 
 interface Props {
-  /** Names the sheet for screen readers and its swipe handle ("… ausklappen"). */
+  /** Names the sheet for screen readers. */
   label: string;
+  /** What the tap target on the swipe handle says, collapsed and expanded ("Liste ausklappen"). */
+  handle: { expand: string; collapse: string };
   /** Rendered inside another sheet, which it stacks on; see `EnclosingSheet`. */
   over?: boolean;
   open: boolean;
@@ -144,6 +145,7 @@ interface Props {
  */
 export const MobileSheet = ({
   label,
+  handle,
   over = false,
   open,
   onClose,
@@ -152,7 +154,6 @@ export const MobileSheet = ({
   onSnapChange,
   children,
 }: Props) => {
-  const { t } = useT();
   const [collapsed, ...rest] = snapPoints;
   const top = rest.at(-1) ?? collapsed;
   const isCollapsed = snap === collapsed;
@@ -210,9 +211,7 @@ export const MobileSheet = ({
         <button
           type="button"
           onClick={() => onSnapChange(isCollapsed ? top : collapsed)}
-          aria-label={
-            isCollapsed ? t.header.expand(label) : t.header.collapse(label)
-          }
+          aria-label={isCollapsed ? handle.expand : handle.collapse}
           className="w-full shrink-0"
         >
           <DrawerSwipeHandle className="h-5" />

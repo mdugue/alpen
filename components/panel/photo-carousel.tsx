@@ -9,6 +9,7 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import { Skeleton } from "@/components/ui/skeleton";
+import { fill } from "@/lib/i18n/fill";
 import { PHOTO_SIZES, photoSrcSet } from "@/lib/photos";
 import type { Photo } from "@/lib/types";
 import { cn, OVERLAY_CONTROL } from "@/lib/utils";
@@ -148,7 +149,9 @@ export const PhotoCarousel = ({
                   href={photo.page}
                   rel="noopener noreferrer"
                   target="_blank"
-                  title={t.panel.photos.viewOnCommons(photo.title)}
+                  title={fill(t.panel.photos.viewOnCommons, {
+                    title: photo.title,
+                  })}
                 >
                   {photo.artist || t.panel.photos.unknownArtist}
                 </a>

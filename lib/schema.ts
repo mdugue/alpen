@@ -1,17 +1,16 @@
 import { z } from "zod";
 
+import { DE } from "@/lib/i18n/dictionaries";
 import {
   COUNTRIES,
   SURFACES,
   inBox,
   isTraverse,
   LATLON_BOUNDS,
-  RANGE,
   RANGE_BOUNDS,
   rangeOf,
   REGIONS,
   ROAD_TAGS,
-  ROAD_TYPE,
   ROAD_TYPES,
   TOWN_TAGS,
 } from "@/lib/regions";
@@ -201,13 +200,13 @@ export const Pass = z
     season: PassSeason.nullable(),
     slug: Slug,
     /**
-     * What the road is rolled on (see `SURFACE`, plan 27). Required like the
+     * What the road is rolled on (see `SURFACES`, plan 27). Required like the
      * type: an entry that does not say what it is rolled on is an entry nobody
      * has looked at. It picks the routing profile and the closing rung.
      */
     surface: Surface,
     /**
-     * What riding the road is like, as editorial labels (see `ROAD_TAG`).
+     * What riding the road is like, as editorial labels (see `ROAD_TAGS`).
      * Optional: plenty of roads are simply a climb, and an empty strip of glyphs
      * says that honestly. Display order is the vocabulary order.
      */
@@ -217,7 +216,7 @@ export const Pass = z
       .optional(),
     traffic: Rating,
     /**
-     * What kind of road this is (see `ROAD_TYPE`). Required on every entry
+     * What kind of road this is (see `ROAD_TYPES`). Required on every entry
      * rather than defaulted: the file is the product, and an entry that does not
      * say what it is is an entry nobody has looked at.
      */
@@ -236,7 +235,7 @@ export const Pass = z
     const range = rangeOf(road.region);
     const box = RANGE_BOUNDS[range];
     const outside = (p: { lat: number; lon: number }) => !inBox(box, p);
-    const where = `${RANGE[range].outside} (${box.lat.join("–")}° N, ${box.lon.join("–")}° E) – Koordinate oder Region prüfen`;
+    const where = `${DE.vocab.range[range].outside} (${box.lat.join("–")}° N, ${box.lon.join("–")}° E) – Koordinate oder Region prüfen`;
     if (outside(road))
       ctx.addIssue({
         code: "custom",
@@ -253,13 +252,13 @@ export const Pass = z
       if (traverse && (a.to === undefined || a.km === undefined))
         ctx.addIssue({
           code: "custom",
-          message: `${ROAD_TYPE[road.type].label}: Strecke braucht Ende (to) und Länge (km)`,
+          message: `${DE.vocab.roadType[road.type].label}: Strecke braucht Ende (to) und Länge (km)`,
           path: ["ascents", i],
         });
       if (!traverse && (a.to !== undefined || a.km !== undefined))
         ctx.addIssue({
           code: "custom",
-          message: `${ROAD_TYPE[road.type].label}: Auffahrt endet am Passpunkt – to und km gehören nicht dazu`,
+          message: `${DE.vocab.roadType[road.type].label}: Auffahrt endet am Passpunkt – to und km gehören nicht dazu`,
           path: ["ascents", i],
         });
       // A check may only widen the limits the validator of *this* ascent
@@ -317,7 +316,7 @@ export const Town = z.strictObject({
   slug: Slug,
   /**
    * Why the town is in the list, as a handful of editorial labels (see
-   * `TOWN_TAG`). At least one: a town nobody can say anything about does not
+   * `TOWN_TAGS`). At least one: a town nobody can say anything about does not
    * belong in a list meant for choosing a base.
    */
   tags: z.array(TownTag).min(1, "Ort ohne Merkmal (tags)"),

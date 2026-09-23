@@ -2,6 +2,7 @@ import { describe, expect, test } from "bun:test";
 
 import { detailModel } from "@/lib/detail-model";
 import type { DetailState } from "@/lib/detail-state";
+import { DE } from "@/lib/i18n/dictionaries";
 import { entityKey } from "@/lib/route-key";
 import {
   bundleOf,
@@ -36,8 +37,8 @@ const modelOf = (kind: "pass" | "tour" | "town", slug: string) => {
   const model = detailModel({ kind, slug }, data, {
     detail: absent,
     hovered: null,
-    lang: "de",
     period: PERIOD,
+    w: DE,
   });
   // The three kinds with a point of their own; an area has no reach block.
   return model?.kind === "destination" ? null : model;

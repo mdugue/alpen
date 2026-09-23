@@ -51,13 +51,13 @@ export const TagIcon = ({
 
 /** The detail panel: one badge per label, icon in front of the word. */
 export const TagBadges = ({ tags }: { tags: Tag[] }) => {
-  const { lang } = useT();
+  const { t } = useT();
   return (
     <div className="flex flex-wrap gap-1">
       {tags.map((tag) => (
         <Badge key={tag} variant="secondary" className="gap-1">
           <TagIcon tag={tag} />
-          {tagLabel(tag, lang)}
+          {tagLabel(tag, t)}
         </Badge>
       ))}
     </div>
@@ -80,16 +80,16 @@ export const TagLine = ({
   /** Put in front of the labels, e.g. the country code or the road type. */
   lead?: string;
 }) => {
-  const { lang } = useT();
+  const { t } = useT();
   return (
     <span className="flex items-center gap-x-1.5">
       {lead && (
         <span className="truncate">{tags.length ? `${lead} ·` : lead}</span>
       )}
       {tags.map((tag) => (
-        <span key={tag} className="inline-flex" title={tagLabel(tag, lang)}>
+        <span key={tag} className="inline-flex" title={tagLabel(tag, t)}>
           <TagIcon tag={tag} className="size-3.5" />
-          <span className="sr-only">{tagLabel(tag, lang)}</span>
+          <span className="sr-only">{tagLabel(tag, t)}</span>
         </span>
       ))}
     </span>

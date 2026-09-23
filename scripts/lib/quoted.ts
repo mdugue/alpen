@@ -17,6 +17,7 @@
  * that what is quoted is quoted right. The plans under `docs/plans/` are
  * history and are not checked.
  */
+import { DE } from "../../lib/i18n/dictionaries";
 import { LAPSE_RATE, SIGNALS, signalValue } from "../../lib/status";
 import { fmt } from "../../lib/utils";
 import { LIMITS } from "./validate";
@@ -110,7 +111,7 @@ export const QUOTES: Quote[] = [
   ...SIGNALS.map((s) => ({
     constant: `SIGNALS[${s.reason ?? "best"}]`,
     files: [SCALES],
-    text: docUnit(signalValue(s)),
+    text: docUnit(signalValue(s, DE)),
   })),
   {
     // "0,65 °C per 100 m", as `lapseText` says it in the dialog.

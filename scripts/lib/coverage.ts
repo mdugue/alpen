@@ -13,6 +13,7 @@
  */
 import { REACH_BANDS, REACH_MAX_KM, haversine, reachBand } from "../../lib/geo";
 import type { ReachBand } from "../../lib/geo";
+import { DE } from "../../lib/i18n/dictionaries";
 import { fold } from "../../lib/search";
 import type { Pass } from "../../lib/types";
 import type { OverpassNode } from "./hosts";
@@ -226,7 +227,7 @@ export const reportLines = (
     const c = cov.candidates[band.key];
     const names = c.slice(0, top).map(candidateLine).join(", ");
     out.push(
-      `  ${band.label.padEnd(16)} gelistet ${String(l).padStart(3)}   Kandidaten ${String(c.length).padStart(3)}${
+      `  ${DE.vocab.band[band.key].label.padEnd(16)} gelistet ${String(l).padStart(3)}   Kandidaten ${String(c.length).padStart(3)}${
         names ? `   ${names}${c.length > top ? ", …" : ""}` : ""
       }`,
     );

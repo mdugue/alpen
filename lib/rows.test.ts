@@ -3,6 +3,7 @@ import { describe, expect, test } from "bun:test";
 import { DEFAULT_FILTERS } from "@/lib/app-state";
 import type { Filters } from "@/lib/app-state";
 import { membersOf } from "@/lib/destination";
+import { DE } from "@/lib/i18n/dictionaries";
 import { PERIODS } from "@/lib/period";
 import {
   barTotal,
@@ -182,27 +183,35 @@ const periodIndexOf = (t: number) => PERIODS.indexOf(t);
 describe("buildPassRows", () => {
   test("filters by elevation, fame, search and favourites", () => {
     expect(
-      buildPassRows(passes, years, filters({ minElevation: 2000 }), never).map(
+      buildPassRows(
+        passes,
+        years,
+        filters({ minElevation: 2000 }),
+        never,
+        DE,
+      ).map((r) => r.pass.slug),
+    ).toEqual(["hoch"]);
+    expect(
+      buildPassRows(passes, years, filters({ minFame: 4 }), never, DE).map(
         (r) => r.pass.slug,
       ),
     ).toEqual(["hoch"]);
     expect(
-      buildPassRows(passes, years, filters({ minFame: 4 }), never).map(
-        (r) => r.pass.slug,
-      ),
-    ).toEqual(["hoch"]);
-    expect(
-      buildPassRows(passes, years, filters({ query: "winter" }), never).map(
+      buildPassRows(passes, years, filters({ query: "winter" }), never, DE).map(
         (r) => r.pass.slug,
       ),
     ).toEqual(["winter"]);
     expect(
-      buildPassRows(passes, years, filters({ query: "westalpen" }), never).map(
-        (r) => r.pass.slug,
-      ),
+      buildPassRows(
+        passes,
+        years,
+        filters({ query: "westalpen" }),
+        never,
+        DE,
+      ).map((r) => r.pass.slug),
     ).toEqual(["hoch"]);
     expect(
-      buildPassRows(passes, years, filters({ favoritesOnly: true }), never),
+      buildPassRows(passes, years, filters({ favoritesOnly: true }), never, DE),
     ).toHaveLength(0);
     expect(
       buildPassRows(
@@ -210,6 +219,7 @@ describe("buildPassRows", () => {
         years,
         filters({ favoritesOnly: true }),
         (_, slug) => slug === "mittel",
+        DE,
       ).map((r) => r.pass.slug),
     ).toEqual(["mittel"]);
   });
@@ -223,6 +233,7 @@ describe("buildPassRows", () => {
         years,
         filters({ period: 4, status: ["open"] }),
         never,
+        DE,
       ).map((r) => r.pass.slug),
     ).toEqual(["mittel"]);
     expect(
@@ -231,12 +242,13 @@ describe("buildPassRows", () => {
         years,
         filters({ period: 4, status: ["closed"] }),
         never,
+        DE,
       ).map((r) => r.pass.slug),
     ).toEqual(["winter"]);
   });
 
   test("every row carries its 24 cells and the climate series is applied", () => {
-    const [row] = buildPassRows([passes[1]!], years, filters(), never);
+    const [row] = buildPassRows([passes[1]!], years, filters(), never, DE);
     expect(row!.season).toHaveLength(24);
     expect(row!.status).toBe("open");
     const signals = { climate: { mittel: snowy(30) } };
@@ -245,6 +257,7 @@ describe("buildPassRows", () => {
       yearsOf(passes, tours, signals),
       filters(),
       never,
+      DE,
       signals,
     );
     expect(withSnow[0]!.status).toBe("risky");
@@ -274,6 +287,7 @@ describe("buildPassRows", () => {
       own,
       filters({ period: 1 }),
       never,
+      DE,
     );
     expect(row!.status).toBe("risky");
     expect(row!.reason).toBe("heat");
@@ -283,7 +297,7 @@ describe("buildPassRows", () => {
     expect(row!.season).toBe(cells);
     expect(row!.season[0]!.grade).toBe("limited");
 
-    const { bars } = seasonBand([passes[1]!], own, filters(), never);
+    const { bars } = seasonBand([passes[1]!], own, filters(), never, DE);
     expect(bars[0]).toMatchObject({ best: 0, good: 0, limited: 1 });
 
     // And the detail panel, which reads the cell through `cellAt`.
@@ -305,7 +319,7 @@ describe("plan 05 criteria", () => {
     }),
   ];
   const pick = (over: Partial<Filters>) =>
-    buildPassRows(mixed, yearsOf(mixed), filters(over), never).map(
+    buildPassRows(mixed, yearsOf(mixed), filters(over), never, DE).map(
       (r) => r.pass.slug,
     );
 
@@ -324,6 +338,7 @@ describe("plan 05 criteria", () => {
         yearsOf(umlaut),
         filters({ query: "grosser bernhard" }),
         never,
+        DE,
       ),
     ).toHaveLength(1);
     expect(
@@ -332,6 +347,7 @@ describe("plan 05 criteria", () => {
         yearsOf(umlaut),
         filters({ query: "bernhard klein" }),
         never,
+        DE,
       ),
     ).toHaveLength(0);
   });
@@ -339,7 +355,7 @@ describe("plan 05 criteria", () => {
   // "kurz" crosses the 1,500 m pass only, "lang" the 1,500 m and the 1,200 m one.
   test("a tour needs one pass that clears the lower bounds", () => {
     const rows = (over: Partial<Filters>) =>
-      buildTourRows(tours, index, years, filters(over), never).map(
+      buildTourRows(tours, index, years, filters(over), never, DE).map(
         (r) => r.tour.slug,
       );
     expect(rows({ minElevation: 1400 })).toEqual(["lang", "kurz"]);
@@ -366,6 +382,7 @@ describe("plan 05 criteria", () => {
         yearsOf(hard, withHard),
         filters(over),
         never,
+        DE,
       ).map((r) => r.tour.slug);
     expect(rows({})).toContain("hart");
     expect(rows({ difficulty: [1, 3] })).toEqual(["lang", "kurz"]);
@@ -374,25 +391,37 @@ describe("plan 05 criteria", () => {
 
   test("towns see search, favourites and the range, nothing else", () => {
     expect(
-      buildTownRows(towns, {}, filters({ maxTraffic: 1, minBeauty: 5 }), never),
+      buildTownRows(
+        towns,
+        {},
+        filters({ maxTraffic: 1, minBeauty: 5 }),
+        never,
+        DE,
+      ),
     ).toHaveLength(2);
     const ranges = { aosta: "Alpen" as const };
     // Bormio has no road in reach here, so it has no range: listed while
     // nothing is asked, gone once a range is – it cannot be "a Jura town".
     expect(
-      buildTownRows(towns, ranges, filters(), never).map((r) => r.town.slug),
-    ).toEqual(["aosta", "bormio"]);
-    expect(
-      buildTownRows(towns, ranges, filters({ ranges: ["Alpen"] }), never).map(
+      buildTownRows(towns, ranges, filters(), never, DE).map(
         (r) => r.town.slug,
       ),
+    ).toEqual(["aosta", "bormio"]);
+    expect(
+      buildTownRows(
+        towns,
+        ranges,
+        filters({ ranges: ["Alpen"] }),
+        never,
+        DE,
+      ).map((r) => r.town.slug),
     ).toEqual(["aosta"]);
     expect(
-      buildTownRows(towns, ranges, filters({ ranges: ["Jura"] }), never),
+      buildTownRows(towns, ranges, filters({ ranges: ["Jura"] }), never, DE),
     ).toEqual([]);
     // The range word finds the town, through the range it was handed.
     expect(
-      buildTownRows(towns, ranges, filters({ query: "alpen" }), never).map(
+      buildTownRows(towns, ranges, filters({ query: "alpen" }), never, DE).map(
         (r) => r.town.slug,
       ),
     ).toEqual(["aosta"]);
@@ -424,6 +453,7 @@ describe("plan 13 summer filters", () => {
       yearsOf(passes, tours, signals),
       filters(over),
       never,
+      DE,
       signals,
     ).map((r) => r.pass.slug);
   };
@@ -488,6 +518,7 @@ describe("plan 13 summer filters", () => {
         yearsOf(passes, tours, signals),
         filters(over),
         never,
+        DE,
         signals,
       ).map((r) => r.tour.slug);
     expect(rows({})).toEqual(["lang", "kurz"]);
@@ -509,7 +540,7 @@ describe("plan 14 type and label filters", () => {
     }),
   ];
   const slugs = (over: Partial<Filters>) =>
-    buildPassRows(roads, yearsOf(roads), filters(over), never).map(
+    buildPassRows(roads, yearsOf(roads), filters(over), never, DE).map(
       (r) => r.pass.slug,
     );
 
@@ -544,6 +575,7 @@ describe("plan 14 type and label filters", () => {
         yearsOf(roads, [withSpur]),
         filters(over),
         never,
+        DE,
       ).map((r) => r.tour.slug);
     expect(rows({ types: ["spur"] })).toEqual(["mit-stich"]);
     expect(rows({ types: ["pass"] })).toEqual([]);
@@ -554,11 +586,11 @@ describe("plan 14 type and label filters", () => {
 
 describe("buildTourRows", () => {
   test("status comes from the passes, sorted by elevation gain", () => {
-    const rows = buildTourRows(tours, index, years, filters(), never);
+    const rows = buildTourRows(tours, index, years, filters(), never, DE);
     expect(rows.map((r) => r.tour.slug)).toEqual(["lang", "kurz"]);
     expect(rows.map((r) => r.status)).toEqual(["open", "open"]);
     expect(
-      buildTourRows(tours, index, years, filters({ period: 4 }), never).map(
+      buildTourRows(tours, index, years, filters({ period: 4 }), never, DE).map(
         (r) => r.status,
       ),
     ).toEqual(["closed", "open"]);
@@ -572,6 +604,7 @@ describe("buildTourRows", () => {
         years,
         filters({ query: "kurze" }),
         never,
+        DE,
       ).map((r) => r.tour.slug),
     ).toEqual(["kurz"]);
     expect(
@@ -581,6 +614,7 @@ describe("buildTourRows", () => {
         years,
         filters({ period: 4, status: ["open"] }),
         never,
+        DE,
       ).map((r) => r.tour.slug),
     ).toEqual(["kurz"]);
   });
@@ -593,11 +627,12 @@ describe("buildTourRows", () => {
       yearsOf(passes, tours, signals),
       filters(),
       never,
+      DE,
       signals,
     );
     expect(rows.every((r) => r.status === "risky")).toBe(true);
     expect(rows.every((r) => r.reason === "snow")).toBe(true);
-    const clear = buildTourRows(tours, index, years, filters(), never);
+    const clear = buildTourRows(tours, index, years, filters(), never, DE);
     expect(clear.every((r) => r.reason === null)).toBe(true);
   });
 });
@@ -605,30 +640,30 @@ describe("buildTourRows", () => {
 describe("buildTownRows", () => {
   test("sorted by name, searchable, favourites only", () => {
     expect(
-      buildTownRows(towns, {}, filters(), never).map((r) => r.town.slug),
+      buildTownRows(towns, {}, filters(), never, DE).map((r) => r.town.slug),
     ).toEqual(["aosta", "bormio"]);
     expect(
-      buildTownRows(towns, {}, filters({ query: "stelvio" }), never).map(
+      buildTownRows(towns, {}, filters({ query: "stelvio" }), never, DE).map(
         (r) => r.town.slug,
       ),
     ).toEqual(["bormio"]);
     expect(
-      buildTownRows(towns, {}, filters({ favoritesOnly: true }), never),
+      buildTownRows(towns, {}, filters({ favoritesOnly: true }), never, DE),
     ).toHaveLength(0);
   });
 });
 
 describe("sortPassRows", () => {
-  const rows = buildPassRows(passes, years, filters({ period: 4 }), never);
+  const rows = buildPassRows(passes, years, filters({ period: 4 }), never, DE);
 
   test("buildPassRows has already applied `Filters.sort`", () => {
     expect(
-      buildPassRows(passes, years, filters({ sort: "name" }), never).map(
+      buildPassRows(passes, years, filters({ sort: "name" }), never, DE).map(
         (r) => r.pass.slug,
       ),
     ).toEqual(["hoch", "mittel", "winter"]);
     expect(
-      buildPassRows(passes, years, filters({ sort: "traffic" }), never).map(
+      buildPassRows(passes, years, filters({ sort: "traffic" }), never, DE).map(
         (r) => r.pass.slug,
       ),
     ).toEqual(sortPassRows(rows, "traffic").map((r) => r.pass.slug));
@@ -669,7 +704,7 @@ describe("sortPassRows", () => {
       pass({ name: "A", slug: "a" }),
     ];
     const sorted = sortPassRows(
-      buildPassRows(twins, yearsOf(twins), filters(), never),
+      buildPassRows(twins, yearsOf(twins), filters(), never, DE),
       "beauty",
     );
     expect(sorted.map((r) => r.pass.slug)).toEqual(["a", "b"]);
@@ -678,7 +713,7 @@ describe("sortPassRows", () => {
 
 describe("seasonBand", () => {
   test("one bar per half-month, counting every matching pass", () => {
-    const { bars } = seasonBand(passes, years, filters(), never);
+    const { bars } = seasonBand(passes, years, filters(), never, DE);
     expect(bars).toHaveLength(24);
     expect(bars.map((b) => b.period)).toEqual(PERIODS);
     for (const b of bars) expect(barTotal(b)).toBe(passes.length);
@@ -695,12 +730,13 @@ describe("seasonBand", () => {
       years,
       filters({ minFame: 4, status: ["open"] }),
       never,
+      DE,
     );
     for (const b of bars) expect(barTotal(b)).toBe(1);
   });
 
   test("currentBar is the column of the chosen half-month", () => {
-    const band = seasonBand(passes, years, filters(), never);
+    const band = seasonBand(passes, years, filters(), never, DE);
     expect(currentBar(band, 4)).toBe(band.bars[periodIndexOf(4)]!);
     expect(currentBar(band, 12.5).period).toBe(12.5);
   });
@@ -711,6 +747,7 @@ describe("seasonBand", () => {
       years,
       filters({ query: "gibtsnicht" }),
       never,
+      DE,
     );
     expect(bars).toHaveLength(24);
     expect(bars.every((b) => barTotal(b) === 0)).toBe(true);
@@ -725,6 +762,7 @@ describe("seasonBand", () => {
       yearsOf(passes, tours, signals),
       filters(),
       never,
+      DE,
       signals,
     );
     expect(bars.every((b) => b.best === 0 && b.good === 0)).toBe(true);
@@ -741,6 +779,7 @@ describe("seasonBand", () => {
       yearsOf(passes, tours, signals),
       filters(),
       never,
+      DE,
       signals,
     );
     for (const b of bars) {
@@ -751,7 +790,7 @@ describe("seasonBand", () => {
   });
 
   test("no climate series at all leaves the means null, not zero", () => {
-    const { bars } = seasonBand(passes, years, filters(), never);
+    const { bars } = seasonBand(passes, years, filters(), never, DE);
     for (const b of bars)
       expect([b.tmax, b.tmin, b.snowPct, b.wetPct]).toEqual([
         null,
@@ -762,7 +801,7 @@ describe("seasonBand", () => {
   });
 
   test("the ribbon is the grade of most passes, a tie going to the better", () => {
-    const { bars } = seasonBand(passes, years, filters(), never);
+    const { bars } = seasonBand(passes, years, filters(), never, DE);
     // Early January: the two year-round passes are limited, the winter one is
     // closed – a majority of two.
     expect(bars[periodIndexOf(1)]).toMatchObject({
@@ -779,7 +818,7 @@ describe("seasonBand", () => {
       limited: 1,
     });
     expect(
-      seasonBand(passes, years, filters({ query: "gibtsnicht" }), never)
+      seasonBand(passes, years, filters({ query: "gibtsnicht" }), never, DE)
         .bars[0]!.grade,
     ).toBeNull();
   });
@@ -788,10 +827,10 @@ describe("seasonBand", () => {
 describe("facetCount", () => {
   test("counts what the patch would leave, not what is left now", () => {
     const f = filters({ minFame: 5 });
-    expect(buildPassRows(passes, years, f, never).length).toBe(1);
+    expect(buildPassRows(passes, years, f, never, DE).length).toBe(1);
     // The patch replaces the fame filter rather than narrowing it further.
-    expect(facetCount(passes, years, f, never, { minFame: 3 })).toBe(2);
-    expect(facetCount(passes, years, f, never, { minFame: 1 })).toBe(3);
+    expect(facetCount(passes, years, f, never, { minFame: 3 }, DE)).toBe(2);
+    expect(facetCount(passes, years, f, never, { minFame: 1 }, DE)).toBe(3);
   });
 
   test("a group's own filter never decides its own numbers", () => {
@@ -801,16 +840,18 @@ describe("facetCount", () => {
     const chosen = filters({ minFame: 5 });
     const untouched = filters();
     for (const v of [1, 3, 5]) {
-      expect(facetCount(passes, years, chosen, never, { minFame: v })).toBe(
-        facetCount(passes, years, untouched, never, { minFame: v }),
+      expect(facetCount(passes, years, chosen, never, { minFame: v }, DE)).toBe(
+        facetCount(passes, years, untouched, never, { minFame: v }, DE),
       );
     }
   });
 
   test("the other groups do still narrow it", () => {
     const f = filters({ minElevation: 2000 });
-    expect(facetCount(passes, years, f, never, { minFame: 1 })).toBe(1);
-    expect(facetCount(passes, years, filters(), never, { minFame: 1 })).toBe(3);
+    expect(facetCount(passes, years, f, never, { minFame: 1 }, DE)).toBe(1);
+    expect(
+      facetCount(passes, years, filters(), never, { minFame: 1 }, DE),
+    ).toBe(3);
   });
 
   test("it agrees with the rows it counts", () => {
@@ -821,8 +862,8 @@ describe("facetCount", () => {
       { types: ["spur" as const] },
     ]) {
       const f = { ...filters(), ...patch };
-      expect(facetCount(passes, years, filters(), never, patch)).toBe(
-        buildPassRows(passes, years, f, never).length,
+      expect(facetCount(passes, years, filters(), never, patch, DE)).toBe(
+        buildPassRows(passes, years, f, never, DE).length,
       );
     }
   });
@@ -894,6 +935,7 @@ describe("buildDestinationRows (plan 12)", () => {
       yearsOf(roads, []),
       filters(over),
       fav,
+      DE,
     );
 
   test("ranks by the beauty that is rideable, and names the bases", () => {
