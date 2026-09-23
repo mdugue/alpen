@@ -71,7 +71,7 @@ flowchart LR
    in CI; its `SEAMS` table carries the reason per owner.
 4. **The core carries the tests.** `bun test` covers the reducer, the camera
    machine, the scene, the pick, the detail model and the offline pipeline.
-   The e2e suite is fourteen scenarios of smoke: one timeout for the suite,
+   The e2e suite is fifteen scenarios of smoke: one timeout for the suite,
    none per scenario, no monkey-patching, and nothing read off `window.__alpen` but
    the map handle.
 5. **A new feature enters as data.** The official closure status

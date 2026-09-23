@@ -18,8 +18,9 @@ import { entityDescription, entityTitle, openGraphOf } from "@/lib/share-text";
  * forecast streamed into the panel's weather block.
  *
  * The slug list is the data, so an unknown path is a 404 – `notFound()` below,
- * because Cache Components allow no `dynamicParams = false` – never an
- * empty panel.
+ * because Cache Components allow no `dynamicParams = false`. It streams with
+ * a 200 like every route here, so its metadata says `noindex` itself, and the
+ * panel says "not found" rather than opening empty (`DetailPanel`).
  */
 export const generateStaticParams = () => staticParams();
 
@@ -36,7 +37,10 @@ export const generateMetadata = async ({
   params,
 }: Props): Promise<Metadata> => {
   const found = await entityOf(params);
-  if (!found) return {};
+  // A path that names nothing is streamed with a 200 like every route here
+  // (the page's `notFound()` comes after the shell), so it says `noindex`
+  // itself rather than inheriting the start page's `index`.
+  if (!found) return { robots: { follow: false, index: false } };
   const { entity, selection, w } = found;
   const { lang } = w;
   const title = entityTitle(entity, w);

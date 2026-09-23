@@ -39,7 +39,7 @@ import type { Lang } from "./lang";
  * Haustür → on the doorstep · Tagesrunde → day loop · Ausflug → day trip.
  */
 export const de = {
-  /** The way back from a page that is not the map: the legal pages, a 404. */
+  /** The way back from a page that is not the map: the legal pages. */
   backToMap: "Zurück zur Karte",
   /** The season band: the summary line, the legend, the slider and the two ways into the drawers. */
   band: {
@@ -132,7 +132,7 @@ export const de = {
     seeAlso: "Siehe auch:",
   },
   map,
-  /** A path that names nothing: an entity that is not (or no longer) in the data. */
+  /** A path that names nothing: an entity that is not (or no longer) in the data – what the panel says instead of opening empty. */
   notFound: {
     text: "Unter dieser Adresse gibt es keinen Pass, keine Tour, keinen Ort und kein Reiseziel – vielleicht wurde es umbenannt.",
     title: "Nicht gefunden",

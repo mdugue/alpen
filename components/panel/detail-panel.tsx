@@ -11,6 +11,7 @@ import { PanelHead } from "@/components/panel/panel-head";
 import { PassDetail } from "@/components/panel/pass-detail";
 import { TourDetail } from "@/components/panel/tour-detail";
 import { TownDetail } from "@/components/panel/town-detail";
+import { Button } from "@/components/ui/button";
 import type { Selection } from "@/lib/app-state";
 import { SITE_NAME } from "@/lib/brand";
 import { detailModel } from "@/lib/detail-model";
@@ -161,7 +162,26 @@ export const DetailPanel = ({
     period,
     w: t,
   });
-  if (!model) return null;
+  // A path or a link that names nothing the data holds – a renamed pass, a
+  // typo. The route has said 404 already (`notFound()`, `noindex`); the panel
+  // says it in words and offers the way out, rather than opening empty.
+  if (!model)
+    return (
+      <section
+        ref={panel}
+        tabIndex={-1}
+        aria-labelledby="detail-title"
+        className="flex flex-col items-start gap-3 p-4 outline-none"
+      >
+        <h2 id="detail-title" className="font-heading text-xl font-bold">
+          {t.notFound.title}
+        </h2>
+        <p className="text-muted-foreground text-sm">{t.notFound.text}</p>
+        <Button variant="outline" size="sm" onClick={actions.onBack}>
+          {t.panel.bar.close}
+        </Button>
+      </section>
+    );
 
   const hero = heroShape(state) === "hero";
   const key = entityKey(selection);

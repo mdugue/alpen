@@ -46,8 +46,9 @@ Everything in the design below, with these departures:
   scheme and language for the editors.
 - **Every page says its languages**: one `alternatesOf` for the canonical,
   both languages and `x-default` (German), in the metadata and the sitemap,
-  and a complete Open Graph block with the other language's locale; an
-  unknown entity is a 404 in the page's language.
+  and a complete Open Graph block with the other language's locale; a path
+  that names no entity is `noindex` and its panel says so in the page's
+  language.
 - **Verified in step 1**: the build log lists `/de` and `/en` as `○`
   (static), and the browser suite opens `/` and `/pass/…` through the
   rewrite on every run.

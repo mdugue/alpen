@@ -165,6 +165,26 @@ test("3 · a shared link restores selection, period and camera", () =>
     },
   ));
 
+test("3b · a path that names nothing says so, and is not indexed", () =>
+  withPage(
+    app,
+    "unknown-path",
+    { target: "pass/gibt-es-nicht" },
+    async (page) => {
+      // A renamed pass or a typo: the panel says it in words instead of
+      // opening empty, and the route marks itself `noindex`.
+      await page.waitFor("#detail-title");
+      expect(await page.text("#detail-title")).toBe("Nicht gefunden");
+      expect(
+        await page.evaluate<string>(
+          `[...document.querySelectorAll('meta[name="robots"]')].map((m) => m.content).join(" ")`,
+        ),
+      ).toContain("noindex");
+      await page.click('[aria-labelledby="detail-title"] button');
+      await page.waitForGone("#detail-title");
+    },
+  ));
+
 test("4 · a status chip narrows the lists and the applied-filter chip undoes it", () =>
   // Early January: nothing is "gut", so the counts and the disabled chip bite.
   withPage(app, "status-filter", { target: "#t=1" }, async (page) => {
