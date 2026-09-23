@@ -779,6 +779,14 @@ const UNCONSTRAINED: YearCell = {
   status: "open",
 };
 
+/** Strictly worse than what stands, or as bad and earlier on the ladder. */
+const beats = (cell: YearCell, worst: YearCell) => {
+  const d = GRADE_RANK[cell.grade] - GRADE_RANK[worst.grade];
+  return (
+    d < 0 || (d === 0 && ladderRank(cell.reasons) < ladderRank(worst.reasons))
+  );
+};
+
 /**
  * The year of a tour: per half-month the cell of the member pass that holds
  * the tour back, taken whole. A tour is only as rideable as its worst pass,
@@ -816,13 +824,6 @@ export const tourYear = (tour: Tour, passes: Record<string, Year>): Year => {
       snowy: false,
       status,
     };
-  };
-  /** Strictly worse than what stands, or as bad and earlier on the ladder. */
-  const beats = (cell: YearCell, worst: YearCell) => {
-    const d = GRADE_RANK[cell.grade] - GRADE_RANK[worst.grade];
-    return (
-      d < 0 || (d === 0 && ladderRank(cell.reasons) < ladderRank(worst.reasons))
-    );
   };
   const cells = PERIODS.map((_, i) => {
     let worst: YearCell | undefined;

@@ -136,14 +136,14 @@ describe("resetFilters", () => {
   });
 });
 
-describe("bestRelief", () => {
-  // A stand-in for the row count: lifting the height bound brings 40 roads
-  // back, lifting the traffic bound 9.
-  const countWith = (patch: Partial<Filters>) => {
-    const f = { ...filters({ maxTraffic: 2, minElevation: 2000 }), ...patch };
-    return (f.minElevation === 0 ? 40 : 0) + (f.maxTraffic === 5 ? 9 : 0);
-  };
+// A stand-in for the row count: lifting the height bound brings 40 roads
+// back, lifting the traffic bound 9.
+const countWith = (patch: Partial<Filters>) => {
+  const f = { ...filters({ maxTraffic: 2, minElevation: 2000 }), ...patch };
+  return (f.minElevation === 0 ? 40 : 0) + (f.maxTraffic === 5 ? 9 : 0);
+};
 
+describe("bestRelief", () => {
   test("names the one filter that brings the most back", () => {
     const relief = bestRelief(
       filters({ maxTraffic: 2, minElevation: 2000 }),

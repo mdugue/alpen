@@ -141,6 +141,11 @@ const yearsOf = (
   return { passes: p, tours: t };
 };
 const years = yearsOf(passes, tours);
+/** The slugs of the tour rows a filter leaves, in list order. */
+const tourSlugs = (over: Partial<Filters>) =>
+  buildTourRows(tours, index, filters(over), inputs(years)).map(
+    (r) => r.tour.slug,
+  );
 
 const towns: Town[] = [
   {
@@ -342,15 +347,11 @@ describe("plan 05 criteria", () => {
 
   // "kurz" crosses the 1,500 m pass only, "lang" the 1,500 m and the 1,200 m one.
   test("a tour needs one pass that clears the lower bounds", () => {
-    const rows = (over: Partial<Filters>) =>
-      buildTourRows(tours, index, filters(over), inputs(years)).map(
-        (r) => r.tour.slug,
-      );
-    expect(rows({ minElevation: 1400 })).toEqual(["lang", "kurz"]);
-    expect(rows({ minElevation: 2000 })).toEqual([]);
-    expect(rows({ minFame: 3 })).toEqual(["lang", "kurz"]);
+    expect(tourSlugs({ minElevation: 1400 })).toEqual(["lang", "kurz"]);
+    expect(tourSlugs({ minElevation: 2000 })).toEqual([]);
+    expect(tourSlugs({ minFame: 3 })).toEqual(["lang", "kurz"]);
     // Found through the name of a pass it crosses.
-    expect(rows({ query: "winterpass" })).toEqual(["lang"]);
+    expect(tourSlugs({ query: "winterpass" })).toEqual(["lang"]);
   });
 
   test("every pass of a tour has to respect the upper bounds", () => {

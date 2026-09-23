@@ -116,10 +116,10 @@ describe("the detail file as one value", () => {
   });
 });
 
-describe("the shape of the head", () => {
-  const readyWith = (photos: Photo[], broken: string[] = []): DetailState =>
-    detailState(asset(photos.length), ready({ photos }), new Set(broken));
+const readyWith = (photos: Photo[], broken: string[] = []): DetailState =>
+  detailState(asset(photos.length), ready({ photos }), new Set(broken));
 
+describe("the shape of the head", () => {
   test("the head is a hero exactly where a picture can lie under it", () => {
     const rows: [string, DetailState, "hero" | "plain"][] = [
       ["no file at all", { phase: "absent" }, "plain"],
