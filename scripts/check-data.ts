@@ -32,6 +32,7 @@ import { DE } from "../lib/i18n/dictionaries";
 import {
   inBox,
   isTraverse,
+  isUnpaved,
   RANGE_BOUNDS,
   rangeOf,
   surfaceOfRoads,
@@ -61,7 +62,7 @@ import type {
 import { renderJsonSchema, schemaFileFor } from "./emit-json-schema";
 import { readData } from "./lib/data-files";
 import type { Data } from "./lib/data-files";
-import { judge, measure, plan } from "./lib/decide";
+import { judge, lacksClimate, measure, plan } from "./lib/decide";
 import type {
   ProfileVerdict,
   RouteJob,
@@ -636,15 +637,17 @@ const singleSided = (passes ?? []).filter(
 // it is not. The list makes that a decision the curator sees.
 const alone = passes && destinations ? standalone(destinations, passes) : [];
 // The snow cover closes an unpaved road (plan 27); a series without it grades
-// such a road by every other rung and never closes it. Counted, not warned:
-// the archive has not been asked for it yet, and that is a run, not a bug.
-const series = Object.values(climate ?? {});
-const withCover = series.filter((c) =>
-  c.some((b) => b?.coverPct !== undefined),
+// such a road by every other rung and never closes it. Only those roads are
+// counted – a paved road never reads the cover – and `data:build` asks the
+// archive for them again (`lacksClimate`). Counted, not warned: that is a
+// run, not a bug.
+const unpaved = (passes ?? []).filter((p) => isUnpaved(p.surface));
+const uncovered = unpaved.filter(
+  (p) => climate?.[p.slug] && lacksClimate(p, climate),
 );
-if (series.length && withCover.length < series.length)
+if (uncovered.length)
   console.log(
-    `INFO  Schneedecke (coverPct) fehlt in ${series.length - withCover.length} von ${series.length} Klimareihen – ungeteerte Straßen werden bis zum Archivlauf nie „gesperrt“`,
+    `INFO  Schneedecke (coverPct) fehlt bei ${uncovered.length} von ${unpaved.length} ungeteerten Straßen (${uncovered.map((p) => p.slug).join(", ")}) – bis zum nächsten bun run data:build werden sie nie „gesperrt“`,
   );
 if (alone.length)
   console.log(

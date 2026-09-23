@@ -16,7 +16,7 @@
  * what it tells the curator about a key is what the next build will actually
  * do with it, rather than a second derivation that can disagree.
  */
-import { isTraverse } from "../../lib/regions";
+import { isTraverse, isUnpaved } from "../../lib/regions";
 import { ascentKey, tourKey } from "../../lib/route-key";
 import type {
   AscentCheck,
@@ -376,6 +376,24 @@ export interface Plan {
   summits: Pass[];
 }
 
+/**
+ * A series is asked for when there is none – or when the road is unpaved and
+ * the stored series predates the snow cover (plan 27): the cover is the rung
+ * that closes such a road, and a series without it never would. A paved road
+ * keeps its series; the cover changes nothing for it, and asking the archive
+ * again would cost ~260 calls for a field it does not read.
+ */
+export const lacksClimate = (
+  pass: Pick<Pass, "slug" | "surface">,
+  climates: Record<string, ClimateYear>,
+): boolean => {
+  const series = climates[pass.slug];
+  if (!series) return true;
+  return (
+    isUnpaved(pass.surface) && series.every((b) => b?.coverPct === undefined)
+  );
+};
+
 /** The DEM height was read at the coordinate the entry carries today. */
 const measuredAt = (p: Pass, s: Summit | undefined) =>
   s !== undefined && s.lat === p.lat && s.lon === p.lon;
@@ -395,7 +413,7 @@ export const plan = (curated: Curated, stored: Stored, flags: Flags): Plan => {
     verdict: decideProfile(job, stored, flags, verdict),
   }));
   const passes = curated.passes.filter((p) => wanted(p.slug));
-  const climate = passes.filter((p) => !stored.climates[p.slug]);
+  const climate = passes.filter((p) => lacksClimate(p, stored.climates));
   /** Missing, or measured at a coordinate that has since moved. */
   const summits = passes.filter((p) => !measuredAt(p, stored.summits[p.slug]));
   /** Entries that still lack the road distance (predate the check, or just fetched). */

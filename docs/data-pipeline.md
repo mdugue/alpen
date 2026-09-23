@@ -321,16 +321,17 @@ keeps 201 passes inside the free tier is in
 
 ## Where to look when something is wrong
 
-| Symptom                                          | Look at                                                                                    |
-| ------------------------------------------------ | ------------------------------------------------------------------------------------------ |
-| A pass has no line on the map                    | `rejected.json` for its key, then `bun run data:check --explain`                           |
-| `data:check` errors on a stored route            | the route was hand-edited or a limit moved; re-measure with `--explain`, then `data:build` |
-| Every ascent of one pass is missing              | the summit gate: `summits.json`, then `bun run data:locate <slug>`                         |
-| A route looks like a car detour                  | `routes-meta.json` says `osrm`; re-run with `ORS_KEY` and `--upgrade-osrm`                 |
-| Profiles are missing after a successful run      | the Open-Meteo budget ran out – `--status`, then run again or use `data:backfill`          |
-| The climate chart is empty for a new pass        | `climate.json` has no entry yet; one run costs ~261 calls                                  |
-| A photo is wrong or missing                      | `bun run data:photos --only <slug> --refresh`                                              |
-| The map draws nothing at all after a fresh clone | `public/map` is git-ignored; `bun dev` regenerates it                                      |
+| Symptom                                          | Look at                                                                                                                                                                    |
+| ------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| A pass has no line on the map                    | `rejected.json` for its key, then `bun run data:check --explain`                                                                                                           |
+| `data:check` errors on a stored route            | the route was hand-edited or a limit moved; re-measure with `--explain`, then `data:build`                                                                                 |
+| Every ascent of one pass is missing              | the summit gate: `summits.json`, then `bun run data:locate <slug>`                                                                                                         |
+| A route looks like a car detour                  | `routes-meta.json` says `osrm`; re-run with `ORS_KEY` and `--upgrade-osrm`                                                                                                 |
+| Profiles are missing after a successful run      | the Open-Meteo budget ran out – `--status`, then run again or use `data:backfill`                                                                                          |
+| The climate chart is empty for a new pass        | `climate.json` has no entry yet; one run costs ~261 calls                                                                                                                  |
+| An unpaved road is never "gesperrt"              | its series predates the snow cover (plan 27); `data:build` asks the archive again for every unpaved road without `coverPct` (`lacksClimate`), a paved one keeps its series |
+| A photo is wrong or missing                      | `bun run data:photos --only <slug> --refresh`                                                                                                                              |
+| The map draws nothing at all after a fresh clone | `public/map` is git-ignored; `bun dev` regenerates it                                                                                                                      |
 
 ## Glossary
 
