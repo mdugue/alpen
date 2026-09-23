@@ -9,7 +9,7 @@ export const scales = {
   },
   data: {
     heading: "Data",
-    text: "**Elevation profile:** Open-Meteo Elevation (Copernicus DEM 90 m) along the routed road. **Weather:** Open-Meteo forecast at summit elevation, cached on the server. **Climate:** Open-Meteo archive (ERA5-Land 2015–2024) per half-month; 10 km grid, tending to be too mild at summit elevation. **Routes:** OpenRouteService (road bike profile) or OSRM. **3D:** Mapzen/AWS Terrain Tiles. Maps © OpenStreetMap contributors.",
+    text: "**Elevation profile:** Open-Meteo Elevation (Copernicus DEM 90 m) along the routed road. **Weather:** Open-Meteo forecast at summit elevation, cached on the server. **Climate:** Open-Meteo archive 2015–2024 per half-month, in Open-Meteo's default model (ERA5 and ERA5-Land, from 2017 ECMWF IFS); a grid of 9 to 25 km, tending to be too mild at summit elevation. **Routes:** OpenRouteService (road bike profile) or OSRM. **3D:** Mapzen/AWS Terrain Tiles. Maps © OpenStreetMap contributors.",
   },
   description:
     "How the 1–5 ratings and the status per period come about – and where the data comes from.",
@@ -59,7 +59,7 @@ export const scales = {
       "**Derived, not measured:** The climate series applies to the summit elevation. The valley value is computed down at {lapse} to the lowest ascent start and is easily ± {error} °C off; passes without an ascent profile have none. The daylight is pure astronomy. In the detail, the reason stands under the status in one sentence, with number and source.",
     heading: "Status per period",
     intro:
-      "A heuristic from the typical opening window (to the half-month), summit elevation, season, the pass's climate series (ERA5-Land 2015–2024) and the daylight. It answers “how good is it to ride there in this half-month”, not just “can you get over”. For loops the worst value of their passes applies. No substitute for official closure information.",
+      "A heuristic from the typical opening window (to the half-month), summit elevation, season, the pass's climate series (2015–2024) and the daylight. It answers “how good is it to ride there in this half-month”, not just “can you get over”. For loops the worst value of their passes applies. No substitute for official closure information.",
     ladder: "**Four rungs, one ladder.** {text}",
     strip:
       "The strip of 24 cells shows the whole year at a glance – the chosen half-month is outlined, the closure hollow with a red edge. In the detail every cell explains itself on hover.",

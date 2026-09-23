@@ -386,8 +386,8 @@ through `buildPassRows`: a count needs neither the row objects nor the season
 strip hanging off them, and the panel asks it once per option on every
 keystroke. Since [plan 15](./plans/15-pass-year.md) the saving is allocation
 rather than arithmetic – both
-paths read the grades from the precomputed year – but it is still 201 rows
-built per option to produce one number. And when a combination does run empty,
+paths read the grades from the precomputed year – but it is still a row per
+road built per option to produce one number. And when a combination does run empty,
 the count line names the single filter that would bring the most back rather
 than saying nothing. What is filtered away is written down outside the panel
 too: `AppliedFilters` turns `appliedFilters()` in `lib/filter-summary.ts` into
@@ -503,8 +503,8 @@ one change per build, before anything is concluded from a profile.
 The rows of a list sit in blocks of ten (`RowList`,
 `components/sidebar/row-list.tsx`), each row and each block a
 `content-visibility: auto` subtree, so what is off screen is skipped – its
-style, its layout and its paint. With 201 roads at ~40 elements a row that is
-most of nine thousand elements the browser does not have to keep up to date
+style, its layout and its paint. With some 260 roads at ~40 elements a row that
+is over ten thousand elements the browser does not have to keep up to date
 while a filter chip changes the list or the sheet's state changes around it.
 
 The blocks were introduced against the restyle described above, before its

@@ -41,10 +41,12 @@ Seiten vorkommen – von „abgeleitet“ bis „zugeschneit“.
 - **eingeschränkt** – Stufe des Status: fahrbar, aber mit einem Haken, den
   ein Wort nennt – zugeschneit, Randzeit, Schnee, Frost, Höhe, Hitze, nass,
   kurze Tage oder kalte Abfahrt.
-- **ERA5-Land** – ein Klimamodell des Europäischen Zentrums für
-  mittelfristige Wettervorhersage (ECMWF), das das Wetter vergangener Jahre
-  für jeden Tag auf einem Raster von rund 10 km nachrechnet. Die Klimareihe
-  jedes Passes stammt daraus, für die Jahre 2015–2024.
+- **ERA5, ERA5-Land** – Reanalysen des Europäischen Zentrums für
+  mittelfristige Wettervorhersage (ECMWF): Sie rechnen das Wetter
+  vergangener Jahre für jeden Tag nach, ERA5 auf einem Raster von rund
+  25 km, ERA5-Land von rund 11 km. Zusammen mit dem Wettermodell ECMWF IFS
+  (9 km, ab 2017) bilden sie das Standardmodell des Open-Meteo-Archivs, aus
+  dem die Klimareihe jedes Passes stammt.
 
 ## G
 
@@ -82,7 +84,7 @@ Seiten vorkommen – von „abgeleitet“ bis „zugeschneit“.
 
 ## K
 
-- **Klimareihe** – die zehnjährige Wetterreihe eines Passes (ERA5-Land,
+- **Klimareihe** – die zehnjährige Wetterreihe eines Passes (Open-Meteo,
   2015–2024), zu 24 Halbmonaten gemittelt: Tageshöchst- und
   Tiefsttemperatur sowie die Anteile der Tage mit Neuschnee, mit Frost und
   mit Niederschlag.

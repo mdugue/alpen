@@ -59,7 +59,7 @@ export const panel = {
   climate: {
     dayNight: "Ø Tag / Nacht",
     frost: "Frost · {days} von 15 Tagen",
-    info: "ERA5-Land 2015–2024, ein 10-km-Raster – auf Passhöhe eher zu mild.",
+    info: "Open-Meteo-Archiv 2015–2024 (ERA5, ERA5-Land, ab 2017 ECMWF IFS), ein Modellraster von 9 bis 25 km – auf Passhöhe eher zu mild.",
     noneText: "Für diesen Pass liegen noch keine Klimadaten vor.",
     noneTitle: "Keine Klimareihe",
     snow: "Schnee · {days} von 15 Tagen",

@@ -153,12 +153,12 @@ Fenster sind fahrbar, solange ihre Pässe offen sind.
 ## Die Klimagrundlage
 
 Alle Klimasignale lesen die **Klimareihe** des Passes: zehn Jahre
-(2015–2024) ERA5-Land aus dem Open-Meteo-Archiv, auf die Höhe des Passpunkts
+(2015–2024) aus dem Open-Meteo-Archiv, auf die Höhe des Passpunkts
 umgerechnet und zu 24 Halbmonaten gemittelt (siehe [Woher die Daten
 kommen](data-sources.md)). Sie beschreibt das Wetter am Passpunkt im
 Durchschnitt der Jahre – keine Vorhersage, und ein einzelnes Jahr kann weit
 davon abweichen. Ein Anteil wie „20 % der Tage“ entspricht etwa 3 von 15
-Tagen eines Halbmonats. Das Modellraster ist rund 10 km grob; auf Passhöhe
+Tagen eines Halbmonats. Das Modellraster ist 9 bis 25 km grob; auf Passhöhe
 fällt die Reihe eher zu mild aus.
 
 ### Abgeleitet: die Wärme im Tal

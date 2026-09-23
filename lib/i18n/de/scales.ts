@@ -13,7 +13,7 @@ export const scales = {
   },
   data: {
     heading: "Daten",
-    text: "**Höhenprofil:** Open-Meteo Elevation (Copernicus DEM 90 m) entlang der gerouteten Straße. **Wetter:** Open-Meteo-Vorhersage auf Passhöhe, serverseitig zwischengespeichert. **Klima:** Open-Meteo-Archiv (ERA5-Land 2015–2024) je Halbmonat; 10-km-Raster, auf Passhöhe tendenziell zu mild. **Routen:** OpenRouteService (Rennrad-Profil) oder OSRM. **3D:** Mapzen/AWS Terrain Tiles. Karten © OpenStreetMap-Mitwirkende.",
+    text: "**Höhenprofil:** Open-Meteo Elevation (Copernicus DEM 90 m) entlang der gerouteten Straße. **Wetter:** Open-Meteo-Vorhersage auf Passhöhe, serverseitig zwischengespeichert. **Klima:** Open-Meteo-Archiv 2015–2024 je Halbmonat, im Standardmodell von Open-Meteo (ERA5 und ERA5-Land, ab 2017 ECMWF IFS); Raster von 9 bis 25 km, auf Passhöhe tendenziell zu mild. **Routen:** OpenRouteService (Rennrad-Profil) oder OSRM. **3D:** Mapzen/AWS Terrain Tiles. Karten © OpenStreetMap-Mitwirkende.",
   },
   description:
     "Wie die 1–5-Bewertungen und der Status je Zeitraum zustande kommen – und woher die Daten stammen.",
@@ -67,7 +67,7 @@ export const scales = {
       "**Abgeleitet, nicht gemessen:** Die Klimareihe gilt für die Passhöhe. Der Talwert wird mit {lapse} bis zum tiefsten Anstiegsbeginn heruntergerechnet und liegt gut ± {error} °C daneben; für Pässe ohne Anstiegsprofil gibt es ihn nicht. Das Tageslicht ist reine Astronomie. Im Detail steht unter dem Status der Grund in einem Satz, mit Zahl und Herkunft.",
     heading: "Status je Zeitraum",
     intro:
-      "Heuristik aus typischem Öffnungsfenster (halbmonatsgenau), Passhöhe, Jahreszeit, der Klimareihe des Passes (ERA5-Land 2015–2024) und dem Tageslicht. Sie beantwortet „wie gut ist es, dort in diesem Halbmonat zu fahren“, nicht nur „kommt man drüber“. Für Rundtouren gilt der schlechteste Wert ihrer Pässe. Ersetzt keine amtliche Sperrauskunft.",
+      "Heuristik aus typischem Öffnungsfenster (halbmonatsgenau), Passhöhe, Jahreszeit, der Klimareihe des Passes (2015–2024) und dem Tageslicht. Sie beantwortet „wie gut ist es, dort in diesem Halbmonat zu fahren“, nicht nur „kommt man drüber“. Für Rundtouren gilt der schlechteste Wert ihrer Pässe. Ersetzt keine amtliche Sperrauskunft.",
     /** The paragraph generated from the signals (`ladderText`), under its lead. */
     ladder: "**Vier Stufen, eine Leiter.** {text}",
     strip:

@@ -124,8 +124,8 @@ has**:
 | `oft gesperrt`  | none                                           |
 
 This was an absolute count first – six rideable passes for "beste Zeit",
-three for "gut" – and the measurement killed it. Over all 48 towns × 24
-half-months:
+three for "gut" – and the measurement killed it. Over the 48 towns there were
+then × 24 half-months:
 
 - **47 of 48 towns cleared the top threshold in early September**, 45 of 48 in
   late July. The top grade landed on 40 % of all cells and on **73 % of the
@@ -159,9 +159,9 @@ what the strip is relative to. The picture carries the shape, the sentence
 carries the magnitude; the same split as the bands and the weight above.
 
 The two shares are set where every base still gets a named best window. At
-0,8 five of the 48 towns – Bormio among them – peaked in a single half-month,
-so `bestRun` found no run of two and the panel's "beste Zeit X – Y" line
-vanished for them; at 0,75 all 48 keep one, with a median length of three
+0,8 five of those 48 towns – Bormio among them – peaked in a single
+half-month, so `bestRun` found no run of two and the panel's "beste Zeit X – Y"
+line vanished for them; at 0,75 all 48 keep one, with a median length of three
 half-months, and the grade split barely moves (best 20 % of all cells against
 16 %).
 
@@ -310,7 +310,8 @@ verdict changes – re-run it after touching a constant.
 
 ### Derived values
 
-The climate series is ERA5-Land, downscaled by Open-Meteo to `pass.elevation`
+The climate series is Open-Meteo's default archive model (ERA5 and ERA5-Land,
+from 2017 ECMWF IFS), downscaled by Open-Meteo to `pass.elevation`
 (the `elevation` parameter in `scripts/build-data.ts`), so every bucket
 describes the summit. Heat is a valley phenomenon, and the valley is not
 measured: `valleyTmax()` takes the summit `tmax` down to the lowest ascent

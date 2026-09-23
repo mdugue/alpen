@@ -141,7 +141,7 @@ export interface Year {
 /**
  * The year of every pass and tour, keyed by slug: what `getYears` in
  * lib/data.ts computes once at prerender and the page hands the client,
- * instead of letting the browser grade 201 passes again on every keystroke.
+ * instead of letting the browser grade every pass again on every keystroke.
  */
 export interface Years {
   passes: Record<string, Year>;
@@ -234,7 +234,8 @@ export const inputAt = (
 });
 
 /**
- * Thresholds, calibrated on the ERA5 series of all 92 passes; see
+ * Thresholds, calibrated on the climate series of the 92 passes there were at
+ * the time; see
  * docs/plans/04-climate-aware-status.md (snow, frost) and
  * docs/plans/13-summer-axis.md (heat, wet, short days, cold descent) for the
  * distribution tables they come from, and `scripts/analyze-status.ts` to

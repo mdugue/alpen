@@ -43,18 +43,18 @@ export const status = {
     altitude:
       "{period} at {elevation} m is borderline: snow and ice are possible even when the road is open.",
     coldDescent:
-      "At the summit no more than {tmax} °C on an average day (ERA5-Land 2015–2024) – with the wind chill the descent is one around freezing.",
+      "At the summit no more than {tmax} °C on an average day (climate series 2015–2024) – with the wind chill the descent is one around freezing.",
     frost:
-      "Frost on {pct} % of nights (≈ {days} of 15, ERA5-Land 2015–2024) – wet roads can ice over, and the descent gets cold.",
+      "Frost on {pct} % of nights (≈ {days} of 15, climate series 2015–2024) – wet roads can ice over, and the descent gets cold.",
     heat: "Around {tmax} °C in the valley in the afternoon (derived from the summit value, ± {error} °C) – from late morning on only the top is pleasant.",
     outsideSeason: "Outside the typical season.",
     outsideWindow: "Outside the typical opening window ({window}).",
     shortDay:
       "Only {hours} hours of daylight, sunset around {sunset} – tight for a long loop.",
-    snow: "Snowfall on {pct} % of days (≈ {days} of 15, ERA5-Land 2015–2024) – the road usually stays rideable, but the period cannot be planned on.",
+    snow: "Snowfall on {pct} % of days (≈ {days} of 15, climate series 2015–2024) – the road usually stays rideable, but the period cannot be planned on.",
     snowCover:
-      "Snow cover on {pct} % of days (≈ {days} of 15, ERA5-Land 2015–2024) – nobody clears an unpaved road, it is open once the snow is gone.",
-    wet: "Rain on {pct} % of days (≈ {days} of 15, ERA5-Land 2015–2024) – a wet corner; a dry window is a matter of luck.",
+      "Snow cover on {pct} % of days (≈ {days} of 15, climate series 2015–2024) – nobody clears an unpaved road, it is open once the snow is gone.",
+    wet: "Rain on {pct} % of days (≈ {days} of 15, climate series 2015–2024) – a wet corner; a dry window is a matter of luck.",
     windowEdge:
       "At the edge of the opening window ({window}) – opening and closing shift by weeks from one winter to the next.",
   },

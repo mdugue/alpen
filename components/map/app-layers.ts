@@ -759,7 +759,7 @@ export const appLayers = (
      * carries three things (status by hue, closure by hollowness, fame by
      * size), so there is nothing left in it to spend on a fourth state –
      * and a ring around it reads at any of those sizes. It is its own
-     * one-feature source, so hovering never rewrites the 201-point source.
+     * one-feature source, so hovering never rewrites the source with every pass in it.
      */
     {
       id: OVERLAY.ring,

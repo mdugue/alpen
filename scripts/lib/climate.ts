@@ -38,7 +38,7 @@ export const halfMonthOf = (iso: string): number | null => {
 /**
  * The means and the shares of one half-month over every year in the series.
  * A day whose two temperatures are missing carries nothing – not a zero: a
- * gap in ERA5-Land must not read as a frost-free day.
+ * gap in the series must not read as a frost-free day.
  */
 export const bucketClimate = (daily: DailySeries): ClimateYear => {
   const buckets = Array.from({ length: HALF_MONTHS }, () => ({

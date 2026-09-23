@@ -48,7 +48,7 @@ export const panel = {
   climate: {
     dayNight: "avg day / night",
     frost: "Frost · {days} of 15 days",
-    info: "ERA5-Land 2015–2024, a 10 km grid – rather too mild at pass height.",
+    info: "Open-Meteo archive 2015–2024 (ERA5, ERA5-Land, from 2017 ECMWF IFS), a model grid of 9 to 25 km – rather too mild at pass height.",
     noneText: "No climate data for this pass yet.",
     noneTitle: "No climate series",
     snow: "Snow · {days} of 15 days",

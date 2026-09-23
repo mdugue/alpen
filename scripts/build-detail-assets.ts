@@ -14,7 +14,7 @@
  * removed so a stale hash cannot linger.
  *
  * What this takes off the page is 374 KB gzipped of the 468 KB it used to
- * carry: profiles for all 201 passes and photo metadata for every entity, both
+ * carry (then): profiles for all 201 passes and photo metadata for every entity, both
  * read by one panel about one entity at a time.
  */
 import { writeDerived } from "../lib/derived-file";

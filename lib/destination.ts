@@ -43,8 +43,8 @@ import { fmt } from "@/lib/utils";
  * base ever gets**, not to an absolute number of passes.
  *
  * This was an absolute count first (six rideable passes = "beste Zeit", three
- * = "gut") and the data says plainly that it does not work. Measured over all
- * 48 towns × 24 half-months:
+ * = "gut") and the data says plainly that it does not work. Measured over the
+ * 48 towns there were then, × 24 half-months:
  *
  *  - **47 of 48 towns cleared the top threshold in early September**, 45 of 48
  *    in late July. The top grade landed on 73 % of every non-winter cell, so

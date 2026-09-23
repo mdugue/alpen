@@ -53,18 +53,18 @@ export const status = {
     altitude:
       "{period} ist auf {elevation} m Grenzbereich: Schnee und Eis sind möglich, auch wenn die Straße offen ist.",
     coldDescent:
-      "Am Gipfel im Schnitt höchstens {tmax} °C (ERA5-Land 2015–2024) – mit Fahrtwind ist die Abfahrt eine um den Gefrierpunkt.",
+      "Am Gipfel im Schnitt höchstens {tmax} °C (Klimareihe 2015–2024) – mit Fahrtwind ist die Abfahrt eine um den Gefrierpunkt.",
     frost:
-      "Frost in {pct} % der Nächte (≈ {days} von 15, ERA5-Land 2015–2024) – nasse Straßen können überfrieren, die Abfahrt wird kalt.",
+      "Frost in {pct} % der Nächte (≈ {days} von 15, Klimareihe 2015–2024) – nasse Straßen können überfrieren, die Abfahrt wird kalt.",
     heat: "Im Tal um {tmax} °C am Nachmittag (aus dem Gipfelwert abgeleitet, ± {error} °C) – ab dem späten Vormittag nur noch oben angenehm.",
     outsideSeason: "Außerhalb der typischen Saison.",
     outsideWindow: "Außerhalb des typischen Öffnungsfensters ({window}).",
     shortDay:
       "Nur {hours} Stunden Tageslicht, Sonnenuntergang gegen {sunset} – für eine lange Runde wird es knapp.",
-    snow: "Schneefall an {pct} % der Tage (≈ {days} von 15, ERA5-Land 2015–2024) – meist bleibt die Straße befahrbar, planbar ist der Zeitraum aber nicht.",
+    snow: "Schneefall an {pct} % der Tage (≈ {days} von 15, Klimareihe 2015–2024) – meist bleibt die Straße befahrbar, planbar ist der Zeitraum aber nicht.",
     snowCover:
-      "Schneedecke an {pct} % der Tage (≈ {days} von 15, ERA5-Land 2015–2024) – eine ungeteerte Straße räumt niemand, sie ist offen, sobald der Schnee weg ist.",
-    wet: "Regen an {pct} % der Tage (≈ {days} von 15, ERA5-Land 2015–2024) – Staulage; ein trockenes Fenster ist Glückssache.",
+      "Schneedecke an {pct} % der Tage (≈ {days} von 15, Klimareihe 2015–2024) – eine ungeteerte Straße räumt niemand, sie ist offen, sobald der Schnee weg ist.",
+    wet: "Regen an {pct} % der Tage (≈ {days} von 15, Klimareihe 2015–2024) – Staulage; ein trockenes Fenster ist Glückssache.",
     windowEdge:
       "Am Rand des Öffnungsfensters ({window}) – Öffnung und Sperrung verschieben sich je nach Winter um Wochen.",
   },
