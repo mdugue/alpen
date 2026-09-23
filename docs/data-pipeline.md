@@ -155,6 +155,18 @@ fallback is a car profile and will usually refuse a track; the run says so
 road needs an `ORS_KEY` or, for the rare road no router carries, curated
 geometry, which is not built yet.
 
+The road-cycling graph has a second weakness: where it leaves out a stretch of
+a paved road and the road has a way round, it does not answer 404 – it takes
+the way round. Mont Cenis from Susa came back at 341 km, the Große Scheidegg
+from Meiringen over Interlaken and Grindelwald. So an answer from
+`cycling-road` that fails the gate on its geometry (length, start, end) is
+asked once more of ORS's everyday graph, `cycling-regular` (`secondGraph` in
+`scripts/lib/decide.ts`), before any profile is paid for. Its answer is kept
+only when it passes those checks, and `routes-meta.json` records it as
+`orsProfile: "cycling-regular"`; the graph is not an input, so it changes no
+hash. A rejection from before this rule stays where it is until
+`--retry-rejected --only <slug>` asks again.
+
 ## Where the facts come from
 
 Every host in stage 2, what it is good at, and what it cannot do. Nothing here

@@ -522,6 +522,13 @@ export const RouteMeta = z.strictObject({
    * cannot come. Cleared whenever the route is fetched anew.
    */
   orsDeclined: z.literal(true).optional(),
+  /**
+   * ORS's everyday cycling graph answered, because its road-cycling graph left
+   * out a stretch of this road and routed round it (Mont Cenis from Susa at
+   * 341 km). Absent for a route from the road's own profile. See
+   * `secondGraph` in `scripts/lib/decide.ts`.
+   */
+  orsProfile: z.literal("cycling-regular").optional(),
   source: RouteSource,
 });
 
@@ -570,6 +577,12 @@ export const RouteRejection = z.strictObject({
   inputs: z.string().min(1),
   lastSeen: z.iso.date(),
   metrics: RouteMetrics,
+  /**
+   * The rejected candidate came from ORS's everyday graph: the road-cycling
+   * answer had already failed on its geometry, and this one got as far as the
+   * profile checks. As on `RouteMeta`.
+   */
+  orsProfile: z.literal("cycling-regular").optional(),
   /** Cached so a retry after a threshold change costs no Open-Meteo calls. */
   profile: ElevationProfile.optional(),
   /** Why it failed, as the sentences `data:check` prints. */

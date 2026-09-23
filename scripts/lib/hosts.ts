@@ -27,7 +27,7 @@ import type { LatLon, RouteGeometry } from "../../lib/types";
 import { ARCHIVE_DAILY } from "./climate";
 import type { Bytes, Transport } from "./transport";
 import { LIMITS } from "./validate";
-import type { RoutingProfile } from "./validate";
+import type { OrsProfile } from "./validate";
 
 export const ORS_KEY = process.env.ORS_KEY ?? "";
 const OSRM_HOST = process.env.OSRM_HOST ?? "https://router.project-osrm.org";
@@ -115,9 +115,10 @@ export const ors = {
   /**
    * The route through the waypoints, 50 per request, on the graph the road's
    * surface asks for (`profileOf`): road cycling for asphalt, mountain for
-   * gravel and mixed.
+   * gravel and mixed – or on the everyday cycling graph, when the road one
+   * routed round the road (`SECOND_GRAPH`).
    */
-  route: (t: Transport, waypoints: LatLon[], profile: RoutingProfile) =>
+  route: (t: Transport, waypoints: LatLon[], profile: OrsProfile) =>
     stitched(waypoints, 50, async (chunk) => {
       const json = OrsAnswer.parse(
         await t.getJson(

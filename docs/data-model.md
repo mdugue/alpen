@@ -349,7 +349,7 @@ none as one information line.
 | `routes.json`      | `<pass-slug>:<index>`, `tour:<tour-slug>` | Road geometry as `[lat, lon][]`                                                                                                                                |
 | `profiles.json`    | `<pass-slug>:<index>`                     | km, elevation gain, average and steepest-kilometre gradient, ~100 samples                                                                                      |
 | `climate.json`     | `<pass-slug>`                             | 24 half-months with average temperatures and frost/snow/rain share; the verdict reads `snowPct`, `frostPct`, `wetPct` and `tmax` (`lib/status.ts`)             |
-| `routes-meta.json` | as `routes.json`                          | `source` (`ors` \| `osrm`) and `fetchedAt` – which router produced this route                                                                                  |
+| `routes-meta.json` | as `routes.json`                          | `source` (`ors` \| `osrm`) and `fetchedAt` – which router produced this route; `orsProfile` when ORS's everyday graph answered instead of the road one         |
 | `rejected.json`    | as `routes.json`                          | routes the quality gate refused, with the reasons, the measured values, the paid-for profile and a hash of the inputs they were routed for                     |
 | `summits.json`     | `<pass-slug>`                             | DEM height (`dem`) and distance to the nearest road (`roadDist`) at the pass coordinate, with the `lat`/`lon` they were read at, to catch a wrong summit point |
 

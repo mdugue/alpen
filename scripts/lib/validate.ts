@@ -470,6 +470,17 @@ export const profileOf = (surface: Surface): RoutingProfile =>
   surface === "asphalt" ? "cycling-road" : "cycling-mountain";
 
 /**
+ * ORS's everyday cycling graph, asked second when the road-cycling one routed
+ * round a stretch of the road (`secondGraph` in `decide.ts`). It is never a
+ * road's own profile and so never enters an inputs hash: the question stays
+ * the same, only the graph that answered it differs – which
+ * `routes-meta.json` records as `orsProfile`.
+ */
+export const SECOND_GRAPH = "cycling-regular";
+/** Every graph `ors.route` may be asked on. */
+export type OrsProfile = RoutingProfile | typeof SECOND_GRAPH;
+
+/**
  * The profile enters the hash only when it is not the road one, so the routes
  * stored before the surface existed keep their hash: every one of them was
  * asked with the road profile. It is a required argument all the same: a

@@ -21,7 +21,12 @@
  *   into a gap and the two routers loop forever.
  * - **fixtur-lautaret** is a plain rejection: no route stored, the candidate
  *   ends 2.3 km short, and its measured values land in `rejected.json` so a
- *   changed limit can re-judge it offline.
+ *   changed limit can re-judge it offline. ORS's second graph is asked about
+ *   it, and about the Lautaret side, and stops just as short.
+ * - **Briançon** is the second graph's path: the road-cycling answer goes
+ *   round by Susa, Mont Cenis and the Galibier, the everyday graph takes the
+ *   road – its geometry subsampled from `col-du-lautaret:1` – and the route
+ *   is stored with the graph that answered it.
  */
 import { profileDistances, profileStats } from "../../lib/profile";
 import type {
@@ -100,7 +105,10 @@ const galibier: Pass = {
 };
 
 const lautaret: Pass = {
-  ascents: [{ from: { lat: 45.06399, lon: 6.40799 }, label: "Galibier" }],
+  ascents: [
+    { from: { lat: 45.06399, lon: 6.40799 }, label: "Galibier" },
+    { from: { lat: 44.897, lon: 6.636 }, label: "Briançon" },
+  ],
   beauty: 3,
   classicAscent: "Galibier",
   country: "FR",
@@ -156,6 +164,8 @@ export const KEYS = {
   kept: "fixtur-galibier:1",
   /** The ride down to the Lautaret: nothing stored, nothing kept. */
   rejected: "fixtur-lautaret:0",
+  /** Briançon: the road-cycling graph goes round, the everyday graph takes the road. */
+  secondGraph: "fixtur-lautaret:1",
   tour: "tour:fixtur-runde",
 } as const;
 
