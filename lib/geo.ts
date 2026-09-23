@@ -153,7 +153,12 @@ export const convexHull = (points: readonly LatLon[]): LatLon[] => {
   return [...half(pts), ...half(pts.toReversed())];
 };
 
-/** An open ring of `[lon, lat]` pairs, ready as a GeoJSON polygon (MapLibre closes it). */
+/**
+ * A closed ring of `[lon, lat]` pairs – the first pair repeated last, as
+ * GeoJSON asks for it. MapLibre fills an open ring as well, but its line
+ * layer strokes the closing edge only where a tile happens to clip the ring,
+ * so an outline drawn from an open one misses a side.
+ */
 export type Ring = readonly (readonly [number, number])[];
 
 /**
@@ -165,8 +170,8 @@ export type Ring = readonly (readonly [number, number])[];
  * to about a hundred metres: it travels to the page, and a drawn edge needs
  * no more.
  */
-export const paddedHull = (points: readonly LatLon[], km: number): Ring =>
-  convexHull(
+export const paddedHull = (points: readonly LatLon[], km: number): Ring => {
+  const ring = convexHull(
     points.flatMap((p) =>
       circleRing(p, km, 12).map(([lon, lat]) => ({ lat, lon })),
     ),
@@ -177,3 +182,5 @@ export const paddedHull = (points: readonly LatLon[], km: number): Ring =>
         Math.round(p.lat * 1000) / 1000,
       ] as const,
   );
+  return ring.length > 0 ? [...ring, ring[0]!] : [];
+};

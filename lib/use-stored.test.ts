@@ -41,6 +41,7 @@ for (const name of ["localStorage", "sessionStorage"])
 
 const TODAY: Period = 7;
 const env: Env = {
+  destinations: [],
   mobile: false,
   rangeBounds: {},
   today: TODAY,

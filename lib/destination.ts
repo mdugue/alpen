@@ -223,10 +223,11 @@ export const basesOf = (reached: ReachedTown[]): Bases => ({
  * What lies inside a curated area, derived once at prerender: every road
  * within `radiusKm` of the centre plus `include` minus `exclude`, every town
  * within the radius plus the bases named, every loop with a waypoint inside
- * the radius, the box around all of it – what selecting the area frames – and
- * the outline the map draws it with. Nothing here is written to a file: a road
- * added to `passes.json` joins its area by itself, and a changed radius moves
- * the membership with it (`docs/destinations.md`).
+ * the radius, the outline the map draws it with and the box around that
+ * outline – what selecting the area frames, so the camera shows all of what
+ * lights up. Nothing here is written to a file: a road added to `passes.json`
+ * joins its area by itself, and a changed radius moves the membership with it
+ * (`docs/destinations.md`).
  */
 export interface DestinationMembers {
   passes: string[];
@@ -234,15 +235,17 @@ export interface DestinationMembers {
   towns: string[];
   bounds: Bounds;
   /**
-   * The area as the map draws it: the padded hull of its summits, the ends of
-   * their ascents and its towns (`paddedHull`). The radius decides who is a
-   * member; this is where the riding is, which is what a disc of the radius
-   * never showed – half of one was valley floor or the next range.
+   * The area as the map draws it: the padded hull of its centre, its summits
+   * and its towns (`paddedHull`). The radius decides who is a member; the
+   * outline is what the members cover, which a disc of the radius never
+   * showed – half of one was valley floor or the next range. The ascents'
+   * valley ends stay out of it: they would pull every area down its valleys
+   * into the next one's, and the lines of the roads say where they start.
    */
   outline: Ring;
 }
 
-/** How far the outline reaches past the roads and towns it is drawn around, in km. */
+/** How far the outline reaches past the summits and towns it is drawn around, in km. */
 const OUTLINE_PADDING_KM = 5;
 
 /** Whether a point lies within the area's radius. */
@@ -270,43 +273,53 @@ export const membersOf = (
     (t) => inside(t) || d.baseTowns.includes(t.slug),
   );
   const ownTours = tours.filter((t) => t.waypoints.some(inside));
-  const points: [number, number][] = [
-    [d.center.lat, d.center.lon],
-    ...own.map((p): [number, number] => [p.lat, p.lon]),
-    ...ownTowns.map((t): [number, number] => [t.lat, t.lon]),
-  ];
-  // Where the riding is: every summit, both ends of every ascent, every town.
-  const riding: LatLon[] = [
-    ...own.flatMap((p) => [
-      p,
-      ...p.ascents.flatMap((a) => (a.to ? [a.from, a.to] : [a.from])),
-    ]),
-    ...ownTowns,
-  ];
+  const outline = paddedHull(
+    [d.center, ...own, ...ownTowns],
+    OUTLINE_PADDING_KM,
+  );
   return {
-    bounds: bounds(points),
-    outline: paddedHull(
-      riding.length > 0 ? riding : [d.center],
-      OUTLINE_PADDING_KM,
-    ),
+    bounds: bounds(outline.map(([lon, lat]) => [lat, lon])),
+    outline,
     passes: own.map((p) => p.slug),
     tours: ownTours.map((t) => t.slug),
     towns: ownTowns.map((t) => t.slug),
   };
 };
 
-/** The areas a town belongs to, the ones that name it as a base first. */
+/**
+ * The areas a town belongs to: those that name it as a base first, then those
+ * it merely lies in, each group by the distance to the area's centre. Lugano
+ * is a base of the Ticino and of Lake Como, and nearer the Ticino's centre.
+ */
 export const destinationsOfTown = (
-  slug: string,
+  town: Town,
+  destinations: readonly Destination[],
+  members: Record<string, DestinationMembers>,
+): Destination[] => {
+  const isBase = (d: Destination) => d.baseTowns.includes(town.slug);
+  return destinations
+    .filter((d) => members[d.slug]?.towns.includes(town.slug))
+    .toSorted(
+      (a, b) =>
+        Number(isBase(b)) - Number(isBase(a)) ||
+        haversine(town, a.center) - haversine(town, b.center),
+    );
+};
+
+/**
+ * Where the list of areas holds a town: under every area that names it as a
+ * base, or – when none does – under the first one it lies in. Lugano is
+ * listed under both of its areas; Canazei, no area's base, once, under the
+ * Alta Badia, whose centre is the nearest.
+ */
+export const homeAreasOf = (
+  town: Town,
   destinations: readonly Destination[],
   members: Record<string, DestinationMembers>,
 ): Destination[] =>
-  destinations
-    .filter((d) => members[d.slug]?.towns.includes(slug))
-    .toSorted(
-      (a, b) =>
-        Number(b.baseTowns.includes(slug)) - Number(a.baseTowns.includes(slug)),
-    );
+  destinationsOfTown(town, destinations, members).filter(
+    (d, i) => i === 0 || d.baseTowns.includes(town.slug),
+  );
 
 /**
  * How much great riding an area holds in one half-month: the beauty of its

@@ -33,6 +33,7 @@ const tourRow = (tour: Tour, extra: Partial<TourRow> = {}): TourRow => ({
 });
 
 const townRow = (town: Town, extra: Partial<TownRow> = {}): TownRow => ({
+  areas: [],
   favorite: false,
   town,
   ...extra,

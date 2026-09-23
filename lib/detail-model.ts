@@ -363,11 +363,7 @@ export const detailModel = (
   if (!town) return null;
   return {
     ...common,
-    areas: destinationsOfTown(
-      town.slug,
-      data.destinations,
-      data.destinationMembers,
-    ),
+    areas: destinationsOfTown(town, data.destinations, data.destinationMembers),
     // The passes are the town panel's own ranked block, one fold above.
     destination: destinationOf(
       reachedPasses(town, data.passes, data.years, period),

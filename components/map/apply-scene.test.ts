@@ -63,7 +63,7 @@ const row = (pass: typeof galibier): PassRow => ({
   season: [],
   status: "open",
 });
-const town: TownRow = { favorite: false, town: bormio };
+const town: TownRow = { areas: [], favorite: false, town: bormio };
 
 const scene = (extra: Partial<SceneInput> = {}) =>
   buildScene({

@@ -4,8 +4,25 @@ import { Star } from "lucide-react";
 
 import { useT } from "@/components/i18n";
 import { Toggle } from "@/components/ui/toggle";
-import { fill } from "@/lib/i18n/fill";
+import type { Selection } from "@/lib/app-state";
+import { fill } from "@/lib/i18n";
+import { entityKey, isHovered } from "@/lib/route-key";
 import { cn, ICON_TOGGLE, TOUCH_ICON } from "@/lib/utils";
+
+/**
+ * What every row of every list does with the entity it shows, as one value
+ * the sidebar builds once: which row is open, what the pointer is over, and
+ * the three things a row can be asked to do. A row derives the rest from its
+ * entity, so no list spells out the wiring again.
+ */
+export interface RowContext {
+  /** The open entity's key (`entityKey`), or null. */
+  currentRow: string | null;
+  hovered: Selection | null;
+  onHover: (entity: Selection | null) => void;
+  onSelect: (entity: Selection) => void;
+  onToggleFavorite: (entity: Selection) => void;
+}
 
 /**
  * One list row: favourite toggle, the selectable body and a right-aligned
@@ -29,7 +46,9 @@ import { cn, ICON_TOGGLE, TOUCH_ICON } from "@/lib/utils";
  *
  * `auto` in the intrinsic size lets a row remember what it measured, so the
  * scrollbar does not jump; the step is the height of a row that has never
- * been rendered. The flip side of the paint containment is that a ring around
+ * been rendered, and it has to be the height a row actually has (50 px). A
+ * list scrolled to a selected row it has not rendered yet adds the error up
+ * row by row: at 48 px, a row sixty rows down landed out of view. The flip side of the paint containment is that a ring around
  * the body button would be clipped at the row's edge – hence the inset focus
  * ring.
  *
@@ -46,23 +65,19 @@ import { cn, ICON_TOGGLE, TOUCH_ICON } from "@/lib/utils";
  *    with nothing to tell them apart.
  */
 export const EntityRow = ({
-  title,
+  entity,
   name,
   subtitle,
   aside,
   trailing,
   favorite,
-  onToggleFavorite,
-  onSelect,
   className,
   leading,
-  rowId,
-  current,
-  hovered,
-  onHover,
+  row,
 }: {
-  title: React.ReactNode;
-  /** The plain name, for the labels no sighted user reads. */
+  /** What the row shows; its key is the row's id (`data-row`), which focus returns to after the detail view closes. */
+  entity: Selection;
+  /** The title, and the plain name for the labels no sighted user reads. */
   name: string;
   subtitle: React.ReactNode;
   /** Right column, e.g. elevation and status. */
@@ -72,26 +87,24 @@ export const EntityRow = ({
   /** Small glyph in front of the title, e.g. a tour colour bar. */
   leading?: React.ReactNode;
   favorite: boolean;
-  onToggleFavorite: () => void;
-  onSelect: () => void;
   className?: string;
-  /** `kind:slug`, used to return focus to the row after the detail view closes. */
-  rowId: string;
-  current?: boolean;
-  /** The pointer is over this entity – here or on the map; one highlight for both. */
-  hovered?: boolean;
-  onHover?: (over: boolean) => void;
+  row: RowContext;
 }) => {
   const { t } = useT();
+  const rowId = entityKey(entity);
+  const current = row.currentRow === rowId;
+  // The pointer is over this entity – here or on the map; one highlight for both.
+  const hovered = isHovered(row.hovered, entity.kind, entity.slug);
+  const onHover = (over: boolean) => row.onHover(over ? entity : null);
   return (
     <div
       role="listitem"
       data-current={current ? true : undefined}
-      onPointerEnter={onHover ? () => onHover(true) : undefined}
-      onPointerLeave={onHover ? () => onHover(false) : undefined}
+      onPointerEnter={() => onHover(true)}
+      onPointerLeave={() => onHover(false)}
       className={cn(
         "border-border grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-x-1 border-b",
-        "[contain-intrinsic-size:auto_--spacing(12)] [content-visibility:auto]",
+        "[contain-intrinsic-size:auto_--spacing(12.5)] [content-visibility:auto]",
         // The hover tint is the same surface the selected row carries, at half
         // the weight and without the accent bar: the map and the list answer
         // the pointer in one another's half of the screen, and the two states
@@ -104,7 +117,7 @@ export const EntityRow = ({
     >
       <Toggle
         pressed={favorite}
-        onPressedChange={onToggleFavorite}
+        onPressedChange={() => row.onToggleFavorite(entity)}
         aria-label={
           favorite
             ? fill(t.sidebar.row.unsave, { name })
@@ -125,14 +138,14 @@ export const EntityRow = ({
         data-roving
         tabIndex={-1}
         aria-current={current ? "true" : undefined}
-        onClick={onSelect}
-        onFocus={onHover ? () => onHover(true) : undefined}
-        onBlur={onHover ? () => onHover(false) : undefined}
+        onClick={() => row.onSelect(entity)}
+        onFocus={() => onHover(true)}
+        onBlur={() => onHover(false)}
         className="focus-visible:inset-ring-ring/50 min-w-0 rounded-sm py-2 pr-1 text-left outline-none focus-visible:inset-ring-2"
       >
         <span className="flex items-center gap-1.5 text-xs leading-tight font-medium">
           {leading}
-          <span className="truncate">{title}</span>
+          <span className="truncate">{name}</span>
         </span>
         <span className="text-muted-foreground mt-0.5 block truncate text-xs">
           {subtitle}

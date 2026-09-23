@@ -628,6 +628,8 @@ export type Action =
 
 /** What the reducer needs from outside the state and never changes it. */
 export interface Env {
+  /** Every destination's slug: a compared area a link names must be one. */
+  destinations: readonly string[];
   /** Whether the two sheets are the layout (`MOBILE_QUERY`). */
   mobile: boolean;
   /** Today's half-month, computed on the server; where the period falls back to. */
@@ -695,7 +697,9 @@ const load = (
   const view = { ...DEFAULT_VIEW, ...defined(hash.view) };
   const next: AppState = {
     ...state,
-    compare: hash.compare,
+    // A link may name an area this build does not hold; a pick that no row
+    // can show would count against `COMPARE_MAX` with no switch to lift it.
+    compare: hash.compare.filter((slug) => env.destinations.includes(slug)),
     filters: {
       ...DEFAULT_FILTERS,
       ...defined(hash.filters),

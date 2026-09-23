@@ -8,6 +8,7 @@ import { useT } from "@/components/i18n";
 import { useSheet } from "@/components/mobile-sheet";
 import { CompareSheet } from "@/components/sidebar/compare-sheet";
 import { DestinationList } from "@/components/sidebar/destination-list";
+import type { RowContext } from "@/components/sidebar/entity-row";
 import {
   AppliedFilters,
   FilterBody,
@@ -42,8 +43,8 @@ import {
 import { langPrefix } from "@/lib/i18n";
 import type { RangeName } from "@/lib/regions";
 import { entityKey } from "@/lib/route-key";
-import { areaEntryCount, nestTowns } from "@/lib/rows";
-import type { Rows } from "@/lib/rows";
+import { nestTowns } from "@/lib/rows";
+import type { DestinationRow, Rows } from "@/lib/rows";
 import { cn, TOUCH_CONTROL } from "@/lib/utils";
 
 export interface SidebarProps {
@@ -54,6 +55,13 @@ export interface SidebarProps {
   rows: Rows;
   /** The destinations picked for the compare sheet (`AppState.compare`). */
   compare: readonly string[];
+  /**
+   * The sheet's columns, in the order they were picked: every picked area,
+   * whatever the list's filters hide – a comparison is not a search result.
+   */
+  compared: readonly DestinationRow[];
+  /** How many entries each list holds (`tabCounts`). */
+  counts: Record<ListTab, number>;
   /** How many entries each list holds with no filter at all. */
   totals: Record<ListTab, number>;
   /** How many roads a filter change would leave – the number on every chip. */
@@ -90,10 +98,16 @@ export const Sidebar = (p: SidebarProps) => {
   const set = <K extends keyof Filters>(key: K, value: Filters[K]) =>
     setFilters((f) => ({ ...f, [key]: value }));
   const reset = () => setFilters(resetFilters);
-  const onSelect = (kind: EntityKind) => (slug: string) =>
-    p.dispatch({ selection: { kind, slug }, type: "select" });
-  const onHover = (sel: Selection | null) =>
-    p.dispatch({ selection: sel, type: "hover" });
+  const onSelect = (selection: Selection) =>
+    p.dispatch({ selection, type: "select" });
+  /** What every row of the three lists does with the entity it shows. */
+  const row: RowContext = {
+    currentRow: p.selection ? entityKey(p.selection) : null,
+    hovered: p.hovered,
+    onHover: (selection) => p.dispatch({ selection, type: "hover" }),
+    onSelect,
+    onToggleFavorite: (sel) => p.onToggleFavorite(sel.kind, sel.slug),
+  };
   const tourCount = p.totals.tour;
   const visibleTourCount = shownTourCount(p.shown, tourCount);
   // The panel opens by itself when a link carries filters; the visitor's own
@@ -103,22 +117,11 @@ export const Sidebar = (p: SidebarProps) => {
   const [more, setMore] = useState<boolean | null>(null);
   const moreOpen = more ?? hasSecondaryFilters(p.filters);
   const [compareOpen, setCompareOpen] = useState(false);
-  // The sheet's columns, in the order they were picked; a slug the rows do not
-  // hold – filtered away, or from a link naming an area this build has not
-  // got – draws no column.
-  const compared = p.compare
-    .map((slug) => p.rows.destination.find((r) => r.destination.slug === slug))
-    .filter((r) => r !== undefined);
 
   const lists = useRef<HTMLDivElement>(null);
   const { expanded } = useSheet();
-  const currentRow = p.selection ? entityKey(p.selection) : null;
-
-  const counts: Record<ListTab, number> = {
-    destination: areaEntryCount(nestTowns(p.rows.destination, p.rows.town)),
-    pass: p.rows.pass.length,
-    tour: p.rows.tour.length,
-  };
+  const { currentRow } = row;
+  const areaGroups = nestTowns(p.rows.destination, p.rows.town);
 
   // Keep the selected row visible, e.g. after a click on a map marker.
   //
@@ -241,7 +244,7 @@ export const Sidebar = (p: SidebarProps) => {
           <KindTabs
             active={p.tab}
             onChange={(tab) => p.dispatch({ tab, type: "tab" })}
-            counts={counts}
+            counts={p.counts}
             totals={p.totals}
           />
         </div>
@@ -261,7 +264,7 @@ export const Sidebar = (p: SidebarProps) => {
               <FilterBody
                 filters={p.filters}
                 setFilters={setFilters}
-                counts={counts}
+                counts={p.counts}
                 totals={p.totals}
                 countWith={p.countWith}
                 ranges={p.ranges}
@@ -274,46 +277,36 @@ export const Sidebar = (p: SidebarProps) => {
           )}
           {p.tab === "destination" && (
             <DestinationList
-              rows={p.rows.destination}
-              towns={p.rows.town}
-              currentRow={currentRow}
-              hovered={p.hovered}
-              onHover={onHover}
+              groups={areaGroups}
+              row={row}
               period={p.filters.period}
-              empty={emptyProps}
+              // Only search, favourites and the range reach the areas: a
+              // road criterion lifted brings no area back, so the empty state
+              // names none (`bestRelief` counts roads).
+              empty={{ ...emptyProps, countWith: undefined }}
               showRange={p.ranges.length > 1}
               compare={p.compare}
               onCompare={(slug, on) =>
                 p.dispatch({ on, slug, type: "compare" })
               }
               onOpenCompare={() => setCompareOpen(true)}
-              onSelect={(selection) =>
-                p.dispatch({ selection, type: "select" })
-              }
-              onToggleFavorite={(sel) => p.onToggleFavorite(sel.kind, sel.slug)}
               mapControl={townSwitch}
             />
           )}
           {p.tab === "pass" && (
             <PassList
               rows={p.rows.pass}
-              currentRow={currentRow}
-              hovered={p.hovered}
-              onHover={onHover}
+              row={row}
               filters={p.filters}
               setFilters={setFilters}
               empty={emptyProps}
               mapControl={passSwitch}
-              onSelect={onSelect("pass")}
-              onToggleFavorite={(slug) => p.onToggleFavorite("pass", slug)}
             />
           )}
           {p.tab === "tour" && (
             <TourList
               rows={p.rows.tour}
-              currentRow={currentRow}
-              hovered={p.hovered}
-              onHover={onHover}
+              row={row}
               period={p.filters.period}
               isShown={(slug) => isShown(p.shown, "tour", slug)}
               empty={emptyProps}
@@ -322,8 +315,6 @@ export const Sidebar = (p: SidebarProps) => {
               onToggleTour={(slug, on) =>
                 p.dispatch({ on, slug, type: "toggleTour" })
               }
-              onSelect={onSelect("tour")}
-              onToggleFavorite={(slug) => p.onToggleFavorite("tour", slug)}
             />
           )}
         </div>
@@ -331,12 +322,12 @@ export const Sidebar = (p: SidebarProps) => {
         <CompareSheet
           open={compareOpen}
           onOpenChange={setCompareOpen}
-          rows={compared}
+          rows={p.compared}
           period={p.filters.period}
           onRemove={(slug) => p.dispatch({ on: false, slug, type: "compare" })}
           onSelect={(slug) => {
             setCompareOpen(false);
-            onSelect("destination")(slug);
+            onSelect({ kind: "destination", slug });
           }}
         />
 

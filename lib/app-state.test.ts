@@ -75,19 +75,33 @@ describe("compare (plan 12)", () => {
     const state = reduce(
       { ...initialState(8), shown },
       { selection: { kind: "destination", slug: "oisans" }, type: "select" },
-      { mobile: false, rangeBounds: {}, today: 8, tours: [] },
+      {
+        destinations: ["oisans"],
+        mobile: false,
+        rangeBounds: {},
+        today: 8,
+        tours: [],
+      },
     );
     expect(state.shown).toBe(shown);
     expect(state.tab).toBe("destination");
   });
 
   test("the comparison comes in with the link and goes out with the state", () => {
-    const env: Env = { mobile: false, rangeBounds: {}, today: 8, tours: [] };
+    const env: Env = {
+      destinations: ["engadin", "oisans", "ubaye"],
+      mobile: false,
+      rangeBounds: {},
+      today: 8,
+      tours: [],
+    };
     let state = reduce(
       initialState(8),
-      { hash: parseHash("#vgl=oisans,engadin"), stored: {}, type: "load" },
+      { hash: parseHash("#vgl=oisans,gone,engadin"), stored: {}, type: "load" },
       env,
     );
+    // An area this build does not hold is dropped: it would count against the
+    // limit with no row to lift it from.
     expect(state.compare).toEqual(["oisans", "engadin"]);
     state = reduce(state, { on: true, slug: "ubaye", type: "compare" }, env);
     expect(state.compare).toEqual(["oisans", "engadin", "ubaye"]);
@@ -115,6 +129,7 @@ describe("entityKey", () => {
 const TOURS = ["sellaronda", "stelvio-runde"];
 const TODAY: Period = 7;
 const desktop: Env = {
+  destinations: [],
   mobile: false,
   rangeBounds: {},
   today: TODAY,

@@ -6,7 +6,6 @@ import { membersOf } from "@/lib/destination";
 import { DE } from "@/lib/i18n/dictionaries";
 import { PERIODS } from "@/lib/period";
 import {
-  areaEntryCount,
   barTotal,
   buildDestinationRows,
   buildPassRows,
@@ -15,11 +14,13 @@ import {
   currentBar,
   facetCount,
   nestTowns,
+  tabCounts,
   rowBlocks,
   ROWS_PER_BLOCK,
   seasonBand,
   sortPassRows,
 } from "@/lib/rows";
+import type { AreaGroup } from "@/lib/rows";
 import {
   cellAt,
   indexBySlug,
@@ -903,6 +904,13 @@ const area = (over: Partial<Destination> & { slug: string }): Destination => ({
   ...over,
 });
 
+/** A nesting as slugs: each area with its towns, `null` for the rest. */
+const shape = (groups: AreaGroup[]) =>
+  groups.map((g) => [
+    g.area?.destination.slug ?? null,
+    g.towns.map((t) => t.town.slug),
+  ]);
+
 describe("buildDestinationRows (plan 12)", () => {
   const roads = [
     pass({ beauty: 5, lat: 46, lon: 10, name: "Nah", slug: "nah" }),
@@ -964,40 +972,34 @@ describe("buildDestinationRows (plan 12)", () => {
     expect(rows({ ranges: ["Jura"] })).toHaveLength(0);
   });
 
-  test("the towns sit under their area, and what no listed area holds comes last", () => {
+  test("the towns sit under their areas, and what no listed area holds comes last", () => {
     const livigno = { ...bases[0]!, name: "Livigno", slug: "livigno" };
+    const zell = { ...bases[0]!, name: "Zell", slug: "zell" };
     const townRows = buildTownRows(
-      [...bases, livigno],
+      [...bases, livigno, zell],
       {},
       filters(),
       never,
       DE,
-      {
-        bormio: areas[0],
-      },
+      // Zell is held under both areas, as a base of each.
+      { bormio: [areas[0]!], zell: [areas[1]!, areas[0]!] },
     );
-    const groups = nestTowns(rows(), townRows);
-    expect(
-      groups.map((g) => [
-        g.area?.destination.slug ?? null,
-        g.towns.map((t) => t.town.slug),
-      ]),
-    ).toEqual([
-      ["ortler", ["bormio"]],
-      ["tauern", []],
+    const all = { destination: rows(), pass: [], tour: [], town: townRows };
+    expect(shape(nestTowns(all.destination, townRows))).toEqual([
+      ["ortler", ["bormio", "zell"]],
+      ["tauern", ["zell"]],
       [null, ["livigno"]],
     ]);
-    // An area the filters dropped hands its towns to the last group.
-    expect(
-      nestTowns(rows({ query: "tauern" }), townRows).map((g) => [
-        g.area?.destination.slug ?? null,
-        g.towns.map((t) => t.town.slug),
-      ]),
-    ).toEqual([
-      ["tauern", []],
+    // An area the filters dropped hands its towns to the last group, unless
+    // another listed area holds them too.
+    const tauern = rows({ query: "tauern" });
+    expect(shape(nestTowns(tauern, townRows))).toEqual([
+      ["tauern", ["zell"]],
       [null, ["bormio", "livigno"]],
     ]);
-    // The tab counts an area, or a town outside every listed area.
-    expect(areaEntryCount(groups)).toBe(3);
+    // The tab counts an area, or a town outside every listed area – never a
+    // town twice, and never one that sits under its area.
+    expect(tabCounts(all).destination).toBe(3);
+    expect(tabCounts({ ...all, destination: tauern }).destination).toBe(3);
   });
 });

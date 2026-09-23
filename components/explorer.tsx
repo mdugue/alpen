@@ -14,7 +14,12 @@ import { Sidebar } from "@/components/sidebar/sidebar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { ALL_RANGES, initialState, reduce } from "@/lib/app-state";
+import {
+  ALL_RANGES,
+  DEFAULT_FILTERS,
+  initialState,
+  reduce,
+} from "@/lib/app-state";
 import type {
   Action,
   AppState,
@@ -22,7 +27,7 @@ import type {
   Filters,
   Selection,
 } from "@/lib/app-state";
-import { destinationsOfTown } from "@/lib/destination";
+import { homeAreasOf } from "@/lib/destination";
 import { filterCount, rangeWord } from "@/lib/filter-summary";
 import { switchLangHref, useHashAdapter } from "@/lib/hash-adapter";
 import type { PageData } from "@/lib/page-data";
@@ -35,6 +40,7 @@ import {
   currentBar,
   facetCount,
   seasonBand,
+  tabCounts,
 } from "@/lib/rows";
 import { indexBySlug } from "@/lib/status";
 import type { Signals } from "@/lib/status";
@@ -84,6 +90,7 @@ export const Explorer = ({ data, defaultPeriod, children }: Props) => {
   const mapEnv = useMapEnvironment();
   const isMobile = mapEnv.mobile;
   const env: Env = {
+    destinations: destinations.map((d) => d.slug),
     mobile: isMobile,
     rangeBounds: assets.rangeBounds,
     today: defaultPeriod,
@@ -118,11 +125,11 @@ export const Explorer = ({ data, defaultPeriod, children }: Props) => {
 
   const passIndex = indexBySlug(passes);
   const townIndex = indexBySlug(towns);
-  /** The area each town lies in – the first that names it as a base. */
+  /** The areas the list holds each town under (`homeAreasOf`). */
   const townAreas = Object.fromEntries(
     towns.map((town) => [
       town.slug,
-      destinationsOfTown(town.slug, destinations, destinationMembers)[0],
+      homeAreasOf(town, destinations, destinationMembers),
     ]),
   );
   const rows = {
@@ -148,6 +155,26 @@ export const Explorer = ({ data, defaultPeriod, children }: Props) => {
     ),
     town: buildTownRows(towns, townRanges, filters, isFavorite, t, townAreas),
   };
+  /** The number on each tab, and on the phone's button that opens the list. */
+  const counts = tabCounts(rows);
+  /**
+   * The compare sheet's columns, in the order they were picked: every picked
+   * area for the chosen half-month, whatever the list's filters hide – a
+   * comparison is not a search result.
+   */
+  const compareRows = buildDestinationRows(
+    destinations.filter((d) => compare.includes(d.slug)),
+    destinationMembers,
+    passIndex,
+    townIndex,
+    years,
+    { ...DEFAULT_FILTERS, period: filters.period },
+    isFavorite,
+    t,
+  );
+  const compared = compare
+    .map((slug) => compareRows.find((r) => r.destination.slug === slug))
+    .filter((r) => r !== undefined);
   /** What selecting an area frames: the box around its members (`membersOf`). */
   const destinationBounds = Object.fromEntries(
     Object.entries(destinationMembers).map(([slug, m]) => [slug, m.bounds]),
@@ -255,7 +282,7 @@ export const Explorer = ({ data, defaultPeriod, children }: Props) => {
                     dispatch({ filters: false, open: true, type: "list" })
                   }
                 >
-                  {t.kinds[tab]} ({fmt(rows[tab].length)})
+                  {t.kinds[tab]} ({fmt(counts[tab])})
                 </Button>
                 <Button
                   variant="outline"
@@ -278,12 +305,15 @@ export const Explorer = ({ data, defaultPeriod, children }: Props) => {
               filters={filters}
               rows={rows}
               compare={compare}
+              compared={compared}
+              counts={counts}
               totals={{
                 // The areas' tab lists every area and, after them, the
                 // towns no area holds (`nestTowns`).
                 destination:
                   destinations.length +
-                  towns.filter((town) => !townAreas[town.slug]).length,
+                  towns.filter((town) => townAreas[town.slug]?.length === 0)
+                    .length,
                 pass: passes.length,
                 tour: tours.length,
               }}

@@ -5,6 +5,7 @@ import {
   areaText,
   areaVerdict,
   destinationsOfTown,
+  homeAreasOf,
   membersOf,
   RISKY_WEIGHT,
 } from "@/lib/destination";
@@ -67,24 +68,71 @@ describe("membersOf", () => {
     expect(m.towns).toEqual(["base", "other", "away"]);
   });
 
-  test("the box holds the centre and every member", () => {
+  test("the outline holds the centre and every member, and the box the outline", () => {
     const m = membersOf(area, passes, tours, towns);
-    expect(m.bounds[0]).toBe(10);
-    expect(m.bounds[2]).toBeCloseTo(edge.lon, 6);
+    const [west, south, east, north] = m.bounds;
+    // Five kilometres past the westernmost point, the centre …
+    expect(west).toBeLessThan(10);
+    expect(west).toBeGreaterThan(9.9);
+    // … and past the easternmost member.
+    expect(east).toBeGreaterThan(edge.lon);
+    // The ring is closed, and every vertex of it lies inside the box.
+    expect(m.outline[0]).toEqual(m.outline.at(-1));
+    for (const [lon, lat] of m.outline) {
+      expect(lon).toBeGreaterThanOrEqual(west);
+      expect(lon).toBeLessThanOrEqual(east);
+      expect(lat).toBeGreaterThanOrEqual(south);
+      expect(lat).toBeLessThanOrEqual(north);
+    }
   });
 });
 
-describe("destinationsOfTown", () => {
+const slugs = (list: readonly Destination[]) => list.map((d) => d.slug);
+
+describe("destinationsOfTown and homeAreasOf", () => {
+  const [, other, away] = towns;
+  /** An area centred on the town "other", 25 km east of the test area's centre. */
+  const around = (slug: string, baseTowns: string[]): Destination => ({
+    ...area,
+    baseTowns,
+    center: { lat: other!.lat, lon: other!.lon },
+    slug,
+  });
+  const membersFor = (list: readonly Destination[]) =>
+    Object.fromEntries(
+      list.map((d) => [d.slug, membersOf(d, passes, tours, towns)]),
+    );
+
   test("names the areas a town lies in, the ones calling it a base first", () => {
-    const other: Destination = { ...area, baseTowns: ["other"], slug: "b" };
-    const members = {
-      b: membersOf(other, passes, tours, towns),
-      test: membersOf(area, passes, tours, towns),
-    };
-    expect(
-      destinationsOfTown("other", [area, other], members).map((d) => d.slug),
-    ).toEqual(["b", "test"]);
-    expect(destinationsOfTown("away", [area, other], members)).toEqual([]);
+    const list = [area, around("b", ["other"])];
+    const members = membersFor(list);
+    expect(slugs(destinationsOfTown(other!, list, members))).toEqual([
+      "b",
+      "test",
+    ]);
+    expect(destinationsOfTown(away!, list, members)).toEqual([]);
+  });
+
+  test("lists a town under every area calling it a base", () => {
+    const list = [
+      area,
+      around("b", ["other"]),
+      { ...area, baseTowns: ["other"], slug: "c" },
+    ];
+    const members = membersFor(list);
+    // Both bases, the nearer centre first; the area it only lies in is left out.
+    expect(slugs(homeAreasOf(other!, list, members))).toEqual(["b", "c"]);
+  });
+
+  test("and a town no area calls a base under the nearest one it lies in", () => {
+    const list = [{ ...area, baseTowns: [] }, around("b", [])];
+    const members = membersFor(list);
+    expect(slugs(destinationsOfTown(other!, list, members))).toEqual([
+      "b",
+      "test",
+    ]);
+    expect(slugs(homeAreasOf(other!, list, members))).toEqual(["b"]);
+    expect(homeAreasOf(away!, list, members)).toEqual([]);
   });
 });
 

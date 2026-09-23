@@ -6,6 +6,7 @@ import { useT } from "@/components/i18n";
 import { Rating } from "@/components/rating";
 import { SeasonStrip } from "@/components/season-strip";
 import { EntityRow } from "@/components/sidebar/entity-row";
+import type { RowContext } from "@/components/sidebar/entity-row";
 import { ListEmpty } from "@/components/sidebar/list-empty";
 import { ListToolbar } from "@/components/sidebar/list-toolbar";
 import { RowList } from "@/components/sidebar/row-list";
@@ -20,12 +21,10 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { PASS_SORTS } from "@/lib/app-state";
-import type { Filters, PassSort, Selection } from "@/lib/app-state";
+import type { Filters, PassSort } from "@/lib/app-state";
 import { typeWord } from "@/lib/i18n";
 import { fill } from "@/lib/i18n/fill";
-import { entityKey } from "@/lib/route-key";
 import type { PassRow } from "@/lib/rows";
-import { useRoving } from "@/lib/use-roving";
 import { cn, TOUCH_CONTROL } from "@/lib/utils";
 
 type RatingSort = "beauty" | "fame" | "difficulty" | "traffic";
@@ -38,31 +37,22 @@ const RATING_SORTS: ReadonlySet<PassSort> = new Set([
 
 export const PassList = ({
   rows,
-  currentRow,
-  hovered,
-  onHover,
+  row,
   filters,
   setFilters,
   empty,
   mapControl,
-  onSelect,
-  onToggleFavorite,
 }: {
   rows: readonly PassRow[];
-  currentRow: string | null;
-  hovered: Selection | null;
-  onHover: (sel: Selection | null) => void;
+  /** What every row does with its entity (`RowContext`). */
+  row: RowContext;
   filters: Filters;
   setFilters: (update: (f: Filters) => Filters) => void;
   empty: Omit<React.ComponentProps<typeof ListEmpty>, "title">;
   /** The "auf der Karte" switch for this kind; it lives in the list, not by the tabs. */
   mapControl: React.ReactNode;
-  onSelect: (slug: string) => void;
-  onToggleFavorite: (slug: string) => void;
 }) => {
   const { t, fmtUnit } = useT();
-  const rovingList = useRoving<HTMLDivElement>();
-  const hoveredSlug = hovered?.kind === "pass" ? hovered.slug : null;
   const ratingSort = RATING_SORTS.has(filters.sort)
     ? (filters.sort as RatingSort)
     : null;
@@ -116,18 +106,12 @@ export const PassList = ({
       {rows.length === 0 ? (
         <ListEmpty title={t.sidebar.empty.noPasses} {...empty} />
       ) : (
-        <RowList ref={rovingList} items={rows} keyOf={({ pass }) => pass.slug}>
+        <RowList items={rows} keyOf={({ pass }) => pass.slug}>
           {({ pass, status, reason, favorite, season }) => (
             <EntityRow
-              key={pass.slug}
-              rowId={entityKey("pass", pass.slug)}
-              current={currentRow === entityKey("pass", pass.slug)}
-              hovered={hoveredSlug === pass.slug}
-              onHover={(over) =>
-                onHover(over ? { kind: "pass", slug: pass.slug } : null)
-              }
+              entity={{ kind: "pass", slug: pass.slug }}
+              row={row}
               name={pass.name}
-              title={pass.name}
               subtitle={
                 <TagLine
                   tags={pass.tags ?? []}
@@ -141,8 +125,6 @@ export const PassList = ({
                 />
               }
               favorite={favorite}
-              onToggleFavorite={() => onToggleFavorite(pass.slug)}
-              onSelect={() => onSelect(pass.slug)}
               aside={
                 <>
                   <span className="text-xs font-medium tabular-nums">

@@ -1,5 +1,5 @@
 import { ALL_RANGES, HEAT_NONE, WET_NONE } from "@/lib/app-state";
-import type { EntityKind, Filters, PassSort } from "@/lib/app-state";
+import type { EntityKind, Filters, ListTab, PassSort } from "@/lib/app-state";
 import { areaScore, areaText, areaVerdict } from "@/lib/destination";
 import type { AreaVerdict, DestinationMembers } from "@/lib/destination";
 import type { Messages } from "@/lib/i18n";
@@ -331,8 +331,11 @@ export interface TownRow {
   favorite: boolean;
   /** The range the town belongs to through its reach; the row names it once there is more than one. */
   range?: RangeName;
-  /** The area the town lies in, the one naming it as a base first (`destinationsOfTown`); the list nests it there. */
-  area?: Destination;
+  /**
+   * The areas the list holds the town under (`homeAreasOf`); the first is the
+   * one its row names when none of them is listed.
+   */
+  areas: readonly Destination[];
 }
 
 /**
@@ -347,8 +350,8 @@ export const buildTownRows = (
   filters: Filters,
   isFavorite: Query["isFavorite"],
   w: Messages,
-  /** Per town slug, its area – the holiday it belongs to (`destinationsOfTown`). */
-  townAreas: Partial<Record<string, Destination>> = {},
+  /** Per town slug, the areas the list holds it under (`homeAreasOf`). */
+  townAreas: Partial<Record<string, readonly Destination[]>> = {},
 ): TownRow[] => {
   const q = query(filters, isFavorite, w);
   const rows: TownRow[] = [];
@@ -362,7 +365,7 @@ export const buildTownRows = (
     )
       continue;
     if (!q.matches(townHaystack(town, range, w))) continue;
-    rows.push({ area: townAreas[town.slug], favorite, range, town });
+    rows.push({ areas: townAreas[town.slug] ?? [], favorite, range, town });
   }
   return rows.toSorted((a, b) => a.town.name.localeCompare(b.town.name, "de"));
 };
@@ -473,9 +476,9 @@ export interface AreaGroup {
 }
 
 /**
- * The areas and the towns as one list: each town under its area (`TownRow`'s
- * `area`) when that area is listed, and the others – in no area, or in one
- * the filters dropped – in a last group. Both keep their own filters
+ * The areas and the towns as one list: each town under every listed area it
+ * is held under (`TownRow`'s `areas`), and the others – in no area, or only
+ * in ones the filters dropped – in a last group. Both keep their own filters
  * (`buildDestinationRows`, `buildTownRows`); this only says where a town is
  * shown, because an area is where one goes and a town is where in it one
  * sleeps (docs/ui-conventions.md, "One list at a time").
@@ -485,17 +488,29 @@ export const nestTowns = (
   towns: readonly TownRow[],
 ): AreaGroup[] => {
   const listed = new Set(areas.map((a) => a.destination.slug));
-  const rest = towns.filter((t) => !t.area || !listed.has(t.area.slug));
   const groups = areas.map((area) => ({
     area,
-    towns: towns.filter((t) => t.area?.slug === area.destination.slug),
+    towns: towns.filter((t) =>
+      t.areas.some((d) => d.slug === area.destination.slug),
+    ),
   }));
+  const rest = towns.filter((t) => !t.areas.some((d) => listed.has(d.slug)));
   return rest.length > 0 ? [...groups, { area: null, towns: rest }] : groups;
 };
 
-/** What the areas' tab counts: an area, or a town outside every listed area. */
-export const areaEntryCount = (groups: readonly AreaGroup[]): number =>
-  groups.reduce((n, g) => n + (g.area ? 1 : g.towns.length), 0);
+/**
+ * The number on each tab. The areas' tab counts what its list answers with:
+ * an area, or a town outside every listed area – a town under its area is
+ * part of that answer, not one of its own.
+ */
+export const tabCounts = (rows: Rows): Record<ListTab, number> => ({
+  destination: nestTowns(rows.destination, rows.town).reduce(
+    (n, g) => n + (g.area ? 1 : g.towns.length),
+    0,
+  ),
+  pass: rows.pass.length,
+  tour: rows.tour.length,
+});
 
 /**
  * The four filtered lists, as the explorer builds them once and hands them
