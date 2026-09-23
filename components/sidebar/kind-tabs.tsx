@@ -9,7 +9,7 @@ import { cn, TOUCH_CONTROL } from "@/lib/utils";
 /** Legend glyphs; the same shapes the map uses for the four kinds. */
 export const KIND_GLYPH: Record<EntityKind, React.ReactNode> = {
   destination: (
-    <span className="bg-accent/30 border-accent size-3 rounded-sm border" />
+    <span className="bg-area/25 border-area size-3 rounded-sm border" />
   ),
   pass: <span className="border-foreground/70 size-3 rounded-full border-2" />,
   tour: <span className="bg-tour h-1.5 w-4 rounded-full" />,

@@ -72,7 +72,7 @@ export const ROUTE_DASH = "routes-dash";
  * The five kinds the map draws. `route` is a pass's ascents: its own lines and
  * its own hit layer, but never its own selection – an ascent belongs to its
  * pass, which is what `pick` answers with. `destination` is the outline of
- * an area under everything else, drawn only in the overview
+ * an area under everything else, thinner past the overview
  * (`DESTINATION_MAX_ZOOM`); its name stands on a point source of its own.
  */
 export const LAYERS = {

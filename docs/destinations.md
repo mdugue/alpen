@@ -129,11 +129,14 @@ towns (`DestinationMembers.outline`, 5 km around them). The valley feet of
 the ascents are left out on purpose – with them, a third of the outlines grew
 larger than the circles they replaced. The
 circle was the membership rule drawn as a picture, and half of every disc was
-valley floor or the next range; the outline shows what the area holds. It is
-drawn in the overview (below zoom 8.5, where the roads thin out by fame),
-the edge tinted by the rideable share, with the name and the count on its
-centre; past that zoom the roads are the picture and the fill would only
-cover it. Selecting an area frames its members.
+valley floor or the next range; the outline shows what the area holds. It
+is drawn at every zoom in the area colour (`--area`), the town's blue family
+– an area is where one stays, and red to green is what a road's rideability
+is said in, so the outline never takes a status colour; the count is its
+label's second line. Past zoom 8.5, where every road is drawn, the fill
+thins out and the edge steps back to a hairline, so the roads stay the
+picture; the selected or hovered area keeps its weight. Selecting an area
+frames its members.
 
 Up to three areas can be switched on for the compare sheet: the verdict of
 the half-month, the derived year, what each holds and where one would stay,

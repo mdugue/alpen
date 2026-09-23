@@ -47,6 +47,9 @@
   --status-closed: oklch(0.55 0.18 25);
   --tour: oklch(0.6 0.09 300);
   --town: oklch(0.45 0.09 250);
+  /* An area: the town's blue, lighter and a little brighter – the region a
+     town sits in, never a status colour. */
+  --area: oklch(0.58 0.13 255);
 
   /*
    * The three filled rungs of the season strip. They have to be told apart
@@ -114,6 +117,7 @@
     --status-closed: oklch(0.68 0.17 25);
     --tour: oklch(0.7 0.09 300);
     --town: oklch(0.72 0.09 245);
+    --area: oklch(0.66 0.1 255);
 
     --grade-best: oklch(0.7 0.13 152);
     --grade-good: oklch(0.83 0.12 98);
@@ -149,6 +153,7 @@
   --color-status-closed: var(--status-closed);
   --color-tour: var(--tour);
   --color-town: var(--town);
+  --color-area: var(--area);
   --color-grade-best: var(--grade-best);
   --color-grade-good: var(--grade-good);
   --color-grade-limited: var(--grade-limited);

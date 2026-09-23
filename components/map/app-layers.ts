@@ -92,6 +92,7 @@ export const readColors = (el: HTMLElement) => {
   };
   return {
     accent: v("--accent", "#e8a33d"),
+    area: v("--area", "#5b86c4"),
     closed: v("--status-closed", "#c43d3d"),
     ink: v("--foreground", "#1b2430"),
     open: v("--status-open", "#2e8b57"),
@@ -397,18 +398,6 @@ export const appLayers = (
   // – and still reach past it on both sides.
   const tourLine = tourWidth(9, 12);
 
-  /** Rideable share → the outline's colour: closed red through open green. */
-  const shareColor: ExpressionSpecification = [
-    "interpolate",
-    ["linear"],
-    ["get", "share"],
-    0,
-    colors.closed,
-    0.5,
-    colors.risky,
-    1,
-    colors.open,
-  ];
   const isDestinationLit: ExpressionSpecification = [
     "any",
     ["==", ["get", "selected"], 1],
@@ -417,28 +406,32 @@ export const appLayers = (
 
   return [
     // The destinations: the outline of where each area's riding is – its
-    // roads, their ascents and its towns (`DestinationMembers.outline`) – as
-    // the overview's own reading of the dots inside it, at the very bottom of
-    // the stack (plan 12). The fill fades out towards `DESTINATION_MAX_ZOOM`,
-    // where every road is drawn and the area is the texture itself; only the
-    // edge and the name stay for the selected or hovered area, so a flight
-    // into one still shows which one it is. The hit layer stops at that zoom
-    // outright, so a click on an empty valley at zoom 10 opens nothing.
+    // roads, their ascents and its towns (`DestinationMembers.outline`) – at
+    // the very bottom of the stack (plan 12), in the area colour: the town's
+    // blue family, because an area is where one stays, and never a status
+    // colour, because red to green is what a road's rideability is said in.
+    // The rideable count is the label's line, not a tint.
+    //
+    // It stays at every zoom – an area that vanished while zooming into it
+    // read as a bug. Only its weight changes: the fill thins out towards
+    // `DESTINATION_MAX_ZOOM`, where every road is drawn and would be veiled
+    // by it, and the edge steps back to a hairline; the selected or hovered
+    // area keeps its full weight.
     //
     // `["zoom"]` may only feed a top-level `interpolate`, so the zoom is the
     // outer expression and what differs per feature sits in its stops.
     {
       id: LAYERS.destination.mark,
       paint: {
-        "fill-color": colors.accent,
+        "fill-color": colors.area,
         "fill-opacity": [
           "interpolate",
           ["linear"],
           ["zoom"],
           DESTINATION_MAX_ZOOM - 1,
-          ["case", isDestinationLit, 0.22, 0.12],
-          DESTINATION_MAX_ZOOM,
-          0,
+          ["case", isDestinationLit, 0.22, 0.14],
+          DESTINATION_MAX_ZOOM + 1,
+          ["case", isDestinationLit, 0.12, 0.04],
         ],
       },
       source: SOURCE.destinations,
@@ -447,19 +440,19 @@ export const appLayers = (
     {
       id: LAYERS.destination.companions[0],
       paint: {
-        "line-color": shareColor,
-        // `line-opacity` rather than the layer's: the lit edge has to outlive
-        // the fade, which is a per-feature difference. Two outlines cross at
-        // a point, not along a hairpin, so the double composite the rule
-        // guards against is two pixels wide here.
+        "line-color": colors.area,
+        // `line-opacity` rather than the layer's: the lit edge keeps its
+        // weight while the others step back, which is a per-feature
+        // difference. Two outlines cross at a point, not along a hairpin, so
+        // the double composite the rule guards against is two pixels wide.
         "line-opacity": [
           "interpolate",
           ["linear"],
           ["zoom"],
           DESTINATION_MAX_ZOOM - 1,
-          ["case", isDestinationLit, 0.9, 0.6],
-          DESTINATION_MAX_ZOOM,
-          ["case", isDestinationLit, 0.9, 0],
+          ["case", isDestinationLit, 1, 0.75],
+          DESTINATION_MAX_ZOOM + 1,
+          ["case", isDestinationLit, 1, 0.45],
         ],
         "line-width": ["case", ["==", ["get", "selected"], 1], 2.5, 1.5],
       },
@@ -467,8 +460,9 @@ export const appLayers = (
       type: "line",
     },
     {
+      // At every zoom too: it is the last group `pick` asks, so a road, a
+      // town or a label inside the area still wins its click.
       id: LAYERS.destination.hit,
-      maxzoom: DESTINATION_MAX_ZOOM,
       paint: { "fill-color": colors.ink, "fill-opacity": 0 },
       source: SOURCE.destinations,
       type: "fill",
@@ -681,9 +675,8 @@ export const appLayers = (
       type: "symbol",
     },
     // Labels staggered by prominence; MapLibre resolves collisions
-    // The area's name over its centre, with the count under it, in the
-    // overview – and past it for the selected or hovered area, like its edge.
-    // A point of its own rather than the outline's: a polygon is labelled
+    // The area's name over its centre, with the count under it, at every
+    // zoom like its outline. A point of its own rather than the outline's: a polygon is labelled
     // once per tile it crosses. Below the pass labels in the list, so
     // MapLibre places the pass names first: a famous pass wins its collision
     // against the area it lies in.
@@ -716,15 +709,9 @@ export const appLayers = (
         "text-color": colors.ink,
         "text-halo-color": colors.paper,
         "text-halo-width": 1.5,
-        "text-opacity": [
-          "interpolate",
-          ["linear"],
-          ["zoom"],
-          DESTINATION_MAX_ZOOM - 1,
-          1,
-          DESTINATION_MAX_ZOOM,
-          ["case", isDestinationLit, 1, 0],
-        ],
+        // The name stays too; past the overview the pass names win their
+        // collisions against it (they are placed first, see below).
+        "text-opacity": 1,
       },
       source: SOURCE.destinationLabels,
       type: "symbol",

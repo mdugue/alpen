@@ -172,7 +172,7 @@ flowchart TB
   L7["ascents — solid, status colour; unpaved ones dashed over it, their open dots ringed"]
   L6["tour bands — hatched, translucent, under the ascents"]
   L5["the hovered town's reach hull"]
-  L45["area outlines — tinted fill and edge, the name on its centre; overview only"]
+  L45["area outlines — a thin fill and edge in the area blue, the name on its centre"]
   L4["raster overlays (optional base, cycling overlay)"]
   L3["basemap lines and labels — rivers, borders, roads, peaks, places"]
   L2["hillshade — Terrarium DEM"]
@@ -182,8 +182,11 @@ flowchart TB
 
 An area is drawn as the padded outline of what it holds
 (`DestinationMembers.outline`, `docs/destinations.md`) under everything else
-of the app's, and only below `DESTINATION_MAX_ZOOM`: past it the roads are
-the picture and a fill would only cover them. The fill and its edge read the
+of the app's, at every zoom, in the area colour (`--area`, the town's blue
+family – never a status colour). Past `DESTINATION_MAX_ZOOM` the roads are
+the picture, so the fill thins to a trace and the edge to a hairline; the
+selected or hovered area keeps its weight, and its hit layer is the last
+group `pick` asks. The fill and its edge read the
 polygon source, the name a point source of its own at the centre – a
 polygon labels itself once per tile, which put the name two or three times
 into one outline.

@@ -25,10 +25,10 @@ export const PROMINENCE = [
 ] as const;
 
 /**
- * Up to which zoom the destination outlines are drawn: the overview's own
- * threshold. Where every road is drawn the outlines have done their job – the
- * roads are the texture, the areas are the reading of it – and past this zoom
- * an area fills the whole screen and would answer every idle click.
+ * Where the destination outlines step back: the overview's own threshold.
+ * Past it every road is drawn and the roads are the picture, so an area keeps
+ * only a trace of its fill and a hairline edge – it stays, because an area
+ * that vanished while zooming into it read as a bug.
  */
 export const DESTINATION_MAX_ZOOM = PROMINENCE.at(-1)!.fromZoom;
 
