@@ -64,10 +64,6 @@ export const preferredLang = (
   return ranked.map((r) => r.lang).find(isLang) ?? DEFAULT_LANG;
 };
 
-/** `generateStaticParams` of every route under `app/[lang]`. */
-export const langParams = (): { lang: Lang }[] =>
-  LANGS.map((lang) => ({ lang }));
-
 /** What a path starts with in this language: nothing for German, `/en` otherwise. */
 export const langPrefix = (lang: Lang): string =>
   lang === DEFAULT_LANG ? "" : `/${lang}`;
@@ -84,9 +80,12 @@ export const langOfPath = (pathname: string): { lang: Lang; rest: string } => {
   return { lang: DEFAULT_LANG, rest: pathname };
 };
 
-/** The BCP 47 locale numbers and dates are formatted in. */
-export const localeOf = (lang: Lang): string =>
-  lang === "en" ? "en-GB" : "de-DE";
+/** Each language's BCP 47 locale – British English, for "favourites" and 24/09. */
+const LOCALE: Record<Lang, string> = { de: "de-DE", en: "en-GB" };
 
-/** The Open Graph locale of each language (`og:locale`). */
-export const OG_LOCALE: Record<Lang, string> = { de: "de_DE", en: "en_GB" };
+/** The locale numbers, dates and lists are formatted in. */
+export const localeOf = (lang: Lang): string => LOCALE[lang];
+
+/** The same locale as Open Graph spells it (`og:locale`): "de_DE". */
+export const ogLocaleOf = (lang: Lang): string =>
+  LOCALE[lang].replace("-", "_");

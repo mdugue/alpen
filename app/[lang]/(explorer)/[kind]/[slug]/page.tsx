@@ -6,10 +6,9 @@ import { Weather } from "@/components/panel/weather";
 import { WeatherSkeleton } from "@/components/panel/weather-forecast";
 import { WeatherSlot } from "@/components/panel/weather-slot";
 import { entityAt, staticParams } from "@/lib/data";
-import { DEFAULT_LANG, LANGS, OG_LOCALE } from "@/lib/i18n";
 import { getDictionary } from "@/lib/i18n/server";
-import { hrefFor } from "@/lib/routes";
-import { entityDescription, entityTitle } from "@/lib/share-text";
+import { alternatesOf, hrefFor } from "@/lib/routes";
+import { entityDescription, entityTitle, openGraphOf } from "@/lib/share-text";
 
 /**
  * One prerendered route per entity (plan 02): `/pass/x`, `/tour/x`, `/ort/x`,
@@ -42,26 +41,16 @@ export const generateMetadata = async ({
   const { lang } = w;
   const title = entityTitle(entity, w);
   const description = entityDescription(entity, w);
-  const url = hrefFor(selection, lang);
   return {
-    alternates: {
-      canonical: url,
-      languages: {
-        ...Object.fromEntries(LANGS.map((l) => [l, hrefFor(selection, l)])),
-        "x-default": hrefFor(selection, DEFAULT_LANG),
-      },
-    },
+    alternates: alternatesOf(lang, (l) => hrefFor(selection, l)),
     description,
-    openGraph: {
+    openGraph: openGraphOf(lang, {
       description,
-      locale: OG_LOCALE[lang],
       title,
-      type: "website",
-      url,
-    },
+      url: hrefFor(selection, lang),
+    }),
     // The site name is appended by the title template in app/[lang]/layout.tsx.
     title,
-    twitter: { description, title },
   };
 };
 

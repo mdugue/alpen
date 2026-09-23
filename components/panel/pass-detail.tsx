@@ -4,8 +4,8 @@ import dynamic from "next/dynamic";
 
 import { useT } from "@/components/i18n";
 import type { PanelActions } from "@/components/panel/actions";
+import { BasesSection } from "@/components/panel/base";
 import { CHART_HEIGHT } from "@/components/panel/chart-size";
-import { BasesSection } from "@/components/panel/destination";
 import {
   ElevationProfile,
   PROFILE_ASPECT,
@@ -34,7 +34,12 @@ import type { PassModel } from "@/lib/detail-model";
 import { profilesOf } from "@/lib/detail-state";
 import type { Messages } from "@/lib/i18n";
 import { fill } from "@/lib/i18n/fill";
-import { komootHref, quaeldichHref } from "@/lib/links";
+import {
+  komootHref,
+  mapsSearchHref,
+  osmHref,
+  quaeldichHref,
+} from "@/lib/links";
 import { isTraverse } from "@/lib/regions";
 import { ascentKey } from "@/lib/route-key";
 import { daysOf } from "@/lib/status";
@@ -316,23 +321,15 @@ export const PassDetail = ({
           ridden from. Same bands, same weighting, read the other way round. */}
       <BasesSection
         bases={model.bases}
-        hovered={model.hovered}
-        onHover={actions.onHover}
-        onSelect={(slug) => actions.onSelect({ kind: "town", slug })}
+        pointing={{ actions, hovered: model.hovered }}
       />
       <Nearby actions={actions} model={model} />
       <ExternalLinks
         links={[
           ["quaeldich.de", quaeldichHref(pass)],
           ["komoot", komootHref(pass.name, pass.lat, pass.lon)],
-          [
-            "Google Maps",
-            `https://www.google.com/maps/search/?api=1&query=${pass.lat},${pass.lon}`,
-          ],
-          [
-            "OSM",
-            `https://www.openstreetmap.org/?mlat=${pass.lat}&mlon=${pass.lon}#map=14/${pass.lat}/${pass.lon}`,
-          ],
+          ["Google Maps", mapsSearchHref(`${pass.lat},${pass.lon}`)],
+          ["OSM", osmHref(pass)],
         ]}
       />
     </>

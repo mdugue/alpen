@@ -79,7 +79,7 @@ describe("detailModel", () => {
     const town = modelOf("town", "bormio")!;
     if (town.kind !== "town") throw new Error("kind");
     expect(town.reach.passes).toEqual([]);
-    expect(town.destination.total).toBe(2);
+    expect(town.base.total).toBe(2);
   });
 
   test("the nearby lists leave the entity itself out", () => {

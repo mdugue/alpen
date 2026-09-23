@@ -1,10 +1,13 @@
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 
+import { ImageResponse } from "next/og";
+
 import climateJson from "@/data/generated/climate.json";
 import profilesJson from "@/data/generated/profiles.json";
 import passes from "@/data/passes.json";
 import { BRAND } from "@/lib/brand";
+import { MarkBadge } from "@/lib/mark";
 import { valleyElevations } from "@/lib/profile";
 import { inputAt, passStatus, signalsOf } from "@/lib/status";
 import type { Signals } from "@/lib/status";
@@ -51,7 +54,7 @@ const fontFile = async (name: string): Promise<ArrayBuffer> => {
  * `Buffer` comes back out of the cache as a bare typed array, which the
  * renderer's font parser refuses.
  */
-export const shareFonts = async () => {
+const shareFonts = async () => {
   "use cache";
   const [bold, medium] = await Promise.all([
     fontFile("Oxanium-Bold.ttf"),
@@ -157,3 +160,57 @@ export const DotLayer = ({
     )}
   </svg>
 );
+
+/**
+ * The frame both cards draw – the day paper, the dot map with the entity
+ * ringed where there is one, and the column on the left under the mark – so
+ * the site's card and an entity's read as one family. `children` is what
+ * stands beside the column: the site's legend.
+ */
+export const ShareCard = ({
+  dots,
+  mark,
+  width,
+  column,
+  children,
+}: {
+  dots: Dot[];
+  mark?: { x: number; y: number } | null;
+  /** The column's width: the site's headline wraps earlier than a name. */
+  width: number;
+  /** What follows the mark in the column: the wordmark and the lines. */
+  column: React.ReactNode;
+  children?: React.ReactNode;
+}) => (
+  <div
+    style={{
+      background: BRAND.day,
+      color: BRAND.ink,
+      display: "flex",
+      fontFamily: "Oxanium",
+      height: "100%",
+      position: "relative",
+      width: "100%",
+    }}
+  >
+    <DotLayer dots={dots} mark={mark} />
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        left: 72,
+        position: "absolute",
+        top: 68,
+        width,
+      }}
+    >
+      <MarkBadge size={62} />
+      {column}
+    </div>
+    {children}
+  </div>
+);
+
+/** A card as the image route answers it: at the share size, in the brand face. */
+export const shareResponse = async (card: React.ReactElement) =>
+  new ImageResponse(card, { ...SHARE_SIZE, fonts: await shareFonts() });

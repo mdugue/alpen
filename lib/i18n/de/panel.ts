@@ -25,9 +25,7 @@ export const panel = {
     close: "Details schließen",
     linkCopied: "Link kopiert",
     list: "Liste",
-    save: "{name} merken",
     share: "{name} teilen",
-    unsave: "{name} nicht mehr merken",
   },
   /** A town judged as a base, and the inverse: the bases of one road. */
   base: {

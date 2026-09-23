@@ -120,8 +120,8 @@ export const EntityRow = ({
         onPressedChange={() => row.onToggleFavorite(entity)}
         aria-label={
           favorite
-            ? fill(t.sidebar.row.unsave, { name })
-            : fill(t.sidebar.row.save, { name })
+            ? fill(t.favorite.unsave, { name })
+            : fill(t.favorite.save, { name })
         }
         tabIndex={-1}
         className={cn(ICON_TOGGLE, TOUCH_ICON, "ml-1.5")}

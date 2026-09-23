@@ -113,7 +113,7 @@ const spoken = (bar: SeasonBar, lat: number | null, w: Messages) =>
 
 /**
  * What the three shapes of a column mean. Behind the band's ⓘ on desktop
- * (`legend`), and in the scales dialog, which is where a phone reads it –
+ * (`max-lg:hidden`), and in the scales dialog, which is where a phone reads it –
  * three lines of legend next to a band that is already only 390 px wide would
  * leave neither of them legible.
  */
@@ -156,8 +156,6 @@ export const SeasonBand = ({
   bar,
   onChange,
   today,
-  legend = false,
-  className,
 }: {
   band: Band;
   /** The chosen half-month's column (`currentBar`), the one the headline reads too. */
@@ -165,9 +163,6 @@ export const SeasonBand = ({
   onChange: (p: Period) => void;
   /** Today's half-month, marked on the rail and offered as the way back. */
   today?: Period;
-  /** Offer the legend behind an ⓘ beside the label. */
-  legend?: boolean;
-  className?: string;
 }) => {
   const { t } = useT();
   const rail = useRef<HTMLDivElement>(null);
@@ -205,7 +200,7 @@ export const SeasonBand = ({
   };
 
   return (
-    <div className={cn("flex min-w-0 flex-col gap-1", className)}>
+    <div className="flex min-w-0 flex-col gap-1">
       <div className="flex min-w-0 items-baseline gap-2">
         <span className="font-heading shrink-0 text-sm font-bold lg:text-base">
           {periodLabel(bar.period, t)}
@@ -216,25 +211,24 @@ export const SeasonBand = ({
             {summary(bar, band.lat, true, t)}
           </span>
         </span>
-        {legend && (
-          <Popover>
-            <PopoverTrigger
-              render={
-                <Button
-                  size="icon"
-                  variant="ghost"
-                  className="shrink-0"
-                  aria-label={t.band.whatBarsMean}
-                />
-              }
-            >
-              <Info />
-            </PopoverTrigger>
-            <PopoverContent side="top" align="end" className="w-72">
-              <SeasonBandLegend className="text-muted-foreground" />
-            </PopoverContent>
-          </Popover>
-        )}
+        {/* The legend behind an ⓘ, on a desktop only (see `SeasonBandLegend`). */}
+        <Popover>
+          <PopoverTrigger
+            render={
+              <Button
+                size="icon"
+                variant="ghost"
+                className="shrink-0 max-lg:hidden"
+                aria-label={t.band.whatBarsMean}
+              />
+            }
+          >
+            <Info />
+          </PopoverTrigger>
+          <PopoverContent side="top" align="end" className="w-72">
+            <SeasonBandLegend className="text-muted-foreground" />
+          </PopoverContent>
+        </Popover>
         {today !== undefined && (
           <Tooltip>
             <TooltipTrigger

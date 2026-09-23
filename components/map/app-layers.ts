@@ -21,7 +21,6 @@ import { OVERLAYS } from "@/components/map/map-style";
 import { BASEMAP_ID, basemapLayers, FONT_BOLD } from "@/lib/basemap";
 import type { Lang } from "@/lib/i18n";
 import {
-  DESTINATION_EDGE,
   LAYERS,
   ROUTE_DASH,
   OVERLAY,
@@ -446,7 +445,7 @@ export const appLayers = (
       type: "fill",
     },
     {
-      id: DESTINATION_EDGE,
+      id: LAYERS.destination.companions[0],
       paint: {
         "line-color": shareColor,
         // `line-opacity` rather than the layer's: the lit edge has to outlive

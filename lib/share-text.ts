@@ -1,9 +1,11 @@
-import type { Messages } from "@/lib/i18n";
+import { SITE_NAME } from "@/lib/brand";
+import { LANGS, ogLocaleOf } from "@/lib/i18n";
+import type { Lang, Messages } from "@/lib/i18n";
 import { fill } from "@/lib/i18n/fill";
 import { rangeOf } from "@/lib/regions";
 import { seasonText } from "@/lib/status";
 import type { Destination, Pass, Tour, Town } from "@/lib/types";
-import { fmt, fmtUnit } from "@/lib/utils";
+import { firstSentence, fmt, fmtUnit } from "@/lib/utils";
 
 /**
  * The title and the description of an entity route – what a search result
@@ -13,18 +15,30 @@ import { fmt, fmtUnit } from "@/lib/utils";
  * route that asks (`messagesOf` on the server, plan 08).
  */
 
+/**
+ * The Open Graph block of one page. Next.js replaces a parent's `openGraph`
+ * rather than merging into it, so every page that sets one says all of it:
+ * the site's name, its own locale and the other languages', its own URL. The
+ * image comes from the route's `opengraph-image`, which Next adds by itself;
+ * X reads the same tags where it finds no `twitter:` ones of its own.
+ */
+export const openGraphOf = (
+  lang: Lang,
+  page: { title: string; description?: string; url: string },
+) => ({
+  ...page,
+  alternateLocale: LANGS.filter((l) => l !== lang).map(ogLocaleOf),
+  locale: ogLocaleOf(lang),
+  siteName: SITE_NAME,
+  type: "website" as const,
+});
+
 /** An entity as the routes see it: its kind and the record behind it. */
 export type Entity =
   | { kind: "pass"; pass: Pass }
   | { kind: "tour"; tour: Tour }
   | { kind: "town"; town: Town }
   | { kind: "destination"; destination: Destination };
-
-/** The first sentence of a note, for a description that must stay short. */
-const firstSentence = (text: string): string => {
-  const m = /^.*?[.!?](?=\s|$)/su.exec(text.trim());
-  return m ? m[0] : text.trim();
-};
 
 /** "Col du Galibier · 2.642 m", "Sellaronda · Rundtour", "Bormio · Rad-Ort", "Oisans · Reiseziel". */
 export const entityTitle = (e: Entity, w: Messages): string => {

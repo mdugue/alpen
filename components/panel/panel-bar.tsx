@@ -99,8 +99,8 @@ export const PanelBar = ({
         onPressedChange={onToggleFavorite}
         aria-label={
           favorite
-            ? fill(t.panel.bar.unsave, { name })
-            : fill(t.panel.bar.save, { name })
+            ? fill(t.favorite.unsave, { name })
+            : fill(t.favorite.save, { name })
         }
         className={cn(
           "pointer-events-auto",

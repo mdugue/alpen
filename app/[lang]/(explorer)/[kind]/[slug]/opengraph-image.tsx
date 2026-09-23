@@ -1,12 +1,14 @@
-import { ImageResponse } from "next/og";
-
 import { BRAND, SITE_NAME } from "@/lib/brand";
 import { entityAt } from "@/lib/data";
 import { fill, langOf } from "@/lib/i18n";
 import type { Messages } from "@/lib/i18n";
 import { messagesOf } from "@/lib/i18n/dictionaries";
-import { MarkBadge } from "@/lib/mark";
-import { DotLayer, dotMap, SHARE_SIZE, shareFonts } from "@/lib/share-image";
+import {
+  dotMap,
+  SHARE_SIZE,
+  ShareCard,
+  shareResponse,
+} from "@/lib/share-image";
 import { entityDescription, entityTitle } from "@/lib/share-text";
 import type { Entity } from "@/lib/share-text";
 import { seasonText, tourSeasonText } from "@/lib/status";
@@ -95,67 +97,50 @@ export default async function Image({ params }: { params: Promise<Segments> }) {
   const title = entity ? entityTitle(entity, w) : SITE_NAME;
   const line = entity ? lineOf(entity, w) : "";
 
-  return new ImageResponse(
-    <div
-      style={{
-        background: BRAND.day,
-        color: BRAND.ink,
-        display: "flex",
-        fontFamily: "Oxanium",
-        height: "100%",
-        position: "relative",
-        width: "100%",
-      }}
-    >
-      <DotLayer dots={dots} mark={mark} />
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          left: 72,
-          position: "absolute",
-          top: 68,
-          width: 360,
-        }}
-      >
-        <MarkBadge size={62} />
-        <div
-          style={{
-            color: BRAND.primary,
-            fontSize: 26,
-            fontWeight: 700,
-            letterSpacing: 3,
-            lineHeight: 1,
-            marginTop: 22,
-            textTransform: "uppercase",
-          }}
-        >
-          {SITE_NAME}
-        </div>
-        <div
-          style={{
-            color: BRAND.ink,
-            fontSize: 44,
-            fontWeight: 700,
-            lineHeight: 1.15,
-            marginTop: 18,
-          }}
-        >
-          {title}
-        </div>
-        <div
-          style={{
-            color: BRAND.muted,
-            fontSize: 22,
-            fontWeight: 500,
-            lineHeight: 1.35,
-            marginTop: 16,
-          }}
-        >
-          {line}
-        </div>
-      </div>
-    </div>,
-    { ...SHARE_SIZE, fonts: await shareFonts() },
+  return await shareResponse(
+    <ShareCard
+      dots={dots}
+      mark={mark}
+      width={360}
+      column={
+        <>
+          <div
+            style={{
+              color: BRAND.primary,
+              fontSize: 26,
+              fontWeight: 700,
+              letterSpacing: 3,
+              lineHeight: 1,
+              marginTop: 22,
+              textTransform: "uppercase",
+            }}
+          >
+            {SITE_NAME}
+          </div>
+          <div
+            style={{
+              color: BRAND.ink,
+              fontSize: 44,
+              fontWeight: 700,
+              lineHeight: 1.15,
+              marginTop: 18,
+            }}
+          >
+            {title}
+          </div>
+          <div
+            style={{
+              color: BRAND.muted,
+              fontSize: 22,
+              fontWeight: 500,
+              lineHeight: 1.35,
+              marginTop: 16,
+            }}
+          >
+            {line}
+          </div>
+        </>
+      }
+    />,
   );
 }

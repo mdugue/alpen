@@ -78,10 +78,6 @@ export const sidebar = {
     townsOnMap: "Towns on the map",
   },
   rating: "{value} of 5",
-  row: {
-    save: "Save {name}",
-    unsave: "Remove {name} from the favourites",
-  },
   search: "Search",
   searchPlaceholder: "Destination, pass, loop or town …",
   strip: {

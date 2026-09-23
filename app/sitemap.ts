@@ -3,6 +3,8 @@ import type { MetadataRoute } from "next";
 import { siteUrl } from "@/lib/brand";
 import { staticParams } from "@/lib/data";
 import { LANGS, langPrefix } from "@/lib/i18n";
+import type { Lang } from "@/lib/i18n";
+import { alternatesOf, homeHref, SEGMENT } from "@/lib/routes";
 
 /**
  * The start page and one entry per entity route (plan 02): every pass, tour,
@@ -20,30 +22,36 @@ import { LANGS, langPrefix } from "@/lib/i18n";
  */
 const BUILD_TIME = new Date();
 
-/** The same path in every language, for the `hreflang` entries of one URL. */
-const languagesOf = (path: string): Record<string, string> =>
-  Object.fromEntries(
-    LANGS.map((lang) => [lang, `${siteUrl}${langPrefix(lang)}${path}`]),
-  );
+/**
+ * One URL of the sitemap: the page in one language, with the `hreflang`
+ * entries the page's own metadata carries (`alternatesOf`), made absolute.
+ */
+const absolute = (path: string) => `${siteUrl}${path === "/" ? "" : path}`;
+
+const entry = (lang: Lang, pathIn: (lang: Lang) => string) => {
+  const { canonical, languages } = alternatesOf(lang, pathIn);
+  return {
+    alternates: {
+      languages: Object.fromEntries(
+        Object.entries(languages).map(([l, path]) => [l, absolute(path)]),
+      ),
+    },
+    lastModified: BUILD_TIME,
+    url: absolute(canonical),
+  };
+};
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  return LANGS.flatMap((lang) => {
-    const base = `${siteUrl}${langPrefix(lang)}`;
-    return [
-      {
-        alternates: { languages: languagesOf("") },
-        changeFrequency: "weekly" as const,
-        lastModified: BUILD_TIME,
-        priority: lang === "de" ? 1 : 0.9,
-        url: base,
-      },
-      ...staticParams().map(({ kind, slug }) => ({
-        alternates: { languages: languagesOf(`/${kind}/${slug}`) },
-        changeFrequency: "monthly" as const,
-        lastModified: BUILD_TIME,
-        priority: kind === "ziel" ? 0.8 : 0.6,
-        url: `${base}/${kind}/${slug}`,
-      })),
-    ];
-  });
+  return LANGS.flatMap((lang) => [
+    {
+      ...entry(lang, homeHref),
+      changeFrequency: "weekly" as const,
+      priority: lang === "de" ? 1 : 0.9,
+    },
+    ...staticParams().map(({ kind, slug }) => ({
+      ...entry(lang, (l) => `${langPrefix(l)}/${kind}/${slug}`),
+      changeFrequency: "monthly" as const,
+      priority: kind === SEGMENT.destination ? 0.8 : 0.6,
+    })),
+  ]);
 }

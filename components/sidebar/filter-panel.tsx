@@ -64,12 +64,10 @@ export const FilterTrigger = ({
   filters,
   open,
   onOpenChange,
-  className,
 }: {
   filters: Filters;
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  className?: string;
 }) => {
   const { t } = useT();
   const count = filterCount(filters, t);
@@ -78,7 +76,7 @@ export const FilterTrigger = ({
       variant={count > 0 ? "secondary" : "outline"}
       aria-expanded={open}
       onClick={() => onOpenChange(!open)}
-      className={cn(TOUCH_CONTROL, className)}
+      className={TOUCH_CONTROL}
     >
       <SlidersHorizontal data-icon="inline-start" />
       {t.sidebar.filters.open}
@@ -103,12 +101,10 @@ export const AppliedFilters = ({
   filters,
   setFilters,
   onReset,
-  className,
 }: {
   filters: Filters;
   setFilters: (update: (f: Filters) => Filters) => void;
   onReset: () => void;
-  className?: string;
 }) => {
   const { t } = useT();
   const applied = appliedFilters(filters, t);
@@ -120,7 +116,6 @@ export const AppliedFilters = ({
         // A horizontal strip inside the phone's bottom sheet: the sheet must
         // not read a sideways drag on it as a swipe downwards.
         "[scrollbar-width:none] [&::-webkit-scrollbar]:hidden",
-        className,
       )}
       data-base-ui-swipe-ignore
       aria-label={t.sidebar.filters.active}

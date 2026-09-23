@@ -1,22 +1,24 @@
 "use client";
 
 import { useT } from "@/components/i18n";
+import { pointerProps } from "@/components/panel/actions";
+import type { PanelActions } from "@/components/panel/actions";
 import { Section } from "@/components/panel/section";
 import { VerdictBox } from "@/components/panel/verdict-box";
 import { Rating } from "@/components/rating";
 import { SeasonStrip } from "@/components/season-strip";
 import { StatusDot } from "@/components/status-badge";
 import type { Selection } from "@/lib/app-state";
-import type { Bases, BaseVerdict } from "@/lib/destination";
-import { destinationText } from "@/lib/destination";
+import type { Bases, BaseVerdict, DerivedVerdict } from "@/lib/destination";
+import type { DerivedText } from "@/lib/detail-model";
 import { REACH_MAX_KM } from "@/lib/geo";
 import type { ReachBand } from "@/lib/geo";
 import { fill } from "@/lib/i18n/fill";
-import type { Band, GradeCount, ReachedPass, ReachedTown } from "@/lib/reach";
+import type { Band, GradeCount, ReachedTown } from "@/lib/reach";
 import { isHovered } from "@/lib/route-key";
-import { bestText, GRADE_ORDER } from "@/lib/status";
-import type { Grade } from "@/lib/status";
-import type { Period } from "@/lib/types";
+import { GRADE_ORDER } from "@/lib/status";
+import type { Grade, YearCell } from "@/lib/status";
+import type { Pass, Period, Status } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
 /** The strip's own ramp, so the bar and the 24 cells say the same thing. */
@@ -65,64 +67,79 @@ export const GradeBar = ({
   );
 };
 
-/**
- * One reachable pass. Everything a base is judged on is in the row – the
- * status now, the beauty, the height and the whole year – because the
- * question this list answers is "is this a good place to stay", and a name
- * with a distance next to it cannot answer it. The distance is still there
- * and still exact; it has simply stopped being the only thing said.
- */
 const ROW =
   "focus-visible:inset-ring-ring/50 grid w-full grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-x-2 rounded-sm px-1 py-1 text-left outline-none focus-visible:inset-ring-2";
 
-/** The row is a pointer target like any list row: it lights its mark on the map. */
-const hoverProps = (on: () => void, off: () => void) => ({
-  onBlur: off,
-  onFocus: on,
-  onPointerEnter: on,
-  onPointerLeave: off,
+/** What a row of the panel's lists needs to light its mark and open it. */
+interface Pointing {
+  /** What the pointer is over anywhere on screen; one highlight for all of them. */
+  hovered: Selection | null;
+  actions: PanelActions;
+}
+
+/** A row's button: the pointer wiring and the hover tint. */
+const rowButton = (entity: Selection, { hovered, actions }: Pointing) => ({
+  ...pointerProps(entity, actions),
+  className: cn(
+    ROW,
+    isHovered(hovered, entity.kind, entity.slug)
+      ? "bg-accent/15"
+      : "hover:bg-muted/60",
+  ),
 });
 
-const PassRow = ({
-  r,
+/**
+ * One road of a list – what a base reaches, what an area holds. Everything a
+ * place is judged on is in the row – the status now, the beauty, the height
+ * and the whole year – because the question these lists answer is "is this a
+ * good place to stay", and a name with a distance next to it cannot answer
+ * it. The distance, where there is one, is still there and still exact; it
+ * has simply stopped being the only thing said.
+ */
+export const RoadRow = ({
+  pass,
+  status,
+  season,
   period,
-  hovered,
-  onHover,
-  onSelect,
+  km,
+  note,
+  pointing,
 }: {
-  r: ReachedPass;
+  pass: Pass;
+  status: Status;
+  season: YearCell[];
   period: Period;
-  hovered: boolean;
-  onHover: (over: boolean) => void;
-  onSelect: () => void;
+  /** How far the road is from the base; an area's own roads have none. */
+  km?: number;
+  /** A word after the height: the classic ascent, in an area's list. */
+  note?: string;
+  pointing: Pointing;
 }) => {
   const { fmtUnit } = useT();
   return (
     <li>
       <button
         type="button"
-        onClick={onSelect}
-        {...hoverProps(
-          () => onHover(true),
-          () => onHover(false),
-        )}
-        className={cn(ROW, hovered ? "bg-accent/15" : "hover:bg-muted/60")}
+        {...rowButton({ kind: "pass", slug: pass.slug }, pointing)}
       >
-        <StatusDot status={r.status} />
+        <StatusDot status={status} />
         <span className="min-w-0">
           <span className="block truncate text-xs font-medium">
-            {r.pass.name}
+            {pass.name}
           </span>
           <span className="text-muted-foreground text-2xs flex items-center gap-1.5">
-            <Rating value={r.pass.beauty} className="[&>span]:h-1.5" />
-            {fmtUnit(r.pass.elevation, "m")}
+            <Rating value={pass.beauty} className="[&>span]:h-1.5" />
+            {fmtUnit(pass.elevation, "m")}
+            {note && <span className="truncate">· {note}</span>}
           </span>
         </span>
         <span className="flex flex-col items-end gap-0.5">
-          <span className="text-muted-foreground text-2xs tabular-nums">
-            {fmtUnit(r.km, "km")}
-          </span>
-          <SeasonStrip cells={r.season} current={period} className="w-16" />
+          {km !== undefined && (
+            <span className="text-muted-foreground text-2xs tabular-nums">
+              {fmtUnit(km, "km")}
+            </span>
+          )}
+          <SeasonStrip cells={season} current={period} className="w-16" />
         </span>
       </button>
     </li>
@@ -134,28 +151,13 @@ const PassRow = ({
  * nearest village is not automatically the best place to sleep, and "12 von
  * 33 Pässen gut" is what tells the two apart.
  */
-const TownRow = ({
-  r,
-  hovered,
-  onHover,
-  onSelect,
-}: {
-  r: ReachedTown;
-  hovered: boolean;
-  onHover: (over: boolean) => void;
-  onSelect: () => void;
-}) => {
+const TownRow = ({ r, pointing }: { r: ReachedTown; pointing: Pointing }) => {
   const { t, fmt, fmtUnit } = useT();
   return (
     <li>
       <button
         type="button"
-        onClick={onSelect}
-        {...hoverProps(
-          () => onHover(true),
-          () => onHover(false),
-        )}
-        className={cn(ROW, hovered ? "bg-accent/15" : "hover:bg-muted/60")}
+        {...rowButton({ kind: "town", slug: r.town.slug }, pointing)}
       >
         <span className="bg-town size-2.5 shrink-0 rounded-full" aria-hidden />
         <span className="min-w-0">
@@ -234,73 +236,83 @@ const bandList = <T,>(
 );
 
 /**
- * A destination, judged for the chosen half-month.
+ * The verdict of a derived year – a base's or an area's – with the grade bar
+ * and the line that says what it was derived from. The 24 cells are the
+ * place's own – derived from the roads, never measured – and the label says
+ * so, with every road's own strip visible in the rows underneath so the
+ * derivation can be checked by eye (Principle 3).
+ */
+export const DerivedVerdictBox = ({
+  verdict,
+  sentences,
+  period,
+}: {
+  verdict: DerivedVerdict;
+  sentences: DerivedText;
+  period: Period;
+}) => (
+  <VerdictBox
+    bar={
+      <GradeBar
+        counts={verdict.counts}
+        total={verdict.total}
+        text={sentences.text}
+      />
+    }
+    best={sentences.best}
+    period={period}
+    text={sentences.text}
+    year={verdict.year}
+  >
+    <p className="text-muted-foreground text-2xs">{sentences.derived}</p>
+  </VerdictBox>
+);
+
+/**
+ * A base, judged for the chosen half-month.
  *
  * The block leads with a verdict and its reason, exactly as the pass panel
- * does, and only then lists what the verdict was made of. The 24 cells are
- * the town's own – derived from the passes it reaches, never measured – and
- * the label says so, with every pass's own strip visible in the rows
- * underneath so the derivation can be checked by eye (Principle 3).
+ * does, and only then lists what the verdict was made of.
  *
  * The list is grouped by reach band rather than cut at a radius, and ordered
  * inside each band by a score that weights nearness smoothly (see
  * `lib/geo.ts`): the bands are what is read, the weight is what ranks.
  */
-export const DestinationSection = ({
-  d,
+export const BaseSection = ({
+  base,
+  sentences,
   period,
-  hovered,
-  onHover,
-  onSelect,
+  pointing,
 }: {
-  d: BaseVerdict;
+  base: BaseVerdict;
+  sentences: DerivedText;
   period: Period;
-  /** The entity the pointer is over anywhere on screen; one highlight for all of them. */
-  hovered: Selection | null;
-  onHover: (sel: Selection | null) => void;
-  onSelect: (slug: string) => void;
+  pointing: Pointing;
 }) => {
-  const { t, fmt } = useT();
-  const text = destinationText(d, t);
+  const { t } = useT();
   return (
     <>
-      <VerdictBox
-        bar={<GradeBar counts={d.counts} total={d.total} text={text} />}
-        best={bestText(d.year, t)}
-        period={period}
-        text={text}
-        year={d.year}
-      >
-        {/* What the 24 cells are graded against, said out loud. They are
-          relative to this base's own best half-month, so the strip shows when
-          to come rather than how big the place is; the magnitude is the
-          sentence and the bar above (`gradeOfBase` in lib/destination.ts). */}
-        <p className="text-muted-foreground text-2xs">
-          {fill(t.panel.base.derived, { total: fmt(d.total) })}
-          {d.peak > 0 && fill(t.panel.base.derivedPeak, { peak: fmt(d.peak) })}.
-        </p>
-      </VerdictBox>
+      <DerivedVerdictBox verdict={base} sentences={sentences} period={period} />
 
       <Section
-        id="destination-passes"
+        id="base-passes"
         info={fill(t.panel.base.passesInfo, { km: REACH_MAX_KM })}
         title={t.panel.base.passesTitle}
       >
-        {d.total === 0 ? (
+        {base.total === 0 ? (
           <p className="text-muted-foreground text-xs">
             {fill(t.vocab.reach.noneWithin, { km: REACH_MAX_KM })}
           </p>
         ) : (
-          bandList(d.bands, t.panel.base.passes, (r) => (
-            <PassRow
+          bandList(base.bands, t.panel.base.passes, (r) => (
+            <RoadRow
               key={r.pass.slug}
-              r={r}
+              pass={r.pass}
+              status={r.status}
+              season={r.season}
+              km={r.km}
               period={period}
-              hovered={isHovered(hovered, "pass", r.pass.slug)}
-              onHover={(over) =>
-                onHover(over ? { kind: "pass", slug: r.pass.slug } : null)
-              }
-              onSelect={() => onSelect(r.pass.slug)}
+              pointing={pointing}
             />
           ))
         )}
@@ -312,7 +324,7 @@ export const DestinationSection = ({
 /**
  * The inverse block: which towns this road could be ridden from.
  *
- * It is the same picture as `DestinationSection` read the other way round, so
+ * It is the same picture as `BaseSection` read the other way round, so
  * it uses the same bands, the same nearness weight and the same row shape –
  * a planner who has understood one has understood the other. What it does not
  * have is a verdict of its own: a road's season is the road's, and the towns
@@ -321,14 +333,10 @@ export const DestinationSection = ({
  */
 export const BasesSection = ({
   bases,
-  hovered,
-  onHover,
-  onSelect,
+  pointing,
 }: {
   bases: Bases;
-  hovered: Selection | null;
-  onHover: (sel: Selection | null) => void;
-  onSelect: (slug: string) => void;
+  pointing: Pointing;
 }) => {
   const { t } = useT();
   return (
@@ -343,15 +351,7 @@ export const BasesSection = ({
         </p>
       ) : (
         bandList(bases.bands, t.panel.base.towns, (r) => (
-          <TownRow
-            key={r.town.slug}
-            r={r}
-            hovered={isHovered(hovered, "town", r.town.slug)}
-            onHover={(over) =>
-              onHover(over ? { kind: "town", slug: r.town.slug } : null)
-            }
-            onSelect={() => onSelect(r.town.slug)}
-          />
+          <TownRow key={r.town.slug} r={r} pointing={pointing} />
         ))
       )}
     </Section>

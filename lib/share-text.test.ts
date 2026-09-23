@@ -3,6 +3,7 @@ import { describe, expect, test } from "bun:test";
 import { DE, messagesOf } from "@/lib/i18n/dictionaries";
 import { entityDescription, entityTitle } from "@/lib/share-text";
 import type { Destination } from "@/lib/types";
+import { firstSentence } from "@/lib/utils";
 import { makePass, makeTour, makeTown } from "@/test/fixtures";
 
 /**
@@ -95,5 +96,17 @@ describe("entityDescription", () => {
     expect(
       entityDescription({ destination, kind: "destination" }, messagesOf("en")),
     ).toBe("Destination (FR). Das Oisans ist rau. Eine Woche reicht nicht.");
+  });
+});
+
+describe("the first sentence", () => {
+  test("ends at a full stop, not at an abbreviation", () => {
+    expect(
+      firstSentence("Die Rampe nach St. Vigil ist steil. Oben flach."),
+    ).toBe("Die Rampe nach St. Vigil ist steil.");
+    expect(
+      firstSentence("Rampen bis ca. 12 %, z. B. am Ende. Danach flach."),
+    ).toBe("Rampen bis ca. 12 %, z. B. am Ende.");
+    expect(firstSentence("Kein Punkt am Ende")).toBe("Kein Punkt am Ende");
   });
 });

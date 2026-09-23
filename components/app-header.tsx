@@ -74,9 +74,9 @@ export const AppHeader = ({
   bar: SeasonBar;
   /** The ranges a chip narrowed the list to, as one phrase; `null` for all of them. */
   where?: string | null;
-  /** Desktop only: no sidebar toggle is rendered without a handler. */
-  sidebarOpen?: boolean;
-  onToggleSidebar?: () => void;
+  /** The desktop sidebar's fold; the toggle is hidden where the list is a drawer. */
+  sidebarOpen: boolean;
+  onToggleSidebar: () => void;
   onOpenScales: () => void;
 }) => {
   const { t } = useT();
@@ -88,28 +88,26 @@ export const AppHeader = ({
       )}
     >
       <div className="flex shrink-0 items-center gap-2">
-        {onToggleSidebar && (
-          <Tooltip>
-            <TooltipTrigger
-              render={
-                <Button
-                  size="icon"
-                  variant="ghost"
-                  className="-ml-1 max-lg:hidden"
-                  onClick={onToggleSidebar}
-                  aria-label={
-                    sidebarOpen ? t.header.hideSidebar : t.header.listAndFilters
-                  }
-                />
-              }
-            >
-              {sidebarOpen ? <PanelLeftClose /> : <PanelLeftOpen />}
-            </TooltipTrigger>
-            <TooltipContent>
-              {sidebarOpen ? t.header.hideSidebar : t.header.listAndFilters}
-            </TooltipContent>
-          </Tooltip>
-        )}
+        <Tooltip>
+          <TooltipTrigger
+            render={
+              <Button
+                size="icon"
+                variant="ghost"
+                className="-ml-1 max-lg:hidden"
+                onClick={onToggleSidebar}
+                aria-label={
+                  sidebarOpen ? t.header.hideSidebar : t.header.listAndFilters
+                }
+              />
+            }
+          >
+            {sidebarOpen ? <PanelLeftClose /> : <PanelLeftOpen />}
+          </TooltipTrigger>
+          <TooltipContent>
+            {sidebarOpen ? t.header.hideSidebar : t.header.listAndFilters}
+          </TooltipContent>
+        </Tooltip>
         <span className="bg-accent h-5 w-1 rounded-full" aria-hidden />
         <h1 className="font-heading text-sm font-bold tracking-wide uppercase">
           {SITE_NAME}

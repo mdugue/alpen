@@ -1,5 +1,5 @@
 import type { EntityKind, Selection } from "@/lib/app-state";
-import { langOfPath, langPrefix } from "@/lib/i18n";
+import { DEFAULT_LANG, LANGS, langOfPath, langPrefix } from "@/lib/i18n";
 import type { Lang } from "@/lib/i18n";
 
 /**
@@ -34,6 +34,27 @@ export const hrefFor = (selection: Selection, lang: Lang) =>
 
 /** The start page in one language: `/` or `/en`. */
 export const homeHref = (lang: Lang): string => langPrefix(lang) || "/";
+
+/** The two legal pages; German only, with an English note (`legal.englishNote`). */
+export type LegalPage = "impressum" | "datenschutz";
+
+/** A legal page in one language: `/impressum`, `/en/impressum`. */
+export const legalHref = (page: LegalPage, lang: Lang): string =>
+  `${langPrefix(lang)}/${page}`;
+
+/**
+ * The `alternates` of a page that exists in every language: its own path as
+ * the canonical, each language's beside it, and the German one for a visitor
+ * no language matches (`x-default`). The start page, the entity routes, the
+ * legal pages and the sitemap all say it this way.
+ */
+export const alternatesOf = (lang: Lang, pathIn: (lang: Lang) => string) => ({
+  canonical: pathIn(lang),
+  languages: {
+    ...Object.fromEntries(LANGS.map((l) => [l, pathIn(l)])),
+    "x-default": pathIn(DEFAULT_LANG),
+  },
+});
 
 /**
  * The entity a path names, or `null` for the start page and for anything

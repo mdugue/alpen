@@ -2,8 +2,9 @@ import type { Selection } from "@/lib/app-state";
 import {
   areaText,
   areaVerdict,
+  baseOf,
   basesOf,
-  destinationOf,
+  baseText,
   destinationsOfTown,
 } from "@/lib/destination";
 import type { Bases, BaseVerdict, DerivedVerdict } from "@/lib/destination";
@@ -38,6 +39,7 @@ import type {
   Tour,
   Town,
 } from "@/lib/types";
+import { fmt } from "@/lib/utils";
 
 /**
  * What the detail panel shows, as a value.
@@ -65,7 +67,7 @@ export type BlockId =
   | "bases"
   | "nearby"
   | "tour-passes"
-  | "destination-passes"
+  | "base-passes"
   | "area-passes"
   | "area-tours"
   | "area-towns"
@@ -87,7 +89,7 @@ export const BLOCKS: Record<DetailModel["kind"], BlockId[]> = {
   destination: ["area-passes", "area-tours", "area-towns", "area-travel"],
   pass: ["rating", "ascents", "weather", "climate", "bases", "nearby"],
   tour: ["tour-passes", "nearby"],
-  town: ["destination-passes", "nearby"],
+  town: ["base-passes", "nearby"],
 };
 
 /** What stands over the name in the panel head. */
@@ -165,11 +167,25 @@ export interface TourModel extends Reaching {
   members: { pass: Pass; cell: YearCell }[];
 }
 
+/**
+ * The sentences of a year derived from counts – a base's or an area's – as
+ * the verdict box prints them.
+ */
+export interface DerivedText {
+  /** Under the badge, and what the grade bar says to a screen reader. */
+  text: string;
+  /** "beste Zeit Mitte Juni – Anfang September", or null without one. */
+  best: string | null;
+  /** What the strip is derived from and what it is graded against. */
+  derived: string;
+}
+
 export interface TownModel extends Reaching {
   kind: "town";
   town: Town;
   /** The verdict of a base is the verdict of what it reaches. */
-  destination: BaseVerdict;
+  base: BaseVerdict;
+  sentences: DerivedText;
   /** The areas this town lies in, the ones naming it as a base first. */
   areas: Destination[];
 }
@@ -184,8 +200,8 @@ export interface DestinationModel extends Common {
   kind: "destination";
   destination: Destination;
   verdict: DerivedVerdict;
-  /** "7 von 9 Straßen gut" – the sentence under the badge. */
-  text: string;
+  /** "7 von 9 Straßen gut" under the badge, the best window, the derivation. */
+  sentences: DerivedText;
   /** The member roads, best cell first, then by beauty and elevation; `season` is the road's own strip. */
   passes: { pass: Pass; cell: YearCell; season: YearCell[] }[];
   tours: { tour: Tour; cell: YearCell }[];
@@ -205,6 +221,23 @@ export interface DetailInput {
   /** The page's words: every sentence of the model is in them. */
   w: Messages;
 }
+
+/** The sentences of a derived year, with the words of its own block. */
+const derivedText = (
+  v: DerivedVerdict,
+  text: string,
+  say: Messages["panel"]["base"] | Messages["panel"]["destination"],
+  w: Messages,
+): DerivedText => ({
+  best: bestText(v.year, w),
+  // What the 24 cells are graded against, said out loud: they are relative to
+  // the best half-month, so the strip shows when to come rather than how big
+  // the place is; the magnitude is the sentence and the bar (`gradeOfBase`).
+  derived: `${fill(say.derived, { total: fmt(v.total, 0, w.lang) })}${
+    v.peak > 0 ? fill(say.derivedPeak, { peak: fmt(v.peak, 0, w.lang) }) : ""
+  }.`,
+  text,
+});
 
 export const detailModel = (
   selection: Selection,
@@ -338,7 +371,12 @@ export const detailModel = (
             b.pass.beauty - a.pass.beauty ||
             b.pass.elevation - a.pass.elevation,
         ),
-      text: areaText(verdict, w),
+      sentences: derivedText(
+        verdict,
+        areaText(verdict, w),
+        w.panel.destination,
+        w,
+      ),
       tours: members.tours
         .map((slug) => data.tours.find((t) => t.slug === slug))
         .filter((tour) => tour !== undefined)
@@ -360,18 +398,20 @@ export const detailModel = (
 
   const town = data.towns.find((t) => t.slug === selection.slug);
   if (!town) return null;
+  // The passes are the town panel's own ranked block, one fold above.
+  const base = baseOf(
+    reachedPasses(town, data.passes, data.years, period),
+    period,
+  );
   return {
     ...common,
     areas: destinationsOfTown(town, data.destinations, data.destinationMembers),
-    // The passes are the town panel's own ranked block, one fold above.
-    destination: destinationOf(
-      reachedPasses(town, data.passes, data.years, period),
-      period,
-    ),
+    base,
     kicker: KICKER.town(town, w),
     kind: "town",
     name: town.name,
     reach: reachOf(town, ["passes"], town.slug),
+    sentences: derivedText(base, baseText(base, w), w.panel.base, w),
     town,
   };
 };

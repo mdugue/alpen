@@ -39,6 +39,8 @@ import type { Lang } from "./lang";
  * Haustür → on the doorstep · Tagesrunde → day loop · Ausflug → day trip.
  */
 export const de = {
+  /** The way back from a page that is not the map: the legal pages, a 404. */
+  backToMap: "Zurück zur Karte",
   /** The season band: the summary line, the legend, the slider and the two ways into the drawers. */
   band: {
     backToToday: "Zurück zu heute ({label})",
@@ -78,6 +80,11 @@ export const de = {
       "Dezember",
     ],
   },
+  /** The bookmark toggle, named after what it keeps – in a row and on the panel. */
+  favorite: {
+    save: "{name} merken",
+    unsave: "{name} nicht mehr merken",
+  },
   /** The header bar, and the shell's landmarks and drawers around it. */
   header: {
     /** The headline's four counts, joined with commas. */
@@ -114,10 +121,22 @@ export const de = {
   },
   /** The language these words are in; the number formats read it. */
   lang: "de",
+  /**
+   * What the two legal pages say around their text, which is German in both
+   * languages: the note an English reader gets, the titles.
+   */
   legal: {
     englishNote: null as string | null,
+    imprint: "Impressum",
+    privacy: "Datenschutzerklärung",
+    seeAlso: "Siehe auch:",
   },
   map,
+  /** A path that names nothing: an entity that is not (or no longer) in the data. */
+  notFound: {
+    text: "Unter dieser Adresse gibt es keinen Pass, keine Tour, keinen Ort und kein Reiseziel – vielleicht wurde es umbenannt.",
+    title: "Nicht gefunden",
+  },
   panel,
   scales,
   share: {

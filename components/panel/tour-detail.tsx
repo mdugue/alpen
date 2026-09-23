@@ -2,13 +2,12 @@
 
 import { useT } from "@/components/i18n";
 import type { PanelActions } from "@/components/panel/actions";
-import { LinkButton, Nearby } from "@/components/panel/nearby";
+import { EntityLink, Nearby } from "@/components/panel/nearby";
 import { Section } from "@/components/panel/section";
 import { VerdictBox } from "@/components/panel/verdict-box";
 import { StatusDot } from "@/components/status-badge";
 import type { TourModel } from "@/lib/detail-model";
 import { fill } from "@/lib/i18n/fill";
-import { isHovered } from "@/lib/route-key";
 
 /** What a tour shows, from its model and nothing else. */
 export const TourDetail = ({
@@ -50,21 +49,17 @@ export const TourDetail = ({
       <Section id="tour-passes" title={t.panel.tour.passesTitle}>
         <div className="flex flex-col items-start">
           {model.members.map(({ cell, pass }) => (
-            <LinkButton
+            <EntityLink
               key={pass.slug}
-              hovered={isHovered(model.hovered, "pass", pass.slug)}
-              onHover={(over) =>
-                actions.onHover(over ? { kind: "pass", slug: pass.slug } : null)
-              }
-              onClick={() =>
-                actions.onSelect({ kind: "pass", slug: pass.slug })
-              }
+              entity={{ kind: "pass", slug: pass.slug }}
+              hovered={model.hovered}
+              actions={actions}
             >
               <StatusDot status={cell.status} /> {pass.name}
               <span className="text-muted-foreground tabular-nums">
                 {fmtUnit(pass.elevation, "m")}
               </span>
-            </LinkButton>
+            </EntityLink>
           ))}
         </div>
       </Section>

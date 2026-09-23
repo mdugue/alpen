@@ -2,18 +2,14 @@
 
 import { useT } from "@/components/i18n";
 import type { PanelActions } from "@/components/panel/actions";
-import { GradeBar } from "@/components/panel/destination";
-import { ExternalLinks, LinkButton } from "@/components/panel/nearby";
+import { DerivedVerdictBox, RoadRow } from "@/components/panel/base";
+import { EntityLink, ExternalLinks } from "@/components/panel/nearby";
 import { Section } from "@/components/panel/section";
-import { VerdictBox } from "@/components/panel/verdict-box";
-import { Rating } from "@/components/rating";
-import { SeasonStrip } from "@/components/season-strip";
 import { StatusDot } from "@/components/status-badge";
 import { TagLine } from "@/components/tags";
 import type { DestinationModel } from "@/lib/detail-model";
 import { fill } from "@/lib/i18n/fill";
-import { isHovered } from "@/lib/route-key";
-import { bestText } from "@/lib/status";
+import { lodgingHref, workshopsHref } from "@/lib/links";
 
 /**
  * What a destination shows, from its model and nothing else: the verdict of
@@ -31,31 +27,17 @@ export const DestinationDetail = ({
   actions: PanelActions;
 }) => {
   const { t, fmt, fmtUnit } = useT();
-  const { destination: d, verdict } = model;
+  const { destination: d } = model;
+  const pointing = { actions, hovered: model.hovered };
   return (
     <>
       <p className="mt-2 text-xs leading-relaxed">{d.character}</p>
 
-      <VerdictBox
-        bar={
-          <GradeBar
-            counts={verdict.counts}
-            total={verdict.total}
-            text={model.text}
-          />
-        }
-        best={bestText(verdict.year, t)}
+      <DerivedVerdictBox
+        verdict={model.verdict}
+        sentences={model.sentences}
         period={model.period}
-        text={model.text}
-        year={verdict.year}
-      >
-        <p className="text-muted-foreground text-2xs">
-          {fill(t.panel.destination.derived, { total: fmt(verdict.total) })}
-          {verdict.peak > 0 &&
-            fill(t.panel.destination.derivedPeak, { peak: fmt(verdict.peak) })}
-          .
-        </p>
-      </VerdictBox>
+      />
 
       <Section
         id="area-passes"
@@ -69,40 +51,15 @@ export const DestinationDetail = ({
         ) : (
           <ul className="-mx-1 flex flex-col">
             {model.passes.map(({ cell, pass, season }) => (
-              <li key={pass.slug}>
-                <button
-                  type="button"
-                  onClick={() =>
-                    actions.onSelect({ kind: "pass", slug: pass.slug })
-                  }
-                  onPointerEnter={() =>
-                    actions.onHover({ kind: "pass", slug: pass.slug })
-                  }
-                  onPointerLeave={() => actions.onHover(null)}
-                  onFocus={() =>
-                    actions.onHover({ kind: "pass", slug: pass.slug })
-                  }
-                  onBlur={() => actions.onHover(null)}
-                  className={`focus-visible:inset-ring-ring/50 grid w-full grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-x-2 rounded-sm px-1 py-1 text-left outline-none focus-visible:inset-ring-2 ${isHovered(model.hovered, "pass", pass.slug) ? "bg-accent/15" : "hover:bg-muted/60"}`}
-                >
-                  <StatusDot status={cell.status} />
-                  <span className="min-w-0">
-                    <span className="block truncate text-xs font-medium">
-                      {pass.name}
-                    </span>
-                    <span className="text-muted-foreground text-2xs flex items-center gap-1.5">
-                      <Rating value={pass.beauty} className="[&>span]:h-1.5" />
-                      {fmtUnit(pass.elevation, "m")}
-                      <span className="truncate">· {pass.classicAscent}</span>
-                    </span>
-                  </span>
-                  <SeasonStrip
-                    cells={season}
-                    current={model.period}
-                    className="w-16"
-                  />
-                </button>
-              </li>
+              <RoadRow
+                key={pass.slug}
+                pass={pass}
+                status={cell.status}
+                season={season}
+                note={pass.classicAscent}
+                period={model.period}
+                pointing={pointing}
+              />
             ))}
           </ul>
         )}
@@ -116,24 +73,17 @@ export const DestinationDetail = ({
         ) : (
           <div className="flex flex-col items-start">
             {model.tours.map(({ cell, tour }) => (
-              <LinkButton
+              <EntityLink
                 key={tour.slug}
-                hovered={isHovered(model.hovered, "tour", tour.slug)}
-                onHover={(over) =>
-                  actions.onHover(
-                    over ? { kind: "tour", slug: tour.slug } : null,
-                  )
-                }
-                onClick={() =>
-                  actions.onSelect({ kind: "tour", slug: tour.slug })
-                }
+                entity={{ kind: "tour", slug: tour.slug }}
+                {...pointing}
               >
                 <StatusDot status={cell.status} /> {tour.name}
                 <span className="text-muted-foreground tabular-nums">
                   {fmtUnit(tour.km, "km")} ·{" "}
                   {fmtUnit(tour.elevationGain, t.vocab.unit.climb)}
                 </span>
-              </LinkButton>
+              </EntityLink>
             ))}
           </div>
         )}
@@ -154,16 +104,9 @@ export const DestinationDetail = ({
               const base = d.baseTowns.includes(town.slug);
               return (
                 <li key={town.slug} className="flex flex-col gap-0.5">
-                  <LinkButton
-                    hovered={isHovered(model.hovered, "town", town.slug)}
-                    onHover={(over) =>
-                      actions.onHover(
-                        over ? { kind: "town", slug: town.slug } : null,
-                      )
-                    }
-                    onClick={() =>
-                      actions.onSelect({ kind: "town", slug: town.slug })
-                    }
+                  <EntityLink
+                    entity={{ kind: "town", slug: town.slug }}
+                    {...pointing}
                   >
                     <span
                       className="bg-town size-2.5 shrink-0 rounded-full"
@@ -175,19 +118,13 @@ export const DestinationDetail = ({
                         · {t.panel.destination.baseMark}
                       </span>
                     )}
-                  </LinkButton>
+                  </EntityLink>
                   <TagLine tags={town.tags} lead={town.country} />
                   {base && (
                     <ExternalLinks
                       links={[
-                        [
-                          t.panel.destination.lodging,
-                          `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(fill(t.panel.destination.lodgingQuery, { town: town.name }))}`,
-                        ],
-                        [
-                          t.panel.town.workshops,
-                          `https://www.openstreetmap.org/search?query=${encodeURIComponent(fill(t.panel.town.workshopsQuery, { town: town.name }))}`,
-                        ],
+                        [t.panel.destination.lodging, lodgingHref(town, t)],
+                        [t.panel.town.workshops, workshopsHref(town, t)],
                       ]}
                     />
                   )}

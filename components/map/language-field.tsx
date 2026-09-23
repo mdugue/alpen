@@ -9,18 +9,24 @@ import { LANG_NAME, LANGS, langCookie } from "@/lib/i18n";
 import type { Lang } from "@/lib/i18n";
 
 /**
- * Remembers the pick for the next arrival at the root. The navigation it
- * starts does not wait for it – the proxy never redirects a request from a
- * page of this site – and a browser without the Cookie Store API still
- * follows the link; it only will not remember.
+ * Remembers the pick for the next arrival at the root, then follows the link.
+ * A plain click waits for the write before it loads the other page – a full
+ * load started at once could leave the write behind – and a click that opens
+ * another tab keeps its default. A browser without the Cookie Store API
+ * follows the link unremembered, and the root asks its languages instead.
  */
-const remember = async (lang: Lang) => {
+const follow = async (e: React.MouseEvent<HTMLAnchorElement>, lang: Lang) => {
   if (!("cookieStore" in globalThis)) return;
+  const plain =
+    e.button === 0 && !(e.metaKey || e.ctrlKey || e.shiftKey || e.altKey);
+  const { href } = e.currentTarget;
+  if (plain) e.preventDefault();
   try {
     await cookieStore.set(langCookie(lang, Date.now()));
   } catch {
     /* not remembered: the link works all the same */
   }
+  if (plain) window.location.assign(href);
 };
 
 /**
@@ -66,8 +72,8 @@ export const LanguageField = ({ hrefOf }: { hrefOf: (to: Lang) => string }) => {
                   href={hrefOf(l)}
                   hrefLang={l}
                   lang={l}
-                  onClick={() => {
-                    void remember(l);
+                  onClick={(e) => {
+                    void follow(e, l);
                   }}
                 />
               }

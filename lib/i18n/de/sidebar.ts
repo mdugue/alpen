@@ -91,11 +91,6 @@ export const sidebar = {
   },
   /** The five bars of an editorial scale, for the screen reader. */
   rating: "{value} von 5",
-  /** The bookmark toggle of one row, named after the row. */
-  row: {
-    save: "{name} merken",
-    unsave: "{name} nicht mehr merken",
-  },
   search: "Suchen",
   searchPlaceholder: "Reiseziel, Pass, Tour oder Ort …",
   /** One cell of the season strip: "Anfang Juli: gut". */

@@ -2,12 +2,11 @@
 
 import { useT } from "@/components/i18n";
 import type { PanelActions } from "@/components/panel/actions";
-import { DestinationSection } from "@/components/panel/destination";
-import { ExternalLinks, LinkButton, Nearby } from "@/components/panel/nearby";
+import { BaseSection } from "@/components/panel/base";
+import { EntityLink, ExternalLinks, Nearby } from "@/components/panel/nearby";
 import { TagBadges } from "@/components/tags";
 import type { TownModel } from "@/lib/detail-model";
-import { fill } from "@/lib/i18n/fill";
-import { isHovered } from "@/lib/route-key";
+import { bikeShopsHref, workshopsHref } from "@/lib/links";
 
 /**
  * What a town shows, from its model and nothing else.
@@ -38,41 +37,28 @@ export const TownDetail = ({
         <p className="text-muted-foreground mt-1.5 flex flex-wrap items-center gap-x-1.5 text-xs">
           {t.panel.town.destinationLead}
           {model.areas.map((area) => (
-            <LinkButton
+            <EntityLink
               key={area.slug}
-              hovered={isHovered(model.hovered, "destination", area.slug)}
-              onHover={(over) =>
-                actions.onHover(
-                  over ? { kind: "destination", slug: area.slug } : null,
-                )
-              }
-              onClick={() =>
-                actions.onSelect({ kind: "destination", slug: area.slug })
-              }
+              entity={{ kind: "destination", slug: area.slug }}
+              hovered={model.hovered}
+              actions={actions}
             >
               {area.name}
-            </LinkButton>
+            </EntityLink>
           ))}
         </p>
       )}
-      <DestinationSection
-        d={model.destination}
+      <BaseSection
+        base={model.base}
+        sentences={model.sentences}
         period={model.period}
-        hovered={model.hovered}
-        onHover={actions.onHover}
-        onSelect={(slug) => actions.onSelect({ kind: "pass", slug })}
+        pointing={{ actions, hovered: model.hovered }}
       />
       <Nearby actions={actions} model={model} />
       <ExternalLinks
         links={[
-          [
-            t.panel.town.workshops,
-            `https://www.openstreetmap.org/search?query=${encodeURIComponent(fill(t.panel.town.workshopsQuery, { town: town.name }))}`,
-          ],
-          [
-            t.panel.town.bikeShops,
-            `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(fill(t.panel.town.bikeShopsQuery, { town: town.name }))}`,
-          ],
+          [t.panel.town.workshops, workshopsHref(town, t)],
+          [t.panel.town.bikeShops, bikeShopsHref(town, t)],
         ]}
       />
     </>

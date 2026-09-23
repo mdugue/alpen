@@ -2,6 +2,7 @@ import type { Messages } from "@/lib/i18n";
 import { countriesOf, rangeOf } from "@/lib/regions";
 import type { RangeName } from "@/lib/regions";
 import type { Destination, Pass, Tour, Town } from "@/lib/types";
+import { firstSentence } from "@/lib/utils";
 
 /**
  * Search the way people spell things: "grossglockner" finds "Großglockner",
@@ -40,8 +41,6 @@ const countryWords = (country: string, w: Messages) =>
   countriesOf(country)
     .flatMap((c) => [c, w.vocab.country[c as keyof typeof w.vocab.country]])
     .join(" ");
-
-const firstSentence = (s: string) => s.split(/(?<=[.!?])\s/u)[0] ?? s;
 
 /**
  * A haystack is folded once per entity and language: the data never changes

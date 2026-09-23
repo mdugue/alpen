@@ -151,7 +151,7 @@ Bédoin relative is the case that proves it: a long spring, a hole in high
 summer where the heat on Ventoux makes it punishing, and a second peak in
 September. Absolute, it is a flat dim line and the app knows nothing.
 
-**"How much is there" is not lost, it is said in words.** `destinationText`
+**"How much is there" is not lost, it is said in words.** `baseText`
 and the grade bar sit directly above the strip – "Von 33 Pässen im Umkreis:
 12 zur besten Zeit, 11 gut, 10 eingeschränkt" – and the line under it names
 what the strip is relative to. The picture carries the shape, the sentence

@@ -1,20 +1,17 @@
-import { ImageResponse } from "next/og";
-
 import passes from "@/data/passes.json";
 import tours from "@/data/tours.json";
 import towns from "@/data/towns.json";
 import { BRAND, SITE_NAME } from "@/lib/brand";
 import { fill, langOf } from "@/lib/i18n";
 import { messagesOf } from "@/lib/i18n/dictionaries";
-import { MarkBadge } from "@/lib/mark";
 import { periodLabel } from "@/lib/period";
 import { STATUSES } from "@/lib/regions";
 import {
-  DotLayer,
   dotMap,
   SHARE_PERIOD,
   SHARE_SIZE,
-  shareFonts,
+  ShareCard,
+  shareResponse,
 } from "@/lib/share-image";
 import { fmt } from "@/lib/utils";
 
@@ -57,67 +54,49 @@ export default async function Image({
     towns: fmt(towns.length, 0, lang),
   });
 
-  return new ImageResponse(
-    <div
-      style={{
-        background: BRAND.day,
-        color: BRAND.ink,
-        display: "flex",
-        fontFamily: "Oxanium",
-        height: "100%",
-        position: "relative",
-        width: "100%",
-      }}
+  return await shareResponse(
+    <ShareCard
+      dots={dots}
+      width={330}
+      column={
+        <>
+          <div
+            style={{
+              color: BRAND.primary,
+              fontSize: 54,
+              fontWeight: 700,
+              letterSpacing: 3,
+              lineHeight: 1,
+              marginTop: 22,
+              textTransform: "uppercase",
+            }}
+          >
+            {SITE_NAME}
+          </div>
+          <div
+            style={{
+              color: BRAND.ink,
+              fontSize: 30,
+              fontWeight: 500,
+              lineHeight: 1.3,
+              marginTop: 20,
+            }}
+          >
+            {w.share.headline}
+          </div>
+          <div
+            style={{
+              color: BRAND.muted,
+              fontSize: 20,
+              fontWeight: 500,
+              marginTop: 14,
+            }}
+          >
+            {counts}
+          </div>
+        </>
+      }
     >
-      <DotLayer dots={dots} />
-
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          left: 72,
-          position: "absolute",
-          top: 68,
-          width: 330,
-        }}
-      >
-        <MarkBadge size={62} />
-        <div
-          style={{
-            color: BRAND.primary,
-            fontSize: 54,
-            fontWeight: 700,
-            letterSpacing: 3,
-            lineHeight: 1,
-            marginTop: 22,
-            textTransform: "uppercase",
-          }}
-        >
-          {SITE_NAME}
-        </div>
-        <div
-          style={{
-            color: BRAND.ink,
-            fontSize: 30,
-            fontWeight: 500,
-            lineHeight: 1.3,
-            marginTop: 20,
-          }}
-        >
-          {w.share.headline}
-        </div>
-        <div
-          style={{
-            color: BRAND.muted,
-            fontSize: 20,
-            fontWeight: 500,
-            marginTop: 14,
-          }}
-        >
-          {counts}
-        </div>
-      </div>
-
       <div
         style={{
           bottom: 64,
@@ -170,7 +149,6 @@ export default async function Image({
           </div>
         ))}
       </div>
-    </div>,
-    { ...SHARE_SIZE, fonts: await shareFonts() },
+    </ShareCard>,
   );
 }

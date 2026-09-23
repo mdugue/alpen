@@ -11,6 +11,7 @@ import type { de } from "./messages.de";
 
 /** The English words, held to the German file's layout by the type and to its placeholders by a test. */
 export const en = {
+  backToMap: "Back to the map",
   band: {
     backToToday: "Back to today ({label})",
     daylight: "{hours} h of daylight",
@@ -46,6 +47,10 @@ export const en = {
       "December",
     ],
   },
+  favorite: {
+    save: "Save {name}",
+    unsave: "Remove {name} from favourites",
+  },
   header: {
     counts: {
       best: "{n} passes at their best time",
@@ -79,8 +84,15 @@ export const en = {
   legal: {
     englishNote:
       "This page is in German: it is the legal notice a site operated from Germany has to carry, and a translation would not be the binding text.",
+    imprint: "Legal notice",
+    privacy: "Privacy policy",
+    seeAlso: "See also:",
   },
   map,
+  notFound: {
+    text: "There is no road, loop, town or destination at this address – perhaps it was renamed.",
+    title: "Not found",
+  },
   panel,
   scales,
   share: {

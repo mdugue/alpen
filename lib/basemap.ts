@@ -5,6 +5,7 @@ import type {
   StyleSpecification,
 } from "maplibre-gl";
 
+import type { Messages } from "@/lib/i18n";
 import { DEFAULT_LANG, localeOf } from "@/lib/i18n/lang";
 import type { Lang } from "@/lib/i18n/lang";
 import { PALETTE } from "@/lib/palette";
@@ -32,21 +33,24 @@ import type { Scheme } from "@/lib/palette";
  *    · profile cursor]
  *
  * The hillshade sits between the two groups: it models the land without
- * greying the roads and labels on top. Labels prefer `name:de`, then the
- * Latin transliteration OpenMapTiles carries for every name, then the local
- * name – so the Latin glyph ranges under `public/map/fonts` are all a label
+ * greying the roads and labels on top. Labels prefer the name in the page's
+ * language (`name:de`, `name:en`), then the Latin transliteration
+ * OpenMapTiles carries for every name, then the local name – so the Latin glyph ranges under `public/map/fonts` are all a label
  * ever needs (a glyph outside them is drawn locally by MapLibre).
  */
 
 /** Which base is the generated one; the raster alternatives keep their own ids. */
 export const BASEMAP_ID = "karte";
 
-export const BASEMAP_SOURCE: SourceSpecification = {
-  attribution:
-    '<a href="https://openfreemap.org" target="_blank">OpenFreeMap</a> © <a href="https://www.openmaptiles.org/" target="_blank">OpenMapTiles</a>, Daten von <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a>',
+/**
+ * The vector tiles and their credit line; the OpenStreetMap credit is the
+ * page's word for it (`map.osmContributors`), as on every raster base.
+ */
+export const basemapSource = (w: Messages): SourceSpecification => ({
+  attribution: `<a href="https://openfreemap.org" target="_blank">OpenFreeMap</a> © <a href="https://www.openmaptiles.org/" target="_blank">OpenMapTiles</a>, <a href="https://www.openstreetmap.org/copyright" target="_blank">${w.map.osmContributors}</a>`,
   type: "vector",
   url: "https://tiles.openfreemap.org/planet",
-};
+});
 
 /** The one source every generated layer draws from. */
 export const BASEMAP_SOURCE_ID = "openmaptiles";
@@ -469,15 +473,15 @@ export const basemapLayerIds = (scheme: Scheme): string[] => {
  */
 export const basemapStyle = (
   scheme: Scheme,
+  w: Messages,
   glyphs: string = GLYPHS,
-  lang: Lang = DEFAULT_LANG,
 ): StyleSpecification => {
-  const { ground, detail } = basemapLayers(scheme, lang);
+  const { ground, detail } = basemapLayers(scheme, w.lang);
   return {
     glyphs,
     layers: [...ground, ...detail],
-    name: `Alpenpässe ${scheme} ${lang}`,
-    sources: { [BASEMAP_SOURCE_ID]: BASEMAP_SOURCE },
+    name: `Alpenpässe ${scheme} ${w.lang}`,
+    sources: { [BASEMAP_SOURCE_ID]: basemapSource(w) },
     version: 8,
   };
 };

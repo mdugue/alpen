@@ -143,7 +143,6 @@ export const ChipGroup = ({
 export const ThresholdChips = ({
   id,
   label,
-  hint,
   options,
   value,
   onChange,
@@ -152,7 +151,6 @@ export const ThresholdChips = ({
 }: {
   id: string;
   label: string;
-  hint?: string;
   options: Options;
   value: number;
   onChange: (value: number) => void;
@@ -170,7 +168,7 @@ export const ThresholdChips = ({
   const { t } = useT();
   const [[none]] = options as unknown as [[number, string]];
   return (
-    <ChipGroup id={id} label={label} hint={hint}>
+    <ChipGroup id={id} label={label}>
       {thresholdChips(options).map(([v, option]) => {
         const text = optionText(option, t);
         return (

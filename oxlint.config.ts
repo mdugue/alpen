@@ -64,18 +64,25 @@ const MAPLIBRE = {
  * words reach the browser as a value from its layout, one language per page
  * (`I18nProvider`), and a component asks `useT()`. A value import of either
  * dictionary from code the browser runs would ship both languages to every
- * page; the `Messages` type is fine anywhere.
+ * page; the `Messages` type is fine anywhere. Patterns rather than names, so
+ * a relative path or one of the sections (`de/panel`) is caught too.
  */
 const DICTIONARIES = [
-  "@/lib/i18n/dictionaries",
-  "@/lib/i18n/messages.de",
-  "@/lib/i18n/messages.en",
-].map((name) => ({
-  allowTypeImports: true,
-  message:
-    "The words reach the browser as a value (`useT()` in a component, an argument in lib/); the dictionaries are for the server, the scripts and the tests.",
-  name,
-}));
+  {
+    allowTypeImports: true,
+    group: [
+      "**/i18n/dictionaries",
+      "**/i18n/messages.de",
+      "**/i18n/messages.en",
+      "**/i18n/de/*",
+      "**/i18n/en/*",
+      // The curated English prose is data, merged on the server (lib/data.ts).
+      "!**/data/i18n/**",
+    ],
+    message:
+      "The words reach the browser as a value (`useT()` in a component, an argument in lib/); the dictionaries are for the server, the scripts and the tests.",
+  },
+];
 
 /**
  * The same rule again for one adapter, minus the globals it owns – so the
@@ -145,7 +152,7 @@ export default defineConfig({
         ],
         "no-restricted-imports": [
           "error",
-          { paths: [MAPLIBRE, ...DICTIONARIES] },
+          { paths: [MAPLIBRE], patterns: DICTIONARIES },
         ],
       },
     },
@@ -153,7 +160,7 @@ export default defineConfig({
       // What the browser runs holds no dictionary either (see DICTIONARIES).
       files: ["components/**"],
       rules: {
-        "no-restricted-imports": ["error", { paths: DICTIONARIES }],
+        "no-restricted-imports": ["error", { patterns: DICTIONARIES }],
       },
     },
     {

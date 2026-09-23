@@ -63,7 +63,7 @@ import { fmt } from "@/lib/utils";
  * it punishing, and a second peak in September.
  *
  * "How much is there" is not lost – it is simply said in words rather than in
- * colour, right next to the strip, by `destinationText` and the grade bar:
+ * colour, right next to the strip, by `baseText` and the grade bar:
  * "Von 33 Pässen im Umkreis: 12 zur besten Zeit, 11 gut, 10 eingeschränkt."
  * The same split as the reach bands: the picture carries the shape, the
  * sentence carries the magnitude, and neither has to do the other's job.
@@ -166,7 +166,7 @@ const deriveYear = (
  * The judgement over passes already measured – what the panel model uses, so
  * the block above the list and the list itself come out of one reach.
  */
-export const destinationOf = (
+export const baseOf = (
   reached: ReachedPass[],
   period: Period,
 ): BaseVerdict => ({
@@ -180,7 +180,7 @@ export const destinationOf = (
  * count is what the grade was made of – the badge says "beste Zeit" and this
  * says why that is so, in the same breath.
  */
-export const destinationText = (d: BaseVerdict, w: Messages): string => {
+export const baseText = (d: BaseVerdict, w: Messages): string => {
   const say = w.vocab.reach;
   if (d.total === 0) return fill(say.noneWithin, { km: REACH_MAX_KM });
   if (rideable(d.counts) === 0)
@@ -192,7 +192,7 @@ export const destinationText = (d: BaseVerdict, w: Messages): string => {
 };
 
 /**
- * The inverse of `destinationOf`: not "what can I ride from this town" but
+ * The inverse of `baseOf`: not "what can I ride from this town" but
  * "where would I stay to ride this road".
  *
  * A pass panel used to answer that with the same flat list of names and

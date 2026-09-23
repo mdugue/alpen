@@ -49,11 +49,14 @@ const MISSING = "–";
 /**
  * The day column, one formatter per language built once: the same shape in
  * both – "Mi., 24.9." / "Wed, 24/09" – left to the locale rather than spelled
- * out.
+ * out. In UTC, because a forecast day is a calendar date ("2026-09-24"),
+ * which `Date` reads as midnight UTC: formatted in a visitor's own zone west
+ * of Greenwich it would be the day before.
  */
 const DAY_OPTIONS: Intl.DateTimeFormatOptions = {
   day: "numeric",
   month: "numeric",
+  timeZone: "UTC",
   weekday: "short",
 };
 const DAY_FORMAT: Record<Lang, Intl.DateTimeFormat> = {

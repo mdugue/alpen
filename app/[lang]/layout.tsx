@@ -3,9 +3,10 @@ import { Inter, Oxanium } from "next/font/google";
 import { notFound } from "next/navigation";
 
 import { BRAND, SITE_NAME, siteUrl } from "@/lib/brand";
-import { isLang, LANGS, langParams, OG_LOCALE } from "@/lib/i18n";
+import { isLang, LANGS } from "@/lib/i18n";
 import { getDictionary } from "@/lib/i18n/server";
-import { homeHref } from "@/lib/routes";
+import { alternatesOf, homeHref } from "@/lib/routes";
+import { openGraphOf } from "@/lib/share-text";
 
 import "../globals.css";
 
@@ -25,25 +26,18 @@ const oxanium = Oxanium({
  * the root parameter, `next.config.ts` rewrites the prefix-free German
  * paths onto `/de`, and the English pages live under `/en`.
  */
-export const generateStaticParams = () => langParams();
+export const generateStaticParams = () => LANGS.map((lang) => ({ lang }));
 
 /**
  * The start page of each language: its title, description and keywords in
  * that language (`site` in the message files), its own canonical, the other
  * language as an alternate, German as the default for a visitor without a
- * match. An entity route sets the same three paths for its own.
+ * match (`alternatesOf`). An entity route sets the same paths for its own.
  */
 export const generateMetadata = async (): Promise<Metadata> => {
   const { lang, site } = await getDictionary();
-  const home = homeHref(lang);
   return {
-    alternates: {
-      canonical: home,
-      languages: {
-        ...Object.fromEntries(LANGS.map((l) => [l, homeHref(l)])),
-        "x-default": "/",
-      },
-    },
+    alternates: alternatesOf(lang, homeHref),
     appleWebApp: { capable: true, statusBarStyle: "default", title: SITE_NAME },
     applicationName: SITE_NAME,
     authors: [{ name: "Manuel Dugué", url: "https://manuel.fyi" }],
@@ -54,14 +48,11 @@ export const generateMetadata = async (): Promise<Metadata> => {
     keywords: [...site.keywords],
     // Absolute URLs for the share images; Vercel provides the production host.
     metadataBase: new URL(siteUrl),
-    openGraph: {
+    openGraph: openGraphOf(lang, {
       description: site.description,
-      locale: OG_LOCALE[lang],
-      siteName: SITE_NAME,
       title: site.title,
-      type: "website",
-      url: home,
-    },
+      url: homeHref(lang),
+    }),
     // Search engines are welcome; the crawlers that are not are turned away in
     // app/robots.ts.
     robots: { follow: true, index: true },
@@ -70,11 +61,9 @@ export const generateMetadata = async (): Promise<Metadata> => {
       // Sub-pages set a bare title ("Impressum") and get the site name appended.
       template: `%s – ${SITE_NAME}`,
     },
-    twitter: {
-      card: "summary_large_image",
-      description: site.description,
-      title: site.title,
-    },
+    // The card type is all X needs of its own: the title, the text and the
+    // image it reads from the Open Graph tags, on every page below this one.
+    twitter: { card: "summary_large_image" },
   };
 };
 

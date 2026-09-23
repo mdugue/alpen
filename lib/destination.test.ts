@@ -1,11 +1,6 @@
 import { describe, expect, test } from "bun:test";
 
-import {
-  basesOf,
-  destinationOf,
-  destinationText,
-  gradeOfBase,
-} from "@/lib/destination";
+import { basesOf, baseOf, baseText, gradeOfBase } from "@/lib/destination";
 import { REACH_MAX_KM } from "@/lib/geo";
 import { DE } from "@/lib/i18n/dictionaries";
 import { reachedPasses, reachedTowns } from "@/lib/reach";
@@ -48,7 +43,7 @@ describe("gradeOfBase", () => {
   });
 });
 
-describe("destinationOf", () => {
+describe("baseOf", () => {
   const passes = [
     makePass("near", 5),
     makePass("day", 30),
@@ -56,7 +51,7 @@ describe("destinationOf", () => {
     makePass("beyond", 120),
   ];
   const years = yearsOf(passes.map((p) => [p.slug, "best"] as [string, Grade]));
-  const d = destinationOf(reachedPasses(ORIGIN, passes, years, PERIOD), PERIOD);
+  const d = baseOf(reachedPasses(ORIGIN, passes, years, PERIOD), PERIOD);
 
   test("judges what lib/reach.ts measured and nothing further out", () => {
     expect(d.passes.map((r) => r.pass.slug)).toEqual(["near", "day", "far"]);
@@ -73,16 +68,16 @@ describe("destinationOf", () => {
   });
 
   test("a base with nothing near says so", () => {
-    const empty = destinationOf(
+    const empty = baseOf(
       reachedPasses({ lat: 0, lon: 0 }, passes, years, PERIOD),
       PERIOD,
     );
     expect(empty.total).toBe(0);
-    expect(destinationText(empty, DE)).toContain("Kein Pass");
+    expect(baseText(empty, DE)).toContain("Kein Pass");
   });
 
   test("the sentence names the counts the badge was made of", () => {
-    expect(destinationText(d, DE)).toContain("3 zur besten Zeit");
+    expect(baseText(d, DE)).toContain("3 zur besten Zeit");
   });
 });
 

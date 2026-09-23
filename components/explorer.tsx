@@ -253,10 +253,8 @@ export const Explorer = ({ data, defaultPeriod, children }: Props) => {
             <AppHeader
               bar={bar}
               where={rangeWord(filters, t)}
-              sidebarOpen={isMobile ? undefined : sidebarOpen}
-              onToggleSidebar={
-                isMobile ? undefined : () => setSidebarOpen(!sidebarOpen)
-              }
+              sidebarOpen={sidebarOpen}
+              onToggleSidebar={() => setSidebarOpen(!sidebarOpen)}
               onOpenScales={() => setScalesOpen(true)}
             />
           }
@@ -267,7 +265,6 @@ export const Explorer = ({ data, defaultPeriod, children }: Props) => {
                 bar={bar}
                 today={defaultPeriod}
                 onChange={(period) => dispatch({ period, type: "period" })}
-                legend={!isMobile}
               />
               <div className="flex gap-2 lg:hidden">
                 <Button

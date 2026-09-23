@@ -55,18 +55,12 @@ import {
 } from "@/components/ui/tooltip";
 import { DEFAULT_VIEW } from "@/lib/app-state";
 import type { MapView, Selection, Shown } from "@/lib/app-state";
-import { BASEMAP_SOURCE, BASEMAP_SOURCE_ID, GLYPHS } from "@/lib/basemap";
+import { BASEMAP_SOURCE_ID, basemapSource, GLYPHS } from "@/lib/basemap";
 import type { Bounds } from "@/lib/geo";
 import type { Lang } from "@/lib/i18n";
 import { HIT_LAYERS, SOURCE } from "@/lib/layer-ids";
 import type { MapAssets } from "@/lib/map-assets";
-import {
-  FIT_MS,
-  FIT_PADDING,
-  fitDone,
-  flightFor,
-  NO_INSET,
-} from "@/lib/map-camera";
+import { FIT_MS, FIT_PADDING, fitDone, flightFor } from "@/lib/map-camera";
 import type { CameraIntent, Inset } from "@/lib/map-camera";
 import { DOUBLE_MS, isDoubleClick, pick } from "@/lib/map-pick";
 import type { Tap } from "@/lib/map-pick";
@@ -113,8 +107,8 @@ interface Props {
    * which is what finally ties the two together – see `hovered` in
    * `explorer.tsx`.
    */
-  hovered?: Selection | null;
-  onHover?: (sel: Selection | null) => void;
+  hovered: Selection | null;
+  onHover: (sel: Selection | null) => void;
   onSelect: (sel: Selection) => void;
   /**
    * Where the camera has come to rest, once it has: the hash adapter writes it
@@ -134,27 +128,27 @@ interface Props {
    * is otherwise the source of truth for its camera, so this is applied only
    * when the object identity changes.
    */
-  requestedView?: MapView | null;
+  requestedView: MapView | null;
   /**
    * A frame asked for by the range chip (`requestedFit` in `lib/app-state.ts`).
    * A fresh box per press, applied when the object identity changes, like the
    * view above.
    */
-  requestedFit?: Bounds | null;
+  requestedFit: Bounds | null;
   /** Road point under the elevation-profile cursor, marked on the ascent. */
-  profileCursor?: LatLon | null;
+  profileCursor: LatLon | null;
   /**
    * Fly-to request from a click on the elevation profile. A fresh object per
    * click, so the same point can be asked for twice.
    */
-  profileZoom?: LatLon | null;
+  profileZoom: LatLon | null;
   /**
    * What the shell covers of the map on each edge, in pixels
    * (`shellGeometry`, lib/shell-geometry.ts): the panels on the left, the
    * header at the top, the season bar or whichever drawer is in front at the
    * bottom. Camera targets land in what is left of it.
    */
-  inset?: Inset;
+  inset: Inset;
   /**
    * What the device does differently: the colour scheme the layers are painted
    * in, whether the pointer is a finger, whether motion is unwanted and whether
@@ -226,16 +220,16 @@ export const PassMap = ({
   assets,
   destinationBounds,
   selection,
-  hovered = null,
+  hovered,
   onHover,
   onSelect,
   onViewChange,
   intent,
-  profileCursor = null,
-  profileZoom = null,
-  requestedView = null,
-  requestedFit = null,
-  inset = NO_INSET,
+  profileCursor,
+  profileZoom,
+  requestedView,
+  requestedFit,
+  inset,
   env,
   langHref,
 }: Props) => {
@@ -377,7 +371,7 @@ export const PassMap = ({
         ...appLayers(colors, env),
       ],
       sources: {
-        [BASEMAP_SOURCE_ID]: BASEMAP_SOURCE,
+        [BASEMAP_SOURCE_ID]: basemapSource(t),
         dem: {
           attribution: "Terrain © Mapzen/AWS",
           encoding: "terrarium",
@@ -518,7 +512,7 @@ export const PassMap = ({
       // explorer.tsx). Noted before it is dispatched, so the rest of the
       // pointer events in this frame do not repeat it.
       hoveredRef.current = hit;
-      onHoverRef.current?.(hit);
+      onHoverRef.current(hit);
     };
 
     // Hover is a mouse affordance; a finger has none, and a label under it

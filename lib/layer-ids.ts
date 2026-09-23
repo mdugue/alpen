@@ -53,15 +53,14 @@ export interface LayerSet {
   hit: string;
   /**
    * Layers drawn with the mark and filtered with it, but neither a name nor
-   * a target: the dash over an unpaved ascent. They are never aimed at.
+   * a target: the dash over an unpaved ascent, the edge of an area's
+   * outline. They are never aimed at.
    */
   companions?: readonly string[];
   /** The source the mark, its companions and its hit area read; a name may stand on a source of its own. */
   source: string;
 }
 
-/** The edge of a destination's outline; the fill is its `mark`. */
-export const DESTINATION_EDGE = "destinations-edge";
 /**
  * The dash laid over an unpaved ascent (plan 27). A companion of the route
  * set below – it carries the same filter – rather than a layer of its own: a
@@ -78,6 +77,8 @@ export const ROUTE_DASH = "routes-dash";
  */
 export const LAYERS = {
   destination: {
+    /** The outline's edge; the fill is the mark. */
+    companions: ["destinations-edge"],
     hit: "destinations-hit",
     labels: ["destinations-label"],
     mark: "destinations",

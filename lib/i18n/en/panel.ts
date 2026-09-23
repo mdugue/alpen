@@ -19,9 +19,7 @@ export const panel = {
     close: "Close details",
     linkCopied: "Link copied",
     list: "List",
-    save: "Save {name}",
     share: "Share {name}",
-    unsave: "Remove {name} from favourites",
   },
   base: {
     bandCount: "{n} {noun} · up to {maxKm}",

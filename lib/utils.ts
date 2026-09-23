@@ -15,6 +15,20 @@ export const fmt = (n: number, digits = 0, lang: Lang = "de") =>
     minimumFractionDigits: 0,
   });
 
+/** Abbreviations whose period ends no sentence: "St. Vigil", "z. B.", "ca. 7 %". */
+const ABBREVIATION =
+  /(?:^|\s)(?:St|Ste|Mt|Nr|ca|bzw|vgl|\p{Ll}|z\. ?B|u\. ?a|d\. ?h)\.$/u;
+
+/** The first sentence of a prose field, for a line that must stay short. */
+export const firstSentence = (text: string): string => {
+  const t = text.trim();
+  for (const end of t.matchAll(/[.!?](?=\s|$)/gu)) {
+    const head = t.slice(0, end.index + 1);
+    if (!ABBREVIATION.test(head)) return head;
+  }
+  return t;
+};
+
 /** "a, b oder c" – alternatives as the page's language lists them. */
 export const listOr = (parts: readonly string[], lang: Lang = "de") =>
   new Intl.ListFormat(localeOf(lang), { type: "disjunction" }).format(parts);
