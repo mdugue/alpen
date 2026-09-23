@@ -2869,7 +2869,12 @@
      "lat": 47.216,
      "lon": 12.174
     },
-    "label": "Krimml"
+    "label": "Krimml",
+    "check": {
+     "maxTopDelta": 110,
+     "minPeakAt": 0.7,
+     "note": "Ab Krimml gipfelt die Gerlos Alpenstraße an der Filzsteinalpe (1628 m) und fällt danach zum Gerlospass ab; die Profilspitze liegt deshalb rund 100 m über der Passhöhe und vor dem Ende."
+    }
    }
   ]
  },
@@ -2949,7 +2954,11 @@
      "lat": 46.858,
      "lon": 13.88
     },
-    "label": "Ebene Reichenau"
+    "label": "Ebene Reichenau",
+    "check": {
+     "minPeakAt": 0.5,
+     "note": "Von Ebene Reichenau quert die Straße zuerst die Schiestelscharte (2024 m), fällt rund 500 m ins Tal und steigt dann zur Eisentalhöhe; die Profilspitze liegt deshalb bei gut der Hälfte der Strecke."
+    }
    }
   ]
  },
