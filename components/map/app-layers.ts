@@ -148,24 +148,25 @@ const townIcon = (c: Colors, ring: string) =>
   });
 
 /** Star as a canvas icon so that no font glyphs are needed. */
-export const addIcons = (map: MLMap, c: ReturnType<typeof readColors>) => {
-  const star = (fill: string, stroke: string) =>
-    draw((ctx, s) => {
-      ctx.beginPath();
-      for (let i = 0; i < 10; i += 1) {
-        const a = -Math.PI / 2 + (i * Math.PI) / 5;
-        const r = (i % 2 ? 0.46 : 1) * s * 0.42;
-        ctx.lineTo(s / 2 + Math.cos(a) * r, s / 2 + Math.sin(a) * r);
-      }
-      ctx.closePath();
-      ctx.fillStyle = fill;
-      ctx.fill();
-      ctx.lineWidth = s * 0.07;
-      ctx.lineJoin = "round";
-      ctx.strokeStyle = stroke;
-      ctx.stroke();
-    });
+const star = (fill: string, stroke: string) =>
+  draw((ctx, s) => {
+    ctx.beginPath();
+    for (let i = 0; i < 10; i += 1) {
+      const a = -Math.PI / 2 + (i * Math.PI) / 5;
+      const r = (i % 2 ? 0.46 : 1) * s * 0.42;
+      ctx.lineTo(s / 2 + Math.cos(a) * r, s / 2 + Math.sin(a) * r);
+    }
+    ctx.closePath();
+    ctx.fillStyle = fill;
+    ctx.fill();
+    ctx.lineWidth = s * 0.07;
+    ctx.lineJoin = "round";
+    ctx.strokeStyle = stroke;
+    ctx.stroke();
+  });
 
+/** The status stars and the town marks, added once and repainted on a scheme change. */
+export const addIcons = (map: MLMap, c: ReturnType<typeof readColors>) => {
   // Repainted on a scheme change: the strokes are paper and ink, which flip.
   const add = (id: string, data: ImageData) => {
     if (map.hasImage(id)) map.updateImage(id, data);
@@ -222,6 +223,33 @@ export const applyBase = (m: MLMap, id: string, s: Scheme, lang: Lang) => {
   const { ground, detail } = baseStack(id, s, lang);
   for (const l of ground) m.addLayer(l, "hillshade");
   for (const l of detail) m.addLayer(l, ABOVE_BASE);
+};
+
+/**
+ * The radius of a pass dot, by zoom and fame. With a `hit` floor it becomes
+ * the dot's hit area instead: never below that floor, and always a margin
+ * wider than the dot, which on a famous pass at close zoom is as wide as the
+ * floor itself. One interpolate rather than a `max` around it, because a
+ * `zoom` expression may only be the input of a top-level interpolate.
+ */
+const passRadius = (hit = 0): ExpressionSpecification => {
+  const stop = (base: number, perFame: number): ExpressionSpecification => {
+    const r: ExpressionSpecification = [
+      "+",
+      base + (hit ? HIT_MARGIN : 0),
+      ["*", perFame, ["get", "fame"]],
+    ];
+    return hit ? ["max", hit, r] : r;
+  };
+  return [
+    "interpolate",
+    ["linear"],
+    ["zoom"],
+    6,
+    stop(2, 1.1),
+    12,
+    stop(4, 1.8),
+  ];
 };
 
 /**
@@ -292,32 +320,6 @@ export const appLayers = (
   // so a period, filter or selection change never re-uploads geometry.
   const selected = ["==", ["feature-state", "selected"], 1];
   const hoveredLine = ["==", ["feature-state", "hovered"], 1];
-  /**
-   * The radius of a pass dot, by zoom and fame. With a `hit` floor it becomes
-   * the dot's hit area instead: never below that floor, and always a margin
-   * wider than the dot, which on a famous pass at close zoom is as wide as the
-   * floor itself. One interpolate rather than a `max` around it, because a
-   * `zoom` expression may only be the input of a top-level interpolate.
-   */
-  const passRadius = (hit = 0): ExpressionSpecification => {
-    const stop = (base: number, perFame: number): ExpressionSpecification => {
-      const r: ExpressionSpecification = [
-        "+",
-        base + (hit ? HIT_MARGIN : 0),
-        ["*", perFame, ["get", "fame"]],
-      ];
-      return hit ? ["max", hit, r] : r;
-    };
-    return [
-      "interpolate",
-      ["linear"],
-      ["zoom"],
-      6,
-      stop(2, 1.1),
-      12,
-      stop(4, 1.8),
-    ];
-  };
   const isSelected = ["==", ["get", "selected"], 1] as const;
   const isFavorite = ["==", ["get", "favorite"], 1] as const;
   /**

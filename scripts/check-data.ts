@@ -561,7 +561,7 @@ for (const [key, r] of Object.entries(rejected ?? {})) {
   const queued = routeVerdict.get(key)?.act === "retry";
   warnings.push(
     now.length
-      ? `${key}: ${what} seit ${r.firstSeen} (${days(r.firstSeen)} Tage, ${r.source}) – ${now.join("; ")}${kept ? `; die ${kept}-Route bleibt` : ""}\n       ${
+      ? `${key}: ${what} seit ${r.firstSeen} (${days(r.firstSeen)} Tage, ${r.source}${r.orsProfile ? `, ${r.orsProfile}` : ""}) – ${now.join("; ")}${kept ? `; die ${kept}-Route bleibt` : ""}\n       ${
           queued
             ? "Koordinaten sind korrigiert – der nächste bun run data:build fragt von selbst neu"
             : `Koordinaten in data/*.json korrigieren oder check an ${where} mit Begründung setzen – der nächste Lauf versucht es dann von selbst (erzwingen: bun run data:build --retry-rejected)`

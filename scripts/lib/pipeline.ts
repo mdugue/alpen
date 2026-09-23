@@ -40,6 +40,7 @@ import {
   measure,
   ofRoad,
   plan,
+  secondGraph,
   storedFor,
 } from "./decide";
 import type {
@@ -56,7 +57,7 @@ import { osmSource } from "./osm";
 import { HttpError, QuotaExhaustedError } from "./transport";
 import type { HostId, Transport } from "./transport";
 import { geometryHash, withProfile } from "./validate";
-import type { RoutingProfile } from "./validate";
+import type { RoutingProfile, SECOND_GRAPH } from "./validate";
 
 /** `[3/40]` against the pipeline's own total, dispatch order (not completion order). */
 const counter = (total: number) => (i: number) => `[${i + 1}/${total}]`;
@@ -307,6 +308,46 @@ export const runPipeline = async ({
     };
   };
 
+  /**
+   * The second question `secondGraph` allows: the same waypoints on ORS's
+   * everyday cycling graph. Its answer replaces the first only when it passes
+   * the geometry checks the first one failed – a second detour teaches
+   * nothing, and the first answer's reasons are the ones a rejection keeps. A
+   * 404 or a spent quota leaves the first answer to the gate, as it was.
+   */
+  const secondTry = async (
+    tag: string,
+    job: RouteJob,
+    first: { geom: RouteGeometry; source: RouteSource },
+  ): Promise<{ geom: RouteGeometry; orsProfile?: typeof SECOND_GRAPH }> => {
+    const graph = secondGraph(
+      job,
+      first.source,
+      judge(job, measure(job, first.geom)),
+    );
+    if (!graph || stopped("ors")) return { geom: first.geom };
+    try {
+      const geom = await ors.route(transport, job.waypoints, graph);
+      if (judge(job, measure(job, geom)).length) {
+        log(
+          `${tag} Zweiter Versuch (${graph}) ebenso abgewiesen: ${job.label}`,
+        );
+        return { geom: first.geom };
+      }
+      log(
+        `${tag} Zweiter Versuch (${graph}): ${job.label} – der Rennradgraph fuhr um die Straße herum`,
+      );
+      return { geom, orsProfile: graph };
+    } catch (error) {
+      if (
+        error instanceof QuotaExhaustedError ||
+        (error instanceof HttpError && error.status === 404)
+      )
+        return { geom: first.geom };
+      throw error;
+    }
+  };
+
   // ── The gate ───────────────────────────────────────────────────────────────
 
   /**
@@ -333,6 +374,8 @@ export const runPipeline = async ({
      * failing candidate therefore takes it with it rather than putting it back.
      */
     replace = false,
+    /** The candidate came from ORS's second graph, not the road's own. */
+    orsProfile?: typeof SECOND_GRAPH,
   ) => {
     const hash = geometryHash(geom);
     // A fetched candidate for a key that already has a route is an upgrade; the
@@ -349,6 +392,7 @@ export const runPipeline = async ({
       hash,
       keep,
       orsDeclined,
+      orsProfile,
       source,
       today,
     };
@@ -359,7 +403,7 @@ export const runPipeline = async ({
         afterGate(job, state, { ...base, metrics: m, reasons, ...judged }),
       );
       log(
-        `${tag} Abgewiesen: ${job.label} (${source})${unchanged ? " – unveränderte Geometrie, die Koordinaten sind das Problem" : ""}${
+        `${tag} Abgewiesen: ${job.label} (${source}${orsProfile ? `, ${orsProfile}` : ""})${unchanged ? " – unveränderte Geometrie, die Koordinaten sind das Problem" : ""}${
           keep
             ? ` – die gespeicherte ${keep.meta?.source ?? "osrm"}-Route bleibt`
             : ""
@@ -369,7 +413,7 @@ export const runPipeline = async ({
     const accepted = async () => {
       await commit(afterGate(job, state, { ...base, metrics: m, reasons: [] }));
       log(
-        `${tag} Route: ${job.label} (${source}, ${(m as AscentMetrics).km} km)`,
+        `${tag} Route: ${job.label} (${source}${orsProfile ? `, ${orsProfile}` : ""}, ${(m as AscentMetrics).km} km)`,
       );
     };
 
@@ -492,11 +536,8 @@ export const runPipeline = async ({
     .map(async ({ job, replace, upgrade }, i, all) => {
       const tag = counter(all.length)(i);
       try {
-        const { declined, geom, source } = await route(
-          job.label,
-          job.waypoints,
-          job.profile,
-        );
+        const first = await route(job.label, job.waypoints, job.profile);
+        const { declined, source } = first;
         if (upgrade && (state.meta[job.key]?.source ?? "osrm") === source) {
           const next = afterDecline(job, state, declined);
           if (next) {
@@ -508,7 +549,8 @@ export const runPipeline = async ({
           }
           return;
         }
-        await gate(tag, job, geom, source, true, declined, replace);
+        const { geom, orsProfile } = await secondTry(tag, job, first);
+        await gate(tag, job, geom, source, true, declined, replace, orsProfile);
       } catch (error) {
         if (!(error instanceof QuotaExhaustedError))
           fail(`${tag} Route ${job.label}`, error);

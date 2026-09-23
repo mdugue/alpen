@@ -282,6 +282,19 @@ describe("osm", () => {
     expect(await overpass.query(t, "[out:json];out;")).toEqual([node]);
   });
 
+  test("an Overpass timeout is an error, not an empty answer", async () => {
+    const { t } = recording([
+      {
+        elements: [],
+        remark:
+          'runtime error: Query timed out in "query" at line 1 after 62 seconds.',
+      },
+    ]);
+    expect(
+      await rejection(overpass.query(t, "[out:json];out;")),
+    ).toBeInstanceOf(Error);
+  });
+
   test("osmMap.bbox asks the map API for the box as JSON", async () => {
     const { asked, t } = recording([{}]);
     expect(await osmMap.bbox(t, "10.1,46.2,10.3,46.4")).toEqual([]);

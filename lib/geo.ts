@@ -126,6 +126,17 @@ export const reachWeight = (km: number): number => {
 const cross = (o: LatLon, a: LatLon, b: LatLon) =>
   (a.lon - o.lon) * (b.lat - o.lat) - (a.lat - o.lat) * (b.lon - o.lon);
 
+/** One chain of the hull over points sorted by lon, without its last point. */
+const half = (input: LatLon[]) => {
+  const out: LatLon[] = [];
+  for (const p of input) {
+    while (out.length > 1 && cross(out.at(-2)!, out.at(-1)!, p) <= 0) out.pop();
+    out.push(p);
+  }
+  out.pop();
+  return out;
+};
+
 /**
  * Convex hull of a set of points (monotone chain), in the input's own units –
  * over the small spans this app draws, treating lon/lat as a plane is well
@@ -138,16 +149,6 @@ export const convexHull = (points: readonly LatLon[]): LatLon[] => {
     ...new Map(points.map((p) => [`${p.lat},${p.lon}`, p])).values(),
   ].toSorted((a, b) => a.lon - b.lon || a.lat - b.lat);
   if (pts.length < 3) return [];
-  const half = (input: LatLon[]) => {
-    const out: LatLon[] = [];
-    for (const p of input) {
-      while (out.length > 1 && cross(out.at(-2)!, out.at(-1)!, p) <= 0)
-        out.pop();
-      out.push(p);
-    }
-    out.pop();
-    return out;
-  };
   return [...half(pts), ...half(pts.toReversed())];
 };
 

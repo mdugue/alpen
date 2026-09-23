@@ -21,6 +21,10 @@
         "type": "boolean",
         "const": true
       },
+      "orsProfile": {
+        "type": "string",
+        "const": "cycling-regular"
+      },
       "source": {
         "type": "string",
         "enum": [

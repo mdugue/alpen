@@ -41,6 +41,7 @@ import {
   checkRoadAscent,
   checkTour,
   profileOf,
+  SECOND_GRAPH,
   suspectPoint,
   tourInputs,
   tourMetrics,
@@ -260,6 +261,28 @@ export const retryDue = (job: RouteJob, stored: Stored, flags: Flags) => {
   if (r.inputs !== job.inputs) return true;
   return judge(job, r.metrics).length === 0;
 };
+
+/**
+ * ORS's road-cycling graph leaves out stretches it does not trust a road bike
+ * on, and where the road has a way round them it does not answer 404 – it
+ * takes the way round. Mont Cenis from Susa came back at 341 km over three
+ * other passes, the Große Scheidegg from Meiringen over Interlaken and
+ * Grindelwald; ORS's everyday cycling graph carries all four of the roads it
+ * routed round in September 2026. So a road-cycling answer that fails the gate
+ * on its geometry is asked once more of that graph, before a profile is paid
+ * for: a detour already shows in the length and the ends.
+ *
+ * `null` when there is nothing to ask: the answer passed, the road is gravel
+ * and its graph is the permissive one already, or the answer came from OSRM.
+ */
+export const secondGraph = (
+  job: RouteJob,
+  source: RouteSource,
+  geometryReasons: string[],
+): typeof SECOND_GRAPH | null =>
+  source === "ors" && job.profile === "cycling-road" && geometryReasons.length
+    ? SECOND_GRAPH
+    : null;
 
 /** What a run does with one route key. */
 export type RouteVerdict =
@@ -508,6 +531,8 @@ export interface Judged {
   metrics: RouteMetrics;
   /** ORS has no answer for this road; recorded so nothing asks again in vain. */
   orsDeclined: boolean;
+  /** The candidate came from ORS's second graph (`secondGraph`). */
+  orsProfile?: typeof SECOND_GRAPH;
   /** The candidate's own profile, once one has been paid for. */
   profile?: ElevationProfile;
   /** Why it failed; empty means it passed. */
@@ -557,6 +582,7 @@ export const afterGate = (
         metrics: judged.metrics,
         reasons: judged.reasons,
         source: judged.source,
+        ...(judged.orsProfile ? { orsProfile: judged.orsProfile } : {}),
         ...(cached ? { profile: cached } : {}),
       },
     };
@@ -588,6 +614,7 @@ export const afterGate = (
         inputs: job.inputs,
         source: judged.source,
         ...(judged.orsDeclined ? { orsDeclined: true as const } : {}),
+        ...(judged.orsProfile ? { orsProfile: judged.orsProfile } : {}),
       },
     },
     rejected: without(stored.rejected, key),

@@ -99,9 +99,10 @@ describe("plan", () => {
       [KEYS.accepted]: { act: "fetch", replace: false, upgrade: false },
       [KEYS.kept]: { act: "fetch", replace: false, upgrade: true },
       [KEYS.rejected]: { act: "fetch", replace: false, upgrade: false },
+      [KEYS.secondGraph]: { act: "fetch", replace: false, upgrade: false },
       [KEYS.tour]: { act: "fetch", replace: false, upgrade: false },
     });
-    expect(counts.routes).toBe(4);
+    expect(counts.routes).toBe(5);
     expect(counts.summits).toBe(2);
     expect(counts.climate).toBe(0);
   });
@@ -113,15 +114,16 @@ describe("plan", () => {
         upgradeOsrm: true,
       }),
     ).toBe(
-      "Fehlend: 4 Routen, 0 Profile, 0 Klimareihen, 2 Gipfelhöhen, 2 Straßenabstände (≈ 302 Open-Meteo-Calls ≈ 1 Läufe à 4500)",
+      "Fehlend: 5 Routen, 0 Profile, 0 Klimareihen, 2 Gipfelhöhen, 2 Straßenabstände (≈ 402 Open-Meteo-Calls ≈ 1 Läufe à 4500)",
     );
   });
 });
 
 describe("the run", () => {
   test("asks each host once for each question and nothing twice", () => {
-    // Two cheap batches for the markers, four routes, one profile.
-    expect(replayed).toBe(7);
+    // Two cheap batches for the markers, five routes, the second graph asked
+    // about the three that failed on their geometry, two profiles.
+    expect(replayed).toBe(12);
   });
 
   test("measures the markers before it routes anything", async () => {
@@ -152,6 +154,33 @@ describe("the run", () => {
     expect(
       log.some((l) => l.includes("Profil: Fixtur-Galibier ab Valloire")),
     ).toBe(true);
+  });
+
+  test("a road the road-cycling graph goes round comes from the second graph", async () => {
+    const { meta, profiles, routes } = await written();
+    // The first answer went round by Susa and the Galibier; the everyday
+    // graph's answer is the one stored, and its meta says which graph it was.
+    expect(routes[KEYS.secondGraph]).toHaveLength(50);
+    expect(meta[KEYS.secondGraph]).toEqual({
+      fetchedAt: TODAY,
+      inputs: plan(curated, before, flags).routes.find(
+        ({ job }) => job.key === KEYS.secondGraph,
+      )!.job.inputs,
+      orsProfile: "cycling-regular",
+      source: "ors",
+    });
+    expect(profiles[KEYS.secondGraph]?.top).toBe(2058);
+    expect(log).toContain(
+      "[4/5] Route: Fixtur-Lautaret ab Briançon (ors, cycling-regular, 26.48 km)",
+    );
+  });
+
+  test("a second answer that fails too leaves the first one's reasons", () => {
+    // Asked, and stopping just as short: the rejection below keeps what the
+    // road-cycling answer measured, and nothing else changes.
+    expect(log).toContain(
+      "[3/5] Zweiter Versuch (cycling-regular) ebenso abgewiesen: Fixtur-Lautaret ab Galibier",
+    );
   });
 
   test("a tour is routed and judged, and earns no profile", async () => {
@@ -218,6 +247,7 @@ describe("the run", () => {
         act: "skip",
         why: `abgewiesen seit ${TODAY}, Eingaben und Grenzen unverändert`,
       },
+      [KEYS.secondGraph]: { act: "keep" },
       [KEYS.tour]: { act: "keep" },
     });
     expect(counts.rejected).toBe(2);

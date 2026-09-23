@@ -18,6 +18,7 @@ import {
   lacksClimate,
   plan,
   routeJobs,
+  secondGraph,
   storedFor,
 } from "./decide";
 import type { Flags, Judged, Stored } from "./decide";
@@ -453,19 +454,57 @@ describe("plan", () => {
   });
 });
 
+describe("secondGraph", () => {
+  const detour = ["Länge 341.46 km > 60 km"];
+  test.each([
+    [
+      "a road-cycling detour asks the everyday graph",
+      first(),
+      "ors",
+      detour,
+      "cycling-regular",
+    ],
+    ["an answer that passes asks nothing", first(), "ors", [], null],
+    [
+      "a car route asks nothing – ORS had no answer",
+      first(),
+      "osrm",
+      detour,
+      null,
+    ],
+    [
+      "a gravel road is on the permissive graph already",
+      jobs([pass({ surface: "gravel" })])[0]!,
+      "ors",
+      detour,
+      null,
+    ],
+    [
+      "a tour on the road graph asks too",
+      jobs([], [tour()])[0]!,
+      "ors",
+      detour,
+      "cycling-regular",
+    ],
+  ] as const)("%s", (_, job, source, reasons, expected) => {
+    expect(secondGraph(job, source, [...reasons])).toBe(expected);
+  });
+});
+
+const judged = (over: Partial<Judged> = {}): Judged => ({
+  geom,
+  hash: "neu",
+  metrics: passingMetrics,
+  orsDeclined: false,
+  reasons: [],
+  source: "ors",
+  today: "2026-09-22",
+  ...over,
+});
+
 describe("afterGate", () => {
   const p = pass();
   const job = first();
-  const judged = (over: Partial<Judged> = {}): Judged => ({
-    geom,
-    hash: "neu",
-    metrics: passingMetrics,
-    orsDeclined: false,
-    reasons: [],
-    source: "ors",
-    today: "2026-09-22",
-    ...over,
-  });
 
   test("an accepted route is stored with what it was fetched for", () => {
     const next = afterGate(job, empty(), judged());
@@ -488,6 +527,25 @@ describe("afterGate", () => {
       judged({ orsDeclined: true, source: "osrm" }),
     );
     expect(next.meta?.[job.key]?.orsDeclined).toBe(true);
+  });
+
+  test("an answer from the second graph says so, accepted or rejected", () => {
+    const next = afterGate(
+      job,
+      empty(),
+      judged({ orsProfile: "cycling-regular" }),
+    );
+    expect(next.meta?.[job.key]?.orsProfile).toBe("cycling-regular");
+    expect(
+      afterGate(
+        job,
+        empty(),
+        judged({ orsProfile: "cycling-regular", reasons: ["kaputt"] }),
+      ).rejected?.[job.key]?.orsProfile,
+    ).toBe("cycling-regular");
+    expect(
+      afterGate(job, empty(), judged()).meta?.[job.key],
+    ).not.toHaveProperty("orsProfile");
   });
 
   test("a replaced geometry drops the profile of the road it replaced", () => {
