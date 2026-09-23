@@ -86,3 +86,16 @@ export const bucketClimate = (daily: DailySeries): ClimateYear => {
       : null,
   );
 };
+
+/**
+ * The daily variables the archive is asked for. `snow_depth_mean` is not
+ * among them yet: plan 27 widens the request only once a live run has
+ * confirmed the variable and its cost, and `lacksClimate` asks again for the
+ * unpaved roads' series the day it is added here.
+ */
+export const ARCHIVE_DAILY: readonly string[] = [
+  "temperature_2m_max",
+  "temperature_2m_min",
+  "snowfall_sum",
+  "precipitation_sum",
+];

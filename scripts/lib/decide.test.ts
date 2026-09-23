@@ -668,11 +668,15 @@ describe("lacksClimate (plan 27)", () => {
   });
 
   test("an unpaved road is asked again while its series has no snow cover", () => {
-    expect(lacksClimate(gravel, { finestre: without })).toBe(true);
-    expect(lacksClimate(gravel, { finestre: withCover })).toBe(false);
+    expect(lacksClimate(gravel, { finestre: without }, true)).toBe(true);
+    expect(lacksClimate(gravel, { finestre: withCover }, true)).toBe(false);
+  });
+
+  test("but only once the archive is asked for the cover: the same answer twice is ~260 calls", () => {
+    expect(lacksClimate(gravel, { finestre: without }, false)).toBe(false);
   });
 
   test("a paved road keeps the series it has: it never reads the cover", () => {
-    expect(lacksClimate(asphalt, { stelvio: without })).toBe(false);
+    expect(lacksClimate(asphalt, { stelvio: without }, true)).toBe(false);
   });
 });

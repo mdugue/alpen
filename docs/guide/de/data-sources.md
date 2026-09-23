@@ -6,19 +6,29 @@ Seite sagt, was aus welcher Quelle stammt.
 
 ## Von Hand gepflegt
 
-Der Kern der App ist redaktionell: drei von Hand gepflegte Dateien für
-Straßen, Rundtouren und Orte. Aus ihnen stammen
+Der Kern der App ist redaktionell: vier von Hand gepflegte Dateien für
+Straßen, Rundtouren, Orte und Reiseziele. Aus ihnen stammen
 
-- Name, weitere gebräuchliche Namen, Land und Region,
+- Name, weitere gebräuchliche Namen, Land und Region (und damit das
+  Gebirge),
 - die Lage des Passpunkts und seine Höhe, die Startpunkte der Auffahrten,
 - die vier Bewertungen von 1 bis 5 (Bekanntheit, Schönheit, Schwierigkeit,
-  Verkehr), die Art der Straße und ihre Merkmale,
+  Verkehr), die Art der Straße, ihr Belag und ihre Merkmale,
 - das **typische Öffnungsfenster** eines Passes in Halbmonaten, oder dass er
   ganzjährig geräumt wird,
-- eine kurze Notiz zu jeder Straße,
+- eine kurze Notiz zu jeder Straße, bei Mautstraßen auch, ob Räder zahlen,
 - bei Rundtouren die beteiligten Pässe, grobe Wegpunkte, Länge und
-  Höhenmeter,
-- bei Orten die Merkmale und ein Satz, warum der Ort in der Liste steht.
+  Höhenmeter und, wo bekannt, ein eigenes typisches Fenster,
+- bei Orten die Merkmale und ein Satz, warum der Ort in der Liste steht,
+- bei Reisezielen die Gebietsmitte und der Radius des Kreises, einzelne
+  Straßen, die dazugezählt oder ausgenommen werden, bis zu drei empfohlene
+  Orte als Standort und drei kurze Texte: wie es sich dort fährt, was das
+  Gebiet für mehrere Tage hergibt und wie man ohne Auto hinkommt.
+
+Welche Straßen, Touren und Orte zu einem Reiseziel gehören, steht nirgends
+von Hand: Das wird beim Bauen der Seite aus dem Kreis berechnet. Eine neu
+eingetragene Straße gehört damit von selbst zu dem Gebiet, in dessen Kreis sie
+liegt.
 
 Die Bewertungen beruhen auf dem allgemeinen Ruf der Pässe – Radsport-Literatur,
 Grand-Tour-Geschichte, quaeldich.de, climbbybike und Cyclingcols. Sie sind die
@@ -52,7 +62,8 @@ Routing-Dienst berechnet und dann gespeichert.
 
 - **OpenRouteService** mit einem Rennradprofil ist die erste Wahl. Es kennt
   auch Straßen, die für Autos gesperrt sind, oder Pflaster- und
-  Schotterstücke.
+  Schotterstücke. Für Straßen mit dem Belag Schotter oder gemischt nimmt es
+  ein Mountainbike-Profil, weil das Rennradprofil Wege ohne Asphalt auslässt.
 - **OSRM**, ein öffentlicher Demo-Server mit Autoprofil, springt ein, wenn
   OpenRouteService nicht verfügbar ist. Ein Autoprofil kürzt manchmal anders
   ab als ein Radfahrer und meidet autofreie Straßen; solche Strecken werden
@@ -92,6 +103,11 @@ Wetterstation. Einen einzelnen Sattel sieht es nicht, auf Passhöhe ist es
 eher zu mild, und „Neuschnee“ heißt frisch gefallener Schnee, nicht Schnee,
 der auf der Straße liegt.
 
+Für ungeteerte Straßen ist zusätzlich der Anteil der Tage mit mindestens
+10 cm Schneedecke vorgesehen; er entscheidet dort, wann die Straße
+zugeschneit ist (siehe [Skalen und Status](scales-and-status.md)). Die
+gespeicherten Klimareihen enthalten die Schneehöhe bisher noch nicht.
+
 ### Wettervorhersage
 
 Die Vorhersage für die nächsten sieben Tage auf Passhöhe (Höchst- und
@@ -108,7 +124,8 @@ im Umkreis von 2 km um einen Passpunkt (2,5 km um einen Ort) und nach
 Dateien, die den Namen nennen. Offensichtliche Nicht-Fotos wie Schilder und
 Karten werden über Name und Format aussortiert, der Rest nach Namensnähe und
 Entfernung sortiert. Eine redaktionelle Auswahl gibt es dabei nicht. Rundtouren
-haben keine eigenen Fotos, sie leihen sich die ihrer Pässe.
+haben keine eigenen Fotos, sie leihen sich die ihrer Pässe; Reiseziele zeigen
+keine Fotos.
 
 Gespeichert werden nur Angaben zum Bild: Adresse, Urheber, Lizenz und
 Dateiseite. Das Bild selbst lädt dein Browser direkt von Wikimedia. Jedes
@@ -133,9 +150,10 @@ Diese Kacheln lädt dein Browser direkt bei den Anbietern.
 ## Nur verlinkt, nicht abgefragt
 
 Die Detailansicht verlinkt auf quaeldich.de, Komoot, Google Maps und
-OpenStreetMap, bei Orten auf die Suche nach Werkstätten und Radläden. Von
-diesen Seiten wird nie etwas abgerufen: Sie sind Ziele für dich, keine
-Quellen für die App.
+OpenStreetMap, bei Orten auf die Suche nach Werkstätten und Radläden, bei
+den Orten eines Reiseziels auf eine Kartensuche nach Unterkünften – ohne
+Buchungsanbieter und ohne Provision. Von diesen Seiten wird nie etwas
+abgerufen: Sie sind Ziele für dich, keine Quellen für die App.
 
 ## Mehr dazu
 

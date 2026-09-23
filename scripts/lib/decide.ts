@@ -34,6 +34,7 @@ import type {
   TourCheck,
   TourMetrics,
 } from "../../lib/types";
+import { ARCHIVE_DAILY } from "./climate";
 import {
   ascentInputs,
   ascentMetrics,
@@ -377,22 +378,34 @@ export interface Plan {
 }
 
 /**
- * A series is asked for when there is none – or when the road is unpaved and
- * the stored series predates the snow cover (plan 27): the cover is the rung
- * that closes such a road, and a series without it never would. A paved road
- * keeps its series; the cover changes nothing for it, and asking the archive
- * again would cost ~260 calls for a field it does not read.
+ * A series is asked for when there is none – or when the road is unpaved,
+ * the stored series predates the snow cover (plan 27) and the archive is
+ * asked for it now (`asksCover`, off `ARCHIVE_DAILY`): the cover is the rung
+ * that closes such a road, and a series without it never would. Until the
+ * request carries the variable, asking again would cost ~260 calls for the
+ * same answer. A paved road keeps its series; it never reads the cover.
  */
 export const lacksClimate = (
   pass: Pick<Pass, "slug" | "surface">,
   climates: Record<string, ClimateYear>,
+  asksCover = ARCHIVE_DAILY.includes("snow_depth_mean"),
 ): boolean => {
   const series = climates[pass.slug];
   if (!series) return true;
   return (
-    isUnpaved(pass.surface) && series.every((b) => b?.coverPct === undefined)
+    asksCover &&
+    isUnpaved(pass.surface) &&
+    series.every((b) => b?.coverPct === undefined)
   );
 };
+
+/** An unpaved road whose stored series carries no snow cover (plan 27). */
+export const lacksCover = (
+  pass: Pick<Pass, "slug" | "surface">,
+  climates: Record<string, ClimateYear>,
+): boolean =>
+  isUnpaved(pass.surface) &&
+  (climates[pass.slug]?.every((b) => b?.coverPct === undefined) ?? false);
 
 /** The DEM height was read at the coordinate the entry carries today. */
 const measuredAt = (p: Pass, s: Summit | undefined) =>
