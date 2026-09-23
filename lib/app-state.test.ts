@@ -200,7 +200,10 @@ describe("reduce · select", () => {
   ])(
     "from %s sets the tab, clears the pointer and reveals the kind",
     (_, env, list) => {
-      const before = busy({ sheet: { ...busy().sheet, list }, tab: "town" });
+      const before = busy({
+        sheet: { ...busy().sheet, list },
+        tab: "destination",
+      });
       const s = reduce(before, { selection: GALIBIER, type: "select" }, env);
       expect(s.selection).toEqual(GALIBIER);
       expect(s.last).toEqual(GALIBIER);
@@ -356,7 +359,7 @@ describe("reduce · load", () => {
         passes: false,
         towns: true,
       },
-      tab: "town" as const,
+      tab: "tour" as const,
     };
     const s = load("", stored);
     expect(s.shown).toEqual({
@@ -364,7 +367,13 @@ describe("reduce · load", () => {
       passes: false,
       towns: true,
     });
-    expect(s.tab).toBe("town");
+    expect(s.tab).toBe("tour");
+  });
+
+  test("a town is listed under its area, so selecting one opens the areas' tab", () => {
+    const s = load("#town=bormio", { tab: "pass" });
+    expect(s.selection).toEqual({ kind: "town", slug: "bormio" });
+    expect(s.tab).toBe("destination");
   });
 
   test("the camera is requested by a later hash, never by the one that opened the page", () => {
@@ -453,7 +462,7 @@ describe("reduce · the switches and the sheets", () => {
       reduce(s, { at: { lat: 1, lon: 2 }, type: "profileCursor" }, desktop)
         .profileCursor,
     ).toEqual({ lat: 1, lon: 2 });
-    expect(reduce(s, { tab: "town", type: "tab" }, desktop).tab).toBe("town");
+    expect(reduce(s, { tab: "tour", type: "tab" }, desktop).tab).toBe("tour");
   });
 
   test("a range chip filters like any member of a set, and frames what it leaves", () => {

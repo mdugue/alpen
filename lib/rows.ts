@@ -331,8 +331,8 @@ export interface TownRow {
   favorite: boolean;
   /** The range the town belongs to through its reach; the row names it once there is more than one. */
   range?: RangeName;
-  /** The name of the area the town lies in, the one naming it as a base first (`townAreas`). */
-  area?: string;
+  /** The area the town lies in, the one naming it as a base first (`destinationsOfTown`); the list nests it there. */
+  area?: Destination;
 }
 
 /**
@@ -347,8 +347,8 @@ export const buildTownRows = (
   filters: Filters,
   isFavorite: Query["isFavorite"],
   w: Messages,
-  /** Per town slug, the name of its area – the row's way up to the holiday it belongs to. */
-  townAreas: Partial<Record<string, string>> = {},
+  /** Per town slug, its area – the holiday it belongs to (`destinationsOfTown`). */
+  townAreas: Partial<Record<string, Destination>> = {},
 ): TownRow[] => {
   const q = query(filters, isFavorite, w);
   const rows: TownRow[] = [];
@@ -462,6 +462,40 @@ export const buildDestinationRows = (
       a.destination.name.localeCompare(b.destination.name, "de"),
   );
 };
+
+/**
+ * One group of the areas' list: an area with the towns listed under it, or –
+ * `area: null`, last – the towns no listed area holds.
+ */
+export interface AreaGroup {
+  area: DestinationRow | null;
+  towns: TownRow[];
+}
+
+/**
+ * The areas and the towns as one list: each town under its area (`TownRow`'s
+ * `area`) when that area is listed, and the others – in no area, or in one
+ * the filters dropped – in a last group. Both keep their own filters
+ * (`buildDestinationRows`, `buildTownRows`); this only says where a town is
+ * shown, because an area is where one goes and a town is where in it one
+ * sleeps (docs/ui-conventions.md, "One list at a time").
+ */
+export const nestTowns = (
+  areas: readonly DestinationRow[],
+  towns: readonly TownRow[],
+): AreaGroup[] => {
+  const listed = new Set(areas.map((a) => a.destination.slug));
+  const rest = towns.filter((t) => !t.area || !listed.has(t.area.slug));
+  const groups = areas.map((area) => ({
+    area,
+    towns: towns.filter((t) => t.area?.slug === area.destination.slug),
+  }));
+  return rest.length > 0 ? [...groups, { area: null, towns: rest }] : groups;
+};
+
+/** What the areas' tab counts: an area, or a town outside every listed area. */
+export const areaEntryCount = (groups: readonly AreaGroup[]): number =>
+  groups.reduce((n, g) => n + (g.area ? 1 : g.towns.length), 0);
 
 /**
  * The four filtered lists, as the explorer builds them once and hands them

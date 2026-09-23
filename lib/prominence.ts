@@ -24,10 +24,10 @@ export const PROMINENCE = [
 ] as const;
 
 /**
- * Up to which zoom the destination circles are drawn: the overview's own
- * threshold. Where every road is drawn the circles have done their job – the
+ * Up to which zoom the destination outlines are drawn: the overview's own
+ * threshold. Where every road is drawn the outlines have done their job – the
  * roads are the texture, the areas are the reading of it – and past this zoom
- * a disc 50 km across covers the whole screen and answers every idle click.
+ * an area fills the whole screen and would answer every idle click.
  */
 export const DESTINATION_MAX_ZOOM = PROMINENCE.at(-1)!.fromZoom;
 

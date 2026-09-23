@@ -110,8 +110,10 @@ what each command writes and the states a route passes through – is
 
 Two languages, one tree (plan 08): every route lives under `app/[lang]`,
 German stays prefix-free and canonical, English lives under `/en`, and
-`next.config.ts` rewrites the prefix-free paths onto `/de` – no proxy, no
-redirect, both prerendered:
+`next.config.ts` rewrites the prefix-free paths onto `/de` (and redirects a
+typed `/de/…` to the prefix-free path), both prerendered. The one request
+that is negotiated is the bare root: `proxy.ts` sends a browser that asks for
+English to `/en`, unless the language menu's cookie says otherwise:
 
 | Request                       | Rewrite           | Route file                                     | Language  |
 | ----------------------------- | ----------------- | ---------------------------------------------- | --------- |
@@ -122,11 +124,12 @@ redirect, both prerendered:
 | `/impressum`, `/en/impressum` | → `/de/…`, (none) | `app/[lang]/impressum/page.tsx`                | de (both) |
 
 The words are `lib/i18n/messages.de.ts` (the source, typed) and
-`messages.en.ts` (held to its shape, so a missing key is a type error); the
-curated prose is `data/i18n/en/*.json`, merged over the German records in
-`lib/data.ts` with a German fallback that `bun run data:check` counts. The
-toggle in the header is a plain link to the same view under the other prefix,
-hash and all.
+`messages.en.ts` (held to its shape, so a missing key is a type error), and
+each page ships only its own; the curated prose is `data/i18n/en/*.json`,
+merged over the German records in `lib/data.ts` with a German fallback that
+`bun run data:check` counts. The language is the last group of the map's
+"…" menu: a plain link to the same view under the other prefix, hash and
+all.
 
 ```
 app/            [lang]/: layout, the explorer layout with the start page and

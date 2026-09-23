@@ -24,7 +24,6 @@ export const sidebar = {
     noDestinations: "No destinations found",
     noPasses: "No roads found",
     noTours: "No loops found",
-    noTowns: "No towns found",
     queryMatchesNothing: '"{query}" matches no entry.',
     queryMatchesNothingFiltered:
       '"{query}" matches no entry – together with the filters you set.',
@@ -66,6 +65,8 @@ export const sidebar = {
   footerNote: "The status is a heuristic, the scales are editorial.",
   lists: {
     onMap: "on the map",
+    /** The last group of the areas' list: the towns no listed area holds. */
+    otherTowns: "Other towns",
     passes: "{n} passes",
     showPasses: "Show passes and roads on the map",
     showTour: "Show {name} on the map",
@@ -73,6 +74,8 @@ export const sidebar = {
     showTowns: "Show towns on the map",
     sort: "Sort",
     sortBy: "Sort by: {label}",
+    /** The areas' list holds towns too, so its switch says whose it is. */
+    townsOnMap: "Towns on the map",
   },
   rating: "{value} of 5",
   row: {

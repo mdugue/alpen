@@ -40,7 +40,7 @@ import {
   TRAFFIC_OPTIONS,
   WET_OPTIONS,
 } from "@/lib/app-state";
-import type { EntityKind, Filters } from "@/lib/app-state";
+import type { Filters, ListTab } from "@/lib/app-state";
 import {
   appliedFilters,
   bestRelief,
@@ -187,8 +187,8 @@ export const FilterBody = ({
   filters: Filters;
   setFilters: (update: (f: Filters) => Filters) => void;
   /** How many rows each list shows right now, and how many there are in all. */
-  counts: Record<EntityKind, number>;
-  totals: Record<EntityKind, number>;
+  counts: Record<ListTab, number>;
+  totals: Record<ListTab, number>;
   /**
    * How many roads would be left by a filter change – the number on every
    * chip. The patch carries the option *and* lifts its own group's filter, so

@@ -27,7 +27,7 @@ import { HIT_LAYERS, LAYERS } from "@/lib/layer-ids";
 import { mapAssets } from "@/lib/map-assets";
 import * as S from "@/lib/schema";
 import { startApp, waitUntil, withPage } from "@/test/browser";
-import type { App, Page } from "@/test/browser";
+import type { App } from "@/test/browser";
 
 let app: App;
 
@@ -52,11 +52,6 @@ afterAll(() => {
 });
 
 const PASS_ROW = '[data-row^="pass:"]';
-/**
- * The list opens on the areas (plan 12); the road tests switch to the roads
- * first, the way a visitor does – by the tab.
- */
-const showRoads = (page: Page) => page.clickText('[role="tab"]', "Straßen");
 const GALIBIER = '[data-row="pass:col-du-galibier"]';
 const SLIDER = '[aria-label="Zeitraum"]';
 const BACK_TO_LIST = '[aria-label="Zurück zur Liste"]';
@@ -65,7 +60,6 @@ const STACKED = "[data-slot=drawer-popup][data-nested-drawer-open]";
 
 test("1 · loads with all passes and a map canvas", () =>
   withPage(app, "loads", {}, async (page) => {
-    await showRoads(page);
     await page.waitFor(PASS_ROW);
     // Every road in the file is a row: the count comes from the data, so a
     // curation PR does not have to touch this test.
@@ -82,7 +76,6 @@ test("1 · loads with all passes and a map canvas", () =>
 
 test("2 · selecting a pass opens the detail panel, Escape returns focus to the row", () =>
   withPage(app, "select-pass", {}, async (page) => {
-    await showRoads(page);
     // A row is reached and opened without a pointer: the list is one tab stop
     // and the arrows move inside it (`useRoving`, lib/use-roving.ts), so the
     // focus steps on from the first row …
@@ -175,7 +168,6 @@ test("3 · a shared link restores selection, period and camera", () =>
 test("4 · a status chip narrows the lists and the applied-filter chip undoes it", () =>
   // Early January: nothing is "gut", so the counts and the disabled chip bite.
   withPage(app, "status-filter", { hash: "#t=1" }, async (page) => {
-    await showRoads(page);
     await page.waitFor(PASS_ROW);
     const all = await page.count(PASS_ROW);
     // The status picker is a row of chips inside the filter panel: no popup
@@ -287,7 +279,6 @@ test("5b · an entity route is a page of its own, and the back button closes it"
       );
       expect(await page.path()).toBe("/pass/col-du-galibier");
       // A second selection is a history entry, so back returns to the first …
-      await showRoads(page);
       await page.click('[data-row="pass:passo-dello-stelvio"]');
       await waitUntil(
         async () => (await page.path()) === "/pass/passo-dello-stelvio",
@@ -373,13 +364,30 @@ test("5d · the root speaks the browser's language until one is picked", () =>
     },
   ));
 
+test("5e · the roads come first, and a town is listed under its area", () =>
+  withPage(app, "town-under-area", {}, async (page) => {
+    // The list opens on the roads …
+    await page.waitFor(PASS_ROW);
+    expect(await page.text('[role="tab"][aria-selected="true"]')).toMatch(
+      /^Straßen/u,
+    );
+    // … and a town, opened from a link, brings the areas' tab forward: it is
+    // listed there, under the area that names it as a base.
+    await page.navigate("#town=bormio");
+    await page.waitFor("#detail-title");
+    await page.waitFor('[data-row="town:bormio"][aria-current="true"]');
+    expect(await page.text('[role="tab"][aria-selected="true"]')).toMatch(
+      /^Reiseziele/u,
+    );
+    expect(await page.count('[data-row^="destination:"]')).toBeGreaterThan(0);
+  }));
+
 test("6 · a stored half-month is applied, a shared link beats it", () =>
   withPage(app, "stored-period", {}, async (page) => {
     // The preference is written by the period control only; here it is
     // planted directly and the page opened afresh on top of it.
     await page.evaluate('localStorage.setItem("alpenpaesse:period", "3")');
     await page.navigate();
-    await showRoads(page);
     await page.waitFor(PASS_ROW);
     // The static HTML names today's half-month until the script arrives;
     // `load` runs in a layout effect, so the first paint after hydration

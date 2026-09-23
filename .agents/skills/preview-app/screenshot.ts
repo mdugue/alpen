@@ -172,6 +172,12 @@ const shoot = async (state: State) => {
         ],
       });
       await view.cdp("Emulation.setLocaleOverride", { locale: "de-DE" });
+      // The root answers the browser's language (proxy.ts): ask for German,
+      // the page every state is written for; `/en/…` states name their own.
+      await view.cdp("Network.enable");
+      await view.cdp("Network.setExtraHTTPHeaders", {
+        headers: { "Accept-Language": "de-DE,de;q=0.9" },
+      });
       // Views share one Chrome profile: start every state without stored sidebar or period state.
       await view.cdp("Storage.clearDataForOrigin", {
         origin: base,
@@ -183,7 +189,6 @@ const shoot = async (state: State) => {
         // external; with an https base, block the known tile, DEM and glyph
         // hosts instead. Request interception via the Fetch domain would be
         // exact but deadlocks in Bun.WebView 1.4.2.
-        await view.cdp("Network.enable");
         await view.cdp("Network.setBlockedURLs", {
           urls: base.startsWith("http://")
             ? ["https://*"]

@@ -16,7 +16,7 @@ export const scales = {
   destinations: {
     heading: "Destinations",
     intro:
-      "A destination is an editorially drawn circle: a centre, a radius, plus single roads counted in or left out, and the towns that make a good base. What lies inside the circle is the membership – it is determined when the site is built, not maintained by hand. All numbers of a destination are **derived**, as they are for a town: “7 of 9 roads good” counts the roads in the area by their status in the chosen half-month, and the strip measures every half-month against this area's best time.",
+      "A destination is an editorially drawn circle: a centre, a radius, plus single roads counted in or left out, and the towns that make a good base. What lies inside the circle is the membership – it is determined when the site is built, not maintained by hand. The map draws not the circle but the outline of what belongs to it: the summits, the ends of their ascents and the towns. All numbers of a destination are **derived**, as they are for a town: “7 of 9 roads good” counts the roads in the area by their status in the chosen half-month, and the strip measures every half-month against this area's best time.",
     order:
       "**The order of the list** is a score that is shown nowhere: the beauty of every open road in full, that of every limited one at {riskyPct} %, a closed one counts nothing. Editorial like everything here – it orders, it does not measure.",
   },

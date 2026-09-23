@@ -20,7 +20,7 @@ export const scales = {
   destinations: {
     heading: "Reiseziele",
     intro:
-      "Ein Reiseziel ist ein redaktionell gezogener Kreis: eine Mitte, ein Radius, dazu einzelne Straßen, die dazugezählt oder ausgenommen sind, und die Orte, die als Standort taugen. Was im Kreis liegt, ist die Mitgliedschaft – sie wird beim Bauen der Seite bestimmt, nicht von Hand gepflegt. Alle Zahlen eines Reiseziels sind wie beim Ort **abgeleitet**: „7 von 9 Straßen gut“ zählt die Straßen im Gebiet nach ihrem Status im gewählten Halbmonat, der Streifen misst jeden Halbmonat an der besten Zeit dieses Gebiets.",
+      "Ein Reiseziel ist ein redaktionell gezogener Kreis: eine Mitte, ein Radius, dazu einzelne Straßen, die dazugezählt oder ausgenommen sind, und die Orte, die als Standort taugen. Was im Kreis liegt, ist die Mitgliedschaft – sie wird beim Bauen der Seite bestimmt, nicht von Hand gepflegt. Die Karte zeichnet nicht den Kreis, sondern den Umriss dessen, was dazugehört: die Gipfel, die Enden ihrer Auffahrten und die Orte. Alle Zahlen eines Reiseziels sind wie beim Ort **abgeleitet**: „7 von 9 Straßen gut“ zählt die Straßen im Gebiet nach ihrem Status im gewählten Halbmonat, der Streifen misst jeden Halbmonat an der besten Zeit dieses Gebiets.",
     /** `riskyPct` is the weight of a limited road, as a whole number. */
     order:
       "**Die Reihenfolge der Liste** ist eine Punktzahl, die nirgends gezeigt wird: die Schönheit jeder offenen Straße voll, die jeder eingeschränkten mit {riskyPct} %, eine gesperrte zählt nichts. Redaktionell wie alles hier – sie ordnet, sie misst nicht.",

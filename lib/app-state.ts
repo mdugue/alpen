@@ -14,8 +14,9 @@ import type {
 /**
  * The four kinds the app lists and selects. A destination is a curated area
  * over the other three (docs/destinations.md): it has no mark on the map but
- * a circle, no switch of its own, and it is the list the product goal names
- * first – "which regions are good in early October".
+ * the outline of what it holds, no switch of its own, and it answers the
+ * question the product goal names first – "which regions are good in early
+ * October". Three of the four have a list of their own (`TABS`).
  */
 export type EntityKind = "destination" | "pass" | "tour" | "town";
 export interface Selection {
@@ -39,8 +40,18 @@ export const ALL_RANGES: RangeName[] = [...RANGES];
 export const ALL_SURFACES: Surface[] = [...SURFACES];
 /** Stable empty snapshot for the tag filter (`Filters.tags`). */
 export const NO_TAGS: RoadTag[] = [];
-/** The tab order: the areas first, because they are the answer the goal asks for. */
-export const ALL_KINDS: EntityKind[] = ["destination", "pass", "tour", "town"];
+/**
+ * The lists, one tab each. The roads come first: they are what the map is
+ * made of, and every other list is read off them. A town has no tab of its
+ * own – it is listed under the area it lies in (`tabOf`), because an area is
+ * where one goes and a town is where in it one sleeps.
+ */
+export type ListTab = Exclude<EntityKind, "town">;
+export const TABS: readonly ListTab[] = ["pass", "destination", "tour"];
+
+/** The tab a kind is listed in: a town under its area. */
+export const tabOf = (kind: EntityKind): ListTab =>
+  kind === "town" ? "destination" : kind;
 export const PASS_SORTS = [
   "elevation",
   "name",
@@ -352,7 +363,7 @@ export const ALL_SHOWN: Shown = {
 const SWITCH = { pass: "passes", town: "towns" } as const;
 
 /**
- * Whether the map draws this entity. A destination has no switch: its circle
+ * Whether the map draws this entity. A destination has no switch: its outline
  * is the overview and is drawn whenever the zoom is low enough for it.
  */
 export const isShown = (shown: Shown, kind: EntityKind, slug: string) =>
@@ -477,7 +488,7 @@ export interface AppState {
    */
   last: Selection | null;
   /** Which of the four lists is on screen. */
-  tab: EntityKind;
+  tab: ListTab;
   /**
    * What the pointer is over – wherever the pointer happens to be. The list
    * and the map are two halves of one screen showing the same entities, and
@@ -538,7 +549,7 @@ export interface AppState {
 export interface StoredState {
   period?: Period | null;
   shown?: Shown;
-  tab?: EntityKind;
+  tab?: ListTab;
 }
 
 /**
@@ -605,7 +616,7 @@ export type Action =
   /** A destination's "vergleichen" toggle. */
   | { type: "compare"; slug: string; on: boolean }
   | { type: "period"; period: Period }
-  | { type: "tab"; tab: EntityKind }
+  | { type: "tab"; tab: ListTab }
   | { type: "toggleKind"; kind: "pass" | "town"; on: boolean }
   | { type: "toggleTour"; slug: string; on: boolean }
   /** The master switch over every tour. */
@@ -656,7 +667,7 @@ const select = (state: AppState, selection: Selection, env: Env): AppState => {
     selection,
     sheet,
     shown: reveal(state.shown, selection),
-    tab: selection.kind,
+    tab: tabOf(selection.kind),
   };
 };
 
@@ -842,8 +853,8 @@ export const initialState = (today: Period): AppState => ({
   selection: null,
   sheet: SHEETS_AT_REST,
   shown: ALL_SHOWN,
-  // The first list is the areas: the first screen answers "which regions are
-  // good in this half-month" before anything else (docs/plans/12-destinations.md).
-  tab: ALL_KINDS[0]!,
+  // The first list is the roads, the map's own material; the areas are the
+  // tab beside it (`TABS`).
+  tab: TABS[0]!,
   view: DEFAULT_VIEW,
 });

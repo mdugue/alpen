@@ -6,6 +6,7 @@ import { membersOf } from "@/lib/destination";
 import { DE } from "@/lib/i18n/dictionaries";
 import { PERIODS } from "@/lib/period";
 import {
+  areaEntryCount,
   barTotal,
   buildDestinationRows,
   buildPassRows,
@@ -13,6 +14,7 @@ import {
   buildTownRows,
   currentBar,
   facetCount,
+  nestTowns,
   rowBlocks,
   ROWS_PER_BLOCK,
   seasonBand,
@@ -960,5 +962,42 @@ describe("buildDestinationRows (plan 12)", () => {
       ).map((r) => r.destination.slug),
     ).toEqual(["tauern"]);
     expect(rows({ ranges: ["Jura"] })).toHaveLength(0);
+  });
+
+  test("the towns sit under their area, and what no listed area holds comes last", () => {
+    const livigno = { ...bases[0]!, name: "Livigno", slug: "livigno" };
+    const townRows = buildTownRows(
+      [...bases, livigno],
+      {},
+      filters(),
+      never,
+      DE,
+      {
+        bormio: areas[0],
+      },
+    );
+    const groups = nestTowns(rows(), townRows);
+    expect(
+      groups.map((g) => [
+        g.area?.destination.slug ?? null,
+        g.towns.map((t) => t.town.slug),
+      ]),
+    ).toEqual([
+      ["ortler", ["bormio"]],
+      ["tauern", []],
+      [null, ["livigno"]],
+    ]);
+    // An area the filters dropped hands its towns to the last group.
+    expect(
+      nestTowns(rows({ query: "tauern" }), townRows).map((g) => [
+        g.area?.destination.slug ?? null,
+        g.towns.map((t) => t.town.slug),
+      ]),
+    ).toEqual([
+      ["tauern", []],
+      [null, ["bormio", "livigno"]],
+    ]);
+    // The tab counts an area, or a town outside every listed area.
+    expect(areaEntryCount(groups)).toBe(3);
   });
 });

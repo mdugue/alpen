@@ -339,6 +339,11 @@ describe("hover", () => {
       favorite: false,
       members: {
         bounds: [10, 46, 10.3, 46.1],
+        outline: [
+          [10, 46],
+          [10.3, 46],
+          [10.3, 46.1],
+        ],
         passes: ["galibier"],
         tours: [],
         towns: [],
@@ -367,11 +372,18 @@ describe("hover", () => {
       share: 1,
       slug: "test",
     });
-    // A closed ring of 49 points, 30 km either side of the centre.
-    const ring = feature!.geometry.coordinates[0]!;
-    expect(ring).toHaveLength(49);
-    expect(ring[0]).toEqual(ring.at(-1));
-    expect(ring[0]![0]).toBeGreaterThan(10.3);
+    // The outline the server drew around the members, as it is.
+    expect(feature!.geometry.coordinates).toEqual([
+      [
+        [10, 46],
+        [10.3, 46],
+        [10.3, 46.1],
+      ],
+    ]);
+    // The name stands on the centre, with the same properties.
+    const [label] = scene.destinationLabels.features;
+    expect(label?.geometry.coordinates).toEqual([10, 46]);
+    expect(label?.properties).toEqual(feature?.properties);
     expect(scene.hover.popup).toEqual({
       anchor: [10, 46],
       name: "Testgebiet",

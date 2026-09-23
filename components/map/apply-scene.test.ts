@@ -104,6 +104,7 @@ describe("the first scene", () => {
       SOURCE.passes,
       SOURCE.towns,
       SOURCE.destinations,
+      SOURCE.destinationLabels,
       SOURCE.hover,
       SOURCE.cursor,
       SOURCE.reach,

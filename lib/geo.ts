@@ -27,7 +27,7 @@ export const bounds = (
 
 /**
  * A circle of `radiusKm` around a point as a closed ring of `[lon, lat]`
- * pairs – what the map draws a destination as. Flat-earth over one degree of
+ * pairs – what a padded hull is built from. Flat-earth over one degree of
  * latitude, with the longitude stretched by the cosine: at 75 km the error
  * is well under the width of the line it is drawn with.
  */
@@ -153,25 +153,27 @@ export const convexHull = (points: readonly LatLon[]): LatLon[] => {
   return [...half(pts), ...half(pts.toReversed())];
 };
 
+/** An open ring of `[lon, lat]` pairs, ready as a GeoJSON polygon (MapLibre closes it). */
+export type Ring = readonly (readonly [number, number])[];
+
 /**
- * Pushes every vertex of a ring away from its centroid by `km`, so a hull
- * drawn through points reads as an area around them rather than a polygon
- * that cuts through them.
+ * The area a set of points covers, padded by `km` all round: the convex hull
+ * of a small circle around each point. It reads as a region around the points
+ * rather than a polygon cutting through them, and it stays one where the
+ * points do not span one – a valley's roads in a line make a band, not a
+ * sliver. What the map draws a town's reach and a destination with. Rounded
+ * to about a hundred metres: it travels to the page, and a drawn edge needs
+ * no more.
  */
-export const expandRing = (ring: readonly LatLon[], km: number): LatLon[] => {
-  if (ring.length === 0) return [];
-  const n = ring.length;
-  const c = {
-    lat: ring.reduce((s, p) => s + p.lat, 0) / n,
-    lon: ring.reduce((s, p) => s + p.lon, 0) / n,
-  };
-  return ring.map((p) => {
-    const d = haversine(c, p);
-    if (d === 0) return { ...p };
-    const f = (d + km) / d;
-    return {
-      lat: c.lat + (p.lat - c.lat) * f,
-      lon: c.lon + (p.lon - c.lon) * f,
-    };
-  });
-};
+export const paddedHull = (points: readonly LatLon[], km: number): Ring =>
+  convexHull(
+    points.flatMap((p) =>
+      circleRing(p, km, 12).map(([lon, lat]) => ({ lat, lon })),
+    ),
+  ).map(
+    (p) =>
+      [
+        Math.round(p.lon * 1000) / 1000,
+        Math.round(p.lat * 1000) / 1000,
+      ] as const,
+  );

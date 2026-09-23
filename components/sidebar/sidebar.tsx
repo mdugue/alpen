@@ -16,7 +16,6 @@ import {
 import { KindTabs } from "@/components/sidebar/kind-tabs";
 import { PassList } from "@/components/sidebar/pass-list";
 import { TourList } from "@/components/sidebar/tour-list";
-import { TownList } from "@/components/sidebar/town-list";
 import { Button } from "@/components/ui/button";
 import {
   InputGroup,
@@ -30,6 +29,7 @@ import type {
   Action,
   EntityKind,
   Filters,
+  ListTab,
   Selection,
   Shown,
 } from "@/lib/app-state";
@@ -42,6 +42,7 @@ import {
 import { langPrefix } from "@/lib/i18n";
 import type { RangeName } from "@/lib/regions";
 import { entityKey } from "@/lib/route-key";
+import { areaEntryCount, nestTowns } from "@/lib/rows";
 import type { Rows } from "@/lib/rows";
 import { cn, TOUCH_CONTROL } from "@/lib/utils";
 
@@ -53,7 +54,8 @@ export interface SidebarProps {
   rows: Rows;
   /** The destinations picked for the compare sheet (`AppState.compare`). */
   compare: readonly string[];
-  totals: Record<EntityKind, number>;
+  /** How many entries each list holds with no filter at all. */
+  totals: Record<ListTab, number>;
   /** How many roads a filter change would leave – the number on every chip. */
   countWith: (patch: Partial<Filters>) => number;
   /** The ranges the data holds a road for; the "Gebirge" group shows with two or more. */
@@ -63,7 +65,7 @@ export interface SidebarProps {
   /** The "auf der Karte" switches. */
   shown: Shown;
   /** Which of the three lists is on screen. */
-  tab: EntityKind;
+  tab: ListTab;
   /** Highlighted in the lists and scrolled into view. */
   selection: Selection | null;
   /** What the pointer is over, on the map or in the list; the two share one highlight. */
@@ -112,11 +114,10 @@ export const Sidebar = (p: SidebarProps) => {
   const { expanded } = useSheet();
   const currentRow = p.selection ? entityKey(p.selection) : null;
 
-  const counts = {
-    destination: p.rows.destination.length,
+  const counts: Record<ListTab, number> = {
+    destination: areaEntryCount(nestTowns(p.rows.destination, p.rows.town)),
     pass: p.rows.pass.length,
     tour: p.rows.tour.length,
-    town: p.rows.town.length,
   };
 
   // Keep the selected row visible, e.g. after a click on a map marker.
@@ -232,7 +233,7 @@ export const Sidebar = (p: SidebarProps) => {
             setFilters={setFilters}
             onReset={reset}
           />
-          {/* The four lists, one at a time. In the fixed header rather than
+          {/* The three lists, one at a time. In the fixed header rather than
               in the scroll container, so the counts stay on screen while a
               list of 201 rows is scrolled – which a section header inside the
               container could not do without an opaque background it has no way
@@ -274,6 +275,7 @@ export const Sidebar = (p: SidebarProps) => {
           {p.tab === "destination" && (
             <DestinationList
               rows={p.rows.destination}
+              towns={p.rows.town}
               currentRow={currentRow}
               hovered={p.hovered}
               onHover={onHover}
@@ -285,10 +287,11 @@ export const Sidebar = (p: SidebarProps) => {
                 p.dispatch({ on, slug, type: "compare" })
               }
               onOpenCompare={() => setCompareOpen(true)}
-              onSelect={onSelect("destination")}
-              onToggleFavorite={(slug) =>
-                p.onToggleFavorite("destination", slug)
+              onSelect={(selection) =>
+                p.dispatch({ selection, type: "select" })
               }
+              onToggleFavorite={(sel) => p.onToggleFavorite(sel.kind, sel.slug)}
+              mapControl={townSwitch}
             />
           )}
           {p.tab === "pass" && (
@@ -321,19 +324,6 @@ export const Sidebar = (p: SidebarProps) => {
               }
               onSelect={onSelect("tour")}
               onToggleFavorite={(slug) => p.onToggleFavorite("tour", slug)}
-            />
-          )}
-          {p.tab === "town" && (
-            <TownList
-              rows={p.rows.town}
-              currentRow={currentRow}
-              hovered={p.hovered}
-              onHover={onHover}
-              empty={emptyProps}
-              mapControl={townSwitch}
-              showRange={p.ranges.length > 1}
-              onSelect={onSelect("town")}
-              onToggleFavorite={(slug) => p.onToggleFavorite("town", slug)}
             />
           )}
         </div>

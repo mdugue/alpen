@@ -23,8 +23,7 @@ import type { FilterSpecification } from "maplibre-gl";
 
 import type { Selection, Shown } from "@/lib/app-state";
 import { isShown } from "@/lib/app-state";
-import { circleRing } from "@/lib/geo";
-import type { Bounds } from "@/lib/geo";
+import type { Bounds, Ring } from "@/lib/geo";
 import { surfaceWord, tagLabel, typeWord } from "@/lib/i18n";
 import type { Messages } from "@/lib/i18n";
 import { visibleBounds } from "@/lib/map-camera";
@@ -60,8 +59,9 @@ export interface TownProps {
 }
 
 /**
- * A destination's circle: its name, and how much of it is rideable in the
+ * A destination on the map: its name, and how much of it is rideable in the
  * chosen half-month as a share from 0 to 1 – what the outline is tinted by.
+ * The outline and the point its name stands on carry the same properties.
  * The hover rides in the properties rather than in feature state because the
  * source is rewritten from the rows anyway, and one path is fewer than two.
  */
@@ -98,9 +98,6 @@ export interface TourState {
   selected: Flag;
 }
 
-/** One hull ring as `lib/nearby.ts` stores it: `[lon, lat]`, open. */
-export type Ring = readonly (readonly [number, number])[];
-
 /**
  * The hover label – the typed lookup from an entity to what the popup says,
  * rather than properties re-read off a rendered feature and a tag list
@@ -124,8 +121,10 @@ export interface Scene {
   tours: { filter: FilterSpecification; state: Record<string, TourState> };
   passes: FeatureCollection<Point, PassProps>;
   towns: FeatureCollection<Point, TownProps>;
-  /** The destination circles, under everything else; drawn in the overview only. */
+  /** The destination outlines, under everything else; drawn in the overview only. */
   destinations: FeatureCollection<Polygon, DestinationProps>;
+  /** Where each destination's name stands: its centre. */
+  destinationLabels: FeatureCollection<Point, DestinationProps>;
   hover: {
     mark: FeatureCollection<Point, HoverProps>;
     /** The hovered town's reach hull, straight out of `townReach`. */
@@ -322,6 +321,22 @@ export const buildScene = (input: SceneInput): Scene => {
     shown.passes,
   );
 
+  const destinations = rows.destination.map((row) => ({
+    props: {
+      favorite: flag(row.favorite),
+      hovered: flag(row.destination.slug === hoverDestination),
+      name: row.destination.name,
+      selected: flag(row.destination.slug === selDestination),
+      share: row.verdict.total
+        ? (row.verdict.counts.best + row.verdict.counts.good) /
+          row.verdict.total
+        : 0,
+      slug: row.destination.slug,
+      text: row.text,
+    },
+    row,
+  }));
+
   return {
     bounds,
     cursor: collection(
@@ -329,26 +344,19 @@ export const buildScene = (input: SceneInput): Scene => {
         ? [{ at: [profileCursor.lon, profileCursor.lat], props: {} }]
         : [],
     ),
+    destinationLabels: collection(
+      destinations.map(({ props, row }) => ({
+        at: [row.destination.center.lon, row.destination.center.lat] as const,
+        props,
+      })),
+    ),
     destinations: {
-      features: rows.destination.map((row) => ({
+      features: destinations.map(({ props, row }) => ({
         geometry: {
-          coordinates: [
-            circleRing(row.destination.center, row.destination.radiusKm),
-          ],
+          coordinates: [row.members.outline.map(([lon, lat]) => [lon, lat])],
           type: "Polygon",
         },
-        properties: {
-          favorite: flag(row.favorite),
-          hovered: flag(row.destination.slug === hoverDestination),
-          name: row.destination.name,
-          selected: flag(row.destination.slug === selDestination),
-          share: row.verdict.total
-            ? (row.verdict.counts.best + row.verdict.counts.good) /
-              row.verdict.total
-            : 0,
-          slug: row.destination.slug,
-          text: row.text,
-        },
+        properties: props,
         type: "Feature",
       })),
       type: "FeatureCollection",

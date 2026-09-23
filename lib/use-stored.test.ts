@@ -98,16 +98,25 @@ describe("the storage adapter", () => {
     expect(readStoredState().period).toBe(3);
   });
 
+  test("a towns tab stored by an earlier build opens the areas, where the towns are now", () => {
+    // Written through the adapter, as the build that still had the tab did.
+    commit({ ...loaded(), tab: "town" as never });
+    expect(readStoredState().tab).toBe("destination");
+    commit({ ...loaded(), tab: "nonsense" as never });
+    expect(readStoredState().tab).toBe("pass");
+    commit({ ...loaded(), tab: "pass" });
+  });
+
   test("carries the tab and the map switches, and writes each one once", () => {
     commit(
       reduce(loaded(), { kind: "town", on: false, type: "toggleKind" }, env),
     );
     expect(valueOf("showTowns")).toBe("false");
-    expect(valueOf("tab")).toBe('"destination"');
+    expect(valueOf("tab")).toBe('"pass"');
     const stored = readStoredState();
     expect(stored.shown?.towns).toBe(false);
     expect(stored.shown?.passes).toBe(true);
-    expect(stored.tab).toBe("destination");
+    expect(stored.tab).toBe("pass");
 
     // A second commit of an unchanged state wakes no reader: what is already
     // under the key is not written again.

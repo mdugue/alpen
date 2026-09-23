@@ -439,6 +439,15 @@ rides in that list's own toolbar (`ListToolbar`), never beside the tab row: a
 control next to three tabs reads as acting on all three, and a bare switch says
 what it does only once it has been flipped, so it carries the words too.
 
+There are three tabs for four kinds (`TABS`, `tabOf` in `lib/app-state.ts`).
+The roads come first, because they are what the map is made of. The towns
+have no tab of their own: an area and its towns answer one question – where to
+go, and where there to sleep – so the areas' list shows each town under the
+area that names it as a base first, and the towns no listed area holds in a
+last group (`nestTowns` in `lib/rows.ts`). Each of the two keeps its own
+filters; the grouping only says where a town is shown, and selecting a town
+opens the areas' tab.
+
 ### What the drawer derives from the drag stays on the drawer
 
 Dragging the bottom sheet stuttered on a phone with the 201 roads in it and
@@ -592,26 +601,33 @@ bookmarks, and the explorer layout carries a skip link to the map.
 ### Every word has one home, and it is not the component
 
 Plan 08 put an English version under `/en`, and the question was where the
-words go. The answer is one typed object per language: `lib/i18n/messages.de.ts`
+words go. The answer is one object per language: `lib/i18n/messages.de.ts`
 is the source of truth, split into one section per area (`de/status.ts`,
 `de/vocab.ts`, `de/sidebar.ts`, `de/panel.ts`, `de/map.ts`, `de/scales.ts`),
-and `messages.en.ts` `satisfies` its type, so a key that exists in one file
-and not the other fails `typecheck` rather than showing up as a blank. An
-interpolation is a plain function (`nearby: (km) => \`Im Umkreis von ${km} km\``),
-so a sentence can change its shape between languages instead of pasting a
-number into a fixed frame.
+and `messages.en.ts` `satisfies` its layout, so a key that exists in one file
+and not the other fails `typecheck` rather than showing up as a blank. Every
+message is a plain string; an interpolation is a `{placeholder}` in it
+(`near: "Im Umkreis von {km} km"`), which `fill` (`lib/i18n/fill.ts`) fills
+and the type checks – `fill` refuses a call that leaves a placeholder out,
+and `lib/i18n/messages.test.ts` holds the English placeholders to the German
+ones. Plain strings are what lets a page's words travel as a value: a
+function cannot cross from the server to the browser, a string can.
 
-Who reads them: a client component calls `useT()` (`components/i18n.tsx`) and
-gets `{ t, lang, fmt, fmtUnit }` – the words and a number format bound to the
-page's locale. A function of the core that says something – `statusWord`,
+Which is the point, and the Next.js guide's: the dictionaries are the
+server's. `getDictionary` (`lib/i18n/server.ts`) reads the root parameter,
+the explorer layout loads the one language its page is in and hands it to
+`I18nProvider`, and no component imports a dictionary – a lint rule on the
+imports holds `components/` and `lib/` to that, so the other language never
+reaches the browser. A client component calls `useT()` (`components/i18n.tsx`)
+and gets `{ t, lang, fmt, fmtUnit }` – the words and a number format bound to
+the page's locale. A function of the core that says something – `statusWord`,
 `cellHint`, `bestText`, `periodLabel`, `appliedFilters`, `areaText` – takes
-the language as its last argument, German by default, so `lib/status.ts` and
-the scripts keep their sentences and the tests keep theirs; the vocabulary
-tables in `lib/regions.ts` and `lib/geo.ts` stay German and are what the
-German `vocab` section points at, while the English one writes its own. The
-provider is a React context under `components/`, and nothing under `lib/`
-imports it: the explorer hands the language to `useHashAdapter`, and the
-scene, the detail model and the row builders take it as an argument.
+the words as its last argument (`w: Messages`), which a component has from
+`useT()`, the server from `messagesOf` and a script or a test as the German
+`DE`. The vocabulary of the data (`lib/regions.ts`, `REACH_BANDS` in
+`lib/geo.ts`) holds keys only; what each is called is `vocab` in the message
+files. The provider is a React context under `components/`, and nothing
+under `lib/` imports it.
 
 What is not a message: the curated prose. That is `data/i18n/en/*.json`,
 keyed by slug and merged over the German records field by field in
@@ -620,11 +636,17 @@ keyed by slug and merged over the German records field by field in
 rather than a surprise in the panel. Proper names are never translated;
 the legal pages stay German with an English note.
 
-The toggle is a plain link (`switchLangHref`): the same path under the other
-prefix with the hash behind it, computed from the state rather than read off
-the address bar, so the server and the client render the same `href`. A full
-load on purpose – the page under the other prefix is another prerender, and
-every row's text changes with it.
+The language is the last group of the map's view menu
+(`components/map/language-field.tsx`), each language named in its own, the
+other a plain link (`switchLangHref`): the same path under the other prefix
+with the hash behind it, computed from the state rather than read off the
+address bar, so the server and the client render the same `href`. A full load
+on purpose – the page under the other prefix is another prerender, and every
+row's text changes with it. Picking one writes the `NEXT_LOCALE` cookie; the
+bare root reads it, and without it the browser's `Accept-Language`
+(`proxy.ts`, `preferredLang`) – the one request the app negotiates. A shared
+link is the page it names, and a navigation from inside the site is never
+redirected.
 
 ## The detail panel
 

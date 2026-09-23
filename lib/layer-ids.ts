@@ -16,6 +16,8 @@
 /** The GeoJSON sources; all but the two static files are written by the scene alone. */
 export const SOURCE = {
   cursor: "cursor",
+  /** One point per area, where its name stands (a polygon labels itself once per tile). */
+  destinationLabels: "destination-labels",
   destinations: "destinations",
   hover: "hover",
   passes: "passes",
@@ -54,11 +56,11 @@ export interface LayerSet {
    * a target: the dash over an unpaved ascent. They are never aimed at.
    */
   companions?: readonly string[];
-  /** The source all of them read. */
+  /** The source the mark, its companions and its hit area read; a name may stand on a source of its own. */
   source: string;
 }
 
-/** The outline of a destination's circle; the fill is its `mark`. */
+/** The edge of a destination's outline; the fill is its `mark`. */
 export const DESTINATION_EDGE = "destinations-edge";
 /**
  * The dash laid over an unpaved ascent (plan 27). A companion of the route
@@ -70,8 +72,9 @@ export const ROUTE_DASH = "routes-dash";
 /**
  * The five kinds the map draws. `route` is a pass's ascents: its own lines and
  * its own hit layer, but never its own selection – an ascent belongs to its
- * pass, which is what `pick` answers with. `destination` is a circle under
- * everything else, drawn only in the overview (`DESTINATION_MAX_ZOOM`).
+ * pass, which is what `pick` answers with. `destination` is the outline of
+ * an area under everything else, drawn only in the overview
+ * (`DESTINATION_MAX_ZOOM`); its name stands on a point source of its own.
  */
 export const LAYERS = {
   destination: {
@@ -147,8 +150,8 @@ export const HIT_GROUPS: readonly (readonly string[])[] = [
   [...LAYERS.tour.labels],
   [LAYERS.route.hit],
   [LAYERS.tour.hit],
-  // A disc up to 150 km across is the least specific answer there is: its
-  // name is a target, the disc only answers where nothing else does.
+  // An area is the least specific answer there is: its name is a target,
+  // the outline only answers where nothing else does.
   [...LAYERS.destination.labels],
   [LAYERS.destination.hit],
 ];

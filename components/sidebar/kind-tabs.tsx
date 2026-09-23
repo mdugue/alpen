@@ -2,14 +2,14 @@
 
 import { useT } from "@/components/i18n";
 import { Button } from "@/components/ui/button";
-import type { EntityKind } from "@/lib/app-state";
-import { ALL_KINDS } from "@/lib/app-state";
+import type { EntityKind, ListTab } from "@/lib/app-state";
+import { TABS } from "@/lib/app-state";
 import { cn, TOUCH_CONTROL } from "@/lib/utils";
 
 /** Legend glyphs; the same shapes the map uses for the four kinds. */
 export const KIND_GLYPH: Record<EntityKind, React.ReactNode> = {
   destination: (
-    <span className="bg-accent/30 border-accent size-3 rounded-full border" />
+    <span className="bg-accent/30 border-accent size-3 rounded-sm border" />
   ),
   pass: <span className="border-foreground/70 size-3 rounded-full border-2" />,
   tour: <span className="bg-tour h-1.5 w-4 rounded-full" />,
@@ -17,7 +17,8 @@ export const KIND_GLYPH: Record<EntityKind, React.ReactNode> = {
 };
 
 /**
- * Which of the four lists is on screen.
+ * Which of the three lists is on screen: the roads first, then the areas with
+ * the towns under them, then the loops (`TABS`).
  *
  * They used to be three collapsible blocks stacked inside one scroll
  * container, which made the sidebar a single **12 841 px** column against a
@@ -44,10 +45,10 @@ export const KindTabs = ({
   counts,
   totals,
 }: {
-  active: EntityKind;
-  onChange: (kind: EntityKind) => void;
-  counts: Record<EntityKind, number>;
-  totals: Record<EntityKind, number>;
+  active: ListTab;
+  onChange: (tab: ListTab) => void;
+  counts: Record<ListTab, number>;
+  totals: Record<ListTab, number>;
 }) => {
   const { t, fmt } = useT();
   return (
@@ -56,7 +57,7 @@ export const KindTabs = ({
       aria-label={t.sidebar.whatTheListShows}
       className="bg-muted/60 flex min-w-0 gap-0.5 rounded-lg p-0.5"
     >
-      {ALL_KINDS.map((kind) => {
+      {TABS.map((kind) => {
         const on = kind === active;
         const filtered = counts[kind] !== totals[kind];
         return (

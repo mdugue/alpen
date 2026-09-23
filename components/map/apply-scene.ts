@@ -2,8 +2,9 @@
 
 import type { GeoJSONSource, Map as MLMap, Popup } from "maplibre-gl";
 
+import type { Ring } from "@/lib/geo";
 import { LAYERS, layersOf, SOURCE } from "@/lib/layer-ids";
-import type { PopupContent, Ring, Scene } from "@/lib/map-scene";
+import type { PopupContent, Scene } from "@/lib/map-scene";
 import { tagIconSvg } from "@/lib/tag-icons";
 
 /**
@@ -186,11 +187,13 @@ export const applyScene = (
     host.setData(SOURCE.passes, next.passes);
   if (!prev || !samePoints(prev.towns, next.towns))
     host.setData(SOURCE.towns, next.towns);
-  // The rings are rebuilt per scene, so the comparison walks the coordinates:
-  // 36 circles of 49 points is what a hover over the list would otherwise
+  // The outlines are rebuilt per scene, so the comparison walks the
+  // coordinates: 36 of them is what a hover over the list would otherwise
   // re-tile in the worker.
   if (!prev || !samePoints(prev.destinations, next.destinations))
     host.setData(SOURCE.destinations, next.destinations);
+  if (!prev || !samePoints(prev.destinationLabels, next.destinationLabels))
+    host.setData(SOURCE.destinationLabels, next.destinationLabels);
   if (!prev || !samePoints(prev.hover.mark, next.hover.mark))
     host.setData(SOURCE.hover, next.hover.mark);
   if (!prev || !samePoints(prev.cursor, next.cursor))

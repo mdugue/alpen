@@ -118,11 +118,11 @@ export const Explorer = ({ data, defaultPeriod, children }: Props) => {
 
   const passIndex = indexBySlug(passes);
   const townIndex = indexBySlug(towns);
-  /** The area each town lies in, by name – the one naming it as a base first. */
+  /** The area each town lies in – the first that names it as a base. */
   const townAreas = Object.fromEntries(
     towns.map((town) => [
       town.slug,
-      destinationsOfTown(town.slug, destinations, destinationMembers)[0]?.name,
+      destinationsOfTown(town.slug, destinations, destinationMembers)[0],
     ]),
   );
   const rows = {
@@ -279,10 +279,13 @@ export const Explorer = ({ data, defaultPeriod, children }: Props) => {
               rows={rows}
               compare={compare}
               totals={{
-                destination: destinations.length,
+                // The areas' tab lists every area and, after them, the
+                // towns no area holds (`nestTowns`).
+                destination:
+                  destinations.length +
+                  towns.filter((town) => !townAreas[town.slug]).length,
                 pass: passes.length,
                 tour: tours.length,
-                town: towns.length,
               }}
               countWith={countWith}
               ranges={ranges}

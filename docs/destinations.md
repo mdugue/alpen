@@ -89,33 +89,46 @@ open road, two fifths of it for a limited one, nothing for a closed one
 (`areaScore`, `RISKY_WEIGHT`). Both are editorial, like every number in this
 app, and the scales dialog says so.
 
-## The first screen, and the compare sheet
+## The list, and the compare sheet
 
-The destinations are the first tab of the sidebar and the one a first visit
-opens on, ranked for the chosen half-month, so the first screen answers the
-product goal's first question:
+The destinations are the second tab of the sidebar, right after the roads –
+the roads are what the map is made of, so a first visit opens on them – and
+they are ranked for the chosen half-month, so the tab answers the product
+goal's first question:
 
 ```
 ┌ Anfang Oktober ─────────────────────────────────┐
-│ REISEZIELE 36 · STRASSEN 262 · TOUREN · ORTE     │
-│ ▸ Mercantour · FR · Nizza      9 von 10 Straßen  │
+│ STRASSEN 262 · REISEZIELE 41 · TOUREN 17         │
+│ ▸ Mercantour · FR              9 von 10 Straßen  │
 │   ░░░▒▓▓▓▓▓▓▓▒░░                      gut         │
-│ ▸ Alta Badia · IT · Corvara    8 von 8 Straßen   │
-│ ▸ Oisans · FR · Bourg-d'Oisans 7 von 9 Straßen   │
+│     ◆ Nizza · Bahnanschluss                       │
+│ ▸ Alta Badia · IT              8 von 8 Straßen   │
+│     ◆ Corvara · Radsport-Mekka                    │
 │ …                                                │
-│ ▸ Engadin · CH · St. Moritz    3 von 7 Straßen   │
+│ WEITERE ORTE                                      │
+│   ◆ Bormio · IT · Valtellina                      │
 └──────────────────────────────────────────────────┘
-ranked by what is rideable in the chosen half-month
+ranked by what is rideable in the chosen half-month,
+each area's towns under it
 ```
 
 The road criteria (height, fame, difficulty, the summer signals) do not
 reach this list: an area is judged on all of its roads. The "Gebirge" chip
 does – it narrows the areas to a range the way it narrows the roads – and so
-do the search and the favourites. On
-the map they are soft discs in the overview (below zoom 8.5, where the roads
-thin out by fame), the outline tinted by the rideable share, with the name
-and the count on them; past that zoom the roads are the picture and the disc
-would only cover it. Selecting an area frames its members.
+do the search and the favourites. The towns are not a list of their own:
+each is listed under the area that names it as a base first, and the towns
+no listed area holds follow in a last group ("Weitere Orte") – an area is
+where one goes, a town is where in it one sleeps.
+
+On the map an area is the outline of where its riding is, not the circle
+that decided its members: the padded hull of its summits, both ends of every
+ascent and its towns (`DestinationMembers.outline`, 5 km around them). The
+circle was the membership rule drawn as a picture, and half of every disc was
+valley floor or the next range; the outline shows what the area holds. It is
+drawn in the overview (below zoom 8.5, where the roads thin out by fame),
+the edge tinted by the rideable share, with the name and the count on its
+centre; past that zoom the roads are the picture and the fill would only
+cover it. Selecting an area frames its members.
 
 Up to three areas can be switched on for the compare sheet: the verdict of
 the half-month, the derived year, what each holds and where one would stay,

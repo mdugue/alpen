@@ -1,5 +1,5 @@
-import { bounds, haversine, REACH_MAX_KM } from "@/lib/geo";
-import type { Bounds } from "@/lib/geo";
+import { bounds, haversine, paddedHull, REACH_MAX_KM } from "@/lib/geo";
+import type { Bounds, Ring } from "@/lib/geo";
 import type { Messages } from "@/lib/i18n";
 import { fill } from "@/lib/i18n/fill";
 import { PERIODS, periodIndex } from "@/lib/period";
@@ -223,17 +223,27 @@ export const basesOf = (reached: ReachedTown[]): Bases => ({
  * What lies inside a curated area, derived once at prerender: every road
  * within `radiusKm` of the centre plus `include` minus `exclude`, every town
  * within the radius plus the bases named, every loop with a waypoint inside
- * the radius, and the box around all of it – what selecting the area frames.
- * Nothing here is written to a file: a road added to `passes.json` joins its
- * area by itself, and a changed radius moves the membership with it
- * (`docs/destinations.md`).
+ * the radius, the box around all of it – what selecting the area frames – and
+ * the outline the map draws it with. Nothing here is written to a file: a road
+ * added to `passes.json` joins its area by itself, and a changed radius moves
+ * the membership with it (`docs/destinations.md`).
  */
 export interface DestinationMembers {
   passes: string[];
   tours: string[];
   towns: string[];
   bounds: Bounds;
+  /**
+   * The area as the map draws it: the padded hull of its summits, the ends of
+   * their ascents and its towns (`paddedHull`). The radius decides who is a
+   * member; this is where the riding is, which is what a disc of the radius
+   * never showed – half of one was valley floor or the next range.
+   */
+  outline: Ring;
 }
+
+/** How far the outline reaches past the roads and towns it is drawn around, in km. */
+const OUTLINE_PADDING_KM = 5;
 
 /** Whether a point lies within the area's radius. */
 export const insideOf = (d: Destination, p: LatLon): boolean =>
@@ -265,8 +275,20 @@ export const membersOf = (
     ...own.map((p): [number, number] => [p.lat, p.lon]),
     ...ownTowns.map((t): [number, number] => [t.lat, t.lon]),
   ];
+  // Where the riding is: every summit, both ends of every ascent, every town.
+  const riding: LatLon[] = [
+    ...own.flatMap((p) => [
+      p,
+      ...p.ascents.flatMap((a) => (a.to ? [a.from, a.to] : [a.from])),
+    ]),
+    ...ownTowns,
+  ];
   return {
     bounds: bounds(points),
+    outline: paddedHull(
+      riding.length > 0 ? riding : [d.center],
+      OUTLINE_PADDING_KM,
+    ),
     passes: own.map((p) => p.slug),
     tours: ownTours.map((t) => t.slug),
     towns: ownTowns.map((t) => t.slug),

@@ -417,13 +417,14 @@ export const appLayers = (
   ];
 
   return [
-    // The destinations: a soft disc per area, the overview's own reading of
-    // the dots inside it, at the very bottom of the stack (plan 12). The disc
-    // fades out towards `DESTINATION_MAX_ZOOM`, where every road is drawn and
-    // a disc up to 150 km across would cover the screen; only its ring and
-    // its name stay for the selected or hovered area, so a flight into one
-    // still shows which one it is. The hit layer stops at that zoom outright,
-    // so a click on an empty valley at zoom 10 opens nothing.
+    // The destinations: the outline of where each area's riding is – its
+    // roads, their ascents and its towns (`DestinationMembers.outline`) – as
+    // the overview's own reading of the dots inside it, at the very bottom of
+    // the stack (plan 12). The fill fades out towards `DESTINATION_MAX_ZOOM`,
+    // where every road is drawn and the area is the texture itself; only the
+    // edge and the name stay for the selected or hovered area, so a flight
+    // into one still shows which one it is. The hit layer stops at that zoom
+    // outright, so a click on an empty valley at zoom 10 opens nothing.
     //
     // `["zoom"]` may only feed a top-level `interpolate`, so the zoom is the
     // outer expression and what differs per feature sits in its stops.
@@ -448,10 +449,10 @@ export const appLayers = (
       id: DESTINATION_EDGE,
       paint: {
         "line-color": shareColor,
-        // `line-opacity` rather than the layer's: the lit ring has to outlive
-        // the fade, which is a per-feature difference. Two rings cross at a
-        // point, not along a hairpin, so the double composite the rule guards
-        // against is two pixels wide here.
+        // `line-opacity` rather than the layer's: the lit edge has to outlive
+        // the fade, which is a per-feature difference. Two outlines cross at
+        // a point, not along a hairpin, so the double composite the rule
+        // guards against is two pixels wide here.
         "line-opacity": [
           "interpolate",
           ["linear"],
@@ -682,9 +683,11 @@ export const appLayers = (
     },
     // Labels staggered by prominence; MapLibre resolves collisions
     // The area's name over its centre, with the count under it, in the
-    // overview – and past it for the selected or hovered area, like its ring. Below the pass labels in the list, so MapLibre places the
-    // pass names first: a famous pass wins its collision against the area it
-    // lies in.
+    // overview – and past it for the selected or hovered area, like its edge.
+    // A point of its own rather than the outline's: a polygon is labelled
+    // once per tile it crosses. Below the pass labels in the list, so
+    // MapLibre places the pass names first: a famous pass wins its collision
+    // against the area it lies in.
     {
       id: LAYERS.destination.labels[0],
       layout: {
@@ -724,7 +727,7 @@ export const appLayers = (
           ["case", isDestinationLit, 1, 0],
         ],
       },
-      source: SOURCE.destinations,
+      source: SOURCE.destinationLabels,
       type: "symbol",
     },
     ...PASS_LABELS.map(({ fame, minzoom }) => ({

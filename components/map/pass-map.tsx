@@ -414,6 +414,7 @@ export const PassMap = ({
         ),
         // What the scene writes: empty until it has been applied once.
         [SOURCE.cursor]: { data: EMPTY, type: "geojson" },
+        [SOURCE.destinationLabels]: { data: EMPTY, type: "geojson" },
         [SOURCE.destinations]: { data: EMPTY, type: "geojson" },
         [SOURCE.hover]: { data: EMPTY, type: "geojson" },
         [SOURCE.passes]: { data: EMPTY, type: "geojson" },

@@ -28,7 +28,6 @@ export const sidebar = {
     noDestinations: "Keine Reiseziele gefunden",
     noPasses: "Keine Straßen gefunden",
     noTours: "Keine Touren gefunden",
-    noTowns: "Keine Orte gefunden",
     /** The query in quotes, with the filters named when they narrow it too. */
     queryMatchesNothing: '„{query}" passt zu keinem Eintrag.',
     /** The same, when filters are set beside the search. */
@@ -78,6 +77,8 @@ export const sidebar = {
   /** The lists, their toolbars and the map switches. */
   lists: {
     onMap: "auf der Karte",
+    /** The last group of the areas' list: the towns no listed area holds. */
+    otherTowns: "Weitere Orte",
     passes: "{n} Pässe",
     showPasses: "Pässe und Straßen auf der Karte anzeigen",
     showTour: "{name} auf der Karte anzeigen",
@@ -85,6 +86,8 @@ export const sidebar = {
     showTowns: "Orte auf der Karte anzeigen",
     sort: "Sortieren",
     sortBy: "Sortieren nach: {label}",
+    /** The areas' list holds towns too, so its switch says whose it is. */
+    townsOnMap: "Orte auf der Karte",
   },
   /** The five bars of an editorial scale, for the screen reader. */
   rating: "{value} von 5",

@@ -594,8 +594,8 @@ export const flightFor = (
     const point = at(world.towns, TOWN_MIN_ZOOM);
     return point && { kind: "point", point };
   }
-  // An area is framed by what it holds, with the room a fit gets: the circle
-  // is the overview's picture, the members are what selecting it is about.
+  // An area is framed by what it holds, with the room a fit gets: the
+  // members are what selecting it is about.
   if (selection.kind === "destination") {
     const bounds = box(world.destinationBounds[selection.slug]);
     return (

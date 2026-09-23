@@ -1,8 +1,13 @@
 "use client";
 import { useEffect, useSyncExternalStore } from "react";
 
-import { ALL_KINDS } from "@/lib/app-state";
-import type { AppState, EntityKind, StoredState } from "@/lib/app-state";
+import { tabOf, TABS } from "@/lib/app-state";
+import type {
+  AppState,
+  EntityKind,
+  ListTab,
+  StoredState,
+} from "@/lib/app-state";
 import { BASEMAP_ID } from "@/lib/basemap";
 import { isPeriod } from "@/lib/period";
 import type { Period } from "@/lib/types";
@@ -82,7 +87,7 @@ const STORAGE = {
    * fold, so coming back lands where the last visit left off; the first visit
    * lands on the areas (`initialState`).
    */
-  tab: slot<EntityKind>("local", ALL_KINDS[0]!),
+  tab: slot<ListTab>("local", TABS[0]!),
 };
 
 type StorageKey = keyof typeof STORAGE;
@@ -187,14 +192,20 @@ export const useFavorites = () => {
   return { isFavorite, toggle };
 };
 
-const isKind = (v: unknown): v is EntityKind =>
-  ALL_KINDS.includes(v as EntityKind);
+/** A stored tab; the towns' own tab of earlier builds is the areas' now (`tabOf`). */
+const storedTab = (v: unknown): ListTab =>
+  v === "town"
+    ? tabOf(v)
+    : TABS.includes(v as ListTab)
+      ? (v as ListTab)
+      : TABS[0]!;
 
 /**
  * The persisted slices the reducer owns, read outside React for the `load`
  * action (`lib/hash-adapter.ts`). What is in storage is not trusted further
  * than its shape: a slug that no longer exists is dropped by `reconcileShown`,
- * a tab name this build does not know falls back to the first list, and a
+ * a tab name this build does not know falls back to the first list – a kind
+ * that lost its own tab, the towns, to the tab it is listed in now – and a
  * half-month that is not one of the 24 is no preference at all.
  */
 export const readStoredState = (): StoredState => {
@@ -216,7 +227,7 @@ export const readStoredState = (): StoredState => {
       passes: passes !== false,
       towns: towns !== false,
     },
-    tab: isKind(tab) ? tab : ALL_KINDS[0]!,
+    tab: storedTab(tab),
   };
 };
 
