@@ -37,7 +37,7 @@ export const siteUrl =
 /**
  * Where the app can be supported. A donation link is the one kind of money
  * the app can carry: ads or affiliate links would break Vercel's Hobby terms
- * and Open-Meteo's free tier in the same move (see the weather route). It is
+ * and Open-Meteo's free tier in the same move (`lib/weather.ts`). It is
  * a plain link, never Ko-fi's widget, so nothing loads from there until it is
  * clicked – which is what the privacy page promises about it.
  */

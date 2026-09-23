@@ -7,6 +7,7 @@ import { fill } from "@/lib/i18n";
 import { DE } from "@/lib/i18n/dictionaries";
 import { periodAt, periodIndex, periodLabel, PERIODS } from "@/lib/period";
 import { valleyElevations } from "@/lib/profile";
+import { STATUSES } from "@/lib/regions";
 import {
   badgeWord,
   bestText,
@@ -28,7 +29,6 @@ import {
   signalValue,
   statusOf,
   statusRank,
-  STATUS_ORDER,
   statusWord,
   tourSeasonText,
   tourText,
@@ -986,7 +986,7 @@ describe("one status vocabulary", () => {
   });
 
   test("the status order is one list and one direction", () => {
-    expect(STATUS_ORDER).toEqual(["open", "risky", "closed"]);
+    expect(STATUSES).toEqual(["open", "risky", "closed"]);
     // Higher is worse – the direction the status sort reads.
     expect(statusRank("open")).toBeLessThan(statusRank("risky"));
     expect(statusRank("risky")).toBeLessThan(statusRank("closed"));

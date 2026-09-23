@@ -172,7 +172,7 @@ export const hasRoadSummit = (road: {
 
 /**
  * What riding the road is like. Editorial labels in the exact sense of
- * `TOWN_TAG` – what a planner notices, not counted facts – multi-valued and
+ * `TOWN_TAGS` – what a planner notices, not counted facts – multi-valued and
  * independent of the type. Nothing that the data already measures belongs
  * here: steepness, length, altitude and a border crossing are numbers and stay
  * numbers. The order is the display order.
@@ -196,7 +196,7 @@ export type TagName = TownTagName | RoadTagName;
 
 /**
  * What a road is rolled on (plan 27). One field that decides three things:
- * the routing profile (`scripts/lib/pipeline.ts`), the closing rung of the
+ * the routing profile (`profileOf`, `scripts/lib/validate.ts`), the closing rung of the
  * ladder – a barrier for asphalt, the snow cover for the rest
  * (`lib/status.ts`) – and the line the map draws it with. `mixed` is a road
  * with a gravel stretch a road bike cannot take, the Finestre; per-ascent
@@ -206,6 +206,13 @@ export type TagName = TownTagName | RoadTagName;
  */
 export const SURFACES = ["asphalt", "gravel", "mixed"] as const;
 export type SurfaceName = (typeof SURFACES)[number];
+
+/**
+ * The three statuses of the rideability heuristic, best first – the one list
+ * the schema's enum, the filter, the map's icons, the share image and the
+ * calibration script iterate (`lib/status.ts` reads the order as the rank).
+ */
+export const STATUSES = ["open", "risky", "closed"] as const;
 
 /** Whether the road is ridden with something other than a road bike. */
 export const isUnpaved = (surface: SurfaceName): boolean =>

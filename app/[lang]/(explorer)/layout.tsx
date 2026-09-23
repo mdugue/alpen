@@ -51,8 +51,8 @@ const jsonLd = (w: Messages) => ({
  * selected entity's detail file (`public/detail`); the page only carries the
  * URLs.
  *
- * The map is the page: no header, no footer – the title lives in the sidebar
- * and the disclaimer in the scales dialog.
+ * The map is the page: the header, the panels and the season bar float over
+ * it (`components/shell.tsx`), and the disclaimer lives in the scales dialog.
  *
  * The half-month the app opens on is computed here, in Europe/Berlin: the
  * cached layout is revalidated within 15 minutes, so the prerendered HTML is

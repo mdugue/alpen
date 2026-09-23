@@ -114,8 +114,8 @@ Design hypotheses, held until the spike confirms or refutes them:
    uncached.
 5. **One dynamic route, budgeted.** A second dynamic route next to the
    weather, and the first that costs money per call: a rate limit per
-   visitor and a daily cap in the route (the weather route's cooldown is the
-   template), a maximum question length, no conversation stored, a paragraph
+   visitor and a daily cap in the route (the forecast's cooldown in
+   `lib/weather.ts` is the template), a maximum question length, no conversation stored, a paragraph
    on the privacy page naming what leaves the server and to whom. The
    cost per question is measured in the spike before a model is chosen.
 

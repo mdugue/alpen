@@ -33,7 +33,6 @@ export const vocab = {
     difficultyOne: "Difficulty {level}",
     fame: "Fame {option}",
     favoritesOnly: "favourites only",
-    statusOr: " or ",
     traffic: "Traffic {option}",
     valley: "Valley {option}",
     wetDays: "Rain days {option}",

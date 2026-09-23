@@ -24,7 +24,7 @@ import type { WeatherDay } from "@/lib/types";
  */
 
 /** How long one pass's forecast is reused. Open-Meteo refreshes hourly at best. */
-export const REVALIDATE_S = 3600;
+const REVALIDATE_S = 3600;
 /**
  * After a failed call, how long this instance stops asking Open-Meteo. A thrown
  * forecast is deliberately *not* cached, so without a cooldown each visitor

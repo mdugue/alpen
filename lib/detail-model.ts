@@ -6,7 +6,7 @@ import {
   destinationOf,
   destinationsOfTown,
 } from "@/lib/destination";
-import type { AreaVerdict, Bases, BaseVerdict } from "@/lib/destination";
+import type { Bases, BaseVerdict, DerivedVerdict } from "@/lib/destination";
 import type { DetailState } from "@/lib/detail-state";
 import { fill, surfaceWord } from "@/lib/i18n";
 import type { Messages } from "@/lib/i18n";
@@ -47,14 +47,13 @@ import type {
  * branch won – which is why adding a field to what a pass shows meant reading
  * a thousand lines to find out who else was passing it on
  * (docs/plans/31-panel-model.md). `detailModel` resolves once and returns one
- * discriminated value; the three kind modules under `components/panel/` take
+ * discriminated value; the four kind modules under `components/panel/` take
  * their half of it and render markup.
  *
  * It is a pure function of the page's data and three pieces of browser state,
  * all of them arguments: the chosen half-month, what the pointer is over, and
  * where the entity's detail file has got to. Nothing here reads a hook, a
- * storage key or the DOM, which is what will let plan 02 render the same model
- * on the server for an entity page.
+ * storage key or the DOM.
  */
 
 /** Every folding block of the panel, by `Section` id. */
@@ -73,7 +72,7 @@ export type BlockId =
   | "area-travel";
 
 /**
- * Which blocks each kind can show, in the order it shows them. The three kind
+ * Which blocks each kind can show, in the order it shows them. The four kind
  * modules render that order in JSX; this is the list they are held to, by the
  * test that reads the `data-block` ids back out of the rendered panel
  * (`components/panel/kind-detail.test.tsx`) – which is why the order lives
@@ -141,7 +140,7 @@ export interface PassModel extends Reaching {
   pass: Pass;
   cell: YearCell;
   verdict: Verdict;
-  /** Every German line the pass panel shows outside the verdict box. */
+  /** Every line the pass panel shows outside the verdict box, in the page's language. */
   sentences: {
     season: string;
     /** The pass's own note, as curated. */
@@ -184,7 +183,7 @@ export interface TownModel extends Reaching {
 export interface DestinationModel extends Common {
   kind: "destination";
   destination: Destination;
-  verdict: AreaVerdict;
+  verdict: DerivedVerdict;
   /** "7 von 9 Straßen gut" – the sentence under the badge. */
   text: string;
   /** The member roads, best cell first, then by beauty and elevation; `season` is the road's own strip. */

@@ -33,6 +33,7 @@ import { dayLength } from "../lib/daylight";
 import { DE } from "../lib/i18n/dictionaries";
 import { periodIndex, periodLabel, PERIODS } from "../lib/period";
 import { valleyElevations } from "../lib/profile";
+import { STATUSES } from "../lib/regions";
 import {
   COLD_DESCENT_TMAX,
   HEAT_VALLEY_TMAX,
@@ -41,7 +42,6 @@ import {
   SHORT_DAY_HOURS,
   signalsOf,
   SNOW_RISKY_PCT,
-  STATUS_ORDER,
   valleyTmax,
   WET_LIMITED_PCT,
 } from "../lib/status";
@@ -144,7 +144,7 @@ const cohortTable = (title: string, pick: (p: Pair) => Status) => {
     `| Verdict | n | mean snow-day share | share with snow ≥ ${SNOW_RISKY_PCT} % of days |`,
   );
   console.log("| --- | --- | --- | --- |");
-  for (const status of STATUS_ORDER) {
+  for (const status of STATUSES) {
     const c = cohorts[status];
     const mean = c.n ? Math.round(c.snowSum / c.n) : 0;
     const high = c.n ? Math.round((c.snowHigh / c.n) * 100) : 0;

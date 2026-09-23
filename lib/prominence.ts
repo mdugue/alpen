@@ -14,8 +14,9 @@ import type { Messages } from "@/lib/i18n";
  * What is selected, hovered or marked as a favourite ignores the rule: a mark
  * the visitor put there or is pointing at is never hidden by the zoom.
  *
- * The labels have their own, older ladder in `pass-map.tsx` (fame 4 from 7,
- * fame 3 from 8, fame 2 from 9.5); a dot always appears before its name.
+ * The labels have their own, older ladder (`PASS_LABELS` in
+ * `lib/layer-ids.ts`: fame 4 from 7, fame 3 from 8, fame 2 from 9.5); a dot
+ * always appears before its name.
  */
 export const PROMINENCE = [
   { fromZoom: 0, level: "famous", minFame: 4 },

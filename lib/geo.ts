@@ -31,7 +31,7 @@ export const bounds = (
  * latitude, with the longitude stretched by the cosine: at 75 km the error
  * is well under the width of the line it is drawn with.
  */
-export const circleRing = (
+const circleRing = (
   center: LatLon,
   radiusKm: number,
   steps = 48,
@@ -72,9 +72,6 @@ export const haversine = (a: LatLon, b: LatLon): number => {
  * stay somewhere else.
  */
 export const REACH_MAX_KM = 75;
-
-/** Kept as the old name for the precomputed hull and tour reach. */
-export const NEARBY_RADIUS_KM = REACH_MAX_KM;
 
 /**
  * Distance, as a rider thinks of it instead of as a number.
@@ -125,6 +122,10 @@ export const reachWeight = (km: number): number => {
   return (1 + Math.cos((km / REACH_MAX_KM) * Math.PI)) / 2;
 };
 
+/** The turn from `o` to `a` to `b`: positive counter-clockwise. */
+const cross = (o: LatLon, a: LatLon, b: LatLon) =>
+  (a.lon - o.lon) * (b.lat - o.lat) - (a.lat - o.lat) * (b.lon - o.lon);
+
 /**
  * Convex hull of a set of points (monotone chain), in the input's own units –
  * over the small spans this app draws, treating lon/lat as a plane is well
@@ -132,9 +133,6 @@ export const reachWeight = (km: number): number => {
  * the first point; fewer than three distinct points have no hull and yield an
  * empty ring.
  */
-const cross = (o: LatLon, a: LatLon, b: LatLon) =>
-  (a.lon - o.lon) * (b.lat - o.lat) - (a.lat - o.lat) * (b.lon - o.lon);
-
 export const convexHull = (points: readonly LatLon[]): LatLon[] => {
   const pts = [
     ...new Map(points.map((p) => [`${p.lat},${p.lon}`, p])).values(),

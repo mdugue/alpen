@@ -40,8 +40,6 @@ export const vocab = {
     difficultyOne: "Schwierigkeit {level}",
     fame: "Bekanntheit {option}",
     favoritesOnly: "nur Gemerkte",
-    /** The status chips read as alternatives: "gut oder eingeschränkt". */
-    statusOr: " oder ",
     traffic: "Verkehr {option}",
     valley: "Tal {option}",
     wetDays: "Regentage {option}",

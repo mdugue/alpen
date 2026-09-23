@@ -12,7 +12,7 @@ import {
   RANGES,
   rangeOf,
 } from "@/lib/regions";
-import { tourRange } from "@/lib/rows";
+import { rangeOfRoads } from "@/lib/rows";
 import { shellGeometry } from "@/lib/shell-geometry";
 import { indexBySlug } from "@/lib/status";
 import type { Pass, Tour } from "@/lib/types";
@@ -76,7 +76,7 @@ const rangeBox = (range: (typeof RANGES)[number]): Bounds | null => {
       .filter((p) => rangeOf(p.region) === range)
       .map((p): [number, number] => [p.lat, p.lon]),
     ...tours
-      .filter((t) => tourRange(t, index) === range)
+      .filter((t) => rangeOfRoads(t.passes, index) === range)
       .flatMap((t) => t.waypoints.map((w): [number, number] => [w.lat, w.lon])),
   ];
   return points.length ? bounds(points) : null;

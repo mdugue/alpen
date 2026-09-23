@@ -238,7 +238,7 @@ export const Sidebar = (p: SidebarProps) => {
           />
           {/* The three lists, one at a time. In the fixed header rather than
               in the scroll container, so the counts stay on screen while a
-              list of 201 rows is scrolled – which a section header inside the
+              list of 262 rows is scrolled – which a section header inside the
               container could not do without an opaque background it has no way
               to get (see `KindTabs`). */}
           <KindTabs
@@ -255,7 +255,7 @@ export const Sidebar = (p: SidebarProps) => {
           className={cn(
             "min-h-0 flex-1 overscroll-contain",
             // Below the sheet's top snap point the drag belongs to the sheet,
-            // not to 201 rows (`useSheet`).
+            // not to 262 rows (`useSheet`).
             expanded ? "overflow-y-auto" : "overflow-hidden",
           )}
         >

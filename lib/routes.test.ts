@@ -1,6 +1,7 @@
 import { describe, expect, test } from "bun:test";
 
-import { hrefFor, selectionOf, withoutLegacySelection } from "@/lib/routes";
+import { withoutLegacySelection } from "@/lib/hash";
+import { hrefFor, selectionOf } from "@/lib/routes";
 
 describe("entity routes (plan 02)", () => {
   test("a path per kind, and back", () => {
@@ -10,10 +11,11 @@ describe("entity routes (plan 02)", () => {
       { kind: "town", slug: "bormio" },
       { kind: "destination", slug: "oisans" },
     ] as const) {
-      expect(selectionOf(hrefFor(sel))).toEqual(sel);
+      expect(selectionOf(hrefFor(sel, "de"))).toEqual(sel);
+      expect(selectionOf(hrefFor(sel, "en"))).toEqual(sel);
     }
-    expect(hrefFor({ kind: "town", slug: "bormio" })).toBe("/ort/bormio");
-    expect(hrefFor({ kind: "destination", slug: "oisans" })).toBe(
+    expect(hrefFor({ kind: "town", slug: "bormio" }, "de")).toBe("/ort/bormio");
+    expect(hrefFor({ kind: "destination", slug: "oisans" }, "de")).toBe(
       "/ziel/oisans",
     );
   });

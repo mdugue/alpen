@@ -164,7 +164,7 @@ symlink to it, so there is only ever one copy.
 | [`docs/scales.md`](./docs/scales.md)                 | the 1–5 scales, the status ladder, the reach bands                      |
 | [`docs/ui-conventions.md`](./docs/ui-conventions.md) | how the interface is built and why                                      |
 | [`docs/map-rendering.md`](./docs/map-rendering.md)   | camera, layers, hit testing, basemap                                    |
-| [`docs/architecture.md`](./docs/architecture.md)     | what the page ships, caching, the weather route, the toolchain          |
+| [`docs/architecture.md`](./docs/architecture.md)     | what the page ships, caching, the one dynamic route, the toolchain      |
 | [`docs/plans/README.md`](./docs/plans/README.md)     | what is being built next                                                |
 | [`docs/roadmap.md`](./docs/roadmap.md)               | what lies beyond the plans                                              |
 
@@ -209,8 +209,8 @@ See `.env.example`. None of them is required to start the app.
 ## Deployment (Vercel)
 
 Push the repo to GitHub, import it in Vercel, done – no `vercel.json` needed.
-The start page is prerendered at build time and served from the CDN edge;
-only the weather route runs as a function. Production: <https://alpen.manuel.fyi>.
+Every page is prerendered at build time and served from the CDN edge; only
+the forecast streamed into a pass's page runs as a function. Production: <https://alpen.manuel.fyi>.
 
 ## Origin
 

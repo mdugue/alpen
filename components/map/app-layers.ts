@@ -32,7 +32,7 @@ import {
 import { PALETTE } from "@/lib/palette";
 import type { Scheme } from "@/lib/palette";
 import { DESTINATION_MAX_ZOOM, prominenceFilter } from "@/lib/prominence";
-import { STATUS_ORDER } from "@/lib/status";
+import { STATUSES } from "@/lib/regions";
 import type { MapEnvironment } from "@/lib/use-media-query";
 
 /**
@@ -171,7 +171,7 @@ export const addIcons = (map: MLMap, c: ReturnType<typeof readColors>) => {
     if (map.hasImage(id)) map.updateImage(id, data);
     else map.addImage(id, data, { pixelRatio: 2 });
   };
-  for (const k of STATUS_ORDER) {
+  for (const k of STATUSES) {
     add(`star-${k}-0`, star(c[k], c.paper));
     add(`star-${k}-1`, star(c[k], c.ink));
   }
@@ -277,14 +277,14 @@ export const appLayers = (
    * A pass dot reads it off the feature – the point source is rewritten
    * whenever the half-month changes – and an ascent off its feature state,
    * because the geometry is a static file that must never be re-uploaded. Two
-   * lookups, one ladder: the arms come from `STATUS_ORDER`, so a fourth status
+   * lookups, one ladder: the arms come from `STATUSES`, so a fourth status
    * is one entry in `lib/status.ts` rather than two expressions here.
    */
   const statusBy = (where: ExpressionSpecification) =>
     [
       "match",
       where,
-      ...STATUS_ORDER.flatMap((s) => [s, colors[s]]),
+      ...STATUSES.flatMap((s) => [s, colors[s]]),
       colors.unknown,
     ] as never;
   const statusColor = statusBy(["get", "status"]);

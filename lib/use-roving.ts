@@ -3,7 +3,7 @@
 /**
  * Turns a long list into one tab stop.
  *
- * The sidebar holds 201 roads, 9 tours and 48 towns, and every row used to be
+ * The sidebar holds 262 roads, 17 loops and 66 towns, and every row used to be
  * two tab stops of its own – the bookmark toggle and the row itself. Measured
  * on the built page that was **562 focusable elements**, so reaching the map,
  * the footer or anything past the first list meant holding Tab down for

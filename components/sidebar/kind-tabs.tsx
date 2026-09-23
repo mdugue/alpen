@@ -31,9 +31,9 @@ export const KIND_GLYPH: Record<EntityKind, React.ReactNode> = {
  * did not stick, because a pinned header over scrolling rows needs an opaque
  * background and a nested `backdrop-blur` cannot supply one inside a panel
  * that already filters its backdrop; in the header row there is nothing
- * scrolling underneath, so the counts can simply stay on screen. And each
- * kind's map-visibility switch now sits next to its own tab rather than
- * inside a header that may be scrolled out of sight.
+ * scrolling underneath, so the counts can simply stay on screen. Each list's
+ * map-visibility switch rides in that list's own toolbar (`ListToolbar`):
+ * a control beside three tabs reads as acting on all three.
  *
  * The count is on the tab because it is the answer to the filter: a planner
  * who narrows to "ab 2.500 m" wants to see the tours collapse from 9 to 2

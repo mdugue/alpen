@@ -25,7 +25,7 @@ import {
 } from "@/test/fixtures";
 
 /**
- * The three kind modules, rendered from one fixture.
+ * The four kind modules, rendered from one fixture.
  *
  * `renderToStaticMarkup` needs no DOM and no browser, which is what makes a
  * test of the panel possible at all: until plan 31 nothing but the e2e ever

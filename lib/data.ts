@@ -47,8 +47,9 @@ import type {
 /**
  * All data is static and lives in the repo. It is imported at build time –
  * no network access, nothing to revalidate – so nothing here is cached and
- * nothing here is async. The one cache boundary is `app/page.tsx`, whose
- * `"use cache"` covers this whole module's work: what these functions derive
+ * nothing here is async. The one cache boundary is the explorer's layout
+ * (`app/[lang]/(explorer)/layout.tsx`), whose `"use cache"` covers this whole
+ * module's work: what these functions derive
  * is derived once, at prerender, and lands in the page's own cache entry.
  * They used to carry a `"use cache"` each, which bought a second copy of the
  * same values in the cache store and nothing else – no getter has a lifetime,
@@ -69,9 +70,9 @@ import type {
  * What the page hands the client instead is derived from them – the file URLs,
  * tour bounding boxes, which tours pass near which entity, and the valley
  * elevation of each pass. Those derivations sit inside the getters, not at
- * module scope: the page runs them once at prerender, while the weather
- * route, which imports `getPass` from here and starts cold on a serverless
- * instance, never runs them.
+ * module scope: the explorer's layout runs them once at prerender, while the
+ * entity routes' metadata and share images, which only look one entity up
+ * (`entityAt`), never run them.
  */
 const passes: Pass[] = S.Passes.parse(passesJson);
 const tours: Tour[] = S.Tours.parse(toursJson);
@@ -261,18 +262,12 @@ const getYears = (valleys: Record<string, number>): Years => {
   return { passes: passYears, tours: tourYears };
 };
 
-export const getPass = (slug: string): Pass | undefined =>
-  passes.find((p) => p.slug === slug);
-
 /**
  * The entity behind a route (plan 02): what `generateMetadata` and the share
  * image read for one path. A find over a few hundred records, run once per
  * prerendered page; nothing here drags the derivations in.
  */
-export const getEntity = (
-  selection: Selection,
-  lang: Lang = DEFAULT_LANG,
-): Entity | undefined => {
+const getEntity = (selection: Selection, lang: Lang): Entity | undefined => {
   const lists = localized(lang);
   switch (selection.kind) {
     case "pass": {
@@ -332,12 +327,8 @@ export const staticParams = (): { kind: Segment; slug: string }[] => [
  * (docs/plans/31-panel-model.md). The four files it simply hands through are
  * read straight off the parsed constants; a getter around a constant only
  * hides which of the two a name is.
- *
- * `getPass` stays separate and stays exported: the weather route imports it
- * and starts cold on a serverless instance, and the constraint at the top of
- * this file is precisely that it must not drag the derivations in.
  */
-export const getPageData = (lang: Lang = DEFAULT_LANG): PageData => {
+export const getPageData = (lang: Lang): PageData => {
   // The valleys are walked once and handed on: the page carries them and the
   // year is graded against them, and there is no cache left to make the second
   // walk free.

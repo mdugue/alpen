@@ -2,7 +2,7 @@ import { clockTime, dayLength, periodDate, sunTimes } from "@/lib/daylight";
 import type { Messages, Msg } from "@/lib/i18n";
 import { fill } from "@/lib/i18n/fill";
 import { periodAt, periodIndex, periodLabel, PERIODS } from "@/lib/period";
-import { isUnpaved } from "@/lib/regions";
+import { isUnpaved, STATUSES } from "@/lib/regions";
 import type {
   ClimateBucket,
   ClimateYear,
@@ -13,7 +13,7 @@ import type {
   TourSeason,
   Town,
 } from "@/lib/types";
-import { fmt, fmtUnit } from "@/lib/utils";
+import { fmt, fmtUnit, listOr } from "@/lib/utils";
 
 /*
  * Every sentence below is built from `w.status`, the words of the page's
@@ -26,21 +26,12 @@ import { fmt, fmtUnit } from "@/lib/utils";
  */
 
 /**
- * The three statuses, best first – the one list the filter, the share image
- * and the calibration script iterate. `lib/schema.ts` carries the same triple
- * as a zod enum because it is the source of the type, but it is server-only
- * (zod must not reach the client), so this literal cannot be derived from it.
- */
-export const STATUS_ORDER: readonly Status[] = ["open", "risky", "closed"];
-
-/**
  * Higher is worse: the direction the status sort reads. Note that
  * `GRADE_RANK` below runs the other way (higher is better) because `tourYear`
  * picks the minimum grade; the two directions are deliberate and live next to
  * each other so neither can be read for the other.
  */
-export const statusRank = (status: Status): number =>
-  STATUS_ORDER.indexOf(status);
+export const statusRank = (status: Status): number => STATUSES.indexOf(status);
 
 /**
  * Why a verdict came out the way it did. Every signal can only lower a cell,
@@ -77,36 +68,20 @@ export const REASON_ORDER: StatusReason[] = [
 ];
 
 /**
- * The two reasons that close a road: a barrier, for asphalt; the snow cover,
- * for gravel – nobody plows a military road, it opens when the snow is gone
- * (plan 27). Every other signal can only make a cell "eingeschränkt" – a
- * snowy or a hot half-month is not a closure – so the reasons behind
- * "eingeschränkt" are the ladder without these. The cover can limit as well
- * as close: below `COVER_CLOSED_PCT` and above `COVER_LIMITED_PCT` it is a
- * caveat, which is why it stands in both lists.
+ * The two reasons that close a road: a barrier (this one), for asphalt; the
+ * snow cover, for gravel – nobody plows a military road, it opens when the
+ * snow is gone (plan 27). Every other signal can only make a cell
+ * "eingeschränkt" – a snowy or a hot half-month is not a closure. The cover
+ * can limit as well as close: below `COVER_CLOSED_PCT` and above
+ * `COVER_LIMITED_PCT` it is a caveat, which is why only the barrier is left
+ * out of the limiting reasons.
  */
-export const WINDOW_CLOSING: StatusReason = "outside-window";
-export const CLOSING_REASONS: StatusReason[] = [WINDOW_CLOSING, "snow-cover"];
+const WINDOW_CLOSING: StatusReason = "outside-window";
 
 /** Every reason that can make a cell "eingeschränkt", in ladder order. */
 const LIMITING_REASONS: StatusReason[] = REASON_ORDER.filter(
   (r) => r !== WINDOW_CLOSING,
 );
-
-/**
- * The caveat as a standalone phrase (`reasonPhrase`) stands alone: the
- * strip's popover shows it for whichever half-month is hovered, which is
- * rarely the selected one, so it is the only explanation that cell has – the
- * reason sentences describe the selected half-month instead. That is why it
- * may carry its own sub-clause, and why the list in the legend uses the bare
- * noun phrase (`reasonShort`) rather than this: a phrase that carries its own
- * sub-clause reads as part of the list rather than as one item of it.
- */
-/** "a, b und c" – the list the generated sentences are built from. */
-const listOf = (parts: string[], conjunction: string): string =>
-  parts.length < 2
-    ? (parts[0] ?? "")
-    : `${parts.slice(0, -1).join(", ")} ${conjunction} ${parts.at(-1)}`;
 
 /**
  * The display scale of the strip and the histogram: `open` split into the
@@ -126,9 +101,9 @@ export const gradeHint = (grade: Grade, w: Messages): string => {
   const s = w.status;
   return grade === "limited"
     ? fill(s.gradeHint.limited, {
-        reasons: listOf(
+        reasons: listOr(
           LIMITING_REASONS.map((r) => s.reasonShort[r]),
-          s.or,
+          w.lang,
         ),
       })
     : s.gradeHint[grade];
@@ -408,11 +383,11 @@ export const ladderText = (w: Messages): string =>
   fill(w.status.ladder, {
     bestSignal: signalText(BEST_SIGNAL, w),
     coverClosed: fmt(COVER_CLOSED_PCT, 0, w.lang),
-    signals: listOf(
+    signals: listOr(
       LIMITING_REASONS.map(signalOf)
         .filter((s) => s !== undefined)
         .map((s) => signalText(s, w)),
-      w.status.or,
+      w.lang,
     ),
   });
 
@@ -699,9 +674,12 @@ const inRange = (i: number, [from, to]: [Period, Period]): boolean => {
 
 /**
  * The longest run of `true` as a window, or null when it is shorter than two
- * half-months – nothing worth calling a best time.
+ * half-months – nothing worth calling a best time. Circular, like the year: a
+ * run through the turn of the year is one window, not two halves. A derived
+ * year reads its best window with it too (`lib/destination.ts`), so a base
+ * and a road say "beste Zeit" by one rule.
  */
-const windowOf = (flags: boolean[]): [Period, Period] | null => {
+export const windowOf = (flags: boolean[]): [Period, Period] | null => {
   const run = longestRun(flags);
   if (!run || run.length < 2) return null;
   return [periodAt(run.start), periodAt(run.start + run.length - 1)];

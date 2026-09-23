@@ -1,14 +1,14 @@
 import { ALL_RANGES, HEAT_NONE, WET_NONE } from "@/lib/app-state";
 import type { EntityKind, Filters, ListTab, PassSort } from "@/lib/app-state";
 import { areaScore, areaText, areaVerdict } from "@/lib/destination";
-import type { AreaVerdict, DestinationMembers } from "@/lib/destination";
+import type { DerivedVerdict, DestinationMembers } from "@/lib/destination";
 import type { Messages } from "@/lib/i18n";
 import { periodIndex, PERIODS } from "@/lib/period";
 import { rangeOf } from "@/lib/regions";
 import type { RangeName } from "@/lib/regions";
 import {
   destinationHaystack,
-  matches,
+  matcher,
   passHaystack,
   tourHaystack,
   townHaystack,
@@ -41,35 +41,49 @@ import type {
   Town,
 } from "@/lib/types";
 
-/**
- * One filtered list per entity kind. Search and the favourites toggle apply
- * to all three, the status filter and the pass criteria to passes and, via
- * their passes, to tours; towns know no criteria. Map visibility (hidden
- * tours, towns on/off) is a layer toggle, not a filter; what the map draws
- * per kind is what the list of that kind shows.
+/*
+ * One filtered list per entity kind. Search, the favourites toggle and the
+ * range apply to all four; the status filter and the road criteria to the
+ * roads and, through their roads, to the loops; an area is judged on all of
+ * its roads and a town on none. Map visibility (hidden loops, towns on/off) is
+ * a layer toggle, not a filter; what the map draws per kind is what the list
+ * of that kind shows.
  */
+
+/**
+ * What every list is built from besides the filters: the graded years, the
+ * signals the summer filters read, the favourites and the page's words, which
+ * the haystacks and the loop's window are built in. The explorer builds it
+ * once; it used to be five arguments in the same order at every call.
+ */
+export interface ListInputs {
+  years: Years;
+  signals: Signals;
+  isFavorite: (kind: EntityKind, slug: string) => boolean;
+  w: Messages;
+}
 
 interface Query {
   matches: (haystack: string) => boolean;
   favoritesOnly: boolean;
-  isFavorite: (kind: EntityKind, slug: string) => boolean;
-  /** The page's words, which the haystacks are built in (`lib/search.ts`). */
+  isFavorite: ListInputs["isFavorite"];
   w: Messages;
 }
 
-const query = (
-  filters: Filters,
-  isFavorite: Query["isFavorite"],
-  w: Messages,
-): Query => {
+const query = (filters: Filters, { isFavorite, w }: ListInputs): Query => {
   const q = filters.query.trim();
   return {
     favoritesOnly: filters.favoritesOnly,
     isFavorite,
-    matches: (haystack) => !q || matches(haystack, q),
+    matches: q ? matcher(q) : () => true,
     w,
   };
 };
+
+/** Whether the range filter lets an entity of this range through; one without a range passes only while no range is asked for. */
+const inRanges = (filters: Filters, range: RangeName | undefined) =>
+  filters.ranges.length === ALL_RANGES.length ||
+  (range !== undefined && filters.ranges.includes(range));
 
 /**
  * Lower bounds, "at least this interesting": a tour needs one pass that clears
@@ -132,7 +146,7 @@ const tourMatches = (
   passes: PassIndex,
   filters: Filters,
   q: Query,
-  signals?: Signals,
+  signals: Signals,
 ): boolean => {
   // A loop is ridden with what its roads demand, so it answers the surface
   // chip with its own surface rather than through one member.
@@ -157,34 +171,6 @@ const tourMatches = (
       own.map((p) => p.name),
     ),
   );
-};
-
-/**
- * How many passes a filter set keeps. `buildPassRows` would answer the same
- * question, but it builds a row per survivor – the favourite flag, the season
- * strip, the word next to the dot – and a count uses none of it; the filter
- * panel asks this once per option on every keystroke. Counting is therefore
- * its own path over the same two predicates.
- */
-const countPasses = (
-  passes: Pass[],
-  years: Years,
-  filters: Filters,
-  isFavorite: Query["isFavorite"],
-  w: Messages,
-  signals?: Signals,
-): number => {
-  const q = query(filters, isFavorite, w);
-  const i = periodIndex(filters.period);
-  let n = 0;
-  for (const pass of passes) {
-    const input = inputAt(signalsOf(signals, pass.slug), filters.period);
-    if (!passMatches(pass, filters, q, input)) continue;
-    const cell = years.passes[pass.slug]?.cells[i];
-    if (!cell || !filters.status.includes(cell.status)) continue;
-    n += 1;
-  }
-  return n;
 };
 
 /**
@@ -237,13 +223,11 @@ export const sortPassRows = (rows: PassRow[], sort: PassSort): PassRow[] => {
  */
 export const buildPassRows = (
   passes: Pass[],
-  years: Years,
   filters: Filters,
-  isFavorite: Query["isFavorite"],
-  w: Messages,
-  signals?: Signals,
+  inputs: ListInputs,
 ): PassRow[] => {
-  const q = query(filters, isFavorite, w);
+  const { years, signals, isFavorite } = inputs;
+  const q = query(filters, inputs);
   const i = periodIndex(filters.period);
   const rows: PassRow[] = [];
   for (const pass of passes) {
@@ -275,18 +259,22 @@ export interface TourRow {
   window: string;
   /**
    * The range the loop lies in: that of its passes, which `data:check` holds
-   * to one. Absent when none of them is known. One definition for the row,
-   * the scene's opening frame and the frame guard.
+   * to one (`rangeOfRoads`). Absent when none of them is known. One
+   * definition for the row, the scene's opening frame and the frame guard.
    */
   range?: RangeName;
 }
 
-/** A loop's range is its passes' – the first known one, since they share it. */
-export const tourRange = (
-  tour: Tour,
+/**
+ * The range of a loop or an area: that of its roads – the first known one,
+ * since `data:check` holds a loop's to one and an area is drawn around one
+ * valley.
+ */
+export const rangeOfRoads = (
+  slugs: readonly string[],
   passes: PassIndex,
 ): RangeName | undefined => {
-  for (const slug of tour.passes) {
+  for (const slug of slugs) {
     const p = passes.get(slug);
     if (p) return rangeOf(p.region);
   }
@@ -296,13 +284,11 @@ export const tourRange = (
 export const buildTourRows = (
   tours: Tour[],
   passes: PassIndex,
-  years: Years,
   filters: Filters,
-  isFavorite: Query["isFavorite"],
-  w: Messages,
-  signals?: Signals,
+  inputs: ListInputs,
 ): TourRow[] => {
-  const q = query(filters, isFavorite, w);
+  const { years, signals, isFavorite, w } = inputs;
+  const q = query(filters, inputs);
   const i = periodIndex(filters.period);
   const rows: TourRow[] = [];
   for (const tour of tours) {
@@ -315,7 +301,7 @@ export const buildTourRows = (
     if (!cell || !filters.status.includes(cell.status)) continue;
     rows.push({
       favorite,
-      range: tourRange(tour, passes),
+      range: rangeOfRoads(tour.passes, passes),
       reason: reasonOf(cell),
       season: year.cells,
       status: cell.status,
@@ -348,23 +334,18 @@ export const buildTownRows = (
   towns: Town[],
   townRanges: Partial<Record<string, RangeName>>,
   filters: Filters,
-  isFavorite: Query["isFavorite"],
-  w: Messages,
+  inputs: ListInputs,
   /** Per town slug, the areas the list holds it under (`homeAreasOf`). */
   townAreas: Partial<Record<string, readonly Destination[]>> = {},
 ): TownRow[] => {
-  const q = query(filters, isFavorite, w);
+  const q = query(filters, inputs);
   const rows: TownRow[] = [];
   for (const town of towns) {
-    const favorite = isFavorite("town", town.slug);
+    const favorite = inputs.isFavorite("town", town.slug);
     if (q.favoritesOnly && !favorite) continue;
     const range = townRanges[town.slug];
-    if (
-      filters.ranges.length !== ALL_RANGES.length &&
-      (!range || !filters.ranges.includes(range))
-    )
-      continue;
-    if (!q.matches(townHaystack(town, range, w))) continue;
+    if (!inRanges(filters, range)) continue;
+    if (!q.matches(townHaystack(town, range, inputs.w))) continue;
     rows.push({ areas: townAreas[town.slug] ?? [], favorite, range, town });
   }
   return rows.toSorted((a, b) => a.town.name.localeCompare(b.town.name, "de"));
@@ -375,7 +356,7 @@ export interface DestinationRow {
   /** What the area holds, as the server derived it. */
   members: DestinationMembers;
   /** The counts of the chosen half-month and the derived year (`areaVerdict`). */
-  verdict: AreaVerdict;
+  verdict: DerivedVerdict;
   /** "7 von 9 Straßen gut" – the row's line and the compare sheet's. */
   text: string;
   /** What the list is ranked by for the chosen half-month (`areaScore`). */
@@ -388,18 +369,6 @@ export interface DestinationRow {
   /** The range the area lies in: its first member road's. */
   range?: RangeName;
 }
-
-/** An area's range is its roads' – the first known one, like a loop's. */
-export const destinationRange = (
-  members: DestinationMembers,
-  passes: PassIndex,
-): RangeName | undefined => {
-  for (const slug of members.passes) {
-    const p = passes.get(slug);
-    if (p) return rangeOf(p.region);
-  }
-  return undefined;
-};
 
 /**
  * The destinations, ranked by what is rideable in the chosen half-month.
@@ -414,24 +383,19 @@ export const buildDestinationRows = (
   members: Record<string, DestinationMembers>,
   passes: PassIndex,
   towns: TownIndex,
-  years: Years,
   filters: Filters,
-  isFavorite: Query["isFavorite"],
-  w: Messages,
+  inputs: ListInputs,
 ): DestinationRow[] => {
-  const q = query(filters, isFavorite, w);
+  const { years, isFavorite, w } = inputs;
+  const q = query(filters, inputs);
   const rows: DestinationRow[] = [];
   for (const destination of destinations) {
     const favorite = isFavorite("destination", destination.slug);
     if (q.favoritesOnly && !favorite) continue;
     const own = members[destination.slug];
     if (!own) continue;
-    const range = destinationRange(own, passes);
-    if (
-      filters.ranges.length !== ALL_RANGES.length &&
-      (!range || !filters.ranges.includes(range))
-    )
-      continue;
+    const range = rangeOfRoads(own.passes, passes);
+    if (!inRanges(filters, range)) continue;
     const baseTowns = destination.baseTowns
       .map((slug) => towns.get(slug))
       .filter((t) => t !== undefined);
@@ -546,14 +510,24 @@ export interface Rows {
  */
 export const facetCount = (
   passes: Pass[],
-  years: Years,
   filters: Filters,
-  isFavorite: Query["isFavorite"],
   patch: Partial<Filters>,
-  w: Messages,
-  signals?: Signals,
-): number =>
-  countPasses(passes, years, { ...filters, ...patch }, isFavorite, w, signals);
+  inputs: ListInputs,
+): number => {
+  // The same two predicates as `buildPassRows`, without a row per survivor:
+  // the filter panel asks this once per chip on every keystroke.
+  const patched = { ...filters, ...patch };
+  const q = query(patched, inputs);
+  const i = periodIndex(patched.period);
+  let n = 0;
+  for (const pass of passes) {
+    const input = inputAt(signalsOf(inputs.signals, pass.slug), patched.period);
+    if (!passMatches(pass, patched, q, input)) continue;
+    const cell = inputs.years.passes[pass.slug]?.cells[i];
+    if (cell && patched.status.includes(cell.status)) n += 1;
+  }
+  return n;
+};
 
 export interface HistogramBar {
   period: Period;
@@ -615,11 +589,9 @@ const dominantGrade = (bar: HistogramBar): Grade | null => {
 const bandPasses = (
   passes: Pass[],
   filters: Filters,
-  isFavorite: Query["isFavorite"],
-  w: Messages,
-  signals?: Signals,
+  inputs: ListInputs,
 ): Pass[] => {
-  const q = query(filters, isFavorite, w);
+  const q = query(filters, inputs);
   const unbounded = {
     ...filters,
     maxValleyTmax: HEAT_NONE,
@@ -630,7 +602,7 @@ const bandPasses = (
       pass,
       unbounded,
       q,
-      inputAt(signalsOf(signals, pass.slug), filters.period),
+      inputAt(signalsOf(inputs.signals, pass.slug), filters.period),
     ),
   );
 };
@@ -645,12 +617,10 @@ const bandPasses = (
  */
 export const seasonBand = (
   passes: Pass[],
-  years: Years,
   filters: Filters,
-  isFavorite: Query["isFavorite"],
-  w: Messages,
-  signals?: Signals,
+  inputs: ListInputs,
 ): SeasonBand => {
+  const { years, signals } = inputs;
   const bars: SeasonBar[] = PERIODS.map((period) => ({
     best: 0,
     closed: 0,
@@ -674,7 +644,7 @@ export const seasonBand = (
   }));
   let latSum = 0;
   let counted = 0;
-  for (const pass of bandPasses(passes, filters, isFavorite, w, signals)) {
+  for (const pass of bandPasses(passes, filters, inputs)) {
     const cells = years.passes[pass.slug]?.cells;
     if (!cells) continue;
     latSum += pass.lat;

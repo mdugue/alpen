@@ -28,9 +28,9 @@ import { surfaceWord, tagLabel, typeWord } from "@/lib/i18n";
 import type { Messages } from "@/lib/i18n";
 import { visibleBounds } from "@/lib/map-camera";
 import type { TownReach } from "@/lib/nearby";
-import { HOME_RANGE, inBox, RANGE_BOUNDS, rangeOf } from "@/lib/regions";
+import { HOME_RANGE, rangeOf } from "@/lib/regions";
 import { ascentKey } from "@/lib/route-key";
-import type { PassRow, Rows } from "@/lib/rows";
+import type { PassRow, Rows, TourRow } from "@/lib/rows";
 import type { LatLon, Status, Surface, Tag } from "@/lib/types";
 import { fmtUnit } from "@/lib/utils";
 
@@ -295,28 +295,22 @@ export const buildScene = (input: SceneInput): Scene => {
     return null;
   };
 
-  const tours = rows.tour.map(({ tour }) => ({
-    slug: tour.slug,
-    visible: isShown(shown, "tour", tour.slug),
-  }));
+  const loops = (list: readonly TourRow[]) =>
+    list.map(({ tour }) => ({
+      slug: tour.slug,
+      visible: isShown(shown, "tour", tour.slug),
+    }));
   const bounds = visibleBounds(
     rows.pass.map((r) => r.pass),
-    tours,
+    loops(rows.tour),
     tourBounds,
     shown.passes,
   );
-  const home = RANGE_BOUNDS[HOME_RANGE];
   const opening = visibleBounds(
     rows.pass
       .map((r) => r.pass)
       .filter((p) => rangeOf(p.region) === HOME_RANGE),
-    // A loop has no region: it is at home where its box's centre is.
-    tours.filter(({ slug }) => {
-      const b = tourBounds[slug];
-      return (
-        b && inBox(home, { lat: (b[1] + b[3]) / 2, lon: (b[0] + b[2]) / 2 })
-      );
-    }),
+    loops(rows.tour.filter((r) => r.range === HOME_RANGE)),
     tourBounds,
     shown.passes,
   );

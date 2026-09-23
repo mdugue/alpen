@@ -15,6 +15,10 @@ export const fmt = (n: number, digits = 0, lang: Lang = "de") =>
     minimumFractionDigits: 0,
   });
 
+/** "a, b oder c" – alternatives as the page's language lists them. */
+export const listOr = (parts: readonly string[], lang: Lang = "de") =>
+  new Intl.ListFormat(localeOf(lang), { type: "disjunction" }).format(parts);
+
 /** Number plus unit with a non-breaking space: "2.757 m", "24,3 km". */
 export const fmtUnit = (
   n: number,

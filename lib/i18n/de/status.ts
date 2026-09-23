@@ -6,8 +6,6 @@
  * the arithmetic and hands the parts over.
  */
 export const status = {
-  /** "a, b und c" / "a, b oder c" – the conjunctions the lists are built with. */
-  and: "und",
   best: "beste Zeit {from} – {to}",
   /** What one cell says where it knows its half-month. */
   cell: {
@@ -50,7 +48,6 @@ export const status = {
   ladder:
     "Jedes Signal kann eine Zelle nur senken, nie heben: {signals} machen aus „gut“ ein „eingeschränkt“ – und das erste Signal in dieser Reihenfolge ist das Wort dazu. „Beste Zeit“ ist der längste Abschnitt ohne Vorbehalt und mit {bestSignal}. „Oft gesperrt“ kommt aus dem Öffnungsfenster – und auf ungeteerter Straße aus der Schneedecke ab {coverClosed} % der Tage: eine gesperrte oder zugeschneite Straße und ein heißes Tal sind nicht dieselbe Art von Aussage.",
   lapse: "{rate} °C je 100 m",
-  or: "oder",
   /** The reason as its sentence under the badge; every number carries its source. */
   reason: {
     altitude:
@@ -71,7 +68,16 @@ export const status = {
     windowEdge:
       "Am Rand des Öffnungsfensters ({window}) – Öffnung und Sperrung verschieben sich je nach Winter um Wochen.",
   },
-  /** The caveat as a standalone phrase, for "Fahrbar, aber mit einem Haken: …". */
+  /**
+   * The caveat as a standalone phrase, for "Fahrbar, aber mit einem Haken: …".
+   * It stands alone: the strip's popover shows it for whichever half-month is
+   * hovered, which is rarely the selected one, so it is the only explanation
+   * that cell has – the reason sentences describe the selected half-month
+   * instead. That is why it may carry its own sub-clause, and why the list in
+   * the legend uses the bare noun phrase (`reasonShort`) rather than this: a
+   * phrase with its own sub-clause reads as part of the list rather than as
+   * one item of it.
+   */
   reasonPhrase: {
     altitude: "Höhenlage, Schnee und Eis sind möglich",
     "cold-descent": "eine kalte Abfahrt",

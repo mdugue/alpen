@@ -7,6 +7,7 @@ import {
   bestRelief,
   difficultyLabel,
   filterCount,
+  hasSecondaryFilters,
   resetFilters,
 } from "@/lib/filter-summary";
 import { DE } from "@/lib/i18n/dictionaries";
@@ -98,6 +99,22 @@ describe("filterCount", () => {
         DE,
       ),
     ).toBe(3);
+  });
+});
+
+describe("hasSecondaryFilters", () => {
+  test("opens the second half for every filter in it, and for none outside it", () => {
+    expect(hasSecondaryFilters(filters())).toBe(false);
+    expect(
+      hasSecondaryFilters(filters({ minElevation: 2000, status: ["open"] })),
+    ).toBe(false);
+    // The surface chip sits behind "Weitere Filter" too; a link carrying
+    // "Schotter" must not hide the control that lifts it.
+    expect(hasSecondaryFilters(filters({ surfaces: ["gravel"] }))).toBe(true);
+    expect(hasSecondaryFilters(filters({ tags: ["toll"] }))).toBe(true);
+    expect(hasSecondaryFilters(filters({ maxTraffic: 2 }))).toBe(true);
+    // A group toggled off and on again is its default, whatever the array.
+    expect(hasSecondaryFilters(filters({ types: [...ALL_TYPES] }))).toBe(false);
   });
 });
 

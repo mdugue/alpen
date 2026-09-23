@@ -384,21 +384,21 @@ change – the script skips everything that already exists.
 
 ### Derived at prerender, not as a file
 
-Some derivations are computed by a `"use cache"` getter in `lib/data.ts` while
-the page is prerendered, rather than committed next to the measurements: they
-depend on rules and thresholds in `lib/`, so a file would go stale the moment
-one of those changed, with nothing to notice it. The page awaits all of them at
-once as `getPageData()`, which is the only exported entry point besides
-`getPass(slug)` – the weather route's, whose cold start must not drag the
-derivations in.
+Some derivations are computed by a getter in `lib/data.ts` while the page is
+prerendered, rather than committed next to the measurements: they depend on
+rules and thresholds in `lib/`, so a file would go stale the moment one of
+those changed, with nothing to notice it. The explorer's layout reads all of
+them at once as `getPageData(lang)`, inside its `"use cache"` entry; the entity
+routes look one entity up with `entityAt`, which runs none of them.
 
 | Getter                  | Value                                                                                                             |
 | ----------------------- | ----------------------------------------------------------------------------------------------------------------- |
 | `getValleys`            | the lowest ascent start per pass – the elevation the summit climate is taken down to for the heat signal          |
-| `getProfiles`           | the road coordinate of every profile sample (`ProfileWithCoords`), so no route geometry reaches the client        |
+| `getMapAssets`          | the hashed GeoJSON file names MapLibre loads, the loops' boxes and the ranges' frames (`lib/map-assets.ts`)       |
+| `getDetailAssets`       | the hashed file name of each entity's detail file – profiles and photos (`lib/detail-assets.ts`)                  |
 | `getNearbyTours`        | which tours run within reach of each pass, tour start and town, and how near their road comes (`lib/nearby.ts`)   |
 | `getTownReach`          | the area each town reaches, as a hull over its passes                                                             |
-| `getDestinationMembers` | what each destination holds – roads, loops, towns and the box around them (`membersOf`, `lib/destination.ts`)     |
+| `getDestinationMembers` | what each area holds – roads, loops, towns, its outline and the box around it (`membersOf`, `lib/destination.ts`) |
 | `getYears`              | the **year of every pass and tour**: 24 cells with status, grade, reasons and the snow note, plus the best window |
 
 The year is what the whole app reads. `passYear()` in `lib/status.ts` runs the

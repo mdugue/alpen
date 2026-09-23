@@ -8,6 +8,7 @@ import { fill, langOf } from "@/lib/i18n";
 import { messagesOf } from "@/lib/i18n/dictionaries";
 import { MarkBadge } from "@/lib/mark";
 import { periodLabel } from "@/lib/period";
+import { STATUSES } from "@/lib/regions";
 import {
   DotLayer,
   dotMap,
@@ -15,7 +16,6 @@ import {
   SHARE_SIZE,
   shareFonts,
 } from "@/lib/share-image";
-import { STATUS_ORDER } from "@/lib/status";
 import { fmt } from "@/lib/utils";
 
 /**
@@ -153,7 +153,7 @@ export default async function Image({
           />
           <span>{periodLabel(SHARE_PERIOD, w)}</span>
         </div>
-        {STATUS_ORDER.map((s) => (
+        {STATUSES.map((s) => (
           <div
             key={s}
             style={{ alignItems: "center", display: "flex", gap: 12 }}

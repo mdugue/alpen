@@ -97,7 +97,7 @@ export const PASS_MAX_ZOOM = 12.5;
 export const PASS_MIN_ZOOM = 11;
 export const TOWN_MIN_ZOOM = 10.5;
 /** A destination never flies closer than this: it is an overview, and its members are the detail. */
-export const DESTINATION_MAX_ZOOM_FIT = 10;
+const DESTINATION_MAX_ZOOM_FIT = 10;
 /** A padding change nothing else moves with: long enough to read as a slide. */
 export const PADDING_MS = 400;
 /**
@@ -283,6 +283,10 @@ const asked = (state: CameraState): Inset =>
       ? state.padding
       : state.padded;
 
+/** A flight still waiting for its delay is dropped by whatever replaces it. */
+const dropScheduled = (state: CameraState): CameraCommand[] =>
+  state.phase === "awaiting" ? [{ cmd: "cancel" }] : [];
+
 const ease = (padding: Inset, env: CameraEnv): CameraCommand => ({
   cmd: "easeTo",
   duration: env.reduceMotion ? 0 : PADDING_MS,
@@ -462,9 +466,7 @@ export const camera = (
           target: event.target,
         },
         [
-          ...(state.phase === "awaiting"
-            ? [{ cmd: "cancel" } as CameraCommand]
-            : []),
+          ...dropScheduled(state),
           { cmd: "schedule", ms: env.reduceMotion ? 0 : SELECT_DELAY },
         ],
       ];
@@ -509,12 +511,7 @@ export const camera = (
       const padding = asked(state);
       return [
         { fitted: true, padded: padding, phase: "idle" },
-        [
-          ...(state.phase === "awaiting"
-            ? [{ cmd: "cancel" } as CameraCommand]
-            : []),
-          { cmd: "jumpTo", padding, view: event.view },
-        ],
+        [...dropScheduled(state), { cmd: "jumpTo", padding, view: event.view }],
       ];
     }
 
@@ -535,9 +532,7 @@ export const camera = (
       return [
         { fitted: true, padded: padding, phase: "idle" },
         [
-          ...(state.phase === "awaiting"
-            ? [{ cmd: "cancel" } as CameraCommand]
-            : []),
+          ...dropScheduled(state),
           {
             cmd: "flyTo",
             duration: env.reduceMotion ? 0 : FIT_MS,

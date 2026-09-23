@@ -1,4 +1,4 @@
-import { haversine, NEARBY_RADIUS_KM, paddedHull } from "@/lib/geo";
+import { haversine, paddedHull, REACH_MAX_KM } from "@/lib/geo";
 import type { Ring } from "@/lib/geo";
 import { rangeOf } from "@/lib/regions";
 import type { RangeName } from "@/lib/regions";
@@ -18,7 +18,7 @@ export interface NearbyTour {
 }
 
 /**
- * Which tours pass within `NEARBY_RADIUS_KM` of each entity, precomputed on
+ * Which tours pass within `REACH_MAX_KM` of each entity, precomputed on
  * the server so the detail panel's "Im Umkreis" list needs no tour geometry
  * on the client (docs/plans/01-map-data-out-of-payload.md). Passes and towns
  * nearby are still measured in the panel: those are points, and a hundred
@@ -55,7 +55,7 @@ export const nearbyTours = (
   tours: readonly Tour[],
   towns: readonly Town[],
   routes: Record<string, RouteGeometry>,
-  radiusKm = NEARBY_RADIUS_KM,
+  radiusKm = REACH_MAX_KM,
 ): NearbyTours => {
   const lines = tours.map((t) => [t.slug, tourLine(t, routes)] as const);
   const near = (at: LatLon): NearbyTour[] =>
@@ -90,7 +90,7 @@ const REACH_PADDING_KM = 4;
 export const townReach = (
   passes: readonly Pass[],
   towns: readonly Town[],
-  radiusKm = NEARBY_RADIUS_KM,
+  radiusKm = REACH_MAX_KM,
 ): TownReach => {
   const out: TownReach = {};
   for (const town of towns) {
@@ -110,7 +110,7 @@ export const townReach = (
 export const townRanges = (
   passes: readonly Pass[],
   towns: readonly Town[],
-  radiusKm = NEARBY_RADIUS_KM,
+  radiusKm = REACH_MAX_KM,
 ): Partial<Record<string, RangeName>> => {
   const out: Partial<Record<string, RangeName>> = {};
   for (const town of towns) {

@@ -12,6 +12,7 @@ import {
   REGIONS,
   ROAD_TAGS,
   ROAD_TYPES,
+  STATUSES,
   TOWN_TAGS,
 } from "@/lib/regions";
 
@@ -38,7 +39,7 @@ export const Period = z
     "Halbmonat: 1, 1.5, … 12.5",
   );
 
-export const Status = z.enum(["open", "risky", "closed"]);
+export const Status = z.enum(STATUSES);
 
 export const Rating = z.int().min(1).max(5);
 
@@ -603,7 +604,7 @@ export const Summit = z.strictObject({
 export const Summits = z.record(Slug, Summit);
 
 /**
- * One day of the Open-Meteo forecast served by `app/api/weather/[slug]`.
+ * One day of the Open-Meteo forecast, as `forecast` (`lib/weather.ts`) reads it.
  *
  * Every measurement is nullable because the host answers a day or a variable
  * it has no value for with `null`, and a forecast is worth having with a cell

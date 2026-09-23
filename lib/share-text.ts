@@ -26,26 +26,6 @@ const firstSentence = (text: string): string => {
   return m ? m[0] : text.trim();
 };
 
-export const entityName = (e: Entity): string => {
-  switch (e.kind) {
-    case "pass": {
-      return e.pass.name;
-    }
-    case "tour": {
-      return e.tour.name;
-    }
-    case "town": {
-      return e.town.name;
-    }
-    case "destination": {
-      return e.destination.name;
-    }
-    default: {
-      return e satisfies never;
-    }
-  }
-};
-
 /** "Col du Galibier · 2.642 m", "Sellaronda · Rundtour", "Bormio · Rad-Ort", "Oisans · Reiseziel". */
 export const entityTitle = (e: Entity, w: Messages): string => {
   const t = w.share.entity;

@@ -40,9 +40,10 @@ import type { Period, Status } from "@/lib/types";
 //   z     zoom                             c     centre "lat,lon"
 //   pi,b  pitch and bearing (only when tilted)
 //   vgl   the destinations set side by side, "oisans,engadin"
-//   pass | tour | town | ziel   the selected entity's slug – read only, for
-//         links from before plan 02; the selection is the path now
-//         (`lib/routes.ts`), and the adapter moves an old link over.
+//   pass | tour | town   the selected entity's slug – read only, for links
+//         from before plan 02; the selection is the path now
+//         (`lib/routes.ts`), and the adapter moves an old link over. An area
+//         never had a key: it came with the paths.
 //
 // Every filter has a key too; those are `FILTER_KEYS` below, one row each.
 // Every key is validated on the way in: unknown values fall back to the
@@ -227,7 +228,6 @@ const HASH = inKeyOrder({
   town: parseAsString,
   vgl: parseAsSlugs,
   z: parseAsFixed(2),
-  ziel: parseAsString,
 });
 /**
  * The row's parser carrying its default. A row is one of thirteen parser
@@ -251,6 +251,20 @@ const HASH_OUT = {
 const loadHash = createLoader(HASH);
 const serialize = createSerializer(HASH_OUT, { clearOnDefault: true });
 
+/** The keys a selection travelled in before plan 02, when there were no paths. */
+const LEGACY_SELECTION = ["pass", "tour", "town"] as const;
+
+/**
+ * A hash from before the routes, with the selection it used to carry taken
+ * out: `#pass=x&t=6` becomes `#t=6`, for the path that now carries the pass.
+ */
+export const withoutLegacySelection = (hash: string): string => {
+  const params = new URLSearchParams(hash.replace(/^#/u, ""));
+  for (const key of LEGACY_SELECTION) params.delete(key);
+  const rest = params.toString();
+  return rest ? `#${rest}` : "";
+};
+
 /**
  * The pure half of the hash adapter (`lib/hash-adapter.ts`), so the parsing can
  * be tested without a window. What the adapter reads becomes the `load` action
@@ -265,9 +279,7 @@ export const parseHash = (hash: string): HashState => {
       ? { kind: "tour", slug: h.tour }
       : h.town
         ? { kind: "town", slug: h.town }
-        : h.ziel
-          ? { kind: "destination", slug: h.ziel }
-          : null;
+        : null;
   return {
     compare: h.vgl ?? [],
     filters: Object.fromEntries(
@@ -297,7 +309,7 @@ export const serializeHash = (
     ) as { [K in FilterHashKey]: Filters[Rows[K]["field"]] }),
     b: tilted ? view.bearing : null,
     c: [view.lat, view.lon],
-    // The selection is the path, never written here; the four keys stay
+    // The selection is the path, never written here; the three keys stay
     // readable so an old link still opens the right entity.
     pass: null,
     pi: tilted ? view.pitch : null,
@@ -305,6 +317,5 @@ export const serializeHash = (
     town: null,
     vgl: compare.length ? [...compare] : null,
     z: view.zoom,
-    ziel: null,
   }).replace(/^\?/u, "");
 };

@@ -17,7 +17,7 @@ import {
 import type { Filters, OptionLabel, Options } from "@/lib/app-state";
 import type { Messages } from "@/lib/i18n";
 import { fill } from "@/lib/i18n/fill";
-import { fmt } from "@/lib/utils";
+import { fmt, listOr } from "@/lib/utils";
 
 /**
  * One applied filter as the chip row under the search field shows it: a
@@ -84,7 +84,10 @@ export const appliedFilters = (f: Filters, w: Messages): AppliedFilter[] => {
   if (status.length)
     add(
       "status",
-      status.map((s) => w.status.label[s]).join(v.filter.statusOr),
+      listOr(
+        status.map((s) => w.status.label[s]),
+        w.lang,
+      ),
       (g) => ({
         ...g,
         status: ALL_STATUS,
@@ -214,16 +217,30 @@ export const bestRelief = (
     .filter((r) => r.n > 0)
     .toSorted((a, b) => b.n - a.n)[0];
 
+/** The filters behind "Weitere Filter", in the order the panel shows them. */
+export const SECONDARY_FILTERS = [
+  "types",
+  "surfaces",
+  "tags",
+  "maxTraffic",
+  "minBeauty",
+  "minFame",
+  "maxValleyTmax",
+  "maxWetDays",
+] as const satisfies readonly (keyof Filters)[];
+
 /**
  * Whether anything in the second half of the panel is set. It decides whether
  * "Weitere Filter" opens by itself: a link that carries a traffic limit must
- * not hide the control that lifts it again.
+ * not hide the control that lifts it again. A set filter is one off its
+ * default – for a chip group, one that does not hold all of its members (or,
+ * for the labels, none), which is what the length says.
  */
 export const hasSecondaryFilters = (f: Filters) =>
-  f.types.length !== ALL_TYPES.length ||
-  f.tags.length > 0 ||
-  f.maxTraffic < RATING_MAX ||
-  f.minBeauty > RATING_MIN ||
-  f.minFame > 1 ||
-  f.maxValleyTmax < HEAT_OPTIONS[0][0] ||
-  f.maxWetDays < WET_OPTIONS[0][0];
+  SECONDARY_FILTERS.some((key) => {
+    const value = f[key];
+    const initial = DEFAULT_FILTERS[key];
+    return Array.isArray(value) && Array.isArray(initial)
+      ? value.length !== initial.length
+      : value !== initial;
+  });

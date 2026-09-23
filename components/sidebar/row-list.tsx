@@ -26,7 +26,7 @@ import { rovingList } from "@/lib/use-roving";
  * would buy a dependency and rows that exist only while they are looked at.
  * Every row staying in the DOM is what keeps the list's arrows (`rovingList`),
  * `scrollIntoView` on the selected row and the browser's own find-in-page
- * working on all 201 of them.
+ * working on every one of them.
  *
  * `contain-intrinsic-size` is the block's remembered height, so the scrollbar
  * does not jump; `auto` lets a block that has been rendered once keep what it
@@ -36,7 +36,7 @@ import { rovingList } from "@/lib/use-roving";
  * The list is `role="list"` on a `<div>` rather than a `<ul>`: a block is an
  * element between the list and its rows, and `<ul>` may hold nothing but
  * `<li>`. The roles say what the markup no longer does on its own, and the
- * block itself is presentational, so a screen reader sees one list of 201.
+ * block itself is presentational, so a screen reader sees one list of rows.
  */
 export const RowList = <T,>({
   items,

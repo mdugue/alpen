@@ -1,5 +1,5 @@
 import type { EntityKind, Selection } from "@/lib/app-state";
-import { DEFAULT_LANG, langOfPath, langPrefix } from "@/lib/i18n";
+import { langOfPath, langPrefix } from "@/lib/i18n";
 import type { Lang } from "@/lib/i18n";
 
 /**
@@ -29,12 +29,11 @@ const KIND_OF = new Map<string, EntityKind>(
 );
 
 /** The path of an entity in one language, without the hash. */
-export const hrefFor = (selection: Selection, lang: Lang = DEFAULT_LANG) =>
+export const hrefFor = (selection: Selection, lang: Lang) =>
   `${langPrefix(lang)}/${SEGMENT[selection.kind]}/${encodeURIComponent(selection.slug)}`;
 
 /** The start page in one language: `/` or `/en`. */
-export const homeHref = (lang: Lang = DEFAULT_LANG): string =>
-  langPrefix(lang) || "/";
+export const homeHref = (lang: Lang): string => langPrefix(lang) || "/";
 
 /**
  * The entity a path names, or `null` for the start page and for anything
@@ -56,17 +55,4 @@ export const selectionOf = (pathname: string): Selection | null => {
   } catch {
     return null;
   }
-};
-
-/**
- * A hash from before the routes, with the selection it used to carry taken
- * out: `#pass=x&t=6` becomes `#t=6`, for the path that now carries the pass.
- */
-export const withoutLegacySelection = (hash: string): string => {
-  const params = new URLSearchParams(hash.replace(/^#/u, ""));
-  for (const key of Object.values(SEGMENT)) params.delete(key);
-  // The old key for a town was `town`, before the German segment.
-  params.delete("town");
-  const rest = params.toString();
-  return rest ? `#${rest}` : "";
 };

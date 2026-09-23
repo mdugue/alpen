@@ -3,7 +3,6 @@ import type { Layout } from "../fill";
 
 /** The English words of the heuristic, held to the German file's shape. */
 export const status = {
-  and: "and",
   best: "best time {from} – {to}",
   cell: {
     closedBarrier:
@@ -40,7 +39,6 @@ export const status = {
   ladder:
     'Every signal can only lower a cell, never lift it: {signals} turn a "good" into a "limited" – and the first signal in this order is the word next to it. "Best time" is the longest stretch without a caveat and with {bestSignal}. "Often closed" comes from the opening window – and on an unpaved road from a snow cover on {coverClosed} % of days or more: a closed or snowed-in road and a hot valley are not the same kind of statement.',
   lapse: "{rate} °C per 100 m",
-  or: "or",
   reason: {
     altitude:
       "{period} at {elevation} m is borderline: snow and ice are possible even when the road is open.",

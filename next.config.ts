@@ -33,10 +33,7 @@ const nextConfig: NextConfig = {
       })),
     ),
 
-  // The pass, tour, town and destination data is static and imported at
-  // build time; the only dynamic source is the weather forecast, streamed
-  // into the pass route (see components/panel/weather.tsx, lib/weather.ts).
-  // React Compiler: memoises the client components automatically
+  // React Compiler: memoises the client components automatically.
   reactCompiler: true,
 
   // German has one address, the prefix-free one. `/de/…` is where the rewrite
@@ -53,10 +50,10 @@ const nextConfig: NextConfig = {
   // German is prefix-free and canonical, English lives under `/en`, and both
   // are prerendered from `app/[lang]` (plan 08): the prefix-free paths are
   // rewritten onto `/de` here, and only the bare root is negotiated
-  // (`proxy.ts`). The negative lookahead keeps `/en` and the metadata routes at the root (the
-  // icons, the manifest, robots and the sitemap) out of the rewrite; the share
-  // images sit under `[lang]` so each language gets its own. `_next` and
-  // `public/` are served before rewrites run.
+  // (`proxy.ts`). The negative lookahead keeps `/en` and the metadata routes
+  // at the root (the icons, the manifest, robots and the sitemap) out of the
+  // rewrite; the share images sit under `[lang]` so each language gets its
+  // own. `_next` and `public/` are served before rewrites run.
   rewrites: () =>
     Promise.resolve([
       { destination: "/de", source: "/" },

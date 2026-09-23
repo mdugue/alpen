@@ -23,10 +23,17 @@ export const fold = (s: string) =>
     .replaceAll(/[^\p{L}\p{N}]+/gu, " ")
     .trim();
 
+/**
+ * The query folded once, as a test for any number of haystacks: a list asks
+ * it of every row on every keystroke, and the query is the same for all.
+ */
+export const matcher = (query: string) => {
+  const tokens = fold(query).split(" ");
+  return (haystack: string) => tokens.every((t) => haystack.includes(t));
+};
+
 export const matches = (haystack: string, query: string) =>
-  fold(query)
-    .split(" ")
-    .every((token) => haystack.includes(token));
+  matcher(query)(haystack);
 
 /** A country as its code and its name, so "frankreich" and "fr" both search. */
 const countryWords = (country: string, w: Messages) =>

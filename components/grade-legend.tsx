@@ -7,18 +7,11 @@ import { cn } from "@/lib/utils";
 
 /**
  * What the four colours of a season strip mean, one line each with its
- * sentence – for the period control's tooltip, the one place a strip's
- * colours show without a cell to hover. In the panel the cells explain
- * themselves (`SeasonStrip`, size "panel").
+ * sentence – for the scales dialog, which explains the strips before any cell
+ * is hovered. In the panel the cells explain themselves (`SeasonStrip`, size
+ * "panel").
  */
-export const GradeLegend = ({
-  className,
-  hint,
-}: {
-  className?: string;
-  /** Optional trailing note, e.g. the counts of the half-month. */
-  hint?: string;
-}) => {
+export const GradeLegend = ({ className }: { className?: string }) => {
   const { t } = useT();
   return (
     <dl className={cn("text-2xs flex flex-col gap-1", className)}>
@@ -34,7 +27,6 @@ export const GradeLegend = ({
           <dd className="opacity-80">{gradeHint(g, t)}</dd>
         </div>
       ))}
-      {hint && <div className="mt-0.5">{hint}</div>}
     </dl>
   );
 };

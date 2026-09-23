@@ -42,8 +42,8 @@ import {
   seasonBand,
   tabCounts,
 } from "@/lib/rows";
+import type { ListInputs } from "@/lib/rows";
 import { indexBySlug } from "@/lib/status";
-import type { Signals } from "@/lib/status";
 import type { Period } from "@/lib/types";
 import { useMapEnvironment } from "@/lib/use-media-query";
 import { useFavorites, useStorageAdapter, useStored } from "@/lib/use-stored";
@@ -82,7 +82,6 @@ export const Explorer = ({ data, defaultPeriod, children }: Props) => {
     valleys,
     years,
   } = data;
-  const signals: Signals = { climate, valleys };
   const { t, fmt, lang } = useT();
   // Everything the map draws differently for, in one value; the shell reads
   // the same `mobile` the map does, so the two can never disagree about which
@@ -132,28 +131,25 @@ export const Explorer = ({ data, defaultPeriod, children }: Props) => {
       homeAreasOf(town, destinations, destinationMembers),
     ]),
   );
+  /** What every list is built from besides the filters (`ListInputs`). */
+  const inputs: ListInputs = {
+    isFavorite,
+    signals: { climate, valleys },
+    w: t,
+    years,
+  };
   const rows = {
     destination: buildDestinationRows(
       destinations,
       destinationMembers,
       passIndex,
       townIndex,
-      years,
       filters,
-      isFavorite,
-      t,
+      inputs,
     ),
-    pass: buildPassRows(passes, years, filters, isFavorite, t, signals),
-    tour: buildTourRows(
-      tours,
-      passIndex,
-      years,
-      filters,
-      isFavorite,
-      t,
-      signals,
-    ),
-    town: buildTownRows(towns, townRanges, filters, isFavorite, t, townAreas),
+    pass: buildPassRows(passes, filters, inputs),
+    tour: buildTourRows(tours, passIndex, filters, inputs),
+    town: buildTownRows(towns, townRanges, filters, inputs, townAreas),
   };
   /** The number on each tab, and on the phone's button that opens the list. */
   const counts = tabCounts(rows);
@@ -167,10 +163,8 @@ export const Explorer = ({ data, defaultPeriod, children }: Props) => {
     destinationMembers,
     passIndex,
     townIndex,
-    years,
     { ...DEFAULT_FILTERS, period: filters.period },
-    isFavorite,
-    t,
+    inputs,
   );
   const compared = compare
     .map((slug) => compareRows.find((r) => r.destination.slug === slug))
@@ -188,13 +182,13 @@ export const Explorer = ({ data, defaultPeriod, children }: Props) => {
    * `facetCount` explains why that is the only honest arithmetic here.
    */
   const countWith = (patch: Partial<Filters>) =>
-    facetCount(passes, years, filters, isFavorite, patch, t, signals);
+    facetCount(passes, filters, patch, inputs);
   /**
    * The 24 bars the season bar draws, and the headline's counts: the same
    * arithmetic over the same passes, so the sentence at the top and the ribbon
    * at the bottom can never disagree.
    */
-  const band = seasonBand(passes, years, filters, isFavorite, t, signals);
+  const band = seasonBand(passes, filters, inputs);
   const bar = currentBar(band, filters.period);
   const activeFilters = filterCount(filters, t);
 

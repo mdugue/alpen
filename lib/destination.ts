@@ -5,7 +5,7 @@ import { fill } from "@/lib/i18n/fill";
 import { PERIODS, periodIndex } from "@/lib/period";
 import { emptyCount, inBands, reachCounts, rideable } from "@/lib/reach";
 import type { Band, GradeCount, ReachedPass, ReachedTown } from "@/lib/reach";
-import { cellAt, GRADE_ORDER, statusOf } from "@/lib/status";
+import { cellAt, GRADE_ORDER, statusOf, windowOf } from "@/lib/status";
 import type { Grade, PassIndex, Year, YearCell, Years } from "@/lib/status";
 import type {
   Destination,
@@ -71,10 +71,10 @@ import { fmt } from "@/lib/utils";
  * The two shares are editorial like every other number here, and documented
  * in the scales dialog and docs/scales.md. They are set where every base
  * still gets a named best window: at 0,8 five of the 48 towns – Bormio among
- * them – peaked in a single half-month and `bestRun` found no run of two, so
- * the panel's "beste Zeit X – Y" line simply vanished for them. At 0,75 all
- * 48 keep one, with a median length of three half-months, and the grade split
- * barely moves. The bottom line stays absolute, because "nothing at all to
+ * them – peaked in a single half-month and no run of two was found
+ * (`windowOf`), so the panel's "beste Zeit X – Y" line simply vanished for
+ * them. At 0,75 all 48 keep one, with a median length of three half-months,
+ * and the grade split barely moves. The bottom line stays absolute, because "nothing at all to
  * ride" is not relative to anything.
  */
 export const RIDEABLE_BEST_SHARE = 0.75;
@@ -108,15 +108,22 @@ export const gradeOfBase = (
   return "limited";
 };
 
-export interface BaseVerdict {
+/**
+ * A year derived from counts rather than read from a series – a base's or an
+ * area's (`deriveYear`).
+ */
+export interface DerivedVerdict {
   /** The 24 derived cells, for a `SeasonStrip`. */
   year: Year;
   /** The grade counts of the chosen half-month. */
   counts: GradeCount;
-  /** How many passes are reachable at all – the denominator of everything above. */
+  /** How many roads were counted at all – the denominator of everything above. */
   total: number;
-  /** Rideable passes in this base's best half-month; what the strip is graded against. */
+  /** Rideable roads in the best half-month; what the strip is graded against. */
   peak: number;
+}
+
+export interface BaseVerdict extends DerivedVerdict {
   /** Reachable passes, best first. */
   passes: ReachedPass[];
   /** The same, grouped by band in `REACH_BANDS` order; empty bands are dropped. */
@@ -134,23 +141,25 @@ const cellOf = (counts: GradeCount, peak: number): YearCell => {
 };
 
 /**
- * The longest run of half-months at "beste Zeit", as `passYear` computes it
- * for a pass – so the destination panel can say "beste Zeit Mitte Juni bis
- * Anfang September" in the same words the pass panel does.
+ * The year of per-half-month counts: every cell graded against the best
+ * half-month, so the strip shows the season rather than the size (see
+ * `gradeOfBase`), and the best window read off the cells by the rule a road's
+ * is read by (`windowOf`) – so the panel says "beste Zeit Mitte Juni bis
+ * Anfang September" in the same words for a base, an area and a pass.
  */
-const bestRun = (cells: YearCell[]): [Period, Period] | null => {
-  let run: [number, number] | null = null;
-  let start: number | null = null;
-  for (let i = 0; i <= cells.length; i += 1) {
-    const good = i < cells.length && cells[i]!.grade === "best";
-    if (good && start === null) start = i;
-    if (!good && start !== null) {
-      const len = i - start;
-      if (len >= 2 && (!run || len > run[1] - run[0] + 1)) run = [start, i - 1];
-      start = null;
-    }
-  }
-  return run ? [PERIODS[run[0]]!, PERIODS[run[1]]!] : null;
+const deriveYear = (
+  perPeriod: readonly GradeCount[],
+  total: number,
+  period: Period,
+): DerivedVerdict => {
+  const peak = Math.max(0, ...perPeriod.map(rideable));
+  const cells = perPeriod.map((c) => cellOf(c, peak));
+  return {
+    counts: perPeriod[periodIndex(period)] ?? emptyCount(),
+    peak,
+    total,
+    year: { best: windowOf(cells.map((c) => c.grade === "best")), cells },
+  };
 };
 
 /**
@@ -160,21 +169,11 @@ const bestRun = (cells: YearCell[]): [Period, Period] | null => {
 export const destinationOf = (
   reached: ReachedPass[],
   period: Period,
-): BaseVerdict => {
-  const perPeriod = reachCounts(reached);
-  // The whole year is graded against the best half-month this base has, so
-  // the strip shows its season rather than its size (see `gradeOfBase`).
-  const peak = Math.max(0, ...perPeriod.map(rideable));
-  const cells = perPeriod.map((c) => cellOf(c, peak));
-  return {
-    bands: inBands(reached),
-    counts: perPeriod[periodIndex(period)] ?? emptyCount(),
-    passes: reached,
-    peak,
-    total: reached.length,
-    year: { best: bestRun(cells), cells },
-  };
-};
+): BaseVerdict => ({
+  ...deriveYear(reachCounts(reached), reached.length, period),
+  bands: inBands(reached),
+  passes: reached,
+});
 
 /**
  * The sentence under a destination's badge. It names the count, because the
@@ -350,25 +349,17 @@ export const areaScore = (
 };
 
 /**
- * The verdict of an area, derived the way a base's is (`gradeOfBase`): the
+ * The verdict of an area, derived the way a base's is (`deriveYear`): the
  * counts of its member roads per half-month, graded against the area's own
- * best half-month, and the best window read off the cells. No reach here –
- * the members are what the curator drew the circle around, not what lies
- * within a band of one point.
+ * best half-month. No reach here – the members are what the curator drew the
+ * circle around, not what lies within a band of one point.
  */
-export interface AreaVerdict {
-  year: Year;
-  counts: GradeCount;
-  total: number;
-  peak: number;
-}
-
 export const areaVerdict = (
   memberSlugs: readonly string[],
   years: Years,
   period: Period,
-): AreaVerdict => {
-  const perPeriod = Array.from({ length: 24 }, emptyCount);
+): DerivedVerdict => {
+  const perPeriod = PERIODS.map(emptyCount);
   let total = 0;
   for (const slug of memberSlugs) {
     const year = years.passes[slug];
@@ -377,18 +368,11 @@ export const areaVerdict = (
     for (const [i, cell] of year.cells.entries())
       perPeriod[i]![cell.grade] += 1;
   }
-  const peak = Math.max(0, ...perPeriod.map(rideable));
-  const cells = perPeriod.map((c) => cellOf(c, peak));
-  return {
-    counts: perPeriod[periodIndex(period)] ?? emptyCount(),
-    peak,
-    total,
-    year: { best: bestRun(cells), cells },
-  };
+  return deriveYear(perPeriod, total, period);
 };
 
 /** "7 von 9 Straßen gut" – the row's one line, and the compare sheet's. */
-export const areaText = (v: AreaVerdict, w: Messages): string =>
+export const areaText = (v: DerivedVerdict, w: Messages): string =>
   v.total === 0
     ? w.vocab.reach.areaNone
     : fill(w.vocab.reach.areaLine, {

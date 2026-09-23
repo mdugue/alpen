@@ -41,7 +41,7 @@ flowchart TB
 
   subgraph run["5 · Runtime"]
     B["Browser"]
-    W["/api/weather/[slug]<br/>the only live call"]
+    W["the pass route's forecast<br/>lib/weather.ts · the only live call"]
   end
 
   P -->|"data:locate<br/>proposes a better point"| P

@@ -202,7 +202,7 @@ The component layer, the layout, the sidebar, the detail panel.
 - **A drag of the sheet may spend the frame on nothing else.** No content box
   resizing, no backdrop filter, no scrolling layer while the finger is down.
   → [why](docs/ui-conventions.md#a-drag-of-the-sheet-may-spend-the-frame-on-nothing-else)
-- **A long list is one tab stop.** `useRoving` makes each list the composite
+- **A long list is one tab stop.** `rovingList` makes each list the composite
   widget the platform expects: one stop, arrows inside it.
   → [why](docs/ui-conventions.md#a-long-list-is-one-tab-stop)
 - **The panel folds.** Every block is a `Section` with a `BlockId`; the folded
@@ -210,7 +210,7 @@ The component layer, the layout, the sidebar, the detail panel.
   `info` popover.
   → [why](docs/ui-conventions.md#the-panel-folds)
 - **Model in, markup out.** `detailModel` resolves the selected entity once and
-  returns one value – sentences, reach, blocks, `DetailState`; the three kind
+  returns one value – sentences, reach, blocks, `DetailState`; the four kind
   modules take their half of it and one `PanelActions`, and every "what is near
   here" comes from `lib/reach.ts`.
   → [why](docs/ui-conventions.md#model-in-markup-out)

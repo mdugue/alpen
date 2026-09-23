@@ -83,9 +83,9 @@ const STORAGE = {
   /** Whether the desktop sidebar is unfolded. */
   sidebar: slot<boolean>("local", true),
   /**
-   * Which of the four lists is on screen. A preference like the sidebar's own
-   * fold, so coming back lands where the last visit left off; the first visit
-   * lands on the areas (`initialState`).
+   * Which of the three lists is on screen. A preference like the sidebar's
+   * own fold, so coming back lands where the last visit left off; the first
+   * visit lands on the roads (`TABS`).
    */
   tab: slot<ListTab>("local", TABS[0]!),
 };

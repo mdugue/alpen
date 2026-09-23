@@ -192,7 +192,7 @@ export const ScalesDialog = ({
               })}
             </P>
             <P>{s.status.strip}</P>
-            {/* The same legend the season bar shows, from GRADE_ORDER. */}
+            {/* The strip's four colours, from GRADE_ORDER. */}
             <GradeLegend className="text-muted-foreground text-xs" />
           </Section>
           <Section heading={s.band.heading}>

@@ -2,7 +2,12 @@
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 
-import { DEFAULT_VIEW, defined, EMPTY_HASH } from "@/lib/app-state";
+import {
+  carriesView,
+  DEFAULT_VIEW,
+  defined,
+  EMPTY_HASH,
+} from "@/lib/app-state";
 import type {
   Action,
   AppState,
@@ -11,16 +16,11 @@ import type {
   MapView,
   Selection,
 } from "@/lib/app-state";
-import { parseHash, serializeHash } from "@/lib/hash";
+import { parseHash, serializeHash, withoutLegacySelection } from "@/lib/hash";
 import type { Lang } from "@/lib/i18n";
 import type { CameraIntent } from "@/lib/map-camera";
 import { entityKey } from "@/lib/route-key";
-import {
-  homeHref,
-  hrefFor,
-  selectionOf,
-  withoutLegacySelection,
-} from "@/lib/routes";
+import { homeHref, hrefFor, selectionOf } from "@/lib/routes";
 import { readStoredState, useStored } from "@/lib/use-stored";
 
 /**
@@ -29,7 +29,7 @@ import { readStoredState, useStored } from "@/lib/use-stored";
  * selection in the hash instead, and that is honoured too – the adapter
  * moves such a link over to the path once it has read it.
  */
-export const readHash = (): HashState => {
+const readHash = (): HashState => {
   if (typeof window === "undefined") return EMPTY_HASH;
   const hash = parseHash(window.location.hash);
   return {
@@ -49,12 +49,7 @@ export const readHash = (): HashState => {
  * value, and the hash is this module's business.
  */
 export const cameraIntent = (hash: HashState): CameraIntent => ({
-  kind:
-    hash.view.lat !== undefined || hash.view.zoom !== undefined
-      ? "view"
-      : hash.selection
-        ? "selection"
-        : "fit",
+  kind: carriesView(hash) ? "view" : hash.selection ? "selection" : "fit",
   view: { ...DEFAULT_VIEW, ...defined(hash.view) },
 });
 

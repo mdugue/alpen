@@ -1,7 +1,6 @@
 import type { Bounds } from "@/lib/geo";
-import { RANGES, ROAD_TYPES, SURFACES } from "@/lib/regions";
+import { RANGES, ROAD_TYPES, STATUSES, SURFACES } from "@/lib/regions";
 import type { RangeName } from "@/lib/regions";
-import { STATUS_ORDER } from "@/lib/status";
 import type {
   LatLon,
   Period,
@@ -25,21 +24,17 @@ export interface Selection {
 }
 
 /**
- * All three selected = no status filter, see `Filters.status`. A copy rather
- * than an alias of `STATUS_ORDER`: the filter's array is handed to callers
- * that build new arrays from it, and sharing one object under two names would
- * let a stray sort reach the map icons, the share image and the calibration
- * script.
+ * All three selected = no status filter, see `Filters.status`. A copy of
+ * `STATUSES`, like the lists below it: the filter's array is handed to
+ * callers that build new arrays from it.
  */
-export const ALL_STATUS: Status[] = [...STATUS_ORDER];
+export const ALL_STATUS: Status[] = [...STATUSES];
 /** All five road types selected = no type filter, see `Filters.types`. */
 export const ALL_TYPES: RoadType[] = [...ROAD_TYPES];
 /** Every range selected = no range filter, see `Filters.ranges`. */
 export const ALL_RANGES: RangeName[] = [...RANGES];
 /** All three surfaces selected = no surface filter, see `Filters.surfaces`. */
 export const ALL_SURFACES: Surface[] = [...SURFACES];
-/** Stable empty snapshot for the tag filter (`Filters.tags`). */
-export const NO_TAGS: RoadTag[] = [];
 /**
  * The lists, one tab each. The roads come first: they are what the map is
  * made of, and every other list is read off them. A town has no tab of its
@@ -76,6 +71,8 @@ export const RATING_MAX = 5;
  * show. Wording: `ab` for a lower bound, `bis` for an upper bound, `nur` for
  * the end of the scale.
  */
+export type Options = readonly (readonly [value: number, label: OptionLabel])[];
+
 /**
  * What a threshold chip says, as a shape rather than a string: the word is
  * the language's (`vocab.option`, `lib/i18n`), the number is the value's.
@@ -84,7 +81,7 @@ export type OptionLabel =
   | { kind: "any" }
   | { kind: "from" | "upTo" | "only" | "under" | "wetDays"; n: number }
   | { kind: "elevationFrom"; m: number };
-export type Options = readonly (readonly [value: number, label: OptionLabel])[];
+
 export const TRAFFIC_OPTIONS = [
   [5, { kind: "any" }],
   [3, { kind: "upTo", n: 3 }],
@@ -300,7 +297,7 @@ export const DEFAULT_FILTERS: Filters = {
   sort: "elevation",
   status: ALL_STATUS,
   surfaces: ALL_SURFACES,
-  tags: NO_TAGS,
+  tags: [],
   types: ALL_TYPES,
 };
 
@@ -321,7 +318,7 @@ export const DEFAULT_VIEW: MapView = {
 };
 
 /** The box around several boxes; `null` for none. A fresh array, so a press is a new request. */
-export const unionBounds = (list: readonly Bounds[]): Bounds | null => {
+const unionBounds = (list: readonly Bounds[]): Bounds | null => {
   if (list.length === 0) return null;
   return [
     Math.min(...list.map((b) => b[0])),
@@ -487,7 +484,7 @@ export interface AppState {
    * would empty out the moment the selection is cleared.
    */
   last: Selection | null;
-  /** Which of the four lists is on screen. */
+  /** Which of the three lists is on screen (`TABS`). */
   tab: ListTab;
   /**
    * What the pointer is over – wherever the pointer happens to be. The list
@@ -566,6 +563,10 @@ export interface HashState {
   /** The compared destinations (`vgl`); empty for none. */
   compare: string[];
 }
+
+/** Whether a link names a camera of its own – a centre or a zoom. */
+export const carriesView = (hash: HashState): boolean =>
+  hash.view.lat !== undefined || hash.view.zoom !== undefined;
 
 export const EMPTY_HASH: HashState = {
   compare: [],
@@ -716,10 +717,7 @@ const load = (
     // the app writes carries a camera, so that is every shared link with an
     // entity in it.
     requestedView:
-      state.loaded &&
-      (hash.view.lat !== undefined || hash.view.zoom !== undefined)
-        ? view
-        : state.requestedView,
+      state.loaded && carriesView(hash) ? view : state.requestedView,
     shown: reconcileShown(stored.shown ?? state.shown, env.tours),
     tab: stored.tab ?? state.tab,
     view,

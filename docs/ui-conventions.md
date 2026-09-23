@@ -442,11 +442,13 @@ what it does only once it has been flipped, so it carries the words too.
 There are three tabs for four kinds (`TABS`, `tabOf` in `lib/app-state.ts`).
 The roads come first, because they are what the map is made of. The towns
 have no tab of their own: an area and its towns answer one question – where to
-go, and where there to sleep – so the areas' list shows each town under the
-area that names it as a base first, and the towns no listed area holds in a
-last group (`nestTowns` in `lib/rows.ts`). Each of the two keeps its own
-filters; the grouping only says where a town is shown, and selecting a town
-opens the areas' tab.
+go, and where there to sleep – so the areas' list shows each town under every
+area that names it as a base (under the nearest area it lies in when none
+does, `homeAreasOf` in `lib/destination.ts`), and the towns no listed area
+holds in a last group (`nestTowns` in `lib/rows.ts`). Each of the two keeps
+its own filters; the grouping only says where a town is shown, the tab counts
+an area or a town outside every listed area (`tabCounts`), and selecting a
+town opens the areas' tab.
 
 ### What the drawer derives from the drag stays on the drawer
 
@@ -519,8 +521,8 @@ judged on a phone.
 
 Every row stays in the DOM either way. Windowing the list – with
 `@tanstack/react-virtual` or by hand – measured no better than the blocks, and
-it would cost `useRoving`'s arrows, `scrollIntoView` on the selected row and
-the browser's own find-in-page across all 201 rows.
+it would cost `rovingList`'s arrows, `scrollIntoView` on the selected row and
+the browser's own find-in-page across every row.
 
 Ten rows is about a screenful at the sheet's lower snap point. The list is a
 `<div role="list">` and a row a `<div role="listitem">`, because a block is an
@@ -586,7 +588,7 @@ delete.
 Every row used to be two (the bookmark toggle and the row itself) – 562
 focusable elements on the built page, so reaching the map meant holding Tab
 down for several hundred presses, and a screen reader's rotor held two hundred
-buttons all called "Merken". `useRoving` (`lib/use-roving.ts`) makes each list
+buttons all called "Merken". `rovingList` (`lib/use-roving.ts`) makes each list
 the composite widget the platform expects: one stop, arrows inside it,
 Home/End/PageUp/PageDown, and the tab stop stays on the row last focused. It
 works off the DOM rather than an index in state, because which rows exist
@@ -670,15 +672,15 @@ which is where it stays.
 
 ### Model in, markup out
 
-**What a pass, a tour or a town shows is a value, and the components render
-it.** `detailModel(selection, data, state)` (`lib/detail-model.ts`) resolves the
-entity once and returns one discriminated `DetailModel`: the entity itself, its
-verdict and every German sentence it shows, what is within reach of it, which
-blocks apply, and how far its detail file has got (`DetailState`,
-`lib/detail-state.ts`). `PassDetail`, `TourDetail` and `TownDetail` take their
-half of that value plus one `PanelActions` object, and nothing else. The shell
-(`detail-panel.tsx`) is the head, the control row and one three-way switch on
-`model.kind`.
+**What a road, a loop, a town or an area shows is a value, and the components
+render it.** `detailModel(selection, data, state)` (`lib/detail-model.ts`)
+resolves the entity once and returns one discriminated `DetailModel`: the
+entity itself, its verdict and every sentence it shows, what is within reach
+of it, which blocks apply, and how far its detail file has got (`DetailState`,
+`lib/detail-state.ts`). `PassDetail`, `TourDetail`, `TownDetail` and
+`DestinationDetail` take their half of that value plus one `PanelActions`
+object, and nothing else. The shell (`detail-panel.tsx`) is the head, the
+control row and one four-way switch on `model.kind`.
 
 The three things that convention buys:
 
@@ -688,13 +690,12 @@ The three things that convention buys:
   file to find out who else was passing it on.
 - **Every sentence has one home.** The model calls `lib/status.ts`
   (`bestText`, `reasonParagraph`, `climateText`, `tourText`, `seasonText`) and
-  the components print what comes back. No German is glued together in JSX, so
-  the same fact cannot be worded two ways in two blocks.
+  the components print what comes back. No sentence is glued together in JSX,
+  so the same fact cannot be worded two ways in two blocks.
 - **It is testable without a browser.** The model is a pure function – `period`,
   `hovered` and the fetch state are arguments, never hooks – so `bun test`
-  renders all three kinds from one fixture with `renderToStaticMarkup`
-  (`components/panel/kind-detail.test.tsx`), and the same model will render on
-  the server for an entity page (`docs/plans/02-*`).
+  renders all four kinds from one fixture with `renderToStaticMarkup`
+  (`components/panel/kind-detail.test.tsx`).
 
 **"What is near here" is one module.** `lib/reach.ts` measures distance in the
 bands, the weight and the reach of `lib/geo.ts` and hands back one `Reach`
