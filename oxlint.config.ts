@@ -245,11 +245,18 @@ export default defineConfig({
       },
     },
     {
-      // The JSON-LD block is the one sanctioned use of the prop. And a
-      // `"use cache"` function has to be async even where it awaits nothing:
-      // the page's data is imported JSON, read synchronously (lib/data.ts).
+      // The JSON-LD block is the one sanctioned use of the prop.
       files: ["app/page.tsx"],
-      rules: { "react/no-danger": "off", "require-await": "off" },
+      rules: { "react/no-danger": "off" },
+    },
+    {
+      // A `"use cache"` function has to be async even where it awaits
+      // nothing: the map page's data is imported JSON, read synchronously
+      // (lib/data.ts), and the /wissen pages read their Markdown with
+      // `readFileSync` at build time. The brackets of the catch-all segment are
+      // escaped: unescaped, the glob reads them as a character class.
+      files: ["app/page.tsx", "app/wissen/\\[\\[...slug\\]\\]/page.tsx"],
+      rules: { "require-await": "off" },
     },
   ],
   rules: {
