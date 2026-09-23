@@ -258,7 +258,11 @@ const OsmNodesWay = z.object({
   type: z.literal("way"),
 });
 const OsmElementRow = z.union([OsmNode, OsmGeomWay, OsmNodesWay]);
-const Elements = z.object({ elements: z.array(z.unknown()).optional() });
+const Elements = z.object({
+  elements: z.array(z.unknown()).optional(),
+  /** Overpass says here that it gave up – with a 200 and what it had so far. */
+  remark: z.string().optional(),
+});
 
 export type OverpassNode = z.infer<typeof OsmNode>;
 export type OverpassWay = z.infer<typeof OsmGeomWay>;
@@ -289,9 +293,23 @@ const overpassPost = (query: string): RequestInit => ({
 });
 
 export const overpass = {
-  /** The nodes and ways an Overpass QL query selects (`locate.ts` writes it). */
-  query: async (t: Transport, query: string): Promise<OsmElement[]> =>
-    elementsOf(await t.getJson("overpass", OVERPASS_URL, overpassPost(query))),
+  /**
+   * The nodes and ways an Overpass QL query selects (`locate.ts` writes it).
+   *
+   * A query that runs past its `[timeout:…]` or out of memory still comes
+   * back as a 200, with `remark: "runtime error: …"` and whatever was
+   * collected until then – often nothing. Read as an answer, that is "no road
+   * near this point": `data:build` stored it as a road distance and blocked
+   * the marker, and `data:locate --radius 8` found no road top at all. So it
+   * is an error, and `osm.ts` asks the map API instead.
+   */
+  query: async (t: Transport, query: string): Promise<OsmElement[]> => {
+    const json = await t.getJson("overpass", OVERPASS_URL, overpassPost(query));
+    const { remark } = Elements.parse(json);
+    if (remark && /runtime error/iu.test(remark))
+      throw new Error(`Overpass: ${remark}`);
+    return elementsOf(json);
+  },
 };
 
 export const osmMap = {
