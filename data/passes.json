@@ -1128,12 +1128,13 @@
    "toll"
   ],
   "aliases": [
-   "Rossfeld"
+   "Rossfeld",
+   "Roßfeldstraße"
   ],
   "country": "DE",
   "region": "Ostalpen",
-  "lat": 47.647,
-  "lon": 13.052,
+  "lat": 47.6185,
+  "lon": 13.0846,
   "elevation": 1560,
   "roadSummit": true,
   "classicAscent": "15 km, 7,5 % ab Berchtesgaden",
@@ -2994,8 +2995,8 @@
   "type": "pass",
   "country": "AT",
   "region": "Ostalpen",
-  "lat": 47.28,
-  "lon": 14.1,
+  "lat": 47.2717,
+  "lon": 14.0797,
   "elevation": 1790,
   "classicAscent": "15 km, 6,5 % ab Stein an der Enns",
   "beauty": 4,
@@ -3012,8 +3013,8 @@
   "ascents": [
    {
     "from": {
-     "lat": 47.396,
-     "lon": 14.03
+     "lat": 47.4345,
+     "lon": 13.9407
     },
     "label": "Stein an der Enns"
    },
@@ -3037,8 +3038,8 @@
   ],
   "country": "AT",
   "region": "Ostalpen",
-  "lat": 46.598,
-  "lon": 13.792,
+  "lat": 46.5933,
+  "lon": 13.7108,
   "elevation": 1732,
   "classicAscent": "17 km, 6,2 % ab Möltschach",
   "beauty": 3,

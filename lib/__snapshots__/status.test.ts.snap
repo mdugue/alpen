@@ -2,7 +2,6 @@
 
 exports[`status matrix for all passes × 24 half-months 1`] = `
 [
-  "rrrrooooooooooooooorrrrr  passo-del-turchino",
   "rrrrooooooooorroooorrrrr  col-de-l-orme",
   "rrrrooooooooorroooorrrrr  col-de-la-porte",
   "rrrrooooooooorroooorrrrr  col-saint-roch",
@@ -41,8 +40,9 @@ exports[`status matrix for all passes × 24 half-months 1`] = `
   "rrrrooooooorrrrrroorrrrr  colle-san-bartolomeo",
   "rrrrooooooorrrrrroorrrrr  gorges-de-la-nesque",
   "rrrrooooooorrrrrroorrrrr  monte-bignone",
-  "rrrrooooroooorroooorrrrr  colle-gallo",
+  "rrrrooooooorrrrrroorrrrr  passo-del-turchino",
   "rrrrooooroooorroooorrrrr  passo-d-ampola",
+  "rrrroooorooorrroooorrrrr  colle-gallo",
   "rrrrroooooooooooooorrrrr  col-de-bleine",
   "rrrrroooooooooooooorrrrr  muro-di-sormano",
   "rrrrroooooooorroooorrrrr  col-de-la-forclaz-de-montmin",
@@ -171,9 +171,9 @@ exports[`status matrix for all passes × 24 half-months 1`] = `
   "xxxxxxxxroooooooooorxxxx  hochkar",
   "xxxxxxxxroooooooooorxxxx  postalm",
   "xxxxxxxxroooooooooorxxxx  vallee-de-l-ubaye",
-  "xxxxxxxxroooooooooorxxxx  villacher-alpenstrasse",
   "xxxxxxxxrooooooooorxxxxx  loser-panoramastrasse",
   "xxxxxxxxroooorroooorxxxx  valle-maira",
+  "xxxxxxxxroooorroooorxxxx  villacher-alpenstrasse",
   "xxxxxxxxroorrrrrooorxxxx  bocca-del-creer",
   "xxxxxxxxroroooooooorrrxx  col-de-joux-plane",
   "xxxxxxxxroroooooooorrxxx  col-de-la-ramaz",
