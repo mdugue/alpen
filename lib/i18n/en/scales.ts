@@ -22,6 +22,8 @@ export const scales = {
   },
   notes: {
     heading: "Notes",
+    more: "The full account is in {link}.",
+    moreLink: "the knowledge base: scales and status (German)",
     text: "Elevations and ascent data are rounded guide values. Beauty, fame, difficulty and traffic are editorial 1–5 judgements; the type and features of the roads and the features of the towns are editorial labels. The status per period is a heuristic and is no substitute for official closure information. The app serves rough route planning, not navigation.",
   },
   ranges: {

@@ -101,6 +101,7 @@ friends do that better and the app links out to them.
 | Legal pages                                        | `app/[lang]/impressum/`, `app/[lang]/datenschutz/` (German only, with an English note), their frame and metadata `components/legal-page.tsx`                                                                                                                                                                                                                                                                                                        |
 | Linting, formatting and the repo checks            | `oxlint.config.ts` (the `lib/**` seam rules, narrowed per adapter), `oxfmt.config.ts`, `scripts/check-seams.ts` (`bun run seams`) and `scripts/check-palette.ts` (`bun run palette`), both inside `bun run lint`                                                                                                                                                                                                                                    |
 | Implementation plans                               | `docs/plans/` (index: `docs/plans/README.md`)                                                                                                                                                                                                                                                                                                                                                                                                       |
+| The knowledge base: docs/ published as /wissen     | the pages `app/wissen/` (their own root layout, German only; `wissen.css` for the prose, diagrams and the road sketch); the pure half `lib/docs/` (`routes`, `nav`, `content`, `diagrams`, `sketch`); `scripts/render-diagrams.ts` (`bun run docs:diagrams` → `docs/diagrams/`, committed); the German guide `docs/guide/`                                                                                                                          |
 | Project skills                                     | `.agents/skills/implement-plan`, `curate-data`, `preview-app`                                                                                                                                                                                                                                                                                                                                                                                       |
 | Web-session setup (Bun version, deps)              | `.claude/hooks/session-start.sh`, registered in `.claude/settings.json`                                                                                                                                                                                                                                                                                                                                                                             |
 
@@ -324,6 +325,12 @@ What the page ships, how it is cached, the one dynamic route, the tools.
   The floor is load-bearing; `.claude/hooks/session-start.sh` upgrades the
   remote container to it.
   → [why](docs/architecture.md#bun-is-pinned-by-engines-and-the-web-container-is-dragged-up-to-it)
+- **The docs are the site.** `docs/` is published under `/wissen` from the
+  same Markdown, links written for GitHub; diagrams are Mermaid rendered once
+  by `bun run docs:diagrams` and committed as SVG in tokens, which a test holds
+  against the source; the German guide in `docs/guide/` changes in the same PR
+  as whatever makes it wrong.
+  → [why](docs/architecture.md#the-docs-are-the-site)
 - **oxlint and oxfmt, no ESLint.** `bun run lint` is `ultracite check`, the
   type-aware rules included (`oxlint-tsgolint`); the configs only ever deviate
   from the preset, with the reason next to each deviation.

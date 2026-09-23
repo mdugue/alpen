@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { Fragment } from "react";
 
 import { GradeLegend } from "@/components/grade-legend";
@@ -111,6 +112,9 @@ export const ScalesDialog = ({
   const v = t.vocab;
   /** A share as a percentage in the page's locale: 0.8 -> "80 %". */
   const pct = (x: number) => `${fmt(x * 100)} %`;
+  // The link to the knowledge base sits inside the sentence: the words around
+  // its `{link}` placeholder, in the page's language.
+  const [moreBefore, moreAfter] = s.notes.more.split("{link}");
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -234,7 +238,16 @@ export const ScalesDialog = ({
             <P>{s.data.text}</P>
           </Section>
           <Section heading={s.notes.heading}>
-            <P>{s.notes.text}</P>
+            <p className="text-muted-foreground">
+              {rich(s.notes.text)} {moreBefore}
+              <Link
+                href="/wissen/scales-and-status"
+                className="text-foreground underline underline-offset-2"
+              >
+                {s.notes.moreLink}
+              </Link>
+              {moreAfter}
+            </p>
           </Section>
         </div>
       </DialogContent>

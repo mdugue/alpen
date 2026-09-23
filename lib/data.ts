@@ -333,6 +333,19 @@ export const prerenderParams = (): { kind: Segment; slug: string }[] => {
 };
 
 /**
+ * Every routed road and every summit, as the /wissen pages draw them
+ * (`sketch` in lib/docs/sketch.ts): read straight off the parsed constants,
+ * nothing derived, so it costs the knowledge base none of the page's work.
+ */
+export const getRoadSketch = (): {
+  roads: RouteGeometry[];
+  summits: [number, number][];
+} => ({
+  roads: Object.values(routes),
+  summits: passes.map((p) => [p.lat, p.lon]),
+});
+
+/**
  * Everything the page hands the client, as one value.
  *
  * The derivations above are the page's own business – it wants all of them,

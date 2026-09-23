@@ -69,6 +69,8 @@ export const sidebar = {
   /** The footer: the legal links and the one call to action. */
   footer: {
     imprint: "Impressum",
+    /** The knowledge base under /wissen, German in both languages. */
+    knowledge: "Wissen",
     privacy: "Datenschutz",
     supportSr: " – auf Ko-fi, öffnet in neuem Tab",
     supportTitle: "Auf Ko-fi unterstützen",

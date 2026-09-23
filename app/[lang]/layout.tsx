@@ -1,5 +1,4 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, Oxanium } from "next/font/google";
 import { notFound } from "next/navigation";
 
 import { BRAND, SITE_NAME, siteUrl } from "@/lib/brand";
@@ -8,18 +7,9 @@ import { getDictionary } from "@/lib/i18n/server";
 import { alternatesOf, homeHref } from "@/lib/routes";
 import { openGraphOf } from "@/lib/share-text";
 
-import "../globals.css";
+import { fontVariables } from "../fonts";
 
-const inter = Inter({
-  display: "swap",
-  subsets: ["latin"],
-  variable: "--font-inter",
-});
-const oxanium = Oxanium({
-  display: "swap",
-  subsets: ["latin"],
-  variable: "--font-oxanium",
-});
+import "../globals.css";
 
 /**
  * The two languages, prerendered from one tree (plan 08): the segment is
@@ -80,7 +70,7 @@ const RootLayout = async ({ children, params }: LayoutProps<"/[lang]">) => {
   const { lang } = await params;
   if (!isLang(lang)) notFound();
   return (
-    <html lang={lang} className={`${inter.variable} ${oxanium.variable}`}>
+    <html lang={lang} className={fontVariables}>
       <body className="h-dvh overflow-hidden antialiased">{children}</body>
     </html>
   );

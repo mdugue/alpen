@@ -345,6 +345,12 @@ export const Sidebar = (p: SidebarProps) => {
           </p>
           <div className="text-muted-foreground text-2xs flex items-center gap-3 px-3 pb-2">
             <Link
+              href="/wissen"
+              className="hover:text-foreground hover:underline"
+            >
+              {t.sidebar.footer.knowledge}
+            </Link>
+            <Link
               href={`${langPrefix(lang)}/impressum`}
               className="hover:text-foreground hover:underline"
             >

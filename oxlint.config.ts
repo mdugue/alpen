@@ -300,6 +300,14 @@ export default defineConfig({
       files: ["app/[[]lang[]]/(explorer)/layout.tsx"],
       rules: { "react/no-danger": "off", "require-await": "off" },
     },
+    {
+      // The /wissen pages read their Markdown with `readFileSync` at build
+      // time, inside a `"use cache"` function. The brackets of the catch-all
+      // segment are escaped: unescaped, the glob reads them as a character
+      // class.
+      files: ["app/wissen/\\[\\[...slug\\]\\]/page.tsx"],
+      rules: { "require-await": "off" },
+    },
   ],
   rules: {
     // The route gate sits at 25 and `baseReasons` at 21: the pipeline's one

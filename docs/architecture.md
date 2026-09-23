@@ -188,7 +188,9 @@ an upstream call per pass per hour. See below.)
 
 A `"use cache"` function has to be `async` even where it awaits nothing, which
 is why the layout is async and carries the one `require-await` exception in
-`oxlint.config.ts`. Introducing `cookies()`, `headers()` or `searchParams`
+`oxlint.config.ts`. The knowledge base under `/wissen` is a page of its own
+and follows the same rule on its own path (see
+["The docs are the site"](#the-docs-are-the-site)). Introducing `cookies()`, `headers()` or `searchParams`
 breaks prerendering – put such things in a separate dynamic child component
 inside `<Suspense>` instead.
 
@@ -244,6 +246,59 @@ and the page palette does not carry far enough. `robots.ts` welcomes search
 engines and turns away the training and answer-engine crawlers; pages that
 carry `robots: { index: false }` stay crawlable on purpose, since a crawler has
 to fetch a page to see that.
+
+### The docs are the site
+
+`/wissen` publishes `docs/` as pages, from the same Markdown GitHub shows –
+there is no second copy of any text. `docs/guide/README.md` is `/wissen`,
+`docs/guide/de/<page>.md` is `/wissen/<page>` (German, prefix-free like the
+rest of the site; an English guide would follow plan 08 under `/en`), and
+every other file is `/wissen/dev/<path>`. `/wissen/dev` itself is the
+documents table of `AGENTS.md`, read off the file, and the menu follows the
+links of the guide's index and that table, so reordering an index reorders
+the site. The mapping, the link rewriting and the menu are `lib/docs/`
+(`routes.ts`, `nav.ts`, `content.ts`); links stay written for GitHub and
+become routes when rendered, and a link to anything that is not a page goes
+to the file on GitHub.
+
+`app/wissen/` is a root layout of its own, beside `app/[lang]/`: the
+knowledge base is German and developer English, one path each, so it stays
+out of the language segment and out of the German rewrite (the lookahead in
+`next.config.ts` names it). Going from the map to `/wissen` is a full page
+load; the two share nothing but the stylesheet and the fonts
+(`app/fonts.ts`).
+
+Every page is prerendered: `app/wissen/[[...slug]]` with
+`generateStaticParams` and one `"use cache"` component per kind of page,
+because the Markdown pipeline (remark/rehype, Shiki for code in both schemes)
+reads the clock on its way. None of it reaches the client bundle; the only
+script on a page is the zoom dialog of a diagram wider than the column.
+
+The Mermaid diagrams are rendered once and committed. Mermaid cannot run on
+the server – it lays a diagram out by measuring text in a live DOM – and in
+the browser it would cost every reader about a megabyte of script and an
+empty box per diagram. So `bun run docs:diagrams`
+(`scripts/render-diagrams.ts`) runs the real Mermaid in a headless Chrome
+through `Bun.WebView`, with Inter loaded, and writes
+`docs/diagrams/<hash of the source>.svg`. Mermaid is handed sentinel colours
+that the script swaps for `--diagram-*` variables (`lib/docs/diagrams.ts`),
+mapped onto the tokens in `app/wissen/wissen.css`, so the SVGs carry no
+palette of their own and follow the OS scheme; the script refuses a diagram
+that paints any other colour. `lib/docs/diagrams.test.ts` fails when a block
+and its SVG disagree, so an edited diagram without a re-render fails
+`bun test` before it fails the build. The build machine needs no browser.
+
+The pages' picture is the app's own geometry: every routed road as a hairline
+and every summit as a dot (`sketch` in `lib/docs/sketch.ts`, fed by
+`getRoadSketch` in `lib/data.ts`), projected and thinned to whole pixels so
+the whole range inlines in about 25 kB – the entry page shows the range, each
+other page a strip of one region. Like the diagrams, it is drawn in tokens.
+
+The German guide is written for people who use the map and is derived from
+the developer docs, not copied from them: it explains in plain words and
+links to the English document for the detail. A change that makes a guide
+page wrong – a new source, a changed threshold, a renamed control – updates
+it in the same PR.
 
 ## The one dynamic route lives inside a free tier, and the numbers are in the file
 

@@ -58,6 +58,8 @@ export const sidebar = {
   },
   footer: {
     imprint: "Legal notice",
+    /** The knowledge base under /wissen, German in both languages. */
+    knowledge: "Knowledge base (German)",
     privacy: "Privacy",
     supportSr: " – on Ko-fi, opens in a new tab",
     supportTitle: "Support on Ko-fi",

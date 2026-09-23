@@ -47,6 +47,7 @@ and the climate series are missing.
 | `bun run data:backfill`              | Drain the whole precomputation backlog in hourly batches                  |
 | `bun run test`                       | Unit tests next to the code                                               |
 | `bun run e2e`                        | Build and drive the app in a headless Chrome                              |
+| `bun run docs:diagrams`              | Render the docs' Mermaid blocks to `docs/diagrams/*.svg` (commit them)    |
 | `bun run map:glyphs`                 | Rasterise Inter into MapLibre glyph atlases (committed, rarely needed)    |
 | `bun run ui:init` / `bun run ui:add` | (Re)install the shadcn "mira" preset and components                       |
 
@@ -147,7 +148,8 @@ scripts/        build-data.ts (precomputation), check-data.ts (validation),
                 locate-pass.ts (where a pass point belongs), build-photos.ts,
                 build-map-assets.ts / build-detail-assets.ts (→ public/, git-ignored)
 test/, e2e/     unit tests and the headless-browser suite
-docs/           pipeline, data model, scales, conventions, roadmap, plans/
+docs/           pipeline, data model, scales, conventions, roadmap, plans/,
+                guide/ (German, for users), diagrams/ ← published under /wissen
 .agents/skills/ project skills for agents: implement-plan, curate-data, preview-app
 ```
 
@@ -156,7 +158,10 @@ docs/           pipeline, data model, scales, conventions, roadmap, plans/
 [`AGENTS.md`](./AGENTS.md) is the index for everything below it: the product
 goal, the principles, a map of the code and the one-line version of every
 convention, each linking to the document that explains it. `CLAUDE.md` is a
-symlink to it, so there is only ever one copy.
+symlink to it, so there is only ever one copy. The site publishes all of
+`docs/` under `/wissen`: a German guide for the people who use the map
+(`docs/guide/`) and the developer documents below (see
+["The docs are the site"](./docs/architecture.md#the-docs-are-the-site)).
 
 | Document                                             | What it answers                                                         |
 | ---------------------------------------------------- | ----------------------------------------------------------------------- |
