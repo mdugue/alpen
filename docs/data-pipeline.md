@@ -25,7 +25,7 @@ flowchart TB
     direction LR
     OSM["Overpass / OSM map API<br/>pass nodes · drivable ways"]
     RT["OpenRouteService → OSRM<br/>road geometry"]
-    OM["Open-Meteo<br/>elevation DEM · ERA5-Land archive"]
+    OM["Open-Meteo<br/>elevation DEM · climate archive"]
     WC["Wikimedia Commons<br/>photo metadata"]
   end
 
@@ -177,7 +177,7 @@ the map API.
 | **OpenRouteService**                          | ORS                                                                                                                             | the road from an ascent start to the pass                           | GeoJSON `LineString`       | `ORS_KEY`, free: 2 000/day, 40/min              | a genuine **road-cycling** profile: takes the Tremola cobbles, the Finestre gravel, car-free roads | 404s on roads its graph rejects; a spent daily quota stops it mid-run                                                             |
 | **Open Source Routing Machine** (demo server) | OSRM                                                                                                                            | the same question, car profile                                      | JSON, coordinate list      | no key, 1 request/s, fair use                   | always there, no key, good enough for most alpine roads                                            | a car profile cuts corners a cyclist does not and refuses car-free roads → marked `osrm` in `routes-meta.json` and upgraded later |
 | **Open-Meteo Elevation**                      | uses the Copernicus DEM (digital elevation model), GLO-90 ≈ 90 m grid                                                           | the height of up to 100 coordinates at once                         | JSON array                 | no key, weighted quota (see below)              | one request per elevation profile; consistent worldwide                                            | grid noise of a few metres (hence 10 m gain smoothing and an 80 m gate); ~100 billed calls per profile                            |
-| **Open-Meteo Archive**                        | ERA5-Land (ECMWF ReAnalysis v5, land surface), 2015–2024                                                                        | daily max/min temperature, snowfall, precipitation                  | JSON series                | no key, ~261 calls per pass                     | ten full years in one request, height-corrected to the pass elevation                              | a ~9 km grid cannot see a single saddle; `snowfall_sum` is fresh snow, not snow lying on the road                                 |
+| **Open-Meteo Archive**                        | the default model "Best Match": ERA5 and ERA5-Land, from 2017 ECMWF IFS, blended; 2015–2024                                     | daily max/min temperature, snowfall, precipitation                  | JSON series                | no key, ~261 calls per pass                     | ten full years in one request, height-corrected to the pass elevation                              | a 9–25 km grid cannot see a single saddle; `snowfall_sum` is fresh snow, not snow lying on the road                               |
 | **Open-Meteo Forecast**                       | –                                                                                                                               | the next 7 days for one pass                                        | JSON                       | no key, 10 000 calls/day shared with the above  | the only thing the app cannot precompute                                                           | the one quota a visitor can spend – hence the hour-long cache and the cooldown                                                    |
 | **Overpass API**                              | –                                                                                                                               | `mountain_pass` / saddle nodes near a point, drivable ways under it | JSON (Overpass elements)   | no key, fair use                                | one request covers a batch of 25 points; filtering happens on the server                           | a single host with no SLA – when it is down, curation stops, which is why there is a fallback                                     |
 | **OSM map API**                               | OSM = OpenStreetMap                                                                                                             | everything inside a bounding box                                    | JSON (`/api/0.6/map.json`) | no key, fair use                                | it is openstreetmap.org itself: "OSM is down" and "curation is down" become the same outage        | one request per point, megabytes where Overpass sends kilobytes, 400 when the box is too full                                     |
@@ -305,7 +305,7 @@ time-varying – the climate window is frozen at 2015–2024 – so a cron could
 structurally never find work once the backlog is drained.
 
 The forecast is the one quota a visitor can spend, and the arithmetic that
-keeps 201 passes inside the free tier is in
+keeps every road inside the free tier is in
 [`architecture.md`](./architecture.md#the-one-dynamic-route-lives-inside-a-free-tier-and-the-numbers-are-in-the-file).
 
 ## Where to look when something is wrong
@@ -330,7 +330,7 @@ keeps 201 passes inside the free tier is in
 | **OSM**          | OpenStreetMap – the map database both routers and Overpass are built on                                                   |
 | **Overpass**     | a query API over OSM data; asks for elements matching a filter inside a radius                                            |
 | **DEM**          | digital elevation model – a height grid. Here: Copernicus GLO-90 via Open-Meteo, and Terrarium tiles for the hillshade    |
-| **ERA5-Land**    | the ECMWF reanalysis of the land surface: modelled weather for every day since 1950, ~9 km grid                           |
+| **Best Match**   | Open-Meteo's default archive model: the ECMWF reanalyses ERA5 (~25 km) and ERA5-Land (~11 km), from 2017 ECMWF IFS (9 km) |
 | **The gate**     | `scripts/lib/validate.ts` – measures a geometry, judges it against `LIMITS`, and decides `routes.json` or `rejected.json` |
 | **`inputs`**     | a hash of what a stored route was fetched for; a mismatch makes it as pending as a missing route                          |
 | **Half-month**   | the app's unit of time. `10` = early October, `10.5` = late October, 24 in a year                                         |

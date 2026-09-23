@@ -11,7 +11,7 @@ import { cn, ICON_TOGGLE, TOUCH_ICON } from "@/lib/utils";
  * own button, so Enter/Space and focus come for free.
  *
  * A row is a containment boundary (`content-visibility`). The lists are long
- * – 201 roads alone, ~40 elements per row – and contained, a row keeps its
+ * – some 260 roads alone, ~40 elements per row – and contained, a row keeps its
  * own layout, style and paint to itself, and off screen it is skipped
  * altogether: whatever restyles the list (a filter chip, a state change of
  * the sheet around it) pays for the rows on screen, not for nine thousand

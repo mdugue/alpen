@@ -78,7 +78,9 @@ metergenau, und der steilste Kilometer ist eine Schätzung.
 ### Klima
 
 Für jeden Pass wird eine zehnjährige Tagesreihe (2015–2024) aus dem
-Open-Meteo-Archiv abgerufen: ERA5-Land, auf die Höhe des Passpunkts
+Open-Meteo-Archiv abgerufen, im Standardmodell von Open-Meteo: Es
+kombiniert die Reanalysen ERA5 und ERA5-Land und nimmt ab 2017 das
+Wettermodell ECMWF IFS dazu. Die Reihe wird auf die Höhe des Passpunkts
 umgerechnet. Sie enthält Tageshöchst- und Tiefsttemperatur, Neuschnee und
 Niederschlag. Daraus werden für jeden der 24 Halbmonate gebildet:
 
@@ -87,8 +89,7 @@ Niederschlag. Daraus werden für jeden der 24 Halbmonate gebildet:
 - der Anteil der Nächte unter 0 °C,
 - der Anteil der Tage mit mindestens 1 mm Niederschlag.
 
-ERA5-Land ist ein Modell mit einem Raster von rund 10 km, keine
-Wetterstation. Einen einzelnen Sattel sieht es nicht, auf Passhöhe ist es
+Das sind Modelle mit einem Raster von 9 bis 25 km, keine Wetterstation. Einen einzelnen Sattel sieht es nicht, auf Passhöhe ist es
 eher zu mild, und „Neuschnee“ heißt frisch gefallener Schnee, nicht Schnee,
 der auf der Straße liegt.
 

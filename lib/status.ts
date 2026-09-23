@@ -205,7 +205,7 @@ export interface Year {
 /**
  * The year of every pass and tour, keyed by slug: what `getYears` in
  * lib/data.ts computes once at prerender and the page hands the client,
- * instead of letting the browser grade 201 passes again on every keystroke.
+ * instead of letting the browser grade every pass again on every keystroke.
  */
 export interface Years {
   passes: Record<string, Year>;
@@ -294,7 +294,8 @@ export const inputAt = (
 });
 
 /**
- * Thresholds, calibrated on the ERA5 series of all 92 passes; see
+ * Thresholds, calibrated on the climate series of the 92 passes there were at
+ * the time; see
  * docs/plans/04-climate-aware-status.md (snow, frost) and
  * docs/plans/13-summer-axis.md (heat, wet, short days, cold descent) for the
  * distribution tables they come from, and `scripts/analyze-status.ts` to
@@ -518,9 +519,9 @@ const REASON_TEXT: Record<StatusReason, (ctx: ReasonContext) => string> = {
   altitude: ({ pass, t }) =>
     `${periodLabel(t)} ist auf ${fmt(pass.elevation)} m Grenzbereich: Schnee und Eis sind möglich, auch wenn die Straße offen ist.`,
   "cold-descent": ({ bucket }) =>
-    `Am Gipfel im Schnitt höchstens ${fmt(bucket?.tmax ?? 0)} °C (ERA5-Land 2015–2024) – mit Fahrtwind ist die Abfahrt eine um den Gefrierpunkt.`,
+    `Am Gipfel im Schnitt höchstens ${fmt(bucket?.tmax ?? 0)} °C (Klimareihe 2015–2024) – mit Fahrtwind ist die Abfahrt eine um den Gefrierpunkt.`,
   frost: ({ bucket }) =>
-    `Frost in ${bucket?.frostPct ?? 0} % der Nächte (≈ ${daysOf(bucket?.frostPct ?? 0)} von 15, ERA5-Land 2015–2024) – nasse Straßen können überfrieren, die Abfahrt wird kalt.`,
+    `Frost in ${bucket?.frostPct ?? 0} % der Nächte (≈ ${daysOf(bucket?.frostPct ?? 0)} von 15, Klimareihe 2015–2024) – nasse Straßen können überfrieren, die Abfahrt wird kalt.`,
   heat: ({ pass, bucket, valley }) =>
     `Im Tal um ${fmt(bucket ? (valleyTmax(pass, bucket, valley) ?? 0) : 0)} °C am Nachmittag (aus dem Gipfelwert abgeleitet, ± ${VALLEY_TMAX_ERROR} °C) – ab dem späten Vormittag nur noch oben angenehm.`,
   "outside-window": ({ pass }) =>
@@ -532,9 +533,9 @@ const REASON_TEXT: Record<StatusReason, (ctx: ReasonContext) => string> = {
     return `Nur ${fmt(sun.dayLength, 1)} Stunden Tageslicht, Sonnenuntergang gegen ${clockTime(sun.sunset)} – für eine lange Runde wird es knapp.`;
   },
   snow: ({ bucket }) =>
-    `Schneefall an ${bucket?.snowPct ?? 0} % der Tage (≈ ${daysOf(bucket?.snowPct ?? 0)} von 15, ERA5-Land 2015–2024) – meist bleibt die Straße befahrbar, planbar ist der Zeitraum aber nicht.`,
+    `Schneefall an ${bucket?.snowPct ?? 0} % der Tage (≈ ${daysOf(bucket?.snowPct ?? 0)} von 15, Klimareihe 2015–2024) – meist bleibt die Straße befahrbar, planbar ist der Zeitraum aber nicht.`,
   wet: ({ bucket }) =>
-    `Regen an ${bucket?.wetPct ?? 0} % der Tage (≈ ${daysOf(bucket?.wetPct ?? 0)} von 15, ERA5-Land 2015–2024) – Staulage; ein trockenes Fenster ist Glückssache.`,
+    `Regen an ${bucket?.wetPct ?? 0} % der Tage (≈ ${daysOf(bucket?.wetPct ?? 0)} von 15, Klimareihe 2015–2024) – Staulage; ein trockenes Fenster ist Glückssache.`,
   "window-edge": ({ pass }) =>
     `Am Rand des Öffnungsfensters${
       pass.season

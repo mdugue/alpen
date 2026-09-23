@@ -26,8 +26,8 @@ import { ascentKey, entityKey } from "./route-key";
  * Measured on the prerendered page, per prop and gzipped: profiles 297 KB,
  * photos 77 KB, everything else together 94 KB. Both are read by exactly one
  * component, for exactly one entity at a time, and the app is about choosing a
- * destination – overview first, route-level detail last. Shipping all 201
- * passes' profiles so that a visitor can look at one is the same mistake plan
+ * destination – overview first, route-level detail last. Shipping every
+ * pass's profile so that a visitor can look at one is the same mistake plan
  * 01 fixed for the geometry, one layer up.
  *
  * So the page carries one URL per entity and the panel fetches the file for

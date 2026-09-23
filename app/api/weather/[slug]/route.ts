@@ -6,14 +6,15 @@ import type { WeatherDay } from "@/lib/types";
 
 /**
  * The app's only dynamic source, and the only free-tier quota a visitor can
- * spend. Three things keep 201 passes inside Open-Meteo's non-commercial
- * allowance of 10 000 calls a day:
+ * spend. Three things keep every road in `data/passes.json` (262 today) inside
+ * Open-Meteo's non-commercial allowance of 10 000 calls a day:
  *
  *   a) the call runs on the server, cached per pass, so a pass costs one
  *      upstream call per window rather than one per visitor,
  *   b) the window is an hour (`REVALIDATE_S`), which puts the worst case –
- *      every pass opened in every window – at 201 × 24 ≈ 4 800 calls a day
- *      instead of the 9 600 a half-hour window allows,
+ *      every pass opened in every window – at 262 × 24 ≈ 6 300 calls a day,
+ *      where a half-hour window would ask for 12 600; an hour holds up to
+ *      about 410 roads, so the list growing past that means a longer window,
  *   c) the answer carries `s-maxage`, so the CDN – not this function – serves
  *      the repeats within a window.
  *
@@ -90,7 +91,7 @@ const forecast = async (
   // Inside the cached function on purpose: a cache hit never runs this body, so
   // a pass that is already answered keeps being answered while the cooldown
   // holds. Only a call that would actually reach Open-Meteo is turned away –
-  // one failing pass must not blank the weather of the other 200.
+  // one failing pass must not blank the weather of all the others.
   if (Date.now() < coolDownUntil) throw new Error("Open-Meteo pausiert");
 
   // The cooldown is armed where it is earned, not in the handler: a handler

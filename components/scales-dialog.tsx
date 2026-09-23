@@ -139,7 +139,7 @@ export const ScalesDialog = ({
           <h3 className="text-base font-semibold">Status je Zeitraum</h3>
           <p className="text-muted-foreground">
             Heuristik aus typischem Öffnungsfenster (halbmonatsgenau), Passhöhe,
-            Jahreszeit, der Klimareihe des Passes (ERA5-Land 2015–2024) und dem
+            Jahreszeit, der Klimareihe des Passes (2015–2024) und dem
             Tageslicht. Sie beantwortet „wie gut ist es, dort in diesem
             Halbmonat zu fahren“, nicht nur „kommt man drüber“. Für Rundtouren
             gilt der schlechteste Wert ihrer Pässe. Ersetzt keine amtliche
@@ -228,10 +228,11 @@ export const ScalesDialog = ({
             <b>Höhenprofil:</b> Open-Meteo Elevation (Copernicus DEM 90 m)
             entlang der gerouteten Straße. <b>Wetter:</b> Open-Meteo-Vorhersage
             auf Passhöhe, serverseitig zwischengespeichert. <b>Klima:</b>{" "}
-            Open-Meteo-Archiv (ERA5-Land 2015–2024) je Halbmonat; 10-km-Raster,
-            auf Passhöhe tendenziell zu mild. <b>Routen:</b> OpenRouteService
-            (Rennrad-Profil) oder OSRM. <b>3D:</b> Mapzen/AWS Terrain Tiles.
-            Karten © OpenStreetMap-Mitwirkende.
+            Open-Meteo-Archiv 2015–2024 je Halbmonat, im Standardmodell von
+            Open-Meteo (ERA5 und ERA5-Land, ab 2017 ECMWF IFS); Raster von 9 bis
+            25 km, auf Passhöhe tendenziell zu mild. <b>Routen:</b>{" "}
+            OpenRouteService (Rennrad-Profil) oder OSRM. <b>3D:</b> Mapzen/AWS
+            Terrain Tiles. Karten © OpenStreetMap-Mitwirkende.
           </p>
         </section>
         <section className="flex flex-col gap-2">

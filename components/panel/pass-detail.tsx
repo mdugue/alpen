@@ -233,7 +233,7 @@ export const PassDetail = ({
 
       <Section
         id="climate"
-        info="ERA5-Land 2015–2024, ein 10-km-Raster – auf Passhöhe eher zu mild."
+        info="Open-Meteo-Archiv 2015–2024 (ERA5, ERA5-Land, ab 2017 ECMWF IFS), ein Modellraster von 9 bis 25 km – auf Passhöhe eher zu mild."
         title="Jahresklima"
       >
         {bucket ? (

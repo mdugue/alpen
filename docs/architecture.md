@@ -126,7 +126,7 @@ GeoJSON per kind into `public/map` (git-ignored, cached immutably via
 `next.config.ts`). `lib/data.ts` derives the same file names with
 `lib/map-assets.ts` and hands the page the URLs plus one bounding box per tour
 and per pass – what a selection is framed into, and the one thing a camera
-cannot wait for a fetch to learn (10 KB for all 201 passes, four rounded
+cannot wait for a fetch to learn (13 KB for all 262 roads, four rounded
 numbers each); MapLibre fetches the files and tiles them in its worker.
 Nothing ever calls `setData` on the `routes` and `tours` sources: which lines
 show is a layer filter (which also keeps hidden lines out of hit-testing),
@@ -270,15 +270,16 @@ it in the same PR.
 `app/api/weather/[slug]` is the only thing a visitor can spend somebody's quota
 on. Open-Meteo's non-commercial allowance is 10 000 calls a day, so the worst
 case has to be computed rather than hoped for: one cached call per pass per
-window, 201 passes, which is why the window is an hour (≈ 4 800/day) and not
-the half hour it was (≈ 9 600/day). Three rules follow. A window that gets
-shorter has to be checked against that product again. A successful answer
+window, 262 roads today, which is why the window is an hour (≈ 6 300/day) and
+not the half hour it once was (≈ 12 600/day, over the allowance). An hour
+holds up to about 410 roads. Three rules follow. A window that gets shorter,
+or a list that grows past that, has to be checked against the product again. A successful answer
 carries `s-maxage`, so the repeats inside a window are served by the CDN and
 not by the function. And a failure is never left to each visitor to retry: a
 thrown forecast is not cached, so a rate limit or an outage would arrive
 undamped, and a module-level cooldown bounds what one warm instance will ask.
 That cooldown sits _inside_ the cached function, where a cache hit never
-reaches it – one failing pass must not blank the weather of the other 200 – and
+reaches it – one failing pass must not blank the weather of all the others – and
 it is armed wherever the host fails it – the fetch, the status, an answer this
 route cannot read – rather than in the handler, or it would re-arm on its own
 rejection and never end. What Open-Meteo has no value for is a `null`, and it
