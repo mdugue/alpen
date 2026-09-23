@@ -68,7 +68,7 @@ import {
 import type { Candidate } from "./lib/locate";
 import { osmSource } from "./lib/osm";
 import { liveTransport } from "./lib/transport";
-import { checkSummit, haversine, LIMITS, suspectPoint } from "./lib/validate";
+import { checkSummit, LIMITS, pairKm, suspectPoint } from "./lib/validate";
 
 const APPLY = process.argv.includes("--apply");
 /**
@@ -235,9 +235,7 @@ const roadTop = async (p: Pass): Promise<RoadTop | null> => {
       })),
     )
     // The tiles are boxes and the search is a circle.
-    .filter(
-      (c) => haversine([p.lat, p.lon], [c.lat, c.lon]) <= ROAD_TOP_RADIUS,
-    );
+    .filter((c) => pairKm([p.lat, p.lon], [c.lat, c.lon]) <= ROAD_TOP_RADIUS);
   if (!points.length) return null;
 
   let sampled = 0;
@@ -254,9 +252,7 @@ const roadTop = async (p: Pass): Promise<RoadTop | null> => {
   const sweep = await highest(points);
   if (!sweep) return null;
   const near = await highest(
-    points.filter(
-      (c) => haversine([sweep.lat, sweep.lon], [c.lat, c.lon]) <= 0.5,
-    ),
+    points.filter((c) => pairKm([sweep.lat, sweep.lon], [c.lat, c.lon]) <= 0.5),
   );
   const best = near && near.dem > sweep.dem ? near : sweep;
   return { ...best, named: named.length > 0, sampled };
@@ -374,14 +370,14 @@ for (const p of list) {
     console.log(
       `  höchster Punkt der gespeicherten Route ${fallback.key}${fallback.fetched ? " (Höhen eben abgefragt, kein Profil gespeichert)" : ""}: ${fallback.lat.toFixed(4)}, ${fallback.lon.toFixed(4)}  ` +
         `Profil ${fallback.ele} m  DEM ${x.dem} m ${ok(x.demOk)}  Straße ${OFFLINE ? "auf der Route ✓" : road(x)}  ` +
-        `(${m(haversine([p.lat, p.lon], [fallback.lat, fallback.lon]))} vom Punkt)`,
+        `(${m(pairKm([p.lat, p.lon], [fallback.lat, fallback.lon]))} vom Punkt)`,
     );
   }
   if (top)
     console.log(
       `  höchster Punkt der Straße "${top.name}"${top.named ? "" : " (kein Weg trägt den Passnamen – jede Straße im Umkreis gesucht)"}: ` +
         `${top.lat.toFixed(4)}, ${top.lon.toFixed(4)}  DEM ${top.dem} m ${ok(topOk)}  Straße 0 m ✓  ` +
-        `(${m(haversine([p.lat, p.lon], [top.lat, top.lon]))} vom Punkt, ${top.sampled} Punkte im Umkreis von ${ROAD_TOP_RADIUS} km abgefragt)`,
+        `(${m(pairKm([p.lat, p.lon], [top.lat, top.lon]))} vom Punkt, ${top.sampled} Punkte im Umkreis von ${ROAD_TOP_RADIUS} km abgefragt)`,
     );
 
   if (!APPLY) continue;
@@ -417,7 +413,7 @@ for (const p of list) {
       );
       continue;
     }
-    if (haversine([p.lat, p.lon], [best.lat, best.lon]) < 0.1) {
+    if (pairKm([p.lat, p.lon], [best.lat, best.lon]) < 0.1) {
       console.log("  --apply: der gespeicherte Punkt liegt bereits dort");
       continue;
     }
@@ -445,7 +441,7 @@ for (const p of list) {
   if (
     cur.demOk &&
     cur.roadOk &&
-    haversine([p.lat, p.lon], [best.lat, best.lon]) < 0.1
+    pairKm([p.lat, p.lon], [best.lat, best.lon]) < 0.1
   ) {
     console.log("  --apply: der gespeicherte Punkt liegt bereits dort");
     continue;

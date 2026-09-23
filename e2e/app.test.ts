@@ -126,7 +126,7 @@ test("3 · a shared link restores selection, period and camera", () =>
   withPage(
     app,
     "shared-link",
-    { hash: "#pass=col-du-galibier&t=6&z=9&c=45.06,6.41" },
+    { target: "#pass=col-du-galibier&t=6&z=9&c=45.06,6.41" },
     async (page) => {
       // A link from before the routes: the selection it carries is applied
       // and the address bar moves to the pass's own path, the rest of the
@@ -167,7 +167,7 @@ test("3 · a shared link restores selection, period and camera", () =>
 
 test("4 · a status chip narrows the lists and the applied-filter chip undoes it", () =>
   // Early January: nothing is "gut", so the counts and the disabled chip bite.
-  withPage(app, "status-filter", { hash: "#t=1" }, async (page) => {
+  withPage(app, "status-filter", { target: "#t=1" }, async (page) => {
     await page.waitFor(PASS_ROW);
     const all = await page.count(PASS_ROW);
     // The status picker is a row of chips inside the filter panel: no popup
@@ -214,7 +214,7 @@ test("5 · nothing covers the map until it is asked for; list and detail stack",
 
     // Tapping a road opens the detail drawer on its own – there is no list
     // underneath it, so it closes rather than going back.
-    await page.navigate("#pass=col-du-galibier");
+    await page.navigate("pass/col-du-galibier");
     await page.waitFor("#detail-title");
     expect(await page.text("#detail-title")).toBe("Col du Galibier");
     expect(await page.count('[aria-label*="klappen"]')).toBe(1);
@@ -268,7 +268,7 @@ test("5b · an entity route is a page of its own, and the back button closes it"
   withPage(
     app,
     "entity-route",
-    { hash: "pass/col-du-galibier#t=6" },
+    { target: "pass/col-du-galibier#t=6" },
     async (page) => {
       // A direct visit: prerendered with the pass's own title, and the panel
       // open on it without a hash saying so.
@@ -305,7 +305,7 @@ test("5c · the English version lives under /en, and the language menu keeps the
   withPage(
     app,
     "english",
-    { hash: "en/pass/col-du-galibier#t=6" },
+    { target: "en/pass/col-du-galibier#t=6" },
     async (page) => {
       await page.waitFor("#detail-title");
       expect(await page.evaluate<string>("document.documentElement.lang")).toBe(
@@ -339,7 +339,7 @@ test("5d · the root speaks the browser's language until one is picked", () =>
   withPage(
     app,
     "root-language",
-    { acceptLanguage: "en-GB,en;q=0.9", hash: "#t=6" },
+    { acceptLanguage: "en-GB,en;q=0.9", target: "#t=6" },
     async (page) => {
       // An English browser arriving at the bare root is sent to /en, and the
       // fragment travels with the redirect.
@@ -373,7 +373,7 @@ test("5e · the roads come first, and a town is listed under its area", () =>
     );
     // … and a town, opened from a link, brings the areas' tab forward: it is
     // listed there, under the area that names it as a base.
-    await page.navigate("#town=bormio");
+    await page.navigate("ort/bormio");
     await page.waitFor("#detail-title");
     await page.waitFor('[data-row="town:bormio"][aria-current="true"]');
     expect(await page.text('[role="tab"][aria-selected="true"]')).toMatch(
@@ -444,7 +444,7 @@ test("7 · a pass answers beside its dot, where nothing is drawn", () =>
   withPage(
     app,
     "map-hit-areas",
-    { hash: "#z=12&c=45.064,6.408" },
+    { target: "#z=12&c=45.064,6.408" },
     async (page) => {
       type Points = {
         dot: { x: number; y: number };
@@ -509,7 +509,7 @@ test("8 · a selected pass is framed whole, clear of the sheet and the controls"
   withPage(
     app,
     "pass-frame",
-    { hash: "#pass=col-du-galibier&t=14", mobile: true },
+    { mobile: true, target: "pass/col-du-galibier#t=14" },
     async (page) => {
       await page.waitFor("canvas.maplibregl-canvas");
       if (!(await page.camera())) return;
@@ -577,7 +577,7 @@ test("9 · the sheet's content scrolls only once it is all the way up", () =>
   withPage(
     app,
     "sheet-scroll-lock",
-    { hash: "#pass=passo-dello-stelvio", mobile: true },
+    { mobile: true, target: "pass/passo-dello-stelvio" },
     async (page) => {
       await page.waitFor("#detail-title");
       await page.waitInViewport("#detail-title");

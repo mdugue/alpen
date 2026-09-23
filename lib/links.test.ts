@@ -2,25 +2,11 @@ import { describe, expect, test } from "bun:test";
 
 import { komootHref, quaeldichHref } from "@/lib/links";
 import type { Pass } from "@/lib/types";
+import { makePass } from "@/test/fixtures";
 
-const pass = (over: Partial<Pass> & { slug: string; name: string }): Pass => ({
-  ascents: [],
-  beauty: 5,
-  classicAscent: "",
-  country: "IT",
-  difficulty: 5,
-  elevation: 2757,
-  fame: 5,
-  lat: 46.5,
-  lon: 10.4,
-  note: "",
-  region: "Zentralalpen",
-  season: null,
-  surface: "asphalt",
-  traffic: 4,
-  type: "pass",
-  ...over,
-});
+/** Only the name and the curated slug reach a link. */
+const pass = (over: Partial<Pass> & { slug: string; name: string }): Pass =>
+  makePass(over.slug, 0, over);
 
 describe("quaeldichHref", () => {
   test("goes to the pass page when the slug is curated", () => {
@@ -30,7 +16,6 @@ describe("quaeldichHref", () => {
           name: "Passo dello Stelvio",
           quaeldich: "stilfser-joch",
           slug: "passo-dello-stelvio",
-          surface: "asphalt",
         }),
       ),
     ).toBe("https://www.quaeldich.de/paesse/stilfser-joch/");

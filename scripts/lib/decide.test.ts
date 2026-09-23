@@ -641,7 +641,9 @@ describe("the routing profile (plan 27)", () => {
     expect(gravel.profile).toBe("cycling-mountain");
     // A road stored before the surface existed keeps its hash: every one of
     // them was asked with the road profile.
-    expect(paved.inputs).toBe(ascentInputs(false, pass(), pass().ascents[0]!));
+    expect(paved.inputs).toBe(
+      ascentInputs(false, pass(), pass().ascents[0]!, "cycling-road"),
+    );
     expect(gravel.inputs).not.toBe(paved.inputs);
     expect(routeJobs([], [tour({ surface: "mixed" })])[0]!.profile).toBe(
       "cycling-mountain",

@@ -3,7 +3,7 @@
  * Headless screenshots of the app in a set of states, using Bun.WebView
  * (Bun ≥ 1.4, experimental) – no Playwright, no npm dependency.
  *
- *   bun .agents/skills/preview-app/screenshot.ts [baseUrl] [outDir] [--offline] [--webkit] [--state name=hash[,mobile][,dark]]...
+ *   bun .agents/skills/preview-app/screenshot.ts [baseUrl] [outDir] [--offline] [--webkit] [--state name=path[#hash][,mobile][,dark]]...
  *
  * Backend: Chrome/Chromium over the DevTools Protocol by default (any
  * installed Chrome; set CHROME=/path/to/chrome when it is not in a standard
@@ -34,18 +34,22 @@ const customStates = args.flatMap((a, i) =>
 
 interface State {
   name: string;
-  hash: string;
+  /** Path and hash after the origin: `pass/col-du-galibier#t=10`. */
+  target: string;
   mobile: boolean;
   dark: boolean;
 }
 
+/** `name=path[#hash][,mobile][,dark]`: the selection is the path, the rest the hash. */
 const DEFAULT_STATES = [
   "overview=",
   "overview-dark=,dark",
-  "tour-sellaronda=#tour=sellaronda",
-  "pass-galibier=#pass=col-du-galibier&t=10",
-  "mobile-peek=,mobile",
-  "mobile-pass=#pass=passo-dello-stelvio,mobile",
+  "tour-sellaronda=tour/sellaronda",
+  "pass-galibier=pass/col-du-galibier#t=10",
+  "area-oisans=ziel/oisans",
+  "english=en",
+  "mobile=,mobile",
+  "mobile-pass=pass/passo-dello-stelvio,mobile",
 ];
 
 const states: State[] = (
@@ -53,12 +57,12 @@ const states: State[] = (
 ).map((spec) => {
   const eq = spec.indexOf("=");
   const name = eq === -1 ? spec : spec.slice(0, eq);
-  const [hash = "", ...flags] = (eq === -1 ? "" : spec.slice(eq + 1)).split(
+  const [target = "", ...flags] = (eq === -1 ? "" : spec.slice(eq + 1)).split(
     ",",
   );
   return {
     dark: flags.includes("dark"),
-    hash,
+    target,
     mobile: flags.includes("mobile"),
     name,
   };
@@ -197,7 +201,7 @@ const shoot = async (state: State) => {
       }
     }
 
-    await view.navigate(`${base}/${state.hash}`);
+    await view.navigate(`${base}/${state.target}`);
     // Let MapLibre fetch its worker, style and data and paint the layers.
     await Bun.sleep(offline ? 4000 : 8000);
 

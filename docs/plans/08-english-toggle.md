@@ -11,31 +11,43 @@ Everything in the design below, with these departures:
 
 - **No `dynamicParams = false`**: Cache Components allow none, so an unknown
   language is `notFound()` in the root layout, like an unknown slug.
-- **The toggle sits in the header**, not in the sidebar brand row: one
-  place on every width, and it is a plain `<a>` with a full load rather than
-  a `Link` – the other prefix is another prerender and every row's text
-  changes with it. Its `href` is a value of the state (`switchLangHref`),
-  so the server and the client render the same link.
-- **The words are split by area** (`lib/i18n/de/*.ts`, `en/*.ts`) and
-  composed in `messages.de.ts`; the core's sentence functions take the
-  language as a trailing argument with a German default, so the scripts and
-  the tests keep their words. The vocabulary tables in `lib/regions.ts` and
-  `lib/geo.ts` stay the German source, the English `vocab` section writes
-  its own.
+- **The language is the last group of the map's "…" menu**
+  (`LanguageField`, `components/map/language-field.tsx`), each language named
+  in its own, not a toggle in the header: a header control read as a second
+  headline and was the first thing a phone lost to the width. It is a plain
+  `<a>` with a full load rather than a `Link` – the other prefix is another
+  prerender and every row's text changes with it. Its `href` is a value of
+  the state (`switchLangHref`), so the server and the client render the same
+  link.
+- **One language per page.** The words are split by area
+  (`lib/i18n/de/*.ts`, `en/*.ts`), composed in `messages.de.ts`, and handed
+  to the client by the layout as one dictionary (`getDictionary`,
+  `I18nProvider`); a lint pattern keeps both dictionaries out of the code the
+  browser runs. The core's sentence functions take the page's words as a
+  trailing argument, German where the scripts and the tests call them.
+- **The root is negotiated, and only the root** (`proxy.ts`, matching `/`
+  alone): a visitor who picked a language in the menu (`NEXT_LOCALE`, written
+  with the Cookie Store API) or whose browser asks for English first is sent
+  to `/en`; every other path stays static and is never redirected. This
+  reverses the non-goal below, which was written for detection on every
+  page: one negotiated URL keeps every prerender and every link stable.
+- **No first-visit hint.** The dismissible box for a browser in the other
+  language was dropped with the negotiated root: the root already answers
+  that visitor, and a deep link is in the language it was shared in.
 - **The share images live under `[lang]`** (`app/[lang]/opengraph-image.tsx`
   and the entity one), so each language gets its own and nothing outside a
   layout resolves an image any more.
 - **The editorial prose** is `data/i18n/en/{passes,tours,towns,destinations}.json`
   with a first machine draft, hand-checked, merged in `lib/data.ts`; the
   coverage is an `INFO` line of `bun run data:check`.
-- **The first-visit hint** is a small dismissible box under the header for
-  a browser whose language is the other one and nothing stored
-  (`alpenpaesse:lang`) – symmetric, so a German browser on `/en` is offered
-  the German version too. The toggle and the hint's link store where they
-  lead, a dismissal stores the page's language; either way the hint is asked
-  once. The basemap labels read `name:en` on the English page
-  (`nameOf` in `lib/basemap.ts`), and `scripts/build-map-style.ts` writes
-  one style file per scheme and language for the editors.
+- **The map speaks the page's language**: the basemap labels read `name:en`
+  on the English page (`nameOf` in `lib/basemap.ts`), its credit line is the
+  page's word, and `scripts/build-map-style.ts` writes one style file per
+  scheme and language for the editors.
+- **Every page says its languages**: one `alternatesOf` for the canonical,
+  both languages and `x-default` (German), in the metadata and the sitemap,
+  and a complete Open Graph block with the other language's locale; an
+  unknown entity is a 404 in the page's language.
 - **Verified in step 1**: the build log lists `/de` and `/en` as `○`
   (static), and the browser suite opens `/` and `/pass/…` through the
   rewrite on every run.

@@ -1,8 +1,9 @@
 # 24 · Depth per destination
 
-**Status:** in progress ([#59](https://github.com/mdugue/alpen/pull/59)) –
-steps 1–3 done, 4 (the split) waits for the 300th entry, 5 (curation rounds)
-is plan 23 and what follows it · **Effort:** M for code, then ongoing curation ·
+**Status:** in progress ([#59](https://github.com/mdugue/alpen/pull/59),
+[#63](https://github.com/mdugue/alpen/pull/63)) – steps 1–3 done, 4 (the
+split) waits for the 300th entry (262 today), 5 (curation rounds) is plan 23
+and what follows it · **Effort:** M for code, then ongoing curation ·
 **Depends on:** 00 (the gate measures what is added), the reach bands of
 PR #47 · **Unblocks:** 23, 25 and 26 have a measure to curate against; 12
 gets destinations whose numbers mean something

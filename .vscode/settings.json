@@ -53,6 +53,10 @@
       "url": "./data/schema/towns.schema.json"
     },
     {
+      "fileMatch": ["/data/destinations.json"],
+      "url": "./data/schema/destinations.schema.json"
+    },
+    {
       "fileMatch": ["/data/i18n/en/passes.json"],
       "url": "./data/schema/passes.en.schema.json"
     },

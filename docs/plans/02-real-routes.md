@@ -16,7 +16,11 @@ route is still on its way; the panel's prose is not rendered on the
 server – the model reads the half-month, the hover and the detail file, and
 rendering it a second time would cost a second model for text the route's
 description already carries; the rows stay buttons (the adapter pushes) rather
-than links · **Effort:** L · **Depends on:** 01 (smaller payload
+than links; the climate series of every pass stays in the page rather than
+shipping with its route alone, because the rows, the chip counts and the
+season band read a pass's half-month out of it on every keystroke
+(`lib/detail-assets.ts`) – what ships per entity is the profiles and the
+photos · **Effort:** L · **Depends on:** 01 (smaller payload
 first, otherwise every prerendered route carries the geometry), 28 and 33
 (the router is an adapter swap rather than a rewrite: the selection is a
 reducer case either way) · **Unblocks:** 08, per-entity share previews,

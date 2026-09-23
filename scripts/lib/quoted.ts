@@ -3,8 +3,10 @@
  *
  * `LIMITS` (`scripts/lib/validate.ts`) is restated as a table in the
  * `curate-data` skill and drawn into two diagrams of `docs/data-model.md`;
- * the status constants (`SIGNALS` and the lapse rate, `lib/status.ts`) sit
- * in a table, a diagram and a paragraph of `docs/scales.md`. The documents
+ * the status constants (`SIGNALS`, the lapse rate and the snow cover,
+ * `lib/status.ts`) and the weights of a base and an area
+ * (`lib/destination.ts`) sit in tables, a diagram and paragraphs of
+ * `docs/scales.md`. The documents
  * stay hand-written on purpose – they explain, they are not generated – so
  * nothing used to notice when a constant moved and the prose kept the old
  * number. `data:check` reads this table and fails, the way it fails on a
@@ -17,9 +19,20 @@
  * that what is quoted is quoted right. The plans under `docs/plans/` are
  * history and are not checked.
  */
+import {
+  RIDEABLE_BEST_SHARE,
+  RIDEABLE_GOOD_SHARE,
+  RISKY_WEIGHT,
+} from "../../lib/destination";
 import { DE } from "../../lib/i18n/dictionaries";
-import { LAPSE_RATE, SIGNALS, signalValue } from "../../lib/status";
+import {
+  COVER_CLOSED_PCT,
+  LAPSE_RATE,
+  SIGNALS,
+  signalValue,
+} from "../../lib/status";
 import { fmt } from "../../lib/utils";
+import { CLIMATE_DAY } from "./climate";
 import { LIMITS } from "./validate";
 
 export interface Quote {
@@ -118,6 +131,34 @@ export const QUOTES: Quote[] = [
     constant: "LAPSE_RATE",
     files: [SCALES],
     text: `${fmt(LAPSE_RATE * 100, 2)} °C`,
+  },
+  {
+    constant: "COVER_CLOSED_PCT",
+    files: [SCALES],
+    text: `${COVER_CLOSED_PCT} %`,
+  },
+  {
+    // "≥ 10 cm of snow cover": the depth a day counts from.
+    constant: "CLIMATE_DAY.coverM",
+    files: [SCALES],
+    text: `${Math.round(CLIMATE_DAY.coverM * 100)} cm`,
+  },
+  // The weights are quoted in brackets after their names, which also keeps
+  // "0,4" from being found inside "0,45".
+  {
+    constant: "RIDEABLE_BEST_SHARE",
+    files: [SCALES],
+    text: `(${fmt(RIDEABLE_BEST_SHARE, 2)})`,
+  },
+  {
+    constant: "RIDEABLE_GOOD_SHARE",
+    files: [SCALES],
+    text: `(${fmt(RIDEABLE_GOOD_SHARE, 2)})`,
+  },
+  {
+    constant: "RISKY_WEIGHT",
+    files: [SCALES],
+    text: `(${fmt(RISKY_WEIGHT, 2)})`,
   },
 ];
 

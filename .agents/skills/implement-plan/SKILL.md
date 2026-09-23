@@ -34,8 +34,8 @@ second round.
 ## 3. Verify
 
 ```bash
-bun run typecheck && bun run lint && bun run build && bun run data:check
-bun test            # once plan 10 exists
+bun run typecheck && bun run lint && bun run test && bun run build && bun run data:check
+bun run e2e         # the built app in a headless browser
 ```
 
 - For anything visible run the `preview-app` skill and attach screenshots

@@ -7,10 +7,11 @@ questions, not routing questions:
 - Where should we look for a hotel so that several passes and a loop are within reach?
 - Which destinations should we keep an eye on for single-day and multi-day tours?
 
-Data today: 201 roads with 300 ascents and their elevation profiles, 9 loop
-tours and 48 cycling towns, each with a rideability estimate for a freely
-chosen half-month, a 7-day forecast and a 2015–2024 climate series at the
-summit, in 2D and 3D. The UI is in German.
+Data today: 262 roads with 398 ascents and their elevation profiles, 17 loop
+tours, 66 cycling towns and 36 destinations, each with a rideability estimate
+for a freely chosen half-month, a 7-day forecast and a 2015–2024 climate
+series at the summit, in 2D and 3D. The UI is in German, and in English under
+`/en`.
 
 **What it is not.** A route planner or a navigation tool. Komoot, Strava and
 similar services do turn-by-turn planning far better, and the app links out
@@ -44,7 +45,7 @@ and the climate series are missing.
 | `bun run data:photos`                | Wikimedia Commons photos per entity → `data/generated/photos.json`        |
 | `bun run data:schema`                | Re-emit `data/schema/*.schema.json` from `lib/schema.ts`                  |
 | `bun run data:backfill`              | Drain the whole precomputation backlog in hourly batches                  |
-| `bun test`                           | Unit tests next to the code                                               |
+| `bun run test`                       | Unit tests next to the code                                               |
 | `bun run e2e`                        | Build and drive the app in a headless Chrome                              |
 | `bun run map:glyphs`                 | Rasterise Inter into MapLibre glyph atlases (committed, rarely needed)    |
 | `bun run ui:init` / `bun run ui:add` | (Re)install the shadcn "mira" preset and components                       |

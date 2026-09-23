@@ -1,6 +1,4 @@
 #!/usr/bin/env bun
-import { insideOf, isMember } from "../lib/destination";
-import { haversine } from "../lib/geo";
 /**
  * Validates every file in `data/` against `lib/schema.ts`, then checks the
  * cross references, completeness and route quality the schemas cannot see.
@@ -28,6 +26,8 @@ import { haversine } from "../lib/geo";
  * must neither block a merge nor stop the refresh workflow from committing
  * what it fetched.
  */
+import { insideOf, isMember } from "../lib/destination";
+import { haversine } from "../lib/geo";
 import { DE } from "../lib/i18n/dictionaries";
 import {
   inBox,
@@ -38,10 +38,16 @@ import {
 } from "../lib/regions";
 import type { RangeName } from "../lib/regions";
 import { ascentKey, entityKey, parseRouteKey, tourKey } from "../lib/route-key";
-import { FILES } from "../lib/schema";
+import {
+  DestinationTranslation,
+  FILES,
+  PassTranslation,
+  TourTranslation,
+  TownTranslation,
+} from "../lib/schema";
 import type { DataFileName } from "../lib/schema";
 import { fold } from "../lib/search";
-import { windowText } from "../lib/status";
+import { indexBySlug, windowText } from "../lib/status";
 import type {
   AscentMetrics,
   Destination,
@@ -508,14 +514,10 @@ const standalone = (list: Destination[], roads: Pass[]): string[] =>
 
 if (passes) checkPasses(passes);
 // Without a valid pass list every reference would read as unknown.
-if (tours && passes) checkTours(tours, new Map(passes.map((p) => [p.slug, p])));
+if (tours && passes) checkTours(tours, indexBySlug(passes));
 if (towns) checkTowns(towns);
 if (destinations && passes && towns)
-  checkDestinations(
-    destinations,
-    new Map(passes.map((p) => [p.slug, p])),
-    new Map(towns.map((t) => [t.slug, t])),
-  );
+  checkDestinations(destinations, indexBySlug(passes), indexBySlug(towns));
 
 // Rejections are unfinished curation: either the coordinates in data/*.json are
 // wrong, or a limit in validate.ts is. Both need a human, neither blocks a merge.
@@ -656,7 +658,8 @@ const coverage = (
   what: string,
   list: { slug: string }[] | null,
   translations: Record<string, object> | null,
-  fields: string[],
+  /** The translatable fields, as the schema of the English file names them. */
+  fields: readonly string[],
 ) => {
   if (!list || !translations) return;
   const slugs = new Set(list.map((x) => x.slug));
@@ -675,7 +678,13 @@ const coverage = (
       translationGaps.push(`${what}.${field} ${missing}/${list.length}`);
   }
 };
-coverage("passes", passes, passesEn, ["note", "classicAscent"]);
+// The ascent labels are an array matched by index and checked on their own below.
+coverage(
+  "passes",
+  passes,
+  passesEn,
+  Object.keys(PassTranslation.shape).filter((f) => f !== "ascents"),
+);
 // The ascent labels are matched by index, so a list of the wrong length
 // would put a label on the wrong side – a warning, unlike a missing field.
 for (const p of passes ?? []) {
@@ -690,14 +699,14 @@ if (passes && passesEn) {
   if (missing)
     translationGaps.push(`passes.ascents ${missing}/${passes.length}`);
 }
-coverage("tours", tours, toursEn, ["description", "note"]);
-coverage("towns", towns, townsEn, ["why"]);
-coverage("destinations", destinations, destinationsEn, [
-  "character",
-  "multiDay",
-  "access",
-  "note",
-]);
+coverage("tours", tours, toursEn, Object.keys(TourTranslation.shape));
+coverage("towns", towns, townsEn, Object.keys(TownTranslation.shape));
+coverage(
+  "destinations",
+  destinations,
+  destinationsEn,
+  Object.keys(DestinationTranslation.shape),
+);
 if (translationGaps.length)
   console.log(
     `INFO  Englische Texte fehlen (Rückfall auf Deutsch): ${translationGaps.join(", ")}`,

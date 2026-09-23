@@ -18,7 +18,7 @@ hands-on procedure for changing source data.
 ```mermaid
 flowchart TB
   subgraph hand["1 · Curated by hand"]
-    P["data/passes.json<br/>tours.json · towns.json"]
+    P["data/passes.json<br/>tours.json · towns.json · destinations.json<br/>i18n/en/*.json – the English prose"]
   end
 
   subgraph net["2 · Asked once, by a script"]
@@ -207,6 +207,8 @@ the reader, not sources for the app.
 | `data/passes.json`                   | `slug`                                | a human               | array of `Pass`                      | yes    | everything                                 |
 | `data/tours.json`                    | `slug`                                | a human               | array of `Tour`                      | yes    | everything                                 |
 | `data/towns.json`                    | `slug`                                | a human               | array of `Town`                      | yes    | everything                                 |
+| `data/destinations.json`             | `slug`                                | a human               | array of `Destination`               | yes    | the areas, `data:check`                    |
+| `data/i18n/en/*.json`                | `slug`                                | a human               | the prose fields, in English         | yes    | the English pages, `data:check`            |
 | `data/generated/summits.json`        | `<pass-slug>`                         | `data:build`          | `{ dem, roadDist, lat, lon }`        | yes    | the gate, `data:check`, `data:locate`      |
 | `data/generated/routes.json`         | `<pass-slug>:<i>`, `tour:<tour-slug>` | `data:build`          | `[lat, lon][]`                       | yes    | map assets, profiles, `data:check`         |
 | `data/generated/routes-meta.json`    | as `routes.json`                      | `data:build`          | `{ source, fetchedAt, inputs }`      | yes    | the retry rules, `data:check`              |

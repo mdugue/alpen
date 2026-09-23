@@ -3,6 +3,7 @@ import { z } from "zod";
 import { DE } from "@/lib/i18n/dictionaries";
 import {
   COUNTRIES,
+  countriesOf,
   SURFACES,
   inBox,
   isTraverse,
@@ -141,6 +142,15 @@ export const TourSeason = z
 
 export const Region = z.enum(REGIONS);
 export const Country = z.enum(COUNTRIES);
+
+/** One country or a pair across a border: "IT", "CH/IT" – a road's, an area's. */
+const CountryPair = z
+  .string()
+  .regex(/^[A-Z]{2}(?:\/[A-Z]{2})?$/u, 'Land: "IT" oder "CH/IT"')
+  .refine(
+    (c) => countriesOf(c).every((x) => COUNTRIES.includes(x as never)),
+    `Land: eines von ${COUNTRIES.join(", ")}`,
+  );
 export const RoadType = z.enum(ROAD_TYPES);
 export const RoadTag = z.enum(ROAD_TAGS);
 export const Surface = z.enum(SURFACES);
@@ -154,14 +164,8 @@ export const Pass = z
     beauty: Rating,
     /** Editorial short description of the classic ascent. */
     classicAscent: z.string(),
-    /** ISO-like code, possibly several: "IT", "CH/IT". */
-    country: z
-      .string()
-      .regex(/^[A-Z]{2}(?:\/[A-Z]{2})?$/u, 'Land: "IT" oder "CH/IT"')
-      .refine(
-        (c) => c.split("/").every((x) => COUNTRIES.includes(x as never)),
-        `Land: eines von ${COUNTRIES.join(", ")}`,
-      ),
+    /** ISO-like code, possibly two: "IT", "CH/IT". */
+    country: CountryPair,
     difficulty: Rating,
     /**
      * Height of the marker, not "the summit": for a traverse type the marker is
@@ -341,21 +345,14 @@ export const Towns = z.array(Town);
 export const Destination = z.strictObject({
   /** How to get there without and with a car: one or two sentences. */
   access: z.string().min(1),
-  /** Where to look for a hotel first: town slugs, in the order they are named. */
-  /** Where to stay, at most three; none while no town of `towns.json` lies inside. */
+  /** Where to stay, at most three, in the order they are named; none while no town of `towns.json` lies inside. */
   baseTowns: z.array(Slug).max(3),
   /** The centre the radius is measured from – usually the main base. */
   center: LatLon,
   /** Two sentences: the roads that make the area, and what riding it is like. */
   character: z.string().min(1),
   /** Like a road's: one country or a pair, "FR/IT". */
-  country: z
-    .string()
-    .regex(/^[A-Z]{2}(?:\/[A-Z]{2})?$/u, 'Land: "IT" oder "CH/IT"')
-    .refine(
-      (c) => c.split("/").every((x) => COUNTRIES.includes(x as never)),
-      `Land: eines von ${COUNTRIES.join(", ")}`,
-    ),
+  country: CountryPair,
   /** Roads inside the radius that belong to a neighbour instead. */
   exclude: z.array(Slug),
   /** Roads outside the radius that belong here anyway – taste over geometry. */

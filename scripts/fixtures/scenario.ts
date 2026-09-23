@@ -181,7 +181,12 @@ export const seed = (): Stored => ({
   meta: {
     [KEYS.kept]: {
       fetchedAt: "2026-01-02",
-      inputs: ascentInputs(false, galibier, galibier.ascents[1]!),
+      inputs: ascentInputs(
+        false,
+        galibier,
+        galibier.ascents[1]!,
+        "cycling-road",
+      ),
       source: "osrm",
     },
   },

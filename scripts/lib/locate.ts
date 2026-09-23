@@ -14,7 +14,7 @@
 import { fold } from "../../lib/search";
 import type { LatLon, Pass } from "../../lib/types";
 import type { OsmElement, OverpassNode, OverpassWay } from "./hosts";
-import { haversine } from "./validate";
+import { pairKm } from "./validate";
 
 /**
  * Highway classes a pass road can be. `service` covers the car parks that end
@@ -146,7 +146,7 @@ export const rankCandidates = (
     c.ele === null ? 9999 : Math.abs(c.ele - pass.elevation);
   return nodes
     .map((n): Candidate => ({
-      dist: haversine([pass.lat, pass.lon], [n.lat, n.lon]),
+      dist: pairKm([pass.lat, pass.lon], [n.lat, n.lon]),
       ele: taggedEle(n.tags),
       lat: n.lat,
       lon: n.lon,
@@ -214,7 +214,7 @@ export const passNodesWithin = (
     (e): e is OverpassNode =>
       e.type === "node" &&
       (e.tags?.mountain_pass === "yes" || e.tags?.natural === "saddle") &&
-      haversine([p.lat, p.lon], [e.lat, e.lon]) <= radiusKm,
+      pairKm([p.lat, p.lon], [e.lat, e.lon]) <= radiusKm,
   );
 
 /** The map API's bbox, `minlon,minlat,maxlon,maxlat`, around a point. */

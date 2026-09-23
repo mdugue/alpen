@@ -111,8 +111,8 @@ export const startApp = async (): Promise<App> => {
 };
 
 export interface OpenOptions {
-  /** Everything after the "/", usually a "#…" hash. */
-  hash?: string;
+  /** Everything after the origin's "/": a path, a "#…" hash or both. */
+  target?: string;
   /** 390 × 844 with touch emulation. */
   mobile?: boolean;
   dark?: boolean;
@@ -139,9 +139,9 @@ export class Page {
    * change is a same-document navigation, and `navigate()` would wait for a
    * load event that never comes.
    */
-  async navigate(hash = "") {
+  async navigate(target = "") {
     await this.view.navigate("about:blank");
-    await this.view.navigate(`${this.base}/${hash}`);
+    await this.view.navigate(`${this.base}/${target}`);
   }
 
   evaluate<T = unknown>(expression: string) {
@@ -288,11 +288,6 @@ export class Page {
     );
   }
 
-  async fill(selector: string, value: string) {
-    await this.focus(selector);
-    await this.view.type(value);
-  }
-
   press(key: string) {
     return this.view.press(key);
   }
@@ -409,7 +404,7 @@ const openPage = async (app: App, options: OpenOptions = {}): Promise<Page> => {
     headers: { "Accept-Language": options.acceptLanguage ?? "de-DE,de;q=0.9" },
   });
   page.errors.push(...errors);
-  await page.navigate(options.hash ?? "");
+  await page.navigate(options.target ?? "");
   return page;
 };
 

@@ -116,13 +116,18 @@ The road criteria (height, fame, difficulty, the summer signals) do not
 reach this list: an area is judged on all of its roads. The "Gebirge" chip
 does – it narrows the areas to a range the way it narrows the roads – and so
 do the search and the favourites. The towns are not a list of their own:
-each is listed under the area that names it as a base first, and the towns
-no listed area holds follow in a last group ("Weitere Orte") – an area is
-where one goes, a town is where in it one sleeps.
+each is listed under every area that names it as a base – Lugano under the
+Ticino and under Lake Como – or, when no area does, under the nearest area it
+lies in (`homeAreasOf`); the towns no listed area holds follow in a last group
+("Weitere Orte"). An area is where one goes, a town is where in it one
+sleeps. The tab counts what the list answers with: an area, or a town outside
+every listed area (`tabCounts`).
 
 On the map an area is the outline of where its riding is, not the circle
-that decided its members: the padded hull of its summits, both ends of every
-ascent and its towns (`DestinationMembers.outline`, 5 km around them). The
+that decided its members: the padded hull of its centre, its summits and its
+towns (`DestinationMembers.outline`, 5 km around them). The valley feet of
+the ascents are left out on purpose – with them, a third of the outlines grew
+larger than the circles they replaced. The
 circle was the membership rule drawn as a picture, and half of every disc was
 valley floor or the next range; the outline shows what the area holds. It is
 drawn in the overview (below zoom 8.5, where the roads thin out by fame),

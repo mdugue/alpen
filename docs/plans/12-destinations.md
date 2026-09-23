@@ -2,19 +2,22 @@
 
 **Status:** done (September 2026) – the entity, 36 curated areas
 (`data/destinations.json`), membership derived at prerender rather than as a
-generated file, the ranked first tab that a first visit opens on, the panel
-with the lodging and workshop links, the circles in the overview, the compare
-sheet with `vgl` in the hash, the `data:check` cross-references and
-`docs/destinations.md`. Deviations, on purpose: the best window is graded
-against the area's own peak like a base's (`docs/scales.md`) rather than an
-absolute 70 % of members open, so a small area's strip shows its season and
-not its size; the row counts "gut" (best and good) rather than "offen", the
-word every other count in the app uses; the "Gebirge" chip narrows the areas
-the way it narrows the roads, and no chip per area was built; a town row
-names its area, the link to it is in the town panel. Left out: the per-area
-climate summary (the members' strips say it, and a median over summits of
-different heights would be a number nobody can read) and the `/ziel/[slug]`
-route, which is plan 02's · **Effort:** L ·
+generated file, the ranked tab, the panel with the lodging and workshop
+links, the outlines in the overview, the compare sheet with `vgl` in the
+hash, the `data:check` cross-references and `docs/destinations.md`; the
+`/ziel/[slug]` route came with plan 02. Deviations, on purpose: the roads
+stay the first tab, because they are what the map is made of, and the areas
+are the second; the towns have no tab of their own but sit under the areas
+that name them as bases, in one list; an area is drawn as the padded outline
+of what it holds, not as the circle that decides its members; the best
+window is graded against the area's own peak like a base's (`docs/scales.md`)
+rather than an absolute 70 % of members open, so a small area's strip shows
+its season and not its size; the row counts "gut" (best and good) rather
+than "offen", the word every other count in the app uses; the "Gebirge" chip
+narrows the areas the way it narrows the roads, and no chip per area was
+built. Left out: the per-area climate summary (the members' strips say it,
+and a median over summits of different heights would be a number nobody can
+read) · **Effort:** L ·
 **Depends on:** 09 (schema), benefits from 03 and 04 · **Unblocks:** the
 "where" half of the product goal, multi-day planning, hotel search
 

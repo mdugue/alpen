@@ -6,6 +6,8 @@ import type { DailySeries } from "./hosts";
 /** A day, as Open-Meteo hands one over. */
 interface Day {
   date: string;
+  /** Snow depth in m; left out of the series entirely when no day has one. */
+  depth?: number | null;
   precipitation?: number | null;
   snow?: number | null;
   tmax?: number | null;
@@ -18,6 +20,9 @@ const series = (days: Day[]): DailySeries => ({
   temperature_2m_max: days.map((d) => d.tmax ?? null),
   temperature_2m_min: days.map((d) => d.tmin ?? null),
   time: days.map((d) => d.date),
+  ...(days.some((d) => d.depth !== undefined)
+    ? { snow_depth_mean: days.map((d) => d.depth ?? null) }
+    : {}),
 });
 
 describe("halfMonthOf", () => {
@@ -34,6 +39,23 @@ describe("halfMonthOf", () => {
 });
 
 describe("bucketClimate", () => {
+  test("a cover day is 10 cm of snow on the ground, counted over the days that have a depth", () => {
+    const year = bucketClimate(
+      series([
+        { date: "2020-05-02", depth: 0.25, tmax: 5, tmin: -2 },
+        { date: "2021-05-02", depth: 0.1, tmax: 6, tmin: -1 },
+        { date: "2022-05-02", depth: 0.09, tmax: 8, tmin: 1 },
+        // A day without a depth counts for the temperatures, not for the cover.
+        { date: "2023-05-02", depth: null, tmax: 9, tmin: 2 },
+      ]),
+    );
+    expect(year[8]?.coverPct).toBe(67);
+    // A series without the variable says nothing about the cover at all.
+    expect(
+      bucketClimate(series([{ date: "2020-05-02", tmax: 5, tmin: -2 }]))[8],
+    ).not.toHaveProperty("coverPct");
+  });
+
   test("a year with no data at all is 24 nulls", () => {
     expect(bucketClimate(series([]))).toEqual(
       Array.from({ length: 24 }, () => null),

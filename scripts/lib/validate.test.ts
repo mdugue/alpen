@@ -565,41 +565,55 @@ describe("ascentInputs / tourInputs", () => {
   test("a moved marker makes a climb's route stale", () => {
     // The Umbrail point moved 740 m in September 2026, and the stored route
     // still ended where it used to be.
-    expect(ascentInputs(false, { ...pass, lat: 46.548 }, ascent)).not.toBe(
-      ascentInputs(false, pass, ascent),
-    );
+    expect(
+      ascentInputs(false, { ...pass, lat: 46.548 }, ascent, "cycling-road"),
+    ).not.toBe(ascentInputs(false, pass, ascent, "cycling-road"));
   });
 
   test("a moved marker leaves a traverse's route alone", () => {
     // A traverse is routed between its two curated ends; the marker is only
     // where its pin sits on the map.
-    expect(ascentInputs(true, { ...pass, lat: 46.548 }, ascent)).toBe(
-      ascentInputs(true, pass, ascent),
-    );
+    expect(
+      ascentInputs(true, { ...pass, lat: 46.548 }, ascent, "cycling-road"),
+    ).toBe(ascentInputs(true, pass, ascent, "cycling-road"));
   });
 
   test("a note is not an input", () => {
     expect(
-      ascentInputs(false, pass, {
-        ...ascent,
-        check: { note: "Mautstraße, im Winter gesperrt" },
-      }),
-    ).toBe(ascentInputs(false, pass, ascent));
+      ascentInputs(
+        false,
+        pass,
+        {
+          ...ascent,
+          check: { note: "Mautstraße, im Winter gesperrt" },
+        },
+        "cycling-road",
+      ),
+    ).toBe(ascentInputs(false, pass, ascent, "cycling-road"));
   });
 
   test("a widened limit is one", () => {
     expect(
-      ascentInputs(false, pass, {
-        ...ascent,
-        check: { maxKm: 70, note: "über das Stilfser Joch, daher länger" },
-      }),
-    ).not.toBe(ascentInputs(false, pass, ascent));
+      ascentInputs(
+        false,
+        pass,
+        {
+          ...ascent,
+          check: { maxKm: 70, note: "über das Stilfser Joch, daher länger" },
+        },
+        "cycling-road",
+      ),
+    ).not.toBe(ascentInputs(false, pass, ascent, "cycling-road"));
   });
 
   test("a tour is asked for by its waypoints and its stated length", () => {
     const tour = { km: 55, waypoints: [{ lat: 46.5, lon: 11.8 }] };
-    expect(tourInputs(tour)).toBe(tourInputs({ ...tour }));
-    expect(tourInputs({ ...tour, km: 56 })).not.toBe(tourInputs(tour));
+    expect(tourInputs(tour, "cycling-road")).toBe(
+      tourInputs({ ...tour }, "cycling-road"),
+    );
+    expect(tourInputs({ ...tour, km: 56 }, "cycling-road")).not.toBe(
+      tourInputs(tour, "cycling-road"),
+    );
   });
 });
 

@@ -104,7 +104,8 @@ own and takes the range of the nearest road in its reach (`townRanges`,
 | `Pyrenäen` | Pyrenäen                                     | Pyrenäen   |
 
 A new range is a vocabulary edit: its name in `RANGES`, its regions in
-`RANGE_REGIONS`, its label and hint in `RANGE`, and its box in
+`RANGE_REGIONS`, its label and hint in `vocab.range` of both message files,
+and its box in
 `RANGE_BOUNDS`. `data:check` accepts the new region from that moment. The
 "Gebirge" chip group only shows once two ranges hold a road, and a range's
 chip frames the box around its roads (`rangeBounds`, `lib/map-assets.ts`).
@@ -269,8 +270,8 @@ infrastructure.
 
 `tags` says in two words **why the town is in the list at all** – one to four
 labels from the fixed vocabulary in `lib/regions.ts` (`TOWN_TAGS`, display
-order; `TOWN_TAG` carries the German label and the sentence that explains it in
-the scales dialog):
+order; `vocab.townTag` in the message files carries the label and the
+sentence that explains it in the scales dialog):
 
 | Tag         | Label                 | Given when                                                      |
 | ----------- | --------------------- | --------------------------------------------------------------- |

@@ -28,7 +28,8 @@ are listed in `docs/roadmap.md`.
 
 ## Town labels
 
-`tags` in `data/towns.json` (vocabulary and German labels in `lib/regions.ts`)
+`tags` in `data/towns.json` (vocabulary in `lib/regions.ts`, labels in
+`vocab.townTag` of the message files)
 are editorial in exactly the same sense: they say what a planner would notice
 on arrival – "Radsport-Mekka", "Werkstätten & Verleih", "Ruhig", "Lange
 Saison" – and nothing is counted. The scales dialog lists all of them with the
@@ -38,8 +39,8 @@ town; `data:check` warns above four.
 
 ## Road types and labels
 
-`type` and `tags` in `data/passes.json` (vocabulary and German labels in
-`lib/regions.ts`) are editorial too, in the same sense as the town labels. The
+`type` and `tags` in `data/passes.json` (vocabulary in `lib/regions.ts`,
+labels in `vocab.roadType` and `vocab.roadTag`) are editorial too, in the same sense as the town labels. The
 **type** says how the road lies in the terrain – it is the one axis that also
 has a mechanical consequence, because the route quality gate measures a
 traverse the way it measures a tour. The **labels** say what riding it is
@@ -115,12 +116,12 @@ costs almost nothing.
 `gradeOfBase` grades a half-month against the **best half-month that base ever
 has**:
 
-| Grade           | condition                                     |
-| --------------- | --------------------------------------------- |
-| `beste Zeit`    | ≥ `RIDEABLE_BEST_SHARE` (0,8) of its own peak |
-| `gut`           | ≥ `RIDEABLE_GOOD_SHARE` (0,5) of its own peak |
-| `eingeschränkt` | at least one rideable pass                    |
-| `oft gesperrt`  | none                                          |
+| Grade           | condition                                      |
+| --------------- | ---------------------------------------------- |
+| `beste Zeit`    | ≥ `RIDEABLE_BEST_SHARE` (0,75) of its own peak |
+| `gut`           | ≥ `RIDEABLE_GOOD_SHARE` (0,45) of its own peak |
+| `eingeschränkt` | at least one rideable pass                     |
+| `oft gesperrt`  | none                                           |
 
 This was an absolute count first – six rideable passes for "beste Zeit",
 three for "gut" – and the measurement killed it. Over all 48 towns × 24
@@ -222,8 +223,9 @@ flowchart TD
 The ladder order is `REASON_ORDER`: `outside-window → window-edge → snow →
 frost → altitude → heat → wet → short-day → cold-descent`. Every reason that
 fired stays in `StatusVerdict.reasons`, in that order; the badge shows the
-first as one word (`REASON_WORD`, via `badgeWord`), the panel every one as a
-sentence with its number and provenance (`REASON_TEXT`).
+first as one word (`status.reasonWord` in the message files, via
+`badgeWord`), the panel every one as a sentence with its number and
+provenance (`status.reason`, filled by `REASON_TEXT` in `lib/status.ts`).
 
 The thresholds in the diagram above are not written twice. `SIGNALS` in
 `lib/status.ts` is one table – reason, value, unit and the clause that
@@ -232,7 +234,7 @@ Stufen, eine Leiter" paragraph from it (`ladderText`), so a constant that
 moves reaches the text explaining it. `scripts/analyze-status.ts` reads the
 same table when it re-runs the calibration. The reasons without a number –
 the opening window, its edge and the altitude fallback – are calendar rules
-rather than thresholds and are named by `REASON_PHRASE` only.
+rather than thresholds and are named by `status.reasonPhrase` only.
 
 Three builders in the same module compose the sentences the UI prints, so no
 component joins the word tables itself: `badgeWord(cell)` (the badge and,
@@ -255,13 +257,13 @@ The three fills differ in lightness as well as hue, so they are told apart at
 4 px; the closure has no fill, so a winter of closures stays light and a
 closed road keeps reading as a different kind of statement. In the panel every cell
 carries a tooltip – the half-month and the grade in the first line, then the
-sentence from `GRADE_HINT`, with the caveat named for a limited cell
-(`cellHint`, `REASON_PHRASE`). A limited cell's popover is the only
+sentence from `status.gradeHint`, with the caveat named for a limited cell
+(`cellHint`, `status.reasonPhrase`). A limited cell's popover is the only
 explanation that half-month has – the sentences above it describe the
-_selected_ half-month – so `REASON_PHRASE` may carry its own sub-clause,
-while the list of eight in `GRADE_HINT.limited` uses the shorter
-`REASON_SHORT`. The period control's tooltip lists the four
-sentences once.
+_selected_ half-month – so `status.reasonPhrase` may carry its own
+sub-clause, while the list in `status.gradeHint.limited` uses the shorter
+`status.reasonShort`. The scales dialog lists the four sentences once
+(`GradeLegend`).
 
 `Status` (`open | risky | closed`, `lib/schema.ts`) stays three-valued: it is
 the vocabulary of the filter, the hash and the map. `Grade` (`best | good |

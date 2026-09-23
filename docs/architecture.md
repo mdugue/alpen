@@ -71,15 +71,15 @@ flowchart LR
    in CI; its `SEAMS` table carries the reason per owner.
 4. **The core carries the tests.** `bun test` covers the reducer, the camera
    machine, the scene, the pick, the detail model and the offline pipeline.
-   The e2e suite is ten scenarios of smoke: one timeout for the suite, none
-   per scenario, no monkey-patching, and nothing read off `window.__alpen` but
+   The e2e suite is fourteen scenarios of smoke: one timeout for the suite,
+   none per scenario, no monkey-patching, and nothing read off `window.__alpen` but
    the map handle.
 5. **A new feature enters as data.** The official closure status
    ([`roadmap.md`](./roadmap.md) §1) is one pipeline job kind, one field on
    the row, one scene input and one reducer case, and it needs no effect
    edited. That is the test of whether the seams are real.
 
-### The four adapters, and the three hooks beside them
+### The four adapters, the server's one call, and the three hooks beside them
 
 | Adapter                                                      | World                                                                                                 |
 | ------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------- |
@@ -87,13 +87,14 @@ flowchart LR
 | `lib/use-stored.ts` (`useStorageAdapter`, `readStoredState`) | `localStorage` and `sessionStorage`, behind `STORAGE`                                                 |
 | `components/map/apply-scene.ts`, `apply-camera.ts`           | MapLibre: the scene's difference, the camera's commands                                               |
 | `lib/use-fetch.ts` (through `lib/detail-state.ts`)           | `fetch`, as the three answers a request can give                                                      |
+| `lib/weather.ts` (`forecast`), server-only                   | Open-Meteo, the one upstream call, inside its cache with the quota and the cooldown                   |
 
 Three more hooks touch the platform and are on the same allow-list, because
 they read it rather than decide anything with it: `lib/use-media-query.ts`
 (`matchMedia` and the viewport height, including the map's whole environment
 as one value), `lib/use-height.ts` (a `ResizeObserver` on the shell's two
-bars) and `lib/use-roving.ts` (a `MutationObserver` and focus, turning a list
-into one tab stop). Every entry needs its comment and its reason; when the
+bars) and `lib/use-roving.ts` (`rovingList`, a callback ref with a
+`MutationObserver` and focus, turning a list into one tab stop). Every entry needs its comment and its reason; when the
 list passes eight, review it rather than extending it.
 
 The core is four functions with names, not a framework: the reducer is a

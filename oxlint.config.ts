@@ -332,8 +332,9 @@ export default defineConfig({
     "react-doctor/no-tiny-text": "off",
     // Route segments and small modules export constants beside a component.
     "react-doctor/only-export-components": "off",
-    // The weather route is a Cache Components route: `"use cache"` plus
-    // `cacheLife`/`cacheTag` control its freshness, which the rule cannot see.
+    // The forecast is cached with Cache Components: `"use cache"` plus
+    // `cacheLife` control its freshness (`lib/weather.ts`), which the rule
+    // cannot see.
     "react-doctor/server-fetch-without-revalidate": "off",
     // Handlers are named after what they do (`onOpenScales`), not after the
     // prop they are passed to.

@@ -71,7 +71,13 @@ authoritative. In addition:
   event day, the cobbles, the plan B.
 - **Towns**: `why` is one sentence naming the surrounding passes and the
   infrastructure (workshop, rental, bike hotel).
-- **Destinations** (plan 12): follow `docs/destinations.md` once it exists.
+- **Destinations**: follow `docs/destinations.md` – the circle decides the
+  members, at most three `baseTowns`, `include`/`exclude` only where the
+  circle is wrong, and the prose in the register of the pass notes.
+- **English prose**: every note, description, `why` and destination text has
+  its English beside it in `data/i18n/en/*.json`, keyed by slug. A new entry
+  gets its translation in the same commit: the English page falls back to
+  the German text, and `data:check` counts the fields still without one.
 
 ## Adding or moving a pass: the checklist
 

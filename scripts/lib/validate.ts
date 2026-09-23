@@ -14,6 +14,7 @@
  * the words of its own type; the measuring below is free of it and takes the
  * decision as a `traverse` flag.
  */
+import { haversine } from "../../lib/geo";
 import { isTraverse } from "../../lib/regions";
 import type {
   AscentCheck,
@@ -29,21 +30,14 @@ import type {
   TourMetrics,
 } from "../../lib/types";
 
-/** Great-circle distance in km. */
-export const haversine = (
+/**
+ * Great-circle distance in km between two `[lat, lon]` pairs – the shape a
+ * routed geometry comes in; the formula is `lib/geo.ts`'s.
+ */
+export const pairKm = (
   a: readonly [number, number],
   b: readonly [number, number],
-) => {
-  const R = 6371;
-  const dLat = ((b[0] - a[0]) * Math.PI) / 180;
-  const dLon = ((b[1] - a[1]) * Math.PI) / 180;
-  const x =
-    Math.sin(dLat / 2) ** 2 +
-    Math.cos((a[0] * Math.PI) / 180) *
-      Math.cos((b[0] * Math.PI) / 180) *
-      Math.sin(dLon / 2) ** 2;
-  return 2 * R * Math.asin(Math.sqrt(x));
-};
+) => haversine({ lat: a[0], lon: a[1] }, { lat: b[0], lon: b[1] });
 
 const at = (p: LatLon): [number, number] => [p.lat, p.lon];
 const round = (n: number, digits: number) => +n.toFixed(digits);
@@ -58,8 +52,7 @@ const strip = (c?: AscentCheck | TourCheck) =>
 /** Length of a polyline in km. */
 export const length = (geom: RouteGeometry) => {
   let km = 0;
-  for (let i = 1; i < geom.length; i += 1)
-    km += haversine(geom[i - 1]!, geom[i]!);
+  for (let i = 1; i < geom.length; i += 1) km += pairKm(geom[i - 1]!, geom[i]!);
   return km;
 };
 
@@ -122,11 +115,11 @@ export const ascentMetrics = (
   from: LatLon,
   summit: LatLon,
 ): AscentMetrics => ({
-  endDist: round(haversine(geom.at(-1)!, at(summit)), 3),
+  endDist: round(pairKm(geom.at(-1)!, at(summit)), 3),
   gain: null,
   km: round(length(geom), 2),
   peakAt: null,
-  startDist: round(haversine(geom[0]!, at(from)), 3),
+  startDist: round(pairKm(geom[0]!, at(from)), 3),
   topDelta: null,
 });
 
@@ -155,10 +148,10 @@ export const tourMetrics = (
 ): TourMetrics => {
   const km = length(geom);
   return {
-    endDist: round(haversine(geom.at(-1)!, at(waypoints.at(-1)!)), 3),
+    endDist: round(pairKm(geom.at(-1)!, at(waypoints.at(-1)!)), 3),
     km: round(km, 2),
     kmDelta: round(statedKm > 0 ? (km - statedKm) / statedKm : Infinity, 3),
-    startDist: round(haversine(geom[0]!, at(waypoints[0]!)), 3),
+    startDist: round(pairKm(geom[0]!, at(waypoints[0]!)), 3),
     statedKm,
   };
 };
@@ -479,10 +472,12 @@ export const profileOf = (surface: Surface): RoutingProfile =>
 /**
  * The profile enters the hash only when it is not the road one, so the routes
  * stored before the surface existed keep their hash: every one of them was
- * asked with the road profile.
+ * asked with the road profile. It is a required argument all the same: a
+ * caller that forgot it would hash a gravel road as asphalt and never route
+ * it again.
  */
-const profilePart = (profile?: RoutingProfile) =>
-  profile && profile !== "cycling-road" ? { profile } : {};
+const profilePart = (profile: RoutingProfile) =>
+  profile === "cycling-road" ? {} : { profile };
 
 /**
  * …and what those parts are for each kind of route, so the two sides cannot
@@ -505,7 +500,7 @@ export const ascentInputs = (
     km?: number;
     to?: LatLon;
   },
-  profile?: RoutingProfile,
+  profile: RoutingProfile,
 ) =>
   traverse
     ? inputsHash(
@@ -529,7 +524,7 @@ export const tourInputs = (
     km: number;
     waypoints: LatLon[];
   },
-  profile?: RoutingProfile,
+  profile: RoutingProfile,
 ) =>
   inputsHash(
     { km: t.km, waypoints: t.waypoints, ...profilePart(profile) },
