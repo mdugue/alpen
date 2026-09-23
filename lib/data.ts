@@ -157,6 +157,19 @@ const getYears = (valleys: Record<string, number>): Years => {
   return { passes: passYears, tours: tourYears };
 };
 
+/**
+ * Every routed road and every summit, as the /wissen pages draw them
+ * (`sketch` in lib/docs/sketch.ts): read straight off the parsed constants,
+ * nothing derived, so it costs the knowledge base none of the page's work.
+ */
+export const getRoadSketch = (): {
+  roads: RouteGeometry[];
+  summits: [number, number][];
+} => ({
+  roads: Object.values(routes),
+  summits: passes.map((p) => [p.lat, p.lon]),
+});
+
 export const getPass = (slug: string): Pass | undefined =>
   passes.find((p) => p.slug === slug);
 

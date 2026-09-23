@@ -1,5 +1,7 @@
 "use client";
 
+import Link from "next/link";
+
 import { GradeLegend } from "@/components/grade-legend";
 import { SeasonBandLegend } from "@/components/season-band";
 import { TagIcon } from "@/components/tags";
@@ -240,7 +242,15 @@ export const ScalesDialog = ({
             1–5-Einschätzungen, Art und Merkmale der Straßen sowie die Merkmale
             der Orte sind redaktionelle Labels. Der Status je Zeitraum ist eine
             Heuristik und ersetzt keine amtliche Sperrauskunft. Die App dient
-            der groben Routenplanung, nicht der Navigation.
+            der groben Routenplanung, nicht der Navigation. Ausführlich steht
+            das unter{" "}
+            <Link
+              href="/wissen/scales-and-status"
+              className="text-foreground underline underline-offset-2"
+            >
+              Wissen: Skalen und Status
+            </Link>
+            .
           </p>
         </section>
       </div>
