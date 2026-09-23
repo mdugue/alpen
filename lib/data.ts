@@ -2,26 +2,40 @@ import "server-only";
 import { existsSync } from "node:fs";
 import path from "node:path";
 
+import destinationsJson from "@/data/destinations.json";
 import climateJson from "@/data/generated/climate.json";
 import photosJson from "@/data/generated/photos.json";
 import profilesJson from "@/data/generated/profiles.json";
 import routesJson from "@/data/generated/routes.json";
+import destinationsEn from "@/data/i18n/en/destinations.json";
+import passesEn from "@/data/i18n/en/passes.json";
+import toursEn from "@/data/i18n/en/tours.json";
+import townsEn from "@/data/i18n/en/towns.json";
 import passesJson from "@/data/passes.json";
 import toursJson from "@/data/tours.json";
 import townsJson from "@/data/towns.json";
+import type { Selection } from "@/lib/app-state";
+import { membersOf } from "@/lib/destination";
+import type { DestinationMembers } from "@/lib/destination";
 import { DETAIL_ASSET_DIR, detailAssets } from "@/lib/detail-assets";
 import type { DetailAssets } from "@/lib/detail-assets";
+import { DEFAULT_LANG } from "@/lib/i18n";
+import type { Lang } from "@/lib/i18n";
 import { MAP_ASSET_DIR, mapAssets } from "@/lib/map-assets";
 import type { MapAssets } from "@/lib/map-assets";
-import { nearbyTours, townReach } from "@/lib/nearby";
+import { nearbyTours, townRanges, townReach } from "@/lib/nearby";
 import type { NearbyTours, TownReach } from "@/lib/nearby";
 import type { PageData } from "@/lib/page-data";
 import { profilesWithCoords, valleyElevations } from "@/lib/profile";
+import { SEGMENT, selectionOf } from "@/lib/routes";
+import type { Segment } from "@/lib/routes";
 import * as S from "@/lib/schema";
+import type { Entity } from "@/lib/share-text";
 import { passYear, signalsOf, tourYear } from "@/lib/status";
 import type { Signals, Year, Years } from "@/lib/status";
 import type {
   ClimateYear,
+  Destination,
   ElevationProfile,
   Pass,
   Photos,
@@ -33,8 +47,9 @@ import type {
 /**
  * All data is static and lives in the repo. It is imported at build time –
  * no network access, nothing to revalidate – so nothing here is cached and
- * nothing here is async. The one cache boundary is `app/page.tsx`, whose
- * `"use cache"` covers this whole module's work: what these functions derive
+ * nothing here is async. The one cache boundary is the explorer's layout
+ * (`app/[lang]/(explorer)/layout.tsx`), whose `"use cache"` covers this whole
+ * module's work: what these functions derive
  * is derived once, at prerender, and lands in the page's own cache entry.
  * They used to carry a `"use cache"` each, which bought a second copy of the
  * same values in the cache store and nothing else – no getter has a lifetime,
@@ -55,18 +70,96 @@ import type {
  * What the page hands the client instead is derived from them – the file URLs,
  * tour bounding boxes, which tours pass near which entity, and the valley
  * elevation of each pass. Those derivations sit inside the getters, not at
- * module scope: the page runs them once at prerender, while the weather
- * route, which imports `getPass` from here and starts cold on a serverless
- * instance, never runs them.
+ * module scope: the explorer's layout runs them once at prerender, while the
+ * entity routes' metadata and share images, which only look one entity up
+ * (`entityAt`), never run them.
  */
 const passes: Pass[] = S.Passes.parse(passesJson);
 const tours: Tour[] = S.Tours.parse(toursJson);
 const towns: Town[] = S.Towns.parse(townsJson);
+const destinations: Destination[] = S.Destinations.parse(destinationsJson);
 const routes: Record<string, RouteGeometry> = S.Routes.parse(routesJson);
 const climate: Record<string, ClimateYear> = S.Climate.parse(climateJson);
 const profiles: Record<string, ElevationProfile> =
   S.Profiles.parse(profilesJson);
 const photos: Photos = S.Photos.parse(photosJson);
+
+/**
+ * The curated prose in English (plan 08), keyed by slug and merged over the
+ * German record field by field: a field the file does not carry stays
+ * German, so a half-translated entry is a German sentence in an English
+ * panel rather than a blank – `data:check` counts what is still missing.
+ * The German records are the only ones parsed against the full schema; the
+ * merge never adds a field and never touches a name or a number.
+ */
+const TRANSLATIONS = {
+  en: {
+    destinations: S.DestinationTranslations.parse(destinationsEn),
+    passes: S.PassTranslations.parse(passesEn),
+    tours: S.TourTranslations.parse(toursEn),
+    towns: S.TownTranslations.parse(townsEn),
+  },
+} satisfies Partial<Record<Lang, unknown>>;
+
+type Translated = (typeof TRANSLATIONS)[keyof typeof TRANSLATIONS];
+
+/** One list with the translated fields laid over each record. */
+const localize = <T extends { slug: string }, P extends object>(
+  list: T[],
+  translations: Record<string, P>,
+): T[] =>
+  list.map((item) => {
+    const own = translations[item.slug];
+    return own ? { ...item, ...own } : item;
+  });
+
+/** A pass with its prose and its ascent labels (matched by index) in the other language. */
+const localizePass = (
+  pass: Pass,
+  own: (typeof TRANSLATIONS)["en"]["passes"][string] | undefined,
+): Pass => {
+  if (!own) return pass;
+  const { ascents: labels, ...prose } = own;
+  return {
+    ...pass,
+    ...prose,
+    ascents: labels
+      ? pass.ascents.map((a, j) => (labels[j] ? { ...a, label: labels[j] } : a))
+      : pass.ascents,
+  };
+};
+
+interface Lists {
+  destinations: Destination[];
+  passes: Pass[];
+  tours: Tour[];
+  towns: Town[];
+}
+
+/**
+ * The German lists, or the other language's laid over them – built once per
+ * language: every prerendered route asks for its entity, and the four lists
+ * do not change between two of them.
+ */
+const LISTS = new Map<Lang, Lists>();
+const localized = (lang: Lang): Lists => {
+  const cached = LISTS.get(lang);
+  if (cached) return cached;
+  const t: Translated | undefined =
+    lang === DEFAULT_LANG
+      ? undefined
+      : TRANSLATIONS[lang as keyof typeof TRANSLATIONS];
+  const lists: Lists = t
+    ? {
+        destinations: localize(destinations, t.destinations),
+        passes: passes.map((p) => localizePass(p, t.passes[p.slug])),
+        tours: localize(tours, t.tours),
+        towns: localize(towns, t.towns),
+      }
+    : { destinations, passes, tours, towns };
+  LISTS.set(lang, lists);
+  return lists;
+};
 
 /**
  * Both asset kinds derive their file names here rather than reading a
@@ -96,6 +189,18 @@ const getMapAssets = (): MapAssets => {
 /** Tours within reach of each pass, tour start and town, see `lib/nearby.ts`. */
 const getNearbyTours = (): NearbyTours =>
   nearbyTours(passes, tours, towns, routes);
+
+/**
+ * What each destination holds – the roads within its radius plus its
+ * `include` minus its `exclude`, the towns and loops inside it, and the box
+ * around all of it (`membersOf`, lib/destination.ts). Derived here rather
+ * than written by `data:build`: a road added to `passes.json` joins its area
+ * without a second file to regenerate.
+ */
+const getDestinationMembers = (): Record<string, DestinationMembers> =>
+  Object.fromEntries(
+    destinations.map((d) => [d.slug, membersOf(d, passes, tours, towns)]),
+  );
 
 /** The area each town reaches, as a hull over its passes; see `lib/nearby.ts`. */
 const getTownReach = (): TownReach => townReach(passes, towns);
@@ -158,6 +263,76 @@ const getYears = (valleys: Record<string, number>): Years => {
 };
 
 /**
+ * The entity behind a route (plan 02): what `generateMetadata` and the share
+ * image read for one path. A find over a few hundred records, run once per
+ * prerendered page; nothing here drags the derivations in.
+ */
+const getEntity = (selection: Selection, lang: Lang): Entity | undefined => {
+  const lists = localized(lang);
+  switch (selection.kind) {
+    case "pass": {
+      const pass = lists.passes.find((p) => p.slug === selection.slug);
+      return pass && { kind: "pass", pass };
+    }
+    case "tour": {
+      const tour = lists.tours.find((t) => t.slug === selection.slug);
+      return tour && { kind: "tour", tour };
+    }
+    case "town": {
+      const town = lists.towns.find((t) => t.slug === selection.slug);
+      return town && { kind: "town", town };
+    }
+    case "destination": {
+      const destination = lists.destinations.find(
+        (d) => d.slug === selection.slug,
+      );
+      return destination && { destination, kind: "destination" };
+    }
+    default: {
+      return selection.kind satisfies never;
+    }
+  }
+};
+
+/**
+ * The entity a route's two segments name, with its selection – what the
+ * page, its metadata and its share image all start from. `null` for a path
+ * that names nothing, which the page turns into a 404.
+ */
+export const entityAt = (
+  kind: string,
+  slug: string,
+  lang: Lang,
+): { entity: Entity; selection: Selection } | null => {
+  // The params arrive decoded; the path form is what `selectionOf` reads.
+  const selection = selectionOf(`/${kind}/${encodeURIComponent(slug)}`);
+  const entity = selection && getEntity(selection, lang);
+  return selection && entity ? { entity, selection } : null;
+};
+
+/** Every entity route there is, for `generateStaticParams` and the sitemap. */
+export const staticParams = (): { kind: Segment; slug: string }[] => [
+  ...passes.map((p) => ({ kind: SEGMENT.pass, slug: p.slug })),
+  ...tours.map((t) => ({ kind: SEGMENT.tour, slug: t.slug })),
+  ...towns.map((t) => ({ kind: SEGMENT.town, slug: t.slug })),
+  ...destinations.map((d) => ({ kind: SEGMENT.destination, slug: d.slug })),
+];
+
+/**
+ * What the build prerenders: every entity – or, where `PRERENDER_SAMPLE` is
+ * set (CI), the first of each kind. The ~760 entity pages are one explorer
+ * rendered 760 times and cost five of the seven minutes a CI build took; the
+ * rest render on their first request, which is what the e2e run exercises.
+ * The deployment build leaves the variable unset and prerenders them all, so
+ * a page that fails to render still fails a build on the pull request.
+ */
+export const prerenderParams = (): { kind: Segment; slug: string }[] => {
+  const all = staticParams();
+  if (!process.env.PRERENDER_SAMPLE) return all;
+  return all.filter((p, i) => all.findIndex((q) => q.kind === p.kind) === i);
+};
+
+/**
  * Every routed road and every summit, as the /wissen pages draw them
  * (`sketch` in lib/docs/sketch.ts): read straight off the parsed constants,
  * nothing derived, so it costs the knowledge base none of the page's work.
@@ -170,9 +345,6 @@ export const getRoadSketch = (): {
   summits: passes.map((p) => [p.lat, p.lon]),
 });
 
-export const getPass = (slug: string): Pass | undefined =>
-  passes.find((p) => p.slug === slug);
-
 /**
  * Everything the page hands the client, as one value.
  *
@@ -182,25 +354,28 @@ export const getPass = (slug: string): Pass | undefined =>
  * (docs/plans/31-panel-model.md). The four files it simply hands through are
  * read straight off the parsed constants; a getter around a constant only
  * hides which of the two a name is.
- *
- * `getPass` stays separate and stays exported: the weather route imports it
- * and starts cold on a serverless instance, and the constraint at the top of
- * this file is precisely that it must not drag the derivations in.
  */
-export const getPageData = (): PageData => {
+export const getPageData = (lang: Lang): PageData => {
   // The valleys are walked once and handed on: the page carries them and the
   // year is graded against them, and there is no cache left to make the second
   // walk free.
   const valleys = getValleys();
+  // Only the prose changes with the language; everything derived – the years,
+  // the reach, the members – is derived from the German records, which carry
+  // the same names, numbers and coordinates.
+  const lists = localized(lang);
   return {
     assets: getMapAssets(),
     climate,
+    destinationMembers: getDestinationMembers(),
+    destinations: lists.destinations,
     detail: getDetailAssets(),
     nearbyTours: getNearbyTours(),
-    passes,
-    tours,
+    passes: lists.passes,
+    tours: lists.tours,
+    townRanges: townRanges(passes, towns),
     townReach: getTownReach(),
-    towns,
+    towns: lists.towns,
     valleys,
     years: getYears(valleys),
   };

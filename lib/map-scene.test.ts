@@ -2,11 +2,12 @@ import { describe, expect, test } from "bun:test";
 
 import { ALL_SHOWN } from "@/lib/app-state";
 import type { Selection, Shown } from "@/lib/app-state";
-import type { Bounds } from "@/lib/map-assets";
+import type { Bounds } from "@/lib/geo";
+import { DE } from "@/lib/i18n/dictionaries";
 import { buildScene } from "@/lib/map-scene";
 import type { Scene, SceneInput } from "@/lib/map-scene";
 import { ascentKey } from "@/lib/route-key";
-import type { PassRow, TourRow, TownRow } from "@/lib/rows";
+import type { DestinationRow, PassRow, TourRow, TownRow } from "@/lib/rows";
 import type { Pass, Tour, Town } from "@/lib/types";
 import { fmtUnit } from "@/lib/utils";
 import { makePass, makeTour, makeTown } from "@/test/fixtures";
@@ -22,14 +23,17 @@ const passRow = (pass: Pass, extra: Partial<PassRow> = {}): PassRow => ({
 
 const tourRow = (tour: Tour, extra: Partial<TourRow> = {}): TourRow => ({
   favorite: false,
+  range: "Alpen",
   reason: null,
   season: [],
   status: "open",
   tour,
+  window: "wie ihre Pässe",
   ...extra,
 });
 
 const townRow = (town: Town, extra: Partial<TownRow> = {}): TownRow => ({
+  areas: [],
   favorite: false,
   town,
   ...extra,
@@ -66,6 +70,7 @@ const input = (extra: Partial<SceneInput> = {}): SceneInput => ({
   hovered: null,
   profileCursor: null,
   rows: {
+    destination: [],
     pass: [passRow(galibier), passRow(stelvio)],
     tour: [tourRow(marmotte)],
     town: [townRow(bormio)],
@@ -74,6 +79,7 @@ const input = (extra: Partial<SceneInput> = {}): SceneInput => ({
   shown: ALL_SHOWN,
   tourBounds: TOUR_BOUNDS,
   townReach: REACH,
+  w: DE,
   ...extra,
 });
 
@@ -97,7 +103,7 @@ describe("what is drawn", () => {
     expect(filtered(on.routes.filter)).toEqual(["galibier", "stelvio"]);
 
     const off = buildScene(
-      input({ shown: { ...ALL_SHOWN, passes: false, towns: false } }),
+      input({ shown: { ...ALL_SHOWN, destinations: false, passes: false } }),
     );
     expect(off.passes.features).toEqual([]);
     expect(off.towns.features).toEqual([]);
@@ -117,6 +123,7 @@ describe("what is drawn", () => {
     const scene = buildScene(
       input({
         rows: {
+          destination: [],
           pass: [passRow(galibier, { favorite: true, status: "risky" })],
           tour: [],
           town: [townRow(bormio)],
@@ -130,6 +137,7 @@ describe("what is drawn", () => {
       selected: 0,
       slug: "galibier",
       status: "risky",
+      surface: "asphalt",
     });
     expect(townMark(scene, "bormio")).toEqual({
       favorite: 0,
@@ -143,11 +151,69 @@ describe("what is drawn", () => {
     expect(buildScene(input()).bounds).not.toBeNull();
     const nothing = buildScene(
       input({
-        rows: { pass: [], tour: [], town: [] },
+        rows: { destination: [], pass: [], tour: [], town: [] },
         shown: { ...ALL_SHOWN, passes: false },
       }),
     );
     expect(nothing.bounds).toBeNull();
+  });
+
+  test("the map opens on the home range, not on everything it draws", () => {
+    const tourmalet = passRow({
+      ...galibier,
+      lat: 42.9,
+      lon: 0.15,
+      region: "Pyrenäen",
+      slug: "tourmalet",
+    });
+    const scene = buildScene(
+      input({
+        rows: {
+          destination: [],
+          pass: [passRow(galibier), tourmalet],
+          tour: [],
+          town: [],
+        },
+      }),
+    );
+    // The fit button frames both; the opening frame holds the Alps alone.
+    expect(scene.bounds![0]).toBeLessThan(1);
+    expect(scene.opening).toEqual([
+      galibier.lon,
+      galibier.lat,
+      galibier.lon,
+      galibier.lat,
+    ]);
+    // A loop is at home where its passes are, not where its box happens to
+    // lie: a Pyrenean loop stays out of the opening frame.
+    const raid = tourRow(makeTour("raid", ["tourmalet"]), {
+      range: "Pyrenäen",
+    });
+    const withLoop = buildScene(
+      input({
+        rows: {
+          destination: [],
+          pass: [passRow(galibier)],
+          tour: [raid],
+          town: [],
+        },
+        tourBounds: { raid: [-0.5, 42.8, 0.5, 43.2] },
+      }),
+    );
+    expect(withLoop.opening).toEqual([
+      galibier.lon,
+      galibier.lat,
+      galibier.lon,
+      galibier.lat,
+    ]);
+    // With nothing of the home range drawn – a Pyrenees chip pressed, say –
+    // the opening frame is what is drawn.
+    const away = buildScene(
+      input({
+        rows: { destination: [], pass: [tourmalet], tour: [], town: [] },
+      }),
+    );
+    expect(away.opening).toEqual(away.bounds);
   });
 
   test("the profile cursor is a point of its own", () => {
@@ -173,6 +239,7 @@ describe("selection", () => {
     const scene = buildScene(
       input({
         rows: {
+          destination: [],
           pass: [passRow(galibier, { status: "closed" })],
           tour: [],
           town: [],
@@ -211,7 +278,7 @@ describe("hover", () => {
       anchor: [bormio.lon, bormio.lat],
       name: "Bormio",
       subtitle: null,
-      tags: ["hotels"],
+      tags: [["hotels", "Bike-Hotels"]],
     });
   });
 
@@ -225,6 +292,7 @@ describe("hover", () => {
       kind: "pass",
       selected: 0,
       status: "open",
+      surface: "asphalt",
     });
     expect(scene.routes.state[ascentKey("galibier", 0)]?.hovered).toBe(1);
     expect(scene.routes.state[ascentKey("galibier", 1)]?.hovered).toBe(1);
@@ -235,7 +303,7 @@ describe("hover", () => {
       name: "Col du Galibier",
       // A road says how high it goes; only a pass keeps its type to itself.
       subtitle: fmtUnit(2642, "m"),
-      tags: ["hairpins"],
+      tags: [["hairpins", "Kehrenbauwerk"]],
     });
   });
 
@@ -245,12 +313,96 @@ describe("hover", () => {
     const scene = buildScene(
       input({
         hovered: { kind: "pass", slug: "galibier" },
-        rows: { pass: [passRow(stelvio)], tour: [], town: [] },
+        rows: { destination: [], pass: [passRow(stelvio)], tour: [], town: [] },
       }),
     );
     expect(scene.hover.mark.features).toEqual([]);
     expect(scene.hover.popup).toBeNull();
     expect(Object.keys(scene.routes.state)).toEqual([ascentKey("stelvio", 0)]);
+  });
+
+  test("a destination is a ring under everything, lit when hovered or selected", () => {
+    const area: DestinationRow = {
+      baseTowns: [],
+      destination: {
+        access: "",
+        baseTowns: [],
+        center: { lat: 46, lon: 10 },
+        character: "",
+        country: "IT",
+        exclude: [],
+        include: [],
+        multiDay: "",
+        name: "Testgebiet",
+        radiusKm: 30,
+        slug: "test",
+      },
+      favorite: false,
+      members: {
+        bounds: [10, 46, 10.3, 46.1],
+        outline: [
+          [10, 46],
+          [10.3, 46],
+          [10.3, 46.1],
+        ],
+        passes: ["galibier"],
+        tours: [],
+        towns: [],
+      },
+      score: 3,
+      season: [],
+      text: "1 von 1 Straßen gut",
+      verdict: {
+        counts: { best: 1, closed: 0, good: 0, limited: 0 },
+        peak: 1,
+        total: 1,
+        year: { best: null, cells: [] },
+      },
+    };
+    const scene = buildScene(
+      input({
+        hovered: { kind: "destination", slug: "test" },
+        rows: { destination: [area], pass: [], tour: [], town: [] },
+      }),
+    );
+    const [feature] = scene.destinations.features;
+    expect(feature?.properties).toMatchObject({
+      hovered: 1,
+      name: "Testgebiet",
+      selected: 0,
+      share: 1,
+      slug: "test",
+    });
+    // The outline the server drew around the members, as it is.
+    expect(feature!.geometry.coordinates).toEqual([
+      [
+        [10, 46],
+        [10.3, 46],
+        [10.3, 46.1],
+      ],
+    ]);
+    // The name stands on the centre, with the same properties.
+    const [label] = scene.destinationLabels.features;
+    expect(label?.geometry.coordinates).toEqual([10, 46]);
+    expect(label?.properties).toEqual(feature?.properties);
+    // The popup stands on the outline's northernmost corner, not its centre.
+    expect(scene.hover.popup).toEqual({
+      anchor: [10.3, 46.1],
+      name: "Testgebiet",
+      subtitle: "1 von 1 Straßen gut",
+      tags: [],
+    });
+    // Switched off, the area is neither drawn nor answers the hover.
+    const off = buildScene(
+      input({
+        hovered: { kind: "destination", slug: "test" },
+        rows: { destination: [area], pass: [], tour: [], town: [] },
+        shown: { ...ALL_SHOWN, destinations: false },
+      }),
+    );
+    expect(off.destinations.features).toEqual([]);
+    expect(off.destinationLabels.features).toEqual([]);
+    expect(off.hover.popup).toBeNull();
   });
 
   test("a hovered tour is labelled at the centre of its box", () => {
@@ -263,7 +415,7 @@ describe("hover", () => {
     expect(scene.hover.popup).toEqual({
       anchor: [6.2, 45.2],
       name: "La Marmotte",
-      subtitle: "ca. 174 km · 5.000 hm",
+      subtitle: `ca. ${fmtUnit(174, "km")} · ${fmtUnit(5000, "hm")}`,
       tags: [],
     });
   });
@@ -272,7 +424,7 @@ describe("hover", () => {
     const scene = buildScene(
       input({
         hovered: { kind: "town", slug: "bormio" },
-        shown: { ...ALL_SHOWN, towns: false },
+        shown: { ...ALL_SHOWN, destinations: false },
       }),
     );
     expect(scene.hover.hull).toBeNull();

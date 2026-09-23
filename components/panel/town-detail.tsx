@@ -1,10 +1,12 @@
 "use client";
 
+import { useT } from "@/components/i18n";
 import type { PanelActions } from "@/components/panel/actions";
-import { DestinationSection } from "@/components/panel/destination";
-import { ExternalLinks, Nearby } from "@/components/panel/nearby";
+import { BaseSection } from "@/components/panel/base";
+import { EntityLink, ExternalLinks, Nearby } from "@/components/panel/nearby";
 import { TagBadges } from "@/components/tags";
 import type { TownModel } from "@/lib/detail-model";
+import { bikeShopsHref, workshopsHref } from "@/lib/links";
 
 /**
  * What a town shows, from its model and nothing else.
@@ -21,6 +23,7 @@ export const TownDetail = ({
   model: TownModel;
   actions: PanelActions;
 }) => {
+  const { t } = useT();
   const { town } = model;
   return (
     <>
@@ -28,24 +31,34 @@ export const TownDetail = ({
         <TagBadges tags={town.tags} />
       </div>
       <p className="mt-2 text-xs">{town.why}</p>
-      <DestinationSection
-        d={model.destination}
+      {/* The areas this town lies in – the way back up from a base to the
+          holiday it belongs to; the ones that name it as a base come first. */}
+      {model.areas.length > 0 && (
+        <p className="text-muted-foreground mt-1.5 flex flex-wrap items-center gap-x-1.5 text-xs">
+          {t.panel.town.destinationLead}
+          {model.areas.map((area) => (
+            <EntityLink
+              key={area.slug}
+              entity={{ kind: "destination", slug: area.slug }}
+              hovered={model.hovered}
+              actions={actions}
+            >
+              {area.name}
+            </EntityLink>
+          ))}
+        </p>
+      )}
+      <BaseSection
+        base={model.base}
+        sentences={model.sentences}
         period={model.period}
-        hovered={model.hovered}
-        onHover={actions.onHover}
-        onSelect={(slug) => actions.onSelect({ kind: "pass", slug })}
+        pointing={{ actions, hovered: model.hovered }}
       />
       <Nearby actions={actions} model={model} />
       <ExternalLinks
         links={[
-          [
-            "Werkstätten (OSM)",
-            `https://www.openstreetmap.org/search?query=${encodeURIComponent(`Fahrradwerkstatt ${town.name}`)}`,
-          ],
-          [
-            "Radläden (Google)",
-            `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`bike shop ${town.name}`)}`,
-          ],
+          [t.panel.town.workshops, workshopsHref(town, t)],
+          [t.panel.town.bikeShops, bikeShopsHref(town, t)],
         ]}
       />
     </>

@@ -8,6 +8,7 @@ import "maplibre-gl/dist/maplibre-gl.css";
 import { LngLat, Map as MLMap, Popup, setWorkerUrl } from "maplibre-gl";
 import { useEffect, useRef, useState } from "react";
 
+import { useT } from "@/components/i18n";
 import {
   addIcons,
   appLayers,
@@ -25,7 +26,13 @@ import {
 import type { MapEnv, Provenance } from "@/components/map/apply-environment";
 import { applyScene, sceneHost } from "@/components/map/apply-scene";
 import type { SceneHost } from "@/components/map/apply-scene";
-import { baseLayers, OVERLAYS, VECTOR_BASE } from "@/components/map/map-style";
+import { LanguageField } from "@/components/map/language-field";
+import {
+  baseLayers,
+  OVERLAYS,
+  overlayName,
+  vectorBase,
+} from "@/components/map/map-style";
 import { Button } from "@/components/ui/button";
 import { ButtonGroup } from "@/components/ui/button-group";
 import {
@@ -48,16 +55,12 @@ import {
 } from "@/components/ui/tooltip";
 import { DEFAULT_VIEW } from "@/lib/app-state";
 import type { MapView, Selection, Shown } from "@/lib/app-state";
-import { BASEMAP_SOURCE, BASEMAP_SOURCE_ID, GLYPHS } from "@/lib/basemap";
+import { BASEMAP_SOURCE_ID, basemapSource, GLYPHS } from "@/lib/basemap";
+import type { Bounds } from "@/lib/geo";
+import type { Lang } from "@/lib/i18n";
 import { HIT_LAYERS, SOURCE } from "@/lib/layer-ids";
 import type { MapAssets } from "@/lib/map-assets";
-import {
-  FIT_MS,
-  FIT_PADDING,
-  fitDone,
-  flightFor,
-  NO_INSET,
-} from "@/lib/map-camera";
+import { FIT_MS, FIT_PADDING, fitDone, flightFor } from "@/lib/map-camera";
 import type { CameraIntent, Inset } from "@/lib/map-camera";
 import { DOUBLE_MS, isDoubleClick, pick } from "@/lib/map-pick";
 import type { Tap } from "@/lib/map-pick";
@@ -73,7 +76,7 @@ import { cn, MAP_CLUSTER, MAP_TOOL } from "@/lib/utils";
 
 interface Props {
   /**
-   * What the three lists show – the same rows, drawn as marks, lines and
+   * What the four lists show – the same rows, drawn as marks, lines and
    * names. `buildScene` (lib/map-scene.ts) turns them into what the map
    * draws; nothing is translated on the way in.
    */
@@ -95,6 +98,8 @@ interface Props {
    * fields.
    */
   assets: MapAssets;
+  /** The box around each destination's members – what selecting one frames. */
+  destinationBounds: Record<string, Bounds>;
   selection: Selection | null;
   /**
    * What the pointer is over, from either half of the screen. The map both
@@ -102,8 +107,8 @@ interface Props {
    * which is what finally ties the two together – see `hovered` in
    * `explorer.tsx`.
    */
-  hovered?: Selection | null;
-  onHover?: (sel: Selection | null) => void;
+  hovered: Selection | null;
+  onHover: (sel: Selection | null) => void;
   onSelect: (sel: Selection) => void;
   /**
    * Where the camera has come to rest, once it has: the hash adapter writes it
@@ -123,21 +128,27 @@ interface Props {
    * is otherwise the source of truth for its camera, so this is applied only
    * when the object identity changes.
    */
-  requestedView?: MapView | null;
+  requestedView: MapView | null;
+  /**
+   * A frame asked for by the range chip (`requestedFit` in `lib/app-state.ts`).
+   * A fresh box per press, applied when the object identity changes, like the
+   * view above.
+   */
+  requestedFit: Bounds | null;
   /** Road point under the elevation-profile cursor, marked on the ascent. */
-  profileCursor?: LatLon | null;
+  profileCursor: LatLon | null;
   /**
    * Fly-to request from a click on the elevation profile. A fresh object per
    * click, so the same point can be asked for twice.
    */
-  profileZoom?: LatLon | null;
+  profileZoom: LatLon | null;
   /**
    * What the shell covers of the map on each edge, in pixels
    * (`shellGeometry`, lib/shell-geometry.ts): the panels on the left, the
    * header at the top, the season bar or whichever drawer is in front at the
    * bottom. Camera targets land in what is left of it.
    */
-  inset?: Inset;
+  inset: Inset;
   /**
    * What the device does differently: the colour scheme the layers are painted
    * in, whether the pointer is a finger, whether motion is unwanted and whether
@@ -145,6 +156,8 @@ interface Props {
    * the map, one of them in a function documented as pure.
    */
   env: MapEnvironment;
+  /** The same place in another language, for the view menu (`switchLangHref`). */
+  langHref: (to: Lang) => string;
 }
 
 const EMPTY: FeatureCollection = { features: [], type: "FeatureCollection" };
@@ -205,18 +218,22 @@ export const PassMap = ({
   shown,
   townReach,
   assets,
+  destinationBounds,
   selection,
-  hovered = null,
+  hovered,
   onHover,
   onSelect,
   onViewChange,
   intent,
-  profileCursor = null,
-  profileZoom = null,
-  requestedView = null,
-  inset = NO_INSET,
+  profileCursor,
+  profileZoom,
+  requestedView,
+  requestedFit,
+  inset,
   env,
+  langHref,
 }: Props) => {
+  const { lang, t } = useT();
   const container = useRef<HTMLDivElement>(null);
   const map = useRef<MLMap | null>(null);
   const [ready, setReady] = useState(false);
@@ -257,6 +274,7 @@ export const PassMap = ({
     shown,
     tourBounds: assets.tourBounds,
     townReach,
+    w: t,
   });
   const applied = useRef<Scene | null>(null);
   const host = useRef<SceneHost | null>(null);
@@ -290,6 +308,7 @@ export const PassMap = ({
     overlays,
     passes: shown.passes,
     terrain: is3d,
+    w: t,
   });
   /**
    * The environment the map is in. Seeded with what the style was built from
@@ -330,7 +349,7 @@ export const PassMap = ({
     // told the map is already in – terrain excepted, which the style carries
     // none of and the applier switches on once `is3d` says so.
     appliedEnv.current = { ...mapEnv, terrain: false };
-    const { ground, detail } = baseStack(mapEnv.base, env.scheme);
+    const { ground, detail } = baseStack(mapEnv.base, env.scheme, lang);
 
     const style: StyleSpecification = {
       glyphs: GLYPHS,
@@ -352,7 +371,7 @@ export const PassMap = ({
         ...appLayers(colors, env),
       ],
       sources: {
-        [BASEMAP_SOURCE_ID]: BASEMAP_SOURCE,
+        [BASEMAP_SOURCE_ID]: basemapSource(t),
         dem: {
           attribution: "Terrain © Mapzen/AWS",
           encoding: "terrarium",
@@ -364,7 +383,7 @@ export const PassMap = ({
           type: "raster-dem",
         },
         ...Object.fromEntries(
-          baseLayers().map((b) => [
+          baseLayers(t).map((b) => [
             b.id,
             {
               attribution: b.attribution,
@@ -389,6 +408,8 @@ export const PassMap = ({
         ),
         // What the scene writes: empty until it has been applied once.
         [SOURCE.cursor]: { data: EMPTY, type: "geojson" },
+        [SOURCE.destinationLabels]: { data: EMPTY, type: "geojson" },
+        [SOURCE.destinations]: { data: EMPTY, type: "geojson" },
         [SOURCE.hover]: { data: EMPTY, type: "geojson" },
         [SOURCE.passes]: { data: EMPTY, type: "geojson" },
         [SOURCE.reach]: { data: EMPTY, type: "geojson" },
@@ -417,8 +438,8 @@ export const PassMap = ({
       center: [view.lon, view.lat],
       container: container.current,
       locale: {
-        "AttributionControl.ToggleAttribution": "Quellenangaben",
-        "Map.Title": "Karte",
+        "AttributionControl.ToggleAttribution": t.map.attribution,
+        "Map.Title": t.map.title,
         "ScaleControl.Kilometers": "km",
         "ScaleControl.Meters": "m",
       },
@@ -446,7 +467,7 @@ export const PassMap = ({
      * OSM attribution guidelines ask for, and a line inside a menu about map
      * types is neither identifiable nor one interaction.
      */
-    const controls = provenanceControls();
+    const controls = provenanceControls(t);
     provenance.current = controls;
     placeProvenance(m, controls, env.mobile, container.current);
 
@@ -491,7 +512,7 @@ export const PassMap = ({
       // explorer.tsx). Noted before it is dispatched, so the rest of the
       // pointer events in this frame do not repeat it.
       hoveredRef.current = hit;
-      onHoverRef.current?.(hit);
+      onHoverRef.current(hit);
     };
 
     // Hover is a mouse affordance; a finger has none, and a label under it
@@ -629,11 +650,12 @@ export const PassMap = ({
     if (intent) send({ intent, type: "intent" });
   }, [intent, send]);
 
-  // What the map draws is what it opens on, so this is dispatched again until
-  // something has been framed: the lines and dots may arrive after the style.
+  // What the map draws of the home range is what it opens on, so this is
+  // dispatched again until something has been framed: the lines and dots may
+  // arrive after the style.
   useEffect(() => {
-    if (ready) send({ bounds: scene.bounds, type: "ready" });
-  }, [ready, scene.bounds, send]);
+    if (ready) send({ bounds: scene.opening, type: "ready" });
+  }, [ready, scene.opening, send]);
 
   useEffect(() => {
     if (!ready) return;
@@ -641,6 +663,7 @@ export const PassMap = ({
       key: selKey,
       target: selection
         ? flightFor(selection, {
+            destinationBounds,
             passBounds: assets.passBounds,
             passes: rows.pass.map((r) => r.pass),
             tourBounds: assets.tourBounds,
@@ -666,6 +689,11 @@ export const PassMap = ({
     if (ready && requestedView)
       send({ type: "requestedView", view: requestedView });
   }, [requestedView, ready, send]);
+
+  useEffect(() => {
+    if (ready && requestedFit)
+      send({ bounds: requestedFit, type: "requestedFit" });
+  }, [requestedFit, ready, send]);
 
   // --- What the map shows --------------------------------------------------
   /**
@@ -790,15 +818,13 @@ export const PassMap = ({
                     onClick={() => {
                       issue([{ bearing: 0, cmd: "easeTo", duration: 400 }]);
                     }}
-                    aria-label="Nach Norden ausrichten"
+                    aria-label={t.map.alignNorth}
                   />
                 }
               >
                 <Compass ref={aimNeedle} />
               </TooltipTrigger>
-              <TooltipContent side="left">
-                Nach Norden ausrichten
-              </TooltipContent>
+              <TooltipContent side="left">{t.map.alignNorth}</TooltipContent>
             </Tooltip>
           )}
           <Tooltip>
@@ -809,22 +835,21 @@ export const PassMap = ({
                   variant="outline"
                   className={cn(TOOL, MAP_TOOL)}
                   onClick={fitToVisible}
-                  aria-label="Ansicht einpassen"
+                  aria-label={t.map.fit}
                 />
               }
             >
               <Scan />
             </TooltipTrigger>
-            <TooltipContent side="left">
-              Ansicht einpassen – erneut für die ganzen Alpen
-            </TooltipContent>
+            <TooltipContent side="left">{t.map.fitHint}</TooltipContent>
           </Tooltip>
 
           {/*
            * Everything that changes how the map looks rather than where it
-           * looks, behind one "…": the base, the overlays and the tilt. They
-           * are answered once per visit and then left alone, so they do not
-           * earn a button each on a phone screen.
+           * looks, behind one "…": the base, the overlays and the tilt – and
+           * the language the whole page speaks. They are answered once per
+           * visit and then left alone, so they do not earn a button each on
+           * a phone screen.
            */}
           <Popover>
             <Tooltip>
@@ -836,7 +861,7 @@ export const PassMap = ({
                         size="icon-lg"
                         variant="outline"
                         className={cn(TOOL, MAP_TOOL)}
-                        aria-label="Ansicht: Karte, Ebenen und 3D"
+                        aria-label={t.map.viewMenu}
                       />
                     }
                   />
@@ -844,17 +869,17 @@ export const PassMap = ({
               >
                 <MoreHorizontal />
               </TooltipTrigger>
-              <TooltipContent side="left">Ansicht</TooltipContent>
+              <TooltipContent side="left">{t.map.view}</TooltipContent>
             </Tooltip>
             <PopoverContent align="start" side="left" className="w-60 gap-3">
               <FieldSet className="gap-2">
-                <FieldLegend variant="label">Grundkarte</FieldLegend>
+                <FieldLegend variant="label">{t.map.base}</FieldLegend>
                 <RadioGroup
                   value={mapEnv.base}
                   onValueChange={(v) => setBase(String(v))}
                   className="gap-1.5"
                 >
-                  {[VECTOR_BASE, ...baseLayers()].map((b) => (
+                  {[vectorBase(t), ...baseLayers(t)].map((b) => (
                     <Field key={b.id} orientation="horizontal">
                       <RadioGroupItem value={b.id} id={`base-${b.id}`} />
                       <FieldLabel
@@ -868,10 +893,13 @@ export const PassMap = ({
                 </RadioGroup>
               </FieldSet>
               <FieldSet className="gap-2">
-                <FieldLegend variant="label">Overlays</FieldLegend>
+                <FieldLegend variant="label">{t.map.overlays}</FieldLegend>
                 {[
-                  { id: "hillshade", name: "Relief-Schummerung" },
-                  ...OVERLAYS,
+                  { id: "hillshade", name: t.map.hillshade },
+                  ...OVERLAYS.map((o) => ({
+                    id: o.id,
+                    name: overlayName(o.id, t),
+                  })),
                 ].map((o) => (
                   <Field key={o.id} orientation="horizontal">
                     <Switch
@@ -887,7 +915,7 @@ export const PassMap = ({
                 ))}
               </FieldSet>
               <FieldSet className="gap-2">
-                <FieldLegend variant="label">Gelände</FieldLegend>
+                <FieldLegend variant="label">{t.map.terrain}</FieldLegend>
                 <Field orientation="horizontal">
                   <Switch
                     size="sm"
@@ -896,10 +924,11 @@ export const PassMap = ({
                     onCheckedChange={toggle3d}
                   />
                   <FieldLabel htmlFor="terrain-3d" className="font-normal">
-                    3D-Ansicht
+                    {t.map.threeD}
                   </FieldLabel>
                 </Field>
               </FieldSet>
+              <LanguageField hrefOf={langHref} />
             </PopoverContent>
           </Popover>
         </ButtonGroup>

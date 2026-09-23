@@ -1,38 +1,52 @@
-import { ROAD_TYPES } from "@/lib/regions";
-import { STATUS_ORDER } from "@/lib/status";
-import type { LatLon, Period, RoadTag, RoadType, Status } from "@/lib/types";
+import type { Bounds } from "@/lib/geo";
+import { RANGES, ROAD_TYPES, STATUSES, SURFACES } from "@/lib/regions";
+import type { RangeName } from "@/lib/regions";
+import type {
+  LatLon,
+  Period,
+  RoadTag,
+  RoadType,
+  Status,
+  Surface,
+} from "@/lib/types";
 
-export type EntityKind = "pass" | "tour" | "town";
+/**
+ * The four kinds the app lists and selects. A destination is a curated area
+ * over the other three (docs/destinations.md): it has no mark on the map but
+ * the outline of what it holds, no switch of its own, and it answers the
+ * question the product goal names first – "which regions are good in early
+ * October". Three of the four have a list of their own (`TABS`).
+ */
+export type EntityKind = "destination" | "pass" | "tour" | "town";
 export interface Selection {
   kind: EntityKind;
   slug: string;
 }
 
 /**
- * All three selected = no status filter, see `Filters.status`. A copy rather
- * than an alias of `STATUS_ORDER`: the filter's array is handed to callers
- * that build new arrays from it, and sharing one object under two names would
- * let a stray sort reach the map icons, the share image and the calibration
- * script.
+ * All three selected = no status filter, see `Filters.status`. A copy of
+ * `STATUSES`, like the lists below it: the filter's array is handed to
+ * callers that build new arrays from it.
  */
-export const ALL_STATUS: Status[] = [...STATUS_ORDER];
+export const ALL_STATUS: Status[] = [...STATUSES];
 /** All five road types selected = no type filter, see `Filters.types`. */
 export const ALL_TYPES: RoadType[] = [...ROAD_TYPES];
-/** Stable empty snapshot for the tag filter (`Filters.tags`). */
-export const NO_TAGS: RoadTag[] = [];
-export const ALL_KINDS: EntityKind[] = ["pass", "tour", "town"];
+/** Every range selected = no range filter, see `Filters.ranges`. */
+export const ALL_RANGES: RangeName[] = [...RANGES];
+/** All three surfaces selected = no surface filter, see `Filters.surfaces`. */
+export const ALL_SURFACES: Surface[] = [...SURFACES];
 /**
- * What each kind is called, beside the vocabulary it labels rather than beside
- * the tab row that draws it – the season bar names the current list too, and
- * `STATUS_LABEL` sits next to `STATUS_ORDER` for the same reason. "Straßen"
- * rather than "Pässe": the list holds spurs and valley roads as well.
+ * The lists, one tab each. The roads come first: they are what the map is
+ * made of, and every other list is read off them. A town has no tab of its
+ * own – it is listed under the area it lies in (`tabOf`), because an area is
+ * where one goes and a town is where in it one sleeps.
  */
-export const KIND_LABEL: Record<EntityKind, string> = {
-  pass: "Straßen",
-  tour: "Touren",
-  town: "Orte",
-};
+export type ListTab = Exclude<EntityKind, "town">;
+export const TABS: readonly ListTab[] = ["pass", "destination", "tour"];
 
+/** The tab a kind is listed in: a town under its area. */
+export const tabOf = (kind: EntityKind): ListTab =>
+  kind === "town" ? "destination" : kind;
 export const PASS_SORTS = [
   "elevation",
   "name",
@@ -57,18 +71,28 @@ export const RATING_MAX = 5;
  * show. Wording: `ab` for a lower bound, `bis` for an upper bound, `nur` for
  * the end of the scale.
  */
-export type Options = readonly (readonly [value: number, label: string])[];
+export type Options = readonly (readonly [value: number, label: OptionLabel])[];
+
+/**
+ * What a threshold chip says, as a shape rather than a string: the word is
+ * the language's (`vocab.option`, `lib/i18n`), the number is the value's.
+ */
+export type OptionLabel =
+  | { kind: "any" }
+  | { kind: "from" | "upTo" | "only" | "under" | "wetDays"; n: number }
+  | { kind: "elevationFrom"; m: number };
+
 export const TRAFFIC_OPTIONS = [
-  [5, "egal"],
-  [3, "bis 3"],
-  [2, "bis 2"],
-  [1, "nur 1"],
+  [5, { kind: "any" }],
+  [3, { kind: "upTo", n: 3 }],
+  [2, { kind: "upTo", n: 2 }],
+  [1, { kind: "only", n: 1 }],
 ] as const satisfies Options;
 export const BEAUTY_OPTIONS = [
-  [1, "egal"],
-  [3, "ab 3"],
-  [4, "ab 4"],
-  [5, "nur 5"],
+  [1, { kind: "any" }],
+  [3, { kind: "from", n: 3 }],
+  [4, { kind: "from", n: 4 }],
+  [5, { kind: "only", n: 5 }],
 ] as const satisfies Options;
 /**
  * The full ladder, "nur 5" included: nine roads carry it – Galibier, Alpe
@@ -77,10 +101,10 @@ export const BEAUTY_OPTIONS = [
  * somebody planning their first Alpine week asks.
  */
 export const FAME_OPTIONS = [
-  [1, "egal"],
-  [3, "ab 3"],
-  [4, "ab 4"],
-  [5, "nur 5"],
+  [1, { kind: "any" }],
+  [3, { kind: "from", n: 3 }],
+  [4, { kind: "from", n: 4 }],
+  [5, { kind: "only", n: 5 }],
 ] as const satisfies Options;
 /**
  * Pass height as a few round thresholds rather than a slider: the question is
@@ -88,10 +112,10 @@ export const FAME_OPTIONS = [
  * threshold is a chip a thumb can hit.
  */
 export const ELEVATION_OPTIONS = [
-  [0, "egal"],
-  [1500, "ab 1.500 m"],
-  [2000, "ab 2.000 m"],
-  [2500, "ab 2.500 m"],
+  [0, { kind: "any" }],
+  [1500, { kind: "elevationFrom", m: 1500 }],
+  [2000, { kind: "elevationFrom", m: 2000 }],
+  [2500, { kind: "elevationFrom", m: 2500 }],
 ] as const satisfies Options;
 /**
  * The raw summer signals, so the data that makes July queryable is not buried
@@ -111,11 +135,11 @@ export const HEAT_NONE = 99;
  * mid-July; what a rung is worth in a given half-month is on its chip.
  */
 export const HEAT_OPTIONS = [
-  [HEAT_NONE, "egal"],
-  [28, "unter 28 °C"],
-  [26, "unter 26 °C"],
-  [24, "unter 24 °C"],
-  [22, "unter 22 °C"],
+  [HEAT_NONE, { kind: "any" }],
+  [28, { kind: "under", n: 28 }],
+  [26, { kind: "under", n: 26 }],
+  [24, { kind: "under", n: 24 }],
+  [22, { kind: "under", n: 22 }],
 ] as const satisfies Options;
 /** All fifteen days of the half-month: no filter. */
 export const WET_NONE = 15;
@@ -134,11 +158,11 @@ export const WET_NONE = 15;
  * "unter 26 °C" is "kein Hitze-Hinweis".
  */
 export const WET_OPTIONS = [
-  [WET_NONE, "egal"],
-  [10, "bis 10 von 15"],
-  [8, "bis 8 von 15"],
-  [6, "bis 6 von 15"],
-  [4, "bis 4 von 15"],
+  [WET_NONE, { kind: "any" }],
+  [10, { kind: "wetDays", n: 10 }],
+  [8, { kind: "wetDays", n: 8 }],
+  [6, { kind: "wetDays", n: 6 }],
+  [4, { kind: "wetDays", n: 4 }],
 ] as const satisfies Options;
 
 /**
@@ -201,6 +225,13 @@ export interface Filters {
   /** Statuses that stay visible; all three = no filter. Passes and tours. */
   status: Status[];
   /**
+   * Which mountain ranges stay in the lists; every range = no filter. A road's
+   * range follows from its region (`rangeOf`), a tour's from its passes like
+   * every lower bound, a town's from the nearest road in its reach
+   * (`PageData.townRanges`) – so this is the one criterion towns see.
+   */
+  ranges: RangeName[];
+  /**
    * The pass criteria below apply to passes and, through their passes, to
    * tours: a tour needs one pass that clears the lower bounds (elevation,
    * fame, beauty, min. difficulty) and every pass has to respect the upper
@@ -229,6 +260,12 @@ export interface Filters {
    */
   types: RoadType[];
   /**
+   * What the road is rolled on; all three = no filter, the default – nothing a
+   * road cyclist sees changes unless the "Belag" chip is pressed (plan 27). A
+   * loop filters through its own surface, which its roads decide.
+   */
+  surfaces: Surface[];
+  /**
    * Editorial road labels that all have to be present (and-semantics): two
    * selected labels mean "car-free *and* glacier", which is what a planner
    * asks two filters for. Empty = no filter. Not applied to tours – a label
@@ -256,9 +293,11 @@ export const DEFAULT_FILTERS: Filters = {
   minFame: 1,
   period: 10,
   query: "",
+  ranges: ALL_RANGES,
   sort: "elevation",
   status: ALL_STATUS,
-  tags: NO_TAGS,
+  surfaces: ALL_SURFACES,
+  tags: [],
   types: ALL_TYPES,
 };
 
@@ -278,6 +317,17 @@ export const DEFAULT_VIEW: MapView = {
   zoom: 6.5,
 };
 
+/** The box around several boxes; `null` for none. A fresh array, so a press is a new request. */
+const unionBounds = (list: readonly Bounds[]): Bounds | null => {
+  if (list.length === 0) return null;
+  return [
+    Math.min(...list.map((b) => b[0])),
+    Math.min(...list.map((b) => b[1])),
+    Math.max(...list.map((b) => b[2])),
+    Math.max(...list.map((b) => b[3])),
+  ];
+};
+
 /** Drops keys that are undefined (or NaN) so a spread does not overwrite defaults. */
 export const defined = <T extends object>(o: T): Partial<T> =>
   Object.fromEntries(
@@ -289,26 +339,32 @@ export const defined = <T extends object>(o: T): Partial<T> =>
 // ── What the map shows ───────────────────────────────────────────────────────
 
 /**
- * The "auf der Karte" switches: passes and towns as one bit each, tours as the
- * hidden ones – so a tour added to the data is on the map until somebody turns
+ * The "auf der Karte" switches: the roads and the destinations as one bit
+ * each – the destinations' bit covers the outlines and the towns listed under
+ * them, which is what their tab lists – and tours as the hidden ones – so a tour added to the data is on the map until somebody turns
  * it off. Not a filter: what the list shows for a kind is what the map draws
  * for that kind, and this only adds a layer toggle on top of it.
  */
 export interface Shown {
   passes: boolean;
-  towns: boolean;
+  destinations: boolean;
   hiddenTours: string[];
 }
 
 export const ALL_SHOWN: Shown = {
+  destinations: true,
   hiddenTours: [],
   passes: true,
-  towns: true,
 };
 
 /** The switch of a kind that has one. */
-const SWITCH = { pass: "passes", town: "towns" } as const;
+const SWITCH = {
+  destination: "destinations",
+  pass: "passes",
+  town: "destinations",
+} as const;
 
+/** Whether the map draws this entity. */
 export const isShown = (shown: Shown, kind: EntityKind, slug: string) =>
   kind === "tour" ? !shown.hiddenTours.includes(slug) : shown[SWITCH[kind]];
 
@@ -426,8 +482,8 @@ export interface AppState {
    * would empty out the moment the selection is cleared.
    */
   last: Selection | null;
-  /** Which of the three lists is on screen. */
-  tab: EntityKind;
+  /** Which of the three lists is on screen (`TABS`). */
+  tab: ListTab;
   /**
    * What the pointer is over – wherever the pointer happens to be. The list
    * and the map are two halves of one screen showing the same entities, and
@@ -453,6 +509,22 @@ export interface AppState {
    * because a profile point is a point on *that* entity's road.
    */
   profileZoom: LatLon | null;
+  /**
+   * The frame a range chip asked for; the map fits it. The first filter that
+   * moves the camera: a range is a place, and "show me the Jura" is answered
+   * by the list *and* the picture. Ephemeral like `profileZoom` – a fresh box
+   * per press, never persisted, never in the hash – and it is the chip that
+   * asks, not the filter: a link carrying `g=Jura` and no camera opens fitted
+   * to what it lists, the way every such link does (`onReady` in the camera).
+   */
+  requestedFit: Bounds | null;
+  /**
+   * The destinations picked for the side-by-side sheet, at most `COMPARE_MAX`
+   * (docs/plans/12-destinations.md). In the hash as `vgl` – a comparison is
+   * exactly the kind of thing that is sent to the person one travels with –
+   * and not in storage: it belongs to one decision, not to the device.
+   */
+  compare: string[];
   filters: Filters;
   /**
    * The visitor's own last choice of half-month, and the only thing the
@@ -472,7 +544,7 @@ export interface AppState {
 export interface StoredState {
   period?: Period | null;
   shown?: Shown;
-  tab?: EntityKind;
+  tab?: ListTab;
 }
 
 /**
@@ -486,9 +558,42 @@ export interface HashState {
   filters: Partial<Filters>;
   selection: Selection | null;
   view: Partial<MapView>;
+  /** The compared destinations (`vgl`); empty for none. */
+  compare: string[];
 }
 
-export const EMPTY_HASH: HashState = { filters: {}, selection: null, view: {} };
+/** Whether a link names a camera of its own – a centre or a zoom. */
+export const carriesView = (hash: HashState): boolean =>
+  hash.view.lat !== undefined || hash.view.zoom !== undefined;
+
+export const EMPTY_HASH: HashState = {
+  compare: [],
+  filters: {},
+  selection: null,
+  view: {},
+};
+
+/**
+ * How many destinations the sheet sets side by side. Three, because the sheet
+ * is three columns on a phone and a holiday decision is rarely between more.
+ */
+export const COMPARE_MAX = 3;
+
+/**
+ * One destination added to or dropped from the comparison; a fourth is
+ * refused. A press that changes nothing hands back the same array, so the
+ * state stays the same object and nothing downstream rewrites for it.
+ */
+export const toggleCompare = (
+  current: string[],
+  slug: string,
+  on: boolean,
+): string[] => {
+  const has = current.includes(slug);
+  if (!on) return has ? current.filter((s) => s !== slug) : current;
+  if (has || current.length >= COMPARE_MAX) return current;
+  return [...current, slug];
+};
 
 export type Action =
   /** The world read in: on hydration, and again on every `hashchange`. */
@@ -500,9 +605,18 @@ export type Action =
   | { type: "profileZoom"; at: LatLon }
   | { type: "view"; view: MapView }
   | { type: "filters"; update: (f: Filters) => Filters }
+  /**
+   * A range chip pressed: the filter toggled like any member of a set, and –
+   * where the press narrows the list to ranges the map has a box for – the
+   * camera asked to frame them. Lifting the filter frames nothing: the
+   * visitor is back to everything and the camera is where they left it.
+   */
+  | { type: "range"; range: RangeName }
+  /** A destination's "vergleichen" toggle. */
+  | { type: "compare"; slug: string; on: boolean }
   | { type: "period"; period: Period }
-  | { type: "tab"; tab: EntityKind }
-  | { type: "toggleKind"; kind: "pass" | "town"; on: boolean }
+  | { type: "tab"; tab: ListTab }
+  | { type: "toggleKind"; kind: "pass" | "destination"; on: boolean }
   | { type: "toggleTour"; slug: string; on: boolean }
   /** The master switch over every tour. */
   | { type: "toggleTours"; on: boolean }
@@ -513,12 +627,16 @@ export type Action =
 
 /** What the reducer needs from outside the state and never changes it. */
 export interface Env {
+  /** Every destination's slug: a compared area a link names must be one. */
+  destinations: readonly string[];
   /** Whether the two sheets are the layout (`MOBILE_QUERY`). */
   mobile: boolean;
   /** Today's half-month, computed on the server; where the period falls back to. */
   today: Period;
   /** Every tour's slug, for `reconcileShown` and the master switch. */
   tours: readonly string[];
+  /** The box around each range's roads (`rangeBounds`, lib/map-assets.ts); what a range chip frames. */
+  rangeBounds: Partial<Record<RangeName, Bounds>>;
 }
 
 /**
@@ -550,7 +668,7 @@ const select = (state: AppState, selection: Selection, env: Env): AppState => {
     selection,
     sheet,
     shown: reveal(state.shown, selection),
-    tab: selection.kind,
+    tab: tabOf(selection.kind),
   };
 };
 
@@ -578,6 +696,9 @@ const load = (
   const view = { ...DEFAULT_VIEW, ...defined(hash.view) };
   const next: AppState = {
     ...state,
+    // A link may name an area this build does not hold; a pick that no row
+    // can show would count against `COMPARE_MAX` with no switch to lift it.
+    compare: hash.compare.filter((slug) => env.destinations.includes(slug)),
     filters: {
       ...DEFAULT_FILTERS,
       ...defined(hash.filters),
@@ -594,10 +715,7 @@ const load = (
     // the app writes carries a camera, so that is every shared link with an
     // entity in it.
     requestedView:
-      state.loaded &&
-      (hash.view.lat !== undefined || hash.view.zoom !== undefined)
-        ? view
-        : state.requestedView,
+      state.loaded && carriesView(hash) ? view : state.requestedView,
     shown: reconcileShown(stored.shown ?? state.shown, env.tours),
     tab: stored.tab ?? state.tab,
     view,
@@ -630,6 +748,31 @@ export const reduce = (state: AppState, action: Action, env: Env): AppState => {
     }
     case "filters": {
       return { ...state, filters: action.update(state.filters) };
+    }
+    case "range": {
+      const ranges = toggleMember(
+        state.filters.ranges,
+        ALL_RANGES,
+        action.range,
+      );
+      return {
+        ...state,
+        filters: { ...state.filters, ranges },
+        requestedFit:
+          ranges.length === ALL_RANGES.length
+            ? state.requestedFit
+            : (unionBounds(
+                ranges
+                  .map((r) => env.rangeBounds[r])
+                  .filter((b) => b !== undefined),
+              ) ?? state.requestedFit),
+      };
+    }
+    case "compare": {
+      return {
+        ...state,
+        compare: toggleCompare(state.compare, action.slug, action.on),
+      };
     }
     case "period": {
       return {
@@ -697,6 +840,7 @@ export const reduce = (state: AppState, action: Action, env: Env): AppState => {
  * (`useHashAdapter`), which is where the resolution is tested.
  */
 export const initialState = (today: Period): AppState => ({
+  compare: [],
   filters: { ...DEFAULT_FILTERS, period: today },
   hovered: null,
   last: null,
@@ -704,10 +848,13 @@ export const initialState = (today: Period): AppState => ({
   ownPeriod: null,
   profileCursor: null,
   profileZoom: null,
+  requestedFit: null,
   requestedView: null,
   selection: null,
   sheet: SHEETS_AT_REST,
   shown: ALL_SHOWN,
-  tab: "pass",
+  // The first list is the roads, the map's own material; the areas are the
+  // tab beside it (`TABS`).
+  tab: TABS[0]!,
   view: DEFAULT_VIEW,
 });

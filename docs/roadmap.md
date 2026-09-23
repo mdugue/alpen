@@ -37,9 +37,13 @@ What was one line here is now five plans (September 2026):
   readable, and the split of `passes.json` past 300 entries.
 - **[25 · Vosges and Jura](./plans/25-vosges-and-jura.md)** – the first ranges
   that are not the Alps, and the mechanism for every range after them: one
-  level above the region, a "Gebirge" chip, the brand line.
+  level above the region, a "Gebirge" chip that frames, the brand line. The
+  mechanism is built (`RANGES` in `lib/regions.ts`); the two ranges' roads
+  are the curation that is still open.
 - **[26 · Pyrenees](./plans/26-pyrenees.md)** – bounds per range, two more
-  countries, and the first screen once two ranges are 600 km apart.
+  countries, and the first screen once two ranges are 600 km apart. The
+  mechanism is built (`RANGE_BOUNDS`, `HOME_RANGE`, `ES` and `AD`); the
+  roads are the curation that is still open.
 - **[27 · Gravel](./plans/27-gravel.md)** – a surface on every road, a
   closing rung from the snow cover instead of a barrier, the mountain routing
   profile, dashed lines and a "Belag" chip. Mountain biking is a different
@@ -88,8 +92,9 @@ Design hypotheses, held until the spike confirms or refutes them:
    Herbstferienwoche" into a half-month (and asks about the Bundesland if it
    matters), "ein paar schöne Pässe" into beauty ≥ 4 with three in reach,
    "nicht so fit" into difficulty ≤ 3. Rideability, reach and the best
-   window come from `passYear`, `destinationOf` and `basesOf`, called as
-   tools and quoted in the app's own words (`GRADE_LABEL`, `REASON_WORD`).
+   window come from `passYear`, `baseOf` and `basesOf`, called as
+   tools and quoted in the app's own words (`status.grade`,
+   `status.reasonWord` in the message files).
    The model never grades a pass; that is Principle 3 applied to a model.
 3. **No retrieval layer.** The whole dataset – every road with region,
    height, scales, tags and its 24 grade letters, every town with its
@@ -110,8 +115,8 @@ Design hypotheses, held until the spike confirms or refutes them:
    uncached.
 5. **One dynamic route, budgeted.** A second dynamic route next to the
    weather, and the first that costs money per call: a rate limit per
-   visitor and a daily cap in the route (the weather route's cooldown is the
-   template), a maximum question length, no conversation stored, a paragraph
+   visitor and a daily cap in the route (the forecast's cooldown in
+   `lib/weather.ts` is the template), a maximum question length, no conversation stored, a paragraph
    on the privacy page naming what leaves the server and to whom. The
    cost per question is measured in the spike before a model is chosen.
 

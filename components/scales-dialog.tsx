@@ -1,8 +1,10 @@
 "use client";
 
 import Link from "next/link";
+import { Fragment } from "react";
 
 import { GradeLegend } from "@/components/grade-legend";
+import { useT } from "@/components/i18n";
 import { SeasonBandLegend } from "@/components/season-band";
 import { TagIcon } from "@/components/tags";
 import {
@@ -12,249 +14,243 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { RIDEABLE_BEST_SHARE, RIDEABLE_GOOD_SHARE } from "@/lib/destination";
-import { REACH_BANDS, REACH_MAX_KM } from "@/lib/geo";
 import {
-  ROAD_TAG,
-  ROAD_TAGS,
-  ROAD_TYPE,
-  ROAD_TYPES,
-  TOWN_TAG,
-  TOWN_TAGS,
-} from "@/lib/regions";
+  RIDEABLE_BEST_SHARE,
+  RIDEABLE_GOOD_SHARE,
+  RISKY_WEIGHT,
+} from "@/lib/destination";
+import { REACH_BANDS, REACH_MAX_KM } from "@/lib/geo";
+import { fill } from "@/lib/i18n/fill";
+import { ROAD_TAGS, ROAD_TYPES, SURFACES, TOWN_TAGS } from "@/lib/regions";
+import type { RangeName, TagName } from "@/lib/regions";
 import { ladderText, lapseText, VALLEY_TMAX_ERROR } from "@/lib/status";
-import { fmt } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 
-/** A share as a German percentage: 0.8 -> "80 %". */
-const pct = (x: number) => `${fmt(x * 100)} %`;
+/**
+ * The three marks a paragraph of the dialog may carry (`lib/i18n/de/scales.ts`):
+ * `**bold**`, `_italic_` and `` `code` ``. A message is a string, so the
+ * emphasis travels inside it and the two languages can place it differently;
+ * this turns the marks back into elements. Nothing else is markup.
+ */
+const rich = (text: string) => {
+  const parts: { at: number; part: string }[] = [];
+  let at = 0;
+  for (const part of text.split(/(?<mark>\*\*.+?\*\*|`.+?`|_.+?_)/u)) {
+    if (part) parts.push({ at, part });
+    at += part.length;
+  }
+  // Keyed by where each part starts in the text: unique, and stable for as
+  // long as the text is.
+  return parts.map(({ at: key, part }) => {
+    if (part.startsWith("**")) return <b key={key}>{part.slice(2, -2)}</b>;
+    if (part.startsWith("`")) return <code key={key}>{part.slice(1, -1)}</code>;
+    if (part.startsWith("_")) return <i key={key}>{part.slice(1, -1)}</i>;
+    return <Fragment key={key}>{part}</Fragment>;
+  });
+};
 
-const SCALES: [string, string][] = [
-  [
-    "Bekanntheit",
-    "5 = Mythos (Galibier, Stelvio, Ventoux, Alpe d'Huez, Glockner), 4 = regelmäßig in Giro/Tour/Marathons, 3 = in der Szene bekannt, 2 = Geheimtipp, 1 = kaum bekannt.",
-  ],
-  [
-    "Schönheit",
-    "Landschaft, Panorama, Straßenführung, Ruhe. 5 = Hochgebirgskulisse mit spektakulärer Straße (Bonette, Iseran, Gavia, Giau), 3 = solide, 1–2 = Waldstraße oder Skiort-Anfahrt.",
-  ],
-  [
-    "Schwierigkeit",
-    "Länge × Steigung, Höhe, Rampen. 5 = über 1 000 hm mit Rampen über 10 % oder sehr lang und hoch, 3 = normaler Alpenpass, 1–2 = kurz oder flach.",
-  ],
-  [
-    "Verkehr",
-    "1 = fast autofrei oder Sackgasse, 3 = normaler Passverkehr, 5 = Durchgangsstraße (Simplon, Lautaret, Julier). Sommerwochenenden und Motorräder verschlechtern das.",
-  ],
-];
+const Section = ({
+  heading,
+  children,
+}: {
+  heading: string;
+  children: React.ReactNode;
+}) => (
+  <section className="flex flex-col gap-2">
+    <h3 className="text-base font-semibold">{heading}</h3>
+    {children}
+  </section>
+);
+
+const P = ({ children }: { children: string }) => (
+  <p className="text-muted-foreground">{rich(children)}</p>
+);
+
+/** A term and its explanation, in the two-column list every section uses. */
+const Terms = ({
+  items,
+  className,
+}: {
+  items: { key: string; term: React.ReactNode; text: string }[];
+  className?: string;
+}) => (
+  <dl className={cn("grid grid-cols-[auto_1fr] gap-x-4 gap-y-2", className)}>
+    {items.map(({ key, term, text }) => (
+      <div key={key} className="contents">
+        <dt className="font-semibold">{term}</dt>
+        <dd className="text-muted-foreground">{text}</dd>
+      </div>
+    ))}
+  </dl>
+);
+
+/** A label with its tag icon in front, for the town and road features. */
+const Tagged = ({ tag, label }: { tag: TagName; label: string }) => (
+  <span className="flex items-center gap-1.5">
+    <TagIcon tag={tag} className="size-4" />
+    {label}
+  </span>
+);
 
 export const ScalesDialog = ({
   open,
   onOpenChange,
+  ranges,
 }: {
   open: boolean;
   onOpenChange: (v: boolean) => void;
-}) => (
-  <Dialog open={open} onOpenChange={onOpenChange}>
-    <DialogContent className="max-h-[85vh] grid-rows-[auto_minmax(0,1fr)] sm:max-w-2xl">
-      <DialogHeader>
-        <DialogTitle>Skalen &amp; Quellen</DialogTitle>
-        <DialogDescription>
-          Wie die 1–5-Bewertungen und der Status je Zeitraum zustande kommen –
-          und woher die Daten stammen.
-        </DialogDescription>
-      </DialogHeader>
-      <div className="flex flex-col gap-4 overflow-y-auto pr-1 text-sm">
-        <section className="flex flex-col gap-2">
-          <h3 className="text-base font-semibold">
-            Woher kommen die 1–5-Bewertungen?
-          </h3>
-          <p className="text-muted-foreground">
-            Redaktionelle Einschätzungen aus dem allgemeinen Ruf der Pässe
-            (Radsport-Literatur, Grand-Tour-Historie, quaeldich.de, climbbybike,
-            Cyclingcols). Keine gemessenen Werte, keine Nutzerbewertungen – zur
-            groben Einordnung, nicht zum Punktevergleich.
-          </p>
-          <dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-2">
-            {SCALES.map(([term, text]) => (
-              <div key={term} className="contents">
-                <dt className="font-semibold">{term}</dt>
-                <dd className="text-muted-foreground">{text}</dd>
-              </div>
-            ))}
-          </dl>
-        </section>
-        <section className="flex flex-col gap-2">
-          <h3 className="text-base font-semibold">
-            Warum ein Ort in der Liste steht
-          </h3>
-          <p className="text-muted-foreground">
-            Jeder Rad-Ort trägt bis zu vier Merkmale. In der Liste stehen sie
-            als Symbole, im Detail und auf der Karte mit Text. Auch sie sind
-            redaktionell: Sie sagen, was vor Ort auffällt, und sind keine
-            gezählten Werkstätten oder Hotels.
-          </p>
-          <dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-2">
-            {TOWN_TAGS.map((tag) => (
-              <div key={tag} className="contents">
-                <dt className="flex items-center gap-1.5 font-semibold">
-                  <TagIcon tag={tag} className="size-4" />
-                  {TOWN_TAG[tag].label}
-                </dt>
-                <dd className="text-muted-foreground">{TOWN_TAG[tag].hint}</dd>
-              </div>
-            ))}
-          </dl>
-        </section>
-        <section className="flex flex-col gap-2">
-          <h3 className="text-base font-semibold">Art und Merkmale</h3>
-          <p className="text-muted-foreground">
-            Die <b>Art</b> sagt, wie die Straße im Gelände liegt – jede Straße
-            hat genau eine. Die <b>Merkmale</b> sagen, wie sich das Fahren dort
-            anfühlt; eine Straße trägt keines, eines oder mehrere. Auch sie sind
-            redaktionelle Labels, keine gezählten Werte: Was die Daten messen –
-            Länge, Steigung, Höhe, Grenzübertritt – steht als Zahl daneben und
-            nicht hier.
-          </p>
-          <dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-2">
-            {ROAD_TYPES.map((type) => (
-              <div key={type} className="contents">
-                <dt className="font-semibold">{ROAD_TYPE[type].label}</dt>
-                <dd className="text-muted-foreground">
-                  {ROAD_TYPE[type].hint}
-                </dd>
-              </div>
-            ))}
-            {ROAD_TAGS.map((tag) => (
-              <div key={tag} className="contents">
-                <dt className="flex items-center gap-1.5 font-semibold">
-                  <TagIcon tag={tag} className="size-4" />
-                  {ROAD_TAG[tag].label}
-                </dt>
-                <dd className="text-muted-foreground">{ROAD_TAG[tag].hint}</dd>
-              </div>
-            ))}
-          </dl>
-        </section>
-        <section className="flex flex-col gap-2">
-          <h3 className="text-base font-semibold">Status je Zeitraum</h3>
-          <p className="text-muted-foreground">
-            Heuristik aus typischem Öffnungsfenster (halbmonatsgenau), Passhöhe,
-            Jahreszeit, der Klimareihe des Passes (2015–2024) und dem
-            Tageslicht. Sie beantwortet „wie gut ist es, dort in diesem
-            Halbmonat zu fahren“, nicht nur „kommt man drüber“. Für Rundtouren
-            gilt der schlechteste Wert ihrer Pässe. Ersetzt keine amtliche
-            Sperrauskunft.
-          </p>
-          {/* Generated from SIGNALS and the reason ladder in lib/status.ts, so
-              a changed threshold reaches the paragraph that explains it. */}
-          <p className="text-muted-foreground">
-            <b>Vier Stufen, eine Leiter.</b> {ladderText()}
-          </p>
-          <p className="text-muted-foreground">
-            <b>Abgeleitet, nicht gemessen:</b> Die Klimareihe gilt für die
-            Passhöhe. Der Talwert wird mit {lapseText()} bis zum tiefsten
-            Anstiegsbeginn heruntergerechnet und liegt gut ±{" "}
-            {fmt(VALLEY_TMAX_ERROR)} °C daneben; für Pässe ohne Anstiegsprofil
-            gibt es ihn nicht. Das Tageslicht ist reine Astronomie. Im Detail
-            steht unter dem Status der Grund in einem Satz, mit Zahl und
-            Herkunft.
-          </p>
-          <p className="text-muted-foreground">
-            Der Streifen aus 24 Zellen zeigt das ganze Jahr auf einen Blick –
-            umrandet ist der gewählte Halbmonat, hohl mit rotem Rand die
-            Sperrung. Im Detail erklärt jede Zelle sich beim Überfahren selbst.
-          </p>
-          {/* The same legend the season bar shows, from GRADE_ORDER. */}
-          <GradeLegend className="text-muted-foreground text-xs" />
-        </section>
-        <section className="flex flex-col gap-2">
-          <h3 className="text-base font-semibold">Saisonband</h3>
-          <p className="text-muted-foreground">
-            Das Band am unteren Rand ist der Zeitregler und zeigt zugleich, was
-            die Pässe der aktuellen Auswahl über das Jahr machen: drei Größen je
-            Halbmonat, gemittelt über genau diese Pässe – Gipfel
-            unterschiedlicher Höhe, also eine Eigenschaft der Auswahl und keine
-            Aussage über „die Alpen“. Auf schmalen Bildschirmen steht die
-            Legende nur hier.
-          </p>
-          <SeasonBandLegend className="text-muted-foreground text-xs" />
-        </section>
-        <section className="flex flex-col gap-2">
-          <h3 className="text-base font-semibold">Orte als Standort</h3>
-          <p className="text-muted-foreground">
-            Ein Ort hat keine eigene Klimareihe und keine eigene Saison. Was er
-            hat, sind die Pässe, die er erreicht – und die sind schon bewertet.
-            Alles, was das Ortsdetail zeigt, ist daraus <b>abgeleitet</b> und
-            sagt das auch: die Zahl gut befahrbarer Pässe, der Balken darunter
-            und der Streifen aus 24 Zellen.
-          </p>
-          <p className="text-muted-foreground">
-            <b>Drei Entfernungen statt eines Radius.</b>{" "}
-            {REACH_BANDS.map((b) => `„${b.label}" bis ${fmt(b.maxKm)} km`).join(
-              ", ",
-            )}
-            . Jenseits von {fmt(REACH_MAX_KM)} km endet die Liste. Innerhalb
-            davon zählt Nähe gleitend: ein Pass wird nicht bei einem runden
-            Kilometerwert wertlos, sondern verliert mit der Entfernung an
-            Gewicht. Die Reihenfolge entsteht daraus zusammen mit Zustand,
-            Schönheit und Bekanntheit – ein schöner Pass etwas weiter weg steht
-            deshalb vor einem unscheinbaren vor der Haustür.
-          </p>
-          <p className="text-muted-foreground">
-            <b>Der Streifen zeigt die Saison, nicht die Größe.</b> Er misst
-            jeden Halbmonat an der besten Zeit <i>dieses</i> Orts: ab{" "}
-            {pct(RIDEABLE_BEST_SHARE)} davon „beste Zeit“, ab{" "}
-            {pct(RIDEABLE_GOOD_SHARE)} „gut“, darunter „eingeschränkt“, ohne
-            einen befahrbaren Pass „gesperrt“. Sonst hätte ein großer Ort von
-            Juni bis Oktober durchgehend die höchste Stufe und ein kleiner nie –
-            der Streifen würde die Größe des Orts zeigen statt seines Jahres.
-            Wie viel es überhaupt ist, steht daneben in Worten. Die beiden
-            Anteile sind redaktionell wie alle Zahlen hier;{" "}
-            <code>scripts/analyze-destinations.ts</code> rechnet sie nach.
-          </p>
-        </section>
-        <section className="flex flex-col gap-2">
-          <h3 className="text-base font-semibold">Kartensymbole</h3>
-          <p className="text-muted-foreground">
-            <b>Kreis:</b> Pass – Farbe zeigt den Status, hohler Kreis = oft
-            gesperrt, Größe = Bekanntheit. <b>Stern:</b> gemerkt. <b>Linie:</b>{" "}
-            Rundtour (eigene Farbe) oder Auffahrt (Statusfarbe). <b>Raute:</b>{" "}
-            Rad-Ort.
-          </p>
-        </section>
-        <section className="flex flex-col gap-2">
-          <h3 className="text-base font-semibold">Daten</h3>
-          <p className="text-muted-foreground">
-            <b>Höhenprofil:</b> Open-Meteo Elevation (Copernicus DEM 90 m)
-            entlang der gerouteten Straße. <b>Wetter:</b> Open-Meteo-Vorhersage
-            auf Passhöhe, serverseitig zwischengespeichert. <b>Klima:</b>{" "}
-            Open-Meteo-Archiv 2015–2024 je Halbmonat, im Standardmodell von
-            Open-Meteo (ERA5 und ERA5-Land, ab 2017 ECMWF IFS); Raster von 9 bis
-            25 km, auf Passhöhe tendenziell zu mild. <b>Routen:</b>{" "}
-            OpenRouteService (Rennrad-Profil) oder OSRM. <b>3D:</b> Mapzen/AWS
-            Terrain Tiles. Karten © OpenStreetMap-Mitwirkende.
-          </p>
-        </section>
-        <section className="flex flex-col gap-2">
-          <h3 className="text-base font-semibold">Hinweise</h3>
-          <p className="text-muted-foreground">
-            Höhen und Auffahrtsdaten sind gerundete Richtwerte. Schönheit,
-            Bekanntheit, Schwierigkeit und Verkehr sind redaktionelle
-            1–5-Einschätzungen, Art und Merkmale der Straßen sowie die Merkmale
-            der Orte sind redaktionelle Labels. Der Status je Zeitraum ist eine
-            Heuristik und ersetzt keine amtliche Sperrauskunft. Die App dient
-            der groben Routenplanung, nicht der Navigation. Ausführlich steht
-            das unter{" "}
-            <Link
-              href="/wissen/scales-and-status"
-              className="text-foreground underline underline-offset-2"
-            >
-              Wissen: Skalen und Status
-            </Link>
-            .
-          </p>
-        </section>
-      </div>
-    </DialogContent>
-  </Dialog>
-);
+  /**
+   * The ranges the data holds a road for. The section that explains them
+   * shows only once there are two: a dialog that names the Vosges' roads
+   * while the map cannot show one would promise what the data does not
+   * hold (Principle 3) – the same reason the brand line waits.
+   */
+  ranges: readonly RangeName[];
+}) => {
+  const { t, fmt } = useT();
+  const s = t.scales;
+  const v = t.vocab;
+  /** A share as a percentage in the page's locale: 0.8 -> "80 %". */
+  const pct = (x: number) => `${fmt(x * 100)} %`;
+  // The link to the knowledge base sits inside the sentence: the words around
+  // its `{link}` placeholder, in the page's language.
+  const [moreBefore, moreAfter] = s.notes.more.split("{link}");
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="max-h-[85vh] grid-rows-[auto_minmax(0,1fr)] sm:max-w-2xl">
+        <DialogHeader>
+          <DialogTitle>{t.header.scales}</DialogTitle>
+          <DialogDescription>{s.description}</DialogDescription>
+        </DialogHeader>
+        <div className="flex flex-col gap-4 overflow-y-auto pr-1 text-sm">
+          <Section heading={s.ratings.heading}>
+            <P>{s.ratings.intro}</P>
+            <Terms
+              items={s.ratings.items.map(([term, text]) => ({
+                key: term,
+                term,
+                text,
+              }))}
+            />
+          </Section>
+          <Section heading={s.towns.heading}>
+            <P>{s.towns.intro}</P>
+            <Terms
+              items={TOWN_TAGS.map((tag) => ({
+                key: tag,
+                term: <Tagged tag={tag} label={v.townTag[tag].label} />,
+                text: v.townTag[tag].hint,
+              }))}
+            />
+          </Section>
+          {ranges.length > 1 && (
+            <Section heading={s.ranges.heading}>
+              <P>{s.ranges.intro}</P>
+              <Terms
+                items={ranges.map((range) => ({
+                  key: range,
+                  term: v.range[range].label,
+                  text: v.range[range].hint,
+                }))}
+              />
+            </Section>
+          )}
+          <Section heading={s.types.heading}>
+            <P>{s.types.intro}</P>
+            <Terms
+              items={[
+                ...ROAD_TYPES.map((type) => ({
+                  key: type,
+                  term: v.roadType[type].label,
+                  text: v.roadType[type].hint,
+                })),
+                ...ROAD_TAGS.map((tag) => ({
+                  key: tag,
+                  term: <Tagged tag={tag} label={v.roadTag[tag].label} />,
+                  text: v.roadTag[tag].hint,
+                })),
+              ]}
+            />
+          </Section>
+          <Section heading={s.surface.heading}>
+            <P>{s.surface.intro}</P>
+            <Terms
+              className="gap-x-3 gap-y-1"
+              items={SURFACES.map((x) => ({
+                key: x,
+                term: v.surface[x].label,
+                text: v.surface[x].hint,
+              }))}
+            />
+          </Section>
+          <Section heading={s.status.heading}>
+            <P>{s.status.intro}</P>
+            {/* Generated from SIGNALS and the reason ladder in lib/status.ts, so
+                a changed threshold reaches the paragraph that explains it. */}
+            <P>{fill(s.status.ladder, { text: ladderText(t) })}</P>
+            <P>
+              {fill(s.status.derived, {
+                error: fmt(VALLEY_TMAX_ERROR),
+                lapse: lapseText(t),
+              })}
+            </P>
+            <P>{s.status.strip}</P>
+            {/* The strip's four colours, from GRADE_ORDER. */}
+            <GradeLegend className="text-muted-foreground text-xs" />
+          </Section>
+          <Section heading={s.band.heading}>
+            <P>{s.band.intro}</P>
+            <SeasonBandLegend className="text-muted-foreground text-xs" />
+          </Section>
+          <Section heading={s.townsAsBase.heading}>
+            <P>{s.townsAsBase.intro}</P>
+            <P>
+              {fill(s.townsAsBase.bands, {
+                list: REACH_BANDS.map((b) =>
+                  fill(s.townsAsBase.bandItem, {
+                    km: fmt(b.maxKm),
+                    label: v.band[b.key].label,
+                  }),
+                ).join(", "),
+                maxKm: fmt(REACH_MAX_KM),
+              })}
+            </P>
+            <P>
+              {fill(s.townsAsBase.stripMeasures, {
+                best: pct(RIDEABLE_BEST_SHARE),
+                good: pct(RIDEABLE_GOOD_SHARE),
+              })}
+            </P>
+          </Section>
+          <Section heading={s.destinations.heading}>
+            <P>{s.destinations.intro}</P>
+            <P>
+              {fill(s.destinations.order, {
+                riskyPct: fmt(RISKY_WEIGHT * 100),
+              })}
+            </P>
+          </Section>
+          <Section heading={s.symbols.heading}>
+            <P>{s.symbols.text}</P>
+          </Section>
+          <Section heading={s.data.heading}>
+            <P>{s.data.text}</P>
+          </Section>
+          <Section heading={s.notes.heading}>
+            <p className="text-muted-foreground">
+              {rich(s.notes.text)} {moreBefore}
+              <Link
+                href="/wissen/scales-and-status"
+                className="text-foreground underline underline-offset-2"
+              >
+                {s.notes.moreLink}
+              </Link>
+              {moreAfter}
+            </p>
+          </Section>
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+};

@@ -5,6 +5,9 @@ import type {
   StyleSpecification,
 } from "maplibre-gl";
 
+import type { Messages } from "@/lib/i18n";
+import { DEFAULT_LANG, localeOf } from "@/lib/i18n/lang";
+import type { Lang } from "@/lib/i18n/lang";
 import { PALETTE } from "@/lib/palette";
 import type { Scheme } from "@/lib/palette";
 
@@ -30,21 +33,24 @@ import type { Scheme } from "@/lib/palette";
  *    · profile cursor]
  *
  * The hillshade sits between the two groups: it models the land without
- * greying the roads and labels on top. Labels prefer `name:de`, then the
- * Latin transliteration OpenMapTiles carries for every name, then the local
- * name – so the Latin glyph ranges under `public/map/fonts` are all a label
+ * greying the roads and labels on top. Labels prefer the name in the page's
+ * language (`name:de`, `name:en`), then the Latin transliteration
+ * OpenMapTiles carries for every name, then the local name – so the Latin glyph ranges under `public/map/fonts` are all a label
  * ever needs (a glyph outside them is drawn locally by MapLibre).
  */
 
 /** Which base is the generated one; the raster alternatives keep their own ids. */
 export const BASEMAP_ID = "karte";
 
-export const BASEMAP_SOURCE: SourceSpecification = {
-  attribution:
-    '<a href="https://openfreemap.org" target="_blank">OpenFreeMap</a> © <a href="https://www.openmaptiles.org/" target="_blank">OpenMapTiles</a>, Daten von <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a>',
+/**
+ * The vector tiles and their credit line; the OpenStreetMap credit is the
+ * page's word for it (`map.osmContributors`), as on every raster base.
+ */
+export const basemapSource = (w: Messages): SourceSpecification => ({
+  attribution: `<a href="https://openfreemap.org" target="_blank">OpenFreeMap</a> © <a href="https://www.openmaptiles.org/" target="_blank">OpenMapTiles</a>, <a href="https://www.openstreetmap.org/copyright" target="_blank">${w.map.osmContributors}</a>`,
   type: "vector",
   url: "https://tiles.openfreemap.org/planet",
-};
+});
 
 /** The one source every generated layer draws from. */
 export const BASEMAP_SOURCE_ID = "openmaptiles";
@@ -60,10 +66,13 @@ export const FONT_REGULAR = "Inter Regular";
 export const FONT_ITALIC = "Inter Italic";
 export const FONT_BOLD = "Inter SemiBold";
 
-/** German name where OpenStreetMap has one, else the Latin spelling. */
-const NAME: ExpressionSpecification = [
+/**
+ * The name in the page's language where OpenStreetMap has one, else the
+ * Latin spelling (plan 08: the English page reads `name:en`).
+ */
+const nameOf = (lang: Lang): ExpressionSpecification => [
   "coalesce",
-  ["get", "name:de"],
+  ["get", `name:${lang}`],
   ["get", "name:latin"],
   ["get", "name"],
 ];
@@ -186,8 +195,9 @@ const groundLayers = (scheme: Scheme): LayerSpecification[] => {
 };
 
 /** The layers after the hillshade: lines and labels. */
-const detailLayers = (scheme: Scheme): LayerSpecification[] => {
+const detailLayers = (scheme: Scheme, lang: Lang): LayerSpecification[] => {
   const p = PALETTE[scheme];
+  const NAME = nameOf(lang);
   const halo = { "text-halo-color": p.land, "text-halo-width": 1.3 };
   const road = (
     id: string,
@@ -376,7 +386,7 @@ const detailLayers = (scheme: Scheme): LayerSpecification[] => {
           [
             "number-format",
             ["get", "ele"],
-            { locale: "de-DE", "max-fraction-digits": 0 },
+            { locale: localeOf(lang), "max-fraction-digits": 0 },
           ],
           " m",
         ],
@@ -444,8 +454,8 @@ const detailLayers = (scheme: Scheme): LayerSpecification[] => {
  * The basemap's layers in two groups, so the caller can slot its hillshade
  * between them. All ids start with `base-`.
  */
-export const basemapLayers = (scheme: Scheme) => ({
-  detail: detailLayers(scheme),
+export const basemapLayers = (scheme: Scheme, lang: Lang = DEFAULT_LANG) => ({
+  detail: detailLayers(scheme, lang),
   ground: groundLayers(scheme),
 });
 
@@ -457,19 +467,21 @@ export const basemapLayerIds = (scheme: Scheme): string[] => {
 
 /**
  * A complete, standalone style – what `scripts/build-map-style.ts` writes to
- * `public/map/style-{light,dark}.json`. `glyphs` defaults to the app's own
- * path; a style editor needs it absolute.
+ * `public/map/style-{light,dark}.json` and, with the English labels,
+ * `style-{light,dark}-en.json`. `glyphs` defaults to the app's own path; a
+ * style editor needs it absolute.
  */
 export const basemapStyle = (
   scheme: Scheme,
+  w: Messages,
   glyphs: string = GLYPHS,
 ): StyleSpecification => {
-  const { ground, detail } = basemapLayers(scheme);
+  const { ground, detail } = basemapLayers(scheme, w.lang);
   return {
     glyphs,
     layers: [...ground, ...detail],
-    name: `Alpenpässe ${scheme === "dark" ? "dunkel" : "hell"}`,
-    sources: { [BASEMAP_SOURCE_ID]: BASEMAP_SOURCE },
+    name: `Alpenpässe ${scheme} ${w.lang}`,
+    sources: { [BASEMAP_SOURCE_ID]: basemapSource(w) },
     version: 8,
   };
 };

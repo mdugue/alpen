@@ -1,15 +1,14 @@
+"use client";
+
+import { useT } from "@/components/i18n";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import {
-  MONTH_INITIALS,
-  periodIndex,
-  periodLabel,
-  PERIODS,
-} from "@/lib/period";
-import { cellHint, GRADE_LABEL, seasonSummary } from "@/lib/status";
+import { fill } from "@/lib/i18n/fill";
+import { periodIndex, periodLabel, PERIODS } from "@/lib/period";
+import { cellHint, seasonSummary } from "@/lib/status";
 import type { Grade, YearCell } from "@/lib/status";
 import type { Period } from "@/lib/types";
 import { cn } from "@/lib/utils";
@@ -53,13 +52,19 @@ export const SeasonStrip = ({
   size?: "row" | "panel";
   className?: string;
 }) => {
+  const { t } = useT();
   const panel = size === "panel";
   const grades = cells.map((c) => c.grade);
   const currentIndex = current === undefined ? -1 : periodIndex(current);
+  const cellWord = (period: Period, grade: Grade) =>
+    fill(t.sidebar.strip.cell, {
+      grade: t.status.grade[grade],
+      period: periodLabel(period, t),
+    });
   const label = [
-    seasonSummary(grades),
+    seasonSummary(grades, t),
     current !== undefined && grades[currentIndex]
-      ? `${periodLabel(current)}: ${GRADE_LABEL[grades[currentIndex]]}.`
+      ? `${cellWord(current, grades[currentIndex])}.`
       : "",
   ]
     .filter(Boolean)
@@ -90,7 +95,7 @@ export const SeasonStrip = ({
                 render={
                   <button
                     type="button"
-                    aria-label={`${periodLabel(PERIODS[i]!)}: ${GRADE_LABEL[grade]}`}
+                    aria-label={cellWord(PERIODS[i]!, grade)}
                     className={cn(
                       cellClass(grade, i),
                       "focus-visible:outline-ring cursor-default border-0 p-0 focus-visible:z-20 focus-visible:outline-2 focus-visible:outline-offset-1",
@@ -100,10 +105,10 @@ export const SeasonStrip = ({
               />
               <PopoverContent className="w-56 gap-1" side="top">
                 <p className="text-sm font-semibold">
-                  {periodLabel(PERIODS[i]!)} · {GRADE_LABEL[grade]}
+                  {periodLabel(PERIODS[i]!, t)} · {t.status.grade[grade]}
                 </p>
                 <p className="text-muted-foreground text-xs">
-                  {cellHint(cells[i]!)}
+                  {cellHint(cells[i]!, t)}
                 </p>
               </PopoverContent>
             </Popover>
@@ -121,11 +126,13 @@ export const SeasonStrip = ({
           aria-hidden
           className="text-muted-foreground text-2xs mt-0.5 flex leading-none"
         >
-          {MONTH_INITIALS.map((m, i) => (
-            <span key={m + String(i)} className="flex-1 text-center">
-              {m}
-            </span>
-          ))}
+          {t.calendar.months
+            .map((m) => m[0]!)
+            .map((m, i) => (
+              <span key={m + String(i)} className="flex-1 text-center">
+                {m}
+              </span>
+            ))}
         </div>
       )}
     </div>

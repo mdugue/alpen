@@ -4,7 +4,11 @@ import { Coffee, Search, X } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
+import { useT } from "@/components/i18n";
 import { useSheet } from "@/components/mobile-sheet";
+import { CompareSheet } from "@/components/sidebar/compare-sheet";
+import { DestinationList } from "@/components/sidebar/destination-list";
+import type { RowContext } from "@/components/sidebar/entity-row";
 import {
   AppliedFilters,
   FilterBody,
@@ -13,7 +17,6 @@ import {
 import { KindTabs } from "@/components/sidebar/kind-tabs";
 import { PassList } from "@/components/sidebar/pass-list";
 import { TourList } from "@/components/sidebar/tour-list";
-import { TownList } from "@/components/sidebar/town-list";
 import { Button } from "@/components/ui/button";
 import {
   InputGroup,
@@ -27,6 +30,7 @@ import type {
   Action,
   EntityKind,
   Filters,
+  ListTab,
   Selection,
   Shown,
 } from "@/lib/app-state";
@@ -36,23 +40,40 @@ import {
   hasSecondaryFilters,
   resetFilters,
 } from "@/lib/filter-summary";
+import { langPrefix } from "@/lib/i18n";
+import type { RangeName } from "@/lib/regions";
 import { entityKey } from "@/lib/route-key";
-import type { Rows } from "@/lib/rows";
+import { nestTowns } from "@/lib/rows";
+import type { DestinationRow, Rows } from "@/lib/rows";
 import { cn, TOUCH_CONTROL } from "@/lib/utils";
 
 export interface SidebarProps {
   /** Only says how a selected row is scrolled into view; the brand lives in the header. */
   variant: "aside" | "sheet";
   filters: Filters;
-  /** The three filtered lists; one is on screen at a time. */
+  /** The four filtered lists; one is on screen at a time. */
   rows: Rows;
-  totals: Record<EntityKind, number>;
+  /** The destinations picked for the compare sheet (`AppState.compare`). */
+  compare: readonly string[];
+  /**
+   * The sheet's columns, in the order they were picked: every picked area,
+   * whatever the list's filters hide – a comparison is not a search result.
+   */
+  compared: readonly DestinationRow[];
+  /** How many entries each list holds (`tabCounts`). */
+  counts: Record<ListTab, number>;
+  /** How many entries each list holds with no filter at all. */
+  totals: Record<ListTab, number>;
   /** How many roads a filter change would leave – the number on every chip. */
   countWith: (patch: Partial<Filters>) => number;
+  /** The ranges the data holds a road for; the "Gebirge" group shows with two or more. */
+  ranges: readonly RangeName[];
+  /** A range chip pressed: the filter and, with it, the frame (`range` in `reduce`). */
+  onRange: (range: RangeName) => void;
   /** The "auf der Karte" switches. */
   shown: Shown;
   /** Which of the three lists is on screen. */
-  tab: EntityKind;
+  tab: ListTab;
   /** Highlighted in the lists and scrolled into view. */
   selection: Selection | null;
   /** What the pointer is over, on the map or in the list; the two share one highlight. */
@@ -71,33 +92,36 @@ export interface SidebarProps {
 }
 
 export const Sidebar = (p: SidebarProps) => {
+  const { t, fmt, lang } = useT();
   const setFilters = (update: (f: Filters) => Filters) =>
     p.dispatch({ type: "filters", update });
   const set = <K extends keyof Filters>(key: K, value: Filters[K]) =>
     setFilters((f) => ({ ...f, [key]: value }));
   const reset = () => setFilters(resetFilters);
-  const onSelect = (kind: EntityKind) => (slug: string) =>
-    p.dispatch({ selection: { kind, slug }, type: "select" });
-  const onHover = (sel: Selection | null) =>
-    p.dispatch({ selection: sel, type: "hover" });
+  const onSelect = (selection: Selection) =>
+    p.dispatch({ selection, type: "select" });
+  /** What every row of the three lists does with the entity it shows. */
+  const row: RowContext = {
+    currentRow: p.selection ? entityKey(p.selection) : null,
+    hovered: p.hovered,
+    onHover: (selection) => p.dispatch({ selection, type: "hover" }),
+    onSelect,
+    onToggleFavorite: (sel) => p.onToggleFavorite(sel.kind, sel.slug),
+  };
   const tourCount = p.totals.tour;
   const visibleTourCount = shownTourCount(p.shown, tourCount);
   // The panel opens by itself when a link carries filters; the visitor's own
   // toggling wins from then on. The second half stays folded until it is
   // needed, or until a filter inside it is already set.
-  const filtersOpen = p.filtersOpen ?? filterCount(p.filters) > 0;
+  const filtersOpen = p.filtersOpen ?? filterCount(p.filters, t) > 0;
   const [more, setMore] = useState<boolean | null>(null);
   const moreOpen = more ?? hasSecondaryFilters(p.filters);
+  const [compareOpen, setCompareOpen] = useState(false);
 
   const lists = useRef<HTMLDivElement>(null);
   const { expanded } = useSheet();
-  const currentRow = p.selection ? entityKey(p.selection) : null;
-
-  const counts = {
-    pass: p.rows.pass.length,
-    tour: p.rows.tour.length,
-    town: p.rows.town.length,
-  };
+  const { currentRow } = row;
+  const areaGroups = nestTowns(p.rows.destination, p.rows.town);
 
   // Keep the selected row visible, e.g. after a click on a map marker.
   //
@@ -131,31 +155,31 @@ export const Sidebar = (p: SidebarProps) => {
       onCheckedChange={(on) =>
         p.dispatch({ kind: "pass", on, type: "toggleKind" })
       }
-      aria-label="Pässe und Straßen auf der Karte anzeigen"
+      aria-label={t.sidebar.lists.showPasses}
     />
   );
-  const townSwitch = (
+  const destinationSwitch = (
     <Switch
       size="sm"
-      checked={p.shown.towns}
+      checked={p.shown.destinations}
       onCheckedChange={(on) =>
-        p.dispatch({ kind: "town", on, type: "toggleKind" })
+        p.dispatch({ kind: "destination", on, type: "toggleKind" })
       }
-      aria-label="Orte auf der Karte anzeigen"
+      aria-label={t.sidebar.lists.showDestinations}
     />
   );
   const tourSwitch = (
     <span className="flex items-center gap-1.5">
       {visibleTourCount > 0 && visibleTourCount < tourCount && (
         <span className="tabular-nums">
-          {visibleTourCount}/{tourCount}
+          {fmt(visibleTourCount)}/{fmt(tourCount)}
         </span>
       )}
       <Switch
         size="sm"
         checked={visibleTourCount === tourCount}
         onCheckedChange={(on) => p.dispatch({ on, type: "toggleTours" })}
-        aria-label="Touren auf der Karte anzeigen"
+        aria-label={t.sidebar.lists.showTours}
       />
     </span>
   );
@@ -184,8 +208,8 @@ export const Sidebar = (p: SidebarProps) => {
                 spellCheck={false}
                 value={p.filters.query}
                 onChange={(e) => set("query", e.target.value)}
-                placeholder="Pass, Tour oder Ort …"
-                aria-label="Suchen"
+                placeholder={t.sidebar.searchPlaceholder}
+                aria-label={t.sidebar.search}
                 className="h-full [&::-webkit-search-cancel-button]:appearance-none [&::-webkit-search-decoration]:appearance-none"
               />
               {p.filters.query && (
@@ -193,7 +217,7 @@ export const Sidebar = (p: SidebarProps) => {
                   <InputGroupButton
                     size="icon-xs"
                     onClick={() => set("query", "")}
-                    aria-label="Suche leeren"
+                    aria-label={t.sidebar.clearSearch}
                   >
                     <X />
                   </InputGroupButton>
@@ -214,13 +238,13 @@ export const Sidebar = (p: SidebarProps) => {
           />
           {/* The three lists, one at a time. In the fixed header rather than
               in the scroll container, so the counts stay on screen while a
-              list of a few hundred rows is scrolled – which a section header inside the
+              list of 262 rows is scrolled – which a section header inside the
               container could not do without an opaque background it has no way
               to get (see `KindTabs`). */}
           <KindTabs
             active={p.tab}
             onChange={(tab) => p.dispatch({ tab, type: "tab" })}
-            counts={counts}
+            counts={p.counts}
             totals={p.totals}
           />
         </div>
@@ -231,7 +255,7 @@ export const Sidebar = (p: SidebarProps) => {
           className={cn(
             "min-h-0 flex-1 overscroll-contain",
             // Below the sheet's top snap point the drag belongs to the sheet,
-            // not to the rows (`useSheet`).
+            // not to 262 rows (`useSheet`).
             expanded ? "overflow-y-auto" : "overflow-hidden",
           )}
         >
@@ -240,72 +264,83 @@ export const Sidebar = (p: SidebarProps) => {
               <FilterBody
                 filters={p.filters}
                 setFilters={setFilters}
-                counts={counts}
+                counts={p.counts}
                 totals={p.totals}
                 countWith={p.countWith}
+                ranges={p.ranges}
+                onRange={p.onRange}
                 onReset={reset}
                 more={moreOpen}
                 onMoreChange={setMore}
               />
             </div>
           )}
+          {p.tab === "destination" && (
+            <DestinationList
+              groups={areaGroups}
+              row={row}
+              period={p.filters.period}
+              // Only search, favourites and the range reach the areas: a
+              // road criterion lifted brings no area back, so the empty state
+              // names none (`bestRelief` counts roads).
+              empty={{ ...emptyProps, countWith: undefined }}
+              showRange={p.ranges.length > 1}
+              compare={p.compare}
+              onCompare={(slug, on) =>
+                p.dispatch({ on, slug, type: "compare" })
+              }
+              onOpenCompare={() => setCompareOpen(true)}
+              mapControl={destinationSwitch}
+            />
+          )}
           {p.tab === "pass" && (
             <PassList
               rows={p.rows.pass}
-              currentRow={currentRow}
-              hovered={p.hovered}
-              onHover={onHover}
+              row={row}
               filters={p.filters}
               setFilters={setFilters}
               empty={emptyProps}
               mapControl={passSwitch}
-              onSelect={onSelect("pass")}
-              onToggleFavorite={(slug) => p.onToggleFavorite("pass", slug)}
             />
           )}
           {p.tab === "tour" && (
             <TourList
               rows={p.rows.tour}
-              currentRow={currentRow}
-              hovered={p.hovered}
-              onHover={onHover}
+              row={row}
               period={p.filters.period}
               isShown={(slug) => isShown(p.shown, "tour", slug)}
               empty={emptyProps}
               mapControl={tourSwitch}
+              showRange={p.ranges.length > 1}
               onToggleTour={(slug, on) =>
                 p.dispatch({ on, slug, type: "toggleTour" })
               }
-              onSelect={onSelect("tour")}
-              onToggleFavorite={(slug) => p.onToggleFavorite("tour", slug)}
-            />
-          )}
-          {p.tab === "town" && (
-            <TownList
-              rows={p.rows.town}
-              currentRow={currentRow}
-              hovered={p.hovered}
-              onHover={onHover}
-              empty={emptyProps}
-              mapControl={townSwitch}
-              onSelect={onSelect("town")}
-              onToggleFavorite={(slug) => p.onToggleFavorite("town", slug)}
             />
           )}
         </div>
 
+        <CompareSheet
+          open={compareOpen}
+          onOpenChange={setCompareOpen}
+          rows={p.compared}
+          period={p.filters.period}
+          onRemove={(slug) => p.dispatch({ on: false, slug, type: "compare" })}
+          onSelect={(slug) => {
+            setCompareOpen(false);
+            onSelect({ kind: "destination", slug });
+          }}
+        />
+
         <div className="border-border shrink-0 border-t">
           <p className="text-muted-foreground text-2xs flex h-8 items-center gap-1 truncate px-3">
-            <span className="truncate">
-              Status ist eine Heuristik, Skalen sind redaktionell.
-            </span>
+            <span className="truncate">{t.sidebar.footerNote}</span>
             <Button
               variant="link"
               size="sm"
               className="h-auto shrink-0 p-0"
               onClick={p.onOpenScales}
             >
-              Skalen &amp; Quellen
+              {t.header.scales}
             </Button>
           </p>
           <div className="text-muted-foreground text-2xs flex items-center gap-3 px-3 pb-2">
@@ -313,19 +348,19 @@ export const Sidebar = (p: SidebarProps) => {
               href="/wissen"
               className="hover:text-foreground hover:underline"
             >
-              Wissen
+              {t.sidebar.footer.knowledge}
             </Link>
             <Link
-              href="/impressum"
+              href={`${langPrefix(lang)}/impressum`}
               className="hover:text-foreground hover:underline"
             >
-              Impressum
+              {t.sidebar.footer.imprint}
             </Link>
             <Link
-              href="/datenschutz"
+              href={`${langPrefix(lang)}/datenschutz`}
               className="hover:text-foreground hover:underline"
             >
-              Datenschutz
+              {t.sidebar.footer.privacy}
             </Link>
             {/* The one call to action in the footer, so it is a button, in
                 the outline the detail panel gives its external links – not a
@@ -341,14 +376,14 @@ export const Sidebar = (p: SidebarProps) => {
                   href={SUPPORT_URL}
                   target="_blank"
                   rel="noopener noreferrer"
-                  title="Auf Ko-fi unterstützen"
+                  title={t.sidebar.footer.supportTitle}
                 />
               }
               nativeButton={false}
             >
               <Coffee data-icon="inline-start" aria-hidden />
-              Kaffee spendieren
-              <span className="sr-only"> – auf Ko-fi, öffnet in neuem Tab</span>
+              {t.sidebar.support}
+              <span className="sr-only">{t.sidebar.footer.supportSr}</span>
             </Button>
           </div>
         </div>

@@ -11,20 +11,15 @@
  */
 import { TOKENS } from "@/lib/palette";
 
-export const SITE_NAME = "Alpenpässe";
-export const SITE_TAGLINE = "Rennradkarte";
-export const SITE_TITLE = `${SITE_NAME} – ${SITE_TAGLINE}`;
-
 /**
- * The app is a planning aid for holidays, not a navigation tool – the
- * description says so, because that is what people search for.
+ * The name, in every language – a name is not translated. It stays
+ * "Alpenpässe" with the Jura, the Vosges and the Pyrenees in the vocabulary
+ * (plans 25 and 26): the domain is `alpen.manuel.fyi`, and a rename waits for
+ * a fourth range to make the stretch a lie. The tagline, the description and
+ * the claim are words, so they live in the dictionaries (`site` in
+ * `lib/i18n/messages.*.ts`).
  */
-export const SITE_DESCRIPTION =
-  "Wohin mit dem Rennrad, und wann? Alpenpässe, Auffahrten mit Höhenprofil, Rundtouren und Rad-Orte auf einer Karte – mit Befahrbarkeit je Halbmonat, Wetter und Klima.";
-
-/** Short form for the share image and the manifest, where space is tight. */
-export const SITE_CLAIM =
-  "Pässe, Rundtouren und Rad-Orte in den Alpen – nach Befahrbarkeit je Halbmonat.";
+export const SITE_NAME = "Alpenpässe";
 
 /**
  * Absolute base URL. Vercel provides the production host; a preview deployment
@@ -42,7 +37,7 @@ export const siteUrl =
 /**
  * Where the app can be supported. A donation link is the one kind of money
  * the app can carry: ads or affiliate links would break Vercel's Hobby terms
- * and Open-Meteo's free tier in the same move (see the weather route). It is
+ * and Open-Meteo's free tier in the same move (`lib/weather.ts`). It is
  * a plain link, never Ko-fi's widget, so nothing loads from there until it is
  * clicked – which is what the privacy page promises about it.
  */

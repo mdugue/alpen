@@ -1,0 +1,719 @@
+[
+ {
+  "slug": "oisans",
+  "name": "Oisans",
+  "country": "FR",
+  "center": {
+   "lat": 45.08,
+   "lon": 6.15
+  },
+  "radiusKm": 30,
+  "baseTowns": [
+   "bourg-d-oisans"
+  ],
+  "include": [],
+  "exclude": [],
+  "character": "Alpe d'Huez, Galibier, Croix de Fer und Sarenne auf einem Fleck: große Höhen, große Namen, und auf der D1091 durch die Romanche-Schlucht viel Verkehr.",
+  "multiDay": "Basis für vier bis sechs Tage; die Marmotte-Runde an einem Tag, eine Etappe über den Galibier nach Briançon ist möglich.",
+  "access": "Grenoble mit der Bahn, Flughafen Lyon in anderthalb Stunden; der Bus ins Tal fährt bis Bourg-d'Oisans."
+ },
+ {
+  "slug": "maurienne",
+  "name": "Maurienne",
+  "country": "FR",
+  "center": {
+   "lat": 45.28,
+   "lon": 6.4
+  },
+  "radiusKm": 25,
+  "baseTowns": [
+   "saint-jean-de-maurienne"
+  ],
+  "include": [],
+  "exclude": [],
+  "character": "Das Tal mit den meisten Anstiegen der Tour: Madeleine, Croix de Fer, Glandon, Télégraphe, Mollard, Chaussy mit den Lacets de Montvernier – alle beginnen im Talgrund.",
+  "multiDay": "Eine Woche ohne Wiederholung; die Route des Grandes Alpes läuft mitten hindurch, und der Galibier verbindet nach Briançon.",
+  "access": "Bahnhof Saint-Jean-de-Maurienne mit TGV-Halt; Autobahn A43 durchs Tal."
+ },
+ {
+  "slug": "tarentaise",
+  "name": "Tarentaise",
+  "country": "FR",
+  "center": {
+   "lat": 45.58,
+   "lon": 6.72
+  },
+  "radiusKm": 28,
+  "baseTowns": [
+   "bourg-saint-maurice"
+  ],
+  "include": [
+   "col-de-l-iseran",
+   "val-thorens"
+  ],
+  "exclude": [],
+  "character": "Iseran, Petit Saint-Bernard, Cormet de Roselend und die Skistationen als Stichstraßen – hohe, lange Anstiege, spät im Jahr offen.",
+  "multiDay": "Vier bis fünf Tage; der Iseran nach Bonneval und der Petit Saint-Bernard nach Aosta sind Etappen, keine Runden.",
+  "access": "Bahnhof Bourg-Saint-Maurice, TGV im Winter, sonst über Chambéry."
+ },
+ {
+  "slug": "brianconnais-queyras",
+  "name": "Briançonnais und Queyras",
+  "country": "FR",
+  "center": {
+   "lat": 44.85,
+   "lon": 6.7
+  },
+  "radiusKm": 30,
+  "baseTowns": [
+   "briancon",
+   "guillestre"
+  ],
+  "include": [],
+  "exclude": [],
+  "character": "Izoard, Granon, Agnel, Montgenèvre und die Schluchten des Guil: hoch, trocken, sonnig – Briançon liegt selbst auf 1 300 m.",
+  "multiDay": "Eine Woche mit zwei Standorten; nach Italien über Agnel oder Montgenèvre, nach Süden über Vars in die Ubaye.",
+  "access": "Bahnhof Briançon (Nachtzug aus Paris); Turin über den Fréjus-Tunnel oder Montgenèvre."
+ },
+ {
+  "slug": "ubaye",
+  "name": "Ubaye",
+  "country": "FR",
+  "center": {
+   "lat": 44.4,
+   "lon": 6.7
+  },
+  "radiusKm": 28,
+  "baseTowns": [
+   "barcelonnette"
+  ],
+  "include": [],
+  "exclude": [],
+  "character": "Bonette, Vars, Allos, Cayolle und Pra-Loup von einem stillen Tal aus – die größten Höhen der Alpen mit dem wenigsten Verkehr.",
+  "multiDay": "Fünf Tage reichen nicht; die Bonette allein ist ein Tag, und die Runde über Allos und Cayolle ein zweiter.",
+  "access": "Kein Bahnhof; Gap oder Digne mit der Bahn, dann Bus. Mit dem Auto über Gap oder aus Cuneo über den Col de Larche."
+ },
+ {
+  "slug": "mercantour",
+  "name": "Mercantour und Nizza",
+  "country": "FR",
+  "center": {
+   "lat": 43.95,
+   "lon": 7.25
+  },
+  "radiusKm": 35,
+  "baseTowns": [
+   "sospel",
+   "nizza",
+   "menton"
+  ],
+  "include": [],
+  "exclude": [],
+  "character": "Turini, Braus, Castillon, Vence und die Schluchten des Cians – vom Meer in die Berge, und im Winter das mildeste Rennradgebiet der Alpen.",
+  "multiDay": "Oktober bis April der Ort für eine Woche; im Sommer früh starten, die Küstenstraßen sind heiß und voll.",
+  "access": "Flughafen und Bahnhof Nizza; die Bahnlinie ins Roya-Tal hält in Sospel."
+ },
+ {
+  "slug": "ventoux",
+  "name": "Ventoux und Baronnies",
+  "country": "FR",
+  "center": {
+   "lat": 44.2,
+   "lon": 5.3
+  },
+  "radiusKm": 25,
+  "baseTowns": [
+   "bedoin",
+   "malaucene",
+   "vaison-la-romaine"
+  ],
+  "include": [],
+  "exclude": [],
+  "character": "Ein Berg mit drei Auffahrten und ringsum die kleinen Pässe der Baronnies und die Gorges de la Nesque: Lavendel, Kalk, Mistral.",
+  "multiDay": "Drei Tage für die drei Seiten des Ventoux, der Rest für die Baronnies; im Hochsommer ist der Berg heiß und voll.",
+  "access": "Avignon TGV, dann eine Stunde mit dem Auto; Orange über die Autobahn A7."
+ },
+ {
+  "slug": "vercors",
+  "name": "Vercors",
+  "country": "FR",
+  "center": {
+   "lat": 45,
+   "lon": 5.4
+  },
+  "radiusKm": 25,
+  "baseTowns": [],
+  "include": [],
+  "exclude": [],
+  "character": "Combe Laval, die Gorges de la Bourne und der Rousset: in die Wand gehauene Balkonstraßen statt Pässe, und oben ein stilles Plateau.",
+  "multiDay": "Drei bis vier Tage Balkonstraßen und Hochebene; nach Grenoble oder Die als Etappe.",
+  "access": "Grenoble oder Valence mit dem TGV, dann eine Stunde ins Plateau."
+ },
+ {
+  "slug": "susa-piemont",
+  "name": "Susatal und Piemont",
+  "country": "IT",
+  "center": {
+   "lat": 45.05,
+   "lon": 7
+  },
+  "radiusKm": 25,
+  "baseTowns": [
+   "susa"
+  ],
+  "include": [],
+  "exclude": [],
+  "character": "Finestre mit seinem Schotter, Sestriere, Mont Cenis und der Nivolet – die piemontesische Seite der Westalpen, Giro-Land.",
+  "multiDay": "Vier Tage; über Montgenèvre oder Mont Cenis nach Frankreich als Etappe.",
+  "access": "Bahnhof Susa über Turin; Turin in einer Stunde."
+ },
+ {
+  "slug": "cuneo",
+  "name": "Cuneo und die Alpi Marittime",
+  "country": "IT",
+  "center": {
+   "lat": 44.45,
+   "lon": 7.2
+  },
+  "radiusKm": 35,
+  "baseTowns": [
+   "cuneo"
+  ],
+  "include": [],
+  "exclude": [],
+  "character": "Fauniera, Sampeyre, Agnello, Lombarde und das Maira-Tal: die einsamsten hohen Straßen der Alpen, von einer Stadt mit Bahnhof aus.",
+  "multiDay": "Eine Woche ohne Wiederholung; über die Lombarde nach Frankreich als Etappe.",
+  "access": "Bahnhof Cuneo über Turin; Flughafen Turin in anderthalb Stunden."
+ },
+ {
+  "slug": "aostatal",
+  "name": "Aostatal",
+  "country": "IT",
+  "center": {
+   "lat": 45.7,
+   "lon": 7.2
+  },
+  "radiusKm": 30,
+  "baseTowns": [
+   "aosta"
+  ],
+  "include": [],
+  "exclude": [],
+  "character": "Großer und Kleiner Sankt Bernhard, San Carlo und die stillen Seitentäler Valsavarenche und Valgrisenche unter dem Gran Paradiso.",
+  "multiDay": "Vier bis fünf Tage; die beiden Bernhard-Pässe verbinden nach Frankreich und in die Schweiz.",
+  "access": "Bahnhof Aosta über Turin; Autobahn A5 von Turin."
+ },
+ {
+  "slug": "ligurien",
+  "name": "Ligurische Riviera",
+  "country": "IT",
+  "center": {
+   "lat": 43.95,
+   "lon": 7.95
+  },
+  "radiusKm": 30,
+  "baseTowns": [
+   "sanremo",
+   "imperia",
+   "alassio"
+  ],
+  "include": [
+   "colle-del-melogno"
+  ],
+  "exclude": [],
+  "character": "Poggio, Cipressa und das Hinterland von Sanremo: niedrige Pässe, das ganze Jahr fahrbar, im Winter das Trainingslager der Profis.",
+  "multiDay": "Eine Woche im Winterhalbjahr; im Sommer die Küste meiden und früh ins Hinterland.",
+  "access": "Bahnhof Sanremo und Imperia auf der Küstenlinie; Flughafen Nizza in einer Stunde."
+ },
+ {
+  "slug": "wallis",
+  "name": "Wallis",
+  "country": "CH",
+  "center": {
+   "lat": 46.25,
+   "lon": 7.5
+  },
+  "radiusKm": 40,
+  "baseTowns": [
+   "martigny",
+   "brig"
+  ],
+  "include": [
+   "simplonpass",
+   "nufenenpass",
+   "col-des-montets",
+   "col-de-la-forclaz-martigny",
+   "col-du-grand-saint-bernard"
+  ],
+  "exclude": [],
+  "character": "Grand-Saint-Bernard, Forclaz, Sanetsch, Simplon und Nufenen vom tiefen Rhonetal aus – lange Anstiege, trockenes Klima, das Tal selbst warm.",
+  "multiDay": "Eine Woche mit zwei Standorten; der Simplon nach Italien und der Nufenen ins Tessin als Etappen.",
+  "access": "Bahnhöfe Martigny und Brig auf der Simplonlinie; Genf in anderthalb Stunden."
+ },
+ {
+  "slug": "andermatt",
+  "name": "Andermatt und Urserental",
+  "country": "CH",
+  "center": {
+   "lat": 46.63,
+   "lon": 8.5
+  },
+  "radiusKm": 30,
+  "baseTowns": [
+   "andermatt",
+   "meiringen"
+  ],
+  "include": [],
+  "exclude": [],
+  "character": "Furka, Grimsel, Susten, Gotthard mit der Tremola, Oberalp und Nufenen von einem Kreuzungspunkt aus: nirgends liegen mehr hohe Pässe so nah beieinander.",
+  "multiDay": "Vier Tage für die klassischen Runden; die Drei-Pässe-Runde an einem Tag.",
+  "access": "Bahnhof Andermatt (Matterhorn-Gotthard-Bahn) über Göschenen; Zürich in zwei Stunden."
+ },
+ {
+  "slug": "engadin",
+  "name": "Engadin",
+  "country": "CH",
+  "center": {
+   "lat": 46.5,
+   "lon": 9.85
+  },
+  "radiusKm": 35,
+  "baseTowns": [
+   "st-moritz",
+   "davos"
+  ],
+  "include": [],
+  "exclude": [],
+  "character": "Albula, Julier, Bernina, Flüela, Maloja und Ofen um ein Hochtal auf 1 800 m – die Anstiege beginnen hoch und die Luft ist dünn.",
+  "multiDay": "Eine Woche; nach Livigno und ins Val Müstair über den Ofenpass als Etappen.",
+  "access": "Bahnhof St. Moritz über Chur (Rhätische Bahn); Zürich in drei Stunden."
+ },
+ {
+  "slug": "bormio-livigno",
+  "name": "Bormio und Livigno",
+  "country": "IT",
+  "center": {
+   "lat": 46.45,
+   "lon": 10.35
+  },
+  "radiusKm": 25,
+  "baseTowns": [
+   "bormio",
+   "livigno",
+   "ponte-di-legno"
+  ],
+  "include": [],
+  "exclude": [],
+  "character": "Stilfser Joch, Gavia, Mortirolo, Umbrail und die Pässe um Livigno: die höchsten Straßen Italiens auf engstem Raum.",
+  "multiDay": "Fünf Tage; die Stilfser-Umbrail-Runde und Gavia-Mortirolo je ein Tag, der Rest für Foscagno und Eira.",
+  "access": "Kein Bahnhof; Tirano (Bernina-Bahn) mit Bus, Mailand in drei Stunden."
+ },
+ {
+  "slug": "vinschgau",
+  "name": "Vinschgau und Ortler",
+  "country": "IT",
+  "center": {
+   "lat": 46.6,
+   "lon": 10.75
+  },
+  "radiusKm": 33,
+  "baseTowns": [
+   "prad-am-stilfserjoch",
+   "meran-merano"
+  ],
+  "include": [],
+  "exclude": [],
+  "character": "Das Stilfser Joch von der Nordseite, Martell-, Ulten- und Schnalstal als stille Sackgassen unter Gletschern, und der Reschen zum Aufwärmen.",
+  "multiDay": "Vier Tage; über das Stilfser Joch nach Bormio als Etappe.",
+  "access": "Vinschgerbahn ab Meran bis Mals; Bozen mit Bahn und Flughafen."
+ },
+ {
+  "slug": "oetztal",
+  "name": "Ötztal und Tiroler Oberland",
+  "country": "AT",
+  "center": {
+   "lat": 47,
+   "lon": 10.9
+  },
+  "radiusKm": 30,
+  "baseTowns": [
+   "soelden",
+   "landeck"
+  ],
+  "include": [],
+  "exclude": [
+   "schnalstal-kurzras"
+  ],
+  "character": "Timmelsjoch, Kühtai, Ötztaler und Kaunertaler Gletscherstraße, Pitztal: die Anstiege des Ötztaler Radmarathons und die Gletscherstraßen als Stichstraßen.",
+  "multiDay": "Vier bis fünf Tage; die Marathonrunde an einem Tag, das Timmelsjoch nach Südtirol als Etappe.",
+  "access": "Bahnhof Ötztal an der Arlberglinie; Innsbruck in einer Stunde."
+ },
+ {
+  "slug": "alta-badia",
+  "name": "Alta Badia und Sella",
+  "country": "IT",
+  "center": {
+   "lat": 46.52,
+   "lon": 11.85
+  },
+  "radiusKm": 22,
+  "baseTowns": [
+   "corvara-alta-badia",
+   "arabba",
+   "wolkenstein-selva"
+  ],
+  "include": [],
+  "exclude": [],
+  "character": "Sella, Gardena, Pordoi, Campolongo, Fedaia, Giau und Valparola um den Sella-Stock – die dichteste Passlandschaft der Alpen, im Sommer voll.",
+  "multiDay": "Eine Woche ohne Wiederholung; die Sellaronda halbtags, die Maratona-Runde ein Tag.",
+  "access": "Bahnhof Brixen oder Bruneck, dann Bus; Bozen und Innsbruck in anderthalb Stunden."
+ },
+ {
+  "slug": "cortina",
+  "name": "Cortina und Cadore",
+  "country": "IT",
+  "center": {
+   "lat": 46.5,
+   "lon": 12.15
+  },
+  "radiusKm": 28,
+  "baseTowns": [
+   "cortina-d-ampezzo",
+   "alleghe-caprile",
+   "toblach-dobbiaco"
+  ],
+  "include": [
+   "passo-furcia",
+   "passo-monte-croce-comelico"
+  ],
+  "exclude": [],
+  "character": "Tre Cime, Giau, Falzarego, Tre Croci, Staulanza und Duran: die östlichen Dolomiten, ruhiger als das Sella-Gebiet und mit dem berühmtesten Stichstraßen-Finale der Alpen.",
+  "multiDay": "Fünf Tage; nach Alta Badia über Falzarego als Etappe.",
+  "access": "Bahnhof Calalzo oder Toblach, dann Bus; Venedig in zwei Stunden."
+ },
+ {
+  "slug": "fassa-fiemme",
+  "name": "Fassa, Fiemme und Primiero",
+  "country": "IT",
+  "center": {
+   "lat": 46.3,
+   "lon": 11.65
+  },
+  "radiusKm": 25,
+  "baseTowns": [
+   "cavalese",
+   "san-martino-di-castrozza"
+  ],
+  "include": [],
+  "exclude": [],
+  "character": "Rolle, Valles, San Pellegrino, Manghen, Lavazè und Costalunga: die südlichen Dolomitenpässe, waldig und weniger voll als der Sella-Stock.",
+  "multiDay": "Fünf Tage; die Sella-Pässe sind eine Tagesrunde entfernt.",
+  "access": "Bahnhof Trient oder Bozen, dann Bus ins Fleimstal."
+ },
+ {
+  "slug": "hohe-tauern",
+  "name": "Hohe Tauern",
+  "country": "AT",
+  "center": {
+   "lat": 47.15,
+   "lon": 12.9
+  },
+  "radiusKm": 32,
+  "baseTowns": [
+   "bruck-an-der-glocknerstrasse"
+  ],
+  "include": [
+   "kitzbueheler-horn",
+   "gerlospass"
+  ],
+  "exclude": [],
+  "character": "Die Großglockner-Hochalpenstraße, Sportgastein, Kals und das Kitzbüheler Horn: bewirtschaftete Mautstraßen, hoch und gepflegt, dazu der steilste Stich Österreichs.",
+  "multiDay": "Drei bis vier Tage; der Glockner nach Kärnten als Etappe.",
+  "access": "Bahnhof Zell am See oder Kitzbühel; Salzburg in anderthalb Stunden."
+ },
+ {
+  "slug": "nockberge",
+  "name": "Nockberge und Kärnten",
+  "country": "AT",
+  "center": {
+   "lat": 46.85,
+   "lon": 13.75
+  },
+  "radiusKm": 30,
+  "baseTowns": [
+   "bad-kleinkirchheim"
+  ],
+  "include": [
+   "malta-hochalmstrasse"
+  ],
+  "exclude": [],
+  "character": "Nockalmstraße, Turracher Höhe, Malta-Hochalmstraße und die Villacher Alpenstraße: sanfte Almhöhen und lange Mautstraßen, wenig Verkehr, viel Aussicht.",
+  "multiDay": "Drei bis vier Tage; nach Slowenien über Wurzen oder Loibl als Etappe.",
+  "access": "Bahnhof Villach oder Spittal; Klagenfurt mit Flughafen."
+ },
+ {
+  "slug": "julische-alpen",
+  "name": "Julische Alpen",
+  "country": "SI",
+  "center": {
+   "lat": 46.45,
+   "lon": 13.7
+  },
+  "radiusKm": 25,
+  "baseTowns": [
+   "kranjska-gora",
+   "bovec"
+  ],
+  "include": [],
+  "exclude": [
+   "villacher-alpenstrasse"
+  ],
+  "character": "Vršič mit seinen Pflasterkehren, Predil, Mangart als Stichstraße, Wurzen und Loibl: die Dreiländerecke von Slowenien, Italien und Österreich.",
+  "multiDay": "Vier Tage; die Vršič-Predil-Runde ein Tag, das Soča-Tal ein zweiter.",
+  "access": "Bahnhof Jesenice; Ljubljana mit Flughafen in einer Stunde."
+ },
+ {
+  "slug": "gardasee",
+  "name": "Gardasee",
+  "country": "IT",
+  "center": {
+   "lat": 45.85,
+   "lon": 10.85
+  },
+  "radiusKm": 25,
+  "baseTowns": [
+   "riva-del-garda",
+   "malcesine",
+   "rovereto"
+  ],
+  "include": [],
+  "exclude": [],
+  "character": "Strada della Forra, Ballino, Punta Veleno und die Höhen über dem See: kurze, steile Anstiege mit dem Wasser im Rücken, von März bis November.",
+  "multiDay": "Eine Woche im Frühjahr oder Herbst; Monte Bondone und die Brenta-Pässe sind eine Tagesrunde entfernt.",
+  "access": "Bahnhof Rovereto (Brennerlinie); Verona mit Flughafen in einer Stunde."
+ },
+ {
+  "slug": "comer-see",
+  "name": "Comer See und Brianza",
+  "country": "IT",
+  "center": {
+   "lat": 45.92,
+   "lon": 9.3
+  },
+  "radiusKm": 30,
+  "baseTowns": [
+   "bellagio",
+   "lecco",
+   "lugano"
+  ],
+  "include": [],
+  "exclude": [],
+  "character": "Ghisallo, Muro di Sormano, San Primo, Valcava und die Culmine: die Anstiege der Lombardei-Rundfahrt, ganzjährig fahrbar, an Sonntagen voller Rennräder.",
+  "multiDay": "Vier Tage im Frühjahr oder Herbst; das Tessin und die Bergamasker Alpen sind eine Tagesrunde entfernt.",
+  "access": "Bahnhof Lecco oder Como; Mailand mit Flughafen in einer Stunde."
+ },
+ {
+  "slug": "haute-savoie",
+  "name": "Aravis und Chablais",
+  "country": "FR",
+  "center": {
+   "lat": 46,
+   "lon": 6.5
+  },
+  "radiusKm": 30,
+  "baseTowns": [
+   "le-grand-bornand",
+   "morzine"
+  ],
+  "include": [
+   "col-des-montets"
+  ],
+  "exclude": [],
+  "character": "Aravis, Colombière, Romme, Joux-Plane und Ramaz – die mittelhohen Pässe der Tour de France zwischen Annecy und Genfer See, grün, dicht und früh im Jahr offen.",
+  "multiDay": "Eine Woche ohne Wiederholung; die Route des Grandes Alpes beginnt hier und führt über Roselend in die Tarentaise.",
+  "access": "Flughafen Genf in einer Stunde; Bahnhof Annecy, Cluses oder Thonon."
+ },
+ {
+  "slug": "tessin",
+  "name": "Tessin und Lago Maggiore",
+  "country": "CH/IT",
+  "center": {
+   "lat": 46.1,
+   "lon": 8.85
+  },
+  "radiusKm": 35,
+  "baseTowns": [
+   "locarno",
+   "lugano",
+   "stresa"
+  ],
+  "include": [
+   "mottarone"
+  ],
+  "exclude": [],
+  "character": "Monte Ceneri, Alpe di Neggia, Generoso, Bisbino und die Talstraßen von Verzasca und Bavona: Seen, Palmen und steile Sträßchen, von März bis November.",
+  "multiDay": "Fünf Tage im Frühjahr oder Herbst; der Nufenen ins Wallis und der Lukmanier nach Graubünden als Etappen.",
+  "access": "Bahnhof Locarno, Lugano oder Stresa auf der Gotthard- und Simplonlinie; Mailand mit Flughafen in anderthalb Stunden."
+ },
+ {
+  "slug": "innsbruck-wipptal",
+  "name": "Innsbruck, Wipptal und Sterzing",
+  "country": "AT/IT",
+  "center": {
+   "lat": 47.05,
+   "lon": 11.4
+  },
+  "radiusKm": 30,
+  "baseTowns": [
+   "innsbruck",
+   "sterzing"
+  ],
+  "include": [
+   "kuehtai"
+  ],
+  "exclude": [],
+  "character": "Jaufen, Penser Joch und Kühtai zu beiden Seiten des Brenners – lange, gleichmäßige Anstiege von zwei Städten mit Bahnhof aus.",
+  "multiDay": "Vier Tage; über das Timmelsjoch ins Ötztal oder über den Jaufen ins Passeiertal als Etappen.",
+  "access": "Bahnhof Innsbruck oder Sterzing auf der Brennerlinie; Flughafen Innsbruck."
+ },
+ {
+  "slug": "trentino-brenta",
+  "name": "Trentino und Brenta",
+  "country": "IT",
+  "center": {
+   "lat": 46.15,
+   "lon": 10.95
+  },
+  "radiusKm": 31,
+  "baseTowns": [
+   "rovereto"
+  ],
+  "include": [
+   "mendelpass",
+   "gampenjoch"
+  ],
+  "exclude": [],
+  "character": "Monte Bondone, Campo Carlo Magno, Tonale, Mendel und das autofreie Val di Genova rund um die Brenta-Dolomiten – Giro-Land ohne den Andrang des Sella-Stocks.",
+  "multiDay": "Fünf Tage; der Gardasee im Süden und das Stilfser Joch im Nordwesten sind Etappenziele.",
+  "access": "Bahnhof Trient oder Rovereto (Brennerlinie); Verona mit Flughafen in einer Stunde."
+ },
+ {
+  "slug": "venetische-voralpen",
+  "name": "Grappa, Asiago und die venetischen Voralpen",
+  "country": "IT",
+  "center": {
+   "lat": 45.85,
+   "lon": 11.55
+  },
+  "radiusKm": 30,
+  "baseTowns": [
+   "bassano-del-grappa"
+  ],
+  "include": [
+   "altopiano-del-cansiglio",
+   "passo-san-boldo"
+  ],
+  "exclude": [],
+  "character": "Cima Grappa mit seinen zehn Auffahrten, die Hochebene von Asiago, Vezzena, Fugazze und San Boldo: der Südrand der Alpen, fahrbar von Februar bis Dezember.",
+  "multiDay": "Fünf Tage im Frühjahr oder Herbst; die südlichen Dolomiten sind eine Tagesrunde entfernt.",
+  "access": "Bahnhof Bassano del Grappa; Venedig und Verona mit Flughafen in einer Stunde."
+ },
+ {
+  "slug": "bergamasker-alpen",
+  "name": "Bergamasker Alpen und Valtellina",
+  "country": "IT",
+  "center": {
+   "lat": 46,
+   "lon": 9.85
+  },
+  "radiusKm": 30,
+  "baseTowns": [
+   "morbegno"
+  ],
+  "include": [
+   "passo-del-maniva",
+   "passo-crocedomini"
+  ],
+  "exclude": [],
+  "character": "San Marco, Vivione, Aprica, Selvino und Colle Gallo: die vergessenen Pässe zwischen Bergamo und dem Veltlin, steil, still und im Giro zu Hause.",
+  "multiDay": "Vier Tage; Mortirolo und Gavia liegen am östlichen Ende des Veltlins.",
+  "access": "Bahnhof Morbegno oder Bergamo; Flughafen Bergamo in einer Stunde."
+ },
+ {
+  "slug": "karnische-alpen",
+  "name": "Karnische Alpen und Friaul",
+  "country": "IT/AT",
+  "center": {
+   "lat": 46.55,
+   "lon": 13.1
+  },
+  "radiusKm": 30,
+  "baseTowns": [
+   "tolmezzo"
+  ],
+  "include": [],
+  "exclude": [],
+  "character": "Zoncolan, Plöcken, Nassfeld, Sella Nevea und Monte Croce Comelico – der steilste Berg des Giro und die stillen Grenzpässe nach Kärnten.",
+  "multiDay": "Vier Tage; die Julischen Alpen und Cortina als Etappenziele.",
+  "access": "Bahnhof Carnia (Udine–Tarvisio), dann Bus nach Tolmezzo; Venedig in zwei Stunden."
+ },
+ {
+  "slug": "berchtesgaden-salzkammergut",
+  "name": "Berchtesgaden und Salzkammergut",
+  "country": "DE/AT",
+  "center": {
+   "lat": 47.65,
+   "lon": 13.3
+  },
+  "radiusKm": 35,
+  "baseTowns": [
+   "berchtesgaden"
+  ],
+  "include": [
+   "loser-panoramastrasse"
+  ],
+  "exclude": [],
+  "character": "Roßfeld, Postalm und Loser: bewirtschaftete Panoramastraßen am Alpennordrand, früh im Jahr offen und mit Blick bis ins Voralpenland.",
+  "multiDay": "Drei Tage; die Großglockner-Hochalpenstraße ist eine Tagesetappe entfernt.",
+  "access": "Bahnhof Berchtesgaden oder Bad Ischl; Salzburg mit Flughafen in einer halben Stunde."
+ },
+ {
+  "slug": "zentralschweiz",
+  "name": "Zentralschweiz",
+  "country": "CH",
+  "center": {
+   "lat": 46.9,
+   "lon": 8.5
+  },
+  "radiusKm": 35,
+  "baseTowns": [
+   "meiringen"
+  ],
+  "include": [
+   "grosse-scheidegg"
+  ],
+  "exclude": [],
+  "character": "Klausen, Pragel, Glaubenbielen, Glaubenberg und die autofreie Große Scheidegg – die Voralpenpässe zwischen Vierwaldstättersee und Brienzersee, kürzer als die Gotthard-Riesen und früher im Jahr offen.",
+  "multiDay": "Vier Tage; Susten und Grimsel als Anschluss nach Süden.",
+  "access": "Bahnhof Meiringen, Luzern oder Altdorf; Zürich in einer Stunde."
+ },
+ {
+  "slug": "vorarlberg-allgaeu",
+  "name": "Vorarlberg, Arlberg und Allgäu",
+  "country": "AT/DE",
+  "center": {
+   "lat": 47.3,
+   "lon": 10.1
+  },
+  "radiusKm": 30,
+  "baseTowns": [],
+  "include": [
+   "silvretta-hochalpenstrasse",
+   "oberjoch"
+  ],
+  "exclude": [],
+  "character": "Furkajoch, Faschinajoch, Hochtannberg, Arlberg, Riedberg und die Silvretta-Hochalpenstraße: der Alpennordrand zwischen Bregenzerwald und Allgäu, grün und mit langen Anstiegen.",
+  "multiDay": "Vier Tage; die Silvretta und der Arlberg verbinden ins Tiroler Oberland.",
+  "access": "Bahnhof Bludenz, Langen am Arlberg oder Oberstdorf; Zürich und München in zwei Stunden."
+ }
+]

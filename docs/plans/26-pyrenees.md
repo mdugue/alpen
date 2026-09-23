@@ -1,6 +1,15 @@
 # 26 · Pyrenees
 
-**Status:** proposed · **Effort:** S–M for code, L for curation ·
+**Status:** in progress – steps 1, 2 and 5 done: `RANGE_BOUNDS` with the
+per-range refinement on `Pass` and the tour checks in `data:check`, `ES` and
+`AD`, the frame guard per range, the headline's range word and the range word
+on town rows; the first screen opens on the home range (`HOME_RANGE`,
+`Scene.opening`) rather than on everything drawn, which is what lets a range
+600 km away exist without zooming the Alps out of readability. Step 3 (the
+data) and 4 (the split) wait for the hosts, which were rate-limited in the
+session that built the mechanism. The name stays "Alpenpässe" as the plan
+recommends; the description names the ranges once their roads are in ·
+**Effort:** S–M for code, L for curation ·
 **Depends on:** 25 (ranges, the chip, the frame test), 24 (the file split,
 which this plan will trigger) · **Unblocks:** the Tour's other mountains;
 the Spanish side's long season for the October question
@@ -65,10 +74,13 @@ the pair regex already allows "FR/ES".
 ### The first screen
 
 The default frame holds the Alps. A frame that held the Pyrenees too would
-show the Alps at zoom 5, where nothing is readable, so the frame test from
-plan 25 is relaxed to "every pass lies inside the frame of its own range"
-and the Pyrenees are reached through their chip, through the search ("tourmalet",
-"pyrenäen") and through a shared link. The header sentence names the range
+show the Alps at zoom 5, where nothing is readable, so the map opens on the
+frame around the roads of the home range (`HOME_RANGE` in `lib/regions.ts`,
+`Scene.opening` in `lib/map-scene.ts`) rather than around everything it
+draws, and the frame guard from plan 25 asks every range to be readable on
+its own frame (`lib/default-frame.test.ts`). The Pyrenees are reached
+through their chip, through the search ("tourmalet", "pyrenäen") and through
+a shared link. The header sentence names the range
 when one chip is pressed. With no chip pressed the list mixes the ranges,
 sorted as today; a row shows its region word where the row already carries
 one, and the range is the one word to add where it does not.

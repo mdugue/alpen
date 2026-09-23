@@ -1,4 +1,7 @@
-import { convexHull, expandRing, haversine, NEARBY_RADIUS_KM } from "@/lib/geo";
+import { haversine, paddedHull, REACH_MAX_KM } from "@/lib/geo";
+import type { Ring } from "@/lib/geo";
+import { rangeOf } from "@/lib/regions";
+import type { RangeName } from "@/lib/regions";
 import { entityKey, tourKey } from "@/lib/route-key";
 import type { LatLon, Pass, RouteGeometry, Tour, Town } from "@/lib/types";
 
@@ -15,7 +18,7 @@ export interface NearbyTour {
 }
 
 /**
- * Which tours pass within `NEARBY_RADIUS_KM` of each entity, precomputed on
+ * Which tours pass within `REACH_MAX_KM` of each entity, precomputed on
  * the server so the detail panel's "Im Umkreis" list needs no tour geometry
  * on the client (docs/plans/01-map-data-out-of-payload.md). Passes and towns
  * nearby are still measured in the panel: those are points, and a hundred
@@ -52,7 +55,7 @@ export const nearbyTours = (
   tours: readonly Tour[],
   towns: readonly Town[],
   routes: Record<string, RouteGeometry>,
-  radiusKm = NEARBY_RADIUS_KM,
+  radiusKm = REACH_MAX_KM,
 ): NearbyTours => {
   const lines = tours.map((t) => [t.slug, tourLine(t, routes)] as const);
   const near = (at: LatLon): NearbyTour[] =>
@@ -70,35 +73,54 @@ export const nearbyTours = (
 };
 
 /**
- * The area a town reaches: the convex hull of the town and every pass within
- * `radiusKm`, expanded a little so it reads as a region rather than a polygon
- * cutting through the pass dots. Precomputed on the server for the same
- * reason as the tours above – the map hovers it, and a hull per town is a few
- * hundred bytes against the alternative of shipping the logic and recomputing
- * it on every pointer move.
+ * The area a town reaches: the padded hull of the town and every pass within
+ * `radiusKm` (`paddedHull`). Precomputed on the server for the same reason as
+ * the tours above – the map hovers it, and a hull per town is a few hundred
+ * bytes against the alternative of shipping the logic and recomputing it on
+ * every pointer move.
  *
- * Key: town slug; value: a ring as `[lon, lat]` pairs, ready as a GeoJSON
- * polygon and open (MapLibre closes it). A town with fewer than three points
- * has no hull and is left out.
+ * Key: town slug. A town with fewer than two passes around it reaches no
+ * area worth drawing and is left out.
  */
-export type TownReach = Record<string, [number, number][]>;
+export type TownReach = Record<string, Ring>;
 
-/** How far the hull is pushed out from its centroid, in km. */
+/** How far the hull reaches past the points it is drawn around, in km. */
 const REACH_PADDING_KM = 4;
 
 export const townReach = (
   passes: readonly Pass[],
   towns: readonly Town[],
-  radiusKm = NEARBY_RADIUS_KM,
+  radiusKm = REACH_MAX_KM,
 ): TownReach => {
   const out: TownReach = {};
   for (const town of towns) {
     const points = passes.filter((p) => haversine(town, p) <= radiusKm);
-    const ring = expandRing(
-      convexHull([town, ...points]),
-      REACH_PADDING_KM,
-    ).map((p) => [p.lon, p.lat] as [number, number]);
-    if (ring.length >= 3) out[town.slug] = ring;
+    if (points.length >= 2)
+      out[town.slug] = paddedHull([town, ...points], REACH_PADDING_KM);
+  }
+  return out;
+};
+
+/**
+ * The range a town belongs to: that of the nearest road within `radiusKm`.
+ * A town carries no region of its own – it is a base, and a base is chosen for
+ * what it reaches – so the nearest road decides. Beyond every road's reach a
+ * town has no range and is left out; the range chip then never hides it.
+ */
+export const townRanges = (
+  passes: readonly Pass[],
+  towns: readonly Town[],
+  radiusKm = REACH_MAX_KM,
+): Partial<Record<string, RangeName>> => {
+  const out: Partial<Record<string, RangeName>> = {};
+  for (const town of towns) {
+    let nearest: { km: number; range: RangeName } | null = null;
+    for (const p of passes) {
+      const km = haversine(town, p);
+      if (km <= radiusKm && (!nearest || km < nearest.km))
+        nearest = { km, range: rangeOf(p.region) };
+    }
+    if (nearest) out[town.slug] = nearest.range;
   }
   return out;
 };

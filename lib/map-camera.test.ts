@@ -1,9 +1,10 @@
 import { describe, expect, test } from "bun:test";
 
-import type { Bounds } from "@/lib/map-assets";
+import type { Bounds } from "@/lib/geo";
 import {
   camera,
   COLD,
+  FIT_MS,
   FIT_PADDING,
   fitDone,
   fitInset,
@@ -124,6 +125,9 @@ describe("fitDone", () => {
 
 describe("flightFor", () => {
   const world = {
+    destinationBounds: {
+      oisans: [5.9, 44.9, 6.5, 45.3] as Bounds,
+    },
     passBounds: {
       "col-du-galibier": [6.3, 45, 6.5, 45.1] as Bounds,
       "flat-pass": [6.4, 45.06, 6.4, 45.06] as Bounds,
@@ -468,6 +472,41 @@ describe("camera · what the visitor does with the map", () => {
     ]);
     expect(per[4]).toEqual([{ cmd: "jumpTo", padding: PANELS, view: VIEW }]);
     expect(state).toEqual({ fitted: true, padded: PANELS, phase: "idle" });
+  });
+
+  test("a frame asked for by the range chip flies there with the padding", () => {
+    const { per, state } = drive([
+      ...opened("fit"),
+      { inset: PANELS, type: "inset" },
+      { bounds: BOX, type: "requestedFit" },
+    ]);
+    expect(per[4]).toEqual([
+      {
+        cmd: "flyTo",
+        duration: FIT_MS,
+        padding: PANELS,
+        target: {
+          bounds: BOX,
+          extra: FIT_PADDING,
+          fallback: { lat: 45, lon: 6.3, minZoom: PASS_MIN_ZOOM },
+          kind: "bounds",
+          maxZoom: PASS_MAX_ZOOM,
+        },
+      },
+    ]);
+    expect(state).toEqual({ fitted: true, padded: PANELS, phase: "idle" });
+    // Before the map can be moved it is ignored; the chip is not a link.
+    expect(drive([{ bounds: BOX, type: "requestedFit" }]).trace).toEqual([]);
+    // A box of no extent – one road, no drawn ascent – is a point, not a
+    // street-level frame at the maximum zoom.
+    const dot = drive([
+      ...opened("fit"),
+      { bounds: [6.3, 45, 6.3, 45], type: "requestedFit" },
+    ]);
+    expect(dot.per[3]![0]).toMatchObject({
+      cmd: "flyTo",
+      target: { kind: "point", point: { lat: 45, lon: 6.3 } },
+    });
   });
 
   test("… and takes the camera off a flight that was about to start", () => {

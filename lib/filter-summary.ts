@@ -1,5 +1,7 @@
 import {
+  ALL_RANGES,
   ALL_STATUS,
+  ALL_SURFACES,
   ALL_TYPES,
   DEFAULT_FILTERS,
   BEAUTY_OPTIONS,
@@ -12,9 +14,10 @@ import {
   TRAFFIC_OPTIONS,
   WET_OPTIONS,
 } from "@/lib/app-state";
-import type { Filters, Options } from "@/lib/app-state";
-import { ROAD_TAG, ROAD_TYPE } from "@/lib/regions";
-import { STATUS_LABEL } from "@/lib/status";
+import type { Filters, OptionLabel, Options } from "@/lib/app-state";
+import type { Messages } from "@/lib/i18n";
+import { fill } from "@/lib/i18n/fill";
+import { fmt, listOr } from "@/lib/utils";
 
 /**
  * One applied filter as the chip row under the search field shows it: a
@@ -31,14 +34,32 @@ export interface AppliedFilter {
   clear: (f: Filters) => Filters;
 }
 
-const optionLabel = (options: Options, value: number) =>
-  options.find(([v]) => v === value)?.[1];
+/** The label of one threshold chip in the page's language: "ab 3", "unter 26 °C". */
+export const optionText = (o: OptionLabel, w: Messages): string => {
+  const say = w.vocab.option;
+  if (o.kind === "any") return say.any;
+  if (o.kind === "elevationFrom")
+    return fill(say.elevationFrom, { m: fmt(o.m, 0, w.lang) });
+  return fill(say[o.kind], { n: fmt(o.n, 0, w.lang) });
+};
+
+/** The label of the option a value picks; the empty string for a value no chip carries. */
+const optionLabel = (options: Options, value: number, w: Messages): string => {
+  const label = options.find(([v]) => v === value)?.[1];
+  return label ? optionText(label, w) : "";
+};
 
 /** "Schwierigkeit 3" for one level, "Schwierigkeit 2–4" for a window. */
-export const difficultyLabel = ([lo, hi]: readonly [number, number]) =>
-  lo === hi ? `Schwierigkeit ${lo}` : `Schwierigkeit ${lo}–${hi}`;
+export const difficultyLabel = (
+  [lo, hi]: readonly [number, number],
+  w: Messages,
+) =>
+  lo === hi
+    ? fill(w.vocab.filter.difficultyOne, { level: lo })
+    : fill(w.vocab.filter.difficulty, { hi, lo });
 
-export const appliedFilters = (f: Filters): AppliedFilter[] => {
+export const appliedFilters = (f: Filters, w: Messages): AppliedFilter[] => {
+  const v = w.vocab;
   const out: AppliedFilter[] = [];
   const add = (
     key: string,
@@ -49,70 +70,123 @@ export const appliedFilters = (f: Filters): AppliedFilter[] => {
   };
 
   if (f.favoritesOnly)
-    add("favorites", "nur Gemerkte", (g) => ({ ...g, favoritesOnly: false }));
+    add("favorites", v.filter.favoritesOnly, (g) => ({
+      ...g,
+      favoritesOnly: false,
+    }));
+  const ranges = pickedMembers(f.ranges, ALL_RANGES);
+  if (ranges.length)
+    add("ranges", ranges.map((r) => v.range[r].label).join(", "), (g) => ({
+      ...g,
+      ranges: ALL_RANGES,
+    }));
   const status = pickedMembers(f.status, ALL_STATUS);
   if (status.length)
-    add("status", status.map((s) => STATUS_LABEL[s]).join(" oder "), (g) => ({
-      ...g,
-      status: ALL_STATUS,
-    }));
+    add(
+      "status",
+      listOr(
+        status.map((s) => w.status.label[s]),
+        w.lang,
+      ),
+      (g) => ({
+        ...g,
+        status: ALL_STATUS,
+      }),
+    );
   const types = pickedMembers(f.types, ALL_TYPES);
   if (types.length)
-    add("types", types.map((t) => ROAD_TYPE[t].label).join(", "), (g) => ({
+    add("types", types.map((t) => v.roadType[t].label).join(", "), (g) => ({
       ...g,
       types: ALL_TYPES,
     }));
+  const surfaces = pickedMembers(f.surfaces, ALL_SURFACES);
+  if (surfaces.length)
+    add(
+      "surfaces",
+      surfaces.map((x) => v.surface[x].label).join(", "),
+      (g) => ({
+        ...g,
+        surfaces: ALL_SURFACES,
+      }),
+    );
   // One chip per label: they stack with and-semantics, so each one is its own decision.
   for (const tag of f.tags)
-    add(`tag:${tag}`, ROAD_TAG[tag].label, (g) => ({
+    add(`tag:${tag}`, v.roadTag[tag].label, (g) => ({
       ...g,
       tags: g.tags.filter((t) => t !== tag),
     }));
   const [lo, hi] = f.difficulty;
   if (lo > RATING_MIN || hi < RATING_MAX)
-    add("difficulty", difficultyLabel(f.difficulty), (g) => ({
+    add("difficulty", difficultyLabel(f.difficulty, w), (g) => ({
       ...g,
       difficulty: [RATING_MIN, RATING_MAX],
     }));
   if (f.minElevation > 0)
-    add("elevation", optionLabel(ELEVATION_OPTIONS, f.minElevation), (g) => ({
-      ...g,
-      minElevation: 0,
-    }));
+    add(
+      "elevation",
+      optionLabel(ELEVATION_OPTIONS, f.minElevation, w),
+      (g) => ({
+        ...g,
+        minElevation: 0,
+      }),
+    );
   if (f.maxTraffic < RATING_MAX)
     add(
       "traffic",
-      `Verkehr ${optionLabel(TRAFFIC_OPTIONS, f.maxTraffic)}`,
+      fill(v.filter.traffic, {
+        option: optionLabel(TRAFFIC_OPTIONS, f.maxTraffic, w),
+      }),
       (g) => ({ ...g, maxTraffic: RATING_MAX }),
     );
   if (f.minBeauty > RATING_MIN)
     add(
       "beauty",
-      `Schönheit ${optionLabel(BEAUTY_OPTIONS, f.minBeauty)}`,
+      fill(v.filter.beauty, {
+        option: optionLabel(BEAUTY_OPTIONS, f.minBeauty, w),
+      }),
       (g) => ({ ...g, minBeauty: RATING_MIN }),
     );
   if (f.minFame > 1)
-    add("fame", `Bekanntheit ${optionLabel(FAME_OPTIONS, f.minFame)}`, (g) => ({
-      ...g,
-      minFame: 1,
-    }));
-  const heat = optionLabel(HEAT_OPTIONS, f.maxValleyTmax);
-  if (heat && heat !== "egal")
-    add("heat", `Tal ${heat}`, (g) => ({
+    add(
+      "fame",
+      fill(v.filter.fame, {
+        option: optionLabel(FAME_OPTIONS, f.minFame, w),
+      }),
+      (g) => ({
+        ...g,
+        minFame: 1,
+      }),
+    );
+  const heat = optionLabel(HEAT_OPTIONS, f.maxValleyTmax, w);
+  if (heat && f.maxValleyTmax !== HEAT_OPTIONS[0][0])
+    add("heat", fill(v.filter.valley, { option: heat }), (g) => ({
       ...g,
       maxValleyTmax: HEAT_OPTIONS[0][0],
     }));
-  const wet = optionLabel(WET_OPTIONS, f.maxWetDays);
-  if (wet && wet !== "egal")
-    add("wet", `Regentage ${wet}`, (g) => ({
+  const wet = optionLabel(WET_OPTIONS, f.maxWetDays, w);
+  if (wet && f.maxWetDays !== WET_OPTIONS[0][0])
+    add("wet", fill(v.filter.wetDays, { option: wet }), (g) => ({
       ...g,
       maxWetDays: WET_OPTIONS[0][0],
     }));
   return out;
 };
 
+/**
+ * The ranges a chip narrowed the list to, as one phrase for the headline –
+ * "Jura" or "Jura, Vogesen" – and `null` while every range is in: the
+ * headline says where it counts only once that is not everywhere.
+ */
+export const rangeWord = (f: Filters, w: Messages): string | null => {
+  const picked = pickedMembers(f.ranges, ALL_RANGES);
+  return picked.length
+    ? picked.map((r) => w.vocab.range[r].label).join(", ")
+    : null;
+};
+
 /** How many decisions the panel currently carries – the badge on its trigger. */
-export const filterCount = (f: Filters) => appliedFilters(f).length;
+export const filterCount = (f: Filters, w: Messages) =>
+  appliedFilters(f, w).length;
 
 /**
  * Back to no filter at all. The period and the sort survive it: the
@@ -136,22 +210,37 @@ export const resetFilters = (f: Filters): Filters => ({
 export const bestRelief = (
   f: Filters,
   countWith: (patch: Partial<Filters>) => number,
+  w: Messages,
 ): { chip: AppliedFilter; n: number } | undefined =>
-  appliedFilters(f)
+  appliedFilters(f, w)
     .map((chip) => ({ chip, n: countWith(chip.clear(f)) }))
     .filter((r) => r.n > 0)
     .toSorted((a, b) => b.n - a.n)[0];
 
+/** The filters behind "Weitere Filter", in the order the panel shows them. */
+export const SECONDARY_FILTERS = [
+  "types",
+  "surfaces",
+  "tags",
+  "maxTraffic",
+  "minBeauty",
+  "minFame",
+  "maxValleyTmax",
+  "maxWetDays",
+] as const satisfies readonly (keyof Filters)[];
+
 /**
  * Whether anything in the second half of the panel is set. It decides whether
  * "Weitere Filter" opens by itself: a link that carries a traffic limit must
- * not hide the control that lifts it again.
+ * not hide the control that lifts it again. A set filter is one off its
+ * default – for a chip group, one that does not hold all of its members (or,
+ * for the labels, none), which is what the length says.
  */
 export const hasSecondaryFilters = (f: Filters) =>
-  f.types.length !== ALL_TYPES.length ||
-  f.tags.length > 0 ||
-  f.maxTraffic < RATING_MAX ||
-  f.minBeauty > RATING_MIN ||
-  f.minFame > 1 ||
-  f.maxValleyTmax < HEAT_OPTIONS[0][0] ||
-  f.maxWetDays < WET_OPTIONS[0][0];
+  SECONDARY_FILTERS.some((key) => {
+    const value = f[key];
+    const initial = DEFAULT_FILTERS[key];
+    return Array.isArray(value) && Array.isArray(initial)
+      ? value.length !== initial.length
+      : value !== initial;
+  });

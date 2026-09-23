@@ -2,6 +2,7 @@
 
 import type { ReactNode, RefObject } from "react";
 
+import { useT } from "@/components/i18n";
 import { MobileSheet, useSheetInset } from "@/components/mobile-sheet";
 import { DETAIL_SNAPS, LIST_SNAPS } from "@/lib/app-state";
 import type { Action, Selection, SheetState } from "@/lib/app-state";
@@ -76,6 +77,7 @@ export const Shell = ({
   sidebar,
   sidebarOpen,
 }: Props) => {
+  const { t } = useT();
   const isXl = useMediaQuery("(width >= 80rem)");
   const viewportHeight = useViewportHeight();
   const sheetInset = useSheetInset();
@@ -115,7 +117,8 @@ export const Shell = ({
    */
   const detailSheet = (
     <MobileSheet
-      label="Details"
+      label={t.header.details}
+      handle={t.header.drawer.details}
       open={selection !== null}
       onClose={onBack}
       snapPoints={DETAIL_SNAPS}
@@ -160,7 +163,7 @@ export const Shell = ({
         {!mobile && selection && (
           <section
             key={entityKey(selection)}
-            aria-label="Details"
+            aria-label={t.header.details}
             className={cn(
               "pointer-events-auto absolute top-3 bottom-3 left-(--shell-detail-left) z-20 flex w-(--shell-detail) flex-col overflow-hidden max-lg:hidden",
               "animate-in fade-in-0 slide-in-from-left-4 duration-200 motion-reduce:animate-none",
@@ -212,7 +215,8 @@ export const Shell = ({
       {mobile && (
         <>
           <MobileSheet
-            label="Liste"
+            label={t.header.list}
+            handle={t.header.drawer.list}
             open={sheet.list.open}
             onClose={() => dispatch({ open: false, type: "list" })}
             snapPoints={LIST_SNAPS}

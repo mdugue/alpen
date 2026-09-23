@@ -16,7 +16,7 @@
  * what it tells the curator about a key is what the next build will actually
  * do with it, rather than a second derivation that can disagree.
  */
-import { isTraverse } from "../../lib/regions";
+import { isTraverse, isUnpaved } from "../../lib/regions";
 import { ascentKey, tourKey } from "../../lib/route-key";
 import type {
   AscentCheck,
@@ -34,16 +34,18 @@ import type {
   TourCheck,
   TourMetrics,
 } from "../../lib/types";
+import { ARCHIVE_DAILY } from "./climate";
 import {
   ascentInputs,
   ascentMetrics,
   checkRoadAscent,
   checkTour,
+  profileOf,
   suspectPoint,
   tourInputs,
   tourMetrics,
 } from "./validate";
-import type { Finding, Marker } from "./validate";
+import type { Finding, Marker, RoutingProfile } from "./validate";
 
 /** Everything `data:build` has written so far, as one value. */
 export interface Stored {
@@ -89,6 +91,8 @@ export type RouteJob = {
   inputs: string;
   key: string;
   label: string;
+  /** The router's graph, from the road's surface (`profileOf`). */
+  profile: RoutingProfile;
   waypoints: LatLon[];
 } & (
   | {
@@ -127,6 +131,7 @@ export const routeJobs = (passes: Pass[], tours: Tour[]): RouteJob[] => [
   ...passes.flatMap((p) => {
     const marker = markerOf(p);
     const summit = { lat: p.lat, lon: p.lon };
+    const profile = profileOf(p.surface);
     return p.ascents.map((a, i): RouteJob => {
       const key = ascentKey(p.slug, i);
       const label = `${p.name} ab ${a.label}`;
@@ -136,11 +141,12 @@ export const routeJobs = (passes: Pass[], tours: Tour[]): RouteJob[] => [
         return {
           check: a.check,
           from: a.from,
-          inputs: ascentInputs(true, p, a),
+          inputs: ascentInputs(true, p, a, profile),
           key,
           kind: "traverse",
           label,
           marker,
+          profile,
           statedKm: a.km ?? 0,
           to: a.to ?? summit,
           waypoints: [a.from, a.to ?? summit],
@@ -148,24 +154,29 @@ export const routeJobs = (passes: Pass[], tours: Tour[]): RouteJob[] => [
       return {
         check: a.check,
         from: a.from,
-        inputs: ascentInputs(false, p, a),
+        inputs: ascentInputs(false, p, a, profile),
         key,
         kind: "ascent",
         label,
         marker,
+        profile,
         waypoints: [a.from, summit],
       };
     });
   }),
-  ...tours.map((t): RouteJob => ({
-    check: t.check,
-    inputs: tourInputs(t),
-    key: tourKey(t.slug),
-    kind: "tour",
-    label: `Tour ${t.name}`,
-    statedKm: t.km,
-    waypoints: t.waypoints,
-  })),
+  ...tours.map((t): RouteJob => {
+    const profile = profileOf(t.surface);
+    return {
+      check: t.check,
+      inputs: tourInputs(t, profile),
+      key: tourKey(t.slug),
+      kind: "tour",
+      label: `Tour ${t.name}`,
+      profile,
+      statedKm: t.km,
+      waypoints: t.waypoints,
+    };
+  }),
 ];
 
 /** Measure a geometry; the profile fields stay null until one has been fetched. */
@@ -366,6 +377,36 @@ export interface Plan {
   summits: Pass[];
 }
 
+/**
+ * A series is asked for when there is none – or when the road is unpaved,
+ * the stored series predates the snow cover (plan 27) and the archive is
+ * asked for it now (`asksCover`, off `ARCHIVE_DAILY`): the cover is the rung
+ * that closes such a road, and a series without it never would. Until the
+ * request carries the variable, asking again would cost ~260 calls for the
+ * same answer. A paved road keeps its series; it never reads the cover.
+ */
+export const lacksClimate = (
+  pass: Pick<Pass, "slug" | "surface">,
+  climates: Record<string, ClimateYear>,
+  asksCover = ARCHIVE_DAILY.includes("snow_depth_mean"),
+): boolean => {
+  const series = climates[pass.slug];
+  if (!series) return true;
+  return (
+    asksCover &&
+    isUnpaved(pass.surface) &&
+    series.every((b) => b?.coverPct === undefined)
+  );
+};
+
+/** An unpaved road whose stored series carries no snow cover (plan 27). */
+export const lacksCover = (
+  pass: Pick<Pass, "slug" | "surface">,
+  climates: Record<string, ClimateYear>,
+): boolean =>
+  isUnpaved(pass.surface) &&
+  (climates[pass.slug]?.every((b) => b?.coverPct === undefined) ?? false);
+
 /** The DEM height was read at the coordinate the entry carries today. */
 const measuredAt = (p: Pass, s: Summit | undefined) =>
   s !== undefined && s.lat === p.lat && s.lon === p.lon;
@@ -385,7 +426,7 @@ export const plan = (curated: Curated, stored: Stored, flags: Flags): Plan => {
     verdict: decideProfile(job, stored, flags, verdict),
   }));
   const passes = curated.passes.filter((p) => wanted(p.slug));
-  const climate = passes.filter((p) => !stored.climates[p.slug]);
+  const climate = passes.filter((p) => lacksClimate(p, stored.climates));
   /** Missing, or measured at a coordinate that has since moved. */
   const summits = passes.filter((p) => !measuredAt(p, stored.summits[p.slug]));
   /** Entries that still lack the road distance (predate the check, or just fetched). */

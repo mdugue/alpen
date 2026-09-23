@@ -3,21 +3,27 @@
  * Writes `data/schema/*.schema.json` from the zod schemas in `lib/schema.ts`,
  * so that editors (see `.vscode/settings.json`, `json.schemas`) complete and
  * check the hand-maintained files. Run after changing `lib/schema.ts`;
- * `bun run data:check` fails while the files are stale.
- *
- *   bun run data:schema           # write
- *   bun run data:schema --check   # exit 1 if any file differs
+ * `bun run data:check` fails while the files are stale (it renders them with
+ * `renderJsonSchema` and compares).
  */
 import { z } from "zod";
 
 import { FILES } from "../lib/schema";
 
 const OUT = new URL("../data/schema/", import.meta.url);
-const CHECK = process.argv.includes("--check");
 
-/** `passes.json` → `passes.schema.json`, `generated/routes.json` → `routes.schema.json`. */
+/**
+ * `passes.json` → `passes.schema.json`, `generated/routes.json` →
+ * `routes.schema.json`, `i18n/en/passes.json` → `passes.en.schema.json`.
+ */
 export const schemaFileFor = (file: string) =>
-  `${file.replace(/^generated\//u, "").replace(/\.json$/u, "")}.schema.json`;
+  `${file
+    .replace(/^generated\//u, "")
+    .replace(
+      /^i18n\/(?<lang>\w+)\/(?<name>\w+)\.json$/u,
+      "$<name>.$<lang>.json",
+    )
+    .replace(/\.json$/u, "")}.schema.json`;
 
 export const renderJsonSchema = (file: keyof typeof FILES): string => {
   const json = z.toJSONSchema(FILES[file].schema, {
@@ -30,7 +36,7 @@ export const renderJsonSchema = (file: keyof typeof FILES): string => {
 };
 
 if (import.meta.main) {
-  let stale = 0;
+  let written = 0;
   for (const file of Object.keys(FILES) as (keyof typeof FILES)[]) {
     const target = new URL(schemaFileFor(file), OUT);
     const next = renderJsonSchema(file);
@@ -38,13 +44,8 @@ if (import.meta.main) {
       ? await Bun.file(target).text()
       : null;
     if (current === next) continue;
-    stale += 1;
-    if (CHECK) console.error(`FEHLER ${schemaFileFor(file)} ist veraltet`);
-    else await Bun.write(target, next);
+    written += 1;
+    await Bun.write(target, next);
   }
-  if (CHECK && stale) {
-    console.error("bun run data:schema ausführen und die Dateien einchecken.");
-    process.exit(1);
-  }
-  if (!CHECK) console.log(`${stale} Schema-Dateien geschrieben`);
+  console.log(`${written} Schema-Dateien geschrieben`);
 }

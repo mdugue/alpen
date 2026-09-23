@@ -2,9 +2,11 @@
 
 import { ArrowDownWideNarrow } from "lucide-react";
 
+import { useT } from "@/components/i18n";
 import { Rating } from "@/components/rating";
 import { SeasonStrip } from "@/components/season-strip";
 import { EntityRow } from "@/components/sidebar/entity-row";
+import type { RowContext } from "@/components/sidebar/entity-row";
 import { ListEmpty } from "@/components/sidebar/list-empty";
 import { ListToolbar } from "@/components/sidebar/list-toolbar";
 import { RowList } from "@/components/sidebar/row-list";
@@ -19,13 +21,11 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { PASS_SORTS } from "@/lib/app-state";
-import type { Filters, PassSort, Selection } from "@/lib/app-state";
-import { roadTypeWord } from "@/lib/regions";
-import { entityKey } from "@/lib/route-key";
-import { PASS_SORT_LABEL } from "@/lib/rows";
+import type { Filters, PassSort } from "@/lib/app-state";
+import { typeWord } from "@/lib/i18n";
+import { fill } from "@/lib/i18n/fill";
 import type { PassRow } from "@/lib/rows";
-import { useRoving } from "@/lib/use-roving";
-import { cn, fmtUnit, TOUCH_CONTROL } from "@/lib/utils";
+import { cn, TOUCH_CONTROL } from "@/lib/utils";
 
 type RatingSort = "beauty" | "fame" | "difficulty" | "traffic";
 const RATING_SORTS: ReadonlySet<PassSort> = new Set([
@@ -37,30 +37,22 @@ const RATING_SORTS: ReadonlySet<PassSort> = new Set([
 
 export const PassList = ({
   rows,
-  currentRow,
-  hovered,
-  onHover,
+  row,
   filters,
   setFilters,
   empty,
   mapControl,
-  onSelect,
-  onToggleFavorite,
 }: {
   rows: readonly PassRow[];
-  currentRow: string | null;
-  hovered: Selection | null;
-  onHover: (sel: Selection | null) => void;
+  /** What every row does with its entity (`RowContext`). */
+  row: RowContext;
   filters: Filters;
   setFilters: (update: (f: Filters) => Filters) => void;
   empty: Omit<React.ComponentProps<typeof ListEmpty>, "title">;
   /** The "auf der Karte" switch for this kind; it lives in the list, not by the tabs. */
   mapControl: React.ReactNode;
-  onSelect: (slug: string) => void;
-  onToggleFavorite: (slug: string) => void;
 }) => {
-  const rovingList = useRoving<HTMLDivElement>();
-  const hoveredSlug = hovered?.kind === "pass" ? hovered.slug : null;
+  const { t, fmtUnit } = useT();
   const ratingSort = RATING_SORTS.has(filters.sort)
     ? (filters.sort as RatingSort)
     : null;
@@ -75,20 +67,24 @@ export const PassList = ({
         and it shows the seven keys in one list instead of behind an OS wheel.
       */}
       <ListToolbar control={mapControl}>
-        <span className="text-muted-foreground text-2xs">Sortieren</span>
+        <span className="text-muted-foreground text-2xs">
+          {t.sidebar.lists.sort}
+        </span>
         <DropdownMenu>
           <DropdownMenuTrigger
             render={
               <Button
                 variant="ghost"
                 size="sm"
-                aria-label={`Sortieren nach: ${PASS_SORT_LABEL[filters.sort]}`}
+                aria-label={fill(t.sidebar.lists.sortBy, {
+                  label: t.vocab.sort[filters.sort],
+                })}
                 className={cn("-my-0.5 px-2 font-normal", TOUCH_CONTROL)}
               />
             }
           >
             <ArrowDownWideNarrow data-icon="inline-start" />
-            {PASS_SORT_LABEL[filters.sort]}
+            {t.vocab.sort[filters.sort]}
           </DropdownMenuTrigger>
           <DropdownMenuContent align="start">
             <DropdownMenuRadioGroup
@@ -99,7 +95,7 @@ export const PassList = ({
             >
               {PASS_SORTS.map((k) => (
                 <DropdownMenuRadioItem key={k} value={k}>
-                  {PASS_SORT_LABEL[k]}
+                  {t.vocab.sort[k]}
                 </DropdownMenuRadioItem>
               ))}
             </DropdownMenuRadioGroup>
@@ -108,31 +104,27 @@ export const PassList = ({
       </ListToolbar>
 
       {rows.length === 0 ? (
-        <ListEmpty title="Keine Straßen gefunden" {...empty} />
+        <ListEmpty title={t.sidebar.empty.noPasses} {...empty} />
       ) : (
-        <RowList ref={rovingList} items={rows} keyOf={({ pass }) => pass.slug}>
+        <RowList items={rows} keyOf={({ pass }) => pass.slug}>
           {({ pass, status, reason, favorite, season }) => (
             <EntityRow
-              key={pass.slug}
-              rowId={entityKey("pass", pass.slug)}
-              current={currentRow === entityKey("pass", pass.slug)}
-              hovered={hoveredSlug === pass.slug}
-              onHover={(over) =>
-                onHover(over ? { kind: "pass", slug: pass.slug } : null)
-              }
+              entity={{ kind: "pass", slug: pass.slug }}
+              row={row}
               name={pass.name}
-              title={pass.name}
               subtitle={
                 <TagLine
                   tags={pass.tags ?? []}
-                  lead={[roadTypeWord(pass.type), pass.region, pass.country]
+                  lead={[
+                    typeWord(pass.type, t),
+                    t.vocab.region[pass.region],
+                    pass.country,
+                  ]
                     .filter(Boolean)
                     .join(" · ")}
                 />
               }
               favorite={favorite}
-              onToggleFavorite={() => onToggleFavorite(pass.slug)}
-              onSelect={() => onSelect(pass.slug)}
               aside={
                 <>
                   <span className="text-xs font-medium tabular-nums">

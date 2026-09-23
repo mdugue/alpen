@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
+import { useT } from "@/components/i18n";
 import { Button } from "@/components/ui/button";
 import {
   Collapsible,
@@ -33,9 +34,10 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { localeOf } from "@/lib/i18n";
+import type { Lang, Messages } from "@/lib/i18n";
 import type { WeatherDay } from "@/lib/types";
-import useFetch from "@/lib/use-fetch";
-import { cn, fmt } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 
 /**
  * A value Open-Meteo has none of. One empty cell costs the cell and nothing
@@ -43,70 +45,89 @@ import { cn, fmt } from "@/lib/utils";
  * (`WeatherDay` in lib/schema.ts).
  */
 const MISSING = "–";
-const value = (n: number | null, unit = "") =>
-  n === null ? MISSING : `${fmt(Math.round(n))}${unit}`;
-
-/** WMO weather code → icon and German label; a day without one gets neither. */
-const describe = (code: number | null): [LucideIcon, string] | null => {
-  if (code === null) return null;
-  if (code === 0) return [Sun, "sonnig"];
-  if (code <= 2) return [CloudSun, "leicht bewölkt"];
-  if (code === 3) return [Cloud, "bedeckt"];
-  if (code <= 48) return [CloudFog, "Nebel"];
-  if (code <= 57) return [CloudDrizzle, "Nieselregen"];
-  if (code <= 67) return [CloudRain, "Regen"];
-  if (code <= 77) return [CloudSnow, "Schneefall"];
-  if (code <= 82) return [CloudRain, "Regenschauer"];
-  if (code <= 86) return [CloudSnow, "Schneeschauer"];
-  return [CloudLightning, "Gewitter"];
-};
-
-const weekday = (date: string) =>
-  new Date(date).toLocaleDateString("de-DE", {
-    day: "numeric",
-    month: "numeric",
-    weekday: "short",
-  });
 
 /**
- * Forecast at pass altitude, from our own cached route. The panel is about
- * choosing a destination, not about planning tomorrow's ride: today and
- * tomorrow are shown as two dense rows, the rest of the week stays one click
- * away.
+ * The day column, one formatter per language built once: the same shape in
+ * both – "Mi., 24.9." / "Wed, 24/09" – left to the locale rather than spelled
+ * out. In UTC, because a forecast day is a calendar date ("2026-09-24"),
+ * which `Date` reads as midnight UTC: formatted in a visitor's own zone west
+ * of Greenwich it would be the day before.
  */
-export const WeatherForecast = ({ slug }: { slug: string }) => {
-  const { data, error, loading } = useFetch<{ days: WeatherDay[] }>(
-    `/api/weather/${slug}`,
+const DAY_OPTIONS: Intl.DateTimeFormatOptions = {
+  day: "numeric",
+  month: "numeric",
+  timeZone: "UTC",
+  weekday: "short",
+};
+const DAY_FORMAT: Record<Lang, Intl.DateTimeFormat> = {
+  de: new Intl.DateTimeFormat(localeOf("de"), DAY_OPTIONS),
+  en: new Intl.DateTimeFormat(localeOf("en"), DAY_OPTIONS),
+};
+
+/** WMO weather code → icon and the word for it; a day without one gets neither. */
+const describe = (
+  code: number | null,
+  words: Messages["panel"]["weather"]["code"],
+): [LucideIcon, string] | null => {
+  if (code === null) return null;
+  if (code === 0) return [Sun, words.sunny];
+  if (code <= 2) return [CloudSun, words.partlyCloudy];
+  if (code === 3) return [Cloud, words.overcast];
+  if (code <= 48) return [CloudFog, words.fog];
+  if (code <= 57) return [CloudDrizzle, words.drizzle];
+  if (code <= 67) return [CloudRain, words.rain];
+  if (code <= 77) return [CloudSnow, words.snow];
+  if (code <= 82) return [CloudRain, words.showers];
+  if (code <= 86) return [CloudSnow, words.snowShowers];
+  return [CloudLightning, words.thunderstorm];
+};
+
+/** What the block looks like while the route's payload is on its way. */
+export const WeatherSkeleton = () => {
+  const { t } = useT();
+  return (
+    <div
+      role="status"
+      aria-busy
+      aria-label={t.panel.weather.loading}
+      className="flex flex-col gap-1.5 py-1"
+    >
+      <Skeleton className="h-5 w-full" />
+      <Skeleton className="h-5 w-full" />
+    </div>
   );
+};
 
-  if (loading)
-    return (
-      <div
-        role="status"
-        aria-busy
-        aria-label="Wetter wird geladen"
-        className="flex flex-col gap-1.5 py-1"
-      >
-        <Skeleton className="h-5 w-full" />
-        <Skeleton className="h-5 w-full" />
-      </div>
-    );
-  if (error || !data)
-    return (
-      <Empty className="py-3">
-        <EmptyHeader>
-          <EmptyTitle>Wetter nicht verfügbar</EmptyTitle>
-          <EmptyDescription>
-            Open-Meteo antwortet gerade nicht.
-          </EmptyDescription>
-        </EmptyHeader>
-      </Empty>
-    );
+/** The server could not get a forecast; the rest of the panel is unaffected. */
+export const WeatherUnavailable = () => {
+  const { t } = useT();
+  return (
+    <Empty className="py-3">
+      <EmptyHeader>
+        <EmptyTitle>{t.panel.weather.unavailableTitle}</EmptyTitle>
+        <EmptyDescription>{t.panel.weather.unavailableText}</EmptyDescription>
+      </EmptyHeader>
+    </Empty>
+  );
+};
 
-  const [today, tomorrow] = data.days;
+/**
+ * Forecast at pass altitude, rendered on the server for the pass's route and
+ * streamed in (`components/panel/weather.tsx`); this is the table, a client
+ * component only for the fold. The panel is about choosing a destination,
+ * not about planning tomorrow's ride: today and tomorrow are shown as two
+ * dense rows, the rest of the week stays one click away.
+ */
+export const WeatherForecast = ({ days }: { days: WeatherDay[] }) => {
+  const { t, lang, fmt } = useT();
+  const w = t.panel.weather;
+  const value = (n: number | null, unit = "") =>
+    n === null ? MISSING : `${fmt(Math.round(n))}${unit}`;
+  const weekday = (date: string) => DAY_FORMAT[lang].format(new Date(date));
+  const [today, tomorrow] = days;
   const rows: [WeatherDay | undefined, string][] = [
-    [today, "heute"],
-    [tomorrow, "morgen"],
+    [today, w.today],
+    [tomorrow, w.tomorrow],
   ];
 
   return (
@@ -115,7 +136,7 @@ export const WeatherForecast = ({ slug }: { slug: string }) => {
         {rows
           .filter((row): row is [WeatherDay, string] => row[0] !== undefined)
           .map(([d, when]) => {
-            const [Icon, label] = describe(d.weatherCode) ?? [];
+            const [Icon, label] = describe(d.weatherCode, w.code) ?? [];
             // A day without a figure for it had no snow as far as the panel
             // is concerned: it says so by saying nothing.
             const snow = d.snowfall ?? 0;
@@ -142,7 +163,7 @@ export const WeatherForecast = ({ slug }: { slug: string }) => {
                 </span>
                 {snow > 0 && (
                   <span className="text-status-closed font-semibold">
-                    {value(d.snowfall, " cm")} Schnee
+                    {value(d.snowfall, " cm")} {w.snow}
                   </span>
                 )}
                 <span className="text-muted-foreground ml-auto">
@@ -162,7 +183,7 @@ export const WeatherForecast = ({ slug }: { slug: string }) => {
           />
         }
       >
-        Alle 7 Tage
+        {w.allDays}
         <ChevronDown
           data-icon="inline-end"
           className="transition-transform group-aria-expanded/week:rotate-180"
@@ -172,20 +193,20 @@ export const WeatherForecast = ({ slug }: { slug: string }) => {
         <Table>
           <TableHeader>
             <TableRow className="text-muted-foreground [&>th]:h-7 [&>th]:px-1 [&>th]:text-right [&>th:first-child]:pl-0 [&>th:first-child]:text-left">
-              <TableHead>Tag</TableHead>
+              <TableHead>{w.columns.day}</TableHead>
               <TableHead>
-                <span className="sr-only">Wetter</span>
+                <span className="sr-only">{w.columns.weather}</span>
               </TableHead>
-              <TableHead>Tmin</TableHead>
-              <TableHead>Tmax</TableHead>
-              <TableHead>Regen</TableHead>
-              <TableHead>Schnee</TableHead>
-              <TableHead>Wind</TableHead>
+              <TableHead>{w.columns.tmin}</TableHead>
+              <TableHead>{w.columns.tmax}</TableHead>
+              <TableHead>{w.columns.rain}</TableHead>
+              <TableHead>{w.columns.snow}</TableHead>
+              <TableHead>{w.columns.wind}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {data.days.map((d) => {
-              const [Icon, label] = describe(d.weatherCode) ?? [];
+            {days.map((d) => {
+              const [Icon, label] = describe(d.weatherCode, w.code) ?? [];
               const snow = d.snowfall ?? 0;
               return (
                 <TableRow

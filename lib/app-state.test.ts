@@ -1,6 +1,7 @@
 import { describe, expect, test } from "bun:test";
 
 import {
+  ALL_RANGES,
   ALL_STATUS,
   DEFAULT_FILTERS,
   DEFAULT_VIEW,
@@ -12,6 +13,7 @@ import {
   reconcileShown,
   reduce,
   shownTourCount,
+  toggleCompare,
   toggleLevel,
   toggleMember,
 } from "@/lib/app-state";
@@ -22,6 +24,7 @@ import type {
   Selection,
   StoredState,
 } from "@/lib/app-state";
+import type { Bounds } from "@/lib/geo";
 import { parseHash } from "@/lib/hash";
 import { entityKey } from "@/lib/route-key";
 import type { Period } from "@/lib/types";
@@ -58,6 +61,63 @@ describe("filters", () => {
   });
 });
 
+describe("compare (plan 12)", () => {
+  test("toggleCompare adds up to three, drops on demand and never duplicates", () => {
+    expect(toggleCompare([], "a", true)).toEqual(["a"]);
+    expect(toggleCompare(["a"], "a", true)).toEqual(["a"]);
+    expect(toggleCompare(["a", "b", "c"], "d", true)).toEqual(["a", "b", "c"]);
+    expect(toggleCompare(["a", "b"], "a", false)).toEqual(["b"]);
+  });
+
+  test("the destinations' switch hides the areas and their towns, and selecting one reveals them", () => {
+    const shown = { destinations: false, hiddenTours: [], passes: false };
+    expect(isShown(shown, "destination", "oisans")).toBe(false);
+    expect(isShown(shown, "town", "bormio")).toBe(false);
+    const state = reduce(
+      { ...initialState(8), shown },
+      { selection: { kind: "destination", slug: "oisans" }, type: "select" },
+      {
+        destinations: ["oisans"],
+        mobile: false,
+        rangeBounds: {},
+        today: 8,
+        tours: [],
+      },
+    );
+    expect(state.shown).toEqual({ ...shown, destinations: true });
+    expect(state.tab).toBe("destination");
+  });
+
+  test("the comparison comes in with the link and goes out with the state", () => {
+    const env: Env = {
+      destinations: ["engadin", "oisans", "ubaye"],
+      mobile: false,
+      rangeBounds: {},
+      today: 8,
+      tours: [],
+    };
+    let state = reduce(
+      initialState(8),
+      { hash: parseHash("#vgl=oisans,gone,engadin"), stored: {}, type: "load" },
+      env,
+    );
+    // An area this build does not hold is dropped: it would count against the
+    // limit with no row to lift it from.
+    expect(state.compare).toEqual(["oisans", "engadin"]);
+    state = reduce(state, { on: true, slug: "ubaye", type: "compare" }, env);
+    expect(state.compare).toEqual(["oisans", "engadin", "ubaye"]);
+    state = reduce(state, { on: false, slug: "engadin", type: "compare" }, env);
+    expect(state.compare).toEqual(["oisans", "ubaye"]);
+    // A link without `vgl` clears it: the hash is authoritative on load.
+    state = reduce(
+      state,
+      { hash: parseHash(""), stored: {}, type: "load" },
+      env,
+    );
+    expect(state.compare).toEqual([]);
+  });
+});
+
 describe("entityKey", () => {
   test("is the kind and the slug, from a selection or from the pair", () => {
     expect(entityKey("pass", "stilfser-joch")).toBe("pass:stilfser-joch");
@@ -69,8 +129,14 @@ describe("entityKey", () => {
 
 const TOURS = ["sellaronda", "stelvio-runde"];
 const TODAY: Period = 7;
-const desktop: Env = { mobile: false, today: TODAY, tours: TOURS };
-const phone: Env = { mobile: true, today: TODAY, tours: TOURS };
+const desktop: Env = {
+  destinations: [],
+  mobile: false,
+  rangeBounds: {},
+  today: TODAY,
+  tours: TOURS,
+};
+const phone: Env = { ...desktop, mobile: true };
 const [LIST_HALF, LIST_FULL] = LIST_SNAPS;
 const [DETAIL_HALF, DETAIL_FULL] = DETAIL_SNAPS;
 const GALIBIER: Selection = { kind: "pass", slug: "col-du-galibier" };
@@ -107,13 +173,17 @@ const busy = (over: Partial<AppState> = {}): AppState => ({
   hovered: BORMIO,
   profileCursor: { lat: 46, lon: 9 },
   profileZoom: { lat: 46, lon: 9 },
-  shown: { hiddenTours: [...TOURS], passes: false, towns: false },
+  shown: { destinations: false, hiddenTours: [...TOURS], passes: false },
   ...over,
 });
 
 describe("shown", () => {
   test("isShown and shownTourCount read the one value", () => {
-    const shown = { hiddenTours: ["sellaronda"], passes: false, towns: true };
+    const shown = {
+      destinations: true,
+      hiddenTours: ["sellaronda"],
+      passes: false,
+    };
     expect(isShown(shown, "pass", "x")).toBe(false);
     expect(isShown(shown, "town", "x")).toBe(true);
     expect(isShown(shown, "tour", "sellaronda")).toBe(false);
@@ -124,12 +194,16 @@ describe("shown", () => {
 
   test("reconcileShown drops slugs that left the data and keeps the rest", () => {
     const shown = {
+      destinations: true,
       hiddenTours: ["gone", "sellaronda"],
       passes: true,
-      towns: true,
     };
     expect(reconcileShown(shown, TOURS).hiddenTours).toEqual(["sellaronda"]);
-    const clean = { hiddenTours: ["sellaronda"], passes: true, towns: true };
+    const clean = {
+      destinations: true,
+      hiddenTours: ["sellaronda"],
+      passes: true,
+    };
     expect(reconcileShown(clean, TOURS)).toBe(clean);
   });
 });
@@ -150,7 +224,10 @@ describe("reduce · select", () => {
   ])(
     "from %s sets the tab, clears the pointer and reveals the kind",
     (_, env, list) => {
-      const before = busy({ sheet: { ...busy().sheet, list }, tab: "town" });
+      const before = busy({
+        sheet: { ...busy().sheet, list },
+        tab: "destination",
+      });
       const s = reduce(before, { selection: GALIBIER, type: "select" }, env);
       expect(s.selection).toEqual(GALIBIER);
       expect(s.last).toEqual(GALIBIER);
@@ -159,7 +236,7 @@ describe("reduce · select", () => {
       expect(s.profileCursor).toBeNull();
       expect(s.profileZoom).toBeNull();
       expect(s.shown.passes).toBe(true);
-      expect(s.shown.towns).toBe(false);
+      expect(s.shown.destinations).toBe(false);
     },
   );
 
@@ -179,9 +256,9 @@ describe("reduce · select", () => {
   test("reveals each kind in its own way", () => {
     const town = reduce(busy(), { selection: BORMIO, type: "select" }, desktop);
     expect(town.shown).toEqual({
+      destinations: true,
       hiddenTours: [...TOURS],
       passes: false,
-      towns: true,
     });
     const tour = reduce(
       busy(),
@@ -302,19 +379,25 @@ describe("reduce · load", () => {
   test("a stale slug in hiddenTours is dropped, the stored tab and switches kept", () => {
     const stored = {
       shown: {
+        destinations: true,
         hiddenTours: ["gone", "sellaronda"],
         passes: false,
-        towns: true,
       },
-      tab: "town" as const,
+      tab: "tour" as const,
     };
     const s = load("", stored);
     expect(s.shown).toEqual({
+      destinations: true,
       hiddenTours: ["sellaronda"],
       passes: false,
-      towns: true,
     });
-    expect(s.tab).toBe("town");
+    expect(s.tab).toBe("tour");
+  });
+
+  test("a town is listed under its area, so selecting one opens the areas' tab", () => {
+    const s = load("#town=bormio", { tab: "pass" });
+    expect(s.selection).toEqual({ kind: "town", slug: "bormio" });
+    expect(s.tab).toBe("destination");
   });
 
   test("the camera is requested by a later hash, never by the one that opened the page", () => {
@@ -352,7 +435,11 @@ describe("reduce · load", () => {
     expect(s.loaded).toBe(false);
     expect(s.selection).toBeNull();
     expect(s.filters).toEqual(filters({ period: 7 }));
-    expect(s.shown).toEqual({ hiddenTours: [], passes: true, towns: true });
+    expect(s.shown).toEqual({
+      destinations: true,
+      hiddenTours: [],
+      passes: true,
+    });
     expect(s.sheet.list.open).toBe(false);
   });
 });
@@ -363,10 +450,10 @@ describe("reduce · the switches and the sheets", () => {
   test("toggleKind, toggleTour and the master switch", () => {
     const s1 = reduce(
       start,
-      { kind: "town", on: false, type: "toggleKind" },
+      { kind: "destination", on: false, type: "toggleKind" },
       desktop,
     );
-    expect(s1.shown.towns).toBe(false);
+    expect(s1.shown.destinations).toBe(false);
     const s2 = reduce(
       s1,
       { on: false, slug: "sellaronda", type: "toggleTour" },
@@ -403,7 +490,31 @@ describe("reduce · the switches and the sheets", () => {
       reduce(s, { at: { lat: 1, lon: 2 }, type: "profileCursor" }, desktop)
         .profileCursor,
     ).toEqual({ lat: 1, lon: 2 });
-    expect(reduce(s, { tab: "town", type: "tab" }, desktop).tab).toBe("town");
+    expect(reduce(s, { tab: "tour", type: "tab" }, desktop).tab).toBe("tour");
+  });
+
+  test("a range chip filters like any member of a set, and frames what it leaves", () => {
+    const bounds = {
+      Alpen: [5, 44, 14, 48] as Bounds,
+      Jura: [5.5, 45.9, 7.3, 47.5] as Bounds,
+    };
+    const env: Env = { ...desktop, rangeBounds: bounds };
+    const jura = reduce(start, { range: "Jura", type: "range" }, env);
+    expect(jura.filters.ranges).toEqual(["Jura"]);
+    expect(jura.requestedFit).toEqual(bounds.Jura);
+    // A second range pressed: both stay in the list and the frame holds both.
+    const both = reduce(jura, { range: "Alpen", type: "range" }, env);
+    expect(both.filters.ranges).toEqual(["Alpen", "Jura"]);
+    expect(both.requestedFit).toEqual([5, 44, 14, 48]);
+    // Pressing the last one out lifts the filter and asks the camera nothing:
+    // the visitor is back to everything and the map stays where it is.
+    const lifted = reduce(jura, { range: "Jura", type: "range" }, env);
+    expect(lifted.filters.ranges).toEqual(ALL_RANGES);
+    expect(lifted.requestedFit).toBe(jura.requestedFit);
+    // A range the map has no box for narrows the list and frames nothing new.
+    const vosges = reduce(start, { range: "Vogesen", type: "range" }, env);
+    expect(vosges.filters.ranges).toEqual(["Vogesen"]);
+    expect(vosges.requestedFit).toBeNull();
   });
 
   test("a profile fly-to is a request, not a value: identity is what carries it", () => {

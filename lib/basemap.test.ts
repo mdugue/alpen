@@ -9,6 +9,7 @@ import {
   basemapLayers,
   basemapStyle,
 } from "@/lib/basemap";
+import { DE } from "@/lib/i18n/dictionaries";
 import { contrast, PALETTE } from "@/lib/palette";
 import type { Scheme } from "@/lib/palette";
 
@@ -36,7 +37,7 @@ const SCHEMES: Scheme[] = ["light", "dark"];
 
 describe("basemapStyle", () => {
   test.each(SCHEMES)("%s is a valid MapLibre style", (scheme) => {
-    const errors = validateStyleMin(basemapStyle(scheme));
+    const errors = validateStyleMin(basemapStyle(scheme, DE));
     expect(errors.map((e) => e.message)).toEqual([]);
   });
 

@@ -1,3 +1,7 @@
+"use client";
+
+import { useT } from "@/components/i18n";
+import { fill } from "@/lib/i18n/fill";
 import { cn } from "@/lib/utils";
 
 /** Editorial 1–5 scale as bars; explained in the scales dialog. */
@@ -16,29 +20,32 @@ export const Rating = ({
    */
   tone?: "primary" | "current";
   className?: string;
-}) => (
-  <span
-    role="img"
-    aria-label={`${value} von 5`}
-    className={cn("inline-flex gap-0.5 align-middle", className)}
-  >
-    {[1, 2, 3, 4, 5].map((i) => (
-      <span
-        key={i}
-        aria-hidden
-        className={cn(
-          "h-2.5 w-1.5 rounded-xs",
-          i <= value
-            ? tone === "current"
-              ? "bg-current"
-              : muted
-                ? "bg-muted-foreground"
-                : "bg-primary"
-            : tone === "current"
-              ? "bg-current/25"
-              : "bg-muted-foreground/25",
-        )}
-      />
-    ))}
-  </span>
-);
+}) => {
+  const { t, fmt } = useT();
+  return (
+    <span
+      role="img"
+      aria-label={fill(t.sidebar.rating, { value: fmt(value) })}
+      className={cn("inline-flex gap-0.5 align-middle", className)}
+    >
+      {[1, 2, 3, 4, 5].map((i) => (
+        <span
+          key={i}
+          aria-hidden
+          className={cn(
+            "h-2.5 w-1.5 rounded-xs",
+            i <= value
+              ? tone === "current"
+                ? "bg-current"
+                : muted
+                  ? "bg-muted-foreground"
+                  : "bg-primary"
+              : tone === "current"
+                ? "bg-current/25"
+                : "bg-muted-foreground/25",
+          )}
+        />
+      ))}
+    </span>
+  );
+};

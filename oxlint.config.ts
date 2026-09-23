@@ -51,6 +51,39 @@ const RESTRICTED_GLOBALS = [
   },
 ];
 
+/** MapLibre is driven from two adapters; everything else under `lib/` may read its types. */
+const MAPLIBRE = {
+  allowTypeImports: true,
+  message:
+    "MapLibre is an adapter's business: the map is driven from components/map/apply-scene.ts and apply-camera.ts. Types are fine.",
+  name: "maplibre-gl",
+};
+
+/**
+ * The dictionaries are the server's (plan 08, docs/architecture.md): a page's
+ * words reach the browser as a value from its layout, one language per page
+ * (`I18nProvider`), and a component asks `useT()`. A value import of either
+ * dictionary from code the browser runs would ship both languages to every
+ * page; the `Messages` type is fine anywhere. Patterns rather than names, so
+ * a relative path or one of the sections (`de/panel`) is caught too.
+ */
+const DICTIONARIES = [
+  {
+    allowTypeImports: true,
+    group: [
+      "**/i18n/dictionaries",
+      "**/i18n/messages.de",
+      "**/i18n/messages.en",
+      "**/i18n/de/*",
+      "**/i18n/en/*",
+      // The curated English prose is data, merged on the server (lib/data.ts).
+      "!**/data/i18n/**",
+    ],
+    message:
+      "The words reach the browser as a value (`useT()` in a component, an argument in lib/); the dictionaries are for the server, the scripts and the tests.",
+  },
+];
+
 /**
  * The same rule again for one adapter, minus the globals it owns – so the
  * file is still held to every world it is *not* a window onto.
@@ -119,18 +152,27 @@ export default defineConfig({
         ],
         "no-restricted-imports": [
           "error",
-          {
-            paths: [
-              {
-                allowTypeImports: true,
-                message:
-                  "MapLibre is an adapter's business: the map is driven from components/map/apply-scene.ts and apply-camera.ts. Types are fine.",
-                name: "maplibre-gl",
-              },
-            ],
-          },
+          { paths: [MAPLIBRE], patterns: DICTIONARIES },
         ],
       },
+    },
+    {
+      // What the browser runs holds no dictionary either (see DICTIONARIES).
+      files: ["components/**"],
+      rules: {
+        "no-restricted-imports": ["error", { patterns: DICTIONARIES }],
+      },
+    },
+    {
+      // Server-only modules and the tests may hold both languages: the schema
+      // is zod and never reaches the client, `getDictionary` is where the
+      // server picks one, and a test reads the German words it checks.
+      files: ["lib/schema.ts", "lib/i18n/server.ts", "lib/**/*.test.ts"],
+      rules: { "no-restricted-imports": ["error", { paths: [MAPLIBRE] }] },
+    },
+    {
+      files: ["components/**/*.test.ts", "components/**/*.test.tsx"],
+      rules: { "no-restricted-imports": "off" },
     },
     // The adapters, one override each. The rule is *re-declared* rather than
     // switched off, minus the globals that file is the window onto: turning it
@@ -140,9 +182,16 @@ export default defineConfig({
     // (`window.addEventListener`), which `checkGlobalObject` would otherwise
     // read as a way around every other name.
     {
-      // The hash: `location.hash` in, `history.replaceState` out.
+      // The address bar: the path and `location.hash` in, `router.push` and
+      // `history.replaceState` out.
       files: ["lib/hash-adapter.ts"],
       rules: except("history", "location", "window"),
+    },
+    {
+      // The one upstream call the app makes, server-only: Open-Meteo, inside
+      // the cached `forecast` with its quota arithmetic and cooldown.
+      files: ["lib/weather.ts"],
+      rules: except("fetch"),
     },
     {
       // `localStorage` and `sessionStorage`, behind the `STORAGE` table.
@@ -245,17 +294,18 @@ export default defineConfig({
       },
     },
     {
-      // The JSON-LD block is the one sanctioned use of the prop.
-      files: ["app/page.tsx"],
-      rules: { "react/no-danger": "off" },
+      // The JSON-LD block is the one sanctioned use of the prop. And a
+      // `"use cache"` function has to be async even where it awaits nothing:
+      // the layout's data is imported JSON, read synchronously (lib/data.ts).
+      files: ["app/[[]lang[]]/(explorer)/layout.tsx"],
+      rules: { "react/no-danger": "off", "require-await": "off" },
     },
     {
-      // A `"use cache"` function has to be async even where it awaits
-      // nothing: the map page's data is imported JSON, read synchronously
-      // (lib/data.ts), and the /wissen pages read their Markdown with
-      // `readFileSync` at build time. The brackets of the catch-all segment are
-      // escaped: unescaped, the glob reads them as a character class.
-      files: ["app/page.tsx", "app/wissen/\\[\\[...slug\\]\\]/page.tsx"],
+      // The /wissen pages read their Markdown with `readFileSync` at build
+      // time, inside a `"use cache"` function. The brackets of the catch-all
+      // segment are escaped: unescaped, the glob reads them as a character
+      // class.
+      files: ["app/wissen/\\[\\[...slug\\]\\]/page.tsx"],
       rules: { "require-await": "off" },
     },
   ],
@@ -290,8 +340,9 @@ export default defineConfig({
     "react-doctor/no-tiny-text": "off",
     // Route segments and small modules export constants beside a component.
     "react-doctor/only-export-components": "off",
-    // The weather route is a Cache Components route: `"use cache"` plus
-    // `cacheLife`/`cacheTag` control its freshness, which the rule cannot see.
+    // The forecast is cached with Cache Components: `"use cache"` plus
+    // `cacheLife` control its freshness (`lib/weather.ts`), which the rule
+    // cannot see.
     "react-doctor/server-fetch-without-revalidate": "off",
     // Handlers are named after what they do (`onOpenScales`), not after the
     // prop they are passed to.

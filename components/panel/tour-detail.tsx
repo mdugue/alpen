@@ -1,13 +1,13 @@
 "use client";
 
+import { useT } from "@/components/i18n";
 import type { PanelActions } from "@/components/panel/actions";
-import { LinkButton, Nearby } from "@/components/panel/nearby";
+import { EntityLink, Nearby } from "@/components/panel/nearby";
 import { Section } from "@/components/panel/section";
 import { VerdictBox } from "@/components/panel/verdict-box";
 import { StatusDot } from "@/components/status-badge";
 import type { TourModel } from "@/lib/detail-model";
-import { isHovered } from "@/lib/route-key";
-import { fmt, fmtUnit } from "@/lib/utils";
+import { fill } from "@/lib/i18n/fill";
 
 /** What a tour shows, from its model and nothing else. */
 export const TourDetail = ({
@@ -17,6 +17,7 @@ export const TourDetail = ({
   model: TourModel;
   actions: PanelActions;
 }) => {
+  const { t, fmt, fmtUnit } = useT();
   const { tour } = model;
   return (
     <>
@@ -28,7 +29,10 @@ export const TourDetail = ({
         <span className="text-foreground text-2xl leading-none font-bold tabular-nums">
           {fmt(tour.elevationGain)}
         </span>
-        <span className="ml-1">hm · {tour.passes.length} Pässe</span>
+        <span className="ml-1">
+          {t.vocab.unit.climb} ·{" "}
+          {fill(t.panel.tour.passCount, { n: fmt(tour.passes.length) })}
+        </span>
       </p>
 
       <VerdictBox
@@ -39,27 +43,23 @@ export const TourDetail = ({
 
       <p className="mt-4 text-xs leading-relaxed">{tour.description}</p>
       <p className="text-muted-foreground mt-1.5 text-xs leading-relaxed">
-        {tour.season}
+        {model.season}
       </p>
 
-      <Section id="tour-passes" title="Pässe der Runde">
+      <Section id="tour-passes" title={t.panel.tour.passesTitle}>
         <div className="flex flex-col items-start">
           {model.members.map(({ cell, pass }) => (
-            <LinkButton
+            <EntityLink
               key={pass.slug}
-              hovered={isHovered(model.hovered, "pass", pass.slug)}
-              onHover={(over) =>
-                actions.onHover(over ? { kind: "pass", slug: pass.slug } : null)
-              }
-              onClick={() =>
-                actions.onSelect({ kind: "pass", slug: pass.slug })
-              }
+              entity={{ kind: "pass", slug: pass.slug }}
+              hovered={model.hovered}
+              actions={actions}
             >
               <StatusDot status={cell.status} /> {pass.name}
               <span className="text-muted-foreground tabular-nums">
                 {fmtUnit(pass.elevation, "m")}
               </span>
-            </LinkButton>
+            </EntityLink>
           ))}
         </div>
       </Section>

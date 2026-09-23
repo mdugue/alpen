@@ -1,7 +1,7 @@
 import { describe, expect, test } from "bun:test";
 
 import { DEFAULT_FILTERS, DEFAULT_VIEW, defined } from "@/lib/app-state";
-import type { Filters, MapView, Selection } from "@/lib/app-state";
+import type { Filters, MapView } from "@/lib/app-state";
 import { parseHash, serializeHash } from "@/lib/hash";
 
 const filters = (over: Partial<Filters> = {}): Filters => ({
@@ -130,7 +130,6 @@ describe("parseHash", () => {
     });
     const out = serializeHash(
       filters({ maxValleyTmax: 22, maxWetDays: 8 }),
-      null,
       DEFAULT_VIEW,
     );
     expect(out).toContain("h=22");
@@ -139,7 +138,7 @@ describe("parseHash", () => {
       maxValleyTmax: 22,
       maxWetDays: 8,
     });
-    expect(serializeHash(filters(), null, DEFAULT_VIEW)).not.toMatch(/[hw]=/u);
+    expect(serializeHash(filters(), DEFAULT_VIEW)).not.toMatch(/[hw]=/u);
   });
 });
 
@@ -159,7 +158,6 @@ describe("plan 14 road types and labels", () => {
   test("both survive the round trip, the defaults leave the hash", () => {
     const hash = serializeHash(
       filters({ tags: ["toll"], types: ["pass", "spur"] }),
-      null,
       view(),
     );
     expect(hash).toContain("a=pass,spur");
@@ -167,7 +165,25 @@ describe("plan 14 road types and labels", () => {
     const back = parseHash(hash);
     expect(back.filters.types).toEqual(["pass", "spur"]);
     expect(back.filters.tags).toEqual(["toll"]);
-    expect(serializeHash(filters(), null, view())).not.toMatch(/[ae]=/u);
+    expect(serializeHash(filters(), view())).not.toMatch(/[ae]=/u);
+  });
+});
+
+describe("destinations in the hash (plan 12)", () => {
+  test("`vgl` carries the comparison; an area is selected by its path only", () => {
+    const h = parseHash("#ziel=oisans&vgl=oisans,engadin,oisans,ubaye,ventoux");
+    expect(h.selection).toBeNull();
+    // Deduplicated and cut to the sheet's three columns.
+    expect(h.compare).toEqual(["oisans", "engadin", "ubaye"]);
+    expect(parseHash("#vgl=").compare).toEqual([]);
+    expect(parseHash("").compare).toEqual([]);
+  });
+
+  test("the comparison travels out and back", () => {
+    const hash = serializeHash(filters(), view(), ["engadin", "oisans"]);
+    expect(hash).toContain("vgl=engadin,oisans");
+    expect(parseHash(hash).compare).toEqual(["engadin", "oisans"]);
+    expect(serializeHash(filters(), view(), [])).not.toMatch(/vgl=/u);
   });
 });
 
@@ -176,7 +192,6 @@ describe("serializeHash", () => {
     expect(
       serializeHash(
         filters({ period: 7 }),
-        null,
         view({ lat: 46.3, lon: 9.6, zoom: 6.5 }),
       ),
     ).toBe("c=46.3000,9.6000&t=7&z=6.50");
@@ -195,7 +210,6 @@ describe("serializeHash", () => {
         sort: "traffic",
         status: ["open"],
       }),
-      { kind: "pass", slug: "col-du-galibier" },
       view({ bearing: 30, pitch: 60 }),
     );
     expect(hash).toContain("d=2-5");
@@ -209,7 +223,6 @@ describe("serializeHash", () => {
     expect(back.filters.minBeauty).toBe(4);
     expect(back.filters.sort).toBe("traffic");
     expect(back.filters.query).toBe("gal");
-    expect(back.selection).toEqual({ kind: "pass", slug: "col-du-galibier" });
     expect(back.view.pitch).toBe(60);
     expect(back.view.bearing).toBe(30);
   });
@@ -217,22 +230,19 @@ describe("serializeHash", () => {
   test("an empty set never reaches the hash – it is no filter", () => {
     // `toggleMember` cannot produce one; a hand-written link with it opens
     // unfiltered rather than on an empty list.
-    const hash = serializeHash(filters({ status: [] }), null, view());
+    const hash = serializeHash(filters({ status: [] }), view());
     expect(parseHash(hash).filters.status).toBeUndefined();
     expect(parseHash("#a=").filters.types).toBeUndefined();
   });
 
   test("round trip through parse and serialize is stable", () => {
-    const selection: Selection = { kind: "town", slug: "bormio" };
     const first = serializeHash(
       filters({ period: 9.5, query: "bor" }),
-      selection,
       view({ zoom: 8.25 }),
     );
     const parsed = parseHash(first);
     const second = serializeHash(
       { ...DEFAULT_FILTERS, ...defined(parsed.filters) },
-      parsed.selection,
       { ...DEFAULT_VIEW, ...defined(parsed.view) },
     );
     expect(second).toBe(first);
@@ -270,8 +280,10 @@ const ROWS = {
   // on, so it is written even when it equals the default.
   period: { elides: false, key: "t", value: 6.5 },
   query: { key: "q", value: "stelvio" },
+  ranges: { key: "g", value: ["Jura"] },
   sort: { key: "o", value: "beauty" },
   status: { key: "s", value: ["open", "risky"] },
+  surfaces: { key: "bl", value: ["gravel", "mixed"] },
   tags: { key: "e", value: ["toll"] },
   types: { key: "a", value: ["pass", "spur"] },
 } satisfies { [K in keyof Filters]: Row<K> };
@@ -290,19 +302,19 @@ describe("every filter key", () => {
     expect(Object.keys(ROWS).toSorted()).toEqual(
       Object.keys(DEFAULT_FILTERS).toSorted(),
     );
-    expect(hashed).toHaveLength(13);
+    expect(hashed).toHaveLength(15);
   });
 
   test("each key carries a non-default value there and back", () => {
     for (const [field, row] of hashed) {
-      const hash = serializeHash(filters({ [field]: row.value }), null, view());
+      const hash = serializeHash(filters({ [field]: row.value }), view());
       expect(carries(hash, row.key)).toBe(true);
       expect(parseHash(hash).filters[field]).toEqual(row.value);
     }
   });
 
   test("a default value leaves the hash", () => {
-    const hash = serializeHash(filters(), null, view());
+    const hash = serializeHash(filters(), view());
     for (const [, row] of hashed)
       expect(carries(hash, row.key)).toBe(row.elides === false);
   });
@@ -314,7 +326,6 @@ describe("every filter key", () => {
     expect(
       serializeHash(
         filters(populated),
-        { kind: "pass", slug: "stilfser-joch" },
         view({
           bearing: 30,
           lat: 46.5253,
@@ -324,7 +335,7 @@ describe("every filter key", () => {
         }),
       ),
     ).toBe(
-      "a=pass,spur&b=30&be=4&c=46.5253,10.4541&d=2-4&e=toll&f=4&h=22&m=2000&o=beauty&pass=stilfser-joch&pi=60&q=stelvio&s=open,risky&t=6.5&v=3&w=8&z=9.75",
+      "a=pass,spur&b=30&be=4&bl=gravel,mixed&c=46.5253,10.4541&d=2-4&e=toll&f=4&g=Jura&h=22&m=2000&o=beauty&pi=60&q=stelvio&s=open,risky&t=6.5&v=3&w=8&z=9.75",
     );
   });
 

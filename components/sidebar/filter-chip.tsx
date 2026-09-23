@@ -2,11 +2,14 @@
 
 import type { ReactNode } from "react";
 
+import { useT } from "@/components/i18n";
 import { Rating } from "@/components/rating";
 import { Toggle } from "@/components/ui/toggle";
 import type { Options } from "@/lib/app-state";
 import { thresholdChips } from "@/lib/app-state";
-import { cn, fmt, TOUCH_CONTROL } from "@/lib/utils";
+import { optionText } from "@/lib/filter-summary";
+import { fill } from "@/lib/i18n/fill";
+import { cn, TOUCH_CONTROL } from "@/lib/utils";
 
 /**
  * Every filter in this app is a chip: a small, pressable word that is either
@@ -54,38 +57,43 @@ export const FilterChip = ({
    */
   count?: number;
   className?: string;
-}) => (
-  <Toggle
-    variant="outline"
-    pressed={pressed}
-    onPressedChange={onPressedChange}
-    disabled={count === 0 && !pressed}
-    aria-label={
-      count === undefined || !label ? label : `${label}, ${fmt(count)} Straßen`
-    }
-    title={hint}
-    className={cn(
-      // The Toggle's own default size, widened into a pill and grown for a
-      // thumb by the constant every other control in the app uses – h-7 with a
-      // mouse, h-9 on a coarse pointer. No step of its own: a chip taller than
-      // the buttons beside it reads as a different kind of thing.
-      "border-border gap-1.5 rounded-full px-3 font-normal",
-      TOUCH_CONTROL,
-      "aria-pressed:border-primary aria-pressed:bg-primary aria-pressed:text-primary-foreground aria-pressed:font-medium",
-      "aria-pressed:hover:bg-primary/90 aria-pressed:hover:text-primary-foreground",
-      className,
-    )}
-  >
-    {children}
-    {count !== undefined && (
-      // A fixed slot: the number changes with every tap in another group, and
-      // a chip that resizes with it would rewrap the row under the thumb.
-      <span className="min-w-6 text-right tabular-nums opacity-65">
-        {fmt(count)}
-      </span>
-    )}
-  </Toggle>
-);
+}) => {
+  const { t, fmt } = useT();
+  return (
+    <Toggle
+      variant="outline"
+      pressed={pressed}
+      onPressedChange={onPressedChange}
+      disabled={count === 0 && !pressed}
+      aria-label={
+        count === undefined || !label
+          ? label
+          : fill(t.sidebar.filters.roadsLeft, { label, n: fmt(count) })
+      }
+      title={hint}
+      className={cn(
+        // The Toggle's own default size, widened into a pill and grown for a
+        // thumb by the constant every other control in the app uses – h-7 with a
+        // mouse, h-9 on a coarse pointer. No step of its own: a chip taller than
+        // the buttons beside it reads as a different kind of thing.
+        "border-border gap-1.5 rounded-full px-3 font-normal",
+        TOUCH_CONTROL,
+        "aria-pressed:border-primary aria-pressed:bg-primary aria-pressed:text-primary-foreground aria-pressed:font-medium",
+        "aria-pressed:hover:bg-primary/90 aria-pressed:hover:text-primary-foreground",
+        className,
+      )}
+    >
+      {children}
+      {count !== undefined && (
+        // A fixed slot: the number changes with every tap in another group, and
+        // a chip that resizes with it would rewrap the row under the thumb.
+        <span className="min-w-6 text-right tabular-nums opacity-65">
+          {fmt(count)}
+        </span>
+      )}
+    </Toggle>
+  );
+};
 
 /**
  * One row of chips under its own heading. The heading names the criterion and
@@ -135,7 +143,6 @@ export const ChipGroup = ({
 export const ThresholdChips = ({
   id,
   label,
-  hint,
   options,
   value,
   onChange,
@@ -144,7 +151,6 @@ export const ThresholdChips = ({
 }: {
   id: string;
   label: string;
-  hint?: string;
   options: Options;
   value: number;
   onChange: (value: number) => void;
@@ -159,23 +165,27 @@ export const ThresholdChips = ({
   /** How many roads each option would leave; see `FilterChip.count`. */
   count?: (value: number) => number;
 }) => {
+  const { t } = useT();
   const [[none]] = options as unknown as [[number, string]];
   return (
-    <ChipGroup id={id} label={label} hint={hint}>
-      {thresholdChips(options).map(([v, text]) => (
-        <FilterChip
-          key={v}
-          label={text}
-          count={count?.(v)}
-          pressed={value === v}
-          onPressedChange={(on) => onChange(on ? v : none)}
-        >
-          {/* `current`, because the pressed chip's surface *is* the primary
+    <ChipGroup id={id} label={label}>
+      {thresholdChips(options).map(([v, option]) => {
+        const text = optionText(option, t);
+        return (
+          <FilterChip
+            key={v}
+            label={text}
+            count={count?.(v)}
+            pressed={value === v}
+            onPressedChange={(on) => onChange(on ? v : none)}
+          >
+            {/* `current`, because the pressed chip's surface *is* the primary
               colour and a primary bar would vanish on it. */}
-          {scale && <Rating value={v} tone="current" />}
-          {text}
-        </FilterChip>
-      ))}
+            {scale && <Rating value={v} tone="current" />}
+            {text}
+          </FilterChip>
+        );
+      })}
     </ChipGroup>
   );
 };

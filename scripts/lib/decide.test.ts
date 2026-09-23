@@ -2,6 +2,7 @@ import { describe, expect, test } from "bun:test";
 
 import type {
   AscentMetrics,
+  ClimateYear,
   ElevationProfile,
   Pass,
   RouteGeometry,
@@ -14,11 +15,13 @@ import {
   afterGate,
   decideProfile,
   decideRoute,
+  lacksClimate,
   plan,
   routeJobs,
   storedFor,
 } from "./decide";
 import type { Flags, Judged, Stored } from "./decide";
+import { ascentInputs } from "./validate";
 
 const pass = (over: Partial<Pass> = {}): Pass => ({
   ascents: [
@@ -38,6 +41,7 @@ const pass = (over: Partial<Pass> = {}): Pass => ({
   region: "Ostalpen",
   season: null,
   slug: "stilfser-joch",
+  surface: "asphalt",
   traffic: 3,
   type: "pass",
   ...over,
@@ -64,9 +68,11 @@ const tour = (over: Partial<Tour> = {}): Tour => ({
   elevationGain: 4000,
   km: 174,
   name: "Marmotte",
+  note: "",
   passes: ["stilfser-joch"],
-  season: "",
+  season: null,
   slug: "marmotte",
+  surface: "asphalt",
   waypoints: [
     { lat: 45, lon: 6 },
     { lat: 45.2, lon: 6.2 },
@@ -626,5 +632,51 @@ describe("afterDecline", () => {
     expect(
       afterDecline(job, declined, false)?.meta?.[job.key],
     ).not.toHaveProperty("orsDeclined");
+  });
+});
+
+describe("the routing profile (plan 27)", () => {
+  test("follows the surface, and only a mountain profile enters the inputs", () => {
+    const paved = routeJobs([pass()], [])[0]!;
+    const gravel = routeJobs([pass({ surface: "gravel" })], [])[0]!;
+    expect(paved.profile).toBe("cycling-road");
+    expect(gravel.profile).toBe("cycling-mountain");
+    // A road stored before the surface existed keeps its hash: every one of
+    // them was asked with the road profile.
+    expect(paved.inputs).toBe(
+      ascentInputs(false, pass(), pass().ascents[0]!, "cycling-road"),
+    );
+    expect(gravel.inputs).not.toBe(paved.inputs);
+    expect(routeJobs([], [tour({ surface: "mixed" })])[0]!.profile).toBe(
+      "cycling-mountain",
+    );
+  });
+});
+
+describe("lacksClimate (plan 27)", () => {
+  const bucket = { frostPct: 0, snowPct: 0, tmax: 10, tmin: 0, wetPct: 0 };
+  const without: ClimateYear = Array.from({ length: 24 }, () => bucket);
+  const withCover: ClimateYear = without.map((b, i) =>
+    i === 0 && b ? { ...b, coverPct: 40 } : b,
+  );
+  const gravel = { slug: "finestre", surface: "gravel" as const };
+  const asphalt = { slug: "stelvio", surface: "asphalt" as const };
+
+  test("no series is asked for, whatever the road is rolled on", () => {
+    expect(lacksClimate(asphalt, {})).toBe(true);
+    expect(lacksClimate(gravel, {})).toBe(true);
+  });
+
+  test("an unpaved road is asked again while its series has no snow cover", () => {
+    expect(lacksClimate(gravel, { finestre: without }, true)).toBe(true);
+    expect(lacksClimate(gravel, { finestre: withCover }, true)).toBe(false);
+  });
+
+  test("but only once the archive is asked for the cover: the same answer twice is ~260 calls", () => {
+    expect(lacksClimate(gravel, { finestre: without }, false)).toBe(false);
+  });
+
+  test("a paved road keeps the series it has: it never reads the cover", () => {
+    expect(lacksClimate(asphalt, { stelvio: without }, true)).toBe(false);
   });
 });

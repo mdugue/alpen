@@ -10,6 +10,7 @@ import type { SingleParserBuilder } from "nuqs";
 import {
   ALL_STATUS,
   BEAUTY_OPTIONS,
+  COMPARE_MAX,
   DEFAULT_FILTERS,
   ELEVATION_OPTIONS,
   FAME_OPTIONS,
@@ -26,7 +27,7 @@ import type {
   Selection,
 } from "@/lib/app-state";
 import { isPeriod } from "@/lib/period";
-import { ROAD_TAGS, ROAD_TYPES } from "@/lib/regions";
+import { RANGES, ROAD_TAGS, ROAD_TYPES, SURFACES } from "@/lib/regions";
 import type { Period, Status } from "@/lib/types";
 
 // ── The URL hash ─────────────────────────────────────────────────────────────
@@ -38,7 +39,11 @@ import type { Period, Status } from "@/lib/types";
 //
 //   z     zoom                             c     centre "lat,lon"
 //   pi,b  pitch and bearing (only when tilted)
-//   pass | tour | town   the selected entity's slug
+//   vgl   the destinations set side by side, "oisans,engadin"
+//   pass | tour | town   the selected entity's slug – read only, for links
+//         from before plan 02; the selection is the path now
+//         (`lib/routes.ts`), and the adapter moves an old link over. An area
+//         never had a key: it came with the paths.
 //
 // Every filter has a key too; those are `FILTER_KEYS` below, one row each.
 // Every key is validated on the way in: unknown values fall back to the
@@ -85,7 +90,7 @@ const parseAsStatus = createParser<Status[]>({
 });
 /**
  * A comma-joined subset of a fixed vocabulary, in vocabulary order – `a=pass,spur`,
- * `e=toll,carfree`. Unknown members are dropped rather than rejected, so an
+ * `e=toll,carfree`, `g=Jura`. Unknown members are dropped rather than rejected, so an
  * old link keeps the part of its filter this build still understands; a value
  * that leaves nothing behind is no filter at all and falls back to the
  * default – `none` included, see `parseAsStatus`.
@@ -100,6 +105,23 @@ const parseAsSubset = <T extends string>(vocabulary: readonly T[]) =>
     },
     serialize: (list) => list.join(","),
   });
+
+/**
+ * `vgl=oisans,engadin`: a comma-joined list of slugs, cut to `COMPARE_MAX`.
+ * Slugs are not validated against the data here – the hash knows no data –
+ * so the sheet drops what it cannot find.
+ */
+const parseAsSlugs = createParser<string[]>({
+  eq: (a, b) => a.length === b.length && a.every((x, i) => x === b[i]),
+  parse: (raw) => {
+    const list = [...new Set(raw.split(",").filter(Boolean))].slice(
+      0,
+      COMPARE_MAX,
+    );
+    return list.length ? list : null;
+  },
+  serialize: (list) => list.join(","),
+});
 
 const RATINGS = [1, 2, 3, 4, 5] as const;
 /**
@@ -149,12 +171,16 @@ const FILTER_KEYS = {
   a: { field: "types", parser: parseAsSubset(ROAD_TYPES) },
   /** Min. beauty. */
   be: { field: "minBeauty", parser: parseAsOneOf(BEAUTY_OPTIONS) },
+  /** Surfaces "gravel,mixed" (Belag). */
+  bl: { field: "surfaces", parser: parseAsSubset(SURFACES) },
   /** Difficulty window "2-4". */
   d: { field: "difficulty", parser: parseAsRange },
   /** Road labels "toll,carfree". */
   e: { field: "tags", parser: parseAsSubset(ROAD_TAGS) },
   /** Min. fame. */
   f: { field: "minFame", parser: parseAsOneOf(FAME_OPTIONS) },
+  /** Mountain ranges "Jura,Vogesen" (Gebirge). */
+  g: { field: "ranges", parser: parseAsSubset(RANGES) },
   /** Max. valley heat in °C. */
   h: { field: "maxValleyTmax", parser: parseAsOneOf(HEAT_OPTIONS) },
   /** Min. elevation in m. */
@@ -200,6 +226,7 @@ const HASH = inKeyOrder({
   pi: parseAsFixed(0),
   tour: parseAsString,
   town: parseAsString,
+  vgl: parseAsSlugs,
   z: parseAsFixed(2),
 });
 /**
@@ -224,6 +251,20 @@ const HASH_OUT = {
 const loadHash = createLoader(HASH);
 const serialize = createSerializer(HASH_OUT, { clearOnDefault: true });
 
+/** The keys a selection travelled in before plan 02, when there were no paths. */
+const LEGACY_SELECTION = ["pass", "tour", "town"] as const;
+
+/**
+ * A hash from before the routes, with the selection it used to carry taken
+ * out: `#pass=x&t=6` becomes `#t=6`, for the path that now carries the pass.
+ */
+export const withoutLegacySelection = (hash: string): string => {
+  const params = new URLSearchParams(hash.replace(/^#/u, ""));
+  for (const key of LEGACY_SELECTION) params.delete(key);
+  const rest = params.toString();
+  return rest ? `#${rest}` : "";
+};
+
 /**
  * The pure half of the hash adapter (`lib/hash-adapter.ts`), so the parsing can
  * be tested without a window. What the adapter reads becomes the `load` action
@@ -240,6 +281,7 @@ export const parseHash = (hash: string): HashState => {
         ? { kind: "town", slug: h.town }
         : null;
   return {
+    compare: h.vgl ?? [],
     filters: Object.fromEntries(
       filterRows.map(([key, row]) => [row.field, given(key)]),
     ),
@@ -257,8 +299,8 @@ export const parseHash = (hash: string): HashState => {
 /** The other pure half: the hash body without the leading "#". */
 export const serializeHash = (
   filters: Filters,
-  selection: Selection | null,
   view: MapView,
+  compare: readonly string[] = [],
 ): string => {
   const tilted = view.pitch > 1;
   return serialize({
@@ -267,10 +309,13 @@ export const serializeHash = (
     ) as { [K in FilterHashKey]: Filters[Rows[K]["field"]] }),
     b: tilted ? view.bearing : null,
     c: [view.lat, view.lon],
-    pass: selection?.kind === "pass" ? selection.slug : null,
+    // The selection is the path, never written here; the three keys stay
+    // readable so an old link still opens the right entity.
+    pass: null,
     pi: tilted ? view.pitch : null,
-    tour: selection?.kind === "tour" ? selection.slug : null,
-    town: selection?.kind === "town" ? selection.slug : null,
+    tour: null,
+    town: null,
+    vgl: compare.length ? [...compare] : null,
     z: view.zoom,
   }).replace(/^\?/u, "");
 };

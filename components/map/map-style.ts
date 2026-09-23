@@ -1,13 +1,12 @@
 import { BASEMAP_ID } from "@/lib/basemap";
+import type { Messages } from "@/lib/i18n";
 
 /**
  * The default: the vector map generated from the app's palette
  * (`lib/basemap.ts`), light or dark with the OS. Listed first in the popover.
  */
-export const VECTOR_BASE = {
-  id: BASEMAP_ID,
-  name: "Karte (hell/dunkel automatisch)",
-} as const;
+export const vectorBase = (w: Messages) =>
+  ({ id: BASEMAP_ID, name: w.map.vectorBase }) as const;
 
 /** A raster alternative in the layer popover. */
 export interface BaseLayerDef {
@@ -18,10 +17,14 @@ export interface BaseLayerDef {
   attribution: string;
 }
 
-const OSM = "© OpenStreetMap-Mitwirkende";
-
-/** Raster base maps without a key; those requiring a key are only added when it is set. */
-export const baseLayers = (): BaseLayerDef[] => {
+/**
+ * Raster base maps without a key; those requiring a key are only added when
+ * it is set. The names and the OSM attribution are words the visitor reads,
+ * so they come in the page's language.
+ */
+export const baseLayers = (w: Messages): BaseLayerDef[] => {
+  const t = w.map;
+  const OSM = t.osmContributors;
   const list: BaseLayerDef[] = [
     {
       attribution: OSM,
@@ -62,7 +65,7 @@ export const baseLayers = (): BaseLayerDef[] => {
       attribution: "Tiles © Esri, Maxar, Earthstar Geographics",
       id: "esri-sat",
       maxzoom: 19,
-      name: "Satellit",
+      name: t.satellite,
       tiles: [
         "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
       ],
@@ -96,13 +99,19 @@ export const baseLayers = (): BaseLayerDef[] => {
   return list;
 };
 
+/** The overlays as the style knows them: ids, tiles, attribution – no words. */
 export const OVERLAYS = [
   {
     attribution: "© waymarkedtrails.org",
     id: "waymarked",
     maxzoom: 18,
-    name: "Radrouten",
     opacity: 0.8,
     tiles: ["https://tile.waymarkedtrails.org/cycling/{z}/{x}/{y}.png"],
   },
 ] as const;
+
+export type OverlayId = (typeof OVERLAYS)[number]["id"];
+
+/** What the view menu calls each overlay, in the page's language. */
+export const overlayName = (id: OverlayId, w: Messages): string =>
+  ({ waymarked: w.map.cycleRoutes })[id];

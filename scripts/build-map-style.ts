@@ -1,9 +1,10 @@
 #!/usr/bin/env bun
 /**
- * Writes the generated basemap as two complete MapLibre styles:
+ * Writes the generated basemap as complete MapLibre styles, one per scheme
+ * and language:
  *
- *   public/map/style-light.json
- *   public/map/style-dark.json
+ *   public/map/style-{light,dark}.json
+ *   public/map/style-{light,dark}-en.json
  *
  * The app does not fetch them – `components/map/pass-map.tsx` imports
  * `lib/basemap.ts` and composes the same layers with its own – but a style
@@ -18,16 +19,22 @@
 import { basemapStyle, GLYPHS } from "../lib/basemap";
 import { siteUrl } from "../lib/brand";
 import { writeDerived } from "../lib/derived-file";
+import { messagesOf } from "../lib/i18n/dictionaries";
+import { LANGS, langPrefix } from "../lib/i18n/lang";
 import { MAP_ASSET_DIR } from "../lib/map-assets";
 
 const OUT = new URL(`../public/${MAP_ASSET_DIR}/`, import.meta.url);
 
-// No hash and no pruning: the two names are fixed, and the geometry files
+// No hash and no pruning: the four names are fixed, and the geometry files
 // beside them belong to scripts/build-map-assets.ts, which runs first.
-const files = (["light", "dark"] as const).map((scheme) => ({
-  body: JSON.stringify(basemapStyle(scheme, `${siteUrl}${GLYPHS}`)),
-  name: `style-${scheme}.json`,
-}));
+const files = (["light", "dark"] as const).flatMap((scheme) =>
+  LANGS.map((lang) => ({
+    body: JSON.stringify(
+      basemapStyle(scheme, messagesOf(lang), `${siteUrl}${GLYPHS}`),
+    ),
+    name: `style-${scheme}${langPrefix(lang).replace("/", "-")}.json`,
+  })),
+);
 await writeDerived({ files, out: OUT });
 
 for (const f of files)

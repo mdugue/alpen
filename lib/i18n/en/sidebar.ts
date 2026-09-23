@@ -1,0 +1,90 @@
+import type { sidebar as de } from "../de/sidebar";
+import type { Layout } from "../fill";
+
+/** The English words of the sidebar, held to the German file's shape. */
+export const sidebar = {
+  clearSearch: "Clear the search",
+  compare: {
+    baseTowns: "Base: ",
+    description:
+      "Everything here is derived from the roads of the areas – the number of roads good to ride in the chosen half-month, the course of the year and the towns to stay in.",
+    loops: "Loops",
+    none: "No destination picked – switch on up to three in the list to compare them.",
+    open: "Compare",
+    pick: "Pick up to {max} destinations to compare",
+    picked: "{n} of {max} to compare",
+    remove: "Remove {name} from the comparison",
+    roads: "Roads",
+    title: "Destinations compared",
+    toggle: "Compare {name}",
+    towns: "Towns",
+  },
+  empty: {
+    filtersMatchNothing: "The filters you set match no entry.",
+    noDestinations: "No destinations found",
+    noPasses: "No roads found",
+    noTours: "No loops found",
+    queryMatchesNothing: '"{query}" matches no entry.',
+    queryMatchesNothingFiltered:
+      '"{query}" matches no entry – together with the filters you set.',
+    resetAll: "Reset all filters",
+    without: 'Without "{label}": {n}',
+  },
+  filters: {
+    active: "Active filters",
+    all: "All",
+    beauty: "Beauty, 5 is the most beautiful",
+    countRoads: "of {total} roads",
+    countTours: "loops",
+    difficulty: "Difficulty",
+    elevation: "Elevation of the summit",
+    fame: "Fame, 5 is a classic",
+    favoritesOnly: "Favourites only",
+    heat: "Valley heat (derived)",
+    more: "More filters",
+    noRoadsWithout: 'No roads. Without "{label}" there would be ',
+    open: "Filter",
+    range: "Range",
+    remove: 'Remove the "{label}" filter',
+    reset: "Reset",
+    roadType: "Type of road",
+    roadsLeft: "{label}, {n} roads",
+    status: "Status in the chosen period",
+    surface: "Surface",
+    tags: "Features",
+    tagsHint: "All of the selected ones must apply.",
+    traffic: "Traffic, 1 is the quietest",
+    wet: "Rain days in the half-month",
+  },
+  footer: {
+    imprint: "Legal notice",
+    /** The knowledge base under /wissen, German in both languages. */
+    knowledge: "Knowledge base (German)",
+    privacy: "Privacy",
+    supportSr: " – on Ko-fi, opens in a new tab",
+    supportTitle: "Support on Ko-fi",
+  },
+  footerNote: "The status is a heuristic, the scales are editorial.",
+  lists: {
+    /** The areas' switch; it carries the towns listed under them too. */
+    destinationsOnMap: "Destinations on the map",
+    onMap: "on the map",
+    /** The last group of the areas' list: the towns no listed area holds. */
+    otherTowns: "Other towns",
+    passes: "{n} passes",
+    showDestinations: "Show destinations and their towns on the map",
+    showPasses: "Show passes and roads on the map",
+    showTour: "Show {name} on the map",
+    showTours: "Show loops on the map",
+    sort: "Sort",
+    sortBy: "Sort by: {label}",
+  },
+  rating: "{value} of 5",
+  search: "Search",
+  searchPlaceholder: "Destination, pass, loop or town …",
+  strip: {
+    cell: "{period}: {grade}",
+  },
+  support: "Buy me a coffee",
+  whatTheListShows: "What the list shows",
+} as const satisfies Layout<typeof de>;

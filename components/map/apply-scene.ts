@@ -2,9 +2,9 @@
 
 import type { GeoJSONSource, Map as MLMap, Popup } from "maplibre-gl";
 
+import type { Ring } from "@/lib/geo";
 import { LAYERS, layersOf, SOURCE } from "@/lib/layer-ids";
-import type { PopupContent, Ring, Scene } from "@/lib/map-scene";
-import { TAG_LABEL } from "@/lib/regions";
+import type { PopupContent, Scene } from "@/lib/map-scene";
 import { tagIconSvg } from "@/lib/tag-icons";
 
 /**
@@ -56,8 +56,8 @@ export const popupHtml = (content: PopupContent) => {
   if (content.tags.length === 0) return `${title}${subtitle}`;
   const chips = content.tags
     .map(
-      (t) =>
-        `<span class="flex items-center gap-1">${tagIconSvg(t)}${escapeHtml(TAG_LABEL[t].label)}</span>`,
+      ([tag, label]) =>
+        `<span class="flex items-center gap-1">${tagIconSvg(tag)}${escapeHtml(label)}</span>`,
     )
     .join("");
   return `${title}${subtitle}<div class="mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs">${chips}</div>`;
@@ -103,12 +103,13 @@ const sameProps = (a: object, b: object): boolean => {
   );
 };
 
+/** Point and polygon collections alike: `same` walks nested coordinates. */
 const samePoints = (
   a: {
-    features: { geometry: { coordinates: number[] }; properties: object }[];
+    features: { geometry: { coordinates: unknown[] }; properties: object }[];
   },
   b: {
-    features: { geometry: { coordinates: number[] }; properties: object }[];
+    features: { geometry: { coordinates: unknown[] }; properties: object }[];
   },
 ): boolean =>
   a.features.length === b.features.length &&
@@ -186,6 +187,13 @@ export const applyScene = (
     host.setData(SOURCE.passes, next.passes);
   if (!prev || !samePoints(prev.towns, next.towns))
     host.setData(SOURCE.towns, next.towns);
+  // The outlines are rebuilt per scene, so the comparison walks the
+  // coordinates: 36 of them is what a hover over the list would otherwise
+  // re-tile in the worker.
+  if (!prev || !samePoints(prev.destinations, next.destinations))
+    host.setData(SOURCE.destinations, next.destinations);
+  if (!prev || !samePoints(prev.destinationLabels, next.destinationLabels))
+    host.setData(SOURCE.destinationLabels, next.destinationLabels);
   if (!prev || !samePoints(prev.hover.mark, next.hover.mark))
     host.setData(SOURCE.hover, next.hover.mark);
   if (!prev || !samePoints(prev.cursor, next.cursor))

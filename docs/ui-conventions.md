@@ -304,13 +304,16 @@ what it took for a pasted hash to bring the right tab forward, and for Escape
 to stop leaving the last hovered entity ringed: the rule used to be written
 three times, and the copies had drifted apart.
 
-**The hash and the storage are adapters.** Neither is read during a render,
-and no control writes to either: a control dispatches, and what the adapters
-persist is what the reducer made of it – which is how a half-month from a
-shared link applies without becoming the visitor's own preference.
-`useHashAdapter` (`lib/hash-adapter.ts`) turns the hash and the stored slices
-into one `load` action in a layout effect after hydration, and again on every
-`hashchange`; afterwards it serialises the state back into the hash. Why that
+**The address bar and the storage are adapters.** Neither is read during a
+render, and no control writes to either: a control dispatches, and what the
+adapters persist is what the reducer made of it – which is how a half-month
+from a shared link applies without becoming the visitor's own preference.
+`useHashAdapter` (`lib/hash-adapter.ts`) turns the path, the hash and the
+stored slices into one `load` action in a layout effect after hydration, and
+again on every `hashchange`; afterwards it serialises the state back – the
+selection as the path (`router.push`, since plan 02, so the back button
+closes the panel), everything else as the hash – and a path that changes
+under the app comes back in as `select` or `back`. Why that
 reading is a layout effect and not the state's initialiser is hydration; the
 hook's doc comment is the one place it is written out. A camera in the hash is
 read once and in one of two ways, decided by which hash this is: the one the
@@ -393,6 +396,20 @@ trigger, so the two can never disagree. Nothing is applied on a button – the
 count line at the end of the panel says what the current answer is, which is
 what makes live filtering answerable at all.
 
+One chip also moves the camera: the range ("Gebirge"). A range is a place,
+and "show me the Jura" is answered by the list _and_ the picture – a list of
+Jura roads under a picture of the Dolomites answers half the question. The
+chip is a filter like every member of a set (`Filters.ranges`, the hash key
+`g`), and pressing it into the list also asks the camera for the box around
+the ranges that stay (`requestedFit` in `lib/app-state.ts`, the `range`
+action); lifting the filter asks for nothing, so the visitor comes back to
+everything with the map where they left it. The frame travels through the
+camera machine like a selection's flight, padding included (`requestedFit`
+in `lib/map-camera.ts`), and it is the chip that asks, never the filter: a
+link carrying `g=Jura` and no camera opens fitted to what it lists, the way
+every such link does, and one with a camera opens on that. The group shows only once two
+ranges hold a road – a chip row of one is a statement, not a choice.
+
 ### The panel scrolls with the lists, not above them
 
 The sidebar's header is a fixed row and holds only the search field, the
@@ -421,6 +438,17 @@ the tours from 9 to 2 where it can be seen. Each kind's "auf der Karte" switch
 rides in that list's own toolbar (`ListToolbar`), never beside the tab row: a
 control next to three tabs reads as acting on all three, and a bare switch says
 what it does only once it has been flipped, so it carries the words too.
+
+There are three tabs for four kinds (`TABS`, `tabOf` in `lib/app-state.ts`).
+The roads come first, because they are what the map is made of. The towns
+have no tab of their own: an area and its towns answer one question – where to
+go, and where there to sleep – so the areas' list shows each town under every
+area that names it as a base (under the nearest area it lies in when none
+does, `homeAreasOf` in `lib/destination.ts`), and the towns no listed area
+holds in a last group (`nestTowns` in `lib/rows.ts`). Each of the two keeps
+its own filters; the grouping only says where a town is shown, the tab counts
+an area or a town outside every listed area (`tabCounts`), and selecting a
+town opens the areas' tab.
 
 ### What the drawer derives from the drag stays on the drawer
 
@@ -493,7 +521,7 @@ judged on a phone.
 
 Every row stays in the DOM either way. Windowing the list – with
 `@tanstack/react-virtual` or by hand – measured no better than the blocks, and
-it would cost `useRoving`'s arrows, `scrollIntoView` on the selected row and
+it would cost `rovingList`'s arrows, `scrollIntoView` on the selected row and
 the browser's own find-in-page across every row.
 
 Ten rows is about a screenful at the sheet's lower snap point. The list is a
@@ -560,7 +588,7 @@ delete.
 Every row used to be two (the bookmark toggle and the row itself) – 562
 focusable elements on the built page, so reaching the map meant holding Tab
 down for several hundred presses, and a screen reader's rotor held two hundred
-buttons all called "Merken". `useRoving` (`lib/use-roving.ts`) makes each list
+buttons all called "Merken". `rovingList` (`lib/use-roving.ts`) makes each list
 the composite widget the platform expects: one stop, arrows inside it,
 Home/End/PageUp/PageDown, and the tab stop stays on the row last focused. It
 works off the DOM rather than an index in state, because which rows exist
@@ -568,7 +596,59 @@ changes on every keystroke in the search field; where a key takes the focus is
 `rovingTarget` beside it, a pure function of the key, the row it was pressed on
 and how many there are, so the ends and the keys the platform keeps are a table
 test rather than a browser. Every bookmark toggle is named after the thing it
-bookmarks, and `app/page.tsx` carries a skip link to the map.
+bookmarks, and the explorer layout carries a skip link to the map.
+
+## The two languages
+
+### Every word has one home, and it is not the component
+
+Plan 08 put an English version under `/en`, and the question was where the
+words go. The answer is one object per language: `lib/i18n/messages.de.ts`
+is the source of truth, split into one section per area (`de/status.ts`,
+`de/vocab.ts`, `de/sidebar.ts`, `de/panel.ts`, `de/map.ts`, `de/scales.ts`),
+and `messages.en.ts` `satisfies` its layout, so a key that exists in one file
+and not the other fails `typecheck` rather than showing up as a blank. Every
+message is a plain string; an interpolation is a `{placeholder}` in it
+(`near: "Im Umkreis von {km} km"`), which `fill` (`lib/i18n/fill.ts`) fills
+and the type checks – `fill` refuses a call that leaves a placeholder out,
+and `lib/i18n/messages.test.ts` holds the English placeholders to the German
+ones. Plain strings are what lets a page's words travel as a value: a
+function cannot cross from the server to the browser, a string can.
+
+Which is the point, and the Next.js guide's: the dictionaries are the
+server's. `getDictionary` (`lib/i18n/server.ts`) reads the root parameter,
+the explorer layout loads the one language its page is in and hands it to
+`I18nProvider`, and no component imports a dictionary – a lint rule on the
+imports holds `components/` and `lib/` to that, so the other language never
+reaches the browser. A client component calls `useT()` (`components/i18n.tsx`)
+and gets `{ t, lang, fmt, fmtUnit }` – the words and a number format bound to
+the page's locale. A function of the core that says something – `statusWord`,
+`cellHint`, `bestText`, `periodLabel`, `appliedFilters`, `areaText` – takes
+the words as its last argument (`w: Messages`), which a component has from
+`useT()`, the server from `messagesOf` and a script or a test as the German
+`DE`. The vocabulary of the data (`lib/regions.ts`, `REACH_BANDS` in
+`lib/geo.ts`) holds keys only; what each is called is `vocab` in the message
+files. The provider is a React context under `components/`, and nothing
+under `lib/` imports it.
+
+What is not a message: the curated prose. That is `data/i18n/en/*.json`,
+keyed by slug and merged over the German records field by field in
+`lib/data.ts`, with a German fallback for what is not translated yet – which
+`bun run data:check` counts, so the coverage is a number in every data PR
+rather than a surprise in the panel. Proper names are never translated;
+the legal pages stay German with an English note.
+
+The language is the last group of the map's view menu
+(`components/map/language-field.tsx`), each language named in its own, the
+other a plain link (`switchLangHref`): the same path under the other prefix
+with the hash behind it, computed from the state rather than read off the
+address bar, so the server and the client render the same `href`. A full load
+on purpose – the page under the other prefix is another prerender, and every
+row's text changes with it. Picking one writes the `NEXT_LOCALE` cookie; the
+bare root reads it, and without it the browser's `Accept-Language`
+(`proxy.ts`, `preferredLang`) – the one request the app negotiates. A shared
+link is the page it names, and a navigation from inside the site is never
+redirected.
 
 ## The detail panel
 
@@ -592,15 +672,15 @@ which is where it stays.
 
 ### Model in, markup out
 
-**What a pass, a tour or a town shows is a value, and the components render
-it.** `detailModel(selection, data, state)` (`lib/detail-model.ts`) resolves the
-entity once and returns one discriminated `DetailModel`: the entity itself, its
-verdict and every German sentence it shows, what is within reach of it, which
-blocks apply, and how far its detail file has got (`DetailState`,
-`lib/detail-state.ts`). `PassDetail`, `TourDetail` and `TownDetail` take their
-half of that value plus one `PanelActions` object, and nothing else. The shell
-(`detail-panel.tsx`) is the head, the control row and one three-way switch on
-`model.kind`.
+**What a road, a loop, a town or an area shows is a value, and the components
+render it.** `detailModel(selection, data, state)` (`lib/detail-model.ts`)
+resolves the entity once and returns one discriminated `DetailModel`: the
+entity itself, its verdict and every sentence it shows, what is within reach
+of it, which blocks apply, and how far its detail file has got (`DetailState`,
+`lib/detail-state.ts`). `PassDetail`, `TourDetail`, `TownDetail` and
+`DestinationDetail` take their half of that value plus one `PanelActions`
+object, and nothing else. The shell (`detail-panel.tsx`) is the head, the
+control row and one four-way switch on `model.kind`.
 
 The three things that convention buys:
 
@@ -610,13 +690,12 @@ The three things that convention buys:
   file to find out who else was passing it on.
 - **Every sentence has one home.** The model calls `lib/status.ts`
   (`bestText`, `reasonParagraph`, `climateText`, `tourText`, `seasonText`) and
-  the components print what comes back. No German is glued together in JSX, so
-  the same fact cannot be worded two ways in two blocks.
+  the components print what comes back. No sentence is glued together in JSX,
+  so the same fact cannot be worded two ways in two blocks.
 - **It is testable without a browser.** The model is a pure function – `period`,
   `hovered` and the fetch state are arguments, never hooks – so `bun test`
-  renders all three kinds from one fixture with `renderToStaticMarkup`
-  (`components/panel/kind-detail.test.tsx`), and the same model will render on
-  the server for an entity page (`docs/plans/02-*`).
+  renders all four kinds from one fixture with `renderToStaticMarkup`
+  (`components/panel/kind-detail.test.tsx`).
 
 **"What is near here" is one module.** `lib/reach.ts` measures distance in the
 bands, the weight and the reach of `lib/geo.ts` and hands back one `Reach`

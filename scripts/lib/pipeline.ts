@@ -56,6 +56,7 @@ import { osmSource } from "./osm";
 import { HttpError, QuotaExhaustedError } from "./transport";
 import type { HostId, Transport } from "./transport";
 import { geometryHash, withProfile } from "./validate";
+import type { RoutingProfile } from "./validate";
 
 /** `[3/40]` against the pipeline's own total, dispatch order (not completion order). */
 const counter = (total: number) => (i: number) => `[${i + 1}/${total}]`;
@@ -201,6 +202,7 @@ export const runPipeline = async ({
   const route = async (
     label: string,
     waypoints: LatLon[],
+    profile: RoutingProfile,
   ): Promise<{
     declined: boolean;
     geom: RouteGeometry;
@@ -211,7 +213,7 @@ export const runPipeline = async ({
       try {
         return {
           declined,
-          geom: await ors.route(transport, waypoints),
+          geom: await ors.route(transport, waypoints, profile),
           source: "ors",
         };
       } catch (error) {
@@ -227,6 +229,13 @@ export const runPipeline = async ({
         } else throw error;
       }
     }
+    // The fallback is a car profile: on a gravel road it will refuse the
+    // track or drive round it, and the gate will say so. Expected, not an
+    // upgrade candidate – the line names it so nobody reads it as a miss.
+    if (profile !== "cycling-road")
+      log(
+        `  Schotter ohne ORS: ${label} – OSRM (Autoprofil) fährt Tracks meist nicht, das Gate weist die Route dann ab`,
+      );
     return {
       declined,
       geom: await osrm.route(transport, waypoints),
@@ -486,6 +495,7 @@ export const runPipeline = async ({
         const { declined, geom, source } = await route(
           job.label,
           job.waypoints,
+          job.profile,
         );
         if (upgrade && (state.meta[job.key]?.source ?? "osrm") === source) {
           const next = afterDecline(job, state, declined);

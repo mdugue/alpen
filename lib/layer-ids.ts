@@ -13,9 +13,12 @@
  * answering the pointer.
  */
 
-/** The GeoJSON sources; the three at the end are written by the scene alone. */
+/** The GeoJSON sources; all but the two static files are written by the scene alone. */
 export const SOURCE = {
   cursor: "cursor",
+  /** One point per area, where its name stands (a polygon labels itself once per tile). */
+  destinationLabels: "destination-labels",
+  destinations: "destinations",
   hover: "hover",
   passes: "passes",
   reach: "reach",
@@ -48,16 +51,39 @@ export interface LayerSet {
   labels: readonly string[];
   /** The transparent layer over the mark, as wide as the pointer needs. */
   hit: string;
-  /** The source all three read. */
+  /**
+   * Layers drawn with the mark and filtered with it, but neither a name nor
+   * a target: the dash over an unpaved ascent, the edge of an area's
+   * outline. They are never aimed at.
+   */
+  companions?: readonly string[];
+  /** The source the mark, its companions and its hit area read; a name may stand on a source of its own. */
   source: string;
 }
 
 /**
- * The four kinds the map draws. `route` is a pass's ascents: its own lines and
+ * The dash laid over an unpaved ascent (plan 27). A companion of the route
+ * set below – it carries the same filter – rather than a layer of its own: a
+ * gravel line hidden by the list must not keep its dashes.
+ */
+export const ROUTE_DASH = "routes-dash";
+
+/**
+ * The five kinds the map draws. `route` is a pass's ascents: its own lines and
  * its own hit layer, but never its own selection – an ascent belongs to its
- * pass, which is what `pick` answers with.
+ * pass, which is what `pick` answers with. `destination` is the outline of
+ * an area under everything else, thinner past the overview
+ * (`DESTINATION_MAX_ZOOM`); its name stands on a point source of its own.
  */
 export const LAYERS = {
+  destination: {
+    /** The outline's edge; the fill is the mark. */
+    companions: ["destinations-edge"],
+    hit: "destinations-hit",
+    labels: ["destinations-label"],
+    mark: "destinations",
+    source: SOURCE.destinations,
+  },
   pass: {
     hit: "passes-hit",
     labels: PASS_LABELS.map((l) => passLabelId(l.fame)),
@@ -65,6 +91,7 @@ export const LAYERS = {
     source: SOURCE.passes,
   },
   route: {
+    companions: [ROUTE_DASH],
     hit: "routes-hit",
     labels: [],
     mark: "routes",
@@ -103,6 +130,7 @@ export const OVERLAY = {
 export const layersOf = (set: LayerSet): string[] => [
   set.mark,
   ...set.labels,
+  ...(set.companions ?? []),
   set.hit,
 ];
 
@@ -123,6 +151,10 @@ export const HIT_GROUPS: readonly (readonly string[])[] = [
   [...LAYERS.tour.labels],
   [LAYERS.route.hit],
   [LAYERS.tour.hit],
+  // An area is the least specific answer there is: its name is a target,
+  // the outline only answers where nothing else does.
+  [...LAYERS.destination.labels],
+  [LAYERS.destination.hit],
 ];
 
 export const HIT_LAYERS: readonly string[] = HIT_GROUPS.flat();

@@ -8,7 +8,7 @@ die Wettervorhersage kommt live.
 
 ```mermaid
 flowchart TB
-  A["Von Hand gepflegt: Straßen, Touren, Orte"]
+  A["Von Hand gepflegt: Straßen, Touren, Orte, Reiseziele"]
   B["OpenStreetMap: Straßen am Passpunkt"]
   C["Routing: OpenRouteService oder OSRM"]
   D{"Qualitätsprüfung"}
@@ -16,7 +16,7 @@ flowchart TB
   E["Open-Meteo: Höhenprofile und Klima"]
   F["Wikimedia Commons: Fotos"]
   G["Gespeichert im Repository"]
-  H["Build: Karten- und Detaildateien, fertige Seite"]
+  H["Build: Karten- und Detaildateien, eine Seite je Eintrag"]
   I["Browser"]
   J["Wettervorhersage, eine Stunde zwischengespeichert"]
 
@@ -39,10 +39,11 @@ Wettervorhersage wird abgefragt, während jemand die Karte benutzt.
 
 ## 1. Von Hand gepflegt
 
-Drei Dateien beschreiben Straßen, Rundtouren und Orte: Namen, Koordinaten
-von Passpunkt und Auffahrtsbeginn, Bewertungen, Öffnungsfenster, Notizen (was
-genau, steht unter [Woher die Daten kommen](data-sources.md)). Hier schreibt
-ein Mensch, sonst nirgends.
+Vier Dateien beschreiben Straßen, Rundtouren, Orte und Reiseziele: Namen,
+Koordinaten von Passpunkt und Auffahrtsbeginn, Bewertungen, Belag,
+Öffnungsfenster, Notizen, bei Reisezielen Kreis und Texte (was genau, steht
+unter [Woher die Daten kommen](data-sources.md)). Hier schreibt ein Mensch,
+sonst nirgends.
 
 ## 2. Einmal abgefragt
 
@@ -58,7 +59,8 @@ einmal abgerufen.
   sonst neben der Straße enden. Ein Hilfsskript (`data:locate`) schlägt dafür
   einen besseren Punkt aus OpenStreetMap vor.
 - **Routen.** Für jede Auffahrt und jede Rundtour berechnet ein
-  Routing-Dienst den Straßenverlauf.
+  Routing-Dienst den Straßenverlauf – auf Asphalt mit einem Rennrad-, auf
+  ungeteerten Straßen mit einem Mountainbike-Profil.
 - **Prüfen** (nächster Abschnitt).
 - **Höhenprofil.** Nur für Strecken, die die Prüfung bestanden haben, werden
   rund 100 Höhenpunkte bei Open-Meteo abgefragt.
@@ -70,9 +72,10 @@ Open-Meteo erlaubt nur eine begrenzte Zahl von Abfragen pro Stunde. Ein Lauf
 hört deshalb vor der Grenze auf, und der nächste macht dort weiter.
 
 Jede gespeicherte Strecke merkt sich, wofür sie berechnet wurde: Start,
-Passpunkt und dessen Höhe. Wird eine Koordinate verschoben, passt die Strecke
-nicht mehr dazu, und der nächste Lauf berechnet sie von selbst neu, statt
-eine Linie stehen zu lassen, die beim alten Punkt endet.
+Passpunkt und dessen Höhe, bei ungeteerten Straßen auch das Profil. Wird eine
+Koordinate verschoben oder der Belag geändert, passt die Strecke nicht mehr
+dazu, und der nächste Lauf berechnet sie von selbst neu, statt eine Linie
+stehen zu lassen, die beim alten Punkt endet.
 
 ## Die Qualitätsprüfung der Strecken
 
@@ -123,10 +126,12 @@ Nach jeder Änderung an den Daten läuft `data:check`, von Hand und in der
 automatischen Prüfung des Repositorys, ohne eine einzige Abfrage. Es prüft,
 ob jede Datei ihrem Schema entspricht, ob alle Verweise stimmen (etwa ob
 jede Tour nur Pässe nennt, die es gibt) und ob Strecken und Profile
-vollständig sind. Außerdem misst es jede gespeicherte Strecke neu und
-hält sie gegen die heutigen Grenzen. Eine gespeicherte Strecke, die
-durchfällt, ist ein Fehler; eine abgelehnte oder nur mit OSRM berechnete ist
-eine Warnung.
+vollständig sind. Bei den Reisezielen warnt es, wenn ein empfohlener Ort
+außerhalb des Kreises liegt oder eine Korrektur nur wiederholt, was der Kreis
+schon sagt, und es listet die Straßen, die in keinem Reiseziel liegen.
+Außerdem misst es jede gespeicherte Strecke neu und hält sie gegen die
+heutigen Grenzen. Eine gespeicherte Strecke, die durchfällt, ist ein Fehler;
+eine abgelehnte oder nur mit OSRM berechnete ist eine Warnung.
 
 ## 4. Beim Build abgeleitet
 
@@ -138,7 +143,13 @@ Beim Bauen der Seite entsteht, was der Browser tatsächlich lädt:
 - **Die fertige Seite**: Hier wird unter anderem der Status aller Straßen und
   Touren für alle 24 Halbmonate einmal berechnet. Weil die Schwellen im Code
   stehen und sich ändern können, wird der Status nicht gespeichert, sondern
-  bei jedem Build neu ermittelt.
+  bei jedem Build neu ermittelt. Ebenso entsteht hier, welche Straßen, Touren
+  und Orte zu welchem Reiseziel gehören, und die Umrandung, mit der die Karte
+  es zeigt.
+- **Eine Seite je Eintrag**: Jeder Pass, jede Tour, jeder Ort und jedes
+  Reiseziel bekommt eine eigene Adresse (`/pass/…`, `/tour/…`, `/ort/…`,
+  `/ziel/…`), auf Deutsch und unter `/en` auf Englisch, jeweils mit eigenem
+  Titel und Vorschaubild zum Teilen.
 
 Die Namen der Karten- und Detaildateien enthalten eine Prüfsumme ihres
 Inhalts. Ändert sich der Inhalt, ändert sich der Name – deshalb dürfen

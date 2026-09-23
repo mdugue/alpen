@@ -1,5 +1,54 @@
 import type { LatLon } from "@/lib/types";
 
+/** `[west, south, east, north]` in degrees – the box MapLibre frames. */
+export type Bounds = [number, number, number, number];
+
+/**
+ * The box around a list of `[lat, lon]` points. Here rather than beside the
+ * map assets, where it started: the assets module needs node's crypto and fs
+ * and is never imported by client code, while the box around a destination's
+ * members is read by the panel and the scene.
+ */
+export const bounds = (
+  points: readonly (readonly [number, number])[],
+): Bounds => {
+  let w = Infinity;
+  let s = Infinity;
+  let e = -Infinity;
+  let n = -Infinity;
+  for (const [lat, lon] of points) {
+    if (lon < w) w = lon;
+    if (lon > e) e = lon;
+    if (lat < s) s = lat;
+    if (lat > n) n = lat;
+  }
+  return [w, s, e, n];
+};
+
+/**
+ * A circle of `radiusKm` around a point as a closed ring of `[lon, lat]`
+ * pairs – what a padded hull is built from. Flat-earth over one degree of
+ * latitude, with the longitude stretched by the cosine: at 75 km the error
+ * is well under the width of the line it is drawn with.
+ */
+const circleRing = (
+  center: LatLon,
+  radiusKm: number,
+  steps = 48,
+): [number, number][] => {
+  const dLat = radiusKm / 111.32;
+  const dLon = dLat / Math.cos((center.lat * Math.PI) / 180);
+  const ring: [number, number][] = [];
+  for (let i = 0; i <= steps; i += 1) {
+    const a = (i / steps) * 2 * Math.PI;
+    ring.push([
+      center.lon + dLon * Math.cos(a),
+      center.lat + dLat * Math.sin(a),
+    ]);
+  }
+  return ring;
+};
+
 /** Great-circle distance in km. */
 export const haversine = (a: LatLon, b: LatLon): number => {
   const R = 6371;
@@ -23,9 +72,6 @@ export const haversine = (a: LatLon, b: LatLon): number => {
  * stay somewhere else.
  */
 export const REACH_MAX_KM = 75;
-
-/** Kept as the old name for the precomputed hull and tour reach. */
-export const NEARBY_RADIUS_KM = REACH_MAX_KM;
 
 /**
  * Distance, as a rider thinks of it instead of as a number.
@@ -53,24 +99,9 @@ export const NEARBY_RADIUS_KM = REACH_MAX_KM;
  * weight.
  */
 export const REACH_BANDS = [
-  {
-    hint: "Aus dem Ort heraus, ohne Auto.",
-    key: "door",
-    label: "vor der Haustür",
-    maxKm: 18,
-  },
-  {
-    hint: "In einer Tagesrunde ab dem Ort machbar.",
-    key: "day",
-    label: "Tagesrunde",
-    maxKm: 45,
-  },
-  {
-    hint: "Lohnt den Transfer – ein Ausflugstag.",
-    key: "trip",
-    label: "Ausflug",
-    maxKm: REACH_MAX_KM,
-  },
+  { key: "door", maxKm: 18 },
+  { key: "day", maxKm: 45 },
+  { key: "trip", maxKm: REACH_MAX_KM },
 ] as const;
 
 export type ReachBand = (typeof REACH_BANDS)[number]["key"];
@@ -91,6 +122,10 @@ export const reachWeight = (km: number): number => {
   return (1 + Math.cos((km / REACH_MAX_KM) * Math.PI)) / 2;
 };
 
+/** The turn from `o` to `a` to `b`: positive counter-clockwise. */
+const cross = (o: LatLon, a: LatLon, b: LatLon) =>
+  (a.lon - o.lon) * (b.lat - o.lat) - (a.lat - o.lat) * (b.lon - o.lon);
+
 /**
  * Convex hull of a set of points (monotone chain), in the input's own units –
  * over the small spans this app draws, treating lon/lat as a plane is well
@@ -98,9 +133,6 @@ export const reachWeight = (km: number): number => {
  * the first point; fewer than three distinct points have no hull and yield an
  * empty ring.
  */
-const cross = (o: LatLon, a: LatLon, b: LatLon) =>
-  (a.lon - o.lon) * (b.lat - o.lat) - (a.lat - o.lat) * (b.lon - o.lon);
-
 export const convexHull = (points: readonly LatLon[]): LatLon[] => {
   const pts = [
     ...new Map(points.map((p) => [`${p.lat},${p.lon}`, p])).values(),
@@ -120,24 +152,33 @@ export const convexHull = (points: readonly LatLon[]): LatLon[] => {
 };
 
 /**
- * Pushes every vertex of a ring away from its centroid by `km`, so a hull
- * drawn through points reads as an area around them rather than a polygon
- * that cuts through them.
+ * A closed ring of `[lon, lat]` pairs – the first pair repeated last, as
+ * GeoJSON asks for it. MapLibre fills an open ring as well, but its line
+ * layer strokes the closing edge only where a tile happens to clip the ring,
+ * so an outline drawn from an open one misses a side.
  */
-export const expandRing = (ring: readonly LatLon[], km: number): LatLon[] => {
-  if (ring.length === 0) return [];
-  const n = ring.length;
-  const c = {
-    lat: ring.reduce((s, p) => s + p.lat, 0) / n,
-    lon: ring.reduce((s, p) => s + p.lon, 0) / n,
-  };
-  return ring.map((p) => {
-    const d = haversine(c, p);
-    if (d === 0) return { ...p };
-    const f = (d + km) / d;
-    return {
-      lat: c.lat + (p.lat - c.lat) * f,
-      lon: c.lon + (p.lon - c.lon) * f,
-    };
-  });
+export type Ring = readonly (readonly [number, number])[];
+
+/**
+ * The area a set of points covers, padded by `km` all round: the convex hull
+ * of a small circle around each point. It reads as a region around the points
+ * rather than a polygon cutting through them, and it stays one where the
+ * points do not span one – a valley's roads in a line make a band, not a
+ * sliver. What the map draws a town's reach and a destination with. Rounded
+ * to about a hundred metres: it travels to the page, and a drawn edge needs
+ * no more.
+ */
+export const paddedHull = (points: readonly LatLon[], km: number): Ring => {
+  const ring = convexHull(
+    points.flatMap((p) =>
+      circleRing(p, km, 12).map(([lon, lat]) => ({ lat, lon })),
+    ),
+  ).map(
+    (p) =>
+      [
+        Math.round(p.lon * 1000) / 1000,
+        Math.round(p.lat * 1000) / 1000,
+      ] as const,
+  );
+  return ring.length > 0 ? [...ring, ring[0]!] : [];
 };

@@ -2,6 +2,7 @@
 
 import { ChevronDown, Info } from "lucide-react";
 
+import { useT } from "@/components/i18n";
 import { Button } from "@/components/ui/button";
 import {
   Collapsible,
@@ -14,6 +15,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import type { BlockId } from "@/lib/detail-model";
+import { fill } from "@/lib/i18n/fill";
 import { useStored } from "@/lib/use-stored";
 
 /**
@@ -54,6 +56,7 @@ export const Section = ({
   info?: string;
   children: React.ReactNode;
 }) => {
+  const { t } = useT();
   const [closed, setClosed] = useStored("closedSections");
 
   return (
@@ -91,7 +94,7 @@ export const Section = ({
               openOnHover
               render={
                 <Button
-                  aria-label={`${title}: Hinweis zur Quelle`}
+                  aria-label={fill(t.panel.section.sourceHint, { title })}
                   className="text-muted-foreground/70"
                   size="icon-sm"
                   variant="ghost"

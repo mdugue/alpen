@@ -2,7 +2,8 @@
 
 Die 1–5-Bewertungen sind redaktionelle Einschätzungen, der Status je
 Halbmonat ist eine Heuristik aus Öffnungsfenster, Klimamitteln und
-Tageslicht. Beides hilft beim Vergleichen, ersetzt aber keine amtliche
+Tageslicht, und was Orte und Reiseziele zeigen, ist aus ihren Straßen
+abgeleitet. Beides hilft beim Vergleichen, ersetzt aber keine amtliche
 Auskunft.
 
 ## Die vier Skalen
@@ -38,8 +39,16 @@ Labels, keine gezählten Werte.
   [Der Weg der Daten](data-journey.md)).
 - Die **Merkmale** sagen, wie sich das Fahren dort anfühlt – etwa
   „Panoramastraße“, „Gletscherstraße“, „Autofrei“, „Maut“, „Kehrenbauwerk“,
-  „Pflaster oder Schotter“ oder „Tunnel & Galerien“. Eine Straße trägt keines,
-  eines oder mehrere.
+  „Pflaster“ oder „Tunnel & Galerien“. Eine Straße trägt keines, eines oder
+  mehrere. Bei „Maut“ sagt die Notiz, ob Räder zahlen; ob eine Mautstraße im
+  Winter geräumt wird, ist davon unabhängig.
+- Der **Belag** – Asphalt, Schotter oder gemischt – ist kein Merkmal, sondern
+  eine eigene Angabe, die jede Straße genau einmal hat. Er entscheidet, mit
+  welchem Profil die Strecke berechnet wird, wie die Straße im Winter
+  schließt (siehe unten) und dass sie auf der Karte gestrichelt ist.
+  „Pflaster“ ist ein Merkmal, kein Belag: Pflaster ändert die Reifenwahl,
+  nicht das Rad. Auf ungeteerten Straßen gelten die vier Skalen innerhalb
+  dieser Disziplin; in die Schwierigkeit geht der Belag mit ein.
 
 Was die Daten messen – Länge, Steigung, Höhe, ein Grenzübertritt –, steht als
 Zahl daneben und ist nie ein Merkmal. Dasselbe gilt für die Merkmale der Orte
@@ -58,12 +67,12 @@ ist, sagt er nicht.
 
 ### Vier Stufen
 
-| Stufe         | Bedeutung                                                                                |
-| ------------- | ---------------------------------------------------------------------------------------- |
-| beste Zeit    | der längste zusammenhängende Abschnitt ohne Vorbehalt und mit wenig Schneefall           |
-| gut           | nichts spricht gegen die Fahrt; nur ein kürzerer Abschnitt, oder es schneit gelegentlich |
-| eingeschränkt | fahrbar, aber mit einem Haken, der in einem Wort genannt wird                            |
-| oft gesperrt  | die Straße ist in dieser Zeit meist zu, in der Regel wegen der Wintersperre              |
+| Stufe         | Bedeutung                                                                                                                |
+| ------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| beste Zeit    | der längste zusammenhängende Abschnitt ohne Vorbehalt und mit wenig Schneefall                                           |
+| gut           | nichts spricht gegen die Fahrt; nur ein kürzerer Abschnitt, oder es schneit gelegentlich                                 |
+| eingeschränkt | fahrbar, aber mit einem Haken, der in einem Wort genannt wird                                                            |
+| oft gesperrt  | die Straße ist in dieser Zeit meist zu – wegen der Wintersperre, oder auf einer ungeteerten Straße wegen der Schneedecke |
 
 Auf der Karte, im Filter und in der Adresszeile gibt es nur drei Werte:
 „beste Zeit“ und „gut“ sind dort zusammen „gut“.
@@ -73,10 +82,11 @@ Auf der Karte, im Filter und in der Adresszeile gibt es nur drei Werte:
 1. **Das Öffnungsfenster entscheidet über „oft gesperrt“.** Für jeden Pass
    ist von Hand eingetragen, von welchem bis zu welchem Halbmonat er
    typischerweise offen ist. Außerhalb davon ist er „oft gesperrt“ – und nur
-   dort: Schnee, Hitze oder kurze Tage machen eine Straße nie „gesperrt“, sie
-   machen sie nur weniger ratsam. Der erste und der letzte Halbmonat im
+   dort: Schneefall, Hitze oder kurze Tage machen eine Straße nie „gesperrt“,
+   sie machen sie nur weniger ratsam. Der erste und der letzte Halbmonat im
    Fenster sind „eingeschränkt“ mit dem Wort **Randzeit**, weil sich Öffnung
-   und Sperrung je nach Winter um Wochen verschieben.
+   und Sperrung je nach Winter um Wochen verschieben. Die eine Ausnahme sind
+   ungeteerte Straßen (siehe [Schotter](#schotter-die-schneedecke-statt-der-wintersperre)).
 2. **Jedes weitere Signal kann eine Zelle nur senken, nie heben.** Schlägt
    eines an, wird aus „gut“ ein „eingeschränkt“.
 3. **Das erste Signal in einer festen Reihenfolge ist das Wort.** Die Zelle
@@ -90,6 +100,7 @@ Die Signale in ihrer Reihenfolge, mit den Werten, die heute gelten:
 
 | Wort          | schlägt an, wenn …                                                                            |
 | ------------- | --------------------------------------------------------------------------------------------- |
+| zugeschneit   | nur auf ungeteerten Straßen: an mindestens 20 % der Tage mindestens 10 cm Schnee liegen       |
 | Schnee        | an mindestens 20 % der Tage mindestens 1 cm Neuschnee fällt                                   |
 | Frost         | mindestens 80 % der Nächte unter 0 °C liegen                                                  |
 | Höhe          | ein hoher Pass in den Randmonaten liegt: Schnee und Eis sind möglich, auch bei offener Straße |
@@ -109,6 +120,21 @@ Klimareihen der Pässe abgestimmt, und der Dialog „Skalen & Quellen“ in der
 App liest seinen Text aus derselben Tabelle. Die genauen Schwellen und ihre
 Begründung stehen in [scales.md](../../scales.md) (englisch).
 
+### Schotter: die Schneedecke statt der Wintersperre
+
+Eine ungeteerte Straße – Belag Schotter oder gemischt – räumt niemand. Sie
+ist offen, sobald der Schnee weg ist, und schließt nicht an einer Schranke.
+Statt einer Wintersperre entscheidet bei ihr deshalb die **Schneedecke**:
+Liegen an mindestens 50 % der Tage eines Halbmonats mindestens 10 cm Schnee,
+ist sie „oft gesperrt“; ab 20 % ist sie „eingeschränkt“ mit dem Wort
+**zugeschneit**. Das ist etwas anderes als das Signal „Schnee“, das
+frisch gefallenen Schnee zählt.
+
+Die Schneehöhe steht bisher in keiner gespeicherten Klimareihe. Solange sie
+fehlt, wird eine ungeteerte Straße nur nach den übrigen Signalen bewertet und
+nie als gesperrt gezeigt – der Streifen zeigt dann, was bekannt ist, statt
+eine Sperre zu raten. Auch die beiden Anteile sind vorläufig gesetzt.
+
 ### Rundtouren
 
 Eine Rundtour hat keine eigene Klimareihe. Für jeden Halbmonat übernimmt sie
@@ -116,6 +142,13 @@ die Zelle des Passes, der sie am stärksten einschränkt – mit Farbe, Wort und
 Hinweis aus diesem einen Pass. Die Detailansicht nennt die Pässe, die die
 Tour zurückhalten. „Beste Zeit“ hat eine Tour nur dort, wo alle ihre Pässe
 in ihrer besten Zeit sind.
+
+Manche Touren tragen zusätzlich ein eigenes, von Hand eingetragenes
+Fenster, etwa „typisch Anfang Juni bis Anfang Oktober“. Es wird gelesen wie
+das eines Passes: außerhalb „oft gesperrt“, im ersten und letzten Halbmonat
+„eingeschränkt“ (Randzeit), dazwischen entscheiden die Pässe. Das Fenster
+kann die Zeit der Pässe nur enger fassen, nie erweitern. Touren ohne eigenes
+Fenster sind fahrbar, solange ihre Pässe offen sind.
 
 ## Die Klimagrundlage
 
@@ -186,6 +219,25 @@ die höchste Stufe und ein kleiner nie – der Streifen zeigte die Größe des
 Orts statt seines Jahres. Wie viel es insgesamt ist, steht deshalb in Worten
 daneben: wie viele Pässe im Umkreis zur besten Zeit, gut oder eingeschränkt
 sind. Die beiden Anteile sind redaktionell gesetzt wie alle Zahlen hier.
+
+## Reiseziele: abgeleitet aus ihren Straßen
+
+Auch ein Reiseziel hat keine eigene Klimareihe. Es wird bewertet wie ein
+Ort, nur über seine eigenen Straßen statt über eine Reichweite: Welche
+Straßen dazugehören, entscheidet der von Hand gezogene Kreis um die
+Gebietsmitte, mit einzelnen Straßen, die redaktionell dazugezählt oder
+ausgenommen sind. Nähe spielt keine Rolle – jede Straße im Gebiet zählt
+einmal. Der Saisonstreifen misst jeden Halbmonat an der besten Zeit **dieses
+Gebiets**, mit denselben Anteilen wie beim Ort (75 % und 45 %), und die
+Detailansicht nennt die Zahl in Worten dazu.
+
+Die Liste der Reiseziele ist nach einer Punktzahl gereiht, die nie angezeigt
+wird: die Schönheit jeder im gewählten Halbmonat gut befahrbaren Straße,
+zwei Fünftel davon für eine eingeschränkte, nichts für eine oft gesperrte.
+Ein Gebiet mit vielen schönen, offenen Straßen steht also oben. Auch diese
+Gewichtung ist redaktionell gesetzt, und sie wird nachjustiert, sobald die
+App eine echte Reise geplant hat. Was ein Reiseziel ist und wie sein Kreis
+gezogen wird, steht in [destinations.md](../../destinations.md) (englisch).
 
 ## Was das alles nicht ist
 

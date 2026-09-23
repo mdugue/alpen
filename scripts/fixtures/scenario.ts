@@ -94,6 +94,7 @@ const galibier: Pass = {
   region: "Westalpen",
   season: null,
   slug: "fixtur-galibier",
+  surface: "asphalt",
   traffic: 3,
   type: "pass",
 };
@@ -113,6 +114,7 @@ const lautaret: Pass = {
   region: "Westalpen",
   season: null,
   slug: "fixtur-lautaret",
+  surface: "asphalt",
   traffic: 4,
   type: "pass",
 };
@@ -124,9 +126,11 @@ const runde: Tour = {
   /** What the subsampled loop measures, so the tour passes on its length. */
   km: 35,
   name: "Fixtur-Runde",
+  note: "",
   passes: ["fixtur-galibier"],
-  season: "",
+  season: null,
   slug: "fixtur-runde",
+  surface: "asphalt",
   waypoints: [
     { lat: 46.549, lon: 11.874 },
     { lat: 46.519, lon: 11.874 },
@@ -177,7 +181,12 @@ export const seed = (): Stored => ({
   meta: {
     [KEYS.kept]: {
       fetchedAt: "2026-01-02",
-      inputs: ascentInputs(false, galibier, galibier.ascents[1]!),
+      inputs: ascentInputs(
+        false,
+        galibier,
+        galibier.ascents[1]!,
+        "cycling-road",
+      ),
       source: "osrm",
     },
   },

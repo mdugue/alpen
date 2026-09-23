@@ -1,8 +1,10 @@
+import type { DestinationMembers } from "@/lib/destination";
 import type { DetailAssets } from "@/lib/detail-assets";
 import type { MapAssets } from "@/lib/map-assets";
 import type { NearbyTours, TownReach } from "@/lib/nearby";
-import type { PassIndex, Years } from "@/lib/status";
-import type { ClimateYear, Pass, Tour, Town } from "@/lib/types";
+import type { RangeName } from "@/lib/regions";
+import type { PassIndex, TownIndex, Years } from "@/lib/status";
+import type { ClimateYear, Destination, Pass, Tour, Town } from "@/lib/types";
 
 /**
  * Everything the page hands the client, as one value.
@@ -21,12 +23,22 @@ export interface PageData {
   passes: Pass[];
   tours: Tour[];
   towns: Town[];
+  /** The riding areas as curated (`data/destinations.json`, docs/destinations.md). */
+  destinations: Destination[];
+  /** What each area holds, by its slug – derived on the server (`membersOf`). */
+  destinationMembers: Record<string, DestinationMembers>;
   /** Where MapLibre loads the ascent and tour lines from; see `lib/map-assets.ts`. */
   assets: MapAssets;
   /** Which tours run within reach of each entity; see `lib/nearby.ts`. */
   nearbyTours: NearbyTours;
   /** The area each town reaches, drawn on hover; see `lib/nearby.ts`. */
   townReach: TownReach;
+  /**
+   * The range each town belongs to, through the nearest road in its reach
+   * (`townRanges`, lib/nearby.ts); absent for a town beyond every road's
+   * reach. A town carries no region of its own, so this is derived.
+   */
+  townRanges: Partial<Record<string, RangeName>>;
   /** One URL per entity for its profiles and photos; see `lib/detail-assets.ts`. */
   detail: DetailAssets;
   climate: Record<string, ClimateYear>;
@@ -40,7 +52,7 @@ export interface PageData {
 }
 
 /**
- * The page data plus the one index every reader of it builds. It is built
+ * The page data plus the two indexes every reader of it builds. It is built
  * where the data is used rather than where it is loaded – the passes travel
  * as an array, and a `Map` does not survive the wire – but only once: the
  * explorer holds it, and the panel model takes it rather than building a
@@ -48,4 +60,5 @@ export interface PageData {
  */
 export interface PageBundle extends PageData {
   passIndex: PassIndex;
+  townIndex: TownIndex;
 }

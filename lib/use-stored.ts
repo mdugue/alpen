@@ -1,8 +1,13 @@
 "use client";
 import { useEffect, useSyncExternalStore } from "react";
 
-import { ALL_KINDS } from "@/lib/app-state";
-import type { AppState, EntityKind, StoredState } from "@/lib/app-state";
+import { tabOf, TABS } from "@/lib/app-state";
+import type {
+  AppState,
+  EntityKind,
+  ListTab,
+  StoredState,
+} from "@/lib/app-state";
 import { BASEMAP_ID } from "@/lib/basemap";
 import { isPeriod } from "@/lib/period";
 import type { Period } from "@/lib/types";
@@ -27,12 +32,13 @@ interface Slot<T> {
 }
 const slot = <T>(area: StorageArea, value: T): Slot<T> => ({ area, value });
 
-interface Favorites {
-  pass: string[];
-  tour: string[];
-  town: string[];
-}
-const NO_FAVORITES: Favorites = { pass: [], tour: [], town: [] };
+type Favorites = Record<EntityKind, string[]>;
+const NO_FAVORITES: Favorites = {
+  destination: [],
+  pass: [],
+  tour: [],
+  town: [],
+};
 
 /**
  * What this app calls its own in a shared origin. Spelled here and nowhere
@@ -65,15 +71,24 @@ const STORAGE = {
    * writes here (`ownPeriod` in `lib/app-state.ts`).
    */
   period: slot<Period | null>("local", null),
+  /**
+   * How many history entries the address-bar adapter pushed that are still
+   * ahead of the page it opened on (`useHashAdapter`), so closing the panel
+   * pops one of them rather than pushing a third – and still does after a
+   * reload, which is what makes it a session slot rather than a ref.
+   */
+  pushed: slot<number>("session", 0),
+  /** The destinations' switch: their outlines and the towns under them. */
+  showDestinations: slot<boolean>("local", true),
   showPasses: slot<boolean>("local", true),
-  showTowns: slot<boolean>("local", true),
   /** Whether the desktop sidebar is unfolded. */
   sidebar: slot<boolean>("local", true),
   /**
-   * Which of the three lists is on screen. A preference like the sidebar's own
-   * fold, so coming back lands where the last visit left off.
+   * Which of the three lists is on screen. A preference like the sidebar's
+   * own fold, so coming back lands where the last visit left off; the first
+   * visit lands on the roads (`TABS`).
    */
-  tab: slot<EntityKind>("local", "pass"),
+  tab: slot<ListTab>("local", TABS[0]!),
 };
 
 type StorageKey = keyof typeof STORAGE;
@@ -155,30 +170,43 @@ export const useStored = <K extends StorageKey>(key: K) => {
   return [value, setValue] as const;
 };
 
+/**
+ * A kind this build added is missing from what an earlier visit stored, so
+ * every read goes through this: a stored object is not trusted to carry every
+ * key.
+ */
+const favoritesOf = (f: Favorites, kind: EntityKind) => f[kind] ?? [];
+
 export const useFavorites = () => {
   const [favorites, setFavorites] = useStored("favorites");
   const isFavorite = (kind: EntityKind, slug: string) =>
-    favorites[kind].includes(slug);
+    favoritesOf(favorites, kind).includes(slug);
   const toggle = (kind: EntityKind, slug: string) =>
     setFavorites((f) => ({
       ...f,
-      [kind]: f[kind].includes(slug)
-        ? f[kind].filter((s) => s !== slug)
-        : [...f[kind], slug],
+      [kind]: favoritesOf(f, kind).includes(slug)
+        ? favoritesOf(f, kind).filter((s) => s !== slug)
+        : [...favoritesOf(f, kind), slug],
     }));
   // Only the two the explorer asks for: a `favorites` array, a `count` and a
   // `clear` were all handed back too, and no caller ever took one.
   return { isFavorite, toggle };
 };
 
-const isKind = (v: unknown): v is EntityKind =>
-  ALL_KINDS.includes(v as EntityKind);
+/** A stored tab; the towns' own tab of earlier builds is the areas' now (`tabOf`). */
+const storedTab = (v: unknown): ListTab =>
+  v === "town"
+    ? tabOf(v)
+    : TABS.includes(v as ListTab)
+      ? (v as ListTab)
+      : TABS[0]!;
 
 /**
  * The persisted slices the reducer owns, read outside React for the `load`
  * action (`lib/hash-adapter.ts`). What is in storage is not trusted further
  * than its shape: a slug that no longer exists is dropped by `reconcileShown`,
- * a tab name this build does not know falls back to the passes, and a
+ * a tab name this build does not know falls back to the first list – a kind
+ * that lost its own tab, the towns, to the tab it is listed in now – and a
  * half-month that is not one of the 24 is no preference at all.
  */
 export const readStoredState = (): StoredState => {
@@ -186,21 +214,21 @@ export const readStoredState = (): StoredState => {
   const hidden: unknown = readStored("hiddenTours");
   const period: unknown = readStored("period");
   const passes: unknown = readStored("showPasses");
-  const towns: unknown = readStored("showTowns");
+  const destinations: unknown = readStored("showDestinations");
   return {
     period: isPeriod(period) ? period : null,
     shown: {
+      // Anything but an explicit `false` is on: a switch is never off by accident.
+      destinations: destinations !== false,
       // The stored array itself when it is one, so a load that changes nothing
       // hands the reducer the reference it already holds.
       hiddenTours:
         Array.isArray(hidden) && hidden.every((s) => typeof s === "string")
           ? hidden
           : STORAGE.hiddenTours.value,
-      // Anything but an explicit `false` is on: a switch is never off by accident.
       passes: passes !== false,
-      towns: towns !== false,
     },
-    tab: isKind(tab) ? tab : "pass",
+    tab: storedTab(tab),
   };
 };
 
@@ -226,7 +254,7 @@ const slice =
  */
 const PERSISTED = [
   slice("showPasses", (s) => s.shown.passes),
-  slice("showTowns", (s) => s.shown.towns),
+  slice("showDestinations", (s) => s.shown.destinations),
   slice("hiddenTours", (s) => s.shown.hiddenTours),
   slice("tab", (s) => s.tab),
   // `ownPeriod` rather than `filters.period`: a half-month applied from a

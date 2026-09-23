@@ -47,10 +47,11 @@ vocabularies (regions, countries, road types, road and town labels) live in
 ```jsonc
 {
   "slug": "col-du-galibier", // stable, derived from the name; umlauts → ae/oe/ue
+  "surface": "asphalt", // asphalt | gravel | mixed – picks the routing profile and the closing rung
   "name": "Col du Galibier",
   "aliases": ["Galibier"], // optional: other spellings people search for
-  "country": "FR", // "CH/IT" for border passes
-  "region": "Westalpen", // Westalpen | Zentralalpen | Ostalpen | Dolomiten
+  "country": "FR", // COUNTRIES in lib/regions.ts; "CH/IT" for border passes
+  "region": "Westalpen", // REGIONS in lib/regions.ts; the range follows from it, see below
   "type": "pass", // required: pass | spur | plateau | balcony | valley
   "tags": ["panorama", "toll"], // optional: editorial labels in ROAD_TAGS order, see below
   "lat": 45.064,
@@ -85,6 +86,45 @@ reads – with a mandatory `note` saying why:
 Nockalm …). They are cleared of snow and therefore get no elevation penalty in
 the status heuristic.
 
+#### Region and range
+
+`region` is one of a fixed list, and one level above it sits the **range**
+(`RANGES` in `lib/regions.ts`, plan 25). The range is a function of the
+region – `rangeOf("Westalpen")` is `"Alpen"` – so no data file carries it and
+every generated key stays as it is; what the level buys is a word the search
+knows, the "Gebirge" chip, and a town's place: a town has no region of its
+own and takes the range of the nearest road in its reach (`townRanges`,
+`lib/nearby.ts`).
+
+| Range      | Regions                                      | Label (UI) |
+| ---------- | -------------------------------------------- | ---------- |
+| `Alpen`    | Westalpen, Zentralalpen, Ostalpen, Dolomiten | Alpen      |
+| `Vogesen`  | Vogesen                                      | Vogesen    |
+| `Jura`     | Jura                                         | Jura       |
+| `Pyrenäen` | Pyrenäen                                     | Pyrenäen   |
+
+A new range is a vocabulary edit: its name in `RANGES`, its regions in
+`RANGE_REGIONS`, its label and hint in `vocab.range` of both message files,
+and its box in
+`RANGE_BOUNDS`. `data:check` accepts the new region from that moment. The
+"Gebirge" chip group only shows once two ranges hold a road, and a range's
+chip frames the box around its roads (`rangeBounds`, `lib/map-assets.ts`).
+
+**Coordinates are guarded per range.** `LatLon` used to be one box around
+the Alps (43–49° N, 4–16° E), a typo guard so a swapped pair or a missing
+digit failed the schema instead of landing a pass in the sea. A box wide
+enough for the Pyrenees too would catch nothing, so the guard moved into
+`RANGE_BOUNDS` (plan 26): a road's marker and every ascent's `from` and `to`
+have to lie inside the box of its own range, a tour's passes have to share
+one range and its waypoints lie in that range's box (`data:check`), and a
+town is held to the union only – its range comes from reach. The Vosges and
+the Jura lie inside the Alps' box, so the guard catches a road filed on the
+wrong side of the 600 km to the Pyrenees and a coordinate typed into the
+sea, not a Jura road filed as "Westalpen". What a second range does to the
+first screen is the map's business (`docs/map-rendering.md`, "The map opens
+on the home range"). `COUNTRIES` carries `ES` and `AD` for the Spanish and
+Andorran side; the pair form (`FR/ES`) works as it always has.
+
 #### What kind of road it is, and what riding it is like
 
 Not every entry is a pass in the strict sense, and "how it deviates from a
@@ -96,7 +136,8 @@ erDiagram
   ROAD {
     string slug
     enum type "pass | spur | plateau | balcony | valley"
-    list tags "panorama, glacier, gorge, reservoir, carfree, toll, hairpins, surface, tunnels"
+    list tags "panorama, glacier, gorge, reservoir, carfree, toll, hairpins, cobbles, tunnels"
+    enum surface "asphalt | gravel | mixed"
     bool roadSummit "technical, only on a pass: no mountain_pass node"
     list ascents "from, label – plus to, km for a traverse"
   }
@@ -113,13 +154,14 @@ it. The rule is operational, not aesthetic: if the ascents climb to the
 entry's own point it is a `pass` or a `spur`; if the ride is the traverse
 itself it is one of the other three.
 
-| `type`    | Label (UI)   | What it is                                            | Examples                                             |
-| --------- | ------------ | ----------------------------------------------------- | ---------------------------------------------------- |
-| `pass`    | Pass         | a crossing: up one side, down another                 | Stilfser Joch, Galibier, Nockalmstraße               |
-| `spur`    | Stichstraße  | a climb to a point where the road ends                | Tre Cime, Ötztaler Gletscherstraße, Kitzbüheler Horn |
-| `plateau` | Höhenstraße  | stays up instead of crossing once: high road, plateau | Zillertaler Höhenstraße, Seiser Alm, Ritten          |
-| `balcony` | Balkonstraße | cut into a wall, no summit the ride aims at           | Combe Laval, Gorges de la Bourne, Gorges du Cians    |
-| `valley`  | Talstraße    | a quiet dead-end valley, little gradient              | Vallée de la Clarée, Val Ferret, Sertigtal           |
+| `type`    | Label (UI)   | What it is                                                                                                                                                                                                                                                                                               | Examples                                             |
+| --------- | ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------- |
+| `pass`    | Pass         | a crossing: up one side, down another                                                                                                                                                                                                                                                                    | Stilfser Joch, Galibier, Nockalmstraße               |
+| `spur`    | Stichstraße  | a climb to a point where the road ends                                                                                                                                                                                                                                                                   | Tre Cime, Ötztaler Gletscherstraße, Kitzbüheler Horn |
+| `surface` | Belag        | what it is rolled on (plan 27) – not a type, the second axis: `asphalt`, `gravel`, or `mixed` for asphalt with a gravel stretch a road bike cannot take; it picks the routing profile and, unpaved, the snow cover as the closing rung (`docs/scales.md`); a loop carries at least what its roads demand | Assietta `gravel`, Finestre `mixed`                  |
+| `plateau` | Höhenstraße  | stays up instead of crossing once: high road, plateau                                                                                                                                                                                                                                                    | Zillertaler Höhenstraße, Seiser Alm, Ritten          |
+| `balcony` | Balkonstraße | cut into a wall, no summit the ride aims at                                                                                                                                                                                                                                                              | Combe Laval, Gorges de la Bourne, Gorges du Cians    |
+| `valley`  | Talstraße    | a quiet dead-end valley, little gradient                                                                                                                                                                                                                                                                 | Vallée de la Clarée, Val Ferret, Sertigtal           |
 
 A `spur` cannot be crossed, so `data:check` warns when a tour lists one and
 the detail panel says so under "Auffahrten". The three traverse types carry
@@ -135,17 +177,17 @@ is the order it is drawn in: the badges in the panel and the strip of glyphs
 in the sidebar row both follow the array, so a hand-sorted entry shows up as
 a differently sorted row.
 
-| Tag         | Label (UI)             | Given when                                                                           |
-| ----------- | ---------------------- | ------------------------------------------------------------------------------------ |
-| `panorama`  | Panoramastraße         | the road was built for the view and says so in its name or its layout                |
-| `glacier`   | Gletscherstraße        | ends at or runs along a glacier                                                      |
-| `gorge`     | Schlucht               | a significant stretch runs through a gorge or canyon                                 |
-| `reservoir` | Stausee                | the road exists because of a dam and ends at or along the lake                       |
-| `carfree`   | Autofrei               | closed to cars, at least on fixed days (say which in `note`)                         |
-| `toll`      | Maut                   | a fee is charged; whether bikes pay goes into `note`                                 |
-| `hairpins`  | Kehrenbauwerk          | the hairpins are a monument in themselves (Tremola, Vršič, San Boldo)                |
-| `surface`   | Pflaster oder Schotter | a stretch that is not smooth asphalt – cobbles, gravel top – changes the tyre choice |
-| `tunnels`   | Tunnel & Galerien      | unlit tunnels or galleries a rider has to plan for                                   |
+| Tag         | Label (UI)        | Given when                                                                               |
+| ----------- | ----------------- | ---------------------------------------------------------------------------------------- |
+| `panorama`  | Panoramastraße    | the road was built for the view and says so in its name or its layout                    |
+| `glacier`   | Gletscherstraße   | ends at or runs along a glacier                                                          |
+| `gorge`     | Schlucht          | a significant stretch runs through a gorge or canyon                                     |
+| `reservoir` | Stausee           | the road exists because of a dam and ends at or along the lake                           |
+| `carfree`   | Autofrei          | closed to cars, at least on fixed days (say which in `note`)                             |
+| `toll`      | Maut              | a fee is charged; whether bikes pay goes into `note`                                     |
+| `hairpins`  | Kehrenbauwerk     | the hairpins are a monument in themselves (Tremola, Vršič, San Boldo)                    |
+| `cobbles`   | Pflaster          | a cobbled stretch – Tremola, Vršič – changes the tyre, not the bike; gravel is `surface` |
+| `tunnels`   | Tunnel & Galerien | unlit tunnels or galleries a rider has to plan for                                       |
 
 `toll` and `season.maintained` are independent: maintained means cleared, toll
 means paid for. The Großglockner is both, the Simplon is cleared and free, a
@@ -187,9 +229,37 @@ overwrites the visitor's own preference.
 
 ### `data/tours.json`
 
-`passes` contains pass **slugs**; the tour status is computed from them as the
-worst status among the passes involved. `waypoints` are rough anchor points
-that routing connects into a line.
+```jsonc
+{
+  "slug": "la-marmotte",
+  "name": "La Marmotte",
+  "color": "#c2410c",
+  "km": 174, // from the event or a trusted source; the gate measures against it
+  "elevationGain": 5000,
+  "passes": [
+    "col-du-glandon",
+    "col-du-telegraphe",
+    "col-du-galibier",
+    "alpe-d-huez",
+  ],
+  "note": "Der Galibier gibt das Fenster vor; Veranstaltung Anfang Juli.",
+  "season": { "opens": 6, "closes": 10.5 }, // the loop's own window; null = whenever its passes are open
+  "description": "…",
+  "waypoints": [{ "lat": 45.06, "lon": 6.03 }, "…"],
+}
+```
+
+`passes` contains pass **slugs** in ride order; per half-month the tour takes
+the cell of the member pass that holds it back (`tourYear`, `lib/status.ts`).
+`season` is the loop's own window where the curator knows one – the same two
+half-months a pass carries, read by the same rule: closed outside it, limited
+in its first and last half-month, and inside it the passes decide. It may
+narrow what the passes allow, never widen it; `data:check` warns when a loop
+claims to be open longer than one of its passes. `null` says the loop is
+rideable whenever its passes are. What the window cannot say goes into
+`note`: the event that closes the roads for a day, the cobbles that turn
+slick in rain, the plan B once a pass shuts. `waypoints` are rough anchor
+points that routing connects into a line.
 
 ### `data/towns.json`
 
@@ -200,8 +270,8 @@ infrastructure.
 
 `tags` says in two words **why the town is in the list at all** – one to four
 labels from the fixed vocabulary in `lib/regions.ts` (`TOWN_TAGS`, display
-order; `TOWN_TAG` carries the German label and the sentence that explains it in
-the scales dialog):
+order; `vocab.townTag` in the message files carries the label and the
+sentence that explains it in the scales dialog):
 
 | Tag         | Label                 | Given when                                                      |
 | ----------- | --------------------- | --------------------------------------------------------------- |
@@ -231,6 +301,46 @@ names people actually type: "Val di Fassa" finds Canazei, "Gröden" finds
 Wolkenstein, "Wallis" finds Brig and Martigny. Unlike a pass alias it may
 therefore be shared by several towns; what `data:check` rejects is an alias
 that collides with another town's _name_, or one a town gives itself twice.
+
+### `data/destinations.json`
+
+A riding area, as `docs/destinations.md` describes it: a circle with a base.
+Schema `Destination` in `lib/schema.ts`.
+
+| Field                             | Meaning                                                                                                                                            |
+| --------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `slug`, `name`, `country`         | As for a town; `country` may be a pair (`FR/IT`)                                                                                                   |
+| `center`, `radiusKm`              | The circle: where the riding starts, and how far a rider goes for a climb (10–75 km)                                                               |
+| `include`, `exclude`              | Road slugs added beyond the radius or cut inside it – corrections to the circle, and `data:check` warns when one says what the circle already says |
+| `baseTowns`                       | Town slugs to stay in; inside the circle as a rule, listed first in the panel, with a lodging search                                               |
+| `character`, `multiDay`, `access` | One or two sentences each: what riding here is like, what the area is for, how one gets there                                                      |
+| `note`                            | Optional, what does not fit the three                                                                                                              |
+
+Nothing in the file is a number about riding: membership and the verdict are
+derived (below). The entity diagram, with plan 12's "after":
+
+```mermaid
+erDiagram
+  DESTINATION ||--o{ ROAD : "within radius, plus include, minus exclude"
+  DESTINATION ||--o{ TOUR : "a waypoint within radius"
+  DESTINATION ||--o{ TOWN : "baseTowns and within radius"
+  TOUR }o--o{ ROAD : "passes[]"
+  DESTINATION {
+    string slug
+    string name
+    latlon center
+    number radiusKm
+    list baseTowns
+    list include
+    list exclude
+    string character
+    string multiDay
+    string access
+  }
+```
+
+A road may lie in several areas or in none; `data:check` prints the roads in
+none as one information line.
 
 ## Derived data (`bun run data:build`)
 
@@ -275,21 +385,22 @@ change – the script skips everything that already exists.
 
 ### Derived at prerender, not as a file
 
-Some derivations are computed by a `"use cache"` getter in `lib/data.ts` while
-the page is prerendered, rather than committed next to the measurements: they
-depend on rules and thresholds in `lib/`, so a file would go stale the moment
-one of those changed, with nothing to notice it. The page awaits all of them at
-once as `getPageData()`, which is the only exported entry point besides
-`getPass(slug)` – the weather route's, whose cold start must not drag the
-derivations in.
+Some derivations are computed by a getter in `lib/data.ts` while the page is
+prerendered, rather than committed next to the measurements: they depend on
+rules and thresholds in `lib/`, so a file would go stale the moment one of
+those changed, with nothing to notice it. The explorer's layout reads all of
+them at once as `getPageData(lang)`, inside its `"use cache"` entry; the entity
+routes look one entity up with `entityAt`, which runs none of them.
 
-| Getter           | Value                                                                                                             |
-| ---------------- | ----------------------------------------------------------------------------------------------------------------- |
-| `getValleys`     | the lowest ascent start per pass – the elevation the summit climate is taken down to for the heat signal          |
-| `getProfiles`    | the road coordinate of every profile sample (`ProfileWithCoords`), so no route geometry reaches the client        |
-| `getNearbyTours` | which tours run within reach of each pass, tour start and town, and how near their road comes (`lib/nearby.ts`)   |
-| `getTownReach`   | the area each town reaches, as a hull over its passes                                                             |
-| `getYears`       | the **year of every pass and tour**: 24 cells with status, grade, reasons and the snow note, plus the best window |
+| Getter                  | Value                                                                                                             |
+| ----------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| `getValleys`            | the lowest ascent start per pass – the elevation the summit climate is taken down to for the heat signal          |
+| `getMapAssets`          | the hashed GeoJSON file names MapLibre loads, the loops' boxes and the ranges' frames (`lib/map-assets.ts`)       |
+| `getDetailAssets`       | the hashed file name of each entity's detail file – profiles and photos (`lib/detail-assets.ts`)                  |
+| `getNearbyTours`        | which tours run within reach of each pass, tour start and town, and how near their road comes (`lib/nearby.ts`)   |
+| `getTownReach`          | the area each town reaches, as a hull over its passes                                                             |
+| `getDestinationMembers` | what each area holds – roads, loops, towns, its outline and the box around it (`membersOf`, `lib/destination.ts`) |
+| `getYears`              | the **year of every pass and tour**: 24 cells with status, grade, reasons and the snow note, plus the best window |
 
 The year is what the whole app reads. `passYear()` in `lib/status.ts` runs the
 verdict over all 24 half-months of a pass, `tourYear()` takes per half-month the

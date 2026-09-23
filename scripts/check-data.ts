@@ -26,13 +26,32 @@
  * must neither block a merge nor stop the refresh workflow from committing
  * what it fetched.
  */
-import { isTraverse, ROAD_TYPE } from "../lib/regions";
+import { insideOf, isMember } from "../lib/destination";
+import { haversine } from "../lib/geo";
+import { DE } from "../lib/i18n/dictionaries";
+import {
+  inBox,
+  isTraverse,
+  isUnpaved,
+  RANGE_BOUNDS,
+  rangeOf,
+  surfaceOfRoads,
+} from "../lib/regions";
+import type { RangeName } from "../lib/regions";
 import { ascentKey, entityKey, parseRouteKey, tourKey } from "../lib/route-key";
-import { FILES } from "../lib/schema";
+import {
+  DestinationTranslation,
+  FILES,
+  PassTranslation,
+  TourTranslation,
+  TownTranslation,
+} from "../lib/schema";
 import type { DataFileName } from "../lib/schema";
 import { fold } from "../lib/search";
+import { indexBySlug, windowText } from "../lib/status";
 import type {
   AscentMetrics,
+  Destination,
   Pass,
   RouteMetrics,
   RouteRejection,
@@ -43,7 +62,7 @@ import type {
 import { renderJsonSchema, schemaFileFor } from "./emit-json-schema";
 import { readData } from "./lib/data-files";
 import type { Data } from "./lib/data-files";
-import { judge, measure, plan } from "./lib/decide";
+import { judge, lacksCover, measure, plan } from "./lib/decide";
 import type {
   ProfileVerdict,
   RouteJob,
@@ -51,6 +70,7 @@ import type {
   Stored,
 } from "./lib/decide";
 import { ORS_KEY } from "./lib/hosts";
+import { misquotedIn } from "./lib/quoted";
 import {
   checkRoadAscent,
   checkTour,
@@ -80,6 +100,7 @@ const [
   passes,
   tours,
   towns,
+  destinations,
   routes,
   profiles,
   climate,
@@ -87,10 +108,15 @@ const [
   rejected,
   summits,
   photos,
+  passesEn,
+  toursEn,
+  townsEn,
+  destinationsEn,
 ] = await Promise.all([
   load("passes.json"),
   load("tours.json"),
   load("towns.json"),
+  load("destinations.json"),
   load("generated/routes.json"),
   load("generated/profiles.json"),
   load("generated/climate.json"),
@@ -98,6 +124,10 @@ const [
   load("generated/rejected.json"),
   load("generated/summits.json"),
   load("generated/photos.json"),
+  load("i18n/en/passes.json"),
+  load("i18n/en/tours.json"),
+  load("i18n/en/towns.json"),
+  load("i18n/en/destinations.json"),
 ]);
 
 for (const file of Object.keys(FILES) as DataFileName[]) {
@@ -108,6 +138,13 @@ for (const file of Object.keys(FILES) as DataFileName[]) {
       `data/schema/${schemaFileFor(file)} ist veraltet (bun run data:schema)`,
     );
 }
+
+// The thresholds are restated in prose – the gate's limits in the skill and
+// two diagrams, the status constants in docs/scales.md – and a constant that
+// moved while the sentence kept the old number is the same kind of staleness
+// as the schema files above. `scripts/lib/quoted.ts` says which document
+// quotes which constant, and how.
+errors.push(...(await misquotedIn(new URL("../", import.meta.url))));
 
 // ── 2. What the next build would do ──────────────────────────────────────────
 
@@ -304,7 +341,7 @@ const checkPasses = (list: Pass[]) => {
     // `false` is worse: it reads as "kein Straßenscheitel" and does nothing.
     if (p.roadSummit !== undefined && p.type !== "pass")
       warnings.push(
-        `${p.slug}: roadSummit wird bei einer ${ROAD_TYPE[p.type].label} nicht gelesen – der Scheitel liegt dort immer auf der Straße; Zeile entfernen`,
+        `${p.slug}: roadSummit wird bei einer ${DE.vocab.roadType[p.type].label} nicht gelesen – der Scheitel liegt dort immer auf der Straße; Zeile entfernen`,
       );
 
     checkRoutes(p);
@@ -315,18 +352,73 @@ const checkPasses = (list: Pass[]) => {
   }
 };
 
-const checkTours = (list: Tour[], spurs: Set<string>, slugs: Set<string>) => {
+/**
+ * A loop is ridden with what its roads demand: gravel or mixed the moment one
+ * member is (plan 27). Written down rather than derived, so the file can say
+ * more than its roads do – and held to at least what they say here.
+ */
+const checkTourSurface = (t: Tour, byPass: Map<string, Pass>) => {
+  const surfaces = t.passes
+    .map((s) => byPass.get(s)?.surface)
+    .filter((x) => x !== undefined);
+  // At least what the roads say: a loop may declare more gravel than its
+  // roads (the connecting stretches), never less.
+  const expected = surfaceOfRoads(surfaces);
+  if (surfaces.length && t.surface === "asphalt" && expected !== "asphalt")
+    errors.push(
+      `Tour ${t.slug}: surface "asphalt" – ihre Pässe verlangen mindestens "${expected}"`,
+    );
+};
+
+const checkTours = (list: Tour[], byPass: Map<string, Pass>) => {
   dupes(list, "Touren");
   for (const t of list) {
+    // A loop has no region of its own: its range is its passes', which have
+    // to agree on one, and its waypoints lie in that range's box – the same
+    // typo guard the schema holds a road's marker to (`RANGE_BOUNDS`).
+    const ranges = new Set<RangeName>();
     for (const s of t.passes) {
-      if (!slugs.has(s)) errors.push(`Tour ${t.slug}: unbekannter Pass ${s}`);
+      const p = byPass.get(s);
+      if (p) ranges.add(rangeOf(p.region));
+    }
+    if (ranges.size > 1)
+      errors.push(
+        `Tour ${t.slug}: Pässe aus ${[...ranges].map((r) => DE.vocab.range[r].label).join(" und ")} – eine Runde liegt in einem Gebirge`,
+      );
+    const [range] = ranges;
+    if (range) {
+      const box = RANGE_BOUNDS[range];
+      for (const [i, w] of t.waypoints.entries())
+        if (!inBox(box, w))
+          errors.push(
+            `Tour ${t.slug}: Wegpunkt ${i} liegt ${DE.vocab.range[range].outside} (${box.lat.join("–")}° N, ${box.lon.join("–")}° E)`,
+          );
+    }
+    for (const s of t.passes) {
+      const p = byPass.get(s);
+      if (!p) {
+        errors.push(`Tour ${t.slug}: unbekannter Pass ${s}`);
+        continue;
+      }
       // A road that ends at its summit cannot be crossed, so a tour listing it
       // either has the wrong pass or the pass is wrongly marked.
-      else if (spurs.has(s))
+      if (p.type === "spur")
         warnings.push(
           `Tour ${t.slug}: ${s} ist eine Stichstraße – eine Runde kann dort nicht hinüber`,
         );
+      // A loop's own window may narrow what its passes allow, never widen it:
+      // a loop that claims to open in May over a pass that opens in June says
+      // something its passes contradict, and the strip would show the pass.
+      if (
+        t.season &&
+        p.season &&
+        (t.season.opens < p.season.opens || t.season.closes > p.season.closes)
+      )
+        warnings.push(
+          `Tour ${t.slug}: Fenster ${windowText(t.season, DE)} reicht über das von ${s} (${windowText(p.season, DE)}) hinaus – die Runde kann nicht länger offen sein als ihr Pass`,
+        );
     }
+    checkTourSurface(t, byPass);
     const key = tourKey(t.slug);
     const job = jobs.get(key);
     const geom = routes?.[key];
@@ -374,15 +466,59 @@ const checkTowns = (list: Town[]) => {
   }
 };
 
+/**
+ * A destination refers to roads and towns by slug, and its lists are
+ * corrections to a radius: `include` reaches past it, `exclude` cuts inside
+ * it. A correction that the radius already makes is a warning – the list
+ * says something the circle says too, and the next radius change will make
+ * one of them wrong. Which road belongs to no area at all is printed as
+ * information at the end (docs/destinations.md).
+ */
+const checkDestinations = (
+  list: Destination[],
+  byPass: Map<string, Pass>,
+  byTown: Map<string, Town>,
+) => {
+  dupes(list, "Reiseziele");
+  for (const d of list) {
+    const inside = (p: { lat: number; lon: number }) => insideOf(d, p);
+    for (const slug of d.baseTowns) {
+      const t = byTown.get(slug);
+      if (!t) errors.push(`${d.slug}: Standort ${slug} unbekannt`);
+      else if (!inside(t))
+        warnings.push(
+          `${d.slug}: Standort ${slug} liegt ${Math.round(haversine(d.center, t))} km von der Mitte – außerhalb des Radius von ${d.radiusKm} km`,
+        );
+    }
+    for (const slug of d.include) {
+      const p = byPass.get(slug);
+      if (!p) errors.push(`${d.slug}: include ${slug} unbekannt`);
+      else if (inside(p))
+        warnings.push(`${d.slug}: include ${slug} liegt ohnehin im Radius`);
+      if (d.exclude.includes(slug))
+        errors.push(`${d.slug}: ${slug} in include und exclude`);
+    }
+    for (const slug of d.exclude) {
+      const p = byPass.get(slug);
+      if (!p) errors.push(`${d.slug}: exclude ${slug} unbekannt`);
+      else if (!inside(p))
+        warnings.push(`${d.slug}: exclude ${slug} liegt ohnehin außerhalb`);
+    }
+    if (![...byPass.values()].some((p) => isMember(d, p)))
+      errors.push(`${d.slug}: keine Straße im Gebiet`);
+  }
+};
+
+/** Roads in no area: listed so that "standalone" is a decision, not an oversight. */
+const standalone = (list: Destination[], roads: Pass[]): string[] =>
+  roads.filter((p) => !list.some((d) => isMember(d, p))).map((p) => p.slug);
+
 if (passes) checkPasses(passes);
 // Without a valid pass list every reference would read as unknown.
-if (tours && passes)
-  checkTours(
-    tours,
-    new Set(passes.filter((p) => p.type === "spur").map((p) => p.slug)),
-    new Set(passes.map((p) => p.slug)),
-  );
+if (tours && passes) checkTours(tours, indexBySlug(passes));
 if (towns) checkTowns(towns);
+if (destinations && passes && towns)
+  checkDestinations(destinations, indexBySlug(passes), indexBySlug(towns));
 
 // Rejections are unfinished curation: either the coordinates in data/*.json are
 // wrong, or a limit in validate.ts is. Both need a human, neither blocks a merge.
@@ -496,8 +632,89 @@ const rejectedCount = Object.keys(rejected ?? {}).length;
 const singleSided = (passes ?? []).filter(
   (p) => p.type === "pass" && p.ascents.length === 1,
 ).length;
+// Also information: a road outside every destination is fine when it is a
+// lone road nobody would build a holiday around, and a gap in the areas when
+// it is not. The list makes that a decision the curator sees.
+const alone = passes && destinations ? standalone(destinations, passes) : [];
+// The snow cover closes an unpaved road (plan 27); a series without it grades
+// such a road by every other rung and never closes it. Only those roads are
+// counted – a paved road never reads the cover – and `data:build` asks the
+// archive for them again once the request carries the variable
+// (`ARCHIVE_DAILY`, `lacksClimate`). Counted, not warned: that is a run, not
+// a bug.
+const unpaved = (passes ?? []).filter((p) => isUnpaved(p.surface));
+const uncovered = climate ? unpaved.filter((p) => lacksCover(p, climate)) : [];
+if (uncovered.length)
+  console.log(
+    `INFO  Schneedecke (coverPct) fehlt bei ${uncovered.length} von ${unpaved.length} ungeteerten Straßen (${uncovered.map((p) => p.slug).join(", ")}) – bis das Archiv nach der Schneehöhe gefragt wird (Plan 27), werden sie nie „gesperrt“`,
+  );
+if (alone.length)
+  console.log(
+    `INFO  ${alone.length} Straßen in keinem Reiseziel: ${alone.join(", ")}`,
+  );
+// The English prose (plan 08): a missing field falls back to German in the
+// English UI, so the gap is counted rather than failed – and an entry for a
+// slug that no longer exists is a warning, like any other orphan.
+const translationGaps: string[] = [];
+const coverage = (
+  what: string,
+  list: { slug: string }[] | null,
+  translations: Record<string, object> | null,
+  /** The translatable fields, as the schema of the English file names them. */
+  fields: readonly string[],
+) => {
+  if (!list || !translations) return;
+  const slugs = new Set(list.map((x) => x.slug));
+  for (const key of Object.keys(translations))
+    if (!slugs.has(key))
+      warnings.push(`i18n/en/${what}.json: verwaister Eintrag ${key}`);
+  for (const field of fields) {
+    const missing = list.filter(
+      (x) =>
+        (x as Record<string, unknown>)[field] !== undefined &&
+        (translations[x.slug] as Record<string, unknown> | undefined)?.[
+          field
+        ] === undefined,
+    ).length;
+    if (missing)
+      translationGaps.push(`${what}.${field} ${missing}/${list.length}`);
+  }
+};
+// The ascent labels are an array matched by index and checked on their own below.
+coverage(
+  "passes",
+  passes,
+  passesEn,
+  Object.keys(PassTranslation.shape).filter((f) => f !== "ascents"),
+);
+// The ascent labels are matched by index, so a list of the wrong length
+// would put a label on the wrong side – a warning, unlike a missing field.
+for (const p of passes ?? []) {
+  const labels = passesEn?.[p.slug]?.ascents;
+  if (labels && labels.length !== p.ascents.length)
+    warnings.push(
+      `i18n/en/passes.json: ${p.slug} hat ${labels.length} Auffahrtsnamen, die Straße ${p.ascents.length}`,
+    );
+}
+if (passes && passesEn) {
+  const missing = passes.filter((p) => !passesEn[p.slug]?.ascents).length;
+  if (missing)
+    translationGaps.push(`passes.ascents ${missing}/${passes.length}`);
+}
+coverage("tours", tours, toursEn, Object.keys(TourTranslation.shape));
+coverage("towns", towns, townsEn, Object.keys(TownTranslation.shape));
+coverage(
+  "destinations",
+  destinations,
+  destinationsEn,
+  Object.keys(DestinationTranslation.shape),
+);
+if (translationGaps.length)
+  console.log(
+    `INFO  Englische Texte fehlen (Rückfall auf Deutsch): ${translationGaps.join(", ")}`,
+  );
 console.log(
-  `${passes?.length ?? 0} Pässe (${singleSided} davon einseitig), ${tours?.length ?? 0} Touren, ${towns?.length ?? 0} Orte · ${Object.keys(routes ?? {}).length} Routen geprüft${
+  `${passes?.length ?? 0} Pässe (${singleSided} davon einseitig), ${tours?.length ?? 0} Touren, ${towns?.length ?? 0} Orte, ${destinations?.length ?? 0} Reiseziele · ${Object.keys(routes ?? {}).length} Routen geprüft${
     rejectedCount ? `, ${rejectedCount} abgewiesen` : ""
   } · ${errors.length} Fehler, ${warnings.length} Warnungen`,
 );

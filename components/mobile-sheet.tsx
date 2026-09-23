@@ -113,8 +113,10 @@ export const useSheet = (): EnclosingSheet => ({
 });
 
 interface Props {
-  /** Names the sheet for screen readers and its swipe handle ("… ausklappen"). */
+  /** Names the sheet for screen readers. */
   label: string;
+  /** What the tap target on the swipe handle says, collapsed and expanded ("Liste ausklappen"). */
+  handle: { expand: string; collapse: string };
   /** Rendered inside another sheet, which it stacks on; see `EnclosingSheet`. */
   over?: boolean;
   open: boolean;
@@ -143,6 +145,7 @@ interface Props {
  */
 export const MobileSheet = ({
   label,
+  handle,
   over = false,
   open,
   onClose,
@@ -208,7 +211,7 @@ export const MobileSheet = ({
         <button
           type="button"
           onClick={() => onSnapChange(isCollapsed ? top : collapsed)}
-          aria-label={`${label} ${isCollapsed ? "ausklappen" : "einklappen"}`}
+          aria-label={isCollapsed ? handle.expand : handle.collapse}
           className="w-full shrink-0"
         >
           <DrawerSwipeHandle className="h-5" />

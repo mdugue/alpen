@@ -19,8 +19,10 @@ import type {
 
 import { OVERLAYS } from "@/components/map/map-style";
 import { BASEMAP_ID, basemapLayers, FONT_BOLD } from "@/lib/basemap";
+import type { Lang } from "@/lib/i18n";
 import {
   LAYERS,
+  ROUTE_DASH,
   OVERLAY,
   PASS_LABELS,
   passLabelId,
@@ -28,8 +30,8 @@ import {
 } from "@/lib/layer-ids";
 import { PALETTE } from "@/lib/palette";
 import type { Scheme } from "@/lib/palette";
-import { prominenceFilter } from "@/lib/prominence";
-import { STATUS_ORDER } from "@/lib/status";
+import { DESTINATION_MAX_ZOOM, prominenceFilter } from "@/lib/prominence";
+import { STATUSES } from "@/lib/regions";
 import type { MapEnvironment } from "@/lib/use-media-query";
 
 /**
@@ -90,6 +92,7 @@ export const readColors = (el: HTMLElement) => {
   };
   return {
     accent: v("--accent", "#e8a33d"),
+    area: v("--area", "#5b86c4"),
     closed: v("--status-closed", "#c43d3d"),
     ink: v("--foreground", "#1b2430"),
     open: v("--status-open", "#2e8b57"),
@@ -168,7 +171,7 @@ export const addIcons = (map: MLMap, c: ReturnType<typeof readColors>) => {
     if (map.hasImage(id)) map.updateImage(id, data);
     else map.addImage(id, data, { pixelRatio: 2 });
   };
-  for (const k of STATUS_ORDER) {
+  for (const k of STATUSES) {
     add(`star-${k}-0`, star(c[k], c.paper));
     add(`star-${k}-1`, star(c[k], c.ink));
   }
@@ -206,16 +209,17 @@ export const hillshadeLayer = (
 export const baseStack = (
   id: string,
   s: Scheme,
+  lang: Lang,
 ): { ground: LayerSpecification[]; detail: LayerSpecification[] } =>
   id === BASEMAP_ID
-    ? basemapLayers(s)
+    ? basemapLayers(s, lang)
     : { detail: [], ground: [{ id: "base", source: id, type: "raster" }] };
 
 /** Swaps the base under a running map; everything above it stays put. */
-export const applyBase = (m: MLMap, id: string, s: Scheme) => {
+export const applyBase = (m: MLMap, id: string, s: Scheme, lang: Lang) => {
   for (const l of m.getStyle().layers)
     if (l.id === "base" || l.id.startsWith("base-")) m.removeLayer(l.id);
-  const { ground, detail } = baseStack(id, s);
+  const { ground, detail } = baseStack(id, s, lang);
   for (const l of ground) m.addLayer(l, "hillshade");
   for (const l of detail) m.addLayer(l, ABOVE_BASE);
 };
@@ -273,14 +277,14 @@ export const appLayers = (
    * A pass dot reads it off the feature – the point source is rewritten
    * whenever the half-month changes – and an ascent off its feature state,
    * because the geometry is a static file that must never be re-uploaded. Two
-   * lookups, one ladder: the arms come from `STATUS_ORDER`, so a fourth status
+   * lookups, one ladder: the arms come from `STATUSES`, so a fourth status
    * is one entry in `lib/status.ts` rather than two expressions here.
    */
   const statusBy = (where: ExpressionSpecification) =>
     [
       "match",
       where,
-      ...STATUS_ORDER.flatMap((s) => [s, colors[s]]),
+      ...STATUSES.flatMap((s) => [s, colors[s]]),
       colors.unknown,
     ] as never;
   const statusColor = statusBy(["get", "status"]);
@@ -321,6 +325,12 @@ export const appLayers = (
    * weight. Shared by the pass layer and the hovered mark, which is the same
    * dot drawn from another source.
    */
+  /** An unpaved road's dot and line (plan 27): a ring, and a dash over the line. */
+  const isUnpavedDot: ExpressionSpecification = [
+    "!=",
+    ["get", "surface"],
+    "asphalt",
+  ];
   const passPaint = {
     // "closed" is additionally encoded as a hollow circle so that the
     // three states do not rely on hue alone.
@@ -346,6 +356,9 @@ export const appLayers = (
       colors.ink,
       ["==", ["get", "status"], "closed"],
       colors.closed,
+      // An unpaved road: a dark ring, the dot's own colour still the status.
+      isUnpavedDot,
+      colors.ink,
       colors.paper,
     ],
     "circle-stroke-width": [
@@ -354,6 +367,8 @@ export const appLayers = (
       3,
       ["==", ["get", "status"], "closed"],
       2.5,
+      isUnpavedDot,
+      2,
       1.5,
     ],
   } as never;
@@ -383,7 +398,75 @@ export const appLayers = (
   // – and still reach past it on both sides.
   const tourLine = tourWidth(9, 12);
 
+  const isDestinationLit: ExpressionSpecification = [
+    "any",
+    ["==", ["get", "selected"], 1],
+    ["==", ["get", "hovered"], 1],
+  ];
+
   return [
+    // The destinations: the outline of where each area's riding is – its
+    // roads, their ascents and its towns (`DestinationMembers.outline`) – at
+    // the very bottom of the stack (plan 12), in the area colour: the town's
+    // blue family, because an area is where one stays, and never a status
+    // colour, because red to green is what a road's rideability is said in.
+    // The rideable count is the label's line, not a tint.
+    //
+    // It stays at every zoom – an area that vanished while zooming into it
+    // read as a bug. Only its weight changes: the fill thins out towards
+    // `DESTINATION_MAX_ZOOM`, where every road is drawn and would be veiled
+    // by it, and the edge steps back to a hairline; the selected or hovered
+    // area keeps its full weight.
+    //
+    // `["zoom"]` may only feed a top-level `interpolate`, so the zoom is the
+    // outer expression and what differs per feature sits in its stops.
+    {
+      id: LAYERS.destination.mark,
+      paint: {
+        "fill-color": colors.area,
+        "fill-opacity": [
+          "interpolate",
+          ["linear"],
+          ["zoom"],
+          DESTINATION_MAX_ZOOM - 1,
+          ["case", isDestinationLit, 0.16, 0.06],
+          DESTINATION_MAX_ZOOM + 1,
+          ["case", isDestinationLit, 0.1, 0.02],
+        ],
+      },
+      source: SOURCE.destinations,
+      type: "fill",
+    },
+    {
+      id: LAYERS.destination.companions[0],
+      paint: {
+        "line-color": colors.area,
+        // `line-opacity` rather than the layer's: the lit edge keeps its
+        // weight while the others step back, which is a per-feature
+        // difference. Two outlines cross at a point, not along a hairpin, so
+        // the double composite the rule guards against is two pixels wide.
+        "line-opacity": [
+          "interpolate",
+          ["linear"],
+          ["zoom"],
+          DESTINATION_MAX_ZOOM - 1,
+          ["case", isDestinationLit, 0.9, 0.45],
+          DESTINATION_MAX_ZOOM + 1,
+          ["case", isDestinationLit, 0.9, 0.3],
+        ],
+        "line-width": ["case", ["==", ["get", "selected"], 1], 2, 1],
+      },
+      source: SOURCE.destinations,
+      type: "line",
+    },
+    {
+      // At every zoom too: it is the last group `pick` asks, so a road, a
+      // town or a label inside the area still wins its click.
+      id: LAYERS.destination.hit,
+      paint: { "fill-color": colors.ink, "fill-opacity": 0 },
+      source: SOURCE.destinations,
+      type: "fill",
+    },
     // The area one town reaches, drawn while it is hovered: the hull over
     // its passes (lib/nearby.ts). Bottom of the app's stack, so
     // every line and dot stays readable on top of it.
@@ -447,6 +530,26 @@ export const appLayers = (
         // width a selection has: pointing at a row says "this one", opening
         // it says "this one, and here is everything about it".
         "line-width": ["case", selected, 6, hoveredLine, 5, 3.5],
+      },
+      source: SOURCE.routes,
+      type: "line",
+    },
+    // The dash over an unpaved ascent, in the paper colour so the status
+    // colour of the line shows through the gaps: `line-dasharray` is not
+    // data-driven, so the layer is the split – painted transparent on
+    // asphalt, and it carries the route filter like the line under it.
+    {
+      id: ROUTE_DASH,
+      layout: { "line-cap": "butt", "line-join": "round" },
+      paint: {
+        "line-color": [
+          "case",
+          ["==", ["get", "surface"], "asphalt"],
+          "transparent",
+          colors.paper,
+        ],
+        "line-dasharray": [1.5, 1.5],
+        "line-width": ["case", selected, 2.5, hoveredLine, 2, 1.5],
       },
       source: SOURCE.routes,
       type: "line",
@@ -572,6 +675,49 @@ export const appLayers = (
       type: "symbol",
     },
     // Labels staggered by prominence; MapLibre resolves collisions
+    // The area's name over its centre, with the count under it, at every
+    // zoom like its outline. A point of its own rather than the outline's: a polygon is labelled
+    // once per tile it crosses. Below the pass labels in the list, so
+    // MapLibre places the pass names first: a famous pass wins its collision
+    // against the area it lies in.
+    {
+      id: LAYERS.destination.labels[0],
+      layout: {
+        "symbol-sort-key": ["-", 1, ["get", "share"]] as never,
+        "text-field": [
+          "format",
+          ["get", "name"],
+          {},
+          "\n",
+          {},
+          ["get", "text"],
+          { "font-scale": 0.8 },
+        ] as never,
+        "text-font": [FONT_BOLD],
+        "text-line-height": 1.25,
+        "text-size": [
+          "interpolate",
+          ["linear"],
+          ["zoom"],
+          5,
+          11,
+          8,
+          13,
+        ] as never,
+      },
+      paint: {
+        // The towns' blue rather than the ink: an area's name is the quiet
+        // voice under the road names, in the family its outline is drawn in.
+        "text-color": colors.town,
+        "text-halo-color": colors.paper,
+        "text-halo-width": 1.5,
+        // The name stays too; past the overview the pass names win their
+        // collisions against it (they are placed first, see below).
+        "text-opacity": 0.85,
+      },
+      source: SOURCE.destinationLabels,
+      type: "symbol",
+    },
     ...PASS_LABELS.map(({ fame, minzoom }) => ({
       filter:
         fame === 5

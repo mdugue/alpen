@@ -1,3 +1,5 @@
+import type { Messages } from "@/lib/i18n";
+
 /**
  * The overview draws by fame, the list draws everything.
  *
@@ -12,14 +14,23 @@
  * What is selected, hovered or marked as a favourite ignores the rule: a mark
  * the visitor put there or is pointing at is never hidden by the zoom.
  *
- * The labels have their own, older ladder in `pass-map.tsx` (fame 4 from 7,
- * fame 3 from 8, fame 2 from 9.5); a dot always appears before its name.
+ * The labels have their own, older ladder (`PASS_LABELS` in
+ * `lib/layer-ids.ts`: fame 4 from 7, fame 3 from 8, fame 2 from 9.5); a dot
+ * always appears before its name.
  */
 export const PROMINENCE = [
-  { fromZoom: 0, minFame: 4, word: "berühmte Pässe" },
-  { fromZoom: 7.5, minFame: 3, word: "bekannte Pässe" },
-  { fromZoom: 8.5, minFame: 1, word: null },
+  { fromZoom: 0, level: "famous", minFame: 4 },
+  { fromZoom: 7.5, level: "known", minFame: 3 },
+  { fromZoom: 8.5, level: null, minFame: 1 },
 ] as const;
+
+/**
+ * Where the destination outlines step back: the overview's own threshold.
+ * Past it every road is drawn and the roads are the picture, so an area keeps
+ * only a trace of its fill and a hairline edge – it stays, because an area
+ * that vanished while zooming into it read as a bug.
+ */
+export const DESTINATION_MAX_ZOOM = PROMINENCE.at(-1)!.fromZoom;
 
 /** From which zoom on a road of this fame is drawn on the overview. */
 export const minzoomOf = (fame: number): number =>
@@ -30,8 +41,10 @@ export const minzoomOf = (fame: number): number =>
  * The legend line for a zoom: "bekannte Pässe" while the overview is thinned,
  * `null` once every road is drawn and there is nothing to say.
  */
-export const prominenceWord = (zoom: number): string | null =>
-  [...PROMINENCE].toReversed().find((p) => zoom >= p.fromZoom)?.word ?? null;
+export const prominenceWord = (zoom: number, w: Messages): string | null => {
+  const level = PROMINENCE.findLast((p) => zoom >= p.fromZoom)?.level;
+  return level ? w.vocab.prominence[level] : null;
+};
 
 /**
  * A MapLibre filter that applies the rule: a top-level `step` on the zoom –

@@ -36,6 +36,18 @@ export const TAG_ICON: Record<Tag, IconNode> = {
     ],
     ["path", { d: "M9.194 6.57a5 2.5 0 0 0 5.61 0" }],
   ],
+  // grip – the cobbles under the tyre
+  cobbles: [
+    ["circle", { cx: "12", cy: "5", r: "1" }],
+    ["circle", { cx: "19", cy: "5", r: "1" }],
+    ["circle", { cx: "5", cy: "5", r: "1" }],
+    ["circle", { cx: "12", cy: "12", r: "1" }],
+    ["circle", { cx: "19", cy: "12", r: "1" }],
+    ["circle", { cx: "5", cy: "12", r: "1" }],
+    ["circle", { cx: "12", cy: "19", r: "1" }],
+    ["circle", { cx: "19", cy: "19", r: "1" }],
+    ["circle", { cx: "5", cy: "19", r: "1" }],
+  ],
   // trophy
   events: [
     ["path", { d: "M10 14.66V17a1 1 0 0 1-1 1 2 2 0 0 0-2 2v2" }],
@@ -162,18 +174,6 @@ export const TAG_ICON: Record<Tag, IconNode> = {
     ["path", { d: "M20 12h2" }],
     ["path", { d: "m6.34 17.66-1.41 1.41" }],
     ["path", { d: "m19.07 4.93-1.41 1.41" }],
-  ],
-  // grip – the cobbles under the tyre
-  surface: [
-    ["circle", { cx: "12", cy: "5", r: "1" }],
-    ["circle", { cx: "19", cy: "5", r: "1" }],
-    ["circle", { cx: "5", cy: "5", r: "1" }],
-    ["circle", { cx: "12", cy: "12", r: "1" }],
-    ["circle", { cx: "19", cy: "12", r: "1" }],
-    ["circle", { cx: "5", cy: "12", r: "1" }],
-    ["circle", { cx: "12", cy: "19", r: "1" }],
-    ["circle", { cx: "19", cy: "19", r: "1" }],
-    ["circle", { cx: "5", cy: "19", r: "1" }],
   ],
   // euro – a fee is charged
   toll: [

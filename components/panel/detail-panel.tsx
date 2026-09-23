@@ -2,14 +2,18 @@
 
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 
+import { useT } from "@/components/i18n";
 import { useSheet } from "@/components/mobile-sheet";
 import type { PanelActions } from "@/components/panel/actions";
+import { DestinationDetail } from "@/components/panel/destination-detail";
 import { PanelBar } from "@/components/panel/panel-bar";
 import { PanelHead } from "@/components/panel/panel-head";
 import { PassDetail } from "@/components/panel/pass-detail";
 import { TourDetail } from "@/components/panel/tour-detail";
 import { TownDetail } from "@/components/panel/town-detail";
+import { Button } from "@/components/ui/button";
 import type { Selection } from "@/lib/app-state";
+import { SITE_NAME } from "@/lib/brand";
 import { detailModel } from "@/lib/detail-model";
 import {
   heroShape,
@@ -35,9 +39,9 @@ const TYPED = new Set(["INPUT", "TEXTAREA"]);
  * phone – so closing it always means the same thing and the lists keep their
  * scroll position underneath.
  *
- * Model in, markup out: what a pass, a tour or a town shows is `detailModel`
- * (lib/detail-model.ts), and the shell renders the head, the control row and
- * one of the three kind modules. It resolves nothing about the entity itself,
+ * Model in, markup out: what a pass, a tour, a town or a destination shows is
+ * `detailModel` (lib/detail-model.ts), and the shell renders the head, the
+ * control row and one of the four kind modules. It resolves nothing about the entity itself,
  * which is why the kind appears exactly once here.
  */
 export const DetailPanel = ({
@@ -47,6 +51,7 @@ export const DetailPanel = ({
   hovered,
   favorite,
   actions,
+  weather,
 }: {
   selection: Selection;
   /** Everything the page loaded, plus the index the explorer already holds. */
@@ -56,7 +61,10 @@ export const DetailPanel = ({
   hovered: Selection | null;
   favorite: boolean;
   actions: PanelActions;
+  /** The pass page's streamed forecast, shown in the weather block (plan 02). */
+  weather?: React.ReactNode;
 }) => {
+  const { t } = useT();
   const panel = useRef<HTMLElement>(null);
   const scroller = useRef<HTMLDivElement>(null);
   // Below the sheet's top snap point nothing scrolls, so the head is on screen
@@ -152,8 +160,28 @@ export const DetailPanel = ({
     detail: state,
     hovered,
     period,
+    w: t,
   });
-  if (!model) return null;
+  // A path or a link that names nothing the data holds – a renamed pass, a
+  // typo. The route has said 404 already (`notFound()`, `noindex`); the panel
+  // says it in words and offers the way out, rather than opening empty.
+  if (!model)
+    return (
+      <section
+        ref={panel}
+        tabIndex={-1}
+        aria-labelledby="detail-title"
+        className="flex flex-col items-start gap-3 p-4 outline-none"
+      >
+        <h2 id="detail-title" className="font-heading text-xl font-bold">
+          {t.notFound.title}
+        </h2>
+        <p className="text-muted-foreground text-sm">{t.notFound.text}</p>
+        <Button variant="outline" size="sm" onClick={actions.onBack}>
+          {t.panel.bar.close}
+        </Button>
+      </section>
+    );
 
   const hero = heroShape(state) === "hero";
   const key = entityKey(selection);
@@ -182,7 +210,7 @@ export const DetailPanel = ({
         shared={shared}
         onBack={actions.onBack}
         onShare={() => {
-          void share(`${model.name} – Alpenpässe`);
+          void share(`${model.name} – ${SITE_NAME}`);
         }}
         onToggleFavorite={actions.onToggleFavorite}
       />
@@ -216,17 +244,20 @@ export const DetailPanel = ({
               and the profile block says the same thing in its own words. */}
           {state.phase === "failed" && (asset?.photos ?? 0) > 0 && (
             <p className="text-muted-foreground text-2xs">
-              Keine Fotos geladen – die Bilddatei ist nicht angekommen.
+              {t.panel.photos.notLoaded}
             </p>
           )}
           {model.kind === "pass" && (
-            <PassDetail actions={actions} model={model} />
+            <PassDetail actions={actions} model={model} weather={weather} />
           )}
           {model.kind === "tour" && (
             <TourDetail actions={actions} model={model} />
           )}
           {model.kind === "town" && (
             <TownDetail actions={actions} model={model} />
+          )}
+          {model.kind === "destination" && (
+            <DestinationDetail actions={actions} model={model} />
           )}
         </div>
       </div>

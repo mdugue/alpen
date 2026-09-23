@@ -2,6 +2,7 @@ import { describe, expect, test } from "bun:test";
 
 import { detailModel } from "@/lib/detail-model";
 import type { DetailState } from "@/lib/detail-state";
+import { DE } from "@/lib/i18n/dictionaries";
 import { entityKey } from "@/lib/route-key";
 import {
   bundleOf,
@@ -32,12 +33,16 @@ const data = bundleOf(passes, tours, towns, years, {
   },
 });
 
-const modelOf = (kind: "pass" | "tour" | "town", slug: string) =>
-  detailModel({ kind, slug }, data, {
+const modelOf = (kind: "pass" | "tour" | "town", slug: string) => {
+  const model = detailModel({ kind, slug }, data, {
     detail: absent,
     hovered: null,
     period: PERIOD,
+    w: DE,
   });
+  // The three kinds with a point of their own; an area has no reach block.
+  return model?.kind === "destination" ? null : model;
+};
 
 describe("detailModel", () => {
   test("an entity the page does not have resolves to nothing", () => {
@@ -74,7 +79,7 @@ describe("detailModel", () => {
     const town = modelOf("town", "bormio")!;
     if (town.kind !== "town") throw new Error("kind");
     expect(town.reach.passes).toEqual([]);
-    expect(town.destination.total).toBe(2);
+    expect(town.base.total).toBe(2);
   });
 
   test("the nearby lists leave the entity itself out", () => {

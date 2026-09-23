@@ -61,7 +61,7 @@ describe("ors.route", () => {
     const { asked, t } = recording([
       { features: [line([10.1, 46.2], [10.123456, 46.3], [10.3, 46.4])] },
     ]);
-    expect(await ors.route(t, [a, b])).toEqual([
+    expect(await ors.route(t, [a, b], "cycling-road")).toEqual([
       [46.2, 10.1],
       [46.3, 10.12346],
       [46.4, 10.3],
@@ -99,7 +99,7 @@ describe("ors.route", () => {
       { features: [line([10, 46], [10, 46.49])] },
       { features: [line([10, 46.49], [10, 46.5])] },
     ]);
-    expect(await ors.route(t, waypoints)).toEqual([
+    expect(await ors.route(t, waypoints, "cycling-road")).toEqual([
       [46, 10],
       [46.49, 10],
       [46.5, 10],

@@ -1,6 +1,7 @@
 [
  {
   "slug": "sellaronda",
+  "surface": "asphalt",
   "name": "Sellaronda",
   "color": "#8d7bb5",
   "km": 52,
@@ -11,7 +12,11 @@
    "passo-sella",
    "passo-gardena"
   ],
-  "season": "Mai bis Oktober; autofreier Sellaronda Bike Day im Juni und September.",
+  "note": "Autofreier Sellaronda Bike Day im Juni und im September.",
+  "season": {
+   "closes": 11,
+   "opens": 5
+  },
   "description": "Dolomiten-Klassikerrunde um den Sella-Stock ab Corvara im Uhrzeigersinn.",
   "waypoints": [
    {
@@ -50,6 +55,7 @@
  },
  {
   "slug": "maratona-dles-dolomites-lang",
+  "surface": "asphalt",
   "name": "Maratona dles Dolomites (lang)",
   "color": "#b57a99",
   "km": 138,
@@ -63,7 +69,11 @@
    "passo-falzarego",
    "passo-valparola"
   ],
-  "season": "Juni bis Oktober; Veranstaltung Anfang Juli (Sperrstraßen).",
+  "note": "Veranstaltung Anfang Juli, die Pässe sind an dem Tag gesperrt.",
+  "season": {
+   "closes": 11,
+   "opens": 6
+  },
   "description": "Sellaronda plus Campolongo (2×), Giau, Falzarego und Valparola ab La Villa.",
   "waypoints": [
    {
@@ -134,6 +144,7 @@
  },
  {
   "slug": "route-des-grandes-alpes",
+  "surface": "asphalt",
   "name": "Route des Grandes Alpes",
   "color": "#c4956a",
   "km": 700,
@@ -149,7 +160,11 @@
    "col-de-la-couillole",
    "col-de-turini"
   ],
-  "season": "Mitte Juni bis Anfang Oktober – der Iseran gibt das Fenster vor; Oktober nur mit Plan B über Mont Cenis.",
+  "note": "Der Iseran gibt das Fenster vor; im Oktober nur mit Plan B über den Mont Cenis.",
+  "season": {
+   "closes": 10,
+   "opens": 6.5
+  },
   "description": "Thonon-les-Bains – Menton über 17 Pässe, typisch 6–8 Etappen.",
   "waypoints": [
    {
@@ -304,6 +319,7 @@
  },
  {
   "slug": "oetztaler-radmarathon",
+  "surface": "asphalt",
   "name": "Ötztaler Radmarathon",
   "color": "#6f9fb0",
   "km": 227,
@@ -313,7 +329,11 @@
    "jaufenpass",
    "timmelsjoch"
   ],
-  "season": "Juni bis Anfang Oktober; Veranstaltung Ende August, Timmelsjoch-Maut für Rad frei.",
+  "note": "Veranstaltung Ende August; die Timmelsjoch-Maut ist für Räder frei.",
+  "season": {
+   "closes": 10,
+   "opens": 6
+  },
   "description": "Sölden – Kühtai – Innsbruck – Brenner – Jaufenpass – Timmelsjoch – Sölden.",
   "waypoints": [
    {
@@ -364,6 +384,7 @@
  },
  {
   "slug": "la-marmotte",
+  "surface": "asphalt",
   "name": "La Marmotte",
   "color": "#7f86b8",
   "km": 174,
@@ -373,7 +394,11 @@
    "col-du-galibier",
    "alpe-d-huez"
   ],
-  "season": "Juni bis Mitte Oktober (Galibier); Veranstaltung Anfang Juli.",
+  "note": "Der Galibier gibt das Fenster vor; Veranstaltung Anfang Juli.",
+  "season": {
+   "closes": 10.5,
+   "opens": 6
+  },
   "description": "Bourg d'Oisans – Glandon – Télégraphe – Galibier – Lautaret – Alpe d'Huez.",
   "waypoints": [
    {
@@ -428,6 +453,7 @@
  },
  {
   "slug": "andermatt-drei-paesse-runde",
+  "surface": "asphalt",
   "name": "Andermatt Drei-Pässe-Runde",
   "color": "#6fa89f",
   "km": 120,
@@ -437,7 +463,11 @@
    "grimselpass",
    "sustenpass"
   ],
-  "season": "Mitte Juni bis Mitte Oktober; Alpenbrevet Ende August.",
+  "note": "Alpenbrevet Ende August.",
+  "season": {
+   "closes": 10.5,
+   "opens": 6.5
+  },
   "description": "Furka – Grimsel – Susten, zurück durch die Schöllenenschlucht.",
   "waypoints": [
    {
@@ -484,6 +514,7 @@
  },
  {
   "slug": "stilfserjoch-umbrail-runde",
+  "surface": "asphalt",
   "name": "Stilfserjoch–Umbrail-Runde",
   "color": "#b09068",
   "km": 70,
@@ -492,7 +523,11 @@
    "passo-dello-stelvio",
    "umbrailpass"
   ],
-  "season": "Juni bis Mitte Oktober; autofreier Stelvio Bike Day Ende August/Anfang September.",
+  "note": "Autofreier Stelvio Bike Day Ende August oder Anfang September.",
+  "season": {
+   "closes": 10.5,
+   "opens": 6
+  },
   "description": "Prad – Stilfserjoch (48 Kehren) – Umbrail – Santa Maria – Glurns – Prad.",
   "waypoints": [
    {
@@ -523,6 +558,7 @@
  },
  {
   "slug": "gavia-mortirolo-runde",
+  "surface": "asphalt",
   "name": "Gavia–Mortirolo-Runde",
   "color": "#9a7fb0",
   "km": 130,
@@ -531,7 +567,11 @@
    "passo-di-gavia",
    "passo-del-mortirolo"
   ],
-  "season": "Mitte Juni bis Anfang Oktober (Gavia).",
+  "note": "Der Gavia gibt das Fenster vor.",
+  "season": {
+   "closes": 10,
+   "opens": 6.5
+  },
   "description": "Bormio – Gavia – Ponte di Legno – Edolo – Mortirolo ab Monno – Mazzo – Bormio.",
   "waypoints": [
    {
@@ -574,6 +614,7 @@
  },
  {
   "slug": "vrsic-predil-runde",
+  "surface": "asphalt",
   "name": "Vršič–Predil-Runde",
   "color": "#6e8ab8",
   "km": 105,
@@ -581,7 +622,11 @@
   "passes": [
    "vrsic"
   ],
-  "season": "Mai bis Oktober; Vršič-Pflaster bei Nässe rutschig.",
+  "note": "Das Vršič-Pflaster ist bei Nässe rutschig.",
+  "season": {
+   "closes": 11,
+   "opens": 5
+  },
   "description": "Kranjska Gora – Vršič – Soča-Tal – Bovec – Predil – Tarvisio – Kranjska Gora.",
   "waypoints": [
    {
@@ -616,6 +661,7 @@
  },
  {
   "slug": "riviera-dei-fiori-runde",
+  "surface": "asphalt",
   "name": "Riviera-dei-Fiori-Runde",
   "color": "#c2703a",
   "km": 96,
@@ -624,7 +670,8 @@
    "colle-san-bartolomeo",
    "colle-d-oggia"
   ],
-  "season": "Ganzjährig; Januar und Februar oben am Oggia gelegentlich Schnee.",
+  "note": "Im Januar und Februar oben am Oggia gelegentlich Schnee.",
+  "season": null,
   "description": "Von Imperia über den Colle San Bartolomeo nach Pieve di Teco, durch Rezzo auf den Colle d'Oggia und über Carpasio und das Argentina-Tal zurück an die Küste – die Winterrunde der Sanremo-Profis.",
   "waypoints": [
    {
@@ -667,6 +714,7 @@
  },
  {
   "slug": "melogno-scravaion-runde",
+  "surface": "asphalt",
   "name": "Melogno-Scravaion-Runde",
   "color": "#7a9a4a",
   "km": 88,
@@ -675,7 +723,8 @@
    "colle-del-melogno",
    "colle-scravaion"
   ],
-  "season": "Ganzjährig; nach Schneefall am Melogno kurz gesperrt.",
+  "note": "Nach Schneefall am Melogno kurz gesperrt.",
+  "season": null,
   "description": "Von Finale Ligure über Finalborgo auf den Colle del Melogno, durch Calizzano und Bardineto zum Colle Scravaion und über Castelvecchio und Albenga an der Küste zurück.",
   "waypoints": [
    {
@@ -718,6 +767,7 @@
  },
  {
   "slug": "valcava-culmine-runde",
+  "surface": "asphalt",
   "name": "Valcava-Culmine-Runde",
   "color": "#5b7fb5",
   "km": 100,
@@ -726,7 +776,11 @@
    "passo-di-valcava",
    "culmine-di-san-pietro"
   ],
-  "season": "April bis November; beide Pässe im Winter oben mit Schnee.",
+  "note": "Beide Pässe liegen im Winter oben unter Schnee.",
+  "season": {
+   "closes": 12,
+   "opens": 4
+  },
   "description": "Von Lecco über Torre de' Busi steil auf den Passo di Valcava, durch das Valle Imagna und das Val Taleggio zum Culmine di San Pietro und über Moggio und die Valsassina zurück nach Lecco.",
   "waypoints": [
    {
@@ -773,6 +827,7 @@
  },
  {
   "slug": "lombardia-runde",
+  "surface": "asphalt",
   "name": "Lombardia-Runde",
   "color": "#a05a8c",
   "km": 62,
@@ -781,7 +836,8 @@
    "madonna-del-ghisallo",
    "muro-di-sormano"
   ],
-  "season": "Ganzjährig; am Sormano im Winter gelegentlich Schnee.",
+  "note": "Am Sormano im Winter gelegentlich Schnee.",
+  "season": null,
   "description": "Das Finale des Giro di Lombardia ab Bellagio: über den Ghisallo nach Asso, durch Sormano über den Muro auf die Colma und am See entlang über Nesso zurück nach Bellagio.",
   "waypoints": [
    {
@@ -816,6 +872,7 @@
  },
  {
   "slug": "ballino-runde",
+  "surface": "asphalt",
   "name": "Ballino-Runde",
   "color": "#4a8a9a",
   "km": 62,
@@ -823,7 +880,8 @@
   "passes": [
    "passo-del-ballino"
   ],
-  "season": "Ganzjährig; im Winter oben am Ballino gelegentlich Schnee.",
+  "note": "Im Winter oben am Ballino gelegentlich Schnee.",
+  "season": null,
   "description": "Von Riva über Tenno und den Lago di Tenno auf den Passo del Ballino, über Fiavè und Ponte Arche ins Sarcatal und über Sarche und Arco zurück an den See.",
   "waypoints": [
    {
@@ -858,6 +916,7 @@
  },
  {
   "slug": "grappa-runde",
+  "surface": "asphalt",
   "name": "Grappa-Runde",
   "color": "#8a6a3a",
   "km": 70,
@@ -865,7 +924,8 @@
   "passes": [
    "cima-grappa"
   ],
-  "season": "Ganzjährig geräumt; nach Schneefall oben zeitweise gesperrt.",
+  "note": "Nach Schneefall oben zeitweise gesperrt.",
+  "season": null,
   "description": "Von Bassano über Semonzo auf den Monte Grappa und über Possagno hinunter, am Fuß des Bergs zurück nach Bassano – hinauf auf der klassischen Seite, hinab auf der stillen.",
   "waypoints": [
    {
@@ -896,6 +956,7 @@
  },
  {
   "slug": "ventoux-runde",
+  "surface": "asphalt",
   "name": "Ventoux-Runde",
   "color": "#b8563a",
   "km": 55,
@@ -904,7 +965,11 @@
    "mont-ventoux",
    "col-de-la-madeleine-bedoin"
   ],
-  "season": "Mai bis November, solange die Gipfelstraße offen ist.",
+  "note": "Die Runde geht, solange die Gipfelstraße des Ventoux offen ist.",
+  "season": {
+   "closes": 11.5,
+   "opens": 5
+  },
   "description": "Von Bédoin die klassische Seite auf den Mont Ventoux, hinunter nach Malaucène und über den Col de la Madeleine zurück nach Bédoin.",
   "waypoints": [
    {
@@ -931,6 +996,7 @@
  },
  {
   "slug": "baronnies-runde",
+  "surface": "asphalt",
   "name": "Baronnies-Runde",
   "color": "#7d6fa8",
   "km": 108,
@@ -940,7 +1006,8 @@
    "col-de-macuegne",
    "col-de-fontaube"
   ],
-  "season": "Ganzjährig; nach Schneefall am Perty kurz gesperrt.",
+  "note": "Nach Schneefall am Perty kurz gesperrt.",
+  "season": null,
   "description": "Von Buis-les-Baronnies über Saint-Auban auf den Col de Perty, durch Laborel und Séderon über den Col de Macuègne nach Montbrun, unter der Ventoux-Nordwand über Brantes auf den Col de Fontaube und über Eygaliers zurück nach Buis.",
   "waypoints": [
    {

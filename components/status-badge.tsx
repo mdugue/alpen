@@ -1,3 +1,6 @@
+"use client";
+
+import { useT } from "@/components/i18n";
 import { Badge } from "@/components/ui/badge";
 import { periodLabel } from "@/lib/period";
 import { badgeWord, statusWord } from "@/lib/status";
@@ -48,17 +51,20 @@ export const StatusLabel = ({
   status: Status;
   reason?: StatusReason | null;
   className?: string;
-}) => (
-  <span
-    className={cn(
-      "inline-flex items-center gap-1.5 whitespace-nowrap",
-      className,
-    )}
-  >
-    <StatusDot status={status} />
-    {statusWord(status, reason)}
-  </span>
-);
+}) => {
+  const { t } = useT();
+  return (
+    <span
+      className={cn(
+        "inline-flex items-center gap-1.5 whitespace-nowrap",
+        className,
+      )}
+    >
+      <StatusDot status={status} />
+      {statusWord(status, reason, t)}
+    </span>
+  );
+};
 
 /**
  * The badge reads one cell rather than a status, a reason and a "best" flag
@@ -72,10 +78,13 @@ export const StatusBadge = ({
 }: {
   cell: YearCell;
   period?: Period;
-}) => (
-  <Badge variant="outline" className="gap-1.5">
-    <StatusDot status={cell.status} />
-    {badgeWord(cell)}
-    {period !== undefined && ` · ${periodLabel(period)}`}
-  </Badge>
-);
+}) => {
+  const { t } = useT();
+  return (
+    <Badge variant="outline" className="gap-1.5">
+      <StatusDot status={cell.status} />
+      {badgeWord(cell, t)}
+      {period !== undefined && ` · ${periodLabel(period, t)}`}
+    </Badge>
+  );
+};

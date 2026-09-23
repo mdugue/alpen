@@ -1,12 +1,19 @@
 import { z } from "zod";
 
+import { DE } from "@/lib/i18n/dictionaries";
 import {
   COUNTRIES,
+  countriesOf,
+  SURFACES,
+  inBox,
   isTraverse,
+  LATLON_BOUNDS,
+  RANGE_BOUNDS,
+  rangeOf,
   REGIONS,
   ROAD_TAGS,
-  ROAD_TYPE,
   ROAD_TYPES,
+  STATUSES,
   TOWN_TAGS,
 } from "@/lib/regions";
 
@@ -33,13 +40,18 @@ export const Period = z
     "Halbmonat: 1, 1.5, … 12.5",
   );
 
-export const Status = z.enum(["open", "risky", "closed"]);
+export const Status = z.enum(STATUSES);
 
 export const Rating = z.int().min(1).max(5);
 
+/**
+ * A coordinate anywhere the app has a range: the union of `RANGE_BOUNDS`. The
+ * real typo guard is per range – `Pass` below holds its marker and its ascents
+ * to the box of its own range, `data:check` a tour's waypoints to its passes'.
+ */
 export const LatLon = z.strictObject({
-  lat: z.number().min(43).max(49),
-  lon: z.number().min(4).max(16),
+  lat: z.number().min(LATLON_BOUNDS.lat[0]).max(LATLON_BOUNDS.lat[1]),
+  lon: z.number().min(LATLON_BOUNDS.lon[0]).max(LATLON_BOUNDS.lon[1]),
 });
 
 /**
@@ -98,21 +110,50 @@ export const Ascent = z.strictObject({
   to: LatLon.optional(),
 });
 
+/** The typical opening window of a road or a loop, as two half-months. */
+const SeasonWindow = {
+  /** Typical winter closure as a Period. */
+  closes: Period,
+  /** Typical opening as a Period. */
+  opens: Period,
+};
+
+const windowOrdered = (s: { opens: number; closes: number }) =>
+  s.opens < s.closes;
+
 export const PassSeason = z
   .object({
-    /** Typical winter closure as a Period. */
-    closes: Period,
+    ...SeasonWindow,
     /** Managed toll road – it is cleared, no altitude penalty. */
     maintained: z.boolean().optional(),
-    /** Typical opening as a Period. */
-    opens: Period,
   })
-  .refine((s) => s.opens < s.closes, "Saisonfenster verdreht");
+  .refine(windowOrdered, "Saisonfenster verdreht");
+
+/**
+ * A loop's own window, where its curator knows one: the same two half-months
+ * as a pass carries, and read the same way by `tourYear` (`lib/status.ts`) –
+ * outside the window the loop is closed, at its edges limited, and inside it
+ * the member passes decide. No `maintained`: a loop is not cleared, its passes
+ * are. `null` says the loop is rideable whenever its passes are.
+ */
+export const TourSeason = z
+  .strictObject(SeasonWindow)
+  .refine(windowOrdered, "Saisonfenster verdreht");
 
 export const Region = z.enum(REGIONS);
 export const Country = z.enum(COUNTRIES);
+
+/** One country or a pair across a border: "IT", "CH/IT" – a road's, an area's. */
+const CountryPair = z
+  .string()
+  .regex(/^[A-Z]{2}(?:\/[A-Z]{2})?$/u, 'Land: "IT" oder "CH/IT"')
+  .refine(
+    (c) => countriesOf(c).every((x) => COUNTRIES.includes(x as never)),
+    `Land: eines von ${COUNTRIES.join(", ")}`,
+  );
 export const RoadType = z.enum(ROAD_TYPES);
 export const RoadTag = z.enum(ROAD_TAGS);
+export const Surface = z.enum(SURFACES);
 
 export const Pass = z
   .strictObject({
@@ -123,14 +164,8 @@ export const Pass = z
     beauty: Rating,
     /** Editorial short description of the classic ascent. */
     classicAscent: z.string(),
-    /** ISO-like code, possibly several: "IT", "CH/IT". */
-    country: z
-      .string()
-      .regex(/^[A-Z]{2}(?:\/[A-Z]{2})?$/u, 'Land: "IT" oder "CH/IT"')
-      .refine(
-        (c) => c.split("/").every((x) => COUNTRIES.includes(x as never)),
-        `Land: eines von ${COUNTRIES.join(", ")}`,
-      ),
+    /** ISO-like code, possibly two: "IT", "CH/IT". */
+    country: CountryPair,
     difficulty: Rating,
     /**
      * Height of the marker, not "the summit": for a traverse type the marker is
@@ -170,7 +205,13 @@ export const Pass = z
     season: PassSeason.nullable(),
     slug: Slug,
     /**
-     * What riding the road is like, as editorial labels (see `ROAD_TAG`).
+     * What the road is rolled on (see `SURFACES`, plan 27). Required like the
+     * type: an entry that does not say what it is rolled on is an entry nobody
+     * has looked at. It picks the routing profile and the closing rung.
+     */
+    surface: Surface,
+    /**
+     * What riding the road is like, as editorial labels (see `ROAD_TAGS`).
      * Optional: plenty of roads are simply a climb, and an empty strip of glyphs
      * says that honestly. Display order is the vocabulary order.
      */
@@ -180,7 +221,7 @@ export const Pass = z
       .optional(),
     traffic: Rating,
     /**
-     * What kind of road this is (see `ROAD_TYPE`). Required on every entry
+     * What kind of road this is (see `ROAD_TYPES`). Required on every entry
      * rather than defaulted: the file is the product, and an entry that does not
      * say what it is is an entry nobody has looked at.
      */
@@ -194,17 +235,35 @@ export const Pass = z
    */
   .superRefine((road, ctx) => {
     const traverse = isTraverse(road.type);
+    // The marker and every ride's ends inside the box of the road's own
+    // range: one wide box would let a Pyrenean col sit in "Westalpen".
+    const range = rangeOf(road.region);
+    const box = RANGE_BOUNDS[range];
+    const outside = (p: { lat: number; lon: number }) => !inBox(box, p);
+    const where = `${DE.vocab.range[range].outside} (${box.lat.join("–")}° N, ${box.lon.join("–")}° E) – Koordinate oder Region prüfen`;
+    if (outside(road))
+      ctx.addIssue({
+        code: "custom",
+        message: `Punkt liegt ${where}`,
+        path: [],
+      });
     for (const [i, a] of road.ascents.entries()) {
+      if (outside(a.from) || (a.to !== undefined && outside(a.to)))
+        ctx.addIssue({
+          code: "custom",
+          message: `Auffahrt liegt ${where}`,
+          path: ["ascents", i],
+        });
       if (traverse && (a.to === undefined || a.km === undefined))
         ctx.addIssue({
           code: "custom",
-          message: `${ROAD_TYPE[road.type].label}: Strecke braucht Ende (to) und Länge (km)`,
+          message: `${DE.vocab.roadType[road.type].label}: Strecke braucht Ende (to) und Länge (km)`,
           path: ["ascents", i],
         });
       if (!traverse && (a.to !== undefined || a.km !== undefined))
         ctx.addIssue({
           code: "custom",
-          message: `${ROAD_TYPE[road.type].label}: Auffahrt endet am Passpunkt – to und km gehören nicht dazu`,
+          message: `${DE.vocab.roadType[road.type].label}: Auffahrt endet am Passpunkt – to und km gehören nicht dazu`,
           path: ["ascents", i],
         });
       // A check may only widen the limits the validator of *this* ascent
@@ -229,10 +288,24 @@ export const Tour = z.strictObject({
   elevationGain: z.number().nonnegative(),
   km: z.number().positive(),
   name: z.string().min(2),
+  /**
+   * What the window cannot say: the event that closes the roads for a day,
+   * the cobbles that turn slick in rain, the plan B once a pass shuts. One or
+   * two German sentences; empty where there is nothing to add.
+   */
+  note: z.string(),
   /** Pass slugs from which the status is derived. */
   passes: z.array(Slug).min(1),
-  season: z.string(),
+  /** The loop's own opening window, see `TourSeason`; null = whenever its passes are open. */
+  season: TourSeason.nullable(),
   slug: Slug,
+  /**
+   * What the loop is ridden with: at least what its roads demand (`gravel`
+   * or `mixed` the moment one member is), and more where the connecting
+   * stretches are gravel. Written down rather than derived so the file can
+   * say so; `data:check` holds it to the roads.
+   */
+  surface: Surface,
   waypoints: z.array(LatLon).min(2),
 });
 
@@ -248,7 +321,7 @@ export const Town = z.strictObject({
   slug: Slug,
   /**
    * Why the town is in the list, as a handful of editorial labels (see
-   * `TOWN_TAG`). At least one: a town nobody can say anything about does not
+   * `TOWN_TAGS`). At least one: a town nobody can say anything about does not
    * belong in a list meant for choosing a base.
    */
   tags: z.array(TownTag).min(1, "Ort ohne Merkmal (tags)"),
@@ -259,6 +332,78 @@ export const Town = z.strictObject({
 export const Passes = z.array(Pass);
 export const Tours = z.array(Tour);
 export const Towns = z.array(Town);
+
+/**
+ * A riding area (plan 12): a centre, a radius and the editorial prose a base
+ * needs – what it is like, what a week there looks like, how to get there.
+ * What lies inside is not written down: the member roads, loops and towns
+ * are derived at prerender from the radius, plus `include` and minus
+ * `exclude` (`membersOf`, lib/destination.ts), so a road added to
+ * `passes.json` joins its area by itself. The rules for the numbers are in
+ * `docs/destinations.md`.
+ */
+export const Destination = z.strictObject({
+  /** How to get there without and with a car: one or two sentences. */
+  access: z.string().min(1),
+  /** Where to stay, at most three, in the order they are named; none while no town of `towns.json` lies inside. */
+  baseTowns: z.array(Slug).max(3),
+  /** The centre the radius is measured from – usually the main base. */
+  center: LatLon,
+  /** Two sentences: the roads that make the area, and what riding it is like. */
+  character: z.string().min(1),
+  /** Like a road's: one country or a pair, "FR/IT". */
+  country: CountryPair,
+  /** Roads inside the radius that belong to a neighbour instead. */
+  exclude: z.array(Slug),
+  /** Roads outside the radius that belong here anyway – taste over geometry. */
+  include: z.array(Slug),
+  /** What a multi-day stay looks like: how many days, which stages lead on. */
+  multiDay: z.string().min(1),
+  name: z.string().min(2),
+  note: z.string().optional(),
+  /**
+   * How far a road may lie from the centre and still count, in km. At most
+   * the reach limit: an area wider than a day's loop from its centre is two
+   * areas.
+   */
+  radiusKm: z.number().min(10).max(75),
+  slug: Slug,
+});
+
+export const Destinations = z.array(Destination);
+
+// ── Editorial prose in another language (plan 08) ───────────────────────────
+
+/**
+ * The curated prose of one entity in another language, keyed by slug in
+ * `data/i18n/<lang>/*.json`; every field is optional, and a missing one falls
+ * back to the German (`lib/data.ts`), which `data:check` counts so the
+ * coverage stays visible. Proper names are not here – a name is not
+ * translated – and neither is anything measured.
+ */
+export const PassTranslation = z.strictObject({
+  /** The ascent labels by index, for the direction words in them ("Nord"). */
+  ascents: z.array(z.string().min(1)).optional(),
+  classicAscent: z.string().min(1).optional(),
+  note: z.string().min(1).optional(),
+});
+export const TourTranslation = z.strictObject({
+  description: z.string().min(1).optional(),
+  note: z.string().min(1).optional(),
+});
+export const TownTranslation = z.strictObject({
+  why: z.string().min(1).optional(),
+});
+export const DestinationTranslation = z.strictObject({
+  access: z.string().min(1).optional(),
+  character: z.string().min(1).optional(),
+  multiDay: z.string().min(1).optional(),
+  note: z.string().min(1).optional(),
+});
+export const PassTranslations = z.record(Slug, PassTranslation);
+export const TourTranslations = z.record(Slug, TourTranslation);
+export const TownTranslations = z.record(Slug, TownTranslation);
+export const DestinationTranslations = z.record(Slug, DestinationTranslation);
 
 // ── Output of scripts/build-data.ts ──────────────────────────────────────────
 
@@ -282,6 +427,13 @@ export const ElevationProfile = z
   .refine((p) => p.dist.length === p.ele.length, "dist und ele ungleich lang");
 
 export const ClimateBucket = z.strictObject({
+  /**
+   * Share of days with a snow cover above `CLIMATE_DAY.coverM` at the marker
+   * (plan 27) – what closes an unpaved road, which no barrier closes. Optional
+   * until the archive has been asked for `snow_depth`; a series without it
+   * grades a gravel road by every other rung and never closes it.
+   */
+  coverPct: z.number().min(0).max(100).optional(),
   /** Share of days with frost (Tmin < 0 °C), in percent. */
   frostPct: z.number().min(0).max(100),
   /** Share of days with snowfall ≥ 1 cm, in percent. */
@@ -449,7 +601,7 @@ export const Summit = z.strictObject({
 export const Summits = z.record(Slug, Summit);
 
 /**
- * One day of the Open-Meteo forecast served by `app/api/weather/[slug]`.
+ * One day of the Open-Meteo forecast, as `forecast` (`lib/weather.ts`) reads it.
  *
  * Every measurement is nullable because the host answers a day or a variable
  * it has no value for with `null`, and a forecast is worth having with a cell
@@ -497,6 +649,12 @@ const generated = <S extends z.ZodType>(schema: S): DataFile<S> => ({
   layout: "byKey",
   schema,
 });
+/** Hand-checked like the curated files, but keyed and allowed to be missing. */
+const translated = <S extends z.ZodType>(schema: S): DataFile<S> => ({
+  empty: {},
+  layout: "indented",
+  schema,
+});
 
 /**
  * Which schema validates which file, where it lives, whether it may be missing
@@ -507,6 +665,7 @@ const generated = <S extends z.ZodType>(schema: S): DataFile<S> => ({
  * path under `data/`.
  */
 export const FILES = {
+  "destinations.json": curated(Destinations),
   "generated/climate.json": generated(Climate),
   "generated/photos.json": generated(Photos),
   "generated/profiles.json": generated(Profiles),
@@ -514,6 +673,10 @@ export const FILES = {
   "generated/routes-meta.json": generated(RoutesMeta),
   "generated/routes.json": generated(Routes),
   "generated/summits.json": generated(Summits),
+  "i18n/en/destinations.json": translated(DestinationTranslations),
+  "i18n/en/passes.json": translated(PassTranslations),
+  "i18n/en/tours.json": translated(TourTranslations),
+  "i18n/en/towns.json": translated(TownTranslations),
   "passes.json": curated(Passes),
   "tours.json": curated(Tours),
   "towns.json": curated(Towns),

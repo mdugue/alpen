@@ -2,14 +2,19 @@ import { describe, expect, test } from "bun:test";
 
 import { renderToStaticMarkup } from "react-dom/server";
 
+import { I18nProvider } from "@/components/i18n";
 import type { PanelActions } from "@/components/panel/actions";
+import { DestinationDetail } from "@/components/panel/destination-detail";
 import { PassDetail } from "@/components/panel/pass-detail";
 import { TourDetail } from "@/components/panel/tour-detail";
 import { TownDetail } from "@/components/panel/town-detail";
+import { membersOf } from "@/lib/destination";
 import { BLOCKS, detailModel } from "@/lib/detail-model";
 import type { DetailModel } from "@/lib/detail-model";
 import type { DetailState } from "@/lib/detail-state";
+import { DE } from "@/lib/i18n/dictionaries";
 import { entityKey } from "@/lib/route-key";
+import type { Destination } from "@/lib/types";
 import {
   bundleOf,
   makePass,
@@ -20,7 +25,7 @@ import {
 } from "@/test/fixtures";
 
 /**
- * The three kind modules, rendered from one fixture.
+ * The four kind modules, rendered from one fixture.
  *
  * `renderToStaticMarkup` needs no DOM and no browser, which is what makes a
  * test of the panel possible at all: until plan 31 nothing but the e2e ever
@@ -45,7 +50,22 @@ const years = yearsOf(
   [["runde", "limited"]],
 );
 const state: DetailState = { phase: "absent" };
+const area: Destination = {
+  access: "Bahn bis Tirano.",
+  baseTowns: ["bormio"],
+  center: { lat: 46, lon: 10.1 },
+  character: "Zwei Riesen auf einem Fleck.",
+  country: "IT",
+  exclude: [],
+  include: [],
+  multiDay: "Drei Tage reichen.",
+  name: "Alta Valtellina",
+  radiusKm: 30,
+  slug: "valtellina",
+};
 const data = bundleOf(passes, tours, towns, years, {
+  destinationMembers: { valtellina: membersOf(area, passes, tours, towns) },
+  destinations: [area],
   nearbyTours: {
     [entityKey("pass", "stilfser-joch")]: [{ km: 3, slug: "runde" }],
     [entityKey("town", "bormio")]: [{ km: 5, slug: "runde" }],
@@ -69,6 +89,7 @@ const modelOf = <K extends DetailModel["kind"]>(kind: K, slug: string) => {
     detail: state,
     hovered: null,
     period: PERIOD,
+    w: DE,
   });
   // A narrow, not a cast: the fixture has the entity, so the discriminant is
   // the proof rather than an assertion over it.
@@ -76,14 +97,24 @@ const modelOf = <K extends DetailModel["kind"]>(kind: K, slug: string) => {
   return model as Extract<DetailModel, { kind: K }>;
 };
 
+/** The panels read their words from the provider, as they do on the page. */
+const render = (node: React.ReactNode) =>
+  renderToStaticMarkup(<I18nProvider messages={DE}>{node}</I18nProvider>);
+
 const html = {
-  pass: renderToStaticMarkup(
+  destination: render(
+    <DestinationDetail
+      actions={actions}
+      model={modelOf("destination", "valtellina")}
+    />,
+  ),
+  pass: render(
     <PassDetail actions={actions} model={modelOf("pass", "stilfser-joch")} />,
   ),
-  tour: renderToStaticMarkup(
+  tour: render(
     <TourDetail actions={actions} model={modelOf("tour", "runde")} />,
   ),
-  town: renderToStaticMarkup(
+  town: render(
     <TownDetail actions={actions} model={modelOf("town", "bormio")} />,
   ),
 };
@@ -92,7 +123,7 @@ const html = {
 const blocksIn = (markup: string) =>
   [...markup.matchAll(/data-block="(?<id>[^"]+)"/gu)].map((m) => m.groups!.id!);
 
-describe("the three kind modules render their model", () => {
+describe("the four kind modules render their model", () => {
   test("a pass leads with its height and its own sentences", () => {
     // Every German line of it comes from the model, which is the point: the
     // panel used to glue six fragments together in JSX (plan 31 phase B).
@@ -116,8 +147,29 @@ describe("the three kind modules render their model", () => {
     expect(html.town).toContain("Abgeleitet aus den 2 Pässen im Umkreis");
   });
 
+  test("a destination shows its sentences, its members and the way back to its base", () => {
+    const model = modelOf("destination", "valtellina");
+    expect(html.destination).toContain(area.character);
+    expect(html.destination).toContain(area.multiDay);
+    expect(html.destination).toContain(area.access);
+    expect(model.passes.map((m) => m.pass.slug)).toEqual([
+      "stilfser-joch",
+      "gavia",
+    ]);
+    expect(html.destination).toContain(
+      "Abgeleitet aus den 2 Straßen im Gebiet",
+    );
+    expect(html.destination).toContain("Unterkunft suchen");
+    expect(html.destination).toContain("Runde");
+    // And the town links back up to the area it lies in.
+    expect(modelOf("town", "bormio").areas.map((d) => d.slug)).toEqual([
+      "valtellina",
+    ]);
+    expect(html.town).toContain("Alta Valtellina");
+  });
+
   test("each kind renders exactly the blocks its model declares", () => {
-    for (const kind of ["pass", "tour", "town"] as const)
+    for (const kind of ["pass", "tour", "town", "destination"] as const)
       expect(blocksIn(html[kind])).toEqual(BLOCKS[kind]);
   });
 

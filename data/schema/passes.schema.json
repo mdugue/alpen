@@ -85,12 +85,12 @@
               "properties": {
                 "lat": {
                   "type": "number",
-                  "minimum": 43,
+                  "minimum": 42,
                   "maximum": 49
                 },
                 "lon": {
                   "type": "number",
-                  "minimum": 4,
+                  "minimum": -2,
                   "maximum": 16
                 }
               },
@@ -113,12 +113,12 @@
               "properties": {
                 "lat": {
                   "type": "number",
-                  "minimum": 43,
+                  "minimum": 42,
                   "maximum": 49
                 },
                 "lon": {
                   "type": "number",
-                  "minimum": 4,
+                  "minimum": -2,
                   "maximum": 16
                 }
               },
@@ -165,12 +165,12 @@
       },
       "lat": {
         "type": "number",
-        "minimum": 43,
+        "minimum": 42,
         "maximum": 49
       },
       "lon": {
         "type": "number",
-        "minimum": 4,
+        "minimum": -2,
         "maximum": 16
       },
       "name": {
@@ -190,7 +190,10 @@
           "Westalpen",
           "Zentralalpen",
           "Ostalpen",
-          "Dolomiten"
+          "Dolomiten",
+          "Vogesen",
+          "Jura",
+          "Pyrenäen"
         ]
       },
       "roadSummit": {
@@ -204,11 +207,11 @@
               "closes": {
                 "type": "number"
               },
-              "maintained": {
-                "type": "boolean"
-              },
               "opens": {
                 "type": "number"
+              },
+              "maintained": {
+                "type": "boolean"
               }
             },
             "required": [
@@ -226,6 +229,14 @@
         "type": "string",
         "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
       },
+      "surface": {
+        "type": "string",
+        "enum": [
+          "asphalt",
+          "gravel",
+          "mixed"
+        ]
+      },
       "tags": {
         "type": "array",
         "items": {
@@ -238,7 +249,7 @@
             "carfree",
             "toll",
             "hairpins",
-            "surface",
+            "cobbles",
             "tunnels"
           ]
         }
@@ -274,6 +285,7 @@
       "region",
       "season",
       "slug",
+      "surface",
       "traffic",
       "type"
     ],

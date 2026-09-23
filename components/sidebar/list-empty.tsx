@@ -2,6 +2,7 @@
 
 import { RotateCcw, SearchX } from "lucide-react";
 
+import { useT } from "@/components/i18n";
 import { Button } from "@/components/ui/button";
 import {
   Empty,
@@ -13,7 +14,7 @@ import {
 } from "@/components/ui/empty";
 import type { Filters } from "@/lib/app-state";
 import { appliedFilters, bestRelief } from "@/lib/filter-summary";
-import { fmt } from "@/lib/utils";
+import { fill } from "@/lib/i18n/fill";
 
 /**
  * The one empty state, with the way out inside it.
@@ -45,9 +46,11 @@ export const ListEmpty = ({
   /** How many roads a filter patch would leave; see `facetCount` in `lib/rows.ts`. */
   countWith?: (patch: Partial<Filters>) => number;
 }) => {
-  const applied = appliedFilters(filters);
+  const { t, fmt } = useT();
+  const applied = appliedFilters(filters, t);
   const hasQuery = filters.query.trim().length > 0;
-  const relief = countWith ? bestRelief(filters, countWith) : undefined;
+  const relief = countWith ? bestRelief(filters, countWith, t) : undefined;
+  const reliefLabel = relief?.chip.label ?? "";
 
   return (
     <Empty className="gap-2 py-8">
@@ -58,8 +61,13 @@ export const ListEmpty = ({
         <EmptyTitle>{title}</EmptyTitle>
         <EmptyDescription>
           {hasQuery
-            ? `„${filters.query.trim()}" passt zu keinem Eintrag${applied.length ? " – zusammen mit den gesetzten Filtern" : ""}.`
-            : "Die gesetzten Filter passen zu keinem Eintrag."}
+            ? fill(
+                applied.length > 0
+                  ? t.sidebar.empty.queryMatchesNothingFiltered
+                  : t.sidebar.empty.queryMatchesNothing,
+                { query: filters.query.trim() },
+              )
+            : t.sidebar.empty.filtersMatchNothing}
         </EmptyDescription>
       </EmptyHeader>
       <EmptyContent className="flex-row flex-wrap justify-center gap-2">
@@ -69,7 +77,7 @@ export const ListEmpty = ({
             variant="outline"
             onClick={() => setFilters((f) => ({ ...f, query: "" }))}
           >
-            Suche leeren
+            {t.sidebar.clearSearch}
           </Button>
         )}
         {relief && (
@@ -78,13 +86,16 @@ export const ListEmpty = ({
             variant="outline"
             onClick={() => setFilters(relief.chip.clear)}
           >
-            Ohne „{relief.chip.label}“: {fmt(relief.n)}
+            {fill(t.sidebar.empty.without, {
+              label: reliefLabel,
+              n: fmt(relief.n),
+            })}
           </Button>
         )}
         {applied.length > 0 && (
           <Button size="sm" variant="ghost" onClick={onReset}>
             <RotateCcw data-icon="inline-start" />
-            Alle Filter zurücksetzen
+            {t.sidebar.empty.resetAll}
           </Button>
         )}
       </EmptyContent>

@@ -283,8 +283,8 @@ export const withinReach = (at: LatLon, o: ReachOptions): Reach => {
 
 /** One band's worth of a reach list. */
 export interface Band<T> {
+  /** Which band; its words are `vocab.band` in the page's language. */
   band: ReachBand;
-  label: string;
   /** Where the band ends, for the header that says "bis 18 km". */
   maxKm: number;
   items: T[];
@@ -301,7 +301,6 @@ export const inBands = <T extends { band: ReachBand }>(
   REACH_BANDS.map((b) => ({
     band: b.key,
     items: list.filter((r) => r.band === b.key),
-    label: b.label,
     maxKm: b.maxKm,
   })).filter((g) => g.items.length > 0);
 

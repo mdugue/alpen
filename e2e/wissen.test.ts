@@ -23,7 +23,7 @@ afterAll(() => {
 });
 
 test("1 · the entry lists the guide as cards and the docs as AGENTS.md does", () =>
-  withPage(app, "wissen-entry", { hash: "wissen" }, async (page) => {
+  withPage(app, "wissen-entry", { target: "wissen" }, async (page) => {
     await page.waitFor("h1");
     expect(await page.text("h1")).toBe("Was hinter der Karte steckt");
     // One card per page the guide's index links to, each a link to its page.
@@ -40,7 +40,7 @@ test("2 · a page carries its diagrams as SVG, and its links stay on the site", 
   withPage(
     app,
     "wissen-page",
-    { hash: "wissen/dev/data-model" },
+    { target: "wissen/dev/data-model" },
     async (page) => {
       await page.waitFor("article h1");
       expect(await page.attribute("article", "lang")).toBe("en");
@@ -65,7 +65,7 @@ test("3 · a diagram wider than the column opens in a dialog with zoom", () =>
   withPage(
     app,
     "wissen-dialog",
-    { hash: "wissen/dev/data-pipeline" },
+    { target: "wissen/dev/data-pipeline" },
     async (page) => {
       await page.click("figure.diagram .diagram-open");
       await page.waitFor("[role=dialog]");
@@ -82,7 +82,7 @@ test("4 · the guide reads in German, in the dark too", () =>
   withPage(
     app,
     "wissen-guide-dark",
-    { dark: true, hash: "wissen/data-journey", mobile: true },
+    { dark: true, mobile: true, target: "wissen/data-journey" },
     async (page) => {
       await page.waitFor("article h1");
       expect(await page.attribute("article", "lang")).toBe("de");

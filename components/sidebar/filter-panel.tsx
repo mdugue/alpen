@@ -8,6 +8,7 @@ import {
   X,
 } from "lucide-react";
 
+import { useT } from "@/components/i18n";
 import {
   ChipGroup,
   FilterChip,
@@ -23,7 +24,9 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import {
+  ALL_RANGES,
   ALL_STATUS,
+  ALL_SURFACES,
   ALL_TYPES,
   BEAUTY_OPTIONS,
   ELEVATION_OPTIONS,
@@ -37,17 +40,18 @@ import {
   TRAFFIC_OPTIONS,
   WET_OPTIONS,
 } from "@/lib/app-state";
-import type { EntityKind, Filters } from "@/lib/app-state";
+import type { Filters, ListTab } from "@/lib/app-state";
 import {
   appliedFilters,
   bestRelief,
   difficultyLabel,
   filterCount,
 } from "@/lib/filter-summary";
-import { ROAD_TAG, ROAD_TAGS, ROAD_TYPE } from "@/lib/regions";
-import { STATUS_LABEL } from "@/lib/status";
-import type { RoadTag, RoadType, Status } from "@/lib/types";
-import { cn, fmt, TOUCH_CONTROL } from "@/lib/utils";
+import { fill } from "@/lib/i18n/fill";
+import { ROAD_TAGS } from "@/lib/regions";
+import type { RangeName } from "@/lib/regions";
+import type { RoadTag, RoadType, Status, Surface } from "@/lib/types";
+import { cn, TOUCH_CONTROL } from "@/lib/utils";
 
 const LEVELS = [1, 2, 3, 4, 5] as const;
 
@@ -60,23 +64,22 @@ export const FilterTrigger = ({
   filters,
   open,
   onOpenChange,
-  className,
 }: {
   filters: Filters;
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  className?: string;
 }) => {
-  const count = filterCount(filters);
+  const { t } = useT();
+  const count = filterCount(filters, t);
   return (
     <Button
       variant={count > 0 ? "secondary" : "outline"}
       aria-expanded={open}
       onClick={() => onOpenChange(!open)}
-      className={cn(TOUCH_CONTROL, className)}
+      className={TOUCH_CONTROL}
     >
       <SlidersHorizontal data-icon="inline-start" />
-      Filter
+      {t.sidebar.filters.open}
       {count > 0 && <Badge>{count}</Badge>}
       <ChevronDown
         data-icon="inline-end"
@@ -98,14 +101,13 @@ export const AppliedFilters = ({
   filters,
   setFilters,
   onReset,
-  className,
 }: {
   filters: Filters;
   setFilters: (update: (f: Filters) => Filters) => void;
   onReset: () => void;
-  className?: string;
 }) => {
-  const applied = appliedFilters(filters);
+  const { t } = useT();
+  const applied = appliedFilters(filters, t);
   if (applied.length === 0) return null;
   return (
     <div
@@ -114,10 +116,9 @@ export const AppliedFilters = ({
         // A horizontal strip inside the phone's bottom sheet: the sheet must
         // not read a sideways drag on it as a swipe downwards.
         "[scrollbar-width:none] [&::-webkit-scrollbar]:hidden",
-        className,
       )}
       data-base-ui-swipe-ignore
-      aria-label="Aktive Filter"
+      aria-label={t.sidebar.filters.active}
     >
       {applied.map((chip) => (
         <Button
@@ -125,7 +126,7 @@ export const AppliedFilters = ({
           variant="secondary"
           size="sm"
           onClick={() => setFilters(chip.clear)}
-          aria-label={`Filter „${chip.label}" entfernen`}
+          aria-label={fill(t.sidebar.filters.remove, { label: chip.label })}
           className={cn(
             "h-7 shrink-0 rounded-full pr-1.5 pl-3 font-normal",
             "pointer-coarse:h-9",
@@ -143,7 +144,7 @@ export const AppliedFilters = ({
           className="h-7 shrink-0 rounded-full px-2.5 font-normal pointer-coarse:h-9"
         >
           <RotateCcw data-icon="inline-start" />
-          Alle
+          {t.sidebar.filters.all}
         </Button>
       )}
     </div>
@@ -172,6 +173,8 @@ export const FilterBody = ({
   counts,
   totals,
   countWith,
+  ranges,
+  onRange,
   onReset,
   more,
   onMoreChange,
@@ -179,8 +182,8 @@ export const FilterBody = ({
   filters: Filters;
   setFilters: (update: (f: Filters) => Filters) => void;
   /** How many rows each list shows right now, and how many there are in all. */
-  counts: Record<EntityKind, number>;
-  totals: Record<EntityKind, number>;
+  counts: Record<ListTab, number>;
+  totals: Record<ListTab, number>;
   /**
    * How many roads would be left by a filter change – the number on every
    * chip. The patch carries the option *and* lifts its own group's filter, so
@@ -189,29 +192,63 @@ export const FilterBody = ({
    * it also keeps the numbers still while a group is being tapped.
    */
   countWith: (patch: Partial<Filters>) => number;
+  /**
+   * The ranges the data holds a road for. The group only shows with two or
+   * more: a chip row of one is a statement, not a choice, and "Alpen 262 ·
+   * Vogesen 0" would list a range the map cannot show yet.
+   */
+  ranges: readonly RangeName[];
+  /** A range chip pressed – the one chip that also frames (`range` in `reduce`). */
+  onRange: (range: RangeName) => void;
   onReset: () => void;
   /** The second half of the panel; its state lives with the panel's own. */
   more: boolean;
   onMoreChange: (open: boolean) => void;
 }) => {
+  const { t, fmt } = useT();
+  const words = t.vocab;
   const set = <K extends keyof Filters>(key: K, value: Filters[K]) =>
     setFilters((f) => ({ ...f, [key]: value }));
+  const pickedRanges = pickedMembers(filters.ranges, ALL_RANGES);
   const pickedStatus = pickedMembers(filters.status, ALL_STATUS);
   const pickedTypes = pickedMembers(filters.types, ALL_TYPES);
+  const pickedSurfaces = pickedMembers(filters.surfaces, ALL_SURFACES);
   const [lo, hi] = filters.difficulty;
   const wholeScale = lo === RATING_MIN && hi === RATING_MAX;
-  const count = filterCount(filters);
-  const relief = counts.pass > 0 ? null : bestRelief(filters, countWith);
+  const count = filterCount(filters, t);
+  const relief = counts.pass > 0 ? null : bestRelief(filters, countWith, t);
+  const reliefLabel = relief?.chip.label ?? "";
 
   return (
     <div className="grid gap-4 px-3 pt-3 pb-4">
-      <ChipGroup id="f-status" label="Zustand im gewählten Zeitraum">
+      {/* The range first: it is the "where" before every other decision, and
+          it is the one chip that moves the camera too – a range is a place,
+          and a list of Jura roads under a picture of the Dolomites answers
+          only half the question. */}
+      {ranges.length > 1 && (
+        <ChipGroup id="f-ranges" label={t.sidebar.filters.range}>
+          {ranges.map((r) => (
+            <FilterChip
+              key={r}
+              label={words.range[r].label}
+              hint={words.range[r].hint}
+              count={countWith({ ranges: [r] })}
+              pressed={pickedRanges.includes(r)}
+              onPressedChange={() => onRange(r)}
+            >
+              {words.range[r].label}
+            </FilterChip>
+          ))}
+        </ChipGroup>
+      )}
+
+      <ChipGroup id="f-status" label={t.sidebar.filters.status}>
         {ALL_STATUS.map((s: Status) => {
           const on = pickedStatus.includes(s);
           return (
             <FilterChip
               key={s}
-              label={STATUS_LABEL[s]}
+              label={t.status.label[s]}
               count={countWith({ status: [s] })}
               pressed={on}
               onPressedChange={() =>
@@ -219,7 +256,7 @@ export const FilterBody = ({
               }
             >
               <StatusDot status={s} hollow={!on} />
-              {STATUS_LABEL[s]}
+              {t.status.label[s]}
             </FilterChip>
           );
         })}
@@ -236,13 +273,15 @@ export const FilterBody = ({
           it stays invariant like every other group's numbers. */}
       <ChipGroup
         id="f-difficulty"
-        label="Schwierigkeit"
-        value={wholeScale ? "egal" : difficultyLabel(filters.difficulty)}
+        label={t.sidebar.filters.difficulty}
+        value={
+          wholeScale ? words.option.any : difficultyLabel(filters.difficulty, t)
+        }
       >
         {LEVELS.map((n) => (
           <FilterChip
             key={n}
-            label={`Schwierigkeit ${n}`}
+            label={fill(words.filter.difficultyOne, { level: n })}
             count={countWith({ difficulty: [n, n] })}
             pressed={!wholeScale && n >= lo && n <= hi}
             onPressedChange={() =>
@@ -257,7 +296,7 @@ export const FilterBody = ({
 
       <ThresholdChips
         id="f-elevation"
-        label="Höhe des Scheitelpunkts"
+        label={t.sidebar.filters.elevation}
         options={ELEVATION_OPTIONS}
         count={(v) => countWith({ minElevation: v })}
         value={filters.minElevation}
@@ -265,14 +304,14 @@ export const FilterBody = ({
       />
 
       <FilterChip
-        label="Nur Gemerkte"
+        label={t.sidebar.filters.favoritesOnly}
         count={countWith({ favoritesOnly: true })}
         pressed={filters.favoritesOnly}
         onPressedChange={(on) => set("favoritesOnly", on)}
         className="w-fit"
       >
         <Star className={cn(filters.favoritesOnly && "fill-current")} />
-        Nur Gemerkte
+        {t.sidebar.filters.favoritesOnly}
       </FilterChip>
 
       <Collapsible open={more} onOpenChange={onMoreChange}>
@@ -294,7 +333,7 @@ export const FilterBody = ({
             data-icon="inline-start"
             className={cn("transition-transform", more && "rotate-180")}
           />
-          Weitere Filter
+          {t.sidebar.filters.more}
         </CollapsibleTrigger>
         <CollapsibleContent className="grid gap-4 pt-3">
           {/* Art and Merkmale: the two axes of plan 14. The type is topology
@@ -302,55 +341,78 @@ export const FilterBody = ({
               I want"; the labels are character and stack with and-semantics,
               which is why they carry their word next to the glyph – a strip of
               icons alone is scannable in a row but not choosable in a filter. */}
-          <ChipGroup id="f-types" label="Art der Straße">
-            {ALL_TYPES.map((t: RoadType) => (
+          <ChipGroup id="f-types" label={t.sidebar.filters.roadType}>
+            {ALL_TYPES.map((type: RoadType) => (
               <FilterChip
-                key={t}
-                label={ROAD_TYPE[t].label}
-                hint={ROAD_TYPE[t].hint}
-                count={countWith({ types: [t] })}
-                pressed={pickedTypes.includes(t)}
+                key={type}
+                label={words.roadType[type].label}
+                hint={words.roadType[type].hint}
+                count={countWith({ types: [type] })}
+                pressed={pickedTypes.includes(type)}
                 onPressedChange={() =>
-                  set("types", toggleMember(filters.types, ALL_TYPES, t))
+                  set("types", toggleMember(filters.types, ALL_TYPES, type))
                 }
               >
-                {ROAD_TYPE[t].label}
+                {words.roadType[type].label}
+              </FilterChip>
+            ))}
+          </ChipGroup>
+
+          {/* Road stays the default: all three pressed is no filter, and a
+              road cyclist who presses nothing sees the gravel roads among the
+              rest, dashed and named (plan 27). */}
+          <ChipGroup id="f-surfaces" label={t.sidebar.filters.surface}>
+            {ALL_SURFACES.map((x: Surface) => (
+              <FilterChip
+                key={x}
+                label={words.surface[x].label}
+                hint={words.surface[x].hint}
+                count={countWith({ surfaces: [x] })}
+                pressed={pickedSurfaces.includes(x)}
+                onPressedChange={() =>
+                  set(
+                    "surfaces",
+                    toggleMember(filters.surfaces, ALL_SURFACES, x),
+                  )
+                }
+              >
+                {words.surface[x].label}
               </FilterChip>
             ))}
           </ChipGroup>
 
           <ChipGroup
             id="f-tags"
-            label="Merkmale"
-            hint="Alle ausgewählten müssen zutreffen."
+            label={t.sidebar.filters.tags}
+            hint={t.sidebar.filters.tagsHint}
           >
-            {ROAD_TAGS.map((t: RoadTag) => (
+            {ROAD_TAGS.map((tag: RoadTag) => (
               <FilterChip
-                key={t}
-                label={ROAD_TAG[t].label}
-                hint={ROAD_TAG[t].hint}
-                count={countWith({ tags: [t] })}
-                pressed={filters.tags.includes(t)}
+                key={tag}
+                label={words.roadTag[tag].label}
+                hint={words.roadTag[tag].hint}
+                count={countWith({ tags: [tag] })}
+                pressed={filters.tags.includes(tag)}
                 onPressedChange={(on) =>
                   set(
                     "tags",
                     on
                       ? ROAD_TAGS.filter(
-                          (x) => x === t || filters.tags.includes(x),
+                          (x) => x === tag || filters.tags.includes(x),
                         )
-                      : filters.tags.filter((x) => x !== t),
+                      : filters.tags.filter((x) => x !== tag),
                   )
                 }
               >
-                <TagIcon tag={t} />
-                {ROAD_TAG[t].label}
+                <TagIcon tag={tag} />
+                {words.roadTag[tag].label}
               </FilterChip>
             ))}
           </ChipGroup>
 
           <ThresholdChips
             id="f-traffic"
-            label="Verkehr, 1 ist am ruhigsten"
+            label={t.sidebar.filters.traffic}
             options={TRAFFIC_OPTIONS}
             count={(v) => countWith({ maxTraffic: v })}
             scale
@@ -359,7 +421,7 @@ export const FilterBody = ({
           />
           <ThresholdChips
             id="f-beauty"
-            label="Schönheit, 5 ist am schönsten"
+            label={t.sidebar.filters.beauty}
             options={BEAUTY_OPTIONS}
             count={(v) => countWith({ minBeauty: v })}
             scale
@@ -368,7 +430,7 @@ export const FilterBody = ({
           />
           <ThresholdChips
             id="f-fame"
-            label="Bekanntheit, 5 ist ein Klassiker"
+            label={t.sidebar.filters.fame}
             options={FAME_OPTIONS}
             count={(v) => countWith({ minFame: v })}
             scale
@@ -382,7 +444,7 @@ export const FilterBody = ({
               says so, as every derived value in the app does. */}
           <ThresholdChips
             id="f-heat"
-            label="Wärme im Tal (abgeleitet)"
+            label={t.sidebar.filters.heat}
             options={HEAT_OPTIONS}
             count={(v) => countWith({ maxValleyTmax: v })}
             value={filters.maxValleyTmax}
@@ -390,7 +452,7 @@ export const FilterBody = ({
           />
           <ThresholdChips
             id="f-wet"
-            label="Regentage im Halbmonat"
+            label={t.sidebar.filters.wet}
             options={WET_OPTIONS}
             count={(v) => countWith({ maxWetDays: v })}
             value={filters.maxWetDays}
@@ -410,7 +472,7 @@ export const FilterBody = ({
         >
           {counts.pass === 0 && relief ? (
             <>
-              Keine Straßen. Ohne „{relief.chip.label}“ wären es{" "}
+              {fill(t.sidebar.filters.noRoadsWithout, { label: reliefLabel })}
               <span className="text-foreground font-medium tabular-nums">
                 {fmt(relief.n)}
               </span>
@@ -421,12 +483,12 @@ export const FilterBody = ({
               <span className="text-foreground font-medium tabular-nums">
                 {fmt(counts.pass)}
               </span>{" "}
-              von {fmt(totals.pass)} Straßen
+              {fill(t.sidebar.filters.countRoads, { total: fmt(totals.pass) })}
               {", "}
               <span className="text-foreground font-medium tabular-nums">
                 {fmt(counts.tour)}
               </span>{" "}
-              Touren
+              {t.sidebar.filters.countTours}
             </>
           )}
         </p>
@@ -438,7 +500,7 @@ export const FilterBody = ({
           className={TOUCH_CONTROL}
         >
           <RotateCcw data-icon="inline-start" />
-          Zurücksetzen
+          {t.sidebar.filters.reset}
         </Button>
       </div>
     </div>

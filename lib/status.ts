@@ -1,5 +1,8 @@
 import { clockTime, dayLength, periodDate, sunTimes } from "@/lib/daylight";
+import type { Messages, Msg } from "@/lib/i18n";
+import { fill } from "@/lib/i18n/fill";
 import { periodAt, periodIndex, periodLabel, PERIODS } from "@/lib/period";
+import { isUnpaved, STATUSES } from "@/lib/regions";
 import type {
   ClimateBucket,
   ClimateYear,
@@ -7,27 +10,20 @@ import type {
   Period,
   Status,
   Tour,
+  TourSeason,
+  Town,
 } from "@/lib/types";
-import { fmt, fmtUnit } from "@/lib/utils";
+import { fmt, fmtUnit, listOr } from "@/lib/utils";
 
-/**
- * The three-valued status is the vocabulary of the filter, the hash, the map
- * and the dot. Its labels answer "how good is it to ride there", not "is the
- * road open": a July cell whose problem is heat is not "meist offen".
+/*
+ * Every sentence below is built from `w.status`, the words of the page's
+ * language, which the caller hands in as the last argument (plan 08): a
+ * client component from `useT()`, the server from `messagesOf`, a script or a
+ * test the German `DE`. The three-valued status is the vocabulary of the
+ * filter, the hash, the map and the dot, and its labels (`status.label`)
+ * answer "how good is it to ride there", not "is the road open": a July cell
+ * whose problem is heat is not "meist offen".
  */
-export const STATUS_LABEL: Record<Status, string> = {
-  closed: "oft gesperrt",
-  open: "gut",
-  risky: "eingeschränkt",
-};
-
-/**
- * The three statuses, best first – the one list the filter, the share image
- * and the calibration script iterate. `lib/schema.ts` carries the same triple
- * as a zod enum because it is the source of the type, but it is server-only
- * (zod must not reach the client), so this literal cannot be derived from it.
- */
-export const STATUS_ORDER: readonly Status[] = ["open", "risky", "closed"];
 
 /**
  * Higher is worse: the direction the status sort reads. Note that
@@ -35,8 +31,7 @@ export const STATUS_ORDER: readonly Status[] = ["open", "risky", "closed"];
  * picks the minimum grade; the two directions are deliberate and live next to
  * each other so neither can be read for the other.
  */
-export const statusRank = (status: Status): number =>
-  STATUS_ORDER.indexOf(status);
+export const statusRank = (status: Status): number => STATUSES.indexOf(status);
 
 /**
  * Why a verdict came out the way it did. Every signal can only lower a cell,
@@ -44,6 +39,7 @@ export const statusRank = (status: Status): number =>
  */
 export type StatusReason =
   | "outside-window"
+  | "snow-cover"
   | "window-edge"
   | "snow"
   | "frost"
@@ -60,6 +56,7 @@ export type StatusReason =
  */
 export const REASON_ORDER: StatusReason[] = [
   "outside-window",
+  "snow-cover",
   "window-edge",
   "snow",
   "frost",
@@ -70,76 +67,21 @@ export const REASON_ORDER: StatusReason[] = [
   "cold-descent",
 ];
 
-/** The one word the badge and the strip carry for a limited cell. */
-const REASON_WORD: Record<StatusReason, string> = {
-  altitude: "Höhe",
-  "cold-descent": "kalte Abfahrt",
-  frost: "Frost",
-  heat: "Hitze",
-  "outside-window": "gesperrt",
-  "short-day": "kurze Tage",
-  snow: "Schnee",
-  wet: "nass",
-  "window-edge": "Randzeit",
-};
-
 /**
- * The one reason that closes a road. Every other signal can only make a cell
- * "eingeschränkt" – a snowy or a hot half-month is not a closure – so the
- * reasons behind "eingeschränkt" are the ladder without this one.
+ * The two reasons that close a road: a barrier (this one), for asphalt; the
+ * snow cover, for gravel – nobody plows a military road, it opens when the
+ * snow is gone (plan 27). Every other signal can only make a cell
+ * "eingeschränkt" – a snowy or a hot half-month is not a closure. The cover
+ * can limit as well as close: below `COVER_CLOSED_PCT` and above
+ * `COVER_LIMITED_PCT` it is a caveat, which is why only the barrier is left
+ * out of the limiting reasons.
  */
-const CLOSING_REASON: StatusReason = "outside-window";
+const WINDOW_CLOSING: StatusReason = "outside-window";
 
 /** Every reason that can make a cell "eingeschränkt", in ladder order. */
 const LIMITING_REASONS: StatusReason[] = REASON_ORDER.filter(
-  (r) => r !== CLOSING_REASON,
+  (r) => r !== WINDOW_CLOSING,
 );
-
-/**
- * The caveat as a standalone phrase, for "Fahrbar, aber mit einem Haken: …".
- * This one stands alone: the strip's popover shows it for whichever
- * half-month is hovered, which is rarely the selected one, so it is the only
- * explanation that cell has – `REASON_TEXT` above it describes the selected
- * half-month instead. That is why it may carry its own sub-clause, and why
- * the list in `GRADE_HINT.limited` uses `REASON_SHORT` rather than this.
- */
-const REASON_PHRASE: Record<StatusReason, string> = {
-  altitude: "Höhenlage, Schnee und Eis sind möglich",
-  "cold-descent": "eine kalte Abfahrt",
-  frost: "Frost in den Nächten",
-  heat: "Hitze im Tal",
-  "outside-window": "Wintersperre",
-  "short-day": "kurze Tage",
-  snow: "Schneefall",
-  wet: "viel Regen",
-  "window-edge":
-    "der Rand des Öffnungsfensters, Öffnung und Sperrung verschieben sich je nach Winter",
-};
-
-/**
- * The caveat as a bare noun phrase, for the list of eight in
- * `GRADE_HINT.limited`. A phrase that carries its own sub-clause reads as
- * part of the list rather than as one item of it, so the list needs the
- * shorter form – the hand-written sentence this replaced used exactly these
- * words for the same reason.
- */
-export const REASON_SHORT: Record<StatusReason, string> = {
-  altitude: "die Höhenlage",
-  "cold-descent": "eine kalte Abfahrt",
-  frost: "Frost",
-  heat: "Hitze im Tal",
-  "outside-window": "Wintersperre",
-  "short-day": "kurze Tage",
-  snow: "Schnee",
-  wet: "viel Regen",
-  "window-edge": "der Rand des Öffnungsfensters",
-};
-
-/** "a, b und c" – the German list the generated sentences are built from. */
-const listOf = (parts: string[], conjunction: string): string =>
-  parts.length < 2
-    ? (parts[0] ?? "")
-    : `${parts.slice(0, -1).join(", ")} ${conjunction} ${parts.at(-1)}`;
 
 /**
  * The display scale of the strip and the histogram: `open` split into the
@@ -148,13 +90,6 @@ const listOf = (parts: string[], conjunction: string): string =>
  */
 export type Grade = "best" | "good" | "limited" | "closed";
 
-export const GRADE_LABEL: Record<Grade, string> = {
-  best: "beste Zeit",
-  closed: "oft gesperrt",
-  good: "gut",
-  limited: "eingeschränkt",
-};
-
 /**
  * One plain sentence per grade – what the colour says, in the words a rider
  * would use. These are the general sentences for the legend; a cell in the
@@ -162,15 +97,16 @@ export const GRADE_LABEL: Record<Grade, string> = {
  * (`cellHint`): which caveat a limited cell has, and why a good cell is not
  * the best time. The rules behind it are in docs/scales.md and the dialog.
  */
-export const GRADE_HINT: Record<Grade, string> = {
-  best: "Die verlässlichsten Wochen des Jahres für diesen Pass: Nichts spricht gegen die Fahrt, und Schnee ist selten.",
-  closed:
-    "Die Straße ist in dieser Zeit meist gesperrt, in der Regel wegen der Wintersperre.",
-  good: "Nichts spricht gegen die Fahrt. Nur ist es entweder ein kürzerer Abschnitt als die beste Zeit, oder es schneit gelegentlich.",
-  limited: `Fahrbar, aber mit einem Haken: ${listOf(
-    LIMITING_REASONS.map((r) => REASON_SHORT[r]),
-    "oder",
-  )}.`,
+export const gradeHint = (grade: Grade, w: Messages): string => {
+  const s = w.status;
+  return grade === "limited"
+    ? fill(s.gradeHint.limited, {
+        reasons: listOr(
+          LIMITING_REASONS.map((r) => s.reasonShort[r]),
+          w.lang,
+        ),
+      })
+    : s.gradeHint[grade];
 };
 
 /**
@@ -217,14 +153,18 @@ export interface Years {
  * caveat of a limited cell, the reason a good cell is not the best time – and
  * the general sentence otherwise.
  */
-export const cellHint = (cell: YearCell): string => {
+export const cellHint = (cell: YearCell, w: Messages): string => {
+  const s = w.status;
   if (cell.grade === "limited" && cell.reasons[0])
-    return `Fahrbar, aber mit einem Haken: ${REASON_PHRASE[cell.reasons[0]]}.`;
+    return fill(s.cell.limited, { phrase: s.reasonPhrase[cell.reasons[0]] });
+  // A closed cell names what closed it: the barrier, or the snow on a track.
+  if (cell.grade === "closed")
+    return cell.reasons[0] === "snow-cover"
+      ? s.cell.closedCover
+      : s.cell.closedBarrier;
   if (cell.grade === "good")
-    return cell.snowy
-      ? "Nichts spricht gegen die Fahrt. Jedoch schneit es gelegentlich."
-      : "Nichts spricht gegen die Fahrt. Nur ist es ein kürzerer Abschnitt als die beste Zeit.";
-  return GRADE_HINT[cell.grade];
+    return cell.snowy ? s.cell.goodSnowy : s.cell.goodShort;
+  return gradeHint(cell.grade, w);
 };
 
 /** The order the legend lists the grades in: best first. */
@@ -303,6 +243,16 @@ export const inputAt = (
  */
 export const SNOW_RISKY_PCT = 20;
 const FROST_RISKY_PCT = 80;
+/**
+ * Snow cover on an unpaved road (plan 27): the share of days with a depth
+ * above `CLIMATE_DAY.coverM` at the marker. Above the first the road is
+ * closed – the ungroomed equivalent of a barrier – above the second it is a
+ * caveat. Provisional: set from the plan's expectation (the Assietta closed
+ * November to May, open July to September) until the archive backfill lets
+ * `analyze:status` print the distribution.
+ */
+export const COVER_CLOSED_PCT = 50;
+export const COVER_LIMITED_PCT = 20;
 /** "Beste Zeit" only counts half-months that are quieter than this. */
 const SNOW_BEST_PCT = 10;
 /** Mean daily maximum in the valley, derived from the summit value. */
@@ -314,7 +264,7 @@ export const SHORT_DAY_HOURS = 10.75;
 /** Mean daily maximum at the summit: the warmest moment of the descent. */
 export const COLD_DESCENT_TMAX = 8;
 /** Standard-atmosphere lapse rate in °C per m. */
-const LAPSE_RATE = 0.0065;
+export const LAPSE_RATE = 0.0065;
 /**
  * How far the derived valley value sits from a measured one, in °C. Principle
  * 3: it travels with every sentence that prints the derived value, so the
@@ -335,63 +285,60 @@ interface Signal {
   reason: StatusReason | null;
   /** The constant the verdict compares against. */
   value: number;
-  /** Written after the value: "%", "°C", "Stunden". */
-  unit: string;
+  /** Written after the value; `hours` is the word `status.hours`, which has a translation. */
+  unit: "%" | "°C" | "hours";
   /** Decimal places the value is printed with. */
   digits?: number;
-  /** The clause the dialog prints; `$` stands for the value with its unit. */
-  reads: string;
 }
 
 /**
- * Every threshold the heuristic carries, in ladder order, with the clause
- * that explains it. The scales dialog renders its "Vier Stufen, eine Leiter"
- * paragraph from this table, so a changed constant reaches the text that
- * explains it; `scripts/analyze-status.ts` reads the same values back when it
- * re-runs the calibration. The reasons without a number – the opening window,
- * its edge and the altitude fallback – are not here: they are calendar rules,
- * not thresholds, and `REASON_PHRASE` is what names them.
+ * Every threshold the heuristic carries, in ladder order; the clause that
+ * explains each is `status.signal` in the message files. The scales dialog
+ * renders its "Vier Stufen, eine Leiter" paragraph from this table, so a
+ * changed constant reaches the text that explains it; `scripts/analyze-status.ts`
+ * reads the same values back when it re-runs the calibration. The reasons
+ * without a number – the opening window, its edge and the altitude fallback
+ * – are not here: they are calendar rules, not thresholds, and
+ * `reasonPhrase` is what names them.
  */
 export const SIGNALS: Signal[] = [
   {
-    reads: "Schneefall ab $ der Tage",
+    reason: "snow-cover",
+    unit: "%",
+    value: COVER_LIMITED_PCT,
+  },
+  {
     reason: "snow",
     unit: "%",
     value: SNOW_RISKY_PCT,
   },
   {
-    reads: "Frost in $ der Nächte",
     reason: "frost",
     unit: "%",
     value: FROST_RISKY_PCT,
   },
   {
-    reads: "Hitze im Tal ab $",
     reason: "heat",
     unit: "°C",
     value: HEAT_VALLEY_TMAX,
   },
   {
-    reads: "Regen an $ der Tage",
     reason: "wet",
     unit: "%",
     value: WET_LIMITED_PCT,
   },
   {
     digits: 2,
-    reads: "Tage unter $ Licht",
     reason: "short-day",
-    unit: "Stunden",
+    unit: "hours",
     value: SHORT_DAY_HOURS,
   },
   {
-    reads: "ein Gipfel-Tagesmaximum unter $",
     reason: "cold-descent",
     unit: "°C",
     value: COLD_DESCENT_TMAX,
   },
   {
-    reads: "weniger als $ Schneefalltagen",
     reason: null,
     unit: "%",
     value: SNOW_BEST_PCT,
@@ -399,15 +346,27 @@ export const SIGNALS: Signal[] = [
 ];
 
 /** The lapse rate as the dialog says it, e.g. "0,65 °C je 100 m". */
-export const lapseText = (): string =>
-  `${fmt(LAPSE_RATE * 100, 2)} °C je 100 m`;
+export const lapseText = (w: Messages): string =>
+  fill(w.status.lapse, { rate: fmt(LAPSE_RATE * 100, 2, w.lang) });
 
 /** The value of a signal with its unit, e.g. "20 %" or "10,75 Stunden". */
-const signalValue = (s: Signal): string =>
-  `${fmt(s.value, s.digits ?? 0)} ${s.unit}`;
+export const signalValue = (s: Signal, w: Messages): string =>
+  `${fmt(s.value, s.digits ?? 0, w.lang)} ${s.unit === "hours" ? w.status.hours : s.unit}`;
+
+/** The clause of a signal in the message files, by its reason; the bar without one is `best`. */
+type SignalKey = keyof Messages["status"]["signal"];
+
+/**
+ * Which clause explains a signal. The cast is what the test on `SIGNALS`
+ * pins: every reason with a threshold has a clause, and the calendar rules
+ * never reach here because `ladderText` walks the signals, not the ladder.
+ */
+export const signalKey = (s: Signal): SignalKey =>
+  (s.reason ?? "best") as SignalKey;
 
 /** A signal's clause with its value filled in, e.g. "Schneefall ab 20 % der Tage". */
-const signalText = (s: Signal): string => s.reads.replace("$", signalValue(s));
+const signalText = (s: Signal, w: Messages): string =>
+  fill(w.status.signal[signalKey(s)], { value: signalValue(s, w) });
 
 /** The signal of one reason, for the dialog and the calibration script. */
 const signalOf = (reason: StatusReason): Signal | undefined =>
@@ -421,13 +380,17 @@ const BEST_SIGNAL: Signal = SIGNALS.find((s) => s.reason === null)!;
  * order. Generated rather than written out so a changed threshold cannot sit
  * in `SIGNALS` while the paragraph that explains it still names the old one.
  */
-export const ladderText = (): string =>
-  `Jedes Signal kann eine Zelle nur senken, nie heben: ${listOf(
-    LIMITING_REASONS.map(signalOf)
-      .filter((s) => s !== undefined)
-      .map(signalText),
-    "oder",
-  )} machen aus „gut“ ein „eingeschränkt“ – und das erste Signal in dieser Reihenfolge ist das Wort dazu. „Beste Zeit“ ist der längste Abschnitt ohne Vorbehalt und mit ${signalText(BEST_SIGNAL)}. „Oft gesperrt“ kommt ausschließlich aus dem Öffnungsfenster: eine gesperrte Straße und ein heißes Tal sind nicht dieselbe Art von Aussage.`;
+export const ladderText = (w: Messages): string =>
+  fill(w.status.ladder, {
+    bestSignal: signalText(BEST_SIGNAL, w),
+    coverClosed: fmt(COVER_CLOSED_PCT, 0, w.lang),
+    signals: listOr(
+      LIMITING_REASONS.map(signalOf)
+        .filter((s) => s !== undefined)
+        .map((s) => signalText(s, w)),
+      w.lang,
+    ),
+  });
 
 /**
  * The valley's mean daily maximum, derived from the summit series with the
@@ -444,6 +407,19 @@ export const valleyTmax = (
     ? null
     : bucket.tmax + LAPSE_RATE * (pass.elevation - valley);
 
+/**
+ * What a curated window says about one half-month: closed outside it, limited
+ * in its first and last half-month (openings and closures move by weeks from
+ * one winter to the next), nothing inside. One rule for a pass and a loop –
+ * `TourSeason` is the two half-months both carry, a pass's `maintained` is
+ * not read here.
+ */
+const windowReasons = (s: TourSeason, t: Period): StatusReason[] => {
+  if (t < s.opens || t >= s.closes) return ["outside-window"];
+  if (t < s.opens + 0.5 || t >= s.closes - 0.5) return ["window-edge"];
+  return [];
+};
+
 /** Opening window, altitude and calendar – the reasons the heuristic knew before the climate series. */
 const baseReasons = (pass: Pass, t: Period): StatusReason[] => {
   const s = pass.season;
@@ -453,8 +429,8 @@ const baseReasons = (pass: Pass, t: Period): StatusReason[] => {
     if (t >= 12 || t < 3) return ["altitude"];
     return [];
   }
-  if (t < s.opens || t >= s.closes) return ["outside-window"];
-  if (t < s.opens + 0.5 || t >= s.closes - 0.5) return ["window-edge"];
+  const fromWindow = windowReasons(s, t);
+  if (fromWindow.length) return fromWindow;
   if (!s.maintained) {
     if (pass.elevation >= 2300 && (t >= 10 || t < 6.5)) return ["altitude"];
     if (pass.elevation >= 1800 && (t >= 10.5 || t < 6)) return ["altitude"];
@@ -481,9 +457,18 @@ export const passVerdict = (
   input?: VerdictInput | null,
 ): StatusVerdict => {
   const reasons = baseReasons(pass, t);
-  if (reasons.includes("outside-window"))
-    return { reasons: ["outside-window"], status: "closed" };
+  if (reasons.includes(WINDOW_CLOSING))
+    return { reasons: [WINDOW_CLOSING], status: "closed" };
   const b = input?.bucket;
+  // The closing rung of an unpaved road is the snow cover, where the series
+  // carries it: a barrier closes a pass, the snow closes a track. Without
+  // the value the road is judged by every other rung and never closed –
+  // which the strip shows as it is, rather than guessing a closure.
+  if (b && isUnpaved(pass.surface) && b.coverPct !== undefined) {
+    if (b.coverPct >= COVER_CLOSED_PCT)
+      return { reasons: ["snow-cover"], status: "closed" };
+    if (b.coverPct >= COVER_LIMITED_PCT) reasons.push("snow-cover");
+  }
   if (b) {
     if (b.snowPct >= SNOW_RISKY_PCT) reasons.push("snow");
     if (b.frostPct >= FROST_RISKY_PCT) reasons.push("frost");
@@ -503,45 +488,85 @@ export const passStatus = (
   input?: VerdictInput | null,
 ): Status => passVerdict(pass, t, input).status;
 
+/** "Anfang Juni bis Ende Oktober" – the window as the row and the panel say it. */
+export const windowText = (s: TourSeason, w: Messages): string =>
+  fill(w.status.window, {
+    from: periodLabel(s.opens, w),
+    to: periodLabel(s.closes, w),
+  });
+
+export const seasonText = (pass: Pass, w: Messages): string => {
+  const s = pass.season;
+  const say = w.status.season;
+  if (!s) return say.allYear;
+  return fill(say.typical, {
+    maintained: s.maintained ? say.maintained : "",
+    window: windowText(s, w),
+  });
+};
+
 interface ReasonContext {
   pass: Pass;
   t: Period;
   bucket?: ClimateBucket | null;
   valley?: number | null;
+  w: Messages;
 }
 
+/** A share of days, and the same share as "≈ n of 15" days. */
+const shareText = (
+  message: Msg<"pct" | "days">,
+  pct: number | undefined = 0,
+): string => fill(message, { days: daysOf(pct), pct });
+
 /**
- * One German sentence per reason – the honesty principle made visible. Every
+ * One sentence per reason – the honesty principle made visible. Every
  * sentence names its number and where it comes from: a share of days from a
- * ten-year average, a derived valley value, an astronomical day length.
+ * ten-year average, a derived valley value, an astronomical day length. The
+ * words are the message file's; the numbers are formatted here.
  */
 const REASON_TEXT: Record<StatusReason, (ctx: ReasonContext) => string> = {
-  altitude: ({ pass, t }) =>
-    `${periodLabel(t)} ist auf ${fmt(pass.elevation)} m Grenzbereich: Schnee und Eis sind möglich, auch wenn die Straße offen ist.`,
-  "cold-descent": ({ bucket }) =>
-    `Am Gipfel im Schnitt höchstens ${fmt(bucket?.tmax ?? 0)} °C (Klimareihe 2015–2024) – mit Fahrtwind ist die Abfahrt eine um den Gefrierpunkt.`,
-  frost: ({ bucket }) =>
-    `Frost in ${bucket?.frostPct ?? 0} % der Nächte (≈ ${daysOf(bucket?.frostPct ?? 0)} von 15, Klimareihe 2015–2024) – nasse Straßen können überfrieren, die Abfahrt wird kalt.`,
-  heat: ({ pass, bucket, valley }) =>
-    `Im Tal um ${fmt(bucket ? (valleyTmax(pass, bucket, valley) ?? 0) : 0)} °C am Nachmittag (aus dem Gipfelwert abgeleitet, ± ${VALLEY_TMAX_ERROR} °C) – ab dem späten Vormittag nur noch oben angenehm.`,
-  "outside-window": ({ pass }) =>
+  altitude: ({ pass, t, w }) =>
+    fill(w.status.reason.altitude, {
+      elevation: fmt(pass.elevation, 0, w.lang),
+      period: periodLabel(t, w),
+    }),
+  "cold-descent": ({ bucket, w }) =>
+    fill(w.status.reason.coldDescent, {
+      tmax: fmt(bucket?.tmax ?? 0, 0, w.lang),
+    }),
+  frost: ({ bucket, w }) => shareText(w.status.reason.frost, bucket?.frostPct),
+  heat: ({ pass, bucket, valley, w }) =>
+    fill(w.status.reason.heat, {
+      error: VALLEY_TMAX_ERROR,
+      tmax: fmt(
+        bucket ? (valleyTmax(pass, bucket, valley) ?? 0) : 0,
+        0,
+        w.lang,
+      ),
+    }),
+  "outside-window": ({ pass, w }) =>
     pass.season
-      ? `Außerhalb des typischen Öffnungsfensters (${periodLabel(pass.season.opens)} bis ${periodLabel(pass.season.closes)}).`
-      : "Außerhalb der typischen Saison.",
-  "short-day": ({ pass, t }) => {
+      ? fill(w.status.reason.outsideWindow, {
+          window: windowText(pass.season, w),
+        })
+      : w.status.reason.outsideSeason,
+  "short-day": ({ pass, t, w }) => {
     const sun = sunTimes(pass.lat, pass.lon, periodDate(t));
-    return `Nur ${fmt(sun.dayLength, 1)} Stunden Tageslicht, Sonnenuntergang gegen ${clockTime(sun.sunset)} – für eine lange Runde wird es knapp.`;
+    return fill(w.status.reason.shortDay, {
+      hours: fmt(sun.dayLength, 1, w.lang),
+      sunset: clockTime(sun.sunset),
+    });
   },
-  snow: ({ bucket }) =>
-    `Schneefall an ${bucket?.snowPct ?? 0} % der Tage (≈ ${daysOf(bucket?.snowPct ?? 0)} von 15, Klimareihe 2015–2024) – meist bleibt die Straße befahrbar, planbar ist der Zeitraum aber nicht.`,
-  wet: ({ bucket }) =>
-    `Regen an ${bucket?.wetPct ?? 0} % der Tage (≈ ${daysOf(bucket?.wetPct ?? 0)} von 15, Klimareihe 2015–2024) – Staulage; ein trockenes Fenster ist Glückssache.`,
-  "window-edge": ({ pass }) =>
-    `Am Rand des Öffnungsfensters${
-      pass.season
-        ? ` (${periodLabel(pass.season.opens)} bis ${periodLabel(pass.season.closes)})`
-        : ""
-    } – Öffnung und Sperrung verschieben sich je nach Winter um Wochen.`,
+  snow: ({ bucket, w }) => shareText(w.status.reason.snow, bucket?.snowPct),
+  "snow-cover": ({ bucket, w }) =>
+    shareText(w.status.reason.snowCover, bucket?.coverPct),
+  wet: ({ bucket, w }) => shareText(w.status.reason.wet, bucket?.wetPct),
+  // Only a curated window has an edge (`windowReasons`), so the pass carries one.
+  "window-edge": ({ pass, w }) =>
+    fill(w.status.reason.windowEdge, {
+      window: windowText(pass.season!, w),
+    }),
 };
 
 /**
@@ -554,7 +579,8 @@ const reasonTexts = (
   pass: Pass,
   t: Period,
   reasons: StatusReason[],
-  input?: VerdictInput | null,
+  input: VerdictInput | null | undefined,
+  w: Messages,
 ): string[] =>
   reasons.map((r) =>
     REASON_TEXT[r]({
@@ -562,22 +588,38 @@ const reasonTexts = (
       pass,
       t,
       valley: input?.valley,
+      w,
     }),
   );
 
-export const seasonText = (pass: Pass): string => {
-  const s = pass.season;
-  if (!s)
-    return "Ganzjährig befahrbar (Winterräumung); Schnee und Kälte je nach Höhe.";
-  return `Typisch offen ${periodLabel(s.opens)} bis ${periodLabel(s.closes)}${
-    s.maintained ? " (bewirtschaftete Mautstraße, wird geräumt)" : ""
-  }.`;
+/**
+ * The season line of a loop: its own window where the curator knows one, and
+ * "whenever its passes are" otherwise – the strip next to it is what shows
+ * the passes' answer, so the sentence does not repeat it. The curated note
+ * follows in the same paragraph.
+ */
+export const tourSeasonText = (tour: Tour, w: Messages): string => {
+  const window = tour.season
+    ? fill(w.status.season.tourOwn, { window: windowText(tour.season, w) })
+    : w.status.season.tourPasses;
+  return tour.note ? `${window} ${tour.note}` : window;
 };
 
-export type PassIndex = Map<string, Pass>;
+/**
+ * The short form for a row: "Anfang Mai bis Ende Oktober", or "wie ihre
+ * Pässe" for a loop without a window of its own. Not "ganzjährig": a loop
+ * over passes that shut for the winter is not open all year, and `null` says
+ * only that the passes decide (Principle 3).
+ */
+export const tourWindowWord = (tour: Tour, w: Messages): string =>
+  tour.season ? windowText(tour.season, w) : w.status.season.likePasses;
 
-export const indexBySlug = (passes: Pass[]): PassIndex =>
-  new Map(passes.map((p) => [p.slug, p]));
+export type PassIndex = Map<string, Pass>;
+export type TownIndex = Map<string, Town>;
+
+export const indexBySlug = <T extends { slug: string }>(
+  list: readonly T[],
+): Map<string, T> => new Map(list.map((x) => [x.slug, x]));
 
 /** Longest run of `true` in a circular series of 24; null when there is none. */
 interface Run {
@@ -633,9 +675,12 @@ const inRange = (i: number, [from, to]: [Period, Period]): boolean => {
 
 /**
  * The longest run of `true` as a window, or null when it is shorter than two
- * half-months – nothing worth calling a best time.
+ * half-months – nothing worth calling a best time. Circular, like the year: a
+ * run through the turn of the year is one window, not two halves. A derived
+ * year reads its best window with it too (`lib/destination.ts`), so a base
+ * and a road say "beste Zeit" by one rule.
  */
-const windowOf = (flags: boolean[]): [Period, Period] | null => {
+export const windowOf = (flags: boolean[]): [Period, Period] | null => {
   const run = longestRun(flags);
   if (!run || run.length < 2) return null;
   return [periodAt(run.start), periodAt(run.start + run.length - 1)];
@@ -748,26 +793,43 @@ const UNCONSTRAINED: YearCell = {
  * its best – which is what a tour cell has to be, since a tour is at its best
  * only where all of its passes are. Among equal grades the pass whose first
  * reason ranks earliest on the ladder wins.
+ *
+ * A loop with a window of its own (`Tour.season`) brings one more candidate
+ * to that reduction: the window's verdict for the half-month, read by the
+ * same rule a pass's window is. It names no member – the loop as a whole is
+ * what the curator closed – so its cell carries an empty `limiting` list and
+ * `tourText` says the window instead.
  */
 export const tourYear = (tour: Tour, passes: Record<string, Year>): Year => {
   const own = tour.passes
     .map((slug) => passes[slug])
     .filter((year) => year !== undefined);
+  const windowCell = (i: number): YearCell | undefined => {
+    if (!tour.season) return undefined;
+    const reasons = windowReasons(tour.season, periodAt(i));
+    if (!reasons.length) return undefined;
+    const status: Status = reasons[0] === "outside-window" ? "closed" : "risky";
+    return {
+      grade: gradeOf(status, false),
+      limiting: [],
+      reasons,
+      snowy: false,
+      status,
+    };
+  };
+  /** Strictly worse than what stands, or as bad and earlier on the ladder. */
+  const beats = (cell: YearCell, worst: YearCell) => {
+    const d = GRADE_RANK[cell.grade] - GRADE_RANK[worst.grade];
+    return (
+      d < 0 || (d === 0 && ladderRank(cell.reasons) < ladderRank(worst.reasons))
+    );
+  };
   const cells = PERIODS.map((_, i) => {
     let worst: YearCell | undefined;
     for (const year of own) {
       const cell = year.cells[i];
       if (!cell) continue;
-      if (!worst) {
-        worst = cell;
-        continue;
-      }
-      const d = GRADE_RANK[cell.grade] - GRADE_RANK[worst.grade];
-      if (
-        d < 0 ||
-        (d === 0 && ladderRank(cell.reasons) < ladderRank(worst.reasons))
-      )
-        worst = cell;
+      if (!worst || beats(cell, worst)) worst = cell;
     }
     if (!worst) return UNCONSTRAINED;
     // The members that share the cell's status are the ones the sentence
@@ -776,11 +838,18 @@ export const tourYear = (tour: Tour, passes: Record<string, Year>): Year => {
     // happened to settle on. Nothing holds an open tour back, so an open cell
     // carries no list – it would be every member, never read, and it travels
     // to the client inside the precomputed `Year`.
-    if (worst.status === "open") return worst;
-    const limiting = tour.passes.filter(
-      (slug) => passes[slug]?.cells[i]?.status === worst.status,
-    );
-    return { ...worst, limiting };
+    if (worst.status !== "open")
+      worst = {
+        ...worst,
+        limiting: tour.passes.filter(
+          (slug) => passes[slug]?.cells[i]?.status === worst!.status,
+        ),
+      };
+    // The loop's own window comes last and only wins outright: where a
+    // member is as bad for the same reason, that member is named – a closed
+    // Iseran under a closed window is still the Iseran's doing.
+    const window = windowCell(i);
+    return window && beats(window, worst) ? window : worst;
   });
   // A member's grade is "best" only inside that member's own best window, so
   // the minimum is "best" exactly where every pass is – which is the tour's
@@ -809,17 +878,19 @@ export const cellAt = (year: Year | undefined, t: Period): YearCell =>
 
 /**
  * "gut", "eingeschränkt: Hitze" or "oft gesperrt": the status label and, where
- * a caveat applies, the one word of its first reason. `CLOSING_REASON` is
- * excluded because it never coexists with "eingeschränkt"; its word exists for
- * the strip's cell hint.
+ * a caveat applies, the one word of its first reason. The window's closing
+ * reason is excluded because it never coexists with "eingeschränkt"; its word
+ * exists for the strip's cell hint. The snow cover is not: below the closing
+ * share it is a caveat with a word of its own.
  */
 export const statusWord = (
   status: Status,
-  reason?: StatusReason | null,
+  reason: StatusReason | null | undefined,
+  w: Messages,
 ): string =>
-  status === "risky" && reason && reason !== CLOSING_REASON
-    ? `${STATUS_LABEL[status]}: ${REASON_WORD[reason]}`
-    : STATUS_LABEL[status];
+  status === "risky" && reason && reason !== WINDOW_CLOSING
+    ? `${w.status.label[status]}: ${w.status.reasonWord[reason]}`
+    : w.status.label[status];
 
 /**
  * What the badge prints for one cell. A cell inside the best window says so
@@ -827,10 +898,10 @@ export const statusWord = (
  * rather than re-deriving the three parts, so it cannot describe a half-month
  * the strip next to it paints differently.
  */
-export const badgeWord = (cell: YearCell): string =>
+export const badgeWord = (cell: YearCell, w: Messages): string =>
   cell.grade === "best"
-    ? GRADE_LABEL.best
-    : statusWord(cell.status, cell.reasons[0]);
+    ? w.status.grade.best
+    : statusWord(cell.status, cell.reasons[0], w);
 
 /**
  * The one "abgeleitet" sentence for the valley value – Principle 3: the
@@ -841,11 +912,16 @@ const valleyText = (
   pass: Pass,
   bucket: ClimateBucket,
   valley: number | null | undefined,
+  w: Messages,
 ): string => {
   const tmax = valleyTmax(pass, bucket, valley);
   return tmax === null || valley === null || valley === undefined
-    ? "Talwert nicht ableitbar, kein Anstiegsprofil."
-    : `Im Tal (${fmtUnit(valley, "m")}) um ${fmt(Math.round(tmax))} °C, abgeleitet (± ${VALLEY_TMAX_ERROR} °C).`;
+    ? w.status.valley.none
+    : fill(w.status.valley.derived, {
+        error: VALLEY_TMAX_ERROR,
+        tmax: fmt(Math.round(tmax), 0, w.lang),
+        valley: fmtUnit(valley, "m", 0, w.lang),
+      });
 };
 
 /**
@@ -853,9 +929,12 @@ const valleyText = (
  * base. Null where the year has no run worth the name: a single quiet
  * half-month is not a season.
  */
-export const bestText = (year?: Year): string | null =>
+export const bestText = (year: Year | undefined, w: Messages): string | null =>
   year?.best
-    ? `beste Zeit ${periodLabel(year.best[0])} – ${periodLabel(year.best[1])}`
+    ? fill(w.status.best, {
+        from: periodLabel(year.best[0], w),
+        to: periodLabel(year.best[1], w),
+      })
     : null;
 
 /**
@@ -867,9 +946,10 @@ export const reasonParagraph = (
   pass: Pass,
   t: Period,
   reasons: StatusReason[],
-  input?: VerdictInput | null,
+  input: VerdictInput | null | undefined,
+  w: Messages,
 ): string | null => {
-  const texts = reasonTexts(pass, t, reasons, input);
+  const texts = reasonTexts(pass, t, reasons, input, w);
   return texts.length > 0 ? texts.join(" ") : null;
 };
 
@@ -886,19 +966,18 @@ export const climateText = (
   bucket: ClimateBucket,
   signals: PassSignals,
   t: Period,
+  w: Messages,
 ): string => {
   const sun = sunTimes(pass.lat, pass.lon, periodDate(t));
-  return `${periodLabel(t)} auf ${fmtUnit(pass.elevation, "m")}; Niederschlag an ${fmt(bucket.wetPct)} % der Tage. ${valleyText(pass, bucket, signals.valley)} Tag ${fmt(sun.dayLength, 1)} h, Sonne ${clockTime(sun.sunrise)}–${clockTime(sun.sunset)}.`;
-};
-
-/**
- * How the tour sentence joins its status word to the passes that carry it.
- * Nothing limits an open tour, so `open` has no sentence.
- */
-const TOUR_JOIN: Record<Status, string | null> = {
-  closed: ":",
-  open: null,
-  risky: " durch",
+  return fill(w.status.climate, {
+    elevation: fmtUnit(pass.elevation, "m", 0, w.lang),
+    hours: fmt(sun.dayLength, 1, w.lang),
+    period: periodLabel(t, w),
+    sunrise: clockTime(sun.sunrise),
+    sunset: clockTime(sun.sunset),
+    valley: valleyText(pass, bucket, signals.valley, w),
+    wetPct: fmt(bucket.wetPct, 0, w.lang),
+  });
 };
 
 const capitalise = (word: string) =>
@@ -911,23 +990,44 @@ const capitalise = (word: string) =>
  * not open, which printed "Eingeschränkt durch …" under an "oft gesperrt"
  * badge; the cell's `limiting` comes out of `tourYear` instead, so the
  * sentence and the badge always describe the same set.
+ *
+ * A cell the loop's own window produced names no member; it says the window
+ * ("Oft gesperrt: außerhalb des typischen Fensters Anfang Mai bis Ende
+ * Oktober."), which is the only thing there is to say about it.
  */
 export const tourText = (
+  tour: Tour,
   cell: YearCell,
   names: (slug: string) => string | undefined,
+  w: Messages,
 ): string | null => {
-  const join = TOUR_JOIN[cell.status];
-  if (join === null) return null;
+  // Nothing limits an open tour, so `open` has no sentence.
+  if (cell.status === "open") return null;
+  const say = w.status.tour;
+  const word = capitalise(w.status.label[cell.status]);
+  // The window's cell is the one that names nobody (`tourYear`); a member's
+  // cell whose names cannot be resolved is not it, and stays silent.
+  if (cell.limiting?.length === 0 && tour.season) {
+    const window = windowText(tour.season, w);
+    return fill(
+      cell.reasons[0] === WINDOW_CLOSING ? say.outsideWindow : say.windowEdge,
+      { window, word },
+    );
+  }
   const list = (cell.limiting ?? []).map(names).filter((n) => n !== undefined);
   if (list.length === 0) return null;
-  return `${capitalise(STATUS_LABEL[cell.status])}${join} ${list.join(", ")}.`;
+  return fill(cell.status === "closed" ? say.closedBy : say.limitedBy, {
+    names: list.join(", "),
+    word,
+  });
 };
 /**
  * One sentence for the 24 cells of a season strip, so screen readers get the
  * same overview the colours give: "beste Zeit Anfang Juli bis Ende September,
  * gut Anfang Juni bis Anfang Oktober, eingeschränkt bis Ende Oktober".
  */
-export const seasonSummary = (grades: Grade[]): string => {
+export const seasonSummary = (grades: Grade[], w: Messages): string => {
+  const s = w.status;
   const n = grades.length;
   // A run "holds" a grade when one of its cells has it: `good` and `rideable`
   // are supersets of `best`, so the longest of them may be the best run
@@ -946,16 +1046,19 @@ export const seasonSummary = (grades: Grade[]): string => {
     grades.map((g) => g !== "closed"),
     holds("limited"),
   );
-  if (!rideable) return "Saison: ganzjährig oft gesperrt.";
+  if (!rideable) return s.summary.closedAllYear;
   const span = (run: Run) =>
     run.length === n
-      ? "ganzjährig"
-      : `${periodLabel(periodAt(run.start))} bis ${periodLabel(periodAt(run.start + run.length - 1))}`;
-  if (!good)
-    return `Saison: eingeschränkt ${span(rideable)}, sonst oft gesperrt.`;
+      ? s.summary.allYear
+      : fill(s.window, {
+          from: periodLabel(periodAt(run.start), w),
+          to: periodLabel(periodAt(run.start + run.length - 1), w),
+        });
+  if (!good) return fill(s.summary.limitedOnly, { span: span(rideable) });
   const parts: string[] = [];
-  if (best) parts.push(`beste Zeit ${span(best)}`);
-  if (grades.includes("good")) parts.push(`gut ${span(good)}`);
-  if (grades.includes("limited")) parts.push(`eingeschränkt ${span(rideable)}`);
-  return `Saison: ${parts.join(", ")}.`;
+  if (best) parts.push(`${s.grade.best} ${span(best)}`);
+  if (grades.includes("good")) parts.push(`${s.grade.good} ${span(good)}`);
+  if (grades.includes("limited"))
+    parts.push(`${s.grade.limited} ${span(rideable)}`);
+  return fill(s.summary.parts, { parts: parts.join(", ") });
 };

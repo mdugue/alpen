@@ -28,7 +28,8 @@ are listed in `docs/roadmap.md`.
 
 ## Town labels
 
-`tags` in `data/towns.json` (vocabulary and German labels in `lib/regions.ts`)
+`tags` in `data/towns.json` (vocabulary in `lib/regions.ts`, labels in
+`vocab.townTag` of the message files)
 are editorial in exactly the same sense: they say what a planner would notice
 on arrival – "Radsport-Mekka", "Werkstätten & Verleih", "Ruhig", "Lange
 Saison" – and nothing is counted. The scales dialog lists all of them with the
@@ -38,8 +39,8 @@ town; `data:check` warns above four.
 
 ## Road types and labels
 
-`type` and `tags` in `data/passes.json` (vocabulary and German labels in
-`lib/regions.ts`) are editorial too, in the same sense as the town labels. The
+`type` and `tags` in `data/passes.json` (vocabulary in `lib/regions.ts`,
+labels in `vocab.roadType` and `vocab.roadTag`) are editorial too, in the same sense as the town labels. The
 **type** says how the road lies in the terrain – it is the one axis that also
 has a mechanical consequence, because the route quality gate measures a
 traverse the way it measures a tour. The **labels** say what riding it is
@@ -48,6 +49,34 @@ measured value, and nothing the data already measures may become one: length,
 gradient, altitude and a border crossing are numbers next to them, not labels
 among them. The scales dialog lists all fourteen with the sentence that
 defines each, `docs/data-model.md` has the tables.
+
+### Gravel: the surface decides the routing profile and the closing rung
+
+`surface` (`asphalt`, `gravel`, `mixed`; `SURFACES` in `lib/regions.ts`) is
+the one field a road carries for the second discipline (plan 27), and it is
+read in three places rather than sprinkled through the app. The **routing
+profile**: `profileOf` in `scripts/lib/validate.ts` picks OpenRouteService's
+road-cycling graph for asphalt and its mountain graph for the rest – the road
+graph leaves tracks out – and the profile enters `meta.inputs`, so a changed
+surface re-routes by itself; only a mountain profile enters the hash, which is
+what keeps every route stored before the field existed valid. The **closing
+rung**: nobody plows a military road, so `outside-window` (a barrier) closes
+asphalt while the snow cover closes a track – `snow-cover` in the ladder,
+with the two shares in the table below, read off `ClimateBucket.coverPct`; a series
+without the value (every one until the archive is asked for `snow_depth`)
+grades a gravel road by the other rungs and never closes it, which the strip
+shows as it is rather than guessing. The **picture**: an unpaved ascent is
+dashed over its status colour and its dot carries a dark ring, so a road
+cyclist who has pressed no chip still sees what the Assietta is.
+
+The four scales stay and are judged inside the discipline: fame is fame among
+gravel riders, difficulty includes the surface (a 6 % gravel ramp rides like a
+9 % asphalt one), traffic is usually 1 and stays a scale because the Via del
+Sale carries motorcycles on toll days. `cobbles` ("Pflaster") is what the old
+`surface` label became: cobbles change the tyre, not the discipline. The two
+cover constants are provisional – set from the plan's expectation until a
+backfill lets `analyze:status` print the distribution – and the scales dialog
+says so with the rest of the ladder.
 
 ## Destinations: reach and the derived year
 
@@ -123,7 +152,7 @@ Bédoin relative is the case that proves it: a long spring, a hole in high
 summer where the heat on Ventoux makes it punishing, and a second peak in
 September. Absolute, it is a flat dim line and the app knows nothing.
 
-**"How much is there" is not lost, it is said in words.** `destinationText`
+**"How much is there" is not lost, it is said in words.** `baseText`
 and the grade bar sit directly above the strip – "Von 33 Pässen im Umkreis:
 12 zur besten Zeit, 11 gut, 10 eingeschränkt" – and the line under it names
 what the strip is relative to. The picture carries the shape, the sentence
@@ -151,6 +180,20 @@ one at 5 km. The inverse list in a pass panel (`basesOf`, "Orte als
 Standort") uses the same bands and the same weight, scaled by how many passes
 each town reaches instead — because the nearest village is rarely the best
 base.
+
+### An area, judged like a base
+
+A destination (`docs/destinations.md`) is judged the way a base is, over its
+members instead of over a reach: the roads inside the circle, their 24 cells
+counted per half-month, graded against the area's own peak with the two
+shares above. There is no band and no nearness weight – the curator drew the
+circle, and everything in it counts once.
+
+What ranks the list of areas is a score that is never shown:
+Σ beauty of the open roads + `RISKY_WEIGHT` (0,4) × Σ beauty of the limited
+ones, nothing for a closed road (`areaScore` in `lib/destination.ts`). It is
+editorial like the scales it sums, and it will be tuned after the app has
+planned one real trip; the scales dialog says both.
 
 ## Status per period
 
@@ -180,8 +223,9 @@ flowchart TD
 The ladder order is `REASON_ORDER`: `outside-window → window-edge → snow →
 frost → altitude → heat → wet → short-day → cold-descent`. Every reason that
 fired stays in `StatusVerdict.reasons`, in that order; the badge shows the
-first as one word (`REASON_WORD`, via `badgeWord`), the panel every one as a
-sentence with its number and provenance (`REASON_TEXT`).
+first as one word (`status.reasonWord` in the message files, via
+`badgeWord`), the panel every one as a sentence with its number and
+provenance (`status.reason`, filled by `REASON_TEXT` in `lib/status.ts`).
 
 The thresholds in the diagram above are not written twice. `SIGNALS` in
 `lib/status.ts` is one table – reason, value, unit and the clause that
@@ -190,7 +234,7 @@ Stufen, eine Leiter" paragraph from it (`ladderText`), so a constant that
 moves reaches the text explaining it. `scripts/analyze-status.ts` reads the
 same table when it re-runs the calibration. The reasons without a number –
 the opening window, its edge and the altitude fallback – are calendar rules
-rather than thresholds and are named by `REASON_PHRASE` only.
+rather than thresholds and are named by `status.reasonPhrase` only.
 
 Three builders in the same module compose the sentences the UI prints, so no
 component joins the word tables itself: `badgeWord(cell)` (the badge and,
@@ -213,13 +257,13 @@ The three fills differ in lightness as well as hue, so they are told apart at
 4 px; the closure has no fill, so a winter of closures stays light and a
 closed road keeps reading as a different kind of statement. In the panel every cell
 carries a tooltip – the half-month and the grade in the first line, then the
-sentence from `GRADE_HINT`, with the caveat named for a limited cell
-(`cellHint`, `REASON_PHRASE`). A limited cell's popover is the only
+sentence from `status.gradeHint`, with the caveat named for a limited cell
+(`cellHint`, `status.reasonPhrase`). A limited cell's popover is the only
 explanation that half-month has – the sentences above it describe the
-_selected_ half-month – so `REASON_PHRASE` may carry its own sub-clause,
-while the list of eight in `GRADE_HINT.limited` uses the shorter
-`REASON_SHORT`. The period control's tooltip lists the four
-sentences once.
+_selected_ half-month – so `status.reasonPhrase` may carry its own
+sub-clause, while the list in `status.gradeHint.limited` uses the shorter
+`status.reasonShort`. The scales dialog lists the four sentences once
+(`GradeLegend`).
 
 `Status` (`open | risky | closed`, `lib/schema.ts`) stays three-valued: it is
 the vocabulary of the filter, the hash and the map. `Grade` (`best | good |
@@ -252,15 +296,17 @@ cohort tables, the per-half-month distributions of every signal, the counts one
 step either side of every threshold, and every (pass, half-month) pair whose
 verdict changes – re-run it after touching a constant.
 
-| Signal        | Constant            | Value   | Reads                                            |
-| ------------- | ------------------- | ------- | ------------------------------------------------ |
-| Schnee        | `SNOW_RISKY_PCT`    | 20 %    | `snowPct`, share of days with ≥ 1 cm             |
-| Frost         | `FROST_RISKY_PCT`   | 80 %    | `frostPct`, share of nights below 0 °C           |
-| Hitze         | `HEAT_VALLEY_TMAX`  | 26 °C   | `tmax` derived to the lowest ascent start        |
-| nass          | `WET_LIMITED_PCT`   | 70 %    | `wetPct`, share of days with ≥ 1 mm              |
-| kurze Tage    | `SHORT_DAY_HOURS`   | 10,75 h | day length from `lat`, `lib/daylight.ts`         |
-| kalte Abfahrt | `COLD_DESCENT_TMAX` | 8 °C    | `tmax` at the summit, the afternoon of a descent |
-| beste Zeit    | `SNOW_BEST_PCT`     | 10 %    | `snowPct` inside a run of "gut"                  |
+| Signal        | Constant            | Value   | Reads                                                                               |
+| ------------- | ------------------- | ------- | ----------------------------------------------------------------------------------- |
+| Schnee        | `SNOW_RISKY_PCT`    | 20 %    | `snowPct`, share of days with ≥ 1 cm                                                |
+| Frost         | `FROST_RISKY_PCT`   | 80 %    | `frostPct`, share of nights below 0 °C                                              |
+| Hitze         | `HEAT_VALLEY_TMAX`  | 26 °C   | `tmax` derived to the lowest ascent start                                           |
+| nass          | `WET_LIMITED_PCT`   | 70 %    | `wetPct`, share of days with ≥ 1 mm                                                 |
+| kurze Tage    | `SHORT_DAY_HOURS`   | 10,75 h | day length from `lat`, `lib/daylight.ts`                                            |
+| kalte Abfahrt | `COLD_DESCENT_TMAX` | 8 °C    | `tmax` at the summit, the afternoon of a descent                                    |
+| beste Zeit    | `SNOW_BEST_PCT`     | 10 %    | `snowPct` inside a run of "gut"                                                     |
+| zugeschneit   | `COVER_LIMITED_PCT` | 20 %    | `coverPct`, share of days with ≥ 10 cm of snow cover – unpaved roads only, a caveat |
+| zugeschneit   | `COVER_CLOSED_PCT`  | 50 %    | `coverPct` – unpaved roads only, closes the road the way a barrier closes a pass    |
 
 ### Derived values
 

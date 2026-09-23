@@ -2,8 +2,10 @@
 
 import { Check, ChevronLeft, Share, Star, X } from "lucide-react";
 
+import { useT } from "@/components/i18n";
 import { Button } from "@/components/ui/button";
 import { Toggle } from "@/components/ui/toggle";
+import { fill } from "@/lib/i18n/fill";
 import { cn, ICON_TOGGLE, OVERLAY_CONTROL, TOUCH_ICON } from "@/lib/utils";
 
 /**
@@ -42,79 +44,88 @@ export const PanelBar = ({
   onBack: () => void;
   onShare: () => void;
   onToggleFavorite: () => void;
-}) => (
-  <div
-    className={cn(
-      "pointer-events-none absolute inset-x-0 top-0 z-20 flex items-center gap-1.5 p-2.5 transition-colors duration-200",
-      solid &&
-        "border-border/60 bg-card/90 supports-not-[backdrop-filter:blur(0)]:bg-card border-b backdrop-blur-md",
-    )}
-  >
-    {backToList && (
-      <Button
-        size="sm"
-        variant="ghost"
-        onClick={onBack}
-        aria-label="Zurück zur Liste"
+}) => {
+  const { t } = useT();
+  return (
+    <div
+      className={cn(
+        "pointer-events-none absolute inset-x-0 top-0 z-20 flex items-center gap-1.5 p-2.5 transition-colors duration-200",
+        solid &&
+          "border-border/60 bg-card/90 supports-not-[backdrop-filter:blur(0)]:bg-card border-b backdrop-blur-md",
+      )}
+    >
+      {backToList && (
+        <Button
+          size="sm"
+          variant="ghost"
+          onClick={onBack}
+          aria-label={t.panel.bar.backToList}
+          className={cn(
+            "pointer-events-auto shrink-0 gap-1 px-2",
+            !solid && OVERLAY_CONTROL,
+          )}
+        >
+          <ChevronLeft />
+          {t.panel.bar.list}
+        </Button>
+      )}
+      {/* The name, once the head it was written on has scrolled away. */}
+      <p
         className={cn(
-          "pointer-events-auto shrink-0 gap-1 px-2",
-          !solid && OVERLAY_CONTROL,
+          "min-w-0 flex-1 truncate text-sm font-semibold transition-opacity duration-200",
+          scrolled ? "opacity-100" : "opacity-0",
         )}
+        aria-hidden
       >
-        <ChevronLeft />
-        Liste
-      </Button>
-    )}
-    {/* The name, once the head it was written on has scrolled away. */}
-    <p
-      className={cn(
-        "min-w-0 flex-1 truncate text-sm font-semibold transition-opacity duration-200",
-        scrolled ? "opacity-100" : "opacity-0",
-      )}
-      aria-hidden
-    >
-      {name}
-    </p>
-    <Button
-      size="icon"
-      variant="ghost"
-      onClick={onShare}
-      aria-label={shared ? "Link kopiert" : `${name} teilen`}
-      className={cn(
-        "pointer-events-auto",
-        !solid && OVERLAY_CONTROL,
-        TOUCH_ICON,
-      )}
-    >
-      {shared ? <Check className="text-status-open" /> : <Share />}
-    </Button>
-    <Toggle
-      pressed={favorite}
-      onPressedChange={onToggleFavorite}
-      aria-label={favorite ? `${name} nicht mehr merken` : `${name} merken`}
-      className={cn(
-        "pointer-events-auto",
-        ICON_TOGGLE,
-        !solid && OVERLAY_CONTROL,
-        TOUCH_ICON,
-      )}
-    >
-      <Star className={cn(favorite && "fill-accent text-accent")} />
-    </Toggle>
-    {!backToList && (
+        {name}
+      </p>
       <Button
         size="icon"
         variant="ghost"
-        onClick={onBack}
-        aria-label="Details schließen"
+        onClick={onShare}
+        aria-label={
+          shared ? t.panel.bar.linkCopied : fill(t.panel.bar.share, { name })
+        }
         className={cn(
           "pointer-events-auto",
           !solid && OVERLAY_CONTROL,
           TOUCH_ICON,
         )}
       >
-        <X />
+        {shared ? <Check className="text-status-open" /> : <Share />}
       </Button>
-    )}
-  </div>
-);
+      <Toggle
+        pressed={favorite}
+        onPressedChange={onToggleFavorite}
+        aria-label={
+          favorite
+            ? fill(t.favorite.unsave, { name })
+            : fill(t.favorite.save, { name })
+        }
+        className={cn(
+          "pointer-events-auto",
+          ICON_TOGGLE,
+          !solid && OVERLAY_CONTROL,
+          TOUCH_ICON,
+        )}
+      >
+        <Star className={cn(favorite && "fill-accent text-accent")} />
+      </Toggle>
+      {!backToList && (
+        <Button
+          size="icon"
+          variant="ghost"
+          onClick={onBack}
+          aria-label={t.panel.bar.close}
+          className={cn(
+            "pointer-events-auto",
+            !solid && OVERLAY_CONTROL,
+            TOUCH_ICON,
+          )}
+        >
+          <X />
+        </Button>
+      )}
+    </div>
+  );
+};

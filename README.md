@@ -7,10 +7,11 @@ questions, not routing questions:
 - Where should we look for a hotel so that several passes and a loop are within reach?
 - Which destinations should we keep an eye on for single-day and multi-day tours?
 
-Data today: 201 roads with 300 ascents and their elevation profiles, 9 loop
-tours and 48 cycling towns, each with a rideability estimate for a freely
-chosen half-month, a 7-day forecast and a 2015–2024 climate series at the
-summit, in 2D and 3D. The UI is in German.
+Data today: 262 roads with 398 ascents and their elevation profiles, 17 loop
+tours, 66 cycling towns and 36 destinations, each with a rideability estimate
+for a freely chosen half-month, a 7-day forecast and a 2015–2024 climate
+series at the summit, in 2D and 3D. The UI is in German, and in English under
+`/en`.
 
 **What it is not.** A route planner or a navigation tool. Komoot, Strava and
 similar services do turn-by-turn planning far better, and the app links out
@@ -34,7 +35,7 @@ and the climate series are missing.
 | ------------------------------------ | ------------------------------------------------------------------------- |
 | `bun dev`                            | Development server                                                        |
 | `bun run build` / `bun start`        | Production build and server                                               |
-| `bun run typecheck`                  | `tsc --noEmit`                                                            |
+| `bun run typecheck`                  | `next typegen && tsc --noEmit` – the route types first, then the compiler |
 | `bun run lint` / `bun run lint:fix`  | oxlint + oxfmt via ultracite (React Compiler and type-aware rules incl.)  |
 | `bun run seams` / `bun run palette`  | The two repo checks inside `lint`: the adapters, and the sRGB mirror      |
 | `bun run data:build`                 | Fetch routes, elevation profiles, climate → `data/generated/` (resumable) |
@@ -44,7 +45,7 @@ and the climate series are missing.
 | `bun run data:photos`                | Wikimedia Commons photos per entity → `data/generated/photos.json`        |
 | `bun run data:schema`                | Re-emit `data/schema/*.schema.json` from `lib/schema.ts`                  |
 | `bun run data:backfill`              | Drain the whole precomputation backlog in hourly batches                  |
-| `bun test`                           | Unit tests next to the code                                               |
+| `bun run test`                       | Unit tests next to the code                                               |
 | `bun run e2e`                        | Build and drive the app in a headless Chrome                              |
 | `bun run docs:diagrams`              | Render the docs' Mermaid blocks to `docs/diagrams/*.svg` (commit them)    |
 | `bun run map:glyphs`                 | Rasterise Inter into MapLibre glyph atlases (committed, rarely needed)    |
@@ -54,19 +55,44 @@ and the climate series are missing.
 
 All content data lives as JSON in the repo (`data/`), is imported at build
 time and read synchronously in `lib/data.ts` inside the one `"use cache"` on
-`app/page.tsx` – the start page is therefore fully prerendered. Two kinds of data never become
+`app/[lang]/(explorer)/layout.tsx` – the start page and every entity route
+under it are therefore fully prerendered, once per language. Two kinds of data never become
 React props: the route geometry, written as content-hashed GeoJSON into
 `public/map` for MapLibre to fetch and tile in its worker, and what only one
 entity's panel reads (its elevation profiles and photo metadata), written as
 one content-hashed JSON per entity into `public/detail`; every later change of
 period, filter or selection reaches the lines as feature state rather than as
 new data. The
-only dynamic source is the weather forecast; it goes through
-`app/api/weather/[slug]/route.ts` with its own cache lifetime so Open-Meteo is
-queried once per pass and hour instead of once per visitor. All
-interaction state lives in one client component (`components/explorer.tsx`)
-and is mirrored into the URL hash, so every view is shareable (plan 02 in
-`docs/plans/` moves entities to real routes).
+only dynamic source is the weather forecast; it is streamed into the pass
+route with its own cache lifetime (`lib/weather.ts`) so Open-Meteo is
+queried once per pass and hour instead of once per visitor. The selection is
+the path and everything else is the hash, so every view is shareable and the
+back button closes the panel:
+
+```
+https://alpen.manuel.fyi/pass/col-du-galibier#t=10&z=9&c=45.06,6.41
+                        └── selection ──┘ └ period ┘ └── camera ──┘
+```
+
+Every pass, tour, town and destination is a prerendered route with its own
+title, description and share image (`app/[lang]/(explorer)/[kind]/[slug]`); the
+layout around it – map, lists, season bar – stays mounted while the path
+changes (`lib/hash-adapter.ts` turns the path into the reducer's `select` and
+`back`, and the state into `router.push`):
+
+```mermaid
+sequenceDiagram
+  participant U as Visitor
+  participant L as (explorer)/layout<br/>map + sidebar, stays mounted
+  participant R as Next router
+  participant P as [kind]/[slug]/page<br/>prerendered
+  U->>L: taps a row or a marker → reduce(select)
+  L->>R: router.push("/pass/x" + location.hash)
+  R->>P: fetches the route's payload
+  P-->>L: the detail slot – the weather streams into its Suspense hole
+  U->>R: browser back
+  R-->>L: pathname "/" → reduce(back); the map stays where it is
+```
 
 ```mermaid
 flowchart LR
@@ -84,15 +110,40 @@ Where the data in those files comes from – which host answers which question,
 what each command writes and the states a route passes through – is
 [`docs/data-pipeline.md`](./docs/data-pipeline.md).
 
+Two languages, one tree (plan 08): every route lives under `app/[lang]`,
+German stays prefix-free and canonical, English lives under `/en`, and
+`next.config.ts` rewrites the prefix-free paths onto `/de` (and redirects a
+typed `/de/…` to the prefix-free path), both prerendered. The one request
+that is negotiated is the bare root: `proxy.ts` sends a browser that asks for
+English to `/en`, unless the language menu's cookie says otherwise:
+
+| Request                       | Rewrite           | Route file                                     | Language  |
+| ----------------------------- | ----------------- | ---------------------------------------------- | --------- |
+| `/`                           | → `/de`           | `app/[lang]/(explorer)/page.tsx`               | de        |
+| `/pass/col-du-galibier`       | → `/de/pass/…`    | `app/[lang]/(explorer)/[kind]/[slug]/page.tsx` | de        |
+| `/en`                         | (none)            | `app/[lang]/(explorer)/page.tsx`               | en        |
+| `/en/pass/col-du-galibier`    | (none)            | `app/[lang]/(explorer)/[kind]/[slug]/page.tsx` | en        |
+| `/impressum`, `/en/impressum` | → `/de/…`, (none) | `app/[lang]/impressum/page.tsx`                | de (both) |
+
+The words are `lib/i18n/messages.de.ts` (the source, typed) and
+`messages.en.ts` (held to its shape, so a missing key is a type error), and
+each page ships only its own; the curated prose is `data/i18n/en/*.json`,
+merged over the German records in `lib/data.ts` with a German fallback that
+`bun run data:check` counts. The language is the last group of the map's
+"…" menu: a plain link to the same view under the other prefix, hash and
+all.
+
 ```
-app/            layout, start page, weather route, Impressum, Datenschutz,
-                metadata routes (icons, share image, manifest, robots, sitemap)
+app/            [lang]/: layout, the explorer layout with the start page and
+                the entity routes, Impressum, Datenschutz, the share images;
+                at the root the metadata routes (icons, manifest, robots, sitemap)
 components/     explorer (state) · map (MapLibre) · sidebar (lists, filters) · panel (detail) · ui (shadcn)
-data/           passes.json, tours.json, towns.json  ← source data, hand-maintained
+data/           passes.json, tours.json, towns.json, destinations.json  ← source data, hand-maintained
+data/i18n/en/   the curated prose in English, keyed by slug, hand-checked
 data/generated/ summits, routes, routes-meta, rejected, profiles, climate, photos
                 ← from data:build and data:photos, committed
 data/schema/    JSON Schema for the editor, from data:schema
-lib/            types, data access, status heuristic, state hooks, brand constants
+lib/            types, data access, status heuristic, state hooks, brand constants, i18n/ (the words)
 scripts/        build-data.ts (precomputation), check-data.ts (validation),
                 locate-pass.ts (where a pass point belongs), build-photos.ts,
                 build-map-assets.ts / build-detail-assets.ts (→ public/, git-ignored)
@@ -119,7 +170,7 @@ symlink to it, so there is only ever one copy. The site publishes all of
 | [`docs/scales.md`](./docs/scales.md)                 | the 1–5 scales, the status ladder, the reach bands                      |
 | [`docs/ui-conventions.md`](./docs/ui-conventions.md) | how the interface is built and why                                      |
 | [`docs/map-rendering.md`](./docs/map-rendering.md)   | camera, layers, hit testing, basemap                                    |
-| [`docs/architecture.md`](./docs/architecture.md)     | what the page ships, caching, the weather route, the toolchain          |
+| [`docs/architecture.md`](./docs/architecture.md)     | what the page ships, caching, the one dynamic route, the toolchain      |
 | [`docs/plans/README.md`](./docs/plans/README.md)     | what is being built next                                                |
 | [`docs/roadmap.md`](./docs/roadmap.md)               | what lies beyond the plans                                              |
 
@@ -164,8 +215,8 @@ See `.env.example`. None of them is required to start the app.
 ## Deployment (Vercel)
 
 Push the repo to GitHub, import it in Vercel, done – no `vercel.json` needed.
-The start page is prerendered at build time and served from the CDN edge;
-only the weather route runs as a function. Production: <https://alpen.manuel.fyi>.
+Every page is prerendered at build time and served from the CDN edge; only
+the forecast streamed into a pass's page runs as a function. Production: <https://alpen.manuel.fyi>.
 
 ## Origin
 

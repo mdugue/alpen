@@ -22,9 +22,9 @@ import { afterAll, beforeAll, expect, test } from "bun:test";
 import routesJson from "@/data/generated/routes.json" with { type: "json" };
 import passes from "@/data/passes.json" with { type: "json" };
 import toursJson from "@/data/tours.json" with { type: "json" };
+import type { Bounds } from "@/lib/geo";
 import { HIT_LAYERS, LAYERS } from "@/lib/layer-ids";
 import { mapAssets } from "@/lib/map-assets";
-import type { Bounds } from "@/lib/map-assets";
 import * as S from "@/lib/schema";
 import { startApp, waitUntil, withPage } from "@/test/browser";
 import type { App } from "@/test/browser";
@@ -92,7 +92,13 @@ test("2 · selecting a pass opens the detail panel, Escape returns focus to the 
     await page.press("Enter");
     await page.waitFor("#detail-title");
     expect(await page.text("#detail-title")).toBe("Col du Galibier");
-    expect(await page.hash()).toContain("pass=col-du-galibier");
+    // The selection is the path (plan 02); the hash carries the rest. The
+    // push is a transition, so it lands a moment after the panel.
+    await waitUntil(
+      async () => (await page.path()) === "/pass/col-du-galibier",
+      "the pass's route",
+    );
+    expect(await page.hash()).not.toContain("pass=");
     // The profiles are not in the page: the panel fetches the selected
     // entity's file from `public/detail` (lib/detail-assets.ts). The title
     // is there immediately, the profile a request later.
@@ -113,17 +119,26 @@ test("2 · selecting a pass opens the detail panel, Escape returns focus to the 
       async () => (await page.activeRow()) === "pass:col-du-galibier",
       "focus back on the row",
     );
-    expect(await page.hash()).not.toContain("pass=");
+    expect(await page.path()).toBe("/");
   }));
 
 test("3 · a shared link restores selection, period and camera", () =>
   withPage(
     app,
     "shared-link",
-    { hash: "#pass=col-du-galibier&t=6&z=9&c=45.06,6.41" },
+    { target: "#pass=col-du-galibier&t=6&z=9&c=45.06,6.41" },
     async (page) => {
+      // A link from before the routes: the selection it carries is applied
+      // and the address bar moves to the pass's own path, the rest of the
+      // hash kept (`useHashAdapter`, lib/hash-adapter.ts).
       await page.waitFor("#detail-title");
       expect(await page.text("#detail-title")).toBe("Col du Galibier");
+      await waitUntil(
+        async () => (await page.path()) === "/pass/col-du-galibier",
+        "the old link moved over to the route",
+      );
+      expect(await page.hash()).not.toContain("pass=");
+      expect(await page.hash()).toContain("t=6");
       await page.waitForAttribute(SLIDER, "aria-valuetext", /^Anfang Juni:/u);
 
       // The link carries a camera as well – the app writes one into every
@@ -150,9 +165,29 @@ test("3 · a shared link restores selection, period and camera", () =>
     },
   ));
 
+test("3b · a path that names nothing says so, and is not indexed", () =>
+  withPage(
+    app,
+    "unknown-path",
+    { target: "pass/gibt-es-nicht" },
+    async (page) => {
+      // A renamed pass or a typo: the panel says it in words instead of
+      // opening empty, and the route marks itself `noindex`.
+      await page.waitFor("#detail-title");
+      expect(await page.text("#detail-title")).toBe("Nicht gefunden");
+      expect(
+        await page.evaluate<string>(
+          `[...document.querySelectorAll('meta[name="robots"]')].map((m) => m.content).join(" ")`,
+        ),
+      ).toContain("noindex");
+      await page.click('[aria-labelledby="detail-title"] button');
+      await page.waitForGone("#detail-title");
+    },
+  ));
+
 test("4 · a status chip narrows the lists and the applied-filter chip undoes it", () =>
   // Early January: nothing is "gut", so the counts and the disabled chip bite.
-  withPage(app, "status-filter", { hash: "#t=1" }, async (page) => {
+  withPage(app, "status-filter", { target: "#t=1" }, async (page) => {
     await page.waitFor(PASS_ROW);
     const all = await page.count(PASS_ROW);
     // The status picker is a row of chips inside the filter panel: no popup
@@ -199,7 +234,7 @@ test("5 · nothing covers the map until it is asked for; list and detail stack",
 
     // Tapping a road opens the detail drawer on its own – there is no list
     // underneath it, so it closes rather than going back.
-    await page.navigate("#pass=col-du-galibier");
+    await page.navigate("pass/col-du-galibier");
     await page.waitFor("#detail-title");
     expect(await page.text("#detail-title")).toBe("Col du Galibier");
     expect(await page.count('[aria-label*="klappen"]')).toBe(1);
@@ -215,6 +250,7 @@ test("5 · nothing covers the map until it is asked for; list and detail stack",
     // has attached the handler; tap again until the field is there.
     await waitUntil(async () => {
       if ((await page.count("input[type=search]")) > 0) return true;
+      // The tab followed the tap on the road, so the button names the roads.
       await page.clickText("button", "Straßen");
       await Bun.sleep(300);
       return (await page.count("input[type=search]")) > 0;
@@ -245,7 +281,125 @@ test("5 · nothing covers the map until it is asked for; list and detail stack",
     await page.click(BACK_TO_LIST);
     await page.waitForGone("#detail-title");
     await page.waitFor(PASS_ROW);
-    expect(await page.hash()).not.toContain("pass=");
+    expect(await page.path()).toBe("/");
+  }));
+
+test("5b · an entity route is a page of its own, and the back button closes it", () =>
+  withPage(
+    app,
+    "entity-route",
+    { target: "pass/col-du-galibier#t=6" },
+    async (page) => {
+      // A direct visit: prerendered with the pass's own title, and the panel
+      // open on it without a hash saying so.
+      await page.waitFor("#detail-title");
+      expect(await page.text("#detail-title")).toBe("Col du Galibier");
+      expect(await page.evaluate<string>("document.title")).toContain(
+        "Col du Galibier",
+      );
+      expect(await page.path()).toBe("/pass/col-du-galibier");
+      // A second selection is a history entry, so back returns to the first …
+      await page.click('[data-row="pass:passo-dello-stelvio"]');
+      await waitUntil(
+        async () => (await page.path()) === "/pass/passo-dello-stelvio",
+        "the second pass's route",
+      );
+      await page.back();
+      await waitUntil(
+        async () => (await page.text("#detail-title")) === "Col du Galibier",
+        "the first pass again after back",
+      );
+      // … and closing the panel now goes forward to the start page rather than
+      // back out of the site: the entry behind this one is not the app's.
+      await page.click('[aria-label="Details schließen"]');
+      await page.waitForGone("#detail-title");
+      await waitUntil(
+        async () => (await page.path()) === "/",
+        "the start page",
+      );
+      expect(await page.hash()).toContain("t=6");
+    },
+  ));
+
+test("5c · the English version lives under /en, and the language menu keeps the place", () =>
+  withPage(
+    app,
+    "english",
+    { target: "en/pass/col-du-galibier#t=6" },
+    async (page) => {
+      await page.waitFor("#detail-title");
+      expect(await page.evaluate<string>("document.documentElement.lang")).toBe(
+        "en",
+      );
+      expect(await page.path()).toBe("/en/pass/col-du-galibier");
+      // The panel, the tabs and the badge read the English words; the rows
+      // keep their names.
+      await page.waitFor('[aria-label="Close details"]');
+      await page.clickText('[role="tab"]', "Roads");
+      await page.waitFor('[data-row="pass:passo-dello-stelvio"]');
+      // The language is the last group of the map's view menu, and the other
+      // one is a plain link to the same place without the prefix.
+      await page.click('[aria-label="View: map, layers, 3D and language"]');
+      await page.waitFor('a[hreflang="de"]');
+      await page.click('a[hreflang="de"]');
+      await waitUntil(
+        async () => (await page.path()) === "/pass/col-du-galibier",
+        "the German route",
+      );
+      // A full load: the new document is there once its panel is.
+      await page.waitFor("#detail-title");
+      expect(await page.evaluate<string>("document.documentElement.lang")).toBe(
+        "de",
+      );
+      expect(await page.hash()).toContain("t=6");
+    },
+  ));
+
+test("5d · the root speaks the browser's language until one is picked", () =>
+  withPage(
+    app,
+    "root-language",
+    { acceptLanguage: "en-GB,en;q=0.9", target: "#t=6" },
+    async (page) => {
+      // An English browser arriving at the bare root is sent to /en, and the
+      // fragment travels with the redirect.
+      await waitUntil(async () => (await page.path()) === "/en", "/en");
+      expect(await page.hash()).toContain("t=6");
+      await page.waitFor('[aria-label="View: map, layers, 3D and language"]');
+      // Picking German leads to the root, which is not sent back: the request
+      // comes from a page of this site.
+      await page.click('[aria-label="View: map, layers, 3D and language"]');
+      await page.waitFor('a[hreflang="de"]');
+      await page.click('a[hreflang="de"]');
+      await waitUntil(async () => (await page.path()) === "/", "the root");
+      await page.waitFor(
+        '[aria-label="Ansicht: Karte, Ebenen, 3D und Sprache"]',
+      );
+      // And the pick is remembered: a fresh arrival stays German.
+      await page.navigate();
+      await page.waitFor(
+        '[aria-label="Ansicht: Karte, Ebenen, 3D und Sprache"]',
+      );
+      expect(await page.path()).toBe("/");
+    },
+  ));
+
+test("5e · the roads come first, and a town is listed under its area", () =>
+  withPage(app, "town-under-area", {}, async (page) => {
+    // The list opens on the roads …
+    await page.waitFor(PASS_ROW);
+    expect(await page.text('[role="tab"][aria-selected="true"]')).toMatch(
+      /^Straßen/u,
+    );
+    // … and a town, opened from a link, brings the areas' tab forward: it is
+    // listed there, under the area that names it as a base.
+    await page.navigate("ort/bormio");
+    await page.waitFor("#detail-title");
+    await page.waitFor('[data-row="town:bormio"][aria-current="true"]');
+    expect(await page.text('[role="tab"][aria-selected="true"]')).toMatch(
+      /^Reiseziele/u,
+    );
+    expect(await page.count('[data-row^="destination:"]')).toBeGreaterThan(0);
   }));
 
 test("6 · a stored half-month is applied, a shared link beats it", () =>
@@ -310,7 +464,7 @@ test("7 · a pass answers beside its dot, where nothing is drawn", () =>
   withPage(
     app,
     "map-hit-areas",
-    { hash: "#z=12&c=45.064,6.408" },
+    { target: "#z=12&c=45.064,6.408" },
     async (page) => {
       type Points = {
         dot: { x: number; y: number };
@@ -375,7 +529,7 @@ test("8 · a selected pass is framed whole, clear of the sheet and the controls"
   withPage(
     app,
     "pass-frame",
-    { hash: "#pass=col-du-galibier&t=14", mobile: true },
+    { mobile: true, target: "pass/col-du-galibier#t=14" },
     async (page) => {
       await page.waitFor("canvas.maplibregl-canvas");
       if (!(await page.camera())) return;
@@ -443,7 +597,7 @@ test("9 · the sheet's content scrolls only once it is all the way up", () =>
   withPage(
     app,
     "sheet-scroll-lock",
-    { hash: "#pass=passo-dello-stelvio", mobile: true },
+    { mobile: true, target: "pass/passo-dello-stelvio" },
     async (page) => {
       await page.waitFor("#detail-title");
       await page.waitInViewport("#detail-title");

@@ -1,6 +1,9 @@
 "use client";
 
+import { Fragment } from "react";
+
 import { rowBlocks } from "@/lib/rows";
+import { rovingList } from "@/lib/use-roving";
 
 /**
  * One list of rows, in blocks of ten.
@@ -21,7 +24,7 @@ import { rowBlocks } from "@/lib/rows";
  * Windowing the list down to the rows on screen, with
  * `@tanstack/react-virtual` or by hand, measured no better than the blocks: it
  * would buy a dependency and rows that exist only while they are looked at.
- * Every row staying in the DOM is what keeps `useRoving`'s arrows,
+ * Every row staying in the DOM is what keeps the list's arrows (`rovingList`),
  * `scrollIntoView` on the selected row and the browser's own find-in-page
  * working on every one of them.
  *
@@ -33,30 +36,30 @@ import { rowBlocks } from "@/lib/rows";
  * The list is `role="list"` on a `<div>` rather than a `<ul>`: a block is an
  * element between the list and its rows, and `<ul>` may hold nothing but
  * `<li>`. The roles say what the markup no longer does on its own, and the
- * block itself is presentational, so a screen reader sees one list of every row.
+ * block itself is presentational, so a screen reader sees one list of rows.
  */
 export const RowList = <T,>({
   items,
   keyOf,
   children,
-  ref,
 }: {
   items: readonly T[];
-  /** Stable key for the block – the first row's slug. */
+  /** Stable key of a row; a block is keyed by its first row's. */
   keyOf: (item: T) => string;
   children: (item: T) => React.ReactNode;
-  /** The roving tab stop of this list (`lib/use-roving.ts`). */
-  ref?: React.Ref<HTMLDivElement>;
 }) => (
-  <div ref={ref} role="list">
+  // One tab stop per list, arrows inside it (`lib/use-roving.ts`).
+  <div ref={rovingList} role="list">
     {rowBlocks(items).map((block) => (
       <div
         key={keyOf(block[0]!)}
         role="presentation"
         style={{ "--rows": block.length } as React.CSSProperties}
-        className="[contain-intrinsic-size:auto_calc(var(--rows)*--spacing(12))] [content-visibility:auto]"
+        className="[contain-intrinsic-size:auto_calc(var(--rows)*--spacing(12.5))] [content-visibility:auto]"
       >
-        {block.map((item) => children(item))}
+        {block.map((item) => (
+          <Fragment key={keyOf(item)}>{children(item)}</Fragment>
+        ))}
       </div>
     ))}
   </div>

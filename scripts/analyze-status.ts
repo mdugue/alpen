@@ -30,8 +30,10 @@ import profilesJson from "../data/generated/profiles.json" with { type: "json" }
  */
 import passesJson from "../data/passes.json" with { type: "json" };
 import { dayLength } from "../lib/daylight";
+import { DE } from "../lib/i18n/dictionaries";
 import { periodIndex, periodLabel, PERIODS } from "../lib/period";
 import { valleyElevations } from "../lib/profile";
+import { STATUSES } from "../lib/regions";
 import {
   COLD_DESCENT_TMAX,
   HEAT_VALLEY_TMAX,
@@ -40,8 +42,6 @@ import {
   SHORT_DAY_HOURS,
   signalsOf,
   SNOW_RISKY_PCT,
-  STATUS_LABEL,
-  STATUS_ORDER,
   valleyTmax,
   WET_LIMITED_PCT,
 } from "../lib/status";
@@ -144,11 +144,13 @@ const cohortTable = (title: string, pick: (p: Pair) => Status) => {
     `| Verdict | n | mean snow-day share | share with snow ≥ ${SNOW_RISKY_PCT} % of days |`,
   );
   console.log("| --- | --- | --- | --- |");
-  for (const status of STATUS_ORDER) {
+  for (const status of STATUSES) {
     const c = cohorts[status];
     const mean = c.n ? Math.round(c.snowSum / c.n) : 0;
     const high = c.n ? Math.round((c.snowHigh / c.n) * 100) : 0;
-    console.log(`| ${STATUS_LABEL[status]} | ${c.n} | ${mean} % | ${high} % |`);
+    console.log(
+      `| ${DE.status.label[status]} | ${c.n} | ${mean} % | ${high} % |`,
+    );
   }
 };
 
@@ -170,7 +172,7 @@ const distribution = (
     if (values.length === 0) continue;
     const f = (q: number) => quantile(values, q).toFixed(digits);
     console.log(
-      `| ${periodLabel(t)} | ${values.length} | ${f(0.1)} | ${f(0.25)} | ${f(0.5)} | ${f(0.75)} | ${f(0.9)} | ${f(1)} |`,
+      `| ${periodLabel(t, DE)} | ${values.length} | ${f(0.1)} | ${f(0.25)} | ${f(0.5)} | ${f(0.75)} | ${f(0.9)} | ${f(1)} |`,
     );
   }
 };
@@ -193,7 +195,7 @@ const thresholdCounts = (
     const byPeriod = new Map<Period, number>();
     for (const p of hit) byPeriod.set(p.t, (byPeriod.get(p.t) ?? 0) + 1);
     const months = PERIODS.filter((t) => byPeriod.has(t))
-      .map((t) => `${periodLabel(t)} ${byPeriod.get(t)}`)
+      .map((t) => `${periodLabel(t, DE)} ${byPeriod.get(t)}`)
       .join(" · ");
     console.log(
       `| ${th} | ${hit.length} | ${new Set(hit.map((p) => p.pass.slug)).size} | ${months} |`,
@@ -210,9 +212,9 @@ const changes = pairs.filter(
 const describe = (p: Pair) => {
   const valley = valleyOf(p);
   return (
-    `${p.pass.name.padEnd(28)} ${periodLabel(p.t).padEnd(16)} ` +
-    `${STATUS_LABEL[p.base]}${p.baseReason ? ` (${p.baseReason})` : ""} → ` +
-    `${STATUS_LABEL[p.status]}${p.reason ? ` (${p.reason})` : ""}` +
+    `${p.pass.name.padEnd(28)} ${periodLabel(p.t, DE).padEnd(16)} ` +
+    `${DE.status.label[p.base]}${p.baseReason ? ` (${p.baseReason})` : ""} → ` +
+    `${DE.status.label[p.status]}${p.reason ? ` (${p.reason})` : ""}` +
     `  [Schnee ${p.bucket?.snowPct ?? "–"} %, Frost ${p.bucket?.frostPct ?? "–"} %, ` +
     `Regen ${p.bucket?.wetPct ?? "–"} %, Gipfel ${p.bucket?.tmax ?? "–"} °C, ` +
     `Tal ${valley === null ? "–" : valley.toFixed(1)} °C, Tag ${dayLength(p.pass.lat, p.t).toFixed(1)} h]`
@@ -228,6 +230,9 @@ if (!changesOnly) {
   distribution("2b. Rain days (%)", (p) => p.bucket?.wetPct ?? null, 0);
   distribution("2c. Summit tmax (°C)", (p) => p.bucket?.tmax ?? null);
   distribution("2d. Day length (h)", (p) => dayLength(p.pass.lat, p.t), 2);
+  // Empty until the archive has been asked for the snow depth (plan 27);
+  // the two cover shares are set against this table once it fills.
+  distribution("2e. Snow cover (%)", (p) => p.bucket?.coverPct ?? null, 0);
 
   thresholdCounts(
     `3a. Heat: valley tmax ≥ threshold (HEAT_VALLEY_TMAX = ${HEAT_VALLEY_TMAX})`,

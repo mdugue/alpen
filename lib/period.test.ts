@@ -1,5 +1,6 @@
 import { describe, expect, test } from "bun:test";
 
+import { DE, messagesOf } from "@/lib/i18n/dictionaries";
 import {
   isPeriod,
   periodAt,
@@ -16,10 +17,16 @@ describe("periods", () => {
       Array.from({ length: 24 }, (_, i) => i),
     );
     expect(PERIODS.map((t) => periodAt(periodIndex(t)))).toEqual(PERIODS);
-    expect(periodLabel(1)).toBe("Anfang Januar");
-    expect(periodLabel(10)).toBe("Anfang Oktober");
-    expect(periodLabel(10.5)).toBe("Ende Oktober");
-    expect(periodLabel(12.5)).toBe("Ende Dezember");
+    expect(periodLabel(1, DE)).toBe("Anfang Januar");
+    expect(periodLabel(10, DE)).toBe("Anfang Oktober");
+    expect(periodLabel(10.5, DE)).toBe("Ende Oktober");
+    expect(periodLabel(12.5, DE)).toBe("Ende Dezember");
+  });
+
+  test("the English label says early and late", () => {
+    const en = messagesOf("en");
+    expect(periodLabel(1, en)).toBe("early January");
+    expect(periodLabel(10.5, en)).toBe("late October");
   });
 
   test("periodAt wraps around the year", () => {

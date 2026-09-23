@@ -1,0 +1,31 @@
+{
+  "$id": "destinations.en.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "propertyNames": {
+    "type": "string",
+    "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+  },
+  "additionalProperties": {
+    "type": "object",
+    "properties": {
+      "access": {
+        "type": "string",
+        "minLength": 1
+      },
+      "character": {
+        "type": "string",
+        "minLength": 1
+      },
+      "multiDay": {
+        "type": "string",
+        "minLength": 1
+      },
+      "note": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "additionalProperties": false
+  }
+}

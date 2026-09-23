@@ -1,6 +1,6 @@
 ---
 name: curate-data
-description: "Add or edit passes, tours, towns and (later) destinations in data/*.json: slug rules, coordinates, editorial 1–5 scales per docs/scales.md, season windows, ascent start points, aliases; then run data:build and data:check and review the routed result. Use when the user wants to add a pass, tour or town, fix a rating or a season, add search aliases, or refresh precomputed data."
+description: "Add or edit passes, tours, towns and destinations in data/*.json: slug rules, coordinates, editorial 1–5 scales per docs/scales.md, season windows, ascent start points, aliases; then run data:build and data:check and review the routed result. Use when the user wants to add a pass, tour, town or destination, fix a rating or a season, add search aliases, or refresh precomputed data."
 ---
 
 Hand-maintained data is the product. Every edit follows the same loop:
@@ -34,6 +34,12 @@ authoritative. In addition:
 - **Season**: half-months (`10` = early October, `10.5` = late October);
   `null` for roads cleared all year; `maintained: true` only for managed toll
   roads that are actually cleared.
+- **`surface`**: what the road is rolled on – `asphalt`, `gravel` or
+  `mixed` (asphalt with a gravel stretch a road bike cannot take; the note
+  says where). Required; it picks the routing profile and, for gravel, the
+  snow cover as the closing rung (`docs/scales.md`). A loop's `surface`
+  follows its roads (`data:check` holds it to them). Cobbles are a label
+  (`cobbles`), not a surface.
 - **`type`**: what kind of road the entry is – `pass`, `spur`, `plateau`,
   `balcony` or `valley` (`ROAD_TYPES` in `lib/regions.ts`). Required on every
   entry. The rule is operational: if the ascents climb to the entry's own
@@ -58,11 +64,20 @@ authoritative. In addition:
 - **aliases** (plan 05): other spellings and other-language names, never the
   name itself.
 - **Tours**: `passes` in ride order; `waypoints` closed for loops (last =
-  first); `km` and `elevationGain` from a trusted source until plan 11 item 8
-  computes them.
+  first); `km` and `elevationGain` from a trusted source. `season` is the
+  loop's own window as two half-months like a pass's, or `null` when the
+  passes alone decide; it may be narrower than the passes' windows, never
+  wider (`data:check` warns). `note` carries what the window cannot: the
+  event day, the cobbles, the plan B.
 - **Towns**: `why` is one sentence naming the surrounding passes and the
   infrastructure (workshop, rental, bike hotel).
-- **Destinations** (plan 12): follow `docs/destinations.md` once it exists.
+- **Destinations**: follow `docs/destinations.md` – the circle decides the
+  members, at most three `baseTowns`, `include`/`exclude` only where the
+  circle is wrong, and the prose in the register of the pass notes.
+- **English prose**: every note, description, `why` and destination text has
+  its English beside it in `data/i18n/en/*.json`, keyed by slug. A new entry
+  gets its translation in the same commit: the English page falls back to
+  the German text, and `data:check` counts the fields still without one.
 
 ## Adding or moving a pass: the checklist
 
@@ -103,6 +118,16 @@ below is either a command or a look at its output.
 Without the network step 2 cannot run; the build then does the same two
 measurements itself and simply holds the ascents back until the point is
 right, so nothing wrong is routed either way.
+
+## Destinations
+
+A destination is a circle with a base (`data/destinations.json`); the
+editorial rules – where the centre goes, how wide the radius is, what
+`include`/`exclude` are for, the register of the three sentences – are in
+`docs/destinations.md`, with the checklist for adding one. Nothing in the
+file is a number: membership and the verdict are derived at build time, and
+`data:check` warns about a correction the circle already makes and prints
+the roads that lie in no area.
 
 ## Loop
 

@@ -1,7 +1,7 @@
 import { describe, expect, test } from "bun:test";
 
+import { bounds } from "@/lib/geo";
 import {
-  bounds,
   MAP_FILES,
   mapAssets,
   routeFeatures,
@@ -159,6 +159,23 @@ describe("mapAssets", () => {
       {},
     ).assets;
     expect(bare.passBounds.bare).toEqual([9.02, 46.01, 9.02, 46.01]);
+  });
+
+  test("a range is framed by every road it holds; a range without one has no box", () => {
+    const { assets } = mapAssets(
+      [
+        { ...pass, lat: 46.01, lon: 9.02, region: "Zentralalpen" },
+        { ...pass, lat: 47.9, lon: 7.1, region: "Vogesen", slug: "ballon" },
+      ],
+      [],
+      routes,
+    );
+    // The alpine box is the one routed ascent plus its marker; the Vosges
+    // box is one bare marker; the Jura has nothing and is absent, so its chip
+    // is not offered.
+    expect(assets.rangeBounds.Alpen).toEqual([9, 46, 9.02, 46.01]);
+    expect(assets.rangeBounds.Vogesen).toEqual([7.1, 47.9, 7.1, 47.9]);
+    expect(assets.rangeBounds.Jura).toBeUndefined();
   });
 
   test("the same content gives the same name, other content another", () => {

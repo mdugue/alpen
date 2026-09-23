@@ -31,6 +31,7 @@ const pass = (
   region: "Zentralalpen",
   season: null,
   slug,
+  surface: "asphalt",
   traffic: 2,
   type,
 });

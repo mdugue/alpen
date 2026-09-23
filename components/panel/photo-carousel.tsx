@@ -1,5 +1,6 @@
 "use client";
 
+import { useT } from "@/components/i18n";
 import {
   Carousel,
   CarouselContent,
@@ -8,6 +9,7 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import { Skeleton } from "@/components/ui/skeleton";
+import { fill } from "@/lib/i18n/fill";
 import { PHOTO_SIZES, photoSrcSet } from "@/lib/photos";
 import type { Photo } from "@/lib/types";
 import { cn, OVERLAY_CONTROL } from "@/lib/utils";
@@ -99,12 +101,13 @@ export const PhotoCarousel = ({
   /** One slide's file did not arrive. */
   onBroken: (src: string) => void;
 }) => {
+  const { t } = useT();
   if (loading)
     return (
       <>
         <Skeleton
           aria-busy
-          aria-label="Bilder werden geladen"
+          aria-label={t.panel.photos.loading}
           className="aspect-video w-full rounded-none"
           role="status"
         />
@@ -113,7 +116,7 @@ export const PhotoCarousel = ({
     );
 
   return (
-    <Carousel aria-label="Bilder" opts={{ duration: 18 }}>
+    <Carousel aria-label={t.panel.photos.label} opts={{ duration: 18 }}>
       <CarouselContent className="ml-0">
         {photos.map((photo, i) => (
           <CarouselItem className="pl-0" key={photo.src}>
@@ -146,9 +149,11 @@ export const PhotoCarousel = ({
                   href={photo.page}
                   rel="noopener noreferrer"
                   target="_blank"
-                  title={`${photo.title} – auf Wikimedia Commons ansehen`}
+                  title={fill(t.panel.photos.viewOnCommons, {
+                    title: photo.title,
+                  })}
                 >
-                  {photo.artist || "unbekannt"}
+                  {photo.artist || t.panel.photos.unknownArtist}
                 </a>
                 <span aria-hidden>·</span>
                 <a
@@ -172,11 +177,11 @@ export const PhotoCarousel = ({
       {photos.length > 1 && (
         <>
           <CarouselPrevious
-            aria-label="Vorheriges Bild"
+            aria-label={t.panel.photos.previous}
             className={cn("left-2", OVERLAY_CONTROL)}
           />
           <CarouselNext
-            aria-label="Nächstes Bild"
+            aria-label={t.panel.photos.next}
             className={cn("right-2", OVERLAY_CONTROL)}
           />
         </>

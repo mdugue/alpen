@@ -18,7 +18,7 @@ hands-on procedure for changing source data.
 ```mermaid
 flowchart TB
   subgraph hand["1 · Curated by hand"]
-    P["data/passes.json<br/>tours.json · towns.json"]
+    P["data/passes.json<br/>tours.json · towns.json · destinations.json<br/>i18n/en/*.json – the English prose"]
   end
 
   subgraph net["2 · Asked once, by a script"]
@@ -41,7 +41,7 @@ flowchart TB
 
   subgraph run["5 · Runtime"]
     B["Browser"]
-    W["/api/weather/[slug]<br/>the only live call"]
+    W["the pass route's forecast<br/>lib/weather.ts · the only live call"]
   end
 
   P -->|"data:locate<br/>proposes a better point"| P
@@ -146,6 +146,15 @@ the whole run – and every counter with it – to the keys containing that text
 available. `scripts/backfill.sh` (`bun run data:backfill`) simply runs
 `data:build` in hourly batches until nothing is missing.
 
+The profile follows the surface (plan 27): `profileOf` in
+`scripts/lib/validate.ts` asks ORS for `cycling-road` on asphalt and
+`cycling-mountain` on gravel and mixed roads, and the mountain profile enters
+`meta.inputs`, so setting a surface re-routes the road by itself. The OSRM
+fallback is a car profile and will usually refuse a track; the run says so
+("Schotter ohne ORS") and the gate rejects what it drives round – a gravel
+road needs an `ORS_KEY` or, for the rare road no router carries, curated
+geometry, which is not built yet.
+
 ## Where the facts come from
 
 Every host in stage 2, what it is good at, and what it cannot do. Nothing here
@@ -198,6 +207,8 @@ the reader, not sources for the app.
 | `data/passes.json`                   | `slug`                                | a human               | array of `Pass`                      | yes    | everything                                 |
 | `data/tours.json`                    | `slug`                                | a human               | array of `Tour`                      | yes    | everything                                 |
 | `data/towns.json`                    | `slug`                                | a human               | array of `Town`                      | yes    | everything                                 |
+| `data/destinations.json`             | `slug`                                | a human               | array of `Destination`               | yes    | the areas, `data:check`                    |
+| `data/i18n/en/*.json`                | `slug`                                | a human               | the prose fields, in English         | yes    | the English pages, `data:check`            |
 | `data/generated/summits.json`        | `<pass-slug>`                         | `data:build`          | `{ dem, roadDist, lat, lon }`        | yes    | the gate, `data:check`, `data:locate`      |
 | `data/generated/routes.json`         | `<pass-slug>:<i>`, `tour:<tour-slug>` | `data:build`          | `[lat, lon][]`                       | yes    | map assets, profiles, `data:check`         |
 | `data/generated/routes-meta.json`    | as `routes.json`                      | `data:build`          | `{ source, fetchedAt, inputs }`      | yes    | the retry rules, `data:check`              |
@@ -310,16 +321,17 @@ keeps every road inside the free tier is in
 
 ## Where to look when something is wrong
 
-| Symptom                                          | Look at                                                                                    |
-| ------------------------------------------------ | ------------------------------------------------------------------------------------------ |
-| A pass has no line on the map                    | `rejected.json` for its key, then `bun run data:check --explain`                           |
-| `data:check` errors on a stored route            | the route was hand-edited or a limit moved; re-measure with `--explain`, then `data:build` |
-| Every ascent of one pass is missing              | the summit gate: `summits.json`, then `bun run data:locate <slug>`                         |
-| A route looks like a car detour                  | `routes-meta.json` says `osrm`; re-run with `ORS_KEY` and `--upgrade-osrm`                 |
-| Profiles are missing after a successful run      | the Open-Meteo budget ran out – `--status`, then run again or use `data:backfill`          |
-| The climate chart is empty for a new pass        | `climate.json` has no entry yet; one run costs ~261 calls                                  |
-| A photo is wrong or missing                      | `bun run data:photos --only <slug> --refresh`                                              |
-| The map draws nothing at all after a fresh clone | `public/map` is git-ignored; `bun dev` regenerates it                                      |
+| Symptom                                          | Look at                                                                                                                                                                                                                                 |
+| ------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| A pass has no line on the map                    | `rejected.json` for its key, then `bun run data:check --explain`                                                                                                                                                                        |
+| `data:check` errors on a stored route            | the route was hand-edited or a limit moved; re-measure with `--explain`, then `data:build`                                                                                                                                              |
+| Every ascent of one pass is missing              | the summit gate: `summits.json`, then `bun run data:locate <slug>`                                                                                                                                                                      |
+| A route looks like a car detour                  | `routes-meta.json` says `osrm`; re-run with `ORS_KEY` and `--upgrade-osrm`                                                                                                                                                              |
+| Profiles are missing after a successful run      | the Open-Meteo budget ran out – `--status`, then run again or use `data:backfill`                                                                                                                                                       |
+| The climate chart is empty for a new pass        | `climate.json` has no entry yet; one run costs ~261 calls                                                                                                                                                                               |
+| An unpaved road is never "gesperrt"              | the archive is not asked for `snow_depth_mean` yet (plan 27, `ARCHIVE_DAILY` in `scripts/lib/climate.ts`); once it is, `data:build` asks again for every unpaved road without `coverPct` (`lacksClimate`), a paved one keeps its series |
+| A photo is wrong or missing                      | `bun run data:photos --only <slug> --refresh`                                                                                                                                                                                           |
+| The map draws nothing at all after a fresh clone | `public/map` is git-ignored; `bun dev` regenerates it                                                                                                                                                                                   |
 
 ## Glossary
 

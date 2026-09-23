@@ -11,6 +11,7 @@ import {
   YAxis,
 } from "recharts";
 
+import { useT } from "@/components/i18n";
 import { CHART_HEIGHT } from "@/components/panel/chart-size";
 import {
   ChartContainer,
@@ -20,7 +21,8 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart";
 import type { ChartConfig } from "@/components/ui/chart";
-import { MONTHS, periodLabel, PERIODS } from "@/lib/period";
+import type { Messages } from "@/lib/i18n";
+import { periodLabel, PERIODS } from "@/lib/period";
 import type { ClimateYear, Period } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
@@ -31,28 +33,40 @@ import { cn } from "@/lib/utils";
  * four numbers for whichever half-month the pointer is on – the whole point
  * of the chart is comparing periods, not reading absolute values.
  */
-const CHART_CONFIG = {
-  frostPct: { color: "var(--muted-foreground)", label: "Frost" },
-  snowPct: { color: "var(--chart-4)", label: "Schneefall" },
-  tmax: { color: "var(--chart-5)", label: "Ø Tag" },
-  tmin: { color: "var(--chart-5)", label: "Ø Nacht" },
-} satisfies ChartConfig;
+const chartConfig = (words: Messages["panel"]["chart"]) =>
+  ({
+    frostPct: { color: "var(--muted-foreground)", label: words.frost },
+    snowPct: { color: "var(--chart-4)", label: words.snow },
+    tmax: { color: "var(--chart-5)", label: words.tmax },
+    tmin: { color: "var(--chart-5)", label: words.tmin },
+  }) satisfies ChartConfig;
+
+type Series = keyof ReturnType<typeof chartConfig>;
 
 /** "Frost 82 %", "Ø Tag 4 °C" – the unit follows the axis the series is on. */
-const formatValue = (value: unknown, name?: number | string) => {
-  const key = name as keyof typeof CHART_CONFIG;
+const formatValue = (
+  config: ReturnType<typeof chartConfig>,
+  fmt: (n: number, digits?: number) => string,
+  value: unknown,
+  name?: number | string,
+) => {
+  const key = name as Series;
   const unit = key === "tmax" || key === "tmin" ? "°C" : "%";
   return (
     <span className="flex w-full justify-between gap-3 tabular-nums">
       <span className="text-muted-foreground">
-        {CHART_CONFIG[key]?.label ?? name}
+        {config[key]?.label ?? name}
       </span>
       <span>
-        {value as number} {unit}
+        {typeof value === "number" ? fmt(value, 1) : String(value)} {unit}
       </span>
     </span>
   );
 };
+
+/** The month name as the axis writes it: three letters, in the page's language. */
+const monthTick = (i: number, w: Messages) =>
+  i % 2 === 0 ? w.calendar.months[i / 2]!.slice(0, 3) : "";
 
 export const ClimateChart = ({
   climate,
@@ -61,13 +75,15 @@ export const ClimateChart = ({
   climate: ClimateYear;
   period: Period;
 }) => {
-  const data = PERIODS.map((t, i) => {
+  const { t: words, fmt } = useT();
+  const config = chartConfig(words.panel.chart);
+  const data = PERIODS.map((p, i) => {
     const bucket = climate[i];
     return {
       frostPct: bucket?.frostPct ?? null,
-      label: periodLabel(t),
-      month: i % 2 === 0 ? MONTHS[i / 2]!.slice(0, 3) : "",
-      period: t,
+      label: periodLabel(p, words),
+      month: monthTick(i, words),
+      period: p,
       snowPct: bucket?.snowPct ?? null,
       tmax: bucket?.tmax ?? null,
       tmin: bucket?.tmin ?? null,
@@ -77,7 +93,7 @@ export const ClimateChart = ({
 
   return (
     <ChartContainer
-      config={CHART_CONFIG}
+      config={config}
       className={cn("mt-3 aspect-auto w-full", CHART_HEIGHT)}
     >
       <ComposedChart data={data} margin={{ left: 0, right: 0, top: 4 }}>
@@ -109,7 +125,7 @@ export const ClimateChart = ({
         />
         <ReferenceLine
           yAxisId="pct"
-          x={periodLabel(period)}
+          x={periodLabel(period, words)}
           stroke="var(--foreground)"
           strokeWidth={1}
           strokeDasharray="2 2"
@@ -148,7 +164,11 @@ export const ClimateChart = ({
           isAnimationActive={false}
         />
         <ChartTooltip
-          content={<ChartTooltipContent formatter={formatValue} />}
+          content={
+            <ChartTooltipContent
+              formatter={(value, name) => formatValue(config, fmt, value, name)}
+            />
+          }
         />
         <ChartLegend content={<ChartLegendContent />} />
       </ComposedChart>

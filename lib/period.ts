@@ -1,6 +1,8 @@
+import type { Messages } from "@/lib/i18n";
 /**
- * The calendar the app reckons in: twelve German month names and the 24
- * half-months everything is rated for.
+ * The calendar the app reckons in: the 24 half-months everything is rated
+ * for, and how one is said (the month names are words, so they live in the
+ * message files as `calendar`).
  *
  * It sat in `lib/status.ts` because that is where half-months were first
  * needed, which made the address bar and web storage import the rideability
@@ -8,31 +10,15 @@
  * about snow, heat and daylight, for a calendar. Nothing here knows anything
  * about a pass: it is vocabulary, and the heuristic is one of its readers.
  */
+import { fill } from "@/lib/i18n/fill";
 import type { Period } from "@/lib/types";
 
-export const MONTHS = [
-  "Januar",
-  "Februar",
-  "März",
-  "April",
-  "Mai",
-  "Juni",
-  "Juli",
-  "August",
-  "September",
-  "Oktober",
-  "November",
-  "Dezember",
-] as const;
+/** "Anfang Oktober" / "early October": the half-month as the whole app says it. */
+export const periodLabel = (t: Period, w: Messages): string =>
+  fill(t % 1 ? w.calendar.late : w.calendar.early, {
+    month: w.calendar.months[Math.floor(t) - 1]!,
+  });
 
-/** Month initials for compact scales (J F M A M J J A S O N D). */
-export const MONTH_INITIALS = MONTHS.map((m) => m[0]!);
-
-/** "Anfang Oktober" / "Ende Oktober" (early/late October) for a Period. */
-export const periodLabel = (t: Period): string =>
-  `${t % 1 ? "Ende" : "Anfang"} ${MONTHS[Math.floor(t) - 1]}`;
-
-/** All 24 half-month points in time. */
 export const PERIODS: Period[] = Array.from(
   { length: 24 },
   (_, i) => Math.floor(i / 2) + 1 + (i % 2 ? 0.5 : 0),

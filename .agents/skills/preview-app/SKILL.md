@@ -30,9 +30,10 @@ CHROME=/opt/pw-browsers/chromium bun .agents/skills/preview-app/screenshot.ts   
 bun .agents/skills/preview-app/screenshot.ts --webkit                          # macOS, system WebKit, zero dependencies
 ```
 
-States captured by default: overview light, overview dark, `#tour=sellaronda`,
-`#pass=col-du-galibier&t=10`, mobile 390×844 peek, mobile with a pass. Add
-your own with `--state name=hash[,mobile][,dark]`. Every state starts with
+States captured by default: overview light, overview dark, `/tour/sellaronda`,
+`/pass/col-du-galibier#t=10`, `/ziel/oisans`, the English start page `/en`,
+mobile 390×844 and mobile with a pass. The selection is the path, filters and
+camera the hash; add your own with `--state name=path[#hash][,mobile][,dark]`. Every state starts with
 cleared storage, so remembered sidebar or period state never leaks between
 shots.
 
@@ -47,14 +48,14 @@ Chrome DevTools Protocol); the script says so and ignores the flags.
 ## 3. Look for
 
 - Panels: sidebar, detail slide-over and the period control must not overlap
-  the map controls; on mobile the sheet's peek row must not cover MapLibre's
-  attribution and zoom buttons.
+  the map controls; on mobile the season bar and an open drawer must not
+  cover MapLibre's attribution and zoom buttons.
 - Status colours: three hues plus the hollow circle for "oft gesperrt"; check
   in dark mode that halos and labels stay legible.
 - Selected state: the row is highlighted and scrolled into view, the map has
   flown to the entity with the panel padding respected.
-- Text: German, `de-DE` number formatting (2.642 m, 24,3 km), no overflow in
-  the 352 px detail panel.
+- Text: German with `de-DE` numbers (2.642 m, 24,3 km), English under `/en`
+  with `en-GB` ones (2,642 m), no overflow in the detail panel.
 - Console: the script prints page errors; failed tile requests in offline
   mode are filtered out, anything else is worth a look.
 

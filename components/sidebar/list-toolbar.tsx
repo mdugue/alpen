@@ -1,5 +1,7 @@
 "use client";
 
+import { useT } from "@/components/i18n";
+
 /**
  * The row above a list: whatever that kind needs on the left, and its
  * "auf der Karte" switch on the right.
@@ -15,16 +17,22 @@
 export const ListToolbar = ({
   children,
   control,
+  label,
 }: {
   /** Left side, e.g. the sort picker. */
   children?: React.ReactNode;
   control: React.ReactNode;
-}) => (
-  <div className="border-border flex items-center gap-2 border-b px-3 py-1.5">
-    {children}
-    <label className="text-muted-foreground text-2xs ml-auto flex shrink-0 items-center gap-1.5">
-      auf der Karte
-      {control}
-    </label>
-  </div>
-);
+  /** What the switch shows, where the list holds more than one kind; "auf der Karte" otherwise. */
+  label?: string;
+}) => {
+  const { t } = useT();
+  return (
+    <div className="border-border flex items-center gap-2 border-b px-3 py-1.5">
+      {children}
+      <label className="text-muted-foreground text-2xs ml-auto flex shrink-0 items-center gap-1.5">
+        {label ?? t.sidebar.lists.onMap}
+        {control}
+      </label>
+    </div>
+  );
+};

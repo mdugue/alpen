@@ -140,6 +140,25 @@ a card and its gap from the edge counts too). On a phone the detail sheet takes
 bottom that counts. All of it is one calculation, `shellGeometry` in
 `lib/shell-geometry.ts`.
 
+### The map opens on the home range
+
+With nothing in the link the map opens on the frame around what it draws –
+but of the home range only (`HOME_RANGE` in `lib/regions.ts`, the Alps), not
+of everything. The Alps and the Pyrenees are 600 km apart, and a first
+screen that held both would show neither: the alpine dots would be a smear
+at zoom 5. So `buildScene` carries two boxes, `bounds` around everything
+drawn – what the fit button frames, pressed on purpose – and `opening`
+around the home range's roads and loops, which is what `onReady` in the
+camera fits (plan 26). A loop is at home where its passes are
+(`TourRow.range`), the one definition `data:check` and the frame guard read
+too; with nothing of the home range drawn, a Pyrenees chip pressed say, the
+opening frame is what is drawn. `lib/default-frame.test.ts` holds every
+range's own frame to a readable zoom at a laptop's viewport under the
+sidebar, so a range whose roads spread too far to read fails the build
+rather than the visitor. The other ranges are reached through their chip,
+the search and a shared link; a link carrying a range chip opens fitted to
+what it lists, like every link without a camera.
+
 ## What is drawn
 
 Bottom to top, and because MapLibre places labels from the top of the style
@@ -150,15 +169,27 @@ name, and both win against the basemap's own place names.
 flowchart TB
   L9["app labels · profile cursor"]
   L8["passes · towns (marks)"]
-  L7["ascents — solid, status colour"]
+  L7["ascents — solid, status colour; unpaved ones dashed over it, their open dots ringed"]
   L6["tour bands — hatched, translucent, under the ascents"]
   L5["the hovered town's reach hull"]
+  L45["area outlines — a thin fill and edge in the area blue, the name on its centre"]
   L4["raster overlays (optional base, cycling overlay)"]
   L3["basemap lines and labels — rivers, borders, roads, peaks, places"]
   L2["hillshade — Terrarium DEM"]
   L1["basemap fills — land, built-up, wood, glacier, water"]
-  L9 --- L8 --- L7 --- L6 --- L5 --- L4 --- L3 --- L2 --- L1
+  L9 --- L8 --- L7 --- L6 --- L5 --- L45 --- L4 --- L3 --- L2 --- L1
 ```
+
+An area is drawn as the padded outline of what it holds
+(`DestinationMembers.outline`, `docs/destinations.md`) under everything else
+of the app's, at every zoom, in the area colour (`--area`, the town's blue
+family – never a status colour). Past `DESTINATION_MAX_ZOOM` the roads are
+the picture, so the fill thins to a trace and the edge to a hairline; the
+selected or hovered area keeps its weight, and its hit layer is the last
+group `pick` asks. The fill and its edge read the
+polygon source, the name a point source of its own at the centre – a
+polygon labels itself once per tile, which put the name two or three times
+into one outline.
 
 ### A tour holds its ascents; it does not sit beside them
 
@@ -275,6 +306,7 @@ flowchart LR
   G --> A["1 · marks — pass dot, town dot"]
   G --> B["2 · names — the label layers"]
   G --> C["3 · lines — ascent before tour band"]
+  G --> D["4 · areas — the name, then the outline"]
 ```
 
 A pass dot is a few pixels across and an ascent line 3.5 wide, so every kind
@@ -290,8 +322,9 @@ behind every click is tested without a map (`lib/map-pick.test.ts`).
 `HIT_GROUPS` spells the priority out rather than taking it from the style,
 because the two disagree – marks before names before lines, and the tour band
 lies _under_ the ascents but reaches past them, so a click inside it hits both
-and the ascent is the more specific answer – and within a group the mark
-nearest the pointer wins. An ascent is answered as its pass: the hit's kind
+and the ascent is the more specific answer; an area is the least specific
+answer there is, so its outline only answers where nothing else does – and
+within a group the mark nearest the pointer wins. An ascent is answered as its pass: the hit's kind
 comes from the layer that answered, and the route layers belong to a pass. A
 hit layer needs the same filter as the layer it widens, or a hidden tour still
 answers, which is why both carry the same scene field. The hover popup is a
@@ -328,13 +361,13 @@ key. Layer stack, bottom to top: the basemap's fills (land, built-up, wood,
 glacier, water), the hillshade from the Terrarium DEM, the basemap's lines and
 labels (rivers, borders, roads from zoom 6 to minor roads at 11, road names at
 12, lakes, peaks with elevation at 10, places), the raster overlays, then the
-app's own layers (the hovered town's reach, the tour bands, the ascents on top
-of them, towns, passes, labels, profile cursor). MapLibre places labels from
+app's own layers (the area outlines, the hovered town's reach, the tour
+bands, the ascents on top of them, towns, passes, labels, profile cursor). MapLibre places labels from
 the top of the style down, so that order is also their collision priority: a
 pass label wins against a town name, and both win against the basemap's own
 place names. Roads are thin and neutral and there are no POIs: the mountain
 roads that matter are the app's lines, and the status and tour colours are what
-should dominate. Labels prefer `name:de`. The raster alternatives (OSM,
+should dominate. Labels prefer the name in the page's language. The raster alternatives (OSM,
 OpenTopoMap, CyclOSM, Esri, satellite) stay in the layer popover; a raster base
 is one layer below the hillshade. Switching base or scheme never rebuilds the
 map: `applyBase` (`components/map/app-layers.ts`) swaps only the layers whose id starts with
@@ -345,8 +378,8 @@ feature state stay. Glyphs are served from `public/map/fonts`: the Latin ranges
 of Inter, the UI's own face, rasterised once into MapLibre's glyph atlases by
 `scripts/build-glyphs.ts` and committed – so map and panels share one family,
 the hermetic e2e suite renders labels and the map has no font server to wait
-for; `scripts/build-map-style.ts` writes the same style as two standalone JSON
-files for tuning in a style editor.
+for; `scripts/build-map-style.ts` writes the same style as four standalone
+JSON files, a scheme and a language each, for tuning in a style editor.
 
 ## MapLibre needs two workarounds
 

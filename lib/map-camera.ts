@@ -29,7 +29,7 @@
 
 import type { MapView, Selection } from "@/lib/app-state";
 import { haversine } from "@/lib/geo";
-import type { Bounds } from "@/lib/map-assets";
+import type { Bounds } from "@/lib/geo";
 
 /** Padding on all four edges in pixels, every side filled in. */
 export interface Inset {
@@ -96,6 +96,8 @@ export const PASS_MAX_ZOOM = 12.5;
 /** Where a pass with no drawn ascent, and a town, are at least zoomed to. */
 export const PASS_MIN_ZOOM = 11;
 export const TOWN_MIN_ZOOM = 10.5;
+/** A destination never flies closer than this: it is an overview, and its members are the detail. */
+const DESTINATION_MAX_ZOOM_FIT = 10;
 /** A padding change nothing else moves with: long enough to read as a slide. */
 export const PADDING_MS = 400;
 /**
@@ -167,6 +169,10 @@ export const visibleBounds = (
   return box;
 };
 
+/** A box of no extent – a pass whose ascents the map has none of – is no box. */
+const box = (b: Bounds | undefined): Bounds | null =>
+  b && (b[0] !== b[2] || b[1] !== b[3]) ? b : null;
+
 // ── The machine ──────────────────────────────────────────────────────────────
 
 /** What a selection's flight aims at. */
@@ -210,6 +216,8 @@ export type CameraEvent =
   | { type: "inset"; inset: Inset }
   /** A camera pasted into the address bar of an open page. */
   | { type: "requestedView"; view: MapView }
+  /** A frame asked for by a control – the range chip – rather than a selection. */
+  | { type: "requestedFit"; bounds: Bounds }
   /** `SELECT_DELAY` has elapsed. */
   | { type: "delay" }
   | { type: "moveend"; byUser: boolean };
@@ -274,6 +282,10 @@ const asked = (state: CameraState): Inset =>
     : state.phase === "awaiting" || state.phase === "flying"
       ? state.padding
       : state.padded;
+
+/** A flight still waiting for its delay is dropped by whatever replaces it. */
+const dropScheduled = (state: CameraState): CameraCommand[] =>
+  state.phase === "awaiting" ? [{ cmd: "cancel" }] : [];
 
 const ease = (padding: Inset, env: CameraEnv): CameraCommand => ({
   cmd: "easeTo",
@@ -367,7 +379,8 @@ const onMoveend = (
 
 /**
  * What the map opens on: the link's camera, the frame around what it names, or
- * – with neither – everything the map draws. The first two win, because a
+ * – with neither – what the map draws of the home range (`Scene.opening`). The
+ * first two win, because a
  * selection is flown to and framing everything first would only be a camera
  * move the visitor never asked for. The fit waits for something to frame: the
  * lines and the dots may arrive after the style does.
@@ -453,9 +466,7 @@ export const camera = (
           target: event.target,
         },
         [
-          ...(state.phase === "awaiting"
-            ? [{ cmd: "cancel" } as CameraCommand]
-            : []),
+          ...dropScheduled(state),
           { cmd: "schedule", ms: env.reduceMotion ? 0 : SELECT_DELAY },
         ],
       ];
@@ -500,11 +511,42 @@ export const camera = (
       const padding = asked(state);
       return [
         { fitted: true, padded: padding, phase: "idle" },
+        [...dropScheduled(state), { cmd: "jumpTo", padding, view: event.view }],
+      ];
+    }
+
+    case "requestedFit": {
+      // A press on the range chip: the same standing as a hand on the map – it
+      // outranks a flight still scheduled, and the frame is fitted into the
+      // padding the panels ask for, which the fit carries the way a selection's
+      // flight does. A box of no extent – a range whose one road has no drawn
+      // ascent – is flown to as a point, like a pass without one.
+      if (state.phase === "cold") return [state, []];
+      const padding = asked(state);
+      const bounds = box(event.bounds);
+      const point: FlightPoint = {
+        lat: event.bounds[1],
+        lon: event.bounds[0],
+        minZoom: PASS_MIN_ZOOM,
+      };
+      return [
+        { fitted: true, padded: padding, phase: "idle" },
         [
-          ...(state.phase === "awaiting"
-            ? [{ cmd: "cancel" } as CameraCommand]
-            : []),
-          { cmd: "jumpTo", padding, view: event.view },
+          ...dropScheduled(state),
+          {
+            cmd: "flyTo",
+            duration: env.reduceMotion ? 0 : FIT_MS,
+            padding,
+            target: bounds
+              ? {
+                  bounds,
+                  extra: FIT_PADDING,
+                  fallback: point,
+                  kind: "bounds",
+                  maxZoom: PASS_MAX_ZOOM,
+                }
+              : { kind: "point", point },
+          },
         ],
       ];
     }
@@ -515,10 +557,6 @@ export const camera = (
     }
   }
 };
-
-/** A box of no extent – a pass whose ascents the map has none of – is no box. */
-const box = (b: Bounds | undefined): Bounds | null =>
-  b && (b[0] !== b[2] || b[1] !== b[3]) ? b : null;
 
 /**
  * Where a selection's flight goes, read off what the map has to draw it with.
@@ -534,6 +572,8 @@ export const flightFor = (
   world: {
     passBounds: Record<string, Bounds>;
     tourBounds: Record<string, Bounds>;
+    /** The box around each destination's members (`membersOf`). */
+    destinationBounds: Record<string, Bounds>;
     passes: readonly { slug: string; lat: number; lon: number }[];
     towns: readonly { slug: string; lat: number; lon: number }[];
   },
@@ -548,6 +588,20 @@ export const flightFor = (
   if (selection.kind === "town") {
     const point = at(world.towns, TOWN_MIN_ZOOM);
     return point && { kind: "point", point };
+  }
+  // An area is framed by what it holds, with the room a fit gets: the
+  // members are what selecting it is about.
+  if (selection.kind === "destination") {
+    const bounds = box(world.destinationBounds[selection.slug]);
+    return (
+      bounds && {
+        bounds,
+        extra: FIT_PADDING,
+        fallback: null,
+        kind: "bounds",
+        maxZoom: DESTINATION_MAX_ZOOM_FIT,
+      }
+    );
   }
   if (selection.kind === "tour") {
     const bounds = box(world.tourBounds[selection.slug]);

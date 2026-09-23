@@ -1,12 +1,9 @@
 "use client";
 
-import { useEffect, useRef } from "react";
-
 /**
  * Turns a long list into one tab stop.
  *
- * The sidebar holds every road, tour and town – 201, 9 and 48 when this was
- * measured – and every row used to be
+ * The sidebar holds 262 roads, 17 loops and 66 towns, and every row used to be
  * two tab stops of its own – the bookmark toggle and the row itself. Measured
  * on the built page that was **562 focusable elements**, so reaching the map,
  * the footer or anything past the first list meant holding Tab down for
@@ -26,12 +23,15 @@ import { useEffect, useRef } from "react";
  * element itself is remembered instead, and when it is filtered away the list
  * falls back to its first row.
  *
- * The listeners are attached in the effect rather than handed back as JSX
- * props: the list is a plain `<div role="list">`, and a list carrying key and
- * pointer handlers is exactly what `jsx-a11y/no-noninteractive-element-interactions`
+ * The listeners are attached by a callback ref rather than handed back as
+ * JSX props: the list is a plain `<div role="list">`, and a list carrying key
+ * and pointer handlers is exactly what `jsx-a11y/no-noninteractive-element-interactions`
  * is there to catch. Here the element genuinely is the composite widget and
  * the rows inside it are the interactive parts, which is the shape the DOM
- * listener expresses and the JSX prop does not.
+ * listener expresses and the JSX prop does not. A ref and not an effect: a
+ * list that mounts after its parent – the rows after an empty state, the
+ * areas' "Weitere Orte" after a search – gets its listeners too, where an
+ * effect run once on the parent's mount found nothing to attach them to.
  */
 const ROW = "[data-roving]";
 
@@ -63,56 +63,50 @@ export const rovingTarget = (
   return Math.min(last, Math.max(0, from + step));
 };
 
-export const useRoving = <T extends HTMLElement>() => {
-  const ref = useRef<T>(null);
+/** The ref of a list that is one tab stop; React 19 calls the cleanup it returns. */
+export const rovingList = (root: HTMLElement | null) => {
+  if (!root) return;
+  /** The row that owns the tab stop; re-read from the DOM, never from an index. */
+  let current: HTMLElement | null = null;
+  const rows = () => [...root.querySelectorAll<HTMLElement>(ROW)];
 
-  useEffect(() => {
-    const root = ref.current;
-    if (!root) return;
-    /** The row that owns the tab stop; re-read from the DOM, never from an index. */
-    let current: HTMLElement | null = null;
-    const rows = () => [...root.querySelectorAll<HTMLElement>(ROW)];
+  /** Exactly one row is tabbable; everything else is reached by arrow. */
+  const sync = () => {
+    const all = rows();
+    if (all.length === 0) return;
+    const active = current && all.includes(current) ? current : all[0]!;
+    current = active;
+    for (const el of all) el.tabIndex = el === active ? 0 : -1;
+  };
 
-    /** Exactly one row is tabbable; everything else is reached by arrow. */
-    const sync = () => {
-      const all = rows();
-      if (all.length === 0) return;
-      const active = current && all.includes(current) ? current : all[0]!;
-      current = active;
-      for (const el of all) el.tabIndex = el === active ? 0 : -1;
-    };
-
-    const onFocusIn = (e: FocusEvent) => {
-      const row = (e.target as HTMLElement | null)?.closest<HTMLElement>(ROW);
-      if (!row) return;
-      current = row;
-      sync();
-    };
-
-    const onKeyDown = (e: KeyboardEvent) => {
-      const all = rows();
-      const from = (e.target as HTMLElement | null)?.closest<HTMLElement>(ROW);
-      const to = rovingTarget(e.key, from ? all.indexOf(from) : -1, all.length);
-      if (to === null) return;
-      const next = all[to];
-      e.preventDefault();
-      next?.focus();
-      next?.scrollIntoView({ block: "nearest" });
-    };
-
+  const onFocusIn = (e: FocusEvent) => {
+    const row = (e.target as HTMLElement | null)?.closest<HTMLElement>(ROW);
+    if (!row) return;
+    current = row;
     sync();
-    // The rows change on every keystroke in the search field and on every tab
-    // switch, so the tab stop is re-established whenever the subtree does.
-    const mo = new MutationObserver(sync);
-    mo.observe(root, { childList: true, subtree: true });
-    root.addEventListener("focusin", onFocusIn);
-    root.addEventListener("keydown", onKeyDown);
-    return () => {
-      mo.disconnect();
-      root.removeEventListener("focusin", onFocusIn);
-      root.removeEventListener("keydown", onKeyDown);
-    };
-  }, []);
+  };
 
-  return ref;
+  const onKeyDown = (e: KeyboardEvent) => {
+    const all = rows();
+    const from = (e.target as HTMLElement | null)?.closest<HTMLElement>(ROW);
+    const to = rovingTarget(e.key, from ? all.indexOf(from) : -1, all.length);
+    if (to === null) return;
+    const next = all[to];
+    e.preventDefault();
+    next?.focus();
+    next?.scrollIntoView({ block: "nearest" });
+  };
+
+  sync();
+  // The rows change on every keystroke in the search field and on every tab
+  // switch, so the tab stop is re-established whenever the subtree does.
+  const mo = new MutationObserver(sync);
+  mo.observe(root, { childList: true, subtree: true });
+  root.addEventListener("focusin", onFocusIn);
+  root.addEventListener("keydown", onKeyDown);
+  return () => {
+    mo.disconnect();
+    root.removeEventListener("focusin", onFocusIn);
+    root.removeEventListener("keydown", onKeyDown);
+  };
 };

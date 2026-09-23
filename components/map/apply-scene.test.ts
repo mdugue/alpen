@@ -3,6 +3,7 @@ import { describe, expect, test } from "bun:test";
 import { applyScene, popupHtml } from "@/components/map/apply-scene";
 import type { SceneHost } from "@/components/map/apply-scene";
 import { ALL_SHOWN } from "@/lib/app-state";
+import { DE } from "@/lib/i18n/dictionaries";
 import { LAYERS, SOURCE } from "@/lib/layer-ids";
 import { buildScene } from "@/lib/map-scene";
 import type { SceneInput } from "@/lib/map-scene";
@@ -62,18 +63,24 @@ const row = (pass: typeof galibier): PassRow => ({
   season: [],
   status: "open",
 });
-const town: TownRow = { favorite: false, town: bormio };
+const town: TownRow = { areas: [], favorite: false, town: bormio };
 
 const scene = (extra: Partial<SceneInput> = {}) =>
   buildScene({
     env: { coarse: false },
     hovered: null,
     profileCursor: null,
-    rows: { pass: [row(galibier), row(stelvio)], tour: [], town: [town] },
+    rows: {
+      destination: [],
+      pass: [row(galibier), row(stelvio)],
+      tour: [],
+      town: [town],
+    },
     selection: null,
     shown: ALL_SHOWN,
     tourBounds: {},
     townReach: REACH,
+    w: DE,
     ...extra,
   });
 
@@ -83,6 +90,7 @@ describe("the first scene", () => {
     applyScene(host, null, scene());
     expect(of(calls, "filter")).toEqual([
       LAYERS.route.mark,
+      ...(LAYERS.route.companions ?? []),
       LAYERS.route.hit,
       LAYERS.tour.mark,
       ...LAYERS.tour.labels,
@@ -95,6 +103,8 @@ describe("the first scene", () => {
     expect(of(calls, "data")).toEqual([
       SOURCE.passes,
       SOURCE.towns,
+      SOURCE.destinations,
+      SOURCE.destinationLabels,
       SOURCE.hover,
       SOURCE.cursor,
       SOURCE.reach,
@@ -154,9 +164,20 @@ describe("the difference", () => {
     applyScene(
       host,
       scene(),
-      scene({ rows: { pass: [row(galibier)], tour: [], town: [town] } }),
+      scene({
+        rows: {
+          destination: [],
+          pass: [row(galibier)],
+          tour: [],
+          town: [town],
+        },
+      }),
     );
-    expect(of(calls, "filter")).toEqual([LAYERS.route.mark, LAYERS.route.hit]);
+    expect(of(calls, "filter")).toEqual([
+      LAYERS.route.mark,
+      ...(LAYERS.route.companions ?? []),
+      LAYERS.route.hit,
+    ]);
     // The tours said nothing new, so their three layers were left alone.
     expect(of(calls, "filter")).not.toContain(LAYERS.tour.mark);
   });
@@ -168,7 +189,7 @@ describe("the label", () => {
       anchor: [6.4, 45.06],
       name: "Col du Galibier",
       subtitle: "2.642 m",
-      tags: ["hairpins"],
+      tags: [["hairpins", "Kehrenbauwerk"]],
     });
     expect(html).toContain("<b>Col du Galibier</b>");
     expect(html).toContain("2.642 m");

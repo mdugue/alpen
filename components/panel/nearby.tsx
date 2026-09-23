@@ -2,67 +2,66 @@
 
 import { ExternalLink } from "lucide-react";
 
+import { useT } from "@/components/i18n";
+import { pointerProps } from "@/components/panel/actions";
 import type { PanelActions } from "@/components/panel/actions";
 import { Section } from "@/components/panel/section";
 import { StatusDot } from "@/components/status-badge";
 import { Button } from "@/components/ui/button";
-import type { EntityKind } from "@/lib/app-state";
-import type { DetailModel } from "@/lib/detail-model";
+import type { EntityKind, Selection } from "@/lib/app-state";
+import type { ReachingModel } from "@/lib/detail-model";
 import { REACH_MAX_KM } from "@/lib/geo";
+import { fill } from "@/lib/i18n/fill";
 import { byDistance } from "@/lib/reach";
 import { isHovered } from "@/lib/route-key";
-import { cn, fmtUnit } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 
-/**
- * A named entity inside the panel. It is a link to a mark on the map, so it
- * behaves like one: pointing at it lights the mark, exactly as pointing at a
- * sidebar row does. Focus counts as pointing, so the keyboard gets it too.
- */
-export const LinkButton = ({
-  children,
-  onClick,
+/** A named entity inside the panel, as a link to its own panel (`pointerProps`). */
+export const EntityLink = ({
+  entity,
   hovered,
-  onHover,
+  actions,
+  children,
 }: {
+  entity: Selection;
+  /** What the pointer is over anywhere on screen (`DetailModel.hovered`). */
+  hovered: Selection | null;
+  actions: PanelActions;
   children: React.ReactNode;
-  onClick: () => void;
-  hovered?: boolean;
-  onHover?: (over: boolean) => void;
 }) => (
   <Button
     variant="link"
     size="sm"
     className={cn(
       "h-auto gap-1 rounded-sm px-0 py-0.5",
-      hovered && "bg-accent/20 -mx-1 px-1",
+      isHovered(hovered, entity.kind, entity.slug) && "bg-accent/20 -mx-1 px-1",
     )}
-    onClick={onClick}
-    onPointerEnter={onHover && (() => onHover(true))}
-    onPointerLeave={onHover && (() => onHover(false))}
-    onFocus={onHover && (() => onHover(true))}
-    onBlur={onHover && (() => onHover(false))}
+    {...pointerProps(entity, actions)}
   >
     {children}
   </Button>
 );
 
-export const ExternalLinks = ({ links }: { links: [string, string][] }) => (
-  <div className="mt-4 flex flex-wrap gap-1.5">
-    {links.map(([label, href]) => (
-      <Button
-        key={label}
-        variant="outline"
-        size="sm"
-        render={<a href={href} target="_blank" rel="noopener noreferrer" />}
-        nativeButton={false}
-      >
-        {label}
-        <ExternalLink data-icon="inline-end" />
-        <span className="sr-only"> (öffnet in neuem Tab)</span>
-      </Button>
-    ))}
-  </div>
-);
+export const ExternalLinks = ({ links }: { links: [string, string][] }) => {
+  const { t } = useT();
+  return (
+    <div className="mt-4 flex flex-wrap gap-1.5">
+      {links.map(([label, href]) => (
+        <Button
+          key={label}
+          variant="outline"
+          size="sm"
+          render={<a href={href} target="_blank" rel="noopener noreferrer" />}
+          nativeButton={false}
+        >
+          {label}
+          <ExternalLink data-icon="inline-end" />
+          <span className="sr-only">{t.panel.external.newTab}</span>
+        </Button>
+      ))}
+    </div>
+  );
+};
 
 /** One labelled row of the nearby list. */
 const group = (label: string, items: React.ReactNode) => (
@@ -87,56 +86,60 @@ export const Nearby = ({
   model,
   actions,
 }: {
-  /** Read for its `reach` and its `hovered`, which every model carries. */
-  model: DetailModel;
+  /** Read for its `reach` and its `hovered`; an area has no point to measure from. */
+  model: ReachingModel;
   actions: PanelActions;
 }) => {
+  const { t, fmtUnit } = useT();
   const { hovered, reach } = model;
   const passes = byDistance(reach.passes);
   const tours = byDistance(reach.tours);
   const towns = byDistance(reach.towns);
   if (passes.length + tours.length + towns.length === 0) return null;
 
-  /** The hover wiring every named entity in this block shares. */
+  /** What every named entity in this block links with. */
   const link = (kind: EntityKind, slug: string) => ({
-    hovered: isHovered(hovered, kind, slug),
-    onClick: () => actions.onSelect({ kind, slug }),
-    onHover: (over: boolean) => actions.onHover(over ? { kind, slug } : null),
+    actions,
+    entity: { kind, slug },
+    hovered,
   });
 
   return (
-    <Section id="nearby" title={`Im Umkreis von ${REACH_MAX_KM} km`}>
+    <Section
+      id="nearby"
+      title={fill(t.panel.nearby.title, { km: REACH_MAX_KM })}
+    >
       <div className="flex flex-col gap-1">
         {passes.length > 0 &&
           group(
-            "Pässe",
+            t.panel.nearby.passes,
             passes.map((r) => (
-              <LinkButton key={r.pass.slug} {...link("pass", r.pass.slug)}>
+              <EntityLink key={r.pass.slug} {...link("pass", r.pass.slug)}>
                 <StatusDot status={r.status} /> {r.pass.name}
                 <span className="text-muted-foreground">
                   {fmtUnit(r.km, "km")}
                 </span>
-              </LinkButton>
+              </EntityLink>
             )),
           )}
         {tours.length > 0 &&
           group(
-            "Touren",
+            t.panel.nearby.tours,
             tours.map((r) => (
-              <LinkButton key={r.tour.slug} {...link("tour", r.tour.slug)}>
+              <EntityLink key={r.tour.slug} {...link("tour", r.tour.slug)}>
                 <span
                   className="inline-block h-1 w-3 rounded"
                   style={{ background: r.tour.color }}
                 />{" "}
                 {r.tour.name}
-              </LinkButton>
+              </EntityLink>
             )),
           )}
         {towns.length > 0 &&
           group(
-            "Orte",
+            t.panel.nearby.towns,
             towns.map((r) => (
-              <LinkButton key={r.town.slug} {...link("town", r.town.slug)}>
+              <EntityLink key={r.town.slug} {...link("town", r.town.slug)}>
                 <span
                   className="bg-town inline-block size-2 rounded-full"
                   aria-hidden
@@ -145,7 +148,7 @@ export const Nearby = ({
                 <span className="text-muted-foreground">
                   {fmtUnit(r.km, "km")}
                 </span>
-              </LinkButton>
+              </EntityLink>
             )),
           )}
       </div>

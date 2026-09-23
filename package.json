@@ -15,7 +15,7 @@
     "test": "bun test lib scripts components",
     "e2e": "NEXT_PUBLIC_TEST_HOOKS=1 bun run build && bun run e2e:run",
     "e2e:run": "bun test --timeout 20000 e2e",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "next typegen && tsc --noEmit",
     "data:build": "bun run scripts/build-data.ts",
     "data:check": "bun run scripts/check-data.ts",
     "data:photos": "bun run scripts/build-photos.ts",
@@ -29,7 +29,7 @@
     "seams": "bun run scripts/check-seams.ts",
     "map:glyphs": "bun run scripts/build-glyphs.ts",
     "ui:init": "bunx shadcn@latest init --preset b1D2ui9g",
-    "ui:add": "bunx shadcn@latest add badge button button-group card carousel chart collapsible dialog drawer dropdown-menu empty field input input-group item label native-select popover radio-group separator skeleton slider switch table toggle toggle-group tooltip"
+    "ui:add": "bunx shadcn@latest add badge button button-group carousel chart collapsible dialog drawer dropdown-menu empty field input input-group item label popover radio-group separator skeleton switch table toggle tooltip"
   },
   "dependencies": {
     "@base-ui/react": "^1.8.0",

@@ -48,16 +48,28 @@ const chromePath = (): string | undefined => {
   return Bun.file(fallback).size > 0 ? fallback : undefined;
 };
 
-/** Polls until the check passes; the message names what was waited for. */
+/**
+ * Polls until the check passes; the message names what was waited for. A
+ * check that throws counts as "not yet": a poll across a redirect asks a page
+ * that is navigating away ("Inspected target navigated or closed"), and the
+ * next poll asks the page it arrived at. The last error is kept for the
+ * timeout's message, so a check that can never succeed still says why.
+ */
 export const waitUntil = async (
   check: () => Promise<boolean>,
   what: string,
   timeout = 15_000,
 ) => {
   const deadline = Date.now() + timeout;
+  let last: unknown;
   for (;;) {
-    if (await check()) return;
-    if (Date.now() > deadline) throw new Error(`Timeout: ${what}`);
+    try {
+      if (await check()) return;
+    } catch (error) {
+      last = error;
+    }
+    if (Date.now() > deadline)
+      throw new Error(`Timeout: ${what}`, { cause: last });
     await Bun.sleep(100);
   }
 };
@@ -111,11 +123,17 @@ export const startApp = async (): Promise<App> => {
 };
 
 export interface OpenOptions {
-  /** Everything after the "/", usually a "#…" hash. */
-  hash?: string;
+  /** Everything after the origin's "/": a path, a "#…" hash or both. */
+  target?: string;
   /** 390 × 844 with touch emulation. */
   mobile?: boolean;
   dark?: boolean;
+  /**
+   * The browser's `Accept-Language`. German unless a scenario asks otherwise:
+   * the root negotiates it (`proxy.ts`), and every other scenario reads the
+   * German page.
+   */
+  acceptLanguage?: string;
 }
 
 /** One page under test; thin wrapper over the view with the waits we need. */
@@ -133,9 +151,9 @@ export class Page {
    * change is a same-document navigation, and `navigate()` would wait for a
    * load event that never comes.
    */
-  async navigate(hash = "") {
+  async navigate(target = "") {
     await this.view.navigate("about:blank");
-    await this.view.navigate(`${this.base}/${hash}`);
+    await this.view.navigate(`${this.base}/${target}`);
   }
 
   evaluate<T = unknown>(expression: string) {
@@ -282,17 +300,22 @@ export class Page {
     );
   }
 
-  async fill(selector: string, value: string) {
-    await this.focus(selector);
-    await this.view.type(value);
-  }
-
   press(key: string) {
     return this.view.press(key);
   }
 
   hash() {
     return this.evaluate<string>("location.hash");
+  }
+
+  /** The path – since plan 02 the selection: `/pass/col-du-galibier`. */
+  path() {
+    return this.evaluate<string>("location.pathname");
+  }
+
+  /** The browser's back button. */
+  back() {
+    return this.evaluate("history.back()");
   }
 
   /** `data-row` of the focused element, for the focus-return checks. */
@@ -389,8 +412,11 @@ const openPage = async (app: App, options: OpenOptions = {}): Promise<Page> => {
   // glyph server. Blocking is enough for MapLibre to reach "load".
   await view.cdp("Network.enable");
   await view.cdp("Network.setBlockedURLs", { urls: ["https://*"] });
+  await view.cdp("Network.setExtraHTTPHeaders", {
+    headers: { "Accept-Language": options.acceptLanguage ?? "de-DE,de;q=0.9" },
+  });
   page.errors.push(...errors);
-  await page.navigate(options.hash ?? "");
+  await page.navigate(options.target ?? "");
   return page;
 };
 

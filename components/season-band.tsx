@@ -3,6 +3,7 @@
 import { Info, RotateCcw } from "lucide-react";
 import { useRef } from "react";
 
+import { useT } from "@/components/i18n";
 import { CELL } from "@/components/season-strip";
 import { Button } from "@/components/ui/button";
 import {
@@ -16,16 +17,11 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { dayLength } from "@/lib/daylight";
-import {
-  MONTH_INITIALS,
-  MONTHS,
-  periodAt,
-  periodIndex,
-  periodLabel,
-  PERIODS,
-} from "@/lib/period";
+import type { Messages } from "@/lib/i18n";
+import { fill } from "@/lib/i18n/fill";
+import { periodAt, periodIndex, periodLabel, PERIODS } from "@/lib/period";
 import type { SeasonBand as Band, SeasonBar } from "@/lib/rows";
-import { GRADE_LABEL, GRADE_ORDER } from "@/lib/status";
+import { GRADE_ORDER } from "@/lib/status";
 import type { Grade } from "@/lib/status";
 import type { Period } from "@/lib/types";
 import { cn, fmt } from "@/lib/utils";
@@ -83,71 +79,83 @@ const ramp = (value: number, lo: number, hi: number) =>
   hi === lo ? 0.5 : (value - lo) / (hi - lo);
 
 /** "9,4 °C / −1,2 °C · 25 % Schnee · 31 % nass · 11 h Tageslicht" */
-const summary = (bar: SeasonBar, lat: number | null, long: boolean) => {
+const summary = (
+  bar: SeasonBar,
+  lat: number | null,
+  long: boolean,
+  w: Messages,
+) => {
+  const n = (x: number, digits = 0) => fmt(x, digits, w.lang);
   const parts: string[] = [];
   if (bar.tmax !== null && bar.tmin !== null)
-    parts.push(`${fmt(bar.tmax, 1)} / ${fmt(bar.tmin, 1)} °C`);
-  if (bar.snowPct !== null) parts.push(`${fmt(bar.snowPct)} % Schnee`);
-  if (bar.wetPct !== null) parts.push(`${fmt(bar.wetPct)} % nass`);
+    parts.push(`${n(bar.tmax, 1)} / ${n(bar.tmin, 1)} °C`);
+  if (bar.snowPct !== null)
+    parts.push(fill(w.band.snow, { pct: n(bar.snowPct) }));
+  if (bar.wetPct !== null) parts.push(fill(w.band.wet, { pct: n(bar.wetPct) }));
   if (long && lat !== null)
-    parts.push(`${fmt(dayLength(lat, bar.period), 1)} h Tageslicht`);
+    parts.push(
+      fill(w.band.daylight, { hours: n(dayLength(lat, bar.period), 1) }),
+    );
   return parts.join(" · ");
 };
 
 /** What a screen reader hears instead of 24 columns of colour. */
-const spoken = (bar: SeasonBar, lat: number | null) =>
+const spoken = (bar: SeasonBar, lat: number | null, w: Messages) =>
   [
-    `${periodLabel(bar.period)}: ${bar.grade ? `meist ${GRADE_LABEL[bar.grade]}` : "kein Pass in dieser Auswahl"}`,
-    GRADE_ORDER.map((g) => `${fmt(bar[g])} ${GRADE_LABEL[g]}`).join(", "),
-    summary(bar, lat, true),
+    `${periodLabel(bar.period, w)}: ${bar.grade ? fill(w.band.mostly, { grade: w.status.grade[bar.grade] }) : w.band.noPass}`,
+    GRADE_ORDER.map(
+      (g) => `${fmt(bar[g], 0, w.lang)} ${w.status.grade[g]}`,
+    ).join(", "),
+    summary(bar, lat, true, w),
   ]
     .filter(Boolean)
     .join(". ");
 
 /**
  * What the three shapes of a column mean. Behind the band's ⓘ on desktop
- * (`legend`), and in the scales dialog, which is where a phone reads it –
+ * (`max-lg:hidden`), and in the scales dialog, which is where a phone reads it –
  * three lines of legend next to a band that is already only 390 px wide would
  * leave neither of them legible.
  */
-export const SeasonBandLegend = ({ className }: { className?: string }) => (
-  <dl className={cn("text-2xs flex flex-col gap-1.5", className)}>
-    <div className="flex items-center gap-2">
-      <dt aria-hidden className="shrink-0">
-        <span
-          className="block h-5 w-2.5 rounded-xs"
-          style={{
-            background:
-              "linear-gradient(to top, var(--temp-cold), var(--temp-warm))",
-          }}
-        />
-      </dt>
-      <dd>Balkenhöhe = Ø Tagesmaximum der gezeigten Pässe</dd>
-    </div>
-    <div className="flex items-center gap-2">
-      <dt aria-hidden className="flex w-8 shrink-0 gap-px">
-        {GRADE_ORDER.map((g) => (
-          <span key={g} className={cn("h-2 flex-1 rounded-xs", RIBBON[g])} />
-        ))}
-      </dt>
-      <dd>Band = Befahrbarkeit der meisten von ihnen</dd>
-    </div>
-    <div className="flex items-center gap-2">
-      <dt aria-hidden className="shrink-0">
-        <span className="bg-chart-4 block h-4 w-2.5 rounded-xs" />
-      </dt>
-      <dd>Hängebalken = Anteil Tage mit Schneefall</dd>
-    </div>
-  </dl>
-);
+export const SeasonBandLegend = ({ className }: { className?: string }) => {
+  const { t } = useT();
+  return (
+    <dl className={cn("text-2xs flex flex-col gap-1.5", className)}>
+      <div className="flex items-center gap-2">
+        <dt aria-hidden className="shrink-0">
+          <span
+            className="block h-5 w-2.5 rounded-xs"
+            style={{
+              background:
+                "linear-gradient(to top, var(--temp-cold), var(--temp-warm))",
+            }}
+          />
+        </dt>
+        <dd>{t.band.legend.bar}</dd>
+      </div>
+      <div className="flex items-center gap-2">
+        <dt aria-hidden className="flex w-8 shrink-0 gap-px">
+          {GRADE_ORDER.map((g) => (
+            <span key={g} className={cn("h-2 flex-1 rounded-xs", RIBBON[g])} />
+          ))}
+        </dt>
+        <dd>{t.band.legend.ribbon}</dd>
+      </div>
+      <div className="flex items-center gap-2">
+        <dt aria-hidden className="shrink-0">
+          <span className="bg-chart-4 block h-4 w-2.5 rounded-xs" />
+        </dt>
+        <dd>{t.band.legend.snow}</dd>
+      </div>
+    </dl>
+  );
+};
 
 export const SeasonBand = ({
   band,
   bar,
   onChange,
   today,
-  legend = false,
-  className,
 }: {
   band: Band;
   /** The chosen half-month's column (`currentBar`), the one the headline reads too. */
@@ -155,14 +163,12 @@ export const SeasonBand = ({
   onChange: (p: Period) => void;
   /** Today's half-month, marked on the rail and offered as the way back. */
   today?: Period;
-  /** Offer the legend behind an ⓘ beside the label. */
-  legend?: boolean;
-  className?: string;
 }) => {
+  const { t } = useT();
   const rail = useRef<HTMLDivElement>(null);
   const index = periodIndex(bar.period);
   const todayIndex = today === undefined ? -1 : periodIndex(today);
-  const temps = band.bars.map((b) => b.tmax).filter((t) => t !== null);
+  const temps = band.bars.map((b) => b.tmax).filter((x) => x !== null);
   const lo = temps.length ? Math.min(...temps) : 0;
   const hi = temps.length ? Math.max(...temps) : 0;
 
@@ -194,34 +200,35 @@ export const SeasonBand = ({
   };
 
   return (
-    <div className={cn("flex min-w-0 flex-col gap-1", className)}>
+    <div className="flex min-w-0 flex-col gap-1">
       <div className="flex min-w-0 items-baseline gap-2">
         <span className="font-heading shrink-0 text-sm font-bold lg:text-base">
-          {periodLabel(bar.period)}
+          {periodLabel(bar.period, t)}
         </span>
         <span className="text-muted-foreground min-w-0 flex-1 truncate text-xs tabular-nums">
-          <span className="lg:hidden">{summary(bar, band.lat, false)}</span>
-          <span className="max-lg:hidden">{summary(bar, band.lat, true)}</span>
+          <span className="lg:hidden">{summary(bar, band.lat, false, t)}</span>
+          <span className="max-lg:hidden">
+            {summary(bar, band.lat, true, t)}
+          </span>
         </span>
-        {legend && (
-          <Popover>
-            <PopoverTrigger
-              render={
-                <Button
-                  size="icon"
-                  variant="ghost"
-                  className="shrink-0"
-                  aria-label="Was die Balken bedeuten"
-                />
-              }
-            >
-              <Info />
-            </PopoverTrigger>
-            <PopoverContent side="top" align="end" className="w-72">
-              <SeasonBandLegend className="text-muted-foreground" />
-            </PopoverContent>
-          </Popover>
-        )}
+        {/* The legend behind an ⓘ, on a desktop only (see `SeasonBandLegend`). */}
+        <Popover>
+          <PopoverTrigger
+            render={
+              <Button
+                size="icon"
+                variant="ghost"
+                className="shrink-0 max-lg:hidden"
+                aria-label={t.band.whatBarsMean}
+              />
+            }
+          >
+            <Info />
+          </PopoverTrigger>
+          <PopoverContent side="top" align="end" className="w-72">
+            <SeasonBandLegend className="text-muted-foreground" />
+          </PopoverContent>
+        </Popover>
         {today !== undefined && (
           <Tooltip>
             <TooltipTrigger
@@ -232,13 +239,17 @@ export const SeasonBand = ({
                   className="shrink-0"
                   onClick={() => onChange(today)}
                   disabled={bar.period === today}
-                  aria-label={`Zurück zu heute (${periodLabel(today)})`}
+                  aria-label={fill(t.band.backToToday, {
+                    label: periodLabel(today, t),
+                  })}
                 />
               }
             >
               <RotateCcw />
             </TooltipTrigger>
-            <TooltipContent>heute: {periodLabel(today)}</TooltipContent>
+            <TooltipContent>
+              {fill(t.band.today, { label: periodLabel(today, t) })}
+            </TooltipContent>
           </Tooltip>
         )}
       </div>
@@ -247,11 +258,11 @@ export const SeasonBand = ({
         ref={rail}
         role="slider"
         tabIndex={0}
-        aria-label="Zeitraum"
+        aria-label={t.band.period}
         aria-valuemin={1}
         aria-valuemax={PERIODS.length}
         aria-valuenow={index + 1}
-        aria-valuetext={spoken(bar, band.lat)}
+        aria-valuetext={spoken(bar, band.lat, t)}
         onKeyDown={onKeyDown}
         onPointerDown={(e) => {
           e.currentTarget.setPointerCapture(e.pointerId);
@@ -280,7 +291,7 @@ export const SeasonBand = ({
             <span
               aria-hidden
               className="flex h-7 items-end lg:h-10"
-              title={`${periodLabel(b.period)}: ${spoken(b, band.lat)}`}
+              title={`${periodLabel(b.period, t)}: ${spoken(b, band.lat, t)}`}
             >
               <span
                 className="w-full rounded-t-xs"
@@ -324,16 +335,16 @@ export const SeasonBand = ({
         aria-hidden
         className="text-muted-foreground text-2xs flex leading-none"
       >
-        {MONTH_INITIALS.map((m, i) => (
+        {t.calendar.months.map((month, i) => (
           <span
-            key={m + String(i)}
+            key={month}
             className={cn(
               "flex-1 text-center",
               Math.floor(index / 2) === i && "text-foreground font-semibold",
             )}
           >
-            <span className="lg:hidden">{m}</span>
-            <span className="max-lg:hidden">{MONTHS[i]!.slice(0, 3)}</span>
+            <span className="lg:hidden">{month[0]}</span>
+            <span className="max-lg:hidden">{month.slice(0, 3)}</span>
           </span>
         ))}
       </div>
