@@ -157,7 +157,10 @@ export const DestinationList = ({
 
   return (
     <>
-      <ListToolbar control={mapControl} label={t.sidebar.lists.townsOnMap}>
+      <ListToolbar
+        control={mapControl}
+        label={t.sidebar.lists.destinationsOnMap}
+      >
         <span className="text-muted-foreground text-2xs min-w-0 truncate">
           {compare.length === 0
             ? fill(t.sidebar.compare.pick, { max: fmt(COMPARE_MAX) })

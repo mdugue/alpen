@@ -135,8 +135,13 @@ is drawn at every zoom in the area colour (`--area`), the town's blue family
 is said in, so the outline never takes a status colour; the count is its
 label's second line. Past zoom 8.5, where every road is drawn, the fill
 thins out and the edge steps back to a hairline, so the roads stay the
-picture; the selected or hovered area keeps its weight. Selecting an area
-frames its members.
+picture; the selected or hovered area keeps its weight. Its name is set in
+the towns' blue rather than the ink, the quiet voice under the road names,
+and the hover popup stands on the outline's northernmost point, not over the
+roads inside it. The list's switch ("Reiseziele auf der Karte") takes the
+outlines and the towns off the map together – what the tab lists is what it
+switches – and selecting an area or a town turns it back on. Selecting an
+area frames its members.
 
 Up to three areas can be switched on for the compare sheet: the verdict of
 the half-month, the derived year, what each holds and where one would stay,

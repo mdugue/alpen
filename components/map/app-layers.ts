@@ -429,9 +429,9 @@ export const appLayers = (
           ["linear"],
           ["zoom"],
           DESTINATION_MAX_ZOOM - 1,
-          ["case", isDestinationLit, 0.22, 0.14],
+          ["case", isDestinationLit, 0.16, 0.06],
           DESTINATION_MAX_ZOOM + 1,
-          ["case", isDestinationLit, 0.12, 0.04],
+          ["case", isDestinationLit, 0.1, 0.02],
         ],
       },
       source: SOURCE.destinations,
@@ -450,11 +450,11 @@ export const appLayers = (
           ["linear"],
           ["zoom"],
           DESTINATION_MAX_ZOOM - 1,
-          ["case", isDestinationLit, 1, 0.75],
+          ["case", isDestinationLit, 0.9, 0.45],
           DESTINATION_MAX_ZOOM + 1,
-          ["case", isDestinationLit, 1, 0.45],
+          ["case", isDestinationLit, 0.9, 0.3],
         ],
-        "line-width": ["case", ["==", ["get", "selected"], 1], 2.5, 1.5],
+        "line-width": ["case", ["==", ["get", "selected"], 1], 2, 1],
       },
       source: SOURCE.destinations,
       type: "line",
@@ -706,12 +706,14 @@ export const appLayers = (
         ] as never,
       },
       paint: {
-        "text-color": colors.ink,
+        // The towns' blue rather than the ink: an area's name is the quiet
+        // voice under the road names, in the family its outline is drawn in.
+        "text-color": colors.town,
         "text-halo-color": colors.paper,
         "text-halo-width": 1.5,
         // The name stays too; past the overview the pass names win their
         // collisions against it (they are placed first, see below).
-        "text-opacity": 1,
+        "text-opacity": 0.85,
       },
       source: SOURCE.destinationLabels,
       type: "symbol",

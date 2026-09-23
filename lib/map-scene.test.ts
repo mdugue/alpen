@@ -103,7 +103,7 @@ describe("what is drawn", () => {
     expect(filtered(on.routes.filter)).toEqual(["galibier", "stelvio"]);
 
     const off = buildScene(
-      input({ shown: { ...ALL_SHOWN, passes: false, towns: false } }),
+      input({ shown: { ...ALL_SHOWN, destinations: false, passes: false } }),
     );
     expect(off.passes.features).toEqual([]);
     expect(off.towns.features).toEqual([]);
@@ -385,12 +385,24 @@ describe("hover", () => {
     const [label] = scene.destinationLabels.features;
     expect(label?.geometry.coordinates).toEqual([10, 46]);
     expect(label?.properties).toEqual(feature?.properties);
+    // The popup stands on the outline's northernmost corner, not its centre.
     expect(scene.hover.popup).toEqual({
-      anchor: [10, 46],
+      anchor: [10.3, 46.1],
       name: "Testgebiet",
       subtitle: "1 von 1 Straßen gut",
       tags: [],
     });
+    // Switched off, the area is neither drawn nor answers the hover.
+    const off = buildScene(
+      input({
+        hovered: { kind: "destination", slug: "test" },
+        rows: { destination: [area], pass: [], tour: [], town: [] },
+        shown: { ...ALL_SHOWN, destinations: false },
+      }),
+    );
+    expect(off.destinations.features).toEqual([]);
+    expect(off.destinationLabels.features).toEqual([]);
+    expect(off.hover.popup).toBeNull();
   });
 
   test("a hovered tour is labelled at the centre of its box", () => {
@@ -412,7 +424,7 @@ describe("hover", () => {
     const scene = buildScene(
       input({
         hovered: { kind: "town", slug: "bormio" },
-        shown: { ...ALL_SHOWN, towns: false },
+        shown: { ...ALL_SHOWN, destinations: false },
       }),
     );
     expect(scene.hover.hull).toBeNull();

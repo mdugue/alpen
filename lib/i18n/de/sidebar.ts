@@ -76,18 +76,18 @@ export const sidebar = {
   footerNote: "Status ist eine Heuristik, Skalen sind redaktionell.",
   /** The lists, their toolbars and the map switches. */
   lists: {
+    /** The areas' switch; it carries the towns listed under them too. */
+    destinationsOnMap: "Reiseziele auf der Karte",
     onMap: "auf der Karte",
     /** The last group of the areas' list: the towns no listed area holds. */
     otherTowns: "Weitere Orte",
     passes: "{n} Pässe",
+    showDestinations: "Reiseziele und ihre Orte auf der Karte anzeigen",
     showPasses: "Pässe und Straßen auf der Karte anzeigen",
     showTour: "{name} auf der Karte anzeigen",
     showTours: "Touren auf der Karte anzeigen",
-    showTowns: "Orte auf der Karte anzeigen",
     sort: "Sortieren",
     sortBy: "Sortieren nach: {label}",
-    /** The areas' list holds towns too, so its switch says whose it is. */
-    townsOnMap: "Orte auf der Karte",
   },
   /** The five bars of an editorial scale, for the screen reader. */
   rating: "{value} von 5",

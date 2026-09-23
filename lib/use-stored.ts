@@ -78,8 +78,9 @@ const STORAGE = {
    * reload, which is what makes it a session slot rather than a ref.
    */
   pushed: slot<number>("session", 0),
+  /** The destinations' switch: their outlines and the towns under them. */
+  showDestinations: slot<boolean>("local", true),
   showPasses: slot<boolean>("local", true),
-  showTowns: slot<boolean>("local", true),
   /** Whether the desktop sidebar is unfolded. */
   sidebar: slot<boolean>("local", true),
   /**
@@ -213,19 +214,19 @@ export const readStoredState = (): StoredState => {
   const hidden: unknown = readStored("hiddenTours");
   const period: unknown = readStored("period");
   const passes: unknown = readStored("showPasses");
-  const towns: unknown = readStored("showTowns");
+  const destinations: unknown = readStored("showDestinations");
   return {
     period: isPeriod(period) ? period : null,
     shown: {
+      // Anything but an explicit `false` is on: a switch is never off by accident.
+      destinations: destinations !== false,
       // The stored array itself when it is one, so a load that changes nothing
       // hands the reducer the reference it already holds.
       hiddenTours:
         Array.isArray(hidden) && hidden.every((s) => typeof s === "string")
           ? hidden
           : STORAGE.hiddenTours.value,
-      // Anything but an explicit `false` is on: a switch is never off by accident.
       passes: passes !== false,
-      towns: towns !== false,
     },
     tab: storedTab(tab),
   };
@@ -253,7 +254,7 @@ const slice =
  */
 const PERSISTED = [
   slice("showPasses", (s) => s.shown.passes),
-  slice("showTowns", (s) => s.shown.towns),
+  slice("showDestinations", (s) => s.shown.destinations),
   slice("hiddenTours", (s) => s.shown.hiddenTours),
   slice("tab", (s) => s.tab),
   // `ownPeriod` rather than `filters.period`: a half-month applied from a

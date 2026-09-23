@@ -121,7 +121,7 @@ export interface Scene {
   tours: { filter: FilterSpecification; state: Record<string, TourState> };
   passes: FeatureCollection<Point, PassProps>;
   towns: FeatureCollection<Point, TownProps>;
-  /** The destination outlines, under everything else; drawn in the overview only. */
+  /** The destination outlines, under everything else; empty when their switch is off. */
   destinations: FeatureCollection<Polygon, DestinationProps>;
   /** Where each destination's name stands: its centre. */
   destinationLabels: FeatureCollection<Point, DestinationProps>;
@@ -197,6 +197,13 @@ const roadSubtitle = (row: PassRow, w: Messages) =>
 const labelled = (tags: readonly Tag[], w: Messages) =>
   tags.map((tag) => [tag, tagLabel(tag, w)] as const);
 
+/** The northernmost corner of a ring, `[lon, lat]`. */
+const topOf = (ring: Ring): [number, number] => {
+  let [lon, lat] = ring[0] ?? [0, 0];
+  for (const [x, y] of ring) if (y > lat) [lon, lat] = [x, y];
+  return [lon, lat];
+};
+
 export const buildScene = (input: SceneInput): Scene => {
   const {
     env,
@@ -255,7 +262,8 @@ export const buildScene = (input: SceneInput): Scene => {
   // Only what is drawn answers a hover: a kind switched off the map has no
   // mark to ring, no hull to outline and nothing to label.
   const markedPass = shown.passes ? passRow : undefined;
-  const markedTown = shown.towns ? townRow : undefined;
+  const markedTown = shown.destinations ? townRow : undefined;
+  const markedDestination = shown.destinations ? destinationRow : undefined;
   const box = hoverTour ? tourBounds[hoverTour] : undefined;
 
   const popup = (): PopupContent | null => {
@@ -282,14 +290,14 @@ export const buildScene = (input: SceneInput): Scene => {
         subtitle: `${w.vocab.unit.approx} ${fmtUnit(tourRow.tour.km, "km", 0, w.lang)} · ${fmtUnit(tourRow.tour.elevationGain, w.vocab.unit.climb, 0, w.lang)}`,
         tags: [],
       };
-    if (destinationRow)
+    if (markedDestination)
       return {
-        anchor: [
-          destinationRow.destination.center.lon,
-          destinationRow.destination.center.lat,
-        ],
-        name: destinationRow.destination.name,
-        subtitle: destinationRow.text,
+        // The outline's northernmost point, not its centre: the popup stands
+        // above its anchor, so it sits on the area's edge instead of over the
+        // roads the pointer is exploring.
+        anchor: topOf(markedDestination.members.outline),
+        name: markedDestination.destination.name,
+        subtitle: markedDestination.text,
         tags: [],
       };
     return null;
@@ -315,21 +323,23 @@ export const buildScene = (input: SceneInput): Scene => {
     shown.passes,
   );
 
-  const destinations = rows.destination.map((row) => ({
-    props: {
-      favorite: flag(row.favorite),
-      hovered: flag(row.destination.slug === hoverDestination),
-      name: row.destination.name,
-      selected: flag(row.destination.slug === selDestination),
-      share: row.verdict.total
-        ? (row.verdict.counts.best + row.verdict.counts.good) /
-          row.verdict.total
-        : 0,
-      slug: row.destination.slug,
-      text: row.text,
-    },
-    row,
-  }));
+  const destinations = (shown.destinations ? rows.destination : []).map(
+    (row) => ({
+      props: {
+        favorite: flag(row.favorite),
+        hovered: flag(row.destination.slug === hoverDestination),
+        name: row.destination.name,
+        selected: flag(row.destination.slug === selDestination),
+        share: row.verdict.total
+          ? (row.verdict.counts.best + row.verdict.counts.good) /
+            row.verdict.total
+          : 0,
+        slug: row.destination.slug,
+        text: row.text,
+      },
+      row,
+    }),
+  );
 
   return {
     bounds,
@@ -407,7 +417,7 @@ export const buildScene = (input: SceneInput): Scene => {
       state: tourState,
     },
     towns: collection<TownProps>(
-      (shown.towns ? rows.town : []).map((row) => ({
+      (shown.destinations ? rows.town : []).map((row) => ({
         at: [row.town.lon, row.town.lat],
         props: {
           favorite: flag(row.favorite),

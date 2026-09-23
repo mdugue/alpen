@@ -339,34 +339,34 @@ export const defined = <T extends object>(o: T): Partial<T> =>
 // ── What the map shows ───────────────────────────────────────────────────────
 
 /**
- * The "auf der Karte" switches: passes and towns as one bit each, tours as the
- * hidden ones – so a tour added to the data is on the map until somebody turns
+ * The "auf der Karte" switches: the roads and the destinations as one bit
+ * each – the destinations' bit covers the outlines and the towns listed under
+ * them, which is what their tab lists – and tours as the hidden ones – so a tour added to the data is on the map until somebody turns
  * it off. Not a filter: what the list shows for a kind is what the map draws
  * for that kind, and this only adds a layer toggle on top of it.
  */
 export interface Shown {
   passes: boolean;
-  towns: boolean;
+  destinations: boolean;
   hiddenTours: string[];
 }
 
 export const ALL_SHOWN: Shown = {
+  destinations: true,
   hiddenTours: [],
   passes: true,
-  towns: true,
 };
 
 /** The switch of a kind that has one. */
-const SWITCH = { pass: "passes", town: "towns" } as const;
+const SWITCH = {
+  destination: "destinations",
+  pass: "passes",
+  town: "destinations",
+} as const;
 
-/**
- * Whether the map draws this entity. A destination has no switch: its outline
- * is the overview and is drawn whenever the zoom is low enough for it.
- */
+/** Whether the map draws this entity. */
 export const isShown = (shown: Shown, kind: EntityKind, slug: string) =>
-  kind === "tour"
-    ? !shown.hiddenTours.includes(slug)
-    : kind === "destination" || shown[SWITCH[kind]];
+  kind === "tour" ? !shown.hiddenTours.includes(slug) : shown[SWITCH[kind]];
 
 /**
  * How many of `total` tours the map draws – the n/m beside the master switch,
@@ -393,9 +393,7 @@ export const reconcileShown = (
 
 /** Selecting something makes it visible: nobody asks for a detail of what is hidden. */
 const reveal = (shown: Shown, sel: Selection): Shown => {
-  // A destination is always shown, so the first line answers for it.
-  if (isShown(shown, sel.kind, sel.slug) || sel.kind === "destination")
-    return shown;
+  if (isShown(shown, sel.kind, sel.slug)) return shown;
   return sel.kind === "tour"
     ? { ...shown, hiddenTours: shown.hiddenTours.filter((s) => s !== sel.slug) }
     : { ...shown, [SWITCH[sel.kind]]: true };
@@ -618,7 +616,7 @@ export type Action =
   | { type: "compare"; slug: string; on: boolean }
   | { type: "period"; period: Period }
   | { type: "tab"; tab: ListTab }
-  | { type: "toggleKind"; kind: "pass" | "town"; on: boolean }
+  | { type: "toggleKind"; kind: "pass" | "destination"; on: boolean }
   | { type: "toggleTour"; slug: string; on: boolean }
   /** The master switch over every tour. */
   | { type: "toggleTours"; on: boolean }

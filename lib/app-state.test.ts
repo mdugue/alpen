@@ -69,9 +69,10 @@ describe("compare (plan 12)", () => {
     expect(toggleCompare(["a", "b"], "a", false)).toEqual(["b"]);
   });
 
-  test("a destination is always shown and selecting one reveals nothing", () => {
-    const shown = { hiddenTours: [], passes: false, towns: false };
-    expect(isShown(shown, "destination", "oisans")).toBe(true);
+  test("the destinations' switch hides the areas and their towns, and selecting one reveals them", () => {
+    const shown = { destinations: false, hiddenTours: [], passes: false };
+    expect(isShown(shown, "destination", "oisans")).toBe(false);
+    expect(isShown(shown, "town", "bormio")).toBe(false);
     const state = reduce(
       { ...initialState(8), shown },
       { selection: { kind: "destination", slug: "oisans" }, type: "select" },
@@ -83,7 +84,7 @@ describe("compare (plan 12)", () => {
         tours: [],
       },
     );
-    expect(state.shown).toBe(shown);
+    expect(state.shown).toEqual({ ...shown, destinations: true });
     expect(state.tab).toBe("destination");
   });
 
@@ -172,13 +173,17 @@ const busy = (over: Partial<AppState> = {}): AppState => ({
   hovered: BORMIO,
   profileCursor: { lat: 46, lon: 9 },
   profileZoom: { lat: 46, lon: 9 },
-  shown: { hiddenTours: [...TOURS], passes: false, towns: false },
+  shown: { destinations: false, hiddenTours: [...TOURS], passes: false },
   ...over,
 });
 
 describe("shown", () => {
   test("isShown and shownTourCount read the one value", () => {
-    const shown = { hiddenTours: ["sellaronda"], passes: false, towns: true };
+    const shown = {
+      destinations: true,
+      hiddenTours: ["sellaronda"],
+      passes: false,
+    };
     expect(isShown(shown, "pass", "x")).toBe(false);
     expect(isShown(shown, "town", "x")).toBe(true);
     expect(isShown(shown, "tour", "sellaronda")).toBe(false);
@@ -189,12 +194,16 @@ describe("shown", () => {
 
   test("reconcileShown drops slugs that left the data and keeps the rest", () => {
     const shown = {
+      destinations: true,
       hiddenTours: ["gone", "sellaronda"],
       passes: true,
-      towns: true,
     };
     expect(reconcileShown(shown, TOURS).hiddenTours).toEqual(["sellaronda"]);
-    const clean = { hiddenTours: ["sellaronda"], passes: true, towns: true };
+    const clean = {
+      destinations: true,
+      hiddenTours: ["sellaronda"],
+      passes: true,
+    };
     expect(reconcileShown(clean, TOURS)).toBe(clean);
   });
 });
@@ -227,7 +236,7 @@ describe("reduce · select", () => {
       expect(s.profileCursor).toBeNull();
       expect(s.profileZoom).toBeNull();
       expect(s.shown.passes).toBe(true);
-      expect(s.shown.towns).toBe(false);
+      expect(s.shown.destinations).toBe(false);
     },
   );
 
@@ -247,9 +256,9 @@ describe("reduce · select", () => {
   test("reveals each kind in its own way", () => {
     const town = reduce(busy(), { selection: BORMIO, type: "select" }, desktop);
     expect(town.shown).toEqual({
+      destinations: true,
       hiddenTours: [...TOURS],
       passes: false,
-      towns: true,
     });
     const tour = reduce(
       busy(),
@@ -370,17 +379,17 @@ describe("reduce · load", () => {
   test("a stale slug in hiddenTours is dropped, the stored tab and switches kept", () => {
     const stored = {
       shown: {
+        destinations: true,
         hiddenTours: ["gone", "sellaronda"],
         passes: false,
-        towns: true,
       },
       tab: "tour" as const,
     };
     const s = load("", stored);
     expect(s.shown).toEqual({
+      destinations: true,
       hiddenTours: ["sellaronda"],
       passes: false,
-      towns: true,
     });
     expect(s.tab).toBe("tour");
   });
@@ -426,7 +435,11 @@ describe("reduce · load", () => {
     expect(s.loaded).toBe(false);
     expect(s.selection).toBeNull();
     expect(s.filters).toEqual(filters({ period: 7 }));
-    expect(s.shown).toEqual({ hiddenTours: [], passes: true, towns: true });
+    expect(s.shown).toEqual({
+      destinations: true,
+      hiddenTours: [],
+      passes: true,
+    });
     expect(s.sheet.list.open).toBe(false);
   });
 });
@@ -437,10 +450,10 @@ describe("reduce · the switches and the sheets", () => {
   test("toggleKind, toggleTour and the master switch", () => {
     const s1 = reduce(
       start,
-      { kind: "town", on: false, type: "toggleKind" },
+      { kind: "destination", on: false, type: "toggleKind" },
       desktop,
     );
-    expect(s1.shown.towns).toBe(false);
+    expect(s1.shown.destinations).toBe(false);
     const s2 = reduce(
       s1,
       { on: false, slug: "sellaronda", type: "toggleTour" },

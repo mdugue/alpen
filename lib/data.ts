@@ -319,6 +319,20 @@ export const staticParams = (): { kind: Segment; slug: string }[] => [
 ];
 
 /**
+ * What the build prerenders: every entity – or, where `PRERENDER_SAMPLE` is
+ * set (CI), the first of each kind. The ~760 entity pages are one explorer
+ * rendered 760 times and cost five of the seven minutes a CI build took; the
+ * rest render on their first request, which is what the e2e run exercises.
+ * The deployment build leaves the variable unset and prerenders them all, so
+ * a page that fails to render still fails a build on the pull request.
+ */
+export const prerenderParams = (): { kind: Segment; slug: string }[] => {
+  const all = staticParams();
+  if (!process.env.PRERENDER_SAMPLE) return all;
+  return all.filter((p, i) => all.findIndex((q) => q.kind === p.kind) === i);
+};
+
+/**
  * Everything the page hands the client, as one value.
  *
  * The derivations above are the page's own business – it wants all of them,

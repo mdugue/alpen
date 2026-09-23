@@ -64,18 +64,18 @@ export const sidebar = {
   },
   footerNote: "The status is a heuristic, the scales are editorial.",
   lists: {
+    /** The areas' switch; it carries the towns listed under them too. */
+    destinationsOnMap: "Destinations on the map",
     onMap: "on the map",
     /** The last group of the areas' list: the towns no listed area holds. */
     otherTowns: "Other towns",
     passes: "{n} passes",
+    showDestinations: "Show destinations and their towns on the map",
     showPasses: "Show passes and roads on the map",
     showTour: "Show {name} on the map",
     showTours: "Show loops on the map",
-    showTowns: "Show towns on the map",
     sort: "Sort",
     sortBy: "Sort by: {label}",
-    /** The areas' list holds towns too, so its switch says whose it is. */
-    townsOnMap: "Towns on the map",
   },
   rating: "{value} of 5",
   search: "Search",

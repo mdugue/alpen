@@ -158,14 +158,14 @@ export const Sidebar = (p: SidebarProps) => {
       aria-label={t.sidebar.lists.showPasses}
     />
   );
-  const townSwitch = (
+  const destinationSwitch = (
     <Switch
       size="sm"
-      checked={p.shown.towns}
+      checked={p.shown.destinations}
       onCheckedChange={(on) =>
-        p.dispatch({ kind: "town", on, type: "toggleKind" })
+        p.dispatch({ kind: "destination", on, type: "toggleKind" })
       }
-      aria-label={t.sidebar.lists.showTowns}
+      aria-label={t.sidebar.lists.showDestinations}
     />
   );
   const tourSwitch = (
@@ -290,7 +290,7 @@ export const Sidebar = (p: SidebarProps) => {
                 p.dispatch({ on, slug, type: "compare" })
               }
               onOpenCompare={() => setCompareOpen(true)}
-              mapControl={townSwitch}
+              mapControl={destinationSwitch}
             />
           )}
           {p.tab === "pass" && (

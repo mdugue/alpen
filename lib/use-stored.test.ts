@@ -110,12 +110,16 @@ describe("the storage adapter", () => {
 
   test("carries the tab and the map switches, and writes each one once", () => {
     commit(
-      reduce(loaded(), { kind: "town", on: false, type: "toggleKind" }, env),
+      reduce(
+        loaded(),
+        { kind: "destination", on: false, type: "toggleKind" },
+        env,
+      ),
     );
-    expect(valueOf("showTowns")).toBe("false");
+    expect(valueOf("showDestinations")).toBe("false");
     expect(valueOf("tab")).toBe('"pass"');
     const stored = readStoredState();
-    expect(stored.shown?.towns).toBe(false);
+    expect(stored.shown?.destinations).toBe(false);
     expect(stored.shown?.passes).toBe(true);
     expect(stored.tab).toBe("pass");
 
@@ -123,7 +127,11 @@ describe("the storage adapter", () => {
     // under the key is not written again.
     const before = writes;
     commit(
-      reduce(loaded(), { kind: "town", on: false, type: "toggleKind" }, env),
+      reduce(
+        loaded(),
+        { kind: "destination", on: false, type: "toggleKind" },
+        env,
+      ),
     );
     expect(writes).toBe(before);
   });

@@ -5,13 +5,14 @@ import { Suspense } from "react";
 import { Weather } from "@/components/panel/weather";
 import { WeatherSkeleton } from "@/components/panel/weather-forecast";
 import { WeatherSlot } from "@/components/panel/weather-slot";
-import { entityAt, staticParams } from "@/lib/data";
+import { entityAt, prerenderParams } from "@/lib/data";
 import { getDictionary } from "@/lib/i18n/server";
 import { alternatesOf, hrefFor } from "@/lib/routes";
 import { entityDescription, entityTitle, openGraphOf } from "@/lib/share-text";
 
 /**
- * One prerendered route per entity (plan 02): `/pass/x`, `/tour/x`, `/ort/x`,
+ * One prerendered route per entity (plan 02; CI prerenders a sample,
+ * `prerenderParams`): `/pass/x`, `/tour/x`, `/ort/x`,
  * `/ziel/x`. The explorer around it is the layout's; what this page adds is
  * the entity's own title, description and share image – so a shared link
  * unfurls to the pass rather than to the site – and, for a pass, the
@@ -22,7 +23,7 @@ import { entityDescription, entityTitle, openGraphOf } from "@/lib/share-text";
  * a 200 like every route here, so its metadata says `noindex` itself, and the
  * panel says "not found" rather than opening empty (`DetailPanel`).
  */
-export const generateStaticParams = () => staticParams();
+export const generateStaticParams = () => prerenderParams();
 
 type Props = PageProps<"/[lang]/[kind]/[slug]">;
 
