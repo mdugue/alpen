@@ -5,7 +5,8 @@ import { useEffect, useRef } from "react";
 /**
  * Turns a long list into one tab stop.
  *
- * The sidebar holds 201 roads, 9 tours and 48 towns, and every row used to be
+ * The sidebar holds every road, tour and town – 201, 9 and 48 when this was
+ * measured – and every row used to be
  * two tab stops of its own – the bookmark toggle and the row itself. Measured
  * on the built page that was **562 focusable elements**, so reaching the map,
  * the footer or anything past the first list meant holding Tab down for
@@ -47,8 +48,8 @@ const STEP: Record<string, number> = {
  * leaving the widget, a letter reaching the search field.
  *
  * `from` is the row the key was pressed on, or -1 when the focus is not on a
- * row at all; the ends do not wrap, because a list of 201 roads read by a
- * screen reader is a place to walk, not a carousel.
+ * row at all; the ends do not wrap, because a list of a few hundred roads
+ * read by a screen reader is a place to walk, not a carousel.
  */
 export const rovingTarget = (
   key: string,

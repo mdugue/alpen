@@ -41,8 +41,8 @@ export interface MapAssets {
    * sides of a traverse are what "over the Galibier" means – so selecting one
    * frames the whole thing rather than centring on the marker. The summit is
    * folded in so a pass without a routed ascent still has a box, and the
-   * numbers are rounded to about ten metres: this travels as a prop for all
-   * 201 passes and a frame needs no more.
+   * numbers are rounded to about ten metres: this travels as a prop for every
+   * pass and a frame needs no more.
    */
   passBounds: Record<string, Bounds>;
 }

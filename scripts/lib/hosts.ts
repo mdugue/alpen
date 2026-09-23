@@ -181,7 +181,13 @@ const Daily = z.object({
 export type DailySeries = z.infer<typeof Daily>["daily"];
 
 export const openMeteo = {
-  /** ERA5-Land daily series 2015–2024, height-corrected to `elevation`. */
+  /**
+   * Daily series 2015–2024, height-corrected to `elevation`, from Open-Meteo's
+   * default archive model ("Best Match": ERA5 and ERA5-Land, from 2017 ECMWF
+   * IFS at 9 km, blended). No `models=` is passed, so that is what
+   * `data/generated/climate.json` holds; pinning `models=era5_land` would
+   * change every stored series and means fetching all of them again.
+   */
   archive: async (
     t: Transport,
     at: { lat: number; lon: number; elevation: number },

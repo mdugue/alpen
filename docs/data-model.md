@@ -309,7 +309,8 @@ flowchart LR
 It stays out of the repo for the reason above – the thresholds in
 `lib/status.ts` move, and the live closure layer (`docs/roadmap.md`) will hook
 in front of `passVerdict` – and it does not need to be committed: 201 passes ×
-24 cells are 394 KB of JSON but 8 KB gzipped, because the cells repeat.
+24 cells (the count when this was measured) are 394 KB of JSON but 8 KB
+gzipped, because the cells repeat.
 
 ### The route quality gate
 

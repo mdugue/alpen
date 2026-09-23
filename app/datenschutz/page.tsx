@@ -44,9 +44,9 @@ const DatenschutzPage = () => (
           Tracking und ohne Werbenetzwerke. Es werden keine Analyse-Tools
           eingesetzt und es werden keine Cookies zu Tracking- oder
           Marketingzwecken gesetzt. Personenbezogene Daten fallen im
-          Wesentlichen nur an, wenn Ihr Browser beim Laden der Seite und der
-          Kartenkacheln automatisch Verbindungsdaten an Server überträgt – siehe
-          unten.
+          Wesentlichen nur an, wenn Ihr Browser beim Laden der Seite, der
+          Kartenkacheln und der Fotos automatisch Verbindungsdaten an Server
+          überträgt – siehe unten.
         </p>
       </section>
 
@@ -87,13 +87,17 @@ const DatenschutzPage = () => (
         </h2>
         <p className="text-muted-foreground">
           Die Karte lädt ihre Kartenkacheln direkt im Browser von den jeweiligen
-          Anbietern nach – je nachdem, welche Grundkarte oder welches Overlay
-          Sie auswählen. Dabei überträgt Ihr Browser zwangsläufig Ihre
-          IP-Adresse sowie technische Angaben (z. B. Browsertyp) an den
-          jeweiligen Server, so wie bei jedem Laden eines Bildes von einer
-          fremden Website. Genutzt werden je nach Auswahl:
+          Anbietern nach – die voreingestellte Grundkarte immer, alle weiteren
+          nur, wenn Sie diese Grundkarte oder dieses Overlay auswählen. Dabei
+          überträgt Ihr Browser zwangsläufig Ihre IP-Adresse sowie technische
+          Angaben (z. B. Browsertyp) an den jeweiligen Server, so wie bei jedem
+          Laden eines Bildes von einer fremden Website. Genutzt werden:
         </p>
         <ul className="text-muted-foreground list-disc pl-5">
+          <li>
+            OpenFreeMap (tiles.openfreemap.org) – die voreingestellte
+            Grundkarte, solange keine andere gewählt ist
+          </li>
           <li>
             OpenStreetMap (tile.openstreetmap.org) – OpenStreetMap Foundation
           </li>
@@ -122,6 +126,31 @@ const DatenschutzPage = () => (
           diese App gesetzt; welche Daten die genannten Anbieter selbst
           protokollieren, entnehmen Sie bitte deren eigenen
           Datenschutzhinweisen.
+        </p>
+      </section>
+
+      <section className="flex flex-col gap-2 text-sm">
+        <h2 className="text-base font-semibold">Fotos (Wikimedia Commons)</h2>
+        <p className="text-muted-foreground">
+          Die Fotos in der Detailansicht eines Passes, einer Tour oder eines
+          Orts stammen von Wikimedia Commons. Die App speichert nur ihre
+          Beschreibung (Titel, Urheber, Lizenz); die Bilddateien selbst lädt Ihr
+          Browser direkt von den Servern der Wikimedia Foundation
+          (thumb.wikimedia.org, Wikimedia Foundation Inc., USA), sobald Sie eine
+          Detailansicht mit Fotos öffnen. Dabei werden Ihre IP-Adresse sowie
+          technische Angaben (z. B. Browsertyp) an diese Server übertragen.
+          Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse
+          an der Darstellung der Fotos). Welche Daten Wikimedia dabei
+          verarbeitet, steht in deren Datenschutzrichtlinie unter{" "}
+          <a
+            href="https://foundation.wikimedia.org/wiki/Policy:Privacy_policy"
+            className="underline"
+            target="_blank"
+            rel="noreferrer"
+          >
+            foundation.wikimedia.org/wiki/Policy:Privacy_policy
+          </a>
+          .
         </p>
       </section>
 
