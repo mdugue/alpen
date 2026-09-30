@@ -69,6 +69,10 @@ Routing-Dienst berechnet und dann gespeichert.
   ab als ein Radfahrer und meidet autofreie Straßen; solche Strecken werden
   vermerkt und später mit OpenRouteService neu berechnet. Heute stammen fast
   alle gespeicherten Strecken von OpenRouteService.
+- Umgekehrt nimmt OpenRouteService manchmal eine andere Straße als die
+  gemeinte – über einen Grat, einen Feldweg hinauf –, während das Autoprofil
+  der Passstraße folgt. Für solche Auffahrten ist in den Daten fest vermerkt,
+  dass sie mit OSRM berechnet werden, samt Begründung.
 
 Bevor eine Strecke gespeichert wird, muss sie eine Qualitätsprüfung bestehen
 – siehe [Der Weg der Daten](data-journey.md).

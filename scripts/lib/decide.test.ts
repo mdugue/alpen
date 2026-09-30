@@ -16,13 +16,14 @@ import {
   decideProfile,
   decideRoute,
   lacksClimate,
+  paidFor,
   plan,
   routeJobs,
   secondGraph,
   storedFor,
 } from "./decide";
 import type { Flags, Judged, Stored } from "./decide";
-import { ascentInputs } from "./validate";
+import { ascentInputs, geometryHash } from "./validate";
 
 const pass = (over: Partial<Pass> = {}): Pass => ({
   ascents: [
@@ -398,6 +399,116 @@ describe("decideProfile", () => {
         flags({ ors: true }),
       ),
     ).toBe("fetch");
+  });
+});
+
+describe("paidFor", () => {
+  const key = "stilfser-joch:0";
+  const other: RouteGeometry = [
+    [46.5, 10],
+    [46.6, 10.5],
+  ];
+  const stored = (over: Partial<Stored> = {}): Stored => ({
+    ...empty(),
+    profiles: { [key]: profile() },
+    routes: { [key]: geom },
+    ...over,
+  });
+
+  test("the stored route came back unchanged: its profile is this one's", () => {
+    expect(paidFor(key, stored(), geometryHash(geom), true)).toEqual(profile());
+  });
+
+  test("another road, or the stored route only being judged: nothing", () => {
+    expect(paidFor(key, stored(), geometryHash(other), true)).toBeUndefined();
+    expect(paidFor(key, stored(), geometryHash(geom), false)).toBeUndefined();
+  });
+
+  test("an earlier rejection of this very geometry left its profile", () => {
+    const cached = { ...profile(), top: 2000 };
+    const s = stored({
+      rejected: {
+        [key]: rejection({ hash: geometryHash(other), profile: cached }),
+      },
+    });
+    expect(paidFor(key, s, geometryHash(other), true)).toEqual(cached);
+    expect(paidFor(key, s, geometryHash(other), false)).toEqual(cached);
+  });
+});
+
+describe("a ride pinned to OSRM (router)", () => {
+  const router = { note: "ORS nimmt den Grat", use: "osrm" as const };
+  const pinnedPass = pass({
+    ascents: [
+      { from: { lat: 46.5, lon: 10 }, label: "Prato", router },
+      { from: { lat: 46.6, lon: 10.2 }, label: "Bormio" },
+    ],
+  });
+  const [pinned, free] = jobs([pinnedPass]);
+  const stored = (over: Partial<Stored> = {}): Stored => ({
+    ...empty(),
+    meta: {
+      [pinned!.key]: {
+        fetchedAt: "2026-01-01",
+        inputs: pinned!.inputs,
+        source: "osrm",
+      },
+    },
+    routes: { [pinned!.key]: geom },
+    summits: { [pinnedPass.slug]: goodSummit(pinnedPass) },
+    ...over,
+  });
+
+  test("the job carries the pin, the other side none", () => {
+    expect(pinned!.router).toBe("osrm");
+    expect(free!.router).toBeUndefined();
+  });
+
+  test("the pin is part of the question, its note is not", () => {
+    const a = pinnedPass.ascents[0]!;
+    const { router: _pin, ...unpinned } = a;
+    expect(pinned!.inputs).not.toBe(
+      ascentInputs(false, pinnedPass, unpinned, "cycling-road"),
+    );
+    expect(pinned!.inputs).toBe(
+      ascentInputs(
+        false,
+        pinnedPass,
+        { ...a, router: { ...router, note: "anders begründet" } },
+        "cycling-road",
+      ),
+    );
+    // A ride without a pin keeps the hash it had before the field existed.
+    expect(jobs()[0]!.inputs).toBe(
+      ascentInputs(false, pass(), pass().ascents[0]!, "cycling-road"),
+    );
+  });
+
+  test("its car route is final: no upgrade, and the profile is paid now", () => {
+    const f = flags({ ors: true, upgradeOsrm: true });
+    const verdict = decideRoute(pinned!, stored(), f);
+    expect(verdict).toEqual({ act: "keep" });
+    expect(decideProfile(pinned!, stored(), f, verdict).act).toBe("fetch");
+    expect(
+      plan({ passes: [pinnedPass], tours: [] }, stored(), f).counts.upgradable,
+    ).toBe(0);
+  });
+
+  test("setting the pin on a stored route asks again, replacing it", () => {
+    const before = stored({
+      meta: {
+        [pinned!.key]: {
+          fetchedAt: "2026-01-01",
+          inputs: jobs()[0]!.inputs,
+          source: "ors",
+        },
+      },
+    });
+    expect(decideRoute(pinned!, before, flags({ ors: true }))).toEqual({
+      act: "fetch",
+      replace: true,
+      upgrade: false,
+    });
   });
 });
 

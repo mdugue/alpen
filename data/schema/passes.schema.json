@@ -108,6 +108,24 @@
               "type": "string",
               "minLength": 1
             },
+            "router": {
+              "type": "object",
+              "properties": {
+                "note": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "use": {
+                  "type": "string",
+                  "const": "osrm"
+                }
+              },
+              "required": [
+                "note",
+                "use"
+              ],
+              "additionalProperties": false
+            },
             "to": {
               "type": "object",
               "properties": {

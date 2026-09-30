@@ -167,6 +167,19 @@ only when it passes those checks, and `routes-meta.json` records it as
 hash. A rejection from before this rule stays where it is until
 `--retry-rejected --only <slug>` asks again.
 
+Neither graph is right everywhere, and the gate cannot always tell: a detour
+under 60 km that ends at the marker with its top in the last quarter passes.
+The Colle di Sampeyre came back 24 km along the ridge from Stroppo and 12.8 km
+up a track from Sampeyre, both inside the limits, while OSRM's car route took
+the road on both sides. For those rides the curator pins the router on the
+ascent (`router: { use: "osrm", note }`, `docs/data-model.md`): ORS is never
+asked for it, the car route is final rather than provisional – its profile is
+paid for at once, `--upgrade-osrm` leaves it alone and `data:check` asks for
+no renewal – and the pin enters `meta.inputs`, so setting or lifting it
+routes the ride again. A re-route that brings back the very geometry already
+stored keeps the profile stored with it; that holds for every changed
+question (a `check`, an elevation), not only for the pin.
+
 ## Where the facts come from
 
 Every host in stage 2, what it is good at, and what it cannot do. Nothing here
@@ -338,7 +351,7 @@ keeps every road inside the free tier is in
 | A pass has no line on the map                    | `rejected.json` for its key, then `bun run data:check --explain`                                                                                                                     |
 | `data:check` errors on a stored route            | the route was hand-edited or a limit moved; re-measure with `--explain`, then `data:build`                                                                                           |
 | Every ascent of one pass is missing              | the summit gate: `summits.json`, then `bun run data:locate <slug>`                                                                                                                   |
-| A route looks like a car detour                  | `routes-meta.json` says `osrm`; re-run with `ORS_KEY` and `--upgrade-osrm`                                                                                                           |
+| A route looks like a car detour                  | `routes-meta.json` says `osrm`; re-run with `ORS_KEY` and `--upgrade-osrm` – unless the ascent is pinned to OSRM (`router`)                                                          |
 | Profiles are missing after a successful run      | the Open-Meteo budget ran out – `--status`, then run again or use `data:backfill`                                                                                                    |
 | The climate chart is empty for a new pass        | `climate.json` has no entry yet; one run costs ~261 calls                                                                                                                            |
 | An unpaved road is never "gesperrt"              | its series has no `coverPct` (`data:check` counts it); the next `data:build` asks the archive again for every unpaved road without it (`lacksClimate`), a paved one keeps its series |
