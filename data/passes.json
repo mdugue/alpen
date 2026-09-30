@@ -2007,8 +2007,8 @@
   "type": "pass",
   "country": "IT",
   "region": "Westalpen",
-  "lat": 44.532,
-  "lon": 7.163,
+  "lat": 44.551,
+  "lon": 7.1196,
   "elevation": 2284,
   "classicAscent": "17 km, 7,4 % ab Sampeyre",
   "beauty": 4,
@@ -3152,7 +3152,8 @@
     "label": "Log pod Mangartom",
     "check": {
      "maxEndDist": 0.8,
-     "note": "Die Straße endet am Parkplatz rund 700 m vor dem Sattelpunkt; der Sattel selbst ist nur zu Fuß erreichbar."
+     "maxTopDelta": 150,
+     "note": "Die Straße endet am Parkplatz auf gut 1900 m, rund 700 m vor dem Sattelpunkt und 140 m darunter: Die obere Schleife ist gesperrt (OSM access=no), jeder Router hält dort an. Der Sattel selbst ist nur zu Fuß erreichbar."
     }
    }
   ]
