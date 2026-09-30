@@ -7,6 +7,10 @@
   "description": "From Riva via Tenno and the Lago di Tenno up to the Passo del Ballino, via Fiavè and Ponte Arche into the Sarca valley and back to the lake via Sarche and Arco.",
   "note": "Occasional snow at the top of the Ballino in winter."
  },
+ "ballons-runde": {
+  "description": "From Thann over the Hundsruck into the Doller valley, from Sewen up the Ballon d'Alsace, down to Saint-Maurice and back through the Thur valley over the Col de Bussang.",
+  "note": "Over Bussang on the N66 with lorry traffic; the rest is quiet."
+ },
  "baronnies-runde": {
   "description": "From Buis-les-Baronnies via Saint-Auban up to the Col de Perty, through Laborel and Séderon over the Col de Macuègne to Montbrun, beneath the north face of the Ventoux via Brantes up to the Col de Fontaube and back to Buis via Eygaliers.",
   "note": "Briefly closed after snowfall on the Perty."
@@ -18,6 +22,10 @@
  "grappa-runde": {
   "description": "From Bassano via Semonzo up to the Monte Grappa and down via Possagno, back to Bassano along the foot of the mountain – up the classic side, down the quiet one.",
   "note": "Temporarily closed at the top after snowfall."
+ },
+ "hochvogesen-runde": {
+  "description": "From Munster to the Schlucht, along the Route des Crêtes over the Hohneck and the Markstein to the Grand Ballon, and back into the Munster valley over the Platzerwasel.",
+  "note": "The crest road is closed roughly mid-November to mid-April; the detour from the Markstein to the Grand Ballon is ridden there and back."
  },
  "la-marmotte": {
   "description": "Bourg d'Oisans – Glandon – Télégraphe – Galibier – Lautaret – Alpe d'Huez.",

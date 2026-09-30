@@ -9411,5 +9411,599 @@
     "label": "Breil-sur-Roya (Ost)"
    }
   ]
+ },
+ {
+  "slug": "grand-ballon",
+  "surface": "asphalt",
+  "name": "Grand Ballon",
+  "type": "pass",
+  "tags": [
+   "panorama"
+  ],
+  "country": "FR",
+  "region": "Vogesen",
+  "lat": 47.9037,
+  "lon": 7.1033,
+  "elevation": 1343,
+  "classicAscent": "15,8 km, 6,2 % ab Willer-sur-Thur",
+  "beauty": 4,
+  "fame": 3,
+  "difficulty": 3,
+  "traffic": 3,
+  "season": {
+   "opens": 4.5,
+   "closes": 11,
+   "maintained": false
+  },
+  "note": "Höchster Punkt der Vogesen, den eine Straße erreicht: 1343 m am Col du Grand Ballon, der Gipfel mit der Radarkuppel (1424 m) ist ein paar Minuten zu Fuß. Mehrfach im Programm der Tour de France; mit der Route des Crêtes im Winter gesperrt, etwa Mitte November bis Mitte April.",
+  "aliases": [
+   "Großer Belchen",
+   "Col du Grand Ballon"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 47.8437,
+     "lon": 7.0706
+    },
+    "label": "Willer-sur-Thur (Süd)"
+   },
+   {
+    "from": {
+     "lat": 47.8202,
+     "lon": 7.1794
+    },
+    "label": "Uffholtz (Ost)"
+   }
+  ]
+ },
+ {
+  "slug": "ballon-d-alsace",
+  "surface": "asphalt",
+  "name": "Ballon d'Alsace",
+  "type": "pass",
+  "country": "FR",
+  "region": "Vogesen",
+  "lat": 47.8209,
+  "lon": 6.8369,
+  "elevation": 1165,
+  "classicAscent": "9,2 km, 6,9 % ab Saint-Maurice-sur-Moselle",
+  "beauty": 3,
+  "fame": 4,
+  "difficulty": 2,
+  "traffic": 3,
+  "season": null,
+  "note": "1905 der erste Berg der Tour de France überhaupt. Drei Auffahrten auf breiter Straße, die kürzeste und steilste von Saint-Maurice-sur-Moselle; oben Weiden, Gasthöfe und am Wochenende Ausflugsverkehr.",
+  "aliases": [
+   "Elsässer Belchen"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 47.8588,
+     "lon": 6.8245
+    },
+    "label": "Saint-Maurice-sur-Moselle (Nord)"
+   },
+   {
+    "from": {
+     "lat": 47.7419,
+     "lon": 6.8252
+    },
+    "label": "Giromagny (Süd)"
+   },
+   {
+    "from": {
+     "lat": 47.8077,
+     "lon": 6.9042
+    },
+    "label": "Sewen (Ost)"
+   }
+  ]
+ },
+ {
+  "slug": "col-de-la-schlucht",
+  "surface": "asphalt",
+  "name": "Col de la Schlucht",
+  "type": "pass",
+  "country": "FR",
+  "region": "Vogesen",
+  "lat": 48.0642,
+  "lon": 7.0227,
+  "elevation": 1139,
+  "classicAscent": "15,4 km, 4,9 % ab Munster",
+  "beauty": 3,
+  "fame": 3,
+  "difficulty": 2,
+  "traffic": 4,
+  "season": null,
+  "note": "Hauptübergang von Colmar nach Gérardmer, entsprechend Verkehr, im Winter geräumt. Von Munster die schönere und steilere Seite, von Gérardmer über Xonrupt fast flach; oben beginnt die Route des Crêtes.",
+  "aliases": [
+   "Schluchtpass"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 48.0409,
+     "lon": 7.1372
+    },
+    "label": "Munster (Ost)"
+   },
+   {
+    "from": {
+     "lat": 48.0706,
+     "lon": 6.8777
+    },
+    "label": "Gérardmer (West)"
+   }
+  ]
+ },
+ {
+  "slug": "col-du-petit-ballon",
+  "surface": "asphalt",
+  "name": "Col du Petit Ballon",
+  "type": "pass",
+  "country": "FR",
+  "region": "Vogesen",
+  "lat": 47.985,
+  "lon": 7.1205,
+  "elevation": 1163,
+  "classicAscent": "7,9 km, 8 % ab Wasserbourg",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 1,
+  "season": null,
+  "note": "Kahle Kuppe mit Almgasthöfen und Rundblick über Munstertal und Rheinebene. Von Wasserbourg schmal und steil; die Südseite aus dem Florival über Linthal ist hier nicht als Auffahrt geführt.",
+  "aliases": [
+   "Kleiner Belchen",
+   "Petit Ballon"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 48.003,
+     "lon": 7.1603
+    },
+    "label": "Wasserbourg (Nord)"
+   }
+  ]
+ },
+ {
+  "slug": "col-du-platzerwasel",
+  "surface": "asphalt",
+  "name": "Col du Platzerwasel",
+  "type": "pass",
+  "country": "FR",
+  "region": "Vogesen",
+  "lat": 47.9695,
+  "lon": 7.0429,
+  "elevation": 1183,
+  "classicAscent": "7,5 km, 8,7 % ab Sondernach",
+  "beauty": 3,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 1,
+  "season": null,
+  "note": "Steil aus dem hinteren Munstertal bei Sondernach hinauf zum Kamm. Von Süden erreicht man den Pass über den Markstein auf Kammhöhe – eine eigene Auffahrt ist das nicht.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 47.9976,
+     "lon": 7.0742
+    },
+    "label": "Sondernach (Nord)"
+   }
+  ]
+ },
+ {
+  "slug": "col-d-oderen",
+  "surface": "asphalt",
+  "name": "Col d'Oderen",
+  "type": "pass",
+  "country": "FR",
+  "region": "Vogesen",
+  "lat": 47.9227,
+  "lon": 6.9174,
+  "elevation": 884,
+  "classicAscent": "11,4 km, 4 % ab Fellering",
+  "beauty": 2,
+  "fame": 2,
+  "difficulty": 1,
+  "traffic": 2,
+  "season": null,
+  "note": "Sanfter Übergang vom oberen Thurtal nach Ventron und ins Moseltal, ruhig und im Wald.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 47.8965,
+     "lon": 6.9858
+    },
+    "label": "Fellering (Ost)"
+   },
+   {
+    "from": {
+     "lat": 47.9414,
+     "lon": 6.872
+    },
+    "label": "Ventron (West)"
+   }
+  ]
+ },
+ {
+  "slug": "col-de-bussang",
+  "surface": "asphalt",
+  "name": "Col de Bussang",
+  "type": "pass",
+  "country": "FR",
+  "region": "Vogesen",
+  "lat": 47.8895,
+  "lon": 6.8971,
+  "elevation": 731,
+  "classicAscent": "7,5 km, 2,9 % ab Saint-Maurice-sur-Moselle",
+  "beauty": 1,
+  "fame": 1,
+  "difficulty": 1,
+  "traffic": 5,
+  "season": null,
+  "note": "Die N66 von Thann nach Remiremont: viel Verkehr und Lastwagen, flach genug zum Verbinden, kein Ziel für sich. Oben die Quelle der Mosel.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 47.8588,
+     "lon": 6.8245
+    },
+    "label": "Saint-Maurice-sur-Moselle (West)"
+   },
+   {
+    "from": {
+     "lat": 47.8839,
+     "lon": 6.9567
+    },
+    "label": "Urbès (Ost)"
+   }
+  ]
+ },
+ {
+  "slug": "col-du-bonhomme",
+  "surface": "asphalt",
+  "name": "Col du Bonhomme",
+  "type": "pass",
+  "country": "FR",
+  "region": "Vogesen",
+  "lat": 48.1646,
+  "lon": 7.08,
+  "elevation": 949,
+  "classicAscent": "10 km, 5,3 % ab Lapoutroie",
+  "beauty": 2,
+  "fame": 2,
+  "difficulty": 2,
+  "traffic": 4,
+  "season": null,
+  "note": "Übergang von Kaysersberg nach Saint-Dié auf der Hauptstraße, mit Verkehr. Oben beginnt nach Süden die Kammstraße zum Col du Calvaire und zur Schlucht.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 48.1533,
+     "lon": 7.1702
+    },
+    "label": "Lapoutroie (Ost)"
+   },
+   {
+    "from": {
+     "lat": 48.1729,
+     "lon": 7.0149
+    },
+    "label": "Plainfaing (West)"
+   }
+  ]
+ },
+ {
+  "slug": "col-du-calvaire",
+  "surface": "asphalt",
+  "name": "Col du Calvaire",
+  "type": "pass",
+  "country": "FR",
+  "region": "Vogesen",
+  "lat": 48.1367,
+  "lon": 7.0866,
+  "elevation": 1144,
+  "classicAscent": "11,2 km, 5,8 % ab Orbey",
+  "beauty": 3,
+  "fame": 1,
+  "difficulty": 2,
+  "traffic": 2,
+  "season": null,
+  "note": "Über dem Lac Blanc am Nordende der Kammstraße. Nach Westen geht es auf Kammhöhe zum Col du Bonhomme weiter, eine zweite Auffahrt ist das nicht.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 48.1273,
+     "lon": 7.1622
+    },
+    "label": "Orbey (Ost)"
+   }
+  ]
+ },
+ {
+  "slug": "col-de-bramont",
+  "surface": "asphalt",
+  "name": "Col de Bramont",
+  "type": "pass",
+  "country": "FR",
+  "region": "Vogesen",
+  "lat": 48.0005,
+  "lon": 6.9454,
+  "elevation": 956,
+  "classicAscent": "7,2 km, 5,3 % ab Wildenstein",
+  "beauty": 2,
+  "fame": 1,
+  "difficulty": 1,
+  "traffic": 2,
+  "season": null,
+  "note": "Ruhiger Übergang von La Bresse ins oberste Thurtal bei Wildenstein, kurz und gleichmäßig.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 47.9781,
+     "lon": 6.9614
+    },
+    "label": "Wildenstein (Ost)"
+   },
+   {
+    "from": {
+     "lat": 48.0066,
+     "lon": 6.8767
+    },
+    "label": "La Bresse (West)"
+   }
+  ]
+ },
+ {
+  "slug": "col-de-grosse-pierre",
+  "surface": "asphalt",
+  "name": "Col de Grosse Pierre",
+  "type": "pass",
+  "country": "FR",
+  "region": "Vogesen",
+  "lat": 48.0264,
+  "lon": 6.8856,
+  "elevation": 955,
+  "classicAscent": "6,6 km, 4,4 % ab Gérardmer",
+  "beauty": 2,
+  "fame": 1,
+  "difficulty": 1,
+  "traffic": 2,
+  "season": null,
+  "note": "Kurzer Waldübergang zwischen Gérardmer und dem Moselotte-Tal bei Cornimont.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 48.0706,
+     "lon": 6.8777
+    },
+    "label": "Gérardmer (Nord)"
+   },
+   {
+    "from": {
+     "lat": 47.9639,
+     "lon": 6.8398
+    },
+    "label": "Cornimont (Süd)"
+   }
+  ]
+ },
+ {
+  "slug": "col-du-wettstein",
+  "surface": "asphalt",
+  "name": "Col du Wettstein",
+  "type": "pass",
+  "country": "FR",
+  "region": "Vogesen",
+  "lat": 48.0879,
+  "lon": 7.116,
+  "elevation": 880,
+  "classicAscent": "6,5 km, 6 % ab Soultzeren",
+  "beauty": 2,
+  "fame": 1,
+  "difficulty": 2,
+  "traffic": 1,
+  "season": null,
+  "note": "Zwischen Munstertal und Orbey, oben ein Soldatenfriedhof aus dem Ersten Weltkrieg und das Schlachtfeld am Lingekopf nebenan.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 48.0629,
+     "lon": 7.1034
+    },
+    "label": "Soultzeren (Süd)"
+   },
+   {
+    "from": {
+     "lat": 48.1273,
+     "lon": 7.1622
+    },
+    "label": "Orbey (Nord)"
+   }
+  ]
+ },
+ {
+  "slug": "col-de-sainte-marie",
+  "surface": "asphalt",
+  "name": "Col de Sainte-Marie",
+  "type": "pass",
+  "country": "FR",
+  "region": "Vogesen",
+  "lat": 48.2433,
+  "lon": 7.1329,
+  "elevation": 772,
+  "classicAscent": "6,1 km, 6,9 % ab Sainte-Marie-aux-Mines",
+  "beauty": 2,
+  "fame": 1,
+  "difficulty": 2,
+  "traffic": 2,
+  "season": null,
+  "note": "Alter Übergang von Sainte-Marie-aux-Mines nach Lothringen; seit der Verkehr durch den Tunnel Maurice-Lemaire fährt, ist die Passstraße ruhig.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 48.2477,
+     "lon": 7.1851
+    },
+    "label": "Sainte-Marie-aux-Mines (Ost)"
+   },
+   {
+    "from": {
+     "lat": 48.258,
+     "lon": 7.1069
+    },
+    "label": "Wisembach (West)"
+   }
+  ]
+ },
+ {
+  "slug": "col-du-hundsruck",
+  "surface": "asphalt",
+  "name": "Col du Hundsruck",
+  "type": "pass",
+  "country": "FR",
+  "region": "Vogesen",
+  "lat": 47.8063,
+  "lon": 7.0424,
+  "elevation": 748,
+  "classicAscent": "7 km, 6,2 % ab Thann",
+  "beauty": 2,
+  "fame": 1,
+  "difficulty": 2,
+  "traffic": 2,
+  "season": null,
+  "note": "Kurzer Waldpass zwischen Thann und dem Dollertal bei Masevaux, gut kombinierbar mit dem Ballon d'Alsace.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 47.8101,
+     "lon": 7.1021
+    },
+    "label": "Thann (Ost)"
+   },
+   {
+    "from": {
+     "lat": 47.7749,
+     "lon": 6.9958
+    },
+    "label": "Masevaux (West)"
+   }
+  ]
+ },
+ {
+  "slug": "hohneck",
+  "surface": "asphalt",
+  "name": "Hohneck",
+  "type": "spur",
+  "tags": [
+   "panorama"
+  ],
+  "country": "FR",
+  "region": "Vogesen",
+  "lat": 48.0375,
+  "lon": 7.0149,
+  "elevation": 1350,
+  "classicAscent": "15,3 km, 4,5 % ab La Bresse",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 2,
+  "traffic": 2,
+  "season": {
+   "opens": 4.5,
+   "closes": 11,
+   "maintained": false
+  },
+  "note": "Stichstraße von der Route des Crêtes bis knapp unter einen der höchsten Gipfel der Vogesen, oben Rundblick über Kamm und Seen. Mit der Kammstraße im Winter gesperrt.",
+  "aliases": [
+   "Hoheneck"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 48.0066,
+     "lon": 6.8767
+    },
+    "label": "La Bresse"
+   }
+  ]
+ },
+ {
+  "slug": "la-planche-des-belles-filles",
+  "surface": "asphalt",
+  "name": "La Planche des Belles Filles",
+  "type": "spur",
+  "country": "FR",
+  "region": "Vogesen",
+  "lat": 47.77,
+  "lon": 6.7769,
+  "elevation": 1050,
+  "classicAscent": "8,2 km, 6,9 % ab Plancher-les-Mines",
+  "beauty": 3,
+  "fame": 4,
+  "difficulty": 3,
+  "traffic": 2,
+  "season": null,
+  "note": "Zielankunft der Tour de France seit 2012, 2020 Schauplatz des Zeitfahrens, mit dem Pogačar die Tour gewann. Die Asphaltstraße endet an der Skistation; die Schotterrampe der „Super Planche“ darüber ist nichts fürs Rennrad.",
+  "aliases": [
+   "Planche des Belles Filles",
+   "Super Planche"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 47.7572,
+     "lon": 6.7396
+    },
+    "label": "Plancher-les-Mines"
+   }
+  ]
+ },
+ {
+  "slug": "route-des-cretes",
+  "surface": "asphalt",
+  "name": "Route des Crêtes",
+  "type": "plateau",
+  "tags": [
+   "panorama"
+  ],
+  "country": "FR",
+  "region": "Vogesen",
+  "lat": 48.0414,
+  "lon": 7.0109,
+  "elevation": 1297,
+  "classicAscent": "29 km vom Col de la Schlucht zum Grand Ballon",
+  "beauty": 4,
+  "fame": 3,
+  "difficulty": 2,
+  "traffic": 3,
+  "season": {
+   "opens": 4.5,
+   "closes": 11,
+   "maintained": false
+  },
+  "note": "Die Kammstraße der Hochvogesen, im Ersten Weltkrieg als Nachschubweg gebaut: über Wiesenkuppen mit Blick auf die Rheinebene und bei klarer Sicht bis zu den Alpen. Wintersperre etwa Mitte November bis Mitte April; am Wochenende viele Motorräder.",
+  "aliases": [
+   "Vogesenkammstraße",
+   "Kammstraße"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 48.0642,
+     "lon": 7.0227
+    },
+    "label": "Col de la Schlucht",
+    "to": {
+     "lat": 47.9037,
+     "lon": 7.1033
+    },
+    "km": 29
+   }
+  ]
  }
 ]

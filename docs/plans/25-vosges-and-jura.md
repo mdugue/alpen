@@ -1,14 +1,20 @@
 # 25 · Vosges and Jura: a second and a third range
 
-**Status:** in progress – steps 1–3 and 6 done (the vocabulary, the search
-word, the "Gebirge" chip with its frame, the town range); step 4 half: the
-frame guard is a minimum opening zoom rather than a box test, because the
-map opens on the frame around what it draws and a far range would zoom that
-frame out, not fall out of it; the brand line and the dialog section on the
-ranges wait for the first road outside the Alps, and so does the chip, which
-shows once two ranges hold a road (Principle 3: nothing names a range the
-map cannot show); step 5, the data, needs Open-Meteo and Overpass, which
-answered 429 and 403 in the session that built the mechanism ·
+**Status:** in progress – steps 1–4 and 6 done (the vocabulary, the search
+word, the "Gebirge" chip with its frame, the town range; the frame guard is a
+minimum opening zoom rather than a box test, because the map opens on the
+frame around what it draws and a far range would zoom that frame out, not
+fall out of it; the claim and the description name the Vosges, and the chip
+and the dialog section on the ranges show by themselves now that a second
+range holds a road). Step 5: the Vosges are in – 17 roads (the Route des
+Crêtes, the Grand Ballon and the Hohneck with a winter window, the rest
+`season: null`), 5 towns, 2 loops and 2 areas (Hochvogesen, Südvogesen);
+the read-back shows every winter half-month as "Höhe", "Schnee" or "Frost"
+and best windows from early May to early October, the two lowest cols
+(Sainte-Marie, Hundsruck, ~750 m) from late March. One road short of the 18
+the acceptance asks for; the next candidates are the Markstein, the Col des
+Chevrères and the northern Vosges (Donon, Champ du Feu). The Jura is
+drafted and waits for a day's Open-Meteo quota ·
 **Effort:** M for code, L for curation ·
 **Depends on:** 09 (schema), 05 (filters and search) · **Unblocks:** 26
 (the Pyrenees reuse the range mechanism), the weekend answer for the

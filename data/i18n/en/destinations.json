@@ -69,6 +69,11 @@
   "multiDay": "A week without repeating a road; the Route des Grandes Alpes starts here and leads over Roselend into the Tarentaise.",
   "access": "Geneva airport in an hour; Annecy, Cluses or Thonon railway station."
  },
+ "hochvogesen": {
+  "character": "The Schlucht, the Route des Crêtes and the Hohneck above the Munster valley: grassy crests at 1200 to 1350 m, short steep climbs out of the valleys, and motorbikes on the crest at weekends.",
+  "multiDay": "A base for a long weekend up to four days; the loop over the Schlucht, the crest road and the Grand Ballon in a day, the south with the Ballon d'Alsace one stage away.",
+  "access": "By train to Colmar and on by regional train to Munster; the nearest airports are Basel-Mulhouse and Strasbourg."
+ },
  "hohe-tauern": {
   "character": "The Grossglockner High Alpine Road, Sportgastein, Kals and the Kitzbüheler Horn: managed toll roads, high and well kept, plus the steepest dead-end climb in Austria.",
   "multiDay": "Three to four days; the Glockner into Carinthia as a stage.",
@@ -118,6 +123,11 @@
   "character": "Alpe d'Huez, Galibier, Croix de Fer and Sarenne in one spot: big altitudes, big names, and plenty of traffic on the D1091 through the Romanche gorge.",
   "multiDay": "A base for four to six days; the Marmotte loop in a day, and a stage over the Galibier to Briançon is possible.",
   "access": "Grenoble by rail, Lyon airport in an hour and a half; the bus into the valley runs as far as Bourg-d'Oisans."
+ },
+ "suedvogesen": {
+  "character": "The Ballon d'Alsace, La Planche des Belles Filles and the Grand Ballon – the Tour de France climbs of the Vosges – with quiet wooded passes between them and the busy N66 over Bussang.",
+  "multiDay": "Two to three days; the loop over the Hundsruck, the Ballon d'Alsace and Bussang in a day, the Planche as a detour from Plancher-les-Mines.",
+  "access": "By TGV to Mulhouse and on by train to Thann and up the Thur valley; for the west side Belfort-Montbéliard TGV."
  },
  "susa-piemont": {
   "character": "Finestre with its gravel, Sestriere, Mont Cenis and the Nivolet – the Piedmont side of the Western Alps, Giro country.",

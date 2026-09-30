@@ -1193,5 +1193,69 @@
    "Riviera"
   ],
   "why": "Zwischen Monaco und der Grenze: Col de la Madone und Castillon beginnen am Meer, Sospel und Braus dahinter, Ventimiglia und die Riviera dei Fiori in einer Stunde. Bahnhof."
+ },
+ {
+  "slug": "munster",
+  "name": "Munster",
+  "country": "FR",
+  "lat": 48.0409,
+  "lon": 7.1372,
+  "tags": [
+   "passes",
+   "train"
+  ],
+  "aliases": [
+   "Munstertal",
+   "Vallée de Munster"
+  ],
+  "why": "Im Talgrund unter der Schlucht: Col de la Schlucht, Petit Ballon, Platzerwasel und Wettstein beginnen ohne Anfahrt, die Route des Crêtes liegt eine Auffahrt entfernt. Bahnhof an der Strecke nach Colmar."
+ },
+ {
+  "slug": "gerardmer",
+  "name": "Gérardmer",
+  "country": "FR",
+  "lat": 48.0706,
+  "lon": 6.8777,
+  "tags": [
+   "passes",
+   "scenic"
+  ],
+  "why": "Am See auf der lothringischen Seite: die Schlucht, der Col de Grosse Pierre und über La Bresse der Bramont. Unterkünfte aller Art, kein Bahnhof."
+ },
+ {
+  "slug": "la-bresse",
+  "name": "La Bresse",
+  "country": "FR",
+  "lat": 48.0066,
+  "lon": 6.8767,
+  "tags": [
+   "passes",
+   "quiet"
+  ],
+  "why": "Ruhiger Ort im Tal der Moselotte: Bramont, Grosse Pierre und die Straße hinauf zum Hohneck beginnen vor der Tür."
+ },
+ {
+  "slug": "thann",
+  "name": "Thann",
+  "country": "FR",
+  "lat": 47.8101,
+  "lon": 7.1021,
+  "tags": [
+   "passes",
+   "train"
+  ],
+  "why": "Am Ausgang des Thurtals: Hundsruck, der Grand Ballon über Willer-sur-Thur und die Runde über Ballon d'Alsace und Bussang. Bahn von Mulhouse bis in den Ort und weiter das Tal hinauf."
+ },
+ {
+  "slug": "colmar",
+  "name": "Colmar",
+  "country": "FR",
+  "lat": 48.0778,
+  "lon": 7.358,
+  "tags": [
+   "train",
+   "season"
+  ],
+  "why": "Stadt in der Rheinebene mit TGV-Bahnhof, Munster und die Schlucht sind gut 20 km entfernt. Trocken und mild, im Frühjahr früher fahrbar als die Täler."
  }
 ]
