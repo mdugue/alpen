@@ -14,6 +14,11 @@
   "multiDay": "Four to five days; the two St Bernard passes link to France and Switzerland.",
   "access": "Aosta railway station via Turin; A5 motorway from Turin."
  },
+ "aure-louron": {
+  "character": "The Aspin, the Hourquette d'Ancizan, the Peyresourde, Pla d'Adet and the Col du Portet: quieter valleys than the Lavedan, with the highest tarmac of the French Pyrenees.",
+  "multiDay": "Three to five days; the loop over the Aspin and the Hourquette in a morning, the Portet as a day of its own, the Tourmalet and Luchon as stages.",
+  "access": "Railway station in Lannemezan, then bus into the Aure valley; Tarbes-Lourdes-Pyrénées airport an hour away."
+ },
  "berchtesgaden-salzkammergut": {
   "character": "Rossfeld, Postalm and Loser: managed panoramic roads on the northern edge of the Alps, open early in the year and with views out across the foothills.",
   "multiDay": "Three days; the Grossglockner High Alpine Road is a day's stage away.",
@@ -104,10 +109,20 @@
   "multiDay": "Four days; the Julian Alps and Cortina as stage destinations.",
   "access": "Carnia railway station (Udine–Tarvisio), then bus to Tolmezzo; Venice in two hours."
  },
+ "lavedan": {
+  "character": "The Tourmalet, the Hautacam, Luz Ardiden and, from the east, the Soulor and the Aubisque: the great names of the Tour close together, long climbs from 450 m in the valley.",
+  "multiDay": "A base for four to six days; a classic every day, the Aspin and the Ossau side of the Aubisque one stage away.",
+  "access": "By train to Lourdes, Tarbes-Lourdes-Pyrénées airport on the doorstep; on by bus up the valley."
+ },
  "ligurien": {
   "character": "Poggio, Cipressa and the hinterland of Sanremo: low passes, rideable all year round, in winter the training camp of the pros.",
   "multiDay": "A week in the winter half of the year; in summer avoid the coast and head early into the hinterland.",
   "access": "Sanremo and Imperia railway stations on the coastal line; Nice airport in an hour."
+ },
+ "luchonnais": {
+  "character": "The Peyresourde, the Port de Balès, Superbagnères, the Portillon and the Menté around the spa town of Luchon: Tour history since 1910, and Spain right next door in the Val d'Aran.",
+  "multiDay": "Three to four days; the loop over Balès and the Peyresourde on one, the Menté and the Portillon as a loop through the Val d'Aran on another.",
+  "access": "Railway station in Montréjeau, then bus to Luchon; Toulouse airport an hour and a half away."
  },
  "maurienne": {
   "character": "The valley with the most climbs of the Tour: Madeleine, Croix de Fer, Glandon, Télégraphe, Mollard, Chaussy with the Lacets de Montvernier – all of them start on the valley floor.",
@@ -133,6 +148,11 @@
   "character": "Alpe d'Huez, Galibier, Croix de Fer and Sarenne in one spot: big altitudes, big names, and plenty of traffic on the D1091 through the Romanche gorge.",
   "multiDay": "A base for four to six days; the Marmotte loop in a day, and a stage over the Galibier to Briançon is possible.",
   "access": "Grenoble by rail, Lyon airport in an hour and a half; the bus into the valley runs as far as Bourg-d'Oisans."
+ },
+ "ossau": {
+  "character": "The Aubisque, the Marie-Blanque and the Pourtalet into Spain: the Béarn at the western edge of the high Pyrenees, green and quieter than the valleys further east.",
+  "multiDay": "Two to three days; the Aubisque out via Gourette and back over the Soulor, the Marie-Blanque and the Pourtalet as days of their own.",
+  "access": "By train to Pau, then bus up the Ossau valley; Pau-Pyrénées airport an hour away."
  },
  "suedvogesen": {
   "character": "The Ballon d'Alsace, La Planche des Belles Filles and the Grand Ballon – the Tour de France climbs of the Vosges – with quiet wooded passes between them and the busy N66 over Bussang.",

@@ -14,8 +14,17 @@
  "arabba": {
   "why": "In the middle of the Sellaronda: Pordoi, Campolongo, Falzarego/Valparola and Fedaia start in the village. Bike hotels with bike cellar, rental at the valley station."
  },
+ "argeles-gazost": {
+  "why": "At the road junction of the Lavedan: the Hautacam, the Soulor and the Aubisque, the Spandelles and, via Luz, the Tourmalet. Railway station in Lourdes, 13 km down the valley."
+ },
+ "arreau": {
+  "why": "Where the Aure and the Louron meet, between the Aspin and the Peyresourde; the Hourquette d'Ancizan starts in the next village."
+ },
  "bad-kleinkirchheim": {
   "why": "Nockalmstraße, Turracher Höhe, Villacher Alpenstraße; bike hotels, workshops."
+ },
+ "bagneres-de-luchon": {
+  "why": "A spa town at the head of the valley: the Peyresourde, the Port de Balès, Superbagnères and the Portillon start in town, the Menté is close."
  },
  "barcelonnette": {
   "why": "Bonette, Cayolle, Allos, Vars, Champs – seven passes within range. Workshops, cycling accommodation."
@@ -107,6 +116,9 @@
  "landeck": {
   "why": "Junction in the upper Inn valley with railway station: Hahntennjoch, Arlberg, Kaunertal glacier road and Silvretta without a long approach."
  },
+ "laruns": {
+  "why": "In the Ossau valley: the Aubisque starts in town, the Pourtalet at the head of the valley, the Marie-Blanque one descent away."
+ },
  "le-grand-bornand": {
   "why": "Aravis village: Colombière, Aravis and Croix Fry start in the village. Green side valleys, little traffic, rental in the village."
  },
@@ -127,6 +139,9 @@
  },
  "lugano": {
   "why": "Mild Ticino with railway station: Bellavista on the Generoso, Sighignola and Bisbino above the lakes, Monte Ceneri and Alpe di Neggia to the north. Rideable from March."
+ },
+ "luz-saint-sauveur": {
+  "why": "At the foot of the Tourmalet and Luz Ardiden, both starting in the village; Gavarnie and the Hautacam are in the same valley."
  },
  "malaucene": {
   "why": "The north side of the Ventoux starts in the village, the Madeleine closes the loop to Bédoin; Dentelles, Fontaube and Col d'Ey within a day's range. Bike shops and rental."
@@ -184,6 +199,9 @@
  },
  "saint-jean-de-maurienne": {
   "why": "Croix de Fer, Madeleine, Télégraphe/Galibier; railway station, bike shops, Maurienne cycling office."
+ },
+ "saint-lary-soulan": {
+  "why": "In the Aure valley below Pla d'Adet and the Col du Portet, with the Hourquette d'Ancizan and the Aspin close by."
  },
  "san-martino-di-castrozza": {
   "why": "South ramp of the Rolle beneath the Pale di San Martino: Rolle, Cereda and Croce d'Aune. Quiet, exceptional scenery, hotels from the ski trade."

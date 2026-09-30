@@ -10563,5 +10563,575 @@
     "label": "Champagne-en-Valromey (Ost)"
    }
   ]
+ },
+ {
+  "slug": "col-du-tourmalet",
+  "surface": "asphalt",
+  "name": "Col du Tourmalet",
+  "type": "pass",
+  "country": "FR",
+  "region": "Pyrenäen",
+  "lat": 42.9084,
+  "lon": 0.1453,
+  "elevation": 2115,
+  "classicAscent": "?",
+  "beauty": 4,
+  "fame": 5,
+  "difficulty": 5,
+  "traffic": 3,
+  "season": {
+   "opens": 5.5,
+   "closes": 11,
+   "maintained": false
+  },
+  "note": "Der meistbefahrene Berg der Tour de France, seit 1910 im Programm. Von Luz über Barèges 19 km, von Sainte-Marie-de-Campan über La Mongie 17 km, beide um 7,5 %. Wintersperre meist November bis Ende Mai.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 42.8721,
+     "lon": -0.0043
+    },
+    "label": "Luz-Saint-Sauveur (West)"
+   },
+   {
+    "from": {
+     "lat": 42.985,
+     "lon": 0.226
+    },
+    "label": "Sainte-Marie-de-Campan (Ost)"
+   }
+  ]
+ },
+ {
+  "slug": "col-d-aubisque",
+  "surface": "asphalt",
+  "name": "Col d'Aubisque",
+  "type": "pass",
+  "country": "FR",
+  "region": "Pyrenäen",
+  "lat": 42.9766,
+  "lon": -0.3398,
+  "elevation": 1709,
+  "classicAscent": "?",
+  "beauty": 5,
+  "fame": 4,
+  "difficulty": 4,
+  "traffic": 2,
+  "season": {
+   "opens": 5.5,
+   "closes": 11,
+   "maintained": false
+  },
+  "note": "Seit 1910 in der Tour de France. Von Laruns über Eaux-Bonnes und Gourette; von Osten über den Soulor und die in den Fels gesprengte Balkonstraße am Cirque du Litor, die im Winter gesperrt ist, meist November bis Ende Mai.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 42.9882,
+     "lon": -0.4266
+    },
+    "label": "Laruns (West)"
+   },
+   {
+    "from": {
+     "lat": 43.0051,
+     "lon": -0.0998
+    },
+    "label": "Argelès-Gazost (Ost, über den Soulor)"
+   }
+  ]
+ },
+ {
+  "slug": "col-du-soulor",
+  "surface": "asphalt",
+  "name": "Col du Soulor",
+  "type": "pass",
+  "country": "FR",
+  "region": "Pyrenäen",
+  "lat": 42.9606,
+  "lon": -0.2611,
+  "elevation": 1474,
+  "classicAscent": "?",
+  "beauty": 4,
+  "fame": 3,
+  "difficulty": 3,
+  "traffic": 2,
+  "season": null,
+  "note": "Vorstufe der Aubisque von Osten und selbst oft in der Tour; von Ferrières im Norden steiler und einsamer als über Arrens aus dem Val d'Azun.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 43.0051,
+     "lon": -0.0998
+    },
+    "label": "Argelès-Gazost (Ost)"
+   },
+   {
+    "from": {
+     "lat": 43.0109,
+     "lon": -0.2629
+    },
+    "label": "Ferrières (Nord)"
+   }
+  ]
+ },
+ {
+  "slug": "col-d-aspin",
+  "surface": "asphalt",
+  "name": "Col d'Aspin",
+  "type": "pass",
+  "country": "FR",
+  "region": "Pyrenäen",
+  "lat": 42.9423,
+  "lon": 0.3274,
+  "elevation": 1489,
+  "classicAscent": "?",
+  "beauty": 4,
+  "fame": 4,
+  "difficulty": 3,
+  "traffic": 2,
+  "season": null,
+  "note": "Zwischen Tourmalet und Peyresourde, einer der häufigsten Tour-Pässe: Weiden, Kühe und Pferde auf der Straße, oben der Blick auf die Pyrenäenkette. Von Arreau die steilere Seite.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 42.9055,
+     "lon": 0.359
+    },
+    "label": "Arreau (Ost)"
+   },
+   {
+    "from": {
+     "lat": 42.985,
+     "lon": 0.226
+    },
+    "label": "Sainte-Marie-de-Campan (West)"
+   }
+  ]
+ },
+ {
+  "slug": "hourquette-d-ancizan",
+  "surface": "asphalt",
+  "name": "Hourquette d'Ancizan",
+  "type": "pass",
+  "country": "FR",
+  "region": "Pyrenäen",
+  "lat": 42.8999,
+  "lon": 0.3058,
+  "elevation": 1564,
+  "classicAscent": "?",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 1,
+  "season": {
+   "opens": 5.5,
+   "closes": 11,
+   "maintained": false
+  },
+  "note": "Die stille Alternative zum Aspin: schmale Straße über offene Almen von Ancizan im Aure-Tal nach Payolle. Im Winter gesperrt.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 42.8735,
+     "lon": 0.3385
+    },
+    "label": "Ancizan (Ost)"
+   },
+   {
+    "from": {
+     "lat": 42.9425,
+     "lon": 0.2851
+    },
+    "label": "Payolle (West)"
+   }
+  ]
+ },
+ {
+  "slug": "col-de-spandelles",
+  "surface": "asphalt",
+  "name": "Col de Spandelles",
+  "type": "pass",
+  "country": "FR",
+  "region": "Pyrenäen",
+  "lat": 43.0114,
+  "lon": -0.2186,
+  "elevation": 1378,
+  "classicAscent": "?",
+  "beauty": 3,
+  "fame": 2,
+  "difficulty": 4,
+  "traffic": 1,
+  "season": null,
+  "note": "Schmale, raue Straße zwischen Ferrières und dem Tal von Argelès, 2022 erstmals in der Tour. Wenig Verkehr, steile Rampen, im Winter nicht geräumt.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 43.0109,
+     "lon": -0.2629
+    },
+    "label": "Ferrières (West)"
+   },
+   {
+    "from": {
+     "lat": 43.0051,
+     "lon": -0.0998
+    },
+    "label": "Argelès-Gazost (Ost)"
+   }
+  ]
+ },
+ {
+  "slug": "col-de-marie-blanque",
+  "surface": "asphalt",
+  "name": "Col de Marie-Blanque",
+  "type": "pass",
+  "country": "FR",
+  "region": "Pyrenäen",
+  "lat": 43.0705,
+  "lon": -0.5075,
+  "elevation": 1035,
+  "classicAscent": "?",
+  "beauty": 3,
+  "fame": 3,
+  "difficulty": 3,
+  "traffic": 1,
+  "season": null,
+  "note": "Niedrig, aber gefürchtet: von Escot die letzten 4 km mit rund 12 %. Oft im Programm der Tour als Auftakt zur Aubisque.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 43.0771,
+     "lon": -0.6068
+    },
+    "label": "Escot (West)"
+   },
+   {
+    "from": {
+     "lat": 43.0548,
+     "lon": -0.4329
+    },
+    "label": "Bielle (Ost)"
+   }
+  ]
+ },
+ {
+  "slug": "col-du-pourtalet",
+  "surface": "asphalt",
+  "name": "Col du Pourtalet",
+  "type": "pass",
+  "country": "FR/ES",
+  "region": "Pyrenäen",
+  "lat": 42.8059,
+  "lon": -0.4185,
+  "elevation": 1794,
+  "classicAscent": "?",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 3,
+  "season": null,
+  "note": "Grenzübergang nach Aragón am Ende des Ossau-Tals, von Laruns lang und gleichmäßig, oben der Blick auf den Pic du Midi d'Ossau. Durchgangsstraße, im Winter geräumt.",
+  "aliases": [
+   "Puerto del Portalet",
+   "Portalet"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 42.9882,
+     "lon": -0.4266
+    },
+    "label": "Laruns (Nord)"
+   },
+   {
+    "from": {
+     "lat": 42.7712,
+     "lon": -0.3341
+    },
+    "label": "Sallent de Gállego (Süd)"
+   }
+  ]
+ },
+ {
+  "slug": "col-de-peyresourde",
+  "surface": "asphalt",
+  "name": "Col de Peyresourde",
+  "type": "pass",
+  "country": "FR",
+  "region": "Pyrenäen",
+  "lat": 42.8023,
+  "lon": 0.4631,
+  "elevation": 1569,
+  "classicAscent": "?",
+  "beauty": 3,
+  "fame": 4,
+  "difficulty": 3,
+  "traffic": 2,
+  "season": null,
+  "note": "Zwischen dem Louron-Tal und Luchon, seit 1910 in der Tour. Von Luchon 14 km mit 7 %, von Westen über Avajan kürzer; oben ein Crêpe-Stand.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 42.7911,
+     "lon": 0.5912
+    },
+    "label": "Bagnères-de-Luchon (Ost)"
+   },
+   {
+    "from": {
+     "lat": 42.8438,
+     "lon": 0.4079
+    },
+    "label": "Avajan (West)"
+   }
+  ]
+ },
+ {
+  "slug": "port-de-bales",
+  "surface": "asphalt",
+  "name": "Port de Balès",
+  "type": "pass",
+  "country": "FR",
+  "region": "Pyrenäen",
+  "lat": 42.8742,
+  "lon": 0.5006,
+  "elevation": 1755,
+  "classicAscent": "?",
+  "beauty": 3,
+  "fame": 3,
+  "difficulty": 4,
+  "traffic": 1,
+  "season": {
+   "opens": 5.5,
+   "closes": 11,
+   "maintained": false
+  },
+  "note": "Seit 2007 in der Tour, schmal und einsam: von Mauléon-Barousse 19 km, die zweite Hälfte steil. Im Winter gesperrt.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 42.9595,
+     "lon": 0.5675
+    },
+    "label": "Mauléon-Barousse (Nord)"
+   },
+   {
+    "from": {
+     "lat": 42.7911,
+     "lon": 0.5912
+    },
+    "label": "Bagnères-de-Luchon (Süd)"
+   }
+  ]
+ },
+ {
+  "slug": "col-de-mente",
+  "surface": "asphalt",
+  "name": "Col de Menté",
+  "type": "pass",
+  "country": "FR",
+  "region": "Pyrenäen",
+  "lat": 42.9193,
+  "lon": 0.7618,
+  "elevation": 1349,
+  "classicAscent": "?",
+  "beauty": 3,
+  "fame": 3,
+  "difficulty": 3,
+  "traffic": 1,
+  "season": null,
+  "note": "Von Saint-Béat 10 km mit gut 8 %, enge Kehren im Wald. 1971 stürzte hier Luis Ocaña im Gelben Trikot und gab die Tour auf.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 42.9144,
+     "lon": 0.6928
+    },
+    "label": "Saint-Béat (West)"
+   }
+  ]
+ },
+ {
+  "slug": "col-du-portillon",
+  "surface": "asphalt",
+  "name": "Col du Portillon",
+  "type": "pass",
+  "country": "FR/ES",
+  "region": "Pyrenäen",
+  "lat": 42.7691,
+  "lon": 0.6601,
+  "elevation": 1293,
+  "classicAscent": "?",
+  "beauty": 2,
+  "fame": 2,
+  "difficulty": 2,
+  "traffic": 2,
+  "season": null,
+  "note": "Kurzer Grenzpass von Luchon ins Val d'Aran nach Bossòst, im Wald, beidseitig um 7 %.",
+  "aliases": [
+   "Coll del Portilhon",
+   "Portilhon"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 42.7911,
+     "lon": 0.5912
+    },
+    "label": "Bagnères-de-Luchon (West)"
+   },
+   {
+    "from": {
+     "lat": 42.786,
+     "lon": 0.6931
+    },
+    "label": "Bossòst (Ost)"
+   }
+  ]
+ },
+ {
+  "slug": "hautacam",
+  "surface": "asphalt",
+  "name": "Hautacam",
+  "type": "spur",
+  "country": "FR",
+  "region": "Pyrenäen",
+  "lat": 42.9716,
+  "lon": -0.0093,
+  "elevation": 1520,
+  "classicAscent": "?",
+  "beauty": 3,
+  "fame": 4,
+  "difficulty": 4,
+  "traffic": 1,
+  "season": null,
+  "note": "Zielankunft der Tour seit 1994, zuletzt 2022; von Argelès unregelmäßig mit steilen Stücken bis zur Skistation.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 43.0051,
+     "lon": -0.0998
+    },
+    "label": "Argelès-Gazost"
+   }
+  ]
+ },
+ {
+  "slug": "luz-ardiden",
+  "surface": "asphalt",
+  "name": "Luz Ardiden",
+  "type": "spur",
+  "tags": [
+   "hairpins"
+  ],
+  "country": "FR",
+  "region": "Pyrenäen",
+  "lat": 42.8849,
+  "lon": -0.0615,
+  "elevation": 1715,
+  "classicAscent": "?",
+  "beauty": 3,
+  "fame": 4,
+  "difficulty": 4,
+  "traffic": 1,
+  "season": null,
+  "note": "Kehrenreiche Straße von Luz zur Skistation, mehrfach Zielankunft der Tour (zuletzt 2011).",
+  "ascents": [
+   {
+    "from": {
+     "lat": 42.8721,
+     "lon": -0.0043
+    },
+    "label": "Luz-Saint-Sauveur"
+   }
+  ]
+ },
+ {
+  "slug": "superbagneres",
+  "surface": "asphalt",
+  "name": "Superbagnères",
+  "type": "spur",
+  "country": "FR",
+  "region": "Pyrenäen",
+  "lat": 42.7683,
+  "lon": 0.5772,
+  "elevation": 1800,
+  "classicAscent": "?",
+  "beauty": 3,
+  "fame": 3,
+  "difficulty": 4,
+  "traffic": 1,
+  "season": null,
+  "note": "Stichstraße von Luchon zum Hotel und zur Skistation auf 1800 m, mehrfach Zielankunft der Tour.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 42.7911,
+     "lon": 0.5912
+    },
+    "label": "Bagnères-de-Luchon"
+   }
+  ]
+ },
+ {
+  "slug": "pla-d-adet",
+  "surface": "asphalt",
+  "name": "Pla d'Adet",
+  "type": "spur",
+  "country": "FR",
+  "region": "Pyrenäen",
+  "lat": 42.8126,
+  "lon": 0.2947,
+  "elevation": 1680,
+  "classicAscent": "?",
+  "beauty": 3,
+  "fame": 3,
+  "difficulty": 4,
+  "traffic": 1,
+  "season": null,
+  "note": "Von Saint-Lary zur Skistation, die ersten Kilometer die steilsten; mehrfach Zielankunft der Tour.",
+  "aliases": [
+   "Saint-Lary-Soulan Pla d'Adet"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 42.8169,
+     "lon": 0.322
+    },
+    "label": "Saint-Lary-Soulan"
+   }
+  ]
+ },
+ {
+  "slug": "col-du-portet",
+  "surface": "asphalt",
+  "name": "Col du Portet",
+  "type": "spur",
+  "country": "FR",
+  "region": "Pyrenäen",
+  "lat": 42.8331,
+  "lon": 0.2365,
+  "elevation": 2215,
+  "classicAscent": "?",
+  "beauty": 4,
+  "fame": 3,
+  "difficulty": 5,
+  "traffic": 1,
+  "season": {
+   "opens": 6,
+   "closes": 10.5,
+   "maintained": false
+  },
+  "note": "Über Pla d'Adet hinaus auf 2215 m, seit 2018 asphaltiert und zweimal Zielankunft der Tour (2018, 2021): 16 km mit über 8 %. Oben endet der Asphalt; im Winter gesperrt.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 42.8169,
+     "lon": 0.322
+    },
+    "label": "Saint-Lary-Soulan"
+   }
+  ]
  }
 ]

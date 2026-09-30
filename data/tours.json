@@ -1259,5 +1259,83 @@
     "lon": 6.2315
    }
   ]
+ },
+ {
+  "slug": "luchon-runde",
+  "surface": "asphalt",
+  "name": "Port de Balès – Peyresourde",
+  "color": "#b0706a",
+  "km": 87,
+  "elevationGain": 2500,
+  "passes": [
+   "port-de-bales",
+   "col-de-peyresourde"
+  ],
+  "season": null,
+  "note": "Der Port de Balès ist im Winter gesperrt; seine Nordseite ist schmal und einsam.",
+  "description": "Von Luchon talaus nach Mauléon-Barousse, über den Port de Balès hinüber und über den Peyresourde zurück nach Luchon.",
+  "waypoints": [
+   {
+    "lat": 42.7911,
+    "lon": 0.5912
+   },
+   {
+    "lat": 42.9595,
+    "lon": 0.5675
+   },
+   {
+    "lat": 42.8742,
+    "lon": 0.5006
+   },
+   {
+    "lat": 42.8023,
+    "lon": 0.4631
+   },
+   {
+    "lat": 42.7911,
+    "lon": 0.5912
+   }
+  ]
+ },
+ {
+  "slug": "aspin-ancizan-runde",
+  "surface": "asphalt",
+  "name": "Aspin – Hourquette d'Ancizan",
+  "color": "#6a8ab0",
+  "km": 41,
+  "elevationGain": 1550,
+  "passes": [
+   "col-d-aspin",
+   "hourquette-d-ancizan"
+  ],
+  "season": null,
+  "note": "Kurz, aber zwei volle Anstiege; die Hourquette ist im Winter gesperrt.",
+  "description": "Von Arreau über den Aspin nach Payolle und über die Hourquette d'Ancizan zurück ins Aure-Tal.",
+  "waypoints": [
+   {
+    "lat": 42.9055,
+    "lon": 0.359
+   },
+   {
+    "lat": 42.9423,
+    "lon": 0.3274
+   },
+   {
+    "lat": 42.9425,
+    "lon": 0.2851
+   },
+   {
+    "lat": 42.8999,
+    "lon": 0.3058
+   },
+   {
+    "lat": 42.8735,
+    "lon": 0.3385
+   },
+   {
+    "lat": 42.9055,
+    "lon": 0.359
+   }
+  ]
  }
 ]

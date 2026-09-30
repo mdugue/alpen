@@ -116,6 +116,22 @@
    "Colmars"
   ]
  },
+ "col-d-aspin": {
+  "classicAscent": "?",
+  "note": "Between the Tourmalet and the Peyresourde, one of the Tour's most frequent passes: pastures, cows and horses on the road, and the Pyrenean chain at the top. From Arreau the steeper side.",
+  "ascents": [
+   "Arreau (east)",
+   "Sainte-Marie-de-Campan (west)"
+  ]
+ },
+ "col-d-aubisque": {
+  "classicAscent": "?",
+  "note": "In the Tour de France since 1910. From Laruns via Eaux-Bonnes and Gourette; from the east over the Soulor and the balcony road blasted into the rock of the Cirque du Litor, closed in winter, usually November to late May.",
+  "ascents": [
+   "Laruns (west)",
+   "Argelès-Gazost (east, over the Soulor)"
+  ]
+ },
  "col-d-ey": {
   "classicAscent": "7 km, 5 % from Buis-les-Baronnies",
   "note": "The home climb of Buis-les-Baronnies, short and even between olive groves and apricots, the view of the Ventoux at the top. Open all year; the opener of every Baronnies loop.",
@@ -427,6 +443,21 @@
    "Séderon (east)"
   ]
  },
+ "col-de-marie-blanque": {
+  "classicAscent": "?",
+  "note": "Low but feared: from Escot the last 4 km at around 12 %. Often on the Tour route as the prelude to the Aubisque.",
+  "ascents": [
+   "Escot (west)",
+   "Bielle (east)"
+  ]
+ },
+ "col-de-mente": {
+  "classicAscent": "?",
+  "note": "From Saint-Béat 10 km at a good 8 %, tight hairpins in the forest. In 1971 Luis Ocaña crashed here in the yellow jersey and left the Tour.",
+  "ascents": [
+   "Saint-Béat (west)"
+  ]
+ },
  "col-de-montgenevre": {
   "classicAscent": "12.1 km, 4.4 % from Briançon",
   "note": "Border crossing into Italy, open all year and correspondingly busy. Unspectacular as a climb, practical as a link.",
@@ -465,6 +496,14 @@
    "Laborel (east)"
   ]
  },
+ "col-de-peyresourde": {
+  "classicAscent": "?",
+  "note": "Between the Louron valley and Luchon, on the Tour route since 1910. From Luchon 14 km at 7 %, from the west via Avajan shorter; a crêpe stand at the top.",
+  "ascents": [
+   "Bagnères-de-Luchon (east)",
+   "Avajan (west)"
+  ]
+ },
  "col-de-richemond": {
   "classicAscent": "?",
   "note": "A wooded pass between the Rhône valley at Seyssel and the Valromey, usually ridden together with the Grand Colombier and the Biche.",
@@ -501,6 +540,14 @@
   "ascents": [
    "Sainte-Jalle (south)",
    "Curnier (north)"
+  ]
+ },
+ "col-de-spandelles": {
+  "classicAscent": "?",
+  "note": "A narrow, rough road between Ferrières and the Argelès valley, in the Tour for the first time in 2022. Little traffic, steep ramps, not cleared in winter.",
+  "ascents": [
+   "Ferrières (west)",
+   "Argelès-Gazost (east)"
   ]
  },
  "col-de-turini": {
@@ -720,6 +767,29 @@
    "Sondernach (north)"
   ]
  },
+ "col-du-portet": {
+  "classicAscent": "?",
+  "note": "Beyond Pla d'Adet up to 2215 m, paved since 2018 and twice a Tour finish (2018, 2021): 16 km at over 8 %. The tarmac ends at the top; closed in winter.",
+  "ascents": [
+   "Saint-Lary-Soulan"
+  ]
+ },
+ "col-du-portillon": {
+  "classicAscent": "?",
+  "note": "A short border pass from Luchon into the Val d'Aran at Bossòst, wooded, around 7 % on both sides.",
+  "ascents": [
+   "Bagnères-de-Luchon (west)",
+   "Bossòst (east)"
+  ]
+ },
+ "col-du-pourtalet": {
+  "classicAscent": "?",
+  "note": "The border crossing into Aragón at the head of the Ossau valley, long and steady from Laruns, with the Pic du Midi d'Ossau at the top. A through road, cleared in winter.",
+  "ascents": [
+   "Laruns (north)",
+   "Sallent de Gállego (south)"
+  ]
+ },
  "col-du-pre": {
   "classicAscent": "12.3 km, 7.8 % from Beaufort",
   "note": "Steep, shaded ramps all the way to the top, then the Lac de Roselend from above – the finest way to reach the Cormet de Roselend.",
@@ -741,11 +811,27 @@
    "Sion"
   ]
  },
+ "col-du-soulor": {
+  "classicAscent": "?",
+  "note": "The Aubisque's first step from the east and often in the Tour in its own right; from Ferrières in the north steeper and lonelier than via Arrens from the Val d'Azun.",
+  "ascents": [
+   "Argelès-Gazost (east)",
+   "Ferrières (north)"
+  ]
+ },
  "col-du-telegraphe": {
   "classicAscent": "12.5 km, 6.6 % from Saint-Michel-de-Maurienne",
   "note": "Open all year, a forest road at a steady 7 %. A solid climb in its own right, but usually just the first step towards the Galibier.",
   "ascents": [
    "Saint-Michel-de-Maurienne"
+  ]
+ },
+ "col-du-tourmalet": {
+  "classicAscent": "?",
+  "note": "The most-climbed mountain of the Tour de France, on the route since 1910. From Luz via Barèges 19 km, from Sainte-Marie-de-Campan via La Mongie 17 km, both around 7.5 %. Closed in winter, usually November to late May.",
+  "ascents": [
+   "Luz-Saint-Sauveur (west)",
+   "Sainte-Marie-de-Campan (east)"
   ]
  },
  "col-du-wettstein": {
@@ -1078,6 +1164,13 @@
    "Imst"
   ]
  },
+ "hautacam": {
+  "classicAscent": "?",
+  "note": "A Tour finish since 1994, most recently in 2022; irregular from Argelès, with steep sections up to the ski station.",
+  "ascents": [
+   "Argelès-Gazost"
+  ]
+ },
  "hochkar": {
   "classicAscent": "8.5 km, 9.3 % from Lassing",
   "note": "Toll road up the Hochkar in the Mostviertel, with views across the Ybbstal Alps to the Ötscher. Steadily steep, the tarmac ends at the ski area on top; bikes pay no toll.",
@@ -1098,6 +1191,14 @@
   "note": "A spur from the Route des Crêtes to just below one of the highest summits of the Vosges, with a view over the crest and the lakes. Closed in winter with the crest road.",
   "ascents": [
    "La Bresse"
+  ]
+ },
+ "hourquette-d-ancizan": {
+  "classicAscent": "?",
+  "note": "The quiet alternative to the Aspin: a narrow road across open pastures from Ancizan in the Aure valley to Payolle. Closed in winter.",
+  "ascents": [
+   "Ancizan (east)",
+   "Payolle (west)"
   ]
  },
  "ibergeregg": {
@@ -1216,6 +1317,13 @@
   "ascents": [
    "Disentis",
    "Olivone"
+  ]
+ },
+ "luz-ardiden": {
+  "classicAscent": "?",
+  "note": "A road of hairpins from Luz to the ski station, a Tour finish several times (most recently 2011).",
+  "ascents": [
+   "Luz-Saint-Sauveur"
   ]
  },
  "madonna-del-ghisallo": {
@@ -1844,6 +1952,13 @@
    "Jerzens"
   ]
  },
+ "pla-d-adet": {
+  "classicAscent": "?",
+  "note": "From Saint-Lary to the ski station, the first kilometres the steepest; a Tour finish several times.",
+  "ascents": [
+   "Saint-Lary-Soulan"
+  ]
+ },
  "plateau-des-glieres": {
   "classicAscent": "13.8 km, 5.8 % from Thorens-Glières",
   "note": "Ascent to the plateau with the 1944 Resistance memorial; the through road ends at the top. The Tour went up in 2018 and 2023.",
@@ -1864,6 +1979,14 @@
   "note": "The last four uphill kilometres of Milan–Sanremo: 160 m above the sea, greenhouses, four hairpins and the village at the top, then the descent into the Via Roma. Open all year and ridden every day by road bikes re-enacting the sprint.",
   "ascents": [
    "Bussana (east)"
+  ]
+ },
+ "port-de-bales": {
+  "classicAscent": "?",
+  "note": "In the Tour since 2007, narrow and lonely: 19 km from Mauléon-Barousse, the second half steep. Closed in winter.",
+  "ascents": [
+   "Mauléon-Barousse (north)",
+   "Bagnères-de-Luchon (south)"
   ]
  },
  "postalm": {
@@ -2060,6 +2183,13 @@
   "ascents": [
    "Bayrischzell (west)",
    "Oberaudorf (east)"
+  ]
+ },
+ "superbagneres": {
+  "classicAscent": "?",
+  "note": "A spur from Luchon to the hotel and ski station at 1800 m, a Tour finish several times.",
+  "ascents": [
+   "Bagnères-de-Luchon"
   ]
  },
  "sustenpass": {

@@ -808,5 +808,79 @@
   "character": "Chasseral, Mont-Crosin und die Vue des Alpes rund um den Vallon de Saint-Imier: Weiden, Windräder und oben der Blick auf die ganze Alpenkette.",
   "multiDay": "Zwei Tage; Chasseral und Mont-Crosin von Saint-Imier aus an einem, die Vue des Alpes und Neuenburg am anderen.",
   "access": "Mit der Bahn über Biel nach Saint-Imier; Flughäfen Basel und Zürich in anderthalb Stunden."
+ },
+ {
+  "slug": "lavedan",
+  "name": "Lavedan · Tourmalet",
+  "country": "FR",
+  "center": {
+   "lat": 42.94,
+   "lon": -0.05
+  },
+  "radiusKm": 25,
+  "baseTowns": [
+   "argeles-gazost",
+   "luz-saint-sauveur"
+  ],
+  "include": [],
+  "exclude": [],
+  "character": "Tourmalet, Hautacam, Luz Ardiden und von Osten Soulor und Aubisque: die großen Namen der Tour auf engem Raum, lange Anstiege von 450 m Talhöhe.",
+  "multiDay": "Basis für vier bis sechs Tage; jeden Tag ein Klassiker, der Aspin und die Ossau-Seite der Aubisque sind eine Etappe entfernt.",
+  "access": "Mit der Bahn nach Lourdes, Flughafen Tarbes-Lourdes-Pyrénées vor der Tür; weiter mit dem Bus ins Tal."
+ },
+ {
+  "slug": "aure-louron",
+  "name": "Aure und Louron",
+  "country": "FR",
+  "center": {
+   "lat": 42.87,
+   "lon": 0.36
+  },
+  "radiusKm": 20,
+  "baseTowns": [
+   "saint-lary-soulan",
+   "arreau"
+  ],
+  "include": [],
+  "exclude": [],
+  "character": "Aspin, Hourquette d'Ancizan, Peyresourde, Pla d'Adet und der Col du Portet: ruhigere Täler als das Lavedan, mit dem höchsten Asphalt der französischen Pyrenäen.",
+  "multiDay": "Drei bis fünf Tage; die Runde über Aspin und Hourquette an einem Vormittag, der Portet als eigener Tag, Tourmalet und Luchon als Etappen.",
+  "access": "Bahnhof in Lannemezan, von dort Bus ins Aure-Tal; Flughafen Tarbes-Lourdes-Pyrénées in einer Stunde."
+ },
+ {
+  "slug": "luchonnais",
+  "name": "Luchonnais",
+  "country": "FR",
+  "center": {
+   "lat": 42.82,
+   "lon": 0.6
+  },
+  "radiusKm": 20,
+  "baseTowns": [
+   "bagneres-de-luchon"
+  ],
+  "include": [],
+  "exclude": [],
+  "character": "Peyresourde, Port de Balès, Superbagnères, Portillon und Menté rund um den Kurort Luchon: Tour-Geschichte seit 1910, im Val d'Aran gleich Spanien.",
+  "multiDay": "Drei bis vier Tage; die Runde über Balès und Peyresourde an einem, Menté und Portillon als Schleife durchs Val d'Aran am anderen.",
+  "access": "Bahnhof Montréjeau, von dort Bus nach Luchon; Flughafen Toulouse in anderthalb Stunden."
+ },
+ {
+  "slug": "ossau",
+  "name": "Ossau-Tal",
+  "country": "FR",
+  "center": {
+   "lat": 43,
+   "lon": -0.43
+  },
+  "radiusKm": 20,
+  "baseTowns": [
+   "laruns"
+  ],
+  "include": [],
+  "exclude": [],
+  "character": "Aubisque, Marie-Blanque und der Pourtalet nach Spanien: das Béarn am Westrand der Hochpyrenäen, grün und ruhiger als die Täler weiter östlich.",
+  "multiDay": "Zwei bis drei Tage; die Aubisque über Gourette hin und über den Soulor zurück, die Marie-Blanque und der Pourtalet als je eigene Tage.",
+  "access": "Mit der Bahn nach Pau, von dort Bus ins Ossau-Tal; Flughafen Pau-Pyrénées in einer Stunde."
  }
 ]

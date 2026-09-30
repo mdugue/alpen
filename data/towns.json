@@ -1328,5 +1328,78 @@
    "passes"
   ],
   "why": "Im engen Tal der Bienne: die Croix de la Serra beginnt im Ort, die Straßen hinauf nach Septmoncel und zur Faucille ebenso."
+ },
+ {
+  "slug": "argeles-gazost",
+  "name": "Argelès-Gazost",
+  "country": "FR",
+  "lat": 43.0051,
+  "lon": -0.0998,
+  "tags": [
+   "passes",
+   "hub"
+  ],
+  "why": "Am Talknoten des Lavedan: Hautacam, Soulor und Aubisque, Spandelles und über Luz der Tourmalet. Bahnhof in Lourdes, 13 km talaus."
+ },
+ {
+  "slug": "luz-saint-sauveur",
+  "name": "Luz-Saint-Sauveur",
+  "country": "FR",
+  "lat": 42.8721,
+  "lon": -0.0043,
+  "tags": [
+   "passes",
+   "hub"
+  ],
+  "why": "Am Fuß von Tourmalet und Luz Ardiden, beide beginnen im Ort; Gavarnie und Hautacam liegen im selben Tal."
+ },
+ {
+  "slug": "bagneres-de-luchon",
+  "name": "Bagnères-de-Luchon",
+  "country": "FR",
+  "lat": 42.7911,
+  "lon": 0.5912,
+  "tags": [
+   "passes",
+   "hub"
+  ],
+  "aliases": [
+   "Luchon"
+  ],
+  "why": "Kurort am Ende des Tals: Peyresourde, Port de Balès, Superbagnères und der Portillon beginnen im Ort, der Menté ist nah."
+ },
+ {
+  "slug": "saint-lary-soulan",
+  "name": "Saint-Lary-Soulan",
+  "country": "FR",
+  "lat": 42.8169,
+  "lon": 0.322,
+  "tags": [
+   "passes"
+  ],
+  "why": "Im Aure-Tal unter Pla d'Adet und Col du Portet, die Hourquette d'Ancizan und der Aspin sind nah."
+ },
+ {
+  "slug": "arreau",
+  "name": "Arreau",
+  "country": "FR",
+  "lat": 42.9055,
+  "lon": 0.359,
+  "tags": [
+   "passes",
+   "quiet"
+  ],
+  "why": "Am Zusammenfluss von Aure und Louron zwischen Aspin und Peyresourde; die Hourquette d'Ancizan beginnt im Nachbarort."
+ },
+ {
+  "slug": "laruns",
+  "name": "Laruns",
+  "country": "FR",
+  "lat": 42.9882,
+  "lon": -0.4266,
+  "tags": [
+   "passes"
+  ],
+  "why": "Im Ossau-Tal: die Aubisque beginnt im Ort, der Pourtalet am Ende des Tals, die Marie-Blanque eine Talfahrt entfernt."
  }
 ]
