@@ -104,10 +104,10 @@ Das sind Modelle mit einem Raster von 9 bis 25 km, keine Wetterstation. Einen ei
 eher zu mild, und „Neuschnee“ heißt frisch gefallener Schnee, nicht Schnee,
 der auf der Straße liegt.
 
-Für ungeteerte Straßen ist zusätzlich der Anteil der Tage mit mindestens
-10 cm Schneedecke vorgesehen; er entscheidet dort, wann die Straße
-zugeschneit ist (siehe [Skalen und Status](scales-and-status.md)). Die
-gespeicherten Klimareihen enthalten die Schneehöhe bisher noch nicht.
+Für ungeteerte Straßen kommt der Anteil der Tage mit mindestens 10 cm
+Schneedecke hinzu; er entscheidet dort, wann die Straße zugeschneit ist
+(siehe [Skalen und Status](scales-and-status.md)). Ältere Reihen geteerter
+Straßen haben ihn nicht – dort entscheidet ohnehin die Wintersperre.
 
 ### Wettervorhersage
 

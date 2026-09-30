@@ -63,7 +63,7 @@ what keeps every route stored before the field existed valid. The **closing
 rung**: nobody plows a military road, so `outside-window` (a barrier) closes
 asphalt while the snow cover closes a track – `snow-cover` in the ladder,
 with the two shares in the table below, read off `ClimateBucket.coverPct`; a series
-without the value (every one until the archive is asked for `snow_depth`)
+without the value (a road added before its next `data:build`; `data:check` counts them)
 grades a gravel road by the other rungs and never closes it, which the strip
 shows as it is rather than guessing. The **picture**: an unpaved ascent is
 dashed over its status colour and its dot carries a dark ring, so a road

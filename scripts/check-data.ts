@@ -638,15 +638,14 @@ const singleSided = (passes ?? []).filter(
 const alone = passes && destinations ? standalone(destinations, passes) : [];
 // The snow cover closes an unpaved road (plan 27); a series without it grades
 // such a road by every other rung and never closes it. Only those roads are
-// counted – a paved road never reads the cover – and `data:build` asks the
-// archive for them again once the request carries the variable
-// (`ARCHIVE_DAILY`, `lacksClimate`). Counted, not warned: that is a run, not
-// a bug.
+// counted – a paved road never reads the cover – and the next `data:build`
+// asks the archive for them again (`ARCHIVE_DAILY`, `lacksClimate`). Counted,
+// not warned: that is a run, not a bug.
 const unpaved = (passes ?? []).filter((p) => isUnpaved(p.surface));
 const uncovered = climate ? unpaved.filter((p) => lacksCover(p, climate)) : [];
 if (uncovered.length)
   console.log(
-    `INFO  Schneedecke (coverPct) fehlt bei ${uncovered.length} von ${unpaved.length} ungeteerten Straßen (${uncovered.map((p) => p.slug).join(", ")}) – bis das Archiv nach der Schneehöhe gefragt wird (Plan 27), werden sie nie „gesperrt“`,
+    `INFO  Schneedecke (coverPct) fehlt bei ${uncovered.length} von ${unpaved.length} ungeteerten Straßen (${uncovered.map((p) => p.slug).join(", ")}) – der nächste data:build holt sie nach; bis dahin werden sie nie „gesperrt“ (Plan 27)`,
   );
 if (alone.length)
   console.log(
