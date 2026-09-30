@@ -62,7 +62,7 @@ import type {
 import { renderJsonSchema, schemaFileFor } from "./emit-json-schema";
 import { readData } from "./lib/data-files";
 import type { Data } from "./lib/data-files";
-import { judge, lacksCover, measure, plan } from "./lib/decide";
+import { asksOrs, judge, lacksCover, measure, plan } from "./lib/decide";
 import type {
   ProfileVerdict,
   RouteJob,
@@ -220,6 +220,7 @@ const inspect = (
   inputs?: string,
 ) => {
   const entry = meta?.[key];
+  const job = jobs.get(key);
   const source = entry?.source ?? "osrm";
   if (reasons.length)
     errors.push(
@@ -228,10 +229,13 @@ const inspect = (
   // An OSRM route whose ORS candidate was refused is reported with that
   // rejection below, not as "erneuern": ORS has been asked. So is one ORS
   // answered 404 for – its road-cycling graph does not carry this road, and
-  // asking again on every run costs a request to hear the same thing.
+  // asking again on every run costs a request to hear the same thing. And so
+  // is a ride the curator pinned to OSRM (`router`): ORS takes another road
+  // there, and nothing is to be renewed.
   else if (
     source === "osrm" &&
     !entry?.orsDeclined &&
+    (job === undefined || asksOrs(job)) &&
     !(rejected && key in rejected)
   )
     warnings.push(
@@ -246,7 +250,7 @@ const inspect = (
     entry.inputs !== inputs
   )
     warnings.push(
-      `${key}: Route wurde für andere Eingaben geholt (Koordinaten, Höhe oder check geändert) – bun run data:build holt sie neu`,
+      `${key}: Route wurde für andere Eingaben geholt (Koordinaten, Höhe, check, Belag oder router geändert) – bun run data:build holt sie neu`,
     );
   if (EXPLAIN)
     explained.push(
@@ -638,15 +642,14 @@ const singleSided = (passes ?? []).filter(
 const alone = passes && destinations ? standalone(destinations, passes) : [];
 // The snow cover closes an unpaved road (plan 27); a series without it grades
 // such a road by every other rung and never closes it. Only those roads are
-// counted – a paved road never reads the cover – and `data:build` asks the
-// archive for them again once the request carries the variable
-// (`ARCHIVE_DAILY`, `lacksClimate`). Counted, not warned: that is a run, not
-// a bug.
+// counted – a paved road never reads the cover – and the next `data:build`
+// asks the archive for them again (`ARCHIVE_DAILY`, `lacksClimate`). Counted,
+// not warned: that is a run, not a bug.
 const unpaved = (passes ?? []).filter((p) => isUnpaved(p.surface));
 const uncovered = climate ? unpaved.filter((p) => lacksCover(p, climate)) : [];
 if (uncovered.length)
   console.log(
-    `INFO  Schneedecke (coverPct) fehlt bei ${uncovered.length} von ${unpaved.length} ungeteerten Straßen (${uncovered.map((p) => p.slug).join(", ")}) – bis das Archiv nach der Schneehöhe gefragt wird (Plan 27), werden sie nie „gesperrt“`,
+    `INFO  Schneedecke (coverPct) fehlt bei ${uncovered.length} von ${unpaved.length} ungeteerten Straßen (${uncovered.map((p) => p.slug).join(", ")}) – der nächste data:build holt sie nach; bis dahin werden sie nie „gesperrt“ (Plan 27)`,
   );
 if (alone.length)
   console.log(

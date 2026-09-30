@@ -27,7 +27,7 @@ import { tmpdir } from "node:os";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
 
-import { curated, flags, KEYS, seed, TODAY } from "./fixtures/scenario";
+import { curated, flags, KEYS, pinned, seed, TODAY } from "./fixtures/scenario";
 import { readData } from "./lib/data-files";
 import { plan } from "./lib/decide";
 import type { Stored } from "./lib/decide";
@@ -256,5 +256,68 @@ describe("the run", () => {
     expect(reportLine(counts, { budget: 4500, upgradeOsrm: true })).toBe(
       "Fehlend: 0 Routen, 0 Profile, 0 Klimareihen, 0 Gipfelhöhen, 0 Straßenabstände · 2 abgewiesen (rejected.json) · 1 davon OSRM-Routen, deren ORS-Kandidat abgewiesen wurde",
     );
+  });
+});
+
+describe("a ride pinned to OSRM", () => {
+  // The Lautaret side as the first run found it – its car route and profile
+  // stored – with both markers measured and the pin just set on the ascent.
+  const pinnedState: Stored = {
+    ...seed(),
+    summits: {
+      "fixtur-galibier": { dem: 2642, lat: 45.064, lon: 6.408, roadDist: 0 },
+      "fixtur-lautaret": { dem: 2058, lat: 45.034, lon: 6.405, roadDist: 0 },
+    },
+  };
+  const earlier = seed();
+  const runFlags = { ...flags, only: KEYS.kept, upgradeOsrm: true };
+  const pinnedLog: string[] = [];
+  let pinnedDir = new URL("file:///");
+  let asked = 0;
+
+  beforeAll(async () => {
+    pinnedDir = pathToFileURL(
+      `${await mkdtemp(path.join(tmpdir(), "alpen-pinned-"))}/`,
+    );
+    // No live transport even when recording: the one answer is written by
+    // hand (`scenario.ts`), and a question without a fixture fails the run.
+    const transport = fixtureTransport(FIXTURES);
+    await runPipeline({
+      curated: pinned,
+      flags: runFlags,
+      log: (line) => {
+        pinnedLog.push(line);
+      },
+      save: saveTo(pinnedDir),
+      state: pinnedState,
+      stopped: () => null,
+      today: TODAY,
+      transport,
+    });
+    asked = transport.replayed;
+  });
+  afterAll(() => rm(pinnedDir, { force: true, recursive: true }));
+
+  test("OSRM alone is asked, and the unchanged road's profile is not paid again", () => {
+    // One question: the car route. No ORS candidate despite --upgrade-osrm
+    // and a key, no Open-Meteo call for a profile the geometry already has.
+    expect(asked).toBe(1);
+    expect(pinnedLog.join("\n")).not.toContain("Abgewiesen");
+    expect(pinnedState.meta[KEYS.kept]).toEqual({
+      fetchedAt: TODAY,
+      inputs: plan(pinned, pinnedState, runFlags).routes[0]!.job.inputs,
+      source: "osrm",
+    });
+    expect(pinnedState.routes[KEYS.kept]).toEqual(earlier.routes[KEYS.kept]);
+    expect(pinnedState.profiles[KEYS.kept]).toEqual(
+      earlier.profiles[KEYS.kept],
+    );
+  });
+
+  test("and the next run leaves it alone: nothing to upgrade, nothing pending", () => {
+    const { counts, routes } = plan(pinned, pinnedState, runFlags);
+    expect(routes.map(({ verdict }) => verdict)).toEqual([{ act: "keep" }]);
+    expect(counts.upgradable).toBe(0);
+    expect(counts.pending).toBe(0);
   });
 });

@@ -175,14 +175,15 @@ export const de = {
   site: {
     /** Short form for the manifest, where space is tight. */
     claim:
-      "Pässe, Rundtouren und Rad-Orte in den Alpen – nach Befahrbarkeit je Halbmonat.",
+      "Pässe, Rundtouren und Rad-Orte in den Alpen und den Vogesen – nach Befahrbarkeit je Halbmonat.",
     description:
-      "Wohin mit dem Rennrad, und wann? Alpenpässe, Auffahrten mit Höhenprofil, Rundtouren und Rad-Orte auf einer Karte – mit Befahrbarkeit je Halbmonat, Wetter und Klima.",
+      "Wohin mit dem Rennrad, und wann? Pässe in den Alpen und den Vogesen, Auffahrten mit Höhenprofil, Rundtouren und Rad-Orte auf einer Karte – mit Befahrbarkeit je Halbmonat, Wetter und Klima.",
     keywords: [
       "Alpenpässe",
       "Rennrad",
       "Rennradurlaub",
       "Radurlaub Alpen",
+      "Radurlaub Vogesen",
       "Passhöhen",
       "Rundtouren",
       "Höhenprofil",

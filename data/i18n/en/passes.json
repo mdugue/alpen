@@ -44,6 +44,15 @@
    "Langen"
   ]
  },
+ "ballon-d-alsace": {
+  "classicAscent": "9.2 km, 6.9 % from Saint-Maurice-sur-Moselle",
+  "note": "In 1905 the very first climb of the Tour de France. Three ascents on a wide road, the shortest and steepest from Saint-Maurice-sur-Moselle; at the top pastures, inns and weekend day-trippers.",
+  "ascents": [
+   "Saint-Maurice-sur-Moselle (north)",
+   "Giromagny (south)",
+   "Sewen (east)"
+  ]
+ },
  "berninapass": {
   "classicAscent": "32 km, 4.5 % from Poschiavo",
   "note": "Open all year, glacier views at Lago Bianco.",
@@ -122,6 +131,14 @@
    "Guillestre (south)"
   ]
  },
+ "col-d-oderen": {
+  "classicAscent": "11.4 km, 4 % from Fellering",
+  "note": "A gentle crossing from the upper Thur valley to Ventron in the Moselotte valley, quiet and wooded.",
+  "ascents": [
+   "Fellering (east)",
+   "Ventron (west)"
+  ]
+ },
  "col-d-ornon": {
   "classicAscent": "13.6 km, 4.8 % from Le Bourg-d'Oisans",
   "note": "Open all year, even and quiet – the relaxed link from the Oisans into the Valbonnais.",
@@ -137,6 +154,14 @@
    "Thorenc (south)"
   ]
  },
+ "col-de-bramont": {
+  "classicAscent": "7.2 km, 5.3 % from Wildenstein",
+  "note": "A quiet crossing from La Bresse into the uppermost Thur valley at Wildenstein, short and steady.",
+  "ascents": [
+   "Wildenstein (east)",
+   "La Bresse (west)"
+  ]
+ },
  "col-de-braus": {
   "classicAscent": "10.3 km, 6.4 % from L'Escarène",
   "note": "Open all year, a classic winter training destination for the pros on the Côte d'Azur. The ladder of hairpins above L'Escarène is famous enough to have its own photos.",
@@ -150,6 +175,14 @@
   "ascents": [
    "Sospel (west)",
    "Breil-sur-Roya (east)"
+  ]
+ },
+ "col-de-bussang": {
+  "classicAscent": "7.5 km, 2.9 % from Saint-Maurice-sur-Moselle",
+  "note": "The N66 from Thann to Remiremont: heavy traffic and lorries, flat enough to link two rides, not a goal in itself. The source of the Moselle is at the top.",
+  "ascents": [
+   "Saint-Maurice-sur-Moselle (west)",
+   "Urbès (east)"
   ]
  },
  "col-de-castillon": {
@@ -174,6 +207,14 @@
   "ascents": [
    "Eygaliers (north)",
    "Brantes (south)"
+  ]
+ },
+ "col-de-grosse-pierre": {
+  "classicAscent": "6.6 km, 4.4 % from Gérardmer",
+  "note": "A short wooded crossing between Gérardmer and the Moselotte valley at Cornimont.",
+  "ascents": [
+   "Gérardmer (north)",
+   "Cornimont (south)"
   ]
  },
  "col-de-joux-plane": {
@@ -319,6 +360,14 @@
    "Taninges"
   ]
  },
+ "col-de-la-schlucht": {
+  "classicAscent": "15.4 km, 4.9 % from Munster",
+  "note": "The main crossing from Colmar to Gérardmer, with the traffic to match, cleared in winter; on the Tour de France route in 2023. From Munster the finer and steeper side, from Gérardmer via Xonrupt almost flat; the Route des Crêtes starts at the top.",
+  "ascents": [
+   "Munster (east)",
+   "Gérardmer (west)"
+  ]
+ },
  "col-de-macuegne": {
   "classicAscent": "8 km, 5 % from Montbrun-les-Bains",
   "note": "Between Montbrun-les-Bains and Séderon, over lavender fields and beech forest with the Ventoux at your back. Open all year, quiet; the way back on the Perty loop.",
@@ -370,6 +419,14 @@
   "note": "Balcony road above the Arve valley, steep and narrow at the top. On the Tour's programme since 2009 as the starter before the Colombière.",
   "ascents": [
    "Cluses"
+  ]
+ },
+ "col-de-sainte-marie": {
+  "classicAscent": "6.1 km, 6.9 % from Sainte-Marie-aux-Mines",
+  "note": "The old crossing from Sainte-Marie-aux-Mines into Lorraine; most of the through traffic now takes the Maurice-Lemaire tunnel below it.",
+  "ascents": [
+   "Sainte-Marie-aux-Mines (east)",
+   "Wisembach (west)"
   ]
  },
  "col-de-sarenne": {
@@ -446,6 +503,21 @@
    "Hauteluce"
   ]
  },
+ "col-du-bonhomme": {
+  "classicAscent": "10 km, 5.3 % from Lapoutroie",
+  "note": "The crossing from Kaysersberg to Saint-Dié on the main road, with traffic. At the top the crest road heads south to the Col du Calvaire and the Schlucht.",
+  "ascents": [
+   "Lapoutroie (east)",
+   "Plainfaing (west)"
+  ]
+ },
+ "col-du-calvaire": {
+  "classicAscent": "11.2 km, 5.8 % from Orbey",
+  "note": "Above the Lac Blanc at the northern end of the crest road. Northwards the road stays on the crest to the Col du Bonhomme – not a second ascent.",
+  "ascents": [
+   "Orbey (east)"
+  ]
+ },
  "col-du-chaussy": {
   "classicAscent": "13.8 km, 7.5 % from Pontamafrey via the Lacets de Montvernier",
   "note": "The seventeen hairpins of the Lacets de Montvernier stack up on top of each other over two kilometres like a piece of architecture – a Tour regular since 2015. Above them the road turns quiet and narrow.",
@@ -484,6 +556,14 @@
    "Saint-Chaffrey"
   ]
  },
+ "col-du-hundsruck": {
+  "classicAscent": "7 km, 6.2 % from Thann",
+  "note": "A short wooded pass between Thann and the Doller valley at Masevaux, easy to combine with the Ballon d'Alsace.",
+  "ascents": [
+   "Thann (east)",
+   "Masevaux (west)"
+  ]
+ },
  "col-du-lautaret": {
   "classicAscent": "28 km, 3.8 % from Bourg d'Oisans",
   "note": "National road, cleared all year. Feeder to the Galibier, heavy traffic.",
@@ -514,6 +594,13 @@
    "Saint-Bonnet-en-Champsaur"
   ]
  },
+ "col-du-petit-ballon": {
+  "classicAscent": "7.9 km, 8 % from Wasserbourg",
+  "note": "A bare dome with mountain inns and a view over the Munster valley and the Rhine plain, on the Tour de France route in 2023. Narrow and steep from Wasserbourg; the south side from the Florival via Linthal is still missing here, because no router takes it without a detour.",
+  "ascents": [
+   "Wasserbourg (north)"
+  ]
+ },
  "col-du-petit-saint-bernard": {
   "classicAscent": "30 km, 4.6 % from Bourg-Saint-Maurice",
   "note": "Border pass, closure usually late October/November.",
@@ -527,6 +614,13 @@
   "note": "Across from Les Diablerets to Gsteig, with the Diablerets glacier above the road. Short, cleared all year and usually joined with the Col de la Croix into a loop.",
   "ascents": [
    "Les Diablerets (west)"
+  ]
+ },
+ "col-du-platzerwasel": {
+  "classicAscent": "7.5 km, 8.7 % from Sondernach",
+  "note": "Steep out of the upper Munster valley at Sondernach up to the crest. From the south the pass is reached via the Markstein at crest height – not a climb of its own.",
+  "ascents": [
+   "Sondernach (north)"
   ]
  },
  "col-du-pre": {
@@ -555,6 +649,14 @@
   "note": "Open all year, a forest road at a steady 7 %. A solid climb in its own right, but usually just the first step towards the Galibier.",
   "ascents": [
    "Saint-Michel-de-Maurienne"
+  ]
+ },
+ "col-du-wettstein": {
+  "classicAscent": "6.5 km, 6 % from Soultzeren",
+  "note": "Between the Munster valley and Orbey, with a First World War military cemetery at the top and the Lingekopf battlefield next to it.",
+  "ascents": [
+   "Soultzeren (south)",
+   "Orbey (north)"
   ]
  },
  "col-saint-martin": {
@@ -830,6 +932,14 @@
    "Hospental"
   ]
  },
+ "grand-ballon": {
+  "classicAscent": "15.8 km, 6.2 % from Willer-sur-Thur",
+  "note": "The highest point of the Vosges a road reaches: 1343 m at the Col du Grand Ballon; the summit with its radar dome (1424 m) is a few minutes on foot. On the Tour de France route several times; the crest road over the top is closed in sections in winter.",
+  "ascents": [
+   "Willer-sur-Thur (south)",
+   "Uffholtz (east)"
+  ]
+ },
  "grimselpass": {
   "classicAscent": "26 km, 5.8 % from Innertkirchen",
   "note": "Closure usually late October/November. Reservoirs and granite.",
@@ -875,6 +985,13 @@
   "ascents": [
    "Schröcken (west)",
    "Warth (east)"
+  ]
+ },
+ "hohneck": {
+  "classicAscent": "15.3 km, 4.5 % from La Bresse",
+  "note": "A spur from the Route des Crêtes to just below one of the highest summits of the Vosges, with a view over the crest and the lakes. Closed in winter with the crest road.",
+  "ascents": [
+   "La Bresse"
   ]
  },
  "ibergeregg": {
@@ -951,6 +1068,13 @@
    "Ötz"
   ]
  },
+ "la-planche-des-belles-filles": {
+  "classicAscent": "8.2 km, 6.9 % from Plancher-les-Mines",
+  "note": "A Tour de France finish since 2012, and in 2020 the time trial with which Pogačar won the Tour. The tarmac ends at the ski station; the gravel ramp of the “Super Planche” above it is no place for a road bike.",
+  "ascents": [
+   "Plancher-les-Mines"
+  ]
+ },
  "le-chazelet": {
   "classicAscent": "5.9 km, 5.1 % from La Grave",
   "note": "Short dead end above La Grave; at the top you stand face to face with the Meije – one of the great panoramas of the Western Alps. Continuing onto the Plateau d'Emparis is only possible off the tarmac.",
@@ -1011,7 +1135,7 @@
  },
  "mangart-sattel": {
   "classicAscent": "12 km, 9 % from Log pod Mangartom",
-  "note": "Slovenia's highest road, a dead end, usually open until late October.",
+  "note": "Slovenia's highest road, a dead end, usually open until late October. The ride now ends at the car park at just over 1900 m: the loop up to the saddle is closed.",
   "ascents": [
    "Log pod Mangartom"
   ]
@@ -1690,6 +1814,13 @@
   "note": "Maintained all year, closed at times for rockfall. A handful of tunnels and a ribbon of road hanging free above the walls of Choranche; at the top it ends in the village.",
   "ascents": [
    "Pont-en-Royans"
+  ]
+ },
+ "route-des-cretes": {
+  "classicAscent": "29 km from the Col de la Schlucht to the Grand Ballon",
+  "note": "The crest road of the high Vosges, built as a supply road in the First World War: over grassy domes with views of the Rhine plain and, on a clear day, the Alps; the Tour de France rides stretches of it too, such as from the Markstein to the Grand Ballon. Closed in winter roughly mid-November to mid-April; lots of motorbikes at weekends.",
+  "ascents": [
+   "Col de la Schlucht"
   ]
  },
  "schnalstal-kurzras": {

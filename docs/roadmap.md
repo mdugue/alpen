@@ -161,7 +161,7 @@ answer in app terms. Seed:
 | Ist das Stilfser Joch Anfang Juni offen?                                      | the year of one pass at period 6: "Randzeit", with the strip as evidence                                                       |
 | Wo ist es im August nicht zu heiß?                                            | period 8, valley-heat chip; the Engadin, Tarentaise, the high Valais                                                           |
 | Rundtour mit dem Galibier – wo übernachten?                                   | bases for one pass, tours near it: Saint-Jean-de-Maurienne, Valloire, Briançon; La Marmotte                                    |
-| Nur ein Wochenende, wir wohnen in Freiburg                                    | today: not in the data, said honestly; after plan 25: Vosges and Jura                                                          |
+| Nur ein Wochenende, wir wohnen in Freiburg                                    | the Vosges since plan 25's first batch (Hochvogesen, Südvogesen); the Jura still open                                          |
 | Wo sind im Oktober die Tage noch lang genug für 150 km?                       | period 10 or 10.5, the short-day signal; the south, and the sentence about daylight                                            |
 | Etwas Ruhiges ohne Verkehr, mittlere Schwierigkeit, Ende September            | period 9.5, traffic ≤ 2, difficulty ≤ 3; the Maira valley, the Queyras gorges, the Nockberge                                   |
 | Hotel am Gardasee – welche Pässe?                                             | today: two roads, said honestly; after plan 23: Riva as a base with its reach                                                  |

@@ -88,14 +88,17 @@ export const bucketClimate = (daily: DailySeries): ClimateYear => {
 };
 
 /**
- * The daily variables the archive is asked for. `snow_depth_mean` is not
- * among them yet: plan 27 widens the request only once a live run has
- * confirmed the variable and its cost, and `lacksClimate` asks again for the
- * unpaved roads' series the day it is added here.
+ * The daily variables the archive is asked for. `snow_depth_mean` (plan 27)
+ * is a daily variable of its own, so no hourly aggregation is needed, and it
+ * costs nothing extra: Open-Meteo weights a request by its span and only past
+ * ten variables by their number. Its presence here is what makes
+ * `lacksClimate` ask again for the unpaved roads' series; the paved ones
+ * keep theirs, since they never read the cover.
  */
 export const ARCHIVE_DAILY: readonly string[] = [
   "temperature_2m_max",
   "temperature_2m_min",
   "snowfall_sum",
   "precipitation_sum",
+  "snow_depth_mean",
 ];

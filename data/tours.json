@@ -1055,5 +1055,118 @@
     "lon": 5.2748
    }
   ]
+ },
+ {
+  "slug": "hochvogesen-runde",
+  "surface": "asphalt",
+  "name": "Schlucht – Route des Crêtes – Grand Ballon",
+  "color": "#6a9a7a",
+  "km": 79,
+  "elevationGain": 1750,
+  "passes": [
+   "col-de-la-schlucht",
+   "route-des-cretes",
+   "grand-ballon",
+   "col-du-platzerwasel"
+  ],
+  "note": "Die Kammstraße ist etwa Mitte November bis Mitte April gesperrt; der Abstecher vom Markstein zum Grand Ballon wird hin und zurück gefahren.",
+  "season": null,
+  "description": "Von Munster zur Schlucht, auf der Route des Crêtes über Hohneck und Markstein zum Grand Ballon und über den Platzerwasel zurück ins Munstertal.",
+  "waypoints": [
+   {
+    "lat": 48.0409,
+    "lon": 7.1372
+   },
+   {
+    "lat": 48.0642,
+    "lon": 7.0227
+   },
+   {
+    "lat": 48.0414,
+    "lon": 7.0109
+   },
+   {
+    "lat": 47.9233,
+    "lon": 7.0318
+   },
+   {
+    "lat": 47.9037,
+    "lon": 7.1033
+   },
+   {
+    "lat": 47.9233,
+    "lon": 7.0318
+   },
+   {
+    "lat": 47.9695,
+    "lon": 7.0429
+   },
+   {
+    "lat": 47.9976,
+    "lon": 7.0742
+   },
+   {
+    "lat": 48.0409,
+    "lon": 7.1372
+   }
+  ]
+ },
+ {
+  "slug": "ballons-runde",
+  "surface": "asphalt",
+  "name": "Hundsruck – Ballon d'Alsace – Bussang",
+  "color": "#a8806a",
+  "km": 79,
+  "elevationGain": 1550,
+  "passes": [
+   "col-du-hundsruck",
+   "ballon-d-alsace",
+   "col-de-bussang"
+  ],
+  "note": "Über Bussang auf der N66 mit Lastwagenverkehr, der Rest ist ruhig.",
+  "season": null,
+  "description": "Von Thann über den Hundsruck ins Dollertal, von Sewen auf den Ballon d'Alsace, hinab nach Saint-Maurice und über den Col de Bussang durchs Thurtal zurück.",
+  "waypoints": [
+   {
+    "lat": 47.8101,
+    "lon": 7.1021
+   },
+   {
+    "lat": 47.8063,
+    "lon": 7.0424
+   },
+   {
+    "lat": 47.7749,
+    "lon": 6.9958
+   },
+   {
+    "lat": 47.8077,
+    "lon": 6.9042
+   },
+   {
+    "lat": 47.8209,
+    "lon": 6.8369
+   },
+   {
+    "lat": 47.8588,
+    "lon": 6.8245
+   },
+   {
+    "lat": 47.8895,
+    "lon": 6.8971
+   },
+   {
+    "lat": 47.8839,
+    "lon": 6.9567
+   },
+   {
+    "lat": 47.873,
+    "lon": 7.0317
+   },
+   {
+    "lat": 47.8101,
+    "lon": 7.1021
+   }
+  ]
  }
 ]

@@ -173,6 +173,7 @@ describe("openMeteo", () => {
   test("archive: the frozen ten years at the pass elevation, 261 calls", async () => {
     const daily = {
       precipitation_sum: [0.4],
+      snow_depth_mean: [0.35],
       snowfall_sum: [null],
       temperature_2m_max: [3.2],
       temperature_2m_min: [-1.1],
@@ -187,7 +188,7 @@ describe("openMeteo", () => {
       {
         host: "openMeteo",
         init: undefined,
-        url: "https://archive-api.open-meteo.com/v1/archive?latitude=46.2&longitude=10.1&elevation=2757&start_date=2015-01-01&end_date=2024-12-31&daily=temperature_2m_max,temperature_2m_min,snowfall_sum,precipitation_sum&timezone=Europe%2FBerlin",
+        url: "https://archive-api.open-meteo.com/v1/archive?latitude=46.2&longitude=10.1&elevation=2757&start_date=2015-01-01&end_date=2024-12-31&daily=temperature_2m_max,temperature_2m_min,snowfall_sum,precipitation_sum,snow_depth_mean&timezone=Europe%2FBerlin",
         weight: 261,
       },
     ]);

@@ -192,11 +192,11 @@ Merkmale, Verkehr, Schönheit, Bekanntheit, die Wärme im Tal (abgeleitet) und
 die Regentage im Halbmonat. Was gerade gefiltert ist, steht als Reihe
 entfernbarer Chips über der Liste.
 
-Vorgesehen ist außerdem ein Filter **Gebirge** – Alpen, Jura, Vogesen,
-Pyrenäen –, der als einziger auch die Karte bewegt: Er rückt den Ausschnitt
-auf das, was er übrig lässt, und wirkt als einziger Straßenfilter auch auf
-die Liste der Reiseziele. Er erscheint erst, wenn die Karte Straßen
-aus mehr als einem Gebirge enthält; heute liegen alle in den Alpen.
+Dazu kommt der Filter **Gebirge** – heute Alpen und Vogesen, später auch
+Jura und Pyrenäen –, der als einziger auch die Karte bewegt: Er rückt den
+Ausschnitt auf das, was er übrig lässt, und wirkt als einziger Straßenfilter
+auch auf die Liste der Reiseziele. Ein Gebirge bekommt seinen Chip, sobald
+die Karte eine Straße darin enthält.
 
 Die Filter gelten für Straßen und Touren. Auf die Reiseziele und ihre Orte
 wirken nur die Suche, „Nur Gemerkte“ und das Gebirge.

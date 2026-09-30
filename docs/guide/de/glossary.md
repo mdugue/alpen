@@ -52,9 +52,9 @@ Seiten vorkommen – von „abgeleitet“ bis „zugeschneit“.
 
 - **Gebirge** – die oberste Einteilung der Karte: Alpen, Jura, Vogesen und
   Pyrenäen, darunter die Regionen (etwa Westalpen oder Dolomiten).
-  Vorgesehen ist ein Filter „Gebirge“, der auch den Kartenausschnitt auf das
-  gewählte Gebirge rückt; er erscheint erst, wenn die Karte Straßen aus mehr
-  als einem Gebirge enthält. Heute liegen alle in den Alpen.
+  Der Filter „Gebirge“ rückt auch den Kartenausschnitt auf das gewählte
+  Gebirge; er zeigt die Gebirge, in denen die Karte Straßen enthält – heute
+  die Alpen und die Vogesen.
 - **Geländemodell** – ein Raster aus Höhenwerten, das die Erdoberfläche
   beschreibt, englisch „digital elevation model“ (DEM). Es kennt keine
   Straßen; auf engen Kehren oder in Schluchten rauscht es um einige Meter.
@@ -119,7 +119,8 @@ Seiten vorkommen – von „abgeleitet“ bis „zugeschneit“.
   Reiseziel oder unter „Weitere Orte“.
 - **OSRM** – Open Source Routing Machine, ein Routing-Dienst mit Autoprofil.
   Springt ein, wenn OpenRouteService nicht verfügbar ist; solche Strecken
-  werden später neu berechnet.
+  werden später neu berechnet. Wo OpenRouteService eine andere Straße nimmt
+  als die gemeinte, ist die Auffahrt fest auf OSRM gestellt.
 - **Overpass** – eine Abfrageschnittstelle für OpenStreetMap-Daten. Mit ihr
   wird geprüft, ob ein Passpunkt an einer befahrbaren Straße liegt.
 

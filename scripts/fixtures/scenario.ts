@@ -27,6 +27,13 @@
  *   round by Susa, Mont Cenis and the Galibier, the everyday graph takes the
  *   road – its geometry subsampled from `col-du-lautaret:1` – and the route
  *   is stored with the graph that answered it.
+ *
+ * A second, smaller run (`pinned`) takes the Lautaret side once more, now
+ * pinned to OSRM (`router` on the ascent). The pin changes the question, so
+ * the stored route is re-fetched – from OSRM alone – and comes back as the
+ * very same geometry, whose stored profile is reused. Its one recorded
+ * answer, `osrm/…json`, was written by hand from `LAUTARET_ROUTE` rather than
+ * asked of the demo server: the point is the identical geometry.
  */
 import { profileDistances, profileStats } from "../../lib/profile";
 import type {
@@ -43,7 +50,7 @@ import { ascentInputs } from "../lib/validate";
 export const TODAY = "2026-02-01";
 
 /** The stored OSRM route of the Lautaret side, which a failing candidate must not evict. */
-const LAUTARET_ROUTE: RouteGeometry = [
+export const LAUTARET_ROUTE: RouteGeometry = [
   [45.03398, 6.40533],
   [45.03898, 6.40069],
   [45.03735, 6.39652],
@@ -154,6 +161,24 @@ const runde: Tour = {
 export const curated: Curated = {
   passes: [galibier, lautaret],
   tours: [runde],
+};
+
+/** The same data with the Lautaret side of the Galibier pinned to OSRM. */
+export const pinned: Curated = {
+  ...curated,
+  passes: [
+    {
+      ...galibier,
+      ascents: [
+        galibier.ascents[0]!,
+        {
+          ...galibier.ascents[1]!,
+          router: { note: "Fixtur: ORS nimmt eine andere Straße", use: "osrm" },
+        },
+      ],
+    },
+    lautaret,
+  ],
 };
 
 /** The keys the three rides and the tour are stored under, named for their path. */

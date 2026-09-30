@@ -15,14 +15,16 @@ import {
   afterGate,
   decideProfile,
   decideRoute,
+  defersProfile,
   lacksClimate,
+  paidFor,
   plan,
   routeJobs,
   secondGraph,
   storedFor,
 } from "./decide";
 import type { Flags, Judged, Stored } from "./decide";
-import { ascentInputs } from "./validate";
+import { ascentInputs, geometryHash } from "./validate";
 
 const pass = (over: Partial<Pass> = {}): Pass => ({
   ascents: [
@@ -401,6 +403,134 @@ describe("decideProfile", () => {
   });
 });
 
+describe("paidFor", () => {
+  const key = "stilfser-joch:0";
+  const other: RouteGeometry = [
+    [46.5, 10],
+    [46.6, 10.5],
+  ];
+  const stored = (over: Partial<Stored> = {}): Stored => ({
+    ...empty(),
+    profiles: { [key]: profile() },
+    routes: { [key]: geom },
+    ...over,
+  });
+
+  test("the stored route came back unchanged: its profile is this one's", () => {
+    expect(paidFor(key, stored(), geometryHash(geom))).toEqual(profile());
+  });
+
+  test("another road: nothing, however recent the stored profile", () => {
+    expect(paidFor(key, stored(), geometryHash(other))).toBeUndefined();
+  });
+
+  test("an earlier rejection of this very geometry left its profile", () => {
+    const cached = { ...profile(), top: 2000 };
+    const s = stored({
+      rejected: {
+        [key]: rejection({ hash: geometryHash(other), profile: cached }),
+      },
+    });
+    expect(paidFor(key, s, geometryHash(other))).toEqual(cached);
+  });
+});
+
+describe("a ride pinned to OSRM (router)", () => {
+  const router = { note: "ORS nimmt den Grat", use: "osrm" as const };
+  const pinnedPass = pass({
+    ascents: [
+      { from: { lat: 46.5, lon: 10 }, label: "Prato", router },
+      { from: { lat: 46.6, lon: 10.2 }, label: "Bormio" },
+    ],
+  });
+  const [pinned, free] = jobs([pinnedPass]);
+  const stored = (over: Partial<Stored> = {}): Stored => ({
+    ...empty(),
+    meta: {
+      [pinned!.key]: {
+        fetchedAt: "2026-01-01",
+        inputs: pinned!.inputs,
+        source: "osrm",
+      },
+    },
+    routes: { [pinned!.key]: geom },
+    summits: { [pinnedPass.slug]: goodSummit(pinnedPass) },
+    ...over,
+  });
+
+  test("the job carries the pin, the other side none", () => {
+    expect(pinned!.router).toBe("osrm");
+    expect(free!.router).toBeUndefined();
+  });
+
+  test("the pin is part of the question, its note is not", () => {
+    const a = pinnedPass.ascents[0]!;
+    const { router: _pin, ...unpinned } = a;
+    expect(pinned!.inputs).not.toBe(
+      ascentInputs(false, pinnedPass, unpinned, "cycling-road"),
+    );
+    expect(pinned!.inputs).toBe(
+      ascentInputs(
+        false,
+        pinnedPass,
+        { ...a, router: { ...router, note: "anders begründet" } },
+        "cycling-road",
+      ),
+    );
+    // A ride without a pin keeps the hash it had before the field existed.
+    expect(jobs()[0]!.inputs).toBe(
+      ascentInputs(false, pass(), pass().ascents[0]!, "cycling-road"),
+    );
+  });
+
+  test("its car route is final: no upgrade, and the profile is paid now", () => {
+    const f = flags({ ors: true, upgradeOsrm: true });
+    const verdict = decideRoute(pinned!, stored(), f);
+    expect(verdict).toEqual({ act: "keep" });
+    expect(decideProfile(pinned!, stored(), f, verdict).act).toBe("fetch");
+    expect(
+      plan({ passes: [pinnedPass], tours: [] }, stored(), f).counts.upgradable,
+    ).toBe(0);
+  });
+
+  test("a car route being stored waits for its profile only while an upgrade may come", () => {
+    const f = flags({ ors: true });
+    const none = empty();
+    expect(defersProfile(free!, none, f, "osrm", false)).toBe(true);
+    // Pinned, declined by ORS, refused before, or no key: final, paid now.
+    expect(defersProfile(pinned!, none, f, "osrm", false)).toBe(false);
+    expect(defersProfile(free!, none, f, "osrm", true)).toBe(false);
+    expect(
+      defersProfile(
+        free!,
+        { ...none, rejected: { [free!.key]: rejection({}) } },
+        f,
+        "osrm",
+        false,
+      ),
+    ).toBe(false);
+    expect(defersProfile(free!, none, flags(), "osrm", false)).toBe(false);
+    expect(defersProfile(free!, none, f, "ors", false)).toBe(false);
+  });
+
+  test("setting the pin on a stored route asks again, replacing it", () => {
+    const before = stored({
+      meta: {
+        [pinned!.key]: {
+          fetchedAt: "2026-01-01",
+          inputs: jobs()[0]!.inputs,
+          source: "ors",
+        },
+      },
+    });
+    expect(decideRoute(pinned!, before, flags({ ors: true }))).toEqual({
+      act: "fetch",
+      replace: true,
+      upgrade: false,
+    });
+  });
+});
+
 describe("plan", () => {
   const p = pass();
   const other = pass({ name: "Gavia", slug: "passo-gavia" });
@@ -505,6 +635,18 @@ const judged = (over: Partial<Judged> = {}): Judged => ({
 describe("afterGate", () => {
   const p = pass();
   const job = first();
+
+  test("a rejected geometry that has a profile already keeps it cached", () => {
+    // A stricter `check` refuses the very road that is stored: its profile
+    // goes with the rejection, so loosening the check again costs nothing.
+    const cached = { ...profile(), top: 1999 };
+    const next = afterGate(
+      job,
+      empty(),
+      judged({ cachedProfile: cached, reasons: ["zu streng"] }),
+    );
+    expect(next.rejected?.[job.key]?.profile).toEqual(cached);
+  });
 
   test("an accepted route is stored with what it was fetched for", () => {
     const next = afterGate(job, empty(), judged());
@@ -726,15 +868,11 @@ describe("lacksClimate (plan 27)", () => {
   });
 
   test("an unpaved road is asked again while its series has no snow cover", () => {
-    expect(lacksClimate(gravel, { finestre: without }, true)).toBe(true);
-    expect(lacksClimate(gravel, { finestre: withCover }, true)).toBe(false);
-  });
-
-  test("but only once the archive is asked for the cover: the same answer twice is ~260 calls", () => {
-    expect(lacksClimate(gravel, { finestre: without }, false)).toBe(false);
+    expect(lacksClimate(gravel, { finestre: without })).toBe(true);
+    expect(lacksClimate(gravel, { finestre: withCover })).toBe(false);
   });
 
   test("a paved road keeps the series it has: it never reads the cover", () => {
-    expect(lacksClimate(asphalt, { stelvio: without }, true)).toBe(false);
+    expect(lacksClimate(asphalt, { stelvio: without })).toBe(false);
   });
 });

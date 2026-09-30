@@ -1,14 +1,14 @@
 # Alpenpässe – where to ride, and when
 
-A map for planning road-cycling holidays in the Alps. It answers destination
+A map for planning road-cycling holidays in the Alps and the Vosges. It answers destination
 questions, not routing questions:
 
 - Which regions are good in early October if we want to ride a few great passes?
 - Where should we look for a hotel so that several passes and a loop are within reach?
 - Which destinations should we keep an eye on for single-day and multi-day tours?
 
-Data today: 262 roads with 398 ascents and their elevation profiles, 17 loop
-tours, 66 cycling towns and 36 destinations, each with a rideability estimate
+Data today: 279 roads with 427 ascents and their elevation profiles, 19 loop
+tours, 71 cycling towns and 38 destinations, each with a rideability estimate
 for a freely chosen half-month, a 7-day forecast and a 2015–2024 climate
 series at the summit, in 2D and 3D. The UI is in German, and in English under
 `/en`.

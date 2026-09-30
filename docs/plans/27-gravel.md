@@ -5,20 +5,25 @@ road and loop with the migration and the `cobbles` rename, the profile by
 surface in the jobs and in `meta.inputs`, `coverPct` in the buckets and the
 `snow-cover` rung with its two provisional shares, the "Belag" chips, the
 dashed line and the ringed dot, the words in the kicker and the popup, the
-dialog and the docs. Open, because every host it needs was rate-limited this
-session: the archive run for `snow_depth` (the field is read when it comes;
-until then a gravel road is never closed on a guess), the first data batch
+dialog and the docs. The archive now carries the snow depth
+(`snow_depth_mean` in `ARCHIVE_DAILY`, a daily variable, so no hourly
+aggregation; by Open-Meteo's documented weighting – the span, and the number
+of variables only past ten – five variables still cost ~261 calls; the API
+reports no cost to measure it by). The Finestre's series was fetched again
+with it; the paved roads' series were not, since they never read the cover,
+so `coverPct` exists only on unpaved roads and on series fetched from now on
+– the paved-pass cover signal (`docs/roadmap.md` §8) needs that backfill
+first. Open: the first data batch
 (it needs `data:locate` and an `ORS_KEY`), the curated-geometry escape hatch
-(no road needs it yet) and the tagline (waits for twenty gravel roads).
+(no road needs it yet), the calibration of the two cover shares against
+that batch, and the tagline (waits for twenty gravel roads).
 `locate.ts` already includes every track in its road query, without the
 `tracktype` filter and for every surface – broader than the plan, and the
 gate catches what that lets through. Two rules differ from the text on
 purpose: only a mountain profile enters `meta.inputs`, so the routes stored
 before the field existed keep their hash; and a loop's surface is held to
 _at least_ its roads, so a loop whose connecting stretches are gravel can say
-so. The archive request itself is not widened until a live run has confirmed
-the variable and its cost – the bucket function reads `snow_depth_mean` the
-day the series carries it ·
+so ·
 **Effort:** L–XL (M for the schema and the routing, M
 for the snow-cover signal, M for the UI, the rest is curation) ·
 **Depends on:** 14 (types and tags: the gravel classics are plateaus and

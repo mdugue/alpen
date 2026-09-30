@@ -18,6 +18,7 @@ import { haversine } from "../../lib/geo";
 import { isTraverse } from "../../lib/regions";
 import type {
   AscentCheck,
+  AscentRouter,
   AscentMetrics,
   ElevationProfile,
   LatLon,
@@ -491,6 +492,15 @@ const profilePart = (profile: RoutingProfile) =>
   profile === "cycling-road" ? {} : { profile };
 
 /**
+ * A pinned router is part of the question in the same way: setting or lifting
+ * the pin routes the ride again by itself. Only its name enters – the `note`
+ * changes nothing a router would answer – and only when it is set, so every
+ * route stored before the field existed keeps its hash.
+ */
+const routerPart = (router: AscentRouter | undefined) =>
+  router ? { router: router.use } : {};
+
+/**
  * …and what those parts are for each kind of route, so the two sides cannot
  * drift: `build-data.ts` stamps the hash onto `routes-meta.json` when it
  * stores a geometry, `check-data.ts` compares it back. Spelled out twice, a
@@ -509,13 +519,20 @@ export const ascentInputs = (
     check?: AscentCheck | TourCheck;
     from: LatLon;
     km?: number;
+    router?: AscentRouter;
     to?: LatLon;
   },
   profile: RoutingProfile,
 ) =>
   traverse
     ? inputsHash(
-        { from: a.from, km: a.km, to: a.to, ...profilePart(profile) },
+        {
+          from: a.from,
+          km: a.km,
+          to: a.to,
+          ...profilePart(profile),
+          ...routerPart(a.router),
+        },
         a.check,
       )
     : inputsHash(
@@ -524,6 +541,7 @@ export const ascentInputs = (
           from: a.from,
           summit: { lat: p.lat, lon: p.lon },
           ...profilePart(profile),
+          ...routerPart(a.router),
         },
         a.check,
       );

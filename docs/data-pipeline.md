@@ -143,7 +143,7 @@ the whole run – and every counter with it – to the keys containing that text
 `--retry-rejected` asks again for everything the gate refused (see
 [the retry rule](#the-retry-rule): normally nothing has to), and
 `--upgrade-osrm` re-routes the car-profile routes once an `ORS_KEY` is
-available. `scripts/backfill.sh` (`bun run data:backfill`) simply runs
+available – all but the rides pinned to OSRM (`router`, below). `scripts/backfill.sh` (`bun run data:backfill`) simply runs
 `data:build` in hourly batches until nothing is missing.
 
 The profile follows the surface (plan 27): `profileOf` in
@@ -166,6 +166,20 @@ only when it passes those checks, and `routes-meta.json` records it as
 `orsProfile: "cycling-regular"`; the graph is not an input, so it changes no
 hash. A rejection from before this rule stays where it is until
 `--retry-rejected --only <slug>` asks again.
+
+Neither graph is right everywhere, and the gate cannot always tell: a detour
+inside the length limit that ends at the marker with its top in the last
+quarter passes.
+The Colle di Sampeyre came back 24 km along the ridge from Stroppo and 12.8 km
+up a track from Sampeyre, both inside the limits, while OSRM's car route took
+the road on both sides. For those rides the curator pins the router on the
+ascent (`router: { use: "osrm", note }`, `docs/data-model.md`): ORS is never
+asked for it, the car route is final rather than provisional – its profile is
+paid for at once, `--upgrade-osrm` leaves it alone and `data:check` asks for
+no renewal – and the pin enters `meta.inputs`, so setting or lifting it
+routes the ride again. A re-route that brings back the very geometry already
+stored keeps the profile stored with it; that holds for every changed
+question (a `check`, an elevation), not only for the pin.
 
 ## Where the facts come from
 
@@ -198,7 +212,7 @@ the map API.
 | **OpenRouteService**                          | ORS                                                                                                                             | the road from an ascent start to the pass                           | GeoJSON `LineString`       | `ORS_KEY`, free: 2 000/day, 40/min              | a genuine **road-cycling** profile: takes the Tremola cobbles, the Finestre gravel, car-free roads | 404s on roads its graph rejects, or routes round them (Mont Cenis from Susa: 341 km); a spent daily quota stops it mid-run                                                                                      |
 | **Open Source Routing Machine** (demo server) | OSRM                                                                                                                            | the same question, car profile                                      | JSON, coordinate list      | no key, 1 request/s, fair use                   | always there, no key, good enough for most alpine roads                                            | a car profile cuts corners a cyclist does not and refuses car-free roads → marked `osrm` in `routes-meta.json` and upgraded later                                                                               |
 | **Open-Meteo Elevation**                      | uses the Copernicus DEM (digital elevation model), GLO-90 ≈ 90 m grid                                                           | the height of up to 100 coordinates at once                         | JSON array                 | no key, weighted quota (see below)              | one request per elevation profile; consistent worldwide                                            | grid noise of a few metres (hence 10 m gain smoothing and an 80 m gate); ~100 billed calls per profile                                                                                                          |
-| **Open-Meteo Archive**                        | the default model "Best Match": ERA5 and ERA5-Land, from 2017 ECMWF IFS, blended; 2015–2024                                     | daily max/min temperature, snowfall, precipitation                  | JSON series                | no key, ~261 calls per pass                     | ten full years in one request, height-corrected to the pass elevation                              | a 9–25 km grid cannot see a single saddle; `snowfall_sum` is fresh snow, not snow lying on the road                                                                                                             |
+| **Open-Meteo Archive**                        | the default model "Best Match": ERA5 and ERA5-Land, from 2017 ECMWF IFS, blended; 2015–2024                                     | daily max/min temperature, snowfall, precipitation, mean snow depth | JSON series                | no key, ~261 calls per pass                     | ten full years in one request, height-corrected to the pass elevation                              | a 9–25 km grid cannot see a single saddle; `snowfall_sum` is fresh snow, not snow lying on the road                                                                                                             |
 | **Open-Meteo Forecast**                       | –                                                                                                                               | the next 7 days for one pass                                        | JSON                       | no key, 10 000 calls/day shared with the above  | the only thing the app cannot precompute                                                           | the one quota a visitor can spend – hence the hour-long cache and the cooldown                                                                                                                                  |
 | **Overpass API**                              | –                                                                                                                               | `mountain_pass` / saddle nodes near a point, drivable ways under it | JSON (Overpass elements)   | no key, fair use                                | one request covers a batch of 25 points; filtering happens on the server                           | a single host with no SLA – when it is down, curation stops, which is why there is a fallback; a query past its `[timeout:…]` answers 200 with a `remark` and no elements, which `hosts.ts` turns into an error |
 | **OSM map API**                               | OSM = OpenStreetMap                                                                                                             | everything inside a bounding box                                    | JSON (`/api/0.6/map.json`) | no key, fair use                                | it is openstreetmap.org itself: "OSM is down" and "curation is down" become the same outage        | one request per point, megabytes where Overpass sends kilobytes, 400 when the box is too full                                                                                                                   |
@@ -274,7 +288,7 @@ stateDiagram-v2
 
   Stored --> Pending: the marker or the start moved<br/>(meta.inputs no longer matches)
   Published --> Pending: same
-  Stored --> Pending: it is an OSRM route<br/>and --upgrade-osrm runs
+  Stored --> Pending: it is an OSRM route, not pinned,<br/>and --upgrade-osrm runs
 ```
 
 ### The retry rule
@@ -286,7 +300,8 @@ told five times is a rule that will be told wrong once.
 
 - **A route is pending when its question changed, not only when it is
   missing.** `meta.inputs` hashes what the route was fetched _for_ – the
-  ascent's start, the marker, its elevation, its `check`. Move a coordinate and
+  ascent's start, the marker, its elevation, its `check`, the routing profile
+  of an unpaved road and a pinned `router`. Move a coordinate and
   the hash stops matching, so the next `data:build` routes it again by itself
   instead of leaving a geometry that ends at the old marker.
 - **A rejection is retried exactly when the outcome could differ**: its inputs
@@ -333,17 +348,17 @@ keeps every road inside the free tier is in
 
 ## Where to look when something is wrong
 
-| Symptom                                          | Look at                                                                                                                                                                                                                                 |
-| ------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| A pass has no line on the map                    | `rejected.json` for its key, then `bun run data:check --explain`                                                                                                                                                                        |
-| `data:check` errors on a stored route            | the route was hand-edited or a limit moved; re-measure with `--explain`, then `data:build`                                                                                                                                              |
-| Every ascent of one pass is missing              | the summit gate: `summits.json`, then `bun run data:locate <slug>`                                                                                                                                                                      |
-| A route looks like a car detour                  | `routes-meta.json` says `osrm`; re-run with `ORS_KEY` and `--upgrade-osrm`                                                                                                                                                              |
-| Profiles are missing after a successful run      | the Open-Meteo budget ran out – `--status`, then run again or use `data:backfill`                                                                                                                                                       |
-| The climate chart is empty for a new pass        | `climate.json` has no entry yet; one run costs ~261 calls                                                                                                                                                                               |
-| An unpaved road is never "gesperrt"              | the archive is not asked for `snow_depth_mean` yet (plan 27, `ARCHIVE_DAILY` in `scripts/lib/climate.ts`); once it is, `data:build` asks again for every unpaved road without `coverPct` (`lacksClimate`), a paved one keeps its series |
-| A photo is wrong or missing                      | `bun run data:photos --only <slug> --refresh`                                                                                                                                                                                           |
-| The map draws nothing at all after a fresh clone | `public/map` is git-ignored; `bun dev` regenerates it                                                                                                                                                                                   |
+| Symptom                                          | Look at                                                                                                                                                                              |
+| ------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| A pass has no line on the map                    | `rejected.json` for its key, then `bun run data:check --explain`                                                                                                                     |
+| `data:check` errors on a stored route            | the route was hand-edited or a limit moved; re-measure with `--explain`, then `data:build`                                                                                           |
+| Every ascent of one pass is missing              | the summit gate: `summits.json`, then `bun run data:locate <slug>`                                                                                                                   |
+| A route looks like a car detour                  | `routes-meta.json` says `osrm`; re-run with `ORS_KEY` and `--upgrade-osrm` – unless the ascent is pinned to OSRM (`router`)                                                          |
+| Profiles are missing after a successful run      | the Open-Meteo budget ran out – `--status`, then run again or use `data:backfill`                                                                                                    |
+| The climate chart is empty for a new pass        | `climate.json` has no entry yet; one run costs ~261 calls                                                                                                                            |
+| An unpaved road is never "gesperrt"              | its series has no `coverPct` (`data:check` counts it); the next `data:build` asks the archive again for every unpaved road without it (`lacksClimate`), a paved one keeps its series |
+| A photo is wrong or missing                      | `bun run data:photos --only <slug> --refresh`                                                                                                                                        |
+| The map draws nothing at all after a fresh clone | `public/map` is git-ignored; `bun dev` regenerates it                                                                                                                                |
 
 ## Glossary
 

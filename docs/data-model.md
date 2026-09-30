@@ -82,6 +82,23 @@ reads – with a mandatory `note` saying why:
 }]
 ```
 
+An ascent may also name its router. Where OpenRouteService takes another
+road than the one the ascent means – over a ridge, down a track – and the
+detour still passes the gate, `router` pins the ride to OSRM, again with a
+mandatory `note` saying what ORS takes instead:
+
+```jsonc
+"ascents": [{
+  "from": { "lat": 44.507, "lon": 7.127 }, "label": "Stroppo",
+  "router": { "use": "osrm", "note": "ORS fährt 24 km über den Grat" }
+}]
+```
+
+The build then never asks ORS for that ride, the car route is not an upgrade
+candidate, and `data:check` asks for no renewal; the pin enters
+`meta.inputs`, so setting or lifting it routes the ride again by itself
+([the stages](data-pipeline.md#the-stages-by-command)).
+
 `season.maintained: true` marks managed toll roads (Grossglockner, Timmelsjoch,
 Nockalm …). They are cleared of snow and therefore get no elevation penalty in
 the status heuristic.

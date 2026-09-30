@@ -89,6 +89,24 @@ export const TourCheck = z
   .refine(atLeastOneLimit, "check nennt keine Grenze");
 
 /**
+ * Per-ascent choice of router, for the rides where OpenRouteService takes a
+ * different road than the one the ascent means – over a ridge, down a track,
+ * round a stretch its road-cycling graph leaves out – and the detour still
+ * passes the gate, because it stays inside the length limit and ends at the
+ * marker. With `use: "osrm"` the build never asks ORS for this ride: the car
+ * profile's route is the one stored, it is not an upgrade candidate, and
+ * `--upgrade-osrm` leaves it alone. `note` is mandatory, like a `check`'s: it
+ * says what ORS takes instead, so the next curator can tell when the choice
+ * has gone stale.
+ */
+export const AscentRouter = z.strictObject({
+  /** What ORS takes instead of the road, and why the car profile is right here. */
+  note: z.string().min(1, "router ohne Begründung (note)"),
+  /** The router that follows the road. OSRM is the only alternative there is. */
+  use: z.literal("osrm"),
+});
+
+/**
  * One ride up or along a road. Which half of this shape applies is decided by
  * the parent's `type` and enforced by `Pass`'s refinement below: a climb
  * (`pass`, `spur`) ends at the entry's own marker and says nothing more, a
@@ -106,6 +124,8 @@ export const Ascent = z.strictObject({
   km: z.number().positive().optional(),
   /** Display name, e.g. "Valloire (Nord)". */
   label: z.string().min(1),
+  /** Routes this ride with the named router alone, see `AscentRouter`. */
+  router: AscentRouter.optional(),
   /** Traverse types only: where the ride ends – there is no summit to aim at. */
   to: LatLon.optional(),
 });
@@ -507,7 +527,8 @@ export const RouteMeta = z.strictObject({
   /**
    * What the route was asked for when it was fetched (`inputsHash` in
    * `scripts/lib/validate.ts`): the ascent's start, the marker and its
-   * elevation, the `check` – a tour's waypoints and stated length. A stored
+   * elevation, the `check`, a gravel road's routing profile and a pinned
+   * router – a tour's waypoints and stated length. A stored
    * route whose job no longer hashes to this was fetched for coordinates that
    * have since moved, and `data:build` re-routes it.
    *

@@ -69,6 +69,10 @@ Routing-Dienst berechnet und dann gespeichert.
   ab als ein Radfahrer und meidet autofreie Straßen; solche Strecken werden
   vermerkt und später mit OpenRouteService neu berechnet. Heute stammen fast
   alle gespeicherten Strecken von OpenRouteService.
+- Umgekehrt nimmt OpenRouteService manchmal eine andere Straße als die
+  gemeinte – über einen Grat, einen Feldweg hinauf –, während das Autoprofil
+  der Passstraße folgt. Für solche Auffahrten ist in den Daten fest vermerkt,
+  dass sie mit OSRM berechnet werden, samt Begründung.
 
 Bevor eine Strecke gespeichert wird, muss sie eine Qualitätsprüfung bestehen
 – siehe [Der Weg der Daten](data-journey.md).
@@ -104,10 +108,10 @@ Das sind Modelle mit einem Raster von 9 bis 25 km, keine Wetterstation. Einen ei
 eher zu mild, und „Neuschnee“ heißt frisch gefallener Schnee, nicht Schnee,
 der auf der Straße liegt.
 
-Für ungeteerte Straßen ist zusätzlich der Anteil der Tage mit mindestens
-10 cm Schneedecke vorgesehen; er entscheidet dort, wann die Straße
-zugeschneit ist (siehe [Skalen und Status](scales-and-status.md)). Die
-gespeicherten Klimareihen enthalten die Schneehöhe bisher noch nicht.
+Für ungeteerte Straßen kommt der Anteil der Tage mit mindestens 10 cm
+Schneedecke hinzu; er entscheidet dort, wann die Straße zugeschneit ist
+(siehe [Skalen und Status](scales-and-status.md)). Ältere Reihen geteerter
+Straßen haben ihn nicht – dort entscheidet ohnehin die Wintersperre.
 
 ### Wettervorhersage
 

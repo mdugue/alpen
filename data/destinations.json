@@ -383,8 +383,7 @@
    "toblach-dobbiaco"
   ],
   "include": [
-   "passo-furcia",
-   "passo-monte-croce-comelico"
+   "passo-furcia"
   ],
   "exclude": [],
   "character": "Tre Cime, Giau, Falzarego, Tre Croci, Staulanza und Duran: die östlichen Dolomiten, ruhiger als das Sella-Gebiet und mit dem berühmtesten Stichstraßen-Finale der Alpen.",
@@ -715,5 +714,43 @@
   "character": "Furkajoch, Faschinajoch, Hochtannberg, Arlberg, Riedberg und die Silvretta-Hochalpenstraße: der Alpennordrand zwischen Bregenzerwald und Allgäu, grün und mit langen Anstiegen.",
   "multiDay": "Vier Tage; die Silvretta und der Arlberg verbinden ins Tiroler Oberland.",
   "access": "Bahnhof Bludenz, Langen am Arlberg oder Oberstdorf; Zürich und München in zwei Stunden."
+ },
+ {
+  "slug": "hochvogesen",
+  "name": "Hochvogesen",
+  "country": "FR",
+  "center": {
+   "lat": 48.02,
+   "lon": 7.06
+  },
+  "radiusKm": 25,
+  "baseTowns": [
+   "munster",
+   "gerardmer",
+   "la-bresse"
+  ],
+  "include": [],
+  "exclude": [],
+  "character": "Schlucht, Route des Crêtes und Hohneck über dem Munstertal: Wiesenkämme auf 1200 bis 1350 m, kurze, steile Anstiege aus den Tälern und am Wochenende Motorräder auf dem Kamm.",
+  "multiDay": "Basis für ein langes Wochenende bis vier Tage; die Runde über Schlucht, Kammstraße und Grand Ballon an einem Tag, der Süden mit dem Ballon d'Alsace ist eine Etappe entfernt.",
+  "access": "Mit der Bahn nach Colmar und weiter mit der Regionalbahn nach Munster; die nächsten Flughäfen sind Basel-Mulhouse und Straßburg."
+ },
+ {
+  "slug": "suedvogesen",
+  "name": "Südvogesen",
+  "country": "FR",
+  "center": {
+   "lat": 47.87,
+   "lon": 7.03
+  },
+  "radiusKm": 25,
+  "baseTowns": [
+   "thann"
+  ],
+  "include": [],
+  "exclude": [],
+  "character": "Ballon d'Alsace, La Planche des Belles Filles und der Grand Ballon – die Tour-de-France-Berge der Vogesen –, dazwischen ruhige Waldpässe und die viel befahrene N66 über Bussang.",
+  "multiDay": "Zwei bis drei Tage; die Runde über Hundsruck, Ballon d'Alsace und Bussang an einem Tag, die Planche als Abstecher von Plancher-les-Mines.",
+  "access": "Mit dem TGV nach Mulhouse und mit der Bahn weiter nach Thann und ins Thurtal; für die Westseite Belfort-Montbéliard TGV."
  }
 ]
