@@ -2028,14 +2028,22 @@
      "lat": 44.579,
      "lon": 7.189
     },
-    "label": "Sampeyre"
+    "label": "Sampeyre",
+    "router": {
+     "use": "osrm",
+     "note": "ORS nimmt ab Sampeyre eine Feldweg-Abkürzung (12,8 km, ein Kilometer mit 22,6 %) oder fährt mit dem Rennradprofil 70 km außen herum; OSRM folgt der Passstraße (15,9 km, 8,1 %)."
+    }
    },
    {
     "from": {
      "lat": 44.507,
      "lon": 7.127
     },
-    "label": "Stroppo"
+    "label": "Stroppo",
+    "router": {
+     "use": "osrm",
+     "note": "ORS fährt ab Stroppo 24 km über die Gratstraße (ein Kilometer mit 33,8 %); OSRM folgt der Passstraße (16,2 km, 7,2 %)."
+    }
    }
   ]
  },
@@ -7426,7 +7434,11 @@
      "lat": 44.4286,
      "lon": 8.7542
     },
-    "label": "Voltri (Süd)"
+    "label": "Voltri (Süd)",
+    "router": {
+     "use": "osrm",
+     "note": "ORS weicht auf beiden Graphen über eine 150 m höhere Nebenstraße aus; OSRM folgt der SS456 durch den Scheiteltunnel."
+    }
    }
   ]
  },
@@ -8214,7 +8226,11 @@
      "lat": 45.7837,
      "lon": 9.8255
     },
-    "label": "Cene (West)"
+    "label": "Cene (West)",
+    "router": {
+     "use": "osrm",
+     "note": "ORS nimmt ab Cene auf beiden Graphen eine Nebenstraße über eine 70 m höhere Kuppe; OSRM folgt der Passstraße mit dem Scheitel am Ende."
+    }
    }
   ]
  },

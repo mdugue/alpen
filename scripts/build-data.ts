@@ -161,9 +161,11 @@ for (const lim of [routerOrs, routerOsrm, meteo]) {
       `${lim.name}: Kontingent erschöpft (${lim.exhausted}) – Rest im nächsten Lauf`,
     );
 }
-const osrmRoutes = Object.values(state.meta).filter(
-  (x) => x.source === "osrm" && !x.orsDeclined,
-).length;
+// The car routes still to be upgraded are the plan's count, which `report()`
+// prints; the rides the curator pinned to OSRM are final and said apart.
+const pinnedRoutes = curated.passes
+  .flatMap((p) => p.ascents)
+  .filter((a) => a.router).length;
 const declinedRoutes = Object.values(state.meta).filter(
   (x) => x.orsDeclined,
 ).length;
@@ -181,13 +183,15 @@ console.log(
         ? ` – ORS gestoppt: ${routerOrs.exhausted}`
         : routerOrs.requests
           ? ""
-          : " – ORS war eingerichtet, wurde aber nie gebraucht (nichts zu routen?)"
+          : routerOsrm.requests
+            ? " – nur auf OSRM festgelegte Fahrten zu routen (router)"
+            : " – ORS war eingerichtet, wurde aber nie gebraucht (nichts zu routen?)"
       : " – ohne ORS_KEY, deshalb Autoprofil"
   }`,
 );
-if (osrmRoutes)
+if (pinnedRoutes)
   console.log(
-    `${osrmRoutes} Routen stammen vom OSRM-Autoprofil und sollten mit ORS_KEY erneuert werden`,
+    `${pinnedRoutes} Fahrten sind auf OSRM festgelegt: ORS nimmt dort eine andere Straße (router in data/passes.json)`,
   );
 if (declinedRoutes)
   console.log(
