@@ -20,6 +20,7 @@ import { isTraverse, isUnpaved } from "../../lib/regions";
 import { ascentKey, tourKey } from "../../lib/route-key";
 import type {
   AscentCheck,
+  AscentRouter,
   ClimateYear,
   ElevationProfile,
   LatLon,
@@ -40,6 +41,7 @@ import {
   ascentMetrics,
   checkRoadAscent,
   checkTour,
+  geometryHash,
   profileOf,
   SECOND_GRAPH,
   suspectPoint,
@@ -94,6 +96,11 @@ export type RouteJob = {
   label: string;
   /** The router's graph, from the road's surface (`profileOf`). */
   profile: RoutingProfile;
+  /**
+   * The router the curator named for this ride (`router` on the ascent), or
+   * none: then ORS is asked first and OSRM is the fallback.
+   */
+  router?: AscentRouter["use"];
   waypoints: LatLon[];
 } & (
   | {
@@ -136,6 +143,7 @@ export const routeJobs = (passes: Pass[], tours: Tour[]): RouteJob[] => [
     return p.ascents.map((a, i): RouteJob => {
       const key = ascentKey(p.slug, i);
       const label = `${p.name} ab ${a.label}`;
+      const router = a.router ? { router: a.router.use } : {};
       // A traverse is routed between its two curated ends and judged against
       // its stated length; a climb is routed to the marker (`roadMetrics`).
       if (isTraverse(p.type))
@@ -148,6 +156,7 @@ export const routeJobs = (passes: Pass[], tours: Tour[]): RouteJob[] => [
           label,
           marker,
           profile,
+          ...router,
           statedKm: a.km ?? 0,
           to: a.to ?? summit,
           waypoints: [a.from, a.to ?? summit],
@@ -161,6 +170,7 @@ export const routeJobs = (passes: Pass[], tours: Tour[]): RouteJob[] => [
         label,
         marker,
         profile,
+        ...router,
         waypoints: [a.from, summit],
       };
     });
@@ -222,6 +232,9 @@ const blockedBy = (finding: Finding | null) =>
 export const upgradable = (job: RouteJob, stored: Stored, flags: Flags) =>
   stored.routes[job.key] !== undefined &&
   flags.ors &&
+  // The curator named OSRM for this ride: ORS takes another road here, so its
+  // answer is not an upgrade, however well it would pass the gate.
+  job.router === undefined &&
   (stored.meta[job.key]?.source ?? "osrm") === "osrm" &&
   // ORS has been asked about this road and said it does not carry it. Asking
   // again on every upgrade pass buys the same 404; `--retry-rejected` is the
@@ -517,6 +530,30 @@ export const storedFor = (
   const geom = stored.routes[job.key];
   return fetched && !replace && geom
     ? { geom, meta: stored.meta[job.key], profile: stored.profiles[job.key] }
+    : undefined;
+};
+
+/**
+ * A profile already paid for this very geometry, if there is one. Either an
+ * earlier rejection of it left one (`afterGate` caches it), or the route came
+ * back as the geometry already stored: the question changed – a `check`, a
+ * pinned router, an elevation – but not the road, and the profile stored with
+ * it is this geometry's profile. Never one measured on another geometry; and
+ * a geometry read out of routes.json to be judged again is the stored route,
+ * whose profile is what is being checked, not a cache.
+ */
+export const paidFor = (
+  key: string,
+  stored: Stored,
+  hash: string,
+  /** False when the geometry came out of routes.json and is only being judged. */
+  fetched: boolean,
+): ElevationProfile | undefined => {
+  const rejection = stored.rejected[key];
+  if (rejection?.hash === hash && rejection.profile) return rejection.profile;
+  const route = stored.routes[key];
+  return fetched && route !== undefined && geometryHash(route) === hash
+    ? stored.profiles[key]
     : undefined;
 };
 

@@ -39,6 +39,7 @@ import {
   judge,
   measure,
   ofRoad,
+  paidFor,
   plan,
   secondGraph,
   storedFor,
@@ -204,13 +205,15 @@ export const runPipeline = async ({
     label: string,
     waypoints: LatLon[],
     profile: RoutingProfile,
+    /** The curator's choice for this ride (`RouteJob.router`): ORS is then never asked. */
+    router?: RouteJob["router"],
   ): Promise<{
     declined: boolean;
     geom: RouteGeometry;
     source: RouteSource;
   }> => {
     let declined = false;
-    if (flags.ors && !stopped("ors")) {
+    if (flags.ors && router === undefined && !stopped("ors")) {
       try {
         return {
           declined,
@@ -385,7 +388,7 @@ export const runPipeline = async ({
     // a retry would then always pay for a profile it already has.
     const before = state.rejected[job.key];
     const unchanged = before?.hash === hash;
-    const cachedProfile = unchanged ? before?.profile : undefined;
+    const cachedProfile = paidFor(job.key, state, hash, fetched);
     const base = {
       cachedProfile,
       geom,
@@ -426,8 +429,10 @@ export const runPipeline = async ({
     // An OSRM route stored while an ORS key exists is provisional – the upgrade
     // pass will replace the geometry and the profile would have to be paid for
     // a second time. 100 Open-Meteo calls is far too much to spend on a road we
-    // already know is the wrong one.
-    const deferred = source === "osrm" && flags.ors && !before;
+    // already know is the wrong one. A ride pinned to OSRM is not provisional:
+    // nothing will replace it, so its profile is paid for straight away.
+    const deferred =
+      source === "osrm" && flags.ors && !before && job.router === undefined;
     if (!ofRoad(job) || deferred) {
       if (fetched) await accepted();
       if (deferred)
@@ -536,7 +541,12 @@ export const runPipeline = async ({
     .map(async ({ job, replace, upgrade }, i, all) => {
       const tag = counter(all.length)(i);
       try {
-        const first = await route(job.label, job.waypoints, job.profile);
+        const first = await route(
+          job.label,
+          job.waypoints,
+          job.profile,
+          job.router,
+        );
         const { declined, source } = first;
         if (upgrade && (state.meta[job.key]?.source ?? "osrm") === source) {
           const next = afterDecline(job, state, declined);

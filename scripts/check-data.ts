@@ -228,10 +228,13 @@ const inspect = (
   // An OSRM route whose ORS candidate was refused is reported with that
   // rejection below, not as "erneuern": ORS has been asked. So is one ORS
   // answered 404 for – its road-cycling graph does not carry this road, and
-  // asking again on every run costs a request to hear the same thing.
+  // asking again on every run costs a request to hear the same thing. And so
+  // is a ride the curator pinned to OSRM (`router`): ORS takes another road
+  // there, and nothing is to be renewed.
   else if (
     source === "osrm" &&
     !entry?.orsDeclined &&
+    jobs.get(key)?.router === undefined &&
     !(rejected && key in rejected)
   )
     warnings.push(

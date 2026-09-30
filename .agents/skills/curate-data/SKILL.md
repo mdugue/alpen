@@ -222,9 +222,29 @@ three ways out, in this order of preference:
 A rejection next to a stored route ("ORS-Kandidat abgewiesen … die osrm-Route
 bleibt") is the upgrade pass having asked ORS for a car-profile route and the
 gate having refused the answer – ORS routes around roads it considers unfit
-for road cycling (Mont Cenis from Susa, Sampeyre, Grosse Scheidegg). The OSRM
+for road cycling (Mont Cenis from Susa, Grosse Scheidegg). The OSRM
 route stays on the map and gets its profile; nothing is lost, and the same
 three ways out apply.
+
+### When ORS takes another road and the gate lets it
+
+The gate catches a detour by its length, its ends and where its top lies – not
+one that stays under 60 km and ends at the marker. The Colle di Sampeyre came
+back 24 km along the ridge from Stroppo and 12.8 km up a track from Sampeyre,
+both passing. The tell-tale is in the profile, not in `data:check`: a steepest
+kilometre far above the road's reputation (33.8 % and 22.6 % there), a length
+far from the `classicAscent`, or a top well above the marker. Compare with the
+car route (`--only <slug>` without `ORS_KEY` shows it) and, if OSRM takes the
+road, pin the ride:
+
+```jsonc
+"router": { "use": "osrm", "note": "ORS fährt ab Stroppo 24 km über den Grat" }
+```
+
+The next `data:build` routes it again with OSRM alone; the pin is part of the
+ride's question, so nothing has to be deleted by hand, and the car route is
+then final – no upgrade, no renewal warning. The note says what ORS takes
+instead, so a later curator can tell when the pin has gone stale.
 
 ## Honesty
 

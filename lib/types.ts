@@ -14,6 +14,7 @@ export type Period = z.infer<typeof S.Period>;
 export type Status = z.infer<typeof S.Status>;
 export type LatLon = z.infer<typeof S.LatLon>;
 export type AscentCheck = z.infer<typeof S.AscentCheck>;
+export type AscentRouter = z.infer<typeof S.AscentRouter>;
 export type TourCheck = z.infer<typeof S.TourCheck>;
 export type Ascent = z.infer<typeof S.Ascent>;
 export type PassSeason = z.infer<typeof S.PassSeason>;
