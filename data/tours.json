@@ -1168,5 +1168,174 @@
     "lon": 7.1021
    }
   ]
+ },
+ {
+  "slug": "grand-colombier-runde",
+  "surface": "asphalt",
+  "name": "Grand Colombier – Biche – Richemond",
+  "color": "#7a8fb0",
+  "km": 81,
+  "elevationGain": 2150,
+  "passes": [
+   "grand-colombier",
+   "col-de-la-biche",
+   "col-de-richemond"
+  ],
+  "season": null,
+  "note": "Über den Grand Colombier von Culoz mit Rampen um 18 %; die Kammstraße zur Biche ist schmal.",
+  "description": "Von Culoz auf den Grand Colombier, über die Kammstraße zum Col de la Biche, weiter zum Col de Richemond und durchs Rhônetal zurück.",
+  "waypoints": [
+   {
+    "lat": 45.8477,
+    "lon": 5.7809
+   },
+   {
+    "lat": 45.9035,
+    "lon": 5.7617
+   },
+   {
+    "lat": 45.9525,
+    "lon": 5.749
+   },
+   {
+    "lat": 46.0083,
+    "lon": 5.7484
+   },
+   {
+    "lat": 45.9668,
+    "lon": 5.8221
+   },
+   {
+    "lat": 45.8477,
+    "lon": 5.7809
+   }
+  ]
+ },
+ {
+  "slug": "vallee-de-joux-runde",
+  "surface": "asphalt",
+  "name": "Marchairuz – Mollendruz",
+  "color": "#9a8a5a",
+  "km": 61,
+  "elevationGain": 1150,
+  "passes": [
+   "col-du-marchairuz",
+   "col-du-mollendruz"
+  ],
+  "season": null,
+  "note": "Zwei Pässe zwischen der Vallée de Joux und dem Jurafuß; ruhige Straßen, im Tal oft kühl.",
+  "description": "Von Le Sentier über den Marchairuz hinab nach Bière, am Jurafuß nach L'Isle, über den Mollendruz zurück in die Vallée de Joux.",
+  "waypoints": [
+   {
+    "lat": 46.606,
+    "lon": 6.2315
+   },
+   {
+    "lat": 46.584,
+    "lon": 6.2123
+   },
+   {
+    "lat": 46.5528,
+    "lon": 6.2503
+   },
+   {
+    "lat": 46.5374,
+    "lon": 6.3337
+   },
+   {
+    "lat": 46.6188,
+    "lon": 6.4117
+   },
+   {
+    "lat": 46.6499,
+    "lon": 6.3659
+   },
+   {
+    "lat": 46.6684,
+    "lon": 6.3256
+   },
+   {
+    "lat": 46.606,
+    "lon": 6.2315
+   }
+  ]
+ },
+ {
+  "slug": "luchon-runde",
+  "surface": "asphalt",
+  "name": "Port de Balès – Peyresourde",
+  "color": "#b0706a",
+  "km": 87,
+  "elevationGain": 2500,
+  "passes": [
+   "port-de-bales",
+   "col-de-peyresourde"
+  ],
+  "season": null,
+  "note": "Der Port de Balès ist im Winter gesperrt; seine Nordseite ist schmal und einsam.",
+  "description": "Von Luchon talaus nach Mauléon-Barousse, über den Port de Balès hinüber und über den Peyresourde zurück nach Luchon.",
+  "waypoints": [
+   {
+    "lat": 42.7911,
+    "lon": 0.5912
+   },
+   {
+    "lat": 42.9595,
+    "lon": 0.5675
+   },
+   {
+    "lat": 42.8742,
+    "lon": 0.5006
+   },
+   {
+    "lat": 42.8023,
+    "lon": 0.4631
+   },
+   {
+    "lat": 42.7911,
+    "lon": 0.5912
+   }
+  ]
+ },
+ {
+  "slug": "aspin-ancizan-runde",
+  "surface": "asphalt",
+  "name": "Aspin – Hourquette d'Ancizan",
+  "color": "#6a8ab0",
+  "km": 41,
+  "elevationGain": 1550,
+  "passes": [
+   "col-d-aspin",
+   "hourquette-d-ancizan"
+  ],
+  "season": null,
+  "note": "Kurz, aber zwei volle Anstiege; die Hourquette ist im Winter gesperrt.",
+  "description": "Von Arreau über den Aspin nach Payolle und über die Hourquette d'Ancizan zurück ins Aure-Tal.",
+  "waypoints": [
+   {
+    "lat": 42.9055,
+    "lon": 0.359
+   },
+   {
+    "lat": 42.9423,
+    "lon": 0.3274
+   },
+   {
+    "lat": 42.9425,
+    "lon": 0.2851
+   },
+   {
+    "lat": 42.8999,
+    "lon": 0.3058
+   },
+   {
+    "lat": 42.8735,
+    "lon": 0.3385
+   },
+   {
+    "lat": 42.9055,
+    "lon": 0.359
+   }
+  ]
  }
 ]
