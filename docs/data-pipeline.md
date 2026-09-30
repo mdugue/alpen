@@ -143,7 +143,7 @@ the whole run – and every counter with it – to the keys containing that text
 `--retry-rejected` asks again for everything the gate refused (see
 [the retry rule](#the-retry-rule): normally nothing has to), and
 `--upgrade-osrm` re-routes the car-profile routes once an `ORS_KEY` is
-available. `scripts/backfill.sh` (`bun run data:backfill`) simply runs
+available – all but the rides pinned to OSRM (`router`, below). `scripts/backfill.sh` (`bun run data:backfill`) simply runs
 `data:build` in hourly batches until nothing is missing.
 
 The profile follows the surface (plan 27): `profileOf` in
@@ -168,7 +168,8 @@ hash. A rejection from before this rule stays where it is until
 `--retry-rejected --only <slug>` asks again.
 
 Neither graph is right everywhere, and the gate cannot always tell: a detour
-under 60 km that ends at the marker with its top in the last quarter passes.
+inside the length limit that ends at the marker with its top in the last
+quarter passes.
 The Colle di Sampeyre came back 24 km along the ridge from Stroppo and 12.8 km
 up a track from Sampeyre, both inside the limits, while OSRM's car route took
 the road on both sides. For those rides the curator pins the router on the
@@ -287,7 +288,7 @@ stateDiagram-v2
 
   Stored --> Pending: the marker or the start moved<br/>(meta.inputs no longer matches)
   Published --> Pending: same
-  Stored --> Pending: it is an OSRM route<br/>and --upgrade-osrm runs
+  Stored --> Pending: it is an OSRM route, not pinned,<br/>and --upgrade-osrm runs
 ```
 
 ### The retry rule
@@ -299,7 +300,8 @@ told five times is a rule that will be told wrong once.
 
 - **A route is pending when its question changed, not only when it is
   missing.** `meta.inputs` hashes what the route was fetched _for_ – the
-  ascent's start, the marker, its elevation, its `check`. Move a coordinate and
+  ascent's start, the marker, its elevation, its `check`, the routing profile
+  of an unpaved road and a pinned `router`. Move a coordinate and
   the hash stops matching, so the next `data:build` routes it again by itself
   instead of leaving a geometry that ends at the old marker.
 - **A rejection is retried exactly when the outcome could differ**: its inputs

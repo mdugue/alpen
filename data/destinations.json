@@ -723,7 +723,7 @@
    "lat": 48.02,
    "lon": 7.06
   },
-  "radiusKm": 22,
+  "radiusKm": 25,
   "baseTowns": [
    "munster",
    "gerardmer",
@@ -740,10 +740,10 @@
   "name": "Südvogesen",
   "country": "FR",
   "center": {
-   "lat": 47.84,
-   "lon": 6.93
+   "lat": 47.87,
+   "lon": 7.03
   },
-  "radiusKm": 22,
+  "radiusKm": 25,
   "baseTowns": [
    "thann"
   ],

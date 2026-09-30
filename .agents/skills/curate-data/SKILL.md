@@ -233,17 +233,20 @@ one that stays under 60 km and ends at the marker. The Colle di Sampeyre came
 back 24 km along the ridge from Stroppo and 12.8 km up a track from Sampeyre,
 both passing. The tell-tale is in the profile, not in `data:check`: a steepest
 kilometre far above the road's reputation (33.8 % and 22.6 % there), a length
-far from the `classicAscent`, or a top well above the marker. Compare with the
-car route (`--only <slug>` without `ORS_KEY` shows it) and, if OSRM takes the
-road, pin the ride:
+far from the `classicAscent`, or a top well above the marker. The pin is the
+comparison: set it, run `bun run data:build --only <slug>` and look at the car
+route it stores – a stored route with unchanged inputs is kept, so a run
+without `ORS_KEY` alone would ask OSRM nothing. If OSRM takes the road, keep
+the pin; if not, remove it and the next build routes the ride with ORS again.
 
 ```jsonc
 "router": { "use": "osrm", "note": "ORS fährt ab Stroppo 24 km über den Grat" }
 ```
 
-The next `data:build` routes it again with OSRM alone; the pin is part of the
-ride's question, so nothing has to be deleted by hand, and the car route is
-then final – no upgrade, no renewal warning. The note says what ORS takes
+The pin is part of the ride's question, so nothing has to be deleted by hand:
+the next `data:build` routes it with OSRM alone – for free when the geometry
+comes back as the one stored, whose profile is kept – and the car route is
+then final: no upgrade, no renewal warning. The note says what ORS takes
 instead, so a later curator can tell when the pin has gone stale.
 
 ## Honesty

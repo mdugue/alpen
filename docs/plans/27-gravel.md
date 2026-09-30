@@ -7,8 +7,13 @@ surface in the jobs and in `meta.inputs`, `coverPct` in the buckets and the
 dashed line and the ringed dot, the words in the kicker and the popup, the
 dialog and the docs. The archive now carries the snow depth
 (`snow_depth_mean` in `ARCHIVE_DAILY`, a daily variable, so no hourly
-aggregation; at five variables the request still costs ~261 calls, and the
-Finestre's series was fetched again with it). Open: the first data batch
+aggregation; by Open-Meteo's documented weighting – the span, and the number
+of variables only past ten – five variables still cost ~261 calls; the API
+reports no cost to measure it by). The Finestre's series was fetched again
+with it; the paved roads' series were not, since they never read the cover,
+so `coverPct` exists only on unpaved roads and on series fetched from now on
+– the paved-pass cover signal (`docs/roadmap.md` §8) needs that backfill
+first. Open: the first data batch
 (it needs `data:locate` and an `ORS_KEY`), the curated-geometry escape hatch
 (no road needs it yet), the calibration of the two cover shares against
 that batch, and the tagline (waits for twenty gravel roads).

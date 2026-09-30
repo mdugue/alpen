@@ -131,7 +131,9 @@ außerhalb des Kreises liegt oder eine Korrektur nur wiederholt, was der Kreis
 schon sagt, und es listet die Straßen, die in keinem Reiseziel liegen.
 Außerdem misst es jede gespeicherte Strecke neu und hält sie gegen die
 heutigen Grenzen. Eine gespeicherte Strecke, die durchfällt, ist ein Fehler;
-eine abgelehnte oder nur mit OSRM berechnete ist eine Warnung.
+eine abgelehnte ist eine Warnung, ebenso eine nur mit OSRM berechnete – außer
+bei den Auffahrten, die ausdrücklich auf OSRM festgelegt sind, weil
+OpenRouteService dort eine andere Straße nimmt.
 
 ## 4. Beim Build abgeleitet
 

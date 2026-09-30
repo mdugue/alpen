@@ -7,14 +7,20 @@ frame around what it draws and a far range would zoom that frame out, not
 fall out of it; the claim and the description name the Vosges, and the chip
 and the dialog section on the ranges show by themselves now that a second
 range holds a road). Step 5: the Vosges are in – 17 roads (the Route des
-Crêtes, the Grand Ballon and the Hohneck with a winter window, the rest
-`season: null`), 5 towns, 2 loops and 2 areas (Hochvogesen, Südvogesen);
-the read-back shows every winter half-month as "Höhe", "Schnee" or "Frost"
-and best windows from early May to early October, the two lowest cols
-(Sainte-Marie, Hundsruck, ~750 m) from late March. One road short of the 18
-the acceptance asks for; the next candidates are the Markstein, the Col des
-Chevrères and the northern Vosges (Donon, Champ du Feu). The Jura is
-drafted and waits for a day's Open-Meteo quota ·
+Crêtes and the Hohneck with a winter window, the rest `season: null`), 5
+towns, 2 loops and 2 areas (Hochvogesen, Südvogesen). The read-back: every
+winter half-month reads "Höhe", "Schnee" and "Frost" or the winter window,
+so no Vosges col is "gut" in January. The best windows are less uniform than
+the acceptance's "May to September": 10 roads run from early May to early
+October; the Ballon d'Alsace, Oderen, Bussang and the Planche from early
+April, the Grosse Pierre from late April, the two lowest cols (Sainte-Marie,
+Hundsruck, ~750 m) from late March – the Hundsruck only to early July, a hot
+half-month breaking it. Whether April at 1100 m is too rosy is the risk this
+plan names, to be decided with these numbers; nothing in `lib/status.ts` has
+changed for it yet. One road short of the 18 the acceptance asks for; the
+next candidates are the Markstein, the Col des Chevrères and the northern
+Vosges (Donon, Champ du Feu). The Jura is drafted and waits for a day's
+Open-Meteo quota ·
 **Effort:** M for code, L for curation ·
 **Depends on:** 09 (schema), 05 (filters and search) · **Unblocks:** 26
 (the Pyrenees reuse the range mechanism), the weekend answer for the

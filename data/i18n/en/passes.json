@@ -133,7 +133,7 @@
  },
  "col-d-oderen": {
   "classicAscent": "11.4 km, 4 % from Fellering",
-  "note": "A gentle crossing from the upper Thur valley to Ventron and the Moselle, quiet and wooded.",
+  "note": "A gentle crossing from the upper Thur valley to Ventron in the Moselotte valley, quiet and wooded.",
   "ascents": [
    "Fellering (east)",
    "Ventron (west)"
@@ -362,7 +362,7 @@
  },
  "col-de-la-schlucht": {
   "classicAscent": "15.4 km, 4.9 % from Munster",
-  "note": "The main crossing from Colmar to Gérardmer, with the traffic to match, cleared in winter. From Munster the finer and steeper side, from Gérardmer via Xonrupt almost flat; the Route des Crêtes starts at the top.",
+  "note": "The main crossing from Colmar to Gérardmer, with the traffic to match, cleared in winter; on the Tour de France route in 2023. From Munster the finer and steeper side, from Gérardmer via Xonrupt almost flat; the Route des Crêtes starts at the top.",
   "ascents": [
    "Munster (east)",
    "Gérardmer (west)"
@@ -423,7 +423,7 @@
  },
  "col-de-sainte-marie": {
   "classicAscent": "6.1 km, 6.9 % from Sainte-Marie-aux-Mines",
-  "note": "The old crossing from Sainte-Marie-aux-Mines into Lorraine; since the traffic has used the Maurice-Lemaire tunnel, the pass road is quiet.",
+  "note": "The old crossing from Sainte-Marie-aux-Mines into Lorraine; most of the through traffic now takes the Maurice-Lemaire tunnel below it.",
   "ascents": [
    "Sainte-Marie-aux-Mines (east)",
    "Wisembach (west)"
@@ -513,7 +513,7 @@
  },
  "col-du-calvaire": {
   "classicAscent": "11.2 km, 5.8 % from Orbey",
-  "note": "Above the Lac Blanc at the northern end of the crest road. Westwards the road stays on the crest to the Col du Bonhomme – not a second ascent.",
+  "note": "Above the Lac Blanc at the northern end of the crest road. Northwards the road stays on the crest to the Col du Bonhomme – not a second ascent.",
   "ascents": [
    "Orbey (east)"
   ]
@@ -596,7 +596,7 @@
  },
  "col-du-petit-ballon": {
   "classicAscent": "7.9 km, 8 % from Wasserbourg",
-  "note": "A bare dome with mountain inns and a view over the Munster valley and the Rhine plain. Narrow and steep from Wasserbourg; the south side from the Florival via Linthal is not listed as an ascent here.",
+  "note": "A bare dome with mountain inns and a view over the Munster valley and the Rhine plain, on the Tour de France route in 2023. Narrow and steep from Wasserbourg; the south side from the Florival via Linthal is still missing here, because no router takes it without a detour.",
   "ascents": [
    "Wasserbourg (north)"
   ]
@@ -934,7 +934,7 @@
  },
  "grand-ballon": {
   "classicAscent": "15.8 km, 6.2 % from Willer-sur-Thur",
-  "note": "The highest point of the Vosges a road reaches: 1343 m at the Col du Grand Ballon; the summit with its radar dome (1424 m) is a few minutes on foot. On the Tour de France route several times; closed in winter with the Route des Crêtes, roughly mid-November to mid-April.",
+  "note": "The highest point of the Vosges a road reaches: 1343 m at the Col du Grand Ballon; the summit with its radar dome (1424 m) is a few minutes on foot. On the Tour de France route several times; the crest road over the top is closed in sections in winter.",
   "ascents": [
    "Willer-sur-Thur (south)",
    "Uffholtz (east)"
@@ -1135,7 +1135,7 @@
  },
  "mangart-sattel": {
   "classicAscent": "12 km, 9 % from Log pod Mangartom",
-  "note": "Slovenia's highest road, a dead end, usually open until late October.",
+  "note": "Slovenia's highest road, a dead end, usually open until late October. The ride now ends at the car park at just over 1900 m: the loop up to the saddle is closed.",
   "ascents": [
    "Log pod Mangartom"
   ]
@@ -1818,7 +1818,7 @@
  },
  "route-des-cretes": {
   "classicAscent": "29 km from the Col de la Schlucht to the Grand Ballon",
-  "note": "The crest road of the high Vosges, built as a supply road in the First World War: over grassy domes with views of the Rhine plain and, on a clear day, the Alps. Closed in winter roughly mid-November to mid-April; lots of motorbikes at weekends.",
+  "note": "The crest road of the high Vosges, built as a supply road in the First World War: over grassy domes with views of the Rhine plain and, on a clear day, the Alps; the Tour de France rides stretches of it too, such as from the Markstein to the Grand Ballon. Closed in winter roughly mid-November to mid-April; lots of motorbikes at weekends.",
   "ascents": [
    "Col de la Schlucht"
   ]

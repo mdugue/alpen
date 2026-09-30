@@ -223,6 +223,34 @@ const blockedBy = (finding: Finding | null) =>
   finding?.reasons.filter((r) => r.blocks) ?? [];
 
 /**
+ * Whether ORS is asked for this ride at all. Not when the curator pinned it
+ * to OSRM (`router` on the ascent): ORS takes another road there, so its
+ * answer is neither the first choice nor an upgrade, however well it would
+ * pass the gate. The one place the pin is read.
+ */
+export const asksOrs = (job: RouteJob) => job.router === undefined;
+
+/**
+ * A car-profile route that an ORS answer is still meant to replace – the
+ * rule `upgradable` applies to a stored route and `defersProfile` to one the
+ * gate is storing right now, so the two cannot drift apart.
+ */
+const awaitsUpgrade = (
+  job: RouteJob,
+  source: RouteSource,
+  /** ORS answered 404 for this road (`orsDeclined`). */
+  declined: boolean,
+  flags: Flags,
+) =>
+  flags.ors &&
+  asksOrs(job) &&
+  source === "osrm" &&
+  // ORS has been asked about this road and said it does not carry it. Asking
+  // again on every upgrade pass buys the same 404; `--retry-rejected` is the
+  // way back in, for when ORS' own graph has moved.
+  (flags.retryRejected || !declined);
+
+/**
  * Re-routing a stored OSRM route also invalidates its profile, and a profile
  * is 100 Open-Meteo calls – upgrading everything at once costs more than
  * filling every gap. So the upgrade is a deliberate second campaign behind
@@ -231,15 +259,12 @@ const blockedBy = (finding: Finding | null) =>
  */
 export const upgradable = (job: RouteJob, stored: Stored, flags: Flags) =>
   stored.routes[job.key] !== undefined &&
-  flags.ors &&
-  // The curator named OSRM for this ride: ORS takes another road here, so its
-  // answer is not an upgrade, however well it would pass the gate.
-  job.router === undefined &&
-  (stored.meta[job.key]?.source ?? "osrm") === "osrm" &&
-  // ORS has been asked about this road and said it does not carry it. Asking
-  // again on every upgrade pass buys the same 404; `--retry-rejected` is the
-  // way back in, for when ORS' own graph has moved.
-  (flags.retryRejected || !stored.meta[job.key]?.orsDeclined);
+  awaitsUpgrade(
+    job,
+    stored.meta[job.key]?.source ?? "osrm",
+    stored.meta[job.key]?.orsDeclined ?? false,
+    flags,
+  );
 
 /**
  * An OSRM route ORS has not been asked about yet. Once ORS has answered and
@@ -248,6 +273,22 @@ export const upgradable = (job: RouteJob, stored: Stored, flags: Flags) =>
  */
 export const provisional = (job: RouteJob, stored: Stored, flags: Flags) =>
   upgradable(job, stored, flags) && !(job.key in stored.rejected);
+
+/**
+ * The same question for a route the gate is storing right now: a car route
+ * the upgrade pass will replace waits for its profile, because paying 100
+ * Open-Meteo calls for a road already known to be the wrong one would be
+ * paying twice. A ride pinned to OSRM, one ORS declined and one whose ORS
+ * candidate was refused are final, and their profile is paid at once.
+ */
+export const defersProfile = (
+  job: RouteJob,
+  stored: Stored,
+  flags: Flags,
+  source: RouteSource,
+  declined: boolean,
+) =>
+  awaitsUpgrade(job, source, declined, flags) && !(job.key in stored.rejected);
 
 /**
  * A stored route was fetched for a question – the ascent's start, the marker,
@@ -413,28 +454,6 @@ export interface Plan {
   summits: Pass[];
 }
 
-/**
- * A series is asked for when there is none – or when the road is unpaved,
- * the stored series predates the snow cover (plan 27) and the archive is
- * asked for it now (`asksCover`, off `ARCHIVE_DAILY`): the cover is the rung
- * that closes such a road, and a series without it never would. Until the
- * request carries the variable, asking again would cost ~260 calls for the
- * same answer. A paved road keeps its series; it never reads the cover.
- */
-export const lacksClimate = (
-  pass: Pick<Pass, "slug" | "surface">,
-  climates: Record<string, ClimateYear>,
-  asksCover = ARCHIVE_DAILY.includes("snow_depth_mean"),
-): boolean => {
-  const series = climates[pass.slug];
-  if (!series) return true;
-  return (
-    asksCover &&
-    isUnpaved(pass.surface) &&
-    series.every((b) => b?.coverPct === undefined)
-  );
-};
-
 /** An unpaved road whose stored series carries no snow cover (plan 27). */
 export const lacksCover = (
   pass: Pick<Pass, "slug" | "surface">,
@@ -442,6 +461,23 @@ export const lacksCover = (
 ): boolean =>
   isUnpaved(pass.surface) &&
   (climates[pass.slug]?.every((b) => b?.coverPct === undefined) ?? false);
+
+/**
+ * A series is asked for when there is none – or when the road is unpaved and
+ * its series carries no snow cover (plan 27): the cover is the rung that
+ * closes such a road, and a series without it never would. That is a series
+ * fetched before the archive was asked for `snow_depth_mean`, or one whose
+ * road has just been set to gravel. The guard on `ARCHIVE_DAILY` keeps the
+ * rule from asking again on every run – ~261 calls for the same answer – if
+ * the variable ever leaves the request. A paved road keeps its series; it
+ * never reads the cover.
+ */
+export const lacksClimate = (
+  pass: Pick<Pass, "slug" | "surface">,
+  climates: Record<string, ClimateYear>,
+): boolean =>
+  climates[pass.slug] === undefined ||
+  (ARCHIVE_DAILY.includes("snow_depth_mean") && lacksCover(pass, climates));
 
 /** The DEM height was read at the coordinate the entry carries today. */
 const measuredAt = (p: Pass, s: Summit | undefined) =>
@@ -538,28 +574,24 @@ export const storedFor = (
  * earlier rejection of it left one (`afterGate` caches it), or the route came
  * back as the geometry already stored: the question changed – a `check`, a
  * pinned router, an elevation – but not the road, and the profile stored with
- * it is this geometry's profile. Never one measured on another geometry; and
- * a geometry read out of routes.json to be judged again is the stored route,
- * whose profile is what is being checked, not a cache.
+ * it is this geometry's profile. Never one measured on another geometry.
  */
 export const paidFor = (
   key: string,
   stored: Stored,
   hash: string,
-  /** False when the geometry came out of routes.json and is only being judged. */
-  fetched: boolean,
 ): ElevationProfile | undefined => {
   const rejection = stored.rejected[key];
   if (rejection?.hash === hash && rejection.profile) return rejection.profile;
   const route = stored.routes[key];
-  return fetched && route !== undefined && geometryHash(route) === hash
+  return route !== undefined && geometryHash(route) === hash
     ? stored.profiles[key]
     : undefined;
 };
 
 /** What the gate saw of one candidate, once it has been measured and judged. */
 export interface Judged {
-  /** A profile from an earlier rejection of this very geometry, if there is one. */
+  /** A profile already paid for this very geometry, if there is one (`paidFor`). */
   cachedProfile?: ElevationProfile;
   geom: RouteGeometry;
   hash: string;
@@ -596,8 +628,8 @@ const without = <T>(record: Record<string, T>, key: string) => {
  * the pair loops forever. And a rejection caches the candidate's profile,
  * because that is the only expensive part: a retry after a threshold change
  * then costs nothing. The cache is only ever kept for the very geometry it was
- * measured on – a stored route's profile, or one from an earlier candidate
- * with another hash, would be reused for the wrong road.
+ * measured on (`paidFor`) – a profile from another geometry, stored or from
+ * an earlier candidate with another hash, would be reused for the wrong road.
  */
 export const afterGate = (
   job: RouteJob,
@@ -608,7 +640,10 @@ export const afterGate = (
   if (judged.reasons.length) {
     const before = stored.rejected[key];
     const unchanged = before?.hash === judged.hash;
-    const cached = judged.profile ?? (unchanged ? before?.profile : undefined);
+    const cached =
+      judged.profile ??
+      judged.cachedProfile ??
+      (unchanged ? before?.profile : undefined);
     const rejected = {
       ...stored.rejected,
       [key]: {

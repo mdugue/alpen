@@ -119,7 +119,8 @@ Seiten vorkommen – von „abgeleitet“ bis „zugeschneit“.
   Reiseziel oder unter „Weitere Orte“.
 - **OSRM** – Open Source Routing Machine, ein Routing-Dienst mit Autoprofil.
   Springt ein, wenn OpenRouteService nicht verfügbar ist; solche Strecken
-  werden später neu berechnet.
+  werden später neu berechnet. Wo OpenRouteService eine andere Straße nimmt
+  als die gemeinte, ist die Auffahrt fest auf OSRM gestellt.
 - **Overpass** – eine Abfrageschnittstelle für OpenStreetMap-Daten. Mit ihr
   wird geprüft, ob ein Passpunkt an einer befahrbaren Straße liegt.
 

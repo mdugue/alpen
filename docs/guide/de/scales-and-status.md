@@ -130,8 +130,9 @@ ist sie „oft gesperrt“; ab 20 % ist sie „eingeschränkt“ mit dem Wort
 **zugeschneit**. Das ist etwas anderes als das Signal „Schnee“, das
 frisch gefallenen Schnee zählt.
 
-Fehlt die Schneehöhe in einer Klimareihe – etwa bei einer neu eingetragenen
-Straße vor dem nächsten Datenlauf –, wird eine ungeteerte Straße nur nach den
+Fehlt die Schneehöhe in einer Klimareihe – etwa bei einer Straße, deren Belag
+gerade auf Schotter geändert wurde, bis zum nächsten Datenlauf –, wird eine
+ungeteerte Straße nur nach den
 übrigen Signalen bewertet und nie als gesperrt gezeigt: Der Streifen zeigt
 dann, was bekannt ist, statt eine Sperre zu raten. Die beiden Anteile sind
 vorläufig gesetzt, bis es genug ungeteerte Straßen gibt, um sie zu prüfen.

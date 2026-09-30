@@ -62,7 +62,7 @@ import type {
 import { renderJsonSchema, schemaFileFor } from "./emit-json-schema";
 import { readData } from "./lib/data-files";
 import type { Data } from "./lib/data-files";
-import { judge, lacksCover, measure, plan } from "./lib/decide";
+import { asksOrs, judge, lacksCover, measure, plan } from "./lib/decide";
 import type {
   ProfileVerdict,
   RouteJob,
@@ -220,6 +220,7 @@ const inspect = (
   inputs?: string,
 ) => {
   const entry = meta?.[key];
+  const job = jobs.get(key);
   const source = entry?.source ?? "osrm";
   if (reasons.length)
     errors.push(
@@ -234,7 +235,7 @@ const inspect = (
   else if (
     source === "osrm" &&
     !entry?.orsDeclined &&
-    jobs.get(key)?.router === undefined &&
+    (job === undefined || asksOrs(job)) &&
     !(rejected && key in rejected)
   )
     warnings.push(
@@ -249,7 +250,7 @@ const inspect = (
     entry.inputs !== inputs
   )
     warnings.push(
-      `${key}: Route wurde für andere Eingaben geholt (Koordinaten, Höhe oder check geändert) – bun run data:build holt sie neu`,
+      `${key}: Route wurde für andere Eingaben geholt (Koordinaten, Höhe, check, Belag oder router geändert) – bun run data:build holt sie neu`,
     );
   if (EXPLAIN)
     explained.push(

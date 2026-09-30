@@ -26,8 +26,8 @@
  * against recorded answers in scripts/pipeline.test.ts.
  *
  * What a stored route was fetched for is recorded with it: `meta.inputs` is the
- * hash of the ascent's start, its marker and elevation and its `check`
- * (`ascentInputs`). Move a coordinate and the hash no longer matches, so the
+ * hash of the ascent's start, its marker and elevation, its `check`, an unpaved
+ * road's routing profile and a pinned `router` (`ascentInputs`). Move a coordinate and the hash no longer matches, so the
  * route is as pending as a missing one – before that, a moved marker left the
  * old geometry in place and only `data:check` noticed, as an error no command
  * could clear. The retry rule that follows from it is written down once, in
@@ -60,7 +60,7 @@
 import { mkdir } from "node:fs/promises";
 
 import { mustRead } from "./lib/data-files";
-import { plan } from "./lib/decide";
+import { asksOrs, plan, routeJobs } from "./lib/decide";
 import type { Flags, Stored } from "./lib/decide";
 import { ORS_KEY } from "./lib/hosts";
 import { reportLine, runPipeline, saveTo } from "./lib/pipeline";
@@ -161,11 +161,16 @@ for (const lim of [routerOrs, routerOsrm, meteo]) {
       `${lim.name}: Kontingent erschöpft (${lim.exhausted}) – Rest im nächsten Lauf`,
     );
 }
-// The car routes still to be upgraded are the plan's count, which `report()`
-// prints; the rides the curator pinned to OSRM are final and said apart.
-const pinnedRoutes = curated.passes
-  .flatMap((p) => p.ascents)
-  .filter((a) => a.router).length;
+// The car routes still to be upgraded are the plan's count: `report()` prints
+// it when a key is set, and without one it is asked as if there were one, so
+// a keyless run still says what a key would renew. The rides pinned to OSRM
+// are final and said apart.
+const renewable = ORS_KEY
+  ? 0
+  : plan(curated, state, { ...flags, ors: true }).counts.upgradable;
+const pinnedRoutes = routeJobs(curated.passes, curated.tours).filter(
+  (j) => !asksOrs(j),
+).length;
 const declinedRoutes = Object.values(state.meta).filter(
   (x) => x.orsDeclined,
 ).length;
@@ -189,6 +194,10 @@ console.log(
       : " – ohne ORS_KEY, deshalb Autoprofil"
   }`,
 );
+if (renewable)
+  console.log(
+    `${renewable} Routen stammen vom OSRM-Autoprofil und sollten mit ORS_KEY erneuert werden`,
+  );
 if (pinnedRoutes)
   console.log(
     `${pinnedRoutes} Fahrten sind auf OSRM festgelegt: ORS nimmt dort eine andere Straße (router in data/passes.json)`,

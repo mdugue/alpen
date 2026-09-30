@@ -36,6 +36,8 @@ import { writeData } from "./data-files";
 import {
   afterDecline,
   afterGate,
+  asksOrs,
+  defersProfile,
   judge,
   measure,
   ofRoad,
@@ -205,15 +207,15 @@ export const runPipeline = async ({
     label: string,
     waypoints: LatLon[],
     profile: RoutingProfile,
-    /** The curator's choice for this ride (`RouteJob.router`): ORS is then never asked. */
-    router?: RouteJob["router"],
+    /** False for a ride pinned to OSRM (`asksOrs`): ORS is then never asked. */
+    askOrs: boolean,
   ): Promise<{
     declined: boolean;
     geom: RouteGeometry;
     source: RouteSource;
   }> => {
     let declined = false;
-    if (flags.ors && router === undefined && !stopped("ors")) {
+    if (flags.ors && askOrs && !stopped("ors")) {
       try {
         return {
           declined,
@@ -388,7 +390,7 @@ export const runPipeline = async ({
     // a retry would then always pay for a profile it already has.
     const before = state.rejected[job.key];
     const unchanged = before?.hash === hash;
-    const cachedProfile = paidFor(job.key, state, hash, fetched);
+    const cachedProfile = paidFor(job.key, state, hash);
     const base = {
       cachedProfile,
       geom,
@@ -426,13 +428,9 @@ export const runPipeline = async ({
       return;
     }
 
-    // An OSRM route stored while an ORS key exists is provisional – the upgrade
-    // pass will replace the geometry and the profile would have to be paid for
-    // a second time. 100 Open-Meteo calls is far too much to spend on a road we
-    // already know is the wrong one. A ride pinned to OSRM is not provisional:
-    // nothing will replace it, so its profile is paid for straight away.
-    const deferred =
-      source === "osrm" && flags.ors && !before && job.router === undefined;
+    // A car route the upgrade pass will replace waits for its profile
+    // (`defersProfile`, the rule `provisional` applies to stored routes).
+    const deferred = defersProfile(job, state, flags, source, orsDeclined);
     if (!ofRoad(job) || deferred) {
       if (fetched) await accepted();
       if (deferred)
@@ -545,7 +543,7 @@ export const runPipeline = async ({
           job.label,
           job.waypoints,
           job.profile,
-          job.router,
+          asksOrs(job),
         );
         const { declined, source } = first;
         if (upgrade && (state.meta[job.key]?.source ?? "osrm") === source) {

@@ -3149,7 +3149,7 @@
    "closes": 11,
    "maintained": false
   },
-  "note": "Höchste Straße Sloweniens, Sackgasse, meist bis Ende Oktober offen.",
+  "note": "Höchste Straße Sloweniens, Sackgasse, meist bis Ende Oktober offen. Die Fahrt endet heute am Parkplatz auf gut 1900 m: Die Schleife bis zum Sattel ist gesperrt.",
   "quaeldich": "mangrt",
   "ascents": [
    {
@@ -9446,12 +9446,8 @@
   "fame": 3,
   "difficulty": 3,
   "traffic": 3,
-  "season": {
-   "opens": 4.5,
-   "closes": 11,
-   "maintained": false
-  },
-  "note": "Höchster Punkt der Vogesen, den eine Straße erreicht: 1343 m am Col du Grand Ballon, der Gipfel mit der Radarkuppel (1424 m) ist ein paar Minuten zu Fuß. Mehrfach im Programm der Tour de France; mit der Route des Crêtes im Winter gesperrt, etwa Mitte November bis Mitte April.",
+  "season": null,
+  "note": "Höchster Punkt der Vogesen, den eine Straße erreicht: 1343 m am Col du Grand Ballon, der Gipfel mit der Radarkuppel (1424 m) ist ein paar Minuten zu Fuß. Mehrfach im Programm der Tour de France; die Kammstraße über den Gipfel ist im Winter abschnittsweise gesperrt.",
   "aliases": [
    "Großer Belchen",
    "Col du Grand Ballon"
@@ -9533,7 +9529,7 @@
   "difficulty": 2,
   "traffic": 4,
   "season": null,
-  "note": "Hauptübergang von Colmar nach Gérardmer, entsprechend Verkehr, im Winter geräumt. Von Munster die schönere und steilere Seite, von Gérardmer über Xonrupt fast flach; oben beginnt die Route des Crêtes.",
+  "note": "Hauptübergang von Colmar nach Gérardmer, entsprechend Verkehr, im Winter geräumt; 2023 im Programm der Tour de France. Von Munster die schönere und steilere Seite, von Gérardmer über Xonrupt fast flach; oben beginnt die Route des Crêtes.",
   "aliases": [
    "Schluchtpass"
   ],
@@ -9570,10 +9566,9 @@
   "difficulty": 3,
   "traffic": 1,
   "season": null,
-  "note": "Kahle Kuppe mit Almgasthöfen und Rundblick über Munstertal und Rheinebene. Von Wasserbourg schmal und steil; die Südseite aus dem Florival über Linthal ist hier nicht als Auffahrt geführt.",
+  "note": "Kahle Kuppe mit Almgasthöfen und Rundblick über Munstertal und Rheinebene, 2023 im Programm der Tour de France. Von Wasserbourg schmal und steil; die Südseite aus dem Florival über Linthal fehlt hier noch, weil keiner der Router sie ohne Umweg führt.",
   "aliases": [
-   "Kleiner Belchen",
-   "Petit Ballon"
+   "Kleiner Belchen"
   ],
   "ascents": [
    {
@@ -9628,7 +9623,7 @@
   "difficulty": 1,
   "traffic": 2,
   "season": null,
-  "note": "Sanfter Übergang vom oberen Thurtal nach Ventron und ins Moseltal, ruhig und im Wald.",
+  "note": "Sanfter Übergang vom oberen Thurtal nach Ventron ins Tal der Moselotte, ruhig und im Wald.",
   "ascents": [
    {
     "from": {
@@ -9730,7 +9725,7 @@
   "difficulty": 2,
   "traffic": 2,
   "season": null,
-  "note": "Über dem Lac Blanc am Nordende der Kammstraße. Nach Westen geht es auf Kammhöhe zum Col du Bonhomme weiter, eine zweite Auffahrt ist das nicht.",
+  "note": "Über dem Lac Blanc am Nordende der Kammstraße. Nach Norden geht es auf Kammhöhe zum Col du Bonhomme weiter, eine zweite Auffahrt ist das nicht.",
   "ascents": [
    {
     "from": {
@@ -9859,7 +9854,7 @@
   "difficulty": 2,
   "traffic": 2,
   "season": null,
-  "note": "Alter Übergang von Sainte-Marie-aux-Mines nach Lothringen; seit der Verkehr durch den Tunnel Maurice-Lemaire fährt, ist die Passstraße ruhig.",
+  "note": "Alter Übergang von Sainte-Marie-aux-Mines nach Lothringen; den Durchgangsverkehr nimmt heute größtenteils der Tunnel Maurice-Lemaire darunter.",
   "ascents": [
    {
     "from": {
@@ -9966,7 +9961,6 @@
   "season": null,
   "note": "Zielankunft der Tour de France seit 2012, 2020 Schauplatz des Zeitfahrens, mit dem Pogačar die Tour gewann. Die Asphaltstraße endet an der Skistation; die Schotterrampe der „Super Planche“ darüber ist nichts fürs Rennrad.",
   "aliases": [
-   "Planche des Belles Filles",
    "Super Planche"
   ],
   "ascents": [
@@ -10002,7 +9996,7 @@
    "closes": 11,
    "maintained": false
   },
-  "note": "Die Kammstraße der Hochvogesen, im Ersten Weltkrieg als Nachschubweg gebaut: über Wiesenkuppen mit Blick auf die Rheinebene und bei klarer Sicht bis zu den Alpen. Wintersperre etwa Mitte November bis Mitte April; am Wochenende viele Motorräder.",
+  "note": "Die Kammstraße der Hochvogesen, im Ersten Weltkrieg als Nachschubweg gebaut: über Wiesenkuppen mit Blick auf die Rheinebene und bei klarer Sicht bis zu den Alpen; Teilstücke fährt auch die Tour de France, etwa vom Markstein zum Grand Ballon. Wintersperre etwa Mitte November bis Mitte April; am Wochenende viele Motorräder.",
   "aliases": [
    "Vogesenkammstraße",
    "Kammstraße"
