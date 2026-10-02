@@ -223,3 +223,12 @@ the forecast streamed into a pass's page runs as a function. Production: <https:
 Grew out of a single HTML prototype; the data and the status heuristic were
 carried over from it. The prototype is kept for reference at
 `docs/prototype.html`.
+
+## Licence
+
+The code and the curated content (`data/*.json`, `data/i18n/`) are licensed
+under the [Apache License 2.0](LICENSE). What the app takes from elsewhere
+keeps its own licence: the routed geometry is derived from OpenStreetMap
+(ODbL), elevations and climate come from Open-Meteo (CC BY 4.0), the photos
+belong to their authors on Wikimedia Commons, and the fonts are under the SIL
+Open Font License. [`NOTICE`](NOTICE) has the details and the credits.

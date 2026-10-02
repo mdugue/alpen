@@ -1,0 +1,29 @@
+Alpenpässe
+Copyright 2026 Manuel Dugué
+
+Licensed under the Apache License, Version 2.0 (see LICENSE): the source
+code, and the curated content in data/*.json and data/i18n/ (the
+selection, ratings, seasons, tags and texts).
+
+Not covered by that licence:
+
+  - The routed geometry and what is measured along it
+    (data/generated/routes.json, routes-meta.json, summits.json,
+    rejected.json) and the recorded host answers in scripts/fixtures/ are
+    derived from OpenStreetMap, routed by openrouteservice and OSRM:
+    © OpenStreetMap contributors, Open Database License (ODbL) 1.0. A
+    database derived from them stays under the ODbL.
+
+  - Elevations, profiles and climate series (data/generated/summits.json,
+    profiles.json, climate.json) come from Open-Meteo.com, CC BY 4.0,
+    which draws on the Copernicus DEM GLO-90 and on the ERA5 and ERA5-Land
+    reanalyses of the Copernicus Climate Change Service.
+
+  - Photos: data/generated/photos.json holds only their metadata. The
+    photos belong to their authors on Wikimedia Commons and are used under
+    the licence named with each one.
+
+  - Fonts: Oxanium (assets/fonts/, © The Oxanium Project Authors) and the
+    map glyphs built from Inter (public/map/fonts/, © The Inter Project
+    Authors) are under the SIL Open Font License 1.1
+    (assets/fonts/OFL.txt).
