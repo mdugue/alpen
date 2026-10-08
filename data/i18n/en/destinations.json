@@ -24,6 +24,11 @@
   "multiDay": "Four days; Mortirolo and Gavia lie at the eastern end of the Valtellina.",
   "access": "Morbegno or Bergamo railway station; Bergamo airport in an hour."
  },
+ "berner-jura": {
+  "character": "The Chasseral, the Mont-Crosin and the Vue des Alpes around the Vallon de Saint-Imier: pastures, wind turbines and at the top a view of the whole Alpine chain.",
+  "multiDay": "Two days; the Chasseral and the Mont-Crosin from Saint-Imier on one, the Vue des Alpes and Neuchâtel on the other.",
+  "access": "By train via Biel to Saint-Imier; Basel and Zurich airports an hour and a half away."
+ },
  "bormio-livigno": {
   "character": "Stelvio, Gavia, Mortirolo, Umbrail and the passes around Livigno: the highest roads in Italy packed into the smallest space.",
   "multiDay": "Five days; the Stelvio–Umbrail loop and Gavia–Mortirolo a day each, the rest for Foscagno and Eira.",
@@ -33,6 +38,11 @@
   "character": "Izoard, Granon, Agnel, Montgenèvre and the gorges of the Guil: high, dry, sunny – Briançon itself sits at 1,300 m.",
   "multiDay": "A week with two bases; into Italy over the Agnel or Montgenèvre, south over Vars into the Ubaye.",
   "access": "Briançon railway station (night train from Paris); Turin via the Fréjus tunnel or Montgenèvre."
+ },
+ "bugey": {
+  "character": "The Grand Colombier, the Biche and the Mont du Chat: short, very steep Jura climbs from 250 m in the valley to 1500 m, with the Rhône valley and the Lac du Bourget between them.",
+  "multiDay": "Two to three hard days; the loop over the Colombier, the Biche and the Richemond in a day, the Mont du Chat as the second.",
+  "access": "By train to Culoz on the Lyon–Geneva line; Geneva and Lyon airports a good hour away."
  },
  "comer-see": {
   "character": "Ghisallo, Muro di Sormano, San Primo, Valcava and the Culmine: the climbs of Il Lombardia, rideable all year round, full of road bikes on Sundays.",
@@ -178,6 +188,11 @@
   "character": "Furkajoch, Faschinajoch, Hochtannberg, Arlberg, Riedberg and the Silvretta High Alpine Road: the northern edge of the Alps between the Bregenzerwald and the Allgäu, green and with long climbs.",
   "multiDay": "Four days; the Silvretta and the Arlberg link into the Tyrolean Oberland.",
   "access": "Bludenz, Langen am Arlberg or Oberstdorf railway station; Zurich and Munich in two hours."
+ },
+ "waadtlaender-jura": {
+  "character": "Long, steady climbs from Lake Geneva up to the Jura pastures and the cool Vallée de Joux: the Marchairuz, the Givrine, the Mollendruz and the Faucille above Gex.",
+  "multiDay": "A weekend to three days; the loop over the Marchairuz and the Mollendruz in a day, the Faucille and the Givrine as a day out from the lake.",
+  "access": "By train to Nyon or Lausanne, into the Vallée de Joux via Vallorbe; Geneva airport half an hour away."
  },
  "wallis": {
   "character": "Grand-Saint-Bernard, Forclaz, Sanetsch, Simplon and Nufenen from the deep Rhône valley – long climbs, a dry climate, the valley itself warm.",

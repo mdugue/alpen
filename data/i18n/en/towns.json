@@ -71,6 +71,9 @@
  "corvara-alta-badia": {
   "why": "Sellaronda and Maratona hub: bike hotels, rental, workshops, service points on the passes."
  },
+ "culoz": {
+  "why": "At the foot of the Grand Colombier, whose classic ascent starts in the village; the Biche, the Richemond and the Mont du Chat are within reach. A rail junction on the Lyon–Geneva line."
+ },
  "cuneo": {
   "why": "Fauniera, Lombarde, Agnello, Sampeyre, Maddalena; bike shops, Fausto Coppi Granfondo."
  },
@@ -107,8 +110,14 @@
  "le-grand-bornand": {
   "why": "Aravis village: Colombière, Aravis and Croix Fry start in the village. Green side valleys, little traffic, rental in the village."
  },
+ "le-sentier": {
+  "why": "The main village of the Vallée de Joux at 1000 m: the Marchairuz and the Mollendruz start in the valley, the loop round the Lac de Joux is flat. Trains to Vallorbe."
+ },
  "lecco": {
   "why": "Rail hub on the eastern arm of Lake Como: Piani dei Resinelli, Culmine di San Pietro, Valcava and Ghisallo within a day's range, bike shops in town."
+ },
+ "les-rousses": {
+  "why": "On the plateau above Lake Geneva, with the Givrine, the Faucille and the roads round the Lac des Rousses within reach; quiet in summer, a cross-country ski resort in winter."
  },
  "livigno": {
   "why": "Altitude-training resort, bike hotels, workshops; Foscagno, Bernina, Forcola."
@@ -152,6 +161,9 @@
  "nizza": {
   "why": "Winter quarters of the peloton: Col d'Èze, Châteauneuf, Vence, Madone and Braus from the city, Turini and Bleine as day loops. Railway station, airport, bike shops."
  },
+ "nyon": {
+  "why": "On Lake Geneva, an intercity stop between Geneva and Lausanne: the Givrine and the Faucille start by the lake, the Marchairuz is close. Mild, rideable early in the year."
+ },
  "ponte-di-legno": {
   "why": "Gavia, Tonale, Mortirolo; bike shops, quieter than Bormio."
  },
@@ -163,6 +175,12 @@
  },
  "rovereto": {
   "why": "Rail hub in the Adige valley with Santa Barbara, Pian delle Fugazze, Bordala and Sommo from the town, Bondone and Lake Garda within a day's range. Mild enough for spring and autumn."
+ },
+ "saint-claude": {
+  "why": "In the narrow Bienne valley: the Croix de la Serra starts in town, and so do the roads up to Septmoncel and the Faucille."
+ },
+ "saint-imier": {
+  "why": "In the Vallon de Saint-Imier between the Chasseral and the Mont-Crosin, both starting in town; the Vue des Alpes is one descent away. Trains to Biel and La Chaux-de-Fonds."
  },
  "saint-jean-de-maurienne": {
   "why": "Croix de Fer, Madeleine, Télégraphe/Galibier; railway station, bike shops, Maurienne cycling office."

@@ -752,5 +752,61 @@
   "character": "Ballon d'Alsace, La Planche des Belles Filles und der Grand Ballon – die Tour-de-France-Berge der Vogesen –, dazwischen ruhige Waldpässe und die viel befahrene N66 über Bussang.",
   "multiDay": "Zwei bis drei Tage; die Runde über Hundsruck, Ballon d'Alsace und Bussang an einem Tag, die Planche als Abstecher von Plancher-les-Mines.",
   "access": "Mit dem TGV nach Mulhouse und mit der Bahn weiter nach Thann und ins Thurtal; für die Westseite Belfort-Montbéliard TGV."
+ },
+ {
+  "slug": "bugey",
+  "name": "Bugey · Grand Colombier",
+  "country": "FR",
+  "center": {
+   "lat": 45.87,
+   "lon": 5.76
+  },
+  "radiusKm": 25,
+  "baseTowns": [
+   "culoz"
+  ],
+  "include": [],
+  "exclude": [],
+  "character": "Grand Colombier, Biche und Mont du Chat: kurze, sehr steile Juraanstiege von 250 m Talhöhe auf 1500 m, dazwischen Rhônetal und Lac du Bourget.",
+  "multiDay": "Zwei bis drei harte Tage; die Runde über Colombier, Biche und Richemond an einem Tag, der Mont du Chat als zweiter.",
+  "access": "Mit der Bahn nach Culoz an der Strecke Lyon–Genf; Flughäfen Genf und Lyon in gut einer Stunde."
+ },
+ {
+  "slug": "waadtlaender-jura",
+  "name": "Waadtländer Jura",
+  "country": "CH",
+  "center": {
+   "lat": 46.55,
+   "lon": 6.2
+  },
+  "radiusKm": 25,
+  "baseTowns": [
+   "le-sentier",
+   "nyon",
+   "les-rousses"
+  ],
+  "include": [],
+  "exclude": [],
+  "character": "Lange, gleichmäßige Anstiege vom Genfersee auf die Juraweiden und die kühle Vallée de Joux: Marchairuz, Givrine, Mollendruz und die Faucille über Gex.",
+  "multiDay": "Ein Wochenende bis drei Tage; die Runde über Marchairuz und Mollendruz an einem Tag, die Faucille und die Givrine als Tagesausflug vom See.",
+  "access": "Mit der Bahn nach Nyon oder Lausanne, in die Vallée de Joux über Vallorbe; Flughafen Genf in einer halben Stunde."
+ },
+ {
+  "slug": "berner-jura",
+  "name": "Berner Jura",
+  "country": "CH",
+  "center": {
+   "lat": 47.14,
+   "lon": 6.99
+  },
+  "radiusKm": 20,
+  "baseTowns": [
+   "saint-imier"
+  ],
+  "include": [],
+  "exclude": [],
+  "character": "Chasseral, Mont-Crosin und die Vue des Alpes rund um den Vallon de Saint-Imier: Weiden, Windräder und oben der Blick auf die ganze Alpenkette.",
+  "multiDay": "Zwei Tage; Chasseral und Mont-Crosin von Saint-Imier aus an einem, die Vue des Alpes und Neuenburg am anderen.",
+  "access": "Mit der Bahn über Biel nach Saint-Imier; Flughäfen Basel und Zürich in anderthalb Stunden."
  }
 ]
