@@ -3,6 +3,10 @@
   "description": "Furka – Grimsel – Susten, back through the Schöllenen gorge.",
   "note": "Alpenbrevet in late August."
  },
+ "aspin-ancizan-runde": {
+  "description": "From Arreau over the Aspin to Payolle and back into the Aure valley over the Hourquette d'Ancizan.",
+  "note": "Short, but two full climbs; the Hourquette is closed in winter."
+ },
  "ballino-runde": {
   "description": "From Riva via Tenno and the Lago di Tenno up to the Passo del Ballino, via Fiavè and Ponte Arche into the Sarca valley and back to the lake via Sarche and Arco.",
   "note": "Occasional snow at the top of the Ballino in winter."
@@ -19,6 +23,10 @@
   "description": "Bormio – Gavia – Ponte di Legno – Edolo – Mortirolo from Monno – Mazzo – Bormio.",
   "note": "The Gavia sets the window."
  },
+ "grand-colombier-runde": {
+  "description": "From Culoz up the Grand Colombier, along the crest road to the Col de la Biche, on to the Col de Richemond and back through the Rhône valley.",
+  "note": "Over the Grand Colombier from Culoz with ramps around 18 %; the crest road to the Biche is narrow."
+ },
  "grappa-runde": {
   "description": "From Bassano via Semonzo up to the Monte Grappa and down via Possagno, back to Bassano along the foot of the mountain – up the classic side, down the quiet one.",
   "note": "Temporarily closed at the top after snowfall."
@@ -34,6 +42,10 @@
  "lombardia-runde": {
   "description": "The finale of the Giro di Lombardia from Bellagio: over the Ghisallo to Asso, through Sormano over the Muro up to the Colma and along the lake via Nesso back to Bellagio.",
   "note": "Occasional snow on the Sormano in winter."
+ },
+ "luchon-runde": {
+  "description": "From Luchon down the valley to Mauléon-Barousse, over the Port de Balès and back to Luchon over the Peyresourde.",
+  "note": "The Port de Balès is closed in winter; its north side is narrow and lonely."
  },
  "maratona-dles-dolomites-lang": {
   "description": "Sellaronda plus Campolongo (twice), Giau, Falzarego and Valparola from La Villa.",
@@ -66,6 +78,10 @@
  "valcava-culmine-runde": {
   "description": "From Lecco via Torre de' Busi steeply up to the Passo di Valcava, through the Valle Imagna and the Val Taleggio to the Culmine di San Pietro and back to Lecco via Moggio and the Valsassina.",
   "note": "Both passes lie under snow at the top in winter."
+ },
+ "vallee-de-joux-runde": {
+  "description": "From Le Sentier over the Marchairuz down to Bière, along the foot of the Jura to L'Isle, and over the Mollendruz back into the Vallée de Joux.",
+  "note": "Two passes between the Vallée de Joux and the foot of the Jura; quiet roads, often cool in the valley."
  },
  "ventoux-runde": {
   "description": "From Bédoin up the classic side of the Mont Ventoux, down to Malaucène and back to Bédoin over the Col de la Madeleine.",

@@ -1257,5 +1257,149 @@
    "season"
   ],
   "why": "Stadt in der Rheinebene mit TGV-Bahnhof; Munster liegt knapp 20 km entfernt, die Schlucht gut 30. Trocken und mild, im Frühjahr früher fahrbar als die Täler."
+ },
+ {
+  "slug": "culoz",
+  "name": "Culoz",
+  "country": "FR",
+  "lat": 45.8477,
+  "lon": 5.7809,
+  "tags": [
+   "passes",
+   "train"
+  ],
+  "why": "Am Fuß des Grand Colombier, dessen klassische Auffahrt im Ort beginnt; Biche, Richemond und der Mont du Chat liegen in Reichweite. Bahnknoten an der Strecke Lyon–Genf."
+ },
+ {
+  "slug": "nyon",
+  "name": "Nyon",
+  "country": "CH",
+  "lat": 46.3821,
+  "lon": 6.2403,
+  "tags": [
+   "train",
+   "season"
+  ],
+  "why": "Am Genfersee, Schnellzughalt zwischen Genf und Lausanne: Givrine und Faucille beginnen am See, der Marchairuz ist nah. Mild, früh im Jahr fahrbar."
+ },
+ {
+  "slug": "le-sentier",
+  "name": "Le Sentier",
+  "country": "CH",
+  "lat": 46.606,
+  "lon": 6.2315,
+  "tags": [
+   "passes",
+   "quiet",
+   "train"
+  ],
+  "why": "Hauptort der Vallée de Joux auf 1000 m: Marchairuz und Mollendruz beginnen im Tal, die Runde um den Lac de Joux ist flach. Bahn nach Vallorbe."
+ },
+ {
+  "slug": "saint-imier",
+  "name": "Saint-Imier",
+  "country": "CH",
+  "lat": 47.1518,
+  "lon": 6.9972,
+  "tags": [
+   "passes",
+   "train"
+  ],
+  "why": "Im Vallon de Saint-Imier zwischen Chasseral und Mont-Crosin, beide beginnen im Ort; die Vue des Alpes liegt eine Talfahrt entfernt. Bahn nach Biel und La Chaux-de-Fonds."
+ },
+ {
+  "slug": "les-rousses",
+  "name": "Les Rousses",
+  "country": "FR",
+  "lat": 46.4856,
+  "lon": 6.0603,
+  "tags": [
+   "quiet"
+  ],
+  "why": "Auf der Hochfläche über dem Genfersee, Givrine, Faucille und die Straßen um den Lac des Rousses in Reichweite; im Sommer ruhig, im Winter Langlaufort."
+ },
+ {
+  "slug": "saint-claude",
+  "name": "Saint-Claude",
+  "country": "FR",
+  "lat": 46.3875,
+  "lon": 5.8644,
+  "tags": [
+   "passes"
+  ],
+  "why": "Im engen Tal der Bienne: die Croix de la Serra beginnt im Ort, die Straßen hinauf nach Septmoncel und zur Faucille ebenso."
+ },
+ {
+  "slug": "argeles-gazost",
+  "name": "Argelès-Gazost",
+  "country": "FR",
+  "lat": 43.0051,
+  "lon": -0.0998,
+  "tags": [
+   "passes",
+   "hub"
+  ],
+  "why": "Am Talknoten des Lavedan: Hautacam, Soulor und Aubisque, Spandelles und über Luz der Tourmalet. Bahnhof in Lourdes, 13 km talaus."
+ },
+ {
+  "slug": "luz-saint-sauveur",
+  "name": "Luz-Saint-Sauveur",
+  "country": "FR",
+  "lat": 42.8721,
+  "lon": -0.0043,
+  "tags": [
+   "passes",
+   "hub"
+  ],
+  "why": "Am Fuß von Tourmalet und Luz Ardiden, beide beginnen im Ort; Gavarnie und Hautacam liegen im selben Tal."
+ },
+ {
+  "slug": "bagneres-de-luchon",
+  "name": "Bagnères-de-Luchon",
+  "country": "FR",
+  "lat": 42.7911,
+  "lon": 0.5912,
+  "tags": [
+   "passes",
+   "hub"
+  ],
+  "aliases": [
+   "Luchon"
+  ],
+  "why": "Kurort am Ende des Tals: Peyresourde, Port de Balès, Superbagnères und der Portillon beginnen im Ort, der Menté ist nah."
+ },
+ {
+  "slug": "saint-lary-soulan",
+  "name": "Saint-Lary-Soulan",
+  "country": "FR",
+  "lat": 42.8169,
+  "lon": 0.322,
+  "tags": [
+   "passes"
+  ],
+  "why": "Im Aure-Tal unter Pla d'Adet und Col du Portet, die Hourquette d'Ancizan und der Aspin sind nah."
+ },
+ {
+  "slug": "arreau",
+  "name": "Arreau",
+  "country": "FR",
+  "lat": 42.9055,
+  "lon": 0.359,
+  "tags": [
+   "passes",
+   "quiet"
+  ],
+  "why": "Am Zusammenfluss von Aure und Louron zwischen Aspin und Peyresourde; die Hourquette d'Ancizan beginnt im Nachbarort."
+ },
+ {
+  "slug": "laruns",
+  "name": "Laruns",
+  "country": "FR",
+  "lat": 42.9882,
+  "lon": -0.4266,
+  "tags": [
+   "passes"
+  ],
+  "why": "Im Ossau-Tal: die Aubisque beginnt im Ort, der Pourtalet am Ende des Tals, die Marie-Blanque eine Talfahrt entfernt."
  }
 ]
