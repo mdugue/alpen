@@ -182,10 +182,20 @@ export const panel = {
       weather: "Wetter",
       wind: "Wind",
     },
-    info: "Vorhersage von Open-Meteo für die Passhöhe, sieben Tage.",
+    info: "Vorhersage von Open-Meteo für die Passhöhe und den Start jeder Anfahrt, sieben Tage. Die Höhe eines Starts ist die des Geländemodells von Open-Meteo.",
+    infoTown:
+      "Vorhersage von Open-Meteo für den Ort, sieben Tage, in der Höhe des Geländemodells von Open-Meteo.",
     loading: "Wetter wird geladen",
+    /** A place's height from Open-Meteo's terrain model rather than the data: approximate, and it says so. */
+    modelHeight: "≈ {metres} m",
+    /** The link out to meteoblue, at the same point (the summit at its curated height). */
+    more: "Ausführlich bei meteoblue",
+    /** The label of the switch that picks whose week the table shows. */
+    places: "Ort der Wochenvorhersage",
     /** The word after the centimetres in a dense row. */
     snow: "Schnee",
+    /** A pass's top in the ladder of places. */
+    summit: "Passhöhe",
     title: "Aktuelles Wetter",
     today: "heute",
     tomorrow: "morgen",

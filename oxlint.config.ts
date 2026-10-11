@@ -219,6 +219,11 @@ export default defineConfig({
       rules: except("location", "navigator", "window"),
     },
     {
+      // `navigator.geolocation`, asked once when the locate button is pressed.
+      files: ["lib/use-geolocation.ts"],
+      rules: except("navigator"),
+    },
+    {
       // `MutationObserver` and focus: a list of rows as one composite widget.
       files: ["lib/use-roving.ts"],
       rules: except("MutationObserver"),

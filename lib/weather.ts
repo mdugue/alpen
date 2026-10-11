@@ -3,29 +3,32 @@ import { z } from "zod";
 
 import * as S from "@/lib/schema";
 import type { WeatherDay } from "@/lib/types";
+import { WEATHER_WINDOW_S } from "@/lib/weather-places";
 
 /**
  * The app's only dynamic source, and the only free-tier quota a visitor can
- * spend. Three things keep every road in `data/passes.json` (262 today) inside
- * Open-Meteo's non-commercial allowance of 10 000 calls a day:
+ * spend. Three things keep every point the panels ask for inside Open-Meteo's
+ * non-commercial allowance of 10 000 calls a day:
  *
- *   a) the call runs on the server, cached per pass, so a pass costs one
- *      upstream call per window rather than one per visitor,
- *   b) the window is an hour (`REVALIDATE_S`), which puts the worst case –
- *      every pass opened in every window – at 262 × 24 ≈ 6 300 calls a day,
- *      where a half-hour window would ask for 12 600; an hour holds up to
- *      about 410 roads, so the list growing past that means a longer window,
+ *   a) the call runs on the server, cached per point, so a point costs one
+ *      upstream call per window rather than one per visitor – and a start
+ *      two passes share is one point,
+ *   b) the window is three hours (`WEATHER_WINDOW_S`, lib/weather-places.ts,
+ *      where the worst case – every point opened in every window – is
+ *      computed from the data and held under the allowance by a test),
  *   c) the answer is streamed into the entity page's Suspense hole
  *      (`components/panel/weather.tsx`), so the browser never asks a third
  *      party and never asks this server twice for the same window either:
  *      what a client navigation fetches is the page's own payload.
  *
+ * A pass is asked for at its summit and at the start of each ascent, a town at
+ * the town (`passPlaces`, `townPlaces`); one point per call, so each is cached
+ * on its own and shared by every entity that names it.
+ *
  * Until plan 02 this was `app/api/weather/[slug]/route.ts`, a route the panel
  * fetched; the function is the same, the transport is the page.
  */
 
-/** How long one pass's forecast is reused. Open-Meteo refreshes hourly at best. */
-const REVALIDATE_S = 3600;
 /**
  * After a failed call, how long this instance stops asking Open-Meteo. A thrown
  * forecast is deliberately *not* cached, so without a cooldown each visitor
@@ -59,9 +62,11 @@ const Forecast = z
       weather_code: z.array(z.unknown()),
       wind_speed_10m_max: z.array(z.unknown()),
     }),
+    /** The height the forecast was made for: the one asked for, or the terrain model's. */
+    elevation: z.number(),
   })
-  .transform(({ daily }): WeatherDay[] =>
-    daily.time.map((date, i) =>
+  .transform(({ daily, elevation }): PointForecast => ({
+    days: daily.time.map((date, i) =>
       S.WeatherDay.parse({
         date,
         precipitation: daily.precipitation_sum[i],
@@ -72,16 +77,32 @@ const Forecast = z
         windMax: daily.wind_speed_10m_max[i],
       }),
     ),
-  );
+    elevation,
+  }));
 
+/** Seven days at one point, and the height they were forecast for. */
+export interface PointForecast {
+  days: WeatherDay[];
+  elevation: number;
+}
+
+/**
+ * One point's week. `elevation` is the curated height where there is one; a
+ * point without (`null`) is placed on Open-Meteo's own terrain model, which
+ * answers with the height it used.
+ */
 export const forecast = async (
   lat: number,
   lon: number,
-  elevation: number,
-): Promise<WeatherDay[]> => {
+  elevation: number | null,
+): Promise<PointForecast> => {
   "use cache";
   const { cacheLife, cacheTag } = await import("next/cache");
-  cacheLife({ expire: 7200, revalidate: REVALIDATE_S, stale: 300 });
+  cacheLife({
+    expire: 2 * WEATHER_WINDOW_S,
+    revalidate: WEATHER_WINDOW_S,
+    stale: 300,
+  });
   cacheTag("weather");
 
   // Inside the cached function on purpose: a cache hit never runs this body, so
@@ -98,9 +119,10 @@ export const forecast = async (
   // visitor would fetch the same unreadable answer again.
   try {
     const res = await fetch(
-      `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&elevation=${elevation}` +
-        "&daily=temperature_2m_max,temperature_2m_min,precipitation_sum,snowfall_sum,wind_speed_10m_max,weather_code" +
-        "&timezone=Europe%2FBerlin&forecast_days=7",
+      `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}${
+        elevation === null ? "" : `&elevation=${elevation}`
+      }&daily=temperature_2m_max,temperature_2m_min,precipitation_sum,snowfall_sum,wind_speed_10m_max,weather_code` +
+        `&timezone=Europe%2FBerlin&forecast_days=7`,
     );
     if (!res.ok) throw new Error(`Open-Meteo ${res.status}`);
     return Forecast.parse(await res.json());

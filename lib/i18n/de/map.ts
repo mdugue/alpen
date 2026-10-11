@@ -15,6 +15,12 @@ export const map = {
   language: "Sprache",
   /** The corner line while the overview is thinned by fame (`prominenceWord`). */
   levelLine: "Bei dieser Zoomstufe: {word}",
+  /** The locate button: its name, its tooltip, and what it says when it cannot. */
+  locate: "Mein Standort",
+  locateDenied:
+    "Standort nicht freigegeben – das lässt sich in den Einstellungen des Browsers ändern",
+  locateHint: "Mein Standort – mit den Straßen in der Nähe",
+  locateUnavailable: "Standort gerade nicht ermittelbar",
   osmContributors: "© OpenStreetMap-Mitwirkende",
   overlays: "Overlays",
   satellite: "Satellit",

@@ -25,6 +25,8 @@ export const SOURCE = {
   routes: "routes",
   tours: "tours",
   towns: "towns",
+  /** Where the visitor is, once they have asked (`useGeolocation`). */
+  you: "you",
 } as const;
 
 /**
@@ -115,7 +117,8 @@ export const LAYERS = {
  * The layers that answer the hover rather than a kind of entity: the ring
  * around the mark under the pointer, the mark drawn again beneath it where the
  * level of detail would hide it, the hull of what a town reaches – and the
- * profile cursor, which belongs to the panel's chart rather than to the map.
+ * profile cursor, which belongs to the panel's chart rather than to the map,
+ * and the visitor's own position, which belongs to no list at all.
  * None of them is a target: they are drawn on top of what was aimed at.
  */
 export const OVERLAY = {
@@ -124,6 +127,9 @@ export const OVERLAY = {
   hullEdge: "town-reach-line",
   mark: "hover-mark",
   ring: "hover-ring",
+  /** The visitor's own position: a dot, and the halo of how sure the fix is. */
+  you: "you",
+  youHalo: "you-halo",
 } as const;
 
 /** What one kind is drawn with, in one list – all of it carries its filter. */

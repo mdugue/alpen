@@ -777,6 +777,46 @@ export const appLayers = (
       source: SOURCE.hover,
       type: "circle",
     },
+    /*
+     * The visitor's position, once asked for: the platform's blue dot in the
+     * app's own blue (`--area`), and around it the circle the fix may be off
+     * by. The halo is in metres on the ground, so its radius doubles with each
+     * zoom step from the pixels `buildScene` measured at the fix's latitude.
+     */
+    {
+      id: OVERLAY.youHalo,
+      paint: {
+        "circle-color": colors.area,
+        "circle-opacity": 0.15,
+        "circle-pitch-alignment": "map",
+        "circle-radius": [
+          "interpolate",
+          ["exponential", 2],
+          ["zoom"],
+          0,
+          ["get", "halo"],
+          22,
+          ["*", ["get", "halo"], 2 ** 22],
+        ],
+        "circle-stroke-color": colors.area,
+        "circle-stroke-opacity": 0.4,
+        "circle-stroke-width": 1,
+      },
+      source: SOURCE.you,
+      type: "circle",
+    },
+    {
+      id: OVERLAY.you,
+      paint: {
+        "circle-color": colors.area,
+        "circle-pitch-alignment": "map",
+        "circle-radius": 6,
+        "circle-stroke-color": colors.paper,
+        "circle-stroke-width": 2.5,
+      },
+      source: SOURCE.you,
+      type: "circle",
+    },
     // Topmost: the profile cursor must stay visible over its own ascent.
     {
       id: OVERLAY.cursor,

@@ -39,7 +39,7 @@ const jsonLd = (w: Messages) => ({
  * The explorer is a layout, not a page (plan 02): the map, the lists and the
  * season bar stay mounted while the path under it changes from `/` to
  * `/pass/x` and back, and the child page only fills the detail slot – for a
- * pass, the weather streamed into a Suspense hole. `children` passes through
+ * pass or a town, the weather streamed into a Suspense hole. `children` passes through
  * the `"use cache"` untouched, which is what lets the layout be prerendered
  * once for every entity route.
  *

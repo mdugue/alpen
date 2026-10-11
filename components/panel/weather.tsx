@@ -4,25 +4,36 @@ import {
   WeatherForecast,
   WeatherUnavailable,
 } from "@/components/panel/weather-forecast";
-import type { Pass } from "@/lib/types";
 import { forecast } from "@/lib/weather";
+import type { WeatherPlace } from "@/lib/weather-places";
 
 /**
- * The forecast of one pass, rendered on the server and streamed into the
- * pass page's Suspense hole (plan 02). `connection()` first: the forecast
- * is the one thing on an entity page that must not be baked into the
- * prerender – a week-old forecast labelled "heute" is worse than none – and
- * it is also what keeps `next build` from asking Open-Meteo 262 times. The
- * cached function behind it (`lib/weather.ts`) holds the quota arithmetic.
+ * The forecast of one entity's places – a pass's summit and the start of each
+ * ascent, or a town – rendered on the server and streamed into the entity
+ * page's Suspense hole (plan 02). `connection()` first: the forecast is the
+ * one thing on an entity page that must not be baked into the prerender – a
+ * week-old forecast labelled "heute" is worse than none – and it is also what
+ * keeps `next build` from asking Open-Meteo for every point. The cached
+ * function behind it (`lib/weather.ts`) holds the quota arithmetic.
  *
- * A failure is rendered, not thrown: the panel says "Wetter nicht
- * verfügbar" in the same place the table would stand, and the rest of the
- * page is unaffected.
+ * A failure is rendered, not thrown: a place Open-Meteo did not answer for is
+ * left out, and with none answered the panel says "Wetter nicht verfügbar" in
+ * the same place the table would stand. The rest of the page is unaffected.
  */
-export const Weather = async ({ pass }: { pass: Pass }) => {
+export const Weather = async ({ places }: { places: WeatherPlace[] }) => {
   await connection();
-  const days = await forecast(pass.lat, pass.lon, pass.elevation).catch(
-    () => null,
+  const answered = await Promise.all(
+    places.map((place) =>
+      forecast(place.lat, place.lon, place.elevation).then(
+        (f) => ({ ...f, place }),
+        () => null,
+      ),
+    ),
   );
-  return days ? <WeatherForecast days={days} /> : <WeatherUnavailable />;
+  const shown = answered.filter((a) => a !== null);
+  return shown.length > 0 ? (
+    <WeatherForecast places={shown} />
+  ) : (
+    <WeatherUnavailable />
+  );
 };

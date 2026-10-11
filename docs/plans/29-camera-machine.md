@@ -31,7 +31,7 @@ Measured at `6c1897b` (2026-09-21).
   state (`hashCamera` 953, `fitted` 954, `inset` 960, `padded` 961,
   `flownTo` 967, `flying` 976).
 - **The rule is one boolean at 1472**, `if (selKey && (flying.current ||
-selKey !== flownTo.current)) return;`, whose correctness depends on write
+  selKey !== flownTo.current)) return;`, whose correctness depends on write
   order across a React effect (1450-1474 writes `inset`/`padded`), a
   `setTimeout` callback (1716-1777 writes `flying`/`flownTo`, reads `inset`
   at 1717) and a `moveend` handler registered at mount (1353-1372 clears
@@ -56,7 +56,7 @@ selKey !== flownTo.current)) return;`, whose correctness depends on write
   45 000 ms timeout with a six-line apology (622-631).
 - **The geometry that feeds the camera is written in four languages.**
   `SHEET_INSET_PX = 8` (mobile-sheet.tsx:24) duplicates `--drawer-inset:
---spacing(2)` in `components/ui/drawer.tsx:124`, a generated file that
+  --spacing(2)` in `components/ui/drawer.tsx:124`, a generated file that
   `ui:init` rewrites, on the path `sheetCover` → `insetBottom` → the flight
   (1717). The panel widths are pixels (explorer.tsx:87-91, "keep in sync
   with the Tailwind widths below") beside the classes (575, 589); the
@@ -212,7 +212,7 @@ stops patching `setPadding`.
   own token once (`--drawer-inset`), never copied.
 - `MapEnvironment = { scheme, coarsePointer, reduceMotion, mobile }` arrives
   as one prop built from `useMediaQuery` in `Explorer`; `appLayers(colors,
-env)` becomes pure in fact; the `coarsePointer` and `scheme` helpers and
+  env)` becomes pure in fact; the `coarsePointer` and `scheme` helpers and
   the inline copy at 1130 go; `overlays` gets the reconciling effect `base`
   has.
 - `readHash` and the duplicate `defined` leave the map: the intent is an

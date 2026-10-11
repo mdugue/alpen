@@ -4,6 +4,8 @@ import { useT } from "@/components/i18n";
 import type { PanelActions } from "@/components/panel/actions";
 import { BaseSection } from "@/components/panel/base";
 import { EntityLink, ExternalLinks, Nearby } from "@/components/panel/nearby";
+import { Section } from "@/components/panel/section";
+import { WeatherSkeleton } from "@/components/panel/weather-forecast";
 import { TagBadges } from "@/components/tags";
 import type { TownModel } from "@/lib/detail-model";
 import { bikeShopsHref, workshopsHref } from "@/lib/links";
@@ -19,9 +21,12 @@ import { bikeShopsHref, workshopsHref } from "@/lib/links";
 export const TownDetail = ({
   model,
   actions,
+  weather,
 }: {
   model: TownModel;
   actions: PanelActions;
+  /** The town page's streamed forecast, as for a pass (`components/panel/weather.tsx`). */
+  weather?: React.ReactNode;
 }) => {
   const { t } = useT();
   const { town } = model;
@@ -54,6 +59,13 @@ export const TownDetail = ({
         period={model.period}
         pointing={{ actions, hovered: model.hovered }}
       />
+      <Section
+        id="weather"
+        info={t.panel.weather.infoTown}
+        title={t.panel.weather.title}
+      >
+        {weather ?? <WeatherSkeleton />}
+      </Section>
       <Nearby actions={actions} model={model} />
       <ExternalLinks
         links={[

@@ -11,18 +11,18 @@ import type { Selection } from "@/lib/app-state";
  * child of the layout, so it arrives as `children` and is shown in the
  * panel; what it may not do is show pass A's weather while the visitor has
  * already tapped pass B and B's page is still on its way. The slot compares
- * its own slug with the selection and shows the skeleton until they agree.
+ * its own entity with the selection and shows the skeleton until they agree.
  */
 export const SelectionContext = createContext<Selection | null>(null);
 
 export const WeatherSlot = ({
-  slug,
+  selection: own,
   children,
 }: {
-  slug: string;
+  selection: Selection;
   children: React.ReactNode;
 }) => {
   const selection = useContext(SelectionContext);
-  const current = selection?.kind === "pass" && selection.slug === slug;
+  const current = selection?.kind === own.kind && selection.slug === own.slug;
   return current ? children : <WeatherSkeleton />;
 };

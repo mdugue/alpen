@@ -207,7 +207,7 @@ Rules:
    `open` half-months with fewer than `SNOW_BEST_PCT` snow days. Since every
    new reason turns a cell `risky`, a best run is automatically free of heat,
    wet, short days and cold descents. New: `passGrades(pass, signals):
-Grade[]` (with `signals: PassSignals`, the pass's climate series and valley
+   Grade[]` (with `signals: PassSignals`, the pass's climate series and valley
    elevation) and `tourGrades(tour, passes, signals)`, where a tour cell is the worst grade of
    its passes (`closed < limited < good < best`), consistent with
    `tourStatus`.
@@ -444,7 +444,7 @@ an editorial judgement, the raw values remain visible).
    `rows.ts` (`withinLimits` reads the bucket).
 7. Documentation as listed, roadmap entries, plan status, README row.
 8. Verify: `bun run typecheck && bun run lint && bun test && bun run build &&
-bun run data:check`; screenshots via `preview-app`: the list with strips
+   bun run data:check`; screenshots via `preview-app`: the list with strips
    in late July and in early October, the Ventoux and the Stilfser Joch
    panel, the scrubber histogram, the filter panel with the two new selects,
    light and dark, desktop and phone.

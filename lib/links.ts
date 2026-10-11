@@ -5,7 +5,7 @@
  * page, a wrong komoot shape returns the discover view at the visitor's own
  * position. So the shapes live here, next to the tests that pin them.
  */
-import type { Messages } from "@/lib/i18n";
+import type { Lang, Messages } from "@/lib/i18n";
 import { fill } from "@/lib/i18n/fill";
 import type { LatLon, Pass, Town } from "@/lib/types";
 
@@ -52,3 +52,24 @@ export const lodgingHref = (town: Town, w: Messages) =>
 
 export const bikeShopsHref = (town: Town, w: Messages) =>
   mapsSearchHref(fill(w.panel.town.bikeShopsQuery, { town: town.name }));
+
+/** The week page's path on meteoblue, which is translated with the site. */
+const METEOBLUE_WEEK: Record<Lang, string> = {
+  de: "de/wetter/woche",
+  en: "en/weather/week",
+};
+
+/**
+ * meteoblue's forecast for one point, at a given height. The point is the
+ * path – `46.528N10.453E2757`, latitude, longitude and metres, a western
+ * longitude as a negative "E" (a "W" lands on a town of the same name in
+ * Ohio) – and the height is honoured, which is what makes it worth linking for
+ * a summit: their meteogram and their multimodel comparison at 2 757 m, not at
+ * the valley floor the nearest town is in. Without a height meteoblue reads its
+ * own terrain model, the same thing the panel's valley points do.
+ */
+export const meteoblueHref = (
+  at: { lat: number; lon: number; elevation: number | null },
+  lang: Lang,
+) =>
+  `https://www.meteoblue.com/${METEOBLUE_WEEK[lang]}/${at.lat}N${at.lon}E${at.elevation ?? ""}`;

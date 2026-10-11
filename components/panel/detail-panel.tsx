@@ -61,7 +61,7 @@ export const DetailPanel = ({
   hovered: Selection | null;
   favorite: boolean;
   actions: PanelActions;
-  /** The pass page's streamed forecast, shown in the weather block (plan 02). */
+  /** The pass or town page's streamed forecast, shown in the weather block (plan 02). */
   weather?: React.ReactNode;
 }) => {
   const { t } = useT();
@@ -254,7 +254,7 @@ export const DetailPanel = ({
             <TourDetail actions={actions} model={model} />
           )}
           {model.kind === "town" && (
-            <TownDetail actions={actions} model={model} />
+            <TownDetail actions={actions} model={model} weather={weather} />
           )}
           {model.kind === "destination" && (
             <DestinationDetail actions={actions} model={model} />

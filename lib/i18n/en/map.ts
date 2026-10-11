@@ -12,6 +12,11 @@ export const map = {
   /** The view menu's last group: the same place in the other language. */
   language: "Language",
   levelLine: "At this zoom level: {word}",
+  locate: "My location",
+  locateDenied:
+    "Location not allowed – this can be changed in the browser's settings",
+  locateHint: "My location – with the roads nearby",
+  locateUnavailable: "Location not available right now",
   osmContributors: "© OpenStreetMap contributors",
   overlays: "Overlays",
   satellite: "Satellite",

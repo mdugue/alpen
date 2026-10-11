@@ -79,7 +79,7 @@ flowchart LR
    the row, one scene input and one reducer case, and it needs no effect
    edited. That is the test of whether the seams are real.
 
-### The four adapters, the server's one call, and the three hooks beside them
+### The four adapters, the server's one call, and the four hooks beside them
 
 | Adapter                                                      | World                                                                                                 |
 | ------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------- |
@@ -89,13 +89,18 @@ flowchart LR
 | `lib/use-fetch.ts` (through `lib/detail-state.ts`)           | `fetch`, as the three answers a request can give                                                      |
 | `lib/weather.ts` (`forecast`), server-only                   | Open-Meteo, the one upstream call, inside its cache with the quota and the cooldown                   |
 
-Three more hooks touch the platform and are on the same allow-list, because
+Four more hooks touch the platform and are on the same allow-list, because
 they read it rather than decide anything with it: `lib/use-media-query.ts`
 (`matchMedia` and the viewport height, including the map's whole environment
 as one value), `lib/use-height.ts` (a `ResizeObserver` on the shell's two
-bars) and `lib/use-roving.ts` (`rovingList`, a callback ref with a
-`MutationObserver` and focus, turning a list into one tab stop). Every entry needs its comment and its reason; when the
-list passes eight, review it rather than extending it.
+bars), `lib/use-roving.ts` (`rovingList`, a callback ref with a
+`MutationObserver` and focus, turning a list into one tab stop) and
+`lib/use-geolocation.ts` (one position, asked for when the locate button is
+pressed and never kept). Every entry needs its comment and its reason; when the
+list passes eight, review it rather than extending it. It was reviewed when the
+geolocation hook made it nine: each entry is still one platform world read
+without a decision, and folding two into one file would only give that file
+two worlds.
 
 The core is four functions with names, not a framework: the reducer is a
 switch, the camera is a switch, the scene and the model are functions. The
@@ -303,13 +308,20 @@ it in the same PR.
 ## The one dynamic route lives inside a free tier, and the numbers are in the file
 
 The forecast (`lib/weather.ts`, streamed by `components/panel/weather.tsx`
-into the pass route) is the only thing a visitor can spend somebody's quota
-on. Open-Meteo's non-commercial allowance is 10 000 calls a day, so the worst
-case has to be computed rather than hoped for: one cached call per pass per
-window, 262 roads today, which is why the window is an hour (≈ 6 300/day) and
-not the half hour it once was (≈ 12 600/day, over the allowance). An hour
-holds up to about 410 roads. Three rules follow. A window that gets shorter,
-or a list that grows past that, has to be checked against the product again. The forecast is never part of
+into the pass and town routes) is the only thing a visitor can spend
+somebody's quota on. Open-Meteo's non-commercial allowance is 10 000 calls a
+day, and it counts each location of a request as a call, so the worst case
+has to be computed rather than hoped for: one cached call per _point_ per
+window. A pass is asked for at its top and at the start of each ascent, a
+town where it is (`passPlaces`, `townPlaces` in `lib/weather-places.ts`), and
+a point two entities share is one cache entry – 690 points today. That is why
+the window is three hours (≈ 5 500/day): the models behind the forecast run
+every three hours at best, so a shorter window would only buy the same
+numbers again, and an hour would be ≈ 16 600/day, over the allowance. The
+arithmetic is not left to this paragraph: `lib/weather-places.test.ts`
+computes it from the data and fails once the points outgrow the window.
+Three rules follow. A window that gets shorter, or a list that grows past it,
+has to be checked against the product again. The forecast is never part of
 a prerender – `connection()` comes first, so `next build` asks Open-Meteo for
 nothing and a page never bakes in a week-old "heute" – and a visit inside a
 window is answered from the cache entry, not from the host. And a failure is

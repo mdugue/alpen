@@ -18,7 +18,7 @@ flowchart TB
   G["Gespeichert im Repository"]
   H["Build: Karten- und Detaildateien, eine Seite je Eintrag"]
   I["Browser"]
-  J["Wettervorhersage, eine Stunde zwischengespeichert"]
+  J["Wettervorhersage, drei Stunden zwischengespeichert"]
 
   A --> C --> D
   B --> D
@@ -166,7 +166,8 @@ Grundkarte) und die Fotos von Wikimedia.
 
 Die einzige Abfrage, deren Antwort nicht schon beim Build feststeht, ist die
 **Wettervorhersage**. Sie läuft über den Server der App, der Open-Meteo
-fragt und die Antwort je Pass eine Stunde lang zwischenspeichert. So bleibt
+fragt und die Antwort je Punkt – Passhöhe, Start einer Auffahrt, Ort – drei
+Stunden lang zwischenspeichert. So bleibt
 die Zahl der Anfragen auch bei vielen Besuchern im kostenlosen Rahmen von
 Open-Meteo. Schlägt eine Anfrage fehl, legt der Server eine Pause ein,
 statt es bei jedem Besucher neu zu versuchen. Fehlt für einen Tag ein

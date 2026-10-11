@@ -13,6 +13,8 @@ export type Period = z.infer<typeof S.Period>;
 
 export type Status = z.infer<typeof S.Status>;
 export type LatLon = z.infer<typeof S.LatLon>;
+/** A position the browser reported, with how far off it may be, in metres. */
+export type Fix = LatLon & { accuracy: number };
 export type AscentCheck = z.infer<typeof S.AscentCheck>;
 export type AscentRouter = z.infer<typeof S.AscentRouter>;
 export type TourCheck = z.infer<typeof S.TourCheck>;

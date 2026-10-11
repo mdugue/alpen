@@ -19,7 +19,7 @@
  * only place the commands meet MapLibre.
  *
  * The app reaches for ten of the names below – `camera`, `COLD`, `toInset`,
- * `fitInset` and the `Inset` type from the two appliers and the shell,
+ * `framePadding` and the `Inset` type from the two appliers and the shell,
  * `flightFor`, `fitDone`, `FIT_MS`, `FIT_PADDING` and `NO_INSET` from the map
  * component, `visibleBounds` from the scene. The rest are the thresholds this
  * file decides with, exported so the tests can name a duration or a padding
@@ -56,28 +56,24 @@ export const sameInset = (a: Inset, b: Inset): boolean =>
   a.left === b.left;
 
 /**
- * The padding to hand `cameraForBounds` when the flight that follows re-pads
- * the map as it moves.
+ * The padding a flight's frame is measured under: the one the camera lands
+ * with (`landing`), plus the breathing room around the frame on every edge.
  *
- * `cameraForBounds` measures the free space against the padding the map has
- * *now* (`now`) and adds the padding it is given, but the camera lands under
- * `next`. Folding the growth of an axis into the fit padding puts the frame
- * right where the camera arrives: the sum of the two sides is what takes space
- * away from the box, so half of it per side leaves the difference of the sides
- * – and with it the centring, which the transform itself applies once the
- * flight has finished – untouched. `extra` is the breathing room around the
- * frame and is kept on every edge.
+ * Handed to `cameraForBounds` with `absolutePadding` (MapLibre 6.12), which
+ * measures the box against exactly this rather than adding it to whatever the
+ * map is padded with *now*. Until then the growth between the two paddings had
+ * to be folded into the fit padding by hand – half of it per side, negative
+ * when a panel folded away – so that the frame came out right under a padding
+ * the map did not have yet. The extra is the same on opposite edges, so it
+ * shrinks the box without moving its centre: the flight can still land with
+ * `landing` alone.
  */
-export const fitInset = (now: Inset, next: Inset, extra: number): Inset => {
-  const x = (next.left + next.right - now.left - now.right) / 2;
-  const y = (next.top + next.bottom - now.top - now.bottom) / 2;
-  return {
-    bottom: extra + y,
-    left: extra + x,
-    right: extra + x,
-    top: extra + y,
-  };
-};
+export const framePadding = (landing: Inset, extra: number): Inset => ({
+  bottom: landing.bottom + extra,
+  left: landing.left + extra,
+  right: landing.right + extra,
+  top: landing.top + extra,
+});
 
 // ── What a camera move costs, and how much room it leaves ────────────────────
 
@@ -166,6 +162,50 @@ export const visibleBounds = (
     const b = tourBounds[t.slug];
     if (t.visible && b) extend(b[0], b[1], b[2], b[3]);
   }
+  return box;
+};
+
+/**
+ * How many of the nearest roads the locate button frames with the visitor.
+ * The answer it gives is "what is near me", so the frame is the visitor and
+ * a handful of roads around them: close enough to read the dots, wide enough
+ * to see which way the next ones lie. From outside the Alps the same box
+ * reaches from the visitor to the nearest range, which is the answer there.
+ */
+export const LOCATE_NEIGHBOURS = 5;
+
+/**
+ * Beyond this the visitor is not on the way to the Alps but on another
+ * continent, and a box around both would show the world with the roads as a
+ * speck: the frame is then the nearest roads alone, and the dot is off screen
+ * where it belongs. Hamburg (≈ 750 km to the nearest road) still sees both.
+ */
+export const LOCATE_MAX_KM = 1500;
+
+/**
+ * The frame the locate button asks for: the visitor's position and the
+ * `LOCATE_NEIGHBOURS` drawn roads nearest to it, or those roads alone past
+ * `LOCATE_MAX_KM`. With no road drawn – every pass filtered away – the box is
+ * the point alone, which the fit flies to as a point (`requestedFit`).
+ */
+export const locateBounds = (
+  at: { lat: number; lon: number },
+  passes: readonly { lat: number; lon: number }[],
+): Bounds => {
+  const nearest = passes
+    .map((p) => ({ d: haversine(at, p), p }))
+    .toSorted((a, b) => a.d - b.d)
+    .slice(0, LOCATE_NEIGHBOURS);
+  const [first] = nearest;
+  const from = first && first.d > LOCATE_MAX_KM ? first.p : at;
+  let box: Bounds = [from.lon, from.lat, from.lon, from.lat];
+  for (const { p } of nearest)
+    box = [
+      Math.min(box[0], p.lon),
+      Math.min(box[1], p.lat),
+      Math.max(box[2], p.lon),
+      Math.max(box[3], p.lat),
+    ];
   return box;
 };
 

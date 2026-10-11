@@ -288,7 +288,7 @@ transport; plans 20 and 21 headers point here; plan 11 items 13, 17, 19 and
 ## Acceptance criteria
 
 - After every phase: `git status` clean under `data/` after `data:build
---status` and `data:check --explain`; their outputs byte-identical to
+  --status` and `data:check --explain`; their outputs byte-identical to
   before the phase (recorded in the PR).
 - Phase A: `grep -rn "fetch(" scripts --include='*.ts'` finds one site, in
   the live transport; one `Limiter` construction site; `locate-pass.ts` has
