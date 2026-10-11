@@ -77,6 +77,20 @@
    "Dimaro (north)"
   ]
  },
+ "capanna-dotra": {
+  "classicAscent": "6.0 km, 7 % from the junction on the Lukmanier road",
+  "note": "A detour off the Lukmanier's south side: a narrow road climbs to the Capanna Dötra at just over 1700 m. Season window taken from the Lukmanierpass.",
+  "ascents": [
+   "Junction on the Lukmanier road"
+  ]
+ },
+ "ceillac-vallee-du-melezet": {
+  "classicAscent": "13.5 km, 7 % from the junction at the Maison du Roy",
+  "note": "A detour off the Izoard climb from Guillestre: at the Maison du Roy the road to Ceillac branches off and ends at the head of the Vallée du Mélézet. Season window taken from the Col d'Izoard.",
+  "ascents": [
+   "Junction at the Maison du Roy"
+  ]
+ },
  "cima-grappa": {
   "classicAscent": "19.1 km, 7.9 % from Semonzo",
   "note": "The solitary peak above the Venetian plain: over 1,500 m of climbing in one go from every side, at the top the First World War ossuary and the view from the Adriatic to the Dolomites. The road from Semonzo is the Strada Cadorna, narrow and without shade in its upper part.",
@@ -759,6 +773,13 @@
    "Molini di Triora (east)"
   ]
  },
+ "colle-melosa": {
+  "classicAscent": "6.7 km, 7 % from the junction on the Langan road",
+  "note": "A detour off the Colle Langan: the road climbs to the refuge at the Colle Melosa. Not cleared in winter.",
+  "ascents": [
+   "Junction on the Langan road"
+  ]
+ },
  "colle-san-bartolomeo": {
   "classicAscent": "11 km, 5 % from Chiusavecchia",
   "note": "Links the Impero valley behind Imperia with the Arroscia valley of Pieve di Teco, open all year. A winter training climb for the pros of the Riviera: olive groves, hardly any traffic, a village at the top.",
@@ -849,6 +870,13 @@
   "note": "The border crossing between Livigno and the Bernina area, usually ridden as part of the loop over Bernina and Foscagno. High, bare and closed in winter.",
   "ascents": [
    "Livigno (north)"
+  ]
+ },
+ "fouillouse": {
+  "classicAscent": "3.1 km, 10 % from the junction in the Ubaye valley",
+  "note": "A detour in the upper Ubaye valley: the road climbs to the hamlet of Fouillouse below the Chambeyron massif. Not cleared in winter.",
+  "ascents": [
+   "Junction in the Ubaye valley"
   ]
  },
  "furkajoch": {
@@ -986,11 +1014,25 @@
    "Imst"
   ]
  },
+ "haute-vallee-de-cervieres": {
+  "classicAscent": "11.5 km, 4 % from the junction in Cervières",
+  "note": "A detour off the Izoard's north side: from Cervières the road runs gently up into the high valley behind it. Season window taken from the Col d'Izoard.",
+  "ascents": [
+   "Junction in Cervières"
+  ]
+ },
  "hochkar": {
   "classicAscent": "8.5 km, 9.3 % from Lassing",
   "note": "Toll road up the Hochkar in the Mostviertel, with views across the Ybbstal Alps to the Ötscher. Steadily steep, the tarmac ends at the ski area on top; bikes pay no toll.",
   "ascents": [
    "Lassing"
+  ]
+ },
+ "hochsoelden": {
+  "classicAscent": "3.7 km, 11 % from the junction above Sölden",
+  "note": "A detour off the Ötztal glacier road: above Sölden the steep road to Hochsölden branches off.",
+  "ascents": [
+   "Junction above Sölden"
   ]
  },
  "hochtannbergpass": {
@@ -1028,6 +1070,13 @@
   "note": "From the Simmental into the Gruyère country, the language border lies on the other side. Evenly steep through forest and pasture, cleared all year and lightly trafficked.",
   "ascents": [
    "Boltigen (east)"
+  ]
+ },
+ "jochgrimm": {
+  "classicAscent": "3.6 km, 6 % from the junction at the Lavazè",
+  "note": "A detour off the Lavazè pass: the road continues to the Jochgrimm (Passo Oclini) below the Schwarzhorn.",
+  "ascents": [
+   "Junction at the Lavazè"
   ]
  },
  "julierpass": {
@@ -1183,6 +1232,13 @@
    "Sarnonico (west)"
   ]
  },
+ "meribel-mottaret": {
+  "classicAscent": "14.7 km, 3 % from the junction in Méribel",
+  "note": "A detour off the Loze climb from Brides-les-Bains: the road continues through Méribel to the ski village of Mottaret. Season window taken from the Col de la Loze.",
+  "ascents": [
+   "Junction in Méribel"
+  ]
+ },
  "mont-ventoux": {
   "classicAscent": "21.5 km, 7.5 % from Bédoin",
   "note": "Summit road usually not closed until mid-November. October is ideal, but the Mistral can be brutal; check the wind forecast.",
@@ -1237,6 +1293,13 @@
    "Rovio"
   ]
  },
+ "monte-pizzoc": {
+  "classicAscent": "4.0 km, 6 % from the junction on the Cansiglio",
+  "note": "A detour off the Cansiglio plateau: the road climbs to the top of Monte Pizzoc with a view over the Venetian plain.",
+  "ascents": [
+   "Junction on the Cansiglio"
+  ]
+ },
  "monte-san-primo": {
   "classicAscent": "14 km, 6 % from Bellagio",
   "note": "Beyond the Ghisallo and on from Magreglio to the Parco Monte San Primo, where the tarmac ends: the highest point of the Larian Triangle, with Lake Como on both sides. Snow at the top in winter.",
@@ -1257,6 +1320,13 @@
   "ascents": [
    "Ovaro",
    "Sutrio"
+  ]
+ },
+ "monte-zugna": {
+  "classicAscent": "12.1 km, 7 % from the junction in Albaredo",
+  "note": "A detour at the Pian delle Fugazze: from Albaredo near Rovereto the road climbs a long way to Monte Zugna, a First World War site. Not cleared in winter.",
+  "ascents": [
+   "Junction in Albaredo"
   ]
  },
  "mottarone": {
@@ -1697,6 +1767,13 @@
    "Misurina (east)"
   ]
  },
+ "passo-tremalzo": {
+  "classicAscent": "13.0 km, 7 % from the junction in the Val di Ledro",
+  "note": "A detour from the Val di Ledro: the paved road climbs to the Passo Tremalzo; beyond it only gravel continues towards Lake Garda. Not cleared in winter.",
+  "ascents": [
+   "Junction in the Val di Ledro"
+  ]
+ },
  "passo-valles": {
   "classicAscent": "11.3 km, 7.9 % from Falcade",
   "note": "Links the Biois valley with the Travignolo valley and is usually strung together with Rolle and San Pellegrino into a loop. Narrow, little traffic, the final kilometres above the tree line.",
@@ -1823,6 +1900,13 @@
    "Castelletto di Brenzone"
   ]
  },
+ "rhemes-notre-dame": {
+  "classicAscent": "14.2 km, 5 % from the junction near Introd",
+  "note": "A detour at the entrance of the Valsavarenche: near Introd the Val di Rhêmes branches off, and the road ends in Rhêmes-Notre-Dame.",
+  "ascents": [
+   "Junction near Introd"
+  ]
+ },
  "riedbergpass": {
   "classicAscent": "6.5 km, 8.3 % from Obermaiselstein",
   "note": "Germany's highest pass road and, at 16 % in the upper third, one of its steepest too. Links the Iller valley with Balderschwang; cleared all year, at times chains only during heavy snowfall.",
@@ -1863,6 +1947,13 @@
   "note": "The crest road of the high Vosges, built as a supply road in the First World War: over grassy domes with views of the Rhine plain and, on a clear day, the Alps; the Tour de France rides stretches of it too, such as from the Markstein to the Grand Ballon. Closed in winter roughly mid-November to mid-April; lots of motorbikes at weekends.",
   "ascents": [
    "Col de la Schlucht"
+  ]
+ },
+ "saint-veran": {
+  "classicAscent": "5.1 km, 5 % from the junction near Molines",
+  "note": "A detour off the Agnello climb from the Queyras: the road branches off near Molines and ends in Saint-Véran, one of the highest villages in Europe.",
+  "ascents": [
+   "Junction near Molines"
   ]
  },
  "santuario-di-sant-anna-di-vinadio": {
@@ -2004,6 +2095,13 @@
    "Oberaudorf (east)"
   ]
  },
+ "sulden": {
+  "classicAscent": "9.2 km, 7 % from the junction in Gomagoi",
+  "note": "A detour off the Stelvio climb from Prad: in Gomagoi the road branches off into the Sulden valley and ends in the village below the Ortler.",
+  "ascents": [
+   "Junction in Gomagoi"
+  ]
+ },
  "sustenpass": {
   "classicAscent": "28 km, 5.5 % from Innertkirchen",
   "note": "Closure usually late October/November. Even gradient, Steingletscher panorama.",
@@ -2112,6 +2210,13 @@
    "Bourg-Saint-Maurice"
   ]
  },
+ "valmeinier-1800": {
+  "classicAscent": "6.4 km, 6 % from the junction near Valloire",
+  "note": "A detour at the Télégraphe: from the Valloire basin the road climbs to the ski station of Valmeinier 1800.",
+  "ascents": [
+   "Junction near Valloire"
+  ]
+ },
  "valsavarenche": {
   "classicAscent": "26.1 km, 5.0 % from Villeneuve to Pont",
   "note": "One of the three valleys of the Gran Paradiso, from Villeneuve in the Aosta valley to the head of the valley at Pont beneath the summit. National park throughout, little traffic, and at the end nothing but meadows and ibex.",
@@ -2133,11 +2238,25 @@
    "Villach"
   ]
  },
+ "villard-reymond": {
+  "classicAscent": "10.1 km, 7 % from the junction on the Ornon road",
+  "note": "A detour off the Ornon road: the narrow road climbs in hairpins to the mountain village of Villard-Reymond above the Oisans.",
+  "ascents": [
+   "Junction on the Ornon road"
+  ]
+ },
  "villnoesstal": {
   "classicAscent": "20.1 km, 5.6 % from Klausen to the Zanser Alm",
   "note": "The valley beneath the Geisler peaks, ending at the Zanser Alm with the wall directly above it. Quiet, because it leads nowhere; the final kilometres from St. Magdalena climb noticeably.",
   "ascents": [
    "Klausen"
+  ]
+ },
+ "vorderkaser-pfossental": {
+  "classicAscent": "4.8 km, 10 % from the junction for the Pfossental",
+  "note": "A detour in the Schnals valley: the road into the Pfossental climbs steeply to the Vorderkaser inn.",
+  "ascents": [
+   "Junction for the Pfossental"
   ]
  },
  "vrsic": {
