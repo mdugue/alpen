@@ -1,5 +1,8 @@
 import { legalMetadata, LegalFrame } from "@/components/legal-page";
 
+/** A legal page is text; nothing on it may be rendered per request (Next 16.4). */
+export const ensureStatic = "navigation";
+
 export const generateMetadata = () => legalMetadata("impressum");
 
 const ImpressumPage = () => (

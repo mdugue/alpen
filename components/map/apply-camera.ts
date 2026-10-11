@@ -4,7 +4,7 @@ import type { FlyToOptions, Map as MLMap } from "maplibre-gl";
 import { useEffect, useRef } from "react";
 
 import type { MapView } from "@/lib/app-state";
-import { camera, COLD, fitInset, toInset } from "@/lib/map-camera";
+import { camera, COLD, framePadding, toInset } from "@/lib/map-camera";
 import type {
   CameraCommand,
   CameraEnv,
@@ -38,9 +38,11 @@ const viewOf = (m: MLMap): MapView => {
  * A flight's landing point, in MapLibre's terms.
  *
  * Not `fitBounds`, which drops the padding before it flies: the frame has to be
- * measured against where the camera lands (`fitInset`), and the padding has to
- * travel with it. `cameraForBounds` can still refuse a box, which is what the
- * fallback point is for; `null` means the map has nowhere to go.
+ * measured against the padding the camera lands with (`framePadding`, under
+ * `absolutePadding`), and that padding has to travel with it – without the
+ * breathing room, which only shrinks the box. `cameraForBounds` can still
+ * refuse a box, which is what the fallback point is for; `null` means the map
+ * has nowhere to go.
  */
 const flight = (
   m: MLMap,
@@ -58,12 +60,15 @@ const flight = (
     return { ...base, bearing, center: [lon, lat], pitch, zoom };
   }
   if (c.target.kind === "point") return at(c.target.point);
-  const now = toInset(m.getPadding());
   const fit = m.cameraForBounds(c.target.bounds, {
+    absolutePadding: true,
     maxZoom: c.target.maxZoom,
-    padding: fitInset(now, c.padding ?? now, c.target.extra),
+    padding: framePadding(c.padding ?? toInset(m.getPadding()), c.target.extra),
   });
-  if (fit) return { ...base, ...fit };
+  if (fit) {
+    const { padding: _measured, ...landing } = fit;
+    return { ...base, ...landing };
+  }
   return c.target.fallback ? at(c.target.fallback) : null;
 };
 

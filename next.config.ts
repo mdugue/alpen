@@ -33,6 +33,13 @@ const nextConfig: NextConfig = {
       })),
     ),
 
+  // Partial Prefetching (Next 16.4): a link prefetches the route's static App
+  // Shell, shared by every entity under the explorer, instead of each route's
+  // full payload. No link here asks for more (`prefetch={true}`), so nothing
+  // prefetched before is lost; the weather stays behind its Suspense hole and
+  // arrives with the navigation, as it always did.
+  partialPrefetching: true,
+
   // React Compiler: memoises the client components automatically.
   reactCompiler: true,
 

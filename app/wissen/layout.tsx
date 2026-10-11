@@ -18,6 +18,13 @@ import "./wissen.css";
  * What the map's root layout says about the site, for the pages that are not
  * the map: absolute share URLs, the title template, the scheme colours.
  */
+/**
+ * The knowledge base is the repository's Markdown, read at build time; nothing
+ * on it may ever be rendered per request. `'navigation'` (Next 16.4) makes the
+ * build fail if a later change brings request-time work onto any of its pages.
+ */
+export const ensureStatic = "navigation";
+
 export const metadata: Metadata = {
   applicationName: SITE_NAME,
   metadataBase: new URL(siteUrl),
