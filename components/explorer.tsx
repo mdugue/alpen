@@ -55,7 +55,7 @@ interface Props {
   defaultPeriod: Period;
   /**
    * The entity page under the layout (plan 02): what the server rendered for
-   * the path – a pass's streamed weather – shown in the panel's own block.
+   * the path – a pass's or a town's streamed weather – shown in the panel's own block.
    * `null` on the start page.
    */
   children?: React.ReactNode;

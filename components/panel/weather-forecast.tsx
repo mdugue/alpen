@@ -1,6 +1,7 @@
 "use client";
 import {
   ChevronDown,
+  ExternalLink,
   Cloud,
   CloudDrizzle,
   CloudFog,
@@ -11,8 +12,10 @@ import {
   Sun,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
+import { useState } from "react";
 
 import { useT } from "@/components/i18n";
+import { FilterChip } from "@/components/sidebar/filter-chip";
 import { Button } from "@/components/ui/button";
 import {
   Collapsible,
@@ -36,8 +39,10 @@ import {
 } from "@/components/ui/table";
 import { localeOf } from "@/lib/i18n";
 import type { Lang, Messages } from "@/lib/i18n";
+import { meteoblueHref } from "@/lib/links";
 import type { WeatherDay } from "@/lib/types";
 import { cn } from "@/lib/utils";
+import type { PlaceForecast } from "@/lib/weather-places";
 
 /**
  * A value Open-Meteo has none of. One empty cell costs the cell and nothing
@@ -111,137 +116,261 @@ export const WeatherUnavailable = () => {
   );
 };
 
+/** "Passhöhe", "Valloire (Nord)", "Bormio" – what one place is called in the panel. */
+const placeName = ({ place }: PlaceForecast, w: Messages["panel"]["weather"]) =>
+  place.label || w.summit;
+
 /**
- * Forecast at pass altitude, rendered on the server for the pass's route and
- * streamed in (`components/panel/weather.tsx`); this is the table, a client
- * component only for the fold. The panel is about choosing a destination,
- * not about planning tomorrow's ride: today and tomorrow are shown as two
- * dense rows, the rest of the week stays one click away.
+ * One day at one place as one dense line: the sky, the lead (the day or the
+ * place), the two temperatures, the rain – or the snow, when there is any –
+ * and the wind. The same line for a pass's ladder and a town's two days, so
+ * the columns stand where the eye left them.
  */
-export const WeatherForecast = ({ days }: { days: WeatherDay[] }) => {
+const DayLine = ({
+  day,
+  lead,
+  sub,
+}: {
+  day: WeatherDay;
+  lead: string;
+  sub?: string;
+}) => {
+  const { t, fmt } = useT();
+  const w = t.panel.weather;
+  const value = (n: number | null, unit = "") =>
+    n === null ? MISSING : `${fmt(Math.round(n) || 0)}${unit}`;
+  const [Icon, label] = describe(day.weatherCode, w.code) ?? [];
+  // A day without a figure for it had no snow as far as the panel is
+  // concerned: it says so by saying nothing.
+  const snow = day.snowfall ?? 0;
+  return (
+    <div className="flex items-center gap-2 py-1 text-xs tabular-nums">
+      {Icon ? (
+        <Icon
+          className="text-muted-foreground size-4 shrink-0"
+          aria-label={label}
+          role="img"
+        />
+      ) : (
+        <span className="size-4 shrink-0" />
+      )}
+      {/* The name wraps rather than truncates: "Col du Lautaret (Süd)" cut to
+          "Col du Laut…" says nothing, and a second line costs less. */}
+      <span className="min-w-0 flex-1 leading-tight">
+        <span className="font-medium">{lead}</span>
+        {sub && (
+          <span className="text-muted-foreground text-2xs whitespace-nowrap">
+            {" "}
+            {sub}
+          </span>
+        )}
+      </span>
+      <span className="w-16 shrink-0 text-right">
+        {value(day.tmin, "°")} / {value(day.tmax, "°")}
+      </span>
+      {snow > 0 ? (
+        <span className="text-status-closed w-12 shrink-0 text-right font-semibold">
+          {value(day.snowfall, " cm")}
+          <span className="sr-only"> {w.snow}</span>
+        </span>
+      ) : (
+        <span className="text-muted-foreground w-12 shrink-0 text-right">
+          {value(day.precipitation, " mm")}
+        </span>
+      )}
+      <span className="text-muted-foreground w-14 shrink-0 text-right">
+        {value(day.windMax, " km/h")}
+      </span>
+    </div>
+  );
+};
+
+/** The week at one place, one row a day. */
+const WeekTable = ({ days }: { days: WeatherDay[] }) => {
   const { t, lang, fmt } = useT();
   const w = t.panel.weather;
   const value = (n: number | null, unit = "") =>
-    n === null ? MISSING : `${fmt(Math.round(n))}${unit}`;
+    n === null ? MISSING : `${fmt(Math.round(n) || 0)}${unit}`;
   const weekday = (date: string) => DAY_FORMAT[lang].format(new Date(date));
-  const [today, tomorrow] = days;
-  const rows: [WeatherDay | undefined, string][] = [
-    [today, w.today],
-    [tomorrow, w.tomorrow],
+  return (
+    <Table>
+      <TableHeader>
+        <TableRow className="text-muted-foreground [&>th]:h-7 [&>th]:px-1 [&>th]:text-right [&>th:first-child]:pl-0 [&>th:first-child]:text-left">
+          <TableHead>{w.columns.day}</TableHead>
+          <TableHead>
+            <span className="sr-only">{w.columns.weather}</span>
+          </TableHead>
+          <TableHead>{w.columns.tmin}</TableHead>
+          <TableHead>{w.columns.tmax}</TableHead>
+          <TableHead>{w.columns.rain}</TableHead>
+          <TableHead>{w.columns.snow}</TableHead>
+          <TableHead>{w.columns.wind}</TableHead>
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+        {days.map((d) => {
+          const [Icon, label] = describe(d.weatherCode, w.code) ?? [];
+          const snow = d.snowfall ?? 0;
+          return (
+            <TableRow
+              key={d.date}
+              className="tabular-nums [&>td]:px-1 [&>td]:py-1 [&>td]:text-right [&>td:first-child]:pl-0 [&>td:first-child]:text-left"
+            >
+              <TableCell>{weekday(d.date)}</TableCell>
+              <TableCell>
+                {Icon ? (
+                  <Icon
+                    className="text-muted-foreground inline size-3.5"
+                    aria-label={label}
+                    role="img"
+                  />
+                ) : (
+                  MISSING
+                )}
+              </TableCell>
+              <TableCell>{value(d.tmin, "°")}</TableCell>
+              <TableCell>{value(d.tmax, "°")}</TableCell>
+              <TableCell>{value(d.precipitation, " mm")}</TableCell>
+              <TableCell
+                className={cn(snow > 0 && "text-status-closed font-semibold")}
+              >
+                {snow > 0 ? value(d.snowfall, " cm") : MISSING}
+              </TableCell>
+              <TableCell>{value(d.windMax, " km/h")}</TableCell>
+            </TableRow>
+          );
+        })}
+      </TableBody>
+    </Table>
+  );
+};
+
+/**
+ * The forecast of an entity's places, rendered on the server for its route
+ * and streamed in (`components/panel/weather.tsx`); this is the table, a
+ * client component only for the fold and the place switch. The panel is about
+ * choosing a destination, not about planning tomorrow's ride: today and
+ * tomorrow are shown as dense rows, the rest of the week stays one click away.
+ *
+ * A pass has several places – its top and the start of each ascent – and
+ * they are shown as a ladder under each day, top first: the comparison is
+ * the point ("1 ° oben, 17 ° in Valloire"), the way mountain weather sites
+ * put "Berg" over "Tal". The week below takes one place at a time. Each place
+ * links out to meteoblue at the same point and height, for the meteogram and
+ * the model comparison the panel does not try to be.
+ */
+export const WeatherForecast = ({ places }: { places: PlaceForecast[] }) => {
+  const { t, lang, fmt } = useT();
+  const w = t.panel.weather;
+  const [chosen, setChosen] = useState(0);
+  const single = places.length === 1;
+  const height = (p: PlaceForecast) => `${fmt(Math.round(p.elevation))} m`;
+  const week = places[chosen] ?? places[0];
+  const days: [number, string][] = [
+    [0, w.today],
+    [1, w.tomorrow],
   ];
 
   return (
     <Collapsible>
       <div className="flex flex-col">
-        {rows
-          .filter((row): row is [WeatherDay, string] => row[0] !== undefined)
-          .map(([d, when]) => {
-            const [Icon, label] = describe(d.weatherCode, w.code) ?? [];
-            // A day without a figure for it had no snow as far as the panel
-            // is concerned: it says so by saying nothing.
-            const snow = d.snowfall ?? 0;
-            return (
-              <div
-                key={d.date}
-                className="flex items-center gap-2 py-1 text-xs tabular-nums"
-              >
-                {Icon ? (
-                  <Icon
-                    className="text-muted-foreground size-4 shrink-0"
-                    aria-label={label}
-                    role="img"
-                  />
-                ) : (
-                  <span className="size-4 shrink-0" />
-                )}
-                <span className="w-14 shrink-0 font-medium">{when}</span>
-                <span className="w-16 shrink-0">
-                  {value(d.tmin, "°")} / {value(d.tmax, "°")}
-                </span>
-                <span className="text-muted-foreground w-14 shrink-0">
-                  {value(d.precipitation, " mm")}
-                </span>
-                {snow > 0 && (
-                  <span className="text-status-closed font-semibold">
-                    {value(d.snowfall, " cm")} {w.snow}
-                  </span>
-                )}
-                <span className="text-muted-foreground ml-auto">
-                  {value(d.windMax, " km/h")}
-                </span>
-              </div>
-            );
-          })}
+        {days.map(([i, when]) => {
+          if (single) {
+            const day = places[0]?.days[i];
+            return day && <DayLine key={when} day={day} lead={when} />;
+          }
+          return (
+            <div key={when} className="flex flex-col">
+              <span className="text-muted-foreground text-2xs mt-1 font-medium uppercase">
+                {when}
+              </span>
+              {places.map((p) => {
+                const day = p.days[i];
+                return (
+                  day && (
+                    <DayLine
+                      key={`${p.place.lat},${p.place.lon}`}
+                      day={day}
+                      lead={placeName(p, w)}
+                      sub={height(p)}
+                    />
+                  )
+                );
+              })}
+            </div>
+          );
+        })}
       </div>
 
-      <CollapsibleTrigger
-        render={
-          <Button
-            variant="ghost"
-            size="sm"
-            className="group/week text-muted-foreground mt-1 px-1"
+      <div className="mt-1 flex flex-wrap items-center justify-between gap-x-3">
+        <CollapsibleTrigger
+          render={
+            <Button
+              variant="ghost"
+              size="sm"
+              className="group/week text-muted-foreground px-1"
+            />
+          }
+        >
+          {w.allDays}
+          <ChevronDown
+            data-icon="inline-end"
+            className="transition-transform group-aria-expanded/week:rotate-180"
           />
-        }
-      >
-        {w.allDays}
-        <ChevronDown
-          data-icon="inline-end"
-          className="transition-transform group-aria-expanded/week:rotate-180"
-        />
-      </CollapsibleTrigger>
+        </CollapsibleTrigger>
+        {single && week && (
+          <a
+            href={meteoblueHref(week.place, lang)}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-muted-foreground hover:text-foreground inline-flex items-center gap-1 text-xs underline-offset-2 hover:underline"
+          >
+            {w.more}
+            <ExternalLink className="size-3" />
+            <span className="sr-only">{t.panel.external.newTab}</span>
+          </a>
+        )}
+      </div>
       <CollapsibleContent>
-        <Table>
-          <TableHeader>
-            <TableRow className="text-muted-foreground [&>th]:h-7 [&>th]:px-1 [&>th]:text-right [&>th:first-child]:pl-0 [&>th:first-child]:text-left">
-              <TableHead>{w.columns.day}</TableHead>
-              <TableHead>
-                <span className="sr-only">{w.columns.weather}</span>
-              </TableHead>
-              <TableHead>{w.columns.tmin}</TableHead>
-              <TableHead>{w.columns.tmax}</TableHead>
-              <TableHead>{w.columns.rain}</TableHead>
-              <TableHead>{w.columns.snow}</TableHead>
-              <TableHead>{w.columns.wind}</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {days.map((d) => {
-              const [Icon, label] = describe(d.weatherCode, w.code) ?? [];
-              const snow = d.snowfall ?? 0;
-              return (
-                <TableRow
-                  key={d.date}
-                  className="tabular-nums [&>td]:px-1 [&>td]:py-1 [&>td]:text-right [&>td:first-child]:pl-0 [&>td:first-child]:text-left"
-                >
-                  <TableCell>{weekday(d.date)}</TableCell>
-                  <TableCell>
-                    {Icon ? (
-                      <Icon
-                        className="text-muted-foreground inline size-3.5"
-                        aria-label={label}
-                        role="img"
-                      />
-                    ) : (
-                      MISSING
-                    )}
-                  </TableCell>
-                  <TableCell>{value(d.tmin, "°")}</TableCell>
-                  <TableCell>{value(d.tmax, "°")}</TableCell>
-                  <TableCell>{value(d.precipitation, " mm")}</TableCell>
-                  <TableCell
-                    className={cn(
-                      snow > 0 && "text-status-closed font-semibold",
-                    )}
-                  >
-                    {snow > 0 ? value(d.snowfall, " cm") : MISSING}
-                  </TableCell>
-                  <TableCell>{value(d.windMax, " km/h")}</TableCell>
-                </TableRow>
-              );
-            })}
-          </TableBody>
-        </Table>
+        {!single && (
+          <div
+            role="group"
+            aria-label={w.places}
+            className="my-1.5 flex flex-wrap gap-1.5"
+          >
+            {places.map((p, i) => (
+              <FilterChip
+                key={`${p.place.lat},${p.place.lon}`}
+                label={placeName(p, w)}
+                pressed={week === p}
+                onPressedChange={() => setChosen(i)}
+              >
+                {placeName(p, w)}
+              </FilterChip>
+            ))}
+          </div>
+        )}
+        {week && <WeekTable days={week.days} />}
       </CollapsibleContent>
+
+      {!single && (
+        <p className="text-muted-foreground mt-2 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs">
+          {w.more}:
+          {places.map((p) => (
+            <a
+              key={`${p.place.lat},${p.place.lon}`}
+              href={meteoblueHref(p.place, lang)}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-foreground inline-flex items-center gap-0.5 underline-offset-2 hover:underline"
+            >
+              {placeName(p, w)}
+              <ExternalLink className="size-3" />
+              <span className="sr-only">{t.panel.external.newTab}</span>
+            </a>
+          ))}
+        </p>
+      )}
     </Collapsible>
   );
 };

@@ -31,6 +31,11 @@ der Liste der Reiseziele, jeweils unter dem Gebiet, zu dem sie gehören. Die
 Karte zeigt dieselben Dinge, und ein Klick auf der Karte oder in der Liste
 öffnet die Detailansicht.
 
+Der Knopf **Mein Standort** rechts oben auf der Karte fragt den Browser nach
+deiner Position, zeigt sie als blauen Punkt und zoomt so, dass du und die
+fünf nächsten Straßen im Bild seid. Die Position wird nur auf Knopfdruck
+abgefragt, nirgends gespeichert und nicht in den Link geschrieben.
+
 ### Straßen und ihre Auffahrten
 
 Die meisten Einträge sind Pässe, aber nicht alle – deshalb heißt der Reiter
@@ -214,13 +219,18 @@ Halbmonat, mit dem Grund in einem Satz. Darunter folgen, jeweils einklappbar:
   Talstraßen heißt der Block „Strecke“ und nennt weder Höhenmeter noch
   steilsten Kilometer: Auf fast flachen Straßen misst das Geländemodell mehr
   Auf und Ab, als die Straße hat.
-- **Aktuelles Wetter**: die Vorhersage für die Passhöhe, sieben Tage.
+- **Aktuelles Wetter**: die Vorhersage für heute und morgen, untereinander
+  für die Passhöhe und den Start jeder Auffahrt – oben kann es frieren,
+  während es im Tal 20 Grad hat. Darunter die ganze Woche für einen dieser
+  Punkte und je ein Link zu meteoblue für dieselbe Stelle und Höhe, mit
+  Meteogramm und Modellvergleich.
 - **Jahresklima**: die Klimareihe des Passes über die 24 Halbmonate.
 - **Orte als Standort** und **Im Umkreis von 75 km**: was in der Nähe liegt.
 - Am Ende Links zu quaeldich.de, Komoot, Google Maps und OpenStreetMap.
 
-Die Detailansicht eines Orts zeigt stattdessen, welche Pässe er erreicht, und
-einen aus diesen Pässen **abgeleiteten** Saisonstreifen. Die eines
+Die Detailansicht eines Orts zeigt stattdessen, welche Pässe er erreicht,
+einen aus diesen Pässen **abgeleiteten** Saisonstreifen und das aktuelle
+Wetter im Ort. Die eines
 Reiseziels zeigt einen aus seinen Straßen abgeleiteten Streifen und, was zum
 Gebiet gehört (siehe [Reiseziele](#reiseziele)). Die einer Tour zeigt die
 Pässe der Runde.

@@ -9,14 +9,15 @@ import { entityAt, prerenderParams } from "@/lib/data";
 import { getDictionary } from "@/lib/i18n/server";
 import { alternatesOf, hrefFor } from "@/lib/routes";
 import { entityDescription, entityTitle, openGraphOf } from "@/lib/share-text";
+import { passPlaces, townPlaces } from "@/lib/weather-places";
 
 /**
  * One prerendered route per entity (plan 02; CI prerenders a sample,
  * `prerenderParams`): `/pass/x`, `/tour/x`, `/ort/x`,
  * `/ziel/x`. The explorer around it is the layout's; what this page adds is
  * the entity's own title, description and share image – so a shared link
- * unfurls to the pass rather than to the site – and, for a pass, the
- * forecast streamed into the panel's weather block.
+ * unfurls to the pass rather than to the site – and, for a pass or a town,
+ * the forecast streamed into the panel's weather block.
  *
  * The slug list is the data, so an unknown path is a 404 – `notFound()` below,
  * because Cache Components allow no `dynamicParams = false`. It streams with
@@ -63,11 +64,20 @@ const EntityPage = async ({ params }: Props) => {
   const found = await entityOf(params);
   if (!found) notFound();
   const { entity, selection } = found;
-  if (entity.kind !== "pass") return null;
+  // A pass is forecast at its top and at the start of each ascent, a town
+  // where it is; a loop and an area are made of those and have no weather of
+  // their own.
+  const places =
+    entity.kind === "pass"
+      ? passPlaces(entity.pass)
+      : entity.kind === "town"
+        ? townPlaces(entity.town)
+        : null;
+  if (!places) return null;
   return (
-    <WeatherSlot slug={selection.slug}>
+    <WeatherSlot selection={selection}>
       <Suspense fallback={<WeatherSkeleton />}>
-        <Weather pass={entity.pass} />
+        <Weather places={places} />
       </Suspense>
     </WeatherSlot>
   );

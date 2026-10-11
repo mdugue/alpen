@@ -89,7 +89,7 @@ export const BLOCKS: Record<DetailModel["kind"], BlockId[]> = {
   destination: ["area-passes", "area-tours", "area-towns", "area-travel"],
   pass: ["rating", "ascents", "weather", "climate", "bases", "nearby"],
   tour: ["tour-passes", "nearby"],
-  town: ["base-passes", "nearby"],
+  town: ["base-passes", "weather", "nearby"],
 };
 
 /** What stands over the name in the panel head. */
