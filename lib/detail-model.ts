@@ -155,6 +155,10 @@ export interface PassModel extends Reaching {
   bucket: ClimateBucket | null;
   /** Towns this road could be ridden from, banded and ranked. */
   bases: Bases;
+  /** The road this one is a detour from (`branchOf`), or null. */
+  trunk: Pass | null;
+  /** The detours that branch off this road, highest first. */
+  branches: { pass: Pass; cell: YearCell }[];
 }
 
 export interface TourModel extends Reaching {
@@ -283,6 +287,13 @@ export const detailModel = (
       bases: basesOf(
         reachedTowns(pass, data.towns, data.passes, data.years, period),
       ),
+      branches: data.passes
+        .filter((p) => p.branchOf === pass.slug)
+        .map((p) => ({
+          cell: cellAt(data.years.passes[p.slug], period),
+          pass: p,
+        }))
+        .toSorted((a, b) => b.pass.elevation - a.pass.elevation),
       bucket,
       cell,
       climate,
@@ -296,6 +307,10 @@ export const detailModel = (
         note: pass.note,
         season: seasonText(pass, w),
       },
+      trunk:
+        pass.branchOf === undefined
+          ? null
+          : (data.passIndex.get(pass.branchOf) ?? null),
       verdict: {
         best: bestText(year, w),
         text: reasonParagraph(

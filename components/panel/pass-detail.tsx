@@ -10,11 +10,12 @@ import {
   ElevationProfile,
   PROFILE_ASPECT,
 } from "@/components/panel/elevation-profile";
-import { ExternalLinks, Nearby } from "@/components/panel/nearby";
+import { EntityLink, ExternalLinks, Nearby } from "@/components/panel/nearby";
 import { Section } from "@/components/panel/section";
 import { VerdictBox } from "@/components/panel/verdict-box";
 import { WeatherSkeleton } from "@/components/panel/weather-forecast";
 import { Rating } from "@/components/rating";
+import { StatusDot } from "@/components/status-badge";
 import { TagBadges } from "@/components/tags";
 import {
   Empty,
@@ -197,8 +198,25 @@ export const PassDetail = ({
       >
         {pass.type === "spur" && (
           <p className="text-muted-foreground mb-3 text-xs leading-relaxed">
-            {t.panel.ascents.spur}
+            {model.trunk ? t.panel.ascents.branch : t.panel.ascents.spur}
           </p>
+        )}
+        {model.trunk && (
+          <div className="mb-3 flex flex-col items-start">
+            <span className="text-muted-foreground text-xs">
+              {t.panel.ascents.trunk}
+            </span>
+            <EntityLink
+              entity={{ kind: "pass", slug: model.trunk.slug }}
+              hovered={model.hovered}
+              actions={actions}
+            >
+              {model.trunk.name}
+              <span className="text-muted-foreground tabular-nums">
+                {fmtUnit(model.trunk.elevation, "m")}
+              </span>
+            </EntityLink>
+          </div>
         )}
         {pass.ascents.length === 0 && (
           <Empty className="py-3">
@@ -240,6 +258,28 @@ export const PassDetail = ({
             );
           })}
         </div>
+        {/* The detours off this road: each its own entry with its own
+            profile and season, linked here so the trunk says what it offers. */}
+        {model.branches.length > 0 && (
+          <div className="mt-4 flex flex-col items-start">
+            <span className="text-xs font-medium">
+              {t.panel.ascents.branches}
+            </span>
+            {model.branches.map(({ cell, pass: branch }) => (
+              <EntityLink
+                key={branch.slug}
+                entity={{ kind: "pass", slug: branch.slug }}
+                hovered={model.hovered}
+                actions={actions}
+              >
+                <StatusDot status={cell.status} /> {branch.name}
+                <span className="text-muted-foreground tabular-nums">
+                  {fmtUnit(branch.elevation, "m")} · {branch.classicAscent}
+                </span>
+              </EntityLink>
+            ))}
+          </div>
+        )}
       </Section>
 
       <Section

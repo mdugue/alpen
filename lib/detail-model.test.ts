@@ -105,4 +105,35 @@ describe("detailModel", () => {
       modelOf("pass", "stilfser-joch")!.reach.tours.map((r) => r.tour.slug),
     ).toEqual(["runde"]);
   });
+
+  test("a trunk lists its detours, highest first, and a detour names its trunk", () => {
+    const glockner = makePass("glockner", 0);
+    const low = makePass("franz-josefs-hoehe", 2, {
+      branchOf: "glockner",
+      elevation: 2369,
+      type: "spur",
+    });
+    const high = makePass("edelweissspitze", 1, {
+      branchOf: "glockner",
+      elevation: 2571,
+      type: "spur",
+    });
+    const bundle = bundleOf([glockner, low, high], [], [], yearsOf([], []));
+    const model = (slug: string) => {
+      const m = detailModel({ kind: "pass", slug }, bundle, {
+        detail: absent,
+        hovered: null,
+        period: PERIOD,
+        w: DE,
+      });
+      return m?.kind === "pass" ? m : null;
+    };
+    expect(model("glockner")!.branches.map((b) => b.pass.slug)).toEqual([
+      "edelweissspitze",
+      "franz-josefs-hoehe",
+    ]);
+    expect(model("glockner")!.trunk).toBeNull();
+    expect(model("edelweissspitze")!.trunk?.slug).toBe("glockner");
+    expect(model("edelweissspitze")!.branches).toEqual([]);
+  });
 });

@@ -4,6 +4,9 @@ import type { Layout } from "../fill";
 export const panel = {
   ascents: {
     average: "avg {pct} %",
+    branch:
+      "Detour: this dead-end road branches off another road, and the profile starts at the junction. The way down leads back to the main road.",
+    branches: "Detours",
     info: "Routed road, 100 elevation samples from a terrain model – good for comparing, not accurate to the metre.",
     infoTraverse:
       "Routed road, 100 elevation samples from a terrain model – good for comparing, not accurate to the metre. Climbing and steepest kilometre are left out here: on a nearly flat road through a gorge the model measures more up and down than the road has.",
@@ -13,6 +16,7 @@ export const panel = {
     steepestKm: "steepest km {pct} %",
     title: "Ascents",
     titleTraverse: "Road",
+    trunk: "Branches off",
   },
   bar: {
     backToList: "Back to the list",

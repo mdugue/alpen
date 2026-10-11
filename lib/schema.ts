@@ -182,6 +182,15 @@ export const Pass = z
     ascents: z.array(Ascent),
     /** Editorial 1–5 scales, see docs/scales.md. */
     beauty: Rating,
+    /**
+     * The road this one branches off, for a `spur` that is a detour from
+     * another entry rather than a climb of its own: the Edelweißspitze and the
+     * Kaiser-Franz-Josefs-Höhe off the Großglockner Hochalpenstraße. Its
+     * ascents then start at the junction, so the profile is the detour alone
+     * and the trunk's own ascents stay the climb to it. The trunk's panel
+     * lists its branches, the branch's panel names its trunk.
+     */
+    branchOf: Slug.optional(),
     /** Editorial short description of the classic ascent. */
     classicAscent: z.string(),
     /** ISO-like code, possibly two: "IT", "CH/IT". */
@@ -266,6 +275,18 @@ export const Pass = z
         code: "custom",
         message: `Punkt liegt ${where}`,
         path: [],
+      });
+    if (road.branchOf !== undefined && road.type !== "spur")
+      ctx.addIssue({
+        code: "custom",
+        message: `${DE.vocab.roadType[road.type].label}: nur eine Stichstraße zweigt ab (branchOf)`,
+        path: ["branchOf"],
+      });
+    if (road.branchOf === road.slug)
+      ctx.addIssue({
+        code: "custom",
+        message: "branchOf zeigt auf die Straße selbst",
+        path: ["branchOf"],
       });
     for (const [i, a] of road.ascents.entries()) {
       if (outside(a.from) || (a.to !== undefined && outside(a.to)))
