@@ -160,6 +160,7 @@ export const panel = {
     infoTown:
       "Open-Meteo forecast for the town, seven days, at the elevation of Open-Meteo's terrain model.",
     loading: "Loading weather",
+    modelHeight: "≈ {metres} m",
     more: "In detail on meteoblue",
     places: "Place of the weekly forecast",
     snow: "snow",

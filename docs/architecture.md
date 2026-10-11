@@ -79,7 +79,7 @@ flowchart LR
    the row, one scene input and one reducer case, and it needs no effect
    edited. That is the test of whether the seams are real.
 
-### The four adapters, the server's one call, and the three hooks beside them
+### The four adapters, the server's one call, and the four hooks beside them
 
 | Adapter                                                      | World                                                                                                 |
 | ------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------- |

@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-import type { LatLon } from "@/lib/types";
+import type { Fix } from "@/lib/types";
 
 /**
  * The adapter for the one platform question the map asks on request: where
@@ -15,14 +15,20 @@ import type { LatLon } from "@/lib/types";
  * the hash and not sent anywhere: the map draws it and the camera frames it,
  * and a reload forgets it.
  */
-export type Located =
-  | { status: "idle" }
-  | { status: "locating" }
-  | { status: "found"; at: LatLon & { accuracy: number } }
-  /** The visitor or the browser said no; only the browser's settings can undo it. */
-  | { status: "denied" }
-  /** No fix in time, or a browser without the API. */
-  | { status: "unavailable" };
+export interface Located {
+  /**
+   * `denied`: the visitor or the browser said no, and only the browser's
+   * settings can undo it. `unavailable`: no fix in time, or a browser without
+   * the API.
+   */
+  status: "idle" | "locating" | "found" | "denied" | "unavailable";
+  /**
+   * The last fix. It is kept while a new one is asked for, and when that one
+   * times out – the visitor has not moved because the second answer was
+   * slow – but not once the permission is withdrawn.
+   */
+  at: Fix | null;
+}
 
 /**
  * How long a fix may take, and how old a cached one may be. A city-level fix
@@ -38,15 +44,15 @@ const OPTIONS: PositionOptions = {
 
 export const useGeolocation = (): [
   Located,
-  (onFound: (at: LatLon & { accuracy: number }) => void) => void,
+  (onFound: (at: Fix) => void) => void,
 ] => {
-  const [located, setLocated] = useState<Located>({ status: "idle" });
-  const locate = (onFound: (at: LatLon & { accuracy: number }) => void) => {
+  const [located, setLocated] = useState<Located>({ at: null, status: "idle" });
+  const locate = (onFound: (at: Fix) => void) => {
     if (!("geolocation" in navigator)) {
-      setLocated({ status: "unavailable" });
+      setLocated({ at: null, status: "unavailable" });
       return;
     }
-    setLocated({ status: "locating" });
+    setLocated((was) => ({ ...was, status: "locating" }));
     navigator.geolocation.getCurrentPosition(
       ({ coords }) => {
         const at = {
@@ -58,10 +64,11 @@ export const useGeolocation = (): [
         onFound(at);
       },
       (error) => {
-        setLocated({
-          status:
-            error.code === error.PERMISSION_DENIED ? "denied" : "unavailable",
-        });
+        setLocated((was) =>
+          error.code === error.PERMISSION_DENIED
+            ? { at: null, status: "denied" }
+            : { ...was, status: "unavailable" },
+        );
       },
       OPTIONS,
     );

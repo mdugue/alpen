@@ -83,12 +83,6 @@ const toRgb = (color: string, fallback: string): string => {
     : `rgba(${r}, ${g}, ${b}, ${((a ?? 0) / 255).toFixed(3)})`;
 };
 
-/**
- * Metres per pixel at zoom 0 at 46° N, for 512-pixel tiles: the equator's
- * 78 271.5 m times cos 46°. What the position's accuracy halo is drawn with.
- */
-const METRES_PER_PX_Z0 = 78_271.517 * Math.cos((46 * Math.PI) / 180);
-
 /** Read colour values from the theme tokens – MapLibre cannot use CSS variables. */
 export const readColors = (el: HTMLElement) => {
   const s = getComputedStyle(el);
@@ -787,9 +781,7 @@ export const appLayers = (
      * The visitor's position, once asked for: the platform's blue dot in the
      * app's own blue (`--area`), and around it the circle the fix may be off
      * by. The halo is in metres on the ground, so its radius doubles with each
-     * zoom step; the metres per pixel are taken at 46° N, the middle of the
-     * range – a few per cent off at the edges of it, for a circle that is an
-     * estimate anyway.
+     * zoom step from the pixels `buildScene` measured at the fix's latitude.
      */
     {
       id: OVERLAY.youHalo,
@@ -802,9 +794,9 @@ export const appLayers = (
           ["exponential", 2],
           ["zoom"],
           0,
-          ["/", ["get", "accuracy"], METRES_PER_PX_Z0],
+          ["get", "halo"],
           22,
-          ["/", ["*", ["get", "accuracy"], 2 ** 22], METRES_PER_PX_Z0],
+          ["*", ["get", "halo"], 2 ** 22],
         ],
         "circle-stroke-color": colors.area,
         "circle-stroke-opacity": 0.4,

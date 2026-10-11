@@ -222,8 +222,9 @@ Halbmonat, mit dem Grund in einem Satz. Darunter folgen, jeweils einklappbar:
 - **Aktuelles Wetter**: die Vorhersage für heute und morgen, untereinander
   für die Passhöhe und den Start jeder Auffahrt – oben kann es frieren,
   während es im Tal 20 Grad hat. Darunter die ganze Woche für einen dieser
-  Punkte und je ein Link zu meteoblue für dieselbe Stelle und Höhe, mit
-  Meteogramm und Modellvergleich.
+  Punkte und je ein Link zu meteoblue für dieselbe Stelle, mit Meteogramm
+  und Modellvergleich. Die Passhöhe steht in ihrer gepflegten Höhe; die Höhe
+  eines Starts oder Orts kommt aus dem Geländemodell und trägt ein „≈“.
 - **Jahresklima**: die Klimareihe des Passes über die 24 Halbmonate.
 - **Orte als Standort** und **Im Umkreis von 75 km**: was in der Nähe liegt.
 - Am Ende Links zu quaeldich.de, Komoot, Google Maps und OpenStreetMap.

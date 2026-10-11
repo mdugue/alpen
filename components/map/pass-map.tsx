@@ -291,7 +291,7 @@ export const PassMap = ({
     tourBounds: assets.tourBounds,
     townReach,
     w: t,
-    you: located.status === "found" ? located.at : null,
+    you: located.at,
   });
   const applied = useRef<Scene | null>(null);
   const host = useRef<SceneHost | null>(null);
@@ -343,6 +343,12 @@ export const PassMap = ({
     onSelectRef.current = onSelect;
     onHoverRef.current = onHover;
   }, [onSelect, onHover]);
+  // A fix can take seconds to arrive; it is framed with the roads drawn then,
+  // not with the ones drawn when the button was pressed.
+  const drawnPasses = useRef(rows.pass);
+  useEffect(() => {
+    drawnPasses.current = rows.pass;
+  }, [rows.pass]);
 
   /**
    * What the pointer is over, as the map last heard it. The map reports a
@@ -814,28 +820,27 @@ export const PassMap = ({
    * machine like the range chip's frame – so it outranks a flight still
    * scheduled and lands in the panels' padding.
    */
-  const locateMe = () =>
+  const locateMe = () => {
+    // One question at a time: a second press while the first is out is noise.
+    if (located.status === "locating") return;
     locate((at) => {
       send({
         bounds: locateBounds(
           at,
-          rows.pass.map((r) => r.pass),
+          drawnPasses.current.map((r) => r.pass),
         ),
         type: "requestedFit",
       });
     });
-  const LocateIcon =
-    located.status === "found"
-      ? LocateFixed
-      : located.status === "denied" || located.status === "unavailable"
-        ? LocateOff
-        : Locate;
-  const locateHint =
-    located.status === "denied"
-      ? t.map.locateDenied
-      : located.status === "unavailable"
-        ? t.map.locateUnavailable
-        : t.map.locateHint;
+  };
+  const locating = {
+    denied: { failed: t.map.locateDenied, icon: LocateOff },
+    found: { failed: null, icon: LocateFixed },
+    idle: { failed: null, icon: Locate },
+    locating: { failed: null, icon: Locate },
+    unavailable: { failed: t.map.locateUnavailable, icon: LocateOff },
+  }[located.status];
+  const LocateIcon = locating.icon;
 
   return (
     <div className="bg-muted relative size-full overflow-hidden">
@@ -898,12 +903,7 @@ export const PassMap = ({
                   variant="outline"
                   className={cn(TOOL, MAP_TOOL)}
                   onClick={locateMe}
-                  aria-label={
-                    located.status === "denied" ||
-                    located.status === "unavailable"
-                      ? locateHint
-                      : t.map.locate
-                  }
+                  aria-label={locating.failed ?? t.map.locate}
                   aria-busy={located.status === "locating"}
                 />
               }
@@ -916,7 +916,9 @@ export const PassMap = ({
                 )}
               />
             </TooltipTrigger>
-            <TooltipContent side="left">{locateHint}</TooltipContent>
+            <TooltipContent side="left">
+              {locating.failed ?? t.map.locateHint}
+            </TooltipContent>
           </Tooltip>
 
           {/*
@@ -1007,6 +1009,22 @@ export const PassMap = ({
             </PopoverContent>
           </Popover>
         </ButtonGroup>
+        {/*
+         * Why the button did nothing, said where a finger can read it: a
+         * tooltip never opens on touch. It fades on its own; the button keeps
+         * the crossed-out icon and the reason in its label.
+         */}
+        {locating.failed && (
+          <p
+            role="status"
+            className={cn(
+              MAP_CLUSTER,
+              "text-muted-foreground animate-out fade-out fill-mode-forwards text-2xs pointer-events-none mt-2 max-w-44 px-2 py-1.5 delay-5000 duration-500",
+            )}
+          >
+            {locating.failed}
+          </p>
+        )}
       </div>
     </div>
   );

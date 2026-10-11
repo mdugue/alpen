@@ -175,10 +175,18 @@ export const visibleBounds = (
 export const LOCATE_NEIGHBOURS = 5;
 
 /**
+ * Beyond this the visitor is not on the way to the Alps but on another
+ * continent, and a box around both would show the world with the roads as a
+ * speck: the frame is then the nearest roads alone, and the dot is off screen
+ * where it belongs. Hamburg (≈ 750 km to the nearest road) still sees both.
+ */
+export const LOCATE_MAX_KM = 1500;
+
+/**
  * The frame the locate button asks for: the visitor's position and the
- * `LOCATE_NEIGHBOURS` drawn roads nearest to it. With no road drawn – every
- * pass filtered away – the box is the point alone, which the fit flies to as
- * a point (`requestedFit`).
+ * `LOCATE_NEIGHBOURS` drawn roads nearest to it, or those roads alone past
+ * `LOCATE_MAX_KM`. With no road drawn – every pass filtered away – the box is
+ * the point alone, which the fit flies to as a point (`requestedFit`).
  */
 export const locateBounds = (
   at: { lat: number; lon: number },
@@ -187,10 +195,11 @@ export const locateBounds = (
   const nearest = passes
     .map((p) => ({ d: haversine(at, p), p }))
     .toSorted((a, b) => a.d - b.d)
-    .slice(0, LOCATE_NEIGHBOURS)
-    .map(({ p }) => p);
-  let box: Bounds = [at.lon, at.lat, at.lon, at.lat];
-  for (const p of nearest)
+    .slice(0, LOCATE_NEIGHBOURS);
+  const [first] = nearest;
+  const from = first && first.d > LOCATE_MAX_KM ? first.p : at;
+  let box: Bounds = [from.lon, from.lat, from.lon, from.lat];
+  for (const { p } of nearest)
     box = [
       Math.min(box[0], p.lon),
       Math.min(box[1], p.lat),

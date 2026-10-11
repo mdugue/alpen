@@ -80,6 +80,13 @@ describe("locateBounds", () => {
     expect(box[3]).toBe(48.1);
   });
 
+  test("from another continent, the frame is the roads alone", () => {
+    // New York: a box around both would be the whole Atlantic.
+    expect(locateBounds({ lat: 40.7, lon: -74 }, passes)).toEqual([
+      7, 44, 10.1, 46.2,
+    ]);
+  });
+
   test("with nothing drawn, the box is the point", () => {
     expect(locateBounds({ lat: 46, lon: 10 }, [])).toEqual([10, 46, 10, 46]);
   });

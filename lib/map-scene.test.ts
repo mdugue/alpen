@@ -217,13 +217,17 @@ describe("what is drawn", () => {
     expect(away.opening).toEqual(away.bounds);
   });
 
-  test("the visitor's position is a point of its own, with its accuracy", () => {
+  test("the visitor's position is a point of its own, its accuracy in pixels at its latitude", () => {
     expect(buildScene(input()).you.features).toEqual([]);
     const at = buildScene(
       input({ you: { accuracy: 30, lat: 46.2, lon: 7.1 } }),
     );
     expect(at.you.features[0]?.geometry.coordinates).toEqual([7.1, 46.2]);
-    expect(at.you.features[0]?.properties).toEqual({ accuracy: 30 });
+    // 30 m at 46.2° N: 78 271.5 m per pixel on the equator, times cos 46.2°.
+    expect(at.you.features[0]?.properties?.halo).toBeCloseTo(
+      30 / (78_271.517 * Math.cos((46.2 * Math.PI) / 180)),
+      9,
+    );
   });
 
   test("the profile cursor is a point of its own", () => {

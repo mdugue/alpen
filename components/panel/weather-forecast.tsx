@@ -15,7 +15,6 @@ import type { LucideIcon } from "lucide-react";
 import { useState } from "react";
 
 import { useT } from "@/components/i18n";
-import { FilterChip } from "@/components/sidebar/filter-chip";
 import { Button } from "@/components/ui/button";
 import {
   Collapsible,
@@ -28,6 +27,7 @@ import {
   EmptyHeader,
   EmptyTitle,
 } from "@/components/ui/empty";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   Table,
@@ -39,6 +39,7 @@ import {
 } from "@/components/ui/table";
 import { localeOf } from "@/lib/i18n";
 import type { Lang, Messages } from "@/lib/i18n";
+import { fill } from "@/lib/i18n/fill";
 import { meteoblueHref } from "@/lib/links";
 import type { WeatherDay } from "@/lib/types";
 import { cn } from "@/lib/utils";
@@ -50,6 +51,13 @@ import type { PlaceForecast } from "@/lib/weather-places";
  * (`WeatherDay` in lib/schema.ts).
  */
 const MISSING = "–";
+
+/** A rounded figure with its unit, or the dash; never "-0°". */
+const figure = (fmt: (n: number) => string, n: number | null, unit = "") =>
+  n === null ? MISSING : `${fmt(Math.round(n) || 0)}${unit}`;
+
+/** Snowfall counts once there is any; a day with no figure for it had none. */
+const snowsOn = (day: WeatherDay) => (day.snowfall ?? 0) > 0;
 
 /**
  * The day column, one formatter per language built once: the same shape in
@@ -120,6 +128,36 @@ export const WeatherUnavailable = () => {
 const placeName = ({ place }: PlaceForecast, w: Messages["panel"]["weather"]) =>
   place.label || w.summit;
 
+const placeKey = ({ place }: PlaceForecast) => `${place.lat},${place.lon}`;
+
+/** A link out to meteoblue's week for one place, in a new tab. */
+const MeteoblueLink = ({
+  forecast,
+  className,
+  children,
+}: {
+  forecast: PlaceForecast;
+  className: string;
+  children: React.ReactNode;
+}) => {
+  const { t, lang } = useT();
+  return (
+    <a
+      href={meteoblueHref(forecast.place, lang)}
+      target="_blank"
+      rel="noopener noreferrer"
+      className={cn(
+        "inline-flex items-center gap-1 underline-offset-2 hover:underline",
+        className,
+      )}
+    >
+      {children}
+      <ExternalLink className="size-3" />
+      <span className="sr-only">{t.panel.external.newTab}</span>
+    </a>
+  );
+};
+
 /**
  * One day at one place as one dense line: the sky, the lead (the day or the
  * place), the two temperatures, the rain – or the snow, when there is any –
@@ -137,12 +175,8 @@ const DayLine = ({
 }) => {
   const { t, fmt } = useT();
   const w = t.panel.weather;
-  const value = (n: number | null, unit = "") =>
-    n === null ? MISSING : `${fmt(Math.round(n) || 0)}${unit}`;
+  const value = (n: number | null, unit?: string) => figure(fmt, n, unit);
   const [Icon, label] = describe(day.weatherCode, w.code) ?? [];
-  // A day without a figure for it had no snow as far as the panel is
-  // concerned: it says so by saying nothing.
-  const snow = day.snowfall ?? 0;
   return (
     <div className="flex items-center gap-2 py-1 text-xs tabular-nums">
       {Icon ? (
@@ -168,7 +202,7 @@ const DayLine = ({
       <span className="w-16 shrink-0 text-right">
         {value(day.tmin, "°")} / {value(day.tmax, "°")}
       </span>
-      {snow > 0 ? (
+      {snowsOn(day) ? (
         <span className="text-status-closed w-12 shrink-0 text-right font-semibold">
           {value(day.snowfall, " cm")}
           <span className="sr-only"> {w.snow}</span>
@@ -189,8 +223,7 @@ const DayLine = ({
 const WeekTable = ({ days }: { days: WeatherDay[] }) => {
   const { t, lang, fmt } = useT();
   const w = t.panel.weather;
-  const value = (n: number | null, unit = "") =>
-    n === null ? MISSING : `${fmt(Math.round(n) || 0)}${unit}`;
+  const value = (n: number | null, unit?: string) => figure(fmt, n, unit);
   const weekday = (date: string) => DAY_FORMAT[lang].format(new Date(date));
   return (
     <Table>
@@ -210,7 +243,7 @@ const WeekTable = ({ days }: { days: WeatherDay[] }) => {
       <TableBody>
         {days.map((d) => {
           const [Icon, label] = describe(d.weatherCode, w.code) ?? [];
-          const snow = d.snowfall ?? 0;
+          const snow = snowsOn(d);
           return (
             <TableRow
               key={d.date}
@@ -232,9 +265,9 @@ const WeekTable = ({ days }: { days: WeatherDay[] }) => {
               <TableCell>{value(d.tmax, "°")}</TableCell>
               <TableCell>{value(d.precipitation, " mm")}</TableCell>
               <TableCell
-                className={cn(snow > 0 && "text-status-closed font-semibold")}
+                className={cn(snow && "text-status-closed font-semibold")}
               >
-                {snow > 0 ? value(d.snowfall, " cm") : MISSING}
+                {snow ? value(d.snowfall, " cm") : MISSING}
               </TableCell>
               <TableCell>{value(d.windMax, " km/h")}</TableCell>
             </TableRow>
@@ -256,15 +289,24 @@ const WeekTable = ({ days }: { days: WeatherDay[] }) => {
  * they are shown as a ladder under each day, top first: the comparison is
  * the point ("1 ° oben, 17 ° in Valloire"), the way mountain weather sites
  * put "Berg" over "Tal". The week below takes one place at a time. Each place
- * links out to meteoblue at the same point and height, for the meteogram and
- * the model comparison the panel does not try to be.
+ * links out to meteoblue at the same point – the summit at its curated
+ * height, a valley point at meteoblue's own terrain height – for the
+ * meteogram and the model comparison the panel does not try to be.
+ *
+ * A height the panel did not curate is Open-Meteo's terrain model and says
+ * so with "≈"; the summit's is the curated one and stands plain.
  */
 export const WeatherForecast = ({ places }: { places: PlaceForecast[] }) => {
-  const { t, lang, fmt } = useT();
+  const { t, fmt } = useT();
   const w = t.panel.weather;
   const [chosen, setChosen] = useState(0);
   const single = places.length === 1;
-  const height = (p: PlaceForecast) => `${fmt(Math.round(p.elevation))} m`;
+  const height = (p: PlaceForecast) => {
+    const metres = fmt(Math.round(p.elevation));
+    return p.place.elevation === null
+      ? fill(w.modelHeight, { metres })
+      : `${metres} m`;
+  };
   const week = places[chosen] ?? places[0];
   const days: [number, string][] = [
     [0, w.today],
@@ -289,7 +331,7 @@ export const WeatherForecast = ({ places }: { places: PlaceForecast[] }) => {
                 return (
                   day && (
                     <DayLine
-                      key={`${p.place.lat},${p.place.lon}`}
+                      key={placeKey(p)}
                       day={day}
                       lead={placeName(p, w)}
                       sub={height(p)}
@@ -319,36 +361,34 @@ export const WeatherForecast = ({ places }: { places: PlaceForecast[] }) => {
           />
         </CollapsibleTrigger>
         {single && week && (
-          <a
-            href={meteoblueHref(week.place, lang)}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-muted-foreground hover:text-foreground inline-flex items-center gap-1 text-xs underline-offset-2 hover:underline"
+          <MeteoblueLink
+            forecast={week}
+            className="text-muted-foreground hover:text-foreground text-xs"
           >
             {w.more}
-            <ExternalLink className="size-3" />
-            <span className="sr-only">{t.panel.external.newTab}</span>
-          </a>
+          </MeteoblueLink>
         )}
       </div>
       <CollapsibleContent>
+        {/* One of n, so a radio group – not filter chips, which say a count
+            and can all be on at once. */}
         {!single && (
-          <div
-            role="group"
+          <RadioGroup
             aria-label={w.places}
-            className="my-1.5 flex flex-wrap gap-1.5"
+            value={String(chosen)}
+            onValueChange={(v) => setChosen(Number(v))}
+            className="my-2 flex flex-wrap gap-x-4 gap-y-2"
           >
             {places.map((p, i) => (
-              <FilterChip
-                key={`${p.place.lat},${p.place.lon}`}
-                label={placeName(p, w)}
-                pressed={week === p}
-                onPressedChange={() => setChosen(i)}
+              <label
+                key={placeKey(p)}
+                className="flex cursor-pointer items-center gap-1.5 text-xs"
               >
+                <RadioGroupItem value={String(i)} />
                 {placeName(p, w)}
-              </FilterChip>
+              </label>
             ))}
-          </div>
+          </RadioGroup>
         )}
         {week && <WeekTable days={week.days} />}
       </CollapsibleContent>
@@ -357,17 +397,13 @@ export const WeatherForecast = ({ places }: { places: PlaceForecast[] }) => {
         <p className="text-muted-foreground mt-2 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs">
           {w.more}:
           {places.map((p) => (
-            <a
-              key={`${p.place.lat},${p.place.lon}`}
-              href={meteoblueHref(p.place, lang)}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-foreground inline-flex items-center gap-0.5 underline-offset-2 hover:underline"
+            <MeteoblueLink
+              key={placeKey(p)}
+              forecast={p}
+              className="text-foreground gap-0.5"
             >
               {placeName(p, w)}
-              <ExternalLink className="size-3" />
-              <span className="sr-only">{t.panel.external.newTab}</span>
-            </a>
+            </MeteoblueLink>
           ))}
         </p>
       )}

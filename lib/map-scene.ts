@@ -31,7 +31,7 @@ import type { TownReach } from "@/lib/nearby";
 import { HOME_RANGE, rangeOf } from "@/lib/regions";
 import { ascentKey } from "@/lib/route-key";
 import type { PassRow, Rows, TourRow } from "@/lib/rows";
-import type { LatLon, Status, Surface, Tag } from "@/lib/types";
+import type { Fix, LatLon, Status, Surface, Tag } from "@/lib/types";
 import { fmtUnit } from "@/lib/utils";
 
 /** MapLibre reads properties as numbers and strings; a flag is 0 or 1. */
@@ -133,8 +133,11 @@ export interface Scene {
   };
   /** The road point under the elevation-profile cursor. */
   cursor: FeatureCollection<Point, Record<string, never>>;
-  /** Where the visitor is, with how far off the fix may be in metres. */
-  you: FeatureCollection<Point, { accuracy: number }>;
+  /**
+   * Where the visitor is; `halo` is how far off the fix may be, in pixels at
+   * zoom 0 at its own latitude, which the layer doubles per zoom step.
+   */
+  you: FeatureCollection<Point, { halo: number }>;
   /** What "fit to visible" frames; `null` while nothing is drawn. */
   bounds: Bounds | null;
   /**
@@ -157,7 +160,7 @@ export interface SceneInput {
   tourBounds: Record<string, Bounds>;
   profileCursor: LatLon | null;
   /** The visitor's position, once they have asked for it; never stored, never in a link. */
-  you: (LatLon & { accuracy: number }) | null;
+  you: Fix | null;
   /**
    * What the pointer can do here. A coarse pointer has no hover to speak of:
    * a finger that touches a mark has already tapped it, and a label under the
@@ -207,6 +210,16 @@ const topOf = (ring: Ring): [number, number] => {
   for (const [x, y] of ring) if (y > lat) [lon, lat] = [x, y];
   return [lon, lat];
 };
+
+/**
+ * Metres per pixel at zoom 0 on the equator, for 512-pixel tiles; a parallel
+ * shrinks with the cosine of its latitude.
+ */
+const METRES_PER_PX_Z0 = 78_271.517;
+
+/** A fix's accuracy as a radius in pixels at zoom 0, where it was taken. */
+const haloPx = ({ accuracy, lat }: Fix) =>
+  accuracy / (METRES_PER_PX_Z0 * Math.cos((lat * Math.PI) / 180));
 
 export const buildScene = (input: SceneInput): Scene => {
   const {
@@ -433,9 +446,7 @@ export const buildScene = (input: SceneInput): Scene => {
       })),
     ),
     you: collection(
-      you
-        ? [{ at: [you.lon, you.lat], props: { accuracy: you.accuracy } }]
-        : [],
+      you ? [{ at: [you.lon, you.lat], props: { halo: haloPx(you) } }] : [],
     ),
   };
 };
