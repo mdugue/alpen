@@ -2,6 +2,7 @@
 
 exports[`status matrix for all passes × 24 half-months 1`] = `
 [
+  "rrrrooooooooooooooorrrrr  penegal",
   "rrrrooooooooorroooorrrrr  col-de-l-orme",
   "rrrrooooooooorroooorrrrr  col-de-la-porte",
   "rrrrooooooooorroooorrrrr  col-saint-roch",
@@ -258,7 +259,10 @@ exports[`status matrix for all passes × 24 half-months 1`] = `
   "xxxxxxxxxrrrrrrroorxxxxx  colle-delle-finestre",
   "xxxxxxxxxxrooooooorrxxxx  mangart-sattel",
   "xxxxxxxxxxrooooooorrxxxx  silvretta-hochalpenstrasse",
+  "xxxxxxxxxxrooooooorxxxxx  cinque-torri",
   "xxxxxxxxxxrooooooorxxxxx  grosse-scheidegg",
+  "xxxxxxxxxxrooooooorxxxxx  santuario-di-sant-anna-di-vinadio",
+  "xxxxxxxxxxrooooooorxxxxx  sommet-bucher",
   "xxxxxxxxxxrooooooorxxxxx  staller-sattel",
   "xxxxxxxxxxroooooorrxxxxx  col-de-la-bonette",
   "xxxxxxxxxxroooooorrxxxxx  col-du-galibier",
@@ -270,7 +274,9 @@ exports[`status matrix for all passes × 24 half-months 1`] = `
   "xxxxxxxxxxroooooorxxxxxx  col-du-grand-saint-bernard",
   "xxxxxxxxxxroooooorxxxxxx  colle-dell-agnello",
   "xxxxxxxxxxroooooorxxxxxx  kaunertaler-gletscherstrasse",
+  "xxxxxxxxxxroooooorxxxxxx  l-ecot",
   "xxxxxxxxxxroooooorxxxxxx  passo-di-gavia",
+  "xxxxxxxxxxroooooorxxxxxx  rifugio-dei-forni",
   "xxxxxxxxxxrooroooorxxxxx  col-du-sanetsch",
   "xxxxxxxxxxrooroooorxxxxx  grimselpass",
   "xxxxxxxxxxrooroooorxxxxx  tre-cime-di-lavaredo",

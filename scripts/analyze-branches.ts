@@ -112,7 +112,7 @@ for (const pass of selected) {
     found += 1;
     if (!c.listed) fresh += 1;
     console.log(
-      `  ${(c.name ?? "ohne Namen").padEnd(34)} ${c.end.km.toFixed(1).padStart(5)} km ${String(c.gain).padStart(5)} Hm ${pct(c.gain, c.end.km).padStart(7)}  ${c.junction.ele} → ${c.end.ele} m  ${c.end.lat.toFixed(4)}, ${c.end.lon.toFixed(4)}${c.listed ? `  = ${c.listed}` : ""}`,
+      `  ${(c.name ?? "ohne Namen").padEnd(34)} ${c.end.km.toFixed(1).padStart(5)} km ${String(c.gain).padStart(5)} Hm ${pct(c.gain, c.end.km).padStart(7)}  ${c.junction.ele} → ${c.end.ele} m  ab ${c.junction.lat.toFixed(4)}, ${c.junction.lon.toFixed(4)} bis ${c.end.lat.toFixed(4)}, ${c.end.lon.toFixed(4)}${c.listed ? `  = ${c.listed}` : ""}`,
     );
   }
   console.log();

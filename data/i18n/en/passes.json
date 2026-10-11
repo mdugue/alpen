@@ -86,6 +86,13 @@
    "Romano d'Ezzelino (south-west)"
   ]
  },
+ "cinque-torri": {
+  "classicAscent": "4.2 km, 10 % from the junction on the Falzarego road",
+  "note": "A detour off the Falzarego climb from Cortina: a steep dead-end road up to the Rifugio Cinque Torri below the five rock towers. A ski area in winter, when the road cannot be ridden.",
+  "ascents": [
+   "Junction on the Falzarego road"
+  ]
+ },
  "cipressa": {
   "classicAscent": "5.6 km, 4 % from San Lorenzo al Mare",
   "note": "A village hill above the coast and the climb where Milan–Sanremo has come apart since 1982. Up from the Aurelia into the village, olives at the top, then the descent to Santo Stefano al Mare. Open all year; famous it is, hard it is not.",
@@ -1082,6 +1089,13 @@
    "Ötz"
   ]
  },
+ "l-ecot": {
+  "classicAscent": "3.4 km, 7 % from Bonneval-sur-Arc",
+  "note": "A detour at the foot of the Iseran's south side: from Bonneval-sur-Arc the road leads to the hamlet of L'Écot at the head of the Haute-Maurienne valley. Season window taken from the Iseran.",
+  "ascents": [
+   "Junction in Bonneval-sur-Arc"
+  ]
+ },
  "la-planche-des-belles-filles": {
   "classicAscent": "8.2 km, 6.9 % from Plancher-les-Mines",
   "note": "A Tour de France finish since 2012, and in 2020 the time trial with which Pogačar won the Tour. The tarmac ends at the ski station; the gravel ramp of the “Super Planche” above it is no place for a road bike.",
@@ -1714,6 +1728,13 @@
    "Posina (north)"
   ]
  },
+ "penegal": {
+  "classicAscent": "3.8 km, 9 % from the top of the Mendel Pass",
+  "note": "A detour off the top of the Mendel Pass: the road climbs through the forest to the lookout tower on the Penegal, with a view over the Adige valley to the Dolomites.",
+  "ascents": [
+   "Junction at the Mendel Pass"
+  ]
+ },
  "penserjoch": {
   "classicAscent": "21 km, 6 % from Sarnthein",
   "note": "Closure usually from November, little traffic.",
@@ -1809,6 +1830,13 @@
    "Obermaiselstein (east)"
   ]
  },
+ "rifugio-dei-forni": {
+  "classicAscent": "6.4 km, 7 % from Santa Caterina",
+  "note": "A detour off the Gavia climb from Bormio: in Santa Caterina the narrow road branches off into the Valle dei Forni and ends at the hut below the Forni glacier. Season window taken from the Gavia.",
+  "ascents": [
+   "Junction in Santa Caterina"
+  ]
+ },
  "rittner-hochplateau": {
   "classicAscent": "21.8 km, 3.2 % from Bozen to Lengstein",
   "note": "The sun terrace above Bozen: after the hairpins out of the Adige valley the road runs almost level across meadows and larches, with the Rosengarten and the Schlern opposite. Cleared all year, hardly any through traffic at the top.",
@@ -1835,6 +1863,13 @@
   "note": "The crest road of the high Vosges, built as a supply road in the First World War: over grassy domes with views of the Rhine plain and, on a clear day, the Alps; the Tour de France rides stretches of it too, such as from the Markstein to the Grand Ballon. Closed in winter roughly mid-November to mid-April; lots of motorbikes at weekends.",
   "ascents": [
    "Col de la Schlucht"
+  ]
+ },
+ "santuario-di-sant-anna-di-vinadio": {
+  "classicAscent": "2.8 km, 9 % from the junction on the Lombarde road",
+  "note": "A detour off the Italian side of the Lombarde: the road branches off below the pass and ends at the highest sanctuary in Europe. Season window taken from the Lombarde.",
+  "ascents": [
+   "Junction on the Lombarde road"
   ]
  },
  "schnalstal-kurzras": {
@@ -1922,6 +1957,13 @@
   "ascents": [
    "Stein an der Enns",
    "Schöder"
+  ]
+ },
+ "sommet-bucher": {
+  "classicAscent": "10.7 km, 8 % from Ville-Vieille",
+  "note": "A detour in the Queyras: from Ville-Vieille a narrow paved forest road climbs through the larches to the lookout summit above Château-Queyras. Not cleared in winter.",
+  "ascents": [
+   "Junction in Ville-Vieille"
   ]
  },
  "spluegenpass": {
