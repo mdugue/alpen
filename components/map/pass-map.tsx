@@ -1,7 +1,14 @@
 "use client";
 
 import type { FeatureCollection } from "geojson";
-import { Compass, MoreHorizontal, Scan } from "lucide-react";
+import {
+  Compass,
+  Locate,
+  LocateFixed,
+  LocateOff,
+  MoreHorizontal,
+  Scan,
+} from "lucide-react";
 import type { StyleSpecification } from "maplibre-gl";
 
 import "maplibre-gl/dist/maplibre-gl.css";
@@ -60,7 +67,13 @@ import type { Bounds } from "@/lib/geo";
 import type { Lang } from "@/lib/i18n";
 import { HIT_LAYERS, SOURCE } from "@/lib/layer-ids";
 import type { MapAssets } from "@/lib/map-assets";
-import { FIT_MS, FIT_PADDING, fitDone, flightFor } from "@/lib/map-camera";
+import {
+  FIT_MS,
+  FIT_PADDING,
+  fitDone,
+  flightFor,
+  locateBounds,
+} from "@/lib/map-camera";
 import type { CameraIntent, Inset } from "@/lib/map-camera";
 import { DOUBLE_MS, isDoubleClick, pick } from "@/lib/map-pick";
 import type { Tap } from "@/lib/map-pick";
@@ -70,6 +83,7 @@ import type { TownReach } from "@/lib/nearby";
 import { entityKey } from "@/lib/route-key";
 import type { Rows } from "@/lib/rows";
 import type { LatLon } from "@/lib/types";
+import { useGeolocation } from "@/lib/use-geolocation";
 import type { MapEnvironment } from "@/lib/use-media-query";
 import { useStored } from "@/lib/use-stored";
 import { cn, MAP_CLUSTER, MAP_TOOL } from "@/lib/utils";
@@ -235,6 +249,8 @@ export const PassMap = ({
 }: Props) => {
   const { lang, t } = useT();
   const container = useRef<HTMLDivElement>(null);
+  /** Where the visitor is, once they have pressed the locate button. */
+  const [located, locate] = useGeolocation();
   const map = useRef<MLMap | null>(null);
   const [ready, setReady] = useState(false);
   const [is3d, setIs3d] = useState(false);
@@ -275,6 +291,7 @@ export const PassMap = ({
     tourBounds: assets.tourBounds,
     townReach,
     w: t,
+    you: located.status === "found" ? located.at : null,
   });
   const applied = useRef<Scene | null>(null);
   const host = useRef<SceneHost | null>(null);
@@ -408,6 +425,7 @@ export const PassMap = ({
         ),
         // What the scene writes: empty until it has been applied once.
         [SOURCE.cursor]: { data: EMPTY, type: "geojson" },
+        [SOURCE.you]: { data: EMPTY, type: "geojson" },
         [SOURCE.destinationLabels]: { data: EMPTY, type: "geojson" },
         [SOURCE.destinations]: { data: EMPTY, type: "geojson" },
         [SOURCE.hover]: { data: EMPTY, type: "geojson" },
@@ -790,6 +808,35 @@ export const PassMap = ({
     ]);
   };
 
+  /**
+   * Where am I, and what is near? The position is asked for on the press and
+   * framed with the nearest drawn roads (`locateBounds`), through the camera
+   * machine like the range chip's frame – so it outranks a flight still
+   * scheduled and lands in the panels' padding.
+   */
+  const locateMe = () =>
+    locate((at) => {
+      send({
+        bounds: locateBounds(
+          at,
+          rows.pass.map((r) => r.pass),
+        ),
+        type: "requestedFit",
+      });
+    });
+  const LocateIcon =
+    located.status === "found"
+      ? LocateFixed
+      : located.status === "denied" || located.status === "unavailable"
+        ? LocateOff
+        : Locate;
+  const locateHint =
+    located.status === "denied"
+      ? t.map.locateDenied
+      : located.status === "unavailable"
+        ? t.map.locateUnavailable
+        : t.map.locateHint;
+
   return (
     <div className="bg-muted relative size-full overflow-hidden">
       {/* Plain "absolute inset-0" loses against the unlayered maplibre-gl.css (`.maplibregl-map { position: relative }`). */}
@@ -842,6 +889,34 @@ export const PassMap = ({
               <Scan />
             </TooltipTrigger>
             <TooltipContent side="left">{t.map.fitHint}</TooltipContent>
+          </Tooltip>
+          <Tooltip>
+            <TooltipTrigger
+              render={
+                <Button
+                  size="icon-lg"
+                  variant="outline"
+                  className={cn(TOOL, MAP_TOOL)}
+                  onClick={locateMe}
+                  aria-label={
+                    located.status === "denied" ||
+                    located.status === "unavailable"
+                      ? locateHint
+                      : t.map.locate
+                  }
+                  aria-busy={located.status === "locating"}
+                />
+              }
+            >
+              <LocateIcon
+                className={cn(
+                  located.status === "locating" &&
+                    "animate-pulse motion-reduce:animate-none",
+                  located.status === "found" && "text-area",
+                )}
+              />
+            </TooltipTrigger>
+            <TooltipContent side="left">{locateHint}</TooltipContent>
           </Tooltip>
 
           {/*

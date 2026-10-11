@@ -81,6 +81,7 @@ const scene = (extra: Partial<SceneInput> = {}) =>
     tourBounds: {},
     townReach: REACH,
     w: DE,
+    you: null,
     ...extra,
   });
 
@@ -107,6 +108,7 @@ describe("the first scene", () => {
       SOURCE.destinationLabels,
       SOURCE.hover,
       SOURCE.cursor,
+      SOURCE.you,
       SOURCE.reach,
     ]);
     expect(of(calls, "label")).toEqual(["—"]);

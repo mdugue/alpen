@@ -133,6 +133,8 @@ export interface Scene {
   };
   /** The road point under the elevation-profile cursor. */
   cursor: FeatureCollection<Point, Record<string, never>>;
+  /** Where the visitor is, with how far off the fix may be in metres. */
+  you: FeatureCollection<Point, { accuracy: number }>;
   /** What "fit to visible" frames; `null` while nothing is drawn. */
   bounds: Bounds | null;
   /**
@@ -154,6 +156,8 @@ export interface SceneInput {
   /** Per tour slug, the box its line covers – where a tour's label points. */
   tourBounds: Record<string, Bounds>;
   profileCursor: LatLon | null;
+  /** The visitor's position, once they have asked for it; never stored, never in a link. */
+  you: (LatLon & { accuracy: number }) | null;
   /**
    * What the pointer can do here. A coarse pointer has no hover to speak of:
    * a finger that touches a mark has already tapped it, and a label under the
@@ -215,6 +219,7 @@ export const buildScene = (input: SceneInput): Scene => {
     tourBounds,
     townReach,
     w,
+    you,
   } = input;
   const selDestination = slugOf(selection, "destination");
   const selPass = slugOf(selection, "pass");
@@ -426,6 +431,11 @@ export const buildScene = (input: SceneInput): Scene => {
           slug: row.town.slug,
         },
       })),
+    ),
+    you: collection(
+      you
+        ? [{ at: [you.lon, you.lat], props: { accuracy: you.accuracy } }]
+        : [],
     ),
   };
 };

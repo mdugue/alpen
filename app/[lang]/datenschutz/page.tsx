@@ -1,5 +1,8 @@
 import { legalMetadata, LegalFrame } from "@/components/legal-page";
 
+/** A legal page is text; nothing on it may be rendered per request (Next 16.4). */
+export const ensureStatic = "navigation";
+
 export const generateMetadata = () => legalMetadata("datenschutz");
 
 const DatenschutzPage = () => (
@@ -8,7 +11,7 @@ const DatenschutzPage = () => (
       <h1 className="font-heading text-2xl font-bold tracking-wide">
         Datenschutzerklärung
       </h1>
-      <p className="text-muted-foreground text-xs">Stand: September 2026</p>
+      <p className="text-muted-foreground text-xs">Stand: Oktober 2026</p>
     </div>
 
     <section className="flex flex-col gap-2 text-sm">
@@ -146,6 +149,22 @@ const DatenschutzPage = () => (
         zwischengespeicherte Route – Ihr Browser stellt hierbei keine eigene
         Verbindung zu Open-Meteo her, es werden also keine Daten von Ihnen
         (insbesondere keine IP-Adresse) an Open-Meteo übertragen.
+      </p>
+    </section>
+
+    <section className="flex flex-col gap-2 text-sm">
+      <h2 className="text-base font-semibold">Standort</h2>
+      <p className="text-muted-foreground">
+        Nur wenn Sie auf der Karte „Mein Standort“ drücken, fragt die App Ihren
+        Browser nach Ihrer Position; der Browser bittet Sie dafür um Erlaubnis.
+        Die Position wird ausschließlich in Ihrem Browser verwendet, um sie auf
+        der Karte zu zeigen und den Kartenausschnitt zu wählen. Sie wird weder
+        gespeichert noch in die Adresse geschrieben noch an diesen oder einen
+        anderen Server übertragen und ist nach dem Neuladen der Seite vergessen.
+        Wie Ihr Browser oder Betriebssystem die Position ermittelt, liegt bei
+        deren Anbietern. Rechtsgrundlage ist Ihre Einwilligung (Art. 6 Abs. 1
+        lit. a DSGVO), die Sie in den Einstellungen Ihres Browsers jederzeit
+        widerrufen können.
       </p>
     </section>
 

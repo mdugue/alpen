@@ -167,6 +167,26 @@ const applyState = <S extends object>(
   }
 };
 
+/**
+ * The sources the scene writes whole, each compared point by point before it
+ * is: a `setData` re-tiles the source in the worker, and most scenes change
+ * none of them. The outlines are rebuilt per scene too, so their comparison
+ * walks the coordinates – 36 of them is what a hover over the list would
+ * otherwise re-tile.
+ */
+const POINT_SOURCES: [
+  string,
+  (s: Scene) => Parameters<typeof samePoints>[0],
+][] = [
+  [SOURCE.passes, (s) => s.passes],
+  [SOURCE.towns, (s) => s.towns],
+  [SOURCE.destinations, (s) => s.destinations],
+  [SOURCE.destinationLabels, (s) => s.destinationLabels],
+  [SOURCE.hover, (s) => s.hover.mark],
+  [SOURCE.cursor, (s) => s.cursor],
+  [SOURCE.you, (s) => s.you],
+];
+
 /** `prev` is `null` on the first scene: nothing has been applied yet. */
 export const applyScene = (
   host: SceneHost,
@@ -183,21 +203,9 @@ export const applyScene = (
       host.setFilter(id, next.tours.filter);
   applyState(host, LAYERS.tour.source, prev?.tours.state, next.tours.state);
 
-  if (!prev || !samePoints(prev.passes, next.passes))
-    host.setData(SOURCE.passes, next.passes);
-  if (!prev || !samePoints(prev.towns, next.towns))
-    host.setData(SOURCE.towns, next.towns);
-  // The outlines are rebuilt per scene, so the comparison walks the
-  // coordinates: 36 of them is what a hover over the list would otherwise
-  // re-tile in the worker.
-  if (!prev || !samePoints(prev.destinations, next.destinations))
-    host.setData(SOURCE.destinations, next.destinations);
-  if (!prev || !samePoints(prev.destinationLabels, next.destinationLabels))
-    host.setData(SOURCE.destinationLabels, next.destinationLabels);
-  if (!prev || !samePoints(prev.hover.mark, next.hover.mark))
-    host.setData(SOURCE.hover, next.hover.mark);
-  if (!prev || !samePoints(prev.cursor, next.cursor))
-    host.setData(SOURCE.cursor, next.cursor);
+  for (const [source, of] of POINT_SOURCES)
+    if (!prev || !samePoints(of(prev), of(next)))
+      host.setData(source, of(next));
   // The rings come straight out of `townReach`, so the same hull is the same
   // array; a town that is no longer hovered clears the layer.
   if (!prev || !same(prev.hover.hull, next.hover.hull))

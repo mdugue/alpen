@@ -80,6 +80,7 @@ const input = (extra: Partial<SceneInput> = {}): SceneInput => ({
   tourBounds: TOUR_BOUNDS,
   townReach: REACH,
   w: DE,
+  you: null,
   ...extra,
 });
 
@@ -214,6 +215,15 @@ describe("what is drawn", () => {
       }),
     );
     expect(away.opening).toEqual(away.bounds);
+  });
+
+  test("the visitor's position is a point of its own, with its accuracy", () => {
+    expect(buildScene(input()).you.features).toEqual([]);
+    const at = buildScene(
+      input({ you: { accuracy: 30, lat: 46.2, lon: 7.1 } }),
+    );
+    expect(at.you.features[0]?.geometry.coordinates).toEqual([7.1, 46.2]);
+    expect(at.you.features[0]?.properties).toEqual({ accuracy: 30 });
   });
 
   test("the profile cursor is a point of its own", () => {
