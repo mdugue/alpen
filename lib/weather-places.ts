@@ -32,9 +32,10 @@ export interface WeatherPlace {
  * Two starts closer than this are one forecast: Open-Meteo's finest models run
  * on a grid of a kilometre or two, so a second call would only cost quota.
  * The same rounding is what the points are asked with, so two entities that
- * share a start share its cached forecast. Three decimals (~100 m) on purpose – coarser rounding would move a point in
- * a narrow valley onto the slope beside it, and the terrain model would put
- * the forecast hundreds of metres too high.
+ * share a start share its cached forecast. Three decimals (~100 m) on
+ * purpose: coarser rounding would move a point in a narrow valley onto the
+ * slope beside it, and the terrain model would put the forecast hundreds of
+ * metres too high.
  */
 const round = (x: number) => Math.round(x * 1000) / 1000;
 const keyOf = (lat: number, lon: number) => `${round(lat)},${round(lon)}`;

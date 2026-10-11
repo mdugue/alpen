@@ -1,6 +1,6 @@
 import { describe, expect, test } from "bun:test";
 
-import { komootHref, quaeldichHref } from "@/lib/links";
+import { komootHref, meteoblueHref, quaeldichHref } from "@/lib/links";
 import type { Pass } from "@/lib/types";
 import { makePass } from "@/test/fixtures";
 
@@ -55,5 +55,22 @@ describe("komootHref", () => {
     expect(komootHref("Alpe d'Huez", 45.0923, 6.0703)).toBe(
       "https://www.komoot.com/de-de/discover/Alpe%20d'Huez/@45.0923,6.0703/tours?sport=racebike",
     );
+  });
+});
+
+describe("meteoblueHref", () => {
+  test("latitude, longitude and the height in the path, under the page's language", () => {
+    expect(
+      meteoblueHref({ elevation: 2757, lat: 46.528, lon: 10.453 }, "de"),
+    ).toBe("https://www.meteoblue.com/de/wetter/woche/46.528N10.453E2757");
+    expect(
+      meteoblueHref({ elevation: 2757, lat: 46.528, lon: 10.453 }, "en"),
+    ).toBe("https://www.meteoblue.com/en/weather/week/46.528N10.453E2757");
+  });
+
+  test("a western longitude stays a negative E, and no height leaves it to meteoblue", () => {
+    expect(
+      meteoblueHref({ elevation: null, lat: 45.034, lon: -0.5 }, "de"),
+    ).toBe("https://www.meteoblue.com/de/wetter/woche/45.034N-0.5E");
   });
 });
