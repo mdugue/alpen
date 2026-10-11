@@ -1028,7 +1028,11 @@
      "lat": 47.1175,
      "lon": 12.8277
     },
-    "label": "Abzweig Fuscher Törl"
+    "label": "Abzweig Fuscher Törl",
+    "check": {
+     "minPeakAt": 0.65,
+     "note": "Die Edelweißstraße erreicht die Gipfelkuppe nach gut 1,3 km und läuft dann um sie herum zum Parkplatz an der Spitze; das Geländemodell legt die höchste Probe deshalb auf 70 % der Strecke. Ende (1 m vom Punkt) und Profilhöhe (−14 m) stimmen."
+    }
    }
   ]
  },
@@ -1069,7 +1073,11 @@
      "lat": 47.063,
      "lon": 12.8179
     },
-    "label": "Abzweig Guttal"
+    "label": "Abzweig Guttal",
+    "check": {
+     "maxTopDelta": 100,
+     "note": "Die Gletscherstraße läuft im letzten Kilometer am steilen Hang unter der Freiwandspitze; die Zellen des Geländemodells mitteln den Hang darüber mit und heben die Profilspitze um gut 80 m über das Besucherzentrum (2369 m). Ende 2 m vom Punkt."
+    }
    }
   ]
  },
