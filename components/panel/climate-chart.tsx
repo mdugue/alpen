@@ -106,9 +106,15 @@ export const ClimateChart = ({
           interval={0}
           tickFormatter={(_, i) => data[i]?.month ?? ""}
         />
+        {/*
+         * Both axes measure their own labels (`width="auto"`, recharts 3).
+         * A fixed 28 px cut "100%" and "50%" at the chart's left edge, so the
+         * axis read "0%" three times; the temperature side, at 30 px, would
+         * have done the same to "-16°" in a colder range.
+         */}
         <YAxis
           yAxisId="pct"
-          width={28}
+          width="auto"
           domain={[0, 100]}
           ticks={[0, 50, 100]}
           tickLine={false}
@@ -118,7 +124,7 @@ export const ClimateChart = ({
         <YAxis
           yAxisId="temp"
           orientation="right"
-          width={30}
+          width="auto"
           tickLine={false}
           axisLine={false}
           tickFormatter={(v: number) => `${v}°`}
