@@ -81,7 +81,7 @@ MapLibre worker copy, reads `data/generated/routes.json` and writes:
 
 - `public/map/routes.<hash>.geojson`: one `LineString` per ascent with
   `properties: { id: "col-du-galibier:0", pass: "col-du-galibier", ascent: 0,
-name, label }`.
+  name, label }`.
 - `public/map/tours.<hash>.geojson`: one `LineString` per tour with
   `properties: { id: slug, name, color, km, elevationGain }`; tours without a
   routed geometry are omitted rather than drawn as straight lines.

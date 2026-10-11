@@ -209,7 +209,7 @@ runner, little enough that a hang is reported while anyone is still watching.
 - `grep -rn "location.hash" components lib` finds the hash adapter only;
   `grep -rn "alpenpaesse:" components lib` finds `STORAGE` only;
   `grep -rn "\.flyTo\|\.easeTo\|\.setFilter\|\.setData\|\.setFeatureState"
-components lib` finds the two appliers only.
+  components lib` finds the two appliers only.
 - The litmus test is written as the first paragraph of the closure-status
   plan when that plan is opened.
 - `docs/architecture.md` carries the section; `AGENTS.md` carries the line.
