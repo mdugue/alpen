@@ -9,6 +9,10 @@ Seiten vorkommen – von „abgeleitet“ bis „zugeschneit“.
   ihn zu lesen. Beispiel: die Wärme im Tal, heruntergerechnet aus dem
   Klimawert am Passpunkt. Solche Werte tragen in der App immer den Zusatz
   „abgeleitet“, und der Ausgangswert bleibt daneben sichtbar.
+- **Abstecher** – eine Stichstraße, die von einer anderen Straße der Liste
+  abzweigt, etwa die Edelweißspitze von der Großglockner Hochalpenstraße. Sie
+  ist ein eigener Eintrag mit eigenem Profil ab dem Abzweig; die
+  Hauptstraße verlinkt ihre Abstecher unter den Auffahrten.
 - **Auffahrt** – ein klassischer Anstieg zu einer Straße, von einem Startort
   im Tal bis zum Passpunkt. Ein Pass hat meist zwei oder mehr Auffahrten,
   jede mit eigenem Straßenverlauf und Höhenprofil.

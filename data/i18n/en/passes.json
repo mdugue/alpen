@@ -814,6 +814,13 @@
    "Vedeseta (east)"
   ]
  },
+ "edelweissspitze": {
+  "classicAscent": "1.8 km, 10 % from the junction at the Fuscher Törl",
+  "note": "A detour off the Großglockner High Alpine Road on the Fusch side: the Edelweißstraße, short, steep and cobbled, ends at the highest point of the toll road with a view of more than 30 three-thousanders. After snow it can stay closed longer than the main road.",
+  "ascents": [
+   "Junction at the Fuscher Törl"
+  ]
+ },
  "faschinajoch": {
   "classicAscent": "4.1 km, 8.3 % from Fontanella",
   "note": "Short crossing from the Großes Walsertal to Damüls, usually ridden as the prelude to the Furkajoch. Cleared all year and the only winter access to Damüls.",
@@ -958,7 +965,7 @@
  },
  "grossglockner-hochalpenstrasse": {
   "classicAscent": "21 km, 8 % from Fusch to the Edelweißspitze",
-  "note": "Toll road, scheduled to be open until late October/early November (closed at night, snow days possible). Bikes ride toll-free; the operator recommends riding before 7 am or after 3 pm. The top is the Hochtor (2504 m); the Edelweißspitze (2571 m) is a detour of just under 2 km from the Fusch side.",
+  "note": "Toll road, scheduled to be open until late October/early November (closed at night, snow days possible). Bikes ride toll-free; the operator recommends riding before 7 am or after 3 pm. The top is the Hochtor (2504 m); the Edelweißspitze (2571 m) and the Kaiser-Franz-Josefs-Höhe (2369 m) are detours, linked below the ascents.",
   "ascents": [
    "Fusch",
    "Heiligenblut"
@@ -1022,6 +1029,13 @@
   "ascents": [
    "Tiefencastel",
    "Silvaplana"
+  ]
+ },
+ "kaiser-franz-josefs-hoehe": {
+  "classicAscent": "8.6 km, 5.5 % from the junction in the Guttal",
+  "note": "A detour off the Großglockner High Alpine Road on the Carinthian side: the Gletscherstraße branches off in the Guttal and ends at the visitor centre facing the Großglockner, above the Pasterze glacier. Busy with day-trippers at the top, quieter early in the day.",
+  "ascents": [
+   "Junction in the Guttal"
   ]
  },
  "kals-lucknerhaus": {

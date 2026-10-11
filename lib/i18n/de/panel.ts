@@ -9,6 +9,10 @@ export const panel = {
   /** The line over each ascent's profile, and what the profile block says. */
   ascents: {
     average: "Ø {pct} %",
+    branch:
+      "Abstecher: Die Stichstraße zweigt von einer anderen Straße ab, das Profil beginnt am Abzweig. Hinunter geht es zurück auf die Hauptstraße.",
+    /** Over the detours a road offers, under its own ascents. */
+    branches: "Abstecher",
     info: "Geroutete Straße, 100 Höhenpunkte aus einem Geländemodell – zum Vergleichen gut, nicht metergenau.",
     infoTraverse:
       "Geroutete Straße, 100 Höhenpunkte aus einem Geländemodell – zum Vergleichen gut, nicht metergenau. Höhenmeter und steilster Kilometer stehen hier nicht: auf einer fast flachen Straße in einer Schlucht misst das Modell mehr Auf und Ab als die Straße hat.",
@@ -18,6 +22,8 @@ export const panel = {
     steepestKm: "steilster km {pct} %",
     title: "Auffahrten",
     titleTraverse: "Strecke",
+    /** Over the link to the road a detour branches off. */
+    trunk: "Zweigt ab von",
   },
   /** The control row on the hero: back, share, save, close. */
   bar: {

@@ -976,7 +976,7 @@
    "closes": 11,
    "maintained": true
   },
-  "note": "Mautstraße, planmäßig bis Ende Oktober/Anfang November offen (nachts gesperrt, Schneetage möglich). Räder fahren mautfrei; die Betreiber empfehlen, vor 7 oder nach 15 Uhr zu fahren. Scheitel ist das Hochtor (2504 m); die Edelweißspitze (2571 m) ist ein knapp 2 km langer Abstecher von der Fuscher Seite.",
+  "note": "Mautstraße, planmäßig bis Ende Oktober/Anfang November offen (nachts gesperrt, Schneetage möglich). Räder fahren mautfrei; die Betreiber empfehlen, vor 7 oder nach 15 Uhr zu fahren. Scheitel ist das Hochtor (2504 m); die Edelweißspitze (2571 m) und die Kaiser-Franz-Josefs-Höhe (2369 m) sind Abstecher, unten bei den Auffahrten verlinkt.",
   "quaeldich": "grossglockner-hochalpenstrasse",
   "ascents": [
    {
@@ -992,6 +992,84 @@
      "lon": 12.843
     },
     "label": "Heiligenblut"
+   }
+  ]
+ },
+ {
+  "slug": "edelweissspitze",
+  "surface": "asphalt",
+  "name": "Edelweißspitze",
+  "type": "spur",
+  "branchOf": "grossglockner-hochalpenstrasse",
+  "tags": [
+   "cobbles",
+   "panorama",
+   "toll"
+  ],
+  "country": "AT",
+  "region": "Ostalpen",
+  "lat": 47.1238,
+  "lon": 12.8314,
+  "elevation": 2571,
+  "classicAscent": "1,8 km, 10 % ab dem Abzweig am Fuscher Törl",
+  "beauty": 5,
+  "fame": 4,
+  "difficulty": 3,
+  "traffic": 3,
+  "season": {
+   "opens": 5,
+   "closes": 11,
+   "maintained": true
+  },
+  "note": "Abstecher von der Großglockner Hochalpenstraße auf der Fuscher Seite: die Edelweißstraße, kurz, steil und mit Kopfsteinpflaster, endet am höchsten Punkt der Mautstraße mit Rundblick auf über 30 Dreitausender. Bei Schnee kann sie länger gesperrt bleiben als die Hauptstraße.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 47.1175,
+     "lon": 12.8277
+    },
+    "label": "Abzweig Fuscher Törl"
+   }
+  ]
+ },
+ {
+  "slug": "kaiser-franz-josefs-hoehe",
+  "surface": "asphalt",
+  "name": "Kaiser-Franz-Josefs-Höhe",
+  "type": "spur",
+  "branchOf": "grossglockner-hochalpenstrasse",
+  "tags": [
+   "glacier",
+   "panorama",
+   "toll"
+  ],
+  "aliases": [
+   "Franz-Josefs-Höhe",
+   "Gletscherstraße"
+  ],
+  "country": "AT",
+  "region": "Ostalpen",
+  "lat": 47.075,
+  "lon": 12.7515,
+  "elevation": 2369,
+  "classicAscent": "8,6 km, 5,5 % ab dem Abzweig im Guttal",
+  "beauty": 5,
+  "fame": 4,
+  "difficulty": 2,
+  "traffic": 4,
+  "season": {
+   "opens": 5,
+   "closes": 11,
+   "maintained": true
+  },
+  "note": "Abstecher von der Großglockner Hochalpenstraße auf der Kärntner Seite: die Gletscherstraße zweigt im Guttal ab und endet am Besucherzentrum gegenüber dem Großglockner, über der Pasterze. Oben viel Ausflugsverkehr, früh am Tag ruhiger.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 47.063,
+     "lon": 12.8179
+    },
+    "label": "Abzweig Guttal"
    }
   ]
  },

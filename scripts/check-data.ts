@@ -334,6 +334,18 @@ const checkPasses = (list: Pass[]) => {
         errors.push(`${p.slug}: Alias "${alias}" gehört zu ${owner}`);
       else names.set(key, p.slug);
     }
+  // A branch names its trunk by slug; the trunk has to exist and be a road
+  // of its own, not another branch – the panels link one level, not a chain.
+  const bySlug = new Map(list.map((p) => [p.slug, p]));
+  for (const p of list) {
+    if (p.branchOf === undefined) continue;
+    const trunk = bySlug.get(p.branchOf);
+    if (!trunk) errors.push(`${p.slug}: branchOf ${p.branchOf} unbekannt`);
+    else if (trunk.branchOf !== undefined)
+      errors.push(
+        `${p.slug}: branchOf ${p.branchOf} ist selbst ein Abstecher – an dessen Stamm hängen`,
+      );
+  }
   for (const p of list) {
     if (!p.ascents.length)
       warnings.push(`${p.slug}: keine Auffahrt hinterlegt`);

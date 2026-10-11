@@ -58,6 +58,7 @@ vocabularies (regions, countries, road types, road and town labels) live in
   "lon": 6.408,
   "elevation": 2642, // the height of the marker, not "the summit"
   "roadSummit": true, // only on a pass: highest asphalt, no mountain_pass node in OSM
+  "branchOf": "grossglockner-hochalpenstrasse", // only on a spur that is a detour off another road, see below
   "classicAscent": "18 km, 6,9 % ab Valloire (34 km via Télégraphe)",
   "beauty": 5,
   "fame": 5,
@@ -156,6 +157,7 @@ erDiagram
     list tags "panorama, glacier, gorge, reservoir, carfree, toll, hairpins, cobbles, tunnels"
     enum surface "asphalt | gravel | mixed"
     bool roadSummit "technical, only on a pass: no mountain_pass node"
+    string branchOf "only on a spur: the road it is a detour from"
     list ascents "from, label – plus to, km for a traverse"
   }
   GATE {
@@ -209,6 +211,16 @@ a differently sorted row.
 `toll` and `season.maintained` are independent: maintained means cleared, toll
 means paid for. The Großglockner is both, the Simplon is cleared and free, a
 car-free spur is neither. Nothing derives one from the other.
+
+`branchOf` marks a `spur` that is a detour off another entry rather than a
+climb of its own: the Edelweißspitze and the Kaiser-Franz-Josefs-Höhe off the
+Großglockner Hochalpenstraße. Its ascents start at the junction on the trunk,
+so its route, profile and gate checks are the detour alone, while the trunk's
+own ascents stay the climb to the junction. The branch is an entry like any
+other – marker, season, scales, climate, status, photos, a line on the map –
+and the link is read in the panel only: the trunk lists its detours under its
+ascents, the detour names its trunk. `data:check` holds the slug to an
+existing road that is not itself a detour, one level and no chains.
 
 `roadSummit: true` stays a technical flag, and only a `pass` carries it: its
 summit point is the highest point of the asphalt rather than a saddle, because
