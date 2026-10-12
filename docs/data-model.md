@@ -256,6 +256,38 @@ boundary, which never changes the bucket by more than that day. Only the
 period control writes to `localStorage`, so opening a shared link never
 overwrites the visitor's own preference.
 
+### `data/portraits.json`
+
+What a road is known for and what each of its sides is like, keyed by the
+road's slug. Editorial prose like the notes, kept in its own file because the
+panel reads it for one road at a time: it travels in that road's detail file
+(`lib/detail-assets.ts`), not with the list the sidebar searches.
+
+| Field                | Meaning                                                                                      |
+| -------------------- | -------------------------------------------------------------------------------------------- |
+| `intro`              | two or three sentences: what the road is known for – races, history, landscape               |
+| `sides[]`            | one per entry of `ascents`, matched by index; `data:check` holds the two lists to one length |
+| `sides[].bestAs`     | `up`, `down` or `both`: which way this side is better ridden; only where there is a choice   |
+| `sides[].character`  | one or two sentences: what riding this side is like, and why `bestAs`                        |
+| `sides[].hazards`    | what to watch on the way down (`DESCENT_HAZARDS` in `lib/regions.ts`)                        |
+| `sides[].highlights` | a view, a stop, a piece of race history on the way                                           |
+
+`bestAs` is asked only of a `pass` or `spur` with two sides or more; a single
+side and a traverse have no direction to choose, and `data:check` refuses it
+there. Where one side is `up` and another `down`, the panel says so above the
+ascents as the way to cross. The English prose is
+`data/i18n/en/portraits.json`, laid over by `localizePortraits`
+(`lib/portrait.ts`) – the judgement and the hazards are not words and stay as
+they are.
+
+Next to the prose the panel shows what the route itself says about each side,
+derived at prerender by `ascentShape` (`lib/ascent-shape.ts`) from the stored
+geometry and profile: the hairpins (turns of 150° within 120 m of road,
+calibrated on the Stelvio from Prad, Alpe d'Huez and the San Boldo), the
+rhythm as one of five classes, the height given back on the way up, and the
+side of the mountain. None of it is a file: it follows from `routes.json` and
+`profiles.json`, and changes with them.
+
 ### `data/tours.json`
 
 ```jsonc
@@ -421,15 +453,15 @@ those changed, with nothing to notice it. The explorer's layout reads all of
 them at once as `getPageData(lang)`, inside its `"use cache"` entry; the entity
 routes look one entity up with `entityAt`, which runs none of them.
 
-| Getter                  | Value                                                                                                             |
-| ----------------------- | ----------------------------------------------------------------------------------------------------------------- |
-| `getValleys`            | the lowest ascent start per pass – the elevation the summit climate is taken down to for the heat signal          |
-| `getMapAssets`          | the hashed GeoJSON file names MapLibre loads, the loops' boxes and the ranges' frames (`lib/map-assets.ts`)       |
-| `getDetailAssets`       | the hashed file name of each entity's detail file – profiles and photos (`lib/detail-assets.ts`)                  |
-| `getNearbyTours`        | which tours run within reach of each pass, tour start and town, and how near their road comes (`lib/nearby.ts`)   |
-| `getTownReach`          | the area each town reaches, as a hull over its passes                                                             |
-| `getDestinationMembers` | what each area holds – roads, loops, towns, its outline and the box around it (`membersOf`, `lib/destination.ts`) |
-| `getYears`              | the **year of every pass and tour**: 24 cells with status, grade, reasons and the snow note, plus the best window |
+| Getter                  | Value                                                                                                                                         |
+| ----------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| `getValleys`            | the lowest ascent start per pass – the elevation the summit climate is taken down to for the heat signal                                      |
+| `getMapAssets`          | the hashed GeoJSON file names MapLibre loads, the loops' boxes and the ranges' frames (`lib/map-assets.ts`)                                   |
+| `getDetailAssets`       | the hashed file name of each entity's detail file – profiles with their shape, photos and the portrait, per language (`lib/detail-assets.ts`) |
+| `getNearbyTours`        | which tours run within reach of each pass, tour start and town, and how near their road comes (`lib/nearby.ts`)                               |
+| `getTownReach`          | the area each town reaches, as a hull over its passes                                                                                         |
+| `getDestinationMembers` | what each area holds – roads, loops, towns, its outline and the box around it (`membersOf`, `lib/destination.ts`)                             |
+| `getYears`              | the **year of every pass and tour**: 24 cells with status, grade, reasons and the snow note, plus the best window                             |
 
 The year is what the whole app reads. `passYear()` in `lib/status.ts` runs the
 verdict over all 24 half-months of a pass, `tourYear()` takes per half-month the

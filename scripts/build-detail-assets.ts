@@ -2,7 +2,8 @@
 /**
  * Writes what the detail panel needs as one static JSON file per entity:
  *
- *   public/detail/pass-<slug>.<hash>.json    profiles of its ascents + photos
+ *   public/detail/pass-<slug>.<hash>.json    profiles of its ascents, photos and
+ *                                            portrait, once per language
  *   public/detail/tour-<slug>.<hash>.json    photos
  *   public/detail/town-<slug>.<hash>.json    photos
  *
@@ -23,6 +24,8 @@ import {
   DETAIL_FILES,
   detailAssets,
 } from "../lib/detail-assets";
+import { LANGS } from "../lib/i18n/lang";
+import { localizePortraits } from "../lib/portrait";
 import { profilesWithCoords } from "../lib/profile";
 import { mustRead } from "./lib/data-files";
 
@@ -38,16 +41,26 @@ const towns = await mustRead("towns.json");
 const photos = await mustRead("generated/photos.json");
 const profiles = await mustRead("generated/profiles.json");
 const routes = await mustRead("generated/routes.json");
+const portraits = await mustRead("portraits.json");
+const portraitsEn = await mustRead("i18n/en/portraits.json");
 
-// The same function `lib/data.ts` runs to derive the names: the file name is a
-// hash of what it returns, so the two sides cannot spell this differently.
-const { files } = detailAssets(
-  passes,
-  tours,
-  towns,
-  profilesWithCoords(profiles, routes),
-  photos,
-);
+// The same functions `lib/data.ts` runs to derive the names: the file name is
+// a hash of what they return, so the two sides cannot spell this differently.
+// Once per language, because a pass's file carries its portrait in the page's
+// language; what is the same in both (a tour, a town) is written once.
+const withCoords = profilesWithCoords(profiles, routes);
+const byName = new Map<string, { name: string; body: string }>();
+for (const lang of LANGS)
+  for (const f of detailAssets(
+    passes,
+    tours,
+    towns,
+    withCoords,
+    photos,
+    localizePortraits(portraits, { en: portraitsEn }, lang),
+  ).files)
+    byName.set(f.name, f);
+const files = [...byName.values()];
 
 await writeDerived({ files, out: OUT, prune: DETAIL_FILES.prune });
 

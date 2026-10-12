@@ -199,8 +199,8 @@ describe("stepGradient", () => {
 
 describe("profilesWithCoords", () => {
   const two: Record<string, ElevationProfile> = {
-    "a:0": { ele: [1000] } as ElevationProfile,
-    "b:0": { ele: [900] } as ElevationProfile,
+    "a:0": { dist: [0, 0.1, 0.2], ele: [1000, 1010, 1020] } as ElevationProfile,
+    "b:0": { dist: [0], ele: [900] } as ElevationProfile,
   };
 
   test("attaches the sample coordinates of the matching route only", () => {

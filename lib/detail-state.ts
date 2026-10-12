@@ -2,7 +2,7 @@
 import { useState } from "react";
 
 import type { DetailAsset, DetailData } from "@/lib/detail-assets";
-import type { Photo, ProfileWithCoords } from "@/lib/types";
+import type { PassPortrait, Photo, ProfileWithCoords } from "@/lib/types";
 import useFetch from "@/lib/use-fetch";
 
 /** The ascent profiles of one entity, keyed as `routes.json` (`ascentKey`). */
@@ -25,12 +25,16 @@ export type Profiles = Record<string, ProfileWithCoords>;
  */
 export type DetailState =
   | { phase: "absent" }
-  /** On its way; `photos` is the count the page already knows (`DetailAsset`). */
-  | { phase: "pending"; photos: number }
+  /**
+   * On its way; `photos` is the count the page already knows and `portrait`
+   * whether one is coming (`DetailAsset`).
+   */
+  | { phase: "pending"; photos: number; portrait: boolean }
   | {
       phase: "ready";
       photos: Photo[];
       profiles: Profiles;
+      portrait: PassPortrait | null;
       /** The photo URLs the browser could not load; see `useDetailState`. */
       broken: ReadonlySet<string>;
     }
@@ -56,7 +60,12 @@ export const detailState = (
   broken: ReadonlySet<string> = NOTHING_BROKEN,
 ): DetailState => {
   if (!asset) return { phase: "absent" };
-  if (fetched.loading) return { phase: "pending", photos: asset.photos };
+  if (fetched.loading)
+    return {
+      phase: "pending",
+      photos: asset.photos,
+      portrait: asset.portrait === true,
+    };
   // A file that answered with anything but its contents is a failure, however
   // it failed: the panel says so and stops reserving room for what is not
   // coming.
@@ -65,6 +74,7 @@ export const detailState = (
     broken,
     phase: "ready",
     photos: fetched.data.photos,
+    portrait: fetched.data.portrait ?? null,
     profiles: fetched.data.profiles ?? {},
   };
 };
@@ -77,6 +87,10 @@ export const shownPhotos = (state: DetailState): Photo[] =>
 
 export const profilesOf = (state: DetailState): Profiles =>
   state.phase === "ready" ? state.profiles : {};
+
+/** The road's portrait once it is there; null while waiting and where there is none. */
+export const portraitOf = (state: DetailState): PassPortrait | null =>
+  state.phase === "ready" ? state.portrait : null;
 
 /**
  * Whether the panel opens on a photograph – the one decision the head makes.

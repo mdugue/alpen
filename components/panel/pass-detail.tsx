@@ -1,5 +1,6 @@
 "use client";
 
+import { MapPin, TriangleAlert } from "lucide-react";
 import dynamic from "next/dynamic";
 
 import { useT } from "@/components/i18n";
@@ -17,6 +18,7 @@ import { WeatherSkeleton } from "@/components/panel/weather-forecast";
 import { Rating } from "@/components/rating";
 import { StatusDot } from "@/components/status-badge";
 import { TagBadges } from "@/components/tags";
+import { Badge } from "@/components/ui/badge";
 import {
   Empty,
   EmptyDescription,
@@ -41,10 +43,10 @@ import {
   osmHref,
   quaeldichHref,
 } from "@/lib/links";
-import { isTraverse } from "@/lib/regions";
+import { DESCENT_HAZARDS, isTraverse } from "@/lib/regions";
 import { ascentKey } from "@/lib/route-key";
 import { daysOf } from "@/lib/status";
-import type { ProfileWithCoords } from "@/lib/types";
+import type { ProfileWithCoords, SidePortrait } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
 /** The chart's placeholder – a component, so it can say what it is in the page's language. */
@@ -113,6 +115,70 @@ const profileLine = (
     `${fmt(profile.start)} → ${fmtUnit(profile.top, "m")}`,
   ].join(" · ");
 
+/**
+ * The line under a side's name: what the route itself says about the climb
+ * (`lib/ascent-shape.ts`) – hairpins, rhythm, dip and the side of the
+ * mountain. A traverse keeps the hairpins only: it has no top to climb to, so
+ * its rhythm and its facing would describe a direction of travel, not a side.
+ */
+const shapeLine = (
+  profile: ProfileWithCoords,
+  traverse: boolean,
+  t: Messages,
+  fmt: (n: number, digits?: number) => string,
+) => {
+  const { shape } = profile;
+  if (!shape) return null;
+  const hairpins =
+    shape.hairpins === 1
+      ? t.panel.ascents.hairpinsOne
+      : shape.hairpins > 1
+        ? fill(t.panel.ascents.hairpins, { n: fmt(shape.hairpins) })
+        : null;
+  if (traverse) return hairpins;
+  return [
+    hairpins,
+    t.panel.ascents.rhythm[shape.rhythm],
+    shape.dip > 0 ? fill(t.panel.ascents.dip, { m: fmt(shape.dip) }) : null,
+    t.panel.ascents.facing[shape.facing],
+  ]
+    .filter(Boolean)
+    .join(" · ");
+};
+
+/**
+ * What a rider would say about one side: the judgement beside the name is the
+ * caller's, this is the sentence, the stop on the way and what to watch on the
+ * way down – all editorial, which the section's info says.
+ */
+const SideText = ({ side }: { side: SidePortrait }) => {
+  const { t } = useT();
+  const hazards = DESCENT_HAZARDS.filter((h) => side.hazards?.includes(h));
+  return (
+    <div className="mt-1 flex flex-col gap-1">
+      <p className="text-xs leading-relaxed text-pretty">{side.character}</p>
+      {side.highlights && (
+        <p className="text-muted-foreground flex gap-1.5 text-xs leading-relaxed">
+          <MapPin aria-hidden className="mt-0.5 size-3 shrink-0" />
+          <span>
+            <span className="sr-only">{t.panel.ascents.highlights}: </span>
+            {side.highlights}
+          </span>
+        </p>
+      )}
+      {hazards.length > 0 && (
+        <p className="text-muted-foreground flex gap-1.5 text-xs leading-relaxed">
+          <TriangleAlert aria-hidden className="mt-0.5 size-3 shrink-0" />
+          <span>
+            {t.panel.ascents.hazards}:{" "}
+            {hazards.map((h) => t.panel.ascents.hazard[h]).join(", ")}
+          </span>
+        </p>
+      )}
+    </div>
+  );
+};
+
 /** What a pass shows, from its model and nothing else. */
 export const PassDetail = ({
   model,
@@ -128,6 +194,7 @@ export const PassDetail = ({
   const { bucket, pass, period } = model;
   const profiles = profilesOf(model.detail);
   const waiting = model.detail.phase === "pending";
+  const { portrait } = model;
   const traverse = isTraverse(pass.type);
 
   return (
@@ -150,6 +217,22 @@ export const PassDetail = ({
         text={model.verdict.text}
         year={model.verdict.year}
       />
+
+      {/* What the road is known for. It comes with the detail file, and the
+          page knows whether one is coming, so its lines are held while the
+          file is on its way rather than pushing the blocks below down. */}
+      {portrait && (
+        <p className="mt-4 text-sm leading-relaxed text-pretty">
+          {portrait.intro}
+        </p>
+      )}
+      {model.detail.phase === "pending" && model.detail.portrait && (
+        <div aria-busy className="mt-4 flex flex-col gap-1.5" role="status">
+          <Skeleton className="h-3.5 w-full" />
+          <Skeleton className="h-3.5 w-full" />
+          <Skeleton className="h-3.5 w-2/3" />
+        </div>
+      )}
 
       <p className="mt-4 text-xs leading-relaxed">{model.sentences.season}</p>
       <p className="text-muted-foreground mt-1.5 text-xs leading-relaxed">
@@ -218,6 +301,11 @@ export const PassDetail = ({
             </EntityLink>
           </div>
         )}
+        {model.sentences.crossing && (
+          <p className="mb-3 text-xs leading-relaxed font-medium">
+            {model.sentences.crossing}
+          </p>
+        )}
         {pass.ascents.length === 0 && (
           <Empty className="py-3">
             <EmptyHeader>
@@ -228,15 +316,30 @@ export const PassDetail = ({
         <div className="flex flex-col gap-4">
           {pass.ascents.map((a, i) => {
             const profile = profiles[ascentKey(pass.slug, i)];
+            const side = portrait?.sides[i];
+            const shape = profile && shapeLine(profile, traverse, t, fmt);
             return (
               <div key={a.label}>
                 <div className="flex flex-wrap items-baseline justify-between gap-x-2">
-                  <span className="text-xs font-medium">{a.label}</span>
+                  <span className="flex items-baseline gap-1.5 text-xs font-medium">
+                    {a.label}
+                    {side?.bestAs && (
+                      <Badge variant="outline" className="text-2xs">
+                        {t.panel.ascents.bestAs[side.bestAs]}
+                      </Badge>
+                    )}
+                  </span>
                   <span className="text-muted-foreground text-xs tabular-nums">
                     {profile && profileLine(profile, traverse, t, fmt, fmtUnit)}
                     {!profile && !waiting && t.panel.ascents.noProfile}
                   </span>
                 </div>
+                {shape && (
+                  <p className="text-muted-foreground text-2xs mt-0.5">
+                    {shape}
+                  </p>
+                )}
+                {side && <SideText side={side} />}
                 {profile && (
                   <ElevationProfile
                     profile={profile}

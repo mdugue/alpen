@@ -190,6 +190,33 @@ export const ROAD_TAGS = [
 ] as const;
 
 export type RoadTagName = (typeof ROAD_TAGS)[number];
+
+/**
+ * Which way a side of a crossing is better ridden: up, down, or either. An
+ * editorial judgement like the 1–5 scales, written per ascent in
+ * `data/portraits.json` and only where there is a choice – a `pass` or `spur`
+ * with two sides or more (`data:check` holds it to that).
+ */
+export const BEST_AS = ["up", "down", "both"] as const;
+export type BestAsName = (typeof BEST_AS)[number];
+
+/**
+ * What to watch on the way down a side, as a small editorial vocabulary in
+ * the sense of `ROAD_TAGS`: what a rider braces for, not what is measured.
+ * The display order is the vocabulary order.
+ */
+export const DESCENT_HAZARDS = [
+  "tight-hairpins",
+  "tunnels",
+  "steep",
+  "rough",
+  "gravel",
+  "narrow",
+  "grids",
+  "traffic",
+] as const;
+export type DescentHazardName = (typeof DESCENT_HAZARDS)[number];
+
 export type TownTagName = (typeof TOWN_TAGS)[number];
 /** A tag of either vocabulary; which one it belongs to is `tagLabel`'s question (`lib/i18n`). */
 export type TagName = TownTagName | RoadTagName;

@@ -50,6 +50,20 @@ gradient, altitude and a border crossing are numbers next to them, not labels
 among them. The scales dialog lists all fourteen with the sentence that
 defines each, `docs/data-model.md` has the tables.
 
+## Portraits: up or down, and what to watch
+
+Each side of a road carries a short portrait in `data/portraits.json`: a
+sentence on what riding it is like, a stop worth making, and the hazards of
+its descent. Where a crossing offers the choice, it also says whether the side
+is better ridden **up**, **down** or **either way** (`bestAs`). That is a
+judgement of the same kind as the 1–5 scales, and the panel's info says so.
+Rules of thumb for it: a hairpin wall one sees coming and steep ramps reward
+the climb; a long, flowing side with wide bends and the view ahead rewards
+the descent; tight hairpins, unlit tunnels, rough surface and steep straights
+speak against riding it down. The hairpin count, the rhythm and the side of
+the mountain next to it are derived from the routed line, not judged
+(`lib/ascent-shape.ts`).
+
 ### Gravel: the surface decides the routing profile and the closing rung
 
 `surface` (`asphalt`, `gravel`, `mixed`; `SURFACES` in `lib/regions.ts`) is

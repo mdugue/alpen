@@ -1,5 +1,6 @@
 import type { z } from "zod";
 
+import type { AscentShape } from "@/lib/ascent-shape";
 import type * as S from "@/lib/schema";
 
 /**
@@ -45,7 +46,16 @@ export type ElevationProfile = z.infer<typeof S.ElevationProfile>;
  * every sample (`profileCoords`), derived on the server in `lib/data.ts` so
  * the client can place the profile cursor without the route itself.
  */
-export type ProfileWithCoords = ElevationProfile & { coords?: RouteGeometry };
+export type ProfileWithCoords = ElevationProfile & {
+  coords?: RouteGeometry;
+  /** Hairpins, rhythm, dip and facing, read off the route (`lib/ascent-shape.ts`). */
+  shape?: AscentShape;
+};
+/** What a road is known for and what each of its sides is like (`data/portraits.json`). */
+export type PassPortrait = z.infer<typeof S.PassPortrait>;
+export type SidePortrait = z.infer<typeof S.SidePortrait>;
+export type Portraits = z.infer<typeof S.Portraits>;
+export type PortraitTranslations = z.infer<typeof S.PortraitTranslations>;
 export type ClimateBucket = z.infer<typeof S.ClimateBucket>;
 /** 24 half-months, index 0 = early January. null = no data. */
 export type ClimateYear = z.infer<typeof S.ClimateYear>;

@@ -1,8 +1,10 @@
 import type { EntityKind } from "@/lib/app-state";
 import type {
   Pass,
+  PassPortrait,
   Photo,
   Photos,
+  Portraits,
   ProfileWithCoords,
   Tour,
   Town,
@@ -55,6 +57,13 @@ export interface DetailData {
    */
   profiles?: Record<string, ProfileWithCoords>;
   photos: Photo[];
+  /**
+   * What the road is known for and what each side is like, in the page's
+   * language (`data/portraits.json`). Read by one panel about one road, so it
+   * travels here rather than with the list: three hundred intros are a good
+   * third of what the page carries otherwise.
+   */
+  portrait?: PassPortrait;
 }
 
 /** What the page knows about one entity's detail file before fetching it. */
@@ -67,6 +76,12 @@ export interface DetailAsset {
    * is no photo to wait for. Two bytes per entity against a visible jump.
    */
   photos: number;
+  /**
+   * Whether the file holds a portrait – for the same reason as the count: the
+   * intro stands near the top of the panel, and the panel reserves its lines
+   * while the file is on its way instead of pushing the blocks under it down.
+   */
+  portrait?: true;
   url: string;
 }
 
@@ -113,7 +128,7 @@ const file = (
   data: DetailData,
 ): DetailFile | null => {
   // Nothing to show: no file, no URL, and so no request from the panel.
-  if (data.photos.length === 0 && !data.profiles) return null;
+  if (data.photos.length === 0 && !data.profiles && !data.portrait) return null;
   const body = canonicalJson(data);
   return { body, name: fileName(kind, slug, body) };
 };
@@ -125,6 +140,10 @@ const file = (
  * `profiles` are the ones with sample coordinates (`getProfiles`' old shape):
  * the panel draws the profile and the map puts the cursor on the road, and
  * both read the same object.
+ *
+ * `portraits` are in one language (`localizePortraits`), so a pass's file
+ * exists once per language; the hash tells the two apart, and a tour or a town,
+ * which carries no prose, comes out as the same file in both.
  */
 export const detailAssets = (
   passes: readonly Pass[],
@@ -132,6 +151,7 @@ export const detailAssets = (
   towns: readonly Town[],
   profiles: Record<string, ProfileWithCoords>,
   photos: Photos,
+  portraits: Portraits,
 ): { files: DetailFile[]; assets: DetailAssets } => {
   const files: DetailFile[] = [];
   const assets: DetailAssets = {};
@@ -142,6 +162,7 @@ export const detailAssets = (
     files.push(f);
     assets[entityKey(kind, slug)] = {
       photos: data.photos.length,
+      ...(data.portrait ? { portrait: true as const } : {}),
       url: DETAIL_FILES.url(f.name),
     };
   };
@@ -153,8 +174,10 @@ export const detailAssets = (
       const profile = profiles[key];
       if (profile) own[key] = profile;
     }
+    const portrait = portraits[pass.slug];
     add("pass", pass.slug, {
       photos: photos[entityKey("pass", pass.slug)] ?? [],
+      ...(portrait ? { portrait } : {}),
       ...(Object.keys(own).length ? { profiles: own } : {}),
     });
   }
