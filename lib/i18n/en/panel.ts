@@ -140,6 +140,7 @@ export const panel = {
   weather: {
     allDays: "All 7 days",
     code: {
+      cloudy: "cloudy, dry",
       drizzle: "drizzle",
       fog: "fog",
       overcast: "overcast",

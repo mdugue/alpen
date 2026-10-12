@@ -168,6 +168,7 @@ export const panel = {
     allDays: "Alle 7 Tage",
     /** The WMO weather code, as a word. */
     code: {
+      cloudy: "bewölkt, trocken",
       drizzle: "Nieselregen",
       fog: "Nebel",
       overcast: "bedeckt",
