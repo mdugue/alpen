@@ -44,6 +44,8 @@ import { meteoblueHref } from "@/lib/links";
 import type { WeatherDay } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import type { PlaceForecast } from "@/lib/weather-places";
+import { skyOf } from "@/lib/weather-sky";
+import type { Sky } from "@/lib/weather-sky";
 
 /**
  * A value Open-Meteo has none of. One empty cell costs the cell and nothing
@@ -56,8 +58,8 @@ const MISSING = "–";
 const figure = (fmt: (n: number) => string, n: number | null, unit = "") =>
   n === null ? MISSING : `${fmt(Math.round(n) || 0)}${unit}`;
 
-/** Snowfall counts once there is any; a day with no figure for it had none. */
-const snowsOn = (day: WeatherDay) => (day.snowfall ?? 0) > 0;
+/** Snowfall counts once the row can print a centimetre; never a red "0 cm". */
+const snowsOn = (day: WeatherDay) => Math.round(day.snowfall ?? 0) > 0;
 
 /**
  * The day column, one formatter per language built once: the same shape in
@@ -77,22 +79,28 @@ const DAY_FORMAT: Record<Lang, Intl.DateTimeFormat> = {
   en: new Intl.DateTimeFormat(localeOf("en"), DAY_OPTIONS),
 };
 
-/** WMO weather code → icon and the word for it; a day without one gets neither. */
+/** Each sky's icon; the word comes from `panel.weather.code`. */
+const SKY_ICON: Record<Sky, LucideIcon> = {
+  cloudy: Cloud,
+  drizzle: CloudDrizzle,
+  fog: CloudFog,
+  overcast: Cloud,
+  partlyCloudy: CloudSun,
+  rain: CloudRain,
+  showers: CloudRain,
+  snow: CloudSnow,
+  snowShowers: CloudSnow,
+  sunny: Sun,
+  thunderstorm: CloudLightning,
+};
+
+/** A day's icon and the word for it; a day without a code gets neither. */
 const describe = (
-  code: number | null,
+  day: WeatherDay,
   words: Messages["panel"]["weather"]["code"],
 ): [LucideIcon, string] | null => {
-  if (code === null) return null;
-  if (code === 0) return [Sun, words.sunny];
-  if (code <= 2) return [CloudSun, words.partlyCloudy];
-  if (code === 3) return [Cloud, words.overcast];
-  if (code <= 48) return [CloudFog, words.fog];
-  if (code <= 57) return [CloudDrizzle, words.drizzle];
-  if (code <= 67) return [CloudRain, words.rain];
-  if (code <= 77) return [CloudSnow, words.snow];
-  if (code <= 82) return [CloudRain, words.showers];
-  if (code <= 86) return [CloudSnow, words.snowShowers];
-  return [CloudLightning, words.thunderstorm];
+  const sky = skyOf(day);
+  return sky === null ? null : [SKY_ICON[sky], words[sky]];
 };
 
 /** What the block looks like while the route's payload is on its way. */
@@ -176,7 +184,7 @@ const DayLine = ({
   const { t, fmt } = useT();
   const w = t.panel.weather;
   const value = (n: number | null, unit?: string) => figure(fmt, n, unit);
-  const [Icon, label] = describe(day.weatherCode, w.code) ?? [];
+  const [Icon, label] = describe(day, w.code) ?? [];
   return (
     <div className="flex items-center gap-2 py-1 text-xs tabular-nums">
       {Icon ? (
@@ -242,7 +250,7 @@ const WeekTable = ({ days }: { days: WeatherDay[] }) => {
       </TableHeader>
       <TableBody>
         {days.map((d) => {
-          const [Icon, label] = describe(d.weatherCode, w.code) ?? [];
+          const [Icon, label] = describe(d, w.code) ?? [];
           const snow = snowsOn(d);
           return (
             <TableRow
