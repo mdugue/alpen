@@ -106,6 +106,38 @@
   ]
  },
  {
+  "slug": "l-ecot",
+  "surface": "asphalt",
+  "name": "L'Écot",
+  "type": "spur",
+  "branchOf": "col-de-l-iseran",
+  "country": "FR",
+  "region": "Westalpen",
+  "lat": 45.381,
+  "lon": 7.0905,
+  "elevation": 2030,
+  "classicAscent": "3,4 km, 7 % ab Bonneval-sur-Arc",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 1,
+  "season": {
+   "opens": 6,
+   "closes": 10,
+   "maintained": false
+  },
+  "note": "Abstecher am Fuß der Iseran-Südrampe: Von Bonneval-sur-Arc führt die Straße zum Weiler L'Écot am Ende des Haute-Maurienne-Tals. Saisonfenster vom Iseran übernommen.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 45.3736,
+     "lon": 7.0531
+    },
+    "label": "Abzweig Bonneval-sur-Arc"
+   }
+  ]
+ },
+ {
   "slug": "col-de-la-bonette",
   "surface": "asphalt",
   "name": "Col de la Bonette",
@@ -184,6 +216,70 @@
      "lon": 6.65
     },
     "label": "Guillestre (Süd)"
+   }
+  ]
+ },
+ {
+  "slug": "ceillac-vallee-du-melezet",
+  "surface": "asphalt",
+  "name": "Ceillac (Vallée du Mélézet)",
+  "type": "spur",
+  "branchOf": "col-d-izoard",
+  "country": "FR",
+  "region": "Westalpen",
+  "lat": 44.6297,
+  "lon": 6.8213,
+  "elevation": 1965,
+  "classicAscent": "13,5 km, 7 % ab dem Abzweig Maison du Roy",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 4,
+  "traffic": 1,
+  "season": {
+   "opens": 5.5,
+   "closes": 11,
+   "maintained": false
+  },
+  "note": "Abstecher von der Izoard-Auffahrt aus Guillestre: An der Maison du Roy zweigt die Straße nach Ceillac ab und endet hinten im Vallée du Mélézet. Saisonfenster von der Col d'Izoard übernommen.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 44.6774,
+     "lon": 6.6943
+    },
+    "label": "Abzweig Maison du Roy"
+   }
+  ]
+ },
+ {
+  "slug": "haute-vallee-de-cervieres",
+  "surface": "asphalt",
+  "name": "Haute Vallée de Cervières",
+  "type": "spur",
+  "branchOf": "col-d-izoard",
+  "country": "FR",
+  "region": "Westalpen",
+  "lat": 44.8451,
+  "lon": 6.8157,
+  "elevation": 2047,
+  "classicAscent": "11,5 km, 4 % ab dem Abzweig Cervières",
+  "beauty": 4,
+  "fame": 1,
+  "difficulty": 2,
+  "traffic": 1,
+  "season": {
+   "opens": 5.5,
+   "closes": 11,
+   "maintained": false
+  },
+  "note": "Abstecher von der Izoard-Nordrampe: Von Cervières führt die Straße flach bis leicht steigend ins hintere Hochtal. Saisonfenster von der Col d'Izoard übernommen.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 44.8683,
+     "lon": 6.7219
+    },
+    "label": "Abzweig Cervières"
    }
   ]
  },
@@ -305,6 +401,38 @@
   ]
  },
  {
+  "slug": "meribel-mottaret",
+  "surface": "asphalt",
+  "name": "Méribel-Mottaret",
+  "type": "spur",
+  "branchOf": "col-de-la-loze",
+  "country": "FR",
+  "region": "Westalpen",
+  "lat": 45.3727,
+  "lon": 6.5755,
+  "elevation": 1763,
+  "classicAscent": "14,7 km, 3 % ab dem Abzweig Méribel",
+  "beauty": 3,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 2,
+  "season": {
+   "opens": 6,
+   "closes": 10.5,
+   "maintained": false
+  },
+  "note": "Abstecher von der Loze-Auffahrt aus Brides-les-Bains: Die Straße führt durch Méribel weiter ins Skidorf Mottaret. Saisonfenster von der Col de la Loze übernommen.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 45.4328,
+     "lon": 6.6212
+    },
+    "label": "Abzweig Méribel"
+   }
+  ]
+ },
+ {
   "slug": "mont-ventoux",
   "surface": "asphalt",
   "name": "Mont Ventoux",
@@ -393,6 +521,34 @@
   ]
  },
  {
+  "slug": "saint-veran",
+  "surface": "asphalt",
+  "name": "Saint-Véran",
+  "type": "spur",
+  "branchOf": "colle-dell-agnello",
+  "country": "IT",
+  "region": "Westalpen",
+  "lat": 44.699,
+  "lon": 6.8682,
+  "elevation": 1992,
+  "classicAscent": "5,1 km, 5 % ab dem Abzweig Molines",
+  "beauty": 4,
+  "fame": 3,
+  "difficulty": 2,
+  "traffic": 2,
+  "season": null,
+  "note": "Abstecher von der Agnello-Auffahrt aus dem Queyras: Die Straße zweigt bei Molines ab und endet in Saint-Véran, einem der höchsten Dörfer Europas.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 44.731,
+     "lon": 6.8405
+    },
+    "label": "Abzweig Molines"
+   }
+  ]
+ },
+ {
   "slug": "colle-delle-finestre",
   "surface": "mixed",
   "name": "Colle delle Finestre",
@@ -472,6 +628,37 @@
   ]
  },
  {
+  "slug": "sulden",
+  "surface": "asphalt",
+  "name": "Sulden",
+  "type": "spur",
+  "branchOf": "passo-dello-stelvio",
+  "aliases": [
+   "Solda"
+  ],
+  "country": "IT",
+  "region": "Zentralalpen",
+  "lat": 46.5293,
+  "lon": 10.5859,
+  "elevation": 1916,
+  "classicAscent": "9,2 km, 7 % ab dem Abzweig Gomagoi",
+  "beauty": 4,
+  "fame": 3,
+  "difficulty": 3,
+  "traffic": 3,
+  "season": null,
+  "note": "Abstecher von der Stilfser-Joch-Auffahrt aus Prad: In Gomagoi zweigt die Straße ins Suldental ab und endet im Ort unter dem Ortler.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.5753,
+     "lon": 10.5398
+    },
+    "label": "Abzweig Gomagoi"
+   }
+  ]
+ },
+ {
   "slug": "passo-di-gavia",
   "surface": "asphalt",
   "name": "Passo di Gavia",
@@ -507,6 +694,41 @@
      "lon": 10.372
     },
     "label": "Bormio"
+   }
+  ]
+ },
+ {
+  "slug": "rifugio-dei-forni",
+  "surface": "asphalt",
+  "name": "Rifugio dei Forni",
+  "type": "spur",
+  "branchOf": "passo-di-gavia",
+  "tags": [
+   "glacier"
+  ],
+  "country": "IT",
+  "region": "Zentralalpen",
+  "lat": 46.4205,
+  "lon": 10.5557,
+  "elevation": 2176,
+  "classicAscent": "6,4 km, 7 % ab Santa Caterina",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 2,
+  "season": {
+   "opens": 6,
+   "closes": 10,
+   "maintained": false
+  },
+  "note": "Abstecher von der Gavia-Auffahrt aus Bormio: In Santa Caterina zweigt die schmale Straße ins Valle dei Forni ab und endet an der Hütte vor dem Forni-Gletscher. Saisonfenster von der Gavia übernommen.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.4152,
+     "lon": 10.4882
+    },
+    "label": "Abzweig Santa Caterina"
    }
   ]
  },
@@ -1939,6 +2161,41 @@
   ]
  },
  {
+  "slug": "santuario-di-sant-anna-di-vinadio",
+  "surface": "asphalt",
+  "name": "Santuario di Sant'Anna di Vinadio",
+  "type": "spur",
+  "branchOf": "col-de-la-lombarde",
+  "aliases": [
+   "Sant'Anna di Vinadio"
+  ],
+  "country": "IT",
+  "region": "Westalpen",
+  "lat": 44.2271,
+  "lon": 7.1063,
+  "elevation": 2010,
+  "classicAscent": "2,8 km, 9 % ab dem Abzweig an der Lombarde-Straße",
+  "beauty": 4,
+  "fame": 3,
+  "difficulty": 3,
+  "traffic": 2,
+  "season": {
+   "opens": 6,
+   "closes": 10.5,
+   "maintained": false
+  },
+  "note": "Abstecher von der italienischen Seite der Lombarde: Die Straße zweigt unterhalb der Passhöhe ab und endet am höchstgelegenen Wallfahrtsort Europas. Saisonfenster von der Lombarde übernommen.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 44.2332,
+     "lon": 7.1127
+    },
+    "label": "Abzweig Lombarde-Straße"
+   }
+  ]
+ },
+ {
   "slug": "col-de-turini",
   "surface": "asphalt",
   "name": "Col de Turini",
@@ -2249,6 +2506,38 @@
      "lon": 8.943
     },
     "label": "Olivone"
+   }
+  ]
+ },
+ {
+  "slug": "capanna-dotra",
+  "surface": "asphalt",
+  "name": "Capanna Dötra",
+  "type": "spur",
+  "branchOf": "lukmanierpass",
+  "country": "CH",
+  "region": "Zentralalpen",
+  "lat": 46.5317,
+  "lon": 8.8793,
+  "elevation": 1762,
+  "classicAscent": "6,0 km, 7 % ab dem Abzweig Lukmanierstraße",
+  "beauty": 3,
+  "fame": 1,
+  "difficulty": 3,
+  "traffic": 1,
+  "season": {
+   "opens": 5.5,
+   "closes": 11.5,
+   "maintained": false
+  },
+  "note": "Abstecher von der Lukmanier-Südrampe: Eine schmale Straße steigt zur Capanna Dötra auf gut 1700 m. Saisonfenster von der Lukmanierpass übernommen.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.5245,
+     "lon": 8.9004
+    },
+    "label": "Abzweig Lukmanierstraße"
    }
   ]
  },
@@ -2736,6 +3025,34 @@
      "lon": 11.007
     },
     "label": "Sölden"
+   }
+  ]
+ },
+ {
+  "slug": "hochsoelden",
+  "surface": "asphalt",
+  "name": "Hochsölden",
+  "type": "spur",
+  "branchOf": "oetztaler-gletscherstrasse",
+  "country": "AT",
+  "region": "Ostalpen",
+  "lat": 46.9772,
+  "lon": 10.9821,
+  "elevation": 2111,
+  "classicAscent": "3,7 km, 11 % ab dem Abzweig Sölden",
+  "beauty": 3,
+  "fame": 2,
+  "difficulty": 4,
+  "traffic": 2,
+  "season": null,
+  "note": "Abstecher von der Ötztaler Gletscherstraße: Oberhalb von Sölden zweigt die steile Straße nach Hochsölden ab.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.9657,
+     "lon": 10.9952
+    },
+    "label": "Abzweig Sölden"
    }
   ]
  },
@@ -3284,6 +3601,44 @@
      "lon": 11.992
     },
     "label": "Caprile"
+   }
+  ]
+ },
+ {
+  "slug": "cinque-torri",
+  "surface": "asphalt",
+  "name": "Cinque Torri",
+  "type": "spur",
+  "branchOf": "passo-falzarego",
+  "tags": [
+   "panorama"
+  ],
+  "aliases": [
+   "Rifugio Cinque Torri"
+  ],
+  "country": "IT",
+  "region": "Dolomiten",
+  "lat": 46.5081,
+  "lon": 12.0548,
+  "elevation": 2137,
+  "classicAscent": "4,2 km, 10 % ab dem Abzweig an der Falzaregostraße",
+  "beauty": 5,
+  "fame": 3,
+  "difficulty": 4,
+  "traffic": 2,
+  "season": {
+   "opens": 6,
+   "closes": 10.5,
+   "maintained": false
+  },
+  "note": "Abstecher von der Falzarego-Auffahrt aus Cortina: steile Stichstraße hinauf zum Rifugio Cinque Torri unter den fünf Felstürmen. Im Winter Skigebiet, die Straße ist dann nicht befahrbar.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.5222,
+     "lon": 12.0665
+    },
+    "label": "Abzweig Falzaregostraße"
    }
   ]
  },
@@ -4020,6 +4375,34 @@
   ]
  },
  {
+  "slug": "valmeinier-1800",
+  "surface": "asphalt",
+  "name": "Valmeinier 1800",
+  "type": "spur",
+  "branchOf": "col-du-telegraphe",
+  "country": "FR",
+  "region": "Westalpen",
+  "lat": 45.1753,
+  "lon": 6.4925,
+  "elevation": 1761,
+  "classicAscent": "6,4 km, 6 % ab dem Abzweig bei Valloire",
+  "beauty": 3,
+  "fame": 1,
+  "difficulty": 3,
+  "traffic": 2,
+  "season": null,
+  "note": "Abstecher am Télégraphe: Vom Valloire-Becken führt die Straße hinauf zur Skistation Valmeinier 1800.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 45.1958,
+     "lon": 6.4664
+    },
+    "label": "Abzweig bei Valloire"
+   }
+  ]
+ },
+ {
   "slug": "col-du-chaussy",
   "surface": "asphalt",
   "name": "Col du Chaussy",
@@ -4321,6 +4704,34 @@
      "lon": 6.0307
     },
     "label": "Le Bourg-d'Oisans"
+   }
+  ]
+ },
+ {
+  "slug": "villard-reymond",
+  "surface": "asphalt",
+  "name": "Villard-Reymond",
+  "type": "spur",
+  "branchOf": "col-d-ornon",
+  "country": "FR",
+  "region": "Westalpen",
+  "lat": 45.0361,
+  "lon": 6.0198,
+  "elevation": 1690,
+  "classicAscent": "10,1 km, 7 % ab dem Abzweig an der Ornon-Straße",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 4,
+  "traffic": 1,
+  "season": null,
+  "note": "Abstecher an der Ornon-Straße: Die schmale Straße steigt in Kehren zum Bergdorf Villard-Reymond über dem Oisans.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 45.0508,
+     "lon": 5.9875
+    },
+    "label": "Abzweig an der Ornon-Straße"
    }
   ]
  },
@@ -4754,6 +5165,41 @@
   ]
  },
  {
+  "slug": "sommet-bucher",
+  "surface": "asphalt",
+  "name": "Sommet Bucher",
+  "type": "spur",
+  "branchOf": "gorges-du-guil",
+  "tags": [
+   "panorama"
+  ],
+  "country": "FR",
+  "region": "Westalpen",
+  "lat": 44.7397,
+  "lon": 6.8138,
+  "elevation": 2254,
+  "classicAscent": "10,7 km, 8 % ab Ville-Vieille",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 4,
+  "traffic": 1,
+  "season": {
+   "opens": 6,
+   "closes": 10.5,
+   "maintained": false
+  },
+  "note": "Abstecher im Queyras: Von Ville-Vieille führt eine schmale Forststraße mit Asphalt durch den Lärchenwald hinauf zum Aussichtsgipfel über Château-Queyras. Im Winter nicht geräumt.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 44.755,
+     "lon": 6.7841
+    },
+    "label": "Abzweig Ville-Vieille"
+   }
+  ]
+ },
+ {
   "slug": "vallee-de-la-claree",
   "surface": "asphalt",
   "name": "Vallée de la Clarée",
@@ -4825,6 +5271,38 @@
      "lat": 44.5932,
      "lon": 6.8424
     }
+   }
+  ]
+ },
+ {
+  "slug": "fouillouse",
+  "surface": "asphalt",
+  "name": "Fouillouse",
+  "type": "spur",
+  "branchOf": "vallee-de-l-ubaye",
+  "country": "FR",
+  "region": "Westalpen",
+  "lat": 44.5254,
+  "lon": 6.8,
+  "elevation": 1913,
+  "classicAscent": "3,1 km, 10 % ab dem Abzweig im Ubayetal",
+  "beauty": 4,
+  "fame": 1,
+  "difficulty": 3,
+  "traffic": 1,
+  "season": {
+   "opens": 5.5,
+   "closes": 10.5,
+   "maintained": false
+  },
+  "note": "Abstecher im oberen Ubayetal: Die Straße steigt zum Weiler Fouillouse unter dem Chambeyron-Massiv. Im Winter nicht geräumt.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 44.5372,
+     "lon": 6.7835
+    },
+    "label": "Abzweig im Ubayetal"
    }
   ]
  },
@@ -5279,6 +5757,37 @@
   ]
  },
  {
+  "slug": "jochgrimm",
+  "surface": "asphalt",
+  "name": "Jochgrimm",
+  "type": "spur",
+  "branchOf": "passo-lavaze",
+  "aliases": [
+   "Passo Oclini"
+  ],
+  "country": "IT",
+  "region": "Dolomiten",
+  "lat": 46.3472,
+  "lon": 11.4508,
+  "elevation": 2001,
+  "classicAscent": "3,6 km, 6 % ab dem Abzweig Lavazè",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 2,
+  "traffic": 2,
+  "season": null,
+  "note": "Abstecher vom Lavazèjoch: Die Straße führt weiter zum Jochgrimm (Passo Oclini) unter dem Schwarzhorn.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.3544,
+     "lon": 11.4925
+    },
+    "label": "Abzweig Lavazè"
+   }
+  ]
+ },
+ {
   "slug": "mendelpass",
   "surface": "asphalt",
   "name": "Mendelpass",
@@ -5315,6 +5824,37 @@
      "lon": 11.1408
     },
     "label": "Sarnonico (West)"
+   }
+  ]
+ },
+ {
+  "slug": "penegal",
+  "surface": "asphalt",
+  "name": "Penegal",
+  "type": "spur",
+  "branchOf": "mendelpass",
+  "tags": [
+   "panorama"
+  ],
+  "country": "IT",
+  "region": "Dolomiten",
+  "lat": 46.438,
+  "lon": 11.2159,
+  "elevation": 1737,
+  "classicAscent": "3,8 km, 9 % ab der Mendelpasshöhe",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 2,
+  "season": null,
+  "note": "Abstecher von der Mendelpasshöhe: Die Straße steigt durch den Wald zum Aussichtsturm auf dem Penegal, mit Blick über das Etschtal bis zu den Dolomiten.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.4189,
+     "lon": 11.2034
+    },
+    "label": "Abzweig Mendelpass"
    }
   ]
  },
@@ -5615,6 +6155,34 @@
   ]
  },
  {
+  "slug": "monte-pizzoc",
+  "surface": "asphalt",
+  "name": "Monte Pizzoc",
+  "type": "spur",
+  "branchOf": "altopiano-del-cansiglio",
+  "country": "IT",
+  "region": "Dolomiten",
+  "lat": 46.0399,
+  "lon": 12.3485,
+  "elevation": 1555,
+  "classicAscent": "4,0 km, 6 % ab dem Abzweig im Cansiglio",
+  "beauty": 3,
+  "fame": 2,
+  "difficulty": 2,
+  "traffic": 1,
+  "season": null,
+  "note": "Abstecher von der Hochebene des Cansiglio: Die Straße steigt zum Gipfel des Monte Pizzoc mit Blick über die venezianische Ebene.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.0411,
+     "lon": 12.3804
+    },
+    "label": "Abzweig im Cansiglio"
+   }
+  ]
+ },
+ {
   "slug": "val-di-genova",
   "surface": "asphalt",
   "name": "Val di Genova",
@@ -5777,6 +6345,38 @@
      "lon": 10.7827
     },
     "km": 26.5
+   }
+  ]
+ },
+ {
+  "slug": "vorderkaser-pfossental",
+  "surface": "asphalt",
+  "name": "Vorderkaser (Pfossental)",
+  "type": "spur",
+  "branchOf": "schnalstal-kurzras",
+  "country": "IT",
+  "region": "Ostalpen",
+  "lat": 46.734,
+  "lon": 10.9263,
+  "elevation": 1707,
+  "classicAscent": "4,8 km, 10 % ab dem Abzweig Pfossental",
+  "beauty": 4,
+  "fame": 1,
+  "difficulty": 4,
+  "traffic": 1,
+  "season": {
+   "opens": 5,
+   "closes": 11,
+   "maintained": false
+  },
+  "note": "Abstecher im Schnalstal: Die Straße ins Pfossental steigt steil bis zum Gasthof Vorderkaser.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.7059,
+     "lon": 10.9134
+    },
+    "label": "Abzweig Pfossental"
    }
   ]
  },
@@ -7242,6 +7842,34 @@
   ]
  },
  {
+  "slug": "rhemes-notre-dame",
+  "surface": "asphalt",
+  "name": "Rhêmes-Notre-Dame",
+  "type": "spur",
+  "branchOf": "valsavarenche",
+  "country": "IT",
+  "region": "Westalpen",
+  "lat": 45.5799,
+  "lon": 7.1223,
+  "elevation": 1713,
+  "classicAscent": "14,2 km, 5 % ab dem Abzweig Introd",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 1,
+  "season": null,
+  "note": "Abstecher am Eingang des Valsavarenche: Bei Introd zweigt das Val di Rhêmes ab, die Straße endet in Rhêmes-Notre-Dame.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 45.6853,
+     "lon": 7.1882
+    },
+    "label": "Abzweig Introd"
+   }
+  ]
+ },
+ {
   "slug": "valgrisenche",
   "surface": "asphalt",
   "name": "Valgrisenche",
@@ -7673,6 +8301,38 @@
      "lon": 7.7744
     },
     "label": "Molini di Triora (Ost)"
+   }
+  ]
+ },
+ {
+  "slug": "colle-melosa",
+  "surface": "asphalt",
+  "name": "Colle Melosa",
+  "type": "spur",
+  "branchOf": "colle-langan",
+  "country": "IT",
+  "region": "Westalpen",
+  "lat": 43.9911,
+  "lon": 7.6842,
+  "elevation": 1570,
+  "classicAscent": "6,7 km, 7 % ab dem Abzweig an der Langan-Straße",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 1,
+  "season": {
+   "opens": 5,
+   "closes": 11,
+   "maintained": false
+  },
+  "note": "Abstecher vom Colle Langan: Die Straße steigt zum Rifugio am Colle Melosa. Im Winter nicht geräumt.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 43.968,
+     "lon": 7.7314
+    },
+    "label": "Abzweig an der Langan-Straße"
    }
   ]
  },
@@ -8555,6 +9215,38 @@
   ]
  },
  {
+  "slug": "passo-tremalzo",
+  "surface": "asphalt",
+  "name": "Passo Tremalzo",
+  "type": "spur",
+  "branchOf": "passo-d-ampola",
+  "country": "IT",
+  "region": "Dolomiten",
+  "lat": 45.8346,
+  "lon": 10.6782,
+  "elevation": 1703,
+  "classicAscent": "13,0 km, 7 % ab dem Abzweig im Val di Ledro",
+  "beauty": 4,
+  "fame": 3,
+  "difficulty": 4,
+  "traffic": 1,
+  "season": {
+   "opens": 5,
+   "closes": 11,
+   "maintained": false
+  },
+  "note": "Abstecher aus dem Val di Ledro: Die asphaltierte Straße steigt bis zum Passo Tremalzo; dahinter geht es nur auf Schotter weiter Richtung Gardasee. Im Winter nicht geräumt.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 45.8643,
+     "lon": 10.6457
+    },
+    "label": "Abzweig im Val di Ledro"
+   }
+  ]
+ },
+ {
   "slug": "passo-santa-barbara",
   "surface": "asphalt",
   "name": "Passo Santa Barbara",
@@ -8668,6 +9360,38 @@
      "lon": 11.2609
     },
     "label": "Valli del Pasubio (Ost)"
+   }
+  ]
+ },
+ {
+  "slug": "monte-zugna",
+  "surface": "asphalt",
+  "name": "Monte Zugna",
+  "type": "spur",
+  "branchOf": "pian-delle-fugazze",
+  "country": "IT",
+  "region": "Dolomiten",
+  "lat": 45.8064,
+  "lon": 11.0591,
+  "elevation": 1622,
+  "classicAscent": "12,1 km, 7 % ab dem Abzweig Albaredo",
+  "beauty": 3,
+  "fame": 2,
+  "difficulty": 4,
+  "traffic": 1,
+  "season": {
+   "opens": 5,
+   "closes": 11,
+   "maintained": false
+  },
+  "note": "Abstecher am Pian delle Fugazze: Von Albaredo bei Rovereto steigt die Straße lang zum Monte Zugna, Schauplatz des Ersten Weltkriegs. Im Winter nicht geräumt.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 45.8561,
+     "lon": 11.0607
+    },
+    "label": "Abzweig Albaredo"
    }
   ]
  },

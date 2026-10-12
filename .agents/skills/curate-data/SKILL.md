@@ -55,7 +55,8 @@ authoritative. In addition:
   cars, whether bikes pay on a `toll` road.
 - **`branchOf`**: only on a `spur` that is a detour off another entry (the
   Edelweißspitze off the Großglockner). Its one ascent starts at the junction
-  on the trunk, labelled "Abzweig …", so the profile is the detour alone;
+  on the trunk, labelled "Abzweig …", so the profile is the detour alone
+  (candidates: `bun run analyze:branches <slug>`, junction and end included);
   season and toll follow the trunk unless the detour has its own habit. Put
   the entry right after its trunk, and say in the trunk's `note` that its
   detours are linked below the ascents. See `docs/data-model.md`.
