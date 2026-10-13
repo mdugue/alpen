@@ -526,7 +526,7 @@
   "name": "Saint-Véran",
   "type": "spur",
   "branchOf": "colle-dell-agnello",
-  "country": "IT",
+  "country": "FR",
   "region": "Westalpen",
   "lat": 44.699,
   "lon": 6.8682,
@@ -3725,7 +3725,7 @@
   "difficulty": 2,
   "traffic": 3,
   "season": null,
-  "note": "Ganzjährig offen, kürzester Sellaronda-Pass.",
+  "note": "Ganzjährig offen, niedrigster Sellaronda-Pass.",
   "quaeldich": "passo-campolongo",
   "ascents": [
    {
@@ -4305,7 +4305,7 @@
    "closes": 11,
    "maintained": false
   },
-  "note": "Auffahrt zur Hochebene mit dem Widerstandsdenkmal von 1944; oben endet die durchgehende Straße. Die Tour fuhr 2018 und 2023 hinauf.",
+  "note": "Auffahrt zur Hochebene mit dem Widerstandsdenkmal von 1944; oben endet die durchgehende Straße. Die Tour fuhr 2018 und 2020 hinauf.",
   "ascents": [
    {
     "from": {
@@ -9270,7 +9270,7 @@
    "closes": 12,
    "maintained": false
   },
-  "note": "Von Rovereto durch die Kehren über Isera auf den Übergang in die Val di Gresta, Bergankunft der Giro-Etappe 2018 nach Arco. Die Westseite von Nago über Ronzo ist die stillere. Oben im Winter Schnee.",
+  "note": "Von Rovereto durch die Kehren über Isera auf den Übergang in die Val di Gresta, 2025 vom Giro überquert. Die Westseite von Nago über Ronzo ist die stillere. Oben im Winter Schnee.",
   "ascents": [
    {
     "from": {
@@ -9737,7 +9737,7 @@
   "difficulty": 3,
   "traffic": 1,
   "season": null,
-  "note": "Der höchste Pass der Baronnies, Tour-de-France-Passage 2006 und 2012: von der Ouvèze aus dem Wald in einen weiten Kessel, oben Blick auf Ventoux und Lure. Ganzjährig offen, nach Schneefall kurz nicht.",
+  "note": "Einer der höchsten Pässe der Baronnies, Tour-de-France-Passage 2006: von der Ouvèze aus dem Wald in einen weiten Kessel, oben Blick auf Ventoux und Lure. Ganzjährig offen, nach Schneefall kurz nicht.",
   "ascents": [
    {
     "from": {
@@ -9774,7 +9774,7 @@
   "difficulty": 2,
   "traffic": 1,
   "season": null,
-  "note": "Von Sainte-Jalle über den Kamm ins Eygues-Tal bei Curnier: Kehren durch Eichen und Lavendel, kaum ein Auto, Tour-Passage 2012. Ganzjährig offen.",
+  "note": "Von Sainte-Jalle über den Kamm ins Eygues-Tal bei Curnier: Kehren durch Eichen und Lavendel, kaum ein Auto. Ganzjährig offen.",
   "ascents": [
    {
     "from": {
@@ -10057,7 +10057,7 @@
   "difficulty": 3,
   "traffic": 1,
   "season": null,
-  "note": "Der höchste Übergang zwischen Estéron und dem Plateau von Thorenc, Paris–Nizza-Passage; auf der Nordseite Kehren durch Buchenwald, oben Wiesen und Kalkkämme. Ganzjährig offen, nach Schneefall kurz gesperrt.",
+  "note": "Der höchste Übergang zwischen Estéron und dem Plateau von Thorenc; auf der Nordseite Kehren durch Buchenwald, oben Wiesen und Kalkkämme. Ganzjährig offen, nach Schneefall kurz gesperrt.",
   "ascents": [
    {
     "from": {

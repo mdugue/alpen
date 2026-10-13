@@ -43,7 +43,7 @@
   ]
  },
  "col-de-la-bonette": {
-  "intro": "The loop around the Cime de la Bonette is the highest paved road of its kind in Europe, and the Tour has crossed it several times. Two very long, lonely sides with military ruins from the old border defences.",
+  "intro": "The loop around the Cime de la Bonette is the highest paved road in France, and the Tour has crossed it several times. Two very long, lonely sides with military ruins from the old border defences.",
   "sides": [
    {
     "character": "From Jausiers long and even through larches, then in many hairpins over the bare slopes at Restefond. A steady rhythm that suits the climb.",
@@ -60,7 +60,7 @@
   "sides": [
    {
     "character": "From Briançon via Cervières with flatter stretches, then many hairpins through larch forest to the top. Good climbing, a twisty descent.",
-    "highlights": "The obelisk at the top with the view back to the Écrins."
+    "highlights": "The memorial at the top with the view back to the Écrins."
    },
    {
     "character": "From Guillestre long and flat at first through the Guil gorge, steeper from Arvieux, finally through the Casse Déserte. The classic climb, with its highlight at the end.",
@@ -111,7 +111,7 @@
   ]
  },
  "col-de-la-loze": {
-  "intro": "Only on the Tour since 2020, and a legend at once: the upper part is a narrow, car-free cycle road with constantly changing ramps. In 2023 Tadej Pogačar lost the yellow jersey here.",
+  "intro": "Only on the Tour since 2020, and a legend at once: the upper part is a narrow, car-free cycle road with constantly changing ramps. In 2023 Tadej Pogačar cracked here, and Jonas Vingegaard turned his yellow jersey into a decisive lead.",
   "sides": [
    {
     "character": "From Brides-les-Bains on the road to Méribel, then on the cycle road with short steep ramps and flat bits to the top. Made for climbing.",
@@ -268,7 +268,7 @@
   ]
  },
  "sustenpass": {
-  "intro": "One of the first Swiss pass roads built for touring traffic, opened in 1946. An even gradient, wide bends and the Steingletscher below the summit tunnel.",
+  "intro": "Opened in 1946 and planned from the start for motor traffic. An even gradient, wide bends and the Steingletscher below the summit tunnel.",
   "sides": [
    {
     "character": "From Innertkirchen very long up the Gadmental, in steps, then in hairpins past the Steingletscher near the top. The glacier comes into view as you climb.",
@@ -504,11 +504,11 @@
   "intro": "The Vars links the Ubaye with Guillestre and often shares a Tour de France stage with the Izoard or the Bonette. The north side runs through the ski resort of Vars, the south side is short and lonely.",
   "sides": [
    {
-    "character": "Long and stepped: from Guillestre through villages and the resort of Vars, with flatter stretches between the ramps. Downhill wide bends and open views."
+    "character": "Long and stepped: from Guillestre through villages and the resort of Vars, with flatter stretches between the ramps. Downhill wide bends and open views.",
+    "highlights": "The Refuge Napoléon two kilometres below the top, good for a break."
    },
    {
-    "character": "Short and open: from the Ubaye it steepens towards the top, over alpine pastures with little forest.",
-    "highlights": "The Refuge Napoléon at the top for a break."
+    "character": "Short and open: from the Ubaye it steepens towards the top, over alpine pastures with little forest."
    }
   ]
  },
@@ -769,7 +769,7 @@
   ]
  },
  "passo-san-bernardino": {
-  "intro": "Since the motorway tunnel took the traffic, the old pass road between the Misox and the Rheinwald has been quiet. At the top lies Lake Moesola among granite knolls.",
+  "intro": "Since the motorway tunnel took the traffic, the old pass road between the Misox and the Rheinwald has been quiet. At the top lies Lake Moesola among rocky knolls.",
   "sides": [
    {
     "character": "Long and stepped from Mesocco, with a great many hairpins and flatter stretches via the village of San Bernardino. A climb with rhythm.",
@@ -877,7 +877,7 @@
   ]
  },
  "passo-san-marco": {
-  "intro": "The road follows the old Via Priula, which Venice had built from Bergamo to the Valtellina in the late 16th century. Today it is a quiet link between the Val Brembana and the Valtellina, and with over 2000 metres from Morbegno one of the longest climbs in the area.",
+  "intro": "The road follows the old Via Priula, which Venice had built from Bergamo to the Valtellina in the late 16th century. Today it is a quiet link between the Val Brembana and the Valtellina, and with some 1700 metres from Morbegno one of the longest climbs in the area.",
   "sides": [
    {
     "character": "Out of the Valtellina through the Bitto valley: long and uneven, flatter stretches between steep ramps and a run of hairpins higher up. The big climb, better ridden uphill."
@@ -1079,7 +1079,7 @@
   ]
  },
  "passo-valparola": {
-  "intro": "The Valparola lies only a few hundred metres from the Falzarego and leads down into the Val Badia. At the top stands the Tre Sassi fort with a First World War museum, and a small lake below the Lagazuoi.",
+  "intro": "The Valparola lies only a little over a kilometre of road from the Falzarego and leads down into the Val Badia. At the top stands the Tre Sassi fort with a First World War museum, and a small lake below the Lagazuoi.",
   "sides": [
    {
     "character": "From Stern via San Cassiano gently along the valley first, then stepped and steeper in hairpins over open pastures to the top.",
@@ -1099,7 +1099,7 @@
   ]
  },
  "passo-campolongo": {
-  "intro": "The shortest and gentlest pass of the Sellaronda, between Corvara and Arabba. In the Maratona dles Dolomites it is the first climb.",
+  "intro": "The lowest and gentlest pass of the Sellaronda, between Corvara and Arabba. In the Maratona dles Dolomites it is the first climb.",
   "sides": [
    {
     "character": "From Arabba short and steeper at first, with a few hairpins, flattening towards the top. A quick hop over the saddle."
@@ -1133,7 +1133,7 @@
   ]
  },
  "passo-manghen": {
-  "intro": "The Manghen crosses the lonely Lagorai range between the Valsugana and the Fiemme valley. Narrow, steep and nearly free of traffic, and with over 1800 metres from the Valsugana one of the hardest climbs in Trentino.",
+  "intro": "The Manghen crosses the lonely Lagorai range between the Valsugana and the Fiemme valley. Narrow, steep and nearly free of traffic, and with over 1600 metres from the Valsugana one of the hardest climbs in Trentino.",
   "sides": [
    {
     "character": "From Borgo Valsugana long and ever steeper towards the top, through forest and finally in hairpins over open slopes. The hard side, to be ridden uphill."
@@ -1235,7 +1235,7 @@
   ]
  },
  "les-arcs": {
-  "intro": "The ski-resort ascent from Bourg-Saint-Maurice via Arc 1800 up to Arc 2000. In the 1996 Tour, Miguel Indurain lost his grip on the race for the first time on the road to Les Arcs.",
+  "intro": "The ski-resort ascent from Bourg-Saint-Maurice via Arc 1800 up to Arc 2000. In the 1996 Tour, Miguel Indurain cracked in the final kilometres to Les Arcs; his run of five Tour wins ended that year.",
   "sides": [
    {
     "character": "From Bourg-Saint-Maurice stepped with many hairpins through forest and meadows, then up between the ski stations, with steeper ramps in between.",
@@ -1270,7 +1270,7 @@
   ]
  },
  "plateau-des-glieres": {
-  "intro": "On this plateau above the Thorens valley a Resistance maquis held out in 1944 until it was crushed; the memorial at the top recalls it. The Tour has come up twice in recent years, in 2018 even with a gravel stretch across the plateau.",
+  "intro": "On this plateau above the Thorens valley a Resistance maquis held out in 1944 until it was crushed; the memorial at the top recalls it. The Tour came up in 2018 and 2020, both times with a gravel stretch across the plateau.",
   "sides": [
    {
     "character": "From Thorens-Glières in steps through forest and meadows, steep ramps alternating with short breathers, and even a brief descent on the way. At the top the plateau opens out all at once.",
@@ -1492,7 +1492,7 @@
   ]
  },
  "corniche-sublime": {
-  "intro": "The south side of the Grand Canyon du Verdon: the road follows the rim, and from the Balcons de la Mescla you look 300 m straight down. A day with more stops than kilometres.",
+  "intro": "The south side of the Grand Canyon du Verdon: the road follows the rim, and from the Balcons de la Mescla you look some 250 m down onto the confluence of the Verdon and the Artuby. A day with more stops than kilometres.",
   "sides": [
    {
     "character": "From Aiguines to Comps-sur-Artuby a long up and down along the rim of the gorge, with some hairpins and stiff counter-climbs. Hardly any net height, but a good deal more work than the figure suggests.",
@@ -1519,11 +1519,11 @@
   ]
  },
  "sommet-bucher": {
-  "intro": "A lookout summit in the middle of the Queyras, reached by a narrow paved forest road. From the top you look down on Château-Queyras and all around at the mountains of the Queyras.",
+  "intro": "A lookout summit in the middle of the Queyras, reached by a narrow paved forest road. At the top an all-round view opens over the valleys and mountains of the Queyras.",
   "sides": [
    {
     "character": "From Ville-Vieille steadily steep through larch forest, hairpin after hairpin on a narrow road. No resting point up to the summit, but a reliable rhythm.",
-    "highlights": "From the summit the view down onto the fort of Château-Queyras."
+    "highlights": "From the summit, the all-round view over the Guil and Aigue Agnelle valleys."
    }
   ]
  },
@@ -1695,7 +1695,7 @@
   ]
  },
  "jochgrimm": {
-  "intro": "The short extension from the Lavazè pass up to just over 2,000 m, below the Schwarzhorn and the Weißhorn. More reward than climb: the view reaches far across the Adige valley and the Dolomites.",
+  "intro": "The short extension from the Lavazè pass up to just under 2,000 m, below the Schwarzhorn and the Weißhorn. More reward than climb: the view reaches far across the Adige valley and the Dolomites.",
   "sides": [
    {
     "character": "From the junction on the Lavazè pass evenly and moderately steep across alpine pasture, almost without hairpins. An encore that costs hardly any effort.",
@@ -2077,7 +2077,7 @@
   ]
  },
  "kals-lucknerhaus": {
-  "intro": "The Kalser Glocknerstraße takes you closer to the Großglockner than any other road. From the Lucknerhaus the south side of Austria's highest mountain stands right above the valley head.",
+  "intro": "The Kalser Glocknerstraße runs up the Ködnitz valley to the Lucknerhaus, right beneath the Großglockner. From the end of the road the south side of Austria's highest mountain stands directly above the valley head.",
   "sides": [
    {
     "character": "Evenly steep from Kals up the Ködnitz valley, with few hairpins and hardly a flatter spot. The Glockner draws ever closer as you go.",
@@ -2257,13 +2257,13 @@
   "intro": "One of the longest climbs in Switzerland: from Sion over 1,700 m of climbing in one go up to the reservoir in a bare karst landscape. A dead end for bikes; the way down is the same road, or the cable car to Gsteig.",
   "sides": [
    {
-    "character": "From Sion first through vineyards and villages, then up in hairpins with a short dip on the way, and at the top through unlit tunnels onto the treeless plateau.",
+    "character": "From Sion first through vineyards and villages, then up in hairpins with a short dip on the way, and at the top through several tunnels onto the treeless plateau.",
     "highlights": "The reservoir at the end, with the glaciers of the Diablerets massif above it."
    }
   ]
  },
  "sestriere": {
-  "intro": "A Giro and Tour regular since the 1930s. In 1952 Fausto Coppi won here at one of the Tour's first summit finishes, and in 1992 Claudio Chiappucci arrived alone after a long breakaway. Plain as scenery, heavy with history.",
+  "intro": "A regular of the Giro and the Tour. In 1952 Fausto Coppi won here at one of the Tour's first summit finishes, and in 1992 Claudio Chiappucci arrived alone after a long breakaway. Plain as scenery, heavy with history.",
   "sides": [
    {
     "character": "Even from Cesana on a wide road with few hairpins, without surprises. A climb that is easy to pace."
@@ -2306,7 +2306,7 @@
   ]
  },
  "colle-di-nava": {
-  "intro": "The old crossing from the Riviera into the Tanaro valley, open all year and the road by which the Giro and the Milano–Torino reached Liguria. Lavender fields at the top at almost 1,000 m.",
+  "intro": "The old crossing from the Riviera into the Tanaro valley, open all year. The Giro crossed it as early as 1953, and Milan–Sanremo used it in 2020 instead of the Turchino. Lavender fields at the top at almost 1,000 m.",
   "sides": [
    {
     "character": "Even from Pieve di Teco on a wide road with barely any hairpins. The side with the height gain and the better one to climb."
@@ -2352,7 +2352,7 @@
   ]
  },
  "passo-del-faiallo": {
-  "intro": "From the sea at Genoa-Voltri via the Acquasanta monastery onto the crest of the Ligurian Alps. At the top the coast lies far below in the haze, the Po plain on the other side.",
+  "intro": "From the sea at Genoa-Voltri past the Acquasanta sanctuary onto the crest of the Ligurian Alps. At the top the coast lies far below in the haze, the Po plain on the other side.",
   "sides": [
    {
     "character": "From Voltri, practically at sea level, long and stepped, with steep ramps, flatter stretches and a short dip on the way. On the crest the view back to the sea.",
@@ -2370,7 +2370,7 @@
   ]
  },
  "monte-beigua": {
-  "intro": "The highest point of the Ligurian coastal mountains, barely 15 km as the crow flies from the beach: from Varazze you climb from sea level to almost 1,300 m. Antennas and wind at the top, and a view that on clear days reaches from the sea to the Western Alps.",
+  "intro": "The highest summit of the Beigua massif, barely 15 km as the crow flies from the beach: from Varazze you climb from sea level to almost 1,300 m. Antennas and wind at the top, and a view that on clear days reaches from the sea to the Alps.",
   "sides": [
    {
     "character": "Up from the sea via Alpicella, moderate at first, then ever steeper, with the hardest ramps in the upper part. With the sea at your back, the climb you come here for.",
@@ -2382,7 +2382,7 @@
   ]
  },
  "passo-teglia": {
-  "intro": "The highest tarmac crossing in the Sanremo hinterland links the Argentina valley with Rezzo. From chestnut forest up to the open pasture on the ridge, with almost nobody in between.",
+  "intro": "One of the highest tarmac crossings in the Sanremo hinterland, almost 1,400 m up, links the Argentina valley with Rezzo. From chestnut forest up to the open pasture on the ridge, with almost nobody in between.",
   "sides": [
    {
     "character": "Straight up from Molini di Triora, evenly steep through chestnut forest, hairpin after hairpin. No flat bit to recover on, but a clear rhythm."
@@ -2393,7 +2393,7 @@
   ]
  },
  "colle-d-oggia": {
-  "intro": "A quiet crossing between the Argentina hinterland and Rezzo, almost car-free and rideable all year. Up from Carpasio, down to Rezzo: the winter loop of the pros who live on the Riviera.",
+  "intro": "A quiet crossing between the Argentina hinterland and Rezzo, almost car-free and rideable all year. Up from Carpasio and down to Rezzo makes a fine loop in the hinterland of the Riviera.",
   "sides": [
    {
     "character": "From Carpasio short and evenly steep, a few hairpins and you are at the top. The climb of the loop."
@@ -2416,7 +2416,7 @@
   ]
  },
  "colle-melosa": {
-  "intro": "A detour off the Colle Langan up to the refuge at the Colle Melosa, a good 1,500 m above the sea. The highest tarmac far and wide in the Sanremo hinterland, with views of the Ligurian Alps.",
+  "intro": "A detour off the Colle Langan up to the Rifugio Allavena at the Colle Melosa, a good 1,500 m above the sea. One of the highest tarmac roads in the Sanremo hinterland, with views of the Ligurian Alps.",
   "sides": [
    {
     "character": "On uphill from the Langan pass, irregular with changing ramps and only a few hairpins, more open at the top with distant views.",
@@ -2425,7 +2425,7 @@
   ]
  },
  "monte-bignone": {
-  "intro": "Sanremo's home mountain and the longest ascent on the Riviera dei Fiori: from the harbour in one go to over 1,000 m. The tarmac ends just below the antenna-topped summit.",
+  "intro": "Sanremo's home mountain and one of the longest ascents on the Riviera dei Fiori: from the harbour in one go to over 1,000 m. The tarmac ends just below the summit.",
   "sides": [
    {
     "character": "From the sea through the villa districts, then up in hairpins via San Romolo; it steepens towards the top, with the hardest stretches last.",
@@ -2544,7 +2544,7 @@
   ]
  },
  "mottarone": {
-  "intro": "The viewpoint mountain between Lake Maggiore and Lake Orta, with both lakes at the top and the Valais Alps with Monte Rosa beyond. By bike the free way up is from Armeno; the road from Stresa is a toll road.",
+  "intro": "The viewpoint mountain between Lake Maggiore and Lake Orta, with both lakes at the top and the Valais Alps with Monte Rosa beyond. From Stresa a private toll road leads up; the climb from Armeno is a public road without a toll.",
   "sides": [
    {
     "character": "From Armeno via Gignese, with changing gradient, steep ramps and short recoveries, open pasture at the top.",
@@ -2575,7 +2575,7 @@
   ]
  },
  "monte-san-primo": {
-  "intro": "The extension of the Ghisallo: from Bellagio past the chapel of the Madonna del Ghisallo and on via Magreglio to the highest point of the Larian Triangle. At the top Lake Como lies on both sides.",
+  "intro": "The extension of the Ghisallo: from Bellagio past the chapel of the Madonna del Ghisallo and on via Magreglio to beneath Monte San Primo, the highest summit of the Larian Triangle. Views of Lake Como again and again on the way.",
   "sides": [
    {
     "character": "From Bellagio up the Ghisallo road in hairpins, a flatter stretch after the chapel, then steeper again to the end of the tarmac. A long climb in stages.",
@@ -2678,7 +2678,7 @@
   ]
  },
  "passo-santa-barbara": {
-  "intro": "The crossing from Rovereto into the Val di Gresta above the northern end of Lake Garda, a Giro summit finish in 2018. Two very different sides: long and stepped from the Adige valley, short and steep from Nago.",
+  "intro": "The crossing from Rovereto into the Val di Gresta above the northern end of Lake Garda, crossed by the Giro d'Italia in 2025. Two very different sides: long and stepped from the Adige valley, short and steep from Nago.",
   "sides": [
    {
     "character": "From Rovereto a long way via Isera and in many hairpins, with rests and a stretch of downhill on the way. Flowing enough for the descent into the Adige valley."
@@ -2702,14 +2702,14 @@
   ]
  },
  "pian-delle-fugazze": {
-  "intro": "The crossing from the Adige valley into the Val Leogra beneath the Pasubio, a front line in the First World War and a Giro passage more than once. The Pasubio ossuary stands at the top.",
+  "intro": "The crossing from the Adige valley into the Val Leogra beneath the Pasubio, a front line in the First World War and already ridden by the Giro in 1934. Near the pass, the Pasubio ossuary stands on the Colle Bellavista.",
   "sides": [
    {
     "character": "From Rovereto a long way through the Vallarsa, in steps with flat stretches and short counter-climbs, hairpins at the top. Downhill a long, quiet ride back to the Adige valley."
    },
    {
     "character": "From Valli del Pasubio short and steep in hairpins, hardest at the top. The side for climbing.",
-    "highlights": "The Ossario del Pasubio just below the pass."
+    "highlights": "A detour just before the pass to the Ossario del Pasubio on the Colle Bellavista."
    }
   ]
  },
@@ -2816,7 +2816,7 @@
   ]
  },
  "col-de-perty": {
-  "intro": "The highest pass in the Baronnies, ridden by the Tour de France in 2006 and 2012. From the forest of the Ouvèze the road climbs into a wide bowl, with the Ventoux and the Montagne de Lure on the horizon at the top.",
+  "intro": "One of the highest passes in the Baronnies, ridden by the Tour de France in 2006. From the forest of the Ouvèze the road climbs into a wide bowl, with the Ventoux and the Montagne de Lure on the horizon at the top.",
   "sides": [
    {
     "character": "From Saint-Auban long and leisurely, with hairpins and easier stretches, out of the forest into the open bowl; as a descent wide and flowing.",
@@ -2828,7 +2828,7 @@
   ]
  },
  "col-de-soubeyrand": {
-  "intro": "A quiet crossing in the Baronnies between Sainte-Jalle and the Eygues valley, ridden by the Tour in 2012. Hairpins through oaks and lavender, and usually you have the road to yourself.",
+  "intro": "A quiet crossing in the Baronnies between Sainte-Jalle and the Eygues valley. Hairpins through oaks and lavender, and usually you have the road to yourself.",
   "sides": [
    {
     "character": "From Sainte-Jalle steadily around 6 % in hairpins through oaks and lavender; a climb with a fixed rhythm, ideal for riding up.",
@@ -2920,7 +2920,7 @@
   ]
  },
  "col-de-bleine": {
-  "intro": "The highest crossing between the Estéron and the Thorenc plateau, ridden several times in Paris–Nice. Beech forest and hairpins lower down, meadows and limestone ridges at the top, high above the Riviera.",
+  "intro": "The highest crossing between the Estéron and the Thorenc plateau. Beech forest and hairpins lower down, meadows and limestone ridges at the top, high above the Riviera.",
   "sides": [
    {
     "character": "From Saint-Auban in hairpins through beech forest, stepped with easier stretches and a short dip on the way; meadows and limestone at the top.",
