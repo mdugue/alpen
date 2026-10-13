@@ -9,15 +9,62 @@ export const panel = {
   /** The line over each ascent's profile, and what the profile block says. */
   ascents: {
     average: "Ø {pct} %",
+    /** The editorial judgement beside a side's name (`bestAs`). */
+    bestAs: {
+      both: "in beide Richtungen",
+      down: "besser bergab",
+      up: "besser bergauf",
+    },
     branch:
       "Abstecher: Die Stichstraße zweigt von einer anderen Straße ab, das Profil beginnt am Abzweig. Hinunter geht es zurück auf die Hauptstraße.",
     /** Over the detours a road offers, under its own ascents. */
     branches: "Abstecher",
-    info: "Geroutete Straße, 100 Höhenpunkte aus einem Geländemodell – zum Vergleichen gut, nicht metergenau.",
+    /** Above the sides, where one is better up and another better down. */
+    crossing: "Für eine Überquerung: rauf ab {up}, runter nach {down}.",
+    /** Joins two sides in the crossing sentence. */
+    crossingOr: " oder ",
+    /** Height given back on the way up (`dip`). */
+    dip: "{m} m Gegengefälle",
+    /** The side of the mountain the climb is on, from start to top. */
+    facing: {
+      e: "Ostseite",
+      n: "Nordseite",
+      ne: "Nordostseite",
+      nw: "Nordwestseite",
+      s: "Südseite",
+      se: "Südostseite",
+      sw: "Südwestseite",
+      w: "Westseite",
+    },
+    hairpins: "{n} Kehren",
+    hairpinsOne: "1 Kehre",
+    hazard: {
+      gravel: "Rollsplitt oder Schotter",
+      grids: "Viehgitter",
+      narrow: "schmale Fahrbahn",
+      rough: "rauen Belag",
+      steep: "steile Geraden",
+      "tight-hairpins": "enge Kehren",
+      traffic: "viel Verkehr",
+      tunnels: "Tunnel (Licht mitnehmen)",
+    },
+    /** Before the hazards of a side's descent. */
+    hazards: "Bergab achten auf",
+    /** Before a side's highlight. */
+    highlights: "Unterwegs",
+    info: "Geroutete Straße, 100 Höhenpunkte aus einem Geländemodell – zum Vergleichen gut, nicht metergenau. Kehren, Rhythmus und Seite sind aus der Linie abgeleitet. Ob eine Seite besser bergauf oder bergab passt, die Beschreibung und die Hinweise zur Abfahrt sind eine redaktionelle Einschätzung.",
     infoTraverse:
-      "Geroutete Straße, 100 Höhenpunkte aus einem Geländemodell – zum Vergleichen gut, nicht metergenau. Höhenmeter und steilster Kilometer stehen hier nicht: auf einer fast flachen Straße in einer Schlucht misst das Modell mehr Auf und Ab als die Straße hat.",
+      "Geroutete Straße, 100 Höhenpunkte aus einem Geländemodell – zum Vergleichen gut, nicht metergenau. Höhenmeter und steilster Kilometer stehen hier nicht: auf einer fast flachen Straße in einer Schlucht misst das Modell mehr Auf und Ab als die Straße hat. Die Beschreibung ist eine redaktionelle Einschätzung.",
     noProfile: "Kein Höhenprofil vorhanden.",
     none: "Keine Auffahrt hinterlegt",
+    /** How the gradient is spread over a climb (`rhythmOf`), a derived class. */
+    rhythm: {
+      easing: "wird flacher",
+      irregular: "wechselhaft",
+      steady: "gleichmäßig",
+      steepening: "wird steiler",
+      stepped: "mit Flachstücken",
+    },
     spur: "Stichstraße: Die Straße endet oben, hinunter geht es dieselbe Auffahrt zurück.",
     steepestKm: "steilster km {pct} %",
     title: "Auffahrten",

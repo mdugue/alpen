@@ -9,9 +9,11 @@ import profilesJson from "@/data/generated/profiles.json";
 import routesJson from "@/data/generated/routes.json";
 import destinationsEn from "@/data/i18n/en/destinations.json";
 import passesEn from "@/data/i18n/en/passes.json";
+import portraitsEn from "@/data/i18n/en/portraits.json";
 import toursEn from "@/data/i18n/en/tours.json";
 import townsEn from "@/data/i18n/en/towns.json";
 import passesJson from "@/data/passes.json";
+import portraitsJson from "@/data/portraits.json";
 import toursJson from "@/data/tours.json";
 import townsJson from "@/data/towns.json";
 import type { Selection } from "@/lib/app-state";
@@ -26,6 +28,7 @@ import type { MapAssets } from "@/lib/map-assets";
 import { nearbyTours, townRanges, townReach } from "@/lib/nearby";
 import type { NearbyTours, TownReach } from "@/lib/nearby";
 import type { PageData } from "@/lib/page-data";
+import { localizePortraits } from "@/lib/portrait";
 import { profilesWithCoords, valleyElevations } from "@/lib/profile";
 import { SEGMENT, selectionOf } from "@/lib/routes";
 import type { Segment } from "@/lib/routes";
@@ -39,6 +42,8 @@ import type {
   ElevationProfile,
   Pass,
   Photos,
+  Portraits,
+  PortraitTranslations,
   RouteGeometry,
   Tour,
   Town,
@@ -83,6 +88,11 @@ const climate: Record<string, ClimateYear> = S.Climate.parse(climateJson);
 const profiles: Record<string, ElevationProfile> =
   S.Profiles.parse(profilesJson);
 const photos: Photos = S.Photos.parse(photosJson);
+const portraits: Portraits = S.Portraits.parse(portraitsJson);
+/** The portraits' English prose; laid over in the detail files, not the lists. */
+const portraitTranslations: Partial<Record<Lang, PortraitTranslations>> = {
+  en: S.PortraitTranslations.parse(portraitsEn),
+};
 
 /**
  * The curated prose in English (plan 08), keyed by slug and merged over the
@@ -206,18 +216,20 @@ const getDestinationMembers = (): Record<string, DestinationMembers> =>
 const getTownReach = (): TownReach => townReach(passes, towns);
 
 /**
- * One URL per entity for the profiles and photos its detail panel needs
- * (`lib/detail-assets.ts`). The profiles go through `profilesWithCoords`, the
- * same function the build script runs – the file name is a hash of what it
- * returns, so the two sides have to derive it identically.
+ * One URL per entity for the profiles, photos and portrait its detail panel
+ * needs (`lib/detail-assets.ts`), in one language. The profiles go through
+ * `profilesWithCoords` and the portraits through `localizePortraits`, the same
+ * functions the build script runs – the file name is a hash of what they
+ * return, so the two sides have to derive it identically.
  */
-const getDetailAssets = (): DetailAssets => {
+const getDetailAssets = (lang: Lang): DetailAssets => {
   const { assets, files } = detailAssets(
     passes,
     tours,
     towns,
     profilesWithCoords(profiles, routes),
     photos,
+    localizePortraits(portraits, portraitTranslations, lang),
   );
   assertWritten(
     DETAIL_ASSET_DIR,
@@ -369,7 +381,7 @@ export const getPageData = (lang: Lang): PageData => {
     climate,
     destinationMembers: getDestinationMembers(),
     destinations: lists.destinations,
-    detail: getDetailAssets(),
+    detail: getDetailAssets(lang),
     nearbyTours: getNearbyTours(),
     passes: lists.passes,
     tours: lists.tours,

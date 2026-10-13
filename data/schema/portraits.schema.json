@@ -1,0 +1,67 @@
+{
+  "$id": "portraits.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "propertyNames": {
+    "type": "string",
+    "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+  },
+  "additionalProperties": {
+    "type": "object",
+    "properties": {
+      "intro": {
+        "type": "string",
+        "minLength": 1
+      },
+      "sides": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "bestAs": {
+              "type": "string",
+              "enum": [
+                "up",
+                "down",
+                "both"
+              ]
+            },
+            "character": {
+              "type": "string",
+              "minLength": 1
+            },
+            "hazards": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "tight-hairpins",
+                  "tunnels",
+                  "steep",
+                  "rough",
+                  "gravel",
+                  "narrow",
+                  "grids",
+                  "traffic"
+                ]
+              }
+            },
+            "highlights": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "required": [
+            "character"
+          ],
+          "additionalProperties": false
+        }
+      }
+    },
+    "required": [
+      "intro",
+      "sides"
+    ],
+    "additionalProperties": false
+  }
+}

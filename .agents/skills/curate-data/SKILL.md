@@ -68,6 +68,16 @@ authoritative. In addition:
   `docs/data-model.md`.
 - **note**: one or two German sentences with the closure habit and the
   character; this is the sentence a planner reads.
+- **Portrait** (`data/portraits.json`): every road gets two or three
+  sentences on what it is known for (`intro`) and one entry per ascent, in
+  the same order: what riding that side is like (`character`), a stop or a
+  view (`highlights`), what to watch on the descent (`hazards`), and – only on
+  a `pass` or `spur` with two sides or more – whether it is better ridden
+  `up`, `down` or `both` (`bestAs`, see `docs/scales.md`). Never invent race
+  history or a hairpin count; the panel shows the measured hairpins, rhythm
+  and side next to the text. A new road gets its portrait, and its English in
+  `data/i18n/en/portraits.json`, in the same commit; add or remove an ascent
+  and the `sides` follow, or `data:check` fails.
 - **aliases** (plan 05): other spellings and other-language names, never the
   name itself.
 - **Tours**: `passes` in ride order; `waypoints` closed for loops (last =

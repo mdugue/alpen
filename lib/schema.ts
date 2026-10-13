@@ -2,7 +2,9 @@ import { z } from "zod";
 
 import { DE } from "@/lib/i18n/dictionaries";
 import {
+  BEST_AS,
   COUNTRIES,
+  DESCENT_HAZARDS,
   countriesOf,
   SURFACES,
   inBox,
@@ -413,6 +415,39 @@ export const Destination = z.strictObject({
 
 export const Destinations = z.array(Destination);
 
+// ── Portraits: what a road is known for, what each side is like ────────────
+
+/**
+ * One side of a road as a rider would describe it – an editorial assessment,
+ * labelled as one in the panel, next to the figures measured off the same
+ * ascent (`lib/ascent-shape.ts`). Matched to `Pass.ascents` by index, like
+ * the English ascent labels; `data:check` holds the two lists to one length.
+ */
+export const SidePortrait = z.strictObject({
+  /**
+   * Whether this side is the better way up or the better way down, where a
+   * crossing offers the choice: a `pass` or `spur` with two sides or more.
+   */
+  bestAs: z.enum(BEST_AS).optional(),
+  /** One or two sentences: what riding this side is like, and why `bestAs`. */
+  character: z.string().min(1),
+  /** What to watch on the way down this side (`DESCENT_HAZARDS`). */
+  hazards: z
+    .array(z.enum(DESCENT_HAZARDS))
+    .refine((h) => new Set(h).size === h.length, "Gefahr doppelt (hazards)")
+    .optional(),
+  /** A view, a stop, a piece of race history on the way. */
+  highlights: z.string().min(1).optional(),
+});
+
+/** The intro and the sides of one road, keyed by its slug in `data/portraits.json`. */
+export const PassPortrait = z.strictObject({
+  /** Two or three sentences: what the road is known for. */
+  intro: z.string().min(1),
+  sides: z.array(SidePortrait),
+});
+export const Portraits = z.record(Slug, PassPortrait);
+
 // ── Editorial prose in another language (plan 08) ───────────────────────────
 
 /**
@@ -441,6 +476,17 @@ export const DestinationTranslation = z.strictObject({
   multiDay: z.string().min(1).optional(),
   note: z.string().min(1).optional(),
 });
+/** A portrait's prose; the judgement and the hazards are not words, and stay German-keyed. */
+export const SidePortraitTranslation = z.strictObject({
+  character: z.string().min(1).optional(),
+  highlights: z.string().min(1).optional(),
+});
+export const PortraitTranslation = z.strictObject({
+  intro: z.string().min(1).optional(),
+  /** By index, like `sides` itself. */
+  sides: z.array(SidePortraitTranslation).optional(),
+});
+export const PortraitTranslations = z.record(Slug, PortraitTranslation);
 export const PassTranslations = z.record(Slug, PassTranslation);
 export const TourTranslations = z.record(Slug, TourTranslation);
 export const TownTranslations = z.record(Slug, TownTranslation);
@@ -730,9 +776,11 @@ export const FILES = {
   "generated/summits.json": generated(Summits),
   "i18n/en/destinations.json": translated(DestinationTranslations),
   "i18n/en/passes.json": translated(PassTranslations),
+  "i18n/en/portraits.json": translated(PortraitTranslations),
   "i18n/en/tours.json": translated(TourTranslations),
   "i18n/en/towns.json": translated(TownTranslations),
   "passes.json": curated(Passes),
+  "portraits.json": curated(Portraits),
   "tours.json": curated(Tours),
   "towns.json": curated(Towns),
 } as const;

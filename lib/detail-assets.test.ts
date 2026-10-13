@@ -11,6 +11,7 @@ import type {
   Pass,
   Photo,
   Photos,
+  Portraits,
   ProfileWithCoords,
   Tour,
   Town,
@@ -51,8 +52,22 @@ const photos: Photos = {
   "town:testort": [photo("Testort")],
 };
 
-const build = (p = profiles, ph = photos): ReturnType<typeof detailAssets> =>
-  detailAssets([pass], [tour], [town], p, ph);
+const build = (
+  p = profiles,
+  ph = photos,
+  po: Portraits = {},
+): ReturnType<typeof detailAssets> =>
+  detailAssets([pass], [tour], [town], p, ph, po);
+
+const portraits = (intro: string): Portraits => ({
+  testpass: {
+    intro,
+    sides: [
+      { bestAs: "up", character: "Kehren." },
+      { bestAs: "down", character: "Weit." },
+    ],
+  },
+});
 
 const bodyOf = (files: ReturnType<typeof detailAssets>["files"], n: number) =>
   JSON.parse(files[n]!.body) as DetailData;
@@ -112,5 +127,22 @@ describe("detailAssets", () => {
     expect(build().files[0]!.name).not.toBe(
       build({ ...profiles, "testpass:0": profile(2100) }).files[0]!.name,
     );
+  });
+
+  test("a pass carries its portrait, and the page knows it is coming", () => {
+    const { assets, files } = build(profiles, photos, portraits("Bekannt."));
+    expect(bodyOf(files, 0).portrait?.intro).toBe("Bekannt.");
+    // The panel reserves the intro's lines while the file is on its way.
+    expect(assets[entityKey("pass", "testpass")]?.portrait).toBe(true);
+    // Another language is another file: the prose is part of the content.
+    expect(files[0]!.name).not.toBe(
+      build(profiles, photos, portraits("Known.")).files[0]!.name,
+    );
+  });
+
+  test("a portrait alone is reason enough for a file", () => {
+    const { files } = build({}, {}, portraits("Bekannt."));
+    expect(files).toHaveLength(1);
+    expect(bodyOf(files, 0).photos).toEqual([]);
   });
 });

@@ -112,6 +112,8 @@ const [
   toursEn,
   townsEn,
   destinationsEn,
+  portraits,
+  portraitsEn,
 ] = await Promise.all([
   load("passes.json"),
   load("tours.json"),
@@ -128,6 +130,8 @@ const [
   load("i18n/en/tours.json"),
   load("i18n/en/towns.json"),
   load("i18n/en/destinations.json"),
+  load("portraits.json"),
+  load("i18n/en/portraits.json"),
 ]);
 
 for (const file of Object.keys(FILES) as DataFileName[]) {
@@ -724,6 +728,61 @@ coverage(
   destinationsEn,
   Object.keys(DestinationTranslation.shape),
 );
+// The portraits (`data/portraits.json`): matched to the ascents by index, so a
+// list of the wrong length is an error – it would put one side's words on the
+// other. The judgement is only asked where there is a choice: a climb with two
+// sides or more.
+if (passes && portraits) {
+  const bySlug = new Map(passes.map((p) => [p.slug, p]));
+  for (const [slug, portrait] of Object.entries(portraits)) {
+    const p = bySlug.get(slug);
+    if (!p) {
+      errors.push(`portraits.json: kein Pass ${slug}`);
+      continue;
+    }
+    if (portrait.sides.length !== p.ascents.length)
+      errors.push(
+        `portraits.json: ${slug} beschreibt ${portrait.sides.length} Seiten, die Straße hat ${p.ascents.length} Auffahrten`,
+      );
+    const choice = !isTraverse(p.type) && p.ascents.length >= 2;
+    for (const [i, side] of portrait.sides.entries()) {
+      if (choice && !side.bestAs)
+        warnings.push(
+          `portraits.json: ${slug} [${i}] ohne bestAs, obwohl die Straße zwei Seiten hat`,
+        );
+      if (!choice && side.bestAs)
+        errors.push(
+          `portraits.json: ${slug} [${i}] hat bestAs, aber keine Wahl der Richtung (${isTraverse(p.type) ? p.type : "eine Seite"})`,
+        );
+    }
+  }
+  const missing = passes.filter((p) => !portraits[p.slug]).length;
+  if (missing)
+    console.log(
+      `INFO  Porträt fehlt bei ${missing} von ${passes.length} Straßen (portraits.json)`,
+    );
+  if (portraitsEn) {
+    for (const [slug, t] of Object.entries(portraitsEn)) {
+      const own = portraits[slug];
+      if (!own)
+        warnings.push(`i18n/en/portraits.json: verwaister Eintrag ${slug}`);
+      else if (t.sides && t.sides.length !== own.sides.length)
+        warnings.push(
+          `i18n/en/portraits.json: ${slug} hat ${t.sides.length} Seiten, das Porträt ${own.sides.length}`,
+        );
+    }
+    const slugs = Object.keys(portraits);
+    const intros = slugs.filter((s) => !portraitsEn[s]?.intro).length;
+    if (intros)
+      translationGaps.push(`portraits.intro ${intros}/${slugs.length}`);
+    const sides = slugs.filter(
+      (s) =>
+        portraits[s]!.sides.length > 0 &&
+        !portraitsEn[s]?.sides?.every((x) => x.character),
+    ).length;
+    if (sides) translationGaps.push(`portraits.sides ${sides}/${slugs.length}`);
+  }
+}
 if (translationGaps.length)
   console.log(
     `INFO  Englische Texte fehlen (Rückfall auf Deutsch): ${translationGaps.join(", ")}`,

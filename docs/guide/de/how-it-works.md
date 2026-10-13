@@ -209,7 +209,8 @@ wirken nur die Suche, „Nur Gemerkte“ und das Gebirge.
 ## Die Detailansicht
 
 Die Detailansicht eines Passes beginnt mit Fotos und dem Status im gewählten
-Halbmonat, mit dem Grund in einem Satz. Darunter folgen, jeweils einklappbar:
+Halbmonat, mit dem Grund in einem Satz. Danach sagen zwei, drei Sätze, wofür
+die Straße bekannt ist. Darunter folgen, jeweils einklappbar:
 
 - **Bewertung**: die vier Skalen.
 - **Auffahrten**: je Auffahrt Länge, Höhenmeter, durchschnittliche Steigung
@@ -219,6 +220,13 @@ Halbmonat, mit dem Grund in einem Satz. Darunter folgen, jeweils einklappbar:
   Talstraßen heißt der Block „Strecke“ und nennt weder Höhenmeter noch
   steilsten Kilometer: Auf fast flachen Straßen misst das Geländemodell mehr
   Auf und Ab, als die Straße hat.
+  Unter jedem Namen stehen die Kehren, der Rhythmus (gleichmäßig, wird
+  steiler, mit Flachstücken …) und die Seite des Bergs – aus der gerouteten
+  Linie abgeleitet, nicht vor Ort gezählt. Dazu kommt eine redaktionelle
+  Beschreibung der Seite: wie sie sich fährt, was unterwegs lohnt und worauf
+  man bergab achten sollte. Wo ein Pass die Wahl lässt, sagt ein Abzeichen, ob
+  die Seite besser bergauf oder bergab passt, und über den Auffahrten steht
+  die Empfehlung für eine Überquerung.
 - **Aktuelles Wetter**: die Vorhersage für heute und morgen, untereinander
   für die Passhöhe und den Start jeder Auffahrt – oben kann es frieren,
   während es im Tal 20 Grad hat. Darunter die ganze Woche für einen dieser

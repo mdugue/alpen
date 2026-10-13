@@ -72,7 +72,12 @@ describe("the detail file as one value", () => {
     expect(detailState(asset(3), pending)).toEqual({
       phase: "pending",
       photos: 3,
+      portrait: false,
     });
+    // A portrait on its way is known too: the panel reserves the intro's lines.
+    expect(detailState({ ...asset(0), portrait: true }, pending)).toMatchObject(
+      { phase: "pending", portrait: true },
+    );
   });
 
   test("a file that arrives carries its photos and profiles", () => {
@@ -125,8 +130,16 @@ describe("the shape of the head", () => {
       ["no file at all", { phase: "absent" }, "plain"],
       // The count comes from the page, so the box is reserved in the first
       // frame rather than after the fetch.
-      ["on its way, with photos", { phase: "pending", photos: 4 }, "hero"],
-      ["on its way, without any", { phase: "pending", photos: 0 }, "plain"],
+      [
+        "on its way, with photos",
+        { phase: "pending", photos: 4, portrait: false },
+        "hero",
+      ],
+      [
+        "on its way, without any",
+        { phase: "pending", photos: 0, portrait: false },
+        "plain",
+      ],
       ["arrived with photos", readyWith(PHOTOS), "hero"],
       [
         "arrived, every slide broken",

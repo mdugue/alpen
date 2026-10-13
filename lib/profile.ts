@@ -1,3 +1,4 @@
+import { ascentShape } from "@/lib/ascent-shape";
 import { haversine } from "@/lib/geo";
 import { ascentKey } from "@/lib/route-key";
 import type {
@@ -34,8 +35,9 @@ export const profileCoords = (geom: RouteGeometry): RouteGeometry =>
   sampleIndices(geom.length).map((i) => geom[i]!);
 
 /**
- * Every profile with its sample coordinates, keyed as `routes.json` – what the
- * detail files hold and what the panel and the map cursor both read.
+ * Every profile with its sample coordinates and the shape of its climb
+ * (`lib/ascent-shape.ts`), keyed as `routes.json` – what the detail files hold
+ * and what the panel and the map cursor both read.
  *
  * One function rather than the same three lines in two places, because both
  * sides of a content hash run it: `scripts/build-detail-assets.ts` writes the
@@ -49,7 +51,13 @@ export const profilesWithCoords = (
   Object.fromEntries(
     Object.entries(profiles).map(([key, p]) => [
       key,
-      { ...p, coords: routes[key] ? profileCoords(routes[key]) : undefined },
+      routes[key]
+        ? {
+            ...p,
+            coords: profileCoords(routes[key]),
+            shape: ascentShape(routes[key], p),
+          }
+        : { ...p, coords: undefined },
     ]),
   );
 

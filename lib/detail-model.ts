@@ -8,11 +8,13 @@ import {
   destinationsOfTown,
 } from "@/lib/destination";
 import type { Bases, BaseVerdict, DerivedVerdict } from "@/lib/destination";
+import { portraitOf } from "@/lib/detail-state";
 import type { DetailState } from "@/lib/detail-state";
 import { fill, surfaceWord } from "@/lib/i18n";
 import type { Messages } from "@/lib/i18n";
 import type { PageBundle } from "@/lib/page-data";
 import { periodIndex } from "@/lib/period";
+import { crossingOf } from "@/lib/portrait";
 import { reachedPasses, reachedTowns, withinReach } from "@/lib/reach";
 import type { Reach, ReachKind } from "@/lib/reach";
 import { entityKey } from "@/lib/route-key";
@@ -35,6 +37,7 @@ import type {
   Destination,
   LatLon,
   Pass,
+  PassPortrait,
   Period,
   Tour,
   Town,
@@ -147,6 +150,12 @@ export interface PassModel extends Reaching {
     season: string;
     /** The pass's own note, as curated. */
     note: string;
+    /**
+     * "Für eine Überquerung: rauf ab Prad, runter nach Bormio." – where the
+     * portrait judges one side better up and another better down; null
+     * before it has arrived and where it does not.
+     */
+    crossing: string | null;
     /** The "abgeleitet" paragraph; absent with no climate series. */
     climate: string | null;
   };
@@ -157,6 +166,12 @@ export interface PassModel extends Reaching {
   bases: Bases;
   /** The road this one is a detour from (`branchOf`), or null. */
   trunk: Pass | null;
+  /**
+   * What the road is known for and what each side is like, from the detail
+   * file (`data/portraits.json`); null until it has arrived and where there
+   * is none.
+   */
+  portrait: PassPortrait | null;
   /** The detours that branch off this road, highest first. */
   branches: { pass: Pass; cell: YearCell }[];
 }
@@ -243,6 +258,28 @@ const derivedText = (
   text,
 });
 
+/** The crossing sentence, with each side named by its label. */
+const crossingText = (
+  pass: Pass,
+  portrait: PassPortrait | null,
+  w: Messages,
+): string | null => {
+  const crossing = crossingOf(portrait ?? undefined);
+  if (!crossing) return null;
+  const names = (sides: number[]) => {
+    const labels: string[] = [];
+    for (const i of sides) {
+      const label = pass.ascents[i]?.label;
+      if (label) labels.push(label);
+    }
+    return labels.join(w.panel.ascents.crossingOr);
+  };
+  return fill(w.panel.ascents.crossing, {
+    down: names(crossing.down),
+    up: names(crossing.up),
+  });
+};
+
 export const detailModel = (
   selection: Selection,
   data: PageBundle,
@@ -280,6 +317,7 @@ export const detailModel = (
     const signals = signalsOf(data, pass.slug);
     const climate = data.climate[pass.slug];
     const bucket = climate?.[periodIndex(period)] ?? null;
+    const portrait = portraitOf(state.detail);
     return {
       ...common,
       // The towns are the pass panel's own ranked block, so the reach leaves
@@ -301,9 +339,11 @@ export const detailModel = (
       kind: "pass",
       name: pass.name,
       pass,
+      portrait,
       reach: reachOf(pass, ["towns"], pass.slug),
       sentences: {
         climate: bucket ? climateText(pass, bucket, signals, period, w) : null,
+        crossing: crossingText(pass, portrait, w),
         note: pass.note,
         season: seasonText(pass, w),
       },
