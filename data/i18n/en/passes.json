@@ -169,7 +169,7 @@
  },
  "col-de-bleine": {
   "classicAscent": "11 km, 6 % from Saint-Auban",
-  "note": "The highest crossing between the Estéron and the Thorenc plateau, Paris–Nice passage; hairpins through beech forest on the north side, meadows and limestone ridges at the top. Open all year, briefly closed after snowfall.",
+  "note": "The highest crossing between the Estéron and the Thorenc plateau; hairpins through beech forest on the north side, meadows and limestone ridges at the top. Open all year, briefly closed after snowfall.",
   "ascents": [
    "Saint-Auban (north)",
    "Thorenc (south)"
@@ -429,7 +429,7 @@
  },
  "col-de-perty": {
   "classicAscent": "12 km, 6 % from Saint-Auban-sur-l'Ouvèze",
-  "note": "The highest pass in the Baronnies, Tour de France passage in 2006 and 2012: from the Ouvèze out of the forest into a wide bowl, at the top the view of the Ventoux and the Lure. Open all year, briefly not after snowfall.",
+  "note": "One of the highest passes in the Baronnies, Tour de France passage in 2006: from the Ouvèze out of the forest into a wide bowl, at the top the view of the Ventoux and the Lure. Open all year, briefly not after snowfall.",
   "ascents": [
    "Saint-Auban-sur-l'Ouvèze (west)",
    "Laborel (east)"
@@ -459,7 +459,7 @@
  },
  "col-de-soubeyrand": {
   "classicAscent": "9 km, 6 % from Sainte-Jalle",
-  "note": "From Sainte-Jalle over the ridge into the Eygues valley at Curnier: hairpins through oaks and lavender, hardly a car, Tour passage in 2012. Open all year.",
+  "note": "From Sainte-Jalle over the ridge into the Eygues valley at Curnier: hairpins through oaks and lavender, hardly a car. Open all year.",
   "ascents": [
    "Sainte-Jalle (south)",
    "Curnier (north)"
@@ -1420,7 +1420,7 @@
  },
  "passo-campolongo": {
   "classicAscent": "6 km, 6.5 % from Arabba",
-  "note": "Open all year, the shortest Sellaronda pass.",
+  "note": "Open all year, the lowest Sellaronda pass.",
   "ascents": [
    "Arabba",
    "Corvara"
@@ -1722,7 +1722,7 @@
  },
  "passo-santa-barbara": {
   "classicAscent": "14 km, 7 % from Rovereto",
-  "note": "From Rovereto through the hairpins above Isera to the crossing into the Val di Gresta, summit finish of the 2018 Giro stage to Arco. The west side from Nago via Ronzo is the quieter one. Snow at the top in winter.",
+  "note": "From Rovereto through the hairpins above Isera to the crossing into the Val di Gresta, crossed by the Giro in 2025. The west side from Nago via Ronzo is the quieter one. Snow at the top in winter.",
   "ascents": [
    "Rovereto (east)",
    "Nago (west)"
@@ -1844,7 +1844,7 @@
  },
  "plateau-des-glieres": {
   "classicAscent": "13.8 km, 5.8 % from Thorens-Glières",
-  "note": "Ascent to the plateau with the 1944 Resistance memorial; the through road ends at the top. The Tour went up in 2018 and 2023.",
+  "note": "Ascent to the plateau with the 1944 Resistance memorial; the through road ends at the top. The Tour went up in 2018 and 2020.",
   "ascents": [
    "Thorens-Glières"
   ]

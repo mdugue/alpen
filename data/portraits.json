@@ -60,7 +60,7 @@
   ]
  },
  "col-de-la-bonette": {
-  "intro": "Die Schleife um die Cime de la Bonette ist die höchste asphaltierte Straße dieser Art in Europa, die Tour hat sie mehrfach überquert. Zwei sehr lange, einsame Rampen mit Militärruinen aus der Zeit der Grenzbefestigung.",
+  "intro": "Die Schleife um die Cime de la Bonette ist die höchste asphaltierte Straße Frankreichs, die Tour hat sie mehrfach überquert. Zwei sehr lange, einsame Rampen mit Militärruinen aus der Zeit der Grenzbefestigung.",
   "sides": [
    {
     "bestAs": "up",
@@ -89,7 +89,7 @@
     "hazards": [
      "tight-hairpins"
     ],
-    "highlights": "Der Obelisk am Scheitel mit Blick zurück zu den Écrins."
+    "highlights": "Das Denkmal am Scheitel mit Blick zurück zu den Écrins."
    },
    {
     "bestAs": "up",
@@ -158,7 +158,7 @@
   ]
  },
  "col-de-la-loze": {
-  "intro": "Erst 2020 bei der Tour, und gleich ein Mythos: Der obere Teil ist ein schmaler, autofreier Radweg mit ständig wechselnden Rampen. 2023 verlor Tadej Pogačar hier das Gelbe Trikot.",
+  "intro": "Erst 2020 bei der Tour, und gleich ein Mythos: Der obere Teil ist ein schmaler, autofreier Radweg mit ständig wechselnden Rampen. 2023 brach Tadej Pogačar hier ein, Jonas Vingegaard baute sein Gelbes Trikot zum entscheidenden Vorsprung aus.",
   "sides": [
    {
     "bestAs": "up",
@@ -402,7 +402,7 @@
   ]
  },
  "sustenpass": {
-  "intro": "Eine der ersten Schweizer Passstraßen, die für den Ausflugsverkehr gebaut wurde, 1946 eröffnet. Gleichmäßige Steigung, breite Kurven und der Steingletscher unter dem Scheiteltunnel.",
+  "intro": "Die Passstraße wurde 1946 eröffnet und von Anfang an für den Autoverkehr geplant. Gleichmäßige Steigung, breite Kurven und der Steingletscher unter dem Scheiteltunnel.",
   "sides": [
    {
     "bestAs": "up",
@@ -788,12 +788,12 @@
   "sides": [
    {
     "bestAs": "down",
-    "character": "Lang und in Stufen: aus Guillestre durch Dörfer und den Skiort Vars, mit flacheren Stücken zwischen den Rampen. Bergab weite Kurven und freie Sicht."
+    "character": "Lang und in Stufen: aus Guillestre durch Dörfer und den Skiort Vars, mit flacheren Stücken zwischen den Rampen. Bergab weite Kurven und freie Sicht.",
+    "highlights": "Das Refuge Napoléon zwei Kilometer unter dem Scheitel, gut für eine Pause."
    },
    {
     "bestAs": "up",
-    "character": "Kurz und offen: aus dem Ubaye wird es zum Scheitel hin steiler, über Almwiesen ohne viel Wald.",
-    "highlights": "Am Scheitel das Refuge Napoléon für die Pause."
+    "character": "Kurz und offen: aus dem Ubaye wird es zum Scheitel hin steiler, über Almwiesen ohne viel Wald."
    }
   ]
  },
@@ -1220,7 +1220,7 @@
   ]
  },
  "passo-san-bernardino": {
-  "intro": "Seit der Autobahntunnel den Verkehr schluckt, ist die alte Passstraße zwischen Misox und Rheinwald ruhig. Oben liegt der Moesola-See zwischen Granitbuckeln.",
+  "intro": "Seit der Autobahntunnel den Verkehr schluckt, ist die alte Passstraße zwischen Misox und Rheinwald ruhig. Oben liegt der Moesola-See zwischen Felsbuckeln.",
   "sides": [
    {
     "bestAs": "up",
@@ -1393,7 +1393,7 @@
   ]
  },
  "passo-san-marco": {
-  "intro": "Die Straße folgt der alten Via Priula, die Venedig Ende des 16. Jahrhunderts von Bergamo ins Veltlin bauen ließ. Heute ist sie eine stille Verbindung zwischen Val Brembana und Valtellina, mit über 2000 Höhenmetern ab Morbegno einer der längsten Anstiege der Gegend.",
+  "intro": "Die Straße folgt der alten Via Priula, die Venedig Ende des 16. Jahrhunderts von Bergamo ins Veltlin bauen ließ. Heute ist sie eine stille Verbindung zwischen Val Brembana und Valtellina, mit gut 1700 Höhenmetern ab Morbegno einer der längsten Anstiege der Gegend.",
   "sides": [
    {
     "bestAs": "up",
@@ -1733,7 +1733,7 @@
   ]
  },
  "passo-valparola": {
-  "intro": "Der Valparola liegt nur wenige hundert Meter vom Falzarego entfernt und führt hinunter ins Gadertal. Oben das Fort Tre Sassi mit einem Museum zum Ersten Weltkrieg und ein kleiner See unter dem Lagazuoi.",
+  "intro": "Der Valparola liegt nur gut einen Kilometer Straße vom Falzarego entfernt und führt hinunter ins Gadertal. Oben das Fort Tre Sassi mit einem Museum zum Ersten Weltkrieg und ein kleiner See unter dem Lagazuoi.",
   "sides": [
    {
     "character": "Von Stern über St. Kassian erst gemächlich durch das Tal, dann gestuft und steiler in Kehren über offene Almen zur Passhöhe.",
@@ -1765,7 +1765,7 @@
   ]
  },
  "passo-campolongo": {
-  "intro": "Der kürzeste und sanfteste Pass der Sellaronda zwischen Corvara und Arabba. Bei der Maratona dles Dolomites ist er der erste Anstieg.",
+  "intro": "Der niedrigste und sanfteste Pass der Sellaronda zwischen Corvara und Arabba. Bei der Maratona dles Dolomites ist er der erste Anstieg.",
   "sides": [
    {
     "bestAs": "up",
@@ -1825,7 +1825,7 @@
   ]
  },
  "passo-manghen": {
-  "intro": "Der Manghen quert die einsame Lagorai-Kette zwischen Valsugana und Fleimstal. Schmal, steil und fast ohne Verkehr, mit über 1800 Höhenmetern aus dem Valsugana einer der härtesten Anstiege im Trentino.",
+  "intro": "Der Manghen quert die einsame Lagorai-Kette zwischen Valsugana und Fleimstal. Schmal, steil und fast ohne Verkehr, mit über 1600 Höhenmetern aus dem Valsugana einer der härtesten Anstiege im Trentino.",
   "sides": [
    {
     "bestAs": "up",
@@ -1991,7 +1991,7 @@
   ]
  },
  "les-arcs": {
-  "intro": "Die Skiort-Auffahrt von Bourg-Saint-Maurice über Arc 1800 hinauf nach Arc 2000. Bei der Tour 1996 verlor Miguel Indurain auf dem Weg nach Les Arcs erstmals die Kontrolle über das Rennen.",
+  "intro": "Die Skiort-Auffahrt von Bourg-Saint-Maurice über Arc 1800 hinauf nach Arc 2000. Bei der Tour 1996 brach Miguel Indurain auf den letzten Kilometern nach Les Arcs ein; seine Serie von fünf Toursiegen endete in diesem Jahr.",
   "sides": [
    {
     "character": "Von Bourg-Saint-Maurice gestuft mit vielen Kehren durch Wald und Wiesen, dann zwischen den Skistationen hinauf, mit steileren Rampen dazwischen.",
@@ -2037,7 +2037,7 @@
   ]
  },
  "plateau-des-glieres": {
-  "intro": "Auf dieser Hochebene über dem Tal von Thorens hielt sich 1944 ein Maquis der Résistance, bis er zerschlagen wurde; daran erinnert das Denkmal oben. Die Tour kam in den letzten Jahren zweimal herauf, 2018 sogar mit einem Schotterstück über das Plateau.",
+  "intro": "Auf dieser Hochebene über dem Tal von Thorens hielt sich 1944 ein Maquis der Résistance, bis er zerschlagen wurde; daran erinnert das Denkmal oben. Die Tour kam 2018 und 2020 herauf, beide Male mit einem Schotterstück über das Plateau.",
   "sides": [
    {
     "character": "Ab Thorens-Glières in Stufen durch Wald und Wiesen, steile Rampen wechseln mit kurzen Erholungen, unterwegs geht es sogar kurz bergab. Oben öffnet sich die Hochebene schlagartig.",
@@ -2334,7 +2334,7 @@
   ]
  },
  "corniche-sublime": {
-  "intro": "Die Südseite des Grand Canyon du Verdon: Die Straße folgt der Abbruchkante, von den Balcons de la Mescla schaut man 300 m senkrecht hinunter. Ein Tag mit mehr Pausen als Kilometern.",
+  "intro": "Die Südseite des Grand Canyon du Verdon: Die Straße folgt der Abbruchkante, von den Balcons de la Mescla schaut man rund 250 m hinunter auf den Zusammenfluss von Verdon und Artuby. Ein Tag mit mehr Pausen als Kilometern.",
   "sides": [
    {
     "character": "Von Aiguines nach Comps-sur-Artuby ein langes Auf und Ab an der Kante der Schlucht, mit einigen Kehren und kräftigen Gegenanstiegen. Netto kaum Höhe, aber deutlich mehr Arbeit, als die Zahl verspricht.",
@@ -2369,7 +2369,7 @@
   ]
  },
  "sommet-bucher": {
-  "intro": "Ein Aussichtsgipfel mitten im Queyras, über eine schmale, asphaltierte Forststraße erreichbar. Wer oben steht, sieht hinunter auf Château-Queyras und rundum auf die Berge des Queyras.",
+  "intro": "Ein Aussichtsgipfel mitten im Queyras, über eine schmale, asphaltierte Forststraße erreichbar. Oben öffnet sich ein Rundblick über die Täler und Berge des Queyras.",
   "sides": [
    {
     "character": "Ab Ville-Vieille gleichmäßig steil durch Lärchenwald, Kehre um Kehre auf schmaler Straße. Kein Ruhepunkt bis zum Gipfel, dafür ein verlässlicher Rhythmus.",
@@ -2377,7 +2377,7 @@
      "tight-hairpins",
      "narrow"
     ],
-    "highlights": "Vom Gipfel der Blick hinunter auf das Fort von Château-Queyras."
+    "highlights": "Vom Gipfel der Rundblick über die Täler von Guil und Aigue Agnelle."
    }
   ]
  },
@@ -2619,7 +2619,7 @@
   ]
  },
  "jochgrimm": {
-  "intro": "Die kurze Verlängerung vom Lavazèjoch hinauf auf gut 2000 m, unter dem Schwarzhorn und dem Weißhorn. Mehr Belohnung als Anstieg: die Aussicht reicht weit über das Etschtal und die Dolomiten.",
+  "intro": "Die kurze Verlängerung vom Lavazèjoch hinauf auf knapp 2000 m, unter dem Schwarzhorn und dem Weißhorn. Mehr Belohnung als Anstieg: die Aussicht reicht weit über das Etschtal und die Dolomiten.",
   "sides": [
    {
     "character": "Vom Abzweig am Lavazèjoch gleichmäßig und mäßig steil über Almwiesen, fast ohne Kehren. Eine Zugabe, die kaum Kraft kostet.",
@@ -3170,7 +3170,7 @@
   ]
  },
  "kals-lucknerhaus": {
-  "intro": "Die Kalser Glocknerstraße bringt einen so nahe an den Großglockner wie keine andere Straße. Vom Lucknerhaus steht die Südseite des höchsten Bergs Österreichs direkt über dem Talschluss.",
+  "intro": "Die Kalser Glocknerstraße führt durch das Ködnitztal bis zum Lucknerhaus, direkt unter den Großglockner. Vom Ende der Straße steht die Südseite des höchsten Bergs Österreichs unmittelbar über dem Talschluss.",
   "sides": [
    {
     "character": "Von Kals gleichmäßig steil das Ködnitztal hinauf, mit wenigen Kehren und kaum einer flacheren Stelle. Der Glockner rückt dabei immer näher ins Bild.",
@@ -3403,7 +3403,7 @@
   "intro": "Eine der längsten Auffahrten der Schweiz: von Sion über 1700 Höhenmeter am Stück bis zum Stausee in einer kahlen Karstlandschaft. Eine Sackgasse für Räder, hinunter geht es dieselbe Straße oder mit der Seilbahn nach Gsteig.",
   "sides": [
    {
-    "character": "Von Sion zuerst durch Weinberge und Dörfer, dann in Kehren und mit einem kurzen Gegenanstieg weiter hinauf, oben durch unbeleuchtete Tunnel in die baumlose Hochfläche.",
+    "character": "Von Sion zuerst durch Weinberge und Dörfer, dann in Kehren und mit einem kurzen Gegenanstieg weiter hinauf, oben durch mehrere Tunnel in die baumlose Hochfläche.",
     "hazards": [
      "tight-hairpins",
      "tunnels"
@@ -3413,7 +3413,7 @@
   ]
  },
  "sestriere": {
-  "intro": "Seit den dreißiger Jahren ein Stammgast von Giro und Tour. 1952 gewann Fausto Coppi hier bei einer der ersten Bergankünfte der Tour, 1992 kam Claudio Chiappucci nach einer langen Flucht allein an. Landschaftlich nüchtern, historisch schwer.",
+  "intro": "Ein Stammgast von Giro und Tour. 1952 gewann Fausto Coppi hier bei einer der ersten Bergankünfte der Tour, 1992 kam Claudio Chiappucci nach einer langen Flucht allein an. Landschaftlich nüchtern, historisch schwer.",
   "sides": [
    {
     "character": "Von Cesana gleichmäßig auf einer breiten Straße mit wenigen Kehren hinauf, ohne Überraschungen. Ein Anstieg, den man gut einteilen kann.",
@@ -3459,7 +3459,7 @@
   ]
  },
  "colle-di-nava": {
-  "intro": "Der alte Übergang von der Riviera ins Tanaro-Tal, ganzjährig offen und die Straße, über die Giro und Milano–Torino ins Ligurische kamen. Oben Lavendelfelder auf knapp 1000 m.",
+  "intro": "Der alte Übergang von der Riviera ins Tanaro-Tal, ganzjährig offen. Der Giro fuhr schon 1953 darüber, Mailand–Sanremo 2020 statt über den Turchino. Oben Lavendelfelder auf knapp 1000 m.",
   "sides": [
    {
     "bestAs": "up",
@@ -3529,7 +3529,7 @@
   ]
  },
  "passo-del-faiallo": {
-  "intro": "Vom Meer bei Genua-Voltri über das Kloster Acquasanta auf den Kamm der Ligurischen Alpen. Oben liegt die Küste tief unten im Dunst, auf der anderen Seite die Po-Ebene.",
+  "intro": "Vom Meer bei Genua-Voltri an der Wallfahrtskirche von Acquasanta vorbei auf den Kamm der Ligurischen Alpen. Oben liegt die Küste tief unten im Dunst, auf der anderen Seite die Po-Ebene.",
   "sides": [
    {
     "character": "Von Voltri praktisch auf Meereshöhe lang und in Stufen hinauf, mit steilen Rampen, flacheren Stücken und einem kurzen Gegenanstieg. Oben auf dem Kamm der Blick zurück aufs Meer.",
@@ -3551,7 +3551,7 @@
   ]
  },
  "monte-beigua": {
-  "intro": "Der höchste Punkt der ligurischen Küstenberge, kaum 15 km Luftlinie vom Strand: Von Varazze steigt man vom Meeresspiegel auf fast 1300 m. Oben Antennen, Wind und ein Blick, der an klaren Tagen vom Meer bis zu den Westalpen reicht.",
+  "intro": "Der höchste Gipfel des Beigua-Massivs, kaum 15 km Luftlinie vom Strand: Von Varazze steigt man vom Meeresspiegel auf fast 1300 m. Oben Antennen, Wind und ein Blick, der an klaren Tagen vom Meer bis zu den Alpen reicht.",
   "sides": [
    {
     "bestAs": "up",
@@ -3572,7 +3572,7 @@
   ]
  },
  "passo-teglia": {
-  "intro": "Der höchste asphaltierte Übergang im Hinterland von Sanremo verbindet das Argentina-Tal mit Rezzo. Von Kastanienwald bis auf die offene Weide am Kamm, und dazwischen fast niemand.",
+  "intro": "Einer der höchsten asphaltierten Übergänge im Hinterland von Sanremo, knapp 1400 m hoch, verbindet das Argentina-Tal mit Rezzo. Von Kastanienwald bis auf die offene Weide am Kamm, und dazwischen fast niemand.",
   "sides": [
    {
     "bestAs": "up",
@@ -3592,7 +3592,7 @@
   ]
  },
  "colle-d-oggia": {
-  "intro": "Ein stiller Übergang zwischen dem Argentina-Hinterland und Rezzo, fast ohne Autos und das ganze Jahr befahrbar. Von Carpasio hinauf, nach Rezzo hinunter: die Winterrunde der Profis, die an der Riviera wohnen.",
+  "intro": "Ein stiller Übergang zwischen dem Argentina-Hinterland und Rezzo, fast ohne Autos und das ganze Jahr befahrbar. Von Carpasio hinauf und nach Rezzo hinunter ergibt sich eine schöne Runde im Hinterland der Riviera.",
   "sides": [
    {
     "bestAs": "up",
@@ -3633,7 +3633,7 @@
   ]
  },
  "colle-melosa": {
-  "intro": "Ein Abstecher vom Colle Langan bis zur Hütte am Colle Melosa, gut 1500 m über dem Meer. Die höchste Asphaltstraße weit und breit im Hinterland von Sanremo, mit Blick auf die ligurischen Alpen.",
+  "intro": "Ein Abstecher vom Colle Langan bis zum Rifugio Allavena am Colle Melosa, gut 1500 m über dem Meer. Eine der höchsten Asphaltstraßen im Hinterland von Sanremo, mit Blick auf die Ligurischen Alpen.",
   "sides": [
    {
     "character": "Vom Langan-Pass weiter bergauf, unregelmäßig mit wechselnden Rampen und nur wenigen Kehren, oben offener und mit Fernsicht.",
@@ -3645,7 +3645,7 @@
   ]
  },
  "monte-bignone": {
-  "intro": "Der Hausberg von Sanremo und die längste Auffahrt der Riviera dei Fiori: vom Hafen in einem Zug auf über 1000 m. Oben endet der Asphalt unter dem Gipfel mit den Antennen.",
+  "intro": "Der Hausberg von Sanremo und eine der längsten Auffahrten der Riviera dei Fiori: vom Hafen in einem Zug auf über 1000 m. Oben endet der Asphalt unter dem Gipfel.",
   "sides": [
    {
     "character": "Vom Meer durch die Villenviertel, dann über San Romolo in Kehren hinauf; nach oben wird es steiler, die härtesten Stücke kommen zuletzt.",
@@ -3811,7 +3811,7 @@
   ]
  },
  "mottarone": {
-  "intro": "Der Aussichtsberg zwischen Lago Maggiore und Ortasee, oben beide Seen und dahinter die Walliser Alpen mit dem Monte Rosa. Mit dem Rad kommt man frei nur von Armeno herauf; die Straße von Stresa kostet Maut.",
+  "intro": "Der Aussichtsberg zwischen Lago Maggiore und Ortasee, oben beide Seen und dahinter die Walliser Alpen mit dem Monte Rosa. Von Stresa führt eine private Mautstraße herauf, die Auffahrt von Armeno ist eine öffentliche Straße ohne Maut.",
   "sides": [
    {
     "character": "Von Armeno über Gignese, mit wechselnder Steigung, steilen Rampen und kurzen Erholungen, oben offenes Weideland.",
@@ -3854,7 +3854,7 @@
   ]
  },
  "monte-san-primo": {
-  "intro": "Die Verlängerung des Ghisallo: von Bellagio an der Kapelle der Madonna del Ghisallo vorbei und über Magreglio weiter bis zum höchsten Punkt des Larianischen Dreiecks. Oben liegt der Comer See zu beiden Seiten.",
+  "intro": "Die Verlängerung des Ghisallo: von Bellagio an der Kapelle der Madonna del Ghisallo vorbei und über Magreglio weiter bis unter den Monte San Primo, den höchsten Gipfel des Larianischen Dreiecks. Unterwegs immer wieder der Blick auf den Comer See.",
   "sides": [
    {
     "character": "Von Bellagio in Kehren die Ghisallo-Straße hinauf, nach der Kapelle ein flacheres Stück, dann wieder steiler zum Ende des Asphalts. Ein langer Anstieg in Etappen.",
@@ -4013,7 +4013,7 @@
   ]
  },
  "passo-santa-barbara": {
-  "intro": "Der Übergang von Rovereto in die Val di Gresta über dem Nordende des Gardasees, Bergankunft beim Giro 2018. Zwei sehr verschiedene Seiten: lang und gestuft aus dem Etschtal, kurz und steil von Nago.",
+  "intro": "Der Übergang von Rovereto in die Val di Gresta über dem Nordende des Gardasees, 2025 vom Giro d'Italia überquert. Zwei sehr verschiedene Seiten: lang und gestuft aus dem Etschtal, kurz und steil von Nago.",
   "sides": [
    {
     "bestAs": "down",
@@ -4053,7 +4053,7 @@
   ]
  },
  "pian-delle-fugazze": {
-  "intro": "Der Übergang vom Etschtal in die Val Leogra unter dem Pasubio, im Ersten Weltkrieg Frontlinie und mehrfach Giro-Passage. Oben steht das Beinhaus des Pasubio.",
+  "intro": "Der Übergang vom Etschtal in die Val Leogra unter dem Pasubio, im Ersten Weltkrieg Frontlinie und schon 1934 vom Giro befahren. Nahe der Passhöhe steht auf dem Colle Bellavista das Beinhaus des Pasubio.",
   "sides": [
    {
     "bestAs": "down",
@@ -4065,7 +4065,7 @@
     "hazards": [
      "tight-hairpins"
     ],
-    "highlights": "Das Ossario del Pasubio kurz unter der Passhöhe."
+    "highlights": "Abstecher kurz vor der Passhöhe zum Ossario del Pasubio auf dem Colle Bellavista."
    }
   ]
  },
@@ -4210,7 +4210,7 @@
   ]
  },
  "col-de-perty": {
-  "intro": "Der höchste Pass der Baronnies, von der Tour de France 2006 und 2012 befahren. Aus dem Wald der Ouvèze geht es in einen weiten Kessel, oben stehen Ventoux und Montagne de Lure am Horizont.",
+  "intro": "Einer der höchsten Pässe der Baronnies, 2006 von der Tour de France befahren. Aus dem Wald der Ouvèze geht es in einen weiten Kessel, oben stehen Ventoux und Montagne de Lure am Horizont.",
   "sides": [
    {
     "bestAs": "down",
@@ -4224,7 +4224,7 @@
   ]
  },
  "col-de-soubeyrand": {
-  "intro": "Ein stiller Übergang der Baronnies zwischen Sainte-Jalle und dem Eygues-Tal, 2012 von der Tour befahren. Kehren durch Eichen und Lavendel, und meist ist man allein auf der Straße.",
+  "intro": "Ein stiller Übergang der Baronnies zwischen Sainte-Jalle und dem Eygues-Tal. Kehren durch Eichen und Lavendel, und meist ist man allein auf der Straße.",
   "sides": [
    {
     "bestAs": "up",
@@ -4341,7 +4341,7 @@
   ]
  },
  "col-de-bleine": {
-  "intro": "Der höchste Übergang zwischen dem Estéron und dem Plateau von Thorenc, mehrfach bei Paris–Nizza befahren. Unten Buchenwald und Kehren, oben Wiesen und Kalkkämme weit über der Riviera.",
+  "intro": "Der höchste Übergang zwischen dem Estéron und dem Plateau von Thorenc. Unten Buchenwald und Kehren, oben Wiesen und Kalkkämme weit über der Riviera.",
   "sides": [
    {
     "bestAs": "up",
