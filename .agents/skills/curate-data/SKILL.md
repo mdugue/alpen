@@ -85,7 +85,10 @@ authoritative. In addition:
   loop's own window as two half-months like a pass's, or `null` when the
   passes alone decide; it may be narrower than the passes' windows, never
   wider (`data:check` warns). `note` carries what the window cannot: the
-  event day, the cobbles, the plan B.
+  event day, the cobbles, the plan B. `type` is how it is ridden: `loop`,
+  `event` (only for a course that stays the same year to year – an Étape du
+  Tour does not belong), `permanent` (signposted, stamp card or timing) or
+  `stages` (A to B over several days; its waypoints are not closed).
 - **Towns**: `why` is one sentence naming the surrounding passes and the
   infrastructure (workshop, rental, bike hotel).
 - **Destinations**: follow `docs/destinations.md` – the circle decides the

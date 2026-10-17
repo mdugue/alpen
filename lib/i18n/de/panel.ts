@@ -145,7 +145,6 @@ export const panel = {
   },
   kicker: {
     destination: "Reiseziel · {country}",
-    tour: "Rundtour",
     town: "Rad-Ort · {country}",
   },
   /** What else is around here, nearest first. */

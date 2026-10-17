@@ -2,6 +2,7 @@ import {
   ALL_RANGES,
   ALL_STATUS,
   ALL_SURFACES,
+  ALL_TOUR_TYPES,
   ALL_TYPES,
   DEFAULT_FILTERS,
   BEAUTY_OPTIONS,
@@ -108,6 +109,13 @@ export const appliedFilters = (f: Filters, w: Messages): AppliedFilter[] => {
         ...g,
         surfaces: ALL_SURFACES,
       }),
+    );
+  const tourTypes = pickedMembers(f.tourTypes, ALL_TOUR_TYPES);
+  if (tourTypes.length)
+    add(
+      "tourTypes",
+      tourTypes.map((x) => v.tourType[x].label).join(", "),
+      (g) => ({ ...g, tourTypes: ALL_TOUR_TYPES }),
     );
   // One chip per label: they stack with and-semantics, so each one is its own decision.
   for (const tag of f.tags)

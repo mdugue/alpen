@@ -108,7 +108,7 @@ const KICKER = {
     ]
       .filter(Boolean)
       .join(" · "),
-  tour: (w: Messages) => w.panel.kicker.tour,
+  tour: (t: Tour, w: Messages) => w.vocab.tourType[t.type].label,
   town: (t: Town, w: Messages) =>
     fill(w.panel.kicker.town, { country: t.country }),
 };
@@ -372,7 +372,7 @@ export const detailModel = (
     const cell = cellAt(year, period);
     return {
       ...common,
-      kicker: KICKER.tour(w),
+      kicker: KICKER.tour(tour, w),
       kind: "tour",
       members: tour.passes
         .map((slug) => data.passIndex.get(slug))

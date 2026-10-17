@@ -89,8 +89,20 @@ export const passHaystack = perEntity<Pass>((pass, w) =>
 );
 
 /** Not cached: the haystack depends on the pass names handed in, and there are only a handful of tours. */
-export const tourHaystack = (tour: Tour, passNames: string[]): string =>
-  fold([tour.name, tour.description, tour.note, ...passNames].join(" "));
+export const tourHaystack = (
+  tour: Tour,
+  passNames: string[],
+  w: Messages,
+): string =>
+  fold(
+    [
+      tour.name,
+      w.vocab.tourType[tour.type].label,
+      tour.description,
+      tour.note,
+      ...passNames,
+    ].join(" "),
+  );
 
 const townWords = perEntity<Town>((town, w) =>
   fold(

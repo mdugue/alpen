@@ -146,6 +146,7 @@ const runde: Tour = {
   season: null,
   slug: "fixtur-runde",
   surface: "asphalt",
+  type: "loop",
   waypoints: [
     { lat: 46.549, lon: 11.874 },
     { lat: 46.519, lon: 11.874 },

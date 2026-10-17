@@ -218,6 +218,7 @@ describe("tourHaystack and townHaystack", () => {
     season: null,
     slug: "stelvio-runde",
     surface: "asphalt",
+    type: "loop",
     waypoints: [],
   };
   const town: Town = {
@@ -231,7 +232,7 @@ describe("tourHaystack and townHaystack", () => {
     why: "Stelvio vor der Tür",
   };
   test("a tour is found through the names of its passes", () => {
-    const hay = tourHaystack(tour, ["Passo dello Stelvio"]);
+    const hay = tourHaystack(tour, ["Passo dello Stelvio"], DE);
     expect(matches(hay, "stelvio")).toBe(true);
     expect(matches(hay, "stilfserjoch")).toBe(true);
     expect(matches(hay, "galibier")).toBe(false);

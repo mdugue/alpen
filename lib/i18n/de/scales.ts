@@ -82,6 +82,11 @@ export const scales = {
     heading: "Kartensymbole",
     text: "**Kreis:** Pass – Farbe zeigt den Status, hohler Kreis = oft gesperrt, Größe = Bekanntheit. **Stern:** gemerkt. **Linie:** Rundtour (eigene Farbe) oder Auffahrt (Statusfarbe). **Raute:** Rad-Ort.",
   },
+  tours: {
+    heading: "Art der Tour",
+    intro:
+      "Jede Tour sagt, wie man sie fährt – eine redaktionelle Einordnung, keine Wertung. Die Chips über der Tourenliste filtern danach.",
+  },
   towns: {
     heading: "Warum ein Ort in der Liste steht",
     intro:

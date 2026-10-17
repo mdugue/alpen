@@ -15,6 +15,7 @@ import {
   REGIONS,
   ROAD_TAGS,
   ROAD_TYPES,
+  TOUR_TYPES,
   STATUSES,
   TOWN_TAGS,
 } from "@/lib/regions";
@@ -174,6 +175,7 @@ const CountryPair = z
     `Land: eines von ${COUNTRIES.join(", ")}`,
   );
 export const RoadType = z.enum(ROAD_TYPES);
+export const TourType = z.enum(TOUR_TYPES);
 export const RoadTag = z.enum(ROAD_TAGS);
 export const Surface = z.enum(SURFACES);
 
@@ -349,6 +351,12 @@ export const Tour = z.strictObject({
    * say so; `data:check` holds it to the roads.
    */
   surface: Surface,
+  /**
+   * What kind of ride it is (see `TOUR_TYPES`): a loop, an event course, a
+   * signposted permanent route or a route in stages. Required, so a new tour
+   * is never filed under "loop" by default.
+   */
+  type: TourType,
   waypoints: z.array(LatLon).min(2),
 });
 

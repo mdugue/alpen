@@ -410,6 +410,14 @@ link carrying `g=Jura` and no camera opens fitted to what it lists, the way
 every such link does, and one with a camera opens on that. The group shows only once two
 ranges hold a road – a chip row of one is a statement, not a choice.
 
+One group is not in the panel: the kind of tour (`Filters.tourTypes`, the
+hash key `r`) – loop, event, permanent route, multi-day route. It says how a
+tour is ridden, which no road has, so its chips would count zero roads or
+count something other than every chip around them. It rides as one sideways
+row under the tour list's toolbar instead, and its chips count loops
+(`tourFacetCount` in `lib/rows.ts`), disjunctively like the rest; the applied
+row and the badge carry it like any other decision.
+
 ### The panel scrolls with the lists, not above them
 
 The sidebar's header is a fixed row and holds only the search field, the

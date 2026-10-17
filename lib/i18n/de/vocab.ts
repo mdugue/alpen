@@ -201,6 +201,24 @@ export const vocab = {
       label: "Gemischt",
     },
   },
+  tourType: {
+    event: {
+      hint: "Die Strecke eines Radmarathons oder Granfondo: an einem Tag im Jahr mit Startnummer und gesperrten Straßen, an allen anderen frei zu fahren.",
+      label: "Veranstaltung",
+    },
+    loop: {
+      hint: "Eine klassische Runde ohne Wertung, zu fahren, wann man will.",
+      label: "Rundtour",
+    },
+    permanent: {
+      hint: "Eine beschilderte Dauerstrecke mit Stempelkarte oder Wertung, die ganze Saison über zu fahren, mit Medaille fürs Ankommen.",
+      label: "Dauerstrecke",
+    },
+    stages: {
+      hint: "Von A nach B über mehrere Tage, mit Nächten unterwegs statt im selben Hotel.",
+      label: "Etappenroute",
+    },
+  },
   townTag: {
     events: {
       hint: "Start oder Zentrum eines großen Radmarathons.",

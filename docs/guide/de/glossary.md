@@ -159,7 +159,8 @@ Seiten vorkommen – von „abgeleitet“ bis „zugeschneit“.
   nebeneinander vergleichen. Status und Saisonstreifen sind aus den Straßen
   des Gebiets abgeleitet. Auf der Karte eine hellblaue Umrandung.
 - **Rundtour** – eine Runde über mehrere Pässe, etwa die Sellaronda. Ihr
-  Status ist der ihres am stärksten eingeschränkten Passes.
+  Status ist der ihres am stärksten eingeschränkten Passes. Zugleich eine der
+  vier Arten einer Tour, neben Veranstaltung, Dauerstrecke und Etappenroute.
 
 ## S
 

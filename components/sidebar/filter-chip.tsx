@@ -40,6 +40,7 @@ export const FilterChip = ({
   label,
   hint,
   count,
+  left,
   className,
 }: {
   pressed: boolean;
@@ -56,6 +57,8 @@ export const FilterChip = ({
    * answer. A pressed chip is never disabled – it has to stay liftable.
    */
   count?: number;
+  /** What `count` counts, for the screen reader; roads unless said otherwise. */
+  left?: string;
   className?: string;
 }) => {
   const { t, fmt } = useT();
@@ -68,7 +71,7 @@ export const FilterChip = ({
       aria-label={
         count === undefined || !label
           ? label
-          : fill(t.sidebar.filters.roadsLeft, { label, n: fmt(count) })
+          : fill(left ?? t.sidebar.filters.roadsLeft, { label, n: fmt(count) })
       }
       title={hint}
       className={cn(

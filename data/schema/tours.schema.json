@@ -91,6 +91,15 @@
           "mixed"
         ]
       },
+      "type": {
+        "type": "string",
+        "enum": [
+          "loop",
+          "event",
+          "permanent",
+          "stages"
+        ]
+      },
       "waypoints": {
         "minItems": 2,
         "type": "array",
@@ -127,6 +136,7 @@
       "season",
       "slug",
       "surface",
+      "type",
       "waypoints"
     ],
     "additionalProperties": false

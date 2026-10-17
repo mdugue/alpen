@@ -104,6 +104,7 @@ const tour = (over: Partial<Tour> & { slug: string }): Tour => ({
   passes: [],
   season: null,
   surface: "asphalt",
+  type: "loop",
   waypoints: [],
   ...over,
 });

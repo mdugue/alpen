@@ -73,6 +73,11 @@ export const scales = {
     heading: "Map symbols",
     text: "**Circle:** pass – colour shows the status, hollow circle = often closed, size = fame. **Star:** favourite. **Line:** loop (its own colour) or ascent (status colour). **Diamond:** cycling town.",
   },
+  tours: {
+    heading: "Kind of tour",
+    intro:
+      "Every tour says how it is ridden – an editorial label, not a rating. The chips over the tour list filter by it.",
+  },
   towns: {
     heading: "Why a town is in the list",
     intro:

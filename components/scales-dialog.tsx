@@ -21,7 +21,13 @@ import {
 } from "@/lib/destination";
 import { REACH_BANDS, REACH_MAX_KM } from "@/lib/geo";
 import { fill } from "@/lib/i18n/fill";
-import { ROAD_TAGS, ROAD_TYPES, SURFACES, TOWN_TAGS } from "@/lib/regions";
+import {
+  ROAD_TAGS,
+  ROAD_TYPES,
+  SURFACES,
+  TOUR_TYPES,
+  TOWN_TAGS,
+} from "@/lib/regions";
 import type { RangeName, TagName } from "@/lib/regions";
 import { ladderText, lapseText, VALLEY_TMAX_ERROR } from "@/lib/status";
 import { cn } from "@/lib/utils";
@@ -181,6 +187,16 @@ export const ScalesDialog = ({
                 key: x,
                 term: v.surface[x].label,
                 text: v.surface[x].hint,
+              }))}
+            />
+          </Section>
+          <Section heading={s.tours.heading}>
+            <P>{s.tours.intro}</P>
+            <Terms
+              items={TOUR_TYPES.map((type) => ({
+                key: type,
+                term: v.tourType[type].label,
+                text: v.tourType[type].hint,
               }))}
             />
           </Section>

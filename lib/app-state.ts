@@ -1,5 +1,11 @@
 import type { Bounds } from "@/lib/geo";
-import { RANGES, ROAD_TYPES, STATUSES, SURFACES } from "@/lib/regions";
+import {
+  RANGES,
+  ROAD_TYPES,
+  STATUSES,
+  SURFACES,
+  TOUR_TYPES,
+} from "@/lib/regions";
 import type { RangeName } from "@/lib/regions";
 import type {
   LatLon,
@@ -8,6 +14,7 @@ import type {
   RoadType,
   Status,
   Surface,
+  TourType,
 } from "@/lib/types";
 
 /**
@@ -35,6 +42,8 @@ export const ALL_TYPES: RoadType[] = [...ROAD_TYPES];
 export const ALL_RANGES: RangeName[] = [...RANGES];
 /** All three surfaces selected = no surface filter, see `Filters.surfaces`. */
 export const ALL_SURFACES: Surface[] = [...SURFACES];
+/** All four kinds of tour selected = no tour-type filter, see `Filters.tourTypes`. */
+export const ALL_TOUR_TYPES: TourType[] = [...TOUR_TYPES];
 /**
  * The lists, one tab each. The roads come first: they are what the map is
  * made of, and every other list is read off them. A town has no tab of its
@@ -273,6 +282,13 @@ export interface Filters {
    * car-free loop.
    */
   tags: RoadTag[];
+  /**
+   * Which kinds of tour stay in the loop list; all four = no filter. The one
+   * criterion that reaches tours alone: it says how a tour is ridden, which
+   * no road has, so it sits over the loop list rather than in the panel whose
+   * chips count roads.
+   */
+  tourTypes: TourType[];
   sort: PassSort;
   query: string;
   favoritesOnly: boolean;
@@ -298,6 +314,7 @@ export const DEFAULT_FILTERS: Filters = {
   status: ALL_STATUS,
   surfaces: ALL_SURFACES,
   tags: [],
+  tourTypes: ALL_TOUR_TYPES,
   types: ALL_TYPES,
 };
 

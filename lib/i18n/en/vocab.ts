@@ -182,6 +182,24 @@ export const vocab = {
       label: "Mixed",
     },
   },
+  tourType: {
+    event: {
+      hint: "The course of a sportive or gran fondo: one day a year with a number and closed roads, free to ride on every other.",
+      label: "Event",
+    },
+    loop: {
+      hint: "A classic loop with no timing, to ride whenever you like.",
+      label: "Loop",
+    },
+    permanent: {
+      hint: "A signposted permanent route with a stamp card or timing, rideable all season, with a medal for finishing.",
+      label: "Permanent route",
+    },
+    stages: {
+      hint: "From A to B over several days, with nights on the way rather than in the same hotel.",
+      label: "Multi-day route",
+    },
+  },
   townTag: {
     events: {
       hint: "Start or hub of a big cycling marathon.",

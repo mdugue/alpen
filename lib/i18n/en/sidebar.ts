@@ -53,6 +53,8 @@ export const sidebar = {
     surface: "Surface",
     tags: "Features",
     tagsHint: "All of the selected ones must apply.",
+    tourType: "Kind of tour",
+    toursLeft: "{label}, {n} tours",
     traffic: "Traffic, 1 is the quietest",
     wet: "Rain days in the half-month",
   },

@@ -130,6 +130,14 @@ nennt diesen Pass. Manche Touren haben zusätzlich eine eigene typische
 Saison, etwa weil ein Pass der Runde das Fenster vorgibt; sie kann die Zeit
 der Pässe nur enger fassen, nie erweitern.
 
+Jede Tour sagt außerdem, wie man sie fährt. Eine **Rundtour** fährt man,
+wann man will. Eine **Veranstaltung** ist die Strecke eines Radmarathons:
+An einem Tag im Jahr gibt es Startnummern und gesperrte Straßen, an allen
+anderen ist sie frei. Eine **Dauerstrecke** ist beschildert und hat eine
+Stempelkarte oder Wertung, etwa der Stoneman Dolomiti Road. Eine
+**Etappenroute** führt über mehrere Tage von A nach B, etwa die Route des
+Grandes Alpes. Die Chips über der Tourenliste filtern nach dieser Art.
+
 ### Kartensymbole
 
 | Symbol                 | Bedeutung                                                                 |

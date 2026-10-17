@@ -27,7 +27,13 @@ import type {
   Selection,
 } from "@/lib/app-state";
 import { isPeriod } from "@/lib/period";
-import { RANGES, ROAD_TAGS, ROAD_TYPES, SURFACES } from "@/lib/regions";
+import {
+  RANGES,
+  ROAD_TAGS,
+  ROAD_TYPES,
+  SURFACES,
+  TOUR_TYPES,
+} from "@/lib/regions";
 import type { Period, Status } from "@/lib/types";
 
 // ── The URL hash ─────────────────────────────────────────────────────────────
@@ -189,6 +195,8 @@ const FILTER_KEYS = {
   o: { field: "sort", parser: parseAsStringLiteral(PASS_SORTS) },
   /** Search text. */
   q: { field: "query", parser: parseAsString },
+  /** Tour kinds "event,permanent" (Art der Tour). */
+  r: { field: "tourTypes", parser: parseAsSubset(TOUR_TYPES) },
   /** Statuses "open,risky". */
   s: { field: "status", parser: parseAsStatus },
   /** Half-month, 1 … 12.5 – what the app opens on, so every link carries it. */

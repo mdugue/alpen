@@ -18,6 +18,7 @@
    "opens": 5
   },
   "description": "Dolomiten-Klassikerrunde um den Sella-Stock ab Corvara im Uhrzeigersinn.",
+  "type": "loop",
   "waypoints": [
    {
     "lat": 46.549,
@@ -75,6 +76,7 @@
    "opens": 6
   },
   "description": "Sellaronda plus Campolongo (2×), Giau, Falzarego und Valparola ab La Villa.",
+  "type": "event",
   "waypoints": [
    {
     "lat": 46.587,
@@ -161,6 +163,7 @@
    "closes": 10
   },
   "description": "Von Sexten über Toblach und Cimabanche nach Cortina, auf den Falzarego, über Colle Santa Lucia auf den Giau, zurück nach Cortina und über Tre Croci nach Misurina, im Stich hinauf zur Auronzohütte unter den Drei Zinnen, hinab nach Auronzo, über den Passo Sant'Antonio nach Padola und über den Kreuzberg zurück nach Sexten.",
+  "type": "permanent",
   "waypoints": [
    {
     "lat": 46.7019,
@@ -256,6 +259,7 @@
    "opens": 6.5
   },
   "description": "Thonon-les-Bains – Menton über 17 Pässe, typisch 6–8 Etappen.",
+  "type": "stages",
   "waypoints": [
    {
     "lat": 46.371,
@@ -425,6 +429,7 @@
    "opens": 6
   },
   "description": "Sölden – Kühtai – Innsbruck – Brenner – Jaufenpass – Timmelsjoch – Sölden.",
+  "type": "event",
   "waypoints": [
    {
     "lat": 46.968,
@@ -490,6 +495,7 @@
    "opens": 6
   },
   "description": "Bourg d'Oisans – Glandon – Télégraphe – Galibier – Lautaret – Alpe d'Huez.",
+  "type": "event",
   "waypoints": [
    {
     "lat": 45.055,
@@ -559,6 +565,7 @@
    "opens": 6.5
   },
   "description": "Furka – Grimsel – Susten, zurück durch die Schöllenenschlucht.",
+  "type": "loop",
   "waypoints": [
    {
     "lat": 46.635,
@@ -619,6 +626,7 @@
    "opens": 6
   },
   "description": "Prad – Stilfserjoch (48 Kehren) – Umbrail – Santa Maria – Glurns – Prad.",
+  "type": "loop",
   "waypoints": [
    {
     "lat": 46.618,
@@ -663,6 +671,7 @@
    "opens": 6.5
   },
   "description": "Bormio – Gavia – Ponte di Legno – Edolo – Mortirolo ab Monno – Mazzo – Bormio.",
+  "type": "loop",
   "waypoints": [
    {
     "lat": 46.468,
@@ -718,6 +727,7 @@
    "opens": 5
   },
   "description": "Kranjska Gora – Vršič – Soča-Tal – Bovec – Predil – Tarvisio – Kranjska Gora.",
+  "type": "loop",
   "waypoints": [
    {
     "lat": 46.484,
@@ -763,6 +773,7 @@
   "note": "Im Januar und Februar oben am Oggia gelegentlich Schnee.",
   "season": null,
   "description": "Von Imperia über den Colle San Bartolomeo nach Pieve di Teco, durch Rezzo auf den Colle d'Oggia und über Carpasio und das Argentina-Tal zurück an die Küste – die Winterrunde der Sanremo-Profis.",
+  "type": "loop",
   "waypoints": [
    {
     "lat": 43.8862,
@@ -816,6 +827,7 @@
   "note": "Nach Schneefall am Melogno kurz gesperrt.",
   "season": null,
   "description": "Von Finale Ligure über Finalborgo auf den Colle del Melogno, durch Calizzano und Bardineto zum Colle Scravaion und über Castelvecchio und Albenga an der Küste zurück.",
+  "type": "loop",
   "waypoints": [
    {
     "lat": 44.1691,
@@ -872,6 +884,7 @@
    "opens": 4
   },
   "description": "Von Lecco über Torre de' Busi steil auf den Passo di Valcava, durch das Valle Imagna und das Val Taleggio zum Culmine di San Pietro und über Moggio und die Valsassina zurück nach Lecco.",
+  "type": "loop",
   "waypoints": [
    {
     "lat": 45.8554,
@@ -929,6 +942,7 @@
   "note": "Am Sormano im Winter gelegentlich Schnee.",
   "season": null,
   "description": "Das Finale des Giro di Lombardia ab Bellagio: über den Ghisallo nach Asso, durch Sormano über den Muro auf die Colma und am See entlang über Nesso zurück nach Bellagio.",
+  "type": "loop",
   "waypoints": [
    {
     "lat": 45.9873,
@@ -973,6 +987,7 @@
   "note": "Im Winter oben am Ballino gelegentlich Schnee.",
   "season": null,
   "description": "Von Riva über Tenno und den Lago di Tenno auf den Passo del Ballino, über Fiavè und Ponte Arche ins Sarcatal und über Sarche und Arco zurück an den See.",
+  "type": "loop",
   "waypoints": [
    {
     "lat": 45.8848,
@@ -1017,6 +1032,7 @@
   "note": "Nach Schneefall oben zeitweise gesperrt.",
   "season": null,
   "description": "Von Bassano über Semonzo auf den Monte Grappa und über Possagno hinunter, am Fuß des Bergs zurück nach Bassano – hinauf auf der klassischen Seite, hinab auf der stillen.",
+  "type": "loop",
   "waypoints": [
    {
     "lat": 45.7669,
@@ -1061,6 +1077,7 @@
    "opens": 5
   },
   "description": "Von Bédoin die klassische Seite auf den Mont Ventoux, hinunter nach Malaucène und über den Col de la Madeleine zurück nach Bédoin.",
+  "type": "loop",
   "waypoints": [
    {
     "lat": 44.124,
@@ -1099,6 +1116,7 @@
   "note": "Nach Schneefall am Perty kurz gesperrt.",
   "season": null,
   "description": "Von Buis-les-Baronnies über Saint-Auban auf den Col de Perty, durch Laborel und Séderon über den Col de Macuègne nach Montbrun, unter der Ventoux-Nordwand über Brantes auf den Col de Fontaube und über Eygaliers zurück nach Buis.",
+  "type": "loop",
   "waypoints": [
    {
     "lat": 44.2768,
@@ -1162,6 +1180,7 @@
   "note": "Die Kammstraße ist etwa Mitte November bis Mitte April gesperrt; der Abstecher vom Markstein zum Grand Ballon wird hin und zurück gefahren.",
   "season": null,
   "description": "Von Munster zur Schlucht, auf der Route des Crêtes über Hohneck und Markstein zum Grand Ballon und über den Platzerwasel zurück ins Munstertal.",
+  "type": "loop",
   "waypoints": [
    {
     "lat": 48.0409,
@@ -1216,6 +1235,7 @@
   "note": "Über Bussang auf der N66 mit Lastwagenverkehr, der Rest ist ruhig.",
   "season": null,
   "description": "Von Thann über den Hundsruck ins Dollertal, von Sewen auf den Ballon d'Alsace, hinab nach Saint-Maurice und über den Col de Bussang durchs Thurtal zurück.",
+  "type": "loop",
   "waypoints": [
    {
     "lat": 47.8101,

@@ -63,6 +63,10 @@ export const sidebar = {
     surface: "Belag",
     tags: "Merkmale",
     tagsHint: "Alle ausgewählten müssen zutreffen.",
+    /** The chip row over the loops. */
+    tourType: "Art der Tour",
+    /** What a tour chip would leave, for the screen reader: "Rundtour, 12 Touren". */
+    toursLeft: "{label}, {n} Touren",
     traffic: "Verkehr, 1 ist am ruhigsten",
     wet: "Regentage im Halbmonat",
   },

@@ -25,6 +25,7 @@ export type TourSeason = z.infer<typeof S.TourSeason>;
 export type Region = z.infer<typeof S.Region>;
 export type Country = z.infer<typeof S.Country>;
 export type RoadType = z.infer<typeof S.RoadType>;
+export type TourType = z.infer<typeof S.TourType>;
 export type RoadTag = z.infer<typeof S.RoadTag>;
 /** What a road is rolled on: asphalt, gravel or both (plan 27). */
 export type Surface = z.infer<typeof S.Surface>;

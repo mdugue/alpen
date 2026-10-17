@@ -121,7 +121,6 @@ export const panel = {
   },
   kicker: {
     destination: "Destination · {country}",
-    tour: "Loop",
     town: "Cycling town · {country}",
   },
   nearby: {

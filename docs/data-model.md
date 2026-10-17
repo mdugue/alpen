@@ -306,9 +306,17 @@ side of the mountain. None of it is a file: it follows from `routes.json` and
   "note": "Der Galibier gibt das Fenster vor; Veranstaltung Anfang Juli.",
   "season": { "opens": 6, "closes": 10.5 }, // the loop's own window; null = whenever its passes are open
   "description": "…",
+  "type": "event", // loop | event | permanent | stages
   "waypoints": [{ "lat": 45.06, "lon": 6.03 }, "…"],
 }
 ```
+
+`type` says how the tour is ridden (`TOUR_TYPES` in `lib/regions.ts`):
+`loop` for a classic loop with nothing attached, `event` for the course of a
+sportive that closes its roads one day a year, `permanent` for a signposted
+route with a stamp card or timing (the Stoneman), `stages` for a route from A
+to B over several days (the Route des Grandes Alpes). Required and
+single-valued; the tour list filters by it.
 
 `passes` contains pass **slugs** in ride order; per half-month the tour takes
 the cell of the member pass that holds it back (`tourYear`, `lib/status.ts`).

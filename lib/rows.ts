@@ -151,6 +151,7 @@ const tourMatches = (
   // A loop is ridden with what its roads demand, so it answers the surface
   // chip with its own surface rather than through one member.
   if (!filters.surfaces.includes(tour.surface)) return false;
+  if (!filters.tourTypes.includes(tour.type)) return false;
   const own = tour.passes
     .map((s) => passes.get(s))
     .filter((p) => p !== undefined);
@@ -169,6 +170,7 @@ const tourMatches = (
     tourHaystack(
       tour,
       own.map((p) => p.name),
+      q.w,
     ),
   );
 };
@@ -528,6 +530,21 @@ export const facetCount = (
   }
   return n;
 };
+
+/**
+ * How many loops a change of the tour-type chips would leave – the number on
+ * those chips, counted the way `facetCount` counts roads: the patch lifts the
+ * group's own filter, so the numbers stand still while it is tapped. A few dozen
+ * tours, so the list itself is the cheapest honest count.
+ */
+export const tourFacetCount = (
+  tours: Tour[],
+  passes: PassIndex,
+  filters: Filters,
+  patch: Partial<Filters>,
+  inputs: ListInputs,
+): number =>
+  buildTourRows(tours, passes, { ...filters, ...patch }, inputs).length;
 
 export interface HistogramBar {
   period: Period;
