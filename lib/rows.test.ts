@@ -19,6 +19,7 @@ import {
   ROWS_PER_BLOCK,
   seasonBand,
   sortPassRows,
+  tourFacetCount,
 } from "@/lib/rows";
 import type { AreaGroup, ListInputs } from "@/lib/rows";
 import {
@@ -121,6 +122,7 @@ const tours = [
     name: "Lange Runde",
     passes: ["mittel", "winter"],
     slug: "lang",
+    type: "event",
   }),
 ];
 
@@ -146,6 +148,16 @@ const years = yearsOf(passes, tours);
 const tourSlugs = (over: Partial<Filters>) =>
   buildTourRows(tours, index, filters(over), inputs(years)).map(
     (r) => r.tour.slug,
+  );
+
+/** A tour-type chip's number while "event" is pressed. */
+const tourTypeCount = (type: Tour["type"]) =>
+  tourFacetCount(
+    tours,
+    index,
+    filters({ tourTypes: ["event"] }),
+    { tourTypes: [type] },
+    inputs(years),
   );
 
 const towns: Town[] = [
@@ -353,6 +365,16 @@ describe("plan 05 criteria", () => {
     expect(tourSlugs({ minFame: 3 })).toEqual(["lang", "kurz"]);
     // Found through the name of a pass it crosses.
     expect(tourSlugs({ query: "winterpass" })).toEqual(["lang"]);
+  });
+
+  test("the kind of tour filters the loops alone, and its chips count loops", () => {
+    expect(tourSlugs({ tourTypes: ["event"] })).toEqual(["lang"]);
+    expect(tourSlugs({ tourTypes: ["loop", "permanent"] })).toEqual(["kurz"]);
+    // The patch lifts the group's own choice, so a chip's number does not
+    // depend on which chip of the group is pressed.
+    expect(tourTypeCount("loop")).toBe(1);
+    expect(tourTypeCount("event")).toBe(1);
+    expect(tourTypeCount("stages")).toBe(0);
   });
 
   test("every pass of a tour has to respect the upper bounds", () => {
