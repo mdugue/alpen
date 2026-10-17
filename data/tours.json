@@ -143,6 +143,96 @@
   ]
  },
  {
+  "slug": "stoneman-dolomiti-road",
+  "surface": "asphalt",
+  "name": "Stoneman Dolomiti Road",
+  "color": "#9a6a5a",
+  "km": 193,
+  "elevationGain": 4700,
+  "passes": [
+   "passo-falzarego",
+   "passo-giau",
+   "passo-tre-croci",
+   "passo-monte-croce-comelico"
+  ],
+  "note": "Beschilderte Dauerstrecke mit Stempelstellen und Startpaket; Gold an einem Tag, Silber in zwei, Bronze in drei. Der Stich zur Auronzohütte ist eine Mautstraße und gibt mit ihrer Saison das Fenster vor.",
+  "season": {
+   "opens": 6,
+   "closes": 10
+  },
+  "description": "Von Sexten über Toblach und Cimabanche nach Cortina, auf den Falzarego, über Colle Santa Lucia auf den Giau, zurück nach Cortina und über Tre Croci nach Misurina, im Stich hinauf zur Auronzohütte unter den Drei Zinnen, hinab nach Auronzo, über den Passo Sant'Antonio nach Padola und über den Kreuzberg zurück nach Sexten.",
+  "waypoints": [
+   {
+    "lat": 46.7019,
+    "lon": 12.3504
+   },
+   {
+    "lat": 46.733,
+    "lon": 12.222
+   },
+   {
+    "lat": 46.6206,
+    "lon": 12.184
+   },
+   {
+    "lat": 46.538,
+    "lon": 12.136
+   },
+   {
+    "lat": 46.519,
+    "lon": 12.008
+   },
+   {
+    "lat": 46.47,
+    "lon": 12.0185
+   },
+   {
+    "lat": 46.484,
+    "lon": 12.055
+   },
+   {
+    "lat": 46.538,
+    "lon": 12.136
+   },
+   {
+    "lat": 46.557,
+    "lon": 12.2019
+   },
+   {
+    "lat": 46.583,
+    "lon": 12.253
+   },
+   {
+    "lat": 46.612,
+    "lon": 12.294
+   },
+   {
+    "lat": 46.583,
+    "lon": 12.253
+   },
+   {
+    "lat": 46.5512,
+    "lon": 12.443
+   },
+   {
+    "lat": 46.572,
+    "lon": 12.4824
+   },
+   {
+    "lat": 46.607,
+    "lon": 12.463
+   },
+   {
+    "lat": 46.6559,
+    "lon": 12.4201
+   },
+   {
+    "lat": 46.7019,
+    "lon": 12.3504
+   }
+  ]
+ },
+ {
   "slug": "route-des-grandes-alpes",
   "surface": "asphalt",
   "name": "Route des Grandes Alpes",
