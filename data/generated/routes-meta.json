@@ -442,6 +442,7 @@
   "tour:route-des-grandes-alpes": {"source":"ors","fetchedAt":"2026-09-08","inputs":"b1d6953150498735"},
   "tour:sellaronda": {"fetchedAt":"2026-09-09","source":"ors","inputs":"394ad3be0aeab661"},
   "tour:stilfserjoch-umbrail-runde": {"source":"ors","fetchedAt":"2026-09-08","inputs":"56ee075104e3dad7"},
+  "tour:stoneman-dolomiti-road": {"fetchedAt":"2026-10-17","inputs":"7705edc4e6eaf005","source":"osrm"},
   "tour:valcava-culmine-runde": {"fetchedAt":"2026-09-21","inputs":"ad766320ccecda16","source":"ors"},
   "tour:ventoux-runde": {"fetchedAt":"2026-09-21","inputs":"c6a4983be07ffe2d","source":"ors"},
   "tour:vrsic-predil-runde": {"source":"ors","fetchedAt":"2026-09-08","inputs":"92f9ec1a9c3045b5"},
