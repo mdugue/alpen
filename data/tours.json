@@ -559,7 +559,7 @@
    "grimselpass",
    "sustenpass"
   ],
-  "note": "Alpenbrevet Ende August.",
+  "note": "Alpenbrevet Anfang September.",
   "season": {
    "closes": 10.5,
    "opens": 6.5
@@ -1276,6 +1276,826 @@
    {
     "lat": 47.8101,
     "lon": 7.1021
+   }
+  ]
+ },
+ {
+  "slug": "engadiner-radmarathon",
+  "surface": "asphalt",
+  "name": "Engadiner Radmarathon (La Svizra)",
+  "color": "#7a6fb8",
+  "km": 117,
+  "elevationGain": 2815,
+  "passes": [
+   "flueelapass",
+   "albulapass"
+  ],
+  "note": "Veranstaltung Anfang Juli, seit 2026 an drei Tagen; die frühere 211-km-Strecke wird nicht mehr gefahren.",
+  "season": null,
+  "description": "Von Zernez über den Flüelapass nach Davos, durchs Landwassertal nach Filisur und Bergün, über den Albulapass nach La Punt und das Engadin hinab zurück nach Zernez.",
+  "type": "event",
+  "waypoints": [
+   {
+    "lat": 46.6993,
+    "lon": 10.0936
+   },
+   {
+    "lat": 46.7494,
+    "lon": 10.0797
+   },
+   {
+    "lat": 46.7475,
+    "lon": 9.9503
+   },
+   {
+    "lat": 46.7934,
+    "lon": 9.8207
+   },
+   {
+    "lat": 46.6738,
+    "lon": 9.686
+   },
+   {
+    "lat": 46.629,
+    "lon": 9.7453
+   },
+   {
+    "lat": 46.5894,
+    "lon": 9.7761
+   },
+   {
+    "lat": 46.5823,
+    "lon": 9.8377
+   },
+   {
+    "lat": 46.5766,
+    "lon": 9.9308
+   },
+   {
+    "lat": 46.6013,
+    "lon": 9.9608
+   },
+   {
+    "lat": 46.6993,
+    "lon": 10.0936
+   }
+  ]
+ },
+ {
+  "slug": "alpenbrevet-silbertour",
+  "surface": "asphalt",
+  "name": "Alpenbrevet (Silbertour)",
+  "color": "#b0705a",
+  "km": 108,
+  "elevationGain": 3100,
+  "passes": [
+   "gotthard-tremola",
+   "nufenenpass",
+   "furkapass"
+  ],
+  "note": "Veranstaltung Anfang September, Start und Ziel in Andermatt; über den Gotthard auf der Hauptstraße, nicht über die Tremola.",
+  "season": null,
+  "description": "Von Andermatt über den Gotthard nach Airolo, über den Nufenen nach Ulrichen, durchs Goms nach Gletsch und über die Furka zurück nach Andermatt. Die Platintour hängt Susten, Grimsel, Lukmanier und Oberalp an (267 km).",
+  "type": "event",
+  "waypoints": [
+   {
+    "lat": 46.634,
+    "lon": 8.5948
+   },
+   {
+    "lat": 46.6189,
+    "lon": 8.5686
+   },
+   {
+    "lat": 46.559,
+    "lon": 8.561
+   },
+   {
+    "lat": 46.529,
+    "lon": 8.6086
+   },
+   {
+    "lat": 46.478,
+    "lon": 8.387
+   },
+   {
+    "lat": 46.5066,
+    "lon": 8.305
+   },
+   {
+    "lat": 46.5613,
+    "lon": 8.3615
+   },
+   {
+    "lat": 46.572,
+    "lon": 8.415
+   },
+   {
+    "lat": 46.5988,
+    "lon": 8.5021
+   },
+   {
+    "lat": 46.634,
+    "lon": 8.5948
+   }
+  ]
+ },
+ {
+  "slug": "dreilaendergiro",
+  "surface": "asphalt",
+  "name": "Dreiländergiro",
+  "color": "#5a8fa8",
+  "km": 168,
+  "elevationGain": 3600,
+  "passes": [
+   "passo-dello-stelvio",
+   "umbrailpass",
+   "ofenpass"
+  ],
+  "note": "Veranstaltung Ende Juni, durch Österreich, Italien und die Schweiz; die Tirol Werbung nennt 3.300 Hm.",
+  "season": null,
+  "description": "Von Nauders über den Reschenpass in den Vinschgau, ab Prad aufs Stilfserjoch, über den Umbrail ins Val Müstair, über den Ofenpass nach Zernez und das Unterengadin hinab über Martina und die Norbertshöhe zurück nach Nauders.",
+  "type": "event",
+  "waypoints": [
+   {
+    "lat": 46.8918,
+    "lon": 10.5026
+   },
+   {
+    "lat": 46.8344,
+    "lon": 10.5102
+   },
+   {
+    "lat": 46.6879,
+    "lon": 10.5465
+   },
+   {
+    "lat": 46.6038,
+    "lon": 10.5819
+   },
+   {
+    "lat": 46.529,
+    "lon": 10.453
+   },
+   {
+    "lat": 46.5416,
+    "lon": 10.4332
+   },
+   {
+    "lat": 46.6013,
+    "lon": 10.4233
+   },
+   {
+    "lat": 46.64,
+    "lon": 10.291
+   },
+   {
+    "lat": 46.6993,
+    "lon": 10.0936
+   },
+   {
+    "lat": 46.7976,
+    "lon": 10.2996
+   },
+   {
+    "lat": 46.8849,
+    "lon": 10.4633
+   },
+   {
+    "lat": 46.8951,
+    "lon": 10.485
+   },
+   {
+    "lat": 46.8918,
+    "lon": 10.5026
+   }
+  ]
+ },
+ {
+  "slug": "tour-du-mont-blanc-cyclo",
+  "surface": "asphalt",
+  "name": "Tour du Mont-Blanc Cyclo",
+  "color": "#8a5a9a",
+  "km": 330,
+  "elevationGain": 8300,
+  "passes": [
+   "col-des-saisies",
+   "col-des-montets",
+   "col-de-la-forclaz-martigny",
+   "col-du-grand-saint-bernard",
+   "col-du-petit-saint-bernard",
+   "cormet-de-roselend"
+  ],
+  "note": "Veranstaltung Mitte Juli, allein oder zu zweit; ein Ultra, Start gegen 5 Uhr. Die Strecke stammt von Sekundärquellen, die Seite des Veranstalters war nicht erreichbar.",
+  "season": null,
+  "description": "Von Les Saisies über Megève und Chamonix, über Montets und Forclaz nach Martigny, hinauf nach Champex, über den Großen Sankt Bernhard nach Aosta, über den Kleinen Sankt Bernhard nach Bourg-Saint-Maurice und über den Cormet de Roselend zurück nach Les Saisies – einmal um den Mont Blanc an einem Tag.",
+  "type": "event",
+  "waypoints": [
+   {
+    "lat": 45.7573,
+    "lon": 6.5394
+   },
+   {
+    "lat": 45.8176,
+    "lon": 6.5143
+   },
+   {
+    "lat": 45.8567,
+    "lon": 6.6179
+   },
+   {
+    "lat": 45.8929,
+    "lon": 6.7113
+   },
+   {
+    "lat": 45.9231,
+    "lon": 6.87
+   },
+   {
+    "lat": 46.0039,
+    "lon": 6.9236
+   },
+   {
+    "lat": 46.0577,
+    "lon": 7.0013
+   },
+   {
+    "lat": 46.1031,
+    "lon": 7.0727
+   },
+   {
+    "lat": 46.0283,
+    "lon": 7.1153
+   },
+   {
+    "lat": 46.0301,
+    "lon": 7.1454
+   },
+   {
+    "lat": 45.9489,
+    "lon": 7.2088
+   },
+   {
+    "lat": 45.869,
+    "lon": 7.17
+   },
+   {
+    "lat": 45.7373,
+    "lon": 7.3204
+   },
+   {
+    "lat": 45.7639,
+    "lon": 6.9853
+   },
+   {
+    "lat": 45.714,
+    "lon": 6.95
+   },
+   {
+    "lat": 45.681,
+    "lon": 6.884
+   },
+   {
+    "lat": 45.6186,
+    "lon": 6.7695
+   },
+   {
+    "lat": 45.6913,
+    "lon": 6.6906
+   },
+   {
+    "lat": 45.7174,
+    "lon": 6.5733
+   },
+   {
+    "lat": 45.7573,
+    "lon": 6.5394
+   }
+  ]
+ },
+ {
+  "slug": "kaernten-radmarathon",
+  "surface": "asphalt",
+  "name": "Kärnten Radmarathon",
+  "color": "#9a8a4a",
+  "km": 106,
+  "elevationGain": 2530,
+  "passes": [
+   "nockalmstrasse"
+  ],
+  "note": "Veranstaltung Anfang Juni; die Nockalmstraße ist eine Mautstraße, und seit 2026 ist das Stück zwischen Gmünd und Dellach neu geführt.",
+  "season": null,
+  "description": "Von Bad Kleinkirchheim über Ebene Reichenau auf die Nockalmstraße, über Schiestlscharte und Eisentalhöhe nach Innerkrems, hinab nach Gmünd und am Millstätter See entlang über Radenthein zurück nach Bad Kleinkirchheim.",
+  "type": "event",
+  "waypoints": [
+   {
+    "lat": 46.8144,
+    "lon": 13.7984
+   },
+   {
+    "lat": 46.855,
+    "lon": 13.8941
+   },
+   {
+    "lat": 46.8901,
+    "lon": 13.7935
+   },
+   {
+    "lat": 46.9383,
+    "lon": 13.7557
+   },
+   {
+    "lat": 46.9681,
+    "lon": 13.7264
+   },
+   {
+    "lat": 46.9609,
+    "lon": 13.6175
+   },
+   {
+    "lat": 46.9066,
+    "lon": 13.536
+   },
+   {
+    "lat": 46.8191,
+    "lon": 13.5187
+   },
+   {
+    "lat": 46.8051,
+    "lon": 13.5715
+   },
+   {
+    "lat": 46.7879,
+    "lon": 13.6162
+   },
+   {
+    "lat": 46.8007,
+    "lon": 13.7107
+   },
+   {
+    "lat": 46.8144,
+    "lon": 13.7984
+   }
+  ]
+ },
+ {
+  "slug": "cingles-du-mont-ventoux",
+  "surface": "asphalt",
+  "name": "Cinglés du Mont Ventoux",
+  "color": "#b8603a",
+  "km": 136,
+  "elevationGain": 4400,
+  "passes": [
+   "mont-ventoux"
+  ],
+  "note": "Dauerwertung des Club des Cinglés mit Stempelkarte, Reihenfolge frei; der Club rät, nicht vor April und nicht nach Oktober zu fahren. Länge und Höhenmeter sind die Summe der drei Seiten, keine offizielle Zahl.",
+  "season": {
+   "opens": 5,
+   "closes": 10.5
+  },
+  "description": "Alle drei Seiten des Mont Ventoux an einem Tag: ab Bédoin hinauf, nach Malaucène hinab und wieder hinauf, über den Chalet Reynard nach Sault hinab und von dort ein drittes Mal hinauf, zurück nach Bédoin.",
+  "type": "permanent",
+  "waypoints": [
+   {
+    "lat": 44.124,
+    "lon": 5.1807
+   },
+   {
+    "lat": 44.1523,
+    "lon": 5.319
+   },
+   {
+    "lat": 44.174,
+    "lon": 5.278
+   },
+   {
+    "lat": 44.1733,
+    "lon": 5.1321
+   },
+   {
+    "lat": 44.174,
+    "lon": 5.278
+   },
+   {
+    "lat": 44.1523,
+    "lon": 5.319
+   },
+   {
+    "lat": 44.0776,
+    "lon": 5.4277
+   },
+   {
+    "lat": 44.1523,
+    "lon": 5.319
+   },
+   {
+    "lat": 44.174,
+    "lon": 5.278
+   },
+   {
+    "lat": 44.1523,
+    "lon": 5.319
+   },
+   {
+    "lat": 44.124,
+    "lon": 5.1807
+   }
+  ]
+ },
+ {
+  "slug": "dreipaesse-rundfahrt-thusis",
+  "surface": "asphalt",
+  "name": "Splügen–Maloja–Julier-Runde",
+  "color": "#6a8ab8",
+  "km": 168,
+  "elevationGain": 3700,
+  "passes": [
+   "spluegenpass",
+   "malojapass",
+   "julierpass"
+  ],
+  "note": "Die Schinstraße zwischen Tiefencastel und Thusis ist stark befahren; die Rhätische Bahn ist die Alternative.",
+  "season": null,
+  "description": "Von Thusis durch die Via Mala und das Schams nach Splügen, über den Splügenpass nach Chiavenna, durchs Bergell auf den Maloja, über Silvaplana auf den Julier und über Bivio, Savognin und Tiefencastel zurück nach Thusis.",
+  "type": "loop",
+  "waypoints": [
+   {
+    "lat": 46.6972,
+    "lon": 9.4391
+   },
+   {
+    "lat": 46.6023,
+    "lon": 9.427
+   },
+   {
+    "lat": 46.5417,
+    "lon": 9.3226
+   },
+   {
+    "lat": 46.507,
+    "lon": 9.33
+   },
+   {
+    "lat": 46.4043,
+    "lon": 9.3497
+   },
+   {
+    "lat": 46.3201,
+    "lon": 9.4007
+   },
+   {
+    "lat": 46.3342,
+    "lon": 9.5174
+   },
+   {
+    "lat": 46.4,
+    "lon": 9.696
+   },
+   {
+    "lat": 46.4599,
+    "lon": 9.7959
+   },
+   {
+    "lat": 46.472,
+    "lon": 9.728
+   },
+   {
+    "lat": 46.4687,
+    "lon": 9.6497
+   },
+   {
+    "lat": 46.5969,
+    "lon": 9.598
+   },
+   {
+    "lat": 46.6616,
+    "lon": 9.5765
+   },
+   {
+    "lat": 46.6972,
+    "lon": 9.4391
+   }
+  ]
+ },
+ {
+  "slug": "albula-julier-runde",
+  "surface": "asphalt",
+  "name": "Albula–Julier-Runde",
+  "color": "#8a9a5a",
+  "km": 100,
+  "elevationGain": 2250,
+  "passes": [
+   "albulapass",
+   "julierpass"
+  ],
+  "note": "Den Tunnel Crap Ses unterhalb von Savognin umgeht die alte Straße über Salouf und Cunter.",
+  "season": null,
+  "description": "Von St. Moritz das Engadin hinab nach La Punt, über den Albulapass nach Bergün und Filisur, nach Tiefencastel und durchs Surses über Savognin und Bivio auf den Julier und über Silvaplana zurück nach St. Moritz.",
+  "type": "loop",
+  "waypoints": [
+   {
+    "lat": 46.4979,
+    "lon": 9.8392
+   },
+   {
+    "lat": 46.5518,
+    "lon": 9.8891
+   },
+   {
+    "lat": 46.5766,
+    "lon": 9.9308
+   },
+   {
+    "lat": 46.5823,
+    "lon": 9.8377
+   },
+   {
+    "lat": 46.5894,
+    "lon": 9.7761
+   },
+   {
+    "lat": 46.629,
+    "lon": 9.7453
+   },
+   {
+    "lat": 46.6738,
+    "lon": 9.686
+   },
+   {
+    "lat": 46.6616,
+    "lon": 9.5765
+   },
+   {
+    "lat": 46.5969,
+    "lon": 9.598
+   },
+   {
+    "lat": 46.5241,
+    "lon": 9.621
+   },
+   {
+    "lat": 46.4687,
+    "lon": 9.6497
+   },
+   {
+    "lat": 46.472,
+    "lon": 9.728
+   },
+   {
+    "lat": 46.4599,
+    "lon": 9.7959
+   },
+   {
+    "lat": 46.4979,
+    "lon": 9.8392
+   }
+  ]
+ },
+ {
+  "slug": "oberalp-lukmanier-gotthard-runde",
+  "surface": "asphalt",
+  "name": "Oberalp–Lukmanier–Gotthard-Runde",
+  "color": "#a85a6a",
+  "km": 155,
+  "elevationGain": 3350,
+  "passes": [
+   "oberalppass",
+   "lukmanierpass",
+   "gotthard-tremola"
+  ],
+  "note": "Über den Gotthard wahlweise auf der gepflasterten Tremola oder der Hauptstraße.",
+  "season": null,
+  "description": "Von Andermatt über den Oberalp nach Disentis, über den Lukmanier ins Bleniotal nach Biasca, die Leventina hinauf nach Airolo und über den Gotthard zurück nach Andermatt.",
+  "type": "loop",
+  "waypoints": [
+   {
+    "lat": 46.634,
+    "lon": 8.5948
+   },
+   {
+    "lat": 46.658,
+    "lon": 8.671
+   },
+   {
+    "lat": 46.7051,
+    "lon": 8.8552
+   },
+   {
+    "lat": 46.5634,
+    "lon": 8.8006
+   },
+   {
+    "lat": 46.5304,
+    "lon": 8.9384
+   },
+   {
+    "lat": 46.3606,
+    "lon": 8.9714
+   },
+   {
+    "lat": 46.478,
+    "lon": 8.8009
+   },
+   {
+    "lat": 46.529,
+    "lon": 8.6086
+   },
+   {
+    "lat": 46.559,
+    "lon": 8.561
+   },
+   {
+    "lat": 46.6189,
+    "lon": 8.5686
+   },
+   {
+    "lat": 46.634,
+    "lon": 8.5948
+   }
+  ]
+ },
+ {
+  "slug": "klausen-pragel-runde",
+  "surface": "asphalt",
+  "name": "Klausen–Pragel-Runde",
+  "color": "#5a9a8a",
+  "km": 129,
+  "elevationGain": 2915,
+  "passes": [
+   "pragelpass",
+   "klausenpass"
+  ],
+  "note": "Auf der Axenstraße zwischen Brunnen und Sisikon gilt seit 2023 ein Fahrverbot für Velos; ein Shuttlebus fährt stündlich. Der Pragel ist an Sonn- und Feiertagen für Autos gesperrt.",
+  "season": null,
+  "description": "Von Glarus durchs Klöntal über den Pragel ins Muotatal, über Schwyz nach Brunnen, am Urnersee entlang nach Flüelen und Altdorf, über den Klausen ins Glarnerland und über Linthal zurück nach Glarus.",
+  "type": "loop",
+  "waypoints": [
+   {
+    "lat": 47.0404,
+    "lon": 9.068
+   },
+   {
+    "lat": 47.0611,
+    "lon": 9.053
+   },
+   {
+    "lat": 47.0278,
+    "lon": 8.9865
+   },
+   {
+    "lat": 47.0235,
+    "lon": 8.9118
+   },
+   {
+    "lat": 46.9994,
+    "lon": 8.8695
+   },
+   {
+    "lat": 46.9747,
+    "lon": 8.7658
+   },
+   {
+    "lat": 47.0207,
+    "lon": 8.6541
+   },
+   {
+    "lat": 46.994,
+    "lon": 8.6054
+   },
+   {
+    "lat": 46.9493,
+    "lon": 8.6211
+   },
+   {
+    "lat": 46.9027,
+    "lon": 8.6253
+   },
+   {
+    "lat": 46.8821,
+    "lon": 8.6414
+   },
+   {
+    "lat": 46.8631,
+    "lon": 8.7704
+   },
+   {
+    "lat": 46.869,
+    "lon": 8.856
+   },
+   {
+    "lat": 46.919,
+    "lon": 8.9971
+   },
+   {
+    "lat": 46.9978,
+    "lon": 9.0776
+   },
+   {
+    "lat": 47.0404,
+    "lon": 9.068
+   }
+  ]
+ },
+ {
+  "slug": "penser-joch-jaufen-runde",
+  "surface": "asphalt",
+  "name": "Penser Joch–Jaufen-Runde",
+  "color": "#7a8a6a",
+  "km": 149,
+  "elevationGain": 3300,
+  "passes": [
+   "penserjoch",
+   "jaufenpass"
+  ],
+  "note": "Im unteren Sarntal führen lange Tunnel, die für Räder offen sind.",
+  "season": null,
+  "description": "Von Meran das Etschtal hinab nach Bozen, durchs Sarntal auf das Penser Joch, hinab nach Sterzing, über den Jaufenpass ins Passeiertal und über St. Leonhard zurück nach Meran.",
+  "type": "loop",
+  "waypoints": [
+   {
+    "lat": 46.6714,
+    "lon": 11.1646
+   },
+   {
+    "lat": 46.6049,
+    "lon": 11.1965
+   },
+   {
+    "lat": 46.4978,
+    "lon": 11.3546
+   },
+   {
+    "lat": 46.643,
+    "lon": 11.3566
+   },
+   {
+    "lat": 46.7705,
+    "lon": 11.3681
+   },
+   {
+    "lat": 46.819,
+    "lon": 11.443
+   },
+   {
+    "lat": 46.8963,
+    "lon": 11.4319
+   },
+   {
+    "lat": 46.84,
+    "lon": 11.321
+   },
+   {
+    "lat": 46.8115,
+    "lon": 11.246
+   },
+   {
+    "lat": 46.6714,
+    "lon": 11.1646
+   }
+  ]
+ },
+ {
+  "slug": "vercors-cols-runde",
+  "surface": "asphalt",
+  "name": "Vercors-Runde über Combe Laval",
+  "color": "#6a7aa8",
+  "km": 62,
+  "elevationGain": 1571,
+  "passes": [
+   "combe-laval"
+  ],
+  "note": "Nach dem Faltblatt des Départements Drôme; in der Combe Laval liegen elf Tunnel.",
+  "season": null,
+  "description": "Von Saint-Jean-en-Royans hinauf nach Léoncel und auf den Col de la Bataille, über den Col de la Portette nach Lente und zum Col de la Machine, und durch die Combe Laval hinab zurück nach Saint-Jean.",
+  "type": "loop",
+  "waypoints": [
+   {
+    "lat": 45.0161,
+    "lon": 5.2907
+   },
+   {
+    "lat": 44.9113,
+    "lon": 5.1928
+   },
+   {
+    "lat": 44.8978,
+    "lon": 5.2338
+   },
+   {
+    "lat": 44.9567,
+    "lon": 5.2948
+   },
+   {
+    "lat": 44.9539,
+    "lon": 5.3255
+   },
+   {
+    "lat": 44.9747,
+    "lon": 5.3348
+   },
+   {
+    "lat": 45.0161,
+    "lon": 5.2907
    }
   ]
  }
