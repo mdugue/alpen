@@ -297,12 +297,13 @@ export const distanceToLine = (
 };
 
 /**
- * Overpass: the pass and saddle nodes in the box around a tour's line that
- * have a paved road within `roadM` – the same question as `coverageQuery`,
- * asked of a box instead of a circle; which of them the line actually rides
- * over is `tourCoverage`'s to decide.
+ * Overpass: the pass and saddle nodes in the box around a tour's line. No
+ * road check on the server, unlike `coverageQuery`: the line is the road, and
+ * which of the nodes it rides over is `tourCoverage`'s to decide – which also
+ * keeps a box the size of the Route des Grandes Alpes inside a mirror's
+ * timeout.
  */
-export const tourQuery = (line: Line, roadM = 300) => {
+export const tourQuery = (line: Line) => {
   const [w, s, e, n] = bounds(line);
   const pad = 0.01;
   const box = [s - pad, w - pad, n + pad, e + pad]
@@ -312,9 +313,7 @@ export const tourQuery = (line: Line, roadM = 300) => {
     `[out:json][timeout:180];(` +
     `node(${box})["mountain_pass"="yes"];` +
     `node(${box})["natural"="saddle"];` +
-    `)->.p;` +
-    `way(around.p:${roadM})["highway"~"${PAVED_HIGHWAYS}"]["surface"!~"${UNPAVED_SURFACES}"]->.r;` +
-    `node.p(around.r:${roadM});out;`
+    `);out;`
   );
 };
 
