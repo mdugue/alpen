@@ -7196,6 +7196,169 @@
   ]
  },
  {
+  "slug": "gailbergsattel",
+  "surface": "asphalt",
+  "name": "Gailbergsattel",
+  "type": "pass",
+  "country": "AT",
+  "region": "Ostalpen",
+  "lat": 46.7178,
+  "lon": 12.967,
+  "elevation": 981,
+  "classicAscent": "6,7 km, 5,4 % ab Oberdrauburg",
+  "beauty": 2,
+  "fame": 2,
+  "difficulty": 2,
+  "traffic": 3,
+  "season": null,
+  "note": "Der niedrige Übergang vom Drautal ins Gailtal, kurz und gleichmäßig, die Kehren liegen vor allem auf der Nordseite. Ganzjährig geräumt; als Zubringer zum Plöckenpass und auf der Runde um die Lienzer Dolomiten gefahren, entsprechend Verkehr auf der B 110.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.7484,
+     "lon": 12.9699
+    },
+    "label": "Oberdrauburg (Nord)"
+   },
+   {
+    "from": {
+     "lat": 46.6744,
+     "lon": 12.9992
+    },
+    "label": "Kötschach-Mauthen (Süd)"
+   }
+  ]
+ },
+ {
+  "slug": "kartitscher-sattel",
+  "surface": "asphalt",
+  "name": "Kartitscher Sattel",
+  "type": "pass",
+  "country": "AT",
+  "region": "Ostalpen",
+  "lat": 46.7179,
+  "lon": 12.541,
+  "elevation": 1525,
+  "classicAscent": "8,8 km, 5,3 % ab Tassenbach",
+  "beauty": 3,
+  "fame": 2,
+  "difficulty": 2,
+  "traffic": 2,
+  "season": null,
+  "note": "Die Talwasserscheide zwischen Pustertal und Lesachtal, an der die Gail entspringt: von Tassenbach kürzer und stellenweise steil, aus dem Lesachtal lang und sanft. Ganzjährig geräumt und ruhig, ein Übergang zwischen Wiesen unter den Karnischen Alpen.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.747,
+     "lon": 12.4661
+    },
+    "label": "Tassenbach (West)"
+   },
+   {
+    "from": {
+     "lat": 46.7038,
+     "lon": 12.6774
+    },
+    "label": "Untertilliach (Ost)"
+   }
+  ]
+ },
+ {
+  "slug": "reschenpass",
+  "surface": "asphalt",
+  "name": "Reschenpass",
+  "type": "pass",
+  "aliases": [
+   "Passo di Resia"
+  ],
+  "country": "AT/IT",
+  "region": "Ostalpen",
+  "lat": 46.8344,
+  "lon": 10.5102,
+  "elevation": 1507,
+  "classicAscent": "19 km, 2,4 % ab Mals",
+  "beauty": 3,
+  "fame": 2,
+  "difficulty": 2,
+  "traffic": 4,
+  "season": null,
+  "note": "Von Mals über die Malser Haide und an Haider- und Reschensee entlang, mit dem Kirchturm im See kurz vor der Passhöhe; breite Transitstraße, ganzjährig offen. Nur die Südseite: Von Norden ist die B 180 zwischen Kajetansbrücke und Nauders für Räder gesperrt, der Radweg kommt über Martina und die Norbertshöhe, und ab Nauders fehlen dann nur gut 100 Höhenmeter.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.6886,
+     "lon": 10.5464
+    },
+    "label": "Mals"
+   }
+  ]
+ },
+ {
+  "slug": "norbertshoehe",
+  "surface": "asphalt",
+  "name": "Norbertshöhe",
+  "type": "pass",
+  "country": "AT",
+  "region": "Ostalpen",
+  "lat": 46.8951,
+  "lon": 10.485,
+  "elevation": 1405,
+  "classicAscent": "5,8 km, 6,4 % ab Martina",
+  "beauty": 3,
+  "fame": 2,
+  "difficulty": 2,
+  "traffic": 3,
+  "season": null,
+  "note": "Von Martina an der Schweizer Grenze in Kehren auf das Hochplateau von Nauders, gleichmäßig und gut ausgebaut; ganzjährig offen und der Weg der Radfahrer Richtung Reschen, weil die B 180 durch die Finstermünz für Räder gesperrt ist. Einseitig, denn Nauders liegt kaum tiefer als die Höhe; ist die B 180 ganz gesperrt, gilt auch hier bergauf ein Radfahrverbot.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.885,
+     "lon": 10.4632
+    },
+    "label": "Martina"
+   }
+  ]
+ },
+ {
+  "slug": "brennerpass",
+  "surface": "asphalt",
+  "name": "Brennerpass",
+  "type": "pass",
+  "aliases": [
+   "Passo del Brennero",
+   "Brenner"
+  ],
+  "country": "AT/IT",
+  "region": "Ostalpen",
+  "lat": 47.0074,
+  "lon": 11.5067,
+  "elevation": 1370,
+  "classicAscent": "37 km, 2,2 % ab Innsbruck",
+  "beauty": 2,
+  "fame": 3,
+  "difficulty": 2,
+  "traffic": 4,
+  "season": null,
+  "note": "Der Übergang vom Wipptal ins Eisacktal; gefahren wird die alte Brennerstraße (B 182, SS 12) neben Autobahn und Bahn. Ganzjährig offen, von Innsbruck lang und flach, von Sterzing kürzer mit einem steileren Stück bei Gossensass; zweiter Anstieg des Ötztaler Radmarathons, auf der Staatsstraße viel Verkehr.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 47.2514,
+     "lon": 11.3996
+    },
+    "label": "Innsbruck (Nord)"
+   },
+   {
+    "from": {
+     "lat": 46.8999,
+     "lon": 11.4333
+    },
+    "label": "Sterzing (Süd)"
+   }
+  ]
+ },
+ {
   "slug": "col-de-la-forclaz-martigny",
   "surface": "asphalt",
   "name": "Col de la Forclaz",
@@ -9607,6 +9770,221 @@
   ]
  },
  {
+  "slug": "passo-cimabanche",
+  "surface": "asphalt",
+  "name": "Passo Cimabanche",
+  "type": "pass",
+  "aliases": [
+   "Im Gemärk",
+   "Cimabanche"
+  ],
+  "country": "IT",
+  "region": "Dolomiten",
+  "lat": 46.6206,
+  "lon": 12.184,
+  "elevation": 1530,
+  "classicAscent": "15,7 km, 2,1 % ab Toblach",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 1,
+  "traffic": 4,
+  "season": null,
+  "note": "Der flache Talübergang zwischen Toblach und Cortina, am Toblacher und am Dürrensee vorbei mit dem Cristallo und dem Blick ins Tal der Drei Zinnen. Ganzjährig offen und viel befahren, auch von Lastwagen; ruhiger ist der Radweg auf der alten Bahntrasse daneben, auf der Toblacher Seite teils Schotter.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.7317,
+     "lon": 12.2206
+    },
+    "label": "Toblach (Nord)"
+   },
+   {
+    "from": {
+     "lat": 46.5405,
+     "lon": 12.1357
+    },
+    "label": "Cortina d'Ampezzo (Süd)"
+   }
+  ]
+ },
+ {
+  "slug": "passo-sant-antonio",
+  "surface": "asphalt",
+  "name": "Passo Sant'Antonio",
+  "type": "pass",
+  "aliases": [
+   "Passo Sant'Antonio di Santo Stefano"
+  ],
+  "country": "IT",
+  "region": "Dolomiten",
+  "lat": 46.572,
+  "lon": 12.4824,
+  "elevation": 1476,
+  "classicAscent": "7,6 km, 8,3 % ab Auronzo di Cadore",
+  "beauty": 3,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 2,
+  "season": null,
+  "note": "Die steile Abkürzung von Auronzo ins Comelico, fast ganz im Wald und wenig befahren; von Padola nur ein kurzer Gegenanstieg. Keine Wintersperre bekannt, der Pass liegt niedrig und verbindet zwei Talorte.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.5498,
+     "lon": 12.4459
+    },
+    "label": "Auronzo di Cadore (Süd)"
+   },
+   {
+    "from": {
+     "lat": 46.6019,
+     "lon": 12.4793
+    },
+    "label": "Padola (Nord)"
+   }
+  ]
+ },
+ {
+  "slug": "passo-pampeago",
+  "surface": "asphalt",
+  "name": "Passo Pampeago",
+  "type": "pass",
+  "aliases": [
+   "Reiterjoch",
+   "Passo Lavazè di Pampeago"
+  ],
+  "country": "IT",
+  "region": "Dolomiten",
+  "lat": 46.3538,
+  "lon": 11.5398,
+  "elevation": 1983,
+  "classicAscent": "11,1 km, 9,1 % ab Tesero",
+  "beauty": 4,
+  "fame": 3,
+  "difficulty": 5,
+  "traffic": 2,
+  "season": {
+   "opens": 6,
+   "closes": 10.5,
+   "maintained": false
+  },
+  "note": "Der steile Anstieg von Tesero zur Skistation Alpe di Pampeago, wo der Giro mehrmals ankam; die letzten drei Kilometer zum Joch erst seit 2012 asphaltiert und für Autos gesperrt, nach Obereggen einspurig. Im Winter liegt die Passhöhe im Skigebiet, gefahren wird im Sommer.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.2889,
+     "lon": 11.5105
+    },
+    "label": "Tesero (Süd)"
+   },
+   {
+    "from": {
+     "lat": 46.4261,
+     "lon": 11.4795
+    },
+    "label": "Birchabruck (Nord)"
+   }
+  ]
+ },
+ {
+  "slug": "passo-croce-d-aune",
+  "surface": "asphalt",
+  "name": "Passo Croce d'Aune",
+  "type": "pass",
+  "aliases": [
+   "Croce d'Aune"
+  ],
+  "country": "IT",
+  "region": "Dolomiten",
+  "lat": 46.0618,
+  "lon": 11.8301,
+  "elevation": 1015,
+  "classicAscent": "8,2 km, 8,0 % ab Pedavena",
+  "beauty": 3,
+  "fame": 3,
+  "difficulty": 3,
+  "traffic": 2,
+  "season": null,
+  "note": "Von Pedavena bei Feltre in Kehren durch den Wald hinauf zu dem Sattel, an dem Tullio Campagnolo der Legende nach mit klammen Fingern am Hinterrad scheiterte und den Schnellspanner erfand; oben erinnert ein Denkmal daran. Ganzjährig offen und ruhig, nach Westen über die Dörfer von Sovramonte.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.0396,
+     "lon": 11.8804
+    },
+    "label": "Pedavena (Ost)"
+   },
+   {
+    "from": {
+     "lat": 46.061,
+     "lon": 11.7656
+    },
+    "label": "Gorna (West)"
+   }
+  ]
+ },
+ {
+  "slug": "forcella-aurine",
+  "surface": "asphalt",
+  "name": "Forcella Aurine",
+  "type": "pass",
+  "country": "IT",
+  "region": "Dolomiten",
+  "lat": 46.2366,
+  "lon": 11.976,
+  "elevation": 1299,
+  "classicAscent": "11,5 km, 6,1 % ab Agordo",
+  "beauty": 3,
+  "fame": 1,
+  "difficulty": 3,
+  "traffic": 2,
+  "season": null,
+  "note": "Der Übergang von Agordo über Voltago und Frassenè nach Gosaldo, auf der Straße zum Passo Cereda; ganzjährig offen. Nur die Nordseite ist ein Anstieg: Von Gosaldo sind es bloß 3,5 km mit 155 Hm.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.2872,
+     "lon": 12.024
+    },
+    "label": "Agordo (Nord)"
+   }
+  ]
+ },
+ {
+  "slug": "forcella-franche",
+  "surface": "asphalt",
+  "name": "Forcella Franche",
+  "type": "pass",
+  "country": "IT",
+  "region": "Dolomiten",
+  "lat": 46.2333,
+  "lon": 12.0132,
+  "elevation": 991,
+  "classicAscent": "8,1 km, 5,3 % ab Agordo",
+  "beauty": 4,
+  "fame": 1,
+  "difficulty": 2,
+  "traffic": 1,
+  "season": null,
+  "note": "Der niedrige Übergang von Agordo über Rivamonte ins Valle del Mis, am Scheitel zweigt die Straße nach Gosaldo und zum Passo Cereda ab. Die Agordo-Seite ist ganzjährig offen; die Talstraße durch das Valle del Mis mit ihren unbeleuchteten Tunneln ist im Winter offiziell gesperrt.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.2696,
+     "lon": 12.0352
+    },
+    "label": "Agordo (Nord)"
+   },
+   {
+    "from": {
+     "lat": 46.212,
+     "lon": 11.9889
+    },
+    "label": "Titele (Süd)"
+   }
+  ]
+ },
+ {
   "slug": "col-de-la-madeleine-bedoin",
   "surface": "asphalt",
   "name": "Col de la Madeleine (Bédoin)",
@@ -10235,6 +10613,136 @@
      "lon": 7.514
     },
     "label": "Breil-sur-Roya (Ost)"
+   }
+  ]
+ },
+ {
+  "slug": "colle-d-esischie",
+  "surface": "asphalt",
+  "name": "Colle d'Esischie",
+  "type": "pass",
+  "country": "IT",
+  "region": "Westalpen",
+  "lat": 44.3967,
+  "lon": 7.1239,
+  "elevation": 2370,
+  "classicAscent": "20 km, 7,1 % ab Ponte Marmora",
+  "beauty": 4,
+  "fame": 1,
+  "difficulty": 4,
+  "traffic": 1,
+  "season": {
+   "opens": 6,
+   "closes": 10.5,
+   "maintained": false
+  },
+  "note": "Der Übergang aus dem Maira- ins Grana-Tal, gut einen Kilometer unterhalb des Colle Fauniera, auf den die Straße weiterführt. Gezählt wird nur die Maira-Seite ab Ponte Marmora: Von Pradleves ist es die Fauniera-Auffahrt bis kurz vor deren Scheitel. Schmal, ruppiger Asphalt, Sperre wie am Fauniera meist ab Mitte Oktober.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 44.4893,
+     "lon": 7.0934
+    },
+    "label": "Ponte Marmora (Nord)"
+   }
+  ]
+ },
+ {
+  "slug": "madonna-del-colletto",
+  "surface": "asphalt",
+  "name": "Madonna del Colletto",
+  "type": "pass",
+  "country": "IT",
+  "region": "Westalpen",
+  "lat": 44.2835,
+  "lon": 7.3726,
+  "elevation": 1305,
+  "classicAscent": "7,3 km, 8 % ab Festiona",
+  "beauty": 3,
+  "fame": 1,
+  "difficulty": 2,
+  "traffic": 1,
+  "season": null,
+  "note": "Der Sattel mit dem Wallfahrtskirchlein zwischen Stura- und Gesso-Tal, letzter Berg der Granfondo Fausto Coppi. Kurz, steil und kaum befahren; der Belag auf der Festiona-Seite ist alt und oft geschottert.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 44.3012,
+     "lon": 7.3342
+    },
+    "label": "Festiona (Nord)"
+   },
+   {
+    "from": {
+     "lat": 44.2775,
+     "lon": 7.3976
+    },
+    "label": "Valdieri (Süd)"
+   }
+  ]
+ },
+ {
+  "slug": "col-de-la-bataille",
+  "surface": "asphalt",
+  "name": "Col de la Bataille",
+  "type": "pass",
+  "country": "FR",
+  "region": "Westalpen",
+  "lat": 44.8978,
+  "lon": 5.2338,
+  "elevation": 1313,
+  "classicAscent": "8,3 km, 4,8 % ab Léoncel",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 2,
+  "traffic": 1,
+  "season": {
+   "opens": 5,
+   "closes": 11,
+   "maintained": false
+  },
+  "note": "Der Übergang von Léoncel durch einen kurzen Tunnel unter den Rochers de la Sausse auf den Balkon über der Combe de Bouvante; die D199 ist ab dem Col im Winter nicht geräumt und zwischen Schranken gesperrt. Nur die Léoncel-Seite ist ein Anstieg, nach Osten läuft die Straße als welliger Balkon über den Col de la Portette nach Lente.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 44.912,
+     "lon": 5.1926
+    },
+    "label": "Léoncel (West)"
+   }
+  ]
+ },
+ {
+  "slug": "col-des-gets",
+  "surface": "asphalt",
+  "name": "Col des Gets",
+  "type": "pass",
+  "country": "FR",
+  "region": "Westalpen",
+  "lat": 46.1604,
+  "lon": 6.6691,
+  "elevation": 1172,
+  "classicAscent": "12 km, 4,7 % ab Taninges",
+  "beauty": 2,
+  "fame": 2,
+  "difficulty": 2,
+  "traffic": 3,
+  "season": null,
+  "note": "Der Übergang vom Giffre-Tal ins Tal der Dranse, Teil der Route des Grandes Alpes, mit dem Skiort Les Gets auf dem Scheitel. Ganzjährig geräumt; der eigentliche Anstieg kommt von Taninges, von Morzine sind es nur gut 4 km und 150 Höhenmeter. Auf der D 902 im Sommer viel Verkehr, auch Lastwagen.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.1075,
+     "lon": 6.5911
+    },
+    "label": "Taninges (Süd)"
+   },
+   {
+    "from": {
+     "lat": 46.1884,
+     "lon": 6.6909
+    },
+    "label": "Morzine (Nord)"
    }
   ]
  },

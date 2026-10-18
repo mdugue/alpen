@@ -152,9 +152,11 @@
   "km": 193,
   "elevationGain": 4700,
   "passes": [
+   "passo-cimabanche",
    "passo-falzarego",
    "passo-giau",
    "passo-tre-croci",
+   "passo-sant-antonio",
    "passo-monte-croce-comelico"
   ],
   "note": "Beschilderte Dauerstrecke mit Stempelstellen und Startpaket; Gold an einem Tag, Silber in zwei, Bronze in drei. Der Stich zur Auronzohütte ist eine Mautstraße und gibt mit ihrer Saison das Fenster vor.",
@@ -243,6 +245,7 @@
   "km": 700,
   "elevationGain": 17000,
   "passes": [
+   "col-des-gets",
    "col-de-la-colombiere",
    "col-des-aravis",
    "col-des-saisies",
@@ -426,6 +429,7 @@
   "elevationGain": 5500,
   "passes": [
    "kuehtai",
+   "brennerpass",
    "jaufenpass",
    "timmelsjoch"
   ],
@@ -1417,9 +1421,11 @@
   "km": 168,
   "elevationGain": 3600,
   "passes": [
+   "reschenpass",
    "passo-dello-stelvio",
    "umbrailpass",
-   "ofenpass"
+   "ofenpass",
+   "norbertshoehe"
   ],
   "note": "Veranstaltung Ende Juni, durch Österreich, Italien und die Schweiz; die Tirol Werbung nennt 3.300 Hm.",
   "season": null,
@@ -2071,6 +2077,7 @@
   "km": 62,
   "elevationGain": 1571,
   "passes": [
+   "col-de-la-bataille",
    "combe-laval"
   ],
   "note": "Nach dem Faltblatt des Départements Drôme; in der Combe Laval liegen elf Tunnel.",
@@ -2105,6 +2112,136 @@
    {
     "lat": 45.0161,
     "lon": 5.2907
+   }
+  ]
+ },
+ {
+  "slug": "dolomitenradrundfahrt-lienz",
+  "surface": "asphalt",
+  "name": "Dolomitenradrundfahrt",
+  "color": "#5a7a9a",
+  "km": 112,
+  "elevationGain": 1870,
+  "passes": [
+   "gailbergsattel",
+   "kartitscher-sattel"
+  ],
+  "note": "Österreichs ältester Radmarathon, seit 1951 auf derselben Runde, Mitte Juni ab Lienz. Zwei niedrige Sättel, dazwischen das lange Auf und Ab des Lesachtals.",
+  "season": null,
+  "description": "Von Lienz das Drautal hinab nach Oberdrauburg, über den Gailbergsattel nach Kötschach-Mauthen, durch das Lesachtal über Maria Luggau und Obertilliach auf den Kartitscher Sattel und durch das Pustertal zurück nach Lienz.",
+  "type": "event",
+  "waypoints": [
+   {
+    "lat": 46.8299,
+    "lon": 12.7681
+   },
+   {
+    "lat": 46.7484,
+    "lon": 12.9701
+   },
+   {
+    "lat": 46.7178,
+    "lon": 12.967
+   },
+   {
+    "lat": 46.7056,
+    "lon": 12.7348
+   },
+   {
+    "lat": 46.71,
+    "lon": 12.6147
+   },
+   {
+    "lat": 46.7179,
+    "lon": 12.541
+   },
+   {
+    "lat": 46.7491,
+    "lon": 12.4653
+   },
+   {
+    "lat": 46.8299,
+    "lon": 12.7681
+   }
+  ]
+ },
+ {
+  "slug": "la-fausto-coppi",
+  "surface": "asphalt",
+  "name": "La Fausto Coppi",
+  "color": "#7a5a8a",
+  "km": 172,
+  "elevationGain": 4330,
+  "passes": [
+   "colle-di-sampeyre",
+   "colle-d-esischie",
+   "colle-fauniera",
+   "madonna-del-colletto"
+  ],
+  "note": "Granfondo Ende Juni ab Cuneo; 2026 auf derselben Strecke wie 2025. Die Maira-Seite der Esischie ist schmal und ruppig; Fauniera und Sampeyre sind meist bis Mitte Oktober offen.",
+  "season": null,
+  "description": "Von Cuneo über Busca und Venasca ins Varaita-Tal, über den Colle di Sampeyre ins Maira-Tal, ab Ponte Marmora auf den Colle d'Esischie und weiter zum Colle Fauniera, hinab nach Demonte, über die Madonna del Colletto nach Valdieri und über Borgo San Dalmazzo zurück nach Cuneo.",
+  "type": "event",
+  "waypoints": [
+   {
+    "lat": 44.3845,
+    "lon": 7.5427
+   },
+   {
+    "lat": 44.5181,
+    "lon": 7.4743
+   },
+   {
+    "lat": 44.5614,
+    "lon": 7.3999
+   },
+   {
+    "lat": 44.579,
+    "lon": 7.189
+   },
+   {
+    "lat": 44.551,
+    "lon": 7.1196
+   },
+   {
+    "lat": 44.5111,
+    "lon": 7.1284
+   },
+   {
+    "lat": 44.4893,
+    "lon": 7.0934
+   },
+   {
+    "lat": 44.3967,
+    "lon": 7.1239
+   },
+   {
+    "lat": 44.3856,
+    "lon": 7.1218
+   },
+   {
+    "lat": 44.3243,
+    "lon": 7.3034
+   },
+   {
+    "lat": 44.3012,
+    "lon": 7.3342
+   },
+   {
+    "lat": 44.2835,
+    "lon": 7.3726
+   },
+   {
+    "lat": 44.2775,
+    "lon": 7.3976
+   },
+   {
+    "lat": 44.327,
+    "lon": 7.4695
+   },
+   {
+    "lat": 44.3845,
+    "lon": 7.5427
    }
   ]
  }

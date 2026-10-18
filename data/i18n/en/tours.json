@@ -27,6 +27,10 @@
   "description": "All three sides of Mont Ventoux in one day: up from Bédoin, down to Malaucène and up again, down past Chalet Reynard to Sault and up a third time from there, back to Bédoin.",
   "note": "A permanent challenge of the Club des Cinglés with a stamp card, in any order; the club advises not to ride before April or after October. Length and climb are the sum of the three sides, not an official figure."
  },
+ "dolomitenradrundfahrt-lienz": {
+  "description": "From Lienz down the Drau valley to Oberdrauburg, over the Gailbergsattel to Kötschach-Mauthen, through the Lesachtal via Maria Luggau and Obertilliach up to the Kartitscher Sattel and back through the Puster valley to Lienz.",
+  "note": "Austria's oldest cycling marathon, on the same loop since 1951, from Lienz in mid-June. Two low saddles with the long ups and downs of the Lesachtal in between."
+ },
  "dreilaendergiro": {
   "description": "From Nauders over the Reschen Pass into the Vinschgau, from Prad up the Stelvio, over the Umbrail into the Val Müstair, over the Ofen Pass to Zernez and down the Lower Engadine via Martina and the Norbertshöhe back to Nauders.",
   "note": "Event in late June, through Austria, Italy and Switzerland; Tirol's tourist board gives 3,300 m."
@@ -58,6 +62,10 @@
  "klausen-pragel-runde": {
   "description": "From Glarus through the Klöntal over the Pragel into the Muota valley, via Schwyz to Brunnen, along Lake Uri to Flüelen and Altdorf, over the Klausen into Glarus and back via Linthal.",
   "note": "Bicycles have been banned from the Axen road between Brunnen and Sisikon since 2023; a shuttle bus runs hourly. The Pragel is closed to cars on Sundays and public holidays."
+ },
+ "la-fausto-coppi": {
+  "description": "From Cuneo via Busca and Venasca into the Varaita valley, over the Colle di Sampeyre into the Maira valley, from Ponte Marmora up the Colle d'Esischie and on to the Colle Fauniera, down to Demonte, over the Madonna del Colletto to Valdieri and back to Cuneo via Borgo San Dalmazzo.",
+  "note": "Granfondo in late June from Cuneo; in 2026 on the same course as in 2025. The Maira side of the Esischie is narrow and rough; the Fauniera and the Sampeyre are usually open until mid-October."
  },
  "la-marmotte": {
   "description": "Bourg d'Oisans – Glandon – Télégraphe – Galibier – Lautaret – Alpe d'Huez.",
