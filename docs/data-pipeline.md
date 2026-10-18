@@ -116,18 +116,18 @@ reformat a file a run only meant to add one entry to.
 
 ## The stages, by command
 
-| Command                                       | Run it when                                                          | Asks                                                                     | Writes                                                                                                       |
-| --------------------------------------------- | -------------------------------------------------------------------- | ------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------ |
-| _(edit by hand)_                              | a pass, tour or town is added or corrected                           | –                                                                        | `data/*.json`                                                                                                |
-| `bun run data:locate [slug…]`                 | the gate blocks a pass, or a marker looks wrong                      | Overpass (or OSM map API), Open-Meteo                                    | nothing, unless `--apply` moves a coordinate in `data/passes.json`                                           |
-| `bun run data:build`                          | after any source-data change; resumable, skips what is done          | OSM, ORS/OSRM, Open-Meteo                                                | `data/generated/{summits,routes,routes-meta,rejected,profiles,climate}.json`                                 |
-| `bun run data:photos`                         | after adding an entity, or to refresh the slideshow                  | Wikimedia Commons                                                        | `data/generated/photos.json`                                                                                 |
-| `bun run data:check [--explain]`              | before every commit that touches data; runs in CI                    | nothing – offline                                                        | nothing; prints errors and warnings                                                                          |
-| `bun run data:schema`                         | in the same PR as a change to `lib/schema.ts`                        | nothing                                                                  | `data/schema/*.schema.json`                                                                                  |
-| `bun run analyze:branches [slug…]`            | before adding detours: which paved dead ends leave a road and climb? | Overpass and Open-Meteo elevation, recorded in `scripts/.cache/branches` | nothing; prints per road the dead ends that climb, with name, km, gain and whether an entry is there already |
-| `bun run scripts/analyze-coverage.ts [slug…]` | before a curation round: where is a base thin?                       | Overpass, recorded per query in `scripts/.cache/coverage`                | nothing; prints listed roads, candidates and single-sided passes per base and reach band                     |
-| `bun run map:glyphs`                          | only when the font or the glyph ranges change                        | the Inter release, fontnik                                               | `public/map/fonts` (committed)                                                                               |
-| `bun dev` / `bun run build`                   | always                                                               | nothing                                                                  | `public/map`, `public/detail`, `public/maplibre` (all git-ignored)                                           |
+| Command                                       | Run it when                                                                        | Asks                                                                     | Writes                                                                                                       |
+| --------------------------------------------- | ---------------------------------------------------------------------------------- | ------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------ |
+| _(edit by hand)_                              | a pass, tour or town is added or corrected                                         | –                                                                        | `data/*.json`                                                                                                |
+| `bun run data:locate [slug…]`                 | the gate blocks a pass, or a marker looks wrong                                    | Overpass (or OSM map API), Open-Meteo                                    | nothing, unless `--apply` moves a coordinate in `data/passes.json`                                           |
+| `bun run data:build`                          | after any source-data change; resumable, skips what is done                        | OSM, ORS/OSRM, Open-Meteo                                                | `data/generated/{summits,routes,routes-meta,rejected,profiles,climate}.json`                                 |
+| `bun run data:photos`                         | after adding an entity, or to refresh the slideshow                                | Wikimedia Commons                                                        | `data/generated/photos.json`                                                                                 |
+| `bun run data:check [--explain]`              | before every commit that touches data; runs in CI                                  | nothing – offline                                                        | nothing; prints errors and warnings                                                                          |
+| `bun run data:schema`                         | in the same PR as a change to `lib/schema.ts`                                      | nothing                                                                  | `data/schema/*.schema.json`                                                                                  |
+| `bun run analyze:branches [slug…]`            | before adding detours: which paved dead ends leave a road and climb?               | Overpass and Open-Meteo elevation, recorded in `scripts/.cache/branches` | nothing; prints per road the dead ends that climb, with name, km, gain and whether an entry is there already |
+| `bun run scripts/analyze-coverage.ts [slug…]` | before a curation round: where is a base thin? (`--tours`: what a tour rides over) | Overpass, recorded per query in `scripts/.cache/coverage`                | nothing; prints listed roads, candidates and single-sided passes per base and reach band                     |
+| `bun run map:glyphs`                          | only when the font or the glyph ranges change                                      | the Inter release, fontnik                                               | `public/map/fonts` (committed)                                                                               |
+| `bun dev` / `bun run build`                   | always                                                                             | nothing                                                                  | `public/map`, `public/detail`, `public/maplibre` (all git-ignored)                                           |
 
 The coverage report is how a candidate becomes an entry: it asks Overpass for
 every `mountain_pass` and `natural=saddle` node within `REACH_MAX_KM` of a base
@@ -137,6 +137,16 @@ sorted by elevation. A line in that report is read by a human, who writes the
 entry with its four scales, its season and its note, runs `data:locate` on the
 point and `data:build` on the rest – nothing is imported. The second run is
 offline: the answers are cached, `--refresh` asks again.
+
+A base-centred report has a blind spot: a tour far from every base, or a
+climb under the 1000 m floor, is never anyone's candidate. That is how the
+Dolomitenradrundfahrt from Lienz came to be missing its Gailbergsattel and
+Kartitscher Sattel. `--tours [slug…]` asks the tour's question instead: the
+saddles from 600 m within 300 m of each stored tour line that no entry stands
+for (`tourCoverage` in `scripts/lib/coverage.ts`). The offline half of it runs
+in `data:check`, which warns about every `pass` entry a tour's line crosses
+that its `passes` do not name. A tour's climbs are entries, added before the
+tour.
 
 Four flags of `data:build` matter often enough to name here: `--status` counts
 the backlog and what it costs in Open-Meteo calls, `--only <text>` restricts

@@ -244,14 +244,20 @@
   "elevationGain": 17000,
   "passes": [
    "col-de-la-colombiere",
+   "col-des-aravis",
+   "col-des-saisies",
    "cormet-de-roselend",
    "col-de-l-iseran",
+   "col-du-telegraphe",
    "col-du-galibier",
+   "col-du-lautaret",
    "col-d-izoard",
    "col-de-vars",
    "col-de-la-cayolle",
    "col-de-la-couillole",
-   "col-de-turini"
+   "col-saint-martin",
+   "col-de-turini",
+   "col-de-castillon"
   ],
   "note": "Der Iseran gibt das Fenster vor; im Oktober nur mit Plan B über den Mont Cenis.",
   "season": {
@@ -486,7 +492,9 @@
   "elevationGain": 5000,
   "passes": [
    "col-du-glandon",
+   "col-du-telegraphe",
    "col-du-galibier",
+   "col-du-lautaret",
    "alpe-d-huez"
   ],
   "note": "Der Galibier gibt das Fenster vor; Veranstaltung Anfang Juli.",
@@ -719,7 +727,8 @@
   "km": 105,
   "elevationGain": 2300,
   "passes": [
-   "vrsic"
+   "vrsic",
+   "predilpass"
   ],
   "note": "Das Vršič-Pflaster ist bei Nässe rutschig.",
   "season": {

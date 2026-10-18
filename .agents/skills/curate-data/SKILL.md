@@ -80,8 +80,17 @@ authoritative. In addition:
   and the `sides` follow, or `data:check` fails.
 - **aliases** (plan 05): other spellings and other-language names, never the
   name itself.
-- **Tours**: `passes` in ride order; `waypoints` closed for loops (last =
-  first); `km` and `elevationGain` from a trusted source. `season` is the
+- **Tours**: `passes` in ride order, and every crossing the tour rides over
+  is one of them. A climb that is not in `passes.json` yet is added first, as
+  a full entry (scales, season, ascents, portrait, English), and the tour
+  after it – a tour over roads the app does not know has no strip, no status
+  and no reach for them. The coverage report is centred on the base towns and
+  counts from 1000 m, so a loop far from a base or over a 980 m saddle (the
+  Dolomitenradrundfahrt from Lienz, its Gailbergsattel) falls through it:
+  `bun run scripts/analyze-coverage.ts --tours <slug>` lists the saddles from
+  600 m on the stored line that are no entry, and `data:check` warns about
+  every entry the line crosses that the tour does not name. `waypoints`
+  closed for loops (last = first); `km` and `elevationGain` from a trusted source. `season` is the
   loop's own window as two half-months like a pass's, or `null` when the
   passes alone decide; it may be narrower than the passes' windows, never
   wider (`data:check` warns). `note` carries what the window cannot: the

@@ -8,6 +8,7 @@
  *   bun run scripts/analyze-coverage.ts --floor 600     # count candidates from 600 m
  *   bun run scripts/analyze-coverage.ts --top 8         # names per band
  *   bun run scripts/analyze-coverage.ts --refresh       # ask Overpass again
+ *   bun run scripts/analyze-coverage.ts --tours [slug…] # what each tour rides over
  *
  * In the family of analyze-status.ts and analyze-destinations.ts: it prints,
  * it writes nothing under data/. "Depth" – how many roads a base reaches –
@@ -29,17 +30,31 @@
  * the OSM map API's fallback in osm.ts stops at a bounding box a few
  * kilometres wide – so when it is down the run says so and stops;
  * OVERPASS_URL picks a mirror.
+ *
+ * `--tours` asks the other question: not what a base reaches but what a tour
+ * rides over. For every stored tour line it asks for the saddles in the box
+ * around it and prints the entries the line crosses that the tour's `passes`
+ * do not name, and the saddles from 600 m (`TOUR_FLOOR`) that are no entry at
+ * all. A base-centred report cannot see those: a loop from Lienz crosses
+ * three roads no base's circle had made anyone write down.
  */
+import routesJson from "../data/generated/routes.json" with { type: "json" };
 import passesJson from "../data/passes.json" with { type: "json" };
+import toursJson from "../data/tours.json" with { type: "json" };
 import townsJson from "../data/towns.json" with { type: "json" };
 import { REACH_MAX_KM } from "../lib/geo";
+import { tourKey } from "../lib/route-key";
 import * as S from "../lib/schema";
 import {
+  candidateLine,
   coverageOf,
   coverageQuery,
   FLOORS,
   reportLines,
   summaryLine,
+  TOUR_FLOOR,
+  tourCoverage,
+  tourQuery,
 } from "./lib/coverage";
 import { OVERPASS_URL, overpass } from "./lib/hosts";
 import type { OverpassNode } from "./lib/hosts";
@@ -61,6 +76,7 @@ const only = args.filter(
   (a, i) =>
     !a.startsWith("--") && args[i - 1] !== "--floor" && args[i - 1] !== "--top",
 );
+const TOURS = args.includes("--tours");
 const selected = only.length
   ? towns.filter((t) => only.some((o) => t.slug.includes(o)))
   : towns;
@@ -78,6 +94,51 @@ const nodesAround = async (t: {
   const elements = await overpass.query(transport, coverageQuery(t));
   return elements.filter((e): e is OverpassNode => e.type === "node");
 };
+
+if (TOURS) {
+  const tours = S.Tours.parse(toursJson).filter(
+    (t) => !only.length || only.some((o) => t.slug.includes(o)),
+  );
+  const routes = routesJson as unknown as Record<string, [number, number][]>;
+  const floor = flag("--floor", TOUR_FLOOR);
+  console.log(
+    `Was jede Tour überfährt, Sättel ab ${floor} m (--floor), ${tours.length} Touren, Overpass: ${new URL(OVERPASS_URL).host}\n`,
+  );
+  for (const t of tours) {
+    const line = routes[tourKey(t.slug)];
+    if (!line) {
+      console.log(
+        `${t.name}: keine Route gespeichert – erst bun run data:build`,
+      );
+      continue;
+    }
+    let nodes: OverpassNode[];
+    try {
+      const elements = await overpass.query(transport, tourQuery(line));
+      nodes = elements.filter((e): e is OverpassNode => e.type === "node");
+    } catch (error) {
+      console.error(
+        `${t.name}: Overpass antwortet nicht (${(error as Error).message}) – OVERPASS_URL=… wählt einen Spiegel`,
+      );
+      process.exit(1);
+    }
+    const cov = tourCoverage(t, line, nodes, passes, floor);
+    console.log(`${t.name} (${t.passes.length} Pässe gelistet)`);
+    if (cov.unnamed.length)
+      console.log(
+        `  überfahren, nicht in passes: ${cov.unnamed.map((p) => p.slug).join(", ")}`,
+      );
+    if (cov.candidates.length)
+      console.log(
+        `  Sättel ohne Eintrag: ${cov.candidates.map(candidateLine).join(", ")}`,
+      );
+    console.log();
+  }
+  console.log(
+    `${transport.recorded} Overpass-Anfragen (${transport.replayed} aus dem Cache)`,
+  );
+  process.exit(0);
+}
 
 console.log(
   `Abdeckung je Basis, Umkreis ${REACH_MAX_KM} km, Kandidaten ab ${FLOOR} m (--floor), ${selected.length} Orte, Overpass: ${new URL(OVERPASS_URL).host}\n`,

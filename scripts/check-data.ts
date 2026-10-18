@@ -60,6 +60,7 @@ import type {
   Town,
 } from "../lib/types";
 import { renderJsonSchema, schemaFileFor } from "./emit-json-schema";
+import { tourCoverage } from "./lib/coverage";
 import { readData } from "./lib/data-files";
 import type { Data } from "./lib/data-files";
 import { asksOrs, judge, lacksCover, measure, plan } from "./lib/decide";
@@ -449,6 +450,13 @@ const checkTours = (list: Tour[], byPass: Map<string, Pass>) => {
         );
       continue;
     }
+    // A climb the line rides over is a climb of the tour: unnamed, the strip,
+    // the status and the reach know nothing about it. Which saddles on the
+    // line are no entry at all asks OSM: analyze-coverage.ts --tours.
+    for (const p of tourCoverage(t, geom, [], [...byPass.values()]).unnamed)
+      warnings.push(
+        `Tour ${t.slug}: die Route führt über ${p.slug}, passes nennt ihn nicht`,
+      );
     const m = measure(job, geom);
     inspect(key, `Tour ${t.name}`, m, judge(job, m), job.inputs);
   }

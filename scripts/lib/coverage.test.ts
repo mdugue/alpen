@@ -1,7 +1,13 @@
 import { expect, test } from "bun:test";
 
 import type { Pass } from "../../lib/types";
-import { coverageOf, coverageQuery, reportLines } from "./coverage";
+import {
+  coverageOf,
+  coverageQuery,
+  reportLines,
+  tourCoverage,
+  tourQuery,
+} from "./coverage";
 import type { OverpassNode } from "./hosts";
 
 /** Bormio. */
@@ -106,4 +112,30 @@ test("the query asks for paved roads on the server", () => {
   expect(q).toContain('["mountain_pass"="yes"]');
   expect(q).toContain("node.p(around.r:300)");
   expect(q).not.toContain("track");
+});
+
+test("a tour's line names the entries it rides over and the saddles no entry stands for", () => {
+  // A line north from Bormio, densely enough sampled for 300 m to matter.
+  const line = Array.from(
+    { length: 101 },
+    (_, i) => [46.468 + i * 0.002, 10.372] as const,
+  );
+  const named = pass("named", 46.5, 10.372);
+  const ridden = pass("ridden", 46.55, 10.373);
+  const aside = pass("aside", 46.55, 10.4);
+  const nodes = [
+    node(1, 46.5001, 10.372, { ele: "1800", name: "Passo Nominato" }),
+    node(2, 46.6, 10.3725, { ele: "980", name: "Sella Bassa" }),
+    node(3, 46.6001, 10.3725, { ele: "980", name: "Sella Bassa" }),
+    node(4, 46.62, 10.372, { ele: "550", name: "Sella Valle" }),
+    node(5, 46.62, 10.45, { ele: "2400", name: "Passo Lontano" }),
+  ];
+  const cov = tourCoverage({ passes: ["named"] }, line, nodes, [
+    named,
+    ridden,
+    aside,
+  ]);
+  expect(cov.unnamed.map((p) => p.slug)).toEqual(["ridden"]);
+  expect(cov.candidates.map((c) => c.name)).toEqual(["Sella Bassa"]);
+  expect(tourQuery(line)).toContain("node(46.4580,10.3620,46.6780,10.3820)");
 });
