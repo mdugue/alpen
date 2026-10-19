@@ -361,8 +361,6 @@
   "passo-manghen:1": {"source":"ors","fetchedAt":"2026-09-08","inputs":"b963a515fac5c3f9"},
   "passo-monte-croce-comelico:0": {"fetchedAt":"2026-09-17","inputs":"f71787febdddf604","source":"ors"},
   "passo-monte-croce-comelico:1": {"fetchedAt":"2026-09-17","inputs":"f6b3c3bc88564043","source":"ors"},
-  "passo-pampeago:0": {"fetchedAt":"2026-10-18","inputs":"af9db609e143eacf","source":"osrm"},
-  "passo-pampeago:1": {"fetchedAt":"2026-10-18","inputs":"46ad8f82b6aa5b31","source":"osrm"},
   "passo-pordoi:0": {"source":"ors","fetchedAt":"2026-09-08","inputs":"fbc58ab3d00c9897"},
   "passo-pordoi:1": {"source":"ors","fetchedAt":"2026-09-08","inputs":"5aad27ace1a72ec5"},
   "passo-rolle:0": {"source":"ors","fetchedAt":"2026-09-08","inputs":"248362b747e23d27"},

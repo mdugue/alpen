@@ -9845,48 +9845,6 @@
   ]
  },
  {
-  "slug": "passo-pampeago",
-  "surface": "asphalt",
-  "name": "Passo Pampeago",
-  "type": "pass",
-  "aliases": [
-   "Reiterjoch",
-   "Passo Lavazè di Pampeago"
-  ],
-  "country": "IT",
-  "region": "Dolomiten",
-  "lat": 46.3538,
-  "lon": 11.5398,
-  "elevation": 1983,
-  "classicAscent": "11,1 km, 9,1 % ab Tesero",
-  "beauty": 4,
-  "fame": 3,
-  "difficulty": 5,
-  "traffic": 2,
-  "season": {
-   "opens": 6,
-   "closes": 10.5,
-   "maintained": false
-  },
-  "note": "Der steile Anstieg von Tesero zur Skistation Alpe di Pampeago, wo der Giro mehrmals ankam; die letzten drei Kilometer zum Joch erst seit 2012 asphaltiert und für Autos gesperrt, nach Obereggen einspurig. Im Winter liegt die Passhöhe im Skigebiet, gefahren wird im Sommer.",
-  "ascents": [
-   {
-    "from": {
-     "lat": 46.2889,
-     "lon": 11.5105
-    },
-    "label": "Tesero (Süd)"
-   },
-   {
-    "from": {
-     "lat": 46.4261,
-     "lon": 11.4795
-    },
-    "label": "Birchabruck (Nord)"
-   }
-  ]
- },
- {
   "slug": "passo-croce-d-aune",
   "surface": "asphalt",
   "name": "Passo Croce d'Aune",
