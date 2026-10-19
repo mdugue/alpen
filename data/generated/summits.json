@@ -242,7 +242,7 @@
   "passo-san-pellegrino": {"dem":1923,"lat":46.378,"lon":11.792,"roadDist":0.038},
   "passo-sant-antonio": {"dem":1478,"lat":46.572,"lon":12.4824,"roadDist":0.002},
   "passo-santa-barbara": {"dem":1165,"lat":45.8963,"lon":10.9403,"roadDist":0.001},
-  "passo-sella": {"dem":2197,"lat":46.509,"lon":11.76,"roadDist":0.015},
+  "passo-sella": {"dem":2231,"lat":46.5081,"lon":11.7673,"roadDist":0},
   "passo-sommo": {"dem":1358,"lat":45.9196,"lon":11.2062,"roadDist":0.007},
   "passo-staulanza": {"dem":1793,"lat":46.421,"lon":12.105,"roadDist":0.003},
   "passo-teglia": {"dem":1395,"lat":43.9953,"lon":7.8336,"roadDist":0.002},

@@ -15,6 +15,7 @@ import {
   REGIONS,
   ROAD_TAGS,
   ROAD_TYPES,
+  DATED_TOUR_TYPES,
   TOUR_TYPES,
   STATUSES,
   TOWN_TAGS,
@@ -325,40 +326,67 @@ export const Pass = z
     }
   });
 
-export const Tour = z.strictObject({
-  /** Widens a route-gate limit for this tour alone, see `TourCheck`. */
-  check: TourCheck.optional(),
-  color: z.string().regex(/^#[0-9a-f]{6}$/u, "Farbe: #rrggbb"),
-  description: z.string(),
-  elevationGain: z.number().nonnegative(),
-  km: z.number().positive(),
-  name: z.string().min(2),
-  /**
-   * What the window cannot say: the event that closes the roads for a day,
-   * the cobbles that turn slick in rain, the plan B once a pass shuts. One or
-   * two German sentences; empty where there is nothing to add.
-   */
-  note: z.string(),
-  /** Pass slugs from which the status is derived. */
-  passes: z.array(Slug).min(1),
-  /** The loop's own opening window, see `TourSeason`; null = whenever its passes are open. */
-  season: TourSeason.nullable(),
-  slug: Slug,
-  /**
-   * What the loop is ridden with: at least what its roads demand (`gravel`
-   * or `mixed` the moment one member is), and more where the connecting
-   * stretches are gravel. Written down rather than derived so the file can
-   * say so; `data:check` holds it to the roads.
-   */
-  surface: Surface,
-  /**
-   * What kind of ride it is (see `TOUR_TYPES`): a loop, an event course, a
-   * signposted permanent route or a route in stages. Required, so a new tour
-   * is never filed under "loop" by default.
-   */
-  type: TourType,
-  waypoints: z.array(LatLon).min(2),
-});
+export const Tour = z
+  .strictObject({
+    /** Widens a route-gate limit for this tour alone, see `TourCheck`. */
+    check: TourCheck.optional(),
+    color: z.string().regex(/^#[0-9a-f]{6}$/u, "Farbe: #rrggbb"),
+    description: z.string(),
+    elevationGain: z.number().nonnegative(),
+    km: z.number().positive(),
+    name: z.string().min(2),
+    /**
+     * What the window cannot say: the event that closes the roads for a day,
+     * the cobbles that turn slick in rain, the plan B once a pass shuts. One or
+     * two German sentences; empty where there is nothing to add.
+     */
+    note: z.string(),
+    /** Pass slugs from which the status is derived. */
+    passes: z.array(Slug).min(1),
+    /** The loop's own opening window, see `TourSeason`; null = whenever its passes are open. */
+    season: TourSeason.nullable(),
+    /**
+     * `edition` only: the event the course belongs to, as a slug shared by all
+     * its years ("stelvio-santini"). The list groups a series and shows its
+     * latest year unless the earlier ones are asked for.
+     */
+    series: Slug.optional(),
+    slug: Slug,
+    /**
+     * What the loop is ridden with: at least what its roads demand (`gravel`
+     * or `mixed` the moment one member is), and more where the connecting
+     * stretches are gravel. Written down rather than derived so the file can
+     * say so; `data:check` holds it to the roads.
+     */
+    surface: Surface,
+    /**
+     * What kind of ride it is (see `TOUR_TYPES`): a loop, an event course, a
+     * signposted permanent route or a route in stages. Required, so a new tour
+     * is never filed under "loop" by default.
+     */
+    type: TourType,
+    waypoints: z.array(LatLon).min(2),
+    /**
+     * `event` and `edition` only: the half-month the event day falls in, so the
+     * list can say which events happen in the chosen period. The day itself
+     * moves from year to year and stays in the `note`.
+     */
+    when: Period.optional(),
+    /** `edition` only: the year whose course this is. */
+    year: z.int().min(2000).max(2100).optional(),
+  })
+  .refine(
+    (t) =>
+      (t.type === "edition") ===
+      (t.series !== undefined && t.year !== undefined),
+    "series und year gehören zusammen, und nur zu type edition",
+  )
+  .refine(
+    (t) =>
+      (DATED_TOUR_TYPES as readonly string[]).includes(t.type) ===
+      (t.when !== undefined),
+    "when: Pflicht für event und edition, sonst nicht erlaubt",
+  );
 
 export const TownTag = z.enum(TOWN_TAGS);
 

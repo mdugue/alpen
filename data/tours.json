@@ -142,7 +142,8 @@
     "lat": 46.587,
     "lon": 11.905
    }
-  ]
+  ],
+  "when": 7
  },
  {
   "slug": "stoneman-dolomiti-road",
@@ -485,7 +486,8 @@
     "lat": 46.968,
     "lon": 11.007
    }
-  ]
+  ],
+  "when": 8.5
  },
  {
   "slug": "la-marmotte",
@@ -557,7 +559,8 @@
     "lat": 45.092,
     "lon": 6.07
    }
-  ]
+  ],
+  "when": 7
  },
  {
   "slug": "andermatt-drei-paesse-runde",
@@ -1352,7 +1355,8 @@
     "lat": 46.6993,
     "lon": 10.0936
    }
-  ]
+  ],
+  "when": 7
  },
  {
   "slug": "alpenbrevet-silbertour",
@@ -1411,7 +1415,8 @@
     "lat": 46.634,
     "lon": 8.5948
    }
-  ]
+  ],
+  "when": 9
  },
  {
   "slug": "dreilaendergiro",
@@ -1484,7 +1489,8 @@
     "lat": 46.8918,
     "lon": 10.5026
    }
-  ]
+  ],
+  "when": 6.5
  },
  {
   "slug": "tour-du-mont-blanc-cyclo",
@@ -1586,7 +1592,8 @@
     "lat": 45.7573,
     "lon": 6.5394
    }
-  ]
+  ],
+  "when": 7
  },
  {
   "slug": "kaernten-radmarathon",
@@ -1651,7 +1658,8 @@
     "lat": 46.8144,
     "lon": 13.7984
    }
-  ]
+  ],
+  "when": 6
  },
  {
   "slug": "cingles-du-mont-ventoux",
@@ -2163,7 +2171,8 @@
     "lat": 46.8299,
     "lon": 12.7681
    }
-  ]
+  ],
+  "when": 6
  },
  {
   "slug": "la-fausto-coppi",
@@ -2243,7 +2252,8 @@
     "lat": 44.3845,
     "lon": 7.5427
    }
-  ]
+  ],
+  "when": 6.5
  },
  {
   "slug": "arlberg-giro",
@@ -2256,7 +2266,7 @@
    "arlbergpass",
    "silvretta-hochalpenstrasse"
   ],
-  "note": "Veranstaltung Ende Juli oder Anfang August; die Silvretta ist eine Mautstraße.",
+  "note": "Veranstaltung Anfang August; die Silvretta ist eine Mautstraße.",
   "season": null,
   "description": "Von St. Anton über den Arlberg ins Klostertal und nach Bludenz, durchs Montafon auf die Silvretta-Hochalpenstraße, über die Bielerhöhe ins Paznaun und durchs Stanzertal zurück nach St. Anton.",
   "type": "event",
@@ -2309,7 +2319,8 @@
     "lat": 47.1289,
     "lon": 10.2664
    }
-  ]
+  ],
+  "when": 8
  },
  {
   "slug": "grosse-scheidegg-runde",

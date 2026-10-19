@@ -42,7 +42,7 @@ export const ALL_TYPES: RoadType[] = [...ROAD_TYPES];
 export const ALL_RANGES: RangeName[] = [...RANGES];
 /** All three surfaces selected = no surface filter, see `Filters.surfaces`. */
 export const ALL_SURFACES: Surface[] = [...SURFACES];
-/** All four kinds of tour selected = no tour-type filter, see `Filters.tourTypes`. */
+/** Every kind of tour selected = no tour-type filter, see `Filters.tourTypes`. */
 export const ALL_TOUR_TYPES: TourType[] = [...TOUR_TYPES];
 /**
  * The lists, one tab each. The roads come first: they are what the map is
@@ -289,6 +289,17 @@ export interface Filters {
    * chips count roads.
    */
   tourTypes: TourType[];
+  /**
+   * Keep only the events whose day falls in the chosen half-month (`when`).
+   * Off = no filter. Like `tourTypes` it reaches tours alone.
+   */
+  onDate: boolean;
+  /**
+   * Show the earlier years of an event whose course changes every year. Off,
+   * the default, keeps each series to its latest edition – the course a rider
+   * can still sign up for – so the list is not five Stelvio Santinis deep.
+   */
+  pastEditions: boolean;
   sort: PassSort;
   query: string;
   favoritesOnly: boolean;
@@ -307,6 +318,8 @@ export const DEFAULT_FILTERS: Filters = {
   minBeauty: RATING_MIN,
   minElevation: 0,
   minFame: 1,
+  onDate: false,
+  pastEditions: false,
   period: 10,
   query: "",
   ranges: ALL_RANGES,

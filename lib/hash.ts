@@ -2,6 +2,7 @@ import {
   createLoader,
   createParser,
   createSerializer,
+  parseAsBoolean,
   parseAsString,
   parseAsStringLiteral,
 } from "nuqs";
@@ -189,6 +190,8 @@ const FILTER_KEYS = {
   g: { field: "ranges", parser: parseAsSubset(RANGES) },
   /** Max. valley heat in °C. */
   h: { field: "maxValleyTmax", parser: parseAsOneOf(HEAT_OPTIONS) },
+  /** Events on the chosen half-month only ("k" for Kalender). */
+  k: { field: "onDate", parser: parseAsBoolean },
   /** Min. elevation in m. */
   m: { field: "minElevation", parser: parseAsOneOf(ELEVATION_OPTIONS) },
   /** Pass sort key. */
@@ -205,6 +208,8 @@ const FILTER_KEYS = {
   v: { field: "maxTraffic", parser: parseAsOneOf(TRAFFIC_OPTIONS) },
   /** Max. rain days of 15. */
   w: { field: "maxWetDays", parser: parseAsOneOf(WET_OPTIONS) },
+  /** Earlier years of a changing event course ("y" for years). */
+  y: { field: "pastEditions", parser: parseAsBoolean },
 } as const satisfies Record<string, FilterKey>;
 
 type FilterHashKey = keyof typeof FILTER_KEYS;

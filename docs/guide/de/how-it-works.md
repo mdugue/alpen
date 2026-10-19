@@ -136,7 +136,16 @@ An einem Tag im Jahr gibt es Startnummern und gesperrte Straßen, an allen
 anderen ist sie frei. Eine **Dauerstrecke** ist beschildert und hat eine
 Stempelkarte oder Wertung, etwa der Stoneman Dolomiti Road. Eine
 **Etappenroute** führt über mehrere Tage von A nach B, etwa die Route des
-Grandes Alpes. Die Chips über der Tourenliste filtern nach dieser Art.
+Grandes Alpes. Eine **Jahresausgabe** ist die Strecke eines Radmarathons, der
+jedes Jahr anders fährt, etwa die Stelvio Santini: jedes Jahr ein eigener
+Eintrag mit der Jahreszahl im Namen. Die Chips über der Tourenliste filtern
+nach dieser Art.
+
+Veranstaltungen und Jahresausgaben tragen ihren Termin als Halbmonat. Der
+Chip „Termin“ zeigt nur, was im gewählten Halbmonat stattfindet. Von einer
+Jahresausgabe zeigt die Liste zunächst nur das neueste Jahr, die Zeile nennt
+die ausgeblendeten Vorjahre; der Chip „Frühere Jahre“ holt sie zurück, gleich
+unter dem neuesten Jahr. Im Reiseziel stehen die Touren nach Art geordnet.
 
 ### Kartensymbole
 

@@ -202,21 +202,30 @@ export const vocab = {
     },
   },
   tourType: {
+    edition: {
+      hint: "Eine Veranstaltung, die ihre Strecke jedes Jahr ändert: hier die Strecke eines Jahres. Die Vorjahre blendet „Frühere Jahre“ ein.",
+      label: "Jahresausgabe",
+      plural: "Jahresausgaben",
+    },
     event: {
       hint: "Die Strecke eines Radmarathons oder Granfondo: an einem Tag im Jahr mit Startnummer und gesperrten Straßen, an allen anderen frei zu fahren.",
       label: "Veranstaltung",
+      plural: "Veranstaltungen",
     },
     loop: {
       hint: "Eine klassische Runde ohne Wertung, zu fahren, wann man will.",
       label: "Rundtour",
+      plural: "Rundtouren",
     },
     permanent: {
       hint: "Eine beschilderte Dauerstrecke mit Stempelkarte oder Wertung, die ganze Saison über zu fahren, mit Medaille fürs Ankommen.",
       label: "Dauerstrecke",
+      plural: "Dauerstrecken",
     },
     stages: {
       hint: "Von A nach B über mehrere Tage, mit Nächten unterwegs statt im selben Hotel.",
       label: "Etappenroute",
+      plural: "Etappenrouten",
     },
   },
   townTag: {

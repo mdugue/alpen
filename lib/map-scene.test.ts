@@ -23,6 +23,7 @@ const passRow = (pass: Pass, extra: Partial<PassRow> = {}): PassRow => ({
 
 const tourRow = (tour: Tour, extra: Partial<TourRow> = {}): TourRow => ({
   favorite: false,
+  older: 0,
   range: "Alpen",
   reason: null,
   season: [],

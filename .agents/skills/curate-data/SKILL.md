@@ -95,9 +95,15 @@ authoritative. In addition:
   passes alone decide; it may be narrower than the passes' windows, never
   wider (`data:check` warns). `note` carries what the window cannot: the
   event day, the cobbles, the plan B. `type` is how it is ridden: `loop`,
-  `event` (only for a course that stays the same year to year – an Étape du
-  Tour does not belong), `permanent` (signposted, stamp card or timing) or
-  `stages` (A to B over several days; its waypoints are not closed).
+  `event` (a course that stays the same year to year), `edition` (one year
+  of an event whose course changes every year – Stelvio Santini, Étape du
+  Tour: `series` shared by the years, `year`, the year at the end of the name
+  and of the slug, e.g. `stelvio-santini-2026`; add a new year as a new entry
+  and keep the old ones), `permanent` (signposted, stamp card or timing) or
+  `stages` (A to B over several days; its waypoints are not closed). `event`
+  and `edition` need `when`, the half-month of the event day; the others may
+  not carry it. An edition is entered once its course is published, from the
+  organiser's GPX or course map, never guessed from the previous year.
 - **Towns**: `why` is one sentence naming the surrounding passes and the
   infrastructure (workshop, rental, bike hotel).
 - **Destinations**: follow `docs/destinations.md` – the circle decides the

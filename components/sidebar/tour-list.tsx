@@ -13,6 +13,7 @@ import { Switch } from "@/components/ui/switch";
 import { ALL_TOUR_TYPES, pickedMembers, toggleMember } from "@/lib/app-state";
 import type { Filters } from "@/lib/app-state";
 import { fill } from "@/lib/i18n/fill";
+import { periodLabel } from "@/lib/period";
 import type { TourRow } from "@/lib/rows";
 import type { Period, TourType } from "@/lib/types";
 import { cn } from "@/lib/utils";
@@ -23,6 +24,11 @@ export const TourList = ({
   period,
   tourTypes,
   onTourTypes,
+  onDate,
+  onOnDate,
+  pastEditions,
+  onPastEditions,
+  hasEditions,
   countWith,
   isShown,
   empty,
@@ -37,6 +43,14 @@ export const TourList = ({
   /** The kinds of tour the list keeps (`Filters.tourTypes`). */
   tourTypes: TourType[];
   onTourTypes: (types: TourType[]) => void;
+  /** Only the events on the chosen half-month (`Filters.onDate`). */
+  onDate: boolean;
+  onOnDate: (on: boolean) => void;
+  /** The earlier years of a changing event course (`Filters.pastEditions`). */
+  pastEditions: boolean;
+  onPastEditions: (on: boolean) => void;
+  /** Whether any series has an earlier year to bring back; no chip otherwise. */
+  hasEditions: boolean;
   /** How many loops a filter change would leave (`tourFacetCount`). */
   countWith: (patch: Partial<Filters>) => number;
   /** Whether a tour's "auf der Karte" switch is on (`isShown`, lib/app-state.ts). */
@@ -82,12 +96,49 @@ export const TourList = ({
             {t.vocab.tourType[type].label}
           </FilterChip>
         ))}
+        {/* Two chips that are not kinds: the event day against the chosen
+            half-month, and the earlier years of a changing course. */}
+        <FilterChip
+          label={fill(t.sidebar.filters.onDate, {
+            period: periodLabel(period, t),
+          })}
+          hint={t.sidebar.filters.onDateHint}
+          count={countWith({ onDate: true })}
+          left={t.sidebar.filters.toursLeft}
+          pressed={onDate}
+          onPressedChange={() => onOnDate(!onDate)}
+          className="shrink-0"
+        >
+          {fill(t.sidebar.filters.onDate, { period: periodLabel(period, t) })}
+        </FilterChip>
+        {hasEditions && (
+          <FilterChip
+            label={t.sidebar.filters.pastEditions}
+            hint={t.sidebar.filters.pastEditionsHint}
+            count={countWith({ pastEditions: true })}
+            left={t.sidebar.filters.toursLeft}
+            pressed={pastEditions}
+            onPressedChange={() => onPastEditions(!pastEditions)}
+            className="shrink-0"
+          >
+            {t.sidebar.filters.pastEditions}
+          </FilterChip>
+        )}
       </div>
       {rows.length === 0 ? (
         <ListEmpty title={t.sidebar.empty.noTours} {...empty} />
       ) : (
         <RowList items={rows} keyOf={({ tour }) => tour.slug}>
-          {({ tour, status, reason, favorite, season, window, range }) => {
+          {({
+            tour,
+            status,
+            reason,
+            favorite,
+            season,
+            window,
+            range,
+            older,
+          }) => {
             const onMap = isShown(tour.slug);
             return (
               <EntityRow
@@ -103,6 +154,12 @@ export const TourList = ({
                 name={tour.name}
                 subtitle={[
                   t.vocab.tourType[tour.type].label,
+                  tour.when === undefined ? null : periodLabel(tour.when, t),
+                  older === 1
+                    ? t.sidebar.lists.olderOne
+                    : older > 1
+                      ? fill(t.sidebar.lists.olderMany, { n: fmt(older) })
+                      : null,
                   showRange && range ? t.vocab.range[range].label : null,
                   fill(t.sidebar.lists.passes, { n: fmt(tour.passes.length) }),
                   window,

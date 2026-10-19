@@ -43,7 +43,13 @@ export const sidebar = {
     heat: "Valley heat (derived)",
     more: "More filters",
     noRoadsWithout: 'No roads. Without "{label}" there would be ',
+    /** The tour chip that keeps the events on the chosen half-month: "In late June". */
+    onDate: "In {period}",
+    onDateHint: "Only events whose day falls in the chosen half-month.",
     open: "Filter",
+    pastEditions: "Earlier years",
+    pastEditionsHint:
+      "Also the courses of past years, for events that change their course every year.",
     range: "Range",
     remove: 'Remove the "{label}" filter',
     reset: "Reset",
@@ -70,6 +76,8 @@ export const sidebar = {
   lists: {
     /** The areas' switch; it carries the towns listed under them too. */
     destinationsOnMap: "Destinations on the map",
+    olderMany: "+{n} earlier years",
+    olderOne: "+1 earlier year",
     onMap: "on the map",
     /** The last group of the areas' list: the towns no listed area holds. */
     otherTowns: "Other towns",

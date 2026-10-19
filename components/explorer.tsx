@@ -39,6 +39,7 @@ import {
   buildTownRows,
   currentBar,
   facetCount,
+  hasPastEditions,
   tourFacetCount,
   seasonBand,
   tabCounts,
@@ -314,6 +315,7 @@ export const Explorer = ({ data, defaultPeriod, children }: Props) => {
               }}
               countWith={countWith}
               tourCountWith={tourCountWith}
+              hasEditions={hasPastEditions(tours)}
               ranges={ranges}
               onRange={(range) => dispatch({ range, type: "range" })}
               shown={shown}

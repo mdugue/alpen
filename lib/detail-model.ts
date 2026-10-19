@@ -13,11 +13,14 @@ import type { DetailState } from "@/lib/detail-state";
 import { fill, surfaceWord } from "@/lib/i18n";
 import type { Messages } from "@/lib/i18n";
 import type { PageBundle } from "@/lib/page-data";
-import { periodIndex } from "@/lib/period";
+import { periodIndex, periodLabel } from "@/lib/period";
 import { crossingOf } from "@/lib/portrait";
 import { reachedPasses, reachedTowns, withinReach } from "@/lib/reach";
 import type { Reach, ReachKind } from "@/lib/reach";
+import { TOUR_TYPES } from "@/lib/regions";
+import type { TourTypeName } from "@/lib/regions";
 import { entityKey } from "@/lib/route-key";
+import { isPastEdition, latestEditions } from "@/lib/rows";
 import {
   bestText,
   cellAt,
@@ -70,6 +73,7 @@ export type BlockId =
   | "bases"
   | "nearby"
   | "tour-passes"
+  | "tour-editions"
   | "base-passes"
   | "area-passes"
   | "area-tours"
@@ -91,7 +95,7 @@ export type BlockId =
 export const BLOCKS: Record<DetailModel["kind"], BlockId[]> = {
   destination: ["area-passes", "area-tours", "area-towns", "area-travel"],
   pass: ["rating", "ascents", "weather", "climate", "bases", "nearby"],
-  tour: ["tour-passes", "nearby"],
+  tour: ["tour-passes", "tour-editions", "nearby"],
   town: ["base-passes", "weather", "nearby"],
 };
 
@@ -108,7 +112,10 @@ const KICKER = {
     ]
       .filter(Boolean)
       .join(" · "),
-  tour: (t: Tour, w: Messages) => w.vocab.tourType[t.type].label,
+  tour: (t: Tour, w: Messages) =>
+    [w.vocab.tourType[t.type].label, t.when && periodLabel(t.when, w)]
+      .filter(Boolean)
+      .join(" · "),
   town: (t: Town, w: Messages) =>
     fill(w.panel.kicker.town, { country: t.country }),
 };
@@ -184,6 +191,8 @@ export interface TourModel extends Reaching {
   season: string;
   /** The passes of the round, in the tour's own order; unknown slugs are dropped. */
   members: { pass: Pass; cell: YearCell }[];
+  /** The series' other years, newest first; empty for anything but an edition. */
+  otherEditions: Tour[];
 }
 
 /**
@@ -223,7 +232,11 @@ export interface DestinationModel extends Common {
   sentences: DerivedText;
   /** The member roads, best cell first, then by beauty and elevation; `season` is the road's own strip. */
   passes: { pass: Pass; cell: YearCell; season: YearCell[] }[];
-  tours: { tour: Tour; cell: YearCell }[];
+  /**
+   * The tours starting inside, one group per type in `TOUR_TYPES` order, empty
+   * groups dropped; of a series only its latest edition, as in the list.
+   */
+  tours: { type: TourTypeName; tours: { tour: Tour; cell: YearCell }[] }[];
   /** The towns inside, the named bases first. */
   towns: Town[];
 }
@@ -240,6 +253,30 @@ export interface DetailInput {
   /** The page's words: every sentence of the model is in them. */
   w: Messages;
 }
+
+/**
+ * An area's tours by type, in `TOUR_TYPES` order; of a series only its latest
+ * edition – the panel is an overview, the tour's own panel lists the years.
+ */
+const toursByType = (
+  slugs: readonly string[],
+  data: PageBundle,
+  period: Period,
+): DestinationModel["tours"] => {
+  const latest = latestEditions(data.tours);
+  const tours = slugs
+    .map((slug) => data.tours.find((t) => t.slug === slug))
+    .filter((tour) => tour !== undefined)
+    .filter((tour) => !isPastEdition(tour, latest))
+    .map((tour) => ({
+      cell: cellAt(data.years.tours[tour.slug], period),
+      tour,
+    }));
+  return TOUR_TYPES.map((type) => ({
+    tours: tours.filter(({ tour }) => tour.type === type),
+    type,
+  })).filter((group) => group.tours.length > 0);
+};
 
 /** The sentences of a derived year, with the words of its own block. */
 const derivedText = (
@@ -382,6 +419,14 @@ export const detailModel = (
           pass,
         })),
       name: tour.name,
+      otherEditions: data.tours
+        .filter(
+          (t) =>
+            tour.series !== undefined &&
+            t.series === tour.series &&
+            t.slug !== tour.slug,
+        )
+        .toSorted((a, b) => (b.year ?? 0) - (a.year ?? 0)),
       // A tour is a line; the panel has always read its surroundings from the
       // first waypoint, and the server measured the tours the same way.
       reach: reachOf(tour.waypoints[0]!),
@@ -432,13 +477,7 @@ export const detailModel = (
         w.panel.destination,
         w,
       ),
-      tours: members.tours
-        .map((slug) => data.tours.find((t) => t.slug === slug))
-        .filter((tour) => tour !== undefined)
-        .map((tour) => ({
-          cell: cellAt(data.years.tours[tour.slug], period),
-          tour,
-        })),
+      tours: toursByType(members.tours, data, period),
       towns: members.towns
         .map((slug) => data.townIndex.get(slug))
         .filter((town) => town !== undefined)

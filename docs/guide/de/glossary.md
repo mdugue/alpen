@@ -86,6 +86,13 @@ Seiten vorkommen – von „abgeleitet“ bis „zugeschneit“.
 - **Höhenstraße** – eine Straße, die oben bleibt, statt einmal überzuqueren:
   Hochebene oder Höhenweg. Eine der fünf Arten einer Straße.
 
+## J
+
+- **Jahresausgabe** – die Strecke eines Radmarathons, der jedes Jahr anders
+  fährt, etwa die Stelvio Santini 2026. Jedes Jahr ist ein eigener Eintrag;
+  die Tourenliste zeigt zunächst nur das neueste, der Chip „Frühere Jahre“
+  holt die übrigen zurück.
+
 ## K
 
 - **Klimareihe** – die zehnjährige Wetterreihe eines Passes (Open-Meteo,
@@ -160,7 +167,8 @@ Seiten vorkommen – von „abgeleitet“ bis „zugeschneit“.
   des Gebiets abgeleitet. Auf der Karte eine hellblaue Umrandung.
 - **Rundtour** – eine Runde über mehrere Pässe, etwa die Sellaronda. Ihr
   Status ist der ihres am stärksten eingeschränkten Passes. Zugleich eine der
-  vier Arten einer Tour, neben Veranstaltung, Dauerstrecke und Etappenroute.
+  fünf Arten einer Tour, neben Veranstaltung, Jahresausgabe, Dauerstrecke und
+  Etappenroute.
 
 ## S
 

@@ -68,6 +68,8 @@ export interface SidebarProps {
   countWith: (patch: Partial<Filters>) => number;
   /** How many loops a filter change would leave – the number on the tour-type chips. */
   tourCountWith: (patch: Partial<Filters>) => number;
+  /** Whether any changing event course has an earlier year (`hasPastEditions`). */
+  hasEditions: boolean;
   /** The ranges the data holds a road for; the "Gebirge" group shows with two or more. */
   ranges: readonly RangeName[];
   /** A range chip pressed: the filter and, with it, the frame (`range` in `reduce`). */
@@ -312,6 +314,11 @@ export const Sidebar = (p: SidebarProps) => {
               period={p.filters.period}
               tourTypes={p.filters.tourTypes}
               onTourTypes={(types) => set("tourTypes", types)}
+              onDate={p.filters.onDate}
+              onOnDate={(on) => set("onDate", on)}
+              pastEditions={p.filters.pastEditions}
+              onPastEditions={(on) => set("pastEditions", on)}
+              hasEditions={p.hasEditions}
               countWith={p.tourCountWith}
               isShown={(slug) => isShown(p.shown, "tour", slug)}
               empty={emptyProps}

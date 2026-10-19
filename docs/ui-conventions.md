@@ -411,12 +411,19 @@ every such link does, and one with a camera opens on that. The group shows only 
 ranges hold a road – a chip row of one is a statement, not a choice.
 
 One group is not in the panel: the kind of tour (`Filters.tourTypes`, the
-hash key `r`) – loop, event, permanent route, multi-day route. It says how a
+hash key `r`) – loop, event, edition, permanent route, multi-day route. It says how a
 tour is ridden, which no road has, so its chips would count zero roads or
 count something other than every chip around them. It rides as one sideways
 row under the tour list's toolbar instead, and its chips count loops
 (`tourFacetCount` in `lib/rows.ts`), disjunctively like the rest; the applied
-row and the badge carry it like any other decision.
+row and the badge carry it like any other decision. Two more chips ride in
+that row because they too ask about the tour and not its roads: "Termin"
+(`onDate`, hash `k`) keeps what takes place in the chosen half-month, and
+"Frühere Jahre" (`pastEditions`, hash `y`), shown only when the data holds an
+earlier edition, brings back the years the list hides by default. Hiding
+the older editions is a default rather than a chip that lies: the chip
+carries the count it would add, the row names how many years it stands for,
+and a favourite is never hidden.
 
 ### The panel scrolls with the lists, not above them
 

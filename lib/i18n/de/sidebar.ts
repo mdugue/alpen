@@ -52,7 +52,15 @@ export const sidebar = {
     more: "Weitere Filter",
     /** The dead end: the number follows, styled, then a full stop. */
     noRoadsWithout: "Keine Straßen. Ohne „{label}“ wären es ",
+    /** The tour chip that keeps the events on the chosen half-month: "Termin Ende Juni". */
+    onDate: "Termin {period}",
+    onDateHint:
+      "Nur Veranstaltungen, deren Termin in den gewählten Halbmonat fällt.",
     open: "Filter",
+    /** The tour chip that brings back the earlier years of a changing event course. */
+    pastEditions: "Frühere Jahre",
+    pastEditionsHint:
+      "Auch die Strecken vergangener Jahre bei Veranstaltungen, die ihre Strecke jedes Jahr ändern.",
     range: "Gebirge",
     remove: 'Filter „{label}" entfernen',
     reset: "Zurücksetzen",
@@ -84,6 +92,9 @@ export const sidebar = {
   lists: {
     /** The areas' switch; it carries the towns listed under them too. */
     destinationsOnMap: "Reiseziele auf der Karte",
+    /** On the latest edition while the earlier years are hidden. */
+    olderMany: "+{n} Vorjahre",
+    olderOne: "+1 Vorjahr",
     onMap: "auf der Karte",
     /** The last group of the areas' list: the towns no listed area holds. */
     otherTowns: "Weitere Orte",

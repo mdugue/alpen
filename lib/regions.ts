@@ -155,10 +155,24 @@ export type RoadTypeName = (typeof ROAD_TYPES)[number];
  * roads are like. Single-valued, because the question it answers is "can I
  * just go" – a loop any day, an event course whose roads close for one day a
  * year and are free the rest of it, a signposted permanent route with a stamp
- * card and a medal, or a route over several days from A to B with nights on
- * the way. The order is the display order in the chips and the scales dialog.
+ * card and a medal, a route over several days from A to B with nights on
+ * the way, or one year's course of an event that changes it every year (an
+ * `edition`, which carries its `series` and `year`). The order is the display
+ * order in the chips and the scales dialog.
  */
-export const TOUR_TYPES = ["loop", "event", "permanent", "stages"] as const;
+export const TOUR_TYPES = [
+  "loop",
+  "event",
+  "edition",
+  "permanent",
+  "stages",
+] as const;
+
+/** The kinds of tour that happen on one day a year and carry its `when`. */
+export const DATED_TOUR_TYPES = [
+  "event",
+  "edition",
+] as const satisfies readonly (typeof TOUR_TYPES)[number][];
 
 export type TourTypeName = (typeof TOUR_TYPES)[number];
 

@@ -306,7 +306,8 @@ side of the mountain. None of it is a file: it follows from `routes.json` and
   "note": "Der Galibier gibt das Fenster vor; Veranstaltung Anfang Juli.",
   "season": { "opens": 6, "closes": 10.5 }, // the loop's own window; null = whenever its passes are open
   "description": "…",
-  "type": "event", // loop | event | permanent | stages
+  "type": "event", // loop | event | edition | permanent | stages
+  "when": 7, // event and edition: the half-month it takes place in
   "waypoints": [{ "lat": 45.06, "lon": 6.03 }, "…"],
 }
 ```
@@ -315,8 +316,20 @@ side of the mountain. None of it is a file: it follows from `routes.json` and
 `loop` for a classic loop with nothing attached, `event` for the course of a
 sportive that closes its roads one day a year, `permanent` for a signposted
 route with a stamp card or timing (the Stoneman), `stages` for a route from A
-to B over several days (the Route des Grandes Alpes). Required and
-single-valued; the tour list filters by it.
+to B over several days (the Route des Grandes Alpes). `edition` is one
+year's course of an event whose route changes every year (Stelvio Santini,
+Étape du Tour): it carries `series` (the slug the years share) and `year`,
+its name ends in the year, and its slug is the series plus the year. Required
+and single-valued; the tour list filters by it.
+
+`when` is the half-month an `event` or `edition` takes place in – required
+for those two types and refused on the others (`Tour`'s refinement in
+`lib/schema.ts`). The tour list's "Termin" chip keeps what takes place in the
+chosen half-month, and the panel's kicker names it. By default the list shows
+only the latest `year` of each `series` and counts the hidden ones on its row
+("+2 Vorjahre"); the "Frühere Jahre" chip brings them back, grouped under the
+latest, newest first (`buildTourRows` in `lib/rows.ts`). An edition's panel
+links the series' other years; an area's lists only the latest.
 
 `passes` contains pass **slugs** in ride order; per half-month the tour takes
 the cell of the member pass that holds it back (`tourYear`, `lib/status.ts`).

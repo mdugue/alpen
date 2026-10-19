@@ -14,7 +14,7 @@ import { lodgingHref, workshopsHref } from "@/lib/links";
 /**
  * What a destination shows, from its model and nothing else: the verdict of
  * the half-month with the year under it, the area's own two sentences, then
- * what it holds – roads, loops, towns – and how one gets there. Every list
+ * what it holds – roads, tours by kind, towns – and how one gets there. Every list
  * links to the entity's own panel; the "where to stay" answer is the towns
  * block with a lodging search per base, a plain map search and no affiliate
  * (docs/plans/12-destinations.md).
@@ -71,19 +71,28 @@ export const DestinationDetail = ({
             {t.panel.destination.toursNone}
           </p>
         ) : (
-          <div className="flex flex-col items-start">
-            {model.tours.map(({ cell, tour }) => (
-              <EntityLink
-                key={tour.slug}
-                entity={{ kind: "tour", slug: tour.slug }}
-                {...pointing}
-              >
-                <StatusDot status={cell.status} /> {tour.name}
-                <span className="text-muted-foreground tabular-nums">
-                  {fmtUnit(tour.km, "km")} ·{" "}
-                  {fmtUnit(tour.elevationGain, t.vocab.unit.climb)}
-                </span>
-              </EntityLink>
+          <div className="flex flex-col gap-3">
+            {model.tours.map(({ tours, type }) => (
+              <div key={type} className="flex flex-col items-start">
+                {/* One heading per kind, so a loop to ride from the hotel is
+                    not confused with a race on one date. */}
+                <h4 className="text-muted-foreground text-2xs mb-0.5 font-medium">
+                  {t.vocab.tourType[type].plural}
+                </h4>
+                {tours.map(({ cell, tour }) => (
+                  <EntityLink
+                    key={tour.slug}
+                    entity={{ kind: "tour", slug: tour.slug }}
+                    {...pointing}
+                  >
+                    <StatusDot status={cell.status} /> {tour.name}
+                    <span className="text-muted-foreground tabular-nums">
+                      {fmtUnit(tour.km, "km")} ·{" "}
+                      {fmtUnit(tour.elevationGain, t.vocab.unit.climb)}
+                    </span>
+                  </EntityLink>
+                ))}
+              </div>
             ))}
           </div>
         )}

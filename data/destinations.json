@@ -752,5 +752,46 @@
   "character": "Ballon d'Alsace, La Planche des Belles Filles und der Grand Ballon – die Tour-de-France-Berge der Vogesen –, dazwischen ruhige Waldpässe und die viel befahrene N66 über Bussang.",
   "multiDay": "Zwei bis drei Tage; die Runde über Hundsruck, Ballon d'Alsace und Bussang an einem Tag, die Planche als Abstecher von Plancher-les-Mines.",
   "access": "Mit dem TGV nach Mulhouse und mit der Bahn weiter nach Thann und ins Thurtal; für die Westseite Belfort-Montbéliard TGV."
+ },
+ {
+  "slug": "osttirol",
+  "name": "Osttirol",
+  "country": "AT",
+  "center": {
+   "lat": 46.83,
+   "lon": 12.77
+  },
+  "radiusKm": 30,
+  "baseTowns": [
+   "lienz"
+  ],
+  "include": [
+   "staller-sattel"
+  ],
+  "exclude": [],
+  "character": "Gailbergsattel und Kartitscher Sattel, der Staller Sattel ins Defereggental, Kals und über den Iselsberg die Glocknerstraße: Lienz liegt, wo Drau-, Isel- und Pustertal zusammenkommen, und fast jeder Anstieg beginnt erst nach einer Talfahrt.",
+  "multiDay": "Drei bis vier Tage; die Runde der Dolomitenradrundfahrt ein Tag, nach Cortina oder ins Gailtal als Etappe.",
+  "access": "Bahnhof Lienz mit Zügen aus Villach und durch das Pustertal aus Innsbruck; Flughafen Klagenfurt gut zwei Stunden mit der Bahn."
+ },
+ {
+  "slug": "belluneser-dolomiten",
+  "name": "Belluneser Dolomiten",
+  "country": "IT",
+  "center": {
+   "lat": 46.15,
+   "lon": 11.97
+  },
+  "radiusKm": 25,
+  "baseTowns": [
+   "agordo",
+   "feltre"
+  ],
+  "include": [
+   "passo-staulanza"
+  ],
+  "exclude": [],
+  "character": "Duran, Cereda, Croce d'Aune und die beiden Forcelle rund um den Nationalpark zwischen Agordo und Feltre, dazu Rolle, Valles, Brocon und San Boldo am Rand: die stille Südseite der Dolomiten, niedriger und leerer als Sella und Cortina.",
+  "multiDay": "Vier bis fünf Tage; die Runde über Cereda, Rolle und Valles ein Tag, Duran und Staulanza ein zweiter, der Grappa als Tagesausflug von Feltre.",
+  "access": "Bahnhof Feltre an der Strecke Padua–Belluno, nach Agordo Bus ab Belluno; Flughafen Venedig oder Treviso in gut einer Stunde."
  }
 ]

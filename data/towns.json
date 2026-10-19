@@ -1257,5 +1257,59 @@
    "season"
   ],
   "why": "Stadt in der Rheinebene mit TGV-Bahnhof; Munster liegt knapp 20 km entfernt, die Schlucht gut 30. Trocken und mild, im Frühjahr früher fahrbar als die Täler."
+ },
+ {
+  "slug": "lienz",
+  "name": "Lienz",
+  "country": "AT",
+  "lat": 46.8299,
+  "lon": 12.7681,
+  "tags": [
+   "train",
+   "workshops",
+   "events"
+  ],
+  "aliases": [
+   "Osttirol",
+   "Lienzer Dolomiten",
+   "Drautal",
+   "Iseltal"
+  ],
+  "why": "Sonnenstadt im Kreuz von Drau-, Isel- und Pustertal: Gailbergsattel und Kartitscher Sattel auf der Runde der Dolomitenradrundfahrt, dazu Staller Sattel, Kals und über den Iselsberg die Glocknerstraße. Radläden mit Werkstatt und Verleih, geprüfte Radunterkünfte, Bahnhof."
+ },
+ {
+  "slug": "agordo",
+  "name": "Agordo",
+  "country": "IT",
+  "lat": 46.2821,
+  "lon": 12.035,
+  "tags": [
+   "passes",
+   "quiet"
+  ],
+  "aliases": [
+   "Conca Agordina",
+   "Taibon Agordino",
+   "Monte Agnèr"
+  ],
+  "why": "Hauptort der Conca Agordina unter dem Agnèr: Duran, Forcella Franche, Forcella Aurine und Cereda beginnen im Ort, Staulanza, Valles und Giau liegen eine Talfahrt entfernt. Ruhig, Radladen im Nachbarort Taibon."
+ },
+ {
+  "slug": "feltre",
+  "name": "Feltre",
+  "country": "IT",
+  "lat": 46.0164,
+  "lon": 11.9063,
+  "tags": [
+   "train",
+   "season",
+   "quiet"
+  ],
+  "aliases": [
+   "Feltrino",
+   "Pedavena",
+   "Valbelluna"
+  ],
+  "why": "Alte Stadt am Südrand der Belluneser Dolomiten: Croce d'Aune beginnt in Pedavena vor der Tür, Grappa, Brocon, Cereda und San Boldo liegen in Tagesreichweite. Radhotel mit Rennradverleih, Radläden, Bahnhof an der Strecke Padua–Belluno; tief genug für Frühjahr und Spätherbst."
  }
 ]
