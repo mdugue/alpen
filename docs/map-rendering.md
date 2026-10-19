@@ -169,8 +169,8 @@ name, and both win against the basemap's own place names.
 flowchart TB
   L9["app labels · profile cursor"]
   L8["passes · towns (marks)"]
-  L7["ascents — solid, status colour; unpaved ones dashed over it, their open dots ringed"]
-  L6["tour bands — hatched, translucent, under the ascents"]
+  L7["ascents — solid, status colour on a paper rim; unpaved ones dashed over it, their open dots ringed"]
+  L6["tour tubes — a rim in the tour colour around a pale inside, under the ascents; arrows on the selected one"]
   L5["the hovered town's reach hull"]
   L45["area outlines — a thin fill and edge in the area blue, the name on its centre"]
   L4["raster overlays (optional base, cycling overlay)"]
@@ -194,18 +194,43 @@ into one outline.
 ### A tour holds its ascents; it does not sit beside them
 
 A tour _is_ the union of several ascents – the Sellaronda is its four passes –
-so it is drawn as what it is: a band wide enough to hold them, laid _under_ the
-ascents so it reaches past them on both sides. What a tour contains is then
-read from the map rather than from the list, which a mark running alongside the
-ascents cannot say. The band is translucent, so the hillshade and the roads
-keep showing through something that covers this much ground, and hatched rather
-than solid, so it is told apart from an ascent by texture and not only by
-weight – the looser of the two marks, which is the right order, since the
-ascent is the rated thing and keeps the solid line and the opaque status
-colour. `DASH` counts in multiples of the line width, so on a band this wide
-the numbers have to be well below 1: widen the band and the dashes lengthen
-with it unless they come down to match, and long dashes on a wide line read as
-a chain of blocks rather than as a texture.
+so it is drawn as what it is: a tube the ascents run inside, wide enough to
+reach past them on both sides. What a tour contains is then read from the map
+rather than from the list, which a mark running alongside the ascents cannot
+say. The tube is three lines: the wall in the tour's colour, a narrower paper
+line over it that leaves only a rim of the wall showing (`TOUR_PARTS.inside`),
+and the road itself along the middle (`TOUR_PARTS.road`), thin, for the
+stretches between two ascents. The ascent keeps the solid line and the opaque
+status colour on top; it is the rated thing, the tour is the frame around it.
+
+An outline rather than a band, because a band has to be told apart from the
+ascent on it by texture. The hatch that did that until October 2026 broke into
+a chain of blocks in every switchback and meant nothing – a dashed line says
+"unpaved" on the ascents, so the same dash on a tour said something false. A
+wall follows a hairpin with a round join and says "everything in here belongs
+together", which is what a tour is.
+
+Every wall of every tour is drawn before any inside, so two tours on the same
+road merge into one tube with both colours on its rim – the road is shared,
+and the picture says so instead of stacking two bands. The inside is 80 %
+opaque: a breath of the wall's colour tints it, so a tour stays recognisable
+along a road its ascents cover completely, at the cost of the hillshade in a
+strip about a dozen pixels wide.
+
+The ascents carry a paper rim of their own (`ROUTE_CASING`), the same edge the
+tour's inside gives them, so a road is one kind of line on the whole map
+rather than a cased one inside a tour and a bare one outside it; on its own the
+rim lifts the status colour off the hillshade.
+
+The tour that is selected or pointed at shows which way round it is ridden:
+arrowheads along the line (`TOUR_PARTS.arrows`, a signed-distance image painted
+in the tour's colour with a paper halo), over the ascents, because on a loop
+like the Sellaronda the ascents are nearly all of it. The line runs the way the
+tour is ridden because its geometry is routed through `waypoints` in order, so
+the order of the waypoints in `data/tours.json` is a statement about the
+direction. The arrows are not drawn on every tour: across a region they would
+be noise laid over the status colours. Feature state cannot reach a layout
+property, so the other tours' arrows are placed and painted transparent.
 
 ### Translucent lines need `line-layer-opacity`, not `line-opacity`
 
@@ -218,7 +243,8 @@ in a hairpin at all. It is data-constant – zoom and global state only, no
 feature state – so anything per-feature has to be carried by width or colour
 instead. `line-gap-width` has a second, purely geometric failure in the same
 bends, folding its inner side inside out; there is no property that fixes that
-one, so offset lines stay out. Widths interpolate with the zoom and grow again
+one, so offset lines stay out – a tour's tube is a wide line with a narrower
+one over it for that reason, not a gap. Widths interpolate with the zoom and grow again
 for the selected tour; because a zoom expression may only be the input of the
 _outermost_ stop function, the selection case goes inside the stops
 (`tourWidth`) – the same reason the pass hit radius is one `interpolate` with a

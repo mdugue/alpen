@@ -95,6 +95,7 @@ describe("the first scene", () => {
       LAYERS.route.hit,
       LAYERS.tour.mark,
       ...LAYERS.tour.labels,
+      ...(LAYERS.tour.companions ?? []),
       LAYERS.tour.hit,
     ]);
     expect(of(calls, "state")).toEqual([

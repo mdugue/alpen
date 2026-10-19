@@ -244,8 +244,9 @@ The camera, the layer stack, hit testing, colours, the basemap.
 - **A selection is framed, not centred.** Fit the box of all of a pass's
   ascents (`passBounds`), not the marker.
   → [why](docs/map-rendering.md#a-selection-is-framed-not-centred)
-- **A tour holds its ascents; it does not sit beside them.** A hatched,
-  translucent band laid under the ascents and wide enough to hold them.
+- **A tour holds its ascents; it does not sit beside them.** A tube in the
+  tour's colour – a rim around a pale inside – laid under the ascents and wide
+  enough to hold them; no dash, which says "unpaved".
   → [why](docs/map-rendering.md#a-tour-holds-its-ascents-it-does-not-sit-beside-them)
 - **Translucent lines need `line-layer-opacity`, not `line-opacity`.**
   `line-opacity` composites every hairpin overlap twice; the layer property is
