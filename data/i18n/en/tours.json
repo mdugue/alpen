@@ -11,6 +11,10 @@
   "description": "Furka – Grimsel – Susten, back through the Schöllenen gorge.",
   "note": "Alpenbrevet in early September."
  },
+ "arlberg-giro": {
+  "description": "From St. Anton over the Arlberg into the Klostertal and to Bludenz, through the Montafon up the Silvretta High Alpine Road, over the Bielerhöhe into the Paznaun and back to St. Anton through the Stanzertal.",
+  "note": "Event in late July or early August; the Silvretta is a toll road."
+ },
  "ballino-runde": {
   "description": "From Riva via Tenno and the Lago di Tenno up to the Passo del Ballino, via Fiavè and Ponte Arche into the Sarca valley and back to the lake via Sarche and Arco.",
   "note": "Occasional snow at the top of the Ballino in winter."
@@ -50,6 +54,10 @@
  "grappa-runde": {
   "description": "From Bassano via Semonzo up to the Monte Grappa and down via Possagno, back to Bassano along the foot of the mountain – up the classic side, down the quiet one.",
   "note": "Temporarily closed at the top after snowfall."
+ },
+ "grosse-scheidegg-runde": {
+  "description": "From Meiringen through the Rosenlaui valley over the Grosse Scheidegg to Grindelwald, down to Interlaken and back to Meiringen along the south shore of Lake Brienz via Iseltwald and Brienz.",
+  "note": "The Grosse Scheidegg is open only to the postbus and to bicycles."
  },
  "hochvogesen-runde": {
   "description": "From Munster to the Schlucht, along the Route des Crêtes over the Hohneck and the Markstein to the Grand Ballon, and back into the Munster valley over the Platzerwasel.",

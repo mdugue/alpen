@@ -4934,5 +4934,28 @@
     "bestAs": "both"
    }
   ]
+ },
+ "passo-pampeago": {
+  "intro": "Das Reiterjoch unter dem Latemar verbindet das Fleimstal mit dem Eggental und ist vor allem als Giro-Bergankunft an der Alpe di Pampeago bekannt. Für den Giro 2012 wurde das letzte Stück zum Joch asphaltiert, seitdem ist es eine durchgehende Straße, die für Autos gesperrt bleibt.",
+  "sides": [
+   {
+    "character": "Von Tesero gleich steil und kaum nachlassend im Wald hinauf zur Skistation, dann auf dem für Autos gesperrten Stück noch einmal steiler zum Joch. Hart und gleichmäßig; bergab ist es die breitere Straße.",
+    "highlights": "Am Weg die Gedenkstätte der Stava-Katastrophe von 1985.",
+    "hazards": [
+     "steep",
+     "tight-hairpins"
+    ],
+    "bestAs": "both"
+   },
+   {
+    "character": "Von Birchabruck mit sehr steilen Rampen hinauf nach Obereggen, dann einspurig und ruhiger durch Wald und über Almen zum Joch. Bergab wegen der Rampen und der schmalen Straße unangenehm.",
+    "highlights": "Der Latemar über den Almen bei Obereggen.",
+    "hazards": [
+     "steep",
+     "narrow"
+    ],
+    "bestAs": "up"
+   }
+  ]
  }
 }

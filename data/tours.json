@@ -2244,5 +2244,128 @@
     "lon": 7.5427
    }
   ]
+ },
+ {
+  "slug": "arlberg-giro",
+  "surface": "asphalt",
+  "name": "Arlberg Giro",
+  "color": "#a87a4a",
+  "km": 150,
+  "elevationGain": 2500,
+  "passes": [
+   "arlbergpass",
+   "silvretta-hochalpenstrasse"
+  ],
+  "note": "Veranstaltung Ende Juli oder Anfang August; die Silvretta ist eine Mautstraße.",
+  "season": null,
+  "description": "Von St. Anton über den Arlberg ins Klostertal und nach Bludenz, durchs Montafon auf die Silvretta-Hochalpenstraße, über die Bielerhöhe ins Paznaun und durchs Stanzertal zurück nach St. Anton.",
+  "type": "event",
+  "waypoints": [
+   {
+    "lat": 47.1289,
+    "lon": 10.2664
+   },
+   {
+    "lat": 47.13,
+    "lon": 10.211
+   },
+   {
+    "lat": 47.1321,
+    "lon": 10.1207
+   },
+   {
+    "lat": 47.153,
+    "lon": 9.8219
+   },
+   {
+    "lat": 47.0802,
+    "lon": 9.9197
+   },
+   {
+    "lat": 46.969,
+    "lon": 10.0607
+   },
+   {
+    "lat": 46.918,
+    "lon": 10.096
+   },
+   {
+    "lat": 46.9195,
+    "lon": 10.1706
+   },
+   {
+    "lat": 47.012,
+    "lon": 10.2913
+   },
+   {
+    "lat": 47.1349,
+    "lon": 10.5129
+   },
+   {
+    "lat": 47.1495,
+    "lon": 10.3436
+   },
+   {
+    "lat": 47.1289,
+    "lon": 10.2664
+   }
+  ]
+ },
+ {
+  "slug": "grosse-scheidegg-runde",
+  "surface": "asphalt",
+  "name": "Grosse-Scheidegg-Runde",
+  "color": "#b8865a",
+  "km": 79,
+  "elevationGain": 1470,
+  "passes": [
+   "grosse-scheidegg"
+  ],
+  "note": "Die Grosse Scheidegg ist nur für Postauto und Velos offen.",
+  "season": null,
+  "description": "Von Meiringen durchs Rosenlauital über die Grosse Scheidegg nach Grindelwald, hinab nach Interlaken und am Südufer des Brienzersees über Iseltwald und Brienz zurück nach Meiringen.",
+  "type": "loop",
+  "waypoints": [
+   {
+    "lat": 46.7286,
+    "lon": 8.1871
+   },
+   {
+    "lat": 46.6802,
+    "lon": 8.1534
+   },
+   {
+    "lat": 46.6753,
+    "lon": 8.133
+   },
+   {
+    "lat": 46.655,
+    "lon": 8.102
+   },
+   {
+    "lat": 46.6243,
+    "lon": 8.0367
+   },
+   {
+    "lat": 46.6326,
+    "lon": 7.8998
+   },
+   {
+    "lat": 46.6855,
+    "lon": 7.8585
+   },
+   {
+    "lat": 46.7105,
+    "lon": 7.9635
+   },
+   {
+    "lat": 46.756,
+    "lon": 8.0303
+   },
+   {
+    "lat": 46.7286,
+    "lon": 8.1871
+   }
+  ]
  }
 ]

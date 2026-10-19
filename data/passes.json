@@ -7285,6 +7285,10 @@
   "note": "Von Mals über die Malser Haide und an Haider- und Reschensee entlang, mit dem Kirchturm im See kurz vor der Passhöhe; breite Transitstraße, ganzjährig offen. Nur die Südseite: Von Norden ist die B 180 zwischen Kajetansbrücke und Nauders für Räder gesperrt, der Radweg kommt über Martina und die Norbertshöhe, und ab Nauders fehlen dann nur gut 100 Höhenmeter.",
   "ascents": [
    {
+    "check": {
+     "minPeakAt": 0.6,
+     "note": "Die Straße läuft ab St. Valentin fast eben über das Reschen-Plateau am Haider See und am Reschensee entlang; das Geländemodell legt die höchste Probe deshalb bei Graun auf gut zwei Drittel der Strecke, wenige Meter über der Passhöhe an der Grenze."
+    },
     "from": {
      "lat": 46.6886,
      "lon": 10.5464
@@ -9939,6 +9943,48 @@
      "lon": 11.9889
     },
     "label": "Titele (Süd)"
+   }
+  ]
+ },
+ {
+  "slug": "passo-pampeago",
+  "surface": "asphalt",
+  "name": "Passo Pampeago",
+  "type": "pass",
+  "aliases": [
+   "Reiterjoch",
+   "Passo Lavazè di Pampeago"
+  ],
+  "country": "IT",
+  "region": "Dolomiten",
+  "lat": 46.3538,
+  "lon": 11.5398,
+  "elevation": 1983,
+  "classicAscent": "11,1 km, 9,1 % ab Tesero",
+  "beauty": 4,
+  "fame": 3,
+  "difficulty": 5,
+  "traffic": 2,
+  "season": {
+   "opens": 6,
+   "closes": 10.5,
+   "maintained": false
+  },
+  "note": "Der steile Anstieg von Tesero zur Skistation Alpe di Pampeago, wo der Giro mehrmals ankam; die letzten drei Kilometer zum Joch erst seit 2012 asphaltiert und für Autos gesperrt, nach Obereggen einspurig. Im Winter liegt die Passhöhe im Skigebiet, gefahren wird im Sommer.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.2889,
+     "lon": 11.5105
+    },
+    "label": "Tesero (Süd)"
+   },
+   {
+    "from": {
+     "lat": 46.4261,
+     "lon": 11.4795
+    },
+    "label": "Birchabruck (Nord)"
    }
   ]
  },

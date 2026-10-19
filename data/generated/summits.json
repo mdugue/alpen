@@ -233,6 +233,7 @@
   "passo-lavaze": {"dem":1804,"lat":46.3547,"lon":11.4927,"roadDist":0.004},
   "passo-manghen": {"dem":2037,"lat":46.173,"lon":11.441,"roadDist":0.037},
   "passo-monte-croce-comelico": {"dem":1652,"lat":46.6559,"lon":12.4201,"roadDist":0.004},
+  "passo-pampeago": {"dem":1991,"lat":46.3538,"lon":11.5398,"roadDist":0.002},
   "passo-pordoi": {"dem":2253,"lat":46.488,"lon":11.813,"roadDist":0.024},
   "passo-rolle": {"dem":1991,"lat":46.297,"lon":11.786,"roadDist":0.07},
   "passo-san-bernardino": {"dem":2068,"lat":46.497,"lon":9.171,"roadDist":0.003},
