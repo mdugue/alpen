@@ -95,6 +95,14 @@
           "mixed"
         ]
       },
+      "touches": {
+        "minItems": 1,
+        "type": "array",
+        "items": {
+          "type": "string",
+          "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+        }
+      },
       "type": {
         "type": "string",
         "enum": [

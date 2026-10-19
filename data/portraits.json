@@ -4957,5 +4957,77 @@
     "bestAs": "up"
    }
   ]
+ },
+ "la-plagne": {
+  "intro": "Der Skiort über der Tarentaise ist 2025 Ziel der 19. Etappe der Tour de France gewesen, die Thymen Arensman knapp vor Vingegaard und Pogačar gewann, und am selben Tag des Étape du Tour für die Jedermänner. Die Straße ist für den Wintersport gebaut: breit, gleichmäßig und mit vielen Kehren.",
+  "sides": [
+   {
+    "character": "Von Aime über Mâcot fast durchgehend um 7 bis 8 %, in langen Kehrenfolgen durch den Wald; oben flacht es zwischen den Skistationen kurz ab, bevor es von Plagne Centre noch einmal nach Plagne Villages hinaufgeht.",
+    "highlights": "Der Blick zurück ins Tal der Isère und zu den Gipfeln der Tarentaise, sobald der Wald aufhört.",
+    "hazards": []
+   }
+  ]
+ },
+ "ballon-de-servance": {
+  "intro": "Der Übergang neben dem Ballon de Servance ist der erste Berg der Les 3 Ballons, die von Ronchamp aus über ihn nach Le Thillot fahren. Eine stille Waldstraße mit Moos und Bächen statt Rundblick; der Gipfel selbst liegt abseits und ist nur zu Fuß zu erreichen.",
+  "sides": [
+   {
+    "bestAs": "both",
+    "character": "Von Plancher-les-Mines erst flach im Tal, ab dem Abzweig zur Planche des Belles Filles stetig im Wald und auf den letzten Kilometern deutlich steiler, mit kurzen zweistelligen Rampen.",
+    "highlights": "Der Abzweig zur Planche des Belles Filles, die man auf derselben Runde noch fahren kann.",
+    "hazards": [
+     "steep",
+     "narrow"
+    ]
+   },
+   {
+    "bestAs": "up",
+    "character": "Von Le Thillot über den Col des Croix gleichmäßig und nie steil durch den Wald. Als Abfahrt schmal, holprig und stellenweise mit Rollsplitt – deshalb besser hinauf.",
+    "highlights": "Der Col des Croix unterwegs, wo die Straße von der Moselle nach Haute-Saône wechselt.",
+    "hazards": [
+     "narrow",
+     "rough",
+     "gravel"
+    ]
+   }
+  ]
+ },
+ "le-markstein": {
+  "intro": "Der Markstein ist der Knoten der südlichen Hochvogesen: Hier treffen die Kammstraße, das Florival und das obere Thurtal aufeinander, und die Tour de France kommt immer wieder vorbei, 2014 von Linthal herauf und 2023 mit dem Etappenziel. Oben Weiden, Skilifte und Gasthöfe, der Grand Ballon ist auf der Kammstraße nah.",
+  "sides": [
+   {
+    "bestAs": "up",
+    "character": "Von Lautenbach durch das Florival erst sanft, dann in zwei steileren Abschnitten im Wald, getrennt vom Flachstück am Lac de la Lauch; die letzten Kilometer ziehen noch einmal an.",
+    "highlights": "Der Lac de la Lauch auf halber Höhe, ein Stausee im Wald unter dem Kamm.",
+    "hazards": []
+   },
+   {
+    "bestAs": "both",
+    "character": "Von Wildenstein am oberen Ende des Thurtals ruhig und gleichmäßig in Kehren durch den Wald, kurz vor dem Markstein auf offenen Weiden etwas über dem Ziel und dann leicht hinab zur Station.",
+    "highlights": "Der Blick über den Stausee von Kruth-Wildenstein auf dem Weg hinauf.",
+    "hazards": []
+   }
+  ]
+ },
+ "iselsberg": {
+  "intro": "Der Sattel zwischen Osttirol und Kärnten, über den die Glocknerstraße von Lienz kommt: Wer von Lienz zum Großglockner will, fährt hier hinauf, und auf der Rückfahrt von der anderen Seite noch einmal. Oben ein Dorf mit Gasthöfen und der Blick auf die Lienzer Dolomiten.",
+  "sides": [
+   {
+    "bestAs": "both",
+    "character": "Von Dölsach gleichmäßig um 7 % mit einigen Kehren, offen und wenig schattig; das Ortsschild von Iselsberg kommt vor dem Scheitel, es geht danach noch ein Stück weiter.",
+    "highlights": "Der Blick zurück über den Lienzer Talboden auf die Lienzer Dolomiten.",
+    "hazards": [
+     "traffic"
+    ]
+   },
+   {
+    "bestAs": "both",
+    "character": "Von Winklern kurz und gleichmäßig steil, fast durchweg um 8 %, erst auf den letzten paar hundert Metern flacher.",
+    "highlights": "Der Blick ins Mölltal Richtung Heiligenblut.",
+    "hazards": [
+     "traffic"
+    ]
+   }
+  ]
  }
 }

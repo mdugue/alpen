@@ -2,6 +2,9 @@
 
 exports[`status matrix for all passes × 24 half-months 1`] = `
 [
+  "rrrrooooooooooooooorrrrr  ballon-de-servance",
+  "rrrrooooooooooooooorrrrr  iselsberg",
+  "rrrrooooooooooooooorrrrr  le-markstein",
   "rrrrooooooooorroooorrrrr  col-de-l-orme",
   "rrrrooooooooorroooorrrrr  col-de-la-porte",
   "rrrrooooooooorroooorrrrr  col-saint-roch",
@@ -99,6 +102,7 @@ exports[`status matrix for all passes × 24 half-months 1`] = `
   "rrrrrroorrrrrrroooorrrrr  forcella-aurine",
   "rrrrrroorrrrrrrrooorrrrr  passo-sommo",
   "rrrrrrroooooooooooorrrrr  grand-ballon",
+  "rrrrrrroooooooooooorrrrr  la-plagne",
   "rrrrrrroooooooooooorrrrr  nigerpass",
   "rrrrrrroooooooooooorrrrr  penegal",
   "rrrrrrroooooooooooorrrrr  reschenpass",

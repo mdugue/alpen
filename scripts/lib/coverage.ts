@@ -332,13 +332,14 @@ export interface TourCoverage {
  * would come to cross three roads the app had never heard of.
  */
 export const tourCoverage = (
-  tour: { passes: readonly string[] },
+  tour: { passes: readonly string[]; touches?: readonly string[] },
   line: Line,
   nodes: readonly OverpassNode[],
   passes: readonly Pass[],
   floor: number = TOUR_FLOOR,
 ): TourCoverage => {
-  const named = new Set(tour.passes);
+  // What the tour names as touched is answered too: a junction, not a climb.
+  const named = new Set([...tour.passes, ...(tour.touches ?? [])]);
   // Crossings only: a spur's top on the line is a stich the curator chose to
   // leave out (the warning on spurs says why), and a valley or a balcony
   // has its marker on the very road a loop rides along.

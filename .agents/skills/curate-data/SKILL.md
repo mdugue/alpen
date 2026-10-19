@@ -89,7 +89,8 @@ authoritative. In addition:
   Dolomitenradrundfahrt from Lienz, its Gailbergsattel) falls through it:
   `bun run scripts/analyze-coverage.ts --tours <slug>` lists the saddles from
   600 m on the stored line that are no entry, and `data:check` warns about
-  every entry the line crosses that the tour does not name. `waypoints`
+  every entry the line crosses that the tour does not name; an entry the line
+  only touches at a junction (Umbrail from Bormio) goes into `touches`. `waypoints`
   closed for loops (last = first); `km` and `elevationGain` from a trusted source. `season` is the
   loop's own window as two half-months like a pass's, or `null` when the
   passes alone decide; it may be narrower than the passes' windows, never

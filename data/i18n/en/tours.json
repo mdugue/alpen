@@ -47,6 +47,18 @@
   "description": "From Zernez over the Flüela Pass to Davos, through the Landwasser valley to Filisur and Bergün, over the Albula Pass to La Punt and down the Engadine back to Zernez.",
   "note": "Event in early July, held over three days since 2026; the former 211 km course is no longer ridden."
  },
+ "etape-du-tour-2024": {
+  "description": "From Nice over the Col de Nice and the Col de Braus to Sospel, up the Turini via Moulinet, down the Vésubie to Saint-Martin-Vésubie, over the Col Saint-Martin at La Colmiane into the Tinée and from Saint-Sauveur up to the finish on the Col de la Couillole.",
+  "note": "Held on 7 July 2024 on closed roads ahead of the Tour stage; finish on the Couillole."
+ },
+ "etape-du-tour-2025": {
+  "description": "From Albertville via Ugine up the côte of Héry-sur-Ugine, over the Col des Saisies to Beaufort, from Arêches up the Col du Pré, past the Lac de Roselend over the Cormet de Roselend, down through Les Chapieux to Bourg-Saint-Maurice and from Aime up to the finish at La Plagne.",
+  "note": "Held on 20 July 2025 on closed roads with 16,000 riders; the pro stage five days later was cut short without the Saisies, the Étape rode the full course."
+ },
+ "etape-du-tour-2026": {
+  "description": "From Bourg d'Oisans via Allemond over the Col de la Croix de Fer and down to Saint-Jean-de-Maurienne, up the Télégraphe and the Galibier, down over the Lautaret and past La Grave to Mizoën, and over the Col de Sarenne to the finish at Alpe d'Huez, from the back rather than up the 21 hairpins.",
+  "note": "Held on 19 July 2026 on closed roads, six days before the Tour stage; finish at Alpe d'Huez via the Sarenne."
+ },
  "gavia-mortirolo-runde": {
   "description": "Bormio – Gavia – Ponte di Legno – Edolo – Mortirolo from Monno – Mazzo – Bormio.",
   "note": "The Gavia sets the window."
@@ -79,6 +91,10 @@
   "description": "Bourg d'Oisans – Glandon – Télégraphe – Galibier – Lautaret – Alpe d'Huez.",
   "note": "The Galibier sets the window; event in early July."
  },
+ "les-3-ballons": {
+  "description": "From Ronchamp via Plancher-les-Mines over the Ballon de Servance to Le Thillot, via Cornimont and Ventron over the Col d'Oderen to Kruth, from Wildenstein up to the Markstein and along the Route des Crêtes to the Grand Ballon, down the Thur valley and over the Col du Hundsruck to Masevaux, from Sewen up the Ballon d'Alsace and down to Giromagny, finishing on the Planche des Belles Filles.",
+  "note": "Event in early June from Ronchamp, finishing on the Planche des Belles Filles; on the Ballon d'Alsace the course rides only the flank from Sewen, not up to the col."
+ },
  "lombardia-runde": {
   "description": "The finale of the Giro di Lombardia from Bellagio: over the Ghisallo to Asso, through Sormano over the Muro up to the Colma and along the lake via Nesso back to Bellagio.",
   "note": "Occasional snow on the Sormano in winter."
@@ -86,6 +102,10 @@
  "maratona-dles-dolomites-lang": {
   "description": "Sellaronda plus Campolongo (twice), Giau, Falzarego and Valparola from La Villa.",
   "note": "Event in early July; the passes are closed on the day."
+ },
+ "marcialonga-cycling-craft": {
+  "description": "From Predazzo via Moena to Sèn Jan di Fassa and over the Costalunga, down past the Lago di Carezza and Nova Levante to Ponte Nova, up via Obereggen to the Passo Pampeago and down to Tesero, then from Moena over the San Pellegrino and the steep Passo Valles and back to Predazzo through the forest of Paneveggio.",
+  "note": "Granfondo in late May, early for the Costalunga, San Pellegrino and Valles; the stretch from Obereggen over the Pampeago is closed to cars."
  },
  "melogno-scravaion-runde": {
   "description": "From Finale Ligure via Finalborgo up to the Colle del Melogno, through Calizzano and Bardineto to the Colle Scravaion and back along the coast via Castelvecchio and Albenga.",
@@ -114,6 +134,14 @@
  "sellaronda": {
   "description": "Classic Dolomites loop around the Sella massif from Corvara, clockwise.",
   "note": "Car-free Sellaronda Bike Day in June and in September."
+ },
+ "sportful-dolomiti-race": {
+  "description": "From Feltre via Sospirolo through the Valle del Mis over the Forcella Franche to Agordo, up the Cordevole to Alleghe and from Selva di Cadore over the Staulanza into the Val di Zoldo, back over the Passo Duran to Agordo, over the Forcella Aurine and the Passo Cereda into the Primiero and from the Cismon valley over the Croce d'Aune back to Feltre.",
+  "note": "Granfondo in mid-June from Feltre over the quiet passes of the Belluno Dolomites. Course unchanged since 2025."
+ },
+ "stelvio-santini": {
+  "description": "From Bormio down the Valtellina to Grosio, up the short steep ramp to Rogorbello above Vervio, from Lovero and Sernio up onto the Mortirolo ridge and over the pass, down towards Grosio and back up the valley to Bormio, finishing on the Stelvio.",
+  "note": "Event in early June finishing on the Stelvio; the Mortirolo from Lovero and Sernio along the ridge. Course unchanged since 2024."
  },
  "stilfserjoch-umbrail-runde": {
   "description": "Prad – Stilfserjoch (48 hairpins) – Umbrail – Santa Maria – Glurns – Prad.",

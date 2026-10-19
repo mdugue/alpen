@@ -1190,6 +1190,7 @@
   "passes": [
    "col-de-la-schlucht",
    "route-des-cretes",
+   "le-markstein",
    "grand-ballon",
    "col-du-platzerwasel"
   ],
@@ -2377,6 +2378,942 @@
     "lat": 46.7286,
     "lon": 8.1871
    }
+  ]
+ },
+ {
+  "slug": "stelvio-santini",
+  "surface": "asphalt",
+  "name": "Stelvio Santini",
+  "color": "#5a6fa8",
+  "km": 130,
+  "elevationGain": 4270,
+  "passes": [
+   "passo-del-mortirolo",
+   "passo-dello-stelvio"
+  ],
+  "note": "Veranstaltung Anfang Juni mit Ziel auf dem Stilfser Joch; der Mortirolo von Lovero und Sernio über den Kamm. Strecke seit 2024 unverändert.",
+  "season": null,
+  "description": "Bormio – Grosio – Rogorbello – Lovero – Mortirolo – Grosio – Bormio – Stilfser Joch.",
+  "type": "event",
+  "waypoints": [
+   {
+    "lat": 46.4686,
+    "lon": 10.3719
+   },
+   {
+    "lat": 46.4602,
+    "lon": 10.3591
+   },
+   {
+    "lat": 46.4135,
+    "lon": 10.3507
+   },
+   {
+    "lat": 46.375,
+    "lon": 10.3595
+   },
+   {
+    "lat": 46.3323,
+    "lon": 10.3493
+   },
+   {
+    "lat": 46.3258,
+    "lon": 10.336
+   },
+   {
+    "lat": 46.3336,
+    "lon": 10.3261
+   },
+   {
+    "lat": 46.2867,
+    "lon": 10.261
+   },
+   {
+    "lat": 46.2618,
+    "lon": 10.2509
+   },
+   {
+    "lat": 46.2611,
+    "lon": 10.2359
+   },
+   {
+    "lat": 46.2489,
+    "lon": 10.2288
+   },
+   {
+    "lat": 46.2514,
+    "lon": 10.2421
+   },
+   {
+    "lat": 46.2412,
+    "lon": 10.2419
+   },
+   {
+    "lat": 46.2273,
+    "lon": 10.1981
+   },
+   {
+    "lat": 46.2196,
+    "lon": 10.2336
+   },
+   {
+    "lat": 46.2013,
+    "lon": 10.2396
+   },
+   {
+    "lat": 46.249,
+    "lon": 10.301
+   },
+   {
+    "lat": 46.2453,
+    "lon": 10.2887
+   },
+   {
+    "lat": 46.2941,
+    "lon": 10.2909
+   },
+   {
+    "lat": 46.2868,
+    "lon": 10.2798
+   },
+   {
+    "lat": 46.2939,
+    "lon": 10.2813
+   },
+   {
+    "lat": 46.3193,
+    "lon": 10.3062
+   },
+   {
+    "lat": 46.3315,
+    "lon": 10.3485
+   },
+   {
+    "lat": 46.3539,
+    "lon": 10.3566
+   },
+   {
+    "lat": 46.4135,
+    "lon": 10.3507
+   },
+   {
+    "lat": 46.4669,
+    "lon": 10.3795
+   },
+   {
+    "lat": 46.5029,
+    "lon": 10.3564
+   },
+   {
+    "lat": 46.5158,
+    "lon": 10.4092
+   },
+   {
+    "lat": 46.5402,
+    "lon": 10.4169
+   },
+   {
+    "lat": 46.529,
+    "lon": 10.453
+   }
+  ],
+  "when": 6,
+  "touches": [
+   "umbrailpass"
+  ]
+ },
+ {
+  "slug": "sportful-dolomiti-race",
+  "surface": "asphalt",
+  "name": "Sportful Dolomiti Race",
+  "color": "#9a5a7a",
+  "km": 204,
+  "elevationGain": 4900,
+  "passes": [
+   "forcella-franche",
+   "passo-staulanza",
+   "passo-duran",
+   "forcella-aurine",
+   "passo-cereda",
+   "passo-croce-d-aune"
+  ],
+  "note": "Granfondo Mitte Juni ab Feltre über die stillen Pässe der Belluneser Dolomiten. Strecke seit 2025 unverändert.",
+  "season": null,
+  "description": "Feltre – Valle del Mis – Forcella Franche – Agordo – Alleghe – Staulanza – Duran – Forcella Aurine – Cereda – Primiero – Croce d'Aune – Feltre.",
+  "type": "event",
+  "waypoints": [
+   {
+    "lat": 46.0166,
+    "lon": 11.906
+   },
+   {
+    "lat": 46.064,
+    "lon": 11.9323
+   },
+   {
+    "lat": 46.1146,
+    "lon": 12.0526
+   },
+   {
+    "lat": 46.157,
+    "lon": 12.0847
+   },
+   {
+    "lat": 46.1988,
+    "lon": 12.0343
+   },
+   {
+    "lat": 46.2089,
+    "lon": 11.9905
+   },
+   {
+    "lat": 46.2333,
+    "lon": 12.0132
+   },
+   {
+    "lat": 46.2714,
+    "lon": 12.0371
+   },
+   {
+    "lat": 46.3518,
+    "lon": 11.9668
+   },
+   {
+    "lat": 46.4056,
+    "lon": 12.0233
+   },
+   {
+    "lat": 46.4363,
+    "lon": 11.9966
+   },
+   {
+    "lat": 46.4507,
+    "lon": 12.0426
+   },
+   {
+    "lat": 46.421,
+    "lon": 12.105
+   },
+   {
+    "lat": 46.3933,
+    "lon": 12.1022
+   },
+   {
+    "lat": 46.3558,
+    "lon": 12.1448
+   },
+   {
+    "lat": 46.3438,
+    "lon": 12.0996
+   },
+   {
+    "lat": 46.325,
+    "lon": 12.096
+   },
+   {
+    "lat": 46.2938,
+    "lon": 12.0876
+   },
+   {
+    "lat": 46.2755,
+    "lon": 12.0512
+   },
+   {
+    "lat": 46.2869,
+    "lon": 12.0208
+   },
+   {
+    "lat": 46.2366,
+    "lon": 11.976
+   },
+   {
+    "lat": 46.2079,
+    "lon": 11.9546
+   },
+   {
+    "lat": 46.2089,
+    "lon": 11.9276
+   },
+   {
+    "lat": 46.1907,
+    "lon": 11.942
+   },
+   {
+    "lat": 46.193,
+    "lon": 11.9054
+   },
+   {
+    "lat": 46.1851,
+    "lon": 11.8459
+   },
+   {
+    "lat": 46.1365,
+    "lon": 11.7693
+   },
+   {
+    "lat": 46.0491,
+    "lon": 11.7692
+   },
+   {
+    "lat": 46.0618,
+    "lon": 11.8301
+   },
+   {
+    "lat": 46.0394,
+    "lon": 11.8657
+   },
+   {
+    "lat": 46.04,
+    "lon": 11.9098
+   },
+   {
+    "lat": 46.0166,
+    "lon": 11.906
+   }
+  ],
+  "when": 6.5
+ },
+ {
+  "slug": "marcialonga-cycling-craft",
+  "surface": "asphalt",
+  "name": "Marcialonga Cycling Craft",
+  "color": "#6a9a9a",
+  "km": 135,
+  "elevationGain": 3900,
+  "passes": [
+   "passo-di-costalunga",
+   "passo-pampeago",
+   "passo-san-pellegrino",
+   "passo-valles"
+  ],
+  "note": "Granfondo Ende Mai, früh für Costalunga, San Pellegrino und Valles; das Stück von Obereggen über den Pampeago ist für Autos gesperrt.",
+  "season": null,
+  "description": "Predazzo – Moena – Costalunga – Karersee – Welschnofen – Obereggen – Pampeago – Predazzo – San Pellegrino – Valles – Paneveggio – Predazzo.",
+  "type": "event",
+  "waypoints": [
+   {
+    "lat": 46.3134,
+    "lon": 11.6005
+   },
+   {
+    "lat": 46.3344,
+    "lon": 11.6049
+   },
+   {
+    "lat": 46.3808,
+    "lon": 11.6655
+   },
+   {
+    "lat": 46.4192,
+    "lon": 11.6806
+   },
+   {
+    "lat": 46.4037,
+    "lon": 11.6427
+   },
+   {
+    "lat": 46.4043,
+    "lon": 11.609
+   },
+   {
+    "lat": 46.4109,
+    "lon": 11.5669
+   },
+   {
+    "lat": 46.431,
+    "lon": 11.5434
+   },
+   {
+    "lat": 46.4292,
+    "lon": 11.4916
+   },
+   {
+    "lat": 46.4401,
+    "lon": 11.4688
+   },
+   {
+    "lat": 46.4171,
+    "lon": 11.4896
+   },
+   {
+    "lat": 46.3945,
+    "lon": 11.4784
+   },
+   {
+    "lat": 46.3853,
+    "lon": 11.5316
+   },
+   {
+    "lat": 46.3538,
+    "lon": 11.5398
+   },
+   {
+    "lat": 46.3443,
+    "lon": 11.5535
+   },
+   {
+    "lat": 46.3234,
+    "lon": 11.5039
+   },
+   {
+    "lat": 46.2932,
+    "lon": 11.5049
+   },
+   {
+    "lat": 46.2855,
+    "lon": 11.5547
+   },
+   {
+    "lat": 46.3013,
+    "lon": 11.5902
+   },
+   {
+    "lat": 46.3344,
+    "lon": 11.605
+   },
+   {
+    "lat": 46.3751,
+    "lon": 11.6575
+   },
+   {
+    "lat": 46.3655,
+    "lon": 11.709
+   },
+   {
+    "lat": 46.378,
+    "lon": 11.792
+   },
+   {
+    "lat": 46.3786,
+    "lon": 11.8186
+   },
+   {
+    "lat": 46.3551,
+    "lon": 11.8493
+   },
+   {
+    "lat": 46.3386,
+    "lon": 11.8003
+   },
+   {
+    "lat": 46.3005,
+    "lon": 11.7263
+   },
+   {
+    "lat": 46.3173,
+    "lon": 11.6515
+   },
+   {
+    "lat": 46.3134,
+    "lon": 11.6005
+   }
+  ],
+  "when": 5.5
+ },
+ {
+  "slug": "les-3-ballons",
+  "surface": "asphalt",
+  "name": "Les 3 Ballons",
+  "color": "#8a7a4a",
+  "km": 181,
+  "elevationGain": 4020,
+  "passes": [
+   "ballon-de-servance",
+   "col-d-oderen",
+   "le-markstein",
+   "grand-ballon",
+   "col-du-hundsruck",
+   "la-planche-des-belles-filles"
+  ],
+  "note": "Veranstaltung Anfang Juni ab Ronchamp, Ziel auf der Planche des Belles Filles; vom Ballon d'Alsace fährt die Strecke nur die Flanke ab Sewen, nicht bis zum Col.",
+  "season": null,
+  "description": "Ronchamp – Ballon de Servance – Le Thillot – Col d'Oderen – Markstein – Grand Ballon – Hundsruck – Sewen – Ballon d'Alsace – Giromagny – Planche des Belles Filles.",
+  "type": "event",
+  "waypoints": [
+   {
+    "lat": 47.6977,
+    "lon": 6.6374
+   },
+   {
+    "lat": 47.7117,
+    "lon": 6.7322
+   },
+   {
+    "lat": 47.7703,
+    "lon": 6.7425
+   },
+   {
+    "lat": 47.8004,
+    "lon": 6.7936
+   },
+   {
+    "lat": 47.847,
+    "lon": 6.7882
+   },
+   {
+    "lat": 47.8463,
+    "lon": 6.7534
+   },
+   {
+    "lat": 47.8621,
+    "lon": 6.7432
+   },
+   {
+    "lat": 47.8748,
+    "lon": 6.7622
+   },
+   {
+    "lat": 47.8924,
+    "lon": 6.7392
+   },
+   {
+    "lat": 47.8931,
+    "lon": 6.7653
+   },
+   {
+    "lat": 47.9444,
+    "lon": 6.8326
+   },
+   {
+    "lat": 47.9227,
+    "lon": 6.9174
+   },
+   {
+    "lat": 47.9181,
+    "lon": 6.9536
+   },
+   {
+    "lat": 47.9557,
+    "lon": 6.9618
+   },
+   {
+    "lat": 47.9416,
+    "lon": 6.9776
+   },
+   {
+    "lat": 47.9594,
+    "lon": 6.9851
+   },
+   {
+    "lat": 47.9482,
+    "lon": 7.0114
+   },
+   {
+    "lat": 47.9244,
+    "lon": 7.0099
+   },
+   {
+    "lat": 47.9037,
+    "lon": 7.1033
+   },
+   {
+    "lat": 47.8755,
+    "lon": 7.1273
+   },
+   {
+    "lat": 47.8698,
+    "lon": 7.0907
+   },
+   {
+    "lat": 47.8198,
+    "lon": 7.0756
+   },
+   {
+    "lat": 47.8063,
+    "lon": 7.0424
+   },
+   {
+    "lat": 47.7765,
+    "lon": 7.0005
+   },
+   {
+    "lat": 47.8088,
+    "lon": 6.943
+   },
+   {
+    "lat": 47.8168,
+    "lon": 6.8538
+   },
+   {
+    "lat": 47.8053,
+    "lon": 6.8724
+   },
+   {
+    "lat": 47.7996,
+    "lon": 6.8318
+   },
+   {
+    "lat": 47.7434,
+    "lon": 6.8211
+   },
+   {
+    "lat": 47.7173,
+    "lon": 6.7364
+   },
+   {
+    "lat": 47.7703,
+    "lon": 6.7425
+   },
+   {
+    "lat": 47.77,
+    "lon": 6.7769
+   },
+   {
+    "lat": 47.7728,
+    "lon": 6.7785
+   }
+  ],
+  "when": 6
+ },
+ {
+  "slug": "etape-du-tour-2024",
+  "surface": "asphalt",
+  "name": "L'Étape du Tour 2024",
+  "color": "#b0805a",
+  "km": 138,
+  "elevationGain": 4600,
+  "passes": [
+   "col-de-nice",
+   "col-de-braus",
+   "col-de-turini",
+   "col-saint-martin",
+   "col-de-la-couillole"
+  ],
+  "note": "Veranstaltung am 7. Juli 2024 auf gesperrten Straßen, eine Woche vor der Tour-Etappe; Ziel auf der Couillole.",
+  "season": null,
+  "description": "Nice – Col de Nice – Braus – Sospel – Turini – Vésubie – Col Saint-Martin – Saint-Sauveur-sur-Tinée – Couillole.",
+  "type": "edition",
+  "waypoints": [
+   {
+    "lat": 43.7344,
+    "lon": 7.3019
+   },
+   {
+    "lat": 43.7937,
+    "lon": 7.3532
+   },
+   {
+    "lat": 43.8269,
+    "lon": 7.3505
+   },
+   {
+    "lat": 43.8726,
+    "lon": 7.3989
+   },
+   {
+    "lat": 43.8591,
+    "lon": 7.4432
+   },
+   {
+    "lat": 43.9192,
+    "lon": 7.4042
+   },
+   {
+    "lat": 43.9758,
+    "lon": 7.4121
+   },
+   {
+    "lat": 43.979,
+    "lon": 7.391
+   },
+   {
+    "lat": 43.9872,
+    "lon": 7.324
+   },
+   {
+    "lat": 44.0291,
+    "lon": 7.3091
+   },
+   {
+    "lat": 44.0621,
+    "lon": 7.2578
+   },
+   {
+    "lat": 44.0905,
+    "lon": 7.2516
+   },
+   {
+    "lat": 44.071,
+    "lon": 7.2214
+   },
+   {
+    "lat": 44.0639,
+    "lon": 7.1873
+   },
+   {
+    "lat": 44.0752,
+    "lon": 7.1657
+   },
+   {
+    "lat": 44.0484,
+    "lon": 7.1311
+   },
+   {
+    "lat": 44.0887,
+    "lon": 7.107
+   },
+   {
+    "lat": 44.0966,
+    "lon": 7.0561
+   },
+   {
+    "lat": 44.084,
+    "lon": 7.057
+   },
+   {
+    "lat": 44.1002,
+    "lon": 7.0229
+   }
+  ],
+  "when": 7,
+  "series": "etape-du-tour",
+  "year": 2024
+ },
+ {
+  "slug": "etape-du-tour-2025",
+  "surface": "asphalt",
+  "name": "L'Étape du Tour 2025",
+  "color": "#b0805a",
+  "km": 131,
+  "elevationGain": 4500,
+  "passes": [
+   "col-des-saisies",
+   "col-du-pre",
+   "cormet-de-roselend",
+   "la-plagne"
+  ],
+  "note": "Veranstaltung am 20. Juli 2025 auf gesperrten Straßen mit 16 000 Teilnehmern; die Profi-Etappe wurde fünf Tage später ohne Saisies gekürzt, das Étape fuhr die volle Strecke.",
+  "season": null,
+  "description": "Albertville – Héry-sur-Ugine – Saisies – Beaufort – Col du Pré – Cormet de Roselend – Bourg-Saint-Maurice – La Plagne.",
+  "type": "edition",
+  "waypoints": [
+   {
+    "lat": 45.6911,
+    "lon": 6.4012
+   },
+   {
+    "lat": 45.7584,
+    "lon": 6.4199
+   },
+   {
+    "lat": 45.758,
+    "lon": 6.4612
+   },
+   {
+    "lat": 45.7946,
+    "lon": 6.4832
+   },
+   {
+    "lat": 45.7948,
+    "lon": 6.5319
+   },
+   {
+    "lat": 45.7586,
+    "lon": 6.5291
+   },
+   {
+    "lat": 45.7416,
+    "lon": 6.5564
+   },
+   {
+    "lat": 45.7519,
+    "lon": 6.5778
+   },
+   {
+    "lat": 45.7321,
+    "lon": 6.5405
+   },
+   {
+    "lat": 45.7179,
+    "lon": 6.5752
+   },
+   {
+    "lat": 45.6854,
+    "lon": 6.5688
+   },
+   {
+    "lat": 45.6903,
+    "lon": 6.598
+   },
+   {
+    "lat": 45.6805,
+    "lon": 6.6152
+   },
+   {
+    "lat": 45.7011,
+    "lon": 6.649
+   },
+   {
+    "lat": 45.6913,
+    "lon": 6.6906
+   },
+   {
+    "lat": 45.6981,
+    "lon": 6.7251
+   },
+   {
+    "lat": 45.6702,
+    "lon": 6.7704
+   },
+   {
+    "lat": 45.6299,
+    "lon": 6.7856
+   },
+   {
+    "lat": 45.5865,
+    "lon": 6.7453
+   },
+   {
+    "lat": 45.557,
+    "lon": 6.6566
+   },
+   {
+    "lat": 45.5541,
+    "lon": 6.6778
+   },
+   {
+    "lat": 45.5324,
+    "lon": 6.6661
+   },
+   {
+    "lat": 45.5063,
+    "lon": 6.6833
+   }
+  ],
+  "when": 7.5,
+  "series": "etape-du-tour",
+  "year": 2025
+ },
+ {
+  "slug": "etape-du-tour-2026",
+  "surface": "asphalt",
+  "name": "L'Étape du Tour 2026",
+  "color": "#b0805a",
+  "km": 170,
+  "elevationGain": 5400,
+  "passes": [
+   "col-de-la-croix-de-fer",
+   "col-du-telegraphe",
+   "col-du-galibier",
+   "col-du-lautaret",
+   "col-de-sarenne",
+   "alpe-d-huez"
+  ],
+  "note": "Veranstaltung am 19. Juli 2026 auf gesperrten Straßen, sechs Tage vor der Tour-Etappe; Ziel in Alpe d'Huez über den Sarenne.",
+  "season": null,
+  "description": "Bourg d'Oisans – Croix de Fer – Saint-Jean-de-Maurienne – Télégraphe – Galibier – Lautaret – Mizoën – Col de Sarenne – Alpe d'Huez.",
+  "type": "edition",
+  "waypoints": [
+   {
+    "lat": 45.1002,
+    "lon": 6.0091
+   },
+   {
+    "lat": 45.145,
+    "lon": 6.0545
+   },
+   {
+    "lat": 45.187,
+    "lon": 6.0338
+   },
+   {
+    "lat": 45.2112,
+    "lon": 6.0475
+   },
+   {
+    "lat": 45.201,
+    "lon": 6.0844
+   },
+   {
+    "lat": 45.2385,
+    "lon": 6.1758
+   },
+   {
+    "lat": 45.227,
+    "lon": 6.203
+   },
+   {
+    "lat": 45.1923,
+    "lon": 6.2928
+   },
+   {
+    "lat": 45.2728,
+    "lon": 6.3449
+   },
+   {
+    "lat": 45.2157,
+    "lon": 6.4749
+   },
+   {
+    "lat": 45.2076,
+    "lon": 6.4534
+   },
+   {
+    "lat": 45.1933,
+    "lon": 6.4682
+   },
+   {
+    "lat": 45.2027,
+    "lon": 6.4446
+   },
+   {
+    "lat": 45.1238,
+    "lon": 6.4176
+   },
+   {
+    "lat": 45.086,
+    "lon": 6.4374
+   },
+   {
+    "lat": 45.064,
+    "lon": 6.408
+   },
+   {
+    "lat": 45.052,
+    "lon": 6.3895
+   },
+   {
+    "lat": 45.034,
+    "lon": 6.405
+   },
+   {
+    "lat": 45.0491,
+    "lon": 6.3153
+   },
+   {
+    "lat": 45.0392,
+    "lon": 6.1773
+   },
+   {
+    "lat": 45.0475,
+    "lon": 6.1385
+   },
+   {
+    "lat": 45.1001,
+    "lon": 6.1647
+   },
+   {
+    "lat": 45.0875,
+    "lon": 6.1491
+   },
+   {
+    "lat": 45.0881,
+    "lon": 6.0558
+   },
+   {
+    "lat": 45.092,
+    "lon": 6.07
+   },
+   {
+    "lat": 45.0947,
+    "lon": 6.0709
+   }
+  ],
+  "when": 7.5,
+  "series": "etape-du-tour",
+  "year": 2026,
+  "touches": [
+   "col-du-glandon"
   ]
  }
 ]

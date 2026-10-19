@@ -7363,6 +7363,43 @@
   ]
  },
  {
+  "slug": "iselsberg",
+  "surface": "asphalt",
+  "name": "Iselsberg",
+  "type": "pass",
+  "aliases": [
+   "Iselsbergpass"
+  ],
+  "country": "AT",
+  "region": "Ostalpen",
+  "lat": 46.8542,
+  "lon": 12.8581,
+  "elevation": 1204,
+  "classicAscent": "7,6 km, 6,8 % ab Dölsach",
+  "beauty": 3,
+  "fame": 2,
+  "difficulty": 2,
+  "traffic": 4,
+  "season": null,
+  "note": "Der Übergang der B107 von Lienz ins Mölltal nach Winklern und damit der Weg zur Großglocknerstraße; ganzjährig geräumt, entsprechend Verkehr mit Motorrädern und Bussen. Die Südseite über Dölsach ist die längere, mit Blick auf die Lienzer Dolomiten.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.8283,
+     "lon": 12.8284
+    },
+    "label": "Dölsach (Süd)"
+   },
+   {
+    "from": {
+     "lat": 46.8657,
+     "lon": 12.8752
+    },
+    "label": "Winklern (Nord)"
+   }
+  ]
+ },
+ {
   "slug": "col-de-la-forclaz-martigny",
   "surface": "asphalt",
   "name": "Col de la Forclaz",
@@ -10647,7 +10684,11 @@
      "lat": 44.4893,
      "lon": 7.0934
     },
-    "label": "Ponte Marmora (Nord)"
+    "label": "Ponte Marmora (Nord)",
+    "router": {
+     "use": "osrm",
+     "note": "ORS antwortet für diese Auffahrt mit 404: Sein Rennradgraph führt die schmale Straße über Marmora zum Colle nicht. OSRM folgt der Passstraße; der Fauniera-Anstieg nebenan bleibt ein ORS-Kandidat."
+    }
    }
   ]
  },
@@ -10747,6 +10788,36 @@
      "lon": 6.6909
     },
     "label": "Morzine (Nord)"
+   }
+  ]
+ },
+ {
+  "slug": "la-plagne",
+  "surface": "asphalt",
+  "name": "La Plagne",
+  "type": "spur",
+  "aliases": [
+   "Plagne Villages"
+  ],
+  "country": "FR",
+  "region": "Westalpen",
+  "lat": 45.5063,
+  "lon": 6.6833,
+  "elevation": 2052,
+  "classicAscent": "19,1 km, 7,2 % ab Aime",
+  "beauty": 3,
+  "fame": 4,
+  "difficulty": 4,
+  "traffic": 3,
+  "season": null,
+  "note": "Straße zum Skiort, ganzjährig geräumt. 2025 Zielankunft der 19. Etappe der Tour de France und des Étape du Tour, oben in Plagne Villages über Plagne Centre; eine lange, gleichmäßige Auffahrt, landschaftlich eher nüchtern.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 45.557,
+     "lon": 6.6566
+    },
+    "label": "Aime"
    }
   ]
  },
@@ -11335,6 +11406,81 @@
      "lon": 7.1033
     },
     "km": 29
+   }
+  ]
+ },
+ {
+  "slug": "ballon-de-servance",
+  "surface": "asphalt",
+  "name": "Ballon de Servance",
+  "type": "pass",
+  "aliases": [
+   "Col du Ballon de Servance"
+  ],
+  "country": "FR",
+  "region": "Vogesen",
+  "lat": 47.8226,
+  "lon": 6.79,
+  "elevation": 1157,
+  "classicAscent": "10,7 km, 5,7 % ab Plancher-les-Mines",
+  "beauty": 2,
+  "fame": 2,
+  "difficulty": 2,
+  "traffic": 1,
+  "season": null,
+  "note": "Ruhige, schmale Waldstraße (D16) von Plancher-les-Mines über die Schulter des Ballon de Servance zum Col des Croix und hinunter nach Le Thillot, Auftakt der Les 3 Ballons. Wenig Aussicht, oben nur ein Parkplatz im Wald; der Belag nach Le Thillot ist stellenweise holprig.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 47.7703,
+     "lon": 6.7425
+    },
+    "label": "Plancher-les-Mines (Süd)"
+   },
+   {
+    "from": {
+     "lat": 47.8748,
+     "lon": 6.7622
+    },
+    "label": "Le Thillot (Nord)"
+   }
+  ]
+ },
+ {
+  "slug": "le-markstein",
+  "surface": "asphalt",
+  "name": "Le Markstein",
+  "type": "pass",
+  "aliases": [
+   "Col du Markstein",
+   "Markstein"
+  ],
+  "country": "FR",
+  "region": "Vogesen",
+  "lat": 47.9231,
+  "lon": 7.0321,
+  "elevation": 1183,
+  "classicAscent": "15,6 km, 5,2 % ab Lautenbach",
+  "beauty": 3,
+  "fame": 3,
+  "difficulty": 2,
+  "traffic": 2,
+  "season": null,
+  "note": "Skistation am Kreuz der Kammstraße mit der D430 aus dem Florival und der D27 aus dem oberen Thurtal; 2023 Etappenziel der Tour de France. Die Zufahrten zur Station werden im Winter geräumt, die Route des Crêtes nach Norden und zum Grand Ballon ist dann gesperrt.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 47.941,
+     "lon": 7.1588
+    },
+    "label": "Lautenbach (Ost)"
+   },
+   {
+    "from": {
+     "lat": 47.9557,
+     "lon": 6.9618
+    },
+    "label": "Wildenstein (West)"
    }
   ]
  }

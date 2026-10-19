@@ -3342,5 +3342,53 @@
     "highlights": "The Latemar above the pastures near Obereggen."
    }
   ]
+ },
+ "la-plagne": {
+  "intro": "In 2025 the ski resort above the Tarentaise was the finish of stage 19 of the Tour de France, won by Thymen Arensman just ahead of Vingegaard and Pogačar, and that same summer the finish of the Étape du Tour for amateurs. The road was built for winter sport: wide, steady and with many hairpins.",
+  "sides": [
+   {
+    "character": "From Aime via Mâcot almost all the way at 7 to 8 %, in long series of hairpins through the forest; near the top it eases briefly between the ski stations before climbing once more from Plagne Centre to Plagne Villages.",
+    "highlights": "The view back down the Isère valley and to the peaks of the Tarentaise once the forest ends."
+   }
+  ]
+ },
+ "ballon-de-servance": {
+  "intro": "The crossing beside the Ballon de Servance is the first climb of Les 3 Ballons, which ride over it from Ronchamp to Le Thillot. A still forest road with moss and streams rather than a panorama; the summit itself lies off the road and is reached only on foot.",
+  "sides": [
+   {
+    "character": "From Plancher-les-Mines flat along the valley at first, then steady in the forest from the turn-off to the Planche des Belles Filles and clearly steeper over the last kilometres, with short double-digit ramps.",
+    "highlights": "The turn-off to the Planche des Belles Filles, which fits into the same ride."
+   },
+   {
+    "character": "From Le Thillot over the Col des Croix, steady and never steep through the forest. As a descent narrow, bumpy and with loose grit in places – so better ridden up.",
+    "highlights": "The Col des Croix on the way, where the road passes from the Moselle side into Haute-Saône."
+   }
+  ]
+ },
+ "le-markstein": {
+  "intro": "The Markstein is the hub of the southern High Vosges: the crest road, the Florival and the upper Thur valley meet here, and the Tour de France keeps coming by, climbing from Linthal in 2014 and finishing here in 2023. At the top meadows, ski lifts and inns, with the Grand Ballon close by on the crest road.",
+  "sides": [
+   {
+    "character": "From Lautenbach up the Florival gently at first, then in two steeper sections through the forest, split by the flat stretch at the Lac de la Lauch; the last kilometres pick up once more.",
+    "highlights": "The Lac de la Lauch halfway up, a reservoir in the forest below the crest."
+   },
+   {
+    "character": "From Wildenstein at the head of the Thur valley quiet and steady in hairpins through the forest, topping out on open meadows just above the station before dropping gently to it.",
+    "highlights": "The view over the Kruth-Wildenstein reservoir on the way up."
+   }
+  ]
+ },
+ "iselsberg": {
+  "intro": "The saddle between East Tyrol and Carinthia that carries the Glockner road up from Lienz: anyone riding from Lienz to the Grossglockner climbs it here, and again from the other side on the way back. At the top a village with inns and the view of the Lienz Dolomites.",
+  "sides": [
+   {
+    "character": "From Dölsach steady at around 7 % with a few hairpins, open and with little shade; the Iselsberg village sign comes before the top, and the road climbs on a little after it.",
+    "highlights": "The view back over the Lienz basin to the Lienz Dolomites."
+   },
+   {
+    "character": "From Winklern short and evenly steep, around 8 % nearly all the way, easing only over the last few hundred metres.",
+    "highlights": "The view up the Möll valley towards Heiligenblut."
+   }
+  ]
  }
 }

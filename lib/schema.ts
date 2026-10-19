@@ -360,6 +360,13 @@ export const Tour = z
      */
     surface: Surface,
     /**
+     * Entries the line passes within a few hundred metres without riding them:
+     * a pass whose top is a junction on the course (the Umbrail on the way up
+     * the Stelvio from Bormio). Named so `data:check` stops asking whether the
+     * tour forgot them; they never count towards the tour's status.
+     */
+    touches: z.array(Slug).min(1).optional(),
+    /**
      * What kind of ride it is (see `TOUR_TYPES`): a loop, an event course, a
      * signposted permanent route or a route in stages. Required, so a new tour
      * is never filed under "loop" by default.

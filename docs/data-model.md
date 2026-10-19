@@ -331,6 +331,12 @@ only the latest `year` of each `series` and counts the hidden ones on its row
 latest, newest first (`buildTourRows` in `lib/rows.ts`). An edition's panel
 links the series' other years; an area's lists only the latest.
 
+`touches` names entries the line passes without riding them – a pass whose
+top is a junction on the course, like the Umbrail on the way up the Stelvio
+from Bormio. `data:check` warns about every entry the line crosses that
+`passes` does not name; `touches` answers that warning on purpose, and the
+named entries never count towards the tour's status.
+
 `passes` contains pass **slugs** in ride order; per half-month the tour takes
 the cell of the member pass that holds it back (`tourYear`, `lib/status.ts`).
 `season` is the loop's own window where the curator knows one – the same two

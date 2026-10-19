@@ -391,6 +391,24 @@ const checkTourSurface = (t: Tour, byPass: Map<string, Pass>) => {
     );
 };
 
+/** What a tour names as touched has to exist, like what it names as ridden. */
+const checkTouches = (t: Tour, byPass: Map<string, Pass>) => {
+  for (const s of t.touches ?? [])
+    if (!byPass.has(s))
+      errors.push(`Tour ${t.slug}: unbekannter Pass ${s} in touches`);
+};
+
+/** A course from A to B: its last waypoint is not its first. */
+const isOpenCourse = ({ waypoints }: Tour): boolean => {
+  const [first] = waypoints;
+  const last = waypoints.at(-1);
+  return (
+    first !== undefined &&
+    last !== undefined &&
+    (first.lat !== last.lat || first.lon !== last.lon)
+  );
+};
+
 const checkTours = (list: Tour[], byPass: Map<string, Pass>) => {
   dupes(list, "Touren");
   for (const t of list) {
@@ -415,15 +433,19 @@ const checkTours = (list: Tour[], byPass: Map<string, Pass>) => {
             `Tour ${t.slug}: Wegpunkt ${i} liegt ${DE.vocab.range[range].outside} (${box.lat.join("–")}° N, ${box.lon.join("–")}° E)`,
           );
     }
-    for (const s of t.passes) {
+    const open = isOpenCourse(t);
+    checkTouches(t, byPass);
+    for (const [i, s] of t.passes.entries()) {
       const p = byPass.get(s);
       if (!p) {
         errors.push(`Tour ${t.slug}: unbekannter Pass ${s}`);
         continue;
       }
       // A road that ends at its summit cannot be crossed, so a tour listing it
-      // either has the wrong pass or the pass is wrongly marked.
-      if (p.type === "spur")
+      // either has the wrong pass or the pass is wrongly marked – unless it is
+      // where an open course finishes, as an event on a summit does.
+      const finish = open && i === t.passes.length - 1;
+      if (p.type === "spur" && !finish)
         warnings.push(
           `Tour ${t.slug}: ${s} ist eine Stichstraße – eine Runde kann dort nicht hinüber`,
         );

@@ -138,4 +138,12 @@ test("a tour's line names the entries it rides over and the saddles no entry sta
   expect(cov.unnamed.map((p) => p.slug)).toEqual(["ridden"]);
   expect(cov.candidates.map((c) => c.name)).toEqual(["Sella Bassa"]);
   expect(tourQuery(line)).toContain("node(46.4580,10.3620,46.6780,10.3820)");
+  // A junction the tour names as touched is not asked about again.
+  expect(
+    tourCoverage({ passes: ["named"], touches: ["ridden"] }, line, nodes, [
+      named,
+      ridden,
+      aside,
+    ]).unnamed,
+  ).toEqual([]);
 });

@@ -53,6 +53,14 @@
    "Sewen (east)"
   ]
  },
+ "ballon-de-servance": {
+  "classicAscent": "10.7 km, 5.7 % from Plancher-les-Mines",
+  "note": "A quiet, narrow forest road (D16) from Plancher-les-Mines over the shoulder of the Ballon de Servance to the Col des Croix and down to Le Thillot, the opening climb of Les 3 Ballons. Few views, only a car park in the woods at the top; the surface towards Le Thillot is bumpy in places.",
+  "ascents": [
+   "Plancher-les-Mines (south)",
+   "Le Thillot (north)"
+  ]
+ },
  "berninapass": {
   "classicAscent": "32 km, 4.5 % from Poschiavo",
   "note": "Open all year, glacier views at Lago Bianco.",
@@ -1110,6 +1118,14 @@
    "Oberiberg (east)"
   ]
  },
+ "iselsberg": {
+  "classicAscent": "7.6 km, 6.8 % from Dölsach",
+  "note": "The B107 crossing from Lienz into the Möll valley at Winklern, and so the way to the Grossglockner road; cleared all year, with the traffic that brings, motorbikes and coaches included. The southern side via Dölsach is the longer one, with views of the Lienz Dolomites.",
+  "ascents": [
+   "Dölsach (south)",
+   "Winklern (north)"
+  ]
+ },
  "jaufenpass": {
   "classicAscent": "15 km, 6.8 % from St. Leonhard",
   "note": "Usually open into November. Third pass of the Ötztaler.",
@@ -1206,6 +1222,13 @@
    "Junction in Bonneval-sur-Arc"
   ]
  },
+ "la-plagne": {
+  "classicAscent": "19.1 km, 7.2 % from Aime",
+  "note": "Road to a ski resort, cleared all year. In 2025 the finish of stage 19 of the Tour de France and of the Étape du Tour, at Plagne Villages above Plagne Centre; a long, steady climb, rather plain to look at.",
+  "ascents": [
+   "Aime"
+  ]
+ },
  "la-planche-des-belles-filles": {
   "classicAscent": "8.2 km, 6.9 % from Plancher-les-Mines",
   "note": "A Tour de France finish since 2012, and in 2020 the time trial with which Pogačar won the Tour. The tarmac ends at the ski station; the gravel ramp of the “Super Planche” above it is no place for a road bike.",
@@ -1218,6 +1241,14 @@
   "note": "Short dead end above La Grave; at the top you stand face to face with the Meije – one of the great panoramas of the Western Alps. Continuing onto the Plateau d'Emparis is only possible off the tarmac.",
   "ascents": [
    "La Grave"
+  ]
+ },
+ "le-markstein": {
+  "classicAscent": "15.6 km, 5.2 % from Lautenbach",
+  "note": "Ski station where the crest road meets the D430 from the Florival and the D27 from the upper Thur valley; a Tour de France stage finish in 2023. The access roads to the station are cleared in winter, while the Route des Crêtes to the north and on to the Grand Ballon is closed then.",
+  "ascents": [
+   "Lautenbach (east)",
+   "Wildenstein (west)"
   ]
  },
  "les-arcs": {
