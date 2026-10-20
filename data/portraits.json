@@ -5029,5 +5029,47 @@
     ]
    }
   ]
+ },
+ "col-de-champex": {
+  "intro": "Eine kleine Passstraße hinauf nach Champex-Lac, dem Kurort an einem Bergsee unter dem Massiv des Grand Combin. Sie läuft parallel zum unteren Teil der Großer-Sankt-Bernhard-Straße und ist der ruhige Umweg zwischen Martigny und Orsières.",
+  "sides": [
+   {
+    "character": "Von Les Valettes zuerst durch eine Schlucht, dann in vielen engen Kehren durch Wald, unten am steilsten und nach oben hin flacher; schmal und wenig befahren.",
+    "highlights": "Der See von Champex-Lac, an dem die Straße oben ankommt.",
+    "hazards": [
+     "tight-hairpins",
+     "narrow",
+     "steep"
+    ],
+    "bestAs": "up"
+   },
+   {
+    "character": "Von Orsières gleichmäßig in Kehren über Wiesen und durch Wald, eine breitere Straße mit der Postautolinie; als Abfahrt flüssig.",
+    "highlights": "Der Blick hinunter ins Val d'Entremont und auf Orsières.",
+    "hazards": [
+     "tight-hairpins"
+    ],
+    "bestAs": "down"
+   }
+  ]
+ },
+ "col-de-saint-jean": {
+  "intro": "Ein kurzer, stiller Übergang der Baronnies zwischen dem Céans-Tal bei Laborel und dem Méouge-Tal bei Eygalayes. Oben stehen eine kleine Kapelle und ein Aussichtspunkt; mit Perty und Macuègne ergibt er eine Runde fast ohne Verkehr.",
+  "sides": [
+   {
+    "character": "Von Laborel kurz und gleichmäßig zwischen Lavendel und Wald, mit wenigen Kehren; schnell oben.",
+    "highlights": "Lavendelfelder am unteren Hang über Laborel.",
+    "hazards": [],
+    "bestAs": "up"
+   },
+   {
+    "character": "Von Eygalayes länger, oberhalb des Dorfes steiler und oben mit ein paar Kehren; der Belag ist stellenweise rau.",
+    "highlights": "Die Kapelle auf der Passhöhe.",
+    "hazards": [
+     "rough"
+    ],
+    "bestAs": "both"
+   }
+  ]
  }
 }

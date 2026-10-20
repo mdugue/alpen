@@ -230,6 +230,14 @@
    "Sospel (north)"
   ]
  },
+ "col-de-champex": {
+  "classicAscent": "10.7 km, 5.8 % from Orsières",
+  "note": "The resort on its mountain lake above the Val d'Entremont, a quiet parallel to the Great St Bernard road between Les Valettes and Orsières. From Orsières steady in hairpins, from Les Valettes narrow, winding and clearly steeper; as a ski resort reachable all year.",
+  "ascents": [
+   "Les Valettes (north)",
+   "Orsières (south)"
+  ]
+ },
  "col-de-chateauneuf": {
   "classicAscent": "9 km, 5 % from Saint-André-de-la-Roche",
   "note": "The first mountain behind Nice towards Tourrette-Levens and Contes, the opener of many training loops out of the city; with traffic, open all year.",
@@ -463,6 +471,14 @@
   "note": "Balcony road above the Arve valley, steep and narrow at the top. On the Tour's programme since 2009 as the starter before the Colombière.",
   "ascents": [
    "Cluses"
+  ]
+ },
+ "col-de-saint-jean": {
+  "classicAscent": "5.3 km, 6.2 % from Laborel",
+  "note": "A small Baronnies pass on the D170 between Laborel and Eygalayes, short, quiet and with a chapel at the top; often linked with the Perty and the Macuègne into a loop. Open all year, briefly not after snowfall.",
+  "ascents": [
+   "Laborel (north)",
+   "Eygalayes (south)"
   ]
  },
  "col-de-sainte-marie": {

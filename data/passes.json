@@ -9262,6 +9262,40 @@
   ]
  },
  {
+  "slug": "col-de-champex",
+  "surface": "asphalt",
+  "name": "Col de Champex",
+  "type": "pass",
+  "country": "CH",
+  "region": "Zentralalpen",
+  "lat": 46.0318,
+  "lon": 7.1068,
+  "elevation": 1498,
+  "classicAscent": "10,7 km, 5,8 % ab Orsières",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 2,
+  "season": null,
+  "note": "Der Kurort am Bergsee über dem Val d'Entremont, eine stille Parallele zur Großer-Sankt-Bernhard-Straße zwischen Les Valettes und Orsières. Von Orsières gleichmäßig in Kehren, von Les Valettes schmal, kurvig und deutlich steiler; als Skiort ganzjährig erreichbar.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.0757,
+     "lon": 7.0749
+    },
+    "label": "Les Valettes (Nord)"
+   },
+   {
+    "from": {
+     "lat": 46.0301,
+     "lon": 7.1454
+    },
+    "label": "Orsières (Süd)"
+   }
+  ]
+ },
+ {
   "slug": "bocca-del-creer",
   "surface": "asphalt",
   "name": "Bocca del Creer",
@@ -10818,6 +10852,43 @@
      "lon": 6.6566
     },
     "label": "Aime"
+   }
+  ]
+ },
+ {
+  "slug": "col-de-saint-jean",
+  "surface": "asphalt",
+  "name": "Col de Saint-Jean",
+  "type": "pass",
+  "aliases": [
+   "Col Saint-Jean"
+  ],
+  "country": "FR",
+  "region": "Westalpen",
+  "lat": 44.2622,
+  "lon": 5.6219,
+  "elevation": 1158,
+  "classicAscent": "5,3 km, 6,2 % ab Laborel",
+  "beauty": 3,
+  "fame": 1,
+  "difficulty": 2,
+  "traffic": 1,
+  "season": null,
+  "note": "Kleiner Pass der Baronnies auf der D170 zwischen Laborel und Eygalayes, kurz, still und mit einer Kapelle oben; oft mit Perty und Macuègne zu einer Runde verbunden. Ganzjährig offen, nach Schneefall kurz nicht.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 44.2928,
+     "lon": 5.596
+    },
+    "label": "Laborel (Nord)"
+   },
+   {
+    "from": {
+     "lat": 44.2393,
+     "lon": 5.6076
+    },
+    "label": "Eygalayes (Süd)"
    }
   ]
  },

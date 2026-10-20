@@ -3390,5 +3390,31 @@
     "highlights": "The view up the Möll valley towards Heiligenblut."
    }
   ]
+ },
+ "col-de-champex": {
+  "intro": "A small pass road up to Champex-Lac, the resort on a mountain lake below the Grand Combin massif. It runs parallel to the lower part of the Great St Bernard road and is the quiet detour between Martigny and Orsières.",
+  "sides": [
+   {
+    "character": "From Les Valettes first through a gorge, then in many tight hairpins through forest, steepest at the bottom and easing towards the top; narrow and little used.",
+    "highlights": "The lake of Champex-Lac, where the road arrives at the top."
+   },
+   {
+    "character": "From Orsières steadily in hairpins over meadows and through forest, a wider road with the PostBus line; flowing as a descent.",
+    "highlights": "The view down into the Val d'Entremont and onto Orsières."
+   }
+  ]
+ },
+ "col-de-saint-jean": {
+  "intro": "A short, quiet crossing in the Baronnies between the Céans valley at Laborel and the Méouge valley at Eygalayes. At the top stand a small chapel and a viewpoint; together with the Perty and the Macuègne it makes a loop almost without traffic.",
+  "sides": [
+   {
+    "character": "From Laborel short and steady between lavender and forest, with a few hairpins; quickly at the top.",
+    "highlights": "Lavender fields on the lower slope above Laborel."
+   },
+   {
+    "character": "From Eygalayes longer, steeper above the village and with a few hairpins near the top; the surface is rough in places.",
+    "highlights": "The chapel at the summit."
+   }
+  ]
  }
 }

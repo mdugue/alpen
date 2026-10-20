@@ -1126,12 +1126,13 @@
   "elevationGain": 2100,
   "passes": [
    "col-de-perty",
+   "col-de-saint-jean",
    "col-de-macuegne",
    "col-de-fontaube"
   ],
   "note": "Nach Schneefall am Perty kurz gesperrt.",
   "season": null,
-  "description": "Von Buis-les-Baronnies über Saint-Auban auf den Col de Perty, durch Laborel und Séderon über den Col de Macuègne nach Montbrun, unter der Ventoux-Nordwand über Brantes auf den Col de Fontaube und über Eygaliers zurück nach Buis.",
+  "description": "Von Buis-les-Baronnies über Saint-Auban auf den Col de Perty, durch Laborel über den Col de Saint-Jean, über Séderon und den Col de Macuègne nach Montbrun, unter der Ventoux-Nordwand über Brantes auf den Col de Fontaube und über Eygaliers zurück nach Buis.",
   "type": "loop",
   "waypoints": [
    {
@@ -1504,6 +1505,7 @@
    "col-des-saisies",
    "col-des-montets",
    "col-de-la-forclaz-martigny",
+   "col-de-champex",
    "col-du-grand-saint-bernard",
    "col-du-petit-saint-bernard",
    "cormet-de-roselend"
