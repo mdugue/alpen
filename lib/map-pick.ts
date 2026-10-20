@@ -3,7 +3,7 @@
  *
  * The hit areas overlap heavily – that is what they are for – so a pixel is
  * regularly answered by a pass dot, the name beside it, the ascent under both
- * and the tour band under that. Exactly one of them may open a panel, and the
+ * and the tour tube under that. Exactly one of them may open a panel, and the
  * rule that decides which is this module: a ranking by `HIT_GROUPS`, the
  * nearest mark within a group, and an ascent answered as its pass.
  *
@@ -89,7 +89,7 @@ const OF_LAYER = new Map(
  *
  * A line has no point to measure against, so it enters its group at distance
  * zero – which is right, because no two line layers share a group: the ascent
- * always beats the band it lies on.
+ * always beats the tube it lies in.
  */
 export const pick = (
   features: readonly Hit[],

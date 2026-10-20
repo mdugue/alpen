@@ -22,11 +22,13 @@ import { BASEMAP_ID, basemapLayers, FONT_BOLD } from "@/lib/basemap";
 import type { Lang } from "@/lib/i18n";
 import {
   LAYERS,
+  ROUTE_CASING,
   ROUTE_DASH,
   OVERLAY,
   PASS_LABELS,
   passLabelId,
   SOURCE,
+  TOUR_PARTS,
 } from "@/lib/layer-ids";
 import { PALETTE } from "@/lib/palette";
 import type { Scheme } from "@/lib/palette";
@@ -34,12 +36,8 @@ import { DESTINATION_MAX_ZOOM, prominenceFilter } from "@/lib/prominence";
 import { STATUSES } from "@/lib/regions";
 import type { MapEnvironment } from "@/lib/use-media-query";
 
-/**
- * The tour hatch, in multiples of the line width – so on a band this wide the
- * numbers have to be well below 1 to read as a texture at all. Widen the band
- * and the dashes lengthen with it unless these come down to match.
- */
-const DASH = [0.45, 0.35];
+/** The image the arrows along a tour are drawn with (`arrowhead`). */
+const TOUR_ARROW = "tour-arrow";
 /** The first layer above the base stack: where the basemap's lines and labels go. */
 const ABOVE_BASE = `ov-${OVERLAYS[0].id}`;
 
@@ -165,6 +163,30 @@ const star = (fill: string, stroke: string) =>
     ctx.stroke();
   });
 
+/**
+ * The arrowhead along a tour, pointing the way the line runs – which is the way
+ * the tour is ridden, because its geometry is routed through the waypoints in
+ * order. A signed-distance image, so the symbol layer paints it in each
+ * tour's own colour with a paper halo, and a scheme change needs no repaint.
+ */
+const arrowhead = () =>
+  draw((ctx, s) => {
+    // A notched arrowhead: filled, because a stroked chevron of this size
+    // thins to a hair on a curve.
+    ctx.beginPath();
+    ctx.moveTo(s * 0.24, s * 0.2);
+    ctx.lineTo(s * 0.78, s * 0.5);
+    ctx.lineTo(s * 0.24, s * 0.8);
+    ctx.lineTo(s * 0.4, s * 0.5);
+    ctx.closePath();
+    ctx.lineJoin = "round";
+    ctx.lineWidth = s * 0.06;
+    ctx.fillStyle = "#000";
+    ctx.strokeStyle = "#000";
+    ctx.fill();
+    ctx.stroke();
+  });
+
 /** The status stars and the town marks, added once and repainted on a scheme change. */
 export const addIcons = (map: MLMap, c: ReturnType<typeof readColors>) => {
   // Repainted on a scheme change: the strokes are paper and ink, which flip.
@@ -179,6 +201,8 @@ export const addIcons = (map: MLMap, c: ReturnType<typeof readColors>) => {
   add("town", townIcon(c, c.paper));
   add("town-fav", townIcon(c, c.accent));
   add("town-sel", townIcon(c, c.ink));
+  if (!map.hasImage(TOUR_ARROW))
+    map.addImage(TOUR_ARROW, arrowhead(), { pixelRatio: 2, sdf: true });
 };
 
 type Colors = ReturnType<typeof readColors>;
@@ -396,9 +420,10 @@ export const appLayers = (
       13,
       ["case", selected, far * 1.3, hoveredLine, far * 1.15, far],
     ] as never;
-  // Wide enough to hold the widest ascent it can carry – a selected one, at 6
-  // – and still reach past it on both sides.
-  const tourLine = tourWidth(9, 12);
+  // The tube: wide enough inside to hold an ascent on its rim (6 px, 9 when
+  // selected), with a wall of 1.5 to 2 px either side of it.
+  const tourWall = tourWidth(11, 16);
+  const tourInside = tourWidth(8, 12.5);
 
   const isDestinationLit: ExpressionSpecification = [
     "any",
@@ -492,35 +517,70 @@ export const appLayers = (
     hitLine(LAYERS.tour.hit, SOURCE.tours),
     hitLine(LAYERS.route.hit, SOURCE.routes),
     // A tour is the union of several ascents – the Sellaronda *is* its four
-    // passes – so it is drawn as what it is: a band wide enough to hold them,
-    // laid *under* the ascents so it reaches past them on both sides. What a
-    // tour contains is then read from the map rather than from the list.
+    // passes – so it is drawn as what it is: a tube the ascents run inside,
+    // reaching past them on both sides. What a tour contains is then read
+    // from the map rather than from the list.
     //
-    // Translucent, so the hillshade and the roads keep showing through a band
-    // that covers a lot of ground, and hatched rather than solid, so it is
-    // told apart from an ascent by texture and not only by weight – a tour is
-    // the looser of the two marks, which is the right order: the ascent is
-    // the rated thing. The hatch is short and tight on purpose; a wide line
-    // with long dashes reads as a chain of blocks rather than as a texture.
+    // Three lines make the tube: the wall in the tour's colour, a narrower
+    // paper line over it that leaves only the wall's rim showing, and the
+    // road itself along the middle, thin, for the stretches between two
+    // ascents. Overlapping tours share one inside, because every wall is
+    // drawn before any inside: where two tours run on the same road the
+    // tubes merge into one, which is what that road is.
     //
-    // `line-layer-opacity`, not `line-opacity`: the latter is applied per
-    // feature, so where a hairpin runs MapLibre's triangle strip over itself
-    // the overlap composites twice and shows as a blotch. The layer property
-    // flattens the whole layer to one surface first and composites that once,
-    // which is what makes a translucent band usable in switchbacks at all.
+    // The inside is not quite opaque, so a breath of the wall's colour
+    // tints it – the tour stays recognisable along a road its ascents cover
+    // completely. Each layer carries `line-layer-opacity`, not
+    // `line-opacity`: a hairpin tighter than the tube runs the triangle
+    // strip over itself, and only the layer property composites that once.
     {
       id: LAYERS.tour.mark,
-      layout: { "line-cap": "butt", "line-join": "round" },
+      layout: { "line-cap": "round", "line-join": "round" },
       paint: {
         "line-color": ["get", "color"],
-        "line-dasharray": DASH,
-        "line-layer-opacity": 0.62,
-        "line-width": tourLine,
+        "line-layer-opacity": 0.95,
+        "line-width": tourWall,
       },
       source: SOURCE.tours,
       type: "line",
     },
-    // The ascent, on top of the band that holds it: solid and opaque, because
+    {
+      id: TOUR_PARTS.inside,
+      layout: { "line-cap": "round", "line-join": "round" },
+      paint: {
+        "line-color": colors.paper,
+        "line-layer-opacity": 0.8,
+        "line-width": tourInside,
+      },
+      source: SOURCE.tours,
+      type: "line",
+    },
+    {
+      id: TOUR_PARTS.road,
+      layout: { "line-cap": "round", "line-join": "round" },
+      paint: {
+        "line-color": ["get", "color"],
+        "line-layer-opacity": 0.9,
+        "line-width": ["case", selected, 2, 1.5],
+      },
+      source: SOURCE.tours,
+      type: "line",
+    },
+    // Every ascent sits on a paper rim, the same edge the tour's inside
+    // gives it: inside a tube the rim disappears into it, on its own it lifts
+    // the status colour off the hillshade – one kind of line on the whole
+    // map rather than a cased one in a tour and a bare one outside it.
+    {
+      id: ROUTE_CASING,
+      layout: { "line-cap": "round", "line-join": "round" },
+      paint: {
+        "line-color": colors.paper,
+        "line-width": ["case", selected, 9, hoveredLine, 7.5, 6],
+      },
+      source: SOURCE.routes,
+      type: "line",
+    },
+    // The ascent, inside the tube that holds it: solid and opaque, because
     // the status colour is the stronger signal and must not be tinted by the
     // tour it belongs to.
     {
@@ -555,6 +615,33 @@ export const appLayers = (
       },
       source: SOURCE.routes,
       type: "line",
+    },
+    // Which way round: arrows along the tour that is selected or pointed at,
+    // over its ascents, because on a loop like the Sellaronda the ascents
+    // are nearly all of it. Only for that one – on every tour at once they
+    // would be noise laid over the status colours. Feature state cannot
+    // reach a layout property, so the others are placed and painted
+    // transparent; a dozen tours make that cheap.
+    {
+      id: TOUR_PARTS.arrows,
+      layout: {
+        "icon-allow-overlap": true,
+        "icon-ignore-placement": true,
+        "icon-image": TOUR_ARROW,
+        "icon-rotation-alignment": "map",
+        "icon-size": ["interpolate", ["linear"], ["zoom"], 8, 0.6, 13, 0.9],
+        "symbol-placement": "line",
+        "symbol-spacing": 110,
+      },
+      minzoom: 8,
+      paint: {
+        "icon-color": ["get", "color"],
+        "icon-halo-color": colors.paper,
+        "icon-halo-width": 2,
+        "icon-opacity": ["case", selected, 1, hoveredLine, 1, 0],
+      },
+      source: SOURCE.tours,
+      type: "symbol",
     },
     {
       id: LAYERS.tour.labels[0],

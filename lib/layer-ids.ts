@@ -56,7 +56,7 @@ export interface LayerSet {
   /**
    * Layers drawn with the mark and filtered with it, but neither a name nor
    * a target: the dash over an unpaved ascent, the edge of an area's
-   * outline. They are never aimed at.
+   * outline, the inside of a tour's tube. They are never aimed at.
    */
   companions?: readonly string[];
   /** The source the mark, its companions and its hit area read; a name may stand on a source of its own. */
@@ -69,6 +69,23 @@ export interface LayerSet {
  * gravel line hidden by the list must not keep its dashes.
  */
 export const ROUTE_DASH = "routes-dash";
+/**
+ * The paper edge under every ascent: the line a road is drawn with has a rim,
+ * like the tube a tour is drawn as, so an ascent reads the same inside a tour
+ * and on its own (`docs/map-rendering.md`).
+ */
+export const ROUTE_CASING = "routes-casing";
+
+/**
+ * A tour is a tube: its mark is the tube's wall in the tour's colour, and
+ * these are the rest of it – the pale inside, the road along its middle and
+ * the arrows that say which way round it is ridden.
+ */
+export const TOUR_PARTS = {
+  arrows: "tours-arrows",
+  inside: "tours-inside",
+  road: "tours-road",
+} as const;
 
 /**
  * The five kinds the map draws. `route` is a pass's ascents: its own lines and
@@ -93,13 +110,14 @@ export const LAYERS = {
     source: SOURCE.passes,
   },
   route: {
-    companions: [ROUTE_DASH],
+    companions: [ROUTE_CASING, ROUTE_DASH],
     hit: "routes-hit",
     labels: [],
     mark: "routes",
     source: SOURCE.routes,
   },
   tour: {
+    companions: [TOUR_PARTS.inside, TOUR_PARTS.road, TOUR_PARTS.arrows],
     hit: "tours-hit",
     labels: ["tours-label"],
     mark: "tours",
@@ -145,7 +163,7 @@ export const layersOf = (set: LayerSet): string[] => [
  * spelled out rather than taken from the style, because the two disagree:
  * marks first, then the names beside them, then the lines – a name is a small
  * deliberate target, a line covers half the map, and both would otherwise
- * swallow the dot they belong to; and the tour band lies *under* the ascents
+ * swallow the dot they belong to; and the tour's tube lies *under* the ascents
  * but reaches past them, so a click inside it hits both and the ascent is the
  * more specific answer. Within a group the nearer mark wins – passes and
  * towns share the first one – so a generous hit area never steals the click

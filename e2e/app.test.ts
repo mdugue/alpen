@@ -192,6 +192,13 @@ test("4 · a status chip narrows the lists and the applied-filter chip undoes it
     const all = await page.count(PASS_ROW);
     // The status picker is a row of chips inside the filter panel: no popup
     // to open, and pressing one narrows the list to it.
+    //
+    // The rows are server-rendered, so seeing one does not mean the button
+    // has its handler yet; the map is created in an effect, so it does.
+    await waitUntil(
+      () => page.evaluate<boolean>("!!window.__alpen?.map"),
+      "the page to hydrate",
+    );
     await page.clickText("button", "Filter");
     await page.waitFor('[aria-labelledby="f-status"]');
     // Every chip carries how many roads it would leave, counted with its own

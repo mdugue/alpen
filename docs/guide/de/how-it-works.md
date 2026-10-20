@@ -123,7 +123,10 @@ Standort“, von welchen Orten aus er gut zu erreichen ist.
 Eine Rundtour verbindet mehrere Pässe zu einer Runde, etwa die Sellaronda
 oder die Strecken bekannter Radmarathons. Länge und Höhenmeter einer Tour
 sind von Hand gepflegt. Auf der Karte hat jede Tour eine eigene Farbe und
-liegt als breites, schraffiertes Band unter ihren Auffahrten. Eine Tour ist
+umschließt ihre Auffahrten wie eine Röhre: ein Rand in ihrer Farbe um ein
+helles Inneres, in dem die Straße verläuft. Teilen sich zwei Touren eine
+Straße, verschmelzen ihre Röhren. Die gewählte Tour zeigt mit Pfeilen, in
+welche Richtung sie gefahren wird. Eine Tour ist
 nur so gut befahrbar wie ihr schwächster Pass: Ihr Status in einem Halbmonat
 ist der des Passes, der sie am meisten einschränkt, und die Detailansicht
 nennt diesen Pass. Manche Touren haben zusätzlich eine eigene typische
@@ -138,7 +141,8 @@ der Pässe nur enger fassen, nie erweitern.
 | Kreisgröße             | Bekanntheit                                                               |
 | Kreis mit dunklem Ring | ungeteerte Straße (Belag Schotter oder gemischt)                          |
 | Stern                  | gemerkt                                                                   |
-| Linie                  | Auffahrt (in der Statusfarbe) oder Rundtour (in ihrer eigenen Farbe)      |
+| Linie                  | Auffahrt, in der Statusfarbe mit hellem Saum                              |
+| umrandete Röhre        | Rundtour, in ihrer eigenen Farbe; Pfeile zeigen die Fahrtrichtung         |
 | gestrichelte Linie     | Auffahrt auf einer ungeteerten Straße, darunter weiter in der Statusfarbe |
 | blauer Punkt mit Ring  | Ort                                                                       |
 | blaue, helle Umrandung | Reiseziel: das Gebiet um seine Mitte, seine Passhöhen und seine Orte      |
