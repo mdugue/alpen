@@ -60,7 +60,7 @@ import { osmSource } from "./osm";
 import { HttpError, QuotaExhaustedError } from "./transport";
 import type { HostId, Transport } from "./transport";
 import { geometryHash, withProfile } from "./validate";
-import type { RoutingProfile, SECOND_GRAPH } from "./validate";
+import type { OrsProfile, SECOND_GRAPH } from "./validate";
 
 /** `[3/40]` against the pipeline's own total, dispatch order (not completion order). */
 const counter = (total: number) => (i: number) => `[${i + 1}/${total}]`;
@@ -206,7 +206,7 @@ export const runPipeline = async ({
   const route = async (
     label: string,
     waypoints: LatLon[],
-    profile: RoutingProfile,
+    profile: OrsProfile,
     /** False for a ride pinned to OSRM (`asksOrs`): ORS is then never asked. */
     askOrs: boolean,
   ): Promise<{

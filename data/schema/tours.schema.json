@@ -56,6 +56,27 @@
           "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
         }
       },
+      "router": {
+        "type": "object",
+        "properties": {
+          "note": {
+            "type": "string",
+            "minLength": 1
+          },
+          "use": {
+            "type": "string",
+            "enum": [
+              "osrm",
+              "cycling-regular"
+            ]
+          }
+        },
+        "required": [
+          "note",
+          "use"
+        ],
+        "additionalProperties": false
+      },
       "season": {
         "anyOf": [
           {

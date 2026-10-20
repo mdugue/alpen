@@ -13,6 +13,7 @@ import type {
 import {
   afterDecline,
   afterGate,
+  asksOrs,
   decideProfile,
   decideRoute,
   defersProfile,
@@ -433,6 +434,22 @@ describe("paidFor", () => {
       },
     });
     expect(paidFor(key, s, geometryHash(other))).toEqual(cached);
+  });
+});
+
+describe("a ride pinned to ORS's everyday graph (router)", () => {
+  const router = { note: "Radweg ohne Autos", use: "cycling-regular" as const };
+  const [regular] = jobs([
+    pass({
+      ascents: [{ from: { lat: 46.5, lon: 10 }, label: "Sormano", router }],
+    }),
+  ]);
+
+  test("ORS is still asked, on the everyday graph, and the pin is in the question", () => {
+    expect(regular!.profile).toBe("cycling-regular");
+    expect(regular!.router).toBeUndefined();
+    expect(asksOrs(regular!)).toBe(true);
+    expect(regular!.inputs).not.toBe(jobs()[0]!.inputs);
   });
 });
 

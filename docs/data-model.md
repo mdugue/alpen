@@ -100,6 +100,13 @@ candidate, and `data:check` asks for no renewal; the pin enters
 `meta.inputs`, so setting or lifting it routes the ride again by itself
 ([the stages](data-pipeline.md#the-stages-by-command)).
 
+The other way round, `"use": "cycling-regular"` keeps ORS but asks its
+everyday cycling graph: for a road bikes may ride that the road-cycling
+graph routes round, because OSM maps it as a cycleway without cars – the
+Muro di Sormano, which both the road graph and OSRM leave for a 5.7 km detour
+on the SP44. A tour takes the same `router` for its whole line (the
+Lombardia loop over the Muro).
+
 `season.maintained: true` marks managed toll roads (Grossglockner, Timmelsjoch,
 Nockalm …). They are cleared of snow and therefore get no elevation penalty in
 the status heuristic.

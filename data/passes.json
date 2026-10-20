@@ -7897,10 +7897,14 @@
   "ascents": [
    {
     "from": {
-     "lat": 45.8778,
-     "lon": 9.2487
+     "lat": 45.8818,
+     "lon": 9.2439
     },
-    "label": "Sormano (Ost)"
+    "label": "Sormano (Ost)",
+    "router": {
+     "use": "cycling-regular",
+     "note": "Der Muro ist in OSM als Radweg ohne Autos erfasst; der Rennradgraph von ORS und OSRM fahren deshalb über die SP44 außen herum (5,7 km, 6 %). Der Alltagsgraph nimmt die Rampe."
+    }
    }
   ]
  },

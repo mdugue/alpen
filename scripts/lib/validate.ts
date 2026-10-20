@@ -546,16 +546,22 @@ export const ascentInputs = (
         a.check,
       );
 
-/** The same for a tour: its waypoints, its stated length, its `check`, its profile. */
+/** The same for a tour: its waypoints, its stated length, its `check`, its profile, a pinned router. */
 export const tourInputs = (
   t: {
     check?: TourCheck;
     km: number;
+    router?: AscentRouter;
     waypoints: LatLon[];
   },
   profile: RoutingProfile,
 ) =>
   inputsHash(
-    { km: t.km, waypoints: t.waypoints, ...profilePart(profile) },
+    {
+      km: t.km,
+      waypoints: t.waypoints,
+      ...profilePart(profile),
+      ...routerPart(t.router),
+    },
     t.check,
   );

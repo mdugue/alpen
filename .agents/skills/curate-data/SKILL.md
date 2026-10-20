@@ -285,6 +285,12 @@ comes back as the one stored, whose profile is kept – and the car route is
 then final: no upgrade, no renewal warning. The note says what ORS takes
 instead, so a later curator can tell when the pin has gone stale.
 
+When both ORS's road graph and OSRM go round a road bikes may ride – OSM
+maps it as a cycleway without cars, like the Muro di Sormano – pin the ride
+(or a whole tour) to ORS's everyday graph instead:
+`"router": { "use": "cycling-regular", "note": "…" }`, and look at the
+profile it stores the same way.
+
 ## Honesty
 
 The scales dialog promises that scales are editorial and the status is a

@@ -106,8 +106,13 @@ export const TourCheck = z
 export const AscentRouter = z.strictObject({
   /** What ORS takes instead of the road, and why the car profile is right here. */
   note: z.string().min(1, "router ohne Begründung (note)"),
-  /** The router that follows the road. OSRM is the only alternative there is. */
-  use: z.literal("osrm"),
+  /**
+   * The router that follows the road: OSRM's car profile, or ORS's everyday
+   * cycling graph (`cycling-regular`) for a road the road-cycling graph routes
+   * round although bikes may ride it – a climb mapped as a cycleway, like the
+   * Muro di Sormano.
+   */
+  use: z.enum(["osrm", "cycling-regular"]),
 });
 
 /**
@@ -343,6 +348,8 @@ export const Tour = z
     note: z.string(),
     /** Pass slugs from which the status is derived. */
     passes: z.array(Slug).min(1),
+    /** Routes the whole tour with the named router alone, see `AscentRouter`. */
+    router: AscentRouter.optional(),
     /** The loop's own opening window, see `TourSeason`; null = whenever its passes are open. */
     season: TourSeason.nullable(),
     /**
