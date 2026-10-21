@@ -575,18 +575,16 @@
   "name": "Julische Alpen",
   "country": "SI",
   "center": {
-   "lat": 46.45,
-   "lon": 13.7
+   "lat": 46.42,
+   "lon": 13.82
   },
-  "radiusKm": 25,
+  "radiusKm": 28,
   "baseTowns": [
    "kranjska-gora",
    "bovec",
    "bled"
   ],
-  "include": [
-   "soriska-planina"
-  ],
+  "include": [],
   "exclude": [
    "villacher-alpenstrasse"
   ],
@@ -957,6 +955,67 @@
   "character": "Ballon d'Alsace, La Planche des Belles Filles und der Grand Ballon – die Tour-de-France-Berge der Vogesen –, dazwischen ruhige Waldpässe und die viel befahrene N66 über Bussang.",
   "multiDay": "Zwei bis drei Tage; die Runde über Hundsruck, Ballon d'Alsace und Bussang an einem Tag, die Planche als Abstecher von Plancher-les-Mines.",
   "access": "Mit dem TGV nach Mulhouse und mit der Bahn weiter nach Thann und ins Thurtal; für die Westseite Belfort-Montbéliard TGV."
+ },
+ {
+  "slug": "bugey",
+  "name": "Bugey",
+  "country": "FR",
+  "center": {
+   "lat": 45.88,
+   "lon": 5.75
+  },
+  "radiusKm": 25,
+  "baseTowns": [
+   "culoz"
+  ],
+  "include": [],
+  "exclude": [],
+  "character": "Der Südjura zwischen Rhone und Valromey: der Grand Colombier mit vier Seiten, dazu Biche, Richemond und der Mont du Chat über dem Lac du Bourget. Steil, waldig und still.",
+  "multiDay": "Drei bis vier Tage ab Culoz, früher und später im Jahr fahrbar als die Hochalpen nebenan.",
+  "access": "Culoz mit dem Zug über Genf, Lyon oder Chambéry."
+ },
+ {
+  "slug": "hochjura-vallee-de-joux",
+  "name": "Hochjura und Vallée de Joux",
+  "country": "FR/CH",
+  "center": {
+   "lat": 46.5,
+   "lon": 6.15
+  },
+  "radiusKm": 25,
+  "baseTowns": [
+   "nyon",
+   "les-rousses",
+   "le-sentier"
+  ],
+  "include": [
+   "col-de-la-croix-de-la-serra"
+  ],
+  "exclude": [],
+  "character": "Der Jurakamm über dem Genfersee: Faucille, Givrine, Marchairuz und Mollendruz, oben Weiden, Seen und Wald, unten der Blick auf die Alpen.",
+  "multiDay": "Zwei bis drei Tage, als Runde ums Vallée de Joux und über die Grenze nach Les Rousses.",
+  "access": "Nyon oder Genf mit dem Zug, die Pässe beginnen am Seeufer."
+ },
+ {
+  "slug": "berner-jura",
+  "name": "Berner und Neuenburger Jura",
+  "country": "CH",
+  "center": {
+   "lat": 47.18,
+   "lon": 7.2
+  },
+  "radiusKm": 30,
+  "baseTowns": [
+   "saint-imier",
+   "solothurn"
+  ],
+  "include": [
+   "passwang"
+  ],
+  "exclude": [],
+  "character": "Die Jurakette über dem Dreiseenland: Chasseral, Vue des Alpes und Mont-Crosin, dazu der steile Weissenstein über Solothurn. Weiden, Wald und bei klarer Sicht die ganze Alpenkette.",
+  "multiDay": "Zwei bis drei Tage zwischen Saint-Imier und Solothurn, gut als Wochenende aus Basel, Bern oder Zürich.",
+  "access": "Saint-Imier und Solothurn mit dem Zug, eine Stunde ab Bern oder Basel."
  },
  {
   "slug": "osttirol",

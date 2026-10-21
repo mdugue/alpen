@@ -83,6 +83,9 @@
  "corvara-alta-badia": {
   "why": "Sellaronda and Maratona hub: bike hotels, rental, workshops, service points on the passes."
  },
+ "culoz": {
+  "why": "A station at the foot of the Grand Colombier: the Culoz side starts at the edge of town, the Biche, Richemond and Mont du Chat are within reach."
+ },
  "cuneo": {
   "why": "Fauniera, Lombarde, Agnello, Sampeyre, Maddalena; bike shops, Fausto Coppi Granfondo."
  },
@@ -131,8 +134,14 @@
  "le-grand-bornand": {
   "why": "Aravis village: Colombière, Aravis and Croix Fry start in the village. Green side valleys, little traffic, rental in the village."
  },
+ "le-sentier": {
+  "why": "The main village of the Vallée de Joux, between the Marchairuz and the Mollendruz; quiet, with a railway connection."
+ },
  "lecco": {
   "why": "Rail hub on the eastern arm of Lake Como: Piani dei Resinelli, Culmine di San Pietro, Valcava and Ghisallo within a day's range, bike shops in town."
+ },
+ "les-rousses": {
+  "why": "The holiday resort on the Jura ridge between the Faucille and the Givrine, with lakes and pastures all around and plenty of lodgings."
  },
  "lienz": {
   "why": "Sunny town where the Drau, Isel and Puster valleys meet: Gailbergsattel and Kartitscher Sattel on the Dolomitenradrundfahrt loop, plus the Staller Sattel, Kals and, over the Iselsberg, the Grossglockner road. Bike shops with workshop and rental, certified cyclist lodgings, railway station."
@@ -179,6 +188,9 @@
  "nizza": {
   "why": "Winter quarters of the peloton: Col d'Èze, Châteauneuf, Vence, Madone and Braus from the city, Turini and Bleine as day loops. Railway station, airport, bike shops."
  },
+ "nyon": {
+  "why": "The town on Lake Geneva with a station: the Givrine from the doorstep, the Faucille and Marchairuz within reach."
+ },
  "ponte-di-legno": {
   "why": "Gavia, Tonale, Mortirolo; bike shops, quieter than Bormio."
  },
@@ -190,6 +202,9 @@
  },
  "rovereto": {
   "why": "Rail hub in the Adige valley with Santa Barbara, Pian delle Fugazze, Bordala and Sommo from the town, Bondone and Lake Garda within a day's range. Mild enough for spring and autumn."
+ },
+ "saint-imier": {
+  "why": "The watchmaking town between the Chasseral and Mont-Crosin, both of which start at the station."
  },
  "saint-jean-de-maurienne": {
   "why": "Croix de Fer, Madeleine, Télégraphe/Galibier; railway station, bike shops, Maurienne cycling office."
@@ -214,6 +229,9 @@
  },
  "soelden": {
   "why": "Ötztaler headquarters: Timmelsjoch, glacier road, Kühtai; bike shops, rental, bike hotels."
+ },
+ "solothurn": {
+  "why": "The baroque town on the Aare below the Weissenstein, with a rail hub, hotels and bike shops; the Passwang is a valley ride away."
  },
  "sospel": {
   "why": "Hinterland of the Côte d'Azur: Turini, Braus, Brouis and Madone. Railway station on the Nice–Tende line and a climate that is rideable almost all year."

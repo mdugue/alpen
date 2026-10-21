@@ -15292,5 +15292,639 @@
     "label": "Wildenstein (West)"
    }
   ]
+ },
+ {
+  "slug": "grand-colombier",
+  "surface": "asphalt",
+  "name": "Grand Colombier",
+  "type": "pass",
+  "tags": [
+   "panorama"
+  ],
+  "aliases": [
+   "Col du Grand Colombier",
+   "Colombier"
+  ],
+  "country": "FR",
+  "region": "Jura",
+  "lat": 45.9035,
+  "lon": 5.7617,
+  "elevation": 1498,
+  "classicAscent": "16,7 km, 7,4 % ab Culoz",
+  "beauty": 5,
+  "fame": 4,
+  "difficulty": 5,
+  "traffic": 1,
+  "season": {
+   "opens": 5,
+   "closes": 11,
+   "maintained": false
+  },
+  "note": "Der König des Jura: vier Auffahrten aus dem Rhonetal und dem Valromey, oben der Blick über den Lac du Bourget bis zum Mont Blanc. Tour-de-France-Ziel 2020 und 2023. Im Winter gesperrt.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 45.8477,
+     "lon": 5.7809
+    },
+    "label": "Culoz"
+   },
+   {
+    "from": {
+     "lat": 45.9118,
+     "lon": 5.8087
+    },
+    "label": "Anglefort"
+   },
+   {
+    "from": {
+     "lat": 45.9084,
+     "lon": 5.7248
+    },
+    "label": "Virieu-le-Petit"
+   }
+  ]
+ },
+ {
+  "slug": "col-de-la-biche",
+  "surface": "asphalt",
+  "name": "Col de la Biche",
+  "type": "pass",
+  "aliases": [
+   "Biche"
+  ],
+  "country": "FR",
+  "region": "Jura",
+  "lat": 45.9524,
+  "lon": 5.7486,
+  "elevation": 1316,
+  "classicAscent": "13,6 km, 5,7 % ab Champagne-en-Valromey",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 1,
+  "season": {
+   "opens": 5,
+   "closes": 11,
+   "maintained": false
+  },
+  "note": "Der Sattel nördlich des Grand Colombier, über den die Kammstraße zum Colombier führt; schmale Waldstraßen aus dem Valromey. Im Winter gesperrt.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 45.9044,
+     "lon": 5.6783
+    },
+    "label": "Champagne-en-Valromey"
+   },
+   {
+    "from": {
+     "lat": 45.9973,
+     "lon": 5.6925
+    },
+    "label": "Hotonnes"
+   }
+  ]
+ },
+ {
+  "slug": "col-de-richemond",
+  "surface": "asphalt",
+  "name": "Col de Richemond",
+  "type": "pass",
+  "aliases": [
+   "Richemond"
+  ],
+  "country": "FR",
+  "region": "Jura",
+  "lat": 46.0086,
+  "lon": 5.749,
+  "elevation": 1036,
+  "classicAscent": "18,7 km, 3,7 % ab Corbonod",
+  "beauty": 3,
+  "fame": 2,
+  "difficulty": 2,
+  "traffic": 1,
+  "season": null,
+  "note": "Der Übergang vom Rhonetal bei Seyssel ins Plateau von Hotonnes, lang und sanft durch Wald. Ganzjährig offen.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 45.9668,
+     "lon": 5.8221
+    },
+    "label": "Corbonod (Ost)"
+   },
+   {
+    "from": {
+     "lat": 45.9973,
+     "lon": 5.6925
+    },
+    "label": "Hotonnes (West)"
+   }
+  ]
+ },
+ {
+  "slug": "mont-du-chat",
+  "surface": "asphalt",
+  "name": "Mont du Chat",
+  "type": "pass",
+  "tags": [
+   "panorama"
+  ],
+  "aliases": [
+   "Col du Mont du Chat"
+  ],
+  "country": "FR",
+  "region": "Jura",
+  "lat": 45.661,
+  "lon": 5.8216,
+  "elevation": 1486,
+  "classicAscent": "13,2 km, 9,3 % ab Le Bourget-du-Lac",
+  "beauty": 4,
+  "fame": 3,
+  "difficulty": 5,
+  "traffic": 1,
+  "season": {
+   "opens": 4,
+   "closes": 11,
+   "maintained": false
+  },
+  "note": "Der südlichste Jura-Pass direkt über dem Lac du Bourget: von Osten über 13 km gleichmäßig um 9 %, Tour-de-France-Passage 2017. Die Westseite von Yenne ist sanfter.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 45.647,
+     "lon": 5.8596
+    },
+    "label": "Le Bourget-du-Lac (Ost)"
+   },
+   {
+    "from": {
+     "lat": 45.7037,
+     "lon": 5.7587
+    },
+    "label": "Yenne (West)"
+   }
+  ]
+ },
+ {
+  "slug": "col-de-la-lebe",
+  "surface": "asphalt",
+  "name": "Col de la Lèbe",
+  "type": "pass",
+  "aliases": [
+   "Lèbe"
+  ],
+  "country": "FR",
+  "region": "Jura",
+  "lat": 45.9191,
+  "lon": 5.6195,
+  "elevation": 914,
+  "classicAscent": "9,9 km, 3,8 % ab Champagne-en-Valromey",
+  "beauty": 3,
+  "fame": 1,
+  "difficulty": 2,
+  "traffic": 1,
+  "season": null,
+  "note": "Der sanfte Übergang zwischen dem Valromey und Belley, durch Wald und über Weiden. Ganzjährig offen.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 45.9044,
+     "lon": 5.6783
+    },
+    "label": "Champagne-en-Valromey (Nord)"
+   },
+   {
+    "from": {
+     "lat": 45.7608,
+     "lon": 5.6861
+    },
+    "label": "Belley (Süd)"
+   }
+  ]
+ },
+ {
+  "slug": "col-de-la-croix-de-la-serra",
+  "surface": "asphalt",
+  "name": "Col de la Croix de la Serra",
+  "type": "pass",
+  "aliases": [
+   "Croix de la Serra"
+  ],
+  "country": "FR",
+  "region": "Jura",
+  "lat": 46.2886,
+  "lon": 5.7995,
+  "elevation": 1049,
+  "classicAscent": "13,9 km, 4,4 % ab Saint-Claude",
+  "beauty": 3,
+  "fame": 2,
+  "difficulty": 2,
+  "traffic": 1,
+  "season": null,
+  "note": "Der Pass südlich von Saint-Claude ins Tal der Valserine, mäßig durch Wald und über Weiden. Ganzjährig offen.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.3875,
+     "lon": 5.8644
+    },
+    "label": "Saint-Claude"
+   }
+  ]
+ },
+ {
+  "slug": "col-de-la-faucille",
+  "surface": "asphalt",
+  "name": "Col de la Faucille",
+  "type": "pass",
+  "tags": [
+   "panorama",
+   "hairpins"
+  ],
+  "aliases": [
+   "Faucille"
+  ],
+  "country": "FR",
+  "region": "Jura",
+  "lat": 46.3681,
+  "lon": 6.0219,
+  "elevation": 1323,
+  "classicAscent": "11,1 km, 6,3 % ab Gex",
+  "beauty": 4,
+  "fame": 3,
+  "difficulty": 3,
+  "traffic": 3,
+  "season": null,
+  "note": "Der Hauptübergang von Genf in den Haut-Jura: von Gex in Kehren an der Ostflanke hinauf, oben der Blick über den Genfersee auf den Mont Blanc. Ganzjährig geräumt, mit Verkehr.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.3338,
+     "lon": 6.0577
+    },
+    "label": "Gex (Ost)"
+   },
+   {
+    "from": {
+     "lat": 46.3662,
+     "lon": 5.9961
+    },
+    "label": "Mijoux (West)"
+   }
+  ]
+ },
+ {
+  "slug": "col-de-la-givrine",
+  "surface": "asphalt",
+  "name": "Col de la Givrine",
+  "type": "pass",
+  "aliases": [
+   "Givrine",
+   "Saint-Cergue"
+  ],
+  "country": "CH",
+  "region": "Jura",
+  "lat": 46.4556,
+  "lon": 6.0905,
+  "elevation": 1228,
+  "classicAscent": "19,5 km, 4,3 % ab Nyon",
+  "beauty": 3,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 2,
+  "season": null,
+  "note": "Der lange Anstieg von Nyon am Genfersee über Saint-Cergue auf den Jurakamm und nach Frankreich. Gleichmäßig, ganzjährig geräumt.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.3852,
+     "lon": 6.238
+    },
+    "label": "Nyon"
+   }
+  ]
+ },
+ {
+  "slug": "col-du-marchairuz",
+  "surface": "asphalt",
+  "name": "Col du Marchairuz",
+  "type": "pass",
+  "tags": [
+   "panorama"
+  ],
+  "aliases": [
+   "Marchairuz"
+  ],
+  "country": "CH",
+  "region": "Jura",
+  "lat": 46.5526,
+  "lon": 6.2505,
+  "elevation": 1447,
+  "classicAscent": "10,5 km, 7,1 % ab Bière",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 4,
+  "traffic": 1,
+  "season": null,
+  "note": "Der höchste Straßenpass des Schweizer Jura, vom Genferseebecken bei Bière ins Vallée de Joux; oben Weiden und Wald. Im Winter nach Schneefall oft gesperrt.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.5374,
+     "lon": 6.3337
+    },
+    "label": "Bière (Süd)"
+   },
+   {
+    "from": {
+     "lat": 46.5854,
+     "lon": 6.2137
+    },
+    "label": "Le Brassus (Nord)"
+   }
+  ]
+ },
+ {
+  "slug": "col-du-mollendruz",
+  "surface": "asphalt",
+  "name": "Col du Mollendruz",
+  "type": "pass",
+  "aliases": [
+   "Mollendruz"
+  ],
+  "country": "CH",
+  "region": "Jura",
+  "lat": 46.6492,
+  "lon": 6.3677,
+  "elevation": 1180,
+  "classicAscent": "6,3 km, 5,5 % ab Mont-la-Ville",
+  "beauty": 3,
+  "fame": 1,
+  "difficulty": 2,
+  "traffic": 2,
+  "season": null,
+  "note": "Der kurze Übergang vom Waadtländer Mittelland ins Vallée de Joux bei L'Abbaye. Mäßig, ganzjährig geräumt.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.6455,
+     "lon": 6.4078
+    },
+    "label": "Mont-la-Ville (Süd)"
+   },
+   {
+    "from": {
+     "lat": 46.6497,
+     "lon": 6.3197
+    },
+    "label": "L'Abbaye (Nord)"
+   }
+  ]
+ },
+ {
+  "slug": "col-des-etroits",
+  "surface": "asphalt",
+  "name": "Col des Etroits",
+  "type": "pass",
+  "aliases": [
+   "Etroits",
+   "Sainte-Croix"
+  ],
+  "country": "CH",
+  "region": "Jura",
+  "lat": 46.8299,
+  "lon": 6.495,
+  "elevation": 1152,
+  "classicAscent": "11,4 km, 5 % ab Vuiteboeuf",
+  "beauty": 3,
+  "fame": 1,
+  "difficulty": 3,
+  "traffic": 2,
+  "season": null,
+  "note": "Der Weg von der Ebene von Yverdon über Sainte-Croix ins Val de Travers, unten durch die Schlucht der Covatanne. Ganzjährig offen.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.8074,
+     "lon": 6.5494
+    },
+    "label": "Vuiteboeuf (Süd)"
+   },
+   {
+    "from": {
+     "lat": 46.9043,
+     "lon": 6.58
+    },
+    "label": "Fleurier (Nord)"
+   }
+  ]
+ },
+ {
+  "slug": "vue-des-alpes",
+  "surface": "asphalt",
+  "name": "Vue des Alpes",
+  "type": "pass",
+  "tags": [
+   "panorama"
+  ],
+  "aliases": [
+   "Col de la Vue des Alpes"
+  ],
+  "country": "CH",
+  "region": "Jura",
+  "lat": 47.0727,
+  "lon": 6.8698,
+  "elevation": 1283,
+  "classicAscent": "9,8 km, 6,4 % ab Valangin",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 3,
+  "season": null,
+  "note": "Der Pass zwischen Neuenburg und La Chaux-de-Fonds, oben bei klarer Sicht die ganze Alpenkette vom Säntis bis zum Mont Blanc. Hauptstraße mit Verkehr, ganzjährig geräumt.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 47.0159,
+     "lon": 6.9073
+    },
+    "label": "Valangin (Süd)"
+   },
+   {
+    "from": {
+     "lat": 47.0997,
+     "lon": 6.8286
+    },
+    "label": "La Chaux-de-Fonds (Nord)"
+   }
+  ]
+ },
+ {
+  "slug": "chasseral",
+  "surface": "asphalt",
+  "name": "Chasseral",
+  "type": "pass",
+  "tags": [
+   "panorama"
+  ],
+  "aliases": [
+   "Col du Chasseral"
+  ],
+  "country": "CH",
+  "region": "Jura",
+  "lat": 47.1194,
+  "lon": 7.0323,
+  "elevation": 1502,
+  "classicAscent": "11,5 km, 6,1 % ab Saint-Imier",
+  "beauty": 5,
+  "fame": 3,
+  "difficulty": 4,
+  "traffic": 1,
+  "season": {
+   "opens": 5,
+   "closes": 11,
+   "maintained": false
+  },
+  "note": "Der Sattel unter dem höchsten Gipfel des Berner Jura, oben der Blick über drei Seen bis zu den Alpen. Im Winter gesperrt.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 47.1521,
+     "lon": 7.0023
+    },
+    "label": "Saint-Imier (Nord)"
+   },
+   {
+    "from": {
+     "lat": 47.113,
+     "lon": 7.0818
+    },
+    "label": "Nods (Süd)"
+   }
+  ]
+ },
+ {
+  "slug": "mont-crosin",
+  "surface": "asphalt",
+  "name": "Mont-Crosin",
+  "type": "pass",
+  "aliases": [
+   "Col du Mont-Crosin"
+  ],
+  "country": "CH",
+  "region": "Jura",
+  "lat": 47.1906,
+  "lon": 7.0399,
+  "elevation": 1227,
+  "classicAscent": "5,6 km, 7,8 % ab Saint-Imier",
+  "beauty": 3,
+  "fame": 1,
+  "difficulty": 3,
+  "traffic": 1,
+  "season": null,
+  "note": "Der kurze Pass zwischen Saint-Imier und Tramelan über die Weiden mit den Windrädern des Mont-Soleil. Ganzjährig offen.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 47.1521,
+     "lon": 7.0023
+    },
+    "label": "Saint-Imier (Süd)"
+   },
+   {
+    "from": {
+     "lat": 47.2237,
+     "lon": 7.103
+    },
+    "label": "Tramelan (Nord)"
+   }
+  ]
+ },
+ {
+  "slug": "weissenstein",
+  "surface": "asphalt",
+  "name": "Weissenstein",
+  "type": "pass",
+  "tags": [
+   "panorama",
+   "hairpins"
+  ],
+  "aliases": [
+   "Weissensteinpass"
+  ],
+  "country": "CH",
+  "region": "Jura",
+  "lat": 47.254,
+  "lon": 7.5064,
+  "elevation": 1270,
+  "classicAscent": "7,6 km, 8,8 % ab Oberdorf",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 5,
+  "traffic": 1,
+  "season": {
+   "opens": 4,
+   "closes": 11,
+   "maintained": false
+  },
+  "note": "Der steile Hausberg von Solothurn: von Oberdorf über 700 Höhenmeter auf kurzer Strecke mit Rampen über 15 %, oben der Alpenblick vom Kurhaus. Im Winter gesperrt.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 47.2298,
+     "lon": 7.5028
+    },
+    "label": "Oberdorf (Süd)"
+   },
+   {
+    "from": {
+     "lat": 47.2623,
+     "lon": 7.468
+    },
+    "label": "Gänsbrunnen (Nord)"
+   }
+  ]
+ },
+ {
+  "slug": "passwang",
+  "surface": "asphalt",
+  "name": "Passwang",
+  "type": "pass",
+  "tags": [
+   "tunnels"
+  ],
+  "aliases": [
+   "Passwangpass"
+  ],
+  "country": "CH",
+  "region": "Jura",
+  "lat": 47.3592,
+  "lon": 7.6591,
+  "elevation": 943,
+  "classicAscent": "7,8 km, 5,1 % ab Mümliswil",
+  "beauty": 3,
+  "fame": 1,
+  "difficulty": 2,
+  "traffic": 2,
+  "season": null,
+  "note": "Der Übergang vom Thal ins Lüsseltal im Solothurner Jura, oben durch den kurzen Scheiteltunnel. Ganzjährig offen.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 47.3428,
+     "lon": 7.7039
+    },
+    "label": "Mümliswil (Süd)"
+   },
+   {
+    "from": {
+     "lat": 47.3608,
+     "lon": 7.5792
+    },
+    "label": "Beinwil (Nord)"
+   }
+  ]
  }
 ]

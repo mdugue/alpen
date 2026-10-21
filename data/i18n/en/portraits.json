@@ -310,6 +310,19 @@
    }
   ]
  },
+ "chasseral": {
+  "intro": "The highest pass of the Bernese Jura, with the view of the three lakes.",
+  "sides": [
+   {
+    "character": "From Saint-Imier steadily through forest, across open pastures at the top.",
+    "highlights": "The Chasseral pastures."
+   },
+   {
+    "character": "From Nods steeper up the south flank with a view of Lake Biel.",
+    "highlights": "Lake Biel and the Alpine chain."
+   }
+  ]
+ },
  "cima-grappa": {
   "intro": "A lone mountain above the Venetian plain, with more than 1,500 m of climbing in one go from every side. In the 2014 Giro d'Italia an uphill time trial finished here, won by Nairo Quintana; at the top the First World War ossuary and the view to the Adriatic.",
   "sides": [
@@ -620,6 +633,19 @@
    }
   ]
  },
+ "col-de-la-biche": {
+  "intro": "The Colombier's neighbour, easy to link in a loop along the ridge.",
+  "sides": [
+   {
+    "character": "From Champagne steadily through forest, narrow at the top.",
+    "highlights": "The forests of the Valromey."
+   },
+   {
+    "character": "From Hotonnes gently across the plateau and through forest.",
+    "highlights": "The pastures of the Hotonnes plateau."
+   }
+  ]
+ },
  "col-de-la-bonette": {
   "intro": "The loop around the Cime de la Bonette is the highest paved road in France, and the Tour has crossed it several times. Two very long, lonely sides with military ruins from the old border defences.",
   "sides": [
@@ -692,6 +718,15 @@
    }
   ]
  },
+ "col-de-la-croix-de-la-serra": {
+  "intro": "A moderate pass in the Haut-Jura, quiet and through forest.",
+  "sides": [
+   {
+    "character": "From Saint-Claude up the Tacon valley and across pastures, steadily.",
+    "highlights": "The pastures and forests of the Haut-Jura."
+   }
+  ]
+ },
  "col-de-la-croix-fry": {
   "intro": "The quiet pass between Thônes and La Clusaz, a good pairing with the Aravis and the Colombière.",
   "sides": [
@@ -702,6 +737,19 @@
    {
     "character": "From La Clusaz short and steady through forest and ski slopes.",
     "highlights": "The view back to La Clusaz and the Aravis."
+   }
+  ]
+ },
+ "col-de-la-faucille": {
+  "intro": "The home climb of Geneva's cyclists, with Lake Geneva as the backdrop.",
+  "sides": [
+   {
+    "character": "From Gex steadily in long hairpins through forest.",
+    "highlights": "Lake Geneva and Mont Blanc."
+   },
+   {
+    "character": "From Mijoux short through the Valserine valley.",
+    "highlights": "The Valserine valley."
    }
   ]
  },
@@ -720,6 +768,28 @@
    {
     "character": "Out of the Rhône valley in many hairpins through the vineyards, then through forest, steeper if anything towards the top. Steady, hard work with a growing view back over the valley.",
     "highlights": "The view back to Martigny and the bend of the Rhône."
+   }
+  ]
+ },
+ "col-de-la-givrine": {
+  "intro": "From Lake Geneva onto the Jura, more than 800 m in one go.",
+  "sides": [
+   {
+    "character": "From Nyon gently through the vineyards, then steadily in hairpins through forest to Saint-Cergue and the top.",
+    "highlights": "The view back over Lake Geneva."
+   }
+  ]
+ },
+ "col-de-la-lebe": {
+  "intro": "An easy Bugey pass, as an approach to the Colombier or as a quiet day.",
+  "sides": [
+   {
+    "character": "From Champagne gently through forest.",
+    "highlights": "The Valromey."
+   },
+   {
+    "character": "From Belley long and gentle through the villages of the Bugey.",
+    "highlights": "The vineyards of the Bugey."
    }
   ]
  },
@@ -915,6 +985,19 @@
    }
   ]
  },
+ "col-de-richemond": {
+  "intro": "The gentle pass at the northern end of the Colombier massif.",
+  "sides": [
+   {
+    "character": "From Corbonod long and moderate in hairpins above the Rhône valley and through forest.",
+    "highlights": "The view across the Rhône valley at Seyssel."
+   },
+   {
+    "character": "From Hotonnes short and gentle.",
+    "highlights": "The Hotonnes plateau."
+   }
+  ]
+ },
  "col-de-romme": {
   "intro": "Since 2009 the Romme has been known as the hard starter before the Colombière when the Tour rides the two back to back. It clings like a balcony above the Arve valley and saves its steepest part for the top.",
   "sides": [
@@ -1042,6 +1125,19 @@
    },
    {
     "character": "Longer from the Var valley with many hairpins, steepening towards the top. Because of the surface and the tight bends, better uphill."
+   }
+  ]
+ },
+ "col-des-etroits": {
+  "intro": "The pass above Sainte-Croix, between Vaud and Neuchâtel.",
+  "sides": [
+   {
+    "character": "From Vuiteboeuf in hairpins up the slope to Sainte-Croix, then gently to the top.",
+    "highlights": "The view across Lake Neuchâtel."
+   },
+   {
+    "character": "From Fleurier long and moderate through forest.",
+    "highlights": "The Val de Travers."
    }
   ]
  },
@@ -1234,12 +1330,38 @@
    }
   ]
  },
+ "col-du-marchairuz": {
+  "intro": "The highest pass of the Vaud Jura, with the Mollendruz a loop around the Vallée de Joux.",
+  "sides": [
+   {
+    "character": "From Bière steadily at around 7 % through forest, across open pastures at the top.",
+    "highlights": "The view across Lake Geneva to the Alps."
+   },
+   {
+    "character": "From the Vallée de Joux short and moderate.",
+    "highlights": "The Vallée de Joux."
+   }
+  ]
+ },
  "col-du-mollard": {
   "intro": "The Mollard is the quiet detour from Saint-Jean-de-Maurienne towards the Croix de Fer: long, little used and for long stretches in forest. Those who ride it usually want to spare themselves the traffic of the big passes.",
   "sides": [
    {
     "character": "Long and in steps: from Saint-Jean-de-Maurienne up through forest and hamlets, with flatter stretches and a short descent along the way. Only at the very top does the country open out.",
     "highlights": "At the top the view of the Aiguilles d'Arves."
+   }
+  ]
+ },
+ "col-du-mollendruz": {
+  "intro": "The second half of the loop around the Vallée de Joux.",
+  "sides": [
+   {
+    "character": "From Mont-la-Ville steadily through forest.",
+    "highlights": "The view over the Swiss plateau."
+   },
+   {
+    "character": "From L'Abbaye on the Lac de Joux short and gentle.",
+    "highlights": "The Lac de Joux."
    }
   ]
  },
@@ -1977,6 +2099,23 @@
    }
   ]
  },
+ "grand-colombier": {
+  "intro": "The hardest climb in the Jura, almost 1,250 m from the Rhône valley with ramps over 10 %.",
+  "sides": [
+   {
+    "character": "From Culoz first in hairpins above the Rhône valley, then through forest with the steepest ramps over 10 % and finally across the open pastures.",
+    "highlights": "The view over the Lac du Bourget and the Rhône valley."
+   },
+   {
+    "character": "From Anglefort the most direct and irregularly steep through forest, the hardest side.",
+    "highlights": "The view down to the Rhône."
+   },
+   {
+    "character": "From the Valromey short and brutally steep, with sections around 12 %.",
+    "highlights": "The villages of the Valromey."
+   }
+  ]
+ },
  "grimselpass": {
   "intro": "Granite, reservoirs and the stack of hairpins above Gletsch define the Grimsel. Together with the Furka and the Susten it makes one of Switzerland's best-known pass loops.",
   "sides": [
@@ -2559,6 +2698,32 @@
   "sides": [
    {
     "character": "From Méribel up the valley in steps, mostly moderate, with short dips between the village parts. Ski-resort scenery rather than wilderness."
+   }
+  ]
+ },
+ "mont-crosin": {
+  "intro": "The opposite slope to the Chasseral, short and steep from Saint-Imier.",
+  "sides": [
+   {
+    "character": "From Saint-Imier short and steep through forest.",
+    "highlights": "The view of the Chasseral."
+   },
+   {
+    "character": "From Tramelan gently across the pastures of the Franches-Montagnes.",
+    "highlights": "The pastures and wind turbines."
+   }
+  ]
+ },
+ "mont-du-chat": {
+  "intro": "One of the hardest climbs between the Jura and the Alps, with the lake at its feet.",
+  "sides": [
+   {
+    "character": "From the lakeshore without a break at around 9 % through forest, hardly any respite until the top.",
+    "highlights": "The Lac du Bourget below the road."
+   },
+   {
+    "character": "From Yenne long and steadier through villages and forest.",
+    "highlights": "The view into the Rhône valley."
    }
   ]
  },
@@ -3541,6 +3706,19 @@
    }
   ]
  },
+ "passwang": {
+  "intro": "A moderate pass in the Solothurn Jura, close to Basel.",
+  "sides": [
+   {
+    "character": "From Mümliswil steadily in hairpins to the tunnel.",
+    "highlights": "The Jura heights above the Thal."
+   },
+   {
+    "character": "From Beinwil steadily up the Lüssel valley.",
+    "highlights": "The quiet Lüssel valley."
+   }
+  ]
+ },
  "pavlicevo-sedlo": {
   "intro": "The quieter neighbour of the Seeberg saddle, with a view into the Kamnik–Savinja Alps.",
   "sides": [
@@ -4465,6 +4643,19 @@
    }
   ]
  },
+ "vue-des-alpes": {
+  "intro": "The name says it all: the Alpine view of the Neuchâtel Jura.",
+  "sides": [
+   {
+    "character": "From Valangin through the Val de Ruz and steadily to the top.",
+    "highlights": "The Alpine view at the top."
+   },
+   {
+    "character": "From La Chaux-de-Fonds short and gentle.",
+    "highlights": "The pastures of the Jura heights."
+   }
+  ]
+ },
  "wallbergstrasse": {
   "intro": "A car-free mountain road above the Tegernsee, the training climb of the Bavarian Oberland.",
   "sides": [
@@ -4484,6 +4675,19 @@
    {
     "character": "From Wolfsberg in the Lavant valley steadily via Prössing.",
     "highlights": "The view across the Lavant valley to the Saualpe."
+   }
+  ]
+ },
+ "weissenstein": {
+  "intro": "One of the steepest passes in Switzerland, short and hard.",
+  "sides": [
+   {
+    "character": "From Oberdorf in tight hairpins steep all the way through forest.",
+    "highlights": "The view across the Swiss plateau to the Alps."
+   },
+   {
+    "character": "From Gänsbrunnen shorter and a little gentler through forest.",
+    "highlights": "The pastures of the Jura ridge."
    }
   ]
  },

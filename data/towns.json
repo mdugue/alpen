@@ -1471,6 +1471,105 @@
   "why": "Stadt in der Rheinebene mit TGV-Bahnhof; Munster liegt knapp 20 km entfernt, die Schlucht gut 30. Trocken und mild, im Frühjahr früher fahrbar als die Täler."
  },
  {
+  "slug": "culoz",
+  "name": "Culoz",
+  "country": "FR",
+  "lat": 45.8477,
+  "lon": 5.7809,
+  "tags": [
+   "train",
+   "passes",
+   "quiet"
+  ],
+  "aliases": [
+   "Bugey"
+  ],
+  "why": "Bahnhof am Fuß des Grand Colombier: die Culoz-Seite beginnt am Ortsrand, Biche, Richemond und der Mont du Chat sind in Reichweite."
+ },
+ {
+  "slug": "les-rousses",
+  "name": "Les Rousses",
+  "country": "FR",
+  "lat": 46.484,
+  "lon": 6.0627,
+  "tags": [
+   "passes",
+   "hotels",
+   "scenic"
+  ],
+  "aliases": [
+   "Haut-Jura"
+  ],
+  "why": "Der Ferienort auf dem Jurakamm zwischen Faucille und Givrine, mit Seen und Weiden ringsum und vielen Unterkünften."
+ },
+ {
+  "slug": "nyon",
+  "name": "Nyon",
+  "country": "CH",
+  "lat": 46.3833,
+  "lon": 6.2398,
+  "tags": [
+   "hub",
+   "train",
+   "hotels",
+   "workshops"
+  ],
+  "aliases": [
+   "La Côte"
+  ],
+  "why": "Die Stadt am Genfersee mit Bahnhof: Givrine ab der Haustür, Faucille und Marchairuz in Reichweite."
+ },
+ {
+  "slug": "le-sentier",
+  "name": "Le Sentier",
+  "country": "CH",
+  "lat": 46.6087,
+  "lon": 6.231,
+  "tags": [
+   "quiet",
+   "scenic",
+   "train"
+  ],
+  "aliases": [
+   "Vallée de Joux"
+  ],
+  "why": "Der Hauptort im Vallée de Joux, zwischen Marchairuz und Mollendruz; ruhig, mit Bahnanschluss."
+ },
+ {
+  "slug": "saint-imier",
+  "name": "Saint-Imier",
+  "country": "CH",
+  "lat": 47.1521,
+  "lon": 7.0023,
+  "tags": [
+   "train",
+   "passes",
+   "quiet"
+  ],
+  "aliases": [
+   "Vallon de Saint-Imier",
+   "Berner Jura"
+  ],
+  "why": "Das Uhrmacherstädtchen zwischen Chasseral und Mont-Crosin, beide beginnen am Bahnhof."
+ },
+ {
+  "slug": "solothurn",
+  "name": "Solothurn",
+  "country": "CH",
+  "lat": 47.2088,
+  "lon": 7.5323,
+  "tags": [
+   "hub",
+   "train",
+   "hotels",
+   "workshops"
+  ],
+  "aliases": [
+   "Soleure"
+  ],
+  "why": "Die Barockstadt an der Aare unter dem Weissenstein, mit Bahnknoten, Hotels und Radläden; der Passwang ist eine Talfahrt entfernt."
+ },
+ {
   "slug": "lienz",
   "name": "Lienz",
   "country": "AT",

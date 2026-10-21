@@ -34,6 +34,11 @@
   "multiDay": "Four days; Mortirolo and Gavia lie at the eastern end of the Valtellina.",
   "access": "Morbegno or Bergamo railway station; Bergamo airport in an hour."
  },
+ "berner-jura": {
+  "character": "The Jura ridge above the Three Lakes region: the Chasseral, Vue des Alpes and Mont-Crosin, plus the steep Weissenstein above Solothurn. Pastures, forest and in clear weather the whole Alpine chain.",
+  "multiDay": "Two to three days between Saint-Imier and Solothurn, a good weekend from Basel, Bern or Zurich.",
+  "access": "Saint-Imier and Solothurn by train, an hour from Bern or Basel."
+ },
  "bormio-livigno": {
   "character": "Stelvio, Gavia, Mortirolo, Umbrail and the passes around Livigno: the highest roads in Italy packed into the smallest space.",
   "multiDay": "Five days; the Stelvio–Umbrail loop and Gavia–Mortirolo a day each, the rest for Foscagno and Eira.",
@@ -43,6 +48,11 @@
   "character": "Izoard, Granon, Agnel, Montgenèvre and the gorges of the Guil: high, dry, sunny – Briançon itself sits at 1,300 m.",
   "multiDay": "A week with two bases; into Italy over the Agnel or Montgenèvre, south over Vars into the Ubaye.",
   "access": "Briançon railway station (night train from Paris); Turin via the Fréjus tunnel or Montgenèvre."
+ },
+ "bugey": {
+  "character": "The southern Jura between the Rhône and the Valromey: the Grand Colombier with four sides, plus the Biche, Richemond and the Mont du Chat above the Lac du Bourget. Steep, wooded and quiet.",
+  "multiDay": "Three to four days from Culoz, rideable earlier and later in the year than the high Alps next door.",
+  "access": "Culoz by train via Geneva, Lyon or Chambéry."
  },
  "champsaur": {
   "character": "The quiet high valley north of Gap: the Noyer as the one big name, plus the Manse, Chaillol and Orcières, sunnier than the Écrins behind it.",
@@ -98,6 +108,11 @@
   "character": "Aravis, Colombière, Romme, Joux-Plane and Ramaz – the mid-height passes of the Tour de France between Annecy and Lake Geneva, green, closely packed and open early in the year.",
   "multiDay": "A week without repeating a road; the Route des Grandes Alpes starts here and leads over Roselend into the Tarentaise.",
   "access": "Geneva airport in an hour; Annecy, Cluses or Thonon railway station."
+ },
+ "hochjura-vallee-de-joux": {
+  "character": "The Jura ridge above Lake Geneva: the Faucille, Givrine, Marchairuz and Mollendruz, pastures, lakes and forest at the top, the view of the Alps below.",
+  "multiDay": "Two to three days, as a loop around the Vallée de Joux and across the border to Les Rousses.",
+  "access": "Nyon or Geneva by train, the passes start at the lakeshore."
  },
  "hochvogesen": {
   "character": "The Schlucht, the Route des Crêtes and the Hohneck above the Munster valley: grassy crests at 1200 to 1350 m, short steep climbs out of the valleys, and motorbikes on the crest at weekends.",

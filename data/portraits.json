@@ -451,6 +451,25 @@
    }
   ]
  },
+ "chasseral": {
+  "intro": "Der höchste Pass des Berner Jura, mit dem Dreiseenblick.",
+  "sides": [
+   {
+    "character": "Von Saint-Imier gleichmäßig durch Wald, oben über offene Weiden.",
+    "highlights": "Die Weiden des Chasseral.",
+    "hazards": [],
+    "bestAs": "up"
+   },
+   {
+    "character": "Von Nods steiler über die Südflanke mit Blick auf den Bielersee.",
+    "highlights": "Der Bielersee und die Alpenkette.",
+    "hazards": [
+     "steep"
+    ],
+    "bestAs": "up"
+   }
+  ]
+ },
  "cima-grappa": {
   "intro": "Ein einzelner Berg über der venezianischen Ebene, von jeder Seite mit über 1500 Höhenmetern am Stück. Im Giro d'Italia 2014 endete hier ein Bergzeitfahren, das Nairo Quintana gewann; oben das Beinhaus des Ersten Weltkriegs und der Blick bis zur Adria.",
   "sides": [
@@ -884,6 +903,27 @@
    }
   ]
  },
+ "col-de-la-biche": {
+  "intro": "Der Nachbar des Colombier, gut zu einer Runde über den Kamm zu verbinden.",
+  "sides": [
+   {
+    "character": "Von Champagne gleichmäßig durch Wald, oben schmal.",
+    "highlights": "Die Wälder des Valromey.",
+    "hazards": [
+     "narrow"
+    ],
+    "bestAs": "up"
+   },
+   {
+    "character": "Von Hotonnes sanft über das Plateau und durch Wald.",
+    "highlights": "Die Almen des Plateau d'Hauteville.",
+    "hazards": [
+     "narrow"
+    ],
+    "bestAs": "down"
+   }
+  ]
+ },
  "col-de-la-bonette": {
   "intro": "Die Schleife um die Cime de la Bonette ist die höchste asphaltierte Straße Frankreichs, die Tour hat sie mehrfach überquert. Zwei sehr lange, einsame Rampen mit Militärruinen aus der Zeit der Grenzbefestigung.",
   "sides": [
@@ -996,6 +1036,16 @@
    }
   ]
  },
+ "col-de-la-croix-de-la-serra": {
+  "intro": "Ein mäßiger Pass im Haut-Jura, ruhig und durch Wald.",
+  "sides": [
+   {
+    "character": "Von Saint-Claude durch das Tal des Tacon und über Weiden gleichmäßig hinauf.",
+    "highlights": "Die Weiden und Wälder des Haut-Jura.",
+    "hazards": []
+   }
+  ]
+ },
  "col-de-la-croix-fry": {
   "intro": "Der ruhige Pass zwischen Thônes und La Clusaz, gut kombiniert mit Aravis und Colombière.",
   "sides": [
@@ -1009,6 +1059,27 @@
     "character": "Von La Clusaz kurz und gleichmäßig durch Wald und Skihänge hinauf.",
     "highlights": "Der Blick zurück auf La Clusaz und die Aravis.",
     "hazards": [],
+    "bestAs": "down"
+   }
+  ]
+ },
+ "col-de-la-faucille": {
+  "intro": "Der Hausberg der Genfer Rennradler, mit dem Genfersee als Kulisse.",
+  "sides": [
+   {
+    "character": "Von Gex gleichmäßig in langen Kehren durch Wald.",
+    "highlights": "Der Genfersee und der Mont Blanc.",
+    "hazards": [
+     "traffic"
+    ],
+    "bestAs": "up"
+   },
+   {
+    "character": "Von Mijoux kurz durch das Tal der Valserine.",
+    "highlights": "Das Tal der Valserine.",
+    "hazards": [
+     "traffic"
+    ],
     "bestAs": "down"
    }
   ]
@@ -1036,6 +1107,33 @@
      "traffic"
     ],
     "highlights": "Der Blick zurück auf Martigny und das Rhoneknie."
+   }
+  ]
+ },
+ "col-de-la-givrine": {
+  "intro": "Vom Genfersee auf den Jura, über 800 Höhenmeter am Stück.",
+  "sides": [
+   {
+    "character": "Von Nyon sanft durch die Weinberge, dann gleichmäßig in Kehren durch Wald nach Saint-Cergue und zur Passhöhe.",
+    "highlights": "Der Blick zurück über den Genfersee.",
+    "hazards": []
+   }
+  ]
+ },
+ "col-de-la-lebe": {
+  "intro": "Ein leichter Pass des Bugey, als Anfahrt zum Colombier oder als ruhiger Tag.",
+  "sides": [
+   {
+    "character": "Von Champagne sanft durch Wald.",
+    "highlights": "Das Valromey.",
+    "hazards": [],
+    "bestAs": "down"
+   },
+   {
+    "character": "Von Belley lang und sanft über die Dörfer des Bugey.",
+    "highlights": "Die Weinberge des Bugey.",
+    "hazards": [],
+    "bestAs": "up"
    }
   ]
  },
@@ -1301,6 +1399,23 @@
    }
   ]
  },
+ "col-de-richemond": {
+  "intro": "Der sanfte Pass im Norden des Colombier-Massivs.",
+  "sides": [
+   {
+    "character": "Von Corbonod lang und mäßig in Kehren über dem Rhonetal und durch Wald.",
+    "highlights": "Der Blick über das Rhonetal bei Seyssel.",
+    "hazards": [],
+    "bestAs": "up"
+   },
+   {
+    "character": "Von Hotonnes kurz und sanft.",
+    "highlights": "Das Plateau von Hotonnes.",
+    "hazards": [],
+    "bestAs": "down"
+   }
+  ]
+ },
  "col-de-romme": {
   "intro": "Seit 2009 kennt man den Romme als harte Vorspeise der Colombière, wenn die Tour beide hintereinander fährt. Er klebt als Balkon über dem Arve-Tal und hebt sich das Steilste für oben auf.",
   "sides": [
@@ -1481,6 +1596,23 @@
      "rough",
      "narrow"
     ]
+   }
+  ]
+ },
+ "col-des-etroits": {
+  "intro": "Der Pass über Sainte-Croix, zwischen Waadt und Neuenburg.",
+  "sides": [
+   {
+    "character": "Von Vuiteboeuf in Kehren am Hang nach Sainte-Croix, dann sanft zur Passhöhe.",
+    "highlights": "Der Blick über den Neuenburgersee.",
+    "hazards": [],
+    "bestAs": "up"
+   },
+   {
+    "character": "Von Fleurier lang und mäßig durch Wald.",
+    "highlights": "Das Val de Travers.",
+    "hazards": [],
+    "bestAs": "down"
    }
   ]
  },
@@ -1762,6 +1894,23 @@
    }
   ]
  },
+ "col-du-marchairuz": {
+  "intro": "Der höchste Pass des Waadtländer Jura, mit dem Mollendruz eine Runde ums Vallée de Joux.",
+  "sides": [
+   {
+    "character": "Von Bière gleichmäßig um 7 % durch Wald, oben über offene Weiden.",
+    "highlights": "Der Blick über den Genfersee zu den Alpen.",
+    "hazards": [],
+    "bestAs": "up"
+   },
+   {
+    "character": "Vom Vallée de Joux kurz und mäßig.",
+    "highlights": "Das Vallée de Joux.",
+    "hazards": [],
+    "bestAs": "down"
+   }
+  ]
+ },
  "col-du-mollard": {
   "intro": "Der Mollard ist der ruhige Umweg von Saint-Jean-de-Maurienne zur Croix de Fer: lang, wenig befahren und über weite Strecken im Wald. Wer ihn fährt, will meist den großen Pässen den Verkehr ersparen.",
   "sides": [
@@ -1771,6 +1920,23 @@
      "narrow"
     ],
     "highlights": "Oben der Blick auf die Aiguilles d'Arves."
+   }
+  ]
+ },
+ "col-du-mollendruz": {
+  "intro": "Die zweite Hälfte der Runde ums Vallée de Joux.",
+  "sides": [
+   {
+    "character": "Von Mont-la-Ville gleichmäßig durch Wald.",
+    "highlights": "Der Blick über das Mittelland.",
+    "hazards": [],
+    "bestAs": "up"
+   },
+   {
+    "character": "Von L'Abbaye am Lac de Joux kurz und sanft.",
+    "highlights": "Der Lac de Joux.",
+    "hazards": [],
+    "bestAs": "down"
    }
   ]
  },
@@ -2845,6 +3011,37 @@
    }
   ]
  },
+ "grand-colombier": {
+  "intro": "Der härteste Anstieg des Jura, aus dem Rhonetal fast 1 250 Höhenmeter mit Rampen über 10 %.",
+  "sides": [
+   {
+    "character": "Von Culoz erst in Kehren über dem Rhonetal, dann durch Wald mit den steilsten Rampen über 10 % und oben über die offenen Almen.",
+    "highlights": "Der Blick über den Lac du Bourget und das Rhonetal.",
+    "hazards": [
+     "steep",
+     "tight-hairpins"
+    ],
+    "bestAs": "up"
+   },
+   {
+    "character": "Von Anglefort am direktesten und unregelmäßig steil durch Wald, die härteste Seite.",
+    "highlights": "Der Blick hinunter auf die Rhone.",
+    "hazards": [
+     "steep",
+     "narrow"
+    ],
+    "bestAs": "up"
+   },
+   {
+    "character": "Aus dem Valromey kurz und brutal steil, mit Abschnitten um 12 %.",
+    "highlights": "Die Dörfer des Valromey.",
+    "hazards": [
+     "steep"
+    ],
+    "bestAs": "down"
+   }
+  ]
+ },
  "grimselpass": {
   "intro": "Granit, Stauseen und die Kehrentreppe über Gletsch prägen die Grimsel. Zusammen mit Furka und Susten ist sie eine der bekanntesten Passrunden der Schweiz.",
   "sides": [
@@ -3711,6 +3908,44 @@
   "sides": [
    {
     "character": "Ab Méribel in Stufen talaufwärts, meist mäßig steil, mit kurzen Gegengefällen zwischen den Ortsteilen. Skiort-Kulisse statt Wildnis."
+   }
+  ]
+ },
+ "mont-crosin": {
+  "intro": "Der Gegenhang zum Chasseral, kurz und steil aus Saint-Imier.",
+  "sides": [
+   {
+    "character": "Von Saint-Imier kurz und steil durch Wald.",
+    "highlights": "Der Blick auf den Chasseral.",
+    "hazards": [
+     "steep"
+    ],
+    "bestAs": "up"
+   },
+   {
+    "character": "Von Tramelan sanft über die Weiden der Freiberge.",
+    "highlights": "Die Weiden und Windräder.",
+    "hazards": [],
+    "bestAs": "down"
+   }
+  ]
+ },
+ "mont-du-chat": {
+  "intro": "Einer der härtesten Anstiege zwischen Jura und Alpen, mit dem See zu Füßen.",
+  "sides": [
+   {
+    "character": "Vom Seeufer ohne Pause um 9 % durch Wald, kaum Erholung bis oben.",
+    "highlights": "Der Lac du Bourget unter der Straße.",
+    "hazards": [
+     "steep"
+    ],
+    "bestAs": "up"
+   },
+   {
+    "character": "Von Yenne lang und gleichmäßiger über Dörfer und Wald.",
+    "highlights": "Der Blick ins Rhonetal.",
+    "hazards": [],
+    "bestAs": "down"
    }
   ]
  },
@@ -5254,6 +5489,27 @@
    }
   ]
  },
+ "passwang": {
+  "intro": "Ein mäßiger Pass im Solothurner Jura, nah an Basel.",
+  "sides": [
+   {
+    "character": "Von Mümliswil gleichmäßig in Kehren zum Tunnel.",
+    "highlights": "Die Jurahöhen über dem Thal.",
+    "hazards": [
+     "tunnels"
+    ],
+    "bestAs": "up"
+   },
+   {
+    "character": "Von Beinwil durch das Lüsseltal gleichmäßig hinauf.",
+    "highlights": "Das stille Lüsseltal.",
+    "hazards": [
+     "tunnels"
+    ],
+    "bestAs": "down"
+   }
+  ]
+ },
  "pavlicevo-sedlo": {
   "intro": "Der stillere Nachbar des Seebergsattels, mit Blick in die Steiner Alpen.",
   "sides": [
@@ -6542,6 +6798,27 @@
    }
   ]
  },
+ "vue-des-alpes": {
+  "intro": "Der Name ist Programm: der Alpenblick des Neuenburger Jura.",
+  "sides": [
+   {
+    "character": "Von Valangin durch das Val de Ruz und gleichmäßig zur Passhöhe.",
+    "highlights": "Der Alpenblick oben.",
+    "hazards": [
+     "traffic"
+    ],
+    "bestAs": "up"
+   },
+   {
+    "character": "Von La Chaux-de-Fonds kurz und sanft.",
+    "highlights": "Die Weiden der Jurahöhen.",
+    "hazards": [
+     "traffic"
+    ],
+    "bestAs": "down"
+   }
+  ]
+ },
  "wallbergstrasse": {
   "intro": "Eine autofreie Bergstraße über dem Tegernsee, der Trainingsberg des Oberlands.",
   "sides": [
@@ -6569,6 +6846,29 @@
     "highlights": "Der Blick über das Lavanttal auf die Saualpe.",
     "hazards": [],
     "bestAs": "both"
+   }
+  ]
+ },
+ "weissenstein": {
+  "intro": "Einer der steilsten Pässe der Schweiz, kurz und hart.",
+  "sides": [
+   {
+    "character": "Von Oberdorf in engen Kehren durchgehend steil durch Wald.",
+    "highlights": "Der Blick über das Mittelland zu den Alpen.",
+    "hazards": [
+     "steep",
+     "tight-hairpins",
+     "narrow"
+    ],
+    "bestAs": "up"
+   },
+   {
+    "character": "Von Gänsbrunnen kürzer und etwas sanfter durch Wald.",
+    "highlights": "Die Weiden der Jurakette.",
+    "hazards": [
+     "steep"
+    ],
+    "bestAs": "down"
    }
   ]
  },

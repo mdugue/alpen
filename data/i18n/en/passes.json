@@ -221,6 +221,14 @@
    "Uriage"
   ]
  },
+ "chasseral": {
+  "classicAscent": "11.5 km, 6.1 % from Saint-Imier",
+  "note": "The saddle below the highest summit of the Bernese Jura, at the top the view over three lakes to the Alps. Closed in winter.",
+  "ascents": [
+   "Saint-Imier (north)",
+   "Nods (south)"
+  ]
+ },
  "cima-grappa": {
   "classicAscent": "19.1 km, 7.9 % from Semonzo",
   "note": "The solitary peak above the Venetian plain: over 1,500 m of climbing in one go from every side, at the top the First World War ossuary and the view from the Adriatic to the Dolomites. The road from Semonzo is the Strada Cadorna, narrow and without shade in its upper part.",
@@ -435,6 +443,14 @@
    "Léoncel (west)"
   ]
  },
+ "col-de-la-biche": {
+  "classicAscent": "13.6 km, 5.7 % from Champagne-en-Valromey",
+  "note": "The saddle north of the Grand Colombier, over which the ridge road to the Colombier runs; narrow forest roads from the Valromey. Closed in winter.",
+  "ascents": [
+   "Champagne-en-Valromey",
+   "Hotonnes"
+  ]
+ },
  "col-de-la-bonette": {
   "classicAscent": "24 km, 6.6 % from Jausiers (Cime loop)",
   "note": "Highest paved loop in Europe. Usually open until mid/late October, closure weather-dependent.",
@@ -482,12 +498,27 @@
    "Rochetaillée (Oisans)"
   ]
  },
+ "col-de-la-croix-de-la-serra": {
+  "classicAscent": "13.9 km, 4.4 % from Saint-Claude",
+  "note": "The pass south of Saint-Claude into the Valserine valley, moderate through forest and across pastures. Open all year.",
+  "ascents": [
+   "Saint-Claude"
+  ]
+ },
  "col-de-la-croix-fry": {
   "classicAscent": "13 km, 6.5 % from Thônes",
   "note": "The crossing from Thônes through the Manigod valley to La Clusaz, the quiet sister of the Aravis road with a view of the Aravis range. Open all year, a small ski resort at the top.",
   "ascents": [
    "Thônes (west)",
    "La Clusaz (east)"
+  ]
+ },
+ "col-de-la-faucille": {
+  "classicAscent": "11.1 km, 6.3 % from Gex",
+  "note": "The main crossing from Geneva into the Haut-Jura: from Gex in hairpins up the eastern flank, at the top the view over Lake Geneva to Mont Blanc. Cleared all year, with traffic.",
+  "ascents": [
+   "Gex (east)",
+   "Mijoux (west)"
   ]
  },
  "col-de-la-forclaz-de-montmin": {
@@ -502,6 +533,21 @@
   "note": "The way from Martigny to Chamonix, evenly steep through vineyards and then forest. Cleared all year and, as the main link into the Trient valley, busy accordingly; often ridden as the approach to the Col des Montets.",
   "ascents": [
    "Martigny (north)"
+  ]
+ },
+ "col-de-la-givrine": {
+  "classicAscent": "19.5 km, 4.3 % from Nyon",
+  "note": "The long climb from Nyon on Lake Geneva via Saint-Cergue onto the Jura ridge and on into France. Steady, cleared all year.",
+  "ascents": [
+   "Nyon"
+  ]
+ },
+ "col-de-la-lebe": {
+  "classicAscent": "9.9 km, 3.8 % from Champagne-en-Valromey",
+  "note": "The gentle crossing between the Valromey and Belley, through forest and across pastures. Open all year.",
+  "ascents": [
+   "Champagne-en-Valromey (north)",
+   "Belley (south)"
   ]
  },
  "col-de-la-lombarde": {
@@ -635,6 +681,14 @@
    "Le Châtelard (north)"
   ]
  },
+ "col-de-richemond": {
+  "classicAscent": "18.7 km, 3.7 % from Corbonod",
+  "note": "The crossing from the Rhône valley at Seyssel onto the Hotonnes plateau, long and gentle through forest. Open all year.",
+  "ascents": [
+   "Corbonod (east)",
+   "Hotonnes (west)"
+  ]
+ },
  "col-de-romme": {
   "classicAscent": "18.1 km, 4.5 % from Cluses",
   "note": "Balcony road above the Arve valley, steep and narrow at the top. On the Tour's programme since 2009 as the starter before the Colombière.",
@@ -724,6 +778,14 @@
   "ascents": [
    "Colmars",
    "Saint-Martin-d'Entraunes"
+  ]
+ },
+ "col-des-etroits": {
+  "classicAscent": "11.4 km, 5 % from Vuiteboeuf",
+  "note": "The road from the Yverdon plain via Sainte-Croix into the Val de Travers, lower down through the Covatanne gorge. Open all year.",
+  "ascents": [
+   "Vuiteboeuf (south)",
+   "Fleurier (north)"
   ]
  },
  "col-des-gets": {
@@ -856,11 +918,27 @@
    "Briançon"
   ]
  },
+ "col-du-marchairuz": {
+  "classicAscent": "10.5 km, 7.1 % from Bière",
+  "note": "The highest road pass of the Swiss Jura, from the Lake Geneva basin at Bière into the Vallée de Joux; pastures and forest at the top. Often closed in winter after snowfall.",
+  "ascents": [
+   "Bière (south)",
+   "Le Brassus (north)"
+  ]
+ },
  "col-du-mollard": {
   "classicAscent": "21.5 km, 5.0 % from Saint-Jean-de-Maurienne",
   "note": "Eighteen hairpins through forest and hamlets, hardly any traffic; at the top the view opens onto the Aiguilles d'Arves.",
   "ascents": [
    "Saint-Jean-de-Maurienne"
+  ]
+ },
+ "col-du-mollendruz": {
+  "classicAscent": "6.3 km, 5.5 % from Mont-la-Ville",
+  "note": "The short crossing from the Vaud plateau into the Vallée de Joux at L'Abbaye. Moderate, cleared all year.",
+  "ascents": [
+   "Mont-la-Ville (south)",
+   "L'Abbaye (north)"
   ]
  },
  "col-du-mont-cenis": {
@@ -1381,6 +1459,15 @@
    "Uffholtz (east)"
   ]
  },
+ "grand-colombier": {
+  "classicAscent": "16.7 km, 7.4 % from Culoz",
+  "note": "The king of the Jura: four ascents from the Rhône valley and the Valromey, at the top the view over the Lac du Bourget to Mont Blanc. A Tour de France finish in 2020 and 2023. Closed in winter.",
+  "ascents": [
+   "Culoz",
+   "Anglefort",
+   "Virieu-le-Petit"
+  ]
+ },
  "grimselpass": {
   "classicAscent": "26 km, 5.8 % from Innertkirchen",
   "note": "Closure usually late October/November. Reservoirs and granite.",
@@ -1799,6 +1886,22 @@
   "note": "A detour off the Loze climb from Brides-les-Bains: the road continues through Méribel to the ski village of Mottaret. Season window taken from the Col de la Loze.",
   "ascents": [
    "Junction in Méribel"
+  ]
+ },
+ "mont-crosin": {
+  "classicAscent": "5.6 km, 7.8 % from Saint-Imier",
+  "note": "The short pass between Saint-Imier and Tramelan across the pastures with the wind turbines of Mont-Soleil. Open all year.",
+  "ascents": [
+   "Saint-Imier (south)",
+   "Tramelan (north)"
+  ]
+ },
+ "mont-du-chat": {
+  "classicAscent": "13.2 km, 9.3 % from Le Bourget-du-Lac",
+  "note": "The southernmost Jura pass right above the Lac du Bourget: from the east 13 km at a steady 9 %, crossed by the Tour de France in 2017. The west side from Yenne is gentler.",
+  "ascents": [
+   "Le Bourget-du-Lac (east)",
+   "Yenne (west)"
   ]
  },
  "mont-revard": {
@@ -2480,6 +2583,14 @@
   "ascents": [
    "Sant'Antonio (south)",
    "Posina (north)"
+  ]
+ },
+ "passwang": {
+  "classicAscent": "7.8 km, 5.1 % from Mümliswil",
+  "note": "The crossing from the Thal into the Lüssel valley in the Solothurn Jura, through the short summit tunnel at the top. Open all year.",
+  "ascents": [
+   "Mümliswil (south)",
+   "Beinwil (north)"
   ]
  },
  "pavlicevo-sedlo": {
@@ -3164,6 +3275,14 @@
    "Trenta"
   ]
  },
+ "vue-des-alpes": {
+  "classicAscent": "9.8 km, 6.4 % from Valangin",
+  "note": "The pass between Neuchâtel and La Chaux-de-Fonds, at the top in clear weather the whole Alpine chain from the Säntis to Mont Blanc. A main road with traffic, cleared all year.",
+  "ascents": [
+   "Valangin (south)",
+   "La Chaux-de-Fonds (north)"
+  ]
+ },
  "wallbergstrasse": {
   "classicAscent": "11.6 km, 6.4 % from Rottach-Egern",
   "note": "Mountain road closed to cars from Rottach-Egern to the Wallberghaus, a toboggan run in winter. Steadily steep in hairpins, at the top the view over the Tegernsee.",
@@ -3177,6 +3296,14 @@
   "ascents": [
    "Deutschlandsberg (east)",
    "Wolfsberg (west)"
+  ]
+ },
+ "weissenstein": {
+  "classicAscent": "7.6 km, 8.8 % from Oberdorf",
+  "note": "Solothurn's steep home climb: from Oberdorf more than 700 m in a short distance with ramps over 15 %, at the top the Alpine view from the Kurhaus. Closed in winter.",
+  "ascents": [
+   "Oberdorf (south)",
+   "Gänsbrunnen (north)"
   ]
  },
  "wildhaus": {
