@@ -2928,5 +2928,63 @@
   "ascents": [
    "Seebach (west)"
   ]
+ },
+ "sa-calobra": {
+  "classicAscent": "10.2 km, 6.6 % from Sa Calobra",
+  "note": "Mallorca's most famous road: from the cove of Sa Calobra up dozens of hairpins and under the knotted tie (Nus de sa Corbata) to the Coll dels Reis. First down, then back – the other side from the junction on the Ma-10 is only a short counter-climb. Coaches during the day, free early in the morning.",
+  "ascents": [
+   "Sa Calobra (north)"
+  ]
+ },
+ "puig-major": {
+  "classicAscent": "16 km, 5.3 % from Sóller",
+  "note": "The island's highest road point, on the Ma-10 below the summit of the Puig Major (itself a military zone). From Sóller long and steady with views of the sea, at the top a short tunnel and the Cúber and Gorg Blau reservoirs.",
+  "ascents": [
+   "Sóller (west)",
+   "Lluc (east)"
+  ]
+ },
+ "coll-de-soller": {
+  "classicAscent": "8.5 km, 5.4 % from Sóller",
+  "note": "The old pass road between Palma and Sóller, almost free of cars since the tunnel: a ribbon of hairpins on both sides, longer and finer from Sóller.",
+  "ascents": [
+   "Sóller (north)",
+   "Bunyola (south)"
+  ]
+ },
+ "coll-de-sa-batalla": {
+  "classicAscent": "8.4 km, 4.8 % from Caimari",
+  "note": "From Caimari at the edge of the plain steadily up into the mountains towards Lluc, the most ridden climb on the island. At the top the petrol station on the col with its café, then on to Lluc and the Puig Major.",
+  "ascents": [
+   "Caimari"
+  ]
+ },
+ "coll-d-honor": {
+  "classicAscent": "6.2 km, 5.5 % from Bunyola",
+  "note": "A narrow mountain road from Bunyola over the Coll d'Honor into the high valley of Orient, almost free of traffic. Towards Orient it drops only briefly, hence one ascent.",
+  "ascents": [
+   "Bunyola (south)"
+  ]
+ },
+ "coll-de-femenia": {
+  "classicAscent": "14.2 km, 3.4 % from Pollença",
+  "note": "From Pollença on the Ma-10 into the mountains towards Lluc: flat along the valley at first, then in hairpins up to the Coll de Femenia with a view back to the bay. At the top the road carries on across the high ground to Lluc.",
+  "ascents": [
+   "Pollença"
+  ]
+ },
+ "puig-de-randa": {
+  "classicAscent": "5.1 km, 4.9 % from Randa",
+  "note": "The monastery mountain in the middle of the plain, with three sanctuaries one above the other and the Santuari de Cura at the top. Short and steady; the hill to ride from Palma when the Tramuntana is in the rain.",
+  "ascents": [
+   "Randa"
+  ]
+ },
+ "sant-salvador": {
+  "classicAscent": "7.8 km, 4.7 % from Felanitx",
+  "note": "A dead-end road from Felanitx to the Sant Salvador monastery in the south-east of the island, with the great cross and the view over the coast at the top. A goal for the days when the north is in the wind.",
+  "ascents": [
+   "Felanitx"
+  ]
  }
 }

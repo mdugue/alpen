@@ -13871,5 +13871,272 @@
     "label": "Seebach (West)"
    }
   ]
+ },
+ {
+  "slug": "sa-calobra",
+  "surface": "asphalt",
+  "name": "Sa Calobra",
+  "type": "pass",
+  "tags": [
+   "hairpins"
+  ],
+  "country": "ES",
+  "region": "Mallorca",
+  "lat": 39.8277,
+  "lon": 2.8179,
+  "elevation": 682,
+  "classicAscent": "10,2 km, 6,6 % ab Sa Calobra",
+  "beauty": 5,
+  "fame": 4,
+  "difficulty": 3,
+  "traffic": 3,
+  "season": null,
+  "note": "Die berühmteste Straße Mallorcas: von der Bucht von Sa Calobra in Dutzenden Kehren und unter dem Krawattenknoten (Nus de sa Corbata) hinauf zum Coll dels Reis. Erst hinunter, dann zurück – die andere Seite vom Abzweig an der Ma-10 ist nur ein kurzer Gegenanstieg. Tagsüber Reisebusse, früh am Morgen frei.",
+  "aliases": [
+   "Coll dels Reis",
+   "Nus de sa Corbata"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 39.8507,
+     "lon": 2.7999
+    },
+    "label": "Sa Calobra (Nord)"
+   }
+  ]
+ },
+ {
+  "slug": "puig-major",
+  "surface": "asphalt",
+  "name": "Puig Major",
+  "type": "pass",
+  "tags": [
+   "tunnels"
+  ],
+  "country": "ES",
+  "region": "Mallorca",
+  "lat": 39.7951,
+  "lon": 2.79,
+  "elevation": 870,
+  "classicAscent": "16 km, 5,3 % ab Sóller",
+  "beauty": 5,
+  "fame": 3,
+  "difficulty": 3,
+  "traffic": 3,
+  "season": null,
+  "note": "Der höchste Straßenpunkt der Insel, an der Ma-10 unter dem Gipfel des Puig Major (der selbst militärisches Sperrgebiet ist). Von Sóller lang und gleichmäßig mit Blick aufs Meer, oben kurzer Tunnel und die Stauseen Cúber und Gorg Blau.",
+  "aliases": [
+   "Coll de Puig Major",
+   "Túnel de Monnàber"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 39.7663,
+     "lon": 2.7151
+    },
+    "label": "Sóller (West)"
+   },
+   {
+    "from": {
+     "lat": 39.8224,
+     "lon": 2.8844
+    },
+    "label": "Lluc (Ost)"
+   }
+  ]
+ },
+ {
+  "slug": "coll-de-soller",
+  "surface": "asphalt",
+  "name": "Coll de Sóller",
+  "type": "pass",
+  "tags": [
+   "hairpins"
+  ],
+  "country": "ES",
+  "region": "Mallorca",
+  "lat": 39.7312,
+  "lon": 2.6862,
+  "elevation": 497,
+  "classicAscent": "8,5 km, 5,4 % ab Sóller",
+  "beauty": 4,
+  "fame": 3,
+  "difficulty": 2,
+  "traffic": 1,
+  "season": null,
+  "note": "Die alte Passstraße zwischen Palma und Sóller, seit dem Tunnel fast ohne Autos: auf beiden Seiten ein Kehrenband, von Sóller das längere und schönere.",
+  "aliases": [],
+  "ascents": [
+   {
+    "from": {
+     "lat": 39.7663,
+     "lon": 2.7151
+    },
+    "label": "Sóller (Nord)"
+   },
+   {
+    "from": {
+     "lat": 39.6962,
+     "lon": 2.699
+    },
+    "label": "Bunyola (Süd)"
+   }
+  ]
+ },
+ {
+  "slug": "coll-de-sa-batalla",
+  "surface": "asphalt",
+  "name": "Coll de sa Batalla",
+  "type": "climb",
+  "tags": [],
+  "country": "ES",
+  "region": "Mallorca",
+  "lat": 39.8118,
+  "lon": 2.8898,
+  "elevation": 580,
+  "classicAscent": "8,4 km, 4,8 % ab Caimari",
+  "beauty": 4,
+  "fame": 3,
+  "difficulty": 2,
+  "traffic": 2,
+  "season": null,
+  "note": "Von Caimari am Rand der Ebene gleichmäßig hinauf in die Berge nach Lluc, der am meisten gefahrene Anstieg der Insel. Oben die Tankstelle am Coll mit Café, weiter nach Lluc und zum Puig Major.",
+  "aliases": [
+   "Lluc"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 39.7711,
+     "lon": 2.9034
+    },
+    "label": "Caimari"
+   }
+  ]
+ },
+ {
+  "slug": "coll-d-honor",
+  "surface": "asphalt",
+  "name": "Coll d'Honor",
+  "type": "pass",
+  "tags": [
+   "forest"
+  ],
+  "country": "ES",
+  "region": "Mallorca",
+  "lat": 39.7271,
+  "lon": 2.7311,
+  "elevation": 550,
+  "classicAscent": "6,2 km, 5,5 % ab Bunyola",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 2,
+  "traffic": 1,
+  "season": null,
+  "note": "Schmale Bergstraße von Bunyola über den Coll d'Honor ins Hochtal von Orient, fast ohne Verkehr. Nach Orient fällt sie nur kurz, deshalb eine Auffahrt.",
+  "aliases": [],
+  "ascents": [
+   {
+    "from": {
+     "lat": 39.6962,
+     "lon": 2.699
+    },
+    "label": "Bunyola (Süd)"
+   }
+  ]
+ },
+ {
+  "slug": "coll-de-femenia",
+  "surface": "asphalt",
+  "name": "Coll de Femenia",
+  "type": "climb",
+  "tags": [],
+  "country": "ES",
+  "region": "Mallorca",
+  "lat": 39.8556,
+  "lon": 2.9011,
+  "elevation": 540,
+  "classicAscent": "14,2 km, 3,4 % ab Pollença",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 2,
+  "traffic": 2,
+  "season": null,
+  "note": "Von Pollença auf der Ma-10 in die Berge Richtung Lluc: unten flach durch das Tal, oben in Kehren zum Coll de Femenia mit Blick zurück zur Bucht. Oben weiter über die Hochfläche nach Lluc.",
+  "aliases": [],
+  "ascents": [
+   {
+    "from": {
+     "lat": 39.8792,
+     "lon": 3.0157
+    },
+    "label": "Pollença"
+   }
+  ]
+ },
+ {
+  "slug": "puig-de-randa",
+  "surface": "asphalt",
+  "name": "Puig de Randa",
+  "type": "spur",
+  "tags": [],
+  "country": "ES",
+  "region": "Mallorca",
+  "lat": 39.5263,
+  "lon": 2.9299,
+  "elevation": 540,
+  "classicAscent": "5,1 km, 4,9 % ab Randa",
+  "beauty": 3,
+  "fame": 2,
+  "difficulty": 2,
+  "traffic": 1,
+  "season": null,
+  "note": "Der Klosterberg mitten in der Ebene, mit drei Heiligtümern übereinander und dem Santuari de Cura oben. Kurz und gleichmäßig; der Berg, den man von Palma aus fährt, wenn die Tramuntana im Regen liegt.",
+  "aliases": [
+   "Santuari de Cura",
+   "Randa"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 39.5268,
+     "lon": 2.915
+    },
+    "label": "Randa"
+   }
+  ]
+ },
+ {
+  "slug": "sant-salvador",
+  "surface": "asphalt",
+  "name": "Sant Salvador",
+  "type": "spur",
+  "tags": [],
+  "country": "ES",
+  "region": "Mallorca",
+  "lat": 39.4556,
+  "lon": 3.186,
+  "elevation": 500,
+  "classicAscent": "7,8 km, 4,7 % ab Felanitx",
+  "beauty": 3,
+  "fame": 2,
+  "difficulty": 2,
+  "traffic": 1,
+  "season": null,
+  "note": "Stichstraße von Felanitx zum Kloster Sant Salvador im Südosten der Insel, oben das große Kreuz und der Blick über die Küste. Ein Ziel für die Tage, an denen der Norden im Wind liegt.",
+  "aliases": [
+   "Santuari de Sant Salvador"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 39.4732,
+     "lon": 3.1477
+    },
+    "label": "Felanitx"
+   }
+  ]
  }
 ]

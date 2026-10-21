@@ -4109,5 +4109,84 @@
     "highlights": "The national park centre at the Ruhestein."
    }
   ]
+ },
+ "sa-calobra": {
+  "intro": "The road that brings half the pro peloton to Mallorca in spring: laid into the rock in 1932, with a hairpin that loops over itself as the knotted tie. You ride it down to the sea in order to ride it back up.",
+  "sides": [
+   {
+    "character": "From the cove steadily at around 7 % up the rocky gully, one hairpin after another, with no flat stretch up to the knotted tie below the Coll dels Reis.",
+    "highlights": "The Nus de sa Corbata, the hairpin that passes under itself."
+   }
+  ]
+ },
+ "puig-major": {
+  "intro": "The long climb of the Serra de Tramuntana, from sea level at Sóller to nearly 900 m. At the top the island changes: bare limestone, two reservoirs and the tunnel under the summit.",
+  "sides": [
+   {
+    "character": "From Sóller past the Fornalutx turn-off steadily at about 6 % along the slope, with a wide view back over the Sóller valley and the sea; the tunnel at the top.",
+    "highlights": "The Mirador de ses Barques looking down on the Sóller valley."
+   },
+   {
+    "character": "From Lluc rolling across the high ground, past the Gorg Blau and Cúber reservoirs; many short rises, little in one piece.",
+    "highlights": "The Gorg Blau and Cúber reservoirs below the Puig Major."
+   }
+  ]
+ },
+ "coll-de-soller": {
+  "intro": "A picture-book hairpin pass that the tunnel has handed over to cyclists. Together with the Puig Major the classic loop around the Sóller valley.",
+  "sides": [
+   {
+    "character": "From Sóller through orange and olive groves, then up the slope in tightly stacked hairpins, steadily at around 6 %.",
+    "highlights": "The run of hairpins above the Sóller valley with a view back to the town."
+   },
+   {
+    "character": "From Bunyola shorter and gentler, also in hairpins through pine forest."
+   }
+  ]
+ },
+ "coll-de-sa-batalla": {
+  "intro": "The gateway into the Serra de Tramuntana for everyone coming from Alcúdia, Pollença or the plain. Not a steep mountain, but one every cycling visitor to Mallorca rides several times.",
+  "sides": [
+   {
+    "character": "Out of Caimari through olive groves, then in wide loops through holm-oak forest, steadily between 4 and 6 % up to the col.",
+    "highlights": "The café at the petrol station on the col, the meeting point of the cycling groups."
+   }
+  ]
+ },
+ "coll-d-honor": {
+  "intro": "One of the quietest roads of the Tramuntana, narrow and winding through pine and holm oak. Behind the col the secluded valley of Orient below the castle of Alaró.",
+  "sides": [
+   {
+    "character": "From Bunyola narrow and winding through the forest, steady and shady up to the col.",
+    "highlights": "The high valley of Orient behind the col."
+   }
+  ]
+ },
+ "coll-de-femenia": {
+  "intro": "The climb into the Tramuntana for everyone staying in Port de Pollença – the first part of every loop over Lluc. Flat at the start, steeper higher up, with the view over the bay of Pollença.",
+  "sides": [
+   {
+    "character": "Out of Pollença long and flat along the valley, then from halfway steeper in hairpins up the mountainside to the col.",
+    "highlights": "The view back over the bay of Pollença from the upper hairpins."
+   }
+  ]
+ },
+ "puig-de-randa": {
+  "intro": "A lone mountain in the middle of the Mallorcan plain, with an all-round view over the whole island. Three monasteries one above the other, the highest with a terrace above the Pla.",
+  "sides": [
+   {
+    "character": "From the village of Randa steadily up in hairpins, past the sanctuaries of Gràcia and Sant Honorat to the Santuari de Cura.",
+    "highlights": "The terrace at the Santuari de Cura with its all-round view of the island."
+   }
+  ]
+ },
+ "sant-salvador": {
+  "intro": "The monastery mountain of the south-east, visible from far off by its cross and the statue of Christ. Quieter than the Tramuntana, with a view of the coast and the plain.",
+  "sides": [
+   {
+    "character": "Out of Felanitx flat at first, then steadily up in hairpins; the last kilometres along the slope with an open view to the south.",
+    "highlights": "The monastery and the cross on the summit."
+   }
+  ]
  }
 }

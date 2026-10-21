@@ -1005,5 +1005,24 @@
   "character": "Der Nationalpark um die Schwarzwaldhochstraße: Anstiege aus den Tälern der Rheinseite auf einen langen Kamm auf 900 bis 1000 m, oben Hochmoor und Fernsicht, unten ruhige Täler.",
   "multiDay": "Ein Wochenende: Ruhestein und Kniebis als Runde über die Hochstraße, die Täler der Rheinseite als zweiter Tag.",
   "access": "Mit der Bahn nach Baiersbronn oder Freudenstadt; von Karlsruhe und Stuttgart gut eine Stunde."
+ },
+ {
+  "slug": "serra-de-tramuntana",
+  "name": "Serra de Tramuntana",
+  "country": "ES",
+  "center": {
+   "lat": 39.8,
+   "lon": 2.85
+  },
+  "radiusKm": 30,
+  "baseTowns": [
+   "port-de-pollenca",
+   "soller"
+  ],
+  "include": [],
+  "exclude": [],
+  "character": "Das Gebirge an der Nordwestküste Mallorcas: Sa Calobra, Puig Major und Coll de Sóller über dem Meer, Kalkfels, Olivenhaine und Kehren, vom Meer auf fast 900 m. Im Frühjahr voller Radgruppen, im Hochsommer heiß.",
+  "multiDay": "Eine Woche, wie es die meisten machen: Sa Calobra, die Runde über Puig Major und Coll de Sóller, Lluc von beiden Seiten und ein Ruhetag in der Ebene.",
+  "access": "Flughafen Palma, von dort eine Stunde nach Port de Pollença oder eine halbe nach Sóller; Radtransport nehmen alle großen Fluglinien."
  }
 ]

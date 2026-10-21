@@ -85,6 +85,12 @@ export const vocab = {
       label: "Jura",
       outside: "außerhalb des Juras",
     },
+    Mallorca: {
+      hint: "Sa Calobra, Puig Major und Coll de Sóller über dem Meer: die Antwort für Februar, März und November.",
+      inside: "auf Mallorca",
+      label: "Mallorca",
+      outside: "außerhalb Mallorcas",
+    },
     Pyrenäen: {
       hint: "Tourmalet, Aubisque, Peyresourde, Ariège und Andorra: die anderen Berge der Tour, mit der langen Saison der spanischen Seite.",
       inside: "in den Pyrenäen",
@@ -127,6 +133,7 @@ export const vocab = {
     Dolomiten: "Dolomiten",
     Erzgebirge: "Erzgebirge",
     Jura: "Jura",
+    Mallorca: "Mallorca",
     Ostalpen: "Ostalpen",
     Pyrenäen: "Pyrenäen",
     Schwarzwald: "Schwarzwald",

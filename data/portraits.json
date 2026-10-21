@@ -6055,5 +6055,104 @@
     "highlights": "Das Nationalparkzentrum am Ruhestein."
    }
   ]
+ },
+ "sa-calobra": {
+  "intro": "Die Straße, wegen der im Frühjahr halbe Profiteams nach Mallorca kommen: 1932 in den Fels gelegt, mit einer Kehre, die als Krawattenknoten über sich selbst hinwegführt. Man fährt sie hinunter ans Meer, um sie dann hinaufzufahren.",
+  "sides": [
+   {
+    "character": "Von der Bucht gleichmäßig um 7 % durch die Felsrinne, eine Kehre nach der anderen, ohne Flachstück bis zum Krawattenknoten unter dem Coll dels Reis.",
+    "highlights": "Der Nus de sa Corbata, die Kehre, die unter sich selbst hindurchführt.",
+    "hazards": [
+     "tight-hairpins",
+     "traffic"
+    ]
+   }
+  ]
+ },
+ "puig-major": {
+  "intro": "Der lange Anstieg der Serra de Tramuntana, von Meereshöhe in Sóller bis auf fast 900 m. Oben ändert sich die Insel: kahler Kalk, zwei Stauseen und der Tunnel unter dem Gipfel.",
+  "sides": [
+   {
+    "bestAs": "up",
+    "character": "Von Sóller über den Ort Fornalutx-Abzweig gleichmäßig um 6 % am Hang, mit weitem Blick zurück über das Tal von Sóller und aufs Meer; oben der Tunnel.",
+    "highlights": "Der Mirador de ses Barques mit Blick auf das Tal von Sóller.",
+    "hazards": [
+     "tunnels"
+    ]
+   },
+   {
+    "bestAs": "down",
+    "character": "Von Lluc wellig über die Hochfläche, vorbei an den Stauseen Gorg Blau und Cúber; viele kurze Gegenanstiege, wenig am Stück.",
+    "highlights": "Die Stauseen Gorg Blau und Cúber unter dem Puig Major."
+   }
+  ]
+ },
+ "coll-de-soller": {
+  "intro": "Ein Kehrenpass wie aus dem Bilderbuch, den der Tunnel den Radfahrern überlassen hat. Zusammen mit dem Puig Major die klassische Runde um das Tal von Sóller.",
+  "sides": [
+   {
+    "bestAs": "up",
+    "character": "Von Sóller durch Orangen- und Olivenhaine, dann in dicht gestapelten Kehren den Hang hinauf, gleichmäßig um 6 %.",
+    "highlights": "Die Kehrenfolge über dem Tal von Sóller mit Blick zurück auf den Ort.",
+    "hazards": [
+     "tight-hairpins"
+    ]
+   },
+   {
+    "bestAs": "both",
+    "character": "Von Bunyola kürzer und flacher, ebenfalls in Kehren durch Kiefernwald.",
+    "hazards": [
+     "tight-hairpins"
+    ]
+   }
+  ]
+ },
+ "coll-de-sa-batalla": {
+  "intro": "Das Tor in die Serra de Tramuntana für alle, die aus Alcúdia, Pollença oder der Ebene kommen. Kein steiler Berg, aber einer, den jeder Mallorca-Urlauber mehrmals fährt.",
+  "sides": [
+   {
+    "character": "Aus Caimari durch Olivenhaine, dann in weiten Schleifen durch Steineichenwald, gleichmäßig zwischen 4 und 6 % bis zum Coll.",
+    "highlights": "Das Café an der Tankstelle auf dem Coll, Treffpunkt der Radgruppen."
+   }
+  ]
+ },
+ "coll-d-honor": {
+  "intro": "Eine der ruhigsten Straßen der Tramuntana, schmal und kurvig durch Kiefern und Steineichen. Hinter dem Coll das abgeschiedene Tal von Orient unter der Burg von Alaró.",
+  "sides": [
+   {
+    "character": "Von Bunyola schmal und kurvig durch den Wald, gleichmäßig und schattig bis zum Coll.",
+    "highlights": "Das Hochtal von Orient hinter dem Coll.",
+    "hazards": [
+     "narrow"
+    ]
+   }
+  ]
+ },
+ "coll-de-femenia": {
+  "intro": "Der Anstieg in die Tramuntana für alle, die in Port de Pollença wohnen – der erste Teil jeder Runde über Lluc. Flach beginnend, oben steiler, mit dem Blick über die Bucht von Pollença.",
+  "sides": [
+   {
+    "character": "Aus Pollença lange flach durch das Tal, dann ab der Hälfte in Kehren steiler an der Bergflanke hinauf zum Coll.",
+    "highlights": "Der Blick zurück über die Bucht von Pollença aus den oberen Kehren."
+   }
+  ]
+ },
+ "puig-de-randa": {
+  "intro": "Ein einzelner Berg mitten in der Ebene von Mallorca, mit Rundblick über die ganze Insel. Drei Klöster übereinander, das oberste mit Terrasse über dem Pla.",
+  "sides": [
+   {
+    "character": "Aus dem Dorf Randa gleichmäßig in Kehren hinauf, an den Heiligtümern Gràcia und Sant Honorat vorbei bis zum Santuari de Cura.",
+    "highlights": "Die Terrasse am Santuari de Cura mit Rundblick über die Insel."
+   }
+  ]
+ },
+ "sant-salvador": {
+  "intro": "Der Klosterberg des Südostens, sichtbar von weit her durch sein Kreuz und die Christusstatue. Ruhiger als die Tramuntana und mit Blick auf Küste und Ebene.",
+  "sides": [
+   {
+    "character": "Aus Felanitx zuerst flach, dann in Kehren gleichmäßig hinauf; die letzten Kilometer am Hang mit freiem Blick nach Süden.",
+    "highlights": "Das Kloster und das Kreuz auf dem Gipfel."
+   }
+  ]
  }
 }

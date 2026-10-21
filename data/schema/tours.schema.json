@@ -142,7 +142,7 @@
           "properties": {
             "lat": {
               "type": "number",
-              "minimum": 42,
+              "minimum": 39.2,
               "maximum": 51
             },
             "lon": {
