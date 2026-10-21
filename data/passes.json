@@ -20011,5 +20011,224 @@
     "label": "Heras (Nord)"
    }
   ]
+ },
+ {
+  "slug": "hoya-de-la-mora",
+  "surface": "asphalt",
+  "name": "Sierra Nevada (Hoya de la Mora)",
+  "type": "spur",
+  "tags": [
+   "race",
+   "panorama"
+  ],
+  "country": "ES",
+  "region": "Sierra Nevada",
+  "lat": 37.0922,
+  "lon": -3.388,
+  "elevation": 2476,
+  "classicAscent": "29,1 km, 6,0 % ab Cenes de la Vega",
+  "beauty": 4,
+  "fame": 4,
+  "difficulty": 5,
+  "traffic": 2,
+  "season": null,
+  "note": "Die höchste asphaltierte Straße Spaniens, von Granada bis über das Skigebiet Pradollano zur Hoya de la Mora auf fast 2500 m; mehrfach Vuelta-Ankunft. Darüber führt die gesperrte Straße weiter zum Veleta.",
+  "aliases": [
+   "Sierra Nevada",
+   "Pradollano",
+   "Veleta"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 37.1559,
+     "lon": -3.5411
+    },
+    "label": "Cenes de la Vega (Granada)"
+   }
+  ]
+ },
+ {
+  "slug": "alto-del-purche",
+  "surface": "asphalt",
+  "name": "Alto del Purche",
+  "type": "pass",
+  "tags": [
+   "panorama"
+  ],
+  "country": "ES",
+  "region": "Sierra Nevada",
+  "lat": 37.1339,
+  "lon": -3.4511,
+  "elevation": 1593,
+  "classicAscent": "9,7 km, 5,7 % ab Monachil",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 1,
+  "season": null,
+  "note": "Der kleine Bruder der Sierra-Nevada-Straße, von Monachil über die Hänge östlich von Granada. Ruhig, mit Rampen über 10 % und Blick auf die Stadt und die Alhambra.",
+  "aliases": [
+   "Purche"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 37.134,
+     "lon": -3.516
+    },
+    "label": "Monachil (West)"
+   }
+  ]
+ },
+ {
+  "slug": "collado-de-las-sabinas",
+  "surface": "asphalt",
+  "name": "Collado de las Sabinas",
+  "type": "climb",
+  "tags": [
+   "panorama"
+  ],
+  "country": "ES",
+  "region": "Sierra Nevada",
+  "lat": 37.1136,
+  "lon": -3.4199,
+  "elevation": 2209,
+  "classicAscent": "19,6 km, 5,4 % ab Güéjar Sierra",
+  "beauty": 4,
+  "fame": 3,
+  "difficulty": 5,
+  "traffic": 1,
+  "season": null,
+  "note": "Der Anstieg über Hazallanas, 2017 Vuelta-Etappe: von Güéjar Sierra auf schmaler Straße mit Rampen über 13 % auf den Kamm über dem Skigebiet. Einer der härtesten Anstiege Andalusiens.",
+  "aliases": [
+   "Hazallanas",
+   "Haza Llanas"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 37.1608,
+     "lon": -3.4395
+    },
+    "label": "Güéjar Sierra"
+   }
+  ]
+ },
+ {
+  "slug": "puerto-de-la-ragua",
+  "surface": "asphalt",
+  "name": "Puerto de la Ragua",
+  "type": "pass",
+  "tags": [
+   "forest",
+   "panorama"
+  ],
+  "country": "ES",
+  "region": "Sierra Nevada",
+  "lat": 37.11,
+  "lon": -3.0284,
+  "elevation": 2063,
+  "classicAscent": "16,2 km, 6,3 % ab Laroles",
+  "beauty": 4,
+  "fame": 3,
+  "difficulty": 4,
+  "traffic": 1,
+  "season": null,
+  "note": "Der höchste ganzjährig offene Straßenpass Andalusiens, über die Sierra Nevada zwischen der Alpujarra und dem Marquesado. Auf beiden Seiten gleichmäßig um 6 %, oben Kiefernwald und Langlaufloipen.",
+  "aliases": [
+   "La Ragua"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 37.0083,
+     "lon": -3.0144
+    },
+    "label": "Laroles (Süd)"
+   },
+   {
+    "from": {
+     "lat": 37.1815,
+     "lon": -3.0641
+    },
+    "label": "La Calahorra (Nord)"
+   }
+  ]
+ },
+ {
+  "slug": "calar-alto",
+  "surface": "asphalt",
+  "name": "Calar Alto",
+  "type": "spur",
+  "tags": [
+   "race",
+   "panorama"
+  ],
+  "country": "ES",
+  "region": "Almería",
+  "lat": 37.222,
+  "lon": -2.5454,
+  "elevation": 2155,
+  "classicAscent": "23,9 km, 5,8 % ab Gérgal",
+  "beauty": 4,
+  "fame": 3,
+  "difficulty": 4,
+  "traffic": 1,
+  "season": null,
+  "note": "Die Straße zur Sternwarte auf dem höchsten Punkt der Sierra de los Filabres, mehrfach Vuelta-Ankunft. Lang, kahl und trocken, oben die Kuppeln der Teleskope und der Blick über die Wüste von Tabernas.",
+  "aliases": [
+   "Observatorio de Calar Alto"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 37.1186,
+     "lon": -2.5396
+    },
+    "label": "Gérgal (Süd)"
+   },
+   {
+    "from": {
+     "lat": 37.2612,
+     "lon": -2.4533
+    },
+    "label": "Bacares (Nord)"
+   }
+  ]
+ },
+ {
+  "slug": "alto-de-velefique",
+  "surface": "asphalt",
+  "name": "Alto de Velefique",
+  "type": "pass",
+  "tags": [
+   "race",
+   "hairpins"
+  ],
+  "country": "ES",
+  "region": "Almería",
+  "lat": 37.2235,
+  "lon": -2.4129,
+  "elevation": 1798,
+  "classicAscent": "12,4 km, 6,9 % ab Velefique",
+  "beauty": 5,
+  "fame": 3,
+  "difficulty": 4,
+  "traffic": 1,
+  "season": null,
+  "note": "Die Kehrenstraße aus dem Dorf Velefique auf den Kamm der Filabres, Vuelta-Pass und eines der schönsten Kehrenbänder Spaniens. Gleichmäßig steil, ganz ohne Verkehr.",
+  "aliases": [
+   "Velefique"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 37.1939,
+     "lon": -2.4029
+    },
+    "label": "Velefique (Süd)"
+   }
+  ]
  }
 ]

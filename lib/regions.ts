@@ -28,6 +28,7 @@ export const RANGES = [
   "Korsika",
   "Kanaren",
   "Nordspanien",
+  "Andalusien",
 ] as const;
 
 export type RangeName = (typeof RANGES)[number];
@@ -48,6 +49,7 @@ export const HOME_RANGE: RangeName = "Alpen";
  */
 export const RANGE_REGIONS = {
   Alpen: ["Westalpen", "Zentralalpen", "Ostalpen", "Dolomiten"],
+  Andalusien: ["Sierra Nevada", "Almería"],
   Bayerwald: ["Bayerwald", "Böhmerwald"],
   Erzgebirge: ["Erzgebirge"],
   Harz: ["Harz"],
@@ -74,6 +76,7 @@ export type TripName = (typeof TRIPS)[number];
 
 export const RANGE_TRIP: Record<RangeName, TripName> = {
   Alpen: "holiday",
+  Andalusien: "holiday",
   Bayerwald: "weekend",
   Erzgebirge: "weekend",
   Harz: "weekend",
@@ -122,6 +125,7 @@ export const REGIONS = [
   ...RANGE_REGIONS.Korsika,
   ...RANGE_REGIONS.Kanaren,
   ...RANGE_REGIONS.Nordspanien,
+  ...RANGE_REGIONS.Andalusien,
 ] as const;
 
 /** A box in degrees, both ends inclusive. */
@@ -147,6 +151,7 @@ export interface GeoBox {
  */
 export const RANGE_BOUNDS: Record<RangeName, GeoBox> = {
   Alpen: { lat: [43, 49], lon: [4, 16] },
+  Andalusien: { lat: [36.6, 37.6], lon: [-4, -2] },
   Bayerwald: { lat: [48.6, 49.4], lon: [12.5, 14.5] },
   Erzgebirge: { lat: [50.2, 51], lon: [12.2, 14.2] },
   Harz: { lat: [51.4, 52.1], lon: [10.1, 11.4] },

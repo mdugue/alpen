@@ -5967,5 +5967,66 @@
     "highlights": "The view over the bay of Santander."
    }
   ]
+ },
+ "hoya-de-la-mora": {
+  "intro": "A high road as in the Alps, but in Andalusia: almost 1,800 metres in one go from the suburbs of Granada, thin air at the top and a view to Africa on clear days.",
+  "sides": [
+   {
+    "character": "From Cenes steadily at around 6 % across bare slopes, open and windy from Pradollano up to the Hoya de la Mora.",
+    "highlights": "The view from the mirador over Granada and the Vega."
+   }
+  ]
+ },
+ "alto-del-purche": {
+  "intro": "The home climb of Granada's cyclists: shorter than the Sierra Nevada, steeper in places, and almost without traffic.",
+  "sides": [
+   {
+    "character": "From Monachil irregular with steep ramps through olives and pines, open above the city at the top.",
+    "highlights": "The view over Granada to the Alhambra."
+   }
+  ]
+ },
+ "collado-de-las-sabinas": {
+  "intro": "The hard side of the Sierra Nevada: a narrow road with walls of gradient, the summits of the Mulhacén and Veleta within reach at the top.",
+  "sides": [
+   {
+    "character": "From Güéjar Sierra moderate at first, then via Hazallanas with long ramps over 10 %, narrow and rough.",
+    "highlights": "The view from the ridge to the Veleta and the Mulhacén."
+   }
+  ]
+ },
+ "puerto-de-la-ragua": {
+  "intro": "A true pass across the Sierra Nevada, 2,000 m high and still quiet: from the Alpujarra through pines, the castle of La Calahorra in sight on the north side.",
+  "sides": [
+   {
+    "character": "From Laroles steadily through terraces and pine forest, with no steep stretches.",
+    "highlights": "The view back over the Alpujarra to the sea."
+   },
+   {
+    "character": "From La Calahorra across the high plain, then in hairpins through the forest.",
+    "highlights": "The castle of La Calahorra in front of the sierra."
+   }
+  ]
+ },
+ "calar-alto": {
+  "intro": "A climb in a landscape out of a western: above the Tabernas desert to 2,150 m, the white domes of the observatory at the top.",
+  "sides": [
+   {
+    "character": "From Gérgal long and steady across bare slopes, without shade.",
+    "highlights": "The observatory domes above the desert."
+   },
+   {
+    "character": "From Bacares shorter and steeper, with ramps over 12 %."
+   }
+  ]
+ },
+ "alto-de-velefique": {
+  "intro": "A hairpin ribbon as if painted above a white village, in Almería's semi-desert: the Stelvio of the south, only emptier.",
+  "sides": [
+   {
+    "character": "From Velefique straight into tightly stacked hairpins at around 7 %, steady up to the ridge.",
+    "highlights": "The hairpins above the village of Velefique."
+   }
+  ]
  }
 }

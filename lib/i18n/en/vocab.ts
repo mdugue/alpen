@@ -62,6 +62,12 @@ export const vocab = {
       label: "Alps",
       outside: "outside the Alps",
     },
+    Andalusien: {
+      hint: "Spain's highest road above Granada, the Ragua and the Calar Alto observatory: long climbs in the Andalusian sun, for spring and autumn.",
+      inside: "in the Sierra Nevada and Almería",
+      label: "Sierra Nevada and Almería",
+      outside: "outside the Sierra Nevada and Almería",
+    },
     Bayerwald: {
       hint: "The Arber roads above Bodenmais and Bayerisch Eisenstein, the Dreisessel and the Kleť: forest mountains on the Czech border for a weekend.",
       inside: "in the Bavarian and Bohemian Forest",
@@ -156,6 +162,7 @@ export const vocab = {
     ofTotal: "Of {total} passes within reach: {parts}.",
   },
   region: {
+    Almería: "Almería",
     Asturien: "Asturias",
     Bayerwald: "Bavarian Forest",
     Böhmerwald: "Bohemian Forest",
@@ -172,6 +179,7 @@ export const vocab = {
     Pyrenäen: "Pyrenees",
     Rhön: "Rhön",
     Schwarzwald: "Black Forest",
+    "Sierra Nevada": "Sierra Nevada",
     Teneriffa: "Tenerife",
     Thüringen: "Thuringian Forest",
     Vogesen: "Vosges",

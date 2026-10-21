@@ -398,5 +398,15 @@
   "character": "Limestone mountains between Asturias, Cantabria and León: the Lagos de Covadonga, the Vuelta's most famous finish, and the San Glorio with the view over the whole massif. Deep gorges in between.",
   "multiDay": "Four days: Covadonga from Cangas de Onís, the Hermida gorge to Potes, the San Glorio and Fuente Dé.",
   "access": "Fly to Asturias or Santander, by car on the A-8."
+ },
+ "sierra-nevada": {
+  "character": "The mountains above Granada: Spain's highest road up to almost 2,500 m, the Purche and the hard Hazallanas ramp. Ridden from the city, in summer only early in the morning.",
+  "multiDay": "Three days from Granada: the Sierra Nevada up to the Hoya de la Mora, Hazallanas, the Purche with the Alhambra in the afternoon.",
+  "access": "Fly to Granada or Málaga, train to Granada."
+ },
+ "sierra-de-los-filabres": {
+  "character": "Bare mountains above the Tabernas desert: Calar Alto with its observatory and the Velefique hairpins, two Vuelta climbs without traffic. For spring and autumn, too hot in summer.",
+  "multiDay": "Two days from Tabernas: Calar Alto via Gérgal, Velefique with the descent via Bacares.",
+  "access": "Fly to Almería, by car on the A-92."
  }
 }

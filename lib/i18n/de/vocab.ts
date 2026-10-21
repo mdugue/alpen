@@ -76,6 +76,12 @@ export const vocab = {
       label: "Alpen",
       outside: "außerhalb der Alpen",
     },
+    Andalusien: {
+      hint: "Die höchste Straße Spaniens über Granada, die Ragua und die Sternwarte von Calar Alto: lange Anstiege in der Sonne Andalusiens, im Frühjahr und Herbst.",
+      inside: "in der Sierra Nevada und in Almería",
+      label: "Sierra Nevada und Almería",
+      outside: "außerhalb der Sierra Nevada und Almerías",
+    },
     Bayerwald: {
       hint: "Die Arberstraßen über Bodenmais und Bayerisch Eisenstein, Dreisessel und Kleť: Waldberge an der tschechischen Grenze für ein Wochenende.",
       inside: "im Bayerischen Wald und im Böhmerwald",
@@ -175,6 +181,7 @@ export const vocab = {
    * English file names them.
    */
   region: {
+    Almería: "Almería",
     Asturien: "Asturien",
     Bayerwald: "Bayerischer Wald",
     Böhmerwald: "Böhmerwald",
@@ -191,6 +198,7 @@ export const vocab = {
     Pyrenäen: "Pyrenäen",
     Rhön: "Rhön",
     Schwarzwald: "Schwarzwald",
+    "Sierra Nevada": "Sierra Nevada",
     Teneriffa: "Teneriffa",
     Thüringen: "Thüringer Wald",
     Vogesen: "Vogesen",

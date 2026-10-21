@@ -4194,5 +4194,49 @@
   "ascents": [
    "Heras (north)"
   ]
+ },
+ "hoya-de-la-mora": {
+  "classicAscent": "29.1 km, 6.0 % from Cenes de la Vega",
+  "note": "Spain's highest paved road, from Granada past the Pradollano ski resort to the Hoya de la Mora at almost 2,500 m; a Vuelta finish several times. Above it the closed road carries on to the Veleta.",
+  "ascents": [
+   "Cenes de la Vega (Granada)"
+  ]
+ },
+ "alto-del-purche": {
+  "classicAscent": "9.7 km, 5.7 % from Monachil",
+  "note": "The little brother of the Sierra Nevada road, from Monachil across the slopes east of Granada. Quiet, with ramps over 10 % and a view of the city and the Alhambra.",
+  "ascents": [
+   "Monachil (west)"
+  ]
+ },
+ "collado-de-las-sabinas": {
+  "classicAscent": "19.6 km, 5.4 % from Güéjar Sierra",
+  "note": "The climb via Hazallanas, a Vuelta stage in 2017: from Güéjar Sierra on a narrow road with ramps over 13 % onto the ridge above the ski resort. One of the hardest climbs in Andalusia.",
+  "ascents": [
+   "Güéjar Sierra"
+  ]
+ },
+ "puerto-de-la-ragua": {
+  "classicAscent": "16.2 km, 6.3 % from Laroles",
+  "note": "The highest year-round road pass in Andalusia, across the Sierra Nevada between the Alpujarra and the Marquesado. Steady at around 6 % on both sides, pine forest and cross-country trails at the top.",
+  "ascents": [
+   "Laroles (south)",
+   "La Calahorra (north)"
+  ]
+ },
+ "calar-alto": {
+  "classicAscent": "23.9 km, 5.8 % from Gérgal",
+  "note": "The road to the observatory on the highest point of the Sierra de los Filabres, a Vuelta finish several times. Long, bare and dry, the telescope domes at the top and a view over the Tabernas desert.",
+  "ascents": [
+   "Gérgal (south)",
+   "Bacares (north)"
+  ]
+ },
+ "alto-de-velefique": {
+  "classicAscent": "12.4 km, 6.9 % from Velefique",
+  "note": "The hairpin road out of the village of Velefique onto the Filabres ridge, a Vuelta pass and one of the finest hairpin ribbons in Spain. Steadily steep, with no traffic at all.",
+  "ascents": [
+   "Velefique (south)"
+  ]
  }
 }

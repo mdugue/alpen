@@ -1572,5 +1572,41 @@
   "character": "Kalkberge zwischen Asturien, Kantabrien und León: Lagos de Covadonga, die berühmteste Vuelta-Ankunft, und der San Glorio mit dem Blick über das ganze Massiv. Dazwischen tiefe Schluchten.",
   "multiDay": "Vier Tage: Covadonga von Cangas de Onís, die Hermida-Schlucht nach Potes, San Glorio und Fuente Dé.",
   "access": "Flug nach Asturias oder Santander, mit dem Auto über die A-8."
+ },
+ {
+  "slug": "sierra-nevada",
+  "name": "Sierra Nevada",
+  "country": "ES",
+  "center": {
+   "lat": 37.12,
+   "lon": -3.42
+  },
+  "radiusKm": 18,
+  "baseTowns": [
+   "granada"
+  ],
+  "include": [],
+  "exclude": [],
+  "character": "Die Berge über Granada: die höchste Straße Spaniens bis auf fast 2500 m, der Purche und die harte Hazallanas-Rampe. Von der Stadt aus zu fahren, im Sommer nur früh am Morgen.",
+  "multiDay": "Drei Tage von Granada: die Sierra Nevada bis zur Hoya de la Mora, Hazallanas, der Purche mit der Alhambra am Nachmittag.",
+  "access": "Flug nach Granada oder Málaga, Bahn bis Granada."
+ },
+ {
+  "slug": "sierra-de-los-filabres",
+  "name": "Sierra de los Filabres",
+  "country": "ES",
+  "center": {
+   "lat": 37.22,
+   "lon": -2.48
+  },
+  "radiusKm": 21,
+  "baseTowns": [
+   "tabernas"
+  ],
+  "include": [],
+  "exclude": [],
+  "character": "Kahle Berge über der Wüste von Tabernas: Calar Alto mit der Sternwarte und die Kehren von Velefique, zwei Vuelta-Anstiege ohne Verkehr. Für Frühjahr und Herbst, im Sommer zu heiß.",
+  "multiDay": "Zwei Tage von Tabernas: Calar Alto über Gérgal, Velefique mit der Abfahrt über Bacares.",
+  "access": "Flug nach Almería, mit dem Auto über die A-92."
  }
 ]

@@ -2308,5 +2308,44 @@
   ],
   "aliases": [],
   "why": "Das Städtchen in der Liébana am Fuß der Picos de Europa: San Glorio beginnt im Ort, Fuente Dé und die Hermida-Schlucht als Ausfahrten."
+ },
+ {
+  "slug": "granada",
+  "name": "Granada",
+  "country": "ES",
+  "lat": 37.1735,
+  "lon": -3.5995,
+  "tags": [
+   "hub",
+   "train",
+   "hotels"
+  ],
+  "aliases": [],
+  "why": "Die Stadt der Alhambra unter der Sierra Nevada: die höchste Straße Spaniens, Purche und Hazallanas beginnen in den Vororten."
+ },
+ {
+  "slug": "la-calahorra",
+  "name": "La Calahorra",
+  "country": "ES",
+  "lat": 37.1815,
+  "lon": -3.0641,
+  "tags": [
+   "quiet"
+  ],
+  "aliases": [],
+  "why": "Dorf mit Renaissance-Burg auf der Hochebene des Marquesado: die Ragua beginnt im Ort."
+ },
+ {
+  "slug": "tabernas",
+  "name": "Tabernas",
+  "country": "ES",
+  "lat": 37.0499,
+  "lon": -2.3914,
+  "tags": [
+   "quiet",
+   "season"
+  ],
+  "aliases": [],
+  "why": "Das Dorf in der Wüste von Tabernas: Calar Alto über Gérgal und Velefique als Tagesrunden, im Winter trocken und mild."
  }
 ]

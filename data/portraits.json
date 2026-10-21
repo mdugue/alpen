@@ -8587,5 +8587,81 @@
     "highlights": "Der Blick über die Bucht von Santander."
    }
   ]
+ },
+ "hoya-de-la-mora": {
+  "intro": "Eine Höhenstraße wie in den Alpen, aber in Andalusien: von den Vororten Granadas fast 1800 Höhenmeter am Stück, oben dünne Luft und der Blick bis Afrika an klaren Tagen.",
+  "sides": [
+   {
+    "character": "Von Cenes gleichmäßig um 6 % über kahle Hänge, ab Pradollano offen und windig bis zur Hoya de la Mora.",
+    "highlights": "Der Blick vom Mirador über Granada und die Vega."
+   }
+  ]
+ },
+ "alto-del-purche": {
+  "intro": "Der Hausberg der Radfahrer aus Granada: kürzer als die Sierra Nevada, steiler im Detail, und fast ohne Verkehr.",
+  "sides": [
+   {
+    "character": "Von Monachil unregelmäßig mit steilen Rampen durch Oliven und Kiefern, oben offen über der Stadt.",
+    "highlights": "Der Blick über Granada zur Alhambra."
+   }
+  ]
+ },
+ "collado-de-las-sabinas": {
+  "intro": "Die harte Seite der Sierra Nevada: eine schmale Straße mit Mauern aus Prozent, oben die Gipfel des Mulhacén und Veleta zum Greifen nah.",
+  "sides": [
+   {
+    "character": "Von Güéjar Sierra erst gemäßigt, dann über Hazallanas mit langen Rampen über 10 %, schmal und rau.",
+    "hazards": [
+     "steep",
+     "narrow",
+     "rough"
+    ],
+    "highlights": "Der Blick vom Kamm auf Veleta und Mulhacén."
+   }
+  ]
+ },
+ "puerto-de-la-ragua": {
+  "intro": "Ein echter Pass über die Sierra Nevada, 2000 m hoch und doch ruhig: von der Alpujarra durch Kiefern, auf der Nordseite die Burg von La Calahorra im Blick.",
+  "sides": [
+   {
+    "bestAs": "up",
+    "character": "Von Laroles gleichmäßig durch Terrassen und Kiefernwald, ohne steile Stücke.",
+    "highlights": "Der Blick zurück über die Alpujarra zum Meer."
+   },
+   {
+    "bestAs": "both",
+    "character": "Von La Calahorra über die Hochebene, dann in Kehren durch den Wald.",
+    "highlights": "Die Burg von La Calahorra vor der Sierra."
+   }
+  ]
+ },
+ "calar-alto": {
+  "intro": "Ein Anstieg in einer Landschaft wie im Western: über die Wüste von Tabernas auf 2150 m, oben die weißen Kuppeln der Sternwarte.",
+  "sides": [
+   {
+    "bestAs": "up",
+    "character": "Von Gérgal lang und gleichmäßig über kahle Hänge, ohne Schatten.",
+    "highlights": "Die Kuppeln der Sternwarte über der Wüste."
+   },
+   {
+    "bestAs": "both",
+    "character": "Von Bacares kürzer und steiler, mit Rampen über 12 %.",
+    "hazards": [
+     "steep"
+    ]
+   }
+  ]
+ },
+ "alto-de-velefique": {
+  "intro": "Ein Kehrenband wie gemalt über einem weißen Dorf, in der Halbwüste Almerías: der Stilfser Joch des Südens, nur leerer.",
+  "sides": [
+   {
+    "character": "Von Velefique sofort in dicht gestapelten Kehren um 7 %, gleichmäßig bis zum Kamm.",
+    "hazards": [
+     "tight-hairpins"
+    ],
+    "highlights": "Die Kehren über dem Dorf Velefique."
+   }
+  ]
  }
 }
