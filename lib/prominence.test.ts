@@ -29,12 +29,16 @@ test("a dead end counts a step lower, a classic never does", () => {
   expect(rankOf({ fame: 5, type: "spur" })).toBe(5);
 });
 
+test("every step is a whole zoom, which is where MapLibre evaluates a filter", () => {
+  for (const p of PROMINENCE) expect(Number.isInteger(p.fromZoom)).toBe(true);
+});
+
 test("the legend names the level and falls silent once everything is drawn", () => {
-  expect(prominenceWord(6.5, DE)).toBe("Klassiker");
-  expect(prominenceWord(7.5, DE)).toBe("Klassiker und bekannte Straßen");
-  expect(prominenceWord(8.49, DE)).toBe("Klassiker und bekannte Straßen");
-  expect(prominenceWord(8.5, DE)).toBe("die meisten Straßen");
-  expect(prominenceWord(9.5, DE)).toBeNull();
+  expect(prominenceWord(7.9, DE)).toBe("Klassiker");
+  expect(prominenceWord(8, DE)).toBe("Klassiker und bekannte Pässe");
+  expect(prominenceWord(8.99, DE)).toBe("Klassiker und bekannte Pässe");
+  expect(prominenceWord(9, DE)).toBe("die meisten Straßen");
+  expect(prominenceWord(10, DE)).toBeNull();
   expect(prominenceWord(12, DE)).toBeNull();
 });
 
@@ -46,23 +50,23 @@ test("the filter is one top-level step on the zoom with a branch per level", () 
     "step",
     ["zoom"],
     [">=", ["get", "rank"], 4],
-    7.5,
+    8,
     [">=", ["get", "rank"], 3],
-    8.5,
+    9,
     [">=", ["get", "rank"], 2],
-    9.5,
+    10,
     true,
   ]);
 });
 
 test("a rank is quiet at the step it joins and whole one step later", () => {
-  expect(SIZE_STOPS).toEqual([6, 7.5, 8.5, 9.5, 10.5, 12]);
+  expect(SIZE_STOPS).toEqual([6, 8, 9, 10, 11, 12]);
   expect(newcomerBelow(6)).toBeNull();
-  // At 7.5 the rank-3 roads have just joined; the classics are whole.
-  expect(newcomerBelow(7.5)).toBe(4);
-  expect(newcomerBelow(8.5)).toBe(3);
-  expect(newcomerBelow(9.5)).toBe(2);
-  expect(newcomerBelow(10.5)).toBeNull();
+  // At 8 the rank-3 roads have just joined; the classics are whole.
+  expect(newcomerBelow(8)).toBe(4);
+  expect(newcomerBelow(9)).toBe(3);
+  expect(newcomerBelow(10)).toBe(2);
+  expect(newcomerBelow(11)).toBeNull();
   // The stops ascend, or MapLibre refuses the interpolate.
   expect(SIZE_STOPS.toSorted((a, b) => a - b)).toEqual([...SIZE_STOPS]);
 });

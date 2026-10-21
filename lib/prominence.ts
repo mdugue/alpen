@@ -30,12 +30,16 @@ import type { Pass, RoadType } from "@/lib/types";
  * The labels have their own, older ladder (`PASS_LABELS` in
  * `lib/layer-ids.ts`: fame 4 from 7, fame 3 from 8, fame 2 from 9.5) and are
  * held to this one on top, so a name never appears before its dot.
+ *
+ * The steps are whole zooms because MapLibre evaluates `["zoom"]` in a filter
+ * at the tile's integer zoom: a step at 7.5 is drawn at 8 anyway, and the
+ * legend and the quiet ramp would say 7.5.
  */
 export const PROMINENCE = [
   { fromZoom: 0, level: "famous", minRank: 4 },
-  { fromZoom: 7.5, level: "known", minRank: 3 },
-  { fromZoom: 8.5, level: "most", minRank: 2 },
-  { fromZoom: 9.5, level: null, minRank: 0 },
+  { fromZoom: 8, level: "known", minRank: 3 },
+  { fromZoom: 9, level: "most", minRank: 2 },
+  { fromZoom: 10, level: null, minRank: 0 },
 ] as const;
 
 /** The road types that end rather than cross: one step lower on the overview. */
@@ -56,10 +60,10 @@ export const rankOf = (pass: Pick<Pass, "fame" | "type">): number =>
     : pass.fame;
 
 /**
- * Where the destination outlines step back: once the small roads join. Past
- * it most roads are drawn and the roads are the picture, so an area keeps only
- * a trace of its fill and a hairline edge – it stays, because an area that
- * vanished while zooming into it read as a bug.
+ * Where the destination outlines step back: once most roads are drawn. Past
+ * it the roads are the picture, so an area keeps only a trace of its fill and
+ * a hairline edge – it stays, because an area that vanished while zooming into
+ * it read as a bug.
  */
 export const DESTINATION_MAX_ZOOM = PROMINENCE[2].fromZoom;
 
@@ -95,16 +99,19 @@ export const prominenceFilter = <T>(branch: (minRank: number | null) => T) =>
     }),
   ] as const;
 
+/** The two zooms a dot's size is given at; between and beyond, it is interpolated. */
+export const SIZE_ZOOMS = { far: 6, near: 12 } as const;
+
 /**
  * The zooms a dot's size is interpolated over: one stop per step of the
  * ladder, one step past the last – where its newcomers have grown – and the
  * two ends the dots were always sized at.
  */
 export const SIZE_STOPS: readonly number[] = [
-  6,
+  SIZE_ZOOMS.far,
   ...PROMINENCE.slice(1).map((p) => p.fromZoom),
   PROMINENCE.at(-1)!.fromZoom + 1,
-  12,
+  SIZE_ZOOMS.near,
 ];
 
 /**

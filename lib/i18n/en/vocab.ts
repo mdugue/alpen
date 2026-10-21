@@ -48,7 +48,7 @@ export const vocab = {
   },
   prominence: {
     famous: "classics",
-    known: "classics and well-known roads",
+    known: "classics and well-known passes",
     most: "most roads",
   },
   range: {

@@ -57,7 +57,7 @@ export const vocab = {
   /** The legend line while the overview is thinned by fame. */
   prominence: {
     famous: "Klassiker",
-    known: "Klassiker und bekannte Straßen",
+    known: "Klassiker und bekannte Pässe",
     most: "die meisten Straßen",
   },
   /**

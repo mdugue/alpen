@@ -37,6 +37,7 @@ import {
   newcomerBelow,
   prominenceFilter,
   SIZE_STOPS,
+  SIZE_ZOOMS,
 } from "@/lib/prominence";
 import { STATUSES } from "@/lib/regions";
 import type { MapEnvironment } from "@/lib/use-media-query";
@@ -254,8 +255,8 @@ export const applyBase = (m: MLMap, id: string, s: Scheme, lang: Lang) => {
   for (const l of detail) m.addLayer(l, ABOVE_BASE);
 };
 
-/** The dot's size at the two zooms it was always sized at, as base + per fame. */
-const SIZE = { far: [6, 2, 1.1], near: [12, 4, 1.8] } as const;
+/** The dot's size at the two zooms it is given at (`SIZE_ZOOMS`), as base + per fame. */
+const SIZE = { far: [2, 1.1], near: [4, 1.8] } as const;
 /** How big and how opaque a newcomer is at the step it joins (`newcomerBelow`). */
 const QUIET = { opacity: 0.45, size: 0.6 } as const;
 
@@ -263,7 +264,7 @@ const QUIET = { opacity: 0.45, size: 0.6 } as const;
  * One zoom-interpolated paint value with a newcomer's share at each of the
  * ladder's stops (`SIZE_STOPS`): `at(stop)` is the full value there, and a dot
  * whose rank joined at that stop gets `quiet` of it – unless it is selected,
- * which is drawn whole whatever the zoom. A `zoom` expression may
+ * which is drawn whole whatever the zoom. A `quiet` of 1 is a plain ramp. A `zoom` expression may
  * only be the input of a top-level interpolate, so the ladder is spelled into
  * its stops rather than wrapped around it.
  */
@@ -276,7 +277,7 @@ const byLadder = (
     ["linear"],
     ["zoom"],
     ...SIZE_STOPS.flatMap((stop) => {
-      const below = newcomerBelow(stop);
+      const below = quiet === 1 ? null : newcomerBelow(stop);
       const full = at(stop);
       return [
         stop,
@@ -301,11 +302,13 @@ const byLadder = (
  * at. With a `hit` floor it becomes the dot's hit area instead: never below that
  * floor, always a margin wider than the dot, which on a famous pass at close
  * zoom is as wide as the floor itself, and never quiet – a dot that is small
- * for a step is no harder to hit.
+ * for a step is no harder to hit. `quiet: false` draws every rank whole, for a
+ * mark the visitor is pointing at.
  */
-const passRadius = (hit = 0): ExpressionSpecification => {
-  const [z0, b0, f0] = SIZE.far;
-  const [z1, b1, f1] = SIZE.near;
+const passRadius = (hit = 0, quiet = true): ExpressionSpecification => {
+  const [b0, f0] = SIZE.far;
+  const [b1, f1] = SIZE.near;
+  const { far: z0, near: z1 } = SIZE_ZOOMS;
   const at = (stop: number): ExpressionSpecification => {
     const t = (stop - z0) / (z1 - z0);
     const base = b0 + t * (b1 - b0);
@@ -317,7 +320,7 @@ const passRadius = (hit = 0): ExpressionSpecification => {
     ];
     return hit ? ["max", hit, r] : r;
   };
-  return byLadder(at, hit ? 1 : QUIET.size);
+  return byLadder(at, hit || !quiet ? 1 : QUIET.size);
 };
 
 /**
@@ -390,61 +393,62 @@ export const appLayers = (
   const hoveredLine = ["==", ["feature-state", "hovered"], 1];
   const isSelected = ["==", ["get", "selected"], 1] as const;
   const isFavorite = ["==", ["get", "favorite"], 1] as const;
-  /**
-   * One pass dot: status by hue, closure by hollowness, fame by size and
-   * weight. Shared by the pass layer and the hovered mark, which is the same
-   * dot drawn from another source.
-   */
   /** An unpaved road's dot and line (plan 27): a ring, and a dash over the line. */
   const isUnpavedDot: ExpressionSpecification = [
     "!=",
     ["get", "surface"],
     "asphalt",
   ];
-  const passPaint = {
-    // "closed" is additionally encoded as a hollow circle so that the
-    // three states do not rely on hue alone.
-    "circle-color": [
-      "case",
-      ["==", ["get", "status"], "closed"],
-      colors.paper,
-      statusColor,
-    ],
-    "circle-opacity": byLadder(
-      () => [
+  /**
+   * One pass dot: status by hue, closure by hollowness, fame by size and
+   * weight, a newcomer quiet. Shared by the pass layer and the hovered mark,
+   * which is the same dot drawn from another source and never quiet.
+   */
+  const passPaintOf = (quiet: boolean) =>
+    ({
+      // "closed" is additionally encoded as a hollow circle so that the
+      // three states do not rely on hue alone.
+      "circle-color": [
         "case",
-        [">=", ["get", "fame"], 4],
-        0.95,
-        ["==", ["get", "fame"], 3],
-        0.8,
-        0.62,
+        ["==", ["get", "status"], "closed"],
+        colors.paper,
+        statusColor,
       ],
-      QUIET.opacity,
-    ),
-    "circle-pitch-alignment": "map",
-    "circle-radius": passRadius(),
-    "circle-stroke-color": [
-      "case",
-      isSelected,
-      colors.ink,
-      ["==", ["get", "status"], "closed"],
-      colors.closed,
-      // An unpaved road: a dark ring, the dot's own colour still the status.
-      isUnpavedDot,
-      colors.ink,
-      colors.paper,
-    ],
-    "circle-stroke-width": [
-      "case",
-      isSelected,
-      3,
-      ["==", ["get", "status"], "closed"],
-      2.5,
-      isUnpavedDot,
-      2,
-      1.5,
-    ],
-  } as never;
+      "circle-opacity": byLadder(
+        () => [
+          "case",
+          [">=", ["get", "fame"], 4],
+          0.95,
+          ["==", ["get", "fame"], 3],
+          0.8,
+          0.62,
+        ],
+        quiet ? QUIET.opacity : 1,
+      ),
+      "circle-pitch-alignment": "map",
+      "circle-radius": passRadius(0, quiet),
+      "circle-stroke-color": [
+        "case",
+        isSelected,
+        colors.ink,
+        ["==", ["get", "status"], "closed"],
+        colors.closed,
+        // An unpaved road: a dark ring, the dot's own colour still the status.
+        isUnpavedDot,
+        colors.ink,
+        colors.paper,
+      ],
+      "circle-stroke-width": [
+        "case",
+        isSelected,
+        3,
+        ["==", ["get", "status"], "closed"],
+        2.5,
+        isUnpavedDot,
+        2,
+        1.5,
+      ],
+    }) as never;
   const routeColor = statusBy([
     "coalesce",
     ["feature-state", "status"],
@@ -488,7 +492,7 @@ export const appLayers = (
     //
     // It stays at every zoom – an area that vanished while zooming into it
     // read as a bug. Only its weight changes: the fill thins out towards
-    // `DESTINATION_MAX_ZOOM`, where every road is drawn and would be veiled
+    // `DESTINATION_MAX_ZOOM`, where most roads are drawn and would be veiled
     // by it, and the edge steps back to a hairline; the selected or hovered
     // area keeps its full weight.
     //
@@ -774,7 +778,7 @@ export const appLayers = (
           : [["any", isSelected, [">=", ["get", "rank"], minRank]]]),
       ]) as never,
       id: LAYERS.pass.mark,
-      paint: passPaint,
+      paint: passPaintOf(true),
       source: SOURCE.passes,
       type: "circle",
     },
@@ -789,7 +793,8 @@ export const appLayers = (
         ["!=", ["get", "favorite"], 1],
       ],
       id: OVERLAY.mark,
-      paint: passPaint,
+      // Whole at every zoom: the pointer is on it, so it is never a newcomer.
+      paint: passPaintOf(false),
       source: SOURCE.hover,
       type: "circle",
     },
