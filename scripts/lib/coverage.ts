@@ -11,7 +11,13 @@
  * a second saddle of the same name or a marker that sits on the wrong one,
  * and both are worth a look.
  */
-import { REACH_BANDS, REACH_MAX_KM, haversine, reachBand } from "../../lib/geo";
+import {
+  REACH_BANDS,
+  REACH_MAX_KM,
+  bounds,
+  haversine,
+  reachBand,
+} from "../../lib/geo";
 import type { ReachBand } from "../../lib/geo";
 import { DE } from "../../lib/i18n/dictionaries";
 import { fold } from "../../lib/search";
@@ -208,7 +214,7 @@ const fmtEle = (n: number | null) =>
   n === null ? "? m" : `${n.toLocaleString("de-DE")} m`;
 
 /** "Passo di Verva 2 290 m (= passo-x, 1,2 km)" */
-export const candidateLine = (c: Candidate) =>
+export const candidateLine = (c: Omit<Candidate, "band" | "dist">) =>
   `${c.name ?? `#${c.osm}`} ${fmtEle(c.ele)}${
     c.near
       ? ` (= ${c.near.slug}, ${c.near.km.toFixed(1).replace(".", ",")} km)`
@@ -257,4 +263,115 @@ export const summaryLine = (
     `${town.name.padEnd(26)}${n("door")}${n("day")}${n("trip")}   ${c("door")}${c("day")}${c("trip")}` +
     `   ${String(cov.singleSided.length).padStart(4)}   ${FLOORS.map((f) => String(byFloor[f] ?? 0).padStart(5)).join("")}`
   );
+};
+
+/**
+ * A pass or saddle this close to a tour's stored line is one the tour rides
+ * over. Wider than the gate's 500 m would be wrong here: a loop that passes a
+ * saddle in the valley below it does not climb it.
+ */
+export const ON_ROUTE_KM = 0.3;
+/**
+ * Tours count from the lower floor: a 980 m saddle is a hump on a base's
+ * map but a named climb of the day on a loop like the Dolomitenradrundfahrt
+ * (the Gailbergsattel), and the tour is what a rider looks it up from.
+ */
+export const [TOUR_FLOOR] = FLOORS;
+
+type Line = readonly (readonly [number, number])[];
+
+/** Distance from a point to the nearest vertex of a `[lat, lon]` line, km. */
+export const distanceToLine = (
+  p: { lat: number; lon: number },
+  line: Line,
+): number => {
+  let best = Infinity;
+  for (const [lat, lon] of line) {
+    // A degree of latitude is 111 km: whatever is further than the best so
+    // far in latitude alone cannot be nearer.
+    if (Math.abs(lat - p.lat) * 111 > best) continue;
+    const d = haversine(p, { lat, lon });
+    if (d < best) best = d;
+  }
+  return best;
+};
+
+/**
+ * Overpass: the pass and saddle nodes in the box around a tour's line. No
+ * road check on the server, unlike `coverageQuery`: the line is the road, and
+ * which of the nodes it rides over is `tourCoverage`'s to decide – which also
+ * keeps a box the size of the Route des Grandes Alpes inside a mirror's
+ * timeout.
+ */
+export const tourQuery = (line: Line) => {
+  const [w, s, e, n] = bounds(line);
+  const pad = 0.01;
+  const box = [s - pad, w - pad, n + pad, e + pad]
+    .map((v) => v.toFixed(4))
+    .join(",");
+  return (
+    `[out:json][timeout:180];(` +
+    `node(${box})["mountain_pass"="yes"];` +
+    `node(${box})["natural"="saddle"];` +
+    `);out;`
+  );
+};
+
+export interface TourCoverage {
+  /** Entries the line rides over that the tour's `passes` do not name. */
+  unnamed: Pass[];
+  /** Nodes on the line above the floor that no entry stands for. */
+  candidates: Omit<CoverageNode, "band" | "dist">[];
+}
+
+/**
+ * What a tour rides over that the data does not say: entries on its line
+ * missing from its `passes`, and saddles on its line that are no entry at
+ * all. A tour's climbs are pass entries, or its strip, its status and its
+ * reach know nothing about them – which is how the Dolomitenradrundfahrt
+ * would come to cross three roads the app had never heard of.
+ */
+export const tourCoverage = (
+  tour: { passes: readonly string[]; touches?: readonly string[] },
+  line: Line,
+  nodes: readonly OverpassNode[],
+  passes: readonly Pass[],
+  floor: number = TOUR_FLOOR,
+): TourCoverage => {
+  // What the tour names as touched is answered too: a junction, not a climb.
+  const named = new Set([...tour.passes, ...(tour.touches ?? [])]);
+  // Crossings only: a spur's top on the line is a stich the curator chose to
+  // leave out (the warning on spurs says why), and a valley or a balcony
+  // has its marker on the very road a loop rides along.
+  const unnamed = passes.filter(
+    (p) =>
+      p.type === "pass" &&
+      !named.has(p.slug) &&
+      distanceToLine(p, line) <= ON_ROUTE_KM,
+  );
+  const candidates: TourCoverage["candidates"] = [];
+  for (const n of nodes) {
+    const ele = taggedEle(n.tags);
+    if (ele === null || ele < floor) continue;
+    if (passes.some((p) => haversine(p, n) <= MATCH_KM)) continue;
+    if (distanceToLine(n, line) > ON_ROUTE_KM) continue;
+    const name = n.tags?.name ?? null;
+    if (
+      candidates.some(
+        (c) =>
+          fold(c.name ?? "") === fold(name ?? "") &&
+          haversine(c, n) <= DEDUPE_KM,
+      )
+    )
+      continue;
+    candidates.push({
+      ele,
+      lat: n.lat,
+      lon: n.lon,
+      name,
+      osm: n.id,
+    });
+  }
+  candidates.sort((a, b) => (b.ele ?? 0) - (a.ele ?? 0));
+  return { candidates, unnamed };
 };

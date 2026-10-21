@@ -15,6 +15,8 @@ import {
   REGIONS,
   ROAD_TAGS,
   ROAD_TYPES,
+  DATED_TOUR_TYPES,
+  TOUR_TYPES,
   STATUSES,
   TOWN_TAGS,
 } from "@/lib/regions";
@@ -104,8 +106,13 @@ export const TourCheck = z
 export const AscentRouter = z.strictObject({
   /** What ORS takes instead of the road, and why the car profile is right here. */
   note: z.string().min(1, "router ohne Begründung (note)"),
-  /** The router that follows the road. OSRM is the only alternative there is. */
-  use: z.literal("osrm"),
+  /**
+   * The router that follows the road: OSRM's car profile, or ORS's everyday
+   * cycling graph (`cycling-regular`) for a road the road-cycling graph routes
+   * round although bikes may ride it – a climb mapped as a cycleway, like the
+   * Muro di Sormano.
+   */
+  use: z.enum(["osrm", "cycling-regular"]),
 });
 
 /**
@@ -174,6 +181,7 @@ const CountryPair = z
     `Land: eines von ${COUNTRIES.join(", ")}`,
   );
 export const RoadType = z.enum(ROAD_TYPES);
+export const TourType = z.enum(TOUR_TYPES);
 export const RoadTag = z.enum(ROAD_TAGS);
 export const Surface = z.enum(SURFACES);
 
@@ -323,34 +331,76 @@ export const Pass = z
     }
   });
 
-export const Tour = z.strictObject({
-  /** Widens a route-gate limit for this tour alone, see `TourCheck`. */
-  check: TourCheck.optional(),
-  color: z.string().regex(/^#[0-9a-f]{6}$/u, "Farbe: #rrggbb"),
-  description: z.string(),
-  elevationGain: z.number().nonnegative(),
-  km: z.number().positive(),
-  name: z.string().min(2),
-  /**
-   * What the window cannot say: the event that closes the roads for a day,
-   * the cobbles that turn slick in rain, the plan B once a pass shuts. One or
-   * two German sentences; empty where there is nothing to add.
-   */
-  note: z.string(),
-  /** Pass slugs from which the status is derived. */
-  passes: z.array(Slug).min(1),
-  /** The loop's own opening window, see `TourSeason`; null = whenever its passes are open. */
-  season: TourSeason.nullable(),
-  slug: Slug,
-  /**
-   * What the loop is ridden with: at least what its roads demand (`gravel`
-   * or `mixed` the moment one member is), and more where the connecting
-   * stretches are gravel. Written down rather than derived so the file can
-   * say so; `data:check` holds it to the roads.
-   */
-  surface: Surface,
-  waypoints: z.array(LatLon).min(2),
-});
+export const Tour = z
+  .strictObject({
+    /** Widens a route-gate limit for this tour alone, see `TourCheck`. */
+    check: TourCheck.optional(),
+    color: z.string().regex(/^#[0-9a-f]{6}$/u, "Farbe: #rrggbb"),
+    description: z.string(),
+    elevationGain: z.number().nonnegative(),
+    km: z.number().positive(),
+    name: z.string().min(2),
+    /**
+     * What the window cannot say: the event that closes the roads for a day,
+     * the cobbles that turn slick in rain, the plan B once a pass shuts. One or
+     * two German sentences; empty where there is nothing to add.
+     */
+    note: z.string(),
+    /** Pass slugs from which the status is derived. */
+    passes: z.array(Slug).min(1),
+    /** Routes the whole tour with the named router alone, see `AscentRouter`. */
+    router: AscentRouter.optional(),
+    /** The loop's own opening window, see `TourSeason`; null = whenever its passes are open. */
+    season: TourSeason.nullable(),
+    /**
+     * `edition` only: the event the course belongs to, as a slug shared by all
+     * its years ("stelvio-santini"). The list groups a series and shows its
+     * latest year unless the earlier ones are asked for.
+     */
+    series: Slug.optional(),
+    slug: Slug,
+    /**
+     * What the loop is ridden with: at least what its roads demand (`gravel`
+     * or `mixed` the moment one member is), and more where the connecting
+     * stretches are gravel. Written down rather than derived so the file can
+     * say so; `data:check` holds it to the roads.
+     */
+    surface: Surface,
+    /**
+     * Entries the line passes within a few hundred metres without riding them:
+     * a pass whose top is a junction on the course (the Umbrail on the way up
+     * the Stelvio from Bormio). Named so `data:check` stops asking whether the
+     * tour forgot them; they never count towards the tour's status.
+     */
+    touches: z.array(Slug).min(1).optional(),
+    /**
+     * What kind of ride it is (see `TOUR_TYPES`): a loop, an event course, a
+     * signposted permanent route or a route in stages. Required, so a new tour
+     * is never filed under "loop" by default.
+     */
+    type: TourType,
+    waypoints: z.array(LatLon).min(2),
+    /**
+     * `event` and `edition` only: the half-month the event day falls in, so the
+     * list can say which events happen in the chosen period. The day itself
+     * moves from year to year and stays in the `note`.
+     */
+    when: Period.optional(),
+    /** `edition` only: the year whose course this is. */
+    year: z.int().min(2000).max(2100).optional(),
+  })
+  .refine(
+    (t) =>
+      (t.type === "edition") ===
+      (t.series !== undefined && t.year !== undefined),
+    "series und year gehören zusammen, und nur zu type edition",
+  )
+  .refine(
+    (t) =>
+      (DATED_TOUR_TYPES as readonly string[]).includes(t.type) ===
+      (t.when !== undefined),
+    "when: Pflicht für event und edition, sonst nicht erlaubt",
+  );
 
 export const TownTag = z.enum(TOWN_TAGS);
 

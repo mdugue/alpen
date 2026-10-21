@@ -1,7 +1,19 @@
 {
+ "albula-julier-runde": {
+  "description": "From St. Moritz down the Engadine to La Punt, over the Albula Pass to Bergün and Filisur, to Tiefencastel and through the Surses via Savognin and Bivio up the Julier and back to St. Moritz via Silvaplana.",
+  "note": "The old road via Salouf and Cunter avoids the Crap Ses tunnel below Savognin."
+ },
+ "alpenbrevet-silbertour": {
+  "description": "From Andermatt over the Gotthard to Airolo, over the Nufenen to Ulrichen, through the Goms to Gletsch and back to Andermatt over the Furka. The platinum route adds the Susten, Grimsel, Lukmanier and Oberalp (267 km).",
+  "note": "Event in early September, starting and finishing in Andermatt; over the Gotthard on the main road, not the Tremola."
+ },
  "andermatt-drei-paesse-runde": {
   "description": "Furka – Grimsel – Susten, back through the Schöllenen gorge.",
-  "note": "Alpenbrevet in late August."
+  "note": "Alpenbrevet in early September."
+ },
+ "arlberg-giro": {
+  "description": "From St. Anton over the Arlberg into the Klostertal and to Bludenz, through the Montafon up the Silvretta High Alpine Road, over the Bielerhöhe into the Paznaun and back to St. Anton through the Stanzertal.",
+  "note": "Event in early August; the Silvretta is a toll road."
  },
  "ballino-runde": {
   "description": "From Riva via Tenno and the Lago di Tenno up to the Passo del Ballino, via Fiavè and Ponte Arche into the Sarca valley and back to the lake via Sarche and Arco.",
@@ -12,8 +24,40 @@
   "note": "Over Bussang on the N66 with lorry traffic; the rest is quiet."
  },
  "baronnies-runde": {
-  "description": "From Buis-les-Baronnies via Saint-Auban up to the Col de Perty, through Laborel and Séderon over the Col de Macuègne to Montbrun, beneath the north face of the Ventoux via Brantes up to the Col de Fontaube and back to Buis via Eygaliers.",
+  "description": "From Buis-les-Baronnies via Saint-Auban up to the Col de Perty, through Laborel over the Col de Saint-Jean, via Séderon and over the Col de Macuègne to Montbrun, beneath the north face of the Ventoux via Brantes up to the Col de Fontaube and back to Buis via Eygaliers.",
   "note": "Briefly closed after snowfall on the Perty."
+ },
+ "cingles-du-mont-ventoux": {
+  "description": "All three sides of Mont Ventoux in one day: up from Bédoin, down to Malaucène and up again, down past Chalet Reynard to Sault and up a third time from there, back to Bédoin.",
+  "note": "A permanent challenge of the Club des Cinglés with a stamp card, in any order; the club advises not to ride before April or after October. Length and climb are the sum of the three sides, not an official figure."
+ },
+ "dolomitenradrundfahrt-lienz": {
+  "description": "From Lienz down the Drau valley to Oberdrauburg, over the Gailbergsattel to Kötschach-Mauthen, through the Lesachtal via Maria Luggau and Obertilliach up to the Kartitscher Sattel and back through the Puster valley to Lienz.",
+  "note": "Austria's oldest cycling marathon, on the same loop since 1951, from Lienz in mid-June. Two low saddles with the long ups and downs of the Lesachtal in between."
+ },
+ "dreilaendergiro": {
+  "description": "From Nauders over the Reschen Pass into the Vinschgau, from Prad up the Stelvio, over the Umbrail into the Val Müstair, over the Ofen Pass to Zernez and down the Lower Engadine via Martina and the Norbertshöhe back to Nauders.",
+  "note": "Event in late June, through Austria, Italy and Switzerland; Tirol's tourist board gives 3,300 m."
+ },
+ "dreipaesse-rundfahrt-thusis": {
+  "description": "From Thusis through the Via Mala and the Schams to Splügen, over the Splügen Pass to Chiavenna, through the Bregaglia up the Maloja, via Silvaplana up the Julier and back to Thusis via Bivio, Savognin and Tiefencastel.",
+  "note": "The Schin road between Tiefencastel and Thusis is busy; the Rhaetian Railway is the alternative."
+ },
+ "engadiner-radmarathon": {
+  "description": "From Zernez over the Flüela Pass to Davos, through the Landwasser valley to Filisur and Bergün, over the Albula Pass to La Punt and down the Engadine back to Zernez.",
+  "note": "Event in early July, held over three days since 2026; the former 211 km course is no longer ridden."
+ },
+ "etape-du-tour-2024": {
+  "description": "From Nice over the Col de Nice and the Col de Braus to Sospel, up the Turini via Moulinet, down the Vésubie to Saint-Martin-Vésubie, over the Col Saint-Martin at La Colmiane into the Tinée and from Saint-Sauveur up to the finish on the Col de la Couillole.",
+  "note": "Held on 7 July 2024 on closed roads ahead of the Tour stage; finish on the Couillole."
+ },
+ "etape-du-tour-2025": {
+  "description": "From Albertville via Ugine up the côte of Héry-sur-Ugine, over the Col des Saisies to Beaufort, from Arêches up the Col du Pré, past the Lac de Roselend over the Cormet de Roselend, down through Les Chapieux to Bourg-Saint-Maurice and from Aime up to the finish at La Plagne.",
+  "note": "Held on 20 July 2025 on closed roads with 16,000 riders; the pro stage five days later was cut short without the Saisies, the Étape rode the full course."
+ },
+ "etape-du-tour-2026": {
+  "description": "From Bourg d'Oisans via Allemond over the Col de la Croix de Fer and down to Saint-Jean-de-Maurienne, up the Télégraphe and the Galibier, down over the Lautaret and past La Grave to Mizoën, and over the Col de Sarenne to the finish at Alpe d'Huez, from the back rather than up the 21 hairpins.",
+  "note": "Held on 19 July 2026 on closed roads, six days before the Tour stage; finish at Alpe d'Huez via the Sarenne."
  },
  "gavia-mortirolo-runde": {
   "description": "Bormio – Gavia – Ponte di Legno – Edolo – Mortirolo from Monno – Mazzo – Bormio.",
@@ -23,13 +67,33 @@
   "description": "From Bassano via Semonzo up to the Monte Grappa and down via Possagno, back to Bassano along the foot of the mountain – up the classic side, down the quiet one.",
   "note": "Temporarily closed at the top after snowfall."
  },
+ "grosse-scheidegg-runde": {
+  "description": "From Meiringen through the Rosenlaui valley over the Grosse Scheidegg to Grindelwald, down to Interlaken and back to Meiringen along the south shore of Lake Brienz via Iseltwald and Brienz.",
+  "note": "The Grosse Scheidegg is open only to the postbus and to bicycles."
+ },
  "hochvogesen-runde": {
   "description": "From Munster to the Schlucht, along the Route des Crêtes over the Hohneck and the Markstein to the Grand Ballon, and back into the Munster valley over the Platzerwasel.",
   "note": "The crest road is closed roughly mid-November to mid-April; the detour from the Markstein to the Grand Ballon is ridden there and back."
  },
+ "kaernten-radmarathon": {
+  "description": "From Bad Kleinkirchheim via Ebene Reichenau up the Nockalm Road, over the Schiestlscharte and the Eisentalhöhe to Innerkrems, down to Gmünd and along Lake Millstatt via Radenthein back to Bad Kleinkirchheim.",
+  "note": "Event in early June; the Nockalm Road is a toll road, and since 2026 the stretch between Gmünd and Dellach takes a new line."
+ },
+ "klausen-pragel-runde": {
+  "description": "From Glarus through the Klöntal over the Pragel into the Muota valley, via Schwyz to Brunnen, along Lake Uri to Flüelen and Altdorf, over the Klausen into Glarus and back via Linthal.",
+  "note": "Bicycles have been banned from the Axen road between Brunnen and Sisikon since 2023; a shuttle bus runs hourly. The Pragel is closed to cars on Sundays and public holidays."
+ },
+ "la-fausto-coppi": {
+  "description": "From Cuneo via Busca and Venasca into the Varaita valley, over the Colle di Sampeyre into the Maira valley, from Ponte Marmora up the Colle d'Esischie and on to the Colle Fauniera, down to Demonte, over the Madonna del Colletto to Valdieri and back to Cuneo via Borgo San Dalmazzo.",
+  "note": "Granfondo in late June from Cuneo; in 2026 on the same course as in 2025. The Maira side of the Esischie is narrow and rough; the Fauniera and the Sampeyre are usually open until mid-October."
+ },
  "la-marmotte": {
   "description": "Bourg d'Oisans – Glandon – Télégraphe – Galibier – Lautaret – Alpe d'Huez.",
   "note": "The Galibier sets the window; event in early July."
+ },
+ "les-3-ballons": {
+  "description": "From Ronchamp via Plancher-les-Mines over the Ballon de Servance to Le Thillot, via Cornimont and Ventron over the Col d'Oderen to Kruth, from Wildenstein up to the Markstein and along the Route des Crêtes to the Grand Ballon, down the Thur valley and over the Col du Hundsruck to Masevaux, from Sewen up the Ballon d'Alsace and down to Giromagny, finishing on the Planche des Belles Filles.",
+  "note": "Event in early June from Ronchamp, finishing on the Planche des Belles Filles; on the Ballon d'Alsace the course rides only the flank from Sewen, not up to the col."
  },
  "lombardia-runde": {
   "description": "The finale of the Giro di Lombardia from Bellagio: over the Ghisallo to Asso, through Sormano over the Muro up to the Colma and along the lake via Nesso back to Bellagio.",
@@ -39,13 +103,25 @@
   "description": "Sellaronda plus Campolongo (twice), Giau, Falzarego and Valparola from La Villa.",
   "note": "Event in early July; the passes are closed on the day."
  },
+ "marcialonga-cycling-craft": {
+  "description": "From Predazzo via Moena to Sèn Jan di Fassa and over the Costalunga, down past the Lago di Carezza and Nova Levante to Ponte Nova, up via Obereggen to the Passo Pampeago and down to Tesero, then from Moena over the San Pellegrino and the steep Passo Valles and back to Predazzo through the forest of Paneveggio.",
+  "note": "Granfondo in late May, early for the Costalunga, San Pellegrino and Valles; the stretch from Obereggen over the Pampeago is closed to cars."
+ },
  "melogno-scravaion-runde": {
   "description": "From Finale Ligure via Finalborgo up to the Colle del Melogno, through Calizzano and Bardineto to the Colle Scravaion and back along the coast via Castelvecchio and Albenga.",
   "note": "Briefly closed after snowfall on the Melogno."
  },
+ "oberalp-lukmanier-gotthard-runde": {
+  "description": "From Andermatt over the Oberalp to Disentis, over the Lukmanier into the Blenio valley to Biasca, up the Leventina to Airolo and back to Andermatt over the Gotthard.",
+  "note": "Over the Gotthard either on the cobbled Tremola or on the main road."
+ },
  "oetztaler-radmarathon": {
   "description": "Sölden – Kühtai – Innsbruck – Brenner – Jaufenpass – Timmelsjoch – Sölden.",
   "note": "Event in late August; the Timmelsjoch toll is free for bikes."
+ },
+ "penser-joch-jaufen-runde": {
+  "description": "From Merano down the Adige valley to Bolzano, through the Sarntal up the Penser Joch, down to Sterzing, over the Jaufen Pass into the Passeier valley and back to Merano via St. Leonhard.",
+  "note": "The lower Sarntal has long tunnels that are open to bicycles."
  },
  "riviera-dei-fiori-runde": {
   "description": "From Imperia over the Colle San Bartolomeo to Pieve di Teco, through Rezzo up to the Colle d'Oggia and back to the coast via Carpasio and the Argentina valley – the winter loop of the Sanremo pros.",
@@ -59,9 +135,25 @@
   "description": "Classic Dolomites loop around the Sella massif from Corvara, clockwise.",
   "note": "Car-free Sellaronda Bike Day in June and in September."
  },
+ "sportful-dolomiti-race": {
+  "description": "From Feltre via Sospirolo through the Valle del Mis over the Forcella Franche to Agordo, up the Cordevole to Alleghe and from Selva di Cadore over the Staulanza into the Val di Zoldo, back over the Passo Duran to Agordo, over the Forcella Aurine and the Passo Cereda into the Primiero and from the Cismon valley over the Croce d'Aune back to Feltre.",
+  "note": "Granfondo in mid-June from Feltre over the quiet passes of the Belluno Dolomites. Course unchanged since 2025."
+ },
+ "stelvio-santini": {
+  "description": "From Bormio down the Valtellina to Grosio, up the short steep ramp to Rogorbello above Vervio, from Lovero and Sernio up onto the Mortirolo ridge and over the pass, down towards Grosio and back up the valley to Bormio, finishing on the Stelvio.",
+  "note": "Event in early June finishing on the Stelvio; the Mortirolo from Lovero and Sernio along the ridge. Course unchanged since 2024."
+ },
  "stilfserjoch-umbrail-runde": {
   "description": "Prad – Stilfserjoch (48 hairpins) – Umbrail – Santa Maria – Glurns – Prad.",
   "note": "Car-free Stelvio Bike Day in late August or early September."
+ },
+ "stoneman-dolomiti-road": {
+  "description": "From Sexten via Toblach and Cimabanche to Cortina, up the Falzarego, via Colle Santa Lucia up the Giau, back to Cortina and over Tre Croci to Misurina, out and back up to the Auronzo hut beneath the Three Peaks, down to Auronzo, over the Passo Sant'Antonio to Padola and back to Sexten over the Kreuzberg.",
+  "note": "A signposted permanent route with stamp points and a starter pack; gold in one day, silver in two, bronze in three. The spur to the Auronzo hut is a toll road, and its season sets the window."
+ },
+ "tour-du-mont-blanc-cyclo": {
+  "description": "From Les Saisies via Megève and Chamonix, over the Montets and the Forclaz to Martigny, up to Champex, over the Great St Bernard to Aosta, over the Little St Bernard to Bourg-Saint-Maurice and back to Les Saisies over the Cormet de Roselend – once round Mont Blanc in a day.",
+  "note": "Event in mid-July, solo or as a pair; an ultra, starting around 5 am. The course comes from secondary sources; the organiser's page could not be reached."
  },
  "valcava-culmine-runde": {
   "description": "From Lecco via Torre de' Busi steeply up to the Passo di Valcava, through the Valle Imagna and the Val Taleggio to the Culmine di San Pietro and back to Lecco via Moggio and the Valsassina.",
@@ -70,6 +162,10 @@
  "ventoux-runde": {
   "description": "From Bédoin up the classic side of the Mont Ventoux, down to Malaucène and back to Bédoin over the Col de la Madeleine.",
   "note": "The loop works as long as the Ventoux summit road is open."
+ },
+ "vercors-cols-runde": {
+  "description": "From Saint-Jean-en-Royans up to Léoncel and the Col de la Bataille, over the Col de la Portette to Lente and the Col de la Machine, and down through the Combe Laval back to Saint-Jean.",
+  "note": "After the Drôme department's leaflet; the Combe Laval has eleven tunnels."
  },
  "vrsic-predil-runde": {
   "description": "Kranjska Gora – Vršič – Soča valley – Bovec – Predil – Tarvisio – Kranjska Gora.",

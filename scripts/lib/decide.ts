@@ -20,7 +20,6 @@ import { isTraverse, isUnpaved } from "../../lib/regions";
 import { ascentKey, tourKey } from "../../lib/route-key";
 import type {
   AscentCheck,
-  AscentRouter,
   ClimateYear,
   ElevationProfile,
   LatLon,
@@ -48,7 +47,7 @@ import {
   tourInputs,
   tourMetrics,
 } from "./validate";
-import type { Finding, Marker, RoutingProfile } from "./validate";
+import type { Finding, Marker, OrsProfile } from "./validate";
 
 /** Everything `data:build` has written so far, as one value. */
 export interface Stored {
@@ -94,13 +93,16 @@ export type RouteJob = {
   inputs: string;
   key: string;
   label: string;
-  /** The router's graph, from the road's surface (`profileOf`). */
-  profile: RoutingProfile;
   /**
-   * The router the curator named for this ride (`router` on the ascent), or
-   * none: then ORS is asked first and OSRM is the fallback.
+   * The router's graph, from the road's surface (`profileOf`), or ORS's
+   * everyday graph where the ascent pins it (`router.use: "cycling-regular"`).
    */
-  router?: AscentRouter["use"];
+  profile: OrsProfile;
+  /**
+   * OSRM where the curator pinned it for this ride (`router` on the ascent),
+   * or none: then ORS is asked first and OSRM is the fallback.
+   */
+  router?: "osrm";
   waypoints: LatLon[];
 } & (
   | {
@@ -139,18 +141,22 @@ export const routeJobs = (passes: Pass[], tours: Tour[]): RouteJob[] => [
   ...passes.flatMap((p) => {
     const marker = markerOf(p);
     const summit = { lat: p.lat, lon: p.lon };
-    const profile = profileOf(p.surface);
+    const road = profileOf(p.surface);
     return p.ascents.map((a, i): RouteJob => {
       const key = ascentKey(p.slug, i);
       const label = `${p.name} ab ${a.label}`;
-      const router = a.router ? { router: a.router.use } : {};
+      // A pin to ORS's everyday graph is a profile, not a second router: ORS
+      // is still asked first, only on that graph.
+      const regular = a.router?.use === SECOND_GRAPH;
+      const profile = regular ? SECOND_GRAPH : road;
+      const router = a.router && !regular ? { router: "osrm" as const } : {};
       // A traverse is routed between its two curated ends and judged against
       // its stated length; a climb is routed to the marker (`roadMetrics`).
       if (isTraverse(p.type))
         return {
           check: a.check,
           from: a.from,
-          inputs: ascentInputs(true, p, a, profile),
+          inputs: ascentInputs(true, p, a, road),
           key,
           kind: "traverse",
           label,
@@ -164,7 +170,7 @@ export const routeJobs = (passes: Pass[], tours: Tour[]): RouteJob[] => [
       return {
         check: a.check,
         from: a.from,
-        inputs: ascentInputs(false, p, a, profile),
+        inputs: ascentInputs(false, p, a, road),
         key,
         kind: "ascent",
         label,
@@ -176,14 +182,16 @@ export const routeJobs = (passes: Pass[], tours: Tour[]): RouteJob[] => [
     });
   }),
   ...tours.map((t): RouteJob => {
-    const profile = profileOf(t.surface);
+    const road = profileOf(t.surface);
+    const regular = t.router?.use === SECOND_GRAPH;
     return {
       check: t.check,
-      inputs: tourInputs(t, profile),
+      inputs: tourInputs(t, road),
       key: tourKey(t.slug),
       kind: "tour",
       label: `Tour ${t.name}`,
-      profile,
+      profile: regular ? SECOND_GRAPH : road,
+      ...(t.router && !regular ? { router: "osrm" as const } : {}),
       statedKm: t.km,
       waypoints: t.waypoints,
     };

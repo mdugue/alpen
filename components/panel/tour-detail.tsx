@@ -64,6 +64,27 @@ export const TourDetail = ({
         </div>
       </Section>
 
+      {model.otherEditions.length > 0 && (
+        <Section id="tour-editions" title={t.panel.tour.editionsTitle}>
+          <div className="flex flex-col items-start">
+            {model.otherEditions.map((edition) => (
+              <EntityLink
+                key={edition.slug}
+                entity={{ kind: "tour", slug: edition.slug }}
+                hovered={model.hovered}
+                actions={actions}
+              >
+                {edition.name}
+                <span className="text-muted-foreground tabular-nums">
+                  {fmtUnit(edition.km, "km")} ·{" "}
+                  {fmtUnit(edition.elevationGain, t.vocab.unit.climb)}
+                </span>
+              </EntityLink>
+            ))}
+          </div>
+        </Section>
+      )}
+
       <Nearby actions={actions} model={model} />
     </>
   );

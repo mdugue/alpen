@@ -18,6 +18,7 @@
    "opens": 5
   },
   "description": "Dolomiten-Klassikerrunde um den Sella-Stock ab Corvara im Uhrzeigersinn.",
+  "type": "loop",
   "waypoints": [
    {
     "lat": 46.549,
@@ -75,6 +76,7 @@
    "opens": 6
   },
   "description": "Sellaronda plus Campolongo (2×), Giau, Falzarego und Valparola ab La Villa.",
+  "type": "event",
   "waypoints": [
    {
     "lat": 46.587,
@@ -140,6 +142,100 @@
     "lat": 46.587,
     "lon": 11.905
    }
+  ],
+  "when": 7
+ },
+ {
+  "slug": "stoneman-dolomiti-road",
+  "surface": "asphalt",
+  "name": "Stoneman Dolomiti Road",
+  "color": "#9a6a5a",
+  "km": 193,
+  "elevationGain": 4700,
+  "passes": [
+   "passo-cimabanche",
+   "passo-falzarego",
+   "passo-giau",
+   "passo-tre-croci",
+   "passo-sant-antonio",
+   "passo-monte-croce-comelico"
+  ],
+  "note": "Beschilderte Dauerstrecke mit Stempelstellen und Startpaket; Gold an einem Tag, Silber in zwei, Bronze in drei. Der Stich zur Auronzohütte ist eine Mautstraße und gibt mit ihrer Saison das Fenster vor.",
+  "season": {
+   "opens": 6,
+   "closes": 10
+  },
+  "description": "Von Sexten über Toblach und Cimabanche nach Cortina, auf den Falzarego, über Colle Santa Lucia auf den Giau, zurück nach Cortina und über Tre Croci nach Misurina, im Stich hinauf zur Auronzohütte unter den Drei Zinnen, hinab nach Auronzo, über den Passo Sant'Antonio nach Padola und über den Kreuzberg zurück nach Sexten.",
+  "type": "permanent",
+  "waypoints": [
+   {
+    "lat": 46.7019,
+    "lon": 12.3504
+   },
+   {
+    "lat": 46.733,
+    "lon": 12.222
+   },
+   {
+    "lat": 46.6206,
+    "lon": 12.184
+   },
+   {
+    "lat": 46.538,
+    "lon": 12.136
+   },
+   {
+    "lat": 46.519,
+    "lon": 12.008
+   },
+   {
+    "lat": 46.47,
+    "lon": 12.0185
+   },
+   {
+    "lat": 46.484,
+    "lon": 12.055
+   },
+   {
+    "lat": 46.538,
+    "lon": 12.136
+   },
+   {
+    "lat": 46.557,
+    "lon": 12.2019
+   },
+   {
+    "lat": 46.583,
+    "lon": 12.253
+   },
+   {
+    "lat": 46.612,
+    "lon": 12.294
+   },
+   {
+    "lat": 46.583,
+    "lon": 12.253
+   },
+   {
+    "lat": 46.5512,
+    "lon": 12.443
+   },
+   {
+    "lat": 46.572,
+    "lon": 12.4824
+   },
+   {
+    "lat": 46.607,
+    "lon": 12.463
+   },
+   {
+    "lat": 46.6559,
+    "lon": 12.4201
+   },
+   {
+    "lat": 46.7019,
+    "lon": 12.3504
+   }
   ]
  },
  {
@@ -150,15 +246,22 @@
   "km": 700,
   "elevationGain": 17000,
   "passes": [
+   "col-des-gets",
    "col-de-la-colombiere",
+   "col-des-aravis",
+   "col-des-saisies",
    "cormet-de-roselend",
    "col-de-l-iseran",
+   "col-du-telegraphe",
    "col-du-galibier",
+   "col-du-lautaret",
    "col-d-izoard",
    "col-de-vars",
    "col-de-la-cayolle",
    "col-de-la-couillole",
-   "col-de-turini"
+   "col-saint-martin",
+   "col-de-turini",
+   "col-de-castillon"
   ],
   "note": "Der Iseran gibt das Fenster vor; im Oktober nur mit Plan B über den Mont Cenis.",
   "season": {
@@ -166,6 +269,7 @@
    "opens": 6.5
   },
   "description": "Thonon-les-Bains – Menton über 17 Pässe, typisch 6–8 Etappen.",
+  "type": "stages",
   "waypoints": [
    {
     "lat": 46.371,
@@ -326,6 +430,7 @@
   "elevationGain": 5500,
   "passes": [
    "kuehtai",
+   "brennerpass",
    "jaufenpass",
    "timmelsjoch"
   ],
@@ -335,6 +440,7 @@
    "opens": 6
   },
   "description": "Sölden – Kühtai – Innsbruck – Brenner – Jaufenpass – Timmelsjoch – Sölden.",
+  "type": "event",
   "waypoints": [
    {
     "lat": 46.968,
@@ -380,7 +486,8 @@
     "lat": 46.968,
     "lon": 11.007
    }
-  ]
+  ],
+  "when": 8.5
  },
  {
   "slug": "la-marmotte",
@@ -391,7 +498,9 @@
   "elevationGain": 5000,
   "passes": [
    "col-du-glandon",
+   "col-du-telegraphe",
    "col-du-galibier",
+   "col-du-lautaret",
    "alpe-d-huez"
   ],
   "note": "Der Galibier gibt das Fenster vor; Veranstaltung Anfang Juli.",
@@ -400,6 +509,7 @@
    "opens": 6
   },
   "description": "Bourg d'Oisans – Glandon – Télégraphe – Galibier – Lautaret – Alpe d'Huez.",
+  "type": "event",
   "waypoints": [
    {
     "lat": 45.055,
@@ -449,7 +559,8 @@
     "lat": 45.092,
     "lon": 6.07
    }
-  ]
+  ],
+  "when": 7
  },
  {
   "slug": "andermatt-drei-paesse-runde",
@@ -463,12 +574,13 @@
    "grimselpass",
    "sustenpass"
   ],
-  "note": "Alpenbrevet Ende August.",
+  "note": "Alpenbrevet Anfang September.",
   "season": {
    "closes": 10.5,
    "opens": 6.5
   },
   "description": "Furka – Grimsel – Susten, zurück durch die Schöllenenschlucht.",
+  "type": "loop",
   "waypoints": [
    {
     "lat": 46.635,
@@ -529,6 +641,7 @@
    "opens": 6
   },
   "description": "Prad – Stilfserjoch (48 Kehren) – Umbrail – Santa Maria – Glurns – Prad.",
+  "type": "loop",
   "waypoints": [
    {
     "lat": 46.618,
@@ -573,6 +686,7 @@
    "opens": 6.5
   },
   "description": "Bormio – Gavia – Ponte di Legno – Edolo – Mortirolo ab Monno – Mazzo – Bormio.",
+  "type": "loop",
   "waypoints": [
    {
     "lat": 46.468,
@@ -620,7 +734,8 @@
   "km": 105,
   "elevationGain": 2300,
   "passes": [
-   "vrsic"
+   "vrsic",
+   "predilpass"
   ],
   "note": "Das Vršič-Pflaster ist bei Nässe rutschig.",
   "season": {
@@ -628,6 +743,7 @@
    "opens": 5
   },
   "description": "Kranjska Gora – Vršič – Soča-Tal – Bovec – Predil – Tarvisio – Kranjska Gora.",
+  "type": "loop",
   "waypoints": [
    {
     "lat": 46.484,
@@ -673,6 +789,7 @@
   "note": "Im Januar und Februar oben am Oggia gelegentlich Schnee.",
   "season": null,
   "description": "Von Imperia über den Colle San Bartolomeo nach Pieve di Teco, durch Rezzo auf den Colle d'Oggia und über Carpasio und das Argentina-Tal zurück an die Küste – die Winterrunde der Sanremo-Profis.",
+  "type": "loop",
   "waypoints": [
    {
     "lat": 43.8862,
@@ -726,6 +843,7 @@
   "note": "Nach Schneefall am Melogno kurz gesperrt.",
   "season": null,
   "description": "Von Finale Ligure über Finalborgo auf den Colle del Melogno, durch Calizzano und Bardineto zum Colle Scravaion und über Castelvecchio und Albenga an der Küste zurück.",
+  "type": "loop",
   "waypoints": [
    {
     "lat": 44.1691,
@@ -782,6 +900,7 @@
    "opens": 4
   },
   "description": "Von Lecco über Torre de' Busi steil auf den Passo di Valcava, durch das Valle Imagna und das Val Taleggio zum Culmine di San Pietro und über Moggio und die Valsassina zurück nach Lecco.",
+  "type": "loop",
   "waypoints": [
    {
     "lat": 45.8554,
@@ -839,6 +958,7 @@
   "note": "Am Sormano im Winter gelegentlich Schnee.",
   "season": null,
   "description": "Das Finale des Giro di Lombardia ab Bellagio: über den Ghisallo nach Asso, durch Sormano über den Muro auf die Colma und am See entlang über Nesso zurück nach Bellagio.",
+  "type": "loop",
   "waypoints": [
    {
     "lat": 45.9873,
@@ -853,8 +973,8 @@
     "lon": 9.2695
    },
    {
-    "lat": 45.8778,
-    "lon": 9.2487
+    "lat": 45.8818,
+    "lon": 9.2439
    },
    {
     "lat": 45.883,
@@ -868,7 +988,11 @@
     "lat": 45.9873,
     "lon": 9.2613
    }
-  ]
+  ],
+  "router": {
+   "use": "cycling-regular",
+   "note": "Der Muro di Sormano ist in OSM als Radweg ohne Autos erfasst; der Rennradgraph fährt über die SP44 außen herum. Der Alltagsgraph nimmt die Rampe und folgt sonst denselben Straßen."
+  }
  },
  {
   "slug": "ballino-runde",
@@ -883,6 +1007,7 @@
   "note": "Im Winter oben am Ballino gelegentlich Schnee.",
   "season": null,
   "description": "Von Riva über Tenno und den Lago di Tenno auf den Passo del Ballino, über Fiavè und Ponte Arche ins Sarcatal und über Sarche und Arco zurück an den See.",
+  "type": "loop",
   "waypoints": [
    {
     "lat": 45.8848,
@@ -927,6 +1052,7 @@
   "note": "Nach Schneefall oben zeitweise gesperrt.",
   "season": null,
   "description": "Von Bassano über Semonzo auf den Monte Grappa und über Possagno hinunter, am Fuß des Bergs zurück nach Bassano – hinauf auf der klassischen Seite, hinab auf der stillen.",
+  "type": "loop",
   "waypoints": [
    {
     "lat": 45.7669,
@@ -971,6 +1097,7 @@
    "opens": 5
   },
   "description": "Von Bédoin die klassische Seite auf den Mont Ventoux, hinunter nach Malaucène und über den Col de la Madeleine zurück nach Bédoin.",
+  "type": "loop",
   "waypoints": [
    {
     "lat": 44.124,
@@ -1003,12 +1130,14 @@
   "elevationGain": 2100,
   "passes": [
    "col-de-perty",
+   "col-de-saint-jean",
    "col-de-macuegne",
    "col-de-fontaube"
   ],
   "note": "Nach Schneefall am Perty kurz gesperrt.",
   "season": null,
-  "description": "Von Buis-les-Baronnies über Saint-Auban auf den Col de Perty, durch Laborel und Séderon über den Col de Macuègne nach Montbrun, unter der Ventoux-Nordwand über Brantes auf den Col de Fontaube und über Eygaliers zurück nach Buis.",
+  "description": "Von Buis-les-Baronnies über Saint-Auban auf den Col de Perty, durch Laborel über den Col de Saint-Jean, über Séderon und den Col de Macuègne nach Montbrun, unter der Ventoux-Nordwand über Brantes auf den Col de Fontaube und über Eygaliers zurück nach Buis.",
+  "type": "loop",
   "waypoints": [
    {
     "lat": 44.2768,
@@ -1066,12 +1195,14 @@
   "passes": [
    "col-de-la-schlucht",
    "route-des-cretes",
+   "le-markstein",
    "grand-ballon",
    "col-du-platzerwasel"
   ],
   "note": "Die Kammstraße ist etwa Mitte November bis Mitte April gesperrt; der Abstecher vom Markstein zum Grand Ballon wird hin und zurück gefahren.",
   "season": null,
   "description": "Von Munster zur Schlucht, auf der Route des Crêtes über Hohneck und Markstein zum Grand Ballon und über den Platzerwasel zurück ins Munstertal.",
+  "type": "loop",
   "waypoints": [
    {
     "lat": 48.0409,
@@ -1126,6 +1257,7 @@
   "note": "Über Bussang auf der N66 mit Lastwagenverkehr, der Rest ist ruhig.",
   "season": null,
   "description": "Von Thann über den Hundsruck ins Dollertal, von Sewen auf den Ballon d'Alsace, hinab nach Saint-Maurice und über den Col de Bussang durchs Thurtal zurück.",
+  "type": "loop",
   "waypoints": [
    {
     "lat": 47.8101,
@@ -1167,6 +1299,2027 @@
     "lat": 47.8101,
     "lon": 7.1021
    }
+  ]
+ },
+ {
+  "slug": "engadiner-radmarathon",
+  "surface": "asphalt",
+  "name": "Engadiner Radmarathon (La Svizra)",
+  "color": "#7a6fb8",
+  "km": 117,
+  "elevationGain": 2815,
+  "passes": [
+   "flueelapass",
+   "albulapass"
+  ],
+  "note": "Veranstaltung Anfang Juli, seit 2026 an drei Tagen; die frühere 211-km-Strecke wird nicht mehr gefahren.",
+  "season": null,
+  "description": "Von Zernez über den Flüelapass nach Davos, durchs Landwassertal nach Filisur und Bergün, über den Albulapass nach La Punt und das Engadin hinab zurück nach Zernez.",
+  "type": "event",
+  "waypoints": [
+   {
+    "lat": 46.6993,
+    "lon": 10.0936
+   },
+   {
+    "lat": 46.7494,
+    "lon": 10.0797
+   },
+   {
+    "lat": 46.7475,
+    "lon": 9.9503
+   },
+   {
+    "lat": 46.7934,
+    "lon": 9.8207
+   },
+   {
+    "lat": 46.6738,
+    "lon": 9.686
+   },
+   {
+    "lat": 46.629,
+    "lon": 9.7453
+   },
+   {
+    "lat": 46.5894,
+    "lon": 9.7761
+   },
+   {
+    "lat": 46.5823,
+    "lon": 9.8377
+   },
+   {
+    "lat": 46.5766,
+    "lon": 9.9308
+   },
+   {
+    "lat": 46.6013,
+    "lon": 9.9608
+   },
+   {
+    "lat": 46.6993,
+    "lon": 10.0936
+   }
+  ],
+  "when": 7
+ },
+ {
+  "slug": "alpenbrevet-silbertour",
+  "surface": "asphalt",
+  "name": "Alpenbrevet (Silbertour)",
+  "color": "#b0705a",
+  "km": 108,
+  "elevationGain": 3100,
+  "passes": [
+   "gotthard-tremola",
+   "nufenenpass",
+   "furkapass"
+  ],
+  "note": "Veranstaltung Anfang September, Start und Ziel in Andermatt; über den Gotthard auf der Hauptstraße, nicht über die Tremola.",
+  "season": null,
+  "description": "Von Andermatt über den Gotthard nach Airolo, über den Nufenen nach Ulrichen, durchs Goms nach Gletsch und über die Furka zurück nach Andermatt. Die Platintour hängt Susten, Grimsel, Lukmanier und Oberalp an (267 km).",
+  "type": "event",
+  "waypoints": [
+   {
+    "lat": 46.634,
+    "lon": 8.5948
+   },
+   {
+    "lat": 46.6189,
+    "lon": 8.5686
+   },
+   {
+    "lat": 46.559,
+    "lon": 8.561
+   },
+   {
+    "lat": 46.529,
+    "lon": 8.6086
+   },
+   {
+    "lat": 46.478,
+    "lon": 8.387
+   },
+   {
+    "lat": 46.5066,
+    "lon": 8.305
+   },
+   {
+    "lat": 46.5613,
+    "lon": 8.3615
+   },
+   {
+    "lat": 46.572,
+    "lon": 8.415
+   },
+   {
+    "lat": 46.5988,
+    "lon": 8.5021
+   },
+   {
+    "lat": 46.634,
+    "lon": 8.5948
+   }
+  ],
+  "when": 9
+ },
+ {
+  "slug": "dreilaendergiro",
+  "surface": "asphalt",
+  "name": "Dreiländergiro",
+  "color": "#5a8fa8",
+  "km": 168,
+  "elevationGain": 3600,
+  "passes": [
+   "reschenpass",
+   "passo-dello-stelvio",
+   "umbrailpass",
+   "ofenpass",
+   "norbertshoehe"
+  ],
+  "note": "Veranstaltung Ende Juni, durch Österreich, Italien und die Schweiz; die Tirol Werbung nennt 3.300 Hm.",
+  "season": null,
+  "description": "Von Nauders über den Reschenpass in den Vinschgau, ab Prad aufs Stilfserjoch, über den Umbrail ins Val Müstair, über den Ofenpass nach Zernez und das Unterengadin hinab über Martina und die Norbertshöhe zurück nach Nauders.",
+  "type": "event",
+  "waypoints": [
+   {
+    "lat": 46.8918,
+    "lon": 10.5026
+   },
+   {
+    "lat": 46.8344,
+    "lon": 10.5102
+   },
+   {
+    "lat": 46.6879,
+    "lon": 10.5465
+   },
+   {
+    "lat": 46.6038,
+    "lon": 10.5819
+   },
+   {
+    "lat": 46.529,
+    "lon": 10.453
+   },
+   {
+    "lat": 46.5416,
+    "lon": 10.4332
+   },
+   {
+    "lat": 46.6013,
+    "lon": 10.4233
+   },
+   {
+    "lat": 46.64,
+    "lon": 10.291
+   },
+   {
+    "lat": 46.6993,
+    "lon": 10.0936
+   },
+   {
+    "lat": 46.7976,
+    "lon": 10.2996
+   },
+   {
+    "lat": 46.8849,
+    "lon": 10.4633
+   },
+   {
+    "lat": 46.8951,
+    "lon": 10.485
+   },
+   {
+    "lat": 46.8918,
+    "lon": 10.5026
+   }
+  ],
+  "when": 6.5
+ },
+ {
+  "slug": "tour-du-mont-blanc-cyclo",
+  "surface": "asphalt",
+  "name": "Tour du Mont-Blanc Cyclo",
+  "color": "#8a5a9a",
+  "km": 330,
+  "elevationGain": 8300,
+  "passes": [
+   "col-des-saisies",
+   "col-des-montets",
+   "col-de-la-forclaz-martigny",
+   "col-de-champex",
+   "col-du-grand-saint-bernard",
+   "col-du-petit-saint-bernard",
+   "cormet-de-roselend"
+  ],
+  "note": "Veranstaltung Mitte Juli, allein oder zu zweit; ein Ultra, Start gegen 5 Uhr. Die Strecke stammt von Sekundärquellen, die Seite des Veranstalters war nicht erreichbar.",
+  "season": null,
+  "description": "Von Les Saisies über Megève und Chamonix, über Montets und Forclaz nach Martigny, hinauf nach Champex, über den Großen Sankt Bernhard nach Aosta, über den Kleinen Sankt Bernhard nach Bourg-Saint-Maurice und über den Cormet de Roselend zurück nach Les Saisies – einmal um den Mont Blanc an einem Tag.",
+  "type": "event",
+  "waypoints": [
+   {
+    "lat": 45.7573,
+    "lon": 6.5394
+   },
+   {
+    "lat": 45.8176,
+    "lon": 6.5143
+   },
+   {
+    "lat": 45.8567,
+    "lon": 6.6179
+   },
+   {
+    "lat": 45.8929,
+    "lon": 6.7113
+   },
+   {
+    "lat": 45.9231,
+    "lon": 6.87
+   },
+   {
+    "lat": 46.0039,
+    "lon": 6.9236
+   },
+   {
+    "lat": 46.0577,
+    "lon": 7.0013
+   },
+   {
+    "lat": 46.1031,
+    "lon": 7.0727
+   },
+   {
+    "lat": 46.0283,
+    "lon": 7.1153
+   },
+   {
+    "lat": 46.0301,
+    "lon": 7.1454
+   },
+   {
+    "lat": 45.9489,
+    "lon": 7.2088
+   },
+   {
+    "lat": 45.869,
+    "lon": 7.17
+   },
+   {
+    "lat": 45.7373,
+    "lon": 7.3204
+   },
+   {
+    "lat": 45.7639,
+    "lon": 6.9853
+   },
+   {
+    "lat": 45.714,
+    "lon": 6.95
+   },
+   {
+    "lat": 45.681,
+    "lon": 6.884
+   },
+   {
+    "lat": 45.6186,
+    "lon": 6.7695
+   },
+   {
+    "lat": 45.6913,
+    "lon": 6.6906
+   },
+   {
+    "lat": 45.7174,
+    "lon": 6.5733
+   },
+   {
+    "lat": 45.7573,
+    "lon": 6.5394
+   }
+  ],
+  "when": 7
+ },
+ {
+  "slug": "kaernten-radmarathon",
+  "surface": "asphalt",
+  "name": "Kärnten Radmarathon",
+  "color": "#9a8a4a",
+  "km": 106,
+  "elevationGain": 2530,
+  "passes": [
+   "nockalmstrasse"
+  ],
+  "note": "Veranstaltung Anfang Juni; die Nockalmstraße ist eine Mautstraße, und seit 2026 ist das Stück zwischen Gmünd und Dellach neu geführt.",
+  "season": null,
+  "description": "Von Bad Kleinkirchheim über Ebene Reichenau auf die Nockalmstraße, über Schiestlscharte und Eisentalhöhe nach Innerkrems, hinab nach Gmünd und am Millstätter See entlang über Radenthein zurück nach Bad Kleinkirchheim.",
+  "type": "event",
+  "waypoints": [
+   {
+    "lat": 46.8144,
+    "lon": 13.7984
+   },
+   {
+    "lat": 46.855,
+    "lon": 13.8941
+   },
+   {
+    "lat": 46.8901,
+    "lon": 13.7935
+   },
+   {
+    "lat": 46.9383,
+    "lon": 13.7557
+   },
+   {
+    "lat": 46.9681,
+    "lon": 13.7264
+   },
+   {
+    "lat": 46.9609,
+    "lon": 13.6175
+   },
+   {
+    "lat": 46.9066,
+    "lon": 13.536
+   },
+   {
+    "lat": 46.8191,
+    "lon": 13.5187
+   },
+   {
+    "lat": 46.8051,
+    "lon": 13.5715
+   },
+   {
+    "lat": 46.7879,
+    "lon": 13.6162
+   },
+   {
+    "lat": 46.8007,
+    "lon": 13.7107
+   },
+   {
+    "lat": 46.8144,
+    "lon": 13.7984
+   }
+  ],
+  "when": 6
+ },
+ {
+  "slug": "cingles-du-mont-ventoux",
+  "surface": "asphalt",
+  "name": "Cinglés du Mont Ventoux",
+  "color": "#b8603a",
+  "km": 136,
+  "elevationGain": 4400,
+  "passes": [
+   "mont-ventoux"
+  ],
+  "note": "Dauerwertung des Club des Cinglés mit Stempelkarte, Reihenfolge frei; der Club rät, nicht vor April und nicht nach Oktober zu fahren. Länge und Höhenmeter sind die Summe der drei Seiten, keine offizielle Zahl.",
+  "season": {
+   "opens": 5,
+   "closes": 10.5
+  },
+  "description": "Alle drei Seiten des Mont Ventoux an einem Tag: ab Bédoin hinauf, nach Malaucène hinab und wieder hinauf, über den Chalet Reynard nach Sault hinab und von dort ein drittes Mal hinauf, zurück nach Bédoin.",
+  "type": "permanent",
+  "waypoints": [
+   {
+    "lat": 44.124,
+    "lon": 5.1807
+   },
+   {
+    "lat": 44.1523,
+    "lon": 5.319
+   },
+   {
+    "lat": 44.174,
+    "lon": 5.278
+   },
+   {
+    "lat": 44.1733,
+    "lon": 5.1321
+   },
+   {
+    "lat": 44.174,
+    "lon": 5.278
+   },
+   {
+    "lat": 44.1523,
+    "lon": 5.319
+   },
+   {
+    "lat": 44.0776,
+    "lon": 5.4277
+   },
+   {
+    "lat": 44.1523,
+    "lon": 5.319
+   },
+   {
+    "lat": 44.174,
+    "lon": 5.278
+   },
+   {
+    "lat": 44.1523,
+    "lon": 5.319
+   },
+   {
+    "lat": 44.124,
+    "lon": 5.1807
+   }
+  ]
+ },
+ {
+  "slug": "dreipaesse-rundfahrt-thusis",
+  "surface": "asphalt",
+  "name": "Splügen–Maloja–Julier-Runde",
+  "color": "#6a8ab8",
+  "km": 168,
+  "elevationGain": 3700,
+  "passes": [
+   "spluegenpass",
+   "malojapass",
+   "julierpass"
+  ],
+  "note": "Die Schinstraße zwischen Tiefencastel und Thusis ist stark befahren; die Rhätische Bahn ist die Alternative.",
+  "season": null,
+  "description": "Von Thusis durch die Via Mala und das Schams nach Splügen, über den Splügenpass nach Chiavenna, durchs Bergell auf den Maloja, über Silvaplana auf den Julier und über Bivio, Savognin und Tiefencastel zurück nach Thusis.",
+  "type": "loop",
+  "waypoints": [
+   {
+    "lat": 46.6972,
+    "lon": 9.4391
+   },
+   {
+    "lat": 46.6023,
+    "lon": 9.427
+   },
+   {
+    "lat": 46.5417,
+    "lon": 9.3226
+   },
+   {
+    "lat": 46.507,
+    "lon": 9.33
+   },
+   {
+    "lat": 46.4043,
+    "lon": 9.3497
+   },
+   {
+    "lat": 46.3201,
+    "lon": 9.4007
+   },
+   {
+    "lat": 46.3342,
+    "lon": 9.5174
+   },
+   {
+    "lat": 46.4,
+    "lon": 9.696
+   },
+   {
+    "lat": 46.4599,
+    "lon": 9.7959
+   },
+   {
+    "lat": 46.472,
+    "lon": 9.728
+   },
+   {
+    "lat": 46.4687,
+    "lon": 9.6497
+   },
+   {
+    "lat": 46.5969,
+    "lon": 9.598
+   },
+   {
+    "lat": 46.6616,
+    "lon": 9.5765
+   },
+   {
+    "lat": 46.6972,
+    "lon": 9.4391
+   }
+  ]
+ },
+ {
+  "slug": "albula-julier-runde",
+  "surface": "asphalt",
+  "name": "Albula–Julier-Runde",
+  "color": "#8a9a5a",
+  "km": 100,
+  "elevationGain": 2250,
+  "passes": [
+   "albulapass",
+   "julierpass"
+  ],
+  "note": "Den Tunnel Crap Ses unterhalb von Savognin umgeht die alte Straße über Salouf und Cunter.",
+  "season": null,
+  "description": "Von St. Moritz das Engadin hinab nach La Punt, über den Albulapass nach Bergün und Filisur, nach Tiefencastel und durchs Surses über Savognin und Bivio auf den Julier und über Silvaplana zurück nach St. Moritz.",
+  "type": "loop",
+  "waypoints": [
+   {
+    "lat": 46.4979,
+    "lon": 9.8392
+   },
+   {
+    "lat": 46.5518,
+    "lon": 9.8891
+   },
+   {
+    "lat": 46.5766,
+    "lon": 9.9308
+   },
+   {
+    "lat": 46.5823,
+    "lon": 9.8377
+   },
+   {
+    "lat": 46.5894,
+    "lon": 9.7761
+   },
+   {
+    "lat": 46.629,
+    "lon": 9.7453
+   },
+   {
+    "lat": 46.6738,
+    "lon": 9.686
+   },
+   {
+    "lat": 46.6616,
+    "lon": 9.5765
+   },
+   {
+    "lat": 46.5969,
+    "lon": 9.598
+   },
+   {
+    "lat": 46.5241,
+    "lon": 9.621
+   },
+   {
+    "lat": 46.4687,
+    "lon": 9.6497
+   },
+   {
+    "lat": 46.472,
+    "lon": 9.728
+   },
+   {
+    "lat": 46.4599,
+    "lon": 9.7959
+   },
+   {
+    "lat": 46.4979,
+    "lon": 9.8392
+   }
+  ]
+ },
+ {
+  "slug": "oberalp-lukmanier-gotthard-runde",
+  "surface": "asphalt",
+  "name": "Oberalp–Lukmanier–Gotthard-Runde",
+  "color": "#a85a6a",
+  "km": 155,
+  "elevationGain": 3350,
+  "passes": [
+   "oberalppass",
+   "lukmanierpass",
+   "gotthard-tremola"
+  ],
+  "note": "Über den Gotthard wahlweise auf der gepflasterten Tremola oder der Hauptstraße.",
+  "season": null,
+  "description": "Von Andermatt über den Oberalp nach Disentis, über den Lukmanier ins Bleniotal nach Biasca, die Leventina hinauf nach Airolo und über den Gotthard zurück nach Andermatt.",
+  "type": "loop",
+  "waypoints": [
+   {
+    "lat": 46.634,
+    "lon": 8.5948
+   },
+   {
+    "lat": 46.658,
+    "lon": 8.671
+   },
+   {
+    "lat": 46.7051,
+    "lon": 8.8552
+   },
+   {
+    "lat": 46.5634,
+    "lon": 8.8006
+   },
+   {
+    "lat": 46.5304,
+    "lon": 8.9384
+   },
+   {
+    "lat": 46.3606,
+    "lon": 8.9714
+   },
+   {
+    "lat": 46.478,
+    "lon": 8.8009
+   },
+   {
+    "lat": 46.529,
+    "lon": 8.6086
+   },
+   {
+    "lat": 46.559,
+    "lon": 8.561
+   },
+   {
+    "lat": 46.6189,
+    "lon": 8.5686
+   },
+   {
+    "lat": 46.634,
+    "lon": 8.5948
+   }
+  ]
+ },
+ {
+  "slug": "klausen-pragel-runde",
+  "surface": "asphalt",
+  "name": "Klausen–Pragel-Runde",
+  "color": "#5a9a8a",
+  "km": 129,
+  "elevationGain": 2915,
+  "passes": [
+   "pragelpass",
+   "klausenpass"
+  ],
+  "note": "Auf der Axenstraße zwischen Brunnen und Sisikon gilt seit 2023 ein Fahrverbot für Velos; ein Shuttlebus fährt stündlich. Der Pragel ist an Sonn- und Feiertagen für Autos gesperrt.",
+  "season": null,
+  "description": "Von Glarus durchs Klöntal über den Pragel ins Muotatal, über Schwyz nach Brunnen, am Urnersee entlang nach Flüelen und Altdorf, über den Klausen ins Glarnerland und über Linthal zurück nach Glarus.",
+  "type": "loop",
+  "waypoints": [
+   {
+    "lat": 47.0404,
+    "lon": 9.068
+   },
+   {
+    "lat": 47.0611,
+    "lon": 9.053
+   },
+   {
+    "lat": 47.0278,
+    "lon": 8.9865
+   },
+   {
+    "lat": 47.0235,
+    "lon": 8.9118
+   },
+   {
+    "lat": 46.9994,
+    "lon": 8.8695
+   },
+   {
+    "lat": 46.9747,
+    "lon": 8.7658
+   },
+   {
+    "lat": 47.0207,
+    "lon": 8.6541
+   },
+   {
+    "lat": 46.994,
+    "lon": 8.6054
+   },
+   {
+    "lat": 46.9493,
+    "lon": 8.6211
+   },
+   {
+    "lat": 46.9027,
+    "lon": 8.6253
+   },
+   {
+    "lat": 46.8821,
+    "lon": 8.6414
+   },
+   {
+    "lat": 46.8631,
+    "lon": 8.7704
+   },
+   {
+    "lat": 46.869,
+    "lon": 8.856
+   },
+   {
+    "lat": 46.919,
+    "lon": 8.9971
+   },
+   {
+    "lat": 46.9978,
+    "lon": 9.0776
+   },
+   {
+    "lat": 47.0404,
+    "lon": 9.068
+   }
+  ]
+ },
+ {
+  "slug": "penser-joch-jaufen-runde",
+  "surface": "asphalt",
+  "name": "Penser Joch–Jaufen-Runde",
+  "color": "#7a8a6a",
+  "km": 149,
+  "elevationGain": 3300,
+  "passes": [
+   "penserjoch",
+   "jaufenpass"
+  ],
+  "note": "Im unteren Sarntal führen lange Tunnel, die für Räder offen sind.",
+  "season": null,
+  "description": "Von Meran das Etschtal hinab nach Bozen, durchs Sarntal auf das Penser Joch, hinab nach Sterzing, über den Jaufenpass ins Passeiertal und über St. Leonhard zurück nach Meran.",
+  "type": "loop",
+  "waypoints": [
+   {
+    "lat": 46.6714,
+    "lon": 11.1646
+   },
+   {
+    "lat": 46.6049,
+    "lon": 11.1965
+   },
+   {
+    "lat": 46.4978,
+    "lon": 11.3546
+   },
+   {
+    "lat": 46.643,
+    "lon": 11.3566
+   },
+   {
+    "lat": 46.7705,
+    "lon": 11.3681
+   },
+   {
+    "lat": 46.819,
+    "lon": 11.443
+   },
+   {
+    "lat": 46.8963,
+    "lon": 11.4319
+   },
+   {
+    "lat": 46.84,
+    "lon": 11.321
+   },
+   {
+    "lat": 46.8115,
+    "lon": 11.246
+   },
+   {
+    "lat": 46.6714,
+    "lon": 11.1646
+   }
+  ]
+ },
+ {
+  "slug": "vercors-cols-runde",
+  "surface": "asphalt",
+  "name": "Vercors-Runde über Combe Laval",
+  "color": "#6a7aa8",
+  "km": 62,
+  "elevationGain": 1571,
+  "passes": [
+   "col-de-la-bataille",
+   "combe-laval"
+  ],
+  "note": "Nach dem Faltblatt des Départements Drôme; in der Combe Laval liegen elf Tunnel.",
+  "season": null,
+  "description": "Von Saint-Jean-en-Royans hinauf nach Léoncel und auf den Col de la Bataille, über den Col de la Portette nach Lente und zum Col de la Machine, und durch die Combe Laval hinab zurück nach Saint-Jean.",
+  "type": "loop",
+  "waypoints": [
+   {
+    "lat": 45.0161,
+    "lon": 5.2907
+   },
+   {
+    "lat": 44.9113,
+    "lon": 5.1928
+   },
+   {
+    "lat": 44.8978,
+    "lon": 5.2338
+   },
+   {
+    "lat": 44.9567,
+    "lon": 5.2948
+   },
+   {
+    "lat": 44.9539,
+    "lon": 5.3255
+   },
+   {
+    "lat": 44.9747,
+    "lon": 5.3348
+   },
+   {
+    "lat": 45.0161,
+    "lon": 5.2907
+   }
+  ]
+ },
+ {
+  "slug": "dolomitenradrundfahrt-lienz",
+  "surface": "asphalt",
+  "name": "Dolomitenradrundfahrt",
+  "color": "#5a7a9a",
+  "km": 112,
+  "elevationGain": 1870,
+  "passes": [
+   "gailbergsattel",
+   "kartitscher-sattel"
+  ],
+  "note": "Österreichs ältester Radmarathon, seit 1951 auf derselben Runde, Mitte Juni ab Lienz. Zwei niedrige Sättel, dazwischen das lange Auf und Ab des Lesachtals.",
+  "season": null,
+  "description": "Von Lienz das Drautal hinab nach Oberdrauburg, über den Gailbergsattel nach Kötschach-Mauthen, durch das Lesachtal über Maria Luggau und Obertilliach auf den Kartitscher Sattel und durch das Pustertal zurück nach Lienz.",
+  "type": "event",
+  "waypoints": [
+   {
+    "lat": 46.8299,
+    "lon": 12.7681
+   },
+   {
+    "lat": 46.7484,
+    "lon": 12.9701
+   },
+   {
+    "lat": 46.7178,
+    "lon": 12.967
+   },
+   {
+    "lat": 46.7056,
+    "lon": 12.7348
+   },
+   {
+    "lat": 46.71,
+    "lon": 12.6147
+   },
+   {
+    "lat": 46.7179,
+    "lon": 12.541
+   },
+   {
+    "lat": 46.7491,
+    "lon": 12.4653
+   },
+   {
+    "lat": 46.8299,
+    "lon": 12.7681
+   }
+  ],
+  "when": 6
+ },
+ {
+  "slug": "la-fausto-coppi",
+  "surface": "asphalt",
+  "name": "La Fausto Coppi",
+  "color": "#7a5a8a",
+  "km": 172,
+  "elevationGain": 4330,
+  "passes": [
+   "colle-di-sampeyre",
+   "colle-d-esischie",
+   "colle-fauniera",
+   "madonna-del-colletto"
+  ],
+  "note": "Granfondo Ende Juni ab Cuneo; 2026 auf derselben Strecke wie 2025. Die Maira-Seite der Esischie ist schmal und ruppig; Fauniera und Sampeyre sind meist bis Mitte Oktober offen.",
+  "season": null,
+  "description": "Von Cuneo über Busca und Venasca ins Varaita-Tal, über den Colle di Sampeyre ins Maira-Tal, ab Ponte Marmora auf den Colle d'Esischie und weiter zum Colle Fauniera, hinab nach Demonte, über die Madonna del Colletto nach Valdieri und über Borgo San Dalmazzo zurück nach Cuneo.",
+  "type": "event",
+  "waypoints": [
+   {
+    "lat": 44.3845,
+    "lon": 7.5427
+   },
+   {
+    "lat": 44.5181,
+    "lon": 7.4743
+   },
+   {
+    "lat": 44.5614,
+    "lon": 7.3999
+   },
+   {
+    "lat": 44.579,
+    "lon": 7.189
+   },
+   {
+    "lat": 44.551,
+    "lon": 7.1196
+   },
+   {
+    "lat": 44.5111,
+    "lon": 7.1284
+   },
+   {
+    "lat": 44.4893,
+    "lon": 7.0934
+   },
+   {
+    "lat": 44.3967,
+    "lon": 7.1239
+   },
+   {
+    "lat": 44.3856,
+    "lon": 7.1218
+   },
+   {
+    "lat": 44.3243,
+    "lon": 7.3034
+   },
+   {
+    "lat": 44.3012,
+    "lon": 7.3342
+   },
+   {
+    "lat": 44.2835,
+    "lon": 7.3726
+   },
+   {
+    "lat": 44.2775,
+    "lon": 7.3976
+   },
+   {
+    "lat": 44.327,
+    "lon": 7.4695
+   },
+   {
+    "lat": 44.3845,
+    "lon": 7.5427
+   }
+  ],
+  "when": 6.5
+ },
+ {
+  "slug": "arlberg-giro",
+  "surface": "asphalt",
+  "name": "Arlberg Giro",
+  "color": "#a87a4a",
+  "km": 150,
+  "elevationGain": 2500,
+  "passes": [
+   "arlbergpass",
+   "silvretta-hochalpenstrasse"
+  ],
+  "note": "Veranstaltung Anfang August; die Silvretta ist eine Mautstraße.",
+  "season": null,
+  "description": "Von St. Anton über den Arlberg ins Klostertal und nach Bludenz, durchs Montafon auf die Silvretta-Hochalpenstraße, über die Bielerhöhe ins Paznaun und durchs Stanzertal zurück nach St. Anton.",
+  "type": "event",
+  "waypoints": [
+   {
+    "lat": 47.1289,
+    "lon": 10.2664
+   },
+   {
+    "lat": 47.13,
+    "lon": 10.211
+   },
+   {
+    "lat": 47.1321,
+    "lon": 10.1207
+   },
+   {
+    "lat": 47.153,
+    "lon": 9.8219
+   },
+   {
+    "lat": 47.0802,
+    "lon": 9.9197
+   },
+   {
+    "lat": 46.969,
+    "lon": 10.0607
+   },
+   {
+    "lat": 46.918,
+    "lon": 10.096
+   },
+   {
+    "lat": 46.9195,
+    "lon": 10.1706
+   },
+   {
+    "lat": 47.012,
+    "lon": 10.2913
+   },
+   {
+    "lat": 47.1349,
+    "lon": 10.5129
+   },
+   {
+    "lat": 47.1495,
+    "lon": 10.3436
+   },
+   {
+    "lat": 47.1289,
+    "lon": 10.2664
+   }
+  ],
+  "when": 8
+ },
+ {
+  "slug": "grosse-scheidegg-runde",
+  "surface": "asphalt",
+  "name": "Grosse-Scheidegg-Runde",
+  "color": "#b8865a",
+  "km": 79,
+  "elevationGain": 1470,
+  "passes": [
+   "grosse-scheidegg"
+  ],
+  "note": "Die Grosse Scheidegg ist nur für Postauto und Velos offen.",
+  "season": null,
+  "description": "Von Meiringen durchs Rosenlauital über die Grosse Scheidegg nach Grindelwald, hinab nach Interlaken und am Südufer des Brienzersees über Iseltwald und Brienz zurück nach Meiringen.",
+  "type": "loop",
+  "waypoints": [
+   {
+    "lat": 46.7286,
+    "lon": 8.1871
+   },
+   {
+    "lat": 46.6802,
+    "lon": 8.1534
+   },
+   {
+    "lat": 46.6753,
+    "lon": 8.133
+   },
+   {
+    "lat": 46.655,
+    "lon": 8.102
+   },
+   {
+    "lat": 46.6243,
+    "lon": 8.0367
+   },
+   {
+    "lat": 46.6326,
+    "lon": 7.8998
+   },
+   {
+    "lat": 46.6855,
+    "lon": 7.8585
+   },
+   {
+    "lat": 46.7105,
+    "lon": 7.9635
+   },
+   {
+    "lat": 46.756,
+    "lon": 8.0303
+   },
+   {
+    "lat": 46.7286,
+    "lon": 8.1871
+   }
+  ]
+ },
+ {
+  "slug": "stelvio-santini",
+  "surface": "asphalt",
+  "name": "Stelvio Santini",
+  "color": "#5a6fa8",
+  "km": 130,
+  "elevationGain": 4270,
+  "passes": [
+   "passo-del-mortirolo",
+   "passo-dello-stelvio"
+  ],
+  "note": "Veranstaltung Anfang Juni mit Ziel auf dem Stilfser Joch; der Mortirolo von Lovero und Sernio über den Kamm. Strecke seit 2024 unverändert.",
+  "season": null,
+  "description": "Bormio – Grosio – Rogorbello – Lovero – Mortirolo – Grosio – Bormio – Stilfser Joch.",
+  "type": "event",
+  "waypoints": [
+   {
+    "lat": 46.4686,
+    "lon": 10.3719
+   },
+   {
+    "lat": 46.4602,
+    "lon": 10.3591
+   },
+   {
+    "lat": 46.4135,
+    "lon": 10.3507
+   },
+   {
+    "lat": 46.375,
+    "lon": 10.3595
+   },
+   {
+    "lat": 46.3323,
+    "lon": 10.3493
+   },
+   {
+    "lat": 46.3258,
+    "lon": 10.336
+   },
+   {
+    "lat": 46.3336,
+    "lon": 10.3261
+   },
+   {
+    "lat": 46.2867,
+    "lon": 10.261
+   },
+   {
+    "lat": 46.2618,
+    "lon": 10.2509
+   },
+   {
+    "lat": 46.2611,
+    "lon": 10.2359
+   },
+   {
+    "lat": 46.2489,
+    "lon": 10.2288
+   },
+   {
+    "lat": 46.2514,
+    "lon": 10.2421
+   },
+   {
+    "lat": 46.2412,
+    "lon": 10.2419
+   },
+   {
+    "lat": 46.2273,
+    "lon": 10.1981
+   },
+   {
+    "lat": 46.2196,
+    "lon": 10.2336
+   },
+   {
+    "lat": 46.2013,
+    "lon": 10.2396
+   },
+   {
+    "lat": 46.249,
+    "lon": 10.301
+   },
+   {
+    "lat": 46.2453,
+    "lon": 10.2887
+   },
+   {
+    "lat": 46.2941,
+    "lon": 10.2909
+   },
+   {
+    "lat": 46.2868,
+    "lon": 10.2798
+   },
+   {
+    "lat": 46.2939,
+    "lon": 10.2813
+   },
+   {
+    "lat": 46.3193,
+    "lon": 10.3062
+   },
+   {
+    "lat": 46.3315,
+    "lon": 10.3485
+   },
+   {
+    "lat": 46.3539,
+    "lon": 10.3566
+   },
+   {
+    "lat": 46.4135,
+    "lon": 10.3507
+   },
+   {
+    "lat": 46.4669,
+    "lon": 10.3795
+   },
+   {
+    "lat": 46.5029,
+    "lon": 10.3564
+   },
+   {
+    "lat": 46.5158,
+    "lon": 10.4092
+   },
+   {
+    "lat": 46.5402,
+    "lon": 10.4169
+   },
+   {
+    "lat": 46.529,
+    "lon": 10.453
+   }
+  ],
+  "when": 6,
+  "touches": [
+   "umbrailpass"
+  ]
+ },
+ {
+  "slug": "sportful-dolomiti-race",
+  "surface": "asphalt",
+  "name": "Sportful Dolomiti Race",
+  "color": "#9a5a7a",
+  "km": 204,
+  "elevationGain": 4900,
+  "passes": [
+   "forcella-franche",
+   "passo-staulanza",
+   "passo-duran",
+   "forcella-aurine",
+   "passo-cereda",
+   "passo-croce-d-aune"
+  ],
+  "note": "Granfondo Mitte Juni ab Feltre über die stillen Pässe der Belluneser Dolomiten. Strecke seit 2025 unverändert.",
+  "season": null,
+  "description": "Feltre – Valle del Mis – Forcella Franche – Agordo – Alleghe – Staulanza – Duran – Forcella Aurine – Cereda – Primiero – Croce d'Aune – Feltre.",
+  "type": "event",
+  "waypoints": [
+   {
+    "lat": 46.0166,
+    "lon": 11.906
+   },
+   {
+    "lat": 46.064,
+    "lon": 11.9323
+   },
+   {
+    "lat": 46.1146,
+    "lon": 12.0526
+   },
+   {
+    "lat": 46.157,
+    "lon": 12.0847
+   },
+   {
+    "lat": 46.1988,
+    "lon": 12.0343
+   },
+   {
+    "lat": 46.2089,
+    "lon": 11.9905
+   },
+   {
+    "lat": 46.2333,
+    "lon": 12.0132
+   },
+   {
+    "lat": 46.2714,
+    "lon": 12.0371
+   },
+   {
+    "lat": 46.3518,
+    "lon": 11.9668
+   },
+   {
+    "lat": 46.4056,
+    "lon": 12.0233
+   },
+   {
+    "lat": 46.4363,
+    "lon": 11.9966
+   },
+   {
+    "lat": 46.4507,
+    "lon": 12.0426
+   },
+   {
+    "lat": 46.421,
+    "lon": 12.105
+   },
+   {
+    "lat": 46.3933,
+    "lon": 12.1022
+   },
+   {
+    "lat": 46.3558,
+    "lon": 12.1448
+   },
+   {
+    "lat": 46.3438,
+    "lon": 12.0996
+   },
+   {
+    "lat": 46.325,
+    "lon": 12.096
+   },
+   {
+    "lat": 46.2938,
+    "lon": 12.0876
+   },
+   {
+    "lat": 46.2755,
+    "lon": 12.0512
+   },
+   {
+    "lat": 46.2869,
+    "lon": 12.0208
+   },
+   {
+    "lat": 46.2366,
+    "lon": 11.976
+   },
+   {
+    "lat": 46.2079,
+    "lon": 11.9546
+   },
+   {
+    "lat": 46.2089,
+    "lon": 11.9276
+   },
+   {
+    "lat": 46.1907,
+    "lon": 11.942
+   },
+   {
+    "lat": 46.193,
+    "lon": 11.9054
+   },
+   {
+    "lat": 46.1851,
+    "lon": 11.8459
+   },
+   {
+    "lat": 46.1365,
+    "lon": 11.7693
+   },
+   {
+    "lat": 46.0491,
+    "lon": 11.7692
+   },
+   {
+    "lat": 46.0618,
+    "lon": 11.8301
+   },
+   {
+    "lat": 46.0394,
+    "lon": 11.8657
+   },
+   {
+    "lat": 46.04,
+    "lon": 11.9098
+   },
+   {
+    "lat": 46.0166,
+    "lon": 11.906
+   }
+  ],
+  "when": 6.5
+ },
+ {
+  "slug": "marcialonga-cycling-craft",
+  "surface": "asphalt",
+  "name": "Marcialonga Cycling Craft",
+  "color": "#6a9a9a",
+  "km": 135,
+  "elevationGain": 3900,
+  "passes": [
+   "passo-di-costalunga",
+   "passo-pampeago",
+   "passo-san-pellegrino",
+   "passo-valles"
+  ],
+  "note": "Granfondo Ende Mai, früh für Costalunga, San Pellegrino und Valles; das Stück von Obereggen über den Pampeago ist für Autos gesperrt.",
+  "season": null,
+  "description": "Predazzo – Moena – Costalunga – Karersee – Welschnofen – Obereggen – Pampeago – Predazzo – San Pellegrino – Valles – Paneveggio – Predazzo.",
+  "type": "event",
+  "waypoints": [
+   {
+    "lat": 46.3134,
+    "lon": 11.6005
+   },
+   {
+    "lat": 46.3344,
+    "lon": 11.6049
+   },
+   {
+    "lat": 46.3808,
+    "lon": 11.6655
+   },
+   {
+    "lat": 46.4192,
+    "lon": 11.6806
+   },
+   {
+    "lat": 46.4037,
+    "lon": 11.6427
+   },
+   {
+    "lat": 46.4043,
+    "lon": 11.609
+   },
+   {
+    "lat": 46.4109,
+    "lon": 11.5669
+   },
+   {
+    "lat": 46.431,
+    "lon": 11.5434
+   },
+   {
+    "lat": 46.4292,
+    "lon": 11.4916
+   },
+   {
+    "lat": 46.4401,
+    "lon": 11.4688
+   },
+   {
+    "lat": 46.4171,
+    "lon": 11.4896
+   },
+   {
+    "lat": 46.3945,
+    "lon": 11.4784
+   },
+   {
+    "lat": 46.3853,
+    "lon": 11.5316
+   },
+   {
+    "lat": 46.3538,
+    "lon": 11.5398
+   },
+   {
+    "lat": 46.3443,
+    "lon": 11.5535
+   },
+   {
+    "lat": 46.3234,
+    "lon": 11.5039
+   },
+   {
+    "lat": 46.2932,
+    "lon": 11.5049
+   },
+   {
+    "lat": 46.2855,
+    "lon": 11.5547
+   },
+   {
+    "lat": 46.3013,
+    "lon": 11.5902
+   },
+   {
+    "lat": 46.3344,
+    "lon": 11.605
+   },
+   {
+    "lat": 46.3751,
+    "lon": 11.6575
+   },
+   {
+    "lat": 46.3655,
+    "lon": 11.709
+   },
+   {
+    "lat": 46.378,
+    "lon": 11.792
+   },
+   {
+    "lat": 46.3786,
+    "lon": 11.8186
+   },
+   {
+    "lat": 46.3551,
+    "lon": 11.8493
+   },
+   {
+    "lat": 46.3386,
+    "lon": 11.8003
+   },
+   {
+    "lat": 46.3005,
+    "lon": 11.7263
+   },
+   {
+    "lat": 46.3173,
+    "lon": 11.6515
+   },
+   {
+    "lat": 46.3134,
+    "lon": 11.6005
+   }
+  ],
+  "when": 5.5
+ },
+ {
+  "slug": "les-3-ballons",
+  "surface": "asphalt",
+  "name": "Les 3 Ballons",
+  "color": "#8a7a4a",
+  "km": 181,
+  "elevationGain": 4020,
+  "passes": [
+   "ballon-de-servance",
+   "col-d-oderen",
+   "le-markstein",
+   "grand-ballon",
+   "col-du-hundsruck",
+   "la-planche-des-belles-filles"
+  ],
+  "note": "Veranstaltung Anfang Juni ab Ronchamp, Ziel auf der Planche des Belles Filles; vom Ballon d'Alsace fährt die Strecke nur die Flanke ab Sewen, nicht bis zum Col.",
+  "season": null,
+  "description": "Ronchamp – Ballon de Servance – Le Thillot – Col d'Oderen – Markstein – Grand Ballon – Hundsruck – Sewen – Ballon d'Alsace – Giromagny – Planche des Belles Filles.",
+  "type": "event",
+  "waypoints": [
+   {
+    "lat": 47.6977,
+    "lon": 6.6374
+   },
+   {
+    "lat": 47.7117,
+    "lon": 6.7322
+   },
+   {
+    "lat": 47.7703,
+    "lon": 6.7425
+   },
+   {
+    "lat": 47.8004,
+    "lon": 6.7936
+   },
+   {
+    "lat": 47.847,
+    "lon": 6.7882
+   },
+   {
+    "lat": 47.8463,
+    "lon": 6.7534
+   },
+   {
+    "lat": 47.8621,
+    "lon": 6.7432
+   },
+   {
+    "lat": 47.8748,
+    "lon": 6.7622
+   },
+   {
+    "lat": 47.8924,
+    "lon": 6.7392
+   },
+   {
+    "lat": 47.8931,
+    "lon": 6.7653
+   },
+   {
+    "lat": 47.9444,
+    "lon": 6.8326
+   },
+   {
+    "lat": 47.9227,
+    "lon": 6.9174
+   },
+   {
+    "lat": 47.9181,
+    "lon": 6.9536
+   },
+   {
+    "lat": 47.9557,
+    "lon": 6.9618
+   },
+   {
+    "lat": 47.9416,
+    "lon": 6.9776
+   },
+   {
+    "lat": 47.9594,
+    "lon": 6.9851
+   },
+   {
+    "lat": 47.9482,
+    "lon": 7.0114
+   },
+   {
+    "lat": 47.9244,
+    "lon": 7.0099
+   },
+   {
+    "lat": 47.9037,
+    "lon": 7.1033
+   },
+   {
+    "lat": 47.8755,
+    "lon": 7.1273
+   },
+   {
+    "lat": 47.8698,
+    "lon": 7.0907
+   },
+   {
+    "lat": 47.8198,
+    "lon": 7.0756
+   },
+   {
+    "lat": 47.8063,
+    "lon": 7.0424
+   },
+   {
+    "lat": 47.7765,
+    "lon": 7.0005
+   },
+   {
+    "lat": 47.8088,
+    "lon": 6.943
+   },
+   {
+    "lat": 47.8168,
+    "lon": 6.8538
+   },
+   {
+    "lat": 47.8053,
+    "lon": 6.8724
+   },
+   {
+    "lat": 47.7996,
+    "lon": 6.8318
+   },
+   {
+    "lat": 47.7434,
+    "lon": 6.8211
+   },
+   {
+    "lat": 47.7173,
+    "lon": 6.7364
+   },
+   {
+    "lat": 47.7703,
+    "lon": 6.7425
+   },
+   {
+    "lat": 47.77,
+    "lon": 6.7769
+   },
+   {
+    "lat": 47.7728,
+    "lon": 6.7785
+   }
+  ],
+  "when": 6
+ },
+ {
+  "slug": "etape-du-tour-2024",
+  "surface": "asphalt",
+  "name": "L'Étape du Tour 2024",
+  "color": "#b0805a",
+  "km": 138,
+  "elevationGain": 4600,
+  "passes": [
+   "col-de-nice",
+   "col-de-braus",
+   "col-de-turini",
+   "col-saint-martin",
+   "col-de-la-couillole"
+  ],
+  "note": "Veranstaltung am 7. Juli 2024 auf gesperrten Straßen, eine Woche vor der Tour-Etappe; Ziel auf der Couillole.",
+  "season": null,
+  "description": "Nice – Col de Nice – Braus – Sospel – Turini – Vésubie – Col Saint-Martin – Saint-Sauveur-sur-Tinée – Couillole.",
+  "type": "edition",
+  "waypoints": [
+   {
+    "lat": 43.7344,
+    "lon": 7.3019
+   },
+   {
+    "lat": 43.7937,
+    "lon": 7.3532
+   },
+   {
+    "lat": 43.8269,
+    "lon": 7.3505
+   },
+   {
+    "lat": 43.8726,
+    "lon": 7.3989
+   },
+   {
+    "lat": 43.8591,
+    "lon": 7.4432
+   },
+   {
+    "lat": 43.9192,
+    "lon": 7.4042
+   },
+   {
+    "lat": 43.9758,
+    "lon": 7.4121
+   },
+   {
+    "lat": 43.979,
+    "lon": 7.391
+   },
+   {
+    "lat": 43.9872,
+    "lon": 7.324
+   },
+   {
+    "lat": 44.0291,
+    "lon": 7.3091
+   },
+   {
+    "lat": 44.0621,
+    "lon": 7.2578
+   },
+   {
+    "lat": 44.0905,
+    "lon": 7.2516
+   },
+   {
+    "lat": 44.071,
+    "lon": 7.2214
+   },
+   {
+    "lat": 44.0639,
+    "lon": 7.1873
+   },
+   {
+    "lat": 44.0752,
+    "lon": 7.1657
+   },
+   {
+    "lat": 44.0484,
+    "lon": 7.1311
+   },
+   {
+    "lat": 44.0887,
+    "lon": 7.107
+   },
+   {
+    "lat": 44.0966,
+    "lon": 7.0561
+   },
+   {
+    "lat": 44.084,
+    "lon": 7.057
+   },
+   {
+    "lat": 44.1002,
+    "lon": 7.0229
+   }
+  ],
+  "when": 7,
+  "series": "etape-du-tour",
+  "year": 2024
+ },
+ {
+  "slug": "etape-du-tour-2025",
+  "surface": "asphalt",
+  "name": "L'Étape du Tour 2025",
+  "color": "#b0805a",
+  "km": 131,
+  "elevationGain": 4500,
+  "passes": [
+   "col-des-saisies",
+   "col-du-pre",
+   "cormet-de-roselend",
+   "la-plagne"
+  ],
+  "note": "Veranstaltung am 20. Juli 2025 auf gesperrten Straßen mit 16 000 Teilnehmern; die Profi-Etappe wurde fünf Tage später ohne Saisies gekürzt, das Étape fuhr die volle Strecke.",
+  "season": null,
+  "description": "Albertville – Héry-sur-Ugine – Saisies – Beaufort – Col du Pré – Cormet de Roselend – Bourg-Saint-Maurice – La Plagne.",
+  "type": "edition",
+  "waypoints": [
+   {
+    "lat": 45.6911,
+    "lon": 6.4012
+   },
+   {
+    "lat": 45.7584,
+    "lon": 6.4199
+   },
+   {
+    "lat": 45.758,
+    "lon": 6.4612
+   },
+   {
+    "lat": 45.7946,
+    "lon": 6.4832
+   },
+   {
+    "lat": 45.7948,
+    "lon": 6.5319
+   },
+   {
+    "lat": 45.7586,
+    "lon": 6.5291
+   },
+   {
+    "lat": 45.7416,
+    "lon": 6.5564
+   },
+   {
+    "lat": 45.7519,
+    "lon": 6.5778
+   },
+   {
+    "lat": 45.7321,
+    "lon": 6.5405
+   },
+   {
+    "lat": 45.7179,
+    "lon": 6.5752
+   },
+   {
+    "lat": 45.6854,
+    "lon": 6.5688
+   },
+   {
+    "lat": 45.6903,
+    "lon": 6.598
+   },
+   {
+    "lat": 45.6805,
+    "lon": 6.6152
+   },
+   {
+    "lat": 45.7011,
+    "lon": 6.649
+   },
+   {
+    "lat": 45.6913,
+    "lon": 6.6906
+   },
+   {
+    "lat": 45.6981,
+    "lon": 6.7251
+   },
+   {
+    "lat": 45.6702,
+    "lon": 6.7704
+   },
+   {
+    "lat": 45.6299,
+    "lon": 6.7856
+   },
+   {
+    "lat": 45.5865,
+    "lon": 6.7453
+   },
+   {
+    "lat": 45.557,
+    "lon": 6.6566
+   },
+   {
+    "lat": 45.5541,
+    "lon": 6.6778
+   },
+   {
+    "lat": 45.5324,
+    "lon": 6.6661
+   },
+   {
+    "lat": 45.5063,
+    "lon": 6.6833
+   }
+  ],
+  "when": 7.5,
+  "series": "etape-du-tour",
+  "year": 2025
+ },
+ {
+  "slug": "etape-du-tour-2026",
+  "surface": "asphalt",
+  "name": "L'Étape du Tour 2026",
+  "color": "#b0805a",
+  "km": 170,
+  "elevationGain": 5400,
+  "passes": [
+   "col-de-la-croix-de-fer",
+   "col-du-telegraphe",
+   "col-du-galibier",
+   "col-du-lautaret",
+   "col-de-sarenne",
+   "alpe-d-huez"
+  ],
+  "note": "Veranstaltung am 19. Juli 2026 auf gesperrten Straßen, sechs Tage vor der Tour-Etappe; Ziel in Alpe d'Huez über den Sarenne.",
+  "season": null,
+  "description": "Bourg d'Oisans – Croix de Fer – Saint-Jean-de-Maurienne – Télégraphe – Galibier – Lautaret – Mizoën – Col de Sarenne – Alpe d'Huez.",
+  "type": "edition",
+  "waypoints": [
+   {
+    "lat": 45.1002,
+    "lon": 6.0091
+   },
+   {
+    "lat": 45.145,
+    "lon": 6.0545
+   },
+   {
+    "lat": 45.187,
+    "lon": 6.0338
+   },
+   {
+    "lat": 45.2112,
+    "lon": 6.0475
+   },
+   {
+    "lat": 45.201,
+    "lon": 6.0844
+   },
+   {
+    "lat": 45.2385,
+    "lon": 6.1758
+   },
+   {
+    "lat": 45.227,
+    "lon": 6.203
+   },
+   {
+    "lat": 45.1923,
+    "lon": 6.2928
+   },
+   {
+    "lat": 45.2728,
+    "lon": 6.3449
+   },
+   {
+    "lat": 45.2157,
+    "lon": 6.4749
+   },
+   {
+    "lat": 45.2076,
+    "lon": 6.4534
+   },
+   {
+    "lat": 45.1933,
+    "lon": 6.4682
+   },
+   {
+    "lat": 45.2027,
+    "lon": 6.4446
+   },
+   {
+    "lat": 45.1238,
+    "lon": 6.4176
+   },
+   {
+    "lat": 45.086,
+    "lon": 6.4374
+   },
+   {
+    "lat": 45.064,
+    "lon": 6.408
+   },
+   {
+    "lat": 45.052,
+    "lon": 6.3895
+   },
+   {
+    "lat": 45.034,
+    "lon": 6.405
+   },
+   {
+    "lat": 45.0491,
+    "lon": 6.3153
+   },
+   {
+    "lat": 45.0392,
+    "lon": 6.1773
+   },
+   {
+    "lat": 45.0475,
+    "lon": 6.1385
+   },
+   {
+    "lat": 45.1001,
+    "lon": 6.1647
+   },
+   {
+    "lat": 45.0875,
+    "lon": 6.1491
+   },
+   {
+    "lat": 45.0881,
+    "lon": 6.0558
+   },
+   {
+    "lat": 45.092,
+    "lon": 6.07
+   },
+   {
+    "lat": 45.0947,
+    "lon": 6.0709
+   }
+  ],
+  "when": 7.5,
+  "series": "etape-du-tour",
+  "year": 2026,
+  "touches": [
+   "col-du-glandon"
   ]
  }
 ]

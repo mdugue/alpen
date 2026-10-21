@@ -13,12 +13,15 @@ import {
   buildTownRows,
   currentBar,
   facetCount,
+  hasPastEditions,
+  latestEditions,
   nestTowns,
   tabCounts,
   rowBlocks,
   ROWS_PER_BLOCK,
   seasonBand,
   sortPassRows,
+  tourFacetCount,
 } from "@/lib/rows";
 import type { AreaGroup, ListInputs } from "@/lib/rows";
 import {
@@ -104,6 +107,7 @@ const tour = (over: Partial<Tour> & { slug: string }): Tour => ({
   passes: [],
   season: null,
   surface: "asphalt",
+  type: "loop",
   waypoints: [],
   ...over,
 });
@@ -120,6 +124,7 @@ const tours = [
     name: "Lange Runde",
     passes: ["mittel", "winter"],
     slug: "lang",
+    type: "event",
   }),
 ];
 
@@ -145,6 +150,16 @@ const years = yearsOf(passes, tours);
 const tourSlugs = (over: Partial<Filters>) =>
   buildTourRows(tours, index, filters(over), inputs(years)).map(
     (r) => r.tour.slug,
+  );
+
+/** A tour-type chip's number while "event" is pressed. */
+const tourTypeCount = (type: Tour["type"]) =>
+  tourFacetCount(
+    tours,
+    index,
+    filters({ tourTypes: ["event"] }),
+    { tourTypes: [type] },
+    inputs(years),
   );
 
 const towns: Town[] = [
@@ -352,6 +367,16 @@ describe("plan 05 criteria", () => {
     expect(tourSlugs({ minFame: 3 })).toEqual(["lang", "kurz"]);
     // Found through the name of a pass it crosses.
     expect(tourSlugs({ query: "winterpass" })).toEqual(["lang"]);
+  });
+
+  test("the kind of tour filters the loops alone, and its chips count loops", () => {
+    expect(tourSlugs({ tourTypes: ["event"] })).toEqual(["lang"]);
+    expect(tourSlugs({ tourTypes: ["loop", "permanent"] })).toEqual(["kurz"]);
+    // The patch lifts the group's own choice, so a chip's number does not
+    // depend on which chip of the group is pressed.
+    expect(tourTypeCount("loop")).toBe(1);
+    expect(tourTypeCount("event")).toBe(1);
+    expect(tourTypeCount("stages")).toBe(0);
   });
 
   test("every pass of a tour has to respect the upper bounds", () => {
@@ -612,6 +637,69 @@ describe("buildTourRows", () => {
     expect(rows.every((r) => r.reason === "snow")).toBe(true);
     const clear = buildTourRows(tours, index, filters(), inputs(years));
     expect(clear.every((r) => r.reason === null)).toBe(true);
+  });
+});
+
+/** Three years of one series between two loops, the middle one the biggest climb. */
+const edition = (edYear: number, elevationGain: number) =>
+  tour({
+    elevationGain,
+    name: `Serie ${edYear}`,
+    passes: ["mittel"],
+    series: "serie",
+    slug: `serie-${edYear}`,
+    type: "edition",
+    when: 8,
+    year: edYear,
+  });
+describe("editions", () => {
+  const list = [
+    ...tours,
+    edition(2024, 4000),
+    edition(2026, 1500),
+    edition(2025, 2500),
+  ];
+  const listYears = yearsOf(passes, list);
+  const slugs = (over: Partial<Filters>, fav: Favorite = never) =>
+    buildTourRows(list, index, filters(over), inputs(listYears, fav)).map(
+      (r) => r.tour.slug,
+    );
+
+  test("the latest year per series", () => {
+    expect([...latestEditions(list)]).toEqual([["serie", 2026]]);
+    expect(hasPastEditions(list)).toBe(true);
+    expect(hasPastEditions(tours)).toBe(false);
+  });
+
+  test("by default only the latest edition, which counts what it hides", () => {
+    expect(slugs({})).toEqual(["lang", "serie-2026", "kurz"]);
+    const rows = buildTourRows(list, index, filters(), inputs(listYears));
+    expect(rows.find((r) => r.tour.slug === "serie-2026")?.older).toBe(2);
+    expect(rows.find((r) => r.tour.slug === "lang")?.older).toBe(0);
+  });
+
+  test("earlier years come back grouped, newest first, where the series first stands", () => {
+    expect(slugs({ pastEditions: true })).toEqual([
+      "serie-2026",
+      "serie-2025",
+      "serie-2024",
+      "lang",
+      "kurz",
+    ]);
+  });
+
+  test("a favourite edition stays whatever its year", () => {
+    expect(slugs({}, (_, slug) => slug === "serie-2024")).toEqual([
+      "serie-2026",
+      "serie-2024",
+      "lang",
+      "kurz",
+    ]);
+  });
+
+  test("the date chip keeps what takes place in the half-month", () => {
+    expect(slugs({ onDate: true })).toEqual(["serie-2026"]);
+    expect(slugs({ onDate: true, period: 9 })).toEqual([]);
   });
 });
 

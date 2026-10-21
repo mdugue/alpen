@@ -80,12 +80,31 @@ authoritative. In addition:
   and the `sides` follow, or `data:check` fails.
 - **aliases** (plan 05): other spellings and other-language names, never the
   name itself.
-- **Tours**: `passes` in ride order; `waypoints` closed for loops (last =
-  first); `km` and `elevationGain` from a trusted source. `season` is the
+- **Tours**: `passes` in ride order, and every crossing the tour rides over
+  is one of them. A climb that is not in `passes.json` yet is added first, as
+  a full entry (scales, season, ascents, portrait, English), and the tour
+  after it – a tour over roads the app does not know has no strip, no status
+  and no reach for them. The coverage report is centred on the base towns and
+  counts from 1000 m, so a loop far from a base or over a 980 m saddle (the
+  Dolomitenradrundfahrt from Lienz, its Gailbergsattel) falls through it:
+  `bun run scripts/analyze-coverage.ts --tours <slug>` lists the saddles from
+  600 m on the stored line that are no entry, and `data:check` warns about
+  every entry the line crosses that the tour does not name; an entry the line
+  only touches at a junction (Umbrail from Bormio) goes into `touches`. `waypoints`
+  closed for loops (last = first); `km` and `elevationGain` from a trusted source. `season` is the
   loop's own window as two half-months like a pass's, or `null` when the
   passes alone decide; it may be narrower than the passes' windows, never
   wider (`data:check` warns). `note` carries what the window cannot: the
-  event day, the cobbles, the plan B.
+  event day, the cobbles, the plan B. `type` is how it is ridden: `loop`,
+  `event` (a course that stays the same year to year), `edition` (one year
+  of an event whose course changes every year – Stelvio Santini, Étape du
+  Tour: `series` shared by the years, `year`, the year at the end of the name
+  and of the slug, e.g. `stelvio-santini-2026`; add a new year as a new entry
+  and keep the old ones), `permanent` (signposted, stamp card or timing) or
+  `stages` (A to B over several days; its waypoints are not closed). `event`
+  and `edition` need `when`, the half-month of the event day; the others may
+  not carry it. An edition is entered once its course is published, from the
+  organiser's GPX or course map, never guessed from the previous year.
 - **Towns**: `why` is one sentence naming the surrounding passes and the
   infrastructure (workshop, rental, bike hotel).
 - **Destinations**: follow `docs/destinations.md` – the circle decides the
@@ -265,6 +284,12 @@ the next `data:build` routes it with OSRM alone – for free when the geometry
 comes back as the one stored, whose profile is kept – and the car route is
 then final: no upgrade, no renewal warning. The note says what ORS takes
 instead, so a later curator can tell when the pin has gone stale.
+
+When both ORS's road graph and OSRM go round a road bikes may ride – OSM
+maps it as a cycleway without cars, like the Muro di Sormano – pin the ride
+(or a whole tour) to ORS's everyday graph instead:
+`"router": { "use": "cycling-regular", "note": "…" }`, and look at the
+profile it stores the same way.
 
 ## Honesty
 

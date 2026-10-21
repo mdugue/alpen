@@ -108,8 +108,8 @@ export const panel = {
       "Every road within {km} km of the area's centre, plus the ones added editorially, minus the ones excluded. Sorted by condition in the chosen half-month, then beauty.",
     roadsNone: "No road in the area.",
     roadsTitle: "Roads in the area",
-    toursNone: "No loop starts in this area.",
-    toursTitle: "Loops",
+    toursNone: "No tour starts in this area.",
+    toursTitle: "Tours",
     townsInfo:
       "The towns recommended as a base first, then the others in the area. “Find accommodation” opens a map search for hotels in the town – no booking site, no commission; “Workshops” the OSM search for bike workshops.",
     townsNone: "No cycling town in the area.",
@@ -121,7 +121,6 @@ export const panel = {
   },
   kicker: {
     destination: "Destination · {country}",
-    tour: "Loop",
     town: "Cycling town · {country}",
   },
   nearby: {
@@ -166,8 +165,9 @@ export const panel = {
     sourceHint: "{title}: note on the source",
   },
   tour: {
+    editionsTitle: "Other years",
     passCount: "{n} passes",
-    passesTitle: "Passes of the loop",
+    passesTitle: "Passes on the route",
   },
   town: {
     bikeShops: "Bike shops (Google)",

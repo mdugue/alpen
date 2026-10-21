@@ -2,6 +2,7 @@ import {
   ALL_RANGES,
   ALL_STATUS,
   ALL_SURFACES,
+  ALL_TOUR_TYPES,
   ALL_TYPES,
   DEFAULT_FILTERS,
   BEAUTY_OPTIONS,
@@ -17,6 +18,7 @@ import {
 import type { Filters, OptionLabel, Options } from "@/lib/app-state";
 import type { Messages } from "@/lib/i18n";
 import { fill } from "@/lib/i18n/fill";
+import { periodLabel } from "@/lib/period";
 import { fmt, listOr } from "@/lib/utils";
 
 /**
@@ -109,6 +111,24 @@ export const appliedFilters = (f: Filters, w: Messages): AppliedFilter[] => {
         surfaces: ALL_SURFACES,
       }),
     );
+  const tourTypes = pickedMembers(f.tourTypes, ALL_TOUR_TYPES);
+  if (tourTypes.length)
+    add(
+      "tourTypes",
+      tourTypes.map((x) => v.tourType[x].label).join(", "),
+      (g) => ({ ...g, tourTypes: ALL_TOUR_TYPES }),
+    );
+  if (f.onDate)
+    add(
+      "onDate",
+      fill(w.sidebar.filters.onDate, { period: periodLabel(f.period, w) }),
+      (g) => ({ ...g, onDate: false }),
+    );
+  if (f.pastEditions)
+    add("pastEditions", w.sidebar.filters.pastEditions, (g) => ({
+      ...g,
+      pastEditions: false,
+    }));
   // One chip per label: they stack with and-semantics, so each one is its own decision.
   for (const tag of f.tags)
     add(`tag:${tag}`, v.roadTag[tag].label, (g) => ({

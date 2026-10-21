@@ -188,5 +188,15 @@
   "character": "Klausen, Pragel, Glaubenbielen, Glaubenberg and the car-free Grosse Scheidegg – the pre-alpine passes between Lake Lucerne and Lake Brienz, shorter than the Gotthard giants and open earlier in the year.",
   "multiDay": "Four days; Susten and Grimsel as the link southwards.",
   "access": "Meiringen, Lucerne or Altdorf railway station; Zurich in an hour."
+ },
+ "osttirol": {
+  "character": "Gailbergsattel and Kartitscher Sattel, the Staller Sattel into the Defereggental, Kals and, over the Iselsberg, the Grossglockner road: Lienz lies where the Drau, Isel and Puster valleys meet, and almost every climb starts only after a ride along the valley.",
+  "multiDay": "Three to four days; the Dolomitenradrundfahrt loop in a day, a stage to Cortina or into the Gailtal.",
+  "access": "Lienz railway station with trains from Villach and through the Pustertal from Innsbruck; Klagenfurt airport a good two hours by train."
+ },
+ "belluneser-dolomiten": {
+  "character": "Duran, Cereda, Croce d'Aune and the two Forcelle around the national park between Agordo and Feltre, plus Rolle, Valles, Brocon and San Boldo at the edge: the quiet southern side of the Dolomites, lower and emptier than the Sella and Cortina.",
+  "multiDay": "Four to five days; the loop over Cereda, Rolle and Valles in a day, Duran and Staulanza on a second, the Grappa as a day trip from Feltre.",
+  "access": "Feltre railway station on the Padua–Belluno line, bus to Agordo from Belluno; Venice or Treviso airport a good hour away."
  }
 }

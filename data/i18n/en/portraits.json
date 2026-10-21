@@ -3167,5 +3167,254 @@
     "highlights": "The view over the Rhine plain, on clear days as far as the Alps."
    }
   ]
+ },
+ "gailbergsattel": {
+  "intro": "A wooded saddle below 1,000 m between the Drau and the Gail that links more than it demands. Anyone riding around the Lienz Dolomites or heading for the Plöckenpass passes this way.",
+  "sides": [
+   {
+    "character": "From Oberdrauburg straight into the hairpins, even and never really steep up through the forest. The side with the rhythm for the climb.",
+    "highlights": "The view back over the Drau valley."
+   },
+   {
+    "character": "From Kötschach-Mauthen flatter, with one short steep pitch and an almost level stretch before the top. Runs down into the Gail valley without surprises.",
+    "highlights": "The Gail valley below, with the Carnic Alps."
+   }
+  ]
+ },
+ "kartitscher-sattel": {
+  "intro": "An open meadow saddle between the Lienz Dolomites and the Carnic ridge, where the Gail flows east and the Gailbach west. It links the Pustertal with the Lesachtal and is part of the loop around the Lienz Dolomites.",
+  "sides": [
+   {
+    "character": "From Tassenbach with the steeper ramps and the hairpins up to Kartitsch, then flatter across the meadows to the saddle. The side that asks something of the climb.",
+    "highlights": "The village of Kartitsch below the Carnic ridge."
+   },
+   {
+    "character": "From Untertilliach gentle and long beside the young Gail through Obertilliach, with short rollers in between. Downhill a long roll through the upper Lesachtal.",
+    "highlights": "Obertilliach and its compact village centre."
+   }
+  ]
+ },
+ "passo-cimabanche": {
+  "intro": "Hardly a climb, more a long valley between the Pustertal and the Ampezzo, but one with a Dolomite backdrop. Usually ridden as the approach to the Drei Zinnen, Misurina or Cortina, with the old Dolomite railway as a cycle path alongside.",
+  "sides": [
+   {
+    "character": "From Toblach long and barely rising through the Höhlensteintal, past two lakes and with short flat stretches. Uphill, Monte Cristallo grows ahead of you.",
+    "highlights": "The Dürrensee with Monte Cristallo behind it."
+   },
+   {
+    "character": "From Cortina just as gentle up through the forest along the Boite, with a bare plateau at the top. Downhill fast and open into the Cortina basin.",
+    "highlights": "The Tofane above the Ampezzo."
+   }
+  ]
+ },
+ "passo-sant-antonio": {
+  "intro": "A quiet forest pass between the Ansiei valley at Auronzo and the Comelico, also called Passo del Zovo. Short, but steep throughout on the south side, and with Monte Croce Comelico a loop around the Comelico.",
+  "sides": [
+   {
+    "character": "Flat out of Auronzo, then steep in the middle section with hairpins through the forest; the view opens near the top. A side for climbing, uncomfortable downhill because of the ramps.",
+    "highlights": "At the top, the view across the forests of the Comelico."
+   },
+   {
+    "character": "From Padola short with a few steep pitches, on a wide road with a good surface. Downhill the pleasanter side into the Comelico.",
+    "highlights": "Padola below the meadows of the Comelico."
+   }
+  ]
+ },
+ "reschenpass": {
+  "intro": "The old Via Claudia Augusta crossing from the Inn to the Adige, today a wide transit road. It is known above all for the church tower of old Graun rising out of the Reschensee, and for the open Malser Haide with the Ortler behind.",
+  "sides": [
+   {
+    "character": "From Mals the only noticeable climb is across the Malser Haide up to the Haidersee, then almost level along the two lakes. Often into a headwind and with heavy traffic; a cycle path runs alongside.",
+    "highlights": "The church tower in the Reschensee at Graun."
+   }
+  ]
+ },
+ "norbertshoehe": {
+  "intro": "A hairpin road from the Lower Engadine up to the Nauders plateau which, with the Finstermünz gorge closed to bikes, has become the real cycle route to the Reschenpass. The Via Claudia Augusta runs on it too.",
+  "sides": [
+   {
+    "character": "From Martina straight into a series of hairpins on the slope above the Inn, even and without hard ramps to the top. Rides well, but with buses and diverted traffic.",
+    "highlights": "The view down into the Lower Engadine and the Inn gorge."
+   }
+  ]
+ },
+ "passo-croce-d-aune": {
+  "intro": "A low forest pass above Feltre that owes its fame to a story: this is where Tullio Campagnolo is said to have had the idea for the quick release. Today a quiet climb with a small village, hotels and inns at the top.",
+  "sides": [
+   {
+    "character": "From Pedavena steep and even at once in hairpins through the forest, with no flat stretches to the saddle. The side for climbing.",
+    "highlights": "At the top, the Campagnolo monument on the saddle."
+   },
+   {
+    "character": "From Gorna more varied through the hamlets of Sovramonte, with flatter stretches and short dips between the hairpins. Downhill the finer side, with views over the valley.",
+    "highlights": "The villages of Sovramonte on the slope."
+   }
+  ]
+ },
+ "colle-d-esischie": {
+  "intro": "A saddle between the Rocce Ciarmetta and Monte Pelvo where the road from the Vallone di Marmora meets the Fauniera road. Most riders carry on to the Colle Fauniera; the Granfondo Fausto Coppi climbs up from the Maira valley this way.",
+  "sides": [
+   {
+    "character": "From Ponte Marmora irregular, with a few very short ramps around 19 % and two kilometres around 10 % low down, then calmer at 6–8 % over the pastures. Long, lonely and narrow.",
+    "highlights": "The view back over the Marmora basin from the top."
+   }
+  ]
+ },
+ "madonna-del-colletto": {
+  "intro": "A low crossing over the ridge between the Valle Stura and the Valle Gesso, with the Santuario Madonna del Colletto at the top. Known as the final climb of the Granfondo Fausto Coppi, which rides up from Festiona and down to Valdieri.",
+  "sides": [
+   {
+    "character": "From Festiona through forest, with several ramps above 12 % in the first half, then steadier. Old, uneven tarmac with grit, the better choice uphill.",
+    "highlights": "The little church on the saddle."
+   },
+   {
+    "character": "From Valdieri shorter and steep throughout, in hairpins above the Gesso valley, with a stretch of concrete near the top. The Granfondo descends this way.",
+    "highlights": "The view over the Gesso valley out towards Cuneo."
+   }
+  ]
+ },
+ "forcella-aurine": {
+  "intro": "A quiet saddle at the foot of the Pale di San Martino, crossed by the SP347 from Agordo to Gosaldo and on to the Passo Cereda. With the Forcella Franche it makes the loop around the Gosaldo valley.",
+  "sides": [
+   {
+    "character": "From the Cordevole bridge near Agordo straight up at around 7 % in hairpins to Voltago, then steadily on via Frassenè; it eases near the top. A climb that is easy to pace.",
+    "highlights": "Frassenè beneath the walls of the Agnèr."
+   }
+  ]
+ },
+ "forcella-franche": {
+  "intro": "A low saddle between the Agordo basin and the wild Valle del Mis. On the south side the road runs through a narrow gorge with a reservoir and short, dark tunnels, one of the quietest corners of the Belluno Dolomites.",
+  "sides": [
+   {
+    "character": "From Ponte Alto near Agordo on a wide road via Rivamonte, moderately steep with a few short, harder pitches. Downhill a flowing roll-out.",
+    "highlights": "The view from Rivamonte over the Agordo basin."
+   },
+   {
+    "character": "From Titele, where the road leaves the Mis gorge, clearly steeper in hairpins up via Tiser, narrow and with ramps up to 12 %. Coming up the valley you first ride through the unlit tunnels along the Lago del Mis.",
+    "highlights": "The village of Tiser and the view down into the Mis gorge."
+   }
+  ]
+ },
+ "col-de-la-bataille": {
+  "intro": "A Vercors pass whose top lies just past a short tunnel through the rock, after which the view opens over the Combe de Bouvante. With the Combe Laval and the Col de la Machine it makes one of the finest loops in the Vercors.",
+  "sides": [
+   {
+    "character": "From Léoncel through forest, with a long stretch just under 9 % in the first half, the last two kilometres almost flat. The tunnel just before the col is windy.",
+    "highlights": "The view down into the Combe de Bouvante after the tunnel."
+   }
+  ]
+ },
+ "brennerpass": {
+  "intro": "The busiest crossing of the Alps, but for cyclists it is the old main road away from the motorway. Not a mountain that asks much, rather the link between Innsbruck and South Tyrol that the Ötztaler rides between the Kühtai and the Jaufen.",
+  "sides": [
+   {
+    "character": "Out of Innsbruck first the steeper ramp up to Schönberg, then a long, almost level run up the Wipptal through Matrei and Steinach; just before the top it kicks up once more. You gain height without noticing, a rolling road in either direction.",
+    "highlights": "The Brennersee just below the top."
+   },
+   {
+    "character": "From Sterzing flat out of town at first, the steeper stretch at Gossensass, then easy again up the upper Eisack valley. Shorter than the north side and with what little climbing the Brenner has.",
+    "highlights": "Gossensass at the mouth of the Pflersch valley."
+   }
+  ]
+ },
+ "col-des-gets": {
+  "intro": "A low saddle between the Chablais and the Giffre with the ski resort of Les Gets on top. More of a passage than a goal: the Route des Grandes Alpes between Morzine and Cluses, and the way to the Joux Plane and the Ramaz.",
+  "sides": [
+   {
+    "character": "From Taninges gentle and even up to the turn-off for the Col de la Ramaz, then about 2 km a little steeper, flattening again before Les Gets. One stretch runs through a shady, cool gorge.",
+    "highlights": "The view down over the Giffre valley."
+   },
+   {
+    "character": "From Morzine short and moderate on a wide road, more a link between two ski resorts than a climb. Over quickly in either direction.",
+    "highlights": "Les Gets itself, with the Mont Chéry above the top."
+   }
+  ]
+ },
+ "passo-pampeago": {
+  "intro": "The Reiterjoch below the Latemar links the Val di Fiemme with the Eggental and is known above all as the Giro summit finish at the Alpe di Pampeago. For the 2012 Giro the last stretch to the pass was paved, and since then it is a through road that stays closed to cars.",
+  "sides": [
+   {
+    "character": "From Tesero steep at once and hardly easing up through the forest to the ski station, then steeper again on the car-free stretch to the pass. Hard and even; downhill it is the wider road.",
+    "highlights": "On the way, the memorial to the Stava disaster of 1985."
+   },
+   {
+    "character": "From Birchabruck with very steep ramps up to Obereggen, then single-track and quieter through forest and across pastures to the pass. Uncomfortable downhill because of the ramps and the narrow road.",
+    "highlights": "The Latemar above the pastures near Obereggen."
+   }
+  ]
+ },
+ "la-plagne": {
+  "intro": "In 2025 the ski resort above the Tarentaise was the finish of stage 19 of the Tour de France, won by Thymen Arensman just ahead of Vingegaard and Pogačar, and that same summer the finish of the Étape du Tour for amateurs. The road was built for winter sport: wide, steady and with many hairpins.",
+  "sides": [
+   {
+    "character": "From Aime via Mâcot almost all the way at 7 to 8 %, in long series of hairpins through the forest; near the top it eases briefly between the ski stations before climbing once more from Plagne Centre to Plagne Villages.",
+    "highlights": "The view back down the Isère valley and to the peaks of the Tarentaise once the forest ends."
+   }
+  ]
+ },
+ "ballon-de-servance": {
+  "intro": "The crossing beside the Ballon de Servance is the first climb of Les 3 Ballons, which ride over it from Ronchamp to Le Thillot. A still forest road with moss and streams rather than a panorama; the summit itself lies off the road and is reached only on foot.",
+  "sides": [
+   {
+    "character": "From Plancher-les-Mines flat along the valley at first, then steady in the forest from the turn-off to the Planche des Belles Filles and clearly steeper over the last kilometres, with short double-digit ramps.",
+    "highlights": "The turn-off to the Planche des Belles Filles, which fits into the same ride."
+   },
+   {
+    "character": "From Le Thillot over the Col des Croix, steady and never steep through the forest. As a descent narrow, bumpy and with loose grit in places – so better ridden up.",
+    "highlights": "The Col des Croix on the way, where the road passes from the Moselle side into Haute-Saône."
+   }
+  ]
+ },
+ "le-markstein": {
+  "intro": "The Markstein is the hub of the southern High Vosges: the crest road, the Florival and the upper Thur valley meet here, and the Tour de France keeps coming by, climbing from Linthal in 2014 and finishing here in 2023. At the top meadows, ski lifts and inns, with the Grand Ballon close by on the crest road.",
+  "sides": [
+   {
+    "character": "From Lautenbach up the Florival gently at first, then in two steeper sections through the forest, split by the flat stretch at the Lac de la Lauch; the last kilometres pick up once more.",
+    "highlights": "The Lac de la Lauch halfway up, a reservoir in the forest below the crest."
+   },
+   {
+    "character": "From Wildenstein at the head of the Thur valley quiet and steady in hairpins through the forest, topping out on open meadows just above the station before dropping gently to it.",
+    "highlights": "The view over the Kruth-Wildenstein reservoir on the way up."
+   }
+  ]
+ },
+ "iselsberg": {
+  "intro": "The saddle between East Tyrol and Carinthia that carries the Glockner road up from Lienz: anyone riding from Lienz to the Grossglockner climbs it here, and again from the other side on the way back. At the top a village with inns and the view of the Lienz Dolomites.",
+  "sides": [
+   {
+    "character": "From Dölsach steady at around 7 % with a few hairpins, open and with little shade; the Iselsberg village sign comes before the top, and the road climbs on a little after it.",
+    "highlights": "The view back over the Lienz basin to the Lienz Dolomites."
+   },
+   {
+    "character": "From Winklern short and evenly steep, around 8 % nearly all the way, easing only over the last few hundred metres.",
+    "highlights": "The view up the Möll valley towards Heiligenblut."
+   }
+  ]
+ },
+ "col-de-champex": {
+  "intro": "A small pass road up to Champex-Lac, the resort on a mountain lake below the Grand Combin massif. It runs parallel to the lower part of the Great St Bernard road and is the quiet detour between Martigny and Orsières.",
+  "sides": [
+   {
+    "character": "From Les Valettes first through a gorge, then in many tight hairpins through forest, steepest at the bottom and easing towards the top; narrow and little used.",
+    "highlights": "The lake of Champex-Lac, where the road arrives at the top."
+   },
+   {
+    "character": "From Orsières steadily in hairpins over meadows and through forest, a wider road with the PostBus line; flowing as a descent.",
+    "highlights": "The view down into the Val d'Entremont and onto Orsières."
+   }
+  ]
+ },
+ "col-de-saint-jean": {
+  "intro": "A short, quiet crossing in the Baronnies between the Céans valley at Laborel and the Méouge valley at Eygalayes. At the top stand a small chapel and a viewpoint; together with the Perty and the Macuègne it makes a loop almost without traffic.",
+  "sides": [
+   {
+    "character": "From Laborel short and steady between lavender and forest, with a few hairpins; quickly at the top.",
+    "highlights": "Lavender fields on the lower slope above Laborel."
+   },
+   {
+    "character": "From Eygalayes longer, steeper above the village and with a few hairpins near the top; the surface is rough in places.",
+    "highlights": "The chapel at the summit."
+   }
+  ]
  }
 }

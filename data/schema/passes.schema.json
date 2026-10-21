@@ -117,7 +117,10 @@
                 },
                 "use": {
                   "type": "string",
-                  "const": "osrm"
+                  "enum": [
+                    "osrm",
+                    "cycling-regular"
+                  ]
                 }
               },
               "required": [

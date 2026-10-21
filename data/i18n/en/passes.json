@@ -53,6 +53,14 @@
    "Sewen (east)"
   ]
  },
+ "ballon-de-servance": {
+  "classicAscent": "10.7 km, 5.7 % from Plancher-les-Mines",
+  "note": "A quiet, narrow forest road (D16) from Plancher-les-Mines over the shoulder of the Ballon de Servance to the Col des Croix and down to Le Thillot, the opening climb of Les 3 Ballons. Few views, only a car park in the woods at the top; the surface towards Le Thillot is bumpy in places.",
+  "ascents": [
+   "Plancher-les-Mines (south)",
+   "Le Thillot (north)"
+  ]
+ },
  "berninapass": {
   "classicAscent": "32 km, 4.5 % from Poschiavo",
   "note": "Open all year, glacier views at Lago Bianco.",
@@ -67,6 +75,14 @@
   "ascents": [
    "Brentonico (east)",
    "Navene (west)"
+  ]
+ },
+ "brennerpass": {
+  "classicAscent": "37 km, 2.2 % from Innsbruck",
+  "note": "The crossing from the Wipptal into the Eisack valley; cyclists ride the old Brenner road (B 182, SS 12) beside the motorway and the railway. Open all year, long and flat from Innsbruck, shorter from Sterzing with one steeper stretch at Gossensass; the second climb of the Ötztaler Radmarathon, with heavy traffic on the main road.",
+  "ascents": [
+   "Innsbruck (north)",
+   "Sterzing (south)"
   ]
  },
  "campo-carlo-magno": {
@@ -214,6 +230,14 @@
    "Sospel (north)"
   ]
  },
+ "col-de-champex": {
+  "classicAscent": "10.7 km, 5.8 % from Orsières",
+  "note": "The resort on its mountain lake above the Val d'Entremont, a quiet parallel to the Great St Bernard road between Les Valettes and Orsières. From Orsières steady in hairpins, from Les Valettes narrow, winding and clearly steeper; as a ski resort reachable all year.",
+  "ascents": [
+   "Les Valettes (north)",
+   "Orsières (south)"
+  ]
+ },
  "col-de-chateauneuf": {
   "classicAscent": "9 km, 5 % from Saint-André-de-la-Roche",
   "note": "The first mountain behind Nice towards Tourrette-Levens and Contes, the opener of many training loops out of the city; with traffic, open all year.",
@@ -265,6 +289,13 @@
   "note": "The first step from Lucéram up to Peïra-Cava and the Turini; a pass of its own only on paper, but the road on which the Nice loops over the Turini begin. Open all year.",
   "ascents": [
    "Lucéram (south)"
+  ]
+ },
+ "col-de-la-bataille": {
+  "classicAscent": "8.3 km, 4.8 % from Léoncel",
+  "note": "The crossing from Léoncel through a short tunnel beneath the Rochers de la Sausse onto the balcony above the Combe de Bouvante; beyond the col the D199 is not cleared in winter and is closed between barriers. Only the Léoncel side is a climb; to the east the road runs on as a rolling balcony over the Col de la Portette to Lente.",
+  "ascents": [
+   "Léoncel (west)"
   ]
  },
  "col-de-la-bonette": {
@@ -442,6 +473,14 @@
    "Cluses"
   ]
  },
+ "col-de-saint-jean": {
+  "classicAscent": "5.3 km, 6.2 % from Laborel",
+  "note": "A small Baronnies pass on the D170 between Laborel and Eygalayes, short, quiet and with a chapel at the top; often linked with the Perty and the Macuègne into a loop. Open all year, briefly not after snowfall.",
+  "ascents": [
+   "Laborel (north)",
+   "Eygalayes (south)"
+  ]
+ },
  "col-de-sainte-marie": {
   "classicAscent": "6.1 km, 6.9 % from Sainte-Marie-aux-Mines",
   "note": "The old crossing from Sainte-Marie-aux-Mines into Lorraine; most of the through traffic now takes the Maurice-Lemaire tunnel below it.",
@@ -501,6 +540,14 @@
   "ascents": [
    "Colmars",
    "Saint-Martin-d'Entraunes"
+  ]
+ },
+ "col-des-gets": {
+  "classicAscent": "12 km, 4.7 % from Taninges",
+  "note": "The crossing from the Giffre valley into the Dranse valley, part of the Route des Grandes Alpes, with the ski resort of Les Gets on the top. Cleared all year; the real climb comes from Taninges, from Morzine it is only a little over 4 km and 150 m of climbing. Busy on the D 902 in summer, lorries included.",
+  "ascents": [
+   "Taninges (south)",
+   "Morzine (north)"
   ]
  },
  "col-des-montets": {
@@ -695,6 +742,13 @@
    "Coaraze (west)"
   ]
  },
+ "colle-d-esischie": {
+  "classicAscent": "20 km, 7.1 % from Ponte Marmora",
+  "note": "The crossing from the Maira into the Grana valley, a good kilometre below the Colle Fauniera, which the road continues up to. Only the Maira side from Ponte Marmora is listed: from Pradleves it is the Fauniera ascent up to just short of its summit. Narrow, rough tarmac, closed like the Fauniera usually from mid-October.",
+  "ascents": [
+   "Ponte Marmora (north)"
+  ]
+ },
  "colle-d-oggia": {
   "classicAscent": "14 km, 6 % from Carpasio",
   "note": "Up from Carpasio in the Argentina hinterland and down to Rezzo: the loop the Sanremo pros spend their winters on. Open all year, almost no cars.",
@@ -865,6 +919,21 @@
    "Susch"
   ]
  },
+ "forcella-aurine": {
+  "classicAscent": "11.5 km, 6.1 % from Agordo",
+  "note": "The crossing from Agordo via Voltago and Frassenè to Gosaldo, on the road to the Passo Cereda; open all year. Only the north side is a climb: from Gosaldo it is just 3.5 km and 155 m of ascent.",
+  "ascents": [
+   "Agordo (north)"
+  ]
+ },
+ "forcella-franche": {
+  "classicAscent": "8.1 km, 5.3 % from Agordo",
+  "note": "The low crossing from Agordo via Rivamonte into the Valle del Mis; at the top the road to Gosaldo and the Passo Cereda branches off. The Agordo side is open all year; the valley road through the Valle del Mis with its unlit tunnels is officially closed in winter.",
+  "ascents": [
+   "Agordo (north)",
+   "Titele (south)"
+  ]
+ },
  "forcola-di-livigno": {
   "classicAscent": "14.0 km, 5.0 % from Livigno",
   "note": "The border crossing between Livigno and the Bernina area, usually ridden as part of the loop over Bernina and Foscagno. High, bare and closed in winter.",
@@ -892,6 +961,14 @@
   "ascents": [
    "Realp",
    "Gletsch"
+  ]
+ },
+ "gailbergsattel": {
+  "classicAscent": "6.7 km, 5.4 % from Oberdrauburg",
+  "note": "The low crossing from the Drau valley into the Gail valley, short and even, with most of the hairpins on the north side. Cleared all year; ridden as the feeder to the Plöckenpass and on the loop around the Lienz Dolomites, so expect traffic on the B 110.",
+  "ascents": [
+   "Oberdrauburg (north)",
+   "Kötschach-Mauthen (south)"
   ]
  },
  "gampenjoch": {
@@ -1057,6 +1134,14 @@
    "Oberiberg (east)"
   ]
  },
+ "iselsberg": {
+  "classicAscent": "7.6 km, 6.8 % from Dölsach",
+  "note": "The B107 crossing from Lienz into the Möll valley at Winklern, and so the way to the Grossglockner road; cleared all year, with the traffic that brings, motorbikes and coaches included. The southern side via Dölsach is the longer one, with views of the Lienz Dolomites.",
+  "ascents": [
+   "Dölsach (south)",
+   "Winklern (north)"
+  ]
+ },
  "jaufenpass": {
   "classicAscent": "15 km, 6.8 % from St. Leonhard",
   "note": "Usually open into November. Third pass of the Ötztaler.",
@@ -1099,6 +1184,14 @@
   "note": "The dead-end road from Kals up to the Lucknerhaus, right beneath the south face of the Großglockner – the closest a road gets to Austria's highest mountain. Toll road for cars, bikes go free.",
   "ascents": [
    "Kals am Großglockner"
+  ]
+ },
+ "kartitscher-sattel": {
+  "classicAscent": "8.8 km, 5.3 % from Tassenbach",
+  "note": "The valley watershed between the Pustertal and the Lesachtal, where the Gail rises: shorter and steep in places from Tassenbach, long and gentle from the Lesachtal. Cleared all year and quiet, a crossing through meadows below the Carnic Alps.",
+  "ascents": [
+   "Tassenbach (west)",
+   "Untertilliach (east)"
   ]
  },
  "kaunertaler-gletscherstrasse": {
@@ -1145,6 +1238,13 @@
    "Junction in Bonneval-sur-Arc"
   ]
  },
+ "la-plagne": {
+  "classicAscent": "19.1 km, 7.2 % from Aime",
+  "note": "Road to a ski resort, cleared all year. In 2025 the finish of stage 19 of the Tour de France and of the Étape du Tour, at Plagne Villages above Plagne Centre; a long, steady climb, rather plain to look at.",
+  "ascents": [
+   "Aime"
+  ]
+ },
  "la-planche-des-belles-filles": {
   "classicAscent": "8.2 km, 6.9 % from Plancher-les-Mines",
   "note": "A Tour de France finish since 2012, and in 2020 the time trial with which Pogačar won the Tour. The tarmac ends at the ski station; the gravel ramp of the “Super Planche” above it is no place for a road bike.",
@@ -1157,6 +1257,14 @@
   "note": "Short dead end above La Grave; at the top you stand face to face with the Meije – one of the great panoramas of the Western Alps. Continuing onto the Plateau d'Emparis is only possible off the tarmac.",
   "ascents": [
    "La Grave"
+  ]
+ },
+ "le-markstein": {
+  "classicAscent": "15.6 km, 5.2 % from Lautenbach",
+  "note": "Ski station where the crest road meets the D430 from the Florival and the D27 from the upper Thur valley; a Tour de France stage finish in 2023. The access roads to the station are cleared in winter, while the Route des Crêtes to the north and on to the Grand Ballon is closed then.",
+  "ascents": [
+   "Lautenbach (east)",
+   "Wildenstein (west)"
   ]
  },
  "les-arcs": {
@@ -1187,6 +1295,14 @@
   "ascents": [
    "Disentis",
    "Olivone"
+  ]
+ },
+ "madonna-del-colletto": {
+  "classicAscent": "7.3 km, 8 % from Festiona",
+  "note": "The saddle with the little sanctuary between the Stura and Gesso valleys, the last climb of the Granfondo Fausto Coppi. Short, steep and almost traffic-free; the surface on the Festiona side is old and often gritty.",
+  "ascents": [
+   "Festiona (north)",
+   "Valdieri (south)"
   ]
  },
  "madonna-del-ghisallo": {
@@ -1366,6 +1482,13 @@
    "Ebene Reichenau"
   ]
  },
+ "norbertshoehe": {
+  "classicAscent": "5.8 km, 6.4 % from Martina",
+  "note": "From Martina on the Swiss border up in hairpins onto the Nauders plateau, even and well built; open all year and the cyclists' way towards the Reschen, because the B 180 through the Finstermünz gorge is closed to bikes. Single-sided, since Nauders lies barely lower than the top; when the B 180 is closed completely, bikes are banned uphill here as well.",
+  "ascents": [
+   "Martina"
+  ]
+ },
  "nufenenpass": {
   "classicAscent": "13.5 km, 8.6 % from Ulrichen",
   "note": "Highest Swiss road pass lying entirely within the country. Closure usually mid/late October.",
@@ -1439,6 +1562,22 @@
   "note": "The quiet crossing between the Cadore and the Zoldo valley, beneath the north face of Monte Rite. Hardly any traffic, Reinhold Messner's Museum in the Clouds at the top; cleared all year.",
   "ascents": [
    "Valle di Cadore (north)"
+  ]
+ },
+ "passo-cimabanche": {
+  "classicAscent": "15.7 km, 2.1 % from Toblach",
+  "note": "The flat valley crossing between Toblach and Cortina, past the Toblacher See and the Dürrensee with Monte Cristallo and the view into the valley of the Drei Zinnen. Open all year and busy, lorries included; quieter is the cycle path on the old railway line beside it, partly gravel on the Toblach side.",
+  "ascents": [
+   "Toblach (north)",
+   "Cortina d'Ampezzo (south)"
+  ]
+ },
+ "passo-croce-d-aune": {
+  "classicAscent": "8.2 km, 8.0 % from Pedavena",
+  "note": "From Pedavena near Feltre in hairpins up through the forest to the saddle where, as the legend goes, Tullio Campagnolo failed with numb fingers at his rear wheel and invented the quick release; a monument at the top recalls it. Open all year and quiet, to the west through the villages of Sovramonte.",
+  "ascents": [
+   "Pedavena (east)",
+   "Gorna (west)"
   ]
  },
  "passo-crocedomini": {
@@ -1673,6 +1812,14 @@
    "Padola"
   ]
  },
+ "passo-pampeago": {
+  "classicAscent": "11.1 km, 9.1 % from Tesero",
+  "note": "The steep climb from Tesero to the Alpe di Pampeago ski station, where the Giro has finished several times; the last three kilometres to the pass were only paved in 2012 and are closed to cars, the road down to Obereggen is single-track. In winter the top lies inside the ski area; it is a summer road.",
+  "ascents": [
+   "Tesero (south)",
+   "Birchabruck (north)"
+  ]
+ },
  "passo-pordoi": {
   "classicAscent": "9.2 km, 6.9 % from Arabba",
   "note": "Usually open all year (closed only in snow). Part of the Sellaronda.",
@@ -1718,6 +1865,14 @@
   "ascents": [
    "Moena",
    "Falcade"
+  ]
+ },
+ "passo-sant-antonio": {
+  "classicAscent": "7.6 km, 8.3 % from Auronzo di Cadore",
+  "note": "The steep short cut from Auronzo into the Comelico, almost entirely in forest and lightly used; from Padola only a short counter-climb. No winter closure known; the pass is low and links two valley villages.",
+  "ascents": [
+   "Auronzo di Cadore (south)",
+   "Padola (north)"
   ]
  },
  "passo-santa-barbara": {
@@ -1898,6 +2053,13 @@
   "note": "From the shore of Lake Garda at Brenzone up to the Punta Veleno on Monte Baldo: a good nine kilometres at eleven percent on average with ramps up to 20 %, the steepest climb on the lake. At the top the road tips over towards Prada Alta. The poison in the name is well earned; snow at the top in winter.",
   "ascents": [
    "Castelletto di Brenzone"
+  ]
+ },
+ "reschenpass": {
+  "classicAscent": "19 km, 2.4 % from Mals",
+  "note": "From Mals across the Malser Haide and along the Haidersee and the Reschensee, with the church tower in the lake just before the top; a wide transit road, open all year. South side only: from the north the B 180 between Kajetansbrücke and Nauders is closed to bikes, the cycle route comes via Martina and the Norbertshöhe, and from Nauders only about 100 m of climbing remain.",
+  "ascents": [
+   "Mals"
   ]
  },
  "rhemes-notre-dame": {

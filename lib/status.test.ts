@@ -147,6 +147,7 @@ const tour = (slugs: string[]): Tour => ({
   season: null,
   slug: "t",
   surface: "asphalt",
+  type: "loop",
   waypoints: [],
 });
 

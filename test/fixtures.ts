@@ -78,6 +78,7 @@ export const makeTour = (
   season: { closes: 9.5, opens: 7 },
   slug,
   surface: "asphalt",
+  type: "loop",
   waypoints: [ORIGIN, { lat: 46.1, lon: 10.1 }],
   ...extra,
 });

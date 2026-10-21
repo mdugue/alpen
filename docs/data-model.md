@@ -100,6 +100,13 @@ candidate, and `data:check` asks for no renewal; the pin enters
 `meta.inputs`, so setting or lifting it routes the ride again by itself
 ([the stages](data-pipeline.md#the-stages-by-command)).
 
+The other way round, `"use": "cycling-regular"` keeps ORS but asks its
+everyday cycling graph: for a road bikes may ride that the road-cycling
+graph routes round, because OSM maps it as a cycleway without cars – the
+Muro di Sormano, which both the road graph and OSRM leave for a 5.7 km detour
+on the SP44. A tour takes the same `router` for its whole line (the
+Lombardia loop over the Muro).
+
 `season.maintained: true` marks managed toll roads (Grossglockner, Timmelsjoch,
 Nockalm …). They are cleared of snow and therefore get no elevation penalty in
 the status heuristic.
@@ -306,9 +313,36 @@ side of the mountain. None of it is a file: it follows from `routes.json` and
   "note": "Der Galibier gibt das Fenster vor; Veranstaltung Anfang Juli.",
   "season": { "opens": 6, "closes": 10.5 }, // the loop's own window; null = whenever its passes are open
   "description": "…",
+  "type": "event", // loop | event | edition | permanent | stages
+  "when": 7, // event and edition: the half-month it takes place in
   "waypoints": [{ "lat": 45.06, "lon": 6.03 }, "…"],
 }
 ```
+
+`type` says how the tour is ridden (`TOUR_TYPES` in `lib/regions.ts`):
+`loop` for a classic loop with nothing attached, `event` for the course of a
+sportive that closes its roads one day a year, `permanent` for a signposted
+route with a stamp card or timing (the Stoneman), `stages` for a route from A
+to B over several days (the Route des Grandes Alpes). `edition` is one
+year's course of an event whose route changes every year (Stelvio Santini,
+Étape du Tour): it carries `series` (the slug the years share) and `year`,
+its name ends in the year, and its slug is the series plus the year. Required
+and single-valued; the tour list filters by it.
+
+`when` is the half-month an `event` or `edition` takes place in – required
+for those two types and refused on the others (`Tour`'s refinement in
+`lib/schema.ts`). The tour list's "Termin" chip keeps what takes place in the
+chosen half-month, and the panel's kicker names it. By default the list shows
+only the latest `year` of each `series` and counts the hidden ones on its row
+("+2 Vorjahre"); the "Frühere Jahre" chip brings them back, grouped under the
+latest, newest first (`buildTourRows` in `lib/rows.ts`). An edition's panel
+links the series' other years; an area's lists only the latest.
+
+`touches` names entries the line passes without riding them – a pass whose
+top is a junction on the course, like the Umbrail on the way up the Stelvio
+from Bormio. `data:check` warns about every entry the line crosses that
+`passes` does not name; `touches` answers that warning on purpose, and the
+named entries never count towards the tour's status.
 
 `passes` contains pass **slugs** in ride order; per half-month the tour takes
 the cell of the member pass that holds it back (`tourYear`, `lib/status.ts`).

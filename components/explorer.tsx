@@ -39,6 +39,8 @@ import {
   buildTownRows,
   currentBar,
   facetCount,
+  hasPastEditions,
+  tourFacetCount,
   seasonBand,
   tabCounts,
 } from "@/lib/rows";
@@ -183,6 +185,9 @@ export const Explorer = ({ data, defaultPeriod, children }: Props) => {
    */
   const countWith = (patch: Partial<Filters>) =>
     facetCount(passes, filters, patch, inputs);
+  /** The same for the loops, behind the tour-type chips. */
+  const tourCountWith = (patch: Partial<Filters>) =>
+    tourFacetCount(tours, passIndex, filters, patch, inputs);
   /**
    * The 24 bars the season bar draws, and the headline's counts: the same
    * arithmetic over the same passes, so the sentence at the top and the ribbon
@@ -309,6 +314,8 @@ export const Explorer = ({ data, defaultPeriod, children }: Props) => {
                 tour: tours.length,
               }}
               countWith={countWith}
+              tourCountWith={tourCountWith}
+              hasEditions={hasPastEditions(tours)}
               ranges={ranges}
               onRange={(range) => dispatch({ range, type: "range" })}
               shown={shown}

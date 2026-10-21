@@ -59,6 +59,7 @@ const tour = (slug: string, passes: string[]): Tour => ({
   season: null,
   slug,
   surface: "asphalt",
+  type: "loop",
   waypoints: [
     { lat: 46.5, lon: 11.8 },
     { lat: 46.4, lon: 11.7 },

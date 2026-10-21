@@ -56,6 +56,27 @@
           "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
         }
       },
+      "router": {
+        "type": "object",
+        "properties": {
+          "note": {
+            "type": "string",
+            "minLength": 1
+          },
+          "use": {
+            "type": "string",
+            "enum": [
+              "osrm",
+              "cycling-regular"
+            ]
+          }
+        },
+        "required": [
+          "note",
+          "use"
+        ],
+        "additionalProperties": false
+      },
       "season": {
         "anyOf": [
           {
@@ -79,6 +100,10 @@
           }
         ]
       },
+      "series": {
+        "type": "string",
+        "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+      },
       "slug": {
         "type": "string",
         "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
@@ -89,6 +114,24 @@
           "asphalt",
           "gravel",
           "mixed"
+        ]
+      },
+      "touches": {
+        "minItems": 1,
+        "type": "array",
+        "items": {
+          "type": "string",
+          "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+        }
+      },
+      "type": {
+        "type": "string",
+        "enum": [
+          "loop",
+          "event",
+          "edition",
+          "permanent",
+          "stages"
         ]
       },
       "waypoints": {
@@ -114,6 +157,14 @@
           ],
           "additionalProperties": false
         }
+      },
+      "when": {
+        "type": "number"
+      },
+      "year": {
+        "type": "integer",
+        "minimum": 2000,
+        "maximum": 2100
       }
     },
     "required": [
@@ -127,6 +178,7 @@
       "season",
       "slug",
       "surface",
+      "type",
       "waypoints"
     ],
     "additionalProperties": false

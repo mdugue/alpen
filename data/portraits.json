@@ -4676,5 +4676,400 @@
     "highlights": "Der Blick über die Rheinebene, an klaren Tagen bis zu den Alpen."
    }
   ]
+ },
+ "gailbergsattel": {
+  "intro": "Ein Waldsattel unter 1000 m zwischen Drau und Gail, der eher verbindet als fordert. Wer um die Lienzer Dolomiten fährt oder zum Plöckenpass will, kommt hier vorbei.",
+  "sides": [
+   {
+    "character": "Von Oberdrauburg gleich in die Kehren, gleichmäßig und nie richtig steil durch den Wald hinauf. Bergauf die Seite mit dem Rhythmus.",
+    "highlights": "Der Blick zurück über das Drautal.",
+    "hazards": [
+     "tight-hairpins",
+     "traffic"
+    ],
+    "bestAs": "up"
+   },
+   {
+    "character": "Von Kötschach-Mauthen flacher, mit einem kurzen steilen Stück und einem fast ebenen Abschnitt vor der Passhöhe. Läuft bergab ohne Überraschungen ins Gailtal.",
+    "highlights": "Unten das Gailtal mit den Karnischen Alpen.",
+    "hazards": [
+     "traffic"
+    ],
+    "bestAs": "down"
+   }
+  ]
+ },
+ "kartitscher-sattel": {
+  "intro": "Ein offener Wiesensattel zwischen den Lienzer Dolomiten und dem Karnischen Kamm, an dem die Gail nach Osten und der Gailbach nach Westen fließen. Er verbindet das Pustertal mit dem Lesachtal und ist Teil der Runde um die Lienzer Dolomiten.",
+  "sides": [
+   {
+    "character": "Von Tassenbach mit den steileren Rampen und den Kehren hinauf nach Kartitsch, danach flacher über die Wiesen zum Sattel. Bergauf die Seite, die etwas verlangt.",
+    "highlights": "Das Dorf Kartitsch vor dem Karnischen Kamm.",
+    "hazards": [
+     "steep",
+     "tight-hairpins"
+    ],
+    "bestAs": "up"
+   },
+   {
+    "character": "Von Untertilliach sanft und lang an der jungen Gail entlang über Obertilliach, mit kurzen Wellen dazwischen. Bergab ein Dahinrollen durch das obere Lesachtal.",
+    "highlights": "Obertilliach mit seinem geschlossenen Dorfkern.",
+    "hazards": [],
+    "bestAs": "down"
+   }
+  ]
+ },
+ "passo-cimabanche": {
+  "intro": "Kaum ein Anstieg, eher ein langes Tal zwischen Pustertal und Ampezzo, aber eines mit Dolomitenkulisse. Meist als Zubringer zu den Drei Zinnen, zum Misurina oder nach Cortina gefahren, mit der alten Dolomitenbahn als Radweg daneben.",
+  "sides": [
+   {
+    "character": "Von Toblach lang und kaum spürbar ansteigend durch das Höhlensteintal, an zwei Seen vorbei und mit kurzen flachen Stücken. Bergauf wächst der Cristallo vor einem auf.",
+    "highlights": "Der Dürrensee mit dem Cristallo dahinter.",
+    "hazards": [
+     "traffic"
+    ],
+    "bestAs": "up"
+   },
+   {
+    "character": "Von Cortina ebenso sanft durch den Wald an der Boite hinauf, mit einer kahlen Hochfläche am Scheitel. Bergab schnell und offen hinunter in den Talkessel von Cortina.",
+    "highlights": "Die Tofane über dem Ampezzo.",
+    "hazards": [
+     "traffic"
+    ],
+    "bestAs": "down"
+   }
+  ]
+ },
+ "passo-sant-antonio": {
+  "intro": "Ein stiller Waldpass zwischen dem Ansiei-Tal bei Auronzo und dem Comelico, auch Passo del Zovo genannt. Kurz, aber auf der Südseite durchgehend steil, und mit dem Monte Croce Comelico eine Runde um das Comelico.",
+  "sides": [
+   {
+    "character": "Von Auronzo flach los, dann im Mittelteil steil und kehrenreich durch den Wald, oben öffnet sich der Blick. Eine Seite zum Klettern, bergab wegen der Rampen unangenehm.",
+    "highlights": "Oben der Blick über die Wälder des Comelico.",
+    "hazards": [
+     "steep",
+     "tight-hairpins"
+    ],
+    "bestAs": "up"
+   },
+   {
+    "character": "Von Padola kurz und mit ein paar steilen Stücken, auf breiter Straße mit gutem Belag. Bergab die angenehmere Seite hinunter ins Comelico.",
+    "highlights": "Padola unter den Wiesen des Comelico.",
+    "hazards": [
+     "steep"
+    ],
+    "bestAs": "down"
+   }
+  ]
+ },
+ "reschenpass": {
+  "intro": "Der alte Übergang der Via Claudia Augusta vom Inn an die Etsch, heute eine breite Transitstraße. Bekannt ist er vor allem für den Kirchturm von Altgraun, der aus dem Reschensee ragt, und für die Weite der Malser Haide mit dem Ortler im Rücken.",
+  "sides": [
+   {
+    "character": "Von Mals der einzige spürbare Anstieg über die Malser Haide bis zum Haidersee, danach fast eben an den beiden Seen entlang. Oft mit Gegenwind und viel Verkehr; parallel führt ein Radweg.",
+    "highlights": "Der Kirchturm im Reschensee bei Graun.",
+    "hazards": [
+     "traffic"
+    ]
+   }
+  ]
+ },
+ "norbertshoehe": {
+  "intro": "Eine Kehrenstraße aus dem Unterengadin auf das Plateau von Nauders, die mit der Sperre der Finstermünz für Räder zum eigentlichen Radweg zum Reschenpass geworden ist. Auf ihr läuft auch die Via Claudia Augusta.",
+  "sides": [
+   {
+    "character": "Von Martina gleich in eine Folge von Kehren am Hang über dem Inn, gleichmäßig und ohne harte Rampen bis auf die Höhe. Gut fahrbar, aber mit Bussen und Ausweichverkehr.",
+    "highlights": "Der Blick hinunter ins Unterengadin und auf die Innschlucht.",
+    "hazards": [
+     "tight-hairpins",
+     "traffic"
+    ]
+   }
+  ]
+ },
+ "passo-croce-d-aune": {
+  "intro": "Ein niedriger Waldpass über Feltre, der seinen Ruf einer Geschichte verdankt: Hier soll Tullio Campagnolo die Idee zum Schnellspanner gekommen sein. Heute ein ruhiger Anstieg mit einem kleinen Ort, Hotels und Gasthäusern oben.",
+  "sides": [
+   {
+    "character": "Von Pedavena gleich steil und gleichmäßig in Kehren durch den Wald, ohne flache Stücke bis zum Sattel. Die Seite zum Klettern.",
+    "highlights": "Oben das Campagnolo-Denkmal am Sattel.",
+    "hazards": [
+     "tight-hairpins",
+     "steep"
+    ],
+    "bestAs": "up"
+   },
+   {
+    "character": "Von Gorna abwechslungsreicher durch die Weiler von Sovramonte, mit flacheren Stücken und kurzen Gegengefällen zwischen den Kehren. Bergab die schönere Seite mit Blicken über das Tal.",
+    "highlights": "Die Dörfer von Sovramonte am Hang.",
+    "hazards": [
+     "tight-hairpins"
+    ],
+    "bestAs": "down"
+   }
+  ]
+ },
+ "colle-d-esischie": {
+  "intro": "Ein Sattel zwischen Rocce Ciarmetta und Monte Pelvo, auf dem die Straße aus dem Vallone di Marmora auf die Fauniera-Straße trifft. Die meisten fahren weiter zum Colle Fauniera; die Granfondo Fausto Coppi kommt auf diesem Weg aus dem Maira-Tal herauf.",
+  "sides": [
+   {
+    "character": "Ab Ponte Marmora unregelmäßig, mit ein paar sehr kurzen Rampen um die 19 % und zwei Kilometern um 10 % im unteren Teil, danach ruhiger um 6–8 % über die Almen. Lang, einsam und schmal.",
+    "highlights": "Der Blick am Scheitel zurück über den Talkessel von Marmora.",
+    "hazards": [
+     "steep",
+     "rough",
+     "narrow"
+    ]
+   }
+  ]
+ },
+ "madonna-del-colletto": {
+  "intro": "Ein niedriger Übergang über den Rücken zwischen Valle Stura und Valle Gesso, oben das Santuario Madonna del Colletto. Bekannt als Schlussanstieg der Granfondo Fausto Coppi, die von Festiona herauf- und nach Valdieri hinunterfährt.",
+  "sides": [
+   {
+    "character": "Von Festiona durch Wald, in der ersten Hälfte mit mehreren Rampen über 12 %, danach gleichmäßiger. Alter, unebener Asphalt mit Schotter, bergauf die bessere Wahl.",
+    "highlights": "Das Kirchlein am Sattel.",
+    "hazards": [
+     "steep",
+     "rough",
+     "narrow"
+    ],
+    "bestAs": "up"
+   },
+   {
+    "character": "Von Valdieri kürzer und durchgehend steil, in Kehren über dem Gesso-Tal, oben ein Stück Betonstraße. Die Granfondo fährt hier hinunter.",
+    "highlights": "Der Blick über das Gesso-Tal hinaus Richtung Cuneo.",
+    "hazards": [
+     "steep",
+     "tight-hairpins",
+     "narrow"
+    ],
+    "bestAs": "both"
+   }
+  ]
+ },
+ "forcella-aurine": {
+  "intro": "Ein stiller Sattel am Fuß der Pale di San Martino, über den die SP347 von Agordo nach Gosaldo und weiter zum Passo Cereda führt. Mit der Forcella Franche bildet er die Runde um die Talschaft von Gosaldo.",
+  "sides": [
+   {
+    "character": "Ab der Cordevole-Brücke bei Agordo gleich mit rund 7 % in Kehren hinauf nach Voltago, dann gleichmäßig weiter über Frassenè; oben flacht es ab. Ein Anstieg, den man gut einteilen kann.",
+    "highlights": "Frassenè unter den Wänden des Agnèr.",
+    "hazards": [
+     "tight-hairpins"
+    ]
+   }
+  ]
+ },
+ "forcella-franche": {
+  "intro": "Ein niedriger Sattel zwischen der Talschaft von Agordo und dem wilden Valle del Mis. Auf der Südseite führt die Straße durch eine enge Schlucht mit Stausee und kurzen, dunklen Tunneln, eine der stillsten Ecken der Belluneser Dolomiten.",
+  "sides": [
+   {
+    "character": "Von Ponte Alto bei Agordo auf breiter Straße über Rivamonte, mäßig steil mit ein paar kurzen, kräftigeren Stücken. Bergab ein flüssiges Ausrollen.",
+    "highlights": "Der Blick von Rivamonte über die Talschaft von Agordo.",
+    "hazards": [],
+    "bestAs": "down"
+   },
+   {
+    "character": "Von Titele, wo die Straße aus der Mis-Schlucht kommt, deutlich steiler in Kehren hinauf über Tiser, schmal und mit Rampen bis 12 %. Wer von unten aus dem Tal kommt, fährt vorher durch die unbeleuchteten Tunnel am Lago del Mis.",
+    "highlights": "Das Dorf Tiser und der Blick hinunter in die Mis-Schlucht.",
+    "hazards": [
+     "narrow",
+     "tight-hairpins",
+     "steep"
+    ],
+    "bestAs": "up"
+   }
+  ]
+ },
+ "col-de-la-bataille": {
+  "intro": "Ein Vercors-Pass, dessen Scheitel gleich hinter einem kurzen Tunnel durch die Felsen liegt; danach öffnet sich der Blick über die Combe de Bouvante. Mit der Combe Laval und dem Col de la Machine ergibt er eine der schönsten Runden des Vercors.",
+  "sides": [
+   {
+    "character": "Ab Léoncel durch Wald, in der ersten Hälfte mit einem langen Stück knapp unter 9 %, die letzten zwei Kilometer fast flach. Der Tunnel kurz vor dem Col ist windig.",
+    "highlights": "Der Blick nach dem Tunnel hinunter in die Combe de Bouvante.",
+    "hazards": [
+     "tunnels"
+    ]
+   }
+  ]
+ },
+ "brennerpass": {
+  "intro": "Der verkehrsreichste Alpenübergang, für Radfahrer aber die alte Staatsstraße abseits der Autobahn. Kein Berg, der fordert, sondern die Verbindung zwischen Innsbruck und Südtirol, die der Ötztaler zwischen Kühtai und Jaufen fährt.",
+  "sides": [
+   {
+    "character": "Aus Innsbruck zuerst die steilere Rampe hinauf nach Schönberg, dann lange fast flach durch das Wipptal über Matrei und Steinach; kurz vor der Passhöhe zieht es noch einmal an. Man gewinnt Höhe, ohne es zu merken, in beide Richtungen ein Rollerweg.",
+    "highlights": "Der Brennersee knapp unter der Passhöhe.",
+    "hazards": [
+     "traffic"
+    ],
+    "bestAs": "both"
+   },
+   {
+    "character": "Von Sterzing zuerst flach aus der Stadt, bei Gossensass das steilere Stück, danach wieder gemächlich das obere Eisacktal hinauf. Kürzer als die Nordseite und mit dem bisschen Anstieg, das der Brenner hat.",
+    "highlights": "Gossensass an der Mündung des Pflerschtals.",
+    "hazards": [
+     "traffic"
+    ],
+    "bestAs": "up"
+   }
+  ]
+ },
+ "col-des-gets": {
+  "intro": "Ein niedriger Sattel zwischen Chablais und Giffre, auf dem der Skiort Les Gets liegt. Er ist eher Durchgang als Ziel: die Route des Grandes Alpes zwischen Morzine und Cluses, und der Weg zu Joux Plane und Ramaz.",
+  "sides": [
+   {
+    "character": "Von Taninges sanft und gleichmäßig bis zur Abzweigung zum Col de la Ramaz, danach rund 2 km etwas steiler und vor Les Gets wieder flach. Ein Stück führt durch eine schattige, kühle Schlucht.",
+    "highlights": "Der Blick hinunter auf das Giffre-Tal.",
+    "hazards": [
+     "traffic"
+    ],
+    "bestAs": "up"
+   },
+   {
+    "character": "Von Morzine kurz und mäßig auf breiter Straße, eher ein Übergang zwischen zwei Skiorten als ein Anstieg. In beide Richtungen schnell vorbei.",
+    "highlights": "Les Gets selbst, mit dem Mont Chéry über dem Scheitel.",
+    "hazards": [
+     "traffic"
+    ],
+    "bestAs": "both"
+   }
+  ]
+ },
+ "passo-pampeago": {
+  "intro": "Das Reiterjoch unter dem Latemar verbindet das Fleimstal mit dem Eggental und ist vor allem als Giro-Bergankunft an der Alpe di Pampeago bekannt. Für den Giro 2012 wurde das letzte Stück zum Joch asphaltiert, seitdem ist es eine durchgehende Straße, die für Autos gesperrt bleibt.",
+  "sides": [
+   {
+    "character": "Von Tesero gleich steil und kaum nachlassend im Wald hinauf zur Skistation, dann auf dem für Autos gesperrten Stück noch einmal steiler zum Joch. Hart und gleichmäßig; bergab ist es die breitere Straße.",
+    "highlights": "Am Weg die Gedenkstätte der Stava-Katastrophe von 1985.",
+    "hazards": [
+     "steep",
+     "tight-hairpins"
+    ],
+    "bestAs": "both"
+   },
+   {
+    "character": "Von Birchabruck mit sehr steilen Rampen hinauf nach Obereggen, dann einspurig und ruhiger durch Wald und über Almen zum Joch. Bergab wegen der Rampen und der schmalen Straße unangenehm.",
+    "highlights": "Der Latemar über den Almen bei Obereggen.",
+    "hazards": [
+     "steep",
+     "narrow"
+    ],
+    "bestAs": "up"
+   }
+  ]
+ },
+ "la-plagne": {
+  "intro": "Der Skiort über der Tarentaise ist 2025 Ziel der 19. Etappe der Tour de France gewesen, die Thymen Arensman knapp vor Vingegaard und Pogačar gewann, und am selben Tag des Étape du Tour für die Jedermänner. Die Straße ist für den Wintersport gebaut: breit, gleichmäßig und mit vielen Kehren.",
+  "sides": [
+   {
+    "character": "Von Aime über Mâcot fast durchgehend um 7 bis 8 %, in langen Kehrenfolgen durch den Wald; oben flacht es zwischen den Skistationen kurz ab, bevor es von Plagne Centre noch einmal nach Plagne Villages hinaufgeht.",
+    "highlights": "Der Blick zurück ins Tal der Isère und zu den Gipfeln der Tarentaise, sobald der Wald aufhört.",
+    "hazards": []
+   }
+  ]
+ },
+ "ballon-de-servance": {
+  "intro": "Der Übergang neben dem Ballon de Servance ist der erste Berg der Les 3 Ballons, die von Ronchamp aus über ihn nach Le Thillot fahren. Eine stille Waldstraße mit Moos und Bächen statt Rundblick; der Gipfel selbst liegt abseits und ist nur zu Fuß zu erreichen.",
+  "sides": [
+   {
+    "bestAs": "both",
+    "character": "Von Plancher-les-Mines erst flach im Tal, ab dem Abzweig zur Planche des Belles Filles stetig im Wald und auf den letzten Kilometern deutlich steiler, mit kurzen zweistelligen Rampen.",
+    "highlights": "Der Abzweig zur Planche des Belles Filles, die man auf derselben Runde noch fahren kann.",
+    "hazards": [
+     "steep",
+     "narrow"
+    ]
+   },
+   {
+    "bestAs": "up",
+    "character": "Von Le Thillot über den Col des Croix gleichmäßig und nie steil durch den Wald. Als Abfahrt schmal, holprig und stellenweise mit Rollsplitt – deshalb besser hinauf.",
+    "highlights": "Der Col des Croix unterwegs, wo die Straße von der Moselle nach Haute-Saône wechselt.",
+    "hazards": [
+     "narrow",
+     "rough",
+     "gravel"
+    ]
+   }
+  ]
+ },
+ "le-markstein": {
+  "intro": "Der Markstein ist der Knoten der südlichen Hochvogesen: Hier treffen die Kammstraße, das Florival und das obere Thurtal aufeinander, und die Tour de France kommt immer wieder vorbei, 2014 von Linthal herauf und 2023 mit dem Etappenziel. Oben Weiden, Skilifte und Gasthöfe, der Grand Ballon ist auf der Kammstraße nah.",
+  "sides": [
+   {
+    "bestAs": "up",
+    "character": "Von Lautenbach durch das Florival erst sanft, dann in zwei steileren Abschnitten im Wald, getrennt vom Flachstück am Lac de la Lauch; die letzten Kilometer ziehen noch einmal an.",
+    "highlights": "Der Lac de la Lauch auf halber Höhe, ein Stausee im Wald unter dem Kamm.",
+    "hazards": []
+   },
+   {
+    "bestAs": "both",
+    "character": "Von Wildenstein am oberen Ende des Thurtals ruhig und gleichmäßig in Kehren durch den Wald, kurz vor dem Markstein auf offenen Weiden etwas über dem Ziel und dann leicht hinab zur Station.",
+    "highlights": "Der Blick über den Stausee von Kruth-Wildenstein auf dem Weg hinauf.",
+    "hazards": []
+   }
+  ]
+ },
+ "iselsberg": {
+  "intro": "Der Sattel zwischen Osttirol und Kärnten, über den die Glocknerstraße von Lienz kommt: Wer von Lienz zum Großglockner will, fährt hier hinauf, und auf der Rückfahrt von der anderen Seite noch einmal. Oben ein Dorf mit Gasthöfen und der Blick auf die Lienzer Dolomiten.",
+  "sides": [
+   {
+    "bestAs": "both",
+    "character": "Von Dölsach gleichmäßig um 7 % mit einigen Kehren, offen und wenig schattig; das Ortsschild von Iselsberg kommt vor dem Scheitel, es geht danach noch ein Stück weiter.",
+    "highlights": "Der Blick zurück über den Lienzer Talboden auf die Lienzer Dolomiten.",
+    "hazards": [
+     "traffic"
+    ]
+   },
+   {
+    "bestAs": "both",
+    "character": "Von Winklern kurz und gleichmäßig steil, fast durchweg um 8 %, erst auf den letzten paar hundert Metern flacher.",
+    "highlights": "Der Blick ins Mölltal Richtung Heiligenblut.",
+    "hazards": [
+     "traffic"
+    ]
+   }
+  ]
+ },
+ "col-de-champex": {
+  "intro": "Eine kleine Passstraße hinauf nach Champex-Lac, dem Kurort an einem Bergsee unter dem Massiv des Grand Combin. Sie läuft parallel zum unteren Teil der Großer-Sankt-Bernhard-Straße und ist der ruhige Umweg zwischen Martigny und Orsières.",
+  "sides": [
+   {
+    "character": "Von Les Valettes zuerst durch eine Schlucht, dann in vielen engen Kehren durch Wald, unten am steilsten und nach oben hin flacher; schmal und wenig befahren.",
+    "highlights": "Der See von Champex-Lac, an dem die Straße oben ankommt.",
+    "hazards": [
+     "tight-hairpins",
+     "narrow",
+     "steep"
+    ],
+    "bestAs": "up"
+   },
+   {
+    "character": "Von Orsières gleichmäßig in Kehren über Wiesen und durch Wald, eine breitere Straße mit der Postautolinie; als Abfahrt flüssig.",
+    "highlights": "Der Blick hinunter ins Val d'Entremont und auf Orsières.",
+    "hazards": [
+     "tight-hairpins"
+    ],
+    "bestAs": "down"
+   }
+  ]
+ },
+ "col-de-saint-jean": {
+  "intro": "Ein kurzer, stiller Übergang der Baronnies zwischen dem Céans-Tal bei Laborel und dem Méouge-Tal bei Eygalayes. Oben stehen eine kleine Kapelle und ein Aussichtspunkt; mit Perty und Macuègne ergibt er eine Runde fast ohne Verkehr.",
+  "sides": [
+   {
+    "character": "Von Laborel kurz und gleichmäßig zwischen Lavendel und Wald, mit wenigen Kehren; schnell oben.",
+    "highlights": "Lavendelfelder am unteren Hang über Laborel.",
+    "hazards": [],
+    "bestAs": "up"
+   },
+   {
+    "character": "Von Eygalayes länger, oberhalb des Dorfes steiler und oben mit ein paar Kehren; der Belag ist stellenweise rau.",
+    "highlights": "Die Kapelle auf der Passhöhe.",
+    "hazards": [
+     "rough"
+    ],
+    "bestAs": "both"
+   }
+  ]
  }
 }

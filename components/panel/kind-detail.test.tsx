@@ -40,6 +40,16 @@ const passes = [
 ];
 const tours = [
   makeTour("runde", ["stilfser-joch", "gavia"], { name: "Runde" }),
+  // Two years of one race: the area lists the latest, its panel the other.
+  ...[2025, 2026].map((year) =>
+    makeTour(`rennen-${year}`, ["gavia"], {
+      name: `Rennen ${year}`,
+      series: "rennen",
+      type: "edition",
+      when: 7,
+      year,
+    }),
+  ),
 ];
 const towns = [makeTown("bormio", 8, { name: "Bormio" })];
 const years = yearsOf(
@@ -47,7 +57,11 @@ const years = yearsOf(
     ["stilfser-joch", "best"],
     ["gavia", "limited"],
   ],
-  [["runde", "limited"]],
+  [
+    ["runde", "limited"],
+    ["rennen-2025", "limited"],
+    ["rennen-2026", "limited"],
+  ],
 );
 const state: DetailState = { phase: "absent" };
 const area: Destination = {
@@ -107,6 +121,9 @@ const html = {
       actions={actions}
       model={modelOf("destination", "valtellina")}
     />,
+  ),
+  edition: render(
+    <TourDetail actions={actions} model={modelOf("tour", "rennen-2026")} />,
   ),
   pass: render(
     <PassDetail actions={actions} model={modelOf("pass", "stilfser-joch")} />,
@@ -169,8 +186,34 @@ describe("the four kind modules render their model", () => {
   });
 
   test("each kind renders exactly the blocks its model declares", () => {
-    for (const kind of ["pass", "tour", "town", "destination"] as const)
+    for (const kind of ["pass", "town", "destination"] as const)
       expect(blocksIn(html[kind])).toEqual(BLOCKS[kind]);
+    // Only an edition has other years to list; a loop leaves that block out.
+    expect(blocksIn(html.edition)).toEqual(BLOCKS.tour);
+    expect(blocksIn(html.tour)).toEqual(
+      BLOCKS.tour.filter((id) => id !== "tour-editions"),
+    );
+  });
+
+  test("an edition names its date and links the series' other years", () => {
+    const model = modelOf("tour", "rennen-2026");
+    expect(model.kicker).toBe("Jahresausgabe · Anfang Juli");
+    expect(model.otherEditions.map((t) => t.slug)).toEqual(["rennen-2025"]);
+    expect(html.edition).toContain("Andere Jahre");
+    expect(html.edition).toContain("Rennen 2025");
+  });
+
+  test("an area groups its tours by kind, of a series only the latest year", () => {
+    const model = modelOf("destination", "valtellina");
+    expect(
+      model.tours.map((g) => [g.type, g.tours.map((x) => x.tour.slug)]),
+    ).toEqual([
+      ["loop", ["runde"]],
+      ["edition", ["rennen-2026"]],
+    ]);
+    expect(html.destination).toContain("Rundtouren");
+    expect(html.destination).toContain("Jahresausgaben");
+    expect(html.destination).not.toContain("Rennen 2025");
   });
 
   test("nothing a sibling block already ranked is listed twice", () => {

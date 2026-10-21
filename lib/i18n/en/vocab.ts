@@ -182,6 +182,33 @@ export const vocab = {
       label: "Mixed",
     },
   },
+  tourType: {
+    edition: {
+      hint: "An event that changes its course every year: this is one year's course. “Earlier years” brings back the previous ones.",
+      label: "Edition",
+      plural: "Editions",
+    },
+    event: {
+      hint: "The course of a sportive or gran fondo: one day a year with a number and closed roads, free to ride on every other.",
+      label: "Event",
+      plural: "Events",
+    },
+    loop: {
+      hint: "A classic loop with no timing, to ride whenever you like.",
+      label: "Loop",
+      plural: "Loops",
+    },
+    permanent: {
+      hint: "A signposted permanent route with a stamp card or timing, rideable all season, with a medal for finishing.",
+      label: "Permanent route",
+      plural: "Permanent routes",
+    },
+    stages: {
+      hint: "From A to B over several days, with nights on the way rather than in the same hotel.",
+      label: "Multi-day route",
+      plural: "Multi-day routes",
+    },
+  },
   townTag: {
     events: {
       hint: "Start or hub of a big cycling marathon.",

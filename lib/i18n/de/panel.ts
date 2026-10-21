@@ -131,8 +131,8 @@ export const panel = {
       "Alle Straßen im Umkreis von {km} km um die Gebietsmitte, plus die redaktionell dazugezählten, minus die ausgenommenen. Sortiert nach Zustand im gewählten Halbmonat, dann Schönheit.",
     roadsNone: "Keine Straße im Gebiet.",
     roadsTitle: "Straßen im Gebiet",
-    toursNone: "Keine Rundtour beginnt in diesem Gebiet.",
-    toursTitle: "Rundtouren",
+    toursNone: "Keine Tour beginnt in diesem Gebiet.",
+    toursTitle: "Touren",
     townsInfo:
       "Die als Standort empfohlenen Orte zuerst, dann die übrigen im Gebiet. „Unterkunft suchen“ öffnet eine Kartensuche nach Hotels im Ort – ohne Buchungsanbieter, ohne Provision; „Werkstätten“ die OSM-Suche nach Fahrradwerkstätten.",
     townsNone: "Kein Rad-Ort im Gebiet.",
@@ -145,7 +145,6 @@ export const panel = {
   },
   kicker: {
     destination: "Reiseziel · {country}",
-    tour: "Rundtour",
     town: "Rad-Ort · {country}",
   },
   /** What else is around here, nearest first. */
@@ -197,8 +196,10 @@ export const panel = {
   },
   /** The loop panel. */
   tour: {
+    /** The series' other years under an edition. */
+    editionsTitle: "Andere Jahre",
     passCount: "{n} Pässe",
-    passesTitle: "Pässe der Runde",
+    passesTitle: "Pässe der Strecke",
   },
   /** The town panel. */
   town: {

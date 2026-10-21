@@ -2,6 +2,7 @@ import {
   createLoader,
   createParser,
   createSerializer,
+  parseAsBoolean,
   parseAsString,
   parseAsStringLiteral,
 } from "nuqs";
@@ -27,7 +28,13 @@ import type {
   Selection,
 } from "@/lib/app-state";
 import { isPeriod } from "@/lib/period";
-import { RANGES, ROAD_TAGS, ROAD_TYPES, SURFACES } from "@/lib/regions";
+import {
+  RANGES,
+  ROAD_TAGS,
+  ROAD_TYPES,
+  SURFACES,
+  TOUR_TYPES,
+} from "@/lib/regions";
 import type { Period, Status } from "@/lib/types";
 
 // ── The URL hash ─────────────────────────────────────────────────────────────
@@ -183,12 +190,16 @@ const FILTER_KEYS = {
   g: { field: "ranges", parser: parseAsSubset(RANGES) },
   /** Max. valley heat in °C. */
   h: { field: "maxValleyTmax", parser: parseAsOneOf(HEAT_OPTIONS) },
+  /** Events on the chosen half-month only ("k" for Kalender). */
+  k: { field: "onDate", parser: parseAsBoolean },
   /** Min. elevation in m. */
   m: { field: "minElevation", parser: parseAsOneOf(ELEVATION_OPTIONS) },
   /** Pass sort key. */
   o: { field: "sort", parser: parseAsStringLiteral(PASS_SORTS) },
   /** Search text. */
   q: { field: "query", parser: parseAsString },
+  /** Tour kinds "event,permanent" (Art der Tour). */
+  r: { field: "tourTypes", parser: parseAsSubset(TOUR_TYPES) },
   /** Statuses "open,risky". */
   s: { field: "status", parser: parseAsStatus },
   /** Half-month, 1 … 12.5 – what the app opens on, so every link carries it. */
@@ -197,6 +208,8 @@ const FILTER_KEYS = {
   v: { field: "maxTraffic", parser: parseAsOneOf(TRAFFIC_OPTIONS) },
   /** Max. rain days of 15. */
   w: { field: "maxWetDays", parser: parseAsOneOf(WET_OPTIONS) },
+  /** Earlier years of a changing event course ("y" for years). */
+  y: { field: "pastEditions", parser: parseAsBoolean },
 } as const satisfies Record<string, FilterKey>;
 
 type FilterHashKey = keyof typeof FILTER_KEYS;

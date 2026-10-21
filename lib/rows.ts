@@ -151,6 +151,9 @@ const tourMatches = (
   // A loop is ridden with what its roads demand, so it answers the surface
   // chip with its own surface rather than through one member.
   if (!filters.surfaces.includes(tour.surface)) return false;
+  if (!filters.tourTypes.includes(tour.type)) return false;
+  // "Termin im Zeitraum": the event day, not the roads, answers it.
+  if (filters.onDate && tour.when !== filters.period) return false;
   const own = tour.passes
     .map((s) => passes.get(s))
     .filter((p) => p !== undefined);
@@ -169,6 +172,7 @@ const tourMatches = (
     tourHaystack(
       tour,
       own.map((p) => p.name),
+      q.w,
     ),
   );
 };
@@ -263,7 +267,67 @@ export interface TourRow {
    * definition for the row, the scene's opening frame and the frame guard.
    */
   range?: RangeName;
+  /**
+   * On the latest edition of a series while the earlier years are hidden: how
+   * many of them there are, so the row can say what the "Frühere Jahre" chip
+   * would bring back. 0 everywhere else.
+   */
+  older: number;
 }
+
+/**
+ * The latest year of every edition series – the course a rider can still sign
+ * up for, and what the list keeps of a series by default. Read off all tours,
+ * not the filtered ones, so a filter never promotes last year's course to
+ * "latest".
+ */
+export const latestEditions = (tours: readonly Tour[]): Map<string, number> => {
+  const latest = new Map<string, number>();
+  for (const { series, year } of tours)
+    if (series !== undefined && year !== undefined)
+      latest.set(series, Math.max(year, latest.get(series) ?? year));
+  return latest;
+};
+
+/** An earlier year of a series whose latest edition is in the data. */
+export const isPastEdition = (
+  tour: Tour,
+  latest: Map<string, number>,
+): boolean =>
+  tour.series !== undefined &&
+  tour.year !== undefined &&
+  tour.year < (latest.get(tour.series) ?? tour.year);
+
+/** Whether the "Frühere Jahre" chip has anything to bring back. */
+export const hasPastEditions = (tours: readonly Tour[]): boolean => {
+  const latest = latestEditions(tours);
+  return tours.some((t) => isPastEdition(t, latest));
+};
+
+/**
+ * The editions of one series stand together, newest first, where the series'
+ * first row would stand – a list sorted by climb would otherwise scatter
+ * Stelvio Santini 2024, 2025 and 2026 over the whole page.
+ */
+const groupEditions = (rows: TourRow[]): TourRow[] => {
+  const out: TourRow[] = [];
+  const placed = new Set<string>();
+  for (const row of rows) {
+    const { series } = row.tour;
+    if (series === undefined) {
+      out.push(row);
+      continue;
+    }
+    if (placed.has(series)) continue;
+    placed.add(series);
+    out.push(
+      ...rows
+        .filter((r) => r.tour.series === series)
+        .toSorted((a, b) => (b.tour.year ?? 0) - (a.tour.year ?? 0)),
+    );
+  }
+  return out;
+};
 
 /**
  * The range of a loop or an area: that of its roads – the first known one,
@@ -290,10 +354,18 @@ export const buildTourRows = (
   const { years, signals, isFavorite, w } = inputs;
   const q = query(filters, inputs);
   const i = periodIndex(filters.period);
+  const latest = latestEditions(tours);
+  const olderOf = new Map<string, number>();
+  for (const tour of tours)
+    if (isPastEdition(tour, latest))
+      olderOf.set(tour.series!, (olderOf.get(tour.series!) ?? 0) + 1);
   const rows: TourRow[] = [];
   for (const tour of tours) {
     const favorite = isFavorite("tour", tour.slug);
     if (q.favoritesOnly && !favorite) continue;
+    // A favourite stays, whatever its year: it was bookmarked on purpose.
+    if (!filters.pastEditions && !favorite && isPastEdition(tour, latest))
+      continue;
     if (!tourMatches(tour, passes, filters, q, signals)) continue;
     const year = years.tours[tour.slug];
     if (!year) continue;
@@ -301,6 +373,10 @@ export const buildTourRows = (
     if (!cell || !filters.status.includes(cell.status)) continue;
     rows.push({
       favorite,
+      older:
+        !filters.pastEditions && tour.series !== undefined
+          ? (olderOf.get(tour.series) ?? 0)
+          : 0,
       range: rangeOfRoads(tour.passes, passes),
       reason: reasonOf(cell),
       season: year.cells,
@@ -309,7 +385,9 @@ export const buildTourRows = (
       window: tourWindowWord(tour, w),
     });
   }
-  return rows.toSorted((a, b) => b.tour.elevationGain - a.tour.elevationGain);
+  return groupEditions(
+    rows.toSorted((a, b) => b.tour.elevationGain - a.tour.elevationGain),
+  );
 };
 
 export interface TownRow {
@@ -528,6 +606,21 @@ export const facetCount = (
   }
   return n;
 };
+
+/**
+ * How many loops a change of the tour-type chips would leave – the number on
+ * those chips, counted the way `facetCount` counts roads: the patch lifts the
+ * group's own filter, so the numbers stand still while it is tapped. A few dozen
+ * tours, so the list itself is the cheapest honest count.
+ */
+export const tourFacetCount = (
+  tours: Tour[],
+  passes: PassIndex,
+  filters: Filters,
+  patch: Partial<Filters>,
+  inputs: ListInputs,
+): number =>
+  buildTourRows(tours, passes, { ...filters, ...patch }, inputs).length;
 
 export interface HistogramBar {
   period: Period;
