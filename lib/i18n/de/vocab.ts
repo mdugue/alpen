@@ -109,6 +109,12 @@ export const vocab = {
       label: "Schwarzwald",
       outside: "außerhalb des Schwarzwalds",
     },
+    Thüringen: {
+      hint: "Inselsberg und Oberhof am Rennsteig, Wasserkuppe und Kreuzberg in der Rhön: kurze Anstiege für ein Wochenende in der Mitte Deutschlands.",
+      inside: "im Thüringer Wald und in der Rhön",
+      label: "Thüringer Wald",
+      outside: "außerhalb des Thüringer Walds",
+    },
     Vogesen: {
       hint: "Grand Ballon, Schlucht, Ballon d'Alsace und die Route des Crêtes: das Wochenende ab Freiburg, Basel oder Karlsruhe.",
       inside: "in den Vogesen",
@@ -149,7 +155,9 @@ export const vocab = {
     Mallorca: "Mallorca",
     Ostalpen: "Ostalpen",
     Pyrenäen: "Pyrenäen",
+    Rhön: "Rhön",
     Schwarzwald: "Schwarzwald",
+    Thüringen: "Thüringer Wald",
     Vogesen: "Vogesen",
     Westalpen: "Westalpen",
     Zentralalpen: "Zentralalpen",

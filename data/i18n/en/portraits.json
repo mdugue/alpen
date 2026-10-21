@@ -4348,5 +4348,56 @@
     "highlights": "The view from the summit across the southern foothills."
    }
   ]
+ },
+ "grosser-inselsberg": {
+  "intro": "The summit you ride in the Thuringian Forest if you ride only one: two ascents, both with ramps over 10 % just before the top.",
+  "sides": [
+   {
+    "character": "From Tabarz long and steady in the forest, the last two kilometres across the Rennsteig steep to the summit.",
+    "highlights": "The view from the summit across the Thuringian basin."
+   },
+   {
+    "character": "From Brotterode short and steep from the start, open at the top."
+   }
+  ]
+ },
+ "oberhof": {
+  "intro": "The Rennsteig at its best-known place: ski jumps, a biathlon stadium and a bobsleigh run, with a steady climb from the south between them.",
+  "sides": [
+   {
+    "character": "From Zella-Mehlis steadily at 4 to 5 % through the spruce forest, flat along the Rennsteig at the top.",
+    "highlights": "The ski jumps and the stadium at the Grenzadler."
+   }
+  ]
+ },
+ "wasserkuppe": {
+  "intro": "The dome around which everything in the Rhön turns: bare plateaus, gliders overhead and on clear days the view to the Thuringian Forest.",
+  "sides": [
+   {
+    "character": "From Gersfeld long and steady, in the forest at first, then open across the pastures of the high Rhön.",
+    "highlights": "The open plateaus just below the summit."
+   },
+   {
+    "character": "From Poppenhausen shorter and steadily steeper, up through the forest."
+   }
+  ]
+ },
+ "kreuzberg-rhoen": {
+  "intro": "Short, steep and with the best destination in the Rhön: the monastery beer below the summit cross.",
+  "sides": [
+   {
+    "character": "From Bischofsheim rising steadily, with ramps over 10 % in the forest for the last kilometres.",
+    "highlights": "The monastery brewery at the end of the road."
+   }
+  ]
+ },
+ "hochrhoenstrasse": {
+  "intro": "The climb onto the open plateau of the Long Rhön, which you then ride for kilometres at the top without a tree or a gradient.",
+  "sides": [
+   {
+    "character": "From Fladungen steadily through forest and meadows to the edge of the plateau at the Black Moor.",
+    "highlights": "The Black Moor with its boardwalk at the edge."
+   }
+  ]
  }
 }

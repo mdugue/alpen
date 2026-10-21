@@ -6346,5 +6346,69 @@
     "highlights": "Der Blick vom Gipfel über das Südharzer Vorland."
    }
   ]
+ },
+ "grosser-inselsberg": {
+  "intro": "Der Gipfel, den man im Thüringer Wald fährt, wenn man nur einen fährt: zwei Auffahrten, beide mit Rampen über 10 % kurz vor dem Ziel.",
+  "sides": [
+   {
+    "bestAs": "up",
+    "character": "Von Tabarz lange gleichmäßig im Wald, die letzten zwei Kilometer über den Rennsteig steil zum Gipfel.",
+    "hazards": [
+     "steep"
+    ],
+    "highlights": "Der Blick vom Gipfel über das Thüringer Becken."
+   },
+   {
+    "bestAs": "down",
+    "character": "Von Brotterode kurz und von Anfang an steil, oben offen."
+   }
+  ]
+ },
+ "oberhof": {
+  "intro": "Der Rennsteig an seinem bekanntesten Ort: Schanzen, Biathlonstadion und Bobbahn, dazwischen eine gleichmäßige Auffahrt aus dem Süden.",
+  "sides": [
+   {
+    "character": "Von Zella-Mehlis gleichmäßig um 4 bis 5 % durch den Fichtenwald, oben flach am Rennsteig.",
+    "highlights": "Die Schanzen und das Stadion am Grenzadler."
+   }
+  ]
+ },
+ "wasserkuppe": {
+  "intro": "Die Kuppe, um die sich in der Rhön alles dreht: kahle Hochflächen, Segelflieger über dem Kopf und an klaren Tagen der Blick bis zum Thüringer Wald.",
+  "sides": [
+   {
+    "bestAs": "up",
+    "character": "Von Gersfeld lang und gleichmäßig, erst im Wald, dann offen über die Weiden der Hochrhön.",
+    "highlights": "Die offenen Hochflächen kurz unter dem Gipfel."
+   },
+   {
+    "bestAs": "down",
+    "character": "Von Poppenhausen kürzer und gleichmäßig steiler, durch den Wald hinauf.",
+    "hazards": [
+     "traffic"
+    ]
+   }
+  ]
+ },
+ "kreuzberg-rhoen": {
+  "intro": "Kurz, steil und mit dem besten Ziel der Rhön: dem Klosterbier unter dem Gipfelkreuz.",
+  "sides": [
+   {
+    "character": "Von Bischofsheim gleichmäßig steigend, auf den letzten Kilometern im Wald mit Rampen über 10 %.",
+    "hazards": [
+     "steep"
+    ],
+    "highlights": "Die Klosterbrauerei am Ende der Straße."
+   }
+  ]
+ },
+ "hochrhoenstrasse": {
+  "intro": "Die Auffahrt auf die offene Hochfläche der Langen Rhön, die man oben kilometerlang ohne Baum und ohne Steigung weiterfährt.",
+  "sides": [
+   {
+    "character": "Von Fladungen gleichmäßig durch Wald und Wiesen bis an die Kante der Hochfläche beim Schwarzen Moor.",
+    "highlights": "Das Schwarze Moor mit seinem Bohlenweg an der Kante."
+   }
+  ]
  }
 }

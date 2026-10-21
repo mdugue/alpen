@@ -95,6 +95,12 @@ export const vocab = {
       label: "Black Forest",
       outside: "outside the Black Forest",
     },
+    Thüringen: {
+      hint: "The Inselsberg and Oberhof on the Rennsteig, the Wasserkuppe and the Kreuzberg in the Rhön: short climbs for a weekend in the middle of Germany.",
+      inside: "in the Thuringian Forest and the Rhön",
+      label: "Thuringian Forest",
+      outside: "outside the Thuringian Forest",
+    },
     Vogesen: {
       hint: "Grand Ballon, Schlucht, Ballon d'Alsace and the Route des Crêtes: the weekend from Freiburg, Basel or Karlsruhe.",
       inside: "in the Vosges",
@@ -130,7 +136,9 @@ export const vocab = {
     Mallorca: "Mallorca",
     Ostalpen: "Eastern Alps",
     Pyrenäen: "Pyrenees",
+    Rhön: "Rhön",
     Schwarzwald: "Black Forest",
+    Thüringen: "Thuringian Forest",
     Vogesen: "Vosges",
     Westalpen: "Western Alps",
     Zentralalpen: "Central Alps",

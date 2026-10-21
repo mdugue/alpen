@@ -14689,5 +14689,182 @@
     "label": "Bad Sachsa"
    }
   ]
+ },
+ {
+  "slug": "grosser-inselsberg",
+  "surface": "asphalt",
+  "name": "Großer Inselsberg",
+  "type": "spur",
+  "tags": [
+   "panorama"
+  ],
+  "country": "DE",
+  "region": "Thüringen",
+  "lat": 50.8507,
+  "lon": 10.4669,
+  "elevation": 915,
+  "classicAscent": "8,9 km, 5,8 % ab Tabarz",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 2,
+  "season": null,
+  "note": "Der markanteste Gipfel des Thüringer Walds, am Rennsteig. Von Tabarz lang und am Ende steil, von Brotterode kurz und steil; oben Gasthäuser und weiter Blick nach Norden.",
+  "aliases": [
+   "Inselsberg"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 50.8761,
+     "lon": 10.5162
+    },
+    "label": "Tabarz (Nord)"
+   },
+   {
+    "from": {
+     "lat": 50.8257,
+     "lon": 10.4422
+    },
+    "label": "Brotterode (Süd)"
+   }
+  ]
+ },
+ {
+  "slug": "oberhof",
+  "surface": "asphalt",
+  "name": "Oberhof",
+  "type": "pass",
+  "tags": [
+   "forest"
+  ],
+  "country": "DE",
+  "region": "Thüringen",
+  "lat": 50.6975,
+  "lon": 10.7222,
+  "elevation": 847,
+  "classicAscent": "8,0 km, 4,3 % ab Zella-Mehlis",
+  "beauty": 3,
+  "fame": 2,
+  "difficulty": 2,
+  "traffic": 3,
+  "season": null,
+  "note": "Der Übergang über den Rennsteig beim Wintersportort Oberhof, von Zella-Mehlis gleichmäßig im Wald. Breite Straße, nach Norden fällt sie lang und flach nach Tambach-Dietharz.",
+  "aliases": [
+   "Grenzadler"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 50.6561,
+     "lon": 10.664
+    },
+    "label": "Zella-Mehlis (Süd)"
+   }
+  ]
+ },
+ {
+  "slug": "wasserkuppe",
+  "surface": "asphalt",
+  "name": "Wasserkuppe",
+  "type": "spur",
+  "tags": [
+   "panorama"
+  ],
+  "country": "DE",
+  "region": "Rhön",
+  "lat": 50.4985,
+  "lon": 9.938,
+  "elevation": 944,
+  "classicAscent": "11,3 km, 4,1 % ab Gersfeld",
+  "beauty": 4,
+  "fame": 3,
+  "difficulty": 2,
+  "traffic": 3,
+  "season": null,
+  "note": "Der höchste Berg der Rhön und Hessens, Wiege des Segelflugs: oben Flugplatz, Radarkuppel und Ausflugsrummel. Von Gersfeld lang und gleichmäßig, von Poppenhausen etwas steiler.",
+  "aliases": [],
+  "ascents": [
+   {
+    "from": {
+     "lat": 50.4498,
+     "lon": 9.8944
+    },
+    "label": "Gersfeld (Süd)"
+   },
+   {
+    "from": {
+     "lat": 50.5012,
+     "lon": 9.8892
+    },
+    "label": "Poppenhausen (West)"
+   }
+  ]
+ },
+ {
+  "slug": "kreuzberg-rhoen",
+  "surface": "asphalt",
+  "name": "Kreuzberg",
+  "type": "spur",
+  "tags": [
+   "panorama"
+  ],
+  "country": "DE",
+  "region": "Rhön",
+  "lat": 50.3693,
+  "lon": 9.9764,
+  "elevation": 877,
+  "classicAscent": "6,0 km, 5,6 % ab Bischofsheim",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 2,
+  "season": null,
+  "note": "Der heilige Berg der Franken: von Bischofsheim steil zum Kloster mit seiner Brauerei unter dem Gipfel. Oben endet die Straße am Parkplatz.",
+  "aliases": [
+   "Kloster Kreuzberg"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 50.4012,
+     "lon": 9.9934
+    },
+    "label": "Bischofsheim"
+   }
+  ]
+ },
+ {
+  "slug": "hochrhoenstrasse",
+  "surface": "asphalt",
+  "name": "Hochrhönstraße",
+  "type": "climb",
+  "tags": [
+   "panorama"
+  ],
+  "country": "DE",
+  "region": "Rhön",
+  "lat": 50.5235,
+  "lon": 10.072,
+  "elevation": 795,
+  "classicAscent": "6,9 km, 5,5 % ab Fladungen",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 2,
+  "traffic": 2,
+  "season": null,
+  "note": "Von Fladungen hinauf auf die Hochrhönstraße am Schwarzen Moor, die oben über die kahle Lange Rhön nach Bischofsheim läuft. Eine Steige im Sinn des Wortes: oben flach und offen.",
+  "aliases": [
+   "Schwarzes Moor"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 50.521,
+     "lon": 10.1458
+    },
+    "label": "Fladungen"
+   }
+  ]
  }
 ]

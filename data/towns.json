@@ -1660,5 +1660,61 @@
   ],
   "aliases": [],
   "why": "Am Ausgang des Bodetals: Hexentanzplatz und Roßtrappe beginnen im Ort, zwei kurze steile Anstiege an einem Vormittag."
+ },
+ {
+  "slug": "oberhof-ort",
+  "name": "Oberhof",
+  "country": "DE",
+  "lat": 50.705,
+  "lon": 10.727,
+  "tags": [
+   "hotels",
+   "passes"
+  ],
+  "aliases": [],
+  "why": "Der Wintersportort am Rennsteig, mit Hotels für Gruppen: der Inselsberg als Tagesrunde über den Rennsteig, die Auffahrt von Zella-Mehlis vor der Tür."
+ },
+ {
+  "slug": "bad-tabarz",
+  "name": "Bad Tabarz",
+  "country": "DE",
+  "lat": 50.8761,
+  "lon": 10.5162,
+  "tags": [
+   "quiet"
+  ],
+  "aliases": [
+   "Tabarz"
+  ],
+  "why": "Kurort am Fuß des Inselsbergs: die Nordauffahrt beginnt im Ort, Friedrichroda und der Rennsteig nebenan."
+ },
+ {
+  "slug": "gersfeld",
+  "name": "Gersfeld",
+  "country": "DE",
+  "lat": 50.4498,
+  "lon": 9.8944,
+  "tags": [
+   "passes",
+   "quiet"
+  ],
+  "aliases": [
+   "Gersfeld (Rhön)"
+  ],
+  "why": "Kleinstadt unter der Wasserkuppe: die Südauffahrt beginnt im Ort, Kreuzberg und Hochrhönstraße als Runde über Bischofsheim."
+ },
+ {
+  "slug": "bischofsheim",
+  "name": "Bischofsheim",
+  "country": "DE",
+  "lat": 50.4012,
+  "lon": 9.9934,
+  "tags": [
+   "quiet"
+  ],
+  "aliases": [
+   "Bischofsheim in der Rhön"
+  ],
+  "why": "Am Fuß des Kreuzbergs, auf halbem Weg zwischen Wasserkuppe und Langer Rhön."
  }
 ]

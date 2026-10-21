@@ -51,6 +51,9 @@ and the way the range chips are read once there are twenty of them.
    only climbing within a weekend of Berlin, Hamburg and Hanover – a range
    with fewer roads is named here, not filled up with roads the rule leaves
    out.
+   The Thuringian Forest with the Rhön is the same case: of nineteen climbs
+   measured, five meet the rule (Inselsberg, Oberhof, Wasserkuppe,
+   Kreuzberg, Hochrhönstraße).
 3. **The order** is by what each range adds to the app's two questions:
    - Stage 1: Erzgebirge (the pilot: a low range, a new country, climbs that
      are not passes), Black Forest, Mallorca (March and November).

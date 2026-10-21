@@ -1103,5 +1103,43 @@
   "character": "Das nördlichste Mittelgebirge mit echten Anstiegen: der autofreie Brocken, Torfhaus über Bad Harzburg und die kurzen steilen Rampen über dem Bodetal. Fichtenwald, Moore und Fachwerkstädte am Rand, für ein Wochenende von Berlin, Hamburg oder Hannover.",
   "multiDay": "Zwei Tage: Brocken und Torfhaus von Wernigerode oder Bad Harzburg, Hexentanzplatz und Roßtrappe an einem Vormittag in Thale.",
   "access": "Bahn bis Wernigerode, Bad Harzburg oder Thale; mit dem Auto über die A7 oder die B6."
+ },
+ {
+  "slug": "thueringer-wald",
+  "name": "Thüringer Wald",
+  "country": "DE",
+  "center": {
+   "lat": 50.78,
+   "lon": 10.6
+  },
+  "radiusKm": 18,
+  "baseTowns": [
+   "oberhof-ort",
+   "bad-tabarz"
+  ],
+  "include": [],
+  "exclude": [],
+  "character": "Der Kamm des Rennsteigs: Fichtenwald, Wintersportorte und zwei Anstiege mit Namen, der Inselsberg und Oberhof. Mehr Mittelgebirge als Gebirge, für ein Wochenende.",
+  "multiDay": "Ein Wochenende: der Inselsberg von beiden Seiten und Oberhof, dazwischen ein Stück Rennsteig.",
+  "access": "Bahn bis Oberhof oder Gotha, mit dem Auto über die A71 oder die A4."
+ },
+ {
+  "slug": "rhoen",
+  "name": "Rhön",
+  "country": "DE",
+  "center": {
+   "lat": 50.45,
+   "lon": 10
+  },
+  "radiusKm": 13,
+  "baseTowns": [
+   "gersfeld",
+   "bischofsheim"
+  ],
+  "include": [],
+  "exclude": [],
+  "character": "Das Land der offenen Fernsicht: kahle Hochflächen, Segelflieger über der Wasserkuppe und das Klosterbier am Kreuzberg. Kurze Anstiege, viel Wind, wenig Verkehr unter der Woche.",
+  "multiDay": "Zwei Tage: Wasserkuppe von zwei Seiten, Kreuzberg und die Hochrhönstraße als Runde.",
+  "access": "Bahn bis Fulda oder Bad Neustadt, mit dem Auto über die A7."
  }
 ]

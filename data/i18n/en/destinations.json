@@ -278,5 +278,15 @@
   "character": "The northernmost low range with real climbs: the car-free Brocken, Torfhaus above Bad Harzburg and the short steep ramps above the Bode gorge. Spruce forest, moors and half-timbered towns around the edge, for a weekend from Berlin, Hamburg or Hanover.",
   "multiDay": "Two days: the Brocken and Torfhaus from Wernigerode or Bad Harzburg, the Hexentanzplatz and the Rosstrappe in a morning at Thale.",
   "access": "Train to Wernigerode, Bad Harzburg or Thale; by car via the A7 or the B6."
+ },
+ "thueringer-wald": {
+  "character": "The ridge of the Rennsteig: spruce forest, winter sports resorts and two named climbs, the Inselsberg and Oberhof. More low range than mountains, for a weekend.",
+  "multiDay": "A weekend: the Inselsberg from both sides and Oberhof, with a stretch of the Rennsteig between them.",
+  "access": "Train to Oberhof or Gotha, by car via the A71 or the A4."
+ },
+ "rhoen": {
+  "character": "The land of open views: bare plateaus, gliders over the Wasserkuppe and the monastery beer at the Kreuzberg. Short climbs, a lot of wind, little traffic during the week.",
+  "multiDay": "Two days: the Wasserkuppe from two sides, the Kreuzberg and the Hochrhön road as a loop.",
+  "access": "Train to Fulda or Bad Neustadt, by car via the A7."
  }
 }

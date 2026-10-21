@@ -3098,5 +3098,42 @@
   "ascents": [
    "Bad Sachsa"
   ]
+ },
+ "grosser-inselsberg": {
+  "classicAscent": "8.9 km, 5.8 % from Tabarz",
+  "note": "The most striking summit of the Thuringian Forest, on the Rennsteig. From Tabarz long and steep at the end, from Brotterode short and steep; inns and a wide view north at the top.",
+  "ascents": [
+   "Tabarz (north)",
+   "Brotterode (south)"
+  ]
+ },
+ "oberhof": {
+  "classicAscent": "8.0 km, 4.3 % from Zella-Mehlis",
+  "note": "The crossing of the Rennsteig at the winter sports resort of Oberhof, steadily through the forest from Zella-Mehlis. A wide road; to the north it falls long and gently to Tambach-Dietharz.",
+  "ascents": [
+   "Zella-Mehlis (south)"
+  ]
+ },
+ "wasserkuppe": {
+  "classicAscent": "11.3 km, 4.1 % from Gersfeld",
+  "note": "The highest mountain of the Rhön and of Hesse, the cradle of gliding: an airfield, a radar dome and day-trip crowds at the top. From Gersfeld long and steady, from Poppenhausen a little steeper.",
+  "ascents": [
+   "Gersfeld (south)",
+   "Poppenhausen (west)"
+  ]
+ },
+ "kreuzberg-rhoen": {
+  "classicAscent": "6.0 km, 5.6 % from Bischofsheim",
+  "note": "The holy mountain of Franconia: from Bischofsheim steeply up to the monastery and its brewery below the summit. The road ends at the car park.",
+  "ascents": [
+   "Bischofsheim"
+  ]
+ },
+ "hochrhoenstrasse": {
+  "classicAscent": "6.9 km, 5.5 % from Fladungen",
+  "note": "From Fladungen up onto the Hochrhön road at the Black Moor, which then runs across the bare Long Rhön to Bischofsheim. A climb in the strict sense: flat and open at the top.",
+  "ascents": [
+   "Fladungen"
+  ]
  }
 }
