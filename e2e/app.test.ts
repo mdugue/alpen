@@ -25,6 +25,7 @@ import toursJson from "@/data/tours.json" with { type: "json" };
 import type { Bounds } from "@/lib/geo";
 import { HIT_LAYERS, LAYERS } from "@/lib/layer-ids";
 import { mapAssets } from "@/lib/map-assets";
+import { CLASSIC_FAME } from "@/lib/regions";
 import * as S from "@/lib/schema";
 import { startApp, waitUntil, withPage } from "@/test/browser";
 import type { App } from "@/test/browser";
@@ -54,16 +55,27 @@ afterAll(() => {
 const PASS_ROW = '[data-row^="pass:"]';
 const GALIBIER = '[data-row="pass:col-du-galibier"]';
 const SLIDER = '[aria-label="Zeitraum"]';
+/** The "Alle" half of the classics switch on the map (`ClassicsSwitch`). */
+const ALL_ROADS =
+  '[role="group"][aria-label="Welche Straßen und Touren gezeigt werden"] button:last-child';
 const BACK_TO_LIST = '[aria-label="Zurück zur Liste"]';
 /** A drawer with another one open on top of it – Base UI's own stack state. */
 const STACKED = "[data-slot=drawer-popup][data-nested-drawer-open]";
 
-test("1 · loads with all passes and a map canvas", () =>
+test("1 · loads on the classics, every pass one press away, and a map canvas", () =>
   withPage(app, "loads", {}, async (page) => {
     await page.waitFor(PASS_ROW);
-    // Every road in the file is a row: the count comes from the data, so a
+    // The app opens on the classics, and "Alle" on the map lifts the floor so
+    // every road in the file is a row: both counts come from the data, so a
     // curation PR does not have to touch this test.
-    expect(await page.count(PASS_ROW)).toBe(passes.length);
+    expect(await page.count(PASS_ROW)).toBe(
+      passes.filter((p) => p.fame >= CLASSIC_FAME).length,
+    );
+    await page.click(ALL_ROADS);
+    await waitUntil(
+      async () => (await page.count(PASS_ROW)) === passes.length,
+      "every pass a row after pressing Alle",
+    );
     await page.waitFor("canvas.maplibregl-canvas");
     // The season band shows a half-month, what most passes are in it and
     // the counts behind that.
