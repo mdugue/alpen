@@ -23,7 +23,7 @@
           "lat": {
             "type": "number",
             "minimum": 39.2,
-            "maximum": 51
+            "maximum": 52.1
           },
           "lon": {
             "type": "number",

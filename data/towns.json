@@ -1620,5 +1620,45 @@
   ],
   "aliases": [],
   "why": "Kleinstadt zwischen Mont Lozère, Causse und Cevennen: Finiels und Aigoual als Tagesrunden, die Gorges du Tarn nebenan."
+ },
+ {
+  "slug": "wernigerode",
+  "name": "Wernigerode",
+  "country": "DE",
+  "lat": 51.8344,
+  "lon": 10.7863,
+  "tags": [
+   "hub",
+   "train",
+   "hotels"
+  ],
+  "aliases": [],
+  "why": "Fachwerkstadt am Nordrand des Harzes mit Bahnhof der Brockenbahn: Schierke und der Brocken eine halbe Stunde entfernt, Thale und Torfhaus als Tagesrunden."
+ },
+ {
+  "slug": "bad-harzburg",
+  "name": "Bad Harzburg",
+  "country": "DE",
+  "lat": 51.8797,
+  "lon": 10.56,
+  "tags": [
+   "passes",
+   "train"
+  ],
+  "aliases": [],
+  "why": "Kurort an der B4, mit dem Torfhaus vor der Tür und dem Brocken über Schierke als lange Tagesrunde."
+ },
+ {
+  "slug": "thale",
+  "name": "Thale",
+  "country": "DE",
+  "lat": 51.7528,
+  "lon": 11.0377,
+  "tags": [
+   "scenic",
+   "train"
+  ],
+  "aliases": [],
+  "why": "Am Ausgang des Bodetals: Hexentanzplatz und Roßtrappe beginnen im Ort, zwei kurze steile Anstiege an einem Vormittag."
  }
 ]

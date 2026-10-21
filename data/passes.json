@@ -14522,5 +14522,172 @@
     "label": "Le Vigan (Süd)"
    }
   ]
+ },
+ {
+  "slug": "brocken",
+  "surface": "asphalt",
+  "name": "Brocken",
+  "type": "spur",
+  "tags": [
+   "carfree",
+   "panorama"
+  ],
+  "country": "DE",
+  "region": "Harz",
+  "lat": 51.7998,
+  "lon": 10.6168,
+  "elevation": 1134,
+  "classicAscent": "10,6 km, 4,9 % ab Schierke",
+  "beauty": 4,
+  "fame": 3,
+  "difficulty": 3,
+  "traffic": 1,
+  "season": null,
+  "note": "Die Brockenstraße von Schierke auf den höchsten Berg Norddeutschlands ist für Autos gesperrt, für Räder offen; oben Bahnhof der Brockenbahn, Wetterstation und viele Wanderer. Oft Wind, Nebel und bis in den Mai Schnee.",
+  "aliases": [
+   "Brockenstraße"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 51.7647,
+     "lon": 10.6597
+    },
+    "label": "Schierke"
+   }
+  ]
+ },
+ {
+  "slug": "torfhaus",
+  "surface": "asphalt",
+  "name": "Torfhaus",
+  "type": "climb",
+  "tags": [
+   "forest"
+  ],
+  "country": "DE",
+  "region": "Harz",
+  "lat": 51.8022,
+  "lon": 10.5369,
+  "elevation": 810,
+  "classicAscent": "10,6 km, 5,2 % ab Bad Harzburg",
+  "beauty": 3,
+  "fame": 3,
+  "difficulty": 3,
+  "traffic": 4,
+  "season": null,
+  "note": "Die B4 von Bad Harzburg auf die Hochfläche des Oberharzes, mit dem Brocken gegenüber. Gleichmäßig, aber eine Bundesstraße mit viel Verkehr und Motorrädern; von Altenau ruhiger.",
+  "aliases": [],
+  "ascents": [
+   {
+    "from": {
+     "lat": 51.8797,
+     "lon": 10.56
+    },
+    "label": "Bad Harzburg (Nord)"
+   },
+   {
+    "from": {
+     "lat": 51.8035,
+     "lon": 10.4473
+    },
+    "label": "Altenau (West)"
+   }
+  ]
+ },
+ {
+  "slug": "hexentanzplatz",
+  "surface": "asphalt",
+  "name": "Hexentanzplatz",
+  "type": "spur",
+  "tags": [
+   "hairpins",
+   "panorama"
+  ],
+  "country": "DE",
+  "region": "Harz",
+  "lat": 51.7297,
+  "lon": 11.027,
+  "elevation": 484,
+  "classicAscent": "4,8 km, 6,7 % ab Thale",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 3,
+  "season": null,
+  "note": "Die steile Kehrenstraße von Thale auf das Plateau über dem Bodetal, oben Ausflugsziel mit Seilbahn, Tierpark und Bergtheater. An Wochenenden viel Ausflugsverkehr.",
+  "aliases": [],
+  "ascents": [
+   {
+    "from": {
+     "lat": 51.7528,
+     "lon": 11.0377
+    },
+    "label": "Thale"
+   }
+  ]
+ },
+ {
+  "slug": "rosstrappe",
+  "surface": "asphalt",
+  "name": "Roßtrappe",
+  "type": "spur",
+  "tags": [
+   "panorama"
+  ],
+  "country": "DE",
+  "region": "Harz",
+  "lat": 51.739,
+  "lon": 11.0181,
+  "elevation": 444,
+  "classicAscent": "4,3 km, 6,5 % ab Thale",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 2,
+  "season": null,
+  "note": "Die Schwester des Hexentanzplatzes auf der anderen Seite des Bodetals: von Thale kurz und steil zum Felsen über der Schlucht, oben endet die Straße an einem Gasthaus.",
+  "aliases": [],
+  "ascents": [
+   {
+    "from": {
+     "lat": 51.7528,
+     "lon": 11.0377
+    },
+    "label": "Thale"
+   }
+  ]
+ },
+ {
+  "slug": "ravensberg",
+  "surface": "asphalt",
+  "name": "Ravensberg",
+  "type": "spur",
+  "tags": [
+   "forest",
+   "panorama"
+  ],
+  "country": "DE",
+  "region": "Harz",
+  "lat": 51.6214,
+  "lon": 10.5272,
+  "elevation": 653,
+  "classicAscent": "6,2 km, 4,8 % ab Bad Sachsa",
+  "beauty": 3,
+  "fame": 1,
+  "difficulty": 3,
+  "traffic": 1,
+  "season": null,
+  "note": "Die Stichstraße von Bad Sachsa auf den Aussichtsberg am Südrand des Harzes, oben Gasthaus und Blick über das Südharzer Vorland. Ruhig, mit steilen Rampen im Wald.",
+  "aliases": [],
+  "ascents": [
+   {
+    "from": {
+     "lat": 51.5883,
+     "lon": 10.5428
+    },
+    "label": "Bad Sachsa"
+   }
+  ]
  }
 ]

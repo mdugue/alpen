@@ -1083,5 +1083,25 @@
   "character": "Kastanienwälder, tiefe Täler und kahle Granitrücken zwischen Mont Lozère und Aigoual: lange gleichmäßige Anstiege und leere Straßen, im Süden schon Mittelmeerklima. Frühjahr und Herbst, im Hochsommer heiß in den Tälern.",
   "multiDay": "Vier Tage: Aigoual von Valleraugue und von Meyrueis, der Minier von Le Vigan, der Mont Lozère über Finiels; dazwischen die Gorges du Tarn.",
   "access": "Mit dem Auto über die A75 oder von Nîmes; nächster Bahnhof Alès oder Mende."
+ },
+ {
+  "slug": "harz",
+  "name": "Harz",
+  "country": "DE",
+  "center": {
+   "lat": 51.74,
+   "lon": 10.75
+  },
+  "radiusKm": 33,
+  "baseTowns": [
+   "wernigerode",
+   "bad-harzburg",
+   "thale"
+  ],
+  "include": [],
+  "exclude": [],
+  "character": "Das nördlichste Mittelgebirge mit echten Anstiegen: der autofreie Brocken, Torfhaus über Bad Harzburg und die kurzen steilen Rampen über dem Bodetal. Fichtenwald, Moore und Fachwerkstädte am Rand, für ein Wochenende von Berlin, Hamburg oder Hannover.",
+  "multiDay": "Zwei Tage: Brocken und Torfhaus von Wernigerode oder Bad Harzburg, Hexentanzplatz und Roßtrappe an einem Vormittag in Thale.",
+  "access": "Bahn bis Wernigerode, Bad Harzburg oder Thale; mit dem Auto über die A7 oder die B6."
  }
 ]

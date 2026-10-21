@@ -44,6 +44,13 @@ and the way the range chips are read once there are twenty of them.
    race made it known (Tour, Giro, Vuelta, Deutschland Tour, a classic). A
    range comes in once it holds eight such roads and one base town with
    beds. The climb decides, not the size of the range.
+   One exception, measured on 2026-10-21: the Harz holds five roads that
+   meet the rule (Brocken, Torfhaus, Hexentanzplatz, Rosstrappe,
+   Ravensberg; everything else stays under 4 %), and no neighbour lies close
+   enough to share a range with. It comes in with five, because it is the
+   only climbing within a weekend of Berlin, Hamburg and Hanover – a range
+   with fewer roads is named here, not filled up with roads the rule leaves
+   out.
 3. **The order** is by what each range adds to the app's two questions:
    - Stage 1: Erzgebirge (the pilot: a low range, a new country, climbs that
      are not passes), Black Forest, Mallorca (March and November).

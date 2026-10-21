@@ -79,6 +79,12 @@ export const vocab = {
       label: "Erzgebirge",
       outside: "außerhalb des Erzgebirges",
     },
+    Harz: {
+      hint: "Der Brocken ohne Autos, Torfhaus und die steilen Rampen über Thale: der nördlichste Berg für ein Wochenende.",
+      inside: "im Harz",
+      label: "Harz",
+      outside: "außerhalb des Harzes",
+    },
     Jura: {
       hint: "Grand Colombier, Mont du Chat, Faucille, Chasseral: lange Saison, wenig Verkehr, zwei Stunden ab Basel.",
       inside: "im Jura",
@@ -138,6 +144,7 @@ export const vocab = {
   region: {
     Dolomiten: "Dolomiten",
     Erzgebirge: "Erzgebirge",
+    Harz: "Harz",
     Jura: "Jura",
     Mallorca: "Mallorca",
     Ostalpen: "Ostalpen",

@@ -6281,5 +6281,70 @@
     "highlights": "Der Wechsel von Kastanien zu Buchen und Tannen auf halber Höhe."
    }
   ]
+ },
+ "brocken": {
+  "intro": "Der Berg des Nordens ohne Autos: eine schmale Betonstraße durch den Fichtenwald des Nationalparks, oben die kahle Kuppe mit Blick über die Norddeutsche Tiefebene.",
+  "sides": [
+   {
+    "character": "Von Schierke zuerst im Wald gleichmäßig, oben neben den Gleisen der Brockenbahn offen und windig; die Betonplatten sind rau.",
+    "hazards": [
+     "rough"
+    ],
+    "highlights": "Der Blick von der Kuppe bis weit in die Tiefebene, an klaren Tagen."
+   }
+  ]
+ },
+ "torfhaus": {
+  "intro": "Die Hauptauffahrt in den Oberharz und der Aussichtspunkt auf den Brocken. Kein stiller Anstieg, aber der längste gleichmäßige im Harz.",
+  "sides": [
+   {
+    "character": "Von Bad Harzburg durch das Radautal gleichmäßig um 5 % im Wald, oben offen über die Moorflächen.",
+    "hazards": [
+     "traffic"
+    ],
+    "highlights": "Der Blick von Torfhaus über das Moor auf den Brocken."
+   },
+   {
+    "character": "Von Altenau kürzer und ruhiger über die Hochfläche am Oderteich vorbei.",
+    "highlights": "Der Okerstausee unterhalb von Altenau."
+   }
+  ]
+ },
+ "hexentanzplatz": {
+  "intro": "Die steilste Kehrenstraße des Harzes, kurz und hart, über der Schlucht der Bode. Oben der Blick hinüber zur Roßtrappe.",
+  "sides": [
+   {
+    "character": "Von Thale in engen Kehren am Hang, mit Rampen über 10 %, nach der Hälfte etwas flacher bis zum Plateau.",
+    "hazards": [
+     "tight-hairpins",
+     "steep"
+    ],
+    "highlights": "Der Blick vom Plateau in das Bodetal und auf die Roßtrappe."
+   }
+  ]
+ },
+ "rosstrappe": {
+  "intro": "Kürzer und ruhiger als der Hexentanzplatz gegenüber, mit dem besseren Blick in die Schlucht.",
+  "sides": [
+   {
+    "character": "Von Thale durch den Wald gleichmäßig steil hinauf, ohne Kehren am Stück wie gegenüber.",
+    "hazards": [
+     "steep"
+    ],
+    "highlights": "Der Felsen der Roßtrappe hoch über der Bode."
+   }
+  ]
+ },
+ "ravensberg": {
+  "intro": "Der Südharz für sich: eine kleine Straße auf einen Aussichtsberg, auf der man kaum jemandem begegnet.",
+  "sides": [
+   {
+    "character": "Von Bad Sachsa wechselnd zwischen flachen Stücken und steilen Rampen durch den Buchenwald.",
+    "hazards": [
+     "narrow"
+    ],
+    "highlights": "Der Blick vom Gipfel über das Südharzer Vorland."
+   }
+  ]
  }
 }

@@ -3062,5 +3062,41 @@
   "ascents": [
    "Le Vigan (south)"
   ]
+ },
+ "brocken": {
+  "classicAscent": "10.6 km, 4.9 % from Schierke",
+  "note": "The Brocken road from Schierke to the highest mountain in northern Germany is closed to cars and open to bikes; at the top the Brocken railway station, a weather station and many walkers. Often wind, fog and snow into May.",
+  "ascents": [
+   "Schierke"
+  ]
+ },
+ "torfhaus": {
+  "classicAscent": "10.6 km, 5.2 % from Bad Harzburg",
+  "note": "The B4 from Bad Harzburg onto the plateau of the Upper Harz, with the Brocken opposite. Steady, but a main road with a lot of traffic and motorbikes; quieter from Altenau.",
+  "ascents": [
+   "Bad Harzburg (north)",
+   "Altenau (west)"
+  ]
+ },
+ "hexentanzplatz": {
+  "classicAscent": "4.8 km, 6.7 % from Thale",
+  "note": "The steep hairpin road from Thale onto the plateau above the Bode gorge, with a cable car, a zoo and an open-air theatre at the top. Plenty of day-trip traffic at weekends.",
+  "ascents": [
+   "Thale"
+  ]
+ },
+ "rosstrappe": {
+  "classicAscent": "4.3 km, 6.5 % from Thale",
+  "note": "The Hexentanzplatz's sister on the other side of the Bode gorge: from Thale short and steep to the rock above the gorge; the road ends at an inn.",
+  "ascents": [
+   "Thale"
+  ]
+ },
+ "ravensberg": {
+  "classicAscent": "6.2 km, 4.8 % from Bad Sachsa",
+  "note": "The dead-end road from Bad Sachsa to the viewpoint mountain on the southern edge of the Harz, with an inn at the top and a view across the southern foothills. Quiet, with steep ramps in the forest.",
+  "ascents": [
+   "Bad Sachsa"
+  ]
  }
 }

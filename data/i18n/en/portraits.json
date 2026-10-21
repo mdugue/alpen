@@ -4299,5 +4299,54 @@
     "highlights": "The change from chestnut to beech and fir halfway up."
    }
   ]
+ },
+ "brocken": {
+  "intro": "The mountain of the north without cars: a narrow concrete road through the spruce forest of the national park, the bare dome at the top with a view across the North German Plain.",
+  "sides": [
+   {
+    "character": "From Schierke steady in the forest at first, open and windy beside the tracks of the Brocken railway at the top; the concrete slabs are rough.",
+    "highlights": "The view from the dome far across the plain, on a clear day."
+   }
+  ]
+ },
+ "torfhaus": {
+  "intro": "The main climb into the Upper Harz and the viewpoint for the Brocken. Not a quiet climb, but the longest steady one in the Harz.",
+  "sides": [
+   {
+    "character": "From Bad Harzburg up the Radau valley steadily at around 5 % in the forest, open across the moors at the top.",
+    "highlights": "The view from Torfhaus across the moor to the Brocken."
+   },
+   {
+    "character": "From Altenau shorter and quieter across the plateau.",
+    "highlights": "The Oker reservoir below Altenau."
+   }
+  ]
+ },
+ "hexentanzplatz": {
+  "intro": "The steepest hairpin road in the Harz, short and hard, above the gorge of the Bode. At the top the view across to the Rosstrappe.",
+  "sides": [
+   {
+    "character": "From Thale in tight hairpins up the slope, with ramps over 10 %, a little gentler after halfway to the plateau.",
+    "highlights": "The view from the plateau into the Bode gorge and to the Rosstrappe."
+   }
+  ]
+ },
+ "rosstrappe": {
+  "intro": "Shorter and quieter than the Hexentanzplatz opposite, with the better view into the gorge.",
+  "sides": [
+   {
+    "character": "From Thale steadily steep through the forest, without the run of hairpins opposite.",
+    "highlights": "The Rosstrappe rock high above the Bode."
+   }
+  ]
+ },
+ "ravensberg": {
+  "intro": "The southern Harz to yourself: a small road up a viewpoint mountain on which you meet hardly anyone.",
+  "sides": [
+   {
+    "character": "From Bad Sachsa alternating flat stretches and steep ramps through beech forest.",
+    "highlights": "The view from the summit across the southern foothills."
+   }
+  ]
  }
 }
