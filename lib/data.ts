@@ -27,7 +27,8 @@ import { MAP_ASSET_DIR, mapAssets } from "@/lib/map-assets";
 import type { MapAssets } from "@/lib/map-assets";
 import { nearbyTours, townRanges, townReach } from "@/lib/nearby";
 import type { NearbyTours, TownReach } from "@/lib/nearby";
-import type { PageData } from "@/lib/page-data";
+import { packPage } from "@/lib/page-wire";
+import type { PageWire } from "@/lib/page-wire";
 import { localizePortraits } from "@/lib/portrait";
 import { profilesWithCoords, valleyElevations } from "@/lib/profile";
 import { SEGMENT, selectionOf } from "@/lib/routes";
@@ -358,7 +359,8 @@ export const getRoadSketch = (): {
 });
 
 /**
- * Everything the page hands the client, as one value.
+ * Everything the page hands the client, as one value – packed for the wire
+ * (`packPage`, lib/page-wire.ts): every prerendered route carries a copy.
  *
  * The derivations above are the page's own business – it wants all of them,
  * every time, and nothing else ever wanted one on its own – so the caller
@@ -367,7 +369,7 @@ export const getRoadSketch = (): {
  * read straight off the parsed constants; a getter around a constant only
  * hides which of the two a name is.
  */
-export const getPageData = (lang: Lang): PageData => {
+export const getPageData = (lang: Lang): PageWire => {
   // The valleys are walked once and handed on: the page carries them and the
   // year is graded against them, and there is no cache left to make the second
   // walk free.
@@ -376,7 +378,7 @@ export const getPageData = (lang: Lang): PageData => {
   // the reach, the members – is derived from the German records, which carry
   // the same names, numbers and coordinates.
   const lists = localized(lang);
-  return {
+  return packPage({
     assets: getMapAssets(),
     climate,
     destinationMembers: getDestinationMembers(),
@@ -390,5 +392,5 @@ export const getPageData = (lang: Lang): PageData => {
     towns: lists.towns,
     valleys,
     years: getYears(valleys),
-  };
+  });
 };
