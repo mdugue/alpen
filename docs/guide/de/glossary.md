@@ -55,9 +55,12 @@ Seiten vorkommen – von „abgeleitet“ bis „zugeschneit“.
 ## G
 
 - **Gebirge** – die oberste Einteilung der Karte: die Alpen und die
-  Gebirge, die sie ergänzen – Jura, Vogesen, Pyrenäen, Erzgebirge,
-  Schwarzwald, Mallorca –, darunter die Regionen (etwa Westalpen oder
-  Dolomiten). Der Filter „Gebirge“ rückt auch den Kartenausschnitt auf das
+  Gebirge, die sie ergänzen – für den Urlaub etwa Pyrenäen, Zentralmassiv,
+  Korsika, Mallorca, die Kanaren, Asturien und Kantabrien, die Sierra
+  Nevada, der Apennin, Sizilien und die Tatra, für ein Wochenende etwa
+  Vogesen, Jura, Schwarzwald, Erzgebirge, Harz, Thüringer Wald, Bayerischer
+  Wald, Ardennen und Riesengebirge –, darunter die Regionen (etwa Westalpen
+  oder Dolomiten). Der Filter „Gebirge“ rückt auch den Kartenausschnitt auf das
   gewählte Gebirge; er zeigt die Gebirge, in denen die Karte Straßen enthält,
   in zwei Zeilen: die für einen Urlaub und die für ein Wochenende.
 - **Geländemodell** – ein Raster aus Höhenwerten, das die Erdoberfläche

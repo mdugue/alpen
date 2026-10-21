@@ -121,15 +121,28 @@ knows, the "Gebirge" chip, and a town's place: a town has no region of its
 own and takes the range of the nearest road in its reach (`townRanges`,
 `lib/nearby.ts`).
 
-| Range         | Regions                                      | Label (UI)  |
-| ------------- | -------------------------------------------- | ----------- |
-| `Alpen`       | Westalpen, Zentralalpen, Ostalpen, Dolomiten | Alpen       |
-| `Vogesen`     | Vogesen                                      | Vogesen     |
-| `Jura`        | Jura                                         | Jura        |
-| `Pyrenäen`    | Pyrenäen                                     | Pyrenäen    |
-| `Erzgebirge`  | Erzgebirge                                   | Erzgebirge  |
-| `Schwarzwald` | Schwarzwald                                  | Schwarzwald |
-| `Mallorca`    | Mallorca                                     | Mallorca    |
+| Range           | Regions                                      | Label (UI)                      |
+| --------------- | -------------------------------------------- | ------------------------------- |
+| `Alpen`         | Westalpen, Zentralalpen, Ostalpen, Dolomiten | Alpen                           |
+| `Vogesen`       | Vogesen                                      | Vogesen                         |
+| `Jura`          | Jura                                         | Jura                            |
+| `Pyrenäen`      | Pyrenäen                                     | Pyrenäen                        |
+| `Erzgebirge`    | Erzgebirge                                   | Erzgebirge                      |
+| `Schwarzwald`   | Schwarzwald                                  | Schwarzwald                     |
+| `Mallorca`      | Mallorca                                     | Mallorca                        |
+| `Zentralmassiv` | Zentralmassiv                                | Zentralmassiv                   |
+| `Harz`          | Harz                                         | Harz                            |
+| `Thüringen`     | Thüringen, Rhön                              | Thüringer Wald und Rhön         |
+| `Bayerwald`     | Bayerwald, Böhmerwald                        | Bayerischer Wald und Böhmerwald |
+| `Korsika`       | Korsika                                      | Korsika                         |
+| `Kanaren`       | Teneriffa, Gran Canaria, La Palma            | Kanaren                         |
+| `Nordspanien`   | Asturien, Kantabrien                         | Asturien und Kantabrien         |
+| `Andalusien`    | Sierra Nevada, Almería                       | Sierra Nevada und Almería       |
+| `Apennin`       | Abruzzen, Latium, Toskana, Marken            | Apennin                         |
+| `Sizilien`      | Ätna, Nordsizilien, Westsizilien             | Sizilien                        |
+| `Ardennen`      | Ardennen                                     | Ardennen                        |
+| `Riesengebirge` | Riesengebirge, Jeschken und Isergebirge      | Riesengebirge                   |
+| `Tatra`         | Hohe Tatra, Podhale, Niedere Tatra           | Tatra                           |
 
 A new range is a vocabulary edit: its name in `RANGES`, its regions in
 `RANGE_REGIONS`, its label and hint in `vocab.range` of both message files,
