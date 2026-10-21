@@ -164,6 +164,7 @@ unter dem neuesten Jahr. Im Reiseziel stehen die Touren nach Art geordnet.
 | blauer Punkt mit Ring  | Ort                                                                       |
 | blaue, helle Umrandung | Reiseziel: das Gebiet um seine Mitte, seine Passhöhen und seine Orte      |
 | kleiner grauer Punkt   | Straße außerhalb der Filter; antippen öffnet sie                          |
+| dünne graue Linie      | ihre Auffahrt, ab mittlerem Zoom                                          |
 
 In der Übersicht zeigt die Karte nicht jeden Pass: Weit herausgezoomt stehen
 nur die Klassiker und die schönsten bekannten Pässe da, beim Hineinzoomen

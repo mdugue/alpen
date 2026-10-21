@@ -56,8 +56,9 @@ export interface PassProps {
 
 /**
  * A road the filters leave out, drawn as a shadow (`LAYERS.ghost`): a small
- * grey dot with no status, no name and no lines – enough to say there is more
- * here, and to be tapped, without competing with what the filters chose.
+ * grey dot with no status and no name, its ascents a grey hairline from zoom 8
+ * (`ROUTE_GHOST`) – enough to say there is more here, and to be tapped,
+ * without competing with what the filters chose.
  */
 export interface GhostProps {
   fame: number;
@@ -136,7 +137,12 @@ export interface PopupContent {
 }
 
 export interface Scene {
-  routes: { filter: FilterSpecification; state: Record<string, RouteState> };
+  routes: {
+    filter: FilterSpecification;
+    /** Which ascents are drawn as the shadows' thin grey lines (`ROUTE_GHOST`). */
+    ghosts: FilterSpecification;
+    state: Record<string, RouteState>;
+  };
   tours: { filter: FilterSpecification; state: Record<string, TourState> };
   passes: FeatureCollection<Point, PassProps>;
   /** The roads the filters leave out, as shadows; empty while the roads are off the map. */
@@ -512,6 +518,11 @@ export const buildScene = (input: SceneInput): Scene => {
     ),
     routes: {
       filter: slugFilter(shown.passes ? drawn.map((r) => r.pass.slug) : []),
+      ghosts: slugFilter(
+        shown.passes
+          ? ghosts.map((r) => r.pass.slug).filter((slug) => slug !== selPass)
+          : [],
+      ),
       state: routeState,
     },
     tours: {

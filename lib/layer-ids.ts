@@ -80,6 +80,14 @@ export const ROUTE_DASH = "routes-dash";
 export const ROUTE_CASING = "routes-casing";
 
 /**
+ * The ascents of the roads the filters leave out: a thin grey line under
+ * everything, the shadow's lines as the grey dot is its mark. Not a companion
+ * of the route set – it carries the shadows' filter, not the drawn roads' –
+ * and no target: the dot answers for its road.
+ */
+export const ROUTE_GHOST = "routes-ghost";
+
+/**
  * A tour is a tube: its mark is the tube's wall in the tour's colour, and
  * these are the rest of it – the pale inside, the road along its middle and
  * the arrows that say which way round it is ridden.
@@ -107,8 +115,8 @@ export const LAYERS = {
     source: SOURCE.destinations,
   },
   /**
-   * A road the filters leave out: a shadow of its dot, and nothing else – no
-   * name, no lines. It answers the pointer as its pass, below every road the
+   * A road the filters leave out: a shadow of its dot – no name, and its
+   * ascents only as the hairline `ROUTE_GHOST`. It answers the pointer as its pass, below every road the
    * filters kept, so a shadow never takes a click meant for a real mark.
    */
   ghost: {

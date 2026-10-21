@@ -302,8 +302,12 @@ reads as texture where a dot would read as noise.
 
 The app opens on the classics (`DEFAULT_FILTERS.minFame` is `CLASSIC_FAME`),
 and a road the filters leave out is not wiped off the map: it stays as a small
-dot in the muted grey the app says "no answer" in (`LAYERS.ghost`,
-`Scene.ghosts`), without status, ring, name or lines. A map that showed only
+dot in the ink at half strength (`LAYERS.ghost`, `Scene.ghosts`), without
+status, ring or name, and from zoom 8 its ascents are a grey hairline under
+everything (`ROUTE_GHOST`, one layer opacity, `Scene.routes.ghosts`) – the
+valleys stay a network of roads, and none of it competes with a status
+colour. Not on the overview, where three hundred hairlines would be a grey
+felt. A map that showed only
 forty-five dots would say the rest of the Alps is empty; a grey speck says
 there is more here, and where. The shadows are every road the half-month
 grades less the ones the list holds, whatever filter left them out, and they

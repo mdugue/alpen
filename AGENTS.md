@@ -263,8 +263,8 @@ The camera, the layer stack, hit testing, colours, the basemap.
   → [why](docs/map-rendering.md#the-overview-draws-by-rank-the-list-draws-everything)
 - **What the filters leave out stays as a shadow.** The app opens on the
   classics (`CLASSIC_FAME`), and every road the filters drop is a small grey
-  dot (`Scene.ghosts`) – no status, no name, no lines, below every real mark,
-  drawn whole once selected.
+  dot (`Scene.ghosts`), its ascents a grey hairline from zoom 8 – no status,
+  no name, below every real mark, drawn whole once selected.
   → [why](docs/map-rendering.md#what-the-filters-leave-out-stays-as-a-shadow)
 - **What answers the pointer is not what is drawn.** A transparent `*-hit`
   layer per kind, one `queryRenderedFeatures`, and `pick` over `HIT_GROUPS` –

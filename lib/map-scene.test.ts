@@ -314,6 +314,8 @@ describe("hover", () => {
       ]);
       expect(passMark(scene, "small")).toBeUndefined();
       expect(filtered(scene.routes.filter)).not.toContain("small");
+      // Its ascents are the thin grey lines instead.
+      expect(filtered(scene.routes.ghosts)).toEqual(["small"]);
     });
 
     test("carry the rank the ladder reads, a pearl a step up", () => {
@@ -327,6 +329,7 @@ describe("hover", () => {
         input({ ghosts: [ghost], selection: { kind: "pass", slug: "small" } }),
       );
       expect(ghostMark(scene)).toEqual([]);
+      expect(filtered(scene.routes.ghosts)).toEqual([]);
       expect(passMark(scene, "small")).toMatchObject({
         selected: 1,
         status: "closed",

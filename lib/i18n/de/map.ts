@@ -12,7 +12,7 @@ export const map = {
   classics: "Klassiker",
   classicsGroup: "Welche Straßen und Touren gezeigt werden",
   classicsHint:
-    "Die Klassiker – Straßen ab Bekanntheit {n}, Touren mit mindestens einer davon. Die übrigen Straßen bleiben als graue Punkte auf der Karte.",
+    "Die Klassiker – Straßen ab Bekanntheit {n}, Touren mit mindestens einer davon. Die übrigen Straßen bleiben grau auf der Karte.",
   classicsSearching: "Die Suche findet alle Straßen, auch ohne „Alle“.",
   /** The one overlay: waymarked cycling routes. */
   cycleRoutes: "Radrouten",

@@ -9,7 +9,7 @@ export const map = {
   classics: "Classics",
   classicsGroup: "Which roads and tours are shown",
   classicsHint:
-    "The classics – roads of fame {n} and up, tours with at least one of them. The other roads stay on the map as grey dots.",
+    "The classics – roads of fame {n} and up, tours with at least one of them. The other roads stay on the map in grey.",
   classicsSearching: "Search finds every road, with or without “All”.",
   cycleRoutes: "Cycle routes",
   filteredOut: "outside the filters",

@@ -24,6 +24,7 @@ import {
   LAYERS,
   ROUTE_CASING,
   ROUTE_DASH,
+  ROUTE_GHOST,
   OVERLAY,
   PASS_LABELS,
   passLabelId,
@@ -259,8 +260,8 @@ export const applyBase = (m: MLMap, id: string, s: Scheme, lang: Lang) => {
 const SIZE = { far: [2, 1.1], near: [4, 1.8] } as const;
 /** The lowest label layer's rank: it names every rank at or below it. */
 const RANK_FLOOR = PASS_LABELS.at(-1)!.rank;
-/** A shadow's radius at the two size zooms and its opacity: present, not loud. */
-const GHOST = { opacity: 0.55, radius: [1.6, 3.2] } as const;
+/** A shadow's radius at the two size zooms, its opacity and its lines': present, not loud. */
+const GHOST = { line: 0.28, opacity: 0.5, radius: [2.4, 4.4] } as const;
 /** How big and how opaque a newcomer is at the step it joins (`newcomerBelow`). */
 const QUIET = { opacity: 0.45, size: 0.6 } as const;
 
@@ -575,17 +576,34 @@ export const appLayers = (
       source: SOURCE.reach,
       type: "line",
     },
+    // The ascents of the roads the filters leave out: a hairline in the ink,
+    // faint, under everything – the valleys stay legible as a network of
+    // roads, and none of it competes with a status colour. One layer opacity
+    // for all of them, so a hairpin's overlap is not drawn twice. Not on the
+    // overview, where three hundred hairlines would be a grey felt.
+    {
+      filter: ["in", ["get", "slug"], ["literal", []]],
+      id: ROUTE_GHOST,
+      layout: { "line-cap": "round", "line-join": "round" },
+      minzoom: 8,
+      paint: {
+        "line-color": colors.ink,
+        "line-layer-opacity": GHOST.line,
+        "line-width": ["interpolate", ["linear"], ["zoom"], 8, 0.8, 12, 2],
+      },
+      source: SOURCE.routes,
+      type: "line",
+    },
     // The roads the filters leave out, as shadows (`Scene.ghosts`): a small
-    // dot in the muted grey the app says "no answer" in, no ring, no status,
-    // no name. They thin out by the same ladder as the dots – three hundred
-    // grey specks would be the noise the classics are there to avoid – and
-    // lie under every line and mark the filters kept, which win the pointer
-    // too (`HIT_GROUPS`).
+    // dot in the ink, faint, no ring, no status, no name. They thin out by
+    // the same ladder as the dots – three hundred grey specks would be the
+    // noise the classics are there to avoid – and lie under every line and
+    // mark the filters kept, which win the pointer too (`HIT_GROUPS`).
     {
       filter: ghostFilter,
       id: LAYERS.ghost.mark,
       paint: {
-        "circle-color": colors.unknown,
+        "circle-color": colors.ink,
         "circle-opacity": byLadder(() => GHOST.opacity, QUIET.opacity),
         "circle-pitch-alignment": "map",
         "circle-radius": byLadder(
