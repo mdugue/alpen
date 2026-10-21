@@ -8,6 +8,15 @@
    }
   ]
  },
+ "alagna-valsesia": {
+  "intro": "The valley to the south-east side of Monte Rosa, a gentle day without a pass.",
+  "sides": [
+   {
+    "character": "From Varallo long and barely rising up the Sesia, only a little steeper past Riva Valdobbia.",
+    "highlights": "The Walser houses of Alagna and Monte Rosa at the head of the valley."
+   }
+  ]
+ },
  "albulapass": {
   "intro": "A quiet pass between the Albula valley and the Engadine, for long stretches beside the Rhaetian Railway's Albula line with its viaducts and spiral tunnels. Little traffic, plenty of landscape.",
   "sides": [
@@ -164,6 +173,15 @@
    {
     "character": "Gentle and stepped from Pontresina, almost without hairpins, with glaciers in view. Wide and flowing on the way down.",
     "highlights": "The Morteratsch glacier and Piz Palü in view."
+   }
+  ]
+ },
+ "bielmonte": {
+  "intro": "A high road above the Biellese, the sister of the Oropa climb.",
+  "sides": [
+   {
+    "character": "From Trivero in waves and moderate along the ridge of the Panoramica Zegna, with short ramps.",
+    "highlights": "The rhododendrons and Monte Rosa to the north."
    }
   ]
  },
@@ -1377,6 +1395,19 @@
    }
   ]
  },
+ "colle-del-lys": {
+  "intro": "The home climb of Turin's cyclists on the edge of the Susa valley.",
+  "sides": [
+   {
+    "character": "From Rubiana steadily steep through chestnut and beech forest.",
+    "highlights": "The view across the Susa valley and the Sacra di San Michele."
+   },
+   {
+    "character": "From Viù long and gentle across pastures.",
+    "highlights": "The Lanzo valleys."
+   }
+  ]
+ },
  "colle-del-melogno": {
   "intro": "The home climb of Finale Ligure: from the sea through the beech woods to just over 1,000 m. A 19th-century fort stands at the top; the Calizzano side is the shorter and quieter one.",
   "sides": [
@@ -1411,6 +1442,19 @@
    }
   ]
  },
+ "colle-della-maddalena": {
+  "intro": "The lowest crossing between Cuneo and the Ubaye, the link for tours across the border.",
+  "sides": [
+   {
+    "character": "From Vinadio long and steady through the Valle Stura via Pietraporzio and Argentera, flatter at the top towards the lake.",
+    "highlights": "The cliffs of the Valle Stura and the Lago della Maddalena."
+   },
+   {
+    "character": "From Larche short and moderate across pastures to the border.",
+    "highlights": "The wide pastures at the border."
+   }
+  ]
+ },
  "colle-delle-finestre": {
   "intro": "On the Giro since 2005 and one of Italy's hardest climbs: tarmac below, about eight kilometres of gravel above. In 2018 Chris Froome began his solo ride to overall victory here.",
   "sides": [
@@ -1439,6 +1483,19 @@
    },
    {
     "character": "Slightly milder from the Maira valley at Stroppo, with more hairpins and also irregular. The bends make the descent easier to read."
+   }
+  ]
+ },
+ "colle-di-zambla": {
+  "intro": "A mid-height pass in the Bergamo valleys, the bridge between the Seriana and the Brembana.",
+  "sides": [
+   {
+    "character": "From Ponte Nossa steadily via Gorno and Oneta through forest.",
+    "highlights": "The Pizzo Arera above the top."
+   },
+   {
+    "character": "From Ambria long and moderate through the Val Serina via Serina and Oltre il Colle.",
+    "highlights": "The villages of the Val Serina."
    }
   ]
  },
@@ -1661,6 +1718,15 @@
    {
     "character": "From Flums straight into steep hairpins through meadows and forest, without a break up to Tannenboden.",
     "highlights": "The view across the Walensee to the walls of the Churfirsten."
+   }
+  ]
+ },
+ "foppolo": {
+  "intro": "The detour to the end of the Brembo valley, next to the Passo San Marco.",
+  "sides": [
+   {
+    "character": "From Branzi via Carona in steady hairpins through forest to the resort.",
+    "highlights": "The head of the valley with the Orobie peaks."
    }
   ]
  },
@@ -2683,6 +2749,15 @@
    }
   ]
  },
+ "nevegal": {
+  "intro": "A short climb above Belluno, good for half a day.",
+  "sides": [
+   {
+    "character": "From Belluno gently through Castion, then steadily through forest and across meadows to the resort.",
+    "highlights": "The view across the Piave valley to the Belluno Dolomites."
+   }
+  ]
+ },
  "nigerpass": {
   "intro": "The quiet side door to the Rosengarten: while through traffic takes the Karerpass, this road climbs steeply and in shade up from Tiers. At the top the wall stands right above you.",
   "sides": [
@@ -2901,6 +2976,15 @@
    }
   ]
  },
+ "passo-del-cason-di-lanza": {
+  "intro": "A lonely pass in the Carnic Alps, within reach of the Zoncolan.",
+  "sides": [
+   {
+    "character": "From Paularo narrow and steadily steep through forest and across pastures to the top.",
+    "highlights": "The pastures below the Zermula."
+   }
+  ]
+ },
  "passo-del-faiallo": {
   "intro": "From the sea at Genoa-Voltri past the Acquasanta sanctuary onto the crest of the Ligurian Alps. At the top the coast lies far below in the haze, the Po plain on the other side.",
   "sides": [
@@ -2953,6 +3037,19 @@
    }
   ]
  },
+ "passo-del-redebus": {
+  "intro": "A quiet pass east of Trento, as a loop with the Piné plateau.",
+  "sides": [
+   {
+    "character": "From Pergine through the Fersina valley via Sant'Orsola and Palù, steady and long.",
+    "highlights": "The Mòcheni villages in the Fersina valley."
+   },
+   {
+    "character": "From Bedollo on the plateau short and moderate.",
+    "highlights": "The Piné plateau."
+   }
+  ]
+ },
  "passo-del-tonale": {
   "intro": "The Tonale links the Valcamonica with the Val di Sole; at the top are a ski resort and the memorial to the fallen of the First World War, when the front ran through here. Often just the link to the Gavia or the Mortirolo.",
   "sides": [
@@ -2990,6 +3087,32 @@
    },
    {
     "character": "Long and flat from Edolo along the valley, only short steeper pitches. Rather tedious uphill, quick and open as a descent to Edolo."
+   }
+  ]
+ },
+ "passo-della-mauria": {
+  "intro": "The gentle link from the Dolomites into Carnia.",
+  "sides": [
+   {
+    "character": "From Lorenzago steadily through forest to the top.",
+    "highlights": "The view back to the Marmarole."
+   },
+   {
+    "character": "From Forni di Sopra gently through the upper Tagliamento valley.",
+    "highlights": "The Friulian Dolomites above Forni."
+   }
+  ]
+ },
+ "passo-della-presolana": {
+  "intro": "The pass below the Presolana, easy to combine with the Vivione and the Zambla in a loop.",
+  "sides": [
+   {
+    "character": "From Clusone steadily via Castione della Presolana and through forest to the top.",
+    "highlights": "The south face of the Presolana above the top."
+   },
+   {
+    "character": "From Dezzo short and steeper in hairpins up out of the gorge.",
+    "highlights": "The Via Mala gorge of Scalve below Dezzo."
    }
   ]
  },
@@ -3212,6 +3335,19 @@
    }
   ]
  },
+ "passo-rest": {
+  "intro": "A quiet pass in the Carnian backcountry, for days without traffic.",
+  "sides": [
+   {
+    "character": "From Tramonti di Sopra steadily through forest.",
+    "highlights": "The green Tramonti valleys."
+   },
+   {
+    "character": "From Socchieve long and moderate via the villages on the Tagliamento slope.",
+    "highlights": "The view over the Tagliamento valley."
+   }
+  ]
+ },
  "passo-rolle": {
   "intro": "The Rolle passes beneath the Pale di San Martino, with the Cimon della Pala, the Matterhorn of the Dolomites, above the top. On the north side lies the Paneveggio forest, whose spruce violin makers prize as tonewood.",
   "sides": [
@@ -3405,6 +3541,19 @@
    }
   ]
  },
+ "pavlicevo-sedlo": {
+  "intro": "The quieter neighbour of the Seeberg saddle, with a view into the Kamnik–Savinja Alps.",
+  "sides": [
+   {
+    "character": "From Solčava through forest and past mountain farms steadily to the border.",
+    "highlights": "The Kamnik–Savinja Alps above the Logar valley."
+   },
+   {
+    "character": "From Bad Eisenkappel long through the Vellach valley, at the top over a rise to the border.",
+    "highlights": "The quiet Leppen valley."
+   }
+  ]
+ },
  "penegal": {
   "intro": "From the Mendel Pass almost 400 m further up to the lookout tower on the Penegal. Short, steep and with one of the widest views over the Adige valley.",
   "sides": [
@@ -3431,6 +3580,15 @@
    {
     "character": "Steep right out of Bregenz up the slope, via Fluh through forest and meadows to the top station.",
     "highlights": "The view over Lake Constance as far as the Säntis."
+   }
+  ]
+ },
+ "pian-del-re": {
+  "intro": "To the end of the Po valley, with the Monviso as a wall above the finish.",
+  "sides": [
+   {
+    "character": "From Paesana gently up the valley to Crissolo, then narrow and steep in hairpins via Pian della Regina to the Pian del Re.",
+    "highlights": "The north face of the Monviso and the source of the Po."
    }
   ]
  },
@@ -3507,12 +3665,30 @@
    }
   ]
  },
+ "plose": {
+  "intro": "The long climb above Brixen, as an opener for the Würzjoch loop or as a day of its own.",
+  "sides": [
+   {
+    "character": "From Brixen steadily via St. Andrä, then through forest and across pastures to Palmschoss and the Kreuztal.",
+    "highlights": "The Odle peaks and the Peitlerkofel opposite."
+   }
+  ]
+ },
  "poggio-di-sanremo": {
   "intro": "The last climb of Milan–Sanremo, where the race has been decided since 1960: a few kilometres between greenhouses, the village at the top, then the descent to the Via Roma. Low, gentle, and still one of the most famous hills in cycling.",
   "sides": [
    {
     "character": "Gently up from the coast road at Bussana between greenhouses, with a few hairpins and a short steeper bit before the village. Anyone who wants to can sprint the crest as in the race.",
     "highlights": "The village of Poggio at the top, the Via Roma waiting below."
+   }
+  ]
+ },
+ "pokljuka": {
+  "intro": "The home climb of Bled's cyclists, onto a quiet forest plateau.",
+  "sides": [
+   {
+    "character": "From Gorje steadily through spruce forest onto the plateau, flatter at the top.",
+    "highlights": "The Pokljuka pastures and the view of Triglav."
    }
   ]
  },
@@ -3552,6 +3728,15 @@
   "sides": [
    {
     "character": "Long and stepped from Muotathal, steep ramps alternating with short recovery stretches. Narrow, few hairpins, plenty of forest and pasture."
+   }
+  ]
+ },
+ "prato-nevoso": {
+  "intro": "A short, steep resort climb between Cuneo and Liguria.",
+  "sides": [
+   {
+    "character": "From Frabosa Sottana steadily at around 8 % through forest and hairpins to the resort.",
+    "highlights": "The view over the Mondovì plain."
    }
   ]
  },
@@ -3750,6 +3935,15 @@
    }
   ]
  },
+ "sauris": {
+  "intro": "Gorge, reservoir and a language-island village: the finest detour in Carnia.",
+  "sides": [
+   {
+    "character": "From Ampezzo steadily into the Lumiei gorge, through several narrow tunnels to the dam, then along the lake and more steeply to Sauris di Sopra.",
+    "highlights": "The Lumiei gorge and the Lago di Sauris."
+   }
+  ]
+ },
  "schallenberg": {
   "intro": "A gentle hill pass between the Bernese Oberland and the Emmental, ideal for a loop with the Glaubenbielen.",
   "sides": [
@@ -3907,6 +4101,19 @@
    {
     "character": "From Ville-Vieille steadily steep through larch forest, hairpin after hairpin on a narrow road. No resting point up to the summit, but a reliable rhythm.",
     "highlights": "From the summit, the all-round view over the Guil and Aigue Agnelle valleys."
+   }
+  ]
+ },
+ "soriska-planina": {
+  "intro": "The quiet pass south of Bohinj, with a view of the Julian Alps.",
+  "sides": [
+   {
+    "character": "From Bohinjska Bistrica in steady hairpins through forest to the pasture.",
+    "highlights": "The view across the Bohinj basin to Triglav."
+   },
+   {
+    "character": "From Železniki long through the Selška valley, then via Sorica to the top.",
+    "highlights": "The village of Sorica."
    }
   ]
  },

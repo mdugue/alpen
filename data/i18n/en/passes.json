@@ -6,6 +6,13 @@
    "Frutigen"
   ]
  },
+ "alagna-valsesia": {
+  "classicAscent": "35.5 km, 2 % from Varallo",
+  "note": "The long valley road of the Valsesia from Varallo to its end at Alagna, a Walser village below the east face of Monte Rosa. Gentle, open all year.",
+  "ascents": [
+   "Varallo"
+  ]
+ },
  "albulapass": {
   "classicAscent": "20 km, 5 % from Filisur",
   "note": "Closure usually early November. Quiet road alongside the Rhaetian Railway.",
@@ -116,6 +123,13 @@
   "ascents": [
    "Poschiavo",
    "Pontresina"
+  ]
+ },
+ "bielmonte": {
+  "classicAscent": "22.4 km, 3.9 % from Trivero",
+  "note": "The Panoramica Zegna from Trivero along the ridge of the Biellese Alps to Bielmonte, in early summer between flowering rhododendrons, with a view of Monte Rosa. Long and moderate.",
+  "ascents": [
+   "Trivero"
   ]
  },
  "bocca-del-creer": {
@@ -959,6 +973,14 @@
    "Rezzo (north)"
   ]
  },
+ "colle-del-lys": {
+  "classicAscent": "9.6 km, 7.2 % from Rubiana",
+  "note": "The crossing from the lower Susa valley into the Valli di Lanzo, at the top a memorial to the partisans. Short and stiff from Rubiana, long and gentle from Viù. Open all year.",
+  "ascents": [
+   "Rubiana (south)",
+   "Viù (north)"
+  ]
+ },
  "colle-del-melogno": {
   "classicAscent": "17 km, 5 % from Finale Ligure",
   "note": "The home climb of Finale Ligure: through the beech woods of the Melogno to 1,000 m, the fort of 1880 at the top and occasional snow in winter, otherwise open all year. From Calizzano the shorter, less busy side.",
@@ -982,6 +1004,14 @@
    "Château-Ville-Vieille (FR)"
   ]
  },
+ "colle-della-maddalena": {
+  "classicAscent": "27 km, 4 % from Vinadio",
+  "note": "The crossing from the Valle Stura into the Ubaye valley, long and moderate, at the top the Lago della Maddalena and wide pastures. Cleared all year and therefore also a lorry route between Cuneo and Barcelonnette.",
+  "ascents": [
+   "Vinadio (east)",
+   "Larche (west)"
+  ]
+ },
  "colle-delle-finestre": {
   "classicAscent": "18.5 km, 9.2 % from Susa, top 8 km gravel",
   "note": "Giro legend with a gravel finale. Usually open until late October, muddy after rain.",
@@ -1003,6 +1033,14 @@
   "ascents": [
    "Sampeyre",
    "Stroppo"
+  ]
+ },
+ "colle-di-zambla": {
+  "classicAscent": "13.9 km, 5.7 % from Ponte Nossa",
+  "note": "The crossing between the Val Seriana and the Val Brembana via Oltre il Colle, with a view of the Pizzo Arera. Steady from Ponte Nossa, long via the Val Serina from Ambria. Open all year.",
+  "ascents": [
+   "Ponte Nossa (east)",
+   "Ambria (west)"
   ]
  },
  "colle-fauniera": {
@@ -1159,6 +1197,13 @@
    "Flums"
   ]
  },
+ "foppolo": {
+  "classicAscent": "9 km, 7.1 % from Branzi",
+  "note": "The hairpin road from the upper Brembo valley to the Foppolo ski resort at the head of the valley. Steady, cleared all year.",
+  "ascents": [
+   "Branzi"
+  ]
+ },
  "forcella-aurine": {
   "classicAscent": "11.5 km, 6.1 % from Agordo",
   "note": "The crossing from Agordo via Voltago and Frassenè to Gosaldo, on the road to the Passo Cereda; open all year. Only the north side is a climb: from Gosaldo it is just 3.5 km and 155 m of ascent.",
@@ -1168,7 +1213,7 @@
  },
  "forcella-franche": {
   "classicAscent": "8.1 km, 5.3 % from Agordo",
-  "note": "The low crossing from Agordo via Rivamonte into the Valle del Mis; at the top the road to Gosaldo and the Passo Cereda branches off. The Agordo side is open all year; the valley road through the Valle del Mis with its unlit tunnels is officially closed in winter.",
+  "note": "The low crossing from Agordo via Rivamonte into the Valle del Mis; at the top the road to Gosaldo and the Passo Cereda branches off. The Agordo side is open all year; the valley road through the Valle del Mis with its partly unlit tunnels is officially closed in winter.",
   "ascents": [
    "Agordo (north)",
    "Titele (south)"
@@ -1890,6 +1935,13 @@
    "Pontebba (south)"
   ]
  },
+ "nevegal": {
+  "classicAscent": "13 km, 5 % from Belluno",
+  "note": "Belluno's home climb: from the town via Castion to the small resort on the Col Visentin, at the top the view of the Belluno Dolomites. Cleared all year.",
+  "ascents": [
+   "Belluno"
+  ]
+ },
  "nigerpass": {
   "classicAscent": "9.9 km, 6.9 % from Tiers",
   "note": "The quiet side door to the Rosengarten: steep and shaded up from Tiers, and at the top the wall stands right above the road. Cleared all year, but only a feeder – through traffic takes the Karerpass.",
@@ -2042,6 +2094,13 @@
    "Ponte Arche (north)"
   ]
  },
+ "passo-del-cason-di-lanza": {
+  "classicAscent": "13.5 km, 6.7 % from Paularo",
+  "note": "A narrow mountain pass in the Carnic Alps between Paularo and Pontebba, at the top pastures below the Monte Zermula. Closed in winter.",
+  "ascents": [
+   "Paularo"
+  ]
+ },
  "passo-del-faiallo": {
   "classicAscent": "24 km, 4 % from Voltri",
   "note": "From the sea at Genoa-Voltri via Mele and the Acquasanta monastery onto the crest of the Ligurian Alps; at the top the coast lies 1,000 m below in the haze, the Po plain behind. The top of the road lies a few hundred metres from the actual saddle. Open all year, briefly closed after snowfall in winter.",
@@ -2080,6 +2139,14 @@
    "Monno"
   ]
  },
+ "passo-del-redebus": {
+  "classicAscent": "16 km, 6.2 % from Pergine",
+  "note": "The quiet crossing from the Valsugana at Pergine into the Fersina valley and onto the Piné plateau. Forest, pastures and hardly any traffic. Open all year.",
+  "ascents": [
+   "Pergine (south)",
+   "Bedollo (north)"
+  ]
+ },
  "passo-del-tonale": {
   "classicAscent": "15 km, 6 % from Vezza d'Oglio",
   "note": "Open all year, often combined with the Gavia or the Mortirolo.",
@@ -2108,6 +2175,22 @@
   "ascents": [
    "Tresenda (west)",
    "Edolo (east)"
+  ]
+ },
+ "passo-della-mauria": {
+  "classicAscent": "7.9 km, 5.3 % from Lorenzago",
+  "note": "The crossing from the Cadore into Friuli at the springs of the Tagliamento, moderate on both sides and through forest. Open all year.",
+  "ascents": [
+   "Lorenzago di Cadore (west)",
+   "Forni di Sopra (east)"
+  ]
+ },
+ "passo-della-presolana": {
+  "classicAscent": "14.7 km, 4.8 % from Clusone",
+  "note": "The crossing from the Val Seriana into the Val di Scalve below the limestone walls of the Presolana, the 'queen of the Bergamasque Alps'. Steady from Clusone, shorter and steeper from Dezzo. Open all year.",
+  "ascents": [
+   "Clusone (west)",
+   "Dezzo di Scalve (east)"
   ]
  },
  "passo-delle-erbe": {
@@ -2259,6 +2342,14 @@
    "Canazei"
   ]
  },
+ "passo-rest": {
+  "classicAscent": "10.2 km, 6.5 % from Tramonti di Sopra",
+  "note": "A remote forest pass between the Tagliamento and the Tramonti valleys, almost deserted on both sides. Open all year.",
+  "ascents": [
+   "Tramonti di Sopra (south)",
+   "Socchieve (north)"
+  ]
+ },
  "passo-rolle": {
   "classicAscent": "21 km, 5 % from Predazzo",
   "note": "Open all year, Pala group.",
@@ -2391,6 +2482,14 @@
    "Posina (north)"
   ]
  },
+ "pavlicevo-sedlo": {
+  "classicAscent": "11.4 km, 6.1 % from Solčava",
+  "note": "The small border pass between the Logar valley and Bad Eisenkappel below the Kamnik–Savinja Alps, quiet on both sides. Often closed in winter.",
+  "ascents": [
+   "Solčava (south)",
+   "Bad Eisenkappel (north)"
+  ]
+ },
  "penegal": {
   "classicAscent": "3.8 km, 9 % from the top of the Mendel Pass",
   "note": "A detour off the top of the Mendel Pass: the road climbs through the forest to the lookout tower on the Penegal, with a view over the Adige valley to the Dolomites.",
@@ -2411,6 +2510,13 @@
   "note": "Bregenz's own mountain, from the town via Fluh to just below the summit, with a view over the whole of Lake Constance. Short and steadily steep, open all year.",
   "ascents": [
    "Bregenz"
+  ]
+ },
+ "pian-del-re": {
+  "classicAscent": "21 km, 5.1 % from Paesana",
+  "note": "The road through the upper Po valley to the source of the Po right below the north face of the Monviso. Gentle as far as Crissolo, then narrow and steep. Closed above Crissolo in winter; at times closed to cars on summer weekends.",
+  "ascents": [
+   "Paesana"
   ]
  },
  "pian-delle-fugazze": {
@@ -2465,11 +2571,25 @@
    "Paluzza (south)"
   ]
  },
+ "plose": {
+  "classicAscent": "21.5 km, 6.7 % from Brixen",
+  "note": "Brixen's home climb: via St. Andrä and Palmschoss almost 1,450 m up to the Kreuztal below the Plose summit, at the top the view of the Odle (Geisler) peaks. Cleared all year.",
+  "ascents": [
+   "Brixen"
+  ]
+ },
  "poggio-di-sanremo": {
   "classicAscent": "3.7 km, 4 % from Arma di Taggia",
   "note": "The last four uphill kilometres of Milan–Sanremo: 160 m above the sea, greenhouses, four hairpins and the village at the top, then the descent into the Via Roma. Open all year and ridden every day by road bikes re-enacting the sprint.",
   "ascents": [
    "Bussana (east)"
+  ]
+ },
+ "pokljuka": {
+  "classicAscent": "15.7 km, 4.6 % from Zgornje Gorje",
+  "note": "The road from Bled onto the forested Pokljuka plateau to the Rudno polje biathlon centre, on the edge of Triglav National Park. Steady, cleared all year.",
+  "ascents": [
+   "Zgornje Gorje"
   ]
  },
  "postalm": {
@@ -2499,6 +2619,13 @@
   "note": "Between the Muotatal and the Klöntal, closed to cars on Sundays and public holidays – then the road belongs to the bikes. Narrow, steep and with the Klöntalersee as the reward on the east side.",
   "ascents": [
    "Muotathal (west)"
+  ]
+ },
+ "prato-nevoso": {
+  "classicAscent": "8.9 km, 8 % from Frabosa Sottana",
+  "note": "The ski resort above Frabosa in the Ligurian Alps, a Tour de France finish in 2008. Short and steadily steep through chestnut forest. Cleared all year.",
+  "ascents": [
+   "Frabosa Sottana"
   ]
  },
  "predilpass": {
@@ -2645,6 +2772,13 @@
    "Euthal (south)"
   ]
  },
+ "sauris": {
+  "classicAscent": "15 km, 5.5 % from Ampezzo",
+  "note": "Through the Lumiei gorge with its partly unlit tunnels to the turquoise Sauris reservoir and up to the German-speaking village of Sauris di Sopra. Open all year.",
+  "ascents": [
+   "Ampezzo"
+  ]
+ },
  "schallenberg": {
   "classicAscent": "9.5 km, 2.5 % from Schwarzenegg",
   "note": "The crossing from Lake Thun into the Emmental and the Entlebuch, gentle on both sides and over hills with farms. Open all year.",
@@ -2760,6 +2894,14 @@
   "note": "A detour in the Queyras: from Ville-Vieille a narrow paved forest road climbs through the larches to the lookout summit above Château-Queyras. Not cleared in winter.",
   "ascents": [
    "Junction in Ville-Vieille"
+  ]
+ },
+ "soriska-planina": {
+  "classicAscent": "12.5 km, 6.6 % from Bohinjska Bistrica",
+  "note": "The crossing from the Bohinj into the Selška valley over a small ski pasture, in hairpins on the Bohinj side, long via the village of Sorica on the east side. Open all year.",
+  "ascents": [
+   "Bohinjska Bistrica (west)",
+   "Železniki (east)"
   ]
  },
  "spitzingsattel": {

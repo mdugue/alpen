@@ -581,9 +581,12 @@
   "radiusKm": 25,
   "baseTowns": [
    "kranjska-gora",
-   "bovec"
+   "bovec",
+   "bled"
   ],
-  "include": [],
+  "include": [
+   "soriska-planina"
+  ],
   "exclude": [
    "villacher-alpenstrasse"
   ],

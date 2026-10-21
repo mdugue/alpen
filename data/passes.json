@@ -581,6 +581,43 @@
   ]
  },
  {
+  "slug": "colle-del-lys",
+  "surface": "asphalt",
+  "name": "Colle del Lys",
+  "type": "pass",
+  "aliases": [
+   "Colle del Lis"
+  ],
+  "country": "IT",
+  "region": "Westalpen",
+  "lat": 45.1779,
+  "lon": 7.3826,
+  "elevation": 1311,
+  "classicAscent": "9,6 km, 7,2 % ab Rubiana",
+  "beauty": 3,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 1,
+  "season": null,
+  "note": "Der Übergang vom unteren Susatal in die Valli di Lanzo, oben ein Denkmal für die Partisanen. Von Rubiana kurz und kräftig, von Viù lang und sanft. Ganzjährig offen.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 45.1379,
+     "lon": 7.3848
+    },
+    "label": "Rubiana (Süd)"
+   },
+   {
+    "from": {
+     "lat": 45.2392,
+     "lon": 7.3758
+    },
+    "label": "Viù (Nord)"
+   }
+  ]
+ },
+ {
   "slug": "passo-dello-stelvio",
   "surface": "asphalt",
   "name": "Passo dello Stelvio",
@@ -1761,6 +1798,151 @@
   ]
  },
  {
+  "slug": "passo-della-mauria",
+  "surface": "asphalt",
+  "name": "Passo della Mauria",
+  "type": "pass",
+  "aliases": [
+   "Mauria"
+  ],
+  "country": "IT",
+  "region": "Dolomiten",
+  "lat": 46.4544,
+  "lon": 12.5133,
+  "elevation": 1298,
+  "classicAscent": "7,9 km, 5,3 % ab Lorenzago",
+  "beauty": 3,
+  "fame": 1,
+  "difficulty": 2,
+  "traffic": 2,
+  "season": null,
+  "note": "Der Übergang vom Cadore ins Friaul an den Quellen des Tagliamento, auf beiden Seiten mäßig und durch Wald. Ganzjährig offen.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.4796,
+     "lon": 12.4594
+    },
+    "label": "Lorenzago di Cadore (West)"
+   },
+   {
+    "from": {
+     "lat": 46.4202,
+     "lon": 12.5856
+    },
+    "label": "Forni di Sopra (Ost)"
+   }
+  ]
+ },
+ {
+  "slug": "sauris",
+  "surface": "asphalt",
+  "name": "Sauris",
+  "type": "spur",
+  "tags": [
+   "gorge",
+   "reservoir",
+   "tunnels"
+  ],
+  "aliases": [
+   "Lago di Sauris",
+   "Sauris di Sopra",
+   "Zahre"
+  ],
+  "country": "IT",
+  "region": "Dolomiten",
+  "lat": 46.4681,
+  "lon": 12.6857,
+  "elevation": 1398,
+  "classicAscent": "15 km, 5,5 % ab Ampezzo",
+  "beauty": 5,
+  "fame": 1,
+  "difficulty": 3,
+  "traffic": 1,
+  "season": null,
+  "note": "Durch die Lumiei-Schlucht mit ihren teils unbeleuchteten Tunneln zum türkisen Stausee von Sauris und hinauf in das deutschsprachige Dorf Sauris di Sopra. Ganzjährig offen.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.4171,
+     "lon": 12.7903
+    },
+    "label": "Ampezzo"
+   }
+  ]
+ },
+ {
+  "slug": "passo-rest",
+  "surface": "asphalt",
+  "name": "Passo Rest",
+  "type": "pass",
+  "aliases": [
+   "Rest"
+  ],
+  "country": "IT",
+  "region": "Dolomiten",
+  "lat": 46.3559,
+  "lon": 12.7828,
+  "elevation": 1052,
+  "classicAscent": "10,2 km, 6,5 % ab Tramonti di Sopra",
+  "beauty": 3,
+  "fame": 1,
+  "difficulty": 3,
+  "traffic": 1,
+  "season": null,
+  "note": "Ein abgelegener Waldpass zwischen dem Tagliamento und den Tramonti-Tälern, auf beiden Seiten fast menschenleer. Ganzjährig offen.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.3089,
+     "lon": 12.7885
+    },
+    "label": "Tramonti di Sopra (Süd)"
+   },
+   {
+    "from": {
+     "lat": 46.3972,
+     "lon": 12.848
+    },
+    "label": "Socchieve (Nord)"
+   }
+  ]
+ },
+ {
+  "slug": "passo-del-cason-di-lanza",
+  "surface": "asphalt",
+  "name": "Passo del Cason di Lanza",
+  "type": "pass",
+  "aliases": [
+   "Cason di Lanza"
+  ],
+  "country": "IT",
+  "region": "Dolomiten",
+  "lat": 46.5669,
+  "lon": 13.1703,
+  "elevation": 1552,
+  "classicAscent": "13,5 km, 6,7 % ab Paularo",
+  "beauty": 4,
+  "fame": 1,
+  "difficulty": 4,
+  "traffic": 1,
+  "season": {
+   "opens": 5,
+   "closes": 11,
+   "maintained": false
+  },
+  "note": "Ein schmaler Bergpass in den Karnischen Alpen zwischen Paularo und Pontebba, oben Almen unter dem Monte Zermula. Im Winter gesperrt.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.5303,
+     "lon": 13.1166
+    },
+    "label": "Paularo"
+   }
+  ]
+ },
+ {
   "slug": "col-de-vars",
   "surface": "asphalt",
   "name": "Col de Vars",
@@ -2518,6 +2700,45 @@
   ]
  },
  {
+  "slug": "colle-della-maddalena",
+  "surface": "asphalt",
+  "name": "Colle della Maddalena",
+  "type": "pass",
+  "aliases": [
+   "Col de Larche",
+   "Maddalena",
+   "Larche"
+  ],
+  "country": "IT",
+  "region": "Westalpen",
+  "lat": 44.4219,
+  "lon": 6.8984,
+  "elevation": 1996,
+  "classicAscent": "27 km, 4 % ab Vinadio",
+  "beauty": 3,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 3,
+  "season": null,
+  "note": "Der Übergang von der Valle Stura ins Ubaye-Tal, lang und mäßig, oben der Lago della Maddalena und weite Almen. Ganzjährig geräumt und deshalb auch eine Lastwagenroute zwischen Cuneo und Barcelonnette.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 44.3077,
+     "lon": 7.1747
+    },
+    "label": "Vinadio (Ost)"
+   },
+   {
+    "from": {
+     "lat": 44.4512,
+     "lon": 6.8463
+    },
+    "label": "Larche (West)"
+   }
+  ]
+ },
+ {
   "slug": "colle-di-sampeyre",
   "surface": "asphalt",
   "name": "Colle di Sampeyre",
@@ -2561,6 +2782,45 @@
      "use": "osrm",
      "note": "ORS fährt ab Stroppo 24 km über die Gratstraße (ein Kilometer mit 33,8 %); OSRM folgt der Passstraße (16,2 km, 7,2 %)."
     }
+   }
+  ]
+ },
+ {
+  "slug": "pian-del-re",
+  "surface": "asphalt",
+  "name": "Pian del Re",
+  "type": "spur",
+  "tags": [
+   "panorama"
+  ],
+  "aliases": [
+   "Po-Quelle",
+   "Monviso",
+   "Crissolo"
+  ],
+  "country": "IT",
+  "region": "Westalpen",
+  "lat": 44.7009,
+  "lon": 7.096,
+  "elevation": 2020,
+  "classicAscent": "21 km, 5,1 % ab Paesana",
+  "beauty": 5,
+  "fame": 2,
+  "difficulty": 4,
+  "traffic": 1,
+  "season": {
+   "opens": 6,
+   "closes": 10,
+   "maintained": false
+  },
+  "note": "Die Straße durch das obere Po-Tal bis zur Quelle des Po direkt unter der Nordwand des Monviso. Bis Crissolo sanft, danach schmal und steil. Oberhalb von Crissolo im Winter gesperrt; an Sommerwochenenden zeitweise für Autos gesperrt.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 44.6698,
+     "lon": 7.2513
+    },
+    "label": "Paesana"
    }
   ]
  },
@@ -2770,6 +3030,37 @@
   ]
  },
  {
+  "slug": "alagna-valsesia",
+  "surface": "asphalt",
+  "name": "Alagna Valsesia",
+  "type": "spur",
+  "aliases": [
+   "Alagna",
+   "Valsesia"
+  ],
+  "country": "IT",
+  "region": "Westalpen",
+  "lat": 45.8541,
+  "lon": 7.9374,
+  "elevation": 1190,
+  "classicAscent": "35,5 km, 2 % ab Varallo",
+  "beauty": 4,
+  "fame": 1,
+  "difficulty": 2,
+  "traffic": 2,
+  "season": null,
+  "note": "Die lange Talstraße der Valsesia von Varallo bis ans Ende in Alagna, ein Walserdorf unter der Ostwand des Monte Rosa. Sanft, ganzjährig offen.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 45.8146,
+     "lon": 8.2542
+    },
+    "label": "Varallo"
+   }
+  ]
+ },
+ {
   "slug": "santuario-di-oropa",
   "surface": "asphalt",
   "name": "Santuario di Oropa",
@@ -2796,6 +3087,40 @@
      "lon": 8.0525
     },
     "label": "Biella"
+   }
+  ]
+ },
+ {
+  "slug": "bielmonte",
+  "surface": "asphalt",
+  "name": "Bielmonte",
+  "type": "spur",
+  "tags": [
+   "panorama"
+  ],
+  "aliases": [
+   "Panoramica Zegna",
+   "Oasi Zegna"
+  ],
+  "country": "IT",
+  "region": "Westalpen",
+  "lat": 45.6625,
+  "lon": 8.0866,
+  "elevation": 1494,
+  "classicAscent": "22,4 km, 3,9 % ab Trivero",
+  "beauty": 4,
+  "fame": 1,
+  "difficulty": 3,
+  "traffic": 1,
+  "season": null,
+  "note": "Die Panoramica Zegna von Trivero über den Kamm der Biellesischen Alpen nach Bielmonte, im Frühsommer zwischen blühenden Rhododendren, mit Blick auf den Monte Rosa. Lang und mäßig.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 45.6045,
+     "lon": 8.1069
+    },
+    "label": "Trivero"
    }
   ]
  },
@@ -3549,6 +3874,36 @@
      "lon": 9.663
     },
     "label": "Mezzoldo"
+   }
+  ]
+ },
+ {
+  "slug": "foppolo",
+  "surface": "asphalt",
+  "name": "Foppolo",
+  "type": "spur",
+  "tags": [
+   "hairpins"
+  ],
+  "country": "IT",
+  "region": "Zentralalpen",
+  "lat": 46.0434,
+  "lon": 9.7504,
+  "elevation": 1511,
+  "classicAscent": "9 km, 7,1 % ab Branzi",
+  "beauty": 3,
+  "fame": 1,
+  "difficulty": 3,
+  "traffic": 1,
+  "season": null,
+  "note": "Die Kehrenstraße vom oberen Brembotal in die Skistation Foppolo am Talschluss. Gleichmäßig, ganzjährig geräumt.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.0054,
+     "lon": 9.76
+    },
+    "label": "Branzi"
    }
   ]
  },
@@ -4751,6 +5106,78 @@
   ]
  },
  {
+  "slug": "pokljuka",
+  "surface": "asphalt",
+  "name": "Pokljuka",
+  "type": "spur",
+  "aliases": [
+   "Rudno polje",
+   "Pokljuka-Plateau"
+  ],
+  "country": "SI",
+  "region": "Ostalpen",
+  "lat": 46.3454,
+  "lon": 13.9232,
+  "elevation": 1347,
+  "classicAscent": "15,7 km, 4,6 % ab Zgornje Gorje",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 1,
+  "season": null,
+  "note": "Die Straße von Bled auf das bewaldete Hochplateau der Pokljuka bis zum Biathlonzentrum Rudno polje, am Rand des Triglav-Nationalparks. Gleichmäßig, ganzjährig geräumt.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.3801,
+     "lon": 14.0681
+    },
+    "label": "Zgornje Gorje"
+   }
+  ]
+ },
+ {
+  "slug": "soriska-planina",
+  "surface": "asphalt",
+  "name": "Soriška planina",
+  "type": "pass",
+  "tags": [
+   "panorama"
+  ],
+  "aliases": [
+   "Soriška",
+   "Sorica"
+  ],
+  "country": "SI",
+  "region": "Ostalpen",
+  "lat": 46.2359,
+  "lon": 14.008,
+  "elevation": 1314,
+  "classicAscent": "12,5 km, 6,6 % ab Bohinjska Bistrica",
+  "beauty": 4,
+  "fame": 1,
+  "difficulty": 3,
+  "traffic": 1,
+  "season": null,
+  "note": "Der Übergang vom Bohinj ins Selška-Tal über eine kleine Skialm, auf der Bohinj-Seite in Kehren, auf der Ostseite lang über das Dorf Sorica. Ganzjährig offen.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.2743,
+     "lon": 13.9592
+    },
+    "label": "Bohinjska Bistrica (West)"
+   },
+   {
+    "from": {
+     "lat": 46.2246,
+     "lon": 14.1704
+    },
+    "label": "Železniki (Ost)"
+   }
+  ]
+ },
+ {
   "slug": "mangart-sattel",
   "surface": "asphalt",
   "name": "Mangart-Sattel",
@@ -5075,6 +5502,43 @@
   ]
  },
  {
+  "slug": "passo-del-redebus",
+  "surface": "asphalt",
+  "name": "Passo del Redebus",
+  "type": "pass",
+  "aliases": [
+   "Redebus"
+  ],
+  "country": "IT",
+  "region": "Dolomiten",
+  "lat": 46.1369,
+  "lon": 11.3222,
+  "elevation": 1455,
+  "classicAscent": "16 km, 6,2 % ab Pergine",
+  "beauty": 3,
+  "fame": 1,
+  "difficulty": 3,
+  "traffic": 1,
+  "season": null,
+  "note": "Der stille Übergang von der Valsugana bei Pergine ins Fersental und auf die Hochebene von Piné. Wald, Almen und kaum Verkehr. Ganzjährig offen.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.0605,
+     "lon": 11.2407
+    },
+    "label": "Pergine (Süd)"
+   },
+   {
+    "from": {
+     "lat": 46.1678,
+     "lon": 11.3059
+    },
+    "label": "Bedollo (Nord)"
+   }
+  ]
+ },
+ {
   "slug": "passo-delle-erbe",
   "surface": "asphalt",
   "name": "Passo delle Erbe",
@@ -5111,6 +5575,41 @@
     "from": {
      "lat": 46.716,
      "lon": 11.657
+    },
+    "label": "Brixen"
+   }
+  ]
+ },
+ {
+  "slug": "plose",
+  "surface": "asphalt",
+  "name": "Plose",
+  "type": "spur",
+  "tags": [
+   "panorama"
+  ],
+  "aliases": [
+   "Kreuztal",
+   "Val Croce",
+   "Plose-Kreuztal"
+  ],
+  "country": "IT",
+  "region": "Dolomiten",
+  "lat": 46.6833,
+  "lon": 11.708,
+  "elevation": 1999,
+  "classicAscent": "21,5 km, 6,7 % ab Brixen",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 4,
+  "traffic": 1,
+  "season": null,
+  "note": "Der Hausberg von Brixen: über St. Andrä und Palmschoss fast 1 450 Höhenmeter bis ins Kreuztal unter dem Plosegipfel, oben der Blick auf die Geisler. Ganzjährig geräumt.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.7164,
+     "lon": 11.6578
     },
     "label": "Brixen"
    }
@@ -7388,6 +7887,36 @@
   ]
  },
  {
+  "slug": "nevegal",
+  "surface": "asphalt",
+  "name": "Nevegal",
+  "type": "spur",
+  "aliases": [
+   "Col Nevegal"
+  ],
+  "country": "IT",
+  "region": "Dolomiten",
+  "lat": 46.0926,
+  "lon": 12.2811,
+  "elevation": 1053,
+  "classicAscent": "13 km, 5 % ab Belluno",
+  "beauty": 3,
+  "fame": 1,
+  "difficulty": 2,
+  "traffic": 1,
+  "season": null,
+  "note": "Der Hausberg von Belluno: von der Stadt über Castion in die kleine Station am Col Visentin, oben der Blick auf die Dolomiti Bellunesi. Ganzjährig geräumt.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.1406,
+     "lon": 12.2166
+    },
+    "label": "Belluno"
+   }
+  ]
+ },
+ {
   "slug": "passo-cibiana",
   "surface": "asphalt",
   "name": "Passo Cibiana",
@@ -8684,6 +9213,50 @@
      "lon": 14.4979
     },
     "label": "Zgornje Jezersko (Süd)"
+   }
+  ]
+ },
+ {
+  "slug": "pavlicevo-sedlo",
+  "surface": "asphalt",
+  "name": "Pavličevo sedlo",
+  "type": "pass",
+  "tags": [
+   "panorama"
+  ],
+  "aliases": [
+   "Paulitschsattel"
+  ],
+  "country": "AT/SI",
+  "region": "Ostalpen",
+  "lat": 46.426,
+  "lon": 14.5863,
+  "elevation": 1339,
+  "classicAscent": "11,4 km, 6,1 % ab Solčava",
+  "beauty": 4,
+  "fame": 1,
+  "difficulty": 3,
+  "traffic": 1,
+  "season": {
+   "opens": 4,
+   "closes": 11,
+   "maintained": false
+  },
+  "note": "Der kleine Grenzpass zwischen dem Logartal und Bad Eisenkappel unter den Steiner Alpen, auf beiden Seiten still. Im Winter oft gesperrt.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.4196,
+     "lon": 14.692
+    },
+    "label": "Solčava (Süd)"
+   },
+   {
+    "from": {
+     "lat": 46.4868,
+     "lon": 14.5932
+    },
+    "label": "Bad Eisenkappel (Nord)"
    }
   ]
  },
@@ -10397,6 +10970,43 @@
   ]
  },
  {
+  "slug": "passo-della-presolana",
+  "surface": "asphalt",
+  "name": "Passo della Presolana",
+  "type": "pass",
+  "aliases": [
+   "Presolana"
+  ],
+  "country": "IT",
+  "region": "Zentralalpen",
+  "lat": 45.9292,
+  "lon": 10.099,
+  "elevation": 1297,
+  "classicAscent": "14,7 km, 4,8 % ab Clusone",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 2,
+  "season": null,
+  "note": "Der Übergang von der Val Seriana in die Val di Scalve unter den Kalkwänden der Presolana, der „Königin der Bergamasker Alpen“. Von Clusone gleichmäßig, von Dezzo kürzer und steiler. Ganzjährig offen.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 45.8871,
+     "lon": 9.9497
+    },
+    "label": "Clusone (West)"
+   },
+   {
+    "from": {
+     "lat": 45.9784,
+     "lon": 10.1016
+    },
+    "label": "Dezzo di Scalve (Ost)"
+   }
+  ]
+ },
+ {
   "slug": "passo-del-maniva",
   "surface": "asphalt",
   "name": "Passo del Maniva",
@@ -12067,6 +12677,43 @@
   ]
  },
  {
+  "slug": "colle-di-zambla",
+  "surface": "asphalt",
+  "name": "Colle di Zambla",
+  "type": "pass",
+  "aliases": [
+   "Zambla"
+  ],
+  "country": "IT",
+  "region": "Zentralalpen",
+  "lat": 45.8871,
+  "lon": 9.7977,
+  "elevation": 1264,
+  "classicAscent": "13,9 km, 5,7 % ab Ponte Nossa",
+  "beauty": 3,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 1,
+  "season": null,
+  "note": "Der Übergang zwischen der Val Seriana und der Val Brembana über Oltre il Colle, mit Blick auf den Pizzo Arera. Von Ponte Nossa gleichmäßig, von Ambria lang über die Val Serina. Ganzjährig offen.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 45.8616,
+     "lon": 9.8917
+    },
+    "label": "Ponte Nossa (Ost)"
+   },
+   {
+    "from": {
+     "lat": 45.8065,
+     "lon": 9.6775
+    },
+    "label": "Ambria (West)"
+   }
+  ]
+ },
+ {
   "slug": "colle-gallo",
   "surface": "asphalt",
   "name": "Colle Gallo",
@@ -12992,7 +13639,7 @@
   "difficulty": 2,
   "traffic": 1,
   "season": null,
-  "note": "Der niedrige Übergang von Agordo über Rivamonte ins Valle del Mis, am Scheitel zweigt die Straße nach Gosaldo und zum Passo Cereda ab. Die Agordo-Seite ist ganzjährig offen; die Talstraße durch das Valle del Mis mit ihren unbeleuchteten Tunneln ist im Winter offiziell gesperrt.",
+  "note": "Der niedrige Übergang von Agordo über Rivamonte ins Valle del Mis, am Scheitel zweigt die Straße nach Gosaldo und zum Passo Cereda ab. Die Agordo-Seite ist ganzjährig offen; die Talstraße durch das Valle del Mis mit ihren teils unbeleuchteten Tunneln ist im Winter offiziell gesperrt.",
   "ascents": [
    {
     "from": {
@@ -13750,6 +14397,36 @@
      "lon": 7.3976
     },
     "label": "Valdieri (Süd)"
+   }
+  ]
+ },
+ {
+  "slug": "prato-nevoso",
+  "surface": "asphalt",
+  "name": "Prato Nevoso",
+  "type": "spur",
+  "aliases": [
+   "Prato Nevoso 1500"
+  ],
+  "country": "IT",
+  "region": "Westalpen",
+  "lat": 44.2555,
+  "lon": 7.7857,
+  "elevation": 1555,
+  "classicAscent": "8,9 km, 8 % ab Frabosa Sottana",
+  "beauty": 3,
+  "fame": 2,
+  "difficulty": 4,
+  "traffic": 1,
+  "season": null,
+  "note": "Die Skistation über Frabosa in den Ligurischen Alpen, Tour-de-France-Ziel 2008. Kurz, gleichmäßig steil durch Kastanienwald. Ganzjährig geräumt.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 44.2835,
+     "lon": 7.7748
+    },
+    "label": "Frabosa Sottana"
    }
   ]
  },

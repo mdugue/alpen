@@ -9,6 +9,16 @@
    }
   ]
  },
+ "alagna-valsesia": {
+  "intro": "Das Tal an die Südostseite des Monte Rosa, ein sanfter Tag ohne Pass.",
+  "sides": [
+   {
+    "character": "Von Varallo lang und kaum steigend die Sesia hinauf, erst hinter Riva Valdobbia etwas steiler.",
+    "highlights": "Die Walserhäuser von Alagna und der Monte Rosa am Talende.",
+    "hazards": []
+   }
+  ]
+ },
  "albulapass": {
   "intro": "Ein ruhiger Pass zwischen Albulatal und Engadin, über weite Strecken neben der Albulabahn der Rhätischen Bahn mit ihren Viadukten und Kehrtunneln. Wenig Verkehr, viel Landschaft.",
   "sides": [
@@ -245,6 +255,16 @@
      "traffic"
     ],
     "highlights": "Morteratschgletscher und Piz Palü vor Augen."
+   }
+  ]
+ },
+ "bielmonte": {
+  "intro": "Eine Höhenstraße über dem Biellese, die Schwester des Oropa-Anstiegs.",
+  "sides": [
+   {
+    "character": "Von Trivero in Wellen und mäßig über den Kamm der Panoramica Zegna, mit kurzen Rampen.",
+    "highlights": "Die Rhododendren und der Monte Rosa im Norden.",
+    "hazards": []
    }
   ]
  },
@@ -1974,6 +1994,23 @@
    }
   ]
  },
+ "colle-del-lys": {
+  "intro": "Der Hausberg der Turiner Radfahrer am Rand des Susatals.",
+  "sides": [
+   {
+    "character": "Von Rubiana gleichmäßig steil durch Kastanien- und Buchenwald.",
+    "highlights": "Der Blick über das Susatal und die Sacra di San Michele.",
+    "hazards": [],
+    "bestAs": "up"
+   },
+   {
+    "character": "Von Viù lang und sanft über Almwiesen.",
+    "highlights": "Die Täler von Lanzo.",
+    "hazards": [],
+    "bestAs": "down"
+   }
+  ]
+ },
  "colle-del-melogno": {
   "intro": "Der Hausberg von Finale Ligure: vom Meer durch die Buchenwälder auf gut 1000 m. Oben steht eine Festung aus dem 19. Jahrhundert, die Seite von Calizzano ist die kürzere und ruhigere.",
   "sides": [
@@ -2017,6 +2054,27 @@
     "bestAs": "down",
     "character": "Von Château-Ville-Vieille durch die Dörfer des Queyras, oben zunehmend steiler über weite Almen. Gleichmäßiger und als Abfahrt die bessere Wahl.",
     "highlights": "Blick vom Scheitel weit nach Italien hinunter."
+   }
+  ]
+ },
+ "colle-della-maddalena": {
+  "intro": "Der niedrigste Übergang zwischen Cuneo und dem Ubaye, das Verbindungsstück für Touren über die Grenze.",
+  "sides": [
+   {
+    "character": "Von Vinadio lang und gleichmäßig durch die Valle Stura über Pietraporzio und Argentera, oben flacher zum See.",
+    "highlights": "Die Felswände der Valle Stura und der Lago della Maddalena.",
+    "hazards": [
+     "traffic"
+    ],
+    "bestAs": "up"
+   },
+   {
+    "character": "Von Larche kurz und mäßig über Almen zur Grenze.",
+    "highlights": "Die weiten Almen an der Grenze.",
+    "hazards": [
+     "traffic"
+    ],
+    "bestAs": "down"
    }
   ]
  },
@@ -2071,6 +2129,23 @@
      "tight-hairpins",
      "narrow"
     ]
+   }
+  ]
+ },
+ "colle-di-zambla": {
+  "intro": "Ein mittlerer Pass in den Bergamasker Tälern, die Brücke zwischen Seriana und Brembana.",
+  "sides": [
+   {
+    "character": "Von Ponte Nossa gleichmäßig über Gorno und Oneta durch Wald.",
+    "highlights": "Der Pizzo Arera über der Passhöhe.",
+    "hazards": [],
+    "bestAs": "up"
+   },
+   {
+    "character": "Von Ambria lang und mäßig durch die Val Serina über Serina und Oltre il Colle.",
+    "highlights": "Die Dörfer der Val Serina.",
+    "hazards": [],
+    "bestAs": "down"
    }
   ]
  },
@@ -2399,6 +2474,18 @@
     "hazards": [
      "tight-hairpins",
      "steep"
+    ]
+   }
+  ]
+ },
+ "foppolo": {
+  "intro": "Der Abstecher ans Ende des Brembotals, neben dem Passo San Marco.",
+  "sides": [
+   {
+    "character": "Von Branzi über Carona in gleichmäßigen Kehren durch Wald zur Station.",
+    "highlights": "Der Talschluss mit den Orobie-Gipfeln.",
+    "hazards": [
+     "tight-hairpins"
     ]
    }
   ]
@@ -3909,6 +3996,16 @@
    }
   ]
  },
+ "nevegal": {
+  "intro": "Ein kurzer Anstieg über Belluno, gut für einen halben Tag.",
+  "sides": [
+   {
+    "character": "Von Belluno sanft durch Castion, dann gleichmäßig durch Wald und über Wiesen zur Station.",
+    "highlights": "Der Blick über das Piave-Tal zu den Bellunesi.",
+    "hazards": []
+   }
+  ]
+ },
  "nigerpass": {
   "intro": "Die stille Seitentür zum Rosengarten: Während der Durchgangsverkehr über den Karerpass fährt, steigt diese Straße von Tiers steil und schattig hinauf. Oben steht die Wand direkt über einem.",
   "sides": [
@@ -4248,6 +4345,18 @@
    }
   ]
  },
+ "passo-del-cason-di-lanza": {
+  "intro": "Ein einsamer Pass der Karnischen Alpen, in Reichweite des Zoncolan.",
+  "sides": [
+   {
+    "character": "Von Paularo schmal und gleichmäßig steil durch Wald und über Almen zur Passhöhe.",
+    "highlights": "Die Almen unter dem Zermula.",
+    "hazards": [
+     "narrow"
+    ]
+   }
+  ]
+ },
  "passo-del-faiallo": {
   "intro": "Vom Meer bei Genua-Voltri an der Wallfahrtskirche von Acquasanta vorbei auf den Kamm der Ligurischen Alpen. Oben liegt die Küste tief unten im Dunst, auf der anderen Seite die Po-Ebene.",
   "sides": [
@@ -4330,6 +4439,23 @@
    }
   ]
  },
+ "passo-del-redebus": {
+  "intro": "Ein ruhiger Pass östlich von Trient, als Runde mit dem Piné-Plateau.",
+  "sides": [
+   {
+    "character": "Von Pergine durch das Fersental über Sant'Orsola und Palù, gleichmäßig und lang.",
+    "highlights": "Die Mòcheni-Dörfer im Fersental.",
+    "hazards": [],
+    "bestAs": "up"
+   },
+   {
+    "character": "Von Bedollo auf der Hochebene kurz und mäßig.",
+    "highlights": "Die Hochebene von Piné.",
+    "hazards": [],
+    "bestAs": "down"
+   }
+  ]
+ },
  "passo-del-tonale": {
   "intro": "Der Tonale verbindet die Valcamonica mit dem Val di Sole; oben liegen ein Skiort und das Gefallenendenkmal des Ersten Weltkriegs, als hier die Front verlief. Oft nur Verbindungsstück zu Gavia oder Mortirolo.",
   "sides": [
@@ -4392,6 +4518,42 @@
     "hazards": [
      "traffic"
     ]
+   }
+  ]
+ },
+ "passo-della-mauria": {
+  "intro": "Die sanfte Verbindung von den Dolomiten in die Carnia.",
+  "sides": [
+   {
+    "character": "Von Lorenzago gleichmäßig durch Wald zur Passhöhe.",
+    "highlights": "Der Blick zurück auf die Marmarole.",
+    "hazards": [],
+    "bestAs": "up"
+   },
+   {
+    "character": "Von Forni di Sopra sanft durch das obere Tagliamento-Tal.",
+    "highlights": "Die Dolomiti Friulane über Forni.",
+    "hazards": [],
+    "bestAs": "down"
+   }
+  ]
+ },
+ "passo-della-presolana": {
+  "intro": "Der Pass unter der Presolana, gut mit Vivione und Zambla zu einer Runde zu verbinden.",
+  "sides": [
+   {
+    "character": "Von Clusone gleichmäßig über Castione della Presolana und durch Wald zur Passhöhe.",
+    "highlights": "Die Südwand der Presolana über der Passhöhe.",
+    "hazards": [],
+    "bestAs": "up"
+   },
+   {
+    "character": "Von Dezzo kurz und steiler in Kehren aus der Schlucht hinauf.",
+    "highlights": "Die Schlucht der Via Mala von Scalve unterhalb von Dezzo.",
+    "hazards": [
+     "tight-hairpins"
+    ],
+    "bestAs": "down"
    }
   ]
  },
@@ -4766,6 +4928,23 @@
    }
   ]
  },
+ "passo-rest": {
+  "intro": "Ein stiller Pass im Hinterland der Carnia, für Tage ohne Verkehr.",
+  "sides": [
+   {
+    "character": "Von Tramonti di Sopra gleichmäßig durch Wald.",
+    "highlights": "Die grünen Tramonti-Täler.",
+    "hazards": [],
+    "bestAs": "up"
+   },
+   {
+    "character": "Von Socchieve lang und mäßig über die Dörfer des Tagliamento-Hangs.",
+    "highlights": "Der Blick über das Tagliamento-Tal.",
+    "hazards": [],
+    "bestAs": "down"
+   }
+  ]
+ },
  "passo-rolle": {
   "intro": "Der Rolle führt unter den Pale di San Martino vorbei, oben steht der Cimon della Pala, das Matterhorn der Dolomiten. Auf der Nordseite liegt der Wald von Paneveggio, aus dessen Fichten Geigenbauer ihr Klangholz holen.",
   "sides": [
@@ -5075,6 +5254,27 @@
    }
   ]
  },
+ "pavlicevo-sedlo": {
+  "intro": "Der stillere Nachbar des Seebergsattels, mit Blick in die Steiner Alpen.",
+  "sides": [
+   {
+    "character": "Von Solčava durch Wald und über Bergbauernhöfe gleichmäßig zur Grenze.",
+    "highlights": "Die Steiner Alpen über dem Logartal.",
+    "hazards": [
+     "narrow"
+    ],
+    "bestAs": "up"
+   },
+   {
+    "character": "Von Bad Eisenkappel lang durch das Vellachtal, oben über eine Kuppe zur Grenze.",
+    "highlights": "Das stille Tal von Leppen.",
+    "hazards": [
+     "narrow"
+    ],
+    "bestAs": "down"
+   }
+  ]
+ },
  "penegal": {
   "intro": "Vom Mendelpass noch einmal fast 400 Höhenmeter weiter, bis zum Aussichtsturm auf dem Penegal. Kurz, steil und mit einem der weitesten Blicke über das Etschtal.",
   "sides": [
@@ -5114,6 +5314,19 @@
     "hazards": [
      "steep",
      "narrow"
+    ]
+   }
+  ]
+ },
+ "pian-del-re": {
+  "intro": "Ans Ende des Po-Tals, mit dem Monviso als Wand über dem Ziel.",
+  "sides": [
+   {
+    "character": "Von Paesana sanft durch das Tal bis Crissolo, dann schmal und steil in Kehren über Pian della Regina zum Pian del Re.",
+    "highlights": "Die Nordwand des Monviso und die Quelle des Po.",
+    "hazards": [
+     "narrow",
+     "steep"
     ]
    }
   ]
@@ -5222,12 +5435,32 @@
    }
   ]
  },
+ "plose": {
+  "intro": "Der lange Anstieg über Brixen, der Würzjoch-Runde vorgeschaltet oder als eigener Tag.",
+  "sides": [
+   {
+    "character": "Von Brixen gleichmäßig über St. Andrä, dann durch Wald und über Almen nach Palmschoss und ins Kreuztal.",
+    "highlights": "Die Geisler und der Peitlerkofel gegenüber.",
+    "hazards": []
+   }
+  ]
+ },
  "poggio-di-sanremo": {
   "intro": "Der letzte Anstieg von Mailand–Sanremo, an dem seit 1960 das Rennen entschieden wird: ein paar Kilometer zwischen Gewächshäusern, oben das Dorf, dann die Abfahrt zur Via Roma. Niedrig, flach, und trotzdem einer der berühmtesten Hügel des Radsports.",
   "sides": [
    {
     "character": "Von der Küstenstraße bei Bussana flach zwischen Gewächshäusern hinauf, mit ein paar Kehren und einer kurzen steileren Stelle vor dem Dorf. Wer will, sprintet die Kuppe wie im Rennen.",
     "highlights": "Oben das Dorf Poggio, unten wartet die Via Roma."
+   }
+  ]
+ },
+ "pokljuka": {
+  "intro": "Der Hausberg der Radler von Bled, auf ein stilles Waldplateau.",
+  "sides": [
+   {
+    "character": "Von Gorje gleichmäßig durch Fichtenwald auf das Plateau, oben flacher.",
+    "highlights": "Die Almen der Pokljuka und der Blick zum Triglav.",
+    "hazards": []
    }
   ]
  },
@@ -5279,6 +5512,16 @@
      "steep",
      "narrow"
     ]
+   }
+  ]
+ },
+ "prato-nevoso": {
+  "intro": "Ein kurzer, steiler Stationsanstieg zwischen Cuneo und Ligurien.",
+  "sides": [
+   {
+    "character": "Von Frabosa Sottana gleichmäßig um 8 % durch Wald und über Kehren zur Station.",
+    "highlights": "Der Blick über die Ebene von Mondovì.",
+    "hazards": []
    }
   ]
  },
@@ -5546,6 +5789,19 @@
    }
   ]
  },
+ "sauris": {
+  "intro": "Schlucht, Stausee und ein Sprachinseldorf: der schönste Abstecher der Carnia.",
+  "sides": [
+   {
+    "character": "Von Ampezzo gleichmäßig in die Lumiei-Schlucht, durch mehrere enge Tunnel zur Staumauer, dann am See entlang und steiler nach Sauris di Sopra.",
+    "highlights": "Die Lumiei-Schlucht und der Lago di Sauris.",
+    "hazards": [
+     "tunnels",
+     "narrow"
+    ]
+   }
+  ]
+ },
  "schallenberg": {
   "intro": "Ein sanfter Hügelpass zwischen Berner Oberland und Emmental, ideal für eine Runde mit Glaubenbielen.",
   "sides": [
@@ -5764,6 +6020,25 @@
      "narrow"
     ],
     "highlights": "Vom Gipfel der Rundblick über die Täler von Guil und Aigue Agnelle."
+   }
+  ]
+ },
+ "soriska-planina": {
+  "intro": "Der stille Pass südlich von Bohinj, mit Blick auf die Julischen Alpen.",
+  "sides": [
+   {
+    "character": "Von Bohinjska Bistrica in gleichmäßigen Kehren durch Wald zur Alm.",
+    "highlights": "Der Blick über das Bohinj-Becken zum Triglav.",
+    "hazards": [
+     "tight-hairpins"
+    ],
+    "bestAs": "up"
+   },
+   {
+    "character": "Von Železniki lang durch das Selška-Tal, dann über Sorica zur Passhöhe.",
+    "highlights": "Das Dorf Sorica.",
+    "hazards": [],
+    "bestAs": "down"
    }
   ]
  },

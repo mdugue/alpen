@@ -1054,6 +1054,23 @@
   "why": "Vršič, Predil, Mangart; Verleih, Werkstätten, Rad-Hotels."
  },
  {
+  "slug": "bled",
+  "name": "Bled",
+  "country": "SI",
+  "lat": 46.3683,
+  "lon": 14.1146,
+  "tags": [
+   "hotels",
+   "scenic",
+   "train",
+   "workshops"
+  ],
+  "aliases": [
+   "Bohinj"
+  ],
+  "why": "Der See mit der Insel als Basis für Pokljuka, Soriška planina und den Weg zum Vršič; viele Hotels und ein Bahnhof an der Wocheiner Bahn."
+ },
+ {
   "slug": "bovec",
   "name": "Bovec",
   "country": "SI",
