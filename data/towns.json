@@ -2087,5 +2087,46 @@
    "Bischofsheim in der Rhön"
   ],
   "why": "Am Fuß des Kreuzbergs, auf halbem Weg zwischen Wasserkuppe und Langer Rhön."
+ },
+ {
+  "slug": "bodenmais",
+  "name": "Bodenmais",
+  "country": "DE",
+  "lat": 49.067,
+  "lon": 13.103,
+  "tags": [
+   "hotels",
+   "passes"
+  ],
+  "aliases": [],
+  "why": "Ferienort unter dem Arber: der Bretterschachten beginnt im Ort, über Bayerisch Eisenstein und den Brennes eine Runde um den Arber."
+ },
+ {
+  "slug": "bayerisch-eisenstein",
+  "name": "Bayerisch Eisenstein",
+  "country": "DE",
+  "lat": 49.1223,
+  "lon": 13.2032,
+  "tags": [
+   "train",
+   "quiet"
+  ],
+  "aliases": [],
+  "why": "Grenzort mit Bahnhof auf der Grenze: Brennes und Bretterschachten von hier, der Böhmerwald jenseits der Grenze."
+ },
+ {
+  "slug": "cesky-krumlov",
+  "name": "Český Krumlov",
+  "country": "CZ",
+  "lat": 48.8107,
+  "lon": 14.3151,
+  "tags": [
+   "scenic",
+   "hotels"
+  ],
+  "aliases": [
+   "Krumau"
+  ],
+  "why": "Die Altstadt an der Moldau unter der Kleť: der Anstieg beginnt am Stadtrand, der Böhmerwald eine Stunde westlich."
  }
 ]

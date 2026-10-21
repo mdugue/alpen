@@ -348,5 +348,15 @@
   "character": "The land of open views: bare plateaus, gliders over the Wasserkuppe and the monastery beer at the Kreuzberg. Short climbs, a lot of wind, little traffic during the week.",
   "multiDay": "Two days: the Wasserkuppe from two sides, the Kreuzberg and the Hochrhön road as a loop.",
   "access": "Train to Fulda or Bad Neustadt, by car via the A7."
+ },
+ "arberland": {
+  "character": "The two roads over the Arber, the Bretterschachten and the Brennes, on one loop from Bodenmais or Bayerisch Eisenstein. Spruce forest, a cable car and the Arbersee; the Bohemian Forest just across the border.",
+  "multiDay": "A weekend: the loop around the Arber over both passes, plus a day into the Bohemian Forest via Železná Ruda and Špičák.",
+  "access": "Train to Bayerisch Eisenstein or Bodenmais, by car via the A3 and Deggendorf."
+ },
+ "boehmerwald": {
+  "character": "The Czech side of the border range: the Kleť above Český Krumlov, the Churáňov above Stachy and the Dreisessel on the Bavarian border. Long, even climbs through spruce forest, quiet roads and the Vltava in the valley.",
+  "multiDay": "Three days from Český Krumlov: the Kleť in the morning, the Churáňov as a long loop via Vimperk, the Dreisessel via the Lipno reservoir.",
+  "access": "Train to Český Krumlov via České Budějovice; by car from Passau or Linz."
  }
 }

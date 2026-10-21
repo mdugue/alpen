@@ -3982,5 +3982,40 @@
   "ascents": [
    "Fladungen"
   ]
+ },
+ "bretterschachten": {
+  "classicAscent": "7.2 km, 6.5 % from Bodenmais",
+  "note": "The highest road point of the Bavarian Forest, between Bodenmais and Bayerisch Eisenstein below the Arber. From Bodenmais steadily steep in the forest; to the east long and gentler via Arberhütte.",
+  "ascents": [
+   "Bodenmais (west)"
+  ]
+ },
+ "brennes": {
+  "classicAscent": "6.1 km, 5.8 % from Bayerisch Eisenstein",
+  "note": "The crossing at the Großer Arber between Bayerisch Eisenstein and Lohberg, at the valley station of the Arber cable car. From Eisenstein short and steep, towards Lohberg long past the Großer Arbersee.",
+  "ascents": [
+   "Bayerisch Eisenstein (east)"
+  ]
+ },
+ "dreisessel": {
+  "classicAscent": "10.5 km, 3.7 % from Haidmühle",
+  "note": "The road up the border mountain where Bavaria, Bohemia and Austria meet, with a mountain inn and granite crags at the top and views across the Bohemian Forest and, with föhn, to the Alps.",
+  "ascents": [
+   "Haidmühle"
+  ]
+ },
+ "klet": {
+  "classicAscent": "13.2 km, 4.5 % from Český Krumlov",
+  "note": "The local mountain of Český Krumlov and České Budějovice, with an observatory and the oldest stone lookout tower in Bohemia. The last kilometres are closed to cars and belong to cyclists.",
+  "ascents": [
+   "Český Krumlov"
+  ]
+ },
+ "churanov": {
+  "classicAscent": "8.2 km, 4.3 % from Stachy",
+  "note": "From Stachy up onto the plateau of the Bohemian Forest at Zadov, with a weather station and a small ski area. At the top the road runs on flat to the raised bogs around Kvilda.",
+  "ascents": [
+   "Stachy"
+  ]
  }
 }

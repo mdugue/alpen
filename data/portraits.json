@@ -8223,5 +8223,53 @@
     "highlights": "Das Schwarze Moor mit seinem Bohlenweg an der Kante."
    }
   ]
+ },
+ "bretterschachten": {
+  "intro": "Die längste steile Auffahrt des Bayerischen Walds, von Bodenmais auf den Sattel unter dem Arber. Viel Wald, wenig Aussicht, aber ein Anstieg mit Gewicht.",
+  "sides": [
+   {
+    "character": "Von Bodenmais ohne Pause um 6 bis 8 % im Fichtenwald, oben an den Weiden des Bretterschachtens offen.",
+    "highlights": "Die Lichtung am Bretterschachten unter dem Arber."
+   }
+  ]
+ },
+ "brennes": {
+  "intro": "Der Pass am Arber, dem höchsten Berg des Bayerischen Walds: oben Bergbahn und Ausflugsrummel, unten auf der Westseite der dunkle Arbersee.",
+  "sides": [
+   {
+    "character": "Von Bayerisch Eisenstein gleichmäßig steil durch den Wald bis zur Bergbahn.",
+    "hazards": [
+     "traffic"
+    ],
+    "highlights": "Der Große Arbersee auf der Abfahrt nach Lohberg."
+   }
+  ]
+ },
+ "dreisessel": {
+  "intro": "Der Aussichtsberg im Dreiländereck: eine ruhige Waldstraße hinauf zu den Felsen, von denen man bei klarem Wetter die Alpen sieht.",
+  "sides": [
+   {
+    "character": "Von Haidmühle gleichmäßig und mäßig steil durch den Bergwald, die letzten Kilometer etwas steiler.",
+    "highlights": "Die Granitfelsen am Gipfel mit Blick über drei Länder."
+   }
+  ]
+ },
+ "klet": {
+  "intro": "Ein Anstieg mit Ziel: aus der Altstadt von Český Krumlov auf den höchsten Berg des Blanský les, oben Sternwarte, Turm und Blick bis zum Böhmerwald.",
+  "sides": [
+   {
+    "character": "Aus Český Krumlov erst durch Dörfer, dann im Wald zunehmend steil; oben ohne Autos.",
+    "highlights": "Der Steinturm auf dem Gipfel mit Blick über Südböhmen."
+   }
+  ]
+ },
+ "churanov": {
+  "intro": "Die Auffahrt auf das Dach des Böhmerwalds: oben eine weite, kühle Hochfläche mit Mooren und Holzdörfern.",
+  "sides": [
+   {
+    "character": "Von Stachy gleichmäßig über Wiesen und durch den Wald bis an die Kante der Hochfläche.",
+    "highlights": "Die Hochfläche bei Zadov mit Blick über die Šumava."
+   }
+  ]
  }
 }

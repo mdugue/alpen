@@ -5678,5 +5678,50 @@
     "highlights": "The Black Moor with its boardwalk at the edge."
    }
   ]
+ },
+ "bretterschachten": {
+  "intro": "The longest steep climb in the Bavarian Forest, from Bodenmais to the saddle below the Arber. Plenty of forest and few views, but a climb with weight.",
+  "sides": [
+   {
+    "character": "From Bodenmais without a break at 6 to 8 % in the spruce forest, open at the Bretterschachten pastures at the top.",
+    "highlights": "The clearing at the Bretterschachten below the Arber."
+   }
+  ]
+ },
+ "brennes": {
+  "intro": "The pass at the Arber, the highest mountain of the Bavarian Forest: a cable car and day-trip crowds at the top, the dark Arbersee below on the west side.",
+  "sides": [
+   {
+    "character": "From Bayerisch Eisenstein steadily steep through the forest up to the cable car.",
+    "highlights": "The Großer Arbersee on the descent to Lohberg."
+   }
+  ]
+ },
+ "dreisessel": {
+  "intro": "The viewpoint mountain where three countries meet: a quiet forest road up to the crags from which you can see the Alps on a clear day.",
+  "sides": [
+   {
+    "character": "From Haidmühle steady and moderately steep through the mountain forest, a little steeper for the last kilometres.",
+    "highlights": "The granite crags at the summit looking across three countries."
+   }
+  ]
+ },
+ "klet": {
+  "intro": "A climb with a destination: out of the old town of Český Krumlov onto the highest mountain of the Blanský les, an observatory, a tower and a view to the Bohemian Forest at the top.",
+  "sides": [
+   {
+    "character": "From Český Krumlov through villages at first, then increasingly steep in the forest; no cars at the top.",
+    "highlights": "The stone tower on the summit looking across South Bohemia."
+   }
+  ]
+ },
+ "churanov": {
+  "intro": "The climb onto the roof of the Bohemian Forest: a wide, cool plateau with bogs and wooden villages at the top.",
+  "sides": [
+   {
+    "character": "From Stachy steadily across meadows and through the forest to the edge of the plateau.",
+    "highlights": "The plateau at Zadov looking across the Šumava."
+   }
+  ]
  }
 }

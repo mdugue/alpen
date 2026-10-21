@@ -18966,5 +18966,171 @@
     "label": "Fladungen"
    }
   ]
+ },
+ {
+  "slug": "bretterschachten",
+  "surface": "asphalt",
+  "name": "Bretterschachten",
+  "type": "pass",
+  "tags": [
+   "forest"
+  ],
+  "country": "DE",
+  "region": "Bayerwald",
+  "lat": 49.0746,
+  "lon": 13.1612,
+  "elevation": 1136,
+  "classicAscent": "7,2 km, 6,5 % ab Bodenmais",
+  "beauty": 3,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 2,
+  "season": null,
+  "note": "Der höchste Straßenpunkt des Bayerischen Walds, zwischen Bodenmais und Bayerisch Eisenstein unter dem Arber. Von Bodenmais gleichmäßig steil im Wald, nach Osten lang und flacher über Arberhütte.",
+  "aliases": [
+   "Arberstraße"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 49.0655,
+     "lon": 13.099
+    },
+    "label": "Bodenmais (West)"
+   }
+  ]
+ },
+ {
+  "slug": "brennes",
+  "surface": "asphalt",
+  "name": "Brennes",
+  "type": "pass",
+  "tags": [
+   "forest"
+  ],
+  "country": "DE",
+  "region": "Bayerwald",
+  "lat": 49.1344,
+  "lon": 13.1552,
+  "elevation": 1068,
+  "classicAscent": "6,1 km, 5,8 % ab Bayerisch Eisenstein",
+  "beauty": 3,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 3,
+  "season": null,
+  "note": "Der Übergang am Großen Arber zwischen Bayerisch Eisenstein und Lohberg, an der Talstation der Arber-Bergbahn. Von Eisenstein kurz und steil, nach Lohberg lang am Großen Arbersee vorbei.",
+  "aliases": [
+   "Arberpass",
+   "Großer Arber"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 49.1223,
+     "lon": 13.2032
+    },
+    "label": "Bayerisch Eisenstein (Ost)"
+   }
+  ]
+ },
+ {
+  "slug": "dreisessel",
+  "surface": "asphalt",
+  "name": "Dreisessel",
+  "type": "spur",
+  "tags": [
+   "panorama"
+  ],
+  "country": "DE",
+  "region": "Bayerwald",
+  "lat": 48.7834,
+  "lon": 13.7918,
+  "elevation": 1217,
+  "classicAscent": "10,5 km, 3,7 % ab Haidmühle",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 2,
+  "traffic": 1,
+  "season": null,
+  "note": "Die Straße auf den Grenzberg im Dreiländereck Bayern, Böhmen und Österreich, oben Berggasthof und Granitfelsen mit Blick über den Böhmerwald und bei Föhn bis zu den Alpen.",
+  "aliases": [
+   "Dreisesselberg"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 48.8249,
+     "lon": 13.776
+    },
+    "label": "Haidmühle"
+   }
+  ]
+ },
+ {
+  "slug": "klet",
+  "surface": "asphalt",
+  "name": "Kleť",
+  "type": "spur",
+  "tags": [
+   "panorama"
+  ],
+  "country": "CZ",
+  "region": "Böhmerwald",
+  "lat": 48.8652,
+  "lon": 14.283,
+  "elevation": 1084,
+  "classicAscent": "13,2 km, 4,5 % ab Český Krumlov",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 1,
+  "season": null,
+  "note": "Der Hausberg von Český Krumlov und Budweis, mit Sternwarte und dem ältesten Steinaussichtsturm Böhmens. Die letzten Kilometer sind für Autos gesperrt und gehören den Radfahrern.",
+  "aliases": [
+   "Schöninger"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 48.811,
+     "lon": 14.315
+    },
+    "label": "Český Krumlov"
+   }
+  ]
+ },
+ {
+  "slug": "churanov",
+  "surface": "asphalt",
+  "name": "Churáňov",
+  "type": "climb",
+  "tags": [
+   "forest"
+  ],
+  "country": "CZ",
+  "region": "Böhmerwald",
+  "lat": 49.0657,
+  "lon": 13.6223,
+  "elevation": 1095,
+  "classicAscent": "8,2 km, 4,3 % ab Stachy",
+  "beauty": 3,
+  "fame": 1,
+  "difficulty": 2,
+  "traffic": 1,
+  "season": null,
+  "note": "Von Stachy hinauf auf die Hochfläche des Böhmerwalds bei Zadov, mit Wetterstation und kleinem Skigebiet. Oben geht es flach weiter zu den Hochmooren um Kvilda.",
+  "aliases": [
+   "Zadov"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 49.1018,
+     "lon": 13.6666
+    },
+    "label": "Stachy"
+   }
+  ]
  }
 ]

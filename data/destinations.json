@@ -1387,5 +1387,42 @@
   "character": "Das Land der offenen Fernsicht: kahle Hochflächen, Segelflieger über der Wasserkuppe und das Klosterbier am Kreuzberg. Kurze Anstiege, viel Wind, wenig Verkehr unter der Woche.",
   "multiDay": "Zwei Tage: Wasserkuppe von zwei Seiten, Kreuzberg und die Hochrhönstraße als Runde.",
   "access": "Bahn bis Fulda oder Bad Neustadt, mit dem Auto über die A7."
+ },
+ {
+  "slug": "arberland",
+  "name": "Arberland",
+  "country": "DE",
+  "center": {
+   "lat": 49.1,
+   "lon": 13.15
+  },
+  "radiusKm": 12,
+  "baseTowns": [
+   "bodenmais",
+   "bayerisch-eisenstein"
+  ],
+  "include": [],
+  "exclude": [],
+  "character": "Die beiden Straßen über den Arber, Bretterschachten und Brennes, auf einer Runde von Bodenmais oder Bayerisch Eisenstein. Fichtenwald, Bergbahn und der Arbersee; der Böhmerwald gleich hinter der Grenze.",
+  "multiDay": "Ein Wochenende: die Runde um den Arber über beide Pässe, dazu ein Tag in den Böhmerwald nach Železná Ruda und Špičák.",
+  "access": "Bahn bis Bayerisch Eisenstein oder Bodenmais, mit dem Auto über die A3 und Deggendorf."
+ },
+ {
+  "slug": "boehmerwald",
+  "name": "Böhmerwald",
+  "country": "CZ",
+  "center": {
+   "lat": 48.93,
+   "lon": 13.95
+  },
+  "radiusKm": 30,
+  "baseTowns": [
+   "cesky-krumlov"
+  ],
+  "include": [],
+  "exclude": [],
+  "character": "Die tschechische Seite des Grenzgebirges: der Kleť über Český Krumlov, der Churáňov über Stachy und der Dreisessel an der Grenze zu Bayern. Lange, gleichmäßige Anstiege durch Fichtenwald, ruhige Straßen und die Moldau im Tal.",
+  "multiDay": "Drei Tage von Český Krumlov: der Kleť am Morgen, der Churáňov als lange Runde über Vimperk, der Dreisessel über den Lipno-Stausee.",
+  "access": "Bahn bis Český Krumlov über České Budějovice; mit dem Auto von Passau oder Linz."
  }
 ]

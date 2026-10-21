@@ -76,6 +76,12 @@ export const vocab = {
       label: "Alpen",
       outside: "außerhalb der Alpen",
     },
+    Bayerwald: {
+      hint: "Die Arberstraßen über Bodenmais und Bayerisch Eisenstein, Dreisessel und Kleť: Waldberge an der tschechischen Grenze für ein Wochenende.",
+      inside: "im Bayerischen Wald und im Böhmerwald",
+      label: "Bayerischer Wald",
+      outside: "außerhalb des Bayerischen Walds",
+    },
     Erzgebirge: {
       hint: "Fichtelberg, Klínovec und die steilen Rampen der böhmischen Südseite: das Wochenende ab Dresden, Chemnitz oder Prag.",
       inside: "im Erzgebirge",
@@ -151,6 +157,8 @@ export const vocab = {
    * English file names them.
    */
   region: {
+    Bayerwald: "Bayerischer Wald",
+    Böhmerwald: "Böhmerwald",
     Dolomiten: "Dolomiten",
     Erzgebirge: "Erzgebirge",
     Harz: "Harz",

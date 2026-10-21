@@ -62,6 +62,12 @@ export const vocab = {
       label: "Alps",
       outside: "outside the Alps",
     },
+    Bayerwald: {
+      hint: "The Arber roads above Bodenmais and Bayerisch Eisenstein, the Dreisessel and the Kleť: forest mountains on the Czech border for a weekend.",
+      inside: "in the Bavarian and Bohemian Forest",
+      label: "Bavarian Forest",
+      outside: "outside the Bavarian Forest",
+    },
     Erzgebirge: {
       hint: "Fichtelberg, Klínovec and the steep ramps of the Bohemian south side: a weekend from Dresden, Chemnitz or Prague.",
       inside: "in the Ore Mountains",
@@ -132,6 +138,8 @@ export const vocab = {
     ofTotal: "Of {total} passes within reach: {parts}.",
   },
   region: {
+    Bayerwald: "Bavarian Forest",
+    Böhmerwald: "Bohemian Forest",
     Dolomiten: "Dolomites",
     Erzgebirge: "Ore Mountains",
     Harz: "Harz",

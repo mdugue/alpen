@@ -53,7 +53,13 @@ and the way the range chips are read once there are twenty of them.
    out.
    The Thuringian Forest with the Rhön is the same case: of nineteen climbs
    measured, five meet the rule (Inselsberg, Oberhof, Wasserkuppe,
-   Kreuzberg, Hochrhönstraße).
+   Kreuzberg, Hochrhönstraße). So is the Bavarian Forest with the Bohemian
+   Forest: five roads (Bretterschachten, Brennes, Dreisessel, Kleť,
+   Churáňov), the Dreisessel at 3.7 % the one held in by its 390 m.
+   The Swabian Jura does not come in: of fourteen climbs measured, two meet
+   the rule (Lochenpass, the Hengen above Bad Urach), and a range of two is
+   a list of roads, not a destination. It stays a candidate for a later
+   rule that counts short steep ramps.
 3. **The order** is by what each range adds to the app's two questions:
    - Stage 1: Erzgebirge (the pilot: a low range, a new country, climbs that
      are not passes), Black Forest, Mallorca (March and November).
