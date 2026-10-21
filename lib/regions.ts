@@ -27,6 +27,7 @@ export const RANGES = [
   "Bayerwald",
   "Korsika",
   "Kanaren",
+  "Nordspanien",
 ] as const;
 
 export type RangeName = (typeof RANGES)[number];
@@ -54,6 +55,7 @@ export const RANGE_REGIONS = {
   Kanaren: ["Teneriffa", "Gran Canaria", "La Palma"],
   Korsika: ["Korsika"],
   Mallorca: ["Mallorca"],
+  Nordspanien: ["Asturien", "Kantabrien"],
   Pyrenäen: ["Pyrenäen"],
   Schwarzwald: ["Schwarzwald"],
   Thüringen: ["Thüringen", "Rhön"],
@@ -79,6 +81,7 @@ export const RANGE_TRIP: Record<RangeName, TripName> = {
   Kanaren: "holiday",
   Korsika: "holiday",
   Mallorca: "holiday",
+  Nordspanien: "holiday",
   Pyrenäen: "holiday",
   Schwarzwald: "weekend",
   Thüringen: "weekend",
@@ -118,6 +121,7 @@ export const REGIONS = [
   ...RANGE_REGIONS.Bayerwald,
   ...RANGE_REGIONS.Korsika,
   ...RANGE_REGIONS.Kanaren,
+  ...RANGE_REGIONS.Nordspanien,
 ] as const;
 
 /** A box in degrees, both ends inclusive. */
@@ -150,6 +154,7 @@ export const RANGE_BOUNDS: Record<RangeName, GeoBox> = {
   Kanaren: { lat: [27.5, 29.5], lon: [-18.3, -13.3] },
   Korsika: { lat: [41.3, 43.1], lon: [8.5, 9.6] },
   Mallorca: { lat: [39.2, 40.1], lon: [2.2, 3.6] },
+  Nordspanien: { lat: [42.6, 43.7], lon: [-7.3, -3] },
   Pyrenäen: { lat: [42, 43.5], lon: [-2, 3.5] },
   Schwarzwald: { lat: [47.5, 49], lon: [7.5, 9] },
   Thüringen: { lat: [50.2, 51], lon: [9.6, 11.4] },

@@ -8497,5 +8497,95 @@
     "character": "Von Garafía steiler und einsamer durch den Kiefernwald, kaum ein Auto."
    }
   ]
+ },
+ "angliru": {
+  "intro": "Einer der steilsten Asphaltanstiege Europas, eine Legende der Vuelta. Unten harmlos, oben eine Wand: wer ihn fährt, braucht die kleinste Übersetzung, die es gibt.",
+  "sides": [
+   {
+    "character": "Von La Vega sechs Kilometer gemäßigt durch Wiesen, dann sechs Kilometer Wand mit Rampen über 20 % in der Cueña les Cabres, schmal und oft feucht.",
+    "hazards": [
+     "steep",
+     "narrow"
+    ],
+    "highlights": "Die Cueña les Cabres und der Blick zurück über die Täler von Riosa."
+   }
+  ]
+ },
+ "lagos-de-covadonga": {
+  "intro": "Der Inbegriff der Vuelta: eine unregelmäßige Rampe von der Basilika in die Picos de Europa, oben die Seen, Kühe und Kalkfelsen.",
+  "sides": [
+   {
+    "character": "Ab Covadonga sofort steil, unregelmäßig mit der Rampe der Huesera über 15 %, dann flacher zum Mirador de la Reina und zu den Seen.",
+    "hazards": [
+     "steep",
+     "traffic"
+    ],
+    "highlights": "Der Mirador de la Reina und der Lago Enol unter den Picos."
+   }
+  ]
+ },
+ "puerto-de-san-lorenzo": {
+  "intro": "Ein harter, gleichmäßiger Vuelta-Pass im wilden Westen Asturiens, mit Bärenland und Almhütten oben.",
+  "sides": [
+   {
+    "character": "Von Teverga gleichmäßig um 8 %, die zweite Hälfte steiler und offen über den Weiden.",
+    "highlights": "Die Brañas mit den Steinhütten unter dem Pass."
+   }
+  ]
+ },
+ "alto-de-la-farrapona": {
+  "intro": "Eine Fahrt in den wildesten Winkel Asturiens: lange Täler, Teiteiros-Hütten und am Ende die Seen von Saliencia unter Kalkwänden.",
+  "sides": [
+   {
+    "character": "Von Pola de Somiedo lang und unregelmäßig das Tal hinauf, mit flachen Stücken und steilen Rampen im letzten Drittel.",
+    "highlights": "Die Lagos de Saliencia unter dem Pass."
+   }
+  ]
+ },
+ "puerto-de-pajares": {
+  "intro": "Ein Pass mit Geschichte: die alte Straße nach Kastilien, mit den Kehren über dem Tal von Pajares und der Bahn, die sich in Tunneln hinaufwindet.",
+  "sides": [
+   {
+    "character": "Von Pola de Lena lange flach im Tal, dann die letzten zehn Kilometer in Kehren mit 6 bis 8 %.",
+    "hazards": [
+     "traffic"
+    ],
+    "highlights": "Die Kehren über dem Tal mit der Rampa de Pajares der Bahn."
+   }
+  ]
+ },
+ "alto-de-la-cobertoria": {
+  "intro": "Ein echter asturischer Pass: steil, schmal, grün, und mit dem Angliru gleich auf der anderen Talseite.",
+  "sides": [
+   {
+    "character": "Von Pola de Lena gleich steil in Kehren durch Kastanien und Wiesen, kaum eine Erholung.",
+    "hazards": [
+     "steep",
+     "narrow"
+    ],
+    "highlights": "Der Blick vom Sattel über das Tal von Lena."
+   }
+  ]
+ },
+ "puerto-de-san-glorio": {
+  "intro": "Ein langer, stiller Pass mit dem schönsten Blick auf die Picos de Europa: von Potes erst im Tal, dann über Almen bis über die Baumgrenze.",
+  "sides": [
+   {
+    "character": "Von Potes lange gemäßigt durch das Tal der Liébana, die letzten zwölf Kilometer steiler durch Buchenwald und über Weiden.",
+    "highlights": "Der Mirador de Llesba mit dem Bärendenkmal und den Picos de Europa."
+   }
+  ]
+ },
+ "pena-cabarga": {
+  "intro": "Santanders Hausberg und eine kurze Vuelta-Wand: unten Eukalyptus, oben ein Gipfel mit dem Meer auf einer und den Bergen auf der anderen Seite.",
+  "sides": [
+   {
+    "character": "Von Heras erst gemäßigt, dann auf den letzten Kilometern steil mit Rampen über 15 %.",
+    "hazards": [
+     "steep"
+    ],
+    "highlights": "Der Blick über die Bucht von Santander."
+   }
+  ]
  }
 }

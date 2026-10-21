@@ -4138,5 +4138,61 @@
    "Santa Cruz de La Palma (east)",
    "Garafía (north)"
   ]
+ },
+ "angliru": {
+  "classicAscent": "12.5 km, 10.1 % from La Vega (Riosa)",
+  "note": "The most feared climb of the Vuelta, a summit finish several times since 1999: over 13 % on average for the last six kilometres, the Cueña les Cabres at over 20 %. Mountain pastures and a view across Asturias at the top.",
+  "ascents": [
+   "La Vega (Riosa)"
+  ]
+ },
+ "lagos-de-covadonga": {
+  "classicAscent": "13.6 km, 6.8 % from Cangas de Onís",
+  "note": "The Vuelta's most famous summit finish, ridden more than twenty times since 1983: from Covadonga and its basilica up to the mountain lakes Enol and Ercina in the Picos de Europa. Partly closed to cars in summer.",
+  "ascents": [
+   "Cangas de Onís"
+  ]
+ },
+ "puerto-de-san-lorenzo": {
+  "classicAscent": "11.2 km, 7.9 % from Teverga",
+  "note": "The pass between Teverga and Somiedo, often in the Vuelta: from La Plaza in Teverga steadily steep across mountain pastures. On the west side down to Somiedo and the Farrapona.",
+  "ascents": [
+   "Teverga (east)"
+  ]
+ },
+ "alto-de-la-farrapona": {
+  "classicAscent": "21.7 km, 4.7 % from Pola de Somiedo",
+  "note": "The road through the Somiedo natural park to the border with León, a Vuelta finish in 2011 and 2016. Long and irregular, lakes and limestone peaks at the top, bears in the forests.",
+  "ascents": [
+   "Pola de Somiedo (west)"
+  ]
+ },
+ "puerto-de-pajares": {
+  "classicAscent": "25.9 km, 4.1 % from Pola de Lena",
+  "note": "The old main pass between Asturias and León, quieter since the motorway. From Pola de Lena long through the valley and then in hairpins up to the border; the Meseta on the south side.",
+  "ascents": [
+   "Pola de Lena (north)"
+  ]
+ },
+ "alto-de-la-cobertoria": {
+  "classicAscent": "10.0 km, 8.6 % from Pola de Lena",
+  "note": "The steep pass between Lena and Quirós, often the curtain-raiser for the Angliru in the Vuelta. From Pola de Lena ten kilometres almost without a break at over 8 %.",
+  "ascents": [
+   "Pola de Lena (east)"
+  ]
+ },
+ "puerto-de-san-glorio": {
+  "classicAscent": "27.1 km, 4.9 % from Potes",
+  "note": "The highest road pass in Cantabria, from Potes up the Liébana valley to the border with León. At the top the view of the Picos de Europa, the bear monument at the Mirador de Llesba.",
+  "ascents": [
+   "Potes (north)"
+  ]
+ },
+ "pena-cabarga": {
+  "classicAscent": "8.6 km, 6.0 % from Heras",
+  "note": "The viewpoint above the bay of Santander, a Vuelta finish several times: short, with ramps over 15 % in the last kilometres, the monument and the view over the bay and the Cantabrian Mountains at the top.",
+  "ascents": [
+   "Heras (north)"
+  ]
  }
 }

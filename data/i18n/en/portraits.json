@@ -5895,5 +5895,77 @@
     "character": "From Garafía steeper and lonelier through the pine forest, hardly a car."
    }
   ]
+ },
+ "angliru": {
+  "intro": "One of the steepest paved climbs in Europe, a Vuelta legend. Harmless at the bottom, a wall at the top: whoever rides it needs the lowest gear there is.",
+  "sides": [
+   {
+    "character": "From La Vega six moderate kilometres through meadows, then six kilometres of wall with ramps over 20 % at the Cueña les Cabres, narrow and often damp.",
+    "highlights": "The Cueña les Cabres and the view back over the valleys of Riosa."
+   }
+  ]
+ },
+ "lagos-de-covadonga": {
+  "intro": "The essence of the Vuelta: an irregular ramp from the basilica into the Picos de Europa, lakes, cows and limestone crags at the top.",
+  "sides": [
+   {
+    "character": "From Covadonga steep at once, irregular with the Huesera ramp at over 15 %, then gentler to the Mirador de la Reina and the lakes.",
+    "highlights": "The Mirador de la Reina and the Lago Enol below the Picos."
+   }
+  ]
+ },
+ "puerto-de-san-lorenzo": {
+  "intro": "A hard, steady Vuelta pass in the wild west of Asturias, bear country and herders' huts at the top.",
+  "sides": [
+   {
+    "character": "From Teverga steadily at around 8 %, the second half steeper and open above the pastures.",
+    "highlights": "The brañas with their stone huts below the pass."
+   }
+  ]
+ },
+ "alto-de-la-farrapona": {
+  "intro": "A ride into the wildest corner of Asturias: long valleys, teito huts and, at the end, the Saliencia lakes below limestone walls.",
+  "sides": [
+   {
+    "character": "From Pola de Somiedo long and irregular up the valley, with flat stretches and steep ramps in the last third.",
+    "highlights": "The Saliencia lakes below the pass."
+   }
+  ]
+ },
+ "puerto-de-pajares": {
+  "intro": "A pass with a history: the old road to Castile, with the hairpins above the Pajares valley and the railway winding up through tunnels.",
+  "sides": [
+   {
+    "character": "From Pola de Lena long and flat in the valley, then the last ten kilometres in hairpins at 6 to 8 %.",
+    "highlights": "The hairpins above the valley with the railway's Rampa de Pajares."
+   }
+  ]
+ },
+ "alto-de-la-cobertoria": {
+  "intro": "A true Asturian pass: steep, narrow, green, and with the Angliru right across the valley.",
+  "sides": [
+   {
+    "character": "From Pola de Lena steep straight away in hairpins through chestnuts and meadows, hardly any respite.",
+    "highlights": "The view from the saddle over the Lena valley."
+   }
+  ]
+ },
+ "puerto-de-san-glorio": {
+  "intro": "A long, quiet pass with the finest view of the Picos de Europa: from Potes in the valley at first, then across pastures to above the tree line.",
+  "sides": [
+   {
+    "character": "From Potes long and moderate up the Liébana valley, the last twelve kilometres steeper through beech forest and across pastures.",
+    "highlights": "The Mirador de Llesba with the bear monument and the Picos de Europa."
+   }
+  ]
+ },
+ "pena-cabarga": {
+  "intro": "Santander's local mountain and a short Vuelta wall: eucalyptus below, a summit with the sea on one side and the mountains on the other.",
+  "sides": [
+   {
+    "character": "From Heras moderate at first, then steep in the last kilometres with ramps over 15 %.",
+    "highlights": "The view over the bay of Santander."
+   }
+  ]
  }
 }

@@ -104,6 +104,12 @@ export const vocab = {
       label: "Mallorca",
       outside: "outside Mallorca",
     },
+    Nordspanien: {
+      hint: "The Angliru, the Lagos de Covadonga and the passes of the Cantabrian Mountains: steep Vuelta climbs between the sea and the Picos de Europa.",
+      inside: "in Asturias and Cantabria",
+      label: "Asturias and Cantabria",
+      outside: "outside Asturias and Cantabria",
+    },
     Pyrenäen: {
       hint: "Tourmalet, Aubisque, Peyresourde, Ariège and Andorra: the Tour's other mountains, with the long season of the Spanish side.",
       inside: "in the Pyrenees",
@@ -150,6 +156,7 @@ export const vocab = {
     ofTotal: "Of {total} passes within reach: {parts}.",
   },
   region: {
+    Asturien: "Asturias",
     Bayerwald: "Bavarian Forest",
     Böhmerwald: "Bohemian Forest",
     Dolomiten: "Dolomites",
@@ -157,6 +164,7 @@ export const vocab = {
     "Gran Canaria": "Gran Canaria",
     Harz: "Harz",
     Jura: "Jura",
+    Kantabrien: "Cantabria",
     Korsika: "Corsica",
     "La Palma": "La Palma",
     Mallorca: "Mallorca",

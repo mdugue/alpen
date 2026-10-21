@@ -1488,7 +1488,7 @@
    "lat": 28.27,
    "lon": -16.62
   },
-  "radiusKm": 25,
+  "radiusKm": 27,
   "baseTowns": [
    "puerto-de-la-cruz",
    "los-cristianos"
@@ -1534,5 +1534,43 @@
   "character": "Die grüne Insel im Westen: der Roque de los Muchachos, 2400 Höhenmeter vom Meer, dazu steile Straßen durch Lorbeerwald und kaum Verkehr. Für Kletterer, die Ruhe suchen.",
   "multiDay": "Drei Tage: der Roque von Santa Cruz, die Nordrunde über Barlovento und Garafía, die Vulkane im Süden.",
   "access": "Flug nach La Palma oder Fähre von Teneriffa."
+ },
+ {
+  "slug": "zentralasturien",
+  "name": "Zentralasturien",
+  "country": "ES",
+  "center": {
+   "lat": 43.14,
+   "lon": -5.98
+  },
+  "radiusKm": 24,
+  "baseTowns": [
+   "pola-de-lena",
+   "pola-de-somiedo"
+  ],
+  "include": [],
+  "exclude": [],
+  "character": "Die Vuelta-Berge südlich von Oviedo: Angliru, Cobertoria, San Lorenzo, Farrapona und Pajares in grünen Tälern, steil, schmal und leer. Atlantisches Wetter, im Sommer angenehm kühl.",
+  "multiDay": "Fünf Tage: Angliru, Cobertoria und Pajares von Pola de Lena, San Lorenzo und Farrapona von Somiedo.",
+  "access": "Flug nach Asturias (Oviedo), Bahn bis Pola de Lena; mit dem Auto über die AP-66."
+ },
+ {
+  "slug": "picos-de-europa",
+  "name": "Picos de Europa",
+  "country": "ES",
+  "center": {
+   "lat": 43.2,
+   "lon": -4.86
+  },
+  "radiusKm": 28,
+  "baseTowns": [
+   "cangas-de-onis",
+   "potes"
+  ],
+  "include": [],
+  "exclude": [],
+  "character": "Kalkberge zwischen Asturien, Kantabrien und León: Lagos de Covadonga, die berühmteste Vuelta-Ankunft, und der San Glorio mit dem Blick über das ganze Massiv. Dazwischen tiefe Schluchten.",
+  "multiDay": "Vier Tage: Covadonga von Cangas de Onís, die Hermida-Schlucht nach Potes, San Glorio und Fuente Dé.",
+  "access": "Flug nach Asturias oder Santander, mit dem Auto über die A-8."
  }
 ]

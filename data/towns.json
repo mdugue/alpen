@@ -2252,5 +2252,61 @@
   ],
   "aliases": [],
   "why": "Die kleine Inselhauptstadt am Hafen: der Roque de los Muchachos beginnt am Meer, die Insel ist ruhig und steil."
+ },
+ {
+  "slug": "cangas-de-onis",
+  "name": "Cangas de Onís",
+  "country": "ES",
+  "lat": 43.3509,
+  "lon": -5.129,
+  "tags": [
+   "hotels",
+   "scenic"
+  ],
+  "aliases": [],
+  "why": "Die Stadt am Eingang der Picos de Europa: Lagos de Covadonga beginnt am Ortsrand, über Arenas und Potes zum San Glorio."
+ },
+ {
+  "slug": "pola-de-lena",
+  "name": "Pola de Lena",
+  "country": "ES",
+  "lat": 43.1586,
+  "lon": -5.8311,
+  "tags": [
+   "train",
+   "passes"
+  ],
+  "aliases": [
+   "La Pola"
+  ],
+  "why": "Kleinstadt mit Bahnhof im Tal: Cobertoria und Pajares beginnen im Ort, der Angliru über Riosa eine halbe Stunde entfernt."
+ },
+ {
+  "slug": "pola-de-somiedo",
+  "name": "Pola de Somiedo",
+  "country": "ES",
+  "lat": 43.0931,
+  "lon": -6.2573,
+  "tags": [
+   "quiet",
+   "scenic"
+  ],
+  "aliases": [
+   "La Pola Somiedo"
+  ],
+  "why": "Das Dorf im Naturpark Somiedo: die Farrapona beginnt im Ort, San Lorenzo auf der anderen Seite des Tals."
+ },
+ {
+  "slug": "potes",
+  "name": "Potes",
+  "country": "ES",
+  "lat": 43.1537,
+  "lon": -4.6234,
+  "tags": [
+   "scenic",
+   "passes"
+  ],
+  "aliases": [],
+  "why": "Das Städtchen in der Liébana am Fuß der Picos de Europa: San Glorio beginnt im Ort, Fuente Dé und die Hermida-Schlucht als Ausfahrten."
  }
 ]

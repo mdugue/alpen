@@ -19738,5 +19738,278 @@
     "label": "Garafía (Nord)"
    }
   ]
+ },
+ {
+  "slug": "angliru",
+  "surface": "asphalt",
+  "name": "Alto de l'Angliru",
+  "type": "spur",
+  "tags": [
+   "race",
+   "panorama"
+  ],
+  "country": "ES",
+  "region": "Asturien",
+  "lat": 43.2257,
+  "lon": -5.938,
+  "elevation": 1564,
+  "classicAscent": "12,5 km, 10,1 % ab La Vega (Riosa)",
+  "beauty": 4,
+  "fame": 5,
+  "difficulty": 5,
+  "traffic": 1,
+  "season": null,
+  "note": "Der gefürchtetste Anstieg der Vuelta, seit 1999 mehrfach Bergankunft: auf den letzten sechs Kilometern im Schnitt über 13 %, die Cueña les Cabres mit über 20 %. Oben Almweiden und der Blick über Asturien.",
+  "aliases": [
+   "Angliru"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 43.2307,
+     "lon": -5.882
+    },
+    "label": "La Vega (Riosa)"
+   }
+  ]
+ },
+ {
+  "slug": "lagos-de-covadonga",
+  "surface": "asphalt",
+  "name": "Lagos de Covadonga",
+  "type": "spur",
+  "tags": [
+   "race",
+   "panorama",
+   "reservoir"
+  ],
+  "country": "ES",
+  "region": "Asturien",
+  "lat": 43.2743,
+  "lon": -4.9931,
+  "elevation": 1145,
+  "classicAscent": "13,6 km, 6,8 % ab Cangas de Onís",
+  "beauty": 5,
+  "fame": 5,
+  "difficulty": 4,
+  "traffic": 3,
+  "season": null,
+  "note": "Die berühmteste Bergankunft der Vuelta, seit 1983 über zwanzigmal gefahren: von Covadonga mit der Basilika hinauf zu den Bergseen Enol und Ercina in den Picos de Europa. Im Sommer für Autos zeitweise gesperrt.",
+  "aliases": [
+   "Covadonga",
+   "Lago Enol"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 43.3136,
+     "lon": -5.0659
+    },
+    "label": "Cangas de Onís"
+   }
+  ]
+ },
+ {
+  "slug": "puerto-de-san-lorenzo",
+  "surface": "asphalt",
+  "name": "Puerto de San Lorenzo",
+  "type": "pass",
+  "tags": [
+   "race",
+   "hairpins"
+  ],
+  "country": "ES",
+  "region": "Asturien",
+  "lat": 43.1417,
+  "lon": -6.1929,
+  "elevation": 1370,
+  "classicAscent": "11,2 km, 7,9 % ab Teverga",
+  "beauty": 4,
+  "fame": 3,
+  "difficulty": 4,
+  "traffic": 1,
+  "season": null,
+  "note": "Der Pass zwischen Teverga und Somiedo, oft in der Vuelta: von La Plaza in Teverga gleichmäßig steil über Almen. Auf der Westseite hinunter nach Somiedo und zur Farrapona.",
+  "aliases": [
+   "San Lorenzo"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 43.162,
+     "lon": -6.0965
+    },
+    "label": "Teverga (Ost)"
+   }
+  ]
+ },
+ {
+  "slug": "alto-de-la-farrapona",
+  "surface": "asphalt",
+  "name": "Alto de la Farrapona",
+  "type": "pass",
+  "tags": [
+   "race",
+   "panorama"
+  ],
+  "country": "ES",
+  "region": "Asturien",
+  "lat": 43.0569,
+  "lon": -6.0897,
+  "elevation": 1715,
+  "classicAscent": "21,7 km, 4,7 % ab Pola de Somiedo",
+  "beauty": 5,
+  "fame": 3,
+  "difficulty": 4,
+  "traffic": 1,
+  "season": null,
+  "note": "Die Straße durch den Naturpark Somiedo bis an die Grenze zu León, Vuelta-Ankunft 2011 und 2016. Lang und unregelmäßig, oben Seen und Kalkberge, Bären in den Wäldern.",
+  "aliases": [
+   "Lagos de Somiedo",
+   "La Farrapona"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 43.0931,
+     "lon": -6.2573
+    },
+    "label": "Pola de Somiedo (West)"
+   }
+  ]
+ },
+ {
+  "slug": "puerto-de-pajares",
+  "surface": "asphalt",
+  "name": "Puerto de Pajares",
+  "type": "pass",
+  "tags": [
+   "hairpins"
+  ],
+  "country": "ES",
+  "region": "Asturien",
+  "lat": 42.9927,
+  "lon": -5.7595,
+  "elevation": 1386,
+  "classicAscent": "25,9 km, 4,1 % ab Pola de Lena",
+  "beauty": 3,
+  "fame": 3,
+  "difficulty": 3,
+  "traffic": 3,
+  "season": null,
+  "note": "Der alte Hauptpass zwischen Asturien und León, seit der Autobahn ruhiger. Von Pola de Lena lang durch das Tal und dann in Kehren hinauf zur Grenze; auf der Südseite die Meseta.",
+  "aliases": [
+   "Pajares"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 43.1586,
+     "lon": -5.8311
+    },
+    "label": "Pola de Lena (Nord)"
+   }
+  ]
+ },
+ {
+  "slug": "alto-de-la-cobertoria",
+  "surface": "asphalt",
+  "name": "Alto de la Cobertoria",
+  "type": "pass",
+  "tags": [
+   "race",
+   "hairpins"
+  ],
+  "country": "ES",
+  "region": "Asturien",
+  "lat": 43.1435,
+  "lon": -5.9059,
+  "elevation": 1190,
+  "classicAscent": "10,0 km, 8,6 % ab Pola de Lena",
+  "beauty": 4,
+  "fame": 3,
+  "difficulty": 4,
+  "traffic": 1,
+  "season": null,
+  "note": "Der steile Pass zwischen Lena und Quirós, in der Vuelta oft der Auftakt zum Angliru. Von Pola de Lena zehn Kilometer fast ohne Pause über 8 %.",
+  "aliases": [
+   "Cobertoria"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 43.1586,
+     "lon": -5.8311
+    },
+    "label": "Pola de Lena (Ost)"
+   }
+  ]
+ },
+ {
+  "slug": "puerto-de-san-glorio",
+  "surface": "asphalt",
+  "name": "Puerto de San Glorio",
+  "type": "pass",
+  "tags": [
+   "panorama"
+  ],
+  "country": "ES",
+  "region": "Kantabrien",
+  "lat": 43.0677,
+  "lon": -4.7635,
+  "elevation": 1626,
+  "classicAscent": "27,1 km, 4,9 % ab Potes",
+  "beauty": 5,
+  "fame": 3,
+  "difficulty": 4,
+  "traffic": 1,
+  "season": null,
+  "note": "Der höchste Straßenpass Kantabriens, von Potes durch das Liébana-Tal hinauf an die Grenze zu León. Oben der Blick auf die Picos de Europa, das Denkmal des Bären am Mirador de Llesba.",
+  "aliases": [
+   "San Glorio"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 43.1537,
+     "lon": -4.6234
+    },
+    "label": "Potes (Nord)"
+   }
+  ]
+ },
+ {
+  "slug": "pena-cabarga",
+  "surface": "asphalt",
+  "name": "Peña Cabarga",
+  "type": "spur",
+  "tags": [
+   "panorama",
+   "race"
+  ],
+  "country": "ES",
+  "region": "Kantabrien",
+  "lat": 43.3798,
+  "lon": -3.7794,
+  "elevation": 526,
+  "classicAscent": "8,6 km, 6,0 % ab Heras",
+  "beauty": 4,
+  "fame": 3,
+  "difficulty": 3,
+  "traffic": 1,
+  "season": null,
+  "note": "Der Aussichtsberg über der Bucht von Santander, mehrfach Vuelta-Ankunft: kurz, mit Rampen über 15 % auf den letzten Kilometern, oben das Denkmal und der Blick über Bucht und Kantabrisches Gebirge.",
+  "aliases": [
+   "Cabarga"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 43.406,
+     "lon": -3.77
+    },
+    "label": "Heras (Nord)"
+   }
+  ]
  }
 ]

@@ -388,5 +388,15 @@
   "character": "The green island in the west: the Roque de los Muchachos, 2,400 metres from the sea, plus steep roads through laurel forest and hardly any traffic. For climbers who want peace.",
   "multiDay": "Three days: the Roque from Santa Cruz, the northern loop via Barlovento and Garafía, the volcanoes in the south.",
   "access": "Fly to La Palma or take the ferry from Tenerife."
+ },
+ "zentralasturien": {
+  "character": "The Vuelta mountains south of Oviedo: the Angliru, the Cobertoria, the San Lorenzo, the Farrapona and the Pajares in green valleys, steep, narrow and empty. Atlantic weather, pleasantly cool in summer.",
+  "multiDay": "Five days: the Angliru, the Cobertoria and the Pajares from Pola de Lena, the San Lorenzo and the Farrapona from Somiedo.",
+  "access": "Fly to Asturias (Oviedo), train to Pola de Lena; by car on the AP-66."
+ },
+ "picos-de-europa": {
+  "character": "Limestone mountains between Asturias, Cantabria and León: the Lagos de Covadonga, the Vuelta's most famous finish, and the San Glorio with the view over the whole massif. Deep gorges in between.",
+  "multiDay": "Four days: Covadonga from Cangas de Onís, the Hermida gorge to Potes, the San Glorio and Fuente Dé.",
+  "access": "Fly to Asturias or Santander, by car on the A-8."
  }
 }
