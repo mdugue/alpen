@@ -2430,6 +2430,202 @@
   ]
  },
  {
+  "slug": "pila",
+  "surface": "asphalt",
+  "name": "Pila",
+  "type": "spur",
+  "tags": [
+   "panorama",
+   "hairpins"
+  ],
+  "country": "IT",
+  "region": "Westalpen",
+  "lat": 45.6873,
+  "lon": 7.3107,
+  "elevation": 1790,
+  "classicAscent": "18 km, 6,6 % ab Aosta",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 4,
+  "traffic": 2,
+  "season": null,
+  "note": "Aus Aosta über Gressan in langen Kehren auf die Skistation über der Stadt, gleichmäßig steil von unten bis oben. Oben der Blick über das ganze Tal bis zum Mont Blanc; ganzjährig offen.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 45.7343,
+     "lon": 7.3223
+    },
+    "label": "Aosta"
+   }
+  ]
+ },
+ {
+  "slug": "cogne",
+  "surface": "asphalt",
+  "name": "Cogne",
+  "type": "spur",
+  "tags": [
+   "gorge"
+  ],
+  "country": "IT",
+  "region": "Westalpen",
+  "lat": 45.6086,
+  "lon": 7.3558,
+  "elevation": 1534,
+  "classicAscent": "18 km, 4,6 % ab Aymavilles",
+  "beauty": 4,
+  "fame": 1,
+  "difficulty": 3,
+  "traffic": 2,
+  "season": null,
+  "note": "Durch die enge Schlucht der Grand Eyvia ins Val di Cogne bis an den Rand des Gran-Paradiso-Nationalparks; unten zwischen Felswänden, oben auf den Wiesen von Sant'Orso. Gleichmäßig und ganzjährig offen.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 45.7017,
+     "lon": 7.2477
+    },
+    "label": "Aymavilles"
+   }
+  ]
+ },
+ {
+  "slug": "col-de-joux",
+  "surface": "asphalt",
+  "name": "Col de Joux",
+  "type": "pass",
+  "tags": [
+   "hairpins"
+  ],
+  "aliases": [
+   "Colle di Joux"
+  ],
+  "country": "IT",
+  "region": "Westalpen",
+  "lat": 45.754,
+  "lon": 7.7029,
+  "elevation": 1640,
+  "classicAscent": "15 km, 7 % ab Saint-Vincent",
+  "beauty": 3,
+  "fame": 2,
+  "difficulty": 4,
+  "traffic": 2,
+  "season": null,
+  "note": "Vom Kurort Saint-Vincent in vielen Kehren durch Kastanien- und Lärchenwald ins Val d'Ayas, auf der anderen Seite kurz hinunter nach Brusson. Ganzjährig offen; mit der Talstraße nach Verrès eine Runde.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 45.7504,
+     "lon": 7.6479
+    },
+    "label": "Saint-Vincent (West)"
+   },
+   {
+    "from": {
+     "lat": 45.7587,
+     "lon": 7.7327
+    },
+    "label": "Brusson (Ost)"
+   }
+  ]
+ },
+ {
+  "slug": "breuil-cervinia",
+  "surface": "asphalt",
+  "name": "Breuil-Cervinia",
+  "type": "spur",
+  "aliases": [
+   "Cervinia",
+   "Valtournenche"
+  ],
+  "country": "IT",
+  "region": "Westalpen",
+  "lat": 45.9356,
+  "lon": 7.6304,
+  "elevation": 2010,
+  "classicAscent": "27 km, 5,4 % ab Châtillon",
+  "beauty": 4,
+  "fame": 3,
+  "difficulty": 4,
+  "traffic": 3,
+  "season": null,
+  "note": "Durch das Valtournenche bis unter das Matterhorn, lang und gleichmäßig, Ankunft des Giro d'Italia zuletzt 2018. Ganzjährig offen, am Wochenende viel Ausflugsverkehr.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 45.7488,
+     "lon": 7.6125
+    },
+    "label": "Châtillon"
+   }
+  ]
+ },
+ {
+  "slug": "staffal",
+  "surface": "asphalt",
+  "name": "Staffal (Gressoney)",
+  "type": "spur",
+  "aliases": [
+   "Gressoney",
+   "Gressoney-La-Trinité",
+   "Gressoney-Saint-Jean",
+   "Valle del Lys",
+   "Lystal"
+  ],
+  "country": "IT",
+  "region": "Westalpen",
+  "lat": 45.8597,
+  "lon": 7.8131,
+  "elevation": 1825,
+  "classicAscent": "37 km, 4 % ab Pont-Saint-Martin",
+  "beauty": 4,
+  "fame": 1,
+  "difficulty": 4,
+  "traffic": 2,
+  "season": null,
+  "note": "Das lange Lystal hinauf von Pont-Saint-Martin durch die Walserdörfer Gressoney-Saint-Jean und Gressoney-La-Trinité bis ans Talende unter dem Monte Rosa. Unten lang und flach, oben steiler; ganzjährig offen.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 45.5994,
+     "lon": 7.7994
+    },
+    "label": "Pont-Saint-Martin"
+   }
+  ]
+ },
+ {
+  "slug": "santuario-di-oropa",
+  "surface": "asphalt",
+  "name": "Santuario di Oropa",
+  "type": "spur",
+  "aliases": [
+   "Oropa"
+  ],
+  "country": "IT",
+  "region": "Zentralalpen",
+  "lat": 45.6257,
+  "lon": 7.9825,
+  "elevation": 1160,
+  "classicAscent": "12 km, 6 % ab Biella",
+  "beauty": 3,
+  "fame": 4,
+  "difficulty": 3,
+  "traffic": 2,
+  "season": null,
+  "note": "Von Biella durch Wald zum großen Wallfahrtsort unter dem Monte Mucrone, oben steiler. Mehrfach Ankunft des Giro d'Italia, bekannt durch Pantanis Aufholjagd 1999; ganzjährig offen.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 45.5662,
+     "lon": 8.0525
+    },
+    "label": "Biella"
+   }
+  ]
+ },
+ {
   "slug": "simplonpass",
   "surface": "asphalt",
   "name": "Simplonpass",
@@ -2464,6 +2660,73 @@
      "lon": 8.14
     },
     "label": "Gondo"
+   }
+  ]
+ },
+ {
+  "slug": "macugnaga",
+  "surface": "asphalt",
+  "name": "Macugnaga",
+  "type": "spur",
+  "aliases": [
+   "Valle Anzasca",
+   "Monte Rosa"
+  ],
+  "country": "IT",
+  "region": "Zentralalpen",
+  "lat": 45.9682,
+  "lon": 7.9675,
+  "elevation": 1310,
+  "classicAscent": "28 km, 3,8 % ab Piedimulera",
+  "beauty": 4,
+  "fame": 1,
+  "difficulty": 3,
+  "traffic": 2,
+  "season": null,
+  "note": "Durch das Valle Anzasca von Piedimulera bis nach Macugnaga unter die Ostwand des Monte Rosa, die höchste Wand der Alpen. Lang und mäßig steil, ganzjährig offen.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.0243,
+     "lon": 8.2609
+    },
+    "label": "Piedimulera"
+   }
+  ]
+ },
+ {
+  "slug": "riale",
+  "surface": "asphalt",
+  "name": "Riale (Val Formazza)",
+  "type": "spur",
+  "tags": [
+   "reservoir"
+  ],
+  "aliases": [
+   "Val Formazza",
+   "Formazza",
+   "Cascata del Toce",
+   "Toce-Wasserfall"
+  ],
+  "country": "IT",
+  "region": "Zentralalpen",
+  "lat": 46.4228,
+  "lon": 8.4166,
+  "elevation": 1730,
+  "classicAscent": "33 km, 3,7 % ab Crodo",
+  "beauty": 4,
+  "fame": 1,
+  "difficulty": 3,
+  "traffic": 1,
+  "season": null,
+  "note": "Durch das Valle Antigorio und das Val Formazza von Crodo bis an den Toce-Wasserfall und die Hochebene von Riale. Lang und unten flach, oben in Kehren neben dem Fall; ganzjährig bis Riale offen.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.2233,
+     "lon": 8.3239
+    },
+    "label": "Crodo"
    }
   ]
  },
@@ -2696,6 +2959,76 @@
      "lon": 9.795
     },
     "label": "Silvaplana"
+   }
+  ]
+ },
+ {
+  "slug": "lenzerheide",
+  "surface": "asphalt",
+  "name": "Lenzerheide",
+  "type": "pass",
+  "aliases": [
+   "Lenzerheidepass",
+   "Lai",
+   "Valbella"
+  ],
+  "country": "CH",
+  "region": "Zentralalpen",
+  "lat": 46.7534,
+  "lon": 9.5585,
+  "elevation": 1549,
+  "classicAscent": "15 km, 6,5 % ab Chur",
+  "beauty": 3,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 4,
+  "season": null,
+  "note": "Die Hauptstraße von Chur ins Albulatal über Churwalden, Valbella und den Heidsee, Zubringer zu Albula und Julier und deshalb gut befahren; ganzjährig offen. Von Chur in Kehren und lange steil, von Tiefencastel über Lantsch gleichmäßiger.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.8531,
+     "lon": 9.5302
+    },
+    "label": "Chur (Nord)"
+   },
+   {
+    "from": {
+     "lat": 46.6616,
+     "lon": 9.5765
+    },
+    "label": "Tiefencastel (Süd)"
+   }
+  ]
+ },
+ {
+  "slug": "arosa",
+  "surface": "asphalt",
+  "name": "Arosa",
+  "type": "spur",
+  "aliases": [
+   "Schanfigg",
+   "Langwies"
+  ],
+  "country": "CH",
+  "region": "Zentralalpen",
+  "lat": 46.7839,
+  "lon": 9.6794,
+  "elevation": 1740,
+  "classicAscent": "29 km, 4 % ab Chur",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 4,
+  "traffic": 2,
+  "season": null,
+  "note": "Das Schanfigg hinauf von Chur in die Sackgasse nach Arosa, eine kurvenreiche Straße hoch über der Plessur. Gleichmäßig, ganzjährig offen; zurück geht es nur dieselbe Straße.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.8531,
+     "lon": 9.5302
+    },
+    "label": "Chur"
    }
   ]
  },
@@ -6464,10 +6797,10 @@
   "lat": 47.2666,
   "lon": 9.8329,
   "elevation": 1758,
-  "classicAscent": "6,5 km, 5,3 % ab Damüls",
+  "classicAscent": "21 km, 6,1 % ab Rankweil durch das Laternsertal",
   "beauty": 4,
   "fame": 2,
-  "difficulty": 3,
+  "difficulty": 4,
   "traffic": 1,
   "season": {
    "opens": 5,
@@ -6482,6 +6815,13 @@
      "lon": 9.891
     },
     "label": "Damüls (Ost)"
+   },
+   {
+    "from": {
+     "lat": 47.2704,
+     "lon": 9.6427
+    },
+    "label": "Rankweil (West)"
    }
   ]
  },
@@ -6516,6 +6856,114 @@
      "lon": 9.891
     },
     "label": "Damüls (West)"
+   }
+  ]
+ },
+ {
+  "slug": "boedele",
+  "surface": "asphalt",
+  "name": "Bödele",
+  "type": "pass",
+  "aliases": [
+   "Losenpass"
+  ],
+  "country": "AT",
+  "region": "Ostalpen",
+  "lat": 47.4194,
+  "lon": 9.8108,
+  "elevation": 1148,
+  "classicAscent": "10 km, 7,2 % ab Dornbirn",
+  "beauty": 3,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 2,
+  "season": null,
+  "note": "Der Hausberg von Dornbirn und die kürzeste Verbindung ins Bregenzerwald: von Dornbirn steil durch Wald hinauf, auf der anderen Seite kurz hinunter nach Schwarzenberg. Ganzjährig offen.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 47.4141,
+     "lon": 9.7409
+    },
+    "label": "Dornbirn (West)"
+   },
+   {
+    "from": {
+     "lat": 47.4138,
+     "lon": 9.8524
+    },
+    "label": "Schwarzenberg (Ost)"
+   }
+  ]
+ },
+ {
+  "slug": "malbun",
+  "surface": "asphalt",
+  "name": "Malbun",
+  "type": "spur",
+  "tags": [
+   "panorama",
+   "tunnels"
+  ],
+  "aliases": [
+   "Triesenberg",
+   "Steg",
+   "Liechtenstein"
+  ],
+  "country": "LI",
+  "region": "Ostalpen",
+  "lat": 47.1025,
+  "lon": 9.6082,
+  "elevation": 1600,
+  "classicAscent": "13 km, 8,7 % ab Vaduz über Triesenberg",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 4,
+  "traffic": 2,
+  "season": null,
+  "note": "Liechtensteins Berg: von Vaduz steil in Kehren nach Triesenberg mit Blick über das Rheintal, dann durch den Tunnel nach Steg und hinauf ins Skidorf Malbun. Durchgehend steil, ganzjährig offen.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 47.1393,
+     "lon": 9.5228
+    },
+    "label": "Vaduz"
+   }
+  ]
+ },
+ {
+  "slug": "flumserberg",
+  "surface": "asphalt",
+  "name": "Flumserberg",
+  "type": "spur",
+  "tags": [
+   "panorama",
+   "hairpins"
+  ],
+  "aliases": [
+   "Tannenboden",
+   "Sarganserland"
+  ],
+  "country": "CH",
+  "region": "Zentralalpen",
+  "lat": 47.0922,
+  "lon": 9.2873,
+  "elevation": 1380,
+  "classicAscent": "11 km, 8 % ab Flums",
+  "beauty": 3,
+  "fame": 2,
+  "difficulty": 4,
+  "traffic": 2,
+  "season": null,
+  "note": "Von Flums steil in Kehren auf die Sonnenterrasse über dem Walensee, mit Blick auf die Churfirsten. Kurz und durchgehend steil, ganzjährig offen.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 47.0964,
+     "lon": 9.348
+    },
+    "label": "Flums"
    }
   ]
  },
@@ -7981,6 +8429,250 @@
   ]
  },
  {
+  "slug": "barrage-de-la-grande-dixence",
+  "surface": "asphalt",
+  "name": "Barrage de la Grande Dixence",
+  "type": "spur",
+  "tags": [
+   "reservoir"
+  ],
+  "aliases": [
+   "Grande Dixence",
+   "Val des Dix",
+   "Lac des Dix"
+  ],
+  "country": "CH",
+  "region": "Zentralalpen",
+  "lat": 46.0841,
+  "lon": 7.4034,
+  "elevation": 2141,
+  "classicAscent": "26 km, 6,3 % ab Sion über Hérémence",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 5,
+  "traffic": 2,
+  "season": {
+   "opens": 6,
+   "closes": 10.5,
+   "maintained": false
+  },
+  "note": "Von Sion über Vex und Hérémence ins Val des Dix bis an den Fuß der höchsten Gewichtsstaumauer der Welt – über 1 600 Höhenmeter in langen, gleichmäßigen Rampen. Der oberste Teil ist im Winter gesperrt, zurück geht es dieselbe Straße.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.2312,
+     "lon": 7.3589
+    },
+    "label": "Sion"
+   }
+  ]
+ },
+ {
+  "slug": "arolla",
+  "surface": "asphalt",
+  "name": "Arolla",
+  "type": "spur",
+  "aliases": [
+   "Val d'Hérens",
+   "Evolène"
+  ],
+  "country": "CH",
+  "region": "Zentralalpen",
+  "lat": 46.0259,
+  "lon": 7.4813,
+  "elevation": 2006,
+  "classicAscent": "38 km, 4 % ab Sion über Evolène",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 4,
+  "traffic": 2,
+  "season": null,
+  "note": "Das ganze Val d'Hérens hinauf, an den Erdpyramiden von Euseigne vorbei und durch Evolène; ab Les Haudères wird es steil und führt in Kehren bis unter den Mont Collon. Lang statt steil, bis ins Dorf ganzjährig offen.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.2312,
+     "lon": 7.3589
+    },
+    "label": "Sion"
+   }
+  ]
+ },
+ {
+  "slug": "crans-montana",
+  "surface": "asphalt",
+  "name": "Crans-Montana",
+  "type": "spur",
+  "country": "CH",
+  "region": "Zentralalpen",
+  "lat": 46.311,
+  "lon": 7.48,
+  "elevation": 1500,
+  "classicAscent": "14 km, 7 % ab Sierre",
+  "beauty": 3,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 3,
+  "season": null,
+  "note": "Von Sierre durch Rebberge und Dörfer auf das Sonnenplateau mit Seen und Golfplatz, gleichmäßig steil und ganzjährig offen. Ein Kurort mit Verkehr, dafür der weite Blick über das Rhonetal bis zu den Walliser Viertausendern.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.2921,
+     "lon": 7.5327
+    },
+    "label": "Sierre"
+   }
+  ]
+ },
+ {
+  "slug": "lac-de-moiry",
+  "surface": "asphalt",
+  "name": "Lac de Moiry",
+  "type": "spur",
+  "tags": [
+   "reservoir",
+   "glacier"
+  ],
+  "aliases": [
+   "Barrage de Moiry",
+   "Val d'Anniviers",
+   "Grimentz"
+  ],
+  "country": "CH",
+  "region": "Zentralalpen",
+  "lat": 46.1384,
+  "lon": 7.574,
+  "elevation": 2249,
+  "classicAscent": "32 km, 5,3 % ab Sierre über Vissoie und Grimentz",
+  "beauty": 5,
+  "fame": 2,
+  "difficulty": 5,
+  "traffic": 2,
+  "season": {
+   "opens": 6,
+   "closes": 10.5,
+   "maintained": false
+  },
+  "note": "Durch das Val d'Anniviers über Vissoie und Grimentz bis auf die Staumauer, über 1 700 Höhenmeter am Stück. Oben ein türkiser Stausee vor dem Moiry-Gletscher; ab Grimentz im Winter gesperrt.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.2921,
+     "lon": 7.5327
+    },
+    "label": "Sierre"
+   }
+  ]
+ },
+ {
+  "slug": "leukerbad",
+  "surface": "asphalt",
+  "name": "Leukerbad",
+  "type": "spur",
+  "tags": [
+   "gorge"
+  ],
+  "aliases": [
+   "Loèche-les-Bains"
+  ],
+  "country": "CH",
+  "region": "Zentralalpen",
+  "lat": 46.3793,
+  "lon": 7.6267,
+  "elevation": 1400,
+  "classicAscent": "14 km, 5,4 % ab Susten",
+  "beauty": 4,
+  "fame": 1,
+  "difficulty": 3,
+  "traffic": 2,
+  "season": null,
+  "note": "Von Susten über Leuk und hoch über der Dalaschlucht in den Thermalkurort unter der Gemmiwand; gleichmäßig, mit ein paar Kehren. Ganzjährig offen.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.3109,
+     "lon": 7.6406
+    },
+    "label": "Susten"
+   }
+  ]
+ },
+ {
+  "slug": "moosalp",
+  "surface": "asphalt",
+  "name": "Moosalp",
+  "type": "pass",
+  "tags": [
+   "panorama"
+  ],
+  "country": "CH",
+  "region": "Zentralalpen",
+  "lat": 46.2513,
+  "lon": 7.8297,
+  "elevation": 2048,
+  "classicAscent": "16 km, 7,6 % ab Stalden über Törbel",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 4,
+  "traffic": 1,
+  "season": {
+   "opens": 5.5,
+   "closes": 11,
+   "maintained": false
+  },
+  "note": "Die Verbindung vom Vispertal ins Rhonetal über eine Alp mit Lärchen und Bergseen, oben der Blick auf Weisshorn, Mischabel und die Berner Alpen. Von Stalden über Törbel kurz und steil, von Raron über Unterbäch und Bürchen länger und gleichmäßiger; im Winter gesperrt.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.2314,
+     "lon": 7.8693
+    },
+    "label": "Stalden (Ost)"
+   },
+   {
+    "from": {
+     "lat": 46.3062,
+     "lon": 7.8015
+    },
+    "label": "Raron (West)"
+   }
+  ]
+ },
+ {
+  "slug": "saas-fee",
+  "surface": "asphalt",
+  "name": "Saas-Fee",
+  "type": "spur",
+  "tags": [
+   "glacier"
+  ],
+  "aliases": [
+   "Saastal"
+  ],
+  "country": "CH",
+  "region": "Zentralalpen",
+  "lat": 46.1097,
+  "lon": 7.9312,
+  "elevation": 1795,
+  "classicAscent": "19 km, 5,3 % ab Stalden",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 4,
+  "traffic": 3,
+  "season": null,
+  "note": "Das Saastal hinauf bis vor das autofreie Dorf, am Ende unter den Gletschern von Dom und Allalin. Unten die Talstraße mit dem Verkehr in die Saaser Orte, ab Saas-Grund in Kehren steiler; ganzjährig offen.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.2314,
+     "lon": 7.8693
+    },
+    "label": "Stalden"
+   }
+  ]
+ },
+ {
   "slug": "sestriere",
   "surface": "asphalt",
   "name": "Sestriere",
@@ -9296,6 +9988,76 @@
      "lon": 7.1454
     },
     "label": "Orsières (Süd)"
+   }
+  ]
+ },
+ {
+  "slug": "verbier",
+  "surface": "asphalt",
+  "name": "Verbier",
+  "type": "spur",
+  "tags": [
+   "hairpins"
+  ],
+  "country": "CH",
+  "region": "Zentralalpen",
+  "lat": 46.0961,
+  "lon": 7.2288,
+  "elevation": 1500,
+  "classicAscent": "8,6 km, 7,8 % ab Le Châble",
+  "beauty": 3,
+  "fame": 3,
+  "difficulty": 3,
+  "traffic": 3,
+  "season": null,
+  "note": "Kurz und steil von Le Châble in vielen Kehren auf die Sonnenterrasse über dem Val de Bagnes; Ankunft der Tour de France 2009. Ein Skiort mit Verkehr, ganzjährig offen.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.0787,
+     "lon": 7.2152
+    },
+    "label": "Le Châble"
+   }
+  ]
+ },
+ {
+  "slug": "barrage-d-emosson",
+  "surface": "asphalt",
+  "name": "Barrage d'Émosson",
+  "type": "spur",
+  "tags": [
+   "reservoir",
+   "panorama"
+  ],
+  "aliases": [
+   "Émosson",
+   "Finhaut-Émosson",
+   "Lac d'Émosson"
+  ],
+  "country": "CH",
+  "region": "Zentralalpen",
+  "lat": 46.069,
+  "lon": 6.9381,
+  "elevation": 1965,
+  "classicAscent": "13 km, 6 % ab Le Châtelard über Finhaut",
+  "beauty": 5,
+  "fame": 3,
+  "difficulty": 4,
+  "traffic": 1,
+  "season": {
+   "opens": 6,
+   "closes": 10.5,
+   "maintained": false
+  },
+  "note": "Von Le Châtelard über Finhaut zur Staumauer, oben ein Stausee mit dem Mont-Blanc-Massiv dahinter; Ankunft der Tour de France 2016. Über Finhaut schmal und steil, im Winter gesperrt.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.0605,
+     "lon": 6.958
+    },
+    "label": "Le Châtelard"
    }
   ]
  },

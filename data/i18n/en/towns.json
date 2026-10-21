@@ -65,6 +65,9 @@
  "cavalese": {
   "why": "Val di Fiemme as a quiet valley base: Manghen, Lavazè, Rolle and San Pellegrino within reach, plus flat valley roads for the day after."
  },
+ "chur": {
+  "why": "Graubünden's rail hub: the Lenzerheide and Arosa start at the station, Flumserberg and Malbun lie a short ride down the Rhine. Low and mild, often warm in autumn too thanks to the foehn."
+ },
  "colmar": {
   "why": "A town in the Rhine plain with a TGV station; Munster is just under 20 km away, the Schlucht a good 30. Dry and mild, rideable earlier in spring than the valleys."
  },
@@ -79,6 +82,9 @@
  },
  "davos": {
   "why": "Flüela, Albula, Wolfgang; many bike shops, altitude 1,560 m."
+ },
+ "domodossola": {
+  "why": "Rail hub on the Simplon line: the Simplon from the south, Macugnaga below the Monte Rosa and the Val Formazza all start from here. Low-lying, rideable early in the year."
  },
  "feltre": {
   "why": "Old town on the southern edge of the Belluno Dolomites: Croce d'Aune starts on the doorstep in Pedavena, Grappa, Brocon, Cereda and San Boldo lie within a day's range. Bike hotel with road-bike rental, bike shops, railway station on the Padua–Belluno line; low enough for spring and late autumn."
@@ -176,6 +182,9 @@
  "saint-jean-de-maurienne": {
   "why": "Croix de Fer, Madeleine, Télégraphe/Galibier; railway station, bike shops, Maurienne cycling office."
  },
+ "saint-vincent": {
+  "why": "Spa town in the lower Aosta valley: the Col de Joux on the doorstep, Breuil-Cervinia from Châtillon and the Gressoney valley next door. Châtillon-Saint-Vincent railway station."
+ },
  "san-martino-di-castrozza": {
   "why": "South ramp of the Rolle beneath the Pale di San Martino: Rolle, Cereda and Croce d'Aune. Quiet, exceptional scenery, hotels from the ski trade."
  },
@@ -184,6 +193,9 @@
  },
  "schladming": {
   "why": "Enns valley with railway station: Sölkpass, Radstädter Tauern and the Dachstein loop. Bike hotels and rental from the ski trade."
+ },
+ "sion": {
+  "why": "The capital of the Valais with a railway station: the Sanetsch, the Grande Dixence and Arolla start right in town, Crans-Montana and Moiry from neighbouring Sierre. Low and dry, so a long season."
  },
  "soelden": {
   "why": "Ötztaler headquarters: Timmelsjoch, glacier road, Kühtai; bike shops, rental, bike hotels."
@@ -214,6 +226,9 @@
  },
  "tolmezzo": {
   "why": "Carnic hub: Zoncolan, Plöckenpass and Passo di Lanza. Quiet valleys, mild enough for spring and late autumn."
+ },
+ "vaduz": {
+  "why": "The capital of Liechtenstein in the Rhine valley: Malbun starts in town, the Furkajoch, the Bödele and Flumserberg are close. Railway stations in Schaan, Buchs and Sargans."
  },
  "vaison-la-romaine": {
   "why": "Roman town between Ventoux and Baronnies: Dentelles, Fontaube, Col d'Ey and Soubeyrand as loops, the Ventoux from Malaucène within reach. Quiet and rideable for a long season."

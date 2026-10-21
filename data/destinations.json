@@ -204,6 +204,24 @@
   "access": "Bahnhof Aosta über Turin; Autobahn A5 von Turin."
  },
  {
+  "slug": "monte-rosa",
+  "name": "Monte-Rosa-Täler",
+  "country": "IT",
+  "center": {
+   "lat": 45.78,
+   "lon": 7.68
+  },
+  "radiusKm": 30,
+  "baseTowns": [
+   "saint-vincent"
+  ],
+  "include": [],
+  "exclude": [],
+  "character": "Breuil-Cervinia unter dem Matterhorn, der Col de Joux, das lange Gressoney-Tal und Oropa über Biella: Talanstiege von unten im Aostatal bis unter die Viertausender, ganzjährig bis oben offen.",
+  "multiDay": "Drei bis vier Tage; mit Pila und Cogne im oberen Aostatal eine Woche, und der Große Sankt Bernhard führt ins Wallis.",
+  "access": "Bahnhof Châtillon-Saint-Vincent an der Linie Turin–Aosta; Turin und Mailand in anderthalb bis zwei Stunden."
+ },
+ {
   "slug": "ligurien",
   "name": "Ligurische Riviera",
   "country": "IT",
@@ -236,19 +254,42 @@
   "radiusKm": 40,
   "baseTowns": [
    "martigny",
-   "brig"
+   "brig",
+   "sion"
   ],
   "include": [
    "simplonpass",
    "nufenenpass",
    "col-des-montets",
    "col-de-la-forclaz-martigny",
-   "col-du-grand-saint-bernard"
+   "col-du-grand-saint-bernard",
+   "barrage-d-emosson"
   ],
   "exclude": [],
   "character": "Grand-Saint-Bernard, Forclaz, Sanetsch, Simplon und Nufenen vom tiefen Rhonetal aus – lange Anstiege, trockenes Klima, das Tal selbst warm.",
   "multiDay": "Eine Woche mit zwei Standorten; der Simplon nach Italien und der Nufenen ins Tessin als Etappen.",
   "access": "Bahnhöfe Martigny und Brig auf der Simplonlinie; Genf in anderthalb Stunden."
+ },
+ {
+  "slug": "ossola",
+  "name": "Ossola",
+  "country": "IT",
+  "center": {
+   "lat": 46.12,
+   "lon": 8.29
+  },
+  "radiusKm": 30,
+  "baseTowns": [
+   "domodossola"
+  ],
+  "include": [
+   "macugnaga",
+   "riale"
+  ],
+  "exclude": [],
+  "character": "Die Südseite des Simplon, Macugnaga unter der Monte-Rosa-Ostwand und das Val Formazza bis zum Toce-Wasserfall: lange, mäßig steile Täler von einem tiefen, warmen Talboden aus.",
+  "multiDay": "Drei Tage; der Simplon verbindet ins Wallis, der Lago Maggiore mit dem Mottarone liegt eine halbe Stunde südlich.",
+  "access": "Bahnhof Domodossola an der Simplonlinie, direkt aus Brig, Genf, Bern und Mailand."
  },
  {
   "slug": "andermatt",
@@ -287,6 +328,25 @@
   "character": "Albula, Julier, Bernina, Flüela, Maloja und Ofen um ein Hochtal auf 1 800 m – die Anstiege beginnen hoch und die Luft ist dünn.",
   "multiDay": "Eine Woche; nach Livigno und ins Val Müstair über den Ofenpass als Etappen.",
   "access": "Bahnhof St. Moritz über Chur (Rhätische Bahn); Zürich in drei Stunden."
+ },
+ {
+  "slug": "churer-rheintal-liechtenstein",
+  "name": "Churer Rheintal und Liechtenstein",
+  "country": "CH/LI",
+  "center": {
+   "lat": 46.95,
+   "lon": 9.55
+  },
+  "radiusKm": 30,
+  "baseTowns": [
+   "chur",
+   "vaduz"
+  ],
+  "include": [],
+  "exclude": [],
+  "character": "Malbun, Lenzerheide, Arosa und Flumserberg: steile Berge direkt aus dem tiefen Rheintal, jeder für sich eine Sackgasse oder ein Übergang, dazwischen flache Wege am Rhein.",
+  "multiDay": "Drei bis vier Tage mit kurzen Anfahrten; die Lenzerheide führt zu Albula und Julier ins Engadin, das Furkajoch ins Vorarlberg.",
+  "access": "Bahnhöfe Chur, Landquart und Sargans an der Linie aus Zürich (gut eine Stunde); Vaduz mit dem Bus ab Sargans, Buchs oder Feldkirch."
  },
  {
   "slug": "bormio-livigno",

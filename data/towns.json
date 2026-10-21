@@ -696,6 +696,24 @@
   "why": "Walliser Drehscheibe mit Bahnhof: Simplon, Nufenen, Furka und Grimsel ab dem Rhonetal. Tief gelegen, deshalb früh im Jahr fahrbar."
  },
  {
+  "slug": "domodossola",
+  "name": "Domodossola",
+  "country": "IT",
+  "lat": 46.1154,
+  "lon": 8.2964,
+  "tags": [
+   "hub",
+   "train",
+   "season"
+  ],
+  "aliases": [
+   "Ossola",
+   "Val d'Ossola",
+   "Ossolatal"
+  ],
+  "why": "Bahnknoten an der Simplonlinie: der Simplon von Süden, Macugnaga unter dem Monte Rosa und das Val Formazza gehen von hier aus. Tief gelegen, früh im Jahr fahrbar."
+ },
+ {
   "slug": "martigny",
   "name": "Martigny",
   "country": "CH",
@@ -713,6 +731,25 @@
    "Forclaz"
   ],
   "why": "Unterwallis mit Bahnhof: Grand-St-Bernard, Forclaz und Champex. Auf 470 m gelegen und dadurch eine der frühesten Basen der Westalpen."
+ },
+ {
+  "slug": "sion",
+  "name": "Sion",
+  "country": "CH",
+  "lat": 46.2312,
+  "lon": 7.3589,
+  "tags": [
+   "passes",
+   "train",
+   "season"
+  ],
+  "aliases": [
+   "Sitten",
+   "Valais",
+   "Wallis",
+   "Mittelwallis"
+  ],
+  "why": "Hauptort des Wallis mit Bahnhof: Sanetsch, Grande Dixence und Arolla gehen direkt in der Stadt los, Crans-Montana und Moiry ab Sierre nebenan. Tief und trocken, deshalb lange Saison."
  },
  {
   "slug": "spluegen",
@@ -752,6 +789,42 @@
   "why": "Flüela, Albula, Wolfgang; viele Radgeschäfte, Höhenlage 1 560 m."
  },
  {
+  "slug": "chur",
+  "name": "Chur",
+  "country": "CH",
+  "lat": 46.8531,
+  "lon": 9.5302,
+  "tags": [
+   "hub",
+   "train",
+   "season"
+  ],
+  "aliases": [
+   "Graubünden",
+   "Graubuenden",
+   "Bündner Rheintal",
+   "Coira"
+  ],
+  "why": "Bahnknoten Graubündens: Lenzerheide und Arosa beginnen am Bahnhof, Flumserberg und Malbun liegen eine kurze Fahrt rheinabwärts. Tief und mild, mit Föhn oft auch im Herbst warm."
+ },
+ {
+  "slug": "vaduz",
+  "name": "Vaduz",
+  "country": "LI",
+  "lat": 47.1393,
+  "lon": 9.5228,
+  "tags": [
+   "passes",
+   "season"
+  ],
+  "aliases": [
+   "Liechtenstein",
+   "Schaan",
+   "Rheintal"
+  ],
+  "why": "Hauptort Liechtensteins im Rheintal: Malbun beginnt in der Stadt, Furkajoch, Bödele und Flumserberg sind nah. Bahnhöfe in Schaan, Buchs und Sargans."
+ },
+ {
   "slug": "st-moritz",
   "name": "St. Moritz",
   "country": "CH",
@@ -786,6 +859,23 @@
    "Aoste"
   ],
   "why": "Grand/Petit Saint-Bernard, San Carlo, Cervinia, Pila; Radläden, Bahnhof."
+ },
+ {
+  "slug": "saint-vincent",
+  "name": "Saint-Vincent",
+  "country": "IT",
+  "lat": 45.7504,
+  "lon": 7.6479,
+  "tags": [
+   "passes",
+   "train"
+  ],
+  "aliases": [
+   "Châtillon",
+   "Valtournenche",
+   "Monte Rosa"
+  ],
+  "why": "Kurort im unteren Aostatal: der Col de Joux vor der Haustür, Breuil-Cervinia ab Châtillon und das Gressoney-Tal in der Nachbarschaft. Bahnhof Châtillon-Saint-Vincent."
  },
  {
   "slug": "susa",

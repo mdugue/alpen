@@ -44,6 +44,20 @@
    "Langen"
   ]
  },
+ "arolla": {
+  "classicAscent": "38 km, 4 % from Sion via Evolène",
+  "note": "Up the whole Val d'Hérens, past the earth pyramids of Euseigne and through Evolène; from Les Haudères it turns steep and climbs in hairpins to the foot of Mont Collon. Long rather than steep, open to the village all year.",
+  "ascents": [
+   "Sion"
+  ]
+ },
+ "arosa": {
+  "classicAscent": "29 km, 4 % from Chur",
+  "note": "Up the Schanfigg from Chur to the dead end at Arosa, a winding road high above the Plessur. Steady, open all year; the way back is the same road.",
+  "ascents": [
+   "Chur"
+  ]
+ },
  "ballon-d-alsace": {
   "classicAscent": "9.2 km, 6.9 % from Saint-Maurice-sur-Moselle",
   "note": "In 1905 the very first climb of the Tour de France. Three ascents on a wide road, the shortest and steepest from Saint-Maurice-sur-Moselle; at the top pastures, inns and weekend day-trippers.",
@@ -59,6 +73,20 @@
   "ascents": [
    "Plancher-les-Mines (south)",
    "Le Thillot (north)"
+  ]
+ },
+ "barrage-d-emosson": {
+  "classicAscent": "13 km, 6 % from Le Châtelard via Finhaut",
+  "note": "From Le Châtelard via Finhaut to the dam, at the top a reservoir with the Mont Blanc massif behind it; a Tour de France finish in 2016. Narrow and steep above Finhaut, closed in winter.",
+  "ascents": [
+   "Le Châtelard"
+  ]
+ },
+ "barrage-de-la-grande-dixence": {
+  "classicAscent": "26 km, 6.3 % from Sion via Hérémence",
+  "note": "From Sion via Vex and Hérémence into the Val des Dix to the foot of the world's tallest gravity dam – more than 1,600 m of climbing in long, even ramps. The top section is closed in winter, and the way back is the same road.",
+  "ascents": [
+   "Sion"
   ]
  },
  "berninapass": {
@@ -77,12 +105,27 @@
    "Navene (west)"
   ]
  },
+ "boedele": {
+  "classicAscent": "10 km, 7.2 % from Dornbirn",
+  "note": "Dornbirn's own mountain and the shortest link into the Bregenzerwald: steeply up through forest from Dornbirn, on the other side a short drop to Schwarzenberg. Open all year.",
+  "ascents": [
+   "Dornbirn (west)",
+   "Schwarzenberg (east)"
+  ]
+ },
  "brennerpass": {
   "classicAscent": "37 km, 2.2 % from Innsbruck",
   "note": "The crossing from the Wipptal into the Eisack valley; cyclists ride the old Brenner road (B 182, SS 12) beside the motorway and the railway. Open all year, long and flat from Innsbruck, shorter from Sterzing with one steeper stretch at Gossensass; the second climb of the Ötztaler Radmarathon, with heavy traffic on the main road.",
   "ascents": [
    "Innsbruck (north)",
    "Sterzing (south)"
+  ]
+ },
+ "breuil-cervinia": {
+  "classicAscent": "27 km, 5.4 % from Châtillon",
+  "note": "Through the Valtournenche to the foot of the Matterhorn, long and even, a Giro d'Italia finish most recently in 2018. Open all year, with a lot of day-trip traffic at weekends.",
+  "ascents": [
+   "Châtillon"
   ]
  },
  "campo-carlo-magno": {
@@ -135,6 +178,13 @@
   "note": "Six flat kilometres into a valley head ringed by waterfalls in a semicircle of 700-metre walls. Short, easy and still one of the great sights of the Northern Alps.",
   "ascents": [
    "Sixt-Fer-à-Cheval"
+  ]
+ },
+ "cogne": {
+  "classicAscent": "18 km, 4.6 % from Aymavilles",
+  "note": "Through the narrow gorge of the Grand Eyvia into the Val di Cogne, to the edge of the Gran Paradiso national park; between rock walls at the bottom, on the meadows of Sant'Orso at the top. Steady and open all year.",
+  "ascents": [
+   "Aymavilles"
   ]
  },
  "col-d-allos": {
@@ -260,6 +310,14 @@
   "ascents": [
    "Gérardmer (north)",
    "Cornimont (south)"
+  ]
+ },
+ "col-de-joux": {
+  "classicAscent": "15 km, 7 % from Saint-Vincent",
+  "note": "From the spa town of Saint-Vincent in many hairpins through chestnut and larch forest into the Val d'Ayas, on the other side a short drop to Brusson. Open all year; with the valley road down to Verrès it makes a loop.",
+  "ascents": [
+   "Saint-Vincent (west)",
+   "Brusson (east)"
   ]
  },
  "col-de-joux-plane": {
@@ -888,6 +946,13 @@
    "Aiguines"
   ]
  },
+ "crans-montana": {
+  "classicAscent": "14 km, 7 % from Sierre",
+  "note": "From Sierre through vineyards and villages up to the sunny plateau with its lakes and golf course, steady and steep and open all year. A resort with traffic, but with the wide view across the Rhône valley to the Valais four-thousanders.",
+  "ascents": [
+   "Sierre"
+  ]
+ },
  "culmine-di-san-pietro": {
   "classicAscent": "9 km, 6 % from Moggio",
   "note": "The crossing from the Valsassina into the Val Taleggio, Giro passage in 2008 and 2018; short and even from Moggio, from Vedeseta the longer, quieter side. Snow at the top in winter.",
@@ -917,6 +982,13 @@
   "ascents": [
    "Davos",
    "Susch"
+  ]
+ },
+ "flumserberg": {
+  "classicAscent": "11 km, 8 % from Flums",
+  "note": "From Flums steeply in hairpins up to the sunny terrace above the Walensee, with a view of the Churfirsten. Short and steep throughout, open all year.",
+  "ascents": [
+   "Flums"
   ]
  },
  "forcella-aurine": {
@@ -949,10 +1021,11 @@
   ]
  },
  "furkajoch": {
-  "classicAscent": "6.5 km, 5.3 % from Damüls",
+  "classicAscent": "21 km, 6.1 % from Rankweil through the Laterns valley",
   "note": "Narrow, little-used link from the Laternsertal to Damüls, closed in winter. A grassy crest at the top with views of the Rätikon and the Arlberg; the western ramp is tight and in places without a crash barrier.",
   "ascents": [
-   "Damüls (east)"
+   "Damüls (east)",
+   "Rankweil (west)"
   ]
  },
  "furkapass": {
@@ -1252,6 +1325,13 @@
    "Plancher-les-Mines"
   ]
  },
+ "lac-de-moiry": {
+  "classicAscent": "32 km, 5.3 % from Sierre via Vissoie and Grimentz",
+  "note": "Through the Val d'Anniviers via Vissoie and Grimentz up to the dam, more than 1,700 m of climbing in one go. At the top a turquoise reservoir below the Moiry glacier; closed above Grimentz in winter.",
+  "ascents": [
+   "Sierre"
+  ]
+ },
  "le-chazelet": {
   "classicAscent": "5.9 km, 5.1 % from La Grave",
   "note": "Short dead end above La Grave; at the top you stand face to face with the Meije – one of the great panoramas of the Western Alps. Continuing onto the Plateau d'Emparis is only possible off the tarmac.",
@@ -1267,11 +1347,26 @@
    "Wildenstein (west)"
   ]
  },
+ "lenzerheide": {
+  "classicAscent": "15 km, 6.5 % from Chur",
+  "note": "The main road from Chur into the Albula valley via Churwalden, Valbella and the Heidsee, the approach to the Albula and the Julier and so busy; open all year. From Chur in hairpins and steep for a long way, from Tiefencastel via Lantsch more even.",
+  "ascents": [
+   "Chur (north)",
+   "Tiefencastel (south)"
+  ]
+ },
  "les-arcs": {
   "classicAscent": "20.8 km, 6.3 % from Bourg-Saint-Maurice",
   "note": "Ski-resort ascent via Arc 1800, open all year. Sober scenery, useful as training for the metres of climbing.",
   "ascents": [
    "Bourg-Saint-Maurice"
+  ]
+ },
+ "leukerbad": {
+  "classicAscent": "14 km, 5.4 % from Susten",
+  "note": "From Susten via Leuk and high above the Dala gorge to the spa town below the Gemmi wall; steady, with a few hairpins. Open all year.",
+  "ascents": [
+   "Susten"
   ]
  },
  "loiblpass": {
@@ -1297,6 +1392,13 @@
    "Olivone"
   ]
  },
+ "macugnaga": {
+  "classicAscent": "28 km, 3.8 % from Piedimulera",
+  "note": "Through the Valle Anzasca from Piedimulera to Macugnaga below the east face of the Monte Rosa, the highest wall in the Alps. Long and moderately steep, open all year.",
+  "ascents": [
+   "Piedimulera"
+  ]
+ },
  "madonna-del-colletto": {
   "classicAscent": "7.3 km, 8 % from Festiona",
   "note": "The saddle with the little sanctuary between the Stura and Gesso valleys, the last climb of the Granfondo Fausto Coppi. Short, steep and almost traffic-free; the surface on the Festiona side is old and often gritty.",
@@ -1310,6 +1412,13 @@
   "note": "The patron saint of cyclists stands in the chapel at the top, the cycling museum beside it – not a high pass, but the most famous climb in Lombardy. Steep from Bellagio above Lake Como, a fixture of the Giro di Lombardia.",
   "ascents": [
    "Bellagio (north)"
+  ]
+ },
+ "malbun": {
+  "classicAscent": "13 km, 8.7 % from Vaduz via Triesenberg",
+  "note": "Liechtenstein's climb: steeply in hairpins from Vaduz to Triesenberg with a view across the Rhine valley, then through the tunnel to Steg and up to the ski village of Malbun. Steep throughout, open all year.",
+  "ascents": [
+   "Vaduz"
   ]
  },
  "malojapass": {
@@ -1443,6 +1552,14 @@
   "note": "A detour at the Pian delle Fugazze: from Albaredo near Rovereto the road climbs a long way to Monte Zugna, a First World War site. Not cleared in winter.",
   "ascents": [
    "Junction in Albaredo"
+  ]
+ },
+ "moosalp": {
+  "classicAscent": "16 km, 7.6 % from Stalden via Törbel",
+  "note": "The link from the Visp valley to the Rhône valley over an alp with larches and mountain lakes, at the top the view of the Weisshorn, the Mischabel and the Bernese Alps. From Stalden via Törbel short and steep, from Raron via Unterbäch and Bürchen longer and more even; closed in winter.",
+  "ascents": [
+   "Stalden (east)",
+   "Raron (west)"
   ]
  },
  "mottarone": {
@@ -1990,6 +2107,13 @@
    "Ballabio"
   ]
  },
+ "pila": {
+  "classicAscent": "18 km, 6.6 % from Aosta",
+  "note": "From Aosta via Gressan in long hairpins up to the ski station above the town, steadily steep from bottom to top. At the top the view across the whole valley to Mont Blanc; open all year.",
+  "ascents": [
+   "Aosta"
+  ]
+ },
  "pitztal-mittelberg": {
   "classicAscent": "19.8 km, 2.7 % from Jerzens to Mittelberg",
   "note": "The Pitztal ends after twenty flat kilometres at the glacier car park in Mittelberg, beneath the Wildspitze. Little gradient, little traffic; cleared all year because of the glacier ski area.",
@@ -2069,6 +2193,13 @@
    "Junction near Introd"
   ]
  },
+ "riale": {
+  "classicAscent": "33 km, 3.7 % from Crodo",
+  "note": "Through the Valle Antigorio and the Val Formazza from Crodo to the Toce waterfall and the high plain of Riale. Long and flat at the bottom, at the top in hairpins beside the fall; open to Riale all year.",
+  "ascents": [
+   "Crodo"
+  ]
+ },
  "riedbergpass": {
   "classicAscent": "6.5 km, 8.3 % from Obermaiselstein",
   "note": "Germany's highest pass road and, at 16 % in the upper third, one of its steepest too. Links the Iller valley with Balderschwang; cleared all year, at times chains only during heavy snowfall.",
@@ -2111,11 +2242,25 @@
    "Col de la Schlucht"
   ]
  },
+ "saas-fee": {
+  "classicAscent": "19 km, 5.3 % from Stalden",
+  "note": "Up the Saas valley to the edge of the car-free village, at the end below the glaciers of the Dom and the Allalin. At the bottom the valley road with the traffic to the Saas villages, steeper in hairpins from Saas-Grund; open all year.",
+  "ascents": [
+   "Stalden"
+  ]
+ },
  "saint-veran": {
   "classicAscent": "5.1 km, 5 % from the junction near Molines",
   "note": "A detour off the Agnello climb from the Queyras: the road branches off near Molines and ends in Saint-Véran, one of the highest villages in Europe.",
   "ascents": [
    "Junction near Molines"
+  ]
+ },
+ "santuario-di-oropa": {
+  "classicAscent": "12 km, 6 % from Biella",
+  "note": "From Biella through forest to the great pilgrimage site below Monte Mucrone, steeper at the top. A Giro d'Italia finish several times, known for Pantani's comeback ride in 1999; open all year.",
+  "ascents": [
+   "Biella"
   ]
  },
  "santuario-di-sant-anna-di-vinadio": {
@@ -2232,6 +2377,13 @@
   "note": "The Gasteiner Alpenstraße ends at the head of the Nassfeld valley beneath the three-thousanders of the Goldberg group. Toll road – cars are charged, bikes ride free; at the top nothing but a ski lift, meadows and the old gold mines.",
   "ascents": [
    "Bad Gastein"
+  ]
+ },
+ "staffal": {
+  "classicAscent": "37 km, 4 % from Pont-Saint-Martin",
+  "note": "Up the long Lys valley from Pont-Saint-Martin through the Walser villages of Gressoney-Saint-Jean and Gressoney-La-Trinité to the head of the valley below the Monte Rosa. Long and flat at the bottom, steeper at the top; open all year.",
+  "ascents": [
+   "Pont-Saint-Martin"
   ]
  },
  "staller-sattel": {
@@ -2391,6 +2543,13 @@
   "note": "Up in hairpins from Gargnano on Lake Garda, then through tunnels and galleries high above the fjord of the Valvestino reservoir to the mountain village of Magasa. Open all year, almost no cars.",
   "ascents": [
    "Gargnano"
+  ]
+ },
+ "verbier": {
+  "classicAscent": "8.6 km, 7.8 % from Le Châble",
+  "note": "Short and steep from Le Châble in many hairpins up to the sunny terrace above the Val de Bagnes; a Tour de France finish in 2009. A ski resort with traffic, open all year.",
+  "ascents": [
+   "Le Châble"
   ]
  },
  "villacher-alpenstrasse": {

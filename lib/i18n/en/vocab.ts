@@ -25,6 +25,7 @@ export const vocab = {
     ES: "Spain",
     FR: "France",
     IT: "Italy",
+    LI: "Liechtenstein",
     SI: "Slovenia",
   },
   filter: {

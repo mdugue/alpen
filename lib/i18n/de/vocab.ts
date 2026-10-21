@@ -30,6 +30,7 @@ export const vocab = {
     ES: "Spanien",
     FR: "Frankreich",
     IT: "Italien",
+    LI: "Liechtenstein",
     SI: "Slowenien",
   },
   /** The chips of the filter panel and their applied form. */

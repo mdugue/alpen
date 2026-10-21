@@ -109,6 +109,7 @@ export const COUNTRIES = [
   "SI",
   "ES",
   "AD",
+  "LI",
 ] as const;
 
 /** "CH/IT" → ["CH", "IT"]. */
