@@ -8391,5 +8391,111 @@
     "highlights": "Der Blick zurück auf den Golf von Sagone."
    }
   ]
+ },
+ "el-portillo": {
+  "intro": "Zweitausend Höhenmeter vom Meer bis unter den Teide: erst Bananen und Häuser, dann Kiefern über den Wolken, oben die Mondlandschaft der Cañadas.",
+  "sides": [
+   {
+    "character": "Aus Puerto de la Cruz steil durch La Orotava, dann gleichmäßig um 7 % durch den Kiefernwald, oft durch eine Wolkendecke, die oben in Sonne aufreißt.",
+    "highlights": "Der Blick aus dem Kiefernwald über das Wolkenmeer zum Teide."
+   }
+  ]
+ },
+ "boca-de-tauce": {
+  "intro": "Der ruhigere Weg in die Cañadas: von der Westküste über schwarze Lava und durch Kiefernwald, oben der Teide direkt vor dem Rad.",
+  "sides": [
+   {
+    "character": "Von Chío gleichmäßig und nie steil über Lavafelder, dann durch lichten Kiefernwald bis an den Kraterrand.",
+    "highlights": "Die Lavaströme des Chinyero und der erste Blick auf den Teide."
+   }
+  ]
+ },
+ "izana": {
+  "intro": "Die schönste Straße der Insel für viele: auf dem Grat zwischen Nord- und Südküste, mit Ausblicken auf beide Meere und zum Schluss auf den Teide.",
+  "sides": [
+   {
+    "character": "Von La Esperanza lang und mäßig steil durch Kiefernwald, dann offen auf dem Grat mit Aussichtspunkten.",
+    "highlights": "Die Kuppeln des Observatoriums vor dem Teide."
+   }
+  ]
+ },
+ "degollada-de-cherfe": {
+  "intro": "Kurz, steil und atemberaubend: die Kehren von Masca an der Schlucht, mit Blick bis La Gomera. Viele Mietwagen und Busse, früh am Morgen am schönsten.",
+  "sides": [
+   {
+    "bestAs": "up",
+    "character": "Von Masca ohne Pause über 10 % in engen Kehren an der Felswand.",
+    "hazards": [
+     "tight-hairpins",
+     "narrow",
+     "traffic"
+    ],
+    "highlights": "Das Dorf Masca unter den Felsnadeln, La Gomera im Meer."
+   },
+   {
+    "bestAs": "down",
+    "character": "Von Santiago del Teide gleichmäßiger durch Felder und Lava bis zum Sattel.",
+    "hazards": [
+     "traffic"
+    ]
+   }
+  ]
+ },
+ "cruz-de-tejeda": {
+  "intro": "Das Herz der Insel: ein Sattel über der Caldera, Ausflugsziel mit Ständen und Paradores, und eine der schönsten Aussichten der Kanaren.",
+  "sides": [
+   {
+    "bestAs": "both",
+    "character": "Von San Mateo gleichmäßig durch Felder und Kiefern, mit wenigen steilen Stücken.",
+    "hazards": [
+     "traffic"
+    ]
+   },
+   {
+    "bestAs": "up",
+    "character": "Von Tejeda steil in Kehren aus der Caldera, Roque Nublo und Roque Bentayga im Rücken.",
+    "hazards": [
+     "tight-hairpins"
+    ],
+    "highlights": "Die Caldera von Tejeda mit Roque Nublo und Bentayga."
+   }
+  ]
+ },
+ "pico-de-las-nieves": {
+  "intro": "Das Dach von Gran Canaria: oben Radarkuppel und Aussichtspunkt über dem Roque Nublo, unten auf beiden Seiten lange, harte Rampen.",
+  "sides": [
+   {
+    "bestAs": "up",
+    "character": "Von San Mateo steil und ohne Pause durch Kiefernwald, oft über 8 %."
+   },
+   {
+    "bestAs": "both",
+    "character": "Von San Bartolomé über die Caldera de Tirajana lang und unregelmäßig.",
+    "highlights": "Der Blick in die Caldera de Tirajana."
+   }
+  ]
+ },
+ "fataga": {
+  "intro": "Der Anstieg, mit dem fast jede Radwoche auf Gran Canaria beginnt: aus der Hotelzone in eine stille Schlucht und auf das Dach der Insel zu.",
+  "sides": [
+   {
+    "character": "Von Maspalomas erst flach, dann gleichmäßig in Kehren über die Degollada de Fataga und durch die Schlucht.",
+    "highlights": "Der Aussichtspunkt über dem Barranco de Fataga und die Palmen im Talgrund."
+   }
+  ]
+ },
+ "roque-de-los-muchachos": {
+  "intro": "Ein Anstieg wie kein zweiter: 2400 Höhenmeter ohne Abfahrt, durch Lorbeer- und Kiefernwald über die Wolken, oben die Teleskope und der Blick in die Caldera.",
+  "sides": [
+   {
+    "bestAs": "up",
+    "character": "Von Santa Cruz gleichmäßig durch den Lorbeerwald, dann Kiefern, ab 2000 m kahl und windig. Verpflegung mitnehmen, oben gibt es nichts.",
+    "highlights": "Der Kraterrand der Caldera de Taburiente bei den Teleskopen."
+   },
+   {
+    "bestAs": "both",
+    "character": "Von Garafía steiler und einsamer durch den Kiefernwald, kaum ein Auto."
+   }
+  ]
  }
 }

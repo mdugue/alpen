@@ -2197,5 +2197,60 @@
   ],
   "aliases": [],
   "why": "Bergdorf über den Schluchten der Spelunca: der Col de Vergio beginnt im Ort, der Col de Sevi liegt eine kurze Abfahrt entfernt."
+ },
+ {
+  "slug": "puerto-de-la-cruz",
+  "name": "Puerto de la Cruz",
+  "country": "ES",
+  "lat": 28.4159,
+  "lon": -16.5533,
+  "tags": [
+   "hotels",
+   "passes"
+  ],
+  "aliases": [],
+  "why": "Hotelstadt an der Nordküste: der Teide beginnt am Strand, Izaña über La Esperanza, Masca eine Stunde westlich."
+ },
+ {
+  "slug": "los-cristianos",
+  "name": "Los Cristianos",
+  "country": "ES",
+  "lat": 28.0526,
+  "lon": -16.717,
+  "tags": [
+   "hotels",
+   "season"
+  ],
+  "aliases": [],
+  "why": "Ferienort im sonnigen Süden: über Vilaflor in die Cañadas, Chío und Masca an der Westküste, im Winter fast immer trocken."
+ },
+ {
+  "slug": "maspalomas",
+  "name": "Maspalomas",
+  "country": "ES",
+  "lat": 27.765,
+  "lon": -15.586,
+  "tags": [
+   "hotels",
+   "season",
+   "workshops"
+  ],
+  "aliases": [
+   "Playa del Inglés"
+  ],
+  "why": "Die Hotelzone im Süden Gran Canarias mit vielen Radverleihen: Fataga beginnt am Ortsrand, Pico de las Nieves und Cruz de Tejeda als große Tage."
+ },
+ {
+  "slug": "santa-cruz-de-la-palma",
+  "name": "Santa Cruz de La Palma",
+  "country": "ES",
+  "lat": 28.6819,
+  "lon": -17.7663,
+  "tags": [
+   "quiet",
+   "scenic"
+  ],
+  "aliases": [],
+  "why": "Die kleine Inselhauptstadt am Hafen: der Roque de los Muchachos beginnt am Meer, die Insel ist ruhig und steil."
  }
 ]

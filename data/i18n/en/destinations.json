@@ -373,5 +373,20 @@
   "character": "The mountains above the Gulf of Porto: the Col de Vergio, the highest road pass on the island, and the Col de Sevi above Vico. Laricio pines, the Spelunca gorges and the sea in sight.",
   "multiDay": "Two days from Evisa: the Vergio in the morning, the Sevi via Vico as a loop; plus the Calanche de Piana on the coast.",
   "access": "By car from Ajaccio via Sagone or from Porto; no station nearby."
+ },
+ "teneriffa": {
+  "character": "The island around the Teide: four ways into the Cañadas, each over 1,500 metres, plus the Masca hairpins. The pros' training camp in winter, often cloudy in the north, sunny in the south.",
+  "multiDay": "A week: the Teide from the north and from the west, Izaña along the ridge, Masca, and a rest day by the sea.",
+  "access": "Fly to Tenerife South or North, bring the bike or hire one there."
+ },
+ "gran-canaria": {
+  "character": "A round island with its highest point in the middle: uphill from every coast, through gorges and pine forest to the Pico de las Nieves and the Cruz de Tejeda. Sunny in the south, cool at the top.",
+  "multiDay": "Five days from Maspalomas: Fataga, the Pico de las Nieves, the Cruz de Tejeda via Ayacata, the west coast via Mogán.",
+  "access": "Fly to Gran Canaria, transfer to the southern resorts; bike hire in Maspalomas."
+ },
+ "la-palma": {
+  "character": "The green island in the west: the Roque de los Muchachos, 2,400 metres from the sea, plus steep roads through laurel forest and hardly any traffic. For climbers who want peace.",
+  "multiDay": "Three days: the Roque from Santa Cruz, the northern loop via Barlovento and Garafía, the volcanoes in the south.",
+  "access": "Fly to La Palma or take the ferry from Tenerife."
  }
 }

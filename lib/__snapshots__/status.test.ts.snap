@@ -2,6 +2,8 @@
 
 exports[`status matrix for all passes × 24 half-months 1`] = `
 [
+  "rrooooooooooooooooooorrr  degollada-de-cherfe",
+  "rrooooooooooooooooooorrr  fataga",
   "rrrooooooooooooooooorrrr  coll-d-honor",
   "rrrooooooooooooooooorrrr  coll-de-femenia",
   "rrrooooooooooooooooorrrr  coll-de-soller",
@@ -41,6 +43,7 @@ exports[`status matrix for all passes × 24 half-months 1`] = `
   "rrroooooroooorroooorrrrr  passo-d-ampola",
   "rrrooooorooorrroooorrrrr  colle-gallo",
   "rrroroooooorrrrrooorrrrr  route-de-presles",
+  "rrrrooooooooooooooooorrr  cruz-de-tejeda",
   "rrrroooooooooooooooorrrr  col-d-azet",
   "rrrroooooooooooooooorrrr  col-de-bavella",
   "rrrroooooooooooooooorrrr  col-de-la-core",
@@ -255,9 +258,13 @@ exports[`status matrix for all passes × 24 half-months 1`] = `
   "rrrrrroorrrrrrroooorrrrr  forcella-aurine",
   "rrrrrroorrrrrrrrooorrrrr  passo-sommo",
   "rrrrrrrooooooooooooorrrr  arcalis",
+  "rrrrrrrooooooooooooorrrr  boca-de-tauce",
   "rrrrrrrooooooooooooorrrr  col-de-puymorens",
   "rrrrrrrooooooooooooorrrr  coll-d-ordino",
   "rrrrrrrooooooooooooorrrr  collada-de-toses",
+  "rrrrrrrooooooooooooorrrr  el-portillo",
+  "rrrrrrrooooooooooooorrrr  izana",
+  "rrrrrrrooooooooooooorrrr  pico-de-las-nieves",
   "rrrrrrrooooooooooooorrrr  port-de-la-bonaigua",
   "rrrrrrroooooooooooorrrrr  arolla",
   "rrrrrrroooooooooooorrrrr  avoriaz",
@@ -303,6 +310,7 @@ exports[`status matrix for all passes × 24 half-months 1`] = `
   "rrrrrrrrroooooooooorrrrr  valmeinier-1800",
   "rrrrrrrrrooooooooorrrrrr  kitzbueheler-horn",
   "rrrrrrrrrooooooooorrrrrr  port-d-envalira",
+  "rrrrrrrrrooooooooorrrrrr  roque-de-los-muchachos",
   "rrrrrrrrroooorooooorrrrr  la-plagne",
   "rrrrrrrrroooorooooorrrrr  rhemes-notre-dame",
   "rrrrrrrrroooorroooorrrrr  col-du-lautaret",

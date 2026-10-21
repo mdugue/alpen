@@ -19437,5 +19437,306 @@
     "label": "Vico (Süd)"
    }
   ]
+ },
+ {
+  "slug": "el-portillo",
+  "surface": "asphalt",
+  "name": "El Portillo (Teide)",
+  "type": "climb",
+  "tags": [
+   "panorama"
+  ],
+  "country": "ES",
+  "region": "Teneriffa",
+  "lat": 28.3066,
+  "lon": -16.5651,
+  "elevation": 2030,
+  "classicAscent": "30,1 km, 6,7 % ab Puerto de la Cruz",
+  "beauty": 5,
+  "fame": 4,
+  "difficulty": 5,
+  "traffic": 3,
+  "season": null,
+  "note": "Der klassische Teide-Anstieg: von der Nordküste durch das Orotava-Tal und den Kiefernwald bis an den Rand der Cañadas, 2000 Höhenmeter am Stück. Im Winter Trainingsrevier der Profis.",
+  "aliases": [
+   "Teide Nord",
+   "TF-21 Nord"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 28.4159,
+     "lon": -16.5533
+    },
+    "label": "Puerto de la Cruz (Nord)"
+   }
+  ]
+ },
+ {
+  "slug": "boca-de-tauce",
+  "surface": "asphalt",
+  "name": "Boca de Tauce",
+  "type": "pass",
+  "tags": [
+   "panorama"
+  ],
+  "country": "ES",
+  "region": "Teneriffa",
+  "lat": 28.2142,
+  "lon": -16.6783,
+  "elevation": 2040,
+  "classicAscent": "29,5 km, 4,6 % ab Chío",
+  "beauty": 5,
+  "fame": 3,
+  "difficulty": 4,
+  "traffic": 2,
+  "season": null,
+  "note": "Der Westeingang der Cañadas, wo die Straßen von Chío und Vilaflor in den Krater führen. Von der Westküste ein langer, gleichmäßiger Anstieg über Lavafelder und durch Kiefernwald.",
+  "aliases": [
+   "Tauce"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 28.2368,
+     "lon": -16.7964
+    },
+    "label": "Chío (West)"
+   }
+  ]
+ },
+ {
+  "slug": "izana",
+  "surface": "asphalt",
+  "name": "Izaña",
+  "type": "climb",
+  "tags": [
+   "panorama",
+   "forest"
+  ],
+  "country": "ES",
+  "region": "Teneriffa",
+  "lat": 28.3046,
+  "lon": -16.5089,
+  "elevation": 2276,
+  "classicAscent": "31,1 km, 4,3 % ab La Esperanza",
+  "beauty": 5,
+  "fame": 2,
+  "difficulty": 4,
+  "traffic": 2,
+  "season": null,
+  "note": "Die Kammstraße über den Rücken der Insel, von La Esperanza durch den Kiefernwald bis zum Observatorium von Izaña, dem höchsten Straßenpunkt Teneriffas. Auf beiden Seiten das Meer.",
+  "aliases": [
+   "Cumbre Dorsal",
+   "TF-24"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 28.4524,
+     "lon": -16.367
+    },
+    "label": "La Esperanza (Nordost)"
+   }
+  ]
+ },
+ {
+  "slug": "degollada-de-cherfe",
+  "surface": "asphalt",
+  "name": "Degollada de Cherfe",
+  "type": "pass",
+  "tags": [
+   "panorama",
+   "hairpins",
+   "gorge"
+  ],
+  "country": "ES",
+  "region": "Teneriffa",
+  "lat": 28.2997,
+  "lon": -16.824,
+  "elevation": 1055,
+  "classicAscent": "4,0 km, 11,2 % ab Masca",
+  "beauty": 5,
+  "fame": 3,
+  "difficulty": 4,
+  "traffic": 3,
+  "season": null,
+  "note": "Der Pass über der Masca-Schlucht, zwischen Santiago del Teide und dem Bergdorf Masca. Von Masca vier Kilometer über 11 % in engen Kehren, eine der steilsten Rampen der Kanaren.",
+  "aliases": [
+   "Masca"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 28.3053,
+     "lon": -16.8405
+    },
+    "label": "Masca (Nord)"
+   },
+   {
+    "from": {
+     "lat": 28.2707,
+     "lon": -16.8165
+    },
+    "label": "Santiago del Teide (Süd)"
+   }
+  ]
+ },
+ {
+  "slug": "cruz-de-tejeda",
+  "surface": "asphalt",
+  "name": "Cruz de Tejeda",
+  "type": "pass",
+  "tags": [
+   "panorama"
+  ],
+  "country": "ES",
+  "region": "Gran Canaria",
+  "lat": 28.0063,
+  "lon": -15.5997,
+  "elevation": 1517,
+  "classicAscent": "12,7 km, 5,5 % ab Vega de San Mateo",
+  "beauty": 5,
+  "fame": 3,
+  "difficulty": 3,
+  "traffic": 3,
+  "season": null,
+  "note": "Der Pass in der Mitte von Gran Canaria, am Rand der Caldera von Tejeda mit Blick auf den Roque Nublo und bis zum Teide. Von Tejeda kurz und steil, von San Mateo länger.",
+  "aliases": [
+   "Tejeda"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 28.0104,
+     "lon": -15.5329
+    },
+    "label": "Vega de San Mateo (Ost)"
+   },
+   {
+    "from": {
+     "lat": 27.9954,
+     "lon": -15.6154
+    },
+    "label": "Tejeda (West)"
+   }
+  ]
+ },
+ {
+  "slug": "pico-de-las-nieves",
+  "surface": "asphalt",
+  "name": "Pico de las Nieves",
+  "type": "spur",
+  "tags": [
+   "panorama"
+  ],
+  "country": "ES",
+  "region": "Gran Canaria",
+  "lat": 27.9633,
+  "lon": -15.5722,
+  "elevation": 1920,
+  "classicAscent": "14,9 km, 7,3 % ab Vega de San Mateo",
+  "beauty": 5,
+  "fame": 3,
+  "difficulty": 4,
+  "traffic": 2,
+  "season": null,
+  "note": "Die Straße auf den höchsten befahrbaren Punkt Gran Canarias, knapp 1950 m, mit Blick über die ganze Insel und bei klarer Sicht zum Teide. Von San Mateo steil, von San Bartolomé lang.",
+  "aliases": [
+   "Pozo de las Nieves"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 28.0104,
+     "lon": -15.5329
+    },
+    "label": "Vega de San Mateo (Nord)"
+   },
+   {
+    "from": {
+     "lat": 27.9253,
+     "lon": -15.573
+    },
+    "label": "San Bartolomé de Tirajana (Süd)"
+   }
+  ]
+ },
+ {
+  "slug": "fataga",
+  "surface": "asphalt",
+  "name": "Fataga",
+  "type": "climb",
+  "tags": [
+   "gorge",
+   "panorama"
+  ],
+  "country": "ES",
+  "region": "Gran Canaria",
+  "lat": 27.9145,
+  "lon": -15.578,
+  "elevation": 965,
+  "classicAscent": "23,5 km, 3,8 % ab Maspalomas",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 2,
+  "season": null,
+  "note": "Der Hausanstieg der Hotelzone im Süden: von Maspalomas durch die Schlucht von Fataga hinauf nach San Bartolomé de Tirajana. Lang und gleichmäßig, mit Palmenoasen und roten Felswänden.",
+  "aliases": [
+   "Barranco de Fataga",
+   "GC-60"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 27.765,
+     "lon": -15.586
+    },
+    "label": "Maspalomas"
+   }
+  ]
+ },
+ {
+  "slug": "roque-de-los-muchachos",
+  "surface": "asphalt",
+  "name": "Roque de los Muchachos",
+  "type": "spur",
+  "tags": [
+   "panorama",
+   "forest"
+  ],
+  "country": "ES",
+  "region": "La Palma",
+  "lat": 28.7547,
+  "lon": -17.8855,
+  "elevation": 2399,
+  "classicAscent": "43,5 km, 5,4 % ab Santa Cruz de La Palma",
+  "beauty": 5,
+  "fame": 3,
+  "difficulty": 5,
+  "traffic": 1,
+  "season": null,
+  "note": "Vom Meer auf 2400 m: die längste Steigung Europas am Stück, von Santa Cruz de La Palma bis zu den Teleskopen am Rand der Caldera de Taburiente. Von Garafía im Norden kürzer und steiler.",
+  "aliases": [
+   "Roque",
+   "LP-4"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 28.6819,
+     "lon": -17.7663
+    },
+    "label": "Santa Cruz de La Palma (Ost)"
+   },
+   {
+    "from": {
+     "lat": 28.817,
+     "lon": -17.944
+    },
+    "label": "Garafía (Nord)"
+   }
+  ]
  }
 ]

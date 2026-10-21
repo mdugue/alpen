@@ -4078,5 +4078,65 @@
   "ascents": [
    "Vico (south)"
   ]
+ },
+ "el-portillo": {
+  "classicAscent": "30.1 km, 6.7 % from Puerto de la Cruz",
+  "note": "The classic Teide climb: from the north coast through the Orotava valley and the pine forest to the rim of the Cañadas, 2,000 metres in one go. The pros' training ground in winter.",
+  "ascents": [
+   "Puerto de la Cruz (north)"
+  ]
+ },
+ "boca-de-tauce": {
+  "classicAscent": "29.5 km, 4.6 % from Chío",
+  "note": "The western gate to the Cañadas, where the roads from Chío and Vilaflor enter the crater. From the west coast a long, steady climb across lava fields and through pine forest.",
+  "ascents": [
+   "Chío (west)"
+  ]
+ },
+ "izana": {
+  "classicAscent": "31.1 km, 4.3 % from La Esperanza",
+  "note": "The ridge road along the island's spine, from La Esperanza through the pine forest to the Izaña observatory, the highest road point on Tenerife. The sea on both sides.",
+  "ascents": [
+   "La Esperanza (north-east)"
+  ]
+ },
+ "degollada-de-cherfe": {
+  "classicAscent": "4.0 km, 11.2 % from Masca",
+  "note": "The pass above the Masca gorge, between Santiago del Teide and the mountain village of Masca. From Masca four kilometres at over 11 % in tight hairpins, one of the steepest ramps in the Canaries.",
+  "ascents": [
+   "Masca (north)",
+   "Santiago del Teide (south)"
+  ]
+ },
+ "cruz-de-tejeda": {
+  "classicAscent": "12.7 km, 5.5 % from Vega de San Mateo",
+  "note": "The pass in the middle of Gran Canaria, on the rim of the Tejeda caldera with a view of the Roque Nublo and as far as the Teide. Short and steep from Tejeda, longer from San Mateo.",
+  "ascents": [
+   "Vega de San Mateo (east)",
+   "Tejeda (west)"
+  ]
+ },
+ "pico-de-las-nieves": {
+  "classicAscent": "14.9 km, 7.3 % from Vega de San Mateo",
+  "note": "The road to the highest point you can ride on Gran Canaria, just under 1,950 m, with a view over the whole island and to the Teide on a clear day. Steep from San Mateo, long from San Bartolomé.",
+  "ascents": [
+   "Vega de San Mateo (north)",
+   "San Bartolomé de Tirajana (south)"
+  ]
+ },
+ "fataga": {
+  "classicAscent": "23.5 km, 3.8 % from Maspalomas",
+  "note": "The home climb of the southern resorts: from Maspalomas through the Fataga gorge up to San Bartolomé de Tirajana. Long and steady, with palm oases and red rock walls.",
+  "ascents": [
+   "Maspalomas"
+  ]
+ },
+ "roque-de-los-muchachos": {
+  "classicAscent": "43.5 km, 5.4 % from Santa Cruz de La Palma",
+  "note": "From the sea to 2,400 m: the longest continuous climb in Europe, from Santa Cruz de La Palma to the telescopes on the rim of the Caldera de Taburiente. Shorter and steeper from Garafía in the north.",
+  "ascents": [
+   "Santa Cruz de La Palma (east)",
+   "Garafía (north)"
+  ]
  }
 }

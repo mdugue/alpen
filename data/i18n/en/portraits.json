@@ -5811,5 +5811,89 @@
     "highlights": "The view back over the Gulf of Sagone."
    }
   ]
+ },
+ "el-portillo": {
+  "intro": "Two thousand metres from the sea to below the Teide: bananas and houses at first, then pines above the clouds, the lunar landscape of the Cañadas at the top.",
+  "sides": [
+   {
+    "character": "From Puerto de la Cruz steep through La Orotava, then steadily at around 7 % through the pine forest, often through a layer of cloud that breaks into sunshine above.",
+    "highlights": "The view from the pine forest across the sea of cloud to the Teide."
+   }
+  ]
+ },
+ "boca-de-tauce": {
+  "intro": "The quieter way into the Cañadas: from the west coast across black lava and through pine forest, the Teide straight ahead at the top.",
+  "sides": [
+   {
+    "character": "From Chío steady and never steep across lava fields, then through open pine forest up to the crater rim.",
+    "highlights": "The lava flows of the Chinyero and the first view of the Teide."
+   }
+  ]
+ },
+ "izana": {
+  "intro": "For many the island's finest road: along the ridge between the north and south coasts, with views of both seas and of the Teide at the end.",
+  "sides": [
+   {
+    "character": "From La Esperanza long and moderately steep through pine forest, then open on the ridge with viewpoints.",
+    "highlights": "The observatory domes in front of the Teide."
+   }
+  ]
+ },
+ "degollada-de-cherfe": {
+  "intro": "Short, steep and breathtaking: the Masca hairpins along the gorge, looking out to La Gomera. Plenty of hire cars and coaches, best early in the morning.",
+  "sides": [
+   {
+    "character": "From Masca without a break at over 10 % in tight hairpins along the rock face.",
+    "highlights": "The village of Masca below the rock needles, La Gomera in the sea."
+   },
+   {
+    "character": "From Santiago del Teide steadier through fields and lava up to the saddle."
+   }
+  ]
+ },
+ "cruz-de-tejeda": {
+  "intro": "The heart of the island: a saddle above the caldera, a day-trip spot with stalls and a parador, and one of the finest views in the Canaries.",
+  "sides": [
+   {
+    "character": "From San Mateo steadily through fields and pines, with a few steep stretches."
+   },
+   {
+    "character": "From Tejeda steep in hairpins out of the caldera, the Roque Nublo and Roque Bentayga behind you.",
+    "highlights": "The Tejeda caldera with the Roque Nublo and the Bentayga."
+   }
+  ]
+ },
+ "pico-de-las-nieves": {
+  "intro": "The roof of Gran Canaria: a radar dome and a viewpoint above the Roque Nublo at the top, long hard ramps on both sides below.",
+  "sides": [
+   {
+    "character": "From San Mateo steep and without a break through pine forest, often over 8 %."
+   },
+   {
+    "character": "From San Bartolomé above the Caldera de Tirajana long and irregular.",
+    "highlights": "The view into the Caldera de Tirajana."
+   }
+  ]
+ },
+ "fataga": {
+  "intro": "The climb almost every cycling week on Gran Canaria starts with: out of the resorts into a quiet gorge and towards the roof of the island.",
+  "sides": [
+   {
+    "character": "From Maspalomas flat at first, then steadily in hairpins over the Degollada de Fataga and through the gorge.",
+    "highlights": "The viewpoint above the Barranco de Fataga and the palms on the valley floor."
+   }
+  ]
+ },
+ "roque-de-los-muchachos": {
+  "intro": "A climb like no other: 2,400 metres without a descent, through laurel and pine forest above the clouds, the telescopes and the view into the caldera at the top.",
+  "sides": [
+   {
+    "character": "From Santa Cruz steadily through the laurel forest, then pines, bare and windy above 2,000 m. Take food, there is nothing at the top.",
+    "highlights": "The rim of the Caldera de Taburiente by the telescopes."
+   },
+   {
+    "character": "From Garafía steeper and lonelier through the pine forest, hardly a car."
+   }
+  ]
  }
 }

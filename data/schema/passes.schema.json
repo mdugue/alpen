@@ -85,12 +85,12 @@
               "properties": {
                 "lat": {
                   "type": "number",
-                  "minimum": 39.2,
+                  "minimum": 27.5,
                   "maximum": 52.1
                 },
                 "lon": {
                   "type": "number",
-                  "minimum": -2,
+                  "minimum": -18.3,
                   "maximum": 16
                 }
               },
@@ -134,12 +134,12 @@
               "properties": {
                 "lat": {
                   "type": "number",
-                  "minimum": 39.2,
+                  "minimum": 27.5,
                   "maximum": 52.1
                 },
                 "lon": {
                   "type": "number",
-                  "minimum": -2,
+                  "minimum": -18.3,
                   "maximum": 16
                 }
               },
@@ -190,12 +190,12 @@
       },
       "lat": {
         "type": "number",
-        "minimum": 39.2,
+        "minimum": 27.5,
         "maximum": 52.1
       },
       "lon": {
         "type": "number",
-        "minimum": -2,
+        "minimum": -18.3,
         "maximum": 16
       },
       "name": {
@@ -228,7 +228,10 @@
           "Rhön",
           "Bayerwald",
           "Böhmerwald",
-          "Korsika"
+          "Korsika",
+          "Teneriffa",
+          "Gran Canaria",
+          "La Palma"
         ]
       },
       "roadSummit": {

@@ -29,12 +29,12 @@
       },
       "lat": {
         "type": "number",
-        "minimum": 39.2,
+        "minimum": 27.5,
         "maximum": 52.1
       },
       "lon": {
         "type": "number",
-        "minimum": -2,
+        "minimum": -18.3,
         "maximum": 16
       },
       "name": {
