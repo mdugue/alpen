@@ -76,7 +76,8 @@ export const waitUntil = async (
 
 export interface App {
   base: string;
-  stop: () => void;
+  /** Resolves once nothing answers on the port any more. */
+  stop: () => Promise<void>;
 }
 
 /**
@@ -88,9 +89,9 @@ export const startApp = async (): Promise<App> => {
   if (fromEnv)
     return {
       base: fromEnv.replace(/\/$/u, ""),
-      stop: () => {
+      stop: () =>
         // Nothing to stop: the server is not ours.
-      },
+        Promise.resolve(),
     };
 
   const proc = Bun.spawn({
@@ -119,7 +120,24 @@ export const startApp = async (): Promise<App> => {
       throw new Error(`No answer from ${base} after 60 s.`);
     await Bun.sleep(250);
   }
-  return { base, stop: () => proc.kill() };
+  // The next suite starts its own server on the same port, and its first
+  // request must not reach this one while it is still shutting down: a
+  // server that answered the readiness check and then went away refused the
+  // suite's first page (e2e/wissen.test.ts, CI 2026-10-21).
+  const stop = async () => {
+    proc.kill();
+    await proc.exited;
+    const until = Date.now() + 10_000;
+    while (Date.now() < until) {
+      try {
+        await fetch(base, { signal: AbortSignal.timeout(500) });
+      } catch {
+        return;
+      }
+      await Bun.sleep(100);
+    }
+  };
+  return { base, stop };
 };
 
 export interface OpenOptions {
