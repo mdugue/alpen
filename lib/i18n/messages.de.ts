@@ -41,12 +41,10 @@ import type { Lang } from "./lang";
 export const de = {
   /** The way back from a page that is not the map: the legal pages. */
   backToMap: "Zurück zur Karte",
-  /** The season band: the summary line, the legend, the slider and the two ways into the drawers. */
+  /** The season band: the summary line, the legend, the slider and the way into the list drawer. */
   band: {
     backToToday: "Zurück zu heute ({label})",
     daylight: "{hours} h Tageslicht",
-    /** The second button under the band on a phone; the first is the list's kind. */
-    filters: "Filter",
     legend: {
       bar: "Balkenhöhe = Ø Tagesmaximum der gezeigten Pässe",
       ribbon: "Band = Befahrbarkeit der meisten von ihnen",
@@ -108,9 +106,9 @@ export const de = {
     hideSidebar: "Seitenleiste ausblenden",
     /** The list drawer. */
     list: "Liste",
-    listAndFilters: "Liste und Filter",
     noPass: "kein Pass in dieser Auswahl.",
     scales: "Skalen & Quellen",
+    showList: "Liste einblenden",
     skipToMap: "Zur Karte springen",
   },
   kinds: {

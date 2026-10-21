@@ -8,7 +8,7 @@
  * ranks them by it (`lib/map-pick.ts`) and the e2e asks the running map
  * whether it has them. `HIT_GROUPS` is derived here
  * rather than written out a second time, because the two used to be written
- * out twice: the labels are one id per fame level, and a sixth level added to
+ * out twice: the labels are one id per rank, and a sixth level added to
  * the ladder below would have been drawn and would silently have stopped
  * answering the pointer.
  */
@@ -19,6 +19,8 @@ export const SOURCE = {
   /** One point per area, where its name stands (a polygon labels itself once per tile). */
   destinationLabels: "destination-labels",
   destinations: "destinations",
+  /** The roads the filters leave out, as shadows (`Scene.ghosts`). */
+  ghosts: "ghosts",
   hover: "hover",
   passes: "passes",
   reach: "reach",
@@ -30,20 +32,21 @@ export const SOURCE = {
 } as const;
 
 /**
- * The label ladder: a pass's name appears at the zoom its fame earns, and
- * MapLibre resolves what collides. A dot always appears before its name
- * (`lib/prominence.ts` holds the dots' own, coarser ladder).
+ * The label ladder: a pass's name appears at the zoom its rank earns
+ * (`rankOf`, lib/prominence.ts), and MapLibre resolves what collides. Every
+ * step is at or after the dots' own, coarser one, so a dot always appears
+ * before its name; the last step takes every rank below it too.
  */
 export const PASS_LABELS = [
-  { fame: 5, minzoom: 0 },
-  { fame: 4, minzoom: 7 },
-  { fame: 3, minzoom: 8 },
-  { fame: 2, minzoom: 9.5 },
-  { fame: 1, minzoom: 10.5 },
+  { minzoom: 0, rank: 5 },
+  { minzoom: 7, rank: 4 },
+  { minzoom: 8, rank: 3 },
+  { minzoom: 9.5, rank: 2 },
+  { minzoom: 10.5, rank: 1 },
 ] as const;
 
 /** The one spelling of a pass label's id. */
-export const passLabelId = (fame: number) => `pass-label-${fame}`;
+export const passLabelId = (rank: number) => `pass-label-${rank}`;
 
 /** What one kind is drawn with: its mark, the names beside it, its hit area. */
 export interface LayerSet {
@@ -77,6 +80,14 @@ export const ROUTE_DASH = "routes-dash";
 export const ROUTE_CASING = "routes-casing";
 
 /**
+ * The ascents of the roads the filters leave out: a thin grey line under
+ * everything, the shadow's lines as the grey dot is its mark. Not a companion
+ * of the route set – it carries the shadows' filter, not the drawn roads' –
+ * and no target: the dot answers for its road.
+ */
+export const ROUTE_GHOST = "routes-ghost";
+
+/**
  * A tour is a tube: its mark is the tube's wall in the tour's colour, and
  * these are the rest of it – the pale inside, the road along its middle and
  * the arrows that say which way round it is ridden.
@@ -88,7 +99,7 @@ export const TOUR_PARTS = {
 } as const;
 
 /**
- * The five kinds the map draws. `route` is a pass's ascents: its own lines and
+ * The six kinds the map draws. `route` is a pass's ascents: its own lines and
  * its own hit layer, but never its own selection – an ascent belongs to its
  * pass, which is what `pick` answers with. `destination` is the outline of
  * an area under everything else, thinner past the overview
@@ -103,9 +114,20 @@ export const LAYERS = {
     mark: "destinations",
     source: SOURCE.destinations,
   },
+  /**
+   * A road the filters leave out: a shadow of its dot – no name, and its
+   * ascents only as the hairline `ROUTE_GHOST`. It answers the pointer as its pass, below every road the
+   * filters kept, so a shadow never takes a click meant for a real mark.
+   */
+  ghost: {
+    hit: "ghosts-hit",
+    labels: [],
+    mark: "ghosts",
+    source: SOURCE.ghosts,
+  },
   pass: {
     hit: "passes-hit",
-    labels: PASS_LABELS.map((l) => passLabelId(l.fame)),
+    labels: PASS_LABELS.map((l) => passLabelId(l.rank)),
     mark: "passes",
     source: SOURCE.passes,
   },
@@ -175,6 +197,7 @@ export const HIT_GROUPS: readonly (readonly string[])[] = [
   [...LAYERS.tour.labels],
   [LAYERS.route.hit],
   [LAYERS.tour.hit],
+  [LAYERS.ghost.hit],
   // An area is the least specific answer there is: its name is a target,
   // the outline only answers where nothing else does.
   [...LAYERS.destination.labels],

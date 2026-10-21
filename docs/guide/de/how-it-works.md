@@ -141,11 +141,11 @@ Stempelkarte oder Wertung, etwa der Stoneman Dolomiti Road. Eine
 **Etappenroute** führt über mehrere Tage von A nach B, etwa die Route des
 Grandes Alpes. Eine **Jahresausgabe** ist die Strecke eines Radmarathons, der
 jedes Jahr anders fährt, etwa die Stelvio Santini: jedes Jahr ein eigener
-Eintrag mit der Jahreszahl im Namen. Die Chips über der Tourenliste filtern
-nach dieser Art.
+Eintrag mit der Jahreszahl im Namen. Der Filter „Art der Tour“ filtert nach
+dieser Art.
 
 Veranstaltungen und Jahresausgaben tragen ihren Termin als Halbmonat. Der
-Chip „Termin“ zeigt nur, was im gewählten Halbmonat stattfindet. Von einer
+Filter „Termin im Zeitraum“ zeigt nur, was im gewählten Halbmonat stattfindet. Von einer
 Jahresausgabe zeigt die Liste zunächst nur das neueste Jahr, die Zeile nennt
 die ausgeblendeten Vorjahre; der Chip „Frühere Jahre“ holt sie zurück, gleich
 unter dem neuesten Jahr. Im Reiseziel stehen die Touren nach Art geordnet.
@@ -163,9 +163,14 @@ unter dem neuesten Jahr. Im Reiseziel stehen die Touren nach Art geordnet.
 | gestrichelte Linie     | Auffahrt auf einer ungeteerten Straße, darunter weiter in der Statusfarbe |
 | blauer Punkt mit Ring  | Ort                                                                       |
 | blaue, helle Umrandung | Reiseziel: das Gebiet um seine Mitte, seine Passhöhen und seine Orte      |
+| kleiner grauer Punkt   | Straße außerhalb der Filter; antippen öffnet sie                          |
+| dünne graue Linie      | ihre Auffahrt, ab mittlerem Zoom                                          |
 
 In der Übersicht zeigt die Karte nicht jeden Pass: Weit herausgezoomt stehen
-nur die bekannten da, beim Hineinzoomen kommen die übrigen hinzu. Eine Zeile
+nur die Klassiker und die schönsten bekannten Pässe da, beim Hineinzoomen
+kommen die übrigen Stufe für Stufe hinzu, zuerst klein und blass. Was nirgends
+hinüberführt – Stich-, Tal-, Balkon- und Höhenstraßen – kommt eine Stufe
+später als ein Pass, eine Straße mit Schönheit 5 eine Stufe früher. Eine Zeile
 in der Kartenecke sagt, welche Stufe gerade gilt. Das ist kein Filter – die
 Liste bleibt vollständig, und was ausgewählt, gemerkt oder unter dem
 Mauszeiger ist, wird immer gezeichnet.
@@ -210,13 +215,21 @@ Vršič) und kennt andere gebräuchliche Namen, etwa „Stilfser Joch“ oder be
 Orten Tal- und Gebietsnamen wie „Gröden“. Sie sucht in allen drei Listen,
 auch nach Reisezielen.
 
-Jeder Filter ist ein Schalter mit einer Zahl daneben: Sie sagt, wie viele
-Straßen übrig blieben, wenn du ihn drückst. Immer sichtbar sind der Zustand
-im gewählten Zeitraum, die Schwierigkeit, die Höhe des Scheitelpunkts und
-„Nur Gemerkte“. Unter „Weitere Filter“ folgen Art der Straße, Belag,
-Merkmale, Verkehr, Schönheit, Bekanntheit, die Wärme im Tal (abgeleitet) und
-die Regentage im Halbmonat. Was gerade gefiltert ist, steht als Reihe
-entfernbarer Chips über der Liste.
+Alle Filter stehen in einer Leiste oben links auf der Karte, auch auf dem
+Handy. Jeder gesetzte Filter ist dort ein kleines Feld, das nur seinen Wert
+nennt, etwa „Klassiker“ oder „ab 2.000 m“. Ein Tipp darauf öffnet die Auswahl
+dieses Filters; jede Wahl trägt eine Zahl, die sagt, wie viele Straßen (bei
+den Tourfiltern: Touren) übrig blieben. Das × daneben nimmt den Filter
+heraus. Das **+** listet alle übrigen Filter, geordnet nach Wo, Straße, Im
+Zeitraum und Touren: Gebirge, Nur Gemerkte, Bekanntheit, Schwierigkeit, Höhe,
+Art der Straße, Belag, Merkmale, Verkehr, Schönheit, Zustand, Wärme im Tal
+(abgeleitet), Regentage, Art der Tour, Termin im Zeitraum und Frühere Jahre.
+
+Die App öffnet mit den **Klassikern**: Straßen ab Bekanntheit 4 und die
+Touren, die mindestens eine davon fahren. Was ein Filter ausblendet, bleibt
+als kleiner grauer Punkt auf der Karte stehen; die Suche findet jede Straße,
+auch wenn „Klassiker“ gesetzt ist. Weichen die Filter davon ab, erscheint am
+Ende der Leiste **Standard**, das zu den Klassikern zurückführt.
 
 Dazu kommt der Filter **Gebirge** – heute Alpen und Vogesen, später auch
 Jura und Pyrenäen –, der als einziger auch die Karte bewegt: Er rückt den

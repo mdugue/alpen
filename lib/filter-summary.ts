@@ -9,6 +9,7 @@ import {
   ELEVATION_OPTIONS,
   FAME_OPTIONS,
   HEAT_OPTIONS,
+  NO_FILTERS,
   pickedMembers,
   RATING_MAX,
   RATING_MIN,
@@ -19,19 +20,64 @@ import type { Filters, OptionLabel, Options } from "@/lib/app-state";
 import type { Messages } from "@/lib/i18n";
 import { fill } from "@/lib/i18n/fill";
 import { periodLabel } from "@/lib/period";
+import { CLASSIC_FAME } from "@/lib/regions";
 import { fmt, listOr } from "@/lib/utils";
 
 /**
- * One applied filter as the chip row under the search field shows it: a
- * short label and the update that lifts exactly this filter and nothing
- * else. What is on the map has to be readable without opening the filter
- * view, and one tap has to undo one decision – that is what the row is for.
- * The period, the sort and the search text are not in it: the period has the
+ * Every criterion the filter bar knows, in the order its tokens stand and
+ * its "+" menu lists them, each under the question it answers: where, which
+ * road, how the half-month treats it, which tour. One table, so the bar, the
+ * menu and the tokens can never list a criterion twice or forget one. The
+ * period, the sort and the search text are not criteria: the period has the
  * scrubber, the sort is a preference, and the search field shows itself.
  */
+export const CRITERIA = [
+  { group: "where", id: "ranges" },
+  { group: "where", id: "favorites" },
+  { group: "road", id: "fame" },
+  { group: "road", id: "difficulty" },
+  { group: "road", id: "elevation" },
+  { group: "road", id: "types" },
+  { group: "road", id: "surfaces" },
+  { group: "road", id: "tags" },
+  { group: "road", id: "traffic" },
+  { group: "road", id: "beauty" },
+  { group: "season", id: "status" },
+  { group: "season", id: "heat" },
+  { group: "season", id: "wet" },
+  { group: "tour", id: "tourTypes" },
+  { group: "tour", id: "onDate" },
+  { group: "tour", id: "pastEditions" },
+] as const;
+export type CriterionId = (typeof CRITERIA)[number]["id"];
+export type CriterionGroup = (typeof CRITERIA)[number]["group"];
+export const CRITERION_GROUPS: readonly CriterionGroup[] = [
+  "where",
+  "road",
+  "season",
+  "tour",
+];
+
+/**
+ * The criteria that are a switch rather than a choice, and what switching
+ * them on sets: the "+" menu applies them on the spot, because a popover
+ * holding one chip is a question asked twice.
+ */
+export const SWITCHES: Partial<Record<CriterionId, Partial<Filters>>> = {
+  favorites: { favoritesOnly: true },
+  onDate: { onDate: true },
+  pastEditions: { pastEditions: true },
+};
+
+/**
+ * One applied filter as the bar over the map shows it: a short label and the
+ * update that lifts exactly this criterion and nothing else. What is on the
+ * map has to be readable without opening anything, and one tap has to undo
+ * one decision – that is what the token is for.
+ */
 export interface AppliedFilter {
-  /** Stable, one per criterion – the React key. */
-  key: string;
+  /** Stable, one per criterion – the React key, and which editor it opens. */
+  key: CriterionId;
   label: string;
   clear: (f: Filters) => Filters;
 }
@@ -64,7 +110,7 @@ export const appliedFilters = (f: Filters, w: Messages): AppliedFilter[] => {
   const v = w.vocab;
   const out: AppliedFilter[] = [];
   const add = (
-    key: string,
+    key: CriterionId,
     label: string | undefined,
     clear: (f: Filters) => Filters,
   ) => {
@@ -129,11 +175,11 @@ export const appliedFilters = (f: Filters, w: Messages): AppliedFilter[] => {
       ...g,
       pastEditions: false,
     }));
-  // One chip per label: they stack with and-semantics, so each one is its own decision.
-  for (const tag of f.tags)
-    add(`tag:${tag}`, v.roadTag[tag].label, (g) => ({
+  // The labels stack with and-semantics, so they read joined by "+".
+  if (f.tags.length)
+    add("tags", f.tags.map((tag) => v.roadTag[tag].label).join(" + "), (g) => ({
       ...g,
-      tags: g.tags.filter((t) => t !== tag),
+      tags: [],
     }));
   const [lo, hi] = f.difficulty;
   if (lo > RATING_MIN || hi < RATING_MAX)
@@ -166,15 +212,19 @@ export const appliedFilters = (f: Filters, w: Messages): AppliedFilter[] => {
       }),
       (g) => ({ ...g, minBeauty: RATING_MIN }),
     );
-  if (f.minFame > 1)
+  if (f.minFame > RATING_MIN)
     add(
       "fame",
-      fill(v.filter.fame, {
-        option: optionLabel(FAME_OPTIONS, f.minFame, w),
-      }),
+      // The floor the app opens on has a name of its own, the one its chip
+      // on the map carries.
+      f.minFame === CLASSIC_FAME
+        ? v.filter.classics
+        : fill(v.filter.fame, {
+            option: optionLabel(FAME_OPTIONS, f.minFame, w),
+          }),
       (g) => ({
         ...g,
-        minFame: 1,
+        minFame: RATING_MIN,
       }),
     );
   const heat = optionLabel(HEAT_OPTIONS, f.maxValleyTmax, w);
@@ -189,7 +239,8 @@ export const appliedFilters = (f: Filters, w: Messages): AppliedFilter[] => {
       ...g,
       maxWetDays: WET_OPTIONS[0][0],
     }));
-  return out;
+  const order: readonly CriterionId[] = CRITERIA.map((c) => c.id);
+  return out.toSorted((a, b) => order.indexOf(a.key) - order.indexOf(b.key));
 };
 
 /**
@@ -209,12 +260,32 @@ export const filterCount = (f: Filters, w: Messages) =>
   appliedFilters(f, w).length;
 
 /**
+ * Whether the filters are what the app opens on – the classics and nothing
+ * else. The bar offers the way back ("Standard") only when they are not.
+ */
+export const isStandard = (f: Filters, w: Messages) =>
+  f.minFame === DEFAULT_FILTERS.minFame && filterCount(f, w) === 1;
+
+/**
+ * Back to what the app opens on. The period, the sort and the search survive
+ * it: the half-month lives in the season bar, the sort is a preference, and
+ * the search field has its own way out.
+ */
+export const standardFilters = (f: Filters): Filters => ({
+  ...DEFAULT_FILTERS,
+  period: f.period,
+  query: f.query,
+  sort: f.sort,
+});
+
+/**
  * Back to no filter at all. The period and the sort survive it: the
  * half-month is the app's one domain control and lives in the season bar, and
- * the sort is a preference rather than a decision about what is shown.
+ * the sort is a preference rather than a decision about what is shown. No
+ * filter means every road, so the classics the app opens on go too.
  */
 export const resetFilters = (f: Filters): Filters => ({
-  ...DEFAULT_FILTERS,
+  ...NO_FILTERS,
   period: f.period,
   sort: f.sort,
 });
@@ -236,31 +307,3 @@ export const bestRelief = (
     .map((chip) => ({ chip, n: countWith(chip.clear(f)) }))
     .filter((r) => r.n > 0)
     .toSorted((a, b) => b.n - a.n)[0];
-
-/** The filters behind "Weitere Filter", in the order the panel shows them. */
-export const SECONDARY_FILTERS = [
-  "types",
-  "surfaces",
-  "tags",
-  "maxTraffic",
-  "minBeauty",
-  "minFame",
-  "maxValleyTmax",
-  "maxWetDays",
-] as const satisfies readonly (keyof Filters)[];
-
-/**
- * Whether anything in the second half of the panel is set. It decides whether
- * "Weitere Filter" opens by itself: a link that carries a traffic limit must
- * not hide the control that lifts it again. A set filter is one off its
- * default – for a chip group, one that does not hold all of its members (or,
- * for the labels, none), which is what the length says.
- */
-export const hasSecondaryFilters = (f: Filters) =>
-  SECONDARY_FILTERS.some((key) => {
-    const value = f[key];
-    const initial = DEFAULT_FILTERS[key];
-    return Array.isArray(value) && Array.isArray(initial)
-      ? value.length !== initial.length
-      : value !== initial;
-  });

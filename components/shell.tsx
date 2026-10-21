@@ -35,6 +35,12 @@ interface Props {
   /** The map, told what the shell covers of it. */
   map: (inset: Inset) => ReactNode;
   header: ReactNode;
+  /**
+   * The filters, as a bar over the map (`FilterBar`): in the map's
+   * top-left corner, clear of the panels and of the map's own tools on the
+   * right, at every width.
+   */
+  overlay: ReactNode;
   /** The season band and, on a phone, the two ways into the drawers. */
   band: ReactNode;
   /** The list, once per place it stands: the desktop panel and the drawer. */
@@ -72,6 +78,7 @@ export const Shell = ({
   map,
   mobile,
   onBack,
+  overlay,
   selection,
   sheet,
   sidebar,
@@ -83,13 +90,14 @@ export const Shell = ({
   const sheetInset = useSheetInset();
   const [headerRef, headerHeight] = useHeight();
   const [barRef, barHeight] = useHeight();
+  const [overlayRef, overlayHeight] = useHeight();
 
   // The detail sheet's share is claimed in the same commit as the selection,
   // one flight ahead of the camera – which is precisely what keeps the picture
   // still: a padding the map has not applied yet cannot move it, and the
   // flight that follows carries it.
   const shell = shellGeometry({
-    bars: { header: headerHeight, season: barHeight },
+    bars: { header: headerHeight, overlay: overlayHeight, season: barHeight },
     panels: { detail: selection !== null, sidebar: sidebarOpen },
     sheet: {
       inset: sheetInset,
@@ -148,6 +156,16 @@ export const Shell = ({
       {/* The map's own middle: a box below the header that the floating
           panels fill on desktop and that the season bar ends on a phone. */}
       <div className="pointer-events-none relative flex min-h-0 flex-1 flex-col justify-end">
+        <div
+          ref={overlayRef}
+          // As wide as the map between the panel and its tools, so the bar
+          // scrolls rather than running under them; only the bar itself takes
+          // the pointer, never the empty rest of the row.
+          className="absolute top-3 right-16 left-3 z-10 *:pointer-events-auto lg:left-(--shell-left)"
+        >
+          {overlay}
+        </div>
+
         {!mobile && sidebarOpen && (
           <aside
             ref={listRef}
@@ -176,8 +194,8 @@ export const Shell = ({
 
         {/*
          * The season bar. The band is the app's one domain control. On a
-         * phone it runs along the bottom of the screen, with the two ways
-         * on – into the list and into the filters – under it. On desktop
+         * phone it runs along the bottom of the screen, with the way into
+         * the list under it (the filters stand on the map). On desktop
          * it is a card of the same material as the panels, standing beside
          * them at the foot of the map and capped in width: 24 columns read
          * better at the width of a chart than stretched across a screen,

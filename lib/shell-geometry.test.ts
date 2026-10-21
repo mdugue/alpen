@@ -118,3 +118,12 @@ describe("shellGeometry · a desktop", () => {
     expect(vars["--shell-detail-left"]).toBe("440px");
   });
 });
+
+test("the switch in the map's corner is covered map too", () => {
+  const { inset } = shellGeometry({
+    ...desktop,
+    bars: { ...desktop.bars, overlay: 44 },
+  });
+  expect(inset.top).toBe(desktop.bars.header + 44 + 12);
+  expect(shellGeometry(desktop).inset.top).toBe(desktop.bars.header);
+});

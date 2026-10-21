@@ -15,7 +15,6 @@ export const en = {
   band: {
     backToToday: "Back to today ({label})",
     daylight: "{hours} h of daylight",
-    filters: "Filters",
     legend: {
       bar: "Bar height = mean daily maximum of the passes shown",
       ribbon: "Band = rideability of most of them",
@@ -69,9 +68,9 @@ export const en = {
     },
     hideSidebar: "Hide the sidebar",
     list: "List",
-    listAndFilters: "List and filters",
     noPass: "no pass in this selection.",
     scales: "Scales & sources",
+    showList: "Show the list",
     skipToMap: "Skip to the map",
   },
   kinds: {
