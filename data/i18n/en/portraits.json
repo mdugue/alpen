@@ -70,6 +70,15 @@
    }
   ]
  },
+ "arcalis": {
+  "intro": "Andorra's summit finish, long and steady.",
+  "sides": [
+   {
+    "character": "From Ordino gently up the valley to El Serrat, then steadily in hairpins to the resort.",
+    "highlights": "The hairpins above El Serrat."
+   }
+  ]
+ },
  "arlbergpass": {
   "intro": "The Arlberg divides Tyrol from Vorarlberg and is the watershed between the Rhine and the Danube. At the top stands St. Christoph with its hospice, which dates back to the 14th century. Despite the tunnel the pass road remains a busy route.",
   "sides": [
@@ -375,6 +384,19 @@
    }
   ]
  },
+ "col-d-agnes": {
+  "intro": "The most beautiful pass in the Ariège, across endless pastures.",
+  "sides": [
+   {
+    "character": "From Aulus steeply through forest, across the pastures at the top.",
+    "highlights": "The pastures below the pass."
+   },
+   {
+    "character": "From Massat long via Le Port and the Port de Lers.",
+    "highlights": "The Étang de Lers."
+   }
+  ]
+ },
  "col-d-allos": {
   "intro": "With the Cayolle and the Champs the Allos forms the triple loop from Barcelonnette. The north side is a narrow balcony road high above the Bachelard gorge, the south side climbs more calmly up the upper Verdon valley.",
   "sides": [
@@ -384,6 +406,45 @@
    {
     "character": "Long and gentle from Colmars up the Verdon valley via Allos and La Foux, on a wider road. The better descent.",
     "highlights": "The fortified old town of Colmars at the start."
+   }
+  ]
+ },
+ "col-d-aspin": {
+  "intro": "The most beautiful of the classic Pyrenean passes, steady and with an open view.",
+  "sides": [
+   {
+    "character": "From Arreau steadily through forest, across open pastures at the top.",
+    "highlights": "The pastures with animals on the road."
+   },
+   {
+    "character": "From Sainte-Marie via Payolle gently, briefly steeper at the top.",
+    "highlights": "The Lac de Payolle."
+   }
+  ]
+ },
+ "col-d-aubisque": {
+  "intro": "The classic of the Béarn, crowned by the cliff road to the Soulor.",
+  "sides": [
+   {
+    "character": "From Laruns via Eaux-Bonnes, then steep and irregular with ramps around 10 % to Gourette and across the pastures.",
+    "highlights": "The view from the pass to the Pic de Ger."
+   },
+   {
+    "character": "From Argelès via Arrens to the Soulor, then rolling on the road cut into the cliff of the Cirque du Litor.",
+    "highlights": "The corniche of the Cirque du Litor."
+   }
+  ]
+ },
+ "col-d-azet": {
+  "intro": "The link from Saint-Lary towards Luchon, across pastures with a view of the peaks.",
+  "sides": [
+   {
+    "character": "From Saint-Lary via Azet steadily steep across the pastures.",
+    "highlights": "The view of the border peaks."
+   },
+   {
+    "character": "From Génos short and steep in hairpins.",
+    "highlights": "The Génos-Loudenvielle lake."
    }
   ]
  },
@@ -405,6 +466,19 @@
    {
     "character": "Out of Nice onto the Grande Corniche, uneven with steeper ramps and easier stretches, hardly any hairpins; the sea below you all the way, and plenty of traffic.",
     "highlights": "The view over the Baie des Anges and Nice from the Corniche."
+   }
+  ]
+ },
+ "col-d-ispeguy": {
+  "intro": "A short, green border pass for a loop from Saint-Jean-Pied-de-Port.",
+  "sides": [
+   {
+    "character": "From Baïgorry steadily in hairpins across the pastures.",
+    "highlights": "The Baïgorry valley."
+   },
+   {
+    "character": "From Errazu gently through forest.",
+    "highlights": "The Baztan valley."
    }
   ]
  },
@@ -438,6 +512,19 @@
    {
     "character": "From Le Bourg-d'Oisans through the narrow gorge of the Lignarre, then up the valley in gentle steps. Few hairpins, more a long roll uphill.",
     "highlights": "On the way the hairpin road to Villard-Reymond branches off."
+   }
+  ]
+ },
+ "col-de-bagargui": {
+  "intro": "The finest pass in the French Basque country.",
+  "sides": [
+   {
+    "character": "From Larrau steeply in hairpins across the pastures.",
+    "highlights": "The view of the Pic d'Orhy."
+   },
+   {
+    "character": "From Mendive long and moderate via the Iraty chalets.",
+    "highlights": "The Iraty beech forest."
    }
   ]
  },
@@ -556,6 +643,19 @@
    },
    {
     "character": "From Cornimont longer and gentler through forest, with short ramps; the calmer side to descend."
+   }
+  ]
+ },
+ "col-de-jau": {
+  "intro": "A lonely pass on the eastern edge of the Pyrenees, with the Canigou at your back.",
+  "sides": [
+   {
+    "character": "From Mosset steadily through forest and across pastures.",
+    "highlights": "The view back to the Canigou."
+   },
+   {
+    "character": "From Axat long through the Aude valley and forest.",
+    "highlights": "The Aude gorges."
    }
   ]
  },
@@ -681,6 +781,19 @@
    },
    {
     "character": "Even from Le Grand-Bornand over alpine meadows and in hairpins, with open views. The more flowing side downhill."
+   }
+  ]
+ },
+ "col-de-la-core": {
+  "intro": "A steady pass in the Couserans with a view of the Mont Valier.",
+  "sides": [
+   {
+    "character": "From Seix steadily through forest and across pastures.",
+    "highlights": "The Mont Valier."
+   },
+   {
+    "character": "From Castillon through the Bethmale valley past the lake.",
+    "highlights": "The Lac de Bethmale."
    }
   ]
  },
@@ -851,6 +964,19 @@
    }
   ]
  },
+ "col-de-la-pierre-saint-martin": {
+  "intro": "A long, hard border pass with a limestone desert at the top.",
+  "sides": [
+   {
+    "character": "From Arette long through the Barétous, steep at the top to the resort and across the karst.",
+    "highlights": "The karst fields on the border."
+   },
+   {
+    "character": "From Isaba long and moderate through the Roncal valley and forest.",
+    "highlights": "The Belagua valley."
+   }
+  ]
+ },
  "col-de-la-porte": {
   "intro": "A quiet crossing above Coaraze over to Lucéram, a little higher than the neighbouring Col Saint-Roch. Hardly any traffic, and on the way the view over the villages of the Paillon valleys.",
   "sides": [
@@ -881,6 +1007,15 @@
    }
   ]
  },
+ "col-de-latrape": {
+  "intro": "The gentle approach to the Agnes.",
+  "sides": [
+   {
+    "character": "From Ercé long and gentle up the valley, briefly steeper at the top.",
+    "highlights": "The Garbet valley."
+   }
+  ]
+ },
  "col-de-macuegne": {
   "intro": "A quiet pass between Montbrun-les-Bains and Séderon, over lavender fields and through beech forest. On the Perty loop it is the way back, with the Ventoux in view.",
   "sides": [
@@ -906,6 +1041,19 @@
    }
   ]
  },
+ "col-de-marie-blanque": {
+  "intro": "Low but mean: the short Tour pass with the steep finale.",
+  "sides": [
+   {
+    "character": "From Escot moderate through forest at first, then four kilometres at around 11 % to the top.",
+    "highlights": "The forest above the Vallée d'Aspe."
+   },
+   {
+    "character": "From Bielle gently across the Bénou plateau.",
+    "highlights": "The Bénou plateau with its herds."
+   }
+  ]
+ },
  "col-de-menee": {
   "intro": "A long, gentle pass without traffic, with the Mont Aiguille as its landmark.",
   "sides": [
@@ -916,6 +1064,19 @@
    {
     "character": "From Chichilianne steadily across pastures and forest.",
     "highlights": "The Mont Aiguille right above the road."
+   }
+  ]
+ },
+ "col-de-mente": {
+  "intro": "Short, steep and part of the chain to the Portet d'Aspet.",
+  "sides": [
+   {
+    "character": "From Saint-Béat steeply in hairpins via Boutx.",
+    "highlights": "The view of the Garonne."
+   },
+   {
+    "character": "From Juzet long and moderate through forest via the Ger.",
+    "highlights": "The Comminges forests."
    }
   ]
  },
@@ -960,6 +1121,19 @@
    }
   ]
  },
+ "col-de-pailheres": {
+  "intro": "The big pass of the eastern Pyrenees, over 2,000 m and almost traffic-free.",
+  "sides": [
+   {
+    "character": "From Ax via Ascou, then steep through forest and in tight hairpins across the pastures at the top.",
+    "highlights": "The hairpins below the top."
+   },
+   {
+    "character": "From Usson through the Donezan, shorter and steadily steep.",
+    "highlights": "The quiet Donezan."
+   }
+  ]
+ },
  "col-de-perty": {
   "intro": "One of the highest passes in the Baronnies, ridden by the Tour de France in 2006. From the forest of the Ouvèze the road climbs into a wide bowl, with the Ventoux and the Montagne de Lure on the horizon at the top.",
   "sides": [
@@ -969,6 +1143,19 @@
    },
    {
     "character": "From Laborel shorter and steeper, increasingly so towards the top, with a few hairpins; the side that suits climbing."
+   }
+  ]
+ },
+ "col-de-peyresourde": {
+  "intro": "Luchon's gateway to the west, continued by the Aspin and the Tourmalet.",
+  "sides": [
+   {
+    "character": "From Luchon via Saint-Aventin at a steady 7 %, across open slopes at the top.",
+    "highlights": "The view back into the Luchon valley."
+   },
+   {
+    "character": "From Arreau long and gentle through the Louron valley, steeper in hairpins at the top.",
+    "highlights": "The Loudenvielle lake."
    }
   ]
  },
@@ -982,6 +1169,32 @@
    {
     "character": "From Le Châtelard long and gentle through the Chéran valley and across pastures.",
     "highlights": "The quiet villages of the Bauges."
+   }
+  ]
+ },
+ "col-de-port": {
+  "intro": "The easy pass between the Ariège valley and the Couserans.",
+  "sides": [
+   {
+    "character": "From Tarascon long and gentle through forest.",
+    "highlights": "The Ariège forests."
+   },
+   {
+    "character": "From Massat steadily through forest and meadows.",
+    "highlights": "The Massat valley."
+   }
+  ]
+ },
+ "col-de-puymorens": {
+  "intro": "The crossing into the Cerdagne, wide high pastures at the top.",
+  "sides": [
+   {
+    "character": "From L'Hospitalet steadily in hairpins across the pastures.",
+    "highlights": "The high pastures of the upper Ariège."
+   },
+   {
+    "character": "From Porté short and gentle.",
+    "highlights": "The Cerdagne."
    }
   ]
  },
@@ -1049,6 +1262,19 @@
    },
    {
     "character": "From Curnier in the Eygues valley longer and gentler, with calm stretches on the way; as a descent long and relaxed."
+   }
+  ]
+ },
+ "col-de-spandelles": {
+  "intro": "The quiet way over the ridge, an alternative to the Soulor.",
+  "sides": [
+   {
+    "character": "From Ferrières narrow and steadily steep through forest.",
+    "highlights": "The forest above the Ouzom."
+   },
+   {
+    "character": "From Argelès via the villages on the slope, then narrow across the pastures.",
+    "highlights": "The view over the Argelès valley."
    }
   ]
  },
@@ -1427,6 +1653,54 @@
    }
   ]
  },
+ "col-du-portet": {
+  "intro": "One of the hardest climbs in the Pyrenees, almost 1,400 m in one go.",
+  "sides": [
+   {
+    "character": "From Saint-Lary via Soulan to the Pla d'Adet, then narrow and steadily steep across the pastures.",
+    "highlights": "The Néouvielle and the lakes below the pass."
+   }
+  ]
+ },
+ "col-du-portet-d-aspet": {
+  "intro": "A short, steep pass with a memorial that calls for care.",
+  "sides": [
+   {
+    "character": "From Saint-Lary short and stiff through forest.",
+    "highlights": "The Couserans forests."
+   },
+   {
+    "character": "From Aspet long and gentle, steep at the top past the Casartelli memorial.",
+    "highlights": "The Casartelli memorial."
+   }
+  ]
+ },
+ "col-du-portillon": {
+  "intro": "The short way from Luchon into Spain, as a loop with the Val d'Aran.",
+  "sides": [
+   {
+    "character": "From Luchon steadily through forest to the border.",
+    "highlights": "The view back to Luchon."
+   },
+   {
+    "character": "From Bossòst steadily in hairpins through forest.",
+    "highlights": "The Val d'Aran."
+   }
+  ]
+ },
+ "col-du-pourtalet": {
+  "intro": "The way into Spain below the Pic du Midi d'Ossau.",
+  "sides": [
+   {
+    "character": "From Laruns long and moderate via Gabas and the Lac de Fabrèges.",
+    "highlights": "The Pic du Midi d'Ossau."
+   },
+   {
+    "character": "From Sallent via Formigal steadily to the border.",
+    "highlights": "The Tena valley."
+   }
+  ]
+ },
  "col-du-pre": {
   "intro": "The Col du Pré is the hard, beautiful way into the Beaufortain: steeply up through forest, then the Lac de Roselend lies below you. The Tour took it in 2018 before the Cormet de Roselend.",
   "sides": [
@@ -1454,12 +1728,51 @@
    }
   ]
  },
+ "col-du-somport": {
+  "intro": "The Way of St James pass, quiet since the tunnel.",
+  "sides": [
+   {
+    "character": "From Bedous long through the Vallée d'Aspe, at the top via Urdos in hairpins.",
+    "highlights": "The Vallée d'Aspe and the Fort du Portalet."
+   },
+   {
+    "character": "From Canfranc short and gentle past the station.",
+    "highlights": "The Canfranc station."
+   }
+  ]
+ },
+ "col-du-soulor": {
+  "intro": "The pass where the Aubisque, the Spandelles and the Val d'Azun meet.",
+  "sides": [
+   {
+    "character": "From Arrens steadily across pastures to the pass.",
+    "highlights": "The Val d'Azun."
+   },
+   {
+    "character": "From Ferrières through the Ouzom valley, steep in hairpins at the top.",
+    "highlights": "The Ouzom forests."
+   }
+  ]
+ },
  "col-du-telegraphe": {
   "intro": "Hardly anyone rides the Télégraphe for its own sake: it is the first step of the Galibier, and that is how the Tour has known it for decades. It takes its name from the old signal station, and a fort keeps watch above the top.",
   "sides": [
    {
     "character": "From Saint-Michel-de-Maurienne almost entirely through forest, with the gradient changing more often than the figures suggest. Through the trees, repeated glimpses down into the Maurienne valley.",
     "highlights": "From the top you roll down to Valloire, with the Galibier waiting beyond."
+   }
+  ]
+ },
+ "col-du-tourmalet": {
+  "intro": "The myth of the Pyrenees, long and steadily steep on both sides.",
+  "sides": [
+   {
+    "character": "From Luz through Barèges, then across the bare slopes of the Bastan valley at a steady 8 % to the top.",
+    "highlights": "The last hairpins below the Pic du Midi."
+   },
+   {
+    "character": "From Sainte-Marie through Gripp, then steeper past the avalanche galleries and La Mongie to the top.",
+    "highlights": "The Arizes waterfall and the peaks above La Mongie."
    }
   ]
  },
@@ -1494,6 +1807,32 @@
    {
     "character": "From Coaraze long and stepped, with a drop on the way; laborious as a climb, in the other direction a long descent with the village of Coaraze ahead.",
     "highlights": "The hill village of Coaraze on its knoll."
+   }
+  ]
+ },
+ "coll-d-ordino": {
+  "intro": "Andorra's most beautiful pass, without the Envalira's traffic.",
+  "sides": [
+   {
+    "character": "From Ordino steadily steep in hairpins through forest.",
+    "highlights": "The view into the Ordino valley."
+   },
+   {
+    "character": "From Canillo via Meritxell, moderate.",
+    "highlights": "The Meritxell sanctuary."
+   }
+  ]
+ },
+ "collada-de-toses": {
+  "intro": "The long, gentle pass into the Cerdanya.",
+  "sides": [
+   {
+    "character": "From Ribes long and moderate via Planoles and Toses.",
+    "highlights": "The hairpins above the Rigart valley."
+   },
+   {
+    "character": "From Alp via La Molina steadily.",
+    "highlights": "The view over the Cerdanya."
    }
   ]
  },
@@ -1973,6 +2312,15 @@
    }
   ]
  },
+ "gavarnie": {
+  "intro": "A gentle day to the end of the valley, with the cirque as the goal.",
+  "sides": [
+   {
+    "character": "From Luz through the gorge and via Gèdre gently up.",
+    "highlights": "The Cirque de Gavarnie at the head of the valley."
+   }
+  ]
+ },
  "gerlitzen": {
   "intro": "The viewpoint mountain above Villach and the Ossiacher See, the longest ramp around the Carinthian lakes.",
   "sides": [
@@ -2189,6 +2537,15 @@
    }
   ]
  },
+ "hautacam": {
+  "intro": "A hard Tour climb with changing gradients and a view over the Lourdes valley.",
+  "sides": [
+   {
+    "character": "From Argelès via Ayros, then with changing ramps over 10 % through forest and pastures to the resort.",
+    "highlights": "The view over the Lavedan."
+   }
+  ]
+ },
  "haute-vallee-de-cervieres": {
   "intro": "A gentle detour off the Izoard's north side into a remote high valley. Little traffic and wide pastures, more of a cruise than a climb.",
   "sides": [
@@ -2255,6 +2612,19 @@
    {
     "character": "From La Bresse long and stepped through forest onto the crest, with hairpins and easier sections, at the end over open pasture to the summit area.",
     "highlights": "The all-round view from the Hohneck over the crest and the lakes."
+   }
+  ]
+ },
+ "hourquette-d-ancizan": {
+  "intro": "The Aspin's little brother, narrow and almost traffic-free.",
+  "sides": [
+   {
+    "character": "From Ancizan narrow and steep through forest, across pastures at the top.",
+    "highlights": "The pastures below the Arbizon."
+   },
+   {
+    "character": "From Payolle gently across the Campan pastures.",
+    "highlights": "The open pastures."
    }
   ]
  },
@@ -2482,6 +2852,15 @@
    }
   ]
  },
+ "lac-de-cap-de-long": {
+  "intro": "The highest paved road in the Hautes-Pyrénées after the Tourmalet, up to a reservoir.",
+  "sides": [
+   {
+    "character": "From Saint-Lary gently to Fabian, then steep in hairpins past the Lac d'Orédon to the dam.",
+    "highlights": "The Lac d'Orédon and the Néouvielle."
+   }
+  ]
+ },
  "lac-de-moiry": {
   "intro": "The highest road in the Val d'Anniviers ends on the crest of a dam, with the glacier at the far end of the lake. One of the great climbs of the Valais, and one of the quietest.",
   "sides": [
@@ -2593,6 +2972,15 @@
    {
     "character": "Irregular from Olivone: steeper pieces in the lower part, then calmer up the upper Blenio valley to the top.",
     "highlights": "The Sontga Maria reservoir at the top."
+   }
+  ]
+ },
+ "luz-ardiden": {
+  "intro": "The second resort climb above Luz, with textbook hairpins.",
+  "sides": [
+   {
+    "character": "From Luz via Sazos steadily, at the top in tight hairpins across the pastures.",
+    "highlights": "The hairpins below the resort."
    }
   ]
  },
@@ -3822,6 +4210,24 @@
    }
   ]
  },
+ "pla-d-adet": {
+  "intro": "The shorter Tour climb above Saint-Lary, the forerunner of the Portet.",
+  "sides": [
+   {
+    "character": "From Saint-Lary steeply via Soulan, then steadier to the resort.",
+    "highlights": "The view into the Aure valley."
+   }
+  ]
+ },
+ "plateau-de-beille": {
+  "intro": "One of the Tour's hardest summit finishes, without a flat metre.",
+  "sides": [
+   {
+    "character": "From Les Cabannes steadily at 8 % through forest, across open pastures at the top.",
+    "highlights": "The view over the upper Ariège valley."
+   }
+  ]
+ },
  "plateau-des-glieres": {
   "intro": "On this plateau above the Thorens valley a Resistance maquis held out in 1944 until it was crushed; the memorial at the top recalls it. The Tour came up in 2018 and 2020, both times with a gravel stretch across the plateau.",
   "sides": [
@@ -3867,6 +4273,71 @@
    {
     "character": "From Gorje steadily through spruce forest onto the plateau, flatter at the top.",
     "highlights": "The Pokljuka pastures and the view of Triglav."
+   }
+  ]
+ },
+ "port-d-envalira": {
+  "intro": "The highest point of the Pyrenean roads, more altitude than beauty.",
+  "sides": [
+   {
+    "character": "From Canillo via Soldeu and Grau Roig steadily to the top.",
+    "highlights": "The height above 2,400 m."
+   },
+   {
+    "character": "From L'Hospitalet through the upper Ariège valley to Pas de la Casa, then in hairpins to the top.",
+    "highlights": "The hairpins above Pas de la Casa."
+   }
+  ]
+ },
+ "port-de-bales": {
+  "intro": "The loneliest of the big Pyrenean passes.",
+  "sides": [
+   {
+    "character": "From Mauléon long and gentle through the Ourse valley, then steep and narrow across the pastures.",
+    "highlights": "The pastures below the top."
+   },
+   {
+    "character": "From Luchon via the villages of the Oueil valley, narrow and irregular.",
+    "highlights": "The quiet Oueil valley."
+   }
+  ]
+ },
+ "port-de-la-bonaigua": {
+  "intro": "Catalonia's big pass, long and open.",
+  "sides": [
+   {
+    "character": "From Esterri long and steady, in wide hairpins across the pastures at the top.",
+    "highlights": "The hairpins of the east side."
+   },
+   {
+    "character": "From Vielha through the upper Aran via Salardú and Baqueira, moderate.",
+    "highlights": "The villages of the upper Aran."
+   }
+  ]
+ },
+ "port-de-lers": {
+  "intro": "The Agnes's neighbour, with a mountain lake at the top.",
+  "sides": [
+   {
+    "character": "From Vicdessos steadily steep through forest.",
+    "highlights": "The view into the Vicdessos valley."
+   },
+   {
+    "character": "From Massat long and gentle via Le Port.",
+    "highlights": "The Étang de Lers."
+   }
+  ]
+ },
+ "port-del-canto": {
+  "intro": "A long pass in the Catalan hinterland, between Sort and La Seu.",
+  "sides": [
+   {
+    "character": "From Sort steadily in hairpins up the slope.",
+    "highlights": "The view into the Noguera Pallaresa valley."
+   },
+   {
+    "character": "From Adrall long and moderate through forest.",
+    "highlights": "The Alt Urgell forests."
    }
   ]
  },
@@ -4393,6 +4864,15 @@
    {
     "character": "From Gomagoi up the narrow valley, with a changing gradient and some hairpins; near the top the view opens onto the glaciers.",
     "highlights": "The Ortler and the Königspitze at the head of the valley."
+   }
+  ]
+ },
+ "superbagneres": {
+  "intro": "The balcony above Luchon, with the highest peaks of the Pyrenees opposite.",
+  "sides": [
+   {
+    "character": "From Luchon on the Saint-Aventin road, then steadily in hairpins to the resort.",
+    "highlights": "The Grand Hôtel and the view of the Maladeta."
    }
   ]
  },

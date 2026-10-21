@@ -1570,6 +1570,191 @@
   "why": "Die Barockstadt an der Aare unter dem Weissenstein, mit Bahnknoten, Hotels und Radläden; der Passwang ist eine Talfahrt entfernt."
  },
  {
+  "slug": "argeles-gazost",
+  "name": "Argelès-Gazost",
+  "country": "FR",
+  "lat": 43.0051,
+  "lon": -0.0998,
+  "tags": [
+   "passes",
+   "hotels",
+   "scenic"
+  ],
+  "aliases": [
+   "Lavedan"
+  ],
+  "why": "Der Knoten der Hautes-Pyrénées: Hautacam, Soulor, Aubisque und Spandelles beginnen hier, Tourmalet und Luz Ardiden über Luz."
+ },
+ {
+  "slug": "luz-saint-sauveur",
+  "name": "Luz-Saint-Sauveur",
+  "country": "FR",
+  "lat": 42.8721,
+  "lon": -0.0043,
+  "tags": [
+   "passes",
+   "quiet",
+   "scenic"
+  ],
+  "aliases": [
+   "Pays Toy"
+  ],
+  "why": "Das Dorf am Fuß des Tourmalet, dazu Luz Ardiden und Gavarnie direkt vor der Tür."
+ },
+ {
+  "slug": "laruns",
+  "name": "Laruns",
+  "country": "FR",
+  "lat": 42.9882,
+  "lon": -0.4266,
+  "tags": [
+   "passes",
+   "quiet"
+  ],
+  "aliases": [
+   "Vallée d'Ossau",
+   "Ossau"
+  ],
+  "why": "Der Hauptort im Ossau-Tal: Aubisque, Pourtalet und Marie-Blanque ab dem Dorf."
+ },
+ {
+  "slug": "saint-lary-soulan",
+  "name": "Saint-Lary-Soulan",
+  "country": "FR",
+  "lat": 42.817,
+  "lon": 0.322,
+  "tags": [
+   "passes",
+   "hotels"
+  ],
+  "aliases": [
+   "Vallée d'Aure"
+  ],
+  "why": "Der Ferienort im Aure-Tal mit Pla d'Adet, Portet, Azet und Cap-de-Long ab der Haustür."
+ },
+ {
+  "slug": "arreau",
+  "name": "Arreau",
+  "country": "FR",
+  "lat": 42.9055,
+  "lon": 0.359,
+  "tags": [
+   "passes",
+   "quiet"
+  ],
+  "aliases": [],
+  "why": "Das Städtchen zwischen Aspin und Peyresourde, dazu die Hourquette d'Ancizan; ruhiger als Luchon."
+ },
+ {
+  "slug": "bagneres-de-luchon",
+  "name": "Bagnères-de-Luchon",
+  "country": "FR",
+  "lat": 42.7911,
+  "lon": 0.5912,
+  "tags": [
+   "hub",
+   "passes",
+   "hotels",
+   "workshops"
+  ],
+  "aliases": [
+   "Luchon"
+  ],
+  "why": "Die Bäderstadt am Fuß von Peyresourde, Superbagnères, Balès und Portillon, mit Hotels und Radläden."
+ },
+ {
+  "slug": "vielha",
+  "name": "Vielha",
+  "country": "ES",
+  "lat": 42.7023,
+  "lon": 0.7956,
+  "tags": [
+   "hotels",
+   "scenic"
+  ],
+  "aliases": [
+   "Val d'Aran",
+   "Vielha e Mijaran"
+  ],
+  "why": "Der Hauptort des Val d'Aran zwischen Bonaigua und Portillon."
+ },
+ {
+  "slug": "saint-girons",
+  "name": "Saint-Girons",
+  "country": "FR",
+  "lat": 42.9847,
+  "lon": 1.1464,
+  "tags": [
+   "hub",
+   "hotels"
+  ],
+  "aliases": [
+   "Couserans"
+  ],
+  "why": "Die Stadt des Couserans: Core, Portet d'Aspet und die Täler zum Agnes in Reichweite."
+ },
+ {
+  "slug": "ax-les-thermes",
+  "name": "Ax-les-Thermes",
+  "country": "FR",
+  "lat": 42.7193,
+  "lon": 1.8378,
+  "tags": [
+   "passes",
+   "train",
+   "hotels"
+  ],
+  "aliases": [],
+  "why": "Der Bäderort mit Bahnhof unter dem Pailhères, dazu Beille, Puymorens und Andorra in Reichweite."
+ },
+ {
+  "slug": "andorra-la-vella",
+  "name": "Andorra la Vella",
+  "country": "AD",
+  "lat": 42.5069,
+  "lon": 1.5212,
+  "tags": [
+   "hub",
+   "hotels",
+   "workshops"
+  ],
+  "aliases": [
+   "Andorra"
+  ],
+  "why": "Die Hauptstadt Andorras, von der Ordino, Arcalís und Envalira ausgehen; viele Hotels und Radläden."
+ },
+ {
+  "slug": "la-seu-d-urgell",
+  "name": "La Seu d'Urgell",
+  "country": "ES",
+  "lat": 42.3584,
+  "lon": 1.4613,
+  "tags": [
+   "hotels",
+   "quiet"
+  ],
+  "aliases": [
+   "Alt Urgell"
+  ],
+  "why": "Die Bischofsstadt südlich von Andorra, mit dem Cantó und den Andorra-Pässen in Reichweite."
+ },
+ {
+  "slug": "saint-jean-pied-de-port",
+  "name": "Saint-Jean-Pied-de-Port",
+  "country": "FR",
+  "lat": 43.1636,
+  "lon": -1.2378,
+  "tags": [
+   "train",
+   "hotels",
+   "scenic"
+  ],
+  "aliases": [
+   "Donibane Garazi"
+  ],
+  "why": "Das Städtchen am Jakobsweg mit Bahnhof, Ausgangspunkt für Bagargui, Iraty und Ispéguy."
+ },
+ {
   "slug": "lienz",
   "name": "Lienz",
   "country": "AT",

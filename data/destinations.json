@@ -1018,6 +1018,126 @@
   "access": "Saint-Imier und Solothurn mit dem Zug, eine Stunde ab Bern oder Basel."
  },
  {
+  "slug": "hautes-pyrenees",
+  "name": "Hautes-Pyrénées",
+  "country": "FR",
+  "center": {
+   "lat": 42.9,
+   "lon": 0.1
+  },
+  "radiusKm": 30,
+  "baseTowns": [
+   "argeles-gazost",
+   "luz-saint-sauveur",
+   "saint-lary-soulan"
+  ],
+  "include": [],
+  "exclude": [],
+  "character": "Das Herz der Tour-Pyrenäen: Tourmalet, Aspin, Hautacam, Luz Ardiden und der Portet, dazu stille Pässe wie Spandelles und die Hourquette. Lange, steile Anstiege mit über 1 000 Höhenmetern.",
+  "multiDay": "Eine Woche mit Standort in Argelès oder Luz und einem zweiten in Saint-Lary; der Cercle de la Mort über Aubisque, Tourmalet, Aspin und Peyresourde als Königsetappe.",
+  "access": "Lourdes mit dem TGV, Tarbes-Lourdes oder Pau mit dem Flugzeug."
+ },
+ {
+  "slug": "bearn-ossau",
+  "name": "Béarn und Ossau",
+  "country": "FR",
+  "center": {
+   "lat": 42.93,
+   "lon": -0.5
+  },
+  "radiusKm": 30,
+  "baseTowns": [
+   "laruns"
+  ],
+  "include": [],
+  "exclude": [],
+  "character": "Die Westpyrenäen zwischen Ossau und Barétous: Aubisque, Marie-Blanque, Pourtalet, Somport und die Pierre Saint-Martin. Grüner und stiller als die Hautes-Pyrénées.",
+  "multiDay": "Drei bis vier Tage ab Laruns, mit Ausflügen über die Grenze nach Aragonien.",
+  "access": "Pau mit dem TGV oder Flugzeug, dann eine Stunde ins Ossau."
+ },
+ {
+  "slug": "baskenland",
+  "name": "Baskenland",
+  "country": "FR/ES",
+  "center": {
+   "lat": 43.1,
+   "lon": -1.2
+  },
+  "radiusKm": 25,
+  "baseTowns": [
+   "saint-jean-pied-de-port"
+  ],
+  "include": [],
+  "exclude": [],
+  "character": "Die grünen Pässe des französischen Baskenlands: Bagargui mit den Weiden von Iraty und der kleine Ispéguy über die Grenze. Mild, feucht und früh im Jahr fahrbar.",
+  "multiDay": "Zwei bis drei Tage ab Saint-Jean-Pied-de-Port, gut als Auftakt einer Pyrenäen-Durchquerung.",
+  "access": "Saint-Jean-Pied-de-Port mit dem Zug aus Bayonne."
+ },
+ {
+  "slug": "luchon-aran",
+  "name": "Luchon und Val d'Aran",
+  "country": "FR/ES",
+  "center": {
+   "lat": 42.8,
+   "lon": 0.62
+  },
+  "radiusKm": 30,
+  "baseTowns": [
+   "bagneres-de-luchon",
+   "arreau",
+   "vielha"
+  ],
+  "include": [
+   "port-de-la-bonaigua"
+  ],
+  "exclude": [],
+  "character": "Rund um Luchon: Peyresourde, Superbagnères, Balès, Menté und Portet d'Aspet, dazu über den Portillon das Val d'Aran und die Bonaigua.",
+  "multiDay": "Vier bis fünf Tage ab Luchon, mit einem Abstecher nach Spanien.",
+  "access": "Toulouse mit Zug oder Flugzeug, dann zwei Stunden nach Luchon."
+ },
+ {
+  "slug": "ariege",
+  "name": "Ariège",
+  "country": "FR",
+  "center": {
+   "lat": 42.82,
+   "lon": 1.4
+  },
+  "radiusKm": 30,
+  "baseTowns": [
+   "saint-girons"
+  ],
+  "include": [],
+  "exclude": [],
+  "character": "Die wilden Pässe des Couserans und des Vicdessos: Agnes, Lers, Core, Port und Latrape, dazu der Plateau de Beille. Kaum Verkehr, viele Almen.",
+  "multiDay": "Drei bis vier Tage ab Saint-Girons oder Massat.",
+  "access": "Toulouse mit dem Zug nach Foix, dann eine Stunde ins Couserans."
+ },
+ {
+  "slug": "andorra-cerdanya",
+  "name": "Andorra und Cerdanya",
+  "country": "AD/FR",
+  "center": {
+   "lat": 42.52,
+   "lon": 1.7
+  },
+  "radiusKm": 30,
+  "baseTowns": [
+   "andorra-la-vella",
+   "ax-les-thermes",
+   "la-seu-d-urgell"
+  ],
+  "include": [
+   "col-de-pailheres",
+   "port-del-canto",
+   "collada-de-toses"
+  ],
+  "exclude": [],
+  "character": "Die hohen Pässe der Ostpyrenäen: Envalira, Ordino und Arcalís in Andorra, Puymorens und Pailhères auf der französischen Seite, dazu Toses und Cantó in Katalonien. Sonniger und trockener als der Westen.",
+  "multiDay": "Eine Woche mit Standort in Andorra und einem zweiten in Ax-les-Thermes.",
+  "access": "Ax-les-Thermes mit dem Zug aus Toulouse, Andorra mit dem Bus aus Toulouse oder Barcelona."
+ },
+ {
   "slug": "osttirol",
   "name": "Osttirol",
   "country": "AT",
