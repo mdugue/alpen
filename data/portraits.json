@@ -1,4 +1,14 @@
 {
+ "adelboden": {
+  "intro": "Ein Talende im Berner Oberland mit Wasserfällen und Weltcupkulisse, ein ruhiger Halbtagesberg.",
+  "sides": [
+   {
+    "character": "Von Frutigen gleichmäßig das Tal hinauf, vor Adelboden ein paar Kehren.",
+    "highlights": "Die Engstligenfälle am Talende.",
+    "hazards": []
+   }
+  ]
+ },
  "albulapass": {
   "intro": "Ein ruhiger Pass zwischen Albulatal und Engadin, über weite Strecken neben der Albulabahn der Rhätischen Bahn mit ihren Viadukten und Kehrtunneln. Wenig Verkehr, viel Landschaft.",
   "sides": [
@@ -120,6 +130,20 @@
     "highlights": "Der Langwieser Viadukt der Rhätischen Bahn und oben der Obersee in Arosa.",
     "hazards": [
      "tight-hairpins"
+    ]
+   }
+  ]
+ },
+ "axalp": {
+  "intro": "Eine steile Sackgasse über dem türkisen Brienzersee, gegenüber dem Brienzer Rothorn.",
+  "sides": [
+   {
+    "character": "Von Brienz am Seeufer entlang und dann steil in Kehren durch Wald bis auf die Alp.",
+    "highlights": "Der Tiefblick auf den Brienzersee.",
+    "hazards": [
+     "steep",
+     "tight-hairpins",
+     "narrow"
     ]
    }
   ]
@@ -255,6 +279,19 @@
    }
   ]
  },
+ "bosco-gurin": {
+  "intro": "Das einzige deutschsprachige Dorf des Tessins, am Ende einer stillen Bergstraße.",
+  "sides": [
+   {
+    "character": "Von Cevio in Kehren aus dem Maggiatal, dann gleichmäßig steil durch Wald und Weiler.",
+    "highlights": "Die Walserhäuser von Bosco/Gurin.",
+    "hazards": [
+     "tight-hairpins",
+     "narrow"
+    ]
+   }
+  ]
+ },
  "brennerpass": {
   "intro": "Der verkehrsreichste Alpenübergang, für Radfahrer aber die alte Staatsstraße abseits der Autobahn. Kein Berg, der fordert, sondern die Verbindung zwischen Innsbruck und Südtirol, die der Ötztaler zwischen Kühtai und Jaufen fährt.",
   "sides": [
@@ -288,6 +325,27 @@
    }
   ]
  },
+ "bruenigpass": {
+  "intro": "Der niedrige Übergang zwischen Obwalden und dem Haslital, mehr Verbindung als Ziel.",
+  "sides": [
+   {
+    "character": "Von Meiringen gleichmäßig am Hang mit Blick ins Haslital.",
+    "highlights": "Der Blick auf die Reichenbachfälle und die Engelhörner.",
+    "hazards": [
+     "traffic"
+    ],
+    "bestAs": "up"
+   },
+   {
+    "character": "Von Lungern kurz und gleichmäßig über dem Lungernsee.",
+    "highlights": "Der Lungernsee unter der Straße.",
+    "hazards": [
+     "traffic"
+    ],
+    "bestAs": "down"
+   }
+  ]
+ },
  "campo-carlo-magno": {
   "intro": "Benannt nach der Legende, Karl der Große habe hier die Alpen überquert. Radsportgeschichte schrieb Madonna di Campiglio 1999, als Marco Pantani nach seinem Etappensieg im Giro am nächsten Morgen wegen eines zu hohen Hämatokritwerts ausgeschlossen wurde.",
   "sides": [
@@ -312,6 +370,19 @@
     "character": "Vom Abzweig gleich steil und schmal, nach oben hin flacher werdend auf die Alp.",
     "hazards": [
      "steep",
+     "narrow"
+    ]
+   }
+  ]
+ },
+ "cari": {
+  "intro": "Eine Kehrenstraße aus der Leventina auf ein kleines Skidorf, ein Geheimtipp neben dem Gotthard.",
+  "sides": [
+   {
+    "character": "Von Faido sofort in Kehren den Hang hinauf, gleichmäßig steil durch Kastanien- und Lärchenwald.",
+    "highlights": "Der Blick hinunter in die Leventina.",
+    "hazards": [
+     "tight-hairpins",
      "narrow"
     ]
    }
@@ -2529,6 +2600,40 @@
    }
   ]
  },
+ "gurnigelpass": {
+  "intro": "Der höchste Pass der Berner Voralpen und der Hausberg der Berner und Thuner Rennradler.",
+  "sides": [
+   {
+    "character": "Von Wattenwil steil in Kehren am Hang hinauf, dann gleichmäßig durch Wald zum Gurnigelbad und über die Moore bis zur Passhöhe.",
+    "highlights": "Der Blick über das Mittelland und oben die Viertausender des Berner Oberlands.",
+    "hazards": [
+     "tight-hairpins"
+    ],
+    "bestAs": "up"
+   },
+   {
+    "character": "Von Zollhaus durch das Tal der Kalten Sense, mäßig und still bis zum Selibühl.",
+    "highlights": "Die Gantrischkette über dem Tal.",
+    "hazards": [
+     "narrow"
+    ],
+    "bestAs": "down"
+   }
+  ]
+ },
+ "haggenegg": {
+  "intro": "Die steilste Straße rund um die Mythen, mit dem Vierwaldstättersee unter sich.",
+  "sides": [
+   {
+    "character": "Von Schwyz gleich steil über Rickenbach, dann lange Rampen über Weiden bis zum Sattel unter dem Kleinen Mythen.",
+    "highlights": "Der Blick auf die Mythen und hinunter zum Vierwaldstättersee.",
+    "hazards": [
+     "steep",
+     "narrow"
+    ]
+   }
+  ]
+ },
  "hahntennjoch": {
   "intro": "Das Hahntennjoch verbindet Imst mit dem Lechtal, die Südseite führt durch kahle Geröllhänge. Bei Motorradfahrern beliebt, seit 2020 gilt dort ein Fahrverbot für besonders laute Maschinen.",
   "sides": [
@@ -2652,6 +2757,19 @@
    {
     "character": "Von Oberiberg ein kurzes Stück über Weiden, anfangs mäßig und gegen Ende etwas steiler, mit nur wenigen Kehren.",
     "highlights": "Oben die Mythen vor Augen."
+   }
+  ]
+ },
+ "iffigenalp": {
+  "intro": "Eine stille Sackgasse am Ende des Simmentals, an Wasserfällen vorbei zu einem Berggasthaus.",
+  "sides": [
+   {
+    "character": "Von Lenk erst flach, dann einspurig und steil durch Wald am Iffigbach entlang.",
+    "highlights": "Der Iffigfall neben der Straße.",
+    "hazards": [
+     "narrow",
+     "steep"
+    ]
    }
   ]
  },
@@ -3216,6 +3334,20 @@
      "tight-hairpins"
     ],
     "highlights": "Der Zufrittsee und oben die Nordwände des Cevedale."
+   }
+  ]
+ },
+ "melchsee-frutt": {
+  "intro": "Die höchste Straße der Zentralschweiz endet an einem Bergsee. Der Schluss ab Stöckalp ist eine der steilsten Rampen der Schweiz.",
+  "sides": [
+   {
+    "character": "Von Kerns gleichmäßig durch das Melchtal bis Stöckalp, dann schmal und sehr steil in Kehren bis auf die Hochebene.",
+    "highlights": "Der Melchsee auf der Hochebene.",
+    "hazards": [
+     "steep",
+     "narrow",
+     "tight-hairpins"
+    ]
    }
   ]
  },
@@ -5036,6 +5168,27 @@
    }
   ]
  },
+ "saanenmoeser": {
+  "intro": "Die Verbindung zwischen Simmental und Gstaad, eher Zubringer als Pass, aber Teil jeder Runde mit Jaunpass und Col du Pillon.",
+  "sides": [
+   {
+    "character": "Von Zweisimmen gleichmäßig über Wiesen am Hang.",
+    "highlights": "Das Hochmoor von Saanenmöser.",
+    "hazards": [
+     "traffic"
+    ],
+    "bestAs": "both"
+   },
+   {
+    "character": "Von Saanen sanft durch Schönried.",
+    "highlights": "Der Blick über das Saanenland.",
+    "hazards": [
+     "traffic"
+    ],
+    "bestAs": "both"
+   }
+  ]
+ },
  "saas-fee": {
   "intro": "Die Straße in das Gletscherdorf unter den höchsten Gipfeln der Schweiz. Ein langer Talanstieg, der erst am Schluss richtig steil wird.",
   "sides": [
@@ -5055,6 +5208,18 @@
    {
     "character": "Vom Abzweig bei Molines mäßig steil über offene Hänge, zum Dorf hin etwas steiler. Kurz, wenig anstrengend, mit weitem Blick über das Queyras.",
     "highlights": "Die Holzhäuser von Saint-Véran."
+   }
+  ]
+ },
+ "samnaun": {
+  "intro": "Ein abgelegenes Schweizer Hochtal, das nur über die Grenze gut erreichbar ist.",
+  "sides": [
+   {
+    "character": "Von Vinadi durch die Schlucht des Schergenbachs mit Tunneln, dann gleichmäßig durch das Tal.",
+    "highlights": "Die Dörfer des Samnauntals unter dem Muttler.",
+    "hazards": [
+     "tunnels"
+    ]
    }
   ]
  },
@@ -5079,6 +5244,40 @@
      "steep"
     ],
     "highlights": "Die Wallfahrtskirche am Ende der Straße."
+   }
+  ]
+ },
+ "sattelegg": {
+  "intro": "Ein ruhiger Voralpenpass zwischen der March und dem Sihlsee, eine Stunde von Zürich.",
+  "sides": [
+   {
+    "character": "Von Siebnen gleichmäßig über Vorderthal und durch Wald hinauf.",
+    "highlights": "Der Blick zurück über den Obersee.",
+    "hazards": [],
+    "bestAs": "up"
+   },
+   {
+    "character": "Von Euthal am Sihlsee kurz und mäßig.",
+    "highlights": "Der Sihlsee unter der Straße.",
+    "hazards": [],
+    "bestAs": "down"
+   }
+  ]
+ },
+ "schallenberg": {
+  "intro": "Ein sanfter Hügelpass zwischen Berner Oberland und Emmental, ideal für eine Runde mit Glaubenbielen.",
+  "sides": [
+   {
+    "character": "Von Schwarzenegg sanft über Wiesen bis zur Passhöhe.",
+    "highlights": "Der Blick zurück auf Niesen und Stockhorn.",
+    "hazards": [],
+    "bestAs": "both"
+   },
+   {
+    "character": "Von Marbach mäßig durch das Tal der Ilfis.",
+    "highlights": "Die Emmentaler Bauernhöfe am Hang.",
+    "hazards": [],
+    "bestAs": "both"
    }
   ]
  },
@@ -5463,6 +5662,18 @@
    }
   ]
  },
+ "thyon-2000": {
+  "intro": "Einer der längsten Anstiege des Wallis, direkt aus Sion bis auf über 2 000 m.",
+  "sides": [
+   {
+    "character": "Aus Sion in Kehren nach Vex, dann gleichmäßig steil über Les Collons bis zur Station.",
+    "highlights": "Der Blick über das Rhonetal.",
+    "hazards": [
+     "tight-hairpins"
+    ]
+   }
+  ]
+ },
  "timmelsjoch": {
   "intro": "Die Hochalpenstraße zwischen Ötztal und Passeiertal ist der letzte und härteste Anstieg des Ötztaler Radmarathons. Auf der Südtiroler Seite eine lange, wilde Straße mit Tunneln.",
   "sides": [
@@ -5804,6 +6015,26 @@
    }
   ]
  },
+ "wildhaus": {
+  "intro": "Die Verbindung von Liechtenstein ins Toggenburg, mit den Churfirsten über der Passhöhe.",
+  "sides": [
+   {
+    "character": "Von Gams im Rheintal steil in Kehren am Hang hinauf.",
+    "highlights": "Der Blick über das Rheintal auf Liechtenstein.",
+    "hazards": [
+     "tight-hairpins",
+     "traffic"
+    ],
+    "bestAs": "up"
+   },
+   {
+    "character": "Von Nesslau sanft durch das obere Toggenburg über Unterwasser.",
+    "highlights": "Die Churfirsten über Unterwasser.",
+    "hazards": [],
+    "bestAs": "down"
+   }
+  ]
+ },
  "windische-hoehe": {
   "intro": "Ein kleiner Pass, der Gailtal und Drautal für eine Runde ab Villach verbindet.",
   "sides": [
@@ -5818,6 +6049,18 @@
     "highlights": "Der Blick ins Drautal.",
     "hazards": [],
     "bestAs": "both"
+   }
+  ]
+ },
+ "wolfgangpass": {
+  "intro": "Der Übergang aus dem Prättigau nach Davos, der Weg zum Flüela.",
+  "sides": [
+   {
+    "character": "Von Klosters gleichmäßig durch Wald bis zum Davosersee-Sattel.",
+    "highlights": "Der Davosersee hinter der Passhöhe.",
+    "hazards": [
+     "traffic"
+    ]
    }
   ]
  },
@@ -5850,6 +6093,18 @@
     "hazards": [
      "steep",
      "narrow",
+     "tight-hairpins"
+    ]
+   }
+  ]
+ },
+ "zinal": {
+  "intro": "Die zweite Sackgasse des Val d'Anniviers neben Moiry, sanfter, mit der Kaiserkrone am Talende.",
+  "sides": [
+   {
+    "character": "Unten die Talstraße ins Val d'Anniviers, ab Vissoie gleichmäßig über Ayer bis Zinal.",
+    "highlights": "Die Gipfelkrone am Talende.",
+    "hazards": [
      "tight-hairpins"
     ]
    }

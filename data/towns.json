@@ -711,6 +711,25 @@
   "why": "Grimsel, Susten, Grosse Scheidegg; Radläden, Bahnhof."
  },
  {
+  "slug": "zweisimmen",
+  "name": "Zweisimmen",
+  "country": "CH",
+  "lat": 46.5538,
+  "lon": 7.3749,
+  "tags": [
+   "passes",
+   "train",
+   "quiet"
+  ],
+  "aliases": [
+   "Simmental",
+   "Saanenland",
+   "Gstaad",
+   "Lenk"
+  ],
+  "why": "Bahnknoten im Simmental: Jaunpass, Saanenmöser und der Gurnigel in Reichweite, Col du Pillon und Col des Mosses über Gstaad. Ruhig und ländlich."
+ },
+ {
   "slug": "brig",
   "name": "Brig",
   "country": "CH",

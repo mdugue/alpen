@@ -1,4 +1,13 @@
 {
+ "adelboden": {
+  "intro": "A valley head in the Bernese Oberland with waterfalls and a World Cup backdrop, a quiet half-day climb.",
+  "sides": [
+   {
+    "character": "From Frutigen steadily up the valley, a few hairpins before Adelboden.",
+    "highlights": "The Engstligen falls at the head of the valley."
+   }
+  ]
+ },
  "albulapass": {
   "intro": "A quiet pass between the Albula valley and the Engadine, for long stretches beside the Rhaetian Railway's Albula line with its viaducts and spiral tunnels. Little traffic, plenty of landscape.",
   "sides": [
@@ -78,6 +87,15 @@
    {
     "character": "In hairpins up out of Chur and then long along the side of the Schanfigg, bend after bend with little change of gradient; steeper after Langwies up to Arosa.",
     "highlights": "The Langwies viaduct of the Rhaetian Railway and at the top the Obersee in Arosa."
+   }
+  ]
+ },
+ "axalp": {
+  "intro": "A steep dead end above the turquoise Brienzersee, opposite the Brienzer Rothorn.",
+  "sides": [
+   {
+    "character": "From Brienz along the lakeshore and then steeply in hairpins through forest up to the alp.",
+    "highlights": "The view down onto the Brienzersee."
    }
   ]
  },
@@ -165,6 +183,15 @@
    }
   ]
  },
+ "bosco-gurin": {
+  "intro": "The only German-speaking village in Ticino, at the end of a quiet mountain road.",
+  "sides": [
+   {
+    "character": "From Cevio in hairpins out of the Maggia valley, then steadily steep through forest and hamlets.",
+    "highlights": "The Walser houses of Bosco/Gurin."
+   }
+  ]
+ },
  "brennerpass": {
   "intro": "The busiest crossing of the Alps, but for cyclists it is the old main road away from the motorway. Not a mountain that asks much, rather the link between Innsbruck and South Tyrol that the Ötztaler rides between the Kühtai and the Jaufen.",
   "sides": [
@@ -187,6 +214,19 @@
    }
   ]
  },
+ "bruenigpass": {
+  "intro": "The low crossing between Obwalden and the Hasli valley, more link than destination.",
+  "sides": [
+   {
+    "character": "From Meiringen steadily along the slope with a view into the Hasli valley.",
+    "highlights": "The view to the Reichenbach falls and the Engelhörner."
+   },
+   {
+    "character": "From Lungern short and steady above the Lungernsee.",
+    "highlights": "The Lungernsee below the road."
+   }
+  ]
+ },
  "campo-carlo-magno": {
   "intro": "Named after the legend that Charlemagne crossed the Alps here. Madonna di Campiglio made cycling history in 1999, when Marco Pantani, having won the Giro stage, was excluded the next morning over a high haematocrit reading.",
   "sides": [
@@ -204,6 +244,15 @@
   "sides": [
    {
     "character": "Steep and narrow straight from the junction, easing towards the top onto the alp."
+   }
+  ]
+ },
+ "cari": {
+  "intro": "A hairpin road out of the Leventina up to a small ski village, an insider's tip next to the Gotthard.",
+  "sides": [
+   {
+    "character": "From Faido straight into hairpins up the slope, steadily steep through chestnut and larch forest.",
+    "highlights": "The view down into the Leventina."
    }
   ]
  },
@@ -1735,6 +1784,28 @@
    }
   ]
  },
+ "gurnigelpass": {
+  "intro": "The highest pass in the Bernese Prealps and the home climb of the cyclists of Bern and Thun.",
+  "sides": [
+   {
+    "character": "From Wattenwil steeply in hairpins up the slope, then steadily through forest to Gurnigelbad and across the moors to the top.",
+    "highlights": "The view across the Swiss plateau and at the top the four-thousanders of the Bernese Oberland."
+   },
+   {
+    "character": "From Zollhaus through the valley of the Kalte Sense, moderate and quiet up to the Selibühl.",
+    "highlights": "The Gantrisch ridge above the valley."
+   }
+  ]
+ },
+ "haggenegg": {
+  "intro": "The steepest road around the Mythen, with Lake Lucerne below.",
+  "sides": [
+   {
+    "character": "Steep right from Schwyz via Rickenbach, then long ramps over pastures up to the saddle below the Kleiner Mythen.",
+    "highlights": "The view of the Mythen and down to Lake Lucerne."
+   }
+  ]
+ },
  "hahntennjoch": {
   "intro": "The Hahntennjoch links Imst with the Lech valley, its south side running through bare scree slopes. Popular with motorcyclists; since 2020 particularly loud machines have been banned.",
   "sides": [
@@ -1822,6 +1893,15 @@
    {
     "character": "A short stretch over pastures from Oberiberg, moderate at first and a little steeper towards the end, with only a few hairpins.",
     "highlights": "The Mythen in view at the top."
+   }
+  ]
+ },
+ "iffigenalp": {
+  "intro": "A quiet dead end at the head of the Simmental, past waterfalls to a mountain inn.",
+  "sides": [
+   {
+    "character": "From Lenk first flat, then single-lane and steep through forest along the Iffigbach.",
+    "highlights": "The Iffig waterfall beside the road."
    }
   ]
  },
@@ -2200,6 +2280,15 @@
    {
     "character": "From Goldrain a long moderate run into the valley with flat steps, then hairpins up to the Zufrittsee and a steep final section to the Enzianhütte. The climb gets harder towards the end.",
     "highlights": "The Zufrittsee and, at the top, the north faces of the Cevedale."
+   }
+  ]
+ },
+ "melchsee-frutt": {
+  "intro": "The highest road in central Switzerland ends at a mountain lake. The finish from Stöckalp is one of the steepest ramps in Switzerland.",
+  "sides": [
+   {
+    "character": "From Kerns steadily through the Melchtal to Stöckalp, then narrow and very steep in hairpins up to the plateau.",
+    "highlights": "The Melchsee on the plateau."
    }
   ]
  },
@@ -3379,6 +3468,19 @@
    }
   ]
  },
+ "saanenmoeser": {
+  "intro": "The link between the Simmental and Gstaad, more an approach than a pass, but part of every loop with the Jaunpass and the Col du Pillon.",
+  "sides": [
+   {
+    "character": "From Zweisimmen steadily across meadows on the slope.",
+    "highlights": "The high moor of Saanenmöser."
+   },
+   {
+    "character": "From Saanen gently through Schönried.",
+    "highlights": "The view across the Saanenland."
+   }
+  ]
+ },
  "saas-fee": {
   "intro": "The road to the glacier village below the highest peaks of Switzerland. A long valley climb that only turns properly steep at the end.",
   "sides": [
@@ -3397,6 +3499,15 @@
    }
   ]
  },
+ "samnaun": {
+  "intro": "A remote Swiss high valley that is best reached across the border.",
+  "sides": [
+   {
+    "character": "From Vinadi through the gorge of the Schergenbach with tunnels, then steadily through the valley.",
+    "highlights": "The villages of the Samnaun valley below the Muttler."
+   }
+  ]
+ },
  "santuario-di-oropa": {
   "intro": "The sanctuary above Biella is one of the Giro's mountains in Piedmont, and tied to Marco Pantani. A climb of medium length that saves its steep part for the end.",
   "sides": [
@@ -3412,6 +3523,32 @@
    {
     "character": "A short, steadily steep spur up from the pass road, with only two hairpins up to the sanctuary.",
     "highlights": "The pilgrimage church at the end of the road."
+   }
+  ]
+ },
+ "sattelegg": {
+  "intro": "A quiet prealpine pass between the March district and the Sihlsee, an hour from Zurich.",
+  "sides": [
+   {
+    "character": "From Siebnen steadily via Vorderthal and up through forest.",
+    "highlights": "The view back across the Obersee."
+   },
+   {
+    "character": "From Euthal on the Sihlsee short and moderate.",
+    "highlights": "The Sihlsee below the road."
+   }
+  ]
+ },
+ "schallenberg": {
+  "intro": "A gentle hill pass between the Bernese Oberland and the Emmental, ideal for a loop with the Glaubenbielen.",
+  "sides": [
+   {
+    "character": "From Schwarzenegg gently across meadows to the top.",
+    "highlights": "The view back to the Niesen and the Stockhorn."
+   },
+   {
+    "character": "From Marbach moderately through the Ilfis valley.",
+    "highlights": "The Emmental farms on the slopes."
    }
   ]
  },
@@ -3675,6 +3812,15 @@
    }
   ]
  },
+ "thyon-2000": {
+  "intro": "One of the longest climbs in the Valais, straight out of Sion to over 2,000 m.",
+  "sides": [
+   {
+    "character": "Out of Sion in hairpins to Vex, then steadily steep via Les Collons up to the station.",
+    "highlights": "The view across the Rhône valley."
+   }
+  ]
+ },
  "timmelsjoch": {
   "intro": "The high road between the Ötztal and the Passeier valley is the last and hardest climb of the Ötztaler Radmarathon. On the South Tyrol side a long, wild road with tunnels.",
   "sides": [
@@ -3923,6 +4069,19 @@
    }
   ]
  },
+ "wildhaus": {
+  "intro": "The link from Liechtenstein into the Toggenburg, with the Churfirsten above the top.",
+  "sides": [
+   {
+    "character": "From Gams in the Rhine valley steeply in hairpins up the slope.",
+    "highlights": "The view across the Rhine valley to Liechtenstein."
+   },
+   {
+    "character": "From Nesslau gently through the upper Toggenburg via Unterwasser.",
+    "highlights": "The Churfirsten above Unterwasser."
+   }
+  ]
+ },
  "windische-hoehe": {
   "intro": "A small pass that links the Gail and Drau valleys for a loop from Villach.",
   "sides": [
@@ -3933,6 +4092,15 @@
    {
     "character": "From Paternion via Kreuzen along the slope, moderate.",
     "highlights": "The view into the Drau valley."
+   }
+  ]
+ },
+ "wolfgangpass": {
+  "intro": "The crossing from the Prättigau to Davos, the way to the Flüela.",
+  "sides": [
+   {
+    "character": "From Klosters steadily through forest up to the saddle above the Davosersee.",
+    "highlights": "The Davosersee beyond the top."
    }
   ]
  },
@@ -3953,6 +4121,15 @@
    {
     "character": "Steep right from Ried through the hillside hamlets, then long ramps above 10 % through forest and over pastures up to the Melchboden.",
     "highlights": "The view from the Melchboden across the Zillertal to the main Zillertal ridge."
+   }
+  ]
+ },
+ "zinal": {
+  "intro": "The second dead end of the Val d'Anniviers next to Moiry, gentler, with the Imperial Crown at the head of the valley.",
+  "sides": [
+   {
+    "character": "At the bottom the valley road into the Val d'Anniviers, from Vissoie steadily via Ayer to Zinal.",
+    "highlights": "The ring of summits at the head of the valley."
    }
   ]
  }

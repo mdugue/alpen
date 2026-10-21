@@ -1,4 +1,11 @@
 {
+ "adelboden": {
+  "classicAscent": "15 km, 3.8 % from Frutigen",
+  "note": "Through the Engstligen valley from Frutigen to the resort below the Engstligenalp, steady with a few hairpins at the end. Open all year.",
+  "ascents": [
+   "Frutigen"
+  ]
+ },
  "albulapass": {
   "classicAscent": "20 km, 5 % from Filisur",
   "note": "Closure usually early November. Quiet road alongside the Rhaetian Railway.",
@@ -58,6 +65,13 @@
    "Chur"
   ]
  },
+ "axalp": {
+  "classicAscent": "12.5 km, 7.7 % from Brienz",
+  "note": "From Brienz steeply via Giessbach up to the alp above the Brienzersee, almost 1,000 m of climbing with a view of the lake. Open all year.",
+  "ascents": [
+   "Brienz"
+  ]
+ },
  "ballon-d-alsace": {
   "classicAscent": "9.2 km, 6.9 % from Saint-Maurice-sur-Moselle",
   "note": "In 1905 the very first climb of the Tour de France. Three ascents on a wide road, the shortest and steepest from Saint-Maurice-sur-Moselle; at the top pastures, inns and weekend day-trippers.",
@@ -113,6 +127,13 @@
    "Schwarzenberg (east)"
   ]
  },
+ "bosco-gurin": {
+  "classicAscent": "16 km, 6.7 % from Cevio",
+  "note": "From the Maggia valley up through the Val di Campo to the highest village in Ticino, a Walser settlement. Steadily steep, open all year.",
+  "ascents": [
+   "Cevio"
+  ]
+ },
  "brennerpass": {
   "classicAscent": "37 km, 2.2 % from Innsbruck",
   "note": "The crossing from the Wipptal into the Eisack valley; cyclists ride the old Brenner road (B 182, SS 12) beside the motorway and the railway. Open all year, long and flat from Innsbruck, shorter from Sterzing with one steeper stretch at Gossensass; the second climb of the Ötztaler Radmarathon, with heavy traffic on the main road.",
@@ -128,6 +149,14 @@
    "Châtillon"
   ]
  },
+ "bruenigpass": {
+  "classicAscent": "7.9 km, 5.3 % from Meiringen",
+  "note": "The main road from Lucerne into the Bernese Oberland, wide and heavily used. Short on both sides, open all year; unavoidable as the link to the Grimsel and the Susten.",
+  "ascents": [
+   "Meiringen (south)",
+   "Lungern (north)"
+  ]
+ },
  "campo-carlo-magno": {
   "classicAscent": "15.4 km, 5.9 % from Pinzolo",
   "note": "The crossing between Val Rendena and Val di Sole, directly above Madonna di Campiglio, with the Brenta on one side and the Adamello on the other. Cleared all year as a ski resort and busy in winter and summer alike.",
@@ -141,6 +170,13 @@
   "note": "A detour off the Lukmanier's south side: a narrow road climbs to the Capanna Dötra at just over 1700 m. Season window taken from the Lukmanierpass.",
   "ascents": [
    "Junction on the Lukmanier road"
+  ]
+ },
+ "cari": {
+  "classicAscent": "11.7 km, 7.4 % from Faido",
+  "note": "From Faido in many hairpins up to the sunny terrace above the Leventina, steadily steep and hardly used. Open all year.",
+  "ascents": [
+   "Faido"
   ]
  },
  "ceillac-vallee-du-melezet": {
@@ -1216,6 +1252,21 @@
    "Heiligenblut"
   ]
  },
+ "gurnigelpass": {
+  "classicAscent": "16.6 km, 6.1 % from Wattenwil",
+  "note": "The pass in the Gantrisch area between the Gürbe valley and the Schwarzsee region, more than 1,000 m from Wattenwil, at the top moorland and the view of the Eiger, Mönch and Jungfrau. Closed in winter.",
+  "ascents": [
+   "Wattenwil (north)",
+   "Zollhaus (west)"
+  ]
+ },
+ "haggenegg": {
+  "classicAscent": "10.7 km, 8.4 % from Schwyz",
+  "note": "A narrow crossing between Schwyz and the Alpthal below the Mythen, from Schwyz almost 900 m with long ramps over 10 %. The north side down to Alpthal is a narrow alp road; closed in winter.",
+  "ascents": [
+   "Schwyz (south)"
+  ]
+ },
  "hahntennjoch": {
   "classicAscent": "17 km, 5 % from Elmen (12 km, 7 % from Imst)",
   "note": "Winter closure usually from November, opens late in spring.",
@@ -1280,6 +1331,13 @@
   "note": "Between Schwyz and the Sihltal, steep and short. Cleared all year; at the top the view of the Mythen, which stand at your back for the whole climb.",
   "ascents": [
    "Oberiberg (east)"
+  ]
+ },
+ "iffigenalp": {
+  "classicAscent": "8.5 km, 6.2 % from Lenk",
+  "note": "A single-lane mountain road from Lenk to the alp below the Wildstrubel, opened to cars in one direction at a time on a fixed schedule. Narrow and steep, closed in winter.",
+  "ascents": [
+   "Lenk"
   ]
  },
  "iselsberg": {
@@ -1552,6 +1610,13 @@
   "note": "From the Vinschgau past the Zufrittsee to beneath the north faces of the Cevedale – a dead end that climbs 1,400 m and gets properly steep in the final stretch. At the top the tarmac ends at the Enzianhütte car park.",
   "ascents": [
    "Goldrain"
+  ]
+ },
+ "melchsee-frutt": {
+  "classicAscent": "19 km, 6.9 % from Kerns through the Melchtal",
+  "note": "Through the Melchtal to Stöckalp and then up the narrow toll road with ramps of up to 15 % to the plateau at the Melchsee. 1,350 m of climbing, at the top mountain lakes at 1,900 m; the upper part closed in winter.",
+  "ascents": [
+   "Kerns"
   ]
  },
  "mendelpass": {
@@ -2386,6 +2451,14 @@
    "Col de la Schlucht"
   ]
  },
+ "saanenmoeser": {
+  "classicAscent": "7.4 km, 4.5 % from Zweisimmen",
+  "note": "The flat crossing from the Simmental into the Saanenland towards Gstaad, a main road beside the railway. Short and gentle, open all year.",
+  "ascents": [
+   "Zweisimmen (east)",
+   "Saanen (west)"
+  ]
+ },
  "saas-fee": {
   "classicAscent": "19 km, 5.3 % from Stalden",
   "note": "Up the Saas valley to the edge of the car-free village, at the end below the glaciers of the Dom and the Allalin. At the bottom the valley road with the traffic to the Saas villages, steeper in hairpins from Saas-Grund; open all year.",
@@ -2400,6 +2473,13 @@
    "Junction near Molines"
   ]
  },
+ "samnaun": {
+  "classicAscent": "14 km, 5.2 % from Vinadi",
+  "note": "From the Inn at Vinadi through tunnels and galleries into the duty-free high valley of Samnaun. Steady, open all year.",
+  "ascents": [
+   "Vinadi"
+  ]
+ },
  "santuario-di-oropa": {
   "classicAscent": "12 km, 6 % from Biella",
   "note": "From Biella through forest to the great pilgrimage site below Monte Mucrone, steeper at the top. A Giro d'Italia finish several times, known for Pantani's comeback ride in 1999; open all year.",
@@ -2412,6 +2492,22 @@
   "note": "A detour off the Italian side of the Lombarde: the road branches off below the pass and ends at the highest sanctuary in Europe. Season window taken from the Lombarde.",
   "ascents": [
    "Junction on the Lombarde road"
+  ]
+ },
+ "sattelegg": {
+  "classicAscent": "12.9 km, 5.9 % from Siebnen",
+  "note": "The crossing from the end of Lake Zurich to the Sihlsee, long from Siebnen via Vorderthal, short from Euthal. Open all year.",
+  "ascents": [
+   "Siebnen (north)",
+   "Euthal (south)"
+  ]
+ },
+ "schallenberg": {
+  "classicAscent": "9.5 km, 2.5 % from Schwarzenegg",
+  "note": "The crossing from Lake Thun into the Emmental and the Entlebuch, gentle on both sides and over hills with farms. Open all year.",
+  "ascents": [
+   "Schwarzenegg (west)",
+   "Marbach (east)"
   ]
  },
  "schnalstal-kurzras": {
@@ -2604,6 +2700,13 @@
    "Wassen"
   ]
  },
+ "thyon-2000": {
+  "classicAscent": "22 km, 7.3 % from Sion",
+  "note": "From Sion via Vex and Les Collons up to the ski station above the Val d'Hérens, 1,550 m steadily steep. At the top the view across the Rhône valley to the Bernese Alps; open all year.",
+  "ascents": [
+   "Sion"
+  ]
+ },
  "timmelsjoch": {
   "classicAscent": "13 km, 8.8 % from Sölden",
   "note": "Toll road, scheduled to be open until mid/late October, then closed until June. Bikes ride toll-free.",
@@ -2791,12 +2894,27 @@
    "Wolfsberg (west)"
   ]
  },
+ "wildhaus": {
+  "classicAscent": "9.3 km, 6.4 % from Gams",
+  "note": "The crossing from the Rhine valley into the Toggenburg between the Churfirsten and the Alpstein, steep in hairpins from Gams, gentle from the Toggenburg. Open all year.",
+  "ascents": [
+   "Gams (east)",
+   "Nesslau (west)"
+  ]
+ },
  "windische-hoehe": {
   "classicAscent": "12.8 km, 4.3 % from Feistritz an der Gail",
   "note": "A quiet crossing between the Gail and Drau valleys west of Villach, moderate on both sides. Open all year.",
   "ascents": [
    "Feistritz an der Gail (south)",
    "Paternion (north)"
+  ]
+ },
+ "wolfgangpass": {
+  "classicAscent": "7 km, 6.3 % from Klosters",
+  "note": "The main road from Klosters to Davos, short and steady from Klosters, barely any gradient from Davos – hence only one side. Open all year.",
+  "ascents": [
+   "Klosters (north)"
   ]
  },
  "wurzenpass": {
@@ -2812,6 +2930,13 @@
   "note": "Toll road above the Zillertal from Ried to over 2,000 m at the Melchboden, almost 1,500 m of climbing with long double-digit ramps. At the top the panorama of the Zillertal Alps; closed in winter.",
   "ascents": [
    "Ried im Zillertal"
+  ]
+ },
+ "zinal": {
+  "classicAscent": "28 km, 4.1 % from Sierre",
+  "note": "The Val d'Anniviers to its end, below the Imperial Crown of the Weisshorn, the Zinalrothorn, the Obergabelhorn, the Matterhorn and the Dent Blanche. Long and steady, open all year.",
+  "ascents": [
+   "Sierre"
   ]
  }
 }

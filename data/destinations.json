@@ -323,7 +323,9 @@
    "st-moritz",
    "davos"
   ],
-  "include": [],
+  "include": [
+   "samnaun"
+  ],
   "exclude": [],
   "character": "Albula, Julier, Bernina, Flüela, Maloja und Ofen um ein Hochtal auf 1 800 m – die Anstiege beginnen hoch und die Luft ist dünn.",
   "multiDay": "Eine Woche; nach Livigno und ins Val Müstair über den Ofenpass als Etappen.",
@@ -342,7 +344,9 @@
    "chur",
    "vaduz"
   ],
-  "include": [],
+  "include": [
+   "wildhaus"
+  ],
   "exclude": [],
   "character": "Malbun, Lenzerheide, Arosa und Flumserberg: steile Berge direkt aus dem tiefen Rheintal, jeder für sich eine Sackgasse oder ein Übergang, dazwischen flache Wege am Rhein.",
   "multiDay": "Drei bis vier Tage mit kurzen Anfahrten; die Lenzerheide führt zu Albula und Julier ins Engadin, das Furkajoch ins Vorarlberg.",
@@ -645,7 +649,9 @@
    "stresa"
   ],
   "include": [
-   "mottarone"
+   "mottarone",
+   "cari",
+   "bosco-gurin"
   ],
   "exclude": [],
   "character": "Monte Ceneri, Alpe di Neggia, Generoso, Bisbino und die Talstraßen von Verzasca und Bavona: Seen, Palmen und steile Sträßchen, von März bis November.",
@@ -806,12 +812,32 @@
    "meiringen"
   ],
   "include": [
-   "grosse-scheidegg"
+   "grosse-scheidegg",
+   "sattelegg",
+   "axalp"
   ],
   "exclude": [],
   "character": "Klausen, Pragel, Glaubenbielen, Glaubenberg und die autofreie Große Scheidegg – die Voralpenpässe zwischen Vierwaldstättersee und Brienzersee, kürzer als die Gotthard-Riesen und früher im Jahr offen.",
   "multiDay": "Vier Tage; Susten und Grimsel als Anschluss nach Süden.",
   "access": "Bahnhof Meiringen, Luzern oder Altdorf; Zürich in einer Stunde."
+ },
+ {
+  "slug": "simmental-saanenland",
+  "name": "Simmental und Saanenland",
+  "country": "CH",
+  "center": {
+   "lat": 46.52,
+   "lon": 7.42
+  },
+  "radiusKm": 28,
+  "baseTowns": [
+   "zweisimmen"
+  ],
+  "include": [],
+  "exclude": [],
+  "character": "Jaunpass, Col du Pillon, Col des Mosses und der Gurnigel, dazu Adelboden und die Iffigenalp: grüne Voralpenpässe zwischen Berner Oberland und Waadtländer Alpen.",
+  "multiDay": "Vier Tage; über den Col du Pillon und den Col de la Croix ins Rhonetal und weiter ins Wallis.",
+  "access": "Bahnhof Zweisimmen an der Linie Spiez–Montreux; Bern in gut einer Stunde."
  },
  {
   "slug": "vorarlberg-allgaeu",

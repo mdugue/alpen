@@ -159,6 +159,11 @@
   "multiDay": "Three to four days; the Dolomitenradrundfahrt loop in a day, a stage to Cortina or into the Gailtal.",
   "access": "Lienz railway station with trains from Villach and through the Pustertal from Innsbruck; Klagenfurt airport a good two hours by train."
  },
+ "simmental-saanenland": {
+  "character": "The Jaunpass, the Col du Pillon, the Col des Mosses and the Gurnigel, plus Adelboden and the Iffigenalp: green prealpine passes between the Bernese Oberland and the Vaud Alps.",
+  "multiDay": "Four days; over the Col du Pillon and the Col de la Croix into the Rhône valley and on into the Valais.",
+  "access": "Zweisimmen station on the Spiez–Montreux line; Bern in just over an hour."
+ },
  "steiermark": {
   "character": "The Gaberl, the Weinebene, the Klippitztörl and the Schöckl: long, steady alpine passes instead of rock, green and quiet, with the Erzberg at the Präbichl as the odd one out.",
   "multiDay": "Three to four days from Graz; rideable early and late in the year while the Tauern are still closed.",
