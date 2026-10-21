@@ -19788,7 +19788,7 @@
   "lat": 43.2743,
   "lon": -4.9931,
   "elevation": 1145,
-  "classicAscent": "13,6 km, 6,8 % ab Cangas de Onís",
+  "classicAscent": "13,0 km, 6,7 % ab Covadonga",
   "beauty": 5,
   "fame": 5,
   "difficulty": 4,
@@ -19805,7 +19805,7 @@
      "lat": 43.3136,
      "lon": -5.0659
     },
-    "label": "Cangas de Onís"
+    "label": "Covadonga"
    }
   ]
  },
@@ -19863,7 +19863,7 @@
   "difficulty": 4,
   "traffic": 1,
   "season": null,
-  "note": "Die Straße durch den Naturpark Somiedo bis an die Grenze zu León, Vuelta-Ankunft 2011 und 2016. Lang und unregelmäßig, oben Seen und Kalkberge, Bären in den Wäldern.",
+  "note": "Die Straße durch den Naturpark Somiedo bis an die Grenze zu León, mehrfach Vuelta-Ankunft. Lang und unregelmäßig, oben Seen und Kalkberge, Bären in den Wäldern.",
   "aliases": [
    "Lagos de Somiedo",
    "La Farrapona"
@@ -20251,7 +20251,7 @@
   "difficulty": 5,
   "traffic": 1,
   "season": null,
-  "note": "Der Giro-Klassiker in der Majella, seit Merckx' erstem großen Sieg 1967 immer wieder Bergankunft: von Roccamorice fast 1500 Höhenmeter mit langen Abschnitten über 9 %, oben kahle Kalkhänge.",
+  "note": "Der Giro-Klassiker in der Majella, seit Merckx' erstem Etappensieg bei einer großen Rundfahrt 1967 immer wieder Bergankunft: von Roccamorice fast 1500 Höhenmeter mit langen Abschnitten über 9 %, oben kahle Kalkhänge.",
   "aliases": [
    "Maielletta",
    "Majella"
@@ -20507,7 +20507,7 @@
  {
   "slug": "etna-sud",
   "surface": "asphalt",
-  "name": "Ätna Süd (Rifugio Sapienza)",
+  "name": "Etna Sud (Rifugio Sapienza)",
   "type": "spur",
   "tags": [
    "race",
@@ -20528,7 +20528,7 @@
   "aliases": [
    "Etna",
    "Rifugio Sapienza",
-   "Etna Sud"
+   "Ätna Süd"
   ],
   "ascents": [
    {
@@ -20557,7 +20557,7 @@
  {
   "slug": "etna-nord",
   "surface": "asphalt",
-  "name": "Ätna Nord (Piano Provenzana)",
+  "name": "Etna Nord (Piano Provenzana)",
   "type": "spur",
   "tags": [
    "race",
@@ -20578,7 +20578,7 @@
   "note": "Die Nordseite des Ätna, von Linguaglossa durch Kiefern- und Birkenwald zum Skigebiet Piano Provenzana auf 1800 m; Giro-Ankunft 2020. Ruhiger und grüner als die Südseite.",
   "aliases": [
    "Piano Provenzana",
-   "Etna Nord"
+   "Ätna Nord"
   ],
   "ascents": [
    {
@@ -20759,7 +20759,7 @@
    {
     "from": {
      "lat": 50.5197,
-     "lon": 5.2397
+     "lon": 5.2491
     },
     "label": "Huy (Maas)"
    }
@@ -20792,8 +20792,8 @@
   "ascents": [
    {
     "from": {
-     "lat": 50.4795,
-     "lon": 5.7126
+     "lat": 50.4832,
+     "lon": 5.7041
     },
     "label": "Remouchamps"
    }
@@ -20813,7 +20813,7 @@
   "lat": 50.3701,
   "lon": 5.9481,
   "elevation": 500,
-  "classicAscent": "1,0 km, 12 % ab Stavelot",
+  "classicAscent": "2,9 km, 7,0 % ab Stavelot",
   "beauty": 3,
   "fame": 3,
   "difficulty": 3,
@@ -20914,7 +20914,7 @@
   "lat": 50.3581,
   "lon": 5.9146,
   "elevation": 480,
-  "classicAscent": "2,7 km, 7,3 % ab Trois-Ponts",
+  "classicAscent": "5,3 km, 4,3 % ab Trois-Ponts",
   "beauty": 3,
   "fame": 2,
   "difficulty": 2,
@@ -21017,7 +21017,7 @@
   "lat": 50.7469,
   "lon": 15.8237,
   "elevation": 1046,
-  "classicAscent": "13,4 km, 4,0 % ab Kowary",
+  "classicAscent": "15,8 km, 3,3 % ab Kowary",
   "beauty": 3,
   "fame": 2,
   "difficulty": 3,
@@ -21085,7 +21085,7 @@
   "lat": 50.651,
   "lon": 15.7486,
   "elevation": 1260,
-  "classicAscent": "9,3 km, 6,6 % ab Janské Lázně",
+  "classicAscent": "7,4 km, 8,5 % ab Janské Lázně",
   "beauty": 4,
   "fame": 2,
   "difficulty": 4,
@@ -21246,7 +21246,7 @@
  {
   "slug": "chopok-juh",
   "surface": "asphalt",
-  "name": "Chopok Süd (Srdiečko)",
+  "name": "Chopok juh (Srdiečko)",
   "type": "spur",
   "tags": [
    "forest",
@@ -21266,7 +21266,7 @@
   "note": "Die Südauffahrt zum Chopok, von Bystrá im Hron-Tal durch das Skigebiet Tále bis Srdiečko auf gut 1200 m. Gleichmäßig, mit steileren Stücken im oberen Teil.",
   "aliases": [
    "Srdiečko",
-   "Chopok juh"
+   "Chopok Süd"
   ],
   "ascents": [
    {
@@ -21291,7 +21291,7 @@
   "lat": 48.9715,
   "lon": 19.5852,
   "elevation": 1120,
-  "classicAscent": "4,4 km, 6,5 % ab der Freiheitshöhle",
+  "classicAscent": "4,7 km, 6,1 % ab Demänovská Dolina",
   "beauty": 3,
   "fame": 2,
   "difficulty": 2,

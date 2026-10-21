@@ -72,13 +72,14 @@ and the way the range chips are read once there are twenty of them.
      a box from Tuscany to Etna frames below zoom 5.65.
    - The Giant Mountains with the Ještěd and the Jizera Mountains hold six
      (Špindlerova bouda, Okraj, Horní Mísečky, Černá hora, Ještěd,
-     Tanvaldský Špičák); the Okraj from Kowary at 4.0 % is held in by its
-     570 m.
+     Tanvaldský Špičák); the Okraj from Kowary at 3.3 % is held in by its
+     520 m.
    - The Tatras hold five (Štrbské Pleso, Čertovica, Chopok south, Jasná,
      Gliczarów Górny); Štrbské Pleso at 3.7 % is held in by its 500 m, and
      the Polish passes around Bukowina and Łapszanka stay under 3.5 %.
      The Ardennes come in by race alone: seven climbs of Liège–Bastogne–Liège
-     and the Flèche Wallonne, none of which gains 250 m. The Eifel (Hohe
+     and the Flèche Wallonne, of which only the Rosier gains 250 m, and at
+     4 %. The Eifel (Hohe
      Acht, 3.8 %) and the Sauerland (Kahler Asten, 3.1 %) were measured and
      do not come in, so the range is the Ardennes without them.
 3. **The order** is by what each range adds to the app's two questions:

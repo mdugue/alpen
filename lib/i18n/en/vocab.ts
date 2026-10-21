@@ -150,7 +150,7 @@ export const vocab = {
       outside: "outside the Black Forest",
     },
     Sizilien: {
-      hint: "Etna from three sides up to almost 2,000 m, the Madonie and the Nebrodi above the north coast, Erice above Trapani: long climbs in southern Italy, from March to November.",
+      hint: "Etna from four sides up to almost 2,000 m, the Madonie and the Nebrodi above the north coast, Erice above Trapani: long climbs in southern Italy, from March to November.",
       inside: "on Sicily",
       label: "Sicily",
       outside: "outside Sicily",

@@ -164,7 +164,7 @@ export const vocab = {
       outside: "außerhalb des Schwarzwalds",
     },
     Sizilien: {
-      hint: "Der Ätna von drei Seiten bis auf fast 2000 m, die Madonie und die Nebrodi über der Nordküste, Erice über Trapani: lange Anstiege im Süden Italiens, von März bis November.",
+      hint: "Der Ätna von vier Seiten bis auf fast 2000 m, die Madonie und die Nebrodi über der Nordküste, Erice über Trapani: lange Anstiege im Süden Italiens, von März bis November.",
       inside: "auf Sizilien",
       label: "Sizilien",
       outside: "außerhalb Siziliens",

@@ -208,8 +208,11 @@ the start page (`/`, an empty detail slot) and one dynamic segment,
 path is `notFound()`, since Cache Components allow no `dynamicParams`). CI
 sets `PRERENDER_SAMPLE` and prerenders one entity per kind: the ~760 pages are
 one explorer rendered 760 times, five of the seven minutes a run took, and the
-rest render on the e2e run's first request. The deployment build prerenders
-them all, so a page that fails to render still fails a check on the PR. The segment words are
+rest render on the e2e run's first request. For now the Vercel build samples
+too (`VERCEL` is set there): every entity page wrote about 4 MB of output,
+and ~1,800 of them filled the 8 GB build machine. A local `bun run build`
+still prerenders them all, so a page that fails to render fails there –
+run it before a PR that changes what a page renders. The segment words are
 `lib/routes.ts` (`SEGMENT`, `hrefFor`, `selectionOf`): `/pass/x`, `/tour/x`,
 `/ort/x`, `/ziel/x`. Each route carries its own title, description
 (`lib/share-text.ts`) and share image (the dot map from `lib/share-image.tsx`

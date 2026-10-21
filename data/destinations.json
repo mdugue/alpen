@@ -1495,7 +1495,7 @@
   ],
   "include": [],
   "exclude": [],
-  "character": "Die Insel um den Teide: vier Wege in die Cañadas, jeder über 1500 Höhenmeter, dazu die Kehren von Masca. Im Winter das Trainingslager der Profis, im Norden oft Wolken, im Süden Sonne.",
+  "character": "Die Insel um den Teide: drei Wege in die Cañadas, jeder über 1300 Höhenmeter, dazu die Kehren von Masca. Im Winter das Trainingslager der Profis, im Norden oft Wolken, im Süden Sonne.",
   "multiDay": "Eine Woche: der Teide von Norden und von Westen, Izaña über den Grat, Masca, und ein Ruhetag am Meer.",
   "access": "Flug nach Teneriffa Süd oder Nord, Rad im Flugzeug oder vor Ort leihen."
  },
@@ -1543,7 +1543,7 @@
    "lat": 43.14,
    "lon": -5.98
   },
-  "radiusKm": 24,
+  "radiusKm": 25,
   "baseTowns": [
    "pola-de-lena",
    "pola-de-somiedo"
@@ -1697,7 +1697,7 @@
   ],
   "include": [],
   "exclude": [],
-  "character": "Die Anstiege aus dem Finale von Lüttich–Bastogne–Lüttich auf engem Raum: Redoute, Rosier, Wanne, Stockeu und Haute-Levée, jeder zwischen einem und sechs Kilometern. Keine Pässe, aber eine Runde mit 2000 Höhenmetern, von April bis Oktober.",
+  "character": "Die Anstiege aus dem Finale von Lüttich–Bastogne–Lüttich auf engem Raum: Redoute, Rosier, Wanne, Stockeu und Haute-Levée, jeder zwischen einem und gut sechs Kilometern. Keine Pässe, aber eine Runde mit 2000 Höhenmetern, von April bis Oktober.",
   "multiDay": "Zwei Tage von Spa: die Schleife Wanne, Stockeu, Haute-Levée und Rosier, am zweiten Tag die Redoute und die Roche-aux-Faucons auf dem Weg nach Lüttich.",
   "access": "Bahn bis Lüttich oder Spa, mit dem Auto eine Stunde von Aachen."
  },
@@ -1716,7 +1716,7 @@
   ],
   "include": [],
   "exclude": [],
-  "character": "Der höchste Kamm zwischen Böhmen und Schlesien: Špindlerova bouda, Černá hora, Horní Mísečky und der Okraj-Pass, jeder zwischen fünf und dreizehn Kilometern. Kurze, steile Anstiege im Fichtenwald, von Mai bis Oktober.",
+  "character": "Der höchste Kamm zwischen Böhmen und Schlesien: Špindlerova bouda, Černá hora, Horní Mísečky und der Okraj-Pass, jeder zwischen vier und sechzehn Kilometern. Kurze, steile Anstiege im Fichtenwald, von Mai bis Oktober.",
   "multiDay": "Zwei Tage: von Špindlerův Mlýn auf die Špindlerova bouda und nach Horní Mísečky, von Janské Lázně auf die Černá hora und über Malá Úpa auf den Okraj.",
   "access": "Mit dem Auto zwei Stunden von Dresden oder Prag, Bahn bis Vrchlabí oder Trutnov."
  },
