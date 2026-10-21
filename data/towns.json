@@ -2508,5 +2508,50 @@
    "Luik"
   ],
   "why": "Start und Ziel der Doyenne, mit dem Bahnhof Guillemins: die Roche-aux-Faucons vor der Stadt, Huy und die Redoute eine halbe Stunde entfernt."
+ },
+ {
+  "slug": "spindleruv-mlyn",
+  "name": "Špindlerův Mlýn",
+  "country": "CZ",
+  "lat": 50.7256,
+  "lon": 15.6068,
+  "tags": [
+   "hotels"
+  ],
+  "aliases": [
+   "Spindlermühle"
+  ],
+  "why": "Der Ferienort an der jungen Elbe: die Špindlerova bouda beginnt im Ort, Horní Mísečky über Vítkovice ist nah."
+ },
+ {
+  "slug": "janske-lazne",
+  "name": "Janské Lázně",
+  "country": "CZ",
+  "lat": 50.6306,
+  "lon": 15.7807,
+  "tags": [
+   "quiet",
+   "hotels"
+  ],
+  "aliases": [
+   "Johannisbad"
+  ],
+  "why": "Kurort am Fuß des Schwarzenbergs: die Černá hora beginnt im Ort, der Okraj-Pass über Malá Úpa ist eine Runde."
+ },
+ {
+  "slug": "liberec",
+  "name": "Liberec",
+  "country": "CZ",
+  "lat": 50.7663,
+  "lon": 15.0543,
+  "tags": [
+   "hub",
+   "train",
+   "hotels"
+  ],
+  "aliases": [
+   "Reichenberg"
+  ],
+  "why": "Die Stadt unter dem Jeschken: der Anstieg beginnt in Horní Hanychov, das Isergebirge mit Tanvald liegt eine halbe Stunde östlich."
  }
 ]

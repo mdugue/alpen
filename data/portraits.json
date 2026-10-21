@@ -8890,5 +8890,64 @@
     "highlights": "Der Blick vom Felsen über die Ourtheschleife."
    }
   ]
+ },
+ "spindlerova-bouda": {
+  "intro": "Der Klassiker des Riesengebirges: von der Elbe hinauf auf den Kamm, oben die Baude und der Blick nach Schlesien.",
+  "sides": [
+   {
+    "character": "Von Špindlerův Mlýn gleichmäßig durch den Wald, im oberen Teil Kehren und Rampen über 10 %.",
+    "highlights": "Der Blick vom Kamm nach Polen."
+   }
+  ]
+ },
+ "przelecz-okraj": {
+  "intro": "Ein echter Grenzpass über das Riesengebirge, ruhig und lang, mit der Schneekoppe über der Passhöhe.",
+  "sides": [
+   {
+    "character": "Von Kowary mäßig im Wald, mit flachen Stücken zwischen steileren Rampen.",
+    "highlights": "Die Schneekoppe über der Passhöhe."
+   }
+  ]
+ },
+ "horni-misecky": {
+  "intro": "Ein kurzer Anstieg in den Fichtenwald, oben die Bauden und die Wege zur Elbquelle.",
+  "sides": [
+   {
+    "character": "Von Vítkovice gleichmäßig um 7 % durch den Wald bis zum Ende der Straße."
+   }
+  ]
+ },
+ "cerna-hora": {
+  "intro": "Der härteste Anstieg des Riesengebirges, ohne Autos: über 600 Höhenmeter bis auf die Hochfläche, oben der Blick über Böhmen.",
+  "sides": [
+   {
+    "character": "Von Janské Lázně in Kehren durch den Wald, oben steiler bis über 12 % auf schmaler Straße.",
+    "hazards": [
+     "steep",
+     "narrow"
+    ],
+    "highlights": "Der Blick von der Baude über das böhmische Vorland."
+   }
+  ]
+ },
+ "jested": {
+  "intro": "Ein Berg mit einem Turm wie aus einem Science-Fiction-Film: von Liberec 450 Höhenmeter, oben der Blick bis zum Riesengebirge und nach Sachsen.",
+  "sides": [
+   {
+    "character": "Von Horní Hanychov gleichmäßig um 6–7 % durch den Wald, die letzten Kehren offen unter dem Turm.",
+    "highlights": "Der Turm auf dem Gipfel."
+   }
+  ]
+ },
+ "tanvaldsky-spicak": {
+  "intro": "Ein kurzer, harter Anstieg im Isergebirge, oben ein Aussichtsturm über den Wäldern.",
+  "sides": [
+   {
+    "character": "Aus Tanvald erst mäßig, dann mit Rampen über 12 % durch den Wald.",
+    "hazards": [
+     "steep"
+    ]
+   }
+  ]
  }
 }

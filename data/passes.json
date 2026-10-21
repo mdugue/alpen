@@ -20967,5 +20967,209 @@
     "label": "Hony (Ourthe)"
    }
   ]
+ },
+ {
+  "slug": "spindlerova-bouda",
+  "surface": "asphalt",
+  "name": "Špindlerova bouda",
+  "type": "pass",
+  "tags": [
+   "forest",
+   "panorama"
+  ],
+  "country": "CZ/PL",
+  "region": "Riesengebirge",
+  "lat": 50.7626,
+  "lon": 15.6339,
+  "elevation": 1198,
+  "classicAscent": "7,2 km, 6,6 % ab Špindlerův Mlýn",
+  "beauty": 4,
+  "fame": 3,
+  "difficulty": 3,
+  "traffic": 1,
+  "season": null,
+  "note": "Die Baude auf dem Kamm an der polnischen Grenze, der höchste Straßenpunkt des Riesengebirges. Von Špindlerův Mlýn durch Fichtenwald mit Kehren; nach Polen geht es nur zu Fuß oder auf dem Rad über die gesperrte Straße weiter.",
+  "aliases": [
+   "Spindlerbaude",
+   "Przełęcz Karkonoska",
+   "Karkonoska"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 50.7256,
+     "lon": 15.6068
+    },
+    "label": "Špindlerův Mlýn (Süd)"
+   }
+  ]
+ },
+ {
+  "slug": "przelecz-okraj",
+  "surface": "asphalt",
+  "name": "Przełęcz Okraj",
+  "type": "pass",
+  "tags": [
+   "forest"
+  ],
+  "country": "PL/CZ",
+  "region": "Riesengebirge",
+  "lat": 50.7469,
+  "lon": 15.8237,
+  "elevation": 1046,
+  "classicAscent": "13,4 km, 4,0 % ab Kowary",
+  "beauty": 3,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 1,
+  "season": null,
+  "note": "Der Grenzpass zwischen Kowary in Schlesien und Malá Úpa in Böhmen, tschechisch Pomezní Boudy. Von Kowary lang durch den Wald, mit flacheren Stücken; oben Bauden und der Blick zur Schneekoppe.",
+  "aliases": [
+   "Pomezní Boudy",
+   "Pomezní sedlo",
+   "Okraj"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 50.7787,
+     "lon": 15.8361
+    },
+    "label": "Kowary (Nord)"
+   }
+  ]
+ },
+ {
+  "slug": "horni-misecky",
+  "surface": "asphalt",
+  "name": "Horní Mísečky",
+  "type": "spur",
+  "tags": [
+   "forest"
+  ],
+  "country": "CZ",
+  "region": "Riesengebirge",
+  "lat": 50.7359,
+  "lon": 15.5689,
+  "elevation": 1050,
+  "classicAscent": "4,6 km, 6,7 % ab Vítkovice",
+  "beauty": 3,
+  "fame": 1,
+  "difficulty": 2,
+  "traffic": 1,
+  "season": null,
+  "note": "Der Bergort am Ende der Straße über Vítkovice, Ausgangspunkt der Wege zu den Elbquellen. Kurz und gleichmäßig steil durch Fichtenwald.",
+  "aliases": [
+   "Mísečky"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 50.7169,
+     "lon": 15.5419
+    },
+    "label": "Vítkovice (Süd)"
+   }
+  ]
+ },
+ {
+  "slug": "cerna-hora",
+  "surface": "asphalt",
+  "name": "Černá hora",
+  "type": "spur",
+  "tags": [
+   "panorama"
+  ],
+  "country": "CZ",
+  "region": "Riesengebirge",
+  "lat": 50.651,
+  "lon": 15.7486,
+  "elevation": 1260,
+  "classicAscent": "9,3 km, 6,6 % ab Janské Lázně",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 4,
+  "traffic": 1,
+  "season": null,
+  "note": "Die Bergstraße vom Kurort Janské Lázně zur Černá bouda unter dem Gipfel des Schwarzenbergs, für Autos gesperrt und als Radroute ausgeschildert. Unten Kehren im Wald, oben Rampen bis 14 %.",
+  "aliases": [
+   "Schwarzenberg",
+   "Černá bouda"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 50.6306,
+     "lon": 15.7807
+    },
+    "label": "Janské Lázně (Ost)"
+   }
+  ]
+ },
+ {
+  "slug": "jested",
+  "surface": "asphalt",
+  "name": "Ještěd",
+  "type": "spur",
+  "tags": [
+   "panorama"
+  ],
+  "country": "CZ",
+  "region": "Jeschken und Isergebirge",
+  "lat": 50.7331,
+  "lon": 14.985,
+  "elevation": 1000,
+  "classicAscent": "6,8 km, 6,6 % ab Horní Hanychov",
+  "beauty": 4,
+  "fame": 3,
+  "difficulty": 3,
+  "traffic": 1,
+  "season": null,
+  "note": "Die Straße auf den Hausberg von Liberec zum Fernsehturm mit Hotel auf gut 1000 m, eines der Wahrzeichen Tschechiens. Steil und gleichmäßig durch Wald, oben über die freie Kuppe.",
+  "aliases": [
+   "Jeschken"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 50.7382,
+     "lon": 15.0121
+    },
+    "label": "Horní Hanychov (Liberec)"
+   }
+  ]
+ },
+ {
+  "slug": "tanvaldsky-spicak",
+  "surface": "asphalt",
+  "name": "Tanvaldský Špičák",
+  "type": "spur",
+  "tags": [
+   "forest"
+  ],
+  "country": "CZ",
+  "region": "Jeschken und Isergebirge",
+  "lat": 50.7515,
+  "lon": 15.284,
+  "elevation": 804,
+  "classicAscent": "5,1 km, 5,7 % ab Tanvald",
+  "beauty": 3,
+  "fame": 1,
+  "difficulty": 3,
+  "traffic": 1,
+  "season": null,
+  "note": "Der Skiberg über Tanvald im Isergebirge, mit einer steilen Straße bis zum Aussichtsturm. Kurz, mit Rampen über 12 %.",
+  "aliases": [
+   "Špičák"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 50.738,
+     "lon": 15.3038
+    },
+    "label": "Tanvald"
+   }
+  ]
  }
 ]

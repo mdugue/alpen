@@ -33,6 +33,7 @@ export const vocab = {
     FR: "Frankreich",
     IT: "Italien",
     LI: "Liechtenstein",
+    PL: "Polen",
     SI: "Slowenien",
   },
   /** The filter chips and their tokens in the bar over the map. */
@@ -149,6 +150,12 @@ export const vocab = {
       label: "Pyrenäen",
       outside: "außerhalb der Pyrenäen",
     },
+    Riesengebirge: {
+      hint: "Die Bauden über Špindlerův Mlýn und Janské Lázně, der Okraj-Pass nach Polen und der Jeschken über Liberec: kurze, steile Anstiege, ein Wochenende von Dresden, Prag und Breslau.",
+      inside: "im Riesengebirge",
+      label: "Riesengebirge",
+      outside: "außerhalb des Riesengebirges",
+    },
     Schwarzwald: {
       hint: "Schauinsland, Kandel, Feldberg und die Schwarzwaldhochstraße: lange Anstiege direkt aus Freiburg, Karlsruhe oder Basel.",
       inside: "im Schwarzwald",
@@ -210,6 +217,7 @@ export const vocab = {
     Erzgebirge: "Erzgebirge",
     "Gran Canaria": "Gran Canaria",
     Harz: "Harz",
+    "Jeschken und Isergebirge": "Jeschken und Isergebirge",
     Jura: "Jura",
     Kantabrien: "Kantabrien",
     Korsika: "Korsika",
@@ -221,6 +229,7 @@ export const vocab = {
     Ostalpen: "Ostalpen",
     Pyrenäen: "Pyrenäen",
     Rhön: "Rhön",
+    Riesengebirge: "Riesengebirge",
     Schwarzwald: "Schwarzwald",
     "Sierra Nevada": "Sierra Nevada",
     Teneriffa: "Teneriffa",

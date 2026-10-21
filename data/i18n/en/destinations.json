@@ -433,5 +433,10 @@
   "character": "The climbs from the finale of Liège–Bastogne–Liège in a small area: the Redoute, Rosier, Wanne, Stockeu and Haute-Levée, each between one and six kilometres. No passes, but a loop with 2,000 metres of climbing, from April to October.",
   "multiDay": "Two days from Spa: the Wanne, Stockeu, Haute-Levée and Rosier loop, on the second day the Redoute and the Roche-aux-Faucons on the way to Liège.",
   "access": "Train to Liège or Spa, an hour by car from Aachen."
+ },
+ "riesengebirge": {
+  "character": "The highest ridge between Bohemia and Silesia: the Špindlerova bouda, the Černá hora, Horní Mísečky and the Okraj pass, each between five and thirteen kilometres. Short, steep climbs in spruce forest, from May to October.",
+  "multiDay": "Two days: from Špindlerův Mlýn up to the Špindlerova bouda and to Horní Mísečky, from Janské Lázně up the Černá hora and via Malá Úpa to the Okraj.",
+  "access": "Two hours by car from Dresden or Prague, train to Vrchlabí or Trutnov."
  }
 }

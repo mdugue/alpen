@@ -4388,5 +4388,47 @@
   "ascents": [
    "Hony (Ourthe)"
   ]
+ },
+ "spindlerova-bouda": {
+  "classicAscent": "7.2 km, 6.6 % from Špindlerův Mlýn",
+  "note": "The mountain hut on the ridge at the Polish border, the highest road point in the Giant Mountains. From Špindlerův Mlýn through spruce forest with hairpins; on into Poland only on foot or by bike on the closed road.",
+  "ascents": [
+   "Špindlerův Mlýn (south)"
+  ]
+ },
+ "przelecz-okraj": {
+  "classicAscent": "13.4 km, 4.0 % from Kowary",
+  "note": "The border pass between Kowary in Silesia and Malá Úpa in Bohemia, Pomezní Boudy in Czech. Long from Kowary through the forest, with flatter stretches; huts at the top and the view to the Sněžka.",
+  "ascents": [
+   "Kowary (north)"
+  ]
+ },
+ "horni-misecky": {
+  "classicAscent": "4.6 km, 6.7 % from Vítkovice",
+  "note": "The mountain village at the end of the road above Vítkovice, the start of the trails to the source of the Elbe. Short and steadily steep through spruce forest.",
+  "ascents": [
+   "Vítkovice (south)"
+  ]
+ },
+ "cerna-hora": {
+  "classicAscent": "9.3 km, 6.6 % from Janské Lázně",
+  "note": "The mountain road from the spa town of Janské Lázně to the Černá bouda below the summit of the Černá hora, closed to cars and signposted as a bike route. Hairpins in the forest at the bottom, ramps of up to 14 % at the top.",
+  "ascents": [
+   "Janské Lázně (east)"
+  ]
+ },
+ "jested": {
+  "classicAscent": "6.8 km, 6.6 % from Horní Hanychov",
+  "note": "The road up Liberec's home mountain to the TV tower with its hotel at just over 1,000 m, one of Czechia's landmarks. Steep and steady through the forest, over the open dome at the top.",
+  "ascents": [
+   "Horní Hanychov (Liberec)"
+  ]
+ },
+ "tanvaldsky-spicak": {
+  "classicAscent": "5.1 km, 5.7 % from Tanvald",
+  "note": "The ski hill above Tanvald in the Jizera Mountains, with a steep road up to the lookout tower. Short, with ramps over 12 %.",
+  "ascents": [
+   "Tanvald"
+  ]
  }
 }

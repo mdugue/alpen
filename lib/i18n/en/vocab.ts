@@ -28,6 +28,7 @@ export const vocab = {
     FR: "France",
     IT: "Italy",
     LI: "Liechtenstein",
+    PL: "Poland",
     SI: "Slovenia",
   },
   filter: {
@@ -135,6 +136,12 @@ export const vocab = {
       label: "Pyrenees",
       outside: "outside the Pyrenees",
     },
+    Riesengebirge: {
+      hint: "The mountain huts above Špindlerův Mlýn and Janské Lázně, the Okraj pass into Poland and the Ještěd above Liberec: short, steep climbs, a weekend from Dresden, Prague and Wrocław.",
+      inside: "in the Giant Mountains",
+      label: "Giant Mountains",
+      outside: "outside the Giant Mountains",
+    },
     Schwarzwald: {
       hint: "Schauinsland, Kandel, Feldberg and the Black Forest High Road: long climbs straight out of Freiburg, Karlsruhe or Basel.",
       inside: "in the Black Forest",
@@ -191,6 +198,7 @@ export const vocab = {
     Erzgebirge: "Ore Mountains",
     "Gran Canaria": "Gran Canaria",
     Harz: "Harz",
+    "Jeschken und Isergebirge": "Ještěd and Jizera Mountains",
     Jura: "Jura",
     Kantabrien: "Cantabria",
     Korsika: "Corsica",
@@ -202,6 +210,7 @@ export const vocab = {
     Ostalpen: "Eastern Alps",
     Pyrenäen: "Pyrenees",
     Rhön: "Rhön",
+    Riesengebirge: "Giant Mountains",
     Schwarzwald: "Black Forest",
     "Sierra Nevada": "Sierra Nevada",
     Teneriffa: "Tenerife",

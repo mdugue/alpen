@@ -6225,5 +6225,57 @@
     "highlights": "The view from the rock over the bend of the Ourthe."
    }
   ]
+ },
+ "spindlerova-bouda": {
+  "intro": "The classic of the Giant Mountains: up from the Elbe onto the ridge, the hut at the top and the view into Silesia.",
+  "sides": [
+   {
+    "character": "From Špindlerův Mlýn steadily through the forest, hairpins and ramps over 10 % in the upper part.",
+    "highlights": "The view from the ridge into Poland."
+   }
+  ]
+ },
+ "przelecz-okraj": {
+  "intro": "A true border pass across the Giant Mountains, quiet and long, with the Sněžka above the top.",
+  "sides": [
+   {
+    "character": "From Kowary moderate in the forest, with flat stretches between steeper ramps.",
+    "highlights": "The Sněžka above the top of the pass."
+   }
+  ]
+ },
+ "horni-misecky": {
+  "intro": "A short climb into the spruce forest, the huts and the trails to the source of the Elbe at the top.",
+  "sides": [
+   {
+    "character": "From Vítkovice steadily at around 7 % through the forest to the end of the road."
+   }
+  ]
+ },
+ "cerna-hora": {
+  "intro": "The hardest climb in the Giant Mountains, without cars: over 600 metres up to the plateau, the view over Bohemia at the top.",
+  "sides": [
+   {
+    "character": "From Janské Lázně in hairpins through the forest, steeper at the top at over 12 % on a narrow road.",
+    "highlights": "The view from the hut over the Bohemian foothills."
+   }
+  ]
+ },
+ "jested": {
+  "intro": "A mountain with a tower out of a science-fiction film: 450 metres up from Liberec, the view to the Giant Mountains and into Saxony at the top.",
+  "sides": [
+   {
+    "character": "From Horní Hanychov steadily at 6–7 % through the forest, the last hairpins open below the tower.",
+    "highlights": "The tower on the summit."
+   }
+  ]
+ },
+ "tanvaldsky-spicak": {
+  "intro": "A short, hard climb in the Jizera Mountains, a lookout tower above the forests at the top.",
+  "sides": [
+   {
+    "character": "Out of Tanvald moderate at first, then with ramps over 12 % through the forest."
+   }
+  ]
  }
 }
