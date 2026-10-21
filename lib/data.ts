@@ -335,12 +335,17 @@ export const staticParams = (): { kind: Segment; slug: string }[] => [
  * set (CI), the first of each kind. The ~760 entity pages are one explorer
  * rendered 760 times and cost five of the seven minutes a CI build took; the
  * rest render on their first request, which is what the e2e run exercises.
- * The deployment build leaves the variable unset and prerenders them all, so
- * a page that fails to render still fails a build on the pull request.
+ *
+ * The Vercel build samples too, for now: every prerendered entity page writes
+ * about 4 MB (the explorer's payload twice, as its segment and in the full
+ * page), and with ~1,800 of them the output alone filled the 8 GB build
+ * machine. Until the explorer's data leaves the page (thread "Speicherbedarf
+ * beim Vercel-Build"), the rest render on their first request there as well,
+ * under the layout's cache entry. A local `next build` still prerenders all.
  */
 export const prerenderParams = (): { kind: Segment; slug: string }[] => {
   const all = staticParams();
-  if (!process.env.PRERENDER_SAMPLE) return all;
+  if (!process.env.PRERENDER_SAMPLE && !process.env.VERCEL) return all;
   return all.filter((p, i) => all.findIndex((q) => q.kind === p.kind) === i);
 };
 
