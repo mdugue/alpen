@@ -271,11 +271,13 @@
             "glacier",
             "gorge",
             "reservoir",
+            "forest",
             "carfree",
             "toll",
             "hairpins",
             "cobbles",
-            "tunnels"
+            "tunnels",
+            "race"
           ]
         }
       },
@@ -289,6 +291,7 @@
         "enum": [
           "pass",
           "spur",
+          "climb",
           "plateau",
           "balcony",
           "valley"

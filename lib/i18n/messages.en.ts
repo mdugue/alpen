@@ -113,12 +113,12 @@ export const en = {
   },
   sidebar,
   site: {
-    claim:
-      "Passes, loops and cycling towns in the Alps and the Vosges – by rideability per half-month.",
+    claim: "Europe's climbs – when and where they are worth it.",
     description:
-      "Where to go with the road bike, and when? Passes in the Alps and the Vosges, ascents with elevation profiles, loops and cycling towns on one map – with rideability per half-month, weather and climate.",
+      "Where to go with the road bike, and when? Passes and climbs in the Alps and beyond, with elevation profiles, loops and cycling towns on one map – with rideability per half-month, weather and climate.",
     keywords: [
       "Alpine passes",
+      "cycling climbs",
       "road bike",
       "road cycling holiday",
       "cycling holiday Alps",

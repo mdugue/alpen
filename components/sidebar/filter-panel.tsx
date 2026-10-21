@@ -48,7 +48,7 @@ import {
   filterCount,
 } from "@/lib/filter-summary";
 import { fill } from "@/lib/i18n/fill";
-import { ROAD_TAGS } from "@/lib/regions";
+import { RANGE_TRIP, ROAD_TAGS, TRIPS } from "@/lib/regions";
 import type { RangeName } from "@/lib/regions";
 import type { RoadTag, RoadType, Status, Surface } from "@/lib/types";
 import { cn, TOUCH_CONTROL } from "@/lib/utils";
@@ -224,23 +224,39 @@ export const FilterBody = ({
       {/* The range first: it is the "where" before every other decision, and
           it is the one chip that moves the camera too – a range is a place,
           and a list of Jura roads under a picture of the Dolomites answers
-          only half the question. */}
-      {ranges.length > 1 && (
-        <ChipGroup id="f-ranges" label={t.sidebar.filters.range}>
-          {ranges.map((r) => (
-            <FilterChip
-              key={r}
-              label={words.range[r].label}
-              hint={words.range[r].hint}
-              count={countWith({ ranges: [r] })}
-              pressed={pickedRanges.includes(r)}
-              onPressedChange={() => onRange(r)}
+          only half the question. A score of ranges reads as two rows, the
+          holiday ranges and the weekend ones (`RANGE_TRIP`); with only one
+          kind of trip in the data the row needs no second word. */}
+      {ranges.length > 1 &&
+        TRIPS.map((trip) => {
+          const row = ranges.filter((r) => RANGE_TRIP[r] === trip);
+          if (row.length === 0) return null;
+          const split = row.length < ranges.length;
+          return (
+            <ChipGroup
+              key={trip}
+              id={`f-ranges-${trip}`}
+              label={
+                split
+                  ? `${t.sidebar.filters.range} · ${words.trip[trip]}`
+                  : t.sidebar.filters.range
+              }
             >
-              {words.range[r].label}
-            </FilterChip>
-          ))}
-        </ChipGroup>
-      )}
+              {row.map((r) => (
+                <FilterChip
+                  key={r}
+                  label={words.range[r].label}
+                  hint={words.range[r].hint}
+                  count={countWith({ ranges: [r] })}
+                  pressed={pickedRanges.includes(r)}
+                  onPressedChange={() => onRange(r)}
+                >
+                  {words.range[r].label}
+                </FilterChip>
+              ))}
+            </ChipGroup>
+          );
+        })}
 
       <ChipGroup id="f-status" label={t.sidebar.filters.status}>
         {ALL_STATUS.map((s: Status) => {

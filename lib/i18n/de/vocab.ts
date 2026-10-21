@@ -128,6 +128,10 @@ export const vocab = {
       hint: "Ein Stück ist gepflastert – Tremola, Vršič –, das ändert die Reifenwahl, nicht das Rad.",
       label: "Pflaster",
     },
+    forest: {
+      hint: "Fast ganz im Wald: im Hochsommer schattig, dafür ohne Fernblick.",
+      label: "Waldstraße",
+    },
     glacier: {
       hint: "Endet an einem Gletscher oder führt an ihm entlang.",
       label: "Gletscherstraße",
@@ -143,6 +147,10 @@ export const vocab = {
     panorama: {
       hint: "Für die Aussicht gebaut, und Name oder Streckenführung sagen das auch.",
       label: "Panoramastraße",
+    },
+    race: {
+      hint: "Eine große Rundfahrt oder ein Klassiker ist hier gefahren – Tour, Giro, Vuelta, Deutschland Tour.",
+      label: "Rennstrecke",
     },
     reservoir: {
       hint: "Die Straße gibt es wegen einer Staumauer; sie endet am See oder führt an ihm entlang.",
@@ -161,6 +169,10 @@ export const vocab = {
     balcony: {
       hint: "In eine Wand gehauen, ohne Gipfel, auf den die Fahrt zuläuft: Combe Laval, Gorges de la Bourne.",
       label: "Balkonstraße",
+    },
+    climb: {
+      hint: "Ein Anstieg auf eine Hochfläche oder einen Kamm, oben geht die Straße weiter: Albaufstiege, der Südabbruch des Erzgebirges.",
+      label: "Steige",
     },
     pass: {
       hint: "Ein Übergang: auf der einen Seite hinauf, auf der anderen hinunter.",
@@ -266,6 +278,11 @@ export const vocab = {
       hint: "Rennradläden mit Werkstatt und Leihrädern am Ort.",
       label: "Werkstätten & Verleih",
     },
+  },
+  /** How a range is travelled to (`RANGE_TRIP`): the two rows of range chips. */
+  trip: {
+    holiday: "Urlaub",
+    weekend: "Wochenende",
   },
   /** The unit words that are not international: the metres of climbing, and "about". */
   unit: {

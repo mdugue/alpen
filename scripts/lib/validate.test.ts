@@ -646,10 +646,13 @@ describe("suspectPoint", () => {
   test("each type is named in its own words", () => {
     expect(markerWords("pass").marker).toBe("Passpunkt");
     expect(markerWords("spur").marker).toBe("Scheitelpunkt");
+    // A Steige tops out at a plateau's edge, a Scheitel and not a saddle.
+    expect(markerWords("climb").marker).toBe("Scheitelpunkt");
     expect(markerWords("balcony").marker).toBe("Markerpunkt");
     for (const [type, word] of [
       ["pass", "Gipfelhöhe"],
       ["spur", "Scheitelhöhe"],
+      ["climb", "Scheitelhöhe"],
       ["plateau", "Markerhöhe"],
       ["balcony", "Markerhöhe"],
       ["valley", "Markerhöhe"],

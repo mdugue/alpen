@@ -1,8 +1,8 @@
 # So funktioniert die Karte
 
-Alpenpässe ist eine Rennradkarte für die Urlaubsplanung in den Alpen: Sie
-zeigt, wo und wann sich Reiseziele, Pässe, Rundtouren und Radorte lohnen –
-bewertet für einen Halbmonat, den du wählst.
+Bergauf ist eine Rennradkarte für die Urlaubsplanung in den Alpen und den
+Gebirgen darüber hinaus: Sie zeigt, wo und wann sich Reiseziele, Pässe,
+Rundtouren und Radorte lohnen – bewertet für einen Halbmonat, den du wählst.
 
 ## Welche Fragen die Karte beantwortet
 
@@ -41,7 +41,8 @@ abgefragt, nirgends gespeichert und nicht in den Link geschrieben.
 Die meisten Einträge sind Pässe, aber nicht alle – deshalb heißt der Reiter
 „Straßen“. Jede Straße hat genau eine **Art**: Pass (auf der einen Seite
 hinauf, auf der anderen hinunter), Stichstraße (endet oben, zurück geht es
-dieselbe Auffahrt), Höhenstraße, Balkonstraße oder Talstraße. Dazu kommen
+dieselbe Auffahrt), Steige (hinauf auf eine Hochfläche, oben geht es
+weiter), Höhenstraße, Balkonstraße oder Talstraße. Dazu kommen
 **Merkmale** wie „Panoramastraße“, „Autofrei“, „Maut“ oder „Kehrenbauwerk“.
 Bei „Maut“ sagt die Notiz der Straße, ob auch Räder zahlen.
 

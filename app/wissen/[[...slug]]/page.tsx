@@ -68,7 +68,7 @@ const DEV_TITLE = "Entwicklerdokumentation";
 const DEV_LEAD =
   "Wie die App gebaut ist, auf Englisch: AGENTS.md ist der Index, und die Dokumente hier sind die, die er aufführt.";
 const ENTRY_LEAD =
-  "Woher die Daten der Alpenpässe-Karte kommen, wie Skalen und Status entstehen und was davon redaktionell eingeschätzt ist.";
+  "Woher die Daten von Bergauf kommen, wie Skalen und Status entstehen und was davon redaktionell eingeschätzt ist.";
 
 /** Title, description and address of a place, for the metadata. */
 const headOf = (

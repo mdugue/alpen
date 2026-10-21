@@ -38,6 +38,22 @@ export const RANGE_REGIONS = {
   Vogesen: ["Vogesen"],
 } as const satisfies Record<RangeName, readonly string[]>;
 
+/**
+ * How a range is travelled to: for a weekend from home, or for a holiday
+ * week. A property of the range, not a filter – it sorts the range chips
+ * into two rows so that a score of them stays readable
+ * (docs/plans/34-beyond-the-alps.md). The order is the display order.
+ */
+export const TRIPS = ["holiday", "weekend"] as const;
+export type TripName = (typeof TRIPS)[number];
+
+export const RANGE_TRIP: Record<RangeName, TripName> = {
+  Alpen: "holiday",
+  Jura: "weekend",
+  Pyrenäen: "holiday",
+  Vogesen: "weekend",
+};
+
 /** The flat union, in range order – what the schema's `Region` enum is made of. */
 export const REGIONS = [
   ...RANGE_REGIONS.Alpen,
@@ -137,13 +153,18 @@ export const TOWN_TAGS = [
  * What kind of road an entry is: how it lies in the terrain. Single-valued and
  * mutually exclusive, and it decides how the route quality gate measures the
  * entry (`scripts/lib/validate.ts`): if the ascents climb to the entry's own
- * point it is a `pass` or a `spur` and is measured as a climb; if the ride is
- * the traverse itself it is one of the other three and is measured the way a
- * tour is. The order is the display order in the filter and the scales dialog.
+ * point it is a `pass`, a `spur` or a `climb` and is measured as a climb; if
+ * the ride is the traverse itself it is one of the other three and is measured
+ * the way a tour is. A `climb` (a "Steige") is the low ranges' commonest kind:
+ * a through road that gains the edge of a plateau or a ridge and carries on up
+ * there, so its top is neither a saddle nor a dead end
+ * (docs/plans/34-beyond-the-alps.md). The order is the display order in the
+ * filter and the scales dialog.
  */
 export const ROAD_TYPES = [
   "pass",
   "spur",
+  "climb",
   "plateau",
   "balcony",
   "valley",
@@ -209,11 +230,13 @@ export const ROAD_TAGS = [
   "glacier",
   "gorge",
   "reservoir",
+  "forest",
   "carfree",
   "toll",
   "hairpins",
   "cobbles",
   "tunnels",
+  "race",
 ] as const;
 
 export type RoadTagName = (typeof ROAD_TAGS)[number];

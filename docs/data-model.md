@@ -52,7 +52,7 @@ vocabularies (regions, countries, road types, road and town labels) live in
   "aliases": ["Galibier"], // optional: other spellings people search for
   "country": "FR", // COUNTRIES in lib/regions.ts; "CH/IT" for border passes
   "region": "Westalpen", // REGIONS in lib/regions.ts; the range follows from it, see below
-  "type": "pass", // required: pass | spur | plateau | balcony | valley
+  "type": "pass", // required: pass | spur | climb | plateau | balcony | valley
   "tags": ["panorama", "toll"], // optional: editorial labels in ROAD_TAGS order, see below
   "lat": 45.064,
   "lon": 6.408,
@@ -160,15 +160,15 @@ are independent of each other and of `maintained`:
 erDiagram
   ROAD {
     string slug
-    enum type "pass | spur | plateau | balcony | valley"
-    list tags "panorama, glacier, gorge, reservoir, carfree, toll, hairpins, cobbles, tunnels"
+    enum type "pass | spur | climb | plateau | balcony | valley"
+    list tags "panorama, glacier, gorge, reservoir, forest, carfree, toll, hairpins, cobbles, tunnels, race"
     enum surface "asphalt | gravel | mixed"
     bool roadSummit "technical, only on a pass: no mountain_pass node"
     string branchOf "only on a spur: the road it is a detour from"
     list ascents "from, label – plus to, km for a traverse"
   }
   GATE {
-    limits ascent "pass, spur: climbs to the marker"
+    limits ascent "pass, spur, climb: climbs to the marker"
     limits traverse "plateau, balcony, valley: measured as a tour"
   }
   ROAD ||--|| GATE : "measured by type"
@@ -177,13 +177,14 @@ erDiagram
 **`type`** is topology: how the road lies in the terrain. Single-valued,
 required on every entry, and it decides how the route quality gate measures
 it. The rule is operational, not aesthetic: if the ascents climb to the
-entry's own point it is a `pass` or a `spur`; if the ride is the traverse
-itself it is one of the other three.
+entry's own point it is a `pass`, a `spur` or a `climb`; if the ride is the
+traverse itself it is one of the other three.
 
 | `type`    | Label (UI)   | What it is                                                                                                                                                                                                                                                                                               | Examples                                             |
 | --------- | ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------- |
 | `pass`    | Pass         | a crossing: up one side, down another                                                                                                                                                                                                                                                                    | Stilfser Joch, Galibier, Nockalmstraße               |
 | `spur`    | Stichstraße  | a climb to a point where the road ends                                                                                                                                                                                                                                                                   | Tre Cime, Ötztaler Gletscherstraße, Kitzbüheler Horn |
+| `climb`   | Steige       | a climb onto a plateau or a ridge, where the road carries on: neither a saddle nor a dead end (plan 34)                                                                                                                                                                                                  | Albaufstiege, Klínovec from Jáchymov                 |
 | `surface` | Belag        | what it is rolled on (plan 27) – not a type, the second axis: `asphalt`, `gravel`, or `mixed` for asphalt with a gravel stretch a road bike cannot take; it picks the routing profile and, unpaved, the snow cover as the closing rung (`docs/scales.md`); a loop carries at least what its roads demand | Assietta `gravel`, Finestre `mixed`                  |
 | `plateau` | Höhenstraße  | stays up instead of crossing once: high road, plateau                                                                                                                                                                                                                                                    | Zillertaler Höhenstraße, Seiser Alm, Ritten          |
 | `balcony` | Balkonstraße | cut into a wall, no summit the ride aims at                                                                                                                                                                                                                                                              | Combe Laval, Gorges de la Bourne, Gorges du Cians    |
@@ -192,7 +193,7 @@ itself it is one of the other three.
 A `spur` cannot be crossed, so `data:check` warns when a tour lists one and
 the detail panel says so under "Auffahrten". The three traverse types carry
 `to` and `km` on every ascent and are measured against the tour limits; a
-`pass` or `spur` ascent must not carry them (see the `curate-data` skill).
+`pass`, `spur` or `climb` ascent must not carry them (see the `curate-data` skill).
 
 **`tags`** is character: what riding the road is like. Multi-valued,
 optional, editorial in the exact sense of the town labels – what a planner
@@ -209,11 +210,13 @@ a differently sorted row.
 | `glacier`   | Gletscherstraße   | ends at or runs along a glacier                                                          |
 | `gorge`     | Schlucht          | a significant stretch runs through a gorge or canyon                                     |
 | `reservoir` | Stausee           | the road exists because of a dam and ends at or along the lake                           |
+| `forest`    | Waldstraße        | almost entirely in the woods: shade in July, no view                                     |
 | `carfree`   | Autofrei          | closed to cars, at least on fixed days (say which in `note`)                             |
 | `toll`      | Maut              | a fee is charged; whether bikes pay goes into `note`                                     |
 | `hairpins`  | Kehrenbauwerk     | the hairpins are a monument in themselves (Tremola, Vršič, San Boldo)                    |
 | `cobbles`   | Pflaster          | a cobbled stretch – Tremola, Vršič – changes the tyre, not the bike; gravel is `surface` |
 | `tunnels`   | Tunnel & Galerien | unlit tunnels or galleries a rider has to plan for                                       |
+| `race`      | Rennstrecke       | a grand tour or a classic raced over it, documented – never guessed from a profile       |
 
 `toll` and `season.maintained` are independent: maintained means cleared, toll
 means paid for. The Großglockner is both, the Simplon is cleared and free, a

@@ -53,6 +53,7 @@ that goal; features that only add route-level precision rank last.
 | 31  | [The panel as a model](31-panel-model.md)                             | testable panel, 16 finished, 02, 12       | L      | 15, 16, 28           | done ([#62](https://github.com/mdugue/alpen/pull/62))                                        |
 | 32  | [The pipeline as plan → execute → apply](32-pipeline-planner.md)      | pipeline testable offline, one retry rule | L      | 00                   | done ([#62](https://github.com/mdugue/alpen/pull/62))                                        |
 | 33  | [Functional core, imperative shell](33-functional-core.md)            | the target the five add up to             | M      | 28–32                | done ([#62](https://github.com/mdugue/alpen/pull/62))                                        |
+| 34  | [Beyond the Alps](34-beyond-the-alps.md)                              | "where" for weekends and winter           | M + XL | 25, 26, 14           | in progress – plan decided 2026-10-21                                                        |
 | –   | UI/UX audit round (no plan document)                                  | "where", finding things, a11y             | M      | –                    | [in progress](https://github.com/mdugue/alpen/pull/47)                                       |
 
 Effort: S ≤ 1 day, M 2–3 days, L 4–6 days. 09, 10 and 11 can be interleaved

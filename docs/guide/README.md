@@ -1,6 +1,7 @@
-# Alpenpässe – Wissen
+# Bergauf – Wissen
 
-Alpenpässe ist eine Rennradkarte für die Urlaubsplanung in den Alpen. Diese
+Bergauf ist eine Rennradkarte für die Urlaubsplanung in den Alpen und den
+Gebirgen darüber hinaus. Diese
 Seiten erklären, was die Karte zeigt, woher ihre Daten kommen, wie
 Bewertungen und Status entstehen und wo ihre Grenzen liegen.
 

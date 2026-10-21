@@ -12,14 +12,16 @@
 import { TOKENS } from "@/lib/palette";
 
 /**
- * The name, in every language – a name is not translated. It stays
- * "Alpenpässe" with the Jura, the Vosges and the Pyrenees in the vocabulary
- * (plans 25 and 26): the domain is `alpen.manuel.fyi`, and a rename waits for
- * a fourth range to make the stretch a lie. The tagline, the description and
- * the claim are words, so they live in the dictionaries (`site` in
- * `lib/i18n/messages.*.ts`).
+ * The name, in every language – a name is not translated. It was
+ * "Alpenpässe" until the map reached past the Alps to the Erzgebirge, the
+ * Black Forest and the islands (docs/plans/34-beyond-the-alps.md): a climb
+ * there rarely ends on a saddle, so neither "Alpen" nor "Pässe" was true any
+ * more. The domain is still `alpen.manuel.fyi`; `siteUrl` reads the host from
+ * the environment, so moving it is a deployment setting. The tagline, the
+ * description and the claim are words, so they live in the dictionaries
+ * (`site` in `lib/i18n/messages.*.ts`).
  */
-export const SITE_NAME = "Alpenpässe";
+export const SITE_NAME = "Bergauf";
 
 /**
  * Absolute base URL. Vercel provides the production host; a preview deployment

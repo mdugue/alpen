@@ -109,6 +109,10 @@ export const vocab = {
       hint: "A stretch is cobbled – Tremola, Vršič – which changes the tyre choice, not the bike.",
       label: "Cobbles",
     },
+    forest: {
+      hint: "Almost entirely in the woods: shady in high summer, but without a view.",
+      label: "Forest road",
+    },
     glacier: {
       hint: "Ends at a glacier or runs alongside one.",
       label: "Glacier road",
@@ -124,6 +128,10 @@ export const vocab = {
     panorama: {
       hint: "Built for the view, and the name or the routing says so.",
       label: "Panoramic road",
+    },
+    race: {
+      hint: "A grand tour or a classic has raced here – Tour, Giro, Vuelta, Deutschland Tour.",
+      label: "Race route",
     },
     reservoir: {
       hint: "The road exists because of a dam; it ends at the lake or runs along it.",
@@ -142,6 +150,10 @@ export const vocab = {
     balcony: {
       hint: "Cut into a wall, with no summit the ride runs towards: Combe Laval, Gorges de la Bourne.",
       label: "Balcony road",
+    },
+    climb: {
+      hint: "A climb onto a plateau or a ridge, where the road carries on: the Swabian Jura's escarpment, the Ore Mountains' southern edge.",
+      label: "Escarpment climb",
     },
     pass: {
       hint: "A crossing: up on one side, down on the other.",
@@ -247,6 +259,11 @@ export const vocab = {
       hint: "Road-bike shops with a workshop and rental bikes in town.",
       label: "Workshops & rental",
     },
+  },
+  /** How a range is travelled to (`RANGE_TRIP`): the two rows of range chips. */
+  trip: {
+    holiday: "Holiday",
+    weekend: "Weekend",
   },
   unit: {
     approx: "approx.",
