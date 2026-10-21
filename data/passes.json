@@ -20731,5 +20731,241 @@
     "label": "Valderice (Ost)"
    }
   ]
+ },
+ {
+  "slug": "mur-de-huy",
+  "surface": "asphalt",
+  "name": "Mur de Huy",
+  "type": "climb",
+  "tags": [
+   "race"
+  ],
+  "country": "BE",
+  "region": "Ardennen",
+  "lat": 50.5128,
+  "lon": 5.2543,
+  "elevation": 205,
+  "classicAscent": "1,3 km, 9,6 % ab Huy",
+  "beauty": 2,
+  "fame": 5,
+  "difficulty": 3,
+  "traffic": 2,
+  "season": null,
+  "note": "Die Zielrampe der Flèche Wallonne, von der Maas in Huy den Chemin des Chapelles hinauf zur Kapelle Notre-Dame de la Sarte. Kurz, aber mit Kurven über 20 %.",
+  "aliases": [
+   "Chemin des Chapelles"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 50.5197,
+     "lon": 5.2397
+    },
+    "label": "Huy (Maas)"
+   }
+  ]
+ },
+ {
+  "slug": "cote-de-la-redoute",
+  "surface": "asphalt",
+  "name": "Côte de la Redoute",
+  "type": "climb",
+  "tags": [
+   "race"
+  ],
+  "country": "BE",
+  "region": "Ardennen",
+  "lat": 50.4923,
+  "lon": 5.6994,
+  "elevation": 290,
+  "classicAscent": "1,6 km, 9,4 % ab Remouchamps",
+  "beauty": 2,
+  "fame": 4,
+  "difficulty": 3,
+  "traffic": 2,
+  "season": null,
+  "note": "Der bekannteste Anstieg von Lüttich–Bastogne–Lüttich, von Remouchamps steil an der Autobahn vorbei hinauf; auf dem Asphalt die Namen der Fans.",
+  "aliases": [
+   "La Redoute",
+   "Redoute"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 50.4795,
+     "lon": 5.7126
+    },
+    "label": "Remouchamps"
+   }
+  ]
+ },
+ {
+  "slug": "cote-de-stockeu",
+  "surface": "asphalt",
+  "name": "Côte de Stockeu",
+  "type": "climb",
+  "tags": [
+   "race",
+   "forest"
+  ],
+  "country": "BE",
+  "region": "Ardennen",
+  "lat": 50.3701,
+  "lon": 5.9481,
+  "elevation": 500,
+  "classicAscent": "1,0 km, 12 % ab Stavelot",
+  "beauty": 3,
+  "fame": 3,
+  "difficulty": 3,
+  "traffic": 2,
+  "season": null,
+  "note": "Die steilste Rampe von Lüttich–Bastogne–Lüttich, aus dem Tal der Amblève bei Stavelot durch den Wald; oben das Denkmal für Eddy Merckx.",
+  "aliases": [
+   "Stockeu"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 50.388,
+     "lon": 5.933
+    },
+    "label": "Stavelot"
+   }
+  ]
+ },
+ {
+  "slug": "col-de-la-haute-levee",
+  "surface": "asphalt",
+  "name": "Col de la Haute-Levée",
+  "type": "pass",
+  "tags": [
+   "race",
+   "forest"
+  ],
+  "country": "BE",
+  "region": "Ardennen",
+  "lat": 50.4269,
+  "lon": 5.9302,
+  "elevation": 510,
+  "classicAscent": "3,9 km, 5,4 % ab Stavelot",
+  "beauty": 3,
+  "fame": 2,
+  "difficulty": 2,
+  "traffic": 2,
+  "season": null,
+  "note": "Der Anstieg von Stavelot nach Norden Richtung Francorchamps, fester Teil von Lüttich–Bastogne–Lüttich. Gleichmäßig, mit dem steilsten Stück am Anfang.",
+  "aliases": [
+   "Haute-Levée"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 50.3942,
+     "lon": 5.931
+    },
+    "label": "Stavelot"
+   }
+  ]
+ },
+ {
+  "slug": "col-du-rosier",
+  "surface": "asphalt",
+  "name": "Col du Rosier",
+  "type": "pass",
+  "tags": [
+   "race",
+   "forest"
+  ],
+  "country": "BE",
+  "region": "Ardennen",
+  "lat": 50.4489,
+  "lon": 5.8789,
+  "elevation": 560,
+  "classicAscent": "6,3 km, 4,1 % ab La Gleize",
+  "beauty": 3,
+  "fame": 2,
+  "difficulty": 2,
+  "traffic": 2,
+  "season": null,
+  "note": "Der höchste und längste Anstieg im Finale von Lüttich–Bastogne–Lüttich, aus dem Amblève-Tal durch die Wälder über Spa.",
+  "aliases": [
+   "Rosier"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 50.4112,
+     "lon": 5.8465
+    },
+    "label": "La Gleize"
+   }
+  ]
+ },
+ {
+  "slug": "cote-de-wanne",
+  "surface": "asphalt",
+  "name": "Côte de Wanne",
+  "type": "climb",
+  "tags": [
+   "race"
+  ],
+  "country": "BE",
+  "region": "Ardennen",
+  "lat": 50.3581,
+  "lon": 5.9146,
+  "elevation": 480,
+  "classicAscent": "2,7 km, 7,3 % ab Trois-Ponts",
+  "beauty": 3,
+  "fame": 2,
+  "difficulty": 2,
+  "traffic": 2,
+  "season": null,
+  "note": "Der Anstieg von Trois-Ponts hinauf zum Dorf Wanne, in Lüttich–Bastogne–Lüttich der erste der drei Schläge Wanne, Stockeu und Haute-Levée.",
+  "aliases": [
+   "Wanne"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 50.3727,
+     "lon": 5.8703
+    },
+    "label": "Trois-Ponts"
+   }
+  ]
+ },
+ {
+  "slug": "cote-de-la-roche-aux-faucons",
+  "surface": "asphalt",
+  "name": "Côte de la Roche-aux-Faucons",
+  "type": "climb",
+  "tags": [
+   "race",
+   "panorama"
+  ],
+  "country": "BE",
+  "region": "Ardennen",
+  "lat": 50.5495,
+  "lon": 5.5755,
+  "elevation": 225,
+  "classicAscent": "1,9 km, 7,8 % ab Hony",
+  "beauty": 3,
+  "fame": 3,
+  "difficulty": 3,
+  "traffic": 2,
+  "season": null,
+  "note": "Die Rampe über dem Ourthetal bei Esneux, in Lüttich–Bastogne–Lüttich oft der Ort des entscheidenden Angriffs. Oben der Felsen mit dem Blick über die Ourtheschleife.",
+  "aliases": [
+   "Roche-aux-Faucons"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 50.539,
+     "lon": 5.583
+    },
+    "label": "Hony (Ourthe)"
+   }
+  ]
  }
 ]

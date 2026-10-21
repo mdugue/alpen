@@ -31,6 +31,7 @@ export const RANGES = [
   "Andalusien",
   "Apennin",
   "Sizilien",
+  "Ardennen",
 ] as const;
 
 export type RangeName = (typeof RANGES)[number];
@@ -53,6 +54,7 @@ export const RANGE_REGIONS = {
   Alpen: ["Westalpen", "Zentralalpen", "Ostalpen", "Dolomiten"],
   Andalusien: ["Sierra Nevada", "Almería"],
   Apennin: ["Abruzzen", "Latium", "Toskana", "Marken"],
+  Ardennen: ["Ardennen"],
   Bayerwald: ["Bayerwald", "Böhmerwald"],
   Erzgebirge: ["Erzgebirge"],
   Harz: ["Harz"],
@@ -82,6 +84,7 @@ export const RANGE_TRIP: Record<RangeName, TripName> = {
   Alpen: "holiday",
   Andalusien: "holiday",
   Apennin: "holiday",
+  Ardennen: "weekend",
   Bayerwald: "weekend",
   Erzgebirge: "weekend",
   Harz: "weekend",
@@ -134,6 +137,7 @@ export const REGIONS = [
   ...RANGE_REGIONS.Andalusien,
   ...RANGE_REGIONS.Apennin,
   ...RANGE_REGIONS.Sizilien,
+  ...RANGE_REGIONS.Ardennen,
 ] as const;
 
 /** A box in degrees, both ends inclusive. */
@@ -161,6 +165,7 @@ export const RANGE_BOUNDS: Record<RangeName, GeoBox> = {
   Alpen: { lat: [43, 49], lon: [4, 16] },
   Andalusien: { lat: [36.6, 37.6], lon: [-4, -2] },
   Apennin: { lat: [41.8, 44.6], lon: [9.8, 14.6] },
+  Ardennen: { lat: [50.2, 50.8], lon: [5.1, 6.3] },
   Bayerwald: { lat: [48.6, 49.4], lon: [12.5, 14.5] },
   Erzgebirge: { lat: [50.2, 51], lon: [12.2, 14.2] },
   Harz: { lat: [51.4, 52.1], lon: [10.1, 11.4] },
@@ -215,6 +220,7 @@ export const COUNTRIES = [
   "AD",
   "LI",
   "CZ",
+  "BE",
 ] as const;
 
 /** "CH/IT" → ["CH", "IT"]. */

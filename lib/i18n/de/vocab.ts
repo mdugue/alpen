@@ -25,6 +25,7 @@ export const vocab = {
   country: {
     AD: "Andorra",
     AT: "Österreich",
+    BE: "Belgien",
     CH: "Schweiz",
     CZ: "Tschechien",
     DE: "Deutschland",
@@ -87,6 +88,12 @@ export const vocab = {
       inside: "im Apennin",
       label: "Apennin",
       outside: "außerhalb des Apennins",
+    },
+    Ardennen: {
+      hint: "Die Anstiege von Lüttich–Bastogne–Lüttich und der Mur de Huy: kurz, steil und berühmt, ein Wochenende von Köln, Aachen und Brüssel.",
+      inside: "in den Ardennen",
+      label: "Ardennen",
+      outside: "außerhalb der Ardennen",
     },
     Bayerwald: {
       hint: "Die Arberstraßen über Bodenmais und Bayerisch Eisenstein, Dreisessel und Kleť: Waldberge an der tschechischen Grenze für ein Wochenende.",
@@ -195,6 +202,7 @@ export const vocab = {
   region: {
     Abruzzen: "Abruzzen",
     Almería: "Almería",
+    Ardennen: "Ardennen",
     Asturien: "Asturien",
     Bayerwald: "Bayerischer Wald",
     Böhmerwald: "Böhmerwald",

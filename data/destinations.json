@@ -1681,5 +1681,24 @@
   "character": "Ein Vulkan mit vier Auffahrten auf 1800 bis 1900 m: Nicolosi, Zafferana und Ragalna zum Rifugio Sapienza, Linguaglossa nach Piano Provenzana. Lange, gleichmäßige Anstiege mit Blick aufs Meer, von März bis November.",
   "multiDay": "Drei Tage: der Ätna von Süden über Nicolosi, von Osten über Zafferana und von Norden über Linguaglossa.",
   "access": "Flug nach Catania, von dort eine halbe Stunde nach Nicolosi."
+ },
+ {
+  "slug": "ardennen-klassiker",
+  "name": "Ardennen-Klassiker",
+  "country": "BE",
+  "center": {
+   "lat": 50.43,
+   "lon": 5.86
+  },
+  "radiusKm": 14,
+  "baseTowns": [
+   "spa",
+   "stavelot"
+  ],
+  "include": [],
+  "exclude": [],
+  "character": "Die Anstiege aus dem Finale von Lüttich–Bastogne–Lüttich auf engem Raum: Redoute, Rosier, Wanne, Stockeu und Haute-Levée, jeder zwischen einem und sechs Kilometern. Keine Pässe, aber eine Runde mit 2000 Höhenmetern, von April bis Oktober.",
+  "multiDay": "Zwei Tage von Spa: die Schleife Wanne, Stockeu, Haute-Levée und Rosier, am zweiten Tag die Redoute und die Roche-aux-Faucons auf dem Weg nach Lüttich.",
+  "access": "Bahn bis Lüttich oder Spa, mit dem Auto eine Stunde von Aachen."
  }
 ]

@@ -8817,5 +8817,78 @@
     "character": "Von Valderice kürzer und ruhiger durch Pinien."
    }
   ]
+ },
+ "mur-de-huy": {
+  "intro": "Ein Kilometer, den jeder Radfahrer aus dem Fernsehen kennt: zwischen Häusern und Kapellen, die steilste Kurve so steil, dass man im Sattel steht oder absteigt.",
+  "sides": [
+   {
+    "character": "Aus Huy erst mäßig, dann zwischen den Kapellen mit Rampen bis über 20 %, oben flacher bis zur Kirche.",
+    "hazards": [
+     "steep"
+    ],
+    "highlights": "Die Kehre bei den Kapellen, wo die Flèche entschieden wird."
+   }
+  ]
+ },
+ "cote-de-la-redoute": {
+  "intro": "Der Hausberg der Doyenne: kurz und steil, und an jedem Wochenende voller Radfahrer, die ihre Zeit mit den Profis vergleichen.",
+  "sides": [
+   {
+    "character": "Von Remouchamps nach einem flachen Anlauf sofort steil, über die Autobahnbrücke mit Rampen um 12 %.",
+    "hazards": [
+     "steep"
+    ],
+    "highlights": "Die bemalte Straße mit den Namen der Fahrer."
+   }
+  ]
+ },
+ "cote-de-stockeu": {
+  "intro": "Ein Kilometer Wand im Wald, und oben steht Merckx in Bronze, der hier seine Angriffe begann.",
+  "sides": [
+   {
+    "character": "Von Stavelot kurz flach, dann eine gerade, steile Rampe durch den Wald, um 12 %.",
+    "hazards": [
+     "steep"
+    ],
+    "highlights": "Das Merckx-Denkmal oben am Waldrand."
+   }
+  ]
+ },
+ "col-de-la-haute-levee": {
+  "intro": "Einer der längeren Ardennenanstiege: vier Kilometer durch Wald und Weiden, nahe der Rennstrecke von Spa-Francorchamps.",
+  "sides": [
+   {
+    "character": "Aus Stavelot steil heraus, dann gleichmäßiger um 5 % bis zur Höhe."
+   }
+  ]
+ },
+ "col-du-rosier": {
+  "intro": "Ein Waldanstieg ohne Wände, aber lang genug, um im Rennen zu sortieren: sechs Kilometer bis auf die Hochfläche über Spa.",
+  "sides": [
+   {
+    "character": "Von La Gleize mäßig und gleichmäßig durch den Wald, oben offen."
+   }
+  ]
+ },
+ "cote-de-wanne": {
+  "intro": "Ein offener Hang über dem Tal der Salm, mit einer steilen Mitte und dem Blick zurück über Trois-Ponts.",
+  "sides": [
+   {
+    "character": "Von Trois-Ponts erst steil, in der Mitte über 10 %, oben flacher bis Wanne.",
+    "highlights": "Der Blick zurück über Trois-Ponts."
+   }
+  ]
+ },
+ "cote-de-la-roche-aux-faucons": {
+  "intro": "Der letzte große Anstieg vor Lüttich: kurz und steil durch ein Dorf, oben ein Aussichtsfelsen über der Ourthe.",
+  "sides": [
+   {
+    "character": "Von der Ourthe bei Hony sofort steil, um 8–10 %, durch die Häuser bis auf die Höhe.",
+    "hazards": [
+     "steep"
+    ],
+    "highlights": "Der Blick vom Felsen über die Ourtheschleife."
+   }
+  ]
  }
 }

@@ -61,6 +61,26 @@ and the way the range chips are read once there are twenty of them.
    the rule (Lochenpass, the Hengen above Bad Urach), and a range of two is
    a list of roads, not a destination. It stays a candidate for a later
    rule that counts short steep ramps.
+   Stage 3 adds four more ranges below eight, each for the same reason – a
+   destination riders travel to, whose other roads the rule leaves out:
+   - The Sierra Nevada with Almería holds six (Hoya de la Mora, Purche,
+     Collado de las Sabinas, Ragua, Calar Alto, Velefique); the rest is
+     gravel or a road the router will not take.
+   - Sicily holds six (Etna south and north, Piano Battaglia, Portella
+     Femmina Morta, Portella Mandrazzi, Erice); Cesarò and Petralia stay
+     under 4 %. It is its own range and not part of the Apennines, because
+     a box from Tuscany to Etna frames below zoom 5.65.
+   - The Giant Mountains with the Ještěd and the Jizera Mountains hold six
+     (Špindlerova bouda, Okraj, Horní Mísečky, Černá hora, Ještěd,
+     Tanvaldský Špičák); the Okraj from Kowary at 4.0 % is held in by its
+     570 m.
+   - The Tatras hold five (Štrbské Pleso, Čertovica, Chopok south, Jasná,
+     Gliczarów Górny); Štrbské Pleso at 3.7 % is held in by its 500 m, and
+     the Polish passes around Bukowina and Łapszanka stay under 3.5 %.
+     The Ardennes come in by race alone: seven climbs of Liège–Bastogne–Liège
+     and the Flèche Wallonne, none of which gains 250 m. The Eifel (Hohe
+     Acht, 3.8 %) and the Sauerland (Kahler Asten, 3.1 %) were measured and
+     do not come in, so the range is the Ardennes without them.
 3. **The order** is by what each range adds to the app's two questions:
    - Stage 1: Erzgebirge (the pilot: a low range, a new country, climbs that
      are not passes), Black Forest, Mallorca (March and November).

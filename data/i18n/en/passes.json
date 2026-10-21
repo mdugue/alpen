@@ -4339,5 +4339,54 @@
    "Trapani (west)",
    "Valderice (east)"
   ]
+ },
+ "mur-de-huy": {
+  "classicAscent": "1.3 km, 9.6 % from Huy",
+  "note": "The finishing ramp of the Flèche Wallonne, from the Meuse in Huy up the Chemin des Chapelles to the chapel of Notre-Dame de la Sarte. Short, but with bends over 20 %.",
+  "ascents": [
+   "Huy (Meuse)"
+  ]
+ },
+ "cote-de-la-redoute": {
+  "classicAscent": "1.6 km, 9.4 % from Remouchamps",
+  "note": "The best-known climb of Liège–Bastogne–Liège, steeply up from Remouchamps past the motorway; the fans' names painted on the tarmac.",
+  "ascents": [
+   "Remouchamps"
+  ]
+ },
+ "cote-de-stockeu": {
+  "classicAscent": "1.0 km, 12 % from Stavelot",
+  "note": "The steepest ramp of Liège–Bastogne–Liège, out of the Amblève valley near Stavelot through the forest; the monument to Eddy Merckx at the top.",
+  "ascents": [
+   "Stavelot"
+  ]
+ },
+ "col-de-la-haute-levee": {
+  "classicAscent": "3.9 km, 5.4 % from Stavelot",
+  "note": "The climb north from Stavelot towards Francorchamps, a fixture of Liège–Bastogne–Liège. Steady, with the steepest stretch at the start.",
+  "ascents": [
+   "Stavelot"
+  ]
+ },
+ "col-du-rosier": {
+  "classicAscent": "6.3 km, 4.1 % from La Gleize",
+  "note": "The highest and longest climb in the finale of Liège–Bastogne–Liège, out of the Amblève valley through the forests above Spa.",
+  "ascents": [
+   "La Gleize"
+  ]
+ },
+ "cote-de-wanne": {
+  "classicAscent": "2.7 km, 7.3 % from Trois-Ponts",
+  "note": "The climb from Trois-Ponts up to the village of Wanne, in Liège–Bastogne–Liège the first of the three blows Wanne, Stockeu and Haute-Levée.",
+  "ascents": [
+   "Trois-Ponts"
+  ]
+ },
+ "cote-de-la-roche-aux-faucons": {
+  "classicAscent": "1.9 km, 7.8 % from Hony",
+  "note": "The ramp above the Ourthe valley near Esneux, often where the decisive attack comes in Liège–Bastogne–Liège. The rock at the top with the view over the bend of the Ourthe.",
+  "ascents": [
+   "Hony (Ourthe)"
+  ]
  }
 }

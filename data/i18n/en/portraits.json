@@ -6164,5 +6164,66 @@
     "character": "From Valderice shorter and quieter through pines."
    }
   ]
+ },
+ "mur-de-huy": {
+  "intro": "A kilometre every cyclist knows from television: between houses and chapels, the steepest bend so steep that you either stand on the pedals or walk.",
+  "sides": [
+   {
+    "character": "Out of Huy moderate at first, then between the chapels with ramps of more than 20 %, flatter at the top up to the church.",
+    "highlights": "The bend by the chapels where the Flèche is decided."
+   }
+  ]
+ },
+ "cote-de-la-redoute": {
+  "intro": "The home climb of La Doyenne: short and steep, and full of cyclists every weekend comparing their time with the pros.",
+  "sides": [
+   {
+    "character": "From Remouchamps steep right after a flat run-in, across the motorway bridge with ramps of around 12 %.",
+    "highlights": "The painted road with the riders' names."
+   }
+  ]
+ },
+ "cote-de-stockeu": {
+  "intro": "A kilometre of wall in the forest, and at the top Merckx stands in bronze, who started his attacks here.",
+  "sides": [
+   {
+    "character": "From Stavelot briefly flat, then a straight, steep ramp through the forest at around 12 %.",
+    "highlights": "The Merckx monument at the edge of the forest at the top."
+   }
+  ]
+ },
+ "col-de-la-haute-levee": {
+  "intro": "One of the longer Ardennes climbs: four kilometres through forest and pasture, close to the Spa-Francorchamps circuit.",
+  "sides": [
+   {
+    "character": "Steeply out of Stavelot, then steadier at around 5 % up to the top."
+   }
+  ]
+ },
+ "col-du-rosier": {
+  "intro": "A forest climb without walls, but long enough to sort out a race: six kilometres up to the plateau above Spa.",
+  "sides": [
+   {
+    "character": "From La Gleize moderate and steady through the forest, open at the top."
+   }
+  ]
+ },
+ "cote-de-wanne": {
+  "intro": "An open slope above the Salm valley, with a steep middle and the view back over Trois-Ponts.",
+  "sides": [
+   {
+    "character": "From Trois-Ponts steep at first, over 10 % in the middle, flatter at the top up to Wanne.",
+    "highlights": "The view back over Trois-Ponts."
+   }
+  ]
+ },
+ "cote-de-la-roche-aux-faucons": {
+  "intro": "The last big climb before Liège: short and steep through a village, a viewpoint rock above the Ourthe at the top.",
+  "sides": [
+   {
+    "character": "From the Ourthe at Hony steep at once, at 8–10 %, through the houses up to the top.",
+    "highlights": "The view from the rock over the bend of the Ourthe."
+   }
+  ]
  }
 }

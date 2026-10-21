@@ -2466,5 +2466,47 @@
   ],
   "aliases": [],
   "why": "Hafenstadt im Westen mit Flughafen: Erice beginnt am Stadtrand."
+ },
+ {
+  "slug": "spa",
+  "name": "Spa",
+  "country": "BE",
+  "lat": 50.4921,
+  "lon": 5.8628,
+  "tags": [
+   "hotels",
+   "train"
+  ],
+  "aliases": [],
+  "why": "Kurstadt mitten in den Lüttich–Bastogne–Lüttich-Anstiegen: Redoute, Rosier, Stockeu und Haute-Levée liegen in einer Runde."
+ },
+ {
+  "slug": "stavelot",
+  "name": "Stavelot",
+  "country": "BE",
+  "lat": 50.3942,
+  "lon": 5.931,
+  "tags": [
+   "quiet"
+  ],
+  "aliases": [],
+  "why": "Abteistadt im Tal der Amblève: Stockeu und Haute-Levée beginnen im Ort, Wanne und Rosier sind nah."
+ },
+ {
+  "slug": "liege",
+  "name": "Lüttich",
+  "country": "BE",
+  "lat": 50.6247,
+  "lon": 5.5671,
+  "tags": [
+   "hub",
+   "train",
+   "hotels"
+  ],
+  "aliases": [
+   "Liège",
+   "Luik"
+  ],
+  "why": "Start und Ziel der Doyenne, mit dem Bahnhof Guillemins: die Roche-aux-Faucons vor der Stadt, Huy und die Redoute eine halbe Stunde entfernt."
  }
 ]
