@@ -10,6 +10,7 @@ import {
   rankOf,
   SIZE_STOPS,
 } from "@/lib/prominence";
+import type { RoadType } from "@/lib/types";
 
 test("classics are always drawn, the rest join one rank per step", () => {
   expect(minzoomOf(5)).toBe(0);
@@ -20,13 +21,21 @@ test("classics are always drawn, the rest join one rank per step", () => {
   expect(minzoomOf(0)).toBe(PROMINENCE[3].fromZoom);
 });
 
-test("a dead end counts a step lower, a classic never does", () => {
-  expect(rankOf({ fame: 3, type: "pass" })).toBe(3);
-  expect(rankOf({ fame: 3, type: "spur" })).toBe(2);
-  expect(rankOf({ fame: 2, type: "valley" })).toBe(1);
-  expect(rankOf({ fame: 1, type: "balcony" })).toBe(0);
-  expect(rankOf({ fame: 4, type: "spur" })).toBe(4);
-  expect(rankOf({ fame: 5, type: "spur" })).toBe(5);
+const road = (fame: number, type: RoadType = "pass", beauty = 4) => ({
+  beauty,
+  fame,
+  type,
+});
+
+test("a dead end counts a step lower, a pearl a step higher, a classic stays", () => {
+  expect(rankOf(road(3))).toBe(3);
+  expect(rankOf(road(3, "spur"))).toBe(2);
+  expect(rankOf(road(2, "valley"))).toBe(1);
+  expect(rankOf(road(1, "balcony"))).toBe(0);
+  expect(rankOf(road(3, "pass", 5))).toBe(4);
+  expect(rankOf(road(2, "spur", 5))).toBe(2);
+  expect(rankOf(road(4, "spur"))).toBe(4);
+  expect(rankOf(road(5, "spur", 5))).toBe(5);
 });
 
 test("every step is a whole zoom, which is where MapLibre evaluates a filter", () => {
@@ -34,9 +43,9 @@ test("every step is a whole zoom, which is where MapLibre evaluates a filter", (
 });
 
 test("the legend names the level and falls silent once everything is drawn", () => {
-  expect(prominenceWord(7.9, DE)).toBe("Klassiker");
-  expect(prominenceWord(8, DE)).toBe("Klassiker und bekannte Pässe");
-  expect(prominenceWord(8.99, DE)).toBe("Klassiker und bekannte Pässe");
+  expect(prominenceWord(7.9, DE)).toBe("Klassiker und Perlen");
+  expect(prominenceWord(8, DE)).toBe("Klassiker, Perlen und bekannte Pässe");
+  expect(prominenceWord(8.99, DE)).toBe("Klassiker, Perlen und bekannte Pässe");
   expect(prominenceWord(9, DE)).toBe("die meisten Straßen");
   expect(prominenceWord(10, DE)).toBeNull();
   expect(prominenceWord(12, DE)).toBeNull();

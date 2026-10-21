@@ -71,7 +71,7 @@ export const scales = {
   },
   symbols: {
     heading: "Map symbols",
-    text: "**Circle:** pass – colour shows the status, hollow circle = often closed, size = fame. **Star:** favourite. **Line:** loop (its own colour) or ascent (status colour). **Diamond:** cycling town.",
+    text: "**Circle:** pass – colour shows the status, hollow circle = often closed, size = fame. **Grey dot:** a road outside the filters; tap it to open it. **Star:** favourite. **Line:** loop (its own colour) or ascent (status colour). **Diamond:** cycling town. Zoomed far out the map shows only the classics and the gems (beauty 5); each zoom level adds more, small and pale at first, dead ends and valley roads one level later than passes.",
   },
   tours: {
     heading: "Kind of tour",

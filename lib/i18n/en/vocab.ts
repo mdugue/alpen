@@ -49,8 +49,8 @@ export const vocab = {
     wetDays: "up to {n} of 15",
   },
   prominence: {
-    famous: "classics",
-    known: "classics and well-known passes",
+    famous: "classics and gems",
+    known: "classics, gems and well-known passes",
     most: "most roads",
   },
   range: {

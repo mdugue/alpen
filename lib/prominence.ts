@@ -1,3 +1,4 @@
+import { CLASSIC_FAME } from "@/lib/app-state";
 import type { Messages } from "@/lib/i18n";
 import type { Pass, RoadType } from "@/lib/types";
 
@@ -16,9 +17,10 @@ import type { Pass, RoadType } from "@/lib/types";
  * The ladder reads a road's `rankOf`, not its fame alone: a road that does not
  * cross anything – a spur up to a reservoir, a valley, a balcony – counts one
  * step lower than a pass of the same fame, because a dead end is a detour from
- * a base and not what a region is chosen for. The classics (fame 4 and 5) are
- * never stepped down: the "Klassiker" chip keeps them, and the overview has to
- * draw what that chip keeps.
+ * a base and not what a region is chosen for; a pearl (beauty 5) counts one
+ * step higher, because it is. The classics (fame 4 and 5) are never moved:
+ * the "Klassiker" chip keeps them, and the overview has to draw what that chip
+ * keeps.
  *
  * A rank draws quiet first: at the zoom it joins, its dot is small and pale,
  * and it grows to its full size by the next step (`newcomerBelow`), so the step
@@ -50,14 +52,25 @@ export const STEPS_DOWN: readonly RoadType[] = [
   "plateau",
 ];
 
-/** A classic keeps its fame as its rank, whatever kind of road it is. */
-const CLASSIC = 4;
+/**
+ * What makes a road a pearl: the top of the beauty scale. A pearl that is not
+ * a classic counts one step higher – the overview is for choosing where to
+ * go, and a road few people know but everybody who rides it remembers is
+ * exactly what a region is chosen for.
+ */
+export const PEARL_BEAUTY = 5;
 
-/** Where a road stands on the ladder: its fame, a step lower for a dead end. */
-export const rankOf = (pass: Pick<Pass, "fame" | "type">): number =>
-  pass.fame < CLASSIC && STEPS_DOWN.includes(pass.type)
-    ? pass.fame - 1
-    : pass.fame;
+/**
+ * Where a road stands on the ladder: its fame, a step lower for a dead end and
+ * a step higher for a pearl. A classic keeps its fame whatever it is – the
+ * "Klassiker" chip keeps it, and the overview draws what the chip keeps.
+ */
+export const rankOf = (pass: Pick<Pass, "beauty" | "fame" | "type">): number =>
+  pass.fame >= CLASSIC_FAME
+    ? pass.fame
+    : pass.fame -
+      (STEPS_DOWN.includes(pass.type) ? 1 : 0) +
+      (pass.beauty >= PEARL_BEAUTY ? 1 : 0);
 
 /**
  * Where the destination outlines step back: once most roads are drawn. Past
