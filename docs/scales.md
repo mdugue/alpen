@@ -252,6 +252,14 @@ same table when it re-runs the calibration. The reasons without a number –
 the opening window, its edge and the altitude fallback – are calendar rules
 rather than thresholds and are named by `status.reasonPhrase` only.
 
+The altitude fallback has three calendar rungs for a road without an opening
+window: from 2300 m, from 1800 m, and every road in January and February. The
+last one stands in for a winter nobody measured; where the road has its own
+climate series, its snow, frost and summit temperature decide instead
+(`baseReasons`). A road on Mallorca or on the Riviera is not an Alpine road in
+late February, and the short days still say what is true of December and
+January there.
+
 Three builders in the same module compose the sentences the UI prints, so no
 component joins the word tables itself: `badgeWord(cell)` (the badge and,
 through `statusWord`, the row), `valleyText()` (the one "abgeleitet"

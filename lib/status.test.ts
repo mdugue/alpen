@@ -166,6 +166,15 @@ describe("passStatus without a climate series", () => {
     expect(passStatus(low, 12.5)).toBe("risky");
   });
 
+  test("the winter rung of every road yields to the road's own series", () => {
+    const low = pass({ elevation: 500 });
+    expect(passVerdict(low, 2.5).reasons).toContain("altitude");
+    const mild = { bucket: bucket({ tmax: 14 }) };
+    expect(passVerdict(low, 2.5, mild).reasons).not.toContain("altitude");
+    const high = pass({ elevation: 1900 });
+    expect(passVerdict(high, 2.5, mild).reasons).toContain("altitude");
+  });
+
   test("season window: closed outside, risky at the edges", () => {
     const p = pass({ elevation: 1500, season: { closes: 10.5, opens: 6 } });
     expect(passStatus(p, 5.5)).toBe("closed");
@@ -236,16 +245,23 @@ describe("the climate series", () => {
     expect(passStatus(p, 7)).toBe(passStatus(p, 7));
   });
 
-  test("climate never produces a closure, for no pass and no half-month", () => {
+  test("climate never produces a closure and only lowers a cell, for no pass and no half-month", () => {
     for (const p of passes) {
       for (const [i, t] of PERIODS.entries()) {
         const withClimate = passStatus(p, t, {
           bucket: climate[p.slug]?.[i] ?? null,
           valley: valleys[p.slug],
         });
-        const without = passStatus(p, t);
-        if (withClimate === "closed") expect(without).toBe("closed");
-        if (without === "risky") expect(withClimate).toBe("risky");
+        const without = passVerdict(p, t);
+        if (withClimate === "closed") expect(without.status).toBe("closed");
+        // The series only lowers – except the calendar's winter rung for
+        // every road, which a measured winter replaces.
+        const calendarOnly =
+          p.season === null &&
+          p.elevation < 1800 &&
+          without.reasons.join(",") === "altitude";
+        if (without.status === "risky" && !calendarOnly)
+          expect(withClimate).toBe("risky");
       }
     }
   });

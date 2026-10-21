@@ -1019,10 +1019,13 @@
    "port-de-pollenca",
    "soller"
   ],
-  "include": [],
+  "include": [
+   "puig-de-randa",
+   "sant-salvador"
+  ],
   "exclude": [],
   "character": "Das Gebirge an der Nordwestküste Mallorcas: Sa Calobra, Puig Major und Coll de Sóller über dem Meer, Kalkfels, Olivenhaine und Kehren, vom Meer auf fast 900 m. Im Frühjahr voller Radgruppen, im Hochsommer heiß.",
-  "multiDay": "Eine Woche, wie es die meisten machen: Sa Calobra, die Runde über Puig Major und Coll de Sóller, Lluc von beiden Seiten und ein Ruhetag in der Ebene.",
+  "multiDay": "Eine Woche, wie es die meisten machen: Sa Calobra, die Runde über Puig Major und Coll de Sóller, Lluc von beiden Seiten und an einem Regentag Randa oder Sant Salvador in der Ebene.",
   "access": "Flughafen Palma, von dort eine Stunde nach Port de Pollença oder eine halbe nach Sóller; Radtransport nehmen alle großen Fluglinien."
  }
 ]

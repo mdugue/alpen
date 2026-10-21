@@ -13630,7 +13630,7 @@
   "difficulty": 4,
   "traffic": 3,
   "season": null,
-  "note": "Der Hausberg von Freiburg: aus Günterstal über die alte Bergrennstrecke in vielen Kurven hinauf auf fast 1200 m, oben weiter über Hofsgrund zum Notschrei. Am Wochenende viele Motorräder.",
+  "note": "Der Hausberg von Freiburg: aus Günterstal über die alte Bergrennstrecke in vielen Kurven hinauf auf über 1200 m, oben weiter über Hofsgrund zum Notschrei. Am Wochenende viele Motorräder.",
   "aliases": [
    "Schauinslandstraße"
   ],
@@ -13731,7 +13731,7 @@
   "difficulty": 3,
   "traffic": 3,
   "season": null,
-  "note": "Übergang vom Dreisamtal ins Wiesental zwischen Schauinsland und Feldberg, mit der Nordschwarzwald-Loipe oben am Pass. Von Oberried die längere und schönere Seite, von Todtnau die kürzere.",
+  "note": "Übergang vom Dreisamtal ins Wiesental zwischen Schauinsland und Feldberg, mit dem Loipenzentrum oben am Pass. Von Oberried die längere und schönere Seite, von Todtnau die kürzere.",
   "aliases": [
    "Notschreipass"
   ],
@@ -13823,13 +13823,13 @@
   "lat": 48.4801,
   "lon": 8.2761,
   "elevation": 965,
-  "classicAscent": "12,2 km, 4,9 % ab Oppenau",
+  "classicAscent": "12,2 km, 5,5 % ab Oppenau",
   "beauty": 2,
   "fame": 1,
   "difficulty": 3,
   "traffic": 4,
   "season": null,
-  "note": "Übergang vom Renchtal nach Freudenstadt an der Alexanderschanze: von Oppenau lang durch Bad Peterstal und dann in Kehren hinauf. Bundesstraße mit Verkehr; nach Osten fällt die Straße kaum, deshalb eine Auffahrt.",
+  "note": "Übergang vom Renchtal nach Freudenstadt an der Alexanderschanze: von Oppenau auf der Landstraße durch das Lierbachtal und in Kehren hinauf, oben flach über die Höhe. Nach Osten fällt die Straße kaum, deshalb eine Auffahrt.",
   "aliases": [
    "Alexanderschanze"
   ],
@@ -14058,21 +14058,21 @@
   "lat": 39.8556,
   "lon": 2.9011,
   "elevation": 540,
-  "classicAscent": "14,2 km, 3,4 % ab Pollença",
+  "classicAscent": "8,0 km, 5,3 % vom Talende hinter Pollença",
   "beauty": 4,
   "fame": 2,
   "difficulty": 2,
   "traffic": 2,
   "season": null,
-  "note": "Von Pollença auf der Ma-10 in die Berge Richtung Lluc: unten flach durch das Tal, oben in Kehren zum Coll de Femenia mit Blick zurück zur Bucht. Oben weiter über die Hochfläche nach Lluc.",
+  "note": "Von Pollença auf der Ma-10 in die Berge Richtung Lluc: nach sechs flachen Kilometern durch das Tal in Kehren zum Coll de Femenia, mit Blick zurück zur Bucht. Oben weiter über die Hochfläche nach Lluc.",
   "aliases": [],
   "ascents": [
    {
     "from": {
-     "lat": 39.8792,
-     "lon": 3.0157
+     "lat": 39.8689,
+     "lon": 2.9554
     },
-    "label": "Pollença"
+    "label": "Pollença (Talende)"
    }
   ]
  },

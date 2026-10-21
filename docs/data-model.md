@@ -121,12 +121,15 @@ knows, the "Gebirge" chip, and a town's place: a town has no region of its
 own and takes the range of the nearest road in its reach (`townRanges`,
 `lib/nearby.ts`).
 
-| Range      | Regions                                      | Label (UI) |
-| ---------- | -------------------------------------------- | ---------- |
-| `Alpen`    | Westalpen, Zentralalpen, Ostalpen, Dolomiten | Alpen      |
-| `Vogesen`  | Vogesen                                      | Vogesen    |
-| `Jura`     | Jura                                         | Jura       |
-| `Pyrenäen` | Pyrenäen                                     | Pyrenäen   |
+| Range         | Regions                                      | Label (UI)  |
+| ------------- | -------------------------------------------- | ----------- |
+| `Alpen`       | Westalpen, Zentralalpen, Ostalpen, Dolomiten | Alpen       |
+| `Vogesen`     | Vogesen                                      | Vogesen     |
+| `Jura`        | Jura                                         | Jura        |
+| `Pyrenäen`    | Pyrenäen                                     | Pyrenäen    |
+| `Erzgebirge`  | Erzgebirge                                   | Erzgebirge  |
+| `Schwarzwald` | Schwarzwald                                  | Schwarzwald |
+| `Mallorca`    | Mallorca                                     | Mallorca    |
 
 A new range is a vocabulary edit: its name in `RANGES`, its regions in
 `RANGE_REGIONS`, its label and hint in `vocab.range` of both message files,
@@ -142,13 +145,14 @@ enough for the Pyrenees too would catch nothing, so the guard moved into
 `RANGE_BOUNDS` (plan 26): a road's marker and every ascent's `from` and `to`
 have to lie inside the box of its own range, a tour's passes have to share
 one range and its waypoints lie in that range's box (`data:check`), and a
-town is held to the union only – its range comes from reach. The Vosges and
-the Jura lie inside the Alps' box, so the guard catches a road filed on the
-wrong side of the 600 km to the Pyrenees and a coordinate typed into the
-sea, not a Jura road filed as "Westalpen". What a second range does to the
+town is held to the union only – its range comes from reach. Neighbouring
+boxes overlap (the Vosges, the Jura and the Black Forest lie inside the
+Alps' box), so the guard catches a road filed hundreds of kilometres off and
+a coordinate typed into the sea, not a Black Forest road filed as
+"Vogesen". What a second range does to the
 first screen is the map's business (`docs/map-rendering.md`, "The map opens
 on the home range"). `COUNTRIES` carries `ES` and `AD` for the Spanish and
-Andorran side; the pair form (`FR/ES`) works as it always has.
+Andorran side and `CZ` for the Czech side of the Ore Mountains; the pair form (`FR/ES`) works as it always has.
 
 #### What kind of road it is, and what riding it is like
 

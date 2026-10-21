@@ -54,11 +54,12 @@ Seiten vorkommen – von „abgeleitet“ bis „zugeschneit“.
 
 ## G
 
-- **Gebirge** – die oberste Einteilung der Karte: Alpen, Jura, Vogesen und
-  Pyrenäen, darunter die Regionen (etwa Westalpen oder Dolomiten).
-  Der Filter „Gebirge“ rückt auch den Kartenausschnitt auf das gewählte
-  Gebirge; er zeigt die Gebirge, in denen die Karte Straßen enthält – heute
-  die Alpen und die Vogesen.
+- **Gebirge** – die oberste Einteilung der Karte: die Alpen und die
+  Gebirge, die sie ergänzen – Jura, Vogesen, Pyrenäen, Erzgebirge,
+  Schwarzwald, Mallorca –, darunter die Regionen (etwa Westalpen oder
+  Dolomiten). Der Filter „Gebirge“ rückt auch den Kartenausschnitt auf das
+  gewählte Gebirge; er zeigt die Gebirge, in denen die Karte Straßen enthält,
+  in zwei Zeilen: die für einen Urlaub und die für ein Wochenende.
 - **Geländemodell** – ein Raster aus Höhenwerten, das die Erdoberfläche
   beschreibt, englisch „digital elevation model“ (DEM). Es kennt keine
   Straßen; auf engen Kehren oder in Schluchten rauscht es um einige Meter.

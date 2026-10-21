@@ -420,13 +420,23 @@ const windowReasons = (s: TourSeason, t: Period): StatusReason[] => {
   return [];
 };
 
-/** Opening window, altitude and calendar – the reasons the heuristic knew before the climate series. */
-const baseReasons = (pass: Pass, t: Period): StatusReason[] => {
+/**
+ * Opening window, altitude and calendar – the reasons the heuristic knew
+ * before the climate series. The last calendar rung (every road in January
+ * and February) stands in for a winter nobody measured: where the road has
+ * its own series, its snow, frost and cold say whether that winter limits it
+ * – a road on Mallorca is not an Alpine road in February.
+ */
+const baseReasons = (
+  pass: Pass,
+  t: Period,
+  measured: boolean,
+): StatusReason[] => {
   const s = pass.season;
   if (!s) {
     if (pass.elevation >= 2300 && (t >= 10 || t < 5.5)) return ["altitude"];
     if (pass.elevation >= 1800 && (t >= 11 || t < 4.5)) return ["altitude"];
-    if (t >= 12 || t < 3) return ["altitude"];
+    if (!measured && (t >= 12 || t < 3)) return ["altitude"];
     return [];
   }
   const fromWindow = windowReasons(s, t);
@@ -456,10 +466,10 @@ export const passVerdict = (
   t: Period,
   input?: VerdictInput | null,
 ): StatusVerdict => {
-  const reasons = baseReasons(pass, t);
+  const b = input?.bucket;
+  const reasons = baseReasons(pass, t, Boolean(b));
   if (reasons.includes(WINDOW_CLOSING))
     return { reasons: [WINDOW_CLOSING], status: "closed" };
-  const b = input?.bucket;
   // The closing rung of an unpaved road is the snow cover, where the series
   // carries it: a barrier closes a pass, the snow closes a track. Without
   // the value the road is judged by every other rung and never closed –

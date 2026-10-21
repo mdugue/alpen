@@ -6039,11 +6039,8 @@
   "intro": "Der klassische Übergang über den Nordschwarzwald zwischen Rheintal und Freudenstadt, eine alte Schanze auf der Passhöhe. Eher Verbindungsstraße als Ausflugsziel, aber eine lange Auffahrt.",
   "sides": [
    {
-    "character": "Von Oppenau das Renchtal hinauf, gleichmäßig durch Bad Peterstal-Griesbach, dann in Kehren steiler zur Hochfläche am Kniebis.",
-    "highlights": "Die Kehren oberhalb von Bad Griesbach.",
-    "hazards": [
-     "traffic"
-    ]
+    "character": "Von Oppenau zuerst sanft durch das Lierbachtal, dann im Wald in Kehren steil hinauf; die letzten Kilometer flach über die Hochfläche zur Alexanderschanze.",
+    "highlights": "Die Kehren im Wald oberhalb von Lierbach, wo die Straße in wenigen Kilometern 500 m gewinnt."
    }
   ]
  },
@@ -6129,10 +6126,10 @@
   ]
  },
  "coll-de-femenia": {
-  "intro": "Der Anstieg in die Tramuntana für alle, die in Port de Pollença wohnen – der erste Teil jeder Runde über Lluc. Flach beginnend, oben steiler, mit dem Blick über die Bucht von Pollença.",
+  "intro": "Der Anstieg in die Tramuntana für alle, die in Port de Pollença wohnen – der erste Teil jeder Runde über Lluc. Nach einem flachen Anlauf durch das Tal acht Kilometer in Kehren, mit dem Blick über die Bucht von Pollença.",
   "sides": [
    {
-    "character": "Aus Pollença lange flach durch das Tal, dann ab der Hälfte in Kehren steiler an der Bergflanke hinauf zum Coll.",
+    "character": "Ab dem Ende des flachen Tals hinter Pollença in Kehren an der Bergflanke hinauf zum Coll, gleichmäßig um 5 %.",
     "highlights": "Der Blick zurück über die Bucht von Pollença aus den oberen Kehren."
    }
   ]

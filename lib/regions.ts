@@ -36,8 +36,8 @@ export type RangeName = (typeof RANGES)[number];
 export const HOME_RANGE: RangeName = "Alpen";
 
 /**
- * Which regions each range holds. The Vosges, the Jura and the Pyrenees are
- * one region each until the data asks for a split; the Alps keep their four.
+ * Which regions each range holds. Every range but the Alps is one region
+ * until the data asks for a split; the Alps keep their four.
  */
 export const RANGE_REGIONS = {
   Alpen: ["Westalpen", "Zentralalpen", "Ostalpen", "Dolomiten"],
@@ -111,10 +111,11 @@ export interface GeoBox {
  * a tour's waypoints inside the box of its passes' range (`data:check`).
  * Towns are checked against the union only; their range comes from reach.
  *
- * The Vosges and the Jura lie inside the Alps' box, so the guard catches a
- * road filed on the wrong side of the 600 km between the Alps and the
- * Pyrenees, and a coordinate typed into the sea – not a Jura road filed as
- * "Westalpen". That one is the curator's to read off the map.
+ * Neighbouring boxes overlap – the Vosges, the Jura and the Black Forest lie
+ * inside the Alps' box, the Black Forest's touches the Vosges' – so the guard
+ * catches a road filed hundreds of kilometres off (the Pyrenees, Mallorca,
+ * the Ore Mountains) and a coordinate typed into the sea, not a Black Forest
+ * road filed as "Vogesen". That one is the curator's to read off the map.
  */
 export const RANGE_BOUNDS: Record<RangeName, GeoBox> = {
   Alpen: { lat: [43, 49], lon: [4, 16] },

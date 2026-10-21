@@ -111,7 +111,10 @@ Die Signale in ihrer Reihenfolge, mit den Werten, die heute gelten:
 
 „Höhe“ ist eine Kalenderregel ohne Klimawert: Sie gilt für Pässe ab 1.800 m
 im Frühjahr und im Herbst, für hohe Pässe länger als für niedrigere, und für
-ganzjährig geräumte Straßen jeder Höhe von Dezember bis Februar.
+ganzjährig geräumte Straßen jeder Höhe von Dezember bis Februar – es sei
+denn, die Straße hat eine eigene Klimareihe: Dann sagen Schnee, Frost und die
+Temperatur am Gipfel, ob ihr Winter sie einschränkt. Eine Straße auf Mallorca
+ist im Februar kein Alpenpass.
 Bewirtschaftete Mautstraßen, die geräumt werden, bekommen sie nicht.
 
 Die Zahlen sind keine Naturkonstanten. Sie stehen an einer Stelle im Code
