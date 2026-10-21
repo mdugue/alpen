@@ -1549,5 +1549,76 @@
   ],
   "aliases": [],
   "why": "Im Orangental an der Westküste: Puig Major und Coll de Sóller beginnen im Ort, Sa Calobra liegt hinter dem Puig Major. Mit der historischen Bahn aus Palma erreichbar."
+ },
+ {
+  "slug": "murat",
+  "name": "Murat",
+  "country": "FR",
+  "lat": 45.1132,
+  "lon": 2.868,
+  "tags": [
+   "passes",
+   "quiet",
+   "train"
+  ],
+  "aliases": [],
+  "why": "Kleine Stadt unter Basaltfelsen an der Ostseite der Monts du Cantal, mit Bahnhof: Prat de Bouc vor der Tür, Pas de Peyrol über Dienne als Tagesrunde."
+ },
+ {
+  "slug": "salers",
+  "name": "Salers",
+  "country": "FR",
+  "lat": 45.1386,
+  "lon": 2.4943,
+  "tags": [
+   "scenic",
+   "passes"
+  ],
+  "aliases": [],
+  "why": "Mittelalterliches Dorf aus dunklem Stein im Westen des Cantal: Néronne und Pas de Peyrol als Runde, ruhige Straßen über die Hochweiden."
+ },
+ {
+  "slug": "le-mont-dore",
+  "name": "Le Mont-Dore",
+  "country": "FR",
+  "lat": 45.5755,
+  "lon": 2.809,
+  "tags": [
+   "passes",
+   "hotels"
+  ],
+  "aliases": [
+   "Mont-Dore"
+  ],
+  "why": "Kurort am Fuß des Puy de Sancy: Croix Saint-Robert und Croix-Morand beginnen im Ort, Super-Besse liegt auf der Runde."
+ },
+ {
+  "slug": "besse",
+  "name": "Besse",
+  "country": "FR",
+  "lat": 45.5116,
+  "lon": 2.933,
+  "tags": [
+   "scenic",
+   "quiet"
+  ],
+  "aliases": [
+   "Besse-en-Chandesse",
+   "Besse-et-Saint-Anastaise"
+  ],
+  "why": "Mittelalterlicher Ort an der Ostseite des Sancy: Super-Besse und Croix Saint-Robert vom Ort aus, der Lac Pavin nebenan."
+ },
+ {
+  "slug": "florac",
+  "name": "Florac",
+  "country": "FR",
+  "lat": 44.3239,
+  "lon": 3.5942,
+  "tags": [
+   "passes",
+   "quiet"
+  ],
+  "aliases": [],
+  "why": "Kleinstadt zwischen Mont Lozère, Causse und Cevennen: Finiels und Aigoual als Tagesrunden, die Gorges du Tarn nebenan."
  }
 ]

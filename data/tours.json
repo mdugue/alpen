@@ -3467,5 +3467,50 @@
     "lon": 3.0838
    }
   ]
+ },
+ {
+  "slug": "tour-du-sancy",
+  "surface": "asphalt",
+  "name": "Tour du Sancy",
+  "color": "#7a8a5a",
+  "km": 60,
+  "elevationGain": 1350,
+  "passes": [
+   "col-de-la-croix-saint-robert",
+   "col-de-la-croix-morand"
+  ],
+  "note": "Super-Besse lässt sich in Besse als Abstecher anhängen (+12 km, +300 m).",
+  "season": {
+   "opens": 5,
+   "closes": 11.5
+  },
+  "description": "Von Le Mont-Dore über die Croix Saint-Robert hinunter nach Besse, am Lac Chambon vorbei und über die Croix-Morand zurück nach Le Mont-Dore.",
+  "type": "loop",
+  "waypoints": [
+   {
+    "lat": 45.5755,
+    "lon": 2.809
+   },
+   {
+    "lat": 45.5641,
+    "lon": 2.836
+   },
+   {
+    "lat": 45.5116,
+    "lon": 2.933
+   },
+   {
+    "lat": 45.5713,
+    "lon": 2.8981
+   },
+   {
+    "lat": 45.5971,
+    "lon": 2.8508
+   },
+   {
+    "lat": 45.5755,
+    "lon": 2.809
+   }
+  ]
  }
 ]

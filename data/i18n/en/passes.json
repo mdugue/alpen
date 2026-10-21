@@ -2986,5 +2986,81 @@
   "ascents": [
    "Felanitx"
   ]
+ },
+ "pas-de-peyrol": {
+  "classicAscent": "11.2 km, 5.9 % from Le Falgoux",
+  "note": "The highest road pass of the Massif Central, right below the summit of the Puy Mary, with three ascents out of three green valleys. A Tour de France stage finish in 2020. Closed in winter.",
+  "ascents": [
+   "Le Falgoux (west)",
+   "Mandailles (south)",
+   "Dienne (east)"
+  ]
+ },
+ "col-de-neronne": {
+  "classicAscent": "4.2 km, 7.7 % from Le Falgoux",
+  "note": "Crossing from Salers into the Le Falgoux valley, the western approach to the Pas de Peyrol. From Le Falgoux short and steep, from Salers long and gentle across the high pastures.",
+  "ascents": [
+   "Le Falgoux (east)"
+  ]
+ },
+ "col-de-prat-de-bouc": {
+  "classicAscent": "10.0 km, 4.1 % from Murat",
+  "note": "Dead-end road from Murat via Albepierre onto the plateau below the Plomb du Cantal, with a small ski area and footpaths at the top. Steady and quiet.",
+  "ascents": [
+   "Murat"
+  ]
+ },
+ "col-de-la-croix-saint-robert": {
+  "classicAscent": "6.8 km, 6.1 % from Le Mont-Dore",
+  "note": "The crossing from Le Mont-Dore to Besse across the flank of the Puy de Sancy. From Le Mont-Dore the steep, fine side; towards Besse long and flat across the plateau. Closed in winter.",
+  "ascents": [
+   "Le Mont-Dore (north)"
+  ]
+ },
+ "col-de-la-croix-morand": {
+  "classicAscent": "8.9 km, 5.6 % from Chambon-sur-Lac",
+  "note": "The crossing between Le Mont-Dore and the Lac Chambon on the D996, ridden several times by the Tour de France. From Chambon the longer side, with a view of the lake.",
+  "ascents": [
+   "Chambon-sur-Lac (east)",
+   "Le Mont-Dore (west)"
+  ]
+ },
+ "super-besse": {
+  "classicAscent": "6.6 km, 4.1 % from Besse",
+  "note": "The climb from Besse into the ski resort below the Sancy, a Tour de France stage finish in 1978, 1996, 2008 and 2011. The road ends in the resort; with the Croix Saint-Robert it makes a loop.",
+  "ascents": [
+   "Besse"
+  ]
+ },
+ "col-du-beal": {
+  "classicAscent": "6.3 km, 6.8 % from Saint-Pierre-la-Bourlhonne",
+  "note": "The highest crossing of the Monts du Forez, between the Auvergne and the Loire, over the treeless jasseries. From the west the steeper side, from Chalmazel shorter. Closed in winter.",
+  "ascents": [
+   "Saint-Pierre-la-Bourlhonne (west)",
+   "Chalmazel (east)"
+  ]
+ },
+ "mont-aigoual": {
+  "classicAscent": "27.4 km, 4.4 % from Valleraugue",
+  "note": "The summit with the weather station, reached from Valleraugue by almost 1200 metres of climbing in one go; a Tour de France stage finish in 2020. From Meyrueis longer and gentler across the causse. Often windy and misty at the top.",
+  "ascents": [
+   "Valleraugue (south)",
+   "Meyrueis (north)"
+  ]
+ },
+ "col-de-finiels": {
+  "classicAscent": "11.2 km, 5.7 % from Le Pont-de-Montvert",
+  "note": "The crossing of the Mont Lozère, on the route Stevenson walked with his donkey. From Le Pont-de-Montvert the longer and steeper side, from Le Bleymard via the Mont Lozère ski station.",
+  "ascents": [
+   "Le Pont-de-Montvert (south)",
+   "Le Bleymard (north)"
+  ]
+ },
+ "col-du-minier": {
+  "classicAscent": "21.0 km, 5.0 % from Le Vigan",
+  "note": "From Le Vigan more than 1000 metres up through the forest to the ridge of the Aigoual; often the way to the summit from the south. Quiet, steady and shady.",
+  "ascents": [
+   "Le Vigan (south)"
+  ]
  }
 }

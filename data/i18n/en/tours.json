@@ -182,5 +182,9 @@
  "femenia-lluc-runde": {
   "description": "From Port de Pollença via Pollença and the Coll de Femenia to Lluc, over the Coll de sa Batalla down to Caimari and back across the plain via Campanet.",
   "note": "In spring the loop half of Port de Pollença rides; Sa Calobra can be added from Lluc as a detour."
+ },
+ "tour-du-sancy": {
+  "description": "From Le Mont-Dore over the Croix Saint-Robert down to Besse, past the Lac Chambon and back over the Croix-Morand to Le Mont-Dore.",
+  "note": "Super-Besse can be added as a detour from Besse (+12 km, +300 m)."
  }
 }

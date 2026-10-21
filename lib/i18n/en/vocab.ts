@@ -95,6 +95,12 @@ export const vocab = {
       label: "Vosges",
       outside: "outside the Vosges",
     },
+    Zentralmassiv: {
+      hint: "The volcanoes of the Auvergne with the Puy Mary and the Cévennes with the Aigoual: empty, green, at their best in June and September.",
+      inside: "in the Massif Central",
+      label: "Massif Central",
+      outside: "outside the Massif Central",
+    },
   },
   reach: {
     areaLine: "{rideable} of {total} roads good",
@@ -121,6 +127,7 @@ export const vocab = {
     Vogesen: "Vosges",
     Westalpen: "Western Alps",
     Zentralalpen: "Central Alps",
+    Zentralmassiv: "Massif Central",
   },
   roadTag: {
     carfree: {

@@ -1027,5 +1027,61 @@
   "character": "Das Gebirge an der Nordwestküste Mallorcas: Sa Calobra, Puig Major und Coll de Sóller über dem Meer, Kalkfels, Olivenhaine und Kehren, vom Meer auf fast 900 m. Im Frühjahr voller Radgruppen, im Hochsommer heiß.",
   "multiDay": "Eine Woche, wie es die meisten machen: Sa Calobra, die Runde über Puig Major und Coll de Sóller, Lluc von beiden Seiten und an einem Regentag Randa oder Sant Salvador in der Ebene.",
   "access": "Flughafen Palma, von dort eine Stunde nach Port de Pollença oder eine halbe nach Sóller; Radtransport nehmen alle großen Fluglinien."
+ },
+ {
+  "slug": "monts-du-cantal",
+  "name": "Monts du Cantal",
+  "country": "FR",
+  "center": {
+   "lat": 45.11,
+   "lon": 2.7
+  },
+  "radiusKm": 22,
+  "baseTowns": [
+   "murat",
+   "salers"
+  ],
+  "include": [],
+  "exclude": [],
+  "character": "Der größte erloschene Vulkan Europas, ein Kreis grüner Täler um den Puy Mary: Pas de Peyrol, Néronne und Prat de Bouc, Weiden, Burons und kaum Verkehr. Auf Juni und September warten, im Hochsommer schwül, oben im Winter gesperrt.",
+  "multiDay": "Drei Tage reichen: der Pas de Peyrol von zwei Seiten, die Runde über die Néronne ab Salers und Prat de Bouc ab Murat.",
+  "access": "Bahn bis Murat (über Clermont-Ferrand), mit dem Auto die A75; nächster Flughafen Aurillac oder Clermont-Ferrand."
+ },
+ {
+  "slug": "monts-dore",
+  "name": "Monts Dore",
+  "country": "FR",
+  "center": {
+   "lat": 45.56,
+   "lon": 2.86
+  },
+  "radiusKm": 15,
+  "baseTowns": [
+   "le-mont-dore",
+   "besse"
+  ],
+  "include": [],
+  "exclude": [],
+  "character": "Die Vulkane um den Puy de Sancy, den höchsten Berg des Zentralmassivs: Croix Saint-Robert, Croix-Morand und die Tour-Ankunft in Super-Besse auf engem Raum, dazu Kraterseen. Gut für ein langes Wochenende.",
+  "multiDay": "Zwei Tage: die Runde über Croix Saint-Robert und Super-Besse, und die Croix-Morand mit dem Lac Chambon.",
+  "access": "Mit dem Auto über Clermont-Ferrand (eine Stunde), Bahn bis Le Mont-Dore nur im Sommer."
+ },
+ {
+  "slug": "cevennen",
+  "name": "Cevennen",
+  "country": "FR",
+  "center": {
+   "lat": 44.22,
+   "lon": 3.66
+  },
+  "radiusKm": 28,
+  "baseTowns": [
+   "florac"
+  ],
+  "include": [],
+  "exclude": [],
+  "character": "Kastanienwälder, tiefe Täler und kahle Granitrücken zwischen Mont Lozère und Aigoual: lange gleichmäßige Anstiege und leere Straßen, im Süden schon Mittelmeerklima. Frühjahr und Herbst, im Hochsommer heiß in den Tälern.",
+  "multiDay": "Vier Tage: Aigoual von Valleraugue und von Meyrueis, der Minier von Le Vigan, der Mont Lozère über Finiels; dazwischen die Gorges du Tarn.",
+  "access": "Mit dem Auto über die A75 oder von Nîmes; nächster Bahnhof Alès oder Mende."
  }
 ]

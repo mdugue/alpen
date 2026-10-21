@@ -6151,5 +6151,135 @@
     "highlights": "Das Kloster und das Kreuz auf dem Gipfel."
    }
   ]
+ },
+ "pas-de-peyrol": {
+  "intro": "Der Pass unter dem Puy Mary ist der Grund, warum Radfahrer ins Cantal kommen: drei Täler eines erloschenen Vulkans laufen hier oben zusammen, und jedes hat seine eigene Auffahrt. Oben der Blick über den ganzen Krater.",
+  "sides": [
+   {
+    "bestAs": "up",
+    "character": "Aus dem Tal von Le Falgoux erst gleichmäßig zwischen Weiden, auf den letzten Kilometern sehr steil in den Hang unter dem Gipfel.",
+    "hazards": [
+     "steep"
+    ],
+    "highlights": "Die letzten zwei Kilometer mit Blick auf den Puy Mary über sich."
+   },
+   {
+    "bestAs": "down",
+    "character": "Von Mandailles durch das Tal der Jordanne, gleichmäßiger als die Westseite und oben mit weiten Kehren.",
+    "highlights": "Das Tal der Jordanne mit seinen Burons."
+   },
+   {
+    "character": "Von Dienne über den Col d'Eylac auf langer Strecke an der Flanke, nur die letzten Kilometer steiler.",
+    "highlights": "Die Hochweiden am Col d'Eylac."
+   }
+  ]
+ },
+ "col-de-neronne": {
+  "intro": "Der kleine Bruder des Pas de Peyrol, auf der Runde von Salers fast immer dabei. Oben eine Hochfläche voller Salers-Rinder.",
+  "sides": [
+   {
+    "character": "Aus dem Tal von Le Falgoux in wenigen Kehren steil die Talflanke hinauf, kurz und gleichmäßig hart.",
+    "hazards": [
+     "steep"
+    ],
+    "highlights": "Der Blick zurück ins Tal und hinüber zum Puy Mary."
+   }
+  ]
+ },
+ "col-de-prat-de-bouc": {
+  "intro": "Die ruhige Auffahrt unter den höchsten Gipfel des Cantal, für einen Halbtag ab Murat. Oben endet die Straße auf einer weiten Alm.",
+  "sides": [
+   {
+    "character": "Von Murat zuerst sanft durch Albepierre, dann im Wald etwas steiler und oben offen über die Alm.",
+    "highlights": "Die weite Hochfläche unter dem Plomb du Cantal."
+   }
+  ]
+ },
+ "col-de-la-croix-saint-robert": {
+  "intro": "Der Pass am Puy de Sancy, dem höchsten Berg des Zentralmassivs. Von Le Mont-Dore in Kehren über der Stadt, oben kahl und windig, mit dem Blick über die Vulkankette.",
+  "sides": [
+   {
+    "character": "Aus Le Mont-Dore in Kehren an der steilen Flanke über dem Tal der Dordogne, gleichmäßig um 6 bis 8 %.",
+    "highlights": "Der Blick zurück auf Le Mont-Dore und den Sancy."
+   }
+  ]
+ },
+ "col-de-la-croix-morand": {
+  "intro": "Die Verbindung, die die beiden Täler am Sancy zu einer Runde macht. Eine breite Straße mit etwas Verkehr, aber gleichmäßig und mit weitem Blick.",
+  "sides": [
+   {
+    "bestAs": "up",
+    "character": "Vom Lac Chambon gleichmäßig an der Flanke hinauf, oben über offene Weiden.",
+    "highlights": "Der Blick zurück auf den Lac Chambon."
+   },
+   {
+    "bestAs": "down",
+    "character": "Von Le Mont-Dore kürzer, erst durch den Wald, dann offen zum Pass; als Abfahrt flüssig.",
+    "hazards": [
+     "traffic"
+    ]
+   }
+  ]
+ },
+ "super-besse": {
+  "intro": "Die Tour-Ankunft am Sancy: nicht schwer, aber mit einem steilen Stück vor dem Ziel. Unten das mittelalterliche Besse, oben ein Skiort mit See.",
+  "sides": [
+   {
+    "character": "Von Besse gleichmäßig über offenes Weideland, kurz vor dem Ort ein steiles Stück zum Ziel der Tour.",
+    "highlights": "Der Lac des Hermines vor dem Ort."
+   }
+  ]
+ },
+ "col-du-beal": {
+  "intro": "Ein Pass für Leute, die keine Menschen sehen wollen: oben die Hochweiden der Jasseries, die alten Sennhütten des Forez, und an klaren Tagen die Alpen am Horizont.",
+  "sides": [
+   {
+    "bestAs": "up",
+    "character": "Aus dem Wald im Westen gleichmäßig steil hinauf, oben offen über die Jasseries.",
+    "highlights": "Die Jasseries kurz unter dem Pass."
+   },
+   {
+    "bestAs": "down",
+    "character": "Von Chalmazel durch das kleine Skigebiet, kürzer und flacher; als Abfahrt die angenehmere Seite."
+   }
+  ]
+ },
+ "mont-aigoual": {
+  "intro": "Der lange Anstieg der Cevennen: von den Kastanienwäldern im Tal bis auf den kahlen Gipfel mit der Wetterwarte, von der man bei klarem Wetter Mittelmeer, Alpen und Pyrenäen sieht.",
+  "sides": [
+   {
+    "bestAs": "up",
+    "character": "Von Valleraugue durch Kastanienwald und über L'Espérou fast 30 km gleichmäßig um 4 bis 6 %, eher Ausdauer als Steilheit.",
+    "highlights": "Der Blick von der Wetterwarte vom Mittelmeer bis zu den Alpen."
+   },
+   {
+    "bestAs": "down",
+    "character": "Von Meyrueis über die Gorges de la Jonte und den Col de Perjuret, lang und wellig; als Abfahrt weit und schnell.",
+    "highlights": "Die Gorges de la Jonte unten bei Meyrueis."
+   }
+  ]
+ },
+ "col-de-finiels": {
+  "intro": "Ein kahler Granitrücken mitten in den Cevennen: oben Heide, Granitblöcke und Wind, unten die alten Steindörfer.",
+  "sides": [
+   {
+    "bestAs": "up",
+    "character": "Von Le Pont-de-Montvert über Finiels gleichmäßig durch offenes Heideland, ohne Schatten.",
+    "highlights": "Das Granitdorf Finiels auf halber Höhe."
+   },
+   {
+    "bestAs": "down",
+    "character": "Von Le Bleymard kürzer durch den Wald zum kleinen Skiort, oben offen zum Pass."
+   }
+  ]
+ },
+ "col-du-minier": {
+  "intro": "Die schattige Südauffahrt ins Aigoual-Massiv: aus dem Mittelmeerklima von Le Vigan in die Buchen- und Tannenwälder des Kamms.",
+  "sides": [
+   {
+    "character": "Von Le Vigan über Aulas lange gleichmäßig um 5 % im Wald, mit wenigen Ausblicken bis kurz unter den Pass.",
+    "highlights": "Der Wechsel von Kastanien zu Buchen und Tannen auf halber Höhe."
+   }
+  ]
  }
 }

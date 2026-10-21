@@ -4188,5 +4188,116 @@
     "highlights": "The monastery and the cross on the summit."
    }
   ]
+ },
+ "pas-de-peyrol": {
+  "intro": "The pass below the Puy Mary is why riders come to the Cantal: three valleys of an extinct volcano meet up here, each with its own climb. At the top the view across the whole crater.",
+  "sides": [
+   {
+    "character": "Out of the Le Falgoux valley steady between pastures at first, very steep into the slope below the summit for the last kilometres.",
+    "highlights": "The last two kilometres with the Puy Mary above you."
+   },
+   {
+    "character": "From Mandailles up the Jordanne valley, steadier than the west side and with wide hairpins at the top.",
+    "highlights": "The Jordanne valley and its burons."
+   },
+   {
+    "character": "From Dienne via the Col d'Eylac a long stretch along the flank, only the last kilometres steeper.",
+    "highlights": "The high pastures at the Col d'Eylac."
+   }
+  ]
+ },
+ "col-de-neronne": {
+  "intro": "The Pas de Peyrol's little brother, almost always part of the loop from Salers. At the top a plateau full of Salers cattle.",
+  "sides": [
+   {
+    "character": "Out of the Le Falgoux valley steeply up the valley side in a few hairpins, short and steadily hard.",
+    "highlights": "The view back into the valley and across to the Puy Mary."
+   }
+  ]
+ },
+ "col-de-prat-de-bouc": {
+  "intro": "The quiet climb below the Cantal's highest summit, a half-day from Murat. At the top the road ends on a wide alpine pasture.",
+  "sides": [
+   {
+    "character": "From Murat gently through Albepierre at first, then a little steeper in the forest and open across the pasture at the top.",
+    "highlights": "The wide plateau below the Plomb du Cantal."
+   }
+  ]
+ },
+ "col-de-la-croix-saint-robert": {
+  "intro": "The pass on the Puy de Sancy, the highest mountain of the Massif Central. From Le Mont-Dore in hairpins above the town, bare and windy at the top, with the view across the chain of volcanoes.",
+  "sides": [
+   {
+    "character": "Out of Le Mont-Dore in hairpins on the steep flank above the Dordogne valley, steady at 6 to 8 %.",
+    "highlights": "The view back to Le Mont-Dore and the Sancy."
+   }
+  ]
+ },
+ "col-de-la-croix-morand": {
+  "intro": "The link that turns the two valleys at the Sancy into a loop. A wide road with some traffic, but steady and with wide views.",
+  "sides": [
+   {
+    "character": "From the Lac Chambon steadily up the flank, across open pastures at the top.",
+    "highlights": "The view back to the Lac Chambon."
+   },
+   {
+    "character": "From Le Mont-Dore shorter, through the forest first, then open to the pass; smooth as a descent."
+   }
+  ]
+ },
+ "super-besse": {
+  "intro": "The Tour finish at the Sancy: not hard, but with a steep pitch before the line. Medieval Besse below, a ski resort with a lake at the top.",
+  "sides": [
+   {
+    "character": "From Besse steadily across open pasture, a steep pitch to the Tour finish just before the resort.",
+    "highlights": "The Lac des Hermines before the resort."
+   }
+  ]
+ },
+ "col-du-beal": {
+  "intro": "A pass for people who want to see no one: at the top the high pastures of the jasseries, the old summer huts of the Forez, and on clear days the Alps on the horizon.",
+  "sides": [
+   {
+    "character": "Out of the forest in the west steadily steep, open across the jasseries at the top.",
+    "highlights": "The jasseries just below the pass."
+   },
+   {
+    "character": "From Chalmazel through the small ski area, shorter and gentler; the pleasanter side as a descent."
+   }
+  ]
+ },
+ "mont-aigoual": {
+  "intro": "The long climb of the Cévennes: from the chestnut woods in the valley to the bare summit with its weather station, from which on a clear day you see the Mediterranean, the Alps and the Pyrenees.",
+  "sides": [
+   {
+    "character": "From Valleraugue through chestnut forest and via L'Espérou nearly 30 km steady at 4 to 6 %, more endurance than steepness.",
+    "highlights": "The view from the weather station from the Mediterranean to the Alps."
+   },
+   {
+    "character": "From Meyrueis via the Gorges de la Jonte and the Col de Perjuret, long and rolling; wide and fast as a descent.",
+    "highlights": "The Gorges de la Jonte down at Meyrueis."
+   }
+  ]
+ },
+ "col-de-finiels": {
+  "intro": "A bare granite ridge in the middle of the Cévennes: heath, granite boulders and wind at the top, the old stone villages below.",
+  "sides": [
+   {
+    "character": "From Le Pont-de-Montvert via Finiels steadily through open heathland, without shade.",
+    "highlights": "The granite village of Finiels halfway up."
+   },
+   {
+    "character": "From Le Bleymard shorter through the forest to the small ski station, open to the pass at the top."
+   }
+  ]
+ },
+ "col-du-minier": {
+  "intro": "The shady southern climb into the Aigoual massif: out of the Mediterranean climate of Le Vigan into the beech and fir forests of the ridge.",
+  "sides": [
+   {
+    "character": "From Le Vigan via Aulas long and steady at around 5 % in the forest, with few views until just below the pass.",
+    "highlights": "The change from chestnut to beech and fir halfway up."
+   }
+  ]
  }
 }

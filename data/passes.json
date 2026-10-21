@@ -14138,5 +14138,389 @@
     "label": "Felanitx"
    }
   ]
+ },
+ {
+  "slug": "pas-de-peyrol",
+  "surface": "asphalt",
+  "name": "Pas de Peyrol",
+  "type": "pass",
+  "tags": [
+   "panorama",
+   "race"
+  ],
+  "country": "FR",
+  "region": "Zentralmassiv",
+  "lat": 45.1141,
+  "lon": 2.6717,
+  "elevation": 1589,
+  "classicAscent": "11,2 km, 5,9 % ab Le Falgoux",
+  "beauty": 5,
+  "fame": 4,
+  "difficulty": 4,
+  "traffic": 2,
+  "season": {
+   "opens": 5,
+   "closes": 11.5,
+   "maintained": false
+  },
+  "note": "Der höchste Straßenpass des Zentralmassivs, direkt unter dem Gipfel des Puy Mary, mit drei Auffahrten aus drei grünen Tälern. 2020 Etappenziel der Tour de France. Im Winter gesperrt.",
+  "aliases": [
+   "Puy Mary",
+   "Col du Pas de Peyrol"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 45.1549,
+     "lon": 2.6229
+    },
+    "label": "Le Falgoux (West)"
+   },
+   {
+    "from": {
+     "lat": 45.07,
+     "lon": 2.6571
+    },
+    "label": "Mandailles (Süd)"
+   },
+   {
+    "from": {
+     "lat": 45.1587,
+     "lon": 2.7868
+    },
+    "label": "Dienne (Ost)"
+   }
+  ]
+ },
+ {
+  "slug": "col-de-neronne",
+  "surface": "asphalt",
+  "name": "Col de Néronne",
+  "type": "pass",
+  "tags": [
+   "panorama"
+  ],
+  "country": "FR",
+  "region": "Zentralmassiv",
+  "lat": 45.1549,
+  "lon": 2.5921,
+  "elevation": 1241,
+  "classicAscent": "4,2 km, 7,7 % ab Le Falgoux",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 1,
+  "season": {
+   "opens": 5,
+   "closes": 11.5,
+   "maintained": false
+  },
+  "note": "Übergang von Salers ins Tal von Le Falgoux, der Zubringer zum Pas de Peyrol von Westen. Von Le Falgoux kurz und steil, von Salers lang und flach über die Hochweiden.",
+  "aliases": [],
+  "ascents": [
+   {
+    "from": {
+     "lat": 45.1549,
+     "lon": 2.6229
+    },
+    "label": "Le Falgoux (Ost)"
+   }
+  ]
+ },
+ {
+  "slug": "col-de-prat-de-bouc",
+  "surface": "asphalt",
+  "name": "Col de Prat de Bouc",
+  "type": "spur",
+  "tags": [],
+  "country": "FR",
+  "region": "Zentralmassiv",
+  "lat": 45.0526,
+  "lon": 2.7939,
+  "elevation": 1392,
+  "classicAscent": "10,0 km, 4,1 % ab Murat",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 1,
+  "season": null,
+  "note": "Sackstraße von Murat über Albepierre auf die Hochfläche unter dem Plomb du Cantal, oben ein kleines Skigebiet und Wanderwege. Gleichmäßig und ruhig.",
+  "aliases": [
+   "Prat-de-Bouc"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 45.1132,
+     "lon": 2.868
+    },
+    "label": "Murat"
+   }
+  ]
+ },
+ {
+  "slug": "col-de-la-croix-saint-robert",
+  "surface": "asphalt",
+  "name": "Col de la Croix Saint-Robert",
+  "type": "pass",
+  "tags": [
+   "panorama"
+  ],
+  "country": "FR",
+  "region": "Zentralmassiv",
+  "lat": 45.5641,
+  "lon": 2.836,
+  "elevation": 1451,
+  "classicAscent": "6,8 km, 6,1 % ab Le Mont-Dore",
+  "beauty": 4,
+  "fame": 3,
+  "difficulty": 3,
+  "traffic": 2,
+  "season": {
+   "opens": 5,
+   "closes": 11.5,
+   "maintained": false
+  },
+  "note": "Der Übergang von Le Mont-Dore nach Besse über die Flanke des Puy de Sancy. Von Le Mont-Dore die steile, schöne Seite; nach Besse lang und flach über die Hochfläche. Im Winter gesperrt.",
+  "aliases": [
+   "Croix-Saint-Robert"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 45.5755,
+     "lon": 2.809
+    },
+    "label": "Le Mont-Dore (Nord)"
+   }
+  ]
+ },
+ {
+  "slug": "col-de-la-croix-morand",
+  "surface": "asphalt",
+  "name": "Col de la Croix-Morand",
+  "type": "pass",
+  "tags": [],
+  "country": "FR",
+  "region": "Zentralmassiv",
+  "lat": 45.5971,
+  "lon": 2.8508,
+  "elevation": 1401,
+  "classicAscent": "8,9 km, 5,6 % ab Chambon-sur-Lac",
+  "beauty": 3,
+  "fame": 3,
+  "difficulty": 3,
+  "traffic": 3,
+  "season": null,
+  "note": "Der Übergang zwischen Le Mont-Dore und dem Lac Chambon auf der D996, mehrmals bei der Tour de France überfahren. Von Chambon die längere Seite mit Blick auf den See.",
+  "aliases": [
+   "Col de Diane",
+   "Croix Morand"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 45.5713,
+     "lon": 2.8981
+    },
+    "label": "Chambon-sur-Lac (Ost)"
+   },
+   {
+    "from": {
+     "lat": 45.5755,
+     "lon": 2.809
+    },
+    "label": "Le Mont-Dore (West)"
+   }
+  ]
+ },
+ {
+  "slug": "super-besse",
+  "surface": "asphalt",
+  "name": "Super-Besse",
+  "type": "spur",
+  "tags": [
+   "race"
+  ],
+  "country": "FR",
+  "region": "Zentralmassiv",
+  "lat": 45.5075,
+  "lon": 2.861,
+  "elevation": 1331,
+  "classicAscent": "6,6 km, 4,1 % ab Besse",
+  "beauty": 3,
+  "fame": 3,
+  "difficulty": 2,
+  "traffic": 2,
+  "season": null,
+  "note": "Die Auffahrt von Besse in den Skiort unter dem Sancy, Etappenziel der Tour de France 1978, 1996, 2008 und 2011. Oben endet die Straße im Ort; zusammen mit der Croix Saint-Robert eine Runde.",
+  "aliases": [
+   "Superbesse"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 45.5116,
+     "lon": 2.933
+    },
+    "label": "Besse"
+   }
+  ]
+ },
+ {
+  "slug": "col-du-beal",
+  "surface": "asphalt",
+  "name": "Col du Béal",
+  "type": "pass",
+  "tags": [
+   "panorama"
+  ],
+  "country": "FR",
+  "region": "Zentralmassiv",
+  "lat": 45.6852,
+  "lon": 3.7828,
+  "elevation": 1390,
+  "classicAscent": "6,3 km, 6,8 % ab Saint-Pierre-la-Bourlhonne",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 1,
+  "season": {
+   "opens": 5,
+   "closes": 11.5,
+   "maintained": false
+  },
+  "note": "Der höchste Übergang der Monts du Forez, zwischen Auvergne und Loire, über die baumlosen Jasseries. Von Westen die steilere Seite, von Chalmazel kürzer. Im Winter gesperrt.",
+  "aliases": [],
+  "ascents": [
+   {
+    "from": {
+     "lat": 45.6746,
+     "lon": 3.7431
+    },
+    "label": "Saint-Pierre-la-Bourlhonne (West)"
+   },
+   {
+    "from": {
+     "lat": 45.6928,
+     "lon": 3.8269
+    },
+    "label": "Chalmazel (Ost)"
+   }
+  ]
+ },
+ {
+  "slug": "mont-aigoual",
+  "surface": "asphalt",
+  "name": "Mont Aigoual",
+  "type": "pass",
+  "tags": [
+   "panorama",
+   "race"
+  ],
+  "country": "FR",
+  "region": "Zentralmassiv",
+  "lat": 44.1216,
+  "lon": 3.5814,
+  "elevation": 1565,
+  "roadSummit": true,
+  "classicAscent": "27,4 km, 4,4 % ab Valleraugue",
+  "beauty": 5,
+  "fame": 3,
+  "difficulty": 4,
+  "traffic": 2,
+  "season": null,
+  "note": "Der Gipfel mit der Wetterwarte, auf den von Valleraugue fast 1200 Höhenmeter am Stück führen; 2020 Etappenziel der Tour de France. Von Meyrueis länger und flacher über die Causse. Oben oft Wind und Nebel.",
+  "aliases": [
+   "Aigoual",
+   "Observatoire du Mont Aigoual"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 44.0845,
+     "lon": 3.6423
+    },
+    "label": "Valleraugue (Süd)"
+   },
+   {
+    "from": {
+     "lat": 44.1775,
+     "lon": 3.4306
+    },
+    "label": "Meyrueis (Nord)"
+   }
+  ]
+ },
+ {
+  "slug": "col-de-finiels",
+  "surface": "asphalt",
+  "name": "Col de Finiels",
+  "type": "pass",
+  "tags": [
+   "panorama"
+  ],
+  "country": "FR",
+  "region": "Zentralmassiv",
+  "lat": 44.4241,
+  "lon": 3.7685,
+  "elevation": 1541,
+  "classicAscent": "11,2 km, 5,7 % ab Le Pont-de-Montvert",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 1,
+  "season": null,
+  "note": "Der Übergang über den Mont Lozère, auf dem Weg, den Stevenson mit seiner Eselin ging. Von Le Pont-de-Montvert die längere und steilere Seite, von Le Bleymard über den Skiort Mont Lozère.",
+  "aliases": [
+   "Mont Lozère"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 44.3664,
+     "lon": 3.7461
+    },
+    "label": "Le Pont-de-Montvert (Süd)"
+   },
+   {
+    "from": {
+     "lat": 44.483,
+     "lon": 3.735
+    },
+    "label": "Le Bleymard (Nord)"
+   }
+  ]
+ },
+ {
+  "slug": "col-du-minier",
+  "surface": "asphalt",
+  "name": "Col du Minier",
+  "type": "pass",
+  "tags": [
+   "forest"
+  ],
+  "country": "FR",
+  "region": "Zentralmassiv",
+  "lat": 44.0541,
+  "lon": 3.5474,
+  "elevation": 1264,
+  "classicAscent": "21,0 km, 5,0 % ab Le Vigan",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 4,
+  "traffic": 1,
+  "season": null,
+  "note": "Von Le Vigan über 1000 Höhenmeter im Wald hinauf auf den Kamm zum Aigoual; oft der Weg zum Gipfel von Süden. Ruhig, gleichmäßig und schattig.",
+  "aliases": [],
+  "ascents": [
+   {
+    "from": {
+     "lat": 43.992,
+     "lon": 3.6063
+    },
+    "label": "Le Vigan (Süd)"
+   }
+  ]
  }
 ]

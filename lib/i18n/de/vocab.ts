@@ -109,6 +109,12 @@ export const vocab = {
       label: "Vogesen",
       outside: "außerhalb der Vogesen",
     },
+    Zentralmassiv: {
+      hint: "Die Vulkane der Auvergne mit dem Puy Mary und die Cevennen mit dem Aigoual: leer, grün, im Juni und September am schönsten.",
+      inside: "im Zentralmassiv",
+      label: "Zentralmassiv",
+      outside: "außerhalb des Zentralmassivs",
+    },
   },
   /** What a base or an area says about the roads around it. */
   reach: {
@@ -140,6 +146,7 @@ export const vocab = {
     Vogesen: "Vogesen",
     Westalpen: "Westalpen",
     Zentralalpen: "Zentralalpen",
+    Zentralmassiv: "Zentralmassiv",
   },
   roadTag: {
     carfree: {
