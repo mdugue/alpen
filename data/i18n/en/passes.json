@@ -1,4 +1,18 @@
 {
+ "adelboden": {
+  "classicAscent": "15 km, 3.8 % from Frutigen",
+  "note": "Through the Engstligen valley from Frutigen to the resort below the Engstligenalp, steady with a few hairpins at the end. Open all year.",
+  "ascents": [
+   "Frutigen"
+  ]
+ },
+ "alagna-valsesia": {
+  "classicAscent": "35.5 km, 2 % from Varallo",
+  "note": "The long valley road of the Valsesia from Varallo to its end at Alagna, a Walser village below the east face of Monte Rosa. Gentle, open all year.",
+  "ascents": [
+   "Varallo"
+  ]
+ },
  "albulapass": {
   "classicAscent": "20 km, 5 % from Filisur",
   "note": "Closure usually early November. Quiet road alongside the Rhaetian Railway.",
@@ -36,12 +50,47 @@
    "Bassano del Grappa"
   ]
  },
+ "arcalis": {
+  "classicAscent": "15.4 km, 5.5 % from Ordino",
+  "note": "The climb to the end of the Valira del Nord valley at the Ordino-Arcalís resort, a Tour finish several times; wide hairpins at the top. Cleared all year.",
+  "ascents": [
+   "Ordino"
+  ]
+ },
  "arlbergpass": {
   "classicAscent": "13 km, 5.6 % from Landeck-Pians",
   "note": "Open all year, traffic despite the tunnel.",
   "ascents": [
    "Pians",
    "Langen"
+  ]
+ },
+ "arolla": {
+  "classicAscent": "38 km, 4 % from Sion via Evolène",
+  "note": "Up the whole Val d'Hérens, past the earth pyramids of Euseigne and through Evolène; from Les Haudères it turns steep and climbs in hairpins to the foot of Mont Collon. Long rather than steep, open to the village all year.",
+  "ascents": [
+   "Sion"
+  ]
+ },
+ "arosa": {
+  "classicAscent": "29 km, 4 % from Chur",
+  "note": "Up the Schanfigg from Chur to the dead end at Arosa, a winding road high above the Plessur. Steady, open all year; the way back is the same road.",
+  "ascents": [
+   "Chur"
+  ]
+ },
+ "avoriaz": {
+  "classicAscent": "11.9 km, 7.1 % from Morzine",
+  "note": "The road from Morzine to the car-free ski resort on the rock edge above the valley, a Tour de France stage finish several times. Steady at around 7 %, cleared all year.",
+  "ascents": [
+   "Morzine"
+  ]
+ },
+ "axalp": {
+  "classicAscent": "12.5 km, 7.7 % from Brienz",
+  "note": "From Brienz steeply via Giessbach up to the alp above the Brienzersee, almost 1,000 m of climbing with a view of the lake. Open all year.",
+  "ascents": [
+   "Brienz"
   ]
  },
  "ballon-d-alsace": {
@@ -61,12 +110,33 @@
    "Le Thillot (north)"
   ]
  },
+ "barrage-d-emosson": {
+  "classicAscent": "13 km, 6 % from Le Châtelard via Finhaut",
+  "note": "From Le Châtelard via Finhaut to the dam, at the top a reservoir with the Mont Blanc massif behind it; a Tour de France finish in 2016. Narrow and steep above Finhaut, closed in winter.",
+  "ascents": [
+   "Le Châtelard"
+  ]
+ },
+ "barrage-de-la-grande-dixence": {
+  "classicAscent": "26 km, 6.3 % from Sion via Hérémence",
+  "note": "From Sion via Vex and Hérémence into the Val des Dix to the foot of the world's tallest gravity dam – more than 1,600 m of climbing in long, even ramps. The top section is closed in winter, and the way back is the same road.",
+  "ascents": [
+   "Sion"
+  ]
+ },
  "berninapass": {
   "classicAscent": "32 km, 4.5 % from Poschiavo",
   "note": "Open all year, glacier views at Lago Bianco.",
   "ascents": [
    "Poschiavo",
    "Pontresina"
+  ]
+ },
+ "bielmonte": {
+  "classicAscent": "22.4 km, 3.9 % from Trivero",
+  "note": "The Panoramica Zegna from Trivero along the ridge of the Biellese Alps to Bielmonte, in early summer between flowering rhododendrons, with a view of Monte Rosa. Long and moderate.",
+  "ascents": [
+   "Trivero"
   ]
  },
  "bocca-del-creer": {
@@ -77,12 +147,42 @@
    "Navene (west)"
   ]
  },
+ "boedele": {
+  "classicAscent": "10 km, 7.2 % from Dornbirn",
+  "note": "Dornbirn's own mountain and the shortest link into the Bregenzerwald: steeply up through forest from Dornbirn, on the other side a short drop to Schwarzenberg. Open all year.",
+  "ascents": [
+   "Dornbirn (west)",
+   "Schwarzenberg (east)"
+  ]
+ },
+ "bosco-gurin": {
+  "classicAscent": "16 km, 6.7 % from Cevio",
+  "note": "From the Maggia valley up through the Val di Campo to the highest village in Ticino, a Walser settlement. Steadily steep, open all year.",
+  "ascents": [
+   "Cevio"
+  ]
+ },
  "brennerpass": {
   "classicAscent": "37 km, 2.2 % from Innsbruck",
   "note": "The crossing from the Wipptal into the Eisack valley; cyclists ride the old Brenner road (B 182, SS 12) beside the motorway and the railway. Open all year, long and flat from Innsbruck, shorter from Sterzing with one steeper stretch at Gossensass; the second climb of the Ötztaler Radmarathon, with heavy traffic on the main road.",
   "ascents": [
    "Innsbruck (north)",
    "Sterzing (south)"
+  ]
+ },
+ "breuil-cervinia": {
+  "classicAscent": "27 km, 5.4 % from Châtillon",
+  "note": "Through the Valtournenche to the foot of the Matterhorn, long and even, a Giro d'Italia finish most recently in 2018. Open all year, with a lot of day-trip traffic at weekends.",
+  "ascents": [
+   "Châtillon"
+  ]
+ },
+ "bruenigpass": {
+  "classicAscent": "7.9 km, 5.3 % from Meiringen",
+  "note": "The main road from Lucerne into the Bernese Oberland, wide and heavily used. Short on both sides, open all year; unavoidable as the link to the Grimsel and the Susten.",
+  "ascents": [
+   "Meiringen (south)",
+   "Lungern (north)"
   ]
  },
  "campo-carlo-magno": {
@@ -100,11 +200,40 @@
    "Junction on the Lukmanier road"
   ]
  },
+ "cari": {
+  "classicAscent": "11.7 km, 7.4 % from Faido",
+  "note": "From Faido in many hairpins up to the sunny terrace above the Leventina, steadily steep and hardly used. Open all year.",
+  "ascents": [
+   "Faido"
+  ]
+ },
  "ceillac-vallee-du-melezet": {
   "classicAscent": "13.5 km, 7 % from the junction at the Maison du Roy",
   "note": "A detour off the Izoard climb from Guillestre: at the Maison du Roy the road to Ceillac branches off and ends at the head of the Vallée du Mélézet. Season window taken from the Col d'Izoard.",
   "ascents": [
    "Junction at the Maison du Roy"
+  ]
+ },
+ "chaillol": {
+  "classicAscent": "9 km, 6.1 % from Saint-Bonnet-en-Champsaur",
+  "note": "The road from Saint-Bonnet up to the small Chaillol resort, quiet and steady, at the top the view over the Champsaur. Cleared all year.",
+  "ascents": [
+   "Saint-Bonnet-en-Champsaur"
+  ]
+ },
+ "chamrousse": {
+  "classicAscent": "17.8 km, 7.5 % from Uriage",
+  "note": "Grenoble's home climb: from Uriage-les-Bains through forest to over 1,700 m at the ski resort, a Tour de France finish in 2014. Cleared all year.",
+  "ascents": [
+   "Uriage"
+  ]
+ },
+ "chasseral": {
+  "classicAscent": "11.5 km, 6.1 % from Saint-Imier",
+  "note": "The saddle below the highest summit of the Bernese Jura, at the top the view over three lakes to the Alps. Closed in winter.",
+  "ascents": [
+   "Saint-Imier (north)",
+   "Nods (south)"
   ]
  },
  "cima-grappa": {
@@ -137,12 +266,51 @@
    "Sixt-Fer-à-Cheval"
   ]
  },
+ "cogne": {
+  "classicAscent": "18 km, 4.6 % from Aymavilles",
+  "note": "Through the narrow gorge of the Grand Eyvia into the Val di Cogne, to the edge of the Gran Paradiso national park; between rock walls at the bottom, on the meadows of Sant'Orso at the top. Steady and open all year.",
+  "ascents": [
+   "Aymavilles"
+  ]
+ },
+ "col-d-agnes": {
+  "classicAscent": "9.7 km, 8.4 % from Aulus-les-Bains",
+  "note": "The wild pass of the Couserans across wide pastures, a double crossing with the Port de Lers beyond. Steep from Aulus, long from Massat. Closed in winter.",
+  "ascents": [
+   "Aulus-les-Bains (west)",
+   "Massat (north)"
+  ]
+ },
  "col-d-allos": {
   "classicAscent": "20 km, 5.7 % from Barcelonnette",
   "note": "Closure usually from November. Together with the Cayolle and the Champs, the 'triple loop' from Barcelonnette.",
   "ascents": [
    "Barcelonnette",
    "Colmars"
+  ]
+ },
+ "col-d-aspin": {
+  "classicAscent": "12.1 km, 6.5 % from Arreau",
+  "note": "The pass between Arreau and the Campan valley, at the top open pastures with cows and horses and the view of the Pic du Midi. A classic Tour pass, closed in winter.",
+  "ascents": [
+   "Arreau (east)",
+   "Sainte-Marie-de-Campan (west)"
+  ]
+ },
+ "col-d-aubisque": {
+  "classicAscent": "15.8 km, 7.4 % from Laruns",
+  "note": "A Tour pass since 1910: from Laruns via Eaux-Bonnes and Gourette steeply up, to the east the balcony road of the Cirque du Litor to the Soulor. Closed above Gourette in winter.",
+  "ascents": [
+   "Laruns (west)",
+   "Argelès-Gazost (east)"
+  ]
+ },
+ "col-d-azet": {
+  "classicAscent": "11.1 km, 6.8 % from Saint-Lary-Soulan",
+  "note": "The crossing from the Aure valley into the Louron valley, steep on both sides and with a wide view; often in the Tour route between the Peyresourde and Saint-Lary. Closed at times after snowfall.",
+  "ascents": [
+   "Saint-Lary-Soulan (west)",
+   "Génos (east)"
   ]
  },
  "col-d-ey": {
@@ -158,6 +326,14 @@
   "note": "The mountain time trial of Paris–Nice, for decades the closing act of the race: from Nice over the Grande Corniche with the sea below to the col, La Turbie and Monaco beyond. Open all year, busy; the east side from Èze is under two kilometres and no ascent in its own right.",
   "ascents": [
    "Nice (west)"
+  ]
+ },
+ "col-d-ispeguy": {
+  "classicAscent": "8.4 km, 6.1 % from Saint-Étienne-de-Baïgorry",
+  "note": "The small border pass from the Baïgorry valley into the Baztan, across green pastures with a view over the Basque country. Open all year.",
+  "ascents": [
+   "Saint-Étienne-de-Baïgorry (north)",
+   "Errazu (south)"
   ]
  },
  "col-d-izoard": {
@@ -181,6 +357,14 @@
   "note": "Open all year, even and quiet – the relaxed link from the Oisans into the Valbonnais.",
   "ascents": [
    "Le Bourg-d'Oisans"
+  ]
+ },
+ "col-de-bagargui": {
+  "classicAscent": "11 km, 6.3 % from Larrau",
+  "note": "The crossing in the Basque country between Larrau and the Iraty forest, wide pastures with horses and sheep at the top. Narrow, closed in winter.",
+  "ascents": [
+   "Larrau (east)",
+   "Mendive (west)"
   ]
  },
  "col-de-bleine": {
@@ -262,11 +446,35 @@
    "Cornimont (south)"
   ]
  },
+ "col-de-jau": {
+  "classicAscent": "12.9 km, 6.1 % from Mosset",
+  "note": "The quiet crossing from the Conflent into the upper Aude valley, steady from Mosset, long through gorges from Axat. Closed in winter.",
+  "ascents": [
+   "Mosset (south)",
+   "Axat (north)"
+  ]
+ },
+ "col-de-joux": {
+  "classicAscent": "15 km, 7 % from Saint-Vincent",
+  "note": "From the spa town of Saint-Vincent in many hairpins through chestnut and larch forest into the Val d'Ayas, on the other side a short drop to Brusson. Open all year; with the valley road down to Verrès it makes a loop.",
+  "ascents": [
+   "Saint-Vincent (west)",
+   "Brusson (east)"
+  ]
+ },
  "col-de-joux-plane": {
   "classicAscent": "11.6 km, 8.5 % from Samoëns",
   "note": "Closure usually from December. Short, steep, Mont Blanc view at the end.",
   "ascents": [
    "Samoëns"
+  ]
+ },
+ "col-de-l-echelle": {
+  "classicAscent": "5.9 km, 4.9 % from Plampinet",
+  "note": "The low crossing from the Clarée valley to Bardonecchia; on the Italian side a steep wall of hairpins with short tunnels. Closed in winter.",
+  "ascents": [
+   "Plampinet (south)",
+   "Bardonecchia (north)"
   ]
  },
  "col-de-l-homme-mort": {
@@ -298,6 +506,14 @@
    "Léoncel (west)"
   ]
  },
+ "col-de-la-biche": {
+  "classicAscent": "13.6 km, 5.7 % from Champagne-en-Valromey",
+  "note": "The saddle north of the Grand Colombier, over which the ridge road to the Colombier runs; narrow forest roads from the Valromey. Closed in winter.",
+  "ascents": [
+   "Champagne-en-Valromey",
+   "Hotonnes"
+  ]
+ },
  "col-de-la-bonette": {
   "classicAscent": "24 km, 6.6 % from Jausiers (Cime loop)",
   "note": "Highest paved loop in Europe. Usually open until mid/late October, closure weather-dependent.",
@@ -320,6 +536,14 @@
   "ascents": [
    "Scionzier",
    "Le Grand-Bornand"
+  ]
+ },
+ "col-de-la-core": {
+  "classicAscent": "14.5 km, 6 % from Seix",
+  "note": "The pass over the Bethmale valley between Seix and Castillon, at the top the view of the Mont Valier. Open all year, closed at times after snowfall.",
+  "ascents": [
+   "Seix (east)",
+   "Castillon-en-Couserans (west)"
   ]
  },
  "col-de-la-couillole": {
@@ -345,6 +569,29 @@
    "Rochetaillée (Oisans)"
   ]
  },
+ "col-de-la-croix-de-la-serra": {
+  "classicAscent": "13.9 km, 4.4 % from Saint-Claude",
+  "note": "The pass south of Saint-Claude into the Valserine valley, moderate through forest and across pastures. Open all year.",
+  "ascents": [
+   "Saint-Claude"
+  ]
+ },
+ "col-de-la-croix-fry": {
+  "classicAscent": "13 km, 6.5 % from Thônes",
+  "note": "The crossing from Thônes through the Manigod valley to La Clusaz, the quiet sister of the Aravis road with a view of the Aravis range. Open all year, a small ski resort at the top.",
+  "ascents": [
+   "Thônes (west)",
+   "La Clusaz (east)"
+  ]
+ },
+ "col-de-la-faucille": {
+  "classicAscent": "11.1 km, 6.3 % from Gex",
+  "note": "The main crossing from Geneva into the Haut-Jura: from Gex in hairpins up the eastern flank, at the top the view over Lake Geneva to Mont Blanc. Cleared all year, with traffic.",
+  "ascents": [
+   "Gex (east)",
+   "Mijoux (west)"
+  ]
+ },
  "col-de-la-forclaz-de-montmin": {
   "classicAscent": "10.2 km, 6.6 % from Talloires",
   "note": "Open all year. The top hangs like a balcony above the Lac d'Annecy; the paragliding launch site is correspondingly busy on fine days.",
@@ -357,6 +604,21 @@
   "note": "The way from Martigny to Chamonix, evenly steep through vineyards and then forest. Cleared all year and, as the main link into the Trient valley, busy accordingly; often ridden as the approach to the Col des Montets.",
   "ascents": [
    "Martigny (north)"
+  ]
+ },
+ "col-de-la-givrine": {
+  "classicAscent": "19.5 km, 4.3 % from Nyon",
+  "note": "The long climb from Nyon on Lake Geneva via Saint-Cergue onto the Jura ridge and on into France. Steady, cleared all year.",
+  "ascents": [
+   "Nyon"
+  ]
+ },
+ "col-de-la-lebe": {
+  "classicAscent": "9.9 km, 3.8 % from Champagne-en-Valromey",
+  "note": "The gentle crossing between the Valromey and Belley, through forest and across pastures. Open all year.",
+  "ascents": [
+   "Champagne-en-Valromey (north)",
+   "Belley (south)"
   ]
  },
  "col-de-la-lombarde": {
@@ -398,6 +660,14 @@
    "Menton"
   ]
  },
+ "col-de-la-pierre-saint-martin": {
+  "classicAscent": "23.8 km, 6 % from Arette",
+  "note": "The westernmost high pass of the Pyrenees, a Tour finish in 2015: from Arette more than 1,400 m up into the karst landscape on the border. Cleared to the resort all year.",
+  "ascents": [
+   "Arette (north)",
+   "Isaba (south)"
+  ]
+ },
  "col-de-la-porte": {
   "classicAscent": "12 km, 6 % from Coaraze",
   "note": "Beyond Coaraze to the crossing to Lucéram, a little above the Col Saint-Roch: quiet, with a view of the villages of the Paillon. Open all year.",
@@ -420,12 +690,51 @@
    "Gérardmer (west)"
   ]
  },
+ "col-de-latrape": {
+  "classicAscent": "13.3 km, 3.8 % from Ercé",
+  "note": "The gentle saddle between the Garbet valley and Aulus, often ridden as the approach to the Col d'Agnes. Open all year.",
+  "ascents": [
+   "Ercé (north)"
+  ]
+ },
  "col-de-macuegne": {
   "classicAscent": "8 km, 5 % from Montbrun-les-Bains",
   "note": "Between Montbrun-les-Bains and Séderon, over lavender fields and beech forest with the Ventoux at your back. Open all year, quiet; the way back on the Perty loop.",
   "ascents": [
    "Montbrun-les-Bains (west)",
    "Séderon (east)"
+  ]
+ },
+ "col-de-manse": {
+  "classicAscent": "10.2 km, 5.2 % from Gap",
+  "note": "Gap's home climb and the crossing into the Champsaur, steady and moderate. Open all year.",
+  "ascents": [
+   "Gap (south)",
+   "Saint-Laurent-du-Cros (north)"
+  ]
+ },
+ "col-de-marie-blanque": {
+  "classicAscent": "9.1 km, 7.7 % from Escot",
+  "note": "The crossing from the Vallée d'Aspe into the Ossau, from Escot with the last four kilometres at around 11 %, the Bénou plateau at the top. Open all year.",
+  "ascents": [
+   "Escot (west)",
+   "Bielle (east)"
+  ]
+ },
+ "col-de-menee": {
+  "classicAscent": "20.1 km, 4.3 % from Châtillon-en-Diois",
+  "note": "The quiet crossing from the Diois into the Trièves on the southern edge of the Vercors, at the top a short summit tunnel at around 1,400 m and on the north side the view of the Mont Aiguille. Open all year.",
+  "ascents": [
+   "Châtillon-en-Diois (south)",
+   "Chichilianne (north)"
+  ]
+ },
+ "col-de-mente": {
+  "classicAscent": "9.5 km, 8.9 % from Saint-Béat",
+  "note": "The steep pass between the Garonne valley and the Ger de Boutx, a classic chain with the Portet d'Aspet. Open all year, cleared to the resort at the top.",
+  "ascents": [
+   "Saint-Béat (west)",
+   "Juzet-d'Izaut (north)"
   ]
  },
  "col-de-montgenevre": {
@@ -458,12 +767,60 @@
    "Sault (east)"
   ]
  },
+ "col-de-pailheres": {
+  "classicAscent": "18.1 km, 7.1 % from Ax-les-Thermes",
+  "note": "The highest pass in the Ariège, crossed by the Tour several times: from Ax via Ascou long and steep, at the top a cascade of hairpins above the pastures. Closed in winter.",
+  "ascents": [
+   "Ax-les-Thermes (west)",
+   "Usson (east)"
+  ]
+ },
  "col-de-perty": {
   "classicAscent": "12 km, 6 % from Saint-Auban-sur-l'Ouvèze",
   "note": "One of the highest passes in the Baronnies, Tour de France passage in 2006: from the Ouvèze out of the forest into a wide bowl, at the top the view of the Ventoux and the Lure. Open all year, briefly not after snowfall.",
   "ascents": [
    "Saint-Auban-sur-l'Ouvèze (west)",
    "Laborel (east)"
+  ]
+ },
+ "col-de-peyresourde": {
+  "classicAscent": "13.6 km, 7 % from Bagnères-de-Luchon",
+  "note": "The Tour classic between Luchon and the Louron valley, steadily steep from Luchon, long and gentler from Arreau. The Peyragudes resort beside the top. Cleared all year.",
+  "ascents": [
+   "Bagnères-de-Luchon (east)",
+   "Arreau (west)"
+  ]
+ },
+ "col-de-plainpalais": {
+  "classicAscent": "14.1 km, 6.2 % from Saint-Alban-Leysse",
+  "note": "The way from Chambéry into the Bauges, past the Margériaz mountain to Le Châtelard. A real climb from Chambéry, a gentle valley crossing from the Bauges. Open all year.",
+  "ascents": [
+   "Chambéry (south)",
+   "Le Châtelard (north)"
+  ]
+ },
+ "col-de-port": {
+  "classicAscent": "17.6 km, 4.4 % from Tarascon-sur-Ariège",
+  "note": "The gentle crossing from Tarascon to Massat, long and steady through forest. Open all year.",
+  "ascents": [
+   "Tarascon-sur-Ariège (east)",
+   "Massat (west)"
+  ]
+ },
+ "col-de-puymorens": {
+  "classicAscent": "10.2 km, 4.8 % from L'Hospitalet-près-l'Andorre",
+  "note": "The pass between the upper Ariège valley and the Cerdagne; through traffic has used the tunnel since 1994, and the pass road is quieter. Cleared, closed at times after snowfall.",
+  "ascents": [
+   "L'Hospitalet-près-l'Andorre (north)",
+   "Porté-Puymorens (south)"
+  ]
+ },
+ "col-de-richemond": {
+  "classicAscent": "18.7 km, 3.7 % from Corbonod",
+  "note": "The crossing from the Rhône valley at Seyssel onto the Hotonnes plateau, long and gentle through forest. Open all year.",
+  "ascents": [
+   "Corbonod (east)",
+   "Hotonnes (west)"
   ]
  },
  "col-de-romme": {
@@ -504,12 +861,28 @@
    "Curnier (north)"
   ]
  },
+ "col-de-spandelles": {
+  "classicAscent": "15.4 km, 5.9 % from Argelès-Gazost",
+  "note": "A narrow, quiet mountain road between the Ouzom valley and the Argelès valley, better known since the 2022 Tour. Partly rough surface, closed in winter.",
+  "ascents": [
+   "Ferrières (west)",
+   "Argelès-Gazost (east)"
+  ]
+ },
  "col-de-turini": {
   "classicAscent": "24 km, 5 % from Sospel",
   "note": "Famous from the Monte Carlo Rally, open all year.",
   "ascents": [
    "Sospel",
    "La Bollène-Vésubie"
+  ]
+ },
+ "col-de-valberg": {
+  "classicAscent": "12.9 km, 6.9 % from Guillaumes",
+  "note": "The crossing from the Var valley at Guillaumes to Beuil through the Valberg resort; with the Couillole and the Gorges du Cians a classic loop. Cleared all year.",
+  "ascents": [
+   "Guillaumes (west)",
+   "Beuil (east)"
   ]
  },
  "col-de-vars": {
@@ -527,6 +900,13 @@
    "Vence"
   ]
  },
+ "col-des-annes": {
+  "classicAscent": "11.4 km, 7 % from Le Grand-Bornand",
+  "note": "A dead-end road from Le Grand-Bornand via Le Chinaillon onto the alpine plateau below the Pointe Percée, at the top cheese farms and the view of Mont Blanc. Narrow and steep in its upper part; closed above Le Chinaillon in winter.",
+  "ascents": [
+   "Le Grand-Bornand"
+  ]
+ },
  "col-des-aravis": {
   "classicAscent": "11.9 km, 5.0 % from Flumet",
   "note": "Open all year, on the Tour's programme since 1911. From the top the view of Mont Blanc; heavy traffic in summer.",
@@ -540,6 +920,14 @@
   "ascents": [
    "Colmars",
    "Saint-Martin-d'Entraunes"
+  ]
+ },
+ "col-des-etroits": {
+  "classicAscent": "11.4 km, 5 % from Vuiteboeuf",
+  "note": "The road from the Yverdon plain via Sainte-Croix into the Val de Travers, lower down through the Covatanne gorge. Open all year.",
+  "ascents": [
+   "Vuiteboeuf (south)",
+   "Fleurier (north)"
   ]
  },
  "col-des-gets": {
@@ -593,6 +981,30 @@
    "Pontamafrey"
   ]
  },
+ "col-du-coq": {
+  "classicAscent": "14 km, 7.7 % from Saint-Ismier",
+  "note": "The hardest pass of the Chartreuse: from the Grésivaudan at Saint-Ismier more than 1,000 m up the cliff flank, at the top the view of the Belledonne. Gentler towards Saint-Pierre-de-Chartreuse. Closed in winter.",
+  "ascents": [
+   "Saint-Ismier (south)",
+   "Saint-Pierre-de-Chartreuse (north)"
+  ]
+ },
+ "col-du-corbier": {
+  "classicAscent": "4.8 km, 8.9 % from Le Biot",
+  "note": "A short, steep crossing in the Chablais between the Dranse valley and the Vallée d'Aulps, at the top pastures and a small ski lift. Open all year.",
+  "ascents": [
+   "Le Biot (south)",
+   "Bonnevaux (north)"
+  ]
+ },
+ "col-du-cucheron": {
+  "classicAscent": "7.1 km, 7 % from Saint-Pierre-d'Entremont",
+  "note": "The short crossing in the heart of the Chartreuse between Saint-Pierre-d'Entremont and Saint-Pierre-de-Chartreuse, the link between the Granier and the Porte. Open all year.",
+  "ascents": [
+   "Saint-Pierre-d'Entremont (north)",
+   "Saint-Pierre-de-Chartreuse (south)"
+  ]
+ },
  "col-du-galibier": {
   "classicAscent": "18 km, 6.9 % from Valloire (34 km via Télégraphe)",
   "note": "Winter closure usually late October to early June. Early October is often still glorious; from mid-October there is a risk of snow at the top.",
@@ -615,6 +1027,14 @@
   "ascents": [
    "Bourg-Saint-Pierre",
    "Etroubles (IT)"
+  ]
+ },
+ "col-du-granier": {
+  "classicAscent": "18.1 km, 4.8 % from Chambéry",
+  "note": "The pass below the north face of the Mont Granier, the crossing from Chambéry into the Chartreuse. Long and moderate from Chambéry, shorter from Entremont. Open all year.",
+  "ascents": [
+   "Chambéry (north)",
+   "Saint-Pierre-d'Entremont (south)"
   ]
  },
  "col-du-granon": {
@@ -640,11 +1060,27 @@
    "Briançon"
   ]
  },
+ "col-du-marchairuz": {
+  "classicAscent": "10.5 km, 7.1 % from Bière",
+  "note": "The highest road pass of the Swiss Jura, from the Lake Geneva basin at Bière into the Vallée de Joux; pastures and forest at the top. Often closed in winter after snowfall.",
+  "ascents": [
+   "Bière (south)",
+   "Le Brassus (north)"
+  ]
+ },
  "col-du-mollard": {
   "classicAscent": "21.5 km, 5.0 % from Saint-Jean-de-Maurienne",
   "note": "Eighteen hairpins through forest and hamlets, hardly any traffic; at the top the view opens onto the Aiguilles d'Arves.",
   "ascents": [
    "Saint-Jean-de-Maurienne"
+  ]
+ },
+ "col-du-mollendruz": {
+  "classicAscent": "6.3 km, 5.5 % from Mont-la-Ville",
+  "note": "The short crossing from the Vaud plateau into the Vallée de Joux at L'Abbaye. Moderate, cleared all year.",
+  "ascents": [
+   "Mont-la-Ville (south)",
+   "L'Abbaye (north)"
   ]
  },
  "col-du-mont-cenis": {
@@ -691,6 +1127,37 @@
    "Sondernach (north)"
   ]
  },
+ "col-du-portet": {
+  "classicAscent": "16.2 km, 8.8 % from Saint-Lary-Soulan",
+  "note": "Beyond the Pla d'Adet to over 2,200 m, a Tour finish in 2018 and 2021. At the top a narrow strip of tarmac across the pastures with a view into the Néouvielle. Closed in winter.",
+  "ascents": [
+   "Saint-Lary-Soulan"
+  ]
+ },
+ "col-du-portet-d-aspet": {
+  "classicAscent": "5.7 km, 6.7 % from Saint-Lary (Ariège)",
+  "note": "The pass between the Comminges and the Couserans; on the descent to the west a memorial recalls Fabio Casartelli, who died here in a crash during the 1995 Tour. Open all year.",
+  "ascents": [
+   "Saint-Lary (east)",
+   "Aspet (north)"
+  ]
+ },
+ "col-du-portillon": {
+  "classicAscent": "10.1 km, 6.6 % from Bagnères-de-Luchon",
+  "note": "The short border pass from Luchon into the Val d'Aran to Bossòst, steady through forest on both sides. Open all year.",
+  "ascents": [
+   "Bagnères-de-Luchon (west)",
+   "Bossòst (east)"
+  ]
+ },
+ "col-du-pourtalet": {
+  "classicAscent": "27.8 km, 4.5 % from Laruns",
+  "note": "The long border pass from the Ossau valley into Aragon, the Pic du Midi d'Ossau at the top. Moderate but long; a main road with lorries. Cleared all year, closed at times after snowfall.",
+  "ascents": [
+   "Laruns (north)",
+   "Sallent de Gállego (south)"
+  ]
+ },
  "col-du-pre": {
   "classicAscent": "12.3 km, 7.8 % from Beaufort",
   "note": "Steep, shaded ramps all the way to the top, then the Lac de Roselend from above – the finest way to reach the Cormet de Roselend.",
@@ -712,11 +1179,35 @@
    "Sion"
   ]
  },
+ "col-du-somport": {
+  "classicAscent": "29.7 km, 4.1 % from Bedous",
+  "note": "The old border pass of the Vallée d'Aspe to Canfranc; since the tunnel the traffic goes underneath, and the pass road on top is quiet. Long and gentle.",
+  "ascents": [
+   "Bedous (north)",
+   "Canfranc-Estación (south)"
+  ]
+ },
+ "col-du-soulor": {
+  "classicAscent": "11.5 km, 7.9 % from Ferrières",
+  "note": "The Aubisque's forerunner above the Val d'Azun, short and steady from Arrens, through the quiet Ouzom valley from Ferrières. Closed at times after snowfall.",
+  "ascents": [
+   "Arrens-Marsous (south)",
+   "Ferrières (north)"
+  ]
+ },
  "col-du-telegraphe": {
   "classicAscent": "12.5 km, 6.6 % from Saint-Michel-de-Maurienne",
   "note": "Open all year, a forest road at a steady 7 %. A solid climb in its own right, but usually just the first step towards the Galibier.",
   "ascents": [
    "Saint-Michel-de-Maurienne"
+  ]
+ },
+ "col-du-tourmalet": {
+  "classicAscent": "18.3 km, 7.7 % from Luz-Saint-Sauveur",
+  "note": "The most-ridden pass of the Tour de France and the highest road pass of the French central Pyrenees: two sides of around 1,300 m each, the Géant statue at the top. From the east through the La Mongie ski resort. Closed above La Mongie and Barèges in winter.",
+  "ascents": [
+   "Luz-Saint-Sauveur (west)",
+   "Sainte-Marie-de-Campan (east)"
   ]
  },
  "col-du-wettstein": {
@@ -742,6 +1233,22 @@
    "Coaraze (west)"
   ]
  },
+ "coll-d-ordino": {
+  "classicAscent": "9.6 km, 7.3 % from Ordino",
+  "note": "The quiet pass between Ordino and Canillo, away from the main road and with a view over the valleys of Andorra. Closed at times after snowfall.",
+  "ascents": [
+   "Ordino (west)",
+   "Canillo (east)"
+  ]
+ },
+ "collada-de-toses": {
+  "classicAscent": "22.7 km, 3.8 % from Ribes de Freser",
+  "note": "The long crossing from the Ripollès into the Cerdanya, in wide hairpins via La Molina on the east side. A main road, cleared all year.",
+  "ascents": [
+   "Ribes de Freser (east)",
+   "Alp (west)"
+  ]
+ },
  "colle-d-esischie": {
   "classicAscent": "20 km, 7.1 % from Ponte Marmora",
   "note": "The crossing from the Maira into the Grana valley, a good kilometre below the Colle Fauniera, which the road continues up to. Only the Maira side from Ponte Marmora is listed: from Pradleves it is the Fauniera ascent up to just short of its summit. Narrow, rough tarmac, closed like the Fauniera usually from mid-October.",
@@ -755,6 +1262,14 @@
   "ascents": [
    "Carpasio (south)",
    "Rezzo (north)"
+  ]
+ },
+ "colle-del-lys": {
+  "classicAscent": "9.6 km, 7.2 % from Rubiana",
+  "note": "The crossing from the lower Susa valley into the Valli di Lanzo, at the top a memorial to the partisans. Short and stiff from Rubiana, long and gentle from Viù. Open all year.",
+  "ascents": [
+   "Rubiana (south)",
+   "Viù (north)"
   ]
  },
  "colle-del-melogno": {
@@ -780,6 +1295,14 @@
    "Château-Ville-Vieille (FR)"
   ]
  },
+ "colle-della-maddalena": {
+  "classicAscent": "27 km, 4 % from Vinadio",
+  "note": "The crossing from the Valle Stura into the Ubaye valley, long and moderate, at the top the Lago della Maddalena and wide pastures. Cleared all year and therefore also a lorry route between Cuneo and Barcelonnette.",
+  "ascents": [
+   "Vinadio (east)",
+   "Larche (west)"
+  ]
+ },
  "colle-delle-finestre": {
   "classicAscent": "18.5 km, 9.2 % from Susa, top 8 km gravel",
   "note": "Giro legend with a gravel finale. Usually open until late October, muddy after rain.",
@@ -801,6 +1324,14 @@
   "ascents": [
    "Sampeyre",
    "Stroppo"
+  ]
+ },
+ "colle-di-zambla": {
+  "classicAscent": "13.9 km, 5.7 % from Ponte Nossa",
+  "note": "The crossing between the Val Seriana and the Val Brembana via Oltre il Colle, with a view of the Pizzo Arera. Steady from Ponte Nossa, long via the Val Serina from Ambria. Open all year.",
+  "ascents": [
+   "Ponte Nossa (east)",
+   "Ambria (west)"
   ]
  },
  "colle-fauniera": {
@@ -888,12 +1419,27 @@
    "Aiguines"
   ]
  },
+ "crans-montana": {
+  "classicAscent": "14 km, 7 % from Sierre",
+  "note": "From Sierre through vineyards and villages up to the sunny plateau with its lakes and golf course, steady and steep and open all year. A resort with traffic, but with the wide view across the Rhône valley to the Valais four-thousanders.",
+  "ascents": [
+   "Sierre"
+  ]
+ },
  "culmine-di-san-pietro": {
   "classicAscent": "9 km, 6 % from Moggio",
   "note": "The crossing from the Valsassina into the Val Taleggio, Giro passage in 2008 and 2018; short and even from Moggio, from Vedeseta the longer, quieter side. Snow at the top in winter.",
   "ascents": [
    "Moggio (west)",
    "Vedeseta (east)"
+  ]
+ },
+ "dientner-sattel": {
+  "classicAscent": "6.4 km, 7.3 % from Mühlbach am Hochkönig",
+  "note": "The saddle below the south face of the Hochkönig between Mühlbach and Dienten; with the Filzensattel the Hochkönig loop from Bischofshofen to Saalfelden. Short and steep, open all year.",
+  "ascents": [
+   "Mühlbach am Hochkönig (east)",
+   "Dienten (west)"
   ]
  },
  "edelweissspitze": {
@@ -911,12 +1457,42 @@
    "Damüls (west)"
   ]
  },
+ "filzensattel": {
+  "classicAscent": "20 km, 3 % from Saalfelden via Maria Alm",
+  "note": "The second saddle of the Hochkönig road, long and moderate from Saalfelden via Maria Alm and Hinterthal, short and steep from Dienten. Open all year.",
+  "ascents": [
+   "Saalfelden (west)",
+   "Dienten (east)"
+  ]
+ },
+ "flattnitz": {
+  "classicAscent": "12.5 km, 5.1 % from Glödnitz",
+  "note": "A quiet alpine pass between the Gurk and Metnitz valleys in the Gurktal Alps, with a round church at the top. Steady on both sides, open all year.",
+  "ascents": [
+   "Glödnitz (south)",
+   "Metnitz (east)"
+  ]
+ },
  "flueelapass": {
   "classicAscent": "13 km, 6.6 % from Davos",
   "note": "Closure usually from late October/November.",
   "ascents": [
    "Davos",
    "Susch"
+  ]
+ },
+ "flumserberg": {
+  "classicAscent": "11 km, 8 % from Flums",
+  "note": "From Flums steeply in hairpins up to the sunny terrace above the Walensee, with a view of the Churfirsten. Short and steep throughout, open all year.",
+  "ascents": [
+   "Flums"
+  ]
+ },
+ "foppolo": {
+  "classicAscent": "9 km, 7.1 % from Branzi",
+  "note": "The hairpin road from the upper Brembo valley to the Foppolo ski resort at the head of the valley. Steady, cleared all year.",
+  "ascents": [
+   "Branzi"
   ]
  },
  "forcella-aurine": {
@@ -928,7 +1504,7 @@
  },
  "forcella-franche": {
   "classicAscent": "8.1 km, 5.3 % from Agordo",
-  "note": "The low crossing from Agordo via Rivamonte into the Valle del Mis; at the top the road to Gosaldo and the Passo Cereda branches off. The Agordo side is open all year; the valley road through the Valle del Mis with its unlit tunnels is officially closed in winter.",
+  "note": "The low crossing from Agordo via Rivamonte into the Valle del Mis; at the top the road to Gosaldo and the Passo Cereda branches off. The Agordo side is open all year; the valley road through the Valle del Mis with its partly unlit tunnels is officially closed in winter.",
   "ascents": [
    "Agordo (north)",
    "Titele (south)"
@@ -949,10 +1525,11 @@
   ]
  },
  "furkajoch": {
-  "classicAscent": "6.5 km, 5.3 % from Damüls",
+  "classicAscent": "21 km, 6.1 % from Rankweil through the Laterns valley",
   "note": "Narrow, little-used link from the Laternsertal to Damüls, closed in winter. A grassy crest at the top with views of the Rätikon and the Arlberg; the western ramp is tight and in places without a crash barrier.",
   "ascents": [
-   "Damüls (east)"
+   "Damüls (east)",
+   "Rankweil (west)"
   ]
  },
  "furkapass": {
@@ -963,6 +1540,14 @@
    "Gletsch"
   ]
  },
+ "gaberl": {
+  "classicAscent": "27 km, 4.1 % from Köflach",
+  "note": "The crossing of the Stubalpe between western Styria and the Mur valley, long and steady on both sides. Open all year.",
+  "ascents": [
+   "Köflach (east)",
+   "Weißkirchen (west)"
+  ]
+ },
  "gailbergsattel": {
   "classicAscent": "6.7 km, 5.4 % from Oberdrauburg",
   "note": "The low crossing from the Drau valley into the Gail valley, short and even, with most of the hairpins on the north side. Cleared all year; ridden as the feeder to the Plöckenpass and on the loop around the Lienz Dolomites, so expect traffic on the B 110.",
@@ -971,12 +1556,40 @@
    "Kötschach-Mauthen (south)"
   ]
  },
+ "gaisberg": {
+  "classicAscent": "12.5 km, 6.7 % from Salzburg",
+  "note": "Salzburg's own mountain, from the old town via Guggenthal and the Zistelalm up to the summit with the transmitter; a classic of the Salzburg cycling scene. Open all year.",
+  "ascents": [
+   "Salzburg"
+  ]
+ },
  "gampenjoch": {
   "classicAscent": "18.2 km, 6.7 % from Lana",
   "note": "From the Adige valley at Lana into the Nonsberg, even and without respite, hot lower down in summer. Main link into Trentino and cleared all year, so never entirely empty.",
   "ascents": [
    "Lana (north)",
    "Fondo (south)"
+  ]
+ },
+ "gargellen": {
+  "classicAscent": "11 km, 4.6 % from St. Gallenkirch",
+  "note": "A side valley of the Montafon up to the mountain village below the Swiss border, steady and quiet. Open all year.",
+  "ascents": [
+   "St. Gallenkirch"
+  ]
+ },
+ "gavarnie": {
+  "classicAscent": "18.7 km, 3.6 % from Luz-Saint-Sauveur",
+  "note": "The valley road through the Luz gorge to the village of Gavarnie in front of the famous cirque. Gentle, a lot of traffic in summer. Open all year.",
+  "ascents": [
+   "Luz-Saint-Sauveur"
+  ]
+ },
+ "gerlitzen": {
+  "classicAscent": "26 km, 5.3 % from Annenheim",
+  "note": "From the Ossiacher See via the Kanzelhöhe to just below the summit, the upper part as a toll road. 1,400 m of climbing, at the top the all-round view across the Carinthian lakes to the Julian Alps; closed in winter.",
+  "ascents": [
+   "Annenheim"
   ]
  },
  "gerlospass": {
@@ -999,6 +1612,13 @@
   "note": "From Giswil on the Sarnersee up to Sörenberg, long and evenly steep. Wide alpine pastures at the top beneath the Brienzer Rothorn; closed in winter.",
   "ascents": [
    "Giswil (east)"
+  ]
+ },
+ "goldeck-panoramastrasse": {
+  "classicAscent": "17 km, 9 % from Spittal an der Drau",
+  "note": "Toll road from Spittal to over 2,000 m below the Goldeck summit, 1,500 m of climbing with long steep ramps. At the top the view to the Tauern, the Dolomites and the Millstätter See; closed in winter.",
+  "ascents": [
+   "Spittal an der Drau"
   ]
  },
  "gorges-de-daluis": {
@@ -1059,6 +1679,15 @@
    "Uffholtz (east)"
   ]
  },
+ "grand-colombier": {
+  "classicAscent": "16.7 km, 7.4 % from Culoz",
+  "note": "The king of the Jura: four ascents from the Rhône valley and the Valromey, at the top the view over the Lac du Bourget to Mont Blanc. A Tour de France finish in 2020 and 2023. Closed in winter.",
+  "ascents": [
+   "Culoz",
+   "Anglefort",
+   "Virieu-le-Petit"
+  ]
+ },
  "grimselpass": {
   "classicAscent": "26 km, 5.8 % from Innertkirchen",
   "note": "Closure usually late October/November. Reservoirs and granite.",
@@ -1083,12 +1712,34 @@
    "Heiligenblut"
   ]
  },
+ "gurnigelpass": {
+  "classicAscent": "16.6 km, 6.1 % from Wattenwil",
+  "note": "The pass in the Gantrisch area between the Gürbe valley and the Schwarzsee region, more than 1,000 m from Wattenwil, at the top moorland and the view of the Eiger, Mönch and Jungfrau. Closed in winter.",
+  "ascents": [
+   "Wattenwil (north)",
+   "Zollhaus (west)"
+  ]
+ },
+ "haggenegg": {
+  "classicAscent": "10.7 km, 8.4 % from Schwyz",
+  "note": "A narrow crossing between Schwyz and the Alpthal below the Mythen, from Schwyz almost 900 m with long ramps over 10 %. The north side down to Alpthal is a narrow alp road; closed in winter.",
+  "ascents": [
+   "Schwyz (south)"
+  ]
+ },
  "hahntennjoch": {
   "classicAscent": "17 km, 5 % from Elmen (12 km, 7 % from Imst)",
   "note": "Winter closure usually from November, opens late in spring.",
   "ascents": [
    "Elmen",
    "Imst"
+  ]
+ },
+ "hautacam": {
+  "classicAscent": "16.7 km, 7 % from Argelès-Gazost",
+  "note": "The irregularly steep resort climb above Argelès, a Tour finish several times; at the top up to the Col de Tramassel. Cleared all year.",
+  "ascents": [
+   "Argelès-Gazost"
   ]
  },
  "haute-vallee-de-cervieres": {
@@ -1098,11 +1749,26 @@
    "Junction in Cervières"
   ]
  },
+ "hintertux": {
+  "classicAscent": "19 km, 4.5 % from Mayrhofen",
+  "note": "From Mayrhofen in hairpins into the Tuxertal and up the valley to the foot of the Hintertux glacier. Steep at the bottom, moderate higher up; open all year, with traffic even in summer as a glacier ski area.",
+  "ascents": [
+   "Mayrhofen"
+  ]
+ },
  "hochkar": {
   "classicAscent": "8.5 km, 9.3 % from Lassing",
   "note": "Toll road up the Hochkar in the Mostviertel, with views across the Ybbstal Alps to the Ötscher. Steadily steep, the tarmac ends at the ski area on top; bikes pay no toll.",
   "ascents": [
    "Lassing"
+  ]
+ },
+ "hochrindl": {
+  "classicAscent": "8.6 km, 8.7 % from Sirnitz",
+  "note": "An alpine ridge with a holiday village between the Gurk valley and Reichenau; steep from Sirnitz, gentler from Ebene Reichenau. Open all year.",
+  "ascents": [
+   "Sirnitz (east)",
+   "Ebene Reichenau (west)"
   ]
  },
  "hochsoelden": {
@@ -1127,11 +1793,26 @@
    "La Bresse"
   ]
  },
+ "hourquette-d-ancizan": {
+  "classicAscent": "9.7 km, 7.9 % from Ancizan",
+  "note": "The quiet alternative to the Aspin: a narrow road across wide pastures between the Aure valley and Payolle. Closed in winter.",
+  "ascents": [
+   "Ancizan (east)",
+   "Payolle (west)"
+  ]
+ },
  "ibergeregg": {
   "classicAscent": "9.0 km, 8.0 % from Oberiberg",
   "note": "Between Schwyz and the Sihltal, steep and short. Cleared all year; at the top the view of the Mythen, which stand at your back for the whole climb.",
   "ascents": [
    "Oberiberg (east)"
+  ]
+ },
+ "iffigenalp": {
+  "classicAscent": "8.5 km, 6.2 % from Lenk",
+  "note": "A single-lane mountain road from Lenk to the alp below the Wildstrubel, opened to cars in one direction at a time on a fixed schedule. Narrow and steep, closed in winter.",
+  "ascents": [
+   "Lenk"
   ]
  },
  "iselsberg": {
@@ -1194,6 +1875,14 @@
    "Untertilliach (east)"
   ]
  },
+ "katschberg": {
+  "classicAscent": "6 km, 9.6 % from St. Michael im Lungau",
+  "note": "The old road between the Lungau and the Lieser valley, short on both sides with ramps of up to 20 %, one of the steepest pass roads in the Alps; the motorway runs in a tunnel underneath. Open all year.",
+  "ascents": [
+   "St. Michael im Lungau (north)",
+   "Rennweg (south)"
+  ]
+ },
  "kaunertaler-gletscherstrasse": {
   "classicAscent": "24.5 km, 5.0 % from Feichten",
   "note": "From the Kaunertal past the Gepatsch reservoir to the end of the public road at 2,510 m – the final hairpins to the glacier car park at around 2,750 m are an access road of the ski area. Toll road: cars pay, bikes ride free. Thin air at the top, hairpins far above the tree line.",
@@ -1221,6 +1910,21 @@
   "ascents": [
    "Altdorf",
    "Linthal"
+  ]
+ },
+ "klippitztoerl": {
+  "classicAscent": "14 km, 6 % from Bad St. Leonhard",
+  "note": "The crossing of the Saualpe between the Lavant and Görtschitz valleys, steady on both sides. At the top pastures and a small ski area; open all year.",
+  "ascents": [
+   "Bad St. Leonhard (east)",
+   "Lölling (west)"
+  ]
+ },
+ "kolm-saigurn": {
+  "classicAscent": "21 km, 3.1 % from Rauris",
+  "note": "Up the Rauris valley to its head below the Hoher Sonnblick, a quiet side valley of the Tauern. Long and moderate, steeper only in the last kilometres.",
+  "ascents": [
+   "Rauris"
   ]
  },
  "kuehtai": {
@@ -1252,6 +1956,27 @@
    "Plancher-les-Mines"
   ]
  },
+ "la-toussuire": {
+  "classicAscent": "18 km, 6 % from Saint-Jean-de-Maurienne",
+  "note": "The ski resort above Saint-Jean-de-Maurienne, a Tour de France finish in 2012; from Saint-Jean via Fontcouverte in hairpins up the slope. Cleared all year.",
+  "ascents": [
+   "Saint-Jean-de-Maurienne"
+  ]
+ },
+ "lac-de-cap-de-long": {
+  "classicAscent": "21.4 km, 6.3 % from Saint-Lary-Soulan",
+  "note": "Through the Couplan valley into the Néouvielle up to the Cap-de-Long dam at over 2,100 m, a granite landscape with lakes at the top. Closed above Fabian in winter.",
+  "ascents": [
+   "Saint-Lary-Soulan"
+  ]
+ },
+ "lac-de-moiry": {
+  "classicAscent": "32 km, 5.3 % from Sierre via Vissoie and Grimentz",
+  "note": "Through the Val d'Anniviers via Vissoie and Grimentz up to the dam, more than 1,700 m of climbing in one go. At the top a turquoise reservoir below the Moiry glacier; closed above Grimentz in winter.",
+  "ascents": [
+   "Sierre"
+  ]
+ },
  "le-chazelet": {
   "classicAscent": "5.9 km, 5.1 % from La Grave",
   "note": "Short dead end above La Grave; at the top you stand face to face with the Meije – one of the great panoramas of the Western Alps. Continuing onto the Plateau d'Emparis is only possible off the tarmac.",
@@ -1267,11 +1992,33 @@
    "Wildenstein (west)"
   ]
  },
+ "lenzerheide": {
+  "classicAscent": "15 km, 6.5 % from Chur",
+  "note": "The main road from Chur into the Albula valley via Churwalden, Valbella and the Heidsee, the approach to the Albula and the Julier and so busy; open all year. From Chur in hairpins and steep for a long way, from Tiefencastel via Lantsch more even.",
+  "ascents": [
+   "Chur (north)",
+   "Tiefencastel (south)"
+  ]
+ },
  "les-arcs": {
   "classicAscent": "20.8 km, 6.3 % from Bourg-Saint-Maurice",
   "note": "Ski-resort ascent via Arc 1800, open all year. Sober scenery, useful as training for the metres of climbing.",
   "ascents": [
    "Bourg-Saint-Maurice"
+  ]
+ },
+ "les-deux-alpes": {
+  "classicAscent": "10.5 km, 6.9 % from Le Freney-d'Oisans",
+  "note": "The hairpin climb from the Romanche valley to the ski resort, a Tour finish in 1998. Shorter than Alpe d'Huez and with more traffic to the resort. Cleared all year.",
+  "ascents": [
+   "Le Freney-d'Oisans"
+  ]
+ },
+ "leukerbad": {
+  "classicAscent": "14 km, 5.4 % from Susten",
+  "note": "From Susten via Leuk and high above the Dala gorge to the spa town below the Gemmi wall; steady, with a few hairpins. Open all year.",
+  "ascents": [
+   "Susten"
   ]
  },
  "loiblpass": {
@@ -1289,12 +2036,33 @@
    "Altaussee"
   ]
  },
+ "luenersee": {
+  "classicAscent": "18 km, 5.6 % from Bludenz through the Brandnertal",
+  "note": "Up the Brandnertal from Bludenz via Brand to the valley station of the Lünersee cable car below the Schesaplana, the last stretch narrow and steep. Closed beyond Brand in winter.",
+  "ascents": [
+   "Bludenz"
+  ]
+ },
  "lukmanierpass": {
   "classicAscent": "18 km, 5 % from Disentis",
   "note": "Closure weather-dependent from November, often open longer than its neighbours.",
   "ascents": [
    "Disentis",
    "Olivone"
+  ]
+ },
+ "luz-ardiden": {
+  "classicAscent": "13.6 km, 7.3 % from Luz-Saint-Sauveur",
+  "note": "The hairpin road from Luz to the ski resort, a Tour finish several times. At the top a cascade of hairpins on open slopes. Cleared all year.",
+  "ascents": [
+   "Luz-Saint-Sauveur"
+  ]
+ },
+ "macugnaga": {
+  "classicAscent": "28 km, 3.8 % from Piedimulera",
+  "note": "Through the Valle Anzasca from Piedimulera to Macugnaga below the east face of the Monte Rosa, the highest wall in the Alps. Long and moderately steep, open all year.",
+  "ascents": [
+   "Piedimulera"
   ]
  },
  "madonna-del-colletto": {
@@ -1310,6 +2078,13 @@
   "note": "The patron saint of cyclists stands in the chapel at the top, the cycling museum beside it – not a high pass, but the most famous climb in Lombardy. Steep from Bellagio above Lake Como, a fixture of the Giro di Lombardia.",
   "ascents": [
    "Bellagio (north)"
+  ]
+ },
+ "malbun": {
+  "classicAscent": "13 km, 8.7 % from Vaduz via Triesenberg",
+  "note": "Liechtenstein's climb: steeply in hairpins from Vaduz to Triesenberg with a view across the Rhine valley, then through the tunnel to Steg and up to the ski village of Malbun. Steep throughout, open all year.",
+  "ascents": [
+   "Vaduz"
   ]
  },
  "malojapass": {
@@ -1340,6 +2115,13 @@
    "Goldrain"
   ]
  },
+ "melchsee-frutt": {
+  "classicAscent": "19 km, 6.9 % from Kerns through the Melchtal",
+  "note": "Through the Melchtal to Stöckalp and then up the narrow toll road with ramps of up to 15 % to the plateau at the Melchsee. 1,350 m of climbing, at the top mountain lakes at 1,900 m; the upper part closed in winter.",
+  "ascents": [
+   "Kerns"
+  ]
+ },
  "mendelpass": {
   "classicAscent": "13.5 km, 7.0 % from Kaltern",
   "note": "From the vineyards above Kaltern up the Mendel wall in tight hairpins, looking back across the Adige valley as far as the Rosengarten. Cleared all year and busy as the link into the Nonsberg.",
@@ -1355,6 +2137,29 @@
    "Junction in Méribel"
   ]
  },
+ "mont-crosin": {
+  "classicAscent": "5.6 km, 7.8 % from Saint-Imier",
+  "note": "The short pass between Saint-Imier and Tramelan across the pastures with the wind turbines of Mont-Soleil. Open all year.",
+  "ascents": [
+   "Saint-Imier (south)",
+   "Tramelan (north)"
+  ]
+ },
+ "mont-du-chat": {
+  "classicAscent": "13.2 km, 9.3 % from Le Bourget-du-Lac",
+  "note": "The southernmost Jura pass right above the Lac du Bourget: from the east 13 km at a steady 9 %, crossed by the Tour de France in 2017. The west side from Yenne is gentler.",
+  "ascents": [
+   "Le Bourget-du-Lac (east)",
+   "Yenne (west)"
+  ]
+ },
+ "mont-revard": {
+  "classicAscent": "19.3 km, 6.5 % from Aix-les-Bains",
+  "note": "The home climb of Aix-les-Bains: more than 1,200 m from the lakeshore through forest onto the plateau, at the top the view across the Lac du Bourget to Mont Blanc. Open all year.",
+  "ascents": [
+   "Aix-les-Bains"
+  ]
+ },
  "mont-ventoux": {
   "classicAscent": "21.5 km, 7.5 % from Bédoin",
   "note": "Summit road usually not closed until mid-November. October is ideal, but the Mistral can be brutal; check the wind forecast.",
@@ -1362,6 +2167,13 @@
    "Bédoin",
    "Malaucène",
    "Sault"
+  ]
+ },
+ "montagne-de-lure": {
+  "classicAscent": "16.7 km, 6.7 % from Saint-Étienne-les-Orgues",
+  "note": "The 'little Ventoux': from Saint-Étienne-les-Orgues through forest to just below the Signal de Lure, at the top a panorama from the Écrins to the Ventoux. Closed above the resort in winter.",
+  "ascents": [
+   "Saint-Étienne-les-Orgues"
   ]
  },
  "monte-beigua": {
@@ -1445,6 +2257,14 @@
    "Junction in Albaredo"
   ]
  },
+ "moosalp": {
+  "classicAscent": "16 km, 7.6 % from Stalden via Törbel",
+  "note": "The link from the Visp valley to the Rhône valley over an alp with larches and mountain lakes, at the top the view of the Weisshorn, the Mischabel and the Bernese Alps. From Stalden via Törbel short and steep, from Raron via Unterbäch and Bürchen longer and more even; closed in winter.",
+  "ascents": [
+   "Stalden (east)",
+   "Raron (west)"
+  ]
+ },
  "mottarone": {
   "classicAscent": "20 km, 6 % from Armeno",
   "note": "The viewpoint mountain between Lake Maggiore and Lake Orta, a Giro summit finish in 2009. The free ascent comes from Armeno via Gignese; the road from Stresa is a private toll road. Usually snow at the top from December to March.",
@@ -1465,6 +2285,13 @@
   "ascents": [
    "Tröpolach (north)",
    "Pontebba (south)"
+  ]
+ },
+ "nevegal": {
+  "classicAscent": "13 km, 5 % from Belluno",
+  "note": "Belluno's home climb: from the town via Castion to the small resort on the Col Visentin, at the top the view of the Belluno Dolomites. Cleared all year.",
+  "ascents": [
+   "Belluno"
   ]
  },
  "nigerpass": {
@@ -1532,6 +2359,14 @@
   "note": "Tour finish in 1971 and 2020, otherwise a quiet ski resort in the Champsaur. Even gradient, hardly any traffic outside the season.",
   "ascents": [
    "Pont-du-Fossé"
+  ]
+ },
+ "pass-thurn": {
+  "classicAscent": "9.5 km, 5.3 % from Mittersill",
+  "note": "The link from Kitzbühel into the upper Pinzgau, a wide main road with traffic. From Mittersill in hairpins with a view of the Hohe Tauern, flat from Jochberg; open all year.",
+  "ascents": [
+   "Mittersill (south)",
+   "Jochberg (north)"
   ]
  },
  "passo-brocon": {
@@ -1611,6 +2446,13 @@
    "Ponte Arche (north)"
   ]
  },
+ "passo-del-cason-di-lanza": {
+  "classicAscent": "13.5 km, 6.7 % from Paularo",
+  "note": "A narrow mountain pass in the Carnic Alps between Paularo and Pontebba, at the top pastures below the Monte Zermula. Closed in winter.",
+  "ascents": [
+   "Paularo"
+  ]
+ },
  "passo-del-faiallo": {
   "classicAscent": "24 km, 4 % from Voltri",
   "note": "From the sea at Genoa-Voltri via Mele and the Acquasanta monastery onto the crest of the Ligurian Alps; at the top the coast lies 1,000 m below in the haze, the Po plain behind. The top of the road lies a few hundred metres from the actual saddle. Open all year, briefly closed after snowfall in winter.",
@@ -1649,6 +2491,14 @@
    "Monno"
   ]
  },
+ "passo-del-redebus": {
+  "classicAscent": "16 km, 6.2 % from Pergine",
+  "note": "The quiet crossing from the Valsugana at Pergine into the Fersina valley and onto the Piné plateau. Forest, pastures and hardly any traffic. Open all year.",
+  "ascents": [
+   "Pergine (south)",
+   "Bedollo (north)"
+  ]
+ },
  "passo-del-tonale": {
   "classicAscent": "15 km, 6 % from Vezza d'Oglio",
   "note": "Open all year, often combined with the Gavia or the Mortirolo.",
@@ -1677,6 +2527,22 @@
   "ascents": [
    "Tresenda (west)",
    "Edolo (east)"
+  ]
+ },
+ "passo-della-mauria": {
+  "classicAscent": "7.9 km, 5.3 % from Lorenzago",
+  "note": "The crossing from the Cadore into Friuli at the springs of the Tagliamento, moderate on both sides and through forest. Open all year.",
+  "ascents": [
+   "Lorenzago di Cadore (west)",
+   "Forni di Sopra (east)"
+  ]
+ },
+ "passo-della-presolana": {
+  "classicAscent": "14.7 km, 4.8 % from Clusone",
+  "note": "The crossing from the Val Seriana into the Val di Scalve below the limestone walls of the Presolana, the 'queen of the Bergamasque Alps'. Steady from Clusone, shorter and steeper from Dezzo. Open all year.",
+  "ascents": [
+   "Clusone (west)",
+   "Dezzo di Scalve (east)"
   ]
  },
  "passo-delle-erbe": {
@@ -1828,6 +2694,14 @@
    "Canazei"
   ]
  },
+ "passo-rest": {
+  "classicAscent": "10.2 km, 6.5 % from Tramonti di Sopra",
+  "note": "A remote forest pass between the Tagliamento and the Tramonti valleys, almost deserted on both sides. Open all year.",
+  "ascents": [
+   "Tramonti di Sopra (south)",
+   "Socchieve (north)"
+  ]
+ },
  "passo-rolle": {
   "classicAscent": "21 km, 5 % from Predazzo",
   "note": "Open all year, Pala group.",
@@ -1960,6 +2834,22 @@
    "Posina (north)"
   ]
  },
+ "passwang": {
+  "classicAscent": "7.8 km, 5.1 % from Mümliswil",
+  "note": "The crossing from the Thal into the Lüssel valley in the Solothurn Jura, through the short summit tunnel at the top. Open all year.",
+  "ascents": [
+   "Mümliswil (south)",
+   "Beinwil (north)"
+  ]
+ },
+ "pavlicevo-sedlo": {
+  "classicAscent": "11.4 km, 6.1 % from Solčava",
+  "note": "The small border pass between the Logar valley and Bad Eisenkappel below the Kamnik–Savinja Alps, quiet on both sides. Often closed in winter.",
+  "ascents": [
+   "Solčava (south)",
+   "Bad Eisenkappel (north)"
+  ]
+ },
  "penegal": {
   "classicAscent": "3.8 km, 9 % from the top of the Mendel Pass",
   "note": "A detour off the top of the Mendel Pass: the road climbs through the forest to the lookout tower on the Penegal, with a view over the Adige valley to the Dolomites.",
@@ -1973,6 +2863,20 @@
   "ascents": [
    "Sarnthein",
    "Sterzing"
+  ]
+ },
+ "pfaender": {
+  "classicAscent": "11 km, 5.6 % from Bregenz",
+  "note": "Bregenz's own mountain, from the town via Fluh to just below the summit, with a view over the whole of Lake Constance. Short and steadily steep, open all year.",
+  "ascents": [
+   "Bregenz"
+  ]
+ },
+ "pian-del-re": {
+  "classicAscent": "21 km, 5.1 % from Paesana",
+  "note": "The road through the upper Po valley to the source of the Po right below the north face of the Monviso. Gentle as far as Crissolo, then narrow and steep. Closed above Crissolo in winter; at times closed to cars on summer weekends.",
+  "ascents": [
+   "Paesana"
   ]
  },
  "pian-delle-fugazze": {
@@ -1990,11 +2894,40 @@
    "Ballabio"
   ]
  },
+ "pila": {
+  "classicAscent": "18 km, 6.6 % from Aosta",
+  "note": "From Aosta via Gressan in long hairpins up to the ski station above the town, steadily steep from bottom to top. At the top the view across the whole valley to Mont Blanc; open all year.",
+  "ascents": [
+   "Aosta"
+  ]
+ },
+ "piller-sattel": {
+  "classicAscent": "9.3 km, 5.8 % from Wenns",
+  "note": "The quiet link from the Pitztal into the upper Inn valley across a high moorland. Steady from Wenns, short and very steep down to Fließ; at the top, at the Gacher Blick, a view far into the Inn valley. Open all year.",
+  "ascents": [
+   "Wenns (east)",
+   "Fließ (west)"
+  ]
+ },
  "pitztal-mittelberg": {
   "classicAscent": "19.8 km, 2.7 % from Jerzens to Mittelberg",
   "note": "The Pitztal ends after twenty flat kilometres at the glacier car park in Mittelberg, beneath the Wildspitze. Little gradient, little traffic; cleared all year because of the glacier ski area.",
   "ascents": [
    "Jerzens"
+  ]
+ },
+ "pla-d-adet": {
+  "classicAscent": "11.6 km, 7.2 % from Saint-Lary-Soulan",
+  "note": "The ski resort above Saint-Lary, a Tour finish several times; steep ramps at the bottom via Soulan. Cleared all year.",
+  "ascents": [
+   "Saint-Lary-Soulan"
+  ]
+ },
+ "plateau-de-beille": {
+  "classicAscent": "15 km, 8.3 % from Les Cabannes",
+  "note": "The long, steadily steep climb to the cross-country ski centre, a Tour finish several times. 15 km at 8 % without a break. Cleared all year.",
+  "ascents": [
+   "Les Cabannes"
   ]
  },
  "plateau-des-glieres": {
@@ -2012,11 +2945,65 @@
    "Paluzza (south)"
   ]
  },
+ "plose": {
+  "classicAscent": "21.5 km, 6.7 % from Brixen",
+  "note": "Brixen's home climb: via St. Andrä and Palmschoss almost 1,450 m up to the Kreuztal below the Plose summit, at the top the view of the Odle (Geisler) peaks. Cleared all year.",
+  "ascents": [
+   "Brixen"
+  ]
+ },
  "poggio-di-sanremo": {
   "classicAscent": "3.7 km, 4 % from Arma di Taggia",
   "note": "The last four uphill kilometres of Milan–Sanremo: 160 m above the sea, greenhouses, four hairpins and the village at the top, then the descent into the Via Roma. Open all year and ridden every day by road bikes re-enacting the sprint.",
   "ascents": [
    "Bussana (east)"
+  ]
+ },
+ "pokljuka": {
+  "classicAscent": "15.7 km, 4.6 % from Zgornje Gorje",
+  "note": "The road from Bled onto the forested Pokljuka plateau to the Rudno polje biathlon centre, on the edge of Triglav National Park. Steady, cleared all year.",
+  "ascents": [
+   "Zgornje Gorje"
+  ]
+ },
+ "port-d-envalira": {
+  "classicAscent": "16.3 km, 5.3 % from Canillo",
+  "note": "The highest road pass in the Pyrenees, between Andorra and France. Moderately steep, but a main road with heavy traffic and petrol stations; the tunnel takes part of it. Cleared all year.",
+  "ascents": [
+   "Canillo (west)",
+   "L'Hospitalet (east)"
+  ]
+ },
+ "port-de-bales": {
+  "classicAscent": "17.9 km, 6.6 % from Mauléon-Barousse",
+  "note": "The wild pass between the Barousse and the Luchon valley, in the Tour route since 2007. Long from the north with steep sections in the upper part, narrow. Closed in winter.",
+  "ascents": [
+   "Mauléon-Barousse (north)",
+   "Bagnères-de-Luchon (south)"
+  ]
+ },
+ "port-de-la-bonaigua": {
+  "classicAscent": "20.9 km, 5.4 % from Esterri d'Àneu",
+  "note": "The high pass between the Val d'Aran and the Pallars, over 2,000 m with wide hairpins on the east side. Cleared, closed at times after snowfall.",
+  "ascents": [
+   "Esterri d'Àneu (east)",
+   "Vielha (west)"
+  ]
+ },
+ "port-de-lers": {
+  "classicAscent": "11.4 km, 7 % from Vicdessos",
+  "note": "The pass at the Étang de Lers between the Vicdessos valley and Massat, ridden together with the Col d'Agnes. Closed at times after snowfall.",
+  "ascents": [
+   "Vicdessos (east)",
+   "Massat (west)"
+  ]
+ },
+ "port-del-canto": {
+  "classicAscent": "18.7 km, 5.5 % from Sort",
+  "note": "The long crossing between the Pallars and the Alt Urgell, more than 1,000 m on both sides. Cleared all year.",
+  "ascents": [
+   "Sort (west)",
+   "Adrall (east)"
   ]
  },
  "postalm": {
@@ -2033,11 +3020,26 @@
    "Barcelonnette"
   ]
  },
+ "praebichl": {
+  "classicAscent": "8.5 km, 5.5 % from Eisenerz",
+  "note": "The pass between Eisenerz and Vordernberg, with the stepped mountain of the Erzberg beside the road. Short and steady on both sides; open all year.",
+  "ascents": [
+   "Eisenerz (north)",
+   "Vordernberg (south)"
+  ]
+ },
  "pragelpass": {
   "classicAscent": "14.0 km, 7.0 % from Muotathal",
   "note": "Between the Muotatal and the Klöntal, closed to cars on Sundays and public holidays – then the road belongs to the bikes. Narrow, steep and with the Klöntalersee as the reward on the east side.",
   "ascents": [
    "Muotathal (west)"
+  ]
+ },
+ "prato-nevoso": {
+  "classicAscent": "8.9 km, 8 % from Frabosa Sottana",
+  "note": "The ski resort above Frabosa in the Ligurian Alps, a Tour de France finish in 2008. Short and steadily steep through chestnut forest. Cleared all year.",
+  "ascents": [
+   "Frabosa Sottana"
   ]
  },
  "predilpass": {
@@ -2055,6 +3057,14 @@
    "Castelletto di Brenzone"
   ]
  },
+ "radstaedter-tauernpass": {
+  "classicAscent": "21 km, 4.2 % from Radstadt",
+  "note": "The pass over Obertauern between the Enns valley and the Lungau, the old Roman road beside the Tauern motorway. Long from Radstadt with a steep stretch before Untertauern, steady from Mauterndorf; open all year.",
+  "ascents": [
+   "Radstadt (north)",
+   "Mauterndorf (south)"
+  ]
+ },
  "reschenpass": {
   "classicAscent": "19 km, 2.4 % from Mals",
   "note": "From Mals across the Malser Haide and along the Haidersee and the Reschensee, with the church tower in the lake just before the top; a wide transit road, open all year. South side only: from the north the B 180 between Kajetansbrücke and Nauders is closed to bikes, the cycle route comes via Martina and the Norbertshöhe, and from Nauders only about 100 m of climbing remain.",
@@ -2069,6 +3079,13 @@
    "Junction near Introd"
   ]
  },
+ "riale": {
+  "classicAscent": "33 km, 3.7 % from Crodo",
+  "note": "Through the Valle Antigorio and the Val Formazza from Crodo to the Toce waterfall and the high plain of Riale. Long and flat at the bottom, at the top in hairpins beside the fall; open to Riale all year.",
+  "ascents": [
+   "Crodo"
+  ]
+ },
  "riedbergpass": {
   "classicAscent": "6.5 km, 8.3 % from Obermaiselstein",
   "note": "Germany's highest pass road and, at 16 % in the upper third, one of its steepest too. Links the Iller valley with Balderschwang; cleared all year, at times chains only during heavy snowfall.",
@@ -2081,6 +3098,13 @@
   "note": "A detour off the Gavia climb from Bormio: in Santa Caterina the narrow road branches off into the Valle dei Forni and ends at the hut below the Forni glacier. Season window taken from the Gavia.",
   "ascents": [
    "Junction in Santa Caterina"
+  ]
+ },
+ "risoul": {
+  "classicAscent": "13.4 km, 6.4 % from Guillestre",
+  "note": "The hairpin road from Guillestre to the Risoul resort, a Tour de France finish in 2014. Steady, at the top larches and the view of the Pelvoux. Cleared all year.",
+  "ascents": [
+   "Guillestre"
   ]
  },
  "rittner-hochplateau": {
@@ -2111,11 +3135,40 @@
    "Col de la Schlucht"
   ]
  },
+ "saanenmoeser": {
+  "classicAscent": "7.4 km, 4.5 % from Zweisimmen",
+  "note": "The flat crossing from the Simmental into the Saanenland towards Gstaad, a main road beside the railway. Short and gentle, open all year.",
+  "ascents": [
+   "Zweisimmen (east)",
+   "Saanen (west)"
+  ]
+ },
+ "saas-fee": {
+  "classicAscent": "19 km, 5.3 % from Stalden",
+  "note": "Up the Saas valley to the edge of the car-free village, at the end below the glaciers of the Dom and the Allalin. At the bottom the valley road with the traffic to the Saas villages, steeper in hairpins from Saas-Grund; open all year.",
+  "ascents": [
+   "Stalden"
+  ]
+ },
  "saint-veran": {
   "classicAscent": "5.1 km, 5 % from the junction near Molines",
   "note": "A detour off the Agnello climb from the Queyras: the road branches off near Molines and ends in Saint-Véran, one of the highest villages in Europe.",
   "ascents": [
    "Junction near Molines"
+  ]
+ },
+ "samnaun": {
+  "classicAscent": "14 km, 5.2 % from Vinadi",
+  "note": "From the Inn at Vinadi through tunnels and galleries into the duty-free high valley of Samnaun. Steady, open all year.",
+  "ascents": [
+   "Vinadi"
+  ]
+ },
+ "santuario-di-oropa": {
+  "classicAscent": "12 km, 6 % from Biella",
+  "note": "From Biella through forest to the great pilgrimage site below Monte Mucrone, steeper at the top. A Giro d'Italia finish several times, known for Pantani's comeback ride in 1999; open all year.",
+  "ascents": [
+   "Biella"
   ]
  },
  "santuario-di-sant-anna-di-vinadio": {
@@ -2125,11 +3178,41 @@
    "Junction on the Lombarde road"
   ]
  },
+ "sattelegg": {
+  "classicAscent": "12.9 km, 5.9 % from Siebnen",
+  "note": "The crossing from the end of Lake Zurich to the Sihlsee, long from Siebnen via Vorderthal, short from Euthal. Open all year.",
+  "ascents": [
+   "Siebnen (north)",
+   "Euthal (south)"
+  ]
+ },
+ "sauris": {
+  "classicAscent": "15 km, 5.5 % from Ampezzo",
+  "note": "Through the Lumiei gorge with its partly unlit tunnels to the turquoise Sauris reservoir and up to the German-speaking village of Sauris di Sopra. Open all year.",
+  "ascents": [
+   "Ampezzo"
+  ]
+ },
+ "schallenberg": {
+  "classicAscent": "9.5 km, 2.5 % from Schwarzenegg",
+  "note": "The crossing from Lake Thun into the Emmental and the Entlebuch, gentle on both sides and over hills with farms. Open all year.",
+  "ascents": [
+   "Schwarzenegg (west)",
+   "Marbach (east)"
+  ]
+ },
  "schnalstal-kurzras": {
   "classicAscent": "25.6 km, 5.8 % from Naturns to Kurzras",
   "note": "From Naturns up to 2,000 m at the glacier, the whole valley a single dead end. Long and even, the Ötzi find site lies above the head of the valley; cleared all year because of the glacier ski area.",
   "ascents": [
    "Naturns"
+  ]
+ },
+ "schoeckl": {
+  "classicAscent": "26 km, 4.1 % from Graz-Andritz via St. Radegund",
+  "note": "Graz's own mountain, from Andritz via St. Radegund up to the summit plateau; the last kilometres narrow and steep. Open all year.",
+  "ascents": [
+   "Graz-Andritz"
   ]
  },
  "schwaegalp": {
@@ -2144,6 +3227,14 @@
   "note": "The quiet border crossing between the Karawanks and the Kamnik Alps, east of the Loibl. Even and little used, meadows rather than rock at the top; cleared all year.",
   "ascents": [
    "Zgornje Jezersko (south)"
+  ]
+ },
+ "seefelder-sattel": {
+  "classicAscent": "10.5 km, 5.6 % from Zirl via the Zirler Berg",
+  "note": "The main road from Innsbruck to Seefeld and Garmisch, from Zirl the notorious Zirler Berg at 16 % – wide, but with a lot of traffic. From Scharnitz barely any gradient; open all year.",
+  "ascents": [
+   "Zirl (south)",
+   "Scharnitz (north)"
   ]
  },
  "seiser-alm": {
@@ -2219,6 +3310,21 @@
    "Junction in Ville-Vieille"
   ]
  },
+ "soriska-planina": {
+  "classicAscent": "12.5 km, 6.6 % from Bohinjska Bistrica",
+  "note": "The crossing from the Bohinj into the Selška valley over a small ski pasture, in hairpins on the Bohinj side, long via the village of Sorica on the east side. Open all year.",
+  "ascents": [
+   "Bohinjska Bistrica (west)",
+   "Železniki (east)"
+  ]
+ },
+ "spitzingsattel": {
+  "classicAscent": "9.3 km, 3.7 % from Schliersee, the top 2.5 km steep",
+  "note": "From Schliersee via Neuhaus and the steep ramp up to the saddle above the Spitzingsee, beyond which the road drops to the lake and ends. Short, open all year, day-trip traffic at weekends.",
+  "ascents": [
+   "Schliersee (north)"
+  ]
+ },
  "spluegenpass": {
   "classicAscent": "9 km, 8 % from Splügen (30 km from Chiavenna)",
   "note": "The Italian south ramp with its wall of hairpins is a highlight. Closure usually from November.",
@@ -2234,6 +3340,13 @@
    "Bad Gastein"
   ]
  },
+ "staffal": {
+  "classicAscent": "37 km, 4 % from Pont-Saint-Martin",
+  "note": "Up the long Lys valley from Pont-Saint-Martin through the Walser villages of Gressoney-Saint-Jean and Gressoney-La-Trinité to the head of the valley below the Monte Rosa. Long and flat at the bottom, steeper at the top; open all year.",
+  "ascents": [
+   "Pont-Saint-Martin"
+  ]
+ },
  "staller-sattel": {
   "classicAscent": "12.0 km, 6.8 % from Antholz Mittertal",
   "note": "Above the Antholzer See from the Pustertal into the Defereggental, high and very quiet. The southern ramp is single-track and run as a one-way system: one direction per hour, switching on the half hour – check the time windows before riding.",
@@ -2242,11 +3355,25 @@
    "Erlsbach (north)"
   ]
  },
+ "stoderzinken": {
+  "classicAscent": "10 km, 7.2 % from Gröbming",
+  "note": "Toll road from Gröbming up to the alp below the summit, steep and narrow, at the top the view across the Enns valley to the Tauern. Closed in winter.",
+  "ascents": [
+   "Gröbming"
+  ]
+ },
  "strada-della-forra": {
   "classicAscent": "7.9 km, 3.8 % from Campione del Garda",
   "note": "From Lake Garda into the Brasa gorge, kilometres beneath overhanging rock and through unlit tunnels, then out onto the plateau of Tremosine. Open all year, narrow and busy in summer – Winston Churchill called it the eighth wonder of the world.",
   "ascents": [
    "Campione del Garda (south)"
+  ]
+ },
+ "stubaital": {
+  "classicAscent": "30 km, 2.5 % from Schönberg",
+  "note": "Up the whole Stubaital from Schönberg via Fulpmes and Neustift to the valley station of the glacier lift. Long and moderate, steeper only in the last kilometres beyond Ranalt; open all year, busy at the bottom.",
+  "ascents": [
+   "Schönberg"
   ]
  },
  "sudelfeld": {
@@ -2264,12 +3391,26 @@
    "Junction in Gomagoi"
   ]
  },
+ "superbagneres": {
+  "classicAscent": "17.6 km, 6.6 % from Bagnères-de-Luchon",
+  "note": "The road from Luchon to the Grand Hôtel on the Superbagnères balcony, a Tour finish several times; at the top the view of the Maladeta. Cleared all year.",
+  "ascents": [
+   "Bagnères-de-Luchon"
+  ]
+ },
  "sustenpass": {
   "classicAscent": "28 km, 5.5 % from Innertkirchen",
   "note": "Closure usually late October/November. Even gradient, Steingletscher panorama.",
   "ascents": [
    "Innertkirchen",
    "Wassen"
+  ]
+ },
+ "thyon-2000": {
+  "classicAscent": "22 km, 7.3 % from Sion",
+  "note": "From Sion via Vex and Les Collons up to the ski station above the Val d'Hérens, 1,550 m steadily steep. At the top the view across the Rhône valley to the Bernese Alps; open all year.",
+  "ascents": [
+   "Sion"
   ]
  },
  "timmelsjoch": {
@@ -2285,6 +3426,14 @@
   "note": "Toll road, usually open until late October, then closed until May. Cars are charged, bikes ride free; when the car park is full the road is closed to cars, not to bikes.",
   "ascents": [
    "Misurina"
+  ]
+ },
+ "triebener-tauern": {
+  "classicAscent": "9 km, 6.3 % from Trieben",
+  "note": "The link from the Palten valley into the Pöls valley via Hohentauern; steep through a gorge from Trieben, flat from the south. Open all year.",
+  "ascents": [
+   "Trieben (north)",
+   "St. Johann am Tauern (south)"
   ]
  },
  "turracher-hoehe": {
@@ -2393,6 +3542,13 @@
    "Gargnano"
   ]
  },
+ "verbier": {
+  "classicAscent": "8.6 km, 7.8 % from Le Châble",
+  "note": "Short and steep from Le Châble in many hairpins up to the sunny terrace above the Val de Bagnes; a Tour de France finish in 2009. A ski resort with traffic, open all year.",
+  "ascents": [
+   "Le Châble"
+  ]
+ },
  "villacher-alpenstrasse": {
   "classicAscent": "17 km, 6.2 % from Möltschach",
   "note": "Toll road, usually open until late October or longer. Bikes ride toll-free.",
@@ -2429,12 +3585,80 @@
    "Trenta"
   ]
  },
+ "vue-des-alpes": {
+  "classicAscent": "9.8 km, 6.4 % from Valangin",
+  "note": "The pass between Neuchâtel and La Chaux-de-Fonds, at the top in clear weather the whole Alpine chain from the Säntis to Mont Blanc. A main road with traffic, cleared all year.",
+  "ascents": [
+   "Valangin (south)",
+   "La Chaux-de-Fonds (north)"
+  ]
+ },
+ "wallbergstrasse": {
+  "classicAscent": "11.6 km, 6.4 % from Rottach-Egern",
+  "note": "Mountain road closed to cars from Rottach-Egern to the Wallberghaus, a toboggan run in winter. Steadily steep in hairpins, at the top the view over the Tegernsee.",
+  "ascents": [
+   "Rottach-Egern"
+  ]
+ },
+ "weinebene": {
+  "classicAscent": "23 km, 5.7 % from Deutschlandsberg",
+  "note": "The high crossing of the Koralpe between western Styria and the Lavant valley, 1,300 m of climbing from either side. Long, steady and quiet; open all year.",
+  "ascents": [
+   "Deutschlandsberg (east)",
+   "Wolfsberg (west)"
+  ]
+ },
+ "weissenstein": {
+  "classicAscent": "7.6 km, 8.8 % from Oberdorf",
+  "note": "Solothurn's steep home climb: from Oberdorf more than 700 m in a short distance with ramps over 15 %, at the top the Alpine view from the Kurhaus. Closed in winter.",
+  "ascents": [
+   "Oberdorf (south)",
+   "Gänsbrunnen (north)"
+  ]
+ },
+ "wildhaus": {
+  "classicAscent": "9.3 km, 6.4 % from Gams",
+  "note": "The crossing from the Rhine valley into the Toggenburg between the Churfirsten and the Alpstein, steep in hairpins from Gams, gentle from the Toggenburg. Open all year.",
+  "ascents": [
+   "Gams (east)",
+   "Nesslau (west)"
+  ]
+ },
+ "windische-hoehe": {
+  "classicAscent": "12.8 km, 4.3 % from Feistritz an der Gail",
+  "note": "A quiet crossing between the Gail and Drau valleys west of Villach, moderate on both sides. Open all year.",
+  "ascents": [
+   "Feistritz an der Gail (south)",
+   "Paternion (north)"
+  ]
+ },
+ "wolfgangpass": {
+  "classicAscent": "7 km, 6.3 % from Klosters",
+  "note": "The main road from Klosters to Davos, short and steady from Klosters, barely any gradient from Davos – hence only one side. Open all year.",
+  "ascents": [
+   "Klosters (north)"
+  ]
+ },
  "wurzenpass": {
   "classicAscent": "6.2 km, 8.8 % from Riegersdorf",
   "note": "Short, brutal and with lorry traffic: the northern ramp hits 18 % on the final kilometre. Border crossing into Slovenia, open all year – the reputation comes from the gradient, not the scenery.",
   "ascents": [
    "Riegersdorf (north)",
    "Kranjska Gora (south)"
+  ]
+ },
+ "zillertaler-hoehenstrasse": {
+  "classicAscent": "19 km, 7.8 % from Ried im Zillertal",
+  "note": "Toll road above the Zillertal from Ried to over 2,000 m at the Melchboden, almost 1,500 m of climbing with long double-digit ramps. At the top the panorama of the Zillertal Alps; closed in winter.",
+  "ascents": [
+   "Ried im Zillertal"
+  ]
+ },
+ "zinal": {
+  "classicAscent": "28 km, 4.1 % from Sierre",
+  "note": "The Val d'Anniviers to its end, below the Imperial Crown of the Weisshorn, the Zinalrothorn, the Obergabelhorn, the Matterhorn and the Dent Blanche. Long and steady, open all year.",
+  "ascents": [
+   "Sierre"
   ]
  }
 }

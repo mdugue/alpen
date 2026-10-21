@@ -126,6 +126,39 @@
   "why": "Aravis-Dorf: Colombière, Aravis und Croix Fry beginnen am Ort. Grüne Nebentäler, wenig Verkehr, Verleih im Dorf."
  },
  {
+  "slug": "chambery",
+  "name": "Chambéry",
+  "country": "FR",
+  "lat": 45.5667,
+  "lon": 5.9208,
+  "tags": [
+   "hub",
+   "train",
+   "hotels",
+   "workshops"
+  ],
+  "aliases": [
+   "Savoie"
+  ],
+  "why": "Bahnknoten zwischen Bauges und Chartreuse: Granier, Plainpalais, Revard und Cucheron ab der Haustür, dazu Radläden und Hotels einer Stadt."
+ },
+ {
+  "slug": "saint-pierre-de-chartreuse",
+  "name": "Saint-Pierre-de-Chartreuse",
+  "country": "FR",
+  "lat": 45.3423,
+  "lon": 5.8147,
+  "tags": [
+   "passes",
+   "quiet",
+   "scenic"
+  ],
+  "aliases": [
+   "Chartreuse"
+  ],
+  "why": "Das Dorf mitten in der Chartreuse, an dem Cucheron, Coq und Porte zusammenlaufen; ruhige Unterkünfte statt Stadtbetrieb."
+ },
+ {
   "slug": "morzine",
   "name": "Morzine",
   "country": "FR",
@@ -161,6 +194,24 @@
    "Hautes-Alpes"
   ],
   "why": "Tor zum Queyras: Izoard, Vars, Agnel und Risoul, dazu die ruhige Schlucht des Guil. Campingplätze und kleine Radläden statt Skiort-Betrieb."
+ },
+ {
+  "slug": "gap",
+  "name": "Gap",
+  "country": "FR",
+  "lat": 44.5594,
+  "lon": 6.0786,
+  "tags": [
+   "hub",
+   "train",
+   "hotels",
+   "workshops"
+  ],
+  "aliases": [
+   "Champsaur",
+   "Gapençais"
+  ],
+  "why": "Die Stadt am Tor zum Champsaur: Manse, Noyer, Chaillol und Orcières in Reichweite, Bahnhof, Radläden und Hotels."
  },
  {
   "slug": "sospel",
@@ -604,6 +655,41 @@
   "why": "Ennstal mit Bahnhof: Sölkpass, Radstädter Tauern und die Dachsteinrunde. Radhotels und Verleih aus dem Skibetrieb."
  },
  {
+  "slug": "graz",
+  "name": "Graz",
+  "country": "AT",
+  "lat": 47.0707,
+  "lon": 15.4395,
+  "tags": [
+   "hub",
+   "train",
+   "season",
+   "workshops"
+  ],
+  "aliases": [
+   "Steiermark",
+   "Weststeiermark"
+  ],
+  "why": "Steirische Landeshauptstadt mit Bahnknoten: Schöckl direkt ab der Stadt, Gaberl und Weinebene in der Weststeiermark eine kurze Anfahrt entfernt. Mildes Klima, lange Saison."
+ },
+ {
+  "slug": "tegernsee",
+  "name": "Tegernsee",
+  "country": "DE",
+  "lat": 47.7096,
+  "lon": 11.7577,
+  "tags": [
+   "scenic",
+   "train"
+  ],
+  "aliases": [
+   "Rottach-Egern",
+   "Oberland",
+   "Schliersee"
+  ],
+  "why": "Ferienort am See im bayerischen Oberland: Wallberg vor der Haustür, Spitzingsattel, Sudelfeld und Kesselberg in der Nachbarschaft. Bahn aus München."
+ },
+ {
   "slug": "bad-kleinkirchheim",
   "name": "Bad Kleinkirchheim",
   "country": "AT",
@@ -676,6 +762,25 @@
   "why": "Grimsel, Susten, Grosse Scheidegg; Radläden, Bahnhof."
  },
  {
+  "slug": "zweisimmen",
+  "name": "Zweisimmen",
+  "country": "CH",
+  "lat": 46.5538,
+  "lon": 7.3749,
+  "tags": [
+   "passes",
+   "train",
+   "quiet"
+  ],
+  "aliases": [
+   "Simmental",
+   "Saanenland",
+   "Gstaad",
+   "Lenk"
+  ],
+  "why": "Bahnknoten im Simmental: Jaunpass, Saanenmöser und der Gurnigel in Reichweite, Col du Pillon und Col des Mosses über Gstaad. Ruhig und ländlich."
+ },
+ {
   "slug": "brig",
   "name": "Brig",
   "country": "CH",
@@ -696,6 +801,24 @@
   "why": "Walliser Drehscheibe mit Bahnhof: Simplon, Nufenen, Furka und Grimsel ab dem Rhonetal. Tief gelegen, deshalb früh im Jahr fahrbar."
  },
  {
+  "slug": "domodossola",
+  "name": "Domodossola",
+  "country": "IT",
+  "lat": 46.1154,
+  "lon": 8.2964,
+  "tags": [
+   "hub",
+   "train",
+   "season"
+  ],
+  "aliases": [
+   "Ossola",
+   "Val d'Ossola",
+   "Ossolatal"
+  ],
+  "why": "Bahnknoten an der Simplonlinie: der Simplon von Süden, Macugnaga unter dem Monte Rosa und das Val Formazza gehen von hier aus. Tief gelegen, früh im Jahr fahrbar."
+ },
+ {
   "slug": "martigny",
   "name": "Martigny",
   "country": "CH",
@@ -713,6 +836,25 @@
    "Forclaz"
   ],
   "why": "Unterwallis mit Bahnhof: Grand-St-Bernard, Forclaz und Champex. Auf 470 m gelegen und dadurch eine der frühesten Basen der Westalpen."
+ },
+ {
+  "slug": "sion",
+  "name": "Sion",
+  "country": "CH",
+  "lat": 46.2312,
+  "lon": 7.3589,
+  "tags": [
+   "passes",
+   "train",
+   "season"
+  ],
+  "aliases": [
+   "Sitten",
+   "Valais",
+   "Wallis",
+   "Mittelwallis"
+  ],
+  "why": "Hauptort des Wallis mit Bahnhof: Sanetsch, Grande Dixence und Arolla gehen direkt in der Stadt los, Crans-Montana und Moiry ab Sierre nebenan. Tief und trocken, deshalb lange Saison."
  },
  {
   "slug": "spluegen",
@@ -752,6 +894,42 @@
   "why": "Flüela, Albula, Wolfgang; viele Radgeschäfte, Höhenlage 1 560 m."
  },
  {
+  "slug": "chur",
+  "name": "Chur",
+  "country": "CH",
+  "lat": 46.8531,
+  "lon": 9.5302,
+  "tags": [
+   "hub",
+   "train",
+   "season"
+  ],
+  "aliases": [
+   "Graubünden",
+   "Graubuenden",
+   "Bündner Rheintal",
+   "Coira"
+  ],
+  "why": "Bahnknoten Graubündens: Lenzerheide und Arosa beginnen am Bahnhof, Flumserberg und Malbun liegen eine kurze Fahrt rheinabwärts. Tief und mild, mit Föhn oft auch im Herbst warm."
+ },
+ {
+  "slug": "vaduz",
+  "name": "Vaduz",
+  "country": "LI",
+  "lat": 47.1393,
+  "lon": 9.5228,
+  "tags": [
+   "passes",
+   "season"
+  ],
+  "aliases": [
+   "Liechtenstein",
+   "Schaan",
+   "Rheintal"
+  ],
+  "why": "Hauptort Liechtensteins im Rheintal: Malbun beginnt in der Stadt, Furkajoch, Bödele und Flumserberg sind nah. Bahnhöfe in Schaan, Buchs und Sargans."
+ },
+ {
   "slug": "st-moritz",
   "name": "St. Moritz",
   "country": "CH",
@@ -786,6 +964,23 @@
    "Aoste"
   ],
   "why": "Grand/Petit Saint-Bernard, San Carlo, Cervinia, Pila; Radläden, Bahnhof."
+ },
+ {
+  "slug": "saint-vincent",
+  "name": "Saint-Vincent",
+  "country": "IT",
+  "lat": 45.7504,
+  "lon": 7.6479,
+  "tags": [
+   "passes",
+   "train"
+  ],
+  "aliases": [
+   "Châtillon",
+   "Valtournenche",
+   "Monte Rosa"
+  ],
+  "why": "Kurort im unteren Aostatal: der Col de Joux vor der Haustür, Breuil-Cervinia ab Châtillon und das Gressoney-Tal in der Nachbarschaft. Bahnhof Châtillon-Saint-Vincent."
  },
  {
   "slug": "susa",
@@ -857,6 +1052,23 @@
    "Gorenjska"
   ],
   "why": "Vršič, Predil, Mangart; Verleih, Werkstätten, Rad-Hotels."
+ },
+ {
+  "slug": "bled",
+  "name": "Bled",
+  "country": "SI",
+  "lat": 46.3683,
+  "lon": 14.1146,
+  "tags": [
+   "hotels",
+   "scenic",
+   "train",
+   "workshops"
+  ],
+  "aliases": [
+   "Bohinj"
+  ],
+  "why": "Der See mit der Insel als Basis für Pokljuka, Soriška planina und den Weg zum Vršič; viele Hotels und ein Bahnhof an der Wocheiner Bahn."
  },
  {
   "slug": "bovec",
@@ -1257,6 +1469,290 @@
    "season"
   ],
   "why": "Stadt in der Rheinebene mit TGV-Bahnhof; Munster liegt knapp 20 km entfernt, die Schlucht gut 30. Trocken und mild, im Frühjahr früher fahrbar als die Täler."
+ },
+ {
+  "slug": "culoz",
+  "name": "Culoz",
+  "country": "FR",
+  "lat": 45.8477,
+  "lon": 5.7809,
+  "tags": [
+   "train",
+   "passes",
+   "quiet"
+  ],
+  "aliases": [
+   "Bugey"
+  ],
+  "why": "Bahnhof am Fuß des Grand Colombier: die Culoz-Seite beginnt am Ortsrand, Biche, Richemond und der Mont du Chat sind in Reichweite."
+ },
+ {
+  "slug": "les-rousses",
+  "name": "Les Rousses",
+  "country": "FR",
+  "lat": 46.484,
+  "lon": 6.0627,
+  "tags": [
+   "passes",
+   "hotels",
+   "scenic"
+  ],
+  "aliases": [
+   "Haut-Jura"
+  ],
+  "why": "Der Ferienort auf dem Jurakamm zwischen Faucille und Givrine, mit Seen und Weiden ringsum und vielen Unterkünften."
+ },
+ {
+  "slug": "nyon",
+  "name": "Nyon",
+  "country": "CH",
+  "lat": 46.3833,
+  "lon": 6.2398,
+  "tags": [
+   "hub",
+   "train",
+   "hotels",
+   "workshops"
+  ],
+  "aliases": [
+   "La Côte"
+  ],
+  "why": "Die Stadt am Genfersee mit Bahnhof: Givrine ab der Haustür, Faucille und Marchairuz in Reichweite."
+ },
+ {
+  "slug": "le-sentier",
+  "name": "Le Sentier",
+  "country": "CH",
+  "lat": 46.6087,
+  "lon": 6.231,
+  "tags": [
+   "quiet",
+   "scenic",
+   "train"
+  ],
+  "aliases": [
+   "Vallée de Joux"
+  ],
+  "why": "Der Hauptort im Vallée de Joux, zwischen Marchairuz und Mollendruz; ruhig, mit Bahnanschluss."
+ },
+ {
+  "slug": "saint-imier",
+  "name": "Saint-Imier",
+  "country": "CH",
+  "lat": 47.1521,
+  "lon": 7.0023,
+  "tags": [
+   "train",
+   "passes",
+   "quiet"
+  ],
+  "aliases": [
+   "Vallon de Saint-Imier",
+   "Berner Jura"
+  ],
+  "why": "Das Uhrmacherstädtchen zwischen Chasseral und Mont-Crosin, beide beginnen am Bahnhof."
+ },
+ {
+  "slug": "solothurn",
+  "name": "Solothurn",
+  "country": "CH",
+  "lat": 47.2088,
+  "lon": 7.5323,
+  "tags": [
+   "hub",
+   "train",
+   "hotels",
+   "workshops"
+  ],
+  "aliases": [
+   "Soleure"
+  ],
+  "why": "Die Barockstadt an der Aare unter dem Weissenstein, mit Bahnknoten, Hotels und Radläden; der Passwang ist eine Talfahrt entfernt."
+ },
+ {
+  "slug": "argeles-gazost",
+  "name": "Argelès-Gazost",
+  "country": "FR",
+  "lat": 43.0051,
+  "lon": -0.0998,
+  "tags": [
+   "passes",
+   "hotels",
+   "scenic"
+  ],
+  "aliases": [
+   "Lavedan"
+  ],
+  "why": "Der Knoten der Hautes-Pyrénées: Hautacam, Soulor, Aubisque und Spandelles beginnen hier, Tourmalet und Luz Ardiden über Luz."
+ },
+ {
+  "slug": "luz-saint-sauveur",
+  "name": "Luz-Saint-Sauveur",
+  "country": "FR",
+  "lat": 42.8721,
+  "lon": -0.0043,
+  "tags": [
+   "passes",
+   "quiet",
+   "scenic"
+  ],
+  "aliases": [
+   "Pays Toy"
+  ],
+  "why": "Das Dorf am Fuß des Tourmalet, dazu Luz Ardiden und Gavarnie direkt vor der Tür."
+ },
+ {
+  "slug": "laruns",
+  "name": "Laruns",
+  "country": "FR",
+  "lat": 42.9882,
+  "lon": -0.4266,
+  "tags": [
+   "passes",
+   "quiet"
+  ],
+  "aliases": [
+   "Vallée d'Ossau",
+   "Ossau"
+  ],
+  "why": "Der Hauptort im Ossau-Tal: Aubisque, Pourtalet und Marie-Blanque ab dem Dorf."
+ },
+ {
+  "slug": "saint-lary-soulan",
+  "name": "Saint-Lary-Soulan",
+  "country": "FR",
+  "lat": 42.817,
+  "lon": 0.322,
+  "tags": [
+   "passes",
+   "hotels"
+  ],
+  "aliases": [
+   "Vallée d'Aure"
+  ],
+  "why": "Der Ferienort im Aure-Tal mit Pla d'Adet, Portet, Azet und Cap-de-Long ab der Haustür."
+ },
+ {
+  "slug": "arreau",
+  "name": "Arreau",
+  "country": "FR",
+  "lat": 42.9055,
+  "lon": 0.359,
+  "tags": [
+   "passes",
+   "quiet"
+  ],
+  "aliases": [],
+  "why": "Das Städtchen zwischen Aspin und Peyresourde, dazu die Hourquette d'Ancizan; ruhiger als Luchon."
+ },
+ {
+  "slug": "bagneres-de-luchon",
+  "name": "Bagnères-de-Luchon",
+  "country": "FR",
+  "lat": 42.7911,
+  "lon": 0.5912,
+  "tags": [
+   "hub",
+   "passes",
+   "hotels",
+   "workshops"
+  ],
+  "aliases": [
+   "Luchon"
+  ],
+  "why": "Die Bäderstadt am Fuß von Peyresourde, Superbagnères, Balès und Portillon, mit Hotels und Radläden."
+ },
+ {
+  "slug": "vielha",
+  "name": "Vielha",
+  "country": "ES",
+  "lat": 42.7023,
+  "lon": 0.7956,
+  "tags": [
+   "hotels",
+   "scenic"
+  ],
+  "aliases": [
+   "Val d'Aran",
+   "Vielha e Mijaran"
+  ],
+  "why": "Der Hauptort des Val d'Aran zwischen Bonaigua und Portillon."
+ },
+ {
+  "slug": "saint-girons",
+  "name": "Saint-Girons",
+  "country": "FR",
+  "lat": 42.9847,
+  "lon": 1.1464,
+  "tags": [
+   "hub",
+   "hotels"
+  ],
+  "aliases": [
+   "Couserans"
+  ],
+  "why": "Die Stadt des Couserans: Core, Portet d'Aspet und die Täler zum Agnes in Reichweite."
+ },
+ {
+  "slug": "ax-les-thermes",
+  "name": "Ax-les-Thermes",
+  "country": "FR",
+  "lat": 42.7193,
+  "lon": 1.8378,
+  "tags": [
+   "passes",
+   "train",
+   "hotels"
+  ],
+  "aliases": [],
+  "why": "Der Bäderort mit Bahnhof unter dem Pailhères, dazu Beille, Puymorens und Andorra in Reichweite."
+ },
+ {
+  "slug": "andorra-la-vella",
+  "name": "Andorra la Vella",
+  "country": "AD",
+  "lat": 42.5069,
+  "lon": 1.5212,
+  "tags": [
+   "hub",
+   "hotels",
+   "workshops"
+  ],
+  "aliases": [
+   "Andorra"
+  ],
+  "why": "Die Hauptstadt Andorras, von der Ordino, Arcalís und Envalira ausgehen; viele Hotels und Radläden."
+ },
+ {
+  "slug": "la-seu-d-urgell",
+  "name": "La Seu d'Urgell",
+  "country": "ES",
+  "lat": 42.3584,
+  "lon": 1.4613,
+  "tags": [
+   "hotels",
+   "quiet"
+  ],
+  "aliases": [
+   "Alt Urgell"
+  ],
+  "why": "Die Bischofsstadt südlich von Andorra, mit dem Cantó und den Andorra-Pässen in Reichweite."
+ },
+ {
+  "slug": "saint-jean-pied-de-port",
+  "name": "Saint-Jean-Pied-de-Port",
+  "country": "FR",
+  "lat": 43.1636,
+  "lon": -1.2378,
+  "tags": [
+   "train",
+   "hotels",
+   "scenic"
+  ],
+  "aliases": [
+   "Donibane Garazi"
+  ],
+  "why": "Das Städtchen am Jakobsweg mit Bahnhof, Ausgangspunkt für Bagargui, Iraty und Ispéguy."
  },
  {
   "slug": "lienz",

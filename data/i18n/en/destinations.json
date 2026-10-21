@@ -9,10 +9,40 @@
   "multiDay": "Four days for the classic loops; the three-pass loop in a day.",
   "access": "Andermatt railway station (Matterhorn Gotthard Bahn) via Göschenen; Zurich in two hours."
  },
+ "andorra-cerdanya": {
+  "character": "The high passes of the eastern Pyrenees: the Envalira, Ordino and Arcalís in Andorra, the Puymorens and Pailhères on the French side, plus the Toses and Cantó in Catalonia. Sunnier and drier than the west.",
+  "multiDay": "A week based in Andorra with a second base in Ax-les-Thermes.",
+  "access": "Ax-les-Thermes by train from Toulouse, Andorra by bus from Toulouse or Barcelona."
+ },
  "aostatal": {
   "character": "Great and Little St Bernard, San Carlo and the quiet side valleys of Valsavarenche and Valgrisenche beneath the Gran Paradiso.",
   "multiDay": "Four to five days; the two St Bernard passes link to France and Switzerland.",
   "access": "Aosta railway station via Turin; A5 motorway from Turin."
+ },
+ "ariege": {
+  "character": "The wild passes of the Couserans and the Vicdessos: the Agnes, Lers, Core, Port and Latrape, plus the Plateau de Beille. Hardly any traffic, many pastures.",
+  "multiDay": "Three to four days from Saint-Girons or Massat.",
+  "access": "Toulouse by train to Foix, then an hour into the Couserans."
+ },
+ "baskenland": {
+  "character": "The green passes of the French Basque country: the Bagargui with the Iraty pastures and the small Ispéguy across the border. Mild, damp and rideable early in the year.",
+  "multiDay": "Two to three days from Saint-Jean-Pied-de-Port, a good start to a Pyrenees crossing.",
+  "access": "Saint-Jean-Pied-de-Port by train from Bayonne."
+ },
+ "bayerisches-oberland": {
+  "character": "The Wallberg, the Spitzingsattel, the Sudelfeld and the Kesselberg: short, steep climbs between foothill lakes, an hour from Munich.",
+  "multiDay": "A long weekend; over the Achenpass into the Inn valley and on into Tyrol.",
+  "access": "Bayerische Regiobahn from Munich to Tegernsee and Schliersee."
+ },
+ "bearn-ossau": {
+  "character": "The western Pyrenees between the Ossau and the Barétous: the Aubisque, Marie-Blanque, Pourtalet, Somport and the Pierre Saint-Martin. Greener and quieter than the Hautes-Pyrénées.",
+  "multiDay": "Three to four days from Laruns, with trips across the border into Aragon.",
+  "access": "Pau by TGV or plane, then an hour into the Ossau."
+ },
+ "belluneser-dolomiten": {
+  "character": "Duran, Cereda, Croce d'Aune and the two Forcelle around the national park between Agordo and Feltre, plus Rolle, Valles, Brocon and San Boldo at the edge: the quiet southern side of the Dolomites, lower and emptier than the Sella and Cortina.",
+  "multiDay": "Four to five days; the loop over Cereda, Rolle and Valles in a day, Duran and Staulanza on a second, the Grappa as a day trip from Feltre.",
+  "access": "Feltre railway station on the Padua–Belluno line, bus to Agordo from Belluno; Venice or Treviso airport a good hour away."
  },
  "berchtesgaden-salzkammergut": {
   "character": "Rossfeld, Postalm and Loser: managed panoramic roads on the northern edge of the Alps, open early in the year and with views out across the foothills.",
@@ -24,6 +54,11 @@
   "multiDay": "Four days; Mortirolo and Gavia lie at the eastern end of the Valtellina.",
   "access": "Morbegno or Bergamo railway station; Bergamo airport in an hour."
  },
+ "berner-jura": {
+  "character": "The Jura ridge above the Three Lakes region: the Chasseral, Vue des Alpes and Mont-Crosin, plus the steep Weissenstein above Solothurn. Pastures, forest and in clear weather the whole Alpine chain.",
+  "multiDay": "Two to three days between Saint-Imier and Solothurn, a good weekend from Basel, Bern or Zurich.",
+  "access": "Saint-Imier and Solothurn by train, an hour from Bern or Basel."
+ },
  "bormio-livigno": {
   "character": "Stelvio, Gavia, Mortirolo, Umbrail and the passes around Livigno: the highest roads in Italy packed into the smallest space.",
   "multiDay": "Five days; the Stelvio–Umbrail loop and Gavia–Mortirolo a day each, the rest for Foscagno and Eira.",
@@ -33,6 +68,26 @@
   "character": "Izoard, Granon, Agnel, Montgenèvre and the gorges of the Guil: high, dry, sunny – Briançon itself sits at 1,300 m.",
   "multiDay": "A week with two bases; into Italy over the Agnel or Montgenèvre, south over Vars into the Ubaye.",
   "access": "Briançon railway station (night train from Paris); Turin via the Fréjus tunnel or Montgenèvre."
+ },
+ "bugey": {
+  "character": "The southern Jura between the Rhône and the Valromey: the Grand Colombier with four sides, plus the Biche, Richemond and the Mont du Chat above the Lac du Bourget. Steep, wooded and quiet.",
+  "multiDay": "Three to four days from Culoz, rideable earlier and later in the year than the high Alps next door.",
+  "access": "Culoz by train via Geneva, Lyon or Chambéry."
+ },
+ "champsaur": {
+  "character": "The quiet high valley north of Gap: the Noyer as the one big name, plus the Manse, Chaillol and Orcières, sunnier than the Écrins behind it.",
+  "multiDay": "Two to three days from Gap, as a stage between the Oisans and the Ubaye.",
+  "access": "Gap by train from Grenoble or Marseille."
+ },
+ "chartreuse-bauges": {
+  "character": "Two limestone massifs either side of Chambéry: short passes below cliffs, a lot of forest and little traffic, mid-height rather than high alpine.",
+  "multiDay": "Three to four days of loops from Chambéry, rideable early in the year and late in autumn when the high passes are closed.",
+  "access": "Chambéry by TGV from Paris or via Lyon, the passes start at the edge of town."
+ },
+ "churer-rheintal-liechtenstein": {
+  "character": "Malbun, the Lenzerheide, Arosa and Flumserberg: steep climbs straight out of the low Rhine valley, each a dead end or a crossing of its own, with flat paths along the Rhine in between.",
+  "multiDay": "Three to four days with short approaches; the Lenzerheide leads on to the Albula and the Julier into the Engadine, the Furkajoch into Vorarlberg.",
+  "access": "Chur, Landquart and Sargans stations on the line from Zurich (just over an hour); Vaduz by bus from Sargans, Buchs or Feldkirch."
  },
  "comer-see": {
   "character": "Ghisallo, Muro di Sormano, San Primo, Valcava and the Culmine: the climbs of Il Lombardia, rideable all year round, full of road bikes on Sundays.",
@@ -54,6 +109,11 @@
   "multiDay": "A week; to Livigno and into the Val Müstair over the Ofen pass as stages.",
   "access": "St. Moritz railway station via Chur (Rhaetian Railway); Zurich in three hours."
  },
+ "ennstal-dachstein": {
+  "character": "The Stoderzinken, the Radstädter Tauern, the Sölkpass and the Postalm: viewpoint roads and Tauern crossings around the Enns valley, with the Dachstein behind.",
+  "multiDay": "Four to five days; the Sölkpass links to the Mur valley, the Radstädter Tauern to the Lungau.",
+  "access": "Schladming station on the Enns valley line; Salzburg in just over an hour."
+ },
  "fassa-fiemme": {
   "character": "Rolle, Valles, San Pellegrino, Manghen, Lavazè and Costalunga: the southern Dolomite passes, wooded and less busy than the Sella massif.",
   "multiDay": "Five days; the Sella passes are a day's loop away.",
@@ -68,6 +128,16 @@
   "character": "Aravis, Colombière, Romme, Joux-Plane and Ramaz – the mid-height passes of the Tour de France between Annecy and Lake Geneva, green, closely packed and open early in the year.",
   "multiDay": "A week without repeating a road; the Route des Grandes Alpes starts here and leads over Roselend into the Tarentaise.",
   "access": "Geneva airport in an hour; Annecy, Cluses or Thonon railway station."
+ },
+ "hautes-pyrenees": {
+  "character": "The heart of the Tour's Pyrenees: the Tourmalet, Aspin, Hautacam, Luz Ardiden and the Portet, plus quiet passes like the Spandelles and the Hourquette. Long, steep climbs of over 1,000 m.",
+  "multiDay": "A week based in Argelès or Luz with a second base in Saint-Lary; the Cercle de la Mort over the Aubisque, Tourmalet, Aspin and Peyresourde as the queen stage.",
+  "access": "Lourdes by TGV, Tarbes-Lourdes or Pau by plane."
+ },
+ "hochjura-vallee-de-joux": {
+  "character": "The Jura ridge above Lake Geneva: the Faucille, Givrine, Marchairuz and Mollendruz, pastures, lakes and forest at the top, the view of the Alps below.",
+  "multiDay": "Two to three days, as a loop around the Vallée de Joux and across the border to Les Rousses.",
+  "access": "Nyon or Geneva by train, the passes start at the lakeshore."
  },
  "hochvogesen": {
   "character": "The Schlucht, the Route des Crêtes and the Hohneck above the Munster valley: grassy crests at 1200 to 1350 m, short steep climbs out of the valleys, and motorbikes on the crest at weekends.",
@@ -99,6 +169,11 @@
   "multiDay": "A week in the winter half of the year; in summer avoid the coast and head early into the hinterland.",
   "access": "Sanremo and Imperia railway stations on the coastal line; Nice airport in an hour."
  },
+ "luchon-aran": {
+  "character": "Around Luchon: the Peyresourde, Superbagnères, Balès, Menté and Portet d'Aspet, plus the Val d'Aran and the Bonaigua over the Portillon.",
+  "multiDay": "Four to five days from Luchon, with a detour into Spain.",
+  "access": "Toulouse by train or plane, then two hours to Luchon."
+ },
  "maurienne": {
   "character": "The valley with the most climbs of the Tour: Madeleine, Croix de Fer, Glandon, Télégraphe, Mollard, Chaussy with the Lacets de Montvernier – all of them start on the valley floor.",
   "multiDay": "A week without repeating a road; the Route des Grandes Alpes runs straight through it, and the Galibier links to Briançon.",
@@ -108,6 +183,11 @@
   "character": "Turini, Braus, Castillon, Vence and the gorges of the Cians – from the sea into the mountains, and in winter the mildest road-cycling area in the Alps.",
   "multiDay": "October to April the place for a week; in summer start early, the coast roads are hot and busy.",
   "access": "Nice airport and railway station; the railway line into the Roya valley stops at Sospel."
+ },
+ "monte-rosa": {
+  "character": "Breuil-Cervinia below the Matterhorn, the Col de Joux, the long Gressoney valley and Oropa above Biella: valley climbs from the floor of the Aosta valley to the foot of the four-thousanders, open to the top all year.",
+  "multiDay": "Three to four days; with Pila and Cogne in the upper Aosta valley a week, and the Great St Bernard leads on into the Valais.",
+  "access": "Châtillon-Saint-Vincent station on the Turin–Aosta line; Turin and Milan in an hour and a half to two hours."
  },
  "nockberge": {
   "character": "Nockalmstrasse, Turracher Höhe, Malta High Alpine Road and the Villacher Alpenstrasse: gentle alpine-pasture heights and long toll roads, little traffic, lots of views.",
@@ -123,6 +203,26 @@
   "character": "Alpe d'Huez, Galibier, Croix de Fer and Sarenne in one spot: big altitudes, big names, and plenty of traffic on the D1091 through the Romanche gorge.",
   "multiDay": "A base for four to six days; the Marmotte loop in a day, and a stage over the Galibier to Briançon is possible.",
   "access": "Grenoble by rail, Lyon airport in an hour and a half; the bus into the valley runs as far as Bourg-d'Oisans."
+ },
+ "ossola": {
+  "character": "The south side of the Simplon, Macugnaga below the east face of the Monte Rosa and the Val Formazza up to the Toce waterfall: long, moderately steep valleys from a low, warm valley floor.",
+  "multiDay": "Three days; the Simplon links to the Valais, and Lake Maggiore with the Mottarone lies half an hour to the south.",
+  "access": "Domodossola station on the Simplon line, direct from Brig, Geneva, Bern and Milan."
+ },
+ "osttirol": {
+  "character": "Gailbergsattel and Kartitscher Sattel, the Staller Sattel into the Defereggental, Kals and, over the Iselsberg, the Grossglockner road: Lienz lies where the Drau, Isel and Puster valleys meet, and almost every climb starts only after a ride along the valley.",
+  "multiDay": "Three to four days; the Dolomitenradrundfahrt loop in a day, a stage to Cortina or into the Gailtal.",
+  "access": "Lienz railway station with trains from Villach and through the Pustertal from Innsbruck; Klagenfurt airport a good two hours by train."
+ },
+ "simmental-saanenland": {
+  "character": "The Jaunpass, the Col du Pillon, the Col des Mosses and the Gurnigel, plus Adelboden and the Iffigenalp: green prealpine passes between the Bernese Oberland and the Vaud Alps.",
+  "multiDay": "Four days; over the Col du Pillon and the Col de la Croix into the Rhône valley and on into the Valais.",
+  "access": "Zweisimmen station on the Spiez–Montreux line; Bern in just over an hour."
+ },
+ "steiermark": {
+  "character": "The Gaberl, the Weinebene, the Klippitztörl and the Schöckl: long, steady alpine passes instead of rock, green and quiet, with the Erzberg at the Präbichl as the odd one out.",
+  "multiDay": "Three to four days from Graz; rideable early and late in the year while the Tauern are still closed.",
+  "access": "Graz main station, Graz airport; Vienna in two and a half hours."
  },
  "suedvogesen": {
   "character": "The Ballon d'Alsace, La Planche des Belles Filles and the Grand Ballon – the Tour de France climbs of the Vosges – with quiet wooded passes between them and the busy N66 over Bussang.",
@@ -189,14 +289,9 @@
   "multiDay": "Four days; Susten and Grimsel as the link southwards.",
   "access": "Meiringen, Lucerne or Altdorf railway station; Zurich in an hour."
  },
- "osttirol": {
-  "character": "Gailbergsattel and Kartitscher Sattel, the Staller Sattel into the Defereggental, Kals and, over the Iselsberg, the Grossglockner road: Lienz lies where the Drau, Isel and Puster valleys meet, and almost every climb starts only after a ride along the valley.",
-  "multiDay": "Three to four days; the Dolomitenradrundfahrt loop in a day, a stage to Cortina or into the Gailtal.",
-  "access": "Lienz railway station with trains from Villach and through the Pustertal from Innsbruck; Klagenfurt airport a good two hours by train."
- },
- "belluneser-dolomiten": {
-  "character": "Duran, Cereda, Croce d'Aune and the two Forcelle around the national park between Agordo and Feltre, plus Rolle, Valles, Brocon and San Boldo at the edge: the quiet southern side of the Dolomites, lower and emptier than the Sella and Cortina.",
-  "multiDay": "Four to five days; the loop over Cereda, Rolle and Valles in a day, Duran and Staulanza on a second, the Grappa as a day trip from Feltre.",
-  "access": "Feltre railway station on the Padua–Belluno line, bus to Agordo from Belluno; Venice or Treviso airport a good hour away."
+ "zillertal": {
+  "character": "The Zillertaler Höhenstraße, Hintertux and the Gerlospass: steep ramps out of a deep, wide valley, the Höhenstraße one of the hardest in Austria.",
+  "multiDay": "Three days; the Gerlospass leads to the Krimml waterfalls and on into the Hohe Tauern.",
+  "access": "The Zillertal railway from Jenbach to Mayrhofen; Innsbruck in an hour."
  }
 }

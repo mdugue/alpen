@@ -121,8 +121,8 @@ beim Ansehen der Karte abgefragt wird. Ein Pass wird auf Passhöhe und am Start
 jeder Auffahrt abgefragt, ein Ort im Ort. Die Passhöhe gilt mit ihrer
 kuratierten Höhe; für die Starts und die Orte nimmt Open-Meteo die Höhe seines
 Geländemodells (90 m Raster) und nennt sie mit. Die Anfrage läuft über den
-Server der App und wird dort drei Stunden lang je Punkt zwischengespeichert –
-so oft rechnen die Wettermodelle hinter der Vorhersage ohnehin neu; dein
+Server der App und wird dort sechs Stunden lang je Punkt zwischengespeichert –
+eine Tagesvorhersage ändert sich in dieser Zeit kaum; dein
 Browser verbindet sich nicht selbst mit Open-Meteo.
 
 ## Wikimedia Commons

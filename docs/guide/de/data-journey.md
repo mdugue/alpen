@@ -18,7 +18,7 @@ flowchart TB
   G["Gespeichert im Repository"]
   H["Build: Karten- und Detaildateien, eine Seite je Eintrag"]
   I["Browser"]
-  J["Wettervorhersage, drei Stunden zwischengespeichert"]
+  J["Wettervorhersage, sechs Stunden zwischengespeichert"]
 
   A --> C --> D
   B --> D

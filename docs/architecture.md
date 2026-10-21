@@ -314,10 +314,12 @@ day, and it counts each location of a request as a call, so the worst case
 has to be computed rather than hoped for: one cached call per _point_ per
 window. A pass is asked for at its top and at the start of each ascent, a
 town where it is (`passPlaces`, `townPlaces` in `lib/weather-places.ts`), and
-a point two entities share is one cache entry – 690 points today. That is why
-the window is three hours (≈ 5 500/day): the models behind the forecast run
-every three hours at best, so a shorter window would only buy the same
-numbers again, and an hour would be ≈ 16 600/day, over the allowance. The
+a point two entities share is one cache entry – about 910 points today. That
+is why the window is six hours (≈ 3 600/day): the models behind the forecast
+run every three hours at best and a daily forecast barely moves between two
+runs, so a shorter window would mostly buy the same numbers again. It was three
+hours until the second round of curation pushed the worst case towards the
+allowance (≈ 7 300/day at 910 points), and an hour would be ≈ 21 800/day. The
 arithmetic is not left to this paragraph: `lib/weather-places.test.ts`
 computes it from the data and fails once the points outgrow the window.
 Three rules follow. A window that gets shorter, or a list that grows past it,

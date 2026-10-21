@@ -13,7 +13,7 @@ import { WEATHER_WINDOW_S } from "@/lib/weather-places";
  *   a) the call runs on the server, cached per point, so a point costs one
  *      upstream call per window rather than one per visitor – and a start
  *      two passes share is one point,
- *   b) the window is three hours (`WEATHER_WINDOW_S`, lib/weather-places.ts,
+ *   b) the window is six hours (`WEATHER_WINDOW_S`, lib/weather-places.ts,
  *      where the worst case – every point opened in every window – is
  *      computed from the data and held under the allowance by a test),
  *   c) the answer is streamed into the entity page's Suspense hole
