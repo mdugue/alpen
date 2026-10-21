@@ -243,5 +243,15 @@
   "character": "The Ore Mountains' steep escarpment towards Bohemia: short, steep climbs out of Krupka, Dubí and Osek onto a gentle ridge, with quiet roads at the top between Altenberg and Moldava.",
   "multiDay": "Two days are enough for every climb on the Bohemian side; from Altenberg as loops over the border, from Teplice from below.",
   "access": "By train from Dresden via Heidenau to Altenberg, or to Teplice via Ústí nad Labem; Dresden is an hour away."
+ },
+ "suedschwarzwald": {
+  "character": "The highest mountains of the Black Forest between Freiburg and the Feldberg: long climbs of 500 to 900 metres out of the Rhine plain and the valleys, forest and open pastures at the top, traffic on the main roads.",
+  "multiDay": "A base for a long weekend up to a week: the Schauinsland, the Notschrei and the Feldberg make one loop, the Kandel, the Wiedener Eck and the Blauen another day each.",
+  "access": "By ICE to Freiburg, from there on the Höllental railway into the Dreisam valley; Basel-Mulhouse airport is an hour away."
+ },
+ "nordschwarzwald": {
+  "character": "The national park around the Black Forest High Road: climbs out of the valleys on the Rhine side onto a long ridge at 900 to 1000 m, moorland and distant views at the top, quiet valleys below.",
+  "multiDay": "A weekend: the Ruhestein and the Kniebis as a loop over the high road, the valleys on the Rhine side as a second day.",
+  "access": "By train to Baiersbronn or Freudenstadt; a good hour from Karlsruhe and Stuttgart."
  }
 }

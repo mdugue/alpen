@@ -4031,5 +4031,83 @@
     "highlights": "The mountain hut at the summit with its view to the south."
    }
   ]
+ },
+ "schauinsland": {
+  "intro": "The best-known climb of the Black Forest, straight out of the city: almost 900 metres of climbing from Freiburg up to the ridge, on the road that once hosted motor hill climbs. At the top the view across the Rhine plain to the Vosges.",
+  "sides": [
+   {
+    "character": "From Günterstal gently up the valley at first, then a long stretch in the forest with one bend after another, steady between 6 and 9 %; the view opens at Hofsgrund near the top.",
+    "highlights": "The view across the Rhine plain to the Vosges from the ridge at Hofsgrund."
+   }
+  ]
+ },
+ "kandel": {
+  "intro": "The summit above the Elz valley, at 1241 m one of the highest in the central Black Forest. The western climb is long and steep and counts in Freiburg as the honest test of form.",
+  "sides": [
+   {
+    "character": "Steep into the forest straight out of Waldkirch, with hairpins and hardly any rest; the gradient stays above 7 % up to the top.",
+    "highlights": "The Kandel rock and the view over the Rhine plain and the Kaiserstuhl."
+   }
+  ]
+ },
+ "feldbergpass": {
+  "intro": "The crossing below the highest mountain of the Black Forest, part of the link from Basel to the Titisee. More traffic than idyll, but the roof of the range and part of every loop around the Feldberg.",
+  "sides": [
+   {
+    "character": "From Todtnau past the Todtnau waterfall long and steady, steeper in the upper part up to the pass at the Feldberger Hof.",
+    "highlights": "The Todtnau waterfall just above the town."
+   },
+   {
+    "character": "From Bärental short and moderate; the easier side, and as a descent a quick run down to the Titisee."
+   }
+  ]
+ },
+ "notschrei": {
+  "intro": "The pass that joins the Schauinsland and the Feldberg into one loop. At the top the cross-country ski centre and the old pass hotel, below the two valleys to Freiburg and to Todtnau.",
+  "sides": [
+   {
+    "character": "From Oberried through the narrow Brugga valley, then in hairpins up through the forest; steady and the finer of the two sides.",
+    "highlights": "The narrow Brugga valley and its pastures in the lower part."
+   },
+   {
+    "character": "From Todtnau shorter and steady along the flank of the Wiese valley; as a descent smooth with wide bends."
+   }
+  ]
+ },
+ "wiedener-eck": {
+  "intro": "The quiet pass of the southern Black Forest, the way from the Markgräflerland into the upper Wiese valley. At the top open pastures and the Belchen opposite.",
+  "sides": [
+   {
+    "character": "Long and gentle through the Münster valley and its farms, steeper only in the last third in hairpins up to the saddle.",
+    "highlights": "The view of the Belchen from the open saddle."
+   }
+  ]
+ },
+ "hochblauen": {
+  "intro": "The viewpoint above the Markgräflerland: steeply up more than 700 metres from the spa town of Badenweiler, and at the top a tower with one of the widest views of the Black Forest.",
+  "sides": [
+   {
+    "character": "Steep into the forest straight out of Badenweiler, more than 8 % on average and without a break; the last kilometres narrow up to the summit hotel.",
+    "highlights": "The lookout tower on the summit with its view over the Rhine plain, the Vosges and the Alps."
+   }
+  ]
+ },
+ "kniebis": {
+  "intro": "The classic crossing of the northern Black Forest between the Rhine valley and Freudenstadt, with an old earthwork fort on the summit. More a link road than a destination, but a long climb.",
+  "sides": [
+   {
+    "character": "From Oppenau up the Rench valley, steady through Bad Peterstal-Griesbach, then steeper in hairpins up to the plateau at the Kniebis.",
+    "highlights": "The hairpins above Bad Griesbach."
+   }
+  ]
+ },
+ "ruhestein": {
+  "intro": "The gateway to the Black Forest National Park, where the Black Forest High Road crosses the road from the Acher valley. From here the high road leads on to the Mummelsee and the Hornisgrinde.",
+  "sides": [
+   {
+    "character": "From Seebach steadily up the Acher valley and then in loops through the forest up to the Ruhestein.",
+    "highlights": "The national park centre at the Ruhestein."
+   }
+  ]
  }
 }

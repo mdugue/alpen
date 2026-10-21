@@ -91,6 +91,12 @@ export const vocab = {
       label: "Pyrenäen",
       outside: "außerhalb der Pyrenäen",
     },
+    Schwarzwald: {
+      hint: "Schauinsland, Kandel, Feldberg und die Schwarzwaldhochstraße: lange Anstiege direkt aus Freiburg, Karlsruhe oder Basel.",
+      inside: "im Schwarzwald",
+      label: "Schwarzwald",
+      outside: "außerhalb des Schwarzwalds",
+    },
     Vogesen: {
       hint: "Grand Ballon, Schlucht, Ballon d'Alsace und die Route des Crêtes: das Wochenende ab Freiburg, Basel oder Karlsruhe.",
       inside: "in den Vogesen",
@@ -123,6 +129,7 @@ export const vocab = {
     Jura: "Jura",
     Ostalpen: "Ostalpen",
     Pyrenäen: "Pyrenäen",
+    Schwarzwald: "Schwarzwald",
     Vogesen: "Vogesen",
     Westalpen: "Westalpen",
     Zentralalpen: "Zentralalpen",

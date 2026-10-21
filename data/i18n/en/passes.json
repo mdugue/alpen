@@ -2870,5 +2870,63 @@
   "ascents": [
    "Mikulov"
   ]
+ },
+ "schauinsland": {
+  "classicAscent": "14.7 km, 6.0 % from Freiburg-Günterstal",
+  "note": "Freiburg's own mountain: from Günterstal up the old hill-climb course in countless bends to almost 1200 m, then on across Hofsgrund to the Notschrei. Many motorbikes at weekends.",
+  "ascents": [
+   "Freiburg-Günterstal"
+  ]
+ },
+ "kandel": {
+  "classicAscent": "12.7 km, 7.4 % from Waldkirch",
+  "note": "From Waldkirch in the Elz valley up more than 900 metres to the Kandel, one of the hardest climbs of the Black Forest. From St. Peter on the other side it is only a short counter-climb, hence the one ascent here.",
+  "ascents": [
+   "Waldkirch (west)"
+  ]
+ },
+ "feldbergpass": {
+  "classicAscent": "10.0 km, 5.8 % from Todtnau",
+  "note": "The highest road crossing of the Black Forest, below the Feldberg (1493 m) between the Wiese valley and the Titisee. A main road with heavy traffic, a ski area in winter, and cleared.",
+  "ascents": [
+   "Todtnau (west)",
+   "Bärental (east)"
+  ]
+ },
+ "notschrei": {
+  "classicAscent": "10.0 km, 6.2 % from Oberried",
+  "note": "Crossing from the Dreisam valley into the Wiese valley between the Schauinsland and the Feldberg, with the cross-country ski centre at the pass. From Oberried the longer and finer side, from Todtnau the shorter one.",
+  "ascents": [
+   "Oberried (north)",
+   "Todtnau (south)"
+  ]
+ },
+ "wiedener-eck": {
+  "classicAscent": "14.5 km, 4.5 % from Münstertal",
+  "note": "Up the long Münster valley to the saddle between the Belchen and the Schauinsland, with a wide view of the Belchen at the top. From Wieden on the east side it is barely 200 metres of climbing, hence one ascent.",
+  "ascents": [
+   "Münstertal (west)"
+  ]
+ },
+ "hochblauen": {
+  "classicAscent": "9.2 km, 8.2 % from Badenweiler",
+  "note": "A dead-end road from Badenweiler up the Blauen, the south-westernmost thousand-metre peak of the Black Forest: steep, without a flat stretch, and at the top a lookout tower with a view over the Rhine plain and, on a föhn day, to the Alps.",
+  "ascents": [
+   "Badenweiler"
+  ]
+ },
+ "kniebis": {
+  "classicAscent": "12.2 km, 4.9 % from Oppenau",
+  "note": "Crossing from the Rench valley to Freudenstadt at the Alexanderschanze: from Oppenau long through Bad Peterstal and then up in hairpins. A main road with traffic; to the east the road barely drops, hence one ascent.",
+  "ascents": [
+   "Oppenau (west)"
+  ]
+ },
+ "ruhestein": {
+  "classicAscent": "8.5 km, 6.2 % from Seebach",
+  "note": "From Seebach in the Acher valley up to the Black Forest High Road at the national park; the B500 crosses at the top. Towards Baiersbronn the road drops long and gently through the Obertal, hence one ascent.",
+  "ascents": [
+   "Seebach (west)"
+  ]
  }
 }

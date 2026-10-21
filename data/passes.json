@@ -13612,5 +13612,264 @@
     "label": "Mikulov"
    }
   ]
+ },
+ {
+  "slug": "schauinsland",
+  "surface": "asphalt",
+  "name": "Schauinsland",
+  "type": "climb",
+  "tags": [],
+  "country": "DE",
+  "region": "Schwarzwald",
+  "lat": 47.9087,
+  "lon": 7.892,
+  "elevation": 1210,
+  "classicAscent": "14,7 km, 6,0 % ab Freiburg-Günterstal",
+  "beauty": 3,
+  "fame": 3,
+  "difficulty": 4,
+  "traffic": 3,
+  "season": null,
+  "note": "Der Hausberg von Freiburg: aus Günterstal über die alte Bergrennstrecke in vielen Kurven hinauf auf fast 1200 m, oben weiter über Hofsgrund zum Notschrei. Am Wochenende viele Motorräder.",
+  "aliases": [
+   "Schauinslandstraße"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 47.9659,
+     "lon": 7.8559
+    },
+    "label": "Freiburg-Günterstal"
+   }
+  ]
+ },
+ {
+  "slug": "kandel",
+  "surface": "asphalt",
+  "name": "Kandel",
+  "type": "pass",
+  "tags": [],
+  "country": "DE",
+  "region": "Schwarzwald",
+  "lat": 48.0644,
+  "lon": 8.0166,
+  "elevation": 1200,
+  "roadSummit": true,
+  "classicAscent": "12,7 km, 7,4 % ab Waldkirch",
+  "beauty": 3,
+  "fame": 2,
+  "difficulty": 4,
+  "traffic": 2,
+  "season": null,
+  "note": "Von Waldkirch im Elztal über 900 Höhenmeter auf den Kandel, einer der härtesten Anstiege des Schwarzwalds. Von St. Peter auf der anderen Seite ist es nur ein kurzer Gegenanstieg, deshalb steht hier eine Auffahrt.",
+  "aliases": [
+   "Kandelstraße"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 48.0939,
+     "lon": 7.961
+    },
+    "label": "Waldkirch (West)"
+   }
+  ]
+ },
+ {
+  "slug": "feldbergpass",
+  "surface": "asphalt",
+  "name": "Feldbergpass",
+  "type": "pass",
+  "tags": [],
+  "country": "DE",
+  "region": "Schwarzwald",
+  "lat": 47.8563,
+  "lon": 8.0291,
+  "elevation": 1235,
+  "classicAscent": "10,0 km, 5,8 % ab Todtnau",
+  "beauty": 3,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 4,
+  "season": null,
+  "note": "Der höchste Straßenübergang des Schwarzwalds, unter dem Feldberg (1493 m) zwischen dem Wiesental und dem Titisee. Bundesstraße mit viel Verkehr, im Winter Skigebiet und geräumt.",
+  "aliases": [
+   "Feldberg"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 47.8303,
+     "lon": 7.9452
+    },
+    "label": "Todtnau (West)"
+   },
+   {
+    "from": {
+     "lat": 47.8699,
+     "lon": 8.0955
+    },
+    "label": "Bärental (Ost)"
+   }
+  ]
+ },
+ {
+  "slug": "notschrei",
+  "surface": "asphalt",
+  "name": "Notschrei",
+  "type": "pass",
+  "tags": [],
+  "country": "DE",
+  "region": "Schwarzwald",
+  "lat": 47.8763,
+  "lon": 7.9097,
+  "elevation": 1121,
+  "classicAscent": "10,0 km, 6,2 % ab Oberried",
+  "beauty": 3,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 3,
+  "season": null,
+  "note": "Übergang vom Dreisamtal ins Wiesental zwischen Schauinsland und Feldberg, mit der Nordschwarzwald-Loipe oben am Pass. Von Oberried die längere und schönere Seite, von Todtnau die kürzere.",
+  "aliases": [
+   "Notschreipass"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 47.933,
+     "lon": 7.9499
+    },
+    "label": "Oberried (Nord)"
+   },
+   {
+    "from": {
+     "lat": 47.8303,
+     "lon": 7.9452
+    },
+    "label": "Todtnau (Süd)"
+   }
+  ]
+ },
+ {
+  "slug": "wiedener-eck",
+  "surface": "asphalt",
+  "name": "Wiedener Eck",
+  "type": "pass",
+  "tags": [],
+  "country": "DE",
+  "region": "Schwarzwald",
+  "lat": 47.8449,
+  "lon": 7.867,
+  "elevation": 1035,
+  "classicAscent": "14,5 km, 4,5 % ab Münstertal",
+  "beauty": 4,
+  "fame": 1,
+  "difficulty": 3,
+  "traffic": 2,
+  "season": null,
+  "note": "Durch das lange Münstertal hinauf zum Sattel zwischen Belchen und Schauinsland, oben weiter Blick zum Belchen. Von Wieden auf der Ostseite sind es nur knapp 200 Höhenmeter, deshalb eine Auffahrt.",
+  "aliases": [],
+  "ascents": [
+   {
+    "from": {
+     "lat": 47.8555,
+     "lon": 7.783
+    },
+    "label": "Münstertal (West)"
+   }
+  ]
+ },
+ {
+  "slug": "hochblauen",
+  "surface": "asphalt",
+  "name": "Hochblauen",
+  "type": "spur",
+  "tags": [],
+  "country": "DE",
+  "region": "Schwarzwald",
+  "lat": 47.7774,
+  "lon": 7.701,
+  "elevation": 1150,
+  "classicAscent": "9,2 km, 8,2 % ab Badenweiler",
+  "beauty": 4,
+  "fame": 1,
+  "difficulty": 4,
+  "traffic": 2,
+  "season": null,
+  "note": "Stichstraße von Badenweiler auf den Blauen, den südwestlichsten Tausender des Schwarzwalds: steil, ohne Flachstück, oben Aussichtsturm mit Blick über die Rheinebene und bei Föhn zu den Alpen.",
+  "aliases": [
+   "Blauen"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 47.8025,
+     "lon": 7.674
+    },
+    "label": "Badenweiler"
+   }
+  ]
+ },
+ {
+  "slug": "kniebis",
+  "surface": "asphalt",
+  "name": "Kniebis",
+  "type": "pass",
+  "tags": [],
+  "country": "DE",
+  "region": "Schwarzwald",
+  "lat": 48.4801,
+  "lon": 8.2761,
+  "elevation": 965,
+  "classicAscent": "12,2 km, 4,9 % ab Oppenau",
+  "beauty": 2,
+  "fame": 1,
+  "difficulty": 3,
+  "traffic": 4,
+  "season": null,
+  "note": "Übergang vom Renchtal nach Freudenstadt an der Alexanderschanze: von Oppenau lang durch Bad Peterstal und dann in Kehren hinauf. Bundesstraße mit Verkehr; nach Osten fällt die Straße kaum, deshalb eine Auffahrt.",
+  "aliases": [
+   "Alexanderschanze"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 48.4752,
+     "lon": 8.1647
+    },
+    "label": "Oppenau (West)"
+   }
+  ]
+ },
+ {
+  "slug": "ruhestein",
+  "surface": "asphalt",
+  "name": "Ruhestein",
+  "type": "pass",
+  "tags": [],
+  "country": "DE",
+  "region": "Schwarzwald",
+  "lat": 48.5613,
+  "lon": 8.2217,
+  "elevation": 915,
+  "classicAscent": "8,5 km, 6,2 % ab Seebach",
+  "beauty": 3,
+  "fame": 1,
+  "difficulty": 3,
+  "traffic": 3,
+  "season": null,
+  "note": "Von Seebach im Achertal hinauf zur Schwarzwaldhochstraße am Nationalpark; oben kreuzt die B500. Nach Baiersbronn fällt die Straße lang und flach durch das Obertal, deshalb eine Auffahrt.",
+  "aliases": [],
+  "ascents": [
+   {
+    "from": {
+     "lat": 48.5762,
+     "lon": 8.1711
+    },
+    "label": "Seebach (West)"
+   }
+  ]
  }
 ]

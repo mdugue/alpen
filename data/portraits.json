@@ -5950,5 +5950,110 @@
     "highlights": "Die Berghütte am Gipfel mit Blick nach Süden."
    }
   ]
+ },
+ "schauinsland": {
+  "intro": "Die bekannteste Auffahrt des Schwarzwalds, direkt aus der Stadt: Fast 900 Höhenmeter von Freiburg bis auf den Kamm, auf der Straße, auf der früher Autorennen um den Berg gefahren wurden. Oben der Blick über die Rheinebene zu den Vogesen.",
+  "sides": [
+   {
+    "character": "Ab Günterstal zuerst sanft durch das Tal, dann lange im Wald mit einer Kurve nach der anderen, gleichmäßig zwischen 6 und 9 %; oben öffnet sich der Blick bei Hofsgrund.",
+    "highlights": "Der Blick über die Rheinebene bis zu den Vogesen vom Kamm bei Hofsgrund.",
+    "hazards": [
+     "traffic"
+    ]
+   }
+  ]
+ },
+ "kandel": {
+  "intro": "Der Gipfel über dem Elztal, mit 1241 m einer der höchsten des mittleren Schwarzwalds. Die Westauffahrt ist lang und steil und gilt in Freiburg als der ehrliche Test der Form.",
+  "sides": [
+   {
+    "character": "Aus Waldkirch sofort steil in den Wald, mit Kehren und kaum Erholung; die Steigung bleibt bis oben über 7 %.",
+    "highlights": "Der Kandelfelsen und der Blick über Rheinebene und Kaiserstuhl.",
+    "hazards": [
+     "steep",
+     "tight-hairpins"
+    ]
+   }
+  ]
+ },
+ "feldbergpass": {
+  "intro": "Der Übergang unter dem höchsten Berg des Schwarzwalds, ein Stück der Querverbindung von Basel zum Titisee. Mehr Verkehr als Idylle, aber das Dach des Gebirges und in jeder Runde um den Feldberg dabei.",
+  "sides": [
+   {
+    "bestAs": "up",
+    "character": "Von Todtnau am Todtnauer Wasserfall vorbei lange gleichmäßig hinauf, im oberen Teil steiler bis zum Pass am Feldberger Hof.",
+    "highlights": "Der Todtnauer Wasserfall kurz oberhalb des Ortes.",
+    "hazards": [
+     "traffic"
+    ]
+   },
+   {
+    "bestAs": "down",
+    "character": "Von Bärental am Feldsee-Becken vorbei kurz und mäßig hinauf; die leichtere Seite, als Abfahrt zügig zum Titisee.",
+    "hazards": [
+     "traffic"
+    ]
+   }
+  ]
+ },
+ "notschrei": {
+  "intro": "Der Pass, mit dem sich Schauinsland und Feldberg zu einer Runde verbinden. Oben das Langlaufzentrum und das alte Passhotel, unten die beiden Täler nach Freiburg und nach Todtnau.",
+  "sides": [
+   {
+    "bestAs": "up",
+    "character": "Von Oberried durch das enge Brugga-Tal, dann in Kehren im Wald hinauf; gleichmäßig und die schönere der beiden Seiten.",
+    "highlights": "Das enge Bruggatal mit seinen Weiden im unteren Teil."
+   },
+   {
+    "bestAs": "down",
+    "character": "Von Todtnau kürzer und gleichmäßig an der Flanke des Wiesentals; als Abfahrt flüssig mit weiten Kurven.",
+    "hazards": [
+     "traffic"
+    ]
+   }
+  ]
+ },
+ "wiedener-eck": {
+  "intro": "Der ruhige Pass des Südschwarzwalds, der Weg vom Markgräflerland ins obere Wiesental. Oben offene Weiden und der Belchen gegenüber.",
+  "sides": [
+   {
+    "character": "Lange und sanft durch das Münstertal mit seinen Höfen, erst im letzten Drittel steiler in Kehren hinauf zum Sattel.",
+    "highlights": "Der Blick zum Belchen vom offenen Sattel."
+   }
+  ]
+ },
+ "hochblauen": {
+  "intro": "Der Aussichtsberg über dem Markgräflerland: von der Kurstadt Badenweiler über 700 Höhenmeter steil hinauf, oben ein Turm mit einem der weitesten Blicke des Schwarzwalds.",
+  "sides": [
+   {
+    "character": "Aus Badenweiler gleich steil in den Wald, im Mittel über 8 % und ohne Pause; die letzten Kilometer schmal bis zum Gipfelhotel.",
+    "highlights": "Der Aussichtsturm auf dem Gipfel mit Blick über Rheinebene, Vogesen und Alpen.",
+    "hazards": [
+     "steep",
+     "narrow"
+    ]
+   }
+  ]
+ },
+ "kniebis": {
+  "intro": "Der klassische Übergang über den Nordschwarzwald zwischen Rheintal und Freudenstadt, eine alte Schanze auf der Passhöhe. Eher Verbindungsstraße als Ausflugsziel, aber eine lange Auffahrt.",
+  "sides": [
+   {
+    "character": "Von Oppenau das Renchtal hinauf, gleichmäßig durch Bad Peterstal-Griesbach, dann in Kehren steiler zur Hochfläche am Kniebis.",
+    "highlights": "Die Kehren oberhalb von Bad Griesbach.",
+    "hazards": [
+     "traffic"
+    ]
+   }
+  ]
+ },
+ "ruhestein": {
+  "intro": "Das Tor zum Nationalpark Schwarzwald, wo die Schwarzwaldhochstraße die Straße aus dem Achertal kreuzt. Von hier lässt sich auf der Hochstraße zum Mummelsee und zur Hornisgrinde weiterfahren.",
+  "sides": [
+   {
+    "character": "Von Seebach gleichmäßig durch das Achertal und dann im Wald in Schleifen hinauf zum Ruhestein.",
+    "highlights": "Das Nationalparkzentrum am Ruhestein."
+   }
+  ]
  }
 }

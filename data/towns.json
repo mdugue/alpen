@@ -1475,5 +1475,47 @@
   ],
   "aliases": [],
   "why": "Kurstadt am Fuß der böhmischen Seite: Komáří vížka, Cínovec und Dlouhá Louka beginnen in den Nachbarorten Krupka, Dubí und Osek. Bahnhof mit Verbindungen nach Ústí nad Labem und Prag."
+ },
+ {
+  "slug": "freiburg",
+  "name": "Freiburg im Breisgau",
+  "country": "DE",
+  "lat": 47.9961,
+  "lon": 7.8494,
+  "tags": [
+   "hub",
+   "workshops",
+   "train"
+  ],
+  "aliases": [
+   "Freiburg"
+  ],
+  "why": "Die Radstadt am Fuß des Südschwarzwalds: Schauinsland beginnt am Stadtrand, Notschrei, Kandel und Wiedener Eck sind eine Tagesrunde entfernt. ICE-Bahnhof und viele Radläden."
+ },
+ {
+  "slug": "todtnau",
+  "name": "Todtnau",
+  "country": "DE",
+  "lat": 47.8303,
+  "lon": 7.9452,
+  "tags": [
+   "passes",
+   "quiet"
+  ],
+  "aliases": [],
+  "why": "Im oberen Wiesental zwischen Feldberg und Belchen: Feldbergpass und Notschrei beginnen im Ort, das Wiedener Eck liegt eine kurze Anfahrt entfernt."
+ },
+ {
+  "slug": "baiersbronn",
+  "name": "Baiersbronn",
+  "country": "DE",
+  "lat": 48.507,
+  "lon": 8.372,
+  "tags": [
+   "hotels",
+   "quiet"
+  ],
+  "aliases": [],
+  "why": "Im Nordschwarzwald am Rand des Nationalparks: Ruhestein und Kniebis sind von hier aus eine kurze Runde, die Schwarzwaldhochstraße liegt oben auf dem Kamm."
  }
 ]

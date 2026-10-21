@@ -968,5 +968,42 @@
   "character": "Der Steilabbruch des Erzgebirges nach Böhmen: kurze, steile Anstiege aus Krupka, Dubí und Osek auf einen sanften Kamm, oben ruhige Straßen zwischen Altenberg und Moldava.",
   "multiDay": "Zwei Tage reichen für alle Anstiege der böhmischen Seite; von Altenberg aus als Runden über die Grenze, von Teplice aus von unten.",
   "access": "Mit der Bahn von Dresden über Heidenau nach Altenberg, oder nach Teplice über Ústí nad Labem; Dresden liegt eine Stunde entfernt."
+ },
+ {
+  "slug": "suedschwarzwald",
+  "name": "Südschwarzwald",
+  "country": "DE",
+  "center": {
+   "lat": 47.93,
+   "lon": 7.88
+  },
+  "radiusKm": 30,
+  "baseTowns": [
+   "freiburg",
+   "todtnau"
+  ],
+  "include": [],
+  "exclude": [],
+  "character": "Die höchsten Berge des Schwarzwalds zwischen Freiburg und dem Feldberg: lange Anstiege von 500 bis 900 Höhenmetern aus der Rheinebene und den Tälern, Wald und offene Weiden oben, auf den Bundesstraßen Verkehr.",
+  "multiDay": "Basis für ein langes Wochenende bis eine Woche: Schauinsland, Notschrei und Feldberg ergeben eine Runde, Kandel, Wiedener Eck und Blauen je einen weiteren Tag.",
+  "access": "Mit dem ICE nach Freiburg, von dort mit der Höllentalbahn ins Dreisamtal; der Flughafen Basel-Mulhouse liegt eine Stunde entfernt."
+ },
+ {
+  "slug": "nordschwarzwald",
+  "name": "Nordschwarzwald",
+  "country": "DE",
+  "center": {
+   "lat": 48.52,
+   "lon": 8.26
+  },
+  "radiusKm": 20,
+  "baseTowns": [
+   "baiersbronn"
+  ],
+  "include": [],
+  "exclude": [],
+  "character": "Der Nationalpark um die Schwarzwaldhochstraße: Anstiege aus den Tälern der Rheinseite auf einen langen Kamm auf 900 bis 1000 m, oben Hochmoor und Fernsicht, unten ruhige Täler.",
+  "multiDay": "Ein Wochenende: Ruhestein und Kniebis als Runde über die Hochstraße, die Täler der Rheinseite als zweiter Tag.",
+  "access": "Mit der Bahn nach Baiersbronn oder Freudenstadt; von Karlsruhe und Stuttgart gut eine Stunde."
  }
 ]
