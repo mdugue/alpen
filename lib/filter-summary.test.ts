@@ -10,6 +10,7 @@ import type { Filters } from "@/lib/app-state";
 import {
   appliedFilters,
   bestRelief,
+  carriesFilters,
   difficultyLabel,
   filterCount,
   hasSecondaryFilters,
@@ -133,6 +134,16 @@ describe("the classics the app opens on", () => {
       "Bekanntheit ab 3",
     );
     expect(resetFilters(opening).minFame).toBe(1);
+  });
+
+  test("count on the badge, but open no panel by themselves", () => {
+    expect(filterCount({ ...DEFAULT_FILTERS }, DE)).toBe(1);
+    expect(carriesFilters({ ...DEFAULT_FILTERS }, DE)).toBe(false);
+    expect(carriesFilters(filters({ minFame: 1 }), DE)).toBe(false);
+    expect(carriesFilters({ ...DEFAULT_FILTERS, maxTraffic: 2 }, DE)).toBe(
+      true,
+    );
+    expect(carriesFilters(filters({ minFame: 3 }), DE)).toBe(true);
   });
 
   test("neither the classics nor every road opens the second half", () => {

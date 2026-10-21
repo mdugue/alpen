@@ -395,9 +395,11 @@ export const appLayers = (
   const hoveredLine = ["==", ["feature-state", "hovered"], 1];
   const isSelected = ["==", ["get", "selected"], 1] as const;
   const isFavorite = ["==", ["get", "favorite"], 1] as const;
-  /** A shadow is drawn where a dot of its rank would be. */
+  /** A shadow is drawn where a dot of its rank would be, a favourite at every zoom. */
   const ghostFilter = prominenceFilter((minRank) =>
-    minRank === null ? true : [">=", ["get", "rank"], minRank],
+    minRank === null
+      ? true
+      : ["any", isFavorite, [">=", ["get", "rank"], minRank]],
   ) as never;
   /** An unpaved road's dot and line (plan 27): a ring, and a dash over the line. */
   const isUnpavedDot: ExpressionSpecification = [
@@ -571,6 +573,34 @@ export const appLayers = (
       source: SOURCE.reach,
       type: "line",
     },
+    // The roads the filters leave out, as shadows (`Scene.ghosts`): a small
+    // dot in the muted grey the app says "no answer" in, no ring, no status,
+    // no name. They thin out by the same ladder as the dots – three hundred
+    // grey specks would be the noise the classics are there to avoid – and
+    // lie under every line and mark the filters kept, which win the pointer
+    // too (`HIT_GROUPS`).
+    {
+      filter: ghostFilter,
+      id: LAYERS.ghost.mark,
+      paint: {
+        "circle-color": colors.unknown,
+        "circle-opacity": byLadder(() => GHOST.opacity, QUIET.opacity),
+        "circle-pitch-alignment": "map",
+        "circle-radius": byLadder(
+          (stop) =>
+            GHOST.radius[0] +
+            ((stop - SIZE_ZOOMS.far) / (SIZE_ZOOMS.near - SIZE_ZOOMS.far)) *
+              (GHOST.radius[1] - GHOST.radius[0]),
+          QUIET.size,
+        ),
+      },
+      source: SOURCE.ghosts,
+      type: "circle",
+    },
+    {
+      ...hitPoint(LAYERS.ghost.hit, SOURCE.ghosts),
+      filter: ghostFilter,
+    },
     hitLine(LAYERS.tour.hit, SOURCE.tours),
     hitLine(LAYERS.route.hit, SOURCE.routes),
     // A tour is the union of several ascents – the Sellaronda *is* its four
@@ -716,33 +746,6 @@ export const appLayers = (
       },
       source: SOURCE.tours,
       type: "symbol",
-    },
-    // The roads the filters leave out, as shadows (`Scene.ghosts`): a small
-    // dot in the muted grey the app says "no answer" in, no ring, no status,
-    // no name. They thin out by the same ladder as the dots – three hundred
-    // grey specks would be the noise the classics are there to avoid – and
-    // lie under every real mark, which wins the pointer too (`HIT_GROUPS`).
-    {
-      filter: ghostFilter,
-      id: LAYERS.ghost.mark,
-      paint: {
-        "circle-color": colors.unknown,
-        "circle-opacity": byLadder(() => GHOST.opacity, QUIET.opacity),
-        "circle-pitch-alignment": "map",
-        "circle-radius": byLadder(
-          (stop) =>
-            GHOST.radius[0] +
-            ((stop - SIZE_ZOOMS.far) / (SIZE_ZOOMS.near - SIZE_ZOOMS.far)) *
-              (GHOST.radius[1] - GHOST.radius[0]),
-          QUIET.size,
-        ),
-      },
-      source: SOURCE.ghosts,
-      type: "circle",
-    },
-    {
-      ...hitPoint(LAYERS.ghost.hit, SOURCE.ghosts),
-      filter: ghostFilter,
     },
     hitPoint(LAYERS.town.hit, SOURCE.towns),
     {

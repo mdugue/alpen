@@ -194,7 +194,7 @@ describe("serializeHash", () => {
         filters({ period: 7 }),
         view({ lat: 46.3, lon: 9.6, zoom: 6.5 }),
       ),
-    ).toBe("c=46.3000,9.6000&t=7&z=6.50");
+    ).toBe("c=46.3000,9.6000&f=4&t=7&z=6.50");
   });
 
   test("filters, selection and a tilted camera are carried", () => {
@@ -275,8 +275,9 @@ const ROWS = {
   maxWetDays: { key: "w", value: 8 },
   minBeauty: { key: "be", value: 4 },
   minElevation: { key: "m", value: 2000 },
-  // The app opens on the classics, so "every road" is what a link spells out.
-  minFame: { key: "f", value: 1 },
+  // Always written: its default moved from every road to the classics once,
+  // and a link must mean what it meant the day it was made.
+  minFame: { elides: false, key: "f", value: 1 },
   // The half-month is the one key every link carries: it is what the app opens
   // on, so it is written even when it equals the default.
   onDate: { key: "k", value: true },

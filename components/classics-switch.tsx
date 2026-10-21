@@ -3,6 +3,7 @@
 import { useT } from "@/components/i18n";
 import { FilterChip } from "@/components/sidebar/filter-chip";
 import { CLASSIC_FAME, RATING_MIN } from "@/lib/app-state";
+import { fill } from "@/lib/i18n/fill";
 import { cn, MAP_CLUSTER } from "@/lib/utils";
 
 /**
@@ -30,7 +31,9 @@ export const ClassicsSwitch = ({
   onChange: (minFame: number) => void;
 }) => {
   const { t } = useT();
-  const hint = searching ? t.map.classicsSearching : t.map.classicsHint;
+  const hint = searching
+    ? t.map.classicsSearching
+    : fill(t.map.classicsHint, { n: CLASSIC_FAME });
   return (
     <div
       role="group"

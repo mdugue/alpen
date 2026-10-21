@@ -155,9 +155,11 @@ export const Explorer = ({ data, defaultPeriod, children }: Props) => {
    * list holds: whatever leaves a road out, the map still says it is there.
    */
   const kept = new Set(rows.pass.map((r) => r.pass.slug));
-  const ghosts = buildPassRows(passes, resetFilters(filters), inputs).filter(
-    (r) => !kept.has(r.pass.slug),
-  );
+  const ghosts = shown.passes
+    ? buildPassRows(passes, resetFilters(filters), inputs).filter(
+        (r) => !kept.has(r.pass.slug),
+      )
+    : [];
   /** The number on each tab, and on the phone's button that opens the list. */
   const counts = tabCounts(rows);
   /**

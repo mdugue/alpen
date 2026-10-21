@@ -310,7 +310,7 @@ describe("hover", () => {
     test("are shadows: no status, no lines, their rank for the ladder", () => {
       const scene = buildScene(input({ ghosts: [ghost] }));
       expect(ghostMark(scene)).toEqual([
-        { fame: 2, name: "Kleiner Pass", rank: 1, slug: "small" },
+        { fame: 2, favorite: 0, name: "Kleiner Pass", rank: 1, slug: "small" },
       ]);
       expect(passMark(scene, "small")).toBeUndefined();
       expect(filtered(scene.routes.filter)).not.toContain("small");
@@ -333,7 +333,26 @@ describe("hover", () => {
         input({ ghosts: [ghost], hovered: { kind: "pass", slug: "small" } }),
       );
       expect(scene.hover.popup?.subtitle).toEndWith("· nicht im Filter");
-      expect(scene.hover.mark.features).toHaveLength(1);
+      // Only the ring: the shadow under the pointer stays grey.
+      expect(scene.hover.mark.features.map((f) => f.properties)).toEqual([
+        { kind: "ghost" },
+      ]);
+    });
+
+    test("stay shadows once selected, under the pointer too", () => {
+      const scene = buildScene(
+        input({
+          ghosts: [ghost],
+          hovered: { kind: "pass", slug: "small" },
+          selection: { kind: "pass", slug: "small" },
+        }),
+      );
+      expect(scene.hover.popup?.subtitle).toEndWith("· nicht im Filter");
+      // Drawn whole, so its hover mark is the whole dot.
+      expect(scene.hover.mark.features[0]?.properties).toMatchObject({
+        kind: "pass",
+        selected: 1,
+      });
     });
 
     test("go with the roads when the roads are off the map", () => {

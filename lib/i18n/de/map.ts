@@ -10,9 +10,9 @@ export const map = {
   base: "Grundkarte",
   /** The switch on the map between the classics and every road (`ClassicsSwitch`). */
   classics: "Klassiker",
-  classicsGroup: "Welche Straßen die Karte zeigt",
+  classicsGroup: "Welche Straßen und Touren gezeigt werden",
   classicsHint:
-    "Die Klassiker – Bekanntheit 4 und 5. Die übrigen Straßen bleiben als graue Punkte auf der Karte.",
+    "Die Klassiker – Straßen ab Bekanntheit {n}, Touren mit mindestens einer davon. Die übrigen Straßen bleiben als graue Punkte auf der Karte.",
   classicsSearching: "Die Suche findet alle Straßen, auch ohne „Alle“.",
   /** The one overlay: waymarked cycling routes. */
   cycleRoutes: "Radrouten",

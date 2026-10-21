@@ -30,6 +30,7 @@ import {
   ALL_TYPES,
   BEAUTY_OPTIONS,
   ELEVATION_OPTIONS,
+  CLASSIC_FAME,
   FAME_OPTIONS,
   HEAT_OPTIONS,
   pickedMembers,
@@ -430,7 +431,7 @@ export const FilterBody = ({
           />
           <ThresholdChips
             id="f-fame"
-            label={t.sidebar.filters.fame}
+            label={fill(t.sidebar.filters.fame, { n: CLASSIC_FAME })}
             options={FAME_OPTIONS}
             count={(v) => countWith({ minFame: v })}
             scale

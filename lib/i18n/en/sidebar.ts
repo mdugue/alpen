@@ -38,7 +38,7 @@ export const sidebar = {
     countTours: "loops",
     difficulty: "Difficulty",
     elevation: "Elevation of the summit",
-    fame: "Fame, 4 and up a classic",
+    fame: "Fame, {n} and up a classic",
     favoritesOnly: "Favourites only",
     heat: "Valley heat (derived)",
     more: "More filters",

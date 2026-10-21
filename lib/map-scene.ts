@@ -31,7 +31,7 @@ import type { TownReach } from "@/lib/nearby";
 import { rankOf } from "@/lib/prominence";
 import { HOME_RANGE, rangeOf } from "@/lib/regions";
 import { ascentKey } from "@/lib/route-key";
-import type { PassRow, Rows, TourRow } from "@/lib/rows";
+import type { PassRow, Rows, TourRow, TownRow } from "@/lib/rows";
 import type { Fix, LatLon, Status, Surface, Tag } from "@/lib/types";
 import { fmtUnit } from "@/lib/utils";
 
@@ -61,6 +61,8 @@ export interface PassProps {
  */
 export interface GhostProps {
   fame: number;
+  /** A favourite is drawn at every zoom, shadow or not. */
+  favorite: Flag;
   name: string;
   rank: number;
   slug: string;
@@ -95,11 +97,13 @@ export interface DestinationProps {
 /**
  * The hovered mark, drawn from its own one-feature source: at a zoom where
  * the level of detail hides a pass's dot, a row hovered in the list would
- * otherwise ring an empty patch of map. A town needs nothing but its kind –
- * only the ring is drawn for it.
+ * otherwise ring an empty patch of map. A town and a shadow need nothing but
+ * their kind – only the ring is drawn for them, so a grey dot under the
+ * pointer stays grey.
  */
 export type HoverProps =
   | ({ kind: "pass" } & Omit<PassProps, "name" | "slug">)
+  | { kind: "ghost" }
   | { kind: "town" };
 
 export interface RouteState {
@@ -228,16 +232,51 @@ const roadSubtitle = (row: PassRow, w: Messages, ghost = false) =>
     .filter(Boolean)
     .join(" · ");
 
+/**
+ * What the hover source holds: the pointed-at road's dot drawn again, or – for
+ * a town and for a shadow, which is to stay grey – only the kind the ring is
+ * drawn for.
+ */
+const hoverMark = (
+  road: PassRow | undefined,
+  ghost: boolean,
+  selPass: string | null,
+  town: TownRow | undefined,
+): { at: readonly [number, number]; props: HoverProps }[] => {
+  if (road)
+    return [
+      {
+        at: [road.pass.lon, road.pass.lat],
+        props: ghost
+          ? { kind: "ghost" }
+          : {
+              fame: road.pass.fame,
+              favorite: flag(road.favorite),
+              kind: "pass",
+              rank: rankOf(road.pass),
+              selected: flag(road.pass.slug === selPass),
+              status: road.status,
+              surface: road.pass.surface,
+            },
+      },
+    ];
+  return town
+    ? [{ at: [town.town.lon, town.town.lat], props: { kind: "town" } }]
+    : [];
+};
+
 /** A road by slug, among the drawn ones or else the shadows – and which of the two. */
 const roadAt = (
   drawn: readonly PassRow[],
   ghosts: readonly PassRow[],
   slug: string | null,
 ): { row: PassRow | undefined; ghost: boolean } => {
-  const row = drawn.find((r) => r.pass.slug === slug);
-  if (row) return { ghost: false, row };
+  // A selected shadow is among the drawn ones, and still a shadow.
   const ghost = ghosts.find((r) => r.pass.slug === slug);
-  return { ghost: ghost !== undefined, row: ghost };
+  return {
+    ghost: ghost !== undefined,
+    row: drawn.find((r) => r.pass.slug === slug) ?? ghost,
+  };
 };
 
 /** The shadows: every road the filters leave out, but the selected one, which is drawn whole. */
@@ -249,6 +288,7 @@ const shadows = (ghosts: readonly PassRow[], selPass: string | null) =>
         at: [row.pass.lon, row.pass.lat],
         props: {
           fame: row.pass.fame,
+          favorite: flag(row.favorite),
           name: row.pass.name,
           rank: rankOf(row.pass),
           slug: row.pass.slug,
@@ -445,29 +485,12 @@ export const buildScene = (input: SceneInput): Scene => {
     hover: {
       hull: (markedTown && townReach[markedTown.town.slug]) ?? null,
       mark: collection<HoverProps>(
-        markedPass
-          ? [
-              {
-                at: [markedPass.pass.lon, markedPass.pass.lat],
-                props: {
-                  fame: markedPass.pass.fame,
-                  favorite: flag(markedPass.favorite),
-                  kind: "pass",
-                  rank: rankOf(markedPass.pass),
-                  selected: flag(markedPass.pass.slug === selPass),
-                  status: markedPass.status,
-                  surface: markedPass.pass.surface,
-                },
-              },
-            ]
-          : markedTown
-            ? [
-                {
-                  at: [markedTown.town.lon, markedTown.town.lat],
-                  props: { kind: "town" },
-                },
-              ]
-            : [],
+        hoverMark(
+          markedPass,
+          ghostRow && markedPass?.pass.slug !== selPass,
+          selPass,
+          markedTown,
+        ),
       ),
       popup: popup(),
     },

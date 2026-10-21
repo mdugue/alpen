@@ -215,6 +215,15 @@ export const filterCount = (f: Filters, w: Messages) =>
   appliedFilters(f, w).length;
 
 /**
+ * Whether anything is filtered beyond what the app opens on – what opens the
+ * panel by itself when a link carries it. The classics are applied on every
+ * fresh page and count on the badge like any filter, but a panel that opened
+ * on every first visit would bury the map under it.
+ */
+export const carriesFilters = (f: Filters, w: Messages) =>
+  filterCount(f, w) > (f.minFame === DEFAULT_FILTERS.minFame ? 1 : 0);
+
+/**
  * Back to no filter at all. The period and the sort survive it: the
  * half-month is the app's one domain control and lives in the season bar, and
  * the sort is a preference rather than a decision about what is shown. No
