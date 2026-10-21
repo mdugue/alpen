@@ -79,8 +79,8 @@ export const vocab = {
     Bayerwald: {
       hint: "Die Arberstraßen über Bodenmais und Bayerisch Eisenstein, Dreisessel und Kleť: Waldberge an der tschechischen Grenze für ein Wochenende.",
       inside: "im Bayerischen Wald und im Böhmerwald",
-      label: "Bayerischer Wald",
-      outside: "außerhalb des Bayerischen Walds",
+      label: "Bayerischer Wald und Böhmerwald",
+      outside: "außerhalb des Bayerischen Walds und des Böhmerwalds",
     },
     Erzgebirge: {
       hint: "Fichtelberg, Klínovec und die steilen Rampen der böhmischen Südseite: das Wochenende ab Dresden, Chemnitz oder Prag.",
@@ -127,8 +127,8 @@ export const vocab = {
     Thüringen: {
       hint: "Inselsberg und Oberhof am Rennsteig, Wasserkuppe und Kreuzberg in der Rhön: kurze Anstiege für ein Wochenende in der Mitte Deutschlands.",
       inside: "im Thüringer Wald und in der Rhön",
-      label: "Thüringer Wald",
-      outside: "außerhalb des Thüringer Walds",
+      label: "Thüringer Wald und Rhön",
+      outside: "außerhalb des Thüringer Walds und der Rhön",
     },
     Vogesen: {
       hint: "Grand Ballon, Schlucht, Ballon d'Alsace und die Route des Crêtes: das Wochenende ab Freiburg, Basel oder Karlsruhe.",

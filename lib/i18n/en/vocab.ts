@@ -65,8 +65,8 @@ export const vocab = {
     Bayerwald: {
       hint: "The Arber roads above Bodenmais and Bayerisch Eisenstein, the Dreisessel and the Kleť: forest mountains on the Czech border for a weekend.",
       inside: "in the Bavarian and Bohemian Forest",
-      label: "Bavarian Forest",
-      outside: "outside the Bavarian Forest",
+      label: "Bavarian and Bohemian Forest",
+      outside: "outside the Bavarian and Bohemian Forest",
     },
     Erzgebirge: {
       hint: "Fichtelberg, Klínovec and the steep ramps of the Bohemian south side: a weekend from Dresden, Chemnitz or Prague.",
@@ -113,8 +113,8 @@ export const vocab = {
     Thüringen: {
       hint: "The Inselsberg and Oberhof on the Rennsteig, the Wasserkuppe and the Kreuzberg in the Rhön: short climbs for a weekend in the middle of Germany.",
       inside: "in the Thuringian Forest and the Rhön",
-      label: "Thuringian Forest",
-      outside: "outside the Thuringian Forest",
+      label: "Thuringian Forest and Rhön",
+      outside: "outside the Thuringian Forest and the Rhön",
     },
     Vogesen: {
       hint: "Grand Ballon, Schlucht, Ballon d'Alsace and the Route des Crêtes: the weekend from Freiburg, Basel or Karlsruhe.",

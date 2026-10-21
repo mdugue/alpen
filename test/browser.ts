@@ -13,6 +13,8 @@ import { mkdir } from "node:fs/promises";
 import path from "node:path";
 
 const PORT = Number(process.env.PORT ?? 3123);
+/** The repository, wherever the test runner was started from. */
+const ROOT = path.resolve(import.meta.dir, "..");
 const FAILURE_DIR = process.env.E2E_FAILURE_DIR ?? "e2e/failures";
 
 /** Chrome with software WebGL – MapLibre needs a GL context even headless. */
@@ -97,19 +99,25 @@ export const startApp = async (): Promise<App> => {
   const proc = Bun.spawn({
     // The server itself, not `bun run start`: a signal to the wrapper does
     // not always reach the `next start` under it, which then keeps the port.
-    cmd: ["./node_modules/.bin/next", "start"],
+    cmd: [path.join(ROOT, "node_modules/.bin/next"), "start"],
+    cwd: ROOT,
     env: { ...process.env, PORT: String(PORT) },
     stderr: "pipe",
-    stdout: "pipe",
+    stdout: "ignore",
   });
+  // Drained as it comes, so a chatty server never blocks on a full pipe; the
+  // tail is what an early exit reports.
+  let stderr = "";
+  void (async () => {
+    for await (const chunk of proc.stderr)
+      stderr = (stderr + new TextDecoder().decode(chunk)).slice(-4000);
+  })();
   const base = `http://127.0.0.1:${PORT}`;
   const deadline = Date.now() + 60_000;
   for (;;) {
     if (proc.exitCode !== null) {
       throw new Error(
-        `"bun run start" exited with ${proc.exitCode}. Run "bun run build" first.\n${await new Response(
-          proc.stderr,
-        ).text()}`,
+        `"next start" exited with ${proc.exitCode}. Run "bun run build" first.\n${stderr}`,
       );
     }
     try {
@@ -140,6 +148,7 @@ export const startApp = async (): Promise<App> => {
       }
       await Bun.sleep(100);
     }
+    throw new Error(`${base} still answers 10 s after the server was killed.`);
   };
   return { base, stop };
 };

@@ -1,6 +1,7 @@
 # 34 · Beyond the Alps: every climb a rider travels for
 
-**Status:** in progress – the plan, decided on 2026-10-21 ·
+**Status:** in progress – stages 1 and 2 done (the Swabian Jura decided out),
+stage 3 next ·
 **Effort:** M for code, XL for curation (one range at a time) ·
 **Depends on:** 25 (the range mechanism), 26 (bounds per range, the opening
 frame), 14 (road types) · **Unblocks:** the weekend answer for the whole
