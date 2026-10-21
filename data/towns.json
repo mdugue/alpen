@@ -2128,5 +2128,74 @@
    "Krumau"
   ],
   "why": "Die Altstadt an der Moldau unter der Kleť: der Anstieg beginnt am Stadtrand, der Böhmerwald eine Stunde westlich."
+ },
+ {
+  "slug": "corte",
+  "name": "Corte",
+  "country": "FR",
+  "lat": 42.3053,
+  "lon": 9.1512,
+  "tags": [
+   "train",
+   "passes"
+  ],
+  "aliases": [
+   "Corti"
+  ],
+  "why": "Die alte Hauptstadt in der Mitte der Insel, mit Bahnhof: Vizzavona und Sorba über Vivario, das Niolo und der Vergio im Westen."
+ },
+ {
+  "slug": "zonza",
+  "name": "Zonza",
+  "country": "FR",
+  "lat": 41.7494,
+  "lon": 9.1706,
+  "tags": [
+   "passes",
+   "quiet"
+  ],
+  "aliases": [],
+  "why": "Bergdorf in der Alta Rocca: der Col de Bavella beginnt im Ort, das Ospedale und Porto-Vecchio liegen auf der anderen Seite des Waldes."
+ },
+ {
+  "slug": "porto-vecchio",
+  "name": "Porto-Vecchio",
+  "country": "FR",
+  "lat": 41.5911,
+  "lon": 9.2794,
+  "tags": [
+   "hotels",
+   "scenic"
+  ],
+  "aliases": [
+   "Portivechju"
+  ],
+  "why": "Hafenstadt im Süden mit vielen Hotels: das Ospedale beginnt am Stadtrand, über Zonza eine große Runde mit dem Col de Bavella."
+ },
+ {
+  "slug": "bastia",
+  "name": "Bastia",
+  "country": "FR",
+  "lat": 42.6975,
+  "lon": 9.4498,
+  "tags": [
+   "train",
+   "hotels"
+  ],
+  "aliases": [],
+  "why": "Fährhafen und Bahnhof im Nordosten: der Col de Teghime beginnt in der Stadt, das Cap Corse als lange Küstenrunde."
+ },
+ {
+  "slug": "evisa",
+  "name": "Evisa",
+  "country": "FR",
+  "lat": 42.2535,
+  "lon": 8.803,
+  "tags": [
+   "passes",
+   "quiet"
+  ],
+  "aliases": [],
+  "why": "Bergdorf über den Schluchten der Spelunca: der Col de Vergio beginnt im Ort, der Col de Sevi liegt eine kurze Abfahrt entfernt."
  }
 ]

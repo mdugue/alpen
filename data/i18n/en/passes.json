@@ -4017,5 +4017,66 @@
   "ascents": [
    "Stachy"
   ]
+ },
+ "col-de-bavella": {
+  "classicAscent": "9.0 km, 5.0 % from Zonza",
+  "note": "The pass below the Aiguilles de Bavella, the red granite needles in the south of the island. From Zonza short and steady, from Solenzara on the east coast thirty kilometres through the gorge of the Solenzara.",
+  "ascents": [
+   "Zonza (west)",
+   "Solenzara (east)"
+  ]
+ },
+ "col-de-vergio": {
+  "classicAscent": "12.0 km, 5.1 % from Evisa",
+  "note": "The highest road pass in Corsica, between the Forêt d'Aïtone and the Niolo. From Evisa uphill through tall Laricio pines; to the east long and gentle via Calacuccia.",
+  "ascents": [
+   "Evisa (west)"
+  ]
+ },
+ "col-de-vizzavona": {
+  "classicAscent": "9.4 km, 5.6 % from Bocognano",
+  "note": "The pass of the main road between Ajaccio and Bastia, which the 2013 Tour de France crossed on Corsica. Beech and pine forest, but a lot of traffic: better early in the morning or out of season.",
+  "ascents": [
+   "Bocognano (south)",
+   "Vivario (north)"
+  ]
+ },
+ "col-de-sorba": {
+  "classicAscent": "9.5 km, 6.9 % from Vivario",
+  "note": "The quiet link from Vivario to Ghisoni, steep and in hairpins on both sides. At the top the view across the ridge to Monte Rotondo.",
+  "ascents": [
+   "Vivario (north)",
+   "Ghisoni (south)"
+  ]
+ },
+ "col-de-verde": {
+  "classicAscent": "17.3 km, 3.7 % from Ghisoni",
+  "note": "The long forest pass between Ghisoni and the Taravo valley, through one of the island's largest forests. Long and moderately steep on both sides, with flat stretches.",
+  "ascents": [
+   "Ghisoni (north)",
+   "Cozzano (south)"
+  ]
+ },
+ "col-de-teghime": {
+  "classicAscent": "10.1 km, 4.9 % from Bastia",
+  "note": "Bastia's local climb, over the ridge at the root of Cap Corse to Saint-Florent. At the top the view of both seas, the Tyrrhenian and the Gulf of Saint-Florent.",
+  "ascents": [
+   "Bastia (east)",
+   "Saint-Florent (west)"
+  ]
+ },
+ "ospedale": {
+  "classicAscent": "18.5 km, 4.8 % from Porto-Vecchio",
+  "note": "From Porto-Vecchio onto the Ospedale plateau, with a reservoir, pine forest and a view over the bay. At the top the road carries on through the forest to Zonza and the Col de Bavella.",
+  "ascents": [
+   "Porto-Vecchio"
+  ]
+ },
+ "col-de-sevi": {
+  "classicAscent": "9.7 km, 6.9 % from Vico",
+  "note": "The pass between Vico and Evisa above the Gulf of Sagone, with views to the sea and the Cinto mountains. A day from Evisa together with the Vergio.",
+  "ascents": [
+   "Vico (south)"
+  ]
  }
 }

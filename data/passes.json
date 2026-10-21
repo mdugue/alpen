@@ -19132,5 +19132,310 @@
     "label": "Stachy"
    }
   ]
+ },
+ {
+  "slug": "col-de-bavella",
+  "surface": "asphalt",
+  "name": "Col de Bavella",
+  "type": "pass",
+  "tags": [
+   "panorama",
+   "hairpins"
+  ],
+  "country": "FR",
+  "region": "Korsika",
+  "lat": 41.7959,
+  "lon": 9.225,
+  "elevation": 1218,
+  "classicAscent": "9,0 km, 5,0 % ab Zonza",
+  "beauty": 5,
+  "fame": 4,
+  "difficulty": 3,
+  "traffic": 3,
+  "season": null,
+  "note": "Der Pass unter den Aiguilles de Bavella, den roten Granitnadeln im Süden der Insel. Von Zonza kurz und gleichmäßig, von Solenzara an der Ostküste dreißig Kilometer durch die Schlucht des Solenzara.",
+  "aliases": [
+   "Bocca di Bavedda"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 41.7494,
+     "lon": 9.1706
+    },
+    "label": "Zonza (West)"
+   },
+   {
+    "from": {
+     "lat": 41.8563,
+     "lon": 9.3986
+    },
+    "label": "Solenzara (Ost)"
+   }
+  ]
+ },
+ {
+  "slug": "col-de-vergio",
+  "surface": "asphalt",
+  "name": "Col de Vergio",
+  "type": "pass",
+  "tags": [
+   "forest",
+   "panorama"
+  ],
+  "country": "FR",
+  "region": "Korsika",
+  "lat": 42.2903,
+  "lon": 8.8784,
+  "elevation": 1477,
+  "classicAscent": "12,0 km, 5,1 % ab Evisa",
+  "beauty": 5,
+  "fame": 3,
+  "difficulty": 3,
+  "traffic": 1,
+  "season": null,
+  "note": "Der höchste Straßenpass Korsikas, zwischen dem Forêt d'Aïtone und dem Niolo. Von Evisa durch hohe Laricio-Kiefern bergauf, nach Osten lang und flach über Calacuccia.",
+  "aliases": [
+   "Bocca di Verghju"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 42.2535,
+     "lon": 8.803
+    },
+    "label": "Evisa (West)"
+   }
+  ]
+ },
+ {
+  "slug": "col-de-vizzavona",
+  "surface": "asphalt",
+  "name": "Col de Vizzavona",
+  "type": "pass",
+  "tags": [
+   "forest",
+   "race"
+  ],
+  "country": "FR",
+  "region": "Korsika",
+  "lat": 42.1119,
+  "lon": 9.1121,
+  "elevation": 1163,
+  "classicAscent": "9,4 km, 5,6 % ab Bocognano",
+  "beauty": 4,
+  "fame": 3,
+  "difficulty": 3,
+  "traffic": 4,
+  "season": null,
+  "note": "Der Pass der Hauptstraße zwischen Ajaccio und Bastia, über den die Tour de France 2013 auf Korsika fuhr. Buchen- und Kiefernwald, aber viel Verkehr: lieber früh am Morgen oder außerhalb der Saison.",
+  "aliases": [
+   "Bocca di Vizzavona"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 42.0835,
+     "lon": 9.0638
+    },
+    "label": "Bocognano (Süd)"
+   },
+   {
+    "from": {
+     "lat": 42.1721,
+     "lon": 9.1696
+    },
+    "label": "Vivario (Nord)"
+   }
+  ]
+ },
+ {
+  "slug": "col-de-sorba",
+  "surface": "asphalt",
+  "name": "Col de Sorba",
+  "type": "pass",
+  "tags": [
+   "hairpins",
+   "forest"
+  ],
+  "country": "FR",
+  "region": "Korsika",
+  "lat": 42.1441,
+  "lon": 9.1903,
+  "elevation": 1311,
+  "classicAscent": "9,5 km, 6,9 % ab Vivario",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 4,
+  "traffic": 1,
+  "season": null,
+  "note": "Die stille Verbindung von Vivario nach Ghisoni, auf beiden Seiten steil und in Kehren. Oben der Blick über den Kamm zum Monte Rotondo.",
+  "aliases": [
+   "Bocca di Sorba"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 42.1721,
+     "lon": 9.1696
+    },
+    "label": "Vivario (Nord)"
+   },
+   {
+    "from": {
+     "lat": 42.1036,
+     "lon": 9.2123
+    },
+    "label": "Ghisoni (Süd)"
+   }
+  ]
+ },
+ {
+  "slug": "col-de-verde",
+  "surface": "asphalt",
+  "name": "Col de Verde",
+  "type": "pass",
+  "tags": [
+   "forest"
+  ],
+  "country": "FR",
+  "region": "Korsika",
+  "lat": 42.0282,
+  "lon": 9.1948,
+  "elevation": 1289,
+  "classicAscent": "17,3 km, 3,7 % ab Ghisoni",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 1,
+  "season": null,
+  "note": "Der lange Waldpass zwischen Ghisoni und dem Taravo-Tal, durch einen der größten Wälder der Insel. Auf beiden Seiten lang und mäßig steil, mit flachen Stücken.",
+  "aliases": [
+   "Bocca di Verdi"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 42.1036,
+     "lon": 9.2123
+    },
+    "label": "Ghisoni (Nord)"
+   },
+   {
+    "from": {
+     "lat": 41.9352,
+     "lon": 9.1546
+    },
+    "label": "Cozzano (Süd)"
+   }
+  ]
+ },
+ {
+  "slug": "col-de-teghime",
+  "surface": "asphalt",
+  "name": "Col de Teghime",
+  "type": "pass",
+  "tags": [
+   "panorama"
+  ],
+  "country": "FR",
+  "region": "Korsika",
+  "lat": 42.6771,
+  "lon": 9.3828,
+  "elevation": 536,
+  "classicAscent": "10,1 km, 4,9 % ab Bastia",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 2,
+  "traffic": 3,
+  "season": null,
+  "note": "Der Hausberg von Bastia, über den Kamm am Ansatz des Cap Corse nach Saint-Florent. Oben der Blick auf beide Meere, das Tyrrhenische und den Golf von Saint-Florent.",
+  "aliases": [
+   "Bocca di Teghime"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 42.6975,
+     "lon": 9.4498
+    },
+    "label": "Bastia (Ost)"
+   },
+   {
+    "from": {
+     "lat": 42.681,
+     "lon": 9.303
+    },
+    "label": "Saint-Florent (West)"
+   }
+  ]
+ },
+ {
+  "slug": "ospedale",
+  "surface": "asphalt",
+  "name": "L'Ospedale",
+  "type": "climb",
+  "tags": [
+   "reservoir",
+   "forest",
+   "panorama"
+  ],
+  "country": "FR",
+  "region": "Korsika",
+  "lat": 41.6542,
+  "lon": 9.1958,
+  "elevation": 933,
+  "classicAscent": "18,5 km, 4,8 % ab Porto-Vecchio",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 2,
+  "season": null,
+  "note": "Von Porto-Vecchio auf die Hochfläche des Ospedale, mit Stausee, Kiefernwald und Blick über die Bucht. Oben geht es weiter über den Wald nach Zonza und zum Col de Bavella.",
+  "aliases": [
+   "Ospedale"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 41.5911,
+     "lon": 9.2794
+    },
+    "label": "Porto-Vecchio"
+   }
+  ]
+ },
+ {
+  "slug": "col-de-sevi",
+  "surface": "asphalt",
+  "name": "Col de Sevi",
+  "type": "pass",
+  "tags": [
+   "panorama"
+  ],
+  "country": "FR",
+  "region": "Korsika",
+  "lat": 42.2235,
+  "lon": 8.8299,
+  "elevation": 1101,
+  "classicAscent": "9,7 km, 6,9 % ab Vico",
+  "beauty": 4,
+  "fame": 1,
+  "difficulty": 3,
+  "traffic": 1,
+  "season": null,
+  "note": "Der Pass zwischen Vico und Evisa über dem Golf von Sagone, mit Blick zum Meer und zu den Bergen des Cinto. Zusammen mit dem Vergio ein Tag ab Evisa.",
+  "aliases": [
+   "Bocca di Sevi"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 42.1661,
+     "lon": 8.7958
+    },
+    "label": "Vico (Süd)"
+   }
+  ]
  }
 ]

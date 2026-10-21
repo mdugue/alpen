@@ -379,5 +379,20 @@
  },
  "cesky-krumlov": {
   "why": "The old town on the Vltava below the Kleť: the climb starts at the edge of town, the Bohemian Forest an hour to the west."
+ },
+ "corte": {
+  "why": "The old capital in the middle of the island, with a station: Vizzavona and Sorba via Vivario, the Niolo and the Vergio to the west."
+ },
+ "zonza": {
+  "why": "Mountain village in the Alta Rocca: the Col de Bavella starts in the village, the Ospedale and Porto-Vecchio lie on the other side of the forest."
+ },
+ "porto-vecchio": {
+  "why": "Port town in the south with plenty of hotels: the Ospedale starts at the edge of town, a big loop with the Col de Bavella via Zonza."
+ },
+ "bastia": {
+  "why": "Ferry port and station in the north-east: the Col de Teghime starts in town, Cap Corse as a long coastal loop."
+ },
+ "evisa": {
+  "why": "Mountain village above the Spelunca gorges: the Col de Vergio starts in the village, the Col de Sevi a short descent away."
  }
 }

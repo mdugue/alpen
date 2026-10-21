@@ -1424,5 +1424,60 @@
   "character": "Die tschechische Seite des Grenzgebirges: der Kleť über Český Krumlov, der Churáňov über Stachy und der Dreisessel an der Grenze zu Bayern. Lange, gleichmäßige Anstiege durch Fichtenwald, ruhige Straßen und die Moldau im Tal.",
   "multiDay": "Drei Tage von Český Krumlov: der Kleť am Morgen, der Churáňov als lange Runde über Vimperk, der Dreisessel über den Lipno-Stausee.",
   "access": "Bahn bis Český Krumlov über České Budějovice; mit dem Auto von Passau oder Linz."
+ },
+ {
+  "slug": "alta-rocca",
+  "name": "Alta Rocca",
+  "country": "FR",
+  "center": {
+   "lat": 41.71,
+   "lon": 9.22
+  },
+  "radiusKm": 16,
+  "baseTowns": [
+   "zonza",
+   "porto-vecchio"
+  ],
+  "include": [],
+  "exclude": [],
+  "character": "Der Süden Korsikas zwischen Granitnadeln und Meer: der Col de Bavella über Zonza und der lange Anstieg auf das Ospedale über Porto-Vecchio. Kiefernwald, Badegumpen und Strände am selben Tag.",
+  "multiDay": "Drei Tage: das Ospedale und Zonza als Runde von Porto-Vecchio, Bavella von beiden Seiten, ein Tag an der Küste.",
+  "access": "Fähre oder Flug nach Figari oder Bastia, mit dem Auto über die Ostküste."
+ },
+ {
+  "slug": "zentralkorsika",
+  "name": "Zentralkorsika",
+  "country": "FR",
+  "center": {
+   "lat": 42.17,
+   "lon": 9.15
+  },
+  "radiusKm": 20,
+  "baseTowns": [
+   "corte"
+  ],
+  "include": [],
+  "exclude": [],
+  "character": "Die Mitte der Insel um Vivario: Vizzavona, Sorba und Verde in tiefen Kiefern- und Buchenwäldern, ruhige Straßen bis auf die Nationalstraße. Corte mit der Bahn als Ausgangspunkt.",
+  "multiDay": "Drei Tage von Corte: Vizzavona und Sorba als Runde über Vivario und Ghisoni, der Verde als langer Tag, dazu die Restonica-Schlucht.",
+  "access": "Bahn bis Corte von Bastia oder Ajaccio; mit dem Auto über die T20."
+ },
+ {
+  "slug": "westkorsika",
+  "name": "Westkorsika",
+  "country": "FR",
+  "center": {
+   "lat": 42.26,
+   "lon": 8.84
+  },
+  "radiusKm": 10,
+  "baseTowns": [
+   "evisa"
+  ],
+  "include": [],
+  "exclude": [],
+  "character": "Die Berge über dem Golf von Porto: der Col de Vergio, der höchste Straßenpass der Insel, und der Col de Sevi über Vico. Laricio-Kiefern, die Schluchten der Spelunca und das Meer in Sichtweite.",
+  "multiDay": "Zwei Tage von Evisa: der Vergio am Morgen, der Sevi über Vico als Runde; dazu die Calanche de Piana an der Küste.",
+  "access": "Mit dem Auto von Ajaccio über Sagone oder von Porto; kein Bahnhof in der Nähe."
  }
 ]

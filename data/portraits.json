@@ -8271,5 +8271,124 @@
     "highlights": "Die Hochfläche bei Zadov mit Blick über die Šumava."
    }
   ]
+ },
+ "col-de-bavella": {
+  "intro": "Der bekannteste Pass Korsikas: oben Kiefern, Felsnadeln und wilde Schweine, unten auf der Ostseite Badegumpen im Fluss. Im Sommer voll, im Mai und Oktober ein Traum.",
+  "sides": [
+   {
+    "bestAs": "up",
+    "character": "Von Zonza gleichmäßig um 5 % durch Kiefernwald, die Nadeln von Bavella erst auf den letzten Kilometern.",
+    "highlights": "Der Blick auf die Aiguilles de Bavella am Sattel."
+   },
+   {
+    "bestAs": "both",
+    "character": "Von Solenzara lang und unregelmäßig das Tal hinauf, mit flachen Stücken am Fluss und steilen Rampen oben in den Kehren.",
+    "hazards": [
+     "tight-hairpins",
+     "narrow"
+    ],
+    "highlights": "Die Schlucht des Solenzara mit ihren Badegumpen."
+   }
+  ]
+ },
+ "col-de-vergio": {
+  "intro": "Das Dach der korsischen Straßen: ein Anstieg durch einen der schönsten Kiefernwälder Europas, oben eine kahle Höhe mit Blick zum Monte Cinto.",
+  "sides": [
+   {
+    "character": "Von Evisa gleichmäßig durch den Forêt d'Aïtone, kühl und schattig, oben offen und windig.",
+    "highlights": "Die alten Laricio-Kiefern im Forêt d'Aïtone."
+   }
+  ]
+ },
+ "col-de-vizzavona": {
+  "intro": "Der Pass in der Mitte der Insel, durch den Wald von Vizzavona. Schön, aber die Nationalstraße: Lastwagen und Busse teilen sich die Kurven.",
+  "sides": [
+   {
+    "bestAs": "up",
+    "character": "Von Bocognano gleichmäßig steil auf der breiten Straße durch Kastanien- und Buchenwald.",
+    "hazards": [
+     "traffic"
+    ],
+    "highlights": "Der Wald von Vizzavona am Sattel."
+   },
+   {
+    "bestAs": "both",
+    "character": "Von Vivario flacher und länger das Tal des Vecchio hinauf.",
+    "hazards": [
+     "traffic"
+    ]
+   }
+  ]
+ },
+ "col-de-sorba": {
+  "intro": "Der steilste der großen Pässe Korsikas und einer der ruhigsten: zwei Kehrenrampen über Vivario und Ghisoni, kaum ein Auto.",
+  "sides": [
+   {
+    "bestAs": "up",
+    "character": "Von Vivario sofort steil in engen Kehren durch Kiefernwald, ohne Pause bis zum Sattel.",
+    "hazards": [
+     "tight-hairpins",
+     "narrow"
+    ],
+    "highlights": "Die Kehren über Vivario mit Blick zum Monte d'Oro."
+   },
+   {
+    "bestAs": "both",
+    "character": "Von Ghisoni ähnlich steil, im unteren Teil durch Kastanienwald.",
+    "hazards": [
+     "tight-hairpins",
+     "narrow"
+    ]
+   }
+  ]
+ },
+ "col-de-verde": {
+  "intro": "Ein Pass für Ausdauer statt Härte: fast zwanzig Kilometer Wald auf jeder Seite, oben eine Hütte und kein Ausblick, dafür Stille.",
+  "sides": [
+   {
+    "bestAs": "both",
+    "character": "Von Ghisoni lang und unregelmäßig durch den Forêt de Marmano, mit flachen Stücken zwischen steileren Rampen."
+   },
+   {
+    "bestAs": "both",
+    "character": "Von Cozzano durch das obere Taravo-Tal, zuerst offen, dann lange im Wald."
+   }
+  ]
+ },
+ "col-de-teghime": {
+  "intro": "Ein kurzer Pass mit dem besten Ausblick der Insel: auf dem Sattel sieht man nach Osten auf Bastia und Elba, nach Westen auf den Golf von Saint-Florent.",
+  "sides": [
+   {
+    "bestAs": "up",
+    "character": "Von Bastia in Kehren über der Stadt, gleichmäßig um 5 %, viel Pendlerverkehr am Morgen.",
+    "hazards": [
+     "traffic"
+    ],
+    "highlights": "Der Blick zurück auf Bastia und den Hafen."
+   },
+   {
+    "bestAs": "both",
+    "character": "Von Saint-Florent durch die Weinberge von Patrimonio, sanfter und ruhiger.",
+    "highlights": "Die Weinberge von Patrimonio über dem Golf."
+   }
+  ]
+ },
+ "ospedale": {
+  "intro": "Der lange Anstieg vom Meer in die Berge über Porto-Vecchio: unten Macchia und Korkeichen, oben der Stausee im Kiefernwald und der Blick auf die Bucht.",
+  "sides": [
+   {
+    "character": "Von Porto-Vecchio gleichmäßig in langen Schleifen den Hang hinauf, mit immer weiterem Blick auf die Bucht.",
+    "highlights": "Der Blick auf den Golf von Porto-Vecchio, oben der Stausee des Ospedale."
+   }
+  ]
+ },
+ "col-de-sevi": {
+  "intro": "Ein stiller Pass im Westen, steil von Vico und mit Blick auf zwei Seiten: zum Meer und ins Gebirge.",
+  "sides": [
+   {
+    "character": "Von Vico steil und gleichmäßig über Kastanienwald und Macchia, oben offen.",
+    "highlights": "Der Blick zurück auf den Golf von Sagone."
+   }
+  ]
  }
 }

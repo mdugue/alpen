@@ -100,6 +100,12 @@ export const vocab = {
       label: "Jura",
       outside: "außerhalb des Juras",
     },
+    Korsika: {
+      hint: "Bavella, Vergio und Vizzavona über Granit und Macchia: lange Anstiege vom Meer ins Gebirge, für Frühjahr und Herbst.",
+      inside: "auf Korsika",
+      label: "Korsika",
+      outside: "außerhalb Korsikas",
+    },
     Mallorca: {
       hint: "Sa Calobra, Puig Major und Coll de Sóller über dem Meer: die Antwort für Februar, März und November.",
       inside: "auf Mallorca",
@@ -163,6 +169,7 @@ export const vocab = {
     Erzgebirge: "Erzgebirge",
     Harz: "Harz",
     Jura: "Jura",
+    Korsika: "Korsika",
     Mallorca: "Mallorca",
     Ostalpen: "Ostalpen",
     Pyrenäen: "Pyrenäen",

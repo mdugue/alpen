@@ -358,5 +358,20 @@
   "character": "The Czech side of the border range: the Kleť above Český Krumlov, the Churáňov above Stachy and the Dreisessel on the Bavarian border. Long, even climbs through spruce forest, quiet roads and the Vltava in the valley.",
   "multiDay": "Three days from Český Krumlov: the Kleť in the morning, the Churáňov as a long loop via Vimperk, the Dreisessel via the Lipno reservoir.",
   "access": "Train to Český Krumlov via České Budějovice; by car from Passau or Linz."
+ },
+ "alta-rocca": {
+  "character": "The south of Corsica between granite needles and the sea: the Col de Bavella above Zonza and the long climb to the Ospedale above Porto-Vecchio. Pine forest, bathing pools and beaches on the same day.",
+  "multiDay": "Three days: the Ospedale and Zonza as a loop from Porto-Vecchio, Bavella from both sides, a day on the coast.",
+  "access": "Ferry or flight to Figari or Bastia, by car along the east coast."
+ },
+ "zentralkorsika": {
+  "character": "The middle of the island around Vivario: Vizzavona, Sorba and Verde in deep pine and beech forests, quiet roads apart from the trunk road. Corte, with its station, as the base.",
+  "multiDay": "Three days from Corte: Vizzavona and Sorba as a loop via Vivario and Ghisoni, the Verde as a long day, plus the Restonica gorge.",
+  "access": "Train to Corte from Bastia or Ajaccio; by car on the T20."
+ },
+ "westkorsika": {
+  "character": "The mountains above the Gulf of Porto: the Col de Vergio, the highest road pass on the island, and the Col de Sevi above Vico. Laricio pines, the Spelunca gorges and the sea in sight.",
+  "multiDay": "Two days from Evisa: the Vergio in the morning, the Sevi via Vico as a loop; plus the Calanche de Piana on the coast.",
+  "access": "By car from Ajaccio via Sagone or from Porto; no station nearby."
  }
 }

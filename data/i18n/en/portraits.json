@@ -5723,5 +5723,93 @@
     "highlights": "The plateau at Zadov looking across the Šumava."
    }
   ]
+ },
+ "col-de-bavella": {
+  "intro": "The best-known pass in Corsica: pines, rock needles and wild pigs at the top, bathing pools in the river below on the east side. Busy in summer, a dream in May and October.",
+  "sides": [
+   {
+    "character": "From Zonza steadily at around 5 % through pine forest, the Bavella needles only in the last kilometres.",
+    "highlights": "The view of the Aiguilles de Bavella at the saddle."
+   },
+   {
+    "character": "From Solenzara long and irregular up the valley, with flat stretches by the river and steep ramps in the hairpins at the top.",
+    "highlights": "The gorge of the Solenzara with its bathing pools."
+   }
+  ]
+ },
+ "col-de-vergio": {
+  "intro": "The roof of Corsica's roads: a climb through one of the finest pine forests in Europe, a bare height with a view to Monte Cinto at the top.",
+  "sides": [
+   {
+    "character": "From Evisa steadily through the Forêt d'Aïtone, cool and shady, open and windy at the top.",
+    "highlights": "The old Laricio pines in the Forêt d'Aïtone."
+   }
+  ]
+ },
+ "col-de-vizzavona": {
+  "intro": "The pass in the middle of the island, through the forest of Vizzavona. Beautiful, but it is the trunk road: lorries and coaches share the bends.",
+  "sides": [
+   {
+    "character": "From Bocognano steadily steep on the wide road through chestnut and beech forest.",
+    "highlights": "The forest of Vizzavona at the saddle."
+   },
+   {
+    "character": "From Vivario gentler and longer up the valley of the Vecchio."
+   }
+  ]
+ },
+ "col-de-sorba": {
+  "intro": "The steepest of Corsica's big passes and one of the quietest: two ramps of hairpins above Vivario and Ghisoni, hardly a car.",
+  "sides": [
+   {
+    "character": "From Vivario steep straight away in tight hairpins through pine forest, without a break to the saddle.",
+    "highlights": "The hairpins above Vivario looking to Monte d'Oro."
+   },
+   {
+    "character": "From Ghisoni similarly steep, through chestnut forest in the lower part."
+   }
+  ]
+ },
+ "col-de-verde": {
+  "intro": "A pass for endurance rather than toughness: nearly twenty kilometres of forest on each side, a hut and no view at the top, but silence.",
+  "sides": [
+   {
+    "character": "From Ghisoni long and irregular through the Forêt de Marmano, with flat stretches between steeper ramps."
+   },
+   {
+    "character": "From Cozzano through the upper Taravo valley, open at first, then long in the forest."
+   }
+  ]
+ },
+ "col-de-teghime": {
+  "intro": "A short pass with the best view on the island: from the saddle you see Bastia and Elba to the east and the Gulf of Saint-Florent to the west.",
+  "sides": [
+   {
+    "character": "From Bastia in hairpins above the town, steadily at around 5 %, plenty of commuter traffic in the morning.",
+    "highlights": "The view back over Bastia and the harbour."
+   },
+   {
+    "character": "From Saint-Florent through the vineyards of Patrimonio, gentler and quieter.",
+    "highlights": "The vineyards of Patrimonio above the gulf."
+   }
+  ]
+ },
+ "ospedale": {
+  "intro": "The long climb from the sea into the mountains above Porto-Vecchio: maquis and cork oaks below, the reservoir in the pine forest and the view of the bay above.",
+  "sides": [
+   {
+    "character": "From Porto-Vecchio steadily in long loops up the slope, with an ever wider view of the bay.",
+    "highlights": "The view of the Gulf of Porto-Vecchio, the Ospedale reservoir at the top."
+   }
+  ]
+ },
+ "col-de-sevi": {
+  "intro": "A quiet pass in the west, steep from Vico and with views both ways: to the sea and into the mountains.",
+  "sides": [
+   {
+    "character": "From Vico steep and steady through chestnut forest and maquis, open at the top.",
+    "highlights": "The view back over the Gulf of Sagone."
+   }
+  ]
  }
 }
