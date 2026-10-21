@@ -32,7 +32,12 @@ import {
 } from "@/lib/layer-ids";
 import { PALETTE } from "@/lib/palette";
 import type { Scheme } from "@/lib/palette";
-import { DESTINATION_MAX_ZOOM, prominenceFilter } from "@/lib/prominence";
+import {
+  DESTINATION_MAX_ZOOM,
+  newcomerBelow,
+  prominenceFilter,
+  SIZE_STOPS,
+} from "@/lib/prominence";
 import { STATUSES } from "@/lib/regions";
 import type { MapEnvironment } from "@/lib/use-media-query";
 
@@ -249,15 +254,62 @@ export const applyBase = (m: MLMap, id: string, s: Scheme, lang: Lang) => {
   for (const l of detail) m.addLayer(l, ABOVE_BASE);
 };
 
+/** The dot's size at the two zooms it was always sized at, as base + per fame. */
+const SIZE = { far: [6, 2, 1.1], near: [12, 4, 1.8] } as const;
+/** How big and how opaque a newcomer is at the step it joins (`newcomerBelow`). */
+const QUIET = { opacity: 0.45, size: 0.6 } as const;
+
 /**
- * The radius of a pass dot, by zoom and fame. With a `hit` floor it becomes
- * the dot's hit area instead: never below that floor, and always a margin
- * wider than the dot, which on a famous pass at close zoom is as wide as the
- * floor itself. One interpolate rather than a `max` around it, because a
- * `zoom` expression may only be the input of a top-level interpolate.
+ * One zoom-interpolated paint value with a newcomer's share at each of the
+ * ladder's stops (`SIZE_STOPS`): `at(stop)` is the full value there, and a dot
+ * whose rank joined at that stop gets `quiet` of it – unless it is selected,
+ * which is drawn whole whatever the zoom. A `zoom` expression may
+ * only be the input of a top-level interpolate, so the ladder is spelled into
+ * its stops rather than wrapped around it.
+ */
+const byLadder = (
+  at: (stop: number) => ExpressionSpecification | number,
+  quiet: number,
+): ExpressionSpecification =>
+  [
+    "interpolate",
+    ["linear"],
+    ["zoom"],
+    ...SIZE_STOPS.flatMap((stop) => {
+      const below = newcomerBelow(stop);
+      const full = at(stop);
+      return [
+        stop,
+        below === null
+          ? full
+          : [
+              "case",
+              [
+                "all",
+                ["<", ["get", "rank"], below],
+                ["!=", ["get", "selected"], 1],
+              ],
+              ["*", quiet, full],
+              full,
+            ],
+      ];
+    }),
+  ] as never;
+
+/**
+ * The radius of a pass dot, by zoom and fame, quiet at the step its rank joins
+ * at. With a `hit` floor it becomes the dot's hit area instead: never below that
+ * floor, always a margin wider than the dot, which on a famous pass at close
+ * zoom is as wide as the floor itself, and never quiet – a dot that is small
+ * for a step is no harder to hit.
  */
 const passRadius = (hit = 0): ExpressionSpecification => {
-  const stop = (base: number, perFame: number): ExpressionSpecification => {
+  const [z0, b0, f0] = SIZE.far;
+  const [z1, b1, f1] = SIZE.near;
+  const at = (stop: number): ExpressionSpecification => {
+    const t = (stop - z0) / (z1 - z0);
+    const base = b0 + t * (b1 - b0);
+    const perFame = f0 + t * (f1 - f0);
     const r: ExpressionSpecification = [
       "+",
       base + (hit ? HIT_MARGIN : 0),
@@ -265,15 +317,7 @@ const passRadius = (hit = 0): ExpressionSpecification => {
     ];
     return hit ? ["max", hit, r] : r;
   };
-  return [
-    "interpolate",
-    ["linear"],
-    ["zoom"],
-    6,
-    stop(2, 1.1),
-    12,
-    stop(4, 1.8),
-  ];
+  return byLadder(at, hit ? 1 : QUIET.size);
 };
 
 /**
@@ -366,14 +410,17 @@ export const appLayers = (
       colors.paper,
       statusColor,
     ],
-    "circle-opacity": [
-      "case",
-      [">=", ["get", "fame"], 4],
-      0.95,
-      ["==", ["get", "fame"], 3],
-      0.8,
-      0.62,
-    ],
+    "circle-opacity": byLadder(
+      () => [
+        "case",
+        [">=", ["get", "fame"], 4],
+        0.95,
+        ["==", ["get", "fame"], 3],
+        0.8,
+        0.62,
+      ],
+      QUIET.opacity,
+    ),
     "circle-pitch-alignment": "map",
     "circle-radius": passRadius(),
     "circle-stroke-color": [
@@ -669,10 +716,10 @@ export const appLayers = (
       ),
       // The hit area follows the rule the dot follows, or a hidden pass still
       // answers the pointer; a favourite is drawn as a star at every zoom.
-      filter: prominenceFilter((minFame) =>
-        minFame === null
+      filter: prominenceFilter((minRank) =>
+        minRank === null
           ? true
-          : ["any", isSelected, isFavorite, [">=", ["get", "fame"], minFame]],
+          : ["any", isSelected, isFavorite, [">=", ["get", "rank"], minRank]],
       ) as never,
     },
     // Below the passes: MapLibre places labels from the top of the style
@@ -716,15 +763,15 @@ export const appLayers = (
       type: "symbol",
     },
     {
-      // The overview draws by fame (`lib/prominence.ts`): the famous passes
-      // at every zoom, the known ones from 7.5, everything from 8.5. What is
+      // The overview draws by rank (`lib/prominence.ts`): the classics at
+      // every zoom, one rank more per step, everything from the last. What is
       // selected is always drawn; a favourite is a star, in the layer below.
-      filter: prominenceFilter((minFame) => [
+      filter: prominenceFilter((minRank) => [
         "all",
         ["!=", ["get", "favorite"], 1],
-        ...(minFame === null
+        ...(minRank === null
           ? []
-          : [["any", isSelected, [">=", ["get", "fame"], minFame]]]),
+          : [["any", isSelected, [">=", ["get", "rank"], minRank]]]),
       ]) as never,
       id: LAYERS.pass.mark,
       paint: passPaint,
@@ -808,6 +855,8 @@ export const appLayers = (
       type: "symbol",
     },
     ...PASS_LABELS.map(({ fame, minzoom }) => ({
+      // The label's own ladder, held to the dots' on top: a dead end of fame 3
+      // is drawn a step later than a pass of fame 3, and its name waits for it.
       filter:
         fame === 5
           ? ([
@@ -816,12 +865,13 @@ export const appLayers = (
               ["==", ["get", "selected"], 1],
               ["==", ["get", "favorite"], 1],
             ] as never)
-          : ([
+          : (prominenceFilter((minRank) => [
               "all",
               ["==", ["get", "fame"], fame],
               ["!=", ["get", "selected"], 1],
               ["!=", ["get", "favorite"], 1],
-            ] as never),
+              ...(minRank === null ? [] : [[">=", ["get", "rank"], minRank]]),
+            ]) as never),
       id: passLabelId(fame),
       layout: {
         "symbol-sort-key": ["-", 6, ["get", "fame"]] as never,

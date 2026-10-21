@@ -56,8 +56,9 @@ export const vocab = {
   },
   /** The legend line while the overview is thinned by fame. */
   prominence: {
-    famous: "berühmte Pässe",
-    known: "bekannte Pässe",
+    famous: "Klassiker",
+    known: "Klassiker und bekannte Straßen",
+    most: "die meisten Straßen",
   },
   /**
    * A range as a label, a hint, and in a sentence: German declines the

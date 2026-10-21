@@ -28,6 +28,7 @@ import { surfaceWord, tagLabel, typeWord } from "@/lib/i18n";
 import type { Messages } from "@/lib/i18n";
 import { visibleBounds } from "@/lib/map-camera";
 import type { TownReach } from "@/lib/nearby";
+import { rankOf } from "@/lib/prominence";
 import { HOME_RANGE, rangeOf } from "@/lib/regions";
 import { ascentKey } from "@/lib/route-key";
 import type { PassRow, Rows, TourRow } from "@/lib/rows";
@@ -44,6 +45,8 @@ export interface PassProps {
   fame: number;
   favorite: Flag;
   name: string;
+  /** Where the road stands on the overview's ladder (`rankOf`, lib/prominence.ts). */
+  rank: number;
   selected: Flag;
   slug: string;
   status: Status;
@@ -394,6 +397,7 @@ export const buildScene = (input: SceneInput): Scene => {
                   fame: markedPass.pass.fame,
                   favorite: flag(markedPass.favorite),
                   kind: "pass",
+                  rank: rankOf(markedPass.pass),
                   selected: flag(markedPass.pass.slug === selPass),
                   status: markedPass.status,
                   surface: markedPass.pass.surface,
@@ -419,6 +423,7 @@ export const buildScene = (input: SceneInput): Scene => {
           fame: row.pass.fame,
           favorite: flag(row.favorite),
           name: row.pass.name,
+          rank: rankOf(row.pass),
           selected: flag(row.pass.slug === selPass),
           slug: row.pass.slug,
           status: row.status,

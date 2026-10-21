@@ -47,8 +47,9 @@ export const vocab = {
     wetDays: "up to {n} of 15",
   },
   prominence: {
-    famous: "famous passes",
-    known: "well-known passes",
+    famous: "classics",
+    known: "classics and well-known roads",
+    most: "most roads",
   },
   range: {
     Alpen: {

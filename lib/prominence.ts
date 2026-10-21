@@ -1,44 +1,75 @@
 import type { Messages } from "@/lib/i18n";
+import type { Pass, RoadType } from "@/lib/types";
 
 /**
  * The overview draws by fame, the list draws everything.
  *
- * Two hundred dots read at zoom 7; four hundred do not, and the file is
- * heading there (docs/plans/24-depth-per-destination.md). So the map has a
- * level of detail: at the widest zooms only the famous passes are drawn, the
- * known ones join at `PROMINENCE[1].fromZoom`, and everything is there from
- * `PROMINENCE[2].fromZoom` on. It is not a filter – the list is untouched and
- * no chip carries it – it is what a paper map does with its type sizes, and
- * the line under the map says which level is showing.
+ * Two hundred dots read at zoom 7; three hundred and fifty do not, and most of
+ * what the file grows by is small roads of fame 1 and 2
+ * (docs/plans/24-depth-per-destination.md). So the map has a level of detail:
+ * at the widest zooms only the classics are drawn, and the rest join one rank
+ * per step until everything is there from `PROMINENCE.at(-1).fromZoom` on. It
+ * is not a filter – the list is untouched and no chip carries it – it is what a
+ * paper map does with its type sizes, and the line under the map says which
+ * level is showing.
+ *
+ * The ladder reads a road's `rankOf`, not its fame alone: a road that does not
+ * cross anything – a spur up to a reservoir, a valley, a balcony – counts one
+ * step lower than a pass of the same fame, because a dead end is a detour from
+ * a base and not what a region is chosen for. The classics (fame 4 and 5) are
+ * never stepped down: the "Klassiker" chip keeps them, and the overview has to
+ * draw what that chip keeps.
+ *
+ * A rank draws quiet first: at the zoom it joins, its dot is small and pale,
+ * and it grows to its full size by the next step (`newcomerBelow`), so the step
+ * reads as a map filling in rather than as a page of dots arriving at once.
  *
  * What is selected, hovered or marked as a favourite ignores the rule: a mark
  * the visitor put there or is pointing at is never hidden by the zoom.
  *
  * The labels have their own, older ladder (`PASS_LABELS` in
- * `lib/layer-ids.ts`: fame 4 from 7, fame 3 from 8, fame 2 from 9.5); a dot
- * always appears before its name.
+ * `lib/layer-ids.ts`: fame 4 from 7, fame 3 from 8, fame 2 from 9.5) and are
+ * held to this one on top, so a name never appears before its dot.
  */
 export const PROMINENCE = [
-  { fromZoom: 0, level: "famous", minFame: 4 },
-  { fromZoom: 7.5, level: "known", minFame: 3 },
-  { fromZoom: 8.5, level: null, minFame: 1 },
+  { fromZoom: 0, level: "famous", minRank: 4 },
+  { fromZoom: 7.5, level: "known", minRank: 3 },
+  { fromZoom: 8.5, level: "most", minRank: 2 },
+  { fromZoom: 9.5, level: null, minRank: 0 },
 ] as const;
 
-/**
- * Where the destination outlines step back: the overview's own threshold.
- * Past it every road is drawn and the roads are the picture, so an area keeps
- * only a trace of its fill and a hairline edge – it stays, because an area
- * that vanished while zooming into it read as a bug.
- */
-export const DESTINATION_MAX_ZOOM = PROMINENCE.at(-1)!.fromZoom;
+/** The road types that end rather than cross: one step lower on the overview. */
+export const STEPS_DOWN: readonly RoadType[] = [
+  "spur",
+  "valley",
+  "balcony",
+  "plateau",
+];
 
-/** From which zoom on a road of this fame is drawn on the overview. */
-export const minzoomOf = (fame: number): number =>
-  PROMINENCE.find((p) => fame >= p.minFame)?.fromZoom ??
+/** A classic keeps its fame as its rank, whatever kind of road it is. */
+const CLASSIC = 4;
+
+/** Where a road stands on the ladder: its fame, a step lower for a dead end. */
+export const rankOf = (pass: Pick<Pass, "fame" | "type">): number =>
+  pass.fame < CLASSIC && STEPS_DOWN.includes(pass.type)
+    ? pass.fame - 1
+    : pass.fame;
+
+/**
+ * Where the destination outlines step back: once the small roads join. Past
+ * it most roads are drawn and the roads are the picture, so an area keeps only
+ * a trace of its fill and a hairline edge – it stays, because an area that
+ * vanished while zooming into it read as a bug.
+ */
+export const DESTINATION_MAX_ZOOM = PROMINENCE[2].fromZoom;
+
+/** From which zoom on a road of this rank is drawn on the overview. */
+export const minzoomOf = (rank: number): number =>
+  PROMINENCE.find((p) => rank >= p.minRank)?.fromZoom ??
   PROMINENCE.at(-1)!.fromZoom;
 
 /**
- * The legend line for a zoom: "bekannte Pässe" while the overview is thinned,
+ * The legend line for a zoom: "Klassiker" while the overview is thinned,
  * `null` once every road is drawn and there is nothing to say.
  */
 export const prominenceWord = (zoom: number, w: Messages): string | null => {
@@ -49,17 +80,39 @@ export const prominenceWord = (zoom: number, w: Messages): string | null => {
 /**
  * A MapLibre filter that applies the rule: a top-level `step` on the zoom –
  * the one place a filter may read `["zoom"]` – with one branch per level.
- * `branch` builds the filter for one level from the fame floor it draws, or
+ * `branch` builds the filter for one level from the rank floor it draws, or
  * from `null` where everything is drawn, so the caller adds what its layer
  * needs on top (a favourite is a star, not a dot; a selected pass is always
  * drawn) without this module knowing MapLibre's property names.
  */
-export const prominenceFilter = <T>(branch: (minFame: number | null) => T) =>
+export const prominenceFilter = <T>(branch: (minRank: number | null) => T) =>
   [
     "step",
     ["zoom"],
     ...PROMINENCE.flatMap((p, i) => {
-      const b = branch(i === PROMINENCE.length - 1 ? null : p.minFame);
+      const b = branch(i === PROMINENCE.length - 1 ? null : p.minRank);
       return i === 0 ? [b] : [p.fromZoom, b];
     }),
   ] as const;
+
+/**
+ * The zooms a dot's size is interpolated over: one stop per step of the
+ * ladder, one step past the last – where its newcomers have grown – and the
+ * two ends the dots were always sized at.
+ */
+export const SIZE_STOPS: readonly number[] = [
+  6,
+  ...PROMINENCE.slice(1).map((p) => p.fromZoom),
+  PROMINENCE.at(-1)!.fromZoom + 1,
+  12,
+];
+
+/**
+ * The rank below which a dot is a newcomer at this stop – drawn quiet, because
+ * the step it joined at is this one. `null` where nobody is new: the famous
+ * are there from the start, and one step past the last everybody has grown.
+ */
+export const newcomerBelow = (stop: number): number | null => {
+  const i = PROMINENCE.findIndex((p) => p.fromZoom === stop);
+  return i > 0 ? PROMINENCE[i - 1]!.minRank : null;
+};
