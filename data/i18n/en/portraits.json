@@ -6028,5 +6028,76 @@
     "highlights": "The hairpins above the village of Velefique."
    }
   ]
+ },
+ "blockhaus": {
+  "intro": "The hardest climb in the Apennines: long, steep and treeless at the top, with a view to the Adriatic.",
+  "sides": [
+   {
+    "character": "From Roccamorice steadily steep through forest, open and windy above the tree line across the limestone slopes.",
+    "highlights": "The view from the Majella across the hills to the Adriatic."
+   }
+  ]
+ },
+ "passo-lanciano": {
+  "intro": "The way into the Majella from the east: steep through dense beech forest, ski lifts and the onward road to the Blockhaus at the top.",
+  "sides": [
+   {
+    "character": "From Pretoro steep in hairpins through the forest, hardly a flat stretch."
+   }
+  ]
+ },
+ "campo-imperatore": {
+  "intro": "A ride through one of the widest landscapes in Europe: high plain, horses, the Corno Grande, and to finish a wall up to the observatory.",
+  "sides": [
+   {
+    "character": "From Fonte Cerreto through beech forest, then long and moderate across the plain, the last four kilometres steep to the hotel.",
+    "highlights": "The Campo Imperatore plain below the Corno Grande."
+   }
+  ]
+ },
+ "terminillo": {
+  "intro": "The mountain Rome's cyclists measure themselves on: steady, long and shady, the view over the Rieti basin at the top.",
+  "sides": [
+   {
+    "character": "From Rieti across the slopes at first, then steadily at around 6 % through the forest up to Pian de' Valli.",
+    "highlights": "The view over the Rieti basin."
+   }
+  ]
+ },
+ "passo-dell-abetone": {
+  "intro": "A pass like in the Alps, only greener: fir forest, wooden houses and the old border pillars between the Grand Duchy of Tuscany and Modena.",
+  "sides": [
+   {
+    "character": "From Cutigliano steadily at around 5 % through fir and beech forest.",
+    "highlights": "The border pyramids at the saddle."
+   }
+  ]
+ },
+ "san-pellegrino-in-alpe": {
+  "intro": "A pilgrimage village on the Apennine ridge and a brutal climb to it: irregular, with walls over 15 % and a wide view over the Apuan Alps.",
+  "sides": [
+   {
+    "character": "From Castiglione irregular, with long ramps over 12 % in the upper part.",
+    "highlights": "The view over the Garfagnana to the Apuan Alps."
+   }
+  ]
+ },
+ "monte-amiata": {
+  "intro": "The highest mountain in southern Tuscany and a climb in the shade: chestnuts, beeches and the summit cross above the hills of Siena.",
+  "sides": [
+   {
+    "character": "From Abbadia steadily at 6 to 7 % through forest, a few steeper ramps at the top.",
+    "highlights": "The Val d'Orcia below the summit."
+   }
+  ]
+ },
+ "sassotetto": {
+  "intro": "A quiet summit-finish classic of the Marche: above a medieval town into the Sibillini mountains.",
+  "sides": [
+   {
+    "character": "From Sarnano steadily at around 7 % through forest, the last kilometres open across pastures.",
+    "highlights": "The Sassotetto meadows below the Sibillini ridge."
+   }
+  ]
  }
 }

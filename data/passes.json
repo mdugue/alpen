@@ -20230,5 +20230,278 @@
     "label": "Velefique (Süd)"
    }
   ]
+ },
+ {
+  "slug": "blockhaus",
+  "surface": "asphalt",
+  "name": "Blockhaus",
+  "type": "spur",
+  "tags": [
+   "race",
+   "panorama"
+  ],
+  "country": "IT",
+  "region": "Abruzzen",
+  "lat": 42.1506,
+  "lon": 14.1164,
+  "elevation": 2065,
+  "classicAscent": "19,3 km, 7,9 % ab Roccamorice",
+  "beauty": 4,
+  "fame": 5,
+  "difficulty": 5,
+  "traffic": 1,
+  "season": null,
+  "note": "Der Giro-Klassiker in der Majella, seit Merckx' erstem großen Sieg 1967 immer wieder Bergankunft: von Roccamorice fast 1500 Höhenmeter mit langen Abschnitten über 9 %, oben kahle Kalkhänge.",
+  "aliases": [
+   "Maielletta",
+   "Majella"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 42.2135,
+     "lon": 14.0246
+    },
+    "label": "Roccamorice (Nord)"
+   }
+  ]
+ },
+ {
+  "slug": "passo-lanciano",
+  "surface": "asphalt",
+  "name": "Passo Lanciano",
+  "type": "pass",
+  "tags": [
+   "race",
+   "forest"
+  ],
+  "country": "IT",
+  "region": "Abruzzen",
+  "lat": 42.1884,
+  "lon": 14.1084,
+  "elevation": 1336,
+  "classicAscent": "10,2 km, 7,4 % ab Pretoro",
+  "beauty": 3,
+  "fame": 3,
+  "difficulty": 4,
+  "traffic": 2,
+  "season": null,
+  "note": "Der Pass am Nordhang der Majella, von Pretoro durch Buchenwald; oben beginnt die Straße zum Blockhaus. Oft Teil der Giro-Etappen in die Abruzzen.",
+  "aliases": [
+   "Lanciano"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 42.2172,
+     "lon": 14.1416
+    },
+    "label": "Pretoro (Ost)"
+   }
+  ]
+ },
+ {
+  "slug": "campo-imperatore",
+  "surface": "asphalt",
+  "name": "Campo Imperatore",
+  "type": "spur",
+  "tags": [
+   "race",
+   "panorama"
+  ],
+  "country": "IT",
+  "region": "Abruzzen",
+  "lat": 42.4425,
+  "lon": 13.5584,
+  "elevation": 2134,
+  "classicAscent": "26,3 km, 3,8 % ab Fonte Cerreto",
+  "beauty": 5,
+  "fame": 4,
+  "difficulty": 4,
+  "traffic": 2,
+  "season": null,
+  "note": "Die Straße über die Hochebene unter dem Gran Sasso, das kleine Tibet Italiens, bis zum Hotel auf 2130 m; Giro-Ankunft 1971, 1989 und 2018. Lang und offen, oben die steile Schlussrampe.",
+  "aliases": [
+   "Gran Sasso"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 42.426,
+     "lon": 13.5291
+    },
+    "label": "Fonte Cerreto (West)"
+   }
+  ]
+ },
+ {
+  "slug": "terminillo",
+  "surface": "asphalt",
+  "name": "Terminillo",
+  "type": "spur",
+  "tags": [
+   "race",
+   "forest"
+  ],
+  "country": "IT",
+  "region": "Latium",
+  "lat": 42.4545,
+  "lon": 12.9774,
+  "elevation": 1643,
+  "classicAscent": "20,7 km, 5,4 % ab Rieti",
+  "beauty": 4,
+  "fame": 3,
+  "difficulty": 4,
+  "traffic": 2,
+  "season": null,
+  "note": "Der Hausberg Roms, von Rieti durch Kastanien- und Buchenwald bis zum Skiort Pian de' Valli; Ankunft bei Tirreno–Adriatico und im Giro. Gleichmäßig und lang.",
+  "aliases": [
+   "Monte Terminillo",
+   "Pian de' Valli"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 42.4147,
+     "lon": 12.8859
+    },
+    "label": "Rieti (West)"
+   }
+  ]
+ },
+ {
+  "slug": "passo-dell-abetone",
+  "surface": "asphalt",
+  "name": "Passo dell'Abetone",
+  "type": "pass",
+  "tags": [
+   "race",
+   "forest"
+  ],
+  "country": "IT",
+  "region": "Toskana",
+  "lat": 44.1444,
+  "lon": 10.6653,
+  "elevation": 1380,
+  "classicAscent": "13,8 km, 5,0 % ab Cutigliano",
+  "beauty": 4,
+  "fame": 3,
+  "difficulty": 3,
+  "traffic": 3,
+  "season": null,
+  "note": "Der klassische Apenninpass zwischen der Toskana und der Emilia, oft im Giro: von Cutigliano gleichmäßig durch Tannenwald zum Skiort Abetone.",
+  "aliases": [
+   "Abetone"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 44.1001,
+     "lon": 10.7557
+    },
+    "label": "Cutigliano (Süd)"
+   }
+  ]
+ },
+ {
+  "slug": "san-pellegrino-in-alpe",
+  "surface": "asphalt",
+  "name": "San Pellegrino in Alpe",
+  "type": "pass",
+  "tags": [
+   "panorama"
+  ],
+  "country": "IT",
+  "region": "Toskana",
+  "lat": 44.1894,
+  "lon": 10.481,
+  "elevation": 1520,
+  "classicAscent": "16,0 km, 6,0 % ab Castiglione di Garfagnana",
+  "beauty": 4,
+  "fame": 3,
+  "difficulty": 5,
+  "traffic": 1,
+  "season": null,
+  "note": "Der höchste besiedelte Pass des Apennins, von Castiglione in der Garfagnana; auf der Seite von Chiozza Rampen bis fast 20 %, eine der härtesten Stellen Italiens. Giro 1989 und 2022.",
+  "aliases": [
+   "San Pellegrino"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 44.1499,
+     "lon": 10.4109
+    },
+    "label": "Castiglione di Garfagnana (Süd)"
+   }
+  ]
+ },
+ {
+  "slug": "monte-amiata",
+  "surface": "asphalt",
+  "name": "Monte Amiata",
+  "type": "spur",
+  "tags": [
+   "forest",
+   "panorama"
+  ],
+  "country": "IT",
+  "region": "Toskana",
+  "lat": 42.8875,
+  "lon": 11.6269,
+  "elevation": 1688,
+  "classicAscent": "13,0 km, 6,4 % ab Abbadia San Salvatore",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 4,
+  "traffic": 1,
+  "season": null,
+  "note": "Der erloschene Vulkan in der südlichen Toskana, mit Buchen- und Kastanienwald bis fast zum Gipfel. Von Abbadia San Salvatore gleichmäßig steil; oben der Blick über die Crete und das Val d'Orcia.",
+  "aliases": [
+   "Amiata"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 42.881,
+     "lon": 11.6724
+    },
+    "label": "Abbadia San Salvatore (Ost)"
+   }
+  ]
+ },
+ {
+  "slug": "sassotetto",
+  "surface": "asphalt",
+  "name": "Sassotetto",
+  "type": "spur",
+  "tags": [
+   "race",
+   "panorama"
+  ],
+  "country": "IT",
+  "region": "Marken",
+  "lat": 43.0066,
+  "lon": 13.2293,
+  "elevation": 1572,
+  "classicAscent": "15,7 km, 6,6 % ab Sarnano",
+  "beauty": 4,
+  "fame": 3,
+  "difficulty": 4,
+  "traffic": 1,
+  "season": null,
+  "note": "Der Anstieg in die Monti Sibillini über Sarnano, Bergankunft bei Tirreno–Adriatico. Gleichmäßig steil durch Wald, oben die offenen Wiesen unter dem Sibillini-Kamm.",
+  "aliases": [
+   "Sasso Tetto"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 43.0354,
+     "lon": 13.2983
+    },
+    "label": "Sarnano (Ost)"
+   }
+  ]
  }
 ]

@@ -82,6 +82,12 @@ export const vocab = {
       label: "Sierra Nevada und Almería",
       outside: "außerhalb der Sierra Nevada und Almerías",
     },
+    Apennin: {
+      hint: "Blockhaus, Campo Imperatore und Terminillo: die großen Giro-Anstiege im Rückgrat Italiens, von der Toskana bis in die Abruzzen.",
+      inside: "im Apennin",
+      label: "Apennin",
+      outside: "außerhalb des Apennins",
+    },
     Bayerwald: {
       hint: "Die Arberstraßen über Bodenmais und Bayerisch Eisenstein, Dreisessel und Kleť: Waldberge an der tschechischen Grenze für ein Wochenende.",
       inside: "im Bayerischen Wald und im Böhmerwald",
@@ -181,6 +187,7 @@ export const vocab = {
    * English file names them.
    */
   region: {
+    Abruzzen: "Abruzzen",
     Almería: "Almería",
     Asturien: "Asturien",
     Bayerwald: "Bayerischer Wald",
@@ -193,7 +200,9 @@ export const vocab = {
     Kantabrien: "Kantabrien",
     Korsika: "Korsika",
     "La Palma": "La Palma",
+    Latium: "Latium",
     Mallorca: "Mallorca",
+    Marken: "Marken",
     Ostalpen: "Ostalpen",
     Pyrenäen: "Pyrenäen",
     Rhön: "Rhön",
@@ -201,6 +210,7 @@ export const vocab = {
     "Sierra Nevada": "Sierra Nevada",
     Teneriffa: "Teneriffa",
     Thüringen: "Thüringer Wald",
+    Toskana: "Toskana",
     Vogesen: "Vogesen",
     Westalpen: "Westalpen",
     Zentralalpen: "Zentralalpen",

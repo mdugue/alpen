@@ -408,5 +408,20 @@
   "character": "Bare mountains above the Tabernas desert: Calar Alto with its observatory and the Velefique hairpins, two Vuelta climbs without traffic. For spring and autumn, too hot in summer.",
   "multiDay": "Two days from Tabernas: Calar Alto via Gérgal, Velefique with the descent via Bacares.",
   "access": "Fly to Almería, by car on the A-92."
+ },
+ "majella": {
+  "character": "The limestone massif above the Adriatic: the Blockhaus, the hardest Giro mountain of the south, and the Passo Lanciano through beech forest. An hour from the coast.",
+  "multiDay": "Two days: the Blockhaus from Roccamorice, the Passo Lanciano from Pretoro with the descent to Guardiagrele.",
+  "access": "Fly or take the train to Pescara, then drive into the mountains."
+ },
+ "gran-sasso": {
+  "character": "The highest mountains of the Apennines between the Abruzzo and Lazio: Campo Imperatore across the plain below the Corno Grande and the Terminillo above Rieti. Long climbs, wide country.",
+  "multiDay": "Three days: Campo Imperatore from Fonte Cerreto, the Terminillo from Rieti, the Rocca di Mezzo plateau in between.",
+  "access": "Train to L'Aquila or Rieti, by car from Rome in an hour and a half."
+ },
+ "appennino-tosco-emiliano": {
+  "character": "The green ridge between Tuscany and Emilia: the Abetone through fir forest and San Pellegrino in Alpe with its walls over 15 %. Cool in summer, quiet outside the holidays.",
+  "multiDay": "Three days from Abetone: the pass from both sides, San Pellegrino via the Garfagnana, the Foce delle Radici.",
+  "access": "By car via Pistoia or Modena; train to Pistoia."
  }
 }

@@ -1608,5 +1608,59 @@
   "character": "Kahle Berge über der Wüste von Tabernas: Calar Alto mit der Sternwarte und die Kehren von Velefique, zwei Vuelta-Anstiege ohne Verkehr. Für Frühjahr und Herbst, im Sommer zu heiß.",
   "multiDay": "Zwei Tage von Tabernas: Calar Alto über Gérgal, Velefique mit der Abfahrt über Bacares.",
   "access": "Flug nach Almería, mit dem Auto über die A-92."
+ },
+ {
+  "slug": "majella",
+  "name": "Majella",
+  "country": "IT",
+  "center": {
+   "lat": 42.17,
+   "lon": 14.11
+  },
+  "radiusKm": 10,
+  "baseTowns": [
+   "guardiagrele"
+  ],
+  "include": [],
+  "exclude": [],
+  "character": "Das Kalkmassiv über der Adria: der Blockhaus, der härteste Giro-Berg des Südens, und der Passo Lanciano durch Buchenwald. Von der Küste in einer Stunde erreichbar.",
+  "multiDay": "Zwei Tage: Blockhaus von Roccamorice, Passo Lanciano von Pretoro mit der Abfahrt nach Guardiagrele.",
+  "access": "Flug oder Bahn nach Pescara, dann mit dem Auto in die Berge."
+ },
+ {
+  "slug": "gran-sasso",
+  "name": "Gran Sasso und Terminillo",
+  "country": "IT",
+  "center": {
+   "lat": 42.45,
+   "lon": 13.27
+  },
+  "radiusKm": 25,
+  "baseTowns": [
+   "l-aquila"
+  ],
+  "include": [],
+  "exclude": [],
+  "character": "Die höchsten Berge des Apennins zwischen Abruzzen und Latium: Campo Imperatore über die Hochebene unter dem Corno Grande und der Terminillo über Rieti. Lange Anstiege, weite Landschaft.",
+  "multiDay": "Drei Tage: Campo Imperatore von Fonte Cerreto, der Terminillo von Rieti, dazwischen die Hochebene von Rocca di Mezzo.",
+  "access": "Bahn bis L'Aquila oder Rieti, mit dem Auto von Rom in anderthalb Stunden."
+ },
+ {
+  "slug": "appennino-tosco-emiliano",
+  "name": "Toskanisch-Emilianischer Apennin",
+  "country": "IT",
+  "center": {
+   "lat": 44.17,
+   "lon": 10.57
+  },
+  "radiusKm": 12,
+  "baseTowns": [
+   "abetone-ort"
+  ],
+  "include": [],
+  "exclude": [],
+  "character": "Der grüne Kamm zwischen Toskana und Emilia: der Abetone durch Tannenwald und San Pellegrino in Alpe mit seinen Wänden über 15 %. Kühl im Sommer, ruhig außerhalb der Ferien.",
+  "multiDay": "Drei Tage von Abetone: der Pass von beiden Seiten, San Pellegrino über die Garfagnana, das Foce delle Radici.",
+  "access": "Mit dem Auto über Pistoia oder Modena; Bahn bis Pistoia."
  }
 ]

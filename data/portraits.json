@@ -8663,5 +8663,86 @@
     "highlights": "Die Kehren über dem Dorf Velefique."
    }
   ]
+ },
+ "blockhaus": {
+  "intro": "Der härteste Anstieg des Apennins: lang, steil und oben ohne Baum, mit dem Blick bis zur Adria.",
+  "sides": [
+   {
+    "character": "Von Roccamorice durch Wald gleichmäßig steil, ab der Baumgrenze offen und windig über die Kalkhänge.",
+    "hazards": [
+     "steep"
+    ],
+    "highlights": "Der Blick von der Majella über das Hügelland bis zur Adria."
+   }
+  ]
+ },
+ "passo-lanciano": {
+  "intro": "Der Zugang zur Majella von Osten: steil durch dichten Buchenwald, oben Skilifte und der Weiterweg zum Blockhaus.",
+  "sides": [
+   {
+    "character": "Von Pretoro in Kehren steil durch den Wald, kaum flache Stücke."
+   }
+  ]
+ },
+ "campo-imperatore": {
+  "intro": "Eine Fahrt durch eine der weitesten Landschaften Europas: Hochebene, Pferde, der Corno Grande, und zum Schluss eine Wand zum Observatorium.",
+  "sides": [
+   {
+    "character": "Von Fonte Cerreto durch Buchenwald, dann lange gemäßigt über die Hochebene, die letzten vier Kilometer steil zum Hotel.",
+    "highlights": "Die Hochebene von Campo Imperatore unter dem Corno Grande."
+   }
+  ]
+ },
+ "terminillo": {
+  "intro": "Der Berg, an dem sich Roms Radfahrer messen: gleichmäßig, lang und schattig, oben der Blick über das Becken von Rieti.",
+  "sides": [
+   {
+    "character": "Von Rieti erst über die Hänge, dann gleichmäßig um 6 % durch den Wald bis Pian de' Valli.",
+    "highlights": "Der Blick über das Becken von Rieti."
+   }
+  ]
+ },
+ "passo-dell-abetone": {
+  "intro": "Ein Pass wie in den Alpen, nur grüner: Tannenwald, Holzhäuser und der alte Grenzpfeiler zwischen dem Großherzogtum Toskana und Modena.",
+  "sides": [
+   {
+    "character": "Von Cutigliano gleichmäßig um 5 % durch Tannen- und Buchenwald.",
+    "hazards": [
+     "traffic"
+    ],
+    "highlights": "Die Grenzpyramiden am Sattel."
+   }
+  ]
+ },
+ "san-pellegrino-in-alpe": {
+  "intro": "Ein Wallfahrtsort auf dem Kamm des Apennins und ein brutaler Anstieg dorthin: unregelmäßig, mit Wänden über 15 % und weitem Blick über die Apuanischen Alpen.",
+  "sides": [
+   {
+    "character": "Von Castiglione unregelmäßig, mit langen Rampen über 12 % im oberen Teil.",
+    "hazards": [
+     "steep",
+     "narrow"
+    ],
+    "highlights": "Der Blick über die Garfagnana zu den Apuanischen Alpen."
+   }
+  ]
+ },
+ "monte-amiata": {
+  "intro": "Der höchste Berg der Südtoskana und ein Anstieg im Schatten: Kastanien, Buchen und oben das Gipfelkreuz über den Hügeln von Siena.",
+  "sides": [
+   {
+    "character": "Von Abbadia gleichmäßig um 6 bis 7 % durch Wald, oben einige steilere Rampen.",
+    "highlights": "Das Val d'Orcia unter dem Gipfel."
+   }
+  ]
+ },
+ "sassotetto": {
+  "intro": "Ein stiller Bergankunft-Klassiker der Marken: über einem mittelalterlichen Städtchen in die Sibillinischen Berge.",
+  "sides": [
+   {
+    "character": "Von Sarnano gleichmäßig um 7 % durch Wald, die letzten Kilometer offen über Weiden.",
+    "highlights": "Die Wiesen von Sassotetto unter dem Sibillini-Kamm."
+   }
+  ]
  }
 }

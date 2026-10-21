@@ -2347,5 +2347,72 @@
   ],
   "aliases": [],
   "why": "Das Dorf in der Wüste von Tabernas: Calar Alto über Gérgal und Velefique als Tagesrunden, im Winter trocken und mild."
+ },
+ {
+  "slug": "pescara",
+  "name": "Pescara",
+  "country": "IT",
+  "lat": 42.4618,
+  "lon": 14.2161,
+  "tags": [
+   "hub",
+   "train",
+   "hotels"
+  ],
+  "aliases": [],
+  "why": "Die Küstenstadt an der Adria vor der Majella: Blockhaus und Passo Lanciano eine Stunde landeinwärts, Campo Imperatore über L'Aquila."
+ },
+ {
+  "slug": "guardiagrele",
+  "name": "Guardiagrele",
+  "country": "IT",
+  "lat": 42.1906,
+  "lon": 14.2214,
+  "tags": [
+   "quiet"
+  ],
+  "aliases": [],
+  "why": "Steinstadt am Fuß der Majella: der Passo Lanciano über Pretoro und der Blockhaus über Roccamorice als Tagesrunden."
+ },
+ {
+  "slug": "l-aquila",
+  "name": "L'Aquila",
+  "country": "IT",
+  "lat": 42.3498,
+  "lon": 13.3995,
+  "tags": [
+   "train",
+   "hotels"
+  ],
+  "aliases": [
+   "Aquila"
+  ],
+  "why": "Die Hauptstadt der Abruzzen unter dem Gran Sasso: Campo Imperatore über Assergi, der Terminillo eine Stunde westlich."
+ },
+ {
+  "slug": "rieti",
+  "name": "Rieti",
+  "country": "IT",
+  "lat": 42.4147,
+  "lon": 12.8859,
+  "tags": [
+   "train",
+   "passes"
+  ],
+  "aliases": [],
+  "why": "Die Stadt in der Mitte Italiens: der Terminillo beginnt am Stadtrand."
+ },
+ {
+  "slug": "abetone-ort",
+  "name": "Abetone",
+  "country": "IT",
+  "lat": 44.1445,
+  "lon": 10.6645,
+  "tags": [
+   "hotels",
+   "passes"
+  ],
+  "aliases": [],
+  "why": "Der Skiort auf dem Pass: Abetone von beiden Seiten, San Pellegrino in Alpe über die Garfagnana."
  }
 ]

@@ -4238,5 +4238,61 @@
   "ascents": [
    "Velefique (south)"
   ]
+ },
+ "blockhaus": {
+  "classicAscent": "19.3 km, 7.9 % from Roccamorice",
+  "note": "The Giro classic in the Majella, a summit finish again and again since Merckx's first great win in 1967: almost 1,500 metres from Roccamorice with long stretches over 9 %, bare limestone slopes at the top.",
+  "ascents": [
+   "Roccamorice (north)"
+  ]
+ },
+ "passo-lanciano": {
+  "classicAscent": "10.2 km, 7.4 % from Pretoro",
+  "note": "The pass on the northern slope of the Majella, from Pretoro through beech forest; at the top the road to the Blockhaus begins. Often part of the Giro stages into the Abruzzo.",
+  "ascents": [
+   "Pretoro (east)"
+  ]
+ },
+ "campo-imperatore": {
+  "classicAscent": "26.3 km, 3.8 % from Fonte Cerreto",
+  "note": "The road across the high plain below the Gran Sasso, Italy's little Tibet, to the hotel at 2,130 m; a Giro finish in 1971, 1989 and 2018. Long and open, the steep final ramp at the top.",
+  "ascents": [
+   "Fonte Cerreto (west)"
+  ]
+ },
+ "terminillo": {
+  "classicAscent": "20.7 km, 5.4 % from Rieti",
+  "note": "Rome's local mountain, from Rieti through chestnut and beech forest to the ski village of Pian de' Valli; a finish in Tirreno–Adriatico and the Giro. Steady and long.",
+  "ascents": [
+   "Rieti (west)"
+  ]
+ },
+ "passo-dell-abetone": {
+  "classicAscent": "13.8 km, 5.0 % from Cutigliano",
+  "note": "The classic Apennine pass between Tuscany and Emilia, often in the Giro: from Cutigliano steadily through fir forest to the ski resort of Abetone.",
+  "ascents": [
+   "Cutigliano (south)"
+  ]
+ },
+ "san-pellegrino-in-alpe": {
+  "classicAscent": "16.0 km, 6.0 % from Castiglione di Garfagnana",
+  "note": "The highest inhabited pass in the Apennines, from Castiglione in the Garfagnana; on the Chiozza side ramps of almost 20 %, one of the hardest places in Italy. Giro 1989 and 2022.",
+  "ascents": [
+   "Castiglione di Garfagnana (south)"
+  ]
+ },
+ "monte-amiata": {
+  "classicAscent": "13.0 km, 6.4 % from Abbadia San Salvatore",
+  "note": "The extinct volcano in southern Tuscany, with beech and chestnut forest almost to the summit. Steadily steep from Abbadia San Salvatore; at the top the view over the Crete and the Val d'Orcia.",
+  "ascents": [
+   "Abbadia San Salvatore (east)"
+  ]
+ },
+ "sassotetto": {
+  "classicAscent": "15.7 km, 6.6 % from Sarnano",
+  "note": "The climb into the Monti Sibillini above Sarnano, a summit finish in Tirreno–Adriatico. Steadily steep through forest, the open meadows below the Sibillini ridge at the top.",
+  "ascents": [
+   "Sarnano (east)"
+  ]
  }
 }
