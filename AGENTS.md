@@ -318,7 +318,7 @@ What the page ships, how it is cached, the one dynamic route, the tools.
   → [why](docs/architecture.md#site-metadata-is-generated-never-committed-as-a-binary)
 - **The one dynamic route lives inside a free tier, and the numbers are in the
   file.** The forecast (`lib/weather.ts`), streamed into the pass and town
-  routes behind `connection()`: one cached call per point in a three-hour
+  routes behind `connection()`: one cached call per point in a six-hour
   window (`lib/weather-places.ts`, held under the allowance by its test),
   never part of a prerender, and a cooldown inside the cached function.
   → [why](docs/architecture.md#the-one-dynamic-route-lives-inside-a-free-tier-and-the-numbers-are-in-the-file)

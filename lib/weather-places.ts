@@ -83,10 +83,13 @@ export const townPlaces = (town: Town): WeatherPlace[] => [
  * How long one point's forecast is reused, in seconds.
  *
  * The models behind Open-Meteo's European forecast run every three hours at
- * best (ICON-D2, AROME, ICON-CH), and a *daily* forecast does not move within
- * one run; a shorter window would spend quota on the same numbers.
+ * best (ICON-D2, AROME, ICON-CH), and a *daily* forecast barely moves from one
+ * run to the next; a shorter window would spend quota on the same numbers. It
+ * was three hours until the roads outgrew it: with the second round of curation
+ * the worst case passed the allowance, and a daily forecast six hours old is
+ * still the same day's decision.
  */
-export const WEATHER_WINDOW_S = 3 * 3600;
+export const WEATHER_WINDOW_S = 6 * 3600;
 
 /** Open-Meteo's non-commercial allowance, in calls a day. */
 export const DAILY_QUOTA = 10_000;
@@ -95,8 +98,8 @@ export const DAILY_QUOTA = 10_000;
  * The worst case: every point opened in every window. Open-Meteo counts each
  * location of a request as one call, so this is a count of points, not of
  * panels – which is why the points are deduplicated across all entities. With
- * 279 roads, their starts and 71 towns this is 690 points, ≈ 5 500 calls a
- * day; `lib/weather-places.test.ts` holds it under the allowance.
+ * 376 roads, their starts and 81 towns this is about 910 points, ≈ 3 600 calls
+ * a day; `lib/weather-places.test.ts` holds it under the allowance.
  */
 export const worstCallsPerDay = (points: number) =>
   Math.ceil(points * ((24 * 3600) / WEATHER_WINDOW_S));
