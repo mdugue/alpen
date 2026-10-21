@@ -50,6 +50,40 @@ const distanceTo = (line: RouteGeometry, at: LatLon) => {
   return min;
 };
 
+/** A line's bounding box grown by `km` on every side, in degrees. */
+interface Box {
+  lat: [number, number];
+  lon: [number, number];
+}
+
+/**
+ * Generous rather than exact: a point outside the box is farther than `km`
+ * from every point of the line, so the box only ever skips what the walk would
+ * have filtered out. The longitude margin is taken at the box's poleward
+ * edge, where a degree is shortest.
+ */
+const reachBox = (line: RouteGeometry, km: number): Box | null => {
+  if (line.length === 0) return null;
+  let [s, w, n, e] = [90, 180, -90, -180];
+  for (const [lat, lon] of line) {
+    s = Math.min(s, lat);
+    n = Math.max(n, lat);
+    w = Math.min(w, lon);
+    e = Math.max(e, lon);
+  }
+  const dLat = km / 110;
+  const edge = Math.min(89, Math.max(Math.abs(s), Math.abs(n)) + dLat);
+  const dLon = km / (111.32 * Math.cos((edge * Math.PI) / 180));
+  return { lat: [s - dLat, n + dLat], lon: [w - dLon, e + dLon] };
+};
+
+const inBox = (box: Box | null, at: LatLon) =>
+  box !== null &&
+  at.lat >= box.lat[0] &&
+  at.lat <= box.lat[1] &&
+  at.lon >= box.lon[0] &&
+  at.lon <= box.lon[1];
+
 export const nearbyTours = (
   passes: readonly Pass[],
   tours: readonly Tour[],
@@ -57,10 +91,16 @@ export const nearbyTours = (
   routes: Record<string, RouteGeometry>,
   radiusKm = REACH_MAX_KM,
 ): NearbyTours => {
-  const lines = tours.map((t) => [t.slug, tourLine(t, routes)] as const);
+  const lines = tours.map((t) => {
+    const line = tourLine(t, routes);
+    return { box: reachBox(line, radiusKm), line, slug: t.slug };
+  });
   const near = (at: LatLon): NearbyTour[] =>
     lines
-      .map(([slug, line]) => ({ km: distanceTo(line, at), slug }))
+      // Most entities lie nowhere near most tours; the box rules those out
+      // before the walk along the road, which is what made this cost seconds.
+      .filter(({ box }) => inBox(box, at))
+      .map(({ line, slug }) => ({ km: distanceTo(line, at), slug }))
       // One decimal is as fine as a reach band can read, and the value travels
       // to every client as part of the page.
       .filter((t) => t.km <= radiusKm)

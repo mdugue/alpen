@@ -95,7 +95,9 @@ export const startApp = async (): Promise<App> => {
     };
 
   const proc = Bun.spawn({
-    cmd: ["bun", "run", "start"],
+    // The server itself, not `bun run start`: a signal to the wrapper does
+    // not always reach the `next start` under it, which then keeps the port.
+    cmd: ["./node_modules/.bin/next", "start"],
     env: { ...process.env, PORT: String(PORT) },
     stderr: "pipe",
     stdout: "pipe",
@@ -123,9 +125,11 @@ export const startApp = async (): Promise<App> => {
   // The next suite starts its own server on the same port, and its first
   // request must not reach this one while it is still shutting down: a
   // server that answered the readiness check and then went away refused the
-  // suite's first page (e2e/wissen.test.ts, CI 2026-10-21).
+  // suite's first page (e2e/wissen.test.ts, CI 2026-10-21). `next start`
+  // shuts down gracefully and waits for open keep-alive connections, so it
+  // is killed outright: there is nothing in it to flush.
   const stop = async () => {
-    proc.kill();
+    proc.kill("SIGKILL");
     await proc.exited;
     const until = Date.now() + 10_000;
     while (Date.now() < until) {

@@ -671,8 +671,6 @@ if (EXPLAIN) {
   for (const line of explained.toSorted()) console.log(`  ${line}`);
   console.log();
 }
-for (const w of warnings) console.warn(`WARN  ${w}`);
-for (const e of errors) console.error(`FEHLER ${e}`);
 const rejectedCount = Object.keys(rejected ?? {}).length;
 // Information, not a warning: a pass carries every side that is a classic
 // climb, and a single-sided one says in its note why the other side is not
@@ -820,6 +818,11 @@ if (translationGaps.length)
   console.log(
     `INFO  Englische Texte fehlen (Rückfall auf Deutsch): ${translationGaps.join(", ")}`,
   );
+// Printed last, after every check has had its say: the portrait checks above
+// push errors too, and printed any earlier those were counted in the summary
+// but never named.
+for (const w of warnings) console.warn(`WARN  ${w}`);
+for (const e of errors) console.error(`FEHLER ${e}`);
 console.log(
   `${passes?.length ?? 0} Pässe (${singleSided} davon einseitig), ${tours?.length ?? 0} Touren, ${towns?.length ?? 0} Orte, ${destinations?.length ?? 0} Reiseziele · ${Object.keys(routes ?? {}).length} Routen geprüft${
     rejectedCount ? `, ${rejectedCount} abgewiesen` : ""
