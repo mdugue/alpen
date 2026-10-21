@@ -3,7 +3,7 @@
 import type { GeoJSONSource, Map as MLMap, Popup } from "maplibre-gl";
 
 import type { Ring } from "@/lib/geo";
-import { LAYERS, layersOf, SOURCE } from "@/lib/layer-ids";
+import { LAYERS, layersOf, ROUTE_GHOST, SOURCE } from "@/lib/layer-ids";
 import type { PopupContent, Scene } from "@/lib/map-scene";
 import { tagIconSvg } from "@/lib/tag-icons";
 
@@ -179,6 +179,7 @@ const POINT_SOURCES: [
   (s: Scene) => Parameters<typeof samePoints>[0],
 ][] = [
   [SOURCE.passes, (s) => s.passes],
+  [SOURCE.ghosts, (s) => s.ghosts],
   [SOURCE.towns, (s) => s.towns],
   [SOURCE.destinations, (s) => s.destinations],
   [SOURCE.destinationLabels, (s) => s.destinationLabels],
@@ -196,6 +197,8 @@ export const applyScene = (
   if (!prev || !same(prev.routes.filter, next.routes.filter))
     for (const id of layersOf(LAYERS.route))
       host.setFilter(id, next.routes.filter);
+  if (!prev || !same(prev.routes.ghosts, next.routes.ghosts))
+    host.setFilter(ROUTE_GHOST, next.routes.ghosts);
   applyState(host, LAYERS.route.source, prev?.routes.state, next.routes.state);
 
   if (!prev || !same(prev.tours.filter, next.tours.filter))

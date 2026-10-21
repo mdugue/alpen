@@ -9,11 +9,6 @@ import { useSheet } from "@/components/mobile-sheet";
 import { CompareSheet } from "@/components/sidebar/compare-sheet";
 import { DestinationList } from "@/components/sidebar/destination-list";
 import type { RowContext } from "@/components/sidebar/entity-row";
-import {
-  AppliedFilters,
-  FilterBody,
-  FilterTrigger,
-} from "@/components/sidebar/filter-panel";
 import { KindTabs } from "@/components/sidebar/kind-tabs";
 import { PassList } from "@/components/sidebar/pass-list";
 import { TourList } from "@/components/sidebar/tour-list";
@@ -35,11 +30,7 @@ import type {
   Shown,
 } from "@/lib/app-state";
 import { SUPPORT_URL } from "@/lib/brand";
-import {
-  filterCount,
-  hasSecondaryFilters,
-  resetFilters,
-} from "@/lib/filter-summary";
+import { resetFilters } from "@/lib/filter-summary";
 import { langPrefix } from "@/lib/i18n";
 import type { RangeName } from "@/lib/regions";
 import { entityKey } from "@/lib/route-key";
@@ -64,16 +55,14 @@ export interface SidebarProps {
   counts: Record<ListTab, number>;
   /** How many entries each list holds with no filter at all. */
   totals: Record<ListTab, number>;
-  /** How many roads a filter change would leave – the number on every chip. */
+  /**
+   * How many roads a filter change would leave: what the empty state offers
+   * to lift (`bestRelief`). The filters themselves live in the bar over the
+   * map (`FilterBar`).
+   */
   countWith: (patch: Partial<Filters>) => number;
-  /** How many loops a filter change would leave – the number on the tour-type chips. */
-  tourCountWith: (patch: Partial<Filters>) => number;
-  /** Whether any changing event course has an earlier year (`hasPastEditions`). */
-  hasEditions: boolean;
-  /** The ranges the data holds a road for; the "Gebirge" group shows with two or more. */
+  /** The ranges the data holds a road for; the rows name theirs with two or more. */
   ranges: readonly RangeName[];
-  /** A range chip pressed: the filter and, with it, the frame (`range` in `reduce`). */
-  onRange: (range: RangeName) => void;
   /** The "auf der Karte" switches. */
   shown: Shown;
   /** Which of the three lists is on screen. */
@@ -86,13 +75,6 @@ export interface SidebarProps {
   dispatch: (action: Action) => void;
   onToggleFavorite: (kind: EntityKind, slug: string) => void;
   onOpenScales: () => void;
-  /**
-   * Whether the filter panel is unfolded, `null` while nobody has said –
-   * state of the sheet rather than of this component because the phone's
-   * "Filter" button in the season bar opens the list *and* the panel in one
-   * press (`explorer.tsx`).
-   */
-  filtersOpen: boolean | null;
 }
 
 export const Sidebar = (p: SidebarProps) => {
@@ -114,12 +96,6 @@ export const Sidebar = (p: SidebarProps) => {
   };
   const tourCount = p.totals.tour;
   const visibleTourCount = shownTourCount(p.shown, tourCount);
-  // The panel opens by itself when a link carries filters; the visitor's own
-  // toggling wins from then on. The second half stays folded until it is
-  // needed, or until a filter inside it is already set.
-  const filtersOpen = p.filtersOpen ?? filterCount(p.filters, t) > 0;
-  const [more, setMore] = useState<boolean | null>(null);
-  const moreOpen = more ?? hasSecondaryFilters(p.filters);
   const [compareOpen, setCompareOpen] = useState(false);
 
   const lists = useRef<HTMLDivElement>(null);
@@ -199,47 +175,34 @@ export const Sidebar = (p: SidebarProps) => {
     <div className="text-card-foreground flex h-full min-h-0 flex-col">
       <div className="flex min-h-0 flex-1 flex-col">
         <div className="border-border relative flex shrink-0 flex-col gap-2 border-b px-3 py-2">
-          <div className="flex items-center gap-2">
-            <InputGroup className={cn("flex-1", TOUCH_CONTROL)}>
-              <InputGroupAddon>
-                <Search />
-              </InputGroupAddon>
-              <InputGroupInput
-                type="search"
-                name="q"
-                autoComplete="off"
-                enterKeyHint="search"
-                spellCheck={false}
-                value={p.filters.query}
-                onChange={(e) => set("query", e.target.value)}
-                placeholder={t.sidebar.searchPlaceholder}
-                aria-label={t.sidebar.search}
-                className="h-full [&::-webkit-search-cancel-button]:appearance-none [&::-webkit-search-decoration]:appearance-none"
-              />
-              {p.filters.query && (
-                <InputGroupAddon align="inline-end">
-                  <InputGroupButton
-                    size="icon-xs"
-                    onClick={() => set("query", "")}
-                    aria-label={t.sidebar.clearSearch}
-                  >
-                    <X />
-                  </InputGroupButton>
-                </InputGroupAddon>
-              )}
-            </InputGroup>
-            <FilterTrigger
-              filters={p.filters}
-              open={filtersOpen}
-              onOpenChange={(open) => p.dispatch({ open, type: "filtersOpen" })}
+          <InputGroup className={cn("flex-1", TOUCH_CONTROL)}>
+            <InputGroupAddon>
+              <Search />
+            </InputGroupAddon>
+            <InputGroupInput
+              type="search"
+              name="q"
+              autoComplete="off"
+              enterKeyHint="search"
+              spellCheck={false}
+              value={p.filters.query}
+              onChange={(e) => set("query", e.target.value)}
+              placeholder={t.sidebar.searchPlaceholder}
+              aria-label={t.sidebar.search}
+              className="h-full [&::-webkit-search-cancel-button]:appearance-none [&::-webkit-search-decoration]:appearance-none"
             />
-          </div>
-          {/* What is filtered away stays readable while the panel is shut. */}
-          <AppliedFilters
-            filters={p.filters}
-            setFilters={setFilters}
-            onReset={reset}
-          />
+            {p.filters.query && (
+              <InputGroupAddon align="inline-end">
+                <InputGroupButton
+                  size="icon-xs"
+                  onClick={() => set("query", "")}
+                  aria-label={t.sidebar.clearSearch}
+                >
+                  <X />
+                </InputGroupButton>
+              </InputGroupAddon>
+            )}
+          </InputGroup>
           {/* The three lists, one at a time. In the fixed header rather than
               in the scroll container, so the counts stay on screen while a
               list of 262 rows is scrolled – which a section header inside the
@@ -263,22 +226,6 @@ export const Sidebar = (p: SidebarProps) => {
             expanded ? "overflow-y-auto" : "overflow-hidden",
           )}
         >
-          {filtersOpen && (
-            <div className="border-border border-b">
-              <FilterBody
-                filters={p.filters}
-                setFilters={setFilters}
-                counts={p.counts}
-                totals={p.totals}
-                countWith={p.countWith}
-                ranges={p.ranges}
-                onRange={p.onRange}
-                onReset={reset}
-                more={moreOpen}
-                onMoreChange={setMore}
-              />
-            </div>
-          )}
           {p.tab === "destination" && (
             <DestinationList
               groups={areaGroups}
@@ -312,14 +259,6 @@ export const Sidebar = (p: SidebarProps) => {
               rows={p.rows.tour}
               row={row}
               period={p.filters.period}
-              tourTypes={p.filters.tourTypes}
-              onTourTypes={(types) => set("tourTypes", types)}
-              onDate={p.filters.onDate}
-              onOnDate={(on) => set("onDate", on)}
-              pastEditions={p.filters.pastEditions}
-              onPastEditions={(on) => set("pastEditions", on)}
-              hasEditions={p.hasEditions}
-              countWith={p.tourCountWith}
               isShown={(slug) => isShown(p.shown, "tour", slug)}
               empty={emptyProps}
               mapControl={tourSwitch}

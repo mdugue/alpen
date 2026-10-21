@@ -97,7 +97,7 @@ export const AppHeader = ({
                 className="-ml-1 max-lg:hidden"
                 onClick={onToggleSidebar}
                 aria-label={
-                  sidebarOpen ? t.header.hideSidebar : t.header.listAndFilters
+                  sidebarOpen ? t.header.hideSidebar : t.header.showList
                 }
               />
             }
@@ -105,7 +105,7 @@ export const AppHeader = ({
             {sidebarOpen ? <PanelLeftClose /> : <PanelLeftOpen />}
           </TooltipTrigger>
           <TooltipContent>
-            {sidebarOpen ? t.header.hideSidebar : t.header.listAndFilters}
+            {sidebarOpen ? t.header.hideSidebar : t.header.showList}
           </TooltipContent>
         </Tooltip>
         <span className="bg-accent h-5 w-1 rounded-full" aria-hidden />

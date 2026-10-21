@@ -68,6 +68,7 @@ const REACH: Record<string, [number, number][]> = {
 
 const input = (extra: Partial<SceneInput> = {}): SceneInput => ({
   env: { coarse: false },
+  ghosts: [],
   hovered: null,
   profileCursor: null,
   rows: {
@@ -91,6 +92,8 @@ const filtered = (filter: unknown): string[] =>
 
 const passMark = (scene: Scene, slug: string) =>
   scene.passes.features.find((f) => f.properties.slug === slug)?.properties;
+const ghostMark = (scene: Scene) =>
+  scene.ghosts.features.map((f) => f.properties);
 const townMark = (scene: Scene, slug: string) =>
   scene.towns.features.find((f) => f.properties.slug === slug)?.properties;
 
@@ -136,6 +139,7 @@ describe("what is drawn", () => {
       fame: 3,
       favorite: 1,
       name: "Col du Galibier",
+      rank: 3,
       selected: 0,
       slug: "galibier",
       status: "risky",
@@ -297,6 +301,77 @@ describe("hover", () => {
     });
   });
 
+  describe("the roads the filters leave out", () => {
+    const ghost = passRow(
+      makePass("small", 30, { fame: 2, name: "Kleiner Pass", type: "spur" }),
+      { status: "closed" },
+    );
+
+    test("are shadows: no status, no lines, their rank for the ladder", () => {
+      const scene = buildScene(input({ ghosts: [ghost] }));
+      expect(ghostMark(scene)).toEqual([
+        { fame: 2, favorite: 0, name: "Kleiner Pass", rank: 1, slug: "small" },
+      ]);
+      expect(passMark(scene, "small")).toBeUndefined();
+      expect(filtered(scene.routes.filter)).not.toContain("small");
+      // Its ascents are the thin grey lines instead.
+      expect(filtered(scene.routes.ghosts)).toEqual(["small"]);
+    });
+
+    test("carry the rank the ladder reads, a pearl a step up", () => {
+      const pearl = passRow(makePass("pearl", 40, { beauty: 5, fame: 3 }));
+      const scene = buildScene(input({ ghosts: [pearl] }));
+      expect(ghostMark(scene)[0]?.rank).toBe(4);
+    });
+
+    test("are drawn whole once selected, lines and all", () => {
+      const scene = buildScene(
+        input({ ghosts: [ghost], selection: { kind: "pass", slug: "small" } }),
+      );
+      expect(ghostMark(scene)).toEqual([]);
+      expect(filtered(scene.routes.ghosts)).toEqual([]);
+      expect(passMark(scene, "small")).toMatchObject({
+        selected: 1,
+        status: "closed",
+      });
+      expect(filtered(scene.routes.filter)).toContain("small");
+    });
+
+    test("say why they are grey under the pointer", () => {
+      const scene = buildScene(
+        input({ ghosts: [ghost], hovered: { kind: "pass", slug: "small" } }),
+      );
+      expect(scene.hover.popup?.subtitle).toEndWith("· nicht im Filter");
+      // Only the ring: the shadow under the pointer stays grey.
+      expect(scene.hover.mark.features.map((f) => f.properties)).toEqual([
+        { kind: "ghost" },
+      ]);
+    });
+
+    test("stay shadows once selected, under the pointer too", () => {
+      const scene = buildScene(
+        input({
+          ghosts: [ghost],
+          hovered: { kind: "pass", slug: "small" },
+          selection: { kind: "pass", slug: "small" },
+        }),
+      );
+      expect(scene.hover.popup?.subtitle).toEndWith("· nicht im Filter");
+      // Drawn whole, so its hover mark is the whole dot.
+      expect(scene.hover.mark.features[0]?.properties).toMatchObject({
+        kind: "pass",
+        selected: 1,
+      });
+    });
+
+    test("go with the roads when the roads are off the map", () => {
+      const scene = buildScene(
+        input({ ghosts: [ghost], shown: { ...ALL_SHOWN, passes: false } }),
+      );
+      expect(scene.ghosts.features).toEqual([]);
+    });
+  });
+
   test("a hovered road rings its summit and widens every ascent of it", () => {
     const scene = buildScene(
       input({ hovered: { kind: "pass", slug: "galibier" } }),
@@ -305,6 +380,7 @@ describe("hover", () => {
       fame: 3,
       favorite: 0,
       kind: "pass",
+      rank: 3,
       selected: 0,
       status: "open",
       surface: "asphalt",

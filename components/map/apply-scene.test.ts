@@ -4,7 +4,7 @@ import { applyScene, popupHtml } from "@/components/map/apply-scene";
 import type { SceneHost } from "@/components/map/apply-scene";
 import { ALL_SHOWN } from "@/lib/app-state";
 import { DE } from "@/lib/i18n/dictionaries";
-import { LAYERS, SOURCE } from "@/lib/layer-ids";
+import { LAYERS, ROUTE_GHOST, SOURCE } from "@/lib/layer-ids";
 import { buildScene } from "@/lib/map-scene";
 import type { SceneInput } from "@/lib/map-scene";
 import { ascentKey } from "@/lib/route-key";
@@ -68,6 +68,7 @@ const town: TownRow = { areas: [], favorite: false, town: bormio };
 const scene = (extra: Partial<SceneInput> = {}) =>
   buildScene({
     env: { coarse: false },
+    ghosts: [],
     hovered: null,
     profileCursor: null,
     rows: {
@@ -93,6 +94,7 @@ describe("the first scene", () => {
       LAYERS.route.mark,
       ...(LAYERS.route.companions ?? []),
       LAYERS.route.hit,
+      ROUTE_GHOST,
       LAYERS.tour.mark,
       ...LAYERS.tour.labels,
       ...(LAYERS.tour.companions ?? []),
@@ -104,6 +106,7 @@ describe("the first scene", () => {
     ]);
     expect(of(calls, "data")).toEqual([
       SOURCE.passes,
+      SOURCE.ghosts,
       SOURCE.towns,
       SOURCE.destinations,
       SOURCE.destinationLabels,

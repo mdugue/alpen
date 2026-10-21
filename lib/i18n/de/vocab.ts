@@ -34,9 +34,11 @@ export const vocab = {
     LI: "Liechtenstein",
     SI: "Slowenien",
   },
-  /** The chips of the filter panel and their applied form. */
+  /** The filter chips and their tokens in the bar over the map. */
   filter: {
     beauty: "Schönheit {option}",
+    /** The fame floor the app opens on (`CLASSIC_FAME`). */
+    classics: "Klassiker",
     /** A window of levels; one level alone is `difficultyOne`. */
     difficulty: "Schwierigkeit {lo}–{hi}",
     difficultyOne: "Schwierigkeit {level}",
@@ -58,8 +60,9 @@ export const vocab = {
   },
   /** The legend line while the overview is thinned by fame. */
   prominence: {
-    famous: "berühmte Pässe",
-    known: "bekannte Pässe",
+    famous: "Klassiker und die schönsten bekannten Pässe",
+    known: "Klassiker und bekannte Pässe",
+    most: "die meisten Straßen",
   },
   /**
    * A range as a label, a hint, and in a sentence: German declines the

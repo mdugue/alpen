@@ -19,8 +19,13 @@ half-month breaking it. Whether April at 1100 m is too rosy is the risk this
 plan names, to be decided with these numbers; nothing in `lib/status.ts` has
 changed for it yet. One road short of the 18 the acceptance asks for; the
 next candidates are the Markstein, the Col des Chevrères and the northern
-Vosges (Donon, Champ du Feu). The Jura is drafted and waits for a day's
-Open-Meteo quota ·
+Vosges (Donon, Champ du Feu). The Jura is in too (#80): 16 roads (Grand Colombier
+with three sides, Biche, Richemond, Mont du Chat, Lèbe, Croix de la Serra,
+Faucille, Givrine, Marchairuz, Mollendruz, Etroits, Vue des Alpes, Chasseral,
+Mont-Crosin, Weissenstein, Passwang), 6 towns and 3 areas (Bugey, Hochjura
+und Vallée de Joux, Berner und Neuenburger Jura); the loops, the photos and
+the `analyze-status --changes` read-back are still open, and the climate
+series wait for Open-Meteo quota ·
 **Effort:** M for code, L for curation ·
 **Depends on:** 09 (schema), 05 (filters and search) · **Unblocks:** 26
 (the Pyrenees reuse the range mechanism), the weekend answer for the

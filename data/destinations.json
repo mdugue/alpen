@@ -76,6 +76,24 @@
   "access": "Bahnhof Briançon (Nachtzug aus Paris); Turin über den Fréjus-Tunnel oder Montgenèvre."
  },
  {
+  "slug": "champsaur",
+  "name": "Champsaur",
+  "country": "FR",
+  "center": {
+   "lat": 44.66,
+   "lon": 6.15
+  },
+  "radiusKm": 25,
+  "baseTowns": [
+   "gap"
+  ],
+  "include": [],
+  "exclude": [],
+  "character": "Das stille Hochtal nördlich von Gap: der Noyer als einziger großer Name, dazu Manse, Chaillol und Orcières, sonniger als die Écrins dahinter.",
+  "multiDay": "Zwei bis drei Tage ab Gap, als Etappe zwischen Oisans und Ubaye.",
+  "access": "Gap mit dem Zug aus Grenoble oder Marseille."
+ },
+ {
   "slug": "ubaye",
   "name": "Ubaye",
   "country": "FR",
@@ -323,7 +341,9 @@
    "st-moritz",
    "davos"
   ],
-  "include": [],
+  "include": [
+   "samnaun"
+  ],
   "exclude": [],
   "character": "Albula, Julier, Bernina, Flüela, Maloja und Ofen um ein Hochtal auf 1 800 m – die Anstiege beginnen hoch und die Luft ist dünn.",
   "multiDay": "Eine Woche; nach Livigno und ins Val Müstair über den Ofenpass als Etappen.",
@@ -342,7 +362,9 @@
    "chur",
    "vaduz"
   ],
-  "include": [],
+  "include": [
+   "wildhaus"
+  ],
   "exclude": [],
   "character": "Malbun, Lenzerheide, Arosa und Flumserberg: steile Berge direkt aus dem tiefen Rheintal, jeder für sich eine Sackgasse oder ein Übergang, dazwischen flache Wege am Rhein.",
   "multiDay": "Drei bis vier Tage mit kurzen Anfahrten; die Lenzerheide führt zu Albula und Julier ins Engadin, das Furkajoch ins Vorarlberg.",
@@ -553,13 +575,14 @@
   "name": "Julische Alpen",
   "country": "SI",
   "center": {
-   "lat": 46.45,
-   "lon": 13.7
+   "lat": 46.42,
+   "lon": 13.82
   },
-  "radiusKm": 25,
+  "radiusKm": 28,
   "baseTowns": [
    "kranjska-gora",
-   "bovec"
+   "bovec",
+   "bled"
   ],
   "include": [],
   "exclude": [
@@ -623,12 +646,32 @@
    "morzine"
   ],
   "include": [
-   "col-des-montets"
+   "col-des-montets",
+   "col-du-corbier"
   ],
   "exclude": [],
   "character": "Aravis, Colombière, Romme, Joux-Plane und Ramaz – die mittelhohen Pässe der Tour de France zwischen Annecy und Genfer See, grün, dicht und früh im Jahr offen.",
   "multiDay": "Eine Woche ohne Wiederholung; die Route des Grandes Alpes beginnt hier und führt über Roselend in die Tarentaise.",
   "access": "Flughafen Genf in einer Stunde; Bahnhof Annecy, Cluses oder Thonon."
+ },
+ {
+  "slug": "chartreuse-bauges",
+  "name": "Chartreuse und Bauges",
+  "country": "FR",
+  "center": {
+   "lat": 45.5,
+   "lon": 5.92
+  },
+  "radiusKm": 28,
+  "baseTowns": [
+   "chambery",
+   "saint-pierre-de-chartreuse"
+  ],
+  "include": [],
+  "exclude": [],
+  "character": "Zwei Kalkmassive links und rechts von Chambéry: kurze Pässe unter Felswänden, viel Wald und wenig Verkehr, mittelhoch statt hochalpin.",
+  "multiDay": "Drei bis vier Tage Runden ab Chambéry, früh im Jahr und spät im Herbst fahrbar, wenn die Hochpässe zu sind.",
+  "access": "Chambéry mit dem TGV aus Paris oder über Lyon, die Pässe beginnen am Stadtrand."
  },
  {
   "slug": "tessin",
@@ -645,7 +688,9 @@
    "stresa"
   ],
   "include": [
-   "mottarone"
+   "mottarone",
+   "cari",
+   "bosco-gurin"
   ],
   "exclude": [],
   "character": "Monte Ceneri, Alpe di Neggia, Generoso, Bisbino und die Talstraßen von Verzasca und Bavona: Seen, Palmen und steile Sträßchen, von März bis November.",
@@ -806,12 +851,32 @@
    "meiringen"
   ],
   "include": [
-   "grosse-scheidegg"
+   "grosse-scheidegg",
+   "sattelegg",
+   "axalp"
   ],
   "exclude": [],
   "character": "Klausen, Pragel, Glaubenbielen, Glaubenberg und die autofreie Große Scheidegg – die Voralpenpässe zwischen Vierwaldstättersee und Brienzersee, kürzer als die Gotthard-Riesen und früher im Jahr offen.",
   "multiDay": "Vier Tage; Susten und Grimsel als Anschluss nach Süden.",
   "access": "Bahnhof Meiringen, Luzern oder Altdorf; Zürich in einer Stunde."
+ },
+ {
+  "slug": "simmental-saanenland",
+  "name": "Simmental und Saanenland",
+  "country": "CH",
+  "center": {
+   "lat": 46.52,
+   "lon": 7.42
+  },
+  "radiusKm": 28,
+  "baseTowns": [
+   "zweisimmen"
+  ],
+  "include": [],
+  "exclude": [],
+  "character": "Jaunpass, Col du Pillon, Col des Mosses und der Gurnigel, dazu Adelboden und die Iffigenalp: grüne Voralpenpässe zwischen Berner Oberland und Waadtländer Alpen.",
+  "multiDay": "Vier Tage; über den Col du Pillon und den Col de la Croix ins Rhonetal und weiter ins Wallis.",
+  "access": "Bahnhof Zweisimmen an der Linie Spiez–Montreux; Bern in gut einer Stunde."
  },
  {
   "slug": "vorarlberg-allgaeu",
@@ -890,6 +955,187 @@
   "character": "Ballon d'Alsace, La Planche des Belles Filles und der Grand Ballon – die Tour-de-France-Berge der Vogesen –, dazwischen ruhige Waldpässe und die viel befahrene N66 über Bussang.",
   "multiDay": "Zwei bis drei Tage; die Runde über Hundsruck, Ballon d'Alsace und Bussang an einem Tag, die Planche als Abstecher von Plancher-les-Mines.",
   "access": "Mit dem TGV nach Mulhouse und mit der Bahn weiter nach Thann und ins Thurtal; für die Westseite Belfort-Montbéliard TGV."
+ },
+ {
+  "slug": "bugey",
+  "name": "Bugey",
+  "country": "FR",
+  "center": {
+   "lat": 45.88,
+   "lon": 5.75
+  },
+  "radiusKm": 25,
+  "baseTowns": [
+   "culoz"
+  ],
+  "include": [],
+  "exclude": [],
+  "character": "Der Südjura zwischen Rhone und Valromey: der Grand Colombier mit vier Seiten, dazu Biche, Richemond und der Mont du Chat über dem Lac du Bourget. Steil, waldig und still.",
+  "multiDay": "Drei bis vier Tage ab Culoz, früher und später im Jahr fahrbar als die Hochalpen nebenan.",
+  "access": "Culoz mit dem Zug über Genf, Lyon oder Chambéry."
+ },
+ {
+  "slug": "hochjura-vallee-de-joux",
+  "name": "Hochjura und Vallée de Joux",
+  "country": "FR/CH",
+  "center": {
+   "lat": 46.5,
+   "lon": 6.15
+  },
+  "radiusKm": 25,
+  "baseTowns": [
+   "nyon",
+   "les-rousses",
+   "le-sentier"
+  ],
+  "include": [
+   "col-de-la-croix-de-la-serra"
+  ],
+  "exclude": [],
+  "character": "Der Jurakamm über dem Genfersee: Faucille, Givrine, Marchairuz und Mollendruz, oben Weiden, Seen und Wald, unten der Blick auf die Alpen.",
+  "multiDay": "Zwei bis drei Tage, als Runde ums Vallée de Joux und über die Grenze nach Les Rousses.",
+  "access": "Nyon oder Genf mit dem Zug, die Pässe beginnen am Seeufer."
+ },
+ {
+  "slug": "berner-jura",
+  "name": "Berner und Neuenburger Jura",
+  "country": "CH",
+  "center": {
+   "lat": 47.18,
+   "lon": 7.2
+  },
+  "radiusKm": 30,
+  "baseTowns": [
+   "saint-imier",
+   "solothurn"
+  ],
+  "include": [
+   "passwang"
+  ],
+  "exclude": [],
+  "character": "Die Jurakette über dem Dreiseenland: Chasseral, Vue des Alpes und Mont-Crosin, dazu der steile Weissenstein über Solothurn. Weiden, Wald und bei klarer Sicht die ganze Alpenkette.",
+  "multiDay": "Zwei bis drei Tage zwischen Saint-Imier und Solothurn, gut als Wochenende aus Basel, Bern oder Zürich.",
+  "access": "Saint-Imier und Solothurn mit dem Zug, eine Stunde ab Bern oder Basel."
+ },
+ {
+  "slug": "hautes-pyrenees",
+  "name": "Hautes-Pyrénées",
+  "country": "FR",
+  "center": {
+   "lat": 42.9,
+   "lon": 0.1
+  },
+  "radiusKm": 30,
+  "baseTowns": [
+   "argeles-gazost",
+   "luz-saint-sauveur",
+   "saint-lary-soulan"
+  ],
+  "include": [],
+  "exclude": [],
+  "character": "Das Herz der Tour-Pyrenäen: Tourmalet, Aspin, Hautacam, Luz Ardiden und der Portet, dazu stille Pässe wie Spandelles und die Hourquette. Lange, steile Anstiege mit über 1 000 Höhenmetern.",
+  "multiDay": "Eine Woche mit Standort in Argelès oder Luz und einem zweiten in Saint-Lary; der Cercle de la Mort über Aubisque, Tourmalet, Aspin und Peyresourde als Königsetappe.",
+  "access": "Lourdes mit dem TGV, Tarbes-Lourdes oder Pau mit dem Flugzeug."
+ },
+ {
+  "slug": "bearn-ossau",
+  "name": "Béarn und Ossau",
+  "country": "FR",
+  "center": {
+   "lat": 42.93,
+   "lon": -0.5
+  },
+  "radiusKm": 30,
+  "baseTowns": [
+   "laruns"
+  ],
+  "include": [],
+  "exclude": [],
+  "character": "Die Westpyrenäen zwischen Ossau und Barétous: Aubisque, Marie-Blanque, Pourtalet, Somport und die Pierre Saint-Martin. Grüner und stiller als die Hautes-Pyrénées.",
+  "multiDay": "Drei bis vier Tage ab Laruns, mit Ausflügen über die Grenze nach Aragonien.",
+  "access": "Pau mit dem TGV oder Flugzeug, dann eine Stunde ins Ossau."
+ },
+ {
+  "slug": "baskenland",
+  "name": "Baskenland",
+  "country": "FR/ES",
+  "center": {
+   "lat": 43.1,
+   "lon": -1.2
+  },
+  "radiusKm": 25,
+  "baseTowns": [
+   "saint-jean-pied-de-port"
+  ],
+  "include": [],
+  "exclude": [],
+  "character": "Die grünen Pässe des französischen Baskenlands: Bagargui mit den Weiden von Iraty und der kleine Ispéguy über die Grenze. Mild, feucht und früh im Jahr fahrbar.",
+  "multiDay": "Zwei bis drei Tage ab Saint-Jean-Pied-de-Port, gut als Auftakt einer Pyrenäen-Durchquerung.",
+  "access": "Saint-Jean-Pied-de-Port mit dem Zug aus Bayonne."
+ },
+ {
+  "slug": "luchon-aran",
+  "name": "Luchon und Val d'Aran",
+  "country": "FR/ES",
+  "center": {
+   "lat": 42.8,
+   "lon": 0.62
+  },
+  "radiusKm": 30,
+  "baseTowns": [
+   "bagneres-de-luchon",
+   "arreau",
+   "vielha"
+  ],
+  "include": [
+   "port-de-la-bonaigua"
+  ],
+  "exclude": [],
+  "character": "Rund um Luchon: Peyresourde, Superbagnères, Balès, Menté und Portet d'Aspet, dazu über den Portillon das Val d'Aran und die Bonaigua.",
+  "multiDay": "Vier bis fünf Tage ab Luchon, mit einem Abstecher nach Spanien.",
+  "access": "Toulouse mit Zug oder Flugzeug, dann zwei Stunden nach Luchon."
+ },
+ {
+  "slug": "ariege",
+  "name": "Ariège",
+  "country": "FR",
+  "center": {
+   "lat": 42.82,
+   "lon": 1.4
+  },
+  "radiusKm": 30,
+  "baseTowns": [
+   "saint-girons"
+  ],
+  "include": [],
+  "exclude": [],
+  "character": "Die wilden Pässe des Couserans und des Vicdessos: Agnes, Lers, Core, Port und Latrape, dazu der Plateau de Beille. Kaum Verkehr, viele Almen.",
+  "multiDay": "Drei bis vier Tage ab Saint-Girons oder Massat.",
+  "access": "Toulouse mit dem Zug nach Foix, dann eine Stunde ins Couserans."
+ },
+ {
+  "slug": "andorra-cerdanya",
+  "name": "Andorra und Cerdanya",
+  "country": "AD/FR",
+  "center": {
+   "lat": 42.52,
+   "lon": 1.7
+  },
+  "radiusKm": 30,
+  "baseTowns": [
+   "andorra-la-vella",
+   "ax-les-thermes",
+   "la-seu-d-urgell"
+  ],
+  "include": [
+   "col-de-pailheres",
+   "port-del-canto",
+   "collada-de-toses"
+  ],
+  "exclude": [],
+  "character": "Die hohen Pässe der Ostpyrenäen: Envalira, Ordino und Arcalís in Andorra, Puymorens und Pailhères auf der französischen Seite, dazu Toses und Cantó in Katalonien. Sonniger und trockener als der Westen.",
+  "multiDay": "Eine Woche mit Standort in Andorra und einem zweiten in Ax-les-Thermes.",
+  "access": "Ax-les-Thermes mit dem Zug aus Toulouse, Andorra mit dem Bus aus Toulouse oder Barcelona."
  },
  {
   "slug": "osttirol",

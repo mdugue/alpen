@@ -31,6 +31,8 @@ export const vocab = {
   },
   filter: {
     beauty: "Beauty {option}",
+    /** The fame floor the app opens on (`CLASSIC_FAME`). */
+    classics: "Classics",
     difficulty: "Difficulty {lo}–{hi}",
     difficultyOne: "Difficulty {level}",
     fame: "Fame {option}",
@@ -49,8 +51,9 @@ export const vocab = {
     wetDays: "up to {n} of 15",
   },
   prominence: {
-    famous: "famous passes",
-    known: "well-known passes",
+    famous: "classics and the finest well-known passes",
+    known: "classics and well-known passes",
+    most: "most roads",
   },
   range: {
     Alpen: {

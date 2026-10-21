@@ -67,9 +67,10 @@ const RANK = new Map(
   HIT_GROUPS.flatMap((group, i) => group.map((id) => [id, i] as const)),
 );
 
-/** An ascent belongs to its pass; every other kind answers for itself. */
+/** An ascent and a shadow belong to their pass; every other kind answers for itself. */
 const KIND: Record<keyof typeof LAYERS, Selection["kind"]> = {
   destination: "destination",
+  ghost: "pass",
   pass: "pass",
   route: "pass",
   tour: "tour",

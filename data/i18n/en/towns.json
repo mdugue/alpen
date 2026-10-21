@@ -11,14 +11,29 @@
  "andermatt": {
   "why": "Furka, Gotthard, Oberalp, Susten, Nufenen; bike shops, railway station, Alpenbrevet base."
  },
+ "andorra-la-vella": {
+  "why": "The capital of Andorra, from which the Ordino, Arcalís and Envalira climbs start; many hotels and bike shops."
+ },
  "aosta": {
   "why": "Grand/Petit Saint-Bernard, San Carlo, Cervinia, Pila; bike shops, railway station."
  },
  "arabba": {
   "why": "In the middle of the Sellaronda: Pordoi, Campolongo, Falzarego/Valparola and Fedaia start in the village. Bike hotels with bike cellar, rental at the valley station."
  },
+ "argeles-gazost": {
+  "why": "The hub of the Hautes-Pyrénées: the Hautacam, Soulor, Aubisque and Spandelles start here, the Tourmalet and Luz Ardiden via Luz."
+ },
+ "arreau": {
+  "why": "The small town between the Aspin and the Peyresourde, plus the Hourquette d'Ancizan; quieter than Luchon."
+ },
+ "ax-les-thermes": {
+  "why": "The spa town with a station below the Pailhères, plus Beille, Puymorens and Andorra within reach."
+ },
  "bad-kleinkirchheim": {
   "why": "Nockalmstraße, Turracher Höhe, Villacher Alpenstraße; bike hotels, workshops."
+ },
+ "bagneres-de-luchon": {
+  "why": "The spa town at the foot of the Peyresourde, Superbagnères, Balès and Portillon, with hotels and bike shops."
  },
  "barcelonnette": {
   "why": "Bonette, Cayolle, Allos, Vars, Champs – seven passes within range. Workshops, cycling accommodation."
@@ -34,6 +49,9 @@
  },
  "berchtesgaden": {
   "why": "Roßfeld panoramic road, Hirschbichl and the loop around the Königssee. Rail link, Alpine backdrop and short approaches from Salzburg."
+ },
+ "bled": {
+  "why": "The lake with the island as a base for the Pokljuka, the Soriška planina and the way to the Vršič; many hotels and a station on the Bohinj railway."
  },
  "bormio": {
   "why": "Stelvio, Gavia, Mortirolo, Foscagno. Many bike shops, rental, bike hotels, thermal baths."
@@ -65,6 +83,9 @@
  "cavalese": {
   "why": "Val di Fiemme as a quiet valley base: Manghen, Lavazè, Rolle and San Pellegrino within reach, plus flat valley roads for the day after."
  },
+ "chambery": {
+  "why": "Rail hub between the Bauges and the Chartreuse: the Granier, Plainpalais, Revard and Cucheron from the doorstep, plus the bike shops and hotels of a city."
+ },
  "chur": {
   "why": "Graubünden's rail hub: the Lenzerheide and Arosa start at the station, Flumserberg and Malbun lie a short ride down the Rhine. Low and mild, often warm in autumn too thanks to the foehn."
  },
@@ -76,6 +97,9 @@
  },
  "corvara-alta-badia": {
   "why": "Sellaronda and Maratona hub: bike hotels, rental, workshops, service points on the passes."
+ },
+ "culoz": {
+  "why": "A station at the foot of the Grand Colombier: the Culoz side starts at the edge of town, the Biche, Richemond and Mont du Chat are within reach."
  },
  "cuneo": {
   "why": "Fauniera, Lombarde, Agnello, Sampeyre, Maddalena; bike shops, Fausto Coppi Granfondo."
@@ -91,6 +115,9 @@
  },
  "finale-ligure": {
   "why": "Italy's mountain-bike capital has the workshops and rental outfits that serve the road bike just as well; the Melogno starts in Finalborgo, Scravaion and Faiallo are day loops. Railway station in town."
+ },
+ "gap": {
+  "why": "The town at the gateway to the Champsaur: the Manse, Noyer, Chaillol and Orcières within reach, a railway station, bike shops and hotels."
  },
  "gerardmer": {
   "why": "By the lake on the Lorraine side: the Schlucht, the Col de Grosse Pierre and, via La Bresse, the Bramont. Accommodation of every kind, no railway station."
@@ -116,14 +143,26 @@
  "la-bresse": {
   "why": "A quiet town in the Moselotte valley: the Bramont, Grosse Pierre and the road up to the Hohneck start at the door."
  },
+ "la-seu-d-urgell": {
+  "why": "The cathedral town south of Andorra, with the Cantó and the Andorran passes within reach."
+ },
  "landeck": {
   "why": "Junction in the upper Inn valley with railway station: Hahntennjoch, Arlberg, Kaunertal glacier road and Silvretta without a long approach."
+ },
+ "laruns": {
+  "why": "The main village of the Ossau valley: the Aubisque, Pourtalet and Marie-Blanque from the village."
  },
  "le-grand-bornand": {
   "why": "Aravis village: Colombière, Aravis and Croix Fry start in the village. Green side valleys, little traffic, rental in the village."
  },
+ "le-sentier": {
+  "why": "The main village of the Vallée de Joux, between the Marchairuz and the Mollendruz; quiet, with a railway connection."
+ },
  "lecco": {
   "why": "Rail hub on the eastern arm of Lake Como: Piani dei Resinelli, Culmine di San Pietro, Valcava and Ghisallo within a day's range, bike shops in town."
+ },
+ "les-rousses": {
+  "why": "The holiday resort on the Jura ridge between the Faucille and the Givrine, with lakes and pastures all around and plenty of lodgings."
  },
  "lienz": {
   "why": "Sunny town where the Drau, Isel and Puster valleys meet: Gailbergsattel and Kartitscher Sattel on the Dolomitenradrundfahrt loop, plus the Staller Sattel, Kals and, over the Iselsberg, the Grossglockner road. Bike shops with workshop and rental, certified cyclist lodgings, railway station."
@@ -136,6 +175,9 @@
  },
  "lugano": {
   "why": "Mild Ticino with railway station: Bellavista on the Generoso, Sighignola and Bisbino above the lakes, Monte Ceneri and Alpe di Neggia to the north. Rideable from March."
+ },
+ "luz-saint-sauveur": {
+  "why": "The village at the foot of the Tourmalet, with Luz Ardiden and Gavarnie right on the doorstep."
  },
  "malaucene": {
   "why": "The north side of the Ventoux starts in the village, the Madeleine closes the loop to Bédoin; Dentelles, Fontaube and Col d'Ey within a day's range. Bike shops and rental."
@@ -170,6 +212,9 @@
  "nizza": {
   "why": "Winter quarters of the peloton: Col d'Èze, Châteauneuf, Vence, Madone and Braus from the city, Turini and Bleine as day loops. Railway station, airport, bike shops."
  },
+ "nyon": {
+  "why": "The town on Lake Geneva with a station: the Givrine from the doorstep, the Faucille and Marchairuz within reach."
+ },
  "ponte-di-legno": {
   "why": "Gavia, Tonale, Mortirolo; bike shops, quieter than Bormio."
  },
@@ -182,8 +227,23 @@
  "rovereto": {
   "why": "Rail hub in the Adige valley with Santa Barbara, Pian delle Fugazze, Bordala and Sommo from the town, Bondone and Lake Garda within a day's range. Mild enough for spring and autumn."
  },
+ "saint-girons": {
+  "why": "The town of the Couserans: the Core, Portet d'Aspet and the valleys to the Agnes within reach."
+ },
+ "saint-imier": {
+  "why": "The watchmaking town between the Chasseral and Mont-Crosin, both of which start at the station."
+ },
  "saint-jean-de-maurienne": {
   "why": "Croix de Fer, Madeleine, Télégraphe/Galibier; railway station, bike shops, Maurienne cycling office."
+ },
+ "saint-jean-pied-de-port": {
+  "why": "The small town on the Way of St James with a station, the starting point for the Bagargui, Iraty and Ispéguy."
+ },
+ "saint-lary-soulan": {
+  "why": "The resort in the Aure valley with the Pla d'Adet, Portet, Azet and Cap-de-Long from the doorstep."
+ },
+ "saint-pierre-de-chartreuse": {
+  "why": "The village in the middle of the Chartreuse where the Cucheron, Coq and Porte meet; quiet lodgings instead of city bustle."
  },
  "saint-vincent": {
   "why": "Spa town in the lower Aosta valley: the Col de Joux on the doorstep, Breuil-Cervinia from Châtillon and the Gressoney valley next door. Châtillon-Saint-Vincent railway station."
@@ -202,6 +262,9 @@
  },
  "soelden": {
   "why": "Ötztaler headquarters: Timmelsjoch, glacier road, Kühtai; bike shops, rental, bike hotels."
+ },
+ "solothurn": {
+  "why": "The baroque town on the Aare below the Weissenstein, with a rail hub, hotels and bike shops; the Passwang is a valley ride away."
  },
  "sospel": {
   "why": "Hinterland of the Côte d'Azur: Turini, Braus, Brouis and Madone. Railway station on the Nice–Tende line and a climate that is rideable almost all year."
@@ -239,8 +302,14 @@
  "vaison-la-romaine": {
   "why": "Roman town between Ventoux and Baronnies: Dentelles, Fontaube, Col d'Ey and Soubeyrand as loops, the Ventoux from Malaucène within reach. Quiet and rideable for a long season."
  },
+ "vielha": {
+  "why": "The main town of the Val d'Aran between the Bonaigua and the Portillon."
+ },
  "wolkenstein-selva": {
   "why": "Head of the Val Gardena: Sella and Gardena passes start in the village, Erbe/Würzjoch and the Sellaronda follow on. Many bike hotels, rental and workshops."
+ },
+ "zweisimmen": {
+  "why": "Rail junction in the Simmental: the Jaunpass, the Saanenmöser and the Gurnigel within reach, the Col du Pillon and the Col des Mosses via Gstaad. Quiet and rural."
  },
  "oberwiesenthal": {
   "why": "Germany's highest town at the foot of the Fichtelberg: the Fichtelberg and the Klínovec start at the door, Měděnec and the Auersberg are a day's loop away. Terminus of the Fichtelberg narrow-gauge railway from Cranzahl."

@@ -1,4 +1,4 @@
-import { ALL_RANGES, HEAT_NONE, WET_NONE } from "@/lib/app-state";
+import { ALL_RANGES, HEAT_NONE, RATING_MIN, WET_NONE } from "@/lib/app-state";
 import type { EntityKind, Filters, ListTab, PassSort } from "@/lib/app-state";
 import { areaScore, areaText, areaVerdict } from "@/lib/destination";
 import type { DerivedVerdict, DestinationMembers } from "@/lib/destination";
@@ -86,6 +86,16 @@ const inRanges = (filters: Filters, range: RangeName | undefined) =>
   (range !== undefined && filters.ranges.includes(range));
 
 /**
+ * The fame a road has to have: the chosen floor, or none while a search is
+ * typed. The app opens on the classics (`CLASSIC_FAME`), and a visitor looking
+ * for a small pass by name should find it without first learning that a chip
+ * hides it – the one filter the search lifts, because it is the one on by
+ * default.
+ */
+export const fameFloor = (f: Filters): number =>
+  f.query.trim() ? RATING_MIN : f.minFame;
+
+/**
  * Lower bounds, "at least this interesting": a tour needs one pass that clears
  * them. The road type belongs here rather than among the upper bounds: a loop
  * over one spur and three passes is still a loop worth showing when spurs are
@@ -93,7 +103,7 @@ const inRanges = (filters: Filters, range: RangeName | undefined) =>
  */
 const interesting = (pass: Pass, f: Filters) =>
   pass.elevation >= f.minElevation &&
-  pass.fame >= f.minFame &&
+  pass.fame >= fameFloor(f) &&
   pass.beauty >= f.minBeauty &&
   pass.difficulty >= f.difficulty[0] &&
   f.types.includes(pass.type) &&
@@ -593,7 +603,7 @@ export const facetCount = (
   inputs: ListInputs,
 ): number => {
   // The same two predicates as `buildPassRows`, without a row per survivor:
-  // the filter panel asks this once per chip on every keystroke.
+  // an open filter popover asks this once per chip on every keystroke.
   const patched = { ...filters, ...patch };
   const q = query(patched, inputs);
   const i = periodIndex(patched.period);

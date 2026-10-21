@@ -543,14 +543,9 @@ describe("reduce · the switches and the sheets", () => {
     expect(reduce(asked, { type: "back" }, desktop).profileZoom).toBeNull();
   });
 
-  test("the list drawer opens with or without its filter panel, and each sheet snaps on its own", () => {
-    const list = reduce(
-      start,
-      { filters: true, open: true, type: "list" },
-      phone,
-    );
+  test("the list drawer opens and closes, and each sheet snaps on its own", () => {
+    const list = reduce(start, { open: true, type: "list" }, phone);
     expect(list.sheet.list.open).toBe(true);
-    expect(list.sheet.filters).toBe(true);
     const up = reduce(
       list,
       { sheet: "list", snap: LIST_FULL, type: "snap" },
@@ -560,9 +555,5 @@ describe("reduce · the switches and the sheets", () => {
     expect(up.sheet.detail.snap).toBe(DETAIL_HALF);
     const closed = reduce(up, { open: false, type: "list" }, phone);
     expect(closed.sheet.list).toEqual({ open: false, snap: LIST_FULL });
-    expect(closed.sheet.filters).toBe(true);
-    expect(
-      reduce(closed, { open: null, type: "filtersOpen" }, phone).sheet.filters,
-    ).toBeNull();
   });
 });

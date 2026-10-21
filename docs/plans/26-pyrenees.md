@@ -5,9 +5,15 @@ per-range refinement on `Pass` and the tour checks in `data:check`, `ES` and
 `AD`, the frame guard per range, the headline's range word and the range word
 on town rows; the first screen opens on the home range (`HOME_RANGE`,
 `Scene.opening`) rather than on everything drawn, which is what lets a range
-600 km away exist without zooming the Alps out of readability. Step 3 (the
-data) and 4 (the split) wait for the hosts, which were rate-limited in the
-session that built the mechanism. The name stays "Alpenpässe" as the plan
+600 km away exist without zooming the Alps out of readability. Step 3, the
+data, is in (#80): 40 roads across the Hautes-Pyrénées, the Béarn and the
+Basque country, Luchon and the Val d'Aran, the Ariège, Andorra and
+Catalonia, 12 towns and 6 areas, in one PR rather than four because the
+person asked for every region at once; the three loops, the photos and the
+`analyze-status --changes` read-back are still open, and the climate series
+wait for Open-Meteo quota. Step 4, the split, has not been done: `main`
+crossed 300 entries without it, and it is left for a PR of its own so it
+does not collide with the other data PRs open at the same time. The name stays "Alpenpässe" as the plan
 recommends; the description names the ranges once their roads are in ·
 **Effort:** S–M for code, L for curation ·
 **Depends on:** 25 (ranges, the chip, the frame test), 24 (the file split,

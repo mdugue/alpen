@@ -184,8 +184,12 @@ const FILTER_KEYS = {
   d: { field: "difficulty", parser: parseAsRange },
   /** Road labels "toll,carfree". */
   e: { field: "tags", parser: parseAsSubset(ROAD_TAGS) },
-  /** Min. fame. */
-  f: { field: "minFame", parser: parseAsOneOf(FAME_OPTIONS) },
+  /**
+   * Min. fame. Written even at its default: the default moved once, from every
+   * road to the classics, and a link is read with the defaults of the day it
+   * is opened, not of the day it was made.
+   */
+  f: { always: true, field: "minFame", parser: parseAsOneOf(FAME_OPTIONS) },
   /** Mountain ranges "Jura,Vogesen" (Gebirge). */
   g: { field: "ranges", parser: parseAsSubset(RANGES) },
   /** Max. valley heat in °C. */

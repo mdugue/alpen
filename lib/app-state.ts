@@ -1,5 +1,6 @@
 import type { Bounds } from "@/lib/geo";
 import {
+  CLASSIC_FAME,
   RANGES,
   ROAD_TYPES,
   STATUSES,
@@ -245,6 +246,10 @@ export interface Filters {
    * tours: a tour needs one pass that clears the lower bounds (elevation,
    * fame, beauty, min. difficulty) and every pass has to respect the upper
    * bounds (max. difficulty, traffic). Towns see only search and favourites.
+   *
+   * The fame floor is the one a search looks past: whoever types a name knows
+   * what they want, and the classics the app opens on must not hide it
+   * (`fameFloor`, lib/rows.ts).
    */
   minFame: number;
   minElevation: number;
@@ -317,7 +322,11 @@ export const DEFAULT_FILTERS: Filters = {
   maxWetDays: WET_NONE,
   minBeauty: RATING_MIN,
   minElevation: 0,
-  minFame: 1,
+  // The classics (`CLASSIC_FAME`, lib/regions.ts), not everything: three
+  // hundred roads read as noise on a first look, and the chip that lifts it
+  // stands on the map (`FilterBar`). What the floor leaves out stays as a
+  // shadow (`Scene.ghosts`); a search looks past it (`fameFloor`).
+  minFame: CLASSIC_FAME,
   onDate: false,
   pastEditions: false,
   period: 10,
@@ -330,6 +339,13 @@ export const DEFAULT_FILTERS: Filters = {
   tourTypes: ALL_TOUR_TYPES,
   types: ALL_TYPES,
 };
+
+/**
+ * No filter at all: every road, the classics the app opens on included – what
+ * "Filter zurücksetzen" goes back to (`resetFilters`) and what the map's
+ * shadows and the compare sheet are counted against.
+ */
+export const NO_FILTERS: Filters = { ...DEFAULT_FILTERS, minFame: RATING_MIN };
 
 export interface MapView {
   lat: number;
@@ -456,12 +472,6 @@ const [DETAIL_HALF, DETAIL_FULL] = DETAIL_SNAPS;
 export interface SheetState {
   /** The list drawer exists only while it is wanted. */
   list: { open: boolean; snap: number };
-  /**
-   * Whether the filter panel inside the list is unfolded, `null` while nobody
-   * has said. Here rather than in the sidebar because the phone's "Filter"
-   * button opens the list and the panel in one press.
-   */
-  filters: boolean | null;
   detail: {
     snap: number;
     /**
@@ -480,7 +490,6 @@ export interface SheetState {
 
 const SHEETS_AT_REST: SheetState = {
   detail: { nested: false, snap: DETAIL_HALF },
-  filters: null,
   list: { open: false, snap: LIST_HALF },
 };
 
@@ -650,10 +659,9 @@ export type Action =
   | { type: "toggleTour"; slug: string; on: boolean }
   /** The master switch over every tour. */
   | { type: "toggleTours"; on: boolean }
-  /** Opens or closes the list drawer, with or without its filter panel. */
-  | { type: "list"; open: boolean; filters?: boolean }
-  | { type: "snap"; sheet: "list" | "detail"; snap: number }
-  | { type: "filtersOpen"; open: boolean | null };
+  /** Opens or closes the list drawer. */
+  | { type: "list"; open: boolean }
+  | { type: "snap"; sheet: "list" | "detail"; snap: number };
 
 /** What the reducer needs from outside the state and never changes it. */
 export interface Env {
@@ -838,7 +846,6 @@ export const reduce = (state: AppState, action: Action, env: Env): AppState => {
         ...state,
         sheet: {
           ...state.sheet,
-          filters: action.filters ?? state.sheet.filters,
           list: { ...state.sheet.list, open: action.open },
         },
       };
@@ -851,9 +858,6 @@ export const reduce = (state: AppState, action: Action, env: Env): AppState => {
           [action.sheet]: { ...state.sheet[action.sheet], snap: action.snap },
         },
       };
-    }
-    case "filtersOpen": {
-      return { ...state, sheet: { ...state.sheet, filters: action.open } };
     }
     default: {
       // Every action has its case above; a new one is a type error here.

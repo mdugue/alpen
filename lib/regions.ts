@@ -227,6 +227,16 @@ export const ROAD_TYPES = [
 export type RoadTypeName = (typeof ROAD_TYPES)[number];
 
 /**
+ * Where a classic starts on the editorial fame scale (1–5): what the
+ * "Klassiker" chip keeps, what the app opens on, and the roads the overview's
+ * ladder never moves (`rankOf`, lib/prominence.ts).
+ */
+export const CLASSIC_FAME = 4;
+
+/** The top of the beauty scale: a pearl, one step earlier on the overview. */
+export const PEARL_BEAUTY = 5;
+
+/**
  * What kind of ride a tour is: how one goes about riding it, not what its
  * roads are like. Single-valued, because the question it answers is "can I
  * just go" – a loop any day, an event course whose roads close for one day a

@@ -43,6 +43,12 @@ export interface ShellBars {
   header: number;
   /** The season bar: an edge-to-edge bar on a phone, a card on desktop. */
   season: number;
+  /**
+   * The filter bar standing in the map's top-left corner (`FilterBar`), a gap
+   * below the header: what it covers is map a target must not land under.
+   * `0` or left out while there is none.
+   */
+  overlay?: number;
 }
 
 export interface ShellViewport {
@@ -154,7 +160,12 @@ export const shellGeometry = ({
   const bottom = Math.max(sheetCover(sheet, viewport.height), cover);
 
   return {
-    inset: { bottom, left, right: 0, top: bars.header },
+    inset: {
+      bottom,
+      left,
+      right: 0,
+      top: bars.header + (bars.overlay ? bars.overlay + GAP : 0),
+    },
     vars: {
       "--shell-bottom": `${controls}px`,
       "--shell-detail": `${detail}px`,
