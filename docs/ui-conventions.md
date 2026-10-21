@@ -410,6 +410,24 @@ link carrying `g=Jura` and no camera opens fitted to what it lists, the way
 every such link does, and one with a camera opens on that. The group shows only once two
 ranges hold a road – a chip row of one is a statement, not a choice.
 
+One pair of chips stands on the map instead of in the panel, at every width:
+"Klassiker | Alle" (`ClassicsSwitch`, `components/classics-switch.tsx`), in the
+map's top-left corner and part of the camera padding (`ShellBars.overlay`). It
+is the panel's fame floor, not a second state – the app opens on the classics
+(`DEFAULT_FILTERS.minFame` is `CLASSIC_FAME`, fame 4 and up), and a default the
+visitor cannot see is a default nobody changes, so the chip that lifts it may
+not be a drawer away on a phone. Each chip carries the count it would leave,
+like every chip; a floor the panel set elsewhere (3, 5) presses neither. Three
+consequences of opening filtered. The applied row and the badge carry the
+classics like any decision, but the panel does not open by itself for them
+(`carriesFilters`), or it would bury the map on every first visit. A search
+looks past the floor (`fameFloor` in `lib/rows.ts`) – whoever types a name
+knows what they want. And the hash always writes the floor (`f`), because a
+link is read with the defaults of the day it is opened: before the classics,
+a link without `f` meant every road. "Filter zurücksetzen" goes to every road
+(`NO_FILTERS`). What the floor leaves out stays on the map as a grey shadow
+(docs/map-rendering.md, "What the filters leave out stays as a shadow").
+
 One group is not in the panel: the kind of tour (`Filters.tourTypes`, the
 hash key `r`) – loop, event, edition, permanent route, multi-day route. It says how a
 tour is ridden, which no road has, so its chips would count zero roads or

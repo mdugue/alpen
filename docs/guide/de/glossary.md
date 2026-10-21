@@ -95,6 +95,8 @@ Seiten vorkommen – von „abgeleitet“ bis „zugeschneit“.
 
 ## K
 
+- **Klassiker** – eine Straße ab Bekanntheit 4. Mit ihnen öffnet die App; der
+  Schalter „Klassiker | Alle“ oben links auf der Karte zeigt alle Straßen.
 - **Klimareihe** – die zehnjährige Wetterreihe eines Passes (Open-Meteo,
   2015–2024), zu 24 Halbmonaten gemittelt: Tageshöchst- und
   Tiefsttemperatur sowie die Anteile der Tage mit Neuschnee, mit Frost und

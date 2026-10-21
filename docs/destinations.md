@@ -133,7 +133,7 @@ valley floor or the next range; the outline shows what the area holds. It
 is drawn at every zoom in the area colour (`--area`), the town's blue family
 – an area is where one stays, and red to green is what a road's rideability
 is said in, so the outline never takes a status colour; the count is its
-label's second line. Past zoom 8.5, where every road is drawn, the fill
+label's second line. Past zoom 9, where most roads are drawn, the fill
 thins out and the edge steps back to a hairline, so the roads stay the
 picture; the selected or hovered area keeps its weight. Its name is set in
 the towns' blue rather than the ink, the quiet voice under the road names,

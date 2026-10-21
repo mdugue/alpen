@@ -163,9 +163,13 @@ unter dem neuesten Jahr. Im Reiseziel stehen die Touren nach Art geordnet.
 | gestrichelte Linie     | Auffahrt auf einer ungeteerten Straße, darunter weiter in der Statusfarbe |
 | blauer Punkt mit Ring  | Ort                                                                       |
 | blaue, helle Umrandung | Reiseziel: das Gebiet um seine Mitte, seine Passhöhen und seine Orte      |
+| kleiner grauer Punkt   | Straße außerhalb der Filter; antippen öffnet sie                          |
 
 In der Übersicht zeigt die Karte nicht jeden Pass: Weit herausgezoomt stehen
-nur die bekannten da, beim Hineinzoomen kommen die übrigen hinzu. Eine Zeile
+nur die Klassiker und die schönsten bekannten Pässe da, beim Hineinzoomen
+kommen die übrigen Stufe für Stufe hinzu, zuerst klein und blass. Was nirgends
+hinüberführt – Stich-, Tal-, Balkon- und Höhenstraßen – kommt eine Stufe
+später als ein Pass, eine Straße mit Schönheit 5 eine Stufe früher. Eine Zeile
 in der Kartenecke sagt, welche Stufe gerade gilt. Das ist kein Filter – die
 Liste bleibt vollständig, und was ausgewählt, gemerkt oder unter dem
 Mauszeiger ist, wird immer gezeichnet.
@@ -217,6 +221,13 @@ im gewählten Zeitraum, die Schwierigkeit, die Höhe des Scheitelpunkts und
 Merkmale, Verkehr, Schönheit, Bekanntheit, die Wärme im Tal (abgeleitet) und
 die Regentage im Halbmonat. Was gerade gefiltert ist, steht als Reihe
 entfernbarer Chips über der Liste.
+
+Die App öffnet mit den **Klassikern**: Straßen ab Bekanntheit 4 und die
+Touren, die mindestens eine davon fahren. Der Schalter „Klassiker | Alle“ steht
+oben links auf der Karte, auch auf dem Handy, und zeigt, wie viele Straßen
+jede Wahl übrig lässt. Was ein Filter ausblendet, bleibt als kleiner grauer
+Punkt auf der Karte stehen; die Suche findet jede Straße, auch wenn
+„Klassiker“ gedrückt ist. „Filter zurücksetzen“ zeigt wieder alle.
 
 Dazu kommt der Filter **Gebirge** – heute Alpen und Vogesen, später auch
 Jura und Pyrenäen –, der als einziger auch die Karte bewegt: Er rückt den
