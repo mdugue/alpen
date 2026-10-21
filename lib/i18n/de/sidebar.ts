@@ -46,7 +46,7 @@ export const sidebar = {
     countTours: "Touren",
     difficulty: "Schwierigkeit",
     elevation: "Höhe des Scheitelpunkts",
-    fame: "Bekanntheit, 5 ist ein Klassiker",
+    fame: "Bekanntheit, ab 4 ein Klassiker",
     favoritesOnly: "Nur Gemerkte",
     heat: "Wärme im Tal (abgeleitet)",
     more: "Weitere Filter",

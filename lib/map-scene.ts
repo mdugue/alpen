@@ -54,6 +54,18 @@ export interface PassProps {
   surface: Surface;
 }
 
+/**
+ * A road the filters leave out, drawn as a shadow (`LAYERS.ghost`): a small
+ * grey dot with no status, no name and no lines – enough to say there is more
+ * here, and to be tapped, without competing with what the filters chose.
+ */
+export interface GhostProps {
+  fame: number;
+  name: string;
+  rank: number;
+  slug: string;
+}
+
 export interface TownProps {
   favorite: Flag;
   name: string;
@@ -123,6 +135,8 @@ export interface Scene {
   routes: { filter: FilterSpecification; state: Record<string, RouteState> };
   tours: { filter: FilterSpecification; state: Record<string, TourState> };
   passes: FeatureCollection<Point, PassProps>;
+  /** The roads the filters leave out, as shadows; empty while the roads are off the map. */
+  ghosts: FeatureCollection<Point, GhostProps>;
   towns: FeatureCollection<Point, TownProps>;
   /** The destination outlines, under everything else; empty when their switch is off. */
   destinations: FeatureCollection<Polygon, DestinationProps>;
@@ -155,6 +169,12 @@ export interface Scene {
 
 export interface SceneInput {
   rows: Rows;
+  /**
+   * The roads the filters leave out, with the status they would have: drawn
+   * as shadows, and drawn whole once selected – a road opened from its shadow
+   * is shown like any other, lines and all.
+   */
+  ghosts: readonly PassRow[];
   shown: Shown;
   selection: Selection | null;
   hovered: Selection | null;
@@ -194,15 +214,47 @@ const slugFilter = (slugs: readonly string[]): FilterSpecification =>
 const slugOf = (sel: Selection | null, kind: Selection["kind"]) =>
   sel?.kind === kind ? sel.slug : null;
 
-/** The one line under a road's name: how high it goes and what kind of road it is. */
-const roadSubtitle = (row: PassRow, w: Messages) =>
+/**
+ * The one line under a road's name: how high it goes and what kind of road it
+ * is – and, for a shadow, why it is grey.
+ */
+const roadSubtitle = (row: PassRow, w: Messages, ghost = false) =>
   [
     fmtUnit(row.pass.elevation, "m", 0, w.lang),
     typeWord(row.pass.type, w),
     surfaceWord(row.pass.surface, w),
+    ghost && w.map.filteredOut,
   ]
     .filter(Boolean)
     .join(" · ");
+
+/** A road by slug, among the drawn ones or else the shadows – and which of the two. */
+const roadAt = (
+  drawn: readonly PassRow[],
+  ghosts: readonly PassRow[],
+  slug: string | null,
+): { row: PassRow | undefined; ghost: boolean } => {
+  const row = drawn.find((r) => r.pass.slug === slug);
+  if (row) return { ghost: false, row };
+  const ghost = ghosts.find((r) => r.pass.slug === slug);
+  return { ghost: ghost !== undefined, row: ghost };
+};
+
+/** The shadows: every road the filters leave out, but the selected one, which is drawn whole. */
+const shadows = (ghosts: readonly PassRow[], selPass: string | null) =>
+  collection<GhostProps>(
+    ghosts
+      .filter((row) => row.pass.slug !== selPass)
+      .map((row) => ({
+        at: [row.pass.lon, row.pass.lat],
+        props: {
+          fame: row.pass.fame,
+          name: row.pass.name,
+          rank: rankOf(row.pass),
+          slug: row.pass.slug,
+        },
+      })),
+  );
 
 const labelled = (tags: readonly Tag[], w: Messages) =>
   tags.map((tag) => [tag, tagLabel(tag, w)] as const);
@@ -227,6 +279,7 @@ const haloPx = ({ accuracy, lat }: Fix) =>
 export const buildScene = (input: SceneInput): Scene => {
   const {
     env,
+    ghosts,
     hovered,
     profileCursor,
     rows,
@@ -246,8 +299,12 @@ export const buildScene = (input: SceneInput): Scene => {
   const hoverTour = slugOf(hovered, "tour");
   const hoverTown = slugOf(hovered, "town");
 
+  // A shadow that is selected is drawn whole: dot, ascents and all.
+  const selGhost = ghosts.find((r) => r.pass.slug === selPass);
+  const drawn = selGhost ? [...rows.pass, selGhost] : rows.pass;
+
   const routeState: Record<string, RouteState> = {};
-  for (const row of rows.pass) {
+  for (const row of drawn) {
     const { slug } = row.pass;
     for (const [i] of row.pass.ascents.entries())
       routeState[ascentKey(slug, i)] = {
@@ -268,9 +325,7 @@ export const buildScene = (input: SceneInput): Scene => {
     isShown(shown, "tour", tour.slug),
   );
 
-  const passRow = hoverPass
-    ? rows.pass.find((r) => r.pass.slug === hoverPass)
-    : undefined;
+  const { ghost: ghostRow, row: passRow } = roadAt(drawn, ghosts, hoverPass);
   const townRow = hoverTown
     ? rows.town.find((r) => r.town.slug === hoverTown)
     : undefined;
@@ -293,7 +348,7 @@ export const buildScene = (input: SceneInput): Scene => {
       return {
         anchor: [markedPass.pass.lon, markedPass.pass.lat],
         name: markedPass.pass.name,
-        subtitle: roadSubtitle(markedPass, w),
+        subtitle: roadSubtitle(markedPass, w, ghostRow),
         tags: labelled(markedPass.pass.tags ?? [], w),
       };
     if (markedTown)
@@ -386,6 +441,7 @@ export const buildScene = (input: SceneInput): Scene => {
       })),
       type: "FeatureCollection",
     },
+    ghosts: shadows(shown.passes ? ghosts : [], selPass),
     hover: {
       hull: (markedTown && townReach[markedTown.town.slug]) ?? null,
       mark: collection<HoverProps>(
@@ -417,7 +473,7 @@ export const buildScene = (input: SceneInput): Scene => {
     },
     opening: opening ?? bounds,
     passes: collection<PassProps>(
-      (shown.passes ? rows.pass : []).map((row) => ({
+      (shown.passes ? drawn : []).map((row) => ({
         at: [row.pass.lon, row.pass.lat],
         props: {
           fame: row.pass.fame,
@@ -432,7 +488,7 @@ export const buildScene = (input: SceneInput): Scene => {
       })),
     ),
     routes: {
-      filter: slugFilter(shown.passes ? rows.pass.map((r) => r.pass.slug) : []),
+      filter: slugFilter(shown.passes ? drawn.map((r) => r.pass.slug) : []),
       state: routeState,
     },
     tours: {

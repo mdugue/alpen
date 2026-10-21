@@ -109,6 +109,12 @@ export const BEAUTY_OPTIONS = [
  * Sormano – and "only the ones everybody knows" is exactly the question
  * somebody planning their first Alpine week asks.
  */
+/**
+ * Where a classic starts on the fame scale – what the "Klassiker" chip keeps
+ * and what the app opens on. The rest stay on the map as shadows
+ * (`Scene.ghosts`), and a search looks past the floor (`fameFloor`).
+ */
+export const CLASSIC_FAME = 4;
 export const FAME_OPTIONS = [
   [1, { kind: "any" }],
   [3, { kind: "from", n: 3 }],
@@ -245,6 +251,10 @@ export interface Filters {
    * tours: a tour needs one pass that clears the lower bounds (elevation,
    * fame, beauty, min. difficulty) and every pass has to respect the upper
    * bounds (max. difficulty, traffic). Towns see only search and favourites.
+   *
+   * The fame floor is the one a search looks past: whoever types a name knows
+   * what they want, and the classics the app opens on must not hide it
+   * (`fameFloor`, lib/rows.ts).
    */
   minFame: number;
   minElevation: number;
@@ -317,7 +327,9 @@ export const DEFAULT_FILTERS: Filters = {
   maxWetDays: WET_NONE,
   minBeauty: RATING_MIN,
   minElevation: 0,
-  minFame: 1,
+  // The classics, not everything: three hundred roads read as noise on a first
+  // look, and the chip that lifts it stands on the map (`ClassicsSwitch`).
+  minFame: CLASSIC_FAME,
   onDate: false,
   pastEditions: false,
   period: 10,
@@ -330,6 +342,13 @@ export const DEFAULT_FILTERS: Filters = {
   tourTypes: ALL_TOUR_TYPES,
   types: ALL_TYPES,
 };
+
+/**
+ * No filter at all: every road, the classics the app opens on included – what
+ * "Filter zurücksetzen" goes back to (`resetFilters`) and what the map's
+ * shadows and the compare sheet are counted against.
+ */
+export const NO_FILTERS: Filters = { ...DEFAULT_FILTERS, minFame: RATING_MIN };
 
 export interface MapView {
   lat: number;

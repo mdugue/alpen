@@ -68,6 +68,7 @@ const town: TownRow = { areas: [], favorite: false, town: bormio };
 const scene = (extra: Partial<SceneInput> = {}) =>
   buildScene({
     env: { coarse: false },
+    ghosts: [],
     hovered: null,
     profileCursor: null,
     rows: {
@@ -104,6 +105,7 @@ describe("the first scene", () => {
     ]);
     expect(of(calls, "data")).toEqual([
       SOURCE.passes,
+      SOURCE.ghosts,
       SOURCE.towns,
       SOURCE.destinations,
       SOURCE.destinationLabels,

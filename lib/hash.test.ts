@@ -204,7 +204,7 @@ describe("serializeHash", () => {
         maxTraffic: 3,
         minBeauty: 4,
         minElevation: 2000,
-        minFame: 4,
+        minFame: 3,
         period: 6,
         query: "gal",
         sort: "traffic",
@@ -216,7 +216,7 @@ describe("serializeHash", () => {
     const back = parseHash(hash);
     expect(back.filters.period).toBe(6);
     expect(back.filters.status).toEqual(["open"]);
-    expect(back.filters.minFame).toBe(4);
+    expect(back.filters.minFame).toBe(3);
     expect(back.filters.minElevation).toBe(2000);
     expect(back.filters.difficulty).toEqual([2, 5]);
     expect(back.filters.maxTraffic).toBe(3);
@@ -275,7 +275,8 @@ const ROWS = {
   maxWetDays: { key: "w", value: 8 },
   minBeauty: { key: "be", value: 4 },
   minElevation: { key: "m", value: 2000 },
-  minFame: { key: "f", value: 4 },
+  // The app opens on the classics, so "every road" is what a link spells out.
+  minFame: { key: "f", value: 1 },
   // The half-month is the one key every link carries: it is what the app opens
   // on, so it is written even when it equals the default.
   onDate: { key: "k", value: true },
@@ -338,7 +339,7 @@ describe("every filter key", () => {
         }),
       ),
     ).toBe(
-      "a=pass,spur&b=30&be=4&bl=gravel,mixed&c=46.5253,10.4541&d=2-4&e=toll&f=4&g=Jura&h=22&k=true&m=2000&o=beauty&pi=60&q=stelvio&r=event,permanent&s=open,risky&t=6.5&v=3&w=8&y=true&z=9.75",
+      "a=pass,spur&b=30&be=4&bl=gravel,mixed&c=46.5253,10.4541&d=2-4&e=toll&f=1&g=Jura&h=22&k=true&m=2000&o=beauty&pi=60&q=stelvio&r=event,permanent&s=open,risky&t=6.5&v=3&w=8&y=true&z=9.75",
     );
   });
 

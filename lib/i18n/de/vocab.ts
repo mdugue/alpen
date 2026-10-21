@@ -35,6 +35,8 @@ export const vocab = {
   /** The chips of the filter panel and their applied form. */
   filter: {
     beauty: "Schönheit {option}",
+    /** The fame floor the app opens on (`CLASSIC_FAME`). */
+    classics: "Klassiker",
     /** A window of levels; one level alone is `difficultyOne`. */
     difficulty: "Schwierigkeit {lo}–{hi}",
     difficultyOne: "Schwierigkeit {level}",

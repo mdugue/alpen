@@ -68,6 +68,7 @@ const REACH: Record<string, [number, number][]> = {
 
 const input = (extra: Partial<SceneInput> = {}): SceneInput => ({
   env: { coarse: false },
+  ghosts: [],
   hovered: null,
   profileCursor: null,
   rows: {
@@ -91,6 +92,8 @@ const filtered = (filter: unknown): string[] =>
 
 const passMark = (scene: Scene, slug: string) =>
   scene.passes.features.find((f) => f.properties.slug === slug)?.properties;
+const ghostMark = (scene: Scene) =>
+  scene.ghosts.features.map((f) => f.properties);
 const townMark = (scene: Scene, slug: string) =>
   scene.towns.features.find((f) => f.properties.slug === slug)?.properties;
 
@@ -295,6 +298,49 @@ describe("hover", () => {
       name: "Bormio",
       subtitle: null,
       tags: [["hotels", "Bike-Hotels"]],
+    });
+  });
+
+  describe("the roads the filters leave out", () => {
+    const ghost = passRow(
+      makePass("small", 30, { fame: 2, name: "Kleiner Pass", type: "spur" }),
+      { status: "closed" },
+    );
+
+    test("are shadows: no status, no lines, their rank for the ladder", () => {
+      const scene = buildScene(input({ ghosts: [ghost] }));
+      expect(ghostMark(scene)).toEqual([
+        { fame: 2, name: "Kleiner Pass", rank: 1, slug: "small" },
+      ]);
+      expect(passMark(scene, "small")).toBeUndefined();
+      expect(filtered(scene.routes.filter)).not.toContain("small");
+    });
+
+    test("are drawn whole once selected, lines and all", () => {
+      const scene = buildScene(
+        input({ ghosts: [ghost], selection: { kind: "pass", slug: "small" } }),
+      );
+      expect(ghostMark(scene)).toEqual([]);
+      expect(passMark(scene, "small")).toMatchObject({
+        selected: 1,
+        status: "closed",
+      });
+      expect(filtered(scene.routes.filter)).toContain("small");
+    });
+
+    test("say why they are grey under the pointer", () => {
+      const scene = buildScene(
+        input({ ghosts: [ghost], hovered: { kind: "pass", slug: "small" } }),
+      );
+      expect(scene.hover.popup?.subtitle).toEndWith("· nicht im Filter");
+      expect(scene.hover.mark.features).toHaveLength(1);
+    });
+
+    test("go with the roads when the roads are off the map", () => {
+      const scene = buildScene(
+        input({ ghosts: [ghost], shown: { ...ALL_SHOWN, passes: false } }),
+      );
+      expect(scene.ghosts.features).toEqual([]);
     });
   });
 

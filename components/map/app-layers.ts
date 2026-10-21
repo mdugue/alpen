@@ -257,6 +257,8 @@ export const applyBase = (m: MLMap, id: string, s: Scheme, lang: Lang) => {
 
 /** The dot's size at the two zooms it is given at (`SIZE_ZOOMS`), as base + per fame. */
 const SIZE = { far: [2, 1.1], near: [4, 1.8] } as const;
+/** A shadow's radius at the two size zooms and its opacity: present, not loud. */
+const GHOST = { opacity: 0.55, radius: [1.6, 3.2] } as const;
 /** How big and how opaque a newcomer is at the step it joins (`newcomerBelow`). */
 const QUIET = { opacity: 0.45, size: 0.6 } as const;
 
@@ -393,6 +395,10 @@ export const appLayers = (
   const hoveredLine = ["==", ["feature-state", "hovered"], 1];
   const isSelected = ["==", ["get", "selected"], 1] as const;
   const isFavorite = ["==", ["get", "favorite"], 1] as const;
+  /** A shadow is drawn where a dot of its rank would be. */
+  const ghostFilter = prominenceFilter((minRank) =>
+    minRank === null ? true : [">=", ["get", "rank"], minRank],
+  ) as never;
   /** An unpaved road's dot and line (plan 27): a ring, and a dash over the line. */
   const isUnpavedDot: ExpressionSpecification = [
     "!=",
@@ -710,6 +716,33 @@ export const appLayers = (
       },
       source: SOURCE.tours,
       type: "symbol",
+    },
+    // The roads the filters leave out, as shadows (`Scene.ghosts`): a small
+    // dot in the muted grey the app says "no answer" in, no ring, no status,
+    // no name. They thin out by the same ladder as the dots – three hundred
+    // grey specks would be the noise the classics are there to avoid – and
+    // lie under every real mark, which wins the pointer too (`HIT_GROUPS`).
+    {
+      filter: ghostFilter,
+      id: LAYERS.ghost.mark,
+      paint: {
+        "circle-color": colors.unknown,
+        "circle-opacity": byLadder(() => GHOST.opacity, QUIET.opacity),
+        "circle-pitch-alignment": "map",
+        "circle-radius": byLadder(
+          (stop) =>
+            GHOST.radius[0] +
+            ((stop - SIZE_ZOOMS.far) / (SIZE_ZOOMS.near - SIZE_ZOOMS.far)) *
+              (GHOST.radius[1] - GHOST.radius[0]),
+          QUIET.size,
+        ),
+      },
+      source: SOURCE.ghosts,
+      type: "circle",
+    },
+    {
+      ...hitPoint(LAYERS.ghost.hit, SOURCE.ghosts),
+      filter: ghostFilter,
     },
     hitPoint(LAYERS.town.hit, SOURCE.towns),
     {

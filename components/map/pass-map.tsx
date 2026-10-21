@@ -81,7 +81,7 @@ import { buildScene } from "@/lib/map-scene";
 import type { Scene } from "@/lib/map-scene";
 import type { TownReach } from "@/lib/nearby";
 import { entityKey } from "@/lib/route-key";
-import type { Rows } from "@/lib/rows";
+import type { PassRow, Rows } from "@/lib/rows";
 import type { LatLon } from "@/lib/types";
 import { useGeolocation } from "@/lib/use-geolocation";
 import type { MapEnvironment } from "@/lib/use-media-query";
@@ -95,6 +95,8 @@ interface Props {
    * draws; nothing is translated on the way in.
    */
   rows: Rows;
+  /** The roads the filters leave out, drawn as grey shadows (`Scene.ghosts`). */
+  ghosts: readonly PassRow[];
   /** The "auf der Karte" switches: the layer toggle on top of the lists. */
   shown: Shown;
   /**
@@ -229,6 +231,7 @@ setWorkerUrl("/maplibre/maplibre-gl-worker.mjs");
 
 export const PassMap = ({
   rows,
+  ghosts,
   shown,
   townReach,
   assets,
@@ -283,6 +286,7 @@ export const PassMap = ({
    */
   const scene = buildScene({
     env: { coarse: env.coarsePointer },
+    ghosts,
     hovered,
     profileCursor,
     rows,
@@ -434,6 +438,7 @@ export const PassMap = ({
         [SOURCE.you]: { data: EMPTY, type: "geojson" },
         [SOURCE.destinationLabels]: { data: EMPTY, type: "geojson" },
         [SOURCE.destinations]: { data: EMPTY, type: "geojson" },
+        [SOURCE.ghosts]: { data: EMPTY, type: "geojson" },
         [SOURCE.hover]: { data: EMPTY, type: "geojson" },
         [SOURCE.passes]: { data: EMPTY, type: "geojson" },
         [SOURCE.reach]: { data: EMPTY, type: "geojson" },

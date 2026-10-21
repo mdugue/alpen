@@ -1,6 +1,11 @@
 import { describe, expect, test } from "bun:test";
 
-import { ALL_STATUS, ALL_TYPES, DEFAULT_FILTERS } from "@/lib/app-state";
+import {
+  ALL_STATUS,
+  ALL_TYPES,
+  DEFAULT_FILTERS,
+  NO_FILTERS,
+} from "@/lib/app-state";
 import type { Filters } from "@/lib/app-state";
 import {
   appliedFilters,
@@ -13,7 +18,7 @@ import {
 import { DE } from "@/lib/i18n/dictionaries";
 
 const filters = (over: Partial<Filters> = {}): Filters => ({
-  ...DEFAULT_FILTERS,
+  ...NO_FILTERS,
   ...over,
 });
 
@@ -115,6 +120,27 @@ describe("hasSecondaryFilters", () => {
     expect(hasSecondaryFilters(filters({ maxTraffic: 2 }))).toBe(true);
     // A group toggled off and on again is its default, whatever the array.
     expect(hasSecondaryFilters(filters({ types: [...ALL_TYPES] }))).toBe(false);
+  });
+});
+
+describe("the classics the app opens on", () => {
+  test("are one applied chip, named as on the map, and the reset lifts them", () => {
+    const opening = { ...DEFAULT_FILTERS };
+    expect(appliedFilters(opening, DE).map((c) => c.label)).toEqual([
+      "Klassiker",
+    ]);
+    expect(appliedFilters(filters({ minFame: 3 }), DE)[0]?.label).toBe(
+      "Bekanntheit ab 3",
+    );
+    expect(resetFilters(opening).minFame).toBe(1);
+  });
+
+  test("neither the classics nor every road opens the second half", () => {
+    // Both are answered by the chip on the map; only a floor it does not carry
+    // needs the panel.
+    expect(hasSecondaryFilters({ ...DEFAULT_FILTERS })).toBe(false);
+    expect(hasSecondaryFilters(filters({ minFame: 1 }))).toBe(false);
+    expect(hasSecondaryFilters(filters({ minFame: 5 }))).toBe(true);
   });
 });
 

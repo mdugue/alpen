@@ -2,12 +2,22 @@
 export const map = {
   /** The compass, shown once the map is turned away from north. */
   alignNorth: "Nach Norden ausrichten",
+  /** The second chip of the switch on the map (`ClassicsSwitch`): every road. */
+  allRoads: "Alle",
   /** MapLibre's own ⓘ, through its `locale` option. */
   attribution: "Quellenangaben",
   /** The legend of the view menu's first group. */
   base: "Grundkarte",
+  /** The switch on the map between the classics and every road (`ClassicsSwitch`). */
+  classics: "Klassiker",
+  classicsGroup: "Welche Straßen die Karte zeigt",
+  classicsHint:
+    "Die Klassiker – Bekanntheit 4 und 5. Die übrigen Straßen bleiben als graue Punkte auf der Karte.",
+  classicsSearching: "Die Suche findet alle Straßen, auch ohne „Alle“.",
   /** The one overlay: waymarked cycling routes. */
   cycleRoutes: "Radrouten",
+  /** The hover line of a road the filters leave out, drawn as a grey shadow. */
+  filteredOut: "nicht im Filter",
   fit: "Ansicht einpassen",
   fitHint: "Ansicht einpassen – erneut für die ganzen Alpen",
   hillshade: "Relief-Schummerung",

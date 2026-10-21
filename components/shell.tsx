@@ -35,6 +35,12 @@ interface Props {
   /** The map, told what the shell covers of it. */
   map: (inset: Inset) => ReactNode;
   header: ReactNode;
+  /**
+   * The one filter that stands on the map (`ClassicsSwitch`): in the map's
+   * top-left corner, clear of the panels and of the map's own tools on the
+   * right, at every width.
+   */
+  overlay: ReactNode;
   /** The season band and, on a phone, the two ways into the drawers. */
   band: ReactNode;
   /** The list, once per place it stands: the desktop panel and the drawer. */
@@ -72,6 +78,7 @@ export const Shell = ({
   map,
   mobile,
   onBack,
+  overlay,
   selection,
   sheet,
   sidebar,
@@ -148,6 +155,10 @@ export const Shell = ({
       {/* The map's own middle: a box below the header that the floating
           panels fill on desktop and that the season bar ends on a phone. */}
       <div className="pointer-events-none relative flex min-h-0 flex-1 flex-col justify-end">
+        <div className="pointer-events-auto absolute top-3 left-3 z-10 lg:left-(--shell-left)">
+          {overlay}
+        </div>
+
         {!mobile && sidebarOpen && (
           <aside
             ref={listRef}

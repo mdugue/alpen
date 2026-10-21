@@ -1,6 +1,6 @@
 import { describe, expect, test } from "bun:test";
 
-import { DEFAULT_FILTERS } from "@/lib/app-state";
+import { CLASSIC_FAME, DEFAULT_FILTERS, NO_FILTERS } from "@/lib/app-state";
 import type { Filters } from "@/lib/app-state";
 import { membersOf } from "@/lib/destination";
 import { DE } from "@/lib/i18n/dictionaries";
@@ -13,6 +13,7 @@ import {
   buildTownRows,
   currentBar,
   facetCount,
+  fameFloor,
   hasPastEditions,
   latestEditions,
   nestTowns,
@@ -42,7 +43,7 @@ import type {
 } from "@/lib/types";
 
 const filters = (over: Partial<Filters> = {}): Filters => ({
-  ...DEFAULT_FILTERS,
+  ...NO_FILTERS,
   period: 8,
   ...over,
 });
@@ -212,6 +213,21 @@ const bucketed = (over: Partial<ClimateBucket>): ClimateYear =>
 const periodIndexOf = (t: number) => PERIODS.indexOf(t);
 
 describe("buildPassRows", () => {
+  test("the app opens on the classics, and a search looks past them", () => {
+    const opening = { ...DEFAULT_FILTERS, period: 8 as const };
+    expect(
+      buildPassRows(passes, opening, inputs(years)).map((r) => r.pass.slug),
+    ).toEqual(["hoch"]);
+    // A name typed finds the small pass the classics leave out.
+    expect(
+      buildPassRows(passes, { ...opening, query: "winter" }, inputs(years)).map(
+        (r) => r.pass.slug,
+      ),
+    ).toEqual(["winter"]);
+    expect(fameFloor({ ...opening, query: "  " })).toBe(CLASSIC_FAME);
+    expect(fameFloor({ ...opening, query: "w" })).toBe(1);
+  });
+
   test("filters by elevation, fame, search and favourites", () => {
     expect(
       buildPassRows(passes, filters({ minElevation: 2000 }), inputs(years)).map(

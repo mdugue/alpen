@@ -19,6 +19,8 @@ export const SOURCE = {
   /** One point per area, where its name stands (a polygon labels itself once per tile). */
   destinationLabels: "destination-labels",
   destinations: "destinations",
+  /** The roads the filters leave out, as shadows (`Scene.ghosts`). */
+  ghosts: "ghosts",
   hover: "hover",
   passes: "passes",
   reach: "reach",
@@ -88,7 +90,7 @@ export const TOUR_PARTS = {
 } as const;
 
 /**
- * The five kinds the map draws. `route` is a pass's ascents: its own lines and
+ * The six kinds the map draws. `route` is a pass's ascents: its own lines and
  * its own hit layer, but never its own selection – an ascent belongs to its
  * pass, which is what `pick` answers with. `destination` is the outline of
  * an area under everything else, thinner past the overview
@@ -102,6 +104,17 @@ export const LAYERS = {
     labels: ["destinations-label"],
     mark: "destinations",
     source: SOURCE.destinations,
+  },
+  /**
+   * A road the filters leave out: a shadow of its dot, and nothing else – no
+   * name, no lines. It answers the pointer as its pass, below every road the
+   * filters kept, so a shadow never takes a click meant for a real mark.
+   */
+  ghost: {
+    hit: "ghosts-hit",
+    labels: [],
+    mark: "ghosts",
+    source: SOURCE.ghosts,
   },
   pass: {
     hit: "passes-hit",
@@ -175,6 +188,7 @@ export const HIT_GROUPS: readonly (readonly string[])[] = [
   [...LAYERS.tour.labels],
   [LAYERS.route.hit],
   [LAYERS.tour.hit],
+  [LAYERS.ghost.hit],
   // An area is the least specific answer there is: its name is a target,
   // the outline only answers where nothing else does.
   [...LAYERS.destination.labels],

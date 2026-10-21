@@ -6,9 +6,11 @@ import {
   ALL_TYPES,
   DEFAULT_FILTERS,
   BEAUTY_OPTIONS,
+  CLASSIC_FAME,
   ELEVATION_OPTIONS,
   FAME_OPTIONS,
   HEAT_OPTIONS,
+  NO_FILTERS,
   pickedMembers,
   RATING_MAX,
   RATING_MIN,
@@ -166,15 +168,19 @@ export const appliedFilters = (f: Filters, w: Messages): AppliedFilter[] => {
       }),
       (g) => ({ ...g, minBeauty: RATING_MIN }),
     );
-  if (f.minFame > 1)
+  if (f.minFame > RATING_MIN)
     add(
       "fame",
-      fill(v.filter.fame, {
-        option: optionLabel(FAME_OPTIONS, f.minFame, w),
-      }),
+      // The floor the app opens on has a name of its own, the one its chip
+      // on the map carries.
+      f.minFame === CLASSIC_FAME
+        ? v.filter.classics
+        : fill(v.filter.fame, {
+            option: optionLabel(FAME_OPTIONS, f.minFame, w),
+          }),
       (g) => ({
         ...g,
-        minFame: 1,
+        minFame: RATING_MIN,
       }),
     );
   const heat = optionLabel(HEAT_OPTIONS, f.maxValleyTmax, w);
@@ -211,10 +217,11 @@ export const filterCount = (f: Filters, w: Messages) =>
 /**
  * Back to no filter at all. The period and the sort survive it: the
  * half-month is the app's one domain control and lives in the season bar, and
- * the sort is a preference rather than a decision about what is shown.
+ * the sort is a preference rather than a decision about what is shown. No
+ * filter means every road, so the classics the app opens on go too.
  */
 export const resetFilters = (f: Filters): Filters => ({
-  ...DEFAULT_FILTERS,
+  ...NO_FILTERS,
   period: f.period,
   sort: f.sort,
 });
@@ -258,6 +265,10 @@ export const SECONDARY_FILTERS = [
  */
 export const hasSecondaryFilters = (f: Filters) =>
   SECONDARY_FILTERS.some((key) => {
+    // The classics and every road are both answered by the chip on the map;
+    // only a floor that chip does not carry needs the panel open.
+    if (key === "minFame")
+      return f.minFame !== RATING_MIN && f.minFame !== CLASSIC_FAME;
     const value = f[key];
     const initial = DEFAULT_FILTERS[key];
     return Array.isArray(value) && Array.isArray(initial)

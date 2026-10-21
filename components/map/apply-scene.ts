@@ -179,6 +179,7 @@ const POINT_SOURCES: [
   (s: Scene) => Parameters<typeof samePoints>[0],
 ][] = [
   [SOURCE.passes, (s) => s.passes],
+  [SOURCE.ghosts, (s) => s.ghosts],
   [SOURCE.towns, (s) => s.towns],
   [SOURCE.destinations, (s) => s.destinations],
   [SOURCE.destinationLabels, (s) => s.destinationLabels],

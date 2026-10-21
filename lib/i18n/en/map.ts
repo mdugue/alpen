@@ -3,9 +3,16 @@ import type { Layout } from "../fill";
 
 export const map = {
   alignNorth: "Point north",
+  allRoads: "All",
   attribution: "Sources",
   base: "Base map",
+  classics: "Classics",
+  classicsGroup: "Which roads the map shows",
+  classicsHint:
+    "The classics – fame 4 and 5. The other roads stay on the map as grey dots.",
+  classicsSearching: "Search finds every road, with or without “All”.",
   cycleRoutes: "Cycle routes",
+  filteredOut: "outside the filters",
   fit: "Fit the view",
   fitHint: "Fit the view – again for the whole of the Alps",
   hillshade: "Hillshade",

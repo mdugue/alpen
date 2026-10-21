@@ -3,6 +3,7 @@
 import { useReducer, useRef, useState } from "react";
 
 import { AppHeader } from "@/components/app-header";
+import { ClassicsSwitch } from "@/components/classics-switch";
 import { useT } from "@/components/i18n";
 import { PassMap } from "@/components/map/pass-map";
 import { DetailPanel } from "@/components/panel/detail-panel";
@@ -14,12 +15,7 @@ import { Sidebar } from "@/components/sidebar/sidebar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import {
-  ALL_RANGES,
-  DEFAULT_FILTERS,
-  initialState,
-  reduce,
-} from "@/lib/app-state";
+import { ALL_RANGES, initialState, NO_FILTERS, reduce } from "@/lib/app-state";
 import type {
   Action,
   AppState,
@@ -28,7 +24,7 @@ import type {
   Selection,
 } from "@/lib/app-state";
 import { homeAreasOf } from "@/lib/destination";
-import { filterCount, rangeWord } from "@/lib/filter-summary";
+import { filterCount, rangeWord, resetFilters } from "@/lib/filter-summary";
 import { switchLangHref, useHashAdapter } from "@/lib/hash-adapter";
 import type { PageData } from "@/lib/page-data";
 import { entityKey } from "@/lib/route-key";
@@ -153,6 +149,15 @@ export const Explorer = ({ data, defaultPeriod, children }: Props) => {
     tour: buildTourRows(tours, passIndex, filters, inputs),
     town: buildTownRows(towns, townRanges, filters, inputs, townAreas),
   };
+  /**
+   * The roads the filters leave out, with the status they would have – the
+   * map's grey shadows. Every road the half-month grades, less the ones the
+   * list holds: whatever leaves a road out, the map still says it is there.
+   */
+  const kept = new Set(rows.pass.map((r) => r.pass.slug));
+  const ghosts = buildPassRows(passes, resetFilters(filters), inputs).filter(
+    (r) => !kept.has(r.pass.slug),
+  );
   /** The number on each tab, and on the phone's button that opens the list. */
   const counts = tabCounts(rows);
   /**
@@ -165,7 +170,7 @@ export const Explorer = ({ data, defaultPeriod, children }: Props) => {
     destinationMembers,
     passIndex,
     townIndex,
-    { ...DEFAULT_FILTERS, period: filters.period },
+    { ...NO_FILTERS, period: filters.period },
     inputs,
   );
   const compared = compare
@@ -235,6 +240,7 @@ export const Explorer = ({ data, defaultPeriod, children }: Props) => {
              and `buildScene` (lib/map-scene.ts) reads both. */
             <PassMap
               rows={rows}
+              ghosts={ghosts}
               shown={shown}
               townReach={townReach}
               assets={assets}
@@ -254,6 +260,19 @@ export const Explorer = ({ data, defaultPeriod, children }: Props) => {
               langHref={(to) => switchLangHref(state, to)}
             />
           )}
+          overlay={
+            <ClassicsSwitch
+              minFame={filters.minFame}
+              countWith={(minFame) => countWith({ minFame })}
+              searching={filters.query.trim() !== ""}
+              onChange={(minFame) =>
+                dispatch({
+                  type: "filters",
+                  update: (f) => ({ ...f, minFame }),
+                })
+              }
+            />
+          }
           header={
             <AppHeader
               bar={bar}
