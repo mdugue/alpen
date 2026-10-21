@@ -456,6 +456,13 @@ A token's popover belongs to the bar rather than to the token, so a chip that
 lifts its own criterion ("Alle" on the fame floor) leaves the token standing,
 greyed, until the popover closes, instead of pulling it away under the thumb.
 
+Every piece of the bar – each token, the "+", "Standard" – is a pill of the
+map's own glass at the height of the map tools in the other corner (`size-9`),
+and the bar between them is bare. The tokens were first grey chips on one glass
+strip: smaller than every other control on the map and opaque, they read as a
+form laid over it. A strip of glass around glass pills would also stack two
+translucent layers into an opaque one.
+
 What the bar knows comes from one table, `CRITERIA` in
 `lib/filter-summary.ts`: the order of the tokens, the groups of the "+" menu,
 and – through `appliedFilters` – the token's label and the update its × makes.

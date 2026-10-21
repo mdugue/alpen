@@ -25,7 +25,16 @@ import {
 import type { CriterionId } from "@/lib/filter-summary";
 import { fill } from "@/lib/i18n/fill";
 import { CLASSIC_FAME } from "@/lib/regions";
-import { cn, MAP_CLUSTER, TOUCH_CONTROL, TOUCH_ICON } from "@/lib/utils";
+import { cn, MAP_CLUSTER, TOUCH_CONTROL } from "@/lib/utils";
+
+/**
+ * What every piece of the bar is made of: the map's own glass, at the height
+ * of the map tools in the opposite corner (`TOOL` in `pass-map.tsx`), so the
+ * filters read as more of the same furniture rather than as a form laid on
+ * the map. Each piece is its own surface, and the bar between them is bare –
+ * a glass bar around glass pills would stack two of them (`GLASS`).
+ */
+const PIECE = cn(MAP_CLUSTER, "border-border h-9 shrink-0 rounded-full border");
 
 /** The popover every editor sits in: wide enough for five chips with counts. */
 const EDITOR = "w-auto max-w-[min(22rem,calc(100vw-1.5rem))] gap-3 p-3";
@@ -72,13 +81,14 @@ const Token = ({
   return (
     <span
       className={cn(
-        "bg-secondary text-secondary-foreground flex shrink-0 items-center rounded-full font-medium transition-opacity",
+        PIECE,
+        "flex items-center font-medium transition-opacity",
         (dimmed || muted) && "opacity-60",
       )}
       title={dimmed ? words.searching : undefined}
     >
       {editor === null ? (
-        <span className="pr-1 pl-3 text-xs">{value}</span>
+        <span className="pr-1 pl-3.5 text-xs">{value}</span>
       ) : (
         <Popover open={open} onOpenChange={onOpenChange}>
           <PopoverTrigger
@@ -87,10 +97,7 @@ const Token = ({
                 variant="ghost"
                 size="sm"
                 aria-label={fill(words.edit, { label })}
-                className={cn(
-                  "rounded-full rounded-r-none pr-1 pl-3 font-medium hover:bg-transparent",
-                  TOUCH_CONTROL,
-                )}
+                className="h-full rounded-full rounded-r-none pr-1 pl-3.5 font-medium hover:bg-transparent"
               />
             }
           >
@@ -107,10 +114,7 @@ const Token = ({
           size="icon-sm"
           onClick={onRemove}
           aria-label={fill(t.sidebar.filters.remove, { label })}
-          className={cn(
-            "rounded-full rounded-l-none opacity-60 hover:bg-transparent hover:opacity-100",
-            TOUCH_ICON,
-          )}
+          className="h-full w-8 rounded-full rounded-l-none opacity-60 hover:bg-transparent hover:opacity-100"
         >
           <X />
         </Button>
@@ -169,7 +173,7 @@ const AddMenu = ({
             // Never unmounted while its popover is open: the criterion it
             // just set may have been the last one left.
             disabled={groups.length === 0 && !open}
-            className={cn("shrink-0 rounded-full", TOUCH_ICON)}
+            className={cn(PIECE, "size-9")}
           />
         }
       >
@@ -272,9 +276,11 @@ export const FilterBar = ({
       role="group"
       aria-label={t.map.filters.bar}
       className={cn(
-        "flex w-fit max-w-full items-center gap-1 overflow-x-auto p-1",
+        // The padding is room for the pieces' shadows, which a scrolling box
+        // would clip; the margin takes it back, so the first pill still
+        // stands where the shell puts the bar.
+        "-m-1.5 flex w-fit max-w-[calc(100%+0.75rem)] items-center gap-1.5 overflow-x-auto p-1.5",
         "[scrollbar-width:none] [&::-webkit-scrollbar]:hidden",
-        MAP_CLUSTER,
       )}
       data-base-ui-swipe-ignore
     >
@@ -310,7 +316,7 @@ export const FilterBar = ({
           size="sm"
           onClick={() => setFilters(standardFilters)}
           title={fill(t.map.filters.standardHint, { n: CLASSIC_FAME })}
-          className={cn("shrink-0 rounded-full px-2.5", TOUCH_CONTROL)}
+          className={cn(PIECE, "px-3")}
         >
           <RotateCcw data-icon="inline-start" />
           {/* A phone's bar is full of tokens by then; the arrow says it. */}
