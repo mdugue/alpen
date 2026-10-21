@@ -1,6 +1,6 @@
 import type { PageData } from "@/lib/page-data";
 import { GRADE_ORDER, REASON_ORDER, statusOf } from "@/lib/status";
-import type { Year, YearCell, Years } from "@/lib/status";
+import type { Grade, StatusReason, Year, YearCell, Years } from "@/lib/status";
 import type { ClimateBucket } from "@/lib/types";
 
 /**
@@ -44,19 +44,43 @@ interface WireYear {
  * character per reason – its place in `REASON_ORDER` in base 36 – so a cell
  * reads `b`, `g*` or `c*01`. The status is not stored: it follows from the
  * grade (`statusOf`), and the reasons come back in ladder order, which is the
- * order a cell keeps them in.
+ * order a cell keeps them in. Each of those assumptions is checked where the
+ * cell is packed, on the server, so a ladder or a grade that outgrows the
+ * code fails the build rather than painting a pass with someone else's
+ * colour.
  */
 const CELL_SEPARATOR = " ";
 const SNOWY = "*";
 const RADIX = 36;
 
-const packCell = (cell: YearCell): string =>
-  cell.grade[0]! +
-  (cell.snowy ? SNOWY : "") +
-  cell.reasons.map((r) => REASON_ORDER.indexOf(r).toString(RADIX)).join("");
+const reasonCode = (reason: StatusReason): string => {
+  const i = REASON_ORDER.indexOf(reason);
+  if (i === -1 || i >= RADIX)
+    throw new Error(`Grund ${reason} hat keinen Code (REASON_ORDER)`);
+  return i.toString(RADIX);
+};
+
+const gradeOfCode = (code: string): Grade => {
+  const grades = GRADE_ORDER.filter((g) => code.startsWith(g[0]!));
+  if (grades.length !== 1)
+    throw new Error(`Zelle "${code}" nennt keine eindeutige Note`);
+  return grades[0]!;
+};
+
+const packCell = (cell: YearCell): string => {
+  if (cell.status !== statusOf(cell.grade))
+    throw new Error(`Zelle mit ${cell.status} und Note ${cell.grade}`);
+  const code =
+    cell.grade[0]! +
+    (cell.snowy ? SNOWY : "") +
+    cell.reasons.map(reasonCode).join("");
+  if (gradeOfCode(code) !== cell.grade)
+    throw new Error(`Note ${cell.grade} nicht eindeutig kodiert`);
+  return code;
+};
 
 const unpackCell = (code: string): YearCell => {
-  const grade = GRADE_ORDER.find((g) => code.startsWith(g[0]!))!;
+  const grade = gradeOfCode(code);
   const snowy = code[1] === SNOWY;
   return {
     grade,
@@ -90,29 +114,39 @@ const unpackYear = ({ best, cells, limiting }: WireYear): Year => ({
 });
 
 /**
- * One climate bucket as a tuple, in the order of `BUCKET_FIELDS`; the snow
- * cover, which a series may not carry yet, comes last and is left off when
- * it is missing.
+ * One climate bucket as a tuple, in the order of `BUCKET_FIELDS`. Only the
+ * last field may be missing – the snow cover, which a series may not carry
+ * yet – and a tuple leaves it off rather than holding a hole.
  */
-type WireBucket =
-  | [number, number, number, number, number]
-  | [number, number, number, number, number, number];
+type WireBucket = number[];
 type WireClimateYear = (WireBucket | null)[];
 
-const BUCKET_FIELDS = [
-  "frostPct",
-  "snowPct",
-  "tmax",
-  "tmin",
-  "wetPct",
-  "coverPct",
-] as const satisfies (keyof ClimateBucket)[];
+/**
+ * Each field's place in the tuple. A record rather than a list, so a field
+ * added to the schema and not given a place is a type error, not a value lost
+ * on the wire.
+ */
+const BUCKET_PLACE: Record<keyof ClimateBucket, number> = {
+  coverPct: 5,
+  frostPct: 0,
+  snowPct: 1,
+  tmax: 2,
+  tmin: 3,
+  wetPct: 4,
+};
+const BUCKET_FIELDS = (
+  Object.keys(BUCKET_PLACE) as (keyof ClimateBucket)[]
+).toSorted((a, b) => BUCKET_PLACE[a] - BUCKET_PLACE[b]);
 
-const packBucket = (b: ClimateBucket | null): WireBucket | null =>
-  b &&
-  (b.coverPct === undefined
-    ? [b.frostPct, b.snowPct, b.tmax, b.tmin, b.wetPct]
-    : [b.frostPct, b.snowPct, b.tmax, b.tmin, b.wetPct, b.coverPct]);
+const packBucket = (b: ClimateBucket | null): WireBucket | null => {
+  if (!b) return null;
+  const values = BUCKET_FIELDS.map((field) => b[field]);
+  const last = values.at(-1) === undefined ? values.length - 1 : values.length;
+  const tuple = values.slice(0, last);
+  if (tuple.includes(undefined))
+    throw new Error("Nur das letzte Feld eines Klima-Eimers darf fehlen");
+  return tuple as number[];
+};
 
 const unpackBucket = (t: WireBucket | null): ClimateBucket | null =>
   t &&

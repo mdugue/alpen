@@ -7,7 +7,9 @@ import type { PassIndex, TownIndex, Years } from "@/lib/status";
 import type { ClimateYear, Destination, Pass, Tour, Town } from "@/lib/types";
 
 /**
- * Everything the page hands the client, as one value.
+ * Everything the page hands the client, as one value – the shape the
+ * explorer reads. On the wire it travels packed (`PageWire`,
+ * lib/page-wire.ts): `getPageData` packs it and the explorer unpacks it once.
  *
  * `lib/data.ts` promised eleven getters for one bundle, so the explorer had
  * eleven datasets as props and the detail panel eight of them again. None of
