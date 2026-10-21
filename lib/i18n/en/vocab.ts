@@ -30,7 +30,7 @@ export const vocab = {
   filter: {
     beauty: "Beauty {option}",
     /** The fame floor the app opens on (`CLASSIC_FAME`). */
-    classics: "classics",
+    classics: "Classics",
     difficulty: "Difficulty {lo}–{hi}",
     difficultyOne: "Difficulty {level}",
     fame: "Fame {option}",

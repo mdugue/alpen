@@ -32,7 +32,7 @@ export const vocab = {
     IT: "Italien",
     SI: "Slowenien",
   },
-  /** The chips of the filter panel and their applied form. */
+  /** The filter chips and their tokens in the bar over the map. */
   filter: {
     beauty: "Schönheit {option}",
     /** The fame floor the app opens on (`CLASSIC_FAME`). */

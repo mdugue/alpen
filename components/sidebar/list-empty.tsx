@@ -26,9 +26,9 @@ import { fill } from "@/lib/i18n/fill";
  * thing a live-filtering list can do, and this list filters live on every
  * keystroke.
  *
- * The relief line is the same arithmetic the filter panel already runs
- * (`bestRelief`, lib/filter-summary.ts), which was the best idea in the panel
- * and was only ever visible inside it. Here it is a button: the sentence names
+ * The relief line is the arithmetic the old filter panel ran in its count
+ * line (`bestRelief`, lib/filter-summary.ts), which was the best idea in that
+ * panel and was only ever visible inside it. Here it is a button: the sentence names
  * the one filter that would bring the most back, and pressing it lifts exactly
  * that one.
  */

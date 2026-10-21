@@ -172,14 +172,13 @@ Map visibility is always a `Switch` ("auf der Karte"), one per kind, two-state
 buttons are always a `Toggle`. Without a camera or a selection in the hash the
 map opens on the frame the fit button produces, not on a fixed overview.
 
-Below `lg` no panel rests on the map: from the season bar's two buttons, **two**
+Below `lg` no panel rests on the map: from the season bar's button, **two**
 independent `MobileSheet`s (`components/mobile-sheet.tsx`, the Base UI `Drawer`
 with `modal={false}` and snap points), the list and the detail, each mounted
 only while it is open and each with its own snap state (`LIST_SNAPS`,
 `DETAIL_SNAPS` in `lib/app-state.ts`, mounted by `components/shell.tsx`).
-"Liste" opens the list on its list; "Filter" opens the same sheet with the
-filter panel unfolded, which is why that fold is `sheet.filters` in the
-reducer and not state in the sidebar. A tap on the map opens the
+The button opens the list; the filters need no sheet, they stand on the map
+(`FilterBar`, "The filters are a bar over the map"). A tap on the map opens the
 detail over the bare map; a tap on a list row opens it over the list. Whichever
 is in front feeds MapLibre its height as bottom padding when that is more than
 the season bar covers. It was one sheet holding either content, after a stint
@@ -341,11 +340,11 @@ There is no theme toggle and no `next-themes`; the dark tokens sit in a
 used. Delete the `@custom-variant dark (&:is(.dark *))` line that `ui:init`
 writes.
 
-## The sidebar
+## The filters and the sidebar
 
 ### A filter is a chip, and no chip lies
 
-Every filter in the sidebar is the same shape: a small pressable word, outlined
+Every filter is the same shape: a small pressable word, outlined
 while it is off and filled with the primary colour while it is on
 (`FilterChip`). There is no slider and no select among them. A slider is for a
 value where the exact number matters and the scale is wide; a 1–5 editorial
@@ -353,7 +352,7 @@ judgement and four round height thresholds are neither, and on a phone its
 thumb is the one control that is regularly missed – small, indistinguishable
 against the filled track at either end, and it swallows the sheet's swipe. A
 chip is a target with a label that says what it does before it is pressed.
-Three rules keep the panel out of states that answer nothing. A "which of
+Three rules keep the chips out of states that answer nothing. A "which of
 these" set (status, road type) is stored as what stays visible, and the whole
 vocabulary means _no filter_, so nothing reads as pressed then; `toggleMember`
 turns the last one out back into the whole set, so "none selected" – an empty
@@ -383,18 +382,16 @@ liftable. The difficulty cells are the one exception to "what happens if I
 press this": a cell moves a window rather than replacing it, so its number is
 how many roads sit at that level. Counting has its own path rather than going
 through `buildPassRows`: a count needs neither the row objects nor the season
-strip hanging off them, and the panel asks it once per option on every
+strip hanging off them, and an open popover asks it once per option on every
 keystroke. Since [plan 15](./plans/15-pass-year.md) the saving is allocation
 rather than arithmetic – both
 paths read the grades from the precomputed year – but it is still a row per
-road built per option to produce one number. And when a combination does run empty,
-the count line names the single filter that would bring the most back rather
-than saying nothing. What is filtered away is written down outside the panel
-too: `AppliedFilters` turns `appliedFilters()` in `lib/filter-summary.ts` into
-one removable chip per decision, and the same list's length is the badge on the
-trigger, so the two can never disagree. Nothing is applied on a button – the
-count line at the end of the panel says what the current answer is, which is
-what makes live filtering answerable at all.
+road built per option to produce one number. And when a combination does run
+empty, the list's empty state names the single filter that would bring the
+most back (`bestRelief`) rather than saying nothing. Nothing is applied on a
+button: the list, the map and the counts change under every tap, and the token
+in the bar says what is set, which is what makes live filtering answerable at
+all.
 
 One chip also moves the camera: the range ("Gebirge"). A range is a place,
 and "show me the Jura" is answered by the list _and_ the picture – a list of
@@ -410,49 +407,63 @@ link carrying `g=Jura` and no camera opens fitted to what it lists, the way
 every such link does, and one with a camera opens on that. The group shows only once two
 ranges hold a road – a chip row of one is a statement, not a choice.
 
-One pair of chips stands on the map instead of in the panel, at every width:
-"Klassiker | Alle" (`ClassicsSwitch`, `components/classics-switch.tsx`), in the
-map's top-left corner and part of the camera padding (`ShellBars.overlay`). It
-is the panel's fame floor, not a second state – the app opens on the classics
-(`DEFAULT_FILTERS.minFame` is `CLASSIC_FAME`, fame 4 and up), and a default the
-visitor cannot see is a default nobody changes, so the chip that lifts it may
-not be a drawer away on a phone. Each chip carries the count it would leave,
-like every chip; a floor the panel set elsewhere (3, 5) presses neither. Three
-consequences of opening filtered. The applied row and the badge carry the
-classics like any decision, but the panel does not open by itself for them
-(`carriesFilters`), or it would bury the map on every first visit. A search
-looks past the floor (`fameFloor` in `lib/rows.ts`) – whoever types a name
-knows what they want. And the hash always writes the floor (`f`), because a
-link is read with the defaults of the day it is opened: before the classics,
-a link without `f` meant every road. "Filter zurücksetzen" goes to every road
-(`NO_FILTERS`). What the floor leaves out stays on the map as a grey shadow
-(docs/map-rendering.md, "What the filters leave out stays as a shadow").
+The app opens on the classics (`DEFAULT_FILTERS.minFame` is `CLASSIC_FAME`,
+fame 4 and up), and that is the standard the bar returns to (below). Two
+consequences of opening filtered. A search looks past the floor (`fameFloor`
+in `lib/rows.ts`) – whoever types a name knows what they want – and the fame
+token dims while it does. And the hash always writes the floor (`f`), because
+a link is read with the defaults of the day it is opened: before the classics,
+a link without `f` meant every road. What the floor leaves out stays on the
+map as a grey shadow (docs/map-rendering.md, "What the filters leave out stays
+as a shadow").
 
-One group is not in the panel: the kind of tour (`Filters.tourTypes`, the
-hash key `r`) – loop, event, edition, permanent route, multi-day route. It says how a
-tour is ridden, which no road has, so its chips would count zero roads or
-count something other than every chip around them. It rides as one sideways
-row under the tour list's toolbar instead, and its chips count loops
-(`tourFacetCount` in `lib/rows.ts`), disjunctively like the rest; the applied
-row and the badge carry it like any other decision. Two more chips ride in
-that row because they too ask about the tour and not its roads: "Termin"
-(`onDate`, hash `k`) keeps what takes place in the chosen half-month, and
-"Frühere Jahre" (`pastEditions`, hash `y`), shown only when the data holds an
-earlier edition, brings back the years the list hides by default. Hiding
-the older editions is a default rather than a chip that lies: the chip
-carries the count it would add, the row names how many years it stands for,
-and a favourite is never hidden.
+Three criteria ask about the tour and not its roads, and they count loops
+(`tourFacetCount` in `lib/rows.ts`), disjunctively like the rest: the kind of
+tour (`Filters.tourTypes`, the hash key `r`) – loop, event, edition, permanent
+route, multi-day route –, "Termin im Zeitraum" (`onDate`, hash `k`), which
+keeps what takes place in the chosen half-month, and "Frühere Jahre"
+(`pastEditions`, hash `y`), offered only when the data holds an earlier
+edition, which brings back the years the list hides by default. Hiding the
+older editions is a default rather than a chip that lies: the chip carries the
+count it would add, the row names how many years it stands for, and a
+favourite is never hidden.
 
-### The panel scrolls with the lists, not above them
+### The filters are a bar over the map
 
-The sidebar's header is a fixed row and holds only the search field, the
-trigger and the chip row; the panel body itself is the first thing inside the
-scroll container the lists live in. A growing panel inside a fixed row simply
-runs off the bottom of the phone's sheet with no way to reach its lower half,
-and two scroll containers stacked inside one drawer is the other half of the
-same bug. The four decisions a holiday planner makes first (status, difficulty,
-height, bookmarks) are always visible, the eight sharper ones wait behind
-"Weitere Filter", which opens by itself when a link carries one of them.
+There is one place for the filters, and it is not the sidebar: a bar of
+tokens in the map's top-left corner at every width (`FilterBar`,
+`components/filters/filter-bar.tsx`), part of the camera padding
+(`ShellBars.overlay`). The panel it replaced sat inside the list, which on a
+phone is a drawer away from the map it filtered – and a filter nobody can see
+is a filter nobody lifts, least of all the classics the app opens on.
+
+A token says only the value – "Klassiker", "ab 2.000 m", "Jura, Vogesen" –
+because the value is what is read at a glance and the criterion is evident
+from it; the "Bekanntheit ist Klassiker" form of Linear and friends costs a
+phone half its width. Pressing the value opens that criterion's chips in a
+popover, with their counts; its × lifts the criterion and nothing else. The
+"+" lists every criterion not yet set, under the question it answers – where,
+which road, how the half-month treats it, which tour – and opens the chosen
+one in the same popover, so adding a filter is two taps; a criterion that is a
+switch ("Nur Gemerkte", "Termin im Zeitraum", "Frühere Jahre") is set at once,
+because a popover holding one chip asks the question twice. "Standard" stands
+at the end only while the filters are not what the app opens on, and returns
+to the classics with the period, the sort and the search kept
+(`standardFilters`). It is not the empty list's "Alle Filter zurücksetzen"
+(`resetFilters`), which goes to every road and clears the search: a list that
+ran empty asks for everything back, a bar that strayed asks for the start.
+A token's popover belongs to the bar rather than to the token, so a chip that
+lifts its own criterion ("Alle" on the fame floor) leaves the token standing,
+greyed, until the popover closes, instead of pulling it away under the thumb.
+
+What the bar knows comes from one table, `CRITERIA` in
+`lib/filter-summary.ts`: the order of the tokens, the groups of the "+" menu,
+and – through `appliedFilters` – the token's label and the update its × makes.
+Each criterion's chips are one case of `CriterionEditor`
+(`components/filters/criterion-editor.tsx`). The bar scrolls sideways instead
+of wrapping, so its height, which the camera's padding reads, stays one row.
+The sidebar keeps the search and the sort, which filter nothing: the search
+looks past the fame floor, and the sort is a preference.
 
 ### One list at a time, chosen by a tab row
 

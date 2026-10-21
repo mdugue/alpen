@@ -55,9 +55,11 @@ afterAll(() => {
 const PASS_ROW = '[data-row^="pass:"]';
 const GALIBIER = '[data-row="pass:col-du-galibier"]';
 const SLIDER = '[aria-label="Zeitraum"]';
-/** The "Alle" half of the classics switch on the map (`ClassicsSwitch`). */
-const ALL_ROADS =
-  '[role="group"][aria-label="Welche Straßen und Touren gezeigt werden"] button:last-child';
+/** The filter bar over the map (`FilterBar`). */
+const BAR = '[role="group"][aria-label="Filter"]';
+/** The × of one token in the bar, by the token's label. */
+const removeToken = (label: string) =>
+  `${BAR} button[aria-label="Filter „${label}“ entfernen"]`;
 const BACK_TO_LIST = '[aria-label="Zurück zur Liste"]';
 /** A drawer with another one open on top of it – Base UI's own stack state. */
 const STACKED = "[data-slot=drawer-popup][data-nested-drawer-open]";
@@ -65,16 +67,29 @@ const STACKED = "[data-slot=drawer-popup][data-nested-drawer-open]";
 test("1 · loads on the classics, every pass one press away, and a map canvas", () =>
   withPage(app, "loads", {}, async (page) => {
     await page.waitFor(PASS_ROW);
-    // The app opens on the classics, and "Alle" on the map lifts the floor so
-    // every road in the file is a row: both counts come from the data, so a
-    // curation PR does not have to touch this test.
-    expect(await page.count(PASS_ROW)).toBe(
-      passes.filter((p) => p.fame >= CLASSIC_FAME).length,
+    // The app opens on the classics, and the × on their token in the bar
+    // lifts the floor so every road in the file is a row: both counts come
+    // from the data, so a curation PR does not have to touch this test.
+    const classics = passes.filter((p) => p.fame >= CLASSIC_FAME).length;
+    expect(await page.count(PASS_ROW)).toBe(classics);
+    await waitUntil(
+      () => page.evaluate<boolean>("!!window.__alpen?.map"),
+      "the page to hydrate",
     );
-    await page.click(ALL_ROADS);
+    // At the standard there is no way back to offer.
+    expect(
+      await page.count(`${BAR} button[title^="Zurück zum Standard"]`),
+    ).toBe(0);
+    await page.click(removeToken("Klassiker"));
     await waitUntil(
       async () => (await page.count(PASS_ROW)) === passes.length,
-      "every pass a row after pressing Alle",
+      "every pass a row after lifting the classics",
+    );
+    // Off the standard, "Standard" brings the classics back.
+    await page.click(`${BAR} button[title^="Zurück zum Standard"]`);
+    await waitUntil(
+      async () => (await page.count(PASS_ROW)) === classics,
+      "the classics again after Standard",
     );
     await page.waitFor("canvas.maplibregl-canvas");
     // The season band shows a half-month, what most passes are in it and
@@ -197,21 +212,21 @@ test("3b · a path that names nothing says so, and is not indexed", () =>
     },
   ));
 
-test("4 · a status chip narrows the lists and the applied-filter chip undoes it", () =>
+test("4 · a status chip from the bar's + narrows the lists, its token's × undoes it", () =>
   // Early January: nothing is "gut", so the counts and the disabled chip bite.
   withPage(app, "status-filter", { target: "#t=1" }, async (page) => {
     await page.waitFor(PASS_ROW);
     const all = await page.count(PASS_ROW);
-    // The status picker is a row of chips inside the filter panel: no popup
-    // to open, and pressing one narrows the list to it.
-    //
     // The rows are server-rendered, so seeing one does not mean the button
     // has its handler yet; the map is created in an effect, so it does.
     await waitUntil(
       () => page.evaluate<boolean>("!!window.__alpen?.map"),
       "the page to hydrate",
     );
-    await page.clickText("button", "Filter");
+    // The "+" lists the criteria not yet set; choosing one opens its chips
+    // in the same popover.
+    await page.click(`${BAR} button[aria-label="Filter hinzufügen"]`);
+    await page.clickText('[data-slot="popover-content"] button', "Zustand");
     await page.waitFor('[aria-labelledby="f-status"]');
     // Every chip carries how many roads it would leave, counted with its own
     // group's filter lifted. In early January that is zero for "gut", and a
@@ -230,14 +245,12 @@ test("4 · a status chip narrows the lists and the applied-filter chip undoes it
       async () => (await page.count(PASS_ROW)) < all,
       "fewer passes after filtering",
     );
-    // The chip row above the panel undoes exactly that decision again.
-    await page.clickText(
-      '[aria-label="Aktive Filter"] button',
-      "eingeschränkt",
-    );
+    // The token the choice put in the bar undoes exactly that decision.
+    await page.press("Escape");
+    await page.click(removeToken("eingeschränkt"));
     await waitUntil(
       async () => (await page.count(PASS_ROW)) === all,
-      "all passes back after the reset",
+      "all passes back after lifting it",
     );
   }));
 

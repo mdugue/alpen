@@ -10,10 +10,12 @@ import type { Filters } from "@/lib/app-state";
 import {
   appliedFilters,
   bestRelief,
-  carriesFilters,
   difficultyLabel,
   filterCount,
-  hasSecondaryFilters,
+  isStandard,
+  standardFilters,
+  CRITERIA,
+  CRITERION_GROUPS,
   resetFilters,
 } from "@/lib/filter-summary";
 import { DE } from "@/lib/i18n/dictionaries";
@@ -34,7 +36,7 @@ describe("appliedFilters", () => {
     ).toEqual([]);
   });
 
-  test("one chip per criterion, one per road label", () => {
+  test("one token per criterion, in the table's order", () => {
     const chips = appliedFilters(
       filters({
         difficulty: [2, 4],
@@ -53,17 +55,16 @@ describe("appliedFilters", () => {
       DE,
     );
     expect(chips.map((c) => c.label)).toEqual([
-      "nur Gemerkte",
       "Jura, Vogesen",
-      "gut oder eingeschränkt",
-      "Pass, Stichstraße",
-      "Autofrei",
-      "Gletscherstraße",
+      "nur Gemerkte",
+      "Bekanntheit nur 5",
       "Schwierigkeit 2–4",
       "ab 2.000 m",
+      "Pass, Stichstraße",
+      "Autofrei + Gletscherstraße",
       "Verkehr bis 2",
       "Schönheit ab 4",
-      "Bekanntheit nur 5",
+      "gut oder eingeschränkt",
       "Tal unter 26 °C",
       "Regentage bis 8 von 15",
     ]);
@@ -82,7 +83,7 @@ describe("appliedFilters", () => {
     expect(by("status").status).toEqual(ALL_STATUS);
     expect(by("status").types).toEqual(["valley"]);
     expect(by("types").types).toEqual(ALL_TYPES);
-    expect(by("tag:carfree").tags).toEqual(["toll"]);
+    expect(by("tags").tags).toEqual([]);
     expect(by("difficulty").difficulty).toEqual([1, 5]);
     expect(by("difficulty").tags).toEqual(["carfree", "toll"]);
   });
@@ -108,22 +109,6 @@ describe("filterCount", () => {
   });
 });
 
-describe("hasSecondaryFilters", () => {
-  test("opens the second half for every filter in it, and for none outside it", () => {
-    expect(hasSecondaryFilters(filters())).toBe(false);
-    expect(
-      hasSecondaryFilters(filters({ minElevation: 2000, status: ["open"] })),
-    ).toBe(false);
-    // The surface chip sits behind "Weitere Filter" too; a link carrying
-    // "Schotter" must not hide the control that lifts it.
-    expect(hasSecondaryFilters(filters({ surfaces: ["gravel"] }))).toBe(true);
-    expect(hasSecondaryFilters(filters({ tags: ["toll"] }))).toBe(true);
-    expect(hasSecondaryFilters(filters({ maxTraffic: 2 }))).toBe(true);
-    // A group toggled off and on again is its default, whatever the array.
-    expect(hasSecondaryFilters(filters({ types: [...ALL_TYPES] }))).toBe(false);
-  });
-});
-
 describe("the classics the app opens on", () => {
   test("are one applied chip, named as on the map, and the reset lifts them", () => {
     const opening = { ...DEFAULT_FILTERS };
@@ -136,22 +121,62 @@ describe("the classics the app opens on", () => {
     expect(resetFilters(opening).minFame).toBe(1);
   });
 
-  test("count on the badge, but open no panel by themselves", () => {
-    expect(filterCount({ ...DEFAULT_FILTERS }, DE)).toBe(1);
-    expect(carriesFilters({ ...DEFAULT_FILTERS }, DE)).toBe(false);
-    expect(carriesFilters(filters({ minFame: 1 }), DE)).toBe(false);
-    expect(carriesFilters({ ...DEFAULT_FILTERS, maxTraffic: 2 }, DE)).toBe(
-      true,
+  test("are the standard, and the way back to it keeps period, sort and search", () => {
+    expect(isStandard({ ...DEFAULT_FILTERS }, DE)).toBe(true);
+    expect(isStandard(filters({ minFame: 1 }), DE)).toBe(false);
+    expect(isStandard(filters({ minFame: 3 }), DE)).toBe(false);
+    expect(isStandard({ ...DEFAULT_FILTERS, maxTraffic: 2 }, DE)).toBe(false);
+    // Period, sort and search are not filters the bar carries.
+    expect(
+      isStandard(
+        { ...DEFAULT_FILTERS, period: 3, query: "x", sort: "name" },
+        DE,
+      ),
+    ).toBe(true);
+    const back = standardFilters(
+      filters({ maxTraffic: 2, period: 3, query: "gal", sort: "name" }),
     );
-    expect(carriesFilters(filters({ minFame: 3 }), DE)).toBe(true);
+    expect(back).toEqual({
+      ...DEFAULT_FILTERS,
+      period: 3,
+      query: "gal",
+      sort: "name",
+    });
+  });
+});
+
+describe("the criteria table", () => {
+  test("names every applied filter once, in the table's order", () => {
+    const keys = appliedFilters(
+      filters({
+        favoritesOnly: true,
+        maxTraffic: 2,
+        minElevation: 2000,
+        minFame: 4,
+        status: ["open"],
+        tags: ["toll", "carfree"],
+        tourTypes: ["loop"],
+      }),
+      DE,
+    ).map((a) => a.key);
+    const order = CRITERIA.map((c) => c.id as string);
+    expect(keys).toEqual(
+      keys.toSorted((a, b) => order.indexOf(a) - order.indexOf(b)),
+    );
+    expect(new Set(keys).size).toBe(keys.length);
+    expect(keys).toContain("tags");
   });
 
-  test("neither the classics nor every road opens the second half", () => {
-    // Both are answered by the chip on the map; only a floor it does not carry
-    // needs the panel.
-    expect(hasSecondaryFilters({ ...DEFAULT_FILTERS })).toBe(false);
-    expect(hasSecondaryFilters(filters({ minFame: 1 }))).toBe(false);
-    expect(hasSecondaryFilters(filters({ minFame: 5 }))).toBe(true);
+  test("joins the labels into one token, and its × lifts them all", () => {
+    const f = filters({ tags: ["toll", "carfree"] });
+    const tags = appliedFilters(f, DE).find((a) => a.key === "tags");
+    expect(tags?.label).toContain(" + ");
+    expect(tags?.clear(f).tags).toEqual([]);
+  });
+
+  test("lists every criterion under one of the four questions", () => {
+    for (const c of CRITERIA) expect(CRITERION_GROUPS).toContain(c.group);
+    expect(new Set(CRITERIA.map((c) => c.id)).size).toBe(CRITERIA.length);
   });
 });
 

@@ -44,7 +44,7 @@ export interface ShellBars {
   /** The season bar: an edge-to-edge bar on a phone, a card on desktop. */
   season: number;
   /**
-   * The switch standing in the map's top-left corner (`ClassicsSwitch`), a gap
+   * The filter bar standing in the map's top-left corner (`FilterBar`), a gap
    * below the header: what it covers is map a target must not land under.
    * `0` or left out while there is none.
    */

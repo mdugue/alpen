@@ -603,7 +603,7 @@ export const facetCount = (
   inputs: ListInputs,
 ): number => {
   // The same two predicates as `buildPassRows`, without a row per survivor:
-  // the filter panel asks this once per chip on every keystroke.
+  // an open filter popover asks this once per chip on every keystroke.
   const patched = { ...filters, ...patch };
   const q = query(patched, inputs);
   const i = periodIndex(patched.period);

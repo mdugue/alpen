@@ -36,35 +36,25 @@ export const sidebar = {
     resetAll: "Alle Filter zurücksetzen",
     without: "Ohne „{label}“: {n}",
   },
-  /** The filter panel, its trigger and the applied-filter row. */
+  /** The filter chips: their groups, their hints and what a chip leaves. */
   filters: {
-    active: "Aktive Filter",
-    all: "Alle",
     beauty: "Schönheit, 5 ist am schönsten",
-    /** The count line: "12 von 262 Straßen, 3 Touren" – the numbers are styled, so they arrive as parts. */
-    countRoads: "von {total} Straßen",
-    countTours: "Touren",
     difficulty: "Schwierigkeit",
     elevation: "Höhe des Scheitelpunkts",
     /** `n` is where a classic starts (`CLASSIC_FAME`). */
     fame: "Bekanntheit, ab {n} ein Klassiker",
     favoritesOnly: "Nur Gemerkte",
     heat: "Wärme im Tal (abgeleitet)",
-    more: "Weitere Filter",
-    /** The dead end: the number follows, styled, then a full stop. */
-    noRoadsWithout: "Keine Straßen. Ohne „{label}“ wären es ",
     /** The tour chip that keeps the events on the chosen half-month: "Termin Ende Juni". */
     onDate: "Termin {period}",
     onDateHint:
       "Nur Veranstaltungen, deren Termin in den gewählten Halbmonat fällt.",
-    open: "Filter",
     /** The tour chip that brings back the earlier years of a changing event course. */
     pastEditions: "Frühere Jahre",
     pastEditionsHint:
       "Auch die Strecken vergangener Jahre bei Veranstaltungen, die ihre Strecke jedes Jahr ändern.",
     range: "Gebirge",
-    remove: 'Filter „{label}" entfernen',
-    reset: "Zurücksetzen",
+    remove: "Filter „{label}“ entfernen",
     roadType: "Art der Straße",
     /** What a chip would leave, for the screen reader: "3, 12 Straßen". */
     roadsLeft: "{label}, {n} Straßen",

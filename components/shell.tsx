@@ -36,7 +36,7 @@ interface Props {
   map: (inset: Inset) => ReactNode;
   header: ReactNode;
   /**
-   * The one filter that stands on the map (`ClassicsSwitch`): in the map's
+   * The filters, as a bar over the map (`FilterBar`): in the map's
    * top-left corner, clear of the panels and of the map's own tools on the
    * right, at every width.
    */
@@ -158,7 +158,10 @@ export const Shell = ({
       <div className="pointer-events-none relative flex min-h-0 flex-1 flex-col justify-end">
         <div
           ref={overlayRef}
-          className="pointer-events-auto absolute top-3 left-3 z-10 lg:left-(--shell-left)"
+          // As wide as the map between the panel and its tools, so the bar
+          // scrolls rather than running under them; only the bar itself takes
+          // the pointer, never the empty rest of the row.
+          className="absolute top-3 right-16 left-3 z-10 *:pointer-events-auto lg:left-(--shell-left)"
         >
           {overlay}
         </div>
@@ -191,8 +194,8 @@ export const Shell = ({
 
         {/*
          * The season bar. The band is the app's one domain control. On a
-         * phone it runs along the bottom of the screen, with the two ways
-         * on – into the list and into the filters – under it. On desktop
+         * phone it runs along the bottom of the screen, with the way into
+         * the list under it (the filters stand on the map). On desktop
          * it is a card of the same material as the panels, standing beside
          * them at the foot of the map and capped in width: 24 columns read
          * better at the width of a chart than stretched across a screen,

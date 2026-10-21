@@ -3,7 +3,7 @@
 import { useReducer, useRef, useState } from "react";
 
 import { AppHeader } from "@/components/app-header";
-import { ClassicsSwitch } from "@/components/classics-switch";
+import { FilterBar } from "@/components/filters/filter-bar";
 import { useT } from "@/components/i18n";
 import { PassMap } from "@/components/map/pass-map";
 import { DetailPanel } from "@/components/panel/detail-panel";
@@ -12,7 +12,6 @@ import { ScalesDialog } from "@/components/scales-dialog";
 import { SeasonBand } from "@/components/season-band";
 import { Shell } from "@/components/shell";
 import { Sidebar } from "@/components/sidebar/sidebar";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { ALL_RANGES, initialState, NO_FILTERS, reduce } from "@/lib/app-state";
@@ -24,7 +23,7 @@ import type {
   Selection,
 } from "@/lib/app-state";
 import { homeAreasOf } from "@/lib/destination";
-import { filterCount, rangeWord, resetFilters } from "@/lib/filter-summary";
+import { rangeWord, resetFilters } from "@/lib/filter-summary";
 import { switchLangHref, useHashAdapter } from "@/lib/hash-adapter";
 import type { PageData } from "@/lib/page-data";
 import { entityKey } from "@/lib/route-key";
@@ -202,7 +201,6 @@ export const Explorer = ({ data, defaultPeriod, children }: Props) => {
    */
   const band = seasonBand(passes, filters, inputs);
   const bar = currentBar(band, filters.period);
-  const activeFilters = filterCount(filters, t);
 
   const select = (sel: Selection) =>
     dispatch({ selection: sel, type: "select" });
@@ -263,16 +261,14 @@ export const Explorer = ({ data, defaultPeriod, children }: Props) => {
             />
           )}
           overlay={
-            <ClassicsSwitch
-              minFame={filters.minFame}
-              countWith={(minFame) => countWith({ minFame })}
-              searching={filters.query.trim() !== ""}
-              onChange={(minFame) =>
-                dispatch({
-                  type: "filters",
-                  update: (f) => ({ ...f, minFame }),
-                })
-              }
+            <FilterBar
+              filters={filters}
+              setFilters={(update) => dispatch({ type: "filters", update })}
+              countWith={countWith}
+              tourCountWith={tourCountWith}
+              ranges={ranges}
+              onRange={(range) => dispatch({ range, type: "range" })}
+              hasEditions={hasPastEditions(tours)}
             />
           }
           header={
@@ -292,28 +288,12 @@ export const Explorer = ({ data, defaultPeriod, children }: Props) => {
                 today={defaultPeriod}
                 onChange={(period) => dispatch({ period, type: "period" })}
               />
-              <div className="flex gap-2 lg:hidden">
-                <Button
-                  className="flex-1"
-                  onClick={() =>
-                    dispatch({ filters: false, open: true, type: "list" })
-                  }
-                >
-                  {t.kinds[tab]} ({fmt(counts[tab])})
-                </Button>
-                <Button
-                  variant="outline"
-                  className="flex-1"
-                  onClick={() =>
-                    dispatch({ filters: true, open: true, type: "list" })
-                  }
-                >
-                  {t.band.filters}
-                  {activeFilters > 0 && (
-                    <Badge variant="secondary">{activeFilters}</Badge>
-                  )}
-                </Button>
-              </div>
+              <Button
+                className="w-full lg:hidden"
+                onClick={() => dispatch({ open: true, type: "list" })}
+              >
+                {t.kinds[tab]} ({fmt(counts[tab])})
+              </Button>
             </>
           }
           sidebar={(variant) => (
@@ -335,10 +315,7 @@ export const Explorer = ({ data, defaultPeriod, children }: Props) => {
                 tour: tours.length,
               }}
               countWith={countWith}
-              tourCountWith={tourCountWith}
-              hasEditions={hasPastEditions(tours)}
               ranges={ranges}
-              onRange={(range) => dispatch({ range, type: "range" })}
               shown={shown}
               tab={tab}
               selection={selection}
@@ -346,7 +323,6 @@ export const Explorer = ({ data, defaultPeriod, children }: Props) => {
               dispatch={dispatch}
               onToggleFavorite={toggleFavorite}
               onOpenScales={() => setScalesOpen(true)}
-              filtersOpen={sheet.filters}
             />
           )}
           detail={(sel) => (

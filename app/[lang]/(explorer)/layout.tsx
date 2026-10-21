@@ -77,9 +77,9 @@ const ExplorerLayout = async ({ children }: LayoutProps<"/[lang]">) => {
       {/*
        * The first tab stop, and the only way past the sidebar without going
        * through it. The lists are composite widgets now (`lib/use-roving.ts`),
-       * so Tab no longer walks 258 rows – but the filter panel alone is still
-       * forty chips, and a keyboard visitor who wants the map should not have
-       * to pass them.
+       * so Tab no longer walks 258 rows – but the search, the tabs, the
+       * sort and the filter bar still stand in front of the map, and a
+       * keyboard visitor who wants the map should not have to pass them.
        */}
       <a
         href="#map"
