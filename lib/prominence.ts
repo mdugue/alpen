@@ -1,5 +1,5 @@
-import { CLASSIC_FAME } from "@/lib/app-state";
 import type { Messages } from "@/lib/i18n";
+import { CLASSIC_FAME, PEARL_BEAUTY } from "@/lib/regions";
 import type { Pass, RoadType } from "@/lib/types";
 
 /**
@@ -8,8 +8,9 @@ import type { Pass, RoadType } from "@/lib/types";
  * Two hundred dots read at zoom 7; three hundred and fifty do not, and most of
  * what the file grows by is small roads of fame 1 and 2
  * (docs/plans/24-depth-per-destination.md). So the map has a level of detail:
- * at the widest zooms only the classics are drawn, and the rest join one rank
- * per step until everything is there from `PROMINENCE.at(-1).fromZoom` on. It
+ * at the widest zooms only the classics and the most beautiful of the known
+ * passes are drawn, and the rest join one rank per step until everything is
+ * there from `PROMINENCE.at(-1).fromZoom` on. It
  * is not a filter – the list is untouched and no chip carries it – it is what a
  * paper map does with its type sizes, and the line under the map says which
  * level is showing.
@@ -29,9 +30,9 @@ import type { Pass, RoadType } from "@/lib/types";
  * What is selected, hovered or marked as a favourite ignores the rule: a mark
  * the visitor put there or is pointing at is never hidden by the zoom.
  *
- * The labels have their own, older ladder (`PASS_LABELS` in
- * `lib/layer-ids.ts`: fame 4 from 7, fame 3 from 8, fame 2 from 9.5) and are
- * held to this one on top, so a name never appears before its dot.
+ * The names read the same rank on a finer ladder of their own (`PASS_LABELS`
+ * in `lib/layer-ids.ts`: rank 4 from 7, rank 3 from 8, rank 2 from 9.5), each
+ * step at or after its dot's, so a name never appears before its dot.
  *
  * The steps are whole zooms because MapLibre evaluates `["zoom"]` in a filter
  * at the tile's integer zoom: a step at 7.5 is drawn at 8 anyway, and the
@@ -53,17 +54,11 @@ export const STEPS_DOWN: readonly RoadType[] = [
 ];
 
 /**
- * What makes a road a pearl: the top of the beauty scale. A pearl that is not
- * a classic counts one step higher – the overview is for choosing where to
- * go, and a road few people know but everybody who rides it remembers is
- * exactly what a region is chosen for.
- */
-export const PEARL_BEAUTY = 5;
-
-/**
  * Where a road stands on the ladder: its fame, a step lower for a dead end and
- * a step higher for a pearl. A classic keeps its fame whatever it is – the
- * "Klassiker" chip keeps it, and the overview draws what the chip keeps.
+ * a step higher for a pearl (`PEARL_BEAUTY`) – a road few people know but
+ * everybody who rides it remembers is what a region is chosen for. A classic
+ * keeps its fame whatever it is: the "Klassiker" chip keeps it, and the
+ * overview draws what the chip keeps.
  */
 export const rankOf = (pass: Pick<Pass, "beauty" | "fame" | "type">): number =>
   pass.fame >= CLASSIC_FAME
@@ -86,7 +81,7 @@ export const minzoomOf = (rank: number): number =>
   PROMINENCE.at(-1)!.fromZoom;
 
 /**
- * The legend line for a zoom: "Klassiker" while the overview is thinned,
+ * The legend line for a zoom: "Klassiker und …" while the overview is thinned,
  * `null` once every road is drawn and there is nothing to say.
  */
 export const prominenceWord = (zoom: number, w: Messages): string | null => {

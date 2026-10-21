@@ -1,10 +1,11 @@
 import { describe, expect, test } from "bun:test";
 
-import { CLASSIC_FAME, DEFAULT_FILTERS, NO_FILTERS } from "@/lib/app-state";
+import { DEFAULT_FILTERS, NO_FILTERS } from "@/lib/app-state";
 import type { Filters } from "@/lib/app-state";
 import { membersOf } from "@/lib/destination";
 import { DE } from "@/lib/i18n/dictionaries";
 import { PERIODS } from "@/lib/period";
+import { CLASSIC_FAME } from "@/lib/regions";
 import {
   barTotal,
   buildDestinationRows,

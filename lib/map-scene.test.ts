@@ -316,6 +316,12 @@ describe("hover", () => {
       expect(filtered(scene.routes.filter)).not.toContain("small");
     });
 
+    test("carry the rank the ladder reads, a pearl a step up", () => {
+      const pearl = passRow(makePass("pearl", 40, { beauty: 5, fame: 3 }));
+      const scene = buildScene(input({ ghosts: [pearl] }));
+      expect(ghostMark(scene)[0]?.rank).toBe(4);
+    });
+
     test("are drawn whole once selected, lines and all", () => {
       const scene = buildScene(
         input({ ghosts: [ghost], selection: { kind: "pass", slug: "small" } }),

@@ -6,7 +6,6 @@ import {
   ALL_TYPES,
   DEFAULT_FILTERS,
   BEAUTY_OPTIONS,
-  CLASSIC_FAME,
   ELEVATION_OPTIONS,
   FAME_OPTIONS,
   HEAT_OPTIONS,
@@ -21,6 +20,7 @@ import type { Filters, OptionLabel, Options } from "@/lib/app-state";
 import type { Messages } from "@/lib/i18n";
 import { fill } from "@/lib/i18n/fill";
 import { periodLabel } from "@/lib/period";
+import { CLASSIC_FAME } from "@/lib/regions";
 import { fmt, listOr } from "@/lib/utils";
 
 /**

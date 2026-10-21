@@ -2,8 +2,9 @@
 
 import { useT } from "@/components/i18n";
 import { FilterChip } from "@/components/sidebar/filter-chip";
-import { CLASSIC_FAME, RATING_MIN } from "@/lib/app-state";
+import { RATING_MIN } from "@/lib/app-state";
 import { fill } from "@/lib/i18n/fill";
+import { CLASSIC_FAME } from "@/lib/regions";
 import { cn, MAP_CLUSTER } from "@/lib/utils";
 
 /**

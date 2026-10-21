@@ -80,7 +80,7 @@ export const scales = {
   },
   symbols: {
     heading: "Kartensymbole",
-    text: "**Kreis:** Pass – Farbe zeigt den Status, hohler Kreis = oft gesperrt, Größe = Bekanntheit. **Grauer Punkt:** Straße außerhalb der Filter, antippen öffnet sie. **Stern:** gemerkt. **Linie:** Rundtour (eigene Farbe) oder Auffahrt (Statusfarbe). **Raute:** Rad-Ort. Weit draußen zeigt die Karte nur Klassiker und Perlen (Schönheit 5), mit jeder Zoomstufe kommen weitere dazu, zuerst klein und blass; Sackgassen und Talstraßen eine Stufe später als Pässe.",
+    text: "**Kreis:** Pass – Farbe zeigt den Status, hohler Kreis = oft gesperrt, Größe = Bekanntheit. **Grauer Punkt:** Straße außerhalb der Filter, antippen öffnet sie. **Stern:** gemerkt. **Linie:** Rundtour (eigene Farbe) oder Auffahrt (Statusfarbe). **Raute:** Rad-Ort. Weit draußen zeigt die Karte nur die Klassiker und die schönsten bekannten Pässe, mit jeder Zoomstufe kommen weitere dazu, zuerst klein und blass. Was nirgends hinüberführt – Stich-, Tal-, Balkon- und Höhenstraßen – kommt eine Stufe später als ein Pass, was Schönheit 5 hat, eine Stufe früher.",
   },
   tours: {
     heading: "Art der Tour",

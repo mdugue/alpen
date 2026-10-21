@@ -257,6 +257,8 @@ export const applyBase = (m: MLMap, id: string, s: Scheme, lang: Lang) => {
 
 /** The dot's size at the two zooms it is given at (`SIZE_ZOOMS`), as base + per fame. */
 const SIZE = { far: [2, 1.1], near: [4, 1.8] } as const;
+/** The lowest label layer's rank: it names every rank at or below it. */
+const RANK_FLOOR = PASS_LABELS.at(-1)!.rank;
 /** A shadow's radius at the two size zooms and its opacity: present, not loud. */
 const GHOST = { opacity: 0.55, radius: [1.6, 3.2] } as const;
 /** How big and how opaque a newcomer is at the step it joins (`newcomerBelow`). */
@@ -895,32 +897,31 @@ export const appLayers = (
       source: SOURCE.destinationLabels,
       type: "symbol",
     },
-    ...PASS_LABELS.map(({ fame, minzoom }) => ({
-      // The label's own ladder, held to the dots' on top: a dead end of fame 3
-      // is drawn a step later than a pass of fame 3, and its name waits for it.
+    ...PASS_LABELS.map(({ minzoom, rank }) => ({
+      // One layer per rank, the lowest taking every rank under it: a dead end
+      // of fame 1 has rank 0 and still gets its name at the last step.
       filter:
-        fame === 5
+        rank === 5
           ? ([
               "any",
-              ["==", ["get", "fame"], 5],
+              ["==", ["get", "rank"], 5],
               ["==", ["get", "selected"], 1],
               ["==", ["get", "favorite"], 1],
             ] as never)
-          : (prominenceFilter((minRank) => [
+          : ([
               "all",
-              ["==", ["get", "fame"], fame],
+              ["==", ["max", RANK_FLOOR, ["get", "rank"]], rank],
               ["!=", ["get", "selected"], 1],
               ["!=", ["get", "favorite"], 1],
-              ...(minRank === null ? [] : [[">=", ["get", "rank"], minRank]]),
-            ]) as never),
-      id: passLabelId(fame),
+            ] as never),
+      id: passLabelId(rank),
       layout: {
-        "symbol-sort-key": ["-", 6, ["get", "fame"]] as never,
+        "symbol-sort-key": ["-", 6, ["get", "rank"]] as never,
         "text-field": ["get", "name"] as never,
         "text-font": [FONT_BOLD],
         "text-justify": "auto" as never,
         "text-radial-offset": 1,
-        "text-size": fame >= 5 ? 13 : fame <= 2 ? 11 : 12.5,
+        "text-size": rank >= 5 ? 13 : rank <= 2 ? 11 : 12.5,
         "text-variable-anchor": ["left", "right", "top", "bottom"] as never,
       },
       minzoom,
@@ -928,7 +929,7 @@ export const appLayers = (
         "text-color": colors.ink,
         "text-halo-color": colors.paper,
         "text-halo-width": 1.6,
-        "text-opacity": fame <= 2 ? 0.85 : 1,
+        "text-opacity": rank <= 2 ? 0.85 : 1,
       },
       source: SOURCE.passes,
       type: "symbol" as const,

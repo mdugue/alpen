@@ -1,5 +1,6 @@
 import type { Bounds } from "@/lib/geo";
 import {
+  CLASSIC_FAME,
   RANGES,
   ROAD_TYPES,
   STATUSES,
@@ -109,12 +110,6 @@ export const BEAUTY_OPTIONS = [
  * Sormano – and "only the ones everybody knows" is exactly the question
  * somebody planning their first Alpine week asks.
  */
-/**
- * Where a classic starts on the fame scale – what the "Klassiker" chip keeps
- * and what the app opens on. The rest stay on the map as shadows
- * (`Scene.ghosts`), and a search looks past the floor (`fameFloor`).
- */
-export const CLASSIC_FAME = 4;
 export const FAME_OPTIONS = [
   [1, { kind: "any" }],
   [3, { kind: "from", n: 3 }],
@@ -327,8 +322,10 @@ export const DEFAULT_FILTERS: Filters = {
   maxWetDays: WET_NONE,
   minBeauty: RATING_MIN,
   minElevation: 0,
-  // The classics, not everything: three hundred roads read as noise on a first
-  // look, and the chip that lifts it stands on the map (`ClassicsSwitch`).
+  // The classics (`CLASSIC_FAME`, lib/regions.ts), not everything: three
+  // hundred roads read as noise on a first look, and the chip that lifts it
+  // stands on the map (`ClassicsSwitch`). What the floor leaves out stays as a
+  // shadow (`Scene.ghosts`); a search looks past it (`fameFloor`).
   minFame: CLASSIC_FAME,
   onDate: false,
   pastEditions: false,

@@ -30,7 +30,6 @@ import {
   ALL_TYPES,
   BEAUTY_OPTIONS,
   ELEVATION_OPTIONS,
-  CLASSIC_FAME,
   FAME_OPTIONS,
   HEAT_OPTIONS,
   pickedMembers,
@@ -49,7 +48,7 @@ import {
   filterCount,
 } from "@/lib/filter-summary";
 import { fill } from "@/lib/i18n/fill";
-import { ROAD_TAGS } from "@/lib/regions";
+import { CLASSIC_FAME, ROAD_TAGS } from "@/lib/regions";
 import type { RangeName } from "@/lib/regions";
 import type { RoadTag, RoadType, Status, Surface } from "@/lib/types";
 import { cn, TOUCH_CONTROL } from "@/lib/utils";

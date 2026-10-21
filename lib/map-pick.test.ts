@@ -20,7 +20,7 @@ describe("the table it ranks by", () => {
     expect(HIT_GROUPS.flat()).toEqual([...HIT_LAYERS]);
   });
 
-  test("every fame level's label answers the pointer", () => {
+  test("every rank's label answers the pointer", () => {
     for (const id of LAYERS.pass.labels) expect(HIT_LAYERS).toContain(id);
     expect(LAYERS.pass.labels).toHaveLength(PASS_LABELS.length);
   });
