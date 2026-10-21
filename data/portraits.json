@@ -8744,5 +8744,78 @@
     "highlights": "Die Wiesen von Sassotetto unter dem Sibillini-Kamm."
    }
   ]
+ },
+ "etna-sud": {
+  "intro": "Ein Vulkan, auf den man mit dem Rennrad fährt: vom Meer durch Weinberge und Ginster bis in die schwarzen Lavafelder unter dem Gipfelkrater.",
+  "sides": [
+   {
+    "bestAs": "both",
+    "character": "Von Nicolosi gleichmäßig durch Pinien und über alte Lavaströme, die meistbefahrene Seite.",
+    "highlights": "Die Silvestri-Krater oben am Rifugio."
+   },
+   {
+    "bestAs": "up",
+    "character": "Von Zafferana die steilste Seite, mit langen Rampen über 9 % durch Wald und Lava.",
+    "hazards": [
+     "steep"
+    ],
+    "highlights": "Der Blick über die Valle del Bove."
+   },
+   {
+    "bestAs": "up",
+    "character": "Von Ragalna lang und unregelmäßig über die Westflanke, ruhig und offen.",
+    "highlights": "Der Blick über die Ebene von Catania."
+   }
+  ]
+ },
+ "etna-nord": {
+  "intro": "Der grüne Ätna: Wald bis weit hinauf, dann die Lavazunge des Ausbruchs von 2002, durch die die Straße neu gebaut wurde.",
+  "sides": [
+   {
+    "character": "Von Linguaglossa gleichmäßig um 6–7 % durch den Pinienwald, oben offen über der Lava.",
+    "highlights": "Der Blick über die Ionische Küste bis Taormina."
+   }
+  ]
+ },
+ "piano-battaglia": {
+  "intro": "Ein Stück Apennin über der Küste von Cefalù: Buchenwald, Kalkgipfel und Hochweiden, eine Stunde vom Strand.",
+  "sides": [
+   {
+    "character": "Von Isnello lang und mäßig, mit einem steileren Stück über Piano Zucchi, viel im Wald.",
+    "highlights": "Der Blick von der Hochebene zum Ätna."
+   }
+  ]
+ },
+ "portella-femmina-morta": {
+  "intro": "Das leere Sizilien: Buchenwald, Weiden mit halbwilden Pferden und auf der Passhöhe der Blick auf den Ätna.",
+  "sides": [
+   {
+    "character": "Von San Fratello gleichmäßig und mäßig, erst offen, oben im Buchenwald.",
+    "highlights": "Der Ätna hinter der Passhöhe."
+   }
+  ]
+ },
+ "portella-mandrazzi": {
+  "intro": "Ein kurzer Pass mit großer Aussicht: auf der einen Seite die Liparischen Inseln, auf der anderen der Ätna.",
+  "sides": [
+   {
+    "character": "Von Novara di Sicilia mäßig mit einigen steileren Kehren, offen über dem Tal.",
+    "highlights": "Der Blick zurück auf die Liparischen Inseln."
+   }
+  ]
+ },
+ "erice": {
+  "intro": "Vom Meeresspiegel in ein Dorf aus Stein in den Wolken: ein kurzer, schöner Anstieg mit dem besten Blick Westsiziliens.",
+  "sides": [
+   {
+    "bestAs": "up",
+    "character": "Von Trapani aus dem Stadtrand in Kehren um 7 % die Felswand hinauf.",
+    "highlights": "Der Blick über die Salinen und die Ägadischen Inseln."
+   },
+   {
+    "bestAs": "both",
+    "character": "Von Valderice kürzer und ruhiger durch Pinien."
+   }
+  ]
  }
 }

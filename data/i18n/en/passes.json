@@ -4294,5 +4294,50 @@
   "ascents": [
    "Sarnano (east)"
   ]
+ },
+ "etna-sud": {
+  "classicAscent": "18.3 km, 7.3 % from Zafferana Etnea",
+  "note": "The road up Etna to the Rifugio Sapienza at just over 1,900 m, a Giro finish several times. Three ascents from Nicolosi, Zafferana and Ragalna, black lava, craters and the cable car to the summit at the top.",
+  "ascents": [
+   "Nicolosi (south)",
+   "Zafferana Etnea (east)",
+   "Ragalna (west)"
+  ]
+ },
+ "etna-nord": {
+  "classicAscent": "19.2 km, 6.5 % from Linguaglossa",
+  "note": "Etna's north side, from Linguaglossa through pine and birch forest to the Piano Provenzana ski area at 1,800 m; a Giro finish in 2020. Quieter and greener than the south side.",
+  "ascents": [
+   "Linguaglossa (north)"
+  ]
+ },
+ "piano-battaglia": {
+  "classicAscent": "23.8 km, 4.5 % from Isnello",
+  "note": "The high plain of the Madonie at just over 1,600 m, Sicily's little ski area. From Isnello via Piano Zucchi through beech and holm oak, on across the plateau to Petralia.",
+  "ascents": [
+   "Isnello (north)"
+  ]
+ },
+ "portella-femmina-morta": {
+  "classicAscent": "18.4 km, 4.6 % from San Fratello",
+  "note": "The highest pass in the Nebrodi, on the road from the north coast via San Fratello to Cesarò. Through Sicily's great beech forests, almost without traffic.",
+  "ascents": [
+   "San Fratello (north)"
+  ]
+ },
+ "portella-mandrazzi": {
+  "classicAscent": "10.7 km, 5.1 % from Novara di Sicilia",
+  "note": "The pass across the Peloritani between the north coast and the Alcantara valley. From Novara di Sicilia below the rocks of the Rocca Salvatesta, a view of Etna at the top.",
+  "ascents": [
+   "Novara di Sicilia (north)"
+  ]
+ },
+ "erice": {
+  "classicAscent": "11.8 km, 6.4 % from Trapani",
+  "note": "The medieval hill village at 750 m right above Trapani. Up the rock face from the coast in hairpins, a view over the salt pans to the Aegadian Islands at the top.",
+  "ascents": [
+   "Trapani (west)",
+   "Valderice (east)"
+  ]
  }
 }

@@ -1662,5 +1662,24 @@
   "character": "Der grüne Kamm zwischen Toskana und Emilia: der Abetone durch Tannenwald und San Pellegrino in Alpe mit seinen Wänden über 15 %. Kühl im Sommer, ruhig außerhalb der Ferien.",
   "multiDay": "Drei Tage von Abetone: der Pass von beiden Seiten, San Pellegrino über die Garfagnana, das Foce delle Radici.",
   "access": "Mit dem Auto über Pistoia oder Modena; Bahn bis Pistoia."
+ },
+ {
+  "slug": "aetna",
+  "name": "Ätna",
+  "country": "IT",
+  "center": {
+   "lat": 37.73,
+   "lon": 15.05
+  },
+  "radiusKm": 16,
+  "baseTowns": [
+   "nicolosi",
+   "linguaglossa"
+  ],
+  "include": [],
+  "exclude": [],
+  "character": "Ein Vulkan mit vier Auffahrten auf 1800 bis 1900 m: Nicolosi, Zafferana und Ragalna zum Rifugio Sapienza, Linguaglossa nach Piano Provenzana. Lange, gleichmäßige Anstiege mit Blick aufs Meer, von März bis November.",
+  "multiDay": "Drei Tage: der Ätna von Süden über Nicolosi, von Osten über Zafferana und von Norden über Linguaglossa.",
+  "access": "Flug nach Catania, von dort eine halbe Stunde nach Nicolosi."
  }
 ]

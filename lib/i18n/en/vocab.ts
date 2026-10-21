@@ -134,6 +134,12 @@ export const vocab = {
       label: "Black Forest",
       outside: "outside the Black Forest",
     },
+    Sizilien: {
+      hint: "Etna from three sides up to almost 2,000 m, the Madonie and the Nebrodi above the north coast, Erice above Trapani: long climbs in southern Italy, from March to November.",
+      inside: "on Sicily",
+      label: "Sicily",
+      outside: "outside Sicily",
+    },
     Thüringen: {
       hint: "The Inselsberg and Oberhof on the Rennsteig, the Wasserkuppe and the Kreuzberg in the Rhön: short climbs for a weekend in the middle of Germany.",
       inside: "in the Thuringian Forest and the Rhön",
@@ -184,6 +190,7 @@ export const vocab = {
     Latium: "Lazio",
     Mallorca: "Mallorca",
     Marken: "Marche",
+    Nordsizilien: "Northern Sicily",
     Ostalpen: "Eastern Alps",
     Pyrenäen: "Pyrenees",
     Rhön: "Rhön",
@@ -194,8 +201,10 @@ export const vocab = {
     Toskana: "Tuscany",
     Vogesen: "Vosges",
     Westalpen: "Western Alps",
+    Westsizilien: "Western Sicily",
     Zentralalpen: "Central Alps",
     Zentralmassiv: "Massif Central",
+    Ätna: "Etna",
   },
   roadTag: {
     carfree: {

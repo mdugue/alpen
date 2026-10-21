@@ -20503,5 +20503,233 @@
     "label": "Sarnano (Ost)"
    }
   ]
+ },
+ {
+  "slug": "etna-sud",
+  "surface": "asphalt",
+  "name": "Ätna Süd (Rifugio Sapienza)",
+  "type": "spur",
+  "tags": [
+   "race",
+   "panorama"
+  ],
+  "country": "IT",
+  "region": "Ätna",
+  "lat": 37.7002,
+  "lon": 14.9982,
+  "elevation": 1910,
+  "classicAscent": "18,3 km, 7,3 % ab Zafferana Etnea",
+  "beauty": 5,
+  "fame": 4,
+  "difficulty": 5,
+  "traffic": 3,
+  "season": null,
+  "note": "Die Straße auf den Ätna bis zum Rifugio Sapienza auf gut 1900 m, mehrfach Giro-Ankunft. Drei Auffahrten von Nicolosi, Zafferana und Ragalna, oben schwarze Lava, Krater und die Seilbahn zum Gipfel.",
+  "aliases": [
+   "Etna",
+   "Rifugio Sapienza",
+   "Etna Sud"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 37.6147,
+     "lon": 15.0263
+    },
+    "label": "Nicolosi (Süd)"
+   },
+   {
+    "from": {
+     "lat": 37.6933,
+     "lon": 15.1065
+    },
+    "label": "Zafferana Etnea (Ost)"
+   },
+   {
+    "from": {
+     "lat": 37.6347,
+     "lon": 14.9427
+    },
+    "label": "Ragalna (West)"
+   }
+  ]
+ },
+ {
+  "slug": "etna-nord",
+  "surface": "asphalt",
+  "name": "Ätna Nord (Piano Provenzana)",
+  "type": "spur",
+  "tags": [
+   "race",
+   "forest",
+   "panorama"
+  ],
+  "country": "IT",
+  "region": "Ätna",
+  "lat": 37.7981,
+  "lon": 15.0384,
+  "elevation": 1800,
+  "classicAscent": "19,2 km, 6,5 % ab Linguaglossa",
+  "beauty": 5,
+  "fame": 3,
+  "difficulty": 4,
+  "traffic": 1,
+  "season": null,
+  "note": "Die Nordseite des Ätna, von Linguaglossa durch Kiefern- und Birkenwald zum Skigebiet Piano Provenzana auf 1800 m; Giro-Ankunft 2020. Ruhiger und grüner als die Südseite.",
+  "aliases": [
+   "Piano Provenzana",
+   "Etna Nord"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 37.8409,
+     "lon": 15.1437
+    },
+    "label": "Linguaglossa (Nord)"
+   }
+  ]
+ },
+ {
+  "slug": "piano-battaglia",
+  "surface": "asphalt",
+  "name": "Piano Battaglia",
+  "type": "climb",
+  "tags": [
+   "forest",
+   "panorama"
+  ],
+  "country": "IT",
+  "region": "Nordsizilien",
+  "lat": 37.8788,
+  "lon": 14.0262,
+  "elevation": 1650,
+  "classicAscent": "23,8 km, 4,5 % ab Isnello",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 4,
+  "traffic": 1,
+  "season": null,
+  "note": "Die Hochebene der Madonie auf gut 1600 m, das kleine Skigebiet Siziliens. Von Isnello über Piano Zucchi durch Buchen und Steineichen, weiter über die Hochfläche nach Petralia.",
+  "aliases": [
+   "Madonie"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 37.9441,
+     "lon": 14.0062
+    },
+    "label": "Isnello (Nord)"
+   }
+  ]
+ },
+ {
+  "slug": "portella-femmina-morta",
+  "surface": "asphalt",
+  "name": "Portella Femmina Morta",
+  "type": "pass",
+  "tags": [
+   "forest"
+  ],
+  "country": "IT",
+  "region": "Nordsizilien",
+  "lat": 37.9189,
+  "lon": 14.6544,
+  "elevation": 1524,
+  "classicAscent": "18,4 km, 4,6 % ab San Fratello",
+  "beauty": 4,
+  "fame": 1,
+  "difficulty": 3,
+  "traffic": 1,
+  "season": null,
+  "note": "Der höchste Pass der Nebrodi, auf der Straße von der Nordküste über San Fratello nach Cesarò. Durch die großen Buchenwälder Siziliens, fast ohne Verkehr.",
+  "aliases": [
+   "Femmina Morta"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 38.0134,
+     "lon": 14.5974
+    },
+    "label": "San Fratello (Nord)"
+   }
+  ]
+ },
+ {
+  "slug": "portella-mandrazzi",
+  "surface": "asphalt",
+  "name": "Portella Mandrazzi",
+  "type": "pass",
+  "tags": [
+   "panorama"
+  ],
+  "country": "IT",
+  "region": "Nordsizilien",
+  "lat": 37.9758,
+  "lon": 15.138,
+  "elevation": 1125,
+  "classicAscent": "10,7 km, 5,1 % ab Novara di Sicilia",
+  "beauty": 4,
+  "fame": 1,
+  "difficulty": 3,
+  "traffic": 1,
+  "season": null,
+  "note": "Der Pass über die Peloritani zwischen der Nordküste und dem Alcantara-Tal. Von Novara di Sicilia unter den Felsen der Rocca Salvatesta, oben der Blick auf den Ätna.",
+  "aliases": [
+   "Mandrazzi"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 38.0162,
+     "lon": 15.132
+    },
+    "label": "Novara di Sicilia (Nord)"
+   }
+  ]
+ },
+ {
+  "slug": "erice",
+  "surface": "asphalt",
+  "name": "Erice",
+  "type": "spur",
+  "tags": [
+   "panorama",
+   "hairpins"
+  ],
+  "country": "IT",
+  "region": "Westsizilien",
+  "lat": 38.037,
+  "lon": 12.5866,
+  "elevation": 750,
+  "classicAscent": "11,8 km, 6,4 % ab Trapani",
+  "beauty": 5,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 2,
+  "season": null,
+  "note": "Das mittelalterliche Bergdorf auf 750 m direkt über Trapani. Von der Küste in Kehren an der Felswand hinauf, oben der Blick über die Salinen bis zu den Ägadischen Inseln.",
+  "aliases": [
+   "Monte Erice",
+   "Monte San Giuliano"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 38.0176,
+     "lon": 12.5365
+    },
+    "label": "Trapani (West)"
+   },
+   {
+    "from": {
+     "lat": 38.039,
+     "lon": 12.617
+    },
+    "label": "Valderice (Ost)"
+   }
+  ]
  }
 ]

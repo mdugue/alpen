@@ -6099,5 +6099,70 @@
     "highlights": "The Sassotetto meadows below the Sibillini ridge."
    }
   ]
+ },
+ "etna-sud": {
+  "intro": "A volcano ridden on a road bike: from the sea through vineyards and broom up into the black lava fields below the summit crater.",
+  "sides": [
+   {
+    "character": "From Nicolosi steadily through pines and across old lava flows, the busiest side.",
+    "highlights": "The Silvestri craters at the Rifugio."
+   },
+   {
+    "character": "From Zafferana the steepest side, with long ramps over 9 % through forest and lava.",
+    "highlights": "The view over the Valle del Bove."
+   },
+   {
+    "character": "From Ragalna long and irregular across the western flank, quiet and open.",
+    "highlights": "The view over the plain of Catania."
+   }
+  ]
+ },
+ "etna-nord": {
+  "intro": "The green Etna: forest far up, then the lava tongue of the 2002 eruption, through which the road was rebuilt.",
+  "sides": [
+   {
+    "character": "From Linguaglossa steadily at 6–7 % through the pine forest, open above the lava at the top.",
+    "highlights": "The view over the Ionian coast to Taormina."
+   }
+  ]
+ },
+ "piano-battaglia": {
+  "intro": "A piece of the Apennines above the coast of Cefalù: beech forest, limestone summits and high pastures, an hour from the beach.",
+  "sides": [
+   {
+    "character": "From Isnello long and moderate, with a steeper stretch past Piano Zucchi, much of it in the forest.",
+    "highlights": "The view from the plateau to Etna."
+   }
+  ]
+ },
+ "portella-femmina-morta": {
+  "intro": "The empty Sicily: beech forest, pastures with half-wild horses and a view of Etna from the top.",
+  "sides": [
+   {
+    "character": "From San Fratello steady and moderate, open at first, in beech forest higher up.",
+    "highlights": "Etna behind the top of the pass."
+   }
+  ]
+ },
+ "portella-mandrazzi": {
+  "intro": "A short pass with a big view: the Aeolian Islands on one side, Etna on the other.",
+  "sides": [
+   {
+    "character": "From Novara di Sicilia moderate with a few steeper hairpins, open above the valley.",
+    "highlights": "The view back to the Aeolian Islands."
+   }
+  ]
+ },
+ "erice": {
+  "intro": "From sea level into a stone village in the clouds: a short, beautiful climb with the best view in western Sicily.",
+  "sides": [
+   {
+    "character": "From Trapani out of the edge of town up the rock face in hairpins at around 7 %.",
+    "highlights": "The view over the salt pans and the Aegadian Islands."
+   },
+   {
+    "character": "From Valderice shorter and quieter through pines."
+   }
+  ]
  }
 }

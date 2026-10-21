@@ -30,6 +30,7 @@ export const RANGES = [
   "Nordspanien",
   "Andalusien",
   "Apennin",
+  "Sizilien",
 ] as const;
 
 export type RangeName = (typeof RANGES)[number];
@@ -62,6 +63,7 @@ export const RANGE_REGIONS = {
   Nordspanien: ["Asturien", "Kantabrien"],
   Pyrenäen: ["Pyrenäen"],
   Schwarzwald: ["Schwarzwald"],
+  Sizilien: ["Ätna", "Nordsizilien", "Westsizilien"],
   Thüringen: ["Thüringen", "Rhön"],
   Vogesen: ["Vogesen"],
   Zentralmassiv: ["Zentralmassiv"],
@@ -90,6 +92,7 @@ export const RANGE_TRIP: Record<RangeName, TripName> = {
   Nordspanien: "holiday",
   Pyrenäen: "holiday",
   Schwarzwald: "weekend",
+  Sizilien: "holiday",
   Thüringen: "weekend",
   Vogesen: "weekend",
   Zentralmassiv: "holiday",
@@ -130,6 +133,7 @@ export const REGIONS = [
   ...RANGE_REGIONS.Nordspanien,
   ...RANGE_REGIONS.Andalusien,
   ...RANGE_REGIONS.Apennin,
+  ...RANGE_REGIONS.Sizilien,
 ] as const;
 
 /** A box in degrees, both ends inclusive. */
@@ -167,6 +171,7 @@ export const RANGE_BOUNDS: Record<RangeName, GeoBox> = {
   Nordspanien: { lat: [42.6, 43.7], lon: [-7.3, -3] },
   Pyrenäen: { lat: [42, 43.5], lon: [-2, 3.5] },
   Schwarzwald: { lat: [47.5, 49], lon: [7.5, 9] },
+  Sizilien: { lat: [36.6, 38.4], lon: [12.3, 15.7] },
   Thüringen: { lat: [50.2, 51], lon: [9.6, 11.4] },
   Vogesen: { lat: [47, 49], lon: [6, 8] },
   Zentralmassiv: { lat: [43.8, 46.2], lon: [2, 4.3] },

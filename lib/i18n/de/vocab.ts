@@ -148,6 +148,12 @@ export const vocab = {
       label: "Schwarzwald",
       outside: "außerhalb des Schwarzwalds",
     },
+    Sizilien: {
+      hint: "Der Ätna von drei Seiten bis auf fast 2000 m, die Madonie und die Nebrodi über der Nordküste, Erice über Trapani: lange Anstiege im Süden Italiens, von März bis November.",
+      inside: "auf Sizilien",
+      label: "Sizilien",
+      outside: "außerhalb Siziliens",
+    },
     Thüringen: {
       hint: "Inselsberg und Oberhof am Rennsteig, Wasserkuppe und Kreuzberg in der Rhön: kurze Anstiege für ein Wochenende in der Mitte Deutschlands.",
       inside: "im Thüringer Wald und in der Rhön",
@@ -203,6 +209,7 @@ export const vocab = {
     Latium: "Latium",
     Mallorca: "Mallorca",
     Marken: "Marken",
+    Nordsizilien: "Nordsizilien",
     Ostalpen: "Ostalpen",
     Pyrenäen: "Pyrenäen",
     Rhön: "Rhön",
@@ -213,8 +220,10 @@ export const vocab = {
     Toskana: "Toskana",
     Vogesen: "Vogesen",
     Westalpen: "Westalpen",
+    Westsizilien: "Westsizilien",
     Zentralalpen: "Zentralalpen",
     Zentralmassiv: "Zentralmassiv",
+    Ätna: "Ätna",
   },
   roadTag: {
     carfree: {
