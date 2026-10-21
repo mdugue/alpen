@@ -961,6 +961,14 @@
    "Vedeseta (east)"
   ]
  },
+ "dientner-sattel": {
+  "classicAscent": "6.4 km, 7.3 % from Mühlbach am Hochkönig",
+  "note": "The saddle below the south face of the Hochkönig between Mühlbach and Dienten; with the Filzensattel the Hochkönig loop from Bischofshofen to Saalfelden. Short and steep, open all year.",
+  "ascents": [
+   "Mühlbach am Hochkönig (east)",
+   "Dienten (west)"
+  ]
+ },
  "edelweissspitze": {
   "classicAscent": "1.8 km, 10 % from the junction at the Fuscher Törl",
   "note": "A detour off the Großglockner High Alpine Road on the Fusch side: the Edelweißstraße, short, steep and cobbled, ends at the highest point of the toll road with a view of more than 30 three-thousanders. After snow it can stay closed longer than the main road.",
@@ -974,6 +982,22 @@
   "ascents": [
    "Fontanella (south)",
    "Damüls (west)"
+  ]
+ },
+ "filzensattel": {
+  "classicAscent": "20 km, 3 % from Saalfelden via Maria Alm",
+  "note": "The second saddle of the Hochkönig road, long and moderate from Saalfelden via Maria Alm and Hinterthal, short and steep from Dienten. Open all year.",
+  "ascents": [
+   "Saalfelden (west)",
+   "Dienten (east)"
+  ]
+ },
+ "flattnitz": {
+  "classicAscent": "12.5 km, 5.1 % from Glödnitz",
+  "note": "A quiet alpine pass between the Gurk and Metnitz valleys in the Gurktal Alps, with a round church at the top. Steady on both sides, open all year.",
+  "ascents": [
+   "Glödnitz (south)",
+   "Metnitz (east)"
   ]
  },
  "flueelapass": {
@@ -1036,6 +1060,14 @@
    "Gletsch"
   ]
  },
+ "gaberl": {
+  "classicAscent": "27 km, 4.1 % from Köflach",
+  "note": "The crossing of the Stubalpe between western Styria and the Mur valley, long and steady on both sides. Open all year.",
+  "ascents": [
+   "Köflach (east)",
+   "Weißkirchen (west)"
+  ]
+ },
  "gailbergsattel": {
   "classicAscent": "6.7 km, 5.4 % from Oberdrauburg",
   "note": "The low crossing from the Drau valley into the Gail valley, short and even, with most of the hairpins on the north side. Cleared all year; ridden as the feeder to the Plöckenpass and on the loop around the Lienz Dolomites, so expect traffic on the B 110.",
@@ -1044,12 +1076,33 @@
    "Kötschach-Mauthen (south)"
   ]
  },
+ "gaisberg": {
+  "classicAscent": "12.5 km, 6.7 % from Salzburg",
+  "note": "Salzburg's own mountain, from the old town via Guggenthal and the Zistelalm up to the summit with the transmitter; a classic of the Salzburg cycling scene. Open all year.",
+  "ascents": [
+   "Salzburg"
+  ]
+ },
  "gampenjoch": {
   "classicAscent": "18.2 km, 6.7 % from Lana",
   "note": "From the Adige valley at Lana into the Nonsberg, even and without respite, hot lower down in summer. Main link into Trentino and cleared all year, so never entirely empty.",
   "ascents": [
    "Lana (north)",
    "Fondo (south)"
+  ]
+ },
+ "gargellen": {
+  "classicAscent": "11 km, 4.6 % from St. Gallenkirch",
+  "note": "A side valley of the Montafon up to the mountain village below the Swiss border, steady and quiet. Open all year.",
+  "ascents": [
+   "St. Gallenkirch"
+  ]
+ },
+ "gerlitzen": {
+  "classicAscent": "26 km, 5.3 % from Annenheim",
+  "note": "From the Ossiacher See via the Kanzelhöhe to just below the summit, the upper part as a toll road. 1,400 m of climbing, at the top the all-round view across the Carinthian lakes to the Julian Alps; closed in winter.",
+  "ascents": [
+   "Annenheim"
   ]
  },
  "gerlospass": {
@@ -1072,6 +1125,13 @@
   "note": "From Giswil on the Sarnersee up to Sörenberg, long and evenly steep. Wide alpine pastures at the top beneath the Brienzer Rothorn; closed in winter.",
   "ascents": [
    "Giswil (east)"
+  ]
+ },
+ "goldeck-panoramastrasse": {
+  "classicAscent": "17 km, 9 % from Spittal an der Drau",
+  "note": "Toll road from Spittal to over 2,000 m below the Goldeck summit, 1,500 m of climbing with long steep ramps. At the top the view to the Tauern, the Dolomites and the Millstätter See; closed in winter.",
+  "ascents": [
+   "Spittal an der Drau"
   ]
  },
  "gorges-de-daluis": {
@@ -1171,11 +1231,26 @@
    "Junction in Cervières"
   ]
  },
+ "hintertux": {
+  "classicAscent": "19 km, 4.5 % from Mayrhofen",
+  "note": "From Mayrhofen in hairpins into the Tuxertal and up the valley to the foot of the Hintertux glacier. Steep at the bottom, moderate higher up; open all year, with traffic even in summer as a glacier ski area.",
+  "ascents": [
+   "Mayrhofen"
+  ]
+ },
  "hochkar": {
   "classicAscent": "8.5 km, 9.3 % from Lassing",
   "note": "Toll road up the Hochkar in the Mostviertel, with views across the Ybbstal Alps to the Ötscher. Steadily steep, the tarmac ends at the ski area on top; bikes pay no toll.",
   "ascents": [
    "Lassing"
+  ]
+ },
+ "hochrindl": {
+  "classicAscent": "8.6 km, 8.7 % from Sirnitz",
+  "note": "An alpine ridge with a holiday village between the Gurk valley and Reichenau; steep from Sirnitz, gentler from Ebene Reichenau. Open all year.",
+  "ascents": [
+   "Sirnitz (east)",
+   "Ebene Reichenau (west)"
   ]
  },
  "hochsoelden": {
@@ -1267,6 +1342,14 @@
    "Untertilliach (east)"
   ]
  },
+ "katschberg": {
+  "classicAscent": "6 km, 9.6 % from St. Michael im Lungau",
+  "note": "The old road between the Lungau and the Lieser valley, short on both sides with ramps of up to 20 %, one of the steepest pass roads in the Alps; the motorway runs in a tunnel underneath. Open all year.",
+  "ascents": [
+   "St. Michael im Lungau (north)",
+   "Rennweg (south)"
+  ]
+ },
  "kaunertaler-gletscherstrasse": {
   "classicAscent": "24.5 km, 5.0 % from Feichten",
   "note": "From the Kaunertal past the Gepatsch reservoir to the end of the public road at 2,510 m – the final hairpins to the glacier car park at around 2,750 m are an access road of the ski area. Toll road: cars pay, bikes ride free. Thin air at the top, hairpins far above the tree line.",
@@ -1294,6 +1377,21 @@
   "ascents": [
    "Altdorf",
    "Linthal"
+  ]
+ },
+ "klippitztoerl": {
+  "classicAscent": "14 km, 6 % from Bad St. Leonhard",
+  "note": "The crossing of the Saualpe between the Lavant and Görtschitz valleys, steady on both sides. At the top pastures and a small ski area; open all year.",
+  "ascents": [
+   "Bad St. Leonhard (east)",
+   "Lölling (west)"
+  ]
+ },
+ "kolm-saigurn": {
+  "classicAscent": "21 km, 3.1 % from Rauris",
+  "note": "Up the Rauris valley to its head below the Hoher Sonnblick, a quiet side valley of the Tauern. Long and moderate, steeper only in the last kilometres.",
+  "ascents": [
+   "Rauris"
   ]
  },
  "kuehtai": {
@@ -1382,6 +1480,13 @@
   "note": "Steep toll road above the Altausseer See into the Totes Gebirge, with ramps around 16 %. Cars are charged, bikes ride free; at the top the tarmac ends on the Loser plateau with views across the Ausseerland.",
   "ascents": [
    "Altaussee"
+  ]
+ },
+ "luenersee": {
+  "classicAscent": "18 km, 5.6 % from Bludenz through the Brandnertal",
+  "note": "Up the Brandnertal from Bludenz via Brand to the valley station of the Lünersee cable car below the Schesaplana, the last stretch narrow and steep. Closed beyond Brand in winter.",
+  "ascents": [
+   "Bludenz"
   ]
  },
  "lukmanierpass": {
@@ -1649,6 +1754,14 @@
   "note": "Tour finish in 1971 and 2020, otherwise a quiet ski resort in the Champsaur. Even gradient, hardly any traffic outside the season.",
   "ascents": [
    "Pont-du-Fossé"
+  ]
+ },
+ "pass-thurn": {
+  "classicAscent": "9.5 km, 5.3 % from Mittersill",
+  "note": "The link from Kitzbühel into the upper Pinzgau, a wide main road with traffic. From Mittersill in hairpins with a view of the Hohe Tauern, flat from Jochberg; open all year.",
+  "ascents": [
+   "Mittersill (south)",
+   "Jochberg (north)"
   ]
  },
  "passo-brocon": {
@@ -2092,6 +2205,13 @@
    "Sterzing"
   ]
  },
+ "pfaender": {
+  "classicAscent": "11 km, 5.6 % from Bregenz",
+  "note": "Bregenz's own mountain, from the town via Fluh to just below the summit, with a view over the whole of Lake Constance. Short and steadily steep, open all year.",
+  "ascents": [
+   "Bregenz"
+  ]
+ },
  "pian-delle-fugazze": {
   "classicAscent": "19 km, 5 % from Rovereto",
   "note": "The crossing from the Adige valley into the Val Leogra beneath the Pasubio, a World War front line and Giro passage. Long from Rovereto through the Vallarsa, short and steep from Valli del Pasubio. Cleared all year.",
@@ -2112,6 +2232,14 @@
   "note": "From Aosta via Gressan in long hairpins up to the ski station above the town, steadily steep from bottom to top. At the top the view across the whole valley to Mont Blanc; open all year.",
   "ascents": [
    "Aosta"
+  ]
+ },
+ "piller-sattel": {
+  "classicAscent": "9.3 km, 5.8 % from Wenns",
+  "note": "The quiet link from the Pitztal into the upper Inn valley across a high moorland. Steady from Wenns, short and very steep down to Fließ; at the top, at the Gacher Blick, a view far into the Inn valley. Open all year.",
+  "ascents": [
+   "Wenns (east)",
+   "Fließ (west)"
   ]
  },
  "pitztal-mittelberg": {
@@ -2157,6 +2285,14 @@
    "Barcelonnette"
   ]
  },
+ "praebichl": {
+  "classicAscent": "8.5 km, 5.5 % from Eisenerz",
+  "note": "The pass between Eisenerz and Vordernberg, with the stepped mountain of the Erzberg beside the road. Short and steady on both sides; open all year.",
+  "ascents": [
+   "Eisenerz (north)",
+   "Vordernberg (south)"
+  ]
+ },
  "pragelpass": {
   "classicAscent": "14.0 km, 7.0 % from Muotathal",
   "note": "Between the Muotatal and the Klöntal, closed to cars on Sundays and public holidays – then the road belongs to the bikes. Narrow, steep and with the Klöntalersee as the reward on the east side.",
@@ -2177,6 +2313,14 @@
   "note": "From the shore of Lake Garda at Brenzone up to the Punta Veleno on Monte Baldo: a good nine kilometres at eleven percent on average with ramps up to 20 %, the steepest climb on the lake. At the top the road tips over towards Prada Alta. The poison in the name is well earned; snow at the top in winter.",
   "ascents": [
    "Castelletto di Brenzone"
+  ]
+ },
+ "radstaedter-tauernpass": {
+  "classicAscent": "21 km, 4.2 % from Radstadt",
+  "note": "The pass over Obertauern between the Enns valley and the Lungau, the old Roman road beside the Tauern motorway. Long from Radstadt with a steep stretch before Untertauern, steady from Mauterndorf; open all year.",
+  "ascents": [
+   "Radstadt (north)",
+   "Mauterndorf (south)"
   ]
  },
  "reschenpass": {
@@ -2277,6 +2421,13 @@
    "Naturns"
   ]
  },
+ "schoeckl": {
+  "classicAscent": "26 km, 4.1 % from Graz-Andritz via St. Radegund",
+  "note": "Graz's own mountain, from Andritz via St. Radegund up to the summit plateau; the last kilometres narrow and steep. Open all year.",
+  "ascents": [
+   "Graz-Andritz"
+  ]
+ },
  "schwaegalp": {
   "classicAscent": "10.0 km, 6.0 % from Urnäsch",
   "note": "The summit lies right beneath the north face of the Säntis, which carries the climb – the wall stands above the road for the last few kilometres. Cleared all year, starting point of the Säntis cable car.",
@@ -2289,6 +2440,14 @@
   "note": "The quiet border crossing between the Karawanks and the Kamnik Alps, east of the Loibl. Even and little used, meadows rather than rock at the top; cleared all year.",
   "ascents": [
    "Zgornje Jezersko (south)"
+  ]
+ },
+ "seefelder-sattel": {
+  "classicAscent": "10.5 km, 5.6 % from Zirl via the Zirler Berg",
+  "note": "The main road from Innsbruck to Seefeld and Garmisch, from Zirl the notorious Zirler Berg at 16 % – wide, but with a lot of traffic. From Scharnitz barely any gradient; open all year.",
+  "ascents": [
+   "Zirl (south)",
+   "Scharnitz (north)"
   ]
  },
  "seiser-alm": {
@@ -2364,6 +2523,13 @@
    "Junction in Ville-Vieille"
   ]
  },
+ "spitzingsattel": {
+  "classicAscent": "9.3 km, 3.7 % from Schliersee, the top 2.5 km steep",
+  "note": "From Schliersee via Neuhaus and the steep ramp up to the saddle above the Spitzingsee, beyond which the road drops to the lake and ends. Short, open all year, day-trip traffic at weekends.",
+  "ascents": [
+   "Schliersee (north)"
+  ]
+ },
  "spluegenpass": {
   "classicAscent": "9 km, 8 % from Splügen (30 km from Chiavenna)",
   "note": "The Italian south ramp with its wall of hairpins is a highlight. Closure usually from November.",
@@ -2394,11 +2560,25 @@
    "Erlsbach (north)"
   ]
  },
+ "stoderzinken": {
+  "classicAscent": "10 km, 7.2 % from Gröbming",
+  "note": "Toll road from Gröbming up to the alp below the summit, steep and narrow, at the top the view across the Enns valley to the Tauern. Closed in winter.",
+  "ascents": [
+   "Gröbming"
+  ]
+ },
  "strada-della-forra": {
   "classicAscent": "7.9 km, 3.8 % from Campione del Garda",
   "note": "From Lake Garda into the Brasa gorge, kilometres beneath overhanging rock and through unlit tunnels, then out onto the plateau of Tremosine. Open all year, narrow and busy in summer – Winston Churchill called it the eighth wonder of the world.",
   "ascents": [
    "Campione del Garda (south)"
+  ]
+ },
+ "stubaital": {
+  "classicAscent": "30 km, 2.5 % from Schönberg",
+  "note": "Up the whole Stubaital from Schönberg via Fulpmes and Neustift to the valley station of the glacier lift. Long and moderate, steeper only in the last kilometres beyond Ranalt; open all year, busy at the bottom.",
+  "ascents": [
+   "Schönberg"
   ]
  },
  "sudelfeld": {
@@ -2437,6 +2617,14 @@
   "note": "Toll road, usually open until late October, then closed until May. Cars are charged, bikes ride free; when the car park is full the road is closed to cars, not to bikes.",
   "ascents": [
    "Misurina"
+  ]
+ },
+ "triebener-tauern": {
+  "classicAscent": "9 km, 6.3 % from Trieben",
+  "note": "The link from the Palten valley into the Pöls valley via Hohentauern; steep through a gorge from Trieben, flat from the south. Open all year.",
+  "ascents": [
+   "Trieben (north)",
+   "St. Johann am Tauern (south)"
   ]
  },
  "turracher-hoehe": {
@@ -2588,12 +2776,42 @@
    "Trenta"
   ]
  },
+ "wallbergstrasse": {
+  "classicAscent": "11.6 km, 6.4 % from Rottach-Egern",
+  "note": "Mountain road closed to cars from Rottach-Egern to the Wallberghaus, a toboggan run in winter. Steadily steep in hairpins, at the top the view over the Tegernsee.",
+  "ascents": [
+   "Rottach-Egern"
+  ]
+ },
+ "weinebene": {
+  "classicAscent": "23 km, 5.7 % from Deutschlandsberg",
+  "note": "The high crossing of the Koralpe between western Styria and the Lavant valley, 1,300 m of climbing from either side. Long, steady and quiet; open all year.",
+  "ascents": [
+   "Deutschlandsberg (east)",
+   "Wolfsberg (west)"
+  ]
+ },
+ "windische-hoehe": {
+  "classicAscent": "12.8 km, 4.3 % from Feistritz an der Gail",
+  "note": "A quiet crossing between the Gail and Drau valleys west of Villach, moderate on both sides. Open all year.",
+  "ascents": [
+   "Feistritz an der Gail (south)",
+   "Paternion (north)"
+  ]
+ },
  "wurzenpass": {
   "classicAscent": "6.2 km, 8.8 % from Riegersdorf",
   "note": "Short, brutal and with lorry traffic: the northern ramp hits 18 % on the final kilometre. Border crossing into Slovenia, open all year – the reputation comes from the gradient, not the scenery.",
   "ascents": [
    "Riegersdorf (north)",
    "Kranjska Gora (south)"
+  ]
+ },
+ "zillertaler-hoehenstrasse": {
+  "classicAscent": "19 km, 7.8 % from Ried im Zillertal",
+  "note": "Toll road above the Zillertal from Ried to over 2,000 m at the Melchboden, almost 1,500 m of climbing with long double-digit ramps. At the top the panorama of the Zillertal Alps; closed in winter.",
+  "ascents": [
+   "Ried im Zillertal"
   ]
  }
 }

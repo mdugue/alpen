@@ -511,6 +511,44 @@
   "access": "Bahnhof Villach oder Spittal; Klagenfurt mit Flughafen."
  },
  {
+  "slug": "steiermark",
+  "name": "Weststeiermark und Koralpe",
+  "country": "AT",
+  "center": {
+   "lat": 47.05,
+   "lon": 15.1
+  },
+  "radiusKm": 40,
+  "baseTowns": [
+   "graz"
+  ],
+  "include": [
+   "praebichl"
+  ],
+  "exclude": [],
+  "character": "Gaberl, Weinebene, Klippitztörl und der Schöckl: lange, gleichmäßige Almpässe statt Felsen, grün und ruhig, mit dem Erzberg am Präbichl als Ausreißer.",
+  "multiDay": "Drei bis vier Tage ab Graz; früh und spät im Jahr fahrbar, wenn die Tauern noch zu sind.",
+  "access": "Hauptbahnhof Graz, Flughafen Graz; Wien in zweieinhalb Stunden."
+ },
+ {
+  "slug": "ennstal-dachstein",
+  "name": "Ennstal und Dachstein",
+  "country": "AT",
+  "center": {
+   "lat": 47.39,
+   "lon": 13.69
+  },
+  "radiusKm": 35,
+  "baseTowns": [
+   "schladming"
+  ],
+  "include": [],
+  "exclude": [],
+  "character": "Stoderzinken, Radstädter Tauern, Sölkpass und die Postalm: Aussichtsstraßen und Tauernübergänge rund um das Ennstal, mit dem Dachstein im Rücken.",
+  "multiDay": "Vier bis fünf Tage; der Sölkpass verbindet ins Murtal, der Radstädter Tauern in den Lungau.",
+  "access": "Bahnhof Schladming an der Ennstalbahn; Salzburg in gut einer Stunde."
+ },
+ {
   "slug": "julische-alpen",
   "name": "Julische Alpen",
   "country": "SI",
@@ -628,12 +666,31 @@
    "sterzing"
   ],
   "include": [
-   "kuehtai"
+   "kuehtai",
+   "seefelder-sattel"
   ],
   "exclude": [],
   "character": "Jaufen, Penser Joch und Kühtai zu beiden Seiten des Brenners – lange, gleichmäßige Anstiege von zwei Städten mit Bahnhof aus.",
   "multiDay": "Vier Tage; über das Timmelsjoch ins Ötztal oder über den Jaufen ins Passeiertal als Etappen.",
   "access": "Bahnhof Innsbruck oder Sterzing auf der Brennerlinie; Flughafen Innsbruck."
+ },
+ {
+  "slug": "zillertal",
+  "name": "Zillertal",
+  "country": "AT",
+  "center": {
+   "lat": 47.2,
+   "lon": 11.85
+  },
+  "radiusKm": 25,
+  "baseTowns": [
+   "mayrhofen"
+  ],
+  "include": [],
+  "exclude": [],
+  "character": "Die Zillertaler Höhenstraße, Hintertux und der Gerlospass: steile Rampen aus einem tiefen, breiten Tal, die Höhenstraße eine der härtesten Österreichs.",
+  "multiDay": "Drei Tage; der Gerlospass führt zu den Krimmler Wasserfällen und weiter in die Hohen Tauern.",
+  "access": "Zillertalbahn ab Jenbach bis Mayrhofen; Innsbruck in einer Stunde."
  },
  {
   "slug": "trentino-brenta",
@@ -768,12 +825,33 @@
   "baseTowns": [],
   "include": [
    "silvretta-hochalpenstrasse",
-   "oberjoch"
+   "oberjoch",
+   "pfaender",
+   "luenersee",
+   "gargellen"
   ],
   "exclude": [],
   "character": "Furkajoch, Faschinajoch, Hochtannberg, Arlberg, Riedberg und die Silvretta-Hochalpenstraße: der Alpennordrand zwischen Bregenzerwald und Allgäu, grün und mit langen Anstiegen.",
   "multiDay": "Vier Tage; die Silvretta und der Arlberg verbinden ins Tiroler Oberland.",
   "access": "Bahnhof Bludenz, Langen am Arlberg oder Oberstdorf; Zürich und München in zwei Stunden."
+ },
+ {
+  "slug": "bayerisches-oberland",
+  "name": "Tegernsee und Bayerisches Oberland",
+  "country": "DE",
+  "center": {
+   "lat": 47.65,
+   "lon": 11.75
+  },
+  "radiusKm": 35,
+  "baseTowns": [
+   "tegernsee"
+  ],
+  "include": [],
+  "exclude": [],
+  "character": "Wallberg, Spitzingsattel, Sudelfeld und Kesselberg: kurze, steile Berge zwischen Voralpenseen, eine Stunde von München.",
+  "multiDay": "Ein langes Wochenende; über den Achenpass ins Inntal und weiter nach Tirol.",
+  "access": "Bayerische Regiobahn von München nach Tegernsee und Schliersee."
  },
  {
   "slug": "hochvogesen",

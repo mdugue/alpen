@@ -14,6 +14,11 @@
   "multiDay": "Four to five days; the two St Bernard passes link to France and Switzerland.",
   "access": "Aosta railway station via Turin; A5 motorway from Turin."
  },
+ "bayerisches-oberland": {
+  "character": "The Wallberg, the Spitzingsattel, the Sudelfeld and the Kesselberg: short, steep climbs between foothill lakes, an hour from Munich.",
+  "multiDay": "A long weekend; over the Achenpass into the Inn valley and on into Tyrol.",
+  "access": "Bayerische Regiobahn from Munich to Tegernsee and Schliersee."
+ },
  "belluneser-dolomiten": {
   "character": "Duran, Cereda, Croce d'Aune and the two Forcelle around the national park between Agordo and Feltre, plus Rolle, Valles, Brocon and San Boldo at the edge: the quiet southern side of the Dolomites, lower and emptier than the Sella and Cortina.",
   "multiDay": "Four to five days; the loop over Cereda, Rolle and Valles in a day, Duran and Staulanza on a second, the Grappa as a day trip from Feltre.",
@@ -63,6 +68,11 @@
   "character": "Albula, Julier, Bernina, Flüela, Maloja and Ofen around a high valley at 1,800 m – the climbs start high and the air is thin.",
   "multiDay": "A week; to Livigno and into the Val Müstair over the Ofen pass as stages.",
   "access": "St. Moritz railway station via Chur (Rhaetian Railway); Zurich in three hours."
+ },
+ "ennstal-dachstein": {
+  "character": "The Stoderzinken, the Radstädter Tauern, the Sölkpass and the Postalm: viewpoint roads and Tauern crossings around the Enns valley, with the Dachstein behind.",
+  "multiDay": "Four to five days; the Sölkpass links to the Mur valley, the Radstädter Tauern to the Lungau.",
+  "access": "Schladming station on the Enns valley line; Salzburg in just over an hour."
  },
  "fassa-fiemme": {
   "character": "Rolle, Valles, San Pellegrino, Manghen, Lavazè and Costalunga: the southern Dolomite passes, wooded and less busy than the Sella massif.",
@@ -149,6 +159,11 @@
   "multiDay": "Three to four days; the Dolomitenradrundfahrt loop in a day, a stage to Cortina or into the Gailtal.",
   "access": "Lienz railway station with trains from Villach and through the Pustertal from Innsbruck; Klagenfurt airport a good two hours by train."
  },
+ "steiermark": {
+  "character": "The Gaberl, the Weinebene, the Klippitztörl and the Schöckl: long, steady alpine passes instead of rock, green and quiet, with the Erzberg at the Präbichl as the odd one out.",
+  "multiDay": "Three to four days from Graz; rideable early and late in the year while the Tauern are still closed.",
+  "access": "Graz main station, Graz airport; Vienna in two and a half hours."
+ },
  "suedvogesen": {
   "character": "The Ballon d'Alsace, La Planche des Belles Filles and the Grand Ballon – the Tour de France climbs of the Vosges – with quiet wooded passes between them and the busy N66 over Bussang.",
   "multiDay": "Two to three days; the loop over the Hundsruck, the Ballon d'Alsace and Bussang in a day, the Planche as a detour from Plancher-les-Mines.",
@@ -213,5 +228,10 @@
   "character": "Klausen, Pragel, Glaubenbielen, Glaubenberg and the car-free Grosse Scheidegg – the pre-alpine passes between Lake Lucerne and Lake Brienz, shorter than the Gotthard giants and open earlier in the year.",
   "multiDay": "Four days; Susten and Grimsel as the link southwards.",
   "access": "Meiringen, Lucerne or Altdorf railway station; Zurich in an hour."
+ },
+ "zillertal": {
+  "character": "The Zillertaler Höhenstraße, Hintertux and the Gerlospass: steep ramps out of a deep, wide valley, the Höhenstraße one of the hardest in Austria.",
+  "multiDay": "Three days; the Gerlospass leads to the Krimml waterfalls and on into the Hohe Tauern.",
+  "access": "The Zillertal railway from Jenbach to Mayrhofen; Innsbruck in an hour."
  }
 }

@@ -604,6 +604,41 @@
   "why": "Ennstal mit Bahnhof: Sölkpass, Radstädter Tauern und die Dachsteinrunde. Radhotels und Verleih aus dem Skibetrieb."
  },
  {
+  "slug": "graz",
+  "name": "Graz",
+  "country": "AT",
+  "lat": 47.0707,
+  "lon": 15.4395,
+  "tags": [
+   "hub",
+   "train",
+   "season",
+   "workshops"
+  ],
+  "aliases": [
+   "Steiermark",
+   "Weststeiermark"
+  ],
+  "why": "Steirische Landeshauptstadt mit Bahnknoten: Schöckl direkt ab der Stadt, Gaberl und Weinebene in der Weststeiermark eine kurze Anfahrt entfernt. Mildes Klima, lange Saison."
+ },
+ {
+  "slug": "tegernsee",
+  "name": "Tegernsee",
+  "country": "DE",
+  "lat": 47.7096,
+  "lon": 11.7577,
+  "tags": [
+   "scenic",
+   "train"
+  ],
+  "aliases": [
+   "Rottach-Egern",
+   "Oberland",
+   "Schliersee"
+  ],
+  "why": "Ferienort am See im bayerischen Oberland: Wallberg vor der Haustür, Spitzingsattel, Sudelfeld und Kesselberg in der Nachbarschaft. Bahn aus München."
+ },
+ {
   "slug": "bad-kleinkirchheim",
   "name": "Bad Kleinkirchheim",
   "country": "AT",

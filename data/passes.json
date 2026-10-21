@@ -3425,6 +3425,120 @@
   ]
  },
  {
+  "slug": "piller-sattel",
+  "surface": "asphalt",
+  "name": "Piller Sattel",
+  "type": "pass",
+  "tags": [
+   "panorama"
+  ],
+  "aliases": [
+   "Pillerhöhe",
+   "Pillerpass"
+  ],
+  "country": "AT",
+  "region": "Ostalpen",
+  "lat": 47.1186,
+  "lon": 10.6667,
+  "elevation": 1559,
+  "classicAscent": "9,3 km, 5,8 % ab Wenns",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 1,
+  "season": null,
+  "note": "Die stille Verbindung vom Pitztal ins Oberinntal über eine Hochmoorlandschaft. Von Wenns gleichmäßig, nach Fließ kurz und sehr steil; oben am Gachen Blick die Aussicht weit ins Inntal. Ganzjährig offen.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 47.1668,
+     "lon": 10.7314
+    },
+    "label": "Wenns (Ost)"
+   },
+   {
+    "from": {
+     "lat": 47.1222,
+     "lon": 10.626
+    },
+    "label": "Fließ (West)"
+   }
+  ]
+ },
+ {
+  "slug": "seefelder-sattel",
+  "surface": "asphalt",
+  "name": "Seefelder Sattel",
+  "type": "pass",
+  "aliases": [
+   "Zirler Berg",
+   "Seefeld"
+  ],
+  "country": "AT",
+  "region": "Ostalpen",
+  "lat": 47.318,
+  "lon": 11.1982,
+  "elevation": 1185,
+  "classicAscent": "10,5 km, 5,6 % ab Zirl über den Zirler Berg",
+  "beauty": 3,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 5,
+  "season": null,
+  "note": "Die Hauptstraße von Innsbruck nach Seefeld und Garmisch, von Zirl der berüchtigte Zirler Berg mit 16 % – breit, aber mit viel Verkehr. Von Scharnitz kaum Steigung; ganzjährig offen.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 47.2666,
+     "lon": 11.2292
+    },
+    "label": "Zirl (Süd)"
+   },
+   {
+    "from": {
+     "lat": 47.3903,
+     "lon": 11.2648
+    },
+    "label": "Scharnitz (Nord)"
+   }
+  ]
+ },
+ {
+  "slug": "stubaital",
+  "surface": "asphalt",
+  "name": "Stubaital (Mutterbergalm)",
+  "type": "spur",
+  "tags": [
+   "glacier"
+  ],
+  "aliases": [
+   "Stubaier Gletscher",
+   "Mutterberg",
+   "Neustift"
+  ],
+  "country": "AT",
+  "region": "Ostalpen",
+  "lat": 47.0114,
+  "lon": 11.1561,
+  "elevation": 1730,
+  "classicAscent": "30 km, 2,5 % ab Schönberg",
+  "beauty": 4,
+  "fame": 1,
+  "difficulty": 2,
+  "traffic": 3,
+  "season": null,
+  "note": "Das ganze Stubaital hinauf von Schönberg über Fulpmes und Neustift bis zur Talstation der Gletscherbahn. Lange mäßig, erst die letzten Kilometer hinter Ranalt steiler; ganzjährig offen, unten viel Verkehr.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 47.1863,
+     "lon": 11.4041
+    },
+    "label": "Schönberg"
+   }
+  ]
+ },
+ {
   "slug": "jaufenpass",
   "surface": "asphalt",
   "name": "Jaufenpass",
@@ -3623,6 +3737,81 @@
   ]
  },
  {
+  "slug": "zillertaler-hoehenstrasse",
+  "surface": "asphalt",
+  "name": "Zillertaler Höhenstraße",
+  "type": "spur",
+  "tags": [
+   "panorama",
+   "toll"
+  ],
+  "aliases": [
+   "Melchboden",
+   "Zirmstadl",
+   "Hochfügen"
+  ],
+  "country": "AT",
+  "region": "Ostalpen",
+  "lat": 47.2207,
+  "lon": 11.8249,
+  "elevation": 2020,
+  "classicAscent": "19 km, 7,8 % ab Ried im Zillertal",
+  "beauty": 5,
+  "fame": 3,
+  "difficulty": 5,
+  "traffic": 1,
+  "season": {
+   "opens": 5.5,
+   "closes": 10.5,
+   "maintained": false
+  },
+  "note": "Mautstraße über dem Zillertal von Ried bis auf über 2 000 m am Melchboden, fast 1 500 Höhenmeter mit langen zweistelligen Rampen. Oben das Panorama der Zillertaler Alpen; im Winter gesperrt.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 47.3036,
+     "lon": 11.8728
+    },
+    "label": "Ried im Zillertal"
+   }
+  ]
+ },
+ {
+  "slug": "hintertux",
+  "surface": "asphalt",
+  "name": "Hintertux",
+  "type": "spur",
+  "tags": [
+   "glacier"
+  ],
+  "aliases": [
+   "Tuxertal",
+   "Tux",
+   "Hintertuxer Gletscher"
+  ],
+  "country": "AT",
+  "region": "Ostalpen",
+  "lat": 47.1176,
+  "lon": 11.6873,
+  "elevation": 1500,
+  "classicAscent": "19 km, 4,5 % ab Mayrhofen",
+  "beauty": 4,
+  "fame": 1,
+  "difficulty": 3,
+  "traffic": 3,
+  "season": null,
+  "note": "Von Mayrhofen in Kehren ins Tuxertal und das Tal hinauf bis unter den Hintertuxer Gletscher. Unten steil, oben mäßig; ganzjährig offen, als Gletscherskigebiet auch im Sommer Verkehr.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 47.1696,
+     "lon": 11.8626
+    },
+    "label": "Mayrhofen"
+   }
+  ]
+ },
+ {
   "slug": "malta-hochalmstrasse",
   "surface": "asphalt",
   "name": "Malta-Hochalmstraße",
@@ -3742,6 +3931,111 @@
   ]
  },
  {
+  "slug": "flattnitz",
+  "surface": "asphalt",
+  "name": "Flattnitz",
+  "type": "pass",
+  "country": "AT",
+  "region": "Ostalpen",
+  "lat": 46.9409,
+  "lon": 14.0366,
+  "elevation": 1400,
+  "classicAscent": "12,5 km, 5,1 % ab Glödnitz",
+  "beauty": 3,
+  "fame": 1,
+  "difficulty": 3,
+  "traffic": 1,
+  "season": null,
+  "note": "Ein stiller Almpass zwischen Gurktal und Metnitztal in den Gurktaler Alpen, oben eine Rundkirche. Gleichmäßig auf beiden Seiten, ganzjährig offen.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.8741,
+     "lon": 14.1187
+    },
+    "label": "Glödnitz (Süd)"
+   },
+   {
+    "from": {
+     "lat": 46.9811,
+     "lon": 14.2162
+    },
+    "label": "Metnitz (Ost)"
+   }
+  ]
+ },
+ {
+  "slug": "hochrindl",
+  "surface": "asphalt",
+  "name": "Hochrindl",
+  "type": "pass",
+  "country": "AT",
+  "region": "Ostalpen",
+  "lat": 46.8609,
+  "lon": 13.9945,
+  "elevation": 1620,
+  "classicAscent": "8,6 km, 8,7 % ab Sirnitz",
+  "beauty": 3,
+  "fame": 1,
+  "difficulty": 3,
+  "traffic": 1,
+  "season": null,
+  "note": "Ein Almrücken mit Feriendorf zwischen Gurktal und Reichenau; von Sirnitz steil, von Ebene Reichenau sanfter. Ganzjährig offen.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.824,
+     "lon": 14.0576
+    },
+    "label": "Sirnitz (Ost)"
+   },
+   {
+    "from": {
+     "lat": 46.855,
+     "lon": 13.8941
+    },
+    "label": "Ebene Reichenau (West)"
+   }
+  ]
+ },
+ {
+  "slug": "klippitztoerl",
+  "surface": "asphalt",
+  "name": "Klippitztörl",
+  "type": "pass",
+  "aliases": [
+   "Saualpe"
+  ],
+  "country": "AT",
+  "region": "Ostalpen",
+  "lat": 46.9357,
+  "lon": 14.6758,
+  "elevation": 1644,
+  "classicAscent": "14 km, 6 % ab Bad St. Leonhard",
+  "beauty": 3,
+  "fame": 1,
+  "difficulty": 3,
+  "traffic": 1,
+  "season": null,
+  "note": "Der Übergang über die Saualpe zwischen Lavanttal und Görtschitztal, auf beiden Seiten gleichmäßig. Oben Almen und ein kleines Skigebiet; ganzjährig offen.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.9646,
+     "lon": 14.7888
+    },
+    "label": "Bad St. Leonhard (Ost)"
+   },
+   {
+    "from": {
+     "lat": 46.9203,
+     "lon": 14.5935
+    },
+    "label": "Lölling (West)"
+   }
+  ]
+ },
+ {
   "slug": "soelkpass",
   "surface": "asphalt",
   "name": "Sölkpass",
@@ -3781,6 +4075,221 @@
   ]
  },
  {
+  "slug": "stoderzinken",
+  "surface": "asphalt",
+  "name": "Stoderzinken",
+  "type": "spur",
+  "tags": [
+   "toll",
+   "panorama"
+  ],
+  "aliases": [
+   "Stoderzinken Alpenstraße",
+   "Steinerhaus"
+  ],
+  "country": "AT",
+  "region": "Ostalpen",
+  "lat": 47.4521,
+  "lon": 13.8216,
+  "elevation": 1570,
+  "classicAscent": "10 km, 7,2 % ab Gröbming",
+  "beauty": 5,
+  "fame": 2,
+  "difficulty": 4,
+  "traffic": 1,
+  "season": {
+   "opens": 5.5,
+   "closes": 10.5,
+   "maintained": false
+  },
+  "note": "Mautstraße von Gröbming auf die Alm unter dem Gipfel, steil und schmal, oben der Blick über das Ennstal auf die Tauern. Im Winter gesperrt.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 47.4447,
+     "lon": 13.9017
+    },
+    "label": "Gröbming"
+   }
+  ]
+ },
+ {
+  "slug": "triebener-tauern",
+  "surface": "asphalt",
+  "name": "Triebener Tauern",
+  "type": "pass",
+  "aliases": [
+   "Hohentauern"
+  ],
+  "country": "AT",
+  "region": "Ostalpen",
+  "lat": 47.4333,
+  "lon": 14.4802,
+  "elevation": 1274,
+  "classicAscent": "9 km, 6,3 % ab Trieben",
+  "beauty": 3,
+  "fame": 1,
+  "difficulty": 3,
+  "traffic": 2,
+  "season": null,
+  "note": "Die Verbindung vom Paltental ins Pölstal über Hohentauern; von Trieben steil durch eine Schlucht, von Süden flach. Ganzjährig offen.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 47.4873,
+     "lon": 14.4857
+    },
+    "label": "Trieben (Nord)"
+   },
+   {
+    "from": {
+     "lat": 47.3585,
+     "lon": 14.4695
+    },
+    "label": "St. Johann am Tauern (Süd)"
+   }
+  ]
+ },
+ {
+  "slug": "praebichl",
+  "surface": "asphalt",
+  "name": "Präbichl",
+  "type": "pass",
+  "country": "AT",
+  "region": "Ostalpen",
+  "lat": 47.5246,
+  "lon": 14.9478,
+  "elevation": 1232,
+  "classicAscent": "8,5 km, 5,5 % ab Eisenerz",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 3,
+  "season": null,
+  "note": "Der Pass zwischen Eisenerz und Vordernberg, mit dem Stufenberg des Erzbergs neben der Straße. Auf beiden Seiten kurz und gleichmäßig; ganzjährig offen.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 47.545,
+     "lon": 14.889
+    },
+    "label": "Eisenerz (Nord)"
+   },
+   {
+    "from": {
+     "lat": 47.4884,
+     "lon": 14.994
+    },
+    "label": "Vordernberg (Süd)"
+   }
+  ]
+ },
+ {
+  "slug": "gaberl",
+  "surface": "asphalt",
+  "name": "Gaberl",
+  "type": "pass",
+  "aliases": [
+   "Gaberlsattel",
+   "Stubalpe"
+  ],
+  "country": "AT",
+  "region": "Ostalpen",
+  "lat": 47.1074,
+  "lon": 14.9173,
+  "elevation": 1547,
+  "classicAscent": "27 km, 4,1 % ab Köflach",
+  "beauty": 3,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 2,
+  "season": null,
+  "note": "Der Übergang über die Stubalpe zwischen der Weststeiermark und dem Murtal, lang und gleichmäßig auf beiden Seiten. Ganzjährig offen.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 47.0646,
+     "lon": 15.0831
+    },
+    "label": "Köflach (Ost)"
+   },
+   {
+    "from": {
+     "lat": 47.1533,
+     "lon": 14.7366
+    },
+    "label": "Weißkirchen (West)"
+   }
+  ]
+ },
+ {
+  "slug": "weinebene",
+  "surface": "asphalt",
+  "name": "Weinebene",
+  "type": "pass",
+  "aliases": [
+   "Koralpe"
+  ],
+  "country": "AT",
+  "region": "Ostalpen",
+  "lat": 46.8399,
+  "lon": 15.0165,
+  "elevation": 1668,
+  "classicAscent": "23 km, 5,7 % ab Deutschlandsberg",
+  "beauty": 3,
+  "fame": 2,
+  "difficulty": 4,
+  "traffic": 1,
+  "season": null,
+  "note": "Der hohe Übergang über die Koralpe zwischen Weststeiermark und Lavanttal, 1 300 Höhenmeter von beiden Seiten. Lang, gleichmäßig und ruhig; ganzjährig offen.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.8146,
+     "lon": 15.2138
+    },
+    "label": "Deutschlandsberg (Ost)"
+   },
+   {
+    "from": {
+     "lat": 46.8391,
+     "lon": 14.8452
+    },
+    "label": "Wolfsberg (West)"
+   }
+  ]
+ },
+ {
+  "slug": "schoeckl",
+  "surface": "asphalt",
+  "name": "Schöckl",
+  "type": "spur",
+  "tags": [
+   "panorama"
+  ],
+  "country": "AT",
+  "region": "Ostalpen",
+  "lat": 47.1983,
+  "lon": 15.4671,
+  "elevation": 1437,
+  "classicAscent": "26 km, 4,1 % ab Graz-Andritz über St. Radegund",
+  "beauty": 3,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 2,
+  "season": null,
+  "note": "Der Hausberg von Graz, von Andritz über St. Radegund bis aufs Gipfelplateau; die letzten Kilometer schmal und steil. Ganzjährig offen.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 47.1031,
+     "lon": 15.4219
+    },
+    "label": "Graz-Andritz"
+   }
+  ]
+ },
+ {
   "slug": "villacher-alpenstrasse",
   "surface": "asphalt",
   "name": "Villacher Alpenstraße",
@@ -3813,6 +4322,117 @@
      "lon": 13.83
     },
     "label": "Villach"
+   }
+  ]
+ },
+ {
+  "slug": "gerlitzen",
+  "surface": "asphalt",
+  "name": "Gerlitzen",
+  "type": "spur",
+  "tags": [
+   "panorama",
+   "toll"
+  ],
+  "aliases": [
+   "Gerlitzen Alpe",
+   "Kanzelhöhe"
+  ],
+  "country": "AT",
+  "region": "Ostalpen",
+  "lat": 46.6951,
+  "lon": 13.9137,
+  "elevation": 1900,
+  "classicAscent": "26 km, 5,3 % ab Annenheim",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 4,
+  "traffic": 2,
+  "season": {
+   "opens": 5.5,
+   "closes": 10.5,
+   "maintained": false
+  },
+  "note": "Vom Ossiacher See über die Kanzelhöhe bis knapp unter den Gipfel, der obere Teil als Mautstraße. 1 400 Höhenmeter, oben der Rundblick über die Kärntner Seen bis zu den Julischen Alpen; im Winter gesperrt.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.6599,
+     "lon": 13.9007
+    },
+    "label": "Annenheim"
+   }
+  ]
+ },
+ {
+  "slug": "goldeck-panoramastrasse",
+  "surface": "asphalt",
+  "name": "Goldeck Panoramastraße",
+  "type": "spur",
+  "tags": [
+   "panorama",
+   "toll"
+  ],
+  "aliases": [
+   "Goldeck"
+  ],
+  "country": "AT",
+  "region": "Ostalpen",
+  "lat": 46.7593,
+  "lon": 13.4583,
+  "elevation": 2120,
+  "classicAscent": "17 km, 9 % ab Spittal an der Drau",
+  "beauty": 5,
+  "fame": 2,
+  "difficulty": 5,
+  "traffic": 1,
+  "season": {
+   "opens": 6,
+   "closes": 10,
+   "maintained": false
+  },
+  "note": "Mautstraße von Spittal auf über 2 000 m unter den Goldeck-Gipfel, 1 500 Höhenmeter mit langen steilen Rampen. Oben der Blick auf die Tauern, die Dolomiten und den Millstätter See; im Winter gesperrt.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.7957,
+     "lon": 13.4875
+    },
+    "label": "Spittal an der Drau"
+   }
+  ]
+ },
+ {
+  "slug": "windische-hoehe",
+  "surface": "asphalt",
+  "name": "Windische Höhe",
+  "type": "pass",
+  "country": "AT",
+  "region": "Ostalpen",
+  "lat": 46.636,
+  "lon": 13.5467,
+  "elevation": 1110,
+  "classicAscent": "12,8 km, 4,3 % ab Feistritz an der Gail",
+  "beauty": 3,
+  "fame": 1,
+  "difficulty": 2,
+  "traffic": 1,
+  "season": null,
+  "note": "Ein stiller Übergang zwischen Gailtal und Drautal westlich von Villach, auf beiden Seiten mäßig. Ganzjährig offen.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.5775,
+     "lon": 13.6066
+    },
+    "label": "Feistritz an der Gail (Süd)"
+   },
+   {
+    "from": {
+     "lat": 46.7119,
+     "lon": 13.637
+    },
+    "label": "Paternion (Nord)"
    }
   ]
  },
@@ -6897,6 +7517,103 @@
   ]
  },
  {
+  "slug": "pfaender",
+  "surface": "asphalt",
+  "name": "Pfänder",
+  "type": "spur",
+  "tags": [
+   "panorama"
+  ],
+  "country": "AT",
+  "region": "Ostalpen",
+  "lat": 47.5097,
+  "lon": 9.7827,
+  "elevation": 1020,
+  "classicAscent": "11 km, 5,6 % ab Bregenz",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 2,
+  "season": null,
+  "note": "Der Hausberg von Bregenz, von der Stadt über Fluh bis kurz unter den Gipfel mit Blick über den ganzen Bodensee. Kurz und gleichmäßig steil, ganzjährig offen.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 47.5022,
+     "lon": 9.7398
+    },
+    "label": "Bregenz"
+   }
+  ]
+ },
+ {
+  "slug": "luenersee",
+  "surface": "asphalt",
+  "name": "Lünersee (Brand)",
+  "type": "spur",
+  "aliases": [
+   "Brandnertal",
+   "Lünerseebahn",
+   "Brand"
+  ],
+  "country": "AT",
+  "region": "Ostalpen",
+  "lat": 47.0671,
+  "lon": 9.7548,
+  "elevation": 1565,
+  "classicAscent": "18 km, 5,6 % ab Bludenz durch das Brandnertal",
+  "beauty": 4,
+  "fame": 1,
+  "difficulty": 3,
+  "traffic": 1,
+  "season": {
+   "opens": 6,
+   "closes": 10,
+   "maintained": false
+  },
+  "note": "Das Brandnertal hinauf von Bludenz über Brand bis zur Talstation der Lünerseebahn unter der Schesaplana, das letzte Stück schmal und steil. Hinter Brand im Winter gesperrt.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 47.1548,
+     "lon": 9.8154
+    },
+    "label": "Bludenz"
+   }
+  ]
+ },
+ {
+  "slug": "gargellen",
+  "surface": "asphalt",
+  "name": "Gargellen",
+  "type": "spur",
+  "aliases": [
+   "Gargellental",
+   "Montafon"
+  ],
+  "country": "AT",
+  "region": "Ostalpen",
+  "lat": 46.9721,
+  "lon": 9.9185,
+  "elevation": 1423,
+  "classicAscent": "11 km, 4,6 % ab St. Gallenkirch",
+  "beauty": 3,
+  "fame": 1,
+  "difficulty": 2,
+  "traffic": 1,
+  "season": null,
+  "note": "Ein Seitental des Montafon bis an das Bergdorf unter der Schweizer Grenze, gleichmäßig und still. Ganzjährig offen.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 47.0091,
+     "lon": 10.0018
+    },
+    "label": "St. Gallenkirch"
+   }
+  ]
+ },
+ {
   "slug": "malbun",
   "surface": "asphalt",
   "name": "Malbun",
@@ -7259,6 +7976,75 @@
   ]
  },
  {
+  "slug": "spitzingsattel",
+  "surface": "asphalt",
+  "name": "Spitzingsattel",
+  "type": "pass",
+  "aliases": [
+   "Spitzingsee"
+  ],
+  "country": "DE",
+  "region": "Ostalpen",
+  "lat": 47.6731,
+  "lon": 11.8866,
+  "elevation": 1129,
+  "classicAscent": "9,3 km, 3,7 % ab Schliersee, oben 2,5 km steil",
+  "beauty": 3,
+  "fame": 2,
+  "difficulty": 2,
+  "traffic": 3,
+  "season": null,
+  "note": "Von Schliersee über Neuhaus und die steile Rampe hinauf zum Sattel über dem Spitzingsee, dahinter fällt die Straße zum See ab und endet. Kurz, ganzjährig offen, am Wochenende Ausflugsverkehr.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 47.7355,
+     "lon": 11.8608
+    },
+    "label": "Schliersee (Nord)"
+   }
+  ]
+ },
+ {
+  "slug": "wallbergstrasse",
+  "surface": "asphalt",
+  "name": "Wallbergstraße",
+  "type": "spur",
+  "tags": [
+   "carfree",
+   "panorama"
+  ],
+  "aliases": [
+   "Wallberg",
+   "Wallberghaus"
+  ],
+  "country": "DE",
+  "region": "Ostalpen",
+  "lat": 47.6568,
+  "lon": 11.7895,
+  "elevation": 1470,
+  "classicAscent": "11,6 km, 6,4 % ab Rottach-Egern",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 1,
+  "season": {
+   "opens": 5,
+   "closes": 11,
+   "maintained": false
+  },
+  "note": "Für Autos gesperrte Bergstraße von Rottach-Egern zum Wallberghaus, im Winter Rodelbahn. Gleichmäßig steil in Kehren, oben der Blick über den Tegernsee.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 47.691,
+     "lon": 11.7707
+    },
+    "label": "Rottach-Egern"
+   }
+  ]
+ },
+ {
   "slug": "riedbergpass",
   "surface": "asphalt",
   "name": "Riedbergpass",
@@ -7528,6 +8314,252 @@
      "lon": 13.1352
     },
     "label": "Bad Gastein"
+   }
+  ]
+ },
+ {
+  "slug": "kolm-saigurn",
+  "surface": "asphalt",
+  "name": "Kolm-Saigurn",
+  "type": "spur",
+  "aliases": [
+   "Raurisertal",
+   "Rauris"
+  ],
+  "country": "AT",
+  "region": "Ostalpen",
+  "lat": 47.07,
+  "lon": 12.9834,
+  "elevation": 1600,
+  "classicAscent": "21 km, 3,1 % ab Rauris",
+  "beauty": 4,
+  "fame": 1,
+  "difficulty": 2,
+  "traffic": 1,
+  "season": null,
+  "note": "Das Raurisertal hinauf bis an den Talschluss unter dem Hohen Sonnblick, ein stilles Seitental der Tauern. Lang und mäßig, erst die letzten Kilometer steiler.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 47.2286,
+     "lon": 12.9941
+    },
+    "label": "Rauris"
+   }
+  ]
+ },
+ {
+  "slug": "dientner-sattel",
+  "surface": "asphalt",
+  "name": "Dientner Sattel",
+  "type": "pass",
+  "aliases": [
+   "Hochkönigstraße"
+  ],
+  "country": "AT",
+  "region": "Ostalpen",
+  "lat": 47.3915,
+  "lon": 13.0575,
+  "elevation": 1357,
+  "classicAscent": "6,4 km, 7,3 % ab Mühlbach am Hochkönig",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 2,
+  "season": null,
+  "note": "Der Sattel unter der Südwand des Hochkönigs zwischen Mühlbach und Dienten; mit dem Filzensattel die Hochkönig-Runde von Bischofshofen nach Saalfelden. Kurz und steil, ganzjährig offen.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 47.3762,
+     "lon": 13.1249
+    },
+    "label": "Mühlbach am Hochkönig (Ost)"
+   },
+   {
+    "from": {
+     "lat": 47.3819,
+     "lon": 13.0023
+    },
+    "label": "Dienten (West)"
+   }
+  ]
+ },
+ {
+  "slug": "filzensattel",
+  "surface": "asphalt",
+  "name": "Filzensattel",
+  "type": "pass",
+  "country": "AT",
+  "region": "Ostalpen",
+  "lat": 47.3973,
+  "lon": 13.001,
+  "elevation": 1291,
+  "classicAscent": "20 km, 3 % ab Saalfelden über Maria Alm",
+  "beauty": 3,
+  "fame": 1,
+  "difficulty": 2,
+  "traffic": 2,
+  "season": null,
+  "note": "Der zweite Sattel der Hochkönigstraße, von Saalfelden über Maria Alm und Hinterthal lang und mäßig, von Dienten kurz und steil. Ganzjährig offen.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 47.427,
+     "lon": 12.8304
+    },
+    "label": "Saalfelden (West)"
+   },
+   {
+    "from": {
+     "lat": 47.3819,
+     "lon": 13.0023
+    },
+    "label": "Dienten (Ost)"
+   }
+  ]
+ },
+ {
+  "slug": "pass-thurn",
+  "surface": "asphalt",
+  "name": "Pass Thurn",
+  "type": "pass",
+  "country": "AT",
+  "region": "Ostalpen",
+  "lat": 47.3086,
+  "lon": 12.4085,
+  "elevation": 1274,
+  "classicAscent": "9,5 km, 5,3 % ab Mittersill",
+  "beauty": 3,
+  "fame": 2,
+  "difficulty": 2,
+  "traffic": 4,
+  "season": null,
+  "note": "Die Verbindung von Kitzbühel ins Oberpinzgau, eine breite Bundesstraße mit Verkehr. Von Mittersill in Kehren mit Blick auf die Hohen Tauern, von Jochberg flach; ganzjährig offen.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 47.2837,
+     "lon": 12.4811
+    },
+    "label": "Mittersill (Süd)"
+   },
+   {
+    "from": {
+     "lat": 47.3805,
+     "lon": 12.418
+    },
+    "label": "Jochberg (Nord)"
+   }
+  ]
+ },
+ {
+  "slug": "gaisberg",
+  "surface": "asphalt",
+  "name": "Gaisberg",
+  "type": "spur",
+  "tags": [
+   "panorama"
+  ],
+  "aliases": [
+   "Gaisbergspitze",
+   "Zistelalm"
+  ],
+  "country": "AT",
+  "region": "Ostalpen",
+  "lat": 47.8035,
+  "lon": 13.1114,
+  "elevation": 1275,
+  "classicAscent": "12,5 km, 6,7 % ab Salzburg",
+  "beauty": 3,
+  "fame": 3,
+  "difficulty": 3,
+  "traffic": 2,
+  "season": null,
+  "note": "Der Hausberg von Salzburg, von der Altstadt über Guggenthal und die Zistelalm bis auf den Gipfel mit dem Sender; Ziel des Amateur-Bergrennens und ein Klassiker der Salzburger Szene. Ganzjährig offen.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 47.8045,
+     "lon": 13.0436
+    },
+    "label": "Salzburg"
+   }
+  ]
+ },
+ {
+  "slug": "radstaedter-tauernpass",
+  "surface": "asphalt",
+  "name": "Radstädter Tauernpass",
+  "type": "pass",
+  "aliases": [
+   "Obertauern",
+   "Tauernpass"
+  ],
+  "country": "AT",
+  "region": "Ostalpen",
+  "lat": 47.2492,
+  "lon": 13.5559,
+  "elevation": 1738,
+  "classicAscent": "21 km, 4,2 % ab Radstadt",
+  "beauty": 3,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 3,
+  "season": null,
+  "note": "Der Pass über Obertauern zwischen Ennstal und Lungau, die alte Römerstraße neben der Tauernautobahn. Von Radstadt lang mit einem steilen Stück vor Untertauern, von Mauterndorf gleichmäßig; ganzjährig offen.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 47.3846,
+     "lon": 13.4681
+    },
+    "label": "Radstadt (Nord)"
+   },
+   {
+    "from": {
+     "lat": 47.1355,
+     "lon": 13.678
+    },
+    "label": "Mauterndorf (Süd)"
+   }
+  ]
+ },
+ {
+  "slug": "katschberg",
+  "surface": "asphalt",
+  "name": "Katschberg",
+  "type": "pass",
+  "aliases": [
+   "Katschberghöhe",
+   "Katschbergpass"
+  ],
+  "country": "AT",
+  "region": "Ostalpen",
+  "lat": 47.0591,
+  "lon": 13.6157,
+  "elevation": 1641,
+  "classicAscent": "6 km, 9,6 % ab St. Michael im Lungau",
+  "beauty": 3,
+  "fame": 3,
+  "difficulty": 4,
+  "traffic": 3,
+  "season": null,
+  "note": "Die alte Straße zwischen Lungau und Liesertal, auf beiden Seiten kurz und mit Rampen bis 20 %, eine der steilsten Passstraßen der Alpen; die Autobahn geht im Tunnel darunter. Ganzjährig offen.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 47.099,
+     "lon": 13.6377
+    },
+    "label": "St. Michael im Lungau (Nord)"
+   },
+   {
+    "from": {
+     "lat": 47.0172,
+     "lon": 13.6135
+    },
+    "label": "Rennweg (Süd)"
    }
   ]
  },

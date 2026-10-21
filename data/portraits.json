@@ -1989,6 +1989,26 @@
    }
   ]
  },
+ "dientner-sattel": {
+  "intro": "Der erste der zwei Sättel der Hochkönigstraße, mit der Kalkwand des Hochkönigs über der Straße.",
+  "sides": [
+   {
+    "character": "Von Mühlbach steil in Kehren durch Wald und über Almwiesen bis auf den Sattel.",
+    "highlights": "Die Südwand des Hochkönigs direkt über dem Sattel.",
+    "hazards": [
+     "steep",
+     "tight-hairpins"
+    ],
+    "bestAs": "up"
+   },
+   {
+    "character": "Von Dienten ein kurzer, mäßiger Anstieg über Wiesen.",
+    "highlights": "Das Bergdorf Dienten mit seiner Kirche.",
+    "hazards": [],
+    "bestAs": "down"
+   }
+  ]
+ },
  "edelweissspitze": {
   "intro": "Kurzer, steiler Abstecher auf Kopfsteinpflaster zum höchsten Punkt der Glocknerstraße. Oben weiter Rundblick über die Hohen Tauern.",
   "sides": [
@@ -2017,6 +2037,42 @@
    {
     "bestAs": "down",
     "character": "Von Damüls ein welliges Verbindungsstück mit kurzem Gegengefälle, kaum Höhe. Bergab der kurze Übergang hinüber nach Damüls."
+   }
+  ]
+ },
+ "filzensattel": {
+  "intro": "Zusammen mit dem Dientner Sattel die Hochkönig-Überquerung zwischen dem Saalachtal und dem Salzachtal.",
+  "sides": [
+   {
+    "character": "Von Saalfelden lange flach nach Maria Alm, dann mäßig durch das Urslautal über Hinterthal.",
+    "highlights": "Die Steinernen Meer-Wände über Maria Alm.",
+    "hazards": [],
+    "bestAs": "up"
+   },
+   {
+    "character": "Von Dienten nur gut 3 km, aber steil.",
+    "highlights": "Der Blick über das Diententaler Becken.",
+    "hazards": [
+     "steep"
+    ],
+    "bestAs": "down"
+   }
+  ]
+ },
+ "flattnitz": {
+  "intro": "Ein kaum befahrener Übergang zwischen zwei Kärntner Tälern, ideal für eine Runde mit der Hochrindl.",
+  "sides": [
+   {
+    "character": "Von Glödnitz gleichmäßig durch das enge Tal und über Almwiesen.",
+    "highlights": "Die romanische Rundkirche auf der Passhöhe.",
+    "hazards": [],
+    "bestAs": "both"
+   },
+   {
+    "character": "Von Metnitz lang und flach das Tal hinauf, oben etwas steiler.",
+    "highlights": "Das stille Metnitztal.",
+    "hazards": [],
+    "bestAs": "both"
    }
   ]
  },
@@ -2146,6 +2202,23 @@
    }
   ]
  },
+ "gaberl": {
+  "intro": "Ein langer, sanfter Almpass in der Weststeiermark, ein Klassiker der Grazer Szene.",
+  "sides": [
+   {
+    "character": "Von Köflach lang und gleichmäßig über Salla durch Wald bis auf die Almen.",
+    "highlights": "Die freien Almkuppen der Stubalpe.",
+    "hazards": [],
+    "bestAs": "both"
+   },
+   {
+    "character": "Von Weißkirchen im Murtal gleichmäßig durch Wald.",
+    "highlights": "Der Blick über das Aichfeld.",
+    "hazards": [],
+    "bestAs": "both"
+   }
+  ]
+ },
  "gailbergsattel": {
   "intro": "Ein Waldsattel unter 1000 m zwischen Drau und Gail, der eher verbindet als fordert. Wer um die Lienzer Dolomiten fährt oder zum Plöckenpass will, kommt hier vorbei.",
   "sides": [
@@ -2168,6 +2241,18 @@
    }
   ]
  },
+ "gaisberg": {
+  "intro": "Ein Stadtberg mit 850 Höhenmetern und dem Rundblick vom Dachstein bis zum Chiemsee. Am Abend nach der Arbeit voller Rennräder.",
+  "sides": [
+   {
+    "character": "Aus der Stadt nach Guggenthal und dann in Kehren steil durch Wald, oben über die freie Kuppe der Zistelalm bis zum Gipfel.",
+    "highlights": "Der Rundblick vom Gipfel über das Salzkammergut und das Alpenvorland.",
+    "hazards": [
+     "tight-hairpins"
+    ]
+   }
+  ]
+ },
  "gampenjoch": {
   "intro": "Die Verbindung von Meran und Lana in den Nonsberg, ein Pass der Länge statt der Kehren. Von der Etsch aus ist er einer der längsten gleichmäßigen Anstiege Südtirols, von Süden kaum mehr als ein sanfter Aufschwung.",
   "sides": [
@@ -2183,6 +2268,28 @@
     "bestAs": "down",
     "character": "Von Fondo über die Hochfläche des Nonsbergs, gleichmäßig und flach. Bergab ein ruhiges Ausrollen, bergauf eher Zufahrt als Anstieg.",
     "highlights": "Die deutschsprachigen Dörfer Unsere Liebe Frau im Walde und St. Felix am Weg."
+   }
+  ]
+ },
+ "gargellen": {
+  "intro": "Das hinterste Dorf im Montafon, eine ruhige Ergänzung zur Silvretta.",
+  "sides": [
+   {
+    "character": "Von St. Gallenkirch gleichmäßig durch das enge, bewaldete Gargellental.",
+    "highlights": "Die Madrisa über dem Talschluss.",
+    "hazards": []
+   }
+  ]
+ },
+ "gerlitzen": {
+  "intro": "Der Aussichtsberg über Villach und dem Ossiacher See, die längste Rampe rund um die Kärntner Seen.",
+  "sides": [
+   {
+    "character": "Vom Seeufer lang und gleichmäßig über Sattendorf und die Kanzelhöhe, oben steiler über die Almen.",
+    "highlights": "Der Blick über den Ossiacher See und den Wörthersee.",
+    "hazards": [
+     "tight-hairpins"
+    ]
    }
   ]
  },
@@ -2227,6 +2334,19 @@
      "narrow"
     ],
     "highlights": "Der Blick zurück auf den Sarnersee, oben das Brienzer Rothorn."
+   }
+  ]
+ },
+ "goldeck-panoramastrasse": {
+  "intro": "Eine der härtesten Straßen Kärntens, auf einen Aussichtsgipfel über dem Drautal.",
+  "sides": [
+   {
+    "character": "Von Spittal steil durch Wald und in Kehren über die Almen, kaum ein Stück unter 8 % bis zum Parkplatz unter dem Gipfel.",
+    "highlights": "Der Rundblick vom Goldeck über Drautal und Millstätter See.",
+    "hazards": [
+     "steep",
+     "tight-hairpins"
+    ]
    }
   ]
  },
@@ -2442,6 +2562,19 @@
    }
   ]
  },
+ "hintertux": {
+  "intro": "Das Tuxertal endet unter dem einzigen ganzjährigen Gletscherskigebiet Österreichs. Ein Talanstieg mit steilem Auftakt aus Mayrhofen.",
+  "sides": [
+   {
+    "character": "Aus Mayrhofen steil in Kehren nach Finkenberg, dann gleichmäßiger durch das Tuxertal über Lanersbach bis Hintertux.",
+    "highlights": "Der Gletscher am Talende über den Hotels von Hintertux.",
+    "hazards": [
+     "tight-hairpins",
+     "traffic"
+    ]
+   }
+  ]
+ },
  "hochkar": {
   "intro": "Die Hochkar Alpenstraße ist eine kurze, sehr steile Mautstraße in den niederösterreichischen Kalkalpen. Oben am Skigebiet reicht der Blick über die Ybbstaler Alpen bis zum Ötscher.",
   "sides": [
@@ -2451,6 +2584,25 @@
      "steep"
     ],
     "highlights": "Oben der Blick über die Ybbstaler Alpen zum Ötscher."
+   }
+  ]
+ },
+ "hochrindl": {
+  "intro": "Der Übergang auf die Almen der Gurktaler Alpen, oben Weite und Zirben.",
+  "sides": [
+   {
+    "character": "Von Sirnitz steil durch Wald in Kehren.",
+    "highlights": "Die Almböden der Hochrindl.",
+    "hazards": [
+     "steep"
+    ],
+    "bestAs": "up"
+   },
+   {
+    "character": "Von Ebene Reichenau gleichmäßig und sanfter.",
+    "highlights": "Der Blick zu den Nockbergen.",
+    "hazards": [],
+    "bestAs": "down"
    }
   ]
  },
@@ -2627,6 +2779,29 @@
    }
   ]
  },
+ "katschberg": {
+  "intro": "Ein kurzer, brutaler Pass zwischen Salzburg und Kärnten, mit einem Skiort oben. Sechs Kilometer, die sich wie ein großer Berg anfühlen.",
+  "sides": [
+   {
+    "character": "Von St. Michael gerade und sehr steil am Hang hinauf, kaum eine Kehre zum Durchatmen.",
+    "highlights": "Der Blick zurück über den Lungau.",
+    "hazards": [
+     "steep",
+     "traffic"
+    ],
+    "bestAs": "up"
+   },
+   {
+    "character": "Von Rennweg ebenso kurz und steil, mit ein paar Kehren.",
+    "highlights": "Das Liesertal Richtung Gmünd.",
+    "hazards": [
+     "steep",
+     "tight-hairpins"
+    ],
+    "bestAs": "up"
+   }
+  ]
+ },
  "kaunertaler-gletscherstrasse": {
   "intro": "Eine der höchsten Straßen Österreichs: vom Kaunertal am Gepatsch-Stausee vorbei hinauf in die Gletscherwelt der Ötztaler Alpen. Für Räder mautfrei, für die Beine eine der härtesten Auffahrten der Ostalpen.",
   "sides": [
@@ -2684,6 +2859,35 @@
      "traffic"
     ],
     "highlights": "Der Urnerboden, die größte Alp der Schweiz."
+   }
+  ]
+ },
+ "klippitztoerl": {
+  "intro": "Ein runder Almpass im Osten Kärntens, gegenüber der Koralpe mit der Weinebene.",
+  "sides": [
+   {
+    "character": "Von Bad St. Leonhard gleichmäßig durch Wald bis auf die Almen.",
+    "highlights": "Der Blick über das Lavanttal.",
+    "hazards": [],
+    "bestAs": "both"
+   },
+   {
+    "character": "Von Lölling durch das Löllinger Tal, mäßig und still.",
+    "highlights": "Die alten Bergbaudörfer des Görtschitztals.",
+    "hazards": [],
+    "bestAs": "both"
+   }
+  ]
+ },
+ "kolm-saigurn": {
+  "intro": "Ein Talschluss im Nationalpark Hohe Tauern, umrahmt von Dreitausendern. Eine ruhige Alternative zu den großen Tauernstraßen.",
+  "sides": [
+   {
+    "character": "Von Rauris lang und flach über Wörth und Bucheben, zum Schluss steiler auf die Almböden von Kolm-Saigurn.",
+    "highlights": "Der Talschluss mit dem Sonnblick und seinen Wasserfällen.",
+    "hazards": [
+     "narrow"
+    ]
    }
   ]
  },
@@ -2863,6 +3067,19 @@
      "steep"
     ],
     "highlights": "Der Altausseer See tief unten, oben das Tote Gebirge."
+   }
+  ]
+ },
+ "luenersee": {
+  "intro": "Ein Talende im Rätikon unter den Wänden der Schesaplana, die ruhigste Rampe rund um Bludenz.",
+  "sides": [
+   {
+    "character": "Von Bludenz in Kehren über Bürserberg ins Brandnertal, mäßig bis Brand, dann schmal und steil bis zur Talstation.",
+    "highlights": "Die Kalkwände der Schesaplana am Talende.",
+    "hazards": [
+     "narrow",
+     "steep"
+    ]
    }
   ]
  },
@@ -3429,6 +3646,27 @@
     "hazards": [
      "tight-hairpins"
     ]
+   }
+  ]
+ },
+ "pass-thurn": {
+  "intro": "Der Übergang aus den Kitzbüheler Alpen ins Salzachtal, mit dem Großvenediger gegenüber.",
+  "sides": [
+   {
+    "character": "Von Mittersill in langen Kehren am Südhang, gleichmäßig und mit Blick auf die Tauern.",
+    "highlights": "Der Blick über den Pinzgau auf den Großvenediger.",
+    "hazards": [
+     "traffic"
+    ],
+    "bestAs": "up"
+   },
+   {
+    "character": "Von Jochberg flach und gerade das Tal hinauf.",
+    "highlights": "Die Grasberge der Kitzbüheler Alpen.",
+    "hazards": [
+     "traffic"
+    ],
+    "bestAs": "down"
    }
   ]
  },
@@ -4465,6 +4703,19 @@
    }
   ]
  },
+ "pfaender": {
+  "intro": "Ein kurzer Berg mit dem großen Blick: der Bodensee unten, die Schweizer Alpen gegenüber.",
+  "sides": [
+   {
+    "character": "Aus Bregenz gleich steil am Hang hinauf, über Fluh durch Wald und Wiesen bis zur Bergstation.",
+    "highlights": "Der Blick über den Bodensee bis zum Säntis.",
+    "hazards": [
+     "steep",
+     "narrow"
+    ]
+   }
+  ]
+ },
  "pian-delle-fugazze": {
   "intro": "Der Übergang vom Etschtal in die Val Leogra unter dem Pasubio, im Ersten Weltkrieg Frontlinie und schon 1934 vom Giro befahren. Nahe der Passhöhe steht auf dem Colle Bellavista das Beinhaus des Pasubio.",
   "sides": [
@@ -4504,6 +4755,26 @@
     "hazards": [
      "tight-hairpins"
     ]
+   }
+  ]
+ },
+ "piller-sattel": {
+  "intro": "Ein kleiner Pass zwischen Pitztal und Inntal, der Kaunertal, Pitztal und Landeck zu einer Runde verbindet. Oben Moor und Lärchen statt Felsen.",
+  "sides": [
+   {
+    "character": "Von Wenns am Eingang des Pitztals gleichmäßig durch Wald und über Wiesen bis auf die Hochfläche.",
+    "highlights": "Das Hochmoor am Piller und der Blick zurück ins Pitztal.",
+    "hazards": [],
+    "bestAs": "up"
+   },
+   {
+    "character": "Von Fließ kurz und sehr steil in Kehren den Hang hinauf; als Abfahrt mit Vorsicht.",
+    "highlights": "Der Gache Blick, eine Aussichtsplattform über dem Inntal.",
+    "hazards": [
+     "steep",
+     "tight-hairpins"
+    ],
+    "bestAs": "up"
    }
   ]
  },
@@ -4576,6 +4847,27 @@
    }
   ]
  },
+ "praebichl": {
+  "intro": "Der Übergang am Steirischen Erzberg, dessen Abbaustufen man von der Straße aus sieht. Eine Runde mit dem Leopoldsteiner See.",
+  "sides": [
+   {
+    "character": "Aus Eisenerz gleichmäßig am Erzberg vorbei durch Wald bis zur Passhöhe.",
+    "highlights": "Der Erzberg mit seinen Stufen.",
+    "hazards": [
+     "traffic"
+    ],
+    "bestAs": "up"
+   },
+   {
+    "character": "Von Vordernberg kurz und etwas steiler durch Wald.",
+    "highlights": "Das alte Radwerk in Vordernberg.",
+    "hazards": [
+     "traffic"
+    ],
+    "bestAs": "down"
+   }
+  ]
+ },
  "pragelpass": {
   "intro": "Eine schmale, steile Bergstraße zwischen Muotatal und Klöntal, an Sonn- und Feiertagen für Autos gesperrt. Auf der Ostseite liegt der Klöntalersee als Belohnung.",
   "sides": [
@@ -4616,6 +4908,25 @@
      "narrow"
     ],
     "highlights": "Der Blick hinunter auf den Gardasee."
+   }
+  ]
+ },
+ "radstaedter-tauernpass": {
+  "intro": "Ein langer Tauernübergang mit einem Skiort auf der Passhöhe. Seit die Autobahn durch den Tunnel geht, ist auf der Passstraße Platz.",
+  "sides": [
+   {
+    "character": "Von Radstadt erst flach durch das Taurachtal, ab Untertauern steil in Kehren am Gnadenfall vorbei, oben flacher.",
+    "highlights": "Der Gnadenfall-Wasserfall an der Steilstufe.",
+    "hazards": [
+     "tight-hairpins"
+    ],
+    "bestAs": "up"
+   },
+   {
+    "character": "Von Mauterndorf über Tweng gleichmäßig durch das Taurachtal.",
+    "highlights": "Die Burg Mauterndorf am Start.",
+    "hazards": [],
+    "bestAs": "down"
    }
   ]
  },
@@ -4783,6 +5094,19 @@
    }
   ]
  },
+ "schoeckl": {
+  "intro": "Der Grazer Stadtberg mit dem Blick über die ganze Oststeiermark, das Feierabendziel der Grazer Rennradler.",
+  "sides": [
+   {
+    "character": "Aus der Stadt sanft nach St. Radegund, dann steiler und schmal in Kehren bis zum Stubenberghaus.",
+    "highlights": "Der Rundblick vom Gipfelplateau über Graz.",
+    "hazards": [
+     "narrow",
+     "steep"
+    ]
+   }
+  ]
+ },
  "schwaegalp": {
   "intro": "Die Passhöhe liegt direkt unter der Nordwand des Säntis, und diese Wand trägt den ganzen Anstieg. Oben startet die Säntis-Schwebebahn, ringsum Appenzeller Hügelland.",
   "sides": [
@@ -4798,6 +5122,28 @@
    {
     "character": "Von Zgornje Jezersko erst gemäßigt, dann in einigen Kehren etwas steiler zur Grenze. Ein kurzer, ruhiger Anstieg ohne Überraschungen.",
     "highlights": "Rückblick auf die Steiner Alpen über Jezersko."
+   }
+  ]
+ },
+ "seefelder-sattel": {
+  "intro": "Der Sattel zwischen Inntal und Seefelder Plateau, eine der steilsten Bundesstraßen Österreichs. Kein Genussberg, aber der Weg aus Innsbruck nach Norden.",
+  "sides": [
+   {
+    "character": "Aus Zirl gleich steil am Hang, lange gerade Rampen mit bis zu 16 % und Lkw-Verkehr, oben flacher bis Reith.",
+    "highlights": "Der Blick über das Inntal auf Innsbruck und die Kalkkögel.",
+    "hazards": [
+     "steep",
+     "traffic"
+    ],
+    "bestAs": "up"
+   },
+   {
+    "character": "Von Scharnitz an der Grenze nur leicht ansteigend über Gießenbach nach Seefeld.",
+    "highlights": "Das Hochplateau von Seefeld mit dem Wettersteingebirge im Norden.",
+    "hazards": [
+     "traffic"
+    ],
+    "bestAs": "down"
    }
   ]
  },
@@ -4940,6 +5286,19 @@
    }
   ]
  },
+ "spitzingsattel": {
+  "intro": "Der Feierabendberg der Münchner: eine kurze steile Rampe mit einem Bergsee dahinter.",
+  "sides": [
+   {
+    "character": "Von Schliersee flach nach Neuhaus, dann gut zwei Kilometer steil in Kehren bis zum Sattel.",
+    "highlights": "Der Spitzingsee hinter dem Sattel.",
+    "hazards": [
+     "traffic",
+     "tight-hairpins"
+    ]
+   }
+  ]
+ },
  "spluegenpass": {
   "intro": "Der Splügen verbindet das Rheinwald mit Chiavenna. Auf der Schweizer Seite stapeln sich die Kehren eng übereinander, die italienische Seite steigt lang aus dem Tal, durch Galerien und am Stausee von Montespluga vorbei.",
   "sides": [
@@ -5007,6 +5366,20 @@
    }
   ]
  },
+ "stoderzinken": {
+  "intro": "Eine der schönsten Aussichtsstraßen der Steiermark, auf einen Kalkstock gegenüber dem Dachstein. Kurz, steil und kaum befahren.",
+  "sides": [
+   {
+    "character": "Von Gröbming steil durch Wald und in Kehren auf die Almen, schmal und ohne flaches Stück.",
+    "highlights": "Das Friedenskircherl am Fels und der Blick auf Dachstein und Tauern.",
+    "hazards": [
+     "steep",
+     "narrow",
+     "tight-hairpins"
+    ]
+   }
+  ]
+ },
  "strada-della-forra": {
   "intro": "Die Straße aus der Brasa-Schlucht vom Gardasee hinauf nach Tremosine, gehauen in überhängenden Fels und durch dunkle Tunnel. Bekannt auch aus der Verfolgungsjagd zu Beginn des James-Bond-Films „Ein Quantum Trost“.",
   "sides": [
@@ -5019,6 +5392,18 @@
      "traffic"
     ],
     "highlights": "Die Felsdächer der Schlucht, oben der Blick von Tremosine über den Gardasee."
+   }
+  ]
+ },
+ "stubaital": {
+  "intro": "Ein Talende unter dem Stubaier Gletscher, eine halbe Stunde von Innsbruck. Mehr Ausfahrt als Anstieg, mit einem steileren Schluss.",
+  "sides": [
+   {
+    "character": "Von Schönberg lang und flach durch die Dörfer, hinter Ranalt in ein paar Kehren steiler bis zur Mutterbergalm.",
+    "highlights": "Der Grawa-Wasserfall kurz vor dem Talschluss.",
+    "hazards": [
+     "traffic"
+    ]
    }
   ]
  },
@@ -5110,6 +5495,25 @@
      "traffic"
     ],
     "highlights": "Start am Misurinasee, oben die Drei Zinnen direkt über dir."
+   }
+  ]
+ },
+ "triebener-tauern": {
+  "intro": "Ein stiller Übergang über die Niederen Tauern, zwischen Ennstal und Murtal.",
+  "sides": [
+   {
+    "character": "Von Trieben steil durch das enge Tal des Triebenbachs und in Kehren bis Hohentauern.",
+    "highlights": "Das Hochtal von Hohentauern.",
+    "hazards": [
+     "tight-hairpins"
+    ],
+    "bestAs": "up"
+   },
+   {
+    "character": "Von St. Johann sanft durch das obere Pölstal.",
+    "highlights": "Die stillen Wiesen des Pölstals.",
+    "hazards": [],
+    "bestAs": "down"
    }
   ]
  },
@@ -5370,6 +5774,53 @@
    }
   ]
  },
+ "wallbergstrasse": {
+  "intro": "Eine autofreie Bergstraße über dem Tegernsee, der Trainingsberg des Oberlands.",
+  "sides": [
+   {
+    "character": "Von Rottach-Egern zur Talstation, dann in vielen Kehren gleichmäßig steil durch Wald bis zum Wallberghaus.",
+    "highlights": "Der Blick über den Tegernsee ins Alpenvorland.",
+    "hazards": [
+     "tight-hairpins",
+     "narrow"
+    ]
+   }
+  ]
+ },
+ "weinebene": {
+  "intro": "Der höchste Straßenpass der Koralpe, mit langen Anstiegen aus dem Weinland und aus dem Lavanttal.",
+  "sides": [
+   {
+    "character": "Von Deutschlandsberg durch die Klause und lange gleichmäßig durch Wald bis auf die Almhöhe.",
+    "highlights": "Der Blick über das steirische Hügelland.",
+    "hazards": [],
+    "bestAs": "both"
+   },
+   {
+    "character": "Von Wolfsberg im Lavanttal gleichmäßig über Prössing.",
+    "highlights": "Der Blick über das Lavanttal auf die Saualpe.",
+    "hazards": [],
+    "bestAs": "both"
+   }
+  ]
+ },
+ "windische-hoehe": {
+  "intro": "Ein kleiner Pass, der Gailtal und Drautal für eine Runde ab Villach verbindet.",
+  "sides": [
+   {
+    "character": "Von Feistritz gleichmäßig durch Wald.",
+    "highlights": "Der Blick über das Gailtal auf die Karnischen Alpen.",
+    "hazards": [],
+    "bestAs": "both"
+   },
+   {
+    "character": "Von Paternion über Kreuzen am Hang, mäßig.",
+    "highlights": "Der Blick ins Drautal.",
+    "hazards": [],
+    "bestAs": "both"
+   }
+  ]
+ },
  "wurzenpass": {
   "intro": "Ein Grenzübergang nach Slowenien, dessen Ruf von der Steigung kommt, nicht von der Landschaft. Die Nordrampe ist kurz und auf den letzten Kilometern brutal steil, dazu fahren hier Lkw.",
   "sides": [
@@ -5386,6 +5837,20 @@
     "character": "Von Kranjska Gora gemäßigt durch Wald, erst gegen die Grenze steiler. Die leichte Seite und als Abfahrt nach Slowenien die bessere Wahl.",
     "hazards": [
      "traffic"
+    ]
+   }
+  ]
+ },
+ "zillertaler-hoehenstrasse": {
+  "intro": "Eine der härtesten Straßen Österreichs: von der Talsohle des Zillertals auf einen Almrücken mit Blick auf die Gletscher.",
+  "sides": [
+   {
+    "character": "Von Ried gleich steil durch die Hangdörfer, dann lange Rampen über 10 % durch Wald und über Almen bis zum Melchboden.",
+    "highlights": "Der Blick vom Melchboden über das Zillertal auf den Zillertaler Hauptkamm.",
+    "hazards": [
+     "steep",
+     "narrow",
+     "tight-hairpins"
     ]
    }
   ]

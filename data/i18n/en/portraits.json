@@ -1368,6 +1368,19 @@
    }
   ]
  },
+ "dientner-sattel": {
+  "intro": "The first of the two saddles of the Hochkönig road, with the limestone wall of the Hochkönig above the road.",
+  "sides": [
+   {
+    "character": "From Mühlbach steeply in hairpins through forest and over pastures up to the saddle.",
+    "highlights": "The south face of the Hochkönig directly above the saddle."
+   },
+   {
+    "character": "From Dienten a short, moderate climb across meadows.",
+    "highlights": "The mountain village of Dienten with its church."
+   }
+  ]
+ },
  "edelweissspitze": {
   "intro": "A short, steep cobbled detour to the highest point of the Glockner road. At the top a wide panorama over the Hohe Tauern.",
   "sides": [
@@ -1386,6 +1399,32 @@
    },
    {
     "character": "From Damüls a rolling link with a short descent, hardly any height. Downhill, the brief run over to Damüls."
+   }
+  ]
+ },
+ "filzensattel": {
+  "intro": "Together with the Dientner Sattel the crossing of the Hochkönig between the Saalach and Salzach valleys.",
+  "sides": [
+   {
+    "character": "From Saalfelden long and flat to Maria Alm, then moderately through the Urslau valley via Hinterthal.",
+    "highlights": "The walls of the Steinernes Meer above Maria Alm."
+   },
+   {
+    "character": "From Dienten barely more than 3 km, but steep.",
+    "highlights": "The view across the Dienten basin."
+   }
+  ]
+ },
+ "flattnitz": {
+  "intro": "A hardly used crossing between two Carinthian valleys, ideal for a loop with the Hochrindl.",
+  "sides": [
+   {
+    "character": "From Glödnitz steadily through the narrow valley and over pastures.",
+    "highlights": "The Romanesque round church at the top."
+   },
+   {
+    "character": "From Metnitz long and flat up the valley, somewhat steeper at the top.",
+    "highlights": "The quiet Metnitz valley."
    }
   ]
  },
@@ -1474,6 +1513,19 @@
    }
   ]
  },
+ "gaberl": {
+  "intro": "A long, gentle alpine pass in western Styria, a classic of the Graz cycling scene.",
+  "sides": [
+   {
+    "character": "From Köflach long and steady via Salla through forest up to the pastures.",
+    "highlights": "The open alpine domes of the Stubalpe."
+   },
+   {
+    "character": "From Weißkirchen in the Mur valley steadily through forest.",
+    "highlights": "The view across the Aichfeld basin."
+   }
+  ]
+ },
  "gailbergsattel": {
   "intro": "A wooded saddle below 1,000 m between the Drau and the Gail that links more than it demands. Anyone riding around the Lienz Dolomites or heading for the Plöckenpass passes this way.",
   "sides": [
@@ -1487,6 +1539,15 @@
    }
   ]
  },
+ "gaisberg": {
+  "intro": "A town mountain with 850 m of climbing and the all-round view from the Dachstein to the Chiemsee. In the evening after work full of road bikes.",
+  "sides": [
+   {
+    "character": "Out of town to Guggenthal and then steeply in hairpins through forest, at the top across the open dome of the Zistelalm to the summit.",
+    "highlights": "The all-round view from the summit over the Salzkammergut and the foothills."
+   }
+  ]
+ },
  "gampenjoch": {
   "intro": "The link from Meran and Lana into the Nonsberg, a pass of length rather than hairpins. From the Adige it is one of the longest steady climbs in South Tyrol; from the south hardly more than a gentle rise.",
   "sides": [
@@ -1497,6 +1558,24 @@
    {
     "character": "From Fondo across the high ground of the Nonsberg, even and gentle. Downhill a calm roll-out, uphill more an approach than a climb.",
     "highlights": "The German-speaking villages of Unsere Liebe Frau im Walde and St. Felix along the way."
+   }
+  ]
+ },
+ "gargellen": {
+  "intro": "The innermost village of the Montafon, a quiet complement to the Silvretta.",
+  "sides": [
+   {
+    "character": "From St. Gallenkirch steadily through the narrow, wooded Gargellen valley.",
+    "highlights": "The Madrisa above the head of the valley."
+   }
+  ]
+ },
+ "gerlitzen": {
+  "intro": "The viewpoint mountain above Villach and the Ossiacher See, the longest ramp around the Carinthian lakes.",
+  "sides": [
+   {
+    "character": "From the lakeshore long and steady via Sattendorf and the Kanzelhöhe, steeper at the top over the pastures.",
+    "highlights": "The view over the Ossiacher See and the Wörthersee."
    }
   ]
  },
@@ -1526,6 +1605,15 @@
    {
     "character": "Long and even up from the Sarnersee, a little steeper still towards the top. Forest below, open pastures above with a view back over the lake.",
     "highlights": "The view back to the Sarnersee, the Brienzer Rothorn at the top."
+   }
+  ]
+ },
+ "goldeck-panoramastrasse": {
+  "intro": "One of the hardest roads in Carinthia, up to a viewpoint summit above the Drau valley.",
+  "sides": [
+   {
+    "character": "From Spittal steeply through forest and in hairpins over the pastures, hardly a stretch below 8 % up to the car park below the summit.",
+    "highlights": "The all-round view from the Goldeck over the Drau valley and the Millstätter See."
    }
   ]
  },
@@ -1667,12 +1755,34 @@
    }
   ]
  },
+ "hintertux": {
+  "intro": "The Tuxertal ends below Austria's only year-round glacier ski area. A valley climb with a steep start out of Mayrhofen.",
+  "sides": [
+   {
+    "character": "Steep in hairpins out of Mayrhofen to Finkenberg, then more evenly through the Tuxertal via Lanersbach to Hintertux.",
+    "highlights": "The glacier at the head of the valley above the hotels of Hintertux."
+   }
+  ]
+ },
  "hochkar": {
   "intro": "The Hochkar Alpenstraße is a short, very steep toll road in the limestone Alps of Lower Austria. At the ski area on top the view reaches across the Ybbstal Alps to the Ötscher.",
   "sides": [
    {
     "character": "Double-digit steep from Lassing right away and if anything harder towards the top, with few hairpins. A climb to grit your teeth through; going down means a lot of braking.",
     "highlights": "At the top the view across the Ybbstal Alps to the Ötscher."
+   }
+  ]
+ },
+ "hochrindl": {
+  "intro": "The crossing onto the pastures of the Gurktal Alps, at the top open space and stone pines.",
+  "sides": [
+   {
+    "character": "From Sirnitz steeply through forest in hairpins.",
+    "highlights": "The pastures of the Hochrindl."
+   },
+   {
+    "character": "From Ebene Reichenau steady and gentler.",
+    "highlights": "The view to the Nock mountains."
    }
   ]
  },
@@ -1800,6 +1910,19 @@
    }
   ]
  },
+ "katschberg": {
+  "intro": "A short, brutal pass between Salzburg and Carinthia, with a ski resort at the top. Six kilometres that feel like a big mountain.",
+  "sides": [
+   {
+    "character": "From St. Michael straight and very steep up the slope, hardly a hairpin to catch one's breath.",
+    "highlights": "The view back across the Lungau."
+   },
+   {
+    "character": "From Rennweg just as short and steep, with a few hairpins.",
+    "highlights": "The Lieser valley towards Gmünd."
+   }
+  ]
+ },
  "kaunertaler-gletscherstrasse": {
   "intro": "One of the highest roads in Austria: from the Kaunertal past the Gepatsch reservoir up into the glacier world of the Ötztal Alps. Toll-free for bikes, and for the legs one of the hardest climbs in the Eastern Alps.",
   "sides": [
@@ -1836,6 +1959,28 @@
    {
     "character": "From Linthal steeply up in hairpins, then flat across the Urnerboden and finally in hairpins below rock walls to the top. Varied and good for climbing.",
     "highlights": "The Urnerboden, Switzerland's largest alpine pasture."
+   }
+  ]
+ },
+ "klippitztoerl": {
+  "intro": "A rounded alpine pass in the east of Carinthia, opposite the Koralpe with the Weinebene.",
+  "sides": [
+   {
+    "character": "From Bad St. Leonhard steadily through forest up to the pastures.",
+    "highlights": "The view across the Lavant valley."
+   },
+   {
+    "character": "From Lölling through the Lölling valley, moderate and quiet.",
+    "highlights": "The old mining villages of the Görtschitz valley."
+   }
+  ]
+ },
+ "kolm-saigurn": {
+  "intro": "A valley head in the Hohe Tauern national park, ringed by three-thousanders. A quiet alternative to the big Tauern roads.",
+  "sides": [
+   {
+    "character": "From Rauris long and flat via Wörth and Bucheben, steeper at the end up to the pastures of Kolm-Saigurn.",
+    "highlights": "The head of the valley with the Sonnblick and its waterfalls."
    }
   ]
  },
@@ -1957,6 +2102,15 @@
    {
     "character": "Steep from Altaussee right away, hairpins up the slope, steeper still towards the top. Hardly a breather, but more of the lake with every metre.",
     "highlights": "The Altausseer See far below, the Totes Gebirge at the top."
+   }
+  ]
+ },
+ "luenersee": {
+  "intro": "A valley head in the Rätikon below the walls of the Schesaplana, the quietest ramp around Bludenz.",
+  "sides": [
+   {
+    "character": "From Bludenz in hairpins via Bürserberg into the Brandnertal, moderate up to Brand, then narrow and steep to the valley station.",
+    "highlights": "The limestone walls of the Schesaplana at the head of the valley."
    }
   ]
  },
@@ -2329,6 +2483,19 @@
   "sides": [
    {
     "character": "From Pont-du-Fossé steady and moderate, stepped with hairpins above the Drac valley, up to the resort."
+   }
+  ]
+ },
+ "pass-thurn": {
+  "intro": "The crossing from the Kitzbühel Alps into the Salzach valley, with the Großvenediger opposite.",
+  "sides": [
+   {
+    "character": "From Mittersill in long hairpins on the south slope, steady and with a view of the Tauern.",
+    "highlights": "The view across the Pinzgau to the Großvenediger."
+   },
+   {
+    "character": "From Jochberg flat and straight up the valley.",
+    "highlights": "The grassy mountains of the Kitzbühel Alps."
    }
   ]
  },
@@ -2967,6 +3134,15 @@
    }
   ]
  },
+ "pfaender": {
+  "intro": "A short climb with a big view: Lake Constance below, the Swiss Alps opposite.",
+  "sides": [
+   {
+    "character": "Steep right out of Bregenz up the slope, via Fluh through forest and meadows to the top station.",
+    "highlights": "The view over Lake Constance as far as the Säntis."
+   }
+  ]
+ },
  "pian-delle-fugazze": {
   "intro": "The crossing from the Adige valley into the Val Leogra beneath the Pasubio, a front line in the First World War and already ridden by the Giro in 1934. Near the pass, the Pasubio ossuary stands on the Colle Bellavista.",
   "sides": [
@@ -2994,6 +3170,19 @@
    {
     "character": "Across the Dora to Gressan and then in many hairpins through meadows and forest, with no flat section and no steep ramp.",
     "highlights": "The view down onto Aosta and across to the Grand Combin."
+   }
+  ]
+ },
+ "piller-sattel": {
+  "intro": "A small pass between the Pitztal and the Inn valley that ties the Kaunertal, the Pitztal and Landeck into one loop. At the top moor and larches instead of rock.",
+  "sides": [
+   {
+    "character": "From Wenns at the mouth of the Pitztal steadily through forest and over meadows up to the plateau.",
+    "highlights": "The high moor at Piller and the view back into the Pitztal."
+   },
+   {
+    "character": "From Fließ short and very steep in hairpins up the slope; to be taken carefully as a descent.",
+    "highlights": "The Gacher Blick, a viewing platform above the Inn valley."
    }
   ]
  },
@@ -3054,6 +3243,19 @@
    }
   ]
  },
+ "praebichl": {
+  "intro": "The crossing at the Styrian Erzberg, whose mining terraces can be seen from the road. A loop with the Leopoldsteiner See.",
+  "sides": [
+   {
+    "character": "Out of Eisenerz steadily past the Erzberg through forest to the top.",
+    "highlights": "The Erzberg with its terraces."
+   },
+   {
+    "character": "From Vordernberg short and somewhat steeper through forest.",
+    "highlights": "The old ironworks in Vordernberg."
+   }
+  ]
+ },
  "pragelpass": {
   "intro": "A narrow, steep mountain road between the Muotatal and the Klöntal, closed to cars on Sundays and public holidays. The Klöntalersee lies on the east side as the reward.",
   "sides": [
@@ -3081,6 +3283,19 @@
    {
     "character": "Steep from the lakeshore without a run-up and steeper still above, hardly any hairpins, the road heads straight up the slope. Bring your smallest gear.",
     "highlights": "The view straight down onto Lake Garda."
+   }
+  ]
+ },
+ "radstaedter-tauernpass": {
+  "intro": "A long Tauern crossing with a ski resort at the top. Since the motorway goes through the tunnel there is room on the pass road.",
+  "sides": [
+   {
+    "character": "From Radstadt first flat through the Taurach valley, from Untertauern steep in hairpins past the Gnadenfall waterfall, flatter at the top.",
+    "highlights": "The Gnadenfall waterfall at the steep step."
+   },
+   {
+    "character": "From Mauterndorf via Tweng steadily through the Taurach valley.",
+    "highlights": "Mauterndorf castle at the start."
    }
   ]
  },
@@ -3209,6 +3424,15 @@
    }
   ]
  },
+ "schoeckl": {
+  "intro": "The Graz town mountain with a view across all of eastern Styria, the after-work goal of the Graz road cyclists.",
+  "sides": [
+   {
+    "character": "Gently out of town to St. Radegund, then steeper and narrow in hairpins up to the Stubenberghaus.",
+    "highlights": "The all-round view from the summit plateau over Graz."
+   }
+  ]
+ },
  "schwaegalp": {
   "intro": "The summit lies right beneath the north face of the Säntis, and that wall carries the whole climb. The Säntis cable car starts at the top, with the Appenzell hill country all around.",
   "sides": [
@@ -3224,6 +3448,19 @@
    {
     "character": "From Zgornje Jezersko moderate at first, then a little steeper through a few hairpins to the border. A short, quiet climb without surprises.",
     "highlights": "Looking back to the Kamnik Alps above Jezersko."
+   }
+  ]
+ },
+ "seefelder-sattel": {
+  "intro": "The saddle between the Inn valley and the Seefeld plateau, one of the steepest federal roads in Austria. No pleasure climb, but the way north out of Innsbruck.",
+  "sides": [
+   {
+    "character": "Steep right out of Zirl on the slope, long straight ramps of up to 16 % with lorry traffic, flatter at the top up to Reith.",
+    "highlights": "The view across the Inn valley to Innsbruck and the Kalkkögel."
+   },
+   {
+    "character": "From Scharnitz on the border only gently rising via Gießenbach to Seefeld.",
+    "highlights": "The Seefeld plateau with the Wetterstein range to the north."
    }
   ]
  },
@@ -3325,6 +3562,15 @@
    }
   ]
  },
+ "spitzingsattel": {
+  "intro": "The after-work climb of Munich's cyclists: a short steep ramp with a mountain lake behind it.",
+  "sides": [
+   {
+    "character": "From Schliersee flat to Neuhaus, then a good two kilometres steep in hairpins up to the saddle.",
+    "highlights": "The Spitzingsee behind the saddle."
+   }
+  ]
+ },
  "spluegenpass": {
   "intro": "The Splügen links the Rheinwald with Chiavenna. On the Swiss side the hairpins stack tightly one above the other; the Italian side climbs long from the valley, through galleries and past the Montespluga reservoir.",
   "sides": [
@@ -3369,12 +3615,30 @@
    }
   ]
  },
+ "stoderzinken": {
+  "intro": "One of the most beautiful viewpoint roads in Styria, onto a limestone massif opposite the Dachstein. Short, steep and hardly used.",
+  "sides": [
+   {
+    "character": "From Gröbming steeply through forest and in hairpins up to the pastures, narrow and without a flat section.",
+    "highlights": "The little Friedenskircherl chapel on the rock and the view of the Dachstein and the Tauern."
+   }
+  ]
+ },
  "strada-della-forra": {
   "intro": "The road out of the Brasa gorge from Lake Garda up to Tremosine, hewn into overhanging rock and through dark tunnels. Known too from the car chase at the start of the James Bond film \"Quantum of Solace\".",
   "sides": [
    {
     "character": "From the lakeshore into the narrow gorge, beneath rock overhangs and through tunnels, then up in steps onto the plateau. The gradient is secondary; the narrowness and the traffic are not.",
     "highlights": "The rock overhangs of the gorge; at the top the view from Tremosine over Lake Garda."
+   }
+  ]
+ },
+ "stubaital": {
+  "intro": "A valley head below the Stubai glacier, half an hour from Innsbruck. More an outing than a climb, with a steeper finish.",
+  "sides": [
+   {
+    "character": "From Schönberg long and flat through the villages, steeper beyond Ranalt in a few hairpins up to the Mutterbergalm.",
+    "highlights": "The Grawa waterfall shortly before the head of the valley."
    }
   ]
  },
@@ -3429,6 +3693,19 @@
    {
     "character": "Gentle at first from Lake Misurina, with a short drop after the toll booth, then the steep final kilometres in a few hairpins up to the car park at the hut.",
     "highlights": "Start at Lake Misurina, the Tre Cime right above you at the top."
+   }
+  ]
+ },
+ "triebener-tauern": {
+  "intro": "A quiet crossing of the Niedere Tauern between the Enns and Mur valleys.",
+  "sides": [
+   {
+    "character": "From Trieben steeply through the narrow valley of the Triebenbach and in hairpins to Hohentauern.",
+    "highlights": "The high valley of Hohentauern."
+   },
+   {
+    "character": "From St. Johann gently through the upper Pöls valley.",
+    "highlights": "The quiet meadows of the Pöls valley."
    }
   ]
  },
@@ -3624,6 +3901,41 @@
    }
   ]
  },
+ "wallbergstrasse": {
+  "intro": "A car-free mountain road above the Tegernsee, the training climb of the Bavarian Oberland.",
+  "sides": [
+   {
+    "character": "From Rottach-Egern to the valley station, then in many hairpins steadily steep through forest up to the Wallberghaus.",
+    "highlights": "The view over the Tegernsee into the foothills."
+   }
+  ]
+ },
+ "weinebene": {
+  "intro": "The highest road pass of the Koralpe, with long climbs out of the wine country and out of the Lavant valley.",
+  "sides": [
+   {
+    "character": "From Deutschlandsberg through the gorge and long and steady through forest up to the alpine heights.",
+    "highlights": "The view across the Styrian hill country."
+   },
+   {
+    "character": "From Wolfsberg in the Lavant valley steadily via Prössing.",
+    "highlights": "The view across the Lavant valley to the Saualpe."
+   }
+  ]
+ },
+ "windische-hoehe": {
+  "intro": "A small pass that links the Gail and Drau valleys for a loop from Villach.",
+  "sides": [
+   {
+    "character": "From Feistritz steadily through forest.",
+    "highlights": "The view across the Gail valley to the Carnic Alps."
+   },
+   {
+    "character": "From Paternion via Kreuzen along the slope, moderate.",
+    "highlights": "The view into the Drau valley."
+   }
+  ]
+ },
  "wurzenpass": {
   "intro": "A border crossing into Slovenia whose reputation comes from the gradient, not the scenery. The northern ramp is short and brutally steep in its final kilometres, and lorries use it too.",
   "sides": [
@@ -3632,6 +3944,15 @@
    },
    {
     "character": "From Kranjska Gora moderately through forest, steeper only towards the border. The easy side, and the better choice as the descent into Slovenia."
+   }
+  ]
+ },
+ "zillertaler-hoehenstrasse": {
+  "intro": "One of Austria's hardest roads: from the floor of the Zillertal up onto an alpine ridge with a view of the glaciers.",
+  "sides": [
+   {
+    "character": "Steep right from Ried through the hillside hamlets, then long ramps above 10 % through forest and over pastures up to the Melchboden.",
+    "highlights": "The view from the Melchboden across the Zillertal to the main Zillertal ridge."
    }
   ]
  }
