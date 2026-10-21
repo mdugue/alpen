@@ -90,6 +90,15 @@
    }
   ]
  },
+ "avoriaz": {
+  "intro": "The Tour climb above Morzine, easy to link with the Joux Plane and Les Gets.",
+  "sides": [
+   {
+    "character": "From Morzine steadily through forest and past avalanche galleries, higher up towards the rock edge of Avoriaz.",
+    "highlights": "The cliffs of Avoriaz and the view over the Morzine valley."
+   }
+  ]
+ },
  "axalp": {
   "intro": "A steep dead end above the turquoise Brienzersee, opposite the Brienzer Rothorn.",
   "sides": [
@@ -262,6 +271,24 @@
    {
     "character": "From the Maison du Roy straight into steep hairpins out of the valley, then flatter steps to Ceillac and a final rise into the valley head.",
     "highlights": "The village of Ceillac in its wide basin."
+   }
+  ]
+ },
+ "chaillol": {
+  "intro": "A quiet resort climb above the Champsaur, a good companion to the Col du Noyer.",
+  "sides": [
+   {
+    "character": "From Saint-Bonnet through the Champsaur villages steadily to the resort.",
+    "highlights": "The view of the Vieux Chaillol and the Obiou."
+   }
+  ]
+ },
+ "chamrousse": {
+  "intro": "The long forest climb above Grenoble into the Belledonne.",
+  "sides": [
+   {
+    "character": "From Uriage steadily at 7 to 8 % through dense forest, hardly any views until the top.",
+    "highlights": "At the top the view over Grenoble and the Vercors."
    }
   ]
  },
@@ -523,6 +550,19 @@
    }
   ]
  },
+ "col-de-l-echelle": {
+  "intro": "The shortcut from the Clarée to Bardonecchia, larches and pastures at the top.",
+  "sides": [
+   {
+    "character": "From Plampinet short and moderate through larches to the plateau.",
+    "highlights": "The larch forests of the upper Clarée."
+   },
+   {
+    "character": "From Bardonecchia via Melezet, then steeply in tight hairpins up the rock step, with short tunnels.",
+    "highlights": "The hairpins on the rock step above Melezet."
+   }
+  ]
+ },
  "col-de-l-homme-mort": {
   "intro": "The crossing from Montbrun-les-Bains onto the lavender plateau of Ferrassières and Sault. From the west it is hardly a climb, but from Montbrun it is a quiet forest road with a view of the Montagne de Lure.",
   "sides": [
@@ -631,6 +671,19 @@
    {
     "character": "From the Oisans via Allemont, with a long intermediate descent that gives away much height, then past the Lac de Grand Maison. Up and down in either direction.",
     "highlights": "The Grand Maison reservoir below the top."
+   }
+  ]
+ },
+ "col-de-la-croix-fry": {
+  "intro": "The quiet pass between Thônes and La Clusaz, a good pairing with the Aravis and the Colombière.",
+  "sides": [
+   {
+    "character": "From Thônes gently into the Manigod valley at first, then steadier and steeper across pastures and chalets to the top.",
+    "highlights": "The hamlets of Manigod and at the top the limestone walls of the Aravis."
+   },
+   {
+    "character": "From La Clusaz short and steady through forest and ski slopes.",
+    "highlights": "The view back to La Clusaz and the Aravis."
    }
   ]
  },
@@ -752,6 +805,32 @@
    }
   ]
  },
+ "col-de-manse": {
+  "intro": "The short crossing from Gap into the Champsaur, the opener for the Noyer and Chaillol.",
+  "sides": [
+   {
+    "character": "From Gap steadily across meadows and forest up to the plateau.",
+    "highlights": "The view over the Gap basin."
+   },
+   {
+    "character": "From Saint-Laurent-du-Cros short and gentle.",
+    "highlights": "The Champsaur with the Vieux Chaillol."
+   }
+  ]
+ },
+ "col-de-menee": {
+  "intro": "A long, gentle pass without traffic, with the Mont Aiguille as its landmark.",
+  "sides": [
+   {
+    "character": "From Châtillon long and gentle through the Bès valley and forest up to the tunnel.",
+    "highlights": "The gorges of the Diois."
+   },
+   {
+    "character": "From Chichilianne steadily across pastures and forest.",
+    "highlights": "The Mont Aiguille right above the road."
+   }
+  ]
+ },
  "col-de-montgenevre": {
   "intro": "One of the oldest crossings of the Alps; the Romans already passed here on their way to Italy. Today it is the main road from Briançon to Turin, open all year, for cyclists more a link than a destination.",
   "sides": [
@@ -802,6 +881,19 @@
    },
    {
     "character": "From Laborel shorter and steeper, increasingly so towards the top, with a few hairpins; the side that suits climbing."
+   }
+  ]
+ },
+ "col-de-plainpalais": {
+  "intro": "The gateway from Chambéry into the Bauges nature park.",
+  "sides": [
+   {
+    "character": "From Saint-Alban-Leysse steadily through the Leysse gorge and forest to Les Déserts and the top.",
+    "highlights": "The view back over Chambéry."
+   },
+   {
+    "character": "From Le Châtelard long and gentle through the Chéran valley and across pastures.",
+    "highlights": "The quiet villages of the Bauges."
    }
   ]
  },
@@ -872,6 +964,19 @@
    }
   ]
  },
+ "col-de-valberg": {
+  "intro": "The middle piece of the loop of the Couillole, Valberg and the red gorges.",
+  "sides": [
+   {
+    "character": "From Guillaumes steadily in hairpins above the Var valley.",
+    "highlights": "The view over the upper Var valley."
+   },
+   {
+    "character": "From Beuil short and gentle across meadows.",
+    "highlights": "The red rocks around Beuil."
+   }
+  ]
+ },
  "col-de-vars": {
   "intro": "The Vars links the Ubaye with Guillestre and often shares a Tour de France stage with the Izoard or the Bonette. The north side runs through the ski resort of Vars, the south side is short and lonely.",
   "sides": [
@@ -890,6 +995,15 @@
    {
     "character": "From Vence steadily across open, stony slopes with hardly any shade. The higher you get, the further the view reaches back over the coast.",
     "highlights": "The view back over the coast to the sea."
+   }
+  ]
+ },
+ "col-des-annes": {
+  "intro": "The pasture road above Le Grand-Bornand, a detour off the Colombière for quiet climbing.",
+  "sides": [
+   {
+    "character": "On the Colombière road to Le Chinaillon, then narrow and steep in hairpins across the pastures up to the plateau.",
+    "highlights": "The chalets of the Annes, the Pointe Percée and Mont Blanc to the south."
    }
   ]
  },
@@ -981,6 +1095,45 @@
    }
   ]
  },
+ "col-du-coq": {
+  "intro": "The steep ramp from the Grenoble valley into the Chartreuse.",
+  "sides": [
+   {
+    "character": "From Saint-Ismier long and steep, with sections over 10 %, through forest on the flank of the Dent de Crolles.",
+    "highlights": "The view across the Grésivaudan to the Belledonne."
+   },
+   {
+    "character": "From Saint-Pierre-de-Chartreuse steadily through forest and across pastures.",
+    "highlights": "The meadows below the Dent de Crolles."
+   }
+  ]
+ },
+ "col-du-corbier": {
+  "intro": "A short, punchy pass in the Chablais that extends a loop around Morzine to the north.",
+  "sides": [
+   {
+    "character": "From Le Biot short and steep all the way through forest and meadows.",
+    "highlights": "The view into the Vallée d'Aulps."
+   },
+   {
+    "character": "From Bonnevaux a little gentler across pastures to the top.",
+    "highlights": "The pastures of the Corbier."
+   }
+  ]
+ },
+ "col-du-cucheron": {
+  "intro": "The link between the Chartreuse passes, short and through forest.",
+  "sides": [
+   {
+    "character": "From Saint-Pierre-d'Entremont steadily through forest and meadows.",
+    "highlights": "The limestone walls of the Chartreuse above the valley."
+   },
+   {
+    "character": "From Saint-Pierre-de-Chartreuse short and steeper to the top.",
+    "highlights": "The view of the Grand Som."
+   }
+  ]
+ },
  "col-du-galibier": {
   "intro": "In the Tour de France since 1911 and often its highest point. The summit road climbs above the old tunnel, and on the south side a monument honours the Tour's founder Henri Desgrange.",
   "sides": [
@@ -1015,6 +1168,19 @@
    },
    {
     "character": "From Etroubles via Saint-Rhémy even up a side valley of the Aosta valley, then in hairpins near the top. A calm, flowing descent."
+   }
+  ]
+ },
+ "col-du-granier": {
+  "intro": "The start of every Chartreuse loop from Chambéry, with the cliff of the Granier above the top.",
+  "sides": [
+   {
+    "character": "From Chambéry via Montagnole steady and long up the slope, at the top below the cliff.",
+    "highlights": "The north face of the Mont Granier and the view over the Combe de Savoie."
+   },
+   {
+    "character": "From Entremont steadily through the valley and forest to the top.",
+    "highlights": "The meadows of Entremont-le-Vieux."
    }
   ]
  },
@@ -2102,6 +2268,15 @@
    }
   ]
  },
+ "la-toussuire": {
+  "intro": "The Maurienne's Tour climb, which joins the Mollard to make a loop.",
+  "sides": [
+   {
+    "character": "From Saint-Jean in hairpins via Fontcouverte, then steadily across meadows to the resort.",
+    "highlights": "The view of the Aiguilles d'Arves."
+   }
+  ]
+ },
  "lac-de-moiry": {
   "intro": "The highest road in the Val d'Anniviers ends on the crest of a dam, with the glacier at the far end of the lake. One of the great climbs of the Valais, and one of the quietest.",
   "sides": [
@@ -2152,6 +2327,15 @@
    {
     "character": "From Bourg-Saint-Maurice stepped with many hairpins through forest and meadows, then up between the ski stations, with steeper ramps in between.",
     "highlights": "View across the upper Tarentaise valley"
+   }
+  ]
+ },
+ "les-deux-alpes": {
+  "intro": "The Oisans's second resort climb, steady in hairpins.",
+  "sides": [
+   {
+    "character": "From the Chambon reservoir via Mont-de-Lans in steady hairpins to the resort.",
+    "highlights": "The Lac du Chambon and the Meije to the east."
    }
   ]
  },
@@ -2312,6 +2496,15 @@
    }
   ]
  },
+ "mont-revard": {
+  "intro": "The long forest climb from the Lac du Bourget onto the Bauges plateau.",
+  "sides": [
+   {
+    "character": "From Aix-les-Bains via Mouxy steady and long through forest, flatter across the plateau at the top to the viewpoint.",
+    "highlights": "The view from the Revard over the Lac du Bourget."
+   }
+  ]
+ },
  "mont-ventoux": {
   "intro": "The Giant of Provence stands alone above the plain, its bare limestone summit visible from far away. On the Tour since 1951; Tom Simpson died here in 1967. Three ascents, all with the wind as an opponent.",
   "sides": [
@@ -2326,6 +2519,15 @@
    {
     "character": "From Sault the gentlest side, long and stepped through lavender fields and forest, joining the Bédoin road at Chalet Reynard for the summit.",
     "highlights": "The lavender fields around Sault."
+   }
+  ]
+ },
+ "montagne-de-lure": {
+  "intro": "The long, quiet climb of Haute-Provence, the Ventoux without the crowds.",
+  "sides": [
+   {
+    "character": "From Saint-Étienne steadily through oak and beech forest, at the top across the bare ridge.",
+    "highlights": "The panorama from the ridge over Provence and the Alps."
    }
   ]
  },
@@ -3429,6 +3631,15 @@
    {
     "character": "From Santa Caterina growing steeper through forest, with few hairpins, opening out at the top onto the glacier valley.",
     "highlights": "The view of the Forni glacier."
+   }
+  ]
+ },
+ "risoul": {
+  "intro": "A Tour climb above Guillestre, quieter than the Vars and the Izoard next door.",
+  "sides": [
+   {
+    "character": "From Guillestre up the Vars road, then in steady hairpins through larch forest to the resort.",
+    "highlights": "The view across the Durance valley to the Pelvoux."
    }
   ]
  },

@@ -76,6 +76,24 @@
   "access": "Bahnhof Briançon (Nachtzug aus Paris); Turin über den Fréjus-Tunnel oder Montgenèvre."
  },
  {
+  "slug": "champsaur",
+  "name": "Champsaur",
+  "country": "FR",
+  "center": {
+   "lat": 44.66,
+   "lon": 6.15
+  },
+  "radiusKm": 25,
+  "baseTowns": [
+   "gap"
+  ],
+  "include": [],
+  "exclude": [],
+  "character": "Das stille Hochtal nördlich von Gap: der Noyer als einziger großer Name, dazu Manse, Chaillol und Orcières, sonniger als die Écrins dahinter.",
+  "multiDay": "Zwei bis drei Tage ab Gap, als Etappe zwischen Oisans und Ubaye.",
+  "access": "Gap mit dem Zug aus Grenoble oder Marseille."
+ },
+ {
   "slug": "ubaye",
   "name": "Ubaye",
   "country": "FR",
@@ -627,12 +645,32 @@
    "morzine"
   ],
   "include": [
-   "col-des-montets"
+   "col-des-montets",
+   "col-du-corbier"
   ],
   "exclude": [],
   "character": "Aravis, Colombière, Romme, Joux-Plane und Ramaz – die mittelhohen Pässe der Tour de France zwischen Annecy und Genfer See, grün, dicht und früh im Jahr offen.",
   "multiDay": "Eine Woche ohne Wiederholung; die Route des Grandes Alpes beginnt hier und führt über Roselend in die Tarentaise.",
   "access": "Flughafen Genf in einer Stunde; Bahnhof Annecy, Cluses oder Thonon."
+ },
+ {
+  "slug": "chartreuse-bauges",
+  "name": "Chartreuse und Bauges",
+  "country": "FR",
+  "center": {
+   "lat": 45.5,
+   "lon": 5.92
+  },
+  "radiusKm": 28,
+  "baseTowns": [
+   "chambery",
+   "saint-pierre-de-chartreuse"
+  ],
+  "include": [],
+  "exclude": [],
+  "character": "Zwei Kalkmassive links und rechts von Chambéry: kurze Pässe unter Felswänden, viel Wald und wenig Verkehr, mittelhoch statt hochalpin.",
+  "multiDay": "Drei bis vier Tage Runden ab Chambéry, früh im Jahr und spät im Herbst fahrbar, wenn die Hochpässe zu sind.",
+  "access": "Chambéry mit dem TGV aus Paris oder über Lyon, die Pässe beginnen am Stadtrand."
  },
  {
   "slug": "tessin",

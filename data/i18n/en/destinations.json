@@ -44,6 +44,16 @@
   "multiDay": "A week with two bases; into Italy over the Agnel or Montgenèvre, south over Vars into the Ubaye.",
   "access": "Briançon railway station (night train from Paris); Turin via the Fréjus tunnel or Montgenèvre."
  },
+ "champsaur": {
+  "character": "The quiet high valley north of Gap: the Noyer as the one big name, plus the Manse, Chaillol and Orcières, sunnier than the Écrins behind it.",
+  "multiDay": "Two to three days from Gap, as a stage between the Oisans and the Ubaye.",
+  "access": "Gap by train from Grenoble or Marseille."
+ },
+ "chartreuse-bauges": {
+  "character": "Two limestone massifs either side of Chambéry: short passes below cliffs, a lot of forest and little traffic, mid-height rather than high alpine.",
+  "multiDay": "Three to four days of loops from Chambéry, rideable early in the year and late in autumn when the high passes are closed.",
+  "access": "Chambéry by TGV from Paris or via Lyon, the passes start at the edge of town."
+ },
  "churer-rheintal-liechtenstein": {
   "character": "Malbun, the Lenzerheide, Arosa and Flumserberg: steep climbs straight out of the low Rhine valley, each a dead end or a crossing of its own, with flat paths along the Rhine in between.",
   "multiDay": "Three to four days with short approaches; the Lenzerheide leads on to the Albula and the Julier into the Engadine, the Furkajoch into Vorarlberg.",

@@ -1800,6 +1800,39 @@
   ]
  },
  {
+  "slug": "risoul",
+  "surface": "asphalt",
+  "name": "Risoul 1850",
+  "type": "spur",
+  "tags": [
+   "hairpins"
+  ],
+  "aliases": [
+   "Risoul"
+  ],
+  "country": "FR",
+  "region": "Westalpen",
+  "lat": 44.6231,
+  "lon": 6.6351,
+  "elevation": 1850,
+  "classicAscent": "13,4 km, 6,4 % ab Guillestre",
+  "beauty": 3,
+  "fame": 2,
+  "difficulty": 4,
+  "traffic": 1,
+  "season": null,
+  "note": "Die Kehrenstraße von Guillestre in die Station Risoul, Tour-de-France-Ziel 2014. Gleichmäßig, oben Lärchen und der Blick auf den Pelvoux. Ganzjährig geräumt.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 44.6598,
+     "lon": 6.6494
+    },
+    "label": "Guillestre"
+   }
+  ]
+ },
+ {
   "slug": "col-du-lautaret",
   "surface": "asphalt",
   "name": "Col du Lautaret",
@@ -1939,6 +1972,43 @@
     "from": {
      "lat": 45.941,
      "lon": 6.428
+    },
+    "label": "Le Grand-Bornand"
+   }
+  ]
+ },
+ {
+  "slug": "col-des-annes",
+  "surface": "asphalt",
+  "name": "Col des Annes",
+  "type": "spur",
+  "tags": [
+   "panorama"
+  ],
+  "aliases": [
+   "Plateau des Annes"
+  ],
+  "country": "FR",
+  "region": "Westalpen",
+  "lat": 45.9705,
+  "lon": 6.5236,
+  "elevation": 1721,
+  "classicAscent": "11,4 km, 7 % ab Le Grand-Bornand",
+  "beauty": 5,
+  "fame": 2,
+  "difficulty": 4,
+  "traffic": 1,
+  "season": {
+   "opens": 6,
+   "closes": 10,
+   "maintained": false
+  },
+  "note": "Eine Sackstraße von Le Grand-Bornand über Le Chinaillon auf das Almplateau unter der Pointe Percée, oben Käsealmen und der Blick auf den Mont Blanc. Schmal und im oberen Teil steil; im Winter oberhalb von Le Chinaillon gesperrt.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 45.9419,
+     "lon": 6.4271
     },
     "label": "Le Grand-Bornand"
    }
@@ -2329,6 +2399,43 @@
      "lon": 6.988
     },
     "label": "Beuil"
+   }
+  ]
+ },
+ {
+  "slug": "col-de-valberg",
+  "surface": "asphalt",
+  "name": "Col de Valberg",
+  "type": "pass",
+  "aliases": [
+   "Valberg"
+  ],
+  "country": "FR",
+  "region": "Westalpen",
+  "lat": 44.0954,
+  "lon": 6.9291,
+  "elevation": 1672,
+  "classicAscent": "12,9 km, 6,9 % ab Guillaumes",
+  "beauty": 3,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 1,
+  "season": null,
+  "note": "Der Übergang vom Var-Tal bei Guillaumes nach Beuil durch die Station Valberg; zusammen mit der Couillole und den Gorges du Cians eine klassische Runde. Ganzjährig geräumt.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 44.0902,
+     "lon": 6.8529
+    },
+    "label": "Guillaumes (West)"
+   },
+   {
+    "from": {
+     "lat": 44.0945,
+     "lon": 6.99
+    },
+    "label": "Beuil (Ost)"
    }
   ]
  },
@@ -5222,6 +5329,46 @@
   ]
  },
  {
+  "slug": "col-de-menee",
+  "surface": "asphalt",
+  "name": "Col de Menée",
+  "type": "pass",
+  "tags": [
+   "tunnels"
+  ],
+  "aliases": [
+   "Menée"
+  ],
+  "country": "FR",
+  "region": "Westalpen",
+  "lat": 44.758,
+  "lon": 5.6035,
+  "elevation": 1402,
+  "classicAscent": "20,1 km, 4,3 % ab Châtillon-en-Diois",
+  "beauty": 4,
+  "fame": 1,
+  "difficulty": 3,
+  "traffic": 1,
+  "season": null,
+  "note": "Der stille Übergang vom Diois in den Trièves am Südrand des Vercors, oben ein kurzer Scheiteltunnel auf rund 1 400 m und auf der Nordseite der Blick auf den Mont Aiguille. Ganzjährig offen.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 44.6951,
+     "lon": 5.4852
+    },
+    "label": "Châtillon-en-Diois (Süd)"
+   },
+   {
+    "from": {
+     "lat": 44.8116,
+     "lon": 5.5736
+    },
+    "label": "Chichilianne (Nord)"
+   }
+  ]
+ },
+ {
   "slug": "col-du-granon",
   "surface": "asphalt",
   "name": "Col du Granon",
@@ -5462,6 +5609,39 @@
   ]
  },
  {
+  "slug": "les-deux-alpes",
+  "surface": "asphalt",
+  "name": "Les Deux Alpes",
+  "type": "spur",
+  "tags": [
+   "hairpins"
+  ],
+  "aliases": [
+   "Deux Alpes"
+  ],
+  "country": "FR",
+  "region": "Westalpen",
+  "lat": 45.0174,
+  "lon": 6.1253,
+  "elevation": 1654,
+  "classicAscent": "10,5 km, 6,9 % ab Le Freney-d'Oisans",
+  "beauty": 3,
+  "fame": 3,
+  "difficulty": 3,
+  "traffic": 3,
+  "season": null,
+  "note": "Der Kehrenanstieg aus dem Romanche-Tal in die Skistation, Tour-Ziel 1998. Kürzer als Alpe d'Huez und mit mehr Verkehr zur Station. Ganzjährig geräumt.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 45.0457,
+     "lon": 6.127
+    },
+    "label": "Le Freney-d'Oisans"
+   }
+  ]
+ },
+ {
   "slug": "col-du-telegraphe",
   "surface": "asphalt",
   "name": "Col du Télégraphe",
@@ -5581,6 +5761,36 @@
   ]
  },
  {
+  "slug": "la-toussuire",
+  "surface": "asphalt",
+  "name": "La Toussuire",
+  "type": "spur",
+  "aliases": [
+   "Toussuire"
+  ],
+  "country": "FR",
+  "region": "Westalpen",
+  "lat": 45.2553,
+  "lon": 6.2624,
+  "elevation": 1690,
+  "classicAscent": "18 km, 6 % ab Saint-Jean-de-Maurienne",
+  "beauty": 3,
+  "fame": 3,
+  "difficulty": 4,
+  "traffic": 2,
+  "season": null,
+  "note": "Die Skistation über Saint-Jean-de-Maurienne, Tour-de-France-Ziel 2012; von Saint-Jean über Fontcouverte in Kehren am Hang hinauf. Ganzjährig geräumt.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 45.2756,
+     "lon": 6.3466
+    },
+    "label": "Saint-Jean-de-Maurienne"
+   }
+  ]
+ },
+ {
   "slug": "col-du-pre",
   "surface": "asphalt",
   "name": "Col du Pré",
@@ -5639,6 +5849,47 @@
      "lon": 6.5143
     },
     "label": "Flumet"
+   }
+  ]
+ },
+ {
+  "slug": "col-de-la-croix-fry",
+  "surface": "asphalt",
+  "name": "Col de la Croix Fry",
+  "type": "pass",
+  "tags": [
+   "panorama"
+  ],
+  "aliases": [
+   "Croix Fry",
+   "Manigod"
+  ],
+  "country": "FR",
+  "region": "Westalpen",
+  "lat": 45.8776,
+  "lon": 6.406,
+  "elevation": 1467,
+  "classicAscent": "13 km, 6,5 % ab Thônes",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 2,
+  "season": null,
+  "note": "Der Übergang von Thônes durch das Tal von Manigod nach La Clusaz, die stille Schwester der Aravis-Straße mit Blick auf die Kette der Aravis. Ganzjährig offen, oben ein kleiner Skiort.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 45.882,
+     "lon": 6.3242
+    },
+    "label": "Thônes (West)"
+   },
+   {
+    "from": {
+     "lat": 45.9044,
+     "lon": 6.4239
+    },
+    "label": "La Clusaz (Ost)"
    }
   ]
  },
@@ -5737,6 +5988,228 @@
   ]
  },
  {
+  "slug": "mont-revard",
+  "surface": "asphalt",
+  "name": "Mont Revard",
+  "type": "spur",
+  "tags": [
+   "panorama"
+  ],
+  "aliases": [
+   "Le Revard"
+  ],
+  "country": "FR",
+  "region": "Westalpen",
+  "lat": 45.6808,
+  "lon": 5.9773,
+  "elevation": 1501,
+  "classicAscent": "19,3 km, 6,5 % ab Aix-les-Bains",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 4,
+  "traffic": 2,
+  "season": null,
+  "note": "Der Hausberg von Aix-les-Bains: über 1 200 Höhenmeter vom Seeufer durch Wald auf das Plateau, oben der Blick über den Lac du Bourget bis zum Mont Blanc. Ganzjährig offen.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 45.6882,
+     "lon": 5.9096
+    },
+    "label": "Aix-les-Bains"
+   }
+  ]
+ },
+ {
+  "slug": "col-de-plainpalais",
+  "surface": "asphalt",
+  "name": "Col de Plainpalais",
+  "type": "pass",
+  "aliases": [
+   "Plainpalais"
+  ],
+  "country": "FR",
+  "region": "Westalpen",
+  "lat": 45.6475,
+  "lon": 6.019,
+  "elevation": 1173,
+  "classicAscent": "14,1 km, 6,2 % ab Saint-Alban-Leysse",
+  "beauty": 3,
+  "fame": 1,
+  "difficulty": 3,
+  "traffic": 2,
+  "season": null,
+  "note": "Der Weg von Chambéry in die Bauges, über die Montagne de la Margériaz nach Le Châtelard. Von Chambéry ein richtiger Anstieg, von den Bauges ein sanfter Tal-Übergang. Ganzjährig offen.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 45.5812,
+     "lon": 5.9558
+    },
+    "label": "Chambéry (Süd)"
+   },
+   {
+    "from": {
+     "lat": 45.687,
+     "lon": 6.1354
+    },
+    "label": "Le Châtelard (Nord)"
+   }
+  ]
+ },
+ {
+  "slug": "col-du-granier",
+  "surface": "asphalt",
+  "name": "Col du Granier",
+  "type": "pass",
+  "tags": [
+   "panorama"
+  ],
+  "aliases": [
+   "Granier",
+   "Mont Granier"
+  ],
+  "country": "FR",
+  "region": "Westalpen",
+  "lat": 45.4805,
+  "lon": 5.915,
+  "elevation": 1134,
+  "classicAscent": "18,1 km, 4,8 % ab Chambéry",
+  "beauty": 4,
+  "fame": 3,
+  "difficulty": 3,
+  "traffic": 2,
+  "season": null,
+  "note": "Der Pass unter der Nordwand des Mont Granier, der Übergang von Chambéry in die Chartreuse. Von Chambéry lang und mäßig, von Entremont kürzer. Ganzjährig offen.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 45.5704,
+     "lon": 5.9198
+    },
+    "label": "Chambéry (Nord)"
+   },
+   {
+    "from": {
+     "lat": 45.4179,
+     "lon": 5.8551
+    },
+    "label": "Saint-Pierre-d'Entremont (Süd)"
+   }
+  ]
+ },
+ {
+  "slug": "col-du-cucheron",
+  "surface": "asphalt",
+  "name": "Col du Cucheron",
+  "type": "pass",
+  "aliases": [
+   "Cucheron"
+  ],
+  "country": "FR",
+  "region": "Westalpen",
+  "lat": 45.3655,
+  "lon": 5.8341,
+  "elevation": 1140,
+  "classicAscent": "7,1 km, 7 % ab Saint-Pierre-d'Entremont",
+  "beauty": 3,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 1,
+  "season": null,
+  "note": "Der kurze Übergang im Herzen der Chartreuse zwischen Saint-Pierre-d'Entremont und Saint-Pierre-de-Chartreuse, das Bindeglied zwischen Granier und Porte. Ganzjährig offen.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 45.4154,
+     "lon": 5.8534
+    },
+    "label": "Saint-Pierre-d'Entremont (Nord)"
+   },
+   {
+    "from": {
+     "lat": 45.3416,
+     "lon": 5.8156
+    },
+    "label": "Saint-Pierre-de-Chartreuse (Süd)"
+   }
+  ]
+ },
+ {
+  "slug": "col-du-coq",
+  "surface": "asphalt",
+  "name": "Col du Coq",
+  "type": "pass",
+  "tags": [
+   "panorama"
+  ],
+  "aliases": [
+   "Coq"
+  ],
+  "country": "FR",
+  "region": "Westalpen",
+  "lat": 45.3025,
+  "lon": 5.8368,
+  "elevation": 1434,
+  "classicAscent": "14 km, 7,7 % ab Saint-Ismier",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 5,
+  "traffic": 1,
+  "season": {
+   "opens": 5,
+   "closes": 11,
+   "maintained": false
+  },
+  "note": "Der härteste Pass der Chartreuse: aus dem Grésivaudan bei Saint-Ismier über 1 000 Höhenmeter an der Felsflanke hinauf, oben der Blick auf die Belledonne. Nach Saint-Pierre-de-Chartreuse sanfter. Im Winter gesperrt.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 45.2482,
+     "lon": 5.8262
+    },
+    "label": "Saint-Ismier (Süd)"
+   },
+   {
+    "from": {
+     "lat": 45.3423,
+     "lon": 5.8147
+    },
+    "label": "Saint-Pierre-de-Chartreuse (Nord)"
+   }
+  ]
+ },
+ {
+  "slug": "chamrousse",
+  "surface": "asphalt",
+  "name": "Chamrousse",
+  "type": "spur",
+  "aliases": [
+   "Chamrousse 1750"
+  ],
+  "country": "FR",
+  "region": "Westalpen",
+  "lat": 45.1138,
+  "lon": 5.8772,
+  "elevation": 1758,
+  "classicAscent": "17,8 km, 7,5 % ab Uriage",
+  "beauty": 3,
+  "fame": 3,
+  "difficulty": 4,
+  "traffic": 2,
+  "season": null,
+  "note": "Der Hausberg von Grenoble: von Uriage-les-Bains durch Wald auf über 1 700 m in die Skistation, Tour-de-France-Ziel 2014. Ganzjährig geräumt.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 45.1421,
+     "lon": 5.8295
+    },
+    "label": "Uriage"
+   }
+  ]
+ },
+ {
   "slug": "col-de-romme",
   "surface": "asphalt",
   "name": "Col de Romme",
@@ -5791,6 +6264,43 @@
      "lon": 6.5911
     },
     "label": "Taninges"
+   }
+  ]
+ },
+ {
+  "slug": "col-du-corbier",
+  "surface": "asphalt",
+  "name": "Col du Corbier",
+  "type": "pass",
+  "aliases": [
+   "Corbier"
+  ],
+  "country": "FR",
+  "region": "Westalpen",
+  "lat": 46.2841,
+  "lon": 6.6452,
+  "elevation": 1237,
+  "classicAscent": "4,8 km, 8,9 % ab Le Biot",
+  "beauty": 3,
+  "fame": 1,
+  "difficulty": 3,
+  "traffic": 1,
+  "season": null,
+  "note": "Ein kurzer, steiler Übergang im Chablais zwischen dem Tal der Dranse und dem Vallée d'Aulps, oben Almen und ein kleiner Skilift. Ganzjährig offen.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.263,
+     "lon": 6.6314
+    },
+    "label": "Le Biot (Süd)"
+   },
+   {
+    "from": {
+     "lat": 46.298,
+     "lon": 6.6709
+    },
+    "label": "Bonnevaux (Nord)"
    }
   ]
  },
@@ -5878,6 +6388,73 @@
     "from": {
      "lat": 44.6828,
      "lon": 6.0748
+    },
+    "label": "Saint-Bonnet-en-Champsaur"
+   }
+  ]
+ },
+ {
+  "slug": "col-de-manse",
+  "surface": "asphalt",
+  "name": "Col de Manse",
+  "type": "pass",
+  "aliases": [
+   "Manse"
+  ],
+  "country": "FR",
+  "region": "Westalpen",
+  "lat": 44.6124,
+  "lon": 6.1344,
+  "elevation": 1268,
+  "classicAscent": "10,2 km, 5,2 % ab Gap",
+  "beauty": 3,
+  "fame": 2,
+  "difficulty": 2,
+  "traffic": 2,
+  "season": null,
+  "note": "Der Hausberg von Gap und der Übergang ins Champsaur, gleichmäßig und mäßig. Ganzjährig offen.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 44.5594,
+     "lon": 6.0786
+    },
+    "label": "Gap (Süd)"
+   },
+   {
+    "from": {
+     "lat": 44.6437,
+     "lon": 6.1104
+    },
+    "label": "Saint-Laurent-du-Cros (Nord)"
+   }
+  ]
+ },
+ {
+  "slug": "chaillol",
+  "surface": "asphalt",
+  "name": "Chaillol",
+  "type": "spur",
+  "aliases": [
+   "Chaillol 1600"
+  ],
+  "country": "FR",
+  "region": "Westalpen",
+  "lat": 44.6894,
+  "lon": 6.1642,
+  "elevation": 1597,
+  "classicAscent": "9 km, 6,1 % ab Saint-Bonnet-en-Champsaur",
+  "beauty": 3,
+  "fame": 1,
+  "difficulty": 3,
+  "traffic": 1,
+  "season": null,
+  "note": "Die Straße von Saint-Bonnet in die kleine Station Chaillol, ruhig und gleichmäßig, oben der Blick über das Champsaur. Ganzjährig geräumt.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 44.6827,
+     "lon": 6.0746
     },
     "label": "Saint-Bonnet-en-Champsaur"
    }
@@ -6349,6 +6926,48 @@
      "lat": 45.0576,
      "lon": 6.5284
     }
+   }
+  ]
+ },
+ {
+  "slug": "col-de-l-echelle",
+  "surface": "asphalt",
+  "name": "Col de l'Échelle",
+  "type": "pass",
+  "aliases": [
+   "Échelle",
+   "Colle della Scala"
+  ],
+  "country": "FR",
+  "region": "Westalpen",
+  "lat": 45.0265,
+  "lon": 6.657,
+  "elevation": 1762,
+  "classicAscent": "5,9 km, 4,9 % ab Plampinet",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 2,
+  "traffic": 1,
+  "season": {
+   "opens": 6,
+   "closes": 10,
+   "maintained": false
+  },
+  "note": "Der niedrige Übergang aus dem Clarée-Tal nach Bardonecchia; auf der italienischen Seite eine steile Kehrenwand mit kurzen Tunneln. Im Winter gesperrt.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 45.0031,
+     "lon": 6.6617
+    },
+    "label": "Plampinet (Süd)"
+   },
+   {
+    "from": {
+     "lat": 45.0783,
+     "lon": 6.7032
+    },
+    "label": "Bardonecchia (Nord)"
    }
   ]
  },
@@ -13200,6 +13819,36 @@
   ]
  },
  {
+  "slug": "avoriaz",
+  "surface": "asphalt",
+  "name": "Avoriaz",
+  "type": "spur",
+  "aliases": [
+   "Avoriaz 1800"
+  ],
+  "country": "FR",
+  "region": "Westalpen",
+  "lat": 46.1923,
+  "lon": 6.7698,
+  "elevation": 1818,
+  "classicAscent": "11,9 km, 7,1 % ab Morzine",
+  "beauty": 3,
+  "fame": 3,
+  "difficulty": 4,
+  "traffic": 2,
+  "season": null,
+  "note": "Die Straße von Morzine in den autofreien Skiort auf der Felskante über dem Tal, mehrfach Etappenziel der Tour de France. Gleichmäßig um 7 %, ganzjährig geräumt.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 46.18,
+     "lon": 6.7091
+    },
+    "label": "Morzine"
+   }
+  ]
+ },
+ {
   "slug": "la-plagne",
   "surface": "asphalt",
   "name": "La Plagne",
@@ -13263,6 +13912,44 @@
      "lon": 5.6076
     },
     "label": "Eygalayes (Süd)"
+   }
+  ]
+ },
+ {
+  "slug": "montagne-de-lure",
+  "surface": "asphalt",
+  "name": "Montagne de Lure",
+  "type": "spur",
+  "tags": [
+   "panorama"
+  ],
+  "aliases": [
+   "Signal de Lure",
+   "Lure"
+  ],
+  "country": "FR",
+  "region": "Westalpen",
+  "lat": 44.1228,
+  "lon": 5.8023,
+  "elevation": 1804,
+  "classicAscent": "16,7 km, 6,7 % ab Saint-Étienne-les-Orgues",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 4,
+  "traffic": 1,
+  "season": {
+   "opens": 5,
+   "closes": 11,
+   "maintained": false
+  },
+  "note": "Der „kleine Ventoux“: von Saint-Étienne-les-Orgues durch Wald bis unter den Signal de Lure, oben Rundblick von den Écrins bis zum Ventoux. Im Winter oberhalb der Station gesperrt.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 44.0454,
+     "lon": 5.7786
+    },
+    "label": "Saint-Étienne-les-Orgues"
    }
   ]
  },

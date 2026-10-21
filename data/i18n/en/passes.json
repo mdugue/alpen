@@ -65,6 +65,13 @@
    "Chur"
   ]
  },
+ "avoriaz": {
+  "classicAscent": "11.9 km, 7.1 % from Morzine",
+  "note": "The road from Morzine to the car-free ski resort on the rock edge above the valley, a Tour de France stage finish several times. Steady at around 7 %, cleared all year.",
+  "ascents": [
+   "Morzine"
+  ]
+ },
  "axalp": {
   "classicAscent": "12.5 km, 7.7 % from Brienz",
   "note": "From Brienz steeply via Giessbach up to the alp above the Brienzersee, almost 1,000 m of climbing with a view of the lake. Open all year.",
@@ -184,6 +191,20 @@
   "note": "A detour off the Izoard climb from Guillestre: at the Maison du Roy the road to Ceillac branches off and ends at the head of the Vallée du Mélézet. Season window taken from the Col d'Izoard.",
   "ascents": [
    "Junction at the Maison du Roy"
+  ]
+ },
+ "chaillol": {
+  "classicAscent": "9 km, 6.1 % from Saint-Bonnet-en-Champsaur",
+  "note": "The road from Saint-Bonnet up to the small Chaillol resort, quiet and steady, at the top the view over the Champsaur. Cleared all year.",
+  "ascents": [
+   "Saint-Bonnet-en-Champsaur"
+  ]
+ },
+ "chamrousse": {
+  "classicAscent": "17.8 km, 7.5 % from Uriage",
+  "note": "Grenoble's home climb: from Uriage-les-Bains through forest to over 1,700 m at the ski resort, a Tour de France finish in 2014. Cleared all year.",
+  "ascents": [
+   "Uriage"
   ]
  },
  "cima-grappa": {
@@ -363,6 +384,14 @@
    "Samoëns"
   ]
  },
+ "col-de-l-echelle": {
+  "classicAscent": "5.9 km, 4.9 % from Plampinet",
+  "note": "The low crossing from the Clarée valley to Bardonecchia; on the Italian side a steep wall of hairpins with short tunnels. Closed in winter.",
+  "ascents": [
+   "Plampinet (south)",
+   "Bardonecchia (north)"
+  ]
+ },
  "col-de-l-homme-mort": {
   "classicAscent": "10 km, 5 % from Montbrun-les-Bains",
   "note": "The crossing from Montbrun onto the lavender plateau of Ferrassières and Sault, open all year; the west side from the plateau is hardly a climb, the east side a quiet forest road with a view of the Lure.",
@@ -437,6 +466,14 @@
   "ascents": [
    "Saint-Jean-de-Maurienne",
    "Rochetaillée (Oisans)"
+  ]
+ },
+ "col-de-la-croix-fry": {
+  "classicAscent": "13 km, 6.5 % from Thônes",
+  "note": "The crossing from Thônes through the Manigod valley to La Clusaz, the quiet sister of the Aravis road with a view of the Aravis range. Open all year, a small ski resort at the top.",
+  "ascents": [
+   "Thônes (west)",
+   "La Clusaz (east)"
   ]
  },
  "col-de-la-forclaz-de-montmin": {
@@ -522,6 +559,22 @@
    "Séderon (east)"
   ]
  },
+ "col-de-manse": {
+  "classicAscent": "10.2 km, 5.2 % from Gap",
+  "note": "Gap's home climb and the crossing into the Champsaur, steady and moderate. Open all year.",
+  "ascents": [
+   "Gap (south)",
+   "Saint-Laurent-du-Cros (north)"
+  ]
+ },
+ "col-de-menee": {
+  "classicAscent": "20.1 km, 4.3 % from Châtillon-en-Diois",
+  "note": "The quiet crossing from the Diois into the Trièves on the southern edge of the Vercors, at the top a short summit tunnel at around 1,400 m and on the north side the view of the Mont Aiguille. Open all year.",
+  "ascents": [
+   "Châtillon-en-Diois (south)",
+   "Chichilianne (north)"
+  ]
+ },
  "col-de-montgenevre": {
   "classicAscent": "12.1 km, 4.4 % from Briançon",
   "note": "Border crossing into Italy, open all year and correspondingly busy. Unspectacular as a climb, practical as a link.",
@@ -558,6 +611,14 @@
   "ascents": [
    "Saint-Auban-sur-l'Ouvèze (west)",
    "Laborel (east)"
+  ]
+ },
+ "col-de-plainpalais": {
+  "classicAscent": "14.1 km, 6.2 % from Saint-Alban-Leysse",
+  "note": "The way from Chambéry into the Bauges, past the Margériaz mountain to Le Châtelard. A real climb from Chambéry, a gentle valley crossing from the Bauges. Open all year.",
+  "ascents": [
+   "Chambéry (south)",
+   "Le Châtelard (north)"
   ]
  },
  "col-de-romme": {
@@ -606,6 +667,14 @@
    "La Bollène-Vésubie"
   ]
  },
+ "col-de-valberg": {
+  "classicAscent": "12.9 km, 6.9 % from Guillaumes",
+  "note": "The crossing from the Var valley at Guillaumes to Beuil through the Valberg resort; with the Couillole and the Gorges du Cians a classic loop. Cleared all year.",
+  "ascents": [
+   "Guillaumes (west)",
+   "Beuil (east)"
+  ]
+ },
  "col-de-vars": {
   "classicAscent": "19 km, 5.7 % from Guillestre",
   "note": "Closure usually late November. Classic combination with the Izoard or the Bonette.",
@@ -619,6 +688,13 @@
   "note": "Open all year, karst plateau above the coast. The winter training ground of the pros around Nice.",
   "ascents": [
    "Vence"
+  ]
+ },
+ "col-des-annes": {
+  "classicAscent": "11.4 km, 7 % from Le Grand-Bornand",
+  "note": "A dead-end road from Le Grand-Bornand via Le Chinaillon onto the alpine plateau below the Pointe Percée, at the top cheese farms and the view of Mont Blanc. Narrow and steep in its upper part; closed above Le Chinaillon in winter.",
+  "ascents": [
+   "Le Grand-Bornand"
   ]
  },
  "col-des-aravis": {
@@ -687,6 +763,30 @@
    "Pontamafrey"
   ]
  },
+ "col-du-coq": {
+  "classicAscent": "14 km, 7.7 % from Saint-Ismier",
+  "note": "The hardest pass of the Chartreuse: from the Grésivaudan at Saint-Ismier more than 1,000 m up the cliff flank, at the top the view of the Belledonne. Gentler towards Saint-Pierre-de-Chartreuse. Closed in winter.",
+  "ascents": [
+   "Saint-Ismier (south)",
+   "Saint-Pierre-de-Chartreuse (north)"
+  ]
+ },
+ "col-du-corbier": {
+  "classicAscent": "4.8 km, 8.9 % from Le Biot",
+  "note": "A short, steep crossing in the Chablais between the Dranse valley and the Vallée d'Aulps, at the top pastures and a small ski lift. Open all year.",
+  "ascents": [
+   "Le Biot (south)",
+   "Bonnevaux (north)"
+  ]
+ },
+ "col-du-cucheron": {
+  "classicAscent": "7.1 km, 7 % from Saint-Pierre-d'Entremont",
+  "note": "The short crossing in the heart of the Chartreuse between Saint-Pierre-d'Entremont and Saint-Pierre-de-Chartreuse, the link between the Granier and the Porte. Open all year.",
+  "ascents": [
+   "Saint-Pierre-d'Entremont (north)",
+   "Saint-Pierre-de-Chartreuse (south)"
+  ]
+ },
  "col-du-galibier": {
   "classicAscent": "18 km, 6.9 % from Valloire (34 km via Télégraphe)",
   "note": "Winter closure usually late October to early June. Early October is often still glorious; from mid-October there is a risk of snow at the top.",
@@ -709,6 +809,14 @@
   "ascents": [
    "Bourg-Saint-Pierre",
    "Etroubles (IT)"
+  ]
+ },
+ "col-du-granier": {
+  "classicAscent": "18.1 km, 4.8 % from Chambéry",
+  "note": "The pass below the north face of the Mont Granier, the crossing from Chambéry into the Chartreuse. Long and moderate from Chambéry, shorter from Entremont. Open all year.",
+  "ascents": [
+   "Chambéry (north)",
+   "Saint-Pierre-d'Entremont (south)"
   ]
  },
  "col-du-granon": {
@@ -1481,6 +1589,13 @@
    "Plancher-les-Mines"
   ]
  },
+ "la-toussuire": {
+  "classicAscent": "18 km, 6 % from Saint-Jean-de-Maurienne",
+  "note": "The ski resort above Saint-Jean-de-Maurienne, a Tour de France finish in 2012; from Saint-Jean via Fontcouverte in hairpins up the slope. Cleared all year.",
+  "ascents": [
+   "Saint-Jean-de-Maurienne"
+  ]
+ },
  "lac-de-moiry": {
   "classicAscent": "32 km, 5.3 % from Sierre via Vissoie and Grimentz",
   "note": "Through the Val d'Anniviers via Vissoie and Grimentz up to the dam, more than 1,700 m of climbing in one go. At the top a turquoise reservoir below the Moiry glacier; closed above Grimentz in winter.",
@@ -1516,6 +1631,13 @@
   "note": "Ski-resort ascent via Arc 1800, open all year. Sober scenery, useful as training for the metres of climbing.",
   "ascents": [
    "Bourg-Saint-Maurice"
+  ]
+ },
+ "les-deux-alpes": {
+  "classicAscent": "10.5 km, 6.9 % from Le Freney-d'Oisans",
+  "note": "The hairpin climb from the Romanche valley to the ski resort, a Tour finish in 1998. Shorter than Alpe d'Huez and with more traffic to the resort. Cleared all year.",
+  "ascents": [
+   "Le Freney-d'Oisans"
   ]
  },
  "leukerbad": {
@@ -1634,6 +1756,13 @@
    "Junction in Méribel"
   ]
  },
+ "mont-revard": {
+  "classicAscent": "19.3 km, 6.5 % from Aix-les-Bains",
+  "note": "The home climb of Aix-les-Bains: more than 1,200 m from the lakeshore through forest onto the plateau, at the top the view across the Lac du Bourget to Mont Blanc. Open all year.",
+  "ascents": [
+   "Aix-les-Bains"
+  ]
+ },
  "mont-ventoux": {
   "classicAscent": "21.5 km, 7.5 % from Bédoin",
   "note": "Summit road usually not closed until mid-November. October is ideal, but the Mistral can be brutal; check the wind forecast.",
@@ -1641,6 +1770,13 @@
    "Bédoin",
    "Malaucène",
    "Sault"
+  ]
+ },
+ "montagne-de-lure": {
+  "classicAscent": "16.7 km, 6.7 % from Saint-Étienne-les-Orgues",
+  "note": "The 'little Ventoux': from Saint-Étienne-les-Orgues through forest to just below the Signal de Lure, at the top a panorama from the Écrins to the Ventoux. Closed above the resort in winter.",
+  "ascents": [
+   "Saint-Étienne-les-Orgues"
   ]
  },
  "monte-beigua": {
@@ -2421,6 +2557,13 @@
   "note": "A detour off the Gavia climb from Bormio: in Santa Caterina the narrow road branches off into the Valle dei Forni and ends at the hut below the Forni glacier. Season window taken from the Gavia.",
   "ascents": [
    "Junction in Santa Caterina"
+  ]
+ },
+ "risoul": {
+  "classicAscent": "13.4 km, 6.4 % from Guillestre",
+  "note": "The hairpin road from Guillestre to the Risoul resort, a Tour de France finish in 2014. Steady, at the top larches and the view of the Pelvoux. Cleared all year.",
+  "ascents": [
+   "Guillestre"
   ]
  },
  "rittner-hochplateau": {

@@ -134,6 +134,16 @@
    }
   ]
  },
+ "avoriaz": {
+  "intro": "Der Tour-Anstieg über Morzine, gut mit Joux Plane und Les Gets zu verbinden.",
+  "sides": [
+   {
+    "character": "Von Morzine gleichmäßig durch Wald und über Lawinengalerien, oben zur Felskante von Avoriaz.",
+    "highlights": "Die Felsen von Avoriaz und der Blick über das Tal von Morzine.",
+    "hazards": []
+   }
+  ]
+ },
  "axalp": {
   "intro": "Eine steile Sackgasse über dem türkisen Brienzersee, gegenüber dem Brienzer Rothorn.",
   "sides": [
@@ -398,6 +408,26 @@
      "narrow"
     ],
     "highlights": "Das Dorf Ceillac in seinem weiten Talkessel."
+   }
+  ]
+ },
+ "chaillol": {
+  "intro": "Ein ruhiger Stationsanstieg über dem Champsaur, gut neben dem Col du Noyer.",
+  "sides": [
+   {
+    "character": "Von Saint-Bonnet über die Dörfer des Champsaur gleichmäßig zur Station.",
+    "highlights": "Der Blick auf den Vieux Chaillol und den Obiou.",
+    "hazards": []
+   }
+  ]
+ },
+ "chamrousse": {
+  "intro": "Der lange Waldanstieg über Grenoble in die Belledonne.",
+  "sides": [
+   {
+    "character": "Von Uriage gleichmäßig um 7 bis 8 % durch dichten Wald, kaum Ausblicke bis oben.",
+    "highlights": "Oben der Blick über Grenoble und den Vercors.",
+    "hazards": []
    }
   ]
  },
@@ -763,6 +793,27 @@
    }
   ]
  },
+ "col-de-l-echelle": {
+  "intro": "Die Abkürzung von der Clarée nach Bardonecchia, oben Lärchen und Almen.",
+  "sides": [
+   {
+    "character": "Von Plampinet kurz und mäßig durch Lärchen zum Plateau.",
+    "highlights": "Die Lärchenwälder der oberen Clarée.",
+    "hazards": [],
+    "bestAs": "down"
+   },
+   {
+    "character": "Von Bardonecchia über Melezet, dann steil in engen Kehren die Felsstufe hinauf, mit kurzen Tunneln.",
+    "highlights": "Die Kehren an der Felsstufe über Melezet.",
+    "hazards": [
+     "tight-hairpins",
+     "tunnels",
+     "narrow"
+    ],
+    "bestAs": "up"
+   }
+  ]
+ },
  "col-de-l-homme-mort": {
   "intro": "Der Übergang von Montbrun-les-Bains auf das Lavendelplateau von Ferrassières und Sault. Von Westen ist er kaum ein Anstieg, von Montbrun dagegen eine ruhige Waldstraße mit Blick auf die Montagne de Lure.",
   "sides": [
@@ -922,6 +973,23 @@
      "steep"
     ],
     "highlights": "Der Stausee Grand Maison unter dem Scheitel."
+   }
+  ]
+ },
+ "col-de-la-croix-fry": {
+  "intro": "Der ruhige Pass zwischen Thônes und La Clusaz, gut kombiniert mit Aravis und Colombière.",
+  "sides": [
+   {
+    "character": "Von Thônes erst sanft ins Tal von Manigod, dann gleichmäßiger und steiler über Weiden und Chalets zur Passhöhe.",
+    "highlights": "Die Dörfer von Manigod und oben die Kalkwände der Aravis.",
+    "hazards": [],
+    "bestAs": "up"
+   },
+   {
+    "character": "Von La Clusaz kurz und gleichmäßig durch Wald und Skihänge hinauf.",
+    "highlights": "Der Blick zurück auf La Clusaz und die Aravis.",
+    "hazards": [],
+    "bestAs": "down"
    }
   ]
  },
@@ -1096,6 +1164,44 @@
    }
   ]
  },
+ "col-de-manse": {
+  "intro": "Der kurze Übergang von Gap ins Champsaur, der Auftakt für Noyer und Chaillol.",
+  "sides": [
+   {
+    "character": "Von Gap gleichmäßig über Wiesen und Wald hinauf zum Plateau.",
+    "highlights": "Der Blick über das Becken von Gap.",
+    "hazards": [],
+    "bestAs": "up"
+   },
+   {
+    "character": "Von Saint-Laurent-du-Cros kurz und sanft.",
+    "highlights": "Das Champsaur mit dem Vieux Chaillol.",
+    "hazards": [],
+    "bestAs": "down"
+   }
+  ]
+ },
+ "col-de-menee": {
+  "intro": "Ein langer, sanfter Pass ohne Verkehr, mit dem Mont Aiguille als Wegmarke.",
+  "sides": [
+   {
+    "character": "Von Châtillon lang und sanft durch das Tal des Bès und Wald bis zum Tunnel.",
+    "highlights": "Die Schluchten des Diois.",
+    "hazards": [
+     "tunnels"
+    ],
+    "bestAs": "up"
+   },
+   {
+    "character": "Von Chichilianne gleichmäßig über Weiden und Wald hinauf.",
+    "highlights": "Der Mont Aiguille direkt über der Straße.",
+    "hazards": [
+     "tunnels"
+    ],
+    "bestAs": "down"
+   }
+  ]
+ },
  "col-de-montgenevre": {
   "intro": "Einer der ältesten Alpenübergänge, schon die Römer zogen hier nach Italien. Heute ist er die ganzjährig offene Hauptstraße von Briançon nach Turin, für Radfahrer eher Verbindung als Ziel.",
   "sides": [
@@ -1155,6 +1261,23 @@
    {
     "bestAs": "up",
     "character": "Von Laborel kürzer und steiler, nach oben zunehmend, mit einigen Kehren; die Seite, die sich zum Klettern anbietet."
+   }
+  ]
+ },
+ "col-de-plainpalais": {
+  "intro": "Das Tor von Chambéry in den Naturpark der Bauges.",
+  "sides": [
+   {
+    "character": "Von Saint-Alban-Leysse gleichmäßig durch die Schlucht der Leysse und Wald nach Les Déserts und zur Passhöhe.",
+    "highlights": "Der Blick zurück über Chambéry.",
+    "hazards": [],
+    "bestAs": "up"
+   },
+   {
+    "character": "Von Le Châtelard lang und sanft durch das Tal des Chéran und über Weiden.",
+    "highlights": "Die stillen Dörfer der Bauges.",
+    "hazards": [],
+    "bestAs": "down"
    }
   ]
  },
@@ -1253,6 +1376,23 @@
    }
   ]
  },
+ "col-de-valberg": {
+  "intro": "Das Mittelstück der Runde aus Couillole, Valberg und den roten Schluchten.",
+  "sides": [
+   {
+    "character": "Von Guillaumes gleichmäßig in Kehren über dem Var-Tal hinauf.",
+    "highlights": "Der Blick über das obere Var-Tal.",
+    "hazards": [],
+    "bestAs": "up"
+   },
+   {
+    "character": "Von Beuil kurz und sanft über Wiesen.",
+    "highlights": "Die roten Felsen um Beuil.",
+    "hazards": [],
+    "bestAs": "down"
+   }
+  ]
+ },
  "col-de-vars": {
   "intro": "Der Vars verbindet das Ubaye mit Guillestre und liegt oft auf derselben Tour-de-France-Etappe wie Izoard oder Bonette. Die Nordseite führt durch den Skiort Vars, die Südseite ist kurz und einsam.",
   "sides": [
@@ -1273,6 +1413,19 @@
    {
     "character": "Ab Vence gleichmäßig über offene, steinige Hänge, kaum Schatten. Je höher man kommt, desto weiter reicht der Blick zurück über die Küste.",
     "highlights": "Der Blick zurück über die Küste bis zum Meer."
+   }
+  ]
+ },
+ "col-des-annes": {
+  "intro": "Die Almstraße über Le Grand-Bornand, ein Abstecher von der Colombière für ruhige Höhenmeter.",
+  "sides": [
+   {
+    "character": "Auf der Colombière-Straße nach Le Chinaillon, dann schmal und steil in Kehren über die Almen bis zum Plateau.",
+    "highlights": "Die Chalets der Annes, die Pointe Percée und der Mont Blanc im Süden.",
+    "hazards": [
+     "narrow",
+     "steep"
+    ]
    }
   ]
  },
@@ -1409,6 +1562,62 @@
    }
   ]
  },
+ "col-du-coq": {
+  "intro": "Die steile Rampe aus dem Tal von Grenoble in die Chartreuse.",
+  "sides": [
+   {
+    "character": "Von Saint-Ismier lang und steil, mit Abschnitten über 10 %, durch Wald an der Flanke der Dent de Crolles.",
+    "highlights": "Der Blick über das Grésivaudan auf die Belledonne.",
+    "hazards": [
+     "steep",
+     "narrow"
+    ],
+    "bestAs": "up"
+   },
+   {
+    "character": "Von Saint-Pierre-de-Chartreuse gleichmäßig durch Wald und über Almwiesen.",
+    "highlights": "Die Wiesen unter der Dent de Crolles.",
+    "hazards": [],
+    "bestAs": "down"
+   }
+  ]
+ },
+ "col-du-corbier": {
+  "intro": "Ein kurzer, giftiger Pass im Chablais, der eine Runde um Morzine nach Norden verlängert.",
+  "sides": [
+   {
+    "character": "Von Le Biot kurz und durchgehend steil durch Wald und Wiesen.",
+    "highlights": "Der Blick ins Vallée d'Aulps.",
+    "hazards": [
+     "steep"
+    ],
+    "bestAs": "up"
+   },
+   {
+    "character": "Von Bonnevaux etwas sanfter über Almwiesen zur Passhöhe.",
+    "highlights": "Die Almen des Corbier.",
+    "hazards": [],
+    "bestAs": "down"
+   }
+  ]
+ },
+ "col-du-cucheron": {
+  "intro": "Das Bindeglied der Chartreuse-Pässe, kurz und durch Wald.",
+  "sides": [
+   {
+    "character": "Von Saint-Pierre-d'Entremont gleichmäßig durch Wald und Wiesen.",
+    "highlights": "Die Kalkwände der Chartreuse über dem Tal.",
+    "hazards": [],
+    "bestAs": "up"
+   },
+   {
+    "character": "Von Saint-Pierre-de-Chartreuse kurz und steiler zur Passhöhe.",
+    "highlights": "Der Blick auf den Grand Som.",
+    "hazards": [],
+    "bestAs": "down"
+   }
+  ]
+ },
  "col-du-galibier": {
   "intro": "Seit 1911 im Programm der Tour de France und oft ihr höchster Punkt. Oben liegt der Scheitel über dem alten Tunnel, auf der Südseite erinnert ein Denkmal an Tour-Gründer Henri Desgrange.",
   "sides": [
@@ -1466,6 +1675,23 @@
     "hazards": [
      "tight-hairpins"
     ]
+   }
+  ]
+ },
+ "col-du-granier": {
+  "intro": "Der Auftakt jeder Chartreuse-Runde ab Chambéry, mit der Felswand des Granier über der Passhöhe.",
+  "sides": [
+   {
+    "character": "Von Chambéry über Montagnole gleichmäßig und lang am Hang hinauf, oben unter der Felswand.",
+    "highlights": "Die Nordwand des Mont Granier und der Blick über die Combe de Savoie.",
+    "hazards": [],
+    "bestAs": "up"
+   },
+   {
+    "character": "Von Entremont gleichmäßig durch das Tal und Wald zur Passhöhe.",
+    "highlights": "Die Wiesen von Entremont-le-Vieux.",
+    "hazards": [],
+    "bestAs": "down"
    }
   ]
  },
@@ -3063,6 +3289,18 @@
    }
   ]
  },
+ "la-toussuire": {
+  "intro": "Der Tour-Anstieg der Maurienne, der sich mit dem Mollard zu einer Runde verbindet.",
+  "sides": [
+   {
+    "character": "Von Saint-Jean in Kehren über Fontcouverte, dann gleichmäßig über Wiesen zur Station.",
+    "highlights": "Der Blick auf die Aiguilles d'Arves.",
+    "hazards": [
+     "tight-hairpins"
+    ]
+   }
+  ]
+ },
  "lac-de-moiry": {
   "intro": "Die höchste Straße im Val d'Anniviers endet auf der Krone einer Staumauer, mit dem Gletscher am anderen Ende des Sees. Einer der großen Anstiege des Wallis, und einer der stillsten.",
   "sides": [
@@ -3138,6 +3376,18 @@
      "traffic"
     ],
     "highlights": "Blick über das obere Tarentaise-Tal"
+   }
+  ]
+ },
+ "les-deux-alpes": {
+  "intro": "Der zweite Stationsanstieg des Oisans, gleichmäßig in Kehren.",
+  "sides": [
+   {
+    "character": "Vom Stausee Chambon über Mont-de-Lans in gleichmäßigen Kehren zur Station.",
+    "highlights": "Der Lac du Chambon und die Meije im Osten.",
+    "hazards": [
+     "traffic"
+    ]
    }
   ]
  },
@@ -3377,6 +3627,16 @@
    }
   ]
  },
+ "mont-revard": {
+  "intro": "Der lange Waldanstieg vom Lac du Bourget auf das Bauges-Plateau.",
+  "sides": [
+   {
+    "character": "Von Aix-les-Bains über Mouxy gleichmäßig und lang durch Wald, oben flacher über das Plateau zum Aussichtspunkt.",
+    "highlights": "Der Blick vom Revard über den Lac du Bourget.",
+    "hazards": []
+   }
+  ]
+ },
  "mont-ventoux": {
   "intro": "Der Riese der Provence steht allein über der Ebene, sein kahler Kalkgipfel ist von weit her zu sehen. Seit 1951 bei der Tour; 1967 starb hier Tom Simpson. Drei Auffahrten, alle mit dem Wind als Gegner.",
   "sides": [
@@ -3400,6 +3660,16 @@
     "bestAs": "both",
     "character": "Von Sault die sanfteste Seite, lang und gestuft durch Lavendelfelder und Wald, ab Chalet Reynard auf der Bédoin-Straße zum Gipfel.",
     "highlights": "Die Lavendelfelder rund um Sault."
+   }
+  ]
+ },
+ "montagne-de-lure": {
+  "intro": "Der lange, stille Anstieg der Haute-Provence, der Ventoux ohne Gedränge.",
+  "sides": [
+   {
+    "character": "Von Saint-Étienne gleichmäßig durch Eichen- und Buchenwald, oben über den kahlen Kamm.",
+    "highlights": "Der Rundblick vom Kamm über die Provence und die Alpen.",
+    "hazards": []
    }
   ]
  },
@@ -5115,6 +5385,18 @@
      "narrow"
     ],
     "highlights": "Blick auf den Forni-Gletscher."
+   }
+  ]
+ },
+ "risoul": {
+  "intro": "Ein Tour-Anstieg über Guillestre, ruhiger als Vars und Izoard nebenan.",
+  "sides": [
+   {
+    "character": "Von Guillestre auf der Vars-Straße hinauf, dann in gleichmäßigen Kehren durch Lärchenwald zur Station.",
+    "highlights": "Der Blick über das Durance-Tal zum Pelvoux.",
+    "hazards": [
+     "tight-hairpins"
+    ]
    }
   ]
  },

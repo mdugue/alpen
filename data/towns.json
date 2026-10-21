@@ -126,6 +126,39 @@
   "why": "Aravis-Dorf: Colombière, Aravis und Croix Fry beginnen am Ort. Grüne Nebentäler, wenig Verkehr, Verleih im Dorf."
  },
  {
+  "slug": "chambery",
+  "name": "Chambéry",
+  "country": "FR",
+  "lat": 45.5667,
+  "lon": 5.9208,
+  "tags": [
+   "hub",
+   "train",
+   "hotels",
+   "workshops"
+  ],
+  "aliases": [
+   "Savoie"
+  ],
+  "why": "Bahnknoten zwischen Bauges und Chartreuse: Granier, Plainpalais, Revard und Cucheron ab der Haustür, dazu Radläden und Hotels einer Stadt."
+ },
+ {
+  "slug": "saint-pierre-de-chartreuse",
+  "name": "Saint-Pierre-de-Chartreuse",
+  "country": "FR",
+  "lat": 45.3423,
+  "lon": 5.8147,
+  "tags": [
+   "passes",
+   "quiet",
+   "scenic"
+  ],
+  "aliases": [
+   "Chartreuse"
+  ],
+  "why": "Das Dorf mitten in der Chartreuse, an dem Cucheron, Coq und Porte zusammenlaufen; ruhige Unterkünfte statt Stadtbetrieb."
+ },
+ {
   "slug": "morzine",
   "name": "Morzine",
   "country": "FR",
@@ -161,6 +194,24 @@
    "Hautes-Alpes"
   ],
   "why": "Tor zum Queyras: Izoard, Vars, Agnel und Risoul, dazu die ruhige Schlucht des Guil. Campingplätze und kleine Radläden statt Skiort-Betrieb."
+ },
+ {
+  "slug": "gap",
+  "name": "Gap",
+  "country": "FR",
+  "lat": 44.5594,
+  "lon": 6.0786,
+  "tags": [
+   "hub",
+   "train",
+   "hotels",
+   "workshops"
+  ],
+  "aliases": [
+   "Champsaur",
+   "Gapençais"
+  ],
+  "why": "Die Stadt am Tor zum Champsaur: Manse, Noyer, Chaillol und Orcières in Reichweite, Bahnhof, Radläden und Hotels."
  },
  {
   "slug": "sospel",

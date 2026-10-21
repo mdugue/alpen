@@ -65,6 +65,9 @@
  "cavalese": {
   "why": "Val di Fiemme as a quiet valley base: Manghen, Lavazè, Rolle and San Pellegrino within reach, plus flat valley roads for the day after."
  },
+ "chambery": {
+  "why": "Rail hub between the Bauges and the Chartreuse: the Granier, Plainpalais, Revard and Cucheron from the doorstep, plus the bike shops and hotels of a city."
+ },
  "chur": {
   "why": "Graubünden's rail hub: the Lenzerheide and Arosa start at the station, Flumserberg and Malbun lie a short ride down the Rhine. Low and mild, often warm in autumn too thanks to the foehn."
  },
@@ -91,6 +94,9 @@
  },
  "finale-ligure": {
   "why": "Italy's mountain-bike capital has the workshops and rental outfits that serve the road bike just as well; the Melogno starts in Finalborgo, Scravaion and Faiallo are day loops. Railway station in town."
+ },
+ "gap": {
+  "why": "The town at the gateway to the Champsaur: the Manse, Noyer, Chaillol and Orcières within reach, a railway station, bike shops and hotels."
  },
  "gerardmer": {
   "why": "By the lake on the Lorraine side: the Schlucht, the Col de Grosse Pierre and, via La Bresse, the Bramont. Accommodation of every kind, no railway station."
@@ -184,6 +190,9 @@
  },
  "saint-jean-de-maurienne": {
   "why": "Croix de Fer, Madeleine, Télégraphe/Galibier; railway station, bike shops, Maurienne cycling office."
+ },
+ "saint-pierre-de-chartreuse": {
+  "why": "The village in the middle of the Chartreuse where the Cucheron, Coq and Porte meet; quiet lodgings instead of city bustle."
  },
  "saint-vincent": {
   "why": "Spa town in the lower Aosta valley: the Col de Joux on the doorstep, Breuil-Cervinia from Châtillon and the Gressoney valley next door. Châtillon-Saint-Vincent railway station."
