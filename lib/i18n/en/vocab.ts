@@ -21,6 +21,7 @@ export const vocab = {
     AD: "Andorra",
     AT: "Austria",
     CH: "Switzerland",
+    CZ: "Czechia",
     DE: "Germany",
     ES: "Spain",
     FR: "France",
@@ -58,6 +59,12 @@ export const vocab = {
       label: "Alps",
       outside: "outside the Alps",
     },
+    Erzgebirge: {
+      hint: "Fichtelberg, Klínovec and the steep ramps of the Bohemian south side: a weekend from Dresden, Chemnitz or Prague.",
+      inside: "in the Ore Mountains",
+      label: "Ore Mountains",
+      outside: "outside the Ore Mountains",
+    },
     Jura: {
       hint: "Grand Colombier, Mont du Chat, Faucille, Chasseral: a long season, little traffic, two hours from Basel.",
       inside: "in the Jura",
@@ -93,6 +100,7 @@ export const vocab = {
   },
   region: {
     Dolomiten: "Dolomites",
+    Erzgebirge: "Ore Mountains",
     Jura: "Jura",
     Ostalpen: "Eastern Alps",
     Pyrenäen: "Pyrenees",

@@ -23,13 +23,14 @@
           "SI",
           "ES",
           "AD",
-          "LI"
+          "LI",
+          "CZ"
         ]
       },
       "lat": {
         "type": "number",
         "minimum": 42,
-        "maximum": 49
+        "maximum": 51
       },
       "lon": {
         "type": "number",

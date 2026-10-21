@@ -931,5 +931,42 @@
   "character": "Duran, Cereda, Croce d'Aune und die beiden Forcelle rund um den Nationalpark zwischen Agordo und Feltre, dazu Rolle, Valles, Brocon und San Boldo am Rand: die stille Südseite der Dolomiten, niedriger und leerer als Sella und Cortina.",
   "multiDay": "Vier bis fünf Tage; die Runde über Cereda, Rolle und Valles ein Tag, Duran und Staulanza ein zweiter, der Grappa als Tagesausflug von Feltre.",
   "access": "Bahnhof Feltre an der Strecke Padua–Belluno, nach Agordo Bus ab Belluno; Flughafen Venedig oder Treviso in gut einer Stunde."
+ },
+ {
+  "slug": "westerzgebirge",
+  "name": "Fichtelberg und Klínovec",
+  "country": "DE/CZ",
+  "center": {
+   "lat": 50.41,
+   "lon": 12.98
+  },
+  "radiusKm": 30,
+  "baseTowns": [
+   "oberwiesenthal"
+  ],
+  "include": [],
+  "exclude": [],
+  "character": "Die beiden höchsten Berge des Erzgebirges zu beiden Seiten der Grenze, dazu die langen Anstiege aus dem Egertal: Hochflächen auf 900 bis 1200 m, Fichtenwald und weite Wiesen, wenig Verkehr abseits der Bundesstraße.",
+  "multiDay": "Ein langes Wochenende: Fichtelberg und Klínovec an einem Tag, Měděnec oder der Auersberg am zweiten.",
+  "access": "Mit der Bahn nach Cranzahl und weiter mit der Fichtelbergbahn nach Oberwiesenthal; von Chemnitz gut eine Stunde mit dem Auto, von Prag zwei."
+ },
+ {
+  "slug": "osterzgebirge",
+  "name": "Osterzgebirge",
+  "country": "DE/CZ",
+  "center": {
+   "lat": 50.69,
+   "lon": 13.77
+  },
+  "radiusKm": 20,
+  "baseTowns": [
+   "altenberg",
+   "teplice"
+  ],
+  "include": [],
+  "exclude": [],
+  "character": "Der Steilabbruch des Erzgebirges nach Böhmen: kurze, steile Anstiege aus Krupka, Dubí und Osek auf einen sanften Kamm, oben ruhige Straßen zwischen Altenberg und Moldava.",
+  "multiDay": "Zwei Tage reichen für alle Anstiege der böhmischen Seite; von Altenberg aus als Runden über die Grenze, von Teplice aus von unten.",
+  "access": "Mit der Bahn von Dresden über Heidenau nach Altenberg, oder nach Teplice über Ústí nad Labem; Dresden liegt eine Stunde entfernt."
  }
 ]

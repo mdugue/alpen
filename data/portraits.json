@@ -5854,5 +5854,101 @@
     ]
    }
   ]
+ },
+ "fichtelberg": {
+  "intro": "Der höchste Berg Sachsens und das Ziel, an dem sich im Erzgebirge jeder einmal misst. Oben das Fichtelberghaus, die Wetterwarte und bei klarer Sicht der Blick hinüber zum Klínovec und weit nach Böhmen.",
+  "sides": [
+   {
+    "character": "Aus Oberwiesenthal zuerst flach durch den Ort, dann im Wald zwischen den Skipisten deutlich steiler; das letzte Stück öffnet sich zur Kuppe.",
+    "highlights": "Das Fichtelberghaus mit Wetterwarte und Aussichtsplattform.",
+    "hazards": [
+     "traffic"
+    ]
+   }
+  ]
+ },
+ "klinovec": {
+  "intro": "Der höchste Gipfel des Erzgebirges, knapp höher als der Fichtelberg und mit ihm in einer Runde zu verbinden. Von Süden die längste gleichmäßige Auffahrt des Gebirges, aus dem alten Silberbergbauort Jáchymov.",
+  "sides": [
+   {
+    "bestAs": "up",
+    "character": "Aus Jáchymov in Kehren aus dem engen Tal, dann lange und gleichmäßig durch den Wald bis unter den Gipfel; die längste Auffahrt der Gegend.",
+    "highlights": "Jáchymov mit seinem Kurviertel und den Zeugnissen des Silber- und Uranbergbaus.",
+    "hazards": [
+     "tight-hairpins"
+    ]
+   },
+   {
+    "bestAs": "both",
+    "character": "Von Loučná auf der sächsischen Seite des Kamms kurz und etwas steiler, über offene Hochflächen mit Blick zum Fichtelberg.",
+    "highlights": "Der Blick über den Kamm hinüber zum Fichtelberg."
+   }
+  ]
+ },
+ "komari-vizka": {
+  "intro": "Die steilste der Auffahrten von der böhmischen Seite auf den Kamm, und die mit der besten Aussicht: Oben steht man am Rand des Gebirges und schaut über Teplice und das Becken bis zum Böhmischen Mittelgebirge.",
+  "sides": [
+   {
+    "character": "Aus dem alten Bergbaustädtchen Krupka sofort steil, in engen Kehren durch den Wald und ohne echte Pause bis zur Kante.",
+    "highlights": "Der Aussichtspunkt an der Komáří vížka mit Blick über das Becken.",
+    "hazards": [
+     "steep",
+     "tight-hairpins",
+     "narrow"
+    ]
+   }
+  ]
+ },
+ "cinovec": {
+  "intro": "Die klassische Verbindung von Böhmen hinauf nach Sachsen, früher Transitstraße, heute vor allem Ausflugsverkehr. Ein Anstieg zum Rhythmusfahren, ohne Rampen, und der bequemste Weg auf den Kamm.",
+  "sides": [
+   {
+    "character": "Von Dubí in weiten Bögen und gleichmäßig im Wald hinauf; oben flacht es zur Hochfläche bei Cínovec ab.",
+    "highlights": "Der Übergang auf die offene Kammhochfläche bei Cínovec.",
+    "hazards": [
+     "traffic"
+    ]
+   }
+  ]
+ },
+ "medenec": {
+  "intro": "Einer der langen Anstiege vom Egertal auf den Erzgebirgskamm, ruhig und gleichmäßig. Oben das Bergbaudorf Měděnec mit der Kapelle auf dem Kupferhübel.",
+  "sides": [
+   {
+    "character": "Aus Klášterec zuerst durch Obstwiesen, dann in langen Schleifen am Hang hinauf, immer wieder mit Blick zurück über das Egertal.",
+    "highlights": "Die Kapelle auf dem Kupferhübel (Mědník) über dem Dorf."
+   }
+  ]
+ },
+ "dlouha-louka": {
+  "intro": "Der zweite steile Anstieg der böhmischen Seite neben der Komáří vížka, kaum bekannt und fast ohne Verkehr. Unten das Kloster Osek, oben die weiten Wiesen des Kamms.",
+  "sides": [
+   {
+    "character": "Gleich hinter Osek steil in den Wald, in einer Folge von Kehren ohne Flachstück bis auf die Kammwiesen.",
+    "highlights": "Das Zisterzienserkloster Osek am Fuß des Anstiegs.",
+    "hazards": [
+     "steep",
+     "tight-hairpins"
+    ]
+   }
+  ]
+ },
+ "auersberg": {
+  "intro": "Der höchste Gipfel des Westerzgebirges westlich des Fichtelbergs, mit einem Aussichtsturm, der über die Wälder bis zum Fichtelberg und in die Vogtländer Berge schaut.",
+  "sides": [
+   {
+    "character": "Aus Wildenthal kurz und gleichmäßig durch Fichtenwald hinauf, das letzte Stück etwas steiler zum Gasthaus.",
+    "highlights": "Der Aussichtsturm auf dem Gipfel."
+   }
+  ]
+ },
+ "bournak": {
+  "intro": "Ein kleiner Skiberg auf dem Kamm des Osterzgebirges, der sich gut an die Komáří vížka oder Dlouhá Louka hängen lässt. Oben eine Berghütte und der Blick nach Süden über das Becken.",
+  "sides": [
+   {
+    "character": "Von Mikulov über offene Kammwiesen, dann kurz steiler durch den Wald zur Hütte am Lift.",
+    "highlights": "Die Berghütte am Gipfel mit Blick nach Süden."
+   }
+  ]
  }
 }

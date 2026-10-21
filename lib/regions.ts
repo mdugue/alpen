@@ -13,7 +13,13 @@
  * map covers (docs/plans/25-vosges-and-jura.md). The order is the display
  * order, the Alps first because they are where the app began.
  */
-export const RANGES = ["Alpen", "Vogesen", "Jura", "Pyrenäen"] as const;
+export const RANGES = [
+  "Alpen",
+  "Vogesen",
+  "Jura",
+  "Pyrenäen",
+  "Erzgebirge",
+] as const;
 
 export type RangeName = (typeof RANGES)[number];
 
@@ -33,6 +39,7 @@ export const HOME_RANGE: RangeName = "Alpen";
  */
 export const RANGE_REGIONS = {
   Alpen: ["Westalpen", "Zentralalpen", "Ostalpen", "Dolomiten"],
+  Erzgebirge: ["Erzgebirge"],
   Jura: ["Jura"],
   Pyrenäen: ["Pyrenäen"],
   Vogesen: ["Vogesen"],
@@ -49,6 +56,7 @@ export type TripName = (typeof TRIPS)[number];
 
 export const RANGE_TRIP: Record<RangeName, TripName> = {
   Alpen: "holiday",
+  Erzgebirge: "weekend",
   Jura: "weekend",
   Pyrenäen: "holiday",
   Vogesen: "weekend",
@@ -77,6 +85,7 @@ export const REGIONS = [
   ...RANGE_REGIONS.Vogesen,
   ...RANGE_REGIONS.Jura,
   ...RANGE_REGIONS.Pyrenäen,
+  ...RANGE_REGIONS.Erzgebirge,
 ] as const;
 
 /** A box in degrees, both ends inclusive. */
@@ -101,6 +110,7 @@ export interface GeoBox {
  */
 export const RANGE_BOUNDS: Record<RangeName, GeoBox> = {
   Alpen: { lat: [43, 49], lon: [4, 16] },
+  Erzgebirge: { lat: [50.2, 51], lon: [12.2, 14.2] },
   Jura: { lat: [45, 48], lon: [5, 8] },
   Pyrenäen: { lat: [42, 43.5], lon: [-2, 3.5] },
   Vogesen: { lat: [47, 49], lon: [6, 8] },
@@ -143,6 +153,7 @@ export const COUNTRIES = [
   "ES",
   "AD",
   "LI",
+  "CZ",
 ] as const;
 
 /** "CH/IT" → ["CH", "IT"]. */

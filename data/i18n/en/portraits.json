@@ -3955,5 +3955,81 @@
     "highlights": "The view from the Melchboden across the Zillertal to the main Zillertal ridge."
    }
   ]
+ },
+ "fichtelberg": {
+  "intro": "Saxony's highest mountain and the summit everyone in the Ore Mountains measures themselves against once. At the top the Fichtelberghaus, the weather station and, on a clear day, the view across to the Klínovec and far into Bohemia.",
+  "sides": [
+   {
+    "character": "From Oberwiesenthal flat through the town at first, then clearly steeper in the forest between the ski runs; the last stretch opens out onto the dome.",
+    "highlights": "The Fichtelberghaus with its weather station and viewing platform."
+   }
+  ]
+ },
+ "klinovec": {
+  "intro": "The highest summit of the Ore Mountains, a little higher than the Fichtelberg and easily joined with it in one loop. From the south the longest steady climb of the range, out of the old silver-mining town of Jáchymov.",
+  "sides": [
+   {
+    "character": "Out of Jáchymov in hairpins from the narrow valley, then long and steady through the forest to just below the summit; the longest climb in the area.",
+    "highlights": "Jáchymov with its spa quarter and the traces of silver and uranium mining."
+   },
+   {
+    "character": "From Loučná on the Saxon side of the ridge short and a little steeper, across open high ground with a view of the Fichtelberg.",
+    "highlights": "The view along the ridge across to the Fichtelberg."
+   }
+  ]
+ },
+ "komari-vizka": {
+  "intro": "The steepest of the climbs from the Bohemian side up onto the ridge, and the one with the best view: at the top you stand at the rim of the range and look across Teplice and the basin to the Bohemian Central Uplands.",
+  "sides": [
+   {
+    "character": "Steep straight out of the old mining town of Krupka, in tight hairpins through the forest and without a real break up to the edge.",
+    "highlights": "The viewpoint at Komáří vížka looking out over the basin."
+   }
+  ]
+ },
+ "cinovec": {
+  "intro": "The classic link from Bohemia up into Saxony, once a transit road, today mostly day-trip traffic. A climb for riding to a rhythm, without ramps, and the easiest way onto the ridge.",
+  "sides": [
+   {
+    "character": "From Dubí in wide sweeps and steadily up through the forest; at the top it flattens out onto the plateau at Cínovec.",
+    "highlights": "Coming out onto the open ridge plateau at Cínovec."
+   }
+  ]
+ },
+ "medenec": {
+  "intro": "One of the long climbs from the Ohře valley onto the Ore Mountains ridge, quiet and steady. At the top the mining village of Měděnec with the chapel on the Mědník hill.",
+  "sides": [
+   {
+    "character": "Out of Klášterec first through orchards, then in long loops up the slope, with repeated views back over the Ohře valley.",
+    "highlights": "The chapel on the Mědník hill above the village."
+   }
+  ]
+ },
+ "dlouha-louka": {
+  "intro": "The second steep climb of the Bohemian side next to Komáří vížka, little known and almost free of traffic. At the bottom the Osek monastery, at the top the wide meadows of the ridge.",
+  "sides": [
+   {
+    "character": "Steep into the forest right behind Osek, in a run of hairpins without a flat stretch up to the ridge meadows.",
+    "highlights": "The Cistercian monastery of Osek at the foot of the climb."
+   }
+  ]
+ },
+ "auersberg": {
+  "intro": "The highest summit of the western Ore Mountains west of the Fichtelberg, with a lookout tower that sees over the forests to the Fichtelberg and into the Vogtland hills.",
+  "sides": [
+   {
+    "character": "Out of Wildenthal short and steady up through spruce forest, the last stretch a little steeper to the inn.",
+    "highlights": "The lookout tower on the summit."
+   }
+  ]
+ },
+ "bournak": {
+  "intro": "A small ski hill on the ridge of the eastern Ore Mountains that is easy to tack on to Komáří vížka or Dlouhá Louka. At the top a mountain hut and the view south over the basin.",
+  "sides": [
+   {
+    "character": "From Mikulov across open ridge meadows, then briefly steeper through the forest to the hut by the lift.",
+    "highlights": "The mountain hut at the summit with its view to the south."
+   }
+  ]
  }
 }

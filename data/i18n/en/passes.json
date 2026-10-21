@@ -2813,5 +2813,62 @@
   "ascents": [
    "Ried im Zillertal"
   ]
+ },
+ "fichtelberg": {
+  "classicAscent": "5.4 km, 5.3 % from Oberwiesenthal",
+  "note": "Saxony's highest mountain: the road ends at the Fichtelberghaus just below the summit (1215 m). Short, around 9 % in the middle; a ski area in winter, the access road to the house is cleared.",
+  "ascents": [
+   "Oberwiesenthal"
+  ]
+ },
+ "klinovec": {
+  "classicAscent": "11.4 km, 5.1 % from Jáchymov",
+  "note": "The highest mountain of the Ore Mountains, on the Bohemian side opposite the Fichtelberg. From Jáchymov the long climb through the forest, from Loučná the shorter one; at the top a lookout tower and a ski area.",
+  "ascents": [
+   "Jáchymov (south)",
+   "Loučná pod Klínovcem (north)"
+  ]
+ },
+ "komari-vizka": {
+  "classicAscent": "5.4 km, 8.7 % from Krupka",
+  "note": "Steeply out of Krupka in hairpins up to the edge of the Ore Mountains, close to 9 % on average. At the top the Komáří vížka viewpoint above the North Bohemian Basin; the road carries on across the plateau to Fojtovice and Cínovec.",
+  "ascents": [
+   "Krupka"
+  ]
+ },
+ "cinovec": {
+  "classicAscent": "9.7 km, 4.9 % from Dubí",
+  "note": "The old border road from Teplice to Zinnwald, much quieter since the D8 motorway: steadily up through the forest onto the plateau, and on to Altenberg at the top.",
+  "ascents": [
+   "Dubí"
+  ]
+ },
+ "medenec": {
+  "classicAscent": "9.6 km, 5.4 % from Klášterec nad Ohří",
+  "note": "Steadily out of the Ohře valley at Klášterec up to Měděnec below the Mědník hill, with a view back over the valley. At the top the road carries on across the plateau to Vejprty or Kovářská.",
+  "ascents": [
+   "Klášterec nad Ohří"
+  ]
+ },
+ "dlouha-louka": {
+  "classicAscent": "6.5 km, 8.1 % from Osek",
+  "note": "From Osek and its Cistercian monastery steeply up through the forest in hairpins onto the ridge at Dlouhá Louka; on to Moldava or Nové Město at the top.",
+  "ascents": [
+   "Osek"
+  ]
+ },
+ "auersberg": {
+  "classicAscent": "6.0 km, 4.5 % from Wildenthal",
+  "note": "A dead-end road in the western Ore Mountains up the Auersberg, with a lookout tower and a mountain inn. Short from Wildenthal, long and gentle from Eibenstock; almost entirely in the forest.",
+  "ascents": [
+   "Wildenthal"
+  ]
+ },
+ "bournak": {
+  "classicAscent": "4.8 km, 5.6 % from Mikulov",
+  "note": "A short dead-end road up the Bouřňák with its ski area and mountain hut, between Mikulov and Moldava on the ridge. At the top a view south over the basin.",
+  "ascents": [
+   "Mikulov"
+  ]
  }
 }

@@ -13352,5 +13352,265 @@
     "label": "Wildenstein (West)"
    }
   ]
+ },
+ {
+  "slug": "fichtelberg",
+  "surface": "asphalt",
+  "name": "Fichtelberg",
+  "type": "spur",
+  "tags": [],
+  "country": "DE",
+  "region": "Erzgebirge",
+  "lat": 50.4288,
+  "lon": 12.9543,
+  "elevation": 1210,
+  "classicAscent": "5,4 km, 5,3 % ab Oberwiesenthal",
+  "beauty": 3,
+  "fame": 2,
+  "difficulty": 2,
+  "traffic": 3,
+  "season": null,
+  "note": "Höchster Berg Sachsens: Die Straße endet am Fichtelberghaus knapp unter dem Gipfel (1215 m). Kurz, im Mittelteil um 9 % steil; im Winter Skigebiet, die Zufahrt zum Haus wird geräumt.",
+  "aliases": [
+   "Fichtelbergstraße"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 50.4194,
+     "lon": 12.971
+    },
+    "label": "Oberwiesenthal"
+   }
+  ]
+ },
+ {
+  "slug": "klinovec",
+  "surface": "asphalt",
+  "name": "Klínovec",
+  "type": "spur",
+  "tags": [],
+  "country": "CZ",
+  "region": "Erzgebirge",
+  "lat": 50.3957,
+  "lon": 12.968,
+  "elevation": 1240,
+  "classicAscent": "11,4 km, 5,1 % ab Jáchymov",
+  "beauty": 3,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 2,
+  "season": null,
+  "note": "Höchster Berg des Erzgebirges, auf der böhmischen Seite gegenüber dem Fichtelberg. Von Jáchymov die lange Auffahrt durch den Wald, von Loučná die kürzere; oben Aussichtsturm und Skigebiet.",
+  "aliases": [
+   "Keilberg"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 50.363,
+     "lon": 12.9299
+    },
+    "label": "Jáchymov (Süd)"
+   },
+   {
+    "from": {
+     "lat": 50.4188,
+     "lon": 12.9814
+    },
+    "label": "Loučná pod Klínovcem (Nord)"
+   }
+  ]
+ },
+ {
+  "slug": "komari-vizka",
+  "surface": "asphalt",
+  "name": "Komáří vížka",
+  "type": "climb",
+  "tags": [],
+  "country": "CZ",
+  "region": "Erzgebirge",
+  "lat": 50.7066,
+  "lon": 13.8565,
+  "elevation": 805,
+  "classicAscent": "5,4 km, 8,7 % ab Krupka",
+  "beauty": 3,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 1,
+  "season": null,
+  "note": "Aus Krupka steil in Kehren auf die Kante des Erzgebirges, im Mittel fast 9 %. Oben der Aussichtspunkt Komáří vížka über dem Nordböhmischen Becken; die Straße führt über die Hochfläche weiter nach Fojtovice und Cínovec.",
+  "aliases": [
+   "Mückentürmchen",
+   "Komáří hůrka"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 50.6847,
+     "lon": 13.8578
+    },
+    "label": "Krupka"
+   }
+  ]
+ },
+ {
+  "slug": "cinovec",
+  "surface": "asphalt",
+  "name": "Cínovec",
+  "type": "climb",
+  "tags": [
+   "forest"
+  ],
+  "country": "CZ",
+  "region": "Erzgebirge",
+  "lat": 50.7211,
+  "lon": 13.7908,
+  "elevation": 877,
+  "classicAscent": "9,7 km, 4,9 % ab Dubí",
+  "beauty": 2,
+  "fame": 2,
+  "difficulty": 2,
+  "traffic": 3,
+  "season": null,
+  "note": "Die alte Grenzstraße von Teplice nach Zinnwald, seit der Autobahn D8 deutlich ruhiger: gleichmäßig durch den Wald hinauf auf die Hochfläche, oben weiter nach Altenberg.",
+  "aliases": [
+   "Zinnwald"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 50.6813,
+     "lon": 13.7888
+    },
+    "label": "Dubí"
+   }
+  ]
+ },
+ {
+  "slug": "medenec",
+  "surface": "asphalt",
+  "name": "Měděnec",
+  "type": "climb",
+  "tags": [],
+  "country": "CZ",
+  "region": "Erzgebirge",
+  "lat": 50.4211,
+  "lon": 13.1142,
+  "elevation": 846,
+  "classicAscent": "9,6 km, 5,4 % ab Klášterec nad Ohří",
+  "beauty": 3,
+  "fame": 1,
+  "difficulty": 2,
+  "traffic": 2,
+  "season": null,
+  "note": "Aus dem Egertal bei Klášterec gleichmäßig hinauf nach Měděnec unter dem Kupferhübel, mit Blick zurück über das Tal. Oben geht es über die Hochfläche weiter nach Vejprty oder Kovářská.",
+  "aliases": [
+   "Kupferberg"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 50.3843,
+     "lon": 13.171
+    },
+    "label": "Klášterec nad Ohří"
+   }
+  ]
+ },
+ {
+  "slug": "dlouha-louka",
+  "surface": "asphalt",
+  "name": "Dlouhá Louka",
+  "type": "climb",
+  "tags": [
+   "forest"
+  ],
+  "country": "CZ",
+  "region": "Erzgebirge",
+  "lat": 50.648,
+  "lon": 13.6487,
+  "elevation": 864,
+  "classicAscent": "6,5 km, 8,1 % ab Osek",
+  "beauty": 3,
+  "fame": 1,
+  "difficulty": 3,
+  "traffic": 2,
+  "season": null,
+  "note": "Von Osek mit seinem Zisterzienserkloster in Kehren steil durch den Wald hinauf auf den Kamm bei Dlouhá Louka; oben weiter nach Moldava oder Nové Město.",
+  "aliases": [
+   "Langewiese"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 50.6231,
+     "lon": 13.6861
+    },
+    "label": "Osek"
+   }
+  ]
+ },
+ {
+  "slug": "auersberg",
+  "surface": "asphalt",
+  "name": "Auersberg",
+  "type": "spur",
+  "tags": [
+   "forest"
+  ],
+  "country": "DE",
+  "region": "Erzgebirge",
+  "lat": 50.4552,
+  "lon": 12.6482,
+  "elevation": 1010,
+  "classicAscent": "6,0 km, 4,5 % ab Wildenthal",
+  "beauty": 2,
+  "fame": 1,
+  "difficulty": 2,
+  "traffic": 2,
+  "season": null,
+  "note": "Stichstraße im Westerzgebirge auf den Auersberg mit Aussichtsturm und Berggasthaus. Aus Wildenthal kurz, aus Eibenstock lang und flach; fast ganz im Wald.",
+  "aliases": [],
+  "ascents": [
+   {
+    "from": {
+     "lat": 50.451,
+     "lon": 12.6324
+    },
+    "label": "Wildenthal"
+   }
+  ]
+ },
+ {
+  "slug": "bournak",
+  "surface": "asphalt",
+  "name": "Bouřňák",
+  "type": "spur",
+  "tags": [],
+  "country": "CZ",
+  "region": "Erzgebirge",
+  "lat": 50.6854,
+  "lon": 13.7069,
+  "elevation": 869,
+  "classicAscent": "4,8 km, 5,6 % ab Mikulov",
+  "beauty": 2,
+  "fame": 1,
+  "difficulty": 2,
+  "traffic": 1,
+  "season": null,
+  "note": "Kurze Stichstraße auf den Bouřňák mit Skigebiet und Berghütte, zwischen Mikulov und Moldava auf dem Kamm. Oben Blick über das Becken nach Süden.",
+  "aliases": [
+   "Stürmer"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 50.6876,
+     "lon": 13.7216
+    },
+    "label": "Mikulov"
+   }
+  ]
  }
 ]

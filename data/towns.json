@@ -1436,5 +1436,44 @@
    "Valbelluna"
   ],
   "why": "Alte Stadt am Südrand der Belluneser Dolomiten: Croce d'Aune beginnt in Pedavena vor der Tür, Grappa, Brocon, Cereda und San Boldo liegen in Tagesreichweite. Radhotel mit Rennradverleih, Radläden, Bahnhof an der Strecke Padua–Belluno; tief genug für Frühjahr und Spätherbst."
+ },
+ {
+  "slug": "oberwiesenthal",
+  "name": "Oberwiesenthal",
+  "country": "DE",
+  "lat": 50.4194,
+  "lon": 12.971,
+  "tags": [
+   "passes",
+   "train"
+  ],
+  "aliases": [],
+  "why": "Höchstgelegene Stadt Deutschlands am Fuß des Fichtelbergs: Fichtelberg und Klínovec beginnen vor der Tür, Měděnec und der Auersberg sind eine Tagesrunde entfernt. Endpunkt der Fichtelbergbahn aus Cranzahl."
+ },
+ {
+  "slug": "altenberg",
+  "name": "Altenberg",
+  "country": "DE",
+  "lat": 50.7666,
+  "lon": 13.7523,
+  "tags": [
+   "train",
+   "quiet"
+  ],
+  "aliases": [],
+  "why": "Auf dem Kamm des Osterzgebirges: Cínovec, Komáří vížka, Dlouhá Louka und Bouřňák liegen auf der böhmischen Seite eine Tagesrunde entfernt. Bahnhof der Müglitztalbahn aus Heidenau bei Dresden."
+ },
+ {
+  "slug": "teplice",
+  "name": "Teplice",
+  "country": "CZ",
+  "lat": 50.6407,
+  "lon": 13.8244,
+  "tags": [
+   "passes",
+   "train"
+  ],
+  "aliases": [],
+  "why": "Kurstadt am Fuß der böhmischen Seite: Komáří vížka, Cínovec und Dlouhá Louka beginnen in den Nachbarorten Krupka, Dubí und Osek. Bahnhof mit Verbindungen nach Ústí nad Labem und Prag."
  }
 ]

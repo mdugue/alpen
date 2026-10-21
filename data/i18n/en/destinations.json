@@ -233,5 +233,15 @@
   "character": "The Zillertaler Höhenstraße, Hintertux and the Gerlospass: steep ramps out of a deep, wide valley, the Höhenstraße one of the hardest in Austria.",
   "multiDay": "Three days; the Gerlospass leads to the Krimml waterfalls and on into the Hohe Tauern.",
   "access": "The Zillertal railway from Jenbach to Mayrhofen; Innsbruck in an hour."
+ },
+ "westerzgebirge": {
+  "character": "The two highest mountains of the Ore Mountains on either side of the border, plus the long climbs out of the Ohře valley: plateaus at 900 to 1200 m, spruce forest and wide meadows, little traffic away from the main road.",
+  "multiDay": "A long weekend: the Fichtelberg and the Klínovec in one day, Měděnec or the Auersberg on the second.",
+  "access": "By train to Cranzahl and on with the Fichtelberg narrow-gauge railway to Oberwiesenthal; a good hour by car from Chemnitz, two from Prague."
+ },
+ "osterzgebirge": {
+  "character": "The Ore Mountains' steep escarpment towards Bohemia: short, steep climbs out of Krupka, Dubí and Osek onto a gentle ridge, with quiet roads at the top between Altenberg and Moldava.",
+  "multiDay": "Two days are enough for every climb on the Bohemian side; from Altenberg as loops over the border, from Teplice from below.",
+  "access": "By train from Dresden via Heidenau to Altenberg, or to Teplice via Ústí nad Labem; Dresden is an hour away."
  }
 }
