@@ -26,7 +26,8 @@
           "LI",
           "CZ",
           "BE",
-          "PL"
+          "PL",
+          "SK"
         ]
       },
       "lat": {
@@ -37,7 +38,7 @@
       "lon": {
         "type": "number",
         "minimum": -18.3,
-        "maximum": 16
+        "maximum": 20.5
       },
       "name": {
         "type": "string",

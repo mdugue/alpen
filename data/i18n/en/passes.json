@@ -4430,5 +4430,41 @@
   "ascents": [
    "Tanvald"
   ]
+ },
+ "strbske-pleso": {
+  "classicAscent": "13.3 km, 3.7 % from Štrba",
+  "note": "The mountain lake and resort below the peaks of the High Tatras at just over 1,300 m. Long and steady from Štrba via Tatranská Štrba, the walls of the Tatras always in front of you.",
+  "ascents": [
+   "Štrba (south)"
+  ]
+ },
+ "certovica": {
+  "classicAscent": "13.5 km, 4.6 % from Mýto pod Ďumbierom",
+  "note": "The pass across the Low Tatras between Liptov and the Hron valley. Long and steady from the south, short and steeper from Vyšná Boca in the north.",
+  "ascents": [
+   "Mýto pod Ďumbierom (south)",
+   "Vyšná Boca (north)"
+  ]
+ },
+ "chopok-juh": {
+  "classicAscent": "11.8 km, 5.6 % from Bystrá",
+  "note": "The southern ascent towards the Chopok, from Bystrá in the Hron valley past the Tále ski area to Srdiečko at just over 1,200 m. Steady, with steeper stretches in the upper part.",
+  "ascents": [
+   "Bystrá (south)"
+  ]
+ },
+ "jasna": {
+  "classicAscent": "4.4 km, 6.5 % from the Freedom Cave",
+  "note": "The northern ascent towards the Chopok, through the Demänovská valley past the entrance of the Freedom Cave to the Jasná ski area. The steep finish after the caves.",
+  "ascents": [
+   "Demänovská Dolina (north)"
+  ]
+ },
+ "gliczarow-gorny": {
+  "classicAscent": "4.5 km, 6.0 % from Biały Dunajec",
+  "note": "The ramp above Biały Dunajec near Zakopane, one of the steepest roads in Poland with stretches over 20 %. The view over the Podhale to the whole chain of the High Tatras at the top.",
+  "ascents": [
+   "Biały Dunajec (north)"
+  ]
  }
 }

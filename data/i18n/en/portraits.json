@@ -6277,5 +6277,52 @@
     "character": "Out of Tanvald moderate at first, then with ramps over 12 % through the forest."
    }
   ]
+ },
+ "strbske-pleso": {
+  "intro": "Not a steep climb, but a big one: 500 metres towards a wall of granite, the lake and the ski jumps at the top.",
+  "sides": [
+   {
+    "character": "From Štrba steadily at around 4 %, through meadows first, through forest at the top up to the lake.",
+    "highlights": "The view of the High Tatra peaks."
+   }
+  ]
+ },
+ "certovica": {
+  "intro": "The pass of the Low Tatras: spruce forest, mountain villages and a small ski station on the ridge at the top.",
+  "sides": [
+   {
+    "character": "From Mýto long and moderate along the valley, a few hairpins in the forest at the top.",
+    "highlights": "The hairpins below the top of the pass."
+   },
+   {
+    "character": "From Vyšná Boca short and steep, with ramps over 10 %."
+   }
+  ]
+ },
+ "chopok-juh": {
+  "intro": "The longest road into the Low Tatras: 650 metres through forest up to below the Chopok ridge.",
+  "sides": [
+   {
+    "character": "From Bystrá moderate along the valley at first, steeper in the forest from Tále up to Srdiečko.",
+    "highlights": "The view of the ridge from the end of the road."
+   }
+  ]
+ },
+ "jasna": {
+  "intro": "A valley with dripstone caves and the largest ski area in Slovakia at its end: short, steep and with the Chopok ahead.",
+  "sides": [
+   {
+    "character": "From the Freedom Cave steep through the forest, flatter at the top up to Jasná."
+   }
+  ]
+ },
+ "gliczarow-gorny": {
+  "intro": "A wall in the Podhale: short, brutally steep, and at the top the finest Tatra panorama a bike can reach.",
+  "sides": [
+   {
+    "character": "Out of Biały Dunajec moderate at first, then a wall of over 20 % between wooden houses.",
+    "highlights": "The chain of the High Tatras behind the meadows."
+   }
+  ]
  }
 }

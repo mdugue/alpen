@@ -91,7 +91,7 @@
                 "lon": {
                   "type": "number",
                   "minimum": -18.3,
-                  "maximum": 16
+                  "maximum": 20.5
                 }
               },
               "required": [
@@ -140,7 +140,7 @@
                 "lon": {
                   "type": "number",
                   "minimum": -18.3,
-                  "maximum": 16
+                  "maximum": 20.5
                 }
               },
               "required": [
@@ -196,7 +196,7 @@
       "lon": {
         "type": "number",
         "minimum": -18.3,
-        "maximum": 16
+        "maximum": 20.5
       },
       "name": {
         "type": "string",
@@ -245,7 +245,10 @@
           "Westsizilien",
           "Ardennen",
           "Riesengebirge",
-          "Jeschken und Isergebirge"
+          "Jeschken und Isergebirge",
+          "Hohe Tatra",
+          "Podhale",
+          "Niedere Tatra"
         ]
       },
       "roadSummit": {

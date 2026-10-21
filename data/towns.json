@@ -2553,5 +2553,45 @@
    "Reichenberg"
   ],
   "why": "Die Stadt unter dem Jeschken: der Anstieg beginnt in Horní Hanychov, das Isergebirge mit Tanvald liegt eine halbe Stunde östlich."
+ },
+ {
+  "slug": "liptovsky-mikulas",
+  "name": "Liptovský Mikuláš",
+  "country": "SK",
+  "lat": 49.0836,
+  "lon": 19.6128,
+  "tags": [
+   "hub",
+   "train",
+   "hotels"
+  ],
+  "aliases": [],
+  "why": "Die Stadt im Liptov unter der Niederen Tatra: Jasná, die Nordseite der Čertovica und über Bystrá der Chopok als Tagesrunden."
+ },
+ {
+  "slug": "poprad",
+  "name": "Poprad",
+  "country": "SK",
+  "lat": 49.0596,
+  "lon": 20.2973,
+  "tags": [
+   "hub",
+   "train"
+  ],
+  "aliases": [],
+  "why": "Bahnknoten und Flughafen unter der Hohen Tatra: Štrbské Pleso über Štrba, die Tatra-Orte am Hang."
+ },
+ {
+  "slug": "zakopane",
+  "name": "Zakopane",
+  "country": "PL",
+  "lat": 49.2969,
+  "lon": 19.9505,
+  "tags": [
+   "hotels",
+   "train"
+  ],
+  "aliases": [],
+  "why": "Die Bergstadt der polnischen Tatra: Gliczarów und die Hügel des Podhale vor der Tür, die Slowakei eine Stunde entfernt."
  }
 ]

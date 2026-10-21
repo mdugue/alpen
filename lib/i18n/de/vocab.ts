@@ -35,6 +35,7 @@ export const vocab = {
     LI: "Liechtenstein",
     PL: "Polen",
     SI: "Slowenien",
+    SK: "Slowakei",
   },
   /** The filter chips and their tokens in the bar over the map. */
   filter: {
@@ -168,6 +169,12 @@ export const vocab = {
       label: "Sizilien",
       outside: "außerhalb Siziliens",
     },
+    Tatra: {
+      hint: "Štrbské Pleso unter der Hohen Tatra, Čertovica und Chopok in der Niederen Tatra, die Rampen um Zakopane: Bergstraßen in der Slowakei und in Polen, von Juni bis September.",
+      inside: "in der Tatra",
+      label: "Tatra",
+      outside: "außerhalb der Tatra",
+    },
     Thüringen: {
       hint: "Inselsberg und Oberhof am Rennsteig, Wasserkuppe und Kreuzberg in der Rhön: kurze Anstiege für ein Wochenende in der Mitte Deutschlands.",
       inside: "im Thüringer Wald und in der Rhön",
@@ -217,6 +224,7 @@ export const vocab = {
     Erzgebirge: "Erzgebirge",
     "Gran Canaria": "Gran Canaria",
     Harz: "Harz",
+    "Hohe Tatra": "Hohe Tatra",
     "Jeschken und Isergebirge": "Jeschken und Isergebirge",
     Jura: "Jura",
     Kantabrien: "Kantabrien",
@@ -225,8 +233,10 @@ export const vocab = {
     Latium: "Latium",
     Mallorca: "Mallorca",
     Marken: "Marken",
+    "Niedere Tatra": "Niedere Tatra",
     Nordsizilien: "Nordsizilien",
     Ostalpen: "Ostalpen",
+    Podhale: "Podhale",
     Pyrenäen: "Pyrenäen",
     Rhön: "Rhön",
     Riesengebirge: "Riesengebirge",

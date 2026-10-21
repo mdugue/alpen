@@ -21171,5 +21171,178 @@
     "label": "Tanvald"
    }
   ]
+ },
+ {
+  "slug": "strbske-pleso",
+  "surface": "asphalt",
+  "name": "Štrbské Pleso",
+  "type": "spur",
+  "tags": [
+   "panorama"
+  ],
+  "country": "SK",
+  "region": "Hohe Tatra",
+  "lat": 49.1195,
+  "lon": 20.064,
+  "elevation": 1335,
+  "classicAscent": "13,3 km, 3,7 % ab Štrba",
+  "beauty": 4,
+  "fame": 3,
+  "difficulty": 2,
+  "traffic": 1,
+  "season": null,
+  "note": "Der Bergsee und Kurort unter den Gipfeln der Hohen Tatra auf gut 1300 m. Von Štrba lang und gleichmäßig über Tatranská Štrba, die Wände der Tatra immer vor Augen.",
+  "aliases": [],
+  "ascents": [
+   {
+    "from": {
+     "lat": 49.0536,
+     "lon": 20.0787
+    },
+    "label": "Štrba (Süd)"
+   }
+  ]
+ },
+ {
+  "slug": "certovica",
+  "surface": "asphalt",
+  "name": "Čertovica",
+  "type": "pass",
+  "tags": [
+   "forest"
+  ],
+  "country": "SK",
+  "region": "Niedere Tatra",
+  "lat": 48.9055,
+  "lon": 19.7359,
+  "elevation": 1238,
+  "classicAscent": "13,5 km, 4,6 % ab Mýto pod Ďumbierom",
+  "beauty": 4,
+  "fame": 3,
+  "difficulty": 3,
+  "traffic": 2,
+  "season": null,
+  "note": "Der Pass über die Niedere Tatra zwischen Liptov und dem Hron-Tal. Von Süden lang und gleichmäßig, von Vyšná Boca im Norden kurz und steiler.",
+  "aliases": [
+   "Čertovica-Sattel"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 48.8539,
+     "lon": 19.6333
+    },
+    "label": "Mýto pod Ďumbierom (Süd)"
+   },
+   {
+    "from": {
+     "lat": 48.9262,
+     "lon": 19.7527
+    },
+    "label": "Vyšná Boca (Nord)"
+   }
+  ]
+ },
+ {
+  "slug": "chopok-juh",
+  "surface": "asphalt",
+  "name": "Chopok Süd (Srdiečko)",
+  "type": "spur",
+  "tags": [
+   "forest",
+   "panorama"
+  ],
+  "country": "SK",
+  "region": "Niedere Tatra",
+  "lat": 48.9273,
+  "lon": 19.5954,
+  "elevation": 1215,
+  "classicAscent": "11,8 km, 5,6 % ab Bystrá",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 1,
+  "season": null,
+  "note": "Die Südauffahrt zum Chopok, von Bystrá im Hron-Tal durch das Skigebiet Tále bis Srdiečko auf gut 1200 m. Gleichmäßig, mit steileren Stücken im oberen Teil.",
+  "aliases": [
+   "Srdiečko",
+   "Chopok juh"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 48.8442,
+     "lon": 19.6063
+    },
+    "label": "Bystrá (Süd)"
+   }
+  ]
+ },
+ {
+  "slug": "jasna",
+  "surface": "asphalt",
+  "name": "Jasná",
+  "type": "spur",
+  "tags": [
+   "forest"
+  ],
+  "country": "SK",
+  "region": "Niedere Tatra",
+  "lat": 48.9715,
+  "lon": 19.5852,
+  "elevation": 1120,
+  "classicAscent": "4,4 km, 6,5 % ab der Freiheitshöhle",
+  "beauty": 3,
+  "fame": 2,
+  "difficulty": 2,
+  "traffic": 1,
+  "season": null,
+  "note": "Die Nordauffahrt zum Chopok, durch das Demänovská-Tal am Eingang der Freiheitshöhle vorbei zum Skigebiet Jasná. Der steile Schluss nach den Höhlen.",
+  "aliases": [
+   "Chopok sever",
+   "Biela Púť"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 48.9982,
+     "lon": 19.5854
+    },
+    "label": "Demänovská Dolina (Nord)"
+   }
+  ]
+ },
+ {
+  "slug": "gliczarow-gorny",
+  "surface": "asphalt",
+  "name": "Gliczarów Górny",
+  "type": "spur",
+  "tags": [
+   "panorama"
+  ],
+  "country": "PL",
+  "region": "Podhale",
+  "lat": 49.3497,
+  "lon": 20.051,
+  "elevation": 970,
+  "classicAscent": "4,5 km, 6,0 % ab Biały Dunajec",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 4,
+  "traffic": 1,
+  "season": null,
+  "note": "Die Rampe über Biały Dunajec bei Zakopane, eine der steilsten Straßen Polens mit Stücken über 20 %. Oben der Blick über das Podhale auf die ganze Kette der Hohen Tatra.",
+  "aliases": [
+   "Gliczarów"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 49.3691,
+     "lon": 20.0095
+    },
+    "label": "Biały Dunajec (Nord)"
+   }
+  ]
  }
 ]

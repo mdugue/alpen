@@ -1719,5 +1719,23 @@
   "character": "Der höchste Kamm zwischen Böhmen und Schlesien: Špindlerova bouda, Černá hora, Horní Mísečky und der Okraj-Pass, jeder zwischen fünf und dreizehn Kilometern. Kurze, steile Anstiege im Fichtenwald, von Mai bis Oktober.",
   "multiDay": "Zwei Tage: von Špindlerův Mlýn auf die Špindlerova bouda und nach Horní Mísečky, von Janské Lázně auf die Černá hora und über Malá Úpa auf den Okraj.",
   "access": "Mit dem Auto zwei Stunden von Dresden oder Prag, Bahn bis Vrchlabí oder Trutnov."
+ },
+ {
+  "slug": "niedere-tatra",
+  "name": "Niedere Tatra",
+  "country": "SK",
+  "center": {
+   "lat": 48.95,
+   "lon": 19.66
+  },
+  "radiusKm": 16,
+  "baseTowns": [
+   "liptovsky-mikulas"
+  ],
+  "include": [],
+  "exclude": [],
+  "character": "Der Kamm zwischen Liptov und dem Hron-Tal: die Čertovica von zwei Seiten, der Chopok von Süden über Bystrá und von Norden nach Jasná. Bergstraßen im Fichtenwald, von Juni bis September.",
+  "multiDay": "Zwei Tage von Liptovský Mikuláš: Jasná und die Čertovica über Vyšná Boca, am zweiten Tag über die Čertovica nach Süden und den Chopok von Bystrá.",
+  "access": "Bahn bis Liptovský Mikuláš, Flug nach Poprad oder Kraków."
  }
 ]

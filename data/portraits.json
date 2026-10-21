@@ -8949,5 +8949,60 @@
     ]
    }
   ]
+ },
+ "strbske-pleso": {
+  "intro": "Kein steiler Anstieg, aber ein großer: 500 Höhenmeter auf eine Granitwand zu, oben der See und die Sprungschanzen.",
+  "sides": [
+   {
+    "character": "Von Štrba gleichmäßig um 4 %, erst durch Wiesen, oben durch Wald bis zum See.",
+    "highlights": "Der Blick auf die Gipfel der Hohen Tatra."
+   }
+  ]
+ },
+ "certovica": {
+  "intro": "Der Pass der Niederen Tatra: Fichtenwald, Bergdörfer und oben eine kleine Skistation am Kamm.",
+  "sides": [
+   {
+    "bestAs": "up",
+    "character": "Von Mýto lang und mäßig durch das Tal, oben einige Kehren im Wald.",
+    "highlights": "Die Kehren unter der Passhöhe."
+   },
+   {
+    "bestAs": "both",
+    "character": "Von Vyšná Boca kurz und steil, mit Rampen über 10 %.",
+    "hazards": [
+     "steep"
+    ]
+   }
+  ]
+ },
+ "chopok-juh": {
+  "intro": "Die längste Straße in die Niedere Tatra: 650 Höhenmeter durch Wald bis unter den Kamm des Chopok.",
+  "sides": [
+   {
+    "character": "Von Bystrá erst mäßig durch das Tal, ab Tále steiler im Wald bis Srdiečko.",
+    "highlights": "Der Blick vom Ende der Straße auf den Kamm."
+   }
+  ]
+ },
+ "jasna": {
+  "intro": "Ein Tal mit Tropfsteinhöhlen und am Ende das größte Skigebiet der Slowakei: kurz, steil und mit dem Chopok vor Augen.",
+  "sides": [
+   {
+    "character": "Von der Freiheitshöhle steil durch den Wald, oben flacher bis Jasná."
+   }
+  ]
+ },
+ "gliczarow-gorny": {
+  "intro": "Eine Mauer im Podhale: kurz, brutal steil, und oben das schönste Tatra-Panorama, das man mit dem Rad erreicht.",
+  "sides": [
+   {
+    "character": "Aus Biały Dunajec erst mäßig, dann eine Wand über 20 % zwischen Holzhäusern.",
+    "hazards": [
+     "steep"
+    ],
+    "highlights": "Die Kette der Hohen Tatra hinter den Wiesen."
+   }
+  ]
  }
 }
