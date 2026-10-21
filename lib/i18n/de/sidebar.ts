@@ -62,6 +62,8 @@ export const sidebar = {
     pastEditionsHint:
       "Auch die Strecken vergangener Jahre bei Veranstaltungen, die ihre Strecke jedes Jahr ändern.",
     range: "Gebirge",
+    /** One row of range chips once they read as two: "Gebirge · Urlaub". */
+    rangeTrip: "Gebirge · {trip}",
     remove: 'Filter „{label}" entfernen',
     reset: "Zurücksetzen",
     roadType: "Art der Straße",

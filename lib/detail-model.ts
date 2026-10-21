@@ -165,6 +165,13 @@ export interface PassModel extends Reaching {
     crossing: string | null;
     /** The "abgeleitet" paragraph; absent with no climate series. */
     climate: string | null;
+    /**
+     * The line over the ascents for a road whose top is not a saddle: a
+     * dead end, a detour off another road, or a Steige that carries on up
+     * there. Null for a pass and for the traverses, which say it in their
+     * heading.
+     */
+    shape: string | null;
   };
   /** The climate series and the bucket of the chosen half-month. */
   climate: ClimateYear | undefined;
@@ -296,6 +303,15 @@ const derivedText = (
 });
 
 /** The crossing sentence, with each side named by its label. */
+/** The line over the ascents for a road whose top is not a saddle (`sentences.shape`). */
+const shapeText = (pass: Pass, w: Messages): string | null => {
+  if (pass.type === "climb") return w.panel.ascents.climb;
+  if (pass.type !== "spur") return null;
+  return pass.branchOf === undefined
+    ? w.panel.ascents.spur
+    : w.panel.ascents.branch;
+};
+
 const crossingText = (
   pass: Pass,
   portrait: PassPortrait | null,
@@ -383,6 +399,7 @@ export const detailModel = (
         crossing: crossingText(pass, portrait, w),
         note: pass.note,
         season: seasonText(pass, w),
+        shape: shapeText(pass, w),
       },
       trunk:
         pass.branchOf === undefined

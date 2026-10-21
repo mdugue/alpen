@@ -48,7 +48,7 @@ import {
   filterCount,
 } from "@/lib/filter-summary";
 import { fill } from "@/lib/i18n/fill";
-import { RANGE_TRIP, ROAD_TAGS, TRIPS } from "@/lib/regions";
+import { rangeRows, ROAD_TAGS } from "@/lib/regions";
 import type { RangeName } from "@/lib/regions";
 import type { RoadTag, RoadType, Status, Surface } from "@/lib/types";
 import { cn, TOUCH_CONTROL } from "@/lib/utils";
@@ -225,38 +225,36 @@ export const FilterBody = ({
           it is the one chip that moves the camera too – a range is a place,
           and a list of Jura roads under a picture of the Dolomites answers
           only half the question. A score of ranges reads as two rows, the
-          holiday ranges and the weekend ones (`RANGE_TRIP`); with only one
-          kind of trip in the data the row needs no second word. */}
+          holiday ranges and the weekend ones (`RANGE_TRIP`) – but only once
+          each row holds a choice of its own; a row of one chip would read as
+          a filter of its own. */}
       {ranges.length > 1 &&
-        TRIPS.map((trip) => {
-          const row = ranges.filter((r) => RANGE_TRIP[r] === trip);
-          if (row.length === 0) return null;
-          const split = row.length < ranges.length;
-          return (
-            <ChipGroup
-              key={trip}
-              id={`f-ranges-${trip}`}
-              label={
-                split
-                  ? `${t.sidebar.filters.range} · ${words.trip[trip]}`
-                  : t.sidebar.filters.range
-              }
-            >
-              {row.map((r) => (
-                <FilterChip
-                  key={r}
-                  label={words.range[r].label}
-                  hint={words.range[r].hint}
-                  count={countWith({ ranges: [r] })}
-                  pressed={pickedRanges.includes(r)}
-                  onPressedChange={() => onRange(r)}
-                >
-                  {words.range[r].label}
-                </FilterChip>
-              ))}
-            </ChipGroup>
-          );
-        })}
+        rangeRows(ranges).map(({ trip, row }) => (
+          <ChipGroup
+            key={trip ?? "all"}
+            id={`f-ranges${trip ? `-${trip}` : ""}`}
+            label={
+              trip
+                ? fill(t.sidebar.filters.rangeTrip, {
+                    trip: words.trip[trip],
+                  })
+                : t.sidebar.filters.range
+            }
+          >
+            {row.map((r) => (
+              <FilterChip
+                key={r}
+                label={words.range[r].label}
+                hint={words.range[r].hint}
+                count={countWith({ ranges: [r] })}
+                pressed={pickedRanges.includes(r)}
+                onPressedChange={() => onRange(r)}
+              >
+                {words.range[r].label}
+              </FilterChip>
+            ))}
+          </ChipGroup>
+        ))}
 
       <ChipGroup id="f-status" label={t.sidebar.filters.status}>
         {ALL_STATUS.map((s: Status) => {

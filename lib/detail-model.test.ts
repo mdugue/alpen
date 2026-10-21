@@ -136,4 +136,27 @@ describe("detailModel", () => {
     expect(model("edelweissspitze")!.trunk?.slug).toBe("glockner");
     expect(model("edelweissspitze")!.branches).toEqual([]);
   });
+
+  test("a road whose top is no saddle says what it is instead", () => {
+    const roads = [
+      makePass("pass", 0),
+      makePass("stich", 1, { type: "spur" }),
+      makePass("abzweig", 2, { branchOf: "pass", type: "spur" }),
+      makePass("steige", 3, { type: "climb" }),
+    ];
+    const bundle = bundleOf(roads, [], [], yearsOf([], []));
+    const shape = (slug: string) => {
+      const m = detailModel({ kind: "pass", slug }, bundle, {
+        detail: absent,
+        hovered: null,
+        period: PERIOD,
+        w: DE,
+      });
+      return m?.kind === "pass" ? m.sentences.shape : undefined;
+    };
+    expect(shape("pass")).toBeNull();
+    expect(shape("stich")).toBe(DE.panel.ascents.spur);
+    expect(shape("abzweig")).toBe(DE.panel.ascents.branch);
+    expect(shape("steige")).toBe(DE.panel.ascents.climb);
+  });
 });

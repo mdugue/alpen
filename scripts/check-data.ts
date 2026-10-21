@@ -774,7 +774,10 @@ if (passes && portraits) {
       errors.push(
         `portraits.json: ${slug} beschreibt ${portrait.sides.length} Seiten, die Straße hat ${p.ascents.length} Auffahrten`,
       );
-    const choice = !isTraverse(p.type) && p.ascents.length >= 2;
+    // Only a road with a top to cross offers a way up and a way down: a
+    // Steige's sides both end at the plateau's edge, and the road carries on.
+    const choice =
+      (p.type === "pass" || p.type === "spur") && p.ascents.length >= 2;
     for (const [i, side] of portrait.sides.entries()) {
       if (choice && !side.bestAs)
         warnings.push(
@@ -782,7 +785,7 @@ if (passes && portraits) {
         );
       if (!choice && side.bestAs)
         errors.push(
-          `portraits.json: ${slug} [${i}] hat bestAs, aber keine Wahl der Richtung (${isTraverse(p.type) ? p.type : "eine Seite"})`,
+          `portraits.json: ${slug} [${i}] hat bestAs, aber keine Wahl der Richtung (${choice ? "" : p.ascents.length < 2 ? "eine Seite" : p.type})`,
         );
     }
   }

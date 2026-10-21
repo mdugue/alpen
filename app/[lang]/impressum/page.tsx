@@ -40,9 +40,9 @@ const ImpressumPage = () => (
         unterstützen möchte, kann das freiwillig über die verlinkte Ko-fi-Seite
         des Betreibers tun; die App selbst bleibt kostenlos und werbefrei. Die
         App dient der groben Routenplanung für Rennradfahrten in den Alpen und
-        ersetzt keine amtliche Auskunft, insbesondere nicht zu Straßensperrungen
-        oder Straßenzuständen – siehe dazu auch die Hinweise unter „Skalen &amp;
-        Quellen“ in der App.
+        den Gebirgen darüber hinaus und ersetzt keine amtliche Auskunft,
+        insbesondere nicht zu Straßensperrungen oder Straßenzuständen – siehe
+        dazu auch die Hinweise unter „Skalen &amp; Quellen“ in der App.
       </p>
     </section>
 

@@ -54,6 +54,23 @@ export const RANGE_TRIP: Record<RangeName, TripName> = {
   Vogesen: "weekend",
 };
 
+/**
+ * The range chips as rows: one row per trip once both rows hold a choice of
+ * two or more, otherwise one row with the holiday ranges first. A row of one
+ * chip under its own label would read as a filter of its own.
+ */
+export const rangeRows = (
+  ranges: readonly RangeName[],
+): { trip: TripName | null; row: RangeName[] }[] => {
+  const rows = TRIPS.map((trip) => ({
+    row: ranges.filter((r) => RANGE_TRIP[r] === trip),
+    trip,
+  })).filter(({ row }) => row.length > 0);
+  return rows.length > 1 && rows.every(({ row }) => row.length > 1)
+    ? rows
+    : [{ row: rows.flatMap(({ row }) => row), trip: null }];
+};
+
 /** The flat union, in range order – what the schema's `Region` enum is made of. */
 export const REGIONS = [
   ...RANGE_REGIONS.Alpen,
@@ -245,7 +262,8 @@ export type RoadTagName = (typeof ROAD_TAGS)[number];
  * Which way a side of a crossing is better ridden: up, down, or either. An
  * editorial judgement like the 1–5 scales, written per ascent in
  * `data/portraits.json` and only where there is a choice – a `pass` or `spur`
- * with two sides or more (`data:check` holds it to that).
+ * with two sides or more, never a `climb`, whose sides both end at a
+ * plateau's edge (`data:check` holds it to that).
  */
 export const BEST_AS = ["up", "down", "both"] as const;
 export type BestAsName = (typeof BEST_AS)[number];
