@@ -232,13 +232,19 @@ German and for the first of each kind in English (`generateStaticParams` from
 Cache Components allow no `dynamicParams`). Every prerendered route carries
 the explorer's payload (["What stays a prop travels packed"](#what-stays-a-prop-travels-packed-because-every-page-carries-it)),
 so the page count is what the build's memory grows with; German is the
-canonical address and is built whole, and an English entity page outside the
-sample is served from the route's App Shell on its first request and stored
-for the next (Partial Prefetching's ISR). CI sets `PRERENDER_SAMPLE` and
+canonical address and is built whole. An English entity page outside the
+sample, its share image with it, is rendered on its first request – the
+page awaits its params outside any Suspense boundary, so that request waits
+for the whole render, under a second locally – and stored for the next
+(ISR under Cache Components: a path `generateStaticParams` did not list). A
+deployment empties that store, so the first crawler through the sitemap
+pays one render per English page. CI sets `PRERENDER_SAMPLE` and
 prerenders the sample in German too: the ~760 German pages are one explorer
 rendered 760 times, five of the seven minutes a run took, and the rest render
 on the e2e run's first request. The deployment build prerenders every German
-page, so a page that fails to render still fails a check on the PR. The segment words are
+page, so a page that fails to render still fails a check on the PR; what
+only English breaks – a curated translation in `data/i18n/en/` – shows on
+the first request instead, which is why `data:check` counts those files. The segment words are
 `lib/routes.ts` (`SEGMENT`, `hrefFor`, `selectionOf`): `/pass/x`, `/tour/x`,
 `/ort/x`, `/ziel/x`. Each route carries its own title, description
 (`lib/share-text.ts`) and share image (the dot map from `lib/share-image.tsx`
@@ -266,7 +272,8 @@ from a layout effect after hydration).
 ### Site metadata is generated, never committed as a binary
 
 Icons, the share image, the manifest, `robots.txt` and `sitemap.xml` are Next
-metadata routes under `app/`, prerendered at build time. Everything they need –
+metadata routes under `app/`, prerendered at build time (an English
+entity's share image with its page, on the first request). Everything they need –
 name, claim, base URL, the colours and the mark geometry – lives in
 `lib/brand.ts`, because neither Satori nor a manifest can read CSS variables;
 its colours are the tokens of `TOKENS` (`lib/palette.ts`), the one sRGB mirror

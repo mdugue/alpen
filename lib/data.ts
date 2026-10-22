@@ -341,17 +341,17 @@ export const staticParams = (): { kind: Segment; slug: string }[] => [
  * output and its memory grow with pages times data; at 1,870 pages it peaked
  * close to the 8 GB of Vercel's build machine. German is the canonical
  * address and the one search engines and shared links reach first, so it is
- * built whole. An English entity page that is not in the sample is served
- * from the route's App Shell on its first request – the explorer is already
- * in it, the entity's own slot streams in – and stored for the next visitor
- * (Partial Prefetching's ISR, docs/architecture.md). The sample stays, because
- * Cache Components want at least one param per route and because it proves
- * the English path renders.
+ * built whole. An English entity page that is not in the sample is rendered
+ * on its first request and stored for the next visitor (docs/architecture.md,
+ * "The explorer is a layout"). The sample stays, because Cache Components
+ * want at least one param per route and because it proves the English path
+ * renders.
  *
  * In CI the ~760 German pages would cost five of the seven minutes a build
  * takes, and the rest render on the e2e run's first request. The deployment
  * build leaves the variable unset, so a German page that fails to render
- * still fails a build on the pull request.
+ * still fails a build on the pull request; what only English breaks shows on
+ * that page's first request.
  */
 export const prerenderParams = (
   lang: Lang,
