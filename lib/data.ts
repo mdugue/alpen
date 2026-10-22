@@ -27,7 +27,8 @@ import { MAP_ASSET_DIR, mapAssets } from "@/lib/map-assets";
 import type { MapAssets } from "@/lib/map-assets";
 import { nearbyTours, townRanges, townReach } from "@/lib/nearby";
 import type { NearbyTours, TownReach } from "@/lib/nearby";
-import type { PageData } from "@/lib/page-data";
+import { packPage } from "@/lib/page-wire";
+import type { PageWire } from "@/lib/page-wire";
 import { localizePortraits } from "@/lib/portrait";
 import { profilesWithCoords, valleyElevations } from "@/lib/profile";
 import { SEGMENT, selectionOf } from "@/lib/routes";
@@ -331,16 +332,32 @@ export const staticParams = (): { kind: Segment; slug: string }[] => [
 ];
 
 /**
- * What the build prerenders: every entity – or, where `PRERENDER_SAMPLE` is
- * set (CI), the first of each kind. The ~760 entity pages are one explorer
- * rendered 760 times and cost five of the seven minutes a CI build took; the
- * rest render on their first request, which is what the e2e run exercises.
- * The deployment build leaves the variable unset and prerenders them all, so
- * a page that fails to render still fails a build on the pull request.
+ * What the build prerenders for one language: every entity in German, the
+ * first of each kind in English – and that sample in both where
+ * `PRERENDER_SAMPLE` is set (CI).
+ *
+ * Every prerendered route carries the explorer's payload
+ * (docs/architecture.md, "What stays a prop travels packed"), so the build's
+ * output and its memory grow with pages times data; at 1,870 pages it peaked
+ * close to the 8 GB of Vercel's build machine. German is the canonical
+ * address and the one search engines and shared links reach first, so it is
+ * built whole. An English entity page that is not in the sample is rendered
+ * on its first request and stored for the next visitor (docs/architecture.md,
+ * "The explorer is a layout"). The sample stays, because Cache Components
+ * want at least one param per route and because it proves the English path
+ * renders.
+ *
+ * In CI the ~760 German pages would cost five of the seven minutes a build
+ * takes, and the rest render on the e2e run's first request. The deployment
+ * build leaves the variable unset, so a German page that fails to render
+ * still fails a build on the pull request; what only English breaks shows on
+ * that page's first request.
  */
-export const prerenderParams = (): { kind: Segment; slug: string }[] => {
+export const prerenderParams = (
+  lang: Lang,
+): { kind: Segment; slug: string }[] => {
   const all = staticParams();
-  if (!process.env.PRERENDER_SAMPLE) return all;
+  if (lang === DEFAULT_LANG && !process.env.PRERENDER_SAMPLE) return all;
   return all.filter((p, i) => all.findIndex((q) => q.kind === p.kind) === i);
 };
 
@@ -358,7 +375,8 @@ export const getRoadSketch = (): {
 });
 
 /**
- * Everything the page hands the client, as one value.
+ * Everything the page hands the client, as one value – packed for the wire
+ * (`packPage`, lib/page-wire.ts): every prerendered route carries a copy.
  *
  * The derivations above are the page's own business – it wants all of them,
  * every time, and nothing else ever wanted one on its own – so the caller
@@ -367,7 +385,7 @@ export const getRoadSketch = (): {
  * read straight off the parsed constants; a getter around a constant only
  * hides which of the two a name is.
  */
-export const getPageData = (lang: Lang): PageData => {
+export const getPageData = (lang: Lang): PageWire => {
   // The valleys are walked once and handed on: the page carries them and the
   // year is graded against them, and there is no cache left to make the second
   // walk free.
@@ -376,7 +394,7 @@ export const getPageData = (lang: Lang): PageData => {
   // the reach, the members – is derived from the German records, which carry
   // the same names, numbers and coordinates.
   const lists = localized(lang);
-  return {
+  return packPage({
     assets: getMapAssets(),
     climate,
     destinationMembers: getDestinationMembers(),
@@ -390,5 +408,5 @@ export const getPageData = (lang: Lang): PageData => {
     towns: lists.towns,
     valleys,
     years: getYears(valleys),
-  };
+  });
 };

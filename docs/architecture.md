@@ -175,6 +175,29 @@ prop, and that is the line: the climate series is 42 KB gzipped and
 would mean a filter counting wrong for a moment (see
 ["A filter is a chip, and no chip lies"](./ui-conventions.md#a-filter-is-a-chip-and-no-chip-lies)).
 
+### What stays a prop travels packed, because every page carries it
+
+The `"use cache"` on the layout renders the explorer once per language, but
+the build still writes the result into every prerendered route, three times
+over: the layout's RSC segment (for prefetching), the route's full payload and
+the postponed state of the weather hole. No mechanism shares one segment
+between routes, so the payload is paid per page, and the page count grows
+with the data: at 1,832 pages (PR #81) the build wrote about 4 MB per page,
+7.9 GB in all, and Vercel's 8 GB build machine ran out of memory before the
+last page – the two prerender workers themselves stay flat at about 1.9 GB.
+
+Half of the 2.2 MB the explorer carried was two tables spelled out as
+objects: the graded year, 24 cells per pass and tour, each repeating
+`"grade"`, `"status"`, `"reasons"` and `"snowy"`, and the climate series,
+six field names in each of its 24 buckets. `lib/page-wire.ts` packs both on
+the server (`getPageData` returns a `PageWire`): a year is one string of 24
+short codes (`b`, `g*`, `c*01` – grade, snow, reasons by their ladder index),
+a bucket a tuple. The explorer unpacks it once, and nothing past it knows the
+difference; `lib/page-wire.test.ts` holds the round trip strict against the
+real data. The page carries 0.96 MB instead of 2.24 MB. A new table that
+stays a prop goes through the same file if it is big, and the payload is
+measured per page, not per visit.
+
 ## Rendering and caching
 
 ### Cache Components
@@ -203,13 +226,25 @@ inside `<Suspense>` instead.
 
 Since plan 02 the explorer is `app/[lang]/(explorer)/layout.tsx`, and under it lie
 the start page (`/`, an empty detail slot) and one dynamic segment,
-`[kind]/[slug]`, prerendered for every pass, tour, town and destination
-(`generateStaticParams` from `prerenderParams` in `lib/data.ts`; an unknown
-path is `notFound()`, since Cache Components allow no `dynamicParams`). CI
-sets `PRERENDER_SAMPLE` and prerenders one entity per kind: the ~760 pages are
-one explorer rendered 760 times, five of the seven minutes a run took, and the
-rest render on the e2e run's first request. The deployment build prerenders
-them all, so a page that fails to render still fails a check on the PR. The segment words are
+`[kind]/[slug]`, prerendered for every pass, tour, town and destination in
+German and for the first of each kind in English (`generateStaticParams` from
+`prerenderParams` in `lib/data.ts`; an unknown path is `notFound()`, since
+Cache Components allow no `dynamicParams`). Every prerendered route carries
+the explorer's payload (["What stays a prop travels packed"](#what-stays-a-prop-travels-packed-because-every-page-carries-it)),
+so the page count is what the build's memory grows with; German is the
+canonical address and is built whole. An English entity page outside the
+sample, its share image with it, is rendered on its first request – the
+page awaits its params outside any Suspense boundary, so that request waits
+for the whole render, under a second locally – and stored for the next
+(ISR under Cache Components: a path `generateStaticParams` did not list). A
+deployment empties that store, so the first crawler through the sitemap
+pays one render per English page. CI sets `PRERENDER_SAMPLE` and
+prerenders the sample in German too: the ~760 German pages are one explorer
+rendered 760 times, five of the seven minutes a run took, and the rest render
+on the e2e run's first request. The deployment build prerenders every German
+page, so a page that fails to render still fails a check on the PR; what
+only English breaks – a curated translation in `data/i18n/en/` – shows on
+the first request instead, which is why `data:check` counts those files. The segment words are
 `lib/routes.ts` (`SEGMENT`, `hrefFor`, `selectionOf`): `/pass/x`, `/tour/x`,
 `/ort/x`, `/ziel/x`. Each route carries its own title, description
 (`lib/share-text.ts`) and share image (the dot map from `lib/share-image.tsx`
@@ -237,7 +272,8 @@ from a layout effect after hydration).
 ### Site metadata is generated, never committed as a binary
 
 Icons, the share image, the manifest, `robots.txt` and `sitemap.xml` are Next
-metadata routes under `app/`, prerendered at build time. Everything they need –
+metadata routes under `app/`, prerendered at build time (an English
+entity's share image with its page, on the first request). Everything they need –
 name, claim, base URL, the colours and the mark geometry – lives in
 `lib/brand.ts`, because neither Satori nor a manifest can read CSS variables;
 its colours are the tokens of `TOKENS` (`lib/palette.ts`), the one sRGB mirror

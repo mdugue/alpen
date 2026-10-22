@@ -25,7 +25,8 @@ import type {
 import { homeAreasOf } from "@/lib/destination";
 import { rangeWord, resetFilters } from "@/lib/filter-summary";
 import { switchLangHref, useHashAdapter } from "@/lib/hash-adapter";
-import type { PageData } from "@/lib/page-data";
+import { unpackPage } from "@/lib/page-wire";
+import type { PageWire } from "@/lib/page-wire";
 import { entityKey } from "@/lib/route-key";
 import {
   buildDestinationRows,
@@ -46,8 +47,8 @@ import { useMapEnvironment } from "@/lib/use-media-query";
 import { useFavorites, useStorageAdapter, useStored } from "@/lib/use-stored";
 
 interface Props {
-  /** Everything the page loaded, as one value (`getPageData`, lib/data.ts). */
-  data: PageData;
+  /** Everything the page loaded, as one value, packed (`getPageData`, lib/data.ts). */
+  data: PageWire;
   /** Today's half-month, computed on the server in Europe/Berlin. */
   defaultPeriod: Period;
   /**
@@ -65,7 +66,10 @@ interface Props {
  * (components/shell.tsx). What is left here is the rows, the sentences they
  * are counted into, and the wiring of `dispatch` into each part.
  */
-export const Explorer = ({ data, defaultPeriod, children }: Props) => {
+export const Explorer = ({ data: wire, defaultPeriod, children }: Props) => {
+  // Unpacked once; the compiler keeps it for as long as the page's value is
+  // the same, which is the whole visit.
+  const data = unpackPage(wire);
   const {
     assets,
     climate,
