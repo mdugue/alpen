@@ -1743,17 +1743,17 @@
   "name": "Hohe Tatra",
   "country": "SK/PL",
   "center": {
-   "lat": 49.2,
+   "lat": 49.1,
    "lon": 20.1
   },
-  "radiusKm": 25,
+  "radiusKm": 30,
   "baseTowns": [
    "poprad",
    "zakopane"
   ],
   "include": [],
   "exclude": [],
-  "character": "Zwei Anstiege auf beiden Seiten der Hohen Tatra: von Štrba lang und gleichmäßig zum Bergsee Štrbské Pleso, über Biały Dunajec die Rampe nach Gliczarów Górny mit Stücken über 20 %. Mehr Aussicht als Pässe, von Mai bis Oktober.",
+  "character": "Ein Anstieg auf jeder Seite der Hohen Tatra: von Štrba lang und gleichmäßig zum Bergsee Štrbské Pleso, über Biały Dunajec die Rampe nach Gliczarów Górny mit Stücken über 20 %. Mehr Aussicht als Pässe, von Mai bis Oktober.",
   "multiDay": "Zwei Tage, einer auf jeder Seite: Štrbské Pleso von Poprad, Gliczarów Górny von Zakopane; die Fahrt über den Grenzübergang Łysa Polana verbindet beide.",
   "access": "Flug nach Poprad oder Kraków, Bahn bis Poprad oder Zakopane."
  },
@@ -1780,10 +1780,10 @@
   "name": "Lüttich und Huy",
   "country": "BE",
   "center": {
-   "lat": 50.57,
-   "lon": 5.45
+   "lat": 50.56,
+   "lon": 5.5
   },
-  "radiusKm": 20,
+  "radiusKm": 25,
   "baseTowns": [
    "liege"
   ],

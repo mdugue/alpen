@@ -3662,7 +3662,7 @@
    "wiedener-eck",
    "notschrei"
   ],
-  "note": "Der Schauinsland lässt sich ab Oberried statt des Notschrei-Abstiegs anhängen: über Hofsgrund hinauf und nach Freiburg hinunter.",
+  "note": "Von der Notschrei-Passhöhe lässt sich statt der Abfahrt nach Oberried der Schauinsland anhängen: über Hofsgrund und hinunter nach Freiburg-Günterstal.",
   "season": null,
   "description": "Von Münstertal über das Wiedener Eck nach Utzenfeld, durchs Wiesental nach Todtnau, über den Notschrei hinunter nach Oberried und über Kirchzarten, Sölden und Staufen zurück ins Münstertal.",
   "type": "loop",
@@ -3769,7 +3769,7 @@
    "bretterschachten",
    "brennes"
   ],
-  "note": "Die beiden höchsten Straßenpunkte des Bayerischen Walds an einem Tag; am Großen Arbersee und an der Arber-Bergbahn im Sommer viele Ausflügler.",
+  "note": "Zwei Übergänge unter dem Großen Arber an einem Tag; am Großen Arbersee und an der Arber-Bergbahn im Sommer viele Ausflügler.",
   "season": null,
   "description": "Von Bodenmais auf den Bretterschachten, am Großen Arbersee vorbei zum Brennes, hinunter nach Bayerisch Eisenstein und über Zwiesel zurück nach Bodenmais.",
   "type": "loop",
@@ -3970,7 +3970,7 @@
   ],
   "note": "Hin und zurück auf derselben Straße: erst nach Sa Calobra hinunter, dann die neun Kilometer wieder hinauf. Tagsüber Reisebusse, früh am Morgen frei.",
   "season": null,
-  "description": "Von Sóller auf der Ma-10 hinauf zum Puig Major, weiter zum Abzweig am Coll dels Reis, in Kehren hinunter nach Sa Calobra und denselben Weg zurück nach Sóller.",
+  "description": "Von Sóller auf der Ma-10 hinauf zum Puig Major, weiter zum Abzweig der Ma-2141, über den Coll dels Reis in Kehren hinunter nach Sa Calobra und denselben Weg zurück nach Sóller.",
   "type": "loop",
   "waypoints": [
    {
@@ -4008,8 +4008,8 @@
   "surface": "asphalt",
   "name": "Teide-Runde ab Los Cristianos",
   "color": "#9a8a6a",
-  "km": 100,
-  "elevationGain": 3000,
+  "km": 97,
+  "elevationGain": 2750,
   "passes": [
    "boca-de-tauce"
   ],
@@ -4035,8 +4035,8 @@
     "lon": -16.7964
    },
    {
-    "lat": 28.2152,
-    "lon": -16.759
+    "lat": 28.2111,
+    "lon": -16.7795
    },
    {
     "lat": 28.1394,
@@ -4095,7 +4095,7 @@
   "passes": [
    "passo-lanciano"
   ],
-  "note": "Vom Pass führt die Straße weiter zum Blockhaus (+9 km, +750 m), dem Giro-Ziel über der Majella.",
+  "note": "Vom Pass führt die Straße weiter zum Blockhaus (+18 km hin und zurück, +750 m), dem Giro-Ziel über der Majella.",
   "season": null,
   "description": "Von Guardiagrele nach Pretoro, durch den Buchenwald auf den Passo Lanciano und über Rapino zurück nach Guardiagrele.",
   "type": "loop",
@@ -4168,14 +4168,14 @@
   "surface": "asphalt",
   "name": "Cobertoria-Runde",
   "color": "#8a9a7a",
-  "km": 102,
-  "elevationGain": 2150,
+  "km": 90,
+  "elevationGain": 2250,
   "passes": [
    "alto-de-la-cobertoria"
   ],
   "note": "Die Cobertoria ist in der Vuelta oft der Auftakt zum Angliru, der sich von Pola de Lena aus als eigene Fahrt anschließen lässt.",
   "season": null,
-  "description": "Von Pola de Lena über die Cobertoria nach Quirós und ins Tal von Teverga, durch die Schluchten des Trubia nach Proaza und über Morcín zurück nach Pola de Lena.",
+  "description": "Von Pola de Lena über die Cobertoria nach Bárzana in Quirós, durchs Tal hinunter nach Caranga, durch die Schluchten des Trubia nach Proaza und über Morcín zurück nach Pola de Lena.",
   "type": "loop",
   "waypoints": [
    {
@@ -4187,8 +4187,12 @@
     "lon": -5.9059
    },
    {
-    "lat": 43.171,
-    "lon": -6.094
+    "lat": 43.1667,
+    "lon": -5.9667
+   },
+   {
+    "lat": 43.2167,
+    "lon": -6.0333
    },
    {
     "lat": 43.2508,
@@ -4217,9 +4221,9 @@
    "col-de-la-haute-levee",
    "col-du-rosier"
   ],
-  "note": "Die Anstiege des Finales von Lüttich–Bastogne–Lüttich auf einer Runde; kurz und steil, auf schmalen Straßen, nach Regen rutschig.",
+  "note": "Die Anstiege von Lüttich–Bastogne–Lüttich auf einer Runde; kurz und steil, auf schmalen Straßen, nach Regen rutschig.",
   "season": null,
-  "description": "Von Stavelot über die Côte de Stockeu Richtung Vielsalm, hinunter nach Trois-Ponts, über die Côte de Wanne zurück nach Stavelot, über die Haute-Levée nach Spa und über den Col du Rosier und La Gleize zurück nach Stavelot.",
+  "description": "Von Stavelot über die Côte de Stockeu nach Vielsalm, hinunter nach Trois-Ponts, über die Côte de Wanne zurück nach Stavelot, über die Haute-Levée nach Spa und über den Col du Rosier und La Gleize zurück nach Stavelot.",
   "type": "loop",
   "waypoints": [
    {
@@ -4273,15 +4277,15 @@
   "surface": "asphalt",
   "name": "Riesengebirgs-Runde",
   "color": "#7a6a9a",
-  "km": 112,
-  "elevationGain": 2100,
+  "km": 102,
+  "elevationGain": 1950,
   "passes": [
    "spindlerova-bouda",
    "przelecz-okraj"
   ],
   "note": "Von der Špindlerova bouda nach Polen geht es auf der für Autos gesperrten Straße hinunter, schmal und steil; Ausweis mitnehmen.",
   "season": null,
-  "description": "Von Špindlerův Mlýn hinauf zur Špindlerova bouda, auf der gesperrten Straße hinunter nach Przesieka, über Karpacz nach Kowary, über den Okraj nach Malá Úpa, über Pec pod Sněžkou und Janské Lázně nach Vrchlabí und zurück nach Špindlerův Mlýn.",
+  "description": "Von Špindlerův Mlýn hinauf zur Špindlerova bouda, auf der gesperrten Straße hinunter nach Przesieka, über Karpacz nach Kowary, über den Okraj nach Malá Úpa, über Horní Maršov und Janské Lázně nach Vrchlabí und zurück nach Špindlerův Mlýn.",
   "type": "loop",
   "waypoints": [
    {
@@ -4313,8 +4317,8 @@
     "lon": 15.8137
    },
    {
-    "lat": 50.6936,
-    "lon": 15.7336
+    "lat": 50.6573,
+    "lon": 15.8195
    },
    {
     "lat": 50.6306,
@@ -4387,7 +4391,7 @@
    "col-du-soulor",
    "col-de-spandelles"
   ],
-  "note": "Vom Soulor lässt sich der Aubisque über den Cirque du Litor anhängen (+16 km hin und zurück, +350 m).",
+  "note": "Vom Soulor lässt sich der Aubisque über den Cirque du Litor anhängen (+21 km hin und zurück, +400 m).",
   "season": null,
   "description": "Von Argelès-Gazost durchs Val d'Azun nach Arrens, auf den Col du Soulor, durchs stille Ouzom-Tal hinunter nach Ferrières und über den Col de Spandelles zurück nach Argelès-Gazost.",
   "type": "loop",
@@ -4474,7 +4478,7 @@
    "col-de-port",
    "port-de-lers"
   ],
-  "note": "Am Étang de Lers lässt sich der Col d'Agnes anhängen (+8 km hin und zurück, +150 m).",
+  "note": "Am Étang de Lers lässt sich der Col d'Agnes anhängen (+9 km hin und zurück, +300 m).",
   "season": null,
   "description": "Von Massat über den Col de Port nach Tarascon-sur-Ariège, durchs Vicdessos-Tal nach Vicdessos, über den Port de Lers am Étang de Lers vorbei und zurück nach Massat.",
   "type": "loop",
@@ -4792,7 +4796,7 @@
   "passes": [
    "oberhof"
   ],
-  "note": "Breite Straßen und gleichmäßige Steigungen; oben bei Oberhof kreuzt die Runde den Rennsteig, nach Norden fällt sie lang und flach.",
+  "note": "Breite Straßen und gleichmäßige Steigungen; die Runde kreuzt den Rennsteig zweimal, bei Oberhof und vor Floh-Seligenthal, nach Norden fällt sie lang und flach.",
   "season": null,
   "description": "Von Zella-Mehlis hinauf nach Oberhof, auf der Nordseite des Thüringer Walds hinunter nach Tambach-Dietharz, über Floh-Seligenthal nach Steinbach-Hallenberg und zurück nach Zella-Mehlis.",
   "type": "loop",
@@ -4833,7 +4837,7 @@
   "passes": [
    "fataga"
   ],
-  "note": "Von Maspalomas durch die Schlucht von Fataga ins Bergland; Wasser in San Bartolomé und Santa Lucía auffüllen.",
+  "note": "Wasser in San Bartolomé und Santa Lucía auffüllen.",
   "season": null,
   "description": "Von Maspalomas durch die Schlucht von Fataga hinauf nach San Bartolomé de Tirajana, über Santa Lucía de Tirajana hinunter nach Agüimes und an der Küste über Vecindario zurück nach Maspalomas.",
   "type": "loop",

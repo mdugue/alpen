@@ -201,7 +201,7 @@
  },
  "wiedener-eck-notschrei-runde": {
   "description": "From Münstertal over the Wiedener Eck to Utzenfeld, through the Wiese valley to Todtnau, over the Notschrei down to Oberried and back via Kirchzarten, Sölden and Staufen to Münstertal.",
-  "note": "The Schauinsland can replace the Notschrei descent from Oberried: up via Hofsgrund and down to Freiburg."
+  "note": "From the top of the Notschrei the Schauinsland can replace the descent to Oberried: via Hofsgrund and down to Freiburg-Günterstal."
  },
  "torfhaus-runde": {
   "description": "From Bad Harzburg up the B4 to Torfhaus, across the plateau down to Altenau, via Schulenberg through the Oker valley to Oker and back to Bad Harzburg.",
@@ -209,7 +209,7 @@
  },
  "arber-runde": {
   "description": "From Bodenmais up to Bretterschachten, past the Großer Arbersee to the Brennes, down to Bayerisch Eisenstein and via Zwiesel back to Bodenmais.",
-  "note": "The two highest road points of the Bavarian Forest in one day; busy with day-trippers at the Großer Arbersee and the Arber gondola in summer."
+  "note": "Two crossings below the Großer Arber in one day; busy with day-trippers at the Großer Arbersee and the Arber gondola in summer."
  },
  "bavella-runde": {
   "description": "From Zonza over the Col de Bavella down to Solenzara, along the coast via Sainte-Lucie to Porto-Vecchio and over the Ospedale plateau back to Zonza.",
@@ -224,7 +224,7 @@
   "note": "The Coll de Sóller twice, both sides a ribbon of hairpins almost free of cars since the tunnel; in between the quiet high valley of Orient."
  },
  "sa-calobra-runde": {
-  "description": "From Sóller up the Ma-10 to the Puig Major, on to the turn at the Coll dels Reis, down the hairpins to Sa Calobra and back the same way to Sóller.",
+  "description": "From Sóller up the Ma-10 to the Puig Major, on to the Ma-2141 turn-off, over the Coll dels Reis down the hairpins to Sa Calobra and back the same way to Sóller.",
   "note": "Out and back on the same road: down to Sa Calobra first, then the nine kilometres back up. Coaches during the day, empty early in the morning."
  },
  "teide-sud-runde": {
@@ -237,22 +237,22 @@
  },
  "lanciano-runde": {
   "description": "From Guardiagrele to Pretoro, up through the beech forest to the Passo Lanciano and via Rapino back to Guardiagrele.",
-  "note": "From the pass the road carries on to the Blockhaus (+9 km, +750 m), the Giro finish above the Majella."
+  "note": "From the pass the road carries on to the Blockhaus (+18 km there and back, +750 m), the Giro finish above the Majella."
  },
  "piano-battaglia-runde": {
   "description": "From Cefalù via Isnello up to Piano Battaglia, down to Petralia Sottana and via Castelbuono back to the coast at Cefalù.",
   "note": "The big loop through the Madonie, with water in the mountain villages; in winter there can be snow on Piano Battaglia."
  },
  "cobertoria-runde": {
-  "description": "From Pola de Lena over the Cobertoria to Quirós and into the Teverga valley, through the gorges of the Trubia to Proaza and via Morcín back to Pola de Lena.",
+  "description": "From Pola de Lena over the Cobertoria to Bárzana in Quirós, down the valley to Caranga, through the gorges of the Trubia to Proaza and via Morcín back to Pola de Lena.",
   "note": "In the Vuelta the Cobertoria is often the prelude to the Angliru, which can be ridden from Pola de Lena as a ride of its own."
  },
  "ardennen-runde": {
-  "description": "From Stavelot over the Côte de Stockeu towards Vielsalm, down to Trois-Ponts, over the Côte de Wanne back to Stavelot, over the Haute-Levée to Spa and over the Col du Rosier and La Gleize back to Stavelot.",
-  "note": "The climbs of the Liège–Bastogne–Liège finale on one loop; short and steep, on narrow roads, slippery after rain."
+  "description": "From Stavelot over the Côte de Stockeu to Vielsalm, down to Trois-Ponts, over the Côte de Wanne back to Stavelot, over the Haute-Levée to Spa and over the Col du Rosier and La Gleize back to Stavelot.",
+  "note": "The climbs of Liège–Bastogne–Liège on one loop; short and steep, on narrow roads, slippery after rain."
  },
  "riesengebirge-runde": {
-  "description": "From Špindlerův Mlýn up to the Špindlerova bouda, down the closed road to Przesieka, via Karpacz to Kowary, over the Okraj to Malá Úpa, via Pec pod Sněžkou and Janské Lázně to Vrchlabí and back to Špindlerův Mlýn.",
+  "description": "From Špindlerův Mlýn up to the Špindlerova bouda, down the closed road to Przesieka, via Karpacz to Kowary, over the Okraj to Malá Úpa, via Horní Maršov and Janské Lázně to Vrchlabí and back to Špindlerův Mlýn.",
   "note": "From the Špindlerova bouda into Poland the road down is closed to cars, narrow and steep; bring an ID."
  },
  "aspin-hourquette-runde": {
@@ -261,7 +261,7 @@
  },
  "soulor-spandelles-runde": {
   "description": "From Argelès-Gazost through the Val d'Azun to Arrens, up the Col du Soulor, down the quiet Ouzom valley to Ferrières and over the Col de Spandelles back to Argelès-Gazost.",
-  "note": "From the Soulor the Aubisque can be added via the Cirque du Litor (+16 km there and back, +350 m)."
+  "note": "From the Soulor the Aubisque can be added via the Cirque du Litor (+21 km there and back, +400 m)."
  },
  "portillon-runde": {
   "description": "From Bagnères-de-Luchon over the Col du Portillon to Bossòst, down the Garonne valley via Les to Saint-Béat and via Cierp-Gaud back to Bagnères-de-Luchon.",
@@ -269,7 +269,7 @@
  },
  "port-lers-runde": {
   "description": "From Massat over the Col de Port to Tarascon-sur-Ariège, up the Vicdessos valley to Vicdessos, over the Port de Lers past the Étang de Lers and back to Massat.",
-  "note": "At the Étang de Lers the Col d'Agnes can be added (+8 km there and back, +150 m)."
+  "note": "At the Étang de Lers the Col d'Agnes can be added (+9 km there and back, +300 m)."
  },
  "ordino-runde": {
   "description": "From Andorra la Vella via La Massana to Ordino, over the Coll d'Ordino to Canillo and via Encamp back to Andorra la Vella.",
@@ -297,10 +297,10 @@
  },
  "oberhof-runde": {
   "description": "From Zella-Mehlis up to Oberhof, down the north side of the Thuringian Forest to Tambach-Dietharz, via Floh-Seligenthal to Steinbach-Hallenberg and back to Zella-Mehlis.",
-  "note": "Wide roads and steady gradients; at Oberhof the loop crosses the Rennsteig trail, and to the north it drops long and gently."
+  "note": "Wide roads and steady gradients; the loop crosses the Rennsteig twice, at Oberhof and before Floh-Seligenthal, and to the north it drops long and gently."
  },
  "fataga-runde": {
   "description": "From Maspalomas up through the Fataga gorge to San Bartolomé de Tirajana, via Santa Lucía de Tirajana down to Agüimes and along the coast via Vecindario back to Maspalomas.",
-  "note": "From Maspalomas through the Fataga gorge into the highlands; fill up with water in San Bartolomé and Santa Lucía."
+  "note": "Fill up with water in San Bartolomé and Santa Lucía."
  }
 }
