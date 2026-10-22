@@ -226,13 +226,19 @@ inside `<Suspense>` instead.
 
 Since plan 02 the explorer is `app/[lang]/(explorer)/layout.tsx`, and under it lie
 the start page (`/`, an empty detail slot) and one dynamic segment,
-`[kind]/[slug]`, prerendered for every pass, tour, town and destination
-(`generateStaticParams` from `prerenderParams` in `lib/data.ts`; an unknown
-path is `notFound()`, since Cache Components allow no `dynamicParams`). CI
-sets `PRERENDER_SAMPLE` and prerenders one entity per kind: the ~760 pages are
-one explorer rendered 760 times, five of the seven minutes a run took, and the
-rest render on the e2e run's first request. The deployment build prerenders
-them all, so a page that fails to render still fails a check on the PR. The segment words are
+`[kind]/[slug]`, prerendered for every pass, tour, town and destination in
+German and for the first of each kind in English (`generateStaticParams` from
+`prerenderParams` in `lib/data.ts`; an unknown path is `notFound()`, since
+Cache Components allow no `dynamicParams`). Every prerendered route carries
+the explorer's payload (["What stays a prop travels packed"](#what-stays-a-prop-travels-packed-because-every-page-carries-it)),
+so the page count is what the build's memory grows with; German is the
+canonical address and is built whole, and an English entity page outside the
+sample is served from the route's App Shell on its first request and stored
+for the next (Partial Prefetching's ISR). CI sets `PRERENDER_SAMPLE` and
+prerenders the sample in German too: the ~760 German pages are one explorer
+rendered 760 times, five of the seven minutes a run took, and the rest render
+on the e2e run's first request. The deployment build prerenders every German
+page, so a page that fails to render still fails a check on the PR. The segment words are
 `lib/routes.ts` (`SEGMENT`, `hrefFor`, `selectionOf`): `/pass/x`, `/tour/x`,
 `/ort/x`, `/ziel/x`. Each route carries its own title, description
 (`lib/share-text.ts`) and share image (the dot map from `lib/share-image.tsx`

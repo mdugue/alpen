@@ -332,16 +332,32 @@ export const staticParams = (): { kind: Segment; slug: string }[] => [
 ];
 
 /**
- * What the build prerenders: every entity – or, where `PRERENDER_SAMPLE` is
- * set (CI), the first of each kind. The ~760 entity pages are one explorer
- * rendered 760 times and cost five of the seven minutes a CI build took; the
- * rest render on their first request, which is what the e2e run exercises.
- * The deployment build leaves the variable unset and prerenders them all, so
- * a page that fails to render still fails a build on the pull request.
+ * What the build prerenders for one language: every entity in German, the
+ * first of each kind in English – and that sample in both where
+ * `PRERENDER_SAMPLE` is set (CI).
+ *
+ * Every prerendered route carries the explorer's payload
+ * (docs/architecture.md, "What stays a prop travels packed"), so the build's
+ * output and its memory grow with pages times data; at 1,870 pages it peaked
+ * close to the 8 GB of Vercel's build machine. German is the canonical
+ * address and the one search engines and shared links reach first, so it is
+ * built whole. An English entity page that is not in the sample is served
+ * from the route's App Shell on its first request – the explorer is already
+ * in it, the entity's own slot streams in – and stored for the next visitor
+ * (Partial Prefetching's ISR, docs/architecture.md). The sample stays, because
+ * Cache Components want at least one param per route and because it proves
+ * the English path renders.
+ *
+ * In CI the ~760 German pages would cost five of the seven minutes a build
+ * takes, and the rest render on the e2e run's first request. The deployment
+ * build leaves the variable unset, so a German page that fails to render
+ * still fails a build on the pull request.
  */
-export const prerenderParams = (): { kind: Segment; slug: string }[] => {
+export const prerenderParams = (
+  lang: Lang,
+): { kind: Segment; slug: string }[] => {
   const all = staticParams();
-  if (!process.env.PRERENDER_SAMPLE) return all;
+  if (lang === DEFAULT_LANG && !process.env.PRERENDER_SAMPLE) return all;
   return all.filter((p, i) => all.findIndex((q) => q.kind === p.kind) === i);
 };
 
