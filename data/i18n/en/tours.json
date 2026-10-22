@@ -170,5 +170,21 @@
  "vrsic-predil-runde": {
   "description": "Kranjska Gora – Vršič – Soča valley – Bovec – Predil – Tarvisio – Kranjska Gora.",
   "note": "The cobbles on the Vršič are slippery when wet."
+ },
+ "schauinsland-notschrei-runde": {
+  "description": "From Freiburg-Günterstal up the old hill-climb course to the Schauinsland, across Hofsgrund to the Notschrei, down the Brugga valley to Oberried and back via Kirchzarten.",
+  "note": "Many motorbikes on the Schauinsland at weekends; start early."
+ },
+ "ruhestein-kniebis-runde": {
+  "description": "From Baiersbronn up the Obertal to the Ruhestein, along the Black Forest High Road past the Schliffkopf and the Zuflucht to the Kniebis, and back to Baiersbronn via Freudenstadt.",
+  "note": "The Black Forest High Road between Ruhestein and Kniebis is a motorbike route at weekends."
+ },
+ "femenia-lluc-runde": {
+  "description": "From Port de Pollença via Pollença and the Coll de Femenia to Lluc, over the Coll de sa Batalla down to Caimari and back across the plain via Campanet.",
+  "note": "In spring the loop half of Port de Pollença rides; Sa Calobra can be added from Lluc as a detour."
+ },
+ "tour-du-sancy": {
+  "description": "From Le Mont-Dore over the Croix Saint-Robert down to Besse, past the Lac Chambon and back over the Croix-Morand to Le Mont-Dore.",
+  "note": "Super-Besse can be added as a detour from Besse (+12 km, +300 m)."
  }
 }

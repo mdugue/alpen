@@ -19,6 +19,8 @@ export const panel = {
       "Abstecher: Die Stichstraße zweigt von einer anderen Straße ab, das Profil beginnt am Abzweig. Hinunter geht es zurück auf die Hauptstraße.",
     /** Over the detours a road offers, under its own ascents. */
     branches: "Abstecher",
+    climb:
+      "Steige: Oben geht die Straße auf der Hochfläche weiter – das Profil endet an der Kante, nicht an einem Sattel.",
     /** Above the sides, where one is better up and another better down. */
     crossing: "Für eine Überquerung: rauf ab {up}, runter nach {down}.",
     /** Joins two sides in the crossing sentence. */

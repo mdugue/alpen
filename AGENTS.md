@@ -1,7 +1,9 @@
 ## What you are working on
 
-A map app for road cyclists planning a holiday in the Alps: passes, their
-ascents, loop tours and cycling towns, rated by rideability for a chosen
+A map app for road cyclists planning a holiday or a weekend in the
+mountains of Europe – the Alps first, and the ranges plan 34 added from the
+Canaries to the Tatras: passes and climbs, their ascents, loop tours and
+cycling towns, rated by rideability for a chosen
 half-month. The product goal is **finding and comparing destinations**, not
 route planning. The questions it must answer well: "which regions are good
 in early October if we want to ride a few nice passes", "where should we look

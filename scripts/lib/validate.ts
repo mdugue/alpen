@@ -287,6 +287,8 @@ export const checkRoad = (
  *   its rides climb to it from both sides;
  * - a **spur** has no saddle at all – it ends where the asphalt does, which
  *   this codebase calls the Scheitel, and the way down is the way up again;
+ *   a **climb** has its Scheitel at the edge of a plateau and carries on
+ *   from there, so it is named in the same words;
  * - a **traverse** aims at no high point whatsoever. Its marker is a point
  *   somewhere along the road and its rides are stretches across, not climbs.
  */
@@ -316,7 +318,7 @@ export type MarkerWords = (typeof MARKER_WORDS)[keyof typeof MARKER_WORDS];
 export const markerWords = (type: RoadType): MarkerWords =>
   isTraverse(type)
     ? MARKER_WORDS.traverse
-    : type === "spur"
+    : type === "spur" || type === "climb"
       ? MARKER_WORDS.spur
       : MARKER_WORDS.pass;
 

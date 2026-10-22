@@ -236,4 +236,5 @@ version and `lib/regions.ts` in "Where things live" gains "ranges".
   destination for a week or a long weekend of road cycling _and_ has at least
   a dozen roads that a rider travels for. The Vosges, the Jura and the
   Pyrenees pass; the Black Forest and the Erzgebirge are for a later
-  conversation with that rule in hand.
+  conversation with that rule in hand. (Superseded by plan 34, whose rule
+  counts climbs rather than a dozen roads: both are in now.)

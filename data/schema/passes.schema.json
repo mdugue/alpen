@@ -85,13 +85,13 @@
               "properties": {
                 "lat": {
                   "type": "number",
-                  "minimum": 42,
-                  "maximum": 49
+                  "minimum": 27.5,
+                  "maximum": 52.1
                 },
                 "lon": {
                   "type": "number",
-                  "minimum": -2,
-                  "maximum": 16
+                  "minimum": -18.3,
+                  "maximum": 20.5
                 }
               },
               "required": [
@@ -134,13 +134,13 @@
               "properties": {
                 "lat": {
                   "type": "number",
-                  "minimum": 42,
-                  "maximum": 49
+                  "minimum": 27.5,
+                  "maximum": 52.1
                 },
                 "lon": {
                   "type": "number",
-                  "minimum": -2,
-                  "maximum": 16
+                  "minimum": -18.3,
+                  "maximum": 20.5
                 }
               },
               "required": [
@@ -190,13 +190,13 @@
       },
       "lat": {
         "type": "number",
-        "minimum": 42,
-        "maximum": 49
+        "minimum": 27.5,
+        "maximum": 52.1
       },
       "lon": {
         "type": "number",
-        "minimum": -2,
-        "maximum": 16
+        "minimum": -18.3,
+        "maximum": 20.5
       },
       "name": {
         "type": "string",
@@ -218,7 +218,37 @@
           "Dolomiten",
           "Vogesen",
           "Jura",
-          "Pyrenäen"
+          "Pyrenäen",
+          "Erzgebirge",
+          "Schwarzwald",
+          "Mallorca",
+          "Zentralmassiv",
+          "Harz",
+          "Thüringen",
+          "Rhön",
+          "Bayerwald",
+          "Böhmerwald",
+          "Korsika",
+          "Teneriffa",
+          "Gran Canaria",
+          "La Palma",
+          "Asturien",
+          "Kantabrien",
+          "Sierra Nevada",
+          "Almería",
+          "Abruzzen",
+          "Latium",
+          "Toskana",
+          "Marken",
+          "Ätna",
+          "Nordsizilien",
+          "Westsizilien",
+          "Ardennen",
+          "Riesengebirge",
+          "Jeschken und Isergebirge",
+          "Hohe Tatra",
+          "Podhale",
+          "Niedere Tatra"
         ]
       },
       "roadSummit": {
@@ -271,11 +301,13 @@
             "glacier",
             "gorge",
             "reservoir",
+            "forest",
             "carfree",
             "toll",
             "hairpins",
             "cobbles",
-            "tunnels"
+            "tunnels",
+            "race"
           ]
         }
       },
@@ -289,6 +321,7 @@
         "enum": [
           "pass",
           "spur",
+          "climb",
           "plateau",
           "balcony",
           "valley"

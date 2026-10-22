@@ -44,6 +44,7 @@ export const sidebar = {
     pastEditionsHint:
       "Also the courses of past years, for events that change their course every year.",
     range: "Range",
+    rangeTrip: "Range · {trip}",
     remove: 'Remove the "{label}" filter',
     roadType: "Type of road",
     roadsLeft: "{label}, {n} roads",

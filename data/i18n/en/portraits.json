@@ -5234,5 +5234,1095 @@
     "highlights": "The ring of summits at the head of the valley."
    }
   ]
+ },
+ "fichtelberg": {
+  "intro": "Saxony's highest mountain and the summit everyone in the Ore Mountains measures themselves against once. At the top the Fichtelberghaus, the weather station and, on a clear day, the view across to the Klínovec and far into Bohemia.",
+  "sides": [
+   {
+    "character": "From Oberwiesenthal flat through the town at first, then clearly steeper in the forest between the ski runs; the last stretch opens out onto the dome.",
+    "highlights": "The Fichtelberghaus with its weather station and viewing platform."
+   }
+  ]
+ },
+ "klinovec": {
+  "intro": "The highest summit of the Ore Mountains, a little higher than the Fichtelberg and easily joined with it in one loop. From the south the longest steady climb of the range, out of the old silver-mining town of Jáchymov.",
+  "sides": [
+   {
+    "character": "Out of Jáchymov in hairpins from the narrow valley, then long and steady through the forest to just below the summit; the longest climb in the area.",
+    "highlights": "Jáchymov with its spa quarter and the traces of silver and uranium mining."
+   },
+   {
+    "character": "From Loučná on the Saxon side of the ridge short and a little steeper, across open high ground with a view of the Fichtelberg.",
+    "highlights": "The view along the ridge across to the Fichtelberg."
+   }
+  ]
+ },
+ "komari-vizka": {
+  "intro": "The steepest of the climbs from the Bohemian side up onto the ridge, and the one with the best view: at the top you stand at the rim of the range and look across Teplice and the basin to the Bohemian Central Uplands.",
+  "sides": [
+   {
+    "character": "Steep straight out of the old mining town of Krupka, in tight hairpins through the forest and without a real break up to the edge.",
+    "highlights": "The viewpoint at Komáří vížka looking out over the basin."
+   }
+  ]
+ },
+ "cinovec": {
+  "intro": "The classic link from Bohemia up into Saxony, once a transit road, today mostly day-trip traffic. A climb for riding to a rhythm, without ramps, and the easiest way onto the ridge.",
+  "sides": [
+   {
+    "character": "From Dubí in wide sweeps and steadily up through the forest; at the top it flattens out onto the plateau at Cínovec.",
+    "highlights": "Coming out onto the open ridge plateau at Cínovec."
+   }
+  ]
+ },
+ "medenec": {
+  "intro": "One of the long climbs from the Ohře valley onto the Ore Mountains ridge, quiet and steady. At the top the mining village of Měděnec with the chapel on the Mědník hill.",
+  "sides": [
+   {
+    "character": "Out of Klášterec first through orchards, then in long loops up the slope, with repeated views back over the Ohře valley.",
+    "highlights": "The chapel on the Mědník hill above the village."
+   }
+  ]
+ },
+ "dlouha-louka": {
+  "intro": "The second steep climb of the Bohemian side next to Komáří vížka, little known and almost free of traffic. At the bottom the Osek monastery, at the top the wide meadows of the ridge.",
+  "sides": [
+   {
+    "character": "Steep into the forest right behind Osek, in a run of hairpins without a flat stretch up to the ridge meadows.",
+    "highlights": "The Cistercian monastery of Osek at the foot of the climb."
+   }
+  ]
+ },
+ "auersberg": {
+  "intro": "The highest summit of the western Ore Mountains west of the Fichtelberg, with a lookout tower that sees over the forests to the Fichtelberg and into the Vogtland hills.",
+  "sides": [
+   {
+    "character": "Out of Wildenthal short and steady up through spruce forest, the last stretch a little steeper to the inn.",
+    "highlights": "The lookout tower on the summit."
+   }
+  ]
+ },
+ "bournak": {
+  "intro": "A small ski hill on the ridge of the eastern Ore Mountains that is easy to tack on to Komáří vížka or Dlouhá Louka. At the top a mountain hut and the view south over the basin.",
+  "sides": [
+   {
+    "character": "From Mikulov across open ridge meadows, then briefly steeper through the forest to the hut by the lift.",
+    "highlights": "The mountain hut at the summit with its view to the south."
+   }
+  ]
+ },
+ "schauinsland": {
+  "intro": "The best-known climb of the Black Forest, straight out of the city: almost 900 metres of climbing from Freiburg up to the ridge, on the road that once hosted motor hill climbs. At the top the view across the Rhine plain to the Vosges.",
+  "sides": [
+   {
+    "character": "From Günterstal gently up the valley at first, then a long stretch in the forest with one bend after another, steady between 6 and 9 %; the view opens at Hofsgrund near the top.",
+    "highlights": "The view across the Rhine plain to the Vosges from the ridge at Hofsgrund."
+   }
+  ]
+ },
+ "kandel": {
+  "intro": "The summit above the Elz valley, at 1241 m one of the highest in the central Black Forest. The western climb is long and steep and counts in Freiburg as the honest test of form.",
+  "sides": [
+   {
+    "character": "Steep into the forest straight out of Waldkirch, with hairpins and hardly any rest; the gradient stays above 7 % up to the top.",
+    "highlights": "The Kandel rock and the view over the Rhine plain and the Kaiserstuhl."
+   }
+  ]
+ },
+ "feldbergpass": {
+  "intro": "The crossing below the highest mountain of the Black Forest, part of the link from Basel to the Titisee. More traffic than idyll, but the roof of the range and part of every loop around the Feldberg.",
+  "sides": [
+   {
+    "character": "From Todtnau past the Todtnau waterfall long and steady, steeper in the upper part up to the pass at the Feldberger Hof.",
+    "highlights": "The Todtnau waterfall just above the town."
+   },
+   {
+    "character": "From Bärental short and moderate; the easier side, and as a descent a quick run down to the Titisee."
+   }
+  ]
+ },
+ "notschrei": {
+  "intro": "The pass that joins the Schauinsland and the Feldberg into one loop. At the top the cross-country ski centre and the old pass hotel, below the two valleys to Freiburg and to Todtnau.",
+  "sides": [
+   {
+    "character": "From Oberried through the narrow Brugga valley, then in hairpins up through the forest; steady and the finer of the two sides.",
+    "highlights": "The narrow Brugga valley and its pastures in the lower part."
+   },
+   {
+    "character": "From Todtnau shorter and steady along the flank of the Wiese valley; as a descent smooth with wide bends."
+   }
+  ]
+ },
+ "wiedener-eck": {
+  "intro": "The quiet pass of the southern Black Forest, the way from the Markgräflerland into the upper Wiese valley. At the top open pastures and the Belchen opposite.",
+  "sides": [
+   {
+    "character": "Long and gentle through the Münster valley and its farms, steeper only in the last third in hairpins up to the saddle.",
+    "highlights": "The view of the Belchen from the open saddle."
+   }
+  ]
+ },
+ "hochblauen": {
+  "intro": "The viewpoint above the Markgräflerland: steeply up more than 700 metres from the spa town of Badenweiler, and at the top a tower with one of the widest views of the Black Forest.",
+  "sides": [
+   {
+    "character": "Steep into the forest straight out of Badenweiler, more than 8 % on average and without a break; the last kilometres narrow up to the summit hotel.",
+    "highlights": "The lookout tower on the summit with its view over the Rhine plain, the Vosges and the Alps."
+   }
+  ]
+ },
+ "kniebis": {
+  "intro": "The classic crossing of the northern Black Forest between the Rhine valley and Freudenstadt, with an old earthwork fort on the summit. More a link road than a destination, but a long climb.",
+  "sides": [
+   {
+    "character": "From Oppenau gently up the Lierbach valley at first, then steeply in hairpins through the forest; the last kilometres flat across the plateau to the Alexanderschanze.",
+    "highlights": "The hairpins in the forest above Lierbach, where the road gains 500 m in a few kilometres."
+   }
+  ]
+ },
+ "ruhestein": {
+  "intro": "The gateway to the Black Forest National Park, where the Black Forest High Road crosses the road from the Acher valley. From here the high road leads on to the Mummelsee and the Hornisgrinde.",
+  "sides": [
+   {
+    "character": "From Seebach steadily up the Acher valley and then in loops through the forest up to the Ruhestein.",
+    "highlights": "The national park centre at the Ruhestein."
+   }
+  ]
+ },
+ "sa-calobra": {
+  "intro": "The road that brings half the pro peloton to Mallorca in spring: laid into the rock in 1932, with a hairpin that loops over itself as the knotted tie. You ride it down to the sea in order to ride it back up.",
+  "sides": [
+   {
+    "character": "From the cove steadily at around 7 % up the rocky gully, one hairpin after another, with no flat stretch up to the knotted tie below the Coll dels Reis.",
+    "highlights": "The Nus de sa Corbata, the hairpin that passes under itself."
+   }
+  ]
+ },
+ "puig-major": {
+  "intro": "The long climb of the Serra de Tramuntana, from sea level at Sóller to nearly 900 m. At the top the island changes: bare limestone, two reservoirs and the tunnel under the summit.",
+  "sides": [
+   {
+    "character": "From Sóller past the Fornalutx turn-off steadily at about 6 % along the slope, with a wide view back over the Sóller valley and the sea; the tunnel at the top.",
+    "highlights": "The Mirador de ses Barques looking down on the Sóller valley."
+   },
+   {
+    "character": "From Lluc rolling across the high ground, past the Gorg Blau and Cúber reservoirs; many short rises, little in one piece.",
+    "highlights": "The Gorg Blau and Cúber reservoirs below the Puig Major."
+   }
+  ]
+ },
+ "coll-de-soller": {
+  "intro": "A picture-book hairpin pass that the tunnel has handed over to cyclists. Together with the Puig Major the classic loop around the Sóller valley.",
+  "sides": [
+   {
+    "character": "From Sóller through orange and olive groves, then up the slope in tightly stacked hairpins, steadily at around 6 %.",
+    "highlights": "The run of hairpins above the Sóller valley with a view back to the town."
+   },
+   {
+    "character": "From Bunyola shorter and gentler, also in hairpins through pine forest."
+   }
+  ]
+ },
+ "coll-de-sa-batalla": {
+  "intro": "The gateway into the Serra de Tramuntana for everyone coming from Alcúdia, Pollença or the plain. Not a steep mountain, but one every cycling visitor to Mallorca rides several times.",
+  "sides": [
+   {
+    "character": "Out of Caimari through olive groves, then in wide loops through holm-oak forest, steadily between 4 and 6 % up to the col.",
+    "highlights": "The café at the petrol station on the col, the meeting point of the cycling groups."
+   }
+  ]
+ },
+ "coll-d-honor": {
+  "intro": "One of the quietest roads of the Tramuntana, narrow and winding through pine and holm oak. Behind the col the secluded valley of Orient below the castle of Alaró.",
+  "sides": [
+   {
+    "character": "From Bunyola narrow and winding through the forest, steady and shady up to the col.",
+    "highlights": "The high valley of Orient behind the col."
+   }
+  ]
+ },
+ "coll-de-femenia": {
+  "intro": "The climb into the Tramuntana for everyone staying in Port de Pollença – the first part of every loop over Lluc. After a flat run-in along the valley, eight kilometres of hairpins, with the view over the bay of Pollença.",
+  "sides": [
+   {
+    "character": "From the end of the flat valley above Pollença in hairpins up the mountainside to the col, steady at around 5 %.",
+    "highlights": "The view back over the bay of Pollença from the upper hairpins."
+   }
+  ]
+ },
+ "puig-de-randa": {
+  "intro": "A lone mountain in the middle of the Mallorcan plain, with an all-round view over the whole island. Three monasteries one above the other, the highest with a terrace above the Pla.",
+  "sides": [
+   {
+    "character": "From the village of Randa steadily up in hairpins, past the sanctuaries of Gràcia and Sant Honorat to the Santuari de Cura.",
+    "highlights": "The terrace at the Santuari de Cura with its all-round view of the island."
+   }
+  ]
+ },
+ "sant-salvador": {
+  "intro": "The monastery mountain of the south-east, visible from far off by its cross and the statue of Christ. Quieter than the Tramuntana, with a view of the coast and the plain.",
+  "sides": [
+   {
+    "character": "Out of Felanitx flat at first, then steadily up in hairpins; the last kilometres along the slope with an open view to the south.",
+    "highlights": "The monastery and the cross on the summit."
+   }
+  ]
+ },
+ "pas-de-peyrol": {
+  "intro": "The pass below the Puy Mary is why riders come to the Cantal: three valleys of an extinct volcano meet up here, each with its own climb. At the top the view across the whole crater.",
+  "sides": [
+   {
+    "character": "Out of the Le Falgoux valley steady between pastures at first, very steep into the slope below the summit for the last kilometres.",
+    "highlights": "The last two kilometres with the Puy Mary above you."
+   },
+   {
+    "character": "From Mandailles up the Jordanne valley, steadier than the west side and with wide hairpins at the top.",
+    "highlights": "The Jordanne valley and its burons."
+   },
+   {
+    "character": "From Dienne via the Col d'Eylac a long stretch along the flank, only the last kilometres steeper.",
+    "highlights": "The high pastures at the Col d'Eylac."
+   }
+  ]
+ },
+ "col-de-neronne": {
+  "intro": "The Pas de Peyrol's little brother, almost always part of the loop from Salers. At the top a plateau full of Salers cattle.",
+  "sides": [
+   {
+    "character": "Out of the Le Falgoux valley steeply up the valley side in a few hairpins, short and steadily hard.",
+    "highlights": "The view back into the valley and across to the Puy Mary."
+   }
+  ]
+ },
+ "col-de-prat-de-bouc": {
+  "intro": "The quiet climb below the Cantal's highest summit, a half-day from Murat. At the top the road ends on a wide alpine pasture.",
+  "sides": [
+   {
+    "character": "From Murat gently through Albepierre at first, then a little steeper in the forest and open across the pasture at the top.",
+    "highlights": "The wide plateau below the Plomb du Cantal."
+   }
+  ]
+ },
+ "col-de-la-croix-saint-robert": {
+  "intro": "The pass on the Puy de Sancy, the highest mountain of the Massif Central. From Le Mont-Dore in hairpins above the town, bare and windy at the top, with the view across the chain of volcanoes.",
+  "sides": [
+   {
+    "character": "Out of Le Mont-Dore in hairpins on the steep flank above the Dordogne valley, steady at 6 to 8 %.",
+    "highlights": "The view back to Le Mont-Dore and the Sancy."
+   }
+  ]
+ },
+ "col-de-la-croix-morand": {
+  "intro": "The link that turns the two valleys at the Sancy into a loop. A wide road with some traffic, but steady and with wide views.",
+  "sides": [
+   {
+    "character": "From the Lac Chambon steadily up the flank, across open pastures at the top.",
+    "highlights": "The view back to the Lac Chambon."
+   },
+   {
+    "character": "From Le Mont-Dore shorter, through the forest first, then open to the pass; smooth as a descent."
+   }
+  ]
+ },
+ "super-besse": {
+  "intro": "The Tour finish at the Sancy: not hard, but with a steep pitch before the line. Medieval Besse below, a ski resort with a lake at the top.",
+  "sides": [
+   {
+    "character": "From Besse steadily across open pasture, a steep pitch to the Tour finish just before the resort.",
+    "highlights": "The Lac des Hermines before the resort."
+   }
+  ]
+ },
+ "col-du-beal": {
+  "intro": "A pass for people who want to see no one: at the top the high pastures of the jasseries, the old summer huts of the Forez, and on clear days the Alps on the horizon.",
+  "sides": [
+   {
+    "character": "Out of the forest in the west steadily steep, open across the jasseries at the top.",
+    "highlights": "The jasseries just below the pass."
+   },
+   {
+    "character": "From Chalmazel through the small ski area, shorter and gentler; the pleasanter side as a descent."
+   }
+  ]
+ },
+ "mont-aigoual": {
+  "intro": "The long climb of the Cévennes: from the chestnut woods in the valley to the bare summit with its weather station, from which on a clear day you see the Mediterranean, the Alps and the Pyrenees.",
+  "sides": [
+   {
+    "character": "From Valleraugue through chestnut forest and via L'Espérou nearly 30 km steady at 4 to 6 %, more endurance than steepness.",
+    "highlights": "The view from the weather station from the Mediterranean to the Alps."
+   },
+   {
+    "character": "From Meyrueis via the Gorges de la Jonte and the Col de Perjuret, long and rolling; wide and fast as a descent.",
+    "highlights": "The Gorges de la Jonte down at Meyrueis."
+   }
+  ]
+ },
+ "col-de-finiels": {
+  "intro": "A bare granite ridge in the middle of the Cévennes: heath, granite boulders and wind at the top, the old stone villages below.",
+  "sides": [
+   {
+    "character": "From Le Pont-de-Montvert via Finiels steadily through open heathland, without shade.",
+    "highlights": "The granite village of Finiels halfway up."
+   },
+   {
+    "character": "From Le Bleymard shorter through the forest to the small ski station, open to the pass at the top."
+   }
+  ]
+ },
+ "col-du-minier": {
+  "intro": "The shady southern climb into the Aigoual massif: out of the Mediterranean climate of Le Vigan into the beech and fir forests of the ridge.",
+  "sides": [
+   {
+    "character": "From Le Vigan via Aulas long and steady at around 5 % in the forest, with few views until just below the pass.",
+    "highlights": "The change from chestnut to beech and fir halfway up."
+   }
+  ]
+ },
+ "brocken": {
+  "intro": "The mountain of the north without cars: a narrow concrete road through the spruce forest of the national park, the bare dome at the top with a view across the North German Plain.",
+  "sides": [
+   {
+    "character": "From Schierke steady in the forest at first, open and windy beside the tracks of the Brocken railway at the top; the concrete slabs are rough.",
+    "highlights": "The view from the dome far across the plain, on a clear day."
+   }
+  ]
+ },
+ "torfhaus": {
+  "intro": "The main climb into the Upper Harz and the viewpoint for the Brocken. Not a quiet climb, but the longest steady one in the Harz.",
+  "sides": [
+   {
+    "character": "From Bad Harzburg up the Radau valley steadily at around 5 % in the forest, open across the moors at the top.",
+    "highlights": "The view from Torfhaus across the moor to the Brocken."
+   },
+   {
+    "character": "From Altenau shorter and quieter across the plateau.",
+    "highlights": "The Oker reservoir below Altenau."
+   }
+  ]
+ },
+ "hexentanzplatz": {
+  "intro": "The steepest hairpin road in the Harz, short and hard, above the gorge of the Bode. At the top the view across to the Rosstrappe.",
+  "sides": [
+   {
+    "character": "From Thale in tight hairpins up the slope, with ramps over 10 %, a little gentler after halfway to the plateau.",
+    "highlights": "The view from the plateau into the Bode gorge and to the Rosstrappe."
+   }
+  ]
+ },
+ "rosstrappe": {
+  "intro": "Shorter and quieter than the Hexentanzplatz opposite, with the better view into the gorge.",
+  "sides": [
+   {
+    "character": "From Thale steadily steep through the forest, without the run of hairpins opposite.",
+    "highlights": "The Rosstrappe rock high above the Bode."
+   }
+  ]
+ },
+ "ravensberg": {
+  "intro": "The southern Harz to yourself: a small road up a viewpoint mountain on which you meet hardly anyone.",
+  "sides": [
+   {
+    "character": "From Bad Sachsa alternating flat stretches and steep ramps through beech forest.",
+    "highlights": "The view from the summit across the southern foothills."
+   }
+  ]
+ },
+ "grosser-inselsberg": {
+  "intro": "The summit you ride in the Thuringian Forest if you ride only one: two ascents, both with ramps over 10 % just before the top.",
+  "sides": [
+   {
+    "character": "From Tabarz long and steady in the forest, the last two kilometres across the Rennsteig steep to the summit.",
+    "highlights": "The view from the summit across the Thuringian basin."
+   },
+   {
+    "character": "From Brotterode short and steep from the start, open at the top."
+   }
+  ]
+ },
+ "oberhof": {
+  "intro": "The Rennsteig at its best-known place: ski jumps, a biathlon stadium and a bobsleigh run, with a steady climb from the south between them.",
+  "sides": [
+   {
+    "character": "From Zella-Mehlis steadily at 4 to 5 % through the spruce forest, flat along the Rennsteig at the top.",
+    "highlights": "The ski jumps and the stadium at the Grenzadler."
+   }
+  ]
+ },
+ "wasserkuppe": {
+  "intro": "The dome around which everything in the Rhön turns: bare plateaus, gliders overhead and on clear days the view to the Thuringian Forest.",
+  "sides": [
+   {
+    "character": "From Gersfeld long and steady, in the forest at first, then open across the pastures of the high Rhön.",
+    "highlights": "The open plateaus just below the summit."
+   },
+   {
+    "character": "From Poppenhausen shorter and steadily steeper, up through the forest."
+   }
+  ]
+ },
+ "kreuzberg-rhoen": {
+  "intro": "Short, steep and with the best destination in the Rhön: the monastery beer below the summit cross.",
+  "sides": [
+   {
+    "character": "From Bischofsheim rising steadily, with ramps over 10 % in the forest for the last kilometres.",
+    "highlights": "The monastery brewery at the end of the road."
+   }
+  ]
+ },
+ "hochrhoenstrasse": {
+  "intro": "The climb onto the open plateau of the Long Rhön, which you then ride for kilometres at the top without a tree or a gradient.",
+  "sides": [
+   {
+    "character": "From Fladungen steadily through forest and meadows to the edge of the plateau at the Black Moor.",
+    "highlights": "The Black Moor with its boardwalk at the edge."
+   }
+  ]
+ },
+ "bretterschachten": {
+  "intro": "The longest steep climb in the Bavarian Forest, from Bodenmais to the saddle below the Arber. Plenty of forest and few views, but a climb with weight.",
+  "sides": [
+   {
+    "character": "From Bodenmais without a break at 6 to 8 % in the spruce forest, open at the Bretterschachten pastures at the top.",
+    "highlights": "The clearing at the Bretterschachten below the Arber."
+   }
+  ]
+ },
+ "brennes": {
+  "intro": "The pass at the Arber, the highest mountain of the Bavarian Forest: a cable car and day-trip crowds at the top, the dark Arbersee below on the west side.",
+  "sides": [
+   {
+    "character": "From Bayerisch Eisenstein steadily steep through the forest up to the cable car.",
+    "highlights": "The Großer Arbersee on the descent to Lohberg."
+   }
+  ]
+ },
+ "dreisessel": {
+  "intro": "The viewpoint mountain where three countries meet: a quiet forest road up to the crags from which you can see the Alps on a clear day.",
+  "sides": [
+   {
+    "character": "From Haidmühle steady and moderately steep through the mountain forest, a little steeper for the last kilometres.",
+    "highlights": "The granite crags at the summit looking across three countries."
+   }
+  ]
+ },
+ "klet": {
+  "intro": "A climb with a destination: out of the old town of Český Krumlov onto the highest mountain of the Blanský les, an observatory, a tower and a view to the Bohemian Forest at the top.",
+  "sides": [
+   {
+    "character": "From Český Krumlov through villages at first, then increasingly steep in the forest; no cars at the top.",
+    "highlights": "The stone tower on the summit looking across South Bohemia."
+   }
+  ]
+ },
+ "churanov": {
+  "intro": "The climb onto the roof of the Bohemian Forest: a wide, cool plateau with bogs and wooden villages at the top.",
+  "sides": [
+   {
+    "character": "From Stachy steadily across meadows and through the forest to the edge of the plateau.",
+    "highlights": "The plateau at Zadov looking across the Šumava."
+   }
+  ]
+ },
+ "col-de-bavella": {
+  "intro": "The best-known pass in Corsica: pines, rock needles and wild pigs at the top, bathing pools in the river below on the east side. Busy in summer, a dream in May and October.",
+  "sides": [
+   {
+    "character": "From Zonza steadily at around 5 % through pine forest, the Bavella needles only in the last kilometres.",
+    "highlights": "The view of the Aiguilles de Bavella at the saddle."
+   },
+   {
+    "character": "From Solenzara long and irregular up the valley, with flat stretches by the river and steep ramps in the hairpins at the top.",
+    "highlights": "The gorge of the Solenzara with its bathing pools."
+   }
+  ]
+ },
+ "col-de-vergio": {
+  "intro": "The roof of Corsica's roads: a climb through one of the finest pine forests in Europe, a bare height with a view to Monte Cinto at the top.",
+  "sides": [
+   {
+    "character": "From Evisa steadily through the Forêt d'Aïtone, cool and shady, open and windy at the top.",
+    "highlights": "The old Laricio pines in the Forêt d'Aïtone."
+   }
+  ]
+ },
+ "col-de-vizzavona": {
+  "intro": "The pass in the middle of the island, through the forest of Vizzavona. Beautiful, but it is the trunk road: lorries and coaches share the bends.",
+  "sides": [
+   {
+    "character": "From Bocognano steadily steep on the wide road through chestnut and beech forest.",
+    "highlights": "The forest of Vizzavona at the saddle."
+   },
+   {
+    "character": "From Vivario gentler and longer up the valley of the Vecchio."
+   }
+  ]
+ },
+ "col-de-sorba": {
+  "intro": "The steepest of Corsica's big passes and one of the quietest: two ramps of hairpins above Vivario and Ghisoni, hardly a car.",
+  "sides": [
+   {
+    "character": "From Vivario steep straight away in tight hairpins through pine forest, without a break to the saddle.",
+    "highlights": "The hairpins above Vivario looking to Monte d'Oro."
+   },
+   {
+    "character": "From Ghisoni similarly steep, through chestnut forest in the lower part."
+   }
+  ]
+ },
+ "col-de-verde": {
+  "intro": "A pass for endurance rather than toughness: nearly twenty kilometres of forest on each side, a hut and no view at the top, but silence.",
+  "sides": [
+   {
+    "character": "From Ghisoni long and irregular through the Forêt de Marmano, with flat stretches between steeper ramps."
+   },
+   {
+    "character": "From Cozzano through the upper Taravo valley, open at first, then long in the forest."
+   }
+  ]
+ },
+ "col-de-teghime": {
+  "intro": "A short pass with the best view on the island: from the saddle you see Bastia and Elba to the east and the Gulf of Saint-Florent to the west.",
+  "sides": [
+   {
+    "character": "From Bastia in hairpins above the town, steadily at around 5 %, plenty of commuter traffic in the morning.",
+    "highlights": "The view back over Bastia and the harbour."
+   },
+   {
+    "character": "From Saint-Florent through the vineyards of Patrimonio, gentler and quieter.",
+    "highlights": "The vineyards of Patrimonio above the gulf."
+   }
+  ]
+ },
+ "ospedale": {
+  "intro": "The long climb from the sea into the mountains above Porto-Vecchio: maquis and cork oaks below, the reservoir in the pine forest and the view of the bay above.",
+  "sides": [
+   {
+    "character": "From Porto-Vecchio steadily in long loops up the slope, with an ever wider view of the bay.",
+    "highlights": "The view of the Gulf of Porto-Vecchio, the Ospedale reservoir at the top."
+   }
+  ]
+ },
+ "col-de-sevi": {
+  "intro": "A quiet pass in the west, steep from Vico and with views both ways: to the sea and into the mountains.",
+  "sides": [
+   {
+    "character": "From Vico steep and steady through chestnut forest and maquis, open at the top.",
+    "highlights": "The view back over the Gulf of Sagone."
+   }
+  ]
+ },
+ "el-portillo": {
+  "intro": "Two thousand metres from the sea to below the Teide: bananas and houses at first, then pines above the clouds, the lunar landscape of the Cañadas at the top.",
+  "sides": [
+   {
+    "character": "From Puerto de la Cruz steep through La Orotava, then steadily at around 7 % through the pine forest, often through a layer of cloud that breaks into sunshine above.",
+    "highlights": "The view from the pine forest across the sea of cloud to the Teide."
+   }
+  ]
+ },
+ "boca-de-tauce": {
+  "intro": "The quieter way into the Cañadas: from the west coast across black lava and through pine forest, the Teide straight ahead at the top.",
+  "sides": [
+   {
+    "character": "From Chío steady and never steep across lava fields, then through open pine forest up to the crater rim.",
+    "highlights": "The lava flows of the Chinyero and the first view of the Teide."
+   }
+  ]
+ },
+ "izana": {
+  "intro": "For many the island's finest road: along the ridge between the north and south coasts, with views of both seas and of the Teide at the end.",
+  "sides": [
+   {
+    "character": "From La Esperanza long and moderately steep through pine forest, then open on the ridge with viewpoints.",
+    "highlights": "The observatory domes in front of the Teide."
+   }
+  ]
+ },
+ "degollada-de-cherfe": {
+  "intro": "Short, steep and breathtaking: the Masca hairpins along the gorge, looking out to La Gomera. Plenty of hire cars and coaches, best early in the morning.",
+  "sides": [
+   {
+    "character": "From Masca without a break at over 10 % in tight hairpins along the rock face.",
+    "highlights": "The village of Masca below the rock needles, La Gomera in the sea."
+   },
+   {
+    "character": "From Santiago del Teide steadier through fields and lava up to the saddle."
+   }
+  ]
+ },
+ "cruz-de-tejeda": {
+  "intro": "The heart of the island: a saddle above the caldera, a day-trip spot with stalls and a parador, and one of the finest views in the Canaries.",
+  "sides": [
+   {
+    "character": "From San Mateo steadily through fields and pines, with a few steep stretches."
+   },
+   {
+    "character": "From Tejeda steep in hairpins out of the caldera, the Roque Nublo and Roque Bentayga behind you.",
+    "highlights": "The Tejeda caldera with the Roque Nublo and the Bentayga."
+   }
+  ]
+ },
+ "pico-de-las-nieves": {
+  "intro": "The roof of Gran Canaria: a radar dome and a viewpoint above the Roque Nublo at the top, long hard ramps on both sides below.",
+  "sides": [
+   {
+    "character": "From San Mateo steep and without a break through pine forest, often over 8 %."
+   },
+   {
+    "character": "From San Bartolomé above the Caldera de Tirajana long and irregular.",
+    "highlights": "The view into the Caldera de Tirajana."
+   }
+  ]
+ },
+ "fataga": {
+  "intro": "The climb almost every cycling week on Gran Canaria starts with: out of the resorts into a quiet gorge and towards the roof of the island.",
+  "sides": [
+   {
+    "character": "From Maspalomas flat at first, then steadily in hairpins over the Degollada de Fataga and through the gorge.",
+    "highlights": "The viewpoint above the Barranco de Fataga and the palms on the valley floor."
+   }
+  ]
+ },
+ "roque-de-los-muchachos": {
+  "intro": "A climb like no other: 2,400 metres without a descent, through laurel and pine forest above the clouds, the telescopes and the view into the caldera at the top.",
+  "sides": [
+   {
+    "character": "From Santa Cruz steadily through the laurel forest, then pines, bare and windy above 2,000 m. Take food, there is nothing at the top.",
+    "highlights": "The rim of the Caldera de Taburiente by the telescopes."
+   },
+   {
+    "character": "From Garafía steeper and lonelier through the pine forest, hardly a car."
+   }
+  ]
+ },
+ "angliru": {
+  "intro": "One of the steepest paved climbs in Europe, a Vuelta legend. Harmless at the bottom, a wall at the top: whoever rides it needs the lowest gear there is.",
+  "sides": [
+   {
+    "character": "From La Vega six moderate kilometres through meadows, then six kilometres of wall with ramps over 20 % at the Cueña les Cabres, narrow and often damp.",
+    "highlights": "The Cueña les Cabres and the view back over the valleys of Riosa."
+   }
+  ]
+ },
+ "lagos-de-covadonga": {
+  "intro": "The essence of the Vuelta: an irregular ramp from the basilica into the Picos de Europa, lakes, cows and limestone crags at the top.",
+  "sides": [
+   {
+    "character": "From Covadonga steep at once, irregular with the Huesera ramp at over 15 %, then gentler to the Mirador de la Reina and the lakes.",
+    "highlights": "The Mirador de la Reina and the Lago Enol below the Picos."
+   }
+  ]
+ },
+ "puerto-de-san-lorenzo": {
+  "intro": "A hard, steady Vuelta pass in the wild west of Asturias, bear country and herders' huts at the top.",
+  "sides": [
+   {
+    "character": "From Teverga steadily at around 8 %, the second half steeper and open above the pastures.",
+    "highlights": "The brañas with their stone huts below the pass."
+   }
+  ]
+ },
+ "alto-de-la-farrapona": {
+  "intro": "A ride into the wildest corner of Asturias: long valleys, teito huts and, at the end, the Saliencia lakes below limestone walls.",
+  "sides": [
+   {
+    "character": "From Pola de Somiedo long and irregular up the valley, with flat stretches and steep ramps in the last third.",
+    "highlights": "The Saliencia lakes below the pass."
+   }
+  ]
+ },
+ "puerto-de-pajares": {
+  "intro": "A pass with a history: the old road to Castile, with the hairpins above the Pajares valley and the railway winding up through tunnels.",
+  "sides": [
+   {
+    "character": "From Pola de Lena long and flat in the valley, then the last ten kilometres in hairpins at 6 to 8 %.",
+    "highlights": "The hairpins above the valley with the railway's Rampa de Pajares."
+   }
+  ]
+ },
+ "alto-de-la-cobertoria": {
+  "intro": "A true Asturian pass: steep, narrow, green, and with the Angliru right across the valley.",
+  "sides": [
+   {
+    "character": "From Pola de Lena steep straight away in hairpins through chestnuts and meadows, hardly any respite.",
+    "highlights": "The view from the saddle over the Lena valley."
+   }
+  ]
+ },
+ "puerto-de-san-glorio": {
+  "intro": "A long, quiet pass with the finest view of the Picos de Europa: from Potes in the valley at first, then across pastures to above the tree line.",
+  "sides": [
+   {
+    "character": "From Potes long and moderate up the Liébana valley, the last twelve kilometres steeper through beech forest and across pastures.",
+    "highlights": "The Mirador de Llesba with the bear monument and the Picos de Europa."
+   }
+  ]
+ },
+ "pena-cabarga": {
+  "intro": "Santander's local mountain and a short Vuelta wall: eucalyptus below, a summit with the sea on one side and the mountains on the other.",
+  "sides": [
+   {
+    "character": "From Heras moderate at first, then steep in the last kilometres with ramps over 15 %.",
+    "highlights": "The view over the bay of Santander."
+   }
+  ]
+ },
+ "hoya-de-la-mora": {
+  "intro": "A high road as in the Alps, but in Andalusia: almost 1,800 metres in one go from the suburbs of Granada, thin air at the top and a view to Africa on clear days.",
+  "sides": [
+   {
+    "character": "From Cenes steadily at around 6 % across bare slopes, open and windy from Pradollano up to the Hoya de la Mora.",
+    "highlights": "The view from the mirador over Granada and the Vega."
+   }
+  ]
+ },
+ "alto-del-purche": {
+  "intro": "The home climb of Granada's cyclists: shorter than the Sierra Nevada, steeper in places, and almost without traffic.",
+  "sides": [
+   {
+    "character": "From Monachil irregular with steep ramps through olives and pines, open above the city at the top.",
+    "highlights": "The view over Granada to the Alhambra."
+   }
+  ]
+ },
+ "collado-de-las-sabinas": {
+  "intro": "The hard side of the Sierra Nevada: a narrow road with walls of gradient, the summits of the Mulhacén and Veleta within reach at the top.",
+  "sides": [
+   {
+    "character": "From Güéjar Sierra moderate at first, then via Hazallanas with long ramps over 10 %, narrow and rough.",
+    "highlights": "The view from the ridge to the Veleta and the Mulhacén."
+   }
+  ]
+ },
+ "puerto-de-la-ragua": {
+  "intro": "A true pass across the Sierra Nevada, 2,000 m high and still quiet: from the Alpujarra through pines, the castle of La Calahorra in sight on the north side.",
+  "sides": [
+   {
+    "character": "From Laroles steadily through terraces and pine forest, with no steep stretches.",
+    "highlights": "The view back over the Alpujarra to the sea."
+   },
+   {
+    "character": "From La Calahorra across the high plain, then in hairpins through the forest.",
+    "highlights": "The castle of La Calahorra in front of the sierra."
+   }
+  ]
+ },
+ "calar-alto": {
+  "intro": "A climb in a landscape out of a western: above the Tabernas desert to 2,150 m, the white domes of the observatory at the top.",
+  "sides": [
+   {
+    "character": "From Gérgal long and steady across bare slopes, without shade.",
+    "highlights": "The observatory domes above the desert."
+   },
+   {
+    "character": "From Bacares shorter and steeper, with ramps over 12 %."
+   }
+  ]
+ },
+ "alto-de-velefique": {
+  "intro": "A hairpin ribbon as if painted above a white village, in Almería's semi-desert: the Stelvio of the south, only emptier.",
+  "sides": [
+   {
+    "character": "From Velefique straight into tightly stacked hairpins at around 7 %, steady up to the ridge.",
+    "highlights": "The hairpins above the village of Velefique."
+   }
+  ]
+ },
+ "blockhaus": {
+  "intro": "The hardest climb in the Apennines: long, steep and treeless at the top, with a view to the Adriatic.",
+  "sides": [
+   {
+    "character": "From Roccamorice steadily steep through forest, open and windy above the tree line across the limestone slopes.",
+    "highlights": "The view from the Majella across the hills to the Adriatic."
+   }
+  ]
+ },
+ "passo-lanciano": {
+  "intro": "The way into the Majella from the east: steep through dense beech forest, ski lifts and the onward road to the Blockhaus at the top.",
+  "sides": [
+   {
+    "character": "From Pretoro steep in hairpins through the forest, hardly a flat stretch."
+   }
+  ]
+ },
+ "campo-imperatore": {
+  "intro": "A ride through one of the widest landscapes in Europe: high plain, horses, the Corno Grande, and to finish a wall up to the observatory.",
+  "sides": [
+   {
+    "character": "From Fonte Cerreto through beech forest, then long and moderate across the plain, the last four kilometres steep to the hotel.",
+    "highlights": "The Campo Imperatore plain below the Corno Grande."
+   }
+  ]
+ },
+ "terminillo": {
+  "intro": "The mountain Rome's cyclists measure themselves on: steady, long and shady, the view over the Rieti basin at the top.",
+  "sides": [
+   {
+    "character": "From Rieti across the slopes at first, then steadily at around 6 % through the forest up to Pian de' Valli.",
+    "highlights": "The view over the Rieti basin."
+   }
+  ]
+ },
+ "passo-dell-abetone": {
+  "intro": "A pass like in the Alps, only greener: fir forest, wooden houses and the old border pillars between the Grand Duchy of Tuscany and Modena.",
+  "sides": [
+   {
+    "character": "From Cutigliano steadily at around 5 % through fir and beech forest.",
+    "highlights": "The border pyramids at the saddle."
+   }
+  ]
+ },
+ "san-pellegrino-in-alpe": {
+  "intro": "A pilgrimage village on the Apennine ridge and a brutal climb to it: irregular, with walls over 15 % and a wide view over the Apuan Alps.",
+  "sides": [
+   {
+    "character": "From Castiglione irregular, with long ramps over 12 % in the upper part.",
+    "highlights": "The view over the Garfagnana to the Apuan Alps."
+   }
+  ]
+ },
+ "monte-amiata": {
+  "intro": "The highest mountain in southern Tuscany and a climb in the shade: chestnuts, beeches and the summit cross above the hills of Siena.",
+  "sides": [
+   {
+    "character": "From Abbadia steadily at 6 to 7 % through forest, a few steeper ramps at the top.",
+    "highlights": "The Val d'Orcia below the summit."
+   }
+  ]
+ },
+ "sassotetto": {
+  "intro": "A quiet summit-finish classic of the Marche: above a medieval town into the Sibillini mountains.",
+  "sides": [
+   {
+    "character": "From Sarnano steadily at around 7 % through forest, the last kilometres open across pastures.",
+    "highlights": "The Sassotetto meadows below the Sibillini ridge."
+   }
+  ]
+ },
+ "etna-sud": {
+  "intro": "A volcano ridden on a road bike: from the sea through vineyards and broom up into the black lava fields below the summit crater.",
+  "sides": [
+   {
+    "character": "From Nicolosi steadily through pines and across old lava flows, the busiest side.",
+    "highlights": "The Silvestri craters at the Rifugio."
+   },
+   {
+    "character": "From Zafferana the steepest side, with long ramps over 9 % through forest and lava.",
+    "highlights": "The view over the Valle del Bove."
+   },
+   {
+    "character": "From Ragalna long and irregular across the western flank, quiet and open.",
+    "highlights": "The view over the plain of Catania."
+   }
+  ]
+ },
+ "etna-nord": {
+  "intro": "The green Etna: forest far up, then the lava tongue of the 2002 eruption, through which the road was rebuilt.",
+  "sides": [
+   {
+    "character": "From Linguaglossa steadily at 6–7 % through the pine forest, open above the lava at the top.",
+    "highlights": "The view over the Ionian coast to Taormina."
+   }
+  ]
+ },
+ "piano-battaglia": {
+  "intro": "A piece of the Apennines above the coast of Cefalù: beech forest, limestone summits and high pastures, an hour from the beach.",
+  "sides": [
+   {
+    "character": "From Isnello long and moderate, with a steeper stretch past Piano Zucchi, much of it in the forest.",
+    "highlights": "The view from the plateau to Etna."
+   }
+  ]
+ },
+ "portella-femmina-morta": {
+  "intro": "The empty Sicily: beech forest, pastures with half-wild horses and a view of Etna from the top.",
+  "sides": [
+   {
+    "character": "From San Fratello steady and moderate, open at first, in beech forest higher up.",
+    "highlights": "Etna behind the top of the pass."
+   }
+  ]
+ },
+ "portella-mandrazzi": {
+  "intro": "A short pass with a big view: the Aeolian Islands on one side, Etna on the other.",
+  "sides": [
+   {
+    "character": "From Novara di Sicilia moderate with a few steeper hairpins, open above the valley.",
+    "highlights": "The view back to the Aeolian Islands."
+   }
+  ]
+ },
+ "erice": {
+  "intro": "From sea level into a stone village in the clouds: a short, beautiful climb with the best view in western Sicily.",
+  "sides": [
+   {
+    "character": "From Trapani out of the edge of town up the rock face in hairpins at around 7 %.",
+    "highlights": "The view over the salt pans and the Aegadian Islands."
+   },
+   {
+    "character": "From Valderice shorter and quieter through pines."
+   }
+  ]
+ },
+ "mur-de-huy": {
+  "intro": "A kilometre every cyclist knows from television: between houses and chapels, the steepest bend so steep that you either stand on the pedals or walk.",
+  "sides": [
+   {
+    "character": "Out of Huy moderate at first, then between the chapels with ramps of more than 20 %, flatter at the top up to the church.",
+    "highlights": "The bend by the chapels where the Flèche is decided."
+   }
+  ]
+ },
+ "cote-de-la-redoute": {
+  "intro": "The home climb of La Doyenne: short and steep, and full of cyclists every weekend comparing their time with the pros.",
+  "sides": [
+   {
+    "character": "From Remouchamps steep right after a flat run-in, across the motorway bridge with ramps of around 12 %.",
+    "highlights": "The painted road with the riders' names."
+   }
+  ]
+ },
+ "cote-de-stockeu": {
+  "intro": "A kilometre of wall in the forest, and at the top Merckx stands in bronze, who started his attacks here.",
+  "sides": [
+   {
+    "character": "From Stavelot briefly flat, then a straight, steep ramp through the forest at around 12 %.",
+    "highlights": "The Merckx monument at the edge of the forest at the top."
+   }
+  ]
+ },
+ "col-de-la-haute-levee": {
+  "intro": "One of the longer Ardennes climbs: four kilometres through forest and pasture, close to the Spa-Francorchamps circuit.",
+  "sides": [
+   {
+    "character": "Steeply out of Stavelot, then steadier at around 5 % up to the top."
+   }
+  ]
+ },
+ "col-du-rosier": {
+  "intro": "A forest climb without walls, but long enough to sort out a race: six kilometres up to the plateau above Spa.",
+  "sides": [
+   {
+    "character": "From La Gleize moderate and steady through the forest, open at the top."
+   }
+  ]
+ },
+ "cote-de-wanne": {
+  "intro": "An open slope above the Salm valley, with a steep middle and the view back over Trois-Ponts.",
+  "sides": [
+   {
+    "character": "From Trois-Ponts steep at first, over 10 % in the middle, flatter at the top up to Wanne.",
+    "highlights": "The view back over Trois-Ponts."
+   }
+  ]
+ },
+ "cote-de-la-roche-aux-faucons": {
+  "intro": "The last big climb before Liège: short and steep through a village, a viewpoint rock above the Ourthe at the top.",
+  "sides": [
+   {
+    "character": "From the Ourthe at Hony steep at once, at 8–10 %, through the houses up to the top.",
+    "highlights": "The view from the rock over the bend of the Ourthe."
+   }
+  ]
+ },
+ "spindlerova-bouda": {
+  "intro": "The classic of the Giant Mountains: up from the Elbe onto the ridge, the hut at the top and the view into Silesia.",
+  "sides": [
+   {
+    "character": "From Špindlerův Mlýn steadily through the forest, hairpins and ramps over 10 % in the upper part.",
+    "highlights": "The view from the ridge into Poland."
+   }
+  ]
+ },
+ "przelecz-okraj": {
+  "intro": "A true border pass across the Giant Mountains, quiet and long, with the Sněžka above the top.",
+  "sides": [
+   {
+    "character": "From Kowary moderate in the forest, with flat stretches between steeper ramps.",
+    "highlights": "The Sněžka above the top of the pass."
+   }
+  ]
+ },
+ "horni-misecky": {
+  "intro": "A short climb into the spruce forest, the huts and the trails to the source of the Elbe at the top.",
+  "sides": [
+   {
+    "character": "From Vítkovice steadily at around 7 % through the forest to the end of the road."
+   }
+  ]
+ },
+ "cerna-hora": {
+  "intro": "The hardest climb in the Giant Mountains, without cars: over 600 metres up to the plateau, the view over Bohemia at the top.",
+  "sides": [
+   {
+    "character": "From Janské Lázně in hairpins through the forest, steeper at the top at over 12 % on a narrow road.",
+    "highlights": "The view from the hut over the Bohemian foothills."
+   }
+  ]
+ },
+ "jested": {
+  "intro": "A mountain with a tower out of a science-fiction film: 450 metres up from Liberec, the view to the Giant Mountains and into Saxony at the top.",
+  "sides": [
+   {
+    "character": "From Horní Hanychov steadily at 6–7 % through the forest, the last hairpins open below the tower.",
+    "highlights": "The tower on the summit."
+   }
+  ]
+ },
+ "tanvaldsky-spicak": {
+  "intro": "A short, hard climb in the Jizera Mountains, a lookout tower above the forests at the top.",
+  "sides": [
+   {
+    "character": "Out of Tanvald moderate at first, then with ramps over 12 % through the forest."
+   }
+  ]
+ },
+ "strbske-pleso": {
+  "intro": "Not a steep climb, but a big one: 500 metres towards a wall of granite, the lake and the ski jumps at the top.",
+  "sides": [
+   {
+    "character": "From Štrba steadily at around 4 %, through meadows first, through forest at the top up to the lake.",
+    "highlights": "The view of the High Tatra peaks."
+   }
+  ]
+ },
+ "certovica": {
+  "intro": "The pass of the Low Tatras: spruce forest, mountain villages and a small ski station on the ridge at the top.",
+  "sides": [
+   {
+    "character": "From Mýto long and moderate along the valley, a few hairpins in the forest at the top.",
+    "highlights": "The hairpins below the top of the pass."
+   },
+   {
+    "character": "From Vyšná Boca short and steep, with ramps over 10 %."
+   }
+  ]
+ },
+ "chopok-juh": {
+  "intro": "The longest road into the Low Tatras: 650 metres through forest up to below the Chopok ridge.",
+  "sides": [
+   {
+    "character": "From Bystrá moderate along the valley at first, steeper in the forest from Tále up to Srdiečko.",
+    "highlights": "The view of the ridge from the end of the road."
+   }
+  ]
+ },
+ "jasna": {
+  "intro": "A valley with dripstone caves and the largest ski area in Slovakia at its end: short, steep and with the Chopok ahead.",
+  "sides": [
+   {
+    "character": "From the Freedom Cave steep through the forest, flatter at the top up to Jasná."
+   }
+  ]
+ },
+ "gliczarow-gorny": {
+  "intro": "A wall in the Podhale: short, brutally steep, and at the top the finest Tatra panorama a bike can reach.",
+  "sides": [
+   {
+    "character": "Out of Biały Dunajec moderate at first, then a wall of over 20 % between wooden houses.",
+    "highlights": "The chain of the High Tatras behind the meadows."
+   }
+  ]
  }
 }

@@ -118,7 +118,7 @@ export const AscentRouter = z.strictObject({
 /**
  * One ride up or along a road. Which half of this shape applies is decided by
  * the parent's `type` and enforced by `Pass`'s refinement below: a climb
- * (`pass`, `spur`) ends at the entry's own marker and says nothing more, a
+ * (`pass`, `spur`, `climb`) ends at the entry's own marker and says nothing more, a
  * traverse (`plateau`, `balcony`, `valley`) names where it ends and how long
  * it is, because that is what the gate measures it against. `check` follows
  * the same split – an ascent may only widen the limits its own validator
@@ -476,7 +476,8 @@ export const Destinations = z.array(Destination);
 export const SidePortrait = z.strictObject({
   /**
    * Whether this side is the better way up or the better way down, where a
-   * crossing offers the choice: a `pass` or `spur` with two sides or more.
+   * crossing offers the choice: a `pass` or `spur` with two sides or more – a
+   * `climb` has no top to cross, so it never carries one.
    */
   bestAs: z.enum(BEST_AS).optional(),
   /** One or two sentences: what riding this side is like, and why `bestAs`. */

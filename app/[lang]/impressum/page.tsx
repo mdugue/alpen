@@ -35,14 +35,14 @@ const ImpressumPage = () => (
     <section className="flex flex-col gap-2 text-sm">
       <h2 className="text-base font-semibold">Hinweis zum Angebot</h2>
       <p className="text-muted-foreground">
-        Alpenpässe ist ein privates, nicht-kommerzielles Hobbyprojekt ohne
-        Werbung, ohne Nutzerkonten und ohne eigene Bezahlfunktion. Wer das
-        Projekt unterstützen möchte, kann das freiwillig über die verlinkte
-        Ko-fi-Seite des Betreibers tun; die App selbst bleibt kostenlos und
-        werbefrei. Die App dient der groben Routenplanung für Rennradfahrten in
-        den Alpen und ersetzt keine amtliche Auskunft, insbesondere nicht zu
-        Straßensperrungen oder Straßenzuständen – siehe dazu auch die Hinweise
-        unter „Skalen &amp; Quellen“ in der App.
+        Bergauf ist ein privates, nicht-kommerzielles Hobbyprojekt ohne Werbung,
+        ohne Nutzerkonten und ohne eigene Bezahlfunktion. Wer das Projekt
+        unterstützen möchte, kann das freiwillig über die verlinkte Ko-fi-Seite
+        des Betreibers tun; die App selbst bleibt kostenlos und werbefrei. Die
+        App dient der groben Routenplanung für Rennradfahrten in den Alpen und
+        den Gebirgen darüber hinaus und ersetzt keine amtliche Auskunft,
+        insbesondere nicht zu Straßensperrungen oder Straßenzuständen – siehe
+        dazu auch die Hinweise unter „Skalen &amp; Quellen“ in der App.
       </p>
     </section>
 

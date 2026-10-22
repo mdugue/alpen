@@ -279,9 +279,9 @@ export const PassDetail = ({
         info={traverse ? t.panel.ascents.infoTraverse : t.panel.ascents.info}
         title={traverse ? t.panel.ascents.titleTraverse : t.panel.ascents.title}
       >
-        {pass.type === "spur" && (
+        {model.sentences.shape && (
           <p className="text-muted-foreground mb-3 text-xs leading-relaxed">
-            {model.trunk ? t.panel.ascents.branch : t.panel.ascents.spur}
+            {model.sentences.shape}
           </p>
         )}
         {model.trunk && (

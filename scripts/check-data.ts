@@ -671,8 +671,6 @@ if (EXPLAIN) {
   for (const line of explained.toSorted()) console.log(`  ${line}`);
   console.log();
 }
-for (const w of warnings) console.warn(`WARN  ${w}`);
-for (const e of errors) console.error(`FEHLER ${e}`);
 const rejectedCount = Object.keys(rejected ?? {}).length;
 // Information, not a warning: a pass carries every side that is a classic
 // climb, and a single-sided one says in its note why the other side is not
@@ -774,7 +772,10 @@ if (passes && portraits) {
       errors.push(
         `portraits.json: ${slug} beschreibt ${portrait.sides.length} Seiten, die Straße hat ${p.ascents.length} Auffahrten`,
       );
-    const choice = !isTraverse(p.type) && p.ascents.length >= 2;
+    // Only a road with a top to cross offers a way up and a way down: a
+    // Steige's sides both end at the plateau's edge, and the road carries on.
+    const choice =
+      (p.type === "pass" || p.type === "spur") && p.ascents.length >= 2;
     for (const [i, side] of portrait.sides.entries()) {
       if (choice && !side.bestAs)
         warnings.push(
@@ -782,7 +783,7 @@ if (passes && portraits) {
         );
       if (!choice && side.bestAs)
         errors.push(
-          `portraits.json: ${slug} [${i}] hat bestAs, aber keine Wahl der Richtung (${isTraverse(p.type) ? p.type : "eine Seite"})`,
+          `portraits.json: ${slug} [${i}] hat bestAs, aber keine Wahl der Richtung (${choice ? "" : p.ascents.length < 2 ? "eine Seite" : p.type})`,
         );
     }
   }
@@ -817,6 +818,11 @@ if (translationGaps.length)
   console.log(
     `INFO  Englische Texte fehlen (Rückfall auf Deutsch): ${translationGaps.join(", ")}`,
   );
+// Printed last, after every check has had its say: the portrait checks above
+// push errors too, and printed any earlier those were counted in the summary
+// but never named.
+for (const w of warnings) console.warn(`WARN  ${w}`);
+for (const e of errors) console.error(`FEHLER ${e}`);
 console.log(
   `${passes?.length ?? 0} Pässe (${singleSided} davon einseitig), ${tours?.length ?? 0} Touren, ${towns?.length ?? 0} Orte, ${destinations?.length ?? 0} Reiseziele · ${Object.keys(routes ?? {}).length} Routen geprüft${
     rejectedCount ? `, ${rejectedCount} abgewiesen` : ""

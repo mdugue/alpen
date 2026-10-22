@@ -1,4 +1,4 @@
-# Alpenpässe – where to ride, and when
+# Bergauf – where to ride, and when
 
 A map for planning road-cycling holidays in the Alps and the Vosges. It answers destination
 questions, not routing questions:

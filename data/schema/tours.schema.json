@@ -142,13 +142,13 @@
           "properties": {
             "lat": {
               "type": "number",
-              "minimum": 42,
-              "maximum": 49
+              "minimum": 27.5,
+              "maximum": 52.1
             },
             "lon": {
               "type": "number",
-              "minimum": -2,
-              "maximum": 16
+              "minimum": -18.3,
+              "maximum": 20.5
             }
           },
           "required": [

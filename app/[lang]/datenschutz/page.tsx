@@ -27,14 +27,13 @@ const DatenschutzPage = () => (
     <section className="flex flex-col gap-2 text-sm">
       <h2 className="text-base font-semibold">Im Überblick</h2>
       <p className="text-muted-foreground">
-        Alpenpässe ist ein statischer Kartendienst ohne Nutzerkonten, ohne
-        Tracking und ohne Werbenetzwerke. Es werden keine Analyse-Tools
-        eingesetzt und es werden keine Cookies zu Tracking- oder
-        Marketingzwecken gesetzt – das einzige Cookie merkt sich die Sprache,
-        wenn Sie eine wählen (siehe unten). Personenbezogene Daten fallen im
-        Wesentlichen nur an, wenn Ihr Browser beim Laden der Seite, der
-        Kartenkacheln und der Fotos automatisch Verbindungsdaten an Server
-        überträgt – siehe unten.
+        Bergauf ist ein statischer Kartendienst ohne Nutzerkonten, ohne Tracking
+        und ohne Werbenetzwerke. Es werden keine Analyse-Tools eingesetzt und es
+        werden keine Cookies zu Tracking- oder Marketingzwecken gesetzt – das
+        einzige Cookie merkt sich die Sprache, wenn Sie eine wählen (siehe
+        unten). Personenbezogene Daten fallen im Wesentlichen nur an, wenn Ihr
+        Browser beim Laden der Seite, der Kartenkacheln und der Fotos
+        automatisch Verbindungsdaten an Server überträgt – siehe unten.
       </p>
     </section>
 

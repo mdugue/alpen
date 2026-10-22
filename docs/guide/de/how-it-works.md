@@ -1,8 +1,8 @@
 # So funktioniert die Karte
 
-Alpenpässe ist eine Rennradkarte für die Urlaubsplanung in den Alpen: Sie
-zeigt, wo und wann sich Reiseziele, Pässe, Rundtouren und Radorte lohnen –
-bewertet für einen Halbmonat, den du wählst.
+Bergauf ist eine Rennradkarte für die Urlaubsplanung in den Alpen und den
+Gebirgen darüber hinaus: Sie zeigt, wo und wann sich Reiseziele, Pässe,
+Rundtouren und Radorte lohnen – bewertet für einen Halbmonat, den du wählst.
 
 ## Welche Fragen die Karte beantwortet
 
@@ -41,7 +41,8 @@ abgefragt, nirgends gespeichert und nicht in den Link geschrieben.
 Die meisten Einträge sind Pässe, aber nicht alle – deshalb heißt der Reiter
 „Straßen“. Jede Straße hat genau eine **Art**: Pass (auf der einen Seite
 hinauf, auf der anderen hinunter), Stichstraße (endet oben, zurück geht es
-dieselbe Auffahrt), Höhenstraße, Balkonstraße oder Talstraße. Dazu kommen
+dieselbe Auffahrt), Steige (hinauf auf eine Hochfläche, oben geht es
+weiter), Höhenstraße, Balkonstraße oder Talstraße. Dazu kommen
 **Merkmale** wie „Panoramastraße“, „Autofrei“, „Maut“ oder „Kehrenbauwerk“.
 Bei „Maut“ sagt die Notiz der Straße, ob auch Räder zahlen.
 
@@ -231,11 +232,11 @@ als kleiner grauer Punkt auf der Karte stehen; die Suche findet jede Straße,
 auch wenn „Klassiker“ gesetzt ist. Weichen die Filter davon ab, erscheint am
 Ende der Leiste **Standard**, das zu den Klassikern zurückführt.
 
-Dazu kommt der Filter **Gebirge** – heute Alpen und Vogesen, später auch
-Jura und Pyrenäen –, der als einziger auch die Karte bewegt: Er rückt den
+Dazu kommt der Filter **Gebirge**, der als einziger auch die Karte bewegt: Er rückt den
 Ausschnitt auf das, was er übrig lässt, und wirkt als einziger Straßenfilter
 auch auf die Liste der Reiseziele. Ein Gebirge bekommt seinen Chip, sobald
-die Karte eine Straße darin enthält.
+die Karte eine Straße darin enthält. Sind es viele, stehen sie in zwei
+Reihen: die Gebirge für eine Urlaubswoche und die für ein Wochenende.
 
 Die Filter gelten für Straßen und Touren. Auf die Reiseziele und ihre Orte
 wirken nur die Suche, „Nur Gemerkte“ und das Gebirge.

@@ -172,16 +172,20 @@ export const de = {
    */
   site: {
     /** Short form for the manifest, where space is tight. */
-    claim:
-      "Pässe, Rundtouren und Rad-Orte in den Alpen und den Vogesen – nach Befahrbarkeit je Halbmonat.",
+    claim: "Die Anstiege Europas – wann und wo sie sich lohnen.",
     description:
-      "Wohin mit dem Rennrad, und wann? Pässe in den Alpen und den Vogesen, Auffahrten mit Höhenprofil, Rundtouren und Rad-Orte auf einer Karte – mit Befahrbarkeit je Halbmonat, Wetter und Klima.",
+      "Wohin mit dem Rennrad, und wann? Pässe und Anstiege in den Alpen und darüber hinaus, mit Höhenprofil, Rundtouren und Rad-Orten auf einer Karte – mit Befahrbarkeit je Halbmonat, Wetter und Klima.",
     keywords: [
       "Alpenpässe",
+      "Anstiege",
       "Rennrad",
       "Rennradurlaub",
       "Radurlaub Alpen",
       "Radurlaub Vogesen",
+      "Rennrad Mallorca",
+      "Rennrad Kanaren",
+      "Rennrad Erzgebirge",
+      "Rennrad Schwarzwald",
       "Passhöhen",
       "Rundtouren",
       "Höhenprofil",

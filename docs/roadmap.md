@@ -49,13 +49,17 @@ What was one line here is now five plans (September 2026):
   profile, dashed lines and a "Belag" chip. Mountain biking is a different
   data model and stays out.
 
-What stays on this list: the Massif Central, more Dolomites, the Black
-Forest and the Erzgebirge. Plan 25's mechanism carries any of them; whether
-one is added follows the rule written there – a destination for a week or a
-long weekend of road cycling, with a dozen roads a rider travels for. The
-Erzgebirge is the deliberate "not yet": low passes, a weekend range, and at
-50.5° N the first range that would force the naming question plan 26 only
-recommends an answer to.
+- **[34 · Beyond the Alps](./plans/34-beyond-the-alps.md)** – the app becomes
+  "Bergauf": twenty ranges from the Canaries to the Tatras, a weekend row and
+  a holiday row of range chips, the road type `climb`, and the rule that
+  decides what comes in – a climb of 250 m at about 5 %, or a race that made
+  it known, and eight such roads per range, with the exceptions named in the
+  plan.
+
+What stays on this list: more Dolomites, the Swabian Jura once a rule counts
+short steep ramps, the Eifel and the Sauerland (measured, too flat for the
+rule), and the profiles and climate of the stage-3 roads, which
+`data:backfill` fills as the Open-Meteo quota allows.
 
 ## 3. Multi-day trips between destinations
 

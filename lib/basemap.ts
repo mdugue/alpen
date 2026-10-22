@@ -5,6 +5,7 @@ import type {
   StyleSpecification,
 } from "maplibre-gl";
 
+import { SITE_NAME } from "@/lib/brand";
 import type { Messages } from "@/lib/i18n";
 import { DEFAULT_LANG, localeOf } from "@/lib/i18n/lang";
 import type { Lang } from "@/lib/i18n/lang";
@@ -480,7 +481,7 @@ export const basemapStyle = (
   return {
     glyphs,
     layers: [...ground, ...detail],
-    name: `Alpenpässe ${scheme} ${w.lang}`,
+    name: `${SITE_NAME} ${scheme} ${w.lang}`,
     sources: { [BASEMAP_SOURCE_ID]: basemapSource(w) },
     version: 8,
   };

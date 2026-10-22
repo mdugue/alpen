@@ -1177,5 +1177,565 @@
   "character": "Duran, Cereda, Croce d'Aune und die beiden Forcelle rund um den Nationalpark zwischen Agordo und Feltre, dazu Rolle, Valles, Brocon und San Boldo am Rand: die stille Südseite der Dolomiten, niedriger und leerer als Sella und Cortina.",
   "multiDay": "Vier bis fünf Tage; die Runde über Cereda, Rolle und Valles ein Tag, Duran und Staulanza ein zweiter, der Grappa als Tagesausflug von Feltre.",
   "access": "Bahnhof Feltre an der Strecke Padua–Belluno, nach Agordo Bus ab Belluno; Flughafen Venedig oder Treviso in gut einer Stunde."
+ },
+ {
+  "slug": "westerzgebirge",
+  "name": "Fichtelberg und Klínovec",
+  "country": "DE/CZ",
+  "center": {
+   "lat": 50.41,
+   "lon": 12.98
+  },
+  "radiusKm": 30,
+  "baseTowns": [
+   "oberwiesenthal"
+  ],
+  "include": [],
+  "exclude": [],
+  "character": "Die beiden höchsten Berge des Erzgebirges zu beiden Seiten der Grenze, dazu die langen Anstiege aus dem Egertal: Hochflächen auf 900 bis 1200 m, Fichtenwald und weite Wiesen, wenig Verkehr abseits der Bundesstraße.",
+  "multiDay": "Ein langes Wochenende: Fichtelberg und Klínovec an einem Tag, Měděnec oder der Auersberg am zweiten.",
+  "access": "Mit der Bahn nach Cranzahl und weiter mit der Fichtelbergbahn nach Oberwiesenthal; von Chemnitz gut eine Stunde mit dem Auto, von Prag zwei."
+ },
+ {
+  "slug": "osterzgebirge",
+  "name": "Osterzgebirge",
+  "country": "DE/CZ",
+  "center": {
+   "lat": 50.69,
+   "lon": 13.77
+  },
+  "radiusKm": 20,
+  "baseTowns": [
+   "altenberg",
+   "teplice"
+  ],
+  "include": [],
+  "exclude": [],
+  "character": "Der Steilabbruch des Erzgebirges nach Böhmen: kurze, steile Anstiege aus Krupka, Dubí und Osek auf einen sanften Kamm, oben ruhige Straßen zwischen Altenberg und Moldava.",
+  "multiDay": "Zwei Tage reichen für alle Anstiege der böhmischen Seite; von Altenberg aus als Runden über die Grenze, von Teplice aus von unten.",
+  "access": "Mit der Bahn von Dresden über Heidenau nach Altenberg, oder nach Teplice über Ústí nad Labem; Dresden liegt eine Stunde entfernt."
+ },
+ {
+  "slug": "suedschwarzwald",
+  "name": "Südschwarzwald",
+  "country": "DE",
+  "center": {
+   "lat": 47.93,
+   "lon": 7.88
+  },
+  "radiusKm": 30,
+  "baseTowns": [
+   "freiburg",
+   "todtnau"
+  ],
+  "include": [],
+  "exclude": [],
+  "character": "Die höchsten Berge des Schwarzwalds zwischen Freiburg und dem Feldberg: lange Anstiege von 500 bis 900 Höhenmetern aus der Rheinebene und den Tälern, Wald und offene Weiden oben, auf den Bundesstraßen Verkehr.",
+  "multiDay": "Basis für ein langes Wochenende bis eine Woche: Schauinsland, Notschrei und Feldberg ergeben eine Runde, Kandel, Wiedener Eck und Blauen je einen weiteren Tag.",
+  "access": "Mit dem ICE nach Freiburg, von dort mit der Höllentalbahn ins Dreisamtal; der Flughafen Basel-Mulhouse liegt eine Stunde entfernt."
+ },
+ {
+  "slug": "nordschwarzwald",
+  "name": "Nordschwarzwald",
+  "country": "DE",
+  "center": {
+   "lat": 48.52,
+   "lon": 8.26
+  },
+  "radiusKm": 20,
+  "baseTowns": [
+   "baiersbronn"
+  ],
+  "include": [],
+  "exclude": [],
+  "character": "Der Nationalpark um die Schwarzwaldhochstraße: Anstiege aus den Tälern der Rheinseite auf einen langen Kamm auf 900 bis 1000 m, oben Hochmoor und Fernsicht, unten ruhige Täler.",
+  "multiDay": "Ein Wochenende: Ruhestein und Kniebis als Runde über die Hochstraße, die Täler der Rheinseite als zweiter Tag.",
+  "access": "Mit der Bahn nach Baiersbronn oder Freudenstadt; von Karlsruhe und Stuttgart gut eine Stunde."
+ },
+ {
+  "slug": "serra-de-tramuntana",
+  "name": "Serra de Tramuntana",
+  "country": "ES",
+  "center": {
+   "lat": 39.8,
+   "lon": 2.85
+  },
+  "radiusKm": 30,
+  "baseTowns": [
+   "port-de-pollenca",
+   "soller"
+  ],
+  "include": [
+   "puig-de-randa",
+   "sant-salvador"
+  ],
+  "exclude": [],
+  "character": "Das Gebirge an der Nordwestküste Mallorcas: Sa Calobra, Puig Major und Coll de Sóller über dem Meer, Kalkfels, Olivenhaine und Kehren, vom Meer auf fast 900 m. Im Frühjahr voller Radgruppen, im Hochsommer heiß.",
+  "multiDay": "Eine Woche, wie es die meisten machen: Sa Calobra, die Runde über Puig Major und Coll de Sóller, Lluc von beiden Seiten und an einem Regentag Randa oder Sant Salvador in der Ebene.",
+  "access": "Flughafen Palma, von dort eine Stunde nach Port de Pollença oder eine halbe nach Sóller; Radtransport nehmen alle großen Fluglinien."
+ },
+ {
+  "slug": "monts-du-cantal",
+  "name": "Monts du Cantal",
+  "country": "FR",
+  "center": {
+   "lat": 45.11,
+   "lon": 2.7
+  },
+  "radiusKm": 22,
+  "baseTowns": [
+   "murat",
+   "salers"
+  ],
+  "include": [],
+  "exclude": [],
+  "character": "Der größte erloschene Vulkan Europas, ein Kreis grüner Täler um den Puy Mary: Pas de Peyrol, Néronne und Prat de Bouc, Weiden, Burons und kaum Verkehr. Auf Juni und September warten, im Hochsommer schwül, oben im Winter gesperrt.",
+  "multiDay": "Drei Tage reichen: der Pas de Peyrol von zwei Seiten, die Runde über die Néronne ab Salers und Prat de Bouc ab Murat.",
+  "access": "Bahn bis Murat (über Clermont-Ferrand), mit dem Auto die A75; nächster Flughafen Aurillac oder Clermont-Ferrand."
+ },
+ {
+  "slug": "monts-dore",
+  "name": "Monts Dore",
+  "country": "FR",
+  "center": {
+   "lat": 45.56,
+   "lon": 2.86
+  },
+  "radiusKm": 15,
+  "baseTowns": [
+   "le-mont-dore",
+   "besse"
+  ],
+  "include": [],
+  "exclude": [],
+  "character": "Die Vulkane um den Puy de Sancy, den höchsten Berg des Zentralmassivs: Croix Saint-Robert, Croix-Morand und die Tour-Ankunft in Super-Besse auf engem Raum, dazu Kraterseen. Gut für ein langes Wochenende.",
+  "multiDay": "Zwei Tage: die Runde über Croix Saint-Robert und Super-Besse, und die Croix-Morand mit dem Lac Chambon.",
+  "access": "Mit dem Auto über Clermont-Ferrand (eine Stunde), Bahn bis Le Mont-Dore nur im Sommer."
+ },
+ {
+  "slug": "cevennen",
+  "name": "Cevennen",
+  "country": "FR",
+  "center": {
+   "lat": 44.22,
+   "lon": 3.66
+  },
+  "radiusKm": 28,
+  "baseTowns": [
+   "florac"
+  ],
+  "include": [],
+  "exclude": [],
+  "character": "Kastanienwälder, tiefe Täler und kahle Granitrücken zwischen Mont Lozère und Aigoual: lange gleichmäßige Anstiege und leere Straßen, im Süden schon Mittelmeerklima. Frühjahr und Herbst, im Hochsommer heiß in den Tälern.",
+  "multiDay": "Vier Tage: Aigoual von Valleraugue und von Meyrueis, der Minier von Le Vigan, der Mont Lozère über Finiels; dazwischen die Gorges du Tarn.",
+  "access": "Mit dem Auto über die A75 oder von Nîmes; nächster Bahnhof Alès oder Mende."
+ },
+ {
+  "slug": "harz",
+  "name": "Harz",
+  "country": "DE",
+  "center": {
+   "lat": 51.74,
+   "lon": 10.75
+  },
+  "radiusKm": 33,
+  "baseTowns": [
+   "wernigerode",
+   "bad-harzburg",
+   "thale"
+  ],
+  "include": [],
+  "exclude": [],
+  "character": "Das nördlichste Mittelgebirge mit echten Anstiegen: der autofreie Brocken, Torfhaus über Bad Harzburg und die kurzen steilen Rampen über dem Bodetal. Fichtenwald, Moore und Fachwerkstädte am Rand, für ein Wochenende von Berlin, Hamburg oder Hannover.",
+  "multiDay": "Zwei Tage: Brocken und Torfhaus von Wernigerode oder Bad Harzburg, Hexentanzplatz und Roßtrappe an einem Vormittag in Thale.",
+  "access": "Bahn bis Wernigerode, Bad Harzburg oder Thale; mit dem Auto über die A7 oder die B6."
+ },
+ {
+  "slug": "thueringer-wald",
+  "name": "Thüringer Wald",
+  "country": "DE",
+  "center": {
+   "lat": 50.78,
+   "lon": 10.6
+  },
+  "radiusKm": 18,
+  "baseTowns": [
+   "oberhof-ort",
+   "bad-tabarz"
+  ],
+  "include": [],
+  "exclude": [],
+  "character": "Der Kamm des Rennsteigs: Fichtenwald, Wintersportorte und zwei Anstiege mit Namen, der Inselsberg und Oberhof. Mehr Mittelgebirge als Gebirge, für ein Wochenende.",
+  "multiDay": "Ein Wochenende: der Inselsberg von beiden Seiten und Oberhof, dazwischen ein Stück Rennsteig.",
+  "access": "Bahn bis Oberhof oder Gotha, mit dem Auto über die A71 oder die A4."
+ },
+ {
+  "slug": "rhoen",
+  "name": "Rhön",
+  "country": "DE",
+  "center": {
+   "lat": 50.45,
+   "lon": 10
+  },
+  "radiusKm": 13,
+  "baseTowns": [
+   "gersfeld",
+   "bischofsheim"
+  ],
+  "include": [],
+  "exclude": [],
+  "character": "Das Land der offenen Fernsicht: kahle Hochflächen, Segelflieger über der Wasserkuppe und das Klosterbier am Kreuzberg. Kurze Anstiege, viel Wind, wenig Verkehr unter der Woche.",
+  "multiDay": "Zwei Tage: Wasserkuppe von zwei Seiten, Kreuzberg und die Hochrhönstraße als Runde.",
+  "access": "Bahn bis Fulda oder Bad Neustadt, mit dem Auto über die A7."
+ },
+ {
+  "slug": "arberland",
+  "name": "Arberland",
+  "country": "DE",
+  "center": {
+   "lat": 49.1,
+   "lon": 13.15
+  },
+  "radiusKm": 12,
+  "baseTowns": [
+   "bodenmais",
+   "bayerisch-eisenstein"
+  ],
+  "include": [],
+  "exclude": [],
+  "character": "Die beiden Straßen über den Arber, Bretterschachten und Brennes, auf einer Runde von Bodenmais oder Bayerisch Eisenstein. Fichtenwald, Bergbahn und der Arbersee; der Böhmerwald gleich hinter der Grenze.",
+  "multiDay": "Ein Wochenende: die Runde um den Arber über beide Pässe, dazu ein Tag in den Böhmerwald nach Železná Ruda und Špičák.",
+  "access": "Bahn bis Bayerisch Eisenstein oder Bodenmais, mit dem Auto über die A3 und Deggendorf."
+ },
+ {
+  "slug": "boehmerwald",
+  "name": "Böhmerwald",
+  "country": "CZ",
+  "center": {
+   "lat": 48.93,
+   "lon": 13.95
+  },
+  "radiusKm": 30,
+  "baseTowns": [
+   "cesky-krumlov"
+  ],
+  "include": [],
+  "exclude": [],
+  "character": "Die tschechische Seite des Grenzgebirges: der Kleť über Český Krumlov, der Churáňov über Stachy und der Dreisessel an der Grenze zu Bayern. Lange, gleichmäßige Anstiege durch Fichtenwald, ruhige Straßen und die Moldau im Tal.",
+  "multiDay": "Drei Tage von Český Krumlov: der Kleť am Morgen, der Churáňov als lange Runde über Vimperk, der Dreisessel über den Lipno-Stausee.",
+  "access": "Bahn bis Český Krumlov über České Budějovice; mit dem Auto von Passau oder Linz."
+ },
+ {
+  "slug": "alta-rocca",
+  "name": "Alta Rocca",
+  "country": "FR",
+  "center": {
+   "lat": 41.71,
+   "lon": 9.22
+  },
+  "radiusKm": 16,
+  "baseTowns": [
+   "zonza",
+   "porto-vecchio"
+  ],
+  "include": [],
+  "exclude": [],
+  "character": "Der Süden Korsikas zwischen Granitnadeln und Meer: der Col de Bavella über Zonza und der lange Anstieg auf das Ospedale über Porto-Vecchio. Kiefernwald, Badegumpen und Strände am selben Tag.",
+  "multiDay": "Drei Tage: das Ospedale und Zonza als Runde von Porto-Vecchio, Bavella von beiden Seiten, ein Tag an der Küste.",
+  "access": "Fähre oder Flug nach Figari oder Bastia, mit dem Auto über die Ostküste."
+ },
+ {
+  "slug": "zentralkorsika",
+  "name": "Zentralkorsika",
+  "country": "FR",
+  "center": {
+   "lat": 42.17,
+   "lon": 9.15
+  },
+  "radiusKm": 20,
+  "baseTowns": [
+   "corte"
+  ],
+  "include": [],
+  "exclude": [],
+  "character": "Die Mitte der Insel um Vivario: Vizzavona, Sorba und Verde in tiefen Kiefern- und Buchenwäldern, ruhige Straßen bis auf die Nationalstraße. Corte mit der Bahn als Ausgangspunkt.",
+  "multiDay": "Drei Tage von Corte: Vizzavona und Sorba als Runde über Vivario und Ghisoni, der Verde als langer Tag, dazu die Restonica-Schlucht.",
+  "access": "Bahn bis Corte von Bastia oder Ajaccio; mit dem Auto über die T20."
+ },
+ {
+  "slug": "westkorsika",
+  "name": "Westkorsika",
+  "country": "FR",
+  "center": {
+   "lat": 42.26,
+   "lon": 8.84
+  },
+  "radiusKm": 10,
+  "baseTowns": [
+   "evisa"
+  ],
+  "include": [],
+  "exclude": [],
+  "character": "Die Berge über dem Golf von Porto: der Col de Vergio, der höchste Straßenpass der Insel, und der Col de Sevi über Vico. Laricio-Kiefern, die Schluchten der Spelunca und das Meer in Sichtweite.",
+  "multiDay": "Zwei Tage von Evisa: der Vergio am Morgen, der Sevi über Vico als Runde; dazu die Calanche de Piana an der Küste.",
+  "access": "Mit dem Auto von Ajaccio über Sagone oder von Porto; kein Bahnhof in der Nähe."
+ },
+ {
+  "slug": "teneriffa",
+  "name": "Teneriffa",
+  "country": "ES",
+  "center": {
+   "lat": 28.27,
+   "lon": -16.62
+  },
+  "radiusKm": 27,
+  "baseTowns": [
+   "puerto-de-la-cruz",
+   "los-cristianos"
+  ],
+  "include": [],
+  "exclude": [],
+  "character": "Die Insel um den Teide: drei Wege in die Cañadas, jeder über 1300 Höhenmeter, dazu die Kehren von Masca. Im Winter das Trainingslager der Profis, im Norden oft Wolken, im Süden Sonne.",
+  "multiDay": "Eine Woche: der Teide von Norden und von Westen, Izaña über den Grat, Masca, und ein Ruhetag am Meer.",
+  "access": "Flug nach Teneriffa Süd oder Nord, Rad im Flugzeug oder vor Ort leihen."
+ },
+ {
+  "slug": "gran-canaria",
+  "name": "Gran Canaria",
+  "country": "ES",
+  "center": {
+   "lat": 27.94,
+   "lon": -15.58
+  },
+  "radiusKm": 20,
+  "baseTowns": [
+   "maspalomas"
+  ],
+  "include": [],
+  "exclude": [],
+  "character": "Eine runde Insel mit dem höchsten Punkt in der Mitte: von jeder Küste geht es bergauf, durch Schluchten und Kiefernwald bis zum Pico de las Nieves und zur Cruz de Tejeda. Sonnig im Süden, kühl oben.",
+  "multiDay": "Fünf Tage von Maspalomas: Fataga, Pico de las Nieves, Cruz de Tejeda über Ayacata, die Westküste über Mogán.",
+  "access": "Flug nach Gran Canaria, Transfer in die Hotelzone im Süden; Radverleihe in Maspalomas."
+ },
+ {
+  "slug": "la-palma",
+  "name": "La Palma",
+  "country": "ES",
+  "center": {
+   "lat": 28.72,
+   "lon": -17.84
+  },
+  "radiusKm": 15,
+  "baseTowns": [
+   "santa-cruz-de-la-palma"
+  ],
+  "include": [],
+  "exclude": [],
+  "character": "Die grüne Insel im Westen: der Roque de los Muchachos, 2400 Höhenmeter vom Meer, dazu steile Straßen durch Lorbeerwald und kaum Verkehr. Für Kletterer, die Ruhe suchen.",
+  "multiDay": "Drei Tage: der Roque von Santa Cruz, die Nordrunde über Barlovento und Garafía, die Vulkane im Süden.",
+  "access": "Flug nach La Palma oder Fähre von Teneriffa."
+ },
+ {
+  "slug": "zentralasturien",
+  "name": "Zentralasturien",
+  "country": "ES",
+  "center": {
+   "lat": 43.14,
+   "lon": -5.98
+  },
+  "radiusKm": 25,
+  "baseTowns": [
+   "pola-de-lena",
+   "pola-de-somiedo"
+  ],
+  "include": [],
+  "exclude": [],
+  "character": "Die Vuelta-Berge südlich von Oviedo: Angliru, Cobertoria, San Lorenzo, Farrapona und Pajares in grünen Tälern, steil, schmal und leer. Atlantisches Wetter, im Sommer angenehm kühl.",
+  "multiDay": "Fünf Tage: Angliru, Cobertoria und Pajares von Pola de Lena, San Lorenzo und Farrapona von Somiedo.",
+  "access": "Flug nach Asturias (Oviedo), Bahn bis Pola de Lena; mit dem Auto über die AP-66."
+ },
+ {
+  "slug": "picos-de-europa",
+  "name": "Picos de Europa",
+  "country": "ES",
+  "center": {
+   "lat": 43.2,
+   "lon": -4.86
+  },
+  "radiusKm": 28,
+  "baseTowns": [
+   "cangas-de-onis",
+   "potes"
+  ],
+  "include": [],
+  "exclude": [],
+  "character": "Kalkberge zwischen Asturien, Kantabrien und León: Lagos de Covadonga, die berühmteste Vuelta-Ankunft, und der San Glorio mit dem Blick über das ganze Massiv. Dazwischen tiefe Schluchten.",
+  "multiDay": "Vier Tage: Covadonga von Cangas de Onís, die Hermida-Schlucht nach Potes, San Glorio und Fuente Dé.",
+  "access": "Flug nach Asturias oder Santander, mit dem Auto über die A-8."
+ },
+ {
+  "slug": "sierra-nevada",
+  "name": "Sierra Nevada",
+  "country": "ES",
+  "center": {
+   "lat": 37.12,
+   "lon": -3.42
+  },
+  "radiusKm": 18,
+  "baseTowns": [
+   "granada"
+  ],
+  "include": [],
+  "exclude": [],
+  "character": "Die Berge über Granada: die höchste Straße Spaniens bis auf fast 2500 m, der Purche und die harte Hazallanas-Rampe. Von der Stadt aus zu fahren, im Sommer nur früh am Morgen.",
+  "multiDay": "Drei Tage von Granada: die Sierra Nevada bis zur Hoya de la Mora, Hazallanas, der Purche mit der Alhambra am Nachmittag.",
+  "access": "Flug nach Granada oder Málaga, Bahn bis Granada."
+ },
+ {
+  "slug": "sierra-de-los-filabres",
+  "name": "Sierra de los Filabres",
+  "country": "ES",
+  "center": {
+   "lat": 37.22,
+   "lon": -2.48
+  },
+  "radiusKm": 21,
+  "baseTowns": [
+   "tabernas"
+  ],
+  "include": [],
+  "exclude": [],
+  "character": "Kahle Berge über der Wüste von Tabernas: Calar Alto mit der Sternwarte und die Kehren von Velefique, zwei Vuelta-Anstiege ohne Verkehr. Für Frühjahr und Herbst, im Sommer zu heiß.",
+  "multiDay": "Zwei Tage von Tabernas: Calar Alto über Gérgal, Velefique mit der Abfahrt über Bacares.",
+  "access": "Flug nach Almería, mit dem Auto über die A-92."
+ },
+ {
+  "slug": "majella",
+  "name": "Majella",
+  "country": "IT",
+  "center": {
+   "lat": 42.17,
+   "lon": 14.11
+  },
+  "radiusKm": 10,
+  "baseTowns": [
+   "guardiagrele"
+  ],
+  "include": [],
+  "exclude": [],
+  "character": "Das Kalkmassiv über der Adria: der Blockhaus, der härteste Giro-Berg des Südens, und der Passo Lanciano durch Buchenwald. Von der Küste in einer Stunde erreichbar.",
+  "multiDay": "Zwei Tage: Blockhaus von Roccamorice, Passo Lanciano von Pretoro mit der Abfahrt nach Guardiagrele.",
+  "access": "Flug oder Bahn nach Pescara, dann mit dem Auto in die Berge."
+ },
+ {
+  "slug": "gran-sasso",
+  "name": "Gran Sasso und Terminillo",
+  "country": "IT",
+  "center": {
+   "lat": 42.45,
+   "lon": 13.27
+  },
+  "radiusKm": 25,
+  "baseTowns": [
+   "l-aquila"
+  ],
+  "include": [],
+  "exclude": [],
+  "character": "Die höchsten Berge des Apennins zwischen Abruzzen und Latium: Campo Imperatore über die Hochebene unter dem Corno Grande und der Terminillo über Rieti. Lange Anstiege, weite Landschaft.",
+  "multiDay": "Drei Tage: Campo Imperatore von Fonte Cerreto, der Terminillo von Rieti, dazwischen die Hochebene von Rocca di Mezzo.",
+  "access": "Bahn bis L'Aquila oder Rieti, mit dem Auto von Rom in anderthalb Stunden."
+ },
+ {
+  "slug": "appennino-tosco-emiliano",
+  "name": "Toskanisch-Emilianischer Apennin",
+  "country": "IT",
+  "center": {
+   "lat": 44.17,
+   "lon": 10.57
+  },
+  "radiusKm": 12,
+  "baseTowns": [
+   "abetone-ort"
+  ],
+  "include": [],
+  "exclude": [],
+  "character": "Der grüne Kamm zwischen Toskana und Emilia: der Abetone durch Tannenwald und San Pellegrino in Alpe mit seinen Wänden über 15 %. Kühl im Sommer, ruhig außerhalb der Ferien.",
+  "multiDay": "Drei Tage von Abetone: der Pass von beiden Seiten, San Pellegrino über die Garfagnana, das Foce delle Radici.",
+  "access": "Mit dem Auto über Pistoia oder Modena; Bahn bis Pistoia."
+ },
+ {
+  "slug": "aetna",
+  "name": "Ätna",
+  "country": "IT",
+  "center": {
+   "lat": 37.73,
+   "lon": 15.05
+  },
+  "radiusKm": 16,
+  "baseTowns": [
+   "nicolosi",
+   "linguaglossa"
+  ],
+  "include": [],
+  "exclude": [],
+  "character": "Ein Vulkan mit vier Auffahrten auf 1800 bis 1900 m: Nicolosi, Zafferana und Ragalna zum Rifugio Sapienza, Linguaglossa nach Piano Provenzana. Lange, gleichmäßige Anstiege mit Blick aufs Meer, von März bis November.",
+  "multiDay": "Drei Tage: der Ätna von Süden über Nicolosi, von Osten über Zafferana und von Norden über Linguaglossa.",
+  "access": "Flug nach Catania, von dort eine halbe Stunde nach Nicolosi."
+ },
+ {
+  "slug": "ardennen-klassiker",
+  "name": "Ardennen-Klassiker",
+  "country": "BE",
+  "center": {
+   "lat": 50.43,
+   "lon": 5.86
+  },
+  "radiusKm": 14,
+  "baseTowns": [
+   "spa",
+   "stavelot"
+  ],
+  "include": [],
+  "exclude": [],
+  "character": "Die Anstiege aus dem Finale von Lüttich–Bastogne–Lüttich auf engem Raum: Redoute, Rosier, Wanne, Stockeu und Haute-Levée, jeder zwischen einem und gut sechs Kilometern. Keine Pässe, aber eine Runde mit 2000 Höhenmetern, von April bis Oktober.",
+  "multiDay": "Zwei Tage von Spa: die Schleife Wanne, Stockeu, Haute-Levée und Rosier, am zweiten Tag die Redoute und die Roche-aux-Faucons auf dem Weg nach Lüttich.",
+  "access": "Bahn bis Lüttich oder Spa, mit dem Auto eine Stunde von Aachen."
+ },
+ {
+  "slug": "riesengebirge",
+  "name": "Riesengebirge",
+  "country": "CZ",
+  "center": {
+   "lat": 50.7,
+   "lon": 15.69
+  },
+  "radiusKm": 13,
+  "baseTowns": [
+   "spindleruv-mlyn",
+   "janske-lazne"
+  ],
+  "include": [],
+  "exclude": [],
+  "character": "Der höchste Kamm zwischen Böhmen und Schlesien: Špindlerova bouda, Černá hora, Horní Mísečky und der Okraj-Pass, jeder zwischen vier und sechzehn Kilometern. Kurze, steile Anstiege im Fichtenwald, von Mai bis Oktober.",
+  "multiDay": "Zwei Tage: von Špindlerův Mlýn auf die Špindlerova bouda und nach Horní Mísečky, von Janské Lázně auf die Černá hora und über Malá Úpa auf den Okraj.",
+  "access": "Mit dem Auto zwei Stunden von Dresden oder Prag, Bahn bis Vrchlabí oder Trutnov."
+ },
+ {
+  "slug": "niedere-tatra",
+  "name": "Niedere Tatra",
+  "country": "SK",
+  "center": {
+   "lat": 48.95,
+   "lon": 19.66
+  },
+  "radiusKm": 16,
+  "baseTowns": [
+   "liptovsky-mikulas"
+  ],
+  "include": [],
+  "exclude": [],
+  "character": "Der Kamm zwischen Liptov und dem Hron-Tal: die Čertovica von zwei Seiten, der Chopok von Süden über Bystrá und von Norden nach Jasná. Bergstraßen im Fichtenwald, von Juni bis September.",
+  "multiDay": "Zwei Tage von Liptovský Mikuláš: Jasná und die Čertovica über Vyšná Boca, am zweiten Tag über die Čertovica nach Süden und den Chopok von Bystrá.",
+  "access": "Bahn bis Liptovský Mikuláš, Flug nach Poprad oder Kraków."
  }
 ]

@@ -3660,5 +3660,811 @@
   "ascents": [
    "Sierre"
   ]
+ },
+ "fichtelberg": {
+  "classicAscent": "5.4 km, 5.3 % from Oberwiesenthal",
+  "note": "Saxony's highest mountain: the road ends at the Fichtelberghaus just below the summit (1215 m). Short, around 9 % in the middle; a ski area in winter, the access road to the house is cleared.",
+  "ascents": [
+   "Oberwiesenthal"
+  ]
+ },
+ "klinovec": {
+  "classicAscent": "11.4 km, 5.1 % from Jáchymov",
+  "note": "The highest mountain of the Ore Mountains, on the Bohemian side opposite the Fichtelberg. From Jáchymov the long climb through the forest, from Loučná the shorter one; at the top a lookout tower and a ski area.",
+  "ascents": [
+   "Jáchymov (south)",
+   "Loučná pod Klínovcem (north)"
+  ]
+ },
+ "komari-vizka": {
+  "classicAscent": "5.4 km, 8.7 % from Krupka",
+  "note": "Steeply out of Krupka in hairpins up to the edge of the Ore Mountains, close to 9 % on average. At the top the Komáří vížka viewpoint above the North Bohemian Basin; the road carries on across the plateau to Fojtovice and Cínovec.",
+  "ascents": [
+   "Krupka"
+  ]
+ },
+ "cinovec": {
+  "classicAscent": "9.7 km, 4.9 % from Dubí",
+  "note": "The old border road from Teplice to Zinnwald, much quieter since the D8 motorway: steadily up through the forest onto the plateau, and on to Altenberg at the top.",
+  "ascents": [
+   "Dubí"
+  ]
+ },
+ "medenec": {
+  "classicAscent": "9.6 km, 5.4 % from Klášterec nad Ohří",
+  "note": "Steadily out of the Ohře valley at Klášterec up to Měděnec below the Mědník hill, with a view back over the valley. At the top the road carries on across the plateau to Vejprty or Kovářská.",
+  "ascents": [
+   "Klášterec nad Ohří"
+  ]
+ },
+ "dlouha-louka": {
+  "classicAscent": "6.5 km, 8.1 % from Osek",
+  "note": "From Osek and its Cistercian monastery steeply up through the forest in hairpins onto the ridge at Dlouhá Louka; on to Moldava or Nové Město at the top.",
+  "ascents": [
+   "Osek"
+  ]
+ },
+ "auersberg": {
+  "classicAscent": "6.0 km, 4.5 % from Wildenthal",
+  "note": "A dead-end road in the western Ore Mountains up the Auersberg, with a lookout tower and a mountain inn. Short from Wildenthal, long and gentle from Eibenstock; almost entirely in the forest.",
+  "ascents": [
+   "Wildenthal"
+  ]
+ },
+ "bournak": {
+  "classicAscent": "4.8 km, 5.6 % from Mikulov",
+  "note": "A short dead-end road up the Bouřňák with its ski area and mountain hut, between Mikulov and Moldava on the ridge. At the top a view south over the basin.",
+  "ascents": [
+   "Mikulov"
+  ]
+ },
+ "schauinsland": {
+  "classicAscent": "14.7 km, 6.0 % from Freiburg-Günterstal",
+  "note": "Freiburg's own mountain: from Günterstal up the old hill-climb course in countless bends to over 1200 m, then on across Hofsgrund to the Notschrei. Many motorbikes at weekends.",
+  "ascents": [
+   "Freiburg-Günterstal"
+  ]
+ },
+ "kandel": {
+  "classicAscent": "12.7 km, 7.4 % from Waldkirch",
+  "note": "From Waldkirch in the Elz valley up more than 900 metres to the Kandel, one of the hardest climbs of the Black Forest. From St. Peter on the other side it is only a short counter-climb, hence the one ascent here.",
+  "ascents": [
+   "Waldkirch (west)"
+  ]
+ },
+ "feldbergpass": {
+  "classicAscent": "10.0 km, 5.8 % from Todtnau",
+  "note": "The highest road crossing of the Black Forest, below the Feldberg (1493 m) between the Wiese valley and the Titisee. A main road with heavy traffic, a ski area in winter, and cleared.",
+  "ascents": [
+   "Todtnau (west)",
+   "Bärental (east)"
+  ]
+ },
+ "notschrei": {
+  "classicAscent": "10.0 km, 6.2 % from Oberried",
+  "note": "Crossing from the Dreisam valley into the Wiese valley between the Schauinsland and the Feldberg, with the cross-country ski centre at the pass. From Oberried the longer and finer side, from Todtnau the shorter one.",
+  "ascents": [
+   "Oberried (north)",
+   "Todtnau (south)"
+  ]
+ },
+ "wiedener-eck": {
+  "classicAscent": "14.5 km, 4.5 % from Münstertal",
+  "note": "Up the long Münster valley to the saddle between the Belchen and the Schauinsland, with a wide view of the Belchen at the top. From Wieden on the east side it is barely 200 metres of climbing, hence one ascent.",
+  "ascents": [
+   "Münstertal (west)"
+  ]
+ },
+ "hochblauen": {
+  "classicAscent": "9.2 km, 8.2 % from Badenweiler",
+  "note": "A dead-end road from Badenweiler up the Blauen, the south-westernmost thousand-metre peak of the Black Forest: steep, without a flat stretch, and at the top a lookout tower with a view over the Rhine plain and, on a föhn day, to the Alps.",
+  "ascents": [
+   "Badenweiler"
+  ]
+ },
+ "kniebis": {
+  "classicAscent": "12.2 km, 5.5 % from Oppenau",
+  "note": "Crossing from the Rench valley to Freudenstadt at the Alexanderschanze: from Oppenau on the country road up the Lierbach valley and in hairpins, then flat across the top. To the east the road barely drops, hence one ascent.",
+  "ascents": [
+   "Oppenau (west)"
+  ]
+ },
+ "ruhestein": {
+  "classicAscent": "8.5 km, 6.2 % from Seebach",
+  "note": "From Seebach in the Acher valley up to the Black Forest High Road at the national park; the B500 crosses at the top. Towards Baiersbronn the road drops long and gently through the Obertal, hence one ascent.",
+  "ascents": [
+   "Seebach (west)"
+  ]
+ },
+ "sa-calobra": {
+  "classicAscent": "10.2 km, 6.6 % from Sa Calobra",
+  "note": "Mallorca's most famous road: from the cove of Sa Calobra up dozens of hairpins and under the knotted tie (Nus de sa Corbata) to the Coll dels Reis. First down, then back – the other side from the junction on the Ma-10 is only a short counter-climb. Coaches during the day, free early in the morning.",
+  "ascents": [
+   "Sa Calobra (north)"
+  ]
+ },
+ "puig-major": {
+  "classicAscent": "16 km, 5.3 % from Sóller",
+  "note": "The island's highest road point, on the Ma-10 below the summit of the Puig Major (itself a military zone). From Sóller long and steady with views of the sea, at the top a short tunnel and the Cúber and Gorg Blau reservoirs.",
+  "ascents": [
+   "Sóller (west)",
+   "Lluc (east)"
+  ]
+ },
+ "coll-de-soller": {
+  "classicAscent": "8.5 km, 5.4 % from Sóller",
+  "note": "The old pass road between Palma and Sóller, almost free of cars since the tunnel: a ribbon of hairpins on both sides, longer and finer from Sóller.",
+  "ascents": [
+   "Sóller (north)",
+   "Bunyola (south)"
+  ]
+ },
+ "coll-de-sa-batalla": {
+  "classicAscent": "8.4 km, 4.8 % from Caimari",
+  "note": "From Caimari at the edge of the plain steadily up into the mountains towards Lluc, the most ridden climb on the island. At the top the petrol station on the col with its café, then on to Lluc and the Puig Major.",
+  "ascents": [
+   "Caimari"
+  ]
+ },
+ "coll-d-honor": {
+  "classicAscent": "6.2 km, 5.5 % from Bunyola",
+  "note": "A narrow mountain road from Bunyola over the Coll d'Honor into the high valley of Orient, almost free of traffic. Towards Orient it drops only briefly, hence one ascent.",
+  "ascents": [
+   "Bunyola (south)"
+  ]
+ },
+ "coll-de-femenia": {
+  "classicAscent": "8.0 km, 5.3 % from the head of the valley above Pollença",
+  "note": "From Pollença on the Ma-10 into the mountains towards Lluc: after six flat kilometres along the valley, in hairpins up to the Coll de Femenia with a view back to the bay. At the top the road carries on across the high ground to Lluc.",
+  "ascents": [
+   "Pollença (head of the valley)"
+  ]
+ },
+ "puig-de-randa": {
+  "classicAscent": "5.1 km, 4.9 % from Randa",
+  "note": "The monastery mountain in the middle of the plain, with three sanctuaries one above the other and the Santuari de Cura at the top. Short and steady; the hill to ride from Palma when the Tramuntana is in the rain.",
+  "ascents": [
+   "Randa"
+  ]
+ },
+ "sant-salvador": {
+  "classicAscent": "7.8 km, 4.7 % from Felanitx",
+  "note": "A dead-end road from Felanitx to the Sant Salvador monastery in the south-east of the island, with the great cross and the view over the coast at the top. A goal for the days when the north is in the wind.",
+  "ascents": [
+   "Felanitx"
+  ]
+ },
+ "pas-de-peyrol": {
+  "classicAscent": "11.2 km, 5.9 % from Le Falgoux",
+  "note": "The highest road pass of the Massif Central, right below the summit of the Puy Mary, with three ascents out of three green valleys. A Tour de France stage finish in 2020. Closed in winter.",
+  "ascents": [
+   "Le Falgoux (west)",
+   "Mandailles (south)",
+   "Dienne (east)"
+  ]
+ },
+ "col-de-neronne": {
+  "classicAscent": "4.2 km, 7.7 % from Le Falgoux",
+  "note": "Crossing from Salers into the Le Falgoux valley, the western approach to the Pas de Peyrol. From Le Falgoux short and steep, from Salers long and gentle across the high pastures.",
+  "ascents": [
+   "Le Falgoux (east)"
+  ]
+ },
+ "col-de-prat-de-bouc": {
+  "classicAscent": "10.0 km, 4.1 % from Murat",
+  "note": "Dead-end road from Murat via Albepierre onto the plateau below the Plomb du Cantal, with a small ski area and footpaths at the top. Steady and quiet.",
+  "ascents": [
+   "Murat"
+  ]
+ },
+ "col-de-la-croix-saint-robert": {
+  "classicAscent": "6.8 km, 6.1 % from Le Mont-Dore",
+  "note": "The crossing from Le Mont-Dore to Besse across the flank of the Puy de Sancy. From Le Mont-Dore the steep, fine side; towards Besse long and flat across the plateau. Closed in winter.",
+  "ascents": [
+   "Le Mont-Dore (north)"
+  ]
+ },
+ "col-de-la-croix-morand": {
+  "classicAscent": "8.9 km, 5.6 % from Chambon-sur-Lac",
+  "note": "The crossing between Le Mont-Dore and the Lac Chambon on the D996, ridden several times by the Tour de France. From Chambon the longer side, with a view of the lake.",
+  "ascents": [
+   "Chambon-sur-Lac (east)",
+   "Le Mont-Dore (west)"
+  ]
+ },
+ "super-besse": {
+  "classicAscent": "6.6 km, 4.1 % from Besse",
+  "note": "The climb from Besse into the ski resort below the Sancy, a Tour de France stage finish in 1978, 1996, 2008 and 2011. The road ends in the resort; with the Croix Saint-Robert it makes a loop.",
+  "ascents": [
+   "Besse"
+  ]
+ },
+ "col-du-beal": {
+  "classicAscent": "6.3 km, 6.8 % from Saint-Pierre-la-Bourlhonne",
+  "note": "The highest crossing of the Monts du Forez, between the Auvergne and the Loire, over the treeless jasseries. From the west the steeper side, from Chalmazel shorter. Closed in winter.",
+  "ascents": [
+   "Saint-Pierre-la-Bourlhonne (west)",
+   "Chalmazel (east)"
+  ]
+ },
+ "mont-aigoual": {
+  "classicAscent": "27.4 km, 4.4 % from Valleraugue",
+  "note": "The summit with the weather station, reached from Valleraugue by almost 1200 metres of climbing in one go; a Tour de France stage finish in 2020. From Meyrueis longer and gentler across the causse. Often windy and misty at the top.",
+  "ascents": [
+   "Valleraugue (south)",
+   "Meyrueis (north)"
+  ]
+ },
+ "col-de-finiels": {
+  "classicAscent": "11.2 km, 5.7 % from Le Pont-de-Montvert",
+  "note": "The crossing of the Mont Lozère, on the route Stevenson walked with his donkey. From Le Pont-de-Montvert the longer and steeper side, from Le Bleymard via the Mont Lozère ski station.",
+  "ascents": [
+   "Le Pont-de-Montvert (south)",
+   "Le Bleymard (north)"
+  ]
+ },
+ "col-du-minier": {
+  "classicAscent": "21.0 km, 5.0 % from Le Vigan",
+  "note": "From Le Vigan more than 1000 metres up through the forest to the ridge of the Aigoual; often the way to the summit from the south. Quiet, steady and shady.",
+  "ascents": [
+   "Le Vigan (south)"
+  ]
+ },
+ "brocken": {
+  "classicAscent": "10.6 km, 4.9 % from Schierke",
+  "note": "The Brocken road from Schierke to the highest mountain in northern Germany is closed to cars and open to bikes; at the top the Brocken railway station, a weather station and many walkers. Often wind, fog and snow into May.",
+  "ascents": [
+   "Schierke"
+  ]
+ },
+ "torfhaus": {
+  "classicAscent": "10.6 km, 5.2 % from Bad Harzburg",
+  "note": "The B4 from Bad Harzburg onto the plateau of the Upper Harz, with the Brocken opposite. Steady, but a main road with a lot of traffic and motorbikes; quieter from Altenau.",
+  "ascents": [
+   "Bad Harzburg (north)",
+   "Altenau (west)"
+  ]
+ },
+ "hexentanzplatz": {
+  "classicAscent": "4.8 km, 6.7 % from Thale",
+  "note": "The steep hairpin road from Thale onto the plateau above the Bode gorge, with a cable car, a zoo and an open-air theatre at the top. Plenty of day-trip traffic at weekends.",
+  "ascents": [
+   "Thale"
+  ]
+ },
+ "rosstrappe": {
+  "classicAscent": "4.3 km, 6.5 % from Thale",
+  "note": "The Hexentanzplatz's sister on the other side of the Bode gorge: from Thale short and steep to the rock above the gorge; the road ends at an inn.",
+  "ascents": [
+   "Thale"
+  ]
+ },
+ "ravensberg": {
+  "classicAscent": "6.2 km, 4.8 % from Bad Sachsa",
+  "note": "The dead-end road from Bad Sachsa to the viewpoint mountain on the southern edge of the Harz, with an inn at the top and a view across the southern foothills. Quiet, with steep ramps in the forest.",
+  "ascents": [
+   "Bad Sachsa"
+  ]
+ },
+ "grosser-inselsberg": {
+  "classicAscent": "8.9 km, 5.8 % from Tabarz",
+  "note": "The most striking summit of the Thuringian Forest, on the Rennsteig. From Tabarz long and steep at the end, from Brotterode short and steep; inns and a wide view north at the top.",
+  "ascents": [
+   "Tabarz (north)",
+   "Brotterode (south)"
+  ]
+ },
+ "oberhof": {
+  "classicAscent": "8.0 km, 4.3 % from Zella-Mehlis",
+  "note": "The crossing of the Rennsteig at the winter sports resort of Oberhof, steadily through the forest from Zella-Mehlis. A wide road; to the north it falls long and gently to Tambach-Dietharz.",
+  "ascents": [
+   "Zella-Mehlis (south)"
+  ]
+ },
+ "wasserkuppe": {
+  "classicAscent": "11.3 km, 4.1 % from Gersfeld",
+  "note": "The highest mountain of the Rhön and of Hesse, the cradle of gliding: an airfield, a radar dome and day-trip crowds at the top. From Gersfeld long and steady, from Poppenhausen a little steeper.",
+  "ascents": [
+   "Gersfeld (south)",
+   "Poppenhausen (west)"
+  ]
+ },
+ "kreuzberg-rhoen": {
+  "classicAscent": "6.0 km, 5.6 % from Bischofsheim",
+  "note": "The holy mountain of Franconia: from Bischofsheim steeply up to the monastery and its brewery below the summit. The road ends at the car park.",
+  "ascents": [
+   "Bischofsheim"
+  ]
+ },
+ "hochrhoenstrasse": {
+  "classicAscent": "6.9 km, 5.5 % from Fladungen",
+  "note": "From Fladungen up onto the Hochrhön road at the Black Moor, which then runs across the bare Long Rhön to Bischofsheim. A climb in the strict sense: flat and open at the top.",
+  "ascents": [
+   "Fladungen"
+  ]
+ },
+ "bretterschachten": {
+  "classicAscent": "7.2 km, 6.5 % from Bodenmais",
+  "note": "The highest road point of the Bavarian Forest, between Bodenmais and Bayerisch Eisenstein below the Arber. From Bodenmais steadily steep in the forest; to the east long and gentler via Arberhütte.",
+  "ascents": [
+   "Bodenmais (west)"
+  ]
+ },
+ "brennes": {
+  "classicAscent": "6.1 km, 5.8 % from Bayerisch Eisenstein",
+  "note": "The crossing at the Großer Arber between Bayerisch Eisenstein and Lohberg, at the valley station of the Arber cable car. From Eisenstein short and steep, towards Lohberg long past the Großer Arbersee.",
+  "ascents": [
+   "Bayerisch Eisenstein (east)"
+  ]
+ },
+ "dreisessel": {
+  "classicAscent": "10.5 km, 3.7 % from Haidmühle",
+  "note": "The road up the border mountain where Bavaria, Bohemia and Austria meet, with a mountain inn and granite crags at the top and views across the Bohemian Forest and, with föhn, to the Alps.",
+  "ascents": [
+   "Haidmühle"
+  ]
+ },
+ "klet": {
+  "classicAscent": "13.2 km, 4.5 % from Český Krumlov",
+  "note": "The local mountain of Český Krumlov and České Budějovice, with an observatory and the oldest stone lookout tower in Bohemia. The last kilometres are closed to cars and belong to cyclists.",
+  "ascents": [
+   "Český Krumlov"
+  ]
+ },
+ "churanov": {
+  "classicAscent": "8.2 km, 4.3 % from Stachy",
+  "note": "From Stachy up onto the plateau of the Bohemian Forest at Zadov, with a weather station and a small ski area. At the top the road runs on flat to the raised bogs around Kvilda.",
+  "ascents": [
+   "Stachy"
+  ]
+ },
+ "col-de-bavella": {
+  "classicAscent": "9.0 km, 5.0 % from Zonza",
+  "note": "The pass below the Aiguilles de Bavella, the red granite needles in the south of the island. From Zonza short and steady, from Solenzara on the east coast thirty kilometres through the gorge of the Solenzara.",
+  "ascents": [
+   "Zonza (west)",
+   "Solenzara (east)"
+  ]
+ },
+ "col-de-vergio": {
+  "classicAscent": "12.0 km, 5.1 % from Evisa",
+  "note": "The highest road pass in Corsica, between the Forêt d'Aïtone and the Niolo. From Evisa uphill through tall Laricio pines; to the east long and gentle via Calacuccia.",
+  "ascents": [
+   "Evisa (west)"
+  ]
+ },
+ "col-de-vizzavona": {
+  "classicAscent": "9.4 km, 5.6 % from Bocognano",
+  "note": "The pass of the main road between Ajaccio and Bastia, which the 2013 Tour de France crossed on Corsica. Beech and pine forest, but a lot of traffic: better early in the morning or out of season.",
+  "ascents": [
+   "Bocognano (south)",
+   "Vivario (north)"
+  ]
+ },
+ "col-de-sorba": {
+  "classicAscent": "9.5 km, 6.9 % from Vivario",
+  "note": "The quiet link from Vivario to Ghisoni, steep and in hairpins on both sides. At the top the view across the ridge to Monte Rotondo.",
+  "ascents": [
+   "Vivario (north)",
+   "Ghisoni (south)"
+  ]
+ },
+ "col-de-verde": {
+  "classicAscent": "17.3 km, 3.7 % from Ghisoni",
+  "note": "The long forest pass between Ghisoni and the Taravo valley, through one of the island's largest forests. Long and moderately steep on both sides, with flat stretches.",
+  "ascents": [
+   "Ghisoni (north)",
+   "Cozzano (south)"
+  ]
+ },
+ "col-de-teghime": {
+  "classicAscent": "10.1 km, 4.9 % from Bastia",
+  "note": "Bastia's local climb, over the ridge at the root of Cap Corse to Saint-Florent. At the top the view of both seas, the Tyrrhenian and the Gulf of Saint-Florent.",
+  "ascents": [
+   "Bastia (east)",
+   "Saint-Florent (west)"
+  ]
+ },
+ "ospedale": {
+  "classicAscent": "18.5 km, 4.8 % from Porto-Vecchio",
+  "note": "From Porto-Vecchio onto the Ospedale plateau, with a reservoir, pine forest and a view over the bay. At the top the road carries on through the forest to Zonza and the Col de Bavella.",
+  "ascents": [
+   "Porto-Vecchio"
+  ]
+ },
+ "col-de-sevi": {
+  "classicAscent": "9.7 km, 6.9 % from Vico",
+  "note": "The pass between Vico and Evisa above the Gulf of Sagone, with views to the sea and the Cinto mountains. A day from Evisa together with the Vergio.",
+  "ascents": [
+   "Vico (south)"
+  ]
+ },
+ "el-portillo": {
+  "classicAscent": "30.1 km, 6.7 % from Puerto de la Cruz",
+  "note": "The classic Teide climb: from the north coast through the Orotava valley and the pine forest to the rim of the Cañadas, 2,000 metres in one go. The pros' training ground in winter.",
+  "ascents": [
+   "Puerto de la Cruz (north)"
+  ]
+ },
+ "boca-de-tauce": {
+  "classicAscent": "29.5 km, 4.6 % from Chío",
+  "note": "The western gate to the Cañadas, where the roads from Chío and Vilaflor enter the crater. From the west coast a long, steady climb across lava fields and through pine forest.",
+  "ascents": [
+   "Chío (west)"
+  ]
+ },
+ "izana": {
+  "classicAscent": "31.1 km, 4.3 % from La Esperanza",
+  "note": "The ridge road along the island's spine, from La Esperanza through the pine forest to the Izaña observatory, the highest road point on Tenerife. The sea on both sides.",
+  "ascents": [
+   "La Esperanza (north-east)"
+  ]
+ },
+ "degollada-de-cherfe": {
+  "classicAscent": "4.0 km, 11.2 % from Masca",
+  "note": "The pass above the Masca gorge, between Santiago del Teide and the mountain village of Masca. From Masca four kilometres at over 11 % in tight hairpins, one of the steepest ramps in the Canaries.",
+  "ascents": [
+   "Masca (north)",
+   "Santiago del Teide (south)"
+  ]
+ },
+ "cruz-de-tejeda": {
+  "classicAscent": "12.7 km, 5.5 % from Vega de San Mateo",
+  "note": "The pass in the middle of Gran Canaria, on the rim of the Tejeda caldera with a view of the Roque Nublo and as far as the Teide. Short and steep from Tejeda, longer from San Mateo.",
+  "ascents": [
+   "Vega de San Mateo (east)",
+   "Tejeda (west)"
+  ]
+ },
+ "pico-de-las-nieves": {
+  "classicAscent": "14.9 km, 7.3 % from Vega de San Mateo",
+  "note": "The road to the highest point you can ride on Gran Canaria, just under 1,950 m, with a view over the whole island and to the Teide on a clear day. Steep from San Mateo, long from San Bartolomé.",
+  "ascents": [
+   "Vega de San Mateo (north)",
+   "San Bartolomé de Tirajana (south)"
+  ]
+ },
+ "fataga": {
+  "classicAscent": "23.5 km, 3.8 % from Maspalomas",
+  "note": "The home climb of the southern resorts: from Maspalomas through the Fataga gorge up to San Bartolomé de Tirajana. Long and steady, with palm oases and red rock walls.",
+  "ascents": [
+   "Maspalomas"
+  ]
+ },
+ "roque-de-los-muchachos": {
+  "classicAscent": "43.5 km, 5.4 % from Santa Cruz de La Palma",
+  "note": "From the sea to 2,400 m: the longest continuous climb in Europe, from Santa Cruz de La Palma to the telescopes on the rim of the Caldera de Taburiente. Shorter and steeper from Garafía in the north.",
+  "ascents": [
+   "Santa Cruz de La Palma (east)",
+   "Garafía (north)"
+  ]
+ },
+ "angliru": {
+  "classicAscent": "12.5 km, 10.1 % from La Vega (Riosa)",
+  "note": "The most feared climb of the Vuelta, a summit finish several times since 1999: over 13 % on average for the last six kilometres, the Cueña les Cabres at over 20 %. Mountain pastures and a view across Asturias at the top.",
+  "ascents": [
+   "La Vega (Riosa)"
+  ]
+ },
+ "lagos-de-covadonga": {
+  "classicAscent": "13.0 km, 6.7 % from Covadonga",
+  "note": "The Vuelta's most famous summit finish, ridden more than twenty times since 1983: from Covadonga and its basilica up to the mountain lakes Enol and Ercina in the Picos de Europa. Partly closed to cars in summer.",
+  "ascents": [
+   "Covadonga"
+  ]
+ },
+ "puerto-de-san-lorenzo": {
+  "classicAscent": "11.2 km, 7.9 % from Teverga",
+  "note": "The pass between Teverga and Somiedo, often in the Vuelta: from La Plaza in Teverga steadily steep across mountain pastures. On the west side down to Somiedo and the Farrapona.",
+  "ascents": [
+   "Teverga (east)"
+  ]
+ },
+ "alto-de-la-farrapona": {
+  "classicAscent": "21.7 km, 4.7 % from Pola de Somiedo",
+  "note": "The road through the Somiedo natural park to the border with León, a Vuelta finish several times. Long and irregular, lakes and limestone peaks at the top, bears in the forests.",
+  "ascents": [
+   "Pola de Somiedo (west)"
+  ]
+ },
+ "puerto-de-pajares": {
+  "classicAscent": "25.9 km, 4.1 % from Pola de Lena",
+  "note": "The old main pass between Asturias and León, quieter since the motorway. From Pola de Lena long through the valley and then in hairpins up to the border; the Meseta on the south side.",
+  "ascents": [
+   "Pola de Lena (north)"
+  ]
+ },
+ "alto-de-la-cobertoria": {
+  "classicAscent": "10.0 km, 8.6 % from Pola de Lena",
+  "note": "The steep pass between Lena and Quirós, often the curtain-raiser for the Angliru in the Vuelta. From Pola de Lena ten kilometres almost without a break at over 8 %.",
+  "ascents": [
+   "Pola de Lena (east)"
+  ]
+ },
+ "puerto-de-san-glorio": {
+  "classicAscent": "27.1 km, 4.9 % from Potes",
+  "note": "The highest road pass in Cantabria, from Potes up the Liébana valley to the border with León. At the top the view of the Picos de Europa, the bear monument at the Mirador de Llesba.",
+  "ascents": [
+   "Potes (north)"
+  ]
+ },
+ "pena-cabarga": {
+  "classicAscent": "8.6 km, 6.0 % from Heras",
+  "note": "The viewpoint above the bay of Santander, a Vuelta finish several times: short, with ramps over 15 % in the last kilometres, the monument and the view over the bay and the Cantabrian Mountains at the top.",
+  "ascents": [
+   "Heras (north)"
+  ]
+ },
+ "hoya-de-la-mora": {
+  "classicAscent": "29.1 km, 6.0 % from Cenes de la Vega",
+  "note": "Spain's highest paved road, from Granada past the Pradollano ski resort to the Hoya de la Mora at almost 2,500 m; a Vuelta finish several times. Above it the closed road carries on to the Veleta.",
+  "ascents": [
+   "Cenes de la Vega (Granada)"
+  ]
+ },
+ "alto-del-purche": {
+  "classicAscent": "9.7 km, 5.7 % from Monachil",
+  "note": "The little brother of the Sierra Nevada road, from Monachil across the slopes east of Granada. Quiet, with ramps over 10 % and a view of the city and the Alhambra.",
+  "ascents": [
+   "Monachil (west)"
+  ]
+ },
+ "collado-de-las-sabinas": {
+  "classicAscent": "19.6 km, 5.4 % from Güéjar Sierra",
+  "note": "The climb via Hazallanas, a Vuelta stage in 2017: from Güéjar Sierra on a narrow road with ramps over 13 % onto the ridge above the ski resort. One of the hardest climbs in Andalusia.",
+  "ascents": [
+   "Güéjar Sierra"
+  ]
+ },
+ "puerto-de-la-ragua": {
+  "classicAscent": "16.2 km, 6.3 % from Laroles",
+  "note": "The highest year-round road pass in Andalusia, across the Sierra Nevada between the Alpujarra and the Marquesado. Steady at around 6 % on both sides, pine forest and cross-country trails at the top.",
+  "ascents": [
+   "Laroles (south)",
+   "La Calahorra (north)"
+  ]
+ },
+ "calar-alto": {
+  "classicAscent": "23.9 km, 5.8 % from Gérgal",
+  "note": "The road to the observatory on the highest point of the Sierra de los Filabres, a Vuelta finish several times. Long, bare and dry, the telescope domes at the top and a view over the Tabernas desert.",
+  "ascents": [
+   "Gérgal (south)",
+   "Bacares (north)"
+  ]
+ },
+ "alto-de-velefique": {
+  "classicAscent": "12.4 km, 6.9 % from Velefique",
+  "note": "The hairpin road out of the village of Velefique onto the Filabres ridge, a Vuelta pass and one of the finest hairpin ribbons in Spain. Steadily steep, with no traffic at all.",
+  "ascents": [
+   "Velefique (south)"
+  ]
+ },
+ "blockhaus": {
+  "classicAscent": "19.3 km, 7.9 % from Roccamorice",
+  "note": "The Giro classic in the Majella, a summit finish again and again since Merckx's first Grand Tour stage win in 1967: almost 1,500 metres from Roccamorice with long stretches over 9 %, bare limestone slopes at the top.",
+  "ascents": [
+   "Roccamorice (north)"
+  ]
+ },
+ "passo-lanciano": {
+  "classicAscent": "10.2 km, 7.4 % from Pretoro",
+  "note": "The pass on the northern slope of the Majella, from Pretoro through beech forest; at the top the road to the Blockhaus begins. Often part of the Giro stages into the Abruzzo.",
+  "ascents": [
+   "Pretoro (east)"
+  ]
+ },
+ "campo-imperatore": {
+  "classicAscent": "26.3 km, 3.8 % from Fonte Cerreto",
+  "note": "The road across the high plain below the Gran Sasso, Italy's little Tibet, to the hotel at 2,130 m; a Giro finish in 1971, 1989 and 2018. Long and open, the steep final ramp at the top.",
+  "ascents": [
+   "Fonte Cerreto (west)"
+  ]
+ },
+ "terminillo": {
+  "classicAscent": "20.7 km, 5.4 % from Rieti",
+  "note": "Rome's local mountain, from Rieti through chestnut and beech forest to the ski village of Pian de' Valli; a finish in Tirreno–Adriatico and the Giro. Steady and long.",
+  "ascents": [
+   "Rieti (west)"
+  ]
+ },
+ "passo-dell-abetone": {
+  "classicAscent": "13.8 km, 5.0 % from Cutigliano",
+  "note": "The classic Apennine pass between Tuscany and Emilia, often in the Giro: from Cutigliano steadily through fir forest to the ski resort of Abetone.",
+  "ascents": [
+   "Cutigliano (south)"
+  ]
+ },
+ "san-pellegrino-in-alpe": {
+  "classicAscent": "16.0 km, 6.0 % from Castiglione di Garfagnana",
+  "note": "The highest inhabited pass in the Apennines, from Castiglione in the Garfagnana; on the Chiozza side ramps of almost 20 %, one of the hardest places in Italy. Giro 1989 and 2022.",
+  "ascents": [
+   "Castiglione di Garfagnana (south)"
+  ]
+ },
+ "monte-amiata": {
+  "classicAscent": "13.0 km, 6.4 % from Abbadia San Salvatore",
+  "note": "The extinct volcano in southern Tuscany, with beech and chestnut forest almost to the summit. Steadily steep from Abbadia San Salvatore; at the top the view over the Crete and the Val d'Orcia.",
+  "ascents": [
+   "Abbadia San Salvatore (east)"
+  ]
+ },
+ "sassotetto": {
+  "classicAscent": "15.7 km, 6.6 % from Sarnano",
+  "note": "The climb into the Monti Sibillini above Sarnano, a summit finish in Tirreno–Adriatico. Steadily steep through forest, the open meadows below the Sibillini ridge at the top.",
+  "ascents": [
+   "Sarnano (east)"
+  ]
+ },
+ "etna-sud": {
+  "classicAscent": "18.3 km, 7.3 % from Zafferana Etnea",
+  "note": "The road up Etna to the Rifugio Sapienza at just over 1,900 m, a Giro finish several times. Three ascents from Nicolosi, Zafferana and Ragalna, black lava, craters and the cable car to the summit at the top.",
+  "ascents": [
+   "Nicolosi (south)",
+   "Zafferana Etnea (east)",
+   "Ragalna (west)"
+  ]
+ },
+ "etna-nord": {
+  "classicAscent": "19.2 km, 6.5 % from Linguaglossa",
+  "note": "Etna's north side, from Linguaglossa through pine and birch forest to the Piano Provenzana ski area at 1,800 m; a Giro finish in 2020. Quieter and greener than the south side.",
+  "ascents": [
+   "Linguaglossa (north)"
+  ]
+ },
+ "piano-battaglia": {
+  "classicAscent": "23.8 km, 4.5 % from Isnello",
+  "note": "The high plain of the Madonie at just over 1,600 m, Sicily's little ski area. From Isnello via Piano Zucchi through beech and holm oak, on across the plateau to Petralia.",
+  "ascents": [
+   "Isnello (north)"
+  ]
+ },
+ "portella-femmina-morta": {
+  "classicAscent": "18.4 km, 4.6 % from San Fratello",
+  "note": "The highest pass in the Nebrodi, on the road from the north coast via San Fratello to Cesarò. Through Sicily's great beech forests, almost without traffic.",
+  "ascents": [
+   "San Fratello (north)"
+  ]
+ },
+ "portella-mandrazzi": {
+  "classicAscent": "10.7 km, 5.1 % from Novara di Sicilia",
+  "note": "The pass across the Peloritani between the north coast and the Alcantara valley. From Novara di Sicilia below the rocks of the Rocca Salvatesta, a view of Etna at the top.",
+  "ascents": [
+   "Novara di Sicilia (north)"
+  ]
+ },
+ "erice": {
+  "classicAscent": "11.8 km, 6.4 % from Trapani",
+  "note": "The medieval hill village at 750 m right above Trapani. Up the rock face from the coast in hairpins, a view over the salt pans to the Aegadian Islands at the top.",
+  "ascents": [
+   "Trapani (west)",
+   "Valderice (east)"
+  ]
+ },
+ "mur-de-huy": {
+  "classicAscent": "1.3 km, 9.6 % from Huy",
+  "note": "The finishing ramp of the Flèche Wallonne, from the Meuse in Huy up the Chemin des Chapelles to the chapel of Notre-Dame de la Sarte. Short, but with bends over 20 %.",
+  "ascents": [
+   "Huy (Meuse)"
+  ]
+ },
+ "cote-de-la-redoute": {
+  "classicAscent": "1.6 km, 9.4 % from Remouchamps",
+  "note": "The best-known climb of Liège–Bastogne–Liège, steeply up from Remouchamps past the motorway; the fans' names painted on the tarmac.",
+  "ascents": [
+   "Remouchamps"
+  ]
+ },
+ "cote-de-stockeu": {
+  "classicAscent": "2.9 km, 7.0 % from Stavelot",
+  "note": "The steepest ramp of Liège–Bastogne–Liège, out of the Amblève valley near Stavelot through the forest; the monument to Eddy Merckx at the top.",
+  "ascents": [
+   "Stavelot"
+  ]
+ },
+ "col-de-la-haute-levee": {
+  "classicAscent": "3.9 km, 5.4 % from Stavelot",
+  "note": "The climb north from Stavelot towards Francorchamps, a fixture of Liège–Bastogne–Liège. Steady, with the steepest stretch at the start.",
+  "ascents": [
+   "Stavelot"
+  ]
+ },
+ "col-du-rosier": {
+  "classicAscent": "6.3 km, 4.1 % from La Gleize",
+  "note": "The highest and longest climb in the finale of Liège–Bastogne–Liège, out of the Amblève valley through the forests above Spa.",
+  "ascents": [
+   "La Gleize"
+  ]
+ },
+ "cote-de-wanne": {
+  "classicAscent": "5.3 km, 4.3 % from Trois-Ponts",
+  "note": "The climb from Trois-Ponts up to the village of Wanne, in Liège–Bastogne–Liège the first of the three blows Wanne, Stockeu and Haute-Levée.",
+  "ascents": [
+   "Trois-Ponts"
+  ]
+ },
+ "cote-de-la-roche-aux-faucons": {
+  "classicAscent": "1.9 km, 7.8 % from Hony",
+  "note": "The ramp above the Ourthe valley near Esneux, often where the decisive attack comes in Liège–Bastogne–Liège. The rock at the top with the view over the bend of the Ourthe.",
+  "ascents": [
+   "Hony (Ourthe)"
+  ]
+ },
+ "spindlerova-bouda": {
+  "classicAscent": "7.2 km, 6.6 % from Špindlerův Mlýn",
+  "note": "The mountain hut on the ridge at the Polish border, the highest road point in the Giant Mountains. From Špindlerův Mlýn through spruce forest with hairpins; on into Poland only on foot or by bike on the closed road.",
+  "ascents": [
+   "Špindlerův Mlýn (south)"
+  ]
+ },
+ "przelecz-okraj": {
+  "classicAscent": "15.8 km, 3.3 % from Kowary",
+  "note": "The border pass between Kowary in Silesia and Malá Úpa in Bohemia, Pomezní Boudy in Czech. Long from Kowary through the forest, with flatter stretches; huts at the top and the view to the Sněžka.",
+  "ascents": [
+   "Kowary (north)"
+  ]
+ },
+ "horni-misecky": {
+  "classicAscent": "4.6 km, 6.7 % from Vítkovice",
+  "note": "The mountain village at the end of the road above Vítkovice, the start of the trails to the source of the Elbe. Short and steadily steep through spruce forest.",
+  "ascents": [
+   "Vítkovice (south)"
+  ]
+ },
+ "cerna-hora": {
+  "classicAscent": "7.4 km, 8.5 % from Janské Lázně",
+  "note": "The mountain road from the spa town of Janské Lázně to the Černá bouda below the summit of the Černá hora, closed to cars and signposted as a bike route. Hairpins in the forest at the bottom, ramps of up to 14 % at the top.",
+  "ascents": [
+   "Janské Lázně (east)"
+  ]
+ },
+ "jested": {
+  "classicAscent": "6.8 km, 6.6 % from Horní Hanychov",
+  "note": "The road up Liberec's home mountain to the TV tower with its hotel at just over 1,000 m, one of Czechia's landmarks. Steep and steady through the forest, over the open dome at the top.",
+  "ascents": [
+   "Horní Hanychov (Liberec)"
+  ]
+ },
+ "tanvaldsky-spicak": {
+  "classicAscent": "5.1 km, 5.7 % from Tanvald",
+  "note": "The ski hill above Tanvald in the Jizera Mountains, with a steep road up to the lookout tower. Short, with ramps over 12 %.",
+  "ascents": [
+   "Tanvald"
+  ]
+ },
+ "strbske-pleso": {
+  "classicAscent": "13.3 km, 3.7 % from Štrba",
+  "note": "The mountain lake and resort below the peaks of the High Tatras at just over 1,300 m. Long and steady from Štrba via Tatranská Štrba, the walls of the Tatras always in front of you.",
+  "ascents": [
+   "Štrba (south)"
+  ]
+ },
+ "certovica": {
+  "classicAscent": "13.5 km, 4.6 % from Mýto pod Ďumbierom",
+  "note": "The pass across the Low Tatras between Liptov and the Hron valley. Long and steady from the south, short and steeper from Vyšná Boca in the north.",
+  "ascents": [
+   "Mýto pod Ďumbierom (south)",
+   "Vyšná Boca (north)"
+  ]
+ },
+ "chopok-juh": {
+  "classicAscent": "11.8 km, 5.6 % from Bystrá",
+  "note": "The southern ascent towards the Chopok, from Bystrá in the Hron valley past the Tále ski area to Srdiečko at just over 1,200 m. Steady, with steeper stretches in the upper part.",
+  "ascents": [
+   "Bystrá (south)"
+  ]
+ },
+ "jasna": {
+  "classicAscent": "4.7 km, 6.1 % from Demänovská Dolina",
+  "note": "The northern ascent towards the Chopok, through the Demänovská valley past the entrance of the Freedom Cave to the Jasná ski area. The steep finish after the caves.",
+  "ascents": [
+   "Demänovská Dolina (north)"
+  ]
+ },
+ "gliczarow-gorny": {
+  "classicAscent": "4.5 km, 6.0 % from Biały Dunajec",
+  "note": "The ramp above Biały Dunajec near Zakopane, one of the steepest roads in Poland with stretches over 20 %. The view over the Podhale to the whole chain of the High Tatras at the top.",
+  "ascents": [
+   "Biały Dunajec (north)"
+  ]
  }
 }
