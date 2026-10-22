@@ -4781,5 +4781,91 @@
     "lon": 6.0577
    }
   ]
+ },
+ {
+  "slug": "oberhof-runde",
+  "surface": "asphalt",
+  "name": "Oberhof-Runde",
+  "color": "#7a7aaa",
+  "km": 76,
+  "elevationGain": 1200,
+  "passes": [
+   "oberhof"
+  ],
+  "note": "Breite Straßen und gleichmäßige Steigungen; oben bei Oberhof kreuzt die Runde den Rennsteig, nach Norden fällt sie lang und flach.",
+  "season": null,
+  "description": "Von Zella-Mehlis hinauf nach Oberhof, auf der Nordseite des Thüringer Walds hinunter nach Tambach-Dietharz, über Floh-Seligenthal nach Steinbach-Hallenberg und zurück nach Zella-Mehlis.",
+  "type": "loop",
+  "waypoints": [
+   {
+    "lat": 50.6561,
+    "lon": 10.664
+   },
+   {
+    "lat": 50.6975,
+    "lon": 10.7222
+   },
+   {
+    "lat": 50.7945,
+    "lon": 10.6168
+   },
+   {
+    "lat": 50.7562,
+    "lon": 10.4792
+   },
+   {
+    "lat": 50.701,
+    "lon": 10.5676
+   },
+   {
+    "lat": 50.6561,
+    "lon": 10.664
+   }
+  ]
+ },
+ {
+  "slug": "fataga-runde",
+  "surface": "asphalt",
+  "name": "Fataga-Runde",
+  "color": "#9a9a6a",
+  "km": 87,
+  "elevationGain": 1600,
+  "passes": [
+   "fataga"
+  ],
+  "note": "Von Maspalomas durch die Schlucht von Fataga ins Bergland; Wasser in San Bartolomé und Santa Lucía auffüllen.",
+  "season": null,
+  "description": "Von Maspalomas durch die Schlucht von Fataga hinauf nach San Bartolomé de Tirajana, über Santa Lucía de Tirajana hinunter nach Agüimes und an der Küste über Vecindario zurück nach Maspalomas.",
+  "type": "loop",
+  "waypoints": [
+   {
+    "lat": 27.7528,
+    "lon": -15.5971
+   },
+   {
+    "lat": 27.9145,
+    "lon": -15.578
+   },
+   {
+    "lat": 27.9047,
+    "lon": -15.5764
+   },
+   {
+    "lat": 27.9118,
+    "lon": -15.5409
+   },
+   {
+    "lat": 27.905,
+    "lon": -15.4445
+   },
+   {
+    "lat": 27.8467,
+    "lon": -15.4408
+   },
+   {
+    "lat": 27.7528,
+    "lon": -15.5971
+   }
+  ]
  }
 ]

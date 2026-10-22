@@ -294,5 +294,13 @@
  "faucille-givrine-runde": {
   "description": "From Gex up the hairpins to the Col de la Faucille, down to Mijoux, via Les Rousses to the Col de la Givrine, down via Saint-Cergue to Nyon and along the lake via Coppet and Divonne back to Gex.",
   "note": "Traffic on the lake road and through the suburbs between Nyon and Divonne; the two passes are quieter."
+ },
+ "oberhof-runde": {
+  "description": "From Zella-Mehlis up to Oberhof, down the north side of the Thuringian Forest to Tambach-Dietharz, via Floh-Seligenthal to Steinbach-Hallenberg and back to Zella-Mehlis.",
+  "note": "Wide roads and steady gradients; at Oberhof the loop crosses the Rennsteig trail, and to the north it drops long and gently."
+ },
+ "fataga-runde": {
+  "description": "From Maspalomas up through the Fataga gorge to San Bartolomé de Tirajana, via Santa Lucía de Tirajana down to Agüimes and along the coast via Vecindario back to Maspalomas.",
+  "note": "From Maspalomas through the Fataga gorge into the highlands; fill up with water in San Bartolomé and Santa Lucía."
  }
 }
