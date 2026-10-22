@@ -1737,5 +1737,60 @@
   "character": "Der Kamm zwischen Liptov und dem Hron-Tal: die Čertovica von zwei Seiten, der Chopok von Süden über Bystrá und von Norden nach Jasná. Bergstraßen im Fichtenwald, von Juni bis September.",
   "multiDay": "Zwei Tage von Liptovský Mikuláš: Jasná und die Čertovica über Vyšná Boca, am zweiten Tag über die Čertovica nach Süden und den Chopok von Bystrá.",
   "access": "Bahn bis Liptovský Mikuláš, Flug nach Poprad oder Kraków."
+ },
+ {
+  "slug": "hohe-tatra",
+  "name": "Hohe Tatra",
+  "country": "SK/PL",
+  "center": {
+   "lat": 49.2,
+   "lon": 20.1
+  },
+  "radiusKm": 25,
+  "baseTowns": [
+   "poprad",
+   "zakopane"
+  ],
+  "include": [],
+  "exclude": [],
+  "character": "Zwei Anstiege auf beiden Seiten der Hohen Tatra: von Štrba lang und gleichmäßig zum Bergsee Štrbské Pleso, über Biały Dunajec die Rampe nach Gliczarów Górny mit Stücken über 20 %. Mehr Aussicht als Pässe, von Mai bis Oktober.",
+  "multiDay": "Zwei Tage, einer auf jeder Seite: Štrbské Pleso von Poprad, Gliczarów Górny von Zakopane; die Fahrt über den Grenzübergang Łysa Polana verbindet beide.",
+  "access": "Flug nach Poprad oder Kraków, Bahn bis Poprad oder Zakopane."
+ },
+ {
+  "slug": "jeschken-isergebirge",
+  "name": "Jeschken und Isergebirge",
+  "country": "CZ",
+  "center": {
+   "lat": 50.75,
+   "lon": 15.1
+  },
+  "radiusKm": 20,
+  "baseTowns": [
+   "liberec"
+  ],
+  "include": [],
+  "exclude": [],
+  "character": "Zwei kurze, steile Bergstraßen um Liberec: auf den Ještěd mit dem Fernsehturm, eines der Wahrzeichen Tschechiens, und auf den Tanvaldský Špičák mit Rampen über 12 %. Ein Ziel für einen Tag oder ein Wochenende, von April bis Oktober.",
+  "multiDay": "Ein Tag von Liberec: der Ještěd am Morgen, der Tanvaldský Špičák auf dem Weg ins Isergebirge; das Riesengebirge liegt eine Stunde weiter östlich.",
+  "access": "Mit dem Auto anderthalb Stunden von Dresden oder Prag, Bahn bis Liberec."
+ },
+ {
+  "slug": "luettich-huy",
+  "name": "Lüttich und Huy",
+  "country": "BE",
+  "center": {
+   "lat": 50.57,
+   "lon": 5.45
+  },
+  "radiusKm": 20,
+  "baseTowns": [
+   "liege"
+  ],
+  "include": [],
+  "exclude": [],
+  "character": "Die kurzen Rampen der Frühjahrsklassiker zwischen Maas und Ourthe: die Mauer von Huy, das Ziel der Flèche Wallonne mit Kurven über 20 %, die Roche-aux-Faucons über der Ourtheschleife und am Rand die Redoute. Kurz und steil, von März bis Oktober.",
+  "multiDay": "Ein Tag von Lüttich: die Maas hinauf nach Huy und über die Ourthe zurück zur Roche-aux-Faucons; die Ardennen-Klassiker um Spa liegen eine Stunde südöstlich.",
+  "access": "Bahn bis Lüttich oder Huy, mit dem Auto eine Stunde von Aachen."
  }
 ]

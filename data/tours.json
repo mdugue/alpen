@@ -3513,5 +3513,1273 @@
     "lon": 2.809
    }
   ]
+ },
+ {
+  "slug": "osterzgebirge-runde",
+  "surface": "asphalt",
+  "name": "Osterzgebirgs-Runde",
+  "color": "#6a8a9a",
+  "km": 47,
+  "elevationGain": 900,
+  "passes": [
+   "cinovec",
+   "komari-vizka"
+  ],
+  "note": "Der Anstieg zur Komáří vížka ist mit fast 9 % im Mittel der härteste der Runde; die alte Grenzstraße nach Cínovec ist seit der D8 ruhig.",
+  "season": null,
+  "description": "Von Altenberg über Zinnwald nach Cínovec, auf der alten Grenzstraße hinunter nach Dubí, über Krupka in Kehren auf die Komáří vížka und am Kamm entlang über Fojtovice zurück nach Altenberg.",
+  "type": "loop",
+  "waypoints": [
+   {
+    "lat": 50.7666,
+    "lon": 13.7523
+   },
+   {
+    "lat": 50.7211,
+    "lon": 13.7908
+   },
+   {
+    "lat": 50.6813,
+    "lon": 13.7888
+   },
+   {
+    "lat": 50.6847,
+    "lon": 13.8578
+   },
+   {
+    "lat": 50.7066,
+    "lon": 13.8565
+   },
+   {
+    "lat": 50.7162,
+    "lon": 13.8551
+   },
+   {
+    "lat": 50.7211,
+    "lon": 13.7908
+   },
+   {
+    "lat": 50.7666,
+    "lon": 13.7523
+   }
+  ]
+ },
+ {
+  "slug": "dlouha-louka-runde",
+  "surface": "asphalt",
+  "name": "Dlouhá Louka – Cínovec",
+  "color": "#8a6a7a",
+  "km": 60,
+  "elevationGain": 1050,
+  "passes": [
+   "dlouha-louka",
+   "cinovec"
+  ],
+  "note": "Zwei Kammanstiege aus dem nordböhmischen Becken an einem Vormittag; zwischen Dlouhá Louka und Cínovec bleibt man oben auf dem Kamm.",
+  "season": null,
+  "description": "Von Teplice nach Osek, in Kehren hinauf nach Dlouhá Louka, über den Kamm via Moldava nach Cínovec und auf der alten Grenzstraße hinunter über Dubí zurück nach Teplice.",
+  "type": "loop",
+  "waypoints": [
+   {
+    "lat": 50.6407,
+    "lon": 13.8244
+   },
+   {
+    "lat": 50.623,
+    "lon": 13.686
+   },
+   {
+    "lat": 50.648,
+    "lon": 13.6487
+   },
+   {
+    "lat": 50.7206,
+    "lon": 13.6572
+   },
+   {
+    "lat": 50.7211,
+    "lon": 13.7908
+   },
+   {
+    "lat": 50.6813,
+    "lon": 13.7888
+   },
+   {
+    "lat": 50.6407,
+    "lon": 13.8244
+   }
+  ]
+ },
+ {
+  "slug": "kandel-runde",
+  "surface": "asphalt",
+  "name": "Kandel-Runde",
+  "color": "#7a9a8a",
+  "km": 47,
+  "elevationGain": 1050,
+  "passes": [
+   "kandel"
+  ],
+  "note": "Der Kandel von Waldkirch ist einer der härtesten Anstiege des Schwarzwalds; die Abfahrt über St. Peter und das Glottertal ist breit und gut ausgebaut.",
+  "season": null,
+  "description": "Von Waldkirch im Elztal auf den Kandel, über die Hochfläche nach St. Peter, durch das Glottertal hinunter und über Denzlingen zurück nach Waldkirch.",
+  "type": "loop",
+  "waypoints": [
+   {
+    "lat": 48.0939,
+    "lon": 7.961
+   },
+   {
+    "lat": 48.0644,
+    "lon": 8.0166
+   },
+   {
+    "lat": 48.0177,
+    "lon": 8.0358
+   },
+   {
+    "lat": 48.0485,
+    "lon": 7.9544
+   },
+   {
+    "lat": 48.0669,
+    "lon": 7.8863
+   },
+   {
+    "lat": 48.0939,
+    "lon": 7.961
+   }
+  ]
+ },
+ {
+  "slug": "wiedener-eck-notschrei-runde",
+  "surface": "asphalt",
+  "name": "Wiedener Eck – Notschrei",
+  "color": "#9a7a5a",
+  "km": 81,
+  "elevationGain": 1600,
+  "passes": [
+   "wiedener-eck",
+   "notschrei"
+  ],
+  "note": "Der Schauinsland lässt sich ab Oberried statt des Notschrei-Abstiegs anhängen: über Hofsgrund hinauf und nach Freiburg hinunter.",
+  "season": null,
+  "description": "Von Münstertal über das Wiedener Eck nach Utzenfeld, durchs Wiesental nach Todtnau, über den Notschrei hinunter nach Oberried und über Kirchzarten, Sölden und Staufen zurück ins Münstertal.",
+  "type": "loop",
+  "waypoints": [
+   {
+    "lat": 47.8555,
+    "lon": 7.783
+   },
+   {
+    "lat": 47.8449,
+    "lon": 7.867
+   },
+   {
+    "lat": 47.801,
+    "lon": 7.9158
+   },
+   {
+    "lat": 47.8303,
+    "lon": 7.9452
+   },
+   {
+    "lat": 47.8763,
+    "lon": 7.9097
+   },
+   {
+    "lat": 47.933,
+    "lon": 7.9499
+   },
+   {
+    "lat": 47.9626,
+    "lon": 7.9542
+   },
+   {
+    "lat": 47.9665,
+    "lon": 7.8285
+   },
+   {
+    "lat": 47.933,
+    "lon": 7.813
+   },
+   {
+    "lat": 47.9215,
+    "lon": 7.786
+   },
+   {
+    "lat": 47.8832,
+    "lon": 7.7329
+   },
+   {
+    "lat": 47.8555,
+    "lon": 7.783
+   }
+  ]
+ },
+ {
+  "slug": "torfhaus-runde",
+  "surface": "asphalt",
+  "name": "Torfhaus-Runde",
+  "color": "#5a7a8a",
+  "km": 52,
+  "elevationGain": 950,
+  "passes": [
+   "torfhaus"
+  ],
+  "note": "Die B4 hinauf trägt viel Verkehr und Motorräder, am Wochenende besser früh; zurück durchs Okertal ist es ruhiger.",
+  "season": null,
+  "description": "Von Bad Harzburg auf der B4 hinauf nach Torfhaus, über die Hochfläche hinunter nach Altenau, über Schulenberg durchs Okertal nach Oker und zurück nach Bad Harzburg.",
+  "type": "loop",
+  "waypoints": [
+   {
+    "lat": 51.8797,
+    "lon": 10.5875
+   },
+   {
+    "lat": 51.8022,
+    "lon": 10.5369
+   },
+   {
+    "lat": 51.8035,
+    "lon": 10.4473
+   },
+   {
+    "lat": 51.8347,
+    "lon": 10.4343
+   },
+   {
+    "lat": 51.905,
+    "lon": 10.484
+   },
+   {
+    "lat": 51.8797,
+    "lon": 10.5875
+   }
+  ]
+ },
+ {
+  "slug": "arber-runde",
+  "surface": "asphalt",
+  "name": "Arber-Runde",
+  "color": "#8a7a9a",
+  "km": 57,
+  "elevationGain": 1000,
+  "passes": [
+   "bretterschachten",
+   "brennes"
+  ],
+  "note": "Die beiden höchsten Straßenpunkte des Bayerischen Walds an einem Tag; am Großen Arbersee und an der Arber-Bergbahn im Sommer viele Ausflügler.",
+  "season": null,
+  "description": "Von Bodenmais auf den Bretterschachten, am Großen Arbersee vorbei zum Brennes, hinunter nach Bayerisch Eisenstein und über Zwiesel zurück nach Bodenmais.",
+  "type": "loop",
+  "waypoints": [
+   {
+    "lat": 49.0792,
+    "lon": 13.1082
+   },
+   {
+    "lat": 49.0746,
+    "lon": 13.1612
+   },
+   {
+    "lat": 49.0985,
+    "lon": 13.1552
+   },
+   {
+    "lat": 49.1344,
+    "lon": 13.1552
+   },
+   {
+    "lat": 49.1223,
+    "lon": 13.2032
+   },
+   {
+    "lat": 49.0249,
+    "lon": 13.2177
+   },
+   {
+    "lat": 49.0792,
+    "lon": 13.1082
+   }
+  ]
+ },
+ {
+  "slug": "bavella-runde",
+  "surface": "asphalt",
+  "name": "Bavella-Runde",
+  "color": "#7a6a5a",
+  "km": 117,
+  "elevationGain": 2050,
+  "passes": [
+   "col-de-bavella",
+   "ospedale"
+  ],
+  "note": "Die Klassikerrunde des Südens; zwischen Solenzara und Porto-Vecchio auf der T10 an der Küste Verkehr, oben auf dem Bavella frei laufende Schweine.",
+  "season": null,
+  "description": "Von Zonza über den Col de Bavella hinunter nach Solenzara, an der Küste über Sainte-Lucie nach Porto-Vecchio und über die Hochfläche des Ospedale zurück nach Zonza.",
+  "type": "loop",
+  "waypoints": [
+   {
+    "lat": 41.7494,
+    "lon": 9.1706
+   },
+   {
+    "lat": 41.7959,
+    "lon": 9.225
+   },
+   {
+    "lat": 41.8563,
+    "lon": 9.3986
+   },
+   {
+    "lat": 41.6998,
+    "lon": 9.3476
+   },
+   {
+    "lat": 41.5911,
+    "lon": 9.2794
+   },
+   {
+    "lat": 41.6542,
+    "lon": 9.1958
+   },
+   {
+    "lat": 41.7494,
+    "lon": 9.1706
+   }
+  ]
+ },
+ {
+  "slug": "sevi-calanche-runde",
+  "surface": "asphalt",
+  "name": "Sevi – Calanche",
+  "color": "#6a9aaa",
+  "km": 103,
+  "elevationGain": 2150,
+  "passes": [
+   "col-de-sevi"
+  ],
+  "note": "Die Calanche de Piana sind ein Weltnaturerbe aus rotem Granit, die Straße darin schmal und im Sommer voller Mietwagen; besser vor zehn Uhr.",
+  "season": null,
+  "description": "Von Evisa über den Col de Sevi nach Vico, hinunter zum Golf von Sagone, an der Küste über Cargèse nach Piana, durch die Calanche nach Porto und das Spelunca-Tal hinauf zurück nach Evisa.",
+  "type": "loop",
+  "waypoints": [
+   {
+    "lat": 42.2535,
+    "lon": 8.803
+   },
+   {
+    "lat": 42.2235,
+    "lon": 8.8299
+   },
+   {
+    "lat": 42.1661,
+    "lon": 8.7958
+   },
+   {
+    "lat": 42.1161,
+    "lon": 8.6965
+   },
+   {
+    "lat": 42.1344,
+    "lon": 8.5942
+   },
+   {
+    "lat": 42.2389,
+    "lon": 8.6371
+   },
+   {
+    "lat": 42.2677,
+    "lon": 8.6941
+   },
+   {
+    "lat": 42.2535,
+    "lon": 8.803
+   }
+  ]
+ },
+ {
+  "slug": "soller-orient-runde",
+  "surface": "asphalt",
+  "name": "Sóller – Orient",
+  "color": "#aa7a6a",
+  "km": 71,
+  "elevationGain": 1350,
+  "passes": [
+   "coll-de-soller",
+   "coll-d-honor"
+  ],
+  "note": "Der Coll de Sóller zweimal, beide Seiten ein Kehrenband fast ohne Autos seit dem Tunnel; dazwischen das stille Hochtal von Orient.",
+  "season": null,
+  "description": "Von Sóller über den Coll de Sóller nach Bunyola, über den Coll d'Honor ins Hochtal von Orient, über Alaró und Santa Maria zurück nach Bunyola und über den Coll de Sóller wieder nach Sóller.",
+  "type": "loop",
+  "waypoints": [
+   {
+    "lat": 39.7663,
+    "lon": 2.7151
+   },
+   {
+    "lat": 39.7312,
+    "lon": 2.6862
+   },
+   {
+    "lat": 39.6962,
+    "lon": 2.699
+   },
+   {
+    "lat": 39.7271,
+    "lon": 2.7311
+   },
+   {
+    "lat": 39.7344,
+    "lon": 2.7598
+   },
+   {
+    "lat": 39.7062,
+    "lon": 2.7907
+   },
+   {
+    "lat": 39.6479,
+    "lon": 2.7779
+   },
+   {
+    "lat": 39.6962,
+    "lon": 2.699
+   },
+   {
+    "lat": 39.7312,
+    "lon": 2.6862
+   },
+   {
+    "lat": 39.7663,
+    "lon": 2.7151
+   }
+  ]
+ },
+ {
+  "slug": "sa-calobra-runde",
+  "surface": "asphalt",
+  "name": "Sa Calobra ab Sóller",
+  "color": "#7a8aaa",
+  "km": 73,
+  "elevationGain": 2100,
+  "passes": [
+   "puig-major",
+   "sa-calobra"
+  ],
+  "note": "Hin und zurück auf derselben Straße: erst nach Sa Calobra hinunter, dann die neun Kilometer wieder hinauf. Tagsüber Reisebusse, früh am Morgen frei.",
+  "season": null,
+  "description": "Von Sóller auf der Ma-10 hinauf zum Puig Major, weiter zum Abzweig am Coll dels Reis, in Kehren hinunter nach Sa Calobra und denselben Weg zurück nach Sóller.",
+  "type": "loop",
+  "waypoints": [
+   {
+    "lat": 39.7663,
+    "lon": 2.7151
+   },
+   {
+    "lat": 39.7951,
+    "lon": 2.79
+   },
+   {
+    "lat": 39.8277,
+    "lon": 2.8179
+   },
+   {
+    "lat": 39.8507,
+    "lon": 2.7999
+   },
+   {
+    "lat": 39.8277,
+    "lon": 2.8179
+   },
+   {
+    "lat": 39.7951,
+    "lon": 2.79
+   },
+   {
+    "lat": 39.7663,
+    "lon": 2.7151
+   }
+  ]
+ },
+ {
+  "slug": "teide-sud-runde",
+  "surface": "asphalt",
+  "name": "Teide-Runde ab Los Cristianos",
+  "color": "#9a8a6a",
+  "km": 100,
+  "elevationGain": 3000,
+  "passes": [
+   "boca-de-tauce"
+  ],
+  "note": "Über 2000 m Höhe, die Luft ist dünn und es kann oben kalt sein, während unten Sommer ist; Wasser in Vilaflor und Chío auffüllen.",
+  "season": null,
+  "description": "Von Los Cristianos über Vilaflor durch den Kiefernwald hinauf zur Boca de Tauce am Rand der Cañadas, über die Lavafelder hinunter nach Chío und über Guía de Isora und Adeje zurück an die Küste.",
+  "type": "loop",
+  "waypoints": [
+   {
+    "lat": 28.0526,
+    "lon": -16.717
+   },
+   {
+    "lat": 28.1588,
+    "lon": -16.6473
+   },
+   {
+    "lat": 28.2142,
+    "lon": -16.6783
+   },
+   {
+    "lat": 28.2368,
+    "lon": -16.7964
+   },
+   {
+    "lat": 28.2152,
+    "lon": -16.759
+   },
+   {
+    "lat": 28.1394,
+    "lon": -16.7395
+   },
+   {
+    "lat": 28.0526,
+    "lon": -16.717
+   }
+  ]
+ },
+ {
+  "slug": "velefique-runde",
+  "surface": "asphalt",
+  "name": "Velefique-Runde",
+  "color": "#6a7a6a",
+  "km": 106,
+  "elevationGain": 2350,
+  "passes": [
+   "alto-de-velefique"
+  ],
+  "note": "Schatten gibt es keinen; von Juni bis September nur am frühen Morgen. Wasser in Velefique und Gérgal auffüllen.",
+  "season": null,
+  "description": "Von Tabernas durch die Wüste nach Velefique, über die Kehren auf den Kamm der Filabres, oben an der Straße zum Calar Alto entlang und hinunter nach Gérgal, dann zurück nach Tabernas.",
+  "type": "loop",
+  "waypoints": [
+   {
+    "lat": 37.0499,
+    "lon": -2.3914
+   },
+   {
+    "lat": 37.1939,
+    "lon": -2.4029
+   },
+   {
+    "lat": 37.2235,
+    "lon": -2.4129
+   },
+   {
+    "lat": 37.1186,
+    "lon": -2.5408
+   },
+   {
+    "lat": 37.0499,
+    "lon": -2.3914
+   }
+  ]
+ },
+ {
+  "slug": "lanciano-runde",
+  "surface": "asphalt",
+  "name": "Passo Lanciano – Majella",
+  "color": "#a86a8a",
+  "km": 43,
+  "elevationGain": 1350,
+  "passes": [
+   "passo-lanciano"
+  ],
+  "note": "Vom Pass führt die Straße weiter zum Blockhaus (+9 km, +750 m), dem Giro-Ziel über der Majella.",
+  "season": null,
+  "description": "Von Guardiagrele nach Pretoro, durch den Buchenwald auf den Passo Lanciano und über Rapino zurück nach Guardiagrele.",
+  "type": "loop",
+  "waypoints": [
+   {
+    "lat": 42.1955,
+    "lon": 14.2197
+   },
+   {
+    "lat": 42.2172,
+    "lon": 14.1416
+   },
+   {
+    "lat": 42.1884,
+    "lon": 14.1084
+   },
+   {
+    "lat": 42.2107,
+    "lon": 14.1839
+   },
+   {
+    "lat": 42.1955,
+    "lon": 14.2197
+   }
+  ]
+ },
+ {
+  "slug": "piano-battaglia-runde",
+  "surface": "asphalt",
+  "name": "Madonie-Runde",
+  "color": "#5a9a9a",
+  "km": 119,
+  "elevationGain": 2650,
+  "passes": [
+   "piano-battaglia"
+  ],
+  "note": "Die große Runde durch die Madonie, mit Wasser in den Bergdörfern; im Winter kann auf Piano Battaglia Schnee liegen.",
+  "season": null,
+  "description": "Von Cefalù über Isnello hinauf nach Piano Battaglia, hinunter nach Petralia Sottana, über Castelbuono zurück an die Küste nach Cefalù.",
+  "type": "loop",
+  "waypoints": [
+   {
+    "lat": 38.035,
+    "lon": 14.0245
+   },
+   {
+    "lat": 37.9441,
+    "lon": 14.0062
+   },
+   {
+    "lat": 37.8788,
+    "lon": 14.0262
+   },
+   {
+    "lat": 37.8082,
+    "lon": 14.0925
+   },
+   {
+    "lat": 37.9316,
+    "lon": 14.099
+   },
+   {
+    "lat": 38.035,
+    "lon": 14.0245
+   }
+  ]
+ },
+ {
+  "slug": "cobertoria-runde",
+  "surface": "asphalt",
+  "name": "Cobertoria-Runde",
+  "color": "#8a9a7a",
+  "km": 102,
+  "elevationGain": 2150,
+  "passes": [
+   "alto-de-la-cobertoria"
+  ],
+  "note": "Die Cobertoria ist in der Vuelta oft der Auftakt zum Angliru, der sich von Pola de Lena aus als eigene Fahrt anschließen lässt.",
+  "season": null,
+  "description": "Von Pola de Lena über die Cobertoria nach Quirós und ins Tal von Teverga, durch die Schluchten des Trubia nach Proaza und über Morcín zurück nach Pola de Lena.",
+  "type": "loop",
+  "waypoints": [
+   {
+    "lat": 43.1586,
+    "lon": -5.8311
+   },
+   {
+    "lat": 43.1435,
+    "lon": -5.9059
+   },
+   {
+    "lat": 43.171,
+    "lon": -6.094
+   },
+   {
+    "lat": 43.2508,
+    "lon": -6.017
+   },
+   {
+    "lat": 43.2797,
+    "lon": -5.87
+   },
+   {
+    "lat": 43.1586,
+    "lon": -5.8311
+   }
+  ]
+ },
+ {
+  "slug": "ardennen-runde",
+  "surface": "asphalt",
+  "name": "Ardennen-Runde ab Stavelot",
+  "color": "#b0806a",
+  "km": 82,
+  "elevationGain": 1500,
+  "passes": [
+   "cote-de-stockeu",
+   "cote-de-wanne",
+   "col-de-la-haute-levee",
+   "col-du-rosier"
+  ],
+  "note": "Die Anstiege des Finales von Lüttich–Bastogne–Lüttich auf einer Runde; kurz und steil, auf schmalen Straßen, nach Regen rutschig.",
+  "season": null,
+  "description": "Von Stavelot über die Côte de Stockeu Richtung Vielsalm, hinunter nach Trois-Ponts, über die Côte de Wanne zurück nach Stavelot, über die Haute-Levée nach Spa und über den Col du Rosier und La Gleize zurück nach Stavelot.",
+  "type": "loop",
+  "waypoints": [
+   {
+    "lat": 50.3942,
+    "lon": 5.931
+   },
+   {
+    "lat": 50.3701,
+    "lon": 5.9481
+   },
+   {
+    "lat": 50.2842,
+    "lon": 5.9163
+   },
+   {
+    "lat": 50.3727,
+    "lon": 5.8703
+   },
+   {
+    "lat": 50.3581,
+    "lon": 5.9146
+   },
+   {
+    "lat": 50.3942,
+    "lon": 5.931
+   },
+   {
+    "lat": 50.4269,
+    "lon": 5.9302
+   },
+   {
+    "lat": 50.4921,
+    "lon": 5.8628
+   },
+   {
+    "lat": 50.4489,
+    "lon": 5.8789
+   },
+   {
+    "lat": 50.4112,
+    "lon": 5.8465
+   },
+   {
+    "lat": 50.3942,
+    "lon": 5.931
+   }
+  ]
+ },
+ {
+  "slug": "riesengebirge-runde",
+  "surface": "asphalt",
+  "name": "Riesengebirgs-Runde",
+  "color": "#7a6a9a",
+  "km": 112,
+  "elevationGain": 2100,
+  "passes": [
+   "spindlerova-bouda",
+   "przelecz-okraj"
+  ],
+  "note": "Von der Špindlerova bouda nach Polen geht es auf der für Autos gesperrten Straße hinunter, schmal und steil; Ausweis mitnehmen.",
+  "season": null,
+  "description": "Von Špindlerův Mlýn hinauf zur Špindlerova bouda, auf der gesperrten Straße hinunter nach Przesieka, über Karpacz nach Kowary, über den Okraj nach Malá Úpa, über Pec pod Sněžkou und Janské Lázně nach Vrchlabí und zurück nach Špindlerův Mlýn.",
+  "type": "loop",
+  "waypoints": [
+   {
+    "lat": 50.7256,
+    "lon": 15.6068
+   },
+   {
+    "lat": 50.7626,
+    "lon": 15.6339
+   },
+   {
+    "lat": 50.815,
+    "lon": 15.675
+   },
+   {
+    "lat": 50.7747,
+    "lon": 15.7542
+   },
+   {
+    "lat": 50.7938,
+    "lon": 15.8338
+   },
+   {
+    "lat": 50.7469,
+    "lon": 15.8237
+   },
+   {
+    "lat": 50.7241,
+    "lon": 15.8137
+   },
+   {
+    "lat": 50.6936,
+    "lon": 15.7336
+   },
+   {
+    "lat": 50.6306,
+    "lon": 15.7807
+   },
+   {
+    "lat": 50.6271,
+    "lon": 15.6096
+   },
+   {
+    "lat": 50.7256,
+    "lon": 15.6068
+   }
+  ]
+ },
+ {
+  "slug": "aspin-hourquette-runde",
+  "surface": "asphalt",
+  "name": "Aspin – Hourquette d'Ancizan",
+  "color": "#9a6a6a",
+  "km": 56,
+  "elevationGain": 1600,
+  "passes": [
+   "col-d-aspin",
+   "hourquette-d-ancizan"
+  ],
+  "note": "Von Sainte-Marie-de-Campan lässt sich der Tourmalet als Abstecher bis La Mongie oder zum Pass anhängen.",
+  "season": null,
+  "description": "Von Sainte-Marie-de-Campan über Payolle auf den Col d'Aspin, hinunter nach Arreau, durchs Aure-Tal nach Ancizan, über die Hourquette d'Ancizan nach Payolle und zurück nach Sainte-Marie-de-Campan.",
+  "type": "loop",
+  "waypoints": [
+   {
+    "lat": 42.9848,
+    "lon": 0.2276
+   },
+   {
+    "lat": 42.9423,
+    "lon": 0.3274
+   },
+   {
+    "lat": 42.9055,
+    "lon": 0.359
+   },
+   {
+    "lat": 42.8735,
+    "lon": 0.3385
+   },
+   {
+    "lat": 42.8999,
+    "lon": 0.3058
+   },
+   {
+    "lat": 42.9425,
+    "lon": 0.2851
+   },
+   {
+    "lat": 42.9848,
+    "lon": 0.2276
+   }
+  ]
+ },
+ {
+  "slug": "soulor-spandelles-runde",
+  "surface": "asphalt",
+  "name": "Soulor – Spandelles",
+  "color": "#6a8a6a",
+  "km": 59,
+  "elevationGain": 1950,
+  "passes": [
+   "col-du-soulor",
+   "col-de-spandelles"
+  ],
+  "note": "Vom Soulor lässt sich der Aubisque über den Cirque du Litor anhängen (+16 km hin und zurück, +350 m).",
+  "season": null,
+  "description": "Von Argelès-Gazost durchs Val d'Azun nach Arrens, auf den Col du Soulor, durchs stille Ouzom-Tal hinunter nach Ferrières und über den Col de Spandelles zurück nach Argelès-Gazost.",
+  "type": "loop",
+  "waypoints": [
+   {
+    "lat": 43.0051,
+    "lon": -0.0998
+   },
+   {
+    "lat": 42.9596,
+    "lon": -0.207
+   },
+   {
+    "lat": 42.9606,
+    "lon": -0.2602
+   },
+   {
+    "lat": 43.0109,
+    "lon": -0.2629
+   },
+   {
+    "lat": 43.0114,
+    "lon": -0.2186
+   },
+   {
+    "lat": 43.0051,
+    "lon": -0.0998
+   }
+  ]
+ },
+ {
+  "slug": "portillon-runde",
+  "surface": "asphalt",
+  "name": "Portillon-Runde",
+  "color": "#8a8aaa",
+  "km": 60,
+  "elevationGain": 900,
+  "passes": [
+   "col-du-portillon"
+  ],
+  "note": "Die kurze Runde von Luchon über die Grenze; durch das Garonnetal unten Verkehr nach Vielha.",
+  "season": null,
+  "description": "Von Bagnères-de-Luchon über den Col du Portillon nach Bossòst, durch das Garonnetal über Les nach Saint-Béat und über Cierp-Gaud zurück nach Bagnères-de-Luchon.",
+  "type": "loop",
+  "waypoints": [
+   {
+    "lat": 42.7911,
+    "lon": 0.5912
+   },
+   {
+    "lat": 42.7691,
+    "lon": 0.6601
+   },
+   {
+    "lat": 42.786,
+    "lon": 0.6931
+   },
+   {
+    "lat": 42.8127,
+    "lon": 0.7118
+   },
+   {
+    "lat": 42.8983,
+    "lon": 0.6879
+   },
+   {
+    "lat": 42.9135,
+    "lon": 0.6387
+   },
+   {
+    "lat": 42.7911,
+    "lon": 0.5912
+   }
+  ]
+ },
+ {
+  "slug": "port-lers-runde",
+  "surface": "asphalt",
+  "name": "Col de Port – Port de Lers",
+  "color": "#aa8a5a",
+  "km": 75,
+  "elevationGain": 1800,
+  "passes": [
+   "col-de-port",
+   "port-de-lers"
+  ],
+  "note": "Am Étang de Lers lässt sich der Col d'Agnes anhängen (+8 km hin und zurück, +150 m).",
+  "season": null,
+  "description": "Von Massat über den Col de Port nach Tarascon-sur-Ariège, durchs Vicdessos-Tal nach Vicdessos, über den Port de Lers am Étang de Lers vorbei und zurück nach Massat.",
+  "type": "loop",
+  "waypoints": [
+   {
+    "lat": 42.8889,
+    "lon": 1.348
+   },
+   {
+    "lat": 42.899,
+    "lon": 1.4528
+   },
+   {
+    "lat": 42.8492,
+    "lon": 1.6043
+   },
+   {
+    "lat": 42.7732,
+    "lon": 1.5137
+   },
+   {
+    "lat": 42.8064,
+    "lon": 1.4116
+   },
+   {
+    "lat": 42.8889,
+    "lon": 1.348
+   }
+  ]
+ },
+ {
+  "slug": "ordino-runde",
+  "surface": "asphalt",
+  "name": "Coll d'Ordino-Runde",
+  "color": "#5a8a7a",
+  "km": 43,
+  "elevationGain": 1150,
+  "passes": [
+   "coll-d-ordino"
+  ],
+  "note": "Durch Encamp und Andorra la Vella dichter Verkehr; der Coll d'Ordino selbst ist ruhig.",
+  "season": null,
+  "description": "Von Andorra la Vella über La Massana nach Ordino, über den Coll d'Ordino nach Canillo und über Encamp zurück nach Andorra la Vella.",
+  "type": "loop",
+  "waypoints": [
+   {
+    "lat": 42.4979,
+    "lon": 1.5032
+   },
+   {
+    "lat": 42.5442,
+    "lon": 1.5164
+   },
+   {
+    "lat": 42.556,
+    "lon": 1.533
+   },
+   {
+    "lat": 42.5561,
+    "lon": 1.5723
+   },
+   {
+    "lat": 42.5666,
+    "lon": 1.5996
+   },
+   {
+    "lat": 42.536,
+    "lon": 1.5836
+   },
+   {
+    "lat": 42.4979,
+    "lon": 1.5032
+   }
+  ]
+ },
+ {
+  "slug": "marie-blanque-runde",
+  "surface": "asphalt",
+  "name": "Marie-Blanque-Runde",
+  "color": "#9a7a8a",
+  "km": 77,
+  "elevationGain": 1100,
+  "passes": [
+   "col-de-marie-blanque"
+  ],
+  "note": "Die Runde fährt den Marie-Blanque von der leichten Seite; wer die letzten vier Kilometer um 11 % will, fährt sie andersherum ab Escot.",
+  "season": null,
+  "description": "Von Laruns durchs Ossau-Tal nach Bielle, über den Col de Marie-Blanque hinunter nach Escot ins Aspe-Tal, nach Oloron-Sainte-Marie und über Arudy zurück nach Laruns.",
+  "type": "loop",
+  "waypoints": [
+   {
+    "lat": 42.9882,
+    "lon": -0.4266
+   },
+   {
+    "lat": 43.0548,
+    "lon": -0.4329
+   },
+   {
+    "lat": 43.0705,
+    "lon": -0.5075
+   },
+   {
+    "lat": 43.0771,
+    "lon": -0.6068
+   },
+   {
+    "lat": 43.1922,
+    "lon": -0.6116
+   },
+   {
+    "lat": 43.1062,
+    "lon": -0.4281
+   },
+   {
+    "lat": 42.9882,
+    "lon": -0.4266
+   }
+  ]
+ },
+ {
+  "slug": "grand-colombier-runde",
+  "surface": "asphalt",
+  "name": "Grand Colombier ab Culoz",
+  "color": "#7a9aaa",
+  "km": 41,
+  "elevationGain": 1300,
+  "passes": [
+   "grand-colombier"
+  ],
+  "note": "Ab Culoz in Kehren und mit Rampen über 10 % hinauf; hinunter nach Anglefort geht es über die steilste Seite, schmal und unregelmäßig.",
+  "season": null,
+  "description": "Von Culoz über die Kehren der Ostseite auf den Grand Colombier und über Anglefort zurück nach Culoz.",
+  "type": "loop",
+  "waypoints": [
+   {
+    "lat": 45.8477,
+    "lon": 5.7809
+   },
+   {
+    "lat": 45.9035,
+    "lon": 5.7617
+   },
+   {
+    "lat": 45.9118,
+    "lon": 5.8087
+   },
+   {
+    "lat": 45.8477,
+    "lon": 5.7809
+   }
+  ]
+ },
+ {
+  "slug": "marchairuz-mollendruz-runde",
+  "surface": "asphalt",
+  "name": "Marchairuz – Mollendruz",
+  "color": "#a87a8a",
+  "km": 55,
+  "elevationGain": 1050,
+  "passes": [
+   "col-du-marchairuz",
+   "col-du-mollendruz"
+  ],
+  "note": "Der Mollendruz wird ganzjährig geräumt, der Marchairuz ist im Winter nach Schneefall oft gesperrt.",
+  "season": null,
+  "description": "Von Le Brassus über den Col du Marchairuz hinunter nach Bière, über Mont-la-Ville auf den Col du Mollendruz, hinunter nach L'Abbaye und am Lac de Joux zurück nach Le Brassus.",
+  "type": "loop",
+  "waypoints": [
+   {
+    "lat": 46.584,
+    "lon": 6.2123
+   },
+   {
+    "lat": 46.5526,
+    "lon": 6.2505
+   },
+   {
+    "lat": 46.5374,
+    "lon": 6.3337
+   },
+   {
+    "lat": 46.6455,
+    "lon": 6.4078
+   },
+   {
+    "lat": 46.6492,
+    "lon": 6.3677
+   },
+   {
+    "lat": 46.6493,
+    "lon": 6.3186
+   },
+   {
+    "lat": 46.584,
+    "lon": 6.2123
+   }
+  ]
+ },
+ {
+  "slug": "chasseral-runde",
+  "surface": "asphalt",
+  "name": "Chasseral – Mont-Crosin",
+  "color": "#6a6a9a",
+  "km": 73,
+  "elevationGain": 1700,
+  "passes": [
+   "chasseral",
+   "mont-crosin"
+  ],
+  "note": "Die Chasseral-Straße ist im Winter gesperrt; dann bleibt der Mont-Crosin allein.",
+  "season": null,
+  "description": "Von Saint-Imier auf den Chasseral, hinunter nach Nods, über Orvin nach Sonceboz, über Tramelan auf den Mont-Crosin und zurück nach Saint-Imier.",
+  "type": "loop",
+  "waypoints": [
+   {
+    "lat": 47.1518,
+    "lon": 6.9972
+   },
+   {
+    "lat": 47.1194,
+    "lon": 7.0323
+   },
+   {
+    "lat": 47.113,
+    "lon": 7.0818
+   },
+   {
+    "lat": 47.1607,
+    "lon": 7.2127
+   },
+   {
+    "lat": 47.1968,
+    "lon": 7.1797
+   },
+   {
+    "lat": 47.2237,
+    "lon": 7.103
+   },
+   {
+    "lat": 47.1906,
+    "lon": 7.0399
+   },
+   {
+    "lat": 47.1518,
+    "lon": 6.9972
+   }
+  ]
+ },
+ {
+  "slug": "faucille-givrine-runde",
+  "surface": "asphalt",
+  "name": "Faucille – Givrine",
+  "color": "#8aaa7a",
+  "km": 86,
+  "elevationGain": 1400,
+  "passes": [
+   "col-de-la-faucille",
+   "col-de-la-givrine"
+  ],
+  "note": "Zwischen Nyon und Divonne auf der Seestraße und durch Vororte Verkehr; die beiden Pässe sind ruhiger.",
+  "season": null,
+  "description": "Von Gex über die Kehren auf den Col de la Faucille, hinunter nach Mijoux, über Les Rousses zum Col de la Givrine, über Saint-Cergue hinunter nach Nyon und am See über Coppet und Divonne zurück nach Gex.",
+  "type": "loop",
+  "waypoints": [
+   {
+    "lat": 46.3338,
+    "lon": 6.0577
+   },
+   {
+    "lat": 46.3681,
+    "lon": 6.0219
+   },
+   {
+    "lat": 46.3662,
+    "lon": 5.9961
+   },
+   {
+    "lat": 46.4856,
+    "lon": 6.0603
+   },
+   {
+    "lat": 46.4556,
+    "lon": 6.0905
+   },
+   {
+    "lat": 46.4461,
+    "lon": 6.1581
+   },
+   {
+    "lat": 46.3821,
+    "lon": 6.2403
+   },
+   {
+    "lat": 46.3164,
+    "lon": 6.1928
+   },
+   {
+    "lat": 46.357,
+    "lon": 6.143
+   },
+   {
+    "lat": 46.3338,
+    "lon": 6.0577
+   }
+  ]
  }
 ]
