@@ -319,7 +319,7 @@
   "colle-d-esischie:0": {"fetchedAt":"2026-10-19","inputs":"14d8a4312a7c5758","source":"osrm"},
   "colle-d-oggia:0": {"fetchedAt":"2026-09-21","inputs":"4bcfece58488714b","source":"ors"},
   "colle-d-oggia:1": {"fetchedAt":"2026-09-21","inputs":"21aa0e615bff0d0c","source":"ors"},
-  "colle-del-lys:0": {"fetchedAt":"2026-10-21","inputs":"7f833135ad617002","source":"osrm"},
+  "colle-del-lys:0": {"fetchedAt":"2026-10-21","inputs":"7f833135ad617002","source":"osrm","orsDeclined":true},
   "colle-del-lys:1": {"fetchedAt":"2026-10-21","inputs":"912271374655e0b","source":"osrm"},
   "colle-del-melogno:0": {"fetchedAt":"2026-09-21","inputs":"e3467c1030357807","source":"ors"},
   "colle-del-melogno:1": {"fetchedAt":"2026-09-21","inputs":"b30096c077c4e2b","source":"ors"},
