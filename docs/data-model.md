@@ -504,8 +504,11 @@ Some derivations are computed by a getter in `lib/data.ts` while the page is
 prerendered, rather than committed next to the measurements: they depend on
 rules and thresholds in `lib/`, so a file would go stale the moment one of
 those changed, with nothing to notice it. The explorer's layout reads all of
-them at once as `getPageData(lang)`, inside its `"use cache"` entry; the entity
-routes look one entity up with `entityAt`, which runs none of them.
+them at once as `getPageData(lang)`, inside its `"use cache"` entry, packed
+for the wire (`packPage`, `lib/page-wire.ts`: the year and the climate
+series travel as short strings and tuples, because every prerendered route
+carries a copy); the explorer unpacks them once. The entity routes look one
+entity up with `entityAt`, which runs none of them.
 
 | Getter                  | Value                                                                                                                                         |
 | ----------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
