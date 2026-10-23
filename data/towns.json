@@ -1807,5 +1807,791 @@
    "Valbelluna"
   ],
   "why": "Alte Stadt am Südrand der Belluneser Dolomiten: Croce d'Aune beginnt in Pedavena vor der Tür, Grappa, Brocon, Cereda und San Boldo liegen in Tagesreichweite. Radhotel mit Rennradverleih, Radläden, Bahnhof an der Strecke Padua–Belluno; tief genug für Frühjahr und Spätherbst."
+ },
+ {
+  "slug": "oberwiesenthal",
+  "name": "Oberwiesenthal",
+  "country": "DE",
+  "lat": 50.4194,
+  "lon": 12.971,
+  "tags": [
+   "passes",
+   "train"
+  ],
+  "aliases": [],
+  "why": "Höchstgelegene Stadt Deutschlands am Fuß des Fichtelbergs: Fichtelberg und Klínovec beginnen vor der Tür, Měděnec und der Auersberg sind eine Tagesrunde entfernt. Endpunkt der Fichtelbergbahn aus Cranzahl."
+ },
+ {
+  "slug": "altenberg",
+  "name": "Altenberg",
+  "country": "DE",
+  "lat": 50.7666,
+  "lon": 13.7523,
+  "tags": [
+   "train",
+   "quiet"
+  ],
+  "aliases": [],
+  "why": "Auf dem Kamm des Osterzgebirges: Cínovec, Komáří vížka, Dlouhá Louka und Bouřňák liegen auf der böhmischen Seite eine Tagesrunde entfernt. Bahnhof der Müglitztalbahn aus Heidenau bei Dresden."
+ },
+ {
+  "slug": "teplice",
+  "name": "Teplice",
+  "country": "CZ",
+  "lat": 50.6407,
+  "lon": 13.8244,
+  "tags": [
+   "passes",
+   "train"
+  ],
+  "aliases": [],
+  "why": "Kurstadt am Fuß der böhmischen Seite: Komáří vížka, Cínovec und Dlouhá Louka beginnen in den Nachbarorten Krupka, Dubí und Osek. Bahnhof mit Verbindungen nach Ústí nad Labem und Prag."
+ },
+ {
+  "slug": "freiburg",
+  "name": "Freiburg im Breisgau",
+  "country": "DE",
+  "lat": 47.9961,
+  "lon": 7.8494,
+  "tags": [
+   "hub",
+   "workshops",
+   "train"
+  ],
+  "aliases": [
+   "Freiburg"
+  ],
+  "why": "Die Radstadt am Fuß des Südschwarzwalds: Schauinsland beginnt am Stadtrand, Notschrei, Kandel und Wiedener Eck sind eine Tagesrunde entfernt. ICE-Bahnhof und viele Radläden."
+ },
+ {
+  "slug": "todtnau",
+  "name": "Todtnau",
+  "country": "DE",
+  "lat": 47.8303,
+  "lon": 7.9452,
+  "tags": [
+   "passes",
+   "quiet"
+  ],
+  "aliases": [],
+  "why": "Im oberen Wiesental zwischen Feldberg und Belchen: Feldbergpass und Notschrei beginnen im Ort, das Wiedener Eck liegt eine kurze Anfahrt entfernt."
+ },
+ {
+  "slug": "baiersbronn",
+  "name": "Baiersbronn",
+  "country": "DE",
+  "lat": 48.507,
+  "lon": 8.372,
+  "tags": [
+   "hotels",
+   "quiet"
+  ],
+  "aliases": [],
+  "why": "Im Nordschwarzwald am Rand des Nationalparks: Ruhestein und Kniebis sind von hier aus eine kurze Runde, die Schwarzwaldhochstraße liegt oben auf dem Kamm."
+ },
+ {
+  "slug": "port-de-pollenca",
+  "name": "Port de Pollença",
+  "country": "ES",
+  "lat": 39.908,
+  "lon": 3.0828,
+  "tags": [
+   "hub",
+   "hotels",
+   "workshops",
+   "season"
+  ],
+  "aliases": [
+   "Puerto Pollensa",
+   "Pollença"
+  ],
+  "why": "Das Zentrum des Rennradurlaubs im Norden der Insel: Femenia, Coll de sa Batalla und Sa Calobra sind Tagesrunden, Radhotels und Verleih in jeder Straße. Fährt sich von Februar bis November."
+ },
+ {
+  "slug": "soller",
+  "name": "Sóller",
+  "country": "ES",
+  "lat": 39.7663,
+  "lon": 2.7151,
+  "tags": [
+   "passes",
+   "scenic",
+   "season"
+  ],
+  "aliases": [],
+  "why": "Im Orangental an der Westküste: Puig Major und Coll de Sóller beginnen im Ort, Sa Calobra liegt hinter dem Puig Major. Mit der historischen Bahn aus Palma erreichbar."
+ },
+ {
+  "slug": "murat",
+  "name": "Murat",
+  "country": "FR",
+  "lat": 45.1132,
+  "lon": 2.868,
+  "tags": [
+   "passes",
+   "quiet",
+   "train"
+  ],
+  "aliases": [],
+  "why": "Kleine Stadt unter Basaltfelsen an der Ostseite der Monts du Cantal, mit Bahnhof: Prat de Bouc vor der Tür, Pas de Peyrol über Dienne als Tagesrunde."
+ },
+ {
+  "slug": "salers",
+  "name": "Salers",
+  "country": "FR",
+  "lat": 45.1386,
+  "lon": 2.4943,
+  "tags": [
+   "scenic",
+   "passes"
+  ],
+  "aliases": [],
+  "why": "Mittelalterliches Dorf aus dunklem Stein im Westen des Cantal: Néronne und Pas de Peyrol als Runde, ruhige Straßen über die Hochweiden."
+ },
+ {
+  "slug": "le-mont-dore",
+  "name": "Le Mont-Dore",
+  "country": "FR",
+  "lat": 45.5755,
+  "lon": 2.809,
+  "tags": [
+   "passes",
+   "hotels"
+  ],
+  "aliases": [
+   "Mont-Dore"
+  ],
+  "why": "Kurort am Fuß des Puy de Sancy: Croix Saint-Robert und Croix-Morand beginnen im Ort, Super-Besse liegt auf der Runde."
+ },
+ {
+  "slug": "besse",
+  "name": "Besse",
+  "country": "FR",
+  "lat": 45.5116,
+  "lon": 2.933,
+  "tags": [
+   "scenic",
+   "quiet"
+  ],
+  "aliases": [
+   "Besse-en-Chandesse",
+   "Besse-et-Saint-Anastaise"
+  ],
+  "why": "Mittelalterlicher Ort an der Ostseite des Sancy: Super-Besse und Croix Saint-Robert vom Ort aus, der Lac Pavin nebenan."
+ },
+ {
+  "slug": "florac",
+  "name": "Florac",
+  "country": "FR",
+  "lat": 44.3239,
+  "lon": 3.5942,
+  "tags": [
+   "passes",
+   "quiet"
+  ],
+  "aliases": [],
+  "why": "Kleinstadt zwischen Mont Lozère, Causse und Cevennen: Finiels und Aigoual als Tagesrunden, die Gorges du Tarn nebenan."
+ },
+ {
+  "slug": "wernigerode",
+  "name": "Wernigerode",
+  "country": "DE",
+  "lat": 51.8344,
+  "lon": 10.7863,
+  "tags": [
+   "hub",
+   "train",
+   "hotels"
+  ],
+  "aliases": [],
+  "why": "Fachwerkstadt am Nordrand des Harzes mit Bahnhof der Brockenbahn: Schierke und der Brocken eine halbe Stunde entfernt, Thale und Torfhaus als Tagesrunden."
+ },
+ {
+  "slug": "bad-harzburg",
+  "name": "Bad Harzburg",
+  "country": "DE",
+  "lat": 51.8797,
+  "lon": 10.56,
+  "tags": [
+   "passes",
+   "train"
+  ],
+  "aliases": [],
+  "why": "Kurort an der B4, mit dem Torfhaus vor der Tür und dem Brocken über Schierke als lange Tagesrunde."
+ },
+ {
+  "slug": "thale",
+  "name": "Thale",
+  "country": "DE",
+  "lat": 51.7528,
+  "lon": 11.0377,
+  "tags": [
+   "scenic",
+   "train"
+  ],
+  "aliases": [],
+  "why": "Am Ausgang des Bodetals: Hexentanzplatz und Roßtrappe beginnen im Ort, zwei kurze steile Anstiege an einem Vormittag."
+ },
+ {
+  "slug": "oberhof-ort",
+  "name": "Oberhof",
+  "country": "DE",
+  "lat": 50.705,
+  "lon": 10.727,
+  "tags": [
+   "hotels",
+   "passes"
+  ],
+  "aliases": [],
+  "why": "Der Wintersportort am Rennsteig, mit Hotels für Gruppen: der Inselsberg als Tagesrunde über den Rennsteig, die Auffahrt von Zella-Mehlis vor der Tür."
+ },
+ {
+  "slug": "bad-tabarz",
+  "name": "Bad Tabarz",
+  "country": "DE",
+  "lat": 50.8761,
+  "lon": 10.5162,
+  "tags": [
+   "quiet"
+  ],
+  "aliases": [
+   "Tabarz"
+  ],
+  "why": "Kurort am Fuß des Inselsbergs: die Nordauffahrt beginnt im Ort, Friedrichroda und der Rennsteig nebenan."
+ },
+ {
+  "slug": "gersfeld",
+  "name": "Gersfeld",
+  "country": "DE",
+  "lat": 50.4498,
+  "lon": 9.8944,
+  "tags": [
+   "passes",
+   "quiet"
+  ],
+  "aliases": [
+   "Gersfeld (Rhön)"
+  ],
+  "why": "Kleinstadt unter der Wasserkuppe: die Südauffahrt beginnt im Ort, Kreuzberg und Hochrhönstraße als Runde über Bischofsheim."
+ },
+ {
+  "slug": "bischofsheim",
+  "name": "Bischofsheim",
+  "country": "DE",
+  "lat": 50.4012,
+  "lon": 9.9934,
+  "tags": [
+   "quiet"
+  ],
+  "aliases": [
+   "Bischofsheim in der Rhön"
+  ],
+  "why": "Am Fuß des Kreuzbergs, auf halbem Weg zwischen Wasserkuppe und Langer Rhön."
+ },
+ {
+  "slug": "bodenmais",
+  "name": "Bodenmais",
+  "country": "DE",
+  "lat": 49.067,
+  "lon": 13.103,
+  "tags": [
+   "hotels",
+   "passes"
+  ],
+  "aliases": [],
+  "why": "Ferienort unter dem Arber: der Bretterschachten beginnt im Ort, über Bayerisch Eisenstein und den Brennes eine Runde um den Arber."
+ },
+ {
+  "slug": "bayerisch-eisenstein",
+  "name": "Bayerisch Eisenstein",
+  "country": "DE",
+  "lat": 49.1223,
+  "lon": 13.2032,
+  "tags": [
+   "train",
+   "quiet"
+  ],
+  "aliases": [],
+  "why": "Grenzort mit Bahnhof auf der Grenze: Brennes und Bretterschachten von hier, der Böhmerwald jenseits der Grenze."
+ },
+ {
+  "slug": "cesky-krumlov",
+  "name": "Český Krumlov",
+  "country": "CZ",
+  "lat": 48.8107,
+  "lon": 14.3151,
+  "tags": [
+   "scenic",
+   "hotels"
+  ],
+  "aliases": [
+   "Krumau"
+  ],
+  "why": "Die Altstadt an der Moldau unter der Kleť: der Anstieg beginnt am Stadtrand, der Böhmerwald eine Stunde westlich."
+ },
+ {
+  "slug": "corte",
+  "name": "Corte",
+  "country": "FR",
+  "lat": 42.3053,
+  "lon": 9.1512,
+  "tags": [
+   "train",
+   "passes"
+  ],
+  "aliases": [
+   "Corti"
+  ],
+  "why": "Die alte Hauptstadt in der Mitte der Insel, mit Bahnhof: Vizzavona und Sorba über Vivario, das Niolo und der Vergio im Westen."
+ },
+ {
+  "slug": "zonza",
+  "name": "Zonza",
+  "country": "FR",
+  "lat": 41.7494,
+  "lon": 9.1706,
+  "tags": [
+   "passes",
+   "quiet"
+  ],
+  "aliases": [],
+  "why": "Bergdorf in der Alta Rocca: der Col de Bavella beginnt im Ort, das Ospedale und Porto-Vecchio liegen auf der anderen Seite des Waldes."
+ },
+ {
+  "slug": "porto-vecchio",
+  "name": "Porto-Vecchio",
+  "country": "FR",
+  "lat": 41.5911,
+  "lon": 9.2794,
+  "tags": [
+   "hotels",
+   "scenic"
+  ],
+  "aliases": [
+   "Portivechju"
+  ],
+  "why": "Hafenstadt im Süden mit vielen Hotels: das Ospedale beginnt am Stadtrand, über Zonza eine große Runde mit dem Col de Bavella."
+ },
+ {
+  "slug": "bastia",
+  "name": "Bastia",
+  "country": "FR",
+  "lat": 42.6975,
+  "lon": 9.4498,
+  "tags": [
+   "train",
+   "hotels"
+  ],
+  "aliases": [],
+  "why": "Fährhafen und Bahnhof im Nordosten: der Col de Teghime beginnt in der Stadt, das Cap Corse als lange Küstenrunde."
+ },
+ {
+  "slug": "evisa",
+  "name": "Evisa",
+  "country": "FR",
+  "lat": 42.2535,
+  "lon": 8.803,
+  "tags": [
+   "passes",
+   "quiet"
+  ],
+  "aliases": [],
+  "why": "Bergdorf über den Schluchten der Spelunca: der Col de Vergio beginnt im Ort, der Col de Sevi liegt eine kurze Abfahrt entfernt."
+ },
+ {
+  "slug": "puerto-de-la-cruz",
+  "name": "Puerto de la Cruz",
+  "country": "ES",
+  "lat": 28.4159,
+  "lon": -16.5533,
+  "tags": [
+   "hotels",
+   "passes"
+  ],
+  "aliases": [],
+  "why": "Hotelstadt an der Nordküste: der Teide beginnt am Strand, Izaña über La Esperanza, Masca eine Stunde westlich."
+ },
+ {
+  "slug": "los-cristianos",
+  "name": "Los Cristianos",
+  "country": "ES",
+  "lat": 28.0526,
+  "lon": -16.717,
+  "tags": [
+   "hotels",
+   "season"
+  ],
+  "aliases": [],
+  "why": "Ferienort im sonnigen Süden: über Vilaflor in die Cañadas, Chío und Masca an der Westküste, im Winter fast immer trocken."
+ },
+ {
+  "slug": "maspalomas",
+  "name": "Maspalomas",
+  "country": "ES",
+  "lat": 27.765,
+  "lon": -15.586,
+  "tags": [
+   "hotels",
+   "season",
+   "workshops"
+  ],
+  "aliases": [
+   "Playa del Inglés"
+  ],
+  "why": "Die Hotelzone im Süden Gran Canarias mit vielen Radverleihen: Fataga beginnt am Ortsrand, Pico de las Nieves und Cruz de Tejeda als große Tage."
+ },
+ {
+  "slug": "santa-cruz-de-la-palma",
+  "name": "Santa Cruz de La Palma",
+  "country": "ES",
+  "lat": 28.6819,
+  "lon": -17.7663,
+  "tags": [
+   "quiet",
+   "scenic"
+  ],
+  "aliases": [],
+  "why": "Die kleine Inselhauptstadt am Hafen: der Roque de los Muchachos beginnt am Meer, die Insel ist ruhig und steil."
+ },
+ {
+  "slug": "cangas-de-onis",
+  "name": "Cangas de Onís",
+  "country": "ES",
+  "lat": 43.3509,
+  "lon": -5.129,
+  "tags": [
+   "hotels",
+   "scenic"
+  ],
+  "aliases": [],
+  "why": "Die Stadt am Eingang der Picos de Europa: Lagos de Covadonga beginnt am Ortsrand, über Arenas und Potes zum San Glorio."
+ },
+ {
+  "slug": "pola-de-lena",
+  "name": "Pola de Lena",
+  "country": "ES",
+  "lat": 43.1586,
+  "lon": -5.8311,
+  "tags": [
+   "train",
+   "passes"
+  ],
+  "aliases": [
+   "La Pola"
+  ],
+  "why": "Kleinstadt mit Bahnhof im Tal: Cobertoria und Pajares beginnen im Ort, der Angliru über Riosa eine halbe Stunde entfernt."
+ },
+ {
+  "slug": "pola-de-somiedo",
+  "name": "Pola de Somiedo",
+  "country": "ES",
+  "lat": 43.0931,
+  "lon": -6.2573,
+  "tags": [
+   "quiet",
+   "scenic"
+  ],
+  "aliases": [
+   "La Pola Somiedo"
+  ],
+  "why": "Das Dorf im Naturpark Somiedo: die Farrapona beginnt im Ort, San Lorenzo auf der anderen Seite des Tals."
+ },
+ {
+  "slug": "potes",
+  "name": "Potes",
+  "country": "ES",
+  "lat": 43.1537,
+  "lon": -4.6234,
+  "tags": [
+   "scenic",
+   "passes"
+  ],
+  "aliases": [],
+  "why": "Das Städtchen in der Liébana am Fuß der Picos de Europa: San Glorio beginnt im Ort, Fuente Dé und die Hermida-Schlucht als Ausfahrten."
+ },
+ {
+  "slug": "granada",
+  "name": "Granada",
+  "country": "ES",
+  "lat": 37.1735,
+  "lon": -3.5995,
+  "tags": [
+   "hub",
+   "train",
+   "hotels"
+  ],
+  "aliases": [],
+  "why": "Die Stadt der Alhambra unter der Sierra Nevada: die höchste Straße Spaniens, Purche und Hazallanas beginnen in den Vororten."
+ },
+ {
+  "slug": "la-calahorra",
+  "name": "La Calahorra",
+  "country": "ES",
+  "lat": 37.1815,
+  "lon": -3.0641,
+  "tags": [
+   "quiet"
+  ],
+  "aliases": [],
+  "why": "Dorf mit Renaissance-Burg auf der Hochebene des Marquesado: die Ragua beginnt im Ort."
+ },
+ {
+  "slug": "tabernas",
+  "name": "Tabernas",
+  "country": "ES",
+  "lat": 37.0499,
+  "lon": -2.3914,
+  "tags": [
+   "quiet",
+   "season"
+  ],
+  "aliases": [],
+  "why": "Das Dorf in der Wüste von Tabernas: Calar Alto über Gérgal und Velefique als Tagesrunden, im Winter trocken und mild."
+ },
+ {
+  "slug": "pescara",
+  "name": "Pescara",
+  "country": "IT",
+  "lat": 42.4618,
+  "lon": 14.2161,
+  "tags": [
+   "hub",
+   "train",
+   "hotels"
+  ],
+  "aliases": [],
+  "why": "Die Küstenstadt an der Adria vor der Majella: Blockhaus und Passo Lanciano eine Stunde landeinwärts, Campo Imperatore über L'Aquila."
+ },
+ {
+  "slug": "guardiagrele",
+  "name": "Guardiagrele",
+  "country": "IT",
+  "lat": 42.1906,
+  "lon": 14.2214,
+  "tags": [
+   "quiet"
+  ],
+  "aliases": [],
+  "why": "Steinstadt am Fuß der Majella: der Passo Lanciano über Pretoro und der Blockhaus über Roccamorice als Tagesrunden."
+ },
+ {
+  "slug": "l-aquila",
+  "name": "L'Aquila",
+  "country": "IT",
+  "lat": 42.3498,
+  "lon": 13.3995,
+  "tags": [
+   "train",
+   "hotels"
+  ],
+  "aliases": [
+   "Aquila"
+  ],
+  "why": "Die Hauptstadt der Abruzzen unter dem Gran Sasso: Campo Imperatore über Assergi, der Terminillo eine Stunde westlich."
+ },
+ {
+  "slug": "rieti",
+  "name": "Rieti",
+  "country": "IT",
+  "lat": 42.4147,
+  "lon": 12.8859,
+  "tags": [
+   "train",
+   "passes"
+  ],
+  "aliases": [],
+  "why": "Die Stadt in der Mitte Italiens: der Terminillo beginnt am Stadtrand."
+ },
+ {
+  "slug": "abetone-ort",
+  "name": "Abetone",
+  "country": "IT",
+  "lat": 44.1445,
+  "lon": 10.6645,
+  "tags": [
+   "hotels",
+   "passes"
+  ],
+  "aliases": [],
+  "why": "Der Skiort auf dem Pass: Abetone von beiden Seiten, San Pellegrino in Alpe über die Garfagnana."
+ },
+ {
+  "slug": "nicolosi",
+  "name": "Nicolosi",
+  "country": "IT",
+  "lat": 37.6147,
+  "lon": 15.0263,
+  "tags": [
+   "quiet",
+   "hotels"
+  ],
+  "aliases": [],
+  "why": "Das Tor zum Ätna über Catania: die Südauffahrt beginnt im Ort, Zafferana und Ragalna sind nah."
+ },
+ {
+  "slug": "linguaglossa",
+  "name": "Linguaglossa",
+  "country": "IT",
+  "lat": 37.8409,
+  "lon": 15.1437,
+  "tags": [
+   "quiet"
+  ],
+  "aliases": [],
+  "why": "Weinort an der Nordflanke des Ätna: Piano Provenzana beginnt im Ort, Taormina und die Peloritani sind nah."
+ },
+ {
+  "slug": "cefalu",
+  "name": "Cefalù",
+  "country": "IT",
+  "lat": 38.0386,
+  "lon": 14.0222,
+  "tags": [
+   "hotels",
+   "train",
+   "season"
+  ],
+  "aliases": [],
+  "why": "Altstadt am Meer unter der Madonie: Piano Battaglia über Isnello als Tagesrunde, Bahn nach Palermo."
+ },
+ {
+  "slug": "trapani",
+  "name": "Trapani",
+  "country": "IT",
+  "lat": 38.0176,
+  "lon": 12.5365,
+  "tags": [
+   "hub",
+   "hotels"
+  ],
+  "aliases": [],
+  "why": "Hafenstadt im Westen mit Flughafen: Erice beginnt am Stadtrand."
+ },
+ {
+  "slug": "spa",
+  "name": "Spa",
+  "country": "BE",
+  "lat": 50.4921,
+  "lon": 5.8628,
+  "tags": [
+   "hotels",
+   "train"
+  ],
+  "aliases": [],
+  "why": "Kurstadt mitten in den Lüttich–Bastogne–Lüttich-Anstiegen: Redoute, Rosier, Stockeu und Haute-Levée liegen in einer Runde."
+ },
+ {
+  "slug": "stavelot",
+  "name": "Stavelot",
+  "country": "BE",
+  "lat": 50.3942,
+  "lon": 5.931,
+  "tags": [
+   "quiet"
+  ],
+  "aliases": [],
+  "why": "Abteistadt im Tal der Amblève: Stockeu und Haute-Levée beginnen im Ort, Wanne und Rosier sind nah."
+ },
+ {
+  "slug": "liege",
+  "name": "Lüttich",
+  "country": "BE",
+  "lat": 50.6247,
+  "lon": 5.5671,
+  "tags": [
+   "hub",
+   "train",
+   "hotels"
+  ],
+  "aliases": [
+   "Liège",
+   "Luik"
+  ],
+  "why": "Start und Ziel der Doyenne, mit dem Bahnhof Guillemins: die Roche-aux-Faucons vor der Stadt, Huy und die Redoute eine halbe Stunde entfernt."
+ },
+ {
+  "slug": "spindleruv-mlyn",
+  "name": "Špindlerův Mlýn",
+  "country": "CZ",
+  "lat": 50.7256,
+  "lon": 15.6068,
+  "tags": [
+   "hotels"
+  ],
+  "aliases": [
+   "Spindlermühle"
+  ],
+  "why": "Der Ferienort an der jungen Elbe: die Špindlerova bouda beginnt im Ort, Horní Mísečky über Vítkovice ist nah."
+ },
+ {
+  "slug": "janske-lazne",
+  "name": "Janské Lázně",
+  "country": "CZ",
+  "lat": 50.6306,
+  "lon": 15.7807,
+  "tags": [
+   "quiet",
+   "hotels"
+  ],
+  "aliases": [
+   "Johannisbad"
+  ],
+  "why": "Kurort am Fuß des Schwarzenbergs: die Černá hora beginnt im Ort, der Okraj-Pass über Malá Úpa ist eine Runde."
+ },
+ {
+  "slug": "liberec",
+  "name": "Liberec",
+  "country": "CZ",
+  "lat": 50.7663,
+  "lon": 15.0543,
+  "tags": [
+   "hub",
+   "train",
+   "hotels"
+  ],
+  "aliases": [
+   "Reichenberg"
+  ],
+  "why": "Die Stadt unter dem Jeschken: der Anstieg beginnt in Horní Hanychov, das Isergebirge mit Tanvald liegt eine halbe Stunde östlich."
+ },
+ {
+  "slug": "liptovsky-mikulas",
+  "name": "Liptovský Mikuláš",
+  "country": "SK",
+  "lat": 49.0836,
+  "lon": 19.6128,
+  "tags": [
+   "hub",
+   "train",
+   "hotels"
+  ],
+  "aliases": [],
+  "why": "Die Stadt im Liptov unter der Niederen Tatra: Jasná, die Nordseite der Čertovica und über Bystrá der Chopok als Tagesrunden."
+ },
+ {
+  "slug": "poprad",
+  "name": "Poprad",
+  "country": "SK",
+  "lat": 49.0596,
+  "lon": 20.2973,
+  "tags": [
+   "hub",
+   "train"
+  ],
+  "aliases": [],
+  "why": "Bahnknoten und Flughafen unter der Hohen Tatra: Štrbské Pleso über Štrba, die Tatra-Orte am Hang."
+ },
+ {
+  "slug": "zakopane",
+  "name": "Zakopane",
+  "country": "PL",
+  "lat": 49.2969,
+  "lon": 19.9505,
+  "tags": [
+   "hotels",
+   "train"
+  ],
+  "aliases": [],
+  "why": "Die Bergstadt der polnischen Tatra: Gliczarów und die Hügel des Podhale vor der Tür, die Slowakei eine Stunde entfernt."
  }
 ]

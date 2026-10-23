@@ -293,5 +293,155 @@
   "character": "The Zillertaler Höhenstraße, Hintertux and the Gerlospass: steep ramps out of a deep, wide valley, the Höhenstraße one of the hardest in Austria.",
   "multiDay": "Three days; the Gerlospass leads to the Krimml waterfalls and on into the Hohe Tauern.",
   "access": "The Zillertal railway from Jenbach to Mayrhofen; Innsbruck in an hour."
+ },
+ "westerzgebirge": {
+  "character": "The two highest mountains of the Ore Mountains on either side of the border, plus the long climbs out of the Ohře valley: plateaus at 900 to 1200 m, spruce forest and wide meadows, little traffic away from the main road.",
+  "multiDay": "A long weekend: the Fichtelberg and the Klínovec in one day, Měděnec or the Auersberg on the second.",
+  "access": "By train to Cranzahl and on with the Fichtelberg narrow-gauge railway to Oberwiesenthal; a good hour by car from Chemnitz, two from Prague."
+ },
+ "osterzgebirge": {
+  "character": "The Ore Mountains' steep escarpment towards Bohemia: short, steep climbs out of Krupka, Dubí and Osek onto a gentle ridge, with quiet roads at the top between Altenberg and Moldava.",
+  "multiDay": "Two days are enough for every climb on the Bohemian side; from Altenberg as loops over the border, from Teplice from below.",
+  "access": "By train from Dresden via Heidenau to Altenberg, or to Teplice via Ústí nad Labem; Dresden is an hour away."
+ },
+ "suedschwarzwald": {
+  "character": "The highest mountains of the Black Forest between Freiburg and the Feldberg: long climbs of 500 to 900 metres out of the Rhine plain and the valleys, forest and open pastures at the top, traffic on the main roads.",
+  "multiDay": "A base for a long weekend up to a week: the Schauinsland, the Notschrei and the Feldberg make one loop, the Kandel, the Wiedener Eck and the Blauen another day each.",
+  "access": "By ICE to Freiburg, from there on the Höllental railway into the Dreisam valley; Basel-Mulhouse airport is an hour away."
+ },
+ "nordschwarzwald": {
+  "character": "The national park around the Black Forest High Road: climbs out of the valleys on the Rhine side onto a long ridge at 900 to 1000 m, moorland and distant views at the top, quiet valleys below.",
+  "multiDay": "A weekend: the Ruhestein and the Kniebis as a loop over the high road, the valleys on the Rhine side as a second day.",
+  "access": "By train to Baiersbronn or Freudenstadt; a good hour from Karlsruhe and Stuttgart."
+ },
+ "serra-de-tramuntana": {
+  "character": "The range on Mallorca's north-west coast: Sa Calobra, the Puig Major and the Coll de Sóller above the sea, limestone, olive groves and hairpins, from sea level to nearly 900 m. Full of cycling groups in spring, hot in high summer.",
+  "multiDay": "A week, the way most riders do it: Sa Calobra, the loop over Puig Major and the Coll de Sóller, Lluc from both sides, and on a rainy day Randa or Sant Salvador on the plain.",
+  "access": "Palma airport, from there an hour to Port de Pollença or half an hour to Sóller; every major airline carries bikes."
+ },
+ "monts-du-cantal": {
+  "character": "Europe's largest extinct volcano, a circle of green valleys around the Puy Mary: the Pas de Peyrol, the Néronne and Prat de Bouc, pastures, burons and hardly any traffic. Wait for June and September; muggy in high summer, closed at the top in winter.",
+  "multiDay": "Three days are enough: the Pas de Peyrol from two sides, the loop over the Néronne from Salers and Prat de Bouc from Murat.",
+  "access": "Train to Murat (via Clermont-Ferrand), by car the A75; nearest airports Aurillac or Clermont-Ferrand."
+ },
+ "monts-dore": {
+  "character": "The volcanoes around the Puy de Sancy, the highest mountain of the Massif Central: the Croix Saint-Robert, the Croix-Morand and the Tour finish at Super-Besse close together, with crater lakes. Good for a long weekend.",
+  "multiDay": "Two days: the loop over the Croix Saint-Robert and Super-Besse, and the Croix-Morand with the Lac Chambon.",
+  "access": "By car via Clermont-Ferrand (one hour); train to Le Mont-Dore in summer only."
+ },
+ "cevennen": {
+  "character": "Chestnut woods, deep valleys and bare granite ridges between the Mont Lozère and the Aigoual: long steady climbs and empty roads, with a Mediterranean climate in the south. Spring and autumn; hot in the valleys in high summer.",
+  "multiDay": "Four days: the Aigoual from Valleraugue and from Meyrueis, the Minier from Le Vigan, the Mont Lozère over the Finiels; the Gorges du Tarn in between.",
+  "access": "By car via the A75 or from Nîmes; nearest stations Alès or Mende."
+ },
+ "harz": {
+  "character": "The northernmost low range with real climbs: the car-free Brocken, Torfhaus above Bad Harzburg and the short steep ramps above the Bode gorge. Spruce forest, moors and half-timbered towns around the edge, for a weekend from Berlin, Hamburg or Hanover.",
+  "multiDay": "Two days: the Brocken and Torfhaus from Wernigerode or Bad Harzburg, the Hexentanzplatz and the Rosstrappe in a morning at Thale.",
+  "access": "Train to Wernigerode, Bad Harzburg or Thale; by car via the A7 or the B6."
+ },
+ "thueringer-wald": {
+  "character": "The ridge of the Rennsteig: spruce forest, winter sports resorts and two named climbs, the Inselsberg and Oberhof. More low range than mountains, for a weekend.",
+  "multiDay": "A weekend: the Inselsberg from both sides and Oberhof, with a stretch of the Rennsteig between them.",
+  "access": "Train to Oberhof or Gotha, by car via the A71 or the A4."
+ },
+ "rhoen": {
+  "character": "The land of open views: bare plateaus, gliders over the Wasserkuppe and the monastery beer at the Kreuzberg. Short climbs, a lot of wind, little traffic during the week.",
+  "multiDay": "Two days: the Wasserkuppe from two sides, the Kreuzberg and the Hochrhön road as a loop.",
+  "access": "Train to Fulda or Bad Neustadt, by car via the A7."
+ },
+ "arberland": {
+  "character": "The two roads over the Arber, the Bretterschachten and the Brennes, on one loop from Bodenmais or Bayerisch Eisenstein. Spruce forest, a cable car and the Arbersee; the Bohemian Forest just across the border.",
+  "multiDay": "A weekend: the loop around the Arber over both passes, plus a day into the Bohemian Forest via Železná Ruda and Špičák.",
+  "access": "Train to Bayerisch Eisenstein or Bodenmais, by car via the A3 and Deggendorf."
+ },
+ "boehmerwald": {
+  "character": "The Czech side of the border range: the Kleť above Český Krumlov, the Churáňov above Stachy and the Dreisessel on the Bavarian border. Long, even climbs through spruce forest, quiet roads and the Vltava in the valley.",
+  "multiDay": "Three days from Český Krumlov: the Kleť in the morning, the Churáňov as a long loop via Vimperk, the Dreisessel via the Lipno reservoir.",
+  "access": "Train to Český Krumlov via České Budějovice; by car from Passau or Linz."
+ },
+ "alta-rocca": {
+  "character": "The south of Corsica between granite needles and the sea: the Col de Bavella above Zonza and the long climb to the Ospedale above Porto-Vecchio. Pine forest, bathing pools and beaches on the same day.",
+  "multiDay": "Three days: the Ospedale and Zonza as a loop from Porto-Vecchio, Bavella from both sides, a day on the coast.",
+  "access": "Ferry or flight to Figari or Bastia, by car along the east coast."
+ },
+ "zentralkorsika": {
+  "character": "The middle of the island around Vivario: Vizzavona, Sorba and Verde in deep pine and beech forests, quiet roads apart from the trunk road. Corte, with its station, as the base.",
+  "multiDay": "Three days from Corte: Vizzavona and Sorba as a loop via Vivario and Ghisoni, the Verde as a long day, plus the Restonica gorge.",
+  "access": "Train to Corte from Bastia or Ajaccio; by car on the T20."
+ },
+ "westkorsika": {
+  "character": "The mountains above the Gulf of Porto: the Col de Vergio, the highest road pass on the island, and the Col de Sevi above Vico. Laricio pines, the Spelunca gorges and the sea in sight.",
+  "multiDay": "Two days from Evisa: the Vergio in the morning, the Sevi via Vico as a loop; plus the Calanche de Piana on the coast.",
+  "access": "By car from Ajaccio via Sagone or from Porto; no station nearby."
+ },
+ "teneriffa": {
+  "character": "The island around the Teide: three ways into the Cañadas, each over 1,300 metres, plus the Masca hairpins. The pros' training camp in winter, often cloudy in the north, sunny in the south.",
+  "multiDay": "A week: the Teide from the north and from the west, Izaña along the ridge, Masca, and a rest day by the sea.",
+  "access": "Fly to Tenerife South or North, bring the bike or hire one there."
+ },
+ "gran-canaria": {
+  "character": "A round island with its highest point in the middle: uphill from every coast, through gorges and pine forest to the Pico de las Nieves and the Cruz de Tejeda. Sunny in the south, cool at the top.",
+  "multiDay": "Five days from Maspalomas: Fataga, the Pico de las Nieves, the Cruz de Tejeda via Ayacata, the west coast via Mogán.",
+  "access": "Fly to Gran Canaria, transfer to the southern resorts; bike hire in Maspalomas."
+ },
+ "la-palma": {
+  "character": "The green island in the west: the Roque de los Muchachos, 2,400 metres from the sea, plus steep roads through laurel forest and hardly any traffic. For climbers who want peace.",
+  "multiDay": "Three days: the Roque from Santa Cruz, the northern loop via Barlovento and Garafía, the volcanoes in the south.",
+  "access": "Fly to La Palma or take the ferry from Tenerife."
+ },
+ "zentralasturien": {
+  "character": "The Vuelta mountains south of Oviedo: the Angliru, the Cobertoria, the San Lorenzo, the Farrapona and the Pajares in green valleys, steep, narrow and empty. Atlantic weather, pleasantly cool in summer.",
+  "multiDay": "Five days: the Angliru, the Cobertoria and the Pajares from Pola de Lena, the San Lorenzo and the Farrapona from Somiedo.",
+  "access": "Fly to Asturias (Oviedo), train to Pola de Lena; by car on the AP-66."
+ },
+ "picos-de-europa": {
+  "character": "Limestone mountains between Asturias, Cantabria and León: the Lagos de Covadonga, the Vuelta's most famous finish, and the San Glorio with the view over the whole massif. Deep gorges in between.",
+  "multiDay": "Four days: Covadonga from Cangas de Onís, the Hermida gorge to Potes, the San Glorio and Fuente Dé.",
+  "access": "Fly to Asturias or Santander, by car on the A-8."
+ },
+ "sierra-nevada": {
+  "character": "The mountains above Granada: Spain's highest road up to almost 2,500 m, the Purche and the hard Hazallanas ramp. Ridden from the city, in summer only early in the morning.",
+  "multiDay": "Three days from Granada: the Sierra Nevada up to the Hoya de la Mora, Hazallanas, the Purche with the Alhambra in the afternoon.",
+  "access": "Fly to Granada or Málaga, train to Granada."
+ },
+ "sierra-de-los-filabres": {
+  "character": "Bare mountains above the Tabernas desert: Calar Alto with its observatory and the Velefique hairpins, two Vuelta climbs without traffic. For spring and autumn, too hot in summer.",
+  "multiDay": "Two days from Tabernas: Calar Alto via Gérgal, Velefique with the descent via Bacares.",
+  "access": "Fly to Almería, by car on the A-92."
+ },
+ "majella": {
+  "character": "The limestone massif above the Adriatic: the Blockhaus, the hardest Giro mountain of the south, and the Passo Lanciano through beech forest. An hour from the coast.",
+  "multiDay": "Two days: the Blockhaus from Roccamorice, the Passo Lanciano from Pretoro with the descent to Guardiagrele.",
+  "access": "Fly or take the train to Pescara, then drive into the mountains."
+ },
+ "gran-sasso": {
+  "character": "The highest mountains of the Apennines between the Abruzzo and Lazio: Campo Imperatore across the plain below the Corno Grande and the Terminillo above Rieti. Long climbs, wide country.",
+  "multiDay": "Three days: Campo Imperatore from Fonte Cerreto, the Terminillo from Rieti, the Rocca di Mezzo plateau in between.",
+  "access": "Train to L'Aquila or Rieti, by car from Rome in an hour and a half."
+ },
+ "appennino-tosco-emiliano": {
+  "character": "The green ridge between Tuscany and Emilia: the Abetone through fir forest and San Pellegrino in Alpe with its walls over 15 %. Cool in summer, quiet outside the holidays.",
+  "multiDay": "Three days from Abetone: the pass from both sides, San Pellegrino via the Garfagnana, the Foce delle Radici.",
+  "access": "By car via Pistoia or Modena; train to Pistoia."
+ },
+ "aetna": {
+  "character": "A volcano with four ascents to 1,800–1,900 m: Nicolosi, Zafferana and Ragalna to the Rifugio Sapienza, Linguaglossa to Piano Provenzana. Long, steady climbs with a view of the sea, from March to November.",
+  "multiDay": "Three days: Etna from the south via Nicolosi, from the east via Zafferana and from the north via Linguaglossa.",
+  "access": "Fly to Catania, half an hour from there to Nicolosi."
+ },
+ "ardennen-klassiker": {
+  "character": "The climbs from the finale of Liège–Bastogne–Liège in a small area: the Redoute, Rosier, Wanne, Stockeu and Haute-Levée, each between one and a little over six kilometres. No passes, but a loop with 2,000 metres of climbing, from April to October.",
+  "multiDay": "Two days from Spa: the Wanne, Stockeu, Haute-Levée and Rosier loop, on the second day the Redoute and the Roche-aux-Faucons on the way to Liège.",
+  "access": "Train to Liège or Spa, an hour by car from Aachen."
+ },
+ "riesengebirge": {
+  "character": "The highest ridge between Bohemia and Silesia: the Špindlerova bouda, the Černá hora, Horní Mísečky and the Okraj pass, each between four and sixteen kilometres. Short, steep climbs in spruce forest, from May to October.",
+  "multiDay": "Two days: from Špindlerův Mlýn up to the Špindlerova bouda and to Horní Mísečky, from Janské Lázně up the Černá hora and via Malá Úpa to the Okraj.",
+  "access": "Two hours by car from Dresden or Prague, train to Vrchlabí or Trutnov."
+ },
+ "niedere-tatra": {
+  "character": "The ridge between the Liptov and the Hron valley: Čertovica from two sides, the Chopok from the south via Bystrá and from the north to Jasná. Mountain roads in spruce forest, from June to September.",
+  "multiDay": "Two days from Liptovský Mikuláš: Jasná and Čertovica via Vyšná Boca, on the second day south over Čertovica and up the Chopok from Bystrá.",
+  "access": "Train to Liptovský Mikuláš, fly to Poprad or Kraków."
  }
 }

@@ -1,7 +1,7 @@
 import type { Tag } from "@/lib/types";
 
 /**
- * The geometry of the eighteen label icons, as Lucide draws them (Lucide 1.43.0,
+ * The geometry of the twenty label icons, as Lucide draws them (Lucide 1.43.0,
  * ISC, lucide.dev). Not imported as `lucide-react` components, because the
  * same glyphs also have to reach MapLibre's hover popup, which takes an
  * HTML string and not React – the same reason `scripts/build-glyphs.ts` bakes
@@ -56,6 +56,16 @@ export const TAG_ICON: Record<Tag, IconNode> = {
     ["path", { d: "M4 22h16" }],
     ["path", { d: "M6 9a6 6 0 0 0 12 0V3a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1z" }],
     ["path", { d: "M6.084 10H4.5A2.5 2.5 0 0 1 2 7.5V5a1 1 0 0 1 1-1h3" }],
+  ],
+  // tree-pine – shade, and no view
+  forest: [
+    [
+      "path",
+      {
+        d: "m17 14 3 3.3a1 1 0 0 1-.7 1.7H4.7a1 1 0 0 1-.7-1.7L7 14h-.3a1 1 0 0 1-.7-1.7L9 9h-.2A1 1 0 0 1 8 7.3L12 3l4 4.3a1 1 0 0 1-.8 1.7H15l3 3.3a1 1 0 0 1-.7 1.7H17Z",
+      },
+    ],
+    ["path", { d: "M12 22v-3" }],
   ],
   // snowflake
   glacier: [
@@ -127,6 +137,15 @@ export const TAG_ICON: Record<Tag, IconNode> = {
       },
     ],
     ["path", { d: "M2 21a5 5 0 012.911-4.544C7.613 15.212 8.351 15.24 11 13" }],
+  ],
+  // flag – a race went over it
+  race: [
+    [
+      "path",
+      {
+        d: "M4 22V4a1 1 0 0 1 .4-.8A6 6 0 0 1 8 2c3 0 5 2 7.333 2q2 0 3.067-.8A1 1 0 0 1 20 4v10a1 1 0 0 1-.4.8A6 6 0 0 1 16 16c-3 0-5-2-8-2a6 6 0 0 0-4 1.528",
+      },
+    ],
   ],
   // dam
   reservoir: [

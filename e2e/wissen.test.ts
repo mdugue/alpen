@@ -17,8 +17,8 @@ beforeAll(async () => {
   app = await startApp();
 });
 
-afterAll(() => {
-  app?.stop();
+afterAll(async () => {
+  await app?.stop();
   Bun.WebView.closeAll();
 });
 

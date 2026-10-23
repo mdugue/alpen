@@ -3322,5 +3322,196 @@
   "touches": [
    "col-du-glandon"
   ]
+ },
+ {
+  "slug": "schauinsland-notschrei-runde",
+  "surface": "asphalt",
+  "name": "Schauinsland-Notschrei-Runde",
+  "color": "#6a9a5a",
+  "km": 47,
+  "elevationGain": 1000,
+  "passes": [
+   "schauinsland",
+   "notschrei"
+  ],
+  "note": "Am Wochenende viele Motorräder am Schauinsland; früh starten.",
+  "season": null,
+  "description": "Von Freiburg-Günterstal über die alte Bergrennstrecke auf den Schauinsland, über Hofsgrund zum Notschrei, durch das Bruggatal nach Oberried und über Kirchzarten zurück.",
+  "type": "loop",
+  "waypoints": [
+   {
+    "lat": 47.9659,
+    "lon": 7.8559
+   },
+   {
+    "lat": 47.9087,
+    "lon": 7.892
+   },
+   {
+    "lat": 47.8763,
+    "lon": 7.9097
+   },
+   {
+    "lat": 47.933,
+    "lon": 7.9499
+   },
+   {
+    "lat": 47.9637,
+    "lon": 7.953
+   },
+   {
+    "lat": 47.9659,
+    "lon": 7.8559
+   }
+  ]
+ },
+ {
+  "slug": "ruhestein-kniebis-runde",
+  "surface": "asphalt",
+  "name": "Ruhestein-Kniebis-Runde",
+  "color": "#5a8a6a",
+  "km": 75,
+  "elevationGain": 1450,
+  "passes": [
+   "ruhestein",
+   "kniebis"
+  ],
+  "note": "Die Schwarzwaldhochstraße zwischen Ruhestein und Kniebis ist am Wochenende eine Motorradstrecke.",
+  "season": null,
+  "description": "Von Baiersbronn durch das Tonbachtal und Obertal hinauf zum Ruhestein, auf der Schwarzwaldhochstraße über Schliffkopf und Zuflucht zum Kniebis, über Freudenstadt zurück nach Baiersbronn.",
+  "type": "loop",
+  "waypoints": [
+   {
+    "lat": 48.507,
+    "lon": 8.372
+   },
+   {
+    "lat": 48.5385,
+    "lon": 8.296
+   },
+   {
+    "lat": 48.5613,
+    "lon": 8.2217
+   },
+   {
+    "lat": 48.542,
+    "lon": 8.206
+   },
+   {
+    "lat": 48.518,
+    "lon": 8.248
+   },
+   {
+    "lat": 48.4801,
+    "lon": 8.2761
+   },
+   {
+    "lat": 48.463,
+    "lon": 8.411
+   },
+   {
+    "lat": 48.507,
+    "lon": 8.372
+   }
+  ]
+ },
+ {
+  "slug": "femenia-lluc-runde",
+  "surface": "asphalt",
+  "name": "Femenia-Lluc-Runde",
+  "color": "#b8865a",
+  "km": 73,
+  "elevationGain": 1000,
+  "passes": [
+   "coll-de-femenia",
+   "coll-de-sa-batalla"
+  ],
+  "note": "Im Frühjahr die Runde, die halb Port de Pollença fährt; Sa Calobra lässt sich ab Lluc als Abstecher anhängen.",
+  "season": null,
+  "description": "Von Port de Pollença über Pollença und den Coll de Femenia nach Lluc, über den Coll de sa Batalla hinunter nach Caimari und durch die Ebene über Campanet zurück.",
+  "type": "loop",
+  "waypoints": [
+   {
+    "lat": 39.9077,
+    "lon": 3.0838
+   },
+   {
+    "lat": 39.877,
+    "lon": 3.016
+   },
+   {
+    "lat": 39.8556,
+    "lon": 2.9011
+   },
+   {
+    "lat": 39.8224,
+    "lon": 2.8844
+   },
+   {
+    "lat": 39.8118,
+    "lon": 2.8898
+   },
+   {
+    "lat": 39.7711,
+    "lon": 2.9034
+   },
+   {
+    "lat": 39.7745,
+    "lon": 2.966
+   },
+   {
+    "lat": 39.877,
+    "lon": 3.016
+   },
+   {
+    "lat": 39.9077,
+    "lon": 3.0838
+   }
+  ]
+ },
+ {
+  "slug": "tour-du-sancy",
+  "surface": "asphalt",
+  "name": "Tour du Sancy",
+  "color": "#7a8a5a",
+  "km": 60,
+  "elevationGain": 1350,
+  "passes": [
+   "col-de-la-croix-saint-robert",
+   "col-de-la-croix-morand"
+  ],
+  "note": "Super-Besse lässt sich in Besse als Abstecher anhängen (+12 km, +300 m).",
+  "season": {
+   "opens": 5,
+   "closes": 11.5
+  },
+  "description": "Von Le Mont-Dore über die Croix Saint-Robert hinunter nach Besse, am Lac Chambon vorbei und über die Croix-Morand zurück nach Le Mont-Dore.",
+  "type": "loop",
+  "waypoints": [
+   {
+    "lat": 45.5755,
+    "lon": 2.809
+   },
+   {
+    "lat": 45.5641,
+    "lon": 2.836
+   },
+   {
+    "lat": 45.5116,
+    "lon": 2.933
+   },
+   {
+    "lat": 45.5713,
+    "lon": 2.8981
+   },
+   {
+    "lat": 45.5971,
+    "lon": 2.8508
+   },
+   {
+    "lat": 45.5755,
+    "lon": 2.809
+   }
+  ]
  }
 ]

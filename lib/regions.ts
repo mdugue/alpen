@@ -13,7 +13,28 @@
  * map covers (docs/plans/25-vosges-and-jura.md). The order is the display
  * order, the Alps first because they are where the app began.
  */
-export const RANGES = ["Alpen", "Vogesen", "Jura", "Pyrenäen"] as const;
+export const RANGES = [
+  "Alpen",
+  "Vogesen",
+  "Jura",
+  "Pyrenäen",
+  "Erzgebirge",
+  "Schwarzwald",
+  "Mallorca",
+  "Zentralmassiv",
+  "Harz",
+  "Thüringen",
+  "Bayerwald",
+  "Korsika",
+  "Kanaren",
+  "Nordspanien",
+  "Andalusien",
+  "Apennin",
+  "Sizilien",
+  "Ardennen",
+  "Riesengebirge",
+  "Tatra",
+] as const;
 
 export type RangeName = (typeof RANGES)[number];
 
@@ -28,15 +49,80 @@ export type RangeName = (typeof RANGES)[number];
 export const HOME_RANGE: RangeName = "Alpen";
 
 /**
- * Which regions each range holds. The Vosges, the Jura and the Pyrenees are
- * one region each until the data asks for a split; the Alps keep their four.
+ * Which regions each range holds. Every range but the Alps is one region
+ * until the data asks for a split; the Alps keep their four.
  */
 export const RANGE_REGIONS = {
   Alpen: ["Westalpen", "Zentralalpen", "Ostalpen", "Dolomiten"],
+  Andalusien: ["Sierra Nevada", "Almería"],
+  Apennin: ["Abruzzen", "Latium", "Toskana", "Marken"],
+  Ardennen: ["Ardennen"],
+  Bayerwald: ["Bayerwald", "Böhmerwald"],
+  Erzgebirge: ["Erzgebirge"],
+  Harz: ["Harz"],
   Jura: ["Jura"],
+  Kanaren: ["Teneriffa", "Gran Canaria", "La Palma"],
+  Korsika: ["Korsika"],
+  Mallorca: ["Mallorca"],
+  Nordspanien: ["Asturien", "Kantabrien"],
   Pyrenäen: ["Pyrenäen"],
+  Riesengebirge: ["Riesengebirge", "Jeschken und Isergebirge"],
+  Schwarzwald: ["Schwarzwald"],
+  Sizilien: ["Ätna", "Nordsizilien", "Westsizilien"],
+  Tatra: ["Hohe Tatra", "Podhale", "Niedere Tatra"],
+  Thüringen: ["Thüringen", "Rhön"],
   Vogesen: ["Vogesen"],
+  Zentralmassiv: ["Zentralmassiv"],
 } as const satisfies Record<RangeName, readonly string[]>;
+
+/**
+ * How a range is travelled to: for a weekend from home, or for a holiday
+ * week. A property of the range, not a filter – it sorts the range chips
+ * into two rows so that a score of them stays readable
+ * (docs/plans/34-beyond-the-alps.md). The order is the display order.
+ */
+export const TRIPS = ["holiday", "weekend"] as const;
+export type TripName = (typeof TRIPS)[number];
+
+export const RANGE_TRIP: Record<RangeName, TripName> = {
+  Alpen: "holiday",
+  Andalusien: "holiday",
+  Apennin: "holiday",
+  Ardennen: "weekend",
+  Bayerwald: "weekend",
+  Erzgebirge: "weekend",
+  Harz: "weekend",
+  Jura: "weekend",
+  Kanaren: "holiday",
+  Korsika: "holiday",
+  Mallorca: "holiday",
+  Nordspanien: "holiday",
+  Pyrenäen: "holiday",
+  Riesengebirge: "weekend",
+  Schwarzwald: "weekend",
+  Sizilien: "holiday",
+  Tatra: "holiday",
+  Thüringen: "weekend",
+  Vogesen: "weekend",
+  Zentralmassiv: "holiday",
+};
+
+/**
+ * The range chips as rows: one row per trip once both rows hold a choice of
+ * two or more, otherwise one row with the holiday ranges first. A row of one
+ * chip under its own label would read as a filter of its own.
+ */
+export const rangeRows = (
+  ranges: readonly RangeName[],
+): { trip: TripName | null; row: RangeName[] }[] => {
+  const rows = TRIPS.map((trip) => ({
+    row: ranges.filter((r) => RANGE_TRIP[r] === trip),
+    trip,
+  })).filter(({ row }) => row.length > 0);
+  return rows.length > 1 && rows.every(({ row }) => row.length > 1)
+    ? rows
+    : [{ row: rows.flatMap(({ row }) => row), trip: null }];
+};
 
 /** The flat union, in range order – what the schema's `Region` enum is made of. */
 export const REGIONS = [
@@ -44,6 +130,22 @@ export const REGIONS = [
   ...RANGE_REGIONS.Vogesen,
   ...RANGE_REGIONS.Jura,
   ...RANGE_REGIONS.Pyrenäen,
+  ...RANGE_REGIONS.Erzgebirge,
+  ...RANGE_REGIONS.Schwarzwald,
+  ...RANGE_REGIONS.Mallorca,
+  ...RANGE_REGIONS.Zentralmassiv,
+  ...RANGE_REGIONS.Harz,
+  ...RANGE_REGIONS.Thüringen,
+  ...RANGE_REGIONS.Bayerwald,
+  ...RANGE_REGIONS.Korsika,
+  ...RANGE_REGIONS.Kanaren,
+  ...RANGE_REGIONS.Nordspanien,
+  ...RANGE_REGIONS.Andalusien,
+  ...RANGE_REGIONS.Apennin,
+  ...RANGE_REGIONS.Sizilien,
+  ...RANGE_REGIONS.Ardennen,
+  ...RANGE_REGIONS.Riesengebirge,
+  ...RANGE_REGIONS.Tatra,
 ] as const;
 
 /** A box in degrees, both ends inclusive. */
@@ -61,16 +163,33 @@ export interface GeoBox {
  * a tour's waypoints inside the box of its passes' range (`data:check`).
  * Towns are checked against the union only; their range comes from reach.
  *
- * The Vosges and the Jura lie inside the Alps' box, so the guard catches a
- * road filed on the wrong side of the 600 km between the Alps and the
- * Pyrenees, and a coordinate typed into the sea – not a Jura road filed as
- * "Westalpen". That one is the curator's to read off the map.
+ * Neighbouring boxes overlap – the Vosges, the Jura and the Black Forest lie
+ * inside the Alps' box, the Black Forest's touches the Vosges' – so the guard
+ * catches a road filed hundreds of kilometres off (the Pyrenees, Mallorca,
+ * the Ore Mountains) and a coordinate typed into the sea, not a Black Forest
+ * road filed as "Vogesen". That one is the curator's to read off the map.
  */
 export const RANGE_BOUNDS: Record<RangeName, GeoBox> = {
   Alpen: { lat: [43, 49], lon: [4, 16] },
+  Andalusien: { lat: [36.6, 37.6], lon: [-4, -2] },
+  Apennin: { lat: [41.8, 44.6], lon: [9.8, 14.6] },
+  Ardennen: { lat: [50.2, 50.8], lon: [5.1, 6.3] },
+  Bayerwald: { lat: [48.6, 49.4], lon: [12.5, 14.5] },
+  Erzgebirge: { lat: [50.2, 51], lon: [12.2, 14.2] },
+  Harz: { lat: [51.4, 52.1], lon: [10.1, 11.4] },
   Jura: { lat: [45, 48], lon: [5, 8] },
+  Kanaren: { lat: [27.5, 29.5], lon: [-18.3, -13.3] },
+  Korsika: { lat: [41.3, 43.1], lon: [8.5, 9.6] },
+  Mallorca: { lat: [39.2, 40.1], lon: [2.2, 3.6] },
+  Nordspanien: { lat: [42.6, 43.7], lon: [-7.3, -3] },
   Pyrenäen: { lat: [42, 43.5], lon: [-2, 3.5] },
+  Riesengebirge: { lat: [50.55, 50.9], lon: [14.9, 15.95] },
+  Schwarzwald: { lat: [47.5, 49], lon: [7.5, 9] },
+  Sizilien: { lat: [36.6, 38.4], lon: [12.3, 15.7] },
+  Tatra: { lat: [48.75, 49.5], lon: [19.4, 20.5] },
+  Thüringen: { lat: [50.2, 51], lon: [9.6, 11.4] },
   Vogesen: { lat: [47, 49], lon: [6, 8] },
+  Zentralmassiv: { lat: [43.8, 46.2], lon: [2, 4.3] },
 };
 
 /** The union of every range's box: what a coordinate may be at all. */
@@ -110,6 +229,10 @@ export const COUNTRIES = [
   "ES",
   "AD",
   "LI",
+  "CZ",
+  "BE",
+  "PL",
+  "SK",
 ] as const;
 
 /** "CH/IT" → ["CH", "IT"]. */
@@ -137,13 +260,18 @@ export const TOWN_TAGS = [
  * What kind of road an entry is: how it lies in the terrain. Single-valued and
  * mutually exclusive, and it decides how the route quality gate measures the
  * entry (`scripts/lib/validate.ts`): if the ascents climb to the entry's own
- * point it is a `pass` or a `spur` and is measured as a climb; if the ride is
- * the traverse itself it is one of the other three and is measured the way a
- * tour is. The order is the display order in the filter and the scales dialog.
+ * point it is a `pass`, a `spur` or a `climb` and is measured as a climb; if
+ * the ride is the traverse itself it is one of the other three and is measured
+ * the way a tour is. A `climb` (a "Steige") is the low ranges' commonest kind:
+ * a through road that gains the edge of a plateau or a ridge and carries on up
+ * there, so its top is neither a saddle nor a dead end
+ * (docs/plans/34-beyond-the-alps.md). The order is the display order in the
+ * filter and the scales dialog.
  */
 export const ROAD_TYPES = [
   "pass",
   "spur",
+  "climb",
   "plateau",
   "balcony",
   "valley",
@@ -219,11 +347,13 @@ export const ROAD_TAGS = [
   "glacier",
   "gorge",
   "reservoir",
+  "forest",
   "carfree",
   "toll",
   "hairpins",
   "cobbles",
   "tunnels",
+  "race",
 ] as const;
 
 export type RoadTagName = (typeof ROAD_TAGS)[number];
@@ -232,7 +362,8 @@ export type RoadTagName = (typeof ROAD_TAGS)[number];
  * Which way a side of a crossing is better ridden: up, down, or either. An
  * editorial judgement like the 1–5 scales, written per ascent in
  * `data/portraits.json` and only where there is a choice – a `pass` or `spur`
- * with two sides or more (`data:check` holds it to that).
+ * with two sides or more, never a `climb`, whose sides both end at a
+ * plateau's edge (`data:check` holds it to that).
  */
 export const BEST_AS = ["up", "down", "both"] as const;
 export type BestAsName = (typeof BEST_AS)[number];

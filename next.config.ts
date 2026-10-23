@@ -9,6 +9,12 @@ const nextConfig: NextConfig = {
   cacheComponents: true,
 
   experimental: {
+    // Two prerender workers, not one per core less one. Each worker loads the
+    // whole of `lib/data.ts` (the routes, the reach, the map assets) at about
+    // 1.9 GB, which Vercel's 8 GB machine also has to hold the build output
+    // in; what grows with the page count is that output, which is why English
+    // is prerendered as a sample only (`prerenderParams` in lib/data.ts).
+    cpus: 2,
     turbopackRustReactCompiler: true,
   },
 

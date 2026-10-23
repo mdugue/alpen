@@ -20,7 +20,7 @@ Seiten vorkommen – von „abgeleitet“ bis „zugeschneit“.
 ## B
 
 - **Balkonstraße** – eine Straße, die in eine Felswand gehauen ist, ohne
-  Gipfel, auf den die Fahrt zuläuft (etwa Combe Laval). Eine der fünf Arten
+  Gipfel, auf den die Fahrt zuläuft (etwa Combe Laval). Eine der sechs Arten
   einer Straße.
 - **Bekanntheit** – redaktionelle Skala von 1 (kaum bekannt) bis 5 (Mythos),
   vor allem an der Geschichte der großen Rundfahrten und Klassiker gemessen.
@@ -54,11 +54,15 @@ Seiten vorkommen – von „abgeleitet“ bis „zugeschneit“.
 
 ## G
 
-- **Gebirge** – die oberste Einteilung der Karte: Alpen, Jura, Vogesen und
-  Pyrenäen, darunter die Regionen (etwa Westalpen oder Dolomiten).
-  Der Filter „Gebirge“ rückt auch den Kartenausschnitt auf das gewählte
-  Gebirge; er zeigt die Gebirge, in denen die Karte Straßen enthält – heute
-  die Alpen und die Vogesen.
+- **Gebirge** – die oberste Einteilung der Karte: die Alpen und die
+  Gebirge, die sie ergänzen – für den Urlaub etwa Pyrenäen, Zentralmassiv,
+  Korsika, Mallorca, die Kanaren, Asturien und Kantabrien, die Sierra
+  Nevada, der Apennin, Sizilien und die Tatra, für ein Wochenende etwa
+  Vogesen, Jura, Schwarzwald, Erzgebirge, Harz, Thüringer Wald, Bayerischer
+  Wald, Ardennen und Riesengebirge –, darunter die Regionen (etwa Westalpen
+  oder Dolomiten). Der Filter „Gebirge“ rückt auch den Kartenausschnitt auf das
+  gewählte Gebirge; er zeigt die Gebirge, in denen die Karte Straßen enthält,
+  in zwei Zeilen: die für einen Urlaub und die für ein Wochenende.
 - **Geländemodell** – ein Raster aus Höhenwerten, das die Erdoberfläche
   beschreibt, englisch „digital elevation model“ (DEM). Es kennt keine
   Straßen; auf engen Kehren oder in Schluchten rauscht es um einige Meter.
@@ -84,7 +88,7 @@ Seiten vorkommen – von „abgeleitet“ bis „zugeschneit“.
 - **Höhenprofil** – die Höhe entlang einer Auffahrt, hier aus rund 100
   Punkten des Geländemodells. Gut zum Vergleichen, nicht metergenau.
 - **Höhenstraße** – eine Straße, die oben bleibt, statt einmal überzuqueren:
-  Hochebene oder Höhenweg. Eine der fünf Arten einer Straße.
+  Hochebene oder Höhenweg. Eine der sechs Arten einer Straße.
 
 ## J
 
@@ -194,17 +198,20 @@ Seiten vorkommen – von „abgeleitet“ bis „zugeschneit“.
 - **Status** – wie gut es ist, eine Straße im gewählten Halbmonat zu fahren,
   in vier Stufen: beste Zeit, gut, eingeschränkt, oft gesperrt. Eine
   Heuristik, keine amtliche Sperrauskunft.
+- **Steige** – ein Anstieg auf eine Hochfläche oder einen Kamm, oben geht
+  die Straße weiter: weder Sattel noch Sackgasse, etwa die Aufstiege auf die
+  Schwäbische Alb. Eine der sechs Arten einer Straße.
 - **Steigung** – das Verhältnis von Höhengewinn zu Strecke, in Prozent. Die
   App nennt je Auffahrt die durchschnittliche Steigung und den steilsten
   Kilometer; Letzterer ist eine Schätzung aus dem Geländemodell.
 - **Stichstraße** – ein Anstieg zu einem Punkt, an dem die Straße endet;
-  hinunter geht es dieselbe Auffahrt zurück. Eine der fünf Arten einer
+  hinunter geht es dieselbe Auffahrt zurück. Eine der sechs Arten einer
   Straße.
 
 ## T
 
 - **Talstraße** – ein ruhiges Sackgassental mit wenig Steigung. Eine der
-  fünf Arten einer Straße.
+  sechs Arten einer Straße.
 
 ## V
 

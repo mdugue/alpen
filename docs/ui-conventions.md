@@ -694,8 +694,9 @@ The language is the last group of the map's view menu
 other a plain link (`switchLangHref`): the same path under the other prefix
 with the hash behind it, computed from the state rather than read off the
 address bar, so the server and the client render the same `href`. A full load
-on purpose – the page under the other prefix is another prerender, and every
-row's text changes with it. Picking one writes the `NEXT_LOCALE` cookie; the
+on purpose – the page under the other prefix is another page (a prerender, or
+for most English entities one rendered on its first request and kept), and
+every row's text changes with it. Picking one writes the `NEXT_LOCALE` cookie; the
 bare root reads it, and without it the browser's `Accept-Language`
 (`proxy.ts`, `preferredLang`) – the one request the app negotiates. A shared
 link is the page it names, and a navigation from inside the site is never

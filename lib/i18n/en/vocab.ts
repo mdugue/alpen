@@ -20,13 +20,17 @@ export const vocab = {
   country: {
     AD: "Andorra",
     AT: "Austria",
+    BE: "Belgium",
     CH: "Switzerland",
+    CZ: "Czechia",
     DE: "Germany",
     ES: "Spain",
     FR: "France",
     IT: "Italy",
     LI: "Liechtenstein",
+    PL: "Poland",
     SI: "Slovenia",
+    SK: "Slovakia",
   },
   filter: {
     beauty: "Beauty {option}",
@@ -61,11 +65,71 @@ export const vocab = {
       label: "Alps",
       outside: "outside the Alps",
     },
+    Andalusien: {
+      hint: "Spain's highest road above Granada, the Ragua and the Calar Alto observatory: long climbs in the Andalusian sun, for spring and autumn.",
+      inside: "in the Sierra Nevada and Almería",
+      label: "Sierra Nevada and Almería",
+      outside: "outside the Sierra Nevada and Almería",
+    },
+    Apennin: {
+      hint: "The Blockhaus, Campo Imperatore and the Terminillo: the great Giro climbs along Italy's spine, from Tuscany to the Abruzzo.",
+      inside: "in the Apennines",
+      label: "Apennines",
+      outside: "outside the Apennines",
+    },
+    Ardennen: {
+      hint: "The climbs of Liège–Bastogne–Liège and the Mur de Huy: short, steep and famous, a weekend from Cologne, Aachen and Brussels.",
+      inside: "in the Ardennes",
+      label: "Ardennes",
+      outside: "outside the Ardennes",
+    },
+    Bayerwald: {
+      hint: "The Arber roads above Bodenmais and Bayerisch Eisenstein, the Dreisessel and the Kleť: forest mountains on the Czech border for a weekend.",
+      inside: "in the Bavarian and Bohemian Forest",
+      label: "Bavarian and Bohemian Forest",
+      outside: "outside the Bavarian and Bohemian Forest",
+    },
+    Erzgebirge: {
+      hint: "Fichtelberg, Klínovec and the steep ramps of the Bohemian south side: a weekend from Dresden, Chemnitz or Prague.",
+      inside: "in the Ore Mountains",
+      label: "Ore Mountains",
+      outside: "outside the Ore Mountains",
+    },
+    Harz: {
+      hint: "The Brocken without cars, Torfhaus and the steep ramps above Thale: the northernmost mountains for a weekend.",
+      inside: "in the Harz",
+      label: "Harz",
+      outside: "outside the Harz",
+    },
     Jura: {
       hint: "Grand Colombier, Mont du Chat, Faucille, Chasseral: a long season, little traffic, two hours from Basel.",
       inside: "in the Jura",
       label: "Jura",
       outside: "outside the Jura",
+    },
+    Kanaren: {
+      hint: "The Teide from sea level to 2,000 m, Masca, the Roque de los Muchachos: Europe's longest climbs for the winter.",
+      inside: "on the Canary Islands",
+      label: "Canary Islands",
+      outside: "outside the Canary Islands",
+    },
+    Korsika: {
+      hint: "Bavella, Vergio and Vizzavona above granite and maquis: long climbs from the sea into the mountains, for spring and autumn.",
+      inside: "on Corsica",
+      label: "Corsica",
+      outside: "outside Corsica",
+    },
+    Mallorca: {
+      hint: "Sa Calobra, the Puig Major and the Coll de Sóller above the sea: the answer for February, March and November.",
+      inside: "on Mallorca",
+      label: "Mallorca",
+      outside: "outside Mallorca",
+    },
+    Nordspanien: {
+      hint: "The Angliru, the Lagos de Covadonga and the passes of the Cantabrian Mountains: steep Vuelta climbs between the sea and the Picos de Europa.",
+      inside: "in Asturias and Cantabria",
+      label: "Asturias and Cantabria",
+      outside: "outside Asturias and Cantabria",
     },
     Pyrenäen: {
       hint: "Tourmalet, Aubisque, Peyresourde, Ariège and Andorra: the Tour's other mountains, with the long season of the Spanish side.",
@@ -73,11 +137,47 @@ export const vocab = {
       label: "Pyrenees",
       outside: "outside the Pyrenees",
     },
+    Riesengebirge: {
+      hint: "The mountain huts above Špindlerův Mlýn and Janské Lázně, the Okraj pass into Poland and the Ještěd above Liberec: short, steep climbs, a weekend from Dresden, Prague and Wrocław.",
+      inside: "in the Giant Mountains",
+      label: "Giant Mountains",
+      outside: "outside the Giant Mountains",
+    },
+    Schwarzwald: {
+      hint: "Schauinsland, Kandel, Feldberg and the Black Forest High Road: long climbs straight out of Freiburg, Karlsruhe or Basel.",
+      inside: "in the Black Forest",
+      label: "Black Forest",
+      outside: "outside the Black Forest",
+    },
+    Sizilien: {
+      hint: "Etna from four sides up to almost 2,000 m, the Madonie and the Nebrodi above the north coast, Erice above Trapani: long climbs in southern Italy, from March to November.",
+      inside: "on Sicily",
+      label: "Sicily",
+      outside: "outside Sicily",
+    },
+    Tatra: {
+      hint: "Štrbské Pleso below the High Tatras, Čertovica and Chopok in the Low Tatras, the ramps around Zakopane: mountain roads in Slovakia and Poland, from June to September.",
+      inside: "in the Tatras",
+      label: "Tatras",
+      outside: "outside the Tatras",
+    },
+    Thüringen: {
+      hint: "The Inselsberg and Oberhof on the Rennsteig, the Wasserkuppe and the Kreuzberg in the Rhön: short climbs for a weekend in the middle of Germany.",
+      inside: "in the Thuringian Forest and the Rhön",
+      label: "Thuringian Forest and Rhön",
+      outside: "outside the Thuringian Forest and the Rhön",
+    },
     Vogesen: {
       hint: "Grand Ballon, Schlucht, Ballon d'Alsace and the Route des Crêtes: the weekend from Freiburg, Basel or Karlsruhe.",
       inside: "in the Vosges",
       label: "Vosges",
       outside: "outside the Vosges",
+    },
+    Zentralmassiv: {
+      hint: "The volcanoes of the Auvergne with the Puy Mary and the Cévennes with the Aigoual: empty, green, at their best in June and September.",
+      inside: "in the Massif Central",
+      label: "Massif Central",
+      outside: "outside the Massif Central",
     },
   },
   reach: {
@@ -95,13 +195,43 @@ export const vocab = {
     ofTotal: "Of {total} passes within reach: {parts}.",
   },
   region: {
+    Abruzzen: "Abruzzo",
+    Almería: "Almería",
+    Ardennen: "Ardennes",
+    Asturien: "Asturias",
+    Bayerwald: "Bavarian Forest",
+    Böhmerwald: "Bohemian Forest",
     Dolomiten: "Dolomites",
+    Erzgebirge: "Ore Mountains",
+    "Gran Canaria": "Gran Canaria",
+    Harz: "Harz",
+    "Hohe Tatra": "High Tatras",
+    "Jeschken und Isergebirge": "Ještěd and Jizera Mountains",
     Jura: "Jura",
+    Kantabrien: "Cantabria",
+    Korsika: "Corsica",
+    "La Palma": "La Palma",
+    Latium: "Lazio",
+    Mallorca: "Mallorca",
+    Marken: "Marche",
+    "Niedere Tatra": "Low Tatras",
+    Nordsizilien: "Northern Sicily",
     Ostalpen: "Eastern Alps",
+    Podhale: "Podhale",
     Pyrenäen: "Pyrenees",
+    Rhön: "Rhön",
+    Riesengebirge: "Giant Mountains",
+    Schwarzwald: "Black Forest",
+    "Sierra Nevada": "Sierra Nevada",
+    Teneriffa: "Tenerife",
+    Thüringen: "Thuringian Forest",
+    Toskana: "Tuscany",
     Vogesen: "Vosges",
     Westalpen: "Western Alps",
+    Westsizilien: "Western Sicily",
     Zentralalpen: "Central Alps",
+    Zentralmassiv: "Massif Central",
+    Ätna: "Etna",
   },
   roadTag: {
     carfree: {
@@ -111,6 +241,10 @@ export const vocab = {
     cobbles: {
       hint: "A stretch is cobbled – Tremola, Vršič – which changes the tyre choice, not the bike.",
       label: "Cobbles",
+    },
+    forest: {
+      hint: "Almost entirely in the woods: shady in high summer, but without a view.",
+      label: "Forest road",
     },
     glacier: {
       hint: "Ends at a glacier or runs alongside one.",
@@ -127,6 +261,10 @@ export const vocab = {
     panorama: {
       hint: "Built for the view, and the name or the routing says so.",
       label: "Panoramic road",
+    },
+    race: {
+      hint: "A grand tour or a classic has raced here – Tour, Giro, Vuelta, Deutschland Tour.",
+      label: "Race route",
     },
     reservoir: {
       hint: "The road exists because of a dam; it ends at the lake or runs along it.",
@@ -145,6 +283,10 @@ export const vocab = {
     balcony: {
       hint: "Cut into a wall, with no summit the ride runs towards: Combe Laval, Gorges de la Bourne.",
       label: "Balcony road",
+    },
+    climb: {
+      hint: "A climb onto a plateau or a ridge, where the road carries on: the Swabian Jura's escarpment, the Ore Mountains' southern edge.",
+      label: "Escarpment climb",
     },
     pass: {
       hint: "A crossing: up on one side, down on the other.",
@@ -250,6 +392,11 @@ export const vocab = {
       hint: "Road-bike shops with a workshop and rental bikes in town.",
       label: "Workshops & rental",
     },
+  },
+  /** How a range is travelled to (`RANGE_TRIP`): the two rows of range chips. */
+  trip: {
+    holiday: "Holiday",
+    weekend: "Weekend",
   },
   unit: {
     approx: "approx.",

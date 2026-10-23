@@ -33,7 +33,7 @@ import { difficultyLabel } from "@/lib/filter-summary";
 import type { CriterionId } from "@/lib/filter-summary";
 import { fill } from "@/lib/i18n/fill";
 import { periodLabel } from "@/lib/period";
-import { CLASSIC_FAME, ROAD_TAGS } from "@/lib/regions";
+import { CLASSIC_FAME, rangeRows, ROAD_TAGS } from "@/lib/regions";
 import type { RangeName } from "@/lib/regions";
 import type { RoadTag, RoadType, Status, Surface } from "@/lib/types";
 import { cn } from "@/lib/utils";
@@ -87,20 +87,32 @@ export const CriterionEditor = ({
     case "ranges": {
       const picked = pickedMembers(filters.ranges, ALL_RANGES);
       return (
-        <ChipGroup id="f-ranges" label={label.range}>
-          {ranges.map((r) => (
-            <FilterChip
-              key={r}
-              label={words.range[r].label}
-              hint={words.range[r].hint}
-              count={countWith({ ranges: [r] })}
-              pressed={picked.includes(r)}
-              onPressedChange={() => onRange(r)}
+        <>
+          {rangeRows(ranges).map(({ trip, row }) => (
+            <ChipGroup
+              key={trip ?? "all"}
+              id={`f-ranges${trip ? `-${trip}` : ""}`}
+              label={
+                trip
+                  ? fill(label.rangeTrip, { trip: words.trip[trip] })
+                  : label.range
+              }
             >
-              {words.range[r].label}
-            </FilterChip>
+              {row.map((r) => (
+                <FilterChip
+                  key={r}
+                  label={words.range[r].label}
+                  hint={words.range[r].hint}
+                  count={countWith({ ranges: [r] })}
+                  pressed={picked.includes(r)}
+                  onPressedChange={() => onRange(r)}
+                >
+                  {words.range[r].label}
+                </FilterChip>
+              ))}
+            </ChipGroup>
           ))}
-        </ChipGroup>
+        </>
       );
     }
     case "favorites": {

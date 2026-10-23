@@ -12,6 +12,8 @@ export const panel = {
     branch:
       "Detour: this dead-end road branches off another road, and the profile starts at the junction. The way down leads back to the main road.",
     branches: "Detours",
+    climb:
+      "Escarpment climb: the road carries on across the plateau at the top – the profile ends at the edge, not on a saddle.",
     crossing: "For a crossing: up from {up}, down to {down}.",
     crossingOr: " or ",
     dip: "{m} m of descent on the way",

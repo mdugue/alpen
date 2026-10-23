@@ -17452,5 +17452,3897 @@
     "label": "Adrall (Ost)"
    }
   ]
+ },
+ {
+  "slug": "fichtelberg",
+  "surface": "asphalt",
+  "name": "Fichtelberg",
+  "type": "spur",
+  "tags": [],
+  "country": "DE",
+  "region": "Erzgebirge",
+  "lat": 50.4288,
+  "lon": 12.9543,
+  "elevation": 1210,
+  "classicAscent": "5,4 km, 5,3 % ab Oberwiesenthal",
+  "beauty": 3,
+  "fame": 2,
+  "difficulty": 2,
+  "traffic": 3,
+  "season": null,
+  "note": "Höchster Berg Sachsens: Die Straße endet am Fichtelberghaus knapp unter dem Gipfel (1215 m). Kurz, im Mittelteil um 9 % steil; im Winter Skigebiet, die Zufahrt zum Haus wird geräumt.",
+  "aliases": [
+   "Fichtelbergstraße"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 50.4194,
+     "lon": 12.971
+    },
+    "label": "Oberwiesenthal"
+   }
+  ]
+ },
+ {
+  "slug": "klinovec",
+  "surface": "asphalt",
+  "name": "Klínovec",
+  "type": "spur",
+  "tags": [],
+  "country": "CZ",
+  "region": "Erzgebirge",
+  "lat": 50.3957,
+  "lon": 12.968,
+  "elevation": 1240,
+  "classicAscent": "11,4 km, 5,1 % ab Jáchymov",
+  "beauty": 3,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 2,
+  "season": null,
+  "note": "Höchster Berg des Erzgebirges, auf der böhmischen Seite gegenüber dem Fichtelberg. Von Jáchymov die lange Auffahrt durch den Wald, von Loučná die kürzere; oben Aussichtsturm und Skigebiet.",
+  "aliases": [
+   "Keilberg"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 50.363,
+     "lon": 12.9299
+    },
+    "label": "Jáchymov (Süd)"
+   },
+   {
+    "from": {
+     "lat": 50.4188,
+     "lon": 12.9814
+    },
+    "label": "Loučná pod Klínovcem (Nord)"
+   }
+  ]
+ },
+ {
+  "slug": "komari-vizka",
+  "surface": "asphalt",
+  "name": "Komáří vížka",
+  "type": "climb",
+  "tags": [],
+  "country": "CZ",
+  "region": "Erzgebirge",
+  "lat": 50.7066,
+  "lon": 13.8565,
+  "elevation": 805,
+  "classicAscent": "5,4 km, 8,7 % ab Krupka",
+  "beauty": 3,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 1,
+  "season": null,
+  "note": "Aus Krupka steil in Kehren auf die Kante des Erzgebirges, im Mittel fast 9 %. Oben der Aussichtspunkt Komáří vížka über dem Nordböhmischen Becken; die Straße führt über die Hochfläche weiter nach Fojtovice und Cínovec.",
+  "aliases": [
+   "Mückentürmchen",
+   "Komáří hůrka"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 50.6847,
+     "lon": 13.8578
+    },
+    "label": "Krupka"
+   }
+  ]
+ },
+ {
+  "slug": "cinovec",
+  "surface": "asphalt",
+  "name": "Cínovec",
+  "type": "climb",
+  "tags": [
+   "forest"
+  ],
+  "country": "CZ",
+  "region": "Erzgebirge",
+  "lat": 50.7211,
+  "lon": 13.7908,
+  "elevation": 877,
+  "classicAscent": "9,7 km, 4,9 % ab Dubí",
+  "beauty": 2,
+  "fame": 2,
+  "difficulty": 2,
+  "traffic": 3,
+  "season": null,
+  "note": "Die alte Grenzstraße von Teplice nach Zinnwald, seit der Autobahn D8 deutlich ruhiger: gleichmäßig durch den Wald hinauf auf die Hochfläche, oben weiter nach Altenberg.",
+  "aliases": [
+   "Zinnwald"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 50.6813,
+     "lon": 13.7888
+    },
+    "label": "Dubí"
+   }
+  ]
+ },
+ {
+  "slug": "medenec",
+  "surface": "asphalt",
+  "name": "Měděnec",
+  "type": "climb",
+  "tags": [],
+  "country": "CZ",
+  "region": "Erzgebirge",
+  "lat": 50.4211,
+  "lon": 13.1142,
+  "elevation": 846,
+  "classicAscent": "9,6 km, 5,4 % ab Klášterec nad Ohří",
+  "beauty": 3,
+  "fame": 1,
+  "difficulty": 2,
+  "traffic": 2,
+  "season": null,
+  "note": "Aus dem Egertal bei Klášterec gleichmäßig hinauf nach Měděnec unter dem Kupferhübel, mit Blick zurück über das Tal. Oben geht es über die Hochfläche weiter nach Vejprty oder Kovářská.",
+  "aliases": [
+   "Kupferberg"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 50.3843,
+     "lon": 13.171
+    },
+    "label": "Klášterec nad Ohří"
+   }
+  ]
+ },
+ {
+  "slug": "dlouha-louka",
+  "surface": "asphalt",
+  "name": "Dlouhá Louka",
+  "type": "climb",
+  "tags": [
+   "forest"
+  ],
+  "country": "CZ",
+  "region": "Erzgebirge",
+  "lat": 50.648,
+  "lon": 13.6487,
+  "elevation": 864,
+  "classicAscent": "6,5 km, 8,1 % ab Osek",
+  "beauty": 3,
+  "fame": 1,
+  "difficulty": 3,
+  "traffic": 2,
+  "season": null,
+  "note": "Von Osek mit seinem Zisterzienserkloster in Kehren steil durch den Wald hinauf auf den Kamm bei Dlouhá Louka; oben weiter nach Moldava oder Nové Město.",
+  "aliases": [
+   "Langewiese"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 50.6231,
+     "lon": 13.6861
+    },
+    "label": "Osek"
+   }
+  ]
+ },
+ {
+  "slug": "auersberg",
+  "surface": "asphalt",
+  "name": "Auersberg",
+  "type": "spur",
+  "tags": [
+   "forest"
+  ],
+  "country": "DE",
+  "region": "Erzgebirge",
+  "lat": 50.4552,
+  "lon": 12.6482,
+  "elevation": 1010,
+  "classicAscent": "6,0 km, 4,5 % ab Wildenthal",
+  "beauty": 2,
+  "fame": 1,
+  "difficulty": 2,
+  "traffic": 2,
+  "season": null,
+  "note": "Stichstraße im Westerzgebirge auf den Auersberg mit Aussichtsturm und Berggasthaus. Aus Wildenthal kurz, aus Eibenstock lang und flach; fast ganz im Wald.",
+  "aliases": [],
+  "ascents": [
+   {
+    "from": {
+     "lat": 50.451,
+     "lon": 12.6324
+    },
+    "label": "Wildenthal"
+   }
+  ]
+ },
+ {
+  "slug": "bournak",
+  "surface": "asphalt",
+  "name": "Bouřňák",
+  "type": "spur",
+  "tags": [],
+  "country": "CZ",
+  "region": "Erzgebirge",
+  "lat": 50.6854,
+  "lon": 13.7069,
+  "elevation": 869,
+  "classicAscent": "4,8 km, 5,6 % ab Mikulov",
+  "beauty": 2,
+  "fame": 1,
+  "difficulty": 2,
+  "traffic": 1,
+  "season": null,
+  "note": "Kurze Stichstraße auf den Bouřňák mit Skigebiet und Berghütte, zwischen Mikulov und Moldava auf dem Kamm. Oben Blick über das Becken nach Süden.",
+  "aliases": [
+   "Stürmer"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 50.6876,
+     "lon": 13.7216
+    },
+    "label": "Mikulov"
+   }
+  ]
+ },
+ {
+  "slug": "schauinsland",
+  "surface": "asphalt",
+  "name": "Schauinsland",
+  "type": "climb",
+  "tags": [],
+  "country": "DE",
+  "region": "Schwarzwald",
+  "lat": 47.9087,
+  "lon": 7.892,
+  "elevation": 1210,
+  "classicAscent": "14,7 km, 6,0 % ab Freiburg-Günterstal",
+  "beauty": 3,
+  "fame": 3,
+  "difficulty": 4,
+  "traffic": 3,
+  "season": null,
+  "note": "Der Hausberg von Freiburg: aus Günterstal über die alte Bergrennstrecke in vielen Kurven hinauf auf über 1200 m, oben weiter über Hofsgrund zum Notschrei. Am Wochenende viele Motorräder.",
+  "aliases": [
+   "Schauinslandstraße"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 47.9659,
+     "lon": 7.8559
+    },
+    "label": "Freiburg-Günterstal"
+   }
+  ]
+ },
+ {
+  "slug": "kandel",
+  "surface": "asphalt",
+  "name": "Kandel",
+  "type": "pass",
+  "tags": [],
+  "country": "DE",
+  "region": "Schwarzwald",
+  "lat": 48.0644,
+  "lon": 8.0166,
+  "elevation": 1200,
+  "roadSummit": true,
+  "classicAscent": "12,7 km, 7,4 % ab Waldkirch",
+  "beauty": 3,
+  "fame": 2,
+  "difficulty": 4,
+  "traffic": 2,
+  "season": null,
+  "note": "Von Waldkirch im Elztal über 900 Höhenmeter auf den Kandel, einer der härtesten Anstiege des Schwarzwalds. Von St. Peter auf der anderen Seite ist es nur ein kurzer Gegenanstieg, deshalb steht hier eine Auffahrt.",
+  "aliases": [
+   "Kandelstraße"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 48.0939,
+     "lon": 7.961
+    },
+    "label": "Waldkirch (West)"
+   }
+  ]
+ },
+ {
+  "slug": "feldbergpass",
+  "surface": "asphalt",
+  "name": "Feldbergpass",
+  "type": "pass",
+  "tags": [],
+  "country": "DE",
+  "region": "Schwarzwald",
+  "lat": 47.8563,
+  "lon": 8.0291,
+  "elevation": 1235,
+  "classicAscent": "10,0 km, 5,8 % ab Todtnau",
+  "beauty": 3,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 4,
+  "season": null,
+  "note": "Der höchste Straßenübergang des Schwarzwalds, unter dem Feldberg (1493 m) zwischen dem Wiesental und dem Titisee. Bundesstraße mit viel Verkehr, im Winter Skigebiet und geräumt.",
+  "aliases": [
+   "Feldberg"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 47.8303,
+     "lon": 7.9452
+    },
+    "label": "Todtnau (West)"
+   },
+   {
+    "from": {
+     "lat": 47.8699,
+     "lon": 8.0955
+    },
+    "label": "Bärental (Ost)"
+   }
+  ]
+ },
+ {
+  "slug": "notschrei",
+  "surface": "asphalt",
+  "name": "Notschrei",
+  "type": "pass",
+  "tags": [],
+  "country": "DE",
+  "region": "Schwarzwald",
+  "lat": 47.8763,
+  "lon": 7.9097,
+  "elevation": 1121,
+  "classicAscent": "10,0 km, 6,2 % ab Oberried",
+  "beauty": 3,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 3,
+  "season": null,
+  "note": "Übergang vom Dreisamtal ins Wiesental zwischen Schauinsland und Feldberg, mit dem Loipenzentrum oben am Pass. Von Oberried die längere und schönere Seite, von Todtnau die kürzere.",
+  "aliases": [
+   "Notschreipass"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 47.933,
+     "lon": 7.9499
+    },
+    "label": "Oberried (Nord)"
+   },
+   {
+    "from": {
+     "lat": 47.8303,
+     "lon": 7.9452
+    },
+    "label": "Todtnau (Süd)"
+   }
+  ]
+ },
+ {
+  "slug": "wiedener-eck",
+  "surface": "asphalt",
+  "name": "Wiedener Eck",
+  "type": "pass",
+  "tags": [],
+  "country": "DE",
+  "region": "Schwarzwald",
+  "lat": 47.8449,
+  "lon": 7.867,
+  "elevation": 1035,
+  "classicAscent": "14,5 km, 4,5 % ab Münstertal",
+  "beauty": 4,
+  "fame": 1,
+  "difficulty": 3,
+  "traffic": 2,
+  "season": null,
+  "note": "Durch das lange Münstertal hinauf zum Sattel zwischen Belchen und Schauinsland, oben weiter Blick zum Belchen. Von Wieden auf der Ostseite sind es nur knapp 200 Höhenmeter, deshalb eine Auffahrt.",
+  "aliases": [],
+  "ascents": [
+   {
+    "from": {
+     "lat": 47.8555,
+     "lon": 7.783
+    },
+    "label": "Münstertal (West)"
+   }
+  ]
+ },
+ {
+  "slug": "hochblauen",
+  "surface": "asphalt",
+  "name": "Hochblauen",
+  "type": "spur",
+  "tags": [],
+  "country": "DE",
+  "region": "Schwarzwald",
+  "lat": 47.7774,
+  "lon": 7.701,
+  "elevation": 1150,
+  "classicAscent": "9,2 km, 8,2 % ab Badenweiler",
+  "beauty": 4,
+  "fame": 1,
+  "difficulty": 4,
+  "traffic": 2,
+  "season": null,
+  "note": "Stichstraße von Badenweiler auf den Blauen, den südwestlichsten Tausender des Schwarzwalds: steil, ohne Flachstück, oben Aussichtsturm mit Blick über die Rheinebene und bei Föhn zu den Alpen.",
+  "aliases": [
+   "Blauen"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 47.8025,
+     "lon": 7.674
+    },
+    "label": "Badenweiler"
+   }
+  ]
+ },
+ {
+  "slug": "kniebis",
+  "surface": "asphalt",
+  "name": "Kniebis",
+  "type": "pass",
+  "tags": [],
+  "country": "DE",
+  "region": "Schwarzwald",
+  "lat": 48.4801,
+  "lon": 8.2761,
+  "elevation": 965,
+  "classicAscent": "12,2 km, 5,5 % ab Oppenau",
+  "beauty": 2,
+  "fame": 1,
+  "difficulty": 3,
+  "traffic": 4,
+  "season": null,
+  "note": "Übergang vom Renchtal nach Freudenstadt an der Alexanderschanze: von Oppenau auf der Landstraße durch das Lierbachtal und in Kehren hinauf, oben flach über die Höhe. Nach Osten fällt die Straße kaum, deshalb eine Auffahrt.",
+  "aliases": [
+   "Alexanderschanze"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 48.4752,
+     "lon": 8.1647
+    },
+    "label": "Oppenau (West)"
+   }
+  ]
+ },
+ {
+  "slug": "ruhestein",
+  "surface": "asphalt",
+  "name": "Ruhestein",
+  "type": "pass",
+  "tags": [],
+  "country": "DE",
+  "region": "Schwarzwald",
+  "lat": 48.5613,
+  "lon": 8.2217,
+  "elevation": 915,
+  "classicAscent": "8,5 km, 6,2 % ab Seebach",
+  "beauty": 3,
+  "fame": 1,
+  "difficulty": 3,
+  "traffic": 3,
+  "season": null,
+  "note": "Von Seebach im Achertal hinauf zur Schwarzwaldhochstraße am Nationalpark; oben kreuzt die B500. Nach Baiersbronn fällt die Straße lang und flach durch das Obertal, deshalb eine Auffahrt.",
+  "aliases": [],
+  "ascents": [
+   {
+    "from": {
+     "lat": 48.5762,
+     "lon": 8.1711
+    },
+    "label": "Seebach (West)"
+   }
+  ]
+ },
+ {
+  "slug": "sa-calobra",
+  "surface": "asphalt",
+  "name": "Sa Calobra",
+  "type": "pass",
+  "tags": [
+   "hairpins"
+  ],
+  "country": "ES",
+  "region": "Mallorca",
+  "lat": 39.8277,
+  "lon": 2.8179,
+  "elevation": 682,
+  "classicAscent": "10,2 km, 6,6 % ab Sa Calobra",
+  "beauty": 5,
+  "fame": 4,
+  "difficulty": 3,
+  "traffic": 3,
+  "season": null,
+  "note": "Die berühmteste Straße Mallorcas: von der Bucht von Sa Calobra in Dutzenden Kehren und unter dem Krawattenknoten (Nus de sa Corbata) hinauf zum Coll dels Reis. Erst hinunter, dann zurück – die andere Seite vom Abzweig an der Ma-10 ist nur ein kurzer Gegenanstieg. Tagsüber Reisebusse, früh am Morgen frei.",
+  "aliases": [
+   "Coll dels Reis",
+   "Nus de sa Corbata"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 39.8507,
+     "lon": 2.7999
+    },
+    "label": "Sa Calobra (Nord)"
+   }
+  ]
+ },
+ {
+  "slug": "puig-major",
+  "surface": "asphalt",
+  "name": "Puig Major",
+  "type": "pass",
+  "tags": [
+   "tunnels"
+  ],
+  "country": "ES",
+  "region": "Mallorca",
+  "lat": 39.7951,
+  "lon": 2.79,
+  "elevation": 870,
+  "classicAscent": "16 km, 5,3 % ab Sóller",
+  "beauty": 5,
+  "fame": 3,
+  "difficulty": 3,
+  "traffic": 3,
+  "season": null,
+  "note": "Der höchste Straßenpunkt der Insel, an der Ma-10 unter dem Gipfel des Puig Major (der selbst militärisches Sperrgebiet ist). Von Sóller lang und gleichmäßig mit Blick aufs Meer, oben kurzer Tunnel und die Stauseen Cúber und Gorg Blau.",
+  "aliases": [
+   "Coll de Puig Major",
+   "Túnel de Monnàber"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 39.7663,
+     "lon": 2.7151
+    },
+    "label": "Sóller (West)"
+   },
+   {
+    "from": {
+     "lat": 39.8224,
+     "lon": 2.8844
+    },
+    "label": "Lluc (Ost)"
+   }
+  ]
+ },
+ {
+  "slug": "coll-de-soller",
+  "surface": "asphalt",
+  "name": "Coll de Sóller",
+  "type": "pass",
+  "tags": [
+   "hairpins"
+  ],
+  "country": "ES",
+  "region": "Mallorca",
+  "lat": 39.7312,
+  "lon": 2.6862,
+  "elevation": 497,
+  "classicAscent": "8,5 km, 5,4 % ab Sóller",
+  "beauty": 4,
+  "fame": 3,
+  "difficulty": 2,
+  "traffic": 1,
+  "season": null,
+  "note": "Die alte Passstraße zwischen Palma und Sóller, seit dem Tunnel fast ohne Autos: auf beiden Seiten ein Kehrenband, von Sóller das längere und schönere.",
+  "aliases": [],
+  "ascents": [
+   {
+    "from": {
+     "lat": 39.7663,
+     "lon": 2.7151
+    },
+    "label": "Sóller (Nord)"
+   },
+   {
+    "from": {
+     "lat": 39.6962,
+     "lon": 2.699
+    },
+    "label": "Bunyola (Süd)"
+   }
+  ]
+ },
+ {
+  "slug": "coll-de-sa-batalla",
+  "surface": "asphalt",
+  "name": "Coll de sa Batalla",
+  "type": "climb",
+  "tags": [],
+  "country": "ES",
+  "region": "Mallorca",
+  "lat": 39.8118,
+  "lon": 2.8898,
+  "elevation": 580,
+  "classicAscent": "8,4 km, 4,8 % ab Caimari",
+  "beauty": 4,
+  "fame": 3,
+  "difficulty": 2,
+  "traffic": 2,
+  "season": null,
+  "note": "Von Caimari am Rand der Ebene gleichmäßig hinauf in die Berge nach Lluc, der am meisten gefahrene Anstieg der Insel. Oben die Tankstelle am Coll mit Café, weiter nach Lluc und zum Puig Major.",
+  "aliases": [
+   "Lluc"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 39.7711,
+     "lon": 2.9034
+    },
+    "label": "Caimari"
+   }
+  ]
+ },
+ {
+  "slug": "coll-d-honor",
+  "surface": "asphalt",
+  "name": "Coll d'Honor",
+  "type": "pass",
+  "tags": [
+   "forest"
+  ],
+  "country": "ES",
+  "region": "Mallorca",
+  "lat": 39.7271,
+  "lon": 2.7311,
+  "elevation": 550,
+  "classicAscent": "6,2 km, 5,5 % ab Bunyola",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 2,
+  "traffic": 1,
+  "season": null,
+  "note": "Schmale Bergstraße von Bunyola über den Coll d'Honor ins Hochtal von Orient, fast ohne Verkehr. Nach Orient fällt sie nur kurz, deshalb eine Auffahrt.",
+  "aliases": [],
+  "ascents": [
+   {
+    "from": {
+     "lat": 39.6962,
+     "lon": 2.699
+    },
+    "label": "Bunyola (Süd)"
+   }
+  ]
+ },
+ {
+  "slug": "coll-de-femenia",
+  "surface": "asphalt",
+  "name": "Coll de Femenia",
+  "type": "climb",
+  "tags": [],
+  "country": "ES",
+  "region": "Mallorca",
+  "lat": 39.8556,
+  "lon": 2.9011,
+  "elevation": 540,
+  "classicAscent": "8,0 km, 5,3 % vom Talende hinter Pollença",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 2,
+  "traffic": 2,
+  "season": null,
+  "note": "Von Pollença auf der Ma-10 in die Berge Richtung Lluc: nach sechs flachen Kilometern durch das Tal in Kehren zum Coll de Femenia, mit Blick zurück zur Bucht. Oben weiter über die Hochfläche nach Lluc.",
+  "aliases": [],
+  "ascents": [
+   {
+    "from": {
+     "lat": 39.8689,
+     "lon": 2.9554
+    },
+    "label": "Pollença (Talende)"
+   }
+  ]
+ },
+ {
+  "slug": "puig-de-randa",
+  "surface": "asphalt",
+  "name": "Puig de Randa",
+  "type": "spur",
+  "tags": [],
+  "country": "ES",
+  "region": "Mallorca",
+  "lat": 39.5263,
+  "lon": 2.9299,
+  "elevation": 540,
+  "classicAscent": "5,1 km, 4,9 % ab Randa",
+  "beauty": 3,
+  "fame": 2,
+  "difficulty": 2,
+  "traffic": 1,
+  "season": null,
+  "note": "Der Klosterberg mitten in der Ebene, mit drei Heiligtümern übereinander und dem Santuari de Cura oben. Kurz und gleichmäßig; der Berg, den man von Palma aus fährt, wenn die Tramuntana im Regen liegt.",
+  "aliases": [
+   "Santuari de Cura",
+   "Randa"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 39.5268,
+     "lon": 2.915
+    },
+    "label": "Randa"
+   }
+  ]
+ },
+ {
+  "slug": "sant-salvador",
+  "surface": "asphalt",
+  "name": "Sant Salvador",
+  "type": "spur",
+  "tags": [],
+  "country": "ES",
+  "region": "Mallorca",
+  "lat": 39.4556,
+  "lon": 3.186,
+  "elevation": 500,
+  "classicAscent": "7,8 km, 4,7 % ab Felanitx",
+  "beauty": 3,
+  "fame": 2,
+  "difficulty": 2,
+  "traffic": 1,
+  "season": null,
+  "note": "Stichstraße von Felanitx zum Kloster Sant Salvador im Südosten der Insel, oben das große Kreuz und der Blick über die Küste. Ein Ziel für die Tage, an denen der Norden im Wind liegt.",
+  "aliases": [
+   "Santuari de Sant Salvador"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 39.4732,
+     "lon": 3.1477
+    },
+    "label": "Felanitx"
+   }
+  ]
+ },
+ {
+  "slug": "pas-de-peyrol",
+  "surface": "asphalt",
+  "name": "Pas de Peyrol",
+  "type": "pass",
+  "tags": [
+   "panorama",
+   "race"
+  ],
+  "country": "FR",
+  "region": "Zentralmassiv",
+  "lat": 45.1141,
+  "lon": 2.6717,
+  "elevation": 1589,
+  "classicAscent": "11,2 km, 5,9 % ab Le Falgoux",
+  "beauty": 5,
+  "fame": 4,
+  "difficulty": 4,
+  "traffic": 2,
+  "season": {
+   "opens": 5,
+   "closes": 11.5,
+   "maintained": false
+  },
+  "note": "Der höchste Straßenpass des Zentralmassivs, direkt unter dem Gipfel des Puy Mary, mit drei Auffahrten aus drei grünen Tälern. 2020 Etappenziel der Tour de France. Im Winter gesperrt.",
+  "aliases": [
+   "Puy Mary",
+   "Col du Pas de Peyrol"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 45.1549,
+     "lon": 2.6229
+    },
+    "label": "Le Falgoux (West)"
+   },
+   {
+    "from": {
+     "lat": 45.07,
+     "lon": 2.6571
+    },
+    "label": "Mandailles (Süd)"
+   },
+   {
+    "from": {
+     "lat": 45.1587,
+     "lon": 2.7868
+    },
+    "label": "Dienne (Ost)"
+   }
+  ]
+ },
+ {
+  "slug": "col-de-neronne",
+  "surface": "asphalt",
+  "name": "Col de Néronne",
+  "type": "pass",
+  "tags": [
+   "panorama"
+  ],
+  "country": "FR",
+  "region": "Zentralmassiv",
+  "lat": 45.1549,
+  "lon": 2.5921,
+  "elevation": 1241,
+  "classicAscent": "4,2 km, 7,7 % ab Le Falgoux",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 1,
+  "season": {
+   "opens": 5,
+   "closes": 11.5,
+   "maintained": false
+  },
+  "note": "Übergang von Salers ins Tal von Le Falgoux, der Zubringer zum Pas de Peyrol von Westen. Von Le Falgoux kurz und steil, von Salers lang und flach über die Hochweiden.",
+  "aliases": [],
+  "ascents": [
+   {
+    "from": {
+     "lat": 45.1549,
+     "lon": 2.6229
+    },
+    "label": "Le Falgoux (Ost)"
+   }
+  ]
+ },
+ {
+  "slug": "col-de-prat-de-bouc",
+  "surface": "asphalt",
+  "name": "Col de Prat de Bouc",
+  "type": "spur",
+  "tags": [],
+  "country": "FR",
+  "region": "Zentralmassiv",
+  "lat": 45.0526,
+  "lon": 2.7939,
+  "elevation": 1392,
+  "classicAscent": "10,0 km, 4,1 % ab Murat",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 1,
+  "season": null,
+  "note": "Sackstraße von Murat über Albepierre auf die Hochfläche unter dem Plomb du Cantal, oben ein kleines Skigebiet und Wanderwege. Gleichmäßig und ruhig.",
+  "aliases": [
+   "Prat-de-Bouc"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 45.1132,
+     "lon": 2.868
+    },
+    "label": "Murat"
+   }
+  ]
+ },
+ {
+  "slug": "col-de-la-croix-saint-robert",
+  "surface": "asphalt",
+  "name": "Col de la Croix Saint-Robert",
+  "type": "pass",
+  "tags": [
+   "panorama"
+  ],
+  "country": "FR",
+  "region": "Zentralmassiv",
+  "lat": 45.5641,
+  "lon": 2.836,
+  "elevation": 1451,
+  "classicAscent": "6,8 km, 6,1 % ab Le Mont-Dore",
+  "beauty": 4,
+  "fame": 3,
+  "difficulty": 3,
+  "traffic": 2,
+  "season": {
+   "opens": 5,
+   "closes": 11.5,
+   "maintained": false
+  },
+  "note": "Der Übergang von Le Mont-Dore nach Besse über die Flanke des Puy de Sancy. Von Le Mont-Dore die steile, schöne Seite; nach Besse lang und flach über die Hochfläche. Im Winter gesperrt.",
+  "aliases": [
+   "Croix-Saint-Robert"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 45.5755,
+     "lon": 2.809
+    },
+    "label": "Le Mont-Dore (Nord)"
+   }
+  ]
+ },
+ {
+  "slug": "col-de-la-croix-morand",
+  "surface": "asphalt",
+  "name": "Col de la Croix-Morand",
+  "type": "pass",
+  "tags": [],
+  "country": "FR",
+  "region": "Zentralmassiv",
+  "lat": 45.5971,
+  "lon": 2.8508,
+  "elevation": 1401,
+  "classicAscent": "8,9 km, 5,6 % ab Chambon-sur-Lac",
+  "beauty": 3,
+  "fame": 3,
+  "difficulty": 3,
+  "traffic": 3,
+  "season": null,
+  "note": "Der Übergang zwischen Le Mont-Dore und dem Lac Chambon auf der D996, mehrmals bei der Tour de France überfahren. Von Chambon die längere Seite mit Blick auf den See.",
+  "aliases": [
+   "Col de Diane",
+   "Croix Morand"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 45.5713,
+     "lon": 2.8981
+    },
+    "label": "Chambon-sur-Lac (Ost)"
+   },
+   {
+    "from": {
+     "lat": 45.5755,
+     "lon": 2.809
+    },
+    "label": "Le Mont-Dore (West)"
+   }
+  ]
+ },
+ {
+  "slug": "super-besse",
+  "surface": "asphalt",
+  "name": "Super-Besse",
+  "type": "spur",
+  "tags": [
+   "race"
+  ],
+  "country": "FR",
+  "region": "Zentralmassiv",
+  "lat": 45.5075,
+  "lon": 2.861,
+  "elevation": 1331,
+  "classicAscent": "6,6 km, 4,1 % ab Besse",
+  "beauty": 3,
+  "fame": 3,
+  "difficulty": 2,
+  "traffic": 2,
+  "season": null,
+  "note": "Die Auffahrt von Besse in den Skiort unter dem Sancy, Etappenziel der Tour de France 1978, 1996, 2008 und 2011. Oben endet die Straße im Ort; zusammen mit der Croix Saint-Robert eine Runde.",
+  "aliases": [
+   "Superbesse"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 45.5116,
+     "lon": 2.933
+    },
+    "label": "Besse"
+   }
+  ]
+ },
+ {
+  "slug": "col-du-beal",
+  "surface": "asphalt",
+  "name": "Col du Béal",
+  "type": "pass",
+  "tags": [
+   "panorama"
+  ],
+  "country": "FR",
+  "region": "Zentralmassiv",
+  "lat": 45.6852,
+  "lon": 3.7828,
+  "elevation": 1390,
+  "classicAscent": "6,3 km, 6,8 % ab Saint-Pierre-la-Bourlhonne",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 1,
+  "season": {
+   "opens": 5,
+   "closes": 11.5,
+   "maintained": false
+  },
+  "note": "Der höchste Übergang der Monts du Forez, zwischen Auvergne und Loire, über die baumlosen Jasseries. Von Westen die steilere Seite, von Chalmazel kürzer. Im Winter gesperrt.",
+  "aliases": [],
+  "ascents": [
+   {
+    "from": {
+     "lat": 45.6746,
+     "lon": 3.7431
+    },
+    "label": "Saint-Pierre-la-Bourlhonne (West)"
+   },
+   {
+    "from": {
+     "lat": 45.6928,
+     "lon": 3.8269
+    },
+    "label": "Chalmazel (Ost)"
+   }
+  ]
+ },
+ {
+  "slug": "mont-aigoual",
+  "surface": "asphalt",
+  "name": "Mont Aigoual",
+  "type": "pass",
+  "tags": [
+   "panorama",
+   "race"
+  ],
+  "country": "FR",
+  "region": "Zentralmassiv",
+  "lat": 44.1216,
+  "lon": 3.5814,
+  "elevation": 1565,
+  "roadSummit": true,
+  "classicAscent": "27,4 km, 4,4 % ab Valleraugue",
+  "beauty": 5,
+  "fame": 3,
+  "difficulty": 4,
+  "traffic": 2,
+  "season": null,
+  "note": "Der Gipfel mit der Wetterwarte, auf den von Valleraugue fast 1200 Höhenmeter am Stück führen; 2020 Etappenziel der Tour de France. Von Meyrueis länger und flacher über die Causse. Oben oft Wind und Nebel.",
+  "aliases": [
+   "Aigoual",
+   "Observatoire du Mont Aigoual"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 44.0845,
+     "lon": 3.6423
+    },
+    "label": "Valleraugue (Süd)"
+   },
+   {
+    "from": {
+     "lat": 44.1775,
+     "lon": 3.4306
+    },
+    "label": "Meyrueis (Nord)"
+   }
+  ]
+ },
+ {
+  "slug": "col-de-finiels",
+  "surface": "asphalt",
+  "name": "Col de Finiels",
+  "type": "pass",
+  "tags": [
+   "panorama"
+  ],
+  "country": "FR",
+  "region": "Zentralmassiv",
+  "lat": 44.4241,
+  "lon": 3.7685,
+  "elevation": 1541,
+  "classicAscent": "11,2 km, 5,7 % ab Le Pont-de-Montvert",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 1,
+  "season": null,
+  "note": "Der Übergang über den Mont Lozère, auf dem Weg, den Stevenson mit seiner Eselin ging. Von Le Pont-de-Montvert die längere und steilere Seite, von Le Bleymard über den Skiort Mont Lozère.",
+  "aliases": [
+   "Mont Lozère"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 44.3664,
+     "lon": 3.7461
+    },
+    "label": "Le Pont-de-Montvert (Süd)"
+   },
+   {
+    "from": {
+     "lat": 44.483,
+     "lon": 3.735
+    },
+    "label": "Le Bleymard (Nord)"
+   }
+  ]
+ },
+ {
+  "slug": "col-du-minier",
+  "surface": "asphalt",
+  "name": "Col du Minier",
+  "type": "pass",
+  "tags": [
+   "forest"
+  ],
+  "country": "FR",
+  "region": "Zentralmassiv",
+  "lat": 44.0541,
+  "lon": 3.5474,
+  "elevation": 1264,
+  "classicAscent": "21,0 km, 5,0 % ab Le Vigan",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 4,
+  "traffic": 1,
+  "season": null,
+  "note": "Von Le Vigan über 1000 Höhenmeter im Wald hinauf auf den Kamm zum Aigoual; oft der Weg zum Gipfel von Süden. Ruhig, gleichmäßig und schattig.",
+  "aliases": [],
+  "ascents": [
+   {
+    "from": {
+     "lat": 43.992,
+     "lon": 3.6063
+    },
+    "label": "Le Vigan (Süd)"
+   }
+  ]
+ },
+ {
+  "slug": "brocken",
+  "surface": "asphalt",
+  "name": "Brocken",
+  "type": "spur",
+  "tags": [
+   "carfree",
+   "panorama"
+  ],
+  "country": "DE",
+  "region": "Harz",
+  "lat": 51.7998,
+  "lon": 10.6168,
+  "elevation": 1134,
+  "classicAscent": "10,6 km, 4,9 % ab Schierke",
+  "beauty": 4,
+  "fame": 3,
+  "difficulty": 3,
+  "traffic": 1,
+  "season": null,
+  "note": "Die Brockenstraße von Schierke auf den höchsten Berg Norddeutschlands ist für Autos gesperrt, für Räder offen; oben Bahnhof der Brockenbahn, Wetterstation und viele Wanderer. Oft Wind, Nebel und bis in den Mai Schnee.",
+  "aliases": [
+   "Brockenstraße"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 51.7647,
+     "lon": 10.6597
+    },
+    "label": "Schierke"
+   }
+  ]
+ },
+ {
+  "slug": "torfhaus",
+  "surface": "asphalt",
+  "name": "Torfhaus",
+  "type": "climb",
+  "tags": [
+   "forest"
+  ],
+  "country": "DE",
+  "region": "Harz",
+  "lat": 51.8022,
+  "lon": 10.5369,
+  "elevation": 810,
+  "classicAscent": "10,6 km, 5,2 % ab Bad Harzburg",
+  "beauty": 3,
+  "fame": 3,
+  "difficulty": 3,
+  "traffic": 4,
+  "season": null,
+  "note": "Die B4 von Bad Harzburg auf die Hochfläche des Oberharzes, mit dem Brocken gegenüber. Gleichmäßig, aber eine Bundesstraße mit viel Verkehr und Motorrädern; von Altenau ruhiger.",
+  "aliases": [],
+  "ascents": [
+   {
+    "from": {
+     "lat": 51.8797,
+     "lon": 10.56
+    },
+    "label": "Bad Harzburg (Nord)"
+   },
+   {
+    "from": {
+     "lat": 51.8035,
+     "lon": 10.4473
+    },
+    "label": "Altenau (West)"
+   }
+  ]
+ },
+ {
+  "slug": "hexentanzplatz",
+  "surface": "asphalt",
+  "name": "Hexentanzplatz",
+  "type": "spur",
+  "tags": [
+   "hairpins",
+   "panorama"
+  ],
+  "country": "DE",
+  "region": "Harz",
+  "lat": 51.7297,
+  "lon": 11.027,
+  "elevation": 484,
+  "classicAscent": "4,8 km, 6,7 % ab Thale",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 3,
+  "season": null,
+  "note": "Die steile Kehrenstraße von Thale auf das Plateau über dem Bodetal, oben Ausflugsziel mit Seilbahn, Tierpark und Bergtheater. An Wochenenden viel Ausflugsverkehr.",
+  "aliases": [],
+  "ascents": [
+   {
+    "from": {
+     "lat": 51.7528,
+     "lon": 11.0377
+    },
+    "label": "Thale"
+   }
+  ]
+ },
+ {
+  "slug": "rosstrappe",
+  "surface": "asphalt",
+  "name": "Roßtrappe",
+  "type": "spur",
+  "tags": [
+   "panorama"
+  ],
+  "country": "DE",
+  "region": "Harz",
+  "lat": 51.739,
+  "lon": 11.0181,
+  "elevation": 444,
+  "classicAscent": "4,3 km, 6,5 % ab Thale",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 2,
+  "season": null,
+  "note": "Die Schwester des Hexentanzplatzes auf der anderen Seite des Bodetals: von Thale kurz und steil zum Felsen über der Schlucht, oben endet die Straße an einem Gasthaus.",
+  "aliases": [],
+  "ascents": [
+   {
+    "from": {
+     "lat": 51.7528,
+     "lon": 11.0377
+    },
+    "label": "Thale"
+   }
+  ]
+ },
+ {
+  "slug": "ravensberg",
+  "surface": "asphalt",
+  "name": "Ravensberg",
+  "type": "spur",
+  "tags": [
+   "forest",
+   "panorama"
+  ],
+  "country": "DE",
+  "region": "Harz",
+  "lat": 51.6214,
+  "lon": 10.5272,
+  "elevation": 653,
+  "classicAscent": "6,2 km, 4,8 % ab Bad Sachsa",
+  "beauty": 3,
+  "fame": 1,
+  "difficulty": 3,
+  "traffic": 1,
+  "season": null,
+  "note": "Die Stichstraße von Bad Sachsa auf den Aussichtsberg am Südrand des Harzes, oben Gasthaus und Blick über das Südharzer Vorland. Ruhig, mit steilen Rampen im Wald.",
+  "aliases": [],
+  "ascents": [
+   {
+    "from": {
+     "lat": 51.5883,
+     "lon": 10.5428
+    },
+    "label": "Bad Sachsa"
+   }
+  ]
+ },
+ {
+  "slug": "grosser-inselsberg",
+  "surface": "asphalt",
+  "name": "Großer Inselsberg",
+  "type": "spur",
+  "tags": [
+   "panorama"
+  ],
+  "country": "DE",
+  "region": "Thüringen",
+  "lat": 50.8507,
+  "lon": 10.4669,
+  "elevation": 915,
+  "classicAscent": "8,9 km, 5,8 % ab Tabarz",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 2,
+  "season": null,
+  "note": "Der markanteste Gipfel des Thüringer Walds, am Rennsteig. Von Tabarz lang und am Ende steil, von Brotterode kurz und steil; oben Gasthäuser und weiter Blick nach Norden.",
+  "aliases": [
+   "Inselsberg"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 50.8761,
+     "lon": 10.5162
+    },
+    "label": "Tabarz (Nord)"
+   },
+   {
+    "from": {
+     "lat": 50.8257,
+     "lon": 10.4422
+    },
+    "label": "Brotterode (Süd)"
+   }
+  ]
+ },
+ {
+  "slug": "oberhof",
+  "surface": "asphalt",
+  "name": "Oberhof",
+  "type": "pass",
+  "tags": [
+   "forest"
+  ],
+  "country": "DE",
+  "region": "Thüringen",
+  "lat": 50.6975,
+  "lon": 10.7222,
+  "elevation": 847,
+  "classicAscent": "8,0 km, 4,3 % ab Zella-Mehlis",
+  "beauty": 3,
+  "fame": 2,
+  "difficulty": 2,
+  "traffic": 3,
+  "season": null,
+  "note": "Der Übergang über den Rennsteig beim Wintersportort Oberhof, von Zella-Mehlis gleichmäßig im Wald. Breite Straße, nach Norden fällt sie lang und flach nach Tambach-Dietharz.",
+  "aliases": [
+   "Grenzadler"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 50.6561,
+     "lon": 10.664
+    },
+    "label": "Zella-Mehlis (Süd)"
+   }
+  ]
+ },
+ {
+  "slug": "wasserkuppe",
+  "surface": "asphalt",
+  "name": "Wasserkuppe",
+  "type": "spur",
+  "tags": [
+   "panorama"
+  ],
+  "country": "DE",
+  "region": "Rhön",
+  "lat": 50.4985,
+  "lon": 9.938,
+  "elevation": 944,
+  "classicAscent": "11,3 km, 4,1 % ab Gersfeld",
+  "beauty": 4,
+  "fame": 3,
+  "difficulty": 2,
+  "traffic": 3,
+  "season": null,
+  "note": "Der höchste Berg der Rhön und Hessens, Wiege des Segelflugs: oben Flugplatz, Radarkuppel und Ausflugsrummel. Von Gersfeld lang und gleichmäßig, von Poppenhausen etwas steiler.",
+  "aliases": [],
+  "ascents": [
+   {
+    "from": {
+     "lat": 50.4498,
+     "lon": 9.8944
+    },
+    "label": "Gersfeld (Süd)"
+   },
+   {
+    "from": {
+     "lat": 50.5012,
+     "lon": 9.8892
+    },
+    "label": "Poppenhausen (West)"
+   }
+  ]
+ },
+ {
+  "slug": "kreuzberg-rhoen",
+  "surface": "asphalt",
+  "name": "Kreuzberg",
+  "type": "spur",
+  "tags": [
+   "panorama"
+  ],
+  "country": "DE",
+  "region": "Rhön",
+  "lat": 50.3693,
+  "lon": 9.9764,
+  "elevation": 877,
+  "classicAscent": "6,0 km, 5,6 % ab Bischofsheim",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 2,
+  "season": null,
+  "note": "Der heilige Berg der Franken: von Bischofsheim steil zum Kloster mit seiner Brauerei unter dem Gipfel. Oben endet die Straße am Parkplatz.",
+  "aliases": [
+   "Kloster Kreuzberg"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 50.4012,
+     "lon": 9.9934
+    },
+    "label": "Bischofsheim"
+   }
+  ]
+ },
+ {
+  "slug": "hochrhoenstrasse",
+  "surface": "asphalt",
+  "name": "Hochrhönstraße",
+  "type": "climb",
+  "tags": [
+   "panorama"
+  ],
+  "country": "DE",
+  "region": "Rhön",
+  "lat": 50.5235,
+  "lon": 10.072,
+  "elevation": 795,
+  "classicAscent": "6,9 km, 5,5 % ab Fladungen",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 2,
+  "traffic": 2,
+  "season": null,
+  "note": "Von Fladungen hinauf auf die Hochrhönstraße am Schwarzen Moor, die oben über die kahle Lange Rhön nach Bischofsheim läuft. Eine Steige im Sinn des Wortes: oben flach und offen.",
+  "aliases": [
+   "Schwarzes Moor"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 50.521,
+     "lon": 10.1458
+    },
+    "label": "Fladungen"
+   }
+  ]
+ },
+ {
+  "slug": "bretterschachten",
+  "surface": "asphalt",
+  "name": "Bretterschachten",
+  "type": "pass",
+  "tags": [
+   "forest"
+  ],
+  "country": "DE",
+  "region": "Bayerwald",
+  "lat": 49.0746,
+  "lon": 13.1612,
+  "elevation": 1136,
+  "classicAscent": "7,2 km, 6,5 % ab Bodenmais",
+  "beauty": 3,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 2,
+  "season": null,
+  "note": "Der höchste Straßenpunkt des Bayerischen Walds, zwischen Bodenmais und Bayerisch Eisenstein unter dem Arber. Von Bodenmais gleichmäßig steil im Wald, nach Osten lang und flacher über Arberhütte.",
+  "aliases": [
+   "Arberstraße"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 49.0655,
+     "lon": 13.099
+    },
+    "label": "Bodenmais (West)"
+   }
+  ]
+ },
+ {
+  "slug": "brennes",
+  "surface": "asphalt",
+  "name": "Brennes",
+  "type": "pass",
+  "tags": [
+   "forest"
+  ],
+  "country": "DE",
+  "region": "Bayerwald",
+  "lat": 49.1344,
+  "lon": 13.1552,
+  "elevation": 1068,
+  "classicAscent": "6,1 km, 5,8 % ab Bayerisch Eisenstein",
+  "beauty": 3,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 3,
+  "season": null,
+  "note": "Der Übergang am Großen Arber zwischen Bayerisch Eisenstein und Lohberg, an der Talstation der Arber-Bergbahn. Von Eisenstein kurz und steil, nach Lohberg lang am Großen Arbersee vorbei.",
+  "aliases": [
+   "Arberpass",
+   "Großer Arber"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 49.1223,
+     "lon": 13.2032
+    },
+    "label": "Bayerisch Eisenstein (Ost)"
+   }
+  ]
+ },
+ {
+  "slug": "dreisessel",
+  "surface": "asphalt",
+  "name": "Dreisessel",
+  "type": "spur",
+  "tags": [
+   "panorama"
+  ],
+  "country": "DE",
+  "region": "Bayerwald",
+  "lat": 48.7834,
+  "lon": 13.7918,
+  "elevation": 1217,
+  "classicAscent": "10,5 km, 3,7 % ab Haidmühle",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 2,
+  "traffic": 1,
+  "season": null,
+  "note": "Die Straße auf den Grenzberg im Dreiländereck Bayern, Böhmen und Österreich, oben Berggasthof und Granitfelsen mit Blick über den Böhmerwald und bei Föhn bis zu den Alpen.",
+  "aliases": [
+   "Dreisesselberg"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 48.8249,
+     "lon": 13.776
+    },
+    "label": "Haidmühle"
+   }
+  ]
+ },
+ {
+  "slug": "klet",
+  "surface": "asphalt",
+  "name": "Kleť",
+  "type": "spur",
+  "tags": [
+   "panorama"
+  ],
+  "country": "CZ",
+  "region": "Böhmerwald",
+  "lat": 48.8652,
+  "lon": 14.283,
+  "elevation": 1084,
+  "classicAscent": "13,2 km, 4,5 % ab Český Krumlov",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 1,
+  "season": null,
+  "note": "Der Hausberg von Český Krumlov und Budweis, mit Sternwarte und dem ältesten Steinaussichtsturm Böhmens. Die letzten Kilometer sind für Autos gesperrt und gehören den Radfahrern.",
+  "aliases": [
+   "Schöninger"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 48.811,
+     "lon": 14.315
+    },
+    "label": "Český Krumlov"
+   }
+  ]
+ },
+ {
+  "slug": "churanov",
+  "surface": "asphalt",
+  "name": "Churáňov",
+  "type": "climb",
+  "tags": [
+   "forest"
+  ],
+  "country": "CZ",
+  "region": "Böhmerwald",
+  "lat": 49.0657,
+  "lon": 13.6223,
+  "elevation": 1095,
+  "classicAscent": "8,2 km, 4,3 % ab Stachy",
+  "beauty": 3,
+  "fame": 1,
+  "difficulty": 2,
+  "traffic": 1,
+  "season": null,
+  "note": "Von Stachy hinauf auf die Hochfläche des Böhmerwalds bei Zadov, mit Wetterstation und kleinem Skigebiet. Oben geht es flach weiter zu den Hochmooren um Kvilda.",
+  "aliases": [
+   "Zadov"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 49.1018,
+     "lon": 13.6666
+    },
+    "label": "Stachy"
+   }
+  ]
+ },
+ {
+  "slug": "col-de-bavella",
+  "surface": "asphalt",
+  "name": "Col de Bavella",
+  "type": "pass",
+  "tags": [
+   "panorama",
+   "hairpins"
+  ],
+  "country": "FR",
+  "region": "Korsika",
+  "lat": 41.7959,
+  "lon": 9.225,
+  "elevation": 1218,
+  "classicAscent": "9,0 km, 5,0 % ab Zonza",
+  "beauty": 5,
+  "fame": 4,
+  "difficulty": 3,
+  "traffic": 3,
+  "season": null,
+  "note": "Der Pass unter den Aiguilles de Bavella, den roten Granitnadeln im Süden der Insel. Von Zonza kurz und gleichmäßig, von Solenzara an der Ostküste dreißig Kilometer durch die Schlucht des Solenzara.",
+  "aliases": [
+   "Bocca di Bavedda"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 41.7494,
+     "lon": 9.1706
+    },
+    "label": "Zonza (West)"
+   },
+   {
+    "from": {
+     "lat": 41.8563,
+     "lon": 9.3986
+    },
+    "label": "Solenzara (Ost)"
+   }
+  ]
+ },
+ {
+  "slug": "col-de-vergio",
+  "surface": "asphalt",
+  "name": "Col de Vergio",
+  "type": "pass",
+  "tags": [
+   "forest",
+   "panorama"
+  ],
+  "country": "FR",
+  "region": "Korsika",
+  "lat": 42.2903,
+  "lon": 8.8784,
+  "elevation": 1477,
+  "classicAscent": "12,0 km, 5,1 % ab Evisa",
+  "beauty": 5,
+  "fame": 3,
+  "difficulty": 3,
+  "traffic": 1,
+  "season": null,
+  "note": "Der höchste Straßenpass Korsikas, zwischen dem Forêt d'Aïtone und dem Niolo. Von Evisa durch hohe Laricio-Kiefern bergauf, nach Osten lang und flach über Calacuccia.",
+  "aliases": [
+   "Bocca di Verghju"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 42.2535,
+     "lon": 8.803
+    },
+    "label": "Evisa (West)"
+   }
+  ]
+ },
+ {
+  "slug": "col-de-vizzavona",
+  "surface": "asphalt",
+  "name": "Col de Vizzavona",
+  "type": "pass",
+  "tags": [
+   "forest",
+   "race"
+  ],
+  "country": "FR",
+  "region": "Korsika",
+  "lat": 42.1119,
+  "lon": 9.1121,
+  "elevation": 1163,
+  "classicAscent": "9,4 km, 5,6 % ab Bocognano",
+  "beauty": 4,
+  "fame": 3,
+  "difficulty": 3,
+  "traffic": 4,
+  "season": null,
+  "note": "Der Pass der Hauptstraße zwischen Ajaccio und Bastia, über den die Tour de France 2013 auf Korsika fuhr. Buchen- und Kiefernwald, aber viel Verkehr: lieber früh am Morgen oder außerhalb der Saison.",
+  "aliases": [
+   "Bocca di Vizzavona"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 42.0835,
+     "lon": 9.0638
+    },
+    "label": "Bocognano (Süd)"
+   },
+   {
+    "from": {
+     "lat": 42.1721,
+     "lon": 9.1696
+    },
+    "label": "Vivario (Nord)"
+   }
+  ]
+ },
+ {
+  "slug": "col-de-sorba",
+  "surface": "asphalt",
+  "name": "Col de Sorba",
+  "type": "pass",
+  "tags": [
+   "hairpins",
+   "forest"
+  ],
+  "country": "FR",
+  "region": "Korsika",
+  "lat": 42.1441,
+  "lon": 9.1903,
+  "elevation": 1311,
+  "classicAscent": "9,5 km, 6,9 % ab Vivario",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 4,
+  "traffic": 1,
+  "season": null,
+  "note": "Die stille Verbindung von Vivario nach Ghisoni, auf beiden Seiten steil und in Kehren. Oben der Blick über den Kamm zum Monte Rotondo.",
+  "aliases": [
+   "Bocca di Sorba"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 42.1721,
+     "lon": 9.1696
+    },
+    "label": "Vivario (Nord)"
+   },
+   {
+    "from": {
+     "lat": 42.1036,
+     "lon": 9.2123
+    },
+    "label": "Ghisoni (Süd)"
+   }
+  ]
+ },
+ {
+  "slug": "col-de-verde",
+  "surface": "asphalt",
+  "name": "Col de Verde",
+  "type": "pass",
+  "tags": [
+   "forest"
+  ],
+  "country": "FR",
+  "region": "Korsika",
+  "lat": 42.0282,
+  "lon": 9.1948,
+  "elevation": 1289,
+  "classicAscent": "17,3 km, 3,7 % ab Ghisoni",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 1,
+  "season": null,
+  "note": "Der lange Waldpass zwischen Ghisoni und dem Taravo-Tal, durch einen der größten Wälder der Insel. Auf beiden Seiten lang und mäßig steil, mit flachen Stücken.",
+  "aliases": [
+   "Bocca di Verdi"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 42.1036,
+     "lon": 9.2123
+    },
+    "label": "Ghisoni (Nord)"
+   },
+   {
+    "from": {
+     "lat": 41.9352,
+     "lon": 9.1546
+    },
+    "label": "Cozzano (Süd)"
+   }
+  ]
+ },
+ {
+  "slug": "col-de-teghime",
+  "surface": "asphalt",
+  "name": "Col de Teghime",
+  "type": "pass",
+  "tags": [
+   "panorama"
+  ],
+  "country": "FR",
+  "region": "Korsika",
+  "lat": 42.6771,
+  "lon": 9.3828,
+  "elevation": 536,
+  "classicAscent": "10,1 km, 4,9 % ab Bastia",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 2,
+  "traffic": 3,
+  "season": null,
+  "note": "Der Hausberg von Bastia, über den Kamm am Ansatz des Cap Corse nach Saint-Florent. Oben der Blick auf beide Meere, das Tyrrhenische und den Golf von Saint-Florent.",
+  "aliases": [
+   "Bocca di Teghime"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 42.6975,
+     "lon": 9.4498
+    },
+    "label": "Bastia (Ost)"
+   },
+   {
+    "from": {
+     "lat": 42.681,
+     "lon": 9.303
+    },
+    "label": "Saint-Florent (West)"
+   }
+  ]
+ },
+ {
+  "slug": "ospedale",
+  "surface": "asphalt",
+  "name": "L'Ospedale",
+  "type": "climb",
+  "tags": [
+   "reservoir",
+   "forest",
+   "panorama"
+  ],
+  "country": "FR",
+  "region": "Korsika",
+  "lat": 41.6542,
+  "lon": 9.1958,
+  "elevation": 933,
+  "classicAscent": "18,5 km, 4,8 % ab Porto-Vecchio",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 2,
+  "season": null,
+  "note": "Von Porto-Vecchio auf die Hochfläche des Ospedale, mit Stausee, Kiefernwald und Blick über die Bucht. Oben geht es weiter über den Wald nach Zonza und zum Col de Bavella.",
+  "aliases": [
+   "Ospedale"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 41.5911,
+     "lon": 9.2794
+    },
+    "label": "Porto-Vecchio"
+   }
+  ]
+ },
+ {
+  "slug": "col-de-sevi",
+  "surface": "asphalt",
+  "name": "Col de Sevi",
+  "type": "pass",
+  "tags": [
+   "panorama"
+  ],
+  "country": "FR",
+  "region": "Korsika",
+  "lat": 42.2235,
+  "lon": 8.8299,
+  "elevation": 1101,
+  "classicAscent": "9,7 km, 6,9 % ab Vico",
+  "beauty": 4,
+  "fame": 1,
+  "difficulty": 3,
+  "traffic": 1,
+  "season": null,
+  "note": "Der Pass zwischen Vico und Evisa über dem Golf von Sagone, mit Blick zum Meer und zu den Bergen des Cinto. Zusammen mit dem Vergio ein Tag ab Evisa.",
+  "aliases": [
+   "Bocca di Sevi"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 42.1661,
+     "lon": 8.7958
+    },
+    "label": "Vico (Süd)"
+   }
+  ]
+ },
+ {
+  "slug": "el-portillo",
+  "surface": "asphalt",
+  "name": "El Portillo (Teide)",
+  "type": "climb",
+  "tags": [
+   "panorama"
+  ],
+  "country": "ES",
+  "region": "Teneriffa",
+  "lat": 28.3066,
+  "lon": -16.5651,
+  "elevation": 2030,
+  "classicAscent": "30,1 km, 6,7 % ab Puerto de la Cruz",
+  "beauty": 5,
+  "fame": 4,
+  "difficulty": 5,
+  "traffic": 3,
+  "season": null,
+  "note": "Der klassische Teide-Anstieg: von der Nordküste durch das Orotava-Tal und den Kiefernwald bis an den Rand der Cañadas, 2000 Höhenmeter am Stück. Im Winter Trainingsrevier der Profis.",
+  "aliases": [
+   "Teide Nord",
+   "TF-21 Nord"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 28.4159,
+     "lon": -16.5533
+    },
+    "label": "Puerto de la Cruz (Nord)"
+   }
+  ]
+ },
+ {
+  "slug": "boca-de-tauce",
+  "surface": "asphalt",
+  "name": "Boca de Tauce",
+  "type": "pass",
+  "tags": [
+   "panorama"
+  ],
+  "country": "ES",
+  "region": "Teneriffa",
+  "lat": 28.2142,
+  "lon": -16.6783,
+  "elevation": 2040,
+  "classicAscent": "29,5 km, 4,6 % ab Chío",
+  "beauty": 5,
+  "fame": 3,
+  "difficulty": 4,
+  "traffic": 2,
+  "season": null,
+  "note": "Der Westeingang der Cañadas, wo die Straßen von Chío und Vilaflor in den Krater führen. Von der Westküste ein langer, gleichmäßiger Anstieg über Lavafelder und durch Kiefernwald.",
+  "aliases": [
+   "Tauce"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 28.2368,
+     "lon": -16.7964
+    },
+    "label": "Chío (West)"
+   }
+  ]
+ },
+ {
+  "slug": "izana",
+  "surface": "asphalt",
+  "name": "Izaña",
+  "type": "climb",
+  "tags": [
+   "panorama",
+   "forest"
+  ],
+  "country": "ES",
+  "region": "Teneriffa",
+  "lat": 28.3046,
+  "lon": -16.5089,
+  "elevation": 2276,
+  "classicAscent": "31,1 km, 4,3 % ab La Esperanza",
+  "beauty": 5,
+  "fame": 2,
+  "difficulty": 4,
+  "traffic": 2,
+  "season": null,
+  "note": "Die Kammstraße über den Rücken der Insel, von La Esperanza durch den Kiefernwald bis zum Observatorium von Izaña, dem höchsten Straßenpunkt Teneriffas. Auf beiden Seiten das Meer.",
+  "aliases": [
+   "Cumbre Dorsal",
+   "TF-24"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 28.4524,
+     "lon": -16.367
+    },
+    "label": "La Esperanza (Nordost)"
+   }
+  ]
+ },
+ {
+  "slug": "degollada-de-cherfe",
+  "surface": "asphalt",
+  "name": "Degollada de Cherfe",
+  "type": "pass",
+  "tags": [
+   "panorama",
+   "hairpins",
+   "gorge"
+  ],
+  "country": "ES",
+  "region": "Teneriffa",
+  "lat": 28.2997,
+  "lon": -16.824,
+  "elevation": 1055,
+  "classicAscent": "4,0 km, 11,2 % ab Masca",
+  "beauty": 5,
+  "fame": 3,
+  "difficulty": 4,
+  "traffic": 3,
+  "season": null,
+  "note": "Der Pass über der Masca-Schlucht, zwischen Santiago del Teide und dem Bergdorf Masca. Von Masca vier Kilometer über 11 % in engen Kehren, eine der steilsten Rampen der Kanaren.",
+  "aliases": [
+   "Masca"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 28.3053,
+     "lon": -16.8405
+    },
+    "label": "Masca (Nord)"
+   },
+   {
+    "from": {
+     "lat": 28.2707,
+     "lon": -16.8165
+    },
+    "label": "Santiago del Teide (Süd)"
+   }
+  ]
+ },
+ {
+  "slug": "cruz-de-tejeda",
+  "surface": "asphalt",
+  "name": "Cruz de Tejeda",
+  "type": "pass",
+  "tags": [
+   "panorama"
+  ],
+  "country": "ES",
+  "region": "Gran Canaria",
+  "lat": 28.0063,
+  "lon": -15.5997,
+  "elevation": 1517,
+  "classicAscent": "12,7 km, 5,5 % ab Vega de San Mateo",
+  "beauty": 5,
+  "fame": 3,
+  "difficulty": 3,
+  "traffic": 3,
+  "season": null,
+  "note": "Der Pass in der Mitte von Gran Canaria, am Rand der Caldera von Tejeda mit Blick auf den Roque Nublo und bis zum Teide. Von Tejeda kurz und steil, von San Mateo länger.",
+  "aliases": [
+   "Tejeda"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 28.0104,
+     "lon": -15.5329
+    },
+    "label": "Vega de San Mateo (Ost)"
+   },
+   {
+    "from": {
+     "lat": 27.9954,
+     "lon": -15.6154
+    },
+    "label": "Tejeda (West)"
+   }
+  ]
+ },
+ {
+  "slug": "pico-de-las-nieves",
+  "surface": "asphalt",
+  "name": "Pico de las Nieves",
+  "type": "spur",
+  "tags": [
+   "panorama"
+  ],
+  "country": "ES",
+  "region": "Gran Canaria",
+  "lat": 27.9633,
+  "lon": -15.5722,
+  "elevation": 1920,
+  "classicAscent": "14,9 km, 7,3 % ab Vega de San Mateo",
+  "beauty": 5,
+  "fame": 3,
+  "difficulty": 4,
+  "traffic": 2,
+  "season": null,
+  "note": "Die Straße auf den höchsten befahrbaren Punkt Gran Canarias, knapp 1950 m, mit Blick über die ganze Insel und bei klarer Sicht zum Teide. Von San Mateo steil, von San Bartolomé lang.",
+  "aliases": [
+   "Pozo de las Nieves"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 28.0104,
+     "lon": -15.5329
+    },
+    "label": "Vega de San Mateo (Nord)"
+   },
+   {
+    "from": {
+     "lat": 27.9253,
+     "lon": -15.573
+    },
+    "label": "San Bartolomé de Tirajana (Süd)"
+   }
+  ]
+ },
+ {
+  "slug": "fataga",
+  "surface": "asphalt",
+  "name": "Fataga",
+  "type": "climb",
+  "tags": [
+   "gorge",
+   "panorama"
+  ],
+  "country": "ES",
+  "region": "Gran Canaria",
+  "lat": 27.9145,
+  "lon": -15.578,
+  "elevation": 965,
+  "classicAscent": "23,5 km, 3,8 % ab Maspalomas",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 2,
+  "season": null,
+  "note": "Der Hausanstieg der Hotelzone im Süden: von Maspalomas durch die Schlucht von Fataga hinauf nach San Bartolomé de Tirajana. Lang und gleichmäßig, mit Palmenoasen und roten Felswänden.",
+  "aliases": [
+   "Barranco de Fataga",
+   "GC-60"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 27.765,
+     "lon": -15.586
+    },
+    "label": "Maspalomas"
+   }
+  ]
+ },
+ {
+  "slug": "roque-de-los-muchachos",
+  "surface": "asphalt",
+  "name": "Roque de los Muchachos",
+  "type": "spur",
+  "tags": [
+   "panorama",
+   "forest"
+  ],
+  "country": "ES",
+  "region": "La Palma",
+  "lat": 28.7547,
+  "lon": -17.8855,
+  "elevation": 2399,
+  "classicAscent": "43,5 km, 5,4 % ab Santa Cruz de La Palma",
+  "beauty": 5,
+  "fame": 3,
+  "difficulty": 5,
+  "traffic": 1,
+  "season": null,
+  "note": "Vom Meer auf 2400 m: die längste Steigung Europas am Stück, von Santa Cruz de La Palma bis zu den Teleskopen am Rand der Caldera de Taburiente. Von Garafía im Norden kürzer und steiler.",
+  "aliases": [
+   "Roque",
+   "LP-4"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 28.6819,
+     "lon": -17.7663
+    },
+    "label": "Santa Cruz de La Palma (Ost)"
+   },
+   {
+    "from": {
+     "lat": 28.817,
+     "lon": -17.944
+    },
+    "label": "Garafía (Nord)"
+   }
+  ]
+ },
+ {
+  "slug": "angliru",
+  "surface": "asphalt",
+  "name": "Alto de l'Angliru",
+  "type": "spur",
+  "tags": [
+   "race",
+   "panorama"
+  ],
+  "country": "ES",
+  "region": "Asturien",
+  "lat": 43.2257,
+  "lon": -5.938,
+  "elevation": 1564,
+  "classicAscent": "12,5 km, 10,1 % ab La Vega (Riosa)",
+  "beauty": 4,
+  "fame": 5,
+  "difficulty": 5,
+  "traffic": 1,
+  "season": null,
+  "note": "Der gefürchtetste Anstieg der Vuelta, seit 1999 mehrfach Bergankunft: auf den letzten sechs Kilometern im Schnitt über 13 %, die Cueña les Cabres mit über 20 %. Oben Almweiden und der Blick über Asturien.",
+  "aliases": [
+   "Angliru"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 43.2307,
+     "lon": -5.882
+    },
+    "label": "La Vega (Riosa)"
+   }
+  ]
+ },
+ {
+  "slug": "lagos-de-covadonga",
+  "surface": "asphalt",
+  "name": "Lagos de Covadonga",
+  "type": "spur",
+  "tags": [
+   "race",
+   "panorama",
+   "reservoir"
+  ],
+  "country": "ES",
+  "region": "Asturien",
+  "lat": 43.2743,
+  "lon": -4.9931,
+  "elevation": 1145,
+  "classicAscent": "13,0 km, 6,7 % ab Covadonga",
+  "beauty": 5,
+  "fame": 5,
+  "difficulty": 4,
+  "traffic": 3,
+  "season": null,
+  "note": "Die berühmteste Bergankunft der Vuelta, seit 1983 über zwanzigmal gefahren: von Covadonga mit der Basilika hinauf zu den Bergseen Enol und Ercina in den Picos de Europa. Im Sommer für Autos zeitweise gesperrt.",
+  "aliases": [
+   "Covadonga",
+   "Lago Enol"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 43.3136,
+     "lon": -5.0659
+    },
+    "label": "Covadonga"
+   }
+  ]
+ },
+ {
+  "slug": "puerto-de-san-lorenzo",
+  "surface": "asphalt",
+  "name": "Puerto de San Lorenzo",
+  "type": "pass",
+  "tags": [
+   "race",
+   "hairpins"
+  ],
+  "country": "ES",
+  "region": "Asturien",
+  "lat": 43.1417,
+  "lon": -6.1929,
+  "elevation": 1370,
+  "classicAscent": "11,2 km, 7,9 % ab Teverga",
+  "beauty": 4,
+  "fame": 3,
+  "difficulty": 4,
+  "traffic": 1,
+  "season": null,
+  "note": "Der Pass zwischen Teverga und Somiedo, oft in der Vuelta: von La Plaza in Teverga gleichmäßig steil über Almen. Auf der Westseite hinunter nach Somiedo und zur Farrapona.",
+  "aliases": [
+   "San Lorenzo"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 43.162,
+     "lon": -6.0965
+    },
+    "label": "Teverga (Ost)"
+   }
+  ]
+ },
+ {
+  "slug": "alto-de-la-farrapona",
+  "surface": "asphalt",
+  "name": "Alto de la Farrapona",
+  "type": "pass",
+  "tags": [
+   "race",
+   "panorama"
+  ],
+  "country": "ES",
+  "region": "Asturien",
+  "lat": 43.0569,
+  "lon": -6.0897,
+  "elevation": 1715,
+  "classicAscent": "21,7 km, 4,7 % ab Pola de Somiedo",
+  "beauty": 5,
+  "fame": 3,
+  "difficulty": 4,
+  "traffic": 1,
+  "season": null,
+  "note": "Die Straße durch den Naturpark Somiedo bis an die Grenze zu León, mehrfach Vuelta-Ankunft. Lang und unregelmäßig, oben Seen und Kalkberge, Bären in den Wäldern.",
+  "aliases": [
+   "Lagos de Somiedo",
+   "La Farrapona"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 43.0931,
+     "lon": -6.2573
+    },
+    "label": "Pola de Somiedo (West)"
+   }
+  ]
+ },
+ {
+  "slug": "puerto-de-pajares",
+  "surface": "asphalt",
+  "name": "Puerto de Pajares",
+  "type": "pass",
+  "tags": [
+   "hairpins"
+  ],
+  "country": "ES",
+  "region": "Asturien",
+  "lat": 42.9927,
+  "lon": -5.7595,
+  "elevation": 1386,
+  "classicAscent": "25,9 km, 4,1 % ab Pola de Lena",
+  "beauty": 3,
+  "fame": 3,
+  "difficulty": 3,
+  "traffic": 3,
+  "season": null,
+  "note": "Der alte Hauptpass zwischen Asturien und León, seit der Autobahn ruhiger. Von Pola de Lena lang durch das Tal und dann in Kehren hinauf zur Grenze; auf der Südseite die Meseta.",
+  "aliases": [
+   "Pajares"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 43.1586,
+     "lon": -5.8311
+    },
+    "label": "Pola de Lena (Nord)"
+   }
+  ]
+ },
+ {
+  "slug": "alto-de-la-cobertoria",
+  "surface": "asphalt",
+  "name": "Alto de la Cobertoria",
+  "type": "pass",
+  "tags": [
+   "race",
+   "hairpins"
+  ],
+  "country": "ES",
+  "region": "Asturien",
+  "lat": 43.1435,
+  "lon": -5.9059,
+  "elevation": 1190,
+  "classicAscent": "10,0 km, 8,6 % ab Pola de Lena",
+  "beauty": 4,
+  "fame": 3,
+  "difficulty": 4,
+  "traffic": 1,
+  "season": null,
+  "note": "Der steile Pass zwischen Lena und Quirós, in der Vuelta oft der Auftakt zum Angliru. Von Pola de Lena zehn Kilometer fast ohne Pause über 8 %.",
+  "aliases": [
+   "Cobertoria"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 43.1586,
+     "lon": -5.8311
+    },
+    "label": "Pola de Lena (Ost)"
+   }
+  ]
+ },
+ {
+  "slug": "puerto-de-san-glorio",
+  "surface": "asphalt",
+  "name": "Puerto de San Glorio",
+  "type": "pass",
+  "tags": [
+   "panorama"
+  ],
+  "country": "ES",
+  "region": "Kantabrien",
+  "lat": 43.0677,
+  "lon": -4.7635,
+  "elevation": 1626,
+  "classicAscent": "27,1 km, 4,9 % ab Potes",
+  "beauty": 5,
+  "fame": 3,
+  "difficulty": 4,
+  "traffic": 1,
+  "season": null,
+  "note": "Der höchste Straßenpass Kantabriens, von Potes durch das Liébana-Tal hinauf an die Grenze zu León. Oben der Blick auf die Picos de Europa, das Denkmal des Bären am Mirador de Llesba.",
+  "aliases": [
+   "San Glorio"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 43.1537,
+     "lon": -4.6234
+    },
+    "label": "Potes (Nord)"
+   }
+  ]
+ },
+ {
+  "slug": "pena-cabarga",
+  "surface": "asphalt",
+  "name": "Peña Cabarga",
+  "type": "spur",
+  "tags": [
+   "panorama",
+   "race"
+  ],
+  "country": "ES",
+  "region": "Kantabrien",
+  "lat": 43.3798,
+  "lon": -3.7794,
+  "elevation": 526,
+  "classicAscent": "8,6 km, 6,0 % ab Heras",
+  "beauty": 4,
+  "fame": 3,
+  "difficulty": 3,
+  "traffic": 1,
+  "season": null,
+  "note": "Der Aussichtsberg über der Bucht von Santander, mehrfach Vuelta-Ankunft: kurz, mit Rampen über 15 % auf den letzten Kilometern, oben das Denkmal und der Blick über Bucht und Kantabrisches Gebirge.",
+  "aliases": [
+   "Cabarga"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 43.406,
+     "lon": -3.77
+    },
+    "label": "Heras (Nord)"
+   }
+  ]
+ },
+ {
+  "slug": "hoya-de-la-mora",
+  "surface": "asphalt",
+  "name": "Sierra Nevada (Hoya de la Mora)",
+  "type": "spur",
+  "tags": [
+   "race",
+   "panorama"
+  ],
+  "country": "ES",
+  "region": "Sierra Nevada",
+  "lat": 37.0922,
+  "lon": -3.388,
+  "elevation": 2476,
+  "classicAscent": "29,1 km, 6,0 % ab Cenes de la Vega",
+  "beauty": 4,
+  "fame": 4,
+  "difficulty": 5,
+  "traffic": 2,
+  "season": null,
+  "note": "Die höchste asphaltierte Straße Spaniens, von Granada bis über das Skigebiet Pradollano zur Hoya de la Mora auf fast 2500 m; mehrfach Vuelta-Ankunft. Darüber führt die gesperrte Straße weiter zum Veleta.",
+  "aliases": [
+   "Sierra Nevada",
+   "Pradollano",
+   "Veleta"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 37.1559,
+     "lon": -3.5411
+    },
+    "label": "Cenes de la Vega (Granada)"
+   }
+  ]
+ },
+ {
+  "slug": "alto-del-purche",
+  "surface": "asphalt",
+  "name": "Alto del Purche",
+  "type": "pass",
+  "tags": [
+   "panorama"
+  ],
+  "country": "ES",
+  "region": "Sierra Nevada",
+  "lat": 37.1339,
+  "lon": -3.4511,
+  "elevation": 1593,
+  "classicAscent": "9,7 km, 5,7 % ab Monachil",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 1,
+  "season": null,
+  "note": "Der kleine Bruder der Sierra-Nevada-Straße, von Monachil über die Hänge östlich von Granada. Ruhig, mit Rampen über 10 % und Blick auf die Stadt und die Alhambra.",
+  "aliases": [
+   "Purche"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 37.134,
+     "lon": -3.516
+    },
+    "label": "Monachil (West)"
+   }
+  ]
+ },
+ {
+  "slug": "collado-de-las-sabinas",
+  "surface": "asphalt",
+  "name": "Collado de las Sabinas",
+  "type": "climb",
+  "tags": [
+   "panorama"
+  ],
+  "country": "ES",
+  "region": "Sierra Nevada",
+  "lat": 37.1136,
+  "lon": -3.4199,
+  "elevation": 2209,
+  "classicAscent": "19,6 km, 5,4 % ab Güéjar Sierra",
+  "beauty": 4,
+  "fame": 3,
+  "difficulty": 5,
+  "traffic": 1,
+  "season": null,
+  "note": "Der Anstieg über Hazallanas, 2017 Vuelta-Etappe: von Güéjar Sierra auf schmaler Straße mit Rampen über 13 % auf den Kamm über dem Skigebiet. Einer der härtesten Anstiege Andalusiens.",
+  "aliases": [
+   "Hazallanas",
+   "Haza Llanas"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 37.1608,
+     "lon": -3.4395
+    },
+    "label": "Güéjar Sierra"
+   }
+  ]
+ },
+ {
+  "slug": "puerto-de-la-ragua",
+  "surface": "asphalt",
+  "name": "Puerto de la Ragua",
+  "type": "pass",
+  "tags": [
+   "forest",
+   "panorama"
+  ],
+  "country": "ES",
+  "region": "Sierra Nevada",
+  "lat": 37.11,
+  "lon": -3.0284,
+  "elevation": 2063,
+  "classicAscent": "16,2 km, 6,3 % ab Laroles",
+  "beauty": 4,
+  "fame": 3,
+  "difficulty": 4,
+  "traffic": 1,
+  "season": null,
+  "note": "Der höchste ganzjährig offene Straßenpass Andalusiens, über die Sierra Nevada zwischen der Alpujarra und dem Marquesado. Auf beiden Seiten gleichmäßig um 6 %, oben Kiefernwald und Langlaufloipen.",
+  "aliases": [
+   "La Ragua"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 37.0083,
+     "lon": -3.0144
+    },
+    "label": "Laroles (Süd)"
+   },
+   {
+    "from": {
+     "lat": 37.1815,
+     "lon": -3.0641
+    },
+    "label": "La Calahorra (Nord)"
+   }
+  ]
+ },
+ {
+  "slug": "calar-alto",
+  "surface": "asphalt",
+  "name": "Calar Alto",
+  "type": "spur",
+  "tags": [
+   "race",
+   "panorama"
+  ],
+  "country": "ES",
+  "region": "Almería",
+  "lat": 37.222,
+  "lon": -2.5454,
+  "elevation": 2155,
+  "classicAscent": "23,9 km, 5,8 % ab Gérgal",
+  "beauty": 4,
+  "fame": 3,
+  "difficulty": 4,
+  "traffic": 1,
+  "season": null,
+  "note": "Die Straße zur Sternwarte auf dem höchsten Punkt der Sierra de los Filabres, mehrfach Vuelta-Ankunft. Lang, kahl und trocken, oben die Kuppeln der Teleskope und der Blick über die Wüste von Tabernas.",
+  "aliases": [
+   "Observatorio de Calar Alto"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 37.1186,
+     "lon": -2.5396
+    },
+    "label": "Gérgal (Süd)"
+   },
+   {
+    "from": {
+     "lat": 37.2612,
+     "lon": -2.4533
+    },
+    "label": "Bacares (Nord)"
+   }
+  ]
+ },
+ {
+  "slug": "alto-de-velefique",
+  "surface": "asphalt",
+  "name": "Alto de Velefique",
+  "type": "pass",
+  "tags": [
+   "race",
+   "hairpins"
+  ],
+  "country": "ES",
+  "region": "Almería",
+  "lat": 37.2235,
+  "lon": -2.4129,
+  "elevation": 1798,
+  "classicAscent": "12,4 km, 6,9 % ab Velefique",
+  "beauty": 5,
+  "fame": 3,
+  "difficulty": 4,
+  "traffic": 1,
+  "season": null,
+  "note": "Die Kehrenstraße aus dem Dorf Velefique auf den Kamm der Filabres, Vuelta-Pass und eines der schönsten Kehrenbänder Spaniens. Gleichmäßig steil, ganz ohne Verkehr.",
+  "aliases": [
+   "Velefique"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 37.1939,
+     "lon": -2.4029
+    },
+    "label": "Velefique (Süd)"
+   }
+  ]
+ },
+ {
+  "slug": "blockhaus",
+  "surface": "asphalt",
+  "name": "Blockhaus",
+  "type": "spur",
+  "tags": [
+   "race",
+   "panorama"
+  ],
+  "country": "IT",
+  "region": "Abruzzen",
+  "lat": 42.1506,
+  "lon": 14.1164,
+  "elevation": 2065,
+  "classicAscent": "19,3 km, 7,9 % ab Roccamorice",
+  "beauty": 4,
+  "fame": 5,
+  "difficulty": 5,
+  "traffic": 1,
+  "season": null,
+  "note": "Der Giro-Klassiker in der Majella, seit Merckx' erstem Etappensieg bei einer großen Rundfahrt 1967 immer wieder Bergankunft: von Roccamorice fast 1500 Höhenmeter mit langen Abschnitten über 9 %, oben kahle Kalkhänge.",
+  "aliases": [
+   "Maielletta",
+   "Majella"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 42.2135,
+     "lon": 14.0246
+    },
+    "label": "Roccamorice (Nord)"
+   }
+  ]
+ },
+ {
+  "slug": "passo-lanciano",
+  "surface": "asphalt",
+  "name": "Passo Lanciano",
+  "type": "pass",
+  "tags": [
+   "race",
+   "forest"
+  ],
+  "country": "IT",
+  "region": "Abruzzen",
+  "lat": 42.1884,
+  "lon": 14.1084,
+  "elevation": 1336,
+  "classicAscent": "10,2 km, 7,4 % ab Pretoro",
+  "beauty": 3,
+  "fame": 3,
+  "difficulty": 4,
+  "traffic": 2,
+  "season": null,
+  "note": "Der Pass am Nordhang der Majella, von Pretoro durch Buchenwald; oben beginnt die Straße zum Blockhaus. Oft Teil der Giro-Etappen in die Abruzzen.",
+  "aliases": [
+   "Lanciano"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 42.2172,
+     "lon": 14.1416
+    },
+    "label": "Pretoro (Ost)"
+   }
+  ]
+ },
+ {
+  "slug": "campo-imperatore",
+  "surface": "asphalt",
+  "name": "Campo Imperatore",
+  "type": "spur",
+  "tags": [
+   "race",
+   "panorama"
+  ],
+  "country": "IT",
+  "region": "Abruzzen",
+  "lat": 42.4425,
+  "lon": 13.5584,
+  "elevation": 2134,
+  "classicAscent": "26,3 km, 3,8 % ab Fonte Cerreto",
+  "beauty": 5,
+  "fame": 4,
+  "difficulty": 4,
+  "traffic": 2,
+  "season": null,
+  "note": "Die Straße über die Hochebene unter dem Gran Sasso, das kleine Tibet Italiens, bis zum Hotel auf 2130 m; Giro-Ankunft 1971, 1989 und 2018. Lang und offen, oben die steile Schlussrampe.",
+  "aliases": [
+   "Gran Sasso"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 42.426,
+     "lon": 13.5291
+    },
+    "label": "Fonte Cerreto (West)"
+   }
+  ]
+ },
+ {
+  "slug": "terminillo",
+  "surface": "asphalt",
+  "name": "Terminillo",
+  "type": "spur",
+  "tags": [
+   "race",
+   "forest"
+  ],
+  "country": "IT",
+  "region": "Latium",
+  "lat": 42.4545,
+  "lon": 12.9774,
+  "elevation": 1643,
+  "classicAscent": "20,7 km, 5,4 % ab Rieti",
+  "beauty": 4,
+  "fame": 3,
+  "difficulty": 4,
+  "traffic": 2,
+  "season": null,
+  "note": "Der Hausberg Roms, von Rieti durch Kastanien- und Buchenwald bis zum Skiort Pian de' Valli; Ankunft bei Tirreno–Adriatico und im Giro. Gleichmäßig und lang.",
+  "aliases": [
+   "Monte Terminillo",
+   "Pian de' Valli"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 42.4147,
+     "lon": 12.8859
+    },
+    "label": "Rieti (West)"
+   }
+  ]
+ },
+ {
+  "slug": "passo-dell-abetone",
+  "surface": "asphalt",
+  "name": "Passo dell'Abetone",
+  "type": "pass",
+  "tags": [
+   "race",
+   "forest"
+  ],
+  "country": "IT",
+  "region": "Toskana",
+  "lat": 44.1444,
+  "lon": 10.6653,
+  "elevation": 1380,
+  "classicAscent": "13,8 km, 5,0 % ab Cutigliano",
+  "beauty": 4,
+  "fame": 3,
+  "difficulty": 3,
+  "traffic": 3,
+  "season": null,
+  "note": "Der klassische Apenninpass zwischen der Toskana und der Emilia, oft im Giro: von Cutigliano gleichmäßig durch Tannenwald zum Skiort Abetone.",
+  "aliases": [
+   "Abetone"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 44.1001,
+     "lon": 10.7557
+    },
+    "label": "Cutigliano (Süd)"
+   }
+  ]
+ },
+ {
+  "slug": "san-pellegrino-in-alpe",
+  "surface": "asphalt",
+  "name": "San Pellegrino in Alpe",
+  "type": "pass",
+  "tags": [
+   "panorama"
+  ],
+  "country": "IT",
+  "region": "Toskana",
+  "lat": 44.1894,
+  "lon": 10.481,
+  "elevation": 1520,
+  "classicAscent": "16,0 km, 6,0 % ab Castiglione di Garfagnana",
+  "beauty": 4,
+  "fame": 3,
+  "difficulty": 5,
+  "traffic": 1,
+  "season": null,
+  "note": "Der höchste besiedelte Pass des Apennins, von Castiglione in der Garfagnana; auf der Seite von Chiozza Rampen bis fast 20 %, eine der härtesten Stellen Italiens. Giro 1989 und 2022.",
+  "aliases": [
+   "San Pellegrino"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 44.1499,
+     "lon": 10.4109
+    },
+    "label": "Castiglione di Garfagnana (Süd)"
+   }
+  ]
+ },
+ {
+  "slug": "monte-amiata",
+  "surface": "asphalt",
+  "name": "Monte Amiata",
+  "type": "spur",
+  "tags": [
+   "forest",
+   "panorama"
+  ],
+  "country": "IT",
+  "region": "Toskana",
+  "lat": 42.8875,
+  "lon": 11.6269,
+  "elevation": 1688,
+  "classicAscent": "13,0 km, 6,4 % ab Abbadia San Salvatore",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 4,
+  "traffic": 1,
+  "season": null,
+  "note": "Der erloschene Vulkan in der südlichen Toskana, mit Buchen- und Kastanienwald bis fast zum Gipfel. Von Abbadia San Salvatore gleichmäßig steil; oben der Blick über die Crete und das Val d'Orcia.",
+  "aliases": [
+   "Amiata"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 42.881,
+     "lon": 11.6724
+    },
+    "label": "Abbadia San Salvatore (Ost)"
+   }
+  ]
+ },
+ {
+  "slug": "sassotetto",
+  "surface": "asphalt",
+  "name": "Sassotetto",
+  "type": "spur",
+  "tags": [
+   "race",
+   "panorama"
+  ],
+  "country": "IT",
+  "region": "Marken",
+  "lat": 43.0066,
+  "lon": 13.2293,
+  "elevation": 1572,
+  "classicAscent": "15,7 km, 6,6 % ab Sarnano",
+  "beauty": 4,
+  "fame": 3,
+  "difficulty": 4,
+  "traffic": 1,
+  "season": null,
+  "note": "Der Anstieg in die Monti Sibillini über Sarnano, Bergankunft bei Tirreno–Adriatico. Gleichmäßig steil durch Wald, oben die offenen Wiesen unter dem Sibillini-Kamm.",
+  "aliases": [
+   "Sasso Tetto"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 43.0354,
+     "lon": 13.2983
+    },
+    "label": "Sarnano (Ost)"
+   }
+  ]
+ },
+ {
+  "slug": "etna-sud",
+  "surface": "asphalt",
+  "name": "Etna Sud (Rifugio Sapienza)",
+  "type": "spur",
+  "tags": [
+   "race",
+   "panorama"
+  ],
+  "country": "IT",
+  "region": "Ätna",
+  "lat": 37.7002,
+  "lon": 14.9982,
+  "elevation": 1910,
+  "classicAscent": "18,3 km, 7,3 % ab Zafferana Etnea",
+  "beauty": 5,
+  "fame": 4,
+  "difficulty": 5,
+  "traffic": 3,
+  "season": null,
+  "note": "Die Straße auf den Ätna bis zum Rifugio Sapienza auf gut 1900 m, mehrfach Giro-Ankunft. Drei Auffahrten von Nicolosi, Zafferana und Ragalna, oben schwarze Lava, Krater und die Seilbahn zum Gipfel.",
+  "aliases": [
+   "Etna",
+   "Rifugio Sapienza",
+   "Ätna Süd"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 37.6147,
+     "lon": 15.0263
+    },
+    "label": "Nicolosi (Süd)"
+   },
+   {
+    "from": {
+     "lat": 37.6933,
+     "lon": 15.1065
+    },
+    "label": "Zafferana Etnea (Ost)"
+   },
+   {
+    "from": {
+     "lat": 37.6347,
+     "lon": 14.9427
+    },
+    "label": "Ragalna (West)"
+   }
+  ]
+ },
+ {
+  "slug": "etna-nord",
+  "surface": "asphalt",
+  "name": "Etna Nord (Piano Provenzana)",
+  "type": "spur",
+  "tags": [
+   "race",
+   "forest",
+   "panorama"
+  ],
+  "country": "IT",
+  "region": "Ätna",
+  "lat": 37.7981,
+  "lon": 15.0384,
+  "elevation": 1800,
+  "classicAscent": "19,2 km, 6,5 % ab Linguaglossa",
+  "beauty": 5,
+  "fame": 3,
+  "difficulty": 4,
+  "traffic": 1,
+  "season": null,
+  "note": "Die Nordseite des Ätna, von Linguaglossa durch Kiefern- und Birkenwald zum Skigebiet Piano Provenzana auf 1800 m; Giro-Ankunft 2020. Ruhiger und grüner als die Südseite.",
+  "aliases": [
+   "Piano Provenzana",
+   "Ätna Nord"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 37.8409,
+     "lon": 15.1437
+    },
+    "label": "Linguaglossa (Nord)"
+   }
+  ]
+ },
+ {
+  "slug": "piano-battaglia",
+  "surface": "asphalt",
+  "name": "Piano Battaglia",
+  "type": "climb",
+  "tags": [
+   "forest",
+   "panorama"
+  ],
+  "country": "IT",
+  "region": "Nordsizilien",
+  "lat": 37.8788,
+  "lon": 14.0262,
+  "elevation": 1650,
+  "classicAscent": "23,8 km, 4,5 % ab Isnello",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 4,
+  "traffic": 1,
+  "season": null,
+  "note": "Die Hochebene der Madonie auf gut 1600 m, das kleine Skigebiet Siziliens. Von Isnello über Piano Zucchi durch Buchen und Steineichen, weiter über die Hochfläche nach Petralia.",
+  "aliases": [
+   "Madonie"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 37.9441,
+     "lon": 14.0062
+    },
+    "label": "Isnello (Nord)"
+   }
+  ]
+ },
+ {
+  "slug": "portella-femmina-morta",
+  "surface": "asphalt",
+  "name": "Portella Femmina Morta",
+  "type": "pass",
+  "tags": [
+   "forest"
+  ],
+  "country": "IT",
+  "region": "Nordsizilien",
+  "lat": 37.9189,
+  "lon": 14.6544,
+  "elevation": 1524,
+  "classicAscent": "18,4 km, 4,6 % ab San Fratello",
+  "beauty": 4,
+  "fame": 1,
+  "difficulty": 3,
+  "traffic": 1,
+  "season": null,
+  "note": "Der höchste Pass der Nebrodi, auf der Straße von der Nordküste über San Fratello nach Cesarò. Durch die großen Buchenwälder Siziliens, fast ohne Verkehr.",
+  "aliases": [
+   "Femmina Morta"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 38.0134,
+     "lon": 14.5974
+    },
+    "label": "San Fratello (Nord)"
+   }
+  ]
+ },
+ {
+  "slug": "portella-mandrazzi",
+  "surface": "asphalt",
+  "name": "Portella Mandrazzi",
+  "type": "pass",
+  "tags": [
+   "panorama"
+  ],
+  "country": "IT",
+  "region": "Nordsizilien",
+  "lat": 37.9758,
+  "lon": 15.138,
+  "elevation": 1125,
+  "classicAscent": "10,7 km, 5,1 % ab Novara di Sicilia",
+  "beauty": 4,
+  "fame": 1,
+  "difficulty": 3,
+  "traffic": 1,
+  "season": null,
+  "note": "Der Pass über die Peloritani zwischen der Nordküste und dem Alcantara-Tal. Von Novara di Sicilia unter den Felsen der Rocca Salvatesta, oben der Blick auf den Ätna.",
+  "aliases": [
+   "Mandrazzi"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 38.0162,
+     "lon": 15.132
+    },
+    "label": "Novara di Sicilia (Nord)"
+   }
+  ]
+ },
+ {
+  "slug": "erice",
+  "surface": "asphalt",
+  "name": "Erice",
+  "type": "spur",
+  "tags": [
+   "panorama",
+   "hairpins"
+  ],
+  "country": "IT",
+  "region": "Westsizilien",
+  "lat": 38.037,
+  "lon": 12.5866,
+  "elevation": 750,
+  "classicAscent": "11,8 km, 6,4 % ab Trapani",
+  "beauty": 5,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 2,
+  "season": null,
+  "note": "Das mittelalterliche Bergdorf auf 750 m direkt über Trapani. Von der Küste in Kehren an der Felswand hinauf, oben der Blick über die Salinen bis zu den Ägadischen Inseln.",
+  "aliases": [
+   "Monte Erice",
+   "Monte San Giuliano"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 38.0176,
+     "lon": 12.5365
+    },
+    "label": "Trapani (West)"
+   },
+   {
+    "from": {
+     "lat": 38.039,
+     "lon": 12.617
+    },
+    "label": "Valderice (Ost)"
+   }
+  ]
+ },
+ {
+  "slug": "mur-de-huy",
+  "surface": "asphalt",
+  "name": "Mur de Huy",
+  "type": "climb",
+  "tags": [
+   "race"
+  ],
+  "country": "BE",
+  "region": "Ardennen",
+  "lat": 50.5128,
+  "lon": 5.2543,
+  "elevation": 205,
+  "classicAscent": "1,3 km, 9,6 % ab Huy",
+  "beauty": 2,
+  "fame": 5,
+  "difficulty": 3,
+  "traffic": 2,
+  "season": null,
+  "note": "Die Zielrampe der Flèche Wallonne, von der Maas in Huy den Chemin des Chapelles hinauf zur Kapelle Notre-Dame de la Sarte. Kurz, aber mit Kurven über 20 %.",
+  "aliases": [
+   "Chemin des Chapelles"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 50.5197,
+     "lon": 5.2491
+    },
+    "label": "Huy (Maas)"
+   }
+  ]
+ },
+ {
+  "slug": "cote-de-la-redoute",
+  "surface": "asphalt",
+  "name": "Côte de la Redoute",
+  "type": "climb",
+  "tags": [
+   "race"
+  ],
+  "country": "BE",
+  "region": "Ardennen",
+  "lat": 50.4923,
+  "lon": 5.6994,
+  "elevation": 290,
+  "classicAscent": "1,6 km, 9,4 % ab Remouchamps",
+  "beauty": 2,
+  "fame": 4,
+  "difficulty": 3,
+  "traffic": 2,
+  "season": null,
+  "note": "Der bekannteste Anstieg von Lüttich–Bastogne–Lüttich, von Remouchamps steil an der Autobahn vorbei hinauf; auf dem Asphalt die Namen der Fans.",
+  "aliases": [
+   "La Redoute",
+   "Redoute"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 50.4832,
+     "lon": 5.7041
+    },
+    "label": "Remouchamps"
+   }
+  ]
+ },
+ {
+  "slug": "cote-de-stockeu",
+  "surface": "asphalt",
+  "name": "Côte de Stockeu",
+  "type": "climb",
+  "tags": [
+   "race",
+   "forest"
+  ],
+  "country": "BE",
+  "region": "Ardennen",
+  "lat": 50.3701,
+  "lon": 5.9481,
+  "elevation": 500,
+  "classicAscent": "2,9 km, 7,0 % ab Stavelot",
+  "beauty": 3,
+  "fame": 3,
+  "difficulty": 3,
+  "traffic": 2,
+  "season": null,
+  "note": "Die steilste Rampe von Lüttich–Bastogne–Lüttich, aus dem Tal der Amblève bei Stavelot durch den Wald; oben das Denkmal für Eddy Merckx.",
+  "aliases": [
+   "Stockeu"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 50.388,
+     "lon": 5.933
+    },
+    "label": "Stavelot"
+   }
+  ]
+ },
+ {
+  "slug": "col-de-la-haute-levee",
+  "surface": "asphalt",
+  "name": "Col de la Haute-Levée",
+  "type": "pass",
+  "tags": [
+   "race",
+   "forest"
+  ],
+  "country": "BE",
+  "region": "Ardennen",
+  "lat": 50.4269,
+  "lon": 5.9302,
+  "elevation": 510,
+  "classicAscent": "3,9 km, 5,4 % ab Stavelot",
+  "beauty": 3,
+  "fame": 2,
+  "difficulty": 2,
+  "traffic": 2,
+  "season": null,
+  "note": "Der Anstieg von Stavelot nach Norden Richtung Francorchamps, fester Teil von Lüttich–Bastogne–Lüttich. Gleichmäßig, mit dem steilsten Stück am Anfang.",
+  "aliases": [
+   "Haute-Levée"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 50.3942,
+     "lon": 5.931
+    },
+    "label": "Stavelot"
+   }
+  ]
+ },
+ {
+  "slug": "col-du-rosier",
+  "surface": "asphalt",
+  "name": "Col du Rosier",
+  "type": "pass",
+  "tags": [
+   "race",
+   "forest"
+  ],
+  "country": "BE",
+  "region": "Ardennen",
+  "lat": 50.4489,
+  "lon": 5.8789,
+  "elevation": 560,
+  "classicAscent": "6,3 km, 4,1 % ab La Gleize",
+  "beauty": 3,
+  "fame": 2,
+  "difficulty": 2,
+  "traffic": 2,
+  "season": null,
+  "note": "Der höchste und längste Anstieg im Finale von Lüttich–Bastogne–Lüttich, aus dem Amblève-Tal durch die Wälder über Spa.",
+  "aliases": [
+   "Rosier"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 50.4112,
+     "lon": 5.8465
+    },
+    "label": "La Gleize"
+   }
+  ]
+ },
+ {
+  "slug": "cote-de-wanne",
+  "surface": "asphalt",
+  "name": "Côte de Wanne",
+  "type": "climb",
+  "tags": [
+   "race"
+  ],
+  "country": "BE",
+  "region": "Ardennen",
+  "lat": 50.3581,
+  "lon": 5.9146,
+  "elevation": 480,
+  "classicAscent": "5,3 km, 4,3 % ab Trois-Ponts",
+  "beauty": 3,
+  "fame": 2,
+  "difficulty": 2,
+  "traffic": 2,
+  "season": null,
+  "note": "Der Anstieg von Trois-Ponts hinauf zum Dorf Wanne, in Lüttich–Bastogne–Lüttich der erste der drei Schläge Wanne, Stockeu und Haute-Levée.",
+  "aliases": [
+   "Wanne"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 50.3727,
+     "lon": 5.8703
+    },
+    "label": "Trois-Ponts"
+   }
+  ]
+ },
+ {
+  "slug": "cote-de-la-roche-aux-faucons",
+  "surface": "asphalt",
+  "name": "Côte de la Roche-aux-Faucons",
+  "type": "climb",
+  "tags": [
+   "race",
+   "panorama"
+  ],
+  "country": "BE",
+  "region": "Ardennen",
+  "lat": 50.5495,
+  "lon": 5.5755,
+  "elevation": 225,
+  "classicAscent": "1,9 km, 7,8 % ab Hony",
+  "beauty": 3,
+  "fame": 3,
+  "difficulty": 3,
+  "traffic": 2,
+  "season": null,
+  "note": "Die Rampe über dem Ourthetal bei Esneux, in Lüttich–Bastogne–Lüttich oft der Ort des entscheidenden Angriffs. Oben der Felsen mit dem Blick über die Ourtheschleife.",
+  "aliases": [
+   "Roche-aux-Faucons"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 50.539,
+     "lon": 5.583
+    },
+    "label": "Hony (Ourthe)"
+   }
+  ]
+ },
+ {
+  "slug": "spindlerova-bouda",
+  "surface": "asphalt",
+  "name": "Špindlerova bouda",
+  "type": "pass",
+  "tags": [
+   "forest",
+   "panorama"
+  ],
+  "country": "CZ/PL",
+  "region": "Riesengebirge",
+  "lat": 50.7626,
+  "lon": 15.6339,
+  "elevation": 1198,
+  "classicAscent": "7,2 km, 6,6 % ab Špindlerův Mlýn",
+  "beauty": 4,
+  "fame": 3,
+  "difficulty": 3,
+  "traffic": 1,
+  "season": null,
+  "note": "Die Baude auf dem Kamm an der polnischen Grenze, der höchste Straßenpunkt des Riesengebirges. Von Špindlerův Mlýn durch Fichtenwald mit Kehren; nach Polen geht es nur zu Fuß oder auf dem Rad über die gesperrte Straße weiter.",
+  "aliases": [
+   "Spindlerbaude",
+   "Przełęcz Karkonoska",
+   "Karkonoska"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 50.7256,
+     "lon": 15.6068
+    },
+    "label": "Špindlerův Mlýn (Süd)"
+   }
+  ]
+ },
+ {
+  "slug": "przelecz-okraj",
+  "surface": "asphalt",
+  "name": "Przełęcz Okraj",
+  "type": "pass",
+  "tags": [
+   "forest"
+  ],
+  "country": "PL/CZ",
+  "region": "Riesengebirge",
+  "lat": 50.7469,
+  "lon": 15.8237,
+  "elevation": 1046,
+  "classicAscent": "15,8 km, 3,3 % ab Kowary",
+  "beauty": 3,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 1,
+  "season": null,
+  "note": "Der Grenzpass zwischen Kowary in Schlesien und Malá Úpa in Böhmen, tschechisch Pomezní Boudy. Von Kowary lang durch den Wald, mit flacheren Stücken; oben Bauden und der Blick zur Schneekoppe.",
+  "aliases": [
+   "Pomezní Boudy",
+   "Pomezní sedlo",
+   "Okraj"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 50.7787,
+     "lon": 15.8361
+    },
+    "label": "Kowary (Nord)"
+   }
+  ]
+ },
+ {
+  "slug": "horni-misecky",
+  "surface": "asphalt",
+  "name": "Horní Mísečky",
+  "type": "spur",
+  "tags": [
+   "forest"
+  ],
+  "country": "CZ",
+  "region": "Riesengebirge",
+  "lat": 50.7359,
+  "lon": 15.5689,
+  "elevation": 1050,
+  "classicAscent": "4,6 km, 6,7 % ab Vítkovice",
+  "beauty": 3,
+  "fame": 1,
+  "difficulty": 2,
+  "traffic": 1,
+  "season": null,
+  "note": "Der Bergort am Ende der Straße über Vítkovice, Ausgangspunkt der Wege zu den Elbquellen. Kurz und gleichmäßig steil durch Fichtenwald.",
+  "aliases": [
+   "Mísečky"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 50.7169,
+     "lon": 15.5419
+    },
+    "label": "Vítkovice (Süd)"
+   }
+  ]
+ },
+ {
+  "slug": "cerna-hora",
+  "surface": "asphalt",
+  "name": "Černá hora",
+  "type": "spur",
+  "tags": [
+   "panorama"
+  ],
+  "country": "CZ",
+  "region": "Riesengebirge",
+  "lat": 50.651,
+  "lon": 15.7486,
+  "elevation": 1260,
+  "classicAscent": "7,4 km, 8,5 % ab Janské Lázně",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 4,
+  "traffic": 1,
+  "season": null,
+  "note": "Die Bergstraße vom Kurort Janské Lázně zur Černá bouda unter dem Gipfel des Schwarzenbergs, für Autos gesperrt und als Radroute ausgeschildert. Unten Kehren im Wald, oben Rampen bis 14 %.",
+  "aliases": [
+   "Schwarzenberg",
+   "Černá bouda"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 50.6306,
+     "lon": 15.7807
+    },
+    "label": "Janské Lázně (Ost)"
+   }
+  ]
+ },
+ {
+  "slug": "jested",
+  "surface": "asphalt",
+  "name": "Ještěd",
+  "type": "spur",
+  "tags": [
+   "panorama"
+  ],
+  "country": "CZ",
+  "region": "Jeschken und Isergebirge",
+  "lat": 50.7331,
+  "lon": 14.985,
+  "elevation": 1000,
+  "classicAscent": "6,8 km, 6,6 % ab Horní Hanychov",
+  "beauty": 4,
+  "fame": 3,
+  "difficulty": 3,
+  "traffic": 1,
+  "season": null,
+  "note": "Die Straße auf den Hausberg von Liberec zum Fernsehturm mit Hotel auf gut 1000 m, eines der Wahrzeichen Tschechiens. Steil und gleichmäßig durch Wald, oben über die freie Kuppe.",
+  "aliases": [
+   "Jeschken"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 50.7382,
+     "lon": 15.0121
+    },
+    "label": "Horní Hanychov (Liberec)"
+   }
+  ]
+ },
+ {
+  "slug": "tanvaldsky-spicak",
+  "surface": "asphalt",
+  "name": "Tanvaldský Špičák",
+  "type": "spur",
+  "tags": [
+   "forest"
+  ],
+  "country": "CZ",
+  "region": "Jeschken und Isergebirge",
+  "lat": 50.7515,
+  "lon": 15.284,
+  "elevation": 804,
+  "classicAscent": "5,1 km, 5,7 % ab Tanvald",
+  "beauty": 3,
+  "fame": 1,
+  "difficulty": 3,
+  "traffic": 1,
+  "season": null,
+  "note": "Der Skiberg über Tanvald im Isergebirge, mit einer steilen Straße bis zum Aussichtsturm. Kurz, mit Rampen über 12 %.",
+  "aliases": [
+   "Špičák"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 50.738,
+     "lon": 15.3038
+    },
+    "label": "Tanvald"
+   }
+  ]
+ },
+ {
+  "slug": "strbske-pleso",
+  "surface": "asphalt",
+  "name": "Štrbské Pleso",
+  "type": "spur",
+  "tags": [
+   "panorama"
+  ],
+  "country": "SK",
+  "region": "Hohe Tatra",
+  "lat": 49.1195,
+  "lon": 20.064,
+  "elevation": 1335,
+  "classicAscent": "13,3 km, 3,7 % ab Štrba",
+  "beauty": 4,
+  "fame": 3,
+  "difficulty": 2,
+  "traffic": 1,
+  "season": null,
+  "note": "Der Bergsee und Kurort unter den Gipfeln der Hohen Tatra auf gut 1300 m. Von Štrba lang und gleichmäßig über Tatranská Štrba, die Wände der Tatra immer vor Augen.",
+  "aliases": [],
+  "ascents": [
+   {
+    "from": {
+     "lat": 49.0536,
+     "lon": 20.0787
+    },
+    "label": "Štrba (Süd)"
+   }
+  ]
+ },
+ {
+  "slug": "certovica",
+  "surface": "asphalt",
+  "name": "Čertovica",
+  "type": "pass",
+  "tags": [
+   "forest"
+  ],
+  "country": "SK",
+  "region": "Niedere Tatra",
+  "lat": 48.9055,
+  "lon": 19.7359,
+  "elevation": 1238,
+  "classicAscent": "13,5 km, 4,6 % ab Mýto pod Ďumbierom",
+  "beauty": 4,
+  "fame": 3,
+  "difficulty": 3,
+  "traffic": 2,
+  "season": null,
+  "note": "Der Pass über die Niedere Tatra zwischen Liptov und dem Hron-Tal. Von Süden lang und gleichmäßig, von Vyšná Boca im Norden kurz und steiler.",
+  "aliases": [
+   "Čertovica-Sattel"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 48.8539,
+     "lon": 19.6333
+    },
+    "label": "Mýto pod Ďumbierom (Süd)"
+   },
+   {
+    "from": {
+     "lat": 48.9262,
+     "lon": 19.7527
+    },
+    "label": "Vyšná Boca (Nord)"
+   }
+  ]
+ },
+ {
+  "slug": "chopok-juh",
+  "surface": "asphalt",
+  "name": "Chopok juh (Srdiečko)",
+  "type": "spur",
+  "tags": [
+   "forest",
+   "panorama"
+  ],
+  "country": "SK",
+  "region": "Niedere Tatra",
+  "lat": 48.9273,
+  "lon": 19.5954,
+  "elevation": 1215,
+  "classicAscent": "11,8 km, 5,6 % ab Bystrá",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 1,
+  "season": null,
+  "note": "Die Südauffahrt zum Chopok, von Bystrá im Hron-Tal durch das Skigebiet Tále bis Srdiečko auf gut 1200 m. Gleichmäßig, mit steileren Stücken im oberen Teil.",
+  "aliases": [
+   "Srdiečko",
+   "Chopok Süd"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 48.8442,
+     "lon": 19.6063
+    },
+    "label": "Bystrá (Süd)"
+   }
+  ]
+ },
+ {
+  "slug": "jasna",
+  "surface": "asphalt",
+  "name": "Jasná",
+  "type": "spur",
+  "tags": [
+   "forest"
+  ],
+  "country": "SK",
+  "region": "Niedere Tatra",
+  "lat": 48.9715,
+  "lon": 19.5852,
+  "elevation": 1120,
+  "classicAscent": "4,7 km, 6,1 % ab Demänovská Dolina",
+  "beauty": 3,
+  "fame": 2,
+  "difficulty": 2,
+  "traffic": 1,
+  "season": null,
+  "note": "Die Nordauffahrt zum Chopok, durch das Demänovská-Tal am Eingang der Freiheitshöhle vorbei zum Skigebiet Jasná. Der steile Schluss nach den Höhlen.",
+  "aliases": [
+   "Chopok sever",
+   "Biela Púť"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 48.9982,
+     "lon": 19.5854
+    },
+    "label": "Demänovská Dolina (Nord)"
+   }
+  ]
+ },
+ {
+  "slug": "gliczarow-gorny",
+  "surface": "asphalt",
+  "name": "Gliczarów Górny",
+  "type": "spur",
+  "tags": [
+   "panorama"
+  ],
+  "country": "PL",
+  "region": "Podhale",
+  "lat": 49.3497,
+  "lon": 20.051,
+  "elevation": 970,
+  "classicAscent": "4,5 km, 6,0 % ab Biały Dunajec",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 4,
+  "traffic": 1,
+  "season": null,
+  "note": "Die Rampe über Biały Dunajec bei Zakopane, eine der steilsten Straßen Polens mit Stücken über 20 %. Oben der Blick über das Podhale auf die ganze Kette der Hohen Tatra.",
+  "aliases": [
+   "Gliczarów"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 49.3691,
+     "lon": 20.0095
+    },
+    "label": "Biały Dunajec (Nord)"
+   }
+  ]
  }
 ]

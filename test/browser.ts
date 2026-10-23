@@ -13,6 +13,8 @@ import { mkdir } from "node:fs/promises";
 import path from "node:path";
 
 const PORT = Number(process.env.PORT ?? 3123);
+/** The repository, wherever the test runner was started from. */
+const ROOT = path.resolve(import.meta.dir, "..");
 const FAILURE_DIR = process.env.E2E_FAILURE_DIR ?? "e2e/failures";
 
 /** Chrome with software WebGL – MapLibre needs a GL context even headless. */
@@ -76,7 +78,8 @@ export const waitUntil = async (
 
 export interface App {
   base: string;
-  stop: () => void;
+  /** Resolves once nothing answers on the port any more. */
+  stop: () => Promise<void>;
 }
 
 /**
@@ -88,25 +91,33 @@ export const startApp = async (): Promise<App> => {
   if (fromEnv)
     return {
       base: fromEnv.replace(/\/$/u, ""),
-      stop: () => {
+      stop: () =>
         // Nothing to stop: the server is not ours.
-      },
+        Promise.resolve(),
     };
 
   const proc = Bun.spawn({
-    cmd: ["bun", "run", "start"],
+    // The server itself, not `bun run start`: a signal to the wrapper does
+    // not always reach the `next start` under it, which then keeps the port.
+    cmd: [path.join(ROOT, "node_modules/.bin/next"), "start"],
+    cwd: ROOT,
     env: { ...process.env, PORT: String(PORT) },
     stderr: "pipe",
-    stdout: "pipe",
+    stdout: "ignore",
   });
+  // Drained as it comes, so a chatty server never blocks on a full pipe; the
+  // tail is what an early exit reports.
+  let stderr = "";
+  void (async () => {
+    for await (const chunk of proc.stderr)
+      stderr = (stderr + new TextDecoder().decode(chunk)).slice(-4000);
+  })();
   const base = `http://127.0.0.1:${PORT}`;
   const deadline = Date.now() + 60_000;
   for (;;) {
     if (proc.exitCode !== null) {
       throw new Error(
-        `"bun run start" exited with ${proc.exitCode}. Run "bun run build" first.\n${await new Response(
-          proc.stderr,
-        ).text()}`,
+        `"next start" exited with ${proc.exitCode}. Run "bun run build" first.\n${stderr}`,
       );
     }
     try {
@@ -119,7 +130,27 @@ export const startApp = async (): Promise<App> => {
       throw new Error(`No answer from ${base} after 60 s.`);
     await Bun.sleep(250);
   }
-  return { base, stop: () => proc.kill() };
+  // The next suite starts its own server on the same port, and its first
+  // request must not reach this one while it is still shutting down: a
+  // server that answered the readiness check and then went away refused the
+  // suite's first page (e2e/wissen.test.ts, CI 2026-10-21). `next start`
+  // shuts down gracefully and waits for open keep-alive connections, so it
+  // is killed outright: there is nothing in it to flush.
+  const stop = async () => {
+    proc.kill("SIGKILL");
+    await proc.exited;
+    const until = Date.now() + 10_000;
+    while (Date.now() < until) {
+      try {
+        await fetch(base, { signal: AbortSignal.timeout(500) });
+      } catch {
+        return;
+      }
+      await Bun.sleep(100);
+    }
+    throw new Error(`${base} still answers 10 s after the server was killed.`);
+  };
+  return { base, stop };
 };
 
 export interface OpenOptions {

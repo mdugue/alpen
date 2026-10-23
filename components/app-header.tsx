@@ -39,8 +39,8 @@ const counts = (bar: SeasonBar, long: boolean, w: Messages) =>
 /**
  * "Anfang Oktober:" – or "Anfang Oktober, Pyrenäen:" once a range chip is
  * pressed. The range is the "where" the sentence is about then, and a
- * headline counting Pyrenean passes under the word Alpenpässe owes the
- * reader that one word (docs/plans/26-pyrenees.md).
+ * headline counting Pyrenean passes on a map that opens on the Alps owes
+ * the reader that one word (docs/plans/26-pyrenees.md).
  */
 const Headline = ({
   bar,

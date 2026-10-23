@@ -25,13 +25,17 @@ export const vocab = {
   country: {
     AD: "Andorra",
     AT: "Österreich",
+    BE: "Belgien",
     CH: "Schweiz",
+    CZ: "Tschechien",
     DE: "Deutschland",
     ES: "Spanien",
     FR: "Frankreich",
     IT: "Italien",
     LI: "Liechtenstein",
+    PL: "Polen",
     SI: "Slowenien",
+    SK: "Slowakei",
   },
   /** The filter chips and their tokens in the bar over the map. */
   filter: {
@@ -75,11 +79,71 @@ export const vocab = {
       label: "Alpen",
       outside: "außerhalb der Alpen",
     },
+    Andalusien: {
+      hint: "Die höchste Straße Spaniens über Granada, die Ragua und die Sternwarte von Calar Alto: lange Anstiege in der Sonne Andalusiens, im Frühjahr und Herbst.",
+      inside: "in der Sierra Nevada und in Almería",
+      label: "Sierra Nevada und Almería",
+      outside: "außerhalb der Sierra Nevada und Almerías",
+    },
+    Apennin: {
+      hint: "Blockhaus, Campo Imperatore und Terminillo: die großen Giro-Anstiege im Rückgrat Italiens, von der Toskana bis in die Abruzzen.",
+      inside: "im Apennin",
+      label: "Apennin",
+      outside: "außerhalb des Apennins",
+    },
+    Ardennen: {
+      hint: "Die Anstiege von Lüttich–Bastogne–Lüttich und der Mur de Huy: kurz, steil und berühmt, ein Wochenende von Köln, Aachen und Brüssel.",
+      inside: "in den Ardennen",
+      label: "Ardennen",
+      outside: "außerhalb der Ardennen",
+    },
+    Bayerwald: {
+      hint: "Die Arberstraßen über Bodenmais und Bayerisch Eisenstein, Dreisessel und Kleť: Waldberge an der tschechischen Grenze für ein Wochenende.",
+      inside: "im Bayerischen Wald und im Böhmerwald",
+      label: "Bayerischer Wald und Böhmerwald",
+      outside: "außerhalb des Bayerischen Walds und des Böhmerwalds",
+    },
+    Erzgebirge: {
+      hint: "Fichtelberg, Klínovec und die steilen Rampen der böhmischen Südseite: das Wochenende ab Dresden, Chemnitz oder Prag.",
+      inside: "im Erzgebirge",
+      label: "Erzgebirge",
+      outside: "außerhalb des Erzgebirges",
+    },
+    Harz: {
+      hint: "Der Brocken ohne Autos, Torfhaus und die steilen Rampen über Thale: der nördlichste Berg für ein Wochenende.",
+      inside: "im Harz",
+      label: "Harz",
+      outside: "außerhalb des Harzes",
+    },
     Jura: {
       hint: "Grand Colombier, Mont du Chat, Faucille, Chasseral: lange Saison, wenig Verkehr, zwei Stunden ab Basel.",
       inside: "im Jura",
       label: "Jura",
       outside: "außerhalb des Juras",
+    },
+    Kanaren: {
+      hint: "Der Teide von Meereshöhe auf 2000 m, Masca, der Roque de los Muchachos: die längsten Anstiege Europas für den Winter.",
+      inside: "auf den Kanaren",
+      label: "Kanaren",
+      outside: "außerhalb der Kanaren",
+    },
+    Korsika: {
+      hint: "Bavella, Vergio und Vizzavona über Granit und Macchia: lange Anstiege vom Meer ins Gebirge, für Frühjahr und Herbst.",
+      inside: "auf Korsika",
+      label: "Korsika",
+      outside: "außerhalb Korsikas",
+    },
+    Mallorca: {
+      hint: "Sa Calobra, Puig Major und Coll de Sóller über dem Meer: die Antwort für Februar, März und November.",
+      inside: "auf Mallorca",
+      label: "Mallorca",
+      outside: "außerhalb Mallorcas",
+    },
+    Nordspanien: {
+      hint: "Angliru, Lagos de Covadonga und die Pässe des Kantabrischen Gebirges: steile Vuelta-Anstiege zwischen Meer und Picos de Europa.",
+      inside: "in Asturien und Kantabrien",
+      label: "Asturien und Kantabrien",
+      outside: "außerhalb Asturiens und Kantabriens",
     },
     Pyrenäen: {
       hint: "Tourmalet, Aubisque, Peyresourde, Ariège und Andorra: die anderen Berge der Tour, mit der langen Saison der spanischen Seite.",
@@ -87,11 +151,47 @@ export const vocab = {
       label: "Pyrenäen",
       outside: "außerhalb der Pyrenäen",
     },
+    Riesengebirge: {
+      hint: "Die Bauden über Špindlerův Mlýn und Janské Lázně, der Okraj-Pass nach Polen und der Jeschken über Liberec: kurze, steile Anstiege, ein Wochenende von Dresden, Prag und Breslau.",
+      inside: "im Riesengebirge",
+      label: "Riesengebirge",
+      outside: "außerhalb des Riesengebirges",
+    },
+    Schwarzwald: {
+      hint: "Schauinsland, Kandel, Feldberg und die Schwarzwaldhochstraße: lange Anstiege direkt aus Freiburg, Karlsruhe oder Basel.",
+      inside: "im Schwarzwald",
+      label: "Schwarzwald",
+      outside: "außerhalb des Schwarzwalds",
+    },
+    Sizilien: {
+      hint: "Der Ätna von vier Seiten bis auf fast 2000 m, die Madonie und die Nebrodi über der Nordküste, Erice über Trapani: lange Anstiege im Süden Italiens, von März bis November.",
+      inside: "auf Sizilien",
+      label: "Sizilien",
+      outside: "außerhalb Siziliens",
+    },
+    Tatra: {
+      hint: "Štrbské Pleso unter der Hohen Tatra, Čertovica und Chopok in der Niederen Tatra, die Rampen um Zakopane: Bergstraßen in der Slowakei und in Polen, von Juni bis September.",
+      inside: "in der Tatra",
+      label: "Tatra",
+      outside: "außerhalb der Tatra",
+    },
+    Thüringen: {
+      hint: "Inselsberg und Oberhof am Rennsteig, Wasserkuppe und Kreuzberg in der Rhön: kurze Anstiege für ein Wochenende in der Mitte Deutschlands.",
+      inside: "im Thüringer Wald und in der Rhön",
+      label: "Thüringer Wald und Rhön",
+      outside: "außerhalb des Thüringer Walds und der Rhön",
+    },
     Vogesen: {
       hint: "Grand Ballon, Schlucht, Ballon d'Alsace und die Route des Crêtes: das Wochenende ab Freiburg, Basel oder Karlsruhe.",
       inside: "in den Vogesen",
       label: "Vogesen",
       outside: "außerhalb der Vogesen",
+    },
+    Zentralmassiv: {
+      hint: "Die Vulkane der Auvergne mit dem Puy Mary und die Cevennen mit dem Aigoual: leer, grün, im Juni und September am schönsten.",
+      inside: "im Zentralmassiv",
+      label: "Zentralmassiv",
+      outside: "außerhalb des Zentralmassivs",
     },
   },
   /** What a base or an area says about the roads around it. */
@@ -114,13 +214,43 @@ export const vocab = {
    * English file names them.
    */
   region: {
+    Abruzzen: "Abruzzen",
+    Almería: "Almería",
+    Ardennen: "Ardennen",
+    Asturien: "Asturien",
+    Bayerwald: "Bayerischer Wald",
+    Böhmerwald: "Böhmerwald",
     Dolomiten: "Dolomiten",
+    Erzgebirge: "Erzgebirge",
+    "Gran Canaria": "Gran Canaria",
+    Harz: "Harz",
+    "Hohe Tatra": "Hohe Tatra",
+    "Jeschken und Isergebirge": "Jeschken und Isergebirge",
     Jura: "Jura",
+    Kantabrien: "Kantabrien",
+    Korsika: "Korsika",
+    "La Palma": "La Palma",
+    Latium: "Latium",
+    Mallorca: "Mallorca",
+    Marken: "Marken",
+    "Niedere Tatra": "Niedere Tatra",
+    Nordsizilien: "Nordsizilien",
     Ostalpen: "Ostalpen",
+    Podhale: "Podhale",
     Pyrenäen: "Pyrenäen",
+    Rhön: "Rhön",
+    Riesengebirge: "Riesengebirge",
+    Schwarzwald: "Schwarzwald",
+    "Sierra Nevada": "Sierra Nevada",
+    Teneriffa: "Teneriffa",
+    Thüringen: "Thüringer Wald",
+    Toskana: "Toskana",
     Vogesen: "Vogesen",
     Westalpen: "Westalpen",
+    Westsizilien: "Westsizilien",
     Zentralalpen: "Zentralalpen",
+    Zentralmassiv: "Zentralmassiv",
+    Ätna: "Ätna",
   },
   roadTag: {
     carfree: {
@@ -130,6 +260,10 @@ export const vocab = {
     cobbles: {
       hint: "Ein Stück ist gepflastert – Tremola, Vršič –, das ändert die Reifenwahl, nicht das Rad.",
       label: "Pflaster",
+    },
+    forest: {
+      hint: "Fast ganz im Wald: im Hochsommer schattig, dafür ohne Fernblick.",
+      label: "Waldstraße",
     },
     glacier: {
       hint: "Endet an einem Gletscher oder führt an ihm entlang.",
@@ -146,6 +280,10 @@ export const vocab = {
     panorama: {
       hint: "Für die Aussicht gebaut, und Name oder Streckenführung sagen das auch.",
       label: "Panoramastraße",
+    },
+    race: {
+      hint: "Eine große Rundfahrt oder ein Klassiker ist hier gefahren – Tour, Giro, Vuelta, Deutschland Tour.",
+      label: "Rennstrecke",
     },
     reservoir: {
       hint: "Die Straße gibt es wegen einer Staumauer; sie endet am See oder führt an ihm entlang.",
@@ -164,6 +302,10 @@ export const vocab = {
     balcony: {
       hint: "In eine Wand gehauen, ohne Gipfel, auf den die Fahrt zuläuft: Combe Laval, Gorges de la Bourne.",
       label: "Balkonstraße",
+    },
+    climb: {
+      hint: "Ein Anstieg auf eine Hochfläche oder einen Kamm, oben geht die Straße weiter: Albaufstiege, der Südabbruch des Erzgebirges.",
+      label: "Steige",
     },
     pass: {
       hint: "Ein Übergang: auf der einen Seite hinauf, auf der anderen hinunter.",
@@ -269,6 +411,11 @@ export const vocab = {
       hint: "Rennradläden mit Werkstatt und Leihrädern am Ort.",
       label: "Werkstätten & Verleih",
     },
+  },
+  /** How a range is travelled to (`RANGE_TRIP`): the two rows of range chips. */
+  trip: {
+    holiday: "Urlaub",
+    weekend: "Wochenende",
   },
   /** The unit words that are not international: the metres of climbing, and "about". */
   unit: {

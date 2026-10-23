@@ -7667,5 +7667,1342 @@
     ]
    }
   ]
+ },
+ "fichtelberg": {
+  "intro": "Der höchste Berg Sachsens und das Ziel, an dem sich im Erzgebirge jeder einmal misst. Oben das Fichtelberghaus, die Wetterwarte und bei klarer Sicht der Blick hinüber zum Klínovec und weit nach Böhmen.",
+  "sides": [
+   {
+    "character": "Aus Oberwiesenthal zuerst flach durch den Ort, dann im Wald zwischen den Skipisten deutlich steiler; das letzte Stück öffnet sich zur Kuppe.",
+    "highlights": "Das Fichtelberghaus mit Wetterwarte und Aussichtsplattform.",
+    "hazards": [
+     "traffic"
+    ]
+   }
+  ]
+ },
+ "klinovec": {
+  "intro": "Der höchste Gipfel des Erzgebirges, knapp höher als der Fichtelberg und mit ihm in einer Runde zu verbinden. Von Süden die längste gleichmäßige Auffahrt des Gebirges, aus dem alten Silberbergbauort Jáchymov.",
+  "sides": [
+   {
+    "bestAs": "up",
+    "character": "Aus Jáchymov in Kehren aus dem engen Tal, dann lange und gleichmäßig durch den Wald bis unter den Gipfel; die längste Auffahrt der Gegend.",
+    "highlights": "Jáchymov mit seinem Kurviertel und den Zeugnissen des Silber- und Uranbergbaus.",
+    "hazards": [
+     "tight-hairpins"
+    ]
+   },
+   {
+    "bestAs": "both",
+    "character": "Von Loučná auf der sächsischen Seite des Kamms kurz und etwas steiler, über offene Hochflächen mit Blick zum Fichtelberg.",
+    "highlights": "Der Blick über den Kamm hinüber zum Fichtelberg."
+   }
+  ]
+ },
+ "komari-vizka": {
+  "intro": "Die steilste der Auffahrten von der böhmischen Seite auf den Kamm, und die mit der besten Aussicht: Oben steht man am Rand des Gebirges und schaut über Teplice und das Becken bis zum Böhmischen Mittelgebirge.",
+  "sides": [
+   {
+    "character": "Aus dem alten Bergbaustädtchen Krupka sofort steil, in engen Kehren durch den Wald und ohne echte Pause bis zur Kante.",
+    "highlights": "Der Aussichtspunkt an der Komáří vížka mit Blick über das Becken.",
+    "hazards": [
+     "steep",
+     "tight-hairpins",
+     "narrow"
+    ]
+   }
+  ]
+ },
+ "cinovec": {
+  "intro": "Die klassische Verbindung von Böhmen hinauf nach Sachsen, früher Transitstraße, heute vor allem Ausflugsverkehr. Ein Anstieg zum Rhythmusfahren, ohne Rampen, und der bequemste Weg auf den Kamm.",
+  "sides": [
+   {
+    "character": "Von Dubí in weiten Bögen und gleichmäßig im Wald hinauf; oben flacht es zur Hochfläche bei Cínovec ab.",
+    "highlights": "Der Übergang auf die offene Kammhochfläche bei Cínovec.",
+    "hazards": [
+     "traffic"
+    ]
+   }
+  ]
+ },
+ "medenec": {
+  "intro": "Einer der langen Anstiege vom Egertal auf den Erzgebirgskamm, ruhig und gleichmäßig. Oben das Bergbaudorf Měděnec mit der Kapelle auf dem Kupferhübel.",
+  "sides": [
+   {
+    "character": "Aus Klášterec zuerst durch Obstwiesen, dann in langen Schleifen am Hang hinauf, immer wieder mit Blick zurück über das Egertal.",
+    "highlights": "Die Kapelle auf dem Kupferhübel (Mědník) über dem Dorf."
+   }
+  ]
+ },
+ "dlouha-louka": {
+  "intro": "Der zweite steile Anstieg der böhmischen Seite neben der Komáří vížka, kaum bekannt und fast ohne Verkehr. Unten das Kloster Osek, oben die weiten Wiesen des Kamms.",
+  "sides": [
+   {
+    "character": "Gleich hinter Osek steil in den Wald, in einer Folge von Kehren ohne Flachstück bis auf die Kammwiesen.",
+    "highlights": "Das Zisterzienserkloster Osek am Fuß des Anstiegs.",
+    "hazards": [
+     "steep",
+     "tight-hairpins"
+    ]
+   }
+  ]
+ },
+ "auersberg": {
+  "intro": "Der höchste Gipfel des Westerzgebirges westlich des Fichtelbergs, mit einem Aussichtsturm, der über die Wälder bis zum Fichtelberg und in die Vogtländer Berge schaut.",
+  "sides": [
+   {
+    "character": "Aus Wildenthal kurz und gleichmäßig durch Fichtenwald hinauf, das letzte Stück etwas steiler zum Gasthaus.",
+    "highlights": "Der Aussichtsturm auf dem Gipfel."
+   }
+  ]
+ },
+ "bournak": {
+  "intro": "Ein kleiner Skiberg auf dem Kamm des Osterzgebirges, der sich gut an die Komáří vížka oder Dlouhá Louka hängen lässt. Oben eine Berghütte und der Blick nach Süden über das Becken.",
+  "sides": [
+   {
+    "character": "Von Mikulov über offene Kammwiesen, dann kurz steiler durch den Wald zur Hütte am Lift.",
+    "highlights": "Die Berghütte am Gipfel mit Blick nach Süden."
+   }
+  ]
+ },
+ "schauinsland": {
+  "intro": "Die bekannteste Auffahrt des Schwarzwalds, direkt aus der Stadt: Fast 900 Höhenmeter von Freiburg bis auf den Kamm, auf der Straße, auf der früher Autorennen um den Berg gefahren wurden. Oben der Blick über die Rheinebene zu den Vogesen.",
+  "sides": [
+   {
+    "character": "Ab Günterstal zuerst sanft durch das Tal, dann lange im Wald mit einer Kurve nach der anderen, gleichmäßig zwischen 6 und 9 %; oben öffnet sich der Blick bei Hofsgrund.",
+    "highlights": "Der Blick über die Rheinebene bis zu den Vogesen vom Kamm bei Hofsgrund.",
+    "hazards": [
+     "traffic"
+    ]
+   }
+  ]
+ },
+ "kandel": {
+  "intro": "Der Gipfel über dem Elztal, mit 1241 m einer der höchsten des mittleren Schwarzwalds. Die Westauffahrt ist lang und steil und gilt in Freiburg als der ehrliche Test der Form.",
+  "sides": [
+   {
+    "character": "Aus Waldkirch sofort steil in den Wald, mit Kehren und kaum Erholung; die Steigung bleibt bis oben über 7 %.",
+    "highlights": "Der Kandelfelsen und der Blick über Rheinebene und Kaiserstuhl.",
+    "hazards": [
+     "steep",
+     "tight-hairpins"
+    ]
+   }
+  ]
+ },
+ "feldbergpass": {
+  "intro": "Der Übergang unter dem höchsten Berg des Schwarzwalds, ein Stück der Querverbindung von Basel zum Titisee. Mehr Verkehr als Idylle, aber das Dach des Gebirges und in jeder Runde um den Feldberg dabei.",
+  "sides": [
+   {
+    "bestAs": "up",
+    "character": "Von Todtnau am Todtnauer Wasserfall vorbei lange gleichmäßig hinauf, im oberen Teil steiler bis zum Pass am Feldberger Hof.",
+    "highlights": "Der Todtnauer Wasserfall kurz oberhalb des Ortes.",
+    "hazards": [
+     "traffic"
+    ]
+   },
+   {
+    "bestAs": "down",
+    "character": "Von Bärental am Feldsee-Becken vorbei kurz und mäßig hinauf; die leichtere Seite, als Abfahrt zügig zum Titisee.",
+    "hazards": [
+     "traffic"
+    ]
+   }
+  ]
+ },
+ "notschrei": {
+  "intro": "Der Pass, mit dem sich Schauinsland und Feldberg zu einer Runde verbinden. Oben das Langlaufzentrum und das alte Passhotel, unten die beiden Täler nach Freiburg und nach Todtnau.",
+  "sides": [
+   {
+    "bestAs": "up",
+    "character": "Von Oberried durch das enge Brugga-Tal, dann in Kehren im Wald hinauf; gleichmäßig und die schönere der beiden Seiten.",
+    "highlights": "Das enge Bruggatal mit seinen Weiden im unteren Teil."
+   },
+   {
+    "bestAs": "down",
+    "character": "Von Todtnau kürzer und gleichmäßig an der Flanke des Wiesentals; als Abfahrt flüssig mit weiten Kurven.",
+    "hazards": [
+     "traffic"
+    ]
+   }
+  ]
+ },
+ "wiedener-eck": {
+  "intro": "Der ruhige Pass des Südschwarzwalds, der Weg vom Markgräflerland ins obere Wiesental. Oben offene Weiden und der Belchen gegenüber.",
+  "sides": [
+   {
+    "character": "Lange und sanft durch das Münstertal mit seinen Höfen, erst im letzten Drittel steiler in Kehren hinauf zum Sattel.",
+    "highlights": "Der Blick zum Belchen vom offenen Sattel."
+   }
+  ]
+ },
+ "hochblauen": {
+  "intro": "Der Aussichtsberg über dem Markgräflerland: von der Kurstadt Badenweiler über 700 Höhenmeter steil hinauf, oben ein Turm mit einem der weitesten Blicke des Schwarzwalds.",
+  "sides": [
+   {
+    "character": "Aus Badenweiler gleich steil in den Wald, im Mittel über 8 % und ohne Pause; die letzten Kilometer schmal bis zum Gipfelhotel.",
+    "highlights": "Der Aussichtsturm auf dem Gipfel mit Blick über Rheinebene, Vogesen und Alpen.",
+    "hazards": [
+     "steep",
+     "narrow"
+    ]
+   }
+  ]
+ },
+ "kniebis": {
+  "intro": "Der klassische Übergang über den Nordschwarzwald zwischen Rheintal und Freudenstadt, eine alte Schanze auf der Passhöhe. Eher Verbindungsstraße als Ausflugsziel, aber eine lange Auffahrt.",
+  "sides": [
+   {
+    "character": "Von Oppenau zuerst sanft durch das Lierbachtal, dann im Wald in Kehren steil hinauf; die letzten Kilometer flach über die Hochfläche zur Alexanderschanze.",
+    "highlights": "Die Kehren im Wald oberhalb von Lierbach, wo die Straße in wenigen Kilometern 500 m gewinnt."
+   }
+  ]
+ },
+ "ruhestein": {
+  "intro": "Das Tor zum Nationalpark Schwarzwald, wo die Schwarzwaldhochstraße die Straße aus dem Achertal kreuzt. Von hier lässt sich auf der Hochstraße zum Mummelsee und zur Hornisgrinde weiterfahren.",
+  "sides": [
+   {
+    "character": "Von Seebach gleichmäßig durch das Achertal und dann im Wald in Schleifen hinauf zum Ruhestein.",
+    "highlights": "Das Nationalparkzentrum am Ruhestein."
+   }
+  ]
+ },
+ "sa-calobra": {
+  "intro": "Die Straße, wegen der im Frühjahr halbe Profiteams nach Mallorca kommen: 1932 in den Fels gelegt, mit einer Kehre, die als Krawattenknoten über sich selbst hinwegführt. Man fährt sie hinunter ans Meer, um sie dann hinaufzufahren.",
+  "sides": [
+   {
+    "character": "Von der Bucht gleichmäßig um 7 % durch die Felsrinne, eine Kehre nach der anderen, ohne Flachstück bis zum Krawattenknoten unter dem Coll dels Reis.",
+    "highlights": "Der Nus de sa Corbata, die Kehre, die unter sich selbst hindurchführt.",
+    "hazards": [
+     "tight-hairpins",
+     "traffic"
+    ]
+   }
+  ]
+ },
+ "puig-major": {
+  "intro": "Der lange Anstieg der Serra de Tramuntana, von Meereshöhe in Sóller bis auf fast 900 m. Oben ändert sich die Insel: kahler Kalk, zwei Stauseen und der Tunnel unter dem Gipfel.",
+  "sides": [
+   {
+    "bestAs": "up",
+    "character": "Von Sóller über den Ort Fornalutx-Abzweig gleichmäßig um 6 % am Hang, mit weitem Blick zurück über das Tal von Sóller und aufs Meer; oben der Tunnel.",
+    "highlights": "Der Mirador de ses Barques mit Blick auf das Tal von Sóller.",
+    "hazards": [
+     "tunnels"
+    ]
+   },
+   {
+    "bestAs": "down",
+    "character": "Von Lluc wellig über die Hochfläche, vorbei an den Stauseen Gorg Blau und Cúber; viele kurze Gegenanstiege, wenig am Stück.",
+    "highlights": "Die Stauseen Gorg Blau und Cúber unter dem Puig Major."
+   }
+  ]
+ },
+ "coll-de-soller": {
+  "intro": "Ein Kehrenpass wie aus dem Bilderbuch, den der Tunnel den Radfahrern überlassen hat. Zusammen mit dem Puig Major die klassische Runde um das Tal von Sóller.",
+  "sides": [
+   {
+    "bestAs": "up",
+    "character": "Von Sóller durch Orangen- und Olivenhaine, dann in dicht gestapelten Kehren den Hang hinauf, gleichmäßig um 6 %.",
+    "highlights": "Die Kehrenfolge über dem Tal von Sóller mit Blick zurück auf den Ort.",
+    "hazards": [
+     "tight-hairpins"
+    ]
+   },
+   {
+    "bestAs": "both",
+    "character": "Von Bunyola kürzer und flacher, ebenfalls in Kehren durch Kiefernwald.",
+    "hazards": [
+     "tight-hairpins"
+    ]
+   }
+  ]
+ },
+ "coll-de-sa-batalla": {
+  "intro": "Das Tor in die Serra de Tramuntana für alle, die aus Alcúdia, Pollença oder der Ebene kommen. Kein steiler Berg, aber einer, den jeder Mallorca-Urlauber mehrmals fährt.",
+  "sides": [
+   {
+    "character": "Aus Caimari durch Olivenhaine, dann in weiten Schleifen durch Steineichenwald, gleichmäßig zwischen 4 und 6 % bis zum Coll.",
+    "highlights": "Das Café an der Tankstelle auf dem Coll, Treffpunkt der Radgruppen."
+   }
+  ]
+ },
+ "coll-d-honor": {
+  "intro": "Eine der ruhigsten Straßen der Tramuntana, schmal und kurvig durch Kiefern und Steineichen. Hinter dem Coll das abgeschiedene Tal von Orient unter der Burg von Alaró.",
+  "sides": [
+   {
+    "character": "Von Bunyola schmal und kurvig durch den Wald, gleichmäßig und schattig bis zum Coll.",
+    "highlights": "Das Hochtal von Orient hinter dem Coll.",
+    "hazards": [
+     "narrow"
+    ]
+   }
+  ]
+ },
+ "coll-de-femenia": {
+  "intro": "Der Anstieg in die Tramuntana für alle, die in Port de Pollença wohnen – der erste Teil jeder Runde über Lluc. Nach einem flachen Anlauf durch das Tal acht Kilometer in Kehren, mit dem Blick über die Bucht von Pollença.",
+  "sides": [
+   {
+    "character": "Ab dem Ende des flachen Tals hinter Pollença in Kehren an der Bergflanke hinauf zum Coll, gleichmäßig um 5 %.",
+    "highlights": "Der Blick zurück über die Bucht von Pollença aus den oberen Kehren."
+   }
+  ]
+ },
+ "puig-de-randa": {
+  "intro": "Ein einzelner Berg mitten in der Ebene von Mallorca, mit Rundblick über die ganze Insel. Drei Klöster übereinander, das oberste mit Terrasse über dem Pla.",
+  "sides": [
+   {
+    "character": "Aus dem Dorf Randa gleichmäßig in Kehren hinauf, an den Heiligtümern Gràcia und Sant Honorat vorbei bis zum Santuari de Cura.",
+    "highlights": "Die Terrasse am Santuari de Cura mit Rundblick über die Insel."
+   }
+  ]
+ },
+ "sant-salvador": {
+  "intro": "Der Klosterberg des Südostens, sichtbar von weit her durch sein Kreuz und die Christusstatue. Ruhiger als die Tramuntana und mit Blick auf Küste und Ebene.",
+  "sides": [
+   {
+    "character": "Aus Felanitx zuerst flach, dann in Kehren gleichmäßig hinauf; die letzten Kilometer am Hang mit freiem Blick nach Süden.",
+    "highlights": "Das Kloster und das Kreuz auf dem Gipfel."
+   }
+  ]
+ },
+ "pas-de-peyrol": {
+  "intro": "Der Pass unter dem Puy Mary ist der Grund, warum Radfahrer ins Cantal kommen: drei Täler eines erloschenen Vulkans laufen hier oben zusammen, und jedes hat seine eigene Auffahrt. Oben der Blick über den ganzen Krater.",
+  "sides": [
+   {
+    "bestAs": "up",
+    "character": "Aus dem Tal von Le Falgoux erst gleichmäßig zwischen Weiden, auf den letzten Kilometern sehr steil in den Hang unter dem Gipfel.",
+    "hazards": [
+     "steep"
+    ],
+    "highlights": "Die letzten zwei Kilometer mit Blick auf den Puy Mary über sich."
+   },
+   {
+    "bestAs": "down",
+    "character": "Von Mandailles durch das Tal der Jordanne, gleichmäßiger als die Westseite und oben mit weiten Kehren.",
+    "highlights": "Das Tal der Jordanne mit seinen Burons."
+   },
+   {
+    "bestAs": "both",
+    "character": "Von Dienne über den Col d'Eylac auf langer Strecke an der Flanke, nur die letzten Kilometer steiler.",
+    "highlights": "Die Hochweiden am Col d'Eylac."
+   }
+  ]
+ },
+ "col-de-neronne": {
+  "intro": "Der kleine Bruder des Pas de Peyrol, auf der Runde von Salers fast immer dabei. Oben eine Hochfläche voller Salers-Rinder.",
+  "sides": [
+   {
+    "character": "Aus dem Tal von Le Falgoux in wenigen Kehren steil die Talflanke hinauf, kurz und gleichmäßig hart.",
+    "hazards": [
+     "steep"
+    ],
+    "highlights": "Der Blick zurück ins Tal und hinüber zum Puy Mary."
+   }
+  ]
+ },
+ "col-de-prat-de-bouc": {
+  "intro": "Die ruhige Auffahrt unter den höchsten Gipfel des Cantal, für einen Halbtag ab Murat. Oben endet die Straße auf einer weiten Alm.",
+  "sides": [
+   {
+    "character": "Von Murat zuerst sanft durch Albepierre, dann im Wald etwas steiler und oben offen über die Alm.",
+    "highlights": "Die weite Hochfläche unter dem Plomb du Cantal."
+   }
+  ]
+ },
+ "col-de-la-croix-saint-robert": {
+  "intro": "Der Pass am Puy de Sancy, dem höchsten Berg des Zentralmassivs. Von Le Mont-Dore in Kehren über der Stadt, oben kahl und windig, mit dem Blick über die Vulkankette.",
+  "sides": [
+   {
+    "character": "Aus Le Mont-Dore in Kehren an der steilen Flanke über dem Tal der Dordogne, gleichmäßig um 6 bis 8 %.",
+    "highlights": "Der Blick zurück auf Le Mont-Dore und den Sancy."
+   }
+  ]
+ },
+ "col-de-la-croix-morand": {
+  "intro": "Die Verbindung, die die beiden Täler am Sancy zu einer Runde macht. Eine breite Straße mit etwas Verkehr, aber gleichmäßig und mit weitem Blick.",
+  "sides": [
+   {
+    "bestAs": "up",
+    "character": "Vom Lac Chambon gleichmäßig an der Flanke hinauf, oben über offene Weiden.",
+    "highlights": "Der Blick zurück auf den Lac Chambon."
+   },
+   {
+    "bestAs": "down",
+    "character": "Von Le Mont-Dore kürzer, erst durch den Wald, dann offen zum Pass; als Abfahrt flüssig.",
+    "hazards": [
+     "traffic"
+    ]
+   }
+  ]
+ },
+ "super-besse": {
+  "intro": "Die Tour-Ankunft am Sancy: nicht schwer, aber mit einem steilen Stück vor dem Ziel. Unten das mittelalterliche Besse, oben ein Skiort mit See.",
+  "sides": [
+   {
+    "character": "Von Besse gleichmäßig über offenes Weideland, kurz vor dem Ort ein steiles Stück zum Ziel der Tour.",
+    "highlights": "Der Lac des Hermines vor dem Ort."
+   }
+  ]
+ },
+ "col-du-beal": {
+  "intro": "Ein Pass für Leute, die keine Menschen sehen wollen: oben die Hochweiden der Jasseries, die alten Sennhütten des Forez, und an klaren Tagen die Alpen am Horizont.",
+  "sides": [
+   {
+    "bestAs": "up",
+    "character": "Aus dem Wald im Westen gleichmäßig steil hinauf, oben offen über die Jasseries.",
+    "highlights": "Die Jasseries kurz unter dem Pass."
+   },
+   {
+    "bestAs": "down",
+    "character": "Von Chalmazel durch das kleine Skigebiet, kürzer und flacher; als Abfahrt die angenehmere Seite."
+   }
+  ]
+ },
+ "mont-aigoual": {
+  "intro": "Der lange Anstieg der Cevennen: von den Kastanienwäldern im Tal bis auf den kahlen Gipfel mit der Wetterwarte, von der man bei klarem Wetter Mittelmeer, Alpen und Pyrenäen sieht.",
+  "sides": [
+   {
+    "bestAs": "up",
+    "character": "Von Valleraugue durch Kastanienwald und über L'Espérou fast 30 km gleichmäßig um 4 bis 6 %, eher Ausdauer als Steilheit.",
+    "highlights": "Der Blick von der Wetterwarte vom Mittelmeer bis zu den Alpen."
+   },
+   {
+    "bestAs": "down",
+    "character": "Von Meyrueis über die Gorges de la Jonte und den Col de Perjuret, lang und wellig; als Abfahrt weit und schnell.",
+    "highlights": "Die Gorges de la Jonte unten bei Meyrueis."
+   }
+  ]
+ },
+ "col-de-finiels": {
+  "intro": "Ein kahler Granitrücken mitten in den Cevennen: oben Heide, Granitblöcke und Wind, unten die alten Steindörfer.",
+  "sides": [
+   {
+    "bestAs": "up",
+    "character": "Von Le Pont-de-Montvert über Finiels gleichmäßig durch offenes Heideland, ohne Schatten.",
+    "highlights": "Das Granitdorf Finiels auf halber Höhe."
+   },
+   {
+    "bestAs": "down",
+    "character": "Von Le Bleymard kürzer durch den Wald zum kleinen Skiort, oben offen zum Pass."
+   }
+  ]
+ },
+ "col-du-minier": {
+  "intro": "Die schattige Südauffahrt ins Aigoual-Massiv: aus dem Mittelmeerklima von Le Vigan in die Buchen- und Tannenwälder des Kamms.",
+  "sides": [
+   {
+    "character": "Von Le Vigan über Aulas lange gleichmäßig um 5 % im Wald, mit wenigen Ausblicken bis kurz unter den Pass.",
+    "highlights": "Der Wechsel von Kastanien zu Buchen und Tannen auf halber Höhe."
+   }
+  ]
+ },
+ "brocken": {
+  "intro": "Der Berg des Nordens ohne Autos: eine schmale Betonstraße durch den Fichtenwald des Nationalparks, oben die kahle Kuppe mit Blick über die Norddeutsche Tiefebene.",
+  "sides": [
+   {
+    "character": "Von Schierke zuerst im Wald gleichmäßig, oben neben den Gleisen der Brockenbahn offen und windig; die Betonplatten sind rau.",
+    "hazards": [
+     "rough"
+    ],
+    "highlights": "Der Blick von der Kuppe bis weit in die Tiefebene, an klaren Tagen."
+   }
+  ]
+ },
+ "torfhaus": {
+  "intro": "Die Hauptauffahrt in den Oberharz und der Aussichtspunkt auf den Brocken. Kein stiller Anstieg, aber der längste gleichmäßige im Harz.",
+  "sides": [
+   {
+    "character": "Von Bad Harzburg durch das Radautal gleichmäßig um 5 % im Wald, oben offen über die Moorflächen.",
+    "hazards": [
+     "traffic"
+    ],
+    "highlights": "Der Blick von Torfhaus über das Moor auf den Brocken."
+   },
+   {
+    "character": "Von Altenau kürzer und ruhiger über die Hochfläche am Oderteich vorbei.",
+    "highlights": "Der Okerstausee unterhalb von Altenau."
+   }
+  ]
+ },
+ "hexentanzplatz": {
+  "intro": "Die steilste Kehrenstraße des Harzes, kurz und hart, über der Schlucht der Bode. Oben der Blick hinüber zur Roßtrappe.",
+  "sides": [
+   {
+    "character": "Von Thale in engen Kehren am Hang, mit Rampen über 10 %, nach der Hälfte etwas flacher bis zum Plateau.",
+    "hazards": [
+     "tight-hairpins",
+     "steep"
+    ],
+    "highlights": "Der Blick vom Plateau in das Bodetal und auf die Roßtrappe."
+   }
+  ]
+ },
+ "rosstrappe": {
+  "intro": "Kürzer und ruhiger als der Hexentanzplatz gegenüber, mit dem besseren Blick in die Schlucht.",
+  "sides": [
+   {
+    "character": "Von Thale durch den Wald gleichmäßig steil hinauf, ohne Kehren am Stück wie gegenüber.",
+    "hazards": [
+     "steep"
+    ],
+    "highlights": "Der Felsen der Roßtrappe hoch über der Bode."
+   }
+  ]
+ },
+ "ravensberg": {
+  "intro": "Der Südharz für sich: eine kleine Straße auf einen Aussichtsberg, auf der man kaum jemandem begegnet.",
+  "sides": [
+   {
+    "character": "Von Bad Sachsa wechselnd zwischen flachen Stücken und steilen Rampen durch den Buchenwald.",
+    "hazards": [
+     "narrow"
+    ],
+    "highlights": "Der Blick vom Gipfel über das Südharzer Vorland."
+   }
+  ]
+ },
+ "grosser-inselsberg": {
+  "intro": "Der Gipfel, den man im Thüringer Wald fährt, wenn man nur einen fährt: zwei Auffahrten, beide mit Rampen über 10 % kurz vor dem Ziel.",
+  "sides": [
+   {
+    "bestAs": "up",
+    "character": "Von Tabarz lange gleichmäßig im Wald, die letzten zwei Kilometer über den Rennsteig steil zum Gipfel.",
+    "hazards": [
+     "steep"
+    ],
+    "highlights": "Der Blick vom Gipfel über das Thüringer Becken."
+   },
+   {
+    "bestAs": "down",
+    "character": "Von Brotterode kurz und von Anfang an steil, oben offen."
+   }
+  ]
+ },
+ "oberhof": {
+  "intro": "Der Rennsteig an seinem bekanntesten Ort: Schanzen, Biathlonstadion und Bobbahn, dazwischen eine gleichmäßige Auffahrt aus dem Süden.",
+  "sides": [
+   {
+    "character": "Von Zella-Mehlis gleichmäßig um 4 bis 5 % durch den Fichtenwald, oben flach am Rennsteig.",
+    "highlights": "Die Schanzen und das Stadion am Grenzadler."
+   }
+  ]
+ },
+ "wasserkuppe": {
+  "intro": "Die Kuppe, um die sich in der Rhön alles dreht: kahle Hochflächen, Segelflieger über dem Kopf und an klaren Tagen der Blick bis zum Thüringer Wald.",
+  "sides": [
+   {
+    "bestAs": "up",
+    "character": "Von Gersfeld lang und gleichmäßig, erst im Wald, dann offen über die Weiden der Hochrhön.",
+    "highlights": "Die offenen Hochflächen kurz unter dem Gipfel."
+   },
+   {
+    "bestAs": "down",
+    "character": "Von Poppenhausen kürzer und gleichmäßig steiler, durch den Wald hinauf.",
+    "hazards": [
+     "traffic"
+    ]
+   }
+  ]
+ },
+ "kreuzberg-rhoen": {
+  "intro": "Kurz, steil und mit dem besten Ziel der Rhön: dem Klosterbier unter dem Gipfelkreuz.",
+  "sides": [
+   {
+    "character": "Von Bischofsheim gleichmäßig steigend, auf den letzten Kilometern im Wald mit Rampen über 10 %.",
+    "hazards": [
+     "steep"
+    ],
+    "highlights": "Die Klosterbrauerei am Ende der Straße."
+   }
+  ]
+ },
+ "hochrhoenstrasse": {
+  "intro": "Die Auffahrt auf die offene Hochfläche der Langen Rhön, die man oben kilometerlang ohne Baum und ohne Steigung weiterfährt.",
+  "sides": [
+   {
+    "character": "Von Fladungen gleichmäßig durch Wald und Wiesen bis an die Kante der Hochfläche beim Schwarzen Moor.",
+    "highlights": "Das Schwarze Moor mit seinem Bohlenweg an der Kante."
+   }
+  ]
+ },
+ "bretterschachten": {
+  "intro": "Die längste steile Auffahrt des Bayerischen Walds, von Bodenmais auf den Sattel unter dem Arber. Viel Wald, wenig Aussicht, aber ein Anstieg mit Gewicht.",
+  "sides": [
+   {
+    "character": "Von Bodenmais ohne Pause um 6 bis 8 % im Fichtenwald, oben an den Weiden des Bretterschachtens offen.",
+    "highlights": "Die Lichtung am Bretterschachten unter dem Arber."
+   }
+  ]
+ },
+ "brennes": {
+  "intro": "Der Pass am Arber, dem höchsten Berg des Bayerischen Walds: oben Bergbahn und Ausflugsrummel, unten auf der Westseite der dunkle Arbersee.",
+  "sides": [
+   {
+    "character": "Von Bayerisch Eisenstein gleichmäßig steil durch den Wald bis zur Bergbahn.",
+    "hazards": [
+     "traffic"
+    ],
+    "highlights": "Der Große Arbersee auf der Abfahrt nach Lohberg."
+   }
+  ]
+ },
+ "dreisessel": {
+  "intro": "Der Aussichtsberg im Dreiländereck: eine ruhige Waldstraße hinauf zu den Felsen, von denen man bei klarem Wetter die Alpen sieht.",
+  "sides": [
+   {
+    "character": "Von Haidmühle gleichmäßig und mäßig steil durch den Bergwald, die letzten Kilometer etwas steiler.",
+    "highlights": "Die Granitfelsen am Gipfel mit Blick über drei Länder."
+   }
+  ]
+ },
+ "klet": {
+  "intro": "Ein Anstieg mit Ziel: aus der Altstadt von Český Krumlov auf den höchsten Berg des Blanský les, oben Sternwarte, Turm und Blick bis zum Böhmerwald.",
+  "sides": [
+   {
+    "character": "Aus Český Krumlov erst durch Dörfer, dann im Wald zunehmend steil; oben ohne Autos.",
+    "highlights": "Der Steinturm auf dem Gipfel mit Blick über Südböhmen."
+   }
+  ]
+ },
+ "churanov": {
+  "intro": "Die Auffahrt auf das Dach des Böhmerwalds: oben eine weite, kühle Hochfläche mit Mooren und Holzdörfern.",
+  "sides": [
+   {
+    "character": "Von Stachy gleichmäßig über Wiesen und durch den Wald bis an die Kante der Hochfläche.",
+    "highlights": "Die Hochfläche bei Zadov mit Blick über die Šumava."
+   }
+  ]
+ },
+ "col-de-bavella": {
+  "intro": "Der bekannteste Pass Korsikas: oben Kiefern, Felsnadeln und wilde Schweine, unten auf der Ostseite Badegumpen im Fluss. Im Sommer voll, im Mai und Oktober ein Traum.",
+  "sides": [
+   {
+    "bestAs": "up",
+    "character": "Von Zonza gleichmäßig um 5 % durch Kiefernwald, die Nadeln von Bavella erst auf den letzten Kilometern.",
+    "highlights": "Der Blick auf die Aiguilles de Bavella am Sattel."
+   },
+   {
+    "bestAs": "both",
+    "character": "Von Solenzara lang und unregelmäßig das Tal hinauf, mit flachen Stücken am Fluss und steilen Rampen oben in den Kehren.",
+    "hazards": [
+     "tight-hairpins",
+     "narrow"
+    ],
+    "highlights": "Die Schlucht des Solenzara mit ihren Badegumpen."
+   }
+  ]
+ },
+ "col-de-vergio": {
+  "intro": "Das Dach der korsischen Straßen: ein Anstieg durch einen der schönsten Kiefernwälder Europas, oben eine kahle Höhe mit Blick zum Monte Cinto.",
+  "sides": [
+   {
+    "character": "Von Evisa gleichmäßig durch den Forêt d'Aïtone, kühl und schattig, oben offen und windig.",
+    "highlights": "Die alten Laricio-Kiefern im Forêt d'Aïtone."
+   }
+  ]
+ },
+ "col-de-vizzavona": {
+  "intro": "Der Pass in der Mitte der Insel, durch den Wald von Vizzavona. Schön, aber die Nationalstraße: Lastwagen und Busse teilen sich die Kurven.",
+  "sides": [
+   {
+    "bestAs": "up",
+    "character": "Von Bocognano gleichmäßig steil auf der breiten Straße durch Kastanien- und Buchenwald.",
+    "hazards": [
+     "traffic"
+    ],
+    "highlights": "Der Wald von Vizzavona am Sattel."
+   },
+   {
+    "bestAs": "both",
+    "character": "Von Vivario flacher und länger das Tal des Vecchio hinauf.",
+    "hazards": [
+     "traffic"
+    ]
+   }
+  ]
+ },
+ "col-de-sorba": {
+  "intro": "Der steilste der großen Pässe Korsikas und einer der ruhigsten: zwei Kehrenrampen über Vivario und Ghisoni, kaum ein Auto.",
+  "sides": [
+   {
+    "bestAs": "up",
+    "character": "Von Vivario sofort steil in engen Kehren durch Kiefernwald, ohne Pause bis zum Sattel.",
+    "hazards": [
+     "tight-hairpins",
+     "narrow"
+    ],
+    "highlights": "Die Kehren über Vivario mit Blick zum Monte d'Oro."
+   },
+   {
+    "bestAs": "both",
+    "character": "Von Ghisoni ähnlich steil, im unteren Teil durch Kastanienwald.",
+    "hazards": [
+     "tight-hairpins",
+     "narrow"
+    ]
+   }
+  ]
+ },
+ "col-de-verde": {
+  "intro": "Ein Pass für Ausdauer statt Härte: fast zwanzig Kilometer Wald auf jeder Seite, oben eine Hütte und kein Ausblick, dafür Stille.",
+  "sides": [
+   {
+    "bestAs": "both",
+    "character": "Von Ghisoni lang und unregelmäßig durch den Forêt de Marmano, mit flachen Stücken zwischen steileren Rampen."
+   },
+   {
+    "bestAs": "both",
+    "character": "Von Cozzano durch das obere Taravo-Tal, zuerst offen, dann lange im Wald."
+   }
+  ]
+ },
+ "col-de-teghime": {
+  "intro": "Ein kurzer Pass mit dem besten Ausblick der Insel: auf dem Sattel sieht man nach Osten auf Bastia und Elba, nach Westen auf den Golf von Saint-Florent.",
+  "sides": [
+   {
+    "bestAs": "up",
+    "character": "Von Bastia in Kehren über der Stadt, gleichmäßig um 5 %, viel Pendlerverkehr am Morgen.",
+    "hazards": [
+     "traffic"
+    ],
+    "highlights": "Der Blick zurück auf Bastia und den Hafen."
+   },
+   {
+    "bestAs": "both",
+    "character": "Von Saint-Florent durch die Weinberge von Patrimonio, sanfter und ruhiger.",
+    "highlights": "Die Weinberge von Patrimonio über dem Golf."
+   }
+  ]
+ },
+ "ospedale": {
+  "intro": "Der lange Anstieg vom Meer in die Berge über Porto-Vecchio: unten Macchia und Korkeichen, oben der Stausee im Kiefernwald und der Blick auf die Bucht.",
+  "sides": [
+   {
+    "character": "Von Porto-Vecchio gleichmäßig in langen Schleifen den Hang hinauf, mit immer weiterem Blick auf die Bucht.",
+    "highlights": "Der Blick auf den Golf von Porto-Vecchio, oben der Stausee des Ospedale."
+   }
+  ]
+ },
+ "col-de-sevi": {
+  "intro": "Ein stiller Pass im Westen, steil von Vico und mit Blick auf zwei Seiten: zum Meer und ins Gebirge.",
+  "sides": [
+   {
+    "character": "Von Vico steil und gleichmäßig über Kastanienwald und Macchia, oben offen.",
+    "highlights": "Der Blick zurück auf den Golf von Sagone."
+   }
+  ]
+ },
+ "el-portillo": {
+  "intro": "Zweitausend Höhenmeter vom Meer bis unter den Teide: erst Bananen und Häuser, dann Kiefern über den Wolken, oben die Mondlandschaft der Cañadas.",
+  "sides": [
+   {
+    "character": "Aus Puerto de la Cruz steil durch La Orotava, dann gleichmäßig um 7 % durch den Kiefernwald, oft durch eine Wolkendecke, die oben in Sonne aufreißt.",
+    "highlights": "Der Blick aus dem Kiefernwald über das Wolkenmeer zum Teide."
+   }
+  ]
+ },
+ "boca-de-tauce": {
+  "intro": "Der ruhigere Weg in die Cañadas: von der Westküste über schwarze Lava und durch Kiefernwald, oben der Teide direkt vor dem Rad.",
+  "sides": [
+   {
+    "character": "Von Chío gleichmäßig und nie steil über Lavafelder, dann durch lichten Kiefernwald bis an den Kraterrand.",
+    "highlights": "Die Lavaströme des Chinyero und der erste Blick auf den Teide."
+   }
+  ]
+ },
+ "izana": {
+  "intro": "Die schönste Straße der Insel für viele: auf dem Grat zwischen Nord- und Südküste, mit Ausblicken auf beide Meere und zum Schluss auf den Teide.",
+  "sides": [
+   {
+    "character": "Von La Esperanza lang und mäßig steil durch Kiefernwald, dann offen auf dem Grat mit Aussichtspunkten.",
+    "highlights": "Die Kuppeln des Observatoriums vor dem Teide."
+   }
+  ]
+ },
+ "degollada-de-cherfe": {
+  "intro": "Kurz, steil und atemberaubend: die Kehren von Masca an der Schlucht, mit Blick bis La Gomera. Viele Mietwagen und Busse, früh am Morgen am schönsten.",
+  "sides": [
+   {
+    "bestAs": "up",
+    "character": "Von Masca ohne Pause über 10 % in engen Kehren an der Felswand.",
+    "hazards": [
+     "tight-hairpins",
+     "narrow",
+     "traffic"
+    ],
+    "highlights": "Das Dorf Masca unter den Felsnadeln, La Gomera im Meer."
+   },
+   {
+    "bestAs": "down",
+    "character": "Von Santiago del Teide gleichmäßiger durch Felder und Lava bis zum Sattel.",
+    "hazards": [
+     "traffic"
+    ]
+   }
+  ]
+ },
+ "cruz-de-tejeda": {
+  "intro": "Das Herz der Insel: ein Sattel über der Caldera, Ausflugsziel mit Ständen und Paradores, und eine der schönsten Aussichten der Kanaren.",
+  "sides": [
+   {
+    "bestAs": "both",
+    "character": "Von San Mateo gleichmäßig durch Felder und Kiefern, mit wenigen steilen Stücken.",
+    "hazards": [
+     "traffic"
+    ]
+   },
+   {
+    "bestAs": "up",
+    "character": "Von Tejeda steil in Kehren aus der Caldera, Roque Nublo und Roque Bentayga im Rücken.",
+    "hazards": [
+     "tight-hairpins"
+    ],
+    "highlights": "Die Caldera von Tejeda mit Roque Nublo und Bentayga."
+   }
+  ]
+ },
+ "pico-de-las-nieves": {
+  "intro": "Das Dach von Gran Canaria: oben Radarkuppel und Aussichtspunkt über dem Roque Nublo, unten auf beiden Seiten lange, harte Rampen.",
+  "sides": [
+   {
+    "bestAs": "up",
+    "character": "Von San Mateo steil und ohne Pause durch Kiefernwald, oft über 8 %."
+   },
+   {
+    "bestAs": "both",
+    "character": "Von San Bartolomé über die Caldera de Tirajana lang und unregelmäßig.",
+    "highlights": "Der Blick in die Caldera de Tirajana."
+   }
+  ]
+ },
+ "fataga": {
+  "intro": "Der Anstieg, mit dem fast jede Radwoche auf Gran Canaria beginnt: aus der Hotelzone in eine stille Schlucht und auf das Dach der Insel zu.",
+  "sides": [
+   {
+    "character": "Von Maspalomas erst flach, dann gleichmäßig in Kehren über die Degollada de Fataga und durch die Schlucht.",
+    "highlights": "Der Aussichtspunkt über dem Barranco de Fataga und die Palmen im Talgrund."
+   }
+  ]
+ },
+ "roque-de-los-muchachos": {
+  "intro": "Ein Anstieg wie kein zweiter: 2400 Höhenmeter ohne Abfahrt, durch Lorbeer- und Kiefernwald über die Wolken, oben die Teleskope und der Blick in die Caldera.",
+  "sides": [
+   {
+    "bestAs": "up",
+    "character": "Von Santa Cruz gleichmäßig durch den Lorbeerwald, dann Kiefern, ab 2000 m kahl und windig. Verpflegung mitnehmen, oben gibt es nichts.",
+    "highlights": "Der Kraterrand der Caldera de Taburiente bei den Teleskopen."
+   },
+   {
+    "bestAs": "both",
+    "character": "Von Garafía steiler und einsamer durch den Kiefernwald, kaum ein Auto."
+   }
+  ]
+ },
+ "angliru": {
+  "intro": "Einer der steilsten Asphaltanstiege Europas, eine Legende der Vuelta. Unten harmlos, oben eine Wand: wer ihn fährt, braucht die kleinste Übersetzung, die es gibt.",
+  "sides": [
+   {
+    "character": "Von La Vega sechs Kilometer gemäßigt durch Wiesen, dann sechs Kilometer Wand mit Rampen über 20 % in der Cueña les Cabres, schmal und oft feucht.",
+    "hazards": [
+     "steep",
+     "narrow"
+    ],
+    "highlights": "Die Cueña les Cabres und der Blick zurück über die Täler von Riosa."
+   }
+  ]
+ },
+ "lagos-de-covadonga": {
+  "intro": "Der Inbegriff der Vuelta: eine unregelmäßige Rampe von der Basilika in die Picos de Europa, oben die Seen, Kühe und Kalkfelsen.",
+  "sides": [
+   {
+    "character": "Ab Covadonga sofort steil, unregelmäßig mit der Rampe der Huesera über 15 %, dann flacher zum Mirador de la Reina und zu den Seen.",
+    "hazards": [
+     "steep",
+     "traffic"
+    ],
+    "highlights": "Der Mirador de la Reina und der Lago Enol unter den Picos."
+   }
+  ]
+ },
+ "puerto-de-san-lorenzo": {
+  "intro": "Ein harter, gleichmäßiger Vuelta-Pass im wilden Westen Asturiens, mit Bärenland und Almhütten oben.",
+  "sides": [
+   {
+    "character": "Von Teverga gleichmäßig um 8 %, die zweite Hälfte steiler und offen über den Weiden.",
+    "highlights": "Die Brañas mit den Steinhütten unter dem Pass."
+   }
+  ]
+ },
+ "alto-de-la-farrapona": {
+  "intro": "Eine Fahrt in den wildesten Winkel Asturiens: lange Täler, Teiteiros-Hütten und am Ende die Seen von Saliencia unter Kalkwänden.",
+  "sides": [
+   {
+    "character": "Von Pola de Somiedo lang und unregelmäßig das Tal hinauf, mit flachen Stücken und steilen Rampen im letzten Drittel.",
+    "highlights": "Die Lagos de Saliencia unter dem Pass."
+   }
+  ]
+ },
+ "puerto-de-pajares": {
+  "intro": "Ein Pass mit Geschichte: die alte Straße nach Kastilien, mit den Kehren über dem Tal von Pajares und der Bahn, die sich in Tunneln hinaufwindet.",
+  "sides": [
+   {
+    "character": "Von Pola de Lena lange flach im Tal, dann die letzten zehn Kilometer in Kehren mit 6 bis 8 %.",
+    "hazards": [
+     "traffic"
+    ],
+    "highlights": "Die Kehren über dem Tal mit der Rampa de Pajares der Bahn."
+   }
+  ]
+ },
+ "alto-de-la-cobertoria": {
+  "intro": "Ein echter asturischer Pass: steil, schmal, grün, und mit dem Angliru gleich auf der anderen Talseite.",
+  "sides": [
+   {
+    "character": "Von Pola de Lena gleich steil in Kehren durch Kastanien und Wiesen, kaum eine Erholung.",
+    "hazards": [
+     "steep",
+     "narrow"
+    ],
+    "highlights": "Der Blick vom Sattel über das Tal von Lena."
+   }
+  ]
+ },
+ "puerto-de-san-glorio": {
+  "intro": "Ein langer, stiller Pass mit dem schönsten Blick auf die Picos de Europa: von Potes erst im Tal, dann über Almen bis über die Baumgrenze.",
+  "sides": [
+   {
+    "character": "Von Potes lange gemäßigt durch das Tal der Liébana, die letzten zwölf Kilometer steiler durch Buchenwald und über Weiden.",
+    "highlights": "Der Mirador de Llesba mit dem Bärendenkmal und den Picos de Europa."
+   }
+  ]
+ },
+ "pena-cabarga": {
+  "intro": "Santanders Hausberg und eine kurze Vuelta-Wand: unten Eukalyptus, oben ein Gipfel mit dem Meer auf einer und den Bergen auf der anderen Seite.",
+  "sides": [
+   {
+    "character": "Von Heras erst gemäßigt, dann auf den letzten Kilometern steil mit Rampen über 15 %.",
+    "hazards": [
+     "steep"
+    ],
+    "highlights": "Der Blick über die Bucht von Santander."
+   }
+  ]
+ },
+ "hoya-de-la-mora": {
+  "intro": "Eine Höhenstraße wie in den Alpen, aber in Andalusien: von den Vororten Granadas fast 1800 Höhenmeter am Stück, oben dünne Luft und der Blick bis Afrika an klaren Tagen.",
+  "sides": [
+   {
+    "character": "Von Cenes gleichmäßig um 6 % über kahle Hänge, ab Pradollano offen und windig bis zur Hoya de la Mora.",
+    "highlights": "Der Blick vom Mirador über Granada und die Vega."
+   }
+  ]
+ },
+ "alto-del-purche": {
+  "intro": "Der Hausberg der Radfahrer aus Granada: kürzer als die Sierra Nevada, steiler im Detail, und fast ohne Verkehr.",
+  "sides": [
+   {
+    "character": "Von Monachil unregelmäßig mit steilen Rampen durch Oliven und Kiefern, oben offen über der Stadt.",
+    "highlights": "Der Blick über Granada zur Alhambra."
+   }
+  ]
+ },
+ "collado-de-las-sabinas": {
+  "intro": "Die harte Seite der Sierra Nevada: eine schmale Straße mit Mauern aus Prozent, oben die Gipfel des Mulhacén und Veleta zum Greifen nah.",
+  "sides": [
+   {
+    "character": "Von Güéjar Sierra erst gemäßigt, dann über Hazallanas mit langen Rampen über 10 %, schmal und rau.",
+    "hazards": [
+     "steep",
+     "narrow",
+     "rough"
+    ],
+    "highlights": "Der Blick vom Kamm auf Veleta und Mulhacén."
+   }
+  ]
+ },
+ "puerto-de-la-ragua": {
+  "intro": "Ein echter Pass über die Sierra Nevada, 2000 m hoch und doch ruhig: von der Alpujarra durch Kiefern, auf der Nordseite die Burg von La Calahorra im Blick.",
+  "sides": [
+   {
+    "bestAs": "up",
+    "character": "Von Laroles gleichmäßig durch Terrassen und Kiefernwald, ohne steile Stücke.",
+    "highlights": "Der Blick zurück über die Alpujarra zum Meer."
+   },
+   {
+    "bestAs": "both",
+    "character": "Von La Calahorra über die Hochebene, dann in Kehren durch den Wald.",
+    "highlights": "Die Burg von La Calahorra vor der Sierra."
+   }
+  ]
+ },
+ "calar-alto": {
+  "intro": "Ein Anstieg in einer Landschaft wie im Western: über die Wüste von Tabernas auf 2150 m, oben die weißen Kuppeln der Sternwarte.",
+  "sides": [
+   {
+    "bestAs": "up",
+    "character": "Von Gérgal lang und gleichmäßig über kahle Hänge, ohne Schatten.",
+    "highlights": "Die Kuppeln der Sternwarte über der Wüste."
+   },
+   {
+    "bestAs": "both",
+    "character": "Von Bacares kürzer und steiler, mit Rampen über 12 %.",
+    "hazards": [
+     "steep"
+    ]
+   }
+  ]
+ },
+ "alto-de-velefique": {
+  "intro": "Ein Kehrenband wie gemalt über einem weißen Dorf, in der Halbwüste Almerías: der Stilfser Joch des Südens, nur leerer.",
+  "sides": [
+   {
+    "character": "Von Velefique sofort in dicht gestapelten Kehren um 7 %, gleichmäßig bis zum Kamm.",
+    "hazards": [
+     "tight-hairpins"
+    ],
+    "highlights": "Die Kehren über dem Dorf Velefique."
+   }
+  ]
+ },
+ "blockhaus": {
+  "intro": "Der härteste Anstieg des Apennins: lang, steil und oben ohne Baum, mit dem Blick bis zur Adria.",
+  "sides": [
+   {
+    "character": "Von Roccamorice durch Wald gleichmäßig steil, ab der Baumgrenze offen und windig über die Kalkhänge.",
+    "hazards": [
+     "steep"
+    ],
+    "highlights": "Der Blick von der Majella über das Hügelland bis zur Adria."
+   }
+  ]
+ },
+ "passo-lanciano": {
+  "intro": "Der Zugang zur Majella von Osten: steil durch dichten Buchenwald, oben Skilifte und der Weiterweg zum Blockhaus.",
+  "sides": [
+   {
+    "character": "Von Pretoro in Kehren steil durch den Wald, kaum flache Stücke."
+   }
+  ]
+ },
+ "campo-imperatore": {
+  "intro": "Eine Fahrt durch eine der weitesten Landschaften Europas: Hochebene, Pferde, der Corno Grande, und zum Schluss eine Wand zum Observatorium.",
+  "sides": [
+   {
+    "character": "Von Fonte Cerreto durch Buchenwald, dann lange gemäßigt über die Hochebene, die letzten vier Kilometer steil zum Hotel.",
+    "highlights": "Die Hochebene von Campo Imperatore unter dem Corno Grande."
+   }
+  ]
+ },
+ "terminillo": {
+  "intro": "Der Berg, an dem sich Roms Radfahrer messen: gleichmäßig, lang und schattig, oben der Blick über das Becken von Rieti.",
+  "sides": [
+   {
+    "character": "Von Rieti erst über die Hänge, dann gleichmäßig um 6 % durch den Wald bis Pian de' Valli.",
+    "highlights": "Der Blick über das Becken von Rieti."
+   }
+  ]
+ },
+ "passo-dell-abetone": {
+  "intro": "Ein Pass wie in den Alpen, nur grüner: Tannenwald, Holzhäuser und der alte Grenzpfeiler zwischen dem Großherzogtum Toskana und Modena.",
+  "sides": [
+   {
+    "character": "Von Cutigliano gleichmäßig um 5 % durch Tannen- und Buchenwald.",
+    "hazards": [
+     "traffic"
+    ],
+    "highlights": "Die Grenzpyramiden am Sattel."
+   }
+  ]
+ },
+ "san-pellegrino-in-alpe": {
+  "intro": "Ein Wallfahrtsort auf dem Kamm des Apennins und ein brutaler Anstieg dorthin: unregelmäßig, mit Wänden über 15 % und weitem Blick über die Apuanischen Alpen.",
+  "sides": [
+   {
+    "character": "Von Castiglione unregelmäßig, mit langen Rampen über 12 % im oberen Teil.",
+    "hazards": [
+     "steep",
+     "narrow"
+    ],
+    "highlights": "Der Blick über die Garfagnana zu den Apuanischen Alpen."
+   }
+  ]
+ },
+ "monte-amiata": {
+  "intro": "Der höchste Berg der Südtoskana und ein Anstieg im Schatten: Kastanien, Buchen und oben das Gipfelkreuz über den Hügeln von Siena.",
+  "sides": [
+   {
+    "character": "Von Abbadia gleichmäßig um 6 bis 7 % durch Wald, oben einige steilere Rampen.",
+    "highlights": "Das Val d'Orcia unter dem Gipfel."
+   }
+  ]
+ },
+ "sassotetto": {
+  "intro": "Ein stiller Bergankunft-Klassiker der Marken: über einem mittelalterlichen Städtchen in die Sibillinischen Berge.",
+  "sides": [
+   {
+    "character": "Von Sarnano gleichmäßig um 7 % durch Wald, die letzten Kilometer offen über Weiden.",
+    "highlights": "Die Wiesen von Sassotetto unter dem Sibillini-Kamm."
+   }
+  ]
+ },
+ "etna-sud": {
+  "intro": "Ein Vulkan, auf den man mit dem Rennrad fährt: vom Meer durch Weinberge und Ginster bis in die schwarzen Lavafelder unter dem Gipfelkrater.",
+  "sides": [
+   {
+    "bestAs": "both",
+    "character": "Von Nicolosi gleichmäßig durch Pinien und über alte Lavaströme, die meistbefahrene Seite.",
+    "highlights": "Die Silvestri-Krater oben am Rifugio."
+   },
+   {
+    "bestAs": "up",
+    "character": "Von Zafferana die steilste Seite, mit langen Rampen über 9 % durch Wald und Lava.",
+    "hazards": [
+     "steep"
+    ],
+    "highlights": "Der Blick über die Valle del Bove."
+   },
+   {
+    "bestAs": "up",
+    "character": "Von Ragalna lang und unregelmäßig über die Westflanke, ruhig und offen.",
+    "highlights": "Der Blick über die Ebene von Catania."
+   }
+  ]
+ },
+ "etna-nord": {
+  "intro": "Der grüne Ätna: Wald bis weit hinauf, dann die Lavazunge des Ausbruchs von 2002, durch die die Straße neu gebaut wurde.",
+  "sides": [
+   {
+    "character": "Von Linguaglossa gleichmäßig um 6–7 % durch den Pinienwald, oben offen über der Lava.",
+    "highlights": "Der Blick über die Ionische Küste bis Taormina."
+   }
+  ]
+ },
+ "piano-battaglia": {
+  "intro": "Ein Stück Apennin über der Küste von Cefalù: Buchenwald, Kalkgipfel und Hochweiden, eine Stunde vom Strand.",
+  "sides": [
+   {
+    "character": "Von Isnello lang und mäßig, mit einem steileren Stück über Piano Zucchi, viel im Wald.",
+    "highlights": "Der Blick von der Hochebene zum Ätna."
+   }
+  ]
+ },
+ "portella-femmina-morta": {
+  "intro": "Das leere Sizilien: Buchenwald, Weiden mit halbwilden Pferden und auf der Passhöhe der Blick auf den Ätna.",
+  "sides": [
+   {
+    "character": "Von San Fratello gleichmäßig und mäßig, erst offen, oben im Buchenwald.",
+    "highlights": "Der Ätna hinter der Passhöhe."
+   }
+  ]
+ },
+ "portella-mandrazzi": {
+  "intro": "Ein kurzer Pass mit großer Aussicht: auf der einen Seite die Liparischen Inseln, auf der anderen der Ätna.",
+  "sides": [
+   {
+    "character": "Von Novara di Sicilia mäßig mit einigen steileren Kehren, offen über dem Tal.",
+    "highlights": "Der Blick zurück auf die Liparischen Inseln."
+   }
+  ]
+ },
+ "erice": {
+  "intro": "Vom Meeresspiegel in ein Dorf aus Stein in den Wolken: ein kurzer, schöner Anstieg mit dem besten Blick Westsiziliens.",
+  "sides": [
+   {
+    "bestAs": "up",
+    "character": "Von Trapani aus dem Stadtrand in Kehren um 7 % die Felswand hinauf.",
+    "highlights": "Der Blick über die Salinen und die Ägadischen Inseln."
+   },
+   {
+    "bestAs": "both",
+    "character": "Von Valderice kürzer und ruhiger durch Pinien."
+   }
+  ]
+ },
+ "mur-de-huy": {
+  "intro": "Ein Kilometer, den jeder Radfahrer aus dem Fernsehen kennt: zwischen Häusern und Kapellen, die steilste Kurve so steil, dass man im Sattel steht oder absteigt.",
+  "sides": [
+   {
+    "character": "Aus Huy erst mäßig, dann zwischen den Kapellen mit Rampen bis über 20 %, oben flacher bis zur Kirche.",
+    "hazards": [
+     "steep"
+    ],
+    "highlights": "Die Kehre bei den Kapellen, wo die Flèche entschieden wird."
+   }
+  ]
+ },
+ "cote-de-la-redoute": {
+  "intro": "Der Hausberg der Doyenne: kurz und steil, und an jedem Wochenende voller Radfahrer, die ihre Zeit mit den Profis vergleichen.",
+  "sides": [
+   {
+    "character": "Von Remouchamps nach einem flachen Anlauf sofort steil, über die Autobahnbrücke mit Rampen um 12 %.",
+    "hazards": [
+     "steep"
+    ],
+    "highlights": "Die bemalte Straße mit den Namen der Fahrer."
+   }
+  ]
+ },
+ "cote-de-stockeu": {
+  "intro": "Ein Kilometer Wand im Wald, und oben steht Merckx in Bronze, der hier seine Angriffe begann.",
+  "sides": [
+   {
+    "character": "Von Stavelot kurz flach, dann eine gerade, steile Rampe durch den Wald, um 12 %.",
+    "hazards": [
+     "steep"
+    ],
+    "highlights": "Das Merckx-Denkmal oben am Waldrand."
+   }
+  ]
+ },
+ "col-de-la-haute-levee": {
+  "intro": "Einer der längeren Ardennenanstiege: vier Kilometer durch Wald und Weiden, nahe der Rennstrecke von Spa-Francorchamps.",
+  "sides": [
+   {
+    "character": "Aus Stavelot steil heraus, dann gleichmäßiger um 5 % bis zur Höhe."
+   }
+  ]
+ },
+ "col-du-rosier": {
+  "intro": "Ein Waldanstieg ohne Wände, aber lang genug, um im Rennen zu sortieren: sechs Kilometer bis auf die Hochfläche über Spa.",
+  "sides": [
+   {
+    "character": "Von La Gleize mäßig und gleichmäßig durch den Wald, oben offen."
+   }
+  ]
+ },
+ "cote-de-wanne": {
+  "intro": "Ein offener Hang über dem Tal der Salm, mit einer steilen Mitte und dem Blick zurück über Trois-Ponts.",
+  "sides": [
+   {
+    "character": "Von Trois-Ponts erst steil, in der Mitte über 10 %, oben flacher bis Wanne.",
+    "highlights": "Der Blick zurück über Trois-Ponts."
+   }
+  ]
+ },
+ "cote-de-la-roche-aux-faucons": {
+  "intro": "Der letzte große Anstieg vor Lüttich: kurz und steil durch ein Dorf, oben ein Aussichtsfelsen über der Ourthe.",
+  "sides": [
+   {
+    "character": "Von der Ourthe bei Hony sofort steil, um 8–10 %, durch die Häuser bis auf die Höhe.",
+    "hazards": [
+     "steep"
+    ],
+    "highlights": "Der Blick vom Felsen über die Ourtheschleife."
+   }
+  ]
+ },
+ "spindlerova-bouda": {
+  "intro": "Der Klassiker des Riesengebirges: von der Elbe hinauf auf den Kamm, oben die Baude und der Blick nach Schlesien.",
+  "sides": [
+   {
+    "character": "Von Špindlerův Mlýn gleichmäßig durch den Wald, im oberen Teil Kehren und Rampen über 10 %.",
+    "highlights": "Der Blick vom Kamm nach Polen."
+   }
+  ]
+ },
+ "przelecz-okraj": {
+  "intro": "Ein echter Grenzpass über das Riesengebirge, ruhig und lang, mit der Schneekoppe über der Passhöhe.",
+  "sides": [
+   {
+    "character": "Von Kowary mäßig im Wald, mit flachen Stücken zwischen steileren Rampen.",
+    "highlights": "Die Schneekoppe über der Passhöhe."
+   }
+  ]
+ },
+ "horni-misecky": {
+  "intro": "Ein kurzer Anstieg in den Fichtenwald, oben die Bauden und die Wege zur Elbquelle.",
+  "sides": [
+   {
+    "character": "Von Vítkovice gleichmäßig um 7 % durch den Wald bis zum Ende der Straße."
+   }
+  ]
+ },
+ "cerna-hora": {
+  "intro": "Der härteste Anstieg des Riesengebirges, ohne Autos: über 600 Höhenmeter bis auf die Hochfläche, oben der Blick über Böhmen.",
+  "sides": [
+   {
+    "character": "Von Janské Lázně in Kehren durch den Wald, oben steiler bis über 12 % auf schmaler Straße.",
+    "hazards": [
+     "steep",
+     "narrow"
+    ],
+    "highlights": "Der Blick von der Baude über das böhmische Vorland."
+   }
+  ]
+ },
+ "jested": {
+  "intro": "Ein Berg mit einem Turm wie aus einem Science-Fiction-Film: von Liberec 450 Höhenmeter, oben der Blick bis zum Riesengebirge und nach Sachsen.",
+  "sides": [
+   {
+    "character": "Von Horní Hanychov gleichmäßig um 6–7 % durch den Wald, die letzten Kehren offen unter dem Turm.",
+    "highlights": "Der Turm auf dem Gipfel."
+   }
+  ]
+ },
+ "tanvaldsky-spicak": {
+  "intro": "Ein kurzer, harter Anstieg im Isergebirge, oben ein Aussichtsturm über den Wäldern.",
+  "sides": [
+   {
+    "character": "Aus Tanvald erst mäßig, dann mit Rampen über 12 % durch den Wald.",
+    "hazards": [
+     "steep"
+    ]
+   }
+  ]
+ },
+ "strbske-pleso": {
+  "intro": "Kein steiler Anstieg, aber ein großer: 500 Höhenmeter auf eine Granitwand zu, oben der See und die Sprungschanzen.",
+  "sides": [
+   {
+    "character": "Von Štrba gleichmäßig um 4 %, erst durch Wiesen, oben durch Wald bis zum See.",
+    "highlights": "Der Blick auf die Gipfel der Hohen Tatra."
+   }
+  ]
+ },
+ "certovica": {
+  "intro": "Der Pass der Niederen Tatra: Fichtenwald, Bergdörfer und oben eine kleine Skistation am Kamm.",
+  "sides": [
+   {
+    "bestAs": "up",
+    "character": "Von Mýto lang und mäßig durch das Tal, oben einige Kehren im Wald.",
+    "highlights": "Die Kehren unter der Passhöhe."
+   },
+   {
+    "bestAs": "both",
+    "character": "Von Vyšná Boca kurz und steil, mit Rampen über 10 %.",
+    "hazards": [
+     "steep"
+    ]
+   }
+  ]
+ },
+ "chopok-juh": {
+  "intro": "Die längste Straße in die Niedere Tatra: 650 Höhenmeter durch Wald bis unter den Kamm des Chopok.",
+  "sides": [
+   {
+    "character": "Von Bystrá erst mäßig durch das Tal, ab Tále steiler im Wald bis Srdiečko.",
+    "highlights": "Der Blick vom Ende der Straße auf den Kamm."
+   }
+  ]
+ },
+ "jasna": {
+  "intro": "Ein Tal mit Tropfsteinhöhlen und am Ende das größte Skigebiet der Slowakei: kurz, steil und mit dem Chopok vor Augen.",
+  "sides": [
+   {
+    "character": "Von der Freiheitshöhle steil durch den Wald, oben flacher bis Jasná."
+   }
+  ]
+ },
+ "gliczarow-gorny": {
+  "intro": "Eine Mauer im Podhale: kurz, brutal steil, und oben das schönste Tatra-Panorama, das man mit dem Rad erreicht.",
+  "sides": [
+   {
+    "character": "Aus Biały Dunajec erst mäßig, dann eine Wand über 20 % zwischen Holzhäusern.",
+    "hazards": [
+     "steep"
+    ],
+    "highlights": "Die Kette der Hohen Tatra hinter den Wiesen."
+   }
+  ]
  }
 }
