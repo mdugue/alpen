@@ -159,7 +159,7 @@ export const themeSvg = (svg: string, measuredFont: string): string => {
     `(?:"|'|&quot;)${family}(?:"|'|&quot;)\\s*,\\s*sans-serif`,
     "gu",
   );
-  return out.replace(spelled, "var(--font-sans)");
+  return out.replaceAll(spelled, "var(--font-sans)");
 };
 
 /**
