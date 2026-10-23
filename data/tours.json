@@ -3515,56 +3515,6 @@
   ]
  },
  {
-  "slug": "osterzgebirge-runde",
-  "surface": "asphalt",
-  "name": "Osterzgebirgs-Runde",
-  "color": "#6a8a9a",
-  "km": 47,
-  "elevationGain": 900,
-  "passes": [
-   "cinovec",
-   "komari-vizka"
-  ],
-  "note": "Der Anstieg zur Komáří vížka ist mit fast 9 % im Mittel der härteste der Runde; die alte Grenzstraße nach Cínovec ist seit der D8 ruhig.",
-  "season": null,
-  "description": "Von Altenberg über Zinnwald nach Cínovec, auf der alten Grenzstraße hinunter nach Dubí, über Krupka in Kehren auf die Komáří vížka und am Kamm entlang über Fojtovice zurück nach Altenberg.",
-  "type": "loop",
-  "waypoints": [
-   {
-    "lat": 50.7666,
-    "lon": 13.7523
-   },
-   {
-    "lat": 50.7211,
-    "lon": 13.7908
-   },
-   {
-    "lat": 50.6813,
-    "lon": 13.7888
-   },
-   {
-    "lat": 50.6847,
-    "lon": 13.8578
-   },
-   {
-    "lat": 50.7066,
-    "lon": 13.8565
-   },
-   {
-    "lat": 50.7162,
-    "lon": 13.8551
-   },
-   {
-    "lat": 50.7211,
-    "lon": 13.7908
-   },
-   {
-    "lat": 50.7666,
-    "lon": 13.7523
-   }
-  ]
- },
- {
   "slug": "dlouha-louka-runde",
   "surface": "asphalt",
   "name": "Dlouhá Louka – Cínovec",
@@ -3714,47 +3664,6 @@
    {
     "lat": 47.8555,
     "lon": 7.783
-   }
-  ]
- },
- {
-  "slug": "torfhaus-runde",
-  "surface": "asphalt",
-  "name": "Torfhaus-Runde",
-  "color": "#5a7a8a",
-  "km": 52,
-  "elevationGain": 950,
-  "passes": [
-   "torfhaus"
-  ],
-  "note": "Die B4 hinauf trägt viel Verkehr und Motorräder, am Wochenende besser früh; zurück durchs Okertal ist es ruhiger.",
-  "season": null,
-  "description": "Von Bad Harzburg auf der B4 hinauf nach Torfhaus, über die Hochfläche hinunter nach Altenau, über Schulenberg durchs Okertal nach Oker und zurück nach Bad Harzburg.",
-  "type": "loop",
-  "waypoints": [
-   {
-    "lat": 51.8797,
-    "lon": 10.5875
-   },
-   {
-    "lat": 51.8022,
-    "lon": 10.5369
-   },
-   {
-    "lat": 51.8035,
-    "lon": 10.4473
-   },
-   {
-    "lat": 51.8347,
-    "lon": 10.4343
-   },
-   {
-    "lat": 51.905,
-    "lon": 10.484
-   },
-   {
-    "lat": 51.8797,
-    "lon": 10.5875
    }
   ]
  },
@@ -4269,68 +4178,6 @@
    {
     "lat": 50.3942,
     "lon": 5.931
-   }
-  ]
- },
- {
-  "slug": "riesengebirge-runde",
-  "surface": "asphalt",
-  "name": "Riesengebirgs-Runde",
-  "color": "#7a6a9a",
-  "km": 102,
-  "elevationGain": 1950,
-  "passes": [
-   "spindlerova-bouda",
-   "przelecz-okraj"
-  ],
-  "note": "Von der Špindlerova bouda nach Polen geht es auf der für Autos gesperrten Straße hinunter, schmal und steil; Ausweis mitnehmen.",
-  "season": null,
-  "description": "Von Špindlerův Mlýn hinauf zur Špindlerova bouda, auf der gesperrten Straße hinunter nach Przesieka, über Karpacz nach Kowary, über den Okraj nach Malá Úpa, über Horní Maršov und Janské Lázně nach Vrchlabí und zurück nach Špindlerův Mlýn.",
-  "type": "loop",
-  "waypoints": [
-   {
-    "lat": 50.7256,
-    "lon": 15.6068
-   },
-   {
-    "lat": 50.7626,
-    "lon": 15.6339
-   },
-   {
-    "lat": 50.815,
-    "lon": 15.675
-   },
-   {
-    "lat": 50.7747,
-    "lon": 15.7542
-   },
-   {
-    "lat": 50.7938,
-    "lon": 15.8338
-   },
-   {
-    "lat": 50.7469,
-    "lon": 15.8237
-   },
-   {
-    "lat": 50.7241,
-    "lon": 15.8137
-   },
-   {
-    "lat": 50.6573,
-    "lon": 15.8195
-   },
-   {
-    "lat": 50.6306,
-    "lon": 15.7807
-   },
-   {
-    "lat": 50.6271,
-    "lon": 15.6096
-   },
-   {
-    "lat": 50.7256,
-    "lon": 15.6068
    }
   ]
  },
