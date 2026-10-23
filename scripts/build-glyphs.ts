@@ -33,9 +33,9 @@ const INTER_VERSION = "4.1";
 const FONTNIK = "fontnik@0.7.7";
 /** Fontstack name → static TTF inside the release zip. */
 const FONTS: Record<string, string> = {
-  [FONT_REGULAR]: "Inter-Regular.ttf",
-  [FONT_ITALIC]: "Inter-Italic.ttf",
   [FONT_BOLD]: "Inter-SemiBold.ttf",
+  [FONT_ITALIC]: "Inter-Italic.ttf",
+  [FONT_REGULAR]: "Inter-Regular.ttf",
 };
 /** Basic Latin and Latin-1, Latin Extended-A and -B, general punctuation (– ’ …). */
 const RANGES: [number, number][] = [

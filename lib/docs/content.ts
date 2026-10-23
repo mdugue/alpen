@@ -31,7 +31,7 @@ export const descriptionOf = (markdown: string, max = 180): string | null => {
   const body = markdown.replace(/^[\s\S]*?^# .+$/mu, "");
   const inFence = /^```[\s\S]*?^```/gmu;
   const paragraph = body
-    .replace(inFence, "")
+    .replaceAll(inFence, "")
     .split(/\n\s*\n/u)
     .map((p) => p.trim())
     .find(
