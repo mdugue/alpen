@@ -186,5 +186,109 @@
  "tour-du-sancy": {
   "description": "From Le Mont-Dore over the Croix Saint-Robert down to Besse, past the Lac Chambon and back over the Croix-Morand to Le Mont-Dore.",
   "note": "Super-Besse can be added as a detour from Besse (+12 km, +300 m)."
+ },
+ "dlouha-louka-runde": {
+  "description": "From Teplice to Osek, up the hairpins to Dlouhá Louka, along the ridge via Moldava to Cínovec and down the old border road via Dubí back to Teplice.",
+  "note": "Two ridge climbs out of the North Bohemian basin in one morning; between Dlouhá Louka and Cínovec the road stays up on the ridge."
+ },
+ "kandel-runde": {
+  "description": "From Waldkirch in the Elz valley up the Kandel, across the plateau to St. Peter, down the Glottertal and via Denzlingen back to Waldkirch.",
+  "note": "The Kandel from Waldkirch is one of the hardest climbs in the Black Forest; the descent via St. Peter and the Glottertal is wide and well surfaced."
+ },
+ "wiedener-eck-notschrei-runde": {
+  "description": "From Münstertal over the Wiedener Eck to Utzenfeld, through the Wiese valley to Todtnau, over the Notschrei down to Oberried and back via Kirchzarten, Sölden and Staufen to Münstertal.",
+  "note": "From the top of the Notschrei the Schauinsland can replace the descent to Oberried: via Hofsgrund and down to Freiburg-Günterstal."
+ },
+ "arber-runde": {
+  "description": "From Bodenmais up to Bretterschachten, past the Großer Arbersee to the Brennes, down to Bayerisch Eisenstein and via Zwiesel back to Bodenmais.",
+  "note": "Two crossings below the Großer Arber in one day; busy with day-trippers at the Großer Arbersee and the Arber gondola in summer."
+ },
+ "bavella-runde": {
+  "description": "From Zonza over the Col de Bavella down to Solenzara, along the coast via Sainte-Lucie to Porto-Vecchio and over the Ospedale plateau back to Zonza.",
+  "note": "The classic loop of the south; traffic on the T10 along the coast between Solenzara and Porto-Vecchio, free-roaming pigs up on the Bavella."
+ },
+ "sevi-calanche-runde": {
+  "description": "From Evisa over the Col de Sevi to Vico, down to the Gulf of Sagone, along the coast via Cargèse to Piana, through the Calanche to Porto and up the Spelunca valley back to Evisa.",
+  "note": "The Calanche de Piana are a World Heritage site of red granite; the road through them is narrow and full of hire cars in summer, so go before ten."
+ },
+ "soller-orient-runde": {
+  "description": "From Sóller over the Coll de Sóller to Bunyola, over the Coll d'Honor into the high valley of Orient, via Alaró and Santa Maria back to Bunyola and over the Coll de Sóller again to Sóller.",
+  "note": "The Coll de Sóller twice, both sides a ribbon of hairpins almost free of cars since the tunnel; in between the quiet high valley of Orient."
+ },
+ "sa-calobra-runde": {
+  "description": "From Sóller up the Ma-10 to the Puig Major, on to the Ma-2141 turn-off, over the Coll dels Reis down the hairpins to Sa Calobra and back the same way to Sóller.",
+  "note": "Out and back on the same road: down to Sa Calobra first, then the nine kilometres back up. Coaches during the day, empty early in the morning."
+ },
+ "teide-sud-runde": {
+  "description": "From Los Cristianos via Vilaflor up through the pine forest to the Boca de Tauce on the rim of the Cañadas, down across the lava fields to Chío and via Guía de Isora and Adeje back to the coast.",
+  "note": "Above 2,000 m the air is thin and it can be cold up there while it is summer on the coast; fill up with water in Vilaflor and Chío."
+ },
+ "velefique-runde": {
+  "description": "From Tabernas through the desert to Velefique, up the hairpins onto the ridge of the Filabres, along the road towards Calar Alto and down to Gérgal, then back to Tabernas.",
+  "note": "There is no shade; from June to September only early in the morning. Fill up with water in Velefique and Gérgal."
+ },
+ "lanciano-runde": {
+  "description": "From Guardiagrele to Pretoro, up through the beech forest to the Passo Lanciano and via Rapino back to Guardiagrele.",
+  "note": "From the pass the road carries on to the Blockhaus (+18 km there and back, +750 m), the Giro finish above the Majella."
+ },
+ "piano-battaglia-runde": {
+  "description": "From Cefalù via Isnello up to Piano Battaglia, down to Petralia Sottana and via Castelbuono back to the coast at Cefalù.",
+  "note": "The big loop through the Madonie, with water in the mountain villages; in winter there can be snow on Piano Battaglia."
+ },
+ "cobertoria-runde": {
+  "description": "From Pola de Lena over the Cobertoria to Bárzana in Quirós, down the valley to Caranga, through the gorges of the Trubia to Proaza and via Morcín back to Pola de Lena.",
+  "note": "In the Vuelta the Cobertoria is often the prelude to the Angliru, which can be ridden from Pola de Lena as a ride of its own."
+ },
+ "ardennen-runde": {
+  "description": "From Stavelot over the Côte de Stockeu to Vielsalm, down to Trois-Ponts, over the Côte de Wanne back to Stavelot, over the Haute-Levée to Spa and over the Col du Rosier and La Gleize back to Stavelot.",
+  "note": "The climbs of Liège–Bastogne–Liège on one loop; short and steep, on narrow roads, slippery after rain."
+ },
+ "aspin-hourquette-runde": {
+  "description": "From Sainte-Marie-de-Campan via Payolle up the Col d'Aspin, down to Arreau, along the Aure valley to Ancizan, over the Hourquette d'Ancizan to Payolle and back to Sainte-Marie-de-Campan.",
+  "note": "From Sainte-Marie-de-Campan the Tourmalet can be added as a detour to La Mongie or the pass."
+ },
+ "soulor-spandelles-runde": {
+  "description": "From Argelès-Gazost through the Val d'Azun to Arrens, up the Col du Soulor, down the quiet Ouzom valley to Ferrières and over the Col de Spandelles back to Argelès-Gazost.",
+  "note": "From the Soulor the Aubisque can be added via the Cirque du Litor (+21 km there and back, +400 m)."
+ },
+ "portillon-runde": {
+  "description": "From Bagnères-de-Luchon over the Col du Portillon to Bossòst, down the Garonne valley via Les to Saint-Béat and via Cierp-Gaud back to Bagnères-de-Luchon.",
+  "note": "The short loop from Luchon over the border; traffic towards Vielha down in the Garonne valley."
+ },
+ "port-lers-runde": {
+  "description": "From Massat over the Col de Port to Tarascon-sur-Ariège, up the Vicdessos valley to Vicdessos, over the Port de Lers past the Étang de Lers and back to Massat.",
+  "note": "At the Étang de Lers the Col d'Agnes can be added (+9 km there and back, +300 m)."
+ },
+ "ordino-runde": {
+  "description": "From Andorra la Vella via La Massana to Ordino, over the Coll d'Ordino to Canillo and via Encamp back to Andorra la Vella.",
+  "note": "Heavy traffic through Encamp and Andorra la Vella; the Coll d'Ordino itself is quiet."
+ },
+ "marie-blanque-runde": {
+  "description": "From Laruns down the Ossau valley to Bielle, over the Col de Marie-Blanque down to Escot in the Aspe valley, to Oloron-Sainte-Marie and via Arudy back to Laruns.",
+  "note": "The loop takes the Marie-Blanque from its easy side; for the last four kilometres at 11 %, ride it the other way round from Escot."
+ },
+ "grand-colombier-runde": {
+  "description": "From Culoz up the hairpins of the east side to the Grand Colombier and via Anglefort back to Culoz.",
+  "note": "Up from Culoz in hairpins with ramps above 10 %; the way down to Anglefort is the steepest side, narrow and irregular."
+ },
+ "marchairuz-mollendruz-runde": {
+  "description": "From Le Brassus over the Col du Marchairuz down to Bière, via Mont-la-Ville up the Col du Mollendruz, down to L'Abbaye and along the Lac de Joux back to Le Brassus.",
+  "note": "The Mollendruz is cleared all year; the Marchairuz is often closed after snowfall in winter."
+ },
+ "chasseral-runde": {
+  "description": "From Saint-Imier up the Chasseral, down to Nods, via Orvin to Sonceboz, via Tramelan up the Mont-Crosin and back to Saint-Imier.",
+  "note": "The Chasseral road is closed in winter; then the Mont-Crosin is left on its own."
+ },
+ "faucille-givrine-runde": {
+  "description": "From Gex up the hairpins to the Col de la Faucille, down to Mijoux, via Les Rousses to the Col de la Givrine, down via Saint-Cergue to Nyon and along the lake via Coppet and Divonne back to Gex.",
+  "note": "Traffic on the lake road and through the suburbs between Nyon and Divonne; the two passes are quieter."
+ },
+ "oberhof-runde": {
+  "description": "From Zella-Mehlis up to Oberhof, down the north side of the Thuringian Forest to Tambach-Dietharz, via Floh-Seligenthal to Steinbach-Hallenberg and back to Zella-Mehlis.",
+  "note": "Wide roads and steady gradients; the loop crosses the Rennsteig twice, at Oberhof and before Floh-Seligenthal, and to the north it drops long and gently."
+ },
+ "fataga-runde": {
+  "description": "From Maspalomas up through the Fataga gorge to San Bartolomé de Tirajana, via Santa Lucía de Tirajana down to Agüimes and along the coast via Vecindario back to Maspalomas.",
+  "note": "Fill up with water in San Bartolomé and Santa Lucía."
  }
 }
