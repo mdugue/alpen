@@ -1,3 +1,5 @@
 {
-
+  "tour:osterzgebirge-runde": {"firstSeen":"2026-10-23","hash":"e2d898877191966d","inputs":"65ca70e30335bce2","lastSeen":"2026-10-23","metrics":{"endDist":0.002,"km":54.81,"kmDelta":0.166,"startDist":0.002,"statedKm":47},"reasons":["Länge 54.81 km weicht +17 % von den angegebenen 47 km ab > 15 %"],"source":"osrm"},
+  "tour:riesengebirge-runde": {"firstSeen":"2026-10-23","hash":"3f184ecd62fe9092","inputs":"36fcdbdf6d45f127","lastSeen":"2026-10-23","metrics":{"endDist":0.004,"km":182.23,"kmDelta":0.787,"startDist":0.004,"statedKm":102},"reasons":["Länge 182.23 km weicht +79 % von den angegebenen 102 km ab > 15 %"],"source":"osrm"},
+  "tour:torfhaus-runde": {"firstSeen":"2026-10-23","hash":"dcdb9d78045ea98c","inputs":"c5068f849d056a4b","lastSeen":"2026-10-23","metrics":{"endDist":0.251,"km":81.81,"kmDelta":0.573,"startDist":0.251,"statedKm":52},"reasons":["Länge 81.81 km weicht +57 % von den angegebenen 52 km ab > 15 %"],"source":"osrm"}
 }
