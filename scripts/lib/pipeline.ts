@@ -578,7 +578,11 @@ export const runPipeline = async ({
       ),
     );
 
-  // Pipeline 4: climate. Queued after the (cheaper) profiles; the Open-Meteo budget cuts it off.
+  // Pipeline 4: climate, started only once the routes and their profiles are
+  // done. A route's profile waits for its router, so a climate series queued
+  // beside it took the Open-Meteo budget first – and an upgrade whose ORS
+  // route was already paid for was thrown away for want of its profile.
+  await Promise.all([...routing, ...profiling]);
   const climating = todo.climate.map(async (pass, i, all) => {
     const tag = counter(all.length)(i);
     try {
@@ -593,6 +597,6 @@ export const runPipeline = async ({
     }
   });
 
-  await Promise.all([...routing, ...profiling, ...climating]);
+  await Promise.all(climating);
   await writing;
 };
