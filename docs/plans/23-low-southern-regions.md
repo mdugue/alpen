@@ -209,7 +209,8 @@ series, i.e. roughly two and three hours of Open-Meteo windows respectively
   `quaeldich` slug is left out where the lexicon has no page and the panel
   falls back to the search, as designed.
 - **Density.** Sixty more dots in the south make the overview busier; plan 24
-  carries the prominence rule that keeps zoom 7 readable. Not a blocker for
+  carried a prominence rule for zoom 7, since replaced by the filters alone
+  deciding what is drawn. Not a blocker for
   the first three steps.
 - **The heat signal on the coast** is derived from the summit series with the
   lapse rate; at 500 m the derivation is close to the measurement, and the

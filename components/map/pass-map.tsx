@@ -267,7 +267,7 @@ export const PassMap = ({
    * frame to turn an icon would be the most expensive way to do that.
    */
   const [turned, setTurned] = useState(false);
-  /** The three controls in the map's quiet corner. */
+  /** The two controls in the map's quiet corner. */
   const provenance = useRef<Provenance | null>(null);
   const bearing = useRef(0);
   const needle = useRef<SVGSVGElement | null>(null);
@@ -327,7 +327,6 @@ export const PassMap = ({
     base,
     device: env,
     overlays,
-    passes: shown.passes,
     terrain: is3d,
     w: t,
   });
@@ -488,15 +487,14 @@ export const PassMap = ({
     /*
      * Provenance: the scale bar and who the map is by. Both quiet and small –
      * they are read once, not operated – while everything a visitor presses
-     * lives in the top-right group. The level-of-detail line travels with
-     * them: it is read too, and it must not sit under the sidebar on desktop.
+     * lives in the top-right group.
      *
      * The attribution stays *on the map* behind a single ⓘ rather than moving
      * into the view menu: one clearly identifiable interaction is what the
      * OSM attribution guidelines ask for, and a line inside a menu about map
      * types is neither identifiable nor one interaction.
      */
-    const controls = provenanceControls(t);
+    const controls = provenanceControls();
     provenance.current = controls;
     placeProvenance(m, controls, env.mobile, container.current);
 
@@ -650,13 +648,13 @@ export const PassMap = ({
    * The environment, handed to MapLibre as the difference to the one it is in
    * (`applyEnvironment`, components/map/apply-environment.ts).
    *
-   * This was five effects – the level-of-detail line, the corner the
-   * provenance stands in, the base, the overlays and the colour scheme – each
-   * with its own "has this been applied yet" ref, and a sixth `setTerrain`
-   * scattered over the style's load, the pitch listener and the 3D switch.
-   * Nothing said which of them ran first, and the two that write the base
-   * stack both did. One value, applied in one place, has one order, and it is
-   * written down in the applier.
+   * This was five effects – among them the corner the provenance stands in,
+   * the base, the overlays and the colour scheme – each with its own "has
+   * this been applied yet" ref, and a sixth `setTerrain` scattered over the
+   * style's load, the pitch listener and the 3D switch. Nothing said which
+   * of them ran first, and the two that write the base stack both did. One
+   * value, applied in one place, has one order, and it is written down in
+   * the applier.
    */
   useEffect(() => {
     const m = map.current;

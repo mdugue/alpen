@@ -250,53 +250,26 @@ _outermost_ stop function, the selection case goes inside the stops
 (`tourWidth`) – the same reason the pass hit radius is one `interpolate` with a
 `max` per stop rather than a `max` around one.
 
-### The overview draws by rank, the list draws everything
+### The filters decide what is drawn, the zoom only how
 
-```mermaid
-flowchart LR
-  P["passes.json<br/>fame · beauty · type"] --> R["rankOf<br/>(lib/prominence.ts)"]
-  R --> F["one step filter on the zoom"]
-  F --> Z1["zoom < 8<br/>rank 4 and 5"]
-  F --> Z2["8 ≤ zoom < 9<br/>rank 3 and up"]
-  F --> Z3["9 ≤ zoom < 10<br/>rank 2 and up"]
-  F --> Z4["zoom ≥ 10<br/>every road"]
-  S["selected · hovered · favourite"] -->|"always drawn"| Z1
-```
+Which roads and tours the map draws is the filters' business and nobody
+else's: every chip says what it leaves, the app opens on the classics, and what
+the filters leave out stays as a shadow (below). The zoom never adds or removes
+a dot, a hit area or a tour. An earlier version thinned the overview by rank
+below zoom 10, with a corner line saying which level was showing; it read as a
+second, hidden filter – a road the list held and the map did not – and is gone.
 
-Two hundred dots read at zoom 7; three hundred and fifty would not, and most
-of what the file grows by is small roads of fame 1 and 2
-(`docs/plans/24-depth-per-destination.md`). So the pass dots have a level of
-detail: a `step` on `["zoom"]` – the one place a MapLibre filter may read the
-zoom – with a rank floor per level (`PROMINENCE` in `lib/prominence.ts`), on the
-dot layer, on its hit layer and on the shadows below, so a hidden pass does not
-answer the pointer either. The steps are whole zooms, because MapLibre
-evaluates the zoom in a filter at the tile's integer zoom: a step written at 7.5
-is drawn at 8 anyway, and the legend would say otherwise.
-
-The rank is the fame, moved by two editorial facts the data already holds
-(`rankOf`): a road that leads over nothing – a spur, a valley, a balcony, a
-plateau – counts one step lower, because a dead end is a detour from a base
-and not what a region is chosen for; a road of beauty 5 counts one step higher,
-because it is. The classics (fame 4 and 5, `CLASSIC_FAME`) are never moved: the
-"Klassiker" chip keeps them, and the overview draws what that chip keeps.
-
-A rank arrives quiet. At the step it joins, its dot is drawn at 60 % of its
-size and 45 % of its opacity and grows to full size by the next step
-(`byLadder` in `components/map/app-layers.ts`, the stops `SIZE_STOPS` and
-`newcomerBelow`), so a step reads as a map filling in rather than as a page of
-dots arriving at once. A selected dot and the hovered mark are never quiet.
-
-It is a level of detail and not a filter: the list is untouched, no chip
-carries it, and the line in the map's bottom corner says which level is showing
-("Bei dieser Zoomstufe: Klassiker und bekannte Pässe"), falling silent once
-everything is drawn. What the visitor put on the map or is pointing at ignores
-the rule – a selected dot is always drawn, a favourite is a star at every zoom,
-and the hovered pass is drawn again from the one-feature hover source
-(`hover-mark`), so a row hovered in the list never rings an empty patch of map.
-The names read the same rank on a finer ladder of their own (`PASS_LABELS`),
-every step at or after its dot's, which a test holds; a dot always appears
-before its name. The lines are not thinned: an ascent is a few pixels wide and
-reads as texture where a dot would read as noise.
+What the zoom still decides is how the drawn roads read. A dot's size
+interpolates between `SIZE_ZOOMS` and grows with its fame, and the names join
+by rank on a ladder of their own (`PASS_LABELS` in `lib/layer-ids.ts`), because
+two hundred dots fit on an overview where two hundred names do not. The rank is
+the fame, moved by two editorial facts the data already holds (`rankOf` in
+`lib/prominence.ts`): a road that leads over nothing – a spur, a valley, a
+balcony, a plateau – counts one step lower, because a dead end is a detour from
+a base and not what a region is chosen for; a road of beauty 5 counts one step
+higher, because it is. The classics (fame 4 and 5, `CLASSIC_FAME`) are never
+moved. What is selected or a favourite is named at every zoom, and MapLibre
+resolves what collides.
 
 ### What the filters leave out stays as a shadow
 
@@ -307,16 +280,15 @@ status, ring or name, and from zoom 8 its ascents are a grey hairline under
 everything (`ROUTE_GHOST`, one layer opacity, `Scene.routes.ghosts`) – the
 valleys stay a network of roads, and none of it competes with a status
 colour. Not on the overview, where three hundred hairlines would be a grey
-felt. A map that showed only
+felt; the dot itself is there at every zoom. A map that showed only
 forty-five dots would say the rest of the Alps is empty; a grey speck says
 there is more here, and where. The shadows are every road the half-month
-grades less the ones the list holds, whatever filter left them out, and they
-thin out by the same ladder as the dots – three hundred grey specks at zoom 6
-would be the noise the classics are there to avoid. They lie under every line
-and mark the filters kept and lose the pointer to all of them (`HIT_GROUPS`),
-but they answer it: the hover label adds "nicht im Filter", and a click opens
-the road, which is then drawn whole – dot, ascents and all – while it is
-selected. A favourite shadow is drawn at every zoom.
+grades less the ones the list holds, whatever filter left them out. They lie
+under every line and mark the filters kept and lose the pointer to all of
+them, and to an area's name too, which a couple of hundred grey dots on the
+overview would otherwise swallow (`HIT_GROUPS`), but they answer it: the hover
+label adds "nicht im Filter", and a click opens the road, which is then drawn
+whole – dot, ascents and all – while it is selected.
 
 ## What the map draws is a value
 

@@ -61,12 +61,6 @@ export const vocab = {
     upTo: "bis {n}",
     wetDays: "bis {n} von 15",
   },
-  /** The legend line while the overview is thinned by fame. */
-  prominence: {
-    famous: "Klassiker und die schönsten bekannten Pässe",
-    known: "Klassiker und bekannte Pässe",
-    most: "die meisten Straßen",
-  },
   /**
    * A range as a label, a hint, and in a sentence: German declines the
    * article, and the Jura is singular where the other three are plural – "in

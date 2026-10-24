@@ -71,7 +71,7 @@ export const scales = {
   },
   symbols: {
     heading: "Map symbols",
-    text: "**Circle:** pass – colour shows the status, hollow circle = often closed, size = fame. **Grey dot:** a road outside the filters; tap it to open it. **Star:** favourite. **Line:** loop (its own colour) or ascent (status colour). **Diamond:** cycling town. Zoomed far out the map shows only the classics and the finest well-known passes; each zoom level adds more, small and pale at first. A road that leads over nothing – spur, valley, balcony or high road – comes one level later than a pass, one of beauty 5 one level earlier.",
+    text: "**Circle:** pass – colour shows the status, hollow circle = often closed, size = fame. **Grey dot:** a road outside the filters; tap it to open it. **Star:** favourite. **Line:** loop (its own colour) or ascent (status colour). **Diamond:** cycling town. Which roads the map shows is decided by the filters alone, not by the zoom – what they leave out stays as a grey dot. The zoom only decides when the names join.",
   },
   tours: {
     heading: "Kind of tour",
