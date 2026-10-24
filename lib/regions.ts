@@ -293,8 +293,8 @@ export const PEARL_BEAUTY = 5;
  * What kind of ride a tour is: how one goes about riding it, not what its
  * roads are like. Single-valued, because the question it answers is "can I
  * just go" – a loop any day, an event course whose roads close for one day a
- * year and are free the rest of it, a signposted permanent route with a stamp
- * card and a medal, a route over several days from A to B with nights on
+ * year and are free the rest of it, a permanent route with a stamp card and a
+ * medal (signposted or ridden on the organiser's track), a route over several days from A to B with nights on
  * the way, or one year's course of an event that changes it every year (an
  * `edition`, which carries its `series` and `year`). The order is the display
  * order in the chips and the scales dialog.

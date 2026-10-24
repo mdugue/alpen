@@ -60,7 +60,7 @@ import type {
   Town,
 } from "../lib/types";
 import { renderJsonSchema, schemaFileFor } from "./emit-json-schema";
-import { tourCoverage } from "./lib/coverage";
+import { MATCH_KM, tourCoverage } from "./lib/coverage";
 import { readData } from "./lib/data-files";
 import type { Data } from "./lib/data-files";
 import { asksOrs, judge, lacksCover, measure, plan } from "./lib/decide";
@@ -443,11 +443,14 @@ const checkTours = (list: Tour[], byPass: Map<string, Pass>) => {
       }
       // A road that ends at its summit cannot be crossed, so a tour listing it
       // either has the wrong pass or the pass is wrongly marked – unless it is
-      // where an open course finishes, as an event on a summit does.
+      // where an open course finishes, as an event on a summit does, or the
+      // course rides up and back down on purpose, as a permanent with its
+      // checkpoint on the top does: the curator says so with a waypoint there.
       const finish = open && i === t.passes.length - 1;
-      if (p.type === "spur" && !finish)
+      const outAndBack = t.waypoints.some((w) => haversine(w, p) <= MATCH_KM);
+      if (p.type === "spur" && !finish && !outAndBack)
         warnings.push(
-          `Tour ${t.slug}: ${s} ist eine Stichstraße – eine Runde kann dort nicht hinüber`,
+          `Tour ${t.slug}: ${s} ist eine Stichstraße – eine Runde kann dort nicht hinüber; fährt sie hinauf und zurück, gehört ein Wegpunkt oben hin`,
         );
       // A loop's own window may narrow what its passes allow, never widen it:
       // a loop that claims to open in May over a pass that opens in June says

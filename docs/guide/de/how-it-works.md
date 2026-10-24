@@ -137,8 +137,10 @@ der Pässe nur enger fassen, nie erweitern.
 Jede Tour sagt außerdem, wie man sie fährt. Eine **Rundtour** fährt man,
 wann man will. Eine **Veranstaltung** ist die Strecke eines Radmarathons:
 An einem Tag im Jahr gibt es Startnummern und gesperrte Straßen, an allen
-anderen ist sie frei. Eine **Dauerstrecke** ist beschildert und hat eine
-Stempelkarte oder Wertung, etwa der Stoneman Dolomiti Road. Eine
+anderen ist sie frei. Eine **Dauerstrecke** hat eine Stempelkarte oder
+Wertung und ist beschildert oder wird nach dem Track des Veranstalters
+gefahren, etwa die Stoneman-Straßenrunden in den Dolomiten und im
+Erzgebirge oder der Raid Pyrénéen. Eine
 **Etappenroute** führt über mehrere Tage von A nach B, etwa die Route des
 Grandes Alpes. Eine **Jahresausgabe** ist die Strecke eines Radmarathons, der
 jedes Jahr anders fährt, etwa die Stelvio Santini: jedes Jahr ein eigener

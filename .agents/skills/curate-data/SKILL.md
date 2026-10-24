@@ -80,6 +80,12 @@ authoritative. In addition:
   and the `sides` follow, or `data:check` fails.
 - **aliases** (plan 05): other spellings and other-language names, never the
   name itself.
+- **Finding tours**: start from the names, not from the roads – branded
+  permanents, sportives, stage routes and the tourism boards' signature loops,
+  per range and in the range's languages. The source classes, the bar a
+  candidate has to clear and the register of what was already checked (with
+  the verdict for the ones left out) are in [`tour-sources.md`](tour-sources.md);
+  add a line there for every candidate you look at.
 - **Tours**: `passes` in ride order, and every crossing the tour rides over
   is one of them. A climb that is not in `passes.json` yet is added first, as
   a full entry (scales, season, ascents, portrait, English), and the tour

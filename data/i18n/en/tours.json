@@ -290,5 +290,21 @@
  "fataga-runde": {
   "description": "From Maspalomas up through the Fataga gorge to San Bartolomé de Tirajana, via Santa Lucía de Tirajana down to Agüimes and along the coast via Vecindario back to Maspalomas.",
   "note": "Fill up with water in San Bartolomé and Santa Lucía."
+ },
+ "stoneman-miriquidi-road": {
+  "description": "From Oberwiesenthal up the Bärenstein, over the Drei-Brüder-Höhe near Marienberg and Kühnhaide through the Natzschung valley to the Saigerhütte in Olbernhau, up the Schwartenberg above Seiffen, past the Rauschenbach reservoir to Holzhau, Bärenfels and Zinnwald. Across the Bohemian moors near Fláje down to Litvínov, up the escarpment to Nová Ves v Horách, down to Chomutov and along the Ohře valley to Klášterec, from Perštejn the long climb up the Klínovec and over the Fichtelberg back to Oberwiesenthal.",
+  "note": "A permanent route with 13 stamp points, most of them on the summits, but no signposts: the GPS track comes with the starter pack. Gold in one day, silver in two, bronze in three; the line here joins the stamp points and differs from the track in places."
+ },
+ "raid-pyreneen": {
+  "description": "From Hendaye over the Basque cols of Saint-Ignace and Pinodieta to Espelette, over the Col d'Osquich to Tardets, via Oloron to Laruns, up the Aubisque and the Soulor, over the Tourmalet to La Mongie, over the Aspin and the Peyresourde to Luchon, over the Col des Ares and the Portet d'Aspet to Saint-Girons, via Massat and the Col de Port to Tarascon, over the Puymorens into the Cerdagne, via Mont-Louis down to Prades and to the coast at Cerbère.",
+  "note": "A brevet of the Cyclo Club Béarnais with a stamp card: from the Atlantic to the Mediterranean in at most 100 hours, from June to September; the controls are cafés and shops in the stage towns. The touring version allows ten days."
+ },
+ "quebrantahuesos": {
+  "description": "From Sabiñánigo via Jaca and Canfranc up the Somport, down the Aspe valley to Bedous, from Escot over the Col de Marie-Blanque to Laruns, up the Ossau valley to the Portalet, down to Sallent, via Hoz de Jaca and Biescas back to Sabiñánigo.",
+  "note": "Spain's largest cycling marathon with 8,000 places, on a Saturday in June on closed roads. The short Treparriscos leaves out the Somport and the Marie-Blanque."
+ },
+ "mallorca-312": {
+  "description": "From Platja de Muro to Pollença, over the Coll de Femenia to Lluc, over the Coll de sa Batalla and past the Gorg Blau under the Puig Major to Sóller, along the coast via Deià, Banyalbufar and Estellencs to Andratx, via Es Capdellà, Galilea and Esporles to Alaró and Lloseta, via Campanet, Ariany and Petra to Artà and back to Platja de Muro.",
+  "note": "A cycling marathon round the whole island in late April, with shorter courses of 167 and 225 km; almost all the climbing comes in the first 150 km in the Tramuntana, the rest rolls across the plain."
  }
 }
