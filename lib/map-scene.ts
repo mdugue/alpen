@@ -370,6 +370,20 @@ export const buildScene = (input: SceneInput): Scene => {
   const visibleTours = rows.tour.filter(({ tour }) =>
     isShown(shown, "tour", tour.slug),
   );
+  // A selected tour the filters leave out is drawn all the same, as a selected
+  // shadow is: the panel shows it, so the map has to. Its line is in the tour
+  // file whatever the filters say; only the filter and the state ask for it.
+  const strayTour =
+    selTour &&
+    !rows.tour.some(({ tour }) => tour.slug === selTour) &&
+    isShown(shown, "tour", selTour)
+      ? selTour
+      : null;
+  if (strayTour)
+    tourState[strayTour] = {
+      hovered: flag(strayTour === hoverTour),
+      selected: 1,
+    };
 
   const { ghost: ghostRow, row: passRow } = roadAt(drawn, ghosts, hoverPass);
   const townRow = hoverTown
@@ -526,7 +540,10 @@ export const buildScene = (input: SceneInput): Scene => {
       state: routeState,
     },
     tours: {
-      filter: slugFilter(visibleTours.map(({ tour }) => tour.slug)),
+      filter: slugFilter([
+        ...visibleTours.map(({ tour }) => tour.slug),
+        ...(strayTour ? [strayTour] : []),
+      ]),
       state: tourState,
     },
     towns: collection<TownProps>(

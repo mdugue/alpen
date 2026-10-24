@@ -316,7 +316,9 @@ would be the noise the classics are there to avoid. They lie under every line
 and mark the filters kept and lose the pointer to all of them (`HIT_GROUPS`),
 but they answer it: the hover label adds "nicht im Filter", and a click opens
 the road, which is then drawn whole – dot, ascents and all – while it is
-selected. A favourite shadow is drawn at every zoom.
+selected. A favourite shadow is drawn at every zoom. A tour the filters
+leave out has no shadow, but once it is selected (from the search or a link)
+its tube is drawn like any other, because the panel already shows it.
 
 ## What the map draws is a value
 

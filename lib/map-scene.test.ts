@@ -272,6 +272,30 @@ describe("selection", () => {
     });
   });
 
+  test("a selected tour the filters leave out is drawn all the same", () => {
+    const scene = buildScene(
+      input({
+        rows: { destination: [], pass: [], tour: [], town: [] },
+        selection: { kind: "tour", slug: "marmotte" },
+      }),
+    );
+    expect(filtered(scene.tours.filter)).toEqual(["marmotte"]);
+    expect(scene.tours.state.marmotte).toEqual({ hovered: 0, selected: 1 });
+    // Not one the map switch hides, though: that is the rider's own choice.
+    const hidden = { ...ALL_SHOWN, hiddenTours: ["marmotte"] };
+    expect(
+      filtered(
+        buildScene(
+          input({
+            rows: { destination: [], pass: [], tour: [], town: [] },
+            selection: { kind: "tour", slug: "marmotte" },
+            shown: hidden,
+          }),
+        ).tours.filter,
+      ),
+    ).toEqual([]);
+  });
+
   test("a selected tour is state, not geometry", () => {
     const scene = buildScene(
       input({ selection: { kind: "tour", slug: "marmotte" } }),
