@@ -15,9 +15,9 @@ curation goes where a base is thin rather than where a name is famous. Three
 things: a coverage report per base town (which paved passes within its reach
 the app does not list), the rule that a pass carries every classic side, and
 a prominence rule on the map so that 400 roads read as well at zoom 7 as
-200 do today. Together they answer the question behind plan 23 in general
-form: yes, the app can offer more depth everywhere, and this is how it stays
-honest and readable while it does.
+200 do today (since superseded, see below). Together they answer the
+question behind plan 23 in general form: yes, the app can offer more depth
+everywhere, and this is how it stays honest and readable while it does.
 
 ## Why now
 
@@ -119,6 +119,12 @@ of them.
 
 ### Prominence on the map
 
+> **Superseded.** The dots were thinned by rank below zoom 10 for a while and
+> the legend line said so; that read as a second, hidden filter and was
+> removed again. The filters alone decide what is drawn, the zoom only sizes
+> the dots and lets the names join by rank – see
+> [map rendering](../map-rendering.md#the-filters-decide-what-is-drawn-the-zoom-only-how).
+
 Every feature in the pass GeoJSON (`lib/map-assets.ts`) gets a `minzoom`
 property derived from fame – fame 5 and 4 always, fame 3 from zoom 7.5, fame
 2 and 1 from zoom 8.5, the numbers to be tuned on the built map – and the
@@ -162,7 +168,8 @@ before.
 on how a candidate becomes an entry; `docs/map-rendering.md` gets the
 prominence rule next to "What answers the pointer is not what is drawn";
 `AGENTS.md` gets the one-line version ("the overview draws by fame, the
-list draws everything").
+list draws everything") – both since replaced by "the filters decide what is
+drawn, the zoom only how".
 
 ## Acceptance criteria
 

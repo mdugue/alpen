@@ -57,8 +57,6 @@ export const map = {
   hillshade: "Relief-Schummerung",
   /** The view menu's last group: the same place in the other language. */
   language: "Sprache",
-  /** The corner line while the overview is thinned by fame (`prominenceWord`). */
-  levelLine: "Bei dieser Zoomstufe: {word}",
   /** The locate button: its name, its tooltip, and what it says when it cannot. */
   locate: "Mein Standort",
   locateDenied:

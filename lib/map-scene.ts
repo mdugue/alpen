@@ -45,7 +45,7 @@ export interface PassProps {
   fame: number;
   favorite: Flag;
   name: string;
-  /** Where the road stands on the overview's ladder (`rankOf`, lib/prominence.ts). */
+  /** Where the road stands on the label ladder (`rankOf`, lib/prominence.ts). */
   rank: number;
   selected: Flag;
   slug: string;
@@ -56,16 +56,13 @@ export interface PassProps {
 
 /**
  * A road the filters leave out, drawn as a shadow (`LAYERS.ghost`): a small
- * grey dot with no status and no name, its ascents a grey hairline from zoom 8
- * (`ROUTE_GHOST`) – enough to say there is more here, and to be tapped,
- * without competing with what the filters chose.
+ * grey dot with no status and no name, at every zoom, its ascents a grey
+ * hairline from zoom 8 (`ROUTE_GHOST`) – enough to say there is more here,
+ * and to be tapped, without competing with what the filters chose.
  */
 export interface GhostProps {
   fame: number;
-  /** A favourite is drawn at every zoom, shadow or not. */
-  favorite: Flag;
   name: string;
-  rank: number;
   slug: string;
 }
 
@@ -96,16 +93,12 @@ export interface DestinationProps {
 }
 
 /**
- * The hovered mark, drawn from its own one-feature source: at a zoom where
- * the level of detail hides a pass's dot, a row hovered in the list would
- * otherwise ring an empty patch of map. A town and a shadow need nothing but
- * their kind – only the ring is drawn for them, so a grey dot under the
- * pointer stays grey.
+ * The hovered mark, its own one-feature source: the ring is drawn around it,
+ * over the mark that is already there – a shadow under the pointer stays grey.
  */
-export type HoverProps =
-  | ({ kind: "pass" } & Omit<PassProps, "name" | "slug">)
-  | { kind: "ghost" }
-  | { kind: "town" };
+export interface HoverProps {
+  kind: "ghost" | "pass" | "town";
+}
 
 export interface RouteState {
   hovered: Flag;
@@ -238,32 +231,17 @@ const roadSubtitle = (row: PassRow, w: Messages, ghost = false) =>
     .filter(Boolean)
     .join(" · ");
 
-/**
- * What the hover source holds: the pointed-at road's dot drawn again, or – for
- * a town and for a shadow, which is to stay grey – only the kind the ring is
- * drawn for.
- */
+/** What the hover source holds: where the ring goes, and around which kind. */
 const hoverMark = (
   road: PassRow | undefined,
   ghost: boolean,
-  selPass: string | null,
   town: TownRow | undefined,
 ): { at: readonly [number, number]; props: HoverProps }[] => {
   if (road)
     return [
       {
         at: [road.pass.lon, road.pass.lat],
-        props: ghost
-          ? { kind: "ghost" }
-          : {
-              fame: road.pass.fame,
-              favorite: flag(road.favorite),
-              kind: "pass",
-              rank: rankOf(road.pass),
-              selected: flag(road.pass.slug === selPass),
-              status: road.status,
-              surface: road.pass.surface,
-            },
+        props: { kind: ghost ? "ghost" : "pass" },
       },
     ];
   return town
@@ -294,9 +272,7 @@ const shadows = (ghosts: readonly PassRow[], selPass: string | null) =>
         at: [row.pass.lon, row.pass.lat],
         props: {
           fame: row.pass.fame,
-          favorite: flag(row.favorite),
           name: row.pass.name,
-          rank: rankOf(row.pass),
           slug: row.pass.slug,
         },
       })),
@@ -494,7 +470,6 @@ export const buildScene = (input: SceneInput): Scene => {
         hoverMark(
           markedPass,
           ghostRow && markedPass?.pass.slug !== selPass,
-          selPass,
           markedTown,
         ),
       ),
