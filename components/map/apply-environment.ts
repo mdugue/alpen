@@ -1,6 +1,6 @@
 "use client";
 
-import type { IControl, Map as MLMap } from "maplibre-gl";
+import type { Map as MLMap } from "maplibre-gl";
 import { AttributionControl, ScaleControl } from "maplibre-gl";
 
 import {
@@ -12,9 +12,7 @@ import {
 } from "@/components/map/app-layers";
 import { baseLayers, OVERLAYS } from "@/components/map/map-style";
 import { BASEMAP_ID } from "@/lib/basemap";
-import { fill } from "@/lib/i18n";
 import type { Messages } from "@/lib/i18n";
-import { prominenceWord } from "@/lib/prominence";
 import type { MapEnvironment } from "@/lib/use-media-query";
 
 /**
@@ -36,78 +34,23 @@ import type { MapEnvironment } from "@/lib/use-media-query";
 /** Tilt and terrain are one thing here: the DEM the 3D switch stands on. */
 const TERRAIN = { exaggeration: 1.25, source: "dem" } as const;
 
-/**
- * The legend line for the level of detail (`lib/prominence.ts`): "Bei dieser
- * Zoomstufe: bekannte Pässe" while the overview is thinned by fame, nothing
- * once every road is drawn. A MapLibre control rather than a React node, so
- * it sits in a corner the way the scale bar and the attribution do – read,
- * not pressed – and keeps clear of the season bar with them.
- * It is silent while the passes are switched off: a line about which passes
- * are drawn is a lie when none are.
- *
- * It is built with the page's words, like the map itself: switching the
- * language is a full load, so they never change under it.
- */
-class DetailLevelControl implements IControl {
-  private el: HTMLDivElement | null = null;
-  private map: MLMap | null = null;
-  private shown = true;
-  private readonly w: Messages;
-
-  constructor(w: Messages) {
-    this.w = w;
-  }
-
-  private readonly update = () => {
-    if (!this.el || !this.map) return;
-    const word = this.shown ? prominenceWord(this.map.getZoom(), this.w) : null;
-    this.el.textContent = word ? fill(this.w.map.levelLine, { word }) : "";
-    this.el.hidden = !word;
-  };
-
-  onAdd(m: MLMap) {
-    this.map = m;
-    this.el = document.createElement("div");
-    this.el.className =
-      "maplibregl-ctrl bg-card/70 border-border/60 text-muted-foreground text-2xs rounded-xs border px-1 leading-4 backdrop-blur-sm";
-    m.on("zoom", this.update);
-    this.update();
-    return this.el;
-  }
-
-  onRemove(m: MLMap) {
-    m.off("zoom", this.update);
-    this.el?.remove();
-    this.el = null;
-    this.map = null;
-  }
-
-  /** Whether the passes are drawn at all – with them off the line is hidden. */
-  setShown(shown: boolean) {
-    this.shown = shown;
-    this.update();
-  }
-}
-
-/** The scale bar, the attribution ⓘ and the level-of-detail line, as a set. */
+/** The scale bar and the attribution ⓘ, as a set. */
 export interface Provenance {
   attribution: AttributionControl;
   scale: ScaleControl;
-  level: DetailLevelControl;
 }
 
-/** The three of them, in the order a right corner has to take them. */
-const inCorner = (c: Provenance) => [c.attribution, c.scale, c.level];
+/** The two of them, in the order a right corner has to take them. */
+const inCorner = (c: Provenance) => [c.attribution, c.scale];
 
 /** Built once with the map, so the corner can be changed without rebuilding them. */
-export const provenanceControls = (w: Messages): Provenance => ({
+export const provenanceControls = (): Provenance => ({
   attribution: new AttributionControl({ compact: true }),
-  level: new DetailLevelControl(w),
   scale: new ScaleControl({ unit: "metric" }),
 });
 
 /**
- * Puts the three quiet controls in the corner the layout leaves them.
+ * Puts the two quiet controls in the corner the layout leaves them.
  *
  * On a phone they stack in the bottom-left corner above the season bar; on
  * desktop, where the season card stands beside the panels on the left, they sit
@@ -150,9 +93,9 @@ export const placeProvenance = (
  *
  * `device` is the environment the platform hands down (`MapEnvironment`,
  * lib/use-media-query.ts) – reused rather than spread out here, so the layer
- * definitions and this value read the same four answers. The four fields
+ * definitions and this value read the same four answers. The three fields
  * beside it are what the visitor has chosen: the view menu's base and
- * overlays, its 3D switch, and whether the pass layer is on at all.
+ * overlays and its 3D switch.
  */
 export interface MapEnv {
   device: MapEnvironment;
@@ -162,8 +105,6 @@ export interface MapEnv {
   overlays: readonly string[];
   /** The 3D switch. Its only consequence is the terrain, which is why it is here. */
   terrain: boolean;
-  /** Whether pass dots are drawn – the level-of-detail line is silent without them. */
-  passes: boolean;
   /** The page's words: the basemap's labels are read in their language. */
   w: Messages;
 }
@@ -208,9 +149,9 @@ export interface EnvHost {
  *    whole style against the DEM; after the layers are in their final state
  *    that costs one such pass instead of two.
  *
- * The other three – the level-of-detail line, the corner the provenance stands
- * in and the overlay visibilities – touch neither the base stack nor the DEM,
- * so their place is free; they keep the one they had.
+ * The other two – the corner the provenance stands in and the overlay
+ * visibilities – touch neither the base stack nor the DEM, so their place is
+ * free; they keep the one they had.
  */
 export const applyEnvironment = (
   host: EnvHost,
@@ -219,10 +160,7 @@ export const applyEnvironment = (
 ): void => {
   const { controls, map: m, root } = host;
 
-  // The line about which passes are drawn, silenced while none are.
-  if (prev.passes !== env.passes) controls.level.setShown(env.passes);
-
-  // Which corner the three quiet controls stand in. MapLibre fixes a
+  // Which corner the two quiet controls stand in. MapLibre fixes a
   // control's corner when it is added, so a change of layout re-adds them.
   if (prev.device.mobile !== env.device.mobile) {
     for (const control of inCorner(controls)) m.removeControl(control);

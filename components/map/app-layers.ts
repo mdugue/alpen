@@ -33,13 +33,7 @@ import {
 } from "@/lib/layer-ids";
 import { PALETTE } from "@/lib/palette";
 import type { Scheme } from "@/lib/palette";
-import {
-  DESTINATION_MAX_ZOOM,
-  newcomerBelow,
-  prominenceFilter,
-  SIZE_STOPS,
-  SIZE_ZOOMS,
-} from "@/lib/prominence";
+import { DESTINATION_MAX_ZOOM, SIZE_ZOOMS } from "@/lib/prominence";
 import { STATUSES } from "@/lib/regions";
 import type { MapEnvironment } from "@/lib/use-media-query";
 
@@ -262,70 +256,38 @@ const SIZE = { far: [2, 1.1], near: [4, 1.8] } as const;
 const RANK_FLOOR = PASS_LABELS.at(-1)!.rank;
 /** A shadow's radius at the two size zooms, its opacity and its lines': present, not loud. */
 const GHOST = { line: 0.28, opacity: 0.5, radius: [2.4, 4.4] } as const;
-/** How big and how opaque a newcomer is at the step it joins (`newcomerBelow`). */
-const QUIET = { opacity: 0.45, size: 0.6 } as const;
 
-/**
- * One zoom-interpolated paint value with a newcomer's share at each of the
- * ladder's stops (`SIZE_STOPS`): `at(stop)` is the full value there, and a dot
- * whose rank joined at that stop gets `quiet` of it – unless it is selected,
- * which is drawn whole whatever the zoom. A `quiet` of 1 is a plain ramp. A `zoom` expression may
- * only be the input of a top-level interpolate, so the ladder is spelled into
- * its stops rather than wrapped around it.
- */
-const byLadder = (
-  at: (stop: number) => ExpressionSpecification | number,
-  quiet: number,
+/** A paint value given at the two size zooms (`SIZE_ZOOMS`) and interpolated between. */
+const bySize = (
+  far: ExpressionSpecification | number,
+  near: ExpressionSpecification | number,
 ): ExpressionSpecification =>
   [
     "interpolate",
     ["linear"],
     ["zoom"],
-    ...SIZE_STOPS.flatMap((stop) => {
-      const below = quiet === 1 ? null : newcomerBelow(stop);
-      const full = at(stop);
-      return [
-        stop,
-        below === null
-          ? full
-          : [
-              "case",
-              [
-                "all",
-                ["<", ["get", "rank"], below],
-                ["!=", ["get", "selected"], 1],
-              ],
-              ["*", quiet, full],
-              full,
-            ],
-      ];
-    }),
+    SIZE_ZOOMS.far,
+    far,
+    SIZE_ZOOMS.near,
+    near,
   ] as never;
 
 /**
- * The radius of a pass dot, by zoom and fame, quiet at the step its rank joins
- * at. With a `hit` floor it becomes the dot's hit area instead: never below that
- * floor, always a margin wider than the dot, which on a famous pass at close
- * zoom is as wide as the floor itself, and never quiet – a dot that is small
- * for a step is no harder to hit. `quiet: false` draws every rank whole, for a
- * mark the visitor is pointing at.
+ * The radius of a pass dot, by zoom and fame. With a `hit` floor it becomes
+ * the dot's hit area instead: never below that floor, always a margin wider
+ * than the dot, which on a famous pass at close zoom is as wide as the floor
+ * itself.
  */
-const passRadius = (hit = 0, quiet = true): ExpressionSpecification => {
-  const [b0, f0] = SIZE.far;
-  const [b1, f1] = SIZE.near;
-  const { far: z0, near: z1 } = SIZE_ZOOMS;
-  const at = (stop: number): ExpressionSpecification => {
-    const t = (stop - z0) / (z1 - z0);
-    const base = b0 + t * (b1 - b0);
-    const perFame = f0 + t * (f1 - f0);
+const passRadius = (hit = 0): ExpressionSpecification => {
+  const at = ([base, perFame]: readonly [number, number]) => {
     const r: ExpressionSpecification = [
       "+",
       base + (hit ? HIT_MARGIN : 0),
       ["*", perFame, ["get", "fame"]],
     ];
-    return hit ? ["max", hit, r] : r;
+    return hit ? (["max", hit, r] as ExpressionSpecification) : r;
   };
-  return byLadder(at, hit || !quiet ? 1 : QUIET.size);
+  return bySize(at(SIZE.far), at(SIZE.near));
 };
 
 /**
@@ -397,69 +359,54 @@ export const appLayers = (
   const selected = ["==", ["feature-state", "selected"], 1];
   const hoveredLine = ["==", ["feature-state", "hovered"], 1];
   const isSelected = ["==", ["get", "selected"], 1] as const;
-  const isFavorite = ["==", ["get", "favorite"], 1] as const;
-  /** A shadow is drawn where a dot of its rank would be, a favourite at every zoom. */
-  const ghostFilter = prominenceFilter((minRank) =>
-    minRank === null
-      ? true
-      : ["any", isFavorite, [">=", ["get", "rank"], minRank]],
-  ) as never;
   /** An unpaved road's dot and line (plan 27): a ring, and a dash over the line. */
   const isUnpavedDot: ExpressionSpecification = [
     "!=",
     ["get", "surface"],
     "asphalt",
   ];
-  /**
-   * One pass dot: status by hue, closure by hollowness, fame by size and
-   * weight, a newcomer quiet. Shared by the pass layer and the hovered mark,
-   * which is the same dot drawn from another source and never quiet.
-   */
-  const passPaintOf = (quiet: boolean) =>
-    ({
-      // "closed" is additionally encoded as a hollow circle so that the
-      // three states do not rely on hue alone.
-      "circle-color": [
-        "case",
-        ["==", ["get", "status"], "closed"],
-        colors.paper,
-        statusColor,
-      ],
-      "circle-opacity": byLadder(
-        () => [
-          "case",
-          [">=", ["get", "fame"], 4],
-          0.95,
-          ["==", ["get", "fame"], 3],
-          0.8,
-          0.62,
-        ],
-        quiet ? QUIET.opacity : 1,
-      ),
-      "circle-pitch-alignment": "map",
-      "circle-radius": passRadius(0, quiet),
-      "circle-stroke-color": [
-        "case",
-        isSelected,
-        colors.ink,
-        ["==", ["get", "status"], "closed"],
-        colors.closed,
-        // An unpaved road: a dark ring, the dot's own colour still the status.
-        isUnpavedDot,
-        colors.ink,
-        colors.paper,
-      ],
-      "circle-stroke-width": [
-        "case",
-        isSelected,
-        3,
-        ["==", ["get", "status"], "closed"],
-        2.5,
-        isUnpavedDot,
-        2,
-        1.5,
-      ],
-    }) as never;
+  /** One pass dot: status by hue, closure by hollowness, fame by size and weight. */
+  const passPaint = {
+    // "closed" is additionally encoded as a hollow circle so that the
+    // three states do not rely on hue alone.
+    "circle-color": [
+      "case",
+      ["==", ["get", "status"], "closed"],
+      colors.paper,
+      statusColor,
+    ],
+    "circle-opacity": [
+      "case",
+      [">=", ["get", "fame"], 4],
+      0.95,
+      ["==", ["get", "fame"], 3],
+      0.8,
+      0.62,
+    ],
+    "circle-pitch-alignment": "map",
+    "circle-radius": passRadius(),
+    "circle-stroke-color": [
+      "case",
+      isSelected,
+      colors.ink,
+      ["==", ["get", "status"], "closed"],
+      colors.closed,
+      // An unpaved road: a dark ring, the dot's own colour still the status.
+      isUnpavedDot,
+      colors.ink,
+      colors.paper,
+    ],
+    "circle-stroke-width": [
+      "case",
+      isSelected,
+      3,
+      ["==", ["get", "status"], "closed"],
+      2.5,
+      isUnpavedDot,
+      2,
+      1.5,
+    ],
+  } as never;
   const routeColor = statusBy([
     "coalesce",
     ["feature-state", "status"],
@@ -595,32 +542,21 @@ export const appLayers = (
       type: "line",
     },
     // The roads the filters leave out, as shadows (`Scene.ghosts`): a small
-    // dot in the ink, faint, no ring, no status, no name. They thin out by
-    // the same ladder as the dots – three hundred grey specks would be the
-    // noise the classics are there to avoid – and lie under every line and
+    // dot in the ink, faint, no ring, no status, no name, at every zoom –
+    // only the filters decide what is drawn. They lie under every line and
     // mark the filters kept, which win the pointer too (`HIT_GROUPS`).
     {
-      filter: ghostFilter,
       id: LAYERS.ghost.mark,
       paint: {
         "circle-color": colors.ink,
-        "circle-opacity": byLadder(() => GHOST.opacity, QUIET.opacity),
+        "circle-opacity": GHOST.opacity,
         "circle-pitch-alignment": "map",
-        "circle-radius": byLadder(
-          (stop) =>
-            GHOST.radius[0] +
-            ((stop - SIZE_ZOOMS.far) / (SIZE_ZOOMS.near - SIZE_ZOOMS.far)) *
-              (GHOST.radius[1] - GHOST.radius[0]),
-          QUIET.size,
-        ),
+        "circle-radius": bySize(GHOST.radius[0], GHOST.radius[1]),
       },
       source: SOURCE.ghosts,
       type: "circle",
     },
-    {
-      ...hitPoint(LAYERS.ghost.hit, SOURCE.ghosts),
-      filter: ghostFilter,
-    },
+    hitPoint(LAYERS.ghost.hit, SOURCE.ghosts),
     hitLine(LAYERS.tour.hit, SOURCE.tours),
     hitLine(LAYERS.route.hit, SOURCE.routes),
     // A tour is the union of several ascents – the Sellaronda *is* its four
@@ -768,20 +704,11 @@ export const appLayers = (
       type: "symbol",
     },
     hitPoint(LAYERS.town.hit, SOURCE.towns),
-    {
-      ...hitPoint(
-        LAYERS.pass.hit,
-        SOURCE.passes,
-        passRadius(coarse ? HIT_RADIUS : HIT_RADIUS_FINE),
-      ),
-      // The hit area follows the rule the dot follows, or a hidden pass still
-      // answers the pointer; a favourite is drawn as a star at every zoom.
-      filter: prominenceFilter((minRank) =>
-        minRank === null
-          ? true
-          : ["any", isSelected, isFavorite, [">=", ["get", "rank"], minRank]],
-      ) as never,
-    },
+    hitPoint(
+      LAYERS.pass.hit,
+      SOURCE.passes,
+      passRadius(coarse ? HIT_RADIUS : HIT_RADIUS_FINE),
+    ),
     // Below the passes: MapLibre places labels from the top of the style
     // down, so a pass label wins the collision against a town name. The
     // passes are what the map is read for; the town is the answer to the
@@ -823,35 +750,12 @@ export const appLayers = (
       type: "symbol",
     },
     {
-      // The overview draws by rank (`lib/prominence.ts`): the classics at
-      // every zoom, one rank more per step, everything from the last. What is
-      // selected is always drawn; a favourite is a star, in the layer below.
-      filter: prominenceFilter((minRank) => [
-        "all",
-        ["!=", ["get", "favorite"], 1],
-        ...(minRank === null
-          ? []
-          : [["any", isSelected, [">=", ["get", "rank"], minRank]]]),
-      ]) as never,
+      // Every road the filters keep, at every zoom; a favourite is a star,
+      // in the layer below.
+      filter: ["!=", ["get", "favorite"], 1],
       id: LAYERS.pass.mark,
-      paint: passPaintOf(true),
+      paint: passPaint,
       source: SOURCE.passes,
-      type: "circle",
-    },
-    // The hovered pass, drawn again from its own one-feature source: at a
-    // zoom where the rule hides its dot, a row hovered in the list would
-    // otherwise ring an empty patch of map. Where the dot is drawn anyway the
-    // two coincide exactly.
-    {
-      filter: [
-        "all",
-        ["==", ["get", "kind"], "pass"],
-        ["!=", ["get", "favorite"], 1],
-      ],
-      id: OVERLAY.mark,
-      // Whole at every zoom: the pointer is on it, so it is never a newcomer.
-      paint: passPaintOf(false),
-      source: SOURCE.hover,
       type: "circle",
     },
     {
@@ -871,7 +775,6 @@ export const appLayers = (
       source: SOURCE.passes,
       type: "symbol",
     },
-    // Labels staggered by prominence; MapLibre resolves collisions
     // The area's name over its centre, with the count under it, at every
     // zoom like its outline. A point of its own rather than the outline's: a polygon is labelled
     // once per tile it crosses. Below the pass labels in the list, so

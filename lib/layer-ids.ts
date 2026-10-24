@@ -33,9 +33,9 @@ export const SOURCE = {
 
 /**
  * The label ladder: a pass's name appears at the zoom its rank earns
- * (`rankOf`, lib/prominence.ts), and MapLibre resolves what collides. Every
- * step is at or after the dots' own, coarser one, so a dot always appears
- * before its name; the last step takes every rank below it too.
+ * (`rankOf`, lib/prominence.ts), and MapLibre resolves what collides. Only
+ * the names wait for the zoom – every dot the filters keep is drawn at every
+ * zoom; the last step takes every rank below it too.
  */
 export const PASS_LABELS = [
   { minzoom: 0, rank: 5 },
@@ -155,8 +155,7 @@ export const LAYERS = {
 
 /**
  * The layers that answer the hover rather than a kind of entity: the ring
- * around the mark under the pointer, the mark drawn again beneath it where the
- * level of detail would hide it, the hull of what a town reaches – and the
+ * around the mark under the pointer, the hull of what a town reaches – and the
  * profile cursor, which belongs to the panel's chart rather than to the map,
  * and the visitor's own position, which belongs to no list at all.
  * None of them is a target: they are drawn on top of what was aimed at.
@@ -165,7 +164,6 @@ export const OVERLAY = {
   cursor: "profile-cursor",
   hull: "town-reach-fill",
   hullEdge: "town-reach-line",
-  mark: "hover-mark",
   ring: "hover-ring",
   /** The visitor's own position: a dot, and the halo of how sure the fix is. */
   you: "you",
@@ -197,10 +195,12 @@ export const HIT_GROUPS: readonly (readonly string[])[] = [
   [...LAYERS.tour.labels],
   [LAYERS.route.hit],
   [LAYERS.tour.hit],
-  [LAYERS.ghost.hit],
   // An area is the least specific answer there is: its name is a target,
-  // the outline only answers where nothing else does.
+  // the outline only answers where nothing else does. The shadows sit
+  // between the two – drawn at every zoom, a couple of hundred grey dots
+  // would otherwise take the overview's clicks meant for an area's name.
   [...LAYERS.destination.labels],
+  [LAYERS.ghost.hit],
   [LAYERS.destination.hit],
 ];
 

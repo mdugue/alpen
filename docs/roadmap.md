@@ -33,7 +33,7 @@ What was one line here is now five plans (September 2026):
   hold the "Anfang Oktober" and "Ende März" answers and are empty today.
 - **[24 · Depth per destination](./plans/24-depth-per-destination.md)** – the
   general form of the same question: a coverage report per base town, the
-  second-side rule, prominence by fame on the map so 400 roads stay
+  second-side rule, names on the map by rank so 400 roads stay
   readable, and the split of `passes.json` past 300 entries.
 - **[25 · Vosges and Jura](./plans/25-vosges-and-jura.md)** – the first ranges
   that are not the Alps, and the mechanism for every range after them: one

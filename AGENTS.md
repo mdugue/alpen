@@ -82,7 +82,7 @@ friends do that better and the app links out to them.
 | Entity routes, their metadata and share images     | `app/[lang]/(explorer)/layout.tsx` (the explorer, `"use cache"`), `app/[lang]/(explorer)/[kind]/[slug]/page.tsx` (+ `opengraph-image.tsx`), `lib/share-text.ts` (`openGraphOf`), `lib/share-image.tsx` (`ShareCard`), `staticParams`/`entityAt` in `lib/data.ts`, the alternates `alternatesOf` in `lib/routes.ts`                                                                                                                                  |
 | Tours within reach, town reach hull                | `lib/nearby.ts`, `lib/geo.ts` (computed on the server in `lib/data.ts`); what is near one point at a time: `lib/reach.ts` (`withinReach`, `reachCount`)                                                                                                                                                                                                                                                                                             |
 | Reach bands, the nearness weight                   | `lib/geo.ts` (`REACH_BANDS`, `reachWeight`, `REACH_MAX_KM`); calibrated in `docs/scales.md`                                                                                                                                                                                                                                                                                                                                                         |
-| Level of detail on the map (by rank)               | `lib/prominence.ts` (`rankOf`, `PROMINENCE`); the filters and the quiet ramp in `components/map/app-layers.ts`, the corner line in `components/map/apply-environment.ts`; the classics and the shadows `CLASSIC_FAME` (`lib/regions.ts`), `FilterBar` (`components/filters/filter-bar.tsx`), `Scene.ghosts`                                                                                                                                         |
+| What the map draws, and the names by rank          | the filters alone: `FilterBar` (`components/filters/filter-bar.tsx`), the classics and the shadows `CLASSIC_FAME` (`lib/regions.ts`), `Scene.ghosts`; the zoom only sizes and names: `rankOf` (`lib/prominence.ts`), `PASS_LABELS` (`lib/layer-ids.ts`)                                                                                                                                                                                             |
 | Coverage per base: what is listed, what is not     | `scripts/analyze-coverage.ts`, `scripts/lib/coverage.ts` (Overpass, cached in `scripts/.cache/coverage`)                                                                                                                                                                                                                                                                                                                                            |
 | Detours off a road: `branchOf` candidates          | `scripts/analyze-branches.ts` (`bun run analyze:branches`), `scripts/lib/branches.ts` (Overpass + DEM, cached in `scripts/.cache/branches`)                                                                                                                                                                                                                                                                                                         |
 | Base verdict, ranked reach, the inverse            | `lib/destination.ts` (`baseOf`, `basesOf`, `gradeOfBase`), `components/panel/base.tsx`, the calibration `scripts/analyze-destinations.ts` (`bun run analyze:destinations`)                                                                                                                                                                                                                                                                          |
@@ -256,13 +256,12 @@ The camera, the layer stack, hit testing, colours, the basemap.
   `line-opacity` composites every hairpin overlap twice; the layer property is
   data-constant, so per-feature differences go into width or colour.
   → [why](docs/map-rendering.md#translucent-lines-need-line-layer-opacity-not-line-opacity)
-- **The overview draws by rank, the list draws everything.** The pass dots
-  and their hit layer thin out by rank – fame, a step down for a dead end, a
-  step up for beauty 5, classics never moved – below zoom 10
-  (`lib/prominence.ts`), a rank arriving small and pale; what is selected,
-  hovered or a favourite is always drawn, and the corner line says which
-  level is showing. Not a filter: no chip, the list untouched.
-  → [why](docs/map-rendering.md#the-overview-draws-by-rank-the-list-draws-everything)
+- **The filters decide what is drawn, the zoom only how.** No dot, hit area
+  or tour appears or disappears with the zoom; the zoom only sizes the dots,
+  brings in the shadows' hairlines from zoom 8 and lets the names join by
+  rank (`PASS_LABELS`, `rankOf` in `lib/prominence.ts`: a step down for a
+  dead end, a step up for beauty 5, classics never moved).
+  → [why](docs/map-rendering.md#the-filters-decide-what-is-drawn-the-zoom-only-how)
 - **What the filters leave out stays as a shadow.** The app opens on the
   classics (`CLASSIC_FAME`), and every road the filters drop is a small grey
   dot (`Scene.ghosts`), its ascents a grey hairline from zoom 8 – no status,

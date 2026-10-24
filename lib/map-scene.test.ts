@@ -331,21 +331,15 @@ describe("hover", () => {
       { status: "closed" },
     );
 
-    test("are shadows: no status, no lines, their rank for the ladder", () => {
+    test("are shadows: no status, no lines", () => {
       const scene = buildScene(input({ ghosts: [ghost] }));
       expect(ghostMark(scene)).toEqual([
-        { fame: 2, favorite: 0, name: "Kleiner Pass", rank: 1, slug: "small" },
+        { fame: 2, name: "Kleiner Pass", slug: "small" },
       ]);
       expect(passMark(scene, "small")).toBeUndefined();
       expect(filtered(scene.routes.filter)).not.toContain("small");
       // Its ascents are the thin grey lines instead.
       expect(filtered(scene.routes.ghosts)).toEqual(["small"]);
-    });
-
-    test("carry the rank the ladder reads, a pearl a step up", () => {
-      const pearl = passRow(makePass("pearl", 40, { beauty: 5, fame: 3 }));
-      const scene = buildScene(input({ ghosts: [pearl] }));
-      expect(ghostMark(scene)[0]?.rank).toBe(4);
     });
 
     test("are drawn whole once selected, lines and all", () => {
@@ -381,10 +375,9 @@ describe("hover", () => {
         }),
       );
       expect(scene.hover.popup?.subtitle).toEndWith("· nicht im Filter");
-      // Drawn whole, so its hover mark is the whole dot.
-      expect(scene.hover.mark.features[0]?.properties).toMatchObject({
+      // Drawn whole, so the ring is a road's.
+      expect(scene.hover.mark.features[0]?.properties).toEqual({
         kind: "pass",
-        selected: 1,
       });
     });
 
@@ -401,13 +394,7 @@ describe("hover", () => {
       input({ hovered: { kind: "pass", slug: "galibier" } }),
     );
     expect(scene.hover.mark.features[0]?.properties).toEqual({
-      fame: 3,
-      favorite: 0,
       kind: "pass",
-      rank: 3,
-      selected: 0,
-      status: "open",
-      surface: "asphalt",
     });
     expect(scene.routes.state[ascentKey("galibier", 0)]?.hovered).toBe(1);
     expect(scene.routes.state[ascentKey("galibier", 1)]?.hovered).toBe(1);

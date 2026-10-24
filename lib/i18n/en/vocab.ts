@@ -53,11 +53,6 @@ export const vocab = {
     upTo: "up to {n}",
     wetDays: "up to {n} of 15",
   },
-  prominence: {
-    famous: "classics and the finest well-known passes",
-    known: "classics and well-known passes",
-    most: "most roads",
-  },
   range: {
     Alpen: {
       hint: "From the Maritime Alps to Slovenia – Western, Central and Eastern Alps and the Dolomites.",

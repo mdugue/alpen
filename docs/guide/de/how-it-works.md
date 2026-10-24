@@ -169,14 +169,12 @@ unter dem neuesten Jahr. Im Reiseziel stehen die Touren nach Art geordnet.
 | kleiner grauer Punkt   | Straße außerhalb der Filter; antippen öffnet sie                          |
 | dünne graue Linie      | ihre Auffahrt, ab mittlerem Zoom                                          |
 
-In der Übersicht zeigt die Karte nicht jeden Pass: Weit herausgezoomt stehen
-nur die Klassiker und die schönsten bekannten Pässe da, beim Hineinzoomen
-kommen die übrigen Stufe für Stufe hinzu, zuerst klein und blass. Was nirgends
-hinüberführt – Stich-, Tal-, Balkon- und Höhenstraßen – kommt eine Stufe
-später als ein Pass, eine Straße mit Schönheit 5 eine Stufe früher. Eine Zeile
-in der Kartenecke sagt, welche Stufe gerade gilt. Das ist kein Filter – die
-Liste bleibt vollständig, und was ausgewählt, gemerkt oder unter dem
-Mauszeiger ist, wird immer gezeichnet.
+Welche Straßen und Touren die Karte zeigt, entscheiden allein die Filter,
+nicht der Zoom: Was in der Liste steht, steht bei jeder Zoomstufe auch auf der
+Karte, und was die Filter auslassen, bleibt als grauer Punkt. Der Zoom
+entscheidet nur, wie groß die Punkte sind und ab wann ihre Namen dazukommen –
+die Klassiker zuerst, Stich-, Tal-, Balkon- und Höhenstraßen eine Stufe
+später, Straßen mit Schönheit 5 eine Stufe früher.
 
 ## Der Halbmonat
 
