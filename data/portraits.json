@@ -9004,5 +9004,111 @@
     "highlights": "Die Kette der Hohen Tatra hinter den Wiesen."
    }
   ]
+ },
+ "baerenstein": {
+  "intro": "Ein Basaltberg direkt an der Grenze gegenüber dem tschechischen Vejprty, mit Berggasthaus und Aussichtsturm, von dem man Fichtelberg und Keilberg sieht.",
+  "sides": [
+   {
+    "character": "Aus dem Ort kurz und steil durch den Wald, die Rampen im Mittel um 11 %; man fährt dieselbe Straße wieder hinunter.",
+    "highlights": "Der Aussichtsturm auf dem Gipfel.",
+    "hazards": [
+     "steep",
+     "narrow"
+    ]
+   }
+  ]
+ },
+ "drei-brueder-hoehe": {
+  "intro": "Eine Höhe zwischen Wolkenstein und Marienberg, nach drei Bergbaubrüdern benannt, mit einem Aussichtsturm über das mittlere Erzgebirge.",
+  "sides": [
+   {
+    "character": "Aus dem Preßnitztal lang und gleichmäßig, mehr Rollen als Klettern; oben offen über Wiesen.",
+    "highlights": "Der Aussichtsturm auf der Höhe."
+   }
+  ]
+ },
+ "schwartenberg": {
+  "intro": "Der Hausberg von Seiffen, dem Spielzeugdorf des Erzgebirges, mit einer Baude unter dem Gipfel und einem der weitesten Blicke im Osterzgebirge.",
+  "sides": [
+   {
+    "character": "Von Olbernhau erst sanft durchs Tal, ab Seiffen steiler zwischen den Häusern hinauf und zuletzt offen über die Wiesen zur Baude.",
+    "highlights": "Seiffen mit seinen Werkstätten und die Aussicht von der Baude.",
+    "hazards": [
+     "traffic"
+    ]
+   }
+  ]
+ },
+ "nova-ves-v-horach": {
+  "intro": "Die Straße von Litvínov auf die Hochfläche des Erzgebirges, über die Bruchstufe, die das Gebirge zum Nordböhmischen Becken hin so steil macht.",
+  "sides": [
+   {
+    "character": "Ab Janov gleich steil durch den Wald die Kante hinauf, oben offener; ein durchgehender Anstieg ohne Flachstück.",
+    "highlights": "Der Blick zurück über das Becken und die Kraftwerke.",
+    "hazards": [
+     "tight-hairpins"
+    ]
+   }
+  ]
+ },
+ "col-d-osquich": {
+  "intro": "Ein Weidepass zwischen Nieder-Navarra und dem Soule, auf dem Weg von Saint-Jean-Pied-de-Port nach Mauléon.",
+  "sides": [
+   {
+    "character": "Von Westen gleichmäßig durch Weiden und Wäldchen, nirgends steil.",
+    "highlights": "Der Blick vom Sattel zurück auf die Hügel des Baskenlands."
+   }
+  ]
+ },
+ "col-des-ares": {
+  "intro": "Ein bewaldeter Sattel im Comminges, Übergang zwischen zwei bekannteren Pässen.",
+  "sides": [
+   {
+    "character": "Von der Garonne her gleichmäßig im Wald, ein Anstieg zum Einrollen.",
+    "highlights": "Die Ruhe im Buchenwald."
+   }
+  ]
+ },
+ "col-de-la-perche": {
+  "intro": "Die Schwelle zwischen der sonnigen Hochebene der Cerdagne und dem Tal der Têt, gleich neben der Festung Mont-Louis.",
+  "sides": [
+   {
+    "character": "Lang und kaum geneigt über die offene Hochebene, mehr Höhe als Anstieg; Gegenwind zählt hier mehr als die Steigung.",
+    "highlights": "Der weite Blick über die Cerdagne auf den Carlit und den Puigmal.",
+    "hazards": [
+     "traffic"
+    ]
+   }
+  ]
+ },
+ "coll-de-sa-gramola": {
+  "intro": "Der Sattel am Südende der Küstenstraße der Serra de Tramuntana, über den Terrassen von Estellencs.",
+  "sides": [
+   {
+    "character": "Von Norden kurz und gleichmäßig aus den Kurven über dem Meer.",
+    "highlights": "Der Blick zurück über die Steilküste."
+   }
+  ]
+ },
+ "galilea": {
+  "intro": "Ein Dorf auf einem Balkon über dem Südwesten der Insel, die Straße windet sich durch Mandel- und Olivenhaine hinauf.",
+  "sides": [
+   {
+    "character": "Von Es Capdellà schmal und kurvig, gleichmäßig um fünf Prozent.",
+    "highlights": "Die Kirchterrasse von Galilea mit dem Blick bis zum Meer.",
+    "hazards": [
+     "narrow"
+    ]
+   }
+  ]
+ },
+ "col-du-menil": {
+  "intro": "Ein Waldsattel der Südvogesen zwischen zwei Tälern der Textilindustrie.",
+  "sides": [
+   {
+    "character": "Von Le Thillot kaum geneigt durch den Wald, ein Verbindungsstück.",
+    "highlights": "Die Tannenwälder der Hautes-Vosges."
+   }
+  ]
  }
 }

@@ -15294,6 +15294,39 @@
   ]
  },
  {
+  "slug": "col-du-menil",
+  "surface": "asphalt",
+  "name": "Col du Ménil",
+  "type": "pass",
+  "tags": [
+   "forest"
+  ],
+  "aliases": [
+   "Ménil"
+  ],
+  "country": "FR",
+  "region": "Vogesen",
+  "lat": 47.9262,
+  "lon": 6.8171,
+  "elevation": 627,
+  "classicAscent": "5,3 km, 2,3 % ab Le Thillot",
+  "beauty": 2,
+  "fame": 1,
+  "difficulty": 1,
+  "traffic": 2,
+  "season": null,
+  "note": "Der niedrige Übergang vom Tal der Mosel bei Le Thillot hinüber ins Tal der Moselotte, auf der Grand Tour des Ballons der Weg nach Cornimont. Ganzjährig offen.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 47.8934,
+     "lon": 6.7758
+    },
+    "label": "Le Thillot (Süd)"
+   }
+  ]
+ },
+ {
   "slug": "grand-colombier",
   "surface": "asphalt",
   "name": "Grand Colombier",
@@ -17454,6 +17487,106 @@
   ]
  },
  {
+  "slug": "col-d-osquich",
+  "surface": "asphalt",
+  "name": "Col d'Osquich",
+  "type": "pass",
+  "tags": [
+   "panorama"
+  ],
+  "aliases": [
+   "Osquich",
+   "Ozkixeko lepoa"
+  ],
+  "country": "FR",
+  "region": "Pyrenäen",
+  "lat": 43.2006,
+  "lon": -1.0003,
+  "elevation": 504,
+  "classicAscent": "6,3 km, 5,2 % ab Larceveau",
+  "beauty": 3,
+  "fame": 2,
+  "difficulty": 2,
+  "traffic": 2,
+  "season": null,
+  "note": "Der niedrige Übergang aus dem Pays de Cize ins Soule, Etappe des Raid Pyrénéen und mehrfach der Tour de France. Grüne baskische Hügel, ganzjährig offen.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 43.1941,
+     "lon": -1.0561
+    },
+    "label": "Larceveau (West)"
+   }
+  ]
+ },
+ {
+  "slug": "col-des-ares",
+  "surface": "asphalt",
+  "name": "Col des Ares",
+  "type": "pass",
+  "tags": [
+   "forest"
+  ],
+  "aliases": [
+   "Ares"
+  ],
+  "country": "FR",
+  "region": "Pyrenäen",
+  "lat": 42.9909,
+  "lon": 0.6938,
+  "elevation": 808,
+  "classicAscent": "6,5 km, 4,8 % ab Frontignan-de-Comminges",
+  "beauty": 2,
+  "fame": 2,
+  "difficulty": 2,
+  "traffic": 2,
+  "season": null,
+  "note": "Der Waldpass zwischen dem Garonne-Tal und dem Tal des Ger, auf dem Raid Pyrénéen und der Tour de France der Weg vom Luchonnais zum Portet d'Aspet. Ganzjährig offen.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 42.9674,
+     "lon": 0.6608
+    },
+    "label": "Frontignan-de-Comminges (West)"
+   }
+  ]
+ },
+ {
+  "slug": "col-de-la-perche",
+  "surface": "asphalt",
+  "name": "Col de la Perche",
+  "type": "pass",
+  "tags": [
+   "panorama"
+  ],
+  "aliases": [
+   "La Perche"
+  ],
+  "country": "FR",
+  "region": "Pyrenäen",
+  "lat": 42.4965,
+  "lon": 2.0928,
+  "elevation": 1580,
+  "classicAscent": "17 km, 2,5 % ab Bourg-Madame",
+  "beauty": 3,
+  "fame": 1,
+  "difficulty": 1,
+  "traffic": 3,
+  "season": null,
+  "note": "Der flache Hochpass zwischen der Cerdagne und dem Capcir bei Mont-Louis, auf dem Raid Pyrénéen das letzte Dach vor der Abfahrt ans Mittelmeer. Hauptstraße, ganzjährig geräumt.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 42.4334,
+     "lon": 1.9546
+    },
+    "label": "Bourg-Madame (West)"
+   }
+  ]
+ },
+ {
   "slug": "fichtelberg",
   "surface": "asphalt",
   "name": "Fichtelberg",
@@ -17710,6 +17843,135 @@
      "lon": 13.7216
     },
     "label": "Mikulov"
+   }
+  ]
+ },
+ {
+  "slug": "baerenstein",
+  "surface": "asphalt",
+  "name": "Bärenstein",
+  "type": "spur",
+  "tags": [
+   "forest"
+  ],
+  "country": "DE",
+  "region": "Erzgebirge",
+  "lat": 50.5083,
+  "lon": 13.0198,
+  "elevation": 898,
+  "classicAscent": "1,5 km, 11 % ab Bärenstein",
+  "beauty": 2,
+  "fame": 1,
+  "difficulty": 2,
+  "traffic": 1,
+  "season": null,
+  "note": "Kurze, steile Stichstraße aus dem Ort Bärenstein auf den Basaltberg an der Grenze, oben Berggasthaus und Aussichtsturm; Stempelstelle der Stoneman Miriquidi Road.",
+  "aliases": [
+   "Bärensteiner Berg"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 50.5006,
+     "lon": 13.0289
+    },
+    "label": "Bärenstein"
+   }
+  ]
+ },
+ {
+  "slug": "drei-brueder-hoehe",
+  "surface": "asphalt",
+  "name": "Drei-Brüder-Höhe",
+  "type": "climb",
+  "tags": [
+   "forest"
+  ],
+  "country": "DE",
+  "region": "Erzgebirge",
+  "lat": 50.6569,
+  "lon": 13.1236,
+  "elevation": 690,
+  "classicAscent": "6,5 km, 3,8 % ab Boden",
+  "beauty": 2,
+  "fame": 1,
+  "difficulty": 1,
+  "traffic": 2,
+  "season": null,
+  "note": "Aus dem Preßnitztal bei Boden gleichmäßig hinauf auf die Höhe zwischen Wolkenstein und Marienberg mit dem Aussichtsturm; oben geht es über die Hochfläche weiter nach Marienberg.",
+  "aliases": [],
+  "ascents": [
+   {
+    "from": {
+     "lat": 50.6164,
+     "lon": 13.0947
+    },
+    "label": "Boden (Preßnitztal)"
+   }
+  ]
+ },
+ {
+  "slug": "schwartenberg",
+  "surface": "asphalt",
+  "name": "Schwartenberg",
+  "type": "climb",
+  "tags": [
+   "panorama"
+  ],
+  "country": "DE",
+  "region": "Erzgebirge",
+  "lat": 50.659,
+  "lon": 13.4667,
+  "elevation": 780,
+  "classicAscent": "12 km, 2,5 % ab Olbernhau",
+  "beauty": 3,
+  "fame": 1,
+  "difficulty": 2,
+  "traffic": 2,
+  "season": null,
+  "note": "Von Olbernhau durchs Spielzeugdorf Seiffen hinauf zur Baude unter dem Gipfel des Schwartenbergs, mit weitem Blick über das Osterzgebirge; oben weiter nach Neuhausen.",
+  "aliases": [],
+  "ascents": [
+   {
+    "from": {
+     "lat": 50.6477,
+     "lon": 13.3821
+    },
+    "label": "Olbernhau"
+   }
+  ]
+ },
+ {
+  "slug": "nova-ves-v-horach",
+  "surface": "asphalt",
+  "name": "Nová Ves v Horách",
+  "type": "climb",
+  "tags": [
+   "panorama",
+   "forest"
+  ],
+  "country": "CZ",
+  "region": "Erzgebirge",
+  "lat": 50.5926,
+  "lon": 13.4864,
+  "elevation": 737,
+  "classicAscent": "7,5 km, 5,9 % ab Janov",
+  "beauty": 3,
+  "fame": 1,
+  "difficulty": 2,
+  "traffic": 2,
+  "season": null,
+  "note": "Von Litvínov-Janov die Bruchstufe des Erzgebirges hinauf, mit Blick zurück über das Nordböhmische Becken; oben über die Hochfläche weiter nach Brandov oder Hora Svaté Kateřiny.",
+  "aliases": [
+   "Gebirgsneudorf"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 50.5867,
+     "lon": 13.5577
+    },
+    "label": "Litvínov-Janov"
    }
   ]
  },
@@ -18236,6 +18498,70 @@
      "lon": 3.1477
     },
     "label": "Felanitx"
+   }
+  ]
+ },
+ {
+  "slug": "coll-de-sa-gramola",
+  "surface": "asphalt",
+  "name": "Coll de sa Gramola",
+  "type": "pass",
+  "tags": [
+   "panorama"
+  ],
+  "aliases": [
+   "sa Gramola"
+  ],
+  "country": "ES",
+  "region": "Mallorca",
+  "lat": 39.6058,
+  "lon": 2.4096,
+  "elevation": 353,
+  "classicAscent": "3,5 km, 4,7 % von Norden",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 1,
+  "traffic": 2,
+  "season": null,
+  "note": "Der Übergang der Küstenstraße Ma-10 von Estellencs nach Andratx, auf der Mallorca 312 und vielen Runden im Südwesten der Insel. Ganzjährig befahrbar.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 39.6255,
+     "lon": 2.4255
+    },
+    "label": "Estellencs (Nord)"
+   }
+  ]
+ },
+ {
+  "slug": "galilea",
+  "surface": "asphalt",
+  "name": "Galilea",
+  "type": "climb",
+  "tags": [
+   "panorama"
+  ],
+  "aliases": [],
+  "country": "ES",
+  "region": "Mallorca",
+  "lat": 39.6088,
+  "lon": 2.5052,
+  "elevation": 426,
+  "classicAscent": "5,3 km, 5,4 % ab Es Capdellà",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 2,
+  "traffic": 1,
+  "season": null,
+  "note": "Der Anstieg zum Bergdorf Galilea über dem Südwesten, auf der Mallorca 312 und als Klassiker der Runden ab Calvià. Schmal, wenig Verkehr, weiter über den Coll des Grau nach Puigpunyent.",
+  "ascents": [
+   {
+    "from": {
+     "lat": 39.595,
+     "lon": 2.4835
+    },
+    "label": "Es Capdellà (Süd)"
    }
   ]
  },

@@ -4728,6 +4728,10 @@
   "km": 290,
   "elevationGain": 4900,
   "passes": [
+   "baerenstein",
+   "drei-brueder-hoehe",
+   "schwartenberg",
+   "nova-ves-v-horach",
    "klinovec",
    "fichtelberg"
   ],
@@ -4825,14 +4829,17 @@
   "km": 720,
   "elevationGain": 11000,
   "passes": [
+   "col-d-osquich",
    "col-d-aubisque",
    "col-du-soulor",
    "col-du-tourmalet",
    "col-d-aspin",
    "col-de-peyresourde",
+   "col-des-ares",
    "col-du-portet-d-aspet",
    "col-de-port",
-   "col-de-puymorens"
+   "col-de-puymorens",
+   "col-de-la-perche"
   ],
   "note": "Brevet des Cyclo Club Béarnais mit Stempelheft: vom Atlantik ans Mittelmeer in höchstens 100 Stunden, von Juni bis September; die Kontrollen sind Cafés und Läden in den Etappenorten. Die touristische Variante lässt zehn Tage Zeit. Von Tardets nach Laruns führt der Weg über Oloron; der Col de Marie-Blanque ist eine Variante, die nicht mitzählt.",
   "season": {
@@ -5054,7 +5061,9 @@
   "passes": [
    "coll-de-femenia",
    "coll-de-sa-batalla",
-   "puig-major"
+   "puig-major",
+   "coll-de-sa-gramola",
+   "galilea"
   ],
   "note": "Radmarathon Ende April um die ganze Insel, mit Kurzstrecken über 167 und 225 km; fast alle Höhenmeter liegen in den ersten 150 km in der Tramuntana, der Rest rollt durch die Ebene.",
   "season": null,
@@ -5131,5 +5140,260 @@
    }
   ],
   "when": 4.5
+ },
+ {
+  "slug": "grand-tour-des-ballons",
+  "surface": "asphalt",
+  "name": "Grand Tour des Ballons",
+  "color": "#7a8a9a",
+  "km": 160,
+  "elevationGain": 2500,
+  "passes": [
+   "col-du-calvaire",
+   "col-de-la-schlucht",
+   "route-des-cretes",
+   "le-markstein",
+   "grand-ballon",
+   "col-d-oderen",
+   "col-de-grosse-pierre",
+   "col-du-menil"
+  ],
+  "note": "Die große Runde der Vogesen aus dem Tourismusangebot rund um Gérardmer; die Route des Crêtes ist im Winter gesperrt und gibt das Fenster vor. Ab Bussang ein Stück auf dem Radweg nach Le Thillot.",
+  "season": null,
+  "description": "Vom Lac de Longemer über Le Valtin und den Col du Louspach auf den Col du Calvaire, 46 km auf der Route des Crêtes über die Schlucht und den Markstein zum Grand Ballon, hinunter über den Col Amic nach Willer-sur-Thur, durchs Thurtal nach Kruth, über den Col d'Oderen und den Col du Page nach Bussang, auf dem Radweg nach Le Thillot, über den Col du Ménil nach La Bresse, über den Col de Grosse Pierre nach Gérardmer und zurück an den See.",
+  "type": "loop",
+  "waypoints": [
+   {
+    "lat": 48.0799,
+    "lon": 6.9414
+   },
+   {
+    "lat": 48.0984,
+    "lon": 7.0236
+   },
+   {
+    "lat": 48.1275,
+    "lon": 7.0511
+   },
+   {
+    "lat": 48.1367,
+    "lon": 7.0866
+   },
+   {
+    "lat": 48.0642,
+    "lon": 7.0227
+   },
+   {
+    "lat": 47.9231,
+    "lon": 7.0321
+   },
+   {
+    "lat": 47.9037,
+    "lon": 7.1033
+   },
+   {
+    "lat": 47.8755,
+    "lon": 7.1273
+   },
+   {
+    "lat": 47.8437,
+    "lon": 7.0706
+   },
+   {
+    "lat": 47.8899,
+    "lon": 6.9976
+   },
+   {
+    "lat": 47.9306,
+    "lon": 6.9646
+   },
+   {
+    "lat": 47.9227,
+    "lon": 6.9174
+   },
+   {
+    "lat": 47.9159,
+    "lon": 6.8909
+   },
+   {
+    "lat": 47.8856,
+    "lon": 6.8555
+   },
+   {
+    "lat": 47.8804,
+    "lon": 6.7634
+   },
+   {
+    "lat": 47.9262,
+    "lon": 6.8171
+   },
+   {
+    "lat": 48.0066,
+    "lon": 6.8767
+   },
+   {
+    "lat": 48.0264,
+    "lon": 6.8856
+   },
+   {
+    "lat": 48.0706,
+    "lon": 6.8777
+   },
+   {
+    "lat": 48.0799,
+    "lon": 6.9414
+   }
+  ]
+ },
+ {
+  "slug": "alpen-challenge-lenzerheide",
+  "surface": "asphalt",
+  "name": "Alpen Challenge Lenzerheide",
+  "color": "#6a7a9a",
+  "km": 191,
+  "elevationGain": 4600,
+  "passes": [
+   "albulapass",
+   "malojapass",
+   "spluegenpass"
+  ],
+  "note": "Radmarathon im Spätsommer ab der Roland Arena in Lantsch/Lenz, 2026 am 20. September; die kurze Strecke (117 km) fährt Albula und Julier. Unter Splügen durch die Viamala nach Thusis.",
+  "season": null,
+  "description": "Von Lantsch/Lenz nach Tiefencastel, über Filisur und Bergün auf den Albulapass, durchs Oberengadin über St. Moritz zum Maloja, das Bergell hinunter nach Chiavenna, über den Splügenpass ins Rheinwald, durch die Viamala nach Thusis und über Tiefencastel zurück nach Lantsch/Lenz.",
+  "type": "event",
+  "waypoints": [
+   {
+    "lat": 46.6928,
+    "lon": 9.5568
+   },
+   {
+    "lat": 46.6616,
+    "lon": 9.5765
+   },
+   {
+    "lat": 46.629,
+    "lon": 9.7453
+   },
+   {
+    "lat": 46.5823,
+    "lon": 9.8377
+   },
+   {
+    "lat": 46.5766,
+    "lon": 9.9308
+   },
+   {
+    "lat": 46.4599,
+    "lon": 9.7959
+   },
+   {
+    "lat": 46.4,
+    "lon": 9.696
+   },
+   {
+    "lat": 46.3201,
+    "lon": 9.4007
+   },
+   {
+    "lat": 46.507,
+    "lon": 9.33
+   },
+   {
+    "lat": 46.5531,
+    "lon": 9.3234
+   },
+   {
+    "lat": 46.6972,
+    "lon": 9.4391
+   },
+   {
+    "lat": 46.6616,
+    "lon": 9.5765
+   },
+   {
+    "lat": 46.6928,
+    "lon": 9.5568
+   }
+  ],
+  "when": 9.5
+ },
+ {
+  "slug": "brevet-de-randonneur-des-alpes-2025",
+  "surface": "asphalt",
+  "name": "Brevet de Randonneur des Alpes 2025",
+  "color": "#9a7a6a",
+  "km": 174,
+  "elevationGain": 4400,
+  "passes": [
+   "col-de-la-croix-de-fer",
+   "col-du-mollard",
+   "col-du-telegraphe",
+   "col-du-galibier",
+   "col-du-lautaret"
+  ],
+  "touches": [
+   "col-du-glandon"
+  ],
+  "note": "Brevet ohne Zeitnahme alle zwei Jahre im Juli, an einem Tag oder in zwei Etappen; Varianten über den Aussichtspunkt Armentier oder den Col de Sarenne führen bis 209 km. 2025 erstmals ab Le Bourg-d'Oisans statt Vizille.",
+  "season": null,
+  "description": "Von Le Bourg-d'Oisans durchs Tal der Eau d'Olle über Allemont auf den Col de la Croix de Fer, über Saint-Sorlin-d'Arves und den Col du Mollard nach Albiez und Saint-Jean-de-Maurienne, nach Saint-Michel, über den Télégraphe nach Valloire, auf den Galibier und über den Lautaret zurück nach Le Bourg-d'Oisans.",
+  "type": "edition",
+  "series": "brevet-de-randonneur-des-alpes",
+  "year": 2025,
+  "waypoints": [
+   {
+    "lat": 45.0547,
+    "lon": 6.0307
+   },
+   {
+    "lat": 45.1311,
+    "lon": 6.0369
+   },
+   {
+    "lat": 45.227,
+    "lon": 6.203
+   },
+   {
+    "lat": 45.2214,
+    "lon": 6.229
+   },
+   {
+    "lat": 45.2105,
+    "lon": 6.3371
+   },
+   {
+    "lat": 45.2451,
+    "lon": 6.3512
+   },
+   {
+    "lat": 45.2775,
+    "lon": 6.3452
+   },
+   {
+    "lat": 45.2179,
+    "lon": 6.4751
+   },
+   {
+    "lat": 45.2027,
+    "lon": 6.4446
+   },
+   {
+    "lat": 45.165,
+    "lon": 6.4296
+   },
+   {
+    "lat": 45.064,
+    "lon": 6.408
+   },
+   {
+    "lat": 45.034,
+    "lon": 6.405
+   },
+   {
+    "lat": 45.0547,
+    "lon": 6.0307
+   }
+  ],
+  "when": 7
  }
 ]

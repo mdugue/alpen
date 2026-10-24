@@ -64,6 +64,7 @@ export type HostId =
   | "ors"
   | "osrm"
   | "openMeteo"
+  | "openTopoData"
   | "overpass"
   | "osmApi"
   | "commons"
@@ -147,6 +148,14 @@ export const HOSTS: Record<HostId, HostSpec> = {
     budget: { env: "OPEN_METEO_BUDGET", fallback: 4500 },
     callsPerMinute: 500,
     name: "Open-Meteo",
+  },
+  // The public API allows one request a second and 1000 a day; only the
+  // climb report asks it, with answers recorded on disk.
+  openTopoData: {
+    ...STEPPED,
+    budget: { env: "OPEN_TOPO_DATA_BUDGET", fallback: 900 },
+    callsPerMinute: 50,
+    name: "OpenTopoData",
   },
   ors: { ...STEPPED, callsPerMinute: 38, name: "OpenRouteService" },
   osmApi: { ...STEPPED, callsPerMinute: 30, name: "OSM-API" },

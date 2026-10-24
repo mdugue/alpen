@@ -9,6 +9,7 @@
  *   bun run scripts/analyze-coverage.ts --top 8         # names per band
  *   bun run scripts/analyze-coverage.ts --refresh       # ask Overpass again
  *   bun run scripts/analyze-coverage.ts --tours [slug…] # what each tour rides over
+ *   bun run scripts/analyze-coverage.ts --tours --climbs [slug…] # and every climb on it
  *
  * In the family of analyze-status.ts and analyze-destinations.ts: it prints,
  * it writes nothing under data/. "Depth" – how many roads a base reaches –
@@ -37,14 +38,29 @@
  * do not name, and the saddles from 600 m (`TOUR_FLOOR`) that are no entry at
  * all. A base-centred report cannot see those: a loop from Lienz crosses
  * three roads no base's circle had made anyone write down.
+ *
+ * `--climbs` adds what no saddle node shows: every rise of 150 m or more on
+ * the line's own profile (`scripts/lib/climbs.ts`), heights from OpenTopoData
+ * and recorded like the Overpass answers. A climb whose top is an entry the
+ * tour names is quiet; the report prints the others – an entry the tour does
+ * not name, or no entry at all, with its foot, its top, its gain and whether
+ * the line rides it up and back down (a spur).
  */
 import routesJson from "../data/generated/routes.json" with { type: "json" };
 import passesJson from "../data/passes.json" with { type: "json" };
 import toursJson from "../data/tours.json" with { type: "json" };
 import townsJson from "../data/towns.json" with { type: "json" };
 import { REACH_MAX_KM } from "../lib/geo";
-import { tourKey } from "../lib/route-key";
+import { ascentKey, tourKey } from "../lib/route-key";
 import * as S from "../lib/schema";
+import {
+  CLIMB_MIN_GAIN,
+  climbsOf,
+  fillGaps,
+  matchClimbs,
+  resample,
+} from "./lib/climbs";
+import type { Climb } from "./lib/climbs";
 import {
   candidateLine,
   coverageOf,
@@ -56,7 +72,7 @@ import {
   tourCoverage,
   tourQuery,
 } from "./lib/coverage";
-import { OVERPASS_URL, overpass } from "./lib/hosts";
+import { OVERPASS_URL, openTopoData, overpass } from "./lib/hosts";
 import type { OverpassNode } from "./lib/hosts";
 import { fixtureTransport, liveTransport } from "./lib/transport";
 
@@ -77,6 +93,7 @@ const only = args.filter(
     !a.startsWith("--") && args[i - 1] !== "--floor" && args[i - 1] !== "--top",
 );
 const TOURS = args.includes("--tours");
+const CLIMBS = args.includes("--climbs");
 const selected = only.length
   ? towns.filter((t) => only.some((o) => t.slug.includes(o)))
   : towns;
@@ -95,6 +112,11 @@ const nodesAround = async (t: {
   return elements.filter((e): e is OverpassNode => e.type === "node");
 };
 
+/** One climb as the curator reads it: where, how high, how much, what kind. */
+const climbLine = (c: Climb): string =>
+  `km ${c.foot.km.toFixed(0)}–${c.top.km.toFixed(0)}: ${Math.round(c.foot.ele)} → ${Math.round(c.top.ele)} m, +${c.gain} Hm, ${c.grade} %` +
+  `${c.outAndBack ? ", hinauf und zurück" : ""} · Fuß ${c.foot.lat.toFixed(4)}, ${c.foot.lon.toFixed(4)} · Gipfel ${c.top.lat.toFixed(4)}, ${c.top.lon.toFixed(4)}`;
+
 if (TOURS) {
   const tours = S.Tours.parse(toursJson).filter(
     (t) => !only.length || only.some((o) => t.slug.includes(o)),
@@ -104,6 +126,7 @@ if (TOURS) {
   console.log(
     `Was jede Tour überfährt, Sättel ab ${floor} m (--floor), ${tours.length} Touren, Overpass: ${new URL(OVERPASS_URL).host}\n`,
   );
+  let incomplete = false;
   for (const t of tours) {
     const line = routes[tourKey(t.slug)];
     if (!line) {
@@ -112,7 +135,7 @@ if (TOURS) {
       );
       continue;
     }
-    let nodes: OverpassNode[];
+    let nodes: OverpassNode[] | null = null;
     try {
       const elements = await overpass.query(transport, tourQuery(line));
       nodes = elements.filter((e): e is OverpassNode => e.type === "node");
@@ -120,10 +143,14 @@ if (TOURS) {
       console.error(
         `${t.name}: Overpass antwortet nicht (${(error as Error).message}) – OVERPASS_URL=… wählt einen Spiegel`,
       );
-      process.exit(1);
+      // The climbs need no Overpass: report them without the saddles.
+      if (!CLIMBS) process.exit(1);
+      incomplete = true;
     }
-    const cov = tourCoverage(t, line, nodes, passes, floor);
+    const cov = tourCoverage(t, line, nodes ?? [], passes, floor);
     console.log(`${t.name} (${t.passes.length} Pässe gelistet)`);
+    if (!nodes)
+      console.log("  Sättel: nicht gefragt, Overpass antwortet nicht");
     if (cov.unnamed.length)
       console.log(
         `  überfahren, nicht in passes: ${cov.unnamed.map((p) => p.slug).join(", ")}`,
@@ -132,12 +159,37 @@ if (TOURS) {
       console.log(
         `  Sättel ohne Eintrag: ${cov.candidates.map(candidateLine).join(", ")}`,
       );
+    const samples = resample(line);
+    let heights: number[] | null = null;
+    if (CLIMBS)
+      try {
+        heights = fillGaps(await openTopoData.elevation(transport, samples));
+      } catch (error) {
+        console.log(`  Anstiege: keine Höhen (${(error as Error).message})`);
+        incomplete = true;
+      }
+    if (heights) {
+      const climbs = matchClimbs(climbsOf(samples, heights), passes, t, (p) =>
+        p.ascents.flatMap((_, i) => {
+          const l = routes[ascentKey(p.slug, i)];
+          return l ? [l] : [];
+        }),
+      );
+      const open = climbs.filter((c) => !c.named);
+      console.log(
+        `  Anstiege ab ${CLIMB_MIN_GAIN} Hm: ${climbs.length}, davon ${climbs.length - open.length} gelistet`,
+      );
+      for (const c of open)
+        console.log(
+          `    ${climbLine(c.climb)}${c.entry ? ` – Eintrag ${c.entry.slug}, nicht in passes` : " – kein Eintrag"}`,
+        );
+    }
     console.log();
   }
   console.log(
-    `${transport.recorded} Overpass-Anfragen (${transport.replayed} aus dem Cache)`,
+    `${transport.recorded} Anfragen (${transport.replayed} aus dem Cache)${incomplete ? " – unvollständig, siehe oben" : ""}`,
   );
-  process.exit(0);
+  process.exit(incomplete ? 1 : 0);
 }
 
 console.log(

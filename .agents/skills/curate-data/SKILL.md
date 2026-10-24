@@ -94,7 +94,9 @@ authoritative. In addition:
   counts from 1000 m, so a loop far from a base or over a 980 m saddle (the
   Dolomitenradrundfahrt from Lienz, its Gailbergsattel) falls through it:
   `bun run scripts/analyze-coverage.ts --tours <slug>` lists the saddles from
-  600 m on the stored line that are no entry, and `data:check` warns about
+  600 m on the stored line that are no entry, `--climbs` adds every rise of
+  150 m or more on the line's height profile whose top is no entry the tour
+  names (summits, escarpments – what no saddle node marks), and `data:check` warns about
   every entry the line crosses that the tour does not name; an entry the line
   only touches at a junction (Umbrail from Bormio) goes into `touches`. `waypoints`
   closed for loops (last = first); `km` and `elevationGain` from a trusted source. `season` is the

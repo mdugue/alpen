@@ -200,6 +200,7 @@
   "coll-d-ordino": {"dem":1988,"lat":42.5561,"lon":1.5723,"roadDist":0.001},
   "coll-de-femenia": {"dem":542,"lat":39.8556,"lon":2.9011,"roadDist":0.001},
   "coll-de-sa-batalla": {"dem":595,"lat":39.8118,"lon":2.8898,"roadDist":0.002},
+  "coll-de-sa-gramola": {"dem":345,"lat":39.6058,"lon":2.4096,"roadDist":0.004},
   "coll-de-soller": {"dem":497,"lat":39.7312,"lon":2.6862,"roadDist":0.003},
   "collada-de-toses": {"dem":1785,"lat":42.336,"lon":1.9911,"roadDist":0.002},
   "collado-de-las-sabinas": {"dem":2209,"lat":37.1136,"lon":-3.4199,"roadDist":0.004},
