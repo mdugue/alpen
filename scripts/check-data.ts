@@ -60,7 +60,7 @@ import type {
   Town,
 } from "../lib/types";
 import { renderJsonSchema, schemaFileFor } from "./emit-json-schema";
-import { MATCH_KM, tourCoverage } from "./lib/coverage";
+import { tourCoverage } from "./lib/coverage";
 import { readData } from "./lib/data-files";
 import type { Data } from "./lib/data-files";
 import { asksOrs, judge, lacksCover, measure, plan } from "./lib/decide";
@@ -409,6 +409,10 @@ const isOpenCourse = ({ waypoints }: Tour): boolean => {
   );
 };
 
+/** How close a permanent's waypoint has to lie to a spur's marker to say "up
+ * to the checkpoint and back down" (`checkTours`). */
+const CHECKPOINT_KM = 0.5;
+
 const checkTours = (list: Tour[], byPass: Map<string, Pass>) => {
   dupes(list, "Touren");
   for (const t of list) {
@@ -443,12 +447,19 @@ const checkTours = (list: Tour[], byPass: Map<string, Pass>) => {
       }
       // A road that ends at its summit cannot be crossed, so a tour listing it
       // either has the wrong pass or the pass is wrongly marked – unless it is
-      // where an open course finishes, as an event on a summit does, or the
-      // course rides up and back down on purpose, as a permanent with its
-      // checkpoint on the top does: the curator says so with a waypoint there.
+      // where an open course finishes, as an event on a summit does, or a
+      // permanent rides up to a checkpoint on the top and back down, which the
+      // curator says with a waypoint there. Only a permanent: a waypoint on a
+      // marker is how every other tour is drawn too, so it proves nothing.
       const finish = open && i === t.passes.length - 1;
-      const outAndBack = t.waypoints.some((w) => haversine(w, p) <= MATCH_KM);
-      if (p.type === "spur" && !finish && !outAndBack)
+      if (
+        p.type === "spur" &&
+        !finish &&
+        !(
+          t.type === "permanent" &&
+          t.waypoints.some((w) => haversine(w, p) <= CHECKPOINT_KM)
+        )
+      )
         warnings.push(
           `Tour ${t.slug}: ${s} ist eine Stichstraße – eine Runde kann dort nicht hinüber; fährt sie hinauf und zurück, gehört ein Wegpunkt oben hin`,
         );

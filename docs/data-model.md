@@ -208,8 +208,8 @@ traverse itself it is one of the other three.
 | `valley`  | Talstraße    | a quiet dead-end valley, little gradient                                                                                                                                                                                                                                                                 | Vallée de la Clarée, Val Ferret, Sertigtal           |
 
 A `spur` cannot be crossed, so `data:check` warns when a tour lists one –
-unless the tour rides up and back down on purpose, which a waypoint on the
-spur's top says (a permanent's checkpoint on a summit) – and the detail panel
+unless a `permanent` rides up to a checkpoint on the top and back down, which
+a waypoint on the spur's marker says – and the detail panel
 says so under "Auffahrten". The three traverse types carry
 `to` and `km` on every ascent and are measured against the tour limits; a
 `pass`, `spur` or `climb` ascent must not carry them (see the `curate-data` skill).
