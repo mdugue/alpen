@@ -196,7 +196,9 @@ See `.env.example`. None of them is required to start the app.
   public OSRM demo server using the **car profile**; with the key it uses the
   OpenRouteService **road-cycling profile**, which correctly handles the
   Tremola cobbles, the gravel on the Finestre and car-free roads. Free,
-  2,000 routes/day: <https://openrouteservice.org/dev>
+  2,000 routes/day: <https://openrouteservice.org/dev>. The script asks
+  `api.heigit.org/openrouteservice`; the old host `api.openrouteservice.org`
+  is capped at 200 a day and shuts down in November 2026.
 - `OPEN_METEO_BUDGET` – only for `data:build`. Open-Meteo bills weighted
   "calls" (an elevation profile ≈ 100, a climate series ≈ 261) with a free
   tier of 5,000/hour and 10,000/day. The script stops itself at this budget

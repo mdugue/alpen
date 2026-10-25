@@ -123,7 +123,7 @@ export const ors = {
       const json = OrsAnswer.parse(
         await t.getJson(
           "ors",
-          `https://api.openrouteservice.org/v2/directions/${profile}/geojson`,
+          `https://api.heigit.org/openrouteservice/v2/directions/${profile}/geojson`,
           {
             body: JSON.stringify({
               coordinates: chunk.map((c) => [c.lon, c.lat]),
