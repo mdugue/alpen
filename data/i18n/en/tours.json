@@ -187,6 +187,10 @@
   "description": "From Le Mont-Dore over the Croix Saint-Robert down to Besse, past the Lac Chambon and back over the Croix-Morand to Le Mont-Dore.",
   "note": "Super-Besse can be added as a detour from Besse (+12 km, +300 m)."
  },
+ "osterzgebirge-runde": {
+  "description": "From Altenberg via Zinnwald to Cínovec, down the old border road to Dubí, through Krupka and up the hairpins to Komáří vížka, then along the ridge via Fojtovice back to Altenberg.",
+  "note": "The climb to Komáří vížka, close to 9 % on average, is the hardest of the loop; the old border road to Cínovec has been quiet since the D8 motorway opened."
+ },
  "dlouha-louka-runde": {
   "description": "From Teplice to Osek, up the hairpins to Dlouhá Louka, along the ridge via Moldava to Cínovec and down the old border road via Dubí back to Teplice.",
   "note": "Two ridge climbs out of the North Bohemian basin in one morning; between Dlouhá Louka and Cínovec the road stays up on the ridge."
@@ -198,6 +202,10 @@
  "wiedener-eck-notschrei-runde": {
   "description": "From Münstertal over the Wiedener Eck to Utzenfeld, through the Wiese valley to Todtnau, over the Notschrei down to Oberried and back via Kirchzarten, Sölden and Staufen to Münstertal.",
   "note": "From the top of the Notschrei the Schauinsland can replace the descent to Oberried: via Hofsgrund and down to Freiburg-Günterstal."
+ },
+ "torfhaus-runde": {
+  "description": "From Bad Harzburg up the B4 to Torfhaus, across the plateau down to Altenau, via Schulenberg through the Oker valley to Oker and back to Bad Harzburg.",
+  "note": "The B4 up carries heavy traffic and motorbikes, so start early at weekends; the way back through the Oker valley is quieter."
  },
  "arber-runde": {
   "description": "From Bodenmais up to Bretterschachten, past the Großer Arbersee to the Brennes, down to Bayerisch Eisenstein and via Zwiesel back to Bodenmais.",
@@ -242,6 +250,10 @@
  "ardennen-runde": {
   "description": "From Stavelot over the Côte de Stockeu to Vielsalm, down to Trois-Ponts, over the Côte de Wanne back to Stavelot, over the Haute-Levée to Spa and over the Col du Rosier and La Gleize back to Stavelot.",
   "note": "The climbs of Liège–Bastogne–Liège on one loop; short and steep, on narrow roads, slippery after rain."
+ },
+ "riesengebirge-runde": {
+  "description": "From Špindlerův Mlýn up to the Špindlerova bouda, down the closed road to Przesieka, via Karpacz to Kowary, over the Okraj to Malá Úpa, via Horní Maršov and Janské Lázně to Vrchlabí and back to Špindlerův Mlýn.",
+  "note": "From the Špindlerova bouda into Poland the road down is closed to cars, narrow and steep; bring an ID."
  },
  "aspin-hourquette-runde": {
   "description": "From Sainte-Marie-de-Campan via Payolle up the Col d'Aspin, down to Arreau, along the Aure valley to Ancizan, over the Hourquette d'Ancizan to Payolle and back to Sainte-Marie-de-Campan.",
