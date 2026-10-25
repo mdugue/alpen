@@ -330,5 +330,13 @@
  "brevet-de-randonneur-des-alpes-2025": {
   "description": "From Le Bourg-d'Oisans up the Eau d'Olle valley via Allemont to the Col de la Croix de Fer, via Saint-Sorlin-d'Arves and the Col du Mollard to Albiez and Saint-Jean-de-Maurienne, on to Saint-Michel, over the Télégraphe to Valloire, up the Galibier and over the Lautaret back to Le Bourg-d'Oisans.",
   "note": "An untimed brevet every two years in July, in one day or in two stages; variants via the Armentier viewpoint or the Col de Sarenne run to 209 km. In 2025 it started in Le Bourg-d'Oisans for the first time instead of Vizille."
+ },
+ "rund-um-die-tatra": {
+  "description": "From Zakopane over Wierch Poroniec to the border at Łysa Polana, over the saddle at Ždiar to Tatranská Lomnica, below the High Tatras through the Liptov to Liptovský Mikuláš, over Huty to Zuberec and through the Orava via Suchá Hora and Chochołów, then below the Tatras via Kościelisko back to Zakopane.",
+  "note": "A long day across two border crossings; the passes are gentle, the length makes the loop hard. A long valley road between Poprad and Liptovský Mikuláš; bikes are not allowed up to Morskie Oko."
+ },
+ "niedere-tatra-runde": {
+  "description": "From Liptovský Hrádok over Čertovica to Mýto pod Ďumbierom, along the Hron valley via Brezno to Telgárt, over the Vernárske sedlo to Vernár and via Hranovnica and Štrba through the Liptov back to Liptovský Hrádok.",
+  "note": "Long, but only two passes; in between the Hron valley, and the way back through the Liptov on main roads with traffic. To shorten it, ride Čertovica from Liptovský Hrádok there and back."
  }
 }

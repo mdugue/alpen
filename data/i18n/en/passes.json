@@ -4467,6 +4467,37 @@
    "Biały Dunajec (north)"
   ]
  },
+ "wierch-poroniec": {
+  "classicAscent": "18 km, 2.4 % from Zakopane",
+  "note": "The Oswald Balzer road from Zakopane through the forest of the Tatra National Park to the border at Łysa Polana. Long and rolling from Zakopane; from Łysa Polana only a short counter-climb of 3 km, hence one-sided.",
+  "ascents": [
+   "Zakopane (west)"
+  ]
+ },
+ "pod-prislopom": {
+  "classicAscent": "12 km, 2.7 % from Tatranská Kotlina",
+  "note": "The saddle above Ždiar between the Belianske Tatry and the Spišská Magura, on the road from Poprad to the Łysa Polana border crossing. Flat and steady from both sides, with a view of the limestone walls of the Belianske Tatry.",
+  "ascents": [
+   "Tatranská Kotlina (east)",
+   "Lysá Poľana (west)"
+  ]
+ },
+ "huty": {
+  "classicAscent": "9.5 km, 4.8 % from Liptovské Matiašovce",
+  "note": "The crossing in front of the Western Tatras between Liptov and Orava, on the road from Liptovský Mikuláš to Zuberec. From the south the longer and steeper climb through the village of Huty; to the north shorter and gentler, down into the valley below the Roháče.",
+  "ascents": [
+   "Liptovské Matiašovce (south)",
+   "Zuberec (north)"
+  ]
+ },
+ "vernarske-sedlo": {
+  "classicAscent": "5 km, 5.5 % from Vernár",
+  "note": "The saddle at the eastern end of the Low Tatras on the main road from Poprad to the Hron valley, below the Kráľova hoľa. Short and steady from Vernár, from Telgárt over the lower saddle of Besník.",
+  "ascents": [
+   "Vernár (north)",
+   "Telgárt (south)"
+  ]
+ },
  "baerenstein": {
   "classicAscent": "1.5 km, 11 % from Bärenstein",
   "note": "A short, steep dead-end road from the village of Bärenstein up the basalt hill on the border, with a mountain inn and a lookout tower at the top; a stamp point of the Stoneman Miriquidi Road.",

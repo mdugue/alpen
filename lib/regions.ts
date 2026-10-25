@@ -69,7 +69,7 @@ export const RANGE_REGIONS = {
   Riesengebirge: ["Riesengebirge", "Jeschken und Isergebirge"],
   Schwarzwald: ["Schwarzwald"],
   Sizilien: ["Ätna", "Nordsizilien", "Westsizilien"],
-  Tatra: ["Hohe Tatra", "Podhale", "Niedere Tatra"],
+  Tatra: ["Hohe Tatra", "Podhale", "Westtatra", "Niedere Tatra"],
   Thüringen: ["Thüringen", "Rhön"],
   Vogesen: ["Vogesen"],
   Zentralmassiv: ["Zentralmassiv"],
