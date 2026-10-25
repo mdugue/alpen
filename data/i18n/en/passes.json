@@ -4466,5 +4466,75 @@
   "ascents": [
    "Biały Dunajec (north)"
   ]
+ },
+ "baerenstein": {
+  "classicAscent": "1.5 km, 11 % from Bärenstein",
+  "note": "A short, steep dead-end road from the village of Bärenstein up the basalt hill on the border, with a mountain inn and a lookout tower at the top; a stamp point of the Stoneman Miriquidi Road.",
+  "ascents": [
+   "Bärenstein"
+  ]
+ },
+ "drei-brueder-hoehe": {
+  "classicAscent": "6.5 km, 3.8 % from Boden",
+  "note": "From the Preßnitz valley at Boden steadily up to the height between Wolkenstein and Marienberg with its lookout tower; at the top the road carries on across the plateau to Marienberg.",
+  "ascents": [
+   "Boden (Preßnitz valley)"
+  ]
+ },
+ "schwartenberg": {
+  "classicAscent": "12 km, 2.5 % from Olbernhau",
+  "note": "From Olbernhau through the toy-making village of Seiffen up to the inn below the summit of the Schwartenberg, with a wide view over the eastern Ore Mountains; at the top the road carries on to Neuhausen.",
+  "ascents": [
+   "Olbernhau"
+  ]
+ },
+ "nova-ves-v-horach": {
+  "classicAscent": "7.5 km, 5.9 % from Janov",
+  "note": "From Litvínov-Janov up the escarpment of the Ore Mountains, with views back over the North Bohemian Basin; at the top the road carries on across the plateau to Brandov or Hora Svaté Kateřiny.",
+  "ascents": [
+   "Litvínov-Janov"
+  ]
+ },
+ "col-d-osquich": {
+  "classicAscent": "6.3 km, 5.2 % from Larceveau",
+  "note": "The low crossing from the Pays de Cize into the Soule, a stage of the Raid Pyrénéen and several times of the Tour de France. Green Basque hills, open all year.",
+  "ascents": [
+   "Larceveau (west)"
+  ]
+ },
+ "col-des-ares": {
+  "classicAscent": "6.5 km, 4.8 % from Frontignan-de-Comminges",
+  "note": "The forest pass between the Garonne valley and the valley of the Ger, the way from the Luchonnais to the Portet d'Aspet on the Raid Pyrénéen and in the Tour de France. Open all year.",
+  "ascents": [
+   "Frontignan-de-Comminges (west)"
+  ]
+ },
+ "col-de-la-perche": {
+  "classicAscent": "17 km, 2.5 % from Bourg-Madame",
+  "note": "The gentle high pass between the Cerdagne and the Capcir near Mont-Louis, on the Raid Pyrénéen the last roof before the descent to the Mediterranean. A main road, cleared all year.",
+  "ascents": [
+   "Bourg-Madame (west)"
+  ]
+ },
+ "coll-de-sa-gramola": {
+  "classicAscent": "3.5 km, 4.7 % from the north",
+  "note": "The crossing of the Ma-10 coast road from Estellencs to Andratx, on the Mallorca 312 and many loops in the island's south-west. Open all year.",
+  "ascents": [
+   "Estellencs (north)"
+  ]
+ },
+ "galilea": {
+  "classicAscent": "5.3 km, 5.4 % from Es Capdellà",
+  "note": "The climb to the mountain village of Galilea above the south-west, on the Mallorca 312 and a classic of the loops from Calvià. Narrow, little traffic, on over the Coll des Grau to Puigpunyent.",
+  "ascents": [
+   "Es Capdellà (south)"
+  ]
+ },
+ "col-du-menil": {
+  "classicAscent": "5.3 km, 2.3 % from Le Thillot",
+  "note": "The low crossing from the Moselle valley at Le Thillot over into the valley of the Moselotte, on the Grand Tour des Ballons the way to Cornimont. Open all year.",
+  "ascents": [
+   "Le Thillot (south)"
+  ]
  }
 }

@@ -207,8 +207,10 @@ traverse itself it is one of the other three.
 | `balcony` | Balkonstraße | cut into a wall, no summit the ride aims at                                                                                                                                                                                                                                                              | Combe Laval, Gorges de la Bourne, Gorges du Cians    |
 | `valley`  | Talstraße    | a quiet dead-end valley, little gradient                                                                                                                                                                                                                                                                 | Vallée de la Clarée, Val Ferret, Sertigtal           |
 
-A `spur` cannot be crossed, so `data:check` warns when a tour lists one and
-the detail panel says so under "Auffahrten". The three traverse types carry
+A `spur` cannot be crossed, so `data:check` warns when a tour lists one –
+unless a `permanent` rides up to a checkpoint on the top and back down, which
+a waypoint on the spur's marker says – and the detail panel
+says so under "Auffahrten". The three traverse types carry
 `to` and `km` on every ascent and are measured against the tour limits; a
 `pass`, `spur` or `climb` ascent must not carry them (see the `curate-data` skill).
 
@@ -341,8 +343,9 @@ side of the mountain. None of it is a file: it follows from `routes.json` and
 
 `type` says how the tour is ridden (`TOUR_TYPES` in `lib/regions.ts`):
 `loop` for a classic loop with nothing attached, `event` for the course of a
-sportive that closes its roads one day a year, `permanent` for a signposted
-route with a stamp card or timing (the Stoneman), `stages` for a route from A
+sportive that closes its roads one day a year, `permanent` for a standing
+route with a stamp card or timing, signposted or ridden on the organiser's
+track (the Stoneman roads, the Raid Pyrénéen), `stages` for a route from A
 to B over several days (the Route des Grandes Alpes). `edition` is one
 year's course of an event whose route changes every year (Stelvio Santini,
 Étape du Tour): it carries `series` (the slug the years share) and `year`,

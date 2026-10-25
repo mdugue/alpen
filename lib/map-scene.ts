@@ -298,6 +298,39 @@ const METRES_PER_PX_Z0 = 78_271.517;
 const haloPx = ({ accuracy, lat }: Fix) =>
   accuracy / (METRES_PER_PX_Z0 * Math.cos((lat * Math.PI) / 180));
 
+/**
+ * The feature state of every tour the rows hold, and the one selected tour
+ * they do not: a selected tour the filters leave out is drawn all the same,
+ * as a selected shadow is – the panel shows it, so the map has to. Its line
+ * is in the tour file whatever the filters say; only the filter and the state
+ * ask for it.
+ */
+const toursDrawn = (
+  rows: SceneInput["rows"]["tour"],
+  shown: SceneInput["shown"],
+  selTour: string | null,
+  hoverTour: string | null,
+): { strayTour: string | null; tourState: Record<string, TourState> } => {
+  const tourState: Record<string, TourState> = {};
+  for (const { tour } of rows)
+    tourState[tour.slug] = {
+      hovered: flag(tour.slug === hoverTour),
+      selected: flag(tour.slug === selTour),
+    };
+  const strayTour =
+    selTour &&
+    !rows.some(({ tour }) => tour.slug === selTour) &&
+    isShown(shown, "tour", selTour)
+      ? selTour
+      : null;
+  if (strayTour)
+    tourState[strayTour] = {
+      hovered: flag(strayTour === hoverTour),
+      selected: 1,
+    };
+  return { strayTour, tourState };
+};
+
 export const buildScene = (input: SceneInput): Scene => {
   const {
     env,
@@ -336,15 +369,14 @@ export const buildScene = (input: SceneInput): Scene => {
       };
   }
 
-  const tourState: Record<string, TourState> = {};
-  for (const { tour } of rows.tour)
-    tourState[tour.slug] = {
-      hovered: flag(tour.slug === hoverTour),
-      selected: flag(tour.slug === selTour),
-    };
-
   const visibleTours = rows.tour.filter(({ tour }) =>
     isShown(shown, "tour", tour.slug),
+  );
+  const { strayTour, tourState } = toursDrawn(
+    rows.tour,
+    shown,
+    selTour,
+    hoverTour,
   );
 
   const { ghost: ghostRow, row: passRow } = roadAt(drawn, ghosts, hoverPass);
@@ -501,7 +533,10 @@ export const buildScene = (input: SceneInput): Scene => {
       state: routeState,
     },
     tours: {
-      filter: slugFilter(visibleTours.map(({ tour }) => tour.slug)),
+      filter: slugFilter([
+        ...visibleTours.map(({ tour }) => tour.slug),
+        ...(strayTour ? [strayTour] : []),
+      ]),
       state: tourState,
     },
     towns: collection<TownProps>(

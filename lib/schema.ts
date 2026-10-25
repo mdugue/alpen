@@ -375,7 +375,7 @@ export const Tour = z
     touches: z.array(Slug).min(1).optional(),
     /**
      * What kind of ride it is (see `TOUR_TYPES`): a loop, an event course, a
-     * signposted permanent route or a route in stages. Required, so a new tour
+     * permanent route with a stamp card or a route in stages. Required, so a new tour
      * is never filed under "loop" by default.
      */
     type: TourType,
