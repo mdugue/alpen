@@ -358,7 +358,7 @@ export const vocab = {
       plural: "Rundtouren",
     },
     permanent: {
-      hint: "Eine beschilderte Dauerstrecke mit Stempelkarte oder Wertung, die ganze Saison über zu fahren, mit Medaille fürs Ankommen.",
+      hint: "Eine Dauerstrecke mit Stempelkarte oder Wertung, beschildert oder nach dem Track des Veranstalters, die ganze Saison über zu fahren, mit Medaille fürs Ankommen.",
       label: "Dauerstrecke",
       plural: "Dauerstrecken",
     },

@@ -290,5 +290,33 @@
  "fataga-runde": {
   "description": "From Maspalomas up through the Fataga gorge to San Bartolomé de Tirajana, via Santa Lucía de Tirajana down to Agüimes and along the coast via Vecindario back to Maspalomas.",
   "note": "Fill up with water in San Bartolomé and Santa Lucía."
+ },
+ "stoneman-miriquidi-road": {
+  "description": "From Oberwiesenthal up the Bärenstein, over the Drei-Brüder-Höhe near Marienberg and Kühnhaide through the Natzschung valley to the Saigerhütte in Olbernhau, up the Schwartenberg above Seiffen, past the Rauschenbach reservoir to Holzhau, Bärenfels and Zinnwald. Across the Bohemian moors near Fláje down to Litvínov, up the escarpment to Nová Ves v Horách, down to Chomutov and along the Ohře valley to Klášterec, from Perštejn the long climb up the Klínovec and over the Fichtelberg back to Oberwiesenthal.",
+  "note": "A permanent route with 13 stamp points, most of them on the summits, but no signposts: the GPS track comes with the starter pack. Gold in one day, silver in two, bronze in three; the line here joins the stamp points and differs from the track in places."
+ },
+ "raid-pyreneen": {
+  "description": "From Hendaye over the Basque cols of Saint-Ignace and Pinodieta to Espelette, over the Col d'Osquich to Tardets, via Oloron to Laruns, up the Aubisque and the Soulor, over the Tourmalet to La Mongie, over the Aspin and the Peyresourde to Luchon, over the Col des Ares and the Portet d'Aspet to Saint-Girons, via Massat and the Col de Port to Tarascon, over the Puymorens into the Cerdagne, via Mont-Louis down to Prades and to the coast at Cerbère.",
+  "note": "A brevet of the Cyclo Club Béarnais with a stamp card: from the Atlantic to the Mediterranean in at most 100 hours, from June to September; the controls are cafés and shops in the stage towns. The touring version allows ten days. From Tardets to Laruns the route goes via Oloron; the Col de Marie-Blanque is a variant that does not count."
+ },
+ "quebrantahuesos": {
+  "description": "From Sabiñánigo via Jaca and Canfranc up the Somport, down the Aspe valley to Bedous, from Escot over the Col de Marie-Blanque to Laruns, up the Ossau valley to the Portalet, down to Sallent, via Hoz de Jaca and Biescas back to Sabiñánigo.",
+  "note": "Spain's largest cycling marathon with 8,000 places, on a Saturday in June on closed roads. The short Treparriscos leaves out the Somport and the Marie-Blanque."
+ },
+ "mallorca-312": {
+  "description": "From Platja de Muro to Pollença, over the Coll de Femenia to Lluc, over the Coll de sa Batalla and past the Gorg Blau under the Puig Major to Sóller, along the coast via Deià, Banyalbufar and Estellencs to Andratx, via Es Capdellà, Galilea and Esporles to Alaró and Lloseta, via Campanet, Ariany and Petra to Artà and back to Platja de Muro.",
+  "note": "A cycling marathon round the whole island in late April, with shorter courses of 167 and 225 km; almost all the climbing comes in the first 150 km in the Tramuntana, the rest rolls across the plain."
+ },
+ "grand-tour-des-ballons": {
+  "description": "From the Lac de Longemer via Le Valtin and the Col du Louspach up to the Col du Calvaire, 46 km along the Route des Crêtes over the Schlucht and the Markstein to the Grand Ballon, down via the Col Amic to Willer-sur-Thur, up the Thur valley to Kruth, over the Col d'Oderen and the Col du Page to Bussang, along the cycle path to Le Thillot, over the Col du Ménil to La Bresse, over the Col de Grosse Pierre to Gérardmer and back to the lake.",
+  "note": "The big Vosges loop from the tourism offer around Gérardmer; the Route des Crêtes is closed in winter and sets the window. From Bussang a stretch on the cycle path to Le Thillot."
+ },
+ "alpen-challenge-lenzerheide": {
+  "description": "From Lantsch/Lenz to Tiefencastel, via Filisur and Bergün up the Albula Pass, through the Upper Engadine via St. Moritz to the Maloja, down the Bregaglia to Chiavenna, over the Splügen Pass into the Rheinwald, through the Viamala to Thusis and via Tiefencastel back to Lantsch/Lenz.",
+  "note": "A cycling marathon in late summer from the Roland Arena in Lantsch/Lenz, on 20 September in 2026; the short course (117 km) rides the Albula and the Julier. Below Splügen through the Viamala to Thusis."
+ },
+ "brevet-de-randonneur-des-alpes-2025": {
+  "description": "From Le Bourg-d'Oisans up the Eau d'Olle valley via Allemont to the Col de la Croix de Fer, via Saint-Sorlin-d'Arves and the Col du Mollard to Albiez and Saint-Jean-de-Maurienne, on to Saint-Michel, over the Télégraphe to Valloire, up the Galibier and over the Lautaret back to Le Bourg-d'Oisans.",
+  "note": "An untimed brevet every two years in July, in one day or in two stages; variants via the Armentier viewpoint or the Col de Sarenne run to 209 km. In 2025 it started in Le Bourg-d'Oisans for the first time instead of Vizille."
  }
 }

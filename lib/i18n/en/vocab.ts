@@ -340,7 +340,7 @@ export const vocab = {
       plural: "Loops",
     },
     permanent: {
-      hint: "A signposted permanent route with a stamp card or timing, rideable all season, with a medal for finishing.",
+      hint: "A permanent route with a stamp card or timing, signposted or ridden on the organiser's track, rideable all season, with a medal for finishing.",
       label: "Permanent route",
       plural: "Permanent routes",
     },

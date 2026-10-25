@@ -6324,5 +6324,95 @@
     "highlights": "The chain of the High Tatras behind the meadows."
    }
   ]
+ },
+ "baerenstein": {
+  "intro": "A basalt hill right on the border opposite the Czech town of Vejprty, with a mountain inn and a lookout tower from which you see the Fichtelberg and the Klínovec.",
+  "sides": [
+   {
+    "character": "Short and steep out of the village through the forest, the ramps around 11 % on average; you ride the same road back down.",
+    "highlights": "The lookout tower on the summit."
+   }
+  ]
+ },
+ "drei-brueder-hoehe": {
+  "intro": "A height between Wolkenstein and Marienberg, named after three mining brothers, with a lookout tower over the central Ore Mountains.",
+  "sides": [
+   {
+    "character": "Long and steady out of the Preßnitz valley, more rolling than climbing; open meadows at the top.",
+    "highlights": "The lookout tower on the height."
+   }
+  ]
+ },
+ "schwartenberg": {
+  "intro": "The home hill of Seiffen, the toy-making village of the Ore Mountains, with an inn below the summit and one of the widest views in the eastern Ore Mountains.",
+  "sides": [
+   {
+    "character": "From Olbernhau gently along the valley at first, steeper between the houses from Seiffen and finally open across the meadows to the inn.",
+    "highlights": "Seiffen with its workshops, and the view from the inn."
+   }
+  ]
+ },
+ "nova-ves-v-horach": {
+  "intro": "The road from Litvínov onto the plateau of the Ore Mountains, up the fault scarp that makes the range so steep on its side towards the North Bohemian Basin.",
+  "sides": [
+   {
+    "character": "From Janov steadily steep through the forest up the edge, more open at the top; one continuous climb with no flat stretch.",
+    "highlights": "The view back over the basin and its power stations."
+   }
+  ]
+ },
+ "col-d-osquich": {
+  "intro": "A pasture pass between Lower Navarre and the Soule, on the way from Saint-Jean-Pied-de-Port to Mauléon.",
+  "sides": [
+   {
+    "character": "Steady from the west through pastures and copses, nowhere steep.",
+    "highlights": "The view back from the saddle over the hills of the Basque Country."
+   }
+  ]
+ },
+ "col-des-ares": {
+  "intro": "A wooded saddle in the Comminges, a link between two better-known passes.",
+  "sides": [
+   {
+    "character": "Steady from the Garonne through the forest, a climb to warm up on.",
+    "highlights": "The quiet of the beech forest."
+   }
+  ]
+ },
+ "col-de-la-perche": {
+  "intro": "The threshold between the sunny high plain of the Cerdagne and the valley of the Têt, right beside the fortress of Mont-Louis.",
+  "sides": [
+   {
+    "character": "Long and barely tilted across the open plateau, more altitude than climb; a headwind counts for more here than the gradient.",
+    "highlights": "The wide view over the Cerdagne to the Carlit and the Puigmal."
+   }
+  ]
+ },
+ "coll-de-sa-gramola": {
+  "intro": "The saddle at the southern end of the Serra de Tramuntana's coast road, above the terraces of Estellencs.",
+  "sides": [
+   {
+    "character": "Short and steady from the north out of the bends above the sea.",
+    "highlights": "The view back along the cliffs."
+   }
+  ]
+ },
+ "galilea": {
+  "intro": "A village on a balcony above the island's south-west, the road winding up through almond and olive groves.",
+  "sides": [
+   {
+    "character": "Narrow and twisting from Es Capdellà, steady at about five per cent.",
+    "highlights": "The church terrace of Galilea with the view down to the sea."
+   }
+  ]
+ },
+ "col-du-menil": {
+  "intro": "A forest saddle of the southern Vosges between two valleys of the textile industry.",
+  "sides": [
+   {
+    "character": "Barely tilted from Le Thillot through the forest, a link.",
+    "highlights": "The fir forests of the Hautes-Vosges."
+   }
+  ]
  }
 }

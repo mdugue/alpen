@@ -157,6 +157,7 @@
    "passo-falzarego",
    "passo-giau",
    "passo-tre-croci",
+   "tre-cime-di-lavaredo",
    "passo-sant-antonio",
    "passo-monte-croce-comelico"
   ],
@@ -4718,5 +4719,681 @@
     "lon": -15.5971
    }
   ]
+ },
+ {
+  "slug": "stoneman-miriquidi-road",
+  "surface": "asphalt",
+  "name": "Stoneman Miriquidi Road",
+  "color": "#7a6a8a",
+  "km": 290,
+  "elevationGain": 4900,
+  "passes": [
+   "baerenstein",
+   "drei-brueder-hoehe",
+   "schwartenberg",
+   "nova-ves-v-horach",
+   "klinovec",
+   "fichtelberg"
+  ],
+  "note": "Dauerstrecke mit 13 Stempelstellen, meist auf den Gipfeln, aber ohne Beschilderung: den GPS-Track gibt es mit dem Starterpaket. Gold an einem Tag, Silber in zwei, Bronze in drei; die Linie hier verbindet die Stempelstellen und weicht im Detail vom Track ab.",
+  "season": {
+   "opens": 4.5,
+   "closes": 10.5
+  },
+  "description": "Von Oberwiesenthal auf den Bärenstein, über die Drei-Brüder-Höhe bei Marienberg und Kühnhaide durchs Natzschungtal zur Saigerhütte in Olbernhau, auf den Schwartenberg über Seiffen, an der Talsperre Rauschenbach vorbei nach Holzhau, Bärenfels und Zinnwald. Über die böhmischen Hochmoore bei Fláje hinunter nach Litvínov, die Kante hinauf nach Nová Ves v Horách, hinab nach Chomutov und durchs Egertal nach Klášterec, von Perštejn den langen Anstieg auf den Klínovec und über den Fichtelberg zurück nach Oberwiesenthal.",
+  "type": "permanent",
+  "waypoints": [
+   {
+    "lat": 50.4194,
+    "lon": 12.971
+   },
+   {
+    "lat": 50.5083,
+    "lon": 13.0188
+   },
+   {
+    "lat": 50.6558,
+    "lon": 13.1242
+   },
+   {
+    "lat": 50.5807,
+    "lon": 13.2334
+   },
+   {
+    "lat": 50.6496,
+    "lon": 13.3683
+   },
+   {
+    "lat": 50.659,
+    "lon": 13.4659
+   },
+   {
+    "lat": 50.7,
+    "lon": 13.5159
+   },
+   {
+    "lat": 50.7337,
+    "lon": 13.5888
+   },
+   {
+    "lat": 50.7944,
+    "lon": 13.673
+   },
+   {
+    "lat": 50.7361,
+    "lon": 13.7638
+   },
+   {
+    "lat": 50.6761,
+    "lon": 13.599
+   },
+   {
+    "lat": 50.601,
+    "lon": 13.611
+   },
+   {
+    "lat": 50.5947,
+    "lon": 13.4825
+   },
+   {
+    "lat": 50.4745,
+    "lon": 13.42
+   },
+   {
+    "lat": 50.3843,
+    "lon": 13.171
+   },
+   {
+    "lat": 50.3817,
+    "lon": 13.1102
+   },
+   {
+    "lat": 50.3957,
+    "lon": 12.968
+   },
+   {
+    "lat": 50.4288,
+    "lon": 12.9543
+   },
+   {
+    "lat": 50.4194,
+    "lon": 12.971
+   }
+  ]
+ },
+ {
+  "slug": "raid-pyreneen",
+  "surface": "asphalt",
+  "name": "Raid Pyrénéen",
+  "color": "#8a7a5a",
+  "km": 720,
+  "elevationGain": 11000,
+  "passes": [
+   "col-d-osquich",
+   "col-d-aubisque",
+   "col-du-soulor",
+   "col-du-tourmalet",
+   "col-d-aspin",
+   "col-de-peyresourde",
+   "col-des-ares",
+   "col-du-portet-d-aspet",
+   "col-de-port",
+   "col-de-puymorens",
+   "col-de-la-perche"
+  ],
+  "note": "Brevet des Cyclo Club Béarnais mit Stempelheft: vom Atlantik ans Mittelmeer in höchstens 100 Stunden, von Juni bis September; die Kontrollen sind Cafés und Läden in den Etappenorten. Die touristische Variante lässt zehn Tage Zeit. Von Tardets nach Laruns führt der Weg über Oloron; der Col de Marie-Blanque ist eine Variante, die nicht mitzählt.",
+  "season": {
+   "opens": 6,
+   "closes": 9.5
+  },
+  "description": "Von Hendaye über die baskischen Cols Saint-Ignace und Pinodieta nach Espelette, über den Col d'Osquich nach Tardets, über Oloron nach Laruns, auf den Aubisque und den Soulor, über den Tourmalet nach La Mongie, über Aspin und Peyresourde nach Luchon, über den Col des Ares und den Portet d'Aspet nach Saint-Girons, über Massat und den Col de Port nach Tarascon, über den Puymorens in die Cerdagne, über Mont-Louis hinunter nach Prades und an die Küste nach Cerbère.",
+  "type": "permanent",
+  "waypoints": [
+   {
+    "lat": 43.3642,
+    "lon": -1.7616
+   },
+   {
+    "lat": 43.3271,
+    "lon": -1.6015
+   },
+   {
+    "lat": 43.3412,
+    "lon": -1.4481
+   },
+   {
+    "lat": 43.1995,
+    "lon": -1.0033
+   },
+   {
+    "lat": 43.1163,
+    "lon": -0.8645
+   },
+   {
+    "lat": 43.1922,
+    "lon": -0.6116
+   },
+   {
+    "lat": 42.9882,
+    "lon": -0.4266
+   },
+   {
+    "lat": 42.9766,
+    "lon": -0.3398
+   },
+   {
+    "lat": 42.9606,
+    "lon": -0.2602
+   },
+   {
+    "lat": 43.0051,
+    "lon": -0.0998
+   },
+   {
+    "lat": 42.8721,
+    "lon": -0.0043
+   },
+   {
+    "lat": 42.9084,
+    "lon": 0.1453
+   },
+   {
+    "lat": 42.9848,
+    "lon": 0.2276
+   },
+   {
+    "lat": 42.9423,
+    "lon": 0.3274
+   },
+   {
+    "lat": 42.9055,
+    "lon": 0.359
+   },
+   {
+    "lat": 42.8023,
+    "lon": 0.4631
+   },
+   {
+    "lat": 42.7911,
+    "lon": 0.5912
+   },
+   {
+    "lat": 42.9909,
+    "lon": 0.6938
+   },
+   {
+    "lat": 42.9448,
+    "lon": 0.8537
+   },
+   {
+    "lat": 42.9842,
+    "lon": 1.1464
+   },
+   {
+    "lat": 42.8889,
+    "lon": 1.348
+   },
+   {
+    "lat": 42.899,
+    "lon": 1.4528
+   },
+   {
+    "lat": 42.8492,
+    "lon": 1.6043
+   },
+   {
+    "lat": 42.7193,
+    "lon": 1.8378
+   },
+   {
+    "lat": 42.5596,
+    "lon": 1.8108
+   },
+   {
+    "lat": 42.4349,
+    "lon": 1.9438
+   },
+   {
+    "lat": 42.4709,
+    "lon": 2.0518
+   },
+   {
+    "lat": 42.4966,
+    "lon": 2.0928
+   },
+   {
+    "lat": 42.5097,
+    "lon": 2.1209
+   },
+   {
+    "lat": 42.6181,
+    "lon": 2.4231
+   },
+   {
+    "lat": 42.5477,
+    "lon": 3.0254
+   },
+   {
+    "lat": 42.4794,
+    "lon": 3.1276
+   },
+   {
+    "lat": 42.4413,
+    "lon": 3.1647
+   }
+  ]
+ },
+ {
+  "slug": "quebrantahuesos",
+  "surface": "asphalt",
+  "name": "Quebrantahuesos",
+  "color": "#9a6a4a",
+  "km": 200,
+  "elevationGain": 3500,
+  "passes": [
+   "col-du-somport",
+   "col-de-marie-blanque",
+   "col-du-pourtalet"
+  ],
+  "note": "Größter Radmarathon Spaniens mit 8000 Plätzen, an einem Samstag im Juni; die Straßen sind dafür gesperrt. Die kurze Treparriscos lässt Somport und Marie-Blanque aus.",
+  "season": null,
+  "description": "Von Sabiñánigo über Jaca und Canfranc auf den Somport, durchs Aspetal hinunter nach Bedous, von Escot über den Col de Marie-Blanque nach Laruns, durchs Ossau-Tal auf den Portalet, hinunter nach Sallent, über Hoz de Jaca und Biescas zurück nach Sabiñánigo.",
+  "type": "event",
+  "waypoints": [
+   {
+    "lat": 42.5184,
+    "lon": -0.3648
+   },
+   {
+    "lat": 42.5693,
+    "lon": -0.5494
+   },
+   {
+    "lat": 42.7499,
+    "lon": -0.5158
+   },
+   {
+    "lat": 42.796,
+    "lon": -0.5253
+   },
+   {
+    "lat": 42.9992,
+    "lon": -0.6002
+   },
+   {
+    "lat": 43.0771,
+    "lon": -0.6068
+   },
+   {
+    "lat": 43.0705,
+    "lon": -0.5075
+   },
+   {
+    "lat": 42.9882,
+    "lon": -0.4266
+   },
+   {
+    "lat": 42.8059,
+    "lon": -0.4185
+   },
+   {
+    "lat": 42.6911,
+    "lon": -0.3061
+   },
+   {
+    "lat": 42.6286,
+    "lon": -0.3216
+   },
+   {
+    "lat": 42.5184,
+    "lon": -0.3648
+   }
+  ],
+  "when": 6.5
+ },
+ {
+  "slug": "mallorca-312",
+  "surface": "asphalt",
+  "name": "Mallorca 312",
+  "color": "#6a8a9a",
+  "km": 312,
+  "elevationGain": 5050,
+  "passes": [
+   "coll-de-femenia",
+   "coll-de-sa-batalla",
+   "puig-major",
+   "coll-de-sa-gramola",
+   "galilea"
+  ],
+  "note": "Radmarathon Ende April um die ganze Insel, mit Kurzstrecken über 167 und 225 km; fast alle Höhenmeter liegen in den ersten 150 km in der Tramuntana, der Rest rollt durch die Ebene.",
+  "season": null,
+  "description": "Von Platja de Muro nach Pollença, über den Coll de Femenia nach Lluc, über den Coll de sa Batalla und am Gorg Blau vorbei unter dem Puig Major hindurch nach Sóller, an der Küste über Deià, Banyalbufar und Estellencs nach Andratx, über Es Capdellà, Galilea und Esporles nach Alaró und Lloseta, über Campanet, Ariany und Petra nach Artà und zurück nach Platja de Muro.",
+  "type": "event",
+  "waypoints": [
+   {
+    "lat": 39.8094,
+    "lon": 3.1161
+   },
+   {
+    "lat": 39.8792,
+    "lon": 3.0157
+   },
+   {
+    "lat": 39.8224,
+    "lon": 2.8844
+   },
+   {
+    "lat": 39.7663,
+    "lon": 2.7151
+   },
+   {
+    "lat": 39.7477,
+    "lon": 2.6483
+   },
+   {
+    "lat": 39.6875,
+    "lon": 2.5148
+   },
+   {
+    "lat": 39.5746,
+    "lon": 2.4202
+   },
+   {
+    "lat": 39.5785,
+    "lon": 2.4704
+   },
+   {
+    "lat": 39.6088,
+    "lon": 2.5052
+   },
+   {
+    "lat": 39.6692,
+    "lon": 2.5776
+   },
+   {
+    "lat": 39.7062,
+    "lon": 2.7907
+   },
+   {
+    "lat": 39.7183,
+    "lon": 2.8666
+   },
+   {
+    "lat": 39.7751,
+    "lon": 2.9651
+   },
+   {
+    "lat": 39.6508,
+    "lon": 3.1115
+   },
+   {
+    "lat": 39.6135,
+    "lon": 3.1128
+   },
+   {
+    "lat": 39.695,
+    "lon": 3.3506
+   },
+   {
+    "lat": 39.8094,
+    "lon": 3.1161
+   }
+  ],
+  "when": 4.5
+ },
+ {
+  "slug": "grand-tour-des-ballons",
+  "surface": "asphalt",
+  "name": "Grand Tour des Ballons",
+  "color": "#7a8a9a",
+  "km": 160,
+  "elevationGain": 2500,
+  "passes": [
+   "col-du-calvaire",
+   "col-de-la-schlucht",
+   "route-des-cretes",
+   "le-markstein",
+   "grand-ballon",
+   "col-d-oderen",
+   "col-de-grosse-pierre",
+   "col-du-menil"
+  ],
+  "note": "Die große Runde der Vogesen aus dem Tourismusangebot rund um Gérardmer; die Route des Crêtes ist im Winter gesperrt und gibt das Fenster vor. Ab Bussang ein Stück auf dem Radweg nach Le Thillot.",
+  "season": null,
+  "description": "Vom Lac de Longemer über Le Valtin und den Col du Louspach auf den Col du Calvaire, 46 km auf der Route des Crêtes über die Schlucht und den Markstein zum Grand Ballon, hinunter über den Col Amic nach Willer-sur-Thur, durchs Thurtal nach Kruth, über den Col d'Oderen und den Col du Page nach Bussang, auf dem Radweg nach Le Thillot, über den Col du Ménil nach La Bresse, über den Col de Grosse Pierre nach Gérardmer und zurück an den See.",
+  "type": "loop",
+  "waypoints": [
+   {
+    "lat": 48.0799,
+    "lon": 6.9414
+   },
+   {
+    "lat": 48.0984,
+    "lon": 7.0236
+   },
+   {
+    "lat": 48.1275,
+    "lon": 7.0511
+   },
+   {
+    "lat": 48.1367,
+    "lon": 7.0866
+   },
+   {
+    "lat": 48.0642,
+    "lon": 7.0227
+   },
+   {
+    "lat": 47.9231,
+    "lon": 7.0321
+   },
+   {
+    "lat": 47.9037,
+    "lon": 7.1033
+   },
+   {
+    "lat": 47.8755,
+    "lon": 7.1273
+   },
+   {
+    "lat": 47.8437,
+    "lon": 7.0706
+   },
+   {
+    "lat": 47.8899,
+    "lon": 6.9976
+   },
+   {
+    "lat": 47.9306,
+    "lon": 6.9646
+   },
+   {
+    "lat": 47.9227,
+    "lon": 6.9174
+   },
+   {
+    "lat": 47.9159,
+    "lon": 6.8909
+   },
+   {
+    "lat": 47.8856,
+    "lon": 6.8555
+   },
+   {
+    "lat": 47.8804,
+    "lon": 6.7634
+   },
+   {
+    "lat": 47.9262,
+    "lon": 6.8171
+   },
+   {
+    "lat": 48.0066,
+    "lon": 6.8767
+   },
+   {
+    "lat": 48.0264,
+    "lon": 6.8856
+   },
+   {
+    "lat": 48.0706,
+    "lon": 6.8777
+   },
+   {
+    "lat": 48.0799,
+    "lon": 6.9414
+   }
+  ]
+ },
+ {
+  "slug": "alpen-challenge-lenzerheide",
+  "surface": "asphalt",
+  "name": "Alpen Challenge Lenzerheide",
+  "color": "#6a7a9a",
+  "km": 191,
+  "elevationGain": 4600,
+  "passes": [
+   "albulapass",
+   "malojapass",
+   "spluegenpass"
+  ],
+  "note": "Radmarathon im Spätsommer ab der Roland Arena in Lantsch/Lenz, 2026 am 20. September; die kurze Strecke (117 km) fährt Albula und Julier. Unter Splügen durch die Viamala nach Thusis.",
+  "season": null,
+  "description": "Von Lantsch/Lenz nach Tiefencastel, über Filisur und Bergün auf den Albulapass, durchs Oberengadin über St. Moritz zum Maloja, das Bergell hinunter nach Chiavenna, über den Splügenpass ins Rheinwald, durch die Viamala nach Thusis und über Tiefencastel zurück nach Lantsch/Lenz.",
+  "type": "event",
+  "waypoints": [
+   {
+    "lat": 46.6928,
+    "lon": 9.5568
+   },
+   {
+    "lat": 46.6616,
+    "lon": 9.5765
+   },
+   {
+    "lat": 46.629,
+    "lon": 9.7453
+   },
+   {
+    "lat": 46.5823,
+    "lon": 9.8377
+   },
+   {
+    "lat": 46.5766,
+    "lon": 9.9308
+   },
+   {
+    "lat": 46.4599,
+    "lon": 9.7959
+   },
+   {
+    "lat": 46.4,
+    "lon": 9.696
+   },
+   {
+    "lat": 46.3201,
+    "lon": 9.4007
+   },
+   {
+    "lat": 46.507,
+    "lon": 9.33
+   },
+   {
+    "lat": 46.5531,
+    "lon": 9.3234
+   },
+   {
+    "lat": 46.6972,
+    "lon": 9.4391
+   },
+   {
+    "lat": 46.6616,
+    "lon": 9.5765
+   },
+   {
+    "lat": 46.6928,
+    "lon": 9.5568
+   }
+  ],
+  "when": 9.5
+ },
+ {
+  "slug": "brevet-de-randonneur-des-alpes-2025",
+  "surface": "asphalt",
+  "name": "Brevet de Randonneur des Alpes 2025",
+  "color": "#9a7a6a",
+  "km": 174,
+  "elevationGain": 4400,
+  "passes": [
+   "col-de-la-croix-de-fer",
+   "col-du-mollard",
+   "col-du-telegraphe",
+   "col-du-galibier",
+   "col-du-lautaret"
+  ],
+  "touches": [
+   "col-du-glandon"
+  ],
+  "note": "Brevet ohne Zeitnahme alle zwei Jahre im Juli, an einem Tag oder in zwei Etappen; Varianten über den Aussichtspunkt Armentier oder den Col de Sarenne führen bis 209 km. 2025 erstmals ab Le Bourg-d'Oisans statt Vizille.",
+  "season": null,
+  "description": "Von Le Bourg-d'Oisans durchs Tal der Eau d'Olle über Allemont auf den Col de la Croix de Fer, über Saint-Sorlin-d'Arves und den Col du Mollard nach Albiez und Saint-Jean-de-Maurienne, nach Saint-Michel, über den Télégraphe nach Valloire, auf den Galibier und über den Lautaret zurück nach Le Bourg-d'Oisans.",
+  "type": "edition",
+  "series": "brevet-de-randonneur-des-alpes",
+  "year": 2025,
+  "waypoints": [
+   {
+    "lat": 45.0547,
+    "lon": 6.0307
+   },
+   {
+    "lat": 45.1311,
+    "lon": 6.0369
+   },
+   {
+    "lat": 45.227,
+    "lon": 6.203
+   },
+   {
+    "lat": 45.2214,
+    "lon": 6.229
+   },
+   {
+    "lat": 45.2105,
+    "lon": 6.3371
+   },
+   {
+    "lat": 45.2451,
+    "lon": 6.3512
+   },
+   {
+    "lat": 45.2775,
+    "lon": 6.3452
+   },
+   {
+    "lat": 45.2179,
+    "lon": 6.4751
+   },
+   {
+    "lat": 45.2027,
+    "lon": 6.4446
+   },
+   {
+    "lat": 45.165,
+    "lon": 6.4296
+   },
+   {
+    "lat": 45.064,
+    "lon": 6.408
+   },
+   {
+    "lat": 45.034,
+    "lon": 6.405
+   },
+   {
+    "lat": 45.0547,
+    "lon": 6.0307
+   }
+  ],
+  "when": 7
  }
 ]

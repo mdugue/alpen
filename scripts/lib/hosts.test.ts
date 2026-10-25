@@ -70,7 +70,7 @@ describe("ors.route", () => {
     const [q] = asked;
     expect(q!.host).toBe("ors");
     expect(q!.url).toBe(
-      "https://api.openrouteservice.org/v2/directions/cycling-road/geojson",
+      "https://api.heigit.org/openrouteservice/v2/directions/cycling-road/geojson",
     );
     expect(q!.init?.method).toBe("POST");
     expect(q!.init?.headers).toEqual({

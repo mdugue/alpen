@@ -123,7 +123,7 @@ export const ors = {
       const json = OrsAnswer.parse(
         await t.getJson(
           "ors",
-          `https://api.openrouteservice.org/v2/directions/${profile}/geojson`,
+          `https://api.heigit.org/openrouteservice/v2/directions/${profile}/geojson`,
           {
             body: JSON.stringify({
               coordinates: chunk.map((c) => [c.lon, c.lat]),
@@ -188,6 +188,43 @@ const Daily = z.object({
   }),
 });
 export type DailySeries = z.infer<typeof Daily>["daily"];
+
+// ---------------------------------------------------------------------------
+// OpenTopoData
+
+/**
+ * EU-DEM at 25 m, with Mapzen's global terrain where EU-DEM has no cell (the
+ * Canaries' sea, a border strip). A separate host from Open-Meteo on purpose:
+ * the climb report samples whole tour lines, and those calls would come out of
+ * the daily budget the climate series need.
+ */
+const OPEN_TOPO_DATA = "https://api.opentopodata.org/v1/eudem25m,mapzen";
+const TopoAnswer = z.object({
+  results: z.array(z.object({ elevation: z.number().nullable() })),
+});
+
+export const openTopoData = {
+  /** One height per point, in the points' order; a cell without data is null. */
+  elevation: async (
+    t: Transport,
+    points: LatLon[],
+  ): Promise<(number | null)[]> => {
+    const out: (number | null)[] = [];
+    for (const chunk of chunks(points, ELEVATION_BATCH)) {
+      const locations = chunk
+        .map((p) => `${p.lat.toFixed(5)},${p.lon.toFixed(5)}`)
+        .join("|");
+      const answer = TopoAnswer.parse(
+        await t.getJson(
+          "openTopoData",
+          `${OPEN_TOPO_DATA}?locations=${locations}`,
+        ),
+      );
+      out.push(...answer.results.map((r) => r.elevation));
+    }
+    return out;
+  },
+};
 
 export const openMeteo = {
   /**
