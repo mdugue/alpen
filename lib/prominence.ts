@@ -102,3 +102,11 @@ export const shortName = (name: string): string => {
 
 /** From this zoom on, every road is named in full. */
 export const SHORT_NAME_ZOOM = 9;
+
+/**
+ * Below this zoom the map is the overview – the Alps and beyond on one
+ * screen – and says where it is green rather than what everything is
+ * called: only the rideable classics carry a name, and the areas none. Every
+ * dot, line and outline is drawn as at any zoom; only names wait.
+ */
+export const OVERVIEW_ZOOM = 6;

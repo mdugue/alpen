@@ -177,7 +177,10 @@ Karte, und was die Filter auslassen, bleibt als grauer Punkt. Der Zoom
 entscheidet nur, wie groß die Punkte sind und ab wann ihre Namen dazukommen –
 die Klassiker zuerst, Stich-, Tal-, Balkon- und Höhenstraßen eine Stufe
 später, Straßen mit Schönheit 5 eine Stufe früher. In der Übersicht stehen die
-Namen kurz („Galibier“ statt „Col du Galibier“).
+Namen kurz („Galibier“ statt „Col du Galibier“). Ganz herausgezoomt, wenn die
+Alpen und mehr auf einen Bildschirm passen, tragen nur befahrbare Straßen einen
+Namen, und die Reiseziele noch keinen; alle Punkte und Flächen bleiben
+gezeichnet.
 
 Wo sich etwas überlagert, gewinnt, was befahrbar ist: Grüne Punkte und
 Auffahrten liegen über orangen, orange über roten. Mit der Maus trägt eine oft

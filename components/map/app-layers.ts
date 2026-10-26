@@ -36,6 +36,7 @@ import { PALETTE } from "@/lib/palette";
 import type { Scheme } from "@/lib/palette";
 import {
   DESTINATION_MAX_ZOOM,
+  OVERVIEW_ZOOM,
   SHORT_NAME_ZOOM,
   SIZE_ZOOMS,
 } from "@/lib/prominence";
@@ -879,9 +880,10 @@ export const appLayers = (
       source: SOURCE.passes,
       type: "symbol",
     },
-    // The area's name over its centre, with the count under it, at every
-    // zoom like its outline. A point of its own rather than the outline's: a polygon is labelled
-    // once per tile it crosses. Below the pass labels in the list, so
+    // The area's name, where its outline has room (`labelSpot`), from the
+    // end of the overview on (`OVERVIEW_ZOOM`): on one screen of the Alps,
+    // eighty area names were most of the text. A point of its own rather
+    // than the outline's: a polygon is labelled once per tile it crosses. Below the pass labels in the list, so
     // MapLibre places the pass names first: a famous pass wins its collision
     // against the area it lies in.
     {
@@ -905,6 +907,7 @@ export const appLayers = (
           12.5,
         ] as never,
       },
+      minzoom: OVERVIEW_ZOOM,
       paint: {
         // The towns' blue rather than the ink: an area's name is the quiet
         // voice under the road names, in the family its outline is drawn in.
@@ -951,9 +954,24 @@ export const appLayers = (
         ] as never,
         // The overview writes the short name (`shortName`): "Galibier", not
         // "Col du Galibier". The selected road is named in full everywhere.
+        // Below `OVERVIEW_ZOOM` only a rideable road is named at all – an
+        // empty name places nothing – besides the selected and the favourites.
         "text-field": [
           "step",
           ["zoom"],
+          [
+            "case",
+            ["==", ["get", "selected"], 1],
+            ["get", "name"],
+            [
+              "any",
+              ["==", ["get", "favorite"], 1],
+              ["==", ["get", "status"], "open"],
+            ],
+            ["get", "short"],
+            "",
+          ],
+          OVERVIEW_ZOOM,
           [
             "case",
             ["==", ["get", "selected"], 1],

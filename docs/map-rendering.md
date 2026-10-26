@@ -218,6 +218,12 @@ every overlap is settled in that order, and nothing else is.
   road keeps its name. What is selected or a favourite is named in any
   status. Within one rank's label layer, open names are placed before risky
   ones (`symbol-sort-key`); across ranks the ladder below still decides.
+- **The overview names only what is green.** Below `OVERVIEW_ZOOM`
+  (`lib/prominence.ts`) – the Alps and beyond on one screen – a road is named
+  only when it is rideable (or selected, or a favourite), and the areas carry
+  no names at all: on a phone, eighty area names and every orange classic
+  were most of the picture. The dots, lines and outlines are all there; only
+  the names wait, as they already join by rank.
 - **Short names on the overview.** Below `SHORT_NAME_ZOOM` a name is
   written without the generic word in front – "Galibier", not "Col du
   Galibier" (`shortName`, `lib/prominence.ts`) – unless what is left would
