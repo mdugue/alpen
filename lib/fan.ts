@@ -126,9 +126,17 @@ export const fanLayout = (
   const rows = Math.max(1, Math.floor((bottom - top) / step) + 1);
 
   const widest = Math.max(...roads.map((r) => widthOf(r.name)));
-  const roomLeft = west - FAN.gap - widest >= view.inset.left + FAN.margin;
-  const roomRight =
-    east + FAN.gap + widest <= view.width - view.inset.right - FAN.margin;
+  const leftEdge = view.inset.left + FAN.margin;
+  const rightEdge = view.width - view.inset.right - FAN.margin;
+  const roomLeft = west - FAN.gap - widest >= leftEdge;
+  const roomRight = east + FAN.gap + widest <= rightEdge;
+  // Where a column's lines end: beside the outline, or – where the outline
+  // reaches the edge of what the panels leave – pulled in over it, so the
+  // names stay on the screen rather than run off it or under a panel.
+  const columnX = {
+    left: Math.max(west - FAN.gap, leftEdge + widest),
+    right: Math.min(east + FAN.gap, rightEdge - widest),
+  };
   // With room on one side only, that side; with room on neither, the wider.
   const wider =
     west - view.inset.left > view.width - view.inset.right - east
@@ -185,7 +193,7 @@ export const fanLayout = (
       more > 0 && side === moreSide ? bottom - step : bottom,
       step,
     );
-    const x = side === "left" ? west - FAN.gap : east + FAN.gap;
+    const x = columnX[side];
     for (const [i, r] of column.entries())
       entries.push({ ...r, label: { x, y: ys[i]! }, side });
     bottoms[side] = ys.at(-1) ?? top - step;
@@ -197,7 +205,7 @@ export const fanLayout = (
       more > 0
         ? {
             side: moreSide,
-            x: moreSide === "left" ? west - FAN.gap : east + FAN.gap,
+            x: columnX[moreSide],
             y: bottoms[moreSide] + step,
           }
         : null,

@@ -75,6 +75,18 @@ describe("fanLayout", () => {
     expect(fan.entries.every((e) => e.side === "right")).toBe(true);
   });
 
+  test("an outline wider than the free screen pulls its column in, onto the screen", () => {
+    const wide: Px[] = outline.map((p) => ({
+      x: p.x < 600 ? 40 : 1180,
+      y: p.y,
+    }));
+    const fan = fanLayout([road("a", 600, 400)], wide, view);
+    const [entry] = fan.entries;
+    expect(entry!.label.x + FAN.charPx + FAN.chrome).toBeLessThanOrEqual(
+      view.width - FAN.margin,
+    );
+  });
+
   test("a short screen keeps the rideable roads and the classics, and counts the rest", () => {
     // Room for three rows a side.
     const short: FanView = { ...view, height: 3 * FAN.step + 2 * FAN.margin };
