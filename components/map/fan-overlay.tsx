@@ -12,7 +12,7 @@ import type { Fan, Px } from "@/lib/fan";
 import { fill } from "@/lib/i18n/fill";
 import type { Inset } from "@/lib/map-camera";
 import type { SceneFan } from "@/lib/map-scene";
-import { cn } from "@/lib/utils";
+import { cn, fmtUnit } from "@/lib/utils";
 
 /** A row on a coarse pointer: a name a finger can hit. */
 const STEP_COARSE = 34;
@@ -21,16 +21,16 @@ interface Drawn {
   /** Which area it was laid out for: a layout of the last one is not drawn. */
   slug: string;
   fan: Fan;
-  /** The outline on the screen, for the veil's hole. */
-  hole: Px[];
   width: number;
   height: number;
 }
 
 /**
  * The fan, drawn: an area's roads named in two columns beside its outline,
- * each with a line to its dot, and the rest of the map veiled a little so the
- * area stands out (lib/fan.ts says where everything goes and when).
+ * each with a line to its dot (lib/fan.ts says where everything goes and
+ * when). It is the roads' hover label: the name the pointer is on – on the
+ * map or in the fan – also says its height. The map around it stays as it
+ * is; a veil that dimmed it made every hover a change of the whole picture.
  *
  * It sits over the map rather than in it. The names are buttons – pointing at
  * one rings its road, pressing it opens the road – and the columns follow the
@@ -65,7 +65,7 @@ export const FanOverlay = ({
    */
   onOver: (slug: string | null) => void;
 }) => {
-  const { t } = useT();
+  const { lang, t } = useT();
   const [drawn, setDrawn] = useState<Drawn | null>(null);
   // The scene is a new value on every render, the fan in it rarely another
   // one: the effect below starts over only when its area or roads change, and
@@ -121,7 +121,6 @@ export const FanOverlay = ({
           },
         ),
         height,
-        hole,
         slug,
         width,
       });
@@ -140,20 +139,19 @@ export const FanOverlay = ({
   }, [map, ready, slug, roads, top, right, bottom, left, coarse]);
 
   if (!fan || drawn?.slug !== fan.slug) return null;
-  const { width, height, hole } = drawn;
-  const veil = `M0 0H${width}V${height}H0Z M${hole.map((p) => `${p.x} ${p.y}`).join("L")}Z`;
+  const { width, height } = drawn;
+  const heightOf = new Map(fan.roads.map((r) => [r.slug, r.elevation]));
   return (
     <div
       key={fan.slug}
       data-fan
-      className="animate-in fade-in pointer-events-none absolute inset-0 z-[1] duration-200 motion-reduce:animate-none"
+      className="animate-in fade-in pointer-events-none absolute inset-0 z-[1] duration-150 motion-reduce:animate-none"
     >
       <svg
         className="absolute inset-0 size-full"
         viewBox={`0 0 ${width} ${height}`}
         aria-hidden
       >
-        <path d={veil} fillRule="evenodd" className="fill-background/45" />
         {drawn.fan.entries.map((e) => (
           <g
             key={e.slug}
@@ -211,6 +209,11 @@ export const FanOverlay = ({
             >
               <StatusDot status={e.status} hollow={e.status === "closed"} />
               {e.name}
+              {e.slug === hoveredRoad && (
+                <span className="text-muted-foreground font-normal tabular-nums">
+                  {fmtUnit(heightOf.get(e.slug) ?? 0, "m", 0, lang)}
+                </span>
+              )}
             </button>
           </li>
         ))}

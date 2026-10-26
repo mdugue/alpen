@@ -37,6 +37,7 @@ import type { Scheme } from "@/lib/palette";
 import {
   DESTINATION_MAX_ZOOM,
   OVERVIEW_ZOOM,
+  ROAD_NAME_ZOOM,
   SHORT_NAME_ZOOM,
   SIZE_ZOOMS,
 } from "@/lib/prominence";
@@ -954,8 +955,8 @@ export const appLayers = (
         ] as never,
         // The overview writes the short name (`shortName`): "Galibier", not
         // "Col du Galibier". The selected road is named in full everywhere.
-        // Below `OVERVIEW_ZOOM` only a rideable road is named at all – an
-        // empty name places nothing – besides the selected and the favourites.
+        // Below `ROAD_NAME_ZOOM` no road is named at rest – an empty name
+        // places nothing – but the selected one and the favourites.
         "text-field": [
           "step",
           ["zoom"],
@@ -963,15 +964,11 @@ export const appLayers = (
             "case",
             ["==", ["get", "selected"], 1],
             ["get", "name"],
-            [
-              "any",
-              ["==", ["get", "favorite"], 1],
-              ["==", ["get", "status"], "open"],
-            ],
+            ["==", ["get", "favorite"], 1],
             ["get", "short"],
             "",
           ],
-          OVERVIEW_ZOOM,
+          ROAD_NAME_ZOOM,
           [
             "case",
             ["==", ["get", "selected"], 1],

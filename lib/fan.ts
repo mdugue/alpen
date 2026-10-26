@@ -220,30 +220,48 @@ export interface FanInput {
   current: string | null;
   /** Whether the pointer is on one of the fan's names. */
   overFan: boolean;
-  /** Whether a road belongs to an area – the fan's own roads keep it open. */
-  holds: (area: string, road: string) => boolean;
+  /** The areas a road or a town belongs to, in the order the list ranks them. */
+  areasOf: (sel: Selection) => readonly string[];
+  /**
+   * Whether a selected road or town opens its area's fan too: on a phone,
+   * where there is no hover to open it, the tap is the only way to point.
+   */
+  coarse: boolean;
 }
 
+/** A road or a town: what belongs to an area, and opens its fan. */
+const isMember = (sel: Selection | null): sel is Selection =>
+  sel?.kind === "pass" || sel?.kind === "town";
+
 /**
- * Which area is fanned out: the one pointed at; the one already fanned out
- * while the pointer is on its names or on one of its roads, so moving from
- * the outline to a name does not close it on the way; else the one that is
- * open in the panel. `null` is the map at rest.
+ * Which area is fanned out. The fan is what the map says about a road or a
+ * town in place of a hover label, so pointing at one opens the area it
+ * belongs to – the one already open if it is one of them – and pointing at
+ * an area opens that. While the pointer is on the fan's names the fan stays;
+ * with nothing pointed at, the area open in the panel is fanned out (on a
+ * phone also the area of the road or town open in it). `null` is the map at
+ * rest.
  *
  * The component waits a moment before it acts on a `null` (or on a fall back
- * to the open area): the pointer crosses a few pixels of nothing between the
- * outline and a name, and a fan that shut there could never be reached.
+ * to the open area): the pointer crosses a few pixels of nothing between a
+ * dot and its name, and a fan that shut there could never be reached.
  */
 export const fanTarget = ({
+  areasOf,
+  coarse,
   current,
-  holds,
   hovered,
   overFan,
   selection,
 }: FanInput): string | null => {
   if (hovered?.kind === "destination") return hovered.slug;
+  if (isMember(hovered)) {
+    const areas = areasOf(hovered);
+    if (current && areas.includes(current)) return current;
+    if (areas.length > 0) return areas[0]!;
+  }
   if (current && overFan) return current;
-  if (current && hovered?.kind === "pass" && holds(current, hovered.slug))
-    return current;
-  return selection?.kind === "destination" ? selection.slug : null;
+  if (selection?.kind === "destination") return selection.slug;
+  if (coarse && isMember(selection)) return areasOf(selection)[0] ?? null;
+  return null;
 };

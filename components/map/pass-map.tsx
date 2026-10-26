@@ -283,26 +283,34 @@ export const PassMap = ({
   };
   /**
    * The area whose roads are named round it (lib/fan.ts), and whether the
-   * pointer is on those names. `fanTarget` says which area it should be; a
-   * new area pointed at opens at once, anything else – closing, or falling
-   * back to the area in the panel – waits `FAN_RELEASE_MS`, so the pointer
-   * can cross the gap from the outline to a name without the fan shutting
-   * under it.
+   * pointer is on those names. `fanTarget` says which area it should be; an
+   * area pointed at – or the area of a road or town pointed at – opens in
+   * the same render, anything else – closing, or falling back to the area in
+   * the panel – waits `FAN_RELEASE_MS`, so the pointer can cross the gap
+   * from a dot to a name without the fan shutting under it.
    */
   const [fan, setFan] = useState<string | null>(null);
   /** Which area's names the pointer is on – only that area's fan it holds. */
   const [overFan, setOverFan] = useState<string | null>(null);
   const fanNext = fanTarget({
+    areasOf: (sel) =>
+      rows.destination
+        .filter((r) =>
+          (sel.kind === "town" ? r.members.towns : r.members.passes).includes(
+            sel.slug,
+          ),
+        )
+        .map((r) => r.destination.slug),
+    coarse: env.coarsePointer,
     current: fan,
-    holds: (area, road) =>
-      rows.destination.some(
-        (r) => r.destination.slug === area && r.members.passes.includes(road),
-      ),
     hovered,
     overFan: fan !== null && overFan === fan,
     selection,
   });
-  const fanAtOnce = fanNext !== null && hovered?.kind === "destination";
+  // Opening is the pointer's answer, so it is not put off – not even by a
+  // frame, or the road's hover label would flash before the fan replaces it.
+  const fanAtOnce = fanNext !== null && hovered !== null;
+  const fanShown = fanAtOnce ? fanNext : fan;
   useEffect(() => {
     if (fanNext === fan) return;
     const id = setTimeout(
@@ -321,7 +329,7 @@ export const PassMap = ({
    */
   const scene = buildScene({
     env: { coarse: env.coarsePointer },
-    fan,
+    fan: fanShown,
     ghosts,
     hovered,
     profileCursor,

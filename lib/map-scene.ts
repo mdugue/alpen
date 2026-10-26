@@ -144,6 +144,8 @@ export interface SceneFan {
   roads: {
     slug: string;
     name: string;
+    /** The summit's height, in m: said beside the name the pointer is on. */
+    elevation: number;
     status: Status;
     classic: boolean;
     lon: number;
@@ -399,6 +401,7 @@ const fanOf = (
     outline: row.members.outline,
     roads: roads.map((r) => ({
       classic: r.pass.fame >= CLASSIC_FAME,
+      elevation: r.pass.elevation,
       lat: r.pass.lat,
       lon: r.pass.lon,
       name: r.pass.name,
@@ -486,8 +489,15 @@ export const buildScene = (input: SceneInput): Scene => {
   const markedDestination = shown.destinations ? destinationRow : undefined;
   const box = hoverTour ? tourBounds[hoverTour] : undefined;
 
+  const fanned = fanOf(fan, rows, shown, drawn);
+
   const popup = (): PopupContent | null => {
     if (env.coarse) return null;
+    // A road the fan names has its say there – name and height beside the
+    // area – so it carries no hover label of its own. One outside every
+    // area, or a shadow, still does.
+    if (markedPass && fanned?.roads.some((r) => r.slug === hoverPass))
+      return null;
     if (markedPass)
       return {
         anchor: [markedPass.pass.lon, markedPass.pass.lat],
@@ -542,8 +552,6 @@ export const buildScene = (input: SceneInput): Scene => {
     tourBounds,
     shown.passes,
   );
-
-  const fanned = fanOf(fan, rows, shown, drawn);
 
   const destinations = (shown.destinations ? rows.destination : []).map(
     (row) => ({

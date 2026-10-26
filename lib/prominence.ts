@@ -105,8 +105,15 @@ export const SHORT_NAME_ZOOM = 9;
 
 /**
  * Below this zoom the map is the overview – the Alps and beyond on one
- * screen – and says where it is green rather than what everything is
- * called: only the rideable classics carry a name, and the areas none. Every
- * dot, line and outline is drawn as at any zoom; only names wait.
+ * screen – and the areas carry no names. Every dot, line and outline is
+ * drawn as at any zoom; only names wait.
  */
 export const OVERVIEW_ZOOM = 6;
+
+/**
+ * Below this zoom no road is named at rest – not even a classic: what a dot
+ * is called is what pointing at it says (the fan, lib/fan.ts), and a map of
+ * names told less than one of colours. The selected road and the favourites
+ * keep theirs.
+ */
+export const ROAD_NAME_ZOOM = 8;

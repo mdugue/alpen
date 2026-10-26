@@ -218,13 +218,15 @@ every overlap is settled in that order, and nothing else is.
   road keeps its name. What is selected or a favourite is named in any
   status. Within one rank's label layer, open names are placed before risky
   ones (`symbol-sort-key`); across ranks the ladder below still decides.
-- **The overview names only what is green.** Below `OVERVIEW_ZOOM`
-  (`lib/prominence.ts`) – the Alps and beyond on one screen – a road is named
-  only when it is rideable (or selected, or a favourite), and the areas carry
-  no names at all: on a phone, eighty area names and every orange classic
-  were most of the picture. The dots, lines and outlines are all there; only
-  the names wait, as they already join by rank.
-- **Short names on the overview.** Below `SHORT_NAME_ZOOM` a name is
+- **Below zoom 8 a road's name is what pointing at it says.** Under
+  `ROAD_NAME_ZOOM` (`lib/prominence.ts`) no road carries a name at rest, not
+  even a classic – the selected one and the favourites aside; pointing at a
+  road opens its area's fan, which names it (below). Under `OVERVIEW_ZOOM`
+  the areas carry no names either. On a phone, eighty area names and every
+  classic were most of the picture, and a map of names said less than one
+  of colours. The dots, lines and outlines are all there; only the names
+  wait, as they already join by rank.
+- **Short names on the overview.** Between `ROAD_NAME_ZOOM` and `SHORT_NAME_ZOOM` a name is
   written without the generic word in front – "Galibier", not "Col du
   Galibier" (`shortName`, `lib/prominence.ts`) – unless what is left would
   read as a town or a word (`KEEP_WHOLE`); the label can stand on any of
@@ -238,16 +240,21 @@ every overlap is settled in that order, and nothing else is.
 ### The fan names a crowded area at its edge
 
 Where roads crowd – the Dolomites at zoom 7 – MapLibre keeps a few names
-and drops the rest. Pointing at an area, or opening it, lays every road of
-it the filters draw out in two columns beside its outline instead, each
-name with a thin line to its dot, and veils the rest of the map a little:
-the margin labels of a printed map, made interactive (excentric labelling).
-It is never there at rest, because two dozen leader lines on every area
-would be the clutter it is meant to clear.
+and drops the rest. Pointing at an area, or at a road or town in it, lays
+every road of it the filters draw out in two columns beside its outline
+instead, each name with a thin line to its dot: the margin labels of a
+printed map, made interactive (excentric labelling). It is the roads' hover
+label – a road the fan names gets no popup of its own, and the name the
+pointer is on, in the fan or on the map, says its height. It is never there
+at rest, because two dozen leader lines on every area would be the clutter
+it is meant to clear, and the map around it is left as it is: a veil that
+dimmed the rest made every hover a change of the whole picture. On a phone,
+where nothing hovers, tapping a road or a town opens its area's fan.
 
 `lib/fan.ts` decides both halves: which area is fanned out (`fanTarget` –
-the one pointed at; the open one while the pointer is on its names or its
-roads; else the one in the panel) and where each name stands (`fanLayout` –
+the one pointed at, or the area of the road or town pointed at, the open
+one first if it holds it; the open one while the pointer is on its names;
+else the one in the panel) and where each name stands (`fanLayout` –
 the side by the outline's middle, a column sorted by height so the lines do
 not cross, the rideable roads and the classics kept when the screen is
 short and the rest counted). `buildScene` hands the area and its drawn roads
@@ -256,8 +263,9 @@ over as `Scene.fan`, and marks those roads `fanned` in their feature state
 property would re-tile the passes source on every area the pointer crosses. `components/map/fan-overlay.tsx` draws it as HTML over the map, not
 as a layer: it projects the points again on every camera frame, and the
 names are buttons – pointing at one rings its road, pressing it opens it.
-The pass map waits `FAN_RELEASE_MS` before it closes the fan, so the pointer
-can cross from the outline to a name.
+The pass map opens a fan in the render the pointer arrives in – a frame
+later and the road's popup would flash first – and waits `FAN_RELEASE_MS`
+before it closes one, so the pointer can cross from a dot to a name.
 
 ### A tour holds its ascents; it does not sit beside them
 

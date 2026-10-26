@@ -122,13 +122,18 @@ describe("fanLayout", () => {
   });
 });
 
-const holds = (area: string, slug: string) =>
-  area === "alta-badia" && slug === "pordoi";
+const areasOf = (sel: { kind: string; slug: string }) =>
+  sel.slug === "pordoi" || sel.slug === "arabba"
+    ? ["alta-badia", "dolomiti"]
+    : sel.slug === "galibier"
+      ? ["oisans"]
+      : [];
 
 describe("fanTarget", () => {
   const base = {
+    areasOf,
+    coarse: false,
     current: null,
-    holds,
     hovered: null,
     overFan: false,
     selection: null,
@@ -143,16 +148,35 @@ describe("fanTarget", () => {
     ).toBe("oisans");
   });
 
-  test("its own road under the pointer, or a name of it, keeps it open", () => {
-    const open = { ...base, current: "alta-badia" };
+  test("a road or a town pointed at opens its area", () => {
     expect(
-      fanTarget({ ...open, hovered: { kind: "pass", slug: "pordoi" } }),
+      fanTarget({ ...base, hovered: { kind: "pass", slug: "galibier" } }),
+    ).toBe("oisans");
+    expect(
+      fanTarget({ ...base, hovered: { kind: "town", slug: "arabba" } }),
     ).toBe("alta-badia");
+    // Outside every area: nothing to fan out.
+    expect(
+      fanTarget({ ...base, hovered: { kind: "pass", slug: "ventoux" } }),
+    ).toBeNull();
+  });
+
+  test("of a road in two areas, the one already open stays", () => {
+    expect(
+      fanTarget({
+        ...base,
+        current: "dolomiti",
+        hovered: { kind: "pass", slug: "pordoi" },
+      }),
+    ).toBe("dolomiti");
+  });
+
+  test("the names keep it open; another area's road moves it", () => {
+    const open = { ...base, current: "alta-badia" };
     expect(fanTarget({ ...open, overFan: true })).toBe("alta-badia");
-    // Another area's road does not.
     expect(
       fanTarget({ ...open, hovered: { kind: "pass", slug: "galibier" } }),
-    ).toBeNull();
+    ).toBe("oisans");
   });
 
   test("with nothing pointed at, the area open in the panel is fanned out", () => {
@@ -163,5 +187,13 @@ describe("fanTarget", () => {
       }),
     ).toBe("oisans");
     expect(fanTarget(base)).toBeNull();
+  });
+
+  test("a selected road opens its area on a phone only", () => {
+    const tapped = { kind: "pass", slug: "galibier" } as const;
+    expect(fanTarget({ ...base, selection: tapped })).toBeNull();
+    expect(fanTarget({ ...base, coarse: true, selection: tapped })).toBe(
+      "oisans",
+    );
   });
 });

@@ -39,7 +39,7 @@ export const SOURCE = {
  */
 export const PASS_LABELS = [
   { minzoom: 0, rank: 5 },
-  { minzoom: 7, rank: 4 },
+  { minzoom: 8, rank: 4 },
   { minzoom: 8, rank: 3 },
   { minzoom: 9.5, rank: 2 },
   { minzoom: 10.5, rank: 1 },

@@ -177,17 +177,19 @@ Karte, und was die Filter auslassen, bleibt als grauer Punkt. Der Zoom
 entscheidet nur, wie groß die Punkte sind und ab wann ihre Namen dazukommen –
 die Klassiker zuerst, Stich-, Tal-, Balkon- und Höhenstraßen eine Stufe
 später, Straßen mit Schönheit 5 eine Stufe früher. In der Übersicht stehen die
-Namen kurz („Galibier“ statt „Col du Galibier“). Ganz herausgezoomt, wenn die
-Alpen und mehr auf einen Bildschirm passen, tragen nur befahrbare Straßen einen
-Namen, und die Reiseziele noch keinen; alle Punkte und Flächen bleiben
+Namen kurz („Galibier“ statt „Col du Galibier“). Weiter draußen trägt keine
+Straße einen Namen, solange du nicht auf sie zeigst – auch kein Klassiker –,
+und ganz herausgezoomt auch kein Reiseziel; alle Punkte und Flächen bleiben
 gezeichnet.
 
 Wo sich etwas überlagert, gewinnt, was befahrbar ist: Grüne Punkte und
 Auffahrten liegen über orangen, orange über roten. Mit der Maus trägt eine oft
 gesperrte Straße ihren Namen erst, wenn du auf sie zeigst; auf dem Telefon
-behält jede Straße ihren Namen. Zeigst du auf ein Reiseziel oder öffnest es,
-stehen alle seine Straßen mit Namen am Rand des Gebiets, jede mit einer
-dünnen Linie zu ihrem Punkt; ein Klick auf einen Namen öffnet die Straße. Wie
+behält jede Straße ihren Namen. Zeigst du auf ein Reiseziel oder auf eine
+Straße oder einen Ort darin, stehen alle Straßen des Gebiets mit Namen an
+seinem Rand, jede mit einer dünnen Linie zu ihrem Punkt; die Straße unter dem
+Zeiger nennt dazu ihre Höhe, und ein Klick auf einen Namen öffnet sie. Auf dem
+Telefon öffnet das Antippen einer Straße oder eines Orts den Fächer. Wie
 viele Straßen ein Reiseziel hat, sagen die Liste und das Schild beim
 Zeigen.
 
