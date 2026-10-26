@@ -116,6 +116,27 @@ describe("what is drawn", () => {
     expect(filtered(off.routes.filter)).toEqual([]);
   });
 
+  test("the ascent lines are split by status, so a rideable one is drawn last", () => {
+    const scene = buildScene(
+      input({
+        rows: {
+          destination: [],
+          pass: [
+            passRow(galibier, { status: "closed" }),
+            passRow(stelvio, { status: "open" }),
+          ],
+          tour: [],
+          town: [],
+        },
+      }),
+    );
+    expect(filtered(scene.routes.byStatus.open)).toEqual(["stelvio"]);
+    expect(filtered(scene.routes.byStatus.closed)).toEqual(["galibier"]);
+    expect(filtered(scene.routes.byStatus.risky)).toEqual([]);
+    // The rim, the dash and the hit area still carry every drawn ascent.
+    expect(filtered(scene.routes.filter)).toEqual(["galibier", "stelvio"]);
+  });
+
   test("a hidden tour is out of the filter, a shown one in it", () => {
     expect(filtered(buildScene(input()).tours.filter)).toEqual(["marmotte"]);
     const hidden: Shown = { ...ALL_SHOWN, hiddenTours: ["marmotte"] };
@@ -141,6 +162,7 @@ describe("what is drawn", () => {
       name: "Col du Galibier",
       rank: 3,
       selected: 0,
+      short: "Galibier",
       slug: "galibier",
       status: "risky",
       surface: "asphalt",
@@ -442,6 +464,7 @@ describe("hover", () => {
       favorite: false,
       members: {
         bounds: [10, 46, 10.3, 46.1],
+        label: { lat: 46.05, lon: 10.2 },
         outline: [
           [10, 46],
           [10.3, 46],
@@ -483,9 +506,10 @@ describe("hover", () => {
         [10.3, 46.1],
       ],
     ]);
-    // The name stands on the centre, with the same properties.
+    // The name stands on the spot the server found room for, with the same
+    // properties – not on the centre, where the roads it is about are.
     const [label] = scene.destinationLabels.features;
-    expect(label?.geometry.coordinates).toEqual([10, 46]);
+    expect(label?.geometry.coordinates).toEqual([10.2, 46.05]);
     expect(label?.properties).toEqual(feature?.properties);
     // The popup stands on the outline's northernmost corner, not its centre.
     expect(scene.hover.popup).toEqual({

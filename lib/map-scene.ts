@@ -28,8 +28,8 @@ import { surfaceWord, tagLabel, typeWord } from "@/lib/i18n";
 import type { Messages } from "@/lib/i18n";
 import { visibleBounds } from "@/lib/map-camera";
 import type { TownReach } from "@/lib/nearby";
-import { rankOf } from "@/lib/prominence";
-import { HOME_RANGE, rangeOf } from "@/lib/regions";
+import { rankOf, shortName } from "@/lib/prominence";
+import { HOME_RANGE, rangeOf, STATUSES } from "@/lib/regions";
 import { ascentKey } from "@/lib/route-key";
 import type { PassRow, Rows, TourRow, TownRow } from "@/lib/rows";
 import type { Fix, LatLon, Status, Surface, Tag } from "@/lib/types";
@@ -47,6 +47,8 @@ export interface PassProps {
   name: string;
   /** Where the road stands on the label ladder (`rankOf`, lib/prominence.ts). */
   rank: number;
+  /** The name as the overview writes it (`shortName`, lib/prominence.ts). */
+  short: string;
   selected: Flag;
   slug: string;
   status: Status;
@@ -75,10 +77,12 @@ export interface TownProps {
 
 /**
  * A destination on the map: its name, and how much of it is rideable in the
- * chosen half-month as a share from 0 to 1 – what the outline is tinted by.
- * The outline and the point its name stands on carry the same properties.
- * The hover rides in the properties rather than in feature state because the
- * source is rewritten from the rows anyway, and one path is fewer than two.
+ * chosen half-month as a share from 0 to 1 – which of two crowding names
+ * MapLibre keeps. The outline and the point its name stands on carry the same
+ * properties. The hover rides in the properties rather than in feature state
+ * because the source is rewritten from the rows anyway, and one path is fewer
+ * than two. How many of its roads are good is not on the map: the hover label
+ * and the list say it, and on the map it was the most text there was.
  */
 export interface DestinationProps {
   favorite: Flag;
@@ -88,8 +92,6 @@ export interface DestinationProps {
   share: number;
   selected: Flag;
   slug: string;
-  /** "7 von 9 Straßen gut" – the second line of the label. */
-  text: string;
 }
 
 /**
@@ -131,7 +133,14 @@ export interface PopupContent {
 
 export interface Scene {
   routes: {
+    /** Every drawn ascent: the rim under the lines, the dash over them and the hit area. */
     filter: FilterSpecification;
+    /**
+     * The same ascents split by status, one line layer each (`ROUTE_LINES`),
+     * so a rideable road is drawn over a closed one where two cross. The
+     * status is feature state, and feature state cannot order a layer.
+     */
+    byStatus: Record<Status, FilterSpecification>;
     /** Which ascents are drawn as the shadows' thin grey lines (`ROUTE_GHOST`). */
     ghosts: FilterSpecification;
     state: Record<string, RouteState>;
@@ -143,7 +152,7 @@ export interface Scene {
   towns: FeatureCollection<Point, TownProps>;
   /** The destination outlines, under everything else; empty when their switch is off. */
   destinations: FeatureCollection<Polygon, DestinationProps>;
-  /** Where each destination's name stands: its centre. */
+  /** Where each destination's name stands: the roomiest spot in its outline (`labelSpot`). */
   destinationLabels: FeatureCollection<Point, DestinationProps>;
   hover: {
     mark: FeatureCollection<Point, HoverProps>;
@@ -465,7 +474,6 @@ export const buildScene = (input: SceneInput): Scene => {
             row.verdict.total
           : 0,
         slug: row.destination.slug,
-        text: row.text,
       },
       row,
     }),
@@ -480,7 +488,7 @@ export const buildScene = (input: SceneInput): Scene => {
     ),
     destinationLabels: collection(
       destinations.map(({ props, row }) => ({
-        at: [row.destination.center.lon, row.destination.center.lat] as const,
+        at: [row.members.label.lon, row.members.label.lat] as const,
         props,
       })),
     ),
@@ -517,6 +525,7 @@ export const buildScene = (input: SceneInput): Scene => {
           name: row.pass.name,
           rank: rankOf(row.pass),
           selected: flag(row.pass.slug === selPass),
+          short: shortName(row.pass.name),
           slug: row.pass.slug,
           status: row.status,
           surface: row.pass.surface,
@@ -524,6 +533,16 @@ export const buildScene = (input: SceneInput): Scene => {
       })),
     ),
     routes: {
+      byStatus: Object.fromEntries(
+        STATUSES.map((status) => [
+          status,
+          slugFilter(
+            shown.passes
+              ? drawn.filter((r) => r.status === status).map((r) => r.pass.slug)
+              : [],
+          ),
+        ]),
+      ) as Record<Status, FilterSpecification>,
       filter: slugFilter(shown.passes ? drawn.map((r) => r.pass.slug) : []),
       ghosts: slugFilter(
         shown.passes

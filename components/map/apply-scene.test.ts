@@ -4,7 +4,7 @@ import { applyScene, popupHtml } from "@/components/map/apply-scene";
 import type { SceneHost } from "@/components/map/apply-scene";
 import { ALL_SHOWN } from "@/lib/app-state";
 import { DE } from "@/lib/i18n/dictionaries";
-import { LAYERS, ROUTE_GHOST, SOURCE } from "@/lib/layer-ids";
+import { LAYERS, ROUTE_GHOST, ROUTE_LINES, SOURCE } from "@/lib/layer-ids";
 import { buildScene } from "@/lib/map-scene";
 import type { SceneInput } from "@/lib/map-scene";
 import { ascentKey } from "@/lib/route-key";
@@ -91,9 +91,11 @@ describe("the first scene", () => {
     const { calls, host } = recorder();
     applyScene(host, null, scene());
     expect(of(calls, "filter")).toEqual([
-      LAYERS.route.mark,
       ...(LAYERS.route.companions ?? []),
       LAYERS.route.hit,
+      ROUTE_LINES.open,
+      ROUTE_LINES.risky,
+      ROUTE_LINES.closed,
       ROUTE_GHOST,
       LAYERS.tour.mark,
       ...LAYERS.tour.labels,
@@ -179,10 +181,12 @@ describe("the difference", () => {
         },
       }),
     );
+    // Both roads were rideable, so of the three line layers only the
+    // rideable one changes.
     expect(of(calls, "filter")).toEqual([
-      LAYERS.route.mark,
       ...(LAYERS.route.companions ?? []),
       LAYERS.route.hit,
+      ROUTE_LINES.open,
     ]);
     // The tours said nothing new, so their three layers were left alone.
     expect(of(calls, "filter")).not.toContain(LAYERS.tour.mark);

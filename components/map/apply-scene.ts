@@ -3,8 +3,15 @@
 import type { GeoJSONSource, Map as MLMap, Popup } from "maplibre-gl";
 
 import type { Ring } from "@/lib/geo";
-import { LAYERS, layersOf, ROUTE_GHOST, SOURCE } from "@/lib/layer-ids";
+import {
+  LAYERS,
+  layersOf,
+  ROUTE_GHOST,
+  ROUTE_LINES,
+  SOURCE,
+} from "@/lib/layer-ids";
 import type { PopupContent, Scene } from "@/lib/map-scene";
+import { STATUSES } from "@/lib/regions";
 import { tagIconSvg } from "@/lib/tag-icons";
 
 /**
@@ -196,7 +203,15 @@ export const applyScene = (
 ): void => {
   if (!prev || !same(prev.routes.filter, next.routes.filter))
     for (const id of layersOf(LAYERS.route))
-      host.setFilter(id, next.routes.filter);
+      if (id !== LAYERS.route.mark) host.setFilter(id, next.routes.filter);
+  // The lines themselves, one layer per status: the rim, the dash and the hit
+  // area above carry every drawn ascent, these only their own status's.
+  for (const status of STATUSES)
+    if (
+      !prev ||
+      !same(prev.routes.byStatus[status], next.routes.byStatus[status])
+    )
+      host.setFilter(ROUTE_LINES[status], next.routes.byStatus[status]);
   if (!prev || !same(prev.routes.ghosts, next.routes.ghosts))
     host.setFilter(ROUTE_GHOST, next.routes.ghosts);
   applyState(host, LAYERS.route.source, prev?.routes.state, next.routes.state);

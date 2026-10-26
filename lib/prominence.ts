@@ -52,3 +52,26 @@ export const DESTINATION_MAX_ZOOM = 9;
 
 /** The two zooms a dot's size is given at; between and beyond, it is interpolated. */
 export const SIZE_ZOOMS = { far: 6, near: 12 } as const;
+
+/**
+ * The generic word in front of a road's name, with the article after it:
+ * "Col du", "Passo dello", "Colle dell'", "Puerto de la". What is left is
+ * what cyclists call the road – the Galibier, the Stelvio, the Agnello.
+ */
+const GENERIC =
+  /^(?:colle|coll|col|passo|puerto|port|alto|côte|cima|monte)\s+(?:de l'|dell'|d'|(?:de la|dello|della|delle|des|del|de|du|di)\s+)?/iu;
+
+/**
+ * A road's name as the overview writes it (`SHORT_NAME_ZOOM`): without the
+ * generic word in front, so three times as many names fit where the roads
+ * crowd. A name that would shrink to two letters stays whole, and a German
+ * "-pass" stays on – "Nigerpass" is not "Niger".
+ */
+export const shortName = (name: string): string => {
+  const rest = name.replace(GENERIC, "");
+  if (rest === name || rest.length < 3) return name;
+  return rest.charAt(0).toUpperCase() + rest.slice(1);
+};
+
+/** From this zoom on, every road is named in full. */
+export const SHORT_NAME_ZOOM = 9;

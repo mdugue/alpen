@@ -44,7 +44,7 @@
   /* Domain colours: status and map objects */
   --status-open: oklch(0.55 0.12 155);
   --status-risky: oklch(0.75 0.14 75);
-  --status-closed: oklch(0.55 0.18 25);
+  --status-closed: oklch(0.55 0.13 25);
   --tour: oklch(0.6 0.09 300);
   --town: oklch(0.45 0.09 250);
   /* An area: the town's blue, lighter and a little brighter – the region a
@@ -114,7 +114,7 @@
 
     --status-open: oklch(0.7 0.14 155);
     --status-risky: oklch(0.79 0.14 75);
-    --status-closed: oklch(0.68 0.17 25);
+    --status-closed: oklch(0.68 0.12 25);
     --tour: oklch(0.7 0.09 300);
     --town: oklch(0.72 0.09 245);
     --area: oklch(0.68 0.08 250);

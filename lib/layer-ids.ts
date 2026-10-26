@@ -80,6 +80,18 @@ export const ROUTE_DASH = "routes-dash";
 export const ROUTE_CASING = "routes-casing";
 
 /**
+ * The ascent lines, one layer per status, drawn closed first and rideable
+ * last, so a green road lies over a red one where two cross (the scene's
+ * `routes.byStatus`). The rideable one is the route set's own mark. Not
+ * companions: each carries a filter of its own, not the route set's.
+ */
+export const ROUTE_LINES = {
+  closed: "routes-closed",
+  open: "routes",
+  risky: "routes-risky",
+} as const;
+
+/**
  * The ascents of the roads the filters leave out: a thin grey line under
  * everything, the shadow's lines as the grey dot is its mark. Not a companion
  * of the route set – it carries the shadows' filter, not the drawn roads' –
@@ -135,7 +147,7 @@ export const LAYERS = {
     companions: [ROUTE_CASING, ROUTE_DASH],
     hit: "routes-hit",
     labels: [],
-    mark: "routes",
+    mark: ROUTE_LINES.open,
     source: SOURCE.routes,
   },
   tour: {
