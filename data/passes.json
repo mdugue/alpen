@@ -21670,5 +21670,155 @@
     "label": "Biały Dunajec (Nord)"
    }
   ]
+ },
+ {
+  "slug": "wierch-poroniec",
+  "surface": "asphalt",
+  "name": "Wierch Poroniec",
+  "type": "pass",
+  "tags": [
+   "forest"
+  ],
+  "country": "PL",
+  "region": "Hohe Tatra",
+  "lat": 49.2877,
+  "lon": 20.1114,
+  "elevation": 1106,
+  "classicAscent": "18 km, 2,4 % ab Zakopane",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 2,
+  "traffic": 3,
+  "season": null,
+  "note": "Die Oswald-Balzer-Straße von Zakopane durch den Wald des Tatra-Nationalparks zur Grenze bei Łysa Polana. Von Zakopane lang und wellig; von Łysa Polana nur ein kurzer Gegenanstieg von 3 km, darum einseitig.",
+  "aliases": [
+   "Droga Oswalda Balzera"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 49.2992,
+     "lon": 19.9496
+    },
+    "label": "Zakopane (West)"
+   }
+  ]
+ },
+ {
+  "slug": "pod-prislopom",
+  "surface": "asphalt",
+  "name": "Pod Príslopom",
+  "type": "pass",
+  "tags": [
+   "panorama",
+   "forest"
+  ],
+  "country": "SK",
+  "region": "Hohe Tatra",
+  "lat": 49.2778,
+  "lon": 20.2068,
+  "elevation": 1078,
+  "classicAscent": "12 km, 2,7 % ab Tatranská Kotlina",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 2,
+  "traffic": 3,
+  "season": null,
+  "note": "Der Sattel über Ždiar zwischen den Belianske Tatry und der Spišská Magura, auf der Straße von Poprad zum Grenzübergang Łysa Polana. Von beiden Seiten flach und gleichmäßig, mit Blick auf die Kalkwände der Belianske Tatry.",
+  "aliases": [],
+  "ascents": [
+   {
+    "from": {
+     "lat": 49.2295,
+     "lon": 20.3176
+    },
+    "label": "Tatranská Kotlina (Ost)"
+   },
+   {
+    "from": {
+     "lat": 49.2653,
+     "lon": 20.1163
+    },
+    "label": "Lysá Poľana (West)"
+   }
+  ]
+ },
+ {
+  "slug": "huty",
+  "surface": "asphalt",
+  "name": "Huty",
+  "type": "pass",
+  "tags": [
+   "forest"
+  ],
+  "country": "SK",
+  "region": "Westtatra",
+  "lat": 49.1957,
+  "lon": 19.5609,
+  "elevation": 1088,
+  "classicAscent": "9,5 km, 4,8 % ab Liptovské Matiašovce",
+  "beauty": 4,
+  "fame": 2,
+  "difficulty": 3,
+  "traffic": 2,
+  "season": null,
+  "note": "Der Übergang vor der Westtatra zwischen Liptov und Orava, auf der Straße von Liptovský Mikuláš nach Zuberec. Von Süden der längere und steilere Anstieg über das Dorf Huty, nach Norden kürzer und flacher ins Tal unter den Roháče.",
+  "aliases": [
+   "Sedlo Huty"
+  ],
+  "ascents": [
+   {
+    "from": {
+     "lat": 49.1557,
+     "lon": 19.5508
+    },
+    "label": "Liptovské Matiašovce (Süd)"
+   },
+   {
+    "from": {
+     "lat": 49.2601,
+     "lon": 19.6143
+    },
+    "label": "Zuberec (Nord)"
+   }
+  ]
+ },
+ {
+  "slug": "vernarske-sedlo",
+  "surface": "asphalt",
+  "name": "Vernárske sedlo",
+  "type": "pass",
+  "tags": [
+   "forest"
+  ],
+  "country": "SK",
+  "region": "Niedere Tatra",
+  "lat": 48.8956,
+  "lon": 20.2481,
+  "elevation": 1053,
+  "classicAscent": "5 km, 5,5 % ab Vernár",
+  "beauty": 3,
+  "fame": 1,
+  "difficulty": 2,
+  "traffic": 3,
+  "season": null,
+  "note": "Der Sattel am Ostende der Niederen Tatra auf der Hauptstraße von Poprad ins Hron-Tal, unter der Kráľova hoľa. Von Vernár kurz und gleichmäßig, von Telgárt über den Vorsattel Besník.",
+  "aliases": [],
+  "ascents": [
+   {
+    "from": {
+     "lat": 48.9179,
+     "lon": 20.2704
+    },
+    "label": "Vernár (Nord)"
+   },
+   {
+    "from": {
+     "lat": 48.8516,
+     "lon": 20.1877
+    },
+    "label": "Telgárt (Süd)"
+   }
+  ]
  }
 ]

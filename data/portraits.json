@@ -9005,6 +9005,66 @@
    }
   ]
  },
+ "wierch-poroniec": {
+  "intro": "Die Straße von Zakopane zur slowakischen Grenze: durch Fichtenwald unter den Gipfeln der Tatra, an der Abzweigung zum Morskie Oko vorbei, das für Räder gesperrt ist.",
+  "sides": [
+   {
+    "character": "Von Zakopane lang und wellig über Toporowa Cyrhla, nie steil, oben im Wald des Nationalparks.",
+    "highlights": "Die Lichtungen um Wierch Poroniec mit Blick auf die Hohe Tatra.",
+    "hazards": [
+     "traffic"
+    ]
+   }
+  ]
+ },
+ "pod-prislopom": {
+  "intro": "Der Sattel über Ždiar, dem Dorf der bemalten Holzhäuser: links die hellen Kalkwände der Belianske Tatry, rechts die Wiesen der Spišská Magura.",
+  "sides": [
+   {
+    "bestAs": "up",
+    "character": "Von Tatranská Kotlina lang und flach über Ždiar, die Belianske Tatry neben der Straße.",
+    "highlights": "Die Holzhäuser von Ždiar.",
+    "hazards": [
+     "traffic"
+    ]
+   },
+   {
+    "bestAs": "both",
+    "character": "Von Lysá Poľana kurz und sanft durch den Wald über Tatranská Javorina."
+   }
+  ]
+ },
+ "huty": {
+  "intro": "Der Übergang von Liptov nach Orava vor der Westtatra: ein stilles Dorf auf der Höhe, Wald, und nach Norden der Blick auf die Roháče.",
+  "sides": [
+   {
+    "bestAs": "up",
+    "character": "Von Liptovské Matiašovce die längere Seite, durch das Dorf Huty mit ein paar Kehren im Wald.",
+    "highlights": "Der Blick zurück über den Liptov zur Niederen Tatra."
+   },
+   {
+    "bestAs": "down",
+    "character": "Von Zuberec lang und flach durch das Tal."
+   }
+  ]
+ },
+ "vernarske-sedlo": {
+  "intro": "Der östlichste Übergang der Niederen Tatra, unter der Kráľova hoľa, wo der Hron entspringt: Wald, wenige Dörfer und eine Hauptstraße mit Lastwagen.",
+  "sides": [
+   {
+    "bestAs": "up",
+    "character": "Von Vernár kurz und gleichmäßig in Kehren durch den Wald.",
+    "hazards": [
+     "traffic"
+    ]
+   },
+   {
+    "bestAs": "both",
+    "character": "Von Telgárt erst über den Vorsattel Besník, dann ein kurzes Stück hinauf.",
+    "highlights": "Der Blick vom Besník zur Kráľova hoľa."
+   }
+  ]
+ },
  "baerenstein": {
   "intro": "Ein Basaltberg direkt an der Grenze gegenüber dem tschechischen Vejprty, mit Berggasthaus und Aussichtsturm, von dem man Fichtelberg und Keilberg sieht.",
   "sides": [

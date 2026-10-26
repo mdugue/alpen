@@ -6325,6 +6325,51 @@
    }
   ]
  },
+ "wierch-poroniec": {
+  "intro": "The road from Zakopane to the Slovak border: through spruce forest below the peaks of the Tatras, past the turn-off to Morskie Oko, which is closed to bikes.",
+  "sides": [
+   {
+    "character": "From Zakopane long and rolling via Toporowa Cyrhla, never steep, the top in the forest of the national park.",
+    "highlights": "The clearings around Wierch Poroniec with a view of the High Tatras."
+   }
+  ]
+ },
+ "pod-prislopom": {
+  "intro": "The saddle above Ždiar, the village of painted wooden houses: on the left the pale limestone walls of the Belianske Tatry, on the right the meadows of the Spišská Magura.",
+  "sides": [
+   {
+    "character": "From Tatranská Kotlina long and flat via Ždiar, the Belianske Tatry beside the road.",
+    "highlights": "The wooden houses of Ždiar."
+   },
+   {
+    "character": "From Lysá Poľana short and gentle through the forest via Tatranská Javorina."
+   }
+  ]
+ },
+ "huty": {
+  "intro": "The crossing from Liptov to Orava in front of the Western Tatras: a quiet village near the top, forest, and to the north the view of the Roháče.",
+  "sides": [
+   {
+    "character": "From Liptovské Matiašovce the longer side, through the village of Huty with a few hairpins in the forest.",
+    "highlights": "The view back over the Liptov to the Low Tatras."
+   },
+   {
+    "character": "From Zuberec long and gentle along the valley."
+   }
+  ]
+ },
+ "vernarske-sedlo": {
+  "intro": "The easternmost crossing of the Low Tatras, below the Kráľova hoľa where the Hron rises: forest, few villages and a main road with lorries.",
+  "sides": [
+   {
+    "character": "From Vernár short and steady in hairpins through the forest."
+   },
+   {
+    "character": "From Telgárt first over the lower saddle of Besník, then a short stretch up.",
+    "highlights": "The view from Besník to the Kráľova hoľa."
+   }
+  ]
+ },
  "baerenstein": {
   "intro": "A basalt hill right on the border opposite the Czech town of Vejprty, with a mountain inn and a lookout tower from which you see the Fichtelberg and the Klínovec.",
   "sides": [

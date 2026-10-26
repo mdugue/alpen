@@ -5548,5 +5548,154 @@
    }
   ],
   "when": 7
+ },
+ {
+  "slug": "rund-um-die-tatra",
+  "surface": "asphalt",
+  "name": "Rund um die Tatra",
+  "color": "#5f8f6a",
+  "km": 214,
+  "elevationGain": 2460,
+  "passes": [
+   "wierch-poroniec",
+   "pod-prislopom",
+   "huty"
+  ],
+  "note": "Ein langer Tag über zwei Grenzübergänge; die Pässe sind sanft, die Länge macht die Runde schwer. Zwischen Poprad und Liptovský Mikuláš lange Talstraße, zum Morskie Oko dürfen Räder nicht.",
+  "season": null,
+  "description": "Von Zakopane über Wierch Poroniec zur Grenze bei Łysa Polana, über den Sattel bei Ždiar nach Tatranská Lomnica, unter der Hohen Tatra durch den Liptov nach Liptovský Mikuláš, über Huty nach Zuberec und durch die Orava über Suchá Hora und Chochołów, dann unter der Tatra über Kościelisko zurück nach Zakopane.",
+  "type": "loop",
+  "waypoints": [
+   {
+    "lat": 49.2992,
+    "lon": 19.9496
+   },
+   {
+    "lat": 49.2846,
+    "lon": 20.1129
+   },
+   {
+    "lat": 49.2778,
+    "lon": 20.2068
+   },
+   {
+    "lat": 49.2295,
+    "lon": 20.3176
+   },
+   {
+    "lat": 49.166,
+    "lon": 20.286
+   },
+   {
+    "lat": 49.056,
+    "lon": 20.2
+   },
+   {
+    "lat": 49.0536,
+    "lon": 20.0787
+   },
+   {
+    "lat": 49.039,
+    "lon": 19.726
+   },
+   {
+    "lat": 49.084,
+    "lon": 19.614
+   },
+   {
+    "lat": 49.1557,
+    "lon": 19.5508
+   },
+   {
+    "lat": 49.1957,
+    "lon": 19.5609
+   },
+   {
+    "lat": 49.2601,
+    "lon": 19.6143
+   },
+   {
+    "lat": 49.372,
+    "lon": 19.797
+   },
+   {
+    "lat": 49.355,
+    "lon": 19.829
+   },
+   {
+    "lat": 49.296,
+    "lon": 19.855
+   },
+   {
+    "lat": 49.274,
+    "lon": 19.886
+   },
+   {
+    "lat": 49.2992,
+    "lon": 19.9496
+   }
+  ]
+ },
+ {
+  "slug": "niedere-tatra-runde",
+  "surface": "asphalt",
+  "name": "Niedere-Tatra-Runde",
+  "color": "#8a7a55",
+  "km": 181,
+  "elevationGain": 1890,
+  "passes": [
+   "certovica",
+   "vernarske-sedlo"
+  ],
+  "note": "Lang, aber nur zwei Pässe; dazwischen das Hron-Tal und zurück der Liptov auf Hauptstraßen mit Verkehr. Wer kürzen will, fährt die Čertovica von Liptovský Hrádok hin und zurück.",
+  "season": null,
+  "description": "Von Liptovský Hrádok über die Čertovica nach Mýto pod Ďumbierom, durch das Hron-Tal über Brezno nach Telgárt, über das Vernárske sedlo nach Vernár und über Hranovnica und Štrba durch den Liptov zurück nach Liptovský Hrádok.",
+  "type": "loop",
+  "waypoints": [
+   {
+    "lat": 49.039,
+    "lon": 19.726
+   },
+   {
+    "lat": 48.9262,
+    "lon": 19.7527
+   },
+   {
+    "lat": 48.9055,
+    "lon": 19.7359
+   },
+   {
+    "lat": 48.8539,
+    "lon": 19.6333
+   },
+   {
+    "lat": 48.813,
+    "lon": 19.64
+   },
+   {
+    "lat": 48.8516,
+    "lon": 20.1877
+   },
+   {
+    "lat": 48.8956,
+    "lon": 20.2481
+   },
+   {
+    "lat": 48.9179,
+    "lon": 20.2704
+   },
+   {
+    "lat": 48.99,
+    "lon": 20.3
+   },
+   {
+    "lat": 49.0536,
+    "lon": 20.0787
+   },
+   {
+    "lat": 49.039,
+    "lon": 19.726
+   }
+  ]
  }
 ]

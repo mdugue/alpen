@@ -440,13 +440,13 @@
   "access": "Two hours by car from Dresden or Prague, train to Vrchlabí or Trutnov."
  },
  "niedere-tatra": {
-  "character": "The ridge between the Liptov and the Hron valley: Čertovica from two sides, the Chopok from the south via Bystrá and from the north to Jasná. Mountain roads in spruce forest, from June to September.",
-  "multiDay": "Two days from Liptovský Mikuláš: Jasná and Čertovica via Vyšná Boca, on the second day south over Čertovica and up the Chopok from Bystrá.",
+  "character": "The ridge between the Liptov and the Hron valley: Čertovica from two sides, the Chopok from the south via Bystrá and from the north to Jasná, and in the north of the Liptov the Huty crossing in front of the Western Tatras. Mountain roads in spruce forest, from June to September.",
+  "multiDay": "Two days from Liptovský Mikuláš: Jasná and Čertovica via Vyšná Boca, on the second day south over Čertovica and up the Chopok from Bystrá. A third day over Huty to Zuberec; for the enduring, the Low Tatras loop over Čertovica and the Vernárske sedlo.",
   "access": "Train to Liptovský Mikuláš, fly to Poprad or Kraków."
  },
  "hohe-tatra": {
-  "character": "One climb on each side of the High Tatras: long and steady from Štrba to the mountain lake of Štrbské Pleso, and via Biały Dunajec the ramp to Gliczarów Górny with stretches above 20 %. More view than passes, from May to October.",
-  "multiDay": "Two days, one on each side: Štrbské Pleso from Poprad, Gliczarów Górny from Zakopane; the ride over the Łysa Polana border crossing links the two.",
+  "character": "Around the High Tatras: from Štrba to the mountain lake of Štrbské Pleso, above Ždiar the Pod Príslopom saddle below the Belianske Tatry, from Zakopane the forest road over Wierch Poroniec to the border, via Biały Dunajec the ramp to Gliczarów Górny with stretches above 20 %, and in the south the Vernárske sedlo. More view than passes, from May to October.",
+  "multiDay": "Two days, one on each side: Štrbské Pleso and the Vernárske sedlo from Poprad, Gliczarów Górny from Zakopane; Wierch Poroniec and the saddle at Ždiar link the two over the Łysa Polana border crossing. For a long day, ride the loop around the Tatras.",
   "access": "Fly to Poprad or Kraków, train to Poprad or Zakopane."
  },
  "jeschken-isergebirge": {
