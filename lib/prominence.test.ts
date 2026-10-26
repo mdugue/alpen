@@ -40,3 +40,14 @@ test("a name without a generic word, or one that would shrink to nothing, stays 
   expect(shortName("Timmelsjoch")).toBe("Timmelsjoch");
   expect(shortName("Col d'Ey")).toBe("Col d'Ey");
 });
+
+test("a short name that would read as a town or a word keeps its generic word", () => {
+  expect(shortName("Col de Nice")).toBe("Col de Nice");
+  expect(shortName("Col de Port")).toBe("Col de Port");
+  expect(shortName("Passo Giau")).toBe("Giau");
+});
+
+test("the side in brackets is left off", () => {
+  expect(shortName("Col de la Madeleine (Bédoin)")).toBe("Madeleine");
+  expect(shortName("Mont Ventoux (Malaucène)")).toBe("Mont Ventoux");
+});

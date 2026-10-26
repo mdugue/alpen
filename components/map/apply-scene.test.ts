@@ -68,6 +68,7 @@ const town: TownRow = { areas: [], favorite: false, town: bormio };
 const scene = (extra: Partial<SceneInput> = {}) =>
   buildScene({
     env: { coarse: false },
+    fan: null,
     ghosts: [],
     hovered: null,
     profileCursor: null,

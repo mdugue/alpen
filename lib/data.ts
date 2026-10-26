@@ -208,10 +208,15 @@ const getNearbyTours = (): NearbyTours =>
  * than written by `data:build`: a road added to `passes.json` joins its area
  * without a second file to regenerate.
  */
-const getDestinationMembers = (): Record<string, DestinationMembers> =>
-  Object.fromEntries(
+let MEMBERS: Record<string, DestinationMembers> | undefined;
+const getDestinationMembers = (): Record<string, DestinationMembers> => {
+  // Once per process, not per language: nothing in it is a word, and placing
+  // each area's name (`labelSpot`) is the dearest part of the page data.
+  MEMBERS ??= Object.fromEntries(
     destinations.map((d) => [d.slug, membersOf(d, passes, tours, towns)]),
   );
+  return MEMBERS;
+};
 
 /** The area each town reaches, as a hull over its passes; see `lib/nearby.ts`. */
 const getTownReach = (): TownReach => townReach(passes, towns);

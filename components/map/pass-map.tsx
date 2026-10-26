@@ -33,6 +33,7 @@ import {
 import type { MapEnv, Provenance } from "@/components/map/apply-environment";
 import { applyScene, sceneHost } from "@/components/map/apply-scene";
 import type { SceneHost } from "@/components/map/apply-scene";
+import { FanOverlay } from "@/components/map/fan-overlay";
 import { LanguageField } from "@/components/map/language-field";
 import {
   baseLayers,
@@ -63,6 +64,7 @@ import {
 import { DEFAULT_VIEW } from "@/lib/app-state";
 import type { MapView, Selection, Shown } from "@/lib/app-state";
 import { BASEMAP_SOURCE_ID, basemapSource, GLYPHS } from "@/lib/basemap";
+import { fanTarget } from "@/lib/fan";
 import type { Bounds } from "@/lib/geo";
 import type { Lang } from "@/lib/i18n";
 import { HIT_LAYERS, SOURCE } from "@/lib/layer-ids";
@@ -229,6 +231,9 @@ const pickAt = (m: MLMap, x: number, y: number): Selection | null => {
 // serve; scripts/copy-maplibre-worker.ts places a copy under public/maplibre.
 setWorkerUrl("/maplibre/maplibre-gl-worker.mjs");
 
+/** How long the fan stays open once nothing holds it, in ms: the trip from the outline to a name. */
+const FAN_RELEASE_MS = 250;
+
 export const PassMap = ({
   rows,
   ghosts,
@@ -277,6 +282,35 @@ export const PassMap = ({
     if (el) el.style.transform = `rotate(${-bearing.current}deg)`;
   };
   /**
+   * The area whose roads are named round it (lib/fan.ts), and whether the
+   * pointer is on those names. `fanTarget` says which area it should be; a
+   * new area pointed at opens at once, anything else – closing, or falling
+   * back to the area in the panel – waits `FAN_RELEASE_MS`, so the pointer
+   * can cross the gap from the outline to a name without the fan shutting
+   * under it.
+   */
+  const [fan, setFan] = useState<string | null>(null);
+  const [overFan, setOverFan] = useState(false);
+  const fanNext = fanTarget({
+    current: fan,
+    holds: (area, road) =>
+      rows.destination.some(
+        (r) => r.destination.slug === area && r.members.passes.includes(road),
+      ),
+    hovered,
+    overFan,
+    selection,
+  });
+  const fanAtOnce = fanNext !== null && hovered?.kind === "destination";
+  useEffect(() => {
+    if (fanNext === fan) return;
+    const id = setTimeout(
+      () => setFan(fanNext),
+      fanAtOnce ? 0 : FAN_RELEASE_MS,
+    );
+    return () => clearTimeout(id);
+  }, [fan, fanNext, fanAtOnce]);
+  /**
    * What the map draws, as one value, and what of it has been applied.
    *
    * The scene is built from the props on every render (`buildScene`,
@@ -286,6 +320,7 @@ export const PassMap = ({
    */
   const scene = buildScene({
     env: { coarse: env.coarsePointer },
+    fan,
     ghosts,
     hovered,
     profileCursor,
@@ -849,6 +884,17 @@ export const PassMap = ({
     <div className="bg-muted relative size-full overflow-hidden">
       {/* Plain "absolute inset-0" loses against the unlayered maplibre-gl.css (`.maplibregl-map { position: relative }`). */}
       <div ref={container} className="size-full" />
+      <FanOverlay
+        map={map}
+        ready={ready}
+        fan={scene.fan}
+        inset={inset}
+        coarse={env.coarsePointer}
+        hoveredRoad={hovered?.kind === "pass" ? hovered.slug : null}
+        onHover={onHover}
+        onSelect={onSelect}
+        onOver={setOverFan}
+      />
 
       {/*
        * The map's own corner: which way is up, how it is framed, and what the

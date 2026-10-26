@@ -132,13 +132,24 @@ circle was the membership rule drawn as a picture, and half of every disc was
 valley floor or the next range; the outline shows what the area holds. It
 is drawn at every zoom in the area colour (`--area`), the town's blue family
 – an area is where one stays, and red to green is what a road's rideability
-is said in, so the outline never takes a status colour; the count is its
-label's second line. Past zoom 9, where most roads are drawn, the fill
-thins out and the edge steps back to a hairline, so the roads stay the
-picture; the selected or hovered area keeps its weight. Its name is set in
-the towns' blue rather than the ink, the quiet voice under the road names,
-and the hover popup stands on the outline's northernmost point, not over the
-roads inside it. The list's switch ("Reiseziele auf der Karte") takes the
+is said in, so the outline never takes a status colour. At rest the fill
+and the edge are a faint trace – the roads and their status are the
+picture – and past zoom 9 the edge steps back to a hairline; the selected or
+hovered area keeps its weight. Its name is one line, set in the towns' blue
+rather than the ink, the quiet voice under the road names, and it does not
+stand on the centre: `labelSpot` (`lib/geo.ts`, stored as
+`DestinationMembers.label`) picks the point inside the outline with the
+most room to the nearest summit, town and edge, pulled a little towards the
+centre – on the centre, the Alta Badia's name lay on the Sella group, over
+the very dots it was about. How many roads an area holds is said in the
+hover popup and the list, not on the map. The hover popup stands on the
+outline's northernmost point, not over the roads inside it.
+
+Pointing at an area (or opening it) fans its roads out: every road of it
+the filters draw is named in two columns beside the outline, each with a
+thin line to its dot, and the rest of the map is veiled a little
+(`lib/fan.ts`, drawn by `components/map/fan-overlay.tsx`; see
+[map rendering](map-rendering.md#the-fan-names-a-crowded-area-at-its-edge)). The list's switch ("Reiseziele auf der Karte") takes the
 outlines and the towns off the map together – what the tab lists is what it
 switches – and selecting an area or a town turns it back on. Selecting an
 area frames its members.

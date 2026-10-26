@@ -68,6 +68,7 @@ const REACH: Record<string, [number, number][]> = {
 
 const input = (extra: Partial<SceneInput> = {}): SceneInput => ({
   env: { coarse: false },
+  fan: null,
   ghosts: [],
   hovered: null,
   profileCursor: null,
@@ -158,6 +159,7 @@ describe("what is drawn", () => {
     );
     expect(passMark(scene, "galibier")).toEqual({
       fame: 3,
+      fanned: 0,
       favorite: 1,
       name: "Col du Galibier",
       rank: 3,

@@ -123,9 +123,11 @@ Standort“, von welchen Orten aus er gut zu erreichen ist.
 
 Eine Rundtour verbindet mehrere Pässe zu einer Runde, etwa die Sellaronda
 oder die Strecken bekannter Radmarathons. Länge und Höhenmeter einer Tour
-sind von Hand gepflegt. Auf der Karte hat jede Tour eine eigene Farbe und
-umschließt ihre Auffahrten wie eine Röhre: ein Rand in ihrer Farbe um ein
-helles Inneres, in dem die Straße verläuft. Teilen sich zwei Touren eine
+sind von Hand gepflegt. Auf der Karte umschließt eine Tour ihre Auffahrten
+wie eine Röhre: ein Rand um ein helles Inneres, in dem die Straße verläuft.
+In Ruhe tragen alle Touren denselben ruhigen Ton, damit ihre Farbe nie wie
+ein Status aussieht; zeigst du auf eine oder wählst sie, bekommt sie ihre
+eigene Farbe. Teilen sich zwei Touren eine
 Straße, verschmelzen ihre Röhren. Die gewählte Tour zeigt mit Pfeilen, in
 welche Richtung sie gefahren wird. Eine Tour ist
 nur so gut befahrbar wie ihr schwächster Pass: Ihr Status in einem Halbmonat
@@ -158,11 +160,11 @@ unter dem neuesten Jahr. Im Reiseziel stehen die Touren nach Art geordnet.
 | Symbol                 | Bedeutung                                                                 |
 | ---------------------- | ------------------------------------------------------------------------- |
 | Kreis                  | Pass; die Farbe zeigt den Status, ein hohler Kreis „oft gesperrt“         |
-| Kreisgröße             | Bekanntheit                                                               |
+| Kreisgröße             | groß für einen Klassiker, klein für alle anderen – in jedem Status        |
 | Kreis mit dunklem Ring | ungeteerte Straße (Belag Schotter oder gemischt)                          |
 | Stern                  | gemerkt                                                                   |
 | Linie                  | Auffahrt, in der Statusfarbe mit hellem Saum                              |
-| umrandete Röhre        | Rundtour, in ihrer eigenen Farbe; Pfeile zeigen die Fahrtrichtung         |
+| umrandete Röhre        | Rundtour, in Ruhe in einem gemeinsamen Ton; Pfeile zeigen die Richtung    |
 | gestrichelte Linie     | Auffahrt auf einer ungeteerten Straße, darunter weiter in der Statusfarbe |
 | blauer Punkt mit Ring  | Ort                                                                       |
 | blaue, helle Umrandung | Reiseziel: das Gebiet um seine Mitte, seine Passhöhen und seine Orte      |
@@ -174,7 +176,17 @@ nicht der Zoom: Was in der Liste steht, steht bei jeder Zoomstufe auch auf der
 Karte, und was die Filter auslassen, bleibt als grauer Punkt. Der Zoom
 entscheidet nur, wie groß die Punkte sind und ab wann ihre Namen dazukommen –
 die Klassiker zuerst, Stich-, Tal-, Balkon- und Höhenstraßen eine Stufe
-später, Straßen mit Schönheit 5 eine Stufe früher.
+später, Straßen mit Schönheit 5 eine Stufe früher. In der Übersicht stehen die
+Namen kurz („Galibier“ statt „Col du Galibier“).
+
+Wo sich etwas überlagert, gewinnt, was befahrbar ist: Grüne Punkte und
+Auffahrten liegen über orangen, orange über roten. Mit der Maus trägt eine oft
+gesperrte Straße ihren Namen erst, wenn du auf sie zeigst; auf dem Telefon
+behält jede Straße ihren Namen. Zeigst du auf ein Reiseziel oder öffnest es,
+stehen alle seine Straßen mit Namen am Rand des Gebiets, jede mit einer
+dünnen Linie zu ihrem Punkt; ein Klick auf einen Namen öffnet die Straße. Wie
+viele Straßen ein Reiseziel hat, sagen die Liste und das Schild beim
+Zeigen.
 
 ## Der Halbmonat
 

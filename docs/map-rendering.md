@@ -169,10 +169,10 @@ name, and both win against the basemap's own place names.
 flowchart TB
   L9["app labels · profile cursor"]
   L8["passes · towns (marks)"]
-  L7["ascents — solid, status colour on a paper rim; unpaved ones dashed over it, their open dots ringed"]
-  L6["tour tubes — a rim in the tour colour around a pale inside, under the ascents; arrows on the selected one"]
+  L7["ascents — solid, status colour on a paper rim, green over orange over red; unpaved ones dashed over it, their open dots ringed"]
+  L6["tour tubes — a rim in one calm tone around a pale inside, the tour's colour when pointed at; arrows on the selected one"]
   L5["the hovered town's reach hull"]
-  L45["area outlines — a thin fill and edge in the area blue, the name on its centre"]
+  L45["area outlines — a faint fill and edge in the area blue, the name where there is room"]
   L4["raster overlays (optional base, cycling overlay)"]
   L3["basemap lines and labels — rivers, borders, roads, peaks, places"]
   L2["hillshade — Terrarium DEM"]
@@ -187,9 +187,70 @@ family – never a status colour). Past `DESTINATION_MAX_ZOOM` the roads are
 the picture, so the fill thins to a trace and the edge to a hairline; the
 selected or hovered area keeps its weight, and its hit layer is the last
 group `pick` asks. The fill and its edge read the
-polygon source, the name a point source of its own at the centre – a
-polygon labels itself once per tile, which put the name two or three times
-into one outline.
+polygon source, the name a point source of its own – a polygon labels
+itself once per tile, which put the name two or three times into one
+outline – at `DestinationMembers.label`, the spot inside the outline with
+the most room (`labelSpot`, `docs/destinations.md`), not at the centre,
+where it lay on the very dots it was about.
+
+### Status first
+
+What the map is read for is the status in the chosen half-month, and of
+that, where one can ride; whether a road is a classic comes second. So
+every overlap is settled in that order, and nothing else is.
+
+- **Rideable on top.** A pass dot's `circle-sort-key` is its fame minus a
+  status step (`statusFirst` in `components/map/app-layers.ts`), so a green
+  dot lies over an orange one and both over a red one, whatever their fame.
+  The ascents cannot be sorted that way – status is feature state, and a
+  sort key is layout – so they are three line layers, closed, risky, open
+  from the bottom (`ROUTE_LINES`), each filtered to its roads by
+  `Scene.routes.byStatus`; the casing under them stays one layer. A closed
+  ascent is thinner too.
+- **Two sizes, not five.** A dot is large for a classic (`CLASSIC_FAME`)
+  and small for every other road (`DOT_FAME`), in any status: a red classic
+  is a large hollow ring. A scale of five sizes was one more thing to decode
+  and said less than the colour next to it.
+- **Names for what can be ridden.** On a fine pointer a road that is often
+  closed in the half-month carries no name until it is pointed at – its thin
+  ring says enough, and its name took the room a rideable road's needed. A
+  finger has no hover to bring the names back, so on a coarse pointer every
+  road keeps its name. What is selected or a favourite is named in any
+  status. Within one rank's label layer, open names are placed before risky
+  ones (`symbol-sort-key`); across ranks the ladder below still decides.
+- **Short names on the overview.** Below `SHORT_NAME_ZOOM` a name is
+  written without the generic word in front – "Galibier", not "Col du
+  Galibier" (`shortName`, `lib/prominence.ts`) – unless what is left would
+  read as a town or a word (`KEEP_WHOLE`); the label can stand on any of
+  eight sides of its dot.
+- **The rest steps back.** At rest every tour is one calm tone (`--tour`),
+  so its colour cannot be mistaken for a status – a third of the tour
+  colours sat in the red and orange hues; the pointed-at or selected tour
+  takes its own colour. Towns are smaller and paler on the overview, and an
+  area is a faint trace with a one-line name.
+
+### The fan names a crowded area at its edge
+
+Where roads crowd – the Dolomites at zoom 7 – MapLibre keeps a few names
+and drops the rest. Pointing at an area, or opening it, lays every road of
+it the filters draw out in two columns beside its outline instead, each
+name with a thin line to its dot, and veils the rest of the map a little:
+the margin labels of a printed map, made interactive (excentric labelling).
+It is never there at rest, because two dozen leader lines on every area
+would be the clutter it is meant to clear.
+
+`lib/fan.ts` decides both halves: which area is fanned out (`fanTarget` –
+the one pointed at; the open one while the pointer is on its names or its
+roads; else the one in the panel) and where each name stands (`fanLayout` –
+the side by the outline's middle, a column sorted by height so the lines do
+not cross, the rideable roads and the classics kept when the screen is
+short and the rest counted). `buildScene` hands the area and its drawn roads
+over as `Scene.fan`, and marks those roads `fanned` so their own labels step
+aside. `components/map/fan-overlay.tsx` draws it as HTML over the map, not
+as a layer: it projects the points again on every camera frame, and the
+names are buttons – pointing at one rings its road, pressing it opens it.
+The pass map waits `FAN_RELEASE_MS` before it closes the fan, so the pointer
+can cross from the outline to a name.
 
 ### A tour holds its ascents; it does not sit beside them
 
@@ -197,7 +258,9 @@ A tour _is_ the union of several ascents – the Sellaronda is its four passes �
 so it is drawn as what it is: a tube the ascents run inside, wide enough to
 reach past them on both sides. What a tour contains is then read from the map
 rather than from the list, which a mark running alongside the ascents cannot
-say. The tube is three lines: the wall in the tour's colour, a narrower paper
+say. The tube is three lines: the wall – one calm tone shared by every tour
+at rest (`--tour`), the tour's own colour once it is pointed at or selected
+– a narrower paper
 line over it that leaves only a rim of the wall showing (`TOUR_PARTS.inside`),
 and the road itself along the middle (`TOUR_PARTS.road`), thin, for the
 stretches between two ascents. The ascent keeps the solid line and the opaque
@@ -260,7 +323,8 @@ below zoom 10, with a corner line saying which level was showing; it read as a
 second, hidden filter – a road the list held and the map did not – and is gone.
 
 What the zoom still decides is how the drawn roads read. A dot's size
-interpolates between `SIZE_ZOOMS` and grows with its fame, and the names join
+interpolates between `SIZE_ZOOMS` in its class (classic or not, above), the
+names are short below `SHORT_NAME_ZOOM`, and they join
 by rank on a ladder of their own (`PASS_LABELS` in `lib/layer-ids.ts`), because
 two hundred dots fit on an overview where two hundred names do not. The rank is
 the fame, moved by two editorial facts the data already holds (`rankOf` in

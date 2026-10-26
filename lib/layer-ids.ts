@@ -182,7 +182,7 @@ export const OVERLAY = {
   youHalo: "you-halo",
 } as const;
 
-/** What one kind is drawn with, in one list – all of it carries its filter. */
+/** What one kind is drawn with, in one list – all of it carries its filter, but a route's mark, which `applyScene` gives the open ascents only (`ROUTE_LINES`). */
 export const layersOf = (set: LayerSet): string[] => [
   set.mark,
   ...set.labels,

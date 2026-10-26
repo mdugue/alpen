@@ -90,6 +90,23 @@ describe("labelSpot", () => {
     expect(labelSpot(square, [], center)).toEqual(center);
   });
 
+  test("the name keeps off the outline's edge, not only off the marks", () => {
+    // Crowded in the middle: the most room to the marks alone is a corner.
+    const crowd = [
+      center,
+      { lat: 46.05, lon: 10.06 },
+      { lat: 46.05, lon: 10.14 },
+    ];
+    const spot = labelSpot(square, crowd, center);
+    const edge = Math.min(
+      spot.lat - 46,
+      46.1 - spot.lat,
+      ((spot.lon - 10) * 77) / 111,
+      ((10.2 - spot.lon) * 77) / 111,
+    );
+    expect(edge).toBeGreaterThan(0.01);
+  });
+
   test("a crowded centre pushes the name into the room beside it", () => {
     const crowd = [
       center,

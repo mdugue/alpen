@@ -203,10 +203,38 @@ export const insideRing = (ring: Ring, p: LatLon): boolean => {
 const SPOT_GRID = 24;
 /** How much a kilometre away from the centre costs against a kilometre of room. */
 const SPOT_PULL = 0.25;
+/**
+ * How far the outline's edge counts as room, against a mark's: a name close
+ * to the rim spills across it, so the edge crowds it like a mark – a little
+ * less, because what lies beyond it is usually empty map.
+ */
+const SPOT_EDGE = 1.5;
+
+/**
+ * How far a point is from a ring's edge, in km, with the distance across
+ * counted half as `labelSpot` counts it: a name is wide, not tall.
+ */
+const edgeKm = (ring: Ring, p: LatLon, kmLon: number, kmLat: number) => {
+  let d = Number.POSITIVE_INFINITY;
+  for (let i = 1; i < ring.length; i += 1) {
+    const [ax, ay] = ring[i - 1]!;
+    const [bx, by] = ring[i]!;
+    const a = { x: ((ax - p.lon) * kmLon) / 2, y: (ay - p.lat) * kmLat };
+    const b = { x: ((bx - p.lon) * kmLon) / 2, y: (by - p.lat) * kmLat };
+    const dx = b.x - a.x;
+    const dy = b.y - a.y;
+    const len = dx * dx + dy * dy;
+    const t =
+      len === 0 ? 0 : Math.min(1, Math.max(0, -(a.x * dx + a.y * dy) / len));
+    d = Math.min(d, Math.hypot(a.x + t * dx, a.y + t * dy));
+  }
+  return d;
+};
 
 /**
  * Where an area's name stands: the point inside its outline with the most
- * room around it, measured to the nearest mark (`marks`), pulled a little
+ * room around it, measured to the nearest mark (`marks`) and to the outline's
+ * own edge (`SPOT_EDGE`), pulled a little
  * towards the centre the area was drawn around so it does not drift into a
  * corner. A name is about three times as wide as it is tall, so room to the
  * side counts half – a mark beside the name crowds it less than one above.
@@ -243,7 +271,7 @@ export const labelSpot = (
         lon: w + ((e - w) * i) / SPOT_GRID,
       };
       if (!insideRing(ring, p)) continue;
-      let room = Number.POSITIVE_INFINITY;
+      let room = SPOT_EDGE * edgeKm(ring, p, kmLon, kmLat);
       for (const m of near) {
         const dx = ((m.lon - p.lon) * kmLon) / 2;
         const dy = (m.lat - p.lat) * kmLat;
@@ -253,7 +281,7 @@ export const labelSpot = (
         (center.lon - p.lon) * kmLon,
         (center.lat - p.lat) * kmLat,
       );
-      const score = (Number.isFinite(room) ? room : 0) - SPOT_PULL * pull;
+      const score = room - SPOT_PULL * pull;
       if (score > bestScore) {
         bestScore = score;
         best = p;

@@ -6,6 +6,10 @@ export const map = {
   attribution: "Sources",
   base: "Base map",
   cycleRoutes: "Cycle routes",
+  fan: {
+    more: "+ {n} more",
+    region: "Roads in {name}",
+  },
   filteredOut: "outside the filters",
   filters: {
     add: "Add a filter",

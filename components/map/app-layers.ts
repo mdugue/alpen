@@ -320,8 +320,15 @@ const statusFirst = (offset: number, step: number) =>
     offset + STATUSES.length * step,
   ] as never;
 
-/** A road not often closed in the half-month: the ones named at rest. */
-const notClosed: ExpressionSpecification = ["!=", ["get", "status"], "closed"];
+/**
+ * A road not often closed in the half-month: the ones named at rest. On a
+ * fine pointer only – a finger has no hover to bring the others' names back,
+ * so on a phone every road keeps its name.
+ */
+const notClosed = (coarse: boolean): ExpressionSpecification =>
+  coarse ? ["literal", true] : ["!=", ["get", "status"], "closed"];
+/** A road the fan is naming round its area (`Scene.fan`): not named twice. */
+const notFanned: ExpressionSpecification = ["!=", ["get", "fanned"], 1];
 
 /**
  * The app's own layers, painted with the live tokens. A pure function of the
@@ -918,20 +925,25 @@ export const appLayers = (
       // of fame 1 has rank 0 and still gets its name at the last step. A road
       // that is often closed in the half-month is not named until it is
       // pointed at – its thin ring says enough, and its name took the room a
-      // rideable road's name needed. What is selected or a favourite is named
-      // whatever its status.
+      // rideable road's name needed (on a fine pointer: `notClosed`). What is
+      // selected or a favourite is named whatever its status.
       filter:
         rank === 5
           ? ([
-              "any",
-              ["all", ["==", ["get", "rank"], 5], notClosed],
-              ["==", ["get", "selected"], 1],
-              ["==", ["get", "favorite"], 1],
+              "all",
+              notFanned,
+              [
+                "any",
+                ["all", ["==", ["get", "rank"], 5], notClosed(coarse)],
+                ["==", ["get", "selected"], 1],
+                ["==", ["get", "favorite"], 1],
+              ],
             ] as never)
           : ([
               "all",
               ["==", ["max", RANK_FLOOR, ["get", "rank"]], rank],
-              notClosed,
+              notClosed(coarse),
+              notFanned,
               ["!=", ["get", "selected"], 1],
               ["!=", ["get", "favorite"], 1],
             ] as never),

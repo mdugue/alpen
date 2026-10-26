@@ -61,15 +61,42 @@ export const SIZE_ZOOMS = { far: 6, near: 12 } as const;
 const GENERIC =
   /^(?:colle|coll|col|passo|puerto|port|alto|côte|cima|monte)\s+(?:de l'|dell'|d'|(?:de la|dello|della|delle|des|del|de|du|di)\s+)?/iu;
 
+/** An ascent's side in brackets: "Mont Ventoux (Bédoin)". The overview leaves it off. */
+const PAREN = /\s*\([^)]*\)\s*$/u;
+
+/**
+ * What would read as something else once the generic word is gone – a town
+ * ("Nice", "Vence", "Gets"), a word ("Port", "Rest", "Croix") – so these keep
+ * it. Checked against every road in data/passes.json whose short name has
+ * five letters or fewer; a new one is added here when it misleads.
+ */
+const KEEP_WHOLE = new Set([
+  "coq",
+  "croix",
+  "gets",
+  "honor",
+  "nice",
+  "port",
+  "porte",
+  "pré",
+  "rest",
+  "velo",
+  "vence",
+  "verde",
+]);
+
 /**
  * A road's name as the overview writes it (`SHORT_NAME_ZOOM`): without the
  * generic word in front, so three times as many names fit where the roads
- * crowd. A name that would shrink to two letters stays whole, and a German
- * "-pass" stays on – "Nigerpass" is not "Niger".
+ * crowd. A name that would shrink to two letters or to another word
+ * (`KEEP_WHOLE`) stays whole, a German "-pass" stays on – "Nigerpass" is not
+ * "Niger" – and the side in brackets is dropped.
  */
 export const shortName = (name: string): string => {
-  const rest = name.replace(GENERIC, "");
-  if (rest === name || rest.length < 3) return name;
+  const bare = name.replace(PAREN, "");
+  const rest = bare.replace(GENERIC, "");
+  if (rest === bare || rest.length < 3 || KEEP_WHOLE.has(rest.toLowerCase()))
+    return bare;
   return rest.charAt(0).toUpperCase() + rest.slice(1);
 };
 

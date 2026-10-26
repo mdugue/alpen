@@ -29,7 +29,7 @@ import type { Messages } from "@/lib/i18n";
 import { visibleBounds } from "@/lib/map-camera";
 import type { TownReach } from "@/lib/nearby";
 import { rankOf, shortName } from "@/lib/prominence";
-import { HOME_RANGE, rangeOf, STATUSES } from "@/lib/regions";
+import { CLASSIC_FAME, HOME_RANGE, rangeOf, STATUSES } from "@/lib/regions";
 import { ascentKey } from "@/lib/route-key";
 import type { PassRow, Rows, TourRow, TownRow } from "@/lib/rows";
 import type { Fix, LatLon, Status, Surface, Tag } from "@/lib/types";
@@ -49,6 +49,8 @@ export interface PassProps {
   rank: number;
   /** The name as the overview writes it (`shortName`, lib/prominence.ts). */
   short: string;
+  /** Named by the fan right now (`Scene.fan`), so not beside its dot as well. */
+  fanned: Flag;
   selected: Flag;
   slug: string;
   status: Status;
@@ -131,6 +133,26 @@ export interface PopupContent {
   tags: readonly (readonly [tag: Tag, label: string])[];
 }
 
+/**
+ * An area's roads laid out round its outline (lib/fan.ts): which area, its
+ * outline and the drawn roads it holds, on the map's coordinates. Where they
+ * go on the screen is the overlay's to work out, because only the map knows
+ * where a coordinate is drawn.
+ */
+export interface SceneFan {
+  slug: string;
+  name: string;
+  outline: Ring;
+  roads: {
+    slug: string;
+    name: string;
+    status: Status;
+    classic: boolean;
+    lon: number;
+    lat: number;
+  }[];
+}
+
 export interface Scene {
   routes: {
     /** Every drawn ascent: the rim under the lines, the dash over them and the hit area. */
@@ -160,6 +182,8 @@ export interface Scene {
     hull: Ring | null;
     popup: PopupContent | null;
   };
+  /** The area whose roads are named round it (`fanTarget`), or nothing. */
+  fan: SceneFan | null;
   /** The road point under the elevation-profile cursor. */
   cursor: FeatureCollection<Point, Record<string, never>>;
   /**
@@ -196,6 +220,8 @@ export interface SceneInput {
   profileCursor: LatLon | null;
   /** The visitor's position, once they have asked for it; never stored, never in a link. */
   you: Fix | null;
+  /** The area whose roads are fanned out round it (`fanTarget`, lib/fan.ts). */
+  fan: string | null;
   /**
    * What the pointer can do here. A coarse pointer has no hover to speak of:
    * a finger that touches a mark has already tapped it, and a label under the
@@ -340,9 +366,47 @@ const toursDrawn = (
   return { strayTour, tourState };
 };
 
+/**
+ * The fan's half of the scene: the area, if the map draws it, and the roads
+ * of it the filters draw – nothing when there are none to name.
+ */
+const fanOf = (
+  slug: string | null,
+  rows: Rows,
+  shown: Shown,
+  drawn: readonly PassRow[],
+): SceneFan | null => {
+  const row = shown.destinations
+    ? rows.destination.find((r) => r.destination.slug === slug)
+    : undefined;
+  const roads =
+    row && shown.passes
+      ? drawn.filter((r) => row.members.passes.includes(r.pass.slug))
+      : [];
+  if (!row || roads.length === 0) return null;
+  return {
+    name: row.destination.name,
+    outline: row.members.outline,
+    roads: roads.map((r) => ({
+      classic: r.pass.fame >= CLASSIC_FAME,
+      lat: r.pass.lat,
+      lon: r.pass.lon,
+      name: r.pass.name,
+      slug: r.pass.slug,
+      status: r.status,
+    })),
+    slug: row.destination.slug,
+  };
+};
+
+/** The roads the fan names, so their own labels stay off the map meanwhile. */
+const fannedOf = (fan: SceneFan | null) =>
+  new Set(fan?.roads.map((r) => r.slug));
+
 export const buildScene = (input: SceneInput): Scene => {
   const {
     env,
+    fan,
     ghosts,
     hovered,
     profileCursor,
@@ -462,6 +526,9 @@ export const buildScene = (input: SceneInput): Scene => {
     shown.passes,
   );
 
+  const fanned = fanOf(fan, rows, shown, drawn);
+  const fannedSlugs = fannedOf(fanned);
+
   const destinations = (shown.destinations ? rows.destination : []).map(
     (row) => ({
       props: {
@@ -503,6 +570,7 @@ export const buildScene = (input: SceneInput): Scene => {
       })),
       type: "FeatureCollection",
     },
+    fan: fanned,
     ghosts: shadows(shown.passes ? ghosts : [], selPass),
     hover: {
       hull: (markedTown && townReach[markedTown.town.slug]) ?? null,
@@ -521,6 +589,7 @@ export const buildScene = (input: SceneInput): Scene => {
         at: [row.pass.lon, row.pass.lat],
         props: {
           fame: row.pass.fame,
+          fanned: flag(fannedSlugs.has(row.pass.slug)),
           favorite: flag(row.favorite),
           name: row.pass.name,
           rank: rankOf(row.pass),
