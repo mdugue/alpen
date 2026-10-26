@@ -49,8 +49,6 @@ export interface PassProps {
   rank: number;
   /** The name as the overview writes it (`shortName`, lib/prominence.ts). */
   short: string;
-  /** Named by the fan right now (`Scene.fan`), so not beside its dot as well. */
-  fanned: Flag;
   selected: Flag;
   slug: string;
   status: Status;
@@ -153,6 +151,16 @@ export interface SceneFan {
   }[];
 }
 
+/**
+ * A pass dot's feature state: whether the fan names it right now
+ * (`Scene.fan`), so its own label steps aside. State rather than a property,
+ * because a fan opens on every area the pointer crosses and a property would
+ * re-tile the whole source each time.
+ */
+export interface PassState {
+  fanned: Flag;
+}
+
 export interface Scene {
   routes: {
     /** Every drawn ascent: the rim under the lines, the dash over them and the hit area. */
@@ -169,6 +177,8 @@ export interface Scene {
   };
   tours: { filter: FilterSpecification; state: Record<string, TourState> };
   passes: FeatureCollection<Point, PassProps>;
+  /** Keyed by slug, every drawn pass. */
+  passState: Record<string, PassState>;
   /** The roads the filters leave out, as shadows; empty while the roads are off the map. */
   ghosts: FeatureCollection<Point, GhostProps>;
   towns: FeatureCollection<Point, TownProps>;
@@ -399,9 +409,16 @@ const fanOf = (
   };
 };
 
-/** The roads the fan names, so their own labels stay off the map meanwhile. */
-const fannedOf = (fan: SceneFan | null) =>
-  new Set(fan?.roads.map((r) => r.slug));
+/** Which drawn roads the fan names, so their own labels step aside meanwhile. */
+const passStateOf = (
+  drawn: readonly PassRow[],
+  fan: SceneFan | null,
+): Record<string, PassState> => {
+  const named = new Set(fan?.roads.map((r) => r.slug));
+  return Object.fromEntries(
+    drawn.map((r) => [r.pass.slug, { fanned: flag(named.has(r.pass.slug)) }]),
+  );
+};
 
 export const buildScene = (input: SceneInput): Scene => {
   const {
@@ -527,7 +544,6 @@ export const buildScene = (input: SceneInput): Scene => {
   );
 
   const fanned = fanOf(fan, rows, shown, drawn);
-  const fannedSlugs = fannedOf(fanned);
 
   const destinations = (shown.destinations ? rows.destination : []).map(
     (row) => ({
@@ -584,12 +600,12 @@ export const buildScene = (input: SceneInput): Scene => {
       popup: popup(),
     },
     opening: opening ?? bounds,
+    passState: passStateOf(drawn, fanned),
     passes: collection<PassProps>(
       (shown.passes ? drawn : []).map((row) => ({
         at: [row.pass.lon, row.pass.lat],
         props: {
           fame: row.pass.fame,
-          fanned: flag(fannedSlugs.has(row.pass.slug)),
           favorite: flag(row.favorite),
           name: row.pass.name,
           rank: rankOf(row.pass),

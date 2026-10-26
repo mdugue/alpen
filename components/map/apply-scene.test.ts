@@ -106,6 +106,8 @@ describe("the first scene", () => {
     expect(of(calls, "state")).toEqual([
       ascentKey("galibier", 0),
       ascentKey("stelvio", 0),
+      "galibier",
+      "stelvio",
     ]);
     expect(of(calls, "data")).toEqual([
       SOURCE.passes,

@@ -159,7 +159,6 @@ describe("what is drawn", () => {
     );
     expect(passMark(scene, "galibier")).toEqual({
       fame: 3,
-      fanned: 0,
       favorite: 1,
       name: "Col du Galibier",
       rank: 3,

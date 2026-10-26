@@ -290,7 +290,8 @@ export const PassMap = ({
    * under it.
    */
   const [fan, setFan] = useState<string | null>(null);
-  const [overFan, setOverFan] = useState(false);
+  /** Which area's names the pointer is on – only that area's fan it holds. */
+  const [overFan, setOverFan] = useState<string | null>(null);
   const fanNext = fanTarget({
     current: fan,
     holds: (area, road) =>
@@ -298,7 +299,7 @@ export const PassMap = ({
         (r) => r.destination.slug === area && r.members.passes.includes(road),
       ),
     hovered,
-    overFan,
+    overFan: fan !== null && overFan === fan,
     selection,
   });
   const fanAtOnce = fanNext !== null && hovered?.kind === "destination";
@@ -474,7 +475,8 @@ export const PassMap = ({
         [SOURCE.destinations]: { data: EMPTY, type: "geojson" },
         [SOURCE.ghosts]: { data: EMPTY, type: "geojson" },
         [SOURCE.hover]: { data: EMPTY, type: "geojson" },
-        [SOURCE.passes]: { data: EMPTY, type: "geojson" },
+        // Keyed by slug for the fan's feature state (`PassState`).
+        [SOURCE.passes]: { data: EMPTY, promoteId: "slug", type: "geojson" },
         [SOURCE.reach]: { data: EMPTY, type: "geojson" },
         // Static files with a content hash in the name (scripts/build-map-assets.ts);
         // promoteId makes the `id` property the feature id for feature state.
@@ -584,7 +586,11 @@ export const PassMap = ({
         at = { x: e.point.x, y: e.point.y };
         hover();
       });
-      m.on("mouseout", () => {
+      m.on("mouseout", (e) => {
+        // Onto a name of the fan, which reports its own road: the browser
+        // tells the name first, and a `null` here would undo it.
+        const to = e.originalEvent.relatedTarget;
+        if (to instanceof Element && to.closest("[data-fan]")) return;
         at = null;
         hover();
       });

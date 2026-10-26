@@ -1,7 +1,7 @@
 "use client";
 
 import type { Map as MLMap } from "maplibre-gl";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { RefObject } from "react";
 
 import { useT } from "@/components/i18n";
@@ -58,36 +58,58 @@ export const FanOverlay = ({
   hoveredRoad: string | null;
   onHover: (sel: Selection | null) => void;
   onSelect: (sel: Selection) => void;
-  /** Whether the pointer is on the names – what keeps the fan open while it travels there. */
-  onOver: (over: boolean) => void;
+  /**
+   * Which area's names the pointer is on, or `null` – what keeps the fan open
+   * while the pointer travels there. Cleared whenever the fan goes, because
+   * names taken away from under a still pointer never hear it leave.
+   */
+  onOver: (slug: string | null) => void;
 }) => {
   const { t } = useT();
   const [drawn, setDrawn] = useState<Drawn | null>(null);
+  // The scene is a new value on every render, the fan in it rarely another
+  // one: the effect below starts over only when its area or roads change, and
+  // reads the rest from here.
+  const latest = useRef(fan);
+  useEffect(() => {
+    latest.current = fan;
+  });
+  const slug = fan?.slug ?? null;
+  const roads = fan?.roads.map((r) => `${r.slug}:${r.status}`).join(",");
+  useEffect(
+    () => () => {
+      if (slug) onOver(null);
+    },
+    [slug, onOver],
+  );
 
   // The layout is a function of where the map draws the area, so it is worked
   // out again on every frame the camera moves – a flight to the area carries
   // the names along with it.
   useEffect(() => {
     const m = map.current;
-    if (!ready || !m || !fan) return;
+    // `roads` is what the area's drawn roads were when this effect started.
+    if (!ready || !m || !slug || !roads) return;
     let frame = 0;
     const layout = () => {
       frame = 0;
+      const now = latest.current;
+      if (now?.slug !== slug) return;
       const { clientHeight: height, clientWidth: width } = m.getContainer();
       const at = (lon: number, lat: number): Px => {
         const p = m.project([lon, lat]);
         return { x: p.x, y: p.y };
       };
-      const hole = fan.outline.map(([lon, lat]) => at(lon, lat));
+      const hole = now.outline.map(([lon, lat]) => at(lon, lat));
       setDrawn({
         fan: fanLayout(
-          fan.roads.map((r) => ({ ...r, at: at(r.lon, r.lat) })),
+          now.roads.map((r) => ({ ...r, at: at(r.lon, r.lat) })),
           hole,
           { height, inset, step: coarse ? STEP_COARSE : FAN.step, width },
         ),
         height,
         hole,
-        slug: fan.slug,
+        slug,
         width,
       });
     };
@@ -101,8 +123,11 @@ export const FanOverlay = ({
       if (frame) cancelAnimationFrame(frame);
       m.off("move", schedule);
       m.off("resize", schedule);
+      // A layout is only good for the camera it was made under: a fan that
+      // opens again starts from its next frame, not from where it last was.
+      setDrawn(null);
     };
-  }, [map, ready, fan, inset, coarse]);
+  }, [map, ready, slug, roads, inset, coarse]);
 
   if (!fan || drawn?.slug !== fan.slug) return null;
   const { width, height, hole } = drawn;
@@ -110,6 +135,7 @@ export const FanOverlay = ({
   return (
     <div
       key={fan.slug}
+      data-fan
       className="animate-in fade-in pointer-events-none absolute inset-0 z-[1] duration-200 motion-reduce:animate-none"
     >
       <svg
@@ -140,9 +166,9 @@ export const FanOverlay = ({
       </svg>
       <ul
         aria-label={fill(t.map.fan.region, { name: fan.name })}
-        onPointerEnter={() => onOver(true)}
+        onPointerEnter={() => onOver(fan.slug)}
         onPointerLeave={() => {
-          onOver(false);
+          onOver(null);
           onHover(null);
         }}
       >
@@ -159,7 +185,7 @@ export const FanOverlay = ({
             <button
               type="button"
               className={cn(
-                "bg-card/90 border-border/70 pointer-events-auto flex h-6 items-center gap-1.5 rounded-full border px-2 text-xs whitespace-nowrap shadow-sm backdrop-blur-sm",
+                "bg-card/95 border-border/70 pointer-events-auto flex h-6 items-center gap-1.5 rounded-full border px-2 text-xs whitespace-nowrap shadow-sm",
                 "hover:border-foreground/40 focus-visible:ring-ring outline-none focus-visible:ring-2",
                 "pointer-coarse:h-8 pointer-coarse:px-3",
                 e.side === "left" && "flex-row-reverse",
@@ -170,6 +196,7 @@ export const FanOverlay = ({
               )}
               onPointerEnter={() => onHover({ kind: "pass", slug: e.slug })}
               onFocus={() => onHover({ kind: "pass", slug: e.slug })}
+              onBlur={() => onHover(null)}
               onClick={() => onSelect({ kind: "pass", slug: e.slug })}
             >
               <StatusDot status={e.status} hollow={e.status === "closed"} />

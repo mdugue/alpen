@@ -327,8 +327,6 @@ const statusFirst = (offset: number, step: number) =>
  */
 const notClosed = (coarse: boolean): ExpressionSpecification =>
   coarse ? ["literal", true] : ["!=", ["get", "status"], "closed"];
-/** A road the fan is naming round its area (`Scene.fan`): not named twice. */
-const notFanned: ExpressionSpecification = ["!=", ["get", "fanned"], 1];
 
 /**
  * The app's own layers, painted with the live tokens. A pure function of the
@@ -930,20 +928,15 @@ export const appLayers = (
       filter:
         rank === 5
           ? ([
-              "all",
-              notFanned,
-              [
-                "any",
-                ["all", ["==", ["get", "rank"], 5], notClosed(coarse)],
-                ["==", ["get", "selected"], 1],
-                ["==", ["get", "favorite"], 1],
-              ],
+              "any",
+              ["all", ["==", ["get", "rank"], 5], notClosed(coarse)],
+              ["==", ["get", "selected"], 1],
+              ["==", ["get", "favorite"], 1],
             ] as never)
           : ([
               "all",
               ["==", ["max", RANK_FLOOR, ["get", "rank"]], rank],
               notClosed(coarse),
-              notFanned,
               ["!=", ["get", "selected"], 1],
               ["!=", ["get", "favorite"], 1],
             ] as never),
@@ -992,7 +985,14 @@ export const appLayers = (
         "text-color": colors.ink,
         "text-halo-color": colors.paper,
         "text-halo-width": 1.6,
-        "text-opacity": rank <= 2 ? 0.85 : 1,
+        // A road the fan names round its area (`PassState`) is not named
+        // beside its dot as well.
+        "text-opacity": [
+          "case",
+          ["==", ["feature-state", "fanned"], 1],
+          0,
+          rank <= 2 ? 0.85 : 1,
+        ] as never,
       },
       source: SOURCE.passes,
       type: "symbol" as const,

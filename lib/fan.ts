@@ -129,10 +129,15 @@ export const fanLayout = (
   const roomLeft = west - FAN.gap - widest >= view.inset.left + FAN.margin;
   const roomRight =
     east + FAN.gap + widest <= view.width - view.inset.right - FAN.margin;
+  // With room on one side only, that side; with room on neither, the wider.
+  const wider =
+    west - view.inset.left > view.width - view.inset.right - east
+      ? "left"
+      : "right";
   const sides: ("left" | "right")[] =
     roomLeft && roomRight
       ? ["left", "right"]
-      : [roomRight || !roomLeft ? "right" : "left"];
+      : [roomRight ? "right" : roomLeft ? "left" : wider];
 
   // Who is named at all: as many as the columns hold, the weightiest first,
   // keeping a row for the count when some are left over.
