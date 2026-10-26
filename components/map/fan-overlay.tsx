@@ -76,12 +76,20 @@ export const FanOverlay = ({
   });
   const slug = fan?.slug ?? null;
   const roads = fan?.roads.map((r) => `${r.slug}:${r.status}`).join(",");
+  // A fan that goes – or turns into another area's – lets go of the pointer
+  // and of its layout: a layout is only good for the camera it was made under,
+  // so one that opens again starts from its next frame, not from where it was.
   useEffect(
     () => () => {
-      if (slug) onOver(null);
+      if (!slug) return;
+      onOver(null);
+      setDrawn(null);
     },
     [slug, onOver],
   );
+  // The panels' share of the screen, as numbers: the prop is a new object on
+  // every render, and the layout below must not start over for that.
+  const { bottom, left, right, top } = inset;
 
   // The layout is a function of where the map draws the area, so it is worked
   // out again on every frame the camera moves – a flight to the area carries
@@ -105,7 +113,12 @@ export const FanOverlay = ({
         fan: fanLayout(
           now.roads.map((r) => ({ ...r, at: at(r.lon, r.lat) })),
           hole,
-          { height, inset, step: coarse ? STEP_COARSE : FAN.step, width },
+          {
+            height,
+            inset: { bottom, left, right, top },
+            step: coarse ? STEP_COARSE : FAN.step,
+            width,
+          },
         ),
         height,
         hole,
@@ -123,11 +136,8 @@ export const FanOverlay = ({
       if (frame) cancelAnimationFrame(frame);
       m.off("move", schedule);
       m.off("resize", schedule);
-      // A layout is only good for the camera it was made under: a fan that
-      // opens again starts from its next frame, not from where it last was.
-      setDrawn(null);
     };
-  }, [map, ready, slug, roads, inset, coarse]);
+  }, [map, ready, slug, roads, top, right, bottom, left, coarse]);
 
   if (!fan || drawn?.slug !== fan.slug) return null;
   const { width, height, hole } = drawn;
