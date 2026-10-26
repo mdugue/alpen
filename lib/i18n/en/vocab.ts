@@ -224,6 +224,7 @@ export const vocab = {
     Vogesen: "Vosges",
     Westalpen: "Western Alps",
     Westsizilien: "Western Sicily",
+    Westtatra: "Western Tatras",
     Zentralalpen: "Central Alps",
     Zentralmassiv: "Massif Central",
     Ätna: "Etna",

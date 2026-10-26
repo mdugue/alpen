@@ -1732,10 +1732,12 @@
   "baseTowns": [
    "liptovsky-mikulas"
   ],
-  "include": [],
+  "include": [
+   "huty"
+  ],
   "exclude": [],
-  "character": "Der Kamm zwischen Liptov und dem Hron-Tal: die Čertovica von zwei Seiten, der Chopok von Süden über Bystrá und von Norden nach Jasná. Bergstraßen im Fichtenwald, von Juni bis September.",
-  "multiDay": "Zwei Tage von Liptovský Mikuláš: Jasná und die Čertovica über Vyšná Boca, am zweiten Tag über die Čertovica nach Süden und den Chopok von Bystrá.",
+  "character": "Der Kamm zwischen Liptov und dem Hron-Tal: die Čertovica von zwei Seiten, der Chopok von Süden über Bystrá und von Norden nach Jasná, dazu im Norden des Liptov der Übergang Huty vor der Westtatra. Bergstraßen im Fichtenwald, von Juni bis September.",
+  "multiDay": "Zwei Tage von Liptovský Mikuláš: Jasná und die Čertovica über Vyšná Boca, am zweiten Tag über die Čertovica nach Süden und den Chopok von Bystrá. Ein dritter Tag über Huty nach Zuberec; für Ausdauernde die Niedere-Tatra-Runde über die Čertovica und das Vernárske sedlo.",
   "access": "Bahn bis Liptovský Mikuláš, Flug nach Poprad oder Kraków."
  },
  {
@@ -1753,8 +1755,8 @@
   ],
   "include": [],
   "exclude": [],
-  "character": "Ein Anstieg auf jeder Seite der Hohen Tatra: von Štrba lang und gleichmäßig zum Bergsee Štrbské Pleso, über Biały Dunajec die Rampe nach Gliczarów Górny mit Stücken über 20 %. Mehr Aussicht als Pässe, von Mai bis Oktober.",
-  "multiDay": "Zwei Tage, einer auf jeder Seite: Štrbské Pleso von Poprad, Gliczarów Górny von Zakopane; die Fahrt über den Grenzübergang Łysa Polana verbindet beide.",
+  "character": "Rund um die Hohe Tatra: von Štrba zum Bergsee Štrbské Pleso, über Ždiar der Sattel Pod Príslopom unter den Belianske Tatry, von Zakopane die Waldstraße über Wierch Poroniec zur Grenze, über Biały Dunajec die Rampe nach Gliczarów Górny mit Stücken über 20 % und im Süden das Vernárske sedlo. Mehr Aussicht als Pässe, von Mai bis Oktober.",
+  "multiDay": "Zwei Tage, einer auf jeder Seite: Štrbské Pleso und das Vernárske sedlo von Poprad, Gliczarów Górny von Zakopane; Wierch Poroniec und der Sattel bei Ždiar verbinden beide über den Grenzübergang Łysa Polana. Wer einen langen Tag will, fährt die Runde um die Tatra.",
   "access": "Flug nach Poprad oder Kraków, Bahn bis Poprad oder Zakopane."
  },
  {
