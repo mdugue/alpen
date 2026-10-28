@@ -228,7 +228,7 @@ every overlap is settled in that order, and nothing else is.
   wait, as they already join by rank.
 - **A phone names by zoom, not by pointing.** A finger cannot point without
   pressing, so a phone has no fan: a tap opens the panel. Instead the
-  classics are named from `CLASSIC_NAME_ZOOM_COARSE` (6.5), the other roads
+  classics are named from `CLASSIC_NAME_ZOOM_COARSE` (7), the other roads
   join by rank from zoom 8 as on a desktop, closed ones included.
 - **Short names on the overview.** Between `ROAD_NAME_ZOOM` and `SHORT_NAME_ZOOM` a name is
   written without the generic word in front – "Galibier", not "Col du

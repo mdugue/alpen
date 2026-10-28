@@ -328,6 +328,28 @@ const statusFirst = (offset: number, step: number) =>
  * fine pointer only – a finger has no hover to bring the others' names back,
  * so on a phone every road keeps its name.
  */
+/**
+ * On a phone, the step that names the classics before the other roads: from
+ * `CLASSIC_NAME_ZOOM_COARSE` a road of `CLASSIC_FAME` gets its short name,
+ * the rest of its rank (the pearls in rank 4) waits for `ROAD_NAME_ZOOM`.
+ */
+const classicFirst = (on: boolean): unknown[] =>
+  on
+    ? [
+        CLASSIC_NAME_ZOOM_COARSE,
+        [
+          "case",
+          ["==", ["get", "selected"], 1],
+          ["get", "name"],
+          [">=", ["get", "fame"], CLASSIC_FAME],
+          ["get", "short"],
+          ["==", ["get", "favorite"], 1],
+          ["get", "short"],
+          "",
+        ],
+      ]
+    : [];
+
 const notClosed = (coarse: boolean): ExpressionSpecification =>
   coarse ? ["literal", true] : ["!=", ["get", "status"], "closed"];
 
@@ -958,7 +980,7 @@ export const appLayers = (
         // "Col du Galibier". The selected road is named in full everywhere.
         // Below `ROAD_NAME_ZOOM` no road is named at rest – an empty name
         // places nothing – but the selected one and the favourites; on a
-        // phone the classics from `CLASSIC_NAME_ZOOM_COARSE`.
+        // phone the classics from `CLASSIC_NAME_ZOOM_COARSE` (`classicFirst`).
         "text-field": [
           "step",
           ["zoom"],
@@ -970,7 +992,8 @@ export const appLayers = (
             ["get", "short"],
             "",
           ],
-          coarse && rank === 5 ? CLASSIC_NAME_ZOOM_COARSE : ROAD_NAME_ZOOM,
+          ...classicFirst(coarse && rank >= 4),
+          ROAD_NAME_ZOOM,
           [
             "case",
             ["==", ["get", "selected"], 1],
@@ -997,7 +1020,8 @@ export const appLayers = (
           "bottom-right",
         ] as never,
       },
-      minzoom,
+      // On a phone the classics of rank 4 are named before the rest of it.
+      minzoom: coarse && rank === 4 ? CLASSIC_NAME_ZOOM_COARSE : minzoom,
       paint: {
         "text-color": colors.ink,
         "text-halo-color": colors.paper,

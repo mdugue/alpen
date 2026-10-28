@@ -121,6 +121,8 @@ export const ROAD_NAME_ZOOM = 8;
 /**
  * On a coarse pointer the classics are named from here on: a finger has no
  * hover to ask a dot its name, so the zoom answers instead – the classics a
- * step before everything else.
+ * step before everything else. A whole number, like every stop a label's
+ * `text-field` steps at: MapLibre lays a symbol out at its tile's zoom, the
+ * whole number below the camera's, so 6.5 drew nothing until 7.
  */
-export const CLASSIC_NAME_ZOOM_COARSE = 6.5;
+export const CLASSIC_NAME_ZOOM_COARSE = 7;
