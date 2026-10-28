@@ -869,6 +869,13 @@ export const appLayers = (
         "text-color": colors.town,
         "text-halo-color": colors.paper,
         "text-halo-width": 2,
+        // A town the fan names (`Scene.townState`) is not named twice.
+        "text-opacity": [
+          "case",
+          ["==", ["feature-state", "fanned"], 1],
+          0,
+          1,
+        ] as never,
       },
       source: SOURCE.towns,
       type: "symbol",

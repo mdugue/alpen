@@ -83,6 +83,7 @@ const scene = (extra: Partial<SceneInput> = {}) =>
     shown: ALL_SHOWN,
     tourBounds: {},
     townReach: REACH,
+    view: null,
     w: DE,
     you: null,
     ...extra,
@@ -109,6 +110,8 @@ describe("the first scene", () => {
       ascentKey("stelvio", 0),
       "galibier",
       "stelvio",
+      // The towns' fan state, after the roads'.
+      "bormio",
     ]);
     expect(of(calls, "data")).toEqual([
       SOURCE.passes,

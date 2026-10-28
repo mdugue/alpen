@@ -189,9 +189,13 @@ Auffahrten liegen über orangen, orange über roten. Mit der Maus trägt eine of
 gesperrte Straße ihren Namen erst, wenn du auf sie zeigst; auf dem Telefon
 behält jede Straße ihren Namen. Zeigst du einen Moment auf ein Reiseziel oder
 auf eine Straße, einen Ort oder eine Tour darin, leuchtet sein Umriss auf und
-alle Straßen des Gebiets stehen mit Namen an seinem Rand, jede mit einer
-dünnen Linie zu ihrem Punkt; die Straße unter dem Zeiger nennt dazu ihre
-Höhe, und ein Klick auf einen Namen öffnet sie. Liegt eine Straße in mehreren
+alle Straßen, Orte und Touren des Gebiets stehen mit Namen an seinem Rand,
+jede mit einer dünnen Linie zu ihrem Zeichen; der Eintrag unter dem Zeiger
+nennt dazu, was sonst das Schild sagt – bei einer Straße die Höhe, bei einem
+Ort seine Merkmale, bei einer Tour Länge und Höhenmeter –, und ein Klick auf
+einen Namen öffnet ihn. Zoomst du so weit hinein, dass das Reiseziel einen
+guten Teil der Karte füllt, tritt der Fächer zurück, und jedes Zeichen hat
+wieder sein eigenes Schild. Liegt eine Straße in mehreren
 Reisezielen, öffnet sich das, dessen Mitte ihr am nächsten liegt; eine lange
 Tour durch viele Gebiete öffnet keins. Auf dem Telefon öffnet ein Antippen
 die Straße direkt. Wie

@@ -245,17 +245,31 @@ every overlap is settled in that order, and nothing else is.
 
 Where roads crowd – the Dolomites at zoom 7 – MapLibre keeps a few names
 and drops the rest. Pointing at an area, or at a road, town or loop in it,
-lays every road of it the filters draw out in two columns beside its
-outline instead, each name with a thin line to its dot: the margin labels of
-a printed map, made interactive (excentric labelling). It is the roads' hover
-label – a road the fan names gets no popup of its own, and the name the
-pointer is on, in the fan or on the map, says its height. It is never there
+lays every road, town and loop of it the filters draw out in two columns
+beside its outline instead, each name with a thin line to its mark – a
+loop's line ends at the point of it nearest the area's centre: the margin
+labels of a printed map, made interactive (excentric labelling). It is
+their hover label – what the fan names gets no popup of its own, and the
+name the pointer is on, in the fan or on the map, says what the popup would
+have: a road's height, a town's labels, a loop's length and climb. Road and
+town names on the map step aside while the fan names them. It is never there
 at rest, because two dozen leader lines on every area would be the clutter
 it is meant to clear, and the map around it is left as it is: a veil that
 dimmed the rest made every hover a change of the whole picture. Pointing at
 a road also lights its area's outline, so the fan is seen to belong to it.
-An area with a single drawn road has no fan – that road keeps its popup –
+An area with a single drawn mark has no fan – that mark keeps its popup –
 and phones have none at all (above).
+
+Close in, the fan steps aside again. Once an area's larger side on the
+screen is more than `FAN_FIT` (40 %) of the shorter side of what the panels
+leave of the map (`fanFits`), one stands in the area rather than before it:
+its marks are far enough apart to carry their own names, and lines from its
+edge would cross half the screen, so every mark has its popup back. A fixed
+zoom could not say this – the areas run from 10 to 120 km across, and
+windows differ – while the share takes zoom, area and window in one measure:
+on a laptop a middling area turns at about zoom 8.5, the Dolomites' around 9,
+a small one at 10. It is worked out from the area's box and the zoom the
+pass map takes at the end of each zoom, so the scene stays a pure function.
 
 A road can lie in up to three areas. It opens one, its _primary_ area: the
 one whose centre is nearest (`areasOf`). A loop's position is the middle of

@@ -23,7 +23,14 @@ import type { FilterSpecification } from "maplibre-gl";
 
 import type { Selection, Shown } from "@/lib/app-state";
 import { isShown } from "@/lib/app-state";
-import { areasOf, FAN_MIN_ROADS, fanTarget } from "@/lib/fan";
+import {
+  areasOf,
+  FAN_MIN_ENTRIES,
+  fanFits,
+  fanKey,
+  fanTarget,
+} from "@/lib/fan";
+import type { FanKind, FitView } from "@/lib/fan";
 import type { Bounds, Ring } from "@/lib/geo";
 import { surfaceWord, tagLabel, typeWord } from "@/lib/i18n";
 import type { Messages } from "@/lib/i18n";
@@ -133,29 +140,35 @@ export interface PopupContent {
 }
 
 /**
- * An area's roads laid out round its outline (lib/fan.ts): which area, its
- * outline and the drawn roads it holds, on the map's coordinates. Where they
- * go on the screen is the overlay's to work out, because only the map knows
- * where a coordinate is drawn.
+ * An area's roads, towns and loops laid out round its outline (lib/fan.ts):
+ * which area, its outline and the drawn members it holds, on the map's
+ * coordinates. Where they go on the screen is the overlay's to work out,
+ * because only the map knows where a coordinate is drawn.
  */
 export interface SceneFan {
   slug: string;
   name: string;
   outline: Ring;
-  roads: {
+  items: {
+    kind: FanKind;
     slug: string;
     name: string;
-    /** The summit's height, in m: said beside the name the pointer is on. */
-    elevation: number;
-    status: Status;
+    /**
+     * What its hover label would have said beside the name – a road's height,
+     * a town's labels, a loop's length and climb – said beside the name the
+     * pointer is on.
+     */
+    detail: string | null;
+    status: Status | null;
     classic: boolean;
+    /** Where its line ends: the dot, or for a loop the point of it nearest the area's centre. */
     lon: number;
     lat: number;
   }[];
 }
 
 /**
- * A pass dot's feature state: whether the fan names it right now
+ * A pass dot's or a town's feature state: whether the fan names it right now
  * (`Scene.fan`), so its own label steps aside. State rather than a property,
  * because a fan opens on every area the pointer crosses and a property would
  * re-tile the whole source each time.
@@ -182,6 +195,8 @@ export interface Scene {
   passes: FeatureCollection<Point, PassProps>;
   /** Keyed by slug, every drawn pass. */
   passState: Record<string, PassState>;
+  /** The same for the towns, whose names join from zoom 8. */
+  townState: Record<string, PassState>;
   /** The roads the filters leave out, as shadows; empty while the roads are off the map. */
   ghosts: FeatureCollection<Point, GhostProps>;
   towns: FeatureCollection<Point, TownProps>;
@@ -242,6 +257,11 @@ export interface SceneInput {
   fan: string | null;
   /** Whether the pointer is on the open fan's names, which holds it open. */
   overFan: boolean;
+  /**
+   * The zoom and the size of what the panels leave of the map, for whether an
+   * area is small enough to fan out (`fanFits`); `null` before the map is.
+   */
+  view: FitView | null;
   /**
    * What the pointer can do here. A coarse pointer has no hover to speak of:
    * a finger that touches a mark has already tapped it, and a label under the
@@ -336,6 +356,10 @@ const shadows = (ghosts: readonly PassRow[], selPass: string | null) =>
 const labelled = (tags: readonly Tag[], w: Messages) =>
   tags.map((tag) => [tag, tagLabel(tag, w)] as const);
 
+/** A loop's one line: how long it is and how much it climbs. */
+const tourSubtitle = ({ tour }: TourRow, w: Messages) =>
+  `${w.vocab.unit.approx} ${fmtUnit(tour.km, "km", 0, w.lang)} · ${fmtUnit(tour.elevationGain, w.vocab.unit.climb, 0, w.lang)}`;
+
 /** The northernmost corner of a ring, `[lon, lat]`. */
 const topOf = (ring: Ring): [number, number] => {
   let [lon, lat] = ring[0] ?? [0, 0];
@@ -386,36 +410,84 @@ const toursDrawn = (
   return { strayTour, tourState };
 };
 
+/** What the fan is built from: the scene's input and the roads it draws. */
+interface FanSource {
+  input: SceneInput;
+  drawn: readonly PassRow[];
+}
+
+/** A loop's point nearest a centre: where the fan's line to it ends. */
+const nearestOn = (waypoints: readonly LatLon[], to: LatLon): LatLon => {
+  const away = (p: LatLon) => (p.lat - to.lat) ** 2 + (p.lon - to.lon) ** 2;
+  let best = waypoints[0]!;
+  for (const p of waypoints) if (away(p) < away(best)) best = p;
+  return best;
+};
+
 /**
- * The fan's half of the scene: the area, if the map draws it, and the roads
- * of it the filters draw – nothing when there are none to name.
+ * The fan's half of the scene: the area, if the map draws it, and the roads,
+ * towns and loops of it the filters draw – nothing when there is only one to
+ * name, or when the area is too large on the screen for a fan (`fanFits`).
  */
 const fanOf = (
   slug: string | null,
-  rows: Rows,
-  shown: Shown,
-  drawn: readonly PassRow[],
+  { drawn, input }: FanSource,
 ): SceneFan | null => {
+  const { rows, shown, view, w } = input;
   const row = shown.destinations
     ? rows.destination.find((r) => r.destination.slug === slug)
     : undefined;
-  const roads =
-    row && shown.passes
-      ? drawn.filter((r) => row.members.passes.includes(r.pass.slug))
-      : [];
-  if (!row || roads.length < FAN_MIN_ROADS) return null;
-  return {
-    name: row.destination.name,
-    outline: row.members.outline,
-    roads: roads.map((r) => ({
+  if (!row || !fanFits(row.members.bounds, view)) return null;
+  const { center } = row.destination;
+  const { members } = row;
+  const roads = shown.passes
+    ? drawn.filter((r) => members.passes.includes(r.pass.slug))
+    : [];
+  const towns = rows.town.filter((r) => members.towns.includes(r.town.slug));
+  const tours = rows.tour.filter(
+    (r) =>
+      members.tours.includes(r.tour.slug) &&
+      isShown(shown, "tour", r.tour.slug),
+  );
+  const items: SceneFan["items"] = [
+    ...roads.map((r) => ({
       classic: r.pass.fame >= CLASSIC_FAME,
-      elevation: r.pass.elevation,
+      detail: fmtUnit(r.pass.elevation, "m", 0, w.lang),
+      kind: "pass" as const,
       lat: r.pass.lat,
       lon: r.pass.lon,
       name: r.pass.name,
       slug: r.pass.slug,
       status: r.status,
     })),
+    ...towns.map((r) => ({
+      classic: false,
+      detail:
+        labelled(r.town.tags, w)
+          .map(([, label]) => label)
+          .join(" · ") || null,
+      kind: "town" as const,
+      lat: r.town.lat,
+      lon: r.town.lon,
+      name: r.town.name,
+      slug: r.town.slug,
+      status: null,
+    })),
+    ...tours.map((r) => ({
+      classic: false,
+      detail: tourSubtitle(r, w),
+      kind: "tour" as const,
+      ...nearestOn(r.tour.waypoints, center),
+      name: r.tour.name,
+      slug: r.tour.slug,
+      status: r.status,
+    })),
+  ];
+  if (items.length < FAN_MIN_ENTRIES) return null;
+  return {
+    items,
+    name: row.destination.name,
+    outline: members.outline,
     slug: row.destination.slug,
   };
 };
@@ -426,53 +498,47 @@ const fanOf = (
  * cannot disagree. A road, town or tour offers only the areas that have a fan
  * to open (`fanOf`); its outline lights even where there is none.
  */
-const fanDecision = (
-  {
-    env,
-    fan,
-    ghosts,
-    hovered,
-    overFan,
-    rows,
-    selection,
-    shown,
-    tourBounds,
-  }: SceneInput,
-  drawn: readonly PassRow[],
-) => {
-  const index = { ...rows, pass: [...drawn, ...ghosts], tourBounds };
+const fanDecision = (src: FanSource) => {
+  const { env, fan, ghosts, hovered, overFan, rows, selection, tourBounds } =
+    src.input;
+  const index = { ...rows, pass: [...src.drawn, ...ghosts], tourBounds };
   const areas = (sel: Selection) => areasOf(sel, index);
+  const opens = (a: string | null) => fanOf(a, src) !== null;
   // A finger has no hover, and beside the drawer a fan has no room: on a
   // phone the names come with the zoom instead (`appLayers`).
-  const next = env.coarse
+  const target = env.coarse
     ? null
     : fanTarget({
-        areasOf: (sel) =>
-          areas(sel).filter((a) => fanOf(a, rows, shown, drawn) !== null),
+        areasOf: (sel) => areas(sel).filter(opens),
         current: fan,
         hovered,
         overFan: fan !== null && overFan,
         selection,
       });
+  // An area pointed at or open in the panel is no exception to the rule:
+  // too large on the screen, it has no fan either.
+  const next = opens(target) ? target : null;
   const own = hovered ? areas(hovered) : [];
   const pointed =
     slugOf(hovered, "destination") ??
     (next !== null && own.includes(next) ? next : own[0]);
   // What the fan is about to name, so no popup flashes before it opens.
-  const fanning = new Set(
-    fanOf(next, rows, shown, drawn)?.roads.map((r) => r.slug),
-  );
+  const fanning = new Set(fanOf(next, src)?.items.map(fanKey));
   return { fanning, hoverArea: pointed, next };
 };
 
-/** Which drawn roads the fan names, so their own labels step aside meanwhile. */
-const passStateOf = (
-  drawn: readonly PassRow[],
+/** Which drawn marks of a kind the fan names, so their own labels step aside meanwhile. */
+const fannedState = (
+  slugs: readonly string[],
+  kind: FanKind,
   fan: SceneFan | null,
 ): Record<string, PassState> => {
-  const named = new Set(fan?.roads.map((r) => r.slug));
+  const named = new Set(fan?.items.map(fanKey));
   return Object.fromEntries(
-    drawn.map((r) => [r.pass.slug, { fanned: flag(named.has(r.pass.slug)) }]),
+    slugs.map((slug) => [
+      slug,
+      { fanned: flag(named.has(fanKey({ kind, slug }))) },
+    ]),
   );
 };
 
@@ -542,16 +608,22 @@ export const buildScene = (input: SceneInput): Scene => {
   const markedDestination = shown.destinations ? destinationRow : undefined;
   const box = hoverTour ? tourBounds[hoverTour] : undefined;
 
-  const fanned = fanOf(fan, rows, shown, drawn);
-  const { fanning, hoverArea, next: fanNext } = fanDecision(input, drawn);
+  const src = { drawn, input };
+  const fanned = fanOf(fan, src);
+  const { fanning, hoverArea, next: fanNext } = fanDecision(src);
+  const fanNames = (kind: FanKind, slug: string) =>
+    fanning.has(fanKey({ kind, slug }));
 
   const popup = (): PopupContent | null => {
     if (env.coarse) return null;
-    // A road the fan names has its say there – name and height beside the
-    // area – so it carries no hover label of its own, not even in the
-    // moment before its fan opens. One outside every area, alone in its
-    // area, or a shadow, still does.
-    if (markedPass && fanning.has(markedPass.pass.slug)) return null;
+    // A road, town or loop the fan names has its say there – its name and
+    // its line beside the area – so it carries no hover label of its own,
+    // not even in the moment before its fan opens. One outside every area,
+    // alone in its area, in an area too large for a fan, or a shadow, still
+    // does.
+    if (markedPass && fanNames("pass", markedPass.pass.slug)) return null;
+    if (markedTown && fanNames("town", markedTown.town.slug)) return null;
+    if (tourRow && fanNames("tour", tourRow.tour.slug)) return null;
     if (markedPass)
       return {
         anchor: [markedPass.pass.lon, markedPass.pass.lat],
@@ -571,7 +643,7 @@ export const buildScene = (input: SceneInput): Scene => {
       return {
         anchor: [(box[0] + box[2]) / 2, (box[1] + box[3]) / 2],
         name: tourRow.tour.name,
-        subtitle: `${w.vocab.unit.approx} ${fmtUnit(tourRow.tour.km, "km", 0, w.lang)} · ${fmtUnit(tourRow.tour.elevationGain, w.vocab.unit.climb, 0, w.lang)}`,
+        subtitle: tourSubtitle(tourRow, w),
         tags: [],
       };
     if (markedDestination)
@@ -663,7 +735,11 @@ export const buildScene = (input: SceneInput): Scene => {
       popup: popup(),
     },
     opening: opening ?? bounds,
-    passState: passStateOf(drawn, fanned),
+    passState: fannedState(
+      drawn.map((r) => r.pass.slug),
+      "pass",
+      fanned,
+    ),
     passes: collection<PassProps>(
       (shown.passes ? drawn : []).map((row) => ({
         at: [row.pass.lon, row.pass.lat],
@@ -706,6 +782,11 @@ export const buildScene = (input: SceneInput): Scene => {
       ]),
       state: tourState,
     },
+    townState: fannedState(
+      rows.town.map((r) => r.town.slug),
+      "town",
+      fanned,
+    ),
     towns: collection<TownProps>(
       (shown.destinations ? rows.town : []).map((row) => ({
         at: [row.town.lon, row.town.lat],

@@ -7,15 +7,29 @@ import type { RefObject } from "react";
 import { useT } from "@/components/i18n";
 import { StatusDot } from "@/components/status-badge";
 import type { Selection } from "@/lib/app-state";
-import { FAN, fanLayout } from "@/lib/fan";
-import type { Fan, Px } from "@/lib/fan";
+import { FAN, fanKey, fanLayout } from "@/lib/fan";
+import type { Fan, FanEntry, Px } from "@/lib/fan";
 import { fill } from "@/lib/i18n/fill";
 import type { Inset } from "@/lib/map-camera";
 import type { SceneFan } from "@/lib/map-scene";
-import { cn, fmtUnit } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 
 /** A row on a coarse pointer: a name a finger can hit. */
 const STEP_COARSE = 34;
+
+/**
+ * What stands before a name: a road's status dot, a town's dot and a loop's
+ * bar – the shapes the legend and the tabs use for the kinds.
+ */
+const Mark = ({ entry }: { entry: FanEntry }) => {
+  if (entry.kind === "town")
+    return <span className="bg-town size-2 shrink-0 rounded-full" />;
+  if (entry.kind === "tour")
+    return <span className="bg-tour h-1.5 w-3 shrink-0 rounded-full" />;
+  return entry.status ? (
+    <StatusDot status={entry.status} hollow={entry.status === "closed"} />
+  ) : null;
+};
 
 interface Drawn {
   /** Which area it was laid out for: a layout of the last one is not drawn. */
@@ -26,14 +40,16 @@ interface Drawn {
 }
 
 /**
- * The fan, drawn: an area's roads named in two columns beside its outline,
- * each with a line to its dot (lib/fan.ts says where everything goes and
- * when). It is the roads' hover label: the name the pointer is on – on the
- * map or in the fan – also says its height. The map around it stays as it
- * is; a veil that dimmed it made every hover a change of the whole picture.
+ * The fan, drawn: an area's roads, towns and loops named in two columns
+ * beside its outline, each with a line to its mark (lib/fan.ts says where
+ * everything goes and when). It is their hover label: the name the pointer
+ * is on – on the map or in the fan – also says what the label would have, a
+ * road's height, a town's labels, a loop's length and climb. The map around
+ * it stays as it is; a veil that dimmed it made every hover a change of the
+ * whole picture.
  *
  * It sits over the map rather than in it. The names are buttons – pointing at
- * one rings its road, pressing it opens the road – and the columns follow the
+ * one rings its mark, pressing it opens it – and the columns follow the
  * camera frame by frame, which a MapLibre symbol layer placed in map
  * coordinates could do neither of. The overlay itself lets the pointer
  * through; only the names take it.
@@ -44,7 +60,7 @@ export const FanOverlay = ({
   fan,
   inset,
   coarse,
-  hoveredRoad,
+  hovered,
   onHover,
   onSelect,
   onOver,
@@ -54,8 +70,8 @@ export const FanOverlay = ({
   fan: SceneFan | null;
   inset: Inset;
   coarse: boolean;
-  /** The road the pointer is on, wherever it is: its line is drawn heavier. */
-  hoveredRoad: string | null;
+  /** What the pointer is on, wherever it is: its line is drawn heavier. */
+  hovered: Selection | null;
   onHover: (sel: Selection | null) => void;
   onSelect: (sel: Selection) => void;
   /**
@@ -65,17 +81,17 @@ export const FanOverlay = ({
    */
   onOver: (slug: string | null) => void;
 }) => {
-  const { lang, t } = useT();
+  const { t } = useT();
   const [drawn, setDrawn] = useState<Drawn | null>(null);
   // The scene is a new value on every render, the fan in it rarely another
-  // one: the effect below starts over only when its area or roads change, and
+  // one: the effect below starts over only when its area or items change, and
   // reads the rest from here.
   const latest = useRef(fan);
   useEffect(() => {
     latest.current = fan;
   });
   const slug = fan?.slug ?? null;
-  const roads = fan?.roads.map((r) => `${r.slug}:${r.status}`).join(",");
+  const items = fan?.items.map((r) => `${fanKey(r)}:${r.status}`).join(",");
   // A fan that goes – or turns into another area's – lets go of the pointer
   // and of its layout: a layout is only good for the camera it was made under,
   // so one that opens again starts from its next frame, not from where it was.
@@ -96,8 +112,8 @@ export const FanOverlay = ({
   // the names along with it.
   useEffect(() => {
     const m = map.current;
-    // `roads` is what the area's drawn roads were when this effect started.
-    if (!ready || !m || !slug || !roads) return;
+    // `items` is what the area's drawn members were when this effect started.
+    if (!ready || !m || !slug || !items) return;
     let frame = 0;
     const layout = () => {
       frame = 0;
@@ -111,7 +127,7 @@ export const FanOverlay = ({
       const hole = now.outline.map(([lon, lat]) => at(lon, lat));
       setDrawn({
         fan: fanLayout(
-          now.roads.map((r) => ({ ...r, at: at(r.lon, r.lat) })),
+          now.items.map((r) => ({ ...r, at: at(r.lon, r.lat) })),
           hole,
           {
             height,
@@ -136,11 +152,12 @@ export const FanOverlay = ({
       m.off("move", schedule);
       m.off("resize", schedule);
     };
-  }, [map, ready, slug, roads, top, right, bottom, left, coarse]);
+  }, [map, ready, slug, items, top, right, bottom, left, coarse]);
 
   if (!fan || drawn?.slug !== fan.slug) return null;
   const { width, height } = drawn;
-  const heightOf = new Map(fan.roads.map((r) => [r.slug, r.elevation]));
+  const detailOf = new Map(fan.items.map((r) => [fanKey(r), r.detail]));
+  const pointed = hovered ? fanKey(hovered) : null;
   return (
     <div
       key={fan.slug}
@@ -154,10 +171,10 @@ export const FanOverlay = ({
       >
         {drawn.fan.entries.map((e) => (
           <g
-            key={e.slug}
+            key={fanKey(e)}
             className={cn(
               "stroke-foreground transition-[stroke-opacity,stroke-width] duration-100",
-              e.slug === hoveredRoad
+              fanKey(e) === pointed
                 ? "[stroke-width:2] [stroke-opacity:0.9]"
                 : "[stroke-width:1] [stroke-opacity:0.4]",
             )}
@@ -182,7 +199,7 @@ export const FanOverlay = ({
       >
         {drawn.fan.entries.map((e) => (
           <li
-            key={e.slug}
+            key={fanKey(e)}
             className="absolute -translate-y-1/2"
             style={
               e.side === "left"
@@ -197,21 +214,21 @@ export const FanOverlay = ({
                 "hover:border-foreground/40 focus-visible:ring-ring outline-none focus-visible:ring-2",
                 "pointer-coarse:h-8 pointer-coarse:px-3",
                 e.side === "left" && "flex-row-reverse",
-                e.status === "open"
+                e.status === "open" || e.status === null
                   ? "text-foreground font-semibold"
                   : "text-muted-foreground",
-                e.slug === hoveredRoad && "border-foreground/50",
+                fanKey(e) === pointed && "border-foreground/50",
               )}
-              onPointerEnter={() => onHover({ kind: "pass", slug: e.slug })}
-              onFocus={() => onHover({ kind: "pass", slug: e.slug })}
+              onPointerEnter={() => onHover({ kind: e.kind, slug: e.slug })}
+              onFocus={() => onHover({ kind: e.kind, slug: e.slug })}
               onBlur={() => onHover(null)}
-              onClick={() => onSelect({ kind: "pass", slug: e.slug })}
+              onClick={() => onSelect({ kind: e.kind, slug: e.slug })}
             >
-              <StatusDot status={e.status} hollow={e.status === "closed"} />
+              <Mark entry={e} />
               {e.name}
-              {e.slug === hoveredRoad && (
+              {fanKey(e) === pointed && detailOf.get(fanKey(e)) && (
                 <span className="text-muted-foreground font-normal tabular-nums">
-                  {fmtUnit(heightOf.get(e.slug) ?? 0, "m", 0, lang)}
+                  {detailOf.get(fanKey(e))}
                 </span>
               )}
             </button>

@@ -83,6 +83,7 @@ const input = (extra: Partial<SceneInput> = {}): SceneInput => ({
   shown: ALL_SHOWN,
   tourBounds: TOUR_BOUNDS,
   townReach: REACH,
+  view: null,
   w: DE,
   you: null,
   ...extra,
@@ -667,6 +668,50 @@ describe("fan", () => {
       }),
     );
     expect(scene.fanNext).toBeNull();
+  });
+
+  test("a town in the fan is an entry, and its popup gives way too", () => {
+    const withTown = {
+      ...shared,
+      members: { ...shared.members, towns: ["bormio"] },
+    };
+    const scene = buildScene(
+      input({
+        hovered: { kind: "town", slug: "bormio" },
+        rows: { ...rows, destination: [withTown], town: [townRow(bormio)] },
+      }),
+    );
+    expect(scene.fanNext).toBe("shared");
+    expect(scene.hover.popup).toBeNull();
+    const open = buildScene(
+      input({
+        fan: "shared",
+        rows: { ...rows, destination: [withTown], town: [townRow(bormio)] },
+      }),
+    );
+    expect(open.fan?.items.map((i) => `${i.kind}:${i.slug}`)).toEqual([
+      "pass:galibier",
+      "pass:stelvio",
+      "town:bormio",
+    ]);
+    expect(open.fan?.items.at(-1)?.detail).toBe("Bike-Hotels");
+    expect(open.townState.bormio).toEqual({ fanned: 1 });
+  });
+
+  test("zoomed in past the fan's share, the road has its popup again", () => {
+    const scene = buildScene(
+      input({
+        fan: "shared",
+        hovered: { kind: "pass", slug: "galibier" },
+        rows,
+        view: { height: 700, width: 1000, zoom: 12 },
+      }),
+    );
+    expect(scene.fanNext).toBeNull();
+    expect(scene.fan).toBeNull();
+    expect(scene.hover.popup?.name).toBe("Col du Galibier");
+    // Its primary area's outline still answers the pointer.
+    expect(lit(scene)).toEqual(["alone"]);
   });
 
   test("an open fan does not light its outline for a road outside it", () => {

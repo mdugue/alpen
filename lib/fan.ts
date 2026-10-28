@@ -1,19 +1,23 @@
 /**
- * The fan: an area's roads named round its outline, each with a thin line to
- * its dot.
+ * The fan: an area's roads, towns and loops named round its outline, each
+ * with a thin line to its mark.
  *
  * Where roads crowd – the Dolomites at zoom 7, the Maurienne – the names on
  * the dots collide and MapLibre keeps a few. Pointing at an area (or opening
- * it) lays every road it holds out in two columns beside the outline instead,
- * the way a printed map names a crowded valley in its margin (boundary
- * labelling; interactively, excentric labelling). It is never there at rest:
+ * it) lays every road, town and loop it holds out in two columns beside the
+ * outline instead, the way a printed map names a crowded valley in its margin
+ * (boundary labelling; interactively, excentric labelling). It is never there at rest:
  * a line on this map reads as a road first, and two dozen of them on every
  * area would be the clutter this is meant to clear.
  *
+ * Close in, an area spans the screen and its names fit beside their marks
+ * again; there the fan steps aside for the marks' own labels (`fanFits`).
+ *
  * Two pure halves, both decided here: which area is fanned out now
- * (`fanTarget`) and where each name goes on the screen (`fanLayout`).
- * `FanOverlay` (components/map/fan-overlay.tsx) projects the points, draws
- * the result and reports the pointer back – it decides nothing itself.
+ * (`fanTarget`, `fanFits`) and where each name goes on the screen
+ * (`fanLayout`). `FanOverlay` (components/map/fan-overlay.tsx) projects the
+ * points, draws the result and reports the pointer back – it decides
+ * nothing itself.
  */
 import type { Selection } from "@/lib/app-state";
 import type { Bounds } from "@/lib/geo";
@@ -26,17 +30,26 @@ export interface Px {
   y: number;
 }
 
-/** One road the fan names, where its dot is on the screen. */
-export interface FanRoad {
+/** What the fan names: the members of an area that have a mark of their own. */
+export type FanKind = "pass" | "town" | "tour";
+
+/** One road, town or loop the fan names, where its mark is on the screen. */
+export interface FanItem {
+  kind: FanKind;
   slug: string;
   name: string;
-  status: Status;
+  /** A road's or a loop's status; a town has none. */
+  status: Status | null;
   classic: boolean;
   at: Px;
 }
 
-/** A road placed: its dot, where its name stands and on which side. */
-export interface FanEntry extends FanRoad {
+/** One item's key: a town and a road may share a slug. */
+export const fanKey = (item: { kind: string; slug: string }) =>
+  `${item.kind}:${item.slug}`;
+
+/** An item placed: its mark, where its name stands and on which side. */
+export interface FanEntry extends FanItem {
   /** The end of the line at the name: the name stands left of it on the left side, right of it on the right. */
   label: Px;
   side: "left" | "right";
@@ -44,7 +57,7 @@ export interface FanEntry extends FanRoad {
 
 export interface Fan {
   entries: FanEntry[];
-  /** How many roads did not fit on the screen; said as "+ n weitere" under a column. */
+  /** How many items did not fit on the screen; said as "+ n weitere" under a column. */
   more: number;
   /** Where that line stands, if there is one. */
   moreAt: (Px & { side: "left" | "right" }) | null;
@@ -75,9 +88,12 @@ export const FAN = {
 /** How wide a name's label is, near enough to decide which side has room. */
 const widthOf = (name: string) => name.length * FAN.charPx + FAN.chrome;
 
+/** A town, which has no status, weighs as much as a rideable road. */
+const weightOf = (item: FanItem) => statusRank(item.status ?? "open");
+
 /** Rideable first, then the classics, then by name: who keeps a place when the screen is short. */
-const byWeight = (a: FanRoad, b: FanRoad) =>
-  statusRank(a.status) - statusRank(b.status) ||
+const byWeight = (a: FanItem, b: FanItem) =>
+  weightOf(a) - weightOf(b) ||
   Number(b.classic) - Number(a.classic) ||
   a.name.localeCompare(b.name);
 
@@ -104,18 +120,18 @@ export const spread = (
 };
 
 /**
- * Where every name goes. The roads left of the outline's middle are named on
+ * Where every name goes. The marks left of the outline's middle are named on
  * its left, the others on its right, each column sorted by height so the
- * lines run level; a side with no room for its widest name gives its roads
- * to the other. When the screen holds fewer rows than there are roads, the
+ * lines run level; a side with no room for its widest name gives its items
+ * to the other. When the screen holds fewer rows than there are items, the
  * rideable ones and the classics keep their place and the rest are counted.
  */
 export const fanLayout = (
-  roads: readonly FanRoad[],
+  items: readonly FanItem[],
   outline: readonly Px[],
   view: FanView,
 ): Fan => {
-  if (roads.length === 0 || outline.length === 0)
+  if (items.length === 0 || outline.length === 0)
     return { entries: [], more: 0, moreAt: null };
   const step = view.step ?? FAN.step;
   const xs = outline.map((p) => p.x);
@@ -126,7 +142,7 @@ export const fanLayout = (
   const bottom = view.height - view.inset.bottom - FAN.margin - step / 2;
   const rows = Math.max(1, Math.floor((bottom - top) / step) + 1);
 
-  const widest = Math.max(...roads.map((r) => widthOf(r.name)));
+  const widest = Math.max(...items.map((r) => widthOf(r.name)));
   const leftEdge = view.inset.left + FAN.margin;
   const rightEdge = view.width - view.inset.right - FAN.margin;
   const roomLeft = west - FAN.gap - widest >= leftEdge;
@@ -151,16 +167,16 @@ export const fanLayout = (
   // Who is named at all: as many as the columns hold, the weightiest first,
   // keeping a row for the count when some are left over.
   const capacity = rows * sides.length;
-  const ranked = roads.toSorted(byWeight);
+  const ranked = items.toSorted(byWeight);
   const kept =
     ranked.length > capacity ? ranked.slice(0, capacity - 1) : ranked;
-  const more = roads.length - kept.length;
+  const more = items.length - kept.length;
 
-  const sideOf = (r: FanRoad): "left" | "right" =>
+  const sideOf = (r: FanItem): "left" | "right" =>
     sides.length === 1 ? sides[0]! : r.at.x < middle ? "left" : "right";
-  const columns = { left: [] as FanRoad[], right: [] as FanRoad[] };
+  const columns = { left: [] as FanItem[], right: [] as FanItem[] };
   for (const r of kept) columns[sideOf(r)].push(r);
-  // A side with more roads than rows hands the ones nearest the middle over.
+  // A side with more items than rows hands the ones nearest the middle over.
   if (sides.length === 2) {
     const [full, other] =
       columns.left.length > rows
@@ -171,9 +187,9 @@ export const fanLayout = (
       const byMiddle = columns[full].toSorted(
         (a, b) => Math.abs(a.at.x - middle) - Math.abs(b.at.x - middle),
       );
-      const moved = new Set(byMiddle.slice(0, extra).map((r) => r.slug));
-      columns[other].push(...columns[full].filter((r) => moved.has(r.slug)));
-      columns[full] = columns[full].filter((r) => !moved.has(r.slug));
+      const moved = new Set(byMiddle.slice(0, extra).map(fanKey));
+      columns[other].push(...columns[full].filter((r) => moved.has(fanKey(r))));
+      columns[full] = columns[full].filter((r) => !moved.has(fanKey(r)));
     }
   }
 
@@ -219,8 +235,49 @@ export const fanLayout = (
  */
 export const TOUR_AREAS_MAX = 2;
 
-/** The fewest drawn roads an area needs to be fanned out: one name needs no margin. */
-export const FAN_MIN_ROADS = 2;
+/** The fewest drawn items an area needs to be fanned out: one name needs no margin. */
+export const FAN_MIN_ENTRIES = 2;
+
+/**
+ * How much of the map an area may take before the fan steps aside: its
+ * larger side on the screen, as a share of the shorter side of what the
+ * panels leave. Below it the area is a thing seen from outside, crowded, and
+ * named at its edge; above it one stands in it, the marks are far enough
+ * apart to carry their own names, and lines from the edge would be long.
+ * One share for every zoom, every window and every area – they run from 10 to
+ * 120 km – where a fixed zoom would suit the middling ones only.
+ */
+export const FAN_FIT = 0.4;
+
+/** The map as the fan measures it: the zoom and the size of what the panels leave. */
+export interface FitView {
+  zoom: number;
+  width: number;
+  height: number;
+}
+
+/** Web Mercator in pixels at a zoom, for 512-pixel tiles. */
+const mercator = (lon: number, lat: number, zoom: number): Px => {
+  const world = 512 * 2 ** zoom;
+  const phi = (lat * Math.PI) / 180;
+  return {
+    x: ((lon + 180) / 360) * world,
+    y: ((1 - Math.log(Math.tan(Math.PI / 4 + phi / 2)) / Math.PI) / 2) * world,
+  };
+};
+
+/**
+ * Whether an area is small enough on the screen to be fanned out (`FAN_FIT`):
+ * worked out from its box and the zoom alone, so the scene stays a function of
+ * its inputs. A map not measured yet fans as before.
+ */
+export const fanFits = (bounds: Bounds, view: FitView | null): boolean => {
+  if (!view) return true;
+  const sw = mercator(bounds[0], bounds[1], view.zoom);
+  const ne = mercator(bounds[2], bounds[3], view.zoom);
+  const extent = Math.max(Math.abs(ne.x - sw.x), Math.abs(ne.y - sw.y));
+  return extent <= FAN_FIT * Math.min(view.width, view.height);
+};
 
 /** What `areasOf` reads: the areas with their members, and where things are. */
 export interface AreaIndex {

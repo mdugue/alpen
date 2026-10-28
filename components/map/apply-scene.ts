@@ -226,6 +226,7 @@ export const applyScene = (
       host.setData(source, of(next));
   // After the dots, so the first scene's state lands on a source that has them.
   applyState(host, SOURCE.passes, prev?.passState, next.passState);
+  applyState(host, SOURCE.towns, prev?.townState, next.townState);
   // The rings come straight out of `townReach`, so the same hull is the same
   // array; a town that is no longer hovered clears the layer.
   if (!prev || !same(prev.hover.hull, next.hover.hull))

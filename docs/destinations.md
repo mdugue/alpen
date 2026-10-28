@@ -146,9 +146,11 @@ hover popup and the list, not on the map. The hover popup stands on the
 outline's northernmost point, not over the roads inside it.
 
 Pointing at an area, or at a road, town or loop in it (or opening it), fans
-its roads out – a road in several areas opens the one whose centre is
-nearest, and an area of one road has no fan: every road of it the filters draw is named in two columns beside
-the outline, each with a thin line to its dot
+its roads, towns and loops out – a road in several areas opens the one
+whose centre is nearest, an area of one mark has no fan, and neither has one
+that fills much of the screen: every road, town and loop of it the filters
+draw is named in two columns beside the outline, each with a thin line to
+its mark
 (`lib/fan.ts`, drawn by `components/map/fan-overlay.tsx`; see
 [map rendering](map-rendering.md#the-fan-names-a-crowded-area-at-its-edge)). The list's switch ("Reiseziele auf der Karte") takes the
 outlines and the towns off the map together – what the tab lists is what it

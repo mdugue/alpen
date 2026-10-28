@@ -3,11 +3,13 @@ import { describe, expect, test } from "bun:test";
 import {
   areasOf as areasIn,
   FAN,
+  FAN_FIT,
+  fanFits,
   fanLayout,
   fanTarget,
   spread,
 } from "@/lib/fan";
-import type { AreaIndex, FanRoad, FanView, Px } from "@/lib/fan";
+import type { AreaIndex, FanItem, FanView, Px } from "@/lib/fan";
 
 const view: FanView = {
   height: 800,
@@ -25,9 +27,16 @@ const road = (
   slug: string,
   x: number,
   y: number,
-  status: FanRoad["status"] = "open",
+  status: FanItem["status"] = "open",
   classic = false,
-): FanRoad => ({ at: { x, y }, classic, name: slug, slug, status });
+): FanItem => ({
+  at: { x, y },
+  classic,
+  kind: "pass",
+  name: slug,
+  slug,
+  status,
+});
 
 describe("spread", () => {
   test("names that do not collide stay level with their dots", () => {
@@ -245,5 +254,46 @@ describe("areasOf", () => {
 
   test("an area itself belongs to nothing", () => {
     expect(areasIn({ kind: "destination", slug: "bormio" }, index)).toEqual([]);
+  });
+});
+
+describe("fanLayout with towns and loops", () => {
+  test("a town and a road may share a slug and are both named", () => {
+    const town: FanItem = {
+      ...road("bormio", 690, 420),
+      kind: "town",
+      status: null,
+    };
+    const fan = fanLayout([road("bormio", 520, 400), town], outline, view);
+    expect(fan.entries.map((e) => `${e.kind}:${e.side}`).toSorted()).toEqual([
+      "pass:left",
+      "town:right",
+    ]);
+  });
+});
+
+describe("fanFits", () => {
+  // About 50 km square at 46° N – the middling area.
+  const box: [number, number, number, number] = [10, 46, 10.65, 46.45];
+  const laptop = { height: 700, width: 1000 };
+
+  test("an area seen from outside is fanned out", () => {
+    expect(fanFits(box, { ...laptop, zoom: 7.5 })).toBe(true);
+  });
+
+  test("one that takes more than its share of the map is not", () => {
+    expect(fanFits(box, { ...laptop, zoom: 9 })).toBe(false);
+  });
+
+  test("the share is of the shorter side of what the panels leave", () => {
+    // The same zoom fits a tall window and not a short one.
+    const zoom = 8.3;
+    expect(fanFits(box, { height: 1000, width: 1000, zoom })).toBe(true);
+    expect(fanFits(box, { height: 500, width: 1000, zoom })).toBe(false);
+    expect(FAN_FIT).toBeLessThan(1);
+  });
+
+  test("a map not measured yet fans as before", () => {
+    expect(fanFits(box, null)).toBe(true);
   });
 });

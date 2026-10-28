@@ -64,6 +64,7 @@ import {
 import { DEFAULT_VIEW } from "@/lib/app-state";
 import type { MapView, Selection, Shown } from "@/lib/app-state";
 import { BASEMAP_SOURCE_ID, basemapSource, GLYPHS } from "@/lib/basemap";
+import type { FitView } from "@/lib/fan";
 import type { Bounds } from "@/lib/geo";
 import type { Lang } from "@/lib/i18n";
 import { HIT_LAYERS, SOURCE } from "@/lib/layer-ids";
@@ -291,6 +292,12 @@ export const PassMap = ({
   /** Which area's names the pointer is on – only that area's fan it holds. */
   const [overFan, setOverFan] = useState<string | null>(null);
   /**
+   * The zoom and the map's size, which decide whether an area is small
+   * enough on the screen to be fanned out (`fanFits`, lib/fan.ts): taken when
+   * a zoom ends and when the map is resized, not on every frame of either.
+   */
+  const [measured, setMeasured] = useState<FitView | null>(null);
+  /**
    * What the map draws, as one value, and what of it has been applied.
    *
    * The scene is built from the props on every render (`buildScene`,
@@ -310,6 +317,12 @@ export const PassMap = ({
     shown,
     tourBounds: assets.tourBounds,
     townReach,
+    // What the panels leave of the map is what the area is measured against.
+    view: measured && {
+      height: measured.height - inset.top - inset.bottom,
+      width: measured.width - inset.left - inset.right,
+      zoom: measured.zoom,
+    },
     w: t,
     you: located.at,
   });
@@ -468,7 +481,7 @@ export const PassMap = ({
         [SOURCE.destinations]: { data: EMPTY, type: "geojson" },
         [SOURCE.ghosts]: { data: EMPTY, type: "geojson" },
         [SOURCE.hover]: { data: EMPTY, type: "geojson" },
-        // Keyed by slug for the fan's feature state (`PassState`).
+        // Keyed by slug for the fan's feature state (`PassState`), as the towns are.
         [SOURCE.passes]: { data: EMPTY, promoteId: "slug", type: "geojson" },
         [SOURCE.reach]: { data: EMPTY, type: "geojson" },
         // Static files with a content hash in the name (scripts/build-map-assets.ts);
@@ -483,7 +496,7 @@ export const PassMap = ({
           promoteId: "id",
           type: "geojson",
         },
-        [SOURCE.towns]: { data: EMPTY, type: "geojson" },
+        [SOURCE.towns]: { data: EMPTY, promoteId: "slug", type: "geojson" },
       },
       version: 8,
     };
@@ -536,9 +549,16 @@ export const PassMap = ({
     // A link that carries a tilt opens tilted, and the terrain that belongs to
     // it is the environment applier's to switch on – the style itself carries
     // none, so `is3d` is the whole of it.
+    const measure = () => {
+      const { clientHeight: height, clientWidth: width } = m.getContainer();
+      setMeasured({ height, width, zoom: Math.round(m.getZoom() * 10) / 10 });
+    };
+    m.on("zoomend", measure);
+    m.on("resize", measure);
     m.on("style.load", () => {
       addIcons(m, colors);
       if (view.pitch > 1) setIs3d(true);
+      measure();
       setReady(true);
     });
 
@@ -889,7 +909,7 @@ export const PassMap = ({
         fan={scene.fan}
         inset={inset}
         coarse={env.coarsePointer}
-        hoveredRoad={hovered?.kind === "pass" ? hovered.slug : null}
+        hovered={hovered}
         onHover={onHover}
         onSelect={onSelect}
         onOver={setOverFan}
