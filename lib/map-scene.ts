@@ -23,7 +23,7 @@ import type { FilterSpecification } from "maplibre-gl";
 
 import type { Selection, Shown } from "@/lib/app-state";
 import { isShown } from "@/lib/app-state";
-import { areasOf, FAN_MIN_ROADS } from "@/lib/fan";
+import { areasOf, FAN_MIN_ROADS, fanTarget } from "@/lib/fan";
 import type { Bounds, Ring } from "@/lib/geo";
 import { surfaceWord, tagLabel, typeWord } from "@/lib/i18n";
 import type { Messages } from "@/lib/i18n";
@@ -197,6 +197,11 @@ export interface Scene {
   };
   /** The area whose roads are named round it (`fanTarget`), or nothing. */
   fan: SceneFan | null;
+  /**
+   * The area the fan should show (`fanTarget`), which `fan` follows after a
+   * delay: the pass map holds it, the scene only says where it is going.
+   */
+  fanNext: string | null;
   /** The road point under the elevation-profile cursor. */
   cursor: FeatureCollection<Point, Record<string, never>>;
   /**
@@ -233,8 +238,10 @@ export interface SceneInput {
   profileCursor: LatLon | null;
   /** The visitor's position, once they have asked for it; never stored, never in a link. */
   you: Fix | null;
-  /** The area whose roads are fanned out round it (`fanTarget`, lib/fan.ts). */
+  /** The area whose roads are fanned out round it now (`Scene.fanNext` a moment ago). */
   fan: string | null;
+  /** Whether the pointer is on the open fan's names, which holds it open. */
+  overFan: boolean;
   /**
    * What the pointer can do here. A coarse pointer has no hover to speak of:
    * a finger that touches a mark has already tapped it, and a label under the
@@ -413,24 +420,50 @@ const fanOf = (
   };
 };
 
-/** Whether a road's primary area would fan it out (`areasOf`, `fanOf`). */
-const fannableRoad = (
-  slug: string,
-  rows: Rows,
-  shown: Shown,
-  drawn: readonly PassRow[],
-  tourBounds: Record<string, Bounds>,
-) => {
-  const [area] = areasOf({ kind: "pass", slug }, { ...rows, tourBounds });
-  return fanOf(area ?? null, rows, shown, drawn) !== null;
-};
-
 /**
- * The area the pointer is on: the one pointed at, or the one a road, town or
- * tour pointed at has fanned out – its outline answers with the fan.
+ * Which area the fan should show, and which outline answers the pointer – one
+ * decision for the fan, the labels it replaces and the outline, so the three
+ * cannot disagree. A road, town or tour offers only the areas that have a fan
+ * to open (`fanOf`); its outline lights even where there is none.
  */
-const areaPointedAt = (hovered: Selection | null, fan: SceneFan | null) =>
-  slugOf(hovered, "destination") ?? (hovered && fan ? fan.slug : undefined);
+const fanDecision = (
+  {
+    env,
+    fan,
+    ghosts,
+    hovered,
+    overFan,
+    rows,
+    selection,
+    shown,
+    tourBounds,
+  }: SceneInput,
+  drawn: readonly PassRow[],
+) => {
+  const index = { ...rows, pass: [...drawn, ...ghosts], tourBounds };
+  const areas = (sel: Selection) => areasOf(sel, index);
+  // A finger has no hover, and beside the drawer a fan has no room: on a
+  // phone the names come with the zoom instead (`appLayers`).
+  const next = env.coarse
+    ? null
+    : fanTarget({
+        areasOf: (sel) =>
+          areas(sel).filter((a) => fanOf(a, rows, shown, drawn) !== null),
+        current: fan,
+        hovered,
+        overFan: fan !== null && overFan,
+        selection,
+      });
+  const own = hovered ? areas(hovered) : [];
+  const pointed =
+    slugOf(hovered, "destination") ??
+    (next !== null && own.includes(next) ? next : own[0]);
+  // What the fan is about to name, so no popup flashes before it opens.
+  const fanning = new Set(
+    fanOf(next, rows, shown, drawn)?.roads.map((r) => r.slug),
+  );
+  return { fanning, hoverArea: pointed, next };
+};
 
 /** Which drawn roads the fan names, so their own labels step aside meanwhile. */
 const passStateOf = (
@@ -510,10 +543,7 @@ export const buildScene = (input: SceneInput): Scene => {
   const box = hoverTour ? tourBounds[hoverTour] : undefined;
 
   const fanned = fanOf(fan, rows, shown, drawn);
-
-  const fannable = (slug: string) =>
-    fannableRoad(slug, rows, shown, drawn, tourBounds);
-  const hoverArea = areaPointedAt(hovered, fanned);
+  const { fanning, hoverArea, next: fanNext } = fanDecision(input, drawn);
 
   const popup = (): PopupContent | null => {
     if (env.coarse) return null;
@@ -521,7 +551,7 @@ export const buildScene = (input: SceneInput): Scene => {
     // area – so it carries no hover label of its own, not even in the
     // moment before its fan opens. One outside every area, alone in its
     // area, or a shadow, still does.
-    if (markedPass && !ghostRow && fannable(markedPass.pass.slug)) return null;
+    if (markedPass && fanning.has(markedPass.pass.slug)) return null;
     if (markedPass)
       return {
         anchor: [markedPass.pass.lon, markedPass.pass.lat],
@@ -619,6 +649,7 @@ export const buildScene = (input: SceneInput): Scene => {
       type: "FeatureCollection",
     },
     fan: fanned,
+    fanNext,
     ghosts: shadows(shown.passes ? ghosts : [], selPass),
     hover: {
       hull: (markedTown && townReach[markedTown.town.slug]) ?? null,

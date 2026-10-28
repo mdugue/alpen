@@ -269,12 +269,15 @@ its names; else the one in the panel) and where each name stands
 (`fanLayout` – the side by the outline's middle, a column sorted by height
 so the lines do not cross, the rideable roads and the classics kept when
 the screen is short and the rest counted, each column held on the screen).
-`buildScene` hands the area and its drawn roads over as `Scene.fan`, and
-marks those roads `fanned` in their feature state (`PassState`) so their own
-labels fade out – state, not a property, because a property would re-tile
-the passes source on every area the pointer crosses. It also drops the
-popup of every road its primary area would fan, whether or not the fan is
-open yet, so no popup flashes before it.
+`buildScene` makes that choice once (`fanDecision`), offering a road only
+the areas that have a fan to open, and from the same choice drops the popup
+of a road the coming fan will name and lights the outline it belongs to – so
+the fan, the labels and the outline cannot disagree. It hands the choice to
+the pass map as `Scene.fanNext`, which the open fan follows after its delay,
+and the open area with its drawn roads as `Scene.fan`, marking those roads
+`fanned` in their feature state (`PassState`) so their own labels fade out –
+state, not a property, because a property would re-tile the passes source on
+every area the pointer crosses.
 `components/map/fan-overlay.tsx` draws it as HTML over the map, not as a
 layer: it projects the points again on every camera frame, and the names are
 buttons – pointing at one rings its road, pressing it opens it. The pass map

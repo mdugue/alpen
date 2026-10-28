@@ -181,7 +181,7 @@ Namen kurz („Galibier“ statt „Col du Galibier“). Weiter draußen trägt 
 Straße einen Namen, solange du nicht auf sie zeigst – auch kein Klassiker –,
 und ganz herausgezoomt auch kein Reiseziel; alle Punkte und Flächen bleiben
 gezeichnet. Auf dem Telefon, wo es kein Zeigen gibt, tragen die Klassiker
-ihren Namen schon in der Übersicht der Alpen, die übrigen Straßen ab der
+ihren Namen schon weit draußen, kurz nach den Reisezielen, die übrigen Straßen ab der
 Ebene einer Gegend.
 
 Wo sich etwas überlagert, gewinnt, was befahrbar ist: Grüne Punkte und

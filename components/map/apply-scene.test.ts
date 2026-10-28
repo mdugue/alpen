@@ -71,6 +71,7 @@ const scene = (extra: Partial<SceneInput> = {}) =>
     fan: null,
     ghosts: [],
     hovered: null,
+    overFan: false,
     profileCursor: null,
     rows: {
       destination: [],

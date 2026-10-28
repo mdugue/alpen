@@ -64,7 +64,6 @@ import {
 import { DEFAULT_VIEW } from "@/lib/app-state";
 import type { MapView, Selection, Shown } from "@/lib/app-state";
 import { BASEMAP_SOURCE_ID, basemapSource, GLYPHS } from "@/lib/basemap";
-import { areasOf, fanTarget } from "@/lib/fan";
 import type { Bounds } from "@/lib/geo";
 import type { Lang } from "@/lib/i18n";
 import { HIT_LAYERS, SOURCE } from "@/lib/layer-ids";
@@ -285,36 +284,12 @@ export const PassMap = ({
   };
   /**
    * The area whose roads are named round it (lib/fan.ts), and whether the
-   * pointer is on those names. `fanTarget` says which area it should be, and
+   * pointer is on those names. The scene says which area it should be, and
    * the effect below says when.
    */
   const [fan, setFan] = useState<string | null>(null);
   /** Which area's names the pointer is on – only that area's fan it holds. */
   const [overFan, setOverFan] = useState<string | null>(null);
-  // A finger has no hover, and beside the drawer a fan has no room: on a
-  // phone the names come with the zoom instead (`appLayers`).
-  const fanNext = env.coarsePointer
-    ? null
-    : fanTarget({
-        areasOf: (sel) =>
-          areasOf(sel, { ...rows, tourBounds: assets.tourBounds }),
-        current: fan,
-        hovered,
-        overFan: fan !== null && overFan === fan,
-        selection,
-      });
-  // Opening waits `FAN_OPEN_MS`, so a pointer crossing the map does not set
-  // off a fan per road it passes; closing, or falling back to the area in the
-  // panel, waits `FAN_RELEASE_MS`.
-  const fanOpening = fanNext !== null && hovered !== null;
-  useEffect(() => {
-    if (fanNext === fan) return;
-    const id = setTimeout(
-      () => setFan(fanNext),
-      fanOpening ? FAN_OPEN_MS : FAN_RELEASE_MS,
-    );
-    return () => clearTimeout(id);
-  }, [fan, fanNext, fanOpening]);
   /**
    * What the map draws, as one value, and what of it has been applied.
    *
@@ -328,6 +303,7 @@ export const PassMap = ({
     fan,
     ghosts,
     hovered,
+    overFan: overFan === fan,
     profileCursor,
     rows,
     selection,
@@ -337,6 +313,19 @@ export const PassMap = ({
     w: t,
     you: located.at,
   });
+  // Opening waits `FAN_OPEN_MS`, so a pointer crossing the map does not set
+  // off a fan per road it passes; closing, or falling back to the area in the
+  // panel, waits `FAN_RELEASE_MS`.
+  const { fanNext } = scene;
+  const fanOpening = fanNext !== null && hovered !== null;
+  useEffect(() => {
+    if (fanNext === fan) return;
+    const id = setTimeout(
+      () => setFan(fanNext),
+      fanOpening ? FAN_OPEN_MS : FAN_RELEASE_MS,
+    );
+    return () => clearTimeout(id);
+  }, [fan, fanNext, fanOpening]);
   const applied = useRef<Scene | null>(null);
   const host = useRef<SceneHost | null>(null);
   /**

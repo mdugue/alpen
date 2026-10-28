@@ -71,6 +71,7 @@ const input = (extra: Partial<SceneInput> = {}): SceneInput => ({
   fan: null,
   ghosts: [],
   hovered: null,
+  overFan: false,
   profileCursor: null,
   rows: {
     destination: [],
@@ -568,5 +569,118 @@ describe("hover", () => {
     );
     expect(scene.hover.popup).toBeNull();
     expect(scene.hover.hull).toBe(REACH.bormio!);
+  });
+});
+
+/** An area round `center` holding `passes`, as the server derives it. */
+const areaRow = (
+  slug: string,
+  center: { lat: number; lon: number },
+  passes: string[],
+): DestinationRow => ({
+  baseTowns: [],
+  destination: {
+    access: "",
+    baseTowns: [],
+    center,
+    character: "",
+    country: "IT",
+    exclude: [],
+    include: [],
+    multiDay: "",
+    name: slug,
+    radiusKm: 30,
+    slug,
+  },
+  favorite: false,
+  members: {
+    bounds: [9.5, 45.5, 11, 46.5],
+    label: center,
+    outline: [
+      [9.5, 45.5],
+      [11, 45.5],
+      [11, 46.5],
+    ],
+    passes,
+    tours: [],
+    towns: [],
+  },
+  score: 3,
+  season: [],
+  text: "",
+  verdict: {
+    counts: { best: passes.length, closed: 0, good: 0, limited: 0 },
+    peak: 1,
+    total: passes.length,
+    year: { best: null, cells: [] },
+  },
+});
+
+const lit = (scene: Scene) =>
+  scene.destinations.features
+    .filter((f) => f.properties.hovered === 1)
+    .map((f) => f.properties.slug);
+
+describe("fan", () => {
+  // The Galibier lies on the centre of an area it has to itself, and in a
+  // farther one it shares with the Stelvio.
+  const alone = areaRow("alone", { lat: 46, lon: 10 }, ["galibier"]);
+  const shared = areaRow("shared", { lat: 46, lon: 10.6 }, [
+    "galibier",
+    "stelvio",
+  ]);
+  const rows = {
+    destination: [alone, shared],
+    pass: [passRow(galibier), passRow(stelvio)],
+    tour: [],
+    town: [],
+  };
+
+  test("a road opens the nearest area that has a fan, and its popup gives way", () => {
+    const scene = buildScene(
+      input({ hovered: { kind: "pass", slug: "galibier" }, rows }),
+    );
+    expect(scene.fanNext).toBe("shared");
+    expect(scene.hover.popup).toBeNull();
+    expect(lit(scene)).toEqual(["shared"]);
+  });
+
+  test("a road alone in its only area keeps its popup and lights its outline", () => {
+    const scene = buildScene(
+      input({
+        hovered: { kind: "pass", slug: "galibier" },
+        rows: { ...rows, destination: [alone] },
+      }),
+    );
+    expect(scene.fanNext).toBeNull();
+    expect(scene.hover.popup?.name).toBe("Col du Galibier");
+    expect(lit(scene)).toEqual(["alone"]);
+  });
+
+  test("a phone opens no fan, not even for the area in the panel", () => {
+    const scene = buildScene(
+      input({
+        env: { coarse: true },
+        hovered: { kind: "pass", slug: "galibier" },
+        rows,
+        selection: { kind: "destination", slug: "shared" },
+      }),
+    );
+    expect(scene.fanNext).toBeNull();
+  });
+
+  test("an open fan does not light its outline for a road outside it", () => {
+    const outside = makePass("outside", 400);
+    const scene = buildScene(
+      input({
+        fan: "shared",
+        hovered: { kind: "pass", slug: "outside" },
+        rows: { ...rows, pass: [...rows.pass, passRow(outside)] },
+        selection: { kind: "destination", slug: "shared" },
+      }),
+    );
+    expect(scene.fanNext).toBe("shared");
+    expect(lit(scene)).toEqual([]);
+    expect(scene.hover.popup?.name).toBe("outside");
   });
 });
