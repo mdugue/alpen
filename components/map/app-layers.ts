@@ -36,6 +36,7 @@ import { PALETTE } from "@/lib/palette";
 import type { Scheme } from "@/lib/palette";
 import {
   DESTINATION_MAX_ZOOM,
+  CLASSIC_NAME_ZOOM_COARSE,
   OVERVIEW_ZOOM,
   ROAD_NAME_ZOOM,
   SHORT_NAME_ZOOM,
@@ -956,7 +957,8 @@ export const appLayers = (
         // The overview writes the short name (`shortName`): "Galibier", not
         // "Col du Galibier". The selected road is named in full everywhere.
         // Below `ROAD_NAME_ZOOM` no road is named at rest – an empty name
-        // places nothing – but the selected one and the favourites.
+        // places nothing – but the selected one and the favourites; on a
+        // phone the classics from `CLASSIC_NAME_ZOOM_COARSE`.
         "text-field": [
           "step",
           ["zoom"],
@@ -968,7 +970,7 @@ export const appLayers = (
             ["get", "short"],
             "",
           ],
-          ROAD_NAME_ZOOM,
+          coarse && rank === 5 ? CLASSIC_NAME_ZOOM_COARSE : ROAD_NAME_ZOOM,
           [
             "case",
             ["==", ["get", "selected"], 1],

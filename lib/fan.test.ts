@@ -1,7 +1,13 @@
 import { describe, expect, test } from "bun:test";
 
-import { FAN, fanLayout, fanTarget, spread } from "@/lib/fan";
-import type { FanRoad, FanView, Px } from "@/lib/fan";
+import {
+  areasOf as areasIn,
+  FAN,
+  fanLayout,
+  fanTarget,
+  spread,
+} from "@/lib/fan";
+import type { AreaIndex, FanRoad, FanView, Px } from "@/lib/fan";
 
 const view: FanView = {
   height: 800,
@@ -132,7 +138,6 @@ const areasOf = (sel: { kind: string; slug: string }) =>
 describe("fanTarget", () => {
   const base = {
     areasOf,
-    coarse: false,
     current: null,
     hovered: null,
     overFan: false,
@@ -189,11 +194,56 @@ describe("fanTarget", () => {
     expect(fanTarget(base)).toBeNull();
   });
 
-  test("a selected road opens its area on a phone only", () => {
-    const tapped = { kind: "pass", slug: "galibier" } as const;
-    expect(fanTarget({ ...base, selection: tapped })).toBeNull();
-    expect(fanTarget({ ...base, coarse: true, selection: tapped })).toBe(
-      "oisans",
-    );
+  test("a tour opens its area like a road", () => {
+    expect(
+      fanTarget({ ...base, hovered: { kind: "tour", slug: "galibier" } }),
+    ).toBe("oisans");
+  });
+});
+
+const area = (
+  slug: string,
+  lat: number,
+  lon: number,
+  passes: string[],
+  tours: string[] = [],
+) => ({
+  destination: { center: { lat, lon }, slug },
+  members: { passes, tours, towns: [] },
+});
+
+describe("areasOf", () => {
+  const index: AreaIndex = {
+    destination: [
+      area("vinschgau", 46.6, 10.6, ["stelvio"], ["grandes-alpes", "loop"]),
+      area(
+        "bormio",
+        46.47,
+        10.37,
+        ["stelvio", "gavia"],
+        ["grandes-alpes", "loop"],
+      ),
+      area("oisans", 45.06, 6.03, [], ["grandes-alpes"]),
+    ],
+    pass: [{ pass: { lat: 46.53, lon: 10.45, slug: "stelvio" } }],
+    tourBounds: { loop: [10.3, 46.4, 10.6, 46.6] },
+    town: [],
+  };
+
+  test("a road in two areas names the one with the nearest centre first", () => {
+    expect(areasIn({ kind: "pass", slug: "stelvio" }, index)).toEqual([
+      "bormio",
+      "vinschgau",
+    ]);
+    expect(areasIn({ kind: "pass", slug: "gavia" }, index)).toEqual(["bormio"]);
+  });
+
+  test("a tour through more than two areas is a journey and opens none", () => {
+    expect(areasIn({ kind: "tour", slug: "grandes-alpes" }, index)).toEqual([]);
+    expect(areasIn({ kind: "tour", slug: "loop" }, index)).toHaveLength(2);
+  });
+
+  test("an area itself belongs to nothing", () => {
+    expect(areasIn({ kind: "destination", slug: "bormio" }, index)).toEqual([]);
   });
 });

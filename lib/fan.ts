@@ -16,8 +16,9 @@
  * the result and reports the pointer back – it decides nothing itself.
  */
 import type { Selection } from "@/lib/app-state";
+import type { Bounds } from "@/lib/geo";
 import { statusRank } from "@/lib/status";
-import type { Status } from "@/lib/types";
+import type { LatLon, Status } from "@/lib/types";
 
 /** A point on the screen, in CSS pixels from the map's top-left corner. */
 export interface Px {
@@ -212,6 +213,68 @@ export const fanLayout = (
   };
 };
 
+/**
+ * A tour in more areas than this is a journey through them – the Route des
+ * Grandes Alpes lies in seven – not an area's loop, and fans none of them out.
+ */
+export const TOUR_AREAS_MAX = 2;
+
+/** The fewest drawn roads an area needs to be fanned out: one name needs no margin. */
+export const FAN_MIN_ROADS = 2;
+
+/** What `areasOf` reads: the areas with their members, and where things are. */
+export interface AreaIndex {
+  destination: readonly {
+    destination: { slug: string; center: LatLon };
+    members: {
+      passes: readonly string[];
+      tours: readonly string[];
+      towns: readonly string[];
+    };
+  }[];
+  pass: readonly { pass: { slug: string } & LatLon }[];
+  town: readonly { town: { slug: string } & LatLon }[];
+  tourBounds: Record<string, Bounds>;
+}
+
+const MEMBERS = { pass: "passes", tour: "tours", town: "towns" } as const;
+
+/** Where a road, a town or a tour is: its dot, or the middle of its box. */
+const whereIs = (sel: Selection, index: AreaIndex): LatLon | undefined => {
+  if (sel.kind === "pass")
+    return index.pass.find((r) => r.pass.slug === sel.slug)?.pass;
+  if (sel.kind === "town")
+    return index.town.find((r) => r.town.slug === sel.slug)?.town;
+  const box = sel.kind === "tour" ? index.tourBounds[sel.slug] : undefined;
+  return box && { lat: (box[1] + box[3]) / 2, lon: (box[0] + box[2]) / 2 };
+};
+
+/**
+ * The areas a road, a town or a tour belongs to, its primary one first: the
+ * one whose centre is nearest. Areas overlap on purpose – the Stelvio is
+ * Bormio's and the Vinschgau's – but a hover opens one fan, and the nearest
+ * centre is the area one would name it after. A tour in more than
+ * `TOUR_AREAS_MAX` areas belongs to none of them here.
+ */
+export const areasOf = (sel: Selection, index: AreaIndex): string[] => {
+  if (sel.kind !== "pass" && sel.kind !== "town" && sel.kind !== "tour")
+    return [];
+  const key = MEMBERS[sel.kind];
+  const holding = index.destination.filter((r) =>
+    r.members[key].includes(sel.slug),
+  );
+  if (sel.kind === "tour" && holding.length > TOUR_AREAS_MAX) return [];
+  const at = whereIs(sel, index);
+  const away = (c: LatLon) =>
+    at
+      ? (c.lat - at.lat) ** 2 +
+        ((c.lon - at.lon) * Math.cos((at.lat * Math.PI) / 180)) ** 2
+      : 0;
+  return holding
+    .toSorted((a, b) => away(a.destination.center) - away(b.destination.center))
+    .map((r) => r.destination.slug);
+};
+
 /** What decides which area is fanned out. */
 export interface FanInput {
   hovered: Selection | null;
@@ -220,35 +283,29 @@ export interface FanInput {
   current: string | null;
   /** Whether the pointer is on one of the fan's names. */
   overFan: boolean;
-  /** The areas a road or a town belongs to, in the order the list ranks them. */
+  /** The areas a road, town or tour belongs to, its primary one first (`areasOf`). */
   areasOf: (sel: Selection) => readonly string[];
-  /**
-   * Whether a selected road or town opens its area's fan too: on a phone,
-   * where there is no hover to open it, the tap is the only way to point.
-   */
-  coarse: boolean;
 }
 
-/** A road or a town: what belongs to an area, and opens its fan. */
+/** A road, a town or a tour: what belongs to an area, and opens its fan. */
 const isMember = (sel: Selection | null): sel is Selection =>
-  sel?.kind === "pass" || sel?.kind === "town";
+  sel?.kind === "pass" || sel?.kind === "town" || sel?.kind === "tour";
 
 /**
- * Which area is fanned out. The fan is what the map says about a road or a
- * town in place of a hover label, so pointing at one opens the area it
- * belongs to – the one already open if it is one of them – and pointing at
- * an area opens that. While the pointer is on the fan's names the fan stays;
- * with nothing pointed at, the area open in the panel is fanned out (on a
- * phone also the area of the road or town open in it). `null` is the map at
- * rest.
+ * Which area is fanned out. The fan is what the map says about a road in
+ * place of a hover label, so pointing at a road, a town or a tour opens the
+ * area it belongs to – the one already open if it is one of them, else its
+ * primary one – and pointing at an area opens that. While the pointer is on
+ * the fan's names the fan stays; with nothing pointed at, the area open in
+ * the panel is fanned out. `null` is the map at rest.
  *
- * The component waits a moment before it acts on a `null` (or on a fall back
- * to the open area): the pointer crosses a few pixels of nothing between a
- * dot and its name, and a fan that shut there could never be reached.
+ * The component times the change: it waits a moment before it opens a fan,
+ * so a pointer crossing the map does not set off one per road it passes, and
+ * a little longer before it closes one, so the pointer can cross from a dot
+ * to its name.
  */
 export const fanTarget = ({
-  areasOf,
-  coarse,
+  areasOf: areas,
   current,
   hovered,
   overFan,
@@ -256,12 +313,10 @@ export const fanTarget = ({
 }: FanInput): string | null => {
   if (hovered?.kind === "destination") return hovered.slug;
   if (isMember(hovered)) {
-    const areas = areasOf(hovered);
-    if (current && areas.includes(current)) return current;
-    if (areas.length > 0) return areas[0]!;
+    const of = areas(hovered);
+    if (current && of.includes(current)) return current;
+    if (of.length > 0) return of[0]!;
   }
   if (current && overFan) return current;
-  if (selection?.kind === "destination") return selection.slug;
-  if (coarse && isMember(selection)) return areasOf(selection)[0] ?? null;
-  return null;
+  return selection?.kind === "destination" ? selection.slug : null;
 };

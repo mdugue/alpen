@@ -23,6 +23,7 @@ import type { FilterSpecification } from "maplibre-gl";
 
 import type { Selection, Shown } from "@/lib/app-state";
 import { isShown } from "@/lib/app-state";
+import { areasOf, FAN_MIN_ROADS } from "@/lib/fan";
 import type { Bounds, Ring } from "@/lib/geo";
 import { surfaceWord, tagLabel, typeWord } from "@/lib/i18n";
 import type { Messages } from "@/lib/i18n";
@@ -395,7 +396,7 @@ const fanOf = (
     row && shown.passes
       ? drawn.filter((r) => row.members.passes.includes(r.pass.slug))
       : [];
-  if (!row || roads.length === 0) return null;
+  if (!row || roads.length < FAN_MIN_ROADS) return null;
   return {
     name: row.destination.name,
     outline: row.members.outline,
@@ -411,6 +412,25 @@ const fanOf = (
     slug: row.destination.slug,
   };
 };
+
+/** Whether a road's primary area would fan it out (`areasOf`, `fanOf`). */
+const fannableRoad = (
+  slug: string,
+  rows: Rows,
+  shown: Shown,
+  drawn: readonly PassRow[],
+  tourBounds: Record<string, Bounds>,
+) => {
+  const [area] = areasOf({ kind: "pass", slug }, { ...rows, tourBounds });
+  return fanOf(area ?? null, rows, shown, drawn) !== null;
+};
+
+/**
+ * The area the pointer is on: the one pointed at, or the one a road, town or
+ * tour pointed at has fanned out – its outline answers with the fan.
+ */
+const areaPointedAt = (hovered: Selection | null, fan: SceneFan | null) =>
+  slugOf(hovered, "destination") ?? (hovered && fan ? fan.slug : undefined);
 
 /** Which drawn roads the fan names, so their own labels step aside meanwhile. */
 const passStateOf = (
@@ -491,13 +511,17 @@ export const buildScene = (input: SceneInput): Scene => {
 
   const fanned = fanOf(fan, rows, shown, drawn);
 
+  const fannable = (slug: string) =>
+    fannableRoad(slug, rows, shown, drawn, tourBounds);
+  const hoverArea = areaPointedAt(hovered, fanned);
+
   const popup = (): PopupContent | null => {
     if (env.coarse) return null;
     // A road the fan names has its say there – name and height beside the
-    // area – so it carries no hover label of its own. One outside every
+    // area – so it carries no hover label of its own, not even in the
+    // moment before its fan opens. One outside every area, alone in its
     // area, or a shadow, still does.
-    if (markedPass && fanned?.roads.some((r) => r.slug === hoverPass))
-      return null;
+    if (markedPass && !ghostRow && fannable(markedPass.pass.slug)) return null;
     if (markedPass)
       return {
         anchor: [markedPass.pass.lon, markedPass.pass.lat],
@@ -557,7 +581,7 @@ export const buildScene = (input: SceneInput): Scene => {
     (row) => ({
       props: {
         favorite: flag(row.favorite),
-        hovered: flag(row.destination.slug === hoverDestination),
+        hovered: flag(row.destination.slug === hoverArea),
         name: row.destination.name,
         selected: flag(row.destination.slug === selDestination),
         share: row.verdict.total

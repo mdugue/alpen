@@ -145,8 +145,9 @@ the very dots it was about. How many roads an area holds is said in the
 hover popup and the list, not on the map. The hover popup stands on the
 outline's northernmost point, not over the roads inside it.
 
-Pointing at an area, or at a road or town in it (or opening it), fans its
-roads out: every road of it the filters draw is named in two columns beside
+Pointing at an area, or at a road, town or loop in it (or opening it), fans
+its roads out – a road in several areas opens the one whose centre is
+nearest, and an area of one road has no fan: every road of it the filters draw is named in two columns beside
 the outline, each with a thin line to its dot
 (`lib/fan.ts`, drawn by `components/map/fan-overlay.tsx`; see
 [map rendering](map-rendering.md#the-fan-names-a-crowded-area-at-its-edge)). The list's switch ("Reiseziele auf der Karte") takes the

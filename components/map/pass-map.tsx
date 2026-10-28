@@ -64,7 +64,7 @@ import {
 import { DEFAULT_VIEW } from "@/lib/app-state";
 import type { MapView, Selection, Shown } from "@/lib/app-state";
 import { BASEMAP_SOURCE_ID, basemapSource, GLYPHS } from "@/lib/basemap";
-import { fanTarget } from "@/lib/fan";
+import { areasOf, fanTarget } from "@/lib/fan";
 import type { Bounds } from "@/lib/geo";
 import type { Lang } from "@/lib/i18n";
 import { HIT_LAYERS, SOURCE } from "@/lib/layer-ids";
@@ -231,8 +231,10 @@ const pickAt = (m: MLMap, x: number, y: number): Selection | null => {
 // serve; scripts/copy-maplibre-worker.ts places a copy under public/maplibre.
 setWorkerUrl("/maplibre/maplibre-gl-worker.mjs");
 
-/** How long the fan stays open once nothing holds it, in ms: the trip from the outline to a name. */
+/** How long the fan stays open once nothing holds it, in ms: the trip from a dot to its name. */
 const FAN_RELEASE_MS = 250;
+/** How long the pointer rests before a fan opens, in ms: long enough to cross a road, short enough to feel like the answer. */
+const FAN_OPEN_MS = 150;
 
 export const PassMap = ({
   rows,
@@ -283,42 +285,36 @@ export const PassMap = ({
   };
   /**
    * The area whose roads are named round it (lib/fan.ts), and whether the
-   * pointer is on those names. `fanTarget` says which area it should be; an
-   * area pointed at – or the area of a road or town pointed at – opens in
-   * the same render, anything else – closing, or falling back to the area in
-   * the panel – waits `FAN_RELEASE_MS`, so the pointer can cross the gap
-   * from a dot to a name without the fan shutting under it.
+   * pointer is on those names. `fanTarget` says which area it should be, and
+   * the effect below says when.
    */
   const [fan, setFan] = useState<string | null>(null);
   /** Which area's names the pointer is on – only that area's fan it holds. */
   const [overFan, setOverFan] = useState<string | null>(null);
-  const fanNext = fanTarget({
-    areasOf: (sel) =>
-      rows.destination
-        .filter((r) =>
-          (sel.kind === "town" ? r.members.towns : r.members.passes).includes(
-            sel.slug,
-          ),
-        )
-        .map((r) => r.destination.slug),
-    coarse: env.coarsePointer,
-    current: fan,
-    hovered,
-    overFan: fan !== null && overFan === fan,
-    selection,
-  });
-  // Opening is the pointer's answer, so it is not put off – not even by a
-  // frame, or the road's hover label would flash before the fan replaces it.
-  const fanAtOnce = fanNext !== null && hovered !== null;
-  const fanShown = fanAtOnce ? fanNext : fan;
+  // A finger has no hover, and beside the drawer a fan has no room: on a
+  // phone the names come with the zoom instead (`appLayers`).
+  const fanNext = env.coarsePointer
+    ? null
+    : fanTarget({
+        areasOf: (sel) =>
+          areasOf(sel, { ...rows, tourBounds: assets.tourBounds }),
+        current: fan,
+        hovered,
+        overFan: fan !== null && overFan === fan,
+        selection,
+      });
+  // Opening waits `FAN_OPEN_MS`, so a pointer crossing the map does not set
+  // off a fan per road it passes; closing, or falling back to the area in the
+  // panel, waits `FAN_RELEASE_MS`.
+  const fanOpening = fanNext !== null && hovered !== null;
   useEffect(() => {
     if (fanNext === fan) return;
     const id = setTimeout(
       () => setFan(fanNext),
-      fanAtOnce ? 0 : FAN_RELEASE_MS,
+      fanOpening ? FAN_OPEN_MS : FAN_RELEASE_MS,
     );
     return () => clearTimeout(id);
-  }, [fan, fanNext, fanAtOnce]);
+  }, [fan, fanNext, fanOpening]);
   /**
    * What the map draws, as one value, and what of it has been applied.
    *
@@ -329,7 +325,7 @@ export const PassMap = ({
    */
   const scene = buildScene({
     env: { coarse: env.coarsePointer },
-    fan: fanShown,
+    fan,
     ghosts,
     hovered,
     profileCursor,

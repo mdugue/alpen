@@ -117,3 +117,10 @@ export const OVERVIEW_ZOOM = 6;
  * keep theirs.
  */
 export const ROAD_NAME_ZOOM = 8;
+
+/**
+ * On a coarse pointer the classics are named from here on: a finger has no
+ * hover to ask a dot its name, so the zoom answers instead – the classics a
+ * step before everything else.
+ */
+export const CLASSIC_NAME_ZOOM_COARSE = 6.5;
