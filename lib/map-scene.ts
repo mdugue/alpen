@@ -29,6 +29,8 @@ import {
   fanFits,
   fanKey,
   fanTarget,
+  nearness,
+  TOUR_AREAS_MAX,
 } from "@/lib/fan";
 import type { FanKind, FitView } from "@/lib/fan";
 import type { Bounds, Ring } from "@/lib/geo";
@@ -410,17 +412,21 @@ const toursDrawn = (
   return { strayTour, tourState };
 };
 
-/** What the fan is built from: the scene's input and the roads it draws. */
+/**
+ * What the fan is built from: the scene's input and the roads it draws – and
+ * the fans already built for it, since one scene asks after the same area
+ * several times.
+ */
 interface FanSource {
   input: SceneInput;
   drawn: readonly PassRow[];
+  built: Map<string, SceneFan | null>;
 }
 
 /** A loop's point nearest a centre: where the fan's line to it ends. */
 const nearestOn = (waypoints: readonly LatLon[], to: LatLon): LatLon => {
-  const away = (p: LatLon) => (p.lat - to.lat) ** 2 + (p.lon - to.lon) ** 2;
   let best = waypoints[0]!;
-  for (const p of waypoints) if (away(p) < away(best)) best = p;
+  for (const p of waypoints) if (nearness(to, p) < nearness(to, best)) best = p;
   return best;
 };
 
@@ -429,8 +435,8 @@ const nearestOn = (waypoints: readonly LatLon[], to: LatLon): LatLon => {
  * towns and loops of it the filters draw – nothing when there is only one to
  * name, or when the area is too large on the screen for a fan (`fanFits`).
  */
-const fanOf = (
-  slug: string | null,
+const buildFan = (
+  slug: string,
   { drawn, input }: FanSource,
 ): SceneFan | null => {
   const { rows, shown, view, w } = input;
@@ -444,10 +450,15 @@ const fanOf = (
     ? drawn.filter((r) => members.passes.includes(r.pass.slug))
     : [];
   const towns = rows.town.filter((r) => members.towns.includes(r.town.slug));
+  // A loop through more areas than `TOUR_AREAS_MAX` is a journey, not one of
+  // the area's loops: it opens no fan, and no fan names it.
+  const areasHolding = (tour: string) =>
+    rows.destination.filter((r) => r.members.tours.includes(tour)).length;
   const tours = rows.tour.filter(
     (r) =>
       members.tours.includes(r.tour.slug) &&
-      isShown(shown, "tour", r.tour.slug),
+      isShown(shown, "tour", r.tour.slug) &&
+      areasHolding(r.tour.slug) <= TOUR_AREAS_MAX,
   );
   const items: SceneFan["items"] = [
     ...roads.map((r) => ({
@@ -492,6 +503,13 @@ const fanOf = (
   };
 };
 
+/** One area's fan, built once per scene (`buildFan`). */
+const fanOf = (slug: string | null, src: FanSource): SceneFan | null => {
+  if (slug === null) return null;
+  if (!src.built.has(slug)) src.built.set(slug, buildFan(slug, src));
+  return src.built.get(slug) ?? null;
+};
+
 /**
  * Which area the fan should show, and which outline answers the pointer – one
  * decision for the fan, the labels it replaces and the outline, so the three
@@ -511,7 +529,12 @@ const fanDecision = (src: FanSource) => {
     : fanTarget({
         areasOf: (sel) => areas(sel).filter(opens),
         current: fan,
-        hovered,
+        // An area pointed at that is too large for a fan is as good as
+        // nothing pointed at: the fan open or in the panel stays.
+        hovered:
+          hovered?.kind === "destination" && !opens(hovered.slug)
+            ? null
+            : hovered,
         overFan: fan !== null && overFan,
         selection,
       });
@@ -608,7 +631,7 @@ export const buildScene = (input: SceneInput): Scene => {
   const markedDestination = shown.destinations ? destinationRow : undefined;
   const box = hoverTour ? tourBounds[hoverTour] : undefined;
 
-  const src = { drawn, input };
+  const src: FanSource = { built: new Map(), drawn, input };
   const fanned = fanOf(fan, src);
   const { fanning, hoverArea, next: fanNext } = fanDecision(src);
   const fanNames = (kind: FanKind, slug: string) =>

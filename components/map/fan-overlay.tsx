@@ -24,8 +24,15 @@ const STEP_COARSE = 34;
 const Mark = ({ entry }: { entry: FanEntry }) => {
   if (entry.kind === "town")
     return <span className="bg-town size-2 shrink-0 rounded-full" />;
-  if (entry.kind === "tour")
-    return <span className="bg-tour h-1.5 w-3 shrink-0 rounded-full" />;
+  if (entry.kind === "tour" && entry.status)
+    // A bar for a loop, in its status: rideable reads first in the fan too.
+    return (
+      <StatusDot
+        status={entry.status}
+        hollow={entry.status === "closed"}
+        className="h-1.5 w-3"
+      />
+    );
   return entry.status ? (
     <StatusDot status={entry.status} hollow={entry.status === "closed"} />
   ) : null;

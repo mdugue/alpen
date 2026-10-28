@@ -21,6 +21,7 @@
  */
 import type { Selection } from "@/lib/app-state";
 import type { Bounds } from "@/lib/geo";
+import { STATUSES } from "@/lib/regions";
 import { statusRank } from "@/lib/status";
 import type { LatLon, Status } from "@/lib/types";
 
@@ -88,10 +89,17 @@ export const FAN = {
 /** How wide a name's label is, near enough to decide which side has room. */
 const widthOf = (name: string) => name.length * FAN.charPx + FAN.chrome;
 
-/** A town, which has no status, weighs as much as a rideable road. */
-const weightOf = (item: FanItem) => statusRank(item.status ?? "open");
+/**
+ * Who keeps a place first: the roads by status – they are what the map is
+ * about – then the loops by theirs, then the towns, which have none.
+ */
+const weightOf = (item: FanItem) => {
+  const rank = statusRank(item.status ?? "open");
+  if (item.kind === "pass") return rank;
+  return item.kind === "tour" ? STATUSES.length + rank : 2 * STATUSES.length;
+};
 
-/** Rideable first, then the classics, then by name: who keeps a place when the screen is short. */
+/** Roads first, rideable first, then the classics, then by name: who keeps a place when the screen is short. */
 const byWeight = (a: FanItem, b: FanItem) =>
   weightOf(a) - weightOf(b) ||
   Number(b.classic) - Number(a.classic) ||
@@ -296,6 +304,11 @@ export interface AreaIndex {
 
 const MEMBERS = { pass: "passes", tour: "tours", town: "towns" } as const;
 
+/** How far apart two points are, squared and in degrees of latitude: for ordering, not for km. */
+export const nearness = (a: LatLon, b: LatLon) =>
+  (b.lat - a.lat) ** 2 +
+  ((b.lon - a.lon) * Math.cos((a.lat * Math.PI) / 180)) ** 2;
+
 /** Where a road, a town or a tour is: its dot, or the middle of its box. */
 const whereIs = (sel: Selection, index: AreaIndex): LatLon | undefined => {
   if (sel.kind === "pass")
@@ -322,11 +335,7 @@ export const areasOf = (sel: Selection, index: AreaIndex): string[] => {
   );
   if (sel.kind === "tour" && holding.length > TOUR_AREAS_MAX) return [];
   const at = whereIs(sel, index);
-  const away = (c: LatLon) =>
-    at
-      ? (c.lat - at.lat) ** 2 +
-        ((c.lon - at.lon) * Math.cos((at.lat * Math.PI) / 180)) ** 2
-      : 0;
+  const away = (c: LatLon) => (at ? nearness(at, c) : 0);
   return holding
     .toSorted((a, b) => away(a.destination.center) - away(b.destination.center))
     .map((r) => r.destination.slug);

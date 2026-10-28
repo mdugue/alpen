@@ -270,6 +270,9 @@ windows differ – while the share takes zoom, area and window in one measure:
 on a laptop a middling area turns at about zoom 8.5, the Dolomites' around 9,
 a small one at 10. It is worked out from the area's box and the zoom the
 pass map takes at the end of each zoom, so the scene stays a pure function.
+When the fan has to shorten, the roads keep their places first – by status,
+then the classics – then the loops, then the towns; a loop through more than
+`TOUR_AREAS_MAX` areas is named by none of their fans.
 
 A road can lie in up to three areas. It opens one, its _primary_ area: the
 one whose centre is nearest (`areasOf`). A loop's position is the middle of
@@ -279,7 +282,8 @@ rather than a part of one, and opens none – its tube says enough.
 `lib/fan.ts` decides both halves: which area is fanned out (`fanTarget` –
 the one pointed at, or the primary area of the road, town or loop pointed
 at, the open one first if it holds it; the open one while the pointer is on
-its names; else the one in the panel) and where each name stands
+its names; else the one in the panel – which, once the camera has framed it,
+fills the screen and so has none) and where each name stands
 (`fanLayout` – the side by the outline's middle, a column sorted by height
 so the lines do not cross, the rideable roads and the classics kept when
 the screen is short and the rest counted, each column held on the screen).

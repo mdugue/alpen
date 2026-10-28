@@ -617,6 +617,12 @@ const areaRow = (
   },
 });
 
+/** An area holding La Marmotte as well. */
+const withMarmotte = (a: DestinationRow): DestinationRow => ({
+  ...a,
+  members: { ...a.members, tours: ["marmotte"] },
+});
+
 const lit = (scene: Scene) =>
   scene.destinations.features
     .filter((f) => f.properties.hovered === 1)
@@ -712,6 +718,23 @@ describe("fan", () => {
     expect(scene.hover.popup?.name).toBe("Col du Galibier");
     // Its primary area's outline still answers the pointer.
     expect(lit(scene)).toEqual(["alone"]);
+  });
+
+  test("a loop through more than two areas is named by no fan", () => {
+    const crowd = ["x", "y"].map((slug) =>
+      withMarmotte(areaRow(slug, { lat: 47, lon: 12 }, ["stelvio"])),
+    );
+    const scene = buildScene(
+      input({
+        fan: "shared",
+        rows: {
+          ...rows,
+          destination: [alone, withMarmotte(shared), ...crowd],
+          tour: [tourRow(marmotte)],
+        },
+      }),
+    );
+    expect(scene.fan?.items.map((i) => i.kind)).toEqual(["pass", "pass"]);
   });
 
   test("an open fan does not light its outline for a road outside it", () => {

@@ -297,3 +297,27 @@ describe("fanFits", () => {
     expect(fanFits(box, null)).toBe(true);
   });
 });
+
+describe("who keeps a place when the screen is short", () => {
+  test("the roads, even a closed one, before the loops and the towns", () => {
+    // Room for two rows on one side: one name and the count.
+    const short: FanView = {
+      ...view,
+      height: 2 * FAN.step + 2 * FAN.margin,
+      width: 760,
+    };
+    const town: FanItem = {
+      ...road("bormio", 690, 420),
+      kind: "town",
+      status: null,
+    };
+    const loop: FanItem = { ...road("sella", 690, 410), kind: "tour" };
+    const fan = fanLayout(
+      [town, loop, road("gavia", 680, 400, "closed")],
+      outline,
+      short,
+    );
+    expect(fan.entries.map((e) => e.slug)).toEqual(["gavia"]);
+    expect(fan.more).toBe(2);
+  });
+});

@@ -318,9 +318,17 @@ export const PassMap = ({
     tourBounds: assets.tourBounds,
     townReach,
     // What the panels leave of the map is what the area is measured against.
+    // The panels float over the map, so at least half of it counts: a narrow
+    // window with both open would otherwise leave no area a fan.
     view: measured && {
-      height: measured.height - inset.top - inset.bottom,
-      width: measured.width - inset.left - inset.right,
+      height: Math.max(
+        measured.height - inset.top - inset.bottom,
+        measured.height / 2,
+      ),
+      width: Math.max(
+        measured.width - inset.left - inset.right,
+        measured.width / 2,
+      ),
       zoom: measured.zoom,
     },
     w: t,
@@ -551,7 +559,13 @@ export const PassMap = ({
     // none, so `is3d` is the whole of it.
     const measure = () => {
       const { clientHeight: height, clientWidth: width } = m.getContainer();
-      setMeasured({ height, width, zoom: Math.round(m.getZoom() * 10) / 10 });
+      const zoom = Math.round(m.getZoom() * 10) / 10;
+      // A resize fires every frame of a drag; only a change is news.
+      setMeasured((was) =>
+        was?.zoom === zoom && was.width === width && was.height === height
+          ? was
+          : { height, width, zoom },
+      );
     };
     m.on("zoomend", measure);
     m.on("resize", measure);

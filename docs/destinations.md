@@ -145,7 +145,8 @@ the very dots it was about. How many roads an area holds is said in the
 hover popup and the list, not on the map. The hover popup stands on the
 outline's northernmost point, not over the roads inside it.
 
-Pointing at an area, or at a road, town or loop in it (or opening it), fans
+Pointing at an area, or at a road, town or loop in it (or opening it while it
+is small on the screen – framed, it fills it and has none), fans
 its roads, towns and loops out – a road in several areas opens the one
 whose centre is nearest, an area of one mark has no fan, and neither has one
 that fills much of the screen: every road, town and loop of it the filters
