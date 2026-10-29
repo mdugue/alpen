@@ -11,6 +11,8 @@ import { DEFAULT_LANG, localeOf } from "@/lib/i18n/lang";
 import type { Lang } from "@/lib/i18n/lang";
 import { PALETTE } from "@/lib/palette";
 import type { Scheme } from "@/lib/palette";
+import { OVERVIEW_ZOOM } from "@/lib/prominence";
+import { AREA_SPACING, HALO_WIDTH, TYPE } from "@/lib/typography";
 
 /**
  * The default basemap: a vector style in the app's own palette, one variant
@@ -199,7 +201,8 @@ const groundLayers = (scheme: Scheme): LayerSpecification[] => {
 const detailLayers = (scheme: Scheme, lang: Lang): LayerSpecification[] => {
   const p = PALETTE[scheme];
   const NAME = nameOf(lang);
-  const halo = { "text-halo-color": p.land, "text-halo-width": 1.3 };
+  // The app's halo, so a basemap name and an app name read as one hand.
+  const halo = { "text-halo-color": p.paper, "text-halo-width": HALO_WIDTH };
   const road = (
     id: string,
     classes: string[],
@@ -402,14 +405,16 @@ const detailLayers = (scheme: Scheme, lang: Lang): LayerSpecification[] => {
       "source-layer": "mountain_peak",
       type: "symbol",
     },
-    place("village", "village", 10, 11),
+    // The basemap's voice: Regular and grey, a step under the app's names on
+    // the same scale (`lib/typography.ts`), and never in capitals.
+    place("village", "village", 10, TYPE.quiet),
     place(
       "town",
       "town",
       8,
       linear([
-        [8, 11],
-        [12, 14],
+        [8, TYPE.quiet],
+        [12, TYPE.place],
       ]),
     ),
     place(
@@ -417,35 +422,31 @@ const detailLayers = (scheme: Scheme, lang: Lang): LayerSpecification[] => {
       "city",
       5,
       linear([
-        [5, 12],
-        [10, 17],
+        [5, TYPE.quiet],
+        [10, TYPE.lead],
       ]),
     ),
-    place(
-      "state",
-      "state",
-      5,
-      linear([
-        [5, 10],
-        [8, 13],
-      ]),
-      {
-        layout: { "text-letter-spacing": 0.15, "text-transform": "uppercase" },
-        maxzoom: 9,
-        paint: { "text-color": p.labelMuted },
-      },
-    ),
+    // A region is named only on the overview: from `OVERVIEW_ZOOM` on, the
+    // app's areas are the regions that matter, and two regional layers on
+    // one screen – "Tirol" over "Ötztal und Tiroler Oberland" – was one too
+    // many.
+    place("state", "state", 5, TYPE.quiet, {
+      layout: { "text-letter-spacing": AREA_SPACING },
+      maxzoom: OVERVIEW_ZOOM,
+      paint: { "text-color": p.labelMuted },
+    }),
     place(
       "country",
       "country",
       3,
       linear([
-        [3, 12],
-        [7, 16],
+        [3, TYPE.quiet],
+        [6, TYPE.lead],
       ]),
       {
-        layout: { "text-font": [FONT_BOLD], "text-letter-spacing": 0.05 },
-        maxzoom: 8,
+        layout: { "text-letter-spacing": AREA_SPACING },
+        maxzoom: 7,
+        paint: { "text-color": p.labelMuted },
       },
     ),
   ];
@@ -459,6 +460,17 @@ export const basemapLayers = (scheme: Scheme, lang: Lang = DEFAULT_LANG) => ({
   detail: detailLayers(scheme, lang),
   ground: groundLayers(scheme),
 });
+
+/**
+ * The basemap's names: what steps back while a fan is open
+ * (`Scene.baseQuiet`). Identical across schemes and languages.
+ */
+export const BASEMAP_LABEL_IDS: readonly string[] = detailLayers(
+  "light",
+  DEFAULT_LANG,
+)
+  .filter((l) => l.type === "symbol")
+  .map((l) => l.id);
 
 /** Every layer id of one scheme, in drawing order; identical across schemes. */
 export const basemapLayerIds = (scheme: Scheme): string[] => {

@@ -19,7 +19,7 @@ import { makePass, makeTown } from "@/test/fixtures";
  * cost nothing.
  */
 interface Call {
-  what: "data" | "filter" | "label" | "state";
+  what: "data" | "filter" | "label" | "quiet" | "state";
   id: string;
 }
 
@@ -28,6 +28,9 @@ const recorder = () => {
   const host: SceneHost = {
     label: (content) => {
       calls.push({ id: content?.name ?? "—", what: "label" });
+    },
+    quietBase: (quiet) => {
+      calls.push({ id: String(quiet), what: "quiet" });
     },
     setData: (source) => {
       calls.push({ id: source, what: "data" });
@@ -197,6 +200,33 @@ describe("the difference", () => {
     ]);
     // The tours said nothing new, so their three layers were left alone.
     expect(of(calls, "filter")).not.toContain(LAYERS.tour.mark);
+  });
+});
+
+const fanned = (): ReturnType<typeof scene> => ({
+  ...scene(),
+  fan: { items: [], name: "Ortler", outline: [], slug: "ortler" },
+});
+
+describe("the basemap's names", () => {
+  test("step back while a fan is open, and only when it opens or closes", () => {
+    const opening = recorder();
+    applyScene(opening.host, scene(), fanned());
+    expect(of(opening.calls, "quiet")).toEqual(["true"]);
+
+    const staying = recorder();
+    applyScene(staying.host, fanned(), fanned());
+    expect(of(staying.calls, "quiet")).toEqual([]);
+
+    const closing = recorder();
+    applyScene(closing.host, fanned(), scene());
+    expect(of(closing.calls, "quiet")).toEqual(["false"]);
+  });
+
+  test("start at full strength: the first scene without a fan says nothing", () => {
+    const { calls, host } = recorder();
+    applyScene(host, null, scene());
+    expect(of(calls, "quiet")).toEqual([]);
   });
 });
 

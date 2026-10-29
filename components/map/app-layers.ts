@@ -43,6 +43,7 @@ import {
   SIZE_ZOOMS,
 } from "@/lib/prominence";
 import { CLASSIC_FAME, STATUSES } from "@/lib/regions";
+import { AREA_SPACING, HALO_WIDTH, TYPE } from "@/lib/typography";
 import type { MapEnvironment } from "@/lib/use-media-query";
 
 /** The image the arrows along a tour are drawn with (`arrowhead`). */
@@ -797,12 +798,12 @@ export const appLayers = (
         "symbol-spacing": 600,
         "text-field": ["get", "name"],
         "text-font": [FONT_BOLD],
-        "text-size": 11,
+        "text-size": TYPE.small,
       },
       paint: {
         "text-color": tourColor,
         "text-halo-color": colors.paper,
-        "text-halo-width": 1.5,
+        "text-halo-width": HALO_WIDTH,
       },
       source: SOURCE.tours,
       type: "symbol",
@@ -861,14 +862,22 @@ export const appLayers = (
         "text-font": [FONT_BOLD],
         "text-justify": "auto",
         "text-radial-offset": 1,
-        "text-size": ["interpolate", ["linear"], ["zoom"], 8, 12, 13, 14],
+        "text-size": [
+          "interpolate",
+          ["linear"],
+          ["zoom"],
+          8,
+          TYPE.body,
+          13,
+          TYPE.lead + 1,
+        ],
         "text-variable-anchor": ["left", "right", "top", "bottom"],
       },
       minzoom: 8,
       paint: {
         "text-color": colors.town,
         "text-halo-color": colors.paper,
-        "text-halo-width": 2,
+        "text-halo-width": HALO_WIDTH,
         // A town the fan names (`Scene.townState`) is not named twice.
         "text-opacity": [
           "case",
@@ -926,16 +935,16 @@ export const appLayers = (
         // of an area under the names of the places in it.
         "text-field": ["get", "name"] as never,
         "text-font": [FONT_BOLD],
-        "text-letter-spacing": 0.04,
+        "text-letter-spacing": AREA_SPACING,
         "text-max-width": 8,
         "text-size": [
           "interpolate",
           ["linear"],
           ["zoom"],
           5,
-          10.5,
+          TYPE.quiet,
           8,
-          12.5,
+          TYPE.body,
         ] as never,
       },
       minzoom: OVERVIEW_ZOOM,
@@ -944,7 +953,7 @@ export const appLayers = (
         // voice under the road names, in the family its outline is drawn in.
         "text-color": colors.town,
         "text-halo-color": colors.paper,
-        "text-halo-width": 1.5,
+        "text-halo-width": HALO_WIDTH,
         // The name stays too; past the overview the pass names win their
         // collisions against it (they are placed first, see below).
         "text-opacity": 0.75,
@@ -1013,7 +1022,7 @@ export const appLayers = (
         "text-font": [FONT_BOLD],
         "text-justify": "auto" as never,
         "text-radial-offset": 1,
-        "text-size": rank >= 5 ? 13 : rank <= 2 ? 11 : 12.5,
+        "text-size": rank >= 5 ? TYPE.lead : rank <= 2 ? TYPE.small : TYPE.body,
         // Eight places round the dot rather than four: in a cluster the
         // diagonal is often the one that is free.
         "text-variable-anchor": [
@@ -1032,7 +1041,7 @@ export const appLayers = (
       paint: {
         "text-color": colors.ink,
         "text-halo-color": colors.paper,
-        "text-halo-width": 1.6,
+        "text-halo-width": HALO_WIDTH,
         // A road the fan names round its area (`PassState`) is not named
         // beside its dot as well.
         "text-opacity": [

@@ -538,6 +538,36 @@ the hermetic e2e suite renders labels and the map has no font server to wait
 for; `scripts/build-map-style.ts` writes the same style as four standalone
 JSON files, a scheme and a language each, for tuning in a style editor.
 
+### One hand, two voices
+
+Every name on the map – the basemap's and the app's – is set from one scale,
+`TYPE` in `lib/typography.ts`, which `lib/basemap.ts` and
+`components/map/app-layers.ts` both read. Before it, the two halves were set
+independently and competed: "TIROL" in spaced capitals stood as large as
+"Ötztal und Tiroler Oberland" next to it, and the basemap's cream halo looked
+different from the app's white one.
+
+- **One face, one halo.** Inter throughout, every name with the same halo:
+  the card colour (`paper`), `HALO_WIDTH` wide.
+- **The weight says who speaks.** The app's names – roads, towns, areas,
+  loops – are SemiBold and in their kind's colour (ink, the towns' blue, the
+  tour's colour). The basemap's are Regular and grey, a step below on the
+  same scale: a city grows to the size of a rank-5 road and stops there.
+- **The spacing says area or point.** A name that stands for an area – an
+  app area, a region, a country – is spaced by `AREA_SPACING`; a point is
+  not. Nothing is set in capitals.
+- **One regional layer at a time.** The basemap names regions (states) only
+  below `OVERVIEW_ZOOM`, and countries only below zoom 7: from the end of the
+  overview on, the app's areas are the regions that matter.
+- **The fan hushes the base.** While a fan is open, the basemap's names fade
+  to `BASE_LABELS_QUIET` (`quietBase`, the one paint property
+  `applyScene` sets), the way the names the fan carries step aside from
+  their dots. A raster base has its names baked in and is left as it is.
+
+The collisions follow the same order: MapLibre places the app's names first,
+so a basemap name gives way to a pass or a town rather than the other way
+round.
+
 ## MapLibre needs two workarounds
 
 Its web worker is resolved via `import.meta.url`, which Turbopack does not

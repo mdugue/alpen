@@ -2,6 +2,7 @@
 
 import type { GeoJSONSource, Map as MLMap, Popup } from "maplibre-gl";
 
+import { BASEMAP_LABEL_IDS } from "@/lib/basemap";
 import type { Ring } from "@/lib/geo";
 import {
   LAYERS,
@@ -13,6 +14,7 @@ import {
 import type { PopupContent, Scene } from "@/lib/map-scene";
 import { STATUSES } from "@/lib/regions";
 import { tagIconSvg } from "@/lib/tag-icons";
+import { BASE_LABELS_QUIET } from "@/lib/typography";
 
 /**
  * The scene, carried out.
@@ -28,7 +30,7 @@ import { tagIconSvg } from "@/lib/tag-icons";
  * in the worker: a hover that changes nothing has to cost nothing.
  */
 
-/** The map as the scene needs it – four calls, so a test can record them. */
+/** The map as the scene needs it – five calls, so a test can record them. */
 export interface SceneHost {
   setFilter: (layer: string, filter: unknown) => void;
   setFeatureState: (
@@ -38,6 +40,11 @@ export interface SceneHost {
   setData: (source: string, data: unknown) => void;
   /** The hover label: what it says and where it points, or nothing at all. */
   label: (content: PopupContent | null) => void;
+  /**
+   * Whether the basemap's names step back: while a fan is open its names are
+   * the ones to read, and "Bozen" under them is noise.
+   */
+  quietBase: (quiet: boolean) => void;
 }
 
 const escapeHtml = (s: string) =>
@@ -81,6 +88,12 @@ export const sceneHost = (map: MLMap, popup: Popup): SceneHost => ({
     popup.setLngLat(content.anchor);
     // `addTo` on an open popup re-appends its element, so it goes in once.
     if (!popup.isOpen()) popup.addTo(map);
+  },
+  quietBase: (quiet) => {
+    // A raster base has its names baked in, and none of these layers.
+    for (const id of BASEMAP_LABEL_IDS)
+      if (map.getLayer(id))
+        map.setPaintProperty(id, "text-opacity", quiet ? BASE_LABELS_QUIET : 1);
   },
   setData: (source, data) => {
     void map.getSource<GeoJSONSource>(source)?.setData(data as never);
@@ -195,6 +208,18 @@ const POINT_SOURCES: [
   [SOURCE.you, (s) => s.you],
 ];
 
+/** The hover's own marks – the reach, the label – and the fan's hush over the base. */
+const applyHover = (host: SceneHost, prev: Scene | null, next: Scene) => {
+  // The rings come straight out of `townReach`, so the same hull is the same
+  // array; a town that is no longer hovered clears the layer.
+  if (!prev || !same(prev.hover.hull, next.hover.hull))
+    host.setData(SOURCE.reach, hullData(next.hover.hull));
+  if (!prev || !samePopup(prev.hover.popup, next.hover.popup))
+    host.label(next.hover.popup);
+  const quiet = next.fan !== null;
+  if ((prev !== null && prev.fan !== null) !== quiet) host.quietBase(quiet);
+};
+
 /** `prev` is `null` on the first scene: nothing has been applied yet. */
 export const applyScene = (
   host: SceneHost,
@@ -227,10 +252,5 @@ export const applyScene = (
   // After the dots, so the first scene's state lands on a source that has them.
   applyState(host, SOURCE.passes, prev?.passState, next.passState);
   applyState(host, SOURCE.towns, prev?.townState, next.townState);
-  // The rings come straight out of `townReach`, so the same hull is the same
-  // array; a town that is no longer hovered clears the layer.
-  if (!prev || !same(prev.hover.hull, next.hover.hull))
-    host.setData(SOURCE.reach, hullData(next.hover.hull));
-  if (!prev || !samePopup(prev.hover.popup, next.hover.popup))
-    host.label(next.hover.popup);
+  applyHover(host, prev, next);
 };
