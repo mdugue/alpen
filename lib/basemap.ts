@@ -11,8 +11,13 @@ import { DEFAULT_LANG, localeOf } from "@/lib/i18n/lang";
 import type { Lang } from "@/lib/i18n/lang";
 import { PALETTE } from "@/lib/palette";
 import type { Scheme } from "@/lib/palette";
-import { OVERVIEW_ZOOM } from "@/lib/prominence";
-import { AREA_SPACING, HALO_WIDTH, TYPE } from "@/lib/typography";
+import {
+  AREA_SPACING,
+  COUNTRY_MAX_ZOOM,
+  HALO_WIDTH,
+  REGION_MAX_ZOOM,
+  TYPE,
+} from "@/lib/typography";
 
 /**
  * The default basemap: a vector style in the app's own palette, one variant
@@ -430,9 +435,9 @@ const detailLayers = (scheme: Scheme, lang: Lang): LayerSpecification[] => {
     // app's areas are the regions that matter, and two regional layers on
     // one screen – "Tirol" over "Ötztal und Tiroler Oberland" – was one too
     // many.
-    place("state", "state", 5, TYPE.quiet, {
+    place("state", "state", 4, TYPE.quiet, {
       layout: { "text-letter-spacing": AREA_SPACING },
-      maxzoom: OVERVIEW_ZOOM,
+      maxzoom: REGION_MAX_ZOOM,
       paint: { "text-color": p.labelMuted },
     }),
     place(
@@ -445,7 +450,7 @@ const detailLayers = (scheme: Scheme, lang: Lang): LayerSpecification[] => {
       ]),
       {
         layout: { "text-letter-spacing": AREA_SPACING },
-        maxzoom: 7,
+        maxzoom: COUNTRY_MAX_ZOOM,
         paint: { "text-color": p.labelMuted },
       },
     ),
@@ -463,7 +468,7 @@ export const basemapLayers = (scheme: Scheme, lang: Lang = DEFAULT_LANG) => ({
 
 /**
  * The basemap's names: what steps back while a fan is open
- * (`Scene.baseQuiet`). Identical across schemes and languages.
+ * (`quietBase` in `components/map/apply-scene.ts`, whenever `Scene.fan` is set). Identical across schemes and languages.
  */
 export const BASEMAP_LABEL_IDS: readonly string[] = detailLayers(
   "light",

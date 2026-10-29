@@ -869,7 +869,7 @@ export const appLayers = (
           8,
           TYPE.body,
           13,
-          TYPE.lead + 1,
+          TYPE.near,
         ],
         "text-variable-anchor": ["left", "right", "top", "bottom"],
       },

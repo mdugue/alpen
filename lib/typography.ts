@@ -12,10 +12,12 @@
 
 /** Sizes in px, the steps every label layer takes its size from. */
 export const TYPE = {
-  /** The app's body: most road names, a town past zoom 8. */
+  /** The app's body: most road names, a town at zoom 8, an area from 8. */
   body: 12.5,
-  /** The app's lead: a road of rank 5. */
+  /** The app's lead: a road of rank 5; where a city stops growing. */
   lead: 13,
+  /** A town up close (zoom 13): the one name that outgrows the roads. */
+  near: 14,
   /** The basemap's towns up close; a city grows to `lead` and stops there. */
   place: 12,
   /** The basemap's quiet names: villages, regions, countries. */
@@ -23,6 +25,16 @@ export const TYPE = {
   /** The app's small names: a rank 1–2 road, a loop, an area at the overview. */
   small: 11,
 } as const;
+
+/**
+ * The basemap names regions only on the overview: from here on the app's
+ * areas are the regions (`OVERVIEW_ZOOM` in `lib/prominence.ts`, where they
+ * are first named; a test holds the two equal).
+ */
+export const REGION_MAX_ZOOM = 6;
+
+/** Countries a step longer than regions: they frame the areas, not replace them. */
+export const COUNTRY_MAX_ZOOM = 7;
 
 /** One halo for every name, in the card colour (`paper`). */
 export const HALO_WIDTH = 1.5;

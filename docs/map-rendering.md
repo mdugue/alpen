@@ -557,8 +557,10 @@ different from the app's white one.
   app area, a region, a country – is spaced by `AREA_SPACING`; a point is
   not. Nothing is set in capitals.
 - **One regional layer at a time.** The basemap names regions (states) only
-  below `OVERVIEW_ZOOM`, and countries only below zoom 7: from the end of the
-  overview on, the app's areas are the regions that matter.
+  below `REGION_MAX_ZOOM`, which a test holds equal to `OVERVIEW_ZOOM`, and
+  countries only below `COUNTRY_MAX_ZOOM`: from the end of the overview on,
+  the app's areas are the regions that matter. A new base or scheme under an
+  open fan is hushed again by the map.
 - **The fan hushes the base.** While a fan is open, the basemap's names fade
   to `BASE_LABELS_QUIET` (`quietBase`, the one paint property
   `applyScene` sets), the way the names the fan carries step aside from

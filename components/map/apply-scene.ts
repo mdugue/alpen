@@ -208,7 +208,7 @@ const POINT_SOURCES: [
   [SOURCE.you, (s) => s.you],
 ];
 
-/** The hover's own marks – the reach, the label – and the fan's hush over the base. */
+/** The hover's own marks: the reach and the label. */
 const applyHover = (host: SceneHost, prev: Scene | null, next: Scene) => {
   // The rings come straight out of `townReach`, so the same hull is the same
   // array; a town that is no longer hovered clears the layer.
@@ -216,6 +216,13 @@ const applyHover = (host: SceneHost, prev: Scene | null, next: Scene) => {
     host.setData(SOURCE.reach, hullData(next.hover.hull));
   if (!prev || !samePopup(prev.hover.popup, next.hover.popup))
     host.label(next.hover.popup);
+};
+
+/**
+ * The fan's hush over the basemap's names: said when a fan opens or closes,
+ * and again by the map when a new base stack comes in under an open one.
+ */
+const applyHush = (host: SceneHost, prev: Scene | null, next: Scene) => {
   const quiet = next.fan !== null;
   if ((prev !== null && prev.fan !== null) !== quiet) host.quietBase(quiet);
 };
@@ -253,4 +260,5 @@ export const applyScene = (
   applyState(host, SOURCE.passes, prev?.passState, next.passState);
   applyState(host, SOURCE.towns, prev?.townState, next.townState);
   applyHover(host, prev, next);
+  applyHush(host, prev, next);
 };

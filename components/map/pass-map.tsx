@@ -732,6 +732,9 @@ export const PassMap = ({
     if (!m || !root || !controls || !prev || !ready) return;
     applyEnvironment({ controls, map: m, root }, mapEnv, prev);
     appliedEnv.current = mapEnv;
+    // A new base or scheme brings the basemap's names back at full strength;
+    // an open fan hushes them again (`quietBase`).
+    if (applied.current?.fan) host.current?.quietBase(true);
   }, [mapEnv, ready]);
 
   // --- The camera ----------------------------------------------------------
