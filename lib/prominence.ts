@@ -52,3 +52,77 @@ export const DESTINATION_MAX_ZOOM = 9;
 
 /** The two zooms a dot's size is given at; between and beyond, it is interpolated. */
 export const SIZE_ZOOMS = { far: 6, near: 12 } as const;
+
+/**
+ * The generic word in front of a road's name, with the article after it:
+ * "Col du", "Passo dello", "Colle dell'", "Puerto de la". What is left is
+ * what cyclists call the road – the Galibier, the Stelvio, the Agnello.
+ */
+const GENERIC =
+  /^(?:colle|coll|col|passo|puerto|port|alto|côte|cima|monte)\s+(?:de l'|dell'|d'|(?:de la|dello|della|delle|des|del|de|du|di)\s+)?/iu;
+
+/** An ascent's side in brackets: "Mont Ventoux (Bédoin)". The overview leaves it off. */
+const PAREN = /\s*\([^)]*\)\s*$/u;
+
+/**
+ * What would read as something else once the generic word is gone – a town
+ * ("Nice", "Vence", "Gets"), a word ("Port", "Rest", "Croix") – so these keep
+ * it. Checked against every road in data/passes.json whose short name has
+ * five letters or fewer; a new one is added here when it misleads.
+ */
+const KEEP_WHOLE = new Set([
+  "coq",
+  "croix",
+  "gets",
+  "honor",
+  "nice",
+  "port",
+  "porte",
+  "pré",
+  "rest",
+  "velo",
+  "vence",
+  "verde",
+]);
+
+/**
+ * A road's name as the overview writes it (`SHORT_NAME_ZOOM`): without the
+ * generic word in front, so three times as many names fit where the roads
+ * crowd. A name that would shrink to two letters or to another word
+ * (`KEEP_WHOLE`) stays whole, a German "-pass" stays on – "Nigerpass" is not
+ * "Niger" – and the side in brackets is dropped.
+ */
+export const shortName = (name: string): string => {
+  const bare = name.replace(PAREN, "");
+  const rest = bare.replace(GENERIC, "");
+  if (rest === bare || rest.length < 3 || KEEP_WHOLE.has(rest.toLowerCase()))
+    return bare;
+  return rest.charAt(0).toUpperCase() + rest.slice(1);
+};
+
+/** From this zoom on, every road is named in full. */
+export const SHORT_NAME_ZOOM = 9;
+
+/**
+ * Below this zoom the map is the overview – the Alps and beyond on one
+ * screen – and the areas carry no names. Every dot, line and outline is
+ * drawn as at any zoom; only names wait.
+ */
+export const OVERVIEW_ZOOM = 6;
+
+/**
+ * Below this zoom no road is named at rest – not even a classic: what a dot
+ * is called is what pointing at it says (the fan, lib/fan.ts), and a map of
+ * names told less than one of colours. The selected road and the favourites
+ * keep theirs.
+ */
+export const ROAD_NAME_ZOOM = 8;
+
+/**
+ * On a coarse pointer the classics are named from here on: a finger has no
+ * hover to ask a dot its name, so the zoom answers instead – the classics a
+ * step before everything else. A whole number, like every stop a label's
+ * `text-field` steps at: MapLibre lays a symbol out at its tile's zoom, the
+ * whole number below the camera's, so 6.5 drew nothing until 7.
+ */
+export const CLASSIC_NAME_ZOOM_COARSE = 7;

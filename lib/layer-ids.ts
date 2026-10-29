@@ -39,7 +39,7 @@ export const SOURCE = {
  */
 export const PASS_LABELS = [
   { minzoom: 0, rank: 5 },
-  { minzoom: 7, rank: 4 },
+  { minzoom: 8, rank: 4 },
   { minzoom: 8, rank: 3 },
   { minzoom: 9.5, rank: 2 },
   { minzoom: 10.5, rank: 1 },
@@ -78,6 +78,18 @@ export const ROUTE_DASH = "routes-dash";
  * and on its own (`docs/map-rendering.md`).
  */
 export const ROUTE_CASING = "routes-casing";
+
+/**
+ * The ascent lines, one layer per status, drawn closed first and rideable
+ * last, so a green road lies over a red one where two cross (the scene's
+ * `routes.byStatus`). The rideable one is the route set's own mark. Not
+ * companions: each carries a filter of its own, not the route set's.
+ */
+export const ROUTE_LINES = {
+  closed: "routes-closed",
+  open: "routes",
+  risky: "routes-risky",
+} as const;
 
 /**
  * The ascents of the roads the filters leave out: a thin grey line under
@@ -135,7 +147,7 @@ export const LAYERS = {
     companions: [ROUTE_CASING, ROUTE_DASH],
     hit: "routes-hit",
     labels: [],
-    mark: "routes",
+    mark: ROUTE_LINES.open,
     source: SOURCE.routes,
   },
   tour: {
@@ -170,7 +182,7 @@ export const OVERLAY = {
   youHalo: "you-halo",
 } as const;
 
-/** What one kind is drawn with, in one list – all of it carries its filter. */
+/** What one kind is drawn with, in one list – all of it carries its filter, but a route's mark, which `applyScene` gives the open ascents only (`ROUTE_LINES`). */
 export const layersOf = (set: LayerSet): string[] => [
   set.mark,
   ...set.labels,

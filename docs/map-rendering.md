@@ -169,10 +169,10 @@ name, and both win against the basemap's own place names.
 flowchart TB
   L9["app labels · profile cursor"]
   L8["passes · towns (marks)"]
-  L7["ascents — solid, status colour on a paper rim; unpaved ones dashed over it, their open dots ringed"]
-  L6["tour tubes — a rim in the tour colour around a pale inside, under the ascents; arrows on the selected one"]
+  L7["ascents — solid, status colour on a paper rim, green over orange over red; unpaved ones dashed over it, their open dots ringed"]
+  L6["tour tubes — a rim in one calm tone around a pale inside, the tour's colour when pointed at; arrows on the selected one"]
   L5["the hovered town's reach hull"]
-  L45["area outlines — a thin fill and edge in the area blue, the name on its centre"]
+  L45["area outlines — a faint fill and edge in the area blue, the name where there is room"]
   L4["raster overlays (optional base, cycling overlay)"]
   L3["basemap lines and labels — rivers, borders, roads, peaks, places"]
   L2["hillshade — Terrarium DEM"]
@@ -187,9 +187,122 @@ family – never a status colour). Past `DESTINATION_MAX_ZOOM` the roads are
 the picture, so the fill thins to a trace and the edge to a hairline; the
 selected or hovered area keeps its weight, and its hit layer is the last
 group `pick` asks. The fill and its edge read the
-polygon source, the name a point source of its own at the centre – a
-polygon labels itself once per tile, which put the name two or three times
-into one outline.
+polygon source, the name a point source of its own – a polygon labels
+itself once per tile, which put the name two or three times into one
+outline – at `DestinationMembers.label`, the spot inside the outline with
+the most room (`labelSpot`, `docs/destinations.md`), not at the centre,
+where it lay on the very dots it was about.
+
+### Status first
+
+What the map is read for is the status in the chosen half-month, and of
+that, where one can ride; whether a road is a classic comes second. So
+every overlap is settled in that order, and nothing else is.
+
+- **Rideable on top.** A pass dot's `circle-sort-key` is its fame minus a
+  status step (`statusFirst` in `components/map/app-layers.ts`), so a green
+  dot lies over an orange one and both over a red one, whatever their fame.
+  The ascents cannot be sorted that way – status is feature state, and a
+  sort key is layout – so they are three line layers, closed, risky, open
+  from the bottom (`ROUTE_LINES`), each filtered to its roads by
+  `Scene.routes.byStatus`; the casing under them stays one layer. A closed
+  ascent is thinner too.
+- **Two sizes, not five.** A dot is large for a classic (`CLASSIC_FAME`)
+  and small for every other road (`DOT_FAME`), in any status: a red classic
+  is a large hollow ring. A scale of five sizes was one more thing to decode
+  and said less than the colour next to it.
+- **Names for what can be ridden.** On a fine pointer a road that is often
+  closed in the half-month carries no name until it is pointed at – its thin
+  ring says enough, and its name took the room a rideable road's needed. A
+  finger has no hover to bring the names back, so on a coarse pointer every
+  road keeps its name once its zoom is reached. What is selected or a favourite is named in any
+  status. Within one rank's label layer, open names are placed before risky
+  ones (`symbol-sort-key`); across ranks the ladder below still decides.
+- **Below zoom 8 a road's name is what pointing at it says.** Under
+  `ROAD_NAME_ZOOM` (`lib/prominence.ts`) no road carries a name at rest, not
+  even a classic – the selected one and the favourites aside; pointing at a
+  road opens its area's fan, which names it (below). Under `OVERVIEW_ZOOM`
+  the areas carry no names either. On a phone, eighty area names and every
+  classic were most of the picture, and a map of names said less than one
+  of colours. The dots, lines and outlines are all there; only the names
+  wait, as they already join by rank.
+- **A phone names by zoom, not by pointing.** A finger cannot point without
+  pressing, so a phone has no fan: a tap opens the panel. Instead the
+  classics are named from `CLASSIC_NAME_ZOOM_COARSE` (7), the other roads
+  join by rank from zoom 8 as on a desktop, closed ones included.
+- **Short names on the overview.** Between `ROAD_NAME_ZOOM` and `SHORT_NAME_ZOOM` a name is
+  written without the generic word in front – "Galibier", not "Col du
+  Galibier" (`shortName`, `lib/prominence.ts`) – unless what is left would
+  read as a town or a word (`KEEP_WHOLE`); the label can stand on any of
+  eight sides of its dot.
+- **The rest steps back.** At rest every tour is one calm tone (`--tour`),
+  so its colour cannot be mistaken for a status – a third of the tour
+  colours sat in the red and orange hues; the pointed-at or selected tour
+  takes its own colour. Towns are smaller and paler on the overview, and an
+  area is a faint trace with a one-line name.
+
+### The fan names a crowded area at its edge
+
+Where roads crowd – the Dolomites at zoom 7 – MapLibre keeps a few names
+and drops the rest. Pointing at an area, or at a road, town or loop in it,
+lays every road, town and loop of it the filters draw out in two columns
+beside its outline instead, each name with a thin line to its mark – a
+loop's line ends at the point of it nearest the area's centre: the margin
+labels of a printed map, made interactive (excentric labelling). It is
+their hover label – what the fan names gets no popup of its own, and the
+name the pointer is on, in the fan or on the map, says what the popup would
+have: a road's height, a town's labels, a loop's length and climb. Road and
+town names on the map step aside while the fan names them. It is never there
+at rest, because two dozen leader lines on every area would be the clutter
+it is meant to clear, and the map around it is left as it is: a veil that
+dimmed the rest made every hover a change of the whole picture. Pointing at
+a road also lights its area's outline, so the fan is seen to belong to it.
+An area with a single drawn mark has no fan – that mark keeps its popup –
+and phones have none at all (above).
+
+Close in, the fan steps aside again. Once an area's larger side on the
+screen is more than `FAN_FIT` (40 %) of the shorter side of what the panels
+leave of the map (`fanFits`), one stands in the area rather than before it:
+its marks are far enough apart to carry their own names, and lines from its
+edge would cross half the screen, so every mark has its popup back. A fixed
+zoom could not say this – the areas run from 10 to 120 km across, and
+windows differ – while the share takes zoom, area and window in one measure:
+on a laptop a middling area turns at about zoom 8.5, the Dolomites' around 9,
+a small one at 10. It is worked out from the area's box and the zoom the
+pass map takes at the end of each zoom, so the scene stays a pure function.
+When the fan has to shorten, the roads keep their places first – by status,
+then the classics – then the loops, then the towns; a loop through more than
+`TOUR_AREAS_MAX` areas is named by none of their fans.
+
+A road can lie in up to three areas. It opens one, its _primary_ area: the
+one whose centre is nearest (`areasOf`). A loop's position is the middle of
+its box; a loop through more than `TOUR_AREAS_MAX` areas is a journey
+rather than a part of one, and opens none – its tube says enough.
+
+`lib/fan.ts` decides both halves: which area is fanned out (`fanTarget` –
+the one pointed at, or the primary area of the road, town or loop pointed
+at, the open one first if it holds it; the open one while the pointer is on
+its names; else the one in the panel – which, once the camera has framed it,
+fills the screen and so has none) and where each name stands
+(`fanLayout` – the side by the outline's middle, a column sorted by height
+so the lines do not cross, the rideable roads and the classics kept when
+the screen is short and the rest counted, each column held on the screen).
+`buildScene` makes that choice once (`fanDecision`), offering a road only
+the areas that have a fan to open, and from the same choice drops the popup
+of a road the coming fan will name and lights the outline it belongs to – so
+the fan, the labels and the outline cannot disagree. It hands the choice to
+the pass map as `Scene.fanNext`, which the open fan follows after its delay,
+and the open area with its drawn roads as `Scene.fan`, marking those roads
+`fanned` in their feature state (`PassState`) so their own labels fade out –
+state, not a property, because a property would re-tile the passes source on
+every area the pointer crosses.
+`components/map/fan-overlay.tsx` draws it as HTML over the map, not as a
+layer: it projects the points again on every camera frame, and the names are
+buttons – pointing at one rings its road, pressing it opens it. The pass map
+opens a fan `FAN_OPEN_MS` (150 ms) after the pointer arrives, so a pointer
+crossing the map on its way somewhere opens nothing, and waits
+`FAN_RELEASE_MS` before it closes one, so the pointer can cross from a dot
+to a name.
 
 ### A tour holds its ascents; it does not sit beside them
 
@@ -197,7 +310,9 @@ A tour _is_ the union of several ascents – the Sellaronda is its four passes �
 so it is drawn as what it is: a tube the ascents run inside, wide enough to
 reach past them on both sides. What a tour contains is then read from the map
 rather than from the list, which a mark running alongside the ascents cannot
-say. The tube is three lines: the wall in the tour's colour, a narrower paper
+say. The tube is three lines: the wall – one calm tone shared by every tour
+at rest (`--tour`), the tour's own colour once it is pointed at or selected
+– a narrower paper
 line over it that leaves only a rim of the wall showing (`TOUR_PARTS.inside`),
 and the road itself along the middle (`TOUR_PARTS.road`), thin, for the
 stretches between two ascents. The ascent keeps the solid line and the opaque
@@ -260,7 +375,8 @@ below zoom 10, with a corner line saying which level was showing; it read as a
 second, hidden filter – a road the list held and the map did not – and is gone.
 
 What the zoom still decides is how the drawn roads read. A dot's size
-interpolates between `SIZE_ZOOMS` and grows with its fame, and the names join
+interpolates between `SIZE_ZOOMS` in its class (classic or not, above), the
+names are short below `SHORT_NAME_ZOOM`, and they join
 by rank on a ladder of their own (`PASS_LABELS` in `lib/layer-ids.ts`), because
 two hundred dots fit on an overview where two hundred names do not. The rank is
 the fame, moved by two editorial facts the data already holds (`rankOf` in
@@ -421,6 +537,38 @@ of Inter, the UI's own face, rasterised once into MapLibre's glyph atlases by
 the hermetic e2e suite renders labels and the map has no font server to wait
 for; `scripts/build-map-style.ts` writes the same style as four standalone
 JSON files, a scheme and a language each, for tuning in a style editor.
+
+### One hand, two voices
+
+Every name on the map – the basemap's and the app's – is set from one scale,
+`TYPE` in `lib/typography.ts`, which `lib/basemap.ts` and
+`components/map/app-layers.ts` both read. Before it, the two halves were set
+independently and competed: "TIROL" in spaced capitals stood as large as
+"Ötztal und Tiroler Oberland" next to it, and the basemap's cream halo looked
+different from the app's white one.
+
+- **One face, one halo.** Inter throughout, every name with the same halo:
+  the card colour (`paper`), `HALO_WIDTH` wide.
+- **The weight says who speaks.** The app's names – roads, towns, areas,
+  loops – are SemiBold and in their kind's colour (ink, the towns' blue, the
+  tour's colour). The basemap's are Regular and grey, a step below on the
+  same scale: a city grows to the size of a rank-5 road and stops there.
+- **The spacing says area or point.** A name that stands for an area – an
+  app area, a region, a country – is spaced by `AREA_SPACING`; a point is
+  not. Nothing is set in capitals.
+- **One regional layer at a time.** The basemap names regions (states) only
+  below `REGION_MAX_ZOOM`, which a test holds equal to `OVERVIEW_ZOOM`, and
+  countries only below `COUNTRY_MAX_ZOOM`: from the end of the overview on,
+  the app's areas are the regions that matter. A new base or scheme under an
+  open fan is hushed again by the map.
+- **The fan hushes the base.** While a fan is open, the basemap's names fade
+  to `BASE_LABELS_QUIET` (`quietBase`, the one paint property
+  `applyScene` sets), the way the names the fan carries step aside from
+  their dots. A raster base has its names baked in and is left as it is.
+
+The collisions follow the same order: MapLibre places the app's names first,
+so a basemap name gives way to a pass or a town rather than the other way
+round.
 
 ## MapLibre needs two workarounds
 

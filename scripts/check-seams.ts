@@ -80,6 +80,8 @@ const SEAMS: Seam[] = [
         "where every layer is defined: the base stack is swapped under the running map and the canvas icons are added to it",
       "components/map/apply-environment.ts":
         "the environment applier: the difference between the environment the map is in and the one it should be in, carried out in one fixed order",
+      "components/map/apply-scene.ts":
+        "the scene applier, for the one paint the scene decides: the basemap's names stepping back while a fan is open (`quietBase`)",
     },
     world: "the map's style",
   },

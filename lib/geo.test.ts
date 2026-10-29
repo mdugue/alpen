@@ -1,6 +1,13 @@
-import { expect, test } from "bun:test";
+import { describe, expect, test } from "bun:test";
 
-import { convexHull, haversine, paddedHull } from "@/lib/geo";
+import {
+  convexHull,
+  haversine,
+  insideRing,
+  labelSpot,
+  paddedHull,
+} from "@/lib/geo";
+import type { Ring } from "@/lib/geo";
 import type { LatLon } from "@/lib/types";
 
 const at = (lat: number, lon: number): LatLon => ({ lat, lon });
@@ -61,4 +68,54 @@ test("paddedHull makes an area of one point or a line of them, and none of nothi
     2,
   );
   expect(paddedHull([], 5)).toEqual([]);
+});
+
+describe("labelSpot", () => {
+  // A square of about 22 × 15 km round (10.1, 46.05).
+  const square: Ring = [
+    [10, 46],
+    [10.2, 46],
+    [10.2, 46.1],
+    [10, 46.1],
+    [10, 46],
+  ];
+  const center = { lat: 46.05, lon: 10.1 };
+
+  test("insideRing tells the inside from the outside", () => {
+    expect(insideRing(square, center)).toBe(true);
+    expect(insideRing(square, { lat: 46.2, lon: 10.1 })).toBe(false);
+  });
+
+  test("an empty area is named on its centre", () => {
+    expect(labelSpot(square, [], center)).toEqual(center);
+  });
+
+  test("the name keeps off the outline's edge, not only off the marks", () => {
+    // Crowded in the middle: the most room to the marks alone is a corner.
+    const crowd = [
+      center,
+      { lat: 46.05, lon: 10.06 },
+      { lat: 46.05, lon: 10.14 },
+    ];
+    const spot = labelSpot(square, crowd, center);
+    const edge = Math.min(
+      spot.lat - 46,
+      46.1 - spot.lat,
+      ((spot.lon - 10) * 77) / 111,
+      ((10.2 - spot.lon) * 77) / 111,
+    );
+    expect(edge).toBeGreaterThan(0.01);
+  });
+
+  test("a crowded centre pushes the name into the room beside it", () => {
+    const crowd = [
+      center,
+      { lat: 46.06, lon: 10.09 },
+      { lat: 46.04, lon: 10.11 },
+    ];
+    const spot = labelSpot(square, crowd, center);
+    expect(insideRing(square, spot)).toBe(true);
+    // Away from the crowd, and still inside the outline.
+    expect(Math.abs(spot.lat - 46.05)).toBeGreaterThan(0.02);
+  });
 });

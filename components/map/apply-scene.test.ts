@@ -4,7 +4,7 @@ import { applyScene, popupHtml } from "@/components/map/apply-scene";
 import type { SceneHost } from "@/components/map/apply-scene";
 import { ALL_SHOWN } from "@/lib/app-state";
 import { DE } from "@/lib/i18n/dictionaries";
-import { LAYERS, ROUTE_GHOST, SOURCE } from "@/lib/layer-ids";
+import { LAYERS, ROUTE_GHOST, ROUTE_LINES, SOURCE } from "@/lib/layer-ids";
 import { buildScene } from "@/lib/map-scene";
 import type { SceneInput } from "@/lib/map-scene";
 import { ascentKey } from "@/lib/route-key";
@@ -19,7 +19,7 @@ import { makePass, makeTown } from "@/test/fixtures";
  * cost nothing.
  */
 interface Call {
-  what: "data" | "filter" | "label" | "state";
+  what: "data" | "filter" | "label" | "quiet" | "state";
   id: string;
 }
 
@@ -28,6 +28,9 @@ const recorder = () => {
   const host: SceneHost = {
     label: (content) => {
       calls.push({ id: content?.name ?? "—", what: "label" });
+    },
+    quietBase: (quiet) => {
+      calls.push({ id: String(quiet), what: "quiet" });
     },
     setData: (source) => {
       calls.push({ id: source, what: "data" });
@@ -68,8 +71,10 @@ const town: TownRow = { areas: [], favorite: false, town: bormio };
 const scene = (extra: Partial<SceneInput> = {}) =>
   buildScene({
     env: { coarse: false },
+    fan: null,
     ghosts: [],
     hovered: null,
+    overFan: false,
     profileCursor: null,
     rows: {
       destination: [],
@@ -81,6 +86,7 @@ const scene = (extra: Partial<SceneInput> = {}) =>
     shown: ALL_SHOWN,
     tourBounds: {},
     townReach: REACH,
+    view: null,
     w: DE,
     you: null,
     ...extra,
@@ -91,9 +97,11 @@ describe("the first scene", () => {
     const { calls, host } = recorder();
     applyScene(host, null, scene());
     expect(of(calls, "filter")).toEqual([
-      LAYERS.route.mark,
       ...(LAYERS.route.companions ?? []),
       LAYERS.route.hit,
+      ROUTE_LINES.open,
+      ROUTE_LINES.risky,
+      ROUTE_LINES.closed,
       ROUTE_GHOST,
       LAYERS.tour.mark,
       ...LAYERS.tour.labels,
@@ -103,6 +111,10 @@ describe("the first scene", () => {
     expect(of(calls, "state")).toEqual([
       ascentKey("galibier", 0),
       ascentKey("stelvio", 0),
+      "galibier",
+      "stelvio",
+      // The towns' fan state, after the roads'.
+      "bormio",
     ]);
     expect(of(calls, "data")).toEqual([
       SOURCE.passes,
@@ -179,13 +191,42 @@ describe("the difference", () => {
         },
       }),
     );
+    // Both roads were rideable, so of the three line layers only the
+    // rideable one changes.
     expect(of(calls, "filter")).toEqual([
-      LAYERS.route.mark,
       ...(LAYERS.route.companions ?? []),
       LAYERS.route.hit,
+      ROUTE_LINES.open,
     ]);
     // The tours said nothing new, so their three layers were left alone.
     expect(of(calls, "filter")).not.toContain(LAYERS.tour.mark);
+  });
+});
+
+const fanned = (): ReturnType<typeof scene> => ({
+  ...scene(),
+  fan: { items: [], name: "Ortler", outline: [], slug: "ortler" },
+});
+
+describe("the basemap's names", () => {
+  test("step back while a fan is open, and only when it opens or closes", () => {
+    const opening = recorder();
+    applyScene(opening.host, scene(), fanned());
+    expect(of(opening.calls, "quiet")).toEqual(["true"]);
+
+    const staying = recorder();
+    applyScene(staying.host, fanned(), fanned());
+    expect(of(staying.calls, "quiet")).toEqual([]);
+
+    const closing = recorder();
+    applyScene(closing.host, fanned(), scene());
+    expect(of(closing.calls, "quiet")).toEqual(["false"]);
+  });
+
+  test("start at full strength: the first scene without a fan says nothing", () => {
+    const { calls, host } = recorder();
+    applyScene(host, null, scene());
+    expect(of(calls, "quiet")).toEqual([]);
   });
 });
 
