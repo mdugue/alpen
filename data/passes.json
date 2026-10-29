@@ -15712,7 +15712,11 @@
      "lat": 46.6497,
      "lon": 6.3197
     },
-    "label": "L'Abbaye (Nord)"
+    "label": "L'Abbaye (Nord)",
+    "check": {
+     "minPeakAt": 0.6,
+     "note": "Ab L'Abbaye erreicht die Straße nach gut 3 km die Höhe des Passes und läuft dann wellig über die bewaldete Hochfläche zum Col; das Geländemodell legt die höchste Probe deshalb auf knapp zwei Drittel der Strecke, nur 5 m über dem Ende. Ende (1 m vom Punkt) und Profilhöhe (+13 m) stimmen."
+    }
    }
   ]
  },
