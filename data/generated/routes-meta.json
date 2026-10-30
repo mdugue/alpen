@@ -316,7 +316,7 @@
   "coll-d-ordino:1": {"fetchedAt":"2026-10-29","inputs":"da36cfd8df2347c8","source":"ors"},
   "coll-de-femenia:0": {"fetchedAt":"2026-10-30","inputs":"74c67f8e1fe6ea1b","source":"ors"},
   "coll-de-sa-batalla:0": {"fetchedAt":"2026-10-30","inputs":"46ae6dc93c7a5385","source":"ors"},
-  "coll-de-sa-gramola:0": {"fetchedAt":"2026-10-24","inputs":"25d9d5ed7552aeaa","source":"osrm"},
+  "coll-de-sa-gramola:0": {"fetchedAt":"2026-10-30","inputs":"7b4d88047285303b","source":"ors"},
   "coll-de-soller:0": {"fetchedAt":"2026-10-30","inputs":"701c2e4bd233cde8","source":"ors"},
   "coll-de-soller:1": {"fetchedAt":"2026-10-30","inputs":"b72d49a1ec1570ed","source":"ors"},
   "collada-de-toses:0": {"fetchedAt":"2026-10-29","inputs":"89f19f6c19fbe034","source":"ors"},
