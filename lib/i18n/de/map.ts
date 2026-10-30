@@ -8,6 +8,13 @@ export const map = {
   base: "Grundkarte",
   /** The one overlay: waymarked cycling routes. */
   cycleRoutes: "Radrouten",
+  /** The fan: an area's roads named round its outline (`FanOverlay`). */
+  fan: {
+    /** Under a column, for the roads the screen had no row for. */
+    more: "+ {n} weitere",
+    /** The group of names, for the screen reader. */
+    region: "Straßen in {name}",
+  },
   /** The hover line of a road the filters leave out, drawn as a grey shadow. */
   filteredOut: "nicht im Filter",
   /** The filter bar over the map (`FilterBar`): one token per criterion. */

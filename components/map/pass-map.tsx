@@ -33,6 +33,7 @@ import {
 import type { MapEnv, Provenance } from "@/components/map/apply-environment";
 import { applyScene, sceneHost } from "@/components/map/apply-scene";
 import type { SceneHost } from "@/components/map/apply-scene";
+import { FanOverlay } from "@/components/map/fan-overlay";
 import { LanguageField } from "@/components/map/language-field";
 import {
   baseLayers,
@@ -63,6 +64,7 @@ import {
 import { DEFAULT_VIEW } from "@/lib/app-state";
 import type { MapView, Selection, Shown } from "@/lib/app-state";
 import { BASEMAP_SOURCE_ID, basemapSource, GLYPHS } from "@/lib/basemap";
+import type { FitView } from "@/lib/fan";
 import type { Bounds } from "@/lib/geo";
 import type { Lang } from "@/lib/i18n";
 import { HIT_LAYERS, SOURCE } from "@/lib/layer-ids";
@@ -229,6 +231,11 @@ const pickAt = (m: MLMap, x: number, y: number): Selection | null => {
 // serve; scripts/copy-maplibre-worker.ts places a copy under public/maplibre.
 setWorkerUrl("/maplibre/maplibre-gl-worker.mjs");
 
+/** How long the fan stays open once nothing holds it, in ms: the trip from a dot to its name. */
+const FAN_RELEASE_MS = 250;
+/** How long the pointer rests before a fan opens, in ms: long enough to cross a road, short enough to feel like the answer. */
+const FAN_OPEN_MS = 150;
+
 export const PassMap = ({
   rows,
   ghosts,
@@ -277,6 +284,20 @@ export const PassMap = ({
     if (el) el.style.transform = `rotate(${-bearing.current}deg)`;
   };
   /**
+   * The area whose roads are named round it (lib/fan.ts), and whether the
+   * pointer is on those names. The scene says which area it should be, and
+   * the effect below says when.
+   */
+  const [fan, setFan] = useState<string | null>(null);
+  /** Which area's names the pointer is on – only that area's fan it holds. */
+  const [overFan, setOverFan] = useState<string | null>(null);
+  /**
+   * The zoom and the map's size, which decide whether an area is small
+   * enough on the screen to be fanned out (`fanFits`, lib/fan.ts): taken when
+   * a zoom ends and when the map is resized, not on every frame of either.
+   */
+  const [measured, setMeasured] = useState<FitView | null>(null);
+  /**
    * What the map draws, as one value, and what of it has been applied.
    *
    * The scene is built from the props on every render (`buildScene`,
@@ -286,17 +307,46 @@ export const PassMap = ({
    */
   const scene = buildScene({
     env: { coarse: env.coarsePointer },
+    fan,
     ghosts,
     hovered,
+    overFan: overFan === fan,
     profileCursor,
     rows,
     selection,
     shown,
     tourBounds: assets.tourBounds,
     townReach,
+    // What the panels leave of the map is what the area is measured against.
+    // The panels float over the map, so at least half of it counts: a narrow
+    // window with both open would otherwise leave no area a fan.
+    view: measured && {
+      height: Math.max(
+        measured.height - inset.top - inset.bottom,
+        measured.height / 2,
+      ),
+      width: Math.max(
+        measured.width - inset.left - inset.right,
+        measured.width / 2,
+      ),
+      zoom: measured.zoom,
+    },
     w: t,
     you: located.at,
   });
+  // Opening waits `FAN_OPEN_MS`, so a pointer crossing the map does not set
+  // off a fan per road it passes; closing, or falling back to the area in the
+  // panel, waits `FAN_RELEASE_MS`.
+  const { fanNext } = scene;
+  const fanOpening = fanNext !== null && hovered !== null;
+  useEffect(() => {
+    if (fanNext === fan) return;
+    const id = setTimeout(
+      () => setFan(fanNext),
+      fanOpening ? FAN_OPEN_MS : FAN_RELEASE_MS,
+    );
+    return () => clearTimeout(id);
+  }, [fan, fanNext, fanOpening]);
   const applied = useRef<Scene | null>(null);
   const host = useRef<SceneHost | null>(null);
   /**
@@ -439,7 +489,8 @@ export const PassMap = ({
         [SOURCE.destinations]: { data: EMPTY, type: "geojson" },
         [SOURCE.ghosts]: { data: EMPTY, type: "geojson" },
         [SOURCE.hover]: { data: EMPTY, type: "geojson" },
-        [SOURCE.passes]: { data: EMPTY, type: "geojson" },
+        // Keyed by slug for the fan's feature state (`PassState`), as the towns are.
+        [SOURCE.passes]: { data: EMPTY, promoteId: "slug", type: "geojson" },
         [SOURCE.reach]: { data: EMPTY, type: "geojson" },
         // Static files with a content hash in the name (scripts/build-map-assets.ts);
         // promoteId makes the `id` property the feature id for feature state.
@@ -453,7 +504,7 @@ export const PassMap = ({
           promoteId: "id",
           type: "geojson",
         },
-        [SOURCE.towns]: { data: EMPTY, type: "geojson" },
+        [SOURCE.towns]: { data: EMPTY, promoteId: "slug", type: "geojson" },
       },
       version: 8,
     };
@@ -506,9 +557,22 @@ export const PassMap = ({
     // A link that carries a tilt opens tilted, and the terrain that belongs to
     // it is the environment applier's to switch on – the style itself carries
     // none, so `is3d` is the whole of it.
+    const measure = () => {
+      const { clientHeight: height, clientWidth: width } = m.getContainer();
+      const zoom = Math.round(m.getZoom() * 10) / 10;
+      // A resize fires every frame of a drag; only a change is news.
+      setMeasured((was) =>
+        was?.zoom === zoom && was.width === width && was.height === height
+          ? was
+          : { height, width, zoom },
+      );
+    };
+    m.on("zoomend", measure);
+    m.on("resize", measure);
     m.on("style.load", () => {
       addIcons(m, colors);
       if (view.pitch > 1) setIs3d(true);
+      measure();
       setReady(true);
     });
 
@@ -549,7 +613,11 @@ export const PassMap = ({
         at = { x: e.point.x, y: e.point.y };
         hover();
       });
-      m.on("mouseout", () => {
+      m.on("mouseout", (e) => {
+        // Onto a name of the fan, which reports its own road: the browser
+        // tells the name first, and a `null` here would undo it.
+        const to = e.originalEvent.relatedTarget;
+        if (to instanceof Element && to.closest("[data-fan]")) return;
         at = null;
         hover();
       });
@@ -664,6 +732,9 @@ export const PassMap = ({
     if (!m || !root || !controls || !prev || !ready) return;
     applyEnvironment({ controls, map: m, root }, mapEnv, prev);
     appliedEnv.current = mapEnv;
+    // A new base or scheme brings the basemap's names back at full strength;
+    // an open fan hushes them again (`quietBase`).
+    if (applied.current?.fan) host.current?.quietBase(true);
   }, [mapEnv, ready]);
 
   // --- The camera ----------------------------------------------------------
@@ -849,6 +920,17 @@ export const PassMap = ({
     <div className="bg-muted relative size-full overflow-hidden">
       {/* Plain "absolute inset-0" loses against the unlayered maplibre-gl.css (`.maplibregl-map { position: relative }`). */}
       <div ref={container} className="size-full" />
+      <FanOverlay
+        map={map}
+        ready={ready}
+        fan={scene.fan}
+        inset={inset}
+        coarse={env.coarsePointer}
+        hovered={hovered}
+        onHover={onHover}
+        onSelect={onSelect}
+        onOver={setOverFan}
+      />
 
       {/*
        * The map's own corner: which way is up, how it is framed, and what the

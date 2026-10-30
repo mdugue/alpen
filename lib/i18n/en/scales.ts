@@ -71,7 +71,7 @@ export const scales = {
   },
   symbols: {
     heading: "Map symbols",
-    text: "**Circle:** pass – colour shows the status, hollow circle = often closed, size = fame. **Grey dot:** a road outside the filters; tap it to open it. **Star:** favourite. **Line:** loop (its own colour) or ascent (status colour). **Diamond:** cycling town. Which roads the map shows is decided by the filters alone, not by the zoom – what they leave out stays as a grey dot. The zoom only decides when the names join.",
+    text: "**Circle:** pass – colour shows the status, hollow circle = often closed; large = classic, small = every other road. Rideable roads lie over limited ones, those over closed ones. **Grey dot:** a road outside the filters; tap it to open it. **Star:** favourite. **Line:** ascent (status colour) or loop (one calm shared tone, its own colour when pointed at or selected). **Diamond:** cycling town. **Area:** destination – point at it, or at a road, town or loop in it, and all its roads, towns and loops are named at its edge, the one under the pointer with its height or length; a road in several areas opens the one whose centre is nearest. Zoomed in until it fills a good part of the map, every mark has its own label again. Which roads the map shows is decided by the filters alone, not by the zoom – what they leave out stays as a grey dot. The zoom only decides when the names join: far out no road names, destinations once you zoom in, then short (“Galibier”). With a mouse, a road that is often closed carries its name only once you point at it. On a phone the classics are named from far out, the other roads as you zoom further in, and a tap opens the road.",
   },
   tours: {
     heading: "Kind of tour",

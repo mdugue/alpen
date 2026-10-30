@@ -12,6 +12,8 @@ import {
 import { DE } from "@/lib/i18n/dictionaries";
 import { contrast, PALETTE } from "@/lib/palette";
 import type { Scheme } from "@/lib/palette";
+import { OVERVIEW_ZOOM } from "@/lib/prominence";
+import { REGION_MAX_ZOOM } from "@/lib/typography";
 
 /** The `source-layer`s OpenFreeMap's TileJSON lists (OpenMapTiles schema). */
 const SOURCE_LAYERS = new Set([
@@ -74,6 +76,25 @@ describe("basemapStyle", () => {
     const by = (id: string) => detail.find((l) => l.id === id)!;
     expect(by("base-road-label").minzoom).toBeGreaterThanOrEqual(12);
     expect(by("base-road-minor").minzoom).toBeGreaterThanOrEqual(11);
+  });
+});
+
+describe("the basemap's names", () => {
+  const labels = basemapLayers("light").detail.filter(
+    (l) => l.type === "symbol",
+  );
+
+  test("hand the regions over to the app's areas where those are first named", () => {
+    expect(REGION_MAX_ZOOM).toBe(OVERVIEW_ZOOM);
+    const state = labels.find((l) => l.id === "base-place-state");
+    expect(state?.maxzoom).toBe(REGION_MAX_ZOOM);
+  });
+
+  test("are never set in capitals, and wear the app's halo", () => {
+    for (const l of labels) {
+      expect(l.layout).not.toHaveProperty("text-transform");
+      expect(l.paint).toHaveProperty("text-halo-color", PALETTE.light.paper);
+    }
   });
 });
 

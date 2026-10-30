@@ -183,3 +183,112 @@ export const paddedHull = (points: readonly LatLon[], km: number): Ring => {
   );
   return ring.length > 0 ? [...ring, ring[0]!] : [];
 };
+
+/** Whether a point lies inside a ring (even-odd rule, lon/lat as a plane). */
+export const insideRing = (ring: Ring, p: LatLon): boolean => {
+  let inside = false;
+  for (let i = 0, j = ring.length - 1; i < ring.length; j = i, i += 1) {
+    const [xi, yi] = ring[i]!;
+    const [xj, yj] = ring[j]!;
+    if (
+      yi > p.lat !== yj > p.lat &&
+      p.lon < ((xj - xi) * (p.lat - yi)) / (yj - yi) + xi
+    )
+      inside = !inside;
+  }
+  return inside;
+};
+
+/** Steps per side of the grid `labelSpot` tries. */
+const SPOT_GRID = 24;
+/** How much a kilometre away from the centre costs against a kilometre of room. */
+const SPOT_PULL = 0.25;
+/**
+ * How far the outline's edge counts as room, against a mark's: a name close
+ * to the rim spills across it, so the edge crowds it like a mark – a little
+ * less, because what lies beyond it is usually empty map.
+ */
+const SPOT_EDGE = 1.5;
+
+/**
+ * How far a point is from a ring's edge, in km, with the distance across
+ * counted half as `labelSpot` counts it: a name is wide, not tall.
+ */
+const edgeKm = (ring: Ring, p: LatLon, kmLon: number, kmLat: number) => {
+  let d = Number.POSITIVE_INFINITY;
+  for (let i = 1; i < ring.length; i += 1) {
+    const [ax, ay] = ring[i - 1]!;
+    const [bx, by] = ring[i]!;
+    const a = { x: ((ax - p.lon) * kmLon) / 2, y: (ay - p.lat) * kmLat };
+    const b = { x: ((bx - p.lon) * kmLon) / 2, y: (by - p.lat) * kmLat };
+    const dx = b.x - a.x;
+    const dy = b.y - a.y;
+    const len = dx * dx + dy * dy;
+    const t =
+      len === 0 ? 0 : Math.min(1, Math.max(0, -(a.x * dx + a.y * dy) / len));
+    d = Math.min(d, Math.hypot(a.x + t * dx, a.y + t * dy));
+  }
+  return d;
+};
+
+/**
+ * Where an area's name stands: the point inside its outline with the most
+ * room around it, measured to the nearest mark (`marks`) and to the outline's
+ * own edge (`SPOT_EDGE`), pulled a little
+ * towards the centre the area was drawn around so it does not drift into a
+ * corner. A name is about three times as wide as it is tall, so room to the
+ * side counts half – a mark beside the name crowds it less than one above.
+ *
+ * It replaced the centre itself, which put the name of every area with a
+ * classic at its middle – the Alta Badia's on the Sella group – over the very
+ * dots it is about. A grid, not a true pole of inaccessibility: the outline is
+ * a padded hull of a few dozen kilometres, and a step of a kilometre or two is
+ * finer than a label.
+ */
+export const labelSpot = (
+  ring: Ring,
+  marks: readonly LatLon[],
+  center: LatLon,
+): LatLon => {
+  if (ring.length < 4) return center;
+  const box = bounds(ring.map(([lon, lat]) => [lat, lon]));
+  const [w, s, e, n] = box;
+  const kmLat = 111.2;
+  const kmLon = kmLat * Math.cos((center.lat * Math.PI) / 180);
+  const near = marks.filter(
+    (m) =>
+      m.lon >= w - 0.2 &&
+      m.lon <= e + 0.2 &&
+      m.lat >= s - 0.2 &&
+      m.lat <= n + 0.2,
+  );
+  let best = center;
+  let bestScore = Number.NEGATIVE_INFINITY;
+  for (let i = 0; i <= SPOT_GRID; i += 1)
+    for (let j = 0; j <= SPOT_GRID; j += 1) {
+      const p = {
+        lat: s + ((n - s) * j) / SPOT_GRID,
+        lon: w + ((e - w) * i) / SPOT_GRID,
+      };
+      if (!insideRing(ring, p)) continue;
+      let room = SPOT_EDGE * edgeKm(ring, p, kmLon, kmLat);
+      for (const m of near) {
+        const dx = ((m.lon - p.lon) * kmLon) / 2;
+        const dy = (m.lat - p.lat) * kmLat;
+        room = Math.min(room, Math.hypot(dx, dy));
+      }
+      const pull = Math.hypot(
+        (center.lon - p.lon) * kmLon,
+        (center.lat - p.lat) * kmLat,
+      );
+      const score = room - SPOT_PULL * pull;
+      if (score > bestScore) {
+        bestScore = score;
+        best = p;
+      }
+    }
+  return {
+    lat: Math.round(best.lat * 1000) / 1000,
+    lon: Math.round(best.lon * 1000) / 1000,
+  };
+};

@@ -1,4 +1,10 @@
-import { bounds, haversine, paddedHull, REACH_MAX_KM } from "@/lib/geo";
+import {
+  bounds,
+  haversine,
+  labelSpot,
+  paddedHull,
+  REACH_MAX_KM,
+} from "@/lib/geo";
 import type { Bounds, Ring } from "@/lib/geo";
 import type { Messages } from "@/lib/i18n";
 import { fill } from "@/lib/i18n/fill";
@@ -242,6 +248,12 @@ export interface DestinationMembers {
    * into the next one's, and the lines of the roads say where they start.
    */
   outline: Ring;
+  /**
+   * Where the map writes the area's name: the roomiest spot inside the
+   * outline, away from every road and town drawn there, members or not
+   * (`labelSpot`). The centre put the name over the very roads it is about.
+   */
+  label: LatLon;
 }
 
 /** How far the outline reaches past the summits and towns it is drawn around, in km. */
@@ -278,6 +290,7 @@ export const membersOf = (
   );
   return {
     bounds: bounds(outline.map(([lon, lat]) => [lat, lon])),
+    label: labelSpot(outline, [...passes, ...towns], d.center),
     outline,
     passes: own.map((p) => p.slug),
     tours: ownTours.map((t) => t.slug),

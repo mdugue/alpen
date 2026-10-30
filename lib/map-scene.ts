@@ -23,13 +23,23 @@ import type { FilterSpecification } from "maplibre-gl";
 
 import type { Selection, Shown } from "@/lib/app-state";
 import { isShown } from "@/lib/app-state";
+import {
+  areasOf,
+  FAN_MIN_ENTRIES,
+  fanFits,
+  fanKey,
+  fanTarget,
+  nearness,
+  TOUR_AREAS_MAX,
+} from "@/lib/fan";
+import type { FanKind, FitView } from "@/lib/fan";
 import type { Bounds, Ring } from "@/lib/geo";
 import { surfaceWord, tagLabel, typeWord } from "@/lib/i18n";
 import type { Messages } from "@/lib/i18n";
 import { visibleBounds } from "@/lib/map-camera";
 import type { TownReach } from "@/lib/nearby";
-import { rankOf } from "@/lib/prominence";
-import { HOME_RANGE, rangeOf } from "@/lib/regions";
+import { rankOf, shortName } from "@/lib/prominence";
+import { CLASSIC_FAME, HOME_RANGE, rangeOf, STATUSES } from "@/lib/regions";
 import { ascentKey } from "@/lib/route-key";
 import type { PassRow, Rows, TourRow, TownRow } from "@/lib/rows";
 import type { Fix, LatLon, Status, Surface, Tag } from "@/lib/types";
@@ -47,6 +57,8 @@ export interface PassProps {
   name: string;
   /** Where the road stands on the label ladder (`rankOf`, lib/prominence.ts). */
   rank: number;
+  /** The name as the overview writes it (`shortName`, lib/prominence.ts). */
+  short: string;
   selected: Flag;
   slug: string;
   status: Status;
@@ -75,10 +87,12 @@ export interface TownProps {
 
 /**
  * A destination on the map: its name, and how much of it is rideable in the
- * chosen half-month as a share from 0 to 1 – what the outline is tinted by.
- * The outline and the point its name stands on carry the same properties.
- * The hover rides in the properties rather than in feature state because the
- * source is rewritten from the rows anyway, and one path is fewer than two.
+ * chosen half-month as a share from 0 to 1 – which of two crowding names
+ * MapLibre keeps. The outline and the point its name stands on carry the same
+ * properties. The hover rides in the properties rather than in feature state
+ * because the source is rewritten from the rows anyway, and one path is fewer
+ * than two. How many of its roads are good is not on the map: the hover label
+ * and the list say it, and on the map it was the most text there was.
  */
 export interface DestinationProps {
   favorite: Flag;
@@ -88,8 +102,6 @@ export interface DestinationProps {
   share: number;
   selected: Flag;
   slug: string;
-  /** "7 von 9 Straßen gut" – the second line of the label. */
-  text: string;
 }
 
 /**
@@ -129,21 +141,70 @@ export interface PopupContent {
   tags: readonly (readonly [tag: Tag, label: string])[];
 }
 
+/**
+ * An area's roads, towns and loops laid out round its outline (lib/fan.ts):
+ * which area, its outline and the drawn members it holds, on the map's
+ * coordinates. Where they go on the screen is the overlay's to work out,
+ * because only the map knows where a coordinate is drawn.
+ */
+export interface SceneFan {
+  slug: string;
+  name: string;
+  outline: Ring;
+  items: {
+    kind: FanKind;
+    slug: string;
+    name: string;
+    /**
+     * What its hover label would have said beside the name – a road's height,
+     * a town's labels, a loop's length and climb – said beside the name the
+     * pointer is on.
+     */
+    detail: string | null;
+    status: Status | null;
+    classic: boolean;
+    /** Where its line ends: the dot, or for a loop the point of it nearest the area's centre. */
+    lon: number;
+    lat: number;
+  }[];
+}
+
+/**
+ * A pass dot's or a town's feature state: whether the fan names it right now
+ * (`Scene.fan`), so its own label steps aside. State rather than a property,
+ * because a fan opens on every area the pointer crosses and a property would
+ * re-tile the whole source each time.
+ */
+export interface PassState {
+  fanned: Flag;
+}
+
 export interface Scene {
   routes: {
+    /** Every drawn ascent: the rim under the lines, the dash over them and the hit area. */
     filter: FilterSpecification;
+    /**
+     * The same ascents split by status, one line layer each (`ROUTE_LINES`),
+     * so a rideable road is drawn over a closed one where two cross. The
+     * status is feature state, and feature state cannot order a layer.
+     */
+    byStatus: Record<Status, FilterSpecification>;
     /** Which ascents are drawn as the shadows' thin grey lines (`ROUTE_GHOST`). */
     ghosts: FilterSpecification;
     state: Record<string, RouteState>;
   };
   tours: { filter: FilterSpecification; state: Record<string, TourState> };
   passes: FeatureCollection<Point, PassProps>;
+  /** Keyed by slug, every drawn pass. */
+  passState: Record<string, PassState>;
+  /** The same for the towns, whose names join from zoom 8. */
+  townState: Record<string, PassState>;
   /** The roads the filters leave out, as shadows; empty while the roads are off the map. */
   ghosts: FeatureCollection<Point, GhostProps>;
   towns: FeatureCollection<Point, TownProps>;
   /** The destination outlines, under everything else; empty when their switch is off. */
   destinations: FeatureCollection<Polygon, DestinationProps>;
-  /** Where each destination's name stands: its centre. */
+  /** Where each destination's name stands: the roomiest spot in its outline (`labelSpot`). */
   destinationLabels: FeatureCollection<Point, DestinationProps>;
   hover: {
     mark: FeatureCollection<Point, HoverProps>;
@@ -151,6 +212,13 @@ export interface Scene {
     hull: Ring | null;
     popup: PopupContent | null;
   };
+  /** The area whose roads are named round it (`fanTarget`), or nothing. */
+  fan: SceneFan | null;
+  /**
+   * The area the fan should show (`fanTarget`), which `fan` follows after a
+   * delay: the pass map holds it, the scene only says where it is going.
+   */
+  fanNext: string | null;
   /** The road point under the elevation-profile cursor. */
   cursor: FeatureCollection<Point, Record<string, never>>;
   /**
@@ -187,6 +255,15 @@ export interface SceneInput {
   profileCursor: LatLon | null;
   /** The visitor's position, once they have asked for it; never stored, never in a link. */
   you: Fix | null;
+  /** The area whose roads are fanned out round it now (`Scene.fanNext` a moment ago). */
+  fan: string | null;
+  /** Whether the pointer is on the open fan's names, which holds it open. */
+  overFan: boolean;
+  /**
+   * The zoom and the size of what the panels leave of the map, for whether an
+   * area is small enough to fan out (`fanFits`); `null` before the map is.
+   */
+  view: FitView | null;
   /**
    * What the pointer can do here. A coarse pointer has no hover to speak of:
    * a finger that touches a mark has already tapped it, and a label under the
@@ -281,6 +358,10 @@ const shadows = (ghosts: readonly PassRow[], selPass: string | null) =>
 const labelled = (tags: readonly Tag[], w: Messages) =>
   tags.map((tag) => [tag, tagLabel(tag, w)] as const);
 
+/** A loop's one line: how long it is and how much it climbs. */
+const tourSubtitle = ({ tour }: TourRow, w: Messages) =>
+  `${w.vocab.unit.approx} ${fmtUnit(tour.km, "km", 0, w.lang)} · ${fmtUnit(tour.elevationGain, w.vocab.unit.climb, 0, w.lang)}`;
+
 /** The northernmost corner of a ring, `[lon, lat]`. */
 const topOf = (ring: Ring): [number, number] => {
   let [lon, lat] = ring[0] ?? [0, 0];
@@ -331,9 +412,163 @@ const toursDrawn = (
   return { strayTour, tourState };
 };
 
+/**
+ * What the fan is built from: the scene's input and the roads it draws – and
+ * the fans already built for it, since one scene asks after the same area
+ * several times.
+ */
+interface FanSource {
+  input: SceneInput;
+  drawn: readonly PassRow[];
+  built: Map<string, SceneFan | null>;
+}
+
+/** A loop's point nearest a centre: where the fan's line to it ends. */
+const nearestOn = (waypoints: readonly LatLon[], to: LatLon): LatLon => {
+  let best = waypoints[0]!;
+  for (const p of waypoints) if (nearness(to, p) < nearness(to, best)) best = p;
+  return best;
+};
+
+/**
+ * The fan's half of the scene: the area, if the map draws it, and the roads,
+ * towns and loops of it the filters draw – nothing when there is only one to
+ * name, or when the area is too large on the screen for a fan (`fanFits`).
+ */
+const buildFan = (
+  slug: string,
+  { drawn, input }: FanSource,
+): SceneFan | null => {
+  const { rows, shown, view, w } = input;
+  const row = shown.destinations
+    ? rows.destination.find((r) => r.destination.slug === slug)
+    : undefined;
+  if (!row || !fanFits(row.members.bounds, view)) return null;
+  const { center } = row.destination;
+  const { members } = row;
+  const roads = shown.passes
+    ? drawn.filter((r) => members.passes.includes(r.pass.slug))
+    : [];
+  const towns = rows.town.filter((r) => members.towns.includes(r.town.slug));
+  // A loop through more areas than `TOUR_AREAS_MAX` is a journey, not one of
+  // the area's loops: it opens no fan, and no fan names it.
+  const areasHolding = (tour: string) =>
+    rows.destination.filter((r) => r.members.tours.includes(tour)).length;
+  const tours = rows.tour.filter(
+    (r) =>
+      members.tours.includes(r.tour.slug) &&
+      isShown(shown, "tour", r.tour.slug) &&
+      areasHolding(r.tour.slug) <= TOUR_AREAS_MAX,
+  );
+  const items: SceneFan["items"] = [
+    ...roads.map((r) => ({
+      classic: r.pass.fame >= CLASSIC_FAME,
+      detail: fmtUnit(r.pass.elevation, "m", 0, w.lang),
+      kind: "pass" as const,
+      lat: r.pass.lat,
+      lon: r.pass.lon,
+      name: r.pass.name,
+      slug: r.pass.slug,
+      status: r.status,
+    })),
+    ...towns.map((r) => ({
+      classic: false,
+      detail:
+        labelled(r.town.tags, w)
+          .map(([, label]) => label)
+          .join(" · ") || null,
+      kind: "town" as const,
+      lat: r.town.lat,
+      lon: r.town.lon,
+      name: r.town.name,
+      slug: r.town.slug,
+      status: null,
+    })),
+    ...tours.map((r) => ({
+      classic: false,
+      detail: tourSubtitle(r, w),
+      kind: "tour" as const,
+      ...nearestOn(r.tour.waypoints, center),
+      name: r.tour.name,
+      slug: r.tour.slug,
+      status: r.status,
+    })),
+  ];
+  if (items.length < FAN_MIN_ENTRIES) return null;
+  return {
+    items,
+    name: row.destination.name,
+    outline: members.outline,
+    slug: row.destination.slug,
+  };
+};
+
+/** One area's fan, built once per scene (`buildFan`). */
+const fanOf = (slug: string | null, src: FanSource): SceneFan | null => {
+  if (slug === null) return null;
+  if (!src.built.has(slug)) src.built.set(slug, buildFan(slug, src));
+  return src.built.get(slug) ?? null;
+};
+
+/**
+ * Which area the fan should show, and which outline answers the pointer – one
+ * decision for the fan, the labels it replaces and the outline, so the three
+ * cannot disagree. A road, town or tour offers only the areas that have a fan
+ * to open (`fanOf`); its outline lights even where there is none.
+ */
+const fanDecision = (src: FanSource) => {
+  const { env, fan, ghosts, hovered, overFan, rows, selection, tourBounds } =
+    src.input;
+  const index = { ...rows, pass: [...src.drawn, ...ghosts], tourBounds };
+  const areas = (sel: Selection) => areasOf(sel, index);
+  const opens = (a: string | null) => fanOf(a, src) !== null;
+  // A finger has no hover, and beside the drawer a fan has no room: on a
+  // phone the names come with the zoom instead (`appLayers`).
+  const target = env.coarse
+    ? null
+    : fanTarget({
+        areasOf: (sel) => areas(sel).filter(opens),
+        current: fan,
+        // An area pointed at that is too large for a fan is as good as
+        // nothing pointed at: the fan open or in the panel stays.
+        hovered:
+          hovered?.kind === "destination" && !opens(hovered.slug)
+            ? null
+            : hovered,
+        overFan: fan !== null && overFan,
+        selection,
+      });
+  // An area pointed at or open in the panel is no exception to the rule:
+  // too large on the screen, it has no fan either.
+  const next = opens(target) ? target : null;
+  const own = hovered ? areas(hovered) : [];
+  const pointed =
+    slugOf(hovered, "destination") ??
+    (next !== null && own.includes(next) ? next : own[0]);
+  // What the fan is about to name, so no popup flashes before it opens.
+  const fanning = new Set(fanOf(next, src)?.items.map(fanKey));
+  return { fanning, hoverArea: pointed, next };
+};
+
+/** Which drawn marks of a kind the fan names, so their own labels step aside meanwhile. */
+const fannedState = (
+  slugs: readonly string[],
+  kind: FanKind,
+  fan: SceneFan | null,
+): Record<string, PassState> => {
+  const named = new Set(fan?.items.map(fanKey));
+  return Object.fromEntries(
+    slugs.map((slug) => [
+      slug,
+      { fanned: flag(named.has(fanKey({ kind, slug }))) },
+    ]),
+  );
+};
+
 export const buildScene = (input: SceneInput): Scene => {
   const {
     env,
+    fan,
     ghosts,
     hovered,
     profileCursor,
@@ -396,8 +631,22 @@ export const buildScene = (input: SceneInput): Scene => {
   const markedDestination = shown.destinations ? destinationRow : undefined;
   const box = hoverTour ? tourBounds[hoverTour] : undefined;
 
+  const src: FanSource = { built: new Map(), drawn, input };
+  const fanned = fanOf(fan, src);
+  const { fanning, hoverArea, next: fanNext } = fanDecision(src);
+  const fanNames = (kind: FanKind, slug: string) =>
+    fanning.has(fanKey({ kind, slug }));
+
   const popup = (): PopupContent | null => {
     if (env.coarse) return null;
+    // A road, town or loop the fan names has its say there – its name and
+    // its line beside the area – so it carries no hover label of its own,
+    // not even in the moment before its fan opens. One outside every area,
+    // alone in its area, in an area too large for a fan, or a shadow, still
+    // does.
+    if (markedPass && fanNames("pass", markedPass.pass.slug)) return null;
+    if (markedTown && fanNames("town", markedTown.town.slug)) return null;
+    if (tourRow && fanNames("tour", tourRow.tour.slug)) return null;
     if (markedPass)
       return {
         anchor: [markedPass.pass.lon, markedPass.pass.lat],
@@ -417,7 +666,7 @@ export const buildScene = (input: SceneInput): Scene => {
       return {
         anchor: [(box[0] + box[2]) / 2, (box[1] + box[3]) / 2],
         name: tourRow.tour.name,
-        subtitle: `${w.vocab.unit.approx} ${fmtUnit(tourRow.tour.km, "km", 0, w.lang)} · ${fmtUnit(tourRow.tour.elevationGain, w.vocab.unit.climb, 0, w.lang)}`,
+        subtitle: tourSubtitle(tourRow, w),
         tags: [],
       };
     if (markedDestination)
@@ -457,7 +706,7 @@ export const buildScene = (input: SceneInput): Scene => {
     (row) => ({
       props: {
         favorite: flag(row.favorite),
-        hovered: flag(row.destination.slug === hoverDestination),
+        hovered: flag(row.destination.slug === hoverArea),
         name: row.destination.name,
         selected: flag(row.destination.slug === selDestination),
         share: row.verdict.total
@@ -465,7 +714,6 @@ export const buildScene = (input: SceneInput): Scene => {
             row.verdict.total
           : 0,
         slug: row.destination.slug,
-        text: row.text,
       },
       row,
     }),
@@ -480,7 +728,7 @@ export const buildScene = (input: SceneInput): Scene => {
     ),
     destinationLabels: collection(
       destinations.map(({ props, row }) => ({
-        at: [row.destination.center.lon, row.destination.center.lat] as const,
+        at: [row.members.label.lon, row.members.label.lat] as const,
         props,
       })),
     ),
@@ -495,6 +743,8 @@ export const buildScene = (input: SceneInput): Scene => {
       })),
       type: "FeatureCollection",
     },
+    fan: fanned,
+    fanNext,
     ghosts: shadows(shown.passes ? ghosts : [], selPass),
     hover: {
       hull: (markedTown && townReach[markedTown.town.slug]) ?? null,
@@ -508,6 +758,11 @@ export const buildScene = (input: SceneInput): Scene => {
       popup: popup(),
     },
     opening: opening ?? bounds,
+    passState: fannedState(
+      drawn.map((r) => r.pass.slug),
+      "pass",
+      fanned,
+    ),
     passes: collection<PassProps>(
       (shown.passes ? drawn : []).map((row) => ({
         at: [row.pass.lon, row.pass.lat],
@@ -517,6 +772,7 @@ export const buildScene = (input: SceneInput): Scene => {
           name: row.pass.name,
           rank: rankOf(row.pass),
           selected: flag(row.pass.slug === selPass),
+          short: shortName(row.pass.name),
           slug: row.pass.slug,
           status: row.status,
           surface: row.pass.surface,
@@ -524,6 +780,16 @@ export const buildScene = (input: SceneInput): Scene => {
       })),
     ),
     routes: {
+      byStatus: Object.fromEntries(
+        STATUSES.map((status) => [
+          status,
+          slugFilter(
+            shown.passes
+              ? drawn.filter((r) => r.status === status).map((r) => r.pass.slug)
+              : [],
+          ),
+        ]),
+      ) as Record<Status, FilterSpecification>,
       filter: slugFilter(shown.passes ? drawn.map((r) => r.pass.slug) : []),
       ghosts: slugFilter(
         shown.passes
@@ -539,6 +805,11 @@ export const buildScene = (input: SceneInput): Scene => {
       ]),
       state: tourState,
     },
+    townState: fannedState(
+      rows.town.map((r) => r.town.slug),
+      "town",
+      fanned,
+    ),
     towns: collection<TownProps>(
       (shown.destinations ? rows.town : []).map((row) => ({
         at: [row.town.lon, row.town.lat],

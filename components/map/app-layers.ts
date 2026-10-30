@@ -23,6 +23,7 @@ import type { Lang } from "@/lib/i18n";
 import {
   LAYERS,
   ROUTE_CASING,
+  ROUTE_LINES,
   ROUTE_DASH,
   ROUTE_GHOST,
   OVERLAY,
@@ -33,8 +34,16 @@ import {
 } from "@/lib/layer-ids";
 import { PALETTE } from "@/lib/palette";
 import type { Scheme } from "@/lib/palette";
-import { DESTINATION_MAX_ZOOM, SIZE_ZOOMS } from "@/lib/prominence";
-import { STATUSES } from "@/lib/regions";
+import {
+  DESTINATION_MAX_ZOOM,
+  CLASSIC_NAME_ZOOM_COARSE,
+  OVERVIEW_ZOOM,
+  ROAD_NAME_ZOOM,
+  SHORT_NAME_ZOOM,
+  SIZE_ZOOMS,
+} from "@/lib/prominence";
+import { CLASSIC_FAME, STATUSES } from "@/lib/regions";
+import { AREA_SPACING, HALO_WIDTH, TYPE } from "@/lib/typography";
 import type { MapEnvironment } from "@/lib/use-media-query";
 
 /** The image the arrows along a tour are drawn with (`arrowhead`). */
@@ -92,11 +101,13 @@ export const readColors = (el: HTMLElement) => {
   return {
     accent: v("--accent", "#e8a33d"),
     area: v("--area", "#5b86c4"),
-    closed: v("--status-closed", "#c43d3d"),
+    closed: v("--status-closed", "#b14e49"),
     ink: v("--foreground", "#1b2430"),
     open: v("--status-open", "#2e8b57"),
     paper: v("--card", "#ffffff"),
     risky: v("--status-risky", "#d9932a"),
+    /** Every tour at rest: one quiet tone outside the status colours. */
+    tour: v("--tour", "#9b8fb0"),
     town: v("--town", "#1f4e79"),
     /**
      * A road whose status is not known – an ascent whose feature state has not
@@ -252,6 +263,15 @@ export const applyBase = (m: MLMap, id: string, s: Scheme, lang: Lang) => {
 
 /** The dot's size at the two zooms it is given at (`SIZE_ZOOMS`), as base + per fame. */
 const SIZE = { far: [2, 1.1], near: [4, 1.8] } as const;
+/**
+ * The two sizes a dot comes in, as the fame its size is computed for: a
+ * classic, whatever its status, and every other road. Five steps of fame were
+ * five sizes between 5 and 15 px, which nobody tells apart; two say the one
+ * thing the size is for – a classic or not.
+ */
+const DOT_FAME = { classic: 4.5, other: 2 } as const;
+/** An ascent's width at rest, by status: rideable widest, closed a thread. */
+const ROUTE_WIDTH = { closed: 2, open: 3.5, risky: 2.75 } as const;
 /** The lowest label layer's rank: it names every rank at or below it. */
 const RANK_FLOOR = PASS_LABELS.at(-1)!.rank;
 /** A shadow's radius at the two size zooms, its opacity and its lines': present, not loud. */
@@ -273,22 +293,66 @@ const bySize = (
   ] as never;
 
 /**
- * The radius of a pass dot, by zoom and fame. With a `hit` floor it becomes
- * the dot's hit area instead: never below that floor, always a margin wider
- * than the dot, which on a famous pass at close zoom is as wide as the floor
- * itself.
+ * The radius of a pass dot, by zoom and by whether it is a classic
+ * (`DOT_FAME`). With a `hit` floor it becomes the dot's hit area instead:
+ * never below that floor, always a margin wider than the dot, which on a
+ * classic at close zoom is as wide as the floor itself.
  */
 const passRadius = (hit = 0): ExpressionSpecification => {
   const at = ([base, perFame]: readonly [number, number]) => {
     const r: ExpressionSpecification = [
-      "+",
-      base + (hit ? HIT_MARGIN : 0),
-      ["*", perFame, ["get", "fame"]],
+      "case",
+      [">=", ["get", "fame"], CLASSIC_FAME],
+      base + (hit ? HIT_MARGIN : 0) + perFame * DOT_FAME.classic,
+      base + (hit ? HIT_MARGIN : 0) + perFame * DOT_FAME.other,
     ];
     return hit ? (["max", hit, r] as ExpressionSpecification) : r;
   };
   return bySize(at(SIZE.far), at(SIZE.near));
 };
+
+/**
+ * Which status comes first, as a number: rideable before limited before
+ * closed (`STATUSES`). The dots are stacked by it and the names placed by
+ * it, so where marks crowd the green ones are the ones left to see.
+ */
+const statusFirst = (offset: number, step: number) =>
+  [
+    "match",
+    ["get", "status"],
+    ...STATUSES.flatMap((st, i) => [st, offset + i * step]),
+    offset + STATUSES.length * step,
+  ] as never;
+
+/**
+ * A road not often closed in the half-month: the ones named at rest. On a
+ * fine pointer only – a finger has no hover to bring the others' names back,
+ * so on a phone every road keeps its name.
+ */
+/**
+ * On a phone, the step that names the classics before the other roads: from
+ * `CLASSIC_NAME_ZOOM_COARSE` a road of `CLASSIC_FAME` gets its short name,
+ * the rest of its rank (the pearls in rank 4) waits for `ROAD_NAME_ZOOM`.
+ */
+const classicFirst = (on: boolean): unknown[] =>
+  on
+    ? [
+        CLASSIC_NAME_ZOOM_COARSE,
+        [
+          "case",
+          ["==", ["get", "selected"], 1],
+          ["get", "name"],
+          [">=", ["get", "fame"], CLASSIC_FAME],
+          ["get", "short"],
+          ["==", ["get", "favorite"], 1],
+          ["get", "short"],
+          "",
+        ],
+      ]
+    : [];
+
+const notClosed = (coarse: boolean): ExpressionSpecification =>
+  coarse ? ["literal", true] : ["!=", ["get", "status"], "closed"];
 
 /**
  * The app's own layers, painted with the live tokens. A pure function of the
@@ -377,11 +441,9 @@ export const appLayers = (
     ],
     "circle-opacity": [
       "case",
-      [">=", ["get", "fame"], 4],
+      [">=", ["get", "fame"], CLASSIC_FAME],
       0.95,
-      ["==", ["get", "fame"], 3],
-      0.8,
-      0.62,
+      0.85,
     ],
     "circle-pitch-alignment": "map",
     "circle-radius": passRadius(),
@@ -400,8 +462,10 @@ export const appLayers = (
       "case",
       isSelected,
       3,
+      // A thin ring: "often closed" stays a shape, but no longer the loudest
+      // mark on the map – the white disc in a thick red ring was.
       ["==", ["get", "status"], "closed"],
-      2.5,
+      1.5,
       isUnpavedDot,
       2,
       1.5,
@@ -431,8 +495,23 @@ export const appLayers = (
     ] as never;
   // The tube: wide enough inside to hold an ascent on its rim (6 px, 9 when
   // selected), with a wall of 1.5 to 2 px either side of it.
-  const tourWall = tourWidth(11, 16);
-  const tourInside = tourWidth(8, 12.5);
+  // Slimmer on the overview than up close: there a tube is a frame around a
+  // few millimetres of road, and at 11 px it was wider than any ascent.
+  const tourWall = tourWidth(7.5, 16);
+  const tourInside = tourWidth(5.5, 12.5);
+  /**
+   * A tour's colour: one quiet tone for all of them at rest, its own once it
+   * is pointed at or selected. A third of the tours' own colours lay in the
+   * reds and oranges the status is said in, so at rest every tube spoke
+   * status; the tour that is singled out still needs to be told from a
+   * neighbour on the same road.
+   */
+  const tourColor = [
+    "case",
+    ["any", selected, hoveredLine],
+    ["get", "color"],
+    colors.tour,
+  ] as never;
 
   const isDestinationLit: ExpressionSpecification = [
     "any",
@@ -465,7 +544,7 @@ export const appLayers = (
           ["linear"],
           ["zoom"],
           DESTINATION_MAX_ZOOM - 1,
-          ["case", isDestinationLit, 0.16, 0.06],
+          ["case", isDestinationLit, 0.16, 0.045],
           DESTINATION_MAX_ZOOM + 1,
           ["case", isDestinationLit, 0.1, 0.02],
         ],
@@ -486,7 +565,7 @@ export const appLayers = (
           ["linear"],
           ["zoom"],
           DESTINATION_MAX_ZOOM - 1,
-          ["case", isDestinationLit, 0.9, 0.45],
+          ["case", isDestinationLit, 0.9, 0.18],
           DESTINATION_MAX_ZOOM + 1,
           ["case", isDestinationLit, 0.9, 0.3],
         ],
@@ -580,7 +659,7 @@ export const appLayers = (
       id: LAYERS.tour.mark,
       layout: { "line-cap": "round", "line-join": "round" },
       paint: {
-        "line-color": ["get", "color"],
+        "line-color": tourColor,
         "line-layer-opacity": 0.95,
         "line-width": tourWall,
       },
@@ -602,7 +681,7 @@ export const appLayers = (
       id: TOUR_PARTS.road,
       layout: { "line-cap": "round", "line-join": "round" },
       paint: {
-        "line-color": ["get", "color"],
+        "line-color": tourColor,
         "line-layer-opacity": 0.9,
         "line-width": ["case", selected, 2, 1.5],
       },
@@ -618,27 +697,53 @@ export const appLayers = (
       layout: { "line-cap": "round", "line-join": "round" },
       paint: {
         "line-color": colors.paper,
-        "line-width": ["case", selected, 9, hoveredLine, 7.5, 6],
+        // A rim of the same width round each line, so a thin closed one does
+        // not sit in a wide white band.
+        "line-width": [
+          "case",
+          selected,
+          9,
+          hoveredLine,
+          7.5,
+          [
+            "match",
+            ["feature-state", "status"],
+            ...STATUSES.flatMap((st) => [st, ROUTE_WIDTH[st] + 2.5]),
+            ROUTE_WIDTH.open + 2.5,
+          ],
+        ] as never,
       },
       source: SOURCE.routes,
       type: "line",
     },
     // The ascent, inside the tube that holds it: solid and opaque, because
     // the status colour is the stronger signal and must not be tinted by the
-    // tour it belongs to.
-    {
-      id: LAYERS.route.mark,
-      layout: { "line-cap": "round", "line-join": "round" },
-      paint: {
-        "line-color": routeColor,
-        // Hover is the lighter of the two states, so it must not reach the
-        // width a selection has: pointing at a row says "this one", opening
-        // it says "this one, and here is everything about it".
-        "line-width": ["case", selected, 6, hoveredLine, 5, 3.5],
-      },
-      source: SOURCE.routes,
-      type: "line",
-    },
+    // tour it belongs to. One layer per status, closed first and rideable
+    // last (`ROUTE_LINES`), so a green road is drawn over a red one where they
+    // cross – and narrower the further down the ladder it is: what is good to
+    // ride is what the map is read for.
+    ...(["closed", "risky", "open"] as const).map(
+      (status): LayerSpecification => ({
+        id: ROUTE_LINES[status],
+        layout: { "line-cap": "round", "line-join": "round" },
+        paint: {
+          "line-color": routeColor,
+          // Hover is the lighter of the two states, so it must not reach the
+          // width a selection has: pointing at a row says "this one", opening
+          // it says "this one, and here is everything about it".
+          "line-width": [
+            "case",
+            selected,
+            6,
+            hoveredLine,
+            5,
+            ROUTE_WIDTH[status],
+          ] as never,
+        },
+        source: SOURCE.routes,
+        type: "line",
+      }),
+    ),
     // The dash over an unpaved ascent, in the paper colour so the status
     // colour of the line shows through the gaps: `line-dasharray` is not
     // data-driven, so the layer is the split – painted transparent on
@@ -693,12 +798,12 @@ export const appLayers = (
         "symbol-spacing": 600,
         "text-field": ["get", "name"],
         "text-font": [FONT_BOLD],
-        "text-size": 11,
+        "text-size": TYPE.small,
       },
       paint: {
-        "text-color": ["get", "color"],
+        "text-color": tourColor,
         "text-halo-color": colors.paper,
-        "text-halo-width": 1.5,
+        "text-halo-width": HALO_WIDTH,
       },
       source: SOURCE.tours,
       type: "symbol",
@@ -717,6 +822,10 @@ export const appLayers = (
       id: LAYERS.town.mark,
       layout: {
         "icon-allow-overlap": true,
+        // A town takes no room from the names: on the overview there are 161
+        // of them, more than there are classics, and each one used to push a
+        // pass name off the map.
+        "icon-ignore-placement": true,
         "icon-image": [
           "case",
           ["==", ["get", "selected"], 1],
@@ -725,7 +834,23 @@ export const appLayers = (
           "town-fav",
           "town",
         ],
-        "icon-size": ["interpolate", ["linear"], ["zoom"], 5, 0.6, 13, 0.85],
+        // Small and pale on the overview, where the question is which region,
+        // full from zoom 8, where it is which town in it – smaller, never
+        // gone, so the zoom still decides only how a town reads.
+        "icon-size": [
+          "interpolate",
+          ["linear"],
+          ["zoom"],
+          5,
+          0.38,
+          8,
+          0.6,
+          13,
+          0.85,
+        ],
+      },
+      paint: {
+        "icon-opacity": ["interpolate", ["linear"], ["zoom"], 6, 0.5, 8.5, 1],
       },
       source: SOURCE.towns,
       type: "symbol",
@@ -737,23 +862,43 @@ export const appLayers = (
         "text-font": [FONT_BOLD],
         "text-justify": "auto",
         "text-radial-offset": 1,
-        "text-size": ["interpolate", ["linear"], ["zoom"], 8, 12, 13, 14],
+        "text-size": [
+          "interpolate",
+          ["linear"],
+          ["zoom"],
+          8,
+          TYPE.body,
+          13,
+          TYPE.near,
+        ],
         "text-variable-anchor": ["left", "right", "top", "bottom"],
       },
       minzoom: 8,
       paint: {
         "text-color": colors.town,
         "text-halo-color": colors.paper,
-        "text-halo-width": 2,
+        "text-halo-width": HALO_WIDTH,
+        // A town the fan names (`Scene.townState`) is not named twice.
+        "text-opacity": [
+          "case",
+          ["==", ["feature-state", "fanned"], 1],
+          0,
+          1,
+        ] as never,
       },
       source: SOURCE.towns,
       type: "symbol",
     },
     {
       // Every road the filters keep, at every zoom; a favourite is a star,
-      // in the layer below.
+      // in the layer below. Stacked rideable over limited over closed, a
+      // classic over the rest of its status.
       filter: ["!=", ["get", "favorite"], 1],
       id: LAYERS.pass.mark,
+      layout: {
+        // Higher is drawn later, so on top.
+        "circle-sort-key": ["-", ["get", "fame"], statusFirst(0, 10)] as never,
+      },
       paint: passPaint,
       source: SOURCE.passes,
       type: "circle",
@@ -775,82 +920,136 @@ export const appLayers = (
       source: SOURCE.passes,
       type: "symbol",
     },
-    // The area's name over its centre, with the count under it, at every
-    // zoom like its outline. A point of its own rather than the outline's: a polygon is labelled
-    // once per tile it crosses. Below the pass labels in the list, so
+    // The area's name, where its outline has room (`labelSpot`), from the
+    // end of the overview on (`OVERVIEW_ZOOM`): on one screen of the Alps,
+    // eighty area names were most of the text. A point of its own rather
+    // than the outline's: a polygon is labelled once per tile it crosses. Below the pass labels in the list, so
     // MapLibre places the pass names first: a famous pass wins its collision
     // against the area it lies in.
     {
       id: LAYERS.destination.labels[0],
       layout: {
         "symbol-sort-key": ["-", 1, ["get", "share"]] as never,
-        "text-field": [
-          "format",
-          ["get", "name"],
-          {},
-          "\n",
-          {},
-          ["get", "text"],
-          { "font-scale": 0.8 },
-        ] as never,
+        // The name alone: how many of its roads are good is what the hover
+        // label and the list say. Spaced a little, the way a map sets the name
+        // of an area under the names of the places in it.
+        "text-field": ["get", "name"] as never,
         "text-font": [FONT_BOLD],
-        "text-line-height": 1.25,
+        "text-letter-spacing": AREA_SPACING,
+        "text-max-width": 8,
         "text-size": [
           "interpolate",
           ["linear"],
           ["zoom"],
           5,
-          11,
+          TYPE.quiet,
           8,
-          13,
+          TYPE.body,
         ] as never,
       },
+      minzoom: OVERVIEW_ZOOM,
       paint: {
         // The towns' blue rather than the ink: an area's name is the quiet
         // voice under the road names, in the family its outline is drawn in.
         "text-color": colors.town,
         "text-halo-color": colors.paper,
-        "text-halo-width": 1.5,
+        "text-halo-width": HALO_WIDTH,
         // The name stays too; past the overview the pass names win their
         // collisions against it (they are placed first, see below).
-        "text-opacity": 0.85,
+        "text-opacity": 0.75,
       },
       source: SOURCE.destinationLabels,
       type: "symbol",
     },
     ...PASS_LABELS.map(({ minzoom, rank }) => ({
       // One layer per rank, the lowest taking every rank under it: a dead end
-      // of fame 1 has rank 0 and still gets its name at the last step.
+      // of fame 1 has rank 0 and still gets its name at the last step. A road
+      // that is often closed in the half-month is not named until it is
+      // pointed at – its thin ring says enough, and its name took the room a
+      // rideable road's name needed (on a fine pointer: `notClosed`). What is
+      // selected or a favourite is named whatever its status.
       filter:
         rank === 5
           ? ([
               "any",
-              ["==", ["get", "rank"], 5],
+              ["all", ["==", ["get", "rank"], 5], notClosed(coarse)],
               ["==", ["get", "selected"], 1],
               ["==", ["get", "favorite"], 1],
             ] as never)
           : ([
               "all",
               ["==", ["max", RANK_FLOOR, ["get", "rank"]], rank],
+              notClosed(coarse),
               ["!=", ["get", "selected"], 1],
               ["!=", ["get", "favorite"], 1],
             ] as never),
       id: passLabelId(rank),
       layout: {
-        "symbol-sort-key": ["-", 6, ["get", "rank"]] as never,
-        "text-field": ["get", "name"] as never,
+        // Placed rideable first, then by rank: where two names collide, the
+        // green road keeps its name.
+        "symbol-sort-key": [
+          "+",
+          statusFirst(0, 10),
+          ["-", 6, ["get", "rank"]],
+        ] as never,
+        // The overview writes the short name (`shortName`): "Galibier", not
+        // "Col du Galibier". The selected road is named in full everywhere.
+        // Below `ROAD_NAME_ZOOM` no road is named at rest – an empty name
+        // places nothing – but the selected one and the favourites; on a
+        // phone the classics from `CLASSIC_NAME_ZOOM_COARSE` (`classicFirst`).
+        "text-field": [
+          "step",
+          ["zoom"],
+          [
+            "case",
+            ["==", ["get", "selected"], 1],
+            ["get", "name"],
+            ["==", ["get", "favorite"], 1],
+            ["get", "short"],
+            "",
+          ],
+          ...classicFirst(coarse && rank >= 4),
+          ROAD_NAME_ZOOM,
+          [
+            "case",
+            ["==", ["get", "selected"], 1],
+            ["get", "name"],
+            ["get", "short"],
+          ],
+          SHORT_NAME_ZOOM,
+          ["get", "name"],
+        ] as never,
         "text-font": [FONT_BOLD],
         "text-justify": "auto" as never,
         "text-radial-offset": 1,
-        "text-size": rank >= 5 ? 13 : rank <= 2 ? 11 : 12.5,
-        "text-variable-anchor": ["left", "right", "top", "bottom"] as never,
+        "text-size": rank >= 5 ? TYPE.lead : rank <= 2 ? TYPE.small : TYPE.body,
+        // Eight places round the dot rather than four: in a cluster the
+        // diagonal is often the one that is free.
+        "text-variable-anchor": [
+          "left",
+          "right",
+          "top",
+          "bottom",
+          "top-left",
+          "top-right",
+          "bottom-left",
+          "bottom-right",
+        ] as never,
       },
-      minzoom,
+      // On a phone the classics of rank 4 are named before the rest of it.
+      minzoom: coarse && rank === 4 ? CLASSIC_NAME_ZOOM_COARSE : minzoom,
       paint: {
         "text-color": colors.ink,
         "text-halo-color": colors.paper,
-        "text-halo-width": 1.6,
-        "text-opacity": rank <= 2 ? 0.85 : 1,
+        "text-halo-width": HALO_WIDTH,
+        // A road the fan names round its area (`PassState`) is not named
+        // beside its dot as well.
+        "text-opacity": [
+          "case",
+          ["==", ["feature-state", "fanned"], 1],
+          0,
+          rank <= 2 ? 0.85 : 1,
+        ] as never,
       },
       source: SOURCE.passes,
       type: "symbol" as const,

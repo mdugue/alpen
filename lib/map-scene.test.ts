@@ -68,8 +68,10 @@ const REACH: Record<string, [number, number][]> = {
 
 const input = (extra: Partial<SceneInput> = {}): SceneInput => ({
   env: { coarse: false },
+  fan: null,
   ghosts: [],
   hovered: null,
+  overFan: false,
   profileCursor: null,
   rows: {
     destination: [],
@@ -81,6 +83,7 @@ const input = (extra: Partial<SceneInput> = {}): SceneInput => ({
   shown: ALL_SHOWN,
   tourBounds: TOUR_BOUNDS,
   townReach: REACH,
+  view: null,
   w: DE,
   you: null,
   ...extra,
@@ -116,6 +119,27 @@ describe("what is drawn", () => {
     expect(filtered(off.routes.filter)).toEqual([]);
   });
 
+  test("the ascent lines are split by status, so a rideable one is drawn last", () => {
+    const scene = buildScene(
+      input({
+        rows: {
+          destination: [],
+          pass: [
+            passRow(galibier, { status: "closed" }),
+            passRow(stelvio, { status: "open" }),
+          ],
+          tour: [],
+          town: [],
+        },
+      }),
+    );
+    expect(filtered(scene.routes.byStatus.open)).toEqual(["stelvio"]);
+    expect(filtered(scene.routes.byStatus.closed)).toEqual(["galibier"]);
+    expect(filtered(scene.routes.byStatus.risky)).toEqual([]);
+    // The rim, the dash and the hit area still carry every drawn ascent.
+    expect(filtered(scene.routes.filter)).toEqual(["galibier", "stelvio"]);
+  });
+
   test("a hidden tour is out of the filter, a shown one in it", () => {
     expect(filtered(buildScene(input()).tours.filter)).toEqual(["marmotte"]);
     const hidden: Shown = { ...ALL_SHOWN, hiddenTours: ["marmotte"] };
@@ -141,6 +165,7 @@ describe("what is drawn", () => {
       name: "Col du Galibier",
       rank: 3,
       selected: 0,
+      short: "Galibier",
       slug: "galibier",
       status: "risky",
       surface: "asphalt",
@@ -442,6 +467,7 @@ describe("hover", () => {
       favorite: false,
       members: {
         bounds: [10, 46, 10.3, 46.1],
+        label: { lat: 46.05, lon: 10.2 },
         outline: [
           [10, 46],
           [10.3, 46],
@@ -483,9 +509,10 @@ describe("hover", () => {
         [10.3, 46.1],
       ],
     ]);
-    // The name stands on the centre, with the same properties.
+    // The name stands on the spot the server found room for, with the same
+    // properties – not on the centre, where the roads it is about are.
     const [label] = scene.destinationLabels.features;
-    expect(label?.geometry.coordinates).toEqual([10, 46]);
+    expect(label?.geometry.coordinates).toEqual([10.2, 46.05]);
     expect(label?.properties).toEqual(feature?.properties);
     // The popup stands on the outline's northernmost corner, not its centre.
     expect(scene.hover.popup).toEqual({
@@ -543,5 +570,185 @@ describe("hover", () => {
     );
     expect(scene.hover.popup).toBeNull();
     expect(scene.hover.hull).toBe(REACH.bormio!);
+  });
+});
+
+/** An area round `center` holding `passes`, as the server derives it. */
+const areaRow = (
+  slug: string,
+  center: { lat: number; lon: number },
+  passes: string[],
+): DestinationRow => ({
+  baseTowns: [],
+  destination: {
+    access: "",
+    baseTowns: [],
+    center,
+    character: "",
+    country: "IT",
+    exclude: [],
+    include: [],
+    multiDay: "",
+    name: slug,
+    radiusKm: 30,
+    slug,
+  },
+  favorite: false,
+  members: {
+    bounds: [9.5, 45.5, 11, 46.5],
+    label: center,
+    outline: [
+      [9.5, 45.5],
+      [11, 45.5],
+      [11, 46.5],
+    ],
+    passes,
+    tours: [],
+    towns: [],
+  },
+  score: 3,
+  season: [],
+  text: "",
+  verdict: {
+    counts: { best: passes.length, closed: 0, good: 0, limited: 0 },
+    peak: 1,
+    total: passes.length,
+    year: { best: null, cells: [] },
+  },
+});
+
+/** An area holding La Marmotte as well. */
+const withMarmotte = (a: DestinationRow): DestinationRow => ({
+  ...a,
+  members: { ...a.members, tours: ["marmotte"] },
+});
+
+const lit = (scene: Scene) =>
+  scene.destinations.features
+    .filter((f) => f.properties.hovered === 1)
+    .map((f) => f.properties.slug);
+
+describe("fan", () => {
+  // The Galibier lies on the centre of an area it has to itself, and in a
+  // farther one it shares with the Stelvio.
+  const alone = areaRow("alone", { lat: 46, lon: 10 }, ["galibier"]);
+  const shared = areaRow("shared", { lat: 46, lon: 10.6 }, [
+    "galibier",
+    "stelvio",
+  ]);
+  const rows = {
+    destination: [alone, shared],
+    pass: [passRow(galibier), passRow(stelvio)],
+    tour: [],
+    town: [],
+  };
+
+  test("a road opens the nearest area that has a fan, and its popup gives way", () => {
+    const scene = buildScene(
+      input({ hovered: { kind: "pass", slug: "galibier" }, rows }),
+    );
+    expect(scene.fanNext).toBe("shared");
+    expect(scene.hover.popup).toBeNull();
+    expect(lit(scene)).toEqual(["shared"]);
+  });
+
+  test("a road alone in its only area keeps its popup and lights its outline", () => {
+    const scene = buildScene(
+      input({
+        hovered: { kind: "pass", slug: "galibier" },
+        rows: { ...rows, destination: [alone] },
+      }),
+    );
+    expect(scene.fanNext).toBeNull();
+    expect(scene.hover.popup?.name).toBe("Col du Galibier");
+    expect(lit(scene)).toEqual(["alone"]);
+  });
+
+  test("a phone opens no fan, not even for the area in the panel", () => {
+    const scene = buildScene(
+      input({
+        env: { coarse: true },
+        hovered: { kind: "pass", slug: "galibier" },
+        rows,
+        selection: { kind: "destination", slug: "shared" },
+      }),
+    );
+    expect(scene.fanNext).toBeNull();
+  });
+
+  test("a town in the fan is an entry, and its popup gives way too", () => {
+    const withTown = {
+      ...shared,
+      members: { ...shared.members, towns: ["bormio"] },
+    };
+    const scene = buildScene(
+      input({
+        hovered: { kind: "town", slug: "bormio" },
+        rows: { ...rows, destination: [withTown], town: [townRow(bormio)] },
+      }),
+    );
+    expect(scene.fanNext).toBe("shared");
+    expect(scene.hover.popup).toBeNull();
+    const open = buildScene(
+      input({
+        fan: "shared",
+        rows: { ...rows, destination: [withTown], town: [townRow(bormio)] },
+      }),
+    );
+    expect(open.fan?.items.map((i) => `${i.kind}:${i.slug}`)).toEqual([
+      "pass:galibier",
+      "pass:stelvio",
+      "town:bormio",
+    ]);
+    expect(open.fan?.items.at(-1)?.detail).toBe("Bike-Hotels");
+    expect(open.townState.bormio).toEqual({ fanned: 1 });
+  });
+
+  test("zoomed in past the fan's share, the road has its popup again", () => {
+    const scene = buildScene(
+      input({
+        fan: "shared",
+        hovered: { kind: "pass", slug: "galibier" },
+        rows,
+        view: { height: 700, width: 1000, zoom: 12 },
+      }),
+    );
+    expect(scene.fanNext).toBeNull();
+    expect(scene.fan).toBeNull();
+    expect(scene.hover.popup?.name).toBe("Col du Galibier");
+    // Its primary area's outline still answers the pointer.
+    expect(lit(scene)).toEqual(["alone"]);
+  });
+
+  test("a loop through more than two areas is named by no fan", () => {
+    const crowd = ["x", "y"].map((slug) =>
+      withMarmotte(areaRow(slug, { lat: 47, lon: 12 }, ["stelvio"])),
+    );
+    const scene = buildScene(
+      input({
+        fan: "shared",
+        rows: {
+          ...rows,
+          destination: [alone, withMarmotte(shared), ...crowd],
+          tour: [tourRow(marmotte)],
+        },
+      }),
+    );
+    expect(scene.fan?.items.map((i) => i.kind)).toEqual(["pass", "pass"]);
+  });
+
+  test("an open fan does not light its outline for a road outside it", () => {
+    const outside = makePass("outside", 400);
+    const scene = buildScene(
+      input({
+        fan: "shared",
+        hovered: { kind: "pass", slug: "outside" },
+        rows: { ...rows, pass: [...rows.pass, passRow(outside)] },
+        selection: { kind: "destination", slug: "shared" },
+      }),
+    );
+    expect(scene.fanNext).toBe("shared");
+    expect(lit(scene)).toEqual([]);
+    expect(scene.hover.popup?.name).toBe("outside");
   });
 });
