@@ -18534,7 +18534,11 @@
      "lat": 39.6255,
      "lon": 2.4255
     },
-    "label": "Estellencs (Nord)"
+    "label": "Estellencs (Nord)",
+    "check": {
+     "minPeakAt": 0.45,
+     "note": "Die Ma-10 überquert auf halbem Weg eine Kuppe bei Ses Fontanelles, gut 10 m über dem Coll, und fällt danach leicht ab, bevor sie zum Pass steigt; die Profilspitze liegt deshalb bei knapp der Hälfte der Strecke. Ende (4 m vom Punkt) und Profilhöhe (+14 m) stimmen."
+    }
    }
   ]
  },
