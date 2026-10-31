@@ -19025,7 +19025,11 @@
      "lat": 51.8035,
      "lon": 10.4473
     },
-    "label": "Altenau (West)"
+    "label": "Altenau (West)",
+    "check": {
+     "minPeakAt": 0.7,
+     "note": "Ab Altenau erreicht die Straße nach gut 6 km eine Kuppe rund 20 m über Torfhaus, fällt dann etwa 60 m ab und steigt auf den letzten Kilometern wieder zur Hochfläche; die Profilspitze liegt deshalb bei knapp drei Vierteln der Strecke. Ende (2 m vom Punkt) und Profilhöhe stimmen."
+    }
    }
   ]
  },
